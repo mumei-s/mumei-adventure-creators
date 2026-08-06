@@ -1,0 +1,25 @@
+const app=document.querySelector('#app'),modal=document.querySelector('#modal'),toastNode=document.querySelector('#toast');
+const STORE='mumei-v3-state',SESSION='mumei-v3-session',GUEST='mumei-v3-guest';
+const ACTIONS={strike:{label:'攻める',icon:'⚔',copy:'正面から一気に勝負を仕掛ける。'},guard:{label:'守る',icon:'◆',copy:'相手の動きを見て反撃を待つ。'},special:{label:'必殺技',icon:'✦',copy:'派手な一撃で決着を狙う。'}};
+const PACKS={
+ gentle:{label:'やさしい応援',intro:['ようこそ。楽しんでいってね。','肩の力を抜いて、いざ勝負。'],win:['いい勝負だったね。また会おう。','この勝利、次の創作につなげよう。'],lose:['お見事！その勢いで進もう。','負けたけれど、すてきな一戦だったよ。'],draw:['引き分けだね。次こそ決着を。','互角だったね。もう一度いこう。']},
+ brave:{label:'熱血',intro:['全力で来い！受けて立つ！','さあ、勝負の時間だ！'],win:['この一戦、もらった！','まだまだ挑戦者を待っているぞ！'],lose:['やるな！次は負けない！','その勝利、誇っていいぞ！'],draw:['決着は次に持ち越しだ！','熱い勝負だった！もう一度だ！']},
+ cool:{label:'冷静',intro:['結果は、始めてみれば分かる。','静かに決着をつけよう。'],win:['想定どおりだ。','悪くない勝負だった。'],lose:['見事だ。今回は君の勝ちだ。','敗因は分析した。次は違う。'],draw:['互角か。興味深い。','判定不能。再戦を推奨する。']},
+ mystical:{label:'神秘',intro:['運命の頁が、いま開かれる。','星の導きに身をゆだねよう。'],win:['星はこの結末を選んだ。','光はこちらに微笑んだ。'],lose:['運命は君を選んだ。','その輝き、確かに受け取った。'],draw:['物語はまだ終わらない。','二つの光は重なった。']},
+ comic:{label:'コミカル',intro:['負けても記事のネタにはなる！','とりあえず勢いでいこう！'],win:['勝った！たぶん実力！','ランキング、見に行ってくる！'],lose:['ぐぬぬ。もう一回だけ！','今のは乱数のせい、たぶん。'],draw:['空気を読んだ引き分け！','仲良く同点ということで！']},
+ job:{label:'ジョブから自動',intro:['「{job}」として、正々堂々と挑もう。','{job}の技、見せてもらおう。'],win:['これが{job}の戦い方だ。','{job}の名に恥じない一戦だった。'],lose:['見事だ。{job}として再戦を誓おう。','この経験も{job}の力になる。'],draw:['{job}同士、譲れない勝負だった。','決着は次の物語へ。']}
+};
+const nowISO=()=>new Date().toISOString();
+const uid=()=>crypto.randomUUID();
+function seedBattles(){const a=[];[['demo-a',8,2],['demo-b',11,3],['demo-c',6,1]].forEach(([p,w,l],x)=>{for(let i=0;i<w+l;i++){const d=new Date();d.setDate(d.getDate()-(i%4));d.setHours(10+(i%8),i*3%60,0,0);a.push({id:`seed-${x}-${i}`,participantId:p,guestId:null,opponentId:`s${i%3+1}`,opponentVersion:1,action:['strike','guard','special'][i%3],result:i<w?'win':'lose',ranked:true,createdAt:d.toISOString(),source:'seed'});}});return a;}
+function fresh(){return{version:3,settings:{title:'無名S note 冒険クリエイター名鑑',hashtag:'#無名S名鑑',started:'2026年5月始動',announcement:'IDだけで参加できます。参加記事が認証されると、おすすめ記事枠が1つから2つへ増えます。',rankDailyLimit:10,winPercent:45,drawPercent:10,profileUrl:'https://note.com/ss_yr/portal',recruitUrl:'https://note.com/ss_yr/n/nf34d092b4032',magazineUrl:'https://note.com/ss_yr/m/mf8a55ef40b9d'},opponents:[{id:'s1',name:'無名S note①',job:'道具屋（アイテムマイスター）',rarity:'SR',dialoguePack:'gentle',images:[],version:1,enabled:true},{id:'s2',name:'無名S note②',job:'共創魔導士',rarity:'Dream SSR',dialoguePack:'mystical',images:[],version:1,enabled:true},{id:'s3',name:'無名S note③',job:'狂戦士（バーサーカー）',rarity:'Legend SSR',dialoguePack:'brave',images:[],version:1,enabled:true}],participants:[{id:'demo-a',noteId:'demo_creator_a',displayName:'見本クリエイターA',status:'approved',job:'言霊士',rarity:'Rare',images:[],intro:'言葉を通して新しい気づきを届ける見本クリエイター。',article1Url:'',article2Url:'',participationArticleUrl:'',articleStatus:'none',createdAt:'2026-08-01T01:00:00Z',isDemo:true},{id:'demo-b',noteId:'demo_creator_b',displayName:'見本クリエイターB',status:'approved',job:'幻創絵師',rarity:'SR',images:[],intro:'イラストとAI創作を楽しむ見本クリエイター。',article1Url:'',article2Url:'',participationArticleUrl:'https://note.com/ss_yr/portal',articleStatus:'verified',createdAt:'2026-08-02T01:00:00Z',isDemo:true},{id:'demo-c',noteId:'demo_creator_c',displayName:'見本クリエイターC',status:'approved',job:'暮らしの記録士',rarity:'Normal',images:[],intro:'日々の記録を丁寧に残す見本クリエイター。',article1Url:'',article2Url:'',participationArticleUrl:'',articleStatus:'none',createdAt:'2026-08-03T01:00:00Z',isDemo:true}],battles:seedBattles(),audit:[]};}
+function load(){try{const v=JSON.parse(localStorage.getItem(STORE));return v?.version===3?v:fresh();}catch{return fresh();}}
+let state=load(),route=location.hash.slice(1)||'home',adminTab='overview',searchText='',opponentId='s1',battleAction='strike',rankPeriod='week',uploadBuffers=new Map(),rematch=false;
+function save(action='更新'){state.audit.unshift({id:uid(),action,at:nowISO()});state.audit=state.audit.slice(0,100);try{localStorage.setItem(STORE,JSON.stringify(state));return true}catch(e){console.error(e);toast('保存容量を超えました。画像を減らしてください。');return false}}
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=d=>d?new Intl.DateTimeFormat('ja-JP',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(d)):'—';
+const label=p=>p.displayName||p.noteId;
+const noteUrl=id=>`https://note.com/${encodeURIComponent(id)}/portal`;
+const current=()=>state.participants.find(p=>p.id===localStorage.getItem(SESSION))||null;
+const approved=()=>state.participants.filter(p=>p.status==='approved');
+const pending=()=>s

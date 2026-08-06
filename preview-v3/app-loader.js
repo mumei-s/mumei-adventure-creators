@@ -1,6 +1,7 @@
 (async () => {
   try {
-    const paths = Array.from({ length: 8 }, (_, i) => `./chunks/app-${String(i + 1).padStart(2, '0')}.txt`);
+    const base = new URL('./', import.meta.url);
+    const paths = Array.from({ length: 8 }, (_, i) => new URL(`chunks/app-${String(i + 1).padStart(2, '0')}.txt`, base));
     const parts = await Promise.all(paths.map(async (path) => {
       const response = await fetch(path, { cache: 'no-store' });
       if (!response.ok) throw new Error(`${path}: ${response.status}`);

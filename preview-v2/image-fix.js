@@ -22,13 +22,13 @@
   }
 
   async function loadImage(id) {
-    const response = await fetch(`./assets/creator-${id}-data.txt?v=6`, {
+    const response = await fetch(`./assets/creator-${id}-data.txt?v=7`, {
       cache: 'no-store'
     });
     if (!response.ok) throw new Error(`画像${id}の読み込みに失敗しました`);
     const base64 = (await response.text()).trim();
-    if (!base64) throw new Error(`画像${id}のデータが空です`);
-    imageData.set(id, `data:image/webp;base64,${base64}`);
+    if (!base64.startsWith('/9j/')) throw new Error(`画像${id}のデータ形式が不正です`);
+    imageData.set(id, `data:image/jpeg;base64,${base64}`);
   }
 
   async function start() {
@@ -37,11 +37,11 @@
       applyImages(document);
 
       new MutationObserver(records => {
-        records.forEach(record => {
-          record.addedNodes.forEach(node => {
+        for (const record of records) {
+          for (const node of record.addedNodes) {
             if (node.nodeType === 1) applyImages(node);
-          });
-        });
+          }
+        }
       }).observe(document.documentElement, {
         childList: true,
         subtree: true

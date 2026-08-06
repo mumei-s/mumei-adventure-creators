@@ -1,0 +1,21 @@
+/* スマホ表示の緊急修正 */
+.main-card img,.creator-card figure img,.fighter img,.gallery-main,.gallery-row img,.rank-item img,.submission img,.mini-card img{object-fit:contain;background:#090d16}
+@media(max-width:650px){
+  #app{width:calc(100% - 24px);padding-top:18px}
+  .hero{display:flex;flex-direction:column;gap:24px;padding-top:8px;min-height:auto}
+  .hero>div:first-child{order:1;display:block}
+  .hero-showcase{order:2;min-height:auto;width:100%;display:block}
+  .hero h1{font-size:38px;line-height:1.12;margin:16px 0}
+  .hero .lead{font-size:14px;line-height:1.75}
+  .main-card{position:relative;inset:auto;width:100%;height:auto;min-height:0;aspect-ratio:3/4;transform:none;border-radius:24px}
+  .main-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+  .main-card .caption{left:16px;right:16px;bottom:15px}
+  .main-card .caption b{font-size:22px}
+  .mini-stack{position:relative;right:auto;top:auto;width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:10px}
+  .mini-card{display:block;min-width:0;padding:6px;text-align:center;border-radius:13px}
+  .mini-card img{width:100%;height:auto;aspect-ratio:3/4;object-fit:contain;border-radius:9px}
+  .mini-card div{margin-top:4px}.mini-card span{font-size:9px}.mini-card b{font-size:10px;line-height:1.25;word-break:break-all}
+  .stat-band{margin-top:30px}
+  .creator-card figure{height:auto;aspect-ratio:3/4}
+  .creator-card figure img{object-fit:contain}
+}

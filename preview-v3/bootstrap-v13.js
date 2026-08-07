@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const V = 'admin13';
+  const V = 'admin14';
   const load = src => new Promise((resolve, reject) => {
     const s = document.createElement('script');
     s.src = src;
@@ -9,27 +9,28 @@
     document.body.appendChild(s);
   });
 
+  const currentSeries = () => new URLSearchParams(location.search).get('series') === 'sengoku' ? 'sengoku' : 'adventure';
+  const adminUrl = () => {
+    const u = new URL('./admin/', location.href);
+    u.searchParams.set('series', currentSeries());
+    u.searchParams.set('v', V);
+    u.hash = 'admin';
+    return u.href;
+  };
   const isAdmin = () => location.hash.replace(/^#/, '') === 'admin';
 
+  // 旧URLで#adminを開いても、一般ルーターには渡さず専用管理ページへ移動する。
   if (isAdmin()) {
-    load(`./admin-app.js?v=${V}`).catch(error => {
-      console.error('[admin-bootstrap]', error);
-      const app = document.querySelector('#app');
-      if (app) app.innerHTML = '<section class="page narrow"><div class="panel"><h1>管理画面を読み込めませんでした</h1><p class="lead">再読み込みしてください。</p><div class="actions"><button class="primary" onclick="location.reload()">再読み込み</button></div></div></section>';
-    });
+    location.replace(adminUrl());
     return;
   }
 
-  // 一般ページ側の「管理」は旧ルーターへ渡さず、専用管理画面へ直接移動する。
   document.addEventListener('click', event => {
     const button = event.target.closest?.('[data-nav="admin"]');
     if (!button) return;
     event.preventDefault();
     event.stopImmediatePropagation();
-    const url = new URL(location.href);
-    url.hash = 'admin';
-    url.searchParams.set('v', V);
-    location.href = url.href;
+    location.href = adminUrl();
   }, true);
 
   load(`./loader-fix.js?v=${V}`)

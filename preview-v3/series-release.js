@@ -31,13 +31,13 @@
   }
 
   function setPublicSeriesVisibility() {
-    const release = read();
-    const showSengoku = release.sengokuPublic;
+    const showSengoku = read().sengokuPublic;
     document.querySelectorAll('.series-switch,.series-title-links').forEach(group => {
       const sengokuLink = [...group.querySelectorAll('a')].find(a => /戦国|sengoku/i.test(`${a.textContent} ${a.href}`));
-      if (sengokuLink) sengokuLink.hidden = !showSengoku;
+      if (sengokuLink && sengokuLink.hidden !== !showSengoku) sengokuLink.hidden = !showSengoku;
       const visibleLinks = [...group.querySelectorAll('a')].filter(a => !a.hidden);
-      group.hidden = visibleLinks.length <= 1;
+      const shouldHideGroup = visibleLinks.length <= 1;
+      if (group.hidden !== shouldHideGroup) group.hidden = shouldHideGroup;
     });
   }
 
@@ -52,8 +52,10 @@
       if (seriesPanel) seriesPanel.after(panel);
       else adminPage.querySelector('.page-title')?.after(panel);
     }
-    const release = read();
-    const on = release.sengokuPublic;
+    const on = read().sengokuPublic;
+    const stateName = on ? 'on' : 'off';
+    if (panel.dataset.releaseState === stateName) return;
+    panel.dataset.releaseState = stateName;
     panel.innerHTML = `
       <div class="release-copy">
         <p class="eyebrow">PUBLICATION CONTROL</p>
@@ -83,6 +85,8 @@
     if (!confirm(message)) return;
     release.sengokuPublic = next;
     write(release);
+    const panel = document.querySelector('.series-release-control');
+    if (panel) delete panel.dataset.releaseState;
     decorate();
     if (!next && currentSeries() === 'sengoku' && !isAdminRoute()) location.replace(urlFor('adventure'));
   });

@@ -26,6 +26,9 @@ jobs:
       - name: JavaScriptを検査
         run: |
           node --check preview-v3/admin-app.js
+          node --check preview-v3/admin-persist.js
+          node --check preview-v3/admin-ux-v15.js
+          node --check preview-v3/owner-return.js
           node --check preview-v3/bootstrap-v13.js
           node --check preview-v3/app-loader.js
           node --check preview-v3/db-loader.js

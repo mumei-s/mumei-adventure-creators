@@ -11,25 +11,22 @@
   <meta property="og:image" content="https://mumei-s.github.io/mumei-adventure-creators/preview-v3/og.svg">
   <meta name="twitter:card" content="summary_large_image">
   <title>無名S note 冒険クリエイター名鑑</title>
-  <link rel="stylesheet" href="./styles.css?v=6">
-  <link rel="stylesheet" href="./series.css?v=6">
-  <link rel="stylesheet" href="./release.css?v=6">
+  <link rel="stylesheet" href="./styles.css?v=7">
+  <link rel="stylesheet" href="./series.css?v=7">
+  <link rel="stylesheet" href="./release.css?v=7">
+  <style>.series-title>span{display:inline-flex!important;align-items:center;padding:8px 14px;border-radius:12px;background:linear-gradient(135deg,#e8c973,#fff0b4);color:#17130a!important;box-shadow:0 8px 28px rgba(242,212,138,.22);font-weight:950!important;letter-spacing:.04em!important}.brand>b,.brand span b{font-weight:950}.live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#75e1aa;box-shadow:0 0 14px #75e1aa;margin-right:7px}</style>
 </head>
 <body>
   <div class="ambient" aria-hidden="true"></div>
   <header class="topbar">
     <button class="brand" data-nav="home"><span class="crest">S</span><span><b>無名S note</b><small>冒険クリエイター名鑑</small></span></button>
     <nav class="desktop-nav"><button data-nav="directory">名鑑</button><button data-nav="battle">対戦</button><button data-nav="join">参加</button><button data-nav="mypage">マイページ</button></nav>
-    <button class="owner" data-nav="admin">管理</button>
+    <button class="owner" data-nav="admin"><span class="live-dot"></span>管理</button>
   </header>
   <main id="app" tabindex="-1"></main>
   <nav class="mobile-nav"><button data-nav="home">⌂<small>トップ</small></button><button data-nav="directory">▦<small>名鑑</small></button><button data-nav="battle">⚔<small>対戦</small></button><button data-nav="join">＋<small>参加</small></button><button data-nav="mypage">◇<small>自分</small></button></nav>
   <dialog id="modal"></dialog>
   <div id="toast" role="status" aria-live="polite"></div>
-  <script>window.__MUMEI_SERIES__=new URLSearchParams(location.search).get('series')==='sengoku'?'sengoku':'adventure';</script>
-  <script src="./series-system.js?v=6"></script>
-  <script src="./series-router-fix.js?v=6"></script>
-  <script src="./series-release.js?v=6"></script>
-  <script type="module" src="./app-loader.js?v=6"></script>
+  <script src="./live-app.js?v=7"></script>
 </body>
 </html>

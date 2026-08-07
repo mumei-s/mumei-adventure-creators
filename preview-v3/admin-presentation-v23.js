@@ -1,7 +1,7 @@
 (() => {
  'use strict';
  const SUPABASE_URL='https://xxhaerjvrgmnadxjqetz.supabase.co';
- const API_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXAiLCJyZWYiOiJ4eGhhZXJqdnJnbW5hZHhqcWV0eiIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzg2MDUzMTE0LCJleHAiOjIxMDE2MjkxMTR9.DtoUvuMTrW7rA3jLThLD4zijvluuTB_LmEBIjWJs-jA';
+ const API_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh4aGFlcmp2cmdtbW5hZHhqcWV0eiIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzg2MDUzMTE0LCJleHAiOjIxMDE2MjkxMTR9.DtoUvuMTrW7rA3jLThLD4zijvluuTB_LmEBIjWJs-jA';
  const TOKEN_KEY='mumei-owner-token';
  const storageUrl=p=>!p?'':(/^https?:/.test(p)?p:`${SUPABASE_URL}/storage/v1/object/public/creator-images/${p}`);
  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));

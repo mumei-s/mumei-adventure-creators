@@ -1,0 +1,1 @@
+body:has(#app .owner-live) .desktop-nav,body:has(#app .owner-live) .mobile-nav,body:has(#app .owner-live) .topbar>.owner,body:has(#app .owner-live) .series-switch{display:none!important}body:has(#app .owner-live) .topbar{justify-content:flex-start}body:has(#app .owner-live) .brand{pointer-events:none}

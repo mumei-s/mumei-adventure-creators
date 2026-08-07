@@ -23,6 +23,12 @@ jobs:
     steps:
       - name: ファイルを取得
         uses: actions/checkout@v4
+      - name: JavaScriptを検査
+        run: |
+          node --check preview-v3/admin-app.js
+          node --check preview-v3/bootstrap-v13.js
+          node --check preview-v3/app-loader.js
+          node --check preview-v3/db-loader.js
       - name: GitHub Pagesを設定
         uses: actions/configure-pages@v5
         with:

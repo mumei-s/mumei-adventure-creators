@@ -1,5 +1,6 @@
 (async () => {
   try {
+    if (window.MUMEI_BACKEND_READY) await window.MUMEI_BACKEND_READY;
     const base = new URL('./', import.meta.url);
     const paths = Array.from({ length: 8 }, (_, i) => new URL(`chunks/app-${String(i + 1).padStart(2, '0')}.txt`, base));
     const parts = await Promise.all(paths.map(async (path) => {

@@ -23,6 +23,9 @@
   <script src="./admin-persist.js?v=18"></script>
   <script src="./admin-app.js?v=18"></script>
   <script src="./admin-reset-v18.js?v=18"></script>
+  <script>
+    (()=>{const sync=()=>document.querySelectorAll('[data-v18-reset-tab]').forEach(b=>{b.dataset.v17ResetTab='1';b.textContent='勝敗管理'});const o=new MutationObserver(sync);o.observe(document.documentElement,{childList:true,subtree:true});sync()})();
+  </script>
   <script src="./admin-fixes-v17.js?v=18"></script>
   <script src="./admin-ux-v15.js?v=18"></script>
   <script src="./admin-manager-v16.js?v=18"></script>

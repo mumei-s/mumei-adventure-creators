@@ -28,6 +28,8 @@ jobs:
           node --check preview-v3/admin-app.js
           node --check preview-v3/admin-persist.js
           node --check preview-v3/admin-ux-v15.js
+          node --check preview-v3/admin-manager-v16.js
+          node --check preview-v3/image-input-v16.js
           node --check preview-v3/owner-return.js
           node --check preview-v3/bootstrap-v13.js
           node --check preview-v3/app-loader.js

@@ -3,21 +3,25 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#070913">
-  <meta name="description" content="無名S note 冒険クリエイター名鑑。IDだけで参加でき、記事認証でおすすめ枠が増える名鑑とランダム対戦ランキング。">
+  <meta name="theme-color" content="#07101a">
+  <meta name="description" content="無名S note 冒険クリエイター名鑑。参加・記事紹介・カード対戦・ランキングを楽しめるクリエイター名鑑。">
   <meta property="og:type" content="website">
   <meta property="og:title" content="無名S note 冒険クリエイター名鑑">
-  <meta property="og:description" content="IDだけで参加。記事認証でおすすめ枠が増える。対戦とランキングも楽しめるクリエイター名鑑。">
-  <meta property="og:image" content="https://mumei-s.github.io/mumei-adventure-creators/preview-v3/og.svg">
+  <meta property="og:description" content="参加・記事紹介・カード対戦・ランキングを楽しめるクリエイター名鑑。">
+  <meta property="og:image" content="https://xxhaerjvrgmnadxjqetz.supabase.co/functions/v1/catalog-og-image?series=adventure">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://xxhaerjvrgmnadxjqetz.supabase.co/functions/v1/catalog-og-image?series=adventure">
   <title>無名S note 冒険クリエイター名鑑</title>
-  <link rel="stylesheet" href="./styles.css?v=22">
-  <link rel="stylesheet" href="./series.css?v=22">
-  <link rel="stylesheet" href="./release.css?v=22">
-  <link rel="stylesheet" href="./admin-chrome.css?v=22">
-  <link rel="stylesheet" href="./image-native-v16.css?v=22">
-  <link rel="stylesheet" href="./feature-v17.css?v=22">
-  <link rel="stylesheet" href="./public-link-cards-v22.css?v=22">
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="./series.css">
+  <link rel="stylesheet" href="./release.css">
+  <link rel="stylesheet" href="./admin-chrome.css">
+  <link rel="stylesheet" href="./image-native-v16.css">
+  <link rel="stylesheet" href="./feature-v17.css">
+  <link rel="stylesheet" href="./presentation-v23.css">
 </head>
 <body>
   <div class="ambient" aria-hidden="true"></div>
@@ -30,13 +34,13 @@
   <nav class="mobile-nav"><button data-nav="home">⌂<small>トップ</small></button><button data-nav="directory">▦<small>名鑑</small></button><button data-nav="battle">⚔<small>対戦</small></button><button data-nav="join">＋<small>参加</small></button><button data-nav="mypage">◇<small>自分</small></button></nav>
   <dialog id="modal"></dialog><div id="toast" role="status" aria-live="polite"></div>
   <script>window.__MUMEI_SERIES__=new URLSearchParams(location.search).get('series')==='sengoku'?'sengoku':'adventure';</script>
-  <script src="./series-system.js?v=22"></script>
-  <script src="./owner-participant-upload.js?v=22"></script>
-  <script src="./image-input-v16.js?v=22"></script>
-  <script src="./bootstrap-v13.js?v=22"></script>
-  <script src="./feature-fixes-v17.js?v=22"></script>
-  <script src="./participant-ui-v21.js?v=22"></script>
-  <script src="./public-link-cards-v22.js?v=22"></script>
-  <script src="./owner-return.js?v=22"></script>
+  <script src="./series-system.js"></script>
+  <script src="./owner-participant-upload.js"></script>
+  <script src="./image-input-v16.js"></script>
+  <script src="./bootstrap-v13.js"></script>
+  <script src="./feature-fixes-v17.js"></script>
+  <script src="./participant-ui-v21.js"></script>
+  <script src="./presentation-v23.js"></script>
+  <script src="./owner-return.js"></script>
 </body>
 </html>

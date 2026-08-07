@@ -15,6 +15,7 @@
     return await r.json();
   }
   function applyTheme(s={}){
+    document.documentElement.dataset.series=series();
     document.documentElement.style.setProperty('--portal-accent',s.accent_primary||'#2aa7d6');
     document.documentElement.style.setProperty('--portal-gold',s.accent_secondary||'#f2d48a');
     document.body.dataset.series=series();
@@ -26,7 +27,7 @@
     const joinImg=storageUrl(s.join_image_path)||BRAND_JOIN;
     const magImg=storageUrl(s.magazine_image_path)||BRAND_MAG;
     const title=s.main_title||(isS?'戦国カード名鑑':'冒険クリエイター名鑑');
-    return `<section class="portal-v23"><header class="portal-v23-head"><div class="portal-v23-brand">無名S note</div><h1>${esc(title)}</h1><div class="portal-v23-meta">${esc(s.hashtag||'')}　｜　${esc(s.started_label||'')}</div></header><div class="portal-links"><section class="portal-link-block portal-join-card"><h2>参加・募集要項はこちら</h2><a class="portal-image-link" href="${esc(s.recruit_url||'#join')}" ${s.recruit_url?'target="_blank" rel="noopener"':'data-nav="join"'}><img src="${esc(joinImg)}" alt="参加・募集要項"></a></section><section class="portal-link-block portal-magazine-card"><h2>マガジンはこちら</h2><a class="portal-image-link" href="${esc(s.magazine_url||'#')}" target="_blank" rel="noopener"><img src="${esc(magImg)}" alt="マガジン"></a></section><section class="portal-directory"><p class="eyebrow">OFFICIAL DIRECTORY</p><h2>${esc(title)}はこちら</h2><p>参加クリエイター一覧・専用ページ・カード対戦・ランキングを楽しめる名鑑本体です。</p><button class="primary" type="button" data-nav="directory">冒険クリエイター名鑑を開く</button></section></div></section>`;
+    return `<section class="portal-v23"><header class="portal-v23-head"><div class="portal-v23-brand">無名S note</div><h1>${esc(title)}</h1><div class="portal-v23-meta">${esc(s.hashtag||'')}　｜　${esc(s.started_label||'')}</div></header><div class="portal-links"><section class="portal-link-block portal-join-card"><h2>参加・募集要項はこちら</h2><a class="portal-image-link" href="${esc(s.recruit_url||'#join')}" ${s.recruit_url?'target="_blank" rel="noopener"':'data-nav="join"'}><img src="${esc(joinImg)}" alt="参加・募集要項"></a></section><section class="portal-link-block portal-magazine-card"><h2>マガジンはこちら</h2><a class="portal-image-link" href="${esc(s.magazine_url||'#')}" target="_blank" rel="noopener"><img src="${esc(magImg)}" alt="マガジン"></a></section><section class="portal-directory"><p class="eyebrow">OFFICIAL DIRECTORY</p><h2>${esc(title)}はこちら</h2><p>参加クリエイター一覧・専用ページ・カード対戦・ランキングを楽しめる名鑑本体です。</p><button class="primary" type="button" data-nav="directory">${isS?'戦国カード名鑑を開く':'冒険クリエイター名鑑を開く'}</button></section></div></section>`;
   }
   function maintenance(pub){
     const s=pub.series||{};

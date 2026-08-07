@@ -31,8 +31,10 @@ jobs:
           node --check preview-v3/admin-manager-v16.js
           node --check preview-v3/admin-fixes-v17.js
           node --check preview-v3/admin-battle-reset-v18.js
+          node --check preview-v3/admin-nav-cleanup-v18.js
           node --check preview-v3/image-input-v16.js
           node --check preview-v3/feature-fixes-v17.js
+          node --check preview-v3/flow-fixes-v18.js
           node --check preview-v3/owner-return.js
           node --check preview-v3/bootstrap-v13.js
           node --check preview-v3/app-loader.js

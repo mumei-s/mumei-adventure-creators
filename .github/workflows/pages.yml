@@ -36,6 +36,8 @@ jobs:
           node --check preview-v3/bootstrap-v13.js
           node --check preview-v3/app-loader.js
           node --check preview-v3/db-loader.js
+          cat preview-v3/chunks/app-*.txt > /tmp/mumei-app-combined.js
+          node --check /tmp/mumei-app-combined.js
       - name: GitHub Pagesを設定
         uses: actions/configure-pages@v5
         with:

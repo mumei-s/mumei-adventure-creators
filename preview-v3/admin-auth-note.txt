@@ -1,0 +1,1 @@
+Owner session recovery enabled in fix12.

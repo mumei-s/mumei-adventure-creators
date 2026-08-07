@@ -11,9 +11,9 @@
   <meta property="og:image" content="https://mumei-s.github.io/mumei-adventure-creators/preview-v3/og.svg">
   <meta name="twitter:card" content="summary_large_image">
   <title>無名S note 冒険クリエイター名鑑</title>
-  <link rel="stylesheet" href="./styles.css?v=6">
-  <link rel="stylesheet" href="./series.css?v=6">
-  <link rel="stylesheet" href="./release.css?v=6">
+  <link rel="stylesheet" href="./styles.css?v=7">
+  <link rel="stylesheet" href="./series.css?v=7">
+  <link rel="stylesheet" href="./release.css?v=7">
 </head>
 <body>
   <div class="ambient" aria-hidden="true"></div>
@@ -22,14 +22,15 @@
     <nav class="desktop-nav"><button data-nav="directory">名鑑</button><button data-nav="battle">対戦</button><button data-nav="join">参加</button><button data-nav="mypage">マイページ</button></nav>
     <button class="owner" data-nav="admin">管理</button>
   </header>
-  <main id="app" tabindex="-1"></main>
+  <main id="app" tabindex="-1"><section class="page narrow"><div class="panel"><p class="eyebrow">CONNECTING</p><h1>名鑑を読み込み中…</h1><p class="lead">共有データを取得しています。</p></div></section></main>
   <nav class="mobile-nav"><button data-nav="home">⌂<small>トップ</small></button><button data-nav="directory">▦<small>名鑑</small></button><button data-nav="battle">⚔<small>対戦</small></button><button data-nav="join">＋<small>参加</small></button><button data-nav="mypage">◇<small>自分</small></button></nav>
   <dialog id="modal"></dialog>
   <div id="toast" role="status" aria-live="polite"></div>
   <script>window.__MUMEI_SERIES__=new URLSearchParams(location.search).get('series')==='sengoku'?'sengoku':'adventure';</script>
-  <script src="./series-system.js?v=6"></script>
-  <script src="./series-router-fix.js?v=6"></script>
-  <script src="./series-release.js?v=6"></script>
-  <script type="module" src="./app-loader.js?v=6"></script>
+  <script src="./series-system.js?v=7"></script>
+  <script src="./series-router-fix.js?v=7"></script>
+  <script src="./backend.js?v=7"></script>
+  <script src="./series-release.js?v=7"></script>
+  <script type="module">try{await window.__MUMEI_BOOT__}catch(e){console.error(e)}await import('./app-loader.js?v=7')</script>
 </body>
 </html>

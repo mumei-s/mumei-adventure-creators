@@ -1,5 +1,5 @@
-import {lookFor} from './looks.js?v=5';
-import {individualSamples} from './sample-catalog.js?v=5';
+import {lookFor} from './looks.js?v=6';
+import {individualSamples} from './sample-catalog.js?v=6';
 // A recipe describes the same visual trait used by each option's artwork.
 const traits=[
  [/水墨|南画|禅画|書と墨/,'墨のにじみ・かすれ・筆圧・濃淡と大胆な白い余白。輪郭を写真で切り抜かず筆で形を作る。'],

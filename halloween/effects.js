@@ -1,0 +1,9 @@
+export function setupEffects(){
+ const layer=document.createElement('div');layer.id='effect-layer';layer.setAttribute('aria-hidden','true');document.body.append(layer);
+ const active=()=>document.body.dataset.motion==='on'&&!window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ function burst(x,y,big=false){if(!active())return;const host=[...document.querySelectorAll('dialog[open]')].at(-1)||document.body;if(layer.parentElement!==host)host.append(layer);const count=big?14:7;for(let i=0;i<count;i++){const spark=document.createElement('i');spark.className=i%3===0?'fx-ring':'fx-spark';spark.style.left=x+'px';spark.style.top=y+'px';layer.append(spark);const angle=(Math.PI*2*i)/count,radius=(big?130:65)+(i%3)*13;const a=spark.animate([{opacity:1,transform:'translate(-50%,-50%) scale(.5)'},{opacity:0,transform:'translate(calc(-50% + '+Math.cos(angle)*radius+'px),calc(-50% + '+Math.sin(angle)*radius+'px)) rotate('+i*30+'deg) scale(1.6)'}],{duration:big?650:400,easing:'cubic-bezier(.18,.68,.2,1)'});a.finished.catch(()=>{}).finally(()=>spark.remove());}while(layer.children.length>42)layer.firstElementChild.remove();}
+ document.addEventListener('click',e=>{const button=e.target.closest('button');if(!button||button.disabled)return;const box=button.getBoundingClientRect();burst(e.clientX||box.left+box.width/2,e.clientY||box.top+box.height/2,button.id==='generate'||button.id==='propose');});
+ const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(!entry.isIntersecting)return;entry.target.classList.add('entered');observer.unobserve(entry.target);}),{threshold:.12});document.querySelectorAll('.desk,.stage,.mode-panel,.history-section,.direction-card').forEach(e=>observer.observe(e));
+ document.addEventListener('visibilitychange',()=>{if(document.hidden)layer.replaceChildren();});
+ return {celebrate(){burst(innerWidth/2,innerHeight*.35,true);}};
+}

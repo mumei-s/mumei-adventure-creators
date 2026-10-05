@@ -1,0 +1,365 @@
+{
+  "style": "Original professional Halloween costume studies, neutral warm dark backgrounds; 6×6 square grids, no text, distinct costumes; sample faces are never character references.",
+  "costumes": [
+    [
+      "定番モンスター",
+      "白布のおばけ",
+      "white sheet ghost costume with eye holes"
+    ],
+    [
+      "定番モンスター",
+      "フランケンシュタインの怪物",
+      "green stitched monster with square head, neck bolts and heavy jacket"
+    ],
+    [
+      "定番モンスター",
+      "ゾンビ",
+      "shambling undead costume with distressed clothing, pale makeup, no gore"
+    ],
+    [
+      "定番モンスター",
+      "骸骨・スケルトン",
+      "black bodysuit with white skeleton bones"
+    ],
+    [
+      "定番モンスター",
+      "メデューサ",
+      "serpent hair, antique green robe"
+    ],
+    [
+      "定番モンスター",
+      "半魚人",
+      "green scaled fish humanoid with fins and gills"
+    ],
+    [
+      "定番モンスター",
+      "透明人間",
+      "invisible person with floating sunglasses, bandaged head and trench coat"
+    ],
+    [
+      "定番モンスター",
+      "コウモリ人",
+      "bat humanoid with black membranous wings and pointed ears"
+    ],
+    [
+      "定番モンスター",
+      "グール",
+      "haunted pale ghoul in tattered shroud, no gore"
+    ],
+    [
+      "定番モンスター",
+      "ジャック・オー・ランタン",
+      "pumpkin headed figure with carved lantern face and tweed suit"
+    ],
+    [
+      "定番モンスター",
+      "亡霊騎士",
+      "haunted armor knight holding empty helmet, no gore"
+    ],
+    [
+      "定番モンスター",
+      "ガーゴイル",
+      "grey stone gargoyle costume with folded stone wings"
+    ],
+    [
+      "定番モンスター",
+      "蜘蛛の怪人",
+      "spider themed human costume with eight stylized appendages"
+    ],
+    [
+      "定番モンスター",
+      "悪の科学者",
+      "mad scientist in laboratory coat with goggles and potion"
+    ],
+    [
+      "定番モンスター",
+      "幽霊花嫁",
+      "spectral bridal costume with veil and faded bouquet"
+    ],
+    [
+      "定番モンスター",
+      "ホラーピエロ",
+      "eerie clown with diamond costume, white makeup and ruff"
+    ],
+    [
+      "ファンタジー",
+      "エルフの弓使い",
+      "elf archer with pointed ears, green cloak and wooden bow"
+    ],
+    [
+      "ファンタジー",
+      "森の妖精",
+      "woodland fairy with translucent insect wings and leaf dress"
+    ],
+    [
+      "ファンタジー",
+      "ドラゴンの騎士",
+      "dragon knight with scaled armor and dragon shaped helmet"
+    ],
+    [
+      "ファンタジー",
+      "竜人",
+      "dragon humanoid with horns and scaled leather outfit"
+    ],
+    [
+      "ファンタジー",
+      "人魚",
+      "mermaid costume with blue fish tail and sea shell decorations"
+    ],
+    [
+      "ファンタジー",
+      "ユニコーン",
+      "white unicorn costume with single spiral horn and iridescent mane"
+    ],
+    [
+      "ファンタジー",
+      "不死鳥",
+      "phoenix costume with red gold feathers and winged cloak"
+    ],
+    [
+      "ファンタジー",
+      "氷の女王",
+      "ice queen in crystalline pale blue gown and icicle crown"
+    ],
+    [
+      "ファンタジー",
+      "花の精霊",
+      "flower spirit with petal garments and blooming crown"
+    ],
+    [
+      "ファンタジー",
+      "星の占い師",
+      "star astrologer with deep blue robe, star chart and crystal orb"
+    ],
+    [
+      "ファンタジー",
+      "錬金術師",
+      "alchemist with leather apron, scrolls and glass potion vessels"
+    ],
+    [
+      "ファンタジー",
+      "ネクロマンサー",
+      "necromancer in dark layered robes with bone staff, no gore"
+    ],
+    [
+      "ファンタジー",
+      "光の聖騎士",
+      "paladin in shining gold white armor with radiant shield"
+    ],
+    [
+      "ファンタジー",
+      "闇の騎士",
+      "dark knight in black armor and burgundy cape"
+    ],
+    [
+      "ファンタジー",
+      "赤ずきん",
+      "adult red riding hood with red hooded cape and wicker basket"
+    ],
+    [
+      "ファンタジー",
+      "不思議の国の旅人",
+      "adult wonderland traveller with blue dress, white apron and playing card details"
+    ],
+    [
+      "職業・制服",
+      "探偵",
+      "detective with deerstalker cap, checked coat and magnifying glass"
+    ],
+    [
+      "職業・制服",
+      "警察官",
+      "police officer costume with navy uniform and peaked hat, no real insignia"
+    ],
+    [
+      "職業・制服",
+      "消防士",
+      "firefighter costume with red helmet and reflective protective jacket"
+    ],
+    [
+      "職業・制服",
+      "医師・白衣",
+      "doctor costume with white coat and stethoscope"
+    ],
+    [
+      "職業・制服",
+      "ナース",
+      "adult nurse costume with practical white uniform and cap"
+    ],
+    [
+      "職業・制服",
+      "パイロット",
+      "airline pilot costume with navy jacket, epaulettes and cap"
+    ],
+    [
+      "職業・制服",
+      "キャビンアテンダント",
+      "adult cabin attendant costume with scarf, tailored suit and pillbox hat"
+    ],
+    [
+      "職業・制服",
+      "シェフ",
+      "chef costume with tall white toque, double breasted jacket and wooden spoon"
+    ],
+    [
+      "職業・制服",
+      "メイド",
+      "adult classic maid with long black dress and white apron"
+    ],
+    [
+      "職業・制服",
+      "執事",
+      "butler in black tailcoat with white gloves and silver tray"
+    ],
+    [
+      "職業・制服",
+      "宇宙飛行士",
+      "astronaut with white spacesuit and round helmet"
+    ],
+    [
+      "職業・制服",
+      "郵便配達員",
+      "postal worker costume with navy cap, mail bag and letters"
+    ],
+    [
+      "SF・ヒーロー",
+      "ロボット",
+      "retro robot costume with silver box body, dials and antenna"
+    ],
+    [
+      "SF・ヒーロー",
+      "アンドロイド",
+      "sleek humanoid android with visible joint seams and metallic panels"
+    ],
+    [
+      "SF・ヒーロー",
+      "サイボーグ",
+      "cyborg with one mechanical arm, visor and dark utility jacket"
+    ],
+    [
+      "SF・ヒーロー",
+      "宇宙海賊",
+      "space pirate with futuristic coat, eye patch and glowing equipment"
+    ],
+    [
+      "SF・ヒーロー",
+      "エイリアン",
+      "original alien with oversized eyes and green futuristic suit"
+    ],
+    [
+      "SF・ヒーロー",
+      "パワードスーツ",
+      "armored powered suit costume with bulky mechanical shoulders"
+    ],
+    [
+      "SF・ヒーロー",
+      "変身ヒーロー",
+      "original masked transforming hero in red silver costume with insect visor"
+    ],
+    [
+      "SF・ヒーロー",
+      "魔法少女風コスチューム",
+      "adult magical heroine with layered purple costume, ribbons and star wand"
+    ],
+    [
+      "SF・ヒーロー",
+      "ヴィラン・悪役",
+      "original villain with black cape and dramatic geometric mask"
+    ],
+    [
+      "SF・ヒーロー",
+      "時空の旅人",
+      "time traveller with copper goggles, mechanical watch and long coat"
+    ],
+    [
+      "和風・歴史",
+      "鬼",
+      "Japanese oni costume with two horns, tiger striped sash and club"
+    ],
+    [
+      "和風・歴史",
+      "天狗",
+      "tengu costume with red long nosed mask, mountain monk robe and feather fan"
+    ],
+    [
+      "和風・歴史",
+      "河童",
+      "kappa costume with green turtle shell and dish shaped crown"
+    ],
+    [
+      "和風・歴史",
+      "座敷わらし",
+      "small folklore spirit costume in traditional red kimono, innocent Halloween doll styling"
+    ],
+    [
+      "和風・歴史",
+      "忍者",
+      "ninja in black wrapped clothing, face scarf and utility belt"
+    ],
+    [
+      "和風・歴史",
+      "侍・武者",
+      "samurai warrior in layered Japanese armor and kabuto helmet"
+    ],
+    [
+      "和風・歴史",
+      "陰陽師",
+      "onmyoji with white ceremonial robe, tall black eboshi and talisman"
+    ],
+    [
+      "和風・歴史",
+      "巫女",
+      "shrine maiden costume with white top and red hakama"
+    ],
+    [
+      "和風・歴史",
+      "西洋の王・女王",
+      "royal costume with velvet robe, crown and ornamental sceptre"
+    ],
+    [
+      "和風・歴史",
+      "ファラオ",
+      "Egyptian pharaoh with striped nemes headdress and broad gold collar"
+    ],
+    [
+      "動物・ポップ",
+      "うさぎの着ぐるみ",
+      "rabbit mascot onesie with long ears and fluffy tail"
+    ],
+    [
+      "動物・ポップ",
+      "くまの着ぐるみ",
+      "brown bear mascot costume with rounded ears and soft paws"
+    ],
+    [
+      "動物・ポップ",
+      "恐竜の着ぐるみ",
+      "green dinosaur costume with dorsal spikes and long tail"
+    ],
+    [
+      "動物・ポップ",
+      "ペンギンの着ぐるみ",
+      "black white penguin mascot costume with orange beak"
+    ],
+    [
+      "動物・ポップ",
+      "キノコの妖精",
+      "mushroom fairy with red spotted mushroom cap and moss costume"
+    ],
+    [
+      "動物・ポップ",
+      "キャンディの精霊",
+      "candy spirit with striped sweets costume and colorful wrapped candy ornaments"
+    ],
+    [
+      "動物・ポップ",
+      "トランプの兵隊",
+      "playing card soldier costume with rectangular heart suit tabard"
+    ],
+    [
+      "動物・ポップ",
+      "花嫁・花婿",
+      "elegant wedding costume, contrasting bride gown and groom tuxedo styling"
+    ]
+  ]
+}

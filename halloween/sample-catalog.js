@@ -1469,5 +1469,365 @@ export const individualSamples={
   "file": "sample-294.jpg",
   "sheet": "individual-19",
   "cell": 5
+ },
+ "costume\u0000白布のおばけ": {
+  "file": "costume-001.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 0
+ },
+ "costume\u0000フランケンシュタインの怪物": {
+  "file": "costume-002.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 1
+ },
+ "costume\u0000ゾンビ": {
+  "file": "costume-003.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 2
+ },
+ "costume\u0000骸骨・スケルトン": {
+  "file": "costume-004.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 3
+ },
+ "costume\u0000メデューサ": {
+  "file": "costume-005.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 4
+ },
+ "costume\u0000半魚人": {
+  "file": "costume-006.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 5
+ },
+ "costume\u0000透明人間": {
+  "file": "costume-007.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 6
+ },
+ "costume\u0000コウモリ人": {
+  "file": "costume-008.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 7
+ },
+ "costume\u0000グール": {
+  "file": "costume-009.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 8
+ },
+ "costume\u0000ジャック・オー・ランタン": {
+  "file": "costume-010.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 9
+ },
+ "costume\u0000亡霊騎士": {
+  "file": "costume-011.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 10
+ },
+ "costume\u0000ガーゴイル": {
+  "file": "costume-012.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 11
+ },
+ "costume\u0000蜘蛛の怪人": {
+  "file": "costume-013.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 12
+ },
+ "costume\u0000悪の科学者": {
+  "file": "costume-014.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 13
+ },
+ "costume\u0000幽霊花嫁": {
+  "file": "costume-015.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 14
+ },
+ "costume\u0000ホラーピエロ": {
+  "file": "costume-016.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 15
+ },
+ "costume\u0000エルフの弓使い": {
+  "file": "costume-017.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 16
+ },
+ "costume\u0000森の妖精": {
+  "file": "costume-018.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 17
+ },
+ "costume\u0000ドラゴンの騎士": {
+  "file": "costume-019.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 18
+ },
+ "costume\u0000竜人": {
+  "file": "costume-020.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 19
+ },
+ "costume\u0000人魚": {
+  "file": "costume-021.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 20
+ },
+ "costume\u0000ユニコーン": {
+  "file": "costume-022.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 21
+ },
+ "costume\u0000不死鳥": {
+  "file": "costume-023.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 22
+ },
+ "costume\u0000氷の女王": {
+  "file": "costume-024.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 23
+ },
+ "costume\u0000花の精霊": {
+  "file": "costume-025.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 24
+ },
+ "costume\u0000星の占い師": {
+  "file": "costume-026.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 25
+ },
+ "costume\u0000錬金術師": {
+  "file": "costume-027.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 26
+ },
+ "costume\u0000ネクロマンサー": {
+  "file": "costume-028.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 27
+ },
+ "costume\u0000光の聖騎士": {
+  "file": "costume-029.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 28
+ },
+ "costume\u0000闇の騎士": {
+  "file": "costume-030.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 29
+ },
+ "costume\u0000赤ずきん": {
+  "file": "costume-031.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 30
+ },
+ "costume\u0000不思議の国の旅人": {
+  "file": "costume-032.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 31
+ },
+ "costume\u0000探偵": {
+  "file": "costume-033.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 32
+ },
+ "costume\u0000警察官": {
+  "file": "costume-034.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 33
+ },
+ "costume\u0000消防士": {
+  "file": "costume-035.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 34
+ },
+ "costume\u0000医師・白衣": {
+  "file": "costume-036.jpg",
+  "sheet": "costume-v6-01",
+  "cell": 35
+ },
+ "costume\u0000ナース": {
+  "file": "costume-037.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 0
+ },
+ "costume\u0000パイロット": {
+  "file": "costume-038.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 1
+ },
+ "costume\u0000キャビンアテンダント": {
+  "file": "costume-039.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 2
+ },
+ "costume\u0000シェフ": {
+  "file": "costume-040.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 3
+ },
+ "costume\u0000メイド": {
+  "file": "costume-041.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 4
+ },
+ "costume\u0000執事": {
+  "file": "costume-042.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 5
+ },
+ "costume\u0000宇宙飛行士": {
+  "file": "costume-043.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 6
+ },
+ "costume\u0000郵便配達員": {
+  "file": "costume-044.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 7
+ },
+ "costume\u0000ロボット": {
+  "file": "costume-045.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 8
+ },
+ "costume\u0000アンドロイド": {
+  "file": "costume-046.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 9
+ },
+ "costume\u0000サイボーグ": {
+  "file": "costume-047.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 10
+ },
+ "costume\u0000宇宙海賊": {
+  "file": "costume-048.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 11
+ },
+ "costume\u0000エイリアン": {
+  "file": "costume-049.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 12
+ },
+ "costume\u0000パワードスーツ": {
+  "file": "costume-050.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 13
+ },
+ "costume\u0000変身ヒーロー": {
+  "file": "costume-051.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 14
+ },
+ "costume\u0000魔法少女風コスチューム": {
+  "file": "costume-052.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 15
+ },
+ "costume\u0000ヴィラン・悪役": {
+  "file": "costume-053.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 16
+ },
+ "costume\u0000時空の旅人": {
+  "file": "costume-054.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 17
+ },
+ "costume\u0000鬼": {
+  "file": "costume-055.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 18
+ },
+ "costume\u0000天狗": {
+  "file": "costume-056.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 19
+ },
+ "costume\u0000河童": {
+  "file": "costume-057.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 20
+ },
+ "costume\u0000座敷わらし": {
+  "file": "costume-058.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 21
+ },
+ "costume\u0000忍者": {
+  "file": "costume-059.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 22
+ },
+ "costume\u0000侍・武者": {
+  "file": "costume-060.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 23
+ },
+ "costume\u0000陰陽師": {
+  "file": "costume-061.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 24
+ },
+ "costume\u0000巫女": {
+  "file": "costume-062.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 25
+ },
+ "costume\u0000西洋の王・女王": {
+  "file": "costume-063.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 26
+ },
+ "costume\u0000ファラオ": {
+  "file": "costume-064.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 27
+ },
+ "costume\u0000うさぎの着ぐるみ": {
+  "file": "costume-065.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 28
+ },
+ "costume\u0000くまの着ぐるみ": {
+  "file": "costume-066.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 29
+ },
+ "costume\u0000恐竜の着ぐるみ": {
+  "file": "costume-067.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 30
+ },
+ "costume\u0000ペンギンの着ぐるみ": {
+  "file": "costume-068.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 31
+ },
+ "costume\u0000キノコの妖精": {
+  "file": "costume-069.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 32
+ },
+ "costume\u0000キャンディの精霊": {
+  "file": "costume-070.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 33
+ },
+ "costume\u0000トランプの兵隊": {
+  "file": "costume-071.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 34
+ },
+ "costume\u0000花嫁・花婿": {
+  "file": "costume-072.jpg",
+  "sheet": "costume-v6-02",
+  "cell": 35
  }
 };

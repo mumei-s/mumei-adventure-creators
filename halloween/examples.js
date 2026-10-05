@@ -1,4 +1,4 @@
-import {individualSamples} from './sample-catalog.js?v=5';
+import {individualSamples} from './sample-catalog.js?v=6';
 const referenceChoices=new Set(['参照画像の衣装を生かす','参照風景を舞台にする','参照画像の色を生かす']);
 export function sampleFor(key,value=''){
  const specific=individualSamples[key+'\u0000'+value];

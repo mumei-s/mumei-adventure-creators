@@ -1,4 +1,4 @@
-import {selectedRecipes} from './recipes.js?v=4';
+import {selectedRecipes} from './recipes.js?v=5';
 const names={medium:'画風・質感',design:'デザイン',theme:'物語',costume:'衣装',mood:'表情・角度',place:'舞台',palette:'配色'};
 async function loadImage(src){return new Promise((resolve,reject)=>{const img=new Image(),timer=setTimeout(()=>reject(new Error('作例の画像を読み込めませんでした。通信を確認して、もう一度制作してください。')),12000);img.onload=()=>{clearTimeout(timer);resolve(img);};img.onerror=()=>{clearTimeout(timer);reject(new Error('作例の画像を読み込めませんでした。'));};img.src=src;});}
 function wrap(ctx,text,x,y,maxWidth,lineHeight,maxLines=3){let line='',row=0;for(const ch of text){if(ctx.measureText(line+ch).width>maxWidth){ctx.fillText(line,x,y+row*lineHeight);line=ch;if(++row>=maxLines)return;}else line+=ch;}if(row<maxLines)ctx.fillText(line,x,y+row*lineHeight);}

@@ -1,5 +1,5 @@
-import {questions} from './catalog.js?v=4';
-import {buildTextPlan} from './direction.js?v=4';
+import {questions} from './catalog.js?v=5';
+import {buildTextPlan} from './direction.js?v=5';
 export function composePrompt({creator,profile,values,variant,references,edition,styleGuide=null,random=Math.random}){
  const [size,pixels,ratio]=values.size.split('｜');
  const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);

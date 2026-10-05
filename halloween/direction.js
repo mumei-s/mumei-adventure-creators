@@ -1,0 +1,85 @@
+export const shotPlans=[
+ {family:'front-close',face:'正面0度。顔をまっすぐ起こし首の傾き0度',expression:'歯を見せた大きな笑顔、頬が上がり目尻が縮む',distance:'顔中心の真正面クローズアップ',pose:'両手で大きく帽子を掲げる。肩は水平',layout:'顔を画面中央上部に置き、下部に大胆な横組み文字',camera:'目線と同じ高さ、正面に水平なカメラ'},
+ {family:'left-profile',face:'完全な左横顔90度。片方の目だけ見える。鑑賞者を見ない',expression:'眉を寄せ、唇を引き結ぶ明確な怒り',distance:'膝まで入る左側面のミディアムロング',pose:'横向きに歩く。両腕は後方へ流れ、体軸は前傾',layout:'左向きの横顔と移動を右下から左上へ対角線に配置',camera:'真横から水平に、主役と平行な視線'},
+ {family:'right-profile',face:'完全な右横顔90度。片方の目だけ見える。首は傾けない',expression:'目を閉じて穏やかに息を吐く',distance:'横顔の鼻先から胸までのタイトな右側面',pose:'両手を胸元で組み、肘を下ろす',layout:'右端に主役、左側の広い余白に大きな縦の文字列',camera:'右真横の近距離、横顔のシルエット重視'},
+ {family:'overhead',face:'頭上から顔を見下ろす。顔は上向き、首の左右傾き0度',expression:'目を大きく見開き、口が丸く開く驚き',distance:'頭頂と全身が見える極端な俯瞰',pose:'地面に座って上を見上げ、両手を広げる',layout:'上から見た円状の構造と小さな全身。放射状の視線誘導',camera:'真上に近い70〜85度の高いカメラ'},
+ {family:'ground-low',face:'顎を上げ下方のカメラを睨む。顔は前向き、首はまっすぐ',expression:'目を細め、牙または歯を露わにする威嚇',distance:'靴から頭まで見える全身ロング',pose:'両足を踏ん張り、腕を大きく広げてマントを展開',layout:'低い地平線、巨大な全身シルエット、上方に大胆な文字',camera:'地面近くから見上げる極端なローアングル'},
+ {family:'rear-turn',face:'背中から撮影し顔だけ左に振り返る。顎を肩に寄せない',expression:'片眉を上げ、口角を片方だけ上げる勝ち誇った笑み',distance:'後ろ姿の腰まで入るミディアム',pose:'背中は鑑賞者側へ向け、左手を肩より高く上げる',layout:'主役を左側、顔と逆側に横長の文字ブロックを重ねる',camera:'背中の高さから、顔への斜めの視線'},
+ {family:'jump-wide',face:'顔は正面から右へ30度。首は垂直、顎を引く',expression:'口を開けて豪快に笑う。目は細くなる',distance:'人物が画面の高さの40%程度に収まる環境ロング',pose:'宙へ跳び上がり片膝を曲げる。両腕を上方へ伸ばす',layout:'遠い全身を右上に、左下に巨大な余白と文字',camera:'遠方から水平に、身体全体と動きを捉える'},
+ {family:'crouch-low',face:'顔を下から左斜め前で捉える。顔は左へ45度、首は傾けない',expression:'片目を閉じた大きなウインク。口角を高く上げる',distance:'足先まで入る近い全身',pose:'低くしゃがみ、片手を地面につき、もう一方を後ろに伸ばす',layout:'三角形の全身構図。文字を上辺の帯に集める',camera:'低い位置から35度上を向く近いカメラ'},
+ {family:'up-gaze',face:'顔を上へ40度向ける。目は空を見て、鑑賞者を見ない',expression:'涙を浮かべ、口を固く閉じた悲しみ',distance:'胸から上のミディアムクローズ',pose:'片手を真上へ伸ばし、体は右側へ反らせる',layout:'手から顔へ縦のライン、下部と左端に文字の小窓',camera:'横斜め前から見上げる'},
+ {family:'down-gaze',face:'顔を下へ35度向ける。目は手元。首の左右傾き0度',expression:'唇を押さえた真剣な無表情。眉は水平',distance:'卓上と上半身まで入るミディアム',pose:'机へ両手を置いて、前を向いた体から顔だけ手元へ下げる',layout:'横長の机を前景とし、上下に情報の段を作る',camera:'正面から少し高い水平位置'},
+ {family:'recline-wide',face:'顔は左へ20度、顎を持ち上げる。首は身体の軸と一直線',expression:'眉を上げ、口が半開きの不思議そうな表情',distance:'横たわる全身を含む横長ワイド',pose:'椅子に横たわり、片腕を額より上に広げる',layout:'身体を横方向の長い曲線にし、余白を上下で分ける',camera:'真横から全身と空間を捉える'},
+ {family:'dynamic-run',face:'顔は右へ60度。顎は前。首の傾き0度',expression:'眉を寄せて口を大きく開けた叫び',distance:'走る全身を入れたミディアムロング',pose:'足を前後へ大きく開いて疾走。左腕を前、右腕を後ろへ',layout:'斜めの走るラインを中心に文字を大小の帯として配置',camera:'横斜め前から動きと平行に捉える'}
+];
+const light=['硬い真昼の光と短い影','霧を透かす朝の逆光','夕日の側面光と長い影','赤い劇場照明と暗い奥行き','冷たい月光と暖かい蝋燭','白いスタジオの拡散光','単一スポットライトの深い明暗','街のネオンが濡れた床へ反射'];
+const objects=['黒い羽根の仮面','朱色の封蝋の手紙','銀の小さな鈴','巨大な時計の針','真鍮の星図','ガラスの小瓶','黒いリボンの花束','錆びた鍵束','一冊の古書','空の肖像額'];
+const backgrounds=['横に流れる薄い雲と開けた空間','一方向へ走る強い建築のパース','大きな一つの円と広い余白','平面の色面と明快なコントラスト','前景の大きなシルエットと遠い奥行き','細密な下部と静かな上部','左右で密度の異なる明暗','大きな縦の柱と水平の地平線'];
+const spatial=['強い広角パース。手前の物体を大きく、奥の物体を小さくし、遠近の差を明確にする','前景・中景・遠景の三層。遮蔽と空気遠近法で空間を読み分ける','立体的な量感。光源に一貫した陰影、落ち影、接地、反射で体積を見せる','鑑賞者の近くに前景を置き、空間の中に立っているような臨場感を出す','大胆な俯瞰または見上げに合う消失点を揃え、厚みのある空間を構成する','浮遊感。宙の物と背景の距離を、位置・影・大きさの差で示す'];
+const motion=['髪・布・煙を同じ風向きに流し、曲線の連なりで流動感を出す','動作の前後が想像できる重心と手足の配置。静止画の中に運動の続きを残す','顔と重要な文字を鮮明に保ち、背景や裾の限定的なブラーで速度を示す','奥から手前へ続く軌跡で迫る勢いを作る。過度な発光に頼らない','小道具と布の慣性を動作に合わせ、身体と環境の相互作用で臨場感を出す','静かな画風では、墨・線・空気・光の方向の流れで動きを示す'];
+export function buildDirection(used=[],control='毎回大胆に変える',random=Math.random){
+ const recent=used.slice(-3).map(x=>x.family);
+ let plans=shotPlans.filter(x=>!recent.includes(x.family));if(!plans.length)plans=shotPlans;
+ let plan=plans[Math.floor(random()*plans.length)];
+ const toneOptions=['静かで美しい','妖しく気高い','儚く切ない','温かく懐かしい','神秘的で透明感','寂しく詩的','優雅でクラシカル','強く挑発的','不敵な微笑み','いたずら好き','明るく祝祭的','可愛くコミカル','疾走する冒険','劇的な勝利','少しだけ不気味','ひやりとする怪談','圧倒的な恐怖・流血なし','奇妙でシュール','無表情の緊張感'];
+ const tone=toneOptions.includes(control)?control:'';
+ const toneExpressions={
+ '静かで美しい':['目を閉じて安らぐ','口元を緩めた自然な笑顔','眉を水平に保ち静かに見つめる'],
+ '妖しく気高い':['片眉を上げて不敵に微笑む','顎を高く保ち真剣に見つめる','目を細めた余裕のある笑顔'],
+ '儚く切ない':['涙を浮かべて口を閉じる','唇を軽く噛み目元に悲しみ','眉を内側へ上げて遠くを見る'],
+ '温かく懐かしい':['歯を見せた優しい笑顔','目を閉じて自然に微笑む','頬が上がる穏やかな笑顔'],
+ '神秘的で透明感':['目を大きく開いた静かな好奇心','目を閉じた穏やかな表情','眉を水平に保つ澄んだ無表情'],
+ '寂しく詩的':['涙を一粒浮かべた目','唇を引き結んだ悲しみ','目元を伏せて寂しさを表す'],
+ '優雅でクラシカル':['歯を少し見せた品のある笑顔','目を閉じた落ち着いた表情','口角を静かに上げた微笑み'],
+ '強く挑発的':['歯を見せて挑発的に笑う','眉を寄せ鋭く睨む','口角を片方だけ上げる'],
+ '不敵な微笑み':['片眉を上げてニヤリと笑う','目を細め歯を見せて笑う','片目を閉じて大胆にウインク'],
+ 'いたずら好き':['舌を少し出した笑顔','片目を閉じた大きなウインク','歯を見せて楽しそうに笑う'],
+ '明るく祝祭的':['口を大きく開けて大笑い','両目を輝かせ歯を見せて笑う','目を細めた満面の笑顔'],
+ '可愛くコミカル':['口を丸く開いて驚く','頬を膨らませたコミカルな表情','歯を見せて豪快に笑う'],
+ '疾走する冒険':['口を開いて叫ぶ決意','眉を寄せて真剣に見つめる','歯を見せた興奮の笑顔'],
+ '劇的な勝利':['口を開けた喜びの笑顔','涙を浮かべて大きく笑う','片眉を上げ勝ち誇って笑う'],
+ '少しだけ不気味':['唇を閉じてじっと見つめる','片側の口角だけが上がる笑顔','目を大きく開いた不自然な沈黙'],
+ 'ひやりとする怪談':['目を見開いて息を呑む','口が半開きの驚き','眉を寄せて緊張を表す'],
+ '圧倒的な恐怖・流血なし':['目を見開き口を大きく開ける恐怖','涙を浮かべ眉を上げた恐怖','眉を寄せ歯を露わにした威嚇'],
+ '奇妙でシュール':['目を見開き口を丸く開く','片眉だけ上げる不可解な表情','左右で異なる口角の奇妙な笑顔'],
+ '無表情の緊張感':['眉を水平に保ち唇を引き結ぶ無表情','まばたきを忘れた真剣な目','口を閉じ緊張を含む無表情']};
+ const selected=control!=='毎回大胆に変える'&&control!=='おまかせ'&&!tone;
+ const keys={ '正面・首をまっすぐ':'front-close','完全な左横顔90度':'left-profile','完全な右横顔90度':'right-profile','真上からの俯瞰':'overhead','真下からのローアングル':'ground-low','背中から振り向く':'rear-turn','顔を上に向ける':'up-gaze','顔を下に向ける':'down-gaze'};
+ const sets={'正面＋満面の笑顔':['front-close','歯を見せた満面の笑顔'],'左横顔＋静かな無表情':['left-profile','静かな無表情'],'右横顔＋大笑い':['right-profile','口を開けた大笑い'],'俯瞰＋目を見開く':['overhead','目を大きく見開く驚き'],'ローアングル＋威嚇':['ground-low','歯を露わにする威嚇'],'背中から振り向く＋ニヤリ':['rear-turn','勝ち誇った片側の笑み']};
+ const fixedView=keys[control]||sets[control]?.[0];
+ const viewPlan=fixedView?shotPlans.find(p=>p.family===fixedView):null;
+ if(viewPlan){
+ plan={...plan,face:viewPlan.face,camera:viewPlan.camera};
+ if(plan.family==='rear-turn'&&fixedView!=='rear-turn')plan.pose='片足を踏み出し、片腕を横へ伸ばして体を大きく開く';
+ if(fixedView==='rear-turn')plan.pose='背中を鑑賞者へ向け、片腕を遠くへ伸ばし、指定の向きに顔だけ振り返る';
+ }
+ for(let n=0;n<10000;n++){
+ const l=Math.floor(random()*light.length),o=Math.floor(random()*objects.length),b=Math.floor(random()*backgrounds.length),d=Math.floor(random()*spatial.length),m=Math.floor(random()*motion.length);
+ const signature=plan.family+'-'+l+'-'+o+'-'+b+'-'+d+'-'+m;
+ if(!used.some(x=>x.signature===signature)){
+ const expression=tone?toneExpressions[tone][Math.floor(random()*toneExpressions[tone].length)]:sets[control]?.[1]||(!keys[control]&&selected?control:plan.expression);
+ return {...plan,expression,tone,light:light[l],motif:objects[o],background:backgrounds[b],depth:spatial[d],motion:motion[m],signature,locked:selected?'選択された表情または角度は固定し、残りの演出を変更':'表情・角度・距離・身体動作をまとめて大きく変更',previous:used.slice(-3).map(x=>({face:x.face,expression:x.expression,distance:x.distance,pose:x.pose,layout:x.layout,family:x.family}))};
+ }
+ }
+ throw new Error('別の演出を選び直してください。');
+}
+export function isAdvertising(design){return /雑誌|誌面|見開き|新聞|映画ポスター|舞台ポスター|フェス|フライヤー|広告|チラシ/.test(design);}
+export function buildTextPlan(profile,values,random=Math.random){
+ const name=(profile.displayName||profile.name||'').trim();
+ if(values.type==='文字を一切入れない')return {mode:'none',name:'',blocks:[],dense:false};
+ const noName=values.type==='セリフのみ'||values.type==='HALLOWEENのみ';
+ const titles=['MIDNIGHT MUSE','THE OTHER SIDE','AFTER THE SPELL','NIGHT PARADE','SHADOW PLAY','HALLOWEEN STORIES','THE MOON ISSUE','MASKS & MAGIC','SPOOKY SEASON','THE LAST CANDLE','BEYOND THE MIRROR','GHOST NOTES'];
+ const topics=Array.isArray(profile.topics)?profile.topics.filter(x=>typeof x==='string'):[];
+ const selectedTopics=[...topics];for(let i=selectedTopics.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[selectedTopics[i],selectedTopics[j]]=[selectedTopics[j],selectedTopics[i]];}
+ const edits=[t=>t+'とHalloweenの交差点',t=>'特集：'+t+'の制作ノート',t=>t+'の視点で見る夜',t=>t+'をめぐる作品案内',t=>t+'から広がる創作の世界',t=>'光と影で読み解く、'+t];
+ const headlines=selectedTopics.slice(0,3+Math.floor(random()*4)).map(t=>edits[Math.floor(random()*edits.length)](t));
+ const dense=/たっぷり|クレジット|新聞/.test(values.type)||values.type==='デザインに合わせて自動編集'&&isAdvertising(values.design);
+ const line=values.line==='セリフなし'?'':values.line;
+ const title=titles[Math.floor(random()*titles.length)];
+ let blocks=noName?[line].filter(Boolean):[title,name,line].filter(Boolean);
+ if(dense)blocks.push('HALLOWEEN SPECIAL',...headlines,'CREATOR SPOTLIGHT','ART / STORY / IMAGINATION','A NIGHT TO REMEMBER','OPEN THE NEXT CHAPTER');
+ if(values.type==='HALLOWEENのみ')blocks=['HALLOWEEN'];
+ if(values.type==='HALLOWEEN＋クリエイター名')blocks=['HALLOWEEN',name];
+ if(values.type==='クリエイター名だけ'||/サイン風|落款風/.test(values.type))blocks=[name];
+ return {mode:values.type,name:noName?'':name,title,dense,blocks:[...new Set(blocks)].slice(0,14),topics};
+}

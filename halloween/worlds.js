@@ -1,4 +1,4 @@
-import {crystalAnimeMedium} from './crystal-anime.js?v=12';
+import {crystalAnimeMedium} from './crystal-anime.js?v=13';
 // Semantic art contracts. Preview artwork never supplies people, objects, or hidden instructions.
 export const colorWorlds=[
  ['星灯りの青紫','群青 × 菫 × 星白',['#121744','#823ae2','#edf4ff'],'群青の暗部を60%、菫の中間色を30%、青白い光を10%。選択舞台にある光源から景物・髪・布へ同じ色の反射を返す。星や発光粒子を色名だけから追加しない。'],
@@ -49,10 +49,12 @@ export function sceneryMaterials(text){return String(text).split('。').filter(s
  .replace(/人物|身体|人体|人間|キャラクター|キャラ|モデル/g,'景物').replace(/衣服|衣装/g,'自然素材').replace(/人形/g,'立体造形').replace(/頭身/g,'形の比率')
  .replace(/頬|手足|手指|首|肩|レース/g,'細部').replace(/服(?=、|と|・|へ|を|の)/g,'素材');}
 export function colorContract(value,{noPerson=false}={}){const text=colorWorlds.find(x=>x.value===value)?.text||('配色「'+value+'」の主色・副色・差し色を60：30：10を目安に分け、光源色と影色を同じ配色内で設計。'+(noPerson?'参照風景':'参照人物')+'の元の撮影色を画面全体の色として固定しない。');return noPerson?sceneryMaterials(text):text;}
-export function sceneContract(values,{collection='halloween',noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume)}={}){return [
+export function sceneContract(values,{collection='halloween',noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume)}={}){
+ const emblem=noPerson&&values.costume==='紋章・アイコンにする',motif=noPerson&&values.costume==='モチーフだけで構成する';
+ return [
  '出来事・主題：'+values.theme+'。'+(noPerson?'人物なしの指定を守り、選んだ主題を風景・物体・自然現象・出来事の痕跡として描く。人の行為は画面外で起きたものとして扱い、人型の顔・手足・影を追加しない。':'この項目から行為・目的・必要な道具を選ぶ。主役は人物の主参照から決め、項目の見本に写る人物へ置換しない。'),
- '唯一の舞台：'+values.place+'。背景の地形・建築・空間はこの舞台を優先し、物語名に含まれる場所へ勝手に置き換えない。前景・中景・遠景の縮尺、消失点、接地、自然光の方向を揃える。',
+ '唯一の舞台：'+values.place+'。背景はこの舞台を優先し、物語名に含まれる場所へ勝手に置き換えない。'+(emblem?'舞台の特徴を少数の背景面・記号・余白へ整理し、平面の輪郭を保つ。写実的な広景や水平線を必須にしない。':motif?'選んだ物体の支持・接触・大小と面の重なりを一つの配置へ整理する。抽象的な背景には地平線や別の風景を追加しない。':'前景・中景・遠景の縮尺、消失点、接地と選択舞台の光源の方向を揃える。'),
  '統合：「'+values.place+'」の中で「'+values.theme+'」が伝わる一場面。'+(noPerson?'風景・物体の配置と光で主題を表し、木・山・建物を人の身体や衣装に変えない。':'テーマ側の別の場所名は、必要な道具・展示・演目などへ翻案し、指定ポーズをその一場面で実行する。')+'背景を二つ並べたり別世界をコラージュしたりしない。',
  '追加物の範囲：物語・衣装・舞台の選択に具体的な根拠があるものだけを描く。配色や画風の見本にある性別・人物・小道具・装飾を取り込まない。幻想的な光だけの指定から、魔法使い・魔法陣・召喚・ホラー要素を追加しない。',
- collection==='everyday'?'通常モードの場面：選択が日常・自然・都市なら、自然な地形・構造・光で成立させる。明示した幻想やコスプレは反映し、未選択のHalloweenの祝祭・文字・カボチャ・おばけを追加しない。':'Halloweenの場面：選んだ物語・仮装・舞台が持つ特徴で祝祭の場面を作る。全ての作品に同じカボチャ・黒猫・月・魔法陣を一律で追加しない。'
+ collection==='everyday'?(emblem||motif?'通常モードの図案：主題と舞台を示す選択された形・配置・背景面で成立させる。':'通常モードの場面：選択が日常・自然・都市なら、自然な地形・構造・光で成立させる。')+'明示した幻想やコスプレは反映し、未選択のHalloweenの祝祭・文字・カボチャ・おばけを追加しない。':'Halloweenの場面：選んだ物語・仮装・舞台が持つ特徴で祝祭の場面を作る。全ての作品に同じカボチャ・黒猫・月・魔法陣を一律で追加しない。'
 ];}

@@ -1,0 +1,106 @@
+{
+  "version": 13,
+  "verifiedAt": "2026-10-06",
+  "scope": "Representative real-image trials and separate instruction/code checks; no claim that every option combination was rendered or will always match.",
+  "instructionChecks": {
+    "optionOccurrences": 941,
+    "exportedRecipeSections": 4142,
+    "mediums": 107,
+    "formats": 47,
+    "palettes": 50,
+    "crystalAnimeCases": 202
+  },
+  "actualTrials": [
+    {
+      "case": "ordinary-watercolor",
+      "method": "single-stage image generation with unchanged application prompt",
+      "result": "accepted",
+      "observed": [
+        "watercolor paper and pigment edges",
+        "mountains and lake with foreground, middle distance and background",
+        "no people, text or unsolicited magic"
+      ],
+      "promptSha256": "1526b310b7cbb8c70ca51be30546f9692fff78d50eeab3e1539c44d45c52d119",
+      "output": {
+        "width": 1536,
+        "height": 1024,
+        "sha256": "ff74954a65fd2e3e8f67dc89954b325ba45cd1a78e338fb097acb19cfcb4f839"
+      }
+    },
+    {
+      "case": "hologram-spread",
+      "method": "two one-pass generation attempts with detailed complete prompts",
+      "result": "rejected",
+      "observed": [
+        "photographic face and paint instead of clear 2D planes",
+        "missing or weak projected hologram structure",
+        "unsafe subject cropping; first attempt also had three body columns"
+      ]
+    },
+    {
+      "case": "hologram-spread",
+      "method": "artwork-only generation",
+      "result": "required style repair",
+      "observed": [
+        "whole pose and hologram membranes improved",
+        "face and hair rendering still too photographic"
+      ]
+    },
+    {
+      "case": "hologram-spread",
+      "method": "focused style repair using only the generated artwork",
+      "result": "accepted as main artwork",
+      "observed": [
+        "clearer facial outlines, planar color and cel shadows on face/body/wrapping",
+        "visible projection membranes and scan lines",
+        "frontal face and crossed-leg pose retained"
+      ],
+      "limits": [
+        "fine hair detail remains",
+        "deep facial shadow is modest",
+        "likeness and style still require human review"
+      ],
+      "artworkPromptSha256": "9d09c2d5f83b6a3a8d70bfa377e0d1a6202e8391e74bab28b05e3caed5d1ee00",
+      "repairPromptSha256": "65944197d0fb2afbe61f09f1dbcb484684f6ddfe852e719dd1d499581ebe93d4",
+      "output": {
+        "width": 1254,
+        "height": 1254,
+        "sha256": "4f2d0074c8d7b979cf7b6818395ba3ae9cf10ed8de65681bdf99cf00cba7c6f7"
+      }
+    },
+    {
+      "case": "hologram-spread",
+      "method": "generative layout from accepted artwork",
+      "result": "rejected",
+      "observed": [
+        "artwork was reframed and cropped despite explicit contain instructions"
+      ]
+    },
+    {
+      "case": "hologram-spread-wide",
+      "method": "actual application import, native SVG document composition and browser PNG export",
+      "result": "accepted",
+      "selection": "横写真3:2｜3600×2400｜3:2",
+      "observed": [
+        "one original bitmap with proportional contain placement",
+        "whole source artwork retained",
+        "exact Japanese copy in two body frames",
+        "no clipping, text overlap or gutter collision observed"
+      ],
+      "output": {
+        "width": 3600,
+        "height": 2400,
+        "sha256": "5137b340b3b3cab85ef559a66e8f08de6dc47eaa6ed2e298ceee2305505ed55d"
+      }
+    }
+  ],
+  "browserChecks": [
+    "native preview and actual PNG download",
+    "selected 3600×2400 output size",
+    "320px and 390px screens without overflow",
+    "invalid raster input rejected",
+    "no page errors"
+  ],
+  "referencePolicy": "Only the creator-supplied character reference and the generated intermediate artwork were used for artistic image calls. Option thumbnails and real magazine photographs were not supplied.",
+  "reproduction": "scripts/image-proof-cases.mjs reproduces current application inputs. Staged artwork and style-repair inputs are identical for portrait and wide spread cases; their final canvas selection differs."
+}

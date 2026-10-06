@@ -1,4 +1,5 @@
-import {formatFor} from './formats.js?v=12';
+import {formatFor} from './formats.js?v=13';
+import {formatTextPolicy} from './format-recipes.js?v=13';
 const pick=(items,random)=>items[Math.min(items.length-1,Math.floor(random()*items.length))];
 function shuffle(items,random){const a=[...items];for(let i=a.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 const titles={cover:['LUMEN THREAD','FORM & FABLE','VELVET SIGNAL','LIGHT ARCHIVE','OPEN PALETTE'],interview:['THE MAKING FILE','CREATIVE VOICES','A FIELD OF IDEAS'],spread:['THE VISUAL NOTE','WORLD IN MOTION','A NEW PERSPECTIVE'],newspaper:['創作通信','彩景新聞','表現日報'],cinema:['BEYOND THE FRAME','A SILENT DOOR','WHEN LIGHT RETURNS'],book:['ひかりを綴る','まだ知らない景色','境界の手紙'],album:['ECHOES IN COLOR','UNFOLDING','SOFT REVERB'],default:['FORM & WONDER','もうひとつの景色','STORIES IN LIGHT']};
@@ -6,7 +7,7 @@ export function buildEditorial(profile,values,random=Math.random){
  const name=(profile.displayName||profile.name||'').trim(),kind=formatFor(values.design).kind,mode=values.type,daily=values.collection==='everyday';
  const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume),landscape=kind==='landscape'||values.costume==='風景を主役にする';
  const captionRole=/^実写風/.test(values.medium)?'写真キャプション':'図版キャプション';
- const line=values.line==='セリフなし'||values.line==='おまかせ'?'':values.line;
+ const {noText,limited,line}=formatTextPolicy(values);
  const title=pick(titles[kind]||titles.default,random),topics=shuffle((profile.topics||[]).filter(v=>typeof v==='string'&&v.trim()),random);
  const subject=values.theme==='おまかせ'?(daily?'日々の創作':'一夜の物語'):values.theme;
  const themeWords=[...new Set([...topics.slice(0,6),subject,...(noPerson||landscape?['景観のかたち','色と光','奥行きの構成','季節と時間','素材の手触り']:['衣装のかたち','色と光','場面づくり','視線の物語','素材の手触り'])])];
@@ -18,12 +19,13 @@ export function buildEditorial(profile,values,random=Math.random){
  '色を増やすことよりも、どこに置くかを考える。明るい面と静かな影、そして視線を引く小さな差し色。選んだ色の世界を保ちながら、場面の中の時間を感じられる一枚へ。'
  ];
  const slots=[];const add=(role,text,priority=2)=>{if(text)slots.push({role,text,priority});};
- const result=()=>({mode,name:slots.some(s=>s.role==='作者名')?name:'',title,dense:slots.length>=8,slots,blocks:slots.map(s=>s.text),topics,kind});
- if(mode==='文字を一切入れない')return {mode:'none',name:'',title:'',dense:false,slots:[],blocks:[],topics:[],kind};
+ const result=()=>({mode,name:slots.some(s=>s.role==='作者名')?name:'',title:slots.some(s=>s.priority===0)?title:'',dense:slots.length>=8,slots,blocks:slots.map(s=>s.text),topics,kind,limited});
+ if(noText)return {mode:'none',name:'',title:'',dense:false,slots:[],blocks:[],topics:[],kind,limited:false};
  if(mode==='クリエイター名だけ'||/サイン風|落款風/.test(mode)){add('作者名',name,1);return result();}
  if(mode==='HALLOWEENのみ'){add('テーマ名','HALLOWEEN',1);return result();}
  if(mode==='HALLOWEEN＋クリエイター名'){add('テーマ名','HALLOWEEN',1);add('作者名',name);return result();}
  if(mode==='セリフのみ'){add('セリフ',line,1);return result();}
+ if(mode==='短いタイトル＋名前'||mode==='クリエイター名＋自由な見出し'){add(mode==='短いタイトル＋名前'?'作品タイトル':'主見出し',title,0);add('作者名',name,2);return result();}
  const automatic=mode==='デザインに合わせて自動編集',rich=/たっぷり|新聞風/.test(mode);
  const density=rich||automatic&&['cover','interview','spread','newspaper','cinema','stage','festival','advert','flyer','zine','exhibition'].includes(kind);
  const coverLine=topic=>pick([topic+'を編む',topic+'の向こう側',topic+'に触れる',topic+'の新しい視点'],random);
@@ -60,11 +62,31 @@ export function buildEditorial(profile,values,random=Math.random){
  return result();
 }
 export function editorialContract(copy){
- if(copy.mode==='none')return ['文字・数字・ロゴ・サインを描かない。'];
+ const slots=copy.slots||[];
+ if(copy.mode==='none'||!slots.length)return ['文字・数字・ロゴ・サイン・署名・疑似文字を描かない。文字のない完成図版とし、看板や紙面の空きにも代わりの原稿を追加しない。'];
+ const limited=copy.limited??formatTextPolicy({type:copy.mode,line:slots.find(s=>s.role==='セリフ')?.text}).limited;
+ const roles=new Set(slots.map(s=>s.role)),body=slots.some(s=>/本文|質問|回答/.test(s.role));
+ const levels=[...new Set(slots.map(s=>s.priority))].sort((a,b)=>a-b).map(priority=>'階層'+priority+'：'+[...new Set(slots.filter(s=>s.priority===priority).map(s=>s.role))].join('・'));
+ const render=(s,i)=>(i+1)+'. 【'+s.role+' / 階層'+s.priority+'】 '+s.text;
+ const spreadFrames=copy.kind==='spread'&&!limited?[
+  {label:'左本文枠A',roles:['本文小見出し1','本文1'],flow:'この2原稿だけを一つの枠に上から下へ組む。末尾の空きは余白として残す。'},
+  {label:'右本文枠B',roles:['本文小見出し2','本文2','本文小見出し3','本文3'],flow:'この4原稿を一つの枠に連続して上から下へ組む。本文3は本文2の直下へ続け、別列や独立カードへ分割しない。'}
+ ]:[];
+ const emitted=new Set(),manuscript=slots.flatMap((s,i)=>{
+  const frame=spreadFrames.find(f=>f.roles.includes(s.role));
+  if(!frame)return [render(s,i)];
+  if(emitted.has(frame.label))return [];
+  emitted.add(frame.label);
+  return ['【'+frame.label+'の連続原稿】'+frame.flow,...frame.roles.flatMap(role=>slots.flatMap((item,index)=>item.role===role?[render(item,index)]:[]))];
+ });
  return [
-  '原稿は役割ごとに用意済み。誌名を作者名へ置換せず、タイトルと特集見出しを別階層にする。本文は見出しの反復や意味のない疑似文字で埋めない。',
-  ...copy.slots.map((s,i)=>(i+1)+'. 【'+s.role+' / 階層'+s.priority+'】 '+s.text),
-  '階層0は最も大きい誌名または題名、1は主特集・キャッチ、2は補助見出し、3は補足・本文・キャプション。柱とノンブルは欄外の小さな文字で、表紙の誌名と同じ大きさにしない。原稿の役割を形式の領域へ割り当てる。書体は原則2系統、大小と太さで階層を作り、日本語の行末・句読点・読み順を整える。',
-  '創作の本文・Q&A・ノンブルはこの図版のための編集原稿で、本人の実際の発言・取材・刊行情報ではない。実在雑誌・出版社・広告・映画のロゴ、未確認の価格・日付・会場・業績を加えない。'
+  limited?'許可された原稿は次の'+slots.length+'ブロックだけ。形式の標準文字量を満たすために文言を増やさず、この文字列と役割をそのまま配置する。':'制作原稿は次の役割ごとに確定済み。各原稿を選択形式の個別制作仕様へ配置し、原稿にない文言や情報役割を補わない。',
+  ...(emitted.size?['見開きの本文原稿は次の左本文枠A・右本文枠Bの2枠へ割り当てる。3つの話題を3列へ分けず、本文小見出し2と3は同じ右枠Bの中で縦に続ける。本文枠内に小画像やカード枠を追加しない。']:[]),
+  ...manuscript,
+  '今回使う文字階層は '+levels.join(' / ')+'。数値の小さい階層から視線が進む大小と太さを使い、原稿が一種類なら一つのまとまりにする。選択形式の個別仕様に従って配置し、原稿内にない階層を埋めない。書体は原則2系統以内で、日本語の行末・句読点・読み順を整える。',
+  ...(roles.has('誌名')&&roles.has('作者名')?['誌名と作者名は今回の原稿にある別の役割として保ち、同じ文字列へ置換しない。']:[]),
+  ...(roles.has('柱')||roles.has('ノンブル')?['原稿にある柱・ノンブルは個別仕様の欄外へ小さく配置し、主見出しと同じ大きさにしない。']:[]),
+  ...(body?['用意した本文・質問・回答は意味のある文章として順に組み、見出しの反復や疑似文字で埋めない。この図版のための創作原稿であり、本人の実際の発言・取材・刊行情報として示さない。']:[]),
+  '実在雑誌・出版社・広告・映画のロゴ、未確認の価格・日付・会場・業績は原稿へ追加しない。'
  ];
 }

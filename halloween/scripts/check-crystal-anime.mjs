@@ -1,16 +1,16 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {CRYSTAL_ANIME,crystalAnimeMedium,crystalAnimeSpec,crystalAnimePalette,isCrystalAnimeLimitedPalette} from '../crystal-anime.js?v=12';
-import {questions,resolveSelections} from '../catalog.js?v=12';
-import {applyCollection} from '../collection.js?v=12';
-import {initialSelections} from '../modes.js?v=12';
-import {buildDirection} from '../direction.js?v=12';
-import {poseItems,applyPose} from '../poses.js?v=12';
-import {visualSpec} from '../visual-specs.js?v=12';
-import {lookFor} from '../looks.js?v=12';
-import {sampleFor} from '../examples.js?v=12';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=12';
-import {composePrompt} from '../prompt.js?v=12';
+import {CRYSTAL_ANIME,crystalAnimeMedium,crystalAnimeSpec,crystalAnimePalette,isCrystalAnimeLimitedPalette} from '../crystal-anime.js?v=13';
+import {questions,resolveSelections} from '../catalog.js?v=13';
+import {applyCollection} from '../collection.js?v=13';
+import {initialSelections} from '../modes.js?v=13';
+import {buildDirection} from '../direction.js?v=13';
+import {poseItems,applyPose} from '../poses.js?v=13';
+import {visualSpec} from '../visual-specs.js?v=13';
+import {lookFor} from '../looks.js?v=13';
+import {sampleFor} from '../examples.js?v=13';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=13';
+import {composePrompt} from '../prompt.js?v=13';
 
 const profile={displayName:'TEST CREATOR',biography:'',topics:[],activityEnabled:false};
 const random=()=>.22;
@@ -39,7 +39,7 @@ for(const collection of ['halloween','everyday']){
  const base=resolveSelections({...initialSelections(),design:'通常の一枚絵',medium:CRYSTAL_ANIME,theme:collection==='everyday'?'ものづくりの時間':'光と影の寓話',costume:'参照画像の衣装を生かす',place:'白いスタジオ',pose:'全力で走る',mood:'完全な左横顔90度',palette:'桃 × ミルク × 淡金',type:'文字を一切入れない',line:'セリフなし',size:'縦写真3:4｜2400×3200｜3:4'},random);
  const {args,prompt,plan}=produce(base,collection);
  assert.equal(plan.conditions.find(c=>c.key==='medium').value,CRYSTAL_ANIME);
- assert.match(prompt,/鼻・唇・頬まで.*2Dアニメ/);
+ assert.match(prompt,/顔は細い色線と少数の澄んだ色面/);assert.match(prompt,/鼻・口は位置と大きさの関係を保った簡潔な描線/);
  assert.match(prompt,/目の一律な拡大/);
  assert.match(prompt,/顔の輪郭、目鼻口の形・配置・比率/);
  assert.match(prompt,/強いコントラスト|強い局所的な明度差/);
@@ -81,7 +81,7 @@ for(const collection of ['halloween','everyday']){
    assert.match(result.prompt,/全ての元の色を許可色と明度差へ翻訳/);
    assert.doesNotMatch(result.prompt,/人物の同一性として必要な髪・肌・瞳の基礎色は保持|髪の基礎色と識別できる髪の特徴|虹彩の基礎色を保ち|元の髪色と根元の明度を残し/,'Limited palettes must agree throughout the final prompt: '+palette);
   }else{
-   assert.match(result.prompt,/髪・肌・瞳の基礎色は保持/);
+   assert.match(result.prompt,/髪・肌・瞳の基礎色は識別のために残し|人物の髪・瞳・肌の基礎色はキャラクター参照を保ち/);
   }
   scenarios++;
  }
@@ -99,7 +99,7 @@ for(const collection of ['halloween','everyday']){
  const legacy=produce({...base,medium:'宝石ホログラムアニメ'},collection);
  assert.match(legacy.prompt,/半透明の投影層/);
  assert.ok(!legacy.prompt.includes('【画風：'+CRYSTAL_ANIME+'】'));
- assert.ok(legacy.prompt.includes(weakLight),'Other media retain their chosen lighting');
+ assert.ok(!legacy.prompt.includes(weakLight),'All detailed media resolve lighting from their technique and selected stage');assert.match(legacy.prompt,/深い.*影面/);
 }
 
 for(const palette of ['モノクローム','墨一色','金と黒の二色','黒と白と朱の三色','セピア','焦茶 × シアン光']){

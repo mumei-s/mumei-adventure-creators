@@ -1,8 +1,8 @@
-import {mediumDefinition} from './looks.js?v=12';
-import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=12';
-import {poseItems} from './poses.js?v=12';
-import {colorContract,luminousMedia,colorWorlds,sceneryMaterials} from './worlds.js?v=12';
-import {formatFor} from './formats.js?v=12';
+import {mediumDefinition} from './looks.js?v=13';
+import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=13';
+import {poseItems} from './poses.js?v=13';
+import {colorContract,luminousMedia,colorWorlds,sceneryMaterials} from './worlds.js?v=13';
+import {formatFor} from './formats.js?v=13';
 const read=source=>Object.fromEntries(source.trim().split('\n').map(line=>{const i=line.indexOf('=');return [line.slice(0,i),line.slice(i+1)];}));
 export const costumeSpecs=read(`
 魔女・魔法使い=尖った帽子・長いローブ・魔術の紋様。布の厚みと帽子の形を明確にする

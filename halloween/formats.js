@@ -1,4 +1,5 @@
-import {editorialReferencesFor,editorialReferenceContract} from './editorial-reference-sources.js?v=12';
+import {editorialReferencesFor} from './editorial-reference-sources.js?v=13';
+import {formatTextPolicy} from './format-recipes.js?v=13';
 // The selected title defines the layout. Medium defines image rendering independently.
 const rows=[
  ['ファッション雑誌の表紙','cover','上部15〜22%に独自の誌名。主役を中央の高さ65〜85%に置き、左右の細い2列にカバーラインを整列。最重要特集を1本、補助特集を4〜6本。誌名・大特集・小特集・補足の4段階で字の大きさを分ける。全周4〜6%を文字の安全余白にする。','誌名／主役／大特集／補助特集／特集の短い補足'],
@@ -50,13 +51,21 @@ const rows=[
  ['広告ビジュアル','advert','主見出し、訴求する主役、説明2〜3ブロック、作者名を一つのグリッドへ。何を紹介する作品か分かるコピーと画像の関係を作り、未確認の価格・成果や申込先を創作しない。','主見出し／訴求する主役／説明ブロック／作者名']
 ];
 export const formatSpecs=Object.fromEntries(rows.map(([value,kind,layout,checks])=>[value,{value,kind,layout,checks:checks.split('／'),references:editorialReferencesFor(value)}]));
-export function formatFor(value){return formatSpecs[value]||{value,kind:'custom',layout:'自由指定「'+value+'」の用途・情報の順序・画像と文字の面積を読み取り、その形式の構造を具体化する。',checks:['自由指定の形式・情報順序・画像領域']};}
-export function formatContract(values){const f=formatFor(values.design),noText=values.type==='文字を一切入れない',limited=/だけ|のみ|サイン風|落款風/.test(values.type);return [
- '形式の必須構造：'+f.layout,
- ...editorialReferenceContract(values.design),
- '形式は情報配置と画面構成の指定。主画像の画材・写真表現・アニメの描線は「技法・画風」の選択に従う。実誌の写真や説明用イラストの画風を形式から勝手に引き継がない。',
- '完成は正面から見た完成図版。机の上の雑誌・額入りポスター・スマホ内の画面の写真へ変えない。開いた実物を撮るモックアップではなく、選んだ比率の全面を作品として使う。',
- 'この形式のレイアウトを主骨格にする。ランダムな画面設計の文字位置はこのグリッドへ移し、指定ポーズ・表情・顔角度を画像領域内で保つ。別の文字設定を選んでもデザイン自体を別形式へ置換しない。',
- noText?'文字なしの指定を厳守。誌名・見出し・本文を描かず、画像領域・余白・段組みのリズムを図版の配置として残す。':limited?'限定した文字設定を厳守。指定された原稿以外を増やさず、形式の余白と画像配置を保つ。': '自動編集では、この形式に必要な各原稿の役割を省略しない。見出しを並べるだけで本文やキャプションを代用しない。',
- '縮小で主役と最大見出しが読め、拡大で補足が読める大小を使う。画像の細部を文字の背後に集中させず、目・口・手指に文字を重ねない。余白・段間・字間・行間を揃え、装飾枠を増やすだけの編集にしない。'
-];}
+export function formatFor(value){return typeof value==='string'&&Object.hasOwn(formatSpecs,value)?formatSpecs[value]:{value,kind:'custom',layout:'自由指定「'+value+'」の用途・情報の順序・画像と文字の面積を読み取り、その形式の構造を具体化する。',checks:['自由指定の形式・情報順序・画像領域']};}
+export function formatContract(values){
+ const f=formatFor(values.design),{noText,limited}=formatTextPolicy(values),noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume||'');
+ const references=f.references||[],main=noPerson?'主題の景物・建築・物体':'主役の顔・頭・手・膝・足先と主題の道具';
+ return [
+  '配置・画像領域・文字の読み順は、上記の選択形式「'+values.design+'」の個別制作仕様に従う。別の文字設定を選んでもデザイン自体を別形式へ置換しない。',
+  ...(references.length?[
+   '開発時に形式の構造を確認した公開資料：'+references.map(r=>r.publisher+'「'+r.title+'」 / '+r.location+' / '+r.url+(r.documentUrl?' / 公開抜粋 '+r.documentUrl:'')).join('； '),
+   '上記は個別制作仕様を整理するための出典。実物の誌面画像を生成モデルへ添付したものではない。資料の人物・性別・衣装・画風・配色・誌名・新聞名・記事は今回の描画対象にせず、情報の配置条件は今回の文字選択に合わせた個別仕様だけを使う。'
+  ]:[]),
+  '形式は情報配置と画面構成を担当する。主画像の描線・陰影・素材は選択画風、色相と面積は選択配色で描き、形式名を理由に写真・平面塗り・コピー印刷・白黒へ変えない。',
+  '完成は正面から見た平らな完成図版とし、選んだ比率の全面を作品に使う。机上の雑誌・開いた実物・額入り作品・端末画面を撮るモックアップへ置換しない。',
+  noPerson?'画像領域には選択した風景・物体・紋章とその視点を配置する。肖像や衣装用の領域にも人物・人型の顔・マネキンを補わない。':'画像領域の中で指定ポーズ・表情・顔角度を保つ。形式を成立させるために身体動作を別のポーズへ変えない。',
+  noText?'文字なしの指定を厳守し、文字・数字・ロゴ・署名・疑似文字を描かない。情報用の領域は個別仕様に従って図版と自然な余白に使い、空欄のフォームや本文風の線を補わない。':limited?'限定した文字設定を厳守し、下記の確定原稿だけを個別仕様の領域に配置する。未許可の誌名・本文・ページ番号・キャッチ・署名を補完しない。':'下記の確定原稿の役割を個別仕様の対応領域へ割り当てる。原稿にない文言・番号・刊行情報は追加せず、用意した本文を見出しの反復で代用しない。',
+  f.kind==='spread'?'中央の綴じ安全帯と左右の外周余白は、見開きの個別仕様の幅を保つ。綴じ安全帯は細線で代用せず、低密度の背景色にした実幅のある空きとして確保する。'+main+'は個別仕様の安全箱へ収め、横幅が超える場合は主画像全体を縮める。'+(noText?'中央の空きを数字や記号で埋めない。':'許可された文字列も綴じ安全帯を横断させない。'):'各形式の個別仕様で定めた外周・切り抜き・折れ位置の安全余白を保ち、'+main+'の重要な輪郭を安全領域内へ収める。',
+  noText?'縮小しても主題の輪郭が読み取れるよう、図版の大小と余白の間隔を整える。文字や記号を可読性の補助として追加しない。':(limited?'許可された原稿の範囲内で':'確定原稿に存在する役割の間で')+'大小と明度差を使い、字間・行間・読み順を整える。'+(noPerson?'主景の識別に必要な形':'目・口・手指')+'へ文字を重ねず、装飾枠を増やすだけの編集にしない。'
+ ];
+}

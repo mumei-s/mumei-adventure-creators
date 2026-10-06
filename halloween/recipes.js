@@ -1,7 +1,8 @@
-import {dailySamples} from './collection.js?v=8';
-import {lookFor} from './looks.js?v=8';
-import {individualSamples} from './sample-catalog.js?v=8';
-import {colorWorlds,luminousMedia} from './worlds.js?v=8';
+import {poseItems} from './poses.js?v=9';
+import {dailySamples} from './collection.js?v=9';
+import {lookFor} from './looks.js?v=9';
+import {individualSamples} from './sample-catalog.js?v=9';
+import {colorWorlds,luminousMedia} from './worlds.js?v=9';
 // A recipe describes the same visual trait used by each option's artwork.
 const traits=[
  [/水墨|南画|禅画|書と墨/,'墨のにじみ・かすれ・筆圧・濃淡と大胆な白い余白。輪郭を写真で切り抜かず筆で形を作る。'],
@@ -34,6 +35,7 @@ const traits=[
  [/墨一色|モノクロ|金と黒|三色/,'指定した限定色を厳守。補助画像に別の色があっても、その色を追加しない。']
 ];
 export function recipeFor(key,value){
+ const pose=key==='pose'?poseItems.find(p=>p.value===value):null;if(pose)return {key,value,file:pose.file,text:pose.text+'。身体の動作だけ参考にし、人物・衣装・画風・表情・顔角度は各指定を優先する。'};
  const world=(key==='palette'?colorWorlds:key==='medium'?luminousMedia:[]).find(x=>x.value===value);
  if(world)return {key,value,file:world.file,text:world.text};
  const sample=dailySamples[key+'\u0000'+value]||individualSamples[key+'\u0000'+value];
@@ -41,5 +43,5 @@ export function recipeFor(key,value){
  const matching=traits.filter(([rx])=>rx.test(value)).map(([,text])=>text);
  return {key,value,file:sample.file,text:sample.text||(key==='medium'?lookFor(key,value).detail+'。':'')+(matching[0]||({theme:'この作例は物語・世界観の参照。人物の顔や構図を流用せず、指定の場面を新しく設計する。',costume:'この作例は衣装の構造・素材・装飾の参照。顔・表情・ポーズ・画風は他の指定を優先する。',mood:'この作例は感情・表情または顔角度の参照。人物の顔立ち・衣装・構図を写さない。',place:'この作例は舞台の構造・奥行き・空気感の参照。画風や被写体は指定へ合わせる。',palette:'この作例は色の組み合わせ・配分の参照。人物や背景モチーフを流用しない。',design:'この作例は形式・余白・文字の階層の参照。顔・画風・場面を流用しない。',medium:'この作例の描線・色面・陰影・画材の手触りを全体で再現する。参照人物の顔立ち以外の写真の質感を引きずらない。'}[key]||'選択した特徴だけを作品へ反映する。'))};
 }
-export const sampleKeys=['medium','design','theme','costume','mood','place','palette'];
+export const sampleKeys=['medium','design','theme','costume','mood','place','palette','pose'];
 export function selectedRecipes(values){return sampleKeys.map(key=>recipeFor(key,values[key]));}

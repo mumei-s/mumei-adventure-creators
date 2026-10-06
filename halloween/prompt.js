@@ -1,7 +1,7 @@
-import {selectedRecipes} from './recipes.js?v=8';
-import {questions} from './catalog.js?v=8';
-import {buildTextPlan} from './direction.js?v=8';
-import {colorContract,sceneContract} from './worlds.js?v=8';
+import {selectedRecipes} from './recipes.js?v=9';
+import {visibleQuestions} from './catalog.js?v=9';
+import {buildTextPlan} from './direction.js?v=9';
+import {colorContract,sceneContract} from './worlds.js?v=9';
 export function composePrompt({collection='halloween',creator,profile,values,variant,references,edition,styleGuide=null,random=Math.random}){
  const [size,pixels,ratio]=values.size.split('｜');
  const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);
@@ -40,12 +40,12 @@ export function composePrompt({collection='halloween',creator,profile,values,var
  ...(!styleGuide?['【プロンプトのみ：ChatGPTに添付した画像から制作】','このメッセージに作成者が添付したキャラ画像を主参照として読み、顔立ち・髪・目・固有の特徴を保って生成する。ツールでの画像添付やreference-board.jpgは必要条件にしない。キャラ画像がこのメッセージにない場合のみ、作成者に添付を求める。','作例画像が任意で添付されている場合は技法だけ参考にする。作例画像がなければ、次の描画仕様と10項目を使って制作し、見ていない作例画像を確認したと主張しない。',...selectedRecipes(values).map(r=>r.value+'：'+r.text),'']:[]),
  ...(styleGuide?[
  '【選んだ作例を実際に読む】',
- '添付ファイル '+styleGuide.name+' は選択した作例を並べた資料画像。完成画像にこの9マスの一覧、枠、項目番号、ラベル、ツール画面を描かない。',
- ...(styleGuide.combined?['この１枚の左側・上の大きな「参照1」がキャラの主参照。左下の「補助」「似せない前作」は記載された役割で読む。右側の9マスは作例。元画像を別ファイルで再添付する必要はなく、左の主参照を顔の基準にする。']:[]),
- '作例資料は左上から右へ、上段・中段・下段の順で読む。1は画風、2は形式、3は物語、4は衣装、5は表情・角度、6は舞台、7は配色、8は文字・セリフ、9はサイズ。各マスから指定した特徴だけを使う。',
+ '添付ファイル '+styleGuide.name+' は選択した作例を3列・4段に並べた資料画像。完成画像にこの10項目の一覧、枠、項目番号、ラベル、ツール画面を描かない。',
+ ...(styleGuide.combined?['この１枚の左側・上の大きな「参照1」がキャラの主参照。左下の「補助」「似せない前作」は記載された役割で読む。右側の10項目は作例。元画像を別ファイルで再添付する必要はなく、左の主参照を顔の基準にする。']:[]),
+ '作例資料は左上から右へ、上から各段の順で読む。1は画風、2は形式、3は物語、4は衣装、5は表情・角度、6は舞台、7は配色、8は身体のポーズ、9は文字・セリフ、10はサイズ。各マスから指定した特徴だけを使う。',
  ...styleGuide.cells.map(c=>'作例'+c.cell+' / '+c.value+'：'+c.text),
  '作例1の線の太さ・輪郭の省略・色面・影の境界・筆跡・紙や素材の感触を画像全体で一致させる。元のキャラクター写真の肌や照明に引き戻されない。作例内の人物は顔の参照ではない。名前、キャラクター、固有の構図や装飾をそのままコピーせず、主参照のキャラで新しい一枚にする。',
- '補助作例2〜7の画風や顔を混ぜない。画風は1、形式は2、場面は3と6、衣装は4、配色は7、文字は8の選択を担当する。表情とアングルは今回必須の演出を優先する。',
+ '補助作例2〜7の画風や顔を混ぜない。画風は1、形式は2、場面は3と6、衣装は4、配色は7、文字は9の選択を担当する。身体のポーズは8、表情と顔角度は5と今回必須の演出を優先する。手足の動作に顔角度を固定させない。',
  '作例画像を確認できなければ、確認したと仮定して別のタッチで制作しない。このメッセージに '+styleGuide.name+' を添付するよう求める。',
  ''
  ]:[]),
@@ -55,7 +55,7 @@ export function composePrompt({collection='halloween',creator,profile,values,var
  '参照の肌テクスチャ、撮影照明、背景、色調、可愛く見せる同じ上目遣いを固定要素に含めない。アニメ・墨・油彩・紙・版画などを選んだ場合、顔だけ写真的なまま貼り付けず、同じ顔立ちを選んだ技法の造形へ変換する。',
  noPerson?'人物を描かない選択を優先。参照の固有モチーフ・色・輪郭を風景や紋章に残し、キャラの顔を無理に描かない。':'主参照が人物ではなく風景・アイコン・物体なら、画像の実際の一部を背景・衣装・紋章・小道具へ組み込む。元の形・色・構造が分かる要素を必ず残し、それに由来するオリジナルの主役を作る。',
  '',
- '【10の選択】',...questions.map((q,i)=>(i+1)+'. '+q.name+'：'+values[q.key]),
+ '【10の選択】',...visibleQuestions.map((q,i)=>(i+1)+'. '+q.name+'：'+values[q.key]+(q.key==='type'?' / セリフ：'+values.line:'')),
  '用途：'+size+' / 希望寸法：'+pixels+'px / 縦横比：'+ratio,
  '',
  '【物語と舞台を一場面に統合】',...sceneContract(values).filter((_,i)=>collection!=='everyday'||i<3),
@@ -68,6 +68,7 @@ export function composePrompt({collection='halloween',creator,profile,values,var
  '明確な表情：'+variant.expression,
  ...(variant.tone?['作品全体の感情・温度：'+variant.tone+'。この雰囲気は光・色・余白・場面の演出で伝え、顔向き・距離・身体動作は上の具体的指定を維持する。']:[]),
  '撮影距離：'+variant.distance,
+ '選んだポーズ：'+values.pose,
  '身体の動き：'+(noPerson?'人物の動作を用いず、物体の配置や動きに置換する':variant.pose),
  'カメラ：'+variant.camera,
  '画面設計：'+variant.layout,
@@ -77,6 +78,7 @@ export function composePrompt({collection='halloween',creator,profile,values,var
  '照明：'+variant.light,
  '追加モチーフ：'+variant.motif,
  '固定と変更の方針：'+variant.locked,
+ '身体のポーズを表情・顔角度と別に実行する。立つ・座る・寝る・走る・跳ぶを互いに置換しない。手足の配置、重心、接触、慣性を具体的に描く。顔向きと両立しない場合は首や関節を破綻させず、カメラと胴体の向きで整える。',
  '完全な横顔では両目を見せず、鑑賞者を見る三分の一横顔へ戻さない。正面指定では首の左右傾きを0度にする。俯瞰やローアングルを軽い高さ差へ弱めない。大笑い・叫び・驚きを閉じた口の微笑みに変えない。全身指定を胸から上の肖像に切り詰めない。',
  '遠近感・アングル・臨場感・流動感・3D的な量感を技法に合わせて統合する。写真はレンズと被写界深度、アニメはパースと線・動線、水墨は墨の重なりと余白・筆の流れ、油彩は色と陰影の体積、工芸・3Dは素材の厚み・遮蔽・接地で表現する。どの技法もCG風の同じ質感へ変換しない。顔と文字はブラーで失わない。アイコン・平面ポスターは小さく見た時の可読性を優先して、立体感や動きを図形の重なりと配置に置換する。',
  '',

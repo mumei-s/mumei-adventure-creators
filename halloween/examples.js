@@ -1,6 +1,8 @@
-import {dailySamples} from './collection.js?v=8';
-import {individualSamples} from './sample-catalog.js?v=8';
-import {colorWorlds,luminousMedia} from './worlds.js?v=8';
+import {poseItems} from './poses.js?v=9';
+import {dailySamples} from './collection.js?v=9';
+import {individualSamples} from './sample-catalog.js?v=9';
+import {colorWorlds,luminousMedia} from './worlds.js?v=9';
+for(const item of poseItems)individualSamples['pose\u0000'+item.value]={file:item.file};
 for(const item of colorWorlds)individualSamples['palette\u0000'+item.value]={file:item.file};
 for(const item of luminousMedia)individualSamples['medium\u0000'+item.value]={file:item.file};
 const referenceChoices=new Set(['参照画像の衣装を生かす','参照風景を舞台にする','参照画像の色を生かす']);

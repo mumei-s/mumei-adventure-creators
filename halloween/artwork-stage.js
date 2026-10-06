@@ -1,5 +1,5 @@
 import {opticalColors,opticalSignature} from './optical-effects.js?v=17';
-import {colorPolicy} from './palette-recipes.js?v=17';
+import {colorPolicy} from './palette-recipes.js?v=17.0.2';
 import {formatFor} from './formats.js?v=17';
 
 const artworkKeys=['medium','theme','costume','mood','place','pose','palette'];

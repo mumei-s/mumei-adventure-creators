@@ -4,10 +4,10 @@ import {resolveSelections} from '../catalog.js?v=17';
 import {initialSelections} from '../modes.js?v=17';
 import {buildDirection} from '../direction.js?v=17';
 import {applyPose} from '../poses.js?v=17';
-import {productionPlan} from '../production-plan.js?v=17';
-import {composePrompt} from '../prompt.js?v=17';
-import {composeArtworkStage} from '../artwork-stage.js?v=17';
-import {needsStagedProduction,composeLayoutStage} from '../staged-production.js?v=17';
+import {productionPlan} from '../production-plan.js?v=17.0.2';
+import {composePrompt} from '../prompt.js?v=17.0.2';
+import {composeArtworkStage} from '../artwork-stage.js?v=17.0.2';
+import {needsStagedProduction,composeLayoutStage} from '../staged-production.js?v=17.0.2';
 
 // The case that kept producing a photographic face when artwork and typesetting
 // were requested together. These assertions check the handoff between stages.

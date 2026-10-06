@@ -1,8 +1,8 @@
 import {formatFor} from './formats.js?v=17';
 import {detailedFormat,formatTextPolicy} from './format-recipes.js?v=17';
 import {editorialContract} from './editorial.js?v=17';
-import {colorPolicy} from './palette-recipes.js?v=17';
-import {renderEditorialLayout} from './editorial-layout.js?v=17';
+import {colorPolicy} from './palette-recipes.js?v=17.0.2';
+import {renderEditorialLayout} from './editorial-layout.js?v=17.0.2';
 
 // This module consumes a completed productionPlan. It does not import the plan
 // builder or composePrompt, and therefore can also be used by those modules.

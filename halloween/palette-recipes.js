@@ -65,6 +65,8 @@ const namedHues={
  '参照画像の色を生かす':['主参照から読み取った主色','同じ参照の副色','同じ参照の差し色'],
  '墨一色':['黒','白','無彩色の灰'],
  'モノクローム':['黒','白','無彩色の灰'],
+ '黒と白と朱の三色':['黒','白','朱'],
+ '金と黒の二色':['金','黒'],
  'セピア':['深い褐色','中間の褐色','薄い紙色']
 };
 for(const [value,hues] of Object.entries(namedHues))specs.get(value).hues=hues;
@@ -90,12 +92,13 @@ export function detailedPalette(value,{values={},noPerson=false}={}){
  sections.push({label:'画風の明暗を保つ',text:'色相と大きな配分はこの指定、影の形・深さ・ハイライトの鋭さ・描画素材は選択画風が担当する。淡色の配色でも深い影を必要とする画風の暗部を薄めない。画材に必要な明部は'+policy.bright+'、最も深い影は'+policy.dark+'へ収める。'+opticalColor+'配色名から別の筆致・粒子・金属・布へ変えず、選択画風の個別工程で描く。'});
  sections.push({label:'光と文字の色',text:'光源の位置と時刻は選択舞台に合わせ、基調と反射先をこの色域に収める。'+opticalColor+'光が必要な画風でだけ発光を描き、火花・星・海月・魔法陣を色名から追加しない。文字を描く場合は背景との明度差を確保し、文字なしの場合は色を整えるための文字や記号も置かない。'});
  const hues=spec?.hues||[value],allocation=spec?.allocation||value;
+ const translate=policy.restricted&&colorPolicy({palette:value}).mode!==policy.mode;
  const assignment=policy.restricted
-  ?allocation+'。色名の有彩色は使用せず、上記の大小・隣接・焦点を許可色「'+policy.allowed+'」の明度帯へ変換する。'
+  ?allocation+'。'+(translate?'指定配色の色相をそのまま使わず、大小・隣接・焦点を許可色「'+policy.allowed+'」の明度帯へ変換する。':'許可色「'+policy.allowed+'」の色相を保ち、上記の大小・隣接・焦点へ配分する。')
   :hues.join(' / ')+(spec?.swatches?'（色の目安：'+spec.swatches.join(' / ')+'）':'')+'。'+allocation+'。';
  const checks=[policy.restricted?'全領域は'+policy.allowed+'。配色「'+value+'」の配置を明度で判別できる':hues.join(' / ')+'の領域が別々に判別できる',
   '配色「'+value+'」の配置：'+assignment,
-  spec?.ratios?'大きな色面の関係は'+hues.map((h,i)=>h+' '+spec.ratios[i]+'%').join('、')+(policy.restricted?'の明度への翻訳':''):'配色「'+value+'」の主色・副色・焦点は上記の個別配分に従う',
+  spec?.ratios?'大きな色面の関係は'+hues.map((h,i)=>h+' '+spec.ratios[i]+'%').join('、')+(translate?'の明度への翻訳':''):'配色「'+value+'」の主色・副色・焦点は上記の個別配分に従う',
   '指定の配分を保ち、選択画風の影と明部が判別できる'];
  return {known:!!spec,sections,checks,executionMethod:assignment};
 }

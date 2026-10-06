@@ -4,10 +4,10 @@ import {applyCollection} from '../collection.js?v=17';
 import {initialSelections} from '../modes.js?v=17';
 import {buildDirection} from '../direction.js?v=17';
 import {applyPose} from '../poses.js?v=17';
-import {optionRecipe} from '../option-recipes.js?v=17';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=17';
-import {composePrompt} from '../prompt.js?v=17';
-import {colorPolicy} from '../palette-recipes.js?v=17';
+import {optionRecipe} from '../option-recipes.js?v=17.0.2';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=17.0.2';
+import {composePrompt} from '../prompt.js?v=17.0.2';
+import {colorPolicy} from '../palette-recipes.js?v=17.0.2';
 
 const profile={displayName:'TEST CREATOR',activityEnabled:false,topics:[],biography:''};
 const random=()=>.28;

@@ -4,8 +4,8 @@ import {resolveSelections} from '../catalog.js?v=17';
 import {initialSelections} from '../modes.js?v=17';
 import {buildDirection} from '../direction.js?v=17';
 import {applyPose} from '../poses.js?v=17';
-import {productionPlan} from '../production-plan.js?v=17';
-import {renderEditorialLayout} from '../editorial-layout.js?v=17';
+import {productionPlan} from '../production-plan.js?v=17.0.2';
+import {renderEditorialLayout} from '../editorial-layout.js?v=17.0.2';
 
 // Native SVG composition preserves supplied pixels; it does not generate images.
 // Solid-color, dimensionally correct test PNGs. No person's artwork is stored.

@@ -5,9 +5,9 @@ import {applyCollection} from '../collection.js?v=17';
 import {initialSelections} from '../modes.js?v=17';
 import {buildDirection} from '../direction.js?v=17';
 import {applyPose} from '../poses.js?v=17';
-import {productionPlan} from '../production-plan.js?v=17';
-import {renderInput} from '../compiled-production.js?v=17';
-import {optionRecipe} from '../option-recipes.js?v=17';
+import {productionPlan} from '../production-plan.js?v=17.0.2';
+import {renderInput} from '../compiled-production.js?v=17.0.2';
+import {optionRecipe} from '../option-recipes.js?v=17.0.2';
 import {mediumExecution} from '../medium-execution.js?v=17';
 import {formatExecution} from '../format-execution.js?v=17';
 
@@ -37,8 +37,8 @@ for(const mode of ['halloween','everyday']){
    const contract=c.key==='medium'?json.drawing:c.key==='design'?json.layout:c.key==='size'?json.canvas:c.key==='type'?json.typography:json.scene[c.key];
    assert.equal(contract.selected,c.value);
    assert.equal(contract.method,c.execution.method);
-   assert.deepEqual(contract.visible_requirements,c.execution.evidence);
-   assert.deepEqual(contract.incomplete_if,c.execution.reject);
+   assert.ok(!('incomplete_if' in contract),'Repeated audit failures must stay out of the drawing request');
+   assert.deepEqual(c.execution.evidence.map(e=>'領域「'+e.region+'」で要求「'+e.required+'」が満たされない場合、この選択は未達成。'),c.execution.reject);
    for(const s of c.sections)assert.ok(input.includes(s.text));
   }
   assert.equal(json.typography.line.selected,values.line);

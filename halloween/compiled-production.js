@@ -1,5 +1,6 @@
-import {imageOutputContract} from './output-contract.js?v=17';
+import {imageOutputContract} from './output-contract.js?v=17.0.2';
 import {opticalSignature} from './optical-effects.js?v=17';
+import {colorPolicy} from './color-policy.js?v=17';
 
 export const conditionOwners=Object.freeze({
  medium:'描線・陰影・画材・光学',design:'画像と原稿の領域・読み順',
@@ -10,20 +11,32 @@ export const conditionOwners=Object.freeze({
 });
 const unique=items=>[...new Set(items.filter(Boolean))];
 const contract=c=>({selected:c.value,applicability:c.execution.applicability,
- method:c.execution.method,visible_requirements:c.execution.evidence,
- incomplete_if:c.execution.reject,...(c.execution.line?{line:c.execution.line}:{})});
+ method:c.execution.method,...(c.execution.line?{line:{selected:c.execution.line.selected,method:c.execution.line.method}}:{})});
 export function renderInput(plan){
  const byKey=Object.fromEntries(plan.conditions.map(c=>[c.key,c]));
  const v=plan.variant,selected=plan.values;
  const material=byKey.medium;
+ const color=colorPolicy(selected);
+ const [,pixels,ratio]=selected.size.split('｜');
+ const [width,height]=pixels.split('×').map(Number);
+ const side=!plan.noPerson&&/真横/.test(v.camera||'');
+ const optical=selected.medium==='クリスタル透光アニメ'?'透明面の境界で背後の輪郭がずれ、その内部に二重反射が見える広い結晶透光層。'
+  :selected.medium==='宝石ホログラムアニメ'?'前後に離れた広い半透明投影面、面ごとの二重輪郭と途切れた走査線。':'';
  const input={
   output:'完成画像を1枚。仕様書・ツール画面として描かない。',
-  canvas:{...contract(byKey.size),format:selected.design},
+  required_before_details:{
+   medium:material.execution.method,
+   palette:color.restricted?'全領域の使用色：'+color.allowed+'。参照の髪・肌・瞳、光、反射、文字もこの色域で描き直す。':byKey.palette.execution.method,
+   ...(optical?{optical_geometry:optical+'主題と周囲の空間をまたぐ面として描き、宝飾の点光だけにしない。'+(color.restricted?'透過・屈折・反射も許可色だけ。':'')}:{}),
+   frame:plan.noPerson?'選択した主題の全景を指定形式の画像領域へ収める。':v.distance+(/全身|足先|靴から頭/.test(v.distance)?'。文字枠の下に手足を隠さず、頭・手・足・支持面を画像領域内へ収める。':'。指定した画角の対象を文字枠で隠さない。'),
+   ...(side?{body_projection:'胴体・肩・骨盤・膝の向きはカメラに対して真横90度。奥側の肩と骨盤が手前側に重なる側面投影。身体を正面や斜め前へ回さない。'}:{})
+  },
+  canvas:{width_px:width,height_px:height,aspect_ratio:ratio,...contract(byKey.size),format:selected.design},
   drawing:{...contract(material),medium:selected.medium,
    visible_signature:material.checks,optics:opticalSignature(selected,{noPerson:plan.noPerson})},
-  identity:plan.noPerson?'選択した景物・物体・図案。人物なし。':'添付した主参照の顔の形と配置比率・髪型・年齢感・性別表現を保ち、同じ人を指定画風で描き起こす。',
+  identity:plan.noPerson?'選択した景物・物体・図案。人物なし。':'主参照は顔の形・目鼻の配置比率・髪の形・年齢感・性別表現を識別する資料。参照の撮影角度・表情・肌の質感を複製せず、今回の画風と配色で新しく描く。'+(color.restricted?'参照の肌色・髪色・瞳色も許可色へ変換し、形と明度差で同じ人を表す。':''),
   scene:Object.fromEntries(['theme','costume','place','pose','mood','palette'].map(key=>[key,contract(byKey[key])])),
-  camera:plan.noPerson?'人物用の表情・顔向き・身体動作は適用しない。':{face:v.face,expression:v.expression,body:v.pose,distance:v.distance,angle:v.camera},
+  camera:plan.noPerson?'人物用の表情・顔向き・身体動作は適用しない。':{face:v.face,expression:v.expression,body:v.pose,distance:v.distance,angle:v.camera,...(side?{torso_yaw_degrees:90,projection:'肩・骨盤・膝は側面投影。顔向きの指定を理由に胴体を鑑賞者側へ回さない。'}:{})},
   layout:contract(byKey.design),
   typography:contract(byKey.type),
   copy:plan.copy.slots.map(s=>({role:s.role,text:s.text})),
@@ -58,7 +71,8 @@ export function compileProduction(plan,originalLines){
   originalLines[0],...imageOutputContract,
   '【通常制作：完成画像を1回で生成】',
   '選択条件を固定し、完成した画像そのものを1枚、直ちにこの会話へ表示する。非表示の再生成ループは行わない。生成前の追加検索・仕様書作成・SVG組版を開始しない。',
-  '下の詳細仕様を照合に使い、画像生成機能へは「画像生成へ渡す入力」のブロックを渡す。操作・検査・納品の説明を描画用の指示へ混ぜない。入力内の各項目は確定値。画風の特徴と個別レシピが食い違う場合は、項目の担当規則で同時に成立させてから1回だけ生成する。',
+  '下の詳細仕様を照合に使い、画像生成機能へは「画像生成へ渡す入力」のブロックを渡す。操作・検査・納品の説明を描画用の指示へ混ぜない。入力内の各項目は確定値。画風の特徴と個別レシピは、項目の担当規則で同時に成立させる。',
+  'canvas.width_px・height_px・aspect_ratioを読み、使用する画像生成機能にサイズや比率の引数があれば明示的に設定する。対応していない寸法をプロンプトだけで保証しない。生成後は実寸と要求値を照合し、違う寸法をA4・300dpi達成と扱わない。',
   '【画像生成へ渡す入力：開始】',renderInput(plan),'【画像生成へ渡す入力：終了】',
   '【画像で必ず見える画風の特徴】',
   medium.value+'：'+medium.checks.join(' / '),...optics,
@@ -77,6 +91,6 @@ export function compileProduction(plan,originalLines){
   '原稿は上記のみ。画風名・技法名・制作ID・未指定のページ番号・日付・号数は印字しない。原稿の語句を変更せず、空きを疑似文字で埋めない。',
   '【実画像での完成検査】',
   ...plan.conditions.filter(c=>c.key!=='medium').map(c=>c.name+'：'+unique(c.key==='type'?c.checks.map(t=>t.split('：')[0]):c.checks).join(' / ')),
-  '画像を先に表示し、選んだ特徴が実際に見えるか確認する。指示を記載した事実だけで合格としない。不足があれば箇所を短く伝え、自動で再生成しない。希望寸法や60秒以内の達成は実測せず断言しない。文章だけで完成扱いにしない。'
+  '画像を先に表示し、選んだ特徴が実際に見えるか確認する。指示を記載した事実だけで合格としない。不足があれば箇所を短く伝える。修正を一律に禁止せず、必要な修正結果も画像で表示する。非表示の再生成ループは行わない。希望寸法や60秒以内の達成は実測せず断言しない。文章だけで完成扱いにしない。'
  ].join('\n');
 }

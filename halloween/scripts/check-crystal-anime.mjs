@@ -9,8 +9,8 @@ import {poseItems,applyPose} from '../poses.js?v=17';
 import {visualSpec} from '../visual-specs.js?v=17';
 import {lookFor} from '../looks.js?v=17';
 import {sampleFor} from '../examples.js?v=17';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=17';
-import {composePrompt} from '../prompt.js?v=17';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=17.0.2';
+import {composePrompt} from '../prompt.js?v=17.0.2';
 
 const profile={displayName:'TEST CREATOR',biography:'',topics:[],activityEnabled:false};
 const random=()=>.22;

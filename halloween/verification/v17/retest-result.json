@@ -1,0 +1,28 @@
+{
+  "trial": "failed-user-cover-retest",
+  "seconds": 41.802,
+  "display": "inline",
+  "imageCalls": 1,
+  "width": 1054,
+  "height": 1492,
+  "requested": {
+    "width": 2480,
+    "height": 3508,
+    "ratio": "210:297",
+    "seconds": 60
+  },
+  "result": "rejected",
+  "observed": [
+    "A4に近い縦横比",
+    "骸骨の衣装と鏡の舞台"
+  ],
+  "failures": [
+    "肌に淡い赤の立体的な陰影が残り明確な不透明セル面ではない",
+    "広い屈折・内部反射の透光層より鏡片と宝飾の点光が目立つ",
+    "胴体の厳密な側面投影と折り畳んだ脚の支持を確認できない",
+    "実寸1054×1492で2480×3508未達",
+    "確定した書名の字形と表情が未達"
+  ],
+  "scope": "This one visual trial is rejected. Structural coverage does not establish image quality for any of the other options.",
+  "limitations": "The built-in generation tool available in this session exposes no width/height/aspect-ratio arguments. Requested dimensions in the prompt are not an exact raster size control."
+}

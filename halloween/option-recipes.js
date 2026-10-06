@@ -2,7 +2,7 @@ import {visualSpec} from './visual-specs.js?v=17';
 import {detailedMedium} from './medium-recipes.js?v=17';
 import {detailedFormat} from './format-recipes.js?v=17';
 import {detailedSubject} from './subject-recipes.js?v=17';
-import {detailedPalette} from './palette-recipes.js?v=17';
+import {detailedPalette} from './palette-recipes.js?v=17.0.2';
 import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=17';
 import {executionFor} from './option-execution.js?v=17';
 

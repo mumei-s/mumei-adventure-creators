@@ -1,4 +1,4 @@
-import {optionRecipe} from './option-recipes.js?v=17';
+import {optionRecipe} from './option-recipes.js?v=17.0.2';
 import {poseItems} from './poses.js?v=17';
 import {dailySamples} from './collection.js?v=17';
 import {individualSamples} from './sample-catalog.js?v=17';

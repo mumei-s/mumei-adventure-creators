@@ -1,5 +1,5 @@
 import {formatFor} from './formats.js?v=17';
-import {colorPolicy} from './palette-recipes.js?v=17';
+import {colorPolicy} from './palette-recipes.js?v=17.0.2';
 import {colorWorlds} from './worlds.js?v=17';
 
 const MAX_EDGE=4096;

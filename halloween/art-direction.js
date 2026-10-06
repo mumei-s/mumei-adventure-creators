@@ -1,4 +1,4 @@
-import {colorPolicy} from './palette-recipes.js?v=17';
+import {colorPolicy} from './palette-recipes.js?v=17.0.2';
 import {opticalSignature,opticalColors} from './optical-effects.js?v=17';
 import {detailedSubject} from './subject-recipes.js?v=17';
 import {detailedFormat} from './format-recipes.js?v=17';

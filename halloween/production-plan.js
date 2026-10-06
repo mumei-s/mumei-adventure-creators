@@ -1,9 +1,9 @@
 import {visibleQuestions} from './catalog.js?v=17';
 import {formatContract} from './formats.js?v=17';
 import {buildEditorial,editorialContract} from './editorial.js?v=17';
-import {optionRecipe} from './option-recipes.js?v=17';
-import {colorPolicy} from './palette-recipes.js?v=17';
-import {resolveArtDirection,interactionContract} from './art-direction.js?v=17';
+import {optionRecipe} from './option-recipes.js?v=17.0.2';
+import {colorPolicy} from './palette-recipes.js?v=17.0.2';
+import {resolveArtDirection,interactionContract} from './art-direction.js?v=17.0.2';
 import {executionFor} from './option-execution.js?v=17';
 
 export function productionPlan(profile,values,variant,collection='halloween',random=Math.random){

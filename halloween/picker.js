@@ -1,6 +1,6 @@
 import {appendRecipeEvidence} from './recipe-evidence.js?v=17';
-import {recipeFor} from './recipes.js?v=17';
-import {optionRecipe} from './option-recipes.js?v=17';
+import {recipeFor} from './recipes.js?v=17.0.2';
+import {optionRecipe} from './option-recipes.js?v=17.0.2';
 import {lookFor} from './looks.js?v=17';
 export function pageSize(width,height=window.innerHeight){return width<620?4:width<1100?(height>=1300?9:6):(height>=1300?12:8);}
 export function pageSlice(items,page,limit){const pages=Math.max(1,Math.ceil(items.length/limit));const safe=Math.min(Math.max(page,0),pages-1);return {page:safe,pages,items:items.slice(safe*limit,(safe+1)*limit)};}

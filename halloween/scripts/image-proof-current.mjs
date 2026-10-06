@@ -5,9 +5,9 @@ import {resolveSelections} from '../catalog.js?v=17';
 import {initialSelections} from '../modes.js?v=17';
 import {buildDirection} from '../direction.js?v=17';
 import {applyPose} from '../poses.js?v=17';
-import {productionPlan} from '../production-plan.js?v=17';
-import {composePrompt} from '../prompt.js?v=17';
-import {stagePrompts} from '../production-workflow.js?v=17';
+import {productionPlan} from '../production-plan.js?v=17.0.2';
+import {composePrompt} from '../prompt.js?v=17.0.2';
+import {stagePrompts} from '../production-workflow.js?v=17.0.2';
 export function currentImageProof(name){
  const cases={
   'photo-newspaper':{design:'新聞の一面',medium:'実写風フィルム写真',type:'デザインに合わせて自動編集',size:'自由サイズ｜1024×1536｜2:3'},

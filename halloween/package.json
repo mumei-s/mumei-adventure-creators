@@ -2,9 +2,9 @@
   "name": "mumeis-halloween-atelier",
   "private": true,
   "type": "module",
-  "version": "13.0.0",
+  "version": "17.0.0",
   "scripts": {
-    "check": "node scripts/check.mjs && node scripts/check-v8.mjs && node scripts/check-poses.mjs && node scripts/check-production.mjs && node scripts/check-collections-v11.mjs && node scripts/check-handoff-v11.mjs && node scripts/check-crystal-anime.mjs && node scripts/check-artwork-recipes.mjs && node scripts/check-staged-production.mjs && node scripts/check-editorial-layout.mjs",
+    "check": "node scripts/check.mjs && node scripts/check-v8.mjs && node scripts/check-poses.mjs && node scripts/check-production.mjs && node scripts/check-collections-v11.mjs && node scripts/check-handoff-v11.mjs && node scripts/check-crystal-anime.mjs && node scripts/check-artwork-recipes.mjs && node scripts/check-staged-production.mjs && node scripts/check-editorial-layout.mjs && node scripts/check-item-review.mjs && node scripts/check-option-execution.mjs",
     "preview": "python -m http.server 4173"
   }
 }

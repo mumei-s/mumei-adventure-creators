@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=13';
-import {resolveSelections} from '../catalog.js?v=13';
-import {initialSelections} from '../modes.js?v=13';
-import {buildDirection} from '../direction.js?v=13';
-import {applyPose} from '../poses.js?v=13';
-import {productionPlan} from '../production-plan.js?v=13';
-import {composePrompt} from '../prompt.js?v=13';
-import {composeArtworkStage} from '../artwork-stage.js?v=13';
-import {needsStagedProduction,composeLayoutStage} from '../staged-production.js?v=13';
+import {applyCollection} from '../collection.js?v=17';
+import {resolveSelections} from '../catalog.js?v=17';
+import {initialSelections} from '../modes.js?v=17';
+import {buildDirection} from '../direction.js?v=17';
+import {applyPose} from '../poses.js?v=17';
+import {productionPlan} from '../production-plan.js?v=17';
+import {composePrompt} from '../prompt.js?v=17';
+import {composeArtworkStage} from '../artwork-stage.js?v=17';
+import {needsStagedProduction,composeLayoutStage} from '../staged-production.js?v=17';
 
 // The case that kept producing a photographic face when artwork and typesetting
 // were requested together. These assertions check the handoff between stages.
@@ -37,9 +37,11 @@ const generatedArt='approved-artwork-stage-1.png';
 const artwork=composeArtworkStage(spread.plan),layout=composeLayoutStage(spread.plan,{artworkName:generatedArt});
 assert.equal(typeof artwork,'string');assert.equal(typeof layout,'string');
 assert.ok(artwork.trim()&&layout.trim(),'Both stages must contain actual instructions');
-has(spread.prompt,'第1段階','Master prompt must start with a dedicated artwork stage');
-has(spread.prompt,'第2段階','Master prompt must describe the later layout stage');
-matches(spread.prompt,/主画像[^\n]*(確認|検査|合格)/,'Master prompt must verify the artwork before the layout stage');
+has(spread.prompt,'通常制作：完成画像を1回で生成','Normal delivery has one generation for the finished page');
+lacks(spread.prompt,'<svg','Optional SVG templates must not bloat normal delivery');
+lacks(spread.prompt,'【必要な場合の画風修正用入力：開始】','Normal delivery must not duplicate the entire repair recipe');
+has(spread.prompt,'直ちにこの会話へ表示','Normal delivery must display the first result before checking it');
+has(spread.prompt,'非表示の再生成ループは行わない','Failed artwork must not cause a hidden unbounded retry loop');
 
 // All selected image decisions survive stage 1, including the 2D construction
 // that failed in the single-pass image proof. Editorial copy does not enter it.
@@ -64,7 +66,7 @@ has(layout,'この段階はSVGによる組版','Layout stage must use native SVG
 has(layout,'<svg','Layout stage must contain an executable SVG template');
 has(layout,'preserveAspectRatio="xMidYMid meet"','SVG template must preserve the whole source image');
 lacks(layout,'この環境で利用できる画像生成機能を実行し、完成した画像そのものを1枚','Layout stage must not retain the previous image-generation output contract');
-has(spread.prompt,'画像生成による再描画では誌面を作らない','Master prompt must separate SVG composition from image generation');
+has(spread.prompt,'確定原稿','Single-call delivery retains the final copy');
 for(const s of spread.plan.conditions.find(c=>c.key==='design').sections.filter(s=>['領域とグリッド','文字と読み順'].includes(s.label)))has(layout,s.text,'Layout stage lost '+s.label);
 for(const slot of spread.plan.copy.slots)has(layout,slot.text,'Layout stage lost exact copy for '+slot.role);
 has(layout,generatedArt,'Layout stage must use the generated artwork as its reference');
@@ -82,8 +84,7 @@ lacks(layout,drawing,'Layout stage must not restart the character drawing recipe
 for(const costume of ['風景を主役にする','モチーフだけで構成する','紋章・アイコンにする']){
  const subject=fixture({costume}),stage=composeArtworkStage(subject.plan);
  assert.equal(needsStagedProduction(subject.plan),true,costume+' in a populated feature spread needs editorial composition');
- has(subject.prompt,'第1段階',costume+' editorial master must contain an artwork stage');
- has(subject.prompt,'第2段階',costume+' editorial master must contain a layout stage');
+ has(subject.prompt,'通常制作：完成画像を1回で生成',costume+' normal delivery returns a finished page in one call');
  has(stage,costume,'Artwork stage must retain the selected nonhuman subject');
  matches(stage,/人物や人型へ置換しない|人物なし/,'Artwork stage must preserve the no-person requirement');
  for(const heading of ['顔の向き：','表情：','身体の動作：'])assert.ok(!stage.split('\n').some(line=>line.startsWith(heading)),costume+' artwork stage must not execute a human '+heading);
@@ -104,4 +105,4 @@ for(const [label,overrides,collection] of [
 }
 
 applyCollection('halloween');
-console.log('PASS staged production: artwork preserves style, identity, pose and palette without editorial/profile instructions; native SVG layout preserves the verified picture, selected two-column format and exact copy without image generation; complex no-person pages use stages without human instructions; no-text, name-only and simple artwork stay single-stage.');
+console.log('PASS staged production: artwork preserves style, identity, pose and palette without editorial/profile instructions; native SVG layout preserves the verified picture, selected two-column format and exact copy without image generation; optional no-person artwork/layout stages suppress human instructions; normal delivery uses one generation; no-text, name-only and simple artwork stay single-stage.');

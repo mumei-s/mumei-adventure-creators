@@ -1,0 +1,68 @@
+{
+  "version": 15,
+  "date": "2026-10-06",
+  "status": "partial-visual-validation",
+  "userRequirements": {
+    "display": "inline completed image, never download-only",
+    "maxSeconds": 60
+  },
+  "case": {
+    "design": "インタビュー誌面",
+    "medium": "クリスタル透光アニメ",
+    "subject": "月夜の仮面舞踏会",
+    "pose": "低くしゃがむ",
+    "palette": "紺 × 淡金 × 白"
+  },
+  "trials": [
+    {
+      "mode": "finished-page-one-call",
+      "seconds": 39.404,
+      "verdict": "failed-style",
+      "observed": "Layout and copy improved, but the face and skin retained photographic shading; unrequested inset images appeared."
+    },
+    {
+      "mode": "artwork-only",
+      "seconds": 37.104,
+      "verdict": "failed-style",
+      "observed": "Photographic/3D-like skin remains. Camera is not a strict side view."
+    },
+    {
+      "mode": "style-repair",
+      "seconds": 53.644,
+      "verdict": "partial",
+      "observed": "Colored contours and hard cel-shadow planes improved. Side-view camera remains unmet. Artwork plus repair exceeds 60 seconds."
+    },
+    {
+      "mode": "strengthened-initial-artwork",
+      "seconds": 40.904,
+      "verdict": "failed-style",
+      "observed": "Body angle moved toward side view, but the face/skin still lack the requested uniform 2D cel rendering."
+    }
+  ],
+  "layout": {
+    "width": 2480,
+    "height": 3508,
+    "msIncludingPreview": 1275,
+    "actualImageArea": 0.35672976054732036,
+    "previousSquareImageArea": 0.08172,
+    "verdict": "layout-only-tested",
+    "notes": "An imperfect style-repair picture was used solely to inspect typography and geometry; this page is a layout prototype, not an all-conditions accepted artwork."
+  },
+  "changes": [
+    "no invented page numbers",
+    "no medium labels in printed copy",
+    "aspect-aware large interview image",
+    "explicit 2D construction and hard cel shadows",
+    "first-result inline display",
+    "no pre-generation research",
+    "one image call per normal request, no automatic repair loop",
+    "60 seconds is an acceptance criterion, not a forcibly enforced ChatGPT-service timeout"
+  ],
+  "remaining": [
+    "one-call reproduction of requested crystal anime from original reference",
+    "strict camera and character identity review",
+    "complete image delivered within 60 seconds in the user ChatGPT handoff",
+    "all options and combinations visually validated",
+    "public deployment"
+  ]
+}

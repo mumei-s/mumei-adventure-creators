@@ -1,4 +1,6 @@
-import {colorWorlds} from './worlds.js?v=13';
+import {colorPolicy} from './color-policy.js?v=17';
+export {colorPolicy} from './color-policy.js?v=17';
+import {colorWorlds} from './worlds.js?v=17';
 
 // A palette owns hue and its allocation. It cannot silently select a material,
 // a time of day, a light source, a subject, or a low-contrast rendering style.
@@ -57,24 +59,25 @@ const worldPlans = [
  [[75,25],'焦茶の濃淡を75%、シアンを25%に配分する。二つの色相だけで明部と暗部を作り、別の色を反射にも加えない'],
 ];
 const specs = new Map(rows.map(([value,ratios,allocation])=>[value,{value,ratios,allocation,hues:value.split(' × ')}]));
+const namedHues={
+ '退色したフィルムカラー':['低彩度の暖かい明部','青緑寄りの暗部'],
+ '原色のポップカラー':['赤','青','黄','白と黒の支持色'],
+ '参照画像の色を生かす':['主参照から読み取った主色','同じ参照の副色','同じ参照の差し色'],
+ '墨一色':['黒','白','無彩色の灰'],
+ 'モノクローム':['黒','白','無彩色の灰'],
+ 'セピア':['深い褐色','中間の褐色','薄い紙色']
+};
+for(const [value,hues] of Object.entries(namedHues))specs.get(value).hues=hues;
 colorWorlds.forEach((world,i)=>{
  const [ratios,allocation]=worldPlans[i];
  specs.set(world.value,{value:world.value,ratios,allocation,hues:world.value.split(' × '),swatches:world.colors});
 });
 export const paletteRecipeValues=[...specs.keys()];
-export function colorPolicy(values={}){
- const medium=values.medium||'',palette=values.palette||'';
- if(medium==='サイアノタイプ')return {restricted:true,mode:'cyanotype',allowed:'プルシアンブルーと紙の白',bright:'紙の白',dark:'深いプルシアンブルー'};
- if(/モノクロ|^水墨画$|^鉛筆デッサン$|^木炭画$/.test(medium)||/^(墨一色|モノクロ)/.test(palette))return {restricted:true,mode:'monochrome',allowed:'黒・白・無彩色の灰',bright:'白',dark:'黒'};
- if(palette==='金と黒の二色')return {restricted:true,mode:'gold-black',allowed:'金と黒だけ',bright:'金の最明部',dark:'黒'};
- if(palette==='黒と白と朱の三色')return {restricted:true,mode:'black-white-red',allowed:'黒・白・朱だけ',bright:'白',dark:'黒'};
- if(palette==='セピア')return {restricted:true,mode:'sepia',allowed:'褐色の濃淡と紙色',bright:'明るい紙色',dark:'深い褐色'};
- if(palette==='焦茶 × シアン光')return {restricted:true,mode:'brown-cyan',allowed:'焦茶とシアンの二つの色相',bright:'明るいシアン',dark:'深い焦茶'};
- return {restricted:false,mode:'selected',allowed:palette||'選択色',bright:'白または選択色の最明部',dark:'選択色を深めた暗部'};
-}
 export function detailedPalette(value,{values={},noPerson=false}={}){
  const spec=specs.get(value),policy=colorPolicy({...values,palette:value});
  const scenery=values.costume==='風景を主役にする',emblem=values.costume==='紋章・アイコンにする';
+ const optical=['クリスタル透光アニメ','宝石ホログラムアニメ','漆と螺鈿'].includes(values.medium);
+ const opticalColor=optical&&!policy.restricted?'分散・薄膜干渉の局所的なスペクトル色は画風の光学として保つ。':'光を理由に指定外の色を加えない。';
  const subject=noPerson?(scenery?'地形・建築・景物・自然素材':emblem?'図案の主形・副形・余白':'主題の物体・支持面・背景'):'人物の衣装・景物・背景';
  const sections=[];
  if(policy.restricted){
@@ -84,7 +87,15 @@ export function detailedPalette(value,{values={},noPerson=false}={}){
   sections.push({label:'色相と配分',text:(spec?.allocation||'配色「'+value+'」に含まれる色を主色・副色・差し色へ分ける')+'。'+(spec?.ratios?'各色の面積の目安は、項目名の順で'+spec.ratios.join(':')+'。比率は余白を含む大きな色面の設計に使い、画素単位の数値達成を主張しない。':'画面の広い基調と小さな焦点を作り、等分の色帯にはしない。')});
   sections.push({label:'色を置く領域',text:subject+'の大きな面へ主色、副色を別の面へ、差し色を一つの読み取りたい領域へ割り当てる。'+(noPerson?'同系色の隣り合う景物は、色相を増やさず明度と境界で区別する。':'主参照の髪・肌・瞳の基礎色は識別のために残し、照り返しは固有色が読める程度に重ねる。')});
  }
- sections.push({label:'画風の明暗を保つ',text:'色相と大きな配分はこの指定、影の形・深さ・ハイライトの鋭さ・描画素材は選択画風が担当する。淡色の配色でも深い影を必要とする画風の暗部を薄めない。画材に必要な明部は'+policy.bright+'、最も深い影は'+policy.dark+'へ収め、光を理由に指定外の色を加えない。配色名から別の筆致・粒子・金属・布へ変えず、選択画風の個別工程で描く。'});
- sections.push({label:'光と文字の色',text:'光源の位置と時刻は選択舞台に合わせ、光の色と反射先をこの色域に収める。光が必要な画風でだけ発光を描き、火花・星・海月・魔法陣を色名から追加しない。文字を描く場合は背景との明度差を確保し、文字なしの場合は色を整えるための文字や記号も置かない。'});
- return {known:!!spec,sections,checks:[policy.restricted?'画像全域が'+policy.allowed:'選択色の基調・副色・小さな焦点が見分けられる','色を保ちながら選択画風の影と明部が残っている','色名だけを理由に物体・別技法・別の舞台が増えていない']};
+ sections.push({label:'画風の明暗を保つ',text:'色相と大きな配分はこの指定、影の形・深さ・ハイライトの鋭さ・描画素材は選択画風が担当する。淡色の配色でも深い影を必要とする画風の暗部を薄めない。画材に必要な明部は'+policy.bright+'、最も深い影は'+policy.dark+'へ収める。'+opticalColor+'配色名から別の筆致・粒子・金属・布へ変えず、選択画風の個別工程で描く。'});
+ sections.push({label:'光と文字の色',text:'光源の位置と時刻は選択舞台に合わせ、基調と反射先をこの色域に収める。'+opticalColor+'光が必要な画風でだけ発光を描き、火花・星・海月・魔法陣を色名から追加しない。文字を描く場合は背景との明度差を確保し、文字なしの場合は色を整えるための文字や記号も置かない。'});
+ const hues=spec?.hues||[value],allocation=spec?.allocation||value;
+ const assignment=policy.restricted
+  ?allocation+'。色名の有彩色は使用せず、上記の大小・隣接・焦点を許可色「'+policy.allowed+'」の明度帯へ変換する。'
+  :hues.join(' / ')+(spec?.swatches?'（色の目安：'+spec.swatches.join(' / ')+'）':'')+'。'+allocation+'。';
+ const checks=[policy.restricted?'全領域は'+policy.allowed+'。配色「'+value+'」の配置を明度で判別できる':hues.join(' / ')+'の領域が別々に判別できる',
+  '配色「'+value+'」の配置：'+assignment,
+  spec?.ratios?'大きな色面の関係は'+hues.map((h,i)=>h+' '+spec.ratios[i]+'%').join('、')+(policy.restricted?'の明度への翻訳':''):'配色「'+value+'」の主色・副色・焦点は上記の個別配分に従う',
+  '指定の配分を保ち、選択画風の影と明部が判別できる'];
+ return {known:!!spec,sections,checks,executionMethod:assignment};
 }

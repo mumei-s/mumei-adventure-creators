@@ -1,9 +1,10 @@
-import {visualSpec} from './visual-specs.js?v=13';
-import {detailedMedium} from './medium-recipes.js?v=13';
-import {detailedFormat} from './format-recipes.js?v=13';
-import {detailedSubject} from './subject-recipes.js?v=13';
-import {detailedPalette} from './palette-recipes.js?v=13';
-import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=13';
+import {visualSpec} from './visual-specs.js?v=17';
+import {detailedMedium} from './medium-recipes.js?v=17';
+import {detailedFormat} from './format-recipes.js?v=17';
+import {detailedSubject} from './subject-recipes.js?v=17';
+import {detailedPalette} from './palette-recipes.js?v=17';
+import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=17';
+import {executionFor} from './option-execution.js?v=17';
 
 function crystalRecipe({values,noPerson}){
  const spec=crystalAnimeSpec({noPerson,palette:values.palette});
@@ -26,7 +27,12 @@ export function optionRecipe(key,value,context={}){
   :key==='design'?detailedFormat(value,options)
   :key==='palette'?detailedPalette(value,options)
   :detailedSubject(key,value,options);
- if(recipe?.sections?.length)return {...recipe,key,value,sections:recipe.sections.map(s=>({...s})),checks:[...(recipe.checks||[])]};
+ if(recipe?.sections?.length){
+  const resolved={...recipe,key,value,sections:recipe.sections.map(s=>({...s})),checks:[...(recipe.checks||[])]};
+  resolved.execution=executionFor(key,value,resolved,options);
+  return resolved;
+ }
  const base=visualSpec(key,value,{noPerson});
- return {key,value,known:false,sections:[{label:'指定内容の具体化',text:base.text}],checks:[...base.checks]};
+ const resolved={key,value,known:false,sections:[{label:'指定内容の具体化',text:base.text}],checks:[...base.checks]};
+ resolved.execution=executionFor(key,value,resolved,options);return resolved;
 }

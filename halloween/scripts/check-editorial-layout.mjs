@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=13';
-import {resolveSelections} from '../catalog.js?v=13';
-import {initialSelections} from '../modes.js?v=13';
-import {buildDirection} from '../direction.js?v=13';
-import {applyPose} from '../poses.js?v=13';
-import {productionPlan} from '../production-plan.js?v=13';
-import {renderEditorialLayout} from '../editorial-layout.js?v=13';
+import {applyCollection} from '../collection.js?v=17';
+import {resolveSelections} from '../catalog.js?v=17';
+import {initialSelections} from '../modes.js?v=17';
+import {buildDirection} from '../direction.js?v=17';
+import {applyPose} from '../poses.js?v=17';
+import {productionPlan} from '../production-plan.js?v=17';
+import {renderEditorialLayout} from '../editorial-layout.js?v=17';
 
 // Native SVG composition preserves supplied pixels; it does not generate images.
 // Solid-color, dimensionally correct test PNGs. No person's artwork is stored.
@@ -71,6 +71,13 @@ for(const design of formats){
  for(const picture of pictures){
   const label=design+' / '+picture.artworkWidth+':'+picture.artworkHeight,output=renderEditorialLayout(plan,picture);
   checkSourceAndGeometry(output,picture,label);checkCopy(output,plan,label);
+  if(design==='インタビュー誌面'){
+   const {width,height,placements}=output;
+   assert.ok(placements.image.width*placements.image.height/(width*height)>=.28,'Interview artwork must be a large lead image, not an inset covering 8% of the page');
+   for(const frame of placements.textFrames)assert.ok(!overlaps(placements.image,frame),'Interview image crosses text frame '+frame.id);
+   assert.ok(!plan.copy.slots.some(s=>s.role==='ノンブル'),'A standalone interview must not invent a page number');
+   assert.ok(!plan.copy.slots.some(s=>s.text.includes(selected.medium)),'Medium labels must not leak into printed editorial copy');
+  }
   if(design==='見開き特集'){
    const {width,height,placements}=output,{image,gutter,textFrames}=placements;
    assert.ok(gutter,'The spread must preserve a physical central safety gutter');

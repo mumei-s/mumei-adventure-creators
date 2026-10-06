@@ -1,0 +1,30 @@
+import fs from 'node:fs';import path from 'node:path';import vm from 'node:vm';import assert from 'node:assert/strict';
+const {JSDOM}=await import(process.env.HALLOWEEN_JSDOM_PATH||'jsdom');
+const root=path.resolve(new URL('..',import.meta.url).pathname);
+const dom=new JSDOM(fs.readFileSync(root+'/index.html','utf8'),{url:'https://example.test/halloween/',pretendToBeVisual:true,runScripts:'outside-only'}),w=dom.window;
+w.matchMedia=()=>({matches:false,addEventListener(){},removeEventListener(){}});w.ResizeObserver=class{observe(){}disconnect(){}};w.IntersectionObserver=class{observe(){}unobserve(){}disconnect(){}};w.HTMLElement.prototype.animate=()=>({finished:Promise.resolve(),cancel(){}});w.scrollTo=()=>{};w.HTMLElement.prototype.scrollIntoView=()=>{};
+w.AbortController=AbortController;w.AbortSignal=AbortSignal;w.TextEncoder=TextEncoder;w.TextDecoder=TextDecoder;w.File=File;w.Blob=Blob;w.structuredClone=structuredClone;w.HTMLDialogElement.prototype.showModal=function(){this.open=true;};w.HTMLDialogElement.prototype.close=function(){this.open=false;this.dispatchEvent(new w.Event("close"));};
+w.URL.createObjectURL=()=> 'blob:test-reference';w.URL.revokeObjectURL=()=>{};
+w.Image=class{naturalWidth=1024;naturalHeight=1536;set src(value){queueMicrotask(()=>this.onload?.());}get src(){return 'blob:test-reference';}};
+let canvasWrites=0;w.HTMLCanvasElement.prototype.getContext=function(){return new Proxy({measureText:s=>({width:s.length*12})},{get:(t,k)=>k in t?t[k]:(()=>{})});};w.HTMLCanvasElement.prototype.toBlob=function(){canvasWrites++;throw new Error('Unexpected eager image encoding');};
+let page2Started=false,releaseSecond;
+const second=new Promise(r=>releaseSecond=r);const calls=[];
+w.fetch=async input=>{const url=new URL(input);calls.push(url.search);const id=url.searchParams.get('id');if(url.searchParams.get('page')==='2'){page2Started=true;await second;}const page=Number(url.searchParams.get('page'));return {ok:true,json:async()=>({id,name:id==='speedtest'?'Speed Test':'Second Author',biography:'写真と海岸の創作',topics:['写真'],titles:[],articles:[],pagination:{nextPage:page===1?2:null,keys:[id+'-'+page]}})};};
+const ctx=dom.getInternalVMContext(),mods=new Map();
+function load(file){file=path.resolve(file.split('?')[0]);if(mods.has(file))return mods.get(file);const mod=new vm.SourceTextModule(fs.readFileSync(file,'utf8'),{context:ctx,identifier:file});mods.set(file,mod);return mod;}
+const entry=load(root+'/app.js');await entry.link((spec,parent)=>load(path.resolve(path.dirname(parent.identifier),spec)));await entry.evaluate();const $=id=>w.document.getElementById(id);const click=id=>$(id).click();const change=(id,value)=>{$(id).value=value;$(id).dispatchEvent(new w.Event('input',{bubbles:true}));$(id).dispatchEvent(new w.Event('change',{bubbles:true}));};
+async function until(fn,message){const start=Date.now();while(!fn()){if(Date.now()-start>3000)throw new Error('Timed out: '+message);await new Promise(r=>setTimeout(r,10));}}
+const results=[];
+w.document.querySelector('[name="attachment-mode"][value="chatgpt"]').click();
+change('creator','speedtest');await until(()=>page2Started,'page 2 starts');assert.equal($('creator-name').value,'Speed Test');
+const start=performance.now();click('generate');click('generate');await until(()=>$('result').open,'prompt available before page 2 resolves');
+const record=JSON.parse(w.localStorage.getItem('mumeis-halloween-v2')).history[0];assert.equal(record.profile.displayName,'Speed Test');assert.equal(record.count,1);assert.ok(record.prompt.includes('この生成チャットに表示'));assert.equal(canvasWrites,0);assert.ok(performance.now()-start<1000);results.push({case:'profile first page usable; page 2 still held; double click',ms:Math.round(performance.now()-start),preparationMs:record.preparationMs});
+$('result').close();releaseSecond();await until(()=>!$('load-profile').disabled,'profile completes');
+change('creator','secondauthor');await until(()=>$('creator-name').value==='Second Author','author switch');click('generate');await until(()=>$('result').open,'second result');let saved=JSON.parse(w.localStorage.getItem('mumeis-halloween-v2'));assert.equal(saved.history[0].profile.displayName,'Second Author');results.push({case:'changed ID uses new author'});
+$('result').close();change('creator','');$('profile-editor').open=true;change('creator-name','Manual Author');
+const f1=new File([fs.readFileSync(root+'/assets/verification/v14/film-sea.png')],'own-one.png',{type:'image/png'}),f2=new File([fs.readFileSync(root+'/assets/verification/v14/watercolor-sea.png')],'own-two.png',{type:'image/png'});
+Object.defineProperty($('image-input'),'files',{configurable:true,value:[f1,f2]});$('image-input').dispatchEvent(new w.Event('change'));await until(()=>!$('generate').disabled&&$('references').children.length===2,'two references load');
+let share;w.navigator.canShare=()=>true;w.navigator.share=async payload=>{share=payload;};
+const multiStart=performance.now();click('generate');await until(()=>$('result').open,'multi-image result');assert.equal(canvasWrites,0);await until(()=>!$('generate').disabled,'unlocked');click('share-board');await until(()=>!!share,'share payload');assert.equal(share.files.length,3);assert.equal(share.files.at(-1).name,'prompt.txt');assert.ok(share.text.length<200);assert.deepEqual(Buffer.from(await share.files[0].arrayBuffer()),Buffer.from(await f1.arrayBuffer()));assert.deepEqual(Buffer.from(await share.files[1].arrayBuffer()),Buffer.from(await f2.arrayBuffer()));results.push({case:'two references prepared without flattening; exact original bytes; prompt attached once',ms:Math.round(performance.now()-multiStart)});
+$('result').close();change('creator-name','');click('generate');await until(()=>!$('generate').disabled,'validation releases lock');assert.ok(!$('form-error').hidden);results.push({case:'validation error releases preparation lock'});
+console.log(JSON.stringify({environment:'jsdom application integration; not visual browser/real network',results,fetchCalls:calls.length,canvasWrites},null,2));dom.window.close();

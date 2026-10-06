@@ -1,8 +1,8 @@
-import {formatFor} from './formats.js?v=13';
-import {detailedFormat,formatTextPolicy} from './format-recipes.js?v=13';
-import {editorialContract} from './editorial.js?v=13';
-import {colorPolicy} from './palette-recipes.js?v=13';
-import {renderEditorialLayout} from './editorial-layout.js?v=13';
+import {formatFor} from './formats.js?v=17';
+import {detailedFormat,formatTextPolicy} from './format-recipes.js?v=17';
+import {editorialContract} from './editorial.js?v=17';
+import {colorPolicy} from './palette-recipes.js?v=17';
+import {renderEditorialLayout} from './editorial-layout.js?v=17';
 
 // This module consumes a completed productionPlan. It does not import the plan
 // builder or composePrompt, and therefore can also be used by those modules.
@@ -74,7 +74,8 @@ export function composeLayoutStage(plan,{artworkName='第1段階で合格を確�
  const textPolicy=formatTextPolicy(effectiveValues),color=colorPolicy(values),size=requestedSize(values.size);
  const recipe=detailedFormat(values.design,{noPerson,values:effectiveValues});
  const placeholder='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScLbtAAAAABJRU5ErkJggg==';
- const template=renderEditorialLayout(plan,{dataUrl:placeholder,artworkWidth:Number(artworkWidth)||1,artworkHeight:Number(artworkHeight)||1});
+ const portraitInterview=kind==='interview'&&size.width<size.height;
+ const template=renderEditorialLayout(plan,{dataUrl:placeholder,artworkWidth:Number(artworkWidth)||(portraitInterview?2:1),artworkHeight:Number(artworkHeight)||(portraitInterview?3:1)});
  const svgTemplate=template.svg.replace(placeholder,'__APPROVED_ARTWORK_DATA_URL__');
  const layoutSections=(recipe.known?recipe.sections:plan.conditions?.find(c=>c.key==='design')?.sections||[]).filter(s=>layoutLabels.has(s.label));
  const materialName=String(artworkName||'第1段階で合格を確認した主画像').replace(/[\r\n]+/g,' ');
@@ -117,7 +118,7 @@ export function composeLayoutStage(plan,{artworkName='第1段階で合格を確�
   '```svg',svgTemplate,'```',
   'テンプレートの実寸は'+template.width+'×'+template.height+'px。'+(template.notes||[]).join(' '),
   '【完成画像の返却】',
-  '完成した画像そのものを1枚、この会話に表示する。実在する完成PNGを添付し、開けるファイルリンクも返す。パスの文章やプロンプトだけで完了しない。',
+  '完成した画像そのものを1枚、この生成チャットに表示する。実在する完成PNGを画像添付または会話内の画像埋め込みで表示する。ダウンロードリンク・パスの文章・プロンプトだけで完了しない。',
   'この環境でSVGの組版・PNG書き出しを実行できない場合は、その状態を明示する。確認できた主画像を返し、制作ツールの「主画像を取り込んで、完成PNGを作る」で仕上げられることを伝える。画像生成による一括再構成へ無言で戻さず、未出力の誌面を完成したと主張しない。'
  ].join('\n');
 }

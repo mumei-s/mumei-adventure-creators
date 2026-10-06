@@ -1,9 +1,10 @@
-import {visibleQuestions} from './catalog.js?v=13';
-import {formatContract} from './formats.js?v=13';
-import {buildEditorial,editorialContract} from './editorial.js?v=13';
-import {optionRecipe} from './option-recipes.js?v=13';
-import {colorPolicy} from './palette-recipes.js?v=13';
-import {resolveArtDirection,interactionContract} from './art-direction.js?v=13';
+import {visibleQuestions} from './catalog.js?v=17';
+import {formatContract} from './formats.js?v=17';
+import {buildEditorial,editorialContract} from './editorial.js?v=17';
+import {optionRecipe} from './option-recipes.js?v=17';
+import {colorPolicy} from './palette-recipes.js?v=17';
+import {resolveArtDirection,interactionContract} from './art-direction.js?v=17';
+import {executionFor} from './option-execution.js?v=17';
 
 export function productionPlan(profile,values,variant,collection='halloween',random=Math.random){
  const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);
@@ -15,6 +16,7 @@ export function productionPlan(profile,values,variant,collection='halloween',ran
  if(noPerson)notes.push(values.costume==='風景を主役にする'?'人物なしの指定を優先します。人物用の表情・顔角度・身体ポーズは適用対象外とし、景物を顔や手足に見立てず、風景の視点・自然な配置・光で作品を成立させます。':'人物なしの指定を優先します。人物用の表情・顔角度・身体ポーズは適用対象外とし、主題を顔や手足に見立てず、選択した物体・図案それぞれの配置と描画方法で作品を成立させます。');
  if(/文字を一切|だけ|のみ|サイン風|落款風/.test(values.type)&&/雑誌|誌面|見開き|新聞/.test(values.design))notes.push('文字を限定した設定です。誌面の文字量はこの指定に合わせて減ります。');
  if(values.line!=='セリフなし'&&(/文字を一切|クリエイター名だけ|HALLOWEEN|サイン風|落款風/.test(values.type)))notes.push('セリフより限定した文字設定を優先します。');
+ if(['クリスタル透光アニメ','宝石ホログラムアニメ'].includes(values.medium)&&color.restricted)notes.push('限定色の指定を優先するため虹色の干渉は使いません。屈折・透過・投影の前後は許可色の明暗で保ちます。');
  if(color.restricted)notes.push('完成画像全体の使用色は'+color.allowed+'。画材の白・虹色・反射色も、この色域の明度へ翻訳します。');
  const conditions=visibleQuestions.map((q,i)=>{
   const recipe=optionRecipe(q.key,values[q.key],context),sections=[...recipe.sections];
@@ -24,12 +26,16 @@ export function productionPlan(profile,values,variant,collection='halloween',ran
    checks.push(variant.face,variant.expression);
   }
   if(q.key==='pose'&&!noPerson){sections.push({label:'今回実行する動作',text:variant.pose});checks.push(variant.pose);}
+  let lineExecution;
   if(q.key==='type'){
-   sections.push(...optionRecipe('line',values.line,context).sections);
+   const lineRecipe=optionRecipe('line',values.line,context);
+   sections.push(...lineRecipe.sections);lineExecution=lineRecipe.execution;
    checks=copy.mode==='none'?['文字・数字・署名のない完成']:copy.slots.map(s=>s.role+'：'+s.text);
   }
   const text=sections.map(s=>s.text).join(' ');
-  return {index:i+1,key:q.key,name:q.name,value:values[q.key],known:recipe.known,text,sections,checks};
+  const execution=executionFor(q.key,values[q.key],{...recipe,sections,checks},context);
+  if(lineExecution)execution.line=lineExecution;
+  return {index:i+1,key:q.key,name:q.name,value:values[q.key],known:recipe.known,text,sections,checks,execution};
  });
  const format=formatContract(values);
  if(noPerson)format.push('人物なしの形式解釈：形式が主役・肖像・衣装の画像領域を求めても、選んだ風景・物体・紋章をそこへ配置する。人物や人型のマネキンを補わず、レイアウトの情報構造だけを保つ。');

@@ -1,0 +1,13 @@
+import fs from 'node:fs';
+import {productionPlan} from '../../production-plan.js';
+import {composePrompt} from '../../prompt.js';
+import {composeArtworkStage} from '../../artwork-stage.js';
+const values={design:'インタビュー誌面',medium:'クリスタル透光アニメ',theme:'月夜の仮面舞踏会',costume:'仮面とドレス',mood:'毎回大胆に変える',place:'古城の大広間',pose:'低くしゃがむ',palette:'紺 × 淡金 × 白',type:'新聞風・記事と段組み',line:'鏡の向こうで、続きを話そう。',size:'A4縦・300dpi目安｜2480×3508｜210:297'};
+const variant={face:'顔は左へ20度、顎を持ち上げる。首は身体の軸と一直線',expression:'眉を上げ、口が半開きの不思議そうな表情',distance:'頭から足先まで入る全身。手足と支持面を切らない',camera:'真横から全身と空間を捉える',pose:'低くしゃがむ。両膝を深く曲げて低くしゃがむ。足裏と重心を地面に合わせる。',previous:[]};
+const profile={displayName:'無名 S note',activityEnabled:false,topics:[],biography:''};
+const plan=productionPlan(profile,values,variant,'halloween',()=>.28);
+const prompt=composePrompt({profile,values,variant:plan.variant,edition:'CRYSTAL-INTERVIEW-V15',references:[{name:'reference-01-1000015491.jpg',role:'identity'}],preparedPlan:plan});
+fs.writeFileSync(new URL('./interview-crystal-input.txt',import.meta.url),prompt);
+fs.writeFileSync(new URL('./interview-crystal-plan.json',import.meta.url),JSON.stringify(plan,null,2));
+fs.writeFileSync(new URL('./interview-crystal-artwork.txt',import.meta.url),composeArtworkStage(plan));
+console.log(JSON.stringify({bytes:Buffer.byteLength(prompt),characters:prompt.length,copy:plan.copy.slots.map(x=>({role:x.role,text:x.text})),variant:plan.variant},null,2));

@@ -1,6 +1,6 @@
-import {formatFor} from './formats.js?v=13';
-import {colorPolicy} from './palette-recipes.js?v=13';
-import {colorWorlds} from './worlds.js?v=13';
+import {formatFor} from './formats.js?v=17';
+import {colorPolicy} from './palette-recipes.js?v=17';
+import {colorWorlds} from './worlds.js?v=17';
 
 const MAX_EDGE=4096;
 const SERIF='"Noto Serif CJK JP", "Yu Mincho", "Hiragino Mincho ProN", Georgia, serif';
@@ -48,7 +48,10 @@ function pageColors(values,notes){
  let colors=colorWorlds.find(p=>p.value===values.palette)?.colors;
  if(!colors&&Object.hasOwn(basePalettes,values.palette||''))colors=basePalettes[values.palette];
  if(!colors){colors=['#f5f2eb','#282724'];notes.push('この配色の誌面用HEX定義がないため、地色と文字には中立色を使用しました。主画像の色は変更していません。');}
- const background=colors[0],candidates=colors.filter(c=>/^#[a-f\d]{6}$/i.test(c)).sort((a,b)=>contrast(background,b)-contrast(background,a));
+ // Newspaper stock uses the lightest selected paper tone; the main scene still
+ // retains its palette. Limited inks keep their explicit mode above.
+ const background=formatFor(values.design).kind==='newspaper'?[...colors].sort((a,b)=>luminance(b)-luminance(a))[0]:colors[0];
+ const candidates=colors.filter(c=>/^#[a-f\d]{6}$/i.test(c)).sort((a,b)=>contrast(background,b)-contrast(background,a));
  let ink=candidates[0]||'#202020';
  if(contrast(background,ink)<4.5)ink=darken(colors[0]);
  const accent=candidates.find(c=>c!==ink&&contrast(background,c)>=4.5)||ink;
@@ -157,17 +160,26 @@ export function renderEditorialLayout(plan,{dataUrl,artworkWidth,artworkHeight,m
   role('folio',rect(.87,.957,.09,.023),'ノンブル',{fontSize:width*.013,align:'right'});
   remaining('additional-copy',rect(.07,.04,.34,.06),{fontSize:width*.012});
  }else if(kind==='interview'){
-  imageBox=rect(.06,.29,.34,.49);
-  role('running-head',rect(.06,.035,.88,.027),s=>s.role==='柱'||s.role==='欄名',{fontSize:width*.014,fontFamily:SANS});
-  role('feature-title',rect(.06,.09,.88,.085),'特集見出し',{fontSize:width*.05,lineHeight:1.2,fontWeight:600});
-  role('lead',rect(.06,.185,.88,.073),'リード文',{fontSize:width*.016});
-  role('author',rect(.46,.26,.48,.021),'作者名',{fontSize:width*.013,align:'right'});
-  add('interview-A',rect(.46,.29,.22,.62),[...pick('質問1'),...pick('回答1')],{sharedScale:'interview-body'});
-  add('interview-B',rect(.72,.29,.22,.62),[...pick('質問2'),...pick('回答2'),...pick('質問3'),...pick('回答3')],{sharedScale:'interview-body'});
-  role('quote',rect(.06,.81,.34,.079),'引き抜き引用',{fontSize:width*.025,fontWeight:600,color:colors.accent});
-  role('caption',rect(.06,.916,.68,.035),s=>/キャプション/.test(s.role),{fontSize:width*.011});
-  role('folio',rect(.84,.96,.1,.02),'ノンブル',{fontSize:width*.013,align:'right'});
-  remaining('additional-copy',rect(.06,.955,.68,.025),{fontSize:width*.011});
+  role('running-head',rect(.05,.027,.59,.025),s=>s.role==='柱'||s.role==='欄名',{fontSize:width*.014,fontFamily:SANS});
+  role('author',rect(.67,.027,.28,.025),'作者名',{fontSize:width*.014,align:'right'});
+  role('feature-title',rect(.05,.065,.9,.067),'特集見出し',{fontSize:width*.065,lineHeight:1.1,fontWeight:600});
+  role('lead',rect(.05,.14,.9,.055),'リード文',{fontSize:width*.018,lineHeight:1.4});
+  if(sourceWidth>=sourceHeight){
+   // Square/wide artwork is a large horizontal lead image, not a tiny inset
+   // centered in a narrow portrait container.
+   const imageHeight=Math.min(.5,.9*width/height*sourceHeight/sourceWidth);
+   imageBox=rect(.05,.21,.9,imageHeight);
+   const captionY=.21+imageHeight+.009,bodyY=captionY+.04;
+   role('caption',rect(.05,captionY,.9,.03),s=>/キャプション/.test(s.role),{fontSize:width*.013});
+   for(let i=1;i<=3;i++)add('interview-'+i,rect(.05+(i-1)*.31,bodyY,.28,.905-bodyY),[...pick('質問'+i),...pick('回答'+i)],{fontSize:width*.018,sharedScale:'interview-body'});
+  }else{
+   imageBox=rect(.05,.21,.58,.65);
+   add('interview-body',rect(.67,.21,.28,.65),[...pick('質問1'),...pick('回答1'),...pick('質問2'),...pick('回答2'),...pick('質問3'),...pick('回答3')],{fontSize:width*.018,lineHeight:1.5,gap:1});
+   role('caption',rect(.05,.875,.9,.027),s=>/キャプション/.test(s.role),{fontSize:width*.013});
+  }
+  role('quote',rect(.05,.92,.9,.045),'引き抜き引用',{fontSize:width*.032,fontWeight:600,color:colors.accent});
+  role('folio',rect(.85,.972,.1,.018),'ノンブル',{fontSize:width*.013,align:'right'});
+  remaining('additional-copy',rect(.05,.973,.72,.018),{fontSize:width*.011});
  }else if(kind==='cover'){
   const culture=values.design==='カルチャー誌の表紙';
   imageBox=culture?rect(.07,.255,.54,.57):rect(.24,.25,.52,.56);

@@ -1,0 +1,77 @@
+{
+  "date": "2026-10-06",
+  "publication": "not-published",
+  "trials": [
+    {
+      "id": "01-crystal-full",
+      "medium": "クリスタル透光アニメ",
+      "seconds": 56.001,
+      "image": "generated_images/exec-674faef5-b50c-42fc-8372-2e0a50af0ac0.png",
+      "input": "trials/01-crystal-full.txt",
+      "observed": [
+        "主画像の面積は改善",
+        "宝飾と布の一部に分光色"
+      ],
+      "failures": [
+        "写真的・3D的な肌と髪が残る",
+        "広い屈折・内部反射の光学層が不明瞭",
+        "胴体の真横90度が未達",
+        "全身の余白が不足"
+      ],
+      "result": "rejected",
+      "timeWithin60Seconds": true,
+      "imageCalls": 1,
+      "display": "inline",
+      "inputSha256": "800bc9bc5905eff34cb6ba1b2f07dc10926b58122fbd1ebf4d5416584232f216"
+    },
+    {
+      "id": "02-hologram-full",
+      "medium": "宝石ホログラムアニメ",
+      "seconds": 122.196,
+      "image": "generated_images/exec-53691a48-0be0-4db7-969d-2a62d6fe67d5.png",
+      "input": "trials/02-hologram-full.txt",
+      "observed": [
+        "一部に広い半透明面と干渉色"
+      ],
+      "failures": [
+        "2Dセル画の描画方法が不成立",
+        "投影面の前後と二重像・走査線が不足",
+        "胴体の真横90度が未達",
+        "60秒を超過"
+      ],
+      "result": "rejected",
+      "timeWithin60Seconds": false,
+      "imageCalls": 1,
+      "display": "inline",
+      "inputSha256": "1105cb458a4c4a80519ccc40dcf4e04163edeab1de9bd7be5c4cbadbee90f3c0"
+    },
+    {
+      "id": "03-crystal-compact",
+      "medium": "クリスタル透光アニメ",
+      "seconds": 66.978,
+      "image": "generated_images/exec-f4a85c83-b91c-455c-ae9c-69581fbb44a1.png",
+      "input": "trials/03-crystal-compact.json",
+      "observed": [
+        "確定原稿は大きく読める"
+      ],
+      "failures": [
+        "写真的・3D的な肌が残る",
+        "追加の顔アップ図版が発生",
+        "頭上と足先の安全余白が不足",
+        "広い透光層の表現が不足",
+        "60秒を超過"
+      ],
+      "result": "rejected",
+      "timeWithin60Seconds": false,
+      "imageCalls": 1,
+      "display": "inline",
+      "inputSha256": "aab49a88ed01900c666c4d0134c527585ffb5a2ccaa7eb0afb709a5355a8c8e1"
+    }
+  ],
+  "latestInstructionChanges": "The final renderer input restores every selected recipe clause, including whole-subject margins and no unsolicited inset images; that final change has structural tests only, not another image proof.",
+  "remaining": [
+    "Target crystal/hologram drawing fidelity from the original identity reference",
+    "60-second end-to-end acceptance",
+    "Visual verification of the remaining options and combinations"
+  ]
+}

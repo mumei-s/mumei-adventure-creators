@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import {questions,visibleQuestions,resolveSelections,AUTO} from '../catalog.js?v=13';
-import {applyCollection,landscapeScenes,noPersonSelection,dailyInspiration} from '../collection.js?v=13';
-import {initialSelections,propose,effectiveSelections} from '../modes.js?v=13';
-import {buildDirection} from '../direction.js?v=13';
-import {poseItems,applyPose} from '../poses.js?v=13';
-import {sampleFor,typePreview} from '../examples.js?v=13';
+import {questions,visibleQuestions,resolveSelections,AUTO} from '../catalog.js?v=17';
+import {applyCollection,landscapeScenes,noPersonSelection,dailyInspiration} from '../collection.js?v=17';
+import {initialSelections,propose,effectiveSelections} from '../modes.js?v=17';
+import {buildDirection} from '../direction.js?v=17';
+import {poseItems,applyPose} from '../poses.js?v=17';
+import {sampleFor,typePreview} from '../examples.js?v=17';
 let state=11987;const random=()=>((state=(Math.imul(state,1664525)+1013904223)>>>0)/4294967296);
 const valuesFor=key=>questions.find(q=>q.key===key).groups.flatMap(g=>g.values);
 applyCollection('halloween');

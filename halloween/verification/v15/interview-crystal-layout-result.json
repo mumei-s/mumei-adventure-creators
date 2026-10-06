@@ -1,0 +1,370 @@
+{
+  "width": 2480,
+  "height": 3508,
+  "sourceWidth": 1024,
+  "sourceHeight": 1536,
+  "layoutMs": 1275,
+  "imageArea": 0.35672976054732036,
+  "placements": {
+    "image": {
+      "x": 124,
+      "y": 797.9800000000001,
+      "width": 1438.3999999999999,
+      "height": 2157.6,
+      "container": {
+        "x": 124,
+        "y": 736.68,
+        "width": 1438.3999999999999,
+        "height": 2280.2000000000003
+      },
+      "sourceWidth": 1024,
+      "sourceHeight": 1536,
+      "preserveAspectRatio": "xMidYMid meet"
+    },
+    "gutter": null,
+    "textFrames": [
+      {
+        "id": "running-head",
+        "x": 124,
+        "y": 94.716,
+        "width": 1463.1999999999998,
+        "height": 87.7,
+        "roles": [
+          "柱",
+          "欄名"
+        ]
+      },
+      {
+        "id": "author",
+        "x": 1661.6000000000001,
+        "y": 94.716,
+        "width": 694.4000000000001,
+        "height": 87.7,
+        "roles": [
+          "作者名"
+        ]
+      },
+      {
+        "id": "feature-title",
+        "x": 124,
+        "y": 228.02,
+        "width": 2232,
+        "height": 235.036,
+        "roles": [
+          "特集見出し"
+        ]
+      },
+      {
+        "id": "lead",
+        "x": 124,
+        "y": 491.12000000000006,
+        "width": 2232,
+        "height": 192.94,
+        "roles": [
+          "リード文"
+        ]
+      },
+      {
+        "id": "interview-body",
+        "x": 1661.6000000000001,
+        "y": 736.68,
+        "width": 694.4000000000001,
+        "height": 2280.2000000000003,
+        "roles": [
+          "質問1",
+          "回答1",
+          "質問2",
+          "回答2",
+          "質問3",
+          "回答3"
+        ]
+      },
+      {
+        "id": "caption",
+        "x": 124,
+        "y": 3069.5,
+        "width": 2232,
+        "height": 94.716,
+        "roles": [
+          "図版キャプション"
+        ]
+      },
+      {
+        "id": "quote",
+        "x": 124,
+        "y": 3227.36,
+        "width": 2232,
+        "height": 157.85999999999999,
+        "roles": [
+          "引き抜き引用"
+        ]
+      }
+    ],
+    "textRuns": [
+      {
+        "role": "柱",
+        "text": "THE MAKING FILE",
+        "slotIndex": 0,
+        "frameId": "running-head",
+        "x": 124,
+        "y": 94.716,
+        "width": 190.99112612038516,
+        "height": 35.32361388706103,
+        "fontSize": 24.36111302555933,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 400,
+        "lines": [
+          "THE MAKING FILE"
+        ],
+        "lineHeight": 35.32361388706103,
+        "align": "left",
+        "color": "#f4edda"
+      },
+      {
+        "role": "欄名",
+        "text": "創作Q&A",
+        "slotIndex": 4,
+        "frameId": "running-head",
+        "x": 124,
+        "y": 147.09239300495256,
+        "width": 97.4444521022373,
+        "height": 35.32361388706103,
+        "fontSize": 24.36111302555933,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 400,
+        "lines": [
+          "創作Q&A"
+        ],
+        "lineHeight": 35.32361388706103,
+        "align": "left",
+        "color": "#f4edda"
+      },
+      {
+        "role": "作者名",
+        "text": "無名 S note",
+        "slotIndex": 3,
+        "frameId": "author",
+        "x": 2163.9984,
+        "y": 94.716,
+        "width": 192.0016,
+        "height": 50.343999999999994,
+        "fontSize": 34.72,
+        "fontFamily": "\"Noto Serif CJK JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", Georgia, serif",
+        "fontWeight": 400,
+        "lines": [
+          "無名 S note"
+        ],
+        "lineHeight": 50.343999999999994,
+        "align": "right",
+        "color": "#f4edda"
+      },
+      {
+        "role": "特集見出し",
+        "text": "月夜の仮面舞踏会",
+        "slotIndex": 1,
+        "frameId": "feature-title",
+        "x": 124,
+        "y": 228.02,
+        "width": 1289.6000000000001,
+        "height": 177.32000000000002,
+        "fontSize": 161.20000000000002,
+        "fontFamily": "\"Noto Serif CJK JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", Georgia, serif",
+        "fontWeight": 600,
+        "lines": [
+          "月夜の仮面舞踏会"
+        ],
+        "lineHeight": 177.32000000000002,
+        "align": "left",
+        "color": "#f4edda"
+      },
+      {
+        "role": "リード文",
+        "text": "月夜の仮面舞踏会を手がかりに、古城の大広間に一つの場面をつくる。仮面とドレスのかたちと、その場に流れる光。その間に、作り手の視点を探してみたい。",
+        "slotIndex": 2,
+        "frameId": "lead",
+        "x": 124,
+        "y": 491.12000000000006,
+        "width": 2142.72,
+        "height": 124.99199999999998,
+        "fontSize": 44.63999999999999,
+        "fontFamily": "\"Noto Serif CJK JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", Georgia, serif",
+        "fontWeight": 400,
+        "lines": [
+          "月夜の仮面舞踏会を手がかりに、古城の大広間に一つの場面をつくる。仮面とドレスのかたちと、その場に",
+          "流れる光。その間に、作り手の視点を探してみたい。"
+        ],
+        "lineHeight": 62.49599999999999,
+        "align": "left",
+        "color": "#f4edda"
+      },
+      {
+        "role": "質問1",
+        "text": "Q. この場面で、最初に見つけたものは？",
+        "slotIndex": 5,
+        "frameId": "interview-body",
+        "x": 1661.6000000000001,
+        "y": 736.68,
+        "width": 600.4972799999999,
+        "height": 160.70399999999998,
+        "fontSize": 53.56799999999999,
+        "fontFamily": "\"Noto Serif CJK JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", Georgia, serif",
+        "fontWeight": 600,
+        "lines": [
+          "Q. この場面で、最初に見",
+          "つけたものは？"
+        ],
+        "lineHeight": 80.35199999999999,
+        "align": "left",
+        "color": "#c9ab60"
+      },
+      {
+        "role": "回答1",
+        "text": "A. 光と距離の関係。近くの小さな形から、遠くの気配へ視線をつなぐ。月夜の仮面舞踏会の世界を、その流れの中で描いてみたい。",
+        "slotIndex": 6,
+        "frameId": "interview-body",
+        "x": 1661.6000000000001,
+        "y": 910.776,
+        "width": 678.9744,
+        "height": 334.79999999999995,
+        "fontSize": 44.63999999999999,
+        "fontFamily": "\"Noto Serif CJK JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", Georgia, serif",
+        "fontWeight": 400,
+        "lines": [
+          "A. 光と距離の関係。近くの小さな",
+          "形から、遠くの気配へ視線を",
+          "つなぐ。月夜の仮面舞踏会の世界",
+          "を、その流れの中で描いて",
+          "みたい。"
+        ],
+        "lineHeight": 66.96,
+        "align": "left",
+        "color": "#f4edda"
+      },
+      {
+        "role": "質問2",
+        "text": "Q. 衣装や素材は、どう物語に関わる？",
+        "slotIndex": 7,
+        "frameId": "interview-body",
+        "x": 1661.6000000000001,
+        "y": 1290.216,
+        "width": 654.0652799999999,
+        "height": 160.70399999999998,
+        "fontSize": 53.56799999999999,
+        "fontFamily": "\"Noto Serif CJK JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", Georgia, serif",
+        "fontWeight": 600,
+        "lines": [
+          "Q. 衣装や素材は、どう物語",
+          "に関わる？"
+        ],
+        "lineHeight": 80.35199999999999,
+        "align": "left",
+        "color": "#c9ab60"
+      },
+      {
+        "role": "回答2",
+        "text": "A. 仮面とドレスの輪郭を起点に、布の重なりや光の返りを考える。動きの前後を想像できるように、道具と身体の関係も大切にする。",
+        "slotIndex": 8,
+        "frameId": "interview-body",
+        "x": 1661.6000000000001,
+        "y": 1464.312,
+        "width": 678.9744,
+        "height": 267.84,
+        "fontSize": 44.63999999999999,
+        "fontFamily": "\"Noto Serif CJK JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", Georgia, serif",
+        "fontWeight": 400,
+        "lines": [
+          "A. 仮面とドレスの輪郭を起点に、",
+          "布の重なりや光の返りを考える。",
+          "動きの前後を想像できるように、",
+          "道具と身体の関係も大切にする。"
+        ],
+        "lineHeight": 66.96,
+        "align": "left",
+        "color": "#f4edda"
+      },
+      {
+        "role": "質問3",
+        "text": "Q. 色の世界を、どこから組み立てる？",
+        "slotIndex": 9,
+        "frameId": "interview-body",
+        "x": 1661.6000000000001,
+        "y": 1776.792,
+        "width": 600.4972799999999,
+        "height": 160.70399999999998,
+        "fontSize": 53.56799999999999,
+        "fontFamily": "\"Noto Serif CJK JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", Georgia, serif",
+        "fontWeight": 600,
+        "lines": [
+          "Q. 色の世界を、どこから",
+          "組み立てる？"
+        ],
+        "lineHeight": 80.35199999999999,
+        "align": "left",
+        "color": "#c9ab60"
+      },
+      {
+        "role": "回答3",
+        "text": "A. 主色の大きな面に、静かな副色を重ねる。小さな差し色へ視線を集め、画面全体のまとまりをつくる。",
+        "slotIndex": 10,
+        "frameId": "interview-body",
+        "x": 1661.6000000000001,
+        "y": 1950.888,
+        "width": 678.9744,
+        "height": 267.84,
+        "fontSize": 44.63999999999999,
+        "fontFamily": "\"Noto Serif CJK JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", Georgia, serif",
+        "fontWeight": 400,
+        "lines": [
+          "A. 主色の大きな面に、静かな副色",
+          "を重ねる。小さな差し色へ視線を",
+          "集め、画面全体のまとまりを",
+          "つくる。"
+        ],
+        "lineHeight": 66.96,
+        "align": "left",
+        "color": "#f4edda"
+      },
+      {
+        "role": "図版キャプション",
+        "text": "月夜の仮面舞踏会 / 無名 S note",
+        "slotIndex": 12,
+        "frameId": "caption",
+        "x": 124,
+        "y": 3069.5,
+        "width": 476.50720000000007,
+        "height": 46.748000000000005,
+        "fontSize": 32.24,
+        "fontFamily": "\"Noto Serif CJK JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", Georgia, serif",
+        "fontWeight": 400,
+        "lines": [
+          "月夜の仮面舞踏会 / 無名 S note"
+        ],
+        "lineHeight": 46.748000000000005,
+        "align": "left",
+        "color": "#f4edda"
+      },
+      {
+        "role": "引き抜き引用",
+        "text": "鏡の向こうで、続きを話そう。",
+        "slotIndex": 11,
+        "frameId": "quote",
+        "x": 124,
+        "y": 3227.36,
+        "width": 1111.04,
+        "height": 115.072,
+        "fontSize": 79.36,
+        "fontFamily": "\"Noto Serif CJK JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", Georgia, serif",
+        "fontWeight": 600,
+        "lines": [
+          "鏡の向こうで、続きを話そう。"
+        ],
+        "lineHeight": 115.072,
+        "align": "left",
+        "color": "#c9ab60"
+      }
+    ]
+  },
+  "notes": [
+    "文字幅は一部または全部を近似計測しています。使用環境のフォントによって字幅が変わる場合があります。"
+  ]
+}

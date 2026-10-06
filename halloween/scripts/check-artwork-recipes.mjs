@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=13';
-import {applyCollection} from '../collection.js?v=13';
-import {initialSelections} from '../modes.js?v=13';
-import {buildDirection} from '../direction.js?v=13';
-import {applyPose} from '../poses.js?v=13';
-import {optionRecipe} from '../option-recipes.js?v=13';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=13';
-import {composePrompt} from '../prompt.js?v=13';
-import {colorPolicy} from '../palette-recipes.js?v=13';
+import {questions,resolveSelections} from '../catalog.js?v=17';
+import {applyCollection} from '../collection.js?v=17';
+import {initialSelections} from '../modes.js?v=17';
+import {buildDirection} from '../direction.js?v=17';
+import {applyPose} from '../poses.js?v=17';
+import {optionRecipe} from '../option-recipes.js?v=17';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=17';
+import {composePrompt} from '../prompt.js?v=17';
+import {colorPolicy} from '../palette-recipes.js?v=17';
 
 const profile={displayName:'TEST CREATOR',activityEnabled:false,topics:[],biography:''};
 const random=()=>.28;

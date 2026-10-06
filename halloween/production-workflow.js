@@ -1,9 +1,13 @@
-import {composeArtworkStage,composeArtworkRepair} from './artwork-stage.js?v=13';
-import {needsStagedProduction,composeLayoutStage} from './staged-production.js?v=13';
+import {compileProduction} from './compiled-production.js?v=17';
+import {composeArtworkStage,composeArtworkRepair} from './artwork-stage.js?v=17';
+import {needsStagedProduction,composeLayoutStage} from './staged-production.js?v=17';
 
+const stagedInputs=new WeakMap();
 export function stagePrompts(plan){
  if(!needsStagedProduction(plan))return null;
- return {artwork:composeArtworkStage(plan),repair:composeArtworkRepair(plan),layout:composeLayoutStage(plan)};
+ if(stagedInputs.has(plan))return stagedInputs.get(plan);
+ const stages=Object.freeze({artwork:composeArtworkStage(plan),repair:composeArtworkRepair(plan),layout:composeLayoutStage(plan)});
+ stagedInputs.set(plan,stages);return stages;
 }
 
 function between(lines,start,end){
@@ -15,9 +19,10 @@ function between(lines,start,end){
 
 // The master is an execution plan for the conversation assistant. Each image
 // call receives one delimited input, never the entire publication specification.
-export function composeStagedMaster(plan,originalLines){
+export function composeStagedMaster(plan,originalLines,{verbose=false}={}){
+ if(!verbose)return compileProduction(plan,originalLines);
+ if(!needsStagedProduction(plan))return compileProduction(plan,originalLines);
  const stages=stagePrompts(plan);
- if(!stages)return originalLines.join('\n');
  return [
   originalLines[0],
   '【制作手順：主画像を確認してから誌面を組む】',

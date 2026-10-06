@@ -1,10 +1,10 @@
-import {imageOutputContract} from './output-contract.js?v=13';
-import {visibleQuestions} from './catalog.js?v=13';
-import {productionPlan,planInstructions,conditionInstructions} from './production-plan.js?v=13';
-import {sceneContract} from './worlds.js?v=13';
-import {colorPolicy} from './palette-recipes.js?v=13';
-import {resolveArtDirection} from './art-direction.js?v=13';
-import {composeStagedMaster} from './production-workflow.js?v=13';
+import {imageOutputContract} from './output-contract.js?v=17';
+import {visibleQuestions} from './catalog.js?v=17';
+import {productionPlan,planInstructions,conditionInstructions} from './production-plan.js?v=17';
+import {sceneContract} from './worlds.js?v=17';
+import {colorPolicy} from './palette-recipes.js?v=17';
+import {resolveArtDirection} from './art-direction.js?v=17';
+import {composeStagedMaster} from './production-workflow.js?v=17';
 export function needsReference(values){const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);return !noPerson||values.place==='参照風景を舞台にする'||values.palette==='参照画像の色を生かす';}
 // Option thumbnails, including legacy styleGuide arguments, never control generation.
 export function composePrompt({collection='halloween',creator,profile,values,variant,references=[],edition,referenceBundle=null,random=Math.random,preparedPlan=null}){
@@ -125,7 +125,7 @@ export function composePrompt({collection='halloween',creator,profile,values,var
  '',
  '【作品内の文字・広告編集】',
  ...plan.editorial,
- 'ツール名・ID・プロフィールURL・制作番号は画像に印字しない。本人が指定したクリエイター名だけを作者名として使う。各原稿の綴りを正確に確認し、意味のない疑似文字で水増ししない。',
+ 'ツール名・ID・プロフィールURL・制作番号・未指定のページ番号・画風名や技法名は画像に印字しない。本人が指定したクリエイター名だけを作者名として使う。各原稿の綴りを正確に確認し、意味のない疑似文字で水増ししない。',
  '',
  '【技法と品質】',
  '描画の設計には色彩理論、明度階層、構図、透視図法、空気遠近、レンズの画角、反射・屈折・散乱、素材の粗さと透過、'+(noPerson?'主題の構造と支持':'衣服の構造と解剖')+'、印刷と文字の階層を使う。選んだ技法に関係する知識を具体的な形・光・面へ落とし込み、単に最高品質という形容詞で済ませない。指定がない特定作家の固有キャラ・作品構図・署名を模倣しない。',
@@ -134,5 +134,12 @@ export function composePrompt({collection='halloween',creator,profile,values,var
  '寸法が生成環境に対応しない場合は、縦横比を可能な限り保った対応寸法で生成する。画像の返却を先に完了し、必要な寸法の補足は短く添える。希望の8K・300dpi・ピクセル数が実現したと推測で断言しない。',
  '',
  '【生成と納品の最終照合】項目名と具体条件どおりの画風・形式・舞台・配色になっているか。'+(noPerson?'人物なしの'+(subjectKind==='scenery'?'景観':subjectKind==='motif'?'物体構成':'紋章・アイコン')+'として成立しているか。':'主参照と同じ人物で、今回の表情・角度・動作になっているか。')+'文字量は形式に合うか。出力画像そのものを確認し、完成画像をこの会話に添付・表示して終了する。文章だけで完成扱いにしない。'
- ];return composeStagedMaster(plan,lines);
+ ];
+ const verification=[
+  '【完成画像と実物との照合：生成後に行う】',
+  '最初に画像を表示し、その実画像を選択した10項目の完成チェックと一つずつ照合する。画角・画質・画風・実写としての光と材質・文字と形式の不足は、該当箇所を具体的に示す。生成が成功した事実と、選択が再現された合格判定を分ける。',
+  '実物資料との比較はツールの検証記録で別途行う。この作品の納品を新たな検索・資料作成で遅らせず、画像を表示して選択条件の不足だけを短く伝える。実物を確認していない場合は実物との一致を主張しない。',
+  '完成確認は今回の出力1例に限る。全項目・全組合せの確実な再現性、実機の撮影記録、希望解像度やdpiの達成を推測で保証しない。画像を出せない場合も、実画像を確認できない場合も、未完了として理由を短く伝える。'
+ ];
+ return composeStagedMaster(plan,lines)+'\n\n'+verification.join('\n');
 }

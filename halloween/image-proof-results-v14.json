@@ -1,0 +1,90 @@
+{
+  "version": 14,
+  "date": "2026-10-06",
+  "status": "limited-sample-review",
+  "baselineCommit": "2dd1a16f6f11a8be460877f0b6752c6827aadafa",
+  "instructionVerification": {
+    "occurrences": 941,
+    "uniqueOptions": 644,
+    "sections": 4166,
+    "meaning": "全選択肢の指示が出力へ接続されることの検査。画像生成の再現性の保証ではない。"
+  },
+  "preparationIntegration": {
+    "environment": "jsdom application integration; not visual browser/real network",
+    "results": [
+      {
+        "case": "profile first page usable; page 2 still held; double click",
+        "ms": 60,
+        "preparationMs": 34
+      },
+      {
+        "case": "changed ID uses new author"
+      },
+      {
+        "case": "two references prepared without flattening; exact original bytes; prompt attached once",
+        "ms": 45
+      },
+      {
+        "case": "validation error releases preparation lock"
+      }
+    ],
+    "fetchCalls": 4,
+    "canvasWrites": 0
+  },
+  "images": [
+    {
+      "case": "photo-newspaper",
+      "image": "assets/verification/v14/film-sea.png",
+      "seconds": 41.437,
+      "width": 1254,
+      "height": 1254,
+      "review": "sample-accepted",
+      "final": "assets/verification/v14/newspaper-finished.png",
+      "finalDimensions": [
+        1024,
+        1536
+      ],
+      "input": "verification/v14/photo-newspaper-input.txt",
+      "inputSHA256": "36e5ffc6f8752fbe96b01e1af5d5a8ae6c22f78ab607694fa14bc2ed7a5c1a20"
+    },
+    {
+      "case": "watercolor-spread",
+      "image": "assets/verification/v14/watercolor-sea.png",
+      "seconds": 30.167,
+      "width": 1254,
+      "height": 1254,
+      "review": "sample-accepted",
+      "final": "assets/verification/v14/spread-finished.png",
+      "finalDimensions": [
+        1536,
+        1024
+      ],
+      "input": "verification/v14/watercolor-spread-input.txt",
+      "inputSHA256": "762debce45bffe3655b2f87208e5660cfa4ffbb32fc7702c96c8ac9a49a83916"
+    },
+    {
+      "case": "woodcut",
+      "image": "assets/verification/v14/woodcut-sea.png",
+      "seconds": 28.364,
+      "width": 1024,
+      "height": 1536,
+      "review": "sample-accepted",
+      "input": "verification/v14/woodcut-input.txt",
+      "inputSHA256": "069e83f30de6a7e77675b59f39ef3b3b7f82b7d47b9f6d156d19613bf09633fa"
+    }
+  ],
+  "layoutVerification": {
+    "renderer": "native SVG via librsvg/sharp",
+    "sourceImage": "one intact bitmap; aspect ratio preserved",
+    "observed": "文字の判読、指定原稿、図版の外形、見開き中央の安全帯、2本文枠、新聞の縦組みを実画像で確認。",
+    "limits": "近似計測により描画。実端末のフォントでの表示は別途確認する。"
+  },
+  "limitations": [
+    "試験画像は人物なしの海岸3例。顔・性別表現・ポーズと主参照の一致は今回未検証。",
+    "全941件または全組合せの実画像検証は未完了。",
+    "実物資料は技法・構造の比較で、物理素材や実在する特定の場所との同一性は未証明。",
+    "生成画像3例の所要秒数は今回の実測。サービス障害・混雑・利用者の所要時間を保証しない。",
+    "同じ指示でも画像の生成には変動があり、プロンプトだけで必ず同一にはできない。"
+  ],
+  "promptRevisionNote": "画像試験の実入力を保存。試験後に完成画像と実物を照合する納品指示を追記した。描画レシピの条件は維持。"
+}

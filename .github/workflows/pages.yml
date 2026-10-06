@@ -25,6 +25,7 @@ jobs:
         uses: actions/checkout@v4
       - name: JavaScriptを検査
         run: |
+          npm --prefix halloween run check
           node --check preview-v3/admin-app.js
           node --check preview-v3/admin-persist.js
           node --check preview-v3/admin-fixes-v17.js

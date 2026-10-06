@@ -1,7 +1,8 @@
-import {mediumDefinition} from './looks.js?v=11';
-import {poseItems} from './poses.js?v=11';
-import {colorContract,luminousMedia,colorWorlds,sceneryMaterials} from './worlds.js?v=11';
-import {formatFor} from './formats.js?v=11';
+import {mediumDefinition} from './looks.js?v=12';
+import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=12';
+import {poseItems} from './poses.js?v=12';
+import {colorContract,luminousMedia,colorWorlds,sceneryMaterials} from './worlds.js?v=12';
+import {formatFor} from './formats.js?v=12';
 const read=source=>Object.fromEntries(source.trim().split('\n').map(line=>{const i=line.indexOf('=');return [line.slice(0,i),line.slice(i+1)];}));
 export const costumeSpecs=read(`
 魔女・魔法使い=尖った帽子・長いローブ・魔術の紋様。布の厚みと帽子の形を明確にする
@@ -238,7 +239,8 @@ HALLOWEENのみ=HALLOWEENの一語だけ。名前・セリフ・補助コピー�
 セリフのみ=選択したセリフだけを一つのブロックへ。名前・誌名・サインを追加しない
 文字を一切入れない=文字・数字・サイン・ロゴ・透かしを一切描かない。セリフの選択も描画しない
 `);
-export function visualSpec(key,value,{noPerson=false}={}){
+export function visualSpec(key,value,{noPerson=false,palette=''}={}){
+ if(key==='medium'&&value===CRYSTAL_ANIME)return crystalAnimeSpec({noPerson,palette});
  if(key==='design'){const f=formatFor(value);return {text:f.layout,checks:f.checks,known:f.kind!=='custom'};}
  if(key==='medium'){const light=luminousMedia.find(x=>x.value===value),spec=light?{text:light.text,checks:light.checks,known:true}:mediumDefinition(value),detail=spec?.text||customSpec(key,value);if(noPerson)return {text:(value==='ちびキャラ'?'景物を小さく丸い形と低い比率へ省略し、地形・建築・自然素材の識別できる特徴を保つ。':value==='実写風ファッション写真'?'景物・建築・自然素材の質感と造形を、編集写真のように整えた照明・明快な色面・余白のある構図で撮影する。':sceneryMaterials(detail))+' 選択した技法を景物・建築・自然素材・空間の全域へ一貫して適用し、舞台を見本画像から置き換えない。',checks:(spec?.checks||['自由指定の技法・素材・陰影']).map(sceneryMaterials).filter(s=>s.trim()),known:!!spec};return {text:detail+' 選択した技法を描かれる人物・物体・衣装・舞台へ一貫して適用する。項目名に少女・少年・人形などがあっても人物の性別や年齢を変更しない。画面の主役・性別・顔・衣装・場所を見本画像から取り込まない。',checks:spec?.checks||['自由指定の技法・素材・陰影'],known:!!spec};}
  if(key==='costume'||key==='theme'||key==='place'){const m={costume:costumeSpecs,theme:themeSpecs,place:placeSpecs}[key],text=m[value];return {text:text?(text+'。'+({costume:'選択が人物ありの場合は、衣装を主参照の人物に着せる。衣装の役柄名や見本のモデルから着用者の性別・年齢・顔を変更しない。表情・ポーズ・技法はそれぞれの指定を使う。',theme:'場所は舞台指定、身体の姿勢はポーズ指定を優先。動作で実行できない出来事は相手・対象・道具・直前直後の状況で意味を保つ。物語の名前に画材名があっても画風は変更しない。',place:'選択した主題をこの一つの空間へ置き、背景を別の場所へ交換しない。地形・構造・遠近を実際に描き、舞台の見本に写る人物・画風・衣装を追加しない。'}[key])):customSpec(key,value),checks:text?[text]:['自由指定の特徴を実際に描く'],known:!!text};}

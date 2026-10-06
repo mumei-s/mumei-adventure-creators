@@ -1,5 +1,5 @@
-import {poseGroups} from './poses.js?v=11';
-import {colorWorlds,luminousMedia} from './worlds.js?v=11';
+import {poseGroups} from './poses.js?v=12';
+import {colorWorlds,luminousMedia} from './worlds.js?v=12';
 export const AUTO='おまかせ';
 const group=(label,values)=>({label,values:values.split('|')});
 export const questions=[

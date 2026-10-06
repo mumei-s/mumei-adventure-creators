@@ -1,15 +1,17 @@
-import {imageOutputContract} from './output-contract.js?v=11';
-import {visibleQuestions} from './catalog.js?v=11';
-import {productionPlan,planInstructions} from './production-plan.js?v=11';
-import {colorContract,sceneContract} from './worlds.js?v=11';
+import {imageOutputContract} from './output-contract.js?v=12';
+import {CRYSTAL_ANIME,crystalAnimePalette,crystalAnimeLighting,isCrystalAnimeLimitedPalette} from './crystal-anime.js?v=12';
+import {visibleQuestions} from './catalog.js?v=12';
+import {productionPlan,planInstructions} from './production-plan.js?v=12';
+import {colorContract,sceneContract} from './worlds.js?v=12';
 export function needsReference(values){const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);return !noPerson||values.place==='参照風景を舞台にする'||values.palette==='参照画像の色を生かす';}
 // Option thumbnails, including legacy styleGuide arguments, never control generation.
 export function composePrompt({collection='halloween',creator,profile,values,variant,references=[],edition,referenceBundle=null,random=Math.random,preparedPlan=null}){
  const [size,pixels,ratio]=values.size.split('｜');
  const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);
+ const crystal=values.medium===CRYSTAL_ANIME;
  const cyanotype=values.medium==='サイアノタイプ';
  const monochrome=!cyanotype&&(/^(墨一色|モノクロ)/.test(values.palette)||/モノクロ|^水墨画$|^鉛筆デッサン$|^木炭画$/.test(values.medium));
- const limitedPalette=monochrome||cyanotype||/^(金と黒の二色|黒と白と朱の三色|セピア)$/.test(values.palette);
+ const limitedPalette=monochrome||cyanotype||/^(金と黒の二色|黒と白と朱の三色|セピア)$/.test(values.palette)||(crystal&&isCrystalAnimeLimitedPalette(values.palette));
  const plan=preparedPlan||productionPlan(profile,values,variant,collection,random);
  const avoid=references.filter(r=>r.role==='avoid');
  const lines=[
@@ -31,6 +33,11 @@ export function composePrompt({collection='halloween',creator,profile,values,var
  ...(/水墨|南画|禅画|書と墨/.test(values.medium)?[noPerson?'墨の必須条件：地形・建築・植生・雲・水面の輪郭と量感を、筆圧・かすれ・墨のにじみ・白い余白で描く。景物を写真的に残して周囲だけに飛沫を足す処理にしない。':'墨の必須条件：顔・髪・肌・身体・衣装も、背景と同じ筆圧・かすれ・にじみ・余白で描き直す。鼻・頬・唇の形は筆の濃淡と白抜きで成立させる。写真の顔や精細なレースを残して墨の飛沫だけを周囲へ足す処理にしない。']:[]),
  ...(/透明水彩/.test(values.medium)?[noPerson?'水彩の必須条件：地形・建築・植生・空・水面を、紙の白・透ける薄塗り・色境界のにじみ・輪郭の省略で描く。透明は絵具の性質であり、景物を幽霊にしない。':'水彩の必須条件：顔・髪・肌・衣装にも紙の白と透ける薄塗り、色境界のにじみ、輪郭の省略を使う。写真的な顔の仕上がりへ戻さず、同じ顔の形を透明水彩の筆で描く。']:[]),
  '',
+ ...(crystal?[
+ noPerson?'クリスタル透光アニメの必須条件：選択した景物を細い色線と澄んだ2Dアニメ色面で描き、光側と影側を明確に分ける。人物を補わない。':'クリスタル透光アニメの必須条件：主参照の顔の輪郭・目鼻口の形と配置比率を保ち、鼻・唇・頬まで細い描線と明快な2Dアニメ色面へ描き直す。目の拡大・顎の尖り・鼻口の縮小を一律に行わない。顔だけ写実に戻さない。',
+ '明暗と透光の必須条件：'+crystalAnimeLighting({noPerson}),
+ ''
+ ]:[]),
  '【作者の名前と公開活動】',
  '作品で使うクリエイター名：'+(profile.displayName||profile.name),
  'ID（情報参照用。画像内には印字しない）：'+(creator||'IDなし・手動入力'),
@@ -70,7 +77,7 @@ export function composePrompt({collection='halloween',creator,profile,values,var
  '',
  '【物語と舞台を一場面に統合】',...sceneContract(values,{collection,noPerson}),
  noPerson?'選択した自然や街の空間を一場面として描く。前景・中景・遠景、空気遠近、接地、反射、光源を整え、未選択の幻想現象や人物で物語を補わない。':'衣装は主役の役柄、感情は演じ方、セリフは発する言葉、デザインは見せ方。これらを別の物語や背景として描き足さない。主役の具体的な行為・相手または対象・結果が読み取れる一瞬にする。',
- '【色・光・素材の設計】',cyanotype?'技法の色制限：プルシアンブルーと紙の白だけ。指定配色の面積と明暗関係を青白の濃淡へ翻訳する。':monochrome?'技法と配色の色制限：黒・白・無彩色の灰色だけ。指定配色の面積と明暗関係を無彩色の濃淡へ翻訳する。':colorContract(values.palette,{noPerson}),
+ '【色・光・素材の設計】',cyanotype?'技法の色制限：プルシアンブルーと紙の白だけ。指定配色の面積と明暗関係を青白の濃淡へ翻訳する。':monochrome?'技法と配色の色制限：黒・白・無彩色の灰色だけ。指定配色の面積と明暗関係を無彩色の濃淡へ翻訳する。':crystal?crystalAnimePalette(values.palette,{noPerson}):colorContract(values.palette,{noPerson}),
  (noPerson?'配色は地形・景物・空・背景・影・文字まで連動させる。':'配色は全体の色調・衣服・背景・影・文字まで連動させる。')+(noPerson?'選んだ技法の色制限を守り、景物の素材と光源の関係を保つ。':monochrome?'髪・肌・瞳も選択した無彩色の明度差へ翻訳する。':limitedPalette?'髪・肌・瞳の識別も限定色と明度差で保ち、元の有彩色を残さない。':'人物の同一性として必要な髪・肌・瞳の基礎色は保持し、その上の光と衣装で配色を実現する。')+'技法は画風の指定が担当し、配色見本の線や顔を持ち込まない。発光・虹彩・透過光を明示選択した場合だけ、光源と被照面のつながりを描く。墨一色や平面印刷では、光を白抜き・濃淡・版の色面に翻訳する。',
  '',
  '【今回必須の演出】',
@@ -93,7 +100,7 @@ export function composePrompt({collection='halloween',creator,profile,values,var
  '背景の骨格：'+variant.background,
  '遠近・立体・臨場感：'+variant.depth,
  '流動・運動・浮遊感：'+variant.motion,
- '照明：'+variant.light,
+ '照明：'+(crystal?crystalAnimeLighting({noPerson}):variant.light),
  '追加モチーフの扱い：'+variant.motif+'。明示した項目と無関係な物を自動追加しない。',
  '固定と変更の方針：'+variant.locked,
  '身体のポーズを表情・顔角度と別に実行する。立つ・座る・寝る・走る・跳ぶを互いに置換しない。手足の配置、重心、接触、慣性を具体的に描く。顔向きと両立しない場合は首や関節を破綻させず、カメラと胴体の向きで整える。',

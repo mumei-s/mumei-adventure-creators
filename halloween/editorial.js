@@ -1,4 +1,4 @@
-import {formatFor} from './formats.js?v=11';
+import {formatFor} from './formats.js?v=12';
 const pick=(items,random)=>items[Math.min(items.length-1,Math.floor(random()*items.length))];
 function shuffle(items,random){const a=[...items];for(let i=a.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 const titles={cover:['LUMEN THREAD','FORM & FABLE','VELVET SIGNAL','LIGHT ARCHIVE','OPEN PALETTE'],interview:['THE MAKING FILE','CREATIVE VOICES','A FIELD OF IDEAS'],spread:['THE VISUAL NOTE','WORLD IN MOTION','A NEW PERSPECTIVE'],newspaper:['創作通信','彩景新聞','表現日報'],cinema:['BEYOND THE FRAME','A SILENT DOOR','WHEN LIGHT RETURNS'],book:['ひかりを綴る','まだ知らない景色','境界の手紙'],album:['ECHOES IN COLOR','UNFOLDING','SOFT REVERB'],default:['FORM & WONDER','もうひとつの景色','STORIES IN LIGHT']};

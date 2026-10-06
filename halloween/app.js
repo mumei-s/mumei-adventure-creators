@@ -1,22 +1,22 @@
-import {productionPlan,repairPrompt} from './production-plan.js?v=11';
-import {applyPose} from './poses.js?v=11';
-import {applyCollection,dailyInspiration} from './collection.js?v=11';
-import {setupEffects} from './effects.js?v=11';
-import {colorWorlds} from './worlds.js?v=11';
-import {mergeCreator} from './creator.js?v=11';
-import {createCropEditor} from './crop-editor.js?v=11';
-import {profileForArtwork} from './activity-settings.js?v=11';
-import {createPicker} from './picker.js?v=11';
-import {modeKeys,modeCopy,initialSelections,effectiveSelections,propose} from './modes.js?v=11';
-import {buildReferenceBoard} from './guide-board.js?v=11';
-import {profileEndpoint,profileHeaders} from './runtime-config.js?v=11';
-import {questions,visibleQuestions,defaults,AUTO,normalizeCreator,resolveSelections} from './catalog.js?v=11';
-import {composePrompt,needsReference} from './prompt.js?v=11';
-import {buildDirection} from './direction.js?v=11';
-import {sampleFor,typePreview} from './examples.js?v=11';
-import {makeZip} from './zip.js?v=11';
-import {imageDeliveryRepairPrompt} from './output-contract.js?v=11';
-import {editorialReferencesFor} from './editorial-reference-sources.js?v=11';
+import {productionPlan,repairPrompt} from './production-plan.js?v=12';
+import {applyPose} from './poses.js?v=12';
+import {applyCollection,dailyInspiration} from './collection.js?v=12';
+import {setupEffects} from './effects.js?v=12';
+import {colorWorlds} from './worlds.js?v=12';
+import {mergeCreator} from './creator.js?v=12';
+import {createCropEditor} from './crop-editor.js?v=12';
+import {profileForArtwork} from './activity-settings.js?v=12';
+import {createPicker} from './picker.js?v=12';
+import {modeKeys,modeCopy,initialSelections,effectiveSelections,propose} from './modes.js?v=12';
+import {buildReferenceBoard} from './guide-board.js?v=12';
+import {profileEndpoint,profileHeaders} from './runtime-config.js?v=12';
+import {questions,visibleQuestions,defaults,AUTO,normalizeCreator,resolveSelections} from './catalog.js?v=12';
+import {composePrompt,needsReference} from './prompt.js?v=12';
+import {buildDirection} from './direction.js?v=12';
+import {sampleFor,typePreview} from './examples.js?v=12';
+import {makeZip} from './zip.js?v=12';
+import {imageDeliveryRepairPrompt} from './output-contract.js?v=12';
+import {editorialReferencesFor} from './editorial-reference-sources.js?v=12';
 const $=id=>document.getElementById(id),STORAGE='mumeis-halloween-v2';
 let saved={history:[],used:[],count:0},view='auto';
 try{const v=JSON.parse(localStorage.getItem(STORAGE)||'null');if(v&&Array.isArray(v.history)&&Array.isArray(v.used))saved={history:v.history.map(r=>({...r,values:{pose:AUTO,line:AUTO,...r?.values}})).filter(x=>x&&typeof x.prompt==='string'&&x.values&&questions.every(q=>typeof x.values[q.key]==='string')&&x.variant&&x.profile&&Array.isArray(x.references)).slice(0,12),used:v.used.filter(x=>x&&typeof x.signature==='string').slice(-2000),count:Number.isSafeInteger(v.count)?v.count:0};view=localStorage.getItem('halloween-view')||'auto';}catch{}
@@ -128,7 +128,7 @@ async function generate(lockedValues=null){
   // A one-image bundle preserves the uploaded bytes. Multi-image flattening is optional.
   let referenceBoardFile=null;try{referenceBoardFile=ordered.length?await buildReferenceBoard(ordered,metadata):null;}catch{tell('１枚へのまとめを省略しました。元の参照画像と指示は共有できます。');}
   const prompt=composePrompt({collection,creator:creator||'',profile,values,variant,references:metadata,edition,referenceBundle:referenceBoardFile&&ordered.length>1?{name:referenceBoardFile.name,combined:true}:null,preparedPlan:production});
-  saved.count++;const r={version:11,collection,creator:creator||'',profile,values,variant,edition,prompt,production,date:new Date().toISOString(),references:metadata,localRefs:ordered.map(r=>({...r})),referenceBoardFile,attachmentMode,isFresh:true,count:saved.count};
+  saved.count++;const r={version:12,collection,creator:creator||'',profile,values,variant,edition,prompt,production,date:new Date().toISOString(),references:metadata,localRefs:ordered.map(r=>({...r})),referenceBoardFile,attachmentMode,isFresh:true,count:saved.count};
   const {localRefs,referenceBoardFile:boardFile,isFresh,...record}=r;
   saved.used.push({signature:variant.signature,family:variant.family,face:variant.face,expression:variant.expression,distance:variant.distance,pose:variant.pose,poseChoice:values.pose,layout:variant.layout});saved.used=saved.used.slice(-2000);saved.history.unshift(record);saved.history=saved.history.slice(0,12);persist();renderHistory();$('form-error').hidden=true;renderBoard(values,variant);$('issue-number').textContent='No. '+String(saved.count).padStart(3,'0');$('stage').classList.remove('flash');void $('stage').offsetWidth;$('stage').classList.add('flash');showResult(r);effects.celebrate();return r;
  }finally{creating=false;$('generate').disabled=false;$('generate').textContent='制作プロンプトをつくる ✦';$('generation-status').hidden=true;}
@@ -138,7 +138,7 @@ function canShareFiles(files){try{return !!navigator.share&&!!navigator.canShare
 function showResult(r){
  currentResult=r;$('copy-repair').hidden=!r.production;$('prompt-output').value=r.prompt;$('result-edition').textContent='EDITION / '+r.edition;
  const live=Array.isArray(r.localRefs)&&r.localRefs.length>0,fresh=!!r.isFresh,requires=needsReference(r.values),noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(r.values.costume);
- $('result-intro').textContent=r.version!==11?'以前の仕様で作成した履歴です。新仕様で作る場合は、入力画面から制作してください。':live?'参照画像と制作指示の準備ができました。ChatGPTへ送り、画像を生成します。':requires?'ChatGPTで自分の参照画像を添付し、この指示と一緒に送ります。':'参照画像なしで作れる風景・モチーフです。この指示をChatGPTへ送って画像を生成します。';
+ $('result-intro').textContent=r.version!==12?'以前の仕様で作成した履歴です。新仕様で作る場合は、入力画面から制作してください。':live?'参照画像と制作指示の準備ができました。ChatGPTへ送り、画像を生成します。':requires?'ChatGPTで自分の参照画像を添付し、この指示と一緒に送ります。':'参照画像なしで作れる風景・モチーフです。この指示をChatGPTへ送って画像を生成します。';
  $('result-summary').replaceChildren(el('h3',null,r.values.theme),el('p',null,r.profile.displayName+' / '+r.values.design+' / '+r.values.medium),el('p',null,r.values.size.split('｜').slice(0,2).join(' / ')+'px'),el('p','detail',noPerson?'人物なし / '+r.values.place:[r.variant.face,r.variant.expression,r.variant.distance].join(' / ')));
  if(r.production){const details=el('details','production-details');details.append(el('summary',null,'この作品に反映する10項目と文字原稿'));const list=el('ol');r.production.conditions.forEach(c=>{const li=el('li');li.append(el('b',null,c.name+'：'+c.value),el('p',null,c.text));list.append(li);});details.append(list);if(r.production.copy.slots.length){details.append(el('h4',null,'作品内の文字原稿'));r.production.copy.slots.forEach(slot=>details.append(el('p',null,slot.role+'：'+slot.text)));}r.production.notes.forEach(n=>details.append(el('p','production-note',n)));const sources=editorialReferencesFor(r.values.design);if(sources.length){details.append(el('h4',null,'誌面の構成を確認した資料'));for(const source of sources){const a=el('a',null,source.publisher+' / '+source.location);a.href=source.url;a.target='_blank';a.rel='noopener noreferrer';const item=el('p');item.append(a);details.append(item);}}$('result-summary').append(details);}
  $('result-refs').replaceChildren();if(live)r.localRefs.forEach((x,i)=>{const f=el('figure'),im=el('img');im.src=x.url;im.alt=x.name;f.append(im,el('figcaption',null,'共有する参照 '+String(i+1).padStart(2,'0')+' / '+(x.role==='avoid'?'似せない前作':x.role==='identity'?'主参照':'補助')));$('result-refs').append(f);});

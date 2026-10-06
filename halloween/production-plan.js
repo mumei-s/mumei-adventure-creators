@@ -1,7 +1,8 @@
-import {visibleQuestions} from './catalog.js?v=11';
-import {visualSpec} from './visual-specs.js?v=11';
-import {formatContract} from './formats.js?v=11';
-import {buildEditorial,editorialContract} from './editorial.js?v=11';
+import {visibleQuestions} from './catalog.js?v=12';
+import {CRYSTAL_ANIME,crystalAnimePalette} from './crystal-anime.js?v=12';
+import {visualSpec} from './visual-specs.js?v=12';
+import {formatContract} from './formats.js?v=12';
+import {buildEditorial,editorialContract} from './editorial.js?v=12';
 const sceneOnlyThemes=Object.fromEntries(`
 朝の光と小さな日常=朝日が差す窓、使用途中のカップ、整えた生活の道具で静かな朝を描く
 旅先で見つけた景色=初めて眺める土地の地形や建築を大きく見せ、手前から遠景へ続く道で旅の発見を表す
@@ -54,7 +55,8 @@ export function productionPlan(profile,values,variant,collection='halloween',ran
  if(values.line!=='セリフなし'&&(/文字を一切|クリエイター名だけ|HALLOWEEN|サイン風|落款風/.test(values.type)))notes.push('セリフより限定した文字設定を優先します。');
  if(/モノクロ|^水墨画$|^鉛筆デッサン$|^木炭画$|サイアノ/.test(values.medium)&&!/墨一色|モノクロ|セピア|参照画像/.test(values.palette))notes.push('単色技法では選んだ配色を技法の濃淡へ翻訳します。モノクロ・水墨・鉛筆・木炭は無彩色、サイアノタイプは青と白を保ちます。');
  const conditions=visibleQuestions.map((q,i)=>{
-  const spec=visualSpec(q.key,values[q.key],{noPerson});let text=spec.text,checks=[...spec.checks];
+  const spec=visualSpec(q.key,values[q.key],{noPerson,palette:values.palette});let text=spec.text,checks=[...spec.checks];
+  if(q.key==='palette'&&values.medium===CRYSTAL_ANIME){text=crystalAnimePalette(values.palette,{noPerson});checks=['選択配色：'+values.palette,'選んだ色の中で白または限定色の光と深い影が分かる',noPerson?'景物の形と材質を保つ':'主参照の特徴を配色の条件に沿って保つ'];}
   if(q.key==='palette'&&(monochromeMedium||cyanotype)){const colors=cyanotype?'プルシアンブルーと紙の白':'黒・白・無彩色の灰';text='選択配色「'+values.palette+'」の主色・副色・差し色の面積と明暗の関係を、'+colors+'の濃淡へ翻訳する。技法の色制限を全領域で守り、'+(noPerson?'景物・建築・自然素材':'髪・肌・瞳')+'の識別も形と明度差で保つ。元の有彩色や別の差し色は残さない。';checks=[colors+'だけの完成画像','形と明度差による識別','選択配色の面積と明暗関係'];}
   if(q.key==='theme'&&noPerson){text=sceneryTheme(values.theme)+'。人物・人型シルエット・顔・手足を追加しない。場所は選んだ舞台を守り、画材や形式は別の項目を守る。';checks=['選択主題が分かる景物・自然現象・出来事の痕跡','人物を再導入していない'];}
   if(q.key==='mood'){text=noPerson?'選択した雰囲気は景物の光・色・余白・天候で表す。人の笑顔・目線・横顔・首の傾きを物体へ移植せず、風景の視点と奥行きを保つ。':text+' 今回の実行：'+variant.face+' / '+variant.expression+(variant.tone?' / '+variant.tone:'');checks=noPerson?['光・色・余白による空気感','物体に顔や目を描いていない']:[variant.face,variant.expression];}

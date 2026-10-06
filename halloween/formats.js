@@ -1,4 +1,4 @@
-import {editorialReferencesFor,editorialReferenceContract} from './editorial-reference-sources.js?v=11';
+import {editorialReferencesFor,editorialReferenceContract} from './editorial-reference-sources.js?v=12';
 // The selected title defines the layout. Medium defines image rendering independently.
 const rows=[
  ['ファッション雑誌の表紙','cover','上部15〜22%に独自の誌名。主役を中央の高さ65〜85%に置き、左右の細い2列にカバーラインを整列。最重要特集を1本、補助特集を4〜6本。誌名・大特集・小特集・補足の4段階で字の大きさを分ける。全周4〜6%を文字の安全余白にする。','誌名／主役／大特集／補助特集／特集の短い補足'],

@@ -1,8 +1,8 @@
-import {visualSpec} from './visual-specs.js?v=11';
-import {poseItems} from './poses.js?v=11';
-import {dailySamples} from './collection.js?v=11';
-import {individualSamples} from './sample-catalog.js?v=11';
-import {colorWorlds,luminousMedia} from './worlds.js?v=11';
+import {visualSpec} from './visual-specs.js?v=12';
+import {poseItems} from './poses.js?v=12';
+import {dailySamples} from './collection.js?v=12';
+import {individualSamples} from './sample-catalog.js?v=12';
+import {colorWorlds,luminousMedia} from './worlds.js?v=12';
 // Each field owns one semantic role. A word such as "墨" in a story must not change the medium.
 // file is used only to show a picker preview; it must never become a generation reference.
 export function recipeFor(key,value){

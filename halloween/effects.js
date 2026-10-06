@@ -1,5 +1,5 @@
-import {createSpells,studioIcons} from './spells.js?v=9';
-import {icons} from './halloween-icons.js?v=9';
+import {createSpells,studioIcons} from './spells.js?v=10';
+import {icons} from './halloween-icons.js?v=10';
 export function setupEffects(){
  function refresh(){const daily=document.body.dataset.collection==='everyday';document.querySelectorAll('#magic-scene .ornament').forEach((n,i)=>{n.innerHTML=(daily?studioIcons:icons)[i];n.setAttribute('aria-label',(daily?['星','花','惑星','鉛筆']:['おばけ','カボチャ','コウモリ','お菓子'])[i]+'の飾りで遊ぶ');});}
  refresh();

@@ -1,4 +1,4 @@
-import {icons} from './halloween-icons.js?v=9';
+import {icons} from './halloween-icons.js?v=10';
 export const studioIcons=[
  '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><path d="m32 3 8 20 21 9-21 9-8 20-9-20L3 32l20-9Z" fill="#ffdc75" stroke="#8350a8" stroke-width="2"/><circle cx="32" cy="32" r="7" fill="#fff8dd"/></svg>',
  '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><g fill="#eda6ca" stroke="#7758a5" stroke-width="2"><ellipse cx="32" cy="16" rx="10" ry="14"/><ellipse cx="48" cy="32" rx="14" ry="10"/><ellipse cx="32" cy="48" rx="10" ry="14"/><ellipse cx="16" cy="32" rx="14" ry="10"/></g><circle cx="32" cy="32" r="11" fill="#ffdb65"/></svg>',

@@ -1,11 +1,12 @@
-import {selectedRecipes} from './recipes.js?v=9';
-import {visibleQuestions} from './catalog.js?v=9';
-import {buildTextPlan} from './direction.js?v=9';
-import {colorContract,sceneContract} from './worlds.js?v=9';
-export function composePrompt({collection='halloween',creator,profile,values,variant,references,edition,styleGuide=null,random=Math.random}){
+import {selectedRecipes} from './recipes.js?v=10';
+import {visibleQuestions} from './catalog.js?v=10';
+import {productionPlan,planInstructions} from './production-plan.js?v=10';
+import {colorContract,sceneContract} from './worlds.js?v=10';
+export function composePrompt({collection='halloween',creator,profile,values,variant,references,edition,styleGuide=null,random=Math.random,preparedPlan=null}){
  const [size,pixels,ratio]=values.size.split('｜');
  const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);
- const copy=buildTextPlan(profile,{...values,collection},random);
+ const monochrome=/^(墨一色|モノクロ)/.test(values.palette);
+ const plan=preparedPlan||productionPlan(profile,values,variant,collection,random),copy=plan.copy;
  const primary=references.filter(r=>r.role!=='avoid'),avoid=references.filter(r=>r.role==='avoid');
  const lines=[
  '画像生成の制作仕様 / '+edition,
@@ -16,7 +17,10 @@ export function composePrompt({collection='halloween',creator,profile,values,var
  '1. 同じキャラクターの顔立ち・髪・目・固有の特徴を保つ。',
  styleGuide?'2. 選んだ作例と指定の画風を照合し、同じ描線・色面・陰影・画材の手触りを画像全体に適用する。参照写真の画風・質感を引きずらない。':'2. 指定の画風の描画仕様に従い、描線・色面・陰影・画材の手触りを画像全体に適用する。参照写真の画風・質感を引きずらない。',
  '3. 今回の表情、顔の角度、撮影距離、身体動作、構図をそのまま実行する。「微細な変化」に縮小しない。',
- '4. 指定の形式に合う文字量と広告の構造を再現する。',
+ '4. 指定の形式に合う文字量と広告の構造を再現する。1〜4はすべて必要な条件で、後ろの条件を省略してよい順位ではない。',
+ ...(monochrome?['限定色の必須条件：完成画像の全領域を黒・白・無彩色の灰色だけで描く。参照の髪・肌・瞳・金属も形と明度差で同一性を保ち、元の色は残さない。金髪・金刺繍・肌色・光源の色も無彩色へ変換し、薄い着色やセピアを加えない。']:[]),
+ ...(/水墨|南画|禅画|書と墨/.test(values.medium)?['墨の必須条件：顔・髪・肌・身体・衣装も、背景と同じ筆圧・かすれ・にじみ・余白で描き直す。鼻・頬・唇の形は筆の濃淡と白抜きで成立させる。写真の顔や精細なレースを残して墨の飛沫だけを周囲へ足す処理にしない。']:[]),
+ ...(/透明水彩/.test(values.medium)?['水彩の必須条件：顔・髪・肌・衣装にも紙の白と透ける薄塗り、色境界のにじみ、輪郭の省略を使う。写真的な顔の仕上がりへ戻さず、同じ顔の形を透明水彩の筆で描く。']:[]),
  '',
  '【人物の名前と公開活動】',
  '作品で使うクリエイター名：'+(profile.displayName||profile.name),
@@ -50,18 +54,19 @@ export function composePrompt({collection='halloween',creator,profile,values,var
  ''
  ]:[]),
  '【固定するもの／変えるもの】',
- '固定：顔の輪郭、目の形と間隔、鼻・口の形、髪の基礎色と識別できる髪の特徴、年齢感、肌の基礎色、体格、固有の印。別人への置換を禁止。',
+ monochrome?'固定：顔の輪郭、目の形と間隔、鼻・口の形、識別できる髪の形、年齢感、体格、固有の印。髪・肌・瞳の色は無彩色の明度差へ翻訳する。別人への置換を禁止。':'固定：顔の輪郭、目の形と間隔、鼻・口の形、髪の基礎色と識別できる髪の特徴、年齢感、肌の基礎色、体格、固有の印。別人への置換を禁止。',
  '変更：顔の向き、首の角度、視線、表情の筋肉、口の開閉、手足の位置、体の向き、カメラ位置、画角、撮影距離、衣装、背景、光、レイアウト、筆致・素材。参照の顔の傾きや肩のひねりをテンプレートにしない。',
  '参照の肌テクスチャ、撮影照明、背景、色調、可愛く見せる同じ上目遣いを固定要素に含めない。アニメ・墨・油彩・紙・版画などを選んだ場合、顔だけ写真的なまま貼り付けず、同じ顔立ちを選んだ技法の造形へ変換する。',
  noPerson?'人物を描かない選択を優先。参照の固有モチーフ・色・輪郭を風景や紋章に残し、キャラの顔を無理に描かない。':'主参照が人物ではなく風景・アイコン・物体なら、画像の実際の一部を背景・衣装・紋章・小道具へ組み込む。元の形・色・構造が分かる要素を必ず残し、それに由来するオリジナルの主役を作る。',
  '',
  '【10の選択】',...visibleQuestions.map((q,i)=>(i+1)+'. '+q.name+'：'+values[q.key]+(q.key==='type'?' / セリフ：'+values.line:'')),
  '用途：'+size+' / 希望寸法：'+pixels+'px / 縦横比：'+ratio,
+ ...planInstructions(plan),
  '',
  '【物語と舞台を一場面に統合】',...sceneContract(values).filter((_,i)=>collection!=='everyday'||i<3),
  '衣装は主役の役柄、感情は演じ方、セリフは発する言葉、デザインは見せ方。これらを別の物語や背景として描き足さない。主役の具体的な行為・相手または対象・結果が読み取れる一瞬にする。',
  '【色・光・素材の設計】',colorContract(values.palette),
- '選んだ配色は全体の色調、主役の服、背景、影、文字まで連動させる。人物の同一性として必要な髪・肌・瞳の基礎色は保持し、その上の光と衣装で配色を実現する。技法は画風の指定が担当し、配色見本の線や顔を持ち込まない。発光・虹彩・透過光を選んだ場合は省略せず、光源と被照面のつながりを描く。墨一色や平面印刷では、光を白抜き・濃淡・版の色面に翻訳する。',
+ '選んだ配色は全体の色調、主役の服、背景、影、文字まで連動させる。'+(monochrome?'髪・肌・瞳も選択した無彩色の明度差へ翻訳する。':'人物の同一性として必要な髪・肌・瞳の基礎色は保持し、その上の光と衣装で配色を実現する。')+'技法は画風の指定が担当し、配色見本の線や顔を持ち込まない。発光・虹彩・透過光を選んだ場合は省略せず、光源と被照面のつながりを描く。墨一色や平面印刷では、光を白抜き・濃淡・版の色面に翻訳する。',
  '',
  '【今回必須の演出】',
  '顔の向き：'+variant.face,
@@ -88,13 +93,8 @@ export function composePrompt({collection='halloween',creator,profile,values,var
  avoid.length?'比較用に添付した前作を実際に見て、頭の傾き・顔の向き・表情・人物の占有率・身体のシルエット・カメラ高・文字配置・背景の奥行きを照合する。顔の同一性以外で似ている項目が3つ以上あれば、今回の演出へ戻して構図を再設計してから生成する。':'過去の完成画像は今回のメッセージに添付されていない。見て比較できたと主張しない。上の前回演出メモと今回の指定を比較して設計する。',
  '',
  '【作品内の文字・広告編集】',
- copy.mode==='none'?'文字を一切描かない。タイトル・サイン・ID・ブランド・透かしも入れない。':[
- '使用する原稿（この中から形式に合わせて配置する。固有名はクリエイター名だけ）：',...copy.blocks.map((s,i)=>(i+1)+'. '+s),
- copy.dense?'文字が多い指定：大きなマストヘッドまたは作品タイトル、クリエイター名、キャッチ、活動テーマの特集見出し3〜6本、紹介文、英語の短い補助見出し、必要なら編集・制作のクレジットを計8〜14ブロックで配置。大・中・小の3段階を使い、縦横の組版、段組み、罫線、囲み記事、キャプションまで設計する。':'文字量は選んだ設定と作品形式に合わせる。名前だけ・セリフだけ・'+(collection==='everyday'?'短いテーマ名':'HALLOWEEN')+'だけの指定なら、その原稿だけを描く。',
- '雑誌：上段の誌名、複数の表紙特集、主役に重ならない縦横のカバーライン。映画ポスター：オリジナルタイトル、コピー、名前、制作クレジットを複数段の字組みに。広告・新聞：段組み、見出し、活動を紹介する短い本文の情報階層。既存の雑誌・映画・広告のロゴや他人の名前は流用しない。',
- 'プロフィールや記事の内容を短いコピーへ編集してよいが、事実の数値や業績を捏造しない。'+(collection==='everyday'?'作品の':'Halloweenの')+'架空の編集タイトルは自由に作れる。日付・価格・会場など未確認の実務情報は描かない。',
- 'ツールの名称を作品のブランドや署名として入れない。クリエイターID、noteプロフィールURL、制作番号を画像内へ印字しない。参加者が指定したクリエイター名がツール名と同じ場合のみ、その本人名として使う。日本語と英語の綴り・可読性を確認し、意味のない疑似文字で文字量を水増ししない。'
- ].join('\n'),
+ ...plan.editorial,
+ 'ツール名・ID・プロフィールURL・制作番号は画像に印字しない。本人が指定したクリエイター名だけを作者名として使う。各原稿の綴りを正確に確認し、意味のない疑似文字で水増ししない。',
  '',
  '【技法と品質】',
  '描画の設計には色彩理論、明度階層、構図、透視図法、空気遠近、レンズの画角、反射・屈折・散乱、素材の粗さと透過、衣服の構造、解剖、印刷と文字の階層を使う。選んだ技法に関係する知識を具体的な形・光・面へ落とし込み、単に最高品質という形容詞で済ませない。指定がない特定作家の固有キャラ・作品構図・署名を模倣しない。',

@@ -1,4 +1,4 @@
-import {questions,AUTO} from './catalog.js?v=9';
+import {questions,AUTO} from './catalog.js?v=10';
 const original=questions.map(q=>({...q,groups:q.groups.map(g=>({...g,values:[...g.values]}))}));
 export const dailyScenes=[
  ['朝の光と小さな日常','カーテンを開き、朝の一杯をいれる。柔らかな日差しと生活の手触り。'],

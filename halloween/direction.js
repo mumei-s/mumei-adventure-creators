@@ -64,23 +64,4 @@ export function buildDirection(used=[],control='毎回大胆に変える',random
  throw new Error('別の演出を選び直してください。');
 }
 export function isAdvertising(design){return /雑誌|誌面|見開き|新聞|映画ポスター|舞台ポスター|フェス|フライヤー|広告|チラシ/.test(design);}
-export function buildTextPlan(profile,values,random=Math.random){
- const name=(profile.displayName||profile.name||'').trim();
- if(values.type==='文字を一切入れない')return {mode:'none',name:'',blocks:[],dense:false};
- const noName=values.type==='セリフのみ'||values.type==='HALLOWEENのみ';
- const daily=values.collection==='everyday';
- const titles=daily?['EVERYDAY WONDERS','ART & LIFE','OPEN SKIES','THE COLOR ISSUE','SMALL MOMENTS','A NEW CHAPTER','STORIES IN LIGHT']:['MIDNIGHT MUSE','THE OTHER SIDE','AFTER THE SPELL','NIGHT PARADE','SHADOW PLAY','HALLOWEEN STORIES','THE MOON ISSUE','MASKS & MAGIC','SPOOKY SEASON','THE LAST CANDLE','BEYOND THE MIRROR','GHOST NOTES'];
- const topics=Array.isArray(profile.topics)?profile.topics.filter(x=>typeof x==='string'):[];
- const selectedTopics=[...topics];for(let i=selectedTopics.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[selectedTopics[i],selectedTopics[j]]=[selectedTopics[j],selectedTopics[i]];}
- const edits=daily?[t=>t+'のある日々',t=>'特集：'+t+'の制作ノート',t=>t+'から広がる世界',t=>t+'の視点で見る日常']:[t=>t+'とHalloweenの交差点',t=>'特集：'+t+'の制作ノート',t=>t+'の視点で見る夜',t=>t+'をめぐる作品案内',t=>t+'から広がる創作の世界',t=>'光と影で読み解く、'+t];
- const headlines=selectedTopics.slice(0,3+Math.floor(random()*4)).map(t=>edits[Math.floor(random()*edits.length)](t));
- const dense=/たっぷり|クレジット|新聞/.test(values.type)||values.type==='デザインに合わせて自動編集'&&isAdvertising(values.design);
- const line=values.line==='セリフなし'?'':values.line;
- const title=titles[Math.floor(random()*titles.length)];
- let blocks=noName?[line].filter(Boolean):[title,name,line].filter(Boolean);
- if(dense)blocks.push(daily?'ART & LIFE SPECIAL':'HALLOWEEN SPECIAL',...headlines,'CREATOR SPOTLIGHT','ART / STORY / IMAGINATION',daily?'A MOMENT TO REMEMBER':'A NIGHT TO REMEMBER','OPEN THE NEXT CHAPTER');
- if(values.type==='HALLOWEENのみ')blocks=['HALLOWEEN'];
- if(values.type==='HALLOWEEN＋クリエイター名')blocks=['HALLOWEEN',name];
- if(values.type==='クリエイター名だけ'||/サイン風|落款風/.test(values.type))blocks=[name];
- return {mode:values.type,name:noName?'':name,title,dense,blocks:[...new Set(blocks)].slice(0,14),topics};
-}
+export {buildEditorial as buildTextPlan} from './editorial.js?v=10';

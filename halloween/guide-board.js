@@ -1,4 +1,4 @@
-import {selectedRecipes} from './recipes.js?v=9';
+import {selectedRecipes} from './recipes.js?v=10';
 const names={medium:'画風・質感',design:'デザイン',theme:'物語',costume:'衣装',mood:'表情・角度',place:'舞台',palette:'配色',pose:'ポーズ'};
 async function loadImage(src){return new Promise((resolve,reject)=>{const img=new Image(),timer=setTimeout(()=>reject(new Error('作例の画像を読み込めませんでした。通信を確認して、もう一度制作してください。')),12000);img.onload=()=>{clearTimeout(timer);resolve(img);};img.onerror=()=>{clearTimeout(timer);reject(new Error('作例の画像を読み込めませんでした。'));};img.src=src;});}
 function wrap(ctx,text,x,y,maxWidth,lineHeight,maxLines=3){let line='',row=0;for(const ch of text){if(ctx.measureText(line+ch).width>maxWidth){ctx.fillText(line,x,y+row*lineHeight);line=ch;if(++row>=maxLines)return;}else line+=ch;}if(row<maxLines)ctx.fillText(line,x,y+row*lineHeight);}
@@ -10,7 +10,7 @@ export async function buildGuideBoard(values,primary){
  const cells=[];
  recipes.forEach((r,i)=>{
   const x=(i%3)*480,y=Math.floor(i/3)*480;ctx.fillStyle='#2b1b12';ctx.fillRect(x+12,y+12,456,42);ctx.fillStyle='#fff7e8';ctx.font='bold 24px sans-serif';ctx.fillText(String(i+1).padStart(2,'0')+' / '+names[r.key],x+24,y+42);
-  if(images[i])ctx.drawImage(images[i],x+70,y+62,340,340);
+  if(images[i]){const im=images[i],scale=Math.min(340/im.naturalWidth,340/im.naturalHeight),w=im.naturalWidth*scale,h=im.naturalHeight*scale;ctx.drawImage(im,x+70+(340-w)/2,y+62+(340-h)/2,w,h);}
   else{ctx.fillStyle='#ead6ba';ctx.fillRect(x+70,y+62,340,340);ctx.fillStyle='#2b1b12';ctx.font='bold 29px sans-serif';wrap(ctx,r.value,x+64,y+180,350,46);ctx.font='22px sans-serif';wrap(ctx,r.file?'':'作例なし：選択文を優先',x+64,y+320,350,34);}
   ctx.fillStyle='#2b1b12';ctx.font='bold 23px sans-serif';wrap(ctx,r.value,x+25,y+435,430,28,2);cells.push({cell:i+1,key:r.key,value:r.value,file:r.file,text:r.text});
  });

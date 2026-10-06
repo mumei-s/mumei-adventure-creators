@@ -1,0 +1,8 @@
+{
+  "purpose": "通常モードの風景形式の説明見本と背景",
+  "generation": "built-in image_gen",
+  "source": "オリジナル生成イラスト。実在の都市写真ではない。",
+  "asset": "landscape-ordinary-v11.png",
+  "generationInput": "UI表示専用。制作セット・生成参照には含めない。",
+  "prompt": "Use case: illustration-story. Asset type: one original landscape preview and wide hero image for the ordinary/everyday mode of an illustration creation tool. Create a polished, grounded landscape painting, landscape orientation approximately 3:2. A beautiful real-world-feeling riverside town viewed across a calm river: foreground grasses and small stones, middle-ground clear reflective water curving gently toward a low masonry bridge and a few ordinary low-rise buildings, distant tree-covered hills and a broad soft morning sky. Geographically coherent and physically possible scenery with strong foreground/middle-ground/background separation, consistent perspective, natural reflected sky and restrained warm sunlight. High quality hand-painted gouache and fine brushwork, nuanced edges, rich but natural greens, muted teal water, warm ivory buildings. This is a neutral example of scenery, so there are no people or figures, no faces or body parts in trees, no costumes, no fantasy architecture, no pumpkins, no ghosts, no flying objects, no magic, no sparkles, no floating island, no oversized moon, no aurora, no neon glow, no frames or UI. Keep a broad uncluttered light sky and calm water on the left for a website text overlay; right side and lower half show the most interesting bridge/town landscape. Full-bleed finished scene. No text, no labels, no logo, no signature."
+}

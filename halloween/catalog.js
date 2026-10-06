@@ -1,5 +1,5 @@
-import {poseGroups} from './poses.js?v=10';
-import {colorWorlds,luminousMedia} from './worlds.js?v=10';
+import {poseGroups} from './poses.js?v=11';
+import {colorWorlds,luminousMedia} from './worlds.js?v=11';
 export const AUTO='おまかせ';
 const group=(label,values)=>({label,values:values.split('|')});
 export const questions=[
@@ -31,4 +31,9 @@ export function normalizeCreator(raw){
  if(/^https?:\/\//i.test(id)){let u;try{u=new URL(id)}catch{return null}if(!['note.com','www.note.com'].includes(u.hostname))return null;id=u.pathname.split('/').filter(Boolean)[0]||'';}
  id=id.replace(/^@/,'');return /^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$/.test(id)?id:null;
 }
-export function resolveSelections(values,random=Math.random){return Object.fromEntries(questions.map(q=>{const v=values[q.key];const list=q.groups.flatMap(g=>g.values);if(v&&v!==AUTO)return [q.key,v];if(q.key==='type')return [q.key,'デザインに合わせて自動編集'];return [q.key,list[Math.floor(random()*list.length)]];}));}
+let selectionRefiner=null;
+export function setSelectionRefiner(refiner){selectionRefiner=refiner;}
+export function resolveSelections(values={},random=Math.random){
+ const resolved=Object.fromEntries(questions.map(q=>{const v=values[q.key];const list=q.autoValues||q.groups.flatMap(g=>g.values);if(v&&v!==AUTO)return [q.key,v];if(q.key==='type')return [q.key,'デザインに合わせて自動編集'];return [q.key,list[Math.min(list.length-1,Math.floor(random()*list.length))]];}));
+ return selectionRefiner?selectionRefiner(resolved,values,random):resolved;
+}

@@ -1,7 +1,7 @@
-import {lookFor} from './looks.js?v=10';
-import {poseItems} from './poses.js?v=10';
-import {colorContract,luminousMedia,colorWorlds} from './worlds.js?v=10';
-import {formatFor} from './formats.js?v=10';
+import {mediumDefinition} from './looks.js?v=11';
+import {poseItems} from './poses.js?v=11';
+import {colorContract,luminousMedia,colorWorlds,sceneryMaterials} from './worlds.js?v=11';
+import {formatFor} from './formats.js?v=11';
 const read=source=>Object.fromEntries(source.trim().split('\n').map(line=>{const i=line.indexOf('=');return [line.slice(0,i),line.slice(i+1)];}));
 export const costumeSpecs=read(`
 魔女・魔法使い=尖った帽子・長いローブ・魔術の紋様。布の厚みと帽子の形を明確にする
@@ -30,7 +30,7 @@ export const costumeSpecs=read(`
 仮面とドレス=実際の顔に沿う仮面と立体的なドレス。仮面越しでも固有の目と髪を保持
 アンティークの旅装=丈夫な外套・革の鞄・紐と留め具・歩きやすい靴。旅の摩耗と布の重み
 参照画像の衣装を生かす=主参照の衣装の襟・袖・丈・留め具・識別模様を読み取って保持。新しい動作と技法へ翻訳
-風景を主役にする=人物を描かず舞台を主役に。主参照の固有の色・形・印を景物へ組み込む
+風景を主役にする=人物を描かず、選んだ舞台の地形・建築・空気・光を主題に。参照風景を選んだ場合だけ元景観の構造を使い、人物参照の顔・衣装・身体を風景へ移植しない
 モチーフだけで構成する=人物を描かず物体と象徴だけで場面を成立。主参照の固有モチーフを残す
 紋章・アイコンにする=人物の身体を描かず、主参照の特徴を輪郭と記号へ翻訳した独自図案
 白布のおばけ=頭から垂れる白布・二つの目穴・丸い裾。人型の透明ドレスへ置換しない
@@ -149,6 +149,13 @@ export const themeSpecs=read(`
 街角のファッション=普段の装いを見せる主役。衣服の素材と都市の環境の関係
 静かな読書の時間=開いた本のページを追うひととき。読書の道具と静かな空気
 星明かりを集める旅=星の光を集める道具と途中の主役。普段使いでは仮装やカボチャを追加しない
+風景・建築の記録=選んだ場所の実際にありうる地形・建築・植生・天候を観察する。場所の特徴を主役に、地平線・消失点・前後の重なりを整えた景観
+山岳と湖のパノラマ=稜線の起伏と湖面の広がり、岸辺から遠峰への奥行き、同じ光を受ける山と水面の反射。人がいなくても自然の規模が分かる景観
+海辺と水平線=岸辺・波打ち際・沖の海・空の水平線を一続きに描く。波の大きさと遠近、砂や岩の接地、時間帯に合う自然光
+里山と田園風景=田畑の区画・あぜ道・低い山や林を奥へつなげる。作物の季節と地形の高さを揃え、人の暮らしは建築や道の痕跡で伝える
+雨に映る街の風景=雨で濡れた道路・水たまり・建築の窓と、その位置に対応する反射。近景の大きな濡れた面から遠景の霞へ視線をつなぐ
+四季の森を見渡す=一つの選んだ季節で樹種・葉・林床・木漏れ日を統一する。太い手前の幹から遠い樹冠へ密度とコントラストを変える
+建築と街並みの記録=建築の構造・窓の反復・道と広場・建物の高さの関係を正しい消失点で描く。未指定の看板文字や人物を加えず、街の固有の形を見せる
 `);
 export const placeSpecs=read(`
 古城の大広間=高い天井・太い柱・広い石床。柱の前後と床の消失点で大きな空間
@@ -181,6 +188,18 @@ export const placeSpecs=read(`
 紙の箱庭=紙の切り口・折り目・段差で一つの景観。主役の技法は別指定のまま
 抽象的な色面=選択色の大きな面・境界・空白。出来事の対象は象徴で残し写実背景を足さない
 参照風景を舞台にする=添付の地形・建物の輪郭・配置・識別要素を読み取り、主役と出来事をその中へ
+山岳と湖畔=連続する山の稜線・岸辺の石や植物・湖の水面・遠い峰。水面の高さと反射の向きを揃え、前景と遠峰の縮尺で奥行きを描く
+砂浜と海岸線=手前の砂や小石・打ち寄せる波・湾曲する海岸線・沖の水平線。波の間隔と砂の濡れ方を距離に合わせる
+田畑と里山=あぜ道で区切られた田畑・小さな農道・奥の林と低い山。地形に沿う区画と遠近を描き、季節の作物を一つに揃える
+広葉樹の森=枝分かれする幹・重なる広い葉・林床・木漏れ日。手前と奥の幹の縮尺、枝の接続、葉の密度で空間を作る
+川沿いの遊歩道=川岸・水の流れ・川に沿う歩道・手すりまたは植生。道と水面の消失点を対応させ、水は地形の低い方へ流す
+街並みと広場=建物が囲む開けた広場・舗装の目地・奥へ続く道・空の抜け。壁と地面の消失点を揃え、未指定の人混みを追加しない
+朝のキッチン=調理台・食器・窓・朝の自然光。窓の方向と食器の影を対応させ、現実的な作業台の高さと生活の配置を描く
+駅の改札前=改札機の列・通路・案内板の形・奥へ続く駅構内。人が通れる寸法と床の遠近を守り、読めない駅名を勝手に捏造しない
+明るい工房=採光窓・作業台・道具棚・制作途中の素材。道具の用途と置き場所、台の接地と明るい作業光を描く
+並木道=両側に続く樹木・歩道・遠くへ収束する道。木の間隔と高さを遠近に合わせ、一つの季節の葉と自然光で統一する
+街角の歩道=角を曲がる歩道・建物の足元・窓や入口・道路との境界。安全に歩ける空間と街の縮尺を自然な遠近で描く
+窓辺の読書室=窓に近い椅子と机・本棚・開いた本・柔らかな採光。窓光と家具の影を接続し、静かな余白を残す
 `);
 const originalColors=read(`
 漆黒 × 琥珀 × 象牙=漆黒60%、琥珀30%、象牙10%。明るい字と主役の縁を象牙で分ける
@@ -219,12 +238,12 @@ HALLOWEENのみ=HALLOWEENの一語だけ。名前・セリフ・補助コピー�
 セリフのみ=選択したセリフだけを一つのブロックへ。名前・誌名・サインを追加しない
 文字を一切入れない=文字・数字・サイン・ロゴ・透かしを一切描かない。セリフの選択も描画しない
 `);
-export function visualSpec(key,value){
+export function visualSpec(key,value,{noPerson=false}={}){
  if(key==='design'){const f=formatFor(value);return {text:f.layout,checks:f.checks,known:f.kind!=='custom'};}
- if(key==='medium'){const light=luminousMedia.find(x=>x.value===value);const detail=light?.text||lookFor(key,value).detail;return {text:detail+'。選択した技法を顔・身体・衣装・舞台へ同じ描線・陰影・素材として適用する。',checks:light?['アニメ造形',detail]:detail.split('、'),known:!!light||detail!=='描線・色面、画材の質感'};}
- if(key==='costume'||key==='theme'||key==='place'){const m={costume:costumeSpecs,theme:themeSpecs,place:placeSpecs}[key],text=m[value];return {text:text?(text+'。'+({costume:'衣装の形を保ち、顔・表情・ポーズ・技法は別指定を使う。',theme:'場所は舞台指定、身体の姿勢はポーズ指定を優先。動作で実行できない出来事は相手・対象・道具・直前直後の状況で意味を保つ。',place:'主役と出来事をこの一つの空間へ置き、背景を別の場所へ交換しない。'}[key])):customSpec(key,value),checks:text?[text]:['自由指定の特徴を実際に描く'],known:!!text};}
+ if(key==='medium'){const light=luminousMedia.find(x=>x.value===value),spec=light?{text:light.text,checks:light.checks,known:true}:mediumDefinition(value),detail=spec?.text||customSpec(key,value);if(noPerson)return {text:(value==='ちびキャラ'?'景物を小さく丸い形と低い比率へ省略し、地形・建築・自然素材の識別できる特徴を保つ。':value==='実写風ファッション写真'?'景物・建築・自然素材の質感と造形を、編集写真のように整えた照明・明快な色面・余白のある構図で撮影する。':sceneryMaterials(detail))+' 選択した技法を景物・建築・自然素材・空間の全域へ一貫して適用し、舞台を見本画像から置き換えない。',checks:(spec?.checks||['自由指定の技法・素材・陰影']).map(sceneryMaterials).filter(s=>s.trim()),known:!!spec};return {text:detail+' 選択した技法を描かれる人物・物体・衣装・舞台へ一貫して適用する。項目名に少女・少年・人形などがあっても人物の性別や年齢を変更しない。画面の主役・性別・顔・衣装・場所を見本画像から取り込まない。',checks:spec?.checks||['自由指定の技法・素材・陰影'],known:!!spec};}
+ if(key==='costume'||key==='theme'||key==='place'){const m={costume:costumeSpecs,theme:themeSpecs,place:placeSpecs}[key],text=m[value];return {text:text?(text+'。'+({costume:'選択が人物ありの場合は、衣装を主参照の人物に着せる。衣装の役柄名や見本のモデルから着用者の性別・年齢・顔を変更しない。表情・ポーズ・技法はそれぞれの指定を使う。',theme:'場所は舞台指定、身体の姿勢はポーズ指定を優先。動作で実行できない出来事は相手・対象・道具・直前直後の状況で意味を保つ。物語の名前に画材名があっても画風は変更しない。',place:'選択した主題をこの一つの空間へ置き、背景を別の場所へ交換しない。地形・構造・遠近を実際に描き、舞台の見本に写る人物・画風・衣装を追加しない。'}[key])):customSpec(key,value),checks:text?[text]:['自由指定の特徴を実際に描く'],known:!!text};}
  if(key==='pose'){const p=poseItems.find(x=>x.value===value);return {text:p?.text||customSpec(key,value),checks:[p?.text||value],known:!!p};}
- if(key==='palette'){const text=colorWorlds.find(x=>x.value===value)?.text||originalColors[value];return {text:(text||colorContract(value))+'。主参照の顔の識別色以外は選択色で統一し、別作例の色を持ち込まない。',checks:[text||value],known:!!text};}
+ if(key==='palette'){const text=colorWorlds.find(x=>x.value===value)?.text||originalColors[value],limited=/墨一色|モノクロ|三色|二色|セピア/.test(value);if(noPerson)return {text:sceneryMaterials(text||colorContract(value,{noPerson:true}))+'。景物・建築・自然素材の色と光を選択配色へ統一する。限定色では素材の識別を形と明度差で保ち、画風や構図は配色の見本から取り込まない。',checks:[sceneryMaterials(text||value)],known:!!text};return {text:(text||colorContract(value))+'。'+(limited?'髪・肌・瞳の元の色も、選択した限定色と明度差へ翻訳する。':'人物の識別に必要な髪・肌・瞳の基礎色は保ち、衣装・周囲の光・景物を選択色で統一する。')+'配色は色と光の役割だけを持ち、見本の人物・物体・構図・画風を取り込まない。',checks:[text||value],known:!!text};}
  if(key==='mood')return {text:'「'+value+'」を目・眉・口の開閉と顔の回転で実行。完全な横顔は片目だけ、正面は左右の首傾き0度。余韻の指定は光・空気・余白にも反映し、今回の具体的な表情と角度は演出欄で照合する。',checks:['今回の顔向き・目・眉・口','指定された感情または空気感'],known:true};
  if(key==='type')return {text:typeSpecs[value]||customSpec(key,value),checks:[typeSpecs[value]||value],known:!!typeSpecs[value]};
  if(key==='line')return {text:value==='セリフなし'?'セリフを描かない。タイトルや名前の可否は文字設定で決める。':'選択したセリフ「'+value+'」を一字ずつ正確に使用。文字なし・名前だけ等の限定設定ではセリフを描かず、意味を主題の補助に使う。',checks:[value==='セリフなし'?'セリフなし':'選んだ一文の正確な綴り'],known:true};

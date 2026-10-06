@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=10';
-import {initialSelections} from '../modes.js?v=10';
-import {applyCollection} from '../collection.js?v=10';
-import {buildDirection} from '../direction.js?v=10';
-import {applyPose} from '../poses.js?v=10';
-import {visualSpec} from '../visual-specs.js?v=10';
-import {formatSpecs} from '../formats.js?v=10';
-import {productionPlan,planInstructions,repairPrompt} from '../production-plan.js?v=10';
-import {buildEditorial} from '../editorial.js?v=10';
-import {composePrompt} from '../prompt.js?v=10';
-import {profileForArtwork} from '../activity-settings.js?v=10';
+import {questions,resolveSelections} from '../catalog.js?v=11';
+import {initialSelections} from '../modes.js?v=11';
+import {applyCollection} from '../collection.js?v=11';
+import {buildDirection} from '../direction.js?v=11';
+import {applyPose} from '../poses.js?v=11';
+import {visualSpec} from '../visual-specs.js?v=11';
+import {formatSpecs} from '../formats.js?v=11';
+import {productionPlan,planInstructions,repairPrompt} from '../production-plan.js?v=11';
+import {buildEditorial} from '../editorial.js?v=11';
+import {composePrompt} from '../prompt.js?v=11';
+import {profileForArtwork} from '../activity-settings.js?v=11';
 const profile={displayName:'Alice',topics:['写真','創作'],biography:'写真と創作'},base=resolveSelections({...initialSelections(),design:'ファッション雑誌の表紙',costume:'海賊',pose:'全力で走る',mood:'完全な左横顔90度'},()=>0.2);
 const make=values=>applyPose(buildDirection([],values.mood,()=>0.2),values.pose);
 let examined=0;
@@ -28,7 +28,7 @@ applyCollection('halloween');
 for(const design of Object.keys(formatSpecs)){
  const values={...base,design,type:'デザインに合わせて自動編集'},copy=buildEditorial(profile,values,()=>0.2);assert.ok(copy.slots.length>=3,design);
  if(copy.kind==='cover'){assert.equal(copy.slots.filter(s=>s.role==='補助特集').length,4);assert.equal(copy.slots.filter(s=>s.role==='補助特集の補足').length,4);assert.ok(copy.slots.some(s=>s.role==='誌名'));}
- if(copy.kind==='interview'){assert.ok(copy.slots.some(s=>s.role==='リード文'));assert.ok(copy.slots.filter(s=>/^回答/.test(s.role)).every(s=>s.text.length>35));assert.ok(copy.slots.some(s=>s.role==='写真キャプション'));}
+ if(copy.kind==='interview'){assert.ok(copy.slots.some(s=>s.role==='リード文'));assert.ok(copy.slots.filter(s=>/^回答/.test(s.role)).every(s=>s.text.length>35));assert.ok(copy.slots.some(s=>/^(写真|図版)キャプション$/.test(s.role)));}
  if(['spread','newspaper'].includes(copy.kind)){assert.equal(copy.slots.filter(s=>/^本文\d/.test(s.role)).length,3);assert.ok(copy.slots.filter(s=>/^本文\d/.test(s.role)).every(s=>s.text.length>60));}
  if(copy.kind==='cinema')assert.equal(copy.slots.filter(s=>s.role.startsWith('ビリング')).length,3);
  if(['art','landscape','icon','pattern'].includes(copy.kind))assert.ok(!copy.slots.some(s=>s.role==='補助見出し'));
@@ -46,4 +46,4 @@ assert.ok(repairPrompt({prompt:'EXACT ORIGINAL PROMPT'}).endsWith('EXACT ORIGINA
 const mono={...base,medium:'水墨画',palette:'墨一色'},monoPrompt=composePrompt({creator:'alice',profile,values:mono,variant:make(mono),references:[],edition:'MONO'});
 assert.match(monoPrompt,/髪・肌・瞳の色は無彩色の明度差へ翻訳/);assert.match(monoPrompt,/金髪・金刺繍・肌色/);assert.ok(!monoPrompt.includes('髪・肌・瞳の基礎色は保持'));
 assert.match(formatSpecs['見開き特集'].layout,/同じ高さから始まる横並び2列/);
-console.log('PASS production: '+examined+' Halloween/everyday choices are concrete and present in final prompts; all 46 format structures; full cover lines/decks, Q&A, spread/newspaper body, cinema billing; no-text/name-only/activity OFF; unresolved inputs blocked. These checks validate instructions, not a guarantee of image-model fidelity.');
+console.log('PASS production: '+examined+' Halloween/everyday choices are concrete and present in final prompts; all '+Object.keys(formatSpecs).length+' format structures; full cover lines/decks, Q&A, spread/newspaper body, cinema billing; no-text/name-only/activity OFF; unresolved inputs blocked. These checks validate instructions, not a guarantee of image-model fidelity.');

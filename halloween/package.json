@@ -2,9 +2,9 @@
   "name": "mumeis-halloween-atelier",
   "private": true,
   "type": "module",
-  "version": "10.0.0",
+  "version": "11.0.0",
   "scripts": {
-    "check": "node scripts/check.mjs && node scripts/check-v8.mjs && node scripts/check-poses.mjs && node scripts/check-production.mjs",
+    "check": "node scripts/check.mjs && node scripts/check-v8.mjs && node scripts/check-poses.mjs && node scripts/check-production.mjs && node scripts/check-collections-v11.mjs && node scripts/check-handoff-v11.mjs",
     "preview": "python -m http.server 4173"
   }
 }

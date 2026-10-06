@@ -1,47 +1,16 @@
-import {visualSpec} from './visual-specs.js?v=10';
-import {poseItems} from './poses.js?v=10';
-import {dailySamples} from './collection.js?v=10';
-import {lookFor} from './looks.js?v=10';
-import {individualSamples} from './sample-catalog.js?v=10';
-import {colorWorlds,luminousMedia} from './worlds.js?v=10';
-// A recipe describes the same visual trait used by each option's artwork.
-const traits=[
- [/水墨|南画|禅画|書と墨/,'墨のにじみ・かすれ・筆圧・濃淡と大胆な白い余白。輪郭を写真で切り抜かず筆で形を作る。'],
- [/墨彩/,'墨の濃淡とかすれに限定した淡い色を重ねる。紙の余白と筆の呼吸を保つ。'],
- [/浮世絵|木版/,'版木の明確な輪郭、平面的な色面、和紙と刷りの粒子、限定した版色。写真の陰影に戻さない。'],
- [/日本画|岩絵具|大和絵|琳派|工筆|民画/,'伝統絵画の輪郭・平面性と画材の手触り。選んだ流派の色面・線・装飾を主役と背景で統一する。'],
- [/現代アニメ|セル画|OVA|ちびキャラ/,'明確な描線、整理した色面、設計されたセル影。顔・身体・衣装も同じアニメ造形で描く。'],
- [/漫画|アメコミ|バンド・デシネ|ウェブトゥーン/,'描線の太細・インク・面の省略・漫画の陰影が見える画面。顔だけ写真を貼り付けない。'],
- [/^(透明水彩|水彩画)/,'透明な重ね塗り、水のにじみ、紙の粒子、柔らかな色の境界。線と色の余白を生かす。'],
- [/ガッシュ|不透明水彩/,'不透明でマットな絵具、はっきりした色面、筆跡と紙の手触り。'],
- [/油彩・厚塗り/,'厚い絵具、盛り上がる筆跡、色の層で作る量感。被写体を油絵の筆で再構成する。'],
- [/油彩|アクリル|テンペラ|フレスコ/,'絵具の層と筆の運びで顔・背景・光を一体化。選んだ画材固有の面と陰影を保つ。'],
- [/鉛筆|木炭|色鉛筆|パステル|ペン画|ボールペン/,'紙に残る描線・ハッチング・画材の粉や筆圧。線の積み重ねで立体を作る。'],
- [/クレイ|粘土/,'粘土の丸い造形、手で触れた凹凸、素材の厚みと柔らかな接地影。'],
- [/羊毛|フェルト|刺繍|編み|織/,'実際の繊維・毛羽・縫い目・糸の重なりが形を作る。素材を単なる表面模様にしない。'],
- [/ペーパークラフト|切り絵|ちぎり|折り紙/,'紙の断面・折り目・切り口・層の重なりによる影。写真を紙の背景に貼る構図にしない。'],
- [/ステンドグラス/,'鉛線で分けた色ガラスと透過光。顔もガラス片の造形で成立させる。'],
- [/ピクセル/,'一貫した画素グリッド、限定色と意図的な階段状の輪郭。滑らかな写真を混ぜない。'],
- [/ローポリ/,'少数の明確な面とエッジ、面ごとの光の差。無関係な水晶装飾へ置き換えない。'],
- [/3D|CG|立体/,'素材ごとの反射・粗さ・厚み、自然な遮蔽と接地で量感を作る。選んだ素材を画面全体で統一する。'],
- [/実写風フィルム|インスタント|ポラロイド/,'光学的な奥行き、自然な肌、フィルムの粒子と階調。色面をアニメ塗りにしない。'],
- [/実写風モノクロ|湿板/,'写真の光学的な形と銀塩・湿板固有の階調や粒子。黒白の絵画へ変えない。'],
- [/実写風/,'実在感のある材質、肌と衣服の細部、レンズによる遠近と自然な光。イラストの輪郭線を足さない。'],
- [/アールデコ/,'幾何学的な装飾、対称性、段階的な形と明確な文字の階層。'],
- [/アールヌーヴォー/,'有機的な曲線、植物の流れと流麗な輪郭。レイアウトに連動する装飾。'],
- [/スイス|グリッド|バウハウス/,'整ったグリッド、幾何形、明快な余白とタイポグラフィーの階層。'],
- [/新聞/,'大見出し・中見出し・細かな本文、複数段、罫線とキャプションで密度のある紙面。'],
- [/雑誌|誌面|特集/,'大きな誌名、写真やイラストの主役、複数の特集見出し、大小の字組みで実際の編集構造を作る。'],
- [/映画ポスター/,'オリジナルの作品タイトル、主役と舞台の階層、キャッチコピー、複数段のクレジット。'],
- [/墨一色|モノクロ|金と黒|三色/,'指定した限定色を厳守。補助画像に別の色があっても、その色を追加しない。']
-];
+import {visualSpec} from './visual-specs.js?v=11';
+import {poseItems} from './poses.js?v=11';
+import {dailySamples} from './collection.js?v=11';
+import {individualSamples} from './sample-catalog.js?v=11';
+import {colorWorlds,luminousMedia} from './worlds.js?v=11';
+// Each field owns one semantic role. A word such as "墨" in a story must not change the medium.
+// file is used only to show a picker preview; it must never become a generation reference.
 export function recipeFor(key,value){
  const spec=visualSpec(key,value);
  const pose=key==='pose'?poseItems.find(p=>p.value===value):null;
  const world=(key==='palette'?colorWorlds:key==='medium'?luminousMedia:[]).find(x=>x.value===value);
  const sample=dailySamples[key+'\u0000'+value]||individualSamples[key+'\u0000'+value];
- const matching=traits.find(([rx])=>rx.test(value));
- return {key,value,file:pose?.file||world?.file||sample?.file||null,text:spec.text+(matching?' '+matching[1]:''),checks:spec.checks};
+ return {key,value,file:pose?.file||world?.file||sample?.file||null,referenceRole:'ui-only',text:spec.text,checks:spec.checks};
 }
 export const sampleKeys=['medium','design','theme','costume','mood','place','palette','pose'];
 export function selectedRecipes(values){return sampleKeys.map(key=>recipeFor(key,values[key]));}

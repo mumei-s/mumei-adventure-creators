@@ -17,7 +17,7 @@ const objects=['黒い羽根の仮面','朱色の封蝋の手紙','銀の小さ�
 const backgrounds=['横に流れる薄い雲と開けた空間','一方向へ走る強い建築のパース','大きな一つの円と広い余白','平面の色面と明快なコントラスト','前景の大きなシルエットと遠い奥行き','細密な下部と静かな上部','左右で密度の異なる明暗','大きな縦の柱と水平の地平線'];
 const spatial=['強い広角パース。手前の物体を大きく、奥の物体を小さくし、遠近の差を明確にする','前景・中景・遠景の三層。遮蔽と空気遠近法で空間を読み分ける','立体的な量感。光源に一貫した陰影、落ち影、接地、反射で体積を見せる','鑑賞者の近くに前景を置き、空間の中に立っているような臨場感を出す','大胆な俯瞰または見上げに合う消失点を揃え、厚みのある空間を構成する','浮遊感。宙の物と背景の距離を、位置・影・大きさの差で示す'];
 const motion=['髪・布・煙を同じ風向きに流し、曲線の連なりで流動感を出す','動作の前後が想像できる重心と手足の配置。静止画の中に運動の続きを残す','顔と重要な文字を鮮明に保ち、背景や裾の限定的なブラーで速度を示す','奥から手前へ続く軌跡で迫る勢いを作る。過度な発光に頼らない','小道具と布の慣性を動作に合わせ、身体と環境の相互作用で臨場感を出す','静かな画風では、墨・線・空気・光の方向の流れで動きを示す'];
-export function buildDirection(used=[],control='毎回大胆に変える',random=Math.random){
+export function buildDirection(used=[],control='毎回大胆に変える',random=Math.random,collection='halloween'){
  const recent=used.slice(-3).map(x=>x.family);
  let plans=shotPlans.filter(x=>!recent.includes(x.family));if(!plans.length)plans=shotPlans;
  let plan=plans[Math.floor(random()*plans.length)];
@@ -55,10 +55,10 @@ export function buildDirection(used=[],control='毎回大胆に変える',random
  }
  for(let n=0;n<10000;n++){
  const l=Math.floor(random()*light.length),o=Math.floor(random()*objects.length),b=Math.floor(random()*backgrounds.length),d=Math.floor(random()*spatial.length),m=Math.floor(random()*motion.length);
- const signature=plan.family+'-'+l+'-'+o+'-'+b+'-'+d+'-'+m;
+ const signature=(collection==='everyday'?'daily-':'')+plan.family+'-'+l+'-'+o+'-'+b+'-'+d+'-'+m;
  if(!used.some(x=>x.signature===signature)){
  const expression=tone?toneExpressions[tone][Math.floor(random()*toneExpressions[tone].length)]:sets[control]?.[1]||(!keys[control]&&selected?control:plan.expression);
- return {...plan,expression,tone,light:light[l],motif:objects[o],background:backgrounds[b],depth:spatial[d],motion:motion[m],signature,locked:selected?'選択された表情または角度は固定し、残りの演出を変更':'表情・角度・距離・身体動作をまとめて大きく変更',previous:used.slice(-3).map(x=>({face:x.face,expression:x.expression,distance:x.distance,pose:x.pose,layout:x.layout,family:x.family}))};
+ return {...plan,pose:collection==='everyday'?plan.pose.replace('マントを展開','衣服の裾を風に広げる'):plan.pose,expression:collection==='everyday'&&!selected&&!tone?expression.replace('牙または歯を露わにする威嚇','顎を上げて歯を見せる堂々とした笑顔'):expression,tone,light:light[l],motif:collection==='everyday'?['花束','手紙','小さな鈴','腕時計','星図','ガラス瓶','リボン','鍵','本','写真の額'][o]:objects[o],background:backgrounds[b],depth:spatial[d],motion:motion[m],signature,locked:selected?'選択された表情または角度は固定し、残りの演出を変更':'表情・角度・距離・身体動作をまとめて大きく変更',previous:used.slice(-3).map(x=>({face:x.face,expression:x.expression,distance:x.distance,pose:x.pose,layout:x.layout,family:x.family}))};
  }
  }
  throw new Error('別の演出を選び直してください。');
@@ -68,16 +68,17 @@ export function buildTextPlan(profile,values,random=Math.random){
  const name=(profile.displayName||profile.name||'').trim();
  if(values.type==='文字を一切入れない')return {mode:'none',name:'',blocks:[],dense:false};
  const noName=values.type==='セリフのみ'||values.type==='HALLOWEENのみ';
- const titles=['MIDNIGHT MUSE','THE OTHER SIDE','AFTER THE SPELL','NIGHT PARADE','SHADOW PLAY','HALLOWEEN STORIES','THE MOON ISSUE','MASKS & MAGIC','SPOOKY SEASON','THE LAST CANDLE','BEYOND THE MIRROR','GHOST NOTES'];
+ const daily=values.collection==='everyday';
+ const titles=daily?['EVERYDAY WONDERS','ART & LIFE','OPEN SKIES','THE COLOR ISSUE','SMALL MOMENTS','A NEW CHAPTER','STORIES IN LIGHT']:['MIDNIGHT MUSE','THE OTHER SIDE','AFTER THE SPELL','NIGHT PARADE','SHADOW PLAY','HALLOWEEN STORIES','THE MOON ISSUE','MASKS & MAGIC','SPOOKY SEASON','THE LAST CANDLE','BEYOND THE MIRROR','GHOST NOTES'];
  const topics=Array.isArray(profile.topics)?profile.topics.filter(x=>typeof x==='string'):[];
  const selectedTopics=[...topics];for(let i=selectedTopics.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[selectedTopics[i],selectedTopics[j]]=[selectedTopics[j],selectedTopics[i]];}
- const edits=[t=>t+'とHalloweenの交差点',t=>'特集：'+t+'の制作ノート',t=>t+'の視点で見る夜',t=>t+'をめぐる作品案内',t=>t+'から広がる創作の世界',t=>'光と影で読み解く、'+t];
+ const edits=daily?[t=>t+'のある日々',t=>'特集：'+t+'の制作ノート',t=>t+'から広がる世界',t=>t+'の視点で見る日常']:[t=>t+'とHalloweenの交差点',t=>'特集：'+t+'の制作ノート',t=>t+'の視点で見る夜',t=>t+'をめぐる作品案内',t=>t+'から広がる創作の世界',t=>'光と影で読み解く、'+t];
  const headlines=selectedTopics.slice(0,3+Math.floor(random()*4)).map(t=>edits[Math.floor(random()*edits.length)](t));
  const dense=/たっぷり|クレジット|新聞/.test(values.type)||values.type==='デザインに合わせて自動編集'&&isAdvertising(values.design);
  const line=values.line==='セリフなし'?'':values.line;
  const title=titles[Math.floor(random()*titles.length)];
  let blocks=noName?[line].filter(Boolean):[title,name,line].filter(Boolean);
- if(dense)blocks.push('HALLOWEEN SPECIAL',...headlines,'CREATOR SPOTLIGHT','ART / STORY / IMAGINATION','A NIGHT TO REMEMBER','OPEN THE NEXT CHAPTER');
+ if(dense)blocks.push(daily?'ART & LIFE SPECIAL':'HALLOWEEN SPECIAL',...headlines,'CREATOR SPOTLIGHT','ART / STORY / IMAGINATION',daily?'A MOMENT TO REMEMBER':'A NIGHT TO REMEMBER','OPEN THE NEXT CHAPTER');
  if(values.type==='HALLOWEENのみ')blocks=['HALLOWEEN'];
  if(values.type==='HALLOWEEN＋クリエイター名')blocks=['HALLOWEEN',name];
  if(values.type==='クリエイター名だけ'||/サイン風|落款風/.test(values.type))blocks=[name];

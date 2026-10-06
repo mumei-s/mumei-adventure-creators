@@ -1,4 +1,4 @@
-import {colorWorlds,luminousMedia} from './worlds.js?v=7';
+import {colorWorlds,luminousMedia} from './worlds.js?v=8';
 export const AUTO='おまかせ';
 const group=(label,values)=>({label,values:values.split('|')});
 export const questions=[

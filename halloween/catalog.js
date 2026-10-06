@@ -1,3 +1,4 @@
+import {colorWorlds,luminousMedia} from './worlds.js?v=7';
 export const AUTO='おまかせ';
 const group=(label,values)=>({label,values:values.split('|')});
 export const questions=[
@@ -12,6 +13,13 @@ export const questions=[
  {key:'type',name:'文字・広告の密度',hint:'クリエイター名と活動内容を使う',groups:[group('おまかせ・名前','デザインに合わせて自動編集|クリエイター名＋自由な見出し|クリエイター名だけ'),group('文字たっぷり','雑誌風・見出しと特集をたっぷり|映画ポスター風・タイトルとクレジット|広告チラシ風・情報をたっぷり|新聞風・記事と段組み|物語の装丁風・タイトルと紹介'),group('控えめ・なし','HALLOWEEN＋クリエイター名|HALLOWEENのみ|短いタイトル＋名前|手書きサイン風の名前|墨の落款風の名前|セリフのみ|文字を一切入れない')]},
  {key:'size',name:'サイズ・用途',hint:'使う場所に合わせる',groups:[group('note・SNS','noteサムネイル｜1280×670｜128:67|横長16:9｜3840×2160｜16:9|正方形アイコン｜2048×2048｜1:1|縦投稿4:5｜2160×2700｜4:5|スマホ壁紙・ストーリー｜2160×3840｜9:16|縦ポスター2:3｜2400×3600｜2:3|横写真3:2｜3600×2400｜3:2|縦写真3:4｜2400×3200｜3:4|横長バナー｜3600×1200｜3:1'),group('印刷・高解像度','A4縦・300dpi目安｜2480×3508｜210:297|A4横・300dpi目安｜3508×2480｜297:210|A3縦・300dpi目安｜3508×4961｜297:420|A3横・300dpi目安｜4961×3508｜420:297|8K横・16:9｜7680×4320｜16:9')]}
 ];
+const palette=questions.find(q=>q.key==='palette');
+for(const [label,range] of [['光る幻想色',[0,8]],['淡色・空気',[8,16]],['鮮烈な対比',[16,24]],['紙・顔料・制限色',[24,32]]])palette.groups.push({label,values:colorWorlds.slice(...range).map(x=>x.value)});
+questions.find(q=>q.key==='medium').groups.push({label:'光と透明感のアニメ',values:luminousMedia.map(x=>x.value)});
+questions.find(q=>q.key==='theme').name='物語・出来事';
+questions.find(q=>q.key==='theme').hint='何をする？どんな出来事？';
+questions.find(q=>q.key==='place').hint='出来事が起きる、一つの場所';
+palette.hint='配色・光源・透け方まで選ぶ';
 export const defaults=[AUTO,AUTO,AUTO,AUTO,'毎回大胆に変える',AUTO,AUTO,AUTO,'デザインに合わせて自動編集','noteサムネイル｜1280×670｜128:67'];
 export function normalizeCreator(raw){
  let id=raw.trim();if(!id)return '';

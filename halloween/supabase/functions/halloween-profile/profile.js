@@ -27,14 +27,20 @@ async function remote(url,json=true,timeout=6000){
  const length=Number(response.headers.get('content-length'));if(length>2500000)throw new Error('プロフィールページが大きすぎます。');
  const source=await response.text();if(source.length>2500000)throw new Error('公開情報が大きすぎます。');return json?JSON.parse(source):source;
 }
-export async function readPublicProfile(id){
+export async function readPublicProfile(id,page=1){
  if(!safeID(id))throw new Error('noteのID形式を確認してください。');
- const results=await Promise.allSettled([remote('https://note.com/api/v2/creators/'+id),remote('https://note.com/api/v2/creators/'+id+'/contents?kind=note&page=1')]);
+ if(!Number.isSafeInteger(page)||page<1)throw new Error('ページ形式を確認してください。');
+ const results=await Promise.allSettled([remote('https://note.com/api/v2/creators/'+id),remote('https://note.com/api/v2/creators/'+id+'/contents?kind=note&page='+page)]);
  const profile=results[0].status==='fulfilled'?results[0].value:null;
- const contents=results[1].status==='fulfilled'?results[1].value:null;
+ if(results[1].status!=='fulfilled')throw new Error('クリエイター情報を整えられませんでした。');
+ const contents=results[1].value;
  let parsed;try{parsed=parsePublicProfile(id,profile,contents);}catch{parsed=parsePublicProfile(id,profile,contents,await remote('https://note.com/'+id,false));}
- const candidates=(contents?.data?.contents||contents?.data?.notes||[]).filter(n=>/^n[a-f0-9]{12,32}$/i.test(n.key||'')&&publicArticle(n,id)).slice(0,4);
- const bodies=await Promise.allSettled(candidates.map(async n=>{const data=await remote('https://note.com/api/v3/notes/'+n.key,true,5000);const note=data?.data;if(!publicArticle(note,id))return null;const body=bodyText(note.body);return body?{key:n.key,title:text(note.name||n.name,100),url:'https://note.com/'+id+'/n/'+n.key,text:body}:null;}));
+ const notes=contents?.data?.contents||contents?.data?.notes||[];
+ if(!Array.isArray(notes))throw new Error('クリエイター情報を整えられませんでした。');
+ const candidates=notes.filter(n=>/^n[a-f0-9]{12,32}$/i.test(n.key||'')&&publicArticle(n,id));
+ const bodies=[];
+ // Bounded concurrency, but no arbitrary article-count cutoff. Each page is resumable.
+ for(let i=0;i<candidates.length;i+=3)bodies.push(...await Promise.allSettled(candidates.slice(i,i+3).map(async n=>{let data;for(let attempt=0;attempt<2;attempt++){try{data=await remote('https://note.com/api/v3/notes/'+n.key,true,6500);break;}catch(e){if(attempt===1)throw e;}}const note=data?.data;if(!publicArticle(note,id))return null;const body=bodyText(note.body);return body?{key:n.key,title:text(note.name||n.name,100),url:'https://note.com/'+id+'/n/'+n.key,text:body}:null;})));
  const read=bodies.filter(r=>r.status==='fulfilled'&&r.value).map(r=>r.value);const inspiration=articleSignals(read,TOPICS);
- return {...parsed,topics:[...new Set([...parsed.topics,...inspiration.bodyTopics])].slice(0,20),inspiration,articles:read.map(({text:body,...a})=>({...a,characters:body.length,keywords:TOPICS.filter(t=>body.includes(t)).slice(0,12)})),bodyRead:{count:read.length,requested:candidates.length,characters:read.reduce((n,a)=>n+a.text.length,0),status:read.length===candidates.length?'complete':'partial'},source:parsed.source+'と公開記事本文'};
+ return {...parsed,topics:[...new Set([...parsed.topics,...inspiration.bodyTopics])].slice(0,20),inspiration,articles:read.map(({text:body,...a})=>({...a,characters:body.length,keywords:TOPICS.filter(t=>body.includes(t)).slice(0,12)})),bodyRead:{count:read.length,requested:candidates.length,characters:read.reduce((n,a)=>n+a.text.length,0),status:bodies.every(r=>r.status==='fulfilled')?'complete':'partial'},pagination:{page,nextPage:contents.data.isLastPage===true||notes.length===0?null:page+1,keys:notes.map(n=>n.key).filter(Boolean)},source:parsed.source+'と公開記事本文'};
 }

@@ -17,7 +17,7 @@ export function lookFor(key,value,group=''){
  else if(key==='design')chips=/雑誌|誌面|特集|新聞/.test(value)?['見出しの大小','文字量と段組み']:/ポスター|フライヤー|広告/.test(value)?['主役とタイトル','情報の配置']:/屏風|絵巻|掛け軸/.test(value)?['伝統の画面形式','余白と視線の流れ']:[group||'作品の形式','画面構成と余白'];
  else if(key==='costume')chips=group==='人物を描かない'?['人物の有無','主役の置き方']:['衣装の形','素材と装飾'];
  else if(key==='place')chips=[group||'舞台の構造','距離・奥行き・空気'];
- else if(key==='theme')chips=['物語の場面','モチーフと出来事'];
+ else if(key==='theme')chips=['何をするか','目的・小道具・出来事'];
  else if(key==='type')chips=[group||'文字の密度','見出しと名前の配置'];
  else if(key==='line')chips=['作品に入れる一言',value==='セリフなし'?'文字を省く':'言葉の余韻'];
  return {chips,detail:chips.join('、')};

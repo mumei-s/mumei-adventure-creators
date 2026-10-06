@@ -9,16 +9,19 @@ export async function handler(req){
  if(req.method==='OPTIONS')return new Response(null,{status:204,headers});
  if(req.method!=='GET')return Response.json({error:'GETのみ利用できます。'},{status:405,headers:{...headers,Allow:'GET, OPTIONS'}});
  const id=new URL(req.url).searchParams.get('id')||'';
+ const page=Number(new URL(req.url).searchParams.get('page')||1);
  if(!/^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$/.test(id))return Response.json({error:'noteのID形式を確認してください。'},{status:400,headers});
- const now=Date.now(),hit=cache.get(id);
+ if(!Number.isSafeInteger(page)||page<1)return Response.json({error:'ページ形式を確認してください。'},{status:400,headers});
+ const key=id+':'+page;
+ const now=Date.now(),hit=cache.get(key);
  if(hit&&now-hit.time<300000)return Response.json(hit.profile,{headers});
  const ip=req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()||'anonymous';
  let client=clients.get(ip);if(!client||now-client.start>60000){client={start:now,count:0};clients.set(ip,client);}
- if(++client.count>20)return Response.json({error:'読み込みが集中しています。少し待つか、名前・活動を手入力して続けてください。'},{status:429,headers:{...headers,'Retry-After':'60'}});
+ if(++client.count>120)return Response.json({error:'読み込みが集中しています。少し待つか、名前・活動を手入力して続けてください。'},{status:429,headers:{...headers,'Retry-After':'60'}});
  if(clients.size>500)clients.delete(clients.keys().next().value);
  try{
-  let promise=inflight.get(id);if(!promise){promise=readPublicProfile(id);inflight.set(id,promise);promise.finally(()=>inflight.delete(id)).catch(()=>{});}
-  const profile=await promise;cache.set(id,{time:now,profile});if(cache.size>200)cache.delete(cache.keys().next().value);
+  let promise=inflight.get(key);if(!promise){promise=readPublicProfile(id,page);inflight.set(key,promise);promise.finally(()=>inflight.delete(key)).catch(()=>{});}
+  const profile=await promise;if(profile.bodyRead.status==='complete')cache.set(key,{time:now,profile});if(cache.size>200)cache.delete(cache.keys().next().value);
   return Response.json(profile,{headers});
  }catch{return Response.json({error:'noteの公開情報を取得できませんでした。名前・活動を手入力して続けられます。'},{status:502,headers});}
 }

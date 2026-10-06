@@ -1,4 +1,4 @@
-import {lookFor} from './looks.js?v=6';
+import {lookFor} from './looks.js?v=7';
 export function pageSize(width,height=window.innerHeight){return width<620?4:width<1100?(height>=1300?9:6):(height>=1300?12:8);}
 export function pageSlice(items,page,limit){const pages=Math.max(1,Math.ceil(items.length/limit));const safe=Math.min(Math.max(page,0),pages-1);return {page:safe,pages,items:items.slice(safe*limit,(safe+1)*limit)};}
 export function createPicker({$,el,sampleNode,readSelection,choose,onCustom,tell}){

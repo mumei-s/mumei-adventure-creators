@@ -1,4 +1,7 @@
-import {individualSamples} from './sample-catalog.js?v=6';
+import {individualSamples} from './sample-catalog.js?v=7';
+import {colorWorlds,luminousMedia} from './worlds.js?v=7';
+for(const item of colorWorlds)individualSamples['palette\u0000'+item.value]={file:item.file};
+for(const item of luminousMedia)individualSamples['medium\u0000'+item.value]={file:item.file};
 const referenceChoices=new Set(['参照画像の衣装を生かす','参照風景を舞台にする','参照画像の色を生かす']);
 export function sampleFor(key,value=''){
  const specific=individualSamples[key+'\u0000'+value];

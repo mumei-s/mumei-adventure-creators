@@ -1,5 +1,6 @@
-import {lookFor} from './looks.js?v=6';
-import {individualSamples} from './sample-catalog.js?v=6';
+import {lookFor} from './looks.js?v=7';
+import {individualSamples} from './sample-catalog.js?v=7';
+import {colorWorlds,luminousMedia} from './worlds.js?v=7';
 // A recipe describes the same visual trait used by each option's artwork.
 const traits=[
  [/水墨|南画|禅画|書と墨/,'墨のにじみ・かすれ・筆圧・濃淡と大胆な白い余白。輪郭を写真で切り抜かず筆で形を作る。'],
@@ -32,6 +33,8 @@ const traits=[
  [/墨一色|モノクロ|金と黒|三色/,'指定した限定色を厳守。補助画像に別の色があっても、その色を追加しない。']
 ];
 export function recipeFor(key,value){
+ const world=(key==='palette'?colorWorlds:key==='medium'?luminousMedia:[]).find(x=>x.value===value);
+ if(world)return {key,value,file:world.file,text:world.text};
  const sample=individualSamples[key+'\u0000'+value];
  if(!sample)return {key,value,file:null,text:'選択した「'+value+'」を優先。添付や自由入力の条件を具体的に読む。'};
  const matching=traits.filter(([rx])=>rx.test(value)).map(([,text])=>text);

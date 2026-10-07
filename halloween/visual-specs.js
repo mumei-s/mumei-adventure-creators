@@ -1,9 +1,9 @@
-import {everydayRecipe} from './everyday-options.js?v=27.0.0';
-import {mediumDefinition} from './looks.js?v=27.0.0';
-import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=27.0.0';
-import {poseItems} from './poses.js?v=27.0.0';
-import {colorContract,luminousMedia,colorWorlds,sceneryMaterials} from './worlds.js?v=27.0.0';
-import {formatFor} from './formats.js?v=27.0.0';
+import {everydayRecipe} from './everyday-options.js?v=27.0.1';
+import {mediumDefinition} from './looks.js?v=27.0.1';
+import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=27.0.1';
+import {poseItems} from './poses.js?v=27.0.1';
+import {colorContract,luminousMedia,colorWorlds,sceneryMaterials} from './worlds.js?v=27.0.1';
+import {formatFor} from './formats.js?v=27.0.1';
 const read=source=>Object.fromEntries(source.trim().split('\n').map(line=>{const i=line.indexOf('=');return [line.slice(0,i),line.slice(i+1)];}));
 export const costumeSpecs=read(`
 魔女・魔法使い=尖った帽子・長いローブ・魔術の紋様。布の厚みと帽子の形を明確にする

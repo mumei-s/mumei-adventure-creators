@@ -1,6 +1,6 @@
-import {everydayScenes,everydayPlaces,casualClothes,swimClothes,everydayBindings,everydaySamples} from './everyday-options.js?v=27.0.0';
-import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=27.0.0';
-import {poseGroups} from './poses.js?v=27.0.0';
+import {everydayScenes,everydayPlaces,casualClothes,swimClothes,everydayBindings,everydaySamples} from './everyday-options.js?v=27.0.1';
+import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=27.0.1';
+import {poseGroups} from './poses.js?v=27.0.1';
 const original=questions.map(q=>({...q,groups:q.groups.map(g=>({...g,values:[...g.values]}))}));
 const originalGroups=key=>original.find(q=>q.key===key).groups;
 const cloneGroups=groups=>groups.map(g=>({...g,values:[...g.values]}));

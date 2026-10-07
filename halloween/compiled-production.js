@@ -1,9 +1,9 @@
-import {styleFidelity} from './style-fidelity.js?v=27.0.0';
-import {modeFoundation} from './japan-direction.js?v=27.0.0';
-import {imageOutputContract} from './output-contract.js?v=27.0.0';
-import {opticalSignature} from './optical-effects.js?v=27.0.0';
-import {colorPolicy} from './color-policy.js?v=27.0.0';
-import {sceneComposition} from './scene-composition.js?v=27.0.0';
+import {styleFidelity} from './style-fidelity.js?v=27.0.1';
+import {modeFoundation} from './japan-direction.js?v=27.0.1';
+import {imageOutputContract} from './output-contract.js?v=27.0.1';
+import {opticalSignature} from './optical-effects.js?v=27.0.1';
+import {colorPolicy} from './color-policy.js?v=27.0.1';
+import {sceneComposition} from './scene-composition.js?v=27.0.1';
 
 export const conditionOwners=Object.freeze({
  medium:'描線・陰影・画材・光学',design:'画像と原稿の領域・読み順',
@@ -39,6 +39,9 @@ function renderInputObject(plan){
  const [width,height]=pixels.split('×').map(Number);
  const side=!plan.noPerson&&/真横/.test(v.camera||'');
  const gestureBased=['書と墨の抽象','禅画','抽象表現','ミニマリズム'].includes(selected.medium);
+ const referenceClothing=selected.costume==='参照画像の衣装を生かす';
+ const wardrobeIdentity=referenceClothing?'「参照画像の衣装を生かす」は着用した服・靴・服に固定された装身具を指し、背景の小物や手に持つ武器を含めない。衣装の裁断・重なり・固定装身具を同じキャラクターの衣装として保つが、完成した素材画像を流用せず今回の画風の線・色面・反射で描き起こす。':'衣装は参照から継承せず、選択した「'+selected.costume+'」へ着替えた同じキャラクターとして新しく描く。主参照の衣服・帽子・装身具・衣服の柄・胸元の開きは固定する人物特徴に含めない。頭髪の識別形は保ち、帽子・冠・ヘッドドレス・宝飾は選択衣装の専用仕様が指定したものだけを着ける。参照にある魔女帽子やカボチャ飾りを引き継がない。';
+ const wardrobeSelection=plan.noPerson?'':'【今回の衣装を先に確定】'+(referenceClothing?'参照衣装の服・靴・固定装身具の構造を保ち、今回の画風で描き直す。':'同じ人物を「'+selected.costume+'」へ着替えさせる。主参照の衣服・帽子・装身具は保持せず、選択衣装が指定する頭の装いと被覆にする。')+' 衣装の外形：'+byKey.costume.sections[0].text;
  const optical=selected.medium==='クリスタル透光アニメ'?'透明面の境界で背後の輪郭がずれ、その内部に二重反射が見える広い結晶透光層。'
   :selected.medium==='宝石ホログラムアニメ'?'前後に離れた広い半透明投影面、面ごとの二重輪郭と途切れた走査線。':'';
  const drawingPriority='描画の基準は選択画風「'+selected.medium+'」。主参照から取り出すのは識別できる形と配置であり、参照の完成した'+(plan.noPerson?'景物・物体の表面':'顔・肌・髪')+'をそのまま残す基準ではない。最初の一筆から'+(plan.noPerson?'主景・選択物体・物語の対象・背景':'顔・目鼻口・髪・身体・衣服・物語の対象・背景')+'をこの画風の同じ工程で描き直す。細部の精密さはその描線・色面・画材の精密さとして作る。画風の工程と参照の表面が異なる場合は、識別形を維持して画風の工程を採用する。';
@@ -48,6 +51,7 @@ function renderInputObject(plan){
   cultural_foundation:modeFoundation(plan.collection),
   required_before_details:{
    selected_drawing_process:material.execution.method,
+   ...(!plan.noPerson?{wardrobe_selection:wardrobeSelection}:{}),
    drawing_priority:drawingPriority,
    story_integration:storyIntegration,
    ...(!plan.noPerson&&/全身|足先|靴から頭/.test(v.distance)?{full_body_composition:gestureBased?'全身指定は、主役の識別できる全体の姿勢・支持・動作の方向を、選択画風の筆の印・形・間隔・余白で画像領域内へ収める。各指や人体の細部を写実的に追加せず、主役と出来事の対象の関係が全体で読める形に整理する。外周5%の安全余白を保ち、重要な筆の形・支持点・動作の行き先を文字枠や画像端で切らない。':'構図の最優先：主画像領域内に頭頂・両手の全指・両足の靴先・支持面をすべて収める。人物の頭頂から一番下の靴先までを主画像領域の高さの75〜80%以内に置き、頭上に5%以上、最下端の靴先の下に10%以上の床または地面を見せる。左右も指先・衣装の端を外周5%より内側へ。手前へ迫る手と頭の遠近差は保ち、指定カメラの角度を変えずにカメラを引いて全身を収める。顔の拡大のために足先を切らない。'}:{}),
@@ -61,7 +65,7 @@ function renderInputObject(plan){
   canvas:{width_px:width,height_px:height,aspect_ratio:ratio,...contract(byKey.size),format:selected.design},
   drawing:{...contract(material),medium:selected.medium,
    visible_signature:material.checks,optics:opticalSignature(selected,{noPerson:plan.noPerson})},
-  identity:plan.noPerson?'選択した景物・物体・図案。人物なし。':'主参照は変換前の人物資料。髪型・顔の輪郭・目鼻口の特徴的な並び・年齢感・性別表現の組合せを読み取り、今回の画風で識別できるキャラクターとして新しく造形する。画風が定める形の整理・誇張・省略は実行し、写真の顔の立体や細かな寸法まで固定しない。参照の撮影角度・表情・肌の質感を複製せず、今回の画風と配色で新しく描く。参照写真の背景・文字・動物・同行者・武器・装飾・持ち物は、選択項目で明示したものだけ採用する。「参照画像の衣装を生かす」は着用した服・靴・服に固定された装身具を指し、背景の小物や手に持つ武器を含めない。衣装の裁断・重なり・固定装身具を同じキャラクターの衣装として保つが、完成した素材画像を流用せず今回の画風の線・色面・反射で描き起こす。'+(color.restricted?'参照の肌色・髪色・瞳色も許可色へ変換し、形と明度差で同じ人を表す。':''),
+  identity:plan.noPerson?'選択した景物・物体・図案。人物なし。':'主参照は変換前の人物資料。髪型・顔の輪郭・目鼻口の特徴的な並び・年齢感・性別表現の組合せを読み取り、今回の画風で識別できるキャラクターとして新しく造形する。画風が定める形の整理・誇張・省略は実行し、写真の顔の立体や細かな寸法まで固定しない。参照の撮影角度・表情・肌の質感を複製せず、今回の画風と配色で新しく描く。参照写真の背景・文字・動物・同行者・武器・装飾・持ち物は、選択項目で明示したものだけ採用する。'+wardrobeIdentity+(color.restricted?'参照の肌色・髪色・瞳色も許可色へ変換し、形と明度差で同じ人を表す。':''),
   scene:Object.fromEntries(['theme','costume','place','pose','mood','palette'].map(key=>[key,contract(byKey[key])])),
   camera:plan.noPerson?'人物用の表情・顔向き・身体動作は適用しない。':{face:v.face,expression:v.expression,body:v.pose,distance:v.distance,angle:v.camera,...(side?{torso_yaw_degrees:90,projection:'肩・骨盤・膝は側面投影。顔向きの指定を理由に胴体を鑑賞者側へ回さない。'}:{})},
   layout:contract(byKey.design),
@@ -97,6 +101,7 @@ export function renderDetailedChatInput(plan,{referenceRules=[],mandatoryRules=[
  return [
   '【主画像の描画方式：ここから完成作品を描き起こす】',
   compiled.required_before_details.selected_drawing_process,
+  compiled.required_before_details.wardrobe_selection,
   ...styleFidelity(plan.conditions.find(c=>c.key==='medium'),{noPerson:plan.noPerson}),
   plan.collection==='everyday'?'【作品モード】普段使い':'【作品モード】Halloween',
   modeFoundation(plan.collection),

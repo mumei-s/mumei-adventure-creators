@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {productionPlan} from '../production-plan.js?v=27.0.0';
-import {renderChatInput,renderInput} from '../compiled-production.js?v=27.0.0';
-import {composePrompt} from '../prompt.js?v=27.0.0';
+import {productionPlan} from '../production-plan.js?v=27.0.1';
+import {renderChatInput,renderInput} from '../compiled-production.js?v=27.0.1';
+import {composePrompt} from '../prompt.js?v=27.0.1';
 
 const settings=JSON.parse(fs.readFileSync(new URL('../verification/v25/machine-anime-settings.json',import.meta.url)));
 const profile={displayName:'検証作者',activityEnabled:true,tagsEnabled:false,topics:['根拠のない宇宙ブランド'],biography:'日常で集めた音を短い映像と文章にしています。',bodyRead:{count:60,status:'complete'},sourceEvidence:Array.from({length:60},(_,index)=>({key:String(index),title:'記録'+index,url:'https://example.test/articles/'+index,excerpts:['本文の観察'+index+'：朝の街角の音を録り、帰宅後に短い映像として組み立てた。']}))};
@@ -10,8 +10,11 @@ const make=(values=settings.values,owner=profile)=>productionPlan(owner,values,s
 const plan=make(),input=renderChatInput(plan),structured=JSON.parse(renderInput(plan).split('\n\n【全選択の個別レシピ】')[0]);
 const medium=plan.conditions.find(c=>c.key==='medium');
 assert.ok(input.indexOf(medium.execution.method)<input.indexOf('【作品モード】'),'The concrete drawing process must be read before collection/reference prose');
-assert.match(medium.execution.method,/COMPLETELY REDRAW.*2D cel-animation/);
-assert.match(medium.execution.method,/one or two short strokes/);
+assert.match(medium.execution.method,/COMPLETELY REDRAW.*2D luminous-fantasy anime/);
+assert.match(medium.execution.method,/fine tapered colored lines and thin painterly color layers/);
+assert.match(medium.execution.method,/broad connected palette-dark shadow regions/);
+assert.match(medium.execution.method,/preserve the reference feature spacing, eye proportions, hairstyle and age impression/);
+assert.ok(!medium.execution.method.includes('all use closed opaque base-color shapes'),'Luminous fantasy rendering must retain thin painted layers, rather than force a uniform two-tone cel fill');
 assert.match(structured.identity,/形の整理・誇張・省略/);
 assert.match(structured.identity,/衣装の裁断・重なり.*今回の画風の線・色面・反射/);
 assert.match(structured.required_before_details.story_integration,/機械仕掛けの怪物.*古い洋館の階段/);

@@ -1,4 +1,4 @@
-import {decorationProfile} from './decoration-effects.js?v=27.0.0';
+import {decorationProfile} from './decoration-effects.js?v=27.0.1';
 export const studioIcons=[
  '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><g stroke="#d59c31" stroke-width="3"><path d="M32 3v9m0 40v9M3 32h9m40 0h9M12 12l7 7m26 26 7 7M12 52l7-7m26-26 7-7"/></g><circle cx="32" cy="32" r="17" fill="#ffdc75" stroke="#d59c31" stroke-width="2"/></svg>',
  '<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"><g fill="#eda6ca" stroke="#7758a5" stroke-width="2"><ellipse cx="32" cy="16" rx="10" ry="14"/><ellipse cx="48" cy="32" rx="14" ry="10"/><ellipse cx="32" cy="48" rx="10" ry="14"/><ellipse cx="16" cy="32" rx="14" ry="10"/></g><circle cx="32" cy="32" r="11" fill="#ffdb65"/></svg>',

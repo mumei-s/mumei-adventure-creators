@@ -25,3 +25,4 @@ body[data-motion=on] dialog[open]{animation:portal-open .3s cubic-bezier(.16,.7,
 #picker .picker-body{overflow-y:auto;overscroll-behavior:contain}
 .ring-stage{overflow:clip;flex-shrink:0}
 .picker-favorites{flex:none}
+.ring-stage,#picker-options{touch-action:pan-y;user-select:none}

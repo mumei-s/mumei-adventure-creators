@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.0.1';
-import {applyCollection} from '../collection.js?v=28.0.1';
-import {initialSelections} from '../modes.js?v=28.0.1';
-import {buildDirection} from '../direction.js?v=28.0.1';
-import {applyPose} from '../poses.js?v=28.0.1';
-import {optionRecipe} from '../option-recipes.js?v=28.0.1';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.0.1';
-import {composePrompt} from '../prompt.js?v=28.0.1';
-import {colorPolicy} from '../palette-recipes.js?v=28.0.1';
+import {questions,resolveSelections} from '../catalog.js?v=28.0.2';
+import {applyCollection} from '../collection.js?v=28.0.2';
+import {initialSelections} from '../modes.js?v=28.0.2';
+import {buildDirection} from '../direction.js?v=28.0.2';
+import {applyPose} from '../poses.js?v=28.0.2';
+import {optionRecipe} from '../option-recipes.js?v=28.0.2';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.0.2';
+import {composePrompt} from '../prompt.js?v=28.0.2';
+import {colorPolicy} from '../palette-recipes.js?v=28.0.2';
 
 const profile={displayName:'TEST CREATOR',activityEnabled:false,topics:[],biography:''};
 const random=()=>.28;

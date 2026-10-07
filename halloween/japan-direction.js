@@ -1,4 +1,5 @@
-import {typographyOption} from './typography-options.js?v=28.0.1';
+import {typographyOption} from './typography-options.js?v=28.0.2';
+import {isPhotographicMedium} from './photo-design.js?v=28.0.2';
 // Japanese publishing/drawing is the default grammar, not a replacement identity.
 // Explicit overseas techniques, clothing and architecture retain their origin.
 export const CRYSTAL_OBJECT='クリスタルホログラム造形アニメ';
@@ -53,7 +54,8 @@ export function japaneseSections(key,value,{noPerson=false,collection='halloween
  if(key==='design')text=covers[value]||'形式「'+value+'」固有の画像領域と余白を保ち、日本語原稿は日本の編集慣行に合う明朝・ゴシックの大小、禁則、句読点、読み順で組む。欧文や海外由来の明示形式は、その文法を保つ。';
  if(key==='design'&&covers[value]&&(noText||limitedText))text='日本の「'+value+'」の主図版と安全余白、個別の領域配分を保つ。'+(noText?'文字・題字・本文・号数・ロゴを一切追加しない。空いた領域を疑似文字や代用罫線で埋めない。':'名前または指定短文など、確定した許可原稿だけを日本語の正しい文字組みで置く。標準の誌名・本文・特集を補完しない。');
  if(key==='medium'){
-  if(noPerson)text='作風「'+value+'」の個別技法で景物・建築・自然素材を描く。近景の構造を個別技法の輪郭や色面で整理し、遠景は細部とコントラストを減らす。明部とまとまった深い影を分け、主景と背景を同じ描画方法へ統一する。';
+  if(isPhotographicMedium(value))text='作風「'+value+'」の専用撮影工程で、'+(noPerson?'景物・建築・自然素材を実物の厚み、材質の反射と散乱、レンズ遠近、連続した露光階調として再構成する。人物や人型を追加しない。':'主参照の同じキャラクターを自然な人物の立体、皮膚・毛髪・衣服の実物の構造として再構成する。参照がイラストでも、その描線やセル色を残さず、顔の識別特徴・年齢感・民族的特徴と明示した役柄を保持する。')+'主題と背景を同じ実照明と光学像へ統一し、日本向けの構図を理由に人物や舞台を入れ替えたり、日本アニメへ戻したりしない。';
+  else if(noPerson)text='作風「'+value+'」の個別技法で景物・建築・自然素材を描く。近景の構造を個別技法の輪郭や色面で整理し、遠景は細部とコントラストを減らす。明部とまとまった深い影を分け、主景と背景を同じ描画方法へ統一する。';
   else if(/アニメ|セル画|OVA|少女漫画|少年漫画|青年漫画|モノクロ漫画|ちびキャラ/.test(value))text='作風「'+value+'」では、日本のアニメ・漫画の造形を描線と塗りで構築する。輪郭線の太さと強弱は個別技法に合わせ、眼瞼の線、簡潔な鼻口、髪の束、形の読める影面を使う。'+(noPerson?'景物全体も同じ技法へ統一する。':'主参照の民族的特徴・顔の識別比率・年齢感は保つ。日本向けという理由だけで別人の顔へ変えない。')+'選択技法を無視した均一輪郭、全体のぼかし、滑らかな人形の肌を標準仕上げにしない。';
   else text='作風「'+value+'」の画材・筆法・光学の専用工程を優先する。日本向けの作品として構図と余白を整えるが、アメコミ・工筆・民画・西洋美術など明示された起源の技法を日本アニメへ置換しない。';
  }

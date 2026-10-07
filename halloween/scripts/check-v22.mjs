@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {toggleFavorite,normalizeFavorites,favoriteKey} from '../favorites.js?v=28.0.1';
-import {ringWindow,ringPosition,swipeStep} from '../ring-motion.js?v=28.0.1';
-import {optionRecipe} from '../option-recipes.js?v=28.0.1';
-import {opticalSignature} from '../optical-effects.js?v=28.0.1';
+import {toggleFavorite,normalizeFavorites,favoriteKey} from '../favorites.js?v=28.0.2';
+import {ringWindow,ringPosition,swipeStep} from '../ring-motion.js?v=28.0.2';
+import {optionRecipe} from '../option-recipes.js?v=28.0.2';
+import {opticalSignature} from '../optical-effects.js?v=28.0.2';
 const values=['A','B','C','D','E'];
 assert.equal(toggleFavorite(values,'F').changed,false);
 assert.deepEqual(toggleFavorite(values,'C').values,['A','B','D','E']);
@@ -11,7 +11,7 @@ assert.deepEqual(toggleFavorite(toggleFavorite(values,'C').values,'F').values,['
 assert.equal(favoriteKey('halloween','medium')===favoriteKey('everyday','medium'),false);
 const normalized=normalizeFavorites(JSON.parse(JSON.stringify({'halloween:medium':['A','A','B','C','D','E','F',null],'everyday:medium':['Z'],bad:['X']})));
 assert.deepEqual(normalized,{'halloween:medium':values,'everyday:medium':['Z']});
-assert.equal(swipeStep(-100,10),-1);assert.equal(swipeStep(100,-10),1);assert.equal(swipeStep(-50,0),0);assert.equal(swipeStep(80,100),0);
+assert.equal(swipeStep(-100,10),1);assert.equal(swipeStep(100,-10),-1);assert.equal(swipeStep(-50,0),0);assert.equal(swipeStep(80,100),0);
 assert.deepEqual(ringWindow(['A','B','C'],2).items,['C','A','B']);
 assert.deepEqual(ringWindow(['A','B','C'],-1).items,['C','A','B']);
 const initial=ringPosition(1,6),half=ringPosition(1,6,30),end=ringPosition(1,6,60),front=ringPosition(0,6);

@@ -1,0 +1,125 @@
+import assert from 'node:assert/strict';
+import {applyCollection} from '../collection.js?v=28.0.2';
+import {questions,resolveSelections} from '../catalog.js?v=28.0.2';
+import {initialSelections} from '../modes.js?v=28.0.2';
+import {buildDirection} from '../direction.js?v=28.0.2';
+import {applyPose} from '../poses.js?v=28.0.2';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.0.2';
+import {composePrompt} from '../prompt.js?v=28.0.2';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.0.2';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.0.2';
+import {photoValues,photoReconstruction,photoDesign,isPhotographicMedium} from '../photo-design.js?v=28.0.2';
+import {styleFidelity} from '../style-fidelity.js?v=28.0.2';
+import {colorPolicy} from '../color-policy.js?v=28.0.2';
+import {detailedMedium} from '../medium-recipes.js?v=28.0.2';
+import {cameraContract,angleItems} from '../angles.js?v=28.0.2';
+
+// Reference filenames describe the user scenario; no reference pixels or
+// image-generation runtime are inspected by this instruction regression.
+const random=()=>.23,profile={displayName:'写真変換の検査作者',activityEnabled:false};
+const base={sceneUnified:true,theme:'白いスタジオ',design:'通常の一枚絵',costume:'参照画像の衣装を生かす',pose:'椅子に腰掛ける',mood:'正面・首をまっすぐ',angle:'俯瞰・45度',type:'文字を一切入れない',line:'セリフなし',size:'A4縦・300dpi目安｜2480×3508｜210:297'};
+const includes=(text,clause,label)=>assert.ok(text.includes(clause),label+' lost: '+clause);
+let photographs=0,otherMedia=0,angleCombinations=0;
+try{
+ for(const collection of ['halloween','everyday']){
+  applyCollection(collection);
+  const presets=questions.find(q=>q.key==='medium').groups.flatMap(g=>g.values).filter(v=>v.startsWith('実写風'));
+  assert.deepEqual(presets,photoValues,'Every photographic preset must use the reconstruction path');
+  assert.equal(presets.length,12);
+  for(const medium of presets)for(const noPerson of [false,true])for(const palette of ['群青 × 月白 × 銀','モノクローム','金と黒の二色']){
+   const values=resolveSelections({...initialSelections(),...base,medium,palette,...(noPerson?{costume:'風景を主役にする'}:{})},random);
+   const variant=applyPose(buildDirection([],values.mood,random,collection,values),values.pose);
+   const plan=productionPlan(profile,values,variant,collection,random);
+   const recipe=plan.conditions.find(c=>c.key==='medium');
+   const photo=photoReconstruction(medium,{noPerson,values}),policy=colorPolicy(values);
+   assert.ok(isPhotographicMedium(medium)&&photo,medium+' has no photography reconstruction contract');
+   assert.equal(recipe.known,true);assert.equal(detailedMedium(medium,{noPerson,values}).family,'photography');
+   const native=renderSelectionMaterial(plan),audit=JSON.parse(renderInput(plan).split('\n\n【全選択の個別レシピ】')[0]);
+   const references=[{name:noPerson?'illustrated-landscape-reference.png':'illustrated-character-reference.png',role:'identity'}];
+   const prompt=composePrompt({collection,profile,values,variant:plan.variant,references,edition:'ILLUSTRATION-TO-PHOTO',preparedPlan:plan});
+   const result={edition:'ILLUSTRATION-TO-PHOTO',prompt,production:plan,values};
+   const routes={native,master:prompt,artwork:composeArtworkStage(plan),artworkRepair:composeArtworkRepair(plan),compactArtworkRepair:composeArtworkRepair(plan,{compact:true}),repair:repairPrompt(result)};
+   for(const section of photo.sections){
+    assert.ok(recipe.sections.some(s=>s.label===section.label&&s.text===section.text),medium+' did not prepend its photograph reconstruction recipe');
+    for(const [route,text] of Object.entries(routes))includes(text,section.text,collection+' / '+medium+' / '+route);
+    includes(recipe.execution.method,section.text,medium+' execution method');
+   }
+   for(const check of photo.checks)assert.ok(recipe.checks.includes(check),medium+' has no reconstruction acceptance '+check);
+   const fidelity=styleFidelity(recipe,{noPerson,values}).join('\n');
+   for(const section of photo.sections)includes(fidelity,section.text,medium+' style fidelity');
+   assert.doesNotMatch(fidelity,/顔だけ写真、背景だけ絵画|細密な作画では瞳の色層/,'Photography must not reuse the anti-photographic drawing default');
+   assert.doesNotMatch(recipe.execution.method,/redraw rather than retain a photographic face|Preserve the technique through its line, layering/,'The photographic execution must not reject photographic anatomy or require drawn line layering');
+   assert.match(recipe.execution.method,/photograph|photographic|optical|撮影|光学/i);
+   assert.match(audit.required_before_details.drawing_priority,/レンズ|撮影|実写/,'The leading drawing priority must construct a photograph');
+   assert.doesNotMatch(audit.required_before_details.drawing_priority,/細部の精密さはその描線・色面・画材/,'The leading priority must not force illustration layers on photos');
+   includes(native,audit.required_before_details.photo_reconstruction,medium+' early photographic reconstruction');
+   includes(prompt,references[0].name,medium+' supplied illustration reference');
+   assert.equal(audit.camera.geometry.selected,values.angle);assert.equal(audit.camera.geometry.pitch_degrees_from_horizontal,45);
+   includes(native,values.pose,medium+' selected physical pose');
+   assert.equal(plan.noPerson,noPerson);assert.equal(plan.copy.mode,'none');assert.equal(audit.copy.length,0);
+   for(const text of Object.values(routes))assert.doesNotMatch(text,/undefined|NaN/);
+   if(noPerson){
+    assert.doesNotMatch(photo.sections.map(s=>s.text).join(' '),/頭蓋|眼球|皮膚|毛髪|毛穴|基礎体格|衣服の繊維/,'Scenery photographs must not acquire a human reconstruction');
+    for(const text of [native,routes.artwork])assert.doesNotMatch(text,/^顔の向き：|^身体の動き：|^身体の動作：/m);
+    assert.match(audit.identity,/人物なし/);
+   }else{
+    assert.match(photo.sections[0].text,/主参照がイラスト・漫画・アニメでも/);
+    assert.match(photo.sections[0].text,/年齢感・性別表現・基礎体格/);
+    assert.match(photo.sections[0].text,/人間の頭蓋・眼球・鼻・唇・顎・首/);
+    assert.match(photo.sections[1].text,/毛穴|産毛/);assert.match(photo.sections[1].text,/縫い目・繊維・重力/);
+    assert.match(photo.sections[1].text,/髪なし・閉眼の明示指定/);
+    assert.match(audit.identity,/イラスト|漫画|アニメ/,'Identity must distinguish the illustration reference from the photographed result');
+    assert.match(audit.identity,/人物|実写|撮影/);
+    if(policy.restricted){
+     includes(photo.sections.at(-1).text,policy.allowed,medium+' permitted photographic palette');
+     assert.match(photo.sections.at(-1).text,/識別色も許可色の明度差へ翻訳/);
+     assert.doesNotMatch(photo.sections.at(-1).text,/髪色を照明の都合で別の色へ変えない/,'Restricted palettes must not preserve source hues as an exception');
+    }else{
+     assert.match(photo.sections.at(-1).text,/髪と瞳などの識別に必要な基礎色は保ち/);
+     assert.match(photo.sections.at(-1).text,/髪色を照明の都合で別の色へ変えない/);
+    }
+   }
+   photographs++;
+  }
+  // Every selected view, including crops, roll, perspective and both vertical
+  // axes, must coexist with the photograph's anatomy/material reconstruction.
+  for(const medium of presets)for(const noPerson of [false,true])for(const {value:angle} of angleItems){
+   const values=resolveSelections({...initialSelections(),...base,medium,angle,palette:'群青 × 月白 × 銀',...(noPerson?{costume:'風景を主役にする'}:{})},random);
+   const variant=applyPose(buildDirection([],values.mood,random,collection,values),values.pose);
+   const plan=productionPlan(profile,values,variant,collection,random),photo=photoReconstruction(medium,{noPerson,values});
+   const camera=cameraContract(values,{noPerson});
+   const audit=JSON.parse(renderInput(plan).split('\n\n【全選択の個別レシピ】')[0]);
+   assert.equal(plan.values.angle,angle,'The photography preset must not replace its selected camera');
+   assert.equal(audit.camera.geometry.selected,angle);
+   if(Object.hasOwn(camera,'pitch_degrees_from_horizontal'))assert.equal(audit.camera.geometry.pitch_degrees_from_horizontal,camera.pitch_degrees_from_horizontal);
+   if(camera.optical_axis)assert.deepEqual(audit.camera.geometry.optical_axis,camera.optical_axis);
+   const optics=photoDesign(medium,{noPerson,values});
+   if(/魚眼|超広角|望遠/.test(angle)){
+    includes(optics.text,angle,medium+' selected optical projection');
+    assert.match(optics.text,/写真プリセットの標準レンズより.*投影と遠近を優先/);
+    assert.doesNotMatch(optics.text,/\d+mm|標準画角|大判標準レンズ|固定レンズ/,'A selected optical projection must replace the preset focal-length default');
+   }
+   for(const [route,text] of [['native',renderSelectionMaterial(plan)],['artwork',composeArtworkStage(plan)]]){
+    includes(text,optics.text,medium+' / '+angle+' / '+route+' optical projection');
+    for(const section of photo.sections)includes(text,section.text,medium+' / '+angle+' / '+route+' reconstruction');
+    for(const instruction of camera.instructions)includes(text,instruction,medium+' / '+angle+' / '+route+' camera');
+   }
+   angleCombinations++;
+  }
+  // A photography-specific remedy must not override the selected anime, ink,
+  // watercolor or material construction in unrelated presets.
+  for(const medium of ['現代アニメの一枚絵','水墨画','透明水彩','クレイアート'])for(const noPerson of [false,true]){
+   const values=resolveSelections({...initialSelections(),...base,medium,palette:'群青 × 月白 × 銀',...(noPerson?{costume:'風景を主役にする'}:{})},random);
+   const variant=applyPose(buildDirection([],values.mood,random,collection,values),values.pose);
+   const plan=productionPlan(profile,values,variant,collection,random),recipe=plan.conditions.find(c=>c.key==='medium');
+   assert.equal(isPhotographicMedium(medium),false);assert.equal(photoReconstruction(medium,{noPerson,values}),null);
+   assert.ok(!recipe.sections.some(s=>/イラスト参照から人物へ|イラスト参照から実物へ/.test(s.label)));
+   assert.doesNotMatch(styleFidelity(recipe,{noPerson,values}).join('\n'),/実物の被写体を同じカメラで撮影した一つの像/);
+   const audit=JSON.parse(renderInput(plan).split('\n\n【全選択の個別レシピ】')[0]);
+   assert.ok(!audit.required_before_details.photo_reconstruction,'A non-photo medium gained photo reconstruction');
+   otherMedia++;
+  }
+ }
+}finally{applyCollection('halloween');}
+assert.equal(photographs,144);assert.equal(otherMedia,16);assert.equal(angleCombinations,12*2*2*angleItems.length);
+console.log('PASS illustration-to-photo instructions: 12 photographic presets × two modes × person/scenery × three palettes = '+photographs+' cases reconstruct illustrated references as optical photographs while retaining identity, selected camera/pose, coverage and color constraints; '+angleCombinations+' combinations retain reconstruction across all '+angleItems.length+' angles; '+otherMedia+' non-photo cases keep their own medium. No AI conversion or generated-image adherence was executed or inferred.');

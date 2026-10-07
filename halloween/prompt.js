@@ -1,16 +1,18 @@
-import {imageOutputContract} from './output-contract.js?v=28.0.1';
-import {visibleQuestions} from './catalog.js?v=28.0.1';
-import {productionPlan,planInstructions,conditionInstructions} from './production-plan.js?v=28.0.1';
-import {sceneContract} from './worlds.js?v=28.0.1';
-import {colorPolicy} from './palette-recipes.js?v=28.0.1';
-import {resolveArtDirection} from './art-direction.js?v=28.0.1';
-import {composeStagedMaster} from './production-workflow.js?v=28.0.1';
+import {imageOutputContract} from './output-contract.js?v=28.0.2';
+import {visibleQuestions} from './catalog.js?v=28.0.2';
+import {productionPlan,planInstructions,conditionInstructions} from './production-plan.js?v=28.0.2';
+import {sceneContract} from './worlds.js?v=28.0.2';
+import {colorPolicy} from './palette-recipes.js?v=28.0.2';
+import {resolveArtDirection} from './art-direction.js?v=28.0.2';
+import {composeStagedMaster} from './production-workflow.js?v=28.0.2';
+import {isPhotographicMedium} from './photo-design.js?v=28.0.2';
 export function needsReference(values){const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);return !noPerson||values.place==='参照風景を舞台にする'||values.palette==='参照画像の色を生かす';}
 // Option thumbnails, including legacy styleGuide arguments, never control generation.
 export function composePrompt({collection='halloween',creator,profile,values,variant,references=[],edition,referenceBundle=null,random=Math.random,preparedPlan=null}){
  const [size,pixels,ratio]=values.size.split('｜');
  const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);
  const wholeMaterial=['クリスタルホログラム造形アニメ','宝石ホログラムアニメ'].includes(values.medium);
+ const photo=isPhotographicMedium(values.medium);
  const color=colorPolicy(values),cyanotype=color.mode==='cyanotype',monochrome=color.mode==='monochrome',limitedPalette=color.restricted;
  const subjectKind=values.costume==='風景を主役にする'?'scenery':values.costume==='紋章・アイコンにする'?'emblem':'motif';
  const subjectRules={
@@ -76,7 +78,7 @@ export function composePrompt({collection='halloween',creator,profile,values,var
  '参照画像がある場合は、'+subjectRules.reference+'を使う。キャラの顔・髪や無関係な印を自動で組み込まず、選択された主題と画風を守る。'
  ]:[
  '【固定するもの／変えるもの】',
- '固定：主参照の顔立ち・目鼻口・髪・固有の印の特徴的な組合せで同じキャラクターと識別できること、年齢感、性別の表現、基礎体格を保つ。顔の立体・各部の細寸法・表面質感は固定せず、選択画風の造形・線・色面・画材へ変換する。ちび等の選択画風が明示する比率整理・誇張・省略を実行する。別人へ置き換えない。',
+ photo?'固定：主参照の髪型・識別色・顔立ちの特徴的な組合せ・固有の印・年齢感・性別表現・基礎体格で同じキャラクターと識別できること。イラストの目の誇張・記号的な鼻口・細寸法の比率・描線・セル色面を固定せず、自然な人物の立体と実物の材質、選択カメラからの撮影像へ再構成する。別のモデルへ置き換えない。':'固定：主参照の顔立ち・目鼻口・髪・固有の印の特徴的な組合せで同じキャラクターと識別できること、年齢感、性別の表現、基礎体格を保つ。顔の立体・各部の細寸法・表面質感は固定せず、選択画風の造形・線・色面・画材へ変換する。ちび等の選択画風が明示する比率整理・誇張・省略を実行する。別人へ置き換えない。',
  wholeMaterial&&!limitedPalette?'素材と色：顔・髪・全身を透明な結晶または半透明ホログラムとして描き直す。元の肌色・肌質・髪の不透明さを固定しない。髪と瞳の識別色は透明材質の内側の淡い色として使う。':monochrome?'色：髪・肌・瞳の色は無彩色の明度差へ翻訳する。':limitedPalette?'色：髪・肌・瞳の色は選択した技法と限定配色の色・明度差へ翻訳する。元の有彩色を例外で残さない。':'色：髪・肌・瞳の識別に必要な基礎色を保ち、配色と照明は今回の指定へ合わせる。',
  '変更：顔の向き、首の角度、視線、表情の筋肉、口の開閉、手足の位置、体の向き、カメラ位置、画角、撮影距離、衣装、背景、光、レイアウト、筆致・素材。参照の顔の傾きや肩のひねりをテンプレートにしない。',
  '参照の撮影照明、背景、色調、同じ上目遣いは固定しない。今回の表情と顔向きは選択どおり描く。',
@@ -115,7 +117,7 @@ export function composePrompt({collection='halloween',creator,profile,values,var
  '流動・運動・浮遊感：'+variant.motion,
  '追加モチーフの扱い：'+variant.motif+'。明示した項目と無関係な物を自動追加しない。',
  '固定と変更の方針：'+variant.locked,
- '身体のポーズを表情・顔角度と別に実行する。立つ・座る・寝る・走る・跳ぶを互いに置換しない。手足の配置、重心、接触、慣性を具体的に描く。顔向きと両立しない場合は首や関節を破綻させず、カメラと胴体の向きで整える。',
+ '身体のポーズを表情・顔角度と別に実行する。立つ・座る・寝る・走る・跳ぶを互いに置換しない。手足の配置、重心、接触、慣性を具体的に描く。顔向きは選択カメラを保って自然な胴体と首の回転で合わせ、明示条件が両立しなければ衝突を伝える。',
  '完全な横顔では両目を見せず、鑑賞者を見る三分の一横顔へ戻さない。正面指定では首の左右傾きを0度にする。俯瞰やローアングルを軽い高さ差へ弱めない。大笑い・叫び・驚きを閉じた口の微笑みに変えない。全身指定を胸から上の肖像に切り詰めない。',
  ]),
  '遠近感・アングル・臨場感・流動感・3D的な量感を技法に合わせて統合する。写真はレンズと被写界深度、アニメはパースと線・動線、水墨は墨の重なりと余白・筆の流れ、油彩は色と陰影の体積、工芸・3Dは素材の厚み・遮蔽・接地で表現する。どの技法もCG風の同じ質感へ変換しない。'+(noPerson?'主景・主要輪郭':'顔')+'と文字はブラーで失わない。アイコン・平面ポスターは小さく見た時の可読性を優先して、立体感や動きを図形の重なりと配置に置換する。',

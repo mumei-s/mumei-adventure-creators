@@ -1,6 +1,7 @@
-import {mediumExecution} from './medium-execution.js?v=28.0.1';
-import {formatExecution} from './format-execution.js?v=28.0.1';
-import {colorPolicy} from './color-policy.js?v=28.0.1';
+import {mediumExecution} from './medium-execution.js?v=28.0.2';
+import {formatExecution} from './format-execution.js?v=28.0.2';
+import {colorPolicy} from './color-policy.js?v=28.0.2';
+import {photoReconstruction} from './photo-design.js?v=28.0.2';
 
 // The option's own physical recipe is the source of its execution contract.
 // No generic "beautiful / atmospheric" default replaces a missing preset.
@@ -33,9 +34,11 @@ export function executionFor(key,value,recipe,{noPerson=false,values={}}={}){
  // the user's no-person choice before that choice is even read.
  if(key==='medium'&&noPerson)method=sections.filter(s=>s.part!=='日本を基準にした個別条件').slice(0,4).map(s=>s.draw).join(' ');
  if(key==='medium'){
-  method+=' Apply this selected making process consistently to '+(noPerson?'the scenery, objects, materials and background.':'the face, hair, body, clothing and background. Preserve reference identity as recognizable features translated into this medium; redraw rather than retain a photographic face or surface from the reference.');
+  const photo=photoReconstruction(value,{noPerson,values});
+  method+=' Apply this selected making process consistently to '+(noPerson?'the scenery, objects, materials and background.':photo?'the face, hair, body, clothing and background. Preserve identifying features while reconstructing an illustrated reference as physically plausible photographed anatomy and materials; do not retain its outlines, cel shading or painted surface.':'the face, hair, body, clothing and background. Preserve reference identity as recognizable features translated into this medium; redraw rather than retain a photographic face or surface from the reference.');
+  if(photo)method+=' '+photo.sections.map(section=>section.text).join(' ');
   const policy=colorPolicy(values);
-  if(policy.restricted)method+=' Use only '+policy.allowed+'. Translate every material color, optical band and reflection into values within those permitted colors. Preserve the technique through its line, layering, boundary and depth structure.';
+  if(policy.restricted)method+=' Use only '+policy.allowed+'. Translate every material color, optical band and reflection into values within those permitted colors. '+(photo?'Preserve the photographic technique through real material structure, optical focus, continuous exposure tones and coherent lighting.':'Preserve the technique through its line, layering, boundary and depth structure.');
  }
  method+=' '+sections.filter(s=>s.part==='日本を基準にした個別条件').map(s=>s.draw).join(' ');
  const inactive=noPerson&&['mood','pose'].includes(key);

@@ -1,9 +1,9 @@
-import {extraTypographyGroups} from './typography-options.js?v=28.0.1';
-import {compatibleResolved} from './compatibility.js?v=28.0.1';
-import {poseGroups} from './poses.js?v=28.0.1';
-import {colorWorlds,luminousMedia} from './worlds.js?v=28.0.1';
-import {mergeSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.0.1';
-import {angleGroups} from './angles.js?v=28.0.1';
+import {extraTypographyGroups} from './typography-options.js?v=28.0.2';
+import {compatibleResolved} from './compatibility.js?v=28.0.2';
+import {poseGroups} from './poses.js?v=28.0.2';
+import {colorWorlds,luminousMedia} from './worlds.js?v=28.0.2';
+import {halloweenSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.0.2';
+import {angleGroups} from './angles.js?v=28.0.2';
 export const AUTO='おまかせ';
 const group=(label,values)=>({label,values:values.split('|')});
 export const questions=[
@@ -32,10 +32,10 @@ questions.find(q=>q.key==='theme').name='世界観・シーン';
 questions.find(q=>q.key==='medium').name='作風・画材';
 questions.find(q=>q.key==='medium').hint='専用の描線・塗り・素材の描き方';
 questions.find(q=>q.key==='place').name='舞台・場所';
-questions.find(q=>q.key==='theme').hint='物語・世界・場所をひとつの場面で選ぶ';
+questions.find(q=>q.key==='theme').hint='仮装・お菓子・怪異・秋の夜をひとつの場面で選ぶ';
 questions.find(q=>q.key==='place').hint='選んだ世界の、出来事が起きる場所';
 palette.hint='配色・光源・透け方まで選ぶ';
-questions.find(q=>q.key==='theme').groups=mergeSceneGroups(questions.find(q=>q.key==='theme').groups,questions.find(q=>q.key==='place').groups);
+questions.find(q=>q.key==='theme').groups=halloweenSceneGroups(questions.find(q=>q.key==='theme').groups,questions.find(q=>q.key==='place').groups);
 const defaultByKey={mood:'毎回大胆に変える',type:'デザインに合わせて自動編集',size:'noteサムネイル｜1280×670｜128:67'};
 export const defaults=questions.map(q=>defaultByKey[q.key]||AUTO);
 export function normalizeCreator(raw){

@@ -47,6 +47,10 @@ export const angleGroups=[
 ];
 const fixedFaceChoices=new Set(['正面・首をまっすぐ','完全な左横顔90度','完全な右横顔90度','真上からの俯瞰','真下からのローアングル','背中から振り向く','顔を上に向ける','顔を下に向ける','正面＋満面の笑顔','左横顔＋静かな無表情','右横顔＋大笑い','俯瞰＋目を見開く','ローアングル＋威嚇','背中から振り向く＋ニヤリ']);
 const withoutAnatomy=text=>text.replace(/顔の目元|顔を|顔|目鼻口|頭部と肩|上半身|身体|手と|足または/g,m=>({'顔の目元':'主景の細部','顔を':'主景を','顔':'主景','目鼻口':'固有形','頭部と肩':'主景と周囲','上半身':'主景の上部','身体':'主題','手と':'接続部と','足または':'底部または'}[m])).replace(/目・眉・鼻筋の一部/,'素材や構造の細部');
+function subjectText(text,{noPerson=false,values={}}={}){
+ if(noPerson)return withoutAnatomy(text).replace(/頭頂|頭上|頭部|頭|肩|胴体|骨盤/g,'主景の構造').replace(/目元だけ|目元|手元|足元|頭から足先まで入る全身/g,'主景の指定部分').replace(/手足|指や足/g,'構造や縁');
+ return values.costume==='人魚'?text.replace(/頭から足先まで/g,'頭から尾びれまで').replace(/足先|足元|両足|つま先/g,'尾びれ').replace(/手足|指や足/g,'腕や尾びれ'):text;
+}
 // Pitch is measured from the horizontal: positive looks down, negative up.
 // A vertical optical axis can use perspective; it need not be orthographic.
 export function cameraContract(values,{noPerson=false}={}){
@@ -54,8 +58,8 @@ export function cameraContract(values,{noPerson=false}={}){
  if(!item)return null;
  const vertical=Math.abs(item.pitch)===90;
  const numeric=/度/.test(item.value);
- const text=noPerson?withoutAnatomy(item.text):item.text;
- const geometry={selected:item.value,...(numeric?{pitch_degrees_from_horizontal:item.pitch}:{}),...(numeric&&!vertical?{azimuth_relative_to_subject_degrees:item.yaw}:{}),...(item.roll?{roll_degrees:item.roll}:{}),...(vertical?{optical_axis:item.pitch===90?[0,0,-1]:[0,0,1],horizontal_component:0}:{}),framing:noPerson?item.distance.replace(/顔と肩|目元だけ|上半身|手元|頭から足先まで入る全身/g,'主景の指定部分'):item.distance};
+ const text=subjectText(item.text,{noPerson,values});
+ const geometry={selected:item.value,...(numeric?{pitch_degrees_from_horizontal:item.pitch}:{}),...(numeric&&!vertical?{azimuth_relative_to_subject_degrees:item.yaw}:{}),...(item.roll?{roll_degrees:item.roll}:{}),...(vertical?{optical_axis:item.pitch===90?[0,0,-1]:[0,0,1],horizontal_component:0}:{}),framing:subjectText(item.distance,{noPerson,values})};
  const whole=/全景|全身|広い|ロングショット/.test(item.distance);
  const close=/クローズアップ|超接写|接写|手元と|支持部と/.test(item.distance);
  const framing_instruction=(noPerson?'主景':whole?'選択ポーズの姿勢全体':close?'指定された接写部分':'主題の指定された範囲')+'を、固定した投影で見える輪郭と必要な周囲ごと画像領域内へ収め、外周5%以上の安全余白を保つ。'+(whole?'自然な短縮・重なり・遮蔽を保ち、隠れる指や足をすべて見せるために手足を広げたりカメラを傾けたりしない。頭から足までが画面の縦方向へ並ぶ立位の比率を強制しない。':close?'接写の指定を全身へ引き直さない。':'選択された画角を保ち、主題の範囲を別の接写や全身へ変更しない。');
@@ -73,33 +77,35 @@ export function cameraContract(values,{noPerson=false}={}){
   instructions.push('光軸は水平から上向き90度、真上へ垂直。下面と上方の重なり・短縮を描き、斜め下の煽りへ弱めない。支持面が視線を遮る場合はその遮蔽を守る。床を透かしたり、座るポーズを浮遊へ変更したりして主題を見せない。');
   checks.push('光軸が真上90度で、下面・上方の重なりと遮蔽が一致している');
  }else if(item.value==='真横90度')checks.push('主題の肩・骨盤・支持部が同じ側面投影になっている');
- if(vertical&&!noPerson){
-  instructions.push(fixedFaceChoices.has(values.mood)?'顔角度はカメラの俯角と別の指定として、固定したカメラから見える自然な頭・首の向きで実行する。横顔の指定を見せるためにカメラを水平や斜めへ戻さない。':'顔角度が未指定なら、選択ポーズに合う自然な頭・首の向きをこの垂直視点で描く。自動演出の水平カメラ向け横顔・首の角度を追加の固定条件にしない。');
+ if(!noPerson){
+  instructions.push(fixedFaceChoices.has(values.mood)?'顔角度はカメラの方向と別の指定として、固定したカメラから見える自然な頭・首の向きで実行する。顔を見せるためにカメラの高さ・方位・投影を変更しない。':'顔角度が未指定なら、選択ポーズに合う自然な頭・首の向きをこの固定視点で描く。自動演出の別のカメラ向けの顔・首の角度を追加の固定条件にしない。');
  }
  instructions.push('選択したポーズ・支持点と画風・形式・世界観を保持する。明示した顔角度やポーズがこの視点と両立しない場合は、その衝突を短く伝え、首や関節の破綻・カメラ角度の変更で満たしたと主張しない。');
- return {...geometry,vertical,whole,framing_instruction,instructions,checks};
+ return {...geometry,vertical,whole,framing_instruction:subjectText(framing_instruction,{noPerson,values}),instructions:instructions.map(t=>subjectText(t,{noPerson,values})),checks:checks.map(t=>subjectText(t,{noPerson,values}))};
 }
-export function angleRecipe(value,{noPerson=false}={}){
+export function angleRecipe(value,{noPerson=false,values={}}={}){
  const item=angleItems.find(x=>x.value===value);
  if(!item&&!['おまかせ','場面に合わせたアングル',undefined,''].includes(value))return {known:false,sections:[{label:'指定アングルの具体化',text:'自由指定「'+value+'」のカメラ位置・高さ・距離・投影を、選んだシーンとポーズに合わせて具体化する。作風や世界は変更しない。'}],checks:['自由指定「'+value+'」に合うカメラ投影']};
  if(!item)return {known:true,sections:[{label:'場面に合うカメラ',text:'選択した世界観・シーンとポーズに合うカメラ位置と距離を決める。作風と世界を変更せず、直近の未指定構図を繰り返さない。'}],checks:['場面と主題に合うカメラ位置・距離']};
- const text=noPerson?withoutAnatomy(item.text):item.text;
- const geometry=cameraContract({angle:value},{noPerson});
- return {known:true,sections:[{label:'カメラの位置と投影',text},{label:'画角・距離',text:(noPerson?item.distance.replace(/顔と肩|目元だけ|上半身|手元|頭から足先まで入る全身/g,'主景の指定部分'):item.distance)+'。構図は選択ポーズと同じ一場面に適用し、画材や描線は選択作風を保つ。'},{label:'作画への翻訳',text:'角度と遠近を、選択技法の線・面・大小・重なり・余白で表す。写真レンズの見本を、人物や世界や画風の参照に使わない。'},...(geometry.vertical?[{label:'垂直投影の照合',text:geometry.checks.at(-1)}]:[])],checks:[text,item.distance,...geometry.checks.slice(1),'画風とシーンと動作を保持した同じカメラ投影']};
+ const text=subjectText(item.text,{noPerson,values});
+ const geometry=cameraContract({...values,angle:value},{noPerson});
+ return {known:true,sections:[{label:'カメラの位置と投影',text},{label:'画角・距離',text:geometry.framing+'。構図は選択ポーズと同じ一場面に適用し、画材や描線は選択作風を保つ。'},{label:'作画への翻訳',text:'角度と遠近を、選択技法の線・面・大小・重なり・余白で表す。写真レンズの見本を、人物や世界や画風の参照に使わない。'},...(geometry.vertical?[{label:'垂直投影の照合',text:geometry.checks.at(-1)}]:[])],checks:[text,geometry.framing,...geometry.checks.slice(1),'画風とシーンと動作を保持した同じカメラ投影']};
 }
 export function applyAngle(values,variant){
  const item=angleItems.find(x=>x.value===values.angle);if(!item){if(!values.angle||['おまかせ','場面に合わせたアングル'].includes(values.angle))return variant;return {...variant,camera:'自由指定「'+values.angle+'」のカメラ位置・方向を実行する。',distance:'自由指定「'+values.angle+'」に合う画角と距離を使う。',angleChoice:values.angle};}
  const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume||'');
- const spec=angleRecipe(values.angle,{noPerson});
- const vertical=Math.abs(item.pitch)===90;
+ const spec=angleRecipe(values.angle,{noPerson,values});
  let face=variant.face;
- if(vertical&&!noPerson&&!fixedFaceChoices.has(values.mood))face='選択ポーズに合う自然な頭と首の向き。この垂直視点から実際に見える頭部の面と短縮を描き、選択表情は見える範囲で保つ。';
- else if(vertical&&!noPerson){
+ if(!noPerson&&!fixedFaceChoices.has(values.mood))face='選択ポーズに合う自然な頭と首の向き。この固定視点から実際に見える頭部の面と短縮を描き、選択表情は見える範囲で保つ。';
+ else if(!noPerson){
   // Legacy facial-view presets also carried a camera instruction. Keep the
   // chosen head direction while the independent angle owns the camera.
   if(/真上からの俯瞰|俯瞰＋/.test(values.mood))face='顔は上向き。頭と首を自然につなぎ、固定したカメラから見える顔の短縮を描く。';
   else if(/真下からのローアングル|ローアングル＋/.test(values.mood))face='顎を上げた顔向き。固定したカメラから見える頭部の面と短縮を描く。';
-  else if(/完全な右横顔90度|右横顔＋/.test(values.mood))face=(face||'').replace('首は傾けない','固定した垂直カメラから見える自然な首の向きで合わせる');
+  else if(/背中から振り向く/.test(values.mood))face='背中側を向け、肩越しに振り返る。固定カメラを動かさず、胸郭と首の自然な回転を分担して選択表情を見える範囲で描く。';
+  else if(values.mood==='顔を上に向ける')face='顔を上へ向ける。固定カメラから見える面と短縮を描き、頭と首を自然につなぐ。';
+  else if(values.mood==='顔を下に向ける')face='顔を下へ向ける。固定カメラから見える面と短縮を描き、頭と首を自然につなぐ。';
+  else if(/完全な右横顔90度|右横顔＋/.test(values.mood))face='完全な右横顔90度。右向きの顔を自然な頭・首の回転で実行し、固定カメラを変更しない。見える目は一つ。';
  }
  return {...variant,face,camera:item.value+'。'+spec.sections[0].text,distance:spec.sections[1].text,depth:(variant.depth||'')+' 選択アングル「'+item.value+'」の投影と画角を保つ。',angleChoice:item.value};
 }

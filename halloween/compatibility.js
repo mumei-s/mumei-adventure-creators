@@ -24,5 +24,5 @@ export function compatibleResolved(values,input,questions,random=Math.random){
  }
  return out;
 }
-// In pop view a left gesture travels to the preceding page, wrapping to the last.
+// Both directions wrap so the adjacent page remains reachable at either end.
 export function wrappedPage(page,delta,pages){return pages>0?((page+delta)%pages+pages)%pages:0;}

@@ -1,14 +1,14 @@
-import {creatorLookupInstructions} from './creator-handoff.js?v=28.0.1';
-import {imageOutputContract} from './output-contract.js?v=28.0.1';
-import {modeFoundation} from './japan-direction.js?v=28.0.1';
-import {questions,visibleQuestions} from './catalog.js?v=28.0.1';
-import {formatContract} from './formats.js?v=28.0.1';
-import {buildEditorial,editorialContract} from './editorial.js?v=28.0.1';
-import {optionRecipe} from './option-recipes.js?v=28.0.1';
-import {colorPolicy} from './palette-recipes.js?v=28.0.1';
-import {resolveArtDirection,interactionContract} from './art-direction.js?v=28.0.1';
-import {executionFor} from './option-execution.js?v=28.0.1';
-import {cameraContract} from './angles.js?v=28.0.1';
+import {creatorLookupInstructions} from './creator-handoff.js?v=28.0.2';
+import {imageOutputContract} from './output-contract.js?v=28.0.2';
+import {modeFoundation} from './japan-direction.js?v=28.0.2';
+import {questions,visibleQuestions} from './catalog.js?v=28.0.2';
+import {formatContract} from './formats.js?v=28.0.2';
+import {buildEditorial,editorialContract} from './editorial.js?v=28.0.2';
+import {optionRecipe} from './option-recipes.js?v=28.0.2';
+import {colorPolicy} from './palette-recipes.js?v=28.0.2';
+import {resolveArtDirection,interactionContract} from './art-direction.js?v=28.0.2';
+import {executionFor} from './option-execution.js?v=28.0.2';
+import {cameraContract} from './angles.js?v=28.0.2';
 
 export function productionPlan(profile,values,variant,collection='halloween',random=Math.random){
  const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);
@@ -37,10 +37,14 @@ export function productionPlan(profile,values,variant,collection='halloween',ran
    checks.push(variant.face,variant.expression);
   }
   if(q.key==='pose'&&!noPerson){sections.push({label:'今回実行する動作',text:variant.pose});checks.push(variant.pose);}
-  if(camera?.vertical&&['theme','place','mood','pose'].includes(q.key)){
-   const scope=q.key==='mood'?'顔角度・表情は固定した垂直カメラから見える自然な頭の向きで実行する。別の高さのカメラを前提とする横顔の見え方を同時に強制しない。明示した顔角度とポーズが両立しない場合は衝突を伝え、指定を満たしたと断定しない。':q.key==='pose'?'選択した身体配置・支持点を保持し、垂直投影の自然な短縮と遮蔽を描く。隠れる手足を全部見せるためにポーズを広げない。':'この空間の識別要素を、固定した垂直視点から見える面・配置・距離層として描く。以下の地平線・遠方の正面・消失点への指示は、カメラを傾ける条件として適用しない。視線外や他の景物で隠れる面の描画を必須にしない。';
+  if(camera&&['theme','place','mood','pose'].includes(q.key)){
+   if(q.key==='mood'&&!noPerson&&/真上からの俯瞰|真下からのローアングル|俯瞰＋|ローアングル＋/.test(values.mood)){
+    sections.splice(0,sections.length,{label:'選択した頭の向きと表情',text:[variant.face,variant.expression,variant.tone].filter(Boolean).join(' / ')+'。顔向きの旧レシピに含まれたカメラの高さは追加せず、独立して選んだアングルを保つ。'});
+    checks=[variant.face,variant.expression];
+   }
+   const scope=q.key==='mood'?'顔角度・表情は固定したカメラから見える自然な頭の向きで実行する。別の高さ・方位のカメラを前提とする顔の見え方を同時に強制しない。明示した顔角度とポーズが両立しない場合は衝突を伝え、指定を満たしたと断定しない。':q.key==='pose'?'選択した身体配置・支持点を保持し、選択投影の自然な短縮と遮蔽を描く。隠れる手足を全部見せるためにポーズを広げない。':'この空間の識別要素を、固定した視点から見える面・配置・距離層として描く。以下の地平線・遠方の正面・消失点への指示は、カメラを移動・回転する条件として適用しない。視線外や他の景物で隠れる面の描画を必須にしない。';
    sections.unshift({label:'固定カメラでの解釈',text:scope});
-   checks=checks.map(check=>'固定した垂直視点で見える範囲を照合：'+check);
+   checks=checks.map(check=>'固定した視点で見える範囲を照合：'+check);
   }
   let lineExecution;
   if(q.key==='type'){

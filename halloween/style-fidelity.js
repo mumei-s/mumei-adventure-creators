@@ -1,5 +1,15 @@
-export function styleFidelity(condition,{noPerson=false}={}){
+import {photoReconstruction} from './photo-design.js?v=28.0.2';
+export function styleFidelity(condition,{noPerson=false,values={}}={}){
  const regions=noPerson?'主景・物体・構造・背景':'顔の輪郭・目鼻口・髪・身体・衣装・背景';
+ const photo=photoReconstruction(condition.value,{noPerson,values});
+ if(photo)return [
+  '【作風を作品全域へ】選択作風「'+condition.value+'」で'+regions+'を、実物の被写体を同じカメラで撮影した一つの像として再構成する。参照の識別特徴を保ち、イラストの描線や平たいセル色を撮影表現として残さない。',
+  ...photo.sections.map(section=>section.text),
+  'この作風の見える特徴：'+condition.checks.join(' / '),
+  (noPerson?'主景の輪郭・構造・材料の境界':'顔の識別点と選んだ動作のシルエット')+'を、指定カメラから見える範囲で判読できる撮影像へ整える。主題の見やすさを理由に画角やポーズを変更しない。',
+  '主役と背景を同じ実照明、材質の反射、連続した露光階調、レンズ遠近と焦点でつなぐ。写真化は参照へ粒子やぼけを重ねる加工だけで済ませず、指定の画角・ポーズ・主題を保って成立させる。',
+  '完成画像そのものを確認し、主役と背景の両方が選択した写真の光学像と実物の材質になっているか照合する。未確認の写真変換を達成したと断言しない。'
+ ];
  const reduced=/禅画|書と墨の抽象|線画|ピクセルアート|ベクターグラフィック|フラットイラスト|ローポリゴン|ボクセル|フラクタルアート|抽象表現|キュビスム|構成主義|ポップアート|アウトサイダーアート|ミニマリズム/.test(condition.value);
  const focus=noPerson?'主景の輪郭・構造・材料の境界':'顔の識別点と選んだ動作のシルエット';
  return [

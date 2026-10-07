@@ -1,5 +1,6 @@
 // These are authored rendering specifications, not EXIF or proof of a camera.
 // Selected face/body angle and requested composition take priority over optics.
+import {colorPolicy} from './color-policy.js?v=28.0.2';
 const designs=new Map([
  ['実写風フィルム写真',['50mm相当の標準レンズ、人物はf/4相当、風景はf/8相当','中間調に細かい不均一な粒子、明部は穏やかに肩へ移る']],
  ['実写風スタジオ写真',['85mm相当、f/8相当','大きな主光と弱い補助光、主題全体の素材が判別できる解像']],
@@ -14,7 +15,34 @@ const designs=new Map([
  ['実写風長時間露光',['35mm相当、f/8相当、三脚を固定した画角','建築や地形は鮮明に固定し、選択舞台で実際に動く水や光だけを連続した軌跡へ']],
  ['実写風インスタントカメラ',['35mm相当の固定レンズ、深い被写界深度','わずかな周辺解像の低下とフィルムの色差、主題の形は明瞭に保持']],
 ]);
-export function photoDesign(value,{noPerson=false}={}){
+export const photoValues=Object.freeze([...designs.keys()]);
+export const isPhotographicMedium=value=>designs.has(value);
+// A reference can identify a drawn character without supplying photographic
+// anatomy or materials. Reconstruct those rather than filtering its pixels.
+export function photoReconstruction(value,{noPerson=false,values={}}={}){
+ if(!isPhotographicMedium(value))return null;
+ const policy=colorPolicy({...values,medium:value});
+ const color=policy.restricted
+  ?'使用色は'+policy.allowed+'。参照の識別色も許可色の明度差へ翻訳し、元の有彩色を例外で残さない。'
+  :'髪と瞳などの識別に必要な基礎色は保ち、背景・照明・補助色を選択配色へ合わせる。髪色を照明の都合で別の色へ変えない。';
+ const sections=noPerson?[
+  {label:'イラスト参照から実物へ',text:'主参照がイラスト・漫画・絵画でも、選択した景物・物体の外形、配置、固有模様を読み取り、実際に存在する材質と厚みを持つ被写体として再構成する。参照の輪郭線、筆跡、網点、セル影、平たい色面を撮影像へ残さず、絵を撮影した紙面や額縁へ置換しない。人物や人型を追加しない。'},
+  {label:'実物の材質と光',text:'石・木・金属・ガラス・水・植生など、選択した素材の微細構造、反射と散乱、重なりと接地影を実物の尺度で組み立てる。主景と周囲を同じレンズ遠近、選択カメラ、実在する光源からの連続した露光階調へつなぐ。絵の上へ粒子・ぼけ・光だけを重ねる処理にしない。'+(policy.restricted?'使用色は'+policy.allowed+'。参照の素材色もこの許可色の明度差へ変換する。':'主景の識別に必要な素材色を保ち、照明・背景を選択配色へ合わせる。')}
+ ]:[
+  {label:'イラスト参照から人物へ',text:'主参照がイラスト・漫画・アニメでも、髪型・髪色・瞳の色、顔立ちの特徴的な組合せ、固有の印、年齢感・性別表現・基礎体格から同じキャラクターと識別できる人物を再構成する。輪郭線、セル塗り、網点、描いた瞳の反射、記号的な鼻口、誇張された目の大きさをそのまま固定せず、人間の頭蓋・眼球・鼻・唇・顎・首が自然につながる立体へ翻訳する。別のモデルや一律の美形へ入れ替えず、明示した非人間の形・役柄は保持する。'},
+  {label:'皮膚・毛髪・衣服の実在感',text:'選択衣装から露出する皮膚に微細な毛穴、産毛、自然な色むらと光の散乱を作り、眼球・眼瞼・唇を実物の厚みと反射として構成する。存在する髪は根元から続く細い毛の流れと束、服は裁断・縫い目・繊維・重力で生じる皺へ再構成する。髪なし・閉眼の明示指定には髪や開いた瞳を追加しない。被覆を減らさず、アニメの色面に毛穴や光だけを貼る処理、プラスチックの人形や3Dアニメへ置換しない。'},
+  {label:'同じ撮影空間と識別色',text:'人物・衣装・背景を、固定したカメラ投影と一つのレンズ像、舞台の実在する光源に対応した反射・接地影・連続した露光階調へ統一する。顔の向き・表情・身体配置・支持点を選択どおり実行し、参照のポーズや平たい描画の陰影を撮影像へ複写しない。'+color}
+ ];
+ return {sections,checks:noPerson
+  ?['描線やセル影を残さない実物の景物・材質','選択視点で連続するレンズ像と露光','人物や人型を追加しない']
+  :['同じキャラクターの識別特徴を持つ自然な人物立体','皮膚・毛髪・衣服の実物の構造','輪郭線・セル塗りを残さない撮影像','選択カメラ・顔向き・ポーズと支持の保持','選択色域で保つ識別色または明度差']};
+}
+export function photoDesign(value,{noPerson=false,values={}}={}){
  const entry=designs.get(value);if(!entry)return null;
- return {label:'撮影設計（描画の基準）',text:entry[0]+'の像として描く。'+entry[1]+'。'+(noPerson?'選択した主景の視点・地形を保つ。':'選択した顔角度・身体ポーズ・カメラ方向を保つ。')+'焦点距離は遠近と解像を設計するための値で、実際のカメラの撮影記録ではない。必要な外形を収めるため撮影距離を調整し、レンズ名を理由に主題や最終比率を変更しない。'};
+ const angle=values.angle||'';
+ const selectedOptics=/魚眼/.test(angle)?'選択した魚眼相当の曲面投影。中央から周辺へ弧状に広がる一つのレンズ像'
+  :/超広角/.test(angle)?'選択した超広角相当の遠近。近い形を大きく、遠い形を小さく結ぶ一つの広いレンズ像'
+  :/望遠/.test(angle)?'選択した望遠相当の圧縮遠近。離れた位置から近景と遠景の大きさの差を抑える一つのレンズ像':'';
+ const optics=selectedOptics||entry[0];
+ return {label:'撮影設計（描画の基準）',text:optics+'として描く。'+(selectedOptics?'写真プリセットの標準レンズより、明示したアングル「'+angle+'」の投影と遠近を優先する。':'')+entry[1]+'。'+(noPerson?'選択した主景の視点・地形を保つ。':'選択した顔角度・身体ポーズ・カメラ方向を保つ。')+'焦点距離は遠近と解像を設計するための値で、実際のカメラの撮影記録ではない。必要な外形を収めるため撮影距離を調整し、レンズ名を理由に主題や最終比率を変更しない。'};
 }

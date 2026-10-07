@@ -2,3 +2,69 @@
    Vertical movement stays available to the dialog's scroll container. */
 #ring-focus, #ring-focus * { touch-action: pan-y; }
 #ring-focus { user-select: none; -webkit-user-select: none; }
+
+/* Orbit cards leave this band clear at rest; it remains ordinary pan-y space. */
+#picker .ring-stage { --swipe-gap: 76px; }
+#picker .ring-stage::after {
+  content: "";
+  position: absolute;
+  inset: calc(50% - var(--swipe-gap) / 2) 0 auto;
+  height: var(--swipe-gap);
+  border-block: 1px solid #fff5e8aa;
+  background: linear-gradient(90deg, #fff5e8d6, #fff5e87a 35% 65%, #fff5e8d6);
+  pointer-events: none;
+  z-index: 1;
+}
+#picker .ring-grabbing::after { opacity: .25; }
+#picker .ring-current-category {
+  flex: none;
+  margin: 0;
+  padding: 3px 8px;
+  color: #452510;
+  background: #fff5e8;
+  border-inline-start: 4px solid var(--page-accent);
+  border-radius: 4px;
+  font-size: .76rem;
+  font-weight: 850;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+/* Each adjacent page changes both color and pattern, including in night mode. */
+#picker {
+  --page-accent: #a85510;
+  --page-wash: #e69a3c66;
+  --page-pattern: radial-gradient(circle at center, var(--page-wash) 0 5px, transparent 6px);
+}
+#picker[data-page-tone="1"] {
+  --page-accent: #ad365f;
+  --page-wash: #d8558b66;
+  --page-pattern: repeating-linear-gradient(135deg, transparent 0 12px, var(--page-wash) 13px 18px, transparent 19px 32px);
+}
+#picker[data-page-tone="2"] {
+  --page-accent: #177e92;
+  --page-wash: #35a9bb66;
+  --page-pattern: linear-gradient(90deg, var(--page-wash) 2px, transparent 3px), linear-gradient(var(--page-wash) 2px, transparent 3px);
+}
+#picker[data-page-tone="3"] {
+  --page-accent: #6950ad;
+  --page-wash: #9570d066;
+  --page-pattern: radial-gradient(circle at center, transparent 0 10px, var(--page-wash) 11px 15px, transparent 16px);
+}
+#picker[data-page-tone="4"] {
+  --page-accent: #4f7e27;
+  --page-wash: #78ad4a66;
+  --page-pattern: linear-gradient(135deg, transparent 40%, var(--page-wash) 41% 49%, transparent 50%), linear-gradient(45deg, transparent 40%, var(--page-wash) 41% 49%, transparent 50%);
+}
+#picker[data-page-tone="5"] {
+  --page-accent: #a56327;
+  --page-wash: #d8945466;
+  --page-pattern: repeating-linear-gradient(0deg, transparent 0 12px, var(--page-wash) 13px 19px, transparent 20px 40px);
+}
+#picker .ring-stage::before { background-size: 40px 40px; opacity: 1; }
+body[data-lights="night"] #picker .ring-stage::after {
+  border-color: #c4b1e155;
+  background: linear-gradient(90deg, #182136de, #18213699 35% 65%, #182136de);
+}
+body[data-lights="night"] #picker .ring-current-category { color: #f4eaff; background: #282d46; }
+@media (max-width: 619px) { #picker .ring-stage { --swipe-gap: 72px; } }

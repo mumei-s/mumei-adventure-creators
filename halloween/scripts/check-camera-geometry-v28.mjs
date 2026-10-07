@@ -1,14 +1,15 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.0.1';
-import {questions,resolveSelections} from '../catalog.js?v=28.0.1';
-import {initialSelections} from '../modes.js?v=28.0.1';
-import {buildDirection} from '../direction.js?v=28.0.1';
-import {applyPose} from '../poses.js?v=28.0.1';
-import {cameraContract} from '../angles.js?v=28.0.1';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.0.1';
-import {composePrompt} from '../prompt.js?v=28.0.1';
-import {renderInput,renderChatInput} from '../compiled-production.js?v=28.0.1';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.0.1';
+import {applyCollection} from '../collection.js?v=28.0.2';
+import {questions,resolveSelections} from '../catalog.js?v=28.0.2';
+import {initialSelections} from '../modes.js?v=28.0.2';
+import {buildDirection} from '../direction.js?v=28.0.2';
+import {applyPose} from '../poses.js?v=28.0.2';
+import {cameraContract} from '../angles.js?v=28.0.2';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.0.2';
+import {composePrompt} from '../prompt.js?v=28.0.2';
+import {renderInput,renderChatInput} from '../compiled-production.js?v=28.0.2';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.0.2';
+import {sceneSourcePlace} from '../scene-presets.js?v=28.0.2';
 
 // The failing user combination must retain a vertical optical axis in the
 // native handoff, audit export, artwork stage and both image-repair routes.
@@ -31,7 +32,14 @@ for(const collection of ['halloween','everyday']){
   const supplied={...initialSelections(),...base,...item.values};
   for(const key of ['theme','design','medium','pose','mood','angle','size']){
    const value=supplied[key];if(value==='おまかせ'||value==='毎回大胆に変える')continue;
-   assert.ok(questions.find(q=>q.key===key).groups.some(g=>g.values.includes(value)),key+' / '+value+' is unavailable in '+collection);
+   const publicChoice=questions.find(q=>q.key===key).groups.some(g=>g.values.includes(value));
+   if(collection==='halloween'&&key==='theme'&&['空中都市','白いスタジオ'].includes(value)){
+    // These scenes were removed from the seasonal picker, while this actual
+    // old user combination must remain reproducible through saved input.
+    assert.equal(publicChoice,false,value+' should not return to the Halloween picker');
+    assert.equal(sceneSourcePlace(value),value,value+' lost its legacy place recipe');
+    assert.ok(questions.find(q=>q.key==='place').groups.some(g=>g.values.includes(value)));
+   }else assert.ok(publicChoice,key+' / '+value+' is unavailable in '+collection);
   }
   const values=resolveSelections(supplied,()=>.23);
   const variant=applyPose(buildDirection([],values.mood,()=>.23,collection,values),values.pose);
@@ -74,11 +82,11 @@ for(const collection of ['halloween','everyday']){
   }
   if(item.automaticFace){
    assert.doesNotMatch(plan.variant.face,/完全な[左右]横顔90度|正面0度|首の傾き0度/,'Automatic facial views must not retain a separate horizontal-camera fixed pose');
-   assert.match(plan.variant.face,/垂直視点|固定したカメラ/);
+   assert.match(plan.variant.face,/固定視点|垂直視点|固定したカメラ/);
   }
   if(item.name==='user flyer/profile/sitting'){
    assert.match(structured.camera.face,/完全な左横顔90度/,'The explicit left profile cannot silently disappear');
-   assert.match(native,/顔角度はカメラの俯角と別/);
+   assert.match(native,/顔角度はカメラの方向と別/);
    assert.match(native,/衝突を短く伝え/,'An explicit conflicting face must be addressed without tilting the fixed camera');
    assert.match(native,/屋根・街区の上面/,'A top-down city must not retain an eye-level skyline');
    contains(native,values.design,'The flyer format');contains(native,values.medium,'The selected ink technique');contains(native,values.pose,'The selected sitting pose');

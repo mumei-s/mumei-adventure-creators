@@ -1,7 +1,7 @@
-import {everydayScenes,everydayPlaces,casualClothes,swimClothes,everydayBindings,everydaySamples} from './everyday-options.js?v=28.0.1';
-import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=28.0.1';
-import {poseGroups} from './poses.js?v=28.0.1';
-import {mergeSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.0.1';
+import {everydayScenes,everydayPlaces,casualClothes,swimClothes,everydayBindings,everydaySamples} from './everyday-options.js?v=28.0.2';
+import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=28.0.2';
+import {poseGroups} from './poses.js?v=28.0.2';
+import {halloweenSceneGroups,mergeSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.0.2';
 const original=questions.map(q=>({...q,groups:q.groups.map(g=>({...g,values:[...g.values]}))}));
 const originalGroups=key=>original.find(q=>q.key===key).groups;
 const cloneGroups=groups=>groups.map(g=>({...g,values:[...g.values]}));
@@ -162,7 +162,7 @@ export function applyCollection(collection){
   const source=original[i],daily=activeCollection==='everyday';q.groups=cloneGroups(daily?(dailyGroups[q.key]||source.groups):source.groups);delete q.autoValues;
   if(daily&&q.key==='type')q.groups=q.groups.map(g=>({...g,values:g.values.filter(v=>!v.includes('HALLOWEEN'))}));
   q.name=source.name;q.hint=source.hint;
-  if(q.key==='theme')q.groups=mergeSceneGroups(q.groups,daily?dailyGroups.place:originalGroups('place'));
+  if(q.key==='theme')q.groups=daily?mergeSceneGroups(q.groups,dailyGroups.place):halloweenSceneGroups(q.groups,originalGroups('place'));
   if(q.key==='angle')q.autoValues=['場面に合わせたアングル'];
   if(daily){
    if(q.key==='theme'){q.hint='日常・風景・創作をひとつの場面で選ぶ';q.autoValues=[...ordinaryScenes,...landscapeScenes].map(x=>x[0]);}

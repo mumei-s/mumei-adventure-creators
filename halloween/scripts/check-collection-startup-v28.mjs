@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {questions} from '../catalog.js?v=28.0.1';
-import {applyCollection,currentCollection} from '../collection.js?v=28.0.1';
-import {initialSelections,modeKeys,modeCopy} from '../modes.js?v=28.0.1';
+import {questions} from '../catalog.js?v=28.0.2';
+import {applyCollection,currentCollection} from '../collection.js?v=28.0.2';
+import {initialSelections,modeKeys,modeCopy} from '../modes.js?v=28.0.2';
 
 // Execute the real switch function. Pool-only tests missed a removed helper
 // that still ran before both initial mode restoration and every button click.

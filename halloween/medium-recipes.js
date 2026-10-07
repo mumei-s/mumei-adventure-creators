@@ -1,7 +1,7 @@
 // Rendering recipes belong to option titles. Picker artwork is never an input.
 // Each section may supply a separate scenery-only instruction in its third cell.
-import {opticalColors} from './optical-effects.js?v=28.0.1';
-import {photoDesign} from './photo-design.js?v=28.0.1';
+import {opticalColors} from './optical-effects.js?v=28.0.2';
+import {photoDesign,photoReconstruction} from './photo-design.js?v=28.0.2';
 const recipes = new Map();
 function add(value, family, sections, checks) {
  if (recipes.has(value)) throw new Error('Duplicate medium recipe: ' + value);
@@ -1013,10 +1013,12 @@ export function detailedMedium(value, {noPerson = false, values = {}, variant = 
  const closedEyes = /両目を?閉|目を閉じ|閉眼|目をつむ|瞼を閉じ/.test(expression) && !/片目|ウインク/.test(expression);
  const hair = [values.hair, values.hairstyle, values.appearance].filter(Boolean).join(' / ');
  const noHair = /髪なし|頭髪なし|スキンヘッド|禿頭/.test(hair);
+ const reconstruction=photoReconstruction(value,{noPerson,values});
+ const photography=photoDesign(value,{noPerson,values});
  return {
   known: true,
   family: recipe.family,
-  sections: [...(photoDesign(value,{noPerson})?[photoDesign(value,{noPerson})]:[]),...recipe.sections.map(([label, text, scenery]) => {
+  sections: [...(reconstruction?.sections||[]),...(photography?[photography]:[]),...recipe.sections.map(([label, text, scenery]) => {
    let sectionLabel = label;
    let instruction = noPerson && scenery ? scenery : text;
    if (value === '宝石ホログラムアニメ' && label === '内部反射と虹彩') {
@@ -1031,6 +1033,6 @@ export function detailedMedium(value, {noPerson = false, values = {}, variant = 
    }
    return {label: render(sectionLabel, noPerson, policy), text: render(instruction, noPerson, policy)};
   })],
-  checks: recipe.checks.map(text => render(text, noPerson, policy))
+  checks: [...(reconstruction?.checks||[]),...recipe.checks.map(text => render(text, noPerson, policy))]
  };
 }

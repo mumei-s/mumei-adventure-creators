@@ -1,6 +1,6 @@
 import {colorPolicy} from './palette-recipes.js?v=24.0.0';
 import {opticalSignature,opticalColors} from './optical-effects.js?v=24.0.0';
-import {detailedSubject} from './subject-recipes.js?v=24.0.0';
+import {detailedSubject} from './subject-recipes.js?v=25.0.0';
 import {detailedFormat} from './format-recipes.js?v=24.0.0';
 
 const luminous=new Set(['発光幻想アニメ']);

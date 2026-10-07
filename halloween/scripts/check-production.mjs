@@ -10,7 +10,9 @@ import {productionPlan,planInstructions,repairPrompt} from '../production-plan.j
 import {buildEditorial} from '../editorial.js?v=24.0.0';
 import {composePrompt} from '../prompt.js?v=24.0.0';
 import {profileForArtwork} from '../activity-settings.js?v=24.0.0';
-const profile={displayName:'Alice',topics:['写真','創作'],biography:'写真と創作'},base=resolveSelections({...initialSelections(),design:'ファッション雑誌の表紙',costume:'海賊',pose:'全力で走る',mood:'完全な左横顔90度'},()=>0.2);
+// This suite checks fixed manuscript geometry. Source-guided manuscript roles
+// and actual article evidence are exercised separately by check-fidelity-v25.
+const profile={displayName:'Alice',activityEnabled:false,topics:['写真','創作'],biography:'写真と創作'},base=resolveSelections({...initialSelections(),design:'ファッション雑誌の表紙',costume:'海賊',pose:'全力で走る',mood:'完全な左横顔90度'},()=>0.2);
 const make=values=>applyPose(buildDirection([],values.mood,()=>0.2),values.pose);
 let examined=0;
 for(const collection of ['halloween','everyday']){

@@ -6,3 +6,20 @@ body[data-collection=everyday]{--ink:#24374c;--paper:#f4fbff;--muted:#425e71;--l
 body[data-collection=everyday]:before{background:linear-gradient(180deg,#c4f3f522,#b8dae522 50%,#e7d3f233)}body[data-collection=everyday] .view-toolbar,body[data-collection=everyday] .view-toolbar button,body[data-collection=everyday] #view-status{color:#29495f}body[data-collection=everyday] .view-switch button{background:#f6ffff;border-color:#769bb0}body[data-collection=everyday] .view-switch button[aria-pressed=true]{background:#2d6478;color:#f2fffe;border-color:#1c4e66}body[data-collection=everyday] .mode-panel,body[data-collection=everyday] .gallery-theater{background:#28435f;border-color:#6b91ad;box-shadow:0 7px 0 #90b1c544}body[data-collection=everyday] .mode-switch button{background:#385e7a;border-color:#83b2c3;color:#f3ffff}body[data-collection=everyday] .mode-switch button[aria-pressed=true]{background:#b8e9e1;color:#203f5b;border-color:#72b7b1}body[data-collection=everyday][data-lights=night]{background-color:#31425a;background-blend-mode:screen}body[data-collection=everyday][data-lights=night] .masthead{background:linear-gradient(120deg,#bbcfe7,#c6bde4)}@media(max-width:620px){.studio-hero>div{max-width:100%}.studio-hero h2{font-size:1.4rem;line-height:1.4}}
 /* Japanese title has its own line and spacing below the creator name. */
 body[data-collection=everyday] .masthead .tool-title h1{font-family:inherit;font-size:clamp(1.75rem,4vw,3rem);font-style:normal;letter-spacing:.025em;line-height:1.3;margin-top:12px;text-shadow:none}
+
+/* The three studios have visibly different materials and movement. */
+.fx-star,.fx-petal,.fx-prism{position:absolute;display:block;width:12px;height:12px;pointer-events:none;background:var(--spark-color);box-shadow:0 0 8px var(--spark-color)}
+.fx-star{clip-path:polygon(50% 0,62% 38%,100% 50%,62% 62%,50% 100%,38% 62%,0 50%,38% 38%)}
+.fx-petal{width:15px;height:9px;border-radius:90% 15% 90% 15%;box-shadow:none}
+.fx-prism{width:12px;height:18px;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);background:linear-gradient(120deg,#ffffff,var(--spark-color) 30%,#ffffff77 50%,var(--spark-color) 70%)}
+.spell-kind-7{width:120px;height:80px;filter:drop-shadow(0 0 8px var(--spell-color))}
+.spell-kind-8{width:32px;height:46px}
+.spell-kind-2[data-family=gallery]{border-radius:0;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);background:linear-gradient(125deg,#ffffff99,var(--spell-color),#ffffff55);width:32px;height:46px}
+body[data-decoration=paper] .magic-scene{background-image:repeating-linear-gradient(25deg,#ffffff05 0 1px,transparent 1px 13px)}
+body[data-decoration=gallery] .magic-scene{background-image:linear-gradient(120deg,transparent 25%,#8bc7ff22 26%,transparent 28%,transparent 62%,#dfbaff22 63%,transparent 65%)}
+body[data-decoration=stars] .studio-hero:after{content:'✦';border:0;clip-path:none}
+body[data-decoration=paper] .studio-hero:after{content:'❋';animation-name:petal-sway}
+body[data-decoration=gallery] .studio-hero:after{content:'◈';animation-name:prism-turn}
+@keyframes petal-sway{0%,100%{transform:rotate(-10deg) translateY(0)}50%{transform:rotate(20deg) translateY(10px)}}
+@keyframes prism-turn{0%,100%{transform:rotate(-8deg) scale(1);filter:brightness(1)}50%{transform:rotate(8deg) scale(1.1);filter:brightness(1.4)}}
+@media(prefers-reduced-motion:reduce){.studio-hero:after{animation:none!important}}

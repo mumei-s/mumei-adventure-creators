@@ -115,4 +115,4 @@ export function buildDirection(used=[],control='毎回大胆に変える',random
  throw new Error('別の演出を選び直してください。');
 }
 export function isAdvertising(design){return /雑誌|誌面|見開き|新聞|映画ポスター|舞台ポスター|フェス|フライヤー|広告|チラシ/.test(design);}
-export {buildEditorial as buildTextPlan} from './editorial.js?v=24.0.0';
+export {buildEditorial as buildTextPlan} from './editorial.js?v=25.0.0';

@@ -1,0 +1,31 @@
+{
+  "checked_at": "2026-10-07",
+  "function": "halloween-profile",
+  "deployed_version": 4,
+  "status": "ACTIVE",
+  "verify_jwt": true,
+  "live_public_profile": {
+    "id": "info",
+    "name": "note公式",
+    "page": 1,
+    "http_status": 200,
+    "elapsed_ms": 20494,
+    "articles_read": 6,
+    "body_characters": 10907,
+    "source_evidence_records": 6,
+    "first_article_has_complete_public_body": true,
+    "first_article_excerpt_count": 2,
+    "failed_keys": [],
+    "next_page": 2
+  },
+  "fixture_verification": {
+    "listing_pages": 3,
+    "public_article_bodies": 75,
+    "paid_articles_excluded": 1,
+    "newest_and_oldest_evidence_reaches_input": true,
+    "tag_off_keeps_biography_bodies_and_dialogue": true,
+    "transient_article_failure_explicit_and_retry_clears_failure": true,
+    "history_never_copies_all_article_bodies": true
+  },
+  "scope": "All accessible public article pages are followed without an article-count cutoff. Paid/private bodies are not available anonymously. Evidence supplied to the image request is representative and bounded independently of full retrieval."
+}

@@ -1,4 +1,4 @@
-import {bodyText,publicArticle,articleSignals} from './articles.js';
+import {bodyText,publicArticle,articleSignals,articleEvidence} from './articles.js';
 const safeID=id=>/^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$/.test(id);
 const text=(v,max=600)=>typeof v==='string'?v.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim().slice(0,max):'';
 const entities=s=>s.replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&#(\d+);/g,(_,v)=>{const n=Number(v);return n<=0x10ffff?String.fromCodePoint(n):'';});
@@ -15,14 +15,14 @@ export function parsePublicProfile(id,profileJSON,contentsJSON,html=''){
  const name=text(p.name||p.nickname||meta(html,'og:title').replace(/｜note.*$/,'').replace(/\s*[-|]\s*note.*$/,''),140);
  const biography=text(p.profile||p.description||meta(html,'og:description')||meta(html,'description'),750);
  const articles=contentsJSON?.data?.contents||contentsJSON?.data?.notes||[];
- const titles=Array.isArray(articles)?articles.map(x=>text(x.name||x.title,100)).filter(Boolean).slice(0,8):[];
+ const titles=Array.isArray(articles)?articles.map(x=>text(x.name||x.title,100)).filter(Boolean):[];
  if(!name)throw new Error('公開プロフィールを取得できませんでした。クリエイター名と活動内容を入力して続けられます。');
  const corpus=[biography,...titles].join(' ');
  const topics=TOPICS.filter(k=>k==='AI'?/\bAI\b/i.test(corpus):corpus.includes(k)).slice(0,12);
  return {id,name,biography,titles,topics,url:'https://note.com/'+id,fetchedAt:new Date().toISOString(),source:payload?'noteの公開プロフィール':'noteの公開プロフィールページ'};
 }
-async function remote(url,json=true,timeout=6000){
- const response=await fetch(url,{headers:{Accept:json?'application/json':'text/html','User-Agent':'HalloweenAtelier/6.0 (public creator profile reader)'},signal:AbortSignal.timeout(timeout),redirect:'error'});
+async function remote(url,json=true,timeout=6000,signal){
+ const response=await fetch(url,{headers:{Accept:json?'application/json':'text/html','User-Agent':'HalloweenAtelier/6.0 (public creator profile reader)'},signal:signal?AbortSignal.any([signal,AbortSignal.timeout(timeout)]):AbortSignal.timeout(timeout),redirect:'error'});
  if(!response.ok)throw new Error('noteの公開情報を取得できませんでした。');
  const length=Number(response.headers.get('content-length'));if(length>2500000)throw new Error('プロフィールページが大きすぎます。');
  const source=await response.text();if(source.length>2500000)throw new Error('公開情報が大きすぎます。');return json?JSON.parse(source):source;
@@ -38,9 +38,13 @@ export async function readPublicProfile(id,page=1){
  const notes=contents?.data?.contents||contents?.data?.notes||[];
  if(!Array.isArray(notes))throw new Error('クリエイター情報を整えられませんでした。');
  const candidates=notes.filter(n=>/^n[a-f0-9]{12,32}$/i.test(n.key||'')&&publicArticle(n,id));
- const bodies=[];
- // Bounded concurrency, but no arbitrary article-count cutoff. Each page is resumable.
- for(let i=0;i<candidates.length;i+=3)bodies.push(...await Promise.allSettled(candidates.slice(i,i+3).map(async n=>{let data;for(let attempt=0;attempt<2;attempt++){try{data=await remote('https://note.com/api/v3/notes/'+n.key,true,6500);break;}catch(e){if(attempt===1)throw e;}}const note=data?.data;if(!publicArticle(note,id))return null;const body=bodyText(note.body);return body?{key:n.key,title:text(note.name||n.name,100),url:'https://note.com/'+id+'/n/'+n.key,text:body}:null;})));
- const read=bodies.filter(r=>r.status==='fulfilled'&&r.value).map(r=>r.value);const inspiration=articleSignals(read,TOPICS);
- return {...parsed,topics:[...new Set([...parsed.topics,...inspiration.bodyTopics])].slice(0,20),inspiration,articles:read.map(({text:body,...a})=>({...a,characters:body.length,keywords:TOPICS.filter(t=>body.includes(t)).slice(0,12)})),bodyRead:{count:read.length,requested:candidates.length,characters:read.reduce((n,a)=>n+a.text.length,0),status:bodies.every(r=>r.status==='fulfilled')?'complete':'partial'},pagination:{page,nextPage:contents.data.isLastPage===true||notes.length===0?null:page+1,keys:notes.map(n=>n.key).filter(Boolean)},source:parsed.source+'と公開記事本文'};
+ const bodies=new Array(candidates.length),deadline=AbortSignal.timeout(40000);
+ // A small worker pool reads every public article on this page. Returning
+ // resumable pages keeps the request within the Edge Function runtime budget.
+ let cursor=0;
+ const worker=async()=>{while(cursor<candidates.length){const index=cursor++,n=candidates[index];try{let data;for(let attempt=0;attempt<2;attempt++){try{data=await remote('https://note.com/api/v3/notes/'+n.key,true,6500,deadline);break;}catch(error){if(deadline.aborted||attempt===1)throw error;}}const note=data?.data;if(!publicArticle(note,id)){bodies[index]={status:'unavailable',key:n.key};continue;}const body=bodyText(note.body);if(!body){bodies[index]={status:'rejected',key:n.key};continue;}const article={key:n.key,title:text(note.name||n.name,100),url:'https://note.com/'+id+'/n/'+n.key,text:body,characters:body.length,keywords:TOPICS.filter(topic=>body.includes(topic)),...articleEvidence(body)};bodies[index]={status:'fulfilled',value:article};}catch{bodies[index]={status:'rejected',key:n.key};}}};
+ await Promise.all(Array.from({length:Math.min(6,candidates.length)},worker));
+ const read=bodies.filter(result=>result.status==='fulfilled').map(result=>result.value),inspiration=articleSignals(read,TOPICS),failedKeys=bodies.filter(result=>result.status==='rejected').map(result=>result.key);
+ const unavailable=notes.length-candidates.length+bodies.filter(result=>result.status==='unavailable').length;
+ return {...parsed,topics:[...new Set([...parsed.topics,...inspiration.bodyTopics])],inspiration,articles:read,sourceEvidence:read.map(({text:body,keywords,...article})=>article),bodyRead:{count:read.length,requested:candidates.length,listed:notes.length,unavailable,characters:read.reduce((sum,article)=>sum+article.characters,0),failedKeys,pages:[page],status:failedKeys.length?'partial':'complete'},pagination:{page,nextPage:contents.data.isLastPage===true||contents.data.is_last_page===true||notes.length===0?null:page+1,keys:notes.map(note=>note.key).filter(Boolean)},source:parsed.source+'と公開記事本文'};
 }

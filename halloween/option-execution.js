@@ -1,4 +1,4 @@
-import {mediumExecution} from './medium-execution.js?v=24.0.0';
+import {mediumExecution} from './medium-execution.js?v=25.0.0';
 import {formatExecution} from './format-execution.js?v=24.0.0';
 import {colorPolicy} from './color-policy.js?v=24.0.0';
 
@@ -26,7 +26,11 @@ export function executionFor(key,value,recipe,{noPerson=false,values={}}={}){
   :recipe.executionMethod||sections.slice(0,counts[key]||2).map(s=>s.draw).join(' ');
  if(recipe.known&&!method)throw new Error('個別の実行指示がありません：'+key+' / '+value);
  if(!method)method=sections.map(s=>s.draw).join(' ');
- if(key==='medium'&&value==='クリスタルホログラム造形アニメ'&&noPerson)method=sections.slice(0,4).map(s=>s.draw).join(' ');
+ // The literal medium rows sometimes describe a person. Scenery-only recipes
+ // already contain the medium's dedicated non-human construction instructions.
+ // Starting the actual image call with a face directive would otherwise defeat
+ // the user's no-person choice before that choice is even read.
+ if(key==='medium'&&noPerson)method=sections.filter(s=>s.part!=='日本を基準にした個別条件').slice(0,4).map(s=>s.draw).join(' ');
  if(key==='medium'){
   const policy=colorPolicy(values);
   if(policy.restricted)method+=' Use only '+policy.allowed+'. Translate every material color, optical band and reflection into values within those permitted colors. Preserve the technique through its line, layering, boundary and depth structure.';

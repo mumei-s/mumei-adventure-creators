@@ -54,3 +54,32 @@ body[data-view=phone] #picker #picker-options:not(.comparing){grid-template-colu
 #picker .page-arrow{width:32px;height:44px;border:0;background:transparent;box-shadow:none;font-size:15px;color:#8a5d37;opacity:.7}#picker .page-arrow:hover,#picker .page-arrow:focus-visible{background:#fff0d699;opacity:1}#picker .page-arrow:disabled{opacity:.25}
 @media(max-width:619px){#picker .picker-canvas{min-height:288px}#picker .ring-pop{width:66px;min-height:66px;padding:3px;gap:2px}#picker .ring-pop .sample-thumb{width:33px;height:33px}#picker .ring-pop>b{font-size:.63rem;line-height:1.25}#picker .ring-focus{width:106px;padding:4px;gap:3px}#picker .ring-focus>.sample-thumb{width:44px;height:44px;min-height:44px}#picker .ring-focus>b{font-size:.72rem}#picker .ring-pick{min-height:27px;font-size:.7rem}#picker .ring-tools{grid-template-columns:1fr 1fr 22px}#picker .ring-tools button{font-size:.6rem;min-height:27px}#picker .page-arrow{width:28px;font-size:13px}#picker .picker-body{padding:7px 9px;gap:5px}#picker .dialog-header h2{font-size:1.02rem}}
 @media(max-height:620px){#picker .picker-body{overflow-y:auto}#picker .picker-canvas{flex:none;height:360px;min-height:360px}}
+
+/* Larger direct-drag orbit cards; page accents never change the text surface. */
+#picker .ring-pop{width:104px;min-height:92px;padding:5px;gap:4px;touch-action:none;cursor:grab}
+#picker .ring-pop .sample-thumb{width:50px;height:50px}
+#picker .ring-pop>b{font-size:.78rem;line-height:1.35}
+#picker .ring-halo{width:76%;height:70%}
+#picker .picker-canvas{min-height:380px}
+#picker .page-arrow{display:none!important}
+#picker #picker-options:not(.comparing){padding-left:3px;padding-right:3px}
+#picker{touch-action:pan-y;--page-accent:#b46928;--page-wash:#f0a34130;--page-pattern:radial-gradient(circle at 20% 20%,var(--page-wash) 0 2px,transparent 3px)}
+#picker[data-page-tone="1"]{--page-accent:#b05474;--page-wash:#d6739a30;--page-pattern:repeating-linear-gradient(135deg,transparent 0 16px,var(--page-wash) 17px 19px,transparent 20px 34px)}
+#picker[data-page-tone="2"]{--page-accent:#408da0;--page-wash:#51b2bb30;--page-pattern:repeating-linear-gradient(90deg,transparent 0 21px,var(--page-wash) 22px 23px,transparent 24px 44px)}
+#picker[data-page-tone="3"]{--page-accent:#7869b6;--page-wash:#9c82d530;--page-pattern:radial-gradient(ellipse at center,var(--page-wash) 0 3px,transparent 4px)}
+#picker[data-page-tone="4"]{--page-accent:#638747;--page-wash:#88b36430;--page-pattern:repeating-linear-gradient(45deg,transparent 0 14px,var(--page-wash) 15px 17px,transparent 18px 32px)}
+#picker[data-page-tone="5"]{--page-accent:#b57542;--page-wash:#dca15c30;--page-pattern:repeating-radial-gradient(ellipse at center,transparent 0 17px,var(--page-wash) 18px 20px,transparent 21px 38px)}
+#picker .ring-stage:before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background:var(--page-pattern);background-size:42px 42px;opacity:.7}
+#picker .ring-halo{border-color:var(--page-accent);box-shadow:0 0 20px var(--page-wash)}
+#picker .picker-canvas{border:2px solid var(--page-accent);border-radius:14px;box-shadow:inset 0 0 30px var(--page-wash)}
+#picker .picker-pagination>span{border-bottom:3px solid var(--page-accent);padding-bottom:2px}
+body[data-motion=on] #picker .page-changing{animation:page-arrive .32s ease-out both}
+@keyframes page-arrive{from{opacity:.45;transform:translateX(var(--page-enter-x)) scale(.985)}to{opacity:1;transform:none}}
+@media(max-width:619px){#picker .picker-canvas{min-height:360px}#picker .ring-pop{width:82px;min-height:88px;padding:4px;gap:3px}#picker .ring-pop .sample-thumb{width:42px;height:42px}#picker .ring-pop>b{font-size:.72rem;line-height:1.3}}
+@media(max-width:350px){#picker .ring-pop{width:76px}#picker .ring-pop>b{font-size:.68rem}}
+@media(max-height:620px){#picker .picker-canvas{height:360px;min-height:360px}}
+@media(prefers-reduced-motion:reduce){#picker .page-changing{animation:none!important}}
+
+#picker .picker-bottom .custom-toggle{margin-top:0}
+@media(max-height:780px) and (min-width:620px){#picker .ring-focus{padding:4px;gap:2px}#picker .ring-focus>.sample-thumb{width:48px;height:48px;min-height:48px}#picker .ring-focus>b{font-size:.76rem}#picker .ring-pick,#picker .ring-tools button{min-height:27px}}
+@media(max-height:760px){#picker .picker-body{overflow-y:auto}}

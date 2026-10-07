@@ -1,0 +1,27 @@
+{
+  "case": "machine-anime-settings.json",
+  "input_sha256": "9247d14da2d9952811bcef096a14c96a460f4c19d6c972a337667d378e5e740b",
+  "generations": [
+    {
+      "elapsed_ms": 61424,
+      "dimensions": [
+        1054,
+        1492
+      ],
+      "review": "Mechanical world and Japanese title present; photographic face persisted. Medium rejected."
+    },
+    {
+      "elapsed_ms": 166371,
+      "dimensions": [
+        1054,
+        1492
+      ],
+      "review": "Drawn anime facial lines, simplified nose, larger irises and planar shadows improved; machine monster and mansion stairs present; posed hand and both boots within frame. Trading-card lower information-band placement still differs from recipe; exact requested pixel dimensions not attained."
+    }
+  ],
+  "limits": [
+    "One representative reference-driven combination was visually tested; 983 catalog occurrences were verified as instructions, not 983 generated pictures.",
+    "Image creation stayed native; no raster reconstruction or pixel rescaling.",
+    "Neither a 60-second upper bound nor perfect model obedience was achieved."
+  ]
+}

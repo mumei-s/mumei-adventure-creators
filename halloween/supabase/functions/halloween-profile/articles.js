@@ -17,3 +17,15 @@ const rules=[
 ];
 const objects=['月','星','海','空','雨','花','森','光','影','鏡','時計','手紙','扉','列車','本','音楽','夢','猫','鳥','宝石','灯り'];
 export function articleSignals(articles,topics){const corpus=articles.map(a=>a.text).join(' ');const matched=rules.filter(([rx])=>rx.test(corpus));const signals=matched.map(([rx,label,theme,imagery,phrases])=>({label,theme,imagery,phrases,score:articles.reduce((sum,a)=>sum+Math.min(10,[...a.text.matchAll(new RegExp(rx.source,'g'))].length),0)}));return {signals,bodyTopics:topics.filter(k=>k==='AI'?/\bAI\b/i.test(corpus):corpus.includes(k)),labels:signals.map(x=>x.label),themes:[...new Set(signals.map(x=>x.theme))],imagery:signals.map(x=>x.imagery),phrases:signals.flatMap(x=>x.phrases),objects:objects.filter(x=>corpus.includes(x))};}
+
+// Select excerpts from the beginning and later body. Full text is still retained
+// on the article record; these short passages are supporting model evidence.
+export function articleEvidence(body){
+ const text=String(body||'').trim();
+ if(!text)return {excerpts:[]};
+ const sentences=text.match(/[^。！？!?]+[。！？!?]?/g)||[text];
+ const substantive=sentences.map(sentence=>sentence.trim()).filter(sentence=>sentence.length>=18&&!/^(?:この記事|続きをみる|この続きを|ログイン|スキ|フォロー|シェア|購入)/.test(sentence));
+ const first=(substantive[0]||text).slice(0,240);
+ const latter=substantive[Math.floor(substantive.length/2)]||text.slice(Math.floor(text.length/2));
+ return {excerpts:[...new Set([first,latter.slice(0,240)])].filter(Boolean)};
+}

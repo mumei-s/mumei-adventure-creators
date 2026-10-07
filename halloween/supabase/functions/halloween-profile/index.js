@@ -1,5 +1,7 @@
 import {readPublicProfile} from './profile.js';
 const cache=new Map(),inflight=new Map(),clients=new Map();
+let cacheCharacters=0;
+function storeProfile(key,profile,time){const serialized=JSON.stringify(profile),size=serialized.length;if(size>4000000)return;const old=cache.get(key);if(old)cacheCharacters-=old.size;cache.set(key,{time,profile,size});cacheCharacters+=size;while(cacheCharacters>8000000||cache.size>100){const oldest=cache.keys().next().value;cacheCharacters-=cache.get(oldest).size;cache.delete(oldest);}}
 const allowedOrigins=new Set(['https://mumei-s.github.io','http://127.0.0.1:4173','http://localhost:4173']);
 export async function handler(req){
  const origin=req.headers.get('origin');
@@ -21,7 +23,7 @@ export async function handler(req){
  if(clients.size>500)clients.delete(clients.keys().next().value);
  try{
   let promise=inflight.get(key);if(!promise){promise=readPublicProfile(id,page);inflight.set(key,promise);promise.finally(()=>inflight.delete(key)).catch(()=>{});}
-  const profile=await promise;if(profile.bodyRead.status==='complete')cache.set(key,{time:now,profile});if(cache.size>200)cache.delete(cache.keys().next().value);
+  const profile=await promise;if(profile.bodyRead.status==='complete')storeProfile(key,profile,now);
   return Response.json(profile,{headers});
  }catch{return Response.json({error:'noteの公開情報を取得できませんでした。名前・活動を手入力して続けられます。'},{status:502,headers});}
 }

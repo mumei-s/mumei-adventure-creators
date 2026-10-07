@@ -33,7 +33,7 @@ body[data-motion=on] dialog[open]{animation:portal-open .3s cubic-bezier(.16,.7,
 .page-arrow-prev{left:0}.page-arrow-next{right:0}.page-arrow:disabled{opacity:.3}
 #picker .picker-filters{grid-template-columns:1fr}.picker-filters select{width:100%}
 .ring-stage{touch-action:pan-y;user-select:none;-webkit-touch-callout:none}.ring-grabbing{touch-action:none;cursor:grabbing;outline:2px solid #c68d3c;outline-offset:-2px}.ring-grabbing .ring-pop{animation:none;transition:none}
-#picker #picker-options:not(.comparing){grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:minmax(110px,min-content);gap:7px;align-content:start;padding:3px 40px;max-height:none}
+#picker #picker-options:not(.comparing){grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:minmax(max-content,auto);gap:7px;align-content:start;padding:3px 40px;max-height:none}
 #picker-options:not(.comparing) .sample-card{padding:5px;gap:3px}
 #picker-options:not(.comparing) .sample-card .look-tags{display:none}
 #picker-options:not(.comparing) .sample-card>.option-button{grid-template-columns:44px minmax(0,1fr);gap:5px}
@@ -43,6 +43,6 @@ body[data-motion=on] dialog[open]{animation:portal-open .3s cubic-bezier(.16,.7,
 #picker-options:not(.comparing) .sample-tools button{font-size:.66rem;min-height:29px;padding:2px 4px}
 .main-collection{display:block;margin:0 4vw 12px;min-height:40px;font-size:.8rem;padding:6px 10px}
 @media(max-width:1099px){#picker #picker-options:not(.comparing){grid-template-columns:repeat(3,minmax(0,1fr))}}
-@media(max-width:619px){#picker #picker-options:not(.comparing){grid-template-columns:repeat(3,minmax(0,1fr));padding:3px 30px;grid-auto-rows:minmax(115px,min-content)}#picker-options:not(.comparing) .sample-card>.option-button{display:flex;flex-direction:column;gap:3px}#picker-options:not(.comparing) .sample-card>.option-button>.sample-thumb{width:100%;height:48px;min-height:48px}#picker-options:not(.comparing) .sample-card>.option-button>b{font-size:.65rem;line-height:1.35;min-height:2.7em}#picker-options:not(.comparing) .sample-tools{display:grid;grid-template-columns:1fr 1fr 24px}.page-arrow{width:28px;height:48px;font-size:18px}}
+@media(max-width:619px){#picker #picker-options:not(.comparing){grid-template-columns:repeat(3,minmax(0,1fr));padding:3px 30px;grid-auto-rows:minmax(max-content,auto)}#picker-options:not(.comparing) .sample-card>.option-button{display:flex;flex-direction:column;gap:3px}#picker-options:not(.comparing) .sample-card>.option-button>.sample-thumb{width:100%;height:48px;min-height:48px}#picker-options:not(.comparing) .sample-card>.option-button>b{font-size:.65rem;line-height:1.35;min-height:2.7em}#picker-options:not(.comparing) .sample-tools{display:grid;grid-template-columns:1fr 1fr 24px}.page-arrow{width:28px;height:48px;font-size:18px}}
 
 body[data-view=phone] #picker #picker-options:not(.comparing){grid-template-columns:repeat(3,minmax(0,1fr))}body[data-view=phone] #picker-options:not(.comparing) .sample-card>.option-button{display:flex;flex-direction:column}body[data-view=phone] #picker-options:not(.comparing) .sample-card>.option-button>.sample-thumb{width:100%;height:48px;min-height:48px}

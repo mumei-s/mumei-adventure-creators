@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {questions} from '../catalog.js?v=20.0.0';
-import {applyCollection} from '../collection.js?v=20.0.0';
-import {sampleFor,typePreview} from '../examples.js?v=20.0.0';
-import {formatPreviews} from '../format-preview-catalog.js?v=20.0.0';
-const report=JSON.parse(fs.readFileSync(new URL('../verification/v20/format-previews.json',import.meta.url)));
-const svg=fs.readFileSync(new URL('../japan-format-previews-v20.svg',import.meta.url),'utf8');
+import {questions} from '../catalog.js?v=21.0.0';
+import {applyCollection} from '../collection.js?v=21.0.0';
+import {sampleFor,typePreview} from '../examples.js?v=21.0.0';
+import {formatPreviews} from '../format-preview-catalog.js?v=21.0.0';
+const report=JSON.parse(fs.readFileSync(new URL('../verification/v21/format-previews.json',import.meta.url)));
+const svg=fs.readFileSync(new URL('../japan-format-previews-v21.svg',import.meta.url),'utf8');
 const covered=new Set([...Object.keys(formatPreviews),...report.preserved]);
 assert.equal(covered.size,48);
 assert.equal(new Set(report.replaced.map(s=>s.id)).size,41);
@@ -24,7 +24,7 @@ for(const mode of ['halloween','everyday']){
   if(formatPreviews[value])assert.equal(sample.src,'./'+formatPreviews[value]);
   assert.match(sample.label,/生成の参照画像には使いません/);
  }
- assert.ok(sampleFor('design','おまかせ').srcs.some(s=>s.includes('japan-format-previews-v20.svg#')));
+ assert.ok(sampleFor('design','おまかせ').srcs.some(s=>s.includes('japan-format-previews-v21.svg#')));
  assert.deepEqual(typePreview('文字を一切入れない').blocks,[]);
  for(const mode of ['映画ポスターのクレジット','広告の見出し','雑誌の組版']){
   const blocks=typePreview(mode).blocks.join('');

@@ -1,0 +1,5 @@
+import fs from'node:fs';import assert from'node:assert/strict';import{createRequire}from'node:module';
+const require=createRequire(process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES+'/sharp/package.json'),sharp=require('sharp'),root=new URL('../',import.meta.url);
+const inv=JSON.parse(fs.readFileSync(new URL('verification/v21/preview-inventory.json',root))),rows=[];
+for(const e of inv.entries.filter(e=>e.key!=='palette')){const st=await sharp(fs.readFileSync(new URL(e.file,root))).stats(),deviation=st.channels.slice(0,3).reduce((a,c)=>a+c.stdev,0)/3;rows.push({key:e.key,value:e.value,file:e.file,deviation:+deviation.toFixed(2),entropy:+st.entropy.toFixed(2)});assert.ok(deviation>10,'Missing artwork / nearly empty tile: '+e.value);}
+fs.writeFileSync(new URL('verification/v21/preview-pixel-review.json',root),JSON.stringify({scope:'350 assigned artwork tiles; low-variance/empty image detection. This does not validate style, identity or exact pose.',minimumDeviation:Math.min(...rows.map(r=>r.deviation)),rows},null,2));console.log('PASS 350 artwork tiles contain visible content; no blank tile. Pixel content does not imply full recipe acceptance.');

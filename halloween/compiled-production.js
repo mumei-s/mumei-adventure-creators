@@ -1,7 +1,7 @@
-import {modeFoundation} from './japan-direction.js?v=20.0.0';
-import {imageOutputContract} from './output-contract.js?v=20.0.0';
-import {opticalSignature} from './optical-effects.js?v=20.0.0';
-import {colorPolicy} from './color-policy.js?v=20.0.0';
+import {modeFoundation} from './japan-direction.js?v=21.0.0';
+import {imageOutputContract} from './output-contract.js?v=21.0.0';
+import {opticalSignature} from './optical-effects.js?v=21.0.0';
+import {colorPolicy} from './color-policy.js?v=21.0.0';
 
 export const conditionOwners=Object.freeze({
  medium:'描線・陰影・画材・光学',design:'画像と原稿の領域・読み順',
@@ -13,7 +13,7 @@ export const conditionOwners=Object.freeze({
 const unique=items=>[...new Set(items.filter(Boolean))];
 const contract=c=>({selected:c.value,applicability:c.execution.applicability,
  method:c.execution.method,...(c.execution.line?{line:{selected:c.execution.line.selected,method:c.execution.line.method}}:{})});
-export function renderInput(plan){
+function renderInputObject(plan){
  const byKey=Object.fromEntries(plan.conditions.map(c=>[c.key,c]));
  const v=plan.variant,selected=plan.values;
  const material=byKey.medium;
@@ -27,6 +27,7 @@ export function renderInput(plan){
   output:'完成画像を1枚。仕様書・ツール画面として描かない。',
   cultural_foundation:modeFoundation(plan.collection),
   required_before_details:{
+   layout:byKey.design.execution.method,
    medium:material.execution.method,
    palette:color.restricted?'全領域の使用色：'+color.allowed+'。参照の髪・肌・瞳、光、反射、文字もこの色域で描き直す。':byKey.palette.execution.method,
    ...(optical?{optical_geometry:optical+'主題と周囲の空間をまたぐ面として描き、宝飾の点光だけにしない。'+(color.restricted?'透過・屈折・反射も許可色だけ。':'')}:{}),
@@ -45,6 +46,10 @@ export function renderInput(plan){
   text_rule:plan.copy.mode==='none'?'文字・数字・署名なし。':'copyの原稿だけを正確に印字。画風名・ページ番号・制作ID・未指定の文字を加えない。',
   combination_rules:plan.interactions,notes:plan.notes
  };
+ return input;
+}
+export function renderInput(plan){
+ const input=renderInputObject(plan);
  // Every selected clause belongs inside the actual image-call input, including
  // safety margins and the prohibition on unsolicited inset illustrations.
  return JSON.stringify(input,null,2)+'\n\n【全選択の個別レシピ】\n'+plan.conditions.flatMap(c=>[
@@ -60,9 +65,9 @@ function between(lines,start,end){
 
 // Natural-language handoff for ordinary ChatGPT (including 5.5).
 // Full JSON execution exports remain available through renderInput for audits.
-export function renderChatInput(plan){
+export function renderDetailedChatInput(plan){
  const v=plan.variant;
- const compiled=JSON.parse(renderInput(plan).split("\n\n【全選択の個別レシピ】")[0]);
+ const compiled=renderInputObject(plan);
  return [
   plan.collection==='everyday'?'【作品モード】普段使い':'【作品モード】Halloween',
   modeFoundation(plan.collection),
@@ -92,10 +97,19 @@ export function renderChatInput(plan){
   ...plan.interactions,
   ...unique(plan.notes.filter(n=>n!==modeFoundation(plan.collection))),
   ...(v.previous||[]).map((p,i)=>'直近'+(i+1)+'から繰り返さない未指定の演出：'+(plan.noPerson?[p.layout]:[p.face,p.expression,p.distance,p.pose,p.layout]).filter(Boolean).join(' / ')+'。明示した条件は変えない。'),
+  '選択したセリフ：'+plan.values.line,
   '【作品内へ印字する確定原稿】',
   plan.copy.mode==='none'?'文字・数字・署名のない完成。':plan.copy.slots.map(slot=>slot.role+'：'+JSON.stringify(slot.text)).join('\n'),
   '原稿は上記だけ。項目名・制作番号・未指定の号数・日付・疑似文字を印字しない。'
  ].filter(Boolean).join('\n');
+}
+// Remove only exact duplicate whole lines; preserve every full recipe clause.
+export function renderChatInput(plan){
+ const seen=new Set();
+ return renderDetailedChatInput(plan).split('\n').filter(line=>{
+  const normalized=line.replace(/^・/,'').trim();
+  if(!normalized||seen.has(normalized))return false;seen.add(normalized);return true;
+ }).join('\n');
 }
 export function compileProduction(plan,originalLines){
  return [

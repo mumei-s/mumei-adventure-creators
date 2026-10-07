@@ -1,14 +1,16 @@
-import {poseItems} from './poses.js?v=20.0.0';
-import {dailySamples,currentCollection,landscapeScenes} from './collection.js?v=20.0.0';
-import {questions} from './catalog.js?v=20.0.0';
-import {formatPreviews} from './format-preview-catalog.js?v=20.0.0';
-import {individualSamples} from './sample-catalog.js?v=20.0.0';
-import {colorWorlds,luminousMedia} from './worlds.js?v=20.0.0';
+import {japanPreviews} from './japan-preview-catalog.js?v=21.0.0';
+import {poseItems} from './poses.js?v=21.0.0';
+import {dailySamples,currentCollection,landscapeScenes} from './collection.js?v=21.0.0';
+import {questions} from './catalog.js?v=21.0.0';
+import {formatPreviews} from './format-preview-catalog.js?v=21.0.0';
+import {individualSamples} from './sample-catalog.js?v=21.0.0';
+import {colorWorlds,luminousMedia} from './worlds.js?v=21.0.0';
 for(const item of poseItems)individualSamples['pose\u0000'+item.value]={file:item.file};
 for(const item of colorWorlds)individualSamples['palette\u0000'+item.value]={file:item.file};
 for(const item of luminousMedia)individualSamples['medium\u0000'+item.value]={file:item.file};
 const referenceChoices=new Set(['参照画像の衣装を生かす','参照風景を舞台にする','参照画像の色を生かす']);
 export function sampleFor(key,value=''){
+ if(japanPreviews[key+'\u0000'+value])return {kind:'image',src:'./'+japanPreviews[key+'\u0000'+value],label:value+'の日本ベースの説明用見本（生成の参照画像には使いません）'};
  if(key==='design'&&formatPreviews[value])return {kind:'image',src:'./'+formatPreviews[value],label:value+'の版面見本（生成の参照画像には使いません）'};
  const specific=dailySamples[key+'\u0000'+value]||individualSamples[key+'\u0000'+value];
  if(specific)return {kind:'image',src:'./'+specific.file,label:value+'の説明用イメージ（生成の参照画像には使いません）'};
@@ -22,7 +24,7 @@ export function sampleFor(key,value=''){
  const daily=currentCollection()==='everyday';
  const dailyPicks={design:['ファッション雑誌の表紙','写真集の表紙','通常の一枚絵','ポストカード'],theme:['朝の光と小さな日常','季節を歩く','ものづくりの時間','静かな読書の時間'],costume:['リネンシャツとデニム','現代のテーラードスーツ','ワンピースとカーディガン','スポーツウェア'],place:['天窓のあるアトリエ','海辺の灯台','雪の庭','雨の路地'],pose:['ゆっくり歩く','本を読む','カップを両手で持つ','絵を描く']};
  const list=(daily?dailyPicks[sampleKey]:null)||picks[sampleKey]||questions.find(q=>q.key===sampleKey)?.autoValues?.slice(0,4)||Object.keys(individualSamples).filter(k=>k.startsWith(sampleKey+'\u0000')).slice(0,4).map(k=>k.split('\u0000')[1]);
- const srcs=list.map(v=>sampleKey==='design'&&formatPreviews[v]?{file:formatPreviews[v]}:dailySamples[sampleKey+'\u0000'+v]||individualSamples[sampleKey+'\u0000'+v]).filter(Boolean).map(s=>'./'+s.file);
+ const srcs=list.map(v=>japanPreviews[sampleKey+'\u0000'+v]?{file:japanPreviews[sampleKey+'\u0000'+v]}:sampleKey==='design'&&formatPreviews[v]?{file:formatPreviews[v]}:dailySamples[sampleKey+'\u0000'+v]||individualSamples[sampleKey+'\u0000'+v]).filter(Boolean).map(s=>'./'+s.file);
  return {kind:'auto',label:'おまかせ候補の説明用イメージ（生成の参照画像には使いません）',srcs,text:key==='mood'?'表情も\n角度も変化':daily?'日常の場面に\n合わせて選択':'組み合わせを\nおまかせ'};
  }
  const landscape=key==='theme'?landscapeScenes.find(([name])=>name===value):null;

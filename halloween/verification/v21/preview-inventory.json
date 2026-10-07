@@ -1,0 +1,5342 @@
+{
+  "date": "2026-10-07",
+  "generatedSheets": 24,
+  "artworkChoices": 350,
+  "paletteChoices": 49,
+  "entries": [
+    {
+      "key": "medium",
+      "value": "実写風フィルム写真",
+      "oldSample": "./sample-047.jpg",
+      "file": "japan-previews-v21/medium-01-01.jpg",
+      "sheet": "medium-01",
+      "index": 0,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "実写風スタジオ写真",
+      "oldSample": "./sample-048.jpg",
+      "file": "japan-previews-v21/medium-01-02.jpg",
+      "sheet": "medium-01",
+      "index": 1,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "実写風街角スナップ",
+      "oldSample": "./sample-049.jpg",
+      "file": "japan-previews-v21/medium-01-03.jpg",
+      "sheet": "medium-01",
+      "index": 2,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "実写風シネマティック写真",
+      "oldSample": "./sample-050.jpg",
+      "file": "japan-previews-v21/medium-01-04.jpg",
+      "sheet": "medium-01",
+      "index": 3,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "実写風ファッション写真",
+      "oldSample": "./sample-051.jpg",
+      "file": "japan-previews-v21/medium-01-05.jpg",
+      "sheet": "medium-01",
+      "index": 4,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "実写風モノクロ銀塩写真",
+      "oldSample": "./sample-052.jpg",
+      "file": "japan-previews-v21/medium-01-06.jpg",
+      "sheet": "medium-01",
+      "index": 5,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "実写風湿板写真",
+      "oldSample": "./sample-053.jpg",
+      "file": "japan-previews-v21/medium-01-07.jpg",
+      "sheet": "medium-01",
+      "index": 6,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "実写風ポラロイド",
+      "oldSample": "./sample-054.jpg",
+      "file": "japan-previews-v21/medium-01-08.jpg",
+      "sheet": "medium-01",
+      "index": 7,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "実写風水中写真",
+      "oldSample": "./sample-055.jpg",
+      "file": "japan-previews-v21/medium-01-09.jpg",
+      "sheet": "medium-01",
+      "index": 8,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "実写風マクロ写真",
+      "oldSample": "./sample-056.jpg",
+      "file": "japan-previews-v21/medium-01-10.jpg",
+      "sheet": "medium-01",
+      "index": 9,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "実写風長時間露光",
+      "oldSample": "./sample-057.jpg",
+      "file": "japan-previews-v21/medium-01-11.jpg",
+      "sheet": "medium-01",
+      "index": 10,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "実写風インスタントカメラ",
+      "oldSample": "./sample-058.jpg",
+      "file": "japan-previews-v21/medium-01-12.jpg",
+      "sheet": "medium-01",
+      "index": 11,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "手描きアニメのセル画",
+      "oldSample": "./sample-059.jpg",
+      "file": "japan-previews-v21/medium-01-13.jpg",
+      "sheet": "medium-01",
+      "index": 12,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "現代アニメの一枚絵",
+      "oldSample": "./sample-060.jpg",
+      "file": "japan-previews-v21/medium-01-14.jpg",
+      "sheet": "medium-01",
+      "index": 13,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "90年代アニメのセル画",
+      "oldSample": "./sample-061.jpg",
+      "file": "japan-previews-v21/medium-01-15.jpg",
+      "sheet": "medium-01",
+      "index": 14,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "80年代OVA",
+      "oldSample": "./sample-062.jpg",
+      "file": "japan-previews-v21/medium-01-16.jpg",
+      "sheet": "medium-01",
+      "index": 15,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "少女漫画の扉絵",
+      "oldSample": "./sample-063.jpg",
+      "file": "japan-previews-v21/medium-02-01.jpg",
+      "sheet": "medium-02",
+      "index": 0,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "少年漫画のカラーページ",
+      "oldSample": "./sample-064.jpg",
+      "file": "japan-previews-v21/medium-02-02.jpg",
+      "sheet": "medium-02",
+      "index": 1,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "青年漫画のペン画",
+      "oldSample": "./sample-065.jpg",
+      "file": "japan-previews-v21/medium-02-03.jpg",
+      "sheet": "medium-02",
+      "index": 2,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "モノクロ漫画",
+      "oldSample": "./sample-066.jpg",
+      "file": "japan-previews-v21/medium-02-04.jpg",
+      "sheet": "medium-02",
+      "index": 3,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "アメコミのインク画",
+      "oldSample": "./sample-067.jpg",
+      "file": "japan-previews-v21/medium-02-05.jpg",
+      "sheet": "medium-02",
+      "index": 4,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "バンド・デシネ",
+      "oldSample": "./sample-068.jpg",
+      "file": "japan-previews-v21/medium-02-06.jpg",
+      "sheet": "medium-02",
+      "index": 5,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "ウェブトゥーン",
+      "oldSample": "./sample-069.jpg",
+      "file": "japan-previews-v21/medium-02-07.jpg",
+      "sheet": "medium-02",
+      "index": 6,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "劇場アニメの背景美術",
+      "oldSample": "./sample-070.jpg",
+      "file": "japan-previews-v21/medium-02-08.jpg",
+      "sheet": "medium-02",
+      "index": 7,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "ちびキャラ",
+      "oldSample": "./sample-071.jpg",
+      "file": "japan-previews-v21/medium-02-09.jpg",
+      "sheet": "medium-02",
+      "index": 8,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "絵本イラスト",
+      "oldSample": "./sample-072.jpg",
+      "file": "japan-previews-v21/medium-02-10.jpg",
+      "sheet": "medium-02",
+      "index": 9,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "水墨画",
+      "oldSample": "./sample-073.jpg",
+      "file": "japan-previews-v21/medium-02-11.jpg",
+      "sheet": "medium-02",
+      "index": 10,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "墨彩画",
+      "oldSample": "./sample-074.jpg",
+      "file": "japan-previews-v21/medium-02-12.jpg",
+      "sheet": "medium-02",
+      "index": 11,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "日本画・岩絵具",
+      "oldSample": "./sample-075.jpg",
+      "file": "japan-previews-v21/medium-02-13.jpg",
+      "sheet": "medium-02",
+      "index": 12,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "浮世絵木版画",
+      "oldSample": "./sample-076.jpg",
+      "file": "japan-previews-v21/medium-02-14.jpg",
+      "sheet": "medium-02",
+      "index": 13,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "大和絵",
+      "oldSample": "./sample-077.jpg",
+      "file": "japan-previews-v21/medium-02-15.jpg",
+      "sheet": "medium-02",
+      "index": 14,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "琳派の金箔表現",
+      "oldSample": "./sample-078.jpg",
+      "file": "japan-previews-v21/medium-02-16.jpg",
+      "sheet": "medium-02",
+      "index": 15,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "南画",
+      "oldSample": "./sample-079.jpg",
+      "file": "japan-previews-v21/medium-03-01.jpg",
+      "sheet": "medium-03",
+      "index": 0,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "禅画",
+      "oldSample": "./sample-080.jpg",
+      "file": "japan-previews-v21/medium-03-02.jpg",
+      "sheet": "medium-03",
+      "index": 1,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "書と墨の抽象",
+      "oldSample": "./sample-081.jpg",
+      "file": "japan-previews-v21/medium-03-03.jpg",
+      "sheet": "medium-03",
+      "index": 2,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "中国工筆画",
+      "oldSample": "./sample-082.jpg",
+      "file": "japan-previews-v21/medium-03-04.jpg",
+      "sheet": "medium-03",
+      "index": 3,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "韓国民画",
+      "oldSample": "./sample-083.jpg",
+      "file": "japan-previews-v21/medium-03-05.jpg",
+      "sheet": "medium-03",
+      "index": 4,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "和紙ちぎり絵",
+      "oldSample": "./sample-084.jpg",
+      "file": "japan-previews-v21/medium-03-06.jpg",
+      "sheet": "medium-03",
+      "index": 5,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "油彩・厚塗り",
+      "oldSample": "./sample-085.jpg",
+      "file": "japan-previews-v21/medium-03-07.jpg",
+      "sheet": "medium-03",
+      "index": 6,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "油彩・薄塗り",
+      "oldSample": "./sample-086.jpg",
+      "file": "japan-previews-v21/medium-03-08.jpg",
+      "sheet": "medium-03",
+      "index": 7,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "透明水彩",
+      "oldSample": "./sample-087.jpg",
+      "file": "japan-previews-v21/medium-03-09.jpg",
+      "sheet": "medium-03",
+      "index": 8,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "不透明水彩・ガッシュ",
+      "oldSample": "./sample-088.jpg",
+      "file": "japan-previews-v21/medium-03-10.jpg",
+      "sheet": "medium-03",
+      "index": 9,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "アクリル画",
+      "oldSample": "./sample-089.jpg",
+      "file": "japan-previews-v21/medium-03-11.jpg",
+      "sheet": "medium-03",
+      "index": 10,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "テンペラ画",
+      "oldSample": "./sample-090.jpg",
+      "file": "japan-previews-v21/medium-03-12.jpg",
+      "sheet": "medium-03",
+      "index": 11,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "フレスコ画",
+      "oldSample": "./sample-091.jpg",
+      "file": "japan-previews-v21/medium-03-13.jpg",
+      "sheet": "medium-03",
+      "index": 12,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "パステル画",
+      "oldSample": "./sample-092.jpg",
+      "file": "japan-previews-v21/medium-03-14.jpg",
+      "sheet": "medium-03",
+      "index": 13,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "色鉛筆画",
+      "oldSample": "./sample-093.jpg",
+      "file": "japan-previews-v21/medium-03-15.jpg",
+      "sheet": "medium-03",
+      "index": 14,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "鉛筆デッサン",
+      "oldSample": "./sample-094.jpg",
+      "file": "japan-previews-v21/medium-03-16.jpg",
+      "sheet": "medium-03",
+      "index": 15,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "木炭画",
+      "oldSample": "./sample-095.jpg",
+      "file": "japan-previews-v21/medium-04-01.jpg",
+      "sheet": "medium-04",
+      "index": 0,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "ボールペン画",
+      "oldSample": "./sample-096.jpg",
+      "file": "japan-previews-v21/medium-04-02.jpg",
+      "sheet": "medium-04",
+      "index": 1,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "線画",
+      "oldSample": "./sample-097.jpg",
+      "file": "japan-previews-v21/medium-04-03.jpg",
+      "sheet": "medium-04",
+      "index": 2,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "点描画",
+      "oldSample": "./sample-098.jpg",
+      "file": "japan-previews-v21/medium-04-04.jpg",
+      "sheet": "medium-04",
+      "index": 3,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "スクラッチボード",
+      "oldSample": "./sample-099.jpg",
+      "file": "japan-previews-v21/medium-04-05.jpg",
+      "sheet": "medium-04",
+      "index": 4,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "銅版画・エッチング",
+      "oldSample": "./sample-100.jpg",
+      "file": "japan-previews-v21/medium-04-06.jpg",
+      "sheet": "medium-04",
+      "index": 5,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "リノカット",
+      "oldSample": "./sample-101.jpg",
+      "file": "japan-previews-v21/medium-04-07.jpg",
+      "sheet": "medium-04",
+      "index": 6,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "木版画",
+      "oldSample": "./sample-102.jpg",
+      "file": "japan-previews-v21/medium-04-08.jpg",
+      "sheet": "medium-04",
+      "index": 7,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "シルクスクリーン",
+      "oldSample": "./sample-103.jpg",
+      "file": "japan-previews-v21/medium-04-09.jpg",
+      "sheet": "medium-04",
+      "index": 8,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "リソグラフ",
+      "oldSample": "./sample-104.jpg",
+      "file": "japan-previews-v21/medium-04-10.jpg",
+      "sheet": "medium-04",
+      "index": 9,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "レタープレス",
+      "oldSample": "./sample-105.jpg",
+      "file": "japan-previews-v21/medium-04-11.jpg",
+      "sheet": "medium-04",
+      "index": 10,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "サイアノタイプ",
+      "oldSample": "./sample-106.jpg",
+      "file": "japan-previews-v21/medium-04-12.jpg",
+      "sheet": "medium-04",
+      "index": 11,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "切り絵",
+      "oldSample": "./sample-107.jpg",
+      "file": "japan-previews-v21/medium-04-13.jpg",
+      "sheet": "medium-04",
+      "index": 12,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "紙のコラージュ",
+      "oldSample": "./sample-108.jpg",
+      "file": "japan-previews-v21/medium-04-14.jpg",
+      "sheet": "medium-04",
+      "index": 13,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "写真コラージュ",
+      "oldSample": "./sample-109.jpg",
+      "file": "japan-previews-v21/medium-04-15.jpg",
+      "sheet": "medium-04",
+      "index": 14,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "折り紙の立体",
+      "oldSample": "./sample-110.jpg",
+      "file": "japan-previews-v21/medium-04-16.jpg",
+      "sheet": "medium-04",
+      "index": 15,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "刺繍・織物",
+      "oldSample": "./sample-111.jpg",
+      "file": "japan-previews-v21/medium-05-01.jpg",
+      "sheet": "medium-05",
+      "index": 0,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "タペストリー",
+      "oldSample": "./sample-112.jpg",
+      "file": "japan-previews-v21/medium-05-02.jpg",
+      "sheet": "medium-05",
+      "index": 1,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "ステンドグラス",
+      "oldSample": "./sample-113.jpg",
+      "file": "japan-previews-v21/medium-05-03.jpg",
+      "sheet": "medium-05",
+      "index": 2,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "モザイク",
+      "oldSample": "./sample-114.jpg",
+      "file": "japan-previews-v21/medium-05-04.jpg",
+      "sheet": "medium-05",
+      "index": 3,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "陶器・釉薬",
+      "oldSample": "./sample-115.jpg",
+      "file": "japan-previews-v21/medium-05-05.jpg",
+      "sheet": "medium-05",
+      "index": 4,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "漆と螺鈿",
+      "oldSample": "./sample-116.jpg",
+      "file": "japan-previews-v21/medium-05-06.jpg",
+      "sheet": "medium-05",
+      "index": 5,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "クレイアート",
+      "oldSample": "./sample-117.jpg",
+      "file": "japan-previews-v21/medium-05-07.jpg",
+      "sheet": "medium-05",
+      "index": 6,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "ストップモーションの人形",
+      "oldSample": "./sample-118.jpg",
+      "file": "japan-previews-v21/medium-05-08.jpg",
+      "sheet": "medium-05",
+      "index": 7,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "フェルトの造形",
+      "oldSample": "./sample-119.jpg",
+      "file": "japan-previews-v21/medium-05-09.jpg",
+      "sheet": "medium-05",
+      "index": 8,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "精密ミニチュア",
+      "oldSample": "./sample-120.jpg",
+      "file": "japan-previews-v21/medium-05-10.jpg",
+      "sheet": "medium-05",
+      "index": 9,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "ジオラマ",
+      "oldSample": "./sample-121.jpg",
+      "file": "japan-previews-v21/medium-05-11.jpg",
+      "sheet": "medium-05",
+      "index": 10,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "トイフォト風",
+      "oldSample": "./sample-122.jpg",
+      "file": "japan-previews-v21/medium-05-12.jpg",
+      "sheet": "medium-05",
+      "index": 11,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "3D彫刻",
+      "oldSample": "./sample-123.jpg",
+      "file": "japan-previews-v21/medium-05-13.jpg",
+      "sheet": "medium-05",
+      "index": 12,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "ローポリゴン",
+      "oldSample": "./sample-124.jpg",
+      "file": "japan-previews-v21/medium-05-14.jpg",
+      "sheet": "medium-05",
+      "index": 13,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "ボクセル",
+      "oldSample": "./sample-125.jpg",
+      "file": "japan-previews-v21/medium-05-15.jpg",
+      "sheet": "medium-05",
+      "index": 14,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "ピクセルアート",
+      "oldSample": "./sample-126.jpg",
+      "file": "japan-previews-v21/medium-05-16.jpg",
+      "sheet": "medium-05",
+      "index": 15,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "ベクターグラフィック",
+      "oldSample": "./sample-127.jpg",
+      "file": "japan-previews-v21/medium-06-01.jpg",
+      "sheet": "medium-06",
+      "index": 0,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "フラットイラスト",
+      "oldSample": "./sample-128.jpg",
+      "file": "japan-previews-v21/medium-06-02.jpg",
+      "sheet": "medium-06",
+      "index": 1,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "インクとデジタル彩色",
+      "oldSample": "./sample-129.jpg",
+      "file": "japan-previews-v21/medium-06-03.jpg",
+      "sheet": "medium-06",
+      "index": 2,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "コンセプトアート",
+      "oldSample": "./sample-130.jpg",
+      "file": "japan-previews-v21/medium-06-04.jpg",
+      "sheet": "medium-06",
+      "index": 3,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "マットペインティング",
+      "oldSample": "./sample-131.jpg",
+      "file": "japan-previews-v21/medium-06-05.jpg",
+      "sheet": "medium-06",
+      "index": 4,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "グリッチアート",
+      "oldSample": "./sample-132.jpg",
+      "file": "japan-previews-v21/medium-06-06.jpg",
+      "sheet": "medium-06",
+      "index": 5,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "フラクタルアート",
+      "oldSample": "./sample-133.jpg",
+      "file": "japan-previews-v21/medium-06-07.jpg",
+      "sheet": "medium-06",
+      "index": 6,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "抽象表現",
+      "oldSample": "./sample-134.jpg",
+      "file": "japan-previews-v21/medium-06-08.jpg",
+      "sheet": "medium-06",
+      "index": 7,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "ゴシック・ロマン主義",
+      "oldSample": "./sample-135.jpg",
+      "file": "japan-previews-v21/medium-06-09.jpg",
+      "sheet": "medium-06",
+      "index": 8,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "バロック",
+      "oldSample": "./sample-136.jpg",
+      "file": "japan-previews-v21/medium-06-10.jpg",
+      "sheet": "medium-06",
+      "index": 9,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "象徴主義",
+      "oldSample": "./sample-137.jpg",
+      "file": "japan-previews-v21/medium-06-11.jpg",
+      "sheet": "medium-06",
+      "index": 10,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "シュルレアリスム",
+      "oldSample": "./sample-138.jpg",
+      "file": "japan-previews-v21/medium-06-12.jpg",
+      "sheet": "medium-06",
+      "index": 11,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "マジックリアリズム",
+      "oldSample": "./sample-139.jpg",
+      "file": "japan-previews-v21/medium-06-13.jpg",
+      "sheet": "medium-06",
+      "index": 12,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "印象主義",
+      "oldSample": "./sample-140.jpg",
+      "file": "japan-previews-v21/medium-06-14.jpg",
+      "sheet": "medium-06",
+      "index": 13,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "表現主義",
+      "oldSample": "./sample-141.jpg",
+      "file": "japan-previews-v21/medium-06-15.jpg",
+      "sheet": "medium-06",
+      "index": 14,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "キュビスム",
+      "oldSample": "./sample-142.jpg",
+      "file": "japan-previews-v21/medium-06-16.jpg",
+      "sheet": "medium-06",
+      "index": 15,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "未来派",
+      "oldSample": "./sample-143.jpg",
+      "file": "japan-previews-v21/medium-07-01.jpg",
+      "sheet": "medium-07",
+      "index": 0,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "構成主義",
+      "oldSample": "./sample-144.jpg",
+      "file": "japan-previews-v21/medium-07-02.jpg",
+      "sheet": "medium-07",
+      "index": 1,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "ポップアート",
+      "oldSample": "./sample-145.jpg",
+      "file": "japan-previews-v21/medium-07-03.jpg",
+      "sheet": "medium-07",
+      "index": 2,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "アウトサイダーアート",
+      "oldSample": "./sample-146.jpg",
+      "file": "japan-previews-v21/medium-07-04.jpg",
+      "sheet": "medium-07",
+      "index": 3,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "ミニマリズム",
+      "oldSample": "./sample-147.jpg",
+      "file": "japan-previews-v21/medium-07-05.jpg",
+      "sheet": "medium-07",
+      "index": 4,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "サイケデリックアート",
+      "oldSample": "./sample-148.jpg",
+      "file": "japan-previews-v21/medium-07-06.jpg",
+      "sheet": "medium-07",
+      "index": 5,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "透明水彩アニメ",
+      "oldSample": "./world-034.jpg",
+      "file": "japan-previews-v21/medium-07-07.jpg",
+      "sheet": "medium-07",
+      "index": 6,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "絵画的シネマアニメ",
+      "oldSample": "./world-035.jpg",
+      "file": "japan-previews-v21/medium-07-08.jpg",
+      "sheet": "medium-07",
+      "index": 7,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "medium",
+      "value": "宝石ホログラムアニメ",
+      "oldSample": "./world-036.jpg",
+      "file": "japan-previews-v21/medium-07-09.jpg",
+      "sheet": "medium-07",
+      "index": 8,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "individual generation replaced blank atlas cell; visual preview reviewed; not claimed as full recipe acceptance",
+      "sourceImage": "exec-59cb2a4f-e88b-42c7-9393-a85f895cb31c.png"
+    },
+    {
+      "key": "medium",
+      "value": "クリスタル透光アニメ",
+      "oldSample": "./crystal-transmission-anime.png",
+      "file": "japan-previews-v21/medium-07-10.jpg",
+      "sheet": "medium-07",
+      "index": 9,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "individual generation replaced blank atlas cell; visual preview reviewed; not claimed as full recipe acceptance",
+      "sourceImage": "exec-3e4ee1d3-e06b-42d5-b463-bd0629ada57e.png"
+    },
+    {
+      "key": "theme",
+      "value": "月夜の仮面舞踏会",
+      "oldSample": "./sample-149.jpg",
+      "file": "japan-previews-v21/theme-01-01.jpg",
+      "sheet": "theme-01",
+      "index": 0,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "真夜中の魔女のアトリエ",
+      "oldSample": "./sample-150.jpg",
+      "file": "japan-previews-v21/theme-01-02.jpg",
+      "sheet": "theme-01",
+      "index": 1,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "忘れられた劇場",
+      "oldSample": "./sample-151.jpg",
+      "file": "japan-previews-v21/theme-01-03.jpg",
+      "sheet": "theme-01",
+      "index": 2,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "幽霊たちのお茶会",
+      "oldSample": "./sample-152.jpg",
+      "file": "japan-previews-v21/theme-01-04.jpg",
+      "sheet": "theme-01",
+      "index": 3,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "秘密の図書館",
+      "oldSample": "./sample-153.jpg",
+      "file": "japan-previews-v21/theme-01-05.jpg",
+      "sheet": "theme-01",
+      "index": 4,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "異界に続く駅",
+      "oldSample": "./sample-154.jpg",
+      "file": "japan-previews-v21/theme-01-06.jpg",
+      "sheet": "theme-01",
+      "index": 5,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "鏡の向こうの自分",
+      "oldSample": "./sample-155.jpg",
+      "file": "japan-previews-v21/theme-01-07.jpg",
+      "sheet": "theme-01",
+      "index": 6,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "星を集める旅",
+      "oldSample": "./sample-156.jpg",
+      "file": "japan-previews-v21/theme-01-08.jpg",
+      "sheet": "theme-01",
+      "index": 7,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "眠らない美術館",
+      "oldSample": "./sample-157.jpg",
+      "file": "japan-previews-v21/theme-01-09.jpg",
+      "sheet": "theme-01",
+      "index": 8,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "一夜だけの怪奇サーカス",
+      "oldSample": "./sample-158.jpg",
+      "file": "japan-previews-v21/theme-01-10.jpg",
+      "sheet": "theme-01",
+      "index": 9,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "吸血鬼の晩餐会",
+      "oldSample": "./sample-159.jpg",
+      "file": "japan-previews-v21/theme-01-11.jpg",
+      "sheet": "theme-01",
+      "index": 10,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "死神の休日",
+      "oldSample": "./sample-160.jpg",
+      "file": "japan-previews-v21/theme-01-12.jpg",
+      "sheet": "theme-01",
+      "index": 11,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "魔法使いの見習い",
+      "oldSample": "./sample-161.jpg",
+      "file": "japan-previews-v21/theme-01-13.jpg",
+      "sheet": "theme-01",
+      "index": 12,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "悪夢からの脱出",
+      "oldSample": "./sample-162.jpg",
+      "file": "japan-previews-v21/theme-01-14.jpg",
+      "sheet": "theme-01",
+      "index": 13,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "百鬼夜行",
+      "oldSample": "./sample-163.jpg",
+      "file": "japan-previews-v21/theme-01-15.jpg",
+      "sheet": "theme-01",
+      "index": 14,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "妖狐と月の契約",
+      "oldSample": "./sample-164.jpg",
+      "file": "japan-previews-v21/theme-01-16.jpg",
+      "sheet": "theme-01",
+      "index": 15,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "海賊船の亡霊",
+      "oldSample": "./sample-165.jpg",
+      "file": "japan-previews-v21/theme-02-01.jpg",
+      "sheet": "theme-02",
+      "index": 0,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "宇宙のHalloween",
+      "oldSample": "./sample-166.jpg",
+      "file": "japan-previews-v21/theme-02-02.jpg",
+      "sheet": "theme-02",
+      "index": 1,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "機械仕掛けの怪物",
+      "oldSample": "./sample-167.jpg",
+      "file": "japan-previews-v21/theme-02-03.jpg",
+      "sheet": "theme-02",
+      "index": 2,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "呪われたオルゴール",
+      "oldSample": "./sample-168.jpg",
+      "file": "japan-previews-v21/theme-02-04.jpg",
+      "sheet": "theme-02",
+      "index": 3,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "お菓子の王国",
+      "oldSample": "./sample-169.jpg",
+      "file": "japan-previews-v21/theme-02-05.jpg",
+      "sheet": "theme-02",
+      "index": 4,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "カボチャの収穫祭",
+      "oldSample": "./sample-170.jpg",
+      "file": "japan-previews-v21/theme-02-06.jpg",
+      "sheet": "theme-02",
+      "index": 5,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "都会の仮装パレード",
+      "oldSample": "./sample-171.jpg",
+      "file": "japan-previews-v21/theme-02-07.jpg",
+      "sheet": "theme-02",
+      "index": 6,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "花と骸骨の祝祭",
+      "oldSample": "./sample-172.jpg",
+      "file": "japan-previews-v21/theme-02-08.jpg",
+      "sheet": "theme-02",
+      "index": 7,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "墨で描く怪異",
+      "oldSample": "./sample-173.jpg",
+      "file": "japan-previews-v21/theme-02-09.jpg",
+      "sheet": "theme-02",
+      "index": 8,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "光と影の寓話",
+      "oldSample": "./sample-174.jpg",
+      "file": "japan-previews-v21/theme-02-10.jpg",
+      "sheet": "theme-02",
+      "index": 9,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "記憶の標本室",
+      "oldSample": "./sample-175.jpg",
+      "file": "japan-previews-v21/theme-02-11.jpg",
+      "sheet": "theme-02",
+      "index": 10,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "異世界のファッションショー",
+      "oldSample": "./sample-176.jpg",
+      "file": "japan-previews-v21/theme-02-12.jpg",
+      "sheet": "theme-02",
+      "index": 11,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "雨上がりの怪談",
+      "oldSample": "./sample-177.jpg",
+      "file": "japan-previews-v21/theme-02-13.jpg",
+      "sheet": "theme-02",
+      "index": 12,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "theme",
+      "value": "静かなハロウィーン",
+      "oldSample": "./sample-178.jpg",
+      "file": "japan-previews-v21/theme-02-14.jpg",
+      "sheet": "theme-02",
+      "index": 13,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "魔女・魔法使い",
+      "oldSample": "./sample-179.jpg",
+      "file": "japan-previews-v21/costume-01-01.jpg",
+      "sheet": "costume-01",
+      "index": 0,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "吸血鬼",
+      "oldSample": "./sample-180.jpg",
+      "file": "japan-previews-v21/costume-01-02.jpg",
+      "sheet": "costume-01",
+      "index": 1,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "幽霊・亡霊",
+      "oldSample": "./sample-181.jpg",
+      "file": "japan-previews-v21/costume-01-03.jpg",
+      "sheet": "costume-01",
+      "index": 2,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "死神",
+      "oldSample": "./sample-182.jpg",
+      "file": "japan-previews-v21/costume-01-04.jpg",
+      "sheet": "costume-01",
+      "index": 3,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "黒猫の使い魔",
+      "oldSample": "./sample-183.jpg",
+      "file": "japan-previews-v21/costume-01-05.jpg",
+      "sheet": "costume-01",
+      "index": 4,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "カボチャの王族",
+      "oldSample": "./sample-184.jpg",
+      "file": "japan-previews-v21/costume-01-06.jpg",
+      "sheet": "costume-01",
+      "index": 5,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "悪魔",
+      "oldSample": "./sample-185.jpg",
+      "file": "japan-previews-v21/costume-01-07.jpg",
+      "sheet": "costume-01",
+      "index": 6,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "堕天使",
+      "oldSample": "./sample-186.jpg",
+      "file": "japan-previews-v21/costume-01-08.jpg",
+      "sheet": "costume-01",
+      "index": 7,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "人狼",
+      "oldSample": "./sample-187.jpg",
+      "file": "japan-previews-v21/costume-01-09.jpg",
+      "sheet": "costume-01",
+      "index": 8,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "ミイラ",
+      "oldSample": "./sample-188.jpg",
+      "file": "japan-previews-v21/costume-01-10.jpg",
+      "sheet": "costume-01",
+      "index": 9,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "怪盗",
+      "oldSample": "./sample-189.jpg",
+      "file": "japan-previews-v21/costume-01-11.jpg",
+      "sheet": "costume-01",
+      "index": 10,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "海賊",
+      "oldSample": "./sample-190.jpg",
+      "file": "japan-previews-v21/costume-01-12.jpg",
+      "sheet": "costume-01",
+      "index": 11,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "サーカスの道化師",
+      "oldSample": "./sample-191.jpg",
+      "file": "japan-previews-v21/costume-01-13.jpg",
+      "sheet": "costume-01",
+      "index": 12,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "人形",
+      "oldSample": "./sample-192.jpg",
+      "file": "japan-previews-v21/costume-01-14.jpg",
+      "sheet": "costume-01",
+      "index": 13,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "妖狐",
+      "oldSample": "./sample-193.jpg",
+      "file": "japan-previews-v21/costume-01-15.jpg",
+      "sheet": "costume-01",
+      "index": 14,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "雪女",
+      "oldSample": "./sample-194.jpg",
+      "file": "japan-previews-v21/costume-01-16.jpg",
+      "sheet": "costume-01",
+      "index": 15,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "ゴシック・クチュール",
+      "oldSample": "./sample-195.jpg",
+      "file": "japan-previews-v21/costume-02-01.jpg",
+      "sheet": "costume-02",
+      "index": 0,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "ヴィクトリア朝の正装",
+      "oldSample": "./sample-196.jpg",
+      "file": "japan-previews-v21/costume-02-02.jpg",
+      "sheet": "costume-02",
+      "index": 1,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "ダーク・ロリータ",
+      "oldSample": "./sample-197.jpg",
+      "file": "japan-previews-v21/costume-02-03.jpg",
+      "sheet": "costume-02",
+      "index": 2,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "和装と怪異",
+      "oldSample": "./sample-198.jpg",
+      "file": "japan-previews-v21/costume-02-04.jpg",
+      "sheet": "costume-02",
+      "index": 3,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "スチームパンク",
+      "oldSample": "./sample-199.jpg",
+      "file": "japan-previews-v21/costume-02-05.jpg",
+      "sheet": "costume-02",
+      "index": 4,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "サイバーパンク",
+      "oldSample": "./sample-200.jpg",
+      "file": "japan-previews-v21/costume-02-06.jpg",
+      "sheet": "costume-02",
+      "index": 5,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "ロック・パンク",
+      "oldSample": "./sample-201.jpg",
+      "file": "japan-previews-v21/costume-02-07.jpg",
+      "sheet": "costume-02",
+      "index": 6,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "仮面とドレス",
+      "oldSample": "./sample-202.jpg",
+      "file": "japan-previews-v21/costume-02-08.jpg",
+      "sheet": "costume-02",
+      "index": 7,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "アンティークの旅装",
+      "oldSample": "./sample-203.jpg",
+      "file": "japan-previews-v21/costume-02-09.jpg",
+      "sheet": "costume-02",
+      "index": 8,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "風景を主役にする",
+      "oldSample": "./sample-204.jpg",
+      "file": "japan-previews-v21/costume-02-10.jpg",
+      "sheet": "costume-02",
+      "index": 9,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "モチーフだけで構成する",
+      "oldSample": "./sample-205.jpg",
+      "file": "japan-previews-v21/costume-02-11.jpg",
+      "sheet": "costume-02",
+      "index": 10,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "紋章・アイコンにする",
+      "oldSample": "./sample-206.jpg",
+      "file": "japan-previews-v21/costume-02-12.jpg",
+      "sheet": "costume-02",
+      "index": 11,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "白布のおばけ",
+      "oldSample": "./costume-001.jpg",
+      "file": "japan-previews-v21/costume-02-13.jpg",
+      "sheet": "costume-02",
+      "index": 12,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "フランケンシュタインの怪物",
+      "oldSample": "./costume-002.jpg",
+      "file": "japan-previews-v21/costume-02-14.jpg",
+      "sheet": "costume-02",
+      "index": 13,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "ゾンビ",
+      "oldSample": "./costume-003.jpg",
+      "file": "japan-previews-v21/costume-02-15.jpg",
+      "sheet": "costume-02",
+      "index": 14,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "骸骨・スケルトン",
+      "oldSample": "./costume-004.jpg",
+      "file": "japan-previews-v21/costume-02-16.jpg",
+      "sheet": "costume-02",
+      "index": 15,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "メデューサ",
+      "oldSample": "./costume-005.jpg",
+      "file": "japan-previews-v21/costume-03-01.jpg",
+      "sheet": "costume-03",
+      "index": 0,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "半魚人",
+      "oldSample": "./costume-006.jpg",
+      "file": "japan-previews-v21/costume-03-02.jpg",
+      "sheet": "costume-03",
+      "index": 1,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "透明人間",
+      "oldSample": "./costume-007.jpg",
+      "file": "japan-previews-v21/costume-03-03.jpg",
+      "sheet": "costume-03",
+      "index": 2,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "コウモリ人",
+      "oldSample": "./costume-008.jpg",
+      "file": "japan-previews-v21/costume-03-04.jpg",
+      "sheet": "costume-03",
+      "index": 3,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "グール",
+      "oldSample": "./costume-009.jpg",
+      "file": "japan-previews-v21/costume-03-05.jpg",
+      "sheet": "costume-03",
+      "index": 4,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "ジャック・オー・ランタン",
+      "oldSample": "./costume-010.jpg",
+      "file": "japan-previews-v21/costume-03-06.jpg",
+      "sheet": "costume-03",
+      "index": 5,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "亡霊騎士",
+      "oldSample": "./costume-011.jpg",
+      "file": "japan-previews-v21/costume-03-07.jpg",
+      "sheet": "costume-03",
+      "index": 6,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "ガーゴイル",
+      "oldSample": "./costume-012.jpg",
+      "file": "japan-previews-v21/costume-03-08.jpg",
+      "sheet": "costume-03",
+      "index": 7,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "蜘蛛の怪人",
+      "oldSample": "./costume-013.jpg",
+      "file": "japan-previews-v21/costume-03-09.jpg",
+      "sheet": "costume-03",
+      "index": 8,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "悪の科学者",
+      "oldSample": "./costume-014.jpg",
+      "file": "japan-previews-v21/costume-03-10.jpg",
+      "sheet": "costume-03",
+      "index": 9,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "幽霊花嫁",
+      "oldSample": "./costume-015.jpg",
+      "file": "japan-previews-v21/costume-03-11.jpg",
+      "sheet": "costume-03",
+      "index": 10,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "ホラーピエロ",
+      "oldSample": "./costume-016.jpg",
+      "file": "japan-previews-v21/costume-03-12.jpg",
+      "sheet": "costume-03",
+      "index": 11,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "エルフの弓使い",
+      "oldSample": "./costume-017.jpg",
+      "file": "japan-previews-v21/costume-03-13.jpg",
+      "sheet": "costume-03",
+      "index": 12,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "森の妖精",
+      "oldSample": "./costume-018.jpg",
+      "file": "japan-previews-v21/costume-03-14.jpg",
+      "sheet": "costume-03",
+      "index": 13,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "ドラゴンの騎士",
+      "oldSample": "./costume-019.jpg",
+      "file": "japan-previews-v21/costume-03-15.jpg",
+      "sheet": "costume-03",
+      "index": 14,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "竜人",
+      "oldSample": "./costume-020.jpg",
+      "file": "japan-previews-v21/costume-03-16.jpg",
+      "sheet": "costume-03",
+      "index": 15,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "人魚",
+      "oldSample": "./costume-021.jpg",
+      "file": "japan-previews-v21/costume-04-01.jpg",
+      "sheet": "costume-04",
+      "index": 0,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "ユニコーン",
+      "oldSample": "./costume-022.jpg",
+      "file": "japan-previews-v21/costume-04-02.jpg",
+      "sheet": "costume-04",
+      "index": 1,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "不死鳥",
+      "oldSample": "./costume-023.jpg",
+      "file": "japan-previews-v21/costume-04-03.jpg",
+      "sheet": "costume-04",
+      "index": 2,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "氷の女王",
+      "oldSample": "./costume-024.jpg",
+      "file": "japan-previews-v21/costume-04-04.jpg",
+      "sheet": "costume-04",
+      "index": 3,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "花の精霊",
+      "oldSample": "./costume-025.jpg",
+      "file": "japan-previews-v21/costume-04-05.jpg",
+      "sheet": "costume-04",
+      "index": 4,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "星の占い師",
+      "oldSample": "./costume-026.jpg",
+      "file": "japan-previews-v21/costume-04-06.jpg",
+      "sheet": "costume-04",
+      "index": 5,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "錬金術師",
+      "oldSample": "./costume-027.jpg",
+      "file": "japan-previews-v21/costume-04-07.jpg",
+      "sheet": "costume-04",
+      "index": 6,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "ネクロマンサー",
+      "oldSample": "./costume-028.jpg",
+      "file": "japan-previews-v21/costume-04-08.jpg",
+      "sheet": "costume-04",
+      "index": 7,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "光の聖騎士",
+      "oldSample": "./costume-029.jpg",
+      "file": "japan-previews-v21/costume-04-09.jpg",
+      "sheet": "costume-04",
+      "index": 8,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "闇の騎士",
+      "oldSample": "./costume-030.jpg",
+      "file": "japan-previews-v21/costume-04-10.jpg",
+      "sheet": "costume-04",
+      "index": 9,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "赤ずきん",
+      "oldSample": "./costume-031.jpg",
+      "file": "japan-previews-v21/costume-04-11.jpg",
+      "sheet": "costume-04",
+      "index": 10,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "不思議の国の旅人",
+      "oldSample": "./costume-032.jpg",
+      "file": "japan-previews-v21/costume-04-12.jpg",
+      "sheet": "costume-04",
+      "index": 11,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "探偵",
+      "oldSample": "./costume-033.jpg",
+      "file": "japan-previews-v21/costume-04-13.jpg",
+      "sheet": "costume-04",
+      "index": 12,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "警察官",
+      "oldSample": "./costume-034.jpg",
+      "file": "japan-previews-v21/costume-04-14.jpg",
+      "sheet": "costume-04",
+      "index": 13,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "消防士",
+      "oldSample": "./costume-035.jpg",
+      "file": "japan-previews-v21/costume-04-15.jpg",
+      "sheet": "costume-04",
+      "index": 14,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "医師・白衣",
+      "oldSample": "./costume-036.jpg",
+      "file": "japan-previews-v21/costume-04-16.jpg",
+      "sheet": "costume-04",
+      "index": 15,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "ナース",
+      "oldSample": "./costume-037.jpg",
+      "file": "japan-previews-v21/costume-05-01.jpg",
+      "sheet": "costume-05",
+      "index": 0,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "パイロット",
+      "oldSample": "./costume-038.jpg",
+      "file": "japan-previews-v21/costume-05-02.jpg",
+      "sheet": "costume-05",
+      "index": 1,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "キャビンアテンダント",
+      "oldSample": "./costume-039.jpg",
+      "file": "japan-previews-v21/costume-05-03.jpg",
+      "sheet": "costume-05",
+      "index": 2,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "シェフ",
+      "oldSample": "./costume-040.jpg",
+      "file": "japan-previews-v21/costume-05-04.jpg",
+      "sheet": "costume-05",
+      "index": 3,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "メイド",
+      "oldSample": "./costume-041.jpg",
+      "file": "japan-previews-v21/costume-05-05.jpg",
+      "sheet": "costume-05",
+      "index": 4,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "執事",
+      "oldSample": "./costume-042.jpg",
+      "file": "japan-previews-v21/costume-05-06.jpg",
+      "sheet": "costume-05",
+      "index": 5,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "宇宙飛行士",
+      "oldSample": "./costume-043.jpg",
+      "file": "japan-previews-v21/costume-05-07.jpg",
+      "sheet": "costume-05",
+      "index": 6,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "郵便配達員",
+      "oldSample": "./costume-044.jpg",
+      "file": "japan-previews-v21/costume-05-08.jpg",
+      "sheet": "costume-05",
+      "index": 7,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "ロボット",
+      "oldSample": "./costume-045.jpg",
+      "file": "japan-previews-v21/costume-05-09.jpg",
+      "sheet": "costume-05",
+      "index": 8,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "アンドロイド",
+      "oldSample": "./costume-046.jpg",
+      "file": "japan-previews-v21/costume-05-10.jpg",
+      "sheet": "costume-05",
+      "index": 9,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "サイボーグ",
+      "oldSample": "./costume-047.jpg",
+      "file": "japan-previews-v21/costume-05-11.jpg",
+      "sheet": "costume-05",
+      "index": 10,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "宇宙海賊",
+      "oldSample": "./costume-048.jpg",
+      "file": "japan-previews-v21/costume-05-12.jpg",
+      "sheet": "costume-05",
+      "index": 11,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "エイリアン",
+      "oldSample": "./costume-049.jpg",
+      "file": "japan-previews-v21/costume-05-13.jpg",
+      "sheet": "costume-05",
+      "index": 12,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "パワードスーツ",
+      "oldSample": "./costume-050.jpg",
+      "file": "japan-previews-v21/costume-05-14.jpg",
+      "sheet": "costume-05",
+      "index": 13,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "変身ヒーロー",
+      "oldSample": "./costume-051.jpg",
+      "file": "japan-previews-v21/costume-05-15.jpg",
+      "sheet": "costume-05",
+      "index": 14,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "魔法少女風コスチューム",
+      "oldSample": "./costume-052.jpg",
+      "file": "japan-previews-v21/costume-05-16.jpg",
+      "sheet": "costume-05",
+      "index": 15,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "ヴィラン・悪役",
+      "oldSample": "./costume-053.jpg",
+      "file": "japan-previews-v21/costume-06-01.jpg",
+      "sheet": "costume-06",
+      "index": 0,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "時空の旅人",
+      "oldSample": "./costume-054.jpg",
+      "file": "japan-previews-v21/costume-06-02.jpg",
+      "sheet": "costume-06",
+      "index": 1,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "鬼",
+      "oldSample": "./costume-055.jpg",
+      "file": "japan-previews-v21/costume-06-03.jpg",
+      "sheet": "costume-06",
+      "index": 2,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "天狗",
+      "oldSample": "./costume-056.jpg",
+      "file": "japan-previews-v21/costume-06-04.jpg",
+      "sheet": "costume-06",
+      "index": 3,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "河童",
+      "oldSample": "./costume-057.jpg",
+      "file": "japan-previews-v21/costume-06-05.jpg",
+      "sheet": "costume-06",
+      "index": 4,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "座敷わらし",
+      "oldSample": "./costume-058.jpg",
+      "file": "japan-previews-v21/costume-06-06.jpg",
+      "sheet": "costume-06",
+      "index": 5,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "忍者",
+      "oldSample": "./costume-059.jpg",
+      "file": "japan-previews-v21/costume-06-07.jpg",
+      "sheet": "costume-06",
+      "index": 6,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "侍・武者",
+      "oldSample": "./costume-060.jpg",
+      "file": "japan-previews-v21/costume-06-08.jpg",
+      "sheet": "costume-06",
+      "index": 7,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "陰陽師",
+      "oldSample": "./costume-061.jpg",
+      "file": "japan-previews-v21/costume-06-09.jpg",
+      "sheet": "costume-06",
+      "index": 8,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "巫女",
+      "oldSample": "./costume-062.jpg",
+      "file": "japan-previews-v21/costume-06-10.jpg",
+      "sheet": "costume-06",
+      "index": 9,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "西洋の王・女王",
+      "oldSample": "./costume-063.jpg",
+      "file": "japan-previews-v21/costume-06-11.jpg",
+      "sheet": "costume-06",
+      "index": 10,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "ファラオ",
+      "oldSample": "./costume-064.jpg",
+      "file": "japan-previews-v21/costume-06-12.jpg",
+      "sheet": "costume-06",
+      "index": 11,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "うさぎの着ぐるみ",
+      "oldSample": "./costume-065.jpg",
+      "file": "japan-previews-v21/costume-06-13.jpg",
+      "sheet": "costume-06",
+      "index": 12,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "くまの着ぐるみ",
+      "oldSample": "./costume-066.jpg",
+      "file": "japan-previews-v21/costume-06-14.jpg",
+      "sheet": "costume-06",
+      "index": 13,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "恐竜の着ぐるみ",
+      "oldSample": "./costume-067.jpg",
+      "file": "japan-previews-v21/costume-06-15.jpg",
+      "sheet": "costume-06",
+      "index": 14,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "ペンギンの着ぐるみ",
+      "oldSample": "./costume-068.jpg",
+      "file": "japan-previews-v21/costume-06-16.jpg",
+      "sheet": "costume-06",
+      "index": 15,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "キノコの妖精",
+      "oldSample": "./costume-069.jpg",
+      "file": "japan-previews-v21/costume-07-01.jpg",
+      "sheet": "costume-07",
+      "index": 0,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "キャンディの精霊",
+      "oldSample": "./costume-070.jpg",
+      "file": "japan-previews-v21/costume-07-02.jpg",
+      "sheet": "costume-07",
+      "index": 1,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "トランプの兵隊",
+      "oldSample": "./costume-071.jpg",
+      "file": "japan-previews-v21/costume-07-03.jpg",
+      "sheet": "costume-07",
+      "index": 2,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "costume",
+      "value": "花嫁・花婿",
+      "oldSample": "./costume-072.jpg",
+      "file": "japan-previews-v21/costume-07-04.jpg",
+      "sheet": "costume-07",
+      "index": 3,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "静かで美しい",
+      "oldSample": "./sample-207.jpg",
+      "file": "japan-previews-v21/mood-01-01.jpg",
+      "sheet": "mood-01",
+      "index": 0,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "妖しく気高い",
+      "oldSample": "./sample-208.jpg",
+      "file": "japan-previews-v21/mood-01-02.jpg",
+      "sheet": "mood-01",
+      "index": 1,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "儚く切ない",
+      "oldSample": "./sample-209.jpg",
+      "file": "japan-previews-v21/mood-01-03.jpg",
+      "sheet": "mood-01",
+      "index": 2,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "温かく懐かしい",
+      "oldSample": "./sample-210.jpg",
+      "file": "japan-previews-v21/mood-01-04.jpg",
+      "sheet": "mood-01",
+      "index": 3,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "神秘的で透明感",
+      "oldSample": "./sample-211.jpg",
+      "file": "japan-previews-v21/mood-01-05.jpg",
+      "sheet": "mood-01",
+      "index": 4,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "寂しく詩的",
+      "oldSample": "./sample-212.jpg",
+      "file": "japan-previews-v21/mood-01-06.jpg",
+      "sheet": "mood-01",
+      "index": 5,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "優雅でクラシカル",
+      "oldSample": "./sample-213.jpg",
+      "file": "japan-previews-v21/mood-01-07.jpg",
+      "sheet": "mood-01",
+      "index": 6,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "強く挑発的",
+      "oldSample": "./sample-214.jpg",
+      "file": "japan-previews-v21/mood-01-08.jpg",
+      "sheet": "mood-01",
+      "index": 7,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "不敵な微笑み",
+      "oldSample": "./sample-215.jpg",
+      "file": "japan-previews-v21/mood-01-09.jpg",
+      "sheet": "mood-01",
+      "index": 8,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "いたずら好き",
+      "oldSample": "./sample-216.jpg",
+      "file": "japan-previews-v21/mood-01-10.jpg",
+      "sheet": "mood-01",
+      "index": 9,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "明るく祝祭的",
+      "oldSample": "./sample-217.jpg",
+      "file": "japan-previews-v21/mood-01-11.jpg",
+      "sheet": "mood-01",
+      "index": 10,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "可愛くコミカル",
+      "oldSample": "./sample-218.jpg",
+      "file": "japan-previews-v21/mood-01-12.jpg",
+      "sheet": "mood-01",
+      "index": 11,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "疾走する冒険",
+      "oldSample": "./sample-219.jpg",
+      "file": "japan-previews-v21/mood-01-13.jpg",
+      "sheet": "mood-01",
+      "index": 12,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "劇的な勝利",
+      "oldSample": "./sample-220.jpg",
+      "file": "japan-previews-v21/mood-01-14.jpg",
+      "sheet": "mood-01",
+      "index": 13,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "少しだけ不気味",
+      "oldSample": "./sample-221.jpg",
+      "file": "japan-previews-v21/mood-01-15.jpg",
+      "sheet": "mood-01",
+      "index": 14,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "ひやりとする怪談",
+      "oldSample": "./sample-222.jpg",
+      "file": "japan-previews-v21/mood-01-16.jpg",
+      "sheet": "mood-01",
+      "index": 15,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "圧倒的な恐怖・流血なし",
+      "oldSample": "./sample-223.jpg",
+      "file": "japan-previews-v21/mood-02-01.jpg",
+      "sheet": "mood-02",
+      "index": 0,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "奇妙でシュール",
+      "oldSample": "./sample-224.jpg",
+      "file": "japan-previews-v21/mood-02-02.jpg",
+      "sheet": "mood-02",
+      "index": 1,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "無表情の緊張感",
+      "oldSample": "./sample-225.jpg",
+      "file": "japan-previews-v21/mood-02-03.jpg",
+      "sheet": "mood-02",
+      "index": 2,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "歯を見せて大笑い",
+      "oldSample": "./sample-226.jpg",
+      "file": "japan-previews-v21/mood-02-04.jpg",
+      "sheet": "mood-02",
+      "index": 3,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "目を見開いて驚く",
+      "oldSample": "./sample-227.jpg",
+      "file": "japan-previews-v21/mood-02-05.jpg",
+      "sheet": "mood-02",
+      "index": 4,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "眉を寄せて怒る",
+      "oldSample": "./sample-228.jpg",
+      "file": "japan-previews-v21/mood-02-06.jpg",
+      "sheet": "mood-02",
+      "index": 5,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "涙を浮かべる",
+      "oldSample": "./sample-229.jpg",
+      "file": "japan-previews-v21/mood-02-07.jpg",
+      "sheet": "mood-02",
+      "index": 6,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "目を閉じて安らぐ",
+      "oldSample": "./sample-230.jpg",
+      "file": "japan-previews-v21/mood-02-08.jpg",
+      "sheet": "mood-02",
+      "index": 7,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "勝ち誇ってニヤリ",
+      "oldSample": "./sample-231.jpg",
+      "file": "japan-previews-v21/mood-02-09.jpg",
+      "sheet": "mood-02",
+      "index": 8,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "片目を閉じてウインク",
+      "oldSample": "./sample-232.jpg",
+      "file": "japan-previews-v21/mood-02-10.jpg",
+      "sheet": "mood-02",
+      "index": 9,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "牙を見せて威嚇",
+      "oldSample": "./sample-233.jpg",
+      "file": "japan-previews-v21/mood-02-11.jpg",
+      "sheet": "mood-02",
+      "index": 10,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "真剣な無表情",
+      "oldSample": "./sample-234.jpg",
+      "file": "japan-previews-v21/mood-02-12.jpg",
+      "sheet": "mood-02",
+      "index": 11,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "正面・首をまっすぐ",
+      "oldSample": "./sample-235.jpg",
+      "file": "japan-previews-v21/mood-02-13.jpg",
+      "sheet": "mood-02",
+      "index": 12,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "完全な左横顔90度",
+      "oldSample": "./sample-236.jpg",
+      "file": "japan-previews-v21/mood-02-14.jpg",
+      "sheet": "mood-02",
+      "index": 13,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "完全な右横顔90度",
+      "oldSample": "./sample-237.jpg",
+      "file": "japan-previews-v21/mood-02-15.jpg",
+      "sheet": "mood-02",
+      "index": 14,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "真上からの俯瞰",
+      "oldSample": "./sample-238.jpg",
+      "file": "japan-previews-v21/mood-02-16.jpg",
+      "sheet": "mood-02",
+      "index": 15,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "真下からのローアングル",
+      "oldSample": "./sample-239.jpg",
+      "file": "japan-previews-v21/mood-03-01.jpg",
+      "sheet": "mood-03",
+      "index": 0,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "背中から振り向く",
+      "oldSample": "./sample-240.jpg",
+      "file": "japan-previews-v21/mood-03-02.jpg",
+      "sheet": "mood-03",
+      "index": 1,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "顔を上に向ける",
+      "oldSample": "./sample-241.jpg",
+      "file": "japan-previews-v21/mood-03-03.jpg",
+      "sheet": "mood-03",
+      "index": 2,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "顔を下に向ける",
+      "oldSample": "./sample-242.jpg",
+      "file": "japan-previews-v21/mood-03-04.jpg",
+      "sheet": "mood-03",
+      "index": 3,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "正面＋満面の笑顔",
+      "oldSample": "./sample-243.jpg",
+      "file": "japan-previews-v21/mood-03-05.jpg",
+      "sheet": "mood-03",
+      "index": 4,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "左横顔＋静かな無表情",
+      "oldSample": "./sample-244.jpg",
+      "file": "japan-previews-v21/mood-03-06.jpg",
+      "sheet": "mood-03",
+      "index": 5,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "右横顔＋大笑い",
+      "oldSample": "./sample-245.jpg",
+      "file": "japan-previews-v21/mood-03-07.jpg",
+      "sheet": "mood-03",
+      "index": 6,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "俯瞰＋目を見開く",
+      "oldSample": "./sample-246.jpg",
+      "file": "japan-previews-v21/mood-03-08.jpg",
+      "sheet": "mood-03",
+      "index": 7,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "ローアングル＋威嚇",
+      "oldSample": "./sample-247.jpg",
+      "file": "japan-previews-v21/mood-03-09.jpg",
+      "sheet": "mood-03",
+      "index": 8,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "mood",
+      "value": "背中から振り向く＋ニヤリ",
+      "oldSample": "./sample-248.jpg",
+      "file": "japan-previews-v21/mood-03-10.jpg",
+      "sheet": "mood-03",
+      "index": 9,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "古城の大広間",
+      "oldSample": "./sample-249.jpg",
+      "file": "japan-previews-v21/place-01-01.jpg",
+      "sheet": "place-01",
+      "index": 0,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "古い洋館の階段",
+      "oldSample": "./sample-250.jpg",
+      "file": "japan-previews-v21/place-01-02.jpg",
+      "sheet": "place-01",
+      "index": 1,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "魔女の書斎",
+      "oldSample": "./sample-251.jpg",
+      "file": "japan-previews-v21/place-01-03.jpg",
+      "sheet": "place-01",
+      "index": 2,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "無人の映画館",
+      "oldSample": "./sample-252.jpg",
+      "file": "japan-previews-v21/place-01-04.jpg",
+      "sheet": "place-01",
+      "index": 3,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "人形の工房",
+      "oldSample": "./sample-253.jpg",
+      "file": "japan-previews-v21/place-01-05.jpg",
+      "sheet": "place-01",
+      "index": 4,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "鏡の迷宮",
+      "oldSample": "./sample-254.jpg",
+      "file": "japan-previews-v21/place-01-06.jpg",
+      "sheet": "place-01",
+      "index": 5,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "深夜の喫茶店",
+      "oldSample": "./sample-255.jpg",
+      "file": "japan-previews-v21/place-01-07.jpg",
+      "sheet": "place-01",
+      "index": 6,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "廃墟の礼拝堂",
+      "oldSample": "./sample-256.jpg",
+      "file": "japan-previews-v21/place-01-08.jpg",
+      "sheet": "place-01",
+      "index": 7,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "骨董品店",
+      "oldSample": "./sample-257.jpg",
+      "file": "japan-previews-v21/place-01-09.jpg",
+      "sheet": "place-01",
+      "index": 8,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "天窓のあるアトリエ",
+      "oldSample": "./sample-258.jpg",
+      "file": "japan-previews-v21/place-01-10.jpg",
+      "sheet": "place-01",
+      "index": 9,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "霧の森",
+      "oldSample": "./sample-259.jpg",
+      "file": "japan-previews-v21/place-01-11.jpg",
+      "sheet": "place-01",
+      "index": 10,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "雨の路地",
+      "oldSample": "./sample-260.jpg",
+      "file": "japan-previews-v21/place-01-12.jpg",
+      "sheet": "place-01",
+      "index": 11,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "月下の墓地",
+      "oldSample": "./sample-261.jpg",
+      "file": "japan-previews-v21/place-01-13.jpg",
+      "sheet": "place-01",
+      "index": 12,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "カボチャ畑",
+      "oldSample": "./sample-262.jpg",
+      "file": "japan-previews-v21/place-01-14.jpg",
+      "sheet": "place-01",
+      "index": 13,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "ネオンの繁華街",
+      "oldSample": "./sample-263.jpg",
+      "file": "japan-previews-v21/place-01-15.jpg",
+      "sheet": "place-01",
+      "index": 14,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "屋根の上",
+      "oldSample": "./sample-264.jpg",
+      "file": "japan-previews-v21/place-01-16.jpg",
+      "sheet": "place-01",
+      "index": 15,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "異界の鳥居",
+      "oldSample": "./sample-265.jpg",
+      "file": "japan-previews-v21/place-02-01.jpg",
+      "sheet": "place-02",
+      "index": 0,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "夜の遊園地",
+      "oldSample": "./sample-267.jpg",
+      "file": "japan-previews-v21/place-02-02.jpg",
+      "sheet": "place-02",
+      "index": 1,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "空中都市",
+      "oldSample": "./sample-268.jpg",
+      "file": "japan-previews-v21/place-02-03.jpg",
+      "sheet": "place-02",
+      "index": 2,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "雪の庭",
+      "oldSample": "./sample-269.jpg",
+      "file": "japan-previews-v21/place-02-04.jpg",
+      "sheet": "place-02",
+      "index": 3,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "星空の砂漠",
+      "oldSample": "./sample-270.jpg",
+      "file": "japan-previews-v21/place-02-05.jpg",
+      "sheet": "place-02",
+      "index": 4,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "墨の余白",
+      "oldSample": "./sample-271.jpg",
+      "file": "japan-previews-v21/place-02-06.jpg",
+      "sheet": "place-02",
+      "index": 5,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "黒いスタジオ",
+      "oldSample": "./sample-272.jpg",
+      "file": "japan-previews-v21/place-02-07.jpg",
+      "sheet": "place-02",
+      "index": 6,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "白いスタジオ",
+      "oldSample": "./sample-273.jpg",
+      "file": "japan-previews-v21/place-02-08.jpg",
+      "sheet": "place-02",
+      "index": 7,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "金箔の空間",
+      "oldSample": "./sample-274.jpg",
+      "file": "japan-previews-v21/place-02-09.jpg",
+      "sheet": "place-02",
+      "index": 8,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "舞台装置",
+      "oldSample": "./sample-275.jpg",
+      "file": "japan-previews-v21/place-02-10.jpg",
+      "sheet": "place-02",
+      "index": 9,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "紙の箱庭",
+      "oldSample": "./sample-276.jpg",
+      "file": "japan-previews-v21/place-02-11.jpg",
+      "sheet": "place-02",
+      "index": 10,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "place",
+      "value": "抽象的な色面",
+      "oldSample": "./sample-277.jpg",
+      "file": "japan-previews-v21/place-02-12.jpg",
+      "sheet": "place-02",
+      "index": 11,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "まっすぐ立つ",
+      "oldSample": "./pose-001.jpg",
+      "file": "japan-previews-v21/pose-01-01.jpg",
+      "sheet": "pose-01",
+      "index": 0,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "片足に体重を乗せる",
+      "oldSample": "./pose-002.jpg",
+      "file": "japan-previews-v21/pose-01-02.jpg",
+      "sheet": "pose-01",
+      "index": 1,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "腰に手を当てる",
+      "oldSample": "./pose-003.jpg",
+      "file": "japan-previews-v21/pose-01-03.jpg",
+      "sheet": "pose-01",
+      "index": 2,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "腕を組む",
+      "oldSample": "./pose-004.jpg",
+      "file": "japan-previews-v21/pose-01-04.jpg",
+      "sheet": "pose-01",
+      "index": 3,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "両手を広げる",
+      "oldSample": "./pose-005.jpg",
+      "file": "japan-previews-v21/pose-01-05.jpg",
+      "sheet": "pose-01",
+      "index": 4,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "片手を高く掲げる",
+      "oldSample": "./pose-006.jpg",
+      "file": "japan-previews-v21/pose-01-06.jpg",
+      "sheet": "pose-01",
+      "index": 5,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "振り向く",
+      "oldSample": "./pose-007.jpg",
+      "file": "japan-previews-v21/pose-01-07.jpg",
+      "sheet": "pose-01",
+      "index": 6,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "膝をついて誓う",
+      "oldSample": "./pose-008.jpg",
+      "file": "japan-previews-v21/pose-01-08.jpg",
+      "sheet": "pose-01",
+      "index": 7,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "椅子に腰掛ける",
+      "oldSample": "./pose-009.jpg",
+      "file": "japan-previews-v21/pose-01-09.jpg",
+      "sheet": "pose-01",
+      "index": 8,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "横向きに座る",
+      "oldSample": "./pose-010.jpg",
+      "file": "japan-previews-v21/pose-01-10.jpg",
+      "sheet": "pose-01",
+      "index": 9,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "床であぐらをかく",
+      "oldSample": "./pose-011.jpg",
+      "file": "japan-previews-v21/pose-01-11.jpg",
+      "sheet": "pose-01",
+      "index": 10,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "膝を抱えて座る",
+      "oldSample": "./pose-012.jpg",
+      "file": "japan-previews-v21/pose-01-12.jpg",
+      "sheet": "pose-01",
+      "index": 11,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "脚を伸ばして座る",
+      "oldSample": "./pose-013.jpg",
+      "file": "japan-previews-v21/pose-01-13.jpg",
+      "sheet": "pose-01",
+      "index": 12,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "椅子の背にもたれる",
+      "oldSample": "./pose-014.jpg",
+      "file": "japan-previews-v21/pose-01-14.jpg",
+      "sheet": "pose-01",
+      "index": 13,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "片膝を立てて座る",
+      "oldSample": "./pose-015.jpg",
+      "file": "japan-previews-v21/pose-01-15.jpg",
+      "sheet": "pose-01",
+      "index": 14,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "低くしゃがむ",
+      "oldSample": "./pose-016.jpg",
+      "file": "japan-previews-v21/pose-01-16.jpg",
+      "sheet": "pose-01",
+      "index": 15,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "片膝をつく",
+      "oldSample": "./pose-017.jpg",
+      "file": "japan-previews-v21/pose-02-01.jpg",
+      "sheet": "pose-02",
+      "index": 0,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "両膝でひざまずく",
+      "oldSample": "./pose-018.jpg",
+      "file": "japan-previews-v21/pose-02-02.jpg",
+      "sheet": "pose-02",
+      "index": 1,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "四つん這いで進む",
+      "oldSample": "./pose-019.jpg",
+      "file": "japan-previews-v21/pose-02-03.jpg",
+      "sheet": "pose-02",
+      "index": 2,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "腰を落として構える",
+      "oldSample": "./pose-020.jpg",
+      "file": "japan-previews-v21/pose-02-04.jpg",
+      "sheet": "pose-02",
+      "index": 3,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "仰向けに寝る",
+      "oldSample": "./pose-021.jpg",
+      "file": "japan-previews-v21/pose-02-05.jpg",
+      "sheet": "pose-02",
+      "index": 4,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "横向きに寝る",
+      "oldSample": "./pose-022.jpg",
+      "file": "japan-previews-v21/pose-02-06.jpg",
+      "sheet": "pose-02",
+      "index": 5,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "うつ伏せで頬杖をつく",
+      "oldSample": "./pose-023.jpg",
+      "file": "japan-previews-v21/pose-02-07.jpg",
+      "sheet": "pose-02",
+      "index": 6,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "ソファに横たわる",
+      "oldSample": "./pose-024.jpg",
+      "file": "japan-previews-v21/pose-02-08.jpg",
+      "sheet": "pose-02",
+      "index": 7,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "背伸びをする",
+      "oldSample": "./pose-025.jpg",
+      "file": "japan-previews-v21/pose-02-09.jpg",
+      "sheet": "pose-02",
+      "index": 8,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "ゆっくり歩く",
+      "oldSample": "./pose-026.jpg",
+      "file": "japan-previews-v21/pose-02-10.jpg",
+      "sheet": "pose-02",
+      "index": 9,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "大股で歩く",
+      "oldSample": "./pose-027.jpg",
+      "file": "japan-previews-v21/pose-02-11.jpg",
+      "sheet": "pose-02",
+      "index": 10,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "全力で走る",
+      "oldSample": "./pose-028.jpg",
+      "file": "japan-previews-v21/pose-02-12.jpg",
+      "sheet": "pose-02",
+      "index": 11,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "走り出す",
+      "oldSample": "./pose-029.jpg",
+      "file": "japan-previews-v21/pose-02-13.jpg",
+      "sheet": "pose-02",
+      "index": 12,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "振り向きながら走る",
+      "oldSample": "./pose-030.jpg",
+      "file": "japan-previews-v21/pose-02-14.jpg",
+      "sheet": "pose-02",
+      "index": 13,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "両足でジャンプ",
+      "oldSample": "./pose-031.jpg",
+      "file": "japan-previews-v21/pose-02-15.jpg",
+      "sheet": "pose-02",
+      "index": 14,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "片膝を曲げて跳ぶ",
+      "oldSample": "./pose-032.jpg",
+      "file": "japan-previews-v21/pose-02-16.jpg",
+      "sheet": "pose-02",
+      "index": 15,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "空中で回転",
+      "oldSample": "./pose-033.jpg",
+      "file": "japan-previews-v21/pose-03-01.jpg",
+      "sheet": "pose-03",
+      "index": 0,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "着地する",
+      "oldSample": "./pose-034.jpg",
+      "file": "japan-previews-v21/pose-03-02.jpg",
+      "sheet": "pose-03",
+      "index": 1,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "浮遊する",
+      "oldSample": "./pose-035.jpg",
+      "file": "japan-previews-v21/pose-03-03.jpg",
+      "sheet": "pose-03",
+      "index": 2,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "片手を差し出す",
+      "oldSample": "./pose-036.jpg",
+      "file": "japan-previews-v21/pose-03-04.jpg",
+      "sheet": "pose-03",
+      "index": 3,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "両手を差し出す",
+      "oldSample": "./pose-037.jpg",
+      "file": "japan-previews-v21/pose-03-05.jpg",
+      "sheet": "pose-03",
+      "index": 4,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "頬に手を添える",
+      "oldSample": "./pose-039.jpg",
+      "file": "japan-previews-v21/pose-03-06.jpg",
+      "sheet": "pose-03",
+      "index": 5,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "口元に指を添える",
+      "oldSample": "./pose-040.jpg",
+      "file": "japan-previews-v21/pose-03-07.jpg",
+      "sheet": "pose-03",
+      "index": 6,
+      "pixels": {
+        "width": 314,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "花束を抱える",
+      "oldSample": "./pose-042.jpg",
+      "file": "japan-previews-v21/pose-03-08.jpg",
+      "sheet": "pose-03",
+      "index": 7,
+      "pixels": {
+        "width": 313,
+        "height": 313
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "楽器を演奏する",
+      "oldSample": "./pose-044.jpg",
+      "file": "japan-previews-v21/pose-03-09.jpg",
+      "sheet": "pose-03",
+      "index": 8,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "くるりと踊る",
+      "oldSample": "./pose-046.jpg",
+      "file": "japan-previews-v21/pose-03-10.jpg",
+      "sheet": "pose-03",
+      "index": 9,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "バレエのアラベスク",
+      "oldSample": "./pose-047.jpg",
+      "file": "japan-previews-v21/pose-03-11.jpg",
+      "sheet": "pose-03",
+      "index": 10,
+      "pixels": {
+        "width": 314,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "pose",
+      "value": "壁にもたれる",
+      "oldSample": "./pose-048.jpg",
+      "file": "japan-previews-v21/pose-03-12.jpg",
+      "sheet": "pose-03",
+      "index": 11,
+      "pixels": {
+        "width": 313,
+        "height": 314
+      },
+      "status": "generated and assigned; atlas grid reviewed; each option is not claimed as a separate full-size render acceptance"
+    },
+    {
+      "key": "palette",
+      "value": "漆黒 × 琥珀 × 象牙",
+      "file": "japan-previews-v21/palette-01.svg",
+      "colors": [
+        "#100f14",
+        "#ca862a",
+        "#efe4d2"
+      ],
+      "ratios": [
+        60,
+        30,
+        10
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "深紅 × 黒 × 古金",
+      "file": "japan-previews-v21/palette-02.svg",
+      "colors": [
+        "#9f213b",
+        "#111018",
+        "#ac9055"
+      ],
+      "ratios": [
+        40,
+        50,
+        10
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "群青 × 月白 × 銀",
+      "file": "japan-previews-v21/palette-03.svg",
+      "colors": [
+        "#202f78",
+        "#edf0e9",
+        "#b6c3cc"
+      ],
+      "ratios": [
+        60,
+        30,
+        10
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "紫 × 黒 × 酸性グリーン",
+      "file": "japan-previews-v21/palette-04.svg",
+      "colors": [
+        "#8133a9",
+        "#130f18",
+        "#b7ee38"
+      ],
+      "ratios": [
+        30,
+        60,
+        10
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "藍墨 × 朱 × 和紙の白",
+      "file": "japan-previews-v21/palette-05.svg",
+      "colors": [
+        "#202f40",
+        "#d04932",
+        "#f4ead6"
+      ],
+      "ratios": [
+        40,
+        10,
+        50
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "桃色 × 墨黒 × 真珠",
+      "file": "japan-previews-v21/palette-06.svg",
+      "colors": [
+        "#e6a9bc",
+        "#24212b",
+        "#f1e8e0"
+      ],
+      "ratios": [
+        40,
+        40,
+        20
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "翡翠 × 銅 × 濃紺",
+      "file": "japan-previews-v21/palette-07.svg",
+      "colors": [
+        "#289c7a",
+        "#af7651",
+        "#172844"
+      ],
+      "ratios": [
+        35,
+        15,
+        50
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "白 × 白銀 × 氷青",
+      "file": "japan-previews-v21/palette-08.svg",
+      "colors": [
+        "#fbfcfd",
+        "#b7c9da",
+        "#a9d8e9"
+      ],
+      "ratios": [
+        60,
+        10,
+        30
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "秋色のブラウン × 生成り",
+      "file": "japan-previews-v21/palette-09.svg",
+      "colors": [
+        "#6a452e",
+        "#ece1c4"
+      ],
+      "ratios": [
+        65,
+        35
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "退色したフィルムカラー",
+      "file": "japan-previews-v21/palette-10.svg",
+      "colors": [
+        "#dbb994",
+        "#497c7a"
+      ],
+      "ratios": [
+        60,
+        40
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "ネオンピンク × シアン",
+      "file": "japan-previews-v21/palette-11.svg",
+      "colors": [
+        "#ff44a8",
+        "#00d9e5",
+        "#18152e"
+      ],
+      "ratios": [
+        25,
+        20,
+        55
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "原色のポップカラー",
+      "file": "japan-previews-v21/palette-12.svg",
+      "colors": [
+        "#e73439",
+        "#264cb2",
+        "#f2c626",
+        "#f3f0e2",
+        "#1b1b24"
+      ],
+      "ratios": [
+        45,
+        20,
+        10,
+        20,
+        5
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "墨一色",
+      "file": "japan-previews-v21/palette-13.svg",
+      "colors": [
+        "#161616",
+        "#f7f7f7",
+        "#838383"
+      ],
+      "ratios": [
+        40,
+        35,
+        25
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "モノクローム",
+      "file": "japan-previews-v21/palette-14.svg",
+      "colors": [
+        "#161616",
+        "#f7f7f7",
+        "#838383"
+      ],
+      "ratios": [
+        40,
+        35,
+        25
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "黒と白と朱の三色",
+      "file": "japan-previews-v21/palette-15.svg",
+      "colors": [
+        "#161616",
+        "#f7f7f7",
+        "#d94c39"
+      ],
+      "ratios": [
+        45,
+        45,
+        10
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "金と黒の二色",
+      "file": "japan-previews-v21/palette-16.svg",
+      "colors": [
+        "#c2a35b",
+        "#141218"
+      ],
+      "ratios": [
+        30,
+        70
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "セピア",
+      "file": "japan-previews-v21/palette-17.svg",
+      "colors": [
+        "#422c20",
+        "#94735b",
+        "#ebd7b6"
+      ],
+      "ratios": [
+        35,
+        40,
+        25
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "群青 × 菫 × 星白",
+      "file": "japan-previews-v21/palette-18.svg",
+      "colors": [
+        "#121744",
+        "#823ae2",
+        "#edf4ff"
+      ],
+      "ratios": [
+        60,
+        30,
+        10
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "青緑 × 水色 × 銀",
+      "file": "japan-previews-v21/palette-19.svg",
+      "colors": [
+        "#065a67",
+        "#76d8e5",
+        "#ddeaf2"
+      ],
+      "ratios": [
+        60,
+        30,
+        10
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "朱赤 × 琥珀 × 金",
+      "file": "japan-previews-v21/palette-20.svg",
+      "colors": [
+        "#9d291b",
+        "#f9a733",
+        "#ffe09c"
+      ],
+      "ratios": [
+        50,
+        40,
+        10
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "夜紺 × 翡翠 × 蛍光緑",
+      "file": "japan-previews-v21/palette-21.svg",
+      "colors": [
+        "#111b35",
+        "#0b9f7d",
+        "#adf7a3"
+      ],
+      "ratios": [
+        65,
+        25,
+        10
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "黒 × シアン × ネオン桃",
+      "file": "japan-previews-v21/palette-22.svg",
+      "colors": [
+        "#0b0918",
+        "#00d9f5",
+        "#ff40a8"
+      ],
+      "ratios": [
+        60,
+        25,
+        15
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "薄紫 × ミント × 氷銀",
+      "file": "japan-previews-v21/palette-23.svg",
+      "colors": [
+        "#8772c7",
+        "#9ce1c9",
+        "#e5f2fa"
+      ],
+      "ratios": [
+        50,
+        35,
+        15
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "真珠白 × 桜 × 玉虫色",
+      "file": "japan-previews-v21/palette-24.svg",
+      "colors": [
+        "#f2ede5",
+        "#f0bcd6",
+        "#86c9bd"
+      ],
+      "ratios": [
+        60,
+        25,
+        15
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "墨黒 × 溶岩朱 × 火花金",
+      "file": "japan-previews-v21/palette-25.svg",
+      "colors": [
+        "#130f13",
+        "#e74a25",
+        "#ffcf64"
+      ],
+      "ratios": [
+        65,
+        25,
+        10
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "桃 × ミルク × 淡金",
+      "file": "japan-previews-v21/palette-26.svg",
+      "colors": [
+        "#f0b5af",
+        "#fff0dc",
+        "#dcbc87"
+      ],
+      "ratios": [
+        45,
+        45,
+        10
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "くすみ薔薇 × セージ × 象牙",
+      "file": "japan-previews-v21/palette-27.svg",
+      "colors": [
+        "#b88491",
+        "#8a9c84",
+        "#ede1cf"
+      ],
+      "ratios": [
+        40,
+        30,
+        30
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "ラベンダー × 粉青 × ミルク",
+      "file": "japan-previews-v21/palette-28.svg",
+      "colors": [
+        "#b8a5d5",
+        "#b0c9e5",
+        "#faf0e7"
+      ],
+      "ratios": [
+        40,
+        35,
+        25
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "珊瑚 × アクア × 白",
+      "file": "japan-previews-v21/palette-29.svg",
+      "colors": [
+        "#f18b7e",
+        "#76d2d3",
+        "#faf4e4"
+      ],
+      "ratios": [
+        35,
+        45,
+        20
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "杏 × モーヴ × 夕焼け金",
+      "file": "japan-previews-v21/palette-30.svg",
+      "colors": [
+        "#e99e6c",
+        "#8c687e",
+        "#f7d487"
+      ],
+      "ratios": [
+        45,
+        40,
+        15
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "白磁 × 霧青 × 淡金",
+      "file": "japan-previews-v21/palette-31.svg",
+      "colors": [
+        "#edece5",
+        "#adc3d5",
+        "#cbb684"
+      ],
+      "ratios": [
+        65,
+        25,
+        10
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "くすみ青 × 炭 × 霧白",
+      "file": "japan-previews-v21/palette-32.svg",
+      "colors": [
+        "#728b9f",
+        "#303741",
+        "#dce1e3"
+      ],
+      "ratios": [
+        50,
+        30,
+        20
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "モーヴ × モカ × オートミール",
+      "file": "japan-previews-v21/palette-33.svg",
+      "colors": [
+        "#ad8a96",
+        "#7b5d52",
+        "#ded2b9"
+      ],
+      "ratios": [
+        35,
+        30,
+        35
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "群青 × 酸性黄 × 白",
+      "file": "japan-previews-v21/palette-34.svg",
+      "colors": [
+        "#193abc",
+        "#e8ed19",
+        "#fffbe7"
+      ],
+      "ratios": [
+        65,
+        25,
+        10
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "翡翠 × マゼンタ × 黒",
+      "file": "japan-previews-v21/palette-35.svg",
+      "colors": [
+        "#058865",
+        "#d62692",
+        "#17151c"
+      ],
+      "ratios": [
+        45,
+        30,
+        25
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "橙 × ターコイズ × コバルト",
+      "file": "japan-previews-v21/palette-36.svg",
+      "colors": [
+        "#ff8e22",
+        "#18bcba",
+        "#244ea4"
+      ],
+      "ratios": [
+        40,
+        40,
+        20
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "深紅 × 氷青 × 黒",
+      "file": "japan-previews-v21/palette-37.svg",
+      "colors": [
+        "#a92343",
+        "#a6e9f2",
+        "#111b27"
+      ],
+      "ratios": [
+        35,
+        25,
+        40
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "菫 × マンゴー × 白",
+      "file": "japan-previews-v21/palette-38.svg",
+      "colors": [
+        "#7541b7",
+        "#ffba45",
+        "#fff2e4"
+      ],
+      "ratios": [
+        50,
+        35,
+        15
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "王青 × 銅 × 生成り",
+      "file": "japan-previews-v21/palette-39.svg",
+      "colors": [
+        "#204997",
+        "#b97048",
+        "#eadcc3"
+      ],
+      "ratios": [
+        55,
+        25,
+        20
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "トマト赤 × ガム桃 × クリーム",
+      "file": "japan-previews-v21/palette-40.svg",
+      "colors": [
+        "#e84733",
+        "#e798b9",
+        "#ffe9bd"
+      ],
+      "ratios": [
+        40,
+        35,
+        25
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "レモン × ライム × 炭黒",
+      "file": "japan-previews-v21/palette-41.svg",
+      "colors": [
+        "#f1e34d",
+        "#92cf38",
+        "#24242b"
+      ],
+      "ratios": [
+        15,
+        25,
+        60
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "サフラン × 藍 × 和紙白",
+      "file": "japan-previews-v21/palette-42.svg",
+      "colors": [
+        "#d7a02f",
+        "#26366c",
+        "#eee2c9"
+      ],
+      "ratios": [
+        35,
+        40,
+        25
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "朱 × 青磁 × 煤黒",
+      "file": "japan-previews-v21/palette-43.svg",
+      "colors": [
+        "#c94331",
+        "#94b8a1",
+        "#292423"
+      ],
+      "ratios": [
+        30,
+        45,
+        25
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "葡萄 × 羊皮紙 × 古金",
+      "file": "japan-previews-v21/palette-44.svg",
+      "colors": [
+        "#682f4b",
+        "#dec7a3",
+        "#ae904b"
+      ],
+      "ratios": [
+        45,
+        40,
+        15
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "紺 × 淡金 × 白",
+      "file": "japan-previews-v21/palette-45.svg",
+      "colors": [
+        "#152e4e",
+        "#c9ab60",
+        "#f4edda"
+      ],
+      "ratios": [
+        60,
+        25,
+        15
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "くすみシアン × 錆 × 象牙",
+      "file": "japan-previews-v21/palette-46.svg",
+      "colors": [
+        "#569ca0",
+        "#b56646",
+        "#efe0c5"
+      ],
+      "ratios": [
+        40,
+        35,
+        25
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "瓶緑 × 黄土 × 革茶",
+      "file": "japan-previews-v21/palette-47.svg",
+      "colors": [
+        "#28584b",
+        "#b38d36",
+        "#a27452"
+      ],
+      "ratios": [
+        50,
+        25,
+        25
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "灰 × 銀 × 一点の赤",
+      "file": "japan-previews-v21/palette-48.svg",
+      "colors": [
+        "#3d414b",
+        "#cbd0d5",
+        "#ee253e"
+      ],
+      "ratios": [
+        60,
+        35,
+        5
+      ],
+      "status": "exact native palette allocation preview"
+    },
+    {
+      "key": "palette",
+      "value": "焦茶 × シアン光",
+      "file": "japan-previews-v21/palette-49.svg",
+      "colors": [
+        "#392725",
+        "#42bccd",
+        "#a48668"
+      ],
+      "ratios": [
+        75,
+        25
+      ],
+      "status": "exact native palette allocation preview"
+    }
+  ],
+  "individualRepairs": 2
+}

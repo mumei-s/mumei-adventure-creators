@@ -1,0 +1,59 @@
+{
+  "scope": "Newspaper and weekly native-image handoff evidence; tool wall time includes queue. No all-option generated-image acceptance or ChatGPT 5.5 certification.",
+  "rejectedInitialFullHandoff": [
+    {
+      "case": "newspaper",
+      "seconds": 77.17,
+      "result": "unrelated man using laptop; rejected, not used as preview"
+    },
+    {
+      "case": "weekly",
+      "seconds": 50.387,
+      "result": "unrelated anime remote meeting; rejected, not used as preview"
+    }
+  ],
+  "directDrawingBriefs": [
+    {
+      "case": "newspaper",
+      "seconds": 77.873,
+      "result": "Japanese newspaper and crystal torii; added unrequested date/issue and insets"
+    },
+    {
+      "case": "weekly",
+      "seconds": 60.822,
+      "result": "Japanese weekly cover and requested adult model/mask/dress"
+    }
+  ],
+  "siteDrawingInput": [
+    {
+      "case": "newspaper",
+      "characters": 9112,
+      "seconds": 59.924,
+      "result": "Japanese newspaper, main crystal torii scene, correct core headings and columns; unsolicited inset pictures and imperfect fine text remain",
+      "preview": "japan-newspaper-v21.jpg"
+    },
+    {
+      "case": "weekly",
+      "characters": 7532,
+      "seconds": 70.413,
+      "result": "Japanese weekly cover, requested pose/mask/dress/palette and headings; primary image successful; not every recipe detail certified",
+      "preview": "japan-weekly-v21.jpg"
+    }
+  ],
+  "previewRepairs": [
+    {
+      "case": "crystal transmission tile",
+      "seconds": 94.073,
+      "result": "missing atlas cell replaced by individually generated Japanese scene"
+    },
+    {
+      "case": "hologram tile",
+      "seconds": 152.751,
+      "result": "missing atlas cell replaced by individually generated Japanese scene"
+    }
+  ],
+  "withinOneMinuteStable": false,
+  "fullOutputShownAsNativeChatImage": true,
+  "initialUnrelatedOutputCause": "not proven; display/control instructions now explicitly separated from drawing input",
+  "siteDrawingInputOrder": "Final existing layout contract promoted ahead of the same medium/palette/identity constraints after these test renders; no recipe clauses removed."
+}

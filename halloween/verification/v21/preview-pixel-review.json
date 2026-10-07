@@ -1,0 +1,2456 @@
+{
+  "scope": "350 assigned artwork tiles; low-variance/empty image detection. This does not validate style, identity or exact pose.",
+  "minimumDeviation": 25.93,
+  "rows": [
+    {
+      "key": "medium",
+      "value": "実写風フィルム写真",
+      "file": "japan-previews-v21/medium-01-01.jpg",
+      "deviation": 55.29,
+      "entropy": 7.65
+    },
+    {
+      "key": "medium",
+      "value": "実写風スタジオ写真",
+      "file": "japan-previews-v21/medium-01-02.jpg",
+      "deviation": 47.75,
+      "entropy": 7.42
+    },
+    {
+      "key": "medium",
+      "value": "実写風街角スナップ",
+      "file": "japan-previews-v21/medium-01-03.jpg",
+      "deviation": 72.02,
+      "entropy": 7.47
+    },
+    {
+      "key": "medium",
+      "value": "実写風シネマティック写真",
+      "file": "japan-previews-v21/medium-01-04.jpg",
+      "deviation": 44.93,
+      "entropy": 7.07
+    },
+    {
+      "key": "medium",
+      "value": "実写風ファッション写真",
+      "file": "japan-previews-v21/medium-01-05.jpg",
+      "deviation": 60.63,
+      "entropy": 7.57
+    },
+    {
+      "key": "medium",
+      "value": "実写風モノクロ銀塩写真",
+      "file": "japan-previews-v21/medium-01-06.jpg",
+      "deviation": 66.41,
+      "entropy": 7.28
+    },
+    {
+      "key": "medium",
+      "value": "実写風湿板写真",
+      "file": "japan-previews-v21/medium-01-07.jpg",
+      "deviation": 33.93,
+      "entropy": 7.03
+    },
+    {
+      "key": "medium",
+      "value": "実写風ポラロイド",
+      "file": "japan-previews-v21/medium-01-08.jpg",
+      "deviation": 57.02,
+      "entropy": 7.16
+    },
+    {
+      "key": "medium",
+      "value": "実写風水中写真",
+      "file": "japan-previews-v21/medium-01-09.jpg",
+      "deviation": 52.21,
+      "entropy": 7.44
+    },
+    {
+      "key": "medium",
+      "value": "実写風マクロ写真",
+      "file": "japan-previews-v21/medium-01-10.jpg",
+      "deviation": 49.06,
+      "entropy": 7.4
+    },
+    {
+      "key": "medium",
+      "value": "実写風長時間露光",
+      "file": "japan-previews-v21/medium-01-11.jpg",
+      "deviation": 50.71,
+      "entropy": 7.07
+    },
+    {
+      "key": "medium",
+      "value": "実写風インスタントカメラ",
+      "file": "japan-previews-v21/medium-01-12.jpg",
+      "deviation": 72.76,
+      "entropy": 7.11
+    },
+    {
+      "key": "medium",
+      "value": "手描きアニメのセル画",
+      "file": "japan-previews-v21/medium-01-13.jpg",
+      "deviation": 62.04,
+      "entropy": 6.94
+    },
+    {
+      "key": "medium",
+      "value": "現代アニメの一枚絵",
+      "file": "japan-previews-v21/medium-01-14.jpg",
+      "deviation": 46.19,
+      "entropy": 7.24
+    },
+    {
+      "key": "medium",
+      "value": "90年代アニメのセル画",
+      "file": "japan-previews-v21/medium-01-15.jpg",
+      "deviation": 55.93,
+      "entropy": 7.15
+    },
+    {
+      "key": "medium",
+      "value": "80年代OVA",
+      "file": "japan-previews-v21/medium-01-16.jpg",
+      "deviation": 41.21,
+      "entropy": 6.08
+    },
+    {
+      "key": "medium",
+      "value": "少女漫画の扉絵",
+      "file": "japan-previews-v21/medium-02-01.jpg",
+      "deviation": 51.36,
+      "entropy": 6.57
+    },
+    {
+      "key": "medium",
+      "value": "少年漫画のカラーページ",
+      "file": "japan-previews-v21/medium-02-02.jpg",
+      "deviation": 74.82,
+      "entropy": 7.78
+    },
+    {
+      "key": "medium",
+      "value": "青年漫画のペン画",
+      "file": "japan-previews-v21/medium-02-03.jpg",
+      "deviation": 74.32,
+      "entropy": 7.82
+    },
+    {
+      "key": "medium",
+      "value": "モノクロ漫画",
+      "file": "japan-previews-v21/medium-02-04.jpg",
+      "deviation": 75.86,
+      "entropy": 7.9
+    },
+    {
+      "key": "medium",
+      "value": "アメコミのインク画",
+      "file": "japan-previews-v21/medium-02-05.jpg",
+      "deviation": 74.49,
+      "entropy": 7.49
+    },
+    {
+      "key": "medium",
+      "value": "バンド・デシネ",
+      "file": "japan-previews-v21/medium-02-06.jpg",
+      "deviation": 62.91,
+      "entropy": 7.61
+    },
+    {
+      "key": "medium",
+      "value": "ウェブトゥーン",
+      "file": "japan-previews-v21/medium-02-07.jpg",
+      "deviation": 46.43,
+      "entropy": 7.24
+    },
+    {
+      "key": "medium",
+      "value": "劇場アニメの背景美術",
+      "file": "japan-previews-v21/medium-02-08.jpg",
+      "deviation": 58.35,
+      "entropy": 7.64
+    },
+    {
+      "key": "medium",
+      "value": "ちびキャラ",
+      "file": "japan-previews-v21/medium-02-09.jpg",
+      "deviation": 60.64,
+      "entropy": 7.54
+    },
+    {
+      "key": "medium",
+      "value": "絵本イラスト",
+      "file": "japan-previews-v21/medium-02-10.jpg",
+      "deviation": 52.55,
+      "entropy": 7.38
+    },
+    {
+      "key": "medium",
+      "value": "水墨画",
+      "file": "japan-previews-v21/medium-02-11.jpg",
+      "deviation": 62.28,
+      "entropy": 6.92
+    },
+    {
+      "key": "medium",
+      "value": "墨彩画",
+      "file": "japan-previews-v21/medium-02-12.jpg",
+      "deviation": 59.92,
+      "entropy": 7.21
+    },
+    {
+      "key": "medium",
+      "value": "日本画・岩絵具",
+      "file": "japan-previews-v21/medium-02-13.jpg",
+      "deviation": 42.36,
+      "entropy": 7.35
+    },
+    {
+      "key": "medium",
+      "value": "浮世絵木版画",
+      "file": "japan-previews-v21/medium-02-14.jpg",
+      "deviation": 53.61,
+      "entropy": 7.56
+    },
+    {
+      "key": "medium",
+      "value": "大和絵",
+      "file": "japan-previews-v21/medium-02-15.jpg",
+      "deviation": 38.54,
+      "entropy": 7.11
+    },
+    {
+      "key": "medium",
+      "value": "琳派の金箔表現",
+      "file": "japan-previews-v21/medium-02-16.jpg",
+      "deviation": 52.98,
+      "entropy": 7.26
+    },
+    {
+      "key": "medium",
+      "value": "南画",
+      "file": "japan-previews-v21/medium-03-01.jpg",
+      "deviation": 60.64,
+      "entropy": 7.61
+    },
+    {
+      "key": "medium",
+      "value": "禅画",
+      "file": "japan-previews-v21/medium-03-02.jpg",
+      "deviation": 53.5,
+      "entropy": 5.11
+    },
+    {
+      "key": "medium",
+      "value": "書と墨の抽象",
+      "file": "japan-previews-v21/medium-03-03.jpg",
+      "deviation": 76.39,
+      "entropy": 6.87
+    },
+    {
+      "key": "medium",
+      "value": "中国工筆画",
+      "file": "japan-previews-v21/medium-03-04.jpg",
+      "deviation": 39.88,
+      "entropy": 6.82
+    },
+    {
+      "key": "medium",
+      "value": "韓国民画",
+      "file": "japan-previews-v21/medium-03-05.jpg",
+      "deviation": 54.82,
+      "entropy": 7.11
+    },
+    {
+      "key": "medium",
+      "value": "和紙ちぎり絵",
+      "file": "japan-previews-v21/medium-03-06.jpg",
+      "deviation": 63.19,
+      "entropy": 7.58
+    },
+    {
+      "key": "medium",
+      "value": "油彩・厚塗り",
+      "file": "japan-previews-v21/medium-03-07.jpg",
+      "deviation": 57.75,
+      "entropy": 7.66
+    },
+    {
+      "key": "medium",
+      "value": "油彩・薄塗り",
+      "file": "japan-previews-v21/medium-03-08.jpg",
+      "deviation": 49.78,
+      "entropy": 7.45
+    },
+    {
+      "key": "medium",
+      "value": "透明水彩",
+      "file": "japan-previews-v21/medium-03-09.jpg",
+      "deviation": 51.62,
+      "entropy": 7.34
+    },
+    {
+      "key": "medium",
+      "value": "不透明水彩・ガッシュ",
+      "file": "japan-previews-v21/medium-03-10.jpg",
+      "deviation": 60.56,
+      "entropy": 7.64
+    },
+    {
+      "key": "medium",
+      "value": "アクリル画",
+      "file": "japan-previews-v21/medium-03-11.jpg",
+      "deviation": 65.96,
+      "entropy": 7.66
+    },
+    {
+      "key": "medium",
+      "value": "テンペラ画",
+      "file": "japan-previews-v21/medium-03-12.jpg",
+      "deviation": 37.11,
+      "entropy": 7.01
+    },
+    {
+      "key": "medium",
+      "value": "フレスコ画",
+      "file": "japan-previews-v21/medium-03-13.jpg",
+      "deviation": 33.44,
+      "entropy": 6.96
+    },
+    {
+      "key": "medium",
+      "value": "パステル画",
+      "file": "japan-previews-v21/medium-03-14.jpg",
+      "deviation": 45,
+      "entropy": 7.41
+    },
+    {
+      "key": "medium",
+      "value": "色鉛筆画",
+      "file": "japan-previews-v21/medium-03-15.jpg",
+      "deviation": 40.53,
+      "entropy": 7.14
+    },
+    {
+      "key": "medium",
+      "value": "鉛筆デッサン",
+      "file": "japan-previews-v21/medium-03-16.jpg",
+      "deviation": 46.59,
+      "entropy": 7.31
+    },
+    {
+      "key": "medium",
+      "value": "木炭画",
+      "file": "japan-previews-v21/medium-04-01.jpg",
+      "deviation": 58.79,
+      "entropy": 7.49
+    },
+    {
+      "key": "medium",
+      "value": "ボールペン画",
+      "file": "japan-previews-v21/medium-04-02.jpg",
+      "deviation": 54.74,
+      "entropy": 7.5
+    },
+    {
+      "key": "medium",
+      "value": "線画",
+      "file": "japan-previews-v21/medium-04-03.jpg",
+      "deviation": 47.55,
+      "entropy": 6.81
+    },
+    {
+      "key": "medium",
+      "value": "点描画",
+      "file": "japan-previews-v21/medium-04-04.jpg",
+      "deviation": 60.51,
+      "entropy": 7.44
+    },
+    {
+      "key": "medium",
+      "value": "スクラッチボード",
+      "file": "japan-previews-v21/medium-04-05.jpg",
+      "deviation": 64.03,
+      "entropy": 6.88
+    },
+    {
+      "key": "medium",
+      "value": "銅版画・エッチング",
+      "file": "japan-previews-v21/medium-04-06.jpg",
+      "deviation": 60.22,
+      "entropy": 7.68
+    },
+    {
+      "key": "medium",
+      "value": "リノカット",
+      "file": "japan-previews-v21/medium-04-07.jpg",
+      "deviation": 73.31,
+      "entropy": 7.26
+    },
+    {
+      "key": "medium",
+      "value": "木版画",
+      "file": "japan-previews-v21/medium-04-08.jpg",
+      "deviation": 55.68,
+      "entropy": 7.53
+    },
+    {
+      "key": "medium",
+      "value": "シルクスクリーン",
+      "file": "japan-previews-v21/medium-04-09.jpg",
+      "deviation": 67.04,
+      "entropy": 6.3
+    },
+    {
+      "key": "medium",
+      "value": "リソグラフ",
+      "file": "japan-previews-v21/medium-04-10.jpg",
+      "deviation": 45.66,
+      "entropy": 7.22
+    },
+    {
+      "key": "medium",
+      "value": "レタープレス",
+      "file": "japan-previews-v21/medium-04-11.jpg",
+      "deviation": 62.42,
+      "entropy": 7.08
+    },
+    {
+      "key": "medium",
+      "value": "サイアノタイプ",
+      "file": "japan-previews-v21/medium-04-12.jpg",
+      "deviation": 52.93,
+      "entropy": 6.93
+    },
+    {
+      "key": "medium",
+      "value": "切り絵",
+      "file": "japan-previews-v21/medium-04-13.jpg",
+      "deviation": 84.55,
+      "entropy": 6.37
+    },
+    {
+      "key": "medium",
+      "value": "紙のコラージュ",
+      "file": "japan-previews-v21/medium-04-14.jpg",
+      "deviation": 56.48,
+      "entropy": 7.44
+    },
+    {
+      "key": "medium",
+      "value": "写真コラージュ",
+      "file": "japan-previews-v21/medium-04-15.jpg",
+      "deviation": 64.99,
+      "entropy": 7.8
+    },
+    {
+      "key": "medium",
+      "value": "折り紙の立体",
+      "file": "japan-previews-v21/medium-04-16.jpg",
+      "deviation": 55.02,
+      "entropy": 7.54
+    },
+    {
+      "key": "medium",
+      "value": "刺繍・織物",
+      "file": "japan-previews-v21/medium-05-01.jpg",
+      "deviation": 63.42,
+      "entropy": 7.77
+    },
+    {
+      "key": "medium",
+      "value": "タペストリー",
+      "file": "japan-previews-v21/medium-05-02.jpg",
+      "deviation": 54.03,
+      "entropy": 7.61
+    },
+    {
+      "key": "medium",
+      "value": "ステンドグラス",
+      "file": "japan-previews-v21/medium-05-03.jpg",
+      "deviation": 73.37,
+      "entropy": 7.59
+    },
+    {
+      "key": "medium",
+      "value": "モザイク",
+      "file": "japan-previews-v21/medium-05-04.jpg",
+      "deviation": 64.25,
+      "entropy": 7.76
+    },
+    {
+      "key": "medium",
+      "value": "陶器・釉薬",
+      "file": "japan-previews-v21/medium-05-05.jpg",
+      "deviation": 55.8,
+      "entropy": 7.62
+    },
+    {
+      "key": "medium",
+      "value": "漆と螺鈿",
+      "file": "japan-previews-v21/medium-05-06.jpg",
+      "deviation": 49,
+      "entropy": 6.93
+    },
+    {
+      "key": "medium",
+      "value": "クレイアート",
+      "file": "japan-previews-v21/medium-05-07.jpg",
+      "deviation": 44.88,
+      "entropy": 7.39
+    },
+    {
+      "key": "medium",
+      "value": "ストップモーションの人形",
+      "file": "japan-previews-v21/medium-05-08.jpg",
+      "deviation": 47.65,
+      "entropy": 7.4
+    },
+    {
+      "key": "medium",
+      "value": "フェルトの造形",
+      "file": "japan-previews-v21/medium-05-09.jpg",
+      "deviation": 58.3,
+      "entropy": 7.73
+    },
+    {
+      "key": "medium",
+      "value": "精密ミニチュア",
+      "file": "japan-previews-v21/medium-05-10.jpg",
+      "deviation": 50.77,
+      "entropy": 7.51
+    },
+    {
+      "key": "medium",
+      "value": "ジオラマ",
+      "file": "japan-previews-v21/medium-05-11.jpg",
+      "deviation": 56.29,
+      "entropy": 7.58
+    },
+    {
+      "key": "medium",
+      "value": "トイフォト風",
+      "file": "japan-previews-v21/medium-05-12.jpg",
+      "deviation": 59.64,
+      "entropy": 7.62
+    },
+    {
+      "key": "medium",
+      "value": "3D彫刻",
+      "file": "japan-previews-v21/medium-05-13.jpg",
+      "deviation": 50.3,
+      "entropy": 7.51
+    },
+    {
+      "key": "medium",
+      "value": "ローポリゴン",
+      "file": "japan-previews-v21/medium-05-14.jpg",
+      "deviation": 55.74,
+      "entropy": 7.56
+    },
+    {
+      "key": "medium",
+      "value": "ボクセル",
+      "file": "japan-previews-v21/medium-05-15.jpg",
+      "deviation": 49.86,
+      "entropy": 7.28
+    },
+    {
+      "key": "medium",
+      "value": "ピクセルアート",
+      "file": "japan-previews-v21/medium-05-16.jpg",
+      "deviation": 59.85,
+      "entropy": 7.55
+    },
+    {
+      "key": "medium",
+      "value": "ベクターグラフィック",
+      "file": "japan-previews-v21/medium-06-01.jpg",
+      "deviation": 74.86,
+      "entropy": 6.88
+    },
+    {
+      "key": "medium",
+      "value": "フラットイラスト",
+      "file": "japan-previews-v21/medium-06-02.jpg",
+      "deviation": 61.97,
+      "entropy": 7.32
+    },
+    {
+      "key": "medium",
+      "value": "インクとデジタル彩色",
+      "file": "japan-previews-v21/medium-06-03.jpg",
+      "deviation": 68.57,
+      "entropy": 7.88
+    },
+    {
+      "key": "medium",
+      "value": "コンセプトアート",
+      "file": "japan-previews-v21/medium-06-04.jpg",
+      "deviation": 63.6,
+      "entropy": 7.7
+    },
+    {
+      "key": "medium",
+      "value": "マットペインティング",
+      "file": "japan-previews-v21/medium-06-05.jpg",
+      "deviation": 66.41,
+      "entropy": 7.78
+    },
+    {
+      "key": "medium",
+      "value": "グリッチアート",
+      "file": "japan-previews-v21/medium-06-06.jpg",
+      "deviation": 90.49,
+      "entropy": 7.63
+    },
+    {
+      "key": "medium",
+      "value": "フラクタルアート",
+      "file": "japan-previews-v21/medium-06-07.jpg",
+      "deviation": 59.44,
+      "entropy": 7.62
+    },
+    {
+      "key": "medium",
+      "value": "抽象表現",
+      "file": "japan-previews-v21/medium-06-08.jpg",
+      "deviation": 76.13,
+      "entropy": 7.58
+    },
+    {
+      "key": "medium",
+      "value": "ゴシック・ロマン主義",
+      "file": "japan-previews-v21/medium-06-09.jpg",
+      "deviation": 32.58,
+      "entropy": 6.7
+    },
+    {
+      "key": "medium",
+      "value": "バロック",
+      "file": "japan-previews-v21/medium-06-10.jpg",
+      "deviation": 44.96,
+      "entropy": 6.95
+    },
+    {
+      "key": "medium",
+      "value": "象徴主義",
+      "file": "japan-previews-v21/medium-06-11.jpg",
+      "deviation": 46.67,
+      "entropy": 7.49
+    },
+    {
+      "key": "medium",
+      "value": "シュルレアリスム",
+      "file": "japan-previews-v21/medium-06-12.jpg",
+      "deviation": 55.8,
+      "entropy": 7.6
+    },
+    {
+      "key": "medium",
+      "value": "マジックリアリズム",
+      "file": "japan-previews-v21/medium-06-13.jpg",
+      "deviation": 57.95,
+      "entropy": 7.72
+    },
+    {
+      "key": "medium",
+      "value": "印象主義",
+      "file": "japan-previews-v21/medium-06-14.jpg",
+      "deviation": 48.02,
+      "entropy": 7.4
+    },
+    {
+      "key": "medium",
+      "value": "表現主義",
+      "file": "japan-previews-v21/medium-06-15.jpg",
+      "deviation": 48.75,
+      "entropy": 7.26
+    },
+    {
+      "key": "medium",
+      "value": "キュビスム",
+      "file": "japan-previews-v21/medium-06-16.jpg",
+      "deviation": 59.98,
+      "entropy": 7.7
+    },
+    {
+      "key": "medium",
+      "value": "未来派",
+      "file": "japan-previews-v21/medium-07-01.jpg",
+      "deviation": 64.48,
+      "entropy": 7.79
+    },
+    {
+      "key": "medium",
+      "value": "構成主義",
+      "file": "japan-previews-v21/medium-07-02.jpg",
+      "deviation": 86.48,
+      "entropy": 6.91
+    },
+    {
+      "key": "medium",
+      "value": "ポップアート",
+      "file": "japan-previews-v21/medium-07-03.jpg",
+      "deviation": 81.91,
+      "entropy": 7.46
+    },
+    {
+      "key": "medium",
+      "value": "アウトサイダーアート",
+      "file": "japan-previews-v21/medium-07-04.jpg",
+      "deviation": 79.54,
+      "entropy": 7.66
+    },
+    {
+      "key": "medium",
+      "value": "ミニマリズム",
+      "file": "japan-previews-v21/medium-07-05.jpg",
+      "deviation": 82.84,
+      "entropy": 4.49
+    },
+    {
+      "key": "medium",
+      "value": "サイケデリックアート",
+      "file": "japan-previews-v21/medium-07-06.jpg",
+      "deviation": 57.42,
+      "entropy": 7.61
+    },
+    {
+      "key": "medium",
+      "value": "透明水彩アニメ",
+      "file": "japan-previews-v21/medium-07-07.jpg",
+      "deviation": 52.59,
+      "entropy": 7.4
+    },
+    {
+      "key": "medium",
+      "value": "絵画的シネマアニメ",
+      "file": "japan-previews-v21/medium-07-08.jpg",
+      "deviation": 53.3,
+      "entropy": 7.29
+    },
+    {
+      "key": "medium",
+      "value": "宝石ホログラムアニメ",
+      "file": "japan-previews-v21/medium-07-09.jpg",
+      "deviation": 68.41,
+      "entropy": 7.64
+    },
+    {
+      "key": "medium",
+      "value": "クリスタル透光アニメ",
+      "file": "japan-previews-v21/medium-07-10.jpg",
+      "deviation": 64.89,
+      "entropy": 7.79
+    },
+    {
+      "key": "theme",
+      "value": "月夜の仮面舞踏会",
+      "file": "japan-previews-v21/theme-01-01.jpg",
+      "deviation": 54.12,
+      "entropy": 7.45
+    },
+    {
+      "key": "theme",
+      "value": "真夜中の魔女のアトリエ",
+      "file": "japan-previews-v21/theme-01-02.jpg",
+      "deviation": 51.21,
+      "entropy": 7.43
+    },
+    {
+      "key": "theme",
+      "value": "忘れられた劇場",
+      "file": "japan-previews-v21/theme-01-03.jpg",
+      "deviation": 48.51,
+      "entropy": 7.2
+    },
+    {
+      "key": "theme",
+      "value": "幽霊たちのお茶会",
+      "file": "japan-previews-v21/theme-01-04.jpg",
+      "deviation": 64.68,
+      "entropy": 7.81
+    },
+    {
+      "key": "theme",
+      "value": "秘密の図書館",
+      "file": "japan-previews-v21/theme-01-05.jpg",
+      "deviation": 49.15,
+      "entropy": 7.34
+    },
+    {
+      "key": "theme",
+      "value": "異界に続く駅",
+      "file": "japan-previews-v21/theme-01-06.jpg",
+      "deviation": 54.25,
+      "entropy": 7.32
+    },
+    {
+      "key": "theme",
+      "value": "鏡の向こうの自分",
+      "file": "japan-previews-v21/theme-01-07.jpg",
+      "deviation": 48.62,
+      "entropy": 7.46
+    },
+    {
+      "key": "theme",
+      "value": "星を集める旅",
+      "file": "japan-previews-v21/theme-01-08.jpg",
+      "deviation": 45.98,
+      "entropy": 7.28
+    },
+    {
+      "key": "theme",
+      "value": "眠らない美術館",
+      "file": "japan-previews-v21/theme-01-09.jpg",
+      "deviation": 49.16,
+      "entropy": 7.45
+    },
+    {
+      "key": "theme",
+      "value": "一夜だけの怪奇サーカス",
+      "file": "japan-previews-v21/theme-01-10.jpg",
+      "deviation": 51.33,
+      "entropy": 7.54
+    },
+    {
+      "key": "theme",
+      "value": "吸血鬼の晩餐会",
+      "file": "japan-previews-v21/theme-01-11.jpg",
+      "deviation": 46.94,
+      "entropy": 7.22
+    },
+    {
+      "key": "theme",
+      "value": "死神の休日",
+      "file": "japan-previews-v21/theme-01-12.jpg",
+      "deviation": 60.57,
+      "entropy": 7.68
+    },
+    {
+      "key": "theme",
+      "value": "魔法使いの見習い",
+      "file": "japan-previews-v21/theme-01-13.jpg",
+      "deviation": 57.97,
+      "entropy": 7.58
+    },
+    {
+      "key": "theme",
+      "value": "悪夢からの脱出",
+      "file": "japan-previews-v21/theme-01-14.jpg",
+      "deviation": 44.6,
+      "entropy": 6.69
+    },
+    {
+      "key": "theme",
+      "value": "百鬼夜行",
+      "file": "japan-previews-v21/theme-01-15.jpg",
+      "deviation": 45.82,
+      "entropy": 7.3
+    },
+    {
+      "key": "theme",
+      "value": "妖狐と月の契約",
+      "file": "japan-previews-v21/theme-01-16.jpg",
+      "deviation": 61.03,
+      "entropy": 7.73
+    },
+    {
+      "key": "theme",
+      "value": "海賊船の亡霊",
+      "file": "japan-previews-v21/theme-02-01.jpg",
+      "deviation": 62.82,
+      "entropy": 7.7
+    },
+    {
+      "key": "theme",
+      "value": "宇宙のHalloween",
+      "file": "japan-previews-v21/theme-02-02.jpg",
+      "deviation": 68.33,
+      "entropy": 7.79
+    },
+    {
+      "key": "theme",
+      "value": "機械仕掛けの怪物",
+      "file": "japan-previews-v21/theme-02-03.jpg",
+      "deviation": 58.37,
+      "entropy": 7.68
+    },
+    {
+      "key": "theme",
+      "value": "呪われたオルゴール",
+      "file": "japan-previews-v21/theme-02-04.jpg",
+      "deviation": 51.07,
+      "entropy": 7.41
+    },
+    {
+      "key": "theme",
+      "value": "お菓子の王国",
+      "file": "japan-previews-v21/theme-02-05.jpg",
+      "deviation": 59.66,
+      "entropy": 7.69
+    },
+    {
+      "key": "theme",
+      "value": "カボチャの収穫祭",
+      "file": "japan-previews-v21/theme-02-06.jpg",
+      "deviation": 56.63,
+      "entropy": 7.65
+    },
+    {
+      "key": "theme",
+      "value": "都会の仮装パレード",
+      "file": "japan-previews-v21/theme-02-07.jpg",
+      "deviation": 54.84,
+      "entropy": 7.59
+    },
+    {
+      "key": "theme",
+      "value": "花と骸骨の祝祭",
+      "file": "japan-previews-v21/theme-02-08.jpg",
+      "deviation": 56.25,
+      "entropy": 7.67
+    },
+    {
+      "key": "theme",
+      "value": "墨で描く怪異",
+      "file": "japan-previews-v21/theme-02-09.jpg",
+      "deviation": 66.65,
+      "entropy": 7.78
+    },
+    {
+      "key": "theme",
+      "value": "光と影の寓話",
+      "file": "japan-previews-v21/theme-02-10.jpg",
+      "deviation": 58.01,
+      "entropy": 7.64
+    },
+    {
+      "key": "theme",
+      "value": "記憶の標本室",
+      "file": "japan-previews-v21/theme-02-11.jpg",
+      "deviation": 48.57,
+      "entropy": 7.4
+    },
+    {
+      "key": "theme",
+      "value": "異世界のファッションショー",
+      "file": "japan-previews-v21/theme-02-12.jpg",
+      "deviation": 56.83,
+      "entropy": 7.71
+    },
+    {
+      "key": "theme",
+      "value": "雨上がりの怪談",
+      "file": "japan-previews-v21/theme-02-13.jpg",
+      "deviation": 47.95,
+      "entropy": 7.26
+    },
+    {
+      "key": "theme",
+      "value": "静かなハロウィーン",
+      "file": "japan-previews-v21/theme-02-14.jpg",
+      "deviation": 52.67,
+      "entropy": 7.54
+    },
+    {
+      "key": "costume",
+      "value": "魔女・魔法使い",
+      "file": "japan-previews-v21/costume-01-01.jpg",
+      "deviation": 54.33,
+      "entropy": 7.53
+    },
+    {
+      "key": "costume",
+      "value": "吸血鬼",
+      "file": "japan-previews-v21/costume-01-02.jpg",
+      "deviation": 35.5,
+      "entropy": 6.49
+    },
+    {
+      "key": "costume",
+      "value": "幽霊・亡霊",
+      "file": "japan-previews-v21/costume-01-03.jpg",
+      "deviation": 53.4,
+      "entropy": 7.56
+    },
+    {
+      "key": "costume",
+      "value": "死神",
+      "file": "japan-previews-v21/costume-01-04.jpg",
+      "deviation": 43.34,
+      "entropy": 7.11
+    },
+    {
+      "key": "costume",
+      "value": "黒猫の使い魔",
+      "file": "japan-previews-v21/costume-01-05.jpg",
+      "deviation": 58.85,
+      "entropy": 7.59
+    },
+    {
+      "key": "costume",
+      "value": "カボチャの王族",
+      "file": "japan-previews-v21/costume-01-06.jpg",
+      "deviation": 49.2,
+      "entropy": 7.45
+    },
+    {
+      "key": "costume",
+      "value": "悪魔",
+      "file": "japan-previews-v21/costume-01-07.jpg",
+      "deviation": 40.72,
+      "entropy": 7.05
+    },
+    {
+      "key": "costume",
+      "value": "堕天使",
+      "file": "japan-previews-v21/costume-01-08.jpg",
+      "deviation": 59.83,
+      "entropy": 7.67
+    },
+    {
+      "key": "costume",
+      "value": "人狼",
+      "file": "japan-previews-v21/costume-01-09.jpg",
+      "deviation": 45.6,
+      "entropy": 7.23
+    },
+    {
+      "key": "costume",
+      "value": "ミイラ",
+      "file": "japan-previews-v21/costume-01-10.jpg",
+      "deviation": 53.9,
+      "entropy": 7.57
+    },
+    {
+      "key": "costume",
+      "value": "怪盗",
+      "file": "japan-previews-v21/costume-01-11.jpg",
+      "deviation": 36.89,
+      "entropy": 6.75
+    },
+    {
+      "key": "costume",
+      "value": "海賊",
+      "file": "japan-previews-v21/costume-01-12.jpg",
+      "deviation": 65.45,
+      "entropy": 7.65
+    },
+    {
+      "key": "costume",
+      "value": "サーカスの道化師",
+      "file": "japan-previews-v21/costume-01-13.jpg",
+      "deviation": 52.58,
+      "entropy": 7.57
+    },
+    {
+      "key": "costume",
+      "value": "人形",
+      "file": "japan-previews-v21/costume-01-14.jpg",
+      "deviation": 50.27,
+      "entropy": 7.52
+    },
+    {
+      "key": "costume",
+      "value": "妖狐",
+      "file": "japan-previews-v21/costume-01-15.jpg",
+      "deviation": 56.97,
+      "entropy": 7.63
+    },
+    {
+      "key": "costume",
+      "value": "雪女",
+      "file": "japan-previews-v21/costume-01-16.jpg",
+      "deviation": 50.31,
+      "entropy": 7.43
+    },
+    {
+      "key": "costume",
+      "value": "ゴシック・クチュール",
+      "file": "japan-previews-v21/costume-02-01.jpg",
+      "deviation": 59.75,
+      "entropy": 7.41
+    },
+    {
+      "key": "costume",
+      "value": "ヴィクトリア朝の正装",
+      "file": "japan-previews-v21/costume-02-02.jpg",
+      "deviation": 59.21,
+      "entropy": 7.59
+    },
+    {
+      "key": "costume",
+      "value": "ダーク・ロリータ",
+      "file": "japan-previews-v21/costume-02-03.jpg",
+      "deviation": 55.18,
+      "entropy": 7.56
+    },
+    {
+      "key": "costume",
+      "value": "和装と怪異",
+      "file": "japan-previews-v21/costume-02-04.jpg",
+      "deviation": 56.25,
+      "entropy": 7.68
+    },
+    {
+      "key": "costume",
+      "value": "スチームパンク",
+      "file": "japan-previews-v21/costume-02-05.jpg",
+      "deviation": 60.89,
+      "entropy": 7.64
+    },
+    {
+      "key": "costume",
+      "value": "サイバーパンク",
+      "file": "japan-previews-v21/costume-02-06.jpg",
+      "deviation": 47.99,
+      "entropy": 7.2
+    },
+    {
+      "key": "costume",
+      "value": "ロック・パンク",
+      "file": "japan-previews-v21/costume-02-07.jpg",
+      "deviation": 44.31,
+      "entropy": 7.2
+    },
+    {
+      "key": "costume",
+      "value": "仮面とドレス",
+      "file": "japan-previews-v21/costume-02-08.jpg",
+      "deviation": 55.14,
+      "entropy": 7.7
+    },
+    {
+      "key": "costume",
+      "value": "アンティークの旅装",
+      "file": "japan-previews-v21/costume-02-09.jpg",
+      "deviation": 64.24,
+      "entropy": 7.61
+    },
+    {
+      "key": "costume",
+      "value": "風景を主役にする",
+      "file": "japan-previews-v21/costume-02-10.jpg",
+      "deviation": 55.87,
+      "entropy": 7.59
+    },
+    {
+      "key": "costume",
+      "value": "モチーフだけで構成する",
+      "file": "japan-previews-v21/costume-02-11.jpg",
+      "deviation": 55.85,
+      "entropy": 7.61
+    },
+    {
+      "key": "costume",
+      "value": "紋章・アイコンにする",
+      "file": "japan-previews-v21/costume-02-12.jpg",
+      "deviation": 62.15,
+      "entropy": 6.42
+    },
+    {
+      "key": "costume",
+      "value": "白布のおばけ",
+      "file": "japan-previews-v21/costume-02-13.jpg",
+      "deviation": 51.7,
+      "entropy": 7.4
+    },
+    {
+      "key": "costume",
+      "value": "フランケンシュタインの怪物",
+      "file": "japan-previews-v21/costume-02-14.jpg",
+      "deviation": 44.77,
+      "entropy": 7.21
+    },
+    {
+      "key": "costume",
+      "value": "ゾンビ",
+      "file": "japan-previews-v21/costume-02-15.jpg",
+      "deviation": 36.84,
+      "entropy": 7.04
+    },
+    {
+      "key": "costume",
+      "value": "骸骨・スケルトン",
+      "file": "japan-previews-v21/costume-02-16.jpg",
+      "deviation": 48.1,
+      "entropy": 7.13
+    },
+    {
+      "key": "costume",
+      "value": "メデューサ",
+      "file": "japan-previews-v21/costume-03-01.jpg",
+      "deviation": 54.52,
+      "entropy": 7.66
+    },
+    {
+      "key": "costume",
+      "value": "半魚人",
+      "file": "japan-previews-v21/costume-03-02.jpg",
+      "deviation": 51.69,
+      "entropy": 7.58
+    },
+    {
+      "key": "costume",
+      "value": "透明人間",
+      "file": "japan-previews-v21/costume-03-03.jpg",
+      "deviation": 47.1,
+      "entropy": 7.36
+    },
+    {
+      "key": "costume",
+      "value": "コウモリ人",
+      "file": "japan-previews-v21/costume-03-04.jpg",
+      "deviation": 40.94,
+      "entropy": 7.11
+    },
+    {
+      "key": "costume",
+      "value": "グール",
+      "file": "japan-previews-v21/costume-03-05.jpg",
+      "deviation": 33.06,
+      "entropy": 6.89
+    },
+    {
+      "key": "costume",
+      "value": "ジャック・オー・ランタン",
+      "file": "japan-previews-v21/costume-03-06.jpg",
+      "deviation": 43.11,
+      "entropy": 7.3
+    },
+    {
+      "key": "costume",
+      "value": "亡霊騎士",
+      "file": "japan-previews-v21/costume-03-07.jpg",
+      "deviation": 47.64,
+      "entropy": 7.41
+    },
+    {
+      "key": "costume",
+      "value": "ガーゴイル",
+      "file": "japan-previews-v21/costume-03-08.jpg",
+      "deviation": 44.42,
+      "entropy": 7.27
+    },
+    {
+      "key": "costume",
+      "value": "蜘蛛の怪人",
+      "file": "japan-previews-v21/costume-03-09.jpg",
+      "deviation": 41.28,
+      "entropy": 7.16
+    },
+    {
+      "key": "costume",
+      "value": "悪の科学者",
+      "file": "japan-previews-v21/costume-03-10.jpg",
+      "deviation": 59.71,
+      "entropy": 7.7
+    },
+    {
+      "key": "costume",
+      "value": "幽霊花嫁",
+      "file": "japan-previews-v21/costume-03-11.jpg",
+      "deviation": 49.59,
+      "entropy": 7.5
+    },
+    {
+      "key": "costume",
+      "value": "ホラーピエロ",
+      "file": "japan-previews-v21/costume-03-12.jpg",
+      "deviation": 43.58,
+      "entropy": 7.28
+    },
+    {
+      "key": "costume",
+      "value": "エルフの弓使い",
+      "file": "japan-previews-v21/costume-03-13.jpg",
+      "deviation": 57.72,
+      "entropy": 7.69
+    },
+    {
+      "key": "costume",
+      "value": "森の妖精",
+      "file": "japan-previews-v21/costume-03-14.jpg",
+      "deviation": 52.15,
+      "entropy": 7.61
+    },
+    {
+      "key": "costume",
+      "value": "ドラゴンの騎士",
+      "file": "japan-previews-v21/costume-03-15.jpg",
+      "deviation": 56.03,
+      "entropy": 7.65
+    },
+    {
+      "key": "costume",
+      "value": "竜人",
+      "file": "japan-previews-v21/costume-03-16.jpg",
+      "deviation": 52.17,
+      "entropy": 7.51
+    },
+    {
+      "key": "costume",
+      "value": "人魚",
+      "file": "japan-previews-v21/costume-04-01.jpg",
+      "deviation": 53.75,
+      "entropy": 7.62
+    },
+    {
+      "key": "costume",
+      "value": "ユニコーン",
+      "file": "japan-previews-v21/costume-04-02.jpg",
+      "deviation": 47.28,
+      "entropy": 7.38
+    },
+    {
+      "key": "costume",
+      "value": "不死鳥",
+      "file": "japan-previews-v21/costume-04-03.jpg",
+      "deviation": 53.05,
+      "entropy": 7.62
+    },
+    {
+      "key": "costume",
+      "value": "氷の女王",
+      "file": "japan-previews-v21/costume-04-04.jpg",
+      "deviation": 48.31,
+      "entropy": 7.52
+    },
+    {
+      "key": "costume",
+      "value": "花の精霊",
+      "file": "japan-previews-v21/costume-04-05.jpg",
+      "deviation": 50.33,
+      "entropy": 7.53
+    },
+    {
+      "key": "costume",
+      "value": "星の占い師",
+      "file": "japan-previews-v21/costume-04-06.jpg",
+      "deviation": 49.45,
+      "entropy": 7.4
+    },
+    {
+      "key": "costume",
+      "value": "錬金術師",
+      "file": "japan-previews-v21/costume-04-07.jpg",
+      "deviation": 56,
+      "entropy": 7.69
+    },
+    {
+      "key": "costume",
+      "value": "ネクロマンサー",
+      "file": "japan-previews-v21/costume-04-08.jpg",
+      "deviation": 48.38,
+      "entropy": 7.32
+    },
+    {
+      "key": "costume",
+      "value": "光の聖騎士",
+      "file": "japan-previews-v21/costume-04-09.jpg",
+      "deviation": 60.69,
+      "entropy": 7.79
+    },
+    {
+      "key": "costume",
+      "value": "闇の騎士",
+      "file": "japan-previews-v21/costume-04-10.jpg",
+      "deviation": 41,
+      "entropy": 7.06
+    },
+    {
+      "key": "costume",
+      "value": "赤ずきん",
+      "file": "japan-previews-v21/costume-04-11.jpg",
+      "deviation": 53.59,
+      "entropy": 7.61
+    },
+    {
+      "key": "costume",
+      "value": "不思議の国の旅人",
+      "file": "japan-previews-v21/costume-04-12.jpg",
+      "deviation": 53.82,
+      "entropy": 7.57
+    },
+    {
+      "key": "costume",
+      "value": "探偵",
+      "file": "japan-previews-v21/costume-04-13.jpg",
+      "deviation": 40.73,
+      "entropy": 7.18
+    },
+    {
+      "key": "costume",
+      "value": "警察官",
+      "file": "japan-previews-v21/costume-04-14.jpg",
+      "deviation": 67.94,
+      "entropy": 7.72
+    },
+    {
+      "key": "costume",
+      "value": "消防士",
+      "file": "japan-previews-v21/costume-04-15.jpg",
+      "deviation": 55.52,
+      "entropy": 7.68
+    },
+    {
+      "key": "costume",
+      "value": "医師・白衣",
+      "file": "japan-previews-v21/costume-04-16.jpg",
+      "deviation": 52.2,
+      "entropy": 7.48
+    },
+    {
+      "key": "costume",
+      "value": "ナース",
+      "file": "japan-previews-v21/costume-05-01.jpg",
+      "deviation": 48.47,
+      "entropy": 7.36
+    },
+    {
+      "key": "costume",
+      "value": "パイロット",
+      "file": "japan-previews-v21/costume-05-02.jpg",
+      "deviation": 81.03,
+      "entropy": 7.38
+    },
+    {
+      "key": "costume",
+      "value": "キャビンアテンダント",
+      "file": "japan-previews-v21/costume-05-03.jpg",
+      "deviation": 61.47,
+      "entropy": 7.62
+    },
+    {
+      "key": "costume",
+      "value": "シェフ",
+      "file": "japan-previews-v21/costume-05-04.jpg",
+      "deviation": 59.07,
+      "entropy": 7.69
+    },
+    {
+      "key": "costume",
+      "value": "メイド",
+      "file": "japan-previews-v21/costume-05-05.jpg",
+      "deviation": 65.65,
+      "entropy": 7.76
+    },
+    {
+      "key": "costume",
+      "value": "執事",
+      "file": "japan-previews-v21/costume-05-06.jpg",
+      "deviation": 52.61,
+      "entropy": 7.47
+    },
+    {
+      "key": "costume",
+      "value": "宇宙飛行士",
+      "file": "japan-previews-v21/costume-05-07.jpg",
+      "deviation": 59.98,
+      "entropy": 7.7
+    },
+    {
+      "key": "costume",
+      "value": "郵便配達員",
+      "file": "japan-previews-v21/costume-05-08.jpg",
+      "deviation": 54.16,
+      "entropy": 7.55
+    },
+    {
+      "key": "costume",
+      "value": "ロボット",
+      "file": "japan-previews-v21/costume-05-09.jpg",
+      "deviation": 55.55,
+      "entropy": 7.69
+    },
+    {
+      "key": "costume",
+      "value": "アンドロイド",
+      "file": "japan-previews-v21/costume-05-10.jpg",
+      "deviation": 56.53,
+      "entropy": 7.45
+    },
+    {
+      "key": "costume",
+      "value": "サイボーグ",
+      "file": "japan-previews-v21/costume-05-11.jpg",
+      "deviation": 47.3,
+      "entropy": 7.39
+    },
+    {
+      "key": "costume",
+      "value": "宇宙海賊",
+      "file": "japan-previews-v21/costume-05-12.jpg",
+      "deviation": 44.37,
+      "entropy": 7.16
+    },
+    {
+      "key": "costume",
+      "value": "エイリアン",
+      "file": "japan-previews-v21/costume-05-13.jpg",
+      "deviation": 48.55,
+      "entropy": 7.48
+    },
+    {
+      "key": "costume",
+      "value": "パワードスーツ",
+      "file": "japan-previews-v21/costume-05-14.jpg",
+      "deviation": 53.1,
+      "entropy": 7.59
+    },
+    {
+      "key": "costume",
+      "value": "変身ヒーロー",
+      "file": "japan-previews-v21/costume-05-15.jpg",
+      "deviation": 61.67,
+      "entropy": 7.71
+    },
+    {
+      "key": "costume",
+      "value": "魔法少女風コスチューム",
+      "file": "japan-previews-v21/costume-05-16.jpg",
+      "deviation": 45.02,
+      "entropy": 7.24
+    },
+    {
+      "key": "costume",
+      "value": "ヴィラン・悪役",
+      "file": "japan-previews-v21/costume-06-01.jpg",
+      "deviation": 37.98,
+      "entropy": 6.92
+    },
+    {
+      "key": "costume",
+      "value": "時空の旅人",
+      "file": "japan-previews-v21/costume-06-02.jpg",
+      "deviation": 60.35,
+      "entropy": 7.77
+    },
+    {
+      "key": "costume",
+      "value": "鬼",
+      "file": "japan-previews-v21/costume-06-03.jpg",
+      "deviation": 59.38,
+      "entropy": 7.67
+    },
+    {
+      "key": "costume",
+      "value": "天狗",
+      "file": "japan-previews-v21/costume-06-04.jpg",
+      "deviation": 64.19,
+      "entropy": 7.73
+    },
+    {
+      "key": "costume",
+      "value": "河童",
+      "file": "japan-previews-v21/costume-06-05.jpg",
+      "deviation": 52.48,
+      "entropy": 7.58
+    },
+    {
+      "key": "costume",
+      "value": "座敷わらし",
+      "file": "japan-previews-v21/costume-06-06.jpg",
+      "deviation": 54.98,
+      "entropy": 7.69
+    },
+    {
+      "key": "costume",
+      "value": "忍者",
+      "file": "japan-previews-v21/costume-06-07.jpg",
+      "deviation": 45.04,
+      "entropy": 7.09
+    },
+    {
+      "key": "costume",
+      "value": "侍・武者",
+      "file": "japan-previews-v21/costume-06-08.jpg",
+      "deviation": 57.67,
+      "entropy": 7.53
+    },
+    {
+      "key": "costume",
+      "value": "陰陽師",
+      "file": "japan-previews-v21/costume-06-09.jpg",
+      "deviation": 53.1,
+      "entropy": 7.63
+    },
+    {
+      "key": "costume",
+      "value": "巫女",
+      "file": "japan-previews-v21/costume-06-10.jpg",
+      "deviation": 57.75,
+      "entropy": 7.56
+    },
+    {
+      "key": "costume",
+      "value": "西洋の王・女王",
+      "file": "japan-previews-v21/costume-06-11.jpg",
+      "deviation": 51.76,
+      "entropy": 7.58
+    },
+    {
+      "key": "costume",
+      "value": "ファラオ",
+      "file": "japan-previews-v21/costume-06-12.jpg",
+      "deviation": 51.24,
+      "entropy": 7.59
+    },
+    {
+      "key": "costume",
+      "value": "うさぎの着ぐるみ",
+      "file": "japan-previews-v21/costume-06-13.jpg",
+      "deviation": 47.52,
+      "entropy": 7.19
+    },
+    {
+      "key": "costume",
+      "value": "くまの着ぐるみ",
+      "file": "japan-previews-v21/costume-06-14.jpg",
+      "deviation": 46.23,
+      "entropy": 7.4
+    },
+    {
+      "key": "costume",
+      "value": "恐竜の着ぐるみ",
+      "file": "japan-previews-v21/costume-06-15.jpg",
+      "deviation": 44.97,
+      "entropy": 7.25
+    },
+    {
+      "key": "costume",
+      "value": "ペンギンの着ぐるみ",
+      "file": "japan-previews-v21/costume-06-16.jpg",
+      "deviation": 62.66,
+      "entropy": 7.59
+    },
+    {
+      "key": "costume",
+      "value": "キノコの妖精",
+      "file": "japan-previews-v21/costume-07-01.jpg",
+      "deviation": 50.24,
+      "entropy": 7.57
+    },
+    {
+      "key": "costume",
+      "value": "キャンディの精霊",
+      "file": "japan-previews-v21/costume-07-02.jpg",
+      "deviation": 48.14,
+      "entropy": 7.47
+    },
+    {
+      "key": "costume",
+      "value": "トランプの兵隊",
+      "file": "japan-previews-v21/costume-07-03.jpg",
+      "deviation": 54.13,
+      "entropy": 7.53
+    },
+    {
+      "key": "costume",
+      "value": "花嫁・花婿",
+      "file": "japan-previews-v21/costume-07-04.jpg",
+      "deviation": 65.84,
+      "entropy": 7.68
+    },
+    {
+      "key": "mood",
+      "value": "静かで美しい",
+      "file": "japan-previews-v21/mood-01-01.jpg",
+      "deviation": 56.21,
+      "entropy": 7.64
+    },
+    {
+      "key": "mood",
+      "value": "妖しく気高い",
+      "file": "japan-previews-v21/mood-01-02.jpg",
+      "deviation": 43.57,
+      "entropy": 7.03
+    },
+    {
+      "key": "mood",
+      "value": "儚く切ない",
+      "file": "japan-previews-v21/mood-01-03.jpg",
+      "deviation": 46.92,
+      "entropy": 7.29
+    },
+    {
+      "key": "mood",
+      "value": "温かく懐かしい",
+      "file": "japan-previews-v21/mood-01-04.jpg",
+      "deviation": 55.24,
+      "entropy": 7.59
+    },
+    {
+      "key": "mood",
+      "value": "神秘的で透明感",
+      "file": "japan-previews-v21/mood-01-05.jpg",
+      "deviation": 56.85,
+      "entropy": 7.65
+    },
+    {
+      "key": "mood",
+      "value": "寂しく詩的",
+      "file": "japan-previews-v21/mood-01-06.jpg",
+      "deviation": 41.65,
+      "entropy": 6.94
+    },
+    {
+      "key": "mood",
+      "value": "優雅でクラシカル",
+      "file": "japan-previews-v21/mood-01-07.jpg",
+      "deviation": 51,
+      "entropy": 7.55
+    },
+    {
+      "key": "mood",
+      "value": "強く挑発的",
+      "file": "japan-previews-v21/mood-01-08.jpg",
+      "deviation": 46.56,
+      "entropy": 7
+    },
+    {
+      "key": "mood",
+      "value": "不敵な微笑み",
+      "file": "japan-previews-v21/mood-01-09.jpg",
+      "deviation": 46.63,
+      "entropy": 7.12
+    },
+    {
+      "key": "mood",
+      "value": "いたずら好き",
+      "file": "japan-previews-v21/mood-01-10.jpg",
+      "deviation": 56.42,
+      "entropy": 7.61
+    },
+    {
+      "key": "mood",
+      "value": "明るく祝祭的",
+      "file": "japan-previews-v21/mood-01-11.jpg",
+      "deviation": 48.82,
+      "entropy": 7.49
+    },
+    {
+      "key": "mood",
+      "value": "可愛くコミカル",
+      "file": "japan-previews-v21/mood-01-12.jpg",
+      "deviation": 49.5,
+      "entropy": 7.47
+    },
+    {
+      "key": "mood",
+      "value": "疾走する冒険",
+      "file": "japan-previews-v21/mood-01-13.jpg",
+      "deviation": 61.19,
+      "entropy": 7.63
+    },
+    {
+      "key": "mood",
+      "value": "劇的な勝利",
+      "file": "japan-previews-v21/mood-01-14.jpg",
+      "deviation": 61.13,
+      "entropy": 7.6
+    },
+    {
+      "key": "mood",
+      "value": "少しだけ不気味",
+      "file": "japan-previews-v21/mood-01-15.jpg",
+      "deviation": 26.9,
+      "entropy": 6.52
+    },
+    {
+      "key": "mood",
+      "value": "ひやりとする怪談",
+      "file": "japan-previews-v21/mood-01-16.jpg",
+      "deviation": 25.93,
+      "entropy": 6.47
+    },
+    {
+      "key": "mood",
+      "value": "圧倒的な恐怖・流血なし",
+      "file": "japan-previews-v21/mood-02-01.jpg",
+      "deviation": 59.34,
+      "entropy": 7.52
+    },
+    {
+      "key": "mood",
+      "value": "奇妙でシュール",
+      "file": "japan-previews-v21/mood-02-02.jpg",
+      "deviation": 58.68,
+      "entropy": 7.69
+    },
+    {
+      "key": "mood",
+      "value": "無表情の緊張感",
+      "file": "japan-previews-v21/mood-02-03.jpg",
+      "deviation": 55.33,
+      "entropy": 7.42
+    },
+    {
+      "key": "mood",
+      "value": "歯を見せて大笑い",
+      "file": "japan-previews-v21/mood-02-04.jpg",
+      "deviation": 64.4,
+      "entropy": 7.77
+    },
+    {
+      "key": "mood",
+      "value": "目を見開いて驚く",
+      "file": "japan-previews-v21/mood-02-05.jpg",
+      "deviation": 57.87,
+      "entropy": 7.73
+    },
+    {
+      "key": "mood",
+      "value": "眉を寄せて怒る",
+      "file": "japan-previews-v21/mood-02-06.jpg",
+      "deviation": 58.6,
+      "entropy": 7.32
+    },
+    {
+      "key": "mood",
+      "value": "涙を浮かべる",
+      "file": "japan-previews-v21/mood-02-07.jpg",
+      "deviation": 61.34,
+      "entropy": 7.72
+    },
+    {
+      "key": "mood",
+      "value": "目を閉じて安らぐ",
+      "file": "japan-previews-v21/mood-02-08.jpg",
+      "deviation": 63.43,
+      "entropy": 7.77
+    },
+    {
+      "key": "mood",
+      "value": "勝ち誇ってニヤリ",
+      "file": "japan-previews-v21/mood-02-09.jpg",
+      "deviation": 59.65,
+      "entropy": 7.58
+    },
+    {
+      "key": "mood",
+      "value": "片目を閉じてウインク",
+      "file": "japan-previews-v21/mood-02-10.jpg",
+      "deviation": 61.73,
+      "entropy": 7.76
+    },
+    {
+      "key": "mood",
+      "value": "牙を見せて威嚇",
+      "file": "japan-previews-v21/mood-02-11.jpg",
+      "deviation": 55.71,
+      "entropy": 7.39
+    },
+    {
+      "key": "mood",
+      "value": "真剣な無表情",
+      "file": "japan-previews-v21/mood-02-12.jpg",
+      "deviation": 62.23,
+      "entropy": 7.49
+    },
+    {
+      "key": "mood",
+      "value": "正面・首をまっすぐ",
+      "file": "japan-previews-v21/mood-02-13.jpg",
+      "deviation": 59.35,
+      "entropy": 7.72
+    },
+    {
+      "key": "mood",
+      "value": "完全な左横顔90度",
+      "file": "japan-previews-v21/mood-02-14.jpg",
+      "deviation": 57.49,
+      "entropy": 7.59
+    },
+    {
+      "key": "mood",
+      "value": "完全な右横顔90度",
+      "file": "japan-previews-v21/mood-02-15.jpg",
+      "deviation": 71.26,
+      "entropy": 7.66
+    },
+    {
+      "key": "mood",
+      "value": "真上からの俯瞰",
+      "file": "japan-previews-v21/mood-02-16.jpg",
+      "deviation": 60.77,
+      "entropy": 7.76
+    },
+    {
+      "key": "mood",
+      "value": "真下からのローアングル",
+      "file": "japan-previews-v21/mood-03-01.jpg",
+      "deviation": 59.98,
+      "entropy": 7.65
+    },
+    {
+      "key": "mood",
+      "value": "背中から振り向く",
+      "file": "japan-previews-v21/mood-03-02.jpg",
+      "deviation": 63.02,
+      "entropy": 7.55
+    },
+    {
+      "key": "mood",
+      "value": "顔を上に向ける",
+      "file": "japan-previews-v21/mood-03-03.jpg",
+      "deviation": 66.25,
+      "entropy": 7.72
+    },
+    {
+      "key": "mood",
+      "value": "顔を下に向ける",
+      "file": "japan-previews-v21/mood-03-04.jpg",
+      "deviation": 55.37,
+      "entropy": 7.5
+    },
+    {
+      "key": "mood",
+      "value": "正面＋満面の笑顔",
+      "file": "japan-previews-v21/mood-03-05.jpg",
+      "deviation": 60.34,
+      "entropy": 7.54
+    },
+    {
+      "key": "mood",
+      "value": "左横顔＋静かな無表情",
+      "file": "japan-previews-v21/mood-03-06.jpg",
+      "deviation": 67.76,
+      "entropy": 7.61
+    },
+    {
+      "key": "mood",
+      "value": "右横顔＋大笑い",
+      "file": "japan-previews-v21/mood-03-07.jpg",
+      "deviation": 63.73,
+      "entropy": 7.57
+    },
+    {
+      "key": "mood",
+      "value": "俯瞰＋目を見開く",
+      "file": "japan-previews-v21/mood-03-08.jpg",
+      "deviation": 56.24,
+      "entropy": 7.44
+    },
+    {
+      "key": "mood",
+      "value": "ローアングル＋威嚇",
+      "file": "japan-previews-v21/mood-03-09.jpg",
+      "deviation": 56.2,
+      "entropy": 7.5
+    },
+    {
+      "key": "mood",
+      "value": "背中から振り向く＋ニヤリ",
+      "file": "japan-previews-v21/mood-03-10.jpg",
+      "deviation": 61.28,
+      "entropy": 7.52
+    },
+    {
+      "key": "place",
+      "value": "古城の大広間",
+      "file": "japan-previews-v21/place-01-01.jpg",
+      "deviation": 43.1,
+      "entropy": 7.23
+    },
+    {
+      "key": "place",
+      "value": "古い洋館の階段",
+      "file": "japan-previews-v21/place-01-02.jpg",
+      "deviation": 43.15,
+      "entropy": 6.84
+    },
+    {
+      "key": "place",
+      "value": "魔女の書斎",
+      "file": "japan-previews-v21/place-01-03.jpg",
+      "deviation": 39.84,
+      "entropy": 7.02
+    },
+    {
+      "key": "place",
+      "value": "無人の映画館",
+      "file": "japan-previews-v21/place-01-04.jpg",
+      "deviation": 49.16,
+      "entropy": 6.73
+    },
+    {
+      "key": "place",
+      "value": "人形の工房",
+      "file": "japan-previews-v21/place-01-05.jpg",
+      "deviation": 53.36,
+      "entropy": 7.51
+    },
+    {
+      "key": "place",
+      "value": "鏡の迷宮",
+      "file": "japan-previews-v21/place-01-06.jpg",
+      "deviation": 36.32,
+      "entropy": 6.97
+    },
+    {
+      "key": "place",
+      "value": "深夜の喫茶店",
+      "file": "japan-previews-v21/place-01-07.jpg",
+      "deviation": 43.39,
+      "entropy": 6.96
+    },
+    {
+      "key": "place",
+      "value": "廃墟の礼拝堂",
+      "file": "japan-previews-v21/place-01-08.jpg",
+      "deviation": 54.21,
+      "entropy": 7.53
+    },
+    {
+      "key": "place",
+      "value": "骨董品店",
+      "file": "japan-previews-v21/place-01-09.jpg",
+      "deviation": 41.37,
+      "entropy": 7.16
+    },
+    {
+      "key": "place",
+      "value": "天窓のあるアトリエ",
+      "file": "japan-previews-v21/place-01-10.jpg",
+      "deviation": 58.67,
+      "entropy": 7.72
+    },
+    {
+      "key": "place",
+      "value": "霧の森",
+      "file": "japan-previews-v21/place-01-11.jpg",
+      "deviation": 47.12,
+      "entropy": 7.42
+    },
+    {
+      "key": "place",
+      "value": "雨の路地",
+      "file": "japan-previews-v21/place-01-12.jpg",
+      "deviation": 41.83,
+      "entropy": 6.98
+    },
+    {
+      "key": "place",
+      "value": "月下の墓地",
+      "file": "japan-previews-v21/place-01-13.jpg",
+      "deviation": 35.91,
+      "entropy": 6.77
+    },
+    {
+      "key": "place",
+      "value": "カボチャ畑",
+      "file": "japan-previews-v21/place-01-14.jpg",
+      "deviation": 50.28,
+      "entropy": 7.39
+    },
+    {
+      "key": "place",
+      "value": "ネオンの繁華街",
+      "file": "japan-previews-v21/place-01-15.jpg",
+      "deviation": 64.92,
+      "entropy": 7.74
+    },
+    {
+      "key": "place",
+      "value": "屋根の上",
+      "file": "japan-previews-v21/place-01-16.jpg",
+      "deviation": 47.3,
+      "entropy": 7.23
+    },
+    {
+      "key": "place",
+      "value": "異界の鳥居",
+      "file": "japan-previews-v21/place-02-01.jpg",
+      "deviation": 48.88,
+      "entropy": 7.23
+    },
+    {
+      "key": "place",
+      "value": "夜の遊園地",
+      "file": "japan-previews-v21/place-02-02.jpg",
+      "deviation": 49.16,
+      "entropy": 7.24
+    },
+    {
+      "key": "place",
+      "value": "空中都市",
+      "file": "japan-previews-v21/place-02-03.jpg",
+      "deviation": 56.28,
+      "entropy": 7.58
+    },
+    {
+      "key": "place",
+      "value": "雪の庭",
+      "file": "japan-previews-v21/place-02-04.jpg",
+      "deviation": 63.65,
+      "entropy": 7.7
+    },
+    {
+      "key": "place",
+      "value": "星空の砂漠",
+      "file": "japan-previews-v21/place-02-05.jpg",
+      "deviation": 42.02,
+      "entropy": 6.93
+    },
+    {
+      "key": "place",
+      "value": "墨の余白",
+      "file": "japan-previews-v21/place-02-06.jpg",
+      "deviation": 54.6,
+      "entropy": 5.08
+    },
+    {
+      "key": "place",
+      "value": "黒いスタジオ",
+      "file": "japan-previews-v21/place-02-07.jpg",
+      "deviation": 35.28,
+      "entropy": 6.09
+    },
+    {
+      "key": "place",
+      "value": "白いスタジオ",
+      "file": "japan-previews-v21/place-02-08.jpg",
+      "deviation": 32.02,
+      "entropy": 5.42
+    },
+    {
+      "key": "place",
+      "value": "金箔の空間",
+      "file": "japan-previews-v21/place-02-09.jpg",
+      "deviation": 50.63,
+      "entropy": 7.66
+    },
+    {
+      "key": "place",
+      "value": "舞台装置",
+      "file": "japan-previews-v21/place-02-10.jpg",
+      "deviation": 63.2,
+      "entropy": 7.6
+    },
+    {
+      "key": "place",
+      "value": "紙の箱庭",
+      "file": "japan-previews-v21/place-02-11.jpg",
+      "deviation": 44.67,
+      "entropy": 7.29
+    },
+    {
+      "key": "place",
+      "value": "抽象的な色面",
+      "file": "japan-previews-v21/place-02-12.jpg",
+      "deviation": 82.2,
+      "entropy": 6.56
+    },
+    {
+      "key": "pose",
+      "value": "まっすぐ立つ",
+      "file": "japan-previews-v21/pose-01-01.jpg",
+      "deviation": 61.1,
+      "entropy": 7.74
+    },
+    {
+      "key": "pose",
+      "value": "片足に体重を乗せる",
+      "file": "japan-previews-v21/pose-01-02.jpg",
+      "deviation": 56.3,
+      "entropy": 7.62
+    },
+    {
+      "key": "pose",
+      "value": "腰に手を当てる",
+      "file": "japan-previews-v21/pose-01-03.jpg",
+      "deviation": 60.61,
+      "entropy": 7.76
+    },
+    {
+      "key": "pose",
+      "value": "腕を組む",
+      "file": "japan-previews-v21/pose-01-04.jpg",
+      "deviation": 60.56,
+      "entropy": 7.49
+    },
+    {
+      "key": "pose",
+      "value": "両手を広げる",
+      "file": "japan-previews-v21/pose-01-05.jpg",
+      "deviation": 57.03,
+      "entropy": 7.65
+    },
+    {
+      "key": "pose",
+      "value": "片手を高く掲げる",
+      "file": "japan-previews-v21/pose-01-06.jpg",
+      "deviation": 59.08,
+      "entropy": 7.62
+    },
+    {
+      "key": "pose",
+      "value": "振り向く",
+      "file": "japan-previews-v21/pose-01-07.jpg",
+      "deviation": 67.5,
+      "entropy": 7.63
+    },
+    {
+      "key": "pose",
+      "value": "膝をついて誓う",
+      "file": "japan-previews-v21/pose-01-08.jpg",
+      "deviation": 59.7,
+      "entropy": 7.71
+    },
+    {
+      "key": "pose",
+      "value": "椅子に腰掛ける",
+      "file": "japan-previews-v21/pose-01-09.jpg",
+      "deviation": 60.56,
+      "entropy": 7.75
+    },
+    {
+      "key": "pose",
+      "value": "横向きに座る",
+      "file": "japan-previews-v21/pose-01-10.jpg",
+      "deviation": 62.16,
+      "entropy": 7.75
+    },
+    {
+      "key": "pose",
+      "value": "床であぐらをかく",
+      "file": "japan-previews-v21/pose-01-11.jpg",
+      "deviation": 59.41,
+      "entropy": 7.73
+    },
+    {
+      "key": "pose",
+      "value": "膝を抱えて座る",
+      "file": "japan-previews-v21/pose-01-12.jpg",
+      "deviation": 53.41,
+      "entropy": 7.6
+    },
+    {
+      "key": "pose",
+      "value": "脚を伸ばして座る",
+      "file": "japan-previews-v21/pose-01-13.jpg",
+      "deviation": 61.04,
+      "entropy": 7.79
+    },
+    {
+      "key": "pose",
+      "value": "椅子の背にもたれる",
+      "file": "japan-previews-v21/pose-01-14.jpg",
+      "deviation": 53.6,
+      "entropy": 7.58
+    },
+    {
+      "key": "pose",
+      "value": "片膝を立てて座る",
+      "file": "japan-previews-v21/pose-01-15.jpg",
+      "deviation": 57.45,
+      "entropy": 7.74
+    },
+    {
+      "key": "pose",
+      "value": "低くしゃがむ",
+      "file": "japan-previews-v21/pose-01-16.jpg",
+      "deviation": 62.01,
+      "entropy": 7.76
+    },
+    {
+      "key": "pose",
+      "value": "片膝をつく",
+      "file": "japan-previews-v21/pose-02-01.jpg",
+      "deviation": 71.84,
+      "entropy": 7.81
+    },
+    {
+      "key": "pose",
+      "value": "両膝でひざまずく",
+      "file": "japan-previews-v21/pose-02-02.jpg",
+      "deviation": 55.63,
+      "entropy": 7.6
+    },
+    {
+      "key": "pose",
+      "value": "四つん這いで進む",
+      "file": "japan-previews-v21/pose-02-03.jpg",
+      "deviation": 58.69,
+      "entropy": 7.66
+    },
+    {
+      "key": "pose",
+      "value": "腰を落として構える",
+      "file": "japan-previews-v21/pose-02-04.jpg",
+      "deviation": 55.29,
+      "entropy": 7.64
+    },
+    {
+      "key": "pose",
+      "value": "仰向けに寝る",
+      "file": "japan-previews-v21/pose-02-05.jpg",
+      "deviation": 52.4,
+      "entropy": 7.42
+    },
+    {
+      "key": "pose",
+      "value": "横向きに寝る",
+      "file": "japan-previews-v21/pose-02-06.jpg",
+      "deviation": 48.69,
+      "entropy": 7.48
+    },
+    {
+      "key": "pose",
+      "value": "うつ伏せで頬杖をつく",
+      "file": "japan-previews-v21/pose-02-07.jpg",
+      "deviation": 62.7,
+      "entropy": 7.7
+    },
+    {
+      "key": "pose",
+      "value": "ソファに横たわる",
+      "file": "japan-previews-v21/pose-02-08.jpg",
+      "deviation": 54.68,
+      "entropy": 7.39
+    },
+    {
+      "key": "pose",
+      "value": "背伸びをする",
+      "file": "japan-previews-v21/pose-02-09.jpg",
+      "deviation": 53.63,
+      "entropy": 7.56
+    },
+    {
+      "key": "pose",
+      "value": "ゆっくり歩く",
+      "file": "japan-previews-v21/pose-02-10.jpg",
+      "deviation": 61.01,
+      "entropy": 7.76
+    },
+    {
+      "key": "pose",
+      "value": "大股で歩く",
+      "file": "japan-previews-v21/pose-02-11.jpg",
+      "deviation": 59.7,
+      "entropy": 7.65
+    },
+    {
+      "key": "pose",
+      "value": "全力で走る",
+      "file": "japan-previews-v21/pose-02-12.jpg",
+      "deviation": 59.91,
+      "entropy": 7.57
+    },
+    {
+      "key": "pose",
+      "value": "走り出す",
+      "file": "japan-previews-v21/pose-02-13.jpg",
+      "deviation": 61.88,
+      "entropy": 7.72
+    },
+    {
+      "key": "pose",
+      "value": "振り向きながら走る",
+      "file": "japan-previews-v21/pose-02-14.jpg",
+      "deviation": 61.3,
+      "entropy": 7.74
+    },
+    {
+      "key": "pose",
+      "value": "両足でジャンプ",
+      "file": "japan-previews-v21/pose-02-15.jpg",
+      "deviation": 47.16,
+      "entropy": 7.21
+    },
+    {
+      "key": "pose",
+      "value": "片膝を曲げて跳ぶ",
+      "file": "japan-previews-v21/pose-02-16.jpg",
+      "deviation": 49.68,
+      "entropy": 7.12
+    },
+    {
+      "key": "pose",
+      "value": "空中で回転",
+      "file": "japan-previews-v21/pose-03-01.jpg",
+      "deviation": 59.58,
+      "entropy": 7.7
+    },
+    {
+      "key": "pose",
+      "value": "着地する",
+      "file": "japan-previews-v21/pose-03-02.jpg",
+      "deviation": 58.75,
+      "entropy": 7.76
+    },
+    {
+      "key": "pose",
+      "value": "浮遊する",
+      "file": "japan-previews-v21/pose-03-03.jpg",
+      "deviation": 53.13,
+      "entropy": 7.57
+    },
+    {
+      "key": "pose",
+      "value": "片手を差し出す",
+      "file": "japan-previews-v21/pose-03-04.jpg",
+      "deviation": 60.61,
+      "entropy": 7.75
+    },
+    {
+      "key": "pose",
+      "value": "両手を差し出す",
+      "file": "japan-previews-v21/pose-03-05.jpg",
+      "deviation": 61.17,
+      "entropy": 7.76
+    },
+    {
+      "key": "pose",
+      "value": "頬に手を添える",
+      "file": "japan-previews-v21/pose-03-06.jpg",
+      "deviation": 50.65,
+      "entropy": 7.53
+    },
+    {
+      "key": "pose",
+      "value": "口元に指を添える",
+      "file": "japan-previews-v21/pose-03-07.jpg",
+      "deviation": 58.26,
+      "entropy": 7.63
+    },
+    {
+      "key": "pose",
+      "value": "花束を抱える",
+      "file": "japan-previews-v21/pose-03-08.jpg",
+      "deviation": 54.45,
+      "entropy": 7.62
+    },
+    {
+      "key": "pose",
+      "value": "楽器を演奏する",
+      "file": "japan-previews-v21/pose-03-09.jpg",
+      "deviation": 59.19,
+      "entropy": 7.69
+    },
+    {
+      "key": "pose",
+      "value": "くるりと踊る",
+      "file": "japan-previews-v21/pose-03-10.jpg",
+      "deviation": 52.52,
+      "entropy": 7.6
+    },
+    {
+      "key": "pose",
+      "value": "バレエのアラベスク",
+      "file": "japan-previews-v21/pose-03-11.jpg",
+      "deviation": 50.28,
+      "entropy": 7.43
+    },
+    {
+      "key": "pose",
+      "value": "壁にもたれる",
+      "file": "japan-previews-v21/pose-03-12.jpg",
+      "deviation": 57.36,
+      "entropy": 7.65
+    }
+  ]
+}

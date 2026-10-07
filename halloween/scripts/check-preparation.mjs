@@ -15,6 +15,15 @@ function load(file){file=path.resolve(file.split('?')[0]);if(mods.has(file))retu
 const entry=load(root+'/app.js');await entry.link((spec,parent)=>load(path.resolve(path.dirname(parent.identifier),spec)));await entry.evaluate();const $=id=>w.document.getElementById(id);const click=id=>$(id).click();const change=(id,value)=>{$(id).value=value;$(id).dispatchEvent(new w.Event('input',{bubbles:true}));$(id).dispatchEvent(new w.Event('change',{bubbles:true}));};
 async function until(fn,message){const start=Date.now();while(!fn()){if(Date.now()-start>3000)throw new Error('Timed out: '+message);await new Promise(r=>setTimeout(r,10));}}
 const results=[];
+assert.ok($('light-play').closest('header'),'night mode belongs in the top header');
+assert.equal(w.document.querySelectorAll('#light-play').length,1);
+assert.equal($('light-play').getAttribute('aria-pressed'),'false');
+const daytime=w.document.querySelector('#magic-scene .ornament').innerHTML;
+click('light-play');assert.equal(w.document.body.dataset.lights,'night');assert.equal($('light-play').getAttribute('aria-pressed'),'true');assert.equal(w.localStorage.getItem('halloween-night'),'on');assert.equal(w.document.querySelectorAll('.night-companion').length,4);assert.notEqual(w.document.querySelector('#magic-scene .ornament').innerHTML,daytime);assert.match(w.document.querySelector('#magic-scene .ornament').getAttribute('aria-label'),/魔法使い/);
+click('motion-off');assert.equal(w.document.body.dataset.motion,'off');
+click('light-play');assert.equal(w.document.body.dataset.lights,'day');assert.equal(w.localStorage.getItem('halloween-night'),'off');assert.equal(w.document.querySelector('#magic-scene .ornament').innerHTML,daytime);
+click('motion-toggle');assert.equal(w.document.body.dataset.motion,'on');results.push({case:'top night toggle; explicit ON/OFF; four new characters; persisted selection; separate animation OFF remains effective'});
+
 w.document.querySelector('[name="attachment-mode"][value="chatgpt"]').click();
 change('creator','speedtest');await until(()=>page2Started,'page 2 starts');assert.equal($('creator-name').value,'Speed Test');
 const start=performance.now();click('generate');click('generate');await until(()=>$('result').open,'prompt available before page 2 resolves');

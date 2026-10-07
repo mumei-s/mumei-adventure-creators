@@ -1,6 +1,6 @@
-import {colorPolicy} from './color-policy.js?v=20.0.0';
-export {colorPolicy} from './color-policy.js?v=20.0.0';
-import {colorWorlds} from './worlds.js?v=20.0.0';
+import {colorPolicy} from './color-policy.js?v=21.0.0';
+export {colorPolicy} from './color-policy.js?v=21.0.0';
+import {colorWorlds} from './worlds.js?v=21.0.0';
 
 // A palette owns hue and its allocation. It cannot silently select a material,
 // a time of day, a light source, a subject, or a low-contrast rendering style.
@@ -101,4 +101,29 @@ export function detailedPalette(value,{values={},noPerson=false}={}){
   spec?.ratios?'大きな色面の関係は'+hues.map((h,i)=>h+' '+spec.ratios[i]+'%').join('、')+(translate?'の明度への翻訳':''):'配色「'+value+'」の主色・副色・焦点は上記の個別配分に従う',
   '指定の配分を保ち、選択画風の影と明部が判別できる'];
  return {known:!!spec,sections,checks,executionMethod:assignment};
+}
+
+// Native palette previews show only the selected color allocation; no hidden scene.
+export function palettePreviewSpec(value){
+ const s=specs.get(value);if(!s||value==='参照画像の色を生かす')return null;
+ const base={
+ '漆黒 × 琥珀 × 象牙':['#100f14','#ca862a','#efe4d2'],
+ '深紅 × 黒 × 古金':['#9f213b','#111018','#ac9055'],
+ '群青 × 月白 × 銀':['#202f78','#edf0e9','#b6c3cc'],
+ '紫 × 黒 × 酸性グリーン':['#8133a9','#130f18','#b7ee38'],
+ '藍墨 × 朱 × 和紙の白':['#202f40','#d04932','#f4ead6'],
+ '桃色 × 墨黒 × 真珠':['#e6a9bc','#24212b','#f1e8e0'],
+ '翡翠 × 銅 × 濃紺':['#289c7a','#af7651','#172844'],
+ '白 × 白銀 × 氷青':['#fbfcfd','#b7c9da','#a9d8e9'],
+ '秋色のブラウン × 生成り':['#6a452e','#ece1c4'],
+ '退色したフィルムカラー':['#dbb994','#497c7a'],
+ 'ネオンピンク × シアン':['#ff44a8','#00d9e5','#18152e'],
+ '原色のポップカラー':['#e73439','#264cb2','#f2c626','#f3f0e2','#1b1b24'],
+ '墨一色':['#161616','#f7f7f7','#838383'],
+ 'モノクローム':['#161616','#f7f7f7','#838383'],
+ '黒と白と朱の三色':['#161616','#f7f7f7','#d94c39'],
+ '金と黒の二色':['#c2a35b','#141218'],
+ 'セピア':['#422c20','#94735b','#ebd7b6']};
+ const colors=s.swatches||base[value],ratios=s.ratios||({'ネオンピンク × シアン':[25,20,55],'原色のポップカラー':[45,20,10,20,5],'退色したフィルムカラー':[60,40],'墨一色':[40,35,25],'モノクローム':[40,35,25],'セピア':[35,40,25]}[value]||colors.map((_,i)=>i===0?60:40/(colors.length-1)));
+ return {value,colors:[...colors],ratios:[...ratios],allocation:s.allocation};
 }

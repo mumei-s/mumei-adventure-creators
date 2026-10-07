@@ -18,6 +18,10 @@ function environment(support,error){
 }
 {
  const t=environment(false);await t.context.shareAll();assert.equal(t.calls.length,0);assert.equal(t.get('transfer-fallback').hidden,false);assert.equal(t.get('result-refs').dataset.manual,'true');await t.context.shareText();assert.equal(t.calls[0].text,t.context.currentResult.prompt);assert.equal(t.calls[0].files,undefined);
+ assert.equal(t.get('share-text').hidden,false);assert.match(t.get('transfer-fallback-instruction').textContent,/下の「指示の本文を共有」/);
+}
+{
+ const t=environment(false);delete t.context.navigator.share;await t.context.shareAll();assert.equal(t.calls.length,0);assert.equal(t.get('share-text').hidden,true);assert.match(t.get('transfer-fallback-instruction').textContent,/上の「プロンプトをコピー」/);assert.doesNotMatch(t.get('transfer-fallback-instruction').textContent,/下の/);assert.match(t.get('transfer-status').textContent,/コピー/);
 }
 {
  const t=environment(true,new TypeError('WebView rejects file sharing'));await t.context.shareAll();assert.equal(t.calls.length,1);assert.equal(t.get('transfer-fallback').hidden,false);

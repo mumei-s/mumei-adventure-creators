@@ -171,7 +171,7 @@ function showResult(r){
  $('transfer-instruction').textContent=live?'「画像＋プロンプトを共有」で、ご自身の参照画像と指示の本文を渡します。共有先に画像と指示が届いたことを確認して送信してください。見本の人物や背景は送信しません。':requires?'「プロンプトをコピー」を押し、ChatGPTで自分の参照画像を添付して同じメッセージで送ってください。':'「プロンプトをコピー」を押し、ChatGPTへ送ってください。この選択では人物の参照画像は必要ありません。';
  $('transfer-instruction').textContent+=' ChatGPTの通常の画像作成を使います。5.5でもWorkやコード実行を前提にしません。';
  $('transfer-status').textContent=live?(canShareFiles(shareFiles(r).filter(f=>f.type.startsWith('image/')))?'画像と制作指示の本文を一緒に共有できます。共有先で両方を確認してください。':'このブラウザでは参照画像を長押しでコピーし、指示と一緒に送れます。'):fresh?'完成画像はChatGPT側に表示されます。':'履歴に画像データはありません。必要な場合は元の参照画像をChatGPTへ添付してください。';
- $('kit-note').textContent=live?'ZIPを解凍して、reference- で始まる参照画像と prompt.txt を同じメッセージに添付してください。':'生成した画像が表示されない場合は「画像が出ないときの指示」をコピーして、同じチャットへ送れます。';
+ $('kit-note').textContent=live?'「制作セットを保存」を使う場合は、ZIPを解凍して参照画像と prompt.txt を同じメッセージに添付してください。':'生成した画像が表示されない場合は「画像が出ないときの指示」をコピーして、同じチャットへ送れます。';
  $('transfer-fallback').hidden=true;delete $('result-refs').dataset.manual;$('result').hidden=false;$('result').scrollIntoView({behavior:document.body.dataset.motion==='off'?'instant':'smooth',block:'start'});
 }
 async function copyPrompt(){if(!currentResult)return false;try{await navigator.clipboard.writeText(currentResult.prompt);tell(needsReference(currentResult.values)?'プロンプトをコピーしました。自分の参照画像と一緒に送ってください。':'プロンプトをコピーしました。ChatGPTへ送って画像を生成します。');return true;}catch{const ta=$('prompt-output');ta.closest('details').open=true;ta.focus();ta.select();try{if(document.execCommand('copy')){tell('プロンプトをコピーしました。');return true;}}catch{}tell('全文を選択しました。長押しでコピーできます。');return false;}}
@@ -185,8 +185,10 @@ async function shareAll(){
  catch(e){if(e.name==='AbortError'){$('transfer-status').textContent='共有を取り消しました。もう一度共有できます。';return;}showShareFallback();}
 }
 function showShareFallback(){
- $('transfer-status').textContent='このブラウザは画像ファイルの共有に対応していません。参照画像を表示したまま、コピーと指示の共有を使えます。';
- $('transfer-fallback').hidden=false;$('share-text').hidden=typeof navigator.share!=='function';$('result-refs').dataset.manual='true';
+ const canShareText=typeof navigator.share==='function';
+ $('transfer-status').textContent=canShareText?'参照画像と指示を別々に渡せます。画像のコピーと指示の共有を使ってください。':'このブラウザは共有機能に対応していません。画像とプロンプトのコピーを使ってください。';
+ $('transfer-fallback-instruction').textContent=canShareText?'画像は上の参照を長押ししてコピーできます。下の「指示の本文を共有」を押し、同じメッセージへ画像を添付してください。':'画像は上の参照を長押ししてコピーできます。上の「プロンプトをコピー」を押してChatGPTへ貼り付け、同じメッセージへ画像を添付してください。';
+ $('transfer-fallback').hidden=false;$('share-text').hidden=!canShareText;$('result-refs').dataset.manual='true';
  $('transfer-fallback').scrollIntoView({block:'nearest'});
 }
 async function shareText(){

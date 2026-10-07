@@ -1,29 +1,28 @@
-import {normalizeImageFile} from './image-files.js?v=25.0.0';
-import {installNightStudio} from './night-studio.js?v=24.0.0';
-import {candidateAvailability,selectionConflicts} from './compatibility.js?v=24.0.0';
-import {appendRecipeEvidence} from './recipe-evidence.js?v=24.0.0';
-import {productionPlan,repairPrompt} from './production-plan.js?v=25.0.0';
-import {stagePrompts} from './production-workflow.js?v=25.0.0';
-import {createLayoutPanel} from './layout-export.js?v=24.0.0';
-import {applyPose} from './poses.js?v=24.0.0';
-import {applyCollection,dailyInspiration} from './collection.js?v=24.0.0';
-import {setupEffects} from './effects.js?v=25.0.0';
-import {colorWorlds} from './worlds.js?v=24.0.0';
-import {mergeCreator,compactCreatorProfile} from './creator.js?v=25.0.0';
-import {createCropEditor} from './crop-editor.js?v=24.0.0';
-import {profileForArtwork} from './activity-settings.js?v=25.0.0';
-import {createPicker} from './picker.js?v=25.0.0';
-import {modeKeys,modeCopy,initialSelections,effectiveSelections,propose} from './modes.js?v=24.0.0';
-import {buildReferenceBoard} from './guide-board.js?v=24.0.0';
-import {profileEndpoint,profileHeaders} from './runtime-config.js?v=24.0.0';
-import {questions,visibleQuestions,defaults,AUTO,normalizeCreator,resolveSelections} from './catalog.js?v=24.0.0';
-import {composePrompt,needsReference} from './prompt.js?v=25.0.0';
-import {buildDirection} from './direction.js?v=25.0.0';
-import {sampleFor,typePreview} from './examples.js?v=24.0.0';
-import {makeZip} from './zip.js?v=24.0.0';
-import {imageDeliveryRepairPrompt} from './output-contract.js?v=24.0.0';
-import {editorialReferencesFor} from './editorial-reference-sources.js?v=24.0.0';
-const APP_VERSION=25;
+import {creatorHandoff} from './creator-handoff.js?v=26.0.0';
+import {normalizeImageFile} from './image-files.js?v=26.0.0';
+import {installNightStudio} from './night-studio.js?v=26.0.0';
+import {candidateAvailability,selectionConflicts} from './compatibility.js?v=26.0.0';
+import {appendRecipeEvidence} from './recipe-evidence.js?v=26.0.0';
+import {productionPlan,repairPrompt} from './production-plan.js?v=26.0.0';
+import {stagePrompts} from './production-workflow.js?v=26.0.0';
+import {createLayoutPanel} from './layout-export.js?v=26.0.0';
+import {applyPose} from './poses.js?v=26.0.0';
+import {applyCollection,dailyInspiration} from './collection.js?v=26.0.0';
+import {setupEffects} from './effects.js?v=26.0.0';
+import {colorWorlds} from './worlds.js?v=26.0.0';
+import {compactCreatorProfile} from './creator.js?v=26.0.0';
+import {createCropEditor} from './crop-editor.js?v=26.0.0';
+import {createPicker} from './picker.js?v=26.0.0';
+import {modeKeys,modeCopy,initialSelections,effectiveSelections,propose} from './modes.js?v=26.0.0';
+import {buildReferenceBoard} from './guide-board.js?v=26.0.0';
+import {questions,visibleQuestions,defaults,AUTO,normalizeCreator,resolveSelections} from './catalog.js?v=26.0.0';
+import {composePrompt,needsReference} from './prompt.js?v=26.0.0';
+import {buildDirection} from './direction.js?v=26.0.0';
+import {sampleFor,typePreview} from './examples.js?v=26.0.0';
+import {makeZip} from './zip.js?v=26.0.0';
+import {imageDeliveryRepairPrompt} from './output-contract.js?v=26.0.0';
+import {editorialReferencesFor} from './editorial-reference-sources.js?v=26.0.0';
+const APP_VERSION=26;
 const $=id=>document.getElementById(id),STORAGE='mumeis-halloween-v2';
 let saved={history:[],used:[],count:0},view='auto';
 try{const v=JSON.parse(localStorage.getItem(STORAGE)||'null');if(v&&Array.isArray(v.history)&&Array.isArray(v.used))saved={history:v.history.map(r=>({...r,values:{pose:AUTO,line:AUTO,...r?.values}})).filter(x=>x&&typeof x.prompt==='string'&&x.values&&questions.every(q=>typeof x.values[q.key]==='string')&&x.variant&&x.profile&&Array.isArray(x.references)).slice(0,12),used:v.used.filter(x=>x&&typeof x.signature==='string').slice(-2000),count:Number.isSafeInteger(v.count)?v.count:0};view=localStorage.getItem('halloween-view')||'auto';}catch{}
@@ -73,7 +72,7 @@ let tagsEnabled=false,excludedTopics=new Set(),ideaSnapshot=null,ideaApplied=nul
 const cropEditor=createCropEditor({$,tell,onApply:async(ref,edit)=>{if(!refs.includes(ref))return;const originalFile=ref.originalFile||ref.file;const url=URL.createObjectURL(edit.file),im=new Image();try{await new Promise((resolve,reject)=>{im.onload=resolve;im.onerror=()=>reject(new Error('編集画像を開けませんでした。'));im.src=url;});URL.revokeObjectURL(ref.url);Object.assign(ref,{originalFile,file:edit.file,url,name:edit.file.name,width:im.naturalWidth,height:im.naturalHeight,crop:edit.crop});renderRefs();}catch(e){URL.revokeObjectURL(url);throw e;}}});
 function renderChoices(picked){
  const existing=new Map([...$('choices').children].map(b=>[b.dataset.key,b])),nodes=[];visibleQuestions.forEach((q,i)=>{if(!modeKeys[mode].includes(q.key))return;const stamp=collection+'|'+q.name+'|'+selections[q.key]+(q.key==='type'?'|'+selections.line:'')+'|'+(q.key==='costume'?refs.find(r=>r.role==='identity')?.url||'':'');const old=existing.get(q.key);if(old?.dataset.stamp===stamp){old.classList.remove('just-picked');nodes.push(old);return;}const b=el('button','choice'+(picked===q.key?' just-picked':''));b.type='button';b.dataset.key=q.key;b.dataset.stamp=stamp;b.setAttribute('aria-haspopup','dialog');b.setAttribute('aria-label',q.name+'：'+displayValue(q,selections[q.key])+'。選択を変更');
- const copy=el('span','choice-content');copy.append(el('span','choice-name',String(i+1).padStart(2,'0')+' / '+q.name),el('b','choice-value',displayValue(q,selections[q.key])),el('span','choice-hint',q.key==='type'?'セリフ：'+selections.line:q.hint));b.append(copy,sampleNode(q.key,selections[q.key]),el('span','choice-plus','＋'));b.addEventListener('click',()=>openPicker(q));nodes.push(b);});$('choices').replaceChildren(...nodes);renderBoard(mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:selections);syncActivity();
+ const copy=el('span','choice-content');copy.append(el('span','choice-name',String(i+1).padStart(2,'0')+' / '+q.name),el('b','choice-value',displayValue(q,selections[q.key])),el('span','choice-hint',q.hint));b.append(copy,sampleNode(q.key,selections[q.key]),el('span','choice-plus','＋'));b.addEventListener('click',()=>openPicker(q));nodes.push(b);});$('choices').replaceChildren(...nodes);renderBoard(mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:selections);syncActivity();
 }
 const paletteColors={'漆黒 × 琥珀 × 象牙':['#171513','#db7d20','#f4ebd4'],'深紅 × 黒 × 古金':['#811722','#171513','#b79538'],'群青 × 月白 × 銀':['#263774','#f1f5fc','#bbc5d1'],'紫 × 黒 × 酸性グリーン':['#623084','#171513','#d7ed26'],'藍墨 × 朱 × 和紙の白':['#263d51','#c54022','#ebe4d7'],'桃色 × 墨黒 × 真珠':['#ec92b6','#262122','#f1eaed'],'墨一色':['#141414','#707070','#f3f1eb'],'モノクローム':['#191919','#777','#eee'],'セピア':['#533e26','#ab8353','#e7caa2']};
 colorWorlds.forEach(x=>paletteColors[x.value]=x.colors);
@@ -89,25 +88,21 @@ function renderBoard(values=selections,variant=null){
 }
 function setView(mode){if(!['auto','phone','tablet','pc'].includes(mode))mode='auto';view=mode;document.body.dataset.view=mode;document.querySelectorAll('.view-switch button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===mode)));$('view-status').textContent={auto:'画面幅に合わせて表示',phone:'スマホの幅・大きな文字',tablet:'タブレットの幅・大きな選択枠',pc:'PCの幅・広い作業スペース'}[mode];try{localStorage.setItem('halloween-view',mode);}catch{}}
 const picker=createPicker({$,el,sampleNode,readSelection:()=>selections,choose,onCustom:buildCustom,tell});
-function openPicker(q){const text=q.key==='type'||q.key==='line';if(text){if(q.key==='line')textPart='line';q=questions.find(x=>x.key===textPart);}$('text-subtabs').hidden=!text;document.querySelectorAll('[data-text-part]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.textPart===q.key)));activeQuestion=q;const i=visibleQuestions.findIndex(x=>x.key===(q.key==='line'?'type':q.key));$('picker-index').textContent=String(i+1).padStart(2,'0')+' / 10';picker.open(q);}
+function openPicker(q){const text=q.key==='type'||q.key==='line';if(text){if(q.key==='line')textPart='line';q=questions.find(x=>x.key===textPart);}$('text-subtabs').hidden=true;document.querySelectorAll('[data-text-part]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.textPart===q.key)));activeQuestion=q;const i=visibleQuestions.findIndex(x=>x.key===(q.key==='line'?'type':q.key));$('picker-index').textContent=String(i+1).padStart(2,'0')+' / 10';picker.open(q);}
 function buildCustom(q){const form=el('form','custom-form');if(q.key==='size'){const w=el('input'),h=el('input');w.type=h.type='number';w.min=h.min='256';w.max=h.max='16000';w.required=h.required=true;w.placeholder='幅px';h.placeholder='高さpx';w.setAttribute('aria-label','希望の幅');h.setAttribute('aria-label','希望の高さ');form.append(w,el('span',null,'×'),h);form.addEventListener('submit',e=>{e.preventDefault();const a=Number(w.value),b=Number(h.value);if(!Number.isInteger(a)||!Number.isInteger(b)||a<256||b<256||a>16000||b>16000)return;const gcd=(x,y)=>y?gcd(y,x%y):x;const d=gcd(a,b);choose('自由サイズ｜'+a+'×'+b+'｜'+a/d+':'+b/d);});}else{const input=el('input');input.required=true;input.maxLength=160;input.placeholder='希望する'+q.name;input.setAttribute('aria-label',q.name+'を自由入力');form.append(input);form.addEventListener('submit',e=>{e.preventDefault();const v=input.value.trim().replace(/[\r\n]/g,' ');if(v)choose(v);});}const b=el('button','dark-button','この内容にする');b.type='submit';form.append(b);$('custom-area').append(form,el('p','microcopy',q.key==='size'?'256〜16,000px。生成環境に対応する実寸で出力されます。':'具体的な技法や角度も指定できます。160文字まで。'));form.querySelector('input').focus();}
 function choose(v){const availability=candidateAvailability(activeQuestion.key,v,selections);if(!availability.enabled){tell(availability.reason);return;}selections[activeQuestion.key]=v;const key=activeQuestion.key;renderChoices(key==='line'?'type':key);$('picker').close();document.querySelector('[data-key="'+(key==='line'?'type':key)+'"]')?.focus();tell(activeQuestion.name+'を選びました');}
 function summarizeName(raw){const bracket=raw.match(/^[〖【「『]([^〗】」』]+)[〗】」』]/);return bracket?bracket[1].trim():raw;}
 async function loadProfile(){
- const id=normalizeCreator($('creator').value);if(!id){tell('noteのIDまたはプロフィールURLを入力してください。');$('creator').focus();return;}
- if(profileController&&profileController.profileId===id)return profileController.done;if(loadedProfile?.id===id&&loadedProfile.ready)return true;profileController?.abort();const controller=new AbortController();profileController=controller;controller.profileId=id;loadedProfile=null;$('load-profile').disabled=true;$('load-profile').textContent='準備中…';$('stop-profile').hidden=false;$('profile-status').textContent='あなたの世界観を整えています。選択や遊びはそのまま楽しめます。';
- let finish,usable;controller.done=new Promise(r=>finish=r);controller.usable=new Promise(r=>usable=r);try{let page=1;const pages=new Set(),signatures=new Set();while(page){if(pages.has(page))throw new Error('クリエイターの準備が途中で止まりました。');pages.add(page);let data;for(let attempt=0;attempt<2;attempt++){try{const response=await fetch(profileEndpoint+'?id='+encodeURIComponent(id)+'&page='+page,{signal:AbortSignal.any([controller.signal,AbortSignal.timeout(60000)]),headers:profileHeaders});data=await response.json();if(!response.ok||typeof data.name!=='string')throw new Error(data.error||'クリエイター情報を整えられませんでした。');break;}catch(e){if(controller.signal.aborted||e.name==='TimeoutError'||attempt===1)throw e;}}if(controller!==profileController)return false;const signature=data.pagination?.keys?.join('|');if(signature&&signatures.has(signature))throw new Error('クリエイターの準備が途中で止まりました。');if(signature)signatures.add(signature);loadedProfile=mergeCreator(loadedProfile,data);if(page===1){$('creator-name').value=summarizeName(data.name);$('activity').value=data.biography||'';$('profile-editor').open=false;usable(true);}syncProfilePreview();renderBoard();$('profile-status').textContent='公開記事を読み込み中：'+(loadedProfile.bodyRead?.count??loadedProfile.bodyRead?.read??0)+'記事の本文 · '+page+'ページ。選択はそのまま続けられます。';page=data.pagination?.nextPage||null;}
- loadedProfile.ready=true;$('profile-status').textContent=loadedProfile.bodyRead?.status==='partial'?'公開記事の一覧を取得しました。一部の本文は取得できていません。読めた本文とプロフィールで制作できます。':'公開記事の全ページを確認しました。'+(loadedProfile.bodyRead?.count??loadedProfile.bodyRead?.read??0)+'記事の本文とプロフィールで制作できます。';$('profile-status').className='profile-status success';tell('あなたの世界観で制作できます。');return true;}
- catch(e){if(controller!==profileController||e.name==='AbortError')return false;if(loadedProfile)loadedProfile.ready=false;$('profile-editor').open=true;syncProfilePreview();$('profile-status').textContent=(e.message||'準備できませんでした。')+' 名前・活動は手入力できます。';$('profile-status').className='profile-status error';}
- finally{usable(!!loadedProfile&&loadedProfile.id===id);finish(!!loadedProfile&&loadedProfile.id===id);if(controller===profileController){profileController=null;$('stop-profile').hidden=true;$('load-profile').disabled=false;$('load-profile').textContent='IDから読み込む';}}
+ const id=normalizeCreator($('creator').value);
+ if(!id){tell('noteのIDまたはプロフィールURLを入力してください。');$('creator').focus();return false;}
+ loadedProfile=creatorHandoff(id);syncProfilePreview();renderBoard();
+ $('profile-status').textContent='IDを設定しました。名前と公開活動はChatGPTで確認します。';
+ $('profile-status').className='profile-status success';return true;
 }
-const topicsList=['共同マガジン','コミュニティ','メンバーシップ','子育て','育児','ワーママ','医療','福祉','介護','看護','イラスト','AI','創作','小説','エッセイ','詩','漫画','写真','音楽','料理','旅行','読書','映画','デザイン','アート','日記','仕事','タイミー','副業','収益化','学習','教育','健康','スポーツ','ゲーム','ファッション','動物','自然'];
-function currentProfile(){const name=$('creator-name').value.trim(),bio=$('activity').value.trim(),id=normalizeCreator($('creator').value);const base=loadedProfile&&loadedProfile.id===id?loadedProfile:{};const corpus=bio+' '+(base.titles||[]).join(' ');const topics=[...new Set([...topicsList.filter(t=>t==='AI'?/\bAI\b/i.test(corpus):corpus.includes(t)),...(bio===(base.biography||'')?base.topics||[]:[])])];return {...base,id:id||'',name:base.name||name,displayName:name,biography:bio,topics,titles:base.titles||[],source:base.source||'作成者の手動入力'};}
-function artworkProfile(){const p=profileForArtwork(currentProfile(),true,excludedTopics,{tagsEnabled});return collection==='everyday'?dailyInspiration(p):p;}
-function syncProfilePreview(){clearPreparedResult();const p=currentProfile();$('profile-preview').hidden=!p.displayName;$('profile-name').textContent=p.displayName;$('profile-bio').textContent=p.biography||'あなたの創作を、Halloweenの世界へ。';renderTopics(p.topics);syncActivity();}
-function syncActivity(){const p=artworkProfile();$('activity-on').setAttribute('aria-pressed',String(tagsEnabled));$('activity-off').setAttribute('aria-pressed',String(!tagsEnabled));$('activity-state').textContent=tagsEnabled?'ON：タグを補助として使います。個別に外せます。記事本文とプロフィールは常に反映します。':'OFF：記事本文とプロフィールから制作します。タグは使いません。';$('profile-ideas').hidden=!currentProfile().inspiration?.themes?.length;$('profile-ideas').disabled=!p.inspiration?.themes?.length;$('activity-topics').hidden=!tagsEnabled;const applied=ideaApplied&&(selections.theme===ideaApplied.theme||selections.line===ideaApplied.line);$('profile-ideas').setAttribute('aria-pressed',String(!!applied));$('profile-ideas').textContent=applied?'提案を使用中 — タップで解除':'物語・セリフを提案する';$('profile-ideas-off').hidden=!applied;}
-function renderTopics(topics){$('activity-topics').replaceChildren(...topics.map(t=>{const on=!excludedTopics.has(t),b=el('button',null,t+' · '+(on?'ON':'OFF'));b.type='button';b.setAttribute('aria-pressed',String(on));b.setAttribute('aria-label',t+'：'+(on?'ON。タップでOFF':'OFF。タップでON'));b.disabled=!tagsEnabled;b.addEventListener('click',()=>{if(on)excludedTopics.add(t);else excludedTopics.delete(t);clearPreparedResult();syncProfilePreview();});return b;}));}
-function clearIdeas(){if(ideaSnapshot&&ideaApplied){if(selections.theme===ideaApplied.theme)selections.theme=ideaSnapshot.theme;if(selections.line===ideaApplied.line)selections.line=ideaSnapshot.line;if(mode==='auto'&&selectedProposal){if(selectedProposal.theme===ideaApplied.theme)selectedProposal.theme=ideaSnapshot.proposal?.theme||ideaSnapshot.theme;if(selectedProposal.line===ideaApplied.line)selectedProposal.line=ideaSnapshot.proposal?.line||ideaSnapshot.line;}}ideaSnapshot=null;ideaApplied=null;renderChoices();}
+function currentProfile(){return creatorHandoff(normalizeCreator($('creator').value)||'',$('creator-name').value,$('activity').value);}
+function artworkProfile(){return currentProfile();}
+function syncProfilePreview(){clearPreparedResult();const p=currentProfile();$('profile-preview').hidden=!(p.id||p.name);$('profile-name').textContent=p.name||'ChatGPTで作者名を確認';$('profile-bio').textContent=p.biography||'公開プロフィールと、選択に関係する記事をChatGPTで確認します。';}
+function syncActivity(){}
 function setActivity(on){clearPreparedResult();tagsEnabled=on;syncProfilePreview();}
 async function addFiles(files){
  if(adding){tell('画像を読み込み中です。');return;}const incoming=Array.from(files);if(!incoming.length)return;setAttachmentMode('bundle');adding=true;$('generate').disabled=true;
@@ -125,20 +120,12 @@ async function generate(lockedValues=null){
  await new Promise(resolve=>requestAnimationFrame(()=>resolve()));
  if(mode==='auto'&&!selectedProposal){formError('気に入った組み合わせを一つ選んでください。',$('propose'));throw new Error('組み合わせを選んでください。');}
  const creator=normalizeCreator($('creator').value);if(creator===null){formError('noteのIDまたはURLの形式を確認してください。',$('creator'));throw new Error('ID形式が正しくありません。');}
- const manualName=$('profile-editor').open&&$('creator-name').value.trim();
- if(creator&&!manualName&&!($('creator-name').value.trim()&&loadedProfile?.id===creator)){
-  if(profileController?.profileId===creator)await profileController.usable;
-  else if((!loadedProfile||loadedProfile.id!==creator)&&!$('profile-editor').open){loadProfile();if(profileController?.profileId===creator)await profileController.usable;}
- }
- if(normalizeCreator($('creator').value)!==creator)throw new Error('クリエイターIDが変わりました。新しい名前を確認して、もう一度制作してください。');
- if(profileController?.profileId===creator){$('generation-status').textContent='公開記事の全ページを確認しています。選択した条件は保持しています。';await profileController.done;}
- if(normalizeCreator($('creator').value)!==creator)throw new Error('クリエイターIDが変わりました。新しい設定で制作してください。');
- const profile=artworkProfile();if(!profile.displayName){$('profile-editor').open=true;formError('IDから名前を読み込むか、クリエイター名を入力してください。',$('creator-name'));throw new Error('クリエイター名がありません。');}
+ const profile=artworkProfile();if(!profile.displayName){$('profile-editor').open=true;formError('noteのIDかクリエイター名を入力してください。',$('creator'));throw new Error('作者の情報がありません。');}
  $('generation-status').textContent='選んだ項目と参照画像を確認しています…';
   syncSaved();const input=lockedValues?{...lockedValues}:mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:effectiveSelections(mode,selections);
   if(input.theme===AUTO&&profile.inspiration?.themes?.length)input.theme=profile.inspiration.themes[Math.floor(rng()*profile.inspiration.themes.length)];
   if(input.line===AUTO&&profile.inspiration?.phrases?.length)input.line=profile.inspiration.phrases[Math.floor(rng()*profile.inspiration.phrases.length)];
-  const values=resolveSelections(input,rng);const conflicts=selectionConflicts(values);if(conflicts.length){formError(conflicts[0].reason,$('generate'));throw new Error(conflicts[0].reason);}if(input.mood===AUTO)values.mood='毎回大胆に変える';
+  input.line='セリフなし';const values=resolveSelections(input,rng);values.line='セリフなし';const conflicts=selectionConflicts(values);if(conflicts.length){formError(conflicts[0].reason,$('generate'));throw new Error(conflicts[0].reason);}if(input.mood===AUTO)values.mood='毎回大胆に変える';
   if(attachmentMode==='bundle'&&needsReference(values)&&!refs.some(r=>r.role==='identity')){formError('主参照を添付してください。人物なしの風景は、参照を使う項目を選んでいなければ画像なしでも作れます。',$('image-input'));throw new Error('主参照画像がありません。');}
   let variant;for(let a=0;a<60;a++){variant=applyPose(buildDirection(saved.used,values.mood,rng,collection,values),values.pose);if(!saved.used.some(r=>r.signature===variant.signature))break;if(a===59)throw new Error('構図の演出を選び直してください。');}
   const edition=uid(),ordered=attachmentMode==='bundle'?[refs.find(r=>r.role==='identity'),...refs.filter(r=>r.role!=='identity')].filter(Boolean):[];
@@ -209,14 +196,9 @@ async function downloadKit(){const r=currentResult;if(!r)return;const b=$('downl
 function renderHistory(){$('history').replaceChildren();if(!saved.history.length){$('history').append(el('p','history-empty','まだ白紙のコレクション。最初の一夜をつくろう。'));return;}saved.history.forEach(r=>{const b=el('button','history-card');b.type='button';b.append(sampleNode('medium',r.values.medium),el('span','hist-id','No. '+String(r.count).padStart(3,'0')),el('b',null,r.values.theme),el('p',null,r.profile.displayName+' / '+r.values.medium),el('small',null,r.variant.face));b.addEventListener('click',()=>showResult(r));$('history').append(b);});}
 function setAttachmentMode(next){clearPreparedResult();attachmentMode=next==='bundle'?'bundle':'chatgpt';document.querySelectorAll('[name="attachment-mode"]').forEach(r=>r.checked=r.value===attachmentMode);$('drop-zone').hidden=false;$('reference-note').hidden=false;$('attachment-mode-note').textContent=attachmentMode==='bundle'?'ここにご自身の参照画像を添付し、項目名から作る制作指示と一緒に共有します。人物なしの風景は画像なしでも作れます。':'制作指示をコピーし、ChatGPTで自分の画像を添付して送ります。ここで画像を添付すると「画像＋プロンプト」に切り替わります。';}
 document.querySelectorAll('[name="attachment-mode"]').forEach(r=>r.addEventListener('change',()=>setAttachmentMode(r.value)));
-$('activity-on').addEventListener('click',()=>setActivity(true));$('activity-off').addEventListener('click',()=>setActivity(false));
-$('profile-ideas-off').addEventListener('click',()=>{clearIdeas();tell('提案を解除し、前の選択に戻しました。');});
-$('profile-ideas').addEventListener('click',()=>{if(ideaApplied&&(selections.theme===ideaApplied.theme||selections.line===ideaApplied.line)){clearIdeas();tell('提案を解除し、前の選択に戻しました。');return;}const idea=artworkProfile().inspiration;if(!idea?.themes?.length)return;ideaSnapshot={theme:selections.theme,line:selections.line,proposal:selectedProposal?{...selectedProposal}:null};selections.theme=idea.themes[Math.floor(rng()*idea.themes.length)];if(idea.phrases?.length)selections.line=idea.phrases[Math.floor(rng()*idea.phrases.length)];ideaApplied={theme:selections.theme,line:selections.line};if(mode==='auto')selectedProposal={...(selectedProposal||propose(selections,rng)),...ideaApplied,size:selections.size};renderChoices();tell('物語とセリフに提案を使っています。もう一度押すと解除できます。');});
-$('stop-profile').addEventListener('click',()=>{profileController?.abort();profileController=null;$('stop-profile').hidden=true;$('load-profile').disabled=false;$('load-profile').textContent='IDから読み込む';$('profile-editor').open=!loadedProfile;$('profile-status').textContent='準備を止めました。今の設定で続けられます。';});
 $('download-board').addEventListener('click',async()=>{const r=currentResult;if(!r?.localRefs?.length)return;const b=$('download-board');b.disabled=true;const label=b.textContent;b.textContent='参照をまとめています…';try{r.referenceBoardFile||=await buildReferenceBoard(r.localRefs,r.references);download(r.referenceBoardFile,r.referenceBoardFile.name);}catch{tell('まとめられませんでした。元の参照画像はそのまま共有できます。');}finally{b.disabled=false;b.textContent=label;}});
 $('share-board').addEventListener('click',shareAll);
-$('load-profile').addEventListener('click',loadProfile);$('creator').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();loadProfile();}});$('creator').addEventListener('input',()=>{profileController?.abort();profileController=null;$('stop-profile').hidden=true;$('load-profile').disabled=false;$('load-profile').textContent='IDから読み込む';if(loadedProfile&&normalizeCreator($('creator').value)!==loadedProfile.id){if($('creator-name').value===summarizeName(loadedProfile.name))$('creator-name').value='';if($('activity').value===loadedProfile.biography)$('activity').value='';loadedProfile=null;excludedTopics.clear();clearIdeas();renderTopics([]);}$('profile-status').className='profile-status';$('profile-status').textContent='IDを入力すると、名前と活動内容を読み込みます。';syncProfilePreview();renderBoard();});
-$('creator').addEventListener('change',()=>{if(normalizeCreator($('creator').value))loadProfile();});
+$('load-profile').addEventListener('click',loadProfile);$('creator').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();loadProfile();}});$('creator').addEventListener('input',()=>{loadedProfile=null;$('profile-status').className='profile-status';$('profile-status').textContent='このIDの名前と公開活動はChatGPTで確認します。';syncProfilePreview();renderBoard();});
 $('creator-name').addEventListener('input',()=>{syncProfilePreview();renderBoard();$('form-error').hidden=true;});$('activity').addEventListener('input',syncProfilePreview);$('image-input').addEventListener('change',e=>addFiles(e.target.files));
 $('pick-image').addEventListener('click',()=>$('image-input').click());
 $('paste-image').addEventListener('click',async()=>{try{if(!navigator.clipboard?.read)throw new Error('unsupported');const items=await navigator.clipboard.read(),files=[];for(const item of items){const type=item.types.find(t=>['image/png','image/jpeg','image/webp','image/gif'].includes(t));if(type){const blob=await item.getType(type);files.push(new File([blob],'paste-'+Date.now()+'.'+(type==='image/jpeg'?'jpg':type.split('/')[1]),{type}));}}if(!files.length)throw new Error('no image');await addFiles(files);$('paste-target').hidden=true;}catch{$('paste-target').hidden=false;$('paste-target').focus();tell('貼り付け欄を長押しして貼り付けてください。写真を選ぶこともできます。');}});

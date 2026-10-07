@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {questions,resolveSelections} from '../catalog.js?v=24.0.0';
-import {applyCollection} from '../collection.js?v=24.0.0';
-import {initialSelections} from '../modes.js?v=24.0.0';
-import {buildDirection} from '../direction.js?v=24.0.0';
-import {applyPose} from '../poses.js?v=24.0.0';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=24.0.0';
-import {composePrompt} from '../prompt.js?v=24.0.0';
-import {renderChatInput,renderInput} from '../compiled-production.js?v=24.0.0';
-import {imageOutputContract,imageDeliveryRepairPrompt,nativeImageRequest} from '../output-contract.js?v=24.0.0';
+import {questions,resolveSelections} from '../catalog.js?v=26.0.0';
+import {applyCollection} from '../collection.js?v=26.0.0';
+import {initialSelections} from '../modes.js?v=26.0.0';
+import {buildDirection} from '../direction.js?v=26.0.0';
+import {applyPose} from '../poses.js?v=26.0.0';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=26.0.0';
+import {composePrompt} from '../prompt.js?v=26.0.0';
+import {renderChatInput,renderInput} from '../compiled-production.js?v=26.0.0';
+import {imageOutputContract,imageDeliveryRepairPrompt,nativeImageRequest} from '../output-contract.js?v=26.0.0';
 
 const profile={displayName:'春野 澪',activityEnabled:false,topics:[]},random=()=>.28;
 let count=0,total=0,max=0;

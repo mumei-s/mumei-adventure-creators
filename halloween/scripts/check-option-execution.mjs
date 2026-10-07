@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {questions,resolveSelections} from '../catalog.js?v=24.0.0';
-import {applyCollection} from '../collection.js?v=24.0.0';
-import {initialSelections} from '../modes.js?v=24.0.0';
-import {buildDirection} from '../direction.js?v=24.0.0';
-import {applyPose} from '../poses.js?v=24.0.0';
-import {productionPlan} from '../production-plan.js?v=24.0.0';
-import {renderInput} from '../compiled-production.js?v=24.0.0';
-import {optionRecipe} from '../option-recipes.js?v=24.0.0';
-import {mediumExecution} from '../medium-execution.js?v=24.0.0';
-import {formatExecution} from '../format-execution.js?v=24.0.0';
+import {questions,resolveSelections} from '../catalog.js?v=26.0.0';
+import {applyCollection} from '../collection.js?v=26.0.0';
+import {initialSelections} from '../modes.js?v=26.0.0';
+import {buildDirection} from '../direction.js?v=26.0.0';
+import {applyPose} from '../poses.js?v=26.0.0';
+import {productionPlan} from '../production-plan.js?v=26.0.0';
+import {renderInput} from '../compiled-production.js?v=26.0.0';
+import {optionRecipe} from '../option-recipes.js?v=26.0.0';
+import {mediumExecution} from '../medium-execution.js?v=26.0.0';
+import {formatExecution} from '../format-execution.js?v=26.0.0';
 
 const random=()=>.28,profile={displayName:'TEST',activityEnabled:false,topics:[],biography:''};
 const entries=new Map();let occurrences=0;
@@ -63,7 +63,7 @@ for(const mode of ['halloween','everyday']){
  assert.ok(blocked.json.typography.line.method.includes('画像には描かない'));
 }
 applyCollection('halloween');
-assert.equal(entries.size,584);assert.equal(occurrences,983);
+assert.equal(entries.size,583);assert.equal(occurrences,981);
 const byKey=Object.fromEntries([...new Set([...entries.values()].map(e=>e.key))].map(key=>[key,[...entries.values()].filter(e=>e.key===key).length]));
 const report={date:'2026-10-07',scope:'Per-option execution input coverage; not generated-image acceptance',unique:entries.size,occurrences,byKey,entries:[...entries.values()]};
 if(process.argv.includes('--save')){

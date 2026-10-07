@@ -1,6 +1,6 @@
-import {compatibleResolved} from './compatibility.js?v=24.0.0';
-import {poseGroups} from './poses.js?v=24.0.0';
-import {colorWorlds,luminousMedia} from './worlds.js?v=24.0.0';
+import {compatibleResolved} from './compatibility.js?v=26.0.0';
+import {poseGroups} from './poses.js?v=26.0.0';
+import {colorWorlds,luminousMedia} from './worlds.js?v=26.0.0';
 export const AUTO='おまかせ';
 const group=(label,values)=>({label,values:values.split('|')});
 export const questions=[
@@ -16,7 +16,9 @@ export const questions=[
  {key:'size',name:'サイズ・用途',hint:'使う場所に合わせる',groups:[group('note・SNS','noteサムネイル｜1280×670｜128:67|横長16:9｜3840×2160｜16:9|正方形アイコン｜2048×2048｜1:1|縦投稿4:5｜2160×2700｜4:5|スマホ壁紙・ストーリー｜2160×3840｜9:16|縦ポスター2:3｜2400×3600｜2:3|横写真3:2｜3600×2400｜3:2|縦写真3:4｜2400×3200｜3:4|横長バナー｜3600×1200｜3:1'),group('印刷・高解像度','A4縦・300dpi目安｜2480×3508｜210:297|A4横・300dpi目安｜3508×2480｜297:210|A3縦・300dpi目安｜3508×4961｜297:420|A3横・300dpi目安｜4961×3508｜420:297|8K横・16:9｜7680×4320｜16:9')]}
 ];
 questions.splice(6,0,{key:'pose',name:'ポーズ',hint:'身体・手足・重心を選ぶ',groups:poseGroups});
-questions.find(q=>q.key==='type').name='文字・広告・セリフ';
+questions.find(q=>q.key==='type').name='文字・広告';
+questions.find(q=>q.key==='type').groups.forEach(g=>g.values=g.values.filter(v=>v!=='セリフのみ'));
+questions.find(q=>q.key==='line').autoValues=['セリフなし'];
 export const visibleQuestions=questions.filter(q=>q.key!=='line');
 const palette=questions.find(q=>q.key==='palette');
 for(const [label,range] of [['光る幻想色',[0,8]],['淡色・空気',[8,16]],['鮮烈な対比',[16,24]],['紙・顔料・制限色',[24,32]]])palette.groups.push({label,values:colorWorlds.slice(...range).map(x=>x.value)});

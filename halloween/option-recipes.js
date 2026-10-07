@@ -1,12 +1,12 @@
-import {everydayRecipe} from './everyday-options.js?v=24.0.0';
-import {CRYSTAL_OBJECT,crystalObjectRecipe,japaneseSections} from './japan-direction.js?v=24.0.0';
-import {visualSpec} from './visual-specs.js?v=24.0.0';
-import {detailedMedium} from './medium-recipes.js?v=25.0.0';
-import {detailedFormat} from './format-recipes.js?v=24.0.0';
-import {detailedSubject} from './subject-recipes.js?v=25.0.0';
-import {detailedPalette} from './palette-recipes.js?v=24.0.0';
-import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=24.0.0';
-import {executionFor} from './option-execution.js?v=25.0.0';
+import {everydayRecipe} from './everyday-options.js?v=26.0.0';
+import {CRYSTAL_OBJECT,crystalObjectRecipe,japaneseSections} from './japan-direction.js?v=26.0.0';
+import {visualSpec} from './visual-specs.js?v=26.0.0';
+import {detailedMedium} from './medium-recipes.js?v=26.0.0';
+import {detailedFormat} from './format-recipes.js?v=26.0.0';
+import {detailedSubject} from './subject-recipes.js?v=26.0.0';
+import {detailedPalette} from './palette-recipes.js?v=26.0.0';
+import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=26.0.0';
+import {executionFor} from './option-execution.js?v=26.0.0';
 
 function crystalMaterialRecipe({noPerson}){
  if(!noPerson)return crystalObjectRecipe;

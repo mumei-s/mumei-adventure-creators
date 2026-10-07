@@ -1,10 +1,10 @@
-import {FAVORITE_LIMIT,FAVORITE_STORAGE,favoriteKey,normalizeFavorites,toggleFavorite} from './favorites.js?v=24.0.0';
-import {ringWindow,ringPosition,swipeStep} from './ring-motion.js?v=25.0.0';
-import {candidateAvailability,wrappedPage} from './compatibility.js?v=24.0.0';
-import {appendRecipeEvidence} from './recipe-evidence.js?v=24.0.0';
-import {recipeFor} from './recipes.js?v=25.0.0';
-import {optionRecipe} from './option-recipes.js?v=25.0.0';
-import {lookFor} from './looks.js?v=24.0.0';
+import {FAVORITE_LIMIT,FAVORITE_STORAGE,favoriteKey,normalizeFavorites,toggleFavorite} from './favorites.js?v=26.0.0';
+import {ringWindow,ringPosition,swipeStep} from './ring-motion.js?v=26.0.0';
+import {candidateAvailability,wrappedPage} from './compatibility.js?v=26.0.0';
+import {appendRecipeEvidence} from './recipe-evidence.js?v=26.0.0';
+import {recipeFor} from './recipes.js?v=26.0.0';
+import {optionRecipe} from './option-recipes.js?v=26.0.0';
+import {lookFor} from './looks.js?v=26.0.0';
 export function pageSize(width,height=window.innerHeight){return width<620?18:width<1100?24:32;}
 export function pageSlice(items,page,limit){const pages=Math.max(1,Math.ceil(items.length/limit));const safe=Math.min(Math.max(page,0),pages-1);return {page:safe,pages,items:items.slice(safe*limit,(safe+1)*limit)};}
 export function createPicker({$,el,sampleNode,readSelection,choose,onCustom,tell}){
@@ -34,7 +34,7 @@ export function createPicker({$,el,sampleNode,readSelection,choose,onCustom,tell
  function movePage(delta){if(comparing||!question||!delta)return;const pages=Math.ceil(records().length/(view==='ring'?6:pageSize(innerWidth))),next=wrappedPage(page,delta,pages);if(next===page)return;cancelGesture();page=next;ringOffset=0;focused=null;render();const canvas=$('picker').querySelector('.picker-canvas');clearTimeout(pageEffectTimer);canvas.classList.remove('page-changing');canvas.style.setProperty('--page-enter-x',delta>0?'-18px':'18px');void canvas.offsetWidth;canvas.classList.add('page-changing');pageEffectTimer=setTimeout(()=>canvas.classList.remove('page-changing'),360);}
  function angle(e){const b=stage.getBoundingClientRect();return Math.atan2((e.clientY-b.top-b.height/2)/(b.height*.35),(e.clientX-b.left-b.width/2)/(b.width*.38))*180/Math.PI;}
  function cancelGesture(){if(swipe&&surface.hasPointerCapture?.(swipe.id))surface.releasePointerCapture(swipe.id);swipe=null;stage.classList.remove('ring-grabbing');}
- surface.addEventListener('pointerdown',e=>{if(e.target.closest('input,textarea,select,#favorites-options,.compare-tray,.ring-tools,.ring-pick')||!e.isPrimary||comparing)return;cancelGesture();swipe={id:e.pointerId,x:e.clientX,y:e.clientY,angle:angle(e),rotation:0,baseOffset:ringOffset,focusStep:0,orbit:false,card:view==='ring'&&!!e.target.closest('.ring-pop')};});
+ surface.addEventListener('pointerdown',e=>{if(e.target.closest('input,textarea,select,#favorites-options,.compare-tray')||!e.isPrimary||comparing)return;cancelGesture();swipe={id:e.pointerId,x:e.clientX,y:e.clientY,angle:angle(e),rotation:0,baseOffset:ringOffset,focusStep:0,orbit:false,card:view==='ring'&&!!e.target.closest('.ring-pop')};});
  surface.addEventListener('dragstart',e=>e.preventDefault());
  surface.addEventListener('contextmenu',e=>{if(e.target.closest('#ring-stage'))e.preventDefault();});
  surface.addEventListener('touchmove',e=>{if(swipe?.orbit)e.preventDefault();},{passive:false});

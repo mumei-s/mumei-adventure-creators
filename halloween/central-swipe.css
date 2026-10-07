@@ -1,0 +1,4 @@
+/* Horizontal paging also starts on the centered sample and its controls.
+   Vertical movement stays available to the dialog's scroll container. */
+#ring-focus, #ring-focus * { touch-action: pan-y; }
+#ring-focus { user-select: none; -webkit-user-select: none; }

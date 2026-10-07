@@ -1,6 +1,6 @@
-import {mediumExecution} from './medium-execution.js?v=25.0.0';
-import {formatExecution} from './format-execution.js?v=24.0.0';
-import {colorPolicy} from './color-policy.js?v=24.0.0';
+import {mediumExecution} from './medium-execution.js?v=26.0.0';
+import {formatExecution} from './format-execution.js?v=26.0.0';
+import {colorPolicy} from './color-policy.js?v=26.0.0';
 
 // The option's own physical recipe is the source of its execution contract.
 // No generic "beautiful / atmospheric" default replaces a missing preset.
@@ -32,6 +32,7 @@ export function executionFor(key,value,recipe,{noPerson=false,values={}}={}){
  // the user's no-person choice before that choice is even read.
  if(key==='medium'&&noPerson)method=sections.filter(s=>s.part!=='日本を基準にした個別条件').slice(0,4).map(s=>s.draw).join(' ');
  if(key==='medium'){
+  method+=' Apply this selected making process consistently to '+(noPerson?'the scenery, objects, materials and background.':'the face, hair, body, clothing and background. Preserve reference identity as recognizable features translated into this medium; redraw rather than retain a photographic face or surface from the reference.');
   const policy=colorPolicy(values);
   if(policy.restricted)method+=' Use only '+policy.allowed+'. Translate every material color, optical band and reflection into values within those permitted colors. Preserve the technique through its line, layering, boundary and depth structure.';
  }

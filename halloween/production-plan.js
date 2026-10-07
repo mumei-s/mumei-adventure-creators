@@ -1,13 +1,13 @@
-import {imageOutputContract} from './output-contract.js?v=24.0.0';
-import {modeFoundation} from './japan-direction.js?v=24.0.0';
-import {visibleQuestions} from './catalog.js?v=24.0.0';
-import {formatContract} from './formats.js?v=24.0.0';
-import {buildEditorial,editorialContract} from './editorial.js?v=25.0.0';
-import {optionRecipe} from './option-recipes.js?v=25.0.0';
-import {colorPolicy} from './palette-recipes.js?v=24.0.0';
-import {resolveArtDirection,interactionContract} from './art-direction.js?v=25.0.0';
-import {executionFor} from './option-execution.js?v=25.0.0';
-import {articleContext} from './creator.js?v=25.0.0';
+import {creatorLookupInstructions} from './creator-handoff.js?v=26.0.0';
+import {imageOutputContract} from './output-contract.js?v=26.0.0';
+import {modeFoundation} from './japan-direction.js?v=26.0.0';
+import {visibleQuestions} from './catalog.js?v=26.0.0';
+import {formatContract} from './formats.js?v=26.0.0';
+import {buildEditorial,editorialContract} from './editorial.js?v=26.0.0';
+import {optionRecipe} from './option-recipes.js?v=26.0.0';
+import {colorPolicy} from './palette-recipes.js?v=26.0.0';
+import {resolveArtDirection,interactionContract} from './art-direction.js?v=26.0.0';
+import {executionFor} from './option-execution.js?v=26.0.0';
 
 export function productionPlan(profile,values,variant,collection='halloween',random=Math.random){
  const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);
@@ -42,12 +42,9 @@ export function productionPlan(profile,values,variant,collection='halloween',ran
  });
  const format=formatContract(values);
  if(noPerson)format.push('人物なしの形式解釈：形式が主役・肖像・衣装の画像領域を求めても、選んだ風景・物体・紋章をそこへ配置する。人物や人型のマネキンを補わず、レイアウトの情報構造だけを保つ。');
- const authorContext=profile.activityEnabled===false?'':[
-  profile.biography?.trim()&&'作者が公開または入力した活動説明：'+profile.biography.trim(),
-  articleContext(profile,{maxCharacters:4200,maxArticles:24}),
-  profile.tagsEnabled===true&&profile.topics?.length&&'選択した補助タグ（本文の根拠より優先しない）：'+profile.topics.join(' / ')
- ].filter(Boolean).join('\n');
- return {collection,values:{...values},conditions,notes,copy,noPerson,variant,authorContext,interactions:interactionContract(values,{noPerson}),format,editorial:editorialContract(copy)};
+ const authorContext=profile.activityEnabled===false?'':(profile.biography?.trim()?'作者が指定した活動説明：'+profile.biography.trim():'');
+ const creatorLookup=creatorLookupInstructions(profile);
+ return {collection,values:{...values},conditions,notes,copy,noPerson,variant,authorContext,creatorLookup,interactions:interactionContract(values,{noPerson}),format,editorial:editorialContract(copy)};
 }
 export function conditionInstructions(condition){return [condition.index+'. '+condition.name+' / '+condition.value,...(condition.sections?.map(s=>'・'+s.label+'：'+s.text)||[condition.text])];}
 export function planInstructions(plan,{omitKeys=[]}={}){return [

@@ -1,5 +1,5 @@
-import {formatFor} from './formats.js?v=24.0.0';
-import {formatTextPolicy} from './format-recipes.js?v=24.0.0';
+import {formatFor} from './formats.js?v=26.0.0';
+import {formatTextPolicy} from './format-recipes.js?v=26.0.0';
 const pick=(items,random)=>items[Math.min(items.length-1,Math.floor(random()*items.length))];
 function shuffle(items,random){const a=[...items];for(let i=a.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 const titles={cover:['装い帖','色と暮らし','創作日和','余白の時間','光の便り'],interview:['制作の現場','創作の声','発想の手帖'],spread:['表現の手帖','動きのある世界','新しい視点'],newspaper:['創作通信','彩景新聞','表現日報'],cinema:['BEYOND THE FRAME','A SILENT DOOR','WHEN LIGHT RETURNS'],book:['ひかりを綴る','まだ知らない景色','境界の手紙'],album:['ECHOES IN COLOR','UNFOLDING','SOFT REVERB'],default:['FORM & WONDER','もうひとつの景色','STORIES IN LIGHT']};
@@ -22,7 +22,7 @@ export function buildEditorial(profile,values,random=Math.random){
  '色を増やすことよりも、どこに置くかを考える。明るい面と静かな影、そして視線を引く小さな差し色。選んだ色の世界を保ちながら、場面の中の時間を感じられる一枚へ。'
  ];
  const slots=[];const add=(role,text,priority=2)=>{if(text)slots.push({role,text,priority});};
- const sourceGuided=profile.activityEnabled!==false&&!limited&&!!(profile.biography?.trim()||profile.sourceEvidence?.some(a=>a.excerpts?.some(Boolean))||profile.articles?.some(a=>a.text||a.excerpts?.some(Boolean)));
+ const sourceGuided=profile.activityEnabled!==false&&!limited&&!!(profile.handoff||profile.biography?.trim()||profile.sourceEvidence?.some(a=>a.excerpts?.some(Boolean))||profile.articles?.some(a=>a.text||a.excerpts?.some(Boolean)));
  const result=()=>{
   const generatedSlots=[],fixed=[];
   for(const slot of slots){

@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.0.3';
-import {resolveSelections} from '../catalog.js?v=28.0.3';
-import {initialSelections} from '../modes.js?v=28.0.3';
-import {buildDirection} from '../direction.js?v=28.0.3';
-import {applyPose} from '../poses.js?v=28.0.3';
-import {productionPlan} from '../production-plan.js?v=28.0.3';
-import {composePrompt} from '../prompt.js?v=28.0.3';
-import {composeArtworkStage} from '../artwork-stage.js?v=28.0.3';
-import {needsStagedProduction,composeLayoutStage} from '../staged-production.js?v=28.0.3';
+import {applyCollection} from '../collection.js?v=28.1.0';
+import {resolveSelections} from '../catalog.js?v=28.1.0';
+import {initialSelections} from '../modes.js?v=28.1.0';
+import {buildDirection} from '../direction.js?v=28.1.0';
+import {applyPose} from '../poses.js?v=28.1.0';
+import {productionPlan} from '../production-plan.js?v=28.1.0';
+import {composePrompt} from '../prompt.js?v=28.1.0';
+import {composeArtworkStage} from '../artwork-stage.js?v=28.1.0';
+import {needsStagedProduction,composeLayoutStage} from '../staged-production.js?v=28.1.0';
 
 // The case that kept producing a photographic face when artwork and typesetting
 // were requested together. These assertions check the handoff between stages.

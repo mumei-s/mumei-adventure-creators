@@ -1,11 +1,11 @@
-import {styleFidelity} from './style-fidelity.js?v=28.0.3';
-import {modeFoundation} from './japan-direction.js?v=28.0.3';
-import {imageOutputContract} from './output-contract.js?v=28.0.3';
-import {opticalSignature} from './optical-effects.js?v=28.0.3';
-import {colorPolicy} from './color-policy.js?v=28.0.3';
-import {sceneComposition} from './scene-composition.js?v=28.0.3';
-import {cameraContract} from './angles.js?v=28.0.3';
-import {photoReconstruction} from './photo-design.js?v=28.0.3';
+import {styleFidelity} from './style-fidelity.js?v=28.1.0';
+import {modeFoundation} from './japan-direction.js?v=28.1.0';
+import {imageOutputContract} from './output-contract.js?v=28.1.0';
+import {opticalSignature} from './optical-effects.js?v=28.1.0';
+import {colorPolicy} from './color-policy.js?v=28.1.0';
+import {sceneComposition} from './scene-composition.js?v=28.1.0';
+import {cameraContract} from './angles.js?v=28.1.0';
+import {photoReconstruction} from './photo-design.js?v=28.1.0';
 
 export const conditionOwners=Object.freeze({
  angle:'カメラの位置・傾き・距離・遠近',
@@ -55,8 +55,8 @@ function renderInputObject(plan){
   output:'完成画像を1枚。仕様書・ツール画面として描かない。',
   cultural_foundation:modeFoundation(plan.collection),
   required_before_details:{
-   ...(geometry?{camera_geometry:geometry.instructions.join(' ')}:{}),
    selected_drawing_process:material.execution.method,
+   ...(geometry?{camera_geometry:geometry.instructions.join(' ')}:{}),
    ...(photo?{photo_reconstruction:'写真化の基準：'+photo.sections.map(section=>section.text).join(' ')}:{}),
    ...(!plan.noPerson?{wardrobe_selection:wardrobeSelection}:{}),
    drawing_priority:drawingPriority,
@@ -107,9 +107,9 @@ export function renderDetailedChatInput(plan,{referenceRules=[],mandatoryRules=[
  const v=plan.variant;
  const compiled=renderInputObject(plan);
  return [
-  ...(compiled.required_before_details.camera_geometry?['【固定カメラ：描画前に確定】',compiled.required_before_details.camera_geometry]:[]),
   '【主画像の描画方式：ここから完成作品を描き起こす】',
   compiled.required_before_details.selected_drawing_process,
+  ...(compiled.required_before_details.camera_geometry?['【固定カメラ：描画前に確定】',compiled.required_before_details.camera_geometry]:[]),
   compiled.required_before_details.wardrobe_selection,
   ...styleFidelity(plan.conditions.find(c=>c.key==='medium'),{noPerson:plan.noPerson,values:plan.values}),
   plan.collection==='everyday'?'【作品モード】普段使い':'【作品モード】Halloween',

@@ -1,15 +1,16 @@
-import {everydayRecipe} from './everyday-options.js?v=28.0.3';
-import {CRYSTAL_OBJECT,crystalObjectRecipe,japaneseSections} from './japan-direction.js?v=28.0.3';
-import {visualSpec} from './visual-specs.js?v=28.0.3';
-import {detailedMedium} from './medium-recipes.js?v=28.0.3';
-import {detailedFormat} from './format-recipes.js?v=28.0.3';
-import {detailedSubject} from './subject-recipes.js?v=28.0.3';
-import {detailedPalette} from './palette-recipes.js?v=28.0.3';
-import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=28.0.3';
-import {executionFor} from './option-execution.js?v=28.0.3';
-import {colorPolicy} from './color-policy.js?v=28.0.3';
-import {halloweenSceneFocus,sceneSourcePlace} from './scene-presets.js?v=28.0.3';
-import {angleRecipe} from './angles.js?v=28.0.3';
+import {everydayRecipe} from './everyday-options.js?v=28.1.0';
+import {CRYSTAL_OBJECT,crystalObjectRecipe,japaneseSections} from './japan-direction.js?v=28.1.0';
+import {visualSpec} from './visual-specs.js?v=28.1.0';
+import {detailedMedium} from './medium-recipes.js?v=28.1.0';
+import {detailedFormat} from './format-recipes.js?v=28.1.0';
+import {detailedSubject} from './subject-recipes.js?v=28.1.0';
+import {detailedPalette} from './palette-recipes.js?v=28.1.0';
+import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=28.1.0';
+import {executionFor} from './option-execution.js?v=28.1.0';
+import {colorPolicy} from './color-policy.js?v=28.1.0';
+import {halloweenSceneFocus,sceneSourcePlace} from './scene-presets.js?v=28.1.0';
+import {angleRecipe} from './angles.js?v=28.1.0';
+import {withArtworkBasis} from './artwork-basis.js?v=28.1.0';
 
 function opticalPaletteText(text,policy){
  if(!policy.restricted)return text;
@@ -45,6 +46,7 @@ export function optionRecipe(key,value,context={}){
   :key==='design'?detailedFormat(value,options)
   :key==='palette'?detailedPalette(value,options)
   :everydayRecipe(sourceKey,value)||detailedSubject(sourceKey,value,options);
+ if(key==='medium')recipe=withArtworkBasis(recipe,value,options);
  if(recipe?.sections?.length){
   recipe={...recipe,sections:recipe.sections.map(s=>({...s}))};
   const halloweenFocus=key==='theme'&&(context.collection||'halloween')==='halloween'&&halloweenSceneFocus(value);
@@ -53,8 +55,8 @@ export function optionRecipe(key,value,context={}){
   const resolved={...recipe,key,value,sourceKey,sections:[...recipe.sections.map(s=>({...s})),...japaneseSections(sourceKey,value,options)],checks:[...(recipe.checks||[]),...(key==='medium'&&!noPerson&&['クリスタルホログラム造形アニメ','宝石ホログラムアニメ'].includes(value)?['額・頬・鼻・眼瞼・唇・耳まで同一の透明結晶ホログラム']:[])]};
   if(key==='medium'&&[CRYSTAL_OBJECT,CRYSTAL_ANIME,'宝石ホログラムアニメ'].includes(value)){
    const policy=colorPolicy(values);
-   resolved.sections=resolved.sections.map(s=>({...s,text:opticalPaletteText(s.text,policy)}));
-   resolved.checks=resolved.checks.map(s=>opticalPaletteText(s,policy));
+   resolved.sections=resolved.sections.map(s=>s.label.startsWith('作画基準／')?s:{...s,text:opticalPaletteText(s.text,policy)});
+   resolved.checks=resolved.checks.map(s=>s.startsWith('作画基準の照合：')?s:opticalPaletteText(s,policy));
   }
   resolved.execution=executionFor(key,value,resolved,options);
   return resolved;

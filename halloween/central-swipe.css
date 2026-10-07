@@ -68,3 +68,47 @@ body[data-lights="night"] #picker .ring-stage::after {
 }
 body[data-lights="night"] #picker .ring-current-category { color: #f4eaff; background: #282d46; }
 @media (max-width: 619px) { #picker .ring-stage { --swipe-gap: 72px; } }
+
+/* Inline reference notes expand below the canvas, preserving the swipe band. */
+#picker.has-artwork-basis .picker-body { overflow-y: auto; }
+#picker .artwork-basis-panel {
+  flex: none;
+  margin: 0;
+  border: 1px solid var(--page-accent);
+  border-radius: 7px;
+  background: #fff6e9;
+  color: #452510;
+  font-size: .73rem;
+  line-height: 1.65;
+  touch-action: pan-y;
+}
+#picker .artwork-basis-panel > summary {
+  min-height: 34px;
+  padding: 5px 9px;
+  cursor: pointer;
+  font-weight: 850;
+}
+#picker .artwork-basis-body {
+  max-height: min(28vh, 260px);
+  overflow-y: auto;
+  padding: 0 10px 9px;
+  overscroll-behavior: contain;
+  overflow-wrap: anywhere;
+}
+#picker .artwork-basis-body h4 { font-size: inherit; margin: 8px 0 2px; }
+#picker .artwork-basis-body p { margin: 2px 0 6px; }
+#picker .artwork-basis-body ul { margin: 2px 0 6px; padding-inline-start: 1.3em; }
+#picker .artwork-basis-body li + li { margin-top: 4px; }
+#picker .artwork-basis-body a { text-decoration: underline; text-underline-offset: 2px; }
+#picker .artwork-basis-status { font-size: .69rem; }
+#picker .artwork-basis-preview {
+  width: 100%;
+  min-height: 28px;
+  padding: 2px 5px;
+  border: 1px solid #a56832;
+  background: #fff0d6;
+  color: #452510;
+  font-size: .68rem;
+}
+body[data-lights="night"] #picker .artwork-basis-panel { color: #f4eaff; background: #282d46; }
+body[data-lights="night"] #picker .artwork-basis-preview { color: #f4eaff; background: #332c4b; border-color: #9d83bc; }

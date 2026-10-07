@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.0.3';
-import {applyCollection} from '../collection.js?v=28.0.3';
-import {productionPlan} from '../production-plan.js?v=28.0.3';
-import {composePrompt} from '../prompt.js?v=28.0.3';
-import {creatorHandoff} from '../creator-handoff.js?v=28.0.3';
+import {questions,resolveSelections} from '../catalog.js?v=28.1.0';
+import {applyCollection} from '../collection.js?v=28.1.0';
+import {productionPlan} from '../production-plan.js?v=28.1.0';
+import {composePrompt} from '../prompt.js?v=28.1.0';
+import {creatorHandoff} from '../creator-handoff.js?v=28.1.0';
 
 applyCollection('halloween');
 const profile=creatorHandoff('scene_author');

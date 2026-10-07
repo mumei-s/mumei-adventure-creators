@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import {createRequire} from 'node:module';
-import {buildEditorial} from '../editorial.js?v=28.0.3';
-import {renderEditorialLayout} from '../editorial-layout.js?v=28.0.3';
+import {buildEditorial} from '../editorial.js?v=28.1.0';
+import {renderEditorialLayout} from '../editorial-layout.js?v=28.1.0';
 const require=createRequire(process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES+'/sharp/package.json');
 const sharp=require('sharp');
 const root=new URL('../',import.meta.url).pathname;

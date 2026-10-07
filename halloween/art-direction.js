@@ -1,11 +1,11 @@
-import {applyAngle} from './angles.js?v=28.0.3';
-import {colorPolicy} from './palette-recipes.js?v=28.0.3';
-import {opticalSignature,opticalColors} from './optical-effects.js?v=28.0.3';
-import {detailedSubject} from './subject-recipes.js?v=28.0.3';
-import {detailedFormat} from './format-recipes.js?v=28.0.3';
-import {isPhotographicMedium} from './photo-design.js?v=28.0.3';
+import {applyAngle} from './angles.js?v=28.1.0';
+import {colorPolicy} from './palette-recipes.js?v=28.1.0';
+import {opticalSignature,opticalColors} from './optical-effects.js?v=28.1.0';
+import {detailedSubject} from './subject-recipes.js?v=28.1.0';
+import {detailedFormat} from './format-recipes.js?v=28.1.0';
+import {isPhotographicMedium} from './photo-design.js?v=28.1.0';
+import {luminousWorldContract} from './luminous-world.js?v=28.1.0';
 
-const luminous=new Set(['発光幻想アニメ']);
 const flat=new Set(['線画','リノカット','木版画','浮世絵木版画','シルクスクリーン','ベクターグラフィック','フラットイラスト','ピクセルアート','構成主義','ミニマリズム']);
 function sourceFor(values,collection){
  const place=values.place||'',theme=values.theme||'';
@@ -23,9 +23,10 @@ function sourceFor(values,collection){
 export function lightingContract(values,{collection='halloween',noPerson=false}={}){
  const medium=values.medium||'',color=colorPolicy(values),surface=noPerson?'主題の景物と空間':'見えている顔・身体・衣装と景物';
  const source=sourceFor(values,collection);
+ const luminous=luminousWorldContract(values,{noPerson});
+ if(luminous)return source+'を光の起点にする。'+luminous.lighting;
  const signature=opticalSignature(values,{noPerson});
  if(signature.length)return source+'を光の起点にし、最明部を'+color.bright+'に置く。主題の深い影面を保ちながら、画風固有の透過と反射を描く。小さく見ても強い局所的な明度差と光学層の前後が分かること。'+signature.join(' ');
- if(luminous.has(medium))return source+'の位置を先に決める。'+surface+'を一続きの深い'+(color.restricted?'許可色':'有彩色')+'の影面と明るい面に分け、'+color.bright+'を細い逆光の縁と小さな点光へ絞る。明部の隣に暗部を残し、小さく見ても強い局所的な明度差が読めるようにする。光源・透過面・照り返し先を同じ方向で結び、全体を淡い霞や均等な光の粒で覆わない。色域は'+color.allowed+'。';
  if(/透明水彩|油彩・薄塗り/.test(medium))return source+'を、薄い色層の重なりと塗らない明部で表す。明部は'+(color.restricted?color.bright:'下地や紙の明るさ')+'、影は'+color.dark+'の透ける重ね塗りとして描き、画材の濃淡と縁の差を残す。不透明な塗りつぶしで深さを失わず、主題が読める部分だけ境界を締める。光をレンズフレアや白い霧として後付けせず、選んだ画材の色層で成立させる。';
  if(/水墨|南画|禅画|書と墨|鉛筆|木炭|ボールペン|ペン画|スクラッチ/.test(medium))return source+'による明暗を、選択画材の線密度・濃淡・かすれ・白抜きへ翻訳する。写真の鏡面反射やCGの発光を別の層として貼らない。最も濃い面と残す余白を先に配分し、描線と紙面の両方で主題を読み取れるようにする。';
  if(flat.has(medium))return source+'から得る明暗を、選択技法で扱える少数の色面・線幅・白抜き・重なりへ整理する。陰影の説明のために写真の立体、滑らかな鏡面CG、立体的な発光を付け足さない。';
@@ -42,6 +43,8 @@ export function resolveArtDirection(values,variant={},collection='halloween'){
  next.motif='道具は選択した物語・衣装・舞台の個別仕様に必要なものだけを置く。指定ポーズで手がふさがる場合は支持面や周囲へ移し、新しい持ち物を握らせない。画風が指定する透光層・投影面・干渉色は光学表現として実行し、道具の制限で削除しない。';
  next.motion=noPerson?'選択主題の支持・重力・面の重なりを保つ。図案は配置と余白、風景や物体は選択場面にある自然な動きで変化を示し、未選択の風・煙・浮遊を追加しない。':/走|跳|ジャンプ|踊|回転|蹴|駆け/.test(values.pose)?'今回の選択動作に沿って重心・支持点・慣性を描く。動く衣装はその素材の可動範囲で遅れ、顔・手足の形を失わない。風や煙は選択場面に根拠がある場合だけ描く。':'今回の指定姿勢と支持点を保ち、手足の位置を別の動作へ変えない。静かな姿勢に走行の慣性・大きな風・煙・浮遊を自動追加しない。';
  next.depth='今回のカメラと撮影距離に合う大小・重なり・遮蔽で前後を示す。奥行きの描き方は選択画風の個別工程を使い、平面の技法は色面と輪郭、立体素材は厚みと支持として読む。別の画角の強い広角や接写を後付けしない。';
+ const luminous=luminousWorldContract(values,{noPerson,variant});
+ if(luminous)next.depth=luminous.depth;
 
  if(!noPerson&&values.costume==='人魚'){next.pose=detailedSubject('pose',values.pose,{values,variant,noPerson}).sections.map(s=>s.text).join(' ');next.distance=(next.distance||'').replace(/足先|足元|両足|つま先/g,'尾びれ');}
  if(flat.has(values.medium))next.depth='前後関係と距離を、選択した平面技法の色面・輪郭・大小・重なり・余白へ翻訳する。滑らかな3Dの材質へ置換しない。';

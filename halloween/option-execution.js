@@ -1,7 +1,9 @@
-import {mediumExecution} from './medium-execution.js?v=28.0.3';
-import {formatExecution} from './format-execution.js?v=28.0.3';
-import {colorPolicy} from './color-policy.js?v=28.0.3';
-import {photoReconstruction} from './photo-design.js?v=28.0.3';
+import {mediumExecution} from './medium-execution.js?v=28.1.0';
+import {artworkBasisContract} from './artwork-basis.js?v=28.1.0';
+import {formatExecution} from './format-execution.js?v=28.1.0';
+import {colorPolicy} from './color-policy.js?v=28.1.0';
+import {photoReconstruction} from './photo-design.js?v=28.1.0';
+import {luminousWorldContract} from './luminous-world.js?v=28.1.0';
 
 // The option's own physical recipe is the source of its execution contract.
 // No generic "beautiful / atmospheric" default replaces a missing preset.
@@ -23,7 +25,8 @@ const counts={angle:3,costume:3,theme:2,place:3,mood:5,pose:3,type:2,line:2,size
 
 export function executionFor(key,value,recipe,{noPerson=false,values={}}={}){
  const sections=recipe.sections.map(s=>({part:s.label,draw:s.text}));
- let method=key==='medium'?mediumExecution.get(value)
+ const luminous=key==='medium'?luminousWorldContract({...values,medium:value},{noPerson}):null;
+ let method=luminous?recipe.executionMethod||luminous.method:key==='medium'?mediumExecution.get(value)
   :key==='design'?formatExecution.get(value)
   :recipe.executionMethod||sections.slice(0,counts[key]||2).map(s=>s.draw).join(' ');
  if(recipe.known&&!method)throw new Error('個別の実行指示がありません：'+key+' / '+value);
@@ -32,8 +35,10 @@ export function executionFor(key,value,recipe,{noPerson=false,values={}}={}){
  // already contain the medium's dedicated non-human construction instructions.
  // Starting the actual image call with a face directive would otherwise defeat
  // the user's no-person choice before that choice is even read.
- if(key==='medium'&&noPerson)method=sections.filter(s=>s.part!=='日本を基準にした個別条件').slice(0,4).map(s=>s.draw).join(' ');
+ if(key==='medium'&&noPerson&&!luminous)method=sections.filter(s=>s.part!=='日本を基準にした個別条件').slice(0,4).map(s=>s.draw).join(' ');
  if(key==='medium'){
+  const basis=artworkBasisContract(value,{noPerson,values});
+  if(basis)method=basis.method+' '+method;
   const photo=photoReconstruction(value,{noPerson,values});
   method+=' Apply this selected making process consistently to '+(noPerson?'the scenery, objects, materials and background.':photo?'the face, hair, body, clothing and background. Preserve identifying features while reconstructing an illustrated reference as physically plausible photographed anatomy and materials; do not retain its outlines, cel shading or painted surface.':'the face, hair, body, clothing and background. Preserve reference identity as recognizable features translated into this medium; redraw rather than retain a photographic face or surface from the reference.');
   if(photo)method+=' '+photo.sections.map(section=>section.text).join(' ');

@@ -1,8 +1,8 @@
-import {costumeSpecs,themeSpecs,placeSpecs} from './visual-specs.js?v=28.0.3';
-import {poseItems} from './poses.js?v=28.0.3';
-import {questions} from './catalog.js?v=28.0.3';
-import {typographyRecipe} from './typography-options.js?v=28.0.3';
-import {angleItems} from './angles.js?v=28.0.3';
+import {costumeSpecs,themeSpecs,placeSpecs} from './visual-specs.js?v=28.1.0';
+import {poseItems} from './poses.js?v=28.1.0';
+import {questions} from './catalog.js?v=28.1.0';
+import {typographyRecipe} from './typography-options.js?v=28.1.0';
+import {angleItems} from './angles.js?v=28.1.0';
 
 // The tables describe the selected title, never the people or settings in a UI thumbnail.
 const rows=source=>Object.assign(Object.create(null),Object.fromEntries(source.trim().split('\n').filter(Boolean).map(line=>{const at=line.indexOf('=');return [line.slice(0,at),line.slice(at+1).split('|')];})));

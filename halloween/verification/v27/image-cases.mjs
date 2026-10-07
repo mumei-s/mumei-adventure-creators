@@ -1,8 +1,8 @@
-import {applyCollection} from '../../collection.js?v=28.0.3';
-import {resolveSelections} from '../../catalog.js?v=28.0.3';
-import {productionPlan} from '../../production-plan.js?v=28.0.3';
-import {composePrompt} from '../../prompt.js?v=28.0.3';
-import {creatorHandoff} from '../../creator-handoff.js?v=28.0.3';
+import {applyCollection} from '../../collection.js?v=28.1.0';
+import {resolveSelections} from '../../catalog.js?v=28.1.0';
+import {productionPlan} from '../../production-plan.js?v=28.1.0';
+import {composePrompt} from '../../prompt.js?v=28.1.0';
+import {creatorHandoff} from '../../creator-handoff.js?v=28.1.0';
 import assert from 'node:assert/strict';
 
 // Fixtures produce the application's handoff without adding generation-only instructions. Only the owner's

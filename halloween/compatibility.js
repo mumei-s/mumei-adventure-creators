@@ -6,7 +6,8 @@ export function selectionConflicts(values={}){
  const reasons=[];
  if(noPerson(values.costume))for(const key of ['pose','mood'])if(!automatic(values[key])&&(key==='pose'||faceOnly(values[key])))reasons.push({keys:['costume',key],reason:'「人物なし」では人体の'+(key==='pose'?'ポーズ':'表情・顔角度')+'を実行できません。人物ありにするか、この項目をおまかせにしてください。'});
  if(values.medium==='クリスタルホログラム造形アニメ'&&limited(values.palette))reasons.push({keys:['medium','palette'],reason:'この作風は虹色の干渉帯が必須です。単色・限定色では同じ完成像にならないため選べません。色を変えるか、色数に対応したクリスタル透光アニメを選べます。'});
- if(['水墨画','モノクロ漫画','実写風モノクロ銀塩写真'].includes(values.medium)&&!automatic(values.palette)&&!['墨一色','モノクローム','参照画像の色を生かす'].includes(values.palette))reasons.push({keys:['medium','palette'],reason:'「'+values.medium+'」は無彩色で描く技法です。有彩色の配色を同時に指定できません。モノクロームにするか、墨彩画などの彩色に対応した作風を選んでください。'});
+ if(['水墨画','鉛筆デッサン','木炭画','モノクロ漫画','実写風モノクロ銀塩写真'].includes(values.medium)&&!automatic(values.palette)&&!['墨一色','モノクローム','参照画像の色を生かす'].includes(values.palette))reasons.push({keys:['medium','palette'],reason:'「'+values.medium+'」は無彩色で描く作画基準です。有彩色の配色は同時に使えません。モノクロームか、墨彩画・色鉛筆画など彩色に対応する作風を選んでください。'});
+ if(values.medium==='サイアノタイプ'&&!automatic(values.palette)&&!['参照画像の色を生かす','群青 × 月白 × 銀'].includes(values.palette))reasons.push({keys:['medium','palette'],reason:'サイアノタイプの作画基準はプルシアンブルーと紙の白です。別の色へ置き換えるとこの技法になりません。配色をおまかせ・参照画像の色を生かすにするか、別の作風を選んでください。'});
  if(values.costume==='人魚'&&/蹴|片膝|あぐら|正座|大股|足を組|片足/.test(values.pose||''))reasons.push({keys:['costume','pose'],reason:'人魚の尾と、左右の脚を必要とするポーズは同時に描けません。尾で実行できる動作を選んでください。'});
  const landscape={'山岳と湖のパノラマ':['山岳と湖畔'],'海辺と水平線':['砂浜と海岸線','海辺の灯台'],'里山と田園風景':['田畑と里山'],'雨に映る街の風景':['雨の路地','ネオンの繁華街'],'四季の森を見渡す':['広葉樹の森'],'建築と街並みの記録':['街並みと広場','街角の歩道']};
  if(landscape[values.theme]&&!automatic(values.place)&&!landscape[values.theme].includes(values.place)&&values.place!=='参照風景を舞台にする')reasons.push({keys:['theme','place'],reason:'「'+values.theme+'」には'+landscape[values.theme].join('・')+'の舞台が必要です。別の場所を同じ背景に混ぜる選択はできません。'});

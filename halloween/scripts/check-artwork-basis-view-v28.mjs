@@ -1,0 +1,23 @@
+import assert from 'node:assert/strict';
+import {updateArtworkBasis} from '../artwork-basis-view.js?v=28.1.0';
+
+const el=(tag,cls,text)=>({tag,className:cls||'',textContent:text||'',children:[],dataset:{},append(...nodes){this.children.push(...nodes);},replaceChildren(...nodes){this.children=nodes;}});
+const descendants=node=>[node,...node.children.flatMap(descendants)];
+const text=node=>descendants(node).map(n=>n.textContent).join('\n');
+const panel=el('details','artwork-basis-panel');panel.open=true;
+const entry={value:'透明水彩',basis:['紙の白を残す','薄い透明層を重ねる'],checks:['白が不透明な白塗りになっていない'],avoid:['油彩の厚い盛り上がり'],references:[{title:'Museum work',url:'https://example.test/work',kind:'work',note:'透明層の見え方を照合'},{title:'Manufacturer technique',url:'https://example.test/technique',kind:'technique',note:'紙と顔料の工程を確認'}],status:'documented'};
+updateArtworkBasis(panel,entry,el);
+assert.equal(panel.hidden,false);assert.equal(panel.open,true);assert.equal(panel.dataset.value,entry.value);
+assert.equal(panel.children[0].tag,'summary');assert.equal(panel.children[0].textContent,'作画の基準・照合資料');
+for(const value of [entry.value,'技法資料に基づく作画基準',...entry.basis,...entry.checks,...entry.avoid,...entry.references.flatMap(r=>[r.title,r.note])])assert.ok(text(panel).includes(value));
+const links=descendants(panel).filter(n=>n.tag==='a');assert.equal(links.length,2);
+links.forEach((link,index)=>{assert.equal(link.href,entry.references[index].url);assert.equal(link.target,'_blank');assert.equal(link.rel,'noopener noreferrer');});
+assert.ok(text(panel).includes('作品資料：'));assert.ok(text(panel).includes('技法資料：'));
+assert.ok(!descendants(panel).some(n=>['img','dialog','iframe'].includes(n.tag)),'Source text adds no overlay or new image');
+const synthesis={...entry,value:'創作の光層',basis:['複数の技法から光層を設計'],checks:['光層が全面を覆わない'],avoid:[],references:[],status:'synthesis'};
+updateArtworkBasis(panel,synthesis,el);
+assert.equal(panel.open,true,'A preview change keeps the existing fold state');assert.equal(panel.dataset.value,synthesis.value);
+assert.ok(text(panel).includes('資料を基に組み合わせた作画基準'));assert.ok(!text(panel).includes('Museum work'));assert.ok(!text(panel).includes('透明水彩'));
+assert.equal(descendants(panel).filter(n=>n.tag==='a').length,0,'Preview changes remove stale links');
+updateArtworkBasis(panel,null,el);assert.equal(panel.hidden,true);assert.equal(panel.dataset.value,'');assert.equal(panel.children.length,0,'Other fields/undefined basis leave no previous notes');
+console.log('PASS inline artwork basis: named source/basis/checks/avoid text, documented/synthesis distinction, primary text links, preserved fold state, no new popup/image, stale notes removed.');

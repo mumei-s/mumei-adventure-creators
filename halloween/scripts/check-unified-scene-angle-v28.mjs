@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
-import {questions,visibleQuestions,resolveSelections,AUTO} from '../catalog.js?v=28.0.3';
-import {applyCollection} from '../collection.js?v=28.0.3';
-import {modeKeys,effectiveSelections,initialSelections} from '../modes.js?v=28.0.3';
-import {sceneSourcePlace} from '../scene-presets.js?v=28.0.3';
-import {angleItems} from '../angles.js?v=28.0.3';
-import {buildDirection} from '../direction.js?v=28.0.3';
-import {productionPlan} from '../production-plan.js?v=28.0.3';
-import {composePrompt} from '../prompt.js?v=28.0.3';
+import {questions,visibleQuestions,resolveSelections,AUTO} from '../catalog.js?v=28.1.0';
+import {applyCollection} from '../collection.js?v=28.1.0';
+import {modeKeys,effectiveSelections,initialSelections} from '../modes.js?v=28.1.0';
+import {sceneSourcePlace} from '../scene-presets.js?v=28.1.0';
+import {angleItems} from '../angles.js?v=28.1.0';
+import {buildDirection} from '../direction.js?v=28.1.0';
+import {productionPlan} from '../production-plan.js?v=28.1.0';
+import {composePrompt} from '../prompt.js?v=28.1.0';
 const profile={displayName:'Test Creator',biography:'創作',topics:[]};
 let scenes=0,angles=0;
 for(const collection of ['halloween','everyday']){

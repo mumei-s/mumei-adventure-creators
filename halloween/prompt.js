@@ -1,11 +1,11 @@
-import {imageOutputContract} from './output-contract.js?v=28.0.3';
-import {visibleQuestions} from './catalog.js?v=28.0.3';
-import {productionPlan,planInstructions,conditionInstructions} from './production-plan.js?v=28.0.3';
-import {sceneContract} from './worlds.js?v=28.0.3';
-import {colorPolicy} from './palette-recipes.js?v=28.0.3';
-import {resolveArtDirection} from './art-direction.js?v=28.0.3';
-import {composeStagedMaster} from './production-workflow.js?v=28.0.3';
-import {isPhotographicMedium} from './photo-design.js?v=28.0.3';
+import {imageOutputContract} from './output-contract.js?v=28.1.0';
+import {visibleQuestions} from './catalog.js?v=28.1.0';
+import {productionPlan,planInstructions,conditionInstructions} from './production-plan.js?v=28.1.0';
+import {sceneContract} from './worlds.js?v=28.1.0';
+import {colorPolicy} from './palette-recipes.js?v=28.1.0';
+import {resolveArtDirection} from './art-direction.js?v=28.1.0';
+import {composeStagedMaster} from './production-workflow.js?v=28.1.0';
+import {isPhotographicMedium} from './photo-design.js?v=28.1.0';
 export function needsReference(values){const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);return !noPerson||values.place==='参照風景を舞台にする'||values.palette==='参照画像の色を生かす';}
 // Option thumbnails, including legacy styleGuide arguments, never control generation.
 export function composePrompt({collection='halloween',creator,profile,values,variant,references=[],edition,referenceBundle=null,random=Math.random,preparedPlan=null}){
@@ -23,7 +23,7 @@ export function composePrompt({collection='halloween',creator,profile,values,var
  const plan=preparedPlan||productionPlan(profile,values,variant,collection,random);
  variant=plan.variant||resolveArtDirection(values,variant,collection);
  const avoid=references.filter(r=>r.role==='avoid');
- const firstKeys=noPerson?[]:['medium','design'];
+ const firstKeys=['medium'];
  const firstConditions=firstKeys.map(key=>plan.conditions.find(c=>c.key===key)).filter(Boolean);
  const lines=[
  '画像生成の制作仕様 / '+edition,

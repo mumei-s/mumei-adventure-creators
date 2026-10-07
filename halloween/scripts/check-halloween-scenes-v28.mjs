@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
-import {questions,visibleQuestions,resolveSelections,AUTO} from '../catalog.js?v=28.0.3';
-import {applyCollection} from '../collection.js?v=28.0.3';
-import {initialSelections,propose,effectiveSelections} from '../modes.js?v=28.0.3';
-import {halloweenSceneFocus,halloweenSceneTitles,sceneSourcePlace} from '../scene-presets.js?v=28.0.3';
-import {optionRecipe} from '../option-recipes.js?v=28.0.3';
-import {sampleFor} from '../examples.js?v=28.0.3';
-import {buildDirection} from '../direction.js?v=28.0.3';
-import {productionPlan} from '../production-plan.js?v=28.0.3';
-import {renderChatInput} from '../compiled-production.js?v=28.0.3';
-import {compactHistoryRecord,restoreHistoryRecord} from '../history-storage.js?v=28.0.3';
+import {questions,visibleQuestions,resolveSelections,AUTO} from '../catalog.js?v=28.1.0';
+import {applyCollection} from '../collection.js?v=28.1.0';
+import {initialSelections,propose,effectiveSelections} from '../modes.js?v=28.1.0';
+import {halloweenSceneFocus,halloweenSceneTitles,sceneSourcePlace} from '../scene-presets.js?v=28.1.0';
+import {optionRecipe} from '../option-recipes.js?v=28.1.0';
+import {sampleFor} from '../examples.js?v=28.1.0';
+import {buildDirection} from '../direction.js?v=28.1.0';
+import {productionPlan} from '../production-plan.js?v=28.1.0';
+import {renderChatInput} from '../compiled-production.js?v=28.1.0';
+import {compactHistoryRecord,restoreHistoryRecord} from '../history-storage.js?v=28.1.0';
 
 const valuesFor=key=>questions.find(q=>q.key===key).groups.flatMap(group=>group.values);
 const keptWorlds='月夜の仮面舞踏会|真夜中の魔女のアトリエ|忘れられた劇場|幽霊たちのお茶会|異界に続く駅|鏡の向こうの自分|眠らない美術館|一夜だけの怪奇サーカス|吸血鬼の晩餐会|死神の休日|魔法使いの見習い|悪夢からの脱出|百鬼夜行|妖狐と月の契約|海賊船の亡霊|宇宙のHalloween|機械仕掛けの怪物|呪われたオルゴール|お菓子の王国|カボチャの収穫祭|都会の仮装パレード|花と骸骨の祝祭|墨で描く怪異|雨上がりの怪談|静かなハロウィーン'.split('|');

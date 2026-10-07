@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.0.3';
-import {resolveSelections} from '../catalog.js?v=28.0.3';
-import {productionPlan} from '../production-plan.js?v=28.0.3';
-import {composePrompt} from '../prompt.js?v=28.0.3';
+import {applyCollection} from '../collection.js?v=28.1.0';
+import {resolveSelections} from '../catalog.js?v=28.1.0';
+import {productionPlan} from '../production-plan.js?v=28.1.0';
+import {composePrompt} from '../prompt.js?v=28.1.0';
 
 const profile={displayName:'TEST CREATOR',activityEnabled:false,biography:''};
 const random=()=>.25;
@@ -35,7 +35,7 @@ for(const mode of ['halloween','everyday']){
     }
     if(medium==='宝石ホログラムアニメ'){
      assert.doesNotMatch(prompt,/本体は不透明な2D原画のまま保つ|原画を描き、その完成後に光を重ねる/);
-     assert.match(style.sections[0].text,/最初から.*半透明の投影像/);
+     assert.ok(style.sections.some(section=>/最初から.*半透明の投影像/.test(section.text)),'The hologram construction must remain present after artwork criteria are read first');
      if(plan.noPerson)assert.match(prompt,/建築と地形の本体も半透明の投影像へ変換/);
      else assert.match(prompt,/顔・髪・身体そのものが半透明の投影像/);
     }

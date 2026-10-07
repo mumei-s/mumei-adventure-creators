@@ -1,12 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-import {questions,visibleQuestions,defaults,resolveSelections} from '../catalog.js?v=28.0.3';
-import {sampleFor} from '../examples.js?v=28.0.3';
-import {modeKeys,effectiveSelections} from '../modes.js?v=28.0.3';
-import {composePrompt} from '../prompt.js?v=28.0.3';
-import {selectedRecipes} from '../recipes.js?v=28.0.3';
-import {buildDirection} from '../direction.js?v=28.0.3';
+import {questions,visibleQuestions,defaults,resolveSelections} from '../catalog.js?v=28.1.0';
+import {sampleFor} from '../examples.js?v=28.1.0';
+import {modeKeys,effectiveSelections} from '../modes.js?v=28.1.0';
+import {composePrompt} from '../prompt.js?v=28.1.0';
+import {selectedRecipes} from '../recipes.js?v=28.1.0';
+import {buildDirection} from '../direction.js?v=28.1.0';
 const keys=questions.map(q=>q.key),values=resolveSelections(Object.fromEntries(questions.map((q,i)=>[q.key,defaults[i]])),()=>0);
 assert.equal(visibleQuestions.length,10);assert.equal(modeKeys.detail.length,10);assert.equal(modeKeys.simple.length,5);assert.equal(modeKeys.auto.length,1);
 let count=0,images=new Set();for(const q of questions)for(const v of q.groups.flatMap(g=>g.values)){count++;const s=sampleFor(q.key,v);assert.notEqual(s.kind,'custom',q.key+':'+v);if(s.kind==='image'){assert.ok(fs.existsSync(new URL(s.src,new URL('../examples.js',import.meta.url))));images.add(s.src);}}
@@ -20,7 +20,7 @@ for(const file of fs.readdirSync(new URL('../',import.meta.url))){if(!/\.(js|htm
 assert.equal(questions.find(q=>q.key==='palette').groups.flatMap(g=>g.values).length,50);
 const luminous={...explicit,theme:'幽霊たちのお茶会',place:'星空の砂漠',medium:'発光幻想アニメ',palette:'群青 × 菫 × 星白'};
 const luminousPrompt=composePrompt({creator:'alice',profile:{displayName:'Alice',biography:'創作',topics:[]},values:luminous,variant,references:[],edition:'LIGHT',styleGuide:{name:'selected-style-guide.jpg',cells:selectedRecipes(luminous).map((r,i)=>({...r,cell:i+1}))}});
-assert.match(luminousPrompt,/2D luminous-fantasy anime/);assert.match(luminousPrompt,/先細りの細い有色線/);assert.match(luminousPrompt,/広い深い影/);assert.match(luminousPrompt,/60:30:10/);
+assert.match(luminousPrompt,/2D luminous-fantasy anime/);assert.match(luminousPrompt,/先細りの細い有色線/);assert.match(luminousPrompt,/大面積の深い|広い深暗部/);assert.match(luminousPrompt,/60:30:10/);
 assert.match(luminousPrompt,/完成場面：「星空の砂漠」で「幽霊たちのお茶会」/);
 assert.match(luminousPrompt,/舞台の識別構造を残したまま場面全体で意味が読める/);
 assert.ok(!luminousPrompt.includes('テーマ側の別の場所名は、必要な道具・展示・演目などへ翻案'));

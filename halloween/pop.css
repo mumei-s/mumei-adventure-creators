@@ -21,3 +21,7 @@ body[data-motion=on] dialog[open]{animation:portal-open .3s cubic-bezier(.16,.7,
 @media(max-width:619px){.ring-stage{min-height:350px}.ring-focus{width:122px}.ring-focus>.sample-thumb{width:56px;height:56px}.ring-pop{width:78px;min-height:75px}.ring-tools{gap:3px}.ring-tools button{font-size:.71rem;padding:2px}.ring-focus .ring-pick{min-height:31px}.picker-favorites{padding:5px 7px}.favorite-heading small{font-size:.67rem}}
 @media(max-height:720px){.ring-stage{min-height:330px}.ring-focus>.sample-thumb{width:48px;height:48px}}
 @media(prefers-reduced-motion:reduce){.ring-pop{will-change:auto}}
+/* The orbit is a canvas, not a focus-scroll container. Keep all filters reachable. */
+#picker .picker-body{overflow-y:auto;overscroll-behavior:contain}
+.ring-stage{overflow:clip;flex-shrink:0}
+.picker-favorites{flex:none}

@@ -1,0 +1,31 @@
+{
+  "url": "https://mumei-s.github.io/mumei-adventure-creators/halloween/",
+  "deployedCommit": "995a53badf3f5e8c58d1404e739a11529c30ff9d",
+  "deploymentRun": 37584479433,
+  "deploymentConclusion": "success",
+  "visibleVersion": "21.0.0",
+  "nightButtonInHeader": true,
+  "nightButtonCount": 1,
+  "ariaPressedOn": "true",
+  "nightCharacters": 4,
+  "nightPersistsAfterReload": true,
+  "horizontalOverflowDesktop": false,
+  "horizontalOverflowPhoneDisplayMode": false,
+  "phoneScope": "Application phone layout selector in a desktop cloud browser; not a physical Android device or narrow viewport emulation",
+  "loadedPreviewExamples": [
+    {
+      "design": "週刊誌の表紙",
+      "src": "./japan-weekly-v21.jpg",
+      "naturalWidth": 1024,
+      "naturalHeight": 1536
+    },
+    {
+      "design": "新聞の一面",
+      "src": "./japan-newspaper-v21.jpg",
+      "naturalWidth": 1054,
+      "naturalHeight": 1492
+    }
+  ],
+  "screenshot": "public-night.jpg",
+  "generationLimitations": "Fine newspaper copy and unsolicited inset pictures remain; stable total generation within one minute is not established; ChatGPT 5.5 and physical Android not tested."
+}

@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import {selectionConflicts,candidateAvailability,wrappedPage} from '../compatibility.js?v=21.0.0';
-import {questions,resolveSelections} from '../catalog.js?v=21.0.0';
-import {applyCollection} from '../collection.js?v=21.0.0';
-import {initialSelections} from '../modes.js?v=21.0.0';
-import {optionRecipe} from '../option-recipes.js?v=21.0.0';
-import {modeFoundation} from '../japan-direction.js?v=21.0.0';
+import {selectionConflicts,candidateAvailability,wrappedPage} from '../compatibility.js?v=22.0.0';
+import {questions,resolveSelections} from '../catalog.js?v=22.0.0';
+import {applyCollection} from '../collection.js?v=22.0.0';
+import {initialSelections} from '../modes.js?v=22.0.0';
+import {optionRecipe} from '../option-recipes.js?v=22.0.0';
+import {modeFoundation} from '../japan-direction.js?v=22.0.0';
 const base={...initialSelections(),costume:'風景を主役にする',pose:'おまかせ',mood:'毎回大胆に変える'};
 assert.equal(candidateAvailability('pose','両手を広げる',base).enabled,false);
 assert.equal(candidateAvailability('mood','正面＋満面の笑顔',base).enabled,false);

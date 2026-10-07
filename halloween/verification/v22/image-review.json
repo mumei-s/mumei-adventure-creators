@@ -1,0 +1,25 @@
+{
+  "version": "22.0.0",
+  "actual_image_trials": [
+    {
+      "seconds": 70.694,
+      "result": "failed",
+      "reason": "ordinary skin remained; material transformation mostly clothing and props"
+    },
+    {
+      "seconds": 74.106,
+      "result": "partial improvement",
+      "improved": [
+        "crystalline face, hair, arms and legs",
+        "stronger light-shadow contrast",
+        "forward depth and movement"
+      ],
+      "remaining": [
+        "reference background props leaked into the selected scene",
+        "one minute target not met"
+      ]
+    }
+  ],
+  "input": "first supplied image for identity and clothing; second screenshot used only for human visual comparison",
+  "acceptance": "not all conditions accepted; no claim that all catalog outputs have been visually validated"
+}

@@ -1,15 +1,16 @@
-import {imageOutputContract} from './output-contract.js?v=21.0.0';
-import {visibleQuestions} from './catalog.js?v=21.0.0';
-import {productionPlan,planInstructions,conditionInstructions} from './production-plan.js?v=21.0.0';
-import {sceneContract} from './worlds.js?v=21.0.0';
-import {colorPolicy} from './palette-recipes.js?v=21.0.0';
-import {resolveArtDirection} from './art-direction.js?v=21.0.0';
-import {composeStagedMaster} from './production-workflow.js?v=21.0.0';
+import {imageOutputContract} from './output-contract.js?v=22.0.0';
+import {visibleQuestions} from './catalog.js?v=22.0.0';
+import {productionPlan,planInstructions,conditionInstructions} from './production-plan.js?v=22.0.0';
+import {sceneContract} from './worlds.js?v=22.0.0';
+import {colorPolicy} from './palette-recipes.js?v=22.0.0';
+import {resolveArtDirection} from './art-direction.js?v=22.0.0';
+import {composeStagedMaster} from './production-workflow.js?v=22.0.0';
 export function needsReference(values){const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);return !noPerson||values.place==='参照風景を舞台にする'||values.palette==='参照画像の色を生かす';}
 // Option thumbnails, including legacy styleGuide arguments, never control generation.
 export function composePrompt({collection='halloween',creator,profile,values,variant,references=[],edition,referenceBundle=null,random=Math.random,preparedPlan=null}){
  const [size,pixels,ratio]=values.size.split('｜');
  const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);
+ const wholeMaterial=['クリスタルホログラム造形アニメ','宝石ホログラムアニメ'].includes(values.medium);
  const color=colorPolicy(values),cyanotype=color.mode==='cyanotype',monochrome=color.mode==='monochrome',limitedPalette=color.restricted;
  const subjectKind=values.costume==='風景を主役にする'?'scenery':values.costume==='紋章・アイコンにする'?'emblem':'motif';
  const subjectRules={
@@ -75,7 +76,7 @@ export function composePrompt({collection='halloween',creator,profile,values,var
  '参照画像がある場合は、'+subjectRules.reference+'を使う。キャラの顔・髪や無関係な印を自動で組み込まず、選択された主題と画風を守る。'
  ]:[
  '【固定するもの／変えるもの】',
- monochrome?'固定：顔の輪郭、目の形と間隔、鼻・口の形、識別できる髪の形、年齢感、体格、性別の表現、固有の印。髪・肌・瞳の色は無彩色の明度差へ翻訳する。別人への置換を禁止。':limitedPalette?'固定：顔立ち、髪の形、年齢感、体格、性別の表現、固有の印。髪・肌・瞳の色は選択した技法と限定配色の色・明度差へ翻訳する。元の有彩色を例外で残さない。':'固定：顔の輪郭、目の形と間隔、鼻・口の形、髪の基礎色と識別できる髪の特徴、年齢感、肌の基礎色、体格、性別の表現、固有の印。別人への置換を禁止。',
+ wholeMaterial&&!limitedPalette?'固定：顔の輪郭、目鼻口の形と配置比率、識別できる髪の形、年齢感、体格、性別の表現、固有の印。人物そのものの材質は変更し、顔・髪・全身を透明な結晶または半透明ホログラムとして描き直す。元の肌色・肌質・髪の不透明さを固定しない。髪と瞳の識別色は透明材質の内側の淡い色として使う。別人への置換を禁止。':monochrome?'固定：顔の輪郭、目の形と間隔、鼻・口の形、識別できる髪の形、年齢感、体格、性別の表現、固有の印。髪・肌・瞳の色は無彩色の明度差へ翻訳する。別人への置換を禁止。':limitedPalette?'固定：顔立ち、髪の形、年齢感、体格、性別の表現、固有の印。髪・肌・瞳の色は選択した技法と限定配色の色・明度差へ翻訳する。元の有彩色を例外で残さない。':'固定：顔の輪郭、目の形と間隔、鼻・口の形、髪の基礎色と識別できる髪の特徴、年齢感、肌の基礎色、体格、性別の表現、固有の印。別人への置換を禁止。',
  '変更：顔の向き、首の角度、視線、表情の筋肉、口の開閉、手足の位置、体の向き、カメラ位置、画角、撮影距離、衣装、背景、光、レイアウト、筆致・素材。参照の顔の傾きや肩のひねりをテンプレートにしない。',
  '参照の肌テクスチャ、撮影照明、背景、色調、可愛く見せる同じ上目遣いを固定要素に含めない。アニメ・墨・油彩・紙・版画などを選んだ場合、顔だけ写真的なまま貼り付けず、同じ顔立ちを選んだ技法の造形へ変換する。',
  '主参照が人物ではなく風景・アイコン・物体なら、その形・色・構造を選択した衣装や小道具へ翻案し、それに由来する独自の主役を作る。'

@@ -1,6 +1,6 @@
-import {colorPolicy} from './color-policy.js?v=21.0.0';
-export {colorPolicy} from './color-policy.js?v=21.0.0';
-import {colorWorlds} from './worlds.js?v=21.0.0';
+import {colorPolicy} from './color-policy.js?v=22.0.0';
+export {colorPolicy} from './color-policy.js?v=22.0.0';
+import {colorWorlds} from './worlds.js?v=22.0.0';
 
 // A palette owns hue and its allocation. It cannot silently select a material,
 // a time of day, a light source, a subject, or a low-contrast rendering style.
@@ -80,6 +80,7 @@ export function detailedPalette(value,{values={},noPerson=false}={}){
  const scenery=values.costume==='風景を主役にする',emblem=values.costume==='紋章・アイコンにする';
  const optical=['クリスタル透光アニメ','宝石ホログラムアニメ','クリスタルホログラム造形アニメ','漆と螺鈿'].includes(values.medium);
  const opticalColor=optical&&!policy.restricted?'分散・薄膜干渉の局所的なスペクトル色は画風の光学として保つ。':'光を理由に指定外の色を加えない。';
+ const wholeMaterial=['クリスタルホログラム造形アニメ','宝石ホログラムアニメ'].includes(values.medium);
  const subject=noPerson?(scenery?'地形・建築・景物・自然素材':emblem?'図案の主形・副形・余白':'主題の物体・支持面・背景'):'人物の衣装・景物・背景';
  const sections=[];
  if(policy.restricted){
@@ -87,7 +88,7 @@ export function detailedPalette(value,{values={},noPerson=false}={}){
   sections.push({label:'色から明度への変換',text:(noPerson?(scenery?'参照の景物・建築・自然素材':emblem?'参照の輪郭・模様・図案全体':'参照の物体・素材・背景'):'主参照の髪・肌・瞳を含む全領域')+'も許可色へ変換し、明るさの順序、輪郭、模様の配置で識別を保つ。元の有彩色を一部分だけ例外にしない。'+(spec&&policy.mode!=='cyanotype'&&policy.mode!=='monochrome'?spec.allocation+'。':'選んだ配色の大きな面と小さなアクセントの関係は保つ。')});
  }else{
   sections.push({label:'色相と配分',text:(spec?.allocation||'配色「'+value+'」に含まれる色を主色・副色・差し色へ分ける')+'。'+(spec?.ratios?'各色の面積の目安は、項目名の順で'+spec.ratios.join(':')+'。比率は余白を含む大きな色面の設計に使い、画素単位の数値達成を主張しない。':'画面の広い基調と小さな焦点を作り、等分の色帯にはしない。')});
-  sections.push({label:'色を置く領域',text:subject+'の大きな面へ主色、副色を別の面へ、差し色を一つの読み取りたい領域へ割り当てる。'+(noPerson?'同系色の隣り合う景物は、色相を増やさず明度と境界で区別する。':'主参照の髪・肌・瞳の基礎色は識別のために残し、照り返しは固有色が読める程度に重ねる。')});
+  sections.push({label:'色を置く領域',text:subject+'の大きな面へ主色、副色を別の面へ、差し色を一つの読み取りたい領域へ割り当てる。'+(noPerson?'同系色の隣り合う景物は、色相を増やさず明度と境界で区別する。':wholeMaterial?'人物の肌や髪の不透明な塗りを残さず、全身を選択した結晶・投影材質で再描画する。髪と瞳の識別色は透明な材質内部の淡い色へ翻訳する。':'主参照の髪・肌・瞳の基礎色は識別のために残し、照り返しは固有色が読める程度に重ねる。')});
  }
  sections.push({label:'画風の明暗を保つ',text:'色相と大きな配分はこの指定、影の形・深さ・ハイライトの鋭さ・描画素材は選択画風が担当する。淡色の配色でも深い影を必要とする画風の暗部を薄めない。画材に必要な明部は'+policy.bright+'、最も深い影は'+policy.dark+'へ収める。'+opticalColor+'配色名から別の筆致・粒子・金属・布へ変えず、選択画風の個別工程で描く。'});
  sections.push({label:'光と文字の色',text:'光源の位置と時刻は選択舞台に合わせ、基調と反射先をこの色域に収める。'+opticalColor+'光が必要な画風でだけ発光を描き、火花・星・海月・魔法陣を色名から追加しない。文字を描く場合は背景との明度差を確保し、文字なしの場合は色を整えるための文字や記号も置かない。'});

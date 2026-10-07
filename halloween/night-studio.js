@@ -1,4 +1,4 @@
-import {icons} from './halloween-icons.js?v=21.0.0';
+import {icons} from './halloween-icons.js?v=22.0.0';
 const svg=b=>'<svg viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+b+'</svg>';
 export const nightIcons=[
 svg('<path d="M21 76V44C21 10 74 10 74 44v32L61 68 48 79 35 68z" fill="#defcff" stroke="#9291ff" stroke-width="2"/><path d="m18 31 14-9L44 4 65 24 79 32z" fill="#514087" stroke="#dacaff" stroke-width="2"/><path d="m43 15 4 6 7-1-4 5 2 7-6-3-6 4 1-8-5-4z" fill="#ffdb83"/><ellipse cx="37" cy="45" rx="4" ry="6" fill="#362953"/><ellipse cx="59" cy="45" rx="4" ry="6" fill="#362953"/><path d="M40 57q8 9 16 0" fill="none" stroke="#362953" stroke-width="3"/>'),
@@ -8,6 +8,6 @@ svg('<path d="M39 24v-9q9-14 18 0v9" fill="none" stroke="#c9ae77" stroke-width="
 export function currentHalloweenIcons(){return document.body.dataset.lights==='night'?nightIcons:icons;}
 export function installNightStudio({refresh,sync}){
  const b=document.getElementById('light-play'),cast=document.createElement('div');cast.className='night-cast';cast.setAttribute('aria-hidden','true');cast.innerHTML=nightIcons.map((art,i)=>'<span class="night-companion night-companion-'+i+'">'+art+'</span>').join('');document.querySelector('.studio-hero').append(cast);
- function update(on){document.body.dataset.lights=on?'night':'day';b.setAttribute('aria-pressed',String(on));b.textContent=on?'夜モード ON ／ 昼へ':'夜モード OFF ／ 夜へ';b.setAttribute('aria-label',on?'夜モードをOFFにする':'夜モードをONにする');refresh();sync();try{localStorage.setItem('halloween-night',on?'on':'off');}catch{}}
+ function update(on){document.body.dataset.lights=on?'night':'day';b.setAttribute('aria-pressed',String(on));document.getElementById('night-state').textContent=on?'ON ／ 昼へ':'OFF ／ 夜へ';b.setAttribute('aria-label',on?'夜モードをOFFにする':'夜モードをONにする');refresh();sync();try{localStorage.setItem('halloween-night',on?'on':'off');}catch{}}
  let initial=false;try{initial=localStorage.getItem('halloween-night')==='on';}catch{}update(initial);b.addEventListener('click',()=>update(document.body.dataset.lights!=='night'));
 }

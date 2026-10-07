@@ -1,0 +1,38 @@
+/* Night is a visible, persistent workshop theme. It never changes drawing choices. */
+.masthead .night-switch{display:grid;grid-template-columns:25px 1fr;gap:1px 7px;align-items:center;background:#fff2d2;color:#44221d;border:2px solid #bd823c;padding:7px 11px;min-height:48px;min-width:115px;text-align:left}.night-switch>span{grid-row:span 2;font-size:25px}.night-switch b{font-size:.85rem}.night-switch small{font-size:.72rem;font-weight:900}.masthead .night-switch[aria-pressed=true]{background:#17203c;color:#d9d8ff;border-color:#c6aaf6;box-shadow:0 0 18px #9763dc66}
+body[data-collection][data-lights=night]{--ink:#f0e8ff;--paper:#182136;--muted:#c0bfd3;--line:#625888;background:#080e20;background-image:radial-gradient(ellipse at 85% 5%,#423569 0,transparent 30%),radial-gradient(ellipse at 10% 50%,#181937 0,transparent 50%);background-blend-mode:normal;color:#f0e8ff}
+body[data-collection][data-lights=night]:before{background:linear-gradient(180deg,#080e2088,#110e2866);pointer-events:none}
+body[data-collection][data-lights=night] .masthead{background:linear-gradient(110deg,#0c1429,#302445);border-color:#8c73b8;color:#f4e6ff}
+body[data-collection][data-lights=night] .masthead .tool-title{color:#f4e6ff}
+body[data-lights=night] .tool-title h1{text-shadow:0 0 18px #b297e46b}
+body[data-collection][data-lights=night] :is(.desk,.direction-card,.history-section,.intro-line,.mix-notice,.view-toolbar,.stage-caption,.sample-gallery,.stage-note){background:#172038ed;color:#f0e8ff;border-color:#71639a}
+body[data-collection][data-lights=night] .studio-hero{background:linear-gradient(90deg,#0b1027fa,#161834b3),url('./landscape-ordinary-v11.png') right center/cover;color:#fff3ff;border-color:#836eb0}
+body[data-collection][data-lights=night] :is(.playground,.mode-panel,.gallery-theater,.collection-bar){background:linear-gradient(120deg,#11172b,#28203d);border-color:#806aa8;color:#f2e7ff;box-shadow:0 0 22px #8061aa33}
+body[data-collection][data-lights=night] :is(.choice,.sample-card,.history-card,.option-button,.attachment-mode,.reference-area,.profile-preview,.activity-control,.result-summary,.transfer-notice,.auto-proposals,.proposal-card){background:#222d46;color:#f0e8ff;border-color:#746790}
+body[data-lights=night] :is(.choice:hover,.option-button:hover){background:#34405a!important}
+body[data-collection][data-lights=night] :is(.choice-name,.choice-hint,.option-recipe,.look-tags,.profile-status,.section-caption,.history-empty,.microcopy,.size-note,.generate-note,.view-toolbar,.view-toolbar button,#view-status,.eyebrow,.swipe-hint,.compare-hint,.hist-id,.detail){color:#cfc3e9}
+body[data-collection][data-lights=night] :is(.collection-switch,.view-switch,.mode-switch,.decoration-controls) button{background:#2b2d49;color:#efeaff;border-color:#8f7ead}
+body[data-collection][data-lights=night] :is(.collection-switch,.view-switch,.mode-switch,.decoration-controls) button[aria-pressed=true]{background:#b397db;color:#140e28;border-color:#e3d4ff;box-shadow:0 0 15px #b38bdf55}
+body[data-collection][data-lights=night] dialog{background:#172038;color:#f0e8ff;border-color:#a78cc6}
+body[data-collection][data-lights=night] .dialog-header{background:#30233f;color:#f9ecff;border-color:#7d629f}
+body[data-lights=night] .ring-stage{background:radial-gradient(ellipse at center,#55396588,#10152b 70%)}
+body[data-lights=night] .ring-pop{background:#201932;color:#f4eaff;border-color:#9d80c8}
+body[data-lights=night] .ring-focus{background:#29243deF;color:#f5eaff;border-color:#bd9bd7}
+body[data-lights=night] .picker-favorites{background:#28223d;color:#f1e6ff;border-color:#8c72a8}
+body[data-lights=night] .favorite-heading small,body[data-lights=night] .favorite-empty{color:#d0c4df}
+body[data-lights=night] .favorite-chip{background:#362b49;border-color:#9275ab}
+body[data-lights=night] .favorite-pick{color:#f3eaff}
+body[data-lights=night] .favorite-remove{color:#f1d5ee}
+.night-creatures{display:none;position:absolute;right:1%;bottom:4%;width:190px;height:160px;pointer-events:none;z-index:0;filter:drop-shadow(0 0 16px #bba0ff99)}
+body[data-lights=night] .night-creatures{display:block}.night-creatures i{position:absolute;width:80px;height:90px;display:block;transform:rotate(-9deg)}.night-creatures i svg{width:100%;height:100%}.night-creatures i:nth-child(1){left:12px;top:65px}.night-creatures i:nth-child(2){right:0;top:0}.night-creatures i:nth-child(3){right:20px;bottom:0;width:70px}
+body[data-lights=night] .studio-hero:after{content:'';width:72px;height:72px;border-radius:50%;background:#cdbbf4;box-shadow:0 0 35px #b99ae388;right:8%;top:10%;opacity:.7;animation:none}
+body[data-lights=night][data-motion=on] .night-creatures i{animation:night-hover 5s ease-in-out infinite}.night-creatures i:nth-child(2){animation-delay:-2s!important}.night-creatures i:nth-child(3){animation-delay:-3.5s!important}
+@keyframes night-hover{50%{transform:translateY(-12px) rotate(8deg)}}
+@media(max-width:620px){.masthead .header-actions{max-width:none;flex:1 0 100%;justify-content:flex-start;align-items:center}.masthead .header-actions .dark-button{width:auto}.masthead .night-switch{margin-left:auto;min-width:113px}.night-creatures{width:115px;height:125px;right:1%}.night-creatures i{width:55px;height:65px}.night-creatures i:nth-child(1){left:0;top:55px}.night-creatures i:nth-child(3){width:46px;right:8px;bottom:0}body[data-lights=night] .studio-hero>div{max-width:73%}}
+@media(prefers-reduced-motion:reduce){.night-creatures i{animation:none!important}}
+
+body[data-collection][data-lights=night] :is(.secondary-button,.text-button,.ring-tools button,.picker-views button,.favorite-toggle,.favorite-remove){background:#332c4b;color:#f4eaff;border-color:#9d83bc}
+body[data-collection][data-lights=night] :is(.primary-button,.dark-button){background:#70568e;color:#fff4ff;border-color:#bb9cdc}
+body[data-collection][data-lights=night] :is(input,textarea,select){background:#222b42;color:#f6ecff;border-color:#9b86b3}
+body[data-lights=night] input::placeholder,body[data-lights=night] textarea::placeholder{color:#c4b9d4}
+body[data-collection][data-lights=night] .picker-views button[aria-pressed=true],body[data-collection][data-lights=night] .favorite-toggle[aria-pressed=true]{background:#b49bd5;color:#181129;border-color:#ebd9ff}

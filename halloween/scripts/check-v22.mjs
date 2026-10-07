@@ -1,0 +1,33 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {toggleFavorite,normalizeFavorites,favoriteKey} from '../favorites.js?v=22.0.0';
+import {ringWindow,ringPosition,swipeStep} from '../ring-motion.js?v=22.0.0';
+import {optionRecipe} from '../option-recipes.js?v=22.0.0';
+import {opticalSignature} from '../optical-effects.js?v=22.0.0';
+const values=['A','B','C','D','E'];
+assert.equal(toggleFavorite(values,'F').changed,false);
+assert.deepEqual(toggleFavorite(values,'C').values,['A','B','D','E']);
+assert.deepEqual(toggleFavorite(toggleFavorite(values,'C').values,'F').values,['A','B','D','E','F']);
+assert.equal(favoriteKey('halloween','medium')===favoriteKey('everyday','medium'),false);
+const normalized=normalizeFavorites(JSON.parse(JSON.stringify({'halloween:medium':['A','A','B','C','D','E','F',null],'everyday:medium':['Z'],bad:['X']})));
+assert.deepEqual(normalized,{'halloween:medium':values,'everyday:medium':['Z']});
+assert.equal(swipeStep(-100,10),1);assert.equal(swipeStep(100,-10),-1);assert.equal(swipeStep(-50,0),0);assert.equal(swipeStep(80,100),0);
+assert.deepEqual(ringWindow(['A','B','C'],2).items,['C','A','B']);
+assert.deepEqual(ringWindow(['A','B','C'],-1).items,['C','A','B']);
+const initial=ringPosition(1,6),half=ringPosition(1,6,30),end=ringPosition(1,6,60),front=ringPosition(0,6);
+assert.ok(initial.x>half.x&&half.x>end.x,'Next item travels left along an arc into the foreground');
+assert.ok(initial.y<half.y&&half.y<end.y);assert.ok(Math.abs(end.x-front.x)<1e-9&&Math.abs(end.y-front.y)<1e-9);
+for(const medium of ['クリスタルホログラム造形アニメ','宝石ホログラムアニメ']){
+ const text=optionRecipe('medium',medium,{values:{medium,costume:'参照画像の衣装を生かす'}}).sections.map(s=>s.text).join('\n');
+ assert.match(text,/顔・髪・.*身体|顔・髪・首・腕・手・脚/);
+ assert.doesNotMatch(text,/衣装と身体の本体は不透明/);
+ assert.match(text,/深い影|深いセル影/);
+ const scenery=optionRecipe('medium',medium,{noPerson:true,values:{medium,costume:'風景を主役にする'}});
+ assert.ok(!scenery.sections.some(s=>/指の緊張|髪の流れ|顔・髪・首・腕/.test(s.text)));
+ assert.doesNotMatch(opticalSignature({medium},{noPerson:true}).join(''),/動作に遅れて流れる髪/);
+}
+const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
+assert.equal((html.match(/id="light-play"/g)||[]).length,1);
+assert.ok(html.indexOf('id="light-play"')<html.indexOf('</header>'));
+assert.match(html,/id="inspector-favorite"/);assert.match(html,/id="picker-favorites"/);
+console.log('PASS crystal/hologram whole-subject recipes, no-person isolation, actual orbital direction, swipe direction, five-favorite limit/removal/serialization/mode isolation, header night control.');

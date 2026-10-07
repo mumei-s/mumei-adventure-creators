@@ -1,19 +1,21 @@
-import {colorPolicy} from './color-policy.js?v=21.0.0';
+import {colorPolicy} from './color-policy.js?v=22.0.0';
 
 // A color theme controls the base image. Dispersion is part of the selected
 // optical medium; only an explicitly limited palette removes spectral hues.
 export function opticalColors(values={}) {
  const policy=colorPolicy(values);
+ const wholeMaterial=['クリスタルホログラム造形アニメ','宝石ホログラムアニメ'].includes(values.medium);
  const optical=['クリスタル透光アニメ','宝石ホログラムアニメ','クリスタルホログラム造形アニメ','漆と螺鈿'].includes(values.medium);
  return { ...policy,optical,spectral:optical&&!policy.restricted,
   instruction:!optical?'':policy.restricted
    ?'限定配色を保ち、屈折による輪郭のずれ、内部反射、透過の濃度差を許可色の明暗で描く。虹色は描かず、色数を制限した光学表現として扱う。'
+   :wholeMaterial?'基調と背景は選択配色を保つ。人物の顔・髪・全身の結晶または投影材質へ、シアン・菫・マゼンタ・淡金の分散と薄膜干渉帯を連続させる。髪と瞳の識別色は透明材質内部の淡い色として残し、肌の不透明な基礎色は固定しない。'
    :'基調・衣装・背景は選択配色を保つ。分散と薄膜干渉の領域にはシアン・菫・マゼンタ・淡金のスペクトル色を使い、角度で色が変わる帯を描く。光学色はその領域だけに使い、髪・瞳の固有色や画面全体を塗り替えない。'};
 }
 
 export function opticalSignature(values={}, {noPerson=false}={}) {
  const color=opticalColors(values);
- if(values.medium==='クリスタルホログラム造形アニメ')return ['広い透明結晶面の厚み・背後の輪郭の屈折ずれ・暗い二重内部反射・面の角度に沿う虹色干渉帯・鋭い光と深い影。光粒だけでは成立しない。',color.instruction];
+ if(values.medium==='クリスタルホログラム造形アニメ')return [noPerson?'主景そのものまで連続する結晶材質。':'顔・髪・首・腕・手・脚そのものまで連続する透明な結晶材質。肌が不透明なまま、服や宝飾だけを虹色にした絵では成立しない。', noPerson?'近景が迫る短縮遠近と主景の深度差、透明結晶面の厚みと屈折。':'近景が迫る短縮遠近、動作に遅れて流れる髪や衣装、背景との深度差。指定ポーズと支持点を維持する。広い透明結晶面の厚み・背後の輪郭の屈折ずれ・暗い二重内部反射・面の角度に沿う虹色干渉帯・鋭い光と深い影。光粒だけでは成立しない。',color.instruction];
  if(values.medium==='クリスタル透光アニメ')return [
   '縮小しても読める結晶的な透光：主題に沿った透明な色層の重なり、面の境界で曲がる光帯と背後の輪郭の屈折、内部の二重反射、鋭い白光と隣接する深い有彩色の影。宝飾の小さな点光だけでは成立しない。',
   noPerson?'景物の広い面とその周囲の空間を澄んだプリズムの色層でつなぐ。主景の構造と外形は保つ。':'髪束・衣装の外周から周囲へ連続する広いプリズムの光帯を描き、顔の識別点を避けて透明な色層を重ねる。主役の外形と衣装の被覆は保つ。',
@@ -21,7 +23,7 @@ export function opticalSignature(values={}, {noPerson=false}={}) {
  ];
  if(values.medium==='宝石ホログラムアニメ')return [
   '縮小しても読めるホログラム：主題の前後へ離れた2層以上の半透明投影面、背後の輪郭が通り抜ける濃度差、角度で切り替わる干渉色の帯、位置がずれた二重像、投影面の中だけで途切れる走査線。宝石の小物や通常の逆光だけでは成立しない。',
-  '投影面は主題の外形に沿って主図版の広い領域へ連続させ、手前・奥・重なりを見分けられる大きさにする。光の層はこの画風の必須要素であり、未選択の持ち物として消さない。',
+  noPerson?'主景の広い面を半透明投影像へ変換し、構造と外形を保つ。':'人物そのものを半透明の投影像へ変換する。顔・髪・身体の輪郭にも深度が違う二重像と干渉帯が続き、普通の肌の人物の周りに膜だけを足す絵にはしない。衣装の被覆と識別形は保持する。投影面は主題の外形に沿って主図版の広い領域へ連続させ、手前・奥・重なりを見分けられる大きさにする。光の層はこの画風の必須要素であり、未選択の持ち物として消さない。',
   color.instruction
  ];
  return [];

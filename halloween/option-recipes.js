@@ -1,16 +1,16 @@
-import {CRYSTAL_OBJECT,crystalObjectRecipe,japaneseSections} from './japan-direction.js?v=21.0.0';
-import {visualSpec} from './visual-specs.js?v=21.0.0';
-import {detailedMedium} from './medium-recipes.js?v=21.0.0';
-import {detailedFormat} from './format-recipes.js?v=21.0.0';
-import {detailedSubject} from './subject-recipes.js?v=21.0.0';
-import {detailedPalette} from './palette-recipes.js?v=21.0.0';
-import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=21.0.0';
-import {executionFor} from './option-execution.js?v=21.0.0';
+import {CRYSTAL_OBJECT,crystalObjectRecipe,japaneseSections} from './japan-direction.js?v=22.0.0';
+import {visualSpec} from './visual-specs.js?v=22.0.0';
+import {detailedMedium} from './medium-recipes.js?v=22.0.0';
+import {detailedFormat} from './format-recipes.js?v=22.0.0';
+import {detailedSubject} from './subject-recipes.js?v=22.0.0';
+import {detailedPalette} from './palette-recipes.js?v=22.0.0';
+import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=22.0.0';
+import {executionFor} from './option-execution.js?v=22.0.0';
 
 function crystalMaterialRecipe({noPerson}){
  if(!noPerson)return crystalObjectRecipe;
- const sections=crystalObjectRecipe.sections.map(section=>({...section,text:section.label==='日本アニメの造形'?'選択した景物・建築・モチーフの識別形と支持構造を保つ。日本アニメの背景作画の細い色線で、材質の境界と遠近を整理する。':section.label==='結晶の厚みと屈折'?'景物の実在する板・窓・装飾・素材の面に、厚みの違う透明な結晶面を作る。厚い縁は暗い二重線、薄い縁は鋭い明線。背後の輪郭の屈折ずれと厚い部分の二次反射を描く。全景を無意味な水晶の山に置換しない。':section.text}));
- return {...crystalObjectRecipe,sections,checks:['景物の識別形と支持構造',...crystalObjectRecipe.checks.slice(1)]};
+ const sections=crystalObjectRecipe.sections.map(section=>({...section,text:section.label==='日本アニメの造形'?'選択した景物・建築・モチーフの識別形と支持構造を保つ。日本アニメの背景作画の細い色線で、材質の境界と遠近を整理する。':section.label==='結晶の厚みと屈折'?'景物の実在する板・窓・装飾・素材の面に、厚みの違う透明な結晶面を作る。厚い縁は暗い二重線、薄い縁は鋭い明線。背後の輪郭の屈折ずれと厚い部分の二次反射を描く。全景を無意味な水晶の山に置換しない。':section.label==='飛び出す奥行きと動勢'?'前景の結晶稜線と奥の主景を短縮遠近と遮蔽で分け、風・水面・光帯の動きが選択された場合は同じ方向と時刻で描く。人物の手足や髪を追加しない。':section.text}));
+ return {...crystalObjectRecipe,sections,checks:['景物の識別形と支持構造','近景と主景の明確な深度差','広い透明な結晶面と厚みの違い','背後の輪郭の屈折ずれと内部反射','面の角度に沿う虹色干渉帯','鋭い光とまとまった深い影']};
 }
 function crystalRecipe({values,noPerson}){
  const spec=crystalAnimeSpec({noPerson,palette:values.palette});

@@ -1,12 +1,12 @@
-import {imageOutputContract} from './output-contract.js?v=21.0.0';
-import {modeFoundation} from './japan-direction.js?v=21.0.0';
-import {visibleQuestions} from './catalog.js?v=21.0.0';
-import {formatContract} from './formats.js?v=21.0.0';
-import {buildEditorial,editorialContract} from './editorial.js?v=21.0.0';
-import {optionRecipe} from './option-recipes.js?v=21.0.0';
-import {colorPolicy} from './palette-recipes.js?v=21.0.0';
-import {resolveArtDirection,interactionContract} from './art-direction.js?v=21.0.0';
-import {executionFor} from './option-execution.js?v=21.0.0';
+import {imageOutputContract} from './output-contract.js?v=22.0.0';
+import {modeFoundation} from './japan-direction.js?v=22.0.0';
+import {visibleQuestions} from './catalog.js?v=22.0.0';
+import {formatContract} from './formats.js?v=22.0.0';
+import {buildEditorial,editorialContract} from './editorial.js?v=22.0.0';
+import {optionRecipe} from './option-recipes.js?v=22.0.0';
+import {colorPolicy} from './palette-recipes.js?v=22.0.0';
+import {resolveArtDirection,interactionContract} from './art-direction.js?v=22.0.0';
+import {executionFor} from './option-execution.js?v=22.0.0';
 
 export function productionPlan(profile,values,variant,collection='halloween',random=Math.random){
  const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);

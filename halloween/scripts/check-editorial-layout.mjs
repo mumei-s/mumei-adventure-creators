@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=23.0.0';
-import {resolveSelections} from '../catalog.js?v=23.0.0';
-import {initialSelections} from '../modes.js?v=23.0.0';
-import {buildDirection} from '../direction.js?v=23.0.0';
-import {applyPose} from '../poses.js?v=23.0.0';
-import {productionPlan} from '../production-plan.js?v=23.0.0';
-import {renderEditorialLayout} from '../editorial-layout.js?v=23.0.0';
+import {applyCollection} from '../collection.js?v=24.0.0';
+import {resolveSelections} from '../catalog.js?v=24.0.0';
+import {initialSelections} from '../modes.js?v=24.0.0';
+import {buildDirection} from '../direction.js?v=24.0.0';
+import {applyPose} from '../poses.js?v=24.0.0';
+import {productionPlan} from '../production-plan.js?v=24.0.0';
+import {renderEditorialLayout} from '../editorial-layout.js?v=24.0.0';
 
 // Native SVG composition preserves supplied pixels; it does not generate images.
 // Solid-color, dimensionally correct test PNGs. No person's artwork is stored.

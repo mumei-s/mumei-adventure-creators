@@ -1,7 +1,7 @@
-import {colorPolicy} from './palette-recipes.js?v=23.0.0';
-import {opticalSignature,opticalColors} from './optical-effects.js?v=23.0.0';
-import {detailedSubject} from './subject-recipes.js?v=23.0.0';
-import {detailedFormat} from './format-recipes.js?v=23.0.0';
+import {colorPolicy} from './palette-recipes.js?v=24.0.0';
+import {opticalSignature,opticalColors} from './optical-effects.js?v=24.0.0';
+import {detailedSubject} from './subject-recipes.js?v=24.0.0';
+import {detailedFormat} from './format-recipes.js?v=24.0.0';
 
 const luminous=new Set(['発光幻想アニメ']);
 const flat=new Set(['線画','リノカット','木版画','浮世絵木版画','シルクスクリーン','ベクターグラフィック','フラットイラスト','ピクセルアート','構成主義','ミニマリズム']);

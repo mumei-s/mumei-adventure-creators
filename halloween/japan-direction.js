@@ -72,4 +72,4 @@ export function japaneseSections(key,value,{noPerson=false,collection='halloween
 }
 export function modeFoundation(collection){return collection==='everyday'
  ?'日本の作画・誌面と生活空間を基本に、明示された海外技法・舞台・衣装を尊重する。通常モードではHalloweenの仮装・カボチャ・幽霊・魔法を自動追加しない。幻想は選択された項目の範囲だけ。'
- :'通常モードと同じ日本の描線・塗り・文字組みを土台に、海外Halloweenの仮装、trick-or-treatの菓子袋、彫ったカボチャの灯り、秋の街の装飾から選択舞台・衣装・物語に合う要素だけを加える。全場面を洋館や魔法放出へ変えず、選択画風を保つ。';}
+ :'通常モードと同じ日本の描線・塗り・文字組みを土台に、Halloweenの各項目で明示した出来事・衣装・道具を描く。Halloweenというモード名だけを理由に、カボチャ・幽霊・菓子袋・墓・魔法・祭りの装飾を自動追加しない。それらを明示した選択項目では、その個別仕様を実行する。全場面を洋館や魔法放出へ変えず、選択画風を保つ。';}

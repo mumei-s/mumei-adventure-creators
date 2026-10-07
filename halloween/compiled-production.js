@@ -1,7 +1,7 @@
-import {modeFoundation} from './japan-direction.js?v=23.0.0';
-import {imageOutputContract} from './output-contract.js?v=23.0.0';
-import {opticalSignature} from './optical-effects.js?v=23.0.0';
-import {colorPolicy} from './color-policy.js?v=23.0.0';
+import {modeFoundation} from './japan-direction.js?v=24.0.0';
+import {imageOutputContract} from './output-contract.js?v=24.0.0';
+import {opticalSignature} from './optical-effects.js?v=24.0.0';
+import {colorPolicy} from './color-policy.js?v=24.0.0';
 
 export const conditionOwners=Object.freeze({
  medium:'描線・陰影・画材・光学',design:'画像と原稿の領域・読み順',
@@ -27,9 +27,10 @@ function renderInputObject(plan){
   output:'完成画像を1枚。仕様書・ツール画面として描かない。',
   cultural_foundation:modeFoundation(plan.collection),
   required_before_details:{
+   ...(!plan.noPerson&&/全身|足先|靴から頭/.test(v.distance)?{full_body_composition:'構図の最優先：主画像領域内に頭頂・両手の全指・両足の靴先・支持面をすべて収める。人物の頭頂から一番下の靴先までを主画像領域の高さの75〜80%以内に置き、頭上に5%以上、最下端の靴先の下に10%以上の床または地面を見せる。左右も指先・衣装の端を外周5%より内側へ。手前へ迫る手と頭の遠近差は保ち、指定カメラの角度を変えずにカメラを引いて全身を収める。顔の拡大のために足先を切らない。'}:{}),
    layout:byKey.design.execution.method,
    medium:material.execution.method,
-   ...(!plan.noPerson&&['クリスタルホログラム造形アニメ','宝石ホログラムアニメ'].includes(selected.medium)?{face_material:'最優先：顔も結晶ホログラム。額・頬・鼻・眼瞼・唇・顎・耳に、透明な厚み、虹色干渉帯、内部反射と屈折ずれを実際に描く。顔だけ自然な皮膚へ戻さない。主参照は形と比率だけに使う。'}:{}),
+   ...(!plan.noPerson&&['クリスタルホログラム造形アニメ','宝石ホログラムアニメ'].includes(selected.medium)?{face_material:'最優先：顔も結晶ホログラム。顔そのものを'+(selected.medium==='クリスタルホログラム造形アニメ'?'透明な彫刻用の結晶ガラスとして造形する。額・頬・鼻・眼瞼・唇・顎・耳すべてに透明な厚み、幅広い虹色干渉帯、暗い二重内部反射を描く。頬の内部に奥の髪や背景の屈折した像を見せ、鼻と唇も透明な結晶面にする。':'半透明のホログラム投影像へ変換する。額・頬・鼻・眼瞼・唇・顎・耳にも濃度差、背景が透ける領域、位置のずれた二重像と干渉帯を続ける。')+'肌に虹の模様を貼るだけで終えない。普通の肌色、自然なピンクの不透明な唇を残さない。目鼻口の識別形と表情は透明材質の内部の色面と描線で保つ。主参照は形と比率だけに使う。'}:{}),
    palette:color.restricted?'全領域の使用色：'+color.allowed+'。参照の髪・肌・瞳、光、反射、文字もこの色域で描き直す。':byKey.palette.execution.method,
    ...(optical?{optical_geometry:optical+'主題と周囲の空間をまたぐ面として描き、宝飾の点光だけにしない。'+(color.restricted?'透過・屈折・反射も許可色だけ。':'')}:{}),
    frame:plan.noPerson?'選択した主題の全景を指定形式の画像領域へ収める。':v.distance+(/全身|足先|靴から頭/.test(v.distance)?'。文字枠の下に手足を隠さず、頭・手・足・支持面を画像領域内へ収める。':'。指定した画角の対象を文字枠で隠さない。'),
@@ -38,7 +39,7 @@ function renderInputObject(plan){
   canvas:{width_px:width,height_px:height,aspect_ratio:ratio,...contract(byKey.size),format:selected.design},
   drawing:{...contract(material),medium:selected.medium,
    visible_signature:material.checks,optics:opticalSignature(selected,{noPerson:plan.noPerson})},
-  identity:plan.noPerson?'選択した景物・物体・図案。人物なし。':'主参照は顔の形・目鼻の配置比率・髪の形・年齢感・性別表現を識別する資料。参照の撮影角度・表情・肌の質感を複製せず、今回の画風と配色で新しく描く。'+(color.restricted?'参照の肌色・髪色・瞳色も許可色へ変換し、形と明度差で同じ人を表す。':''),
+  identity:plan.noPerson?'選択した景物・物体・図案。人物なし。':'主参照は顔の形・目鼻の配置比率・髪の形・年齢感・性別表現を識別する資料。参照の撮影角度・表情・肌の質感を複製せず、今回の画風と配色で新しく描く。参照写真の背景・文字・動物・同行者・武器・装飾・持ち物は、選択項目で明示したものだけ採用する。「参照画像の衣装を生かす」は着用した服・靴・服に固定された装身具を指し、背景の小物や手に持つ武器を含めない。'+(color.restricted?'参照の肌色・髪色・瞳色も許可色へ変換し、形と明度差で同じ人を表す。':''),
   scene:Object.fromEntries(['theme','costume','place','pose','mood','palette'].map(key=>[key,contract(byKey[key])])),
   camera:plan.noPerson?'人物用の表情・顔向き・身体動作は適用しない。':{face:v.face,expression:v.expression,body:v.pose,distance:v.distance,angle:v.camera,...(side?{torso_yaw_degrees:90,projection:'肩・骨盤・膝は側面投影。顔向きの指定を理由に胴体を鑑賞者側へ回さない。'}:{})},
   layout:contract(byKey.design),
@@ -103,12 +104,18 @@ export function renderDetailedChatInput(plan){
   '原稿は上記だけ。項目名・制作番号・未指定の号数・日付・疑似文字を印字しない。'
  ].filter(Boolean).join('\n');
 }
-// Remove only exact duplicate whole lines; preserve every full recipe clause.
+// Drop duplicate/contained instructions without paraphrasing any recipe clause.
 export function renderChatInput(plan){
  const seen=new Set();
- return renderDetailedChatInput(plan).split('\n').filter(line=>{
+ const lines=renderDetailedChatInput(plan).split('\n').filter(line=>{
   const normalized=line.replace(/^・/,'').trim();
   if(!normalized||seen.has(normalized))return false;seen.add(normalized);return true;
+ });
+ const normalized=lines.map(line=>line.replace(/^・/,'').trim());
+ return lines.filter((line,i)=>{
+  const clause=normalized[i];
+  if(clause.length<24||/^【|^\d+\.|^描き分け：/.test(clause))return true;
+  return !normalized.some((other,j)=>j!==i&&other.length>clause.length&&other.includes(clause));
  }).join('\n');
 }
 export function compileProduction(plan,originalLines){

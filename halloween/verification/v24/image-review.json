@@ -1,0 +1,21 @@
+{
+  "date": "2026-10-07",
+  "release": "24.0.0",
+  "initialImage": {
+    "elapsedMs": 69802,
+    "face": "partly natural skin/lip color remained",
+    "feet": "far shoe occluded",
+    "unselectedPumpkins": "absent"
+  },
+  "finishingEdit": {
+    "elapsedMs": 52618,
+    "face": "transparent violet crystal planes over forehead, cheeks, nose, lips, chin with internal reflections",
+    "feet": "both black lace-up shoes and their toes visible inside frame; floor visible below",
+    "unselectedPumpkins": "absent",
+    "display": "native image directly returned in chat"
+  },
+  "timingLimit": "A 53-second correction does not establish a <=60-second first generation SLA. Initial generation measured 70 seconds.",
+  "conditions": "All 10 selected conditions and each complete recipe clause retained; required regression suites passed.",
+  "scope": "Prompt/compiler and UI implementation. The 983 option occurrences are instruction-tested, not 983 generated images.",
+  "privacy": "User reference images and generated likeness proofs are not published into public repository assets."
+}

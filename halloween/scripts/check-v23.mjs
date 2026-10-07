@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.0.0';
-import {applyCollection,dailyInspiration} from '../collection.js?v=28.0.0';
-import {everydayScenes,everydayPlaces,casualClothes,swimClothes} from '../everyday-options.js?v=28.0.0';
-import {optionRecipe} from '../option-recipes.js?v=28.0.0';
-import {productionPlan} from '../production-plan.js?v=28.0.0';
-import {renderChatInput} from '../compiled-production.js?v=28.0.0';
+import {questions,resolveSelections} from '../catalog.js?v=28.0.1';
+import {applyCollection,dailyInspiration} from '../collection.js?v=28.0.1';
+import {everydayScenes,everydayPlaces,casualClothes,swimClothes} from '../everyday-options.js?v=28.0.1';
+import {optionRecipe} from '../option-recipes.js?v=28.0.1';
+import {productionPlan} from '../production-plan.js?v=28.0.1';
+import {renderChatInput} from '../compiled-production.js?v=28.0.1';
 const random=()=>.28,profile={displayName:'TEST',activityEnabled:false,topics:[]};
 applyCollection('everyday');
 for(const [key,values]of [['theme',everydayScenes.map(x=>x[0])],['place',everydayPlaces],['costume',[...casualClothes,...swimClothes]]])for(const value of values){
@@ -20,7 +20,7 @@ for(const medium of ['クリスタルホログラム造形アニメ','宝石ホ�
  assert.equal(optionRecipe('medium',medium).sections.length,recipe.sections.length,'Repeated inspection does not append sections to global recipes');
  const values=resolveSelections({medium,costume:'参照画像の衣装を生かす'},random);
  const plan=productionPlan(profile,values,{face:'正面',expression:'笑顔',pose:'立つ',distance:'全身',camera:'正面',light:'窓からの光',depth:'前後の奥行き',motion:'静止'},'everyday',random);
- const input=renderChatInput(plan);assert.ok(input.indexOf('最優先：顔も結晶ホログラム')<input.indexOf('【全選択の個別レシピ】'));
+ const input=renderChatInput(plan);assert.ok(input.indexOf('最優先：顔も結晶ホログラム')<input.indexOf('【選択済みの仕様資料：一場面へ統合する】'));
  for(const c of plan.conditions)for(const section of c.sections)assert.ok(input.includes(section.text));
 }
 applyCollection('halloween');assert.ok(!questions.find(q=>q.key==='costume').groups.some(g=>g.values.includes('ビキニ')));

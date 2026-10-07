@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {questions,resolveSelections} from '../catalog.js?v=28.0.0';
-import {applyCollection} from '../collection.js?v=28.0.0';
-import {initialSelections} from '../modes.js?v=28.0.0';
-import {buildDirection} from '../direction.js?v=28.0.0';
-import {applyPose} from '../poses.js?v=28.0.0';
-import {productionPlan} from '../production-plan.js?v=28.0.0';
-import {composePrompt} from '../prompt.js?v=28.0.0';
-import {optionRecipe} from '../option-recipes.js?v=28.0.0';
-import {conditionOwners,renderInput} from '../compiled-production.js?v=28.0.0';
-import {opticalColors,opticalSignature} from '../optical-effects.js?v=28.0.0';
+import {questions,resolveSelections} from '../catalog.js?v=28.0.1';
+import {applyCollection} from '../collection.js?v=28.0.1';
+import {initialSelections} from '../modes.js?v=28.0.1';
+import {buildDirection} from '../direction.js?v=28.0.1';
+import {applyPose} from '../poses.js?v=28.0.1';
+import {productionPlan} from '../production-plan.js?v=28.0.1';
+import {composePrompt} from '../prompt.js?v=28.0.1';
+import {optionRecipe} from '../option-recipes.js?v=28.0.1';
+import {conditionOwners,renderInput} from '../compiled-production.js?v=28.0.1';
+import {opticalColors,opticalSignature} from '../optical-effects.js?v=28.0.1';
 const random=()=>.28,profile={displayName:'REVIEW',activityEnabled:false,topics:[],biography:''};
 const entries=new Map();let occurrences=0,pairs=0,totalLength=0,maxLength=0;
 for(const mode of ['halloween','everyday']){
@@ -25,9 +25,9 @@ for(const mode of ['halloween','everyday']){
   assert.ok(!prompt.includes('<svg')&&!prompt.includes('第2段階の生成用入力'));
   for(const c of plan.conditions){assert.ok(conditionOwners[c.key]);for(const s of c.sections)assert.ok(prompt.includes(s.text),mode+'/'+value+'/'+s.label);}
   const drawingInput=renderInput(plan);
-  for(const c of plan.conditions)for(const s of c.sections)assert.ok(drawingInput.includes(s.text),'Actual image-call input lost '+q.key+'/'+value+'/'+s.label);
+  for(const c of plan.conditions)for(const s of c.sections)assert.ok(drawingInput.includes(s.text),'Actual ChatGPT integration material lost '+q.key+'/'+value+'/'+s.label);
   const medium=plan.conditions.find(c=>c.key==='medium');
-  assert.ok(prompt.indexOf(medium.checks[0])<prompt.indexOf('【全選択の個別レシピ】'),'Medium signatures must precede detailed recipes');
+  assert.ok(prompt.indexOf(medium.checks[0])<prompt.indexOf('【選択済みの仕様資料：一場面へ統合する】'),'Medium signatures must precede detailed recipes');
   assert.ok(!plan.copy.slots.some(s=>s.role==='ノンブル'||s.text==='06'||s.text===values.medium));
   const r=optionRecipe(q.key,value,{values,variant,collection:mode});
   const id=q.key+'\u0000'+value;

@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {productionPlan} from '../production-plan.js?v=28.0.0';
-import {renderChatInput,renderInput} from '../compiled-production.js?v=28.0.0';
-import {modeFoundation} from '../japan-direction.js?v=28.0.0';
+import {productionPlan} from '../production-plan.js?v=28.0.1';
+import {renderChatInput,renderInput} from '../compiled-production.js?v=28.0.1';
+import {modeFoundation} from '../japan-direction.js?v=28.0.1';
 const settings=JSON.parse(fs.readFileSync(new URL('../verification/v22/crystal-proof-settings.json',import.meta.url)));
 const profile={displayName:'TEST',activityEnabled:false,topics:[]};
 for(const collection of ['halloween','everyday'])for(const costume of ['参照画像の衣装を生かす','風景を主役にする']){

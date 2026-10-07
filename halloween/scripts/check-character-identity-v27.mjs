@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.0.0';
-import {applyCollection} from '../collection.js?v=28.0.0';
-import {productionPlan} from '../production-plan.js?v=28.0.0';
-import {composePrompt} from '../prompt.js?v=28.0.0';
-import {colorPolicy} from '../color-policy.js?v=28.0.0';
+import {questions,resolveSelections} from '../catalog.js?v=28.0.1';
+import {applyCollection} from '../collection.js?v=28.0.1';
+import {productionPlan} from '../production-plan.js?v=28.0.1';
+import {composePrompt} from '../prompt.js?v=28.0.1';
+import {colorPolicy} from '../color-policy.js?v=28.0.1';
 
 const profile={displayName:'同一性検査',activityEnabled:false},random=()=>.2;
 const base=resolveSelections({design:'通常の一枚絵',medium:'発光幻想アニメ',theme:'宇宙のHalloween',costume:'参照画像の衣装を生かす',place:'星空の砂漠',pose:'片手を差し出す',mood:'俯瞰＋目を見開く',palette:'群青 × 菫 × 星白',type:'文字を一切入れない',line:'セリフなし',size:'縦ポスター2:3｜2400×3600｜2:3'},random);
@@ -11,7 +11,7 @@ const variant={face:'顔を上へ向ける',expression:'目を見開いて驚く
 function inputFor(values,mode){
  const plan=productionPlan(profile,values,variant,mode,random);
  const prompt=composePrompt({profile,values,variant,collection:mode,preparedPlan:plan,references:[{name:'character.png',role:'identity'}],edition:'IDENTITY'});
- const input=prompt.split('【画像生成へ渡す作画条件：開始】')[1].split('【画像生成へ渡す作画条件：終了】')[0];
+ const input=prompt.split('【統合するための制作仕様：開始】')[1].split('【統合するための制作仕様：終了】')[0];
  return {plan,input};
 }
 let cases=0;
@@ -55,4 +55,4 @@ for(const mode of ['halloween','everyday']){
 }
 applyCollection('halloween');
 assert.equal(cases,1080);
-console.log('PASS character identity: '+cases+' mode/style/palette combinations preserve identifying features, age, gender and base build while permitting the selected medium to reshape facial form and surface; chibi simplification, material conversion, monochrome and limited-color routing are retained in the actual image input; no-person output receives no face contract.');
+console.log('PASS character identity: '+cases+' mode/style/palette combinations preserve identifying features, age, gender and base build while permitting the selected medium to reshape facial form and surface; chibi simplification, material conversion, monochrome and limited-color routing are retained in the ChatGPT integration material; no-person output receives no face contract.');

@@ -1,20 +1,21 @@
-import {creatorLookupInstructions} from './creator-handoff.js?v=28.0.0';
-import {imageOutputContract} from './output-contract.js?v=28.0.0';
-import {modeFoundation} from './japan-direction.js?v=28.0.0';
-import {questions,visibleQuestions} from './catalog.js?v=28.0.0';
-import {formatContract} from './formats.js?v=28.0.0';
-import {buildEditorial,editorialContract} from './editorial.js?v=28.0.0';
-import {optionRecipe} from './option-recipes.js?v=28.0.0';
-import {colorPolicy} from './palette-recipes.js?v=28.0.0';
-import {resolveArtDirection,interactionContract} from './art-direction.js?v=28.0.0';
-import {executionFor} from './option-execution.js?v=28.0.0';
+import {creatorLookupInstructions} from './creator-handoff.js?v=28.0.1';
+import {imageOutputContract} from './output-contract.js?v=28.0.1';
+import {modeFoundation} from './japan-direction.js?v=28.0.1';
+import {questions,visibleQuestions} from './catalog.js?v=28.0.1';
+import {formatContract} from './formats.js?v=28.0.1';
+import {buildEditorial,editorialContract} from './editorial.js?v=28.0.1';
+import {optionRecipe} from './option-recipes.js?v=28.0.1';
+import {colorPolicy} from './palette-recipes.js?v=28.0.1';
+import {resolveArtDirection,interactionContract} from './art-direction.js?v=28.0.1';
+import {executionFor} from './option-execution.js?v=28.0.1';
+import {cameraContract} from './angles.js?v=28.0.1';
 
 export function productionPlan(profile,values,variant,collection='halloween',random=Math.random){
  const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);
  for(const key of ['design','medium','theme','costume','mood','place','pose','palette','type','line','size'])if(typeof values[key]!=='string'||!values[key].trim()||(values[key]==='おまかせ'&&!(noPerson&&['mood','pose'].includes(key))))throw new Error('制作条件「'+key+'」が未確定です。');
  if(!/^.+｜\d+×\d+｜\d+:\d+$/.test(values.size))throw new Error('サイズの幅・高さ・比率を確認してください。');
  variant=resolveArtDirection(values,variant,collection);
- const context={noPerson,values,variant,collection},color=colorPolicy(values);
+ const context={noPerson,values,variant,collection},color=colorPolicy(values),camera=cameraContract(values,{noPerson});
  const copy=buildEditorial(profile,{...values,collection},random),notes=[modeFoundation(collection)];
  if(noPerson)notes.push(values.costume==='風景を主役にする'?'人物なしの指定を優先します。人物用の表情・顔角度・身体ポーズは適用対象外とし、景物を顔や手足に見立てず、風景の視点・自然な配置・光で作品を成立させます。':'人物なしの指定を優先します。人物用の表情・顔角度・身体ポーズは適用対象外とし、主題を顔や手足に見立てず、選択した物体・図案それぞれの配置と描画方法で作品を成立させます。');
  if(/文字を一切|だけ|のみ|サイン風|落款風/.test(values.type)&&/雑誌|誌面|見開き|新聞/.test(values.design))notes.push('文字を限定した設定です。誌面の文字量はこの指定に合わせて減ります。');
@@ -36,6 +37,11 @@ export function productionPlan(profile,values,variant,collection='halloween',ran
    checks.push(variant.face,variant.expression);
   }
   if(q.key==='pose'&&!noPerson){sections.push({label:'今回実行する動作',text:variant.pose});checks.push(variant.pose);}
+  if(camera?.vertical&&['theme','place','mood','pose'].includes(q.key)){
+   const scope=q.key==='mood'?'顔角度・表情は固定した垂直カメラから見える自然な頭の向きで実行する。別の高さのカメラを前提とする横顔の見え方を同時に強制しない。明示した顔角度とポーズが両立しない場合は衝突を伝え、指定を満たしたと断定しない。':q.key==='pose'?'選択した身体配置・支持点を保持し、垂直投影の自然な短縮と遮蔽を描く。隠れる手足を全部見せるためにポーズを広げない。':'この空間の識別要素を、固定した垂直視点から見える面・配置・距離層として描く。以下の地平線・遠方の正面・消失点への指示は、カメラを傾ける条件として適用しない。視線外や他の景物で隠れる面の描画を必須にしない。';
+   sections.unshift({label:'固定カメラでの解釈',text:scope});
+   checks=checks.map(check=>'固定した垂直視点で見える範囲を照合：'+check);
+  }
   let lineExecution;
   if(q.key==='type'){
    const lineRecipe=optionRecipe('line',values.line,context);
@@ -68,10 +74,12 @@ export function planInstructions(plan,{omitKeys=[]}={}){return [
 ];}
 export function repairPrompt(result){
  const noPerson=result.production?.noPerson??/風景を主役|モチーフだけ|紋章・アイコン/.test(result.values?.costume||'');
+ const camera=cameraContract(result.values||{},{noPerson});
  const checks=result.production?.conditions?.map(c=>'照合 / '+c.name+'：'+c.checks.join(' / '))||['元の制作仕様の各項目と、実際に見える完成画像を照合する。'];
  return [
  ...imageOutputContract,
  '【選択した仕様へ仕上げ直す】',
+ ...(camera?['【修正時も固定するカメラ】',...camera.instructions,...camera.checks]:[]),
  'このチャットで直前に生成した完成画像、または今回添付した修正対象の完成画像を実際に見て、下記の制作仕様と照合する。完成画像は修正対象。画風・主題・舞台・形式は項目タイトルと具体的な制作仕様を使う。項目の見本画像は不要であり、見本や画面一覧の再添付を要求しない。必要な主参照や修正対象を確認できない場合のみ、その画像を求める。',
  noPerson?'人物なしの指定を保つ。主参照がある場合は選択主題の形・構造・模様だけを用い、人の顔・身体・衣装を新しく導入しない。':'同じ人物の識別特徴は元の主参照から保つ。修正対象の構図や衣装を、別人の顔の基準へ変更しない。',
  '不足する項目と画像内の領域を特定し、その部分を修正した完成画像を1枚生成する。合格している主題・画風・配色・配置を保つ。人物なし・文字なし・限定色・限定原稿などの選択は、修正時にもそのまま適用する。未許可の人物や文字を品質向上のために追加しない。',

@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {productionPlan} from '../production-plan.js?v=28.0.0';
-import {renderChatInput,renderInput} from '../compiled-production.js?v=28.0.0';
-import {composePrompt} from '../prompt.js?v=28.0.0';
+import {productionPlan} from '../production-plan.js?v=28.0.1';
+import {renderChatInput,renderInput} from '../compiled-production.js?v=28.0.1';
+import {composePrompt} from '../prompt.js?v=28.0.1';
 
 const settings=JSON.parse(fs.readFileSync(new URL('../verification/v25/machine-anime-settings.json',import.meta.url)));
 const profile={displayName:'検証作者',activityEnabled:true,tagsEnabled:false,topics:['根拠のない宇宙ブランド'],biography:'日常で集めた音を短い映像と文章にしています。',bodyRead:{count:60,status:'complete'},sourceEvidence:Array.from({length:60},(_,index)=>({key:String(index),title:'記録'+index,url:'https://example.test/articles/'+index,excerpts:['本文の観察'+index+'：朝の街角の音を録り、帰宅後に短い映像として組み立てた。']}))};
@@ -21,7 +21,7 @@ assert.match(structured.required_before_details.story_integration,/機械仕掛�
 assert.match(input,/歯車から駆動軸/);
 assert.ok(!plan.copy.slots.some(slot=>slot.text==='STORIES IN LIGHT'));
 assert.equal(plan.copy.slots.find(slot=>slot.role==='主見出し').text,'機械仕掛けの怪物');
-assert.ok(!input.includes('本文の観察'),'Article corpora must stay out of image-call input');
+assert.ok(!input.includes('本文の観察'),'Article corpora must stay out of ChatGPT integration material');
 assert.ok(input.includes(profile.biography));
 assert.ok(!input.includes(profile.topics[0]),'Disabled tags must not become editorial headings or image inputs');
 assert.ok(plan.copy.slots.some(slot=>slot.text===settings.values.line),'Explicit selected dialogue is retained');

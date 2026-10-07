@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {productionPlan} from '../production-plan.js?v=28.0.0';
-import {renderInput} from '../compiled-production.js?v=28.0.0';
-import {detailedPalette} from '../palette-recipes.js?v=28.0.0';
-import {imageOutputContract} from '../output-contract.js?v=28.0.0';
+import {productionPlan} from '../production-plan.js?v=28.0.1';
+import {renderInput} from '../compiled-production.js?v=28.0.1';
+import {detailedPalette} from '../palette-recipes.js?v=28.0.1';
+import {imageOutputContract} from '../output-contract.js?v=28.0.1';
 
 // Reproduce the user's failed cover, including its actual resolved camera.
 const old=JSON.parse(fs.readFileSync(new URL('../verification/v17/failed-user-input.json',import.meta.url)));
@@ -41,4 +41,4 @@ assert.doesNotMatch(imageOutputContract.join('\n'),/60秒以内|合格基準/);
 const localized=plan.conditions.flatMap(c=>c.sections.filter(s=>s.label==='日本を基準にした個別条件')).reduce((n,s)=>n+s.text.length,0);
 assert.ok(input.length<JSON.stringify(old,null,2).length+localized*2+1000,'New local drawing clauses have a budget; audit repetition must stay out of the input');
 if(process.argv.includes('--save'))fs.writeFileSync(new URL('../verification/v17/retest-drawing-input.txt',import.meta.url),input);
-console.log('PASS failed-cover regressions: actual drawing input owns side projection, full frame, restricted identity colors, broad crystal optics, explicit requested dimensions and all ten recipes; allowed vermilion/gold are retained; failed output is not frozen as final. Image acceptance is still separate.');
+console.log('PASS failed-cover regressions: structured audit material owns side projection, full frame, restricted identity colors, broad crystal optics, explicit requested dimensions and all ten recipes; allowed vermilion/gold are retained; failed output is not frozen as final. Image acceptance is still separate.');

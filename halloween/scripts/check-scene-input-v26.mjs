@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.0.0';
-import {applyCollection} from '../collection.js?v=28.0.0';
-import {productionPlan} from '../production-plan.js?v=28.0.0';
-import {composePrompt} from '../prompt.js?v=28.0.0';
-import {creatorHandoff} from '../creator-handoff.js?v=28.0.0';
+import {questions,resolveSelections} from '../catalog.js?v=28.0.1';
+import {applyCollection} from '../collection.js?v=28.0.1';
+import {productionPlan} from '../production-plan.js?v=28.0.1';
+import {composePrompt} from '../prompt.js?v=28.0.1';
+import {creatorHandoff} from '../creator-handoff.js?v=28.0.1';
 
 applyCollection('halloween');
 const profile=creatorHandoff('scene_author');
@@ -13,8 +13,8 @@ const references=[{name:'identity.png',role:'identity'},{name:'auxiliary.png',ro
 function make(values){
  const plan=productionPlan(profile,values,variant,'halloween',()=>.2);
  const prompt=composePrompt({creator:profile.id,profile,values,variant,preparedPlan:plan,references,edition:'SCENE-INPUT'});
- const start=prompt.indexOf('【画像生成へ渡す作画条件：開始】');
- const end=prompt.indexOf('【画像生成へ渡す作画条件：終了】');
+ const start=prompt.indexOf('【統合するための制作仕様：開始】');
+ const end=prompt.indexOf('【統合するための制作仕様：終了】');
  assert.ok(start>=0&&end>start);
  return {plan,prompt,input:prompt.slice(start,end)};
 }
@@ -27,7 +27,7 @@ for(const medium of questions.find(q=>q.key==='medium').groups.flatMap(g=>g.valu
    assert.ok(input.includes('【物語・世界観・舞台を一つの場面へ】'),medium);
    assert.ok(input.includes('「雨の路地」で「'+theme+'」'),medium+' separates subject and place');
    assert.ok(input.includes('別背景の禁止は画像の分割・無関係な場所の追加を防ぐ条件であり、選んだ世界観を消す条件ではない。'));
-   if(theme==='宇宙のHalloween')assert.ok(input.includes('宇宙の世界観を主画像から削除しない'),medium+' loses cosmic context inside the actual image input');
+   if(theme==='宇宙のHalloween')assert.ok(input.includes('宇宙の世界観を主画像から削除しない'),medium+' loses cosmic context inside the ChatGPT integration material');
    if(theme==='お菓子の王国')assert.ok(input.includes('主役の支持面と周囲にも同じ素材と光'),medium+' reduces candy world to a prop');
    for(const ref of references)assert.ok(input.includes(ref.name),medium+' loses '+ref.role+' reference role');
    assert.ok(input.includes('似せてはいけない前作'));
@@ -35,7 +35,7 @@ for(const medium of questions.find(q=>q.key==='medium').groups.flatMap(g=>g.valu
     assert.ok(condition.known,condition.key+' / '+condition.value+' uses a custom fallback in this preset test');
     for(const section of condition.sections)assert.ok(input.includes(section.text),medium+' loses '+condition.key+' / '+section.label);
    }
-   assert.ok(prompt.indexOf('【ChatGPTで作者を確認')<prompt.indexOf('【画像生成へ渡す作画条件：開始】'));
+   assert.ok(prompt.indexOf('【ChatGPTで作者を確認')<prompt.indexOf('【統合するための制作仕様：開始】'));
    assert.equal((input.match(/共通編集条件：/g)||[]).length,1);
    for(const [index,slot] of plan.copy.generatedSlots.entries())assert.ok(input.includes((index+1)+'. '+slot.role+' / '+slot.maxCharacters+'字以内 / 階層'+slot.priority));
    cases++;max=Math.max(max,prompt.length);
@@ -72,4 +72,4 @@ for(const medium of ['書と墨の抽象','禅画','抽象表現','ミニマリ�
  assert.ok(!input.includes('両手の全指'));
  assert.ok(!input.includes('75〜80%'));
 }
-console.log('PASS scene image input: '+cases+' medium/world/subject combinations preserve one scene, every individual recipe and reference role inside the actual image-call boundaries; abstract subjects stay planar; color constraints stay in input; repeated editorial instructions reduced. Maximum '+max+' prompt characters. Actual image quality is not inferred by this test.');
+console.log('PASS scene image input: '+cases+' medium/world/subject combinations preserve one scene, every individual recipe and reference role inside the ChatGPT integration-material boundaries; abstract subjects stay planar; color constraints stay in input; repeated editorial instructions reduced. Maximum '+max+' prompt characters. Actual image quality is not inferred by this test.');

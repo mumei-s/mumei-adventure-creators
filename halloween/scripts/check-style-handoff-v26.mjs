@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {questions,resolveSelections} from '../catalog.js?v=28.0.0';
-import {applyCollection} from '../collection.js?v=28.0.0';
-import {productionPlan} from '../production-plan.js?v=28.0.0';
-import {composePrompt} from '../prompt.js?v=28.0.0';
-import {creatorHandoff,CREATOR_NAME_TOKEN,creatorDisplayLabel,creatorEditableName} from '../creator-handoff.js?v=28.0.0';
-import {mediumExecution} from '../medium-execution.js?v=28.0.0';
+import {questions,resolveSelections} from '../catalog.js?v=28.0.1';
+import {applyCollection} from '../collection.js?v=28.0.1';
+import {productionPlan} from '../production-plan.js?v=28.0.1';
+import {composePrompt} from '../prompt.js?v=28.0.1';
+import {creatorHandoff,CREATOR_NAME_TOKEN,creatorDisplayLabel,creatorEditableName} from '../creator-handoff.js?v=28.0.1';
+import {mediumExecution} from '../medium-execution.js?v=28.0.1';
 
 const profile={...creatorHandoff('test_author'),articles:[{text:'OLD_CORPUS_SENTINEL'}],topics:['OLD_TAG_SENTINEL'],bodyRead:{count:1000},sourceEvidence:[{excerpts:['OLD_CORPUS_SENTINEL']}]};
 const base=resolveSelections({design:'週刊誌の表紙',medium:'発光幻想アニメ',theme:'宇宙のHalloween',costume:'参照画像の衣装を生かす',place:'雨の路地',pose:'四つん這い',mood:'正面・首をまっすぐ',palette:'星灯りの青紫',type:'デザインに合わせて自動編集',line:'セリフなし',size:'縦ポスター2:3｜2400×3600｜2:3'},()=>.2);
@@ -20,12 +20,12 @@ for(const mode of ['halloween','everyday']){
    const prompt=composePrompt({creator:'test_author',profile,values,variant,preparedPlan:plan,references:[{name:'reference.png',role:'identity'}],edition:'V26'});
    const condition=plan.conditions.find(c=>c.key==='medium');
    assert.ok(condition.known&&condition.execution.method&&condition.checks.length,medium);
-   assert.ok(prompt.includes(condition.execution.method),medium+' must reach the actual drawing input');
+   assert.ok(prompt.includes(condition.execution.method),medium+' must reach the structured audit material');
    for(const section of condition.sections)assert.ok(prompt.includes(section.text),medium+' loses '+section.label);
    assert.ok(prompt.includes('【作風を作品全域へ】'),medium);
    assert.ok(prompt.includes('宇宙の世界観を主画像から削除しない'),medium);
    assert.ok(prompt.includes('https://note.com/test_author/'));
-   assert.ok(prompt.indexOf('【ChatGPTで作者を確認')<prompt.indexOf('【画像生成へ渡す作画条件：開始】'));
+   assert.ok(prompt.indexOf('【ChatGPTで作者を確認')<prompt.indexOf('【統合するための制作仕様：開始】'));
    assert.ok(!prompt.includes('OLD_CORPUS_SENTINEL')&&!prompt.includes('OLD_TAG_SENTINEL'));
    assert.ok(!prompt.includes('undefined'));
    count++;max=Math.max(max,prompt.length);

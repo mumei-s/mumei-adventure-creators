@@ -1,8 +1,10 @@
-import {opticalColors,opticalSignature} from './optical-effects.js?v=28.0.0';
-import {colorPolicy} from './palette-recipes.js?v=28.0.0';
-import {formatFor} from './formats.js?v=28.0.0';
+import {opticalColors,opticalSignature} from './optical-effects.js?v=28.0.1';
+import {colorPolicy} from './palette-recipes.js?v=28.0.1';
+import {formatFor} from './formats.js?v=28.0.1';
+import {cameraContract} from './angles.js?v=28.0.1';
+import {selectionIntegrationInstructions} from './output-contract.js?v=28.0.1';
 
-const artworkKeys=['medium','theme','costume','mood','place','pose','palette'];
+const artworkKeys=['medium','theme','costume','mood','place','angle','pose','palette'];
 const render=c=>[c.name+'：'+c.value,...c.sections.map(s=>'・'+s.label+'：'+s.text)];
 
 // The first image call receives only the drawing task. Publication copy and
@@ -11,6 +13,7 @@ export function composeArtworkStage(plan,{embedded=false}={}){
  const values=plan.values||Object.fromEntries(plan.conditions.map(c=>[c.key,c.value]));
  const selected=artworkKeys.map(key=>plan.conditions.find(c=>c.key===key)).filter(Boolean);
  const variant=plan.variant||{},color=colorPolicy(values),optics=opticalColors(values);
+ const geometry=cameraContract(values,{noPerson:plan.noPerson});
  const fullBody=!plan.noPerson&&/全身|足先|尾びれ|あぐら|床|椅子|座|寝|横た|立|走|跳|踊|浮/.test((values.pose||'')+' '+(variant.distance||''));
  const portraitInterview=formatFor(values.design).kind==='interview'&&/｜\d+×\d+｜(210:297|2:3|9:16|3:4|4:5)$/.test(values.size);
  const frame=embedded?'完成誌面の大きな主画像領域':portraitInterview?'縦2:3の画面':'正方形1:1の画面';
@@ -18,7 +21,9 @@ export function composeArtworkStage(plan,{embedded=false}={}){
  return [
   embedded?'【完成誌面の主画像を描く条件】':'【第1段階：選択画風の主画像を制作】',
   embedded?'完成画像の主画像領域を以下の画風で描く。人物・衣装・背景を同じ描画方法で統一し、文字組みと一緒に完成画像1枚へ仕上げる。':
-   '以下の描画条件だけを画像生成機能へ渡し、主画像を1枚生成して実際の画像を返す。文字・数字・署名・枠・複数画面を描かず、単独の一場面にする。',
+   '以下の制作仕様を一つの場面へ統合した画像生成用プロンプトにまとめ、主画像を1枚生成して実際の画像を返す。文字・数字・署名・枠・複数画面を描かず、単独の一場面にする。',
+  ...selectionIntegrationInstructions,
+  ...(geometry?['【固定カメラ：描画前に確定】',...geometry.instructions]:[]),
   ...(crystal&&!plan.noPerson?['【最優先の描画方法】手描きの2Dアニメイラスト。輪郭と髪束を細い色線で描き、肌・髪・衣装を明快な色面で塗り、影の境界を鋭いセル影にする。顔の鼻は短い描線、口は簡潔な線と色面で構成する。光の質感も描線と透明な色層の組み合わせで描き、写真的な肌・実写の唇・3D人形の顔を残さない。参照は同じ人物と識別する造形だけに使う。']:[]),
   plan.noPerson?'選択主題の形・素材・配置を今回の画風で描く。人物や人型へ置換しない。':
    '作成者の主参照は人物の輪郭、目鼻口の形と配置比率、髪の形、年齢感、体格、性別表現、固有の印を読み取るために使う。同じ人物を、選択した描画方法で最初から描き起こす。元画像の皮膚・髪の微細質感、照明、表情、顔の傾き、身体のポーズを完成画像の下地に残さない。衣装の名称から別人へ置換しない。',
@@ -27,7 +32,7 @@ export function composeArtworkStage(plan,{embedded=false}={}){
   ...selected.flatMap(c=>['',...render(c)]),
   '',
   '【この主画像の画角】',
-  fullBody?frame+'を使い、主役の頭頂・飾り・両腕・両膝・足先または尾びれまで、姿勢全体を収める。輪郭の外側に必要な5〜8%の安全余白を確保し、人物は図版の高さの70〜85%を使って大きく描く。あぐらやしゃがむ姿勢では膝の横幅と足の接地を保ち、過剰な背景で人物を小さくしない。':
+  geometry?frame+'を使う。'+geometry.framing_instruction:fullBody?frame+'を使い、主役の頭頂・飾り・両腕・両膝・足先または尾びれまで、姿勢全体を収める。輪郭の外側に必要な5〜8%の安全余白を確保し、人物は図版の高さの70〜85%を使って大きく描く。あぐらやしゃがむ姿勢では膝の横幅と足の接地を保ち、過剰な背景で人物を小さくしない。':
    frame+'を使い、選んだ主題と必要な周囲を一つの画像に収める。重要な輪郭に5〜8%の安全余白を残し、主題を大きく描く。',
   ...(plan.noPerson?[]:[
    '顔の向き：'+variant.face,
@@ -45,6 +50,7 @@ export function composeArtworkStage(plan,{embedded=false}={}){
   ...(plan.collection==='everyday'?['普段使いの作品。幻想・魔法・Halloweenの装飾は、それを明示的に選択したときだけ描く。']:[]),
   '',
   '【画像ができてから確認すること】',
+  ...(geometry?geometry.checks:[]),
   ...selected.map(c=>c.name+'：'+c.checks.join(' / ')),
   '出力画像を拡大して主題の描画方法・固有特徴・姿勢・配色と、切れている重要な輪郭がないか確認する。指示を書いた事実だけで合格としない。',
   embedded?'完成画像を会話に表示してから検査する。不足があれば短く伝え、画像を隠したまま自動再生成や別工程を繰り返さない。':
@@ -57,11 +63,15 @@ export function composeArtworkRepair(plan,{compact=false}={}){
  const medium=plan.conditions.find(c=>c.key==='medium');
  const values=plan.values||Object.fromEntries(plan.conditions.map(c=>[c.key,c.value]));
  const color=colorPolicy(values);
+ const geometry=cameraContract(values,{noPerson:plan.noPerson});
  return [
   '【第1段階の画風を修正】',
-  '添付した制作途中の主画像を、選択画風「'+medium.value+'」の描画方法へ全面的に描き直してください。主画像の人物・物・構図を保ち、描画そのものを変換する画像編集を実行してください。',
+  ...selectionIntegrationInstructions,
+  ...(geometry?['【修正時も固定するカメラ】',...geometry.instructions,'既存画像のカメラがこの指定と違う場合は、誤った角度を固定して残さず指定へ直す。']:[]),
+  '添付した制作途中の主画像を、選択画風「'+medium.value+'」の描画方法へ全面的に描き直してください。'+(geometry?'主画像の人物・物と指定どおり成立している配置を保ち、誤ったカメラの角度は指定へ修正する。':'主画像の人物・物・構図を保ち、')+'描画そのものを変換する画像編集を実行してください。',
   '入力する画像は直前の主画像1枚だけ。元の人物写真や項目の見本は再入力しない。',
   plan.noPerson?'主題の外形、配置、固有の模様、背景、光の起点、画角と余白を保つ。人物や人型を追加しない。':'今ある主題の外形、目鼻口の配置比率、年齢感、性別表現、髪の形、衣装、表情、顔角度、身体の動作、物体の配置、背景、光の起点、画角と余白を保つ。表面を塗り直すために別人へ変更しない。',
+  ...(geometry?['上の保持条件は指定どおり成立している部分へ適用する。カメラの誤りがある部分の画角・短縮・遮蔽は固定カメラの条件で描き直す。']:[]),
   '変えるのは描線、面の塗り方、明暗の境界、素材の表し方。元の表面へ少数の線や光を追加する加工で済ませず、主題の内部の面まで次の工程で置き換える。',
   ...(medium.value==='クリスタル透光アニメ'?[
    '【必須の作画変換】日本の手描き2Dアニメの一枚絵へ全面変換する。肌・布・髪・背景の物体の輪郭に細い色線を引き、内部を少数の澄んだ色面で塗る。顔・首・腕・膝は明るい面と暗い面を硬いセル影の境界で分け、光と反対側には濃い有彩色の影をまとまって置く。写真や3Dレンダリングの皮膚の艶・毛穴・滑らかな立体陰影は完全に描き直す。',
@@ -71,6 +81,7 @@ export function composeArtworkRepair(plan,{compact=false}={}){
   '使用色は'+color.allowed+'。同じ配色と色の配置を維持し、画風が必要とする明暗差と材質を成立させる。',
   '文字・数字・署名を入れない。場面や装飾を追加して描画の不一致を隠さず、同じ一場面として仕上げる。',
   '完成検査：'+medium.checks.join(' / '),
+  ...(geometry?geometry.checks:[]),
   '修正画像を拡大して検査する。見えていない特徴を達成したと主張せず、未達なら残る箇所を伝える。画像そのものを返す。'
  ].join('\n');
 }

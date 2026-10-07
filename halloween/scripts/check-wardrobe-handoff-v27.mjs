@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.0.0';
-import {applyCollection} from '../collection.js?v=28.0.0';
-import {productionPlan} from '../production-plan.js?v=28.0.0';
-import {composePrompt} from '../prompt.js?v=28.0.0';
-import {renderInput} from '../compiled-production.js?v=28.0.0';
+import {questions,resolveSelections} from '../catalog.js?v=28.0.1';
+import {applyCollection} from '../collection.js?v=28.0.1';
+import {productionPlan} from '../production-plan.js?v=28.0.1';
+import {composePrompt} from '../prompt.js?v=28.0.1';
+import {renderInput} from '../compiled-production.js?v=28.0.1';
 
 applyCollection('halloween');
 const profile={displayName:'試作作者',activityEnabled:false};
@@ -12,7 +12,7 @@ const variant={face:'正面',expression:'目を見開いて驚く',distance:'全
 function make(values){
  const plan=productionPlan(profile,values,variant,'halloween',()=>.2);
  const prompt=composePrompt({profile,values,variant,preparedPlan:plan,references:[{name:'witch-reference.png',role:'identity'}],edition:'WARDROBE'});
- const input=prompt.split('【画像生成へ渡す作画条件：開始】')[1].split('【画像生成へ渡す作画条件：終了】')[0];
+ const input=prompt.split('【統合するための制作仕様：開始】')[1].split('【統合するための制作仕様：終了】')[0];
  const structured=JSON.parse(renderInput(plan).split('\n\n【全選択の個別レシピ】')[0]);
  return {plan,input,structured};
 }

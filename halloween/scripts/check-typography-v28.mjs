@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.0.0';
-import {resolveSelections} from '../catalog.js?v=28.0.0';
-import {initialSelections} from '../modes.js?v=28.0.0';
-import {buildDirection} from '../direction.js?v=28.0.0';
-import {productionPlan} from '../production-plan.js?v=28.0.0';
-import {composePrompt} from '../prompt.js?v=28.0.0';
-import {typePreview} from '../examples.js?v=28.0.0';
-import {typographyValues,typographyOption} from '../typography-options.js?v=28.0.0';
-import {visualSpec} from '../visual-specs.js?v=28.0.0';
-import {renderInput} from '../compiled-production.js?v=28.0.0';
+import {applyCollection} from '../collection.js?v=28.0.1';
+import {resolveSelections} from '../catalog.js?v=28.0.1';
+import {initialSelections} from '../modes.js?v=28.0.1';
+import {buildDirection} from '../direction.js?v=28.0.1';
+import {productionPlan} from '../production-plan.js?v=28.0.1';
+import {composePrompt} from '../prompt.js?v=28.0.1';
+import {typePreview} from '../examples.js?v=28.0.1';
+import {typographyValues,typographyOption} from '../typography-options.js?v=28.0.1';
+import {visualSpec} from '../visual-specs.js?v=28.0.1';
+import {renderInput} from '../compiled-production.js?v=28.0.1';
 
 let examined=0;
 for(const collection of ['halloween','everyday']){
@@ -31,7 +31,7 @@ for(const collection of ['halloween','everyday']){
   if(type==='ミニマル広告・見出しと名前')assert.equal(roles.length,2);
   if(type==='キャラクター名鑑・役柄とスキル')assert.equal(roles.filter(role=>noPerson?/^特徴\d$/.test(role):/^スキル\d$/.test(role)).length,2);
   const input=renderInput(plan),prompt=composePrompt({creator:'private_test_id',profile,values,variant:plan.variant,references:[],edition:'TYPOGRAPHY',collection,preparedPlan:plan});
-  assert.ok(input.includes(typographyOption(type).layout),type+' layout did not reach image-call input');
+  assert.ok(input.includes(typographyOption(type).layout),type+' layout did not reach ChatGPT integration material');
   assert.ok(prompt.includes(type),type+' selected mode missing from transferred prompt');
   for(const slot of copy.slots)assert.ok(input.includes(slot.text),type+' lost fixed manuscript '+slot.role);
   for(const slot of copy.generatedSlots){assert.ok(input.includes(slot.role),type+' lost generated manuscript '+slot.role);assert.ok(input.includes(slot.instruction),type+' lost role-specific editorial rules');}
@@ -43,4 +43,4 @@ for(const collection of ['halloween','everyday']){
  }
 }
 applyCollection('halloween');
-console.log('PASS v28 typography: '+typographyValues.length+' copy choices and '+examined+' mode/source/person combinations preserve explicit manuscript counts, role-specific editing, matching previews, and selected layout inside image-call input; no unrequested factual claims or ID copy.');
+console.log('PASS v28 typography: '+typographyValues.length+' copy choices and '+examined+' mode/source/person combinations preserve explicit manuscript counts, role-specific editing, matching previews, and selected layout inside ChatGPT integration material; no unrequested factual claims or ID copy.');

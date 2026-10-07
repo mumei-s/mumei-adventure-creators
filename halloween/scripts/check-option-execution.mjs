@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {questions,resolveSelections} from '../catalog.js?v=28.0.0';
-import {applyCollection} from '../collection.js?v=28.0.0';
-import {initialSelections} from '../modes.js?v=28.0.0';
-import {buildDirection} from '../direction.js?v=28.0.0';
-import {applyPose} from '../poses.js?v=28.0.0';
-import {productionPlan} from '../production-plan.js?v=28.0.0';
-import {renderInput} from '../compiled-production.js?v=28.0.0';
-import {optionRecipe} from '../option-recipes.js?v=28.0.0';
-import {mediumExecution} from '../medium-execution.js?v=28.0.0';
-import {formatExecution} from '../format-execution.js?v=28.0.0';
+import {questions,resolveSelections} from '../catalog.js?v=28.0.1';
+import {applyCollection} from '../collection.js?v=28.0.1';
+import {initialSelections} from '../modes.js?v=28.0.1';
+import {buildDirection} from '../direction.js?v=28.0.1';
+import {applyPose} from '../poses.js?v=28.0.1';
+import {productionPlan} from '../production-plan.js?v=28.0.1';
+import {renderInput} from '../compiled-production.js?v=28.0.1';
+import {optionRecipe} from '../option-recipes.js?v=28.0.1';
+import {mediumExecution} from '../medium-execution.js?v=28.0.1';
+import {formatExecution} from '../format-execution.js?v=28.0.1';
 
 const random=()=>.28,profile={displayName:'TEST',activityEnabled:false,topics:[],biography:''};
 const entries=new Map();let occurrences=0;
@@ -70,4 +70,4 @@ if(process.argv.includes('--save')){
  const dir=new URL('../verification/v18/',import.meta.url);fs.mkdirSync(dir,{recursive:true});
  fs.writeFileSync(new URL('option-execution.json',dir),JSON.stringify(report,null,2));
 }
-console.log('PASS individual execution: '+occurrences+' occurrences / '+entries.size+' options. All 10 contracts and each nested line reach the real image-call input; no-person, limited colors and copy boundaries checked. Generated-image quality remains unvalidated.');
+console.log('PASS individual execution: '+occurrences+' occurrences / '+entries.size+' options. All 10 contracts and each nested line reach the real ChatGPT integration material; no-person, limited colors and copy boundaries checked. Generated-image quality remains unvalidated.');

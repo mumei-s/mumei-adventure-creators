@@ -1,9 +1,9 @@
-import {extraTypographyGroups} from './typography-options.js?v=28.0.0';
-import {compatibleResolved} from './compatibility.js?v=28.0.0';
-import {poseGroups} from './poses.js?v=28.0.0';
-import {colorWorlds,luminousMedia} from './worlds.js?v=28.0.0';
-import {mergeSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.0.0';
-import {angleGroups} from './angles.js?v=28.0.0';
+import {extraTypographyGroups} from './typography-options.js?v=28.0.1';
+import {compatibleResolved} from './compatibility.js?v=28.0.1';
+import {poseGroups} from './poses.js?v=28.0.1';
+import {colorWorlds,luminousMedia} from './worlds.js?v=28.0.1';
+import {mergeSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.0.1';
+import {angleGroups} from './angles.js?v=28.0.1';
 export const AUTO='おまかせ';
 const group=(label,values)=>({label,values:values.split('|')});
 export const questions=[

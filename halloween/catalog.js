@@ -1,9 +1,9 @@
-import {extraTypographyGroups} from './typography-options.js?v=28.0.2';
-import {compatibleResolved} from './compatibility.js?v=28.0.2';
-import {poseGroups} from './poses.js?v=28.0.2';
-import {colorWorlds,luminousMedia} from './worlds.js?v=28.0.2';
-import {halloweenSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.0.2';
-import {angleGroups} from './angles.js?v=28.0.2';
+import {extraTypographyGroups} from './typography-options.js?v=28.0.3';
+import {compatibleResolved} from './compatibility.js?v=28.0.3';
+import {poseGroups} from './poses.js?v=28.0.3';
+import {colorWorlds,luminousMedia} from './worlds.js?v=28.0.3';
+import {halloweenSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.0.3';
+import {angleGroups} from './angles.js?v=28.0.3';
 export const AUTO='おまかせ';
 const group=(label,values)=>({label,values:values.split('|')});
 export const questions=[

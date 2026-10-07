@@ -1,5 +1,5 @@
-import {proofsForRecipe} from './visual-proofs.js?v=28.0.2';
-import {editorialReferencesFor} from './editorial-reference-sources.js?v=28.0.2';
+import {proofsForRecipe} from './visual-proofs.js?v=28.0.3';
+import {editorialReferencesFor} from './editorial-reference-sources.js?v=28.0.3';
 // Consulted primary materials; association means structural/technical research,
 // never visual validation of a generated image or full reproduction of an object.
 const technicalSources={

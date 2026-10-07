@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.0.2';
-import {initialSelections} from '../modes.js?v=28.0.2';
-import {applyCollection} from '../collection.js?v=28.0.2';
-import {buildDirection} from '../direction.js?v=28.0.2';
-import {applyPose} from '../poses.js?v=28.0.2';
-import {visualSpec} from '../visual-specs.js?v=28.0.2';
-import {formatSpecs} from '../formats.js?v=28.0.2';
-import {productionPlan,planInstructions,repairPrompt} from '../production-plan.js?v=28.0.2';
-import {buildEditorial} from '../editorial.js?v=28.0.2';
-import {composePrompt} from '../prompt.js?v=28.0.2';
-import {profileForArtwork} from '../activity-settings.js?v=28.0.2';
+import {questions,resolveSelections} from '../catalog.js?v=28.0.3';
+import {initialSelections} from '../modes.js?v=28.0.3';
+import {applyCollection} from '../collection.js?v=28.0.3';
+import {buildDirection} from '../direction.js?v=28.0.3';
+import {applyPose} from '../poses.js?v=28.0.3';
+import {visualSpec} from '../visual-specs.js?v=28.0.3';
+import {formatSpecs} from '../formats.js?v=28.0.3';
+import {productionPlan,planInstructions,repairPrompt} from '../production-plan.js?v=28.0.3';
+import {buildEditorial} from '../editorial.js?v=28.0.3';
+import {composePrompt} from '../prompt.js?v=28.0.3';
+import {profileForArtwork} from '../activity-settings.js?v=28.0.3';
 // This suite checks fixed manuscript geometry. Source-guided manuscript roles
 // and actual article evidence are exercised separately by check-fidelity-v25.
 const profile={displayName:'Alice',activityEnabled:false,topics:['写真','創作'],biography:'写真と創作'},base=resolveSelections({...initialSelections(),design:'ファッション雑誌の表紙',costume:'海賊',pose:'全力で走る',mood:'完全な左横顔90度'},()=>0.2);

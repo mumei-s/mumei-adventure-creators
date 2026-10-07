@@ -1,18 +1,18 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.0.2';
-import {questions,resolveSelections} from '../catalog.js?v=28.0.2';
-import {initialSelections} from '../modes.js?v=28.0.2';
-import {buildDirection} from '../direction.js?v=28.0.2';
-import {applyPose} from '../poses.js?v=28.0.2';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.0.2';
-import {composePrompt} from '../prompt.js?v=28.0.2';
-import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.0.2';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.0.2';
-import {photoValues,photoReconstruction,photoDesign,isPhotographicMedium} from '../photo-design.js?v=28.0.2';
-import {styleFidelity} from '../style-fidelity.js?v=28.0.2';
-import {colorPolicy} from '../color-policy.js?v=28.0.2';
-import {detailedMedium} from '../medium-recipes.js?v=28.0.2';
-import {cameraContract,angleItems} from '../angles.js?v=28.0.2';
+import {applyCollection} from '../collection.js?v=28.0.3';
+import {questions,resolveSelections} from '../catalog.js?v=28.0.3';
+import {initialSelections} from '../modes.js?v=28.0.3';
+import {buildDirection} from '../direction.js?v=28.0.3';
+import {applyPose} from '../poses.js?v=28.0.3';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.0.3';
+import {composePrompt} from '../prompt.js?v=28.0.3';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.0.3';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.0.3';
+import {photoValues,photoReconstruction,photoDesign,isPhotographicMedium} from '../photo-design.js?v=28.0.3';
+import {styleFidelity} from '../style-fidelity.js?v=28.0.3';
+import {colorPolicy} from '../color-policy.js?v=28.0.3';
+import {detailedMedium} from '../medium-recipes.js?v=28.0.3';
+import {cameraContract,angleItems} from '../angles.js?v=28.0.3';
 
 // Reference filenames describe the user scenario; no reference pixels or
 // image-generation runtime are inspected by this instruction regression.
@@ -35,6 +35,7 @@ try{
    assert.ok(isPhotographicMedium(medium)&&photo,medium+' has no photography reconstruction contract');
    assert.equal(recipe.known,true);assert.equal(detailedMedium(medium,{noPerson,values}).family,'photography');
    const native=renderSelectionMaterial(plan),audit=JSON.parse(renderInput(plan).split('\n\n【全選択の個別レシピ】')[0]);
+   assert.doesNotMatch(native,/通常モードと同じ日本の描線・塗り|その同じ特徴を選択画風の線と素材で描き直す/,'Photographs must not receive generic illustration construction instructions');
    const references=[{name:noPerson?'illustrated-landscape-reference.png':'illustrated-character-reference.png',role:'identity'}];
    const prompt=composePrompt({collection,profile,values,variant:plan.variant,references,edition:'ILLUSTRATION-TO-PHOTO',preparedPlan:plan});
    const result={edition:'ILLUSTRATION-TO-PHOTO',prompt,production:plan,values};

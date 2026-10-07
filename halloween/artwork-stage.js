@@ -1,9 +1,9 @@
-import {opticalColors,opticalSignature} from './optical-effects.js?v=28.0.2';
-import {colorPolicy} from './palette-recipes.js?v=28.0.2';
-import {formatFor} from './formats.js?v=28.0.2';
-import {cameraContract} from './angles.js?v=28.0.2';
-import {selectionIntegrationInstructions} from './output-contract.js?v=28.0.2';
-import {photoReconstruction} from './photo-design.js?v=28.0.2';
+import {opticalColors,opticalSignature} from './optical-effects.js?v=28.0.3';
+import {colorPolicy} from './palette-recipes.js?v=28.0.3';
+import {formatFor} from './formats.js?v=28.0.3';
+import {cameraContract} from './angles.js?v=28.0.3';
+import {selectionIntegrationInstructions} from './output-contract.js?v=28.0.3';
+import {photoReconstruction} from './photo-design.js?v=28.0.3';
 
 const artworkKeys=['medium','theme','costume','mood','place','angle','pose','palette'];
 const render=c=>[c.name+'：'+c.value,...c.sections.map(s=>'・'+s.label+'：'+s.text)];

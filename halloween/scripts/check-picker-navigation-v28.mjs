@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
-import {createPicker} from '../picker.js?v=28.0.2';
-import {questions,visibleQuestions} from '../catalog.js?v=28.0.2';
-import {applyCollection} from '../collection.js?v=28.0.2';
-import {ringPosition,restingRingPosition,pagePatternTone} from '../ring-motion.js?v=28.0.2';
+import {createPicker} from '../picker.js?v=28.0.3';
+import {questions,visibleQuestions} from '../catalog.js?v=28.0.3';
+import {applyCollection} from '../collection.js?v=28.0.3';
+import {ringPosition,restingRingPosition,pagePatternTone} from '../ring-motion.js?v=28.0.3';
 
 // Short screens retain a 360px scrollable canvas rather than crushing its cards.
 // Exercise measured card bounds and two-line labels at all supported widths.

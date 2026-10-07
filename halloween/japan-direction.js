@@ -1,5 +1,5 @@
-import {typographyOption} from './typography-options.js?v=28.0.2';
-import {isPhotographicMedium} from './photo-design.js?v=28.0.2';
+import {typographyOption} from './typography-options.js?v=28.0.3';
+import {isPhotographicMedium} from './photo-design.js?v=28.0.3';
 // Japanese publishing/drawing is the default grammar, not a replacement identity.
 // Explicit overseas techniques, clothing and architecture retain their origin.
 export const CRYSTAL_OBJECT='クリスタルホログラム造形アニメ';
@@ -76,4 +76,4 @@ export function japaneseSections(key,value,{noPerson=false,collection='halloween
 }
 export function modeFoundation(collection){return collection==='everyday'
  ?'日本の作画・誌面と生活空間を基本に、明示された海外技法・舞台・衣装を尊重する。通常モードではHalloweenの仮装・カボチャ・幽霊・魔法を自動追加しない。幻想は選択された項目の範囲だけ。'
- :'通常モードと同じ日本の描線・塗り・文字組みを土台に、Halloweenの各項目で明示した出来事・衣装・道具を描く。Halloweenというモード名だけを理由に、カボチャ・幽霊・菓子袋・墓・魔法・祭りの装飾を自動追加しない。それらを明示した選択項目では、その個別仕様を実行する。全場面を洋館や魔法放出へ変えず、選択画風を保つ。';}
+ :'通常モードと同じ日本の構図・余白・文字組みを土台に、Halloweenで明示した出来事・衣装・道具を選択作風で表す。Halloweenというモード名だけを理由に、カボチャ・幽霊・菓子袋・墓・魔法・祭りの装飾を自動追加しない。それらを明示した選択項目では、その個別仕様を実行する。全場面を洋館や魔法放出へ変えず、選択画風を保つ。';}

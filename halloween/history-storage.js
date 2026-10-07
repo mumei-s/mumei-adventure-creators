@@ -1,4 +1,4 @@
-import {compactCreatorProfile} from './creator.js?v=28.0.2';
+import {compactCreatorProfile} from './creator.js?v=28.0.3';
 
 export const HISTORY_STORAGE_FORMAT=3;
 const historyLimit=12,usedLimit=2000;

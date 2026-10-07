@@ -1,7 +1,7 @@
-import {mediumExecution} from './medium-execution.js?v=28.0.2';
-import {formatExecution} from './format-execution.js?v=28.0.2';
-import {colorPolicy} from './color-policy.js?v=28.0.2';
-import {photoReconstruction} from './photo-design.js?v=28.0.2';
+import {mediumExecution} from './medium-execution.js?v=28.0.3';
+import {formatExecution} from './format-execution.js?v=28.0.3';
+import {colorPolicy} from './color-policy.js?v=28.0.3';
+import {photoReconstruction} from './photo-design.js?v=28.0.3';
 
 // The option's own physical recipe is the source of its execution contract.
 // No generic "beautiful / atmospheric" default replaces a missing preset.

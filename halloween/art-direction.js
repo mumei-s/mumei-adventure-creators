@@ -1,8 +1,9 @@
-import {applyAngle} from './angles.js?v=28.0.2';
-import {colorPolicy} from './palette-recipes.js?v=28.0.2';
-import {opticalSignature,opticalColors} from './optical-effects.js?v=28.0.2';
-import {detailedSubject} from './subject-recipes.js?v=28.0.2';
-import {detailedFormat} from './format-recipes.js?v=28.0.2';
+import {applyAngle} from './angles.js?v=28.0.3';
+import {colorPolicy} from './palette-recipes.js?v=28.0.3';
+import {opticalSignature,opticalColors} from './optical-effects.js?v=28.0.3';
+import {detailedSubject} from './subject-recipes.js?v=28.0.3';
+import {detailedFormat} from './format-recipes.js?v=28.0.3';
+import {isPhotographicMedium} from './photo-design.js?v=28.0.3';
 
 const luminous=new Set(['発光幻想アニメ']);
 const flat=new Set(['線画','リノカット','木版画','浮世絵木版画','シルクスクリーン','ベクターグラフィック','フラットイラスト','ピクセルアート','構成主義','ミニマリズム']);
@@ -49,7 +50,7 @@ export function resolveArtDirection(values,variant={},collection='halloween'){
 export function interactionContract(values,{noPerson=false}={}){
  const color=colorPolicy(values),optics=opticalColors(values);
  return [
-  '主役の識別と描画方法を分ける。'+(noPerson?'参照がある場合は景物の形・構造・模様を保ち、人物を補わない。':'主参照の顔の形・配置・髪型・年齢感・性別の表現を保ち、その同じ特徴を選択画風の線と素材で描き直す。表情・顔向きは今回の選択を優先する。'),
+  '主役の識別と描画方法を分ける。'+(noPerson?'参照がある場合は景物の形・構造・模様を保ち、人物を補わない。':isPhotographicMedium(values.medium)?'主参照の髪型・識別色・顔立ちの特徴の組合せ・年齢感・性別表現を保ち、同じキャラクターと識別できる自然な人物立体と実物の材質へ再構成する。イラストの描線・セル色面・細寸法の比率は固定しない。表情・顔向きは今回の選択を優先する。':'主参照の顔の形・配置・髪型・年齢感・性別の表現を保ち、その同じ特徴を選択画風の線と素材で描き直す。表情・顔向きは今回の選択を優先する。'),
   '画風は描線・陰影の形と強さ・画材・光学を決める。配色は色相と面積を決める。配色の名称や見本から、画風を低コントラスト・マット・発光・版画など別の方法へ変更しない。',
   color.restricted?'この組み合わせの許可色は'+color.allowed+'。画風の白い点光や虹色という表現は、この許可色の最明部と濃淡に翻訳する。元の色を例外で残さない。':'光と影の基調を指定配色の中で組み立てる。'+optics.instruction+(noPerson?'景物を見分ける形と明度差を保つ。':'人物の識別に必要な固有色がある場合は保ち、反射だけで別の髪色・瞳色へ変えない。'),
   noPerson?'形式が画像と文字の領域を決め、その画像領域へ主景と視点を配置する。主要な景物と綴じ余白が重なる場合は主画像を片側の安全な領域へ収める。':'形式が画像と文字の領域を決め、その画像領域の中で今回のポーズと画角を実行する。身体を誌面の綴じ位置へ割り当てず、関節や主要モチーフと綴じ余白が重なる場合は主画像を片側の安全な領域へ収める。',

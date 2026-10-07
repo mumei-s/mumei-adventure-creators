@@ -1,16 +1,16 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.0.2';
-import {resolveSelections} from '../catalog.js?v=28.0.2';
-import {initialSelections} from '../modes.js?v=28.0.2';
-import {buildDirection} from '../direction.js?v=28.0.2';
-import {applyPose} from '../poses.js?v=28.0.2';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.0.2';
-import {composePrompt} from '../prompt.js?v=28.0.2';
-import {renderSelectionMaterial,renderChatInput,renderInput} from '../compiled-production.js?v=28.0.2';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.0.2';
-import {cameraContract} from '../angles.js?v=28.0.2';
-import {creatorHandoff} from '../creator-handoff.js?v=28.0.2';
-import {selectionIntegrationInstructions,imageOutputContract,imageDeliveryRepairPrompt} from '../output-contract.js?v=28.0.2';
+import {applyCollection} from '../collection.js?v=28.0.3';
+import {resolveSelections} from '../catalog.js?v=28.0.3';
+import {initialSelections} from '../modes.js?v=28.0.3';
+import {buildDirection} from '../direction.js?v=28.0.3';
+import {applyPose} from '../poses.js?v=28.0.3';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.0.3';
+import {composePrompt} from '../prompt.js?v=28.0.3';
+import {renderSelectionMaterial,renderChatInput,renderInput} from '../compiled-production.js?v=28.0.3';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.0.3';
+import {cameraContract} from '../angles.js?v=28.0.3';
+import {creatorHandoff} from '../creator-handoff.js?v=28.0.3';
+import {selectionIntegrationInstructions,imageOutputContract,imageDeliveryRepairPrompt} from '../output-contract.js?v=28.0.3';
 
 // These tests inspect the material and instructions sent to ChatGPT. They do
 // not execute AI synthesis or claim that an image model obeyed the selections.

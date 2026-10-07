@@ -41,7 +41,7 @@ body[data-lights=night] #picker :is(input,textarea,select){background:#222b42;co
 body[data-collection][data-lights=night] .profile-editor{background:#172038;color:#f0e8ff;border-color:#9b86b3}
 body[data-collection][data-lights=night] :is(.profile-fields label,.profile-editor summary,.profile-fields label small,#profile-reading,.reference-thumb figcaption,.inspector-note,.recipe-specs,.picker-example-note,.topic-chips span){color:#e4daf2}
 body[data-collection][data-lights=night] .topic-chips span{background:#332c4b;border-color:#9b86b3}
-body[data-collection][data-lights=night] .page-arrow{background:#332c4bee;color:#fff4ff;border-color:#bb9cdc}
+body[data-collection][data-lights=night] .page-arrow{background:transparent;color:#d8c5ef;border-color:transparent;box-shadow:none}
 body[data-collection=everyday][data-lights=night]{background-color:#081a23;background-image:radial-gradient(ellipse at top right,#22475499,transparent 45%),linear-gradient(#081a23,#101c29)}
 body[data-collection=everyday] :is(.night-cast,.night-creatures){display:none!important}
 body[data-collection=everyday][data-lights=night] .studio-hero{background:linear-gradient(90deg,#071b29ee,#091d2bbb),url('./landscape-ordinary-v11.png') center/cover}

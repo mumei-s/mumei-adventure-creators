@@ -6,5 +6,5 @@ export function ringWindow(items,index,limit=6){
 }
 export function ringPosition(slot,count=6,rotation=0){
  const angle=(90-slot*360/Math.max(1,count)+rotation)*Math.PI/180,depth=(Math.sin(angle)+1)/2;
- return {x:37*Math.cos(angle),y:33*Math.sin(angle),scale:.78+.22*depth,z:2+Math.round(depth*6)};
+ return {x:37*Math.cos(angle),y:37*Math.sin(angle),scale:.78+.22*depth,z:2+Math.round(depth*6)};
 }

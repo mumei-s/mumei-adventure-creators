@@ -1,0 +1,20 @@
+{
+  "version": "18.0.0",
+  "date": "2026-10-07",
+  "codeCommit": "070fd0645300373676073ca489246a32829fac20",
+  "pagesWorkflow": {
+    "id": 37556399692,
+    "result": "success"
+  },
+  "publicURL": "https://mumei-s.github.io/mumei-adventure-creators/halloween/",
+  "liveBrowserChecks": [
+    "Version footer shows 18.0.0",
+    "New medium appears among 108 media",
+    "First page previous button wraps to 18/18",
+    "Crystal hologram selected",
+    "Monochrome palette choice disabled with visible reason",
+    "Japanese weekly cover image loaded in enlarged inspector"
+  ],
+  "screenshot": "published-weekly.jpg",
+  "allOptionImageAcceptance": "not verified"
+}

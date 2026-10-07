@@ -1,5 +1,5 @@
-import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=22.0.0';
-import {poseGroups} from './poses.js?v=22.0.0';
+import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=22.0.2';
+import {poseGroups} from './poses.js?v=22.0.2';
 const original=questions.map(q=>({...q,groups:q.groups.map(g=>({...g,values:[...g.values]}))}));
 const originalGroups=key=>original.find(q=>q.key===key).groups;
 const cloneGroups=groups=>groups.map(g=>({...g,values:[...g.values]}));

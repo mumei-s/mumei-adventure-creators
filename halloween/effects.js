@@ -1,5 +1,5 @@
-import {createSpells,studioIcons} from './spells.js?v=22.0.0';
-import {icons,nightIcons} from './halloween-icons.js?v=22.0.0';
+import {createSpells,studioIcons} from './spells.js?v=22.0.2';
+import {icons,nightIcons} from './halloween-icons.js?v=22.0.2';
 export function setupEffects(){
  function refresh(){const daily=document.body.dataset.collection==='everyday',night=document.body.dataset.lights==='night';const gameTitle=daily?'モチーフあつめ':night?'夜の仲間あつめ':'おばけとお菓子集め';for(const id of ['play-ghosts','ghost-title'])document.getElementById(id).textContent=gameTitle;document.getElementById('spell-status').textContent=daily?'タップで色と形の演出が変わります。':'タップで毎回、違う魔法が広がります。';document.querySelectorAll('#magic-scene .ornament').forEach((n,i)=>{n.innerHTML=(night?nightIcons:daily?studioIcons:icons)[i];n.setAttribute('aria-label',(night?['おばけ','コウモリ','一つ目モンスター','スケルトン']:daily?['太陽','花','カメラ','鉛筆']:['おばけ','カボチャ','コウモリ','お菓子'])[i]+'の飾りで遊ぶ');});}
  const creatures=document.createElement('div');creatures.className='night-creatures';creatures.setAttribute('aria-hidden','true');for(const icon of [nightIcons[0],nightIcons[1],nightIcons[2]]){const n=document.createElement('i');n.innerHTML=icon;creatures.append(n);}document.querySelector('.studio-hero')?.append(creatures);

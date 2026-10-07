@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {toggleFavorite,normalizeFavorites,favoriteKey} from '../favorites.js?v=22.0.0';
-import {ringWindow,ringPosition,swipeStep} from '../ring-motion.js?v=22.0.0';
-import {optionRecipe} from '../option-recipes.js?v=22.0.0';
-import {opticalSignature} from '../optical-effects.js?v=22.0.0';
+import {toggleFavorite,normalizeFavorites,favoriteKey} from '../favorites.js?v=22.0.2';
+import {ringWindow,ringPosition,swipeStep} from '../ring-motion.js?v=22.0.2';
+import {optionRecipe} from '../option-recipes.js?v=22.0.2';
+import {opticalSignature} from '../optical-effects.js?v=22.0.2';
 const values=['A','B','C','D','E'];
 assert.equal(toggleFavorite(values,'F').changed,false);
 assert.deepEqual(toggleFavorite(values,'C').values,['A','B','D','E']);

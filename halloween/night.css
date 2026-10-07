@@ -36,3 +36,4 @@ body[data-collection][data-lights=night] :is(.primary-button,.dark-button){backg
 body[data-collection][data-lights=night] :is(input,textarea,select){background:#222b42;color:#f6ecff;border-color:#9b86b3}
 body[data-lights=night] input::placeholder,body[data-lights=night] textarea::placeholder{color:#c4b9d4}
 body[data-collection][data-lights=night] .picker-views button[aria-pressed=true],body[data-collection][data-lights=night] .favorite-toggle[aria-pressed=true]{background:#b49bd5;color:#181129;border-color:#ebd9ff}
+body[data-lights=night] #picker :is(input,textarea,select){background:#222b42;color:#f6ecff;border-color:#9b86b3}

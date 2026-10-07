@@ -1,7 +1,7 @@
 // Rendering recipes belong to option titles. Picker artwork is never an input.
 // Each section may supply a separate scenery-only instruction in its third cell.
-import {opticalColors} from './optical-effects.js?v=22.0.0';
-import {photoDesign} from './photo-design.js?v=22.0.0';
+import {opticalColors} from './optical-effects.js?v=22.0.2';
+import {photoDesign} from './photo-design.js?v=22.0.2';
 const recipes = new Map();
 function add(value, family, sections, checks) {
  if (recipes.has(value)) throw new Error('Duplicate medium recipe: ' + value);

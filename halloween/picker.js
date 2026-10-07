@@ -1,10 +1,10 @@
-import {FAVORITE_LIMIT,FAVORITE_STORAGE,favoriteKey,normalizeFavorites,toggleFavorite} from './favorites.js?v=22.0.0';
-import {ringWindow,ringPosition,swipeStep} from './ring-motion.js?v=22.0.0';
-import {candidateAvailability,wrappedPage} from './compatibility.js?v=22.0.0';
-import {appendRecipeEvidence} from './recipe-evidence.js?v=22.0.0';
-import {recipeFor} from './recipes.js?v=22.0.0';
-import {optionRecipe} from './option-recipes.js?v=22.0.0';
-import {lookFor} from './looks.js?v=22.0.0';
+import {FAVORITE_LIMIT,FAVORITE_STORAGE,favoriteKey,normalizeFavorites,toggleFavorite} from './favorites.js?v=22.0.2';
+import {ringWindow,ringPosition,swipeStep} from './ring-motion.js?v=22.0.2';
+import {candidateAvailability,wrappedPage} from './compatibility.js?v=22.0.2';
+import {appendRecipeEvidence} from './recipe-evidence.js?v=22.0.2';
+import {recipeFor} from './recipes.js?v=22.0.2';
+import {optionRecipe} from './option-recipes.js?v=22.0.2';
+import {lookFor} from './looks.js?v=22.0.2';
 export function pageSize(width,height=window.innerHeight){return width<620?4:width<1100?(height>=1300?9:6):(height>=1300?12:8);}
 export function pageSlice(items,page,limit){const pages=Math.max(1,Math.ceil(items.length/limit));const safe=Math.min(Math.max(page,0),pages-1);return {page:safe,pages,items:items.slice(safe*limit,(safe+1)*limit)};}
 export function createPicker({$,el,sampleNode,readSelection,choose,onCustom,tell}){

@@ -1,7 +1,7 @@
-import {modeFoundation} from './japan-direction.js?v=18.0.1';
-import {imageOutputContract} from './output-contract.js?v=18.0.1';
-import {opticalSignature} from './optical-effects.js?v=18.0.1';
-import {colorPolicy} from './color-policy.js?v=18.0.1';
+import {modeFoundation} from './japan-direction.js?v=19.0.0';
+import {imageOutputContract} from './output-contract.js?v=19.0.0';
+import {opticalSignature} from './optical-effects.js?v=19.0.0';
+import {colorPolicy} from './color-policy.js?v=19.0.0';
 
 export const conditionOwners=Object.freeze({
  medium:'描線・陰影・画材・光学',design:'画像と原稿の領域・読み順',
@@ -58,41 +58,59 @@ function between(lines,start,end){
  return lines.slice(from,to<0?undefined:to);
 }
 
-// One normal generation request for every format. Exact per-option recipes stay
-// once; SVG templates, repairs and verification records remain separate actions.
-export function compileProduction(plan,originalLines){
- const medium=plan.conditions.find(c=>c.key==='medium'),v=plan.variant;
- const optics=opticalSignature(plan.values,{noPerson:plan.noPerson});
- const executed=plan.noPerson?['人物の顔・表情・ポーズ：適用しない。']:[
-  '顔の向き：'+v.face,'明確な表情：'+v.expression,
-  '選んだポーズ：'+plan.values.pose,'身体の動き：'+v.pose,
-  '撮影距離：'+v.distance,'カメラ：'+v.camera,
-  ...(/真横/.test(v.camera||'')?['胴体・肩・膝はカメラに対して真横90度。顔は指定した自然な首の回旋で合わせる。']:[])
- ];
+// Natural-language handoff for ordinary ChatGPT (including 5.5).
+// Full JSON execution exports remain available through renderInput for audits.
+export function renderChatInput(plan){
+ const v=plan.variant;
+ const compiled=JSON.parse(renderInput(plan).split("\n\n【全選択の個別レシピ】")[0]);
  return [
-  originalLines[0],...imageOutputContract,
-  '【通常制作：完成画像を1回で生成】',
-  '選択条件を固定し、完成した画像そのものを1枚、直ちにこの会話へ表示する。非表示の再生成ループは行わない。生成前の追加検索・仕様書作成・SVG組版を開始しない。',
-  '下の詳細仕様を照合に使い、画像生成機能へは「画像生成へ渡す入力」のブロックを渡す。操作・検査・納品の説明を描画用の指示へ混ぜない。入力内の各項目は確定値。画風の特徴と個別レシピは、項目の担当規則で同時に成立させる。',
-  'canvas.width_px・height_px・aspect_ratioを読み、使用する画像生成機能にサイズや比率の引数があれば明示的に設定する。対応していない寸法をプロンプトだけで保証しない。生成後は実寸と要求値を照合し、違う寸法をA4・300dpi達成と扱わない。',
-  '【画像生成へ渡す入力：開始】',renderInput(plan),'【画像生成へ渡す入力：終了】',
+  plan.collection==='everyday'?'【作品モード】普段使い':'【作品モード】Halloween',
+  modeFoundation(plan.collection),
+  ...Object.values(compiled.required_before_details),
+  '主役：'+compiled.identity,
   '【画像で必ず見える画風の特徴】',
-  medium.value+'：'+medium.checks.join(' / '),...optics,
-  'この特徴を主役・衣装・背景へ同じ描画方法で通す。参照は識別の形の資料。元の表面を残して小物やフィルターだけを足す処理にしない。',
-  ...between(originalLines,'【作品モード】','【10の選択】'),
-  ...between(originalLines,'【10の選択】','【選択を具体的に実行する制作条件】'),
-  '【選択条件の担当】',...Object.entries(conditionOwners).map(([key,owner])=>plan.conditions.find(c=>c.key===key).name+'：'+owner),
-  ...plan.interactions,...plan.notes,
-  '【今回実行する構図と動作】',...executed,
+  ...plan.conditions.find(c=>c.key==='medium').checks,
+  ...opticalSignature(plan.values,{noPerson:plan.noPerson}),
+  '【全選択の個別レシピ】',
+  ...plan.conditions.flatMap(c=>[
+   c.index+'. '+c.name+'：'+c.value,
+   '担当：'+conditionOwners[c.key],
+   '描き分け：'+c.sections.map(s=>s.label).join('、'),
+   ...unique([c.execution.method,...c.sections.map(s=>s.text).filter(t=>!c.execution.method.includes(t)),c.execution.line?.method]).map(t=>'・'+t)
+  ]),
+  '【今回の構図】',
+  ...(plan.noPerson?['人物の顔・表情・ポーズ：適用しない。']:[
+   '顔の向き：'+v.face,'明確な表情：'+v.expression,
+   '選んだポーズ：'+plan.values.pose,'身体の動き：'+v.pose,
+   '撮影距離：'+v.distance,'カメラ：'+v.camera,
+   ...(/真横/.test(v.camera||'')?['胴体・肩・骨盤・膝はカメラに対して真横90度。']:[])
+  ]),
+  v.layout&&'画面設計：'+v.layout,v.background&&'背景の骨格：'+v.background,
+  ...(v.tone?['作品全体の温度：'+v.tone]:[]),
   '光：'+v.light,'奥行き：'+v.depth,'動き：'+v.motion,'追加物：'+v.motif,
-  v.locked?'固定と変更の方針：'+v.locked:'',
-  ...(v.previous||[]).map((p,i)=>'直近'+(i+1)+'から繰り返さない未指定の演出：'+(plan.noPerson?[p.layout]:[p.face,p.expression,p.distance,p.pose,p.layout]).filter(Boolean).join(' / ')+'。今回明示した条件は変更しない。'),
-  ...between(originalLines,'【物語と舞台を一場面に統合】','【色・光・素材の設計】'),
+  ...(v.locked?['固定と変更の方針：'+v.locked]:[]),
+  ...plan.interactions,
+  ...unique(plan.notes.filter(n=>n!==modeFoundation(plan.collection))),
+  ...(v.previous||[]).map((p,i)=>'直近'+(i+1)+'から繰り返さない未指定の演出：'+(plan.noPerson?[p.layout]:[p.face,p.expression,p.distance,p.pose,p.layout]).filter(Boolean).join(' / ')+'。明示した条件は変えない。'),
   '【作品内へ印字する確定原稿】',
-  plan.copy.mode==='none'?'文字・数字・署名のない完成。':plan.copy.slots.map(s=>s.role+'：'+JSON.stringify(s.text)).join('\n'),
-  '原稿は上記のみ。画風名・技法名・制作ID・未指定のページ番号・日付・号数は印字しない。原稿の語句を変更せず、空きを疑似文字で埋めない。',
-  '【実画像での完成検査】',
-  ...plan.conditions.filter(c=>c.key!=='medium').map(c=>c.name+'：'+unique(c.key==='type'?c.checks.map(t=>t.split('：')[0]):c.checks).join(' / ')),
-  '画像を先に表示し、選んだ特徴が実際に見えるか確認する。指示を記載した事実だけで合格としない。不足があれば箇所を短く伝える。修正を一律に禁止せず、必要な修正結果も画像で表示する。非表示の再生成ループは行わない。希望寸法や60秒以内の達成は実測せず断言しない。文章だけで完成扱いにしない。'
+  plan.copy.mode==='none'?'文字・数字・署名のない完成。':plan.copy.slots.map(slot=>slot.role+'：'+JSON.stringify(slot.text)).join('\n'),
+  '原稿は上記だけ。項目名・制作番号・未指定の号数・日付・疑似文字を印字しない。'
+ ].filter(Boolean).join('\n');
+}
+export function compileProduction(plan,originalLines){
+ return [
+  ...imageOutputContract,
+  '【通常制作：完成画像を1回で生成】',
+  originalLines[0],
+  '【参照と人物】',
+  '制作の基準は各項目のタイトルと具体条件。見本の人物は顔の参照ではない。見本の性別や構図へ置き換えない。',
+  ...between(originalLines,'【作成者が添付する参照画像】','【10の選択】'),
+  ...originalLines.filter(s=>/^(限定色|墨|水彩)の必須条件：/.test(s)),
+  ...between(originalLines,'【10の選択】','用途：'),
+  originalLines.find(s=>s.startsWith('用途：')),
+  '【画像生成へ渡す作画条件：開始】',renderChatInput(plan),'【画像生成へ渡す作画条件：終了】',
+  ...between(originalLines,'【物語と舞台を一場面に統合】','【色・光・素材の設計】'),
+  ...between(originalLines,'【似た作品への回帰を防ぐ】','【作品内の文字・広告編集】'),
+  '完成した画像そのものを1枚、画像作成機能の通常の生成画像として表示する。文章だけで完成扱いにしない。'
  ].join('\n');
 }

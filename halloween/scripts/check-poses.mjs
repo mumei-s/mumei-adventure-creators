@@ -1,11 +1,11 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
-import {questions,visibleQuestions,defaults,resolveSelections} from '../catalog.js?v=18.0.1';
-import {poseItems,applyPose} from '../poses.js?v=18.0.1';
-import {initialSelections,effectiveSelections} from '../modes.js?v=18.0.1';
-import {buildDirection} from '../direction.js?v=18.0.1';
-import {composePrompt} from '../prompt.js?v=18.0.1';
-import {selectedRecipes} from '../recipes.js?v=18.0.1';
+import {questions,visibleQuestions,defaults,resolveSelections} from '../catalog.js?v=19.0.0';
+import {poseItems,applyPose} from '../poses.js?v=19.0.0';
+import {initialSelections,effectiveSelections} from '../modes.js?v=19.0.0';
+import {buildDirection} from '../direction.js?v=19.0.0';
+import {composePrompt} from '../prompt.js?v=19.0.0';
+import {selectedRecipes} from '../recipes.js?v=19.0.0';
 assert.equal(visibleQuestions.length,10);assert.equal(questions.length,11);assert.equal(defaults.length,11);assert.ok(!visibleQuestions.some(q=>q.key==='line'));assert.ok(visibleQuestions.some(q=>q.key==='pose'));assert.equal(poseItems.length,48);
 const values=resolveSelections({...initialSelections(),pose:'全力で走る',mood:'完全な左横顔90度',line:'今日の光を、忘れない。'});assert.equal(effectiveSelections('detail',values).line,values.line);assert.equal(effectiveSelections('simple',values).line,values.line);
 for(const pose of poseItems){assert.ok(fs.existsSync(new URL('../'+pose.file,import.meta.url)));const v=applyPose(buildDirection([],values.mood),pose.value);assert.match(v.face,/左横顔90度/);assert.ok(v.pose.includes(pose.text));assert.match(v.distance,/全身|胸から上/);}

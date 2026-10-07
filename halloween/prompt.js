@@ -1,10 +1,10 @@
-import {imageOutputContract} from './output-contract.js?v=18.0.1';
-import {visibleQuestions} from './catalog.js?v=18.0.1';
-import {productionPlan,planInstructions,conditionInstructions} from './production-plan.js?v=18.0.1';
-import {sceneContract} from './worlds.js?v=18.0.1';
-import {colorPolicy} from './palette-recipes.js?v=18.0.1';
-import {resolveArtDirection} from './art-direction.js?v=18.0.1';
-import {composeStagedMaster} from './production-workflow.js?v=18.0.1';
+import {imageOutputContract} from './output-contract.js?v=19.0.0';
+import {visibleQuestions} from './catalog.js?v=19.0.0';
+import {productionPlan,planInstructions,conditionInstructions} from './production-plan.js?v=19.0.0';
+import {sceneContract} from './worlds.js?v=19.0.0';
+import {colorPolicy} from './palette-recipes.js?v=19.0.0';
+import {resolveArtDirection} from './art-direction.js?v=19.0.0';
+import {composeStagedMaster} from './production-workflow.js?v=19.0.0';
 export function needsReference(values){const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);return !noPerson||values.place==='参照風景を舞台にする'||values.palette==='参照画像の色を生かす';}
 // Option thumbnails, including legacy styleGuide arguments, never control generation.
 export function composePrompt({collection='halloween',creator,profile,values,variant,references=[],edition,referenceBundle=null,random=Math.random,preparedPlan=null}){
@@ -135,11 +135,5 @@ export function composePrompt({collection='halloween',creator,profile,values,var
  '',
  '【生成と納品の最終照合】項目名と具体条件どおりの画風・形式・舞台・配色になっているか。'+(noPerson?'人物なしの'+(subjectKind==='scenery'?'景観':subjectKind==='motif'?'物体構成':'紋章・アイコン')+'として成立しているか。':'主参照と同じ人物で、今回の表情・角度・動作になっているか。')+'文字量は形式に合うか。出力画像そのものを確認し、完成画像をこの会話に添付・表示して終了する。文章だけで完成扱いにしない。'
  ];
- const verification=[
-  '【完成画像と実物との照合：生成後に行う】',
-  '最初に画像を表示し、その実画像を選択した10項目の完成チェックと一つずつ照合する。画角・画質・画風・実写としての光と材質・文字と形式の不足は、該当箇所を具体的に示す。生成が成功した事実と、選択が再現された合格判定を分ける。',
-  '実物資料との比較はツールの検証記録で別途行う。この作品の納品を新たな検索・資料作成で遅らせず、画像を表示して選択条件の不足だけを短く伝える。実物を確認していない場合は実物との一致を主張しない。',
-  '完成確認は今回の出力1例に限る。全項目・全組合せの確実な再現性、実機の撮影記録、希望解像度やdpiの達成を推測で保証しない。画像を出せない場合も、実画像を確認できない場合も、未完了として理由を短く伝える。'
- ];
- return composeStagedMaster(plan,lines)+'\n\n'+verification.join('\n');
+ return composeStagedMaster(plan,lines);
 }

@@ -1834,3 +1834,5 @@ export const individualSamples={
 
 individualSamples['design\u0000週刊誌の表紙']={file:'japan-weekly-v18.png'};
 for(const [title,file] of [['ファッション雑誌の表紙','japan-fashion-v18.png'],['カルチャー誌の表紙','japan-culture-v18.png'],['新聞の一面','japan-newspaper-v18.png']])individualSamples['design\u0000'+title]={file};
+
+for(const [title,file] of [['インタビュー誌面','japan-interview-v19.jpg'],['見開き特集','japan-spread-v19.jpg']])individualSamples['design\u0000'+title]={file};

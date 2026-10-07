@@ -1,11 +1,12 @@
-import {modeFoundation} from './japan-direction.js?v=18.0.1';
-import {visibleQuestions} from './catalog.js?v=18.0.1';
-import {formatContract} from './formats.js?v=18.0.1';
-import {buildEditorial,editorialContract} from './editorial.js?v=18.0.1';
-import {optionRecipe} from './option-recipes.js?v=18.0.1';
-import {colorPolicy} from './palette-recipes.js?v=18.0.1';
-import {resolveArtDirection,interactionContract} from './art-direction.js?v=18.0.1';
-import {executionFor} from './option-execution.js?v=18.0.1';
+import {imageOutputContract} from './output-contract.js?v=19.0.0';
+import {modeFoundation} from './japan-direction.js?v=19.0.0';
+import {visibleQuestions} from './catalog.js?v=19.0.0';
+import {formatContract} from './formats.js?v=19.0.0';
+import {buildEditorial,editorialContract} from './editorial.js?v=19.0.0';
+import {optionRecipe} from './option-recipes.js?v=19.0.0';
+import {colorPolicy} from './palette-recipes.js?v=19.0.0';
+import {resolveArtDirection,interactionContract} from './art-direction.js?v=19.0.0';
+import {executionFor} from './option-execution.js?v=19.0.0';
 
 export function productionPlan(profile,values,variant,collection='halloween',random=Math.random){
  const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);
@@ -59,6 +60,7 @@ export function repairPrompt(result){
  const noPerson=result.production?.noPerson??/風景を主役|モチーフだけ|紋章・アイコン/.test(result.values?.costume||'');
  const checks=result.production?.conditions?.map(c=>'照合 / '+c.name+'：'+c.checks.join(' / '))||['元の制作仕様の各項目と、実際に見える完成画像を照合する。'];
  return [
+ ...imageOutputContract,
  '【選択した仕様へ仕上げ直す】',
  'このチャットで直前に生成した完成画像、または今回添付した修正対象の完成画像を実際に見て、下記の制作仕様と照合する。完成画像は修正対象。画風・主題・舞台・形式は項目タイトルと具体的な制作仕様を使う。項目の見本画像は不要であり、見本や画面一覧の再添付を要求しない。必要な主参照や修正対象を確認できない場合のみ、その画像を求める。',
  noPerson?'人物なしの指定を保つ。主参照がある場合は選択主題の形・構造・模様だけを用い、人の顔・身体・衣装を新しく導入しない。':'同じ人物の識別特徴は元の主参照から保つ。修正対象の構図や衣装を、別人の顔の基準へ変更しない。',

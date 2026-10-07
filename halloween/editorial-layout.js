@@ -1,6 +1,6 @@
-import {formatFor} from './formats.js?v=18.0.1';
-import {colorPolicy} from './palette-recipes.js?v=18.0.1';
-import {colorWorlds} from './worlds.js?v=18.0.1';
+import {formatFor} from './formats.js?v=19.0.0';
+import {colorPolicy} from './palette-recipes.js?v=19.0.0';
+import {colorWorlds} from './worlds.js?v=19.0.0';
 
 const MAX_EDGE=4096;
 const SERIF='"Noto Serif CJK JP", "Yu Mincho", "Hiragino Mincho ProN", Georgia, serif';
@@ -150,7 +150,7 @@ export function renderEditorialLayout(plan,{dataUrl,artworkWidth,artworkHeight,m
  if(kind==='spread'){
   imageBox=rect(.07,.12,.34,.75);gutter=rect(.47,0,.06,1);
   role('running-head',rect(.56,.04,.4,.025),'柱',{fontSize:width*.014,align:'left',fontFamily:SANS});
-  role('feature-title',rect(.56,.08,.4,.17),s=>['特集見出し','主見出し','作品タイトル','テーマ名'].includes(s.role),{fontSize:width*.07,lineHeight:1.15,fontWeight:600});
+  role('feature-title',rect(.56,.08,.4,.17),s=>['特集見出し','主見出し','作品タイトル','テーマ名'].includes(s.role),{fontSize:width*.04,lineHeight:1.15,fontWeight:600});
   role('lead',rect(.56,.27,.4,.075),'リード文',{fontSize:width*.015,lineHeight:1.45});
   role('author',rect(.56,.35,.4,.02),'作者名',{fontSize:width*.013,align:'right'});
   role('quote',rect(.56,.375,.4,.04),'引き抜き引用',{fontSize:width*.024,lineHeight:1.25,fontWeight:600,color:colors.accent});

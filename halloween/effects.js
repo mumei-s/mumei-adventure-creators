@@ -1,5 +1,5 @@
-import {createSpells,studioIcons} from './spells.js?v=18.0.1';
-import {icons} from './halloween-icons.js?v=18.0.1';
+import {createSpells,studioIcons} from './spells.js?v=19.0.0';
+import {icons} from './halloween-icons.js?v=19.0.0';
 export function setupEffects(){
  function refresh(){const daily=document.body.dataset.collection==='everyday';document.getElementById('spell-status').textContent=daily?'タップで色と形の演出が変わります。':'タップで毎回、違う魔法が広がります。';document.querySelectorAll('#magic-scene .ornament').forEach((n,i)=>{n.innerHTML=(daily?studioIcons:icons)[i];n.setAttribute('aria-label',(daily?['太陽','花','カメラ','鉛筆']:['おばけ','カボチャ','コウモリ','お菓子'])[i]+'の飾りで遊ぶ');});}
  refresh();

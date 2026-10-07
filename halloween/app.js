@@ -1,27 +1,27 @@
-import {candidateAvailability,selectionConflicts} from './compatibility.js?v=18.0.1';
-import {appendRecipeEvidence} from './recipe-evidence.js?v=18.0.1';
-import {productionPlan,repairPrompt} from './production-plan.js?v=18.0.1';
-import {stagePrompts} from './production-workflow.js?v=18.0.1';
-import {createLayoutPanel} from './layout-export.js?v=18.0.1';
-import {applyPose} from './poses.js?v=18.0.1';
-import {applyCollection,dailyInspiration} from './collection.js?v=18.0.1';
-import {setupEffects} from './effects.js?v=18.0.1';
-import {colorWorlds} from './worlds.js?v=18.0.1';
-import {mergeCreator} from './creator.js?v=18.0.1';
-import {createCropEditor} from './crop-editor.js?v=18.0.1';
-import {profileForArtwork} from './activity-settings.js?v=18.0.1';
-import {createPicker} from './picker.js?v=18.0.1';
-import {modeKeys,modeCopy,initialSelections,effectiveSelections,propose} from './modes.js?v=18.0.1';
-import {buildReferenceBoard} from './guide-board.js?v=18.0.1';
-import {profileEndpoint,profileHeaders} from './runtime-config.js?v=18.0.1';
-import {questions,visibleQuestions,defaults,AUTO,normalizeCreator,resolveSelections} from './catalog.js?v=18.0.1';
-import {composePrompt,needsReference} from './prompt.js?v=18.0.1';
-import {buildDirection} from './direction.js?v=18.0.1';
-import {sampleFor,typePreview} from './examples.js?v=18.0.1';
-import {makeZip} from './zip.js?v=18.0.1';
-import {imageDeliveryRepairPrompt} from './output-contract.js?v=18.0.1';
-import {editorialReferencesFor} from './editorial-reference-sources.js?v=18.0.1';
-const APP_VERSION=18;
+import {candidateAvailability,selectionConflicts} from './compatibility.js?v=19.0.0';
+import {appendRecipeEvidence} from './recipe-evidence.js?v=19.0.0';
+import {productionPlan,repairPrompt} from './production-plan.js?v=19.0.0';
+import {stagePrompts} from './production-workflow.js?v=19.0.0';
+import {createLayoutPanel} from './layout-export.js?v=19.0.0';
+import {applyPose} from './poses.js?v=19.0.0';
+import {applyCollection,dailyInspiration} from './collection.js?v=19.0.0';
+import {setupEffects} from './effects.js?v=19.0.0';
+import {colorWorlds} from './worlds.js?v=19.0.0';
+import {mergeCreator} from './creator.js?v=19.0.0';
+import {createCropEditor} from './crop-editor.js?v=19.0.0';
+import {profileForArtwork} from './activity-settings.js?v=19.0.0';
+import {createPicker} from './picker.js?v=19.0.0';
+import {modeKeys,modeCopy,initialSelections,effectiveSelections,propose} from './modes.js?v=19.0.0';
+import {buildReferenceBoard} from './guide-board.js?v=19.0.0';
+import {profileEndpoint,profileHeaders} from './runtime-config.js?v=19.0.0';
+import {questions,visibleQuestions,defaults,AUTO,normalizeCreator,resolveSelections} from './catalog.js?v=19.0.0';
+import {composePrompt,needsReference} from './prompt.js?v=19.0.0';
+import {buildDirection} from './direction.js?v=19.0.0';
+import {sampleFor,typePreview} from './examples.js?v=19.0.0';
+import {makeZip} from './zip.js?v=19.0.0';
+import {imageDeliveryRepairPrompt} from './output-contract.js?v=19.0.0';
+import {editorialReferencesFor} from './editorial-reference-sources.js?v=19.0.0';
+const APP_VERSION=19;
 const $=id=>document.getElementById(id),STORAGE='mumeis-halloween-v2';
 let saved={history:[],used:[],count:0},view='auto';
 try{const v=JSON.parse(localStorage.getItem(STORAGE)||'null');if(v&&Array.isArray(v.history)&&Array.isArray(v.used))saved={history:v.history.map(r=>({...r,values:{pose:AUTO,line:AUTO,...r?.values}})).filter(x=>x&&typeof x.prompt==='string'&&x.values&&questions.every(q=>typeof x.values[q.key]==='string')&&x.variant&&x.profile&&Array.isArray(x.references)).slice(0,12),used:v.used.filter(x=>x&&typeof x.signature==='string').slice(-2000),count:Number.isSafeInteger(v.count)?v.count:0};view=localStorage.getItem('halloween-view')||'auto';}catch{}
@@ -162,6 +162,7 @@ function showResult(r){
  $('download-guide').disabled=!r.production;$('download-kit').disabled=false;$('copy-image').disabled=!live;$('share-all').hidden=true;$('again').hidden=!fresh;$('download-board').hidden=!live;$('download-board').textContent=live&&r.localRefs.length===1?'参照画像を保存':'参照だけを１枚に保存';$('share-board').hidden=!live;
  $('transfer-title').textContent=live?'参照画像＋プロンプト':'プロンプトのみ';
  $('transfer-instruction').textContent=live?'「画像＋プロンプトを共有」で、ご自身の参照画像と prompt.txt を渡します。共有先に画像と指示が届いたことを確認して送信してください。見本の人物や背景は送信しません。':requires?'「プロンプトをコピー」を押し、ChatGPTで自分の参照画像を添付して同じメッセージで送ってください。':'「プロンプトをコピー」を押し、ChatGPTへ送ってください。この選択では人物の参照画像は必要ありません。';
+ $('transfer-instruction').textContent+=' ChatGPTの通常の画像作成を使います。5.5でもWorkやコード実行を前提にしません。';
  $('transfer-status').textContent=live?(canShareFiles(shareFiles(r))?'画像と指示ファイルを一緒に共有できます。共有先で両方を確認してください。':'端末の共有対応を確認します。使えない場合は制作セットを保存できます。'):fresh?'完成画像はChatGPT側に表示されます。':'履歴に画像データはありません。必要な場合は元の参照画像をChatGPTへ添付してください。';
  $('kit-note').textContent=live?'ZIPを解凍して、reference- で始まる参照画像と prompt.txt を同じメッセージに添付してください。':'生成した画像が表示されない場合は「画像が出ないときの指示」をコピーして、同じチャットへ送れます。';
  if(!$('result').open)$('result').showModal();
@@ -171,7 +172,7 @@ async function copyStage(key){const text=currentResult?.stages?.[key];if(!text)r
 async function shareAll(){
  const r=currentResult;if(!r?.isFresh)return;
  const files=shareFiles(r),images=files.filter(f=>f.type.startsWith('image/'));
- let payload;if(canShareFiles(files))payload={files,text:'添付の prompt.txt の制作仕様を読み、参照画像を使って完成画像をこの会話に表示してください。',title:r.collection==='everyday'?'イラスト制作資料':'Halloween制作資料'};else if(images.length&&canShareFiles(images))payload={files:images,text:r.prompt,title:'画像と制作指示'};
+ let payload;if(canShareFiles(files))payload={files,text:'添付の prompt.txt と参照画像で絵を1枚描いてください。ChatGPTの画像作成機能を実行し、通常の生成画像としてこのチャットに表示してください。計画・コード・ダウンロードリンクだけで終わらないでください。',title:r.collection==='everyday'?'イラスト制作資料':'Halloween制作資料'};else if(images.length&&canShareFiles(images))payload={files:images,text:r.prompt,title:'画像と制作指示'};
  if(!payload){$('transfer-status').textContent='この端末では同時共有に対応していません。制作セットを保存し、解凍した画像と prompt.txt をChatGPTへ添付してください。';await downloadKit();return;}
  try{await navigator.share(payload);$('transfer-status').textContent=payload.files.some(f=>f.type==='text/plain')?'共有画面を閉じました。送信先の画像と prompt.txt を確認して送信してください。':'参照画像を共有しました。共有先で指示が表示されない場合は「プロンプトをコピー」で追加してください。';}
  catch(e){if(e.name==='AbortError'){$('transfer-status').textContent='共有を取り消しました。もう一度共有できます。';return;}$('transfer-status').textContent='共有できませんでした。参照画像とプロンプトを別々に保存して添付できます。';tell('共有できませんでした。制作セット保存を使ってください。');}
@@ -181,9 +182,8 @@ async function copyImage(){const r=currentResult?.localRefs?.find(x=>x.role==='i
 function download(blob,name){const url=URL.createObjectURL(blob),a=el('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);}
 async function downloadKit(){const r=currentResult;if(!r)return;const b=$('download-kit');b.disabled=true;b.textContent='セットを準備中…';try{
  const imageNames=(r.localRefs||[]).map((_,i)=>r.references[i].name);
- const help=['画像制作セット','','1. ZIPを解凍します。',imageNames.length?'2. 下の参照画像と prompt.txt を同じChatGPTのメッセージへ添付します。':needsReference(r.values)?'2. prompt.txt とご自身の主参照画像を、同じChatGPTのメッセージへ添付します。':'2. prompt.txt をChatGPTへ添付するか、中の指示をコピーして送ります。','3. 画像と制作指示が届いたことを確認して送信します。','4. 完成画像が出ない場合は、ツールの「画像が出ないときの指示」を同じチャットへ送ります。','','添付する参照画像：',...imageNames,'','選択画面の見本絵は制作セットに含めません。','名前：'+r.profile.displayName,'制作番号：'+r.edition].join('\n');
+ const help=['画像制作セット','','1. ZIPを解凍します。',imageNames.length?'2. 下の参照画像と prompt.txt を同じChatGPTのメッセージへ添付します。':needsReference(r.values)?'2. prompt.txt とご自身の主参照画像を、同じChatGPTのメッセージへ添付します。':'2. prompt.txt をChatGPTへ添付するか、中の指示をコピーして送ります。','3. prompt.txt の条件で画像を1枚描き、ChatGPTの通常の生成画像としてチャットに表示するよう送信します。','4. 完成画像が出ない場合は、ツールの「画像が出ないときの指示」を同じチャットへ送ります。','','添付する参照画像：',...imageNames,'','選択画面の見本絵は制作セットに含めません。','名前：'+r.profile.displayName,'制作番号：'+r.edition].join('\n');
  const files=[{name:'prompt.txt',data:new TextEncoder().encode(r.prompt)},{name:'使い方.txt',data:new TextEncoder().encode(help)}];
- if(r.stages){files.push({name:'stage-1-artwork.txt',data:new TextEncoder().encode(r.stages.artwork)},{name:'stage-1-style-repair.txt',data:new TextEncoder().encode(r.stages.repair)},{name:'stage-2-layout.txt',data:new TextEncoder().encode(r.stages.layout)});}
  for(let i=0;i<(r.localRefs||[]).length;i++)files.push({name:r.references[i].name,data:new Uint8Array(await r.localRefs[i].file.arrayBuffer())});
  download(makeZip(files),'Artwork-'+r.edition+'.zip');tell('制作セットを保存しました。');
  }catch{tell('保存に失敗しました。プロンプトと参照画像を個別に保存してください。');}finally{b.disabled=false;b.textContent='制作セットを保存';}}

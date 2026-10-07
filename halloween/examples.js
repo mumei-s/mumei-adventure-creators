@@ -1,8 +1,8 @@
-import {poseItems} from './poses.js?v=18.0.1';
-import {dailySamples,currentCollection,landscapeScenes} from './collection.js?v=18.0.1';
-import {questions} from './catalog.js?v=18.0.1';
-import {individualSamples} from './sample-catalog.js?v=18.0.1';
-import {colorWorlds,luminousMedia} from './worlds.js?v=18.0.1';
+import {poseItems} from './poses.js?v=19.0.0';
+import {dailySamples,currentCollection,landscapeScenes} from './collection.js?v=19.0.0';
+import {questions} from './catalog.js?v=19.0.0';
+import {individualSamples} from './sample-catalog.js?v=19.0.0';
+import {colorWorlds,luminousMedia} from './worlds.js?v=19.0.0';
 for(const item of poseItems)individualSamples['pose\u0000'+item.value]={file:item.file};
 for(const item of colorWorlds)individualSamples['palette\u0000'+item.value]={file:item.file};
 for(const item of luminousMedia)individualSamples['medium\u0000'+item.value]={file:item.file};
@@ -25,7 +25,7 @@ export function sampleFor(key,value=''){
  }
  const landscape=key==='theme'?landscapeScenes.find(([name])=>name===value):null;
  if(landscape)return {kind:'custom',label:value+'：'+landscape[1],text:value.replace('と','と\n').replace('の記録','\nの記録')};
- if(key==='design'&&value==='自然・都市の風景画')return {kind:'image',src:'./landscape-ordinary-v11.png',label:'自然・都市の風景画の説明用イメージ（生成の参照画像には使いません）'};
+ if(key==='design'&&value==='自然・都市の風景画')return {kind:'image',src:'./japan-landscape-v19.png',label:'自然・都市の風景画の説明用イメージ（生成の参照画像には使いません）'};
  if(questions.find(q=>q.key===key)?.groups.some(g=>g.values.includes(value)))return {kind:'custom',label:value+'：項目名と説明を制作へ反映します。',text:value.replace('と','と\n')};
  return {kind:'custom',label:'自由入力',text:'あなたの\n指定で制作'};
 }

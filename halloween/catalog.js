@@ -1,6 +1,6 @@
-import {compatibleResolved} from './compatibility.js?v=18.0.1';
-import {poseGroups} from './poses.js?v=18.0.1';
-import {colorWorlds,luminousMedia} from './worlds.js?v=18.0.1';
+import {compatibleResolved} from './compatibility.js?v=19.0.0';
+import {poseGroups} from './poses.js?v=19.0.0';
+import {colorWorlds,luminousMedia} from './worlds.js?v=19.0.0';
 export const AUTO='おまかせ';
 const group=(label,values)=>({label,values:values.split('|')});
 export const questions=[

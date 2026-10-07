@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {productionPlan} from '../production-plan.js?v=18.0.1';
-import {renderInput} from '../compiled-production.js?v=18.0.1';
-import {detailedPalette} from '../palette-recipes.js?v=18.0.1';
-import {imageOutputContract} from '../output-contract.js?v=18.0.1';
+import {productionPlan} from '../production-plan.js?v=19.0.0';
+import {renderInput} from '../compiled-production.js?v=19.0.0';
+import {detailedPalette} from '../palette-recipes.js?v=19.0.0';
+import {imageOutputContract} from '../output-contract.js?v=19.0.0';
 
 // Reproduce the user's failed cover, including its actual resolved camera.
 const old=JSON.parse(fs.readFileSync(new URL('../verification/v17/failed-user-input.json',import.meta.url)));
@@ -36,7 +36,8 @@ for(const [palette,colors] of [['黒と白と朱の三色',['黒 45%','白 45%',
 }
 assert.ok(!imageOutputContract.join('\n').includes('今回の画像生成は1回だけ'));
 assert.match(imageOutputContract.join('\n'),/選択した全10項目/);
-assert.match(imageOutputContract.join('\n'),/60秒を超えた場合は時間条件も未達/);
+assert.match(imageOutputContract.join('\n'),/通常の画像生成/);
+assert.doesNotMatch(imageOutputContract.join('\n'),/60秒以内|合格基準/);
 const localized=plan.conditions.flatMap(c=>c.sections.filter(s=>s.label==='日本を基準にした個別条件')).reduce((n,s)=>n+s.text.length,0);
 assert.ok(input.length<JSON.stringify(old,null,2).length+localized*2+1000,'New local drawing clauses have a budget; audit repetition must stay out of the input');
 if(process.argv.includes('--save'))fs.writeFileSync(new URL('../verification/v17/retest-drawing-input.txt',import.meta.url),input);

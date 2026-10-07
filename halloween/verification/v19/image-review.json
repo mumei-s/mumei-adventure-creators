@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-07",
+  "runtime": "built-in image_gen in this session; not a ChatGPT 5.5 account",
+  "nativeImageResult": "tool produced and displayed its native image result for both calls",
+  "landscapeTrials": [
+    {
+      "image": "exec-1e928b0e-f2fa-4e7b-a0fe-30a49448d025.png",
+      "decision": "not used",
+      "reason": "Watercolor achieved, but jagged Alpine peaks dominate; insufficient Japan-specific geographic direction."
+    },
+    {
+      "image": "japan-landscape-v19.png",
+      "decision": "used as a Japan landscape sample",
+      "reason": "Recognizable single broad Mount Fuji cone, wooded foothills, rocky shore, susuki grass, watercolor paper white, wash edges, reflections; no person, text or Halloween ornament. Fictional composition informed by Motosu; not a documented viewpoint or exact-color-area proof."
+    }
+  ],
+  "editorialSamples": [
+    {
+      "image": "japan-interview-v19.jpg",
+      "decision": "used",
+      "review": "Japanese headline and Q&A, one uncropped fictional Japanese adult portrait, no copied real publication."
+    },
+    {
+      "image": "japan-spread-v19.jpg",
+      "decision": "used after headline-size revision",
+      "review": "Japanese title without one-character orphan, left portrait, central gutter, aligned two-column body."
+    }
+  ],
+  "limitations": [
+    "This site can request native ChatGPT image output; it cannot control ChatGPT account tools, native viewer, save/share UI or model-specific success.",
+    "Full replacement and image-model acceptance of every sample and every option combination is not claimed."
+  ]
+}

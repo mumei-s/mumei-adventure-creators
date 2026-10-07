@@ -1,6 +1,6 @@
-import {costumeSpecs,themeSpecs,placeSpecs} from './visual-specs.js?v=18.0.1';
-import {poseItems} from './poses.js?v=18.0.1';
-import {questions} from './catalog.js?v=18.0.1';
+import {costumeSpecs,themeSpecs,placeSpecs} from './visual-specs.js?v=19.0.0';
+import {poseItems} from './poses.js?v=19.0.0';
+import {questions} from './catalog.js?v=19.0.0';
 
 // The tables describe the selected title, never the people or settings in a UI thumbnail.
 const rows=source=>Object.assign(Object.create(null),Object.fromEntries(source.trim().split('\n').filter(Boolean).map(line=>{const at=line.indexOf('=');return [line.slice(0,at),line.slice(at+1).split('|')];})));

@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=18.0.1';
-import {initialSelections} from '../modes.js?v=18.0.1';
-import {applyCollection} from '../collection.js?v=18.0.1';
-import {buildDirection} from '../direction.js?v=18.0.1';
-import {applyPose} from '../poses.js?v=18.0.1';
-import {visualSpec} from '../visual-specs.js?v=18.0.1';
-import {formatSpecs} from '../formats.js?v=18.0.1';
-import {productionPlan,planInstructions,repairPrompt} from '../production-plan.js?v=18.0.1';
-import {buildEditorial} from '../editorial.js?v=18.0.1';
-import {composePrompt} from '../prompt.js?v=18.0.1';
-import {profileForArtwork} from '../activity-settings.js?v=18.0.1';
+import {questions,resolveSelections} from '../catalog.js?v=19.0.0';
+import {initialSelections} from '../modes.js?v=19.0.0';
+import {applyCollection} from '../collection.js?v=19.0.0';
+import {buildDirection} from '../direction.js?v=19.0.0';
+import {applyPose} from '../poses.js?v=19.0.0';
+import {visualSpec} from '../visual-specs.js?v=19.0.0';
+import {formatSpecs} from '../formats.js?v=19.0.0';
+import {productionPlan,planInstructions,repairPrompt} from '../production-plan.js?v=19.0.0';
+import {buildEditorial} from '../editorial.js?v=19.0.0';
+import {composePrompt} from '../prompt.js?v=19.0.0';
+import {profileForArtwork} from '../activity-settings.js?v=19.0.0';
 const profile={displayName:'Alice',topics:['写真','創作'],biography:'写真と創作'},base=resolveSelections({...initialSelections(),design:'ファッション雑誌の表紙',costume:'海賊',pose:'全力で走る',mood:'完全な左横顔90度'},()=>0.2);
 const make=values=>applyPose(buildDirection([],values.mood,()=>0.2),values.pose);
 let examined=0;
@@ -21,7 +21,7 @@ for(const collection of ['halloween','everyday']){
   const variant=make(values),plan=productionPlan(profile,values,variant,collection,()=>0.2);
   assert.equal(plan.conditions.length,10);assert.ok(plan.conditions.every(c=>c.text.length>=20&&c.checks.length));
   const prompt=composePrompt({creator:'alice',profile,values,variant,references:[],edition:'ALL',collection,preparedPlan:plan});
-  assert.ok(prompt.includes(value));assert.ok(prompt.includes('実画像での完成検査'));assert.ok(!prompt.includes('undefined'));assert.ok(!prompt.includes('NaN'));assert.ok(!prompt.includes('選択した特徴だけを作品へ反映'));examined++;
+  assert.ok(prompt.includes(value));assert.ok(prompt.includes('ChatGPTの画像作成機能を実行'));assert.ok(!prompt.includes('undefined'));assert.ok(!prompt.includes('NaN'));assert.ok(!prompt.includes('選択した特徴だけを作品へ反映'));examined++;
  }
 }
 applyCollection('halloween');

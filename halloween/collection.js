@@ -1,5 +1,5 @@
-import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=18.0.1';
-import {poseGroups} from './poses.js?v=18.0.1';
+import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=19.0.0';
+import {poseGroups} from './poses.js?v=19.0.0';
 const original=questions.map(q=>({...q,groups:q.groups.map(g=>({...g,values:[...g.values]}))}));
 const originalGroups=key=>original.find(q=>q.key===key).groups;
 const cloneGroups=groups=>groups.map(g=>({...g,values:[...g.values]}));
@@ -31,6 +31,7 @@ const dailyFile=index=>'japan-everyday-'+String(index).padStart(3,'0')+'-v18.png
 const japanesePlaces=['朝のキッチン','海辺の灯台','駅の改札前','明るい工房','並木道','街角の歩道','窓辺の読書室'];
 const clothingSampleIndices=[1,6,7,2];
 export const dailySamples=Object.fromEntries([
+ ['theme\u0000山岳と湖のパノラマ',{file:'japan-landscape-v19.png',text:'日本の山と湖を透明水彩で描いた見本。富士山と本栖湖を手掛かりにした架空の構図。選択した別の舞台へ富士山を自動追加しない。'}],
  ...dailyScenes.map(([value,text],i)=>['theme\u0000'+value,{file:dailyFile(i+1),text}]),
  ...japanesePlaces.map((value,i)=>['place\u0000'+value,{file:dailyFile(i+1),text:'日本の'+value+'の建築・生活寸法・背景の奥行きの見本。人物・衣装・物語・作風はそれぞれの選択で決める。'}]),
  ...dailyClothes.map((value,i)=>['costume\u0000'+value,{file:dailyFile(clothingSampleIndices[i]),text:'衣服の形・縫製・素材と動きの説明。人物の顔・性別・体型・ポーズ・描画技法は指定しない。'}]),

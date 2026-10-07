@@ -1,0 +1,471 @@
+{
+  "values": {
+    "design": "インタビュー誌面",
+    "medium": "実写風ファッション写真",
+    "theme": "街角のファッション",
+    "costume": "現代のテーラードスーツ",
+    "place": "街角の歩道",
+    "palette": "モノクローム",
+    "type": "デザインに合わせて自動編集",
+    "line": "セリフなし",
+    "size": "縦見本｜1024×1536｜2:3",
+    "collection": "everyday"
+  },
+  "copy": {
+    "mode": "デザインに合わせて自動編集",
+    "name": "春野 澪",
+    "title": "制作の現場",
+    "dense": true,
+    "slots": [
+      {
+        "role": "柱",
+        "text": "制作の現場",
+        "priority": 3
+      },
+      {
+        "role": "特集見出し",
+        "text": "街角のファッション",
+        "priority": 0
+      },
+      {
+        "role": "リード文",
+        "text": "街角のファッションを手がかりに、街角の歩道に一つの場面をつくる。現代のテーラードスーツのかたちと、その場に流れる光。その間に、作り手の視点を探してみたい。",
+        "priority": 2
+      },
+      {
+        "role": "作者名",
+        "text": "春野 澪",
+        "priority": 3
+      },
+      {
+        "role": "欄名",
+        "text": "創作Q&A",
+        "priority": 3
+      },
+      {
+        "role": "質問1",
+        "text": "Q. この場面で、最初に見つけたものは？",
+        "priority": 2
+      },
+      {
+        "role": "回答1",
+        "text": "A. 光と距離の関係。近くの小さな形から、遠くの気配へ視線をつなぐ。街角のファッションの世界を、その流れの中で描いてみたい。",
+        "priority": 3
+      },
+      {
+        "role": "質問2",
+        "text": "Q. 衣装や素材は、どう物語に関わる？",
+        "priority": 2
+      },
+      {
+        "role": "回答2",
+        "text": "A. 現代のテーラードスーツの輪郭を起点に、布の重なりや光の返りを考える。動きの前後を想像できるように、道具と身体の関係も大切にする。",
+        "priority": 3
+      },
+      {
+        "role": "質問3",
+        "text": "Q. 色の世界を、どこから組み立てる？",
+        "priority": 2
+      },
+      {
+        "role": "回答3",
+        "text": "A. 主色の大きな面に、静かな副色を重ねる。小さな差し色へ視線を集め、画面全体のまとまりをつくる。",
+        "priority": 3
+      },
+      {
+        "role": "引き抜き引用",
+        "text": "街角のファッションを、ひとつの場面に。",
+        "priority": 1
+      },
+      {
+        "role": "写真キャプション",
+        "text": "街角のファッション / 春野 澪",
+        "priority": 3
+      }
+    ],
+    "blocks": [
+      "制作の現場",
+      "街角のファッション",
+      "街角のファッションを手がかりに、街角の歩道に一つの場面をつくる。現代のテーラードスーツのかたちと、その場に流れる光。その間に、作り手の視点を探してみたい。",
+      "春野 澪",
+      "創作Q&A",
+      "Q. この場面で、最初に見つけたものは？",
+      "A. 光と距離の関係。近くの小さな形から、遠くの気配へ視線をつなぐ。街角のファッションの世界を、その流れの中で描いてみたい。",
+      "Q. 衣装や素材は、どう物語に関わる？",
+      "A. 現代のテーラードスーツの輪郭を起点に、布の重なりや光の返りを考える。動きの前後を想像できるように、道具と身体の関係も大切にする。",
+      "Q. 色の世界を、どこから組み立てる？",
+      "A. 主色の大きな面に、静かな副色を重ねる。小さな差し色へ視線を集め、画面全体のまとまりをつくる。",
+      "街角のファッションを、ひとつの場面に。",
+      "街角のファッション / 春野 澪"
+    ],
+    "topics": [
+      "暮らし",
+      "装い"
+    ],
+    "kind": "interview",
+    "limited": false
+  },
+  "placements": {
+    "image": {
+      "x": 51.2,
+      "y": 376.3200000000001,
+      "width": 593.92,
+      "height": 890.8799999999999,
+      "container": {
+        "x": 51.2,
+        "y": 322.56,
+        "width": 593.92,
+        "height": 998.4000000000001
+      },
+      "sourceWidth": 1024,
+      "sourceHeight": 1536,
+      "preserveAspectRatio": "xMidYMid meet"
+    },
+    "gutter": null,
+    "textFrames": [
+      {
+        "id": "running-head",
+        "x": 51.2,
+        "y": 41.472,
+        "width": 604.16,
+        "height": 38.400000000000006,
+        "roles": [
+          "柱",
+          "欄名"
+        ]
+      },
+      {
+        "id": "author",
+        "x": 686.08,
+        "y": 41.472,
+        "width": 286.72,
+        "height": 38.400000000000006,
+        "roles": [
+          "作者名"
+        ]
+      },
+      {
+        "id": "feature-title",
+        "x": 51.2,
+        "y": 99.84,
+        "width": 921.6,
+        "height": 102.912,
+        "roles": [
+          "特集見出し"
+        ]
+      },
+      {
+        "id": "lead",
+        "x": 51.2,
+        "y": 215.04000000000002,
+        "width": 921.6,
+        "height": 84.48,
+        "roles": [
+          "リード文"
+        ]
+      },
+      {
+        "id": "interview-body",
+        "x": 686.08,
+        "y": 322.56,
+        "width": 286.72,
+        "height": 998.4000000000001,
+        "roles": [
+          "質問1",
+          "回答1",
+          "質問2",
+          "回答2",
+          "質問3",
+          "回答3"
+        ]
+      },
+      {
+        "id": "caption",
+        "x": 51.2,
+        "y": 1344,
+        "width": 921.6,
+        "height": 41.472,
+        "roles": [
+          "写真キャプション"
+        ]
+      },
+      {
+        "id": "quote",
+        "x": 51.2,
+        "y": 1413.1200000000001,
+        "width": 921.6,
+        "height": 69.12,
+        "roles": [
+          "引き抜き引用"
+        ]
+      }
+    ],
+    "textRuns": [
+      {
+        "role": "柱",
+        "text": "制作の現場",
+        "slotIndex": 0,
+        "frameId": "running-head",
+        "x": 51.2,
+        "y": 41.472,
+        "width": 53.33334325844116,
+        "height": 15.466669544947935,
+        "fontSize": 10.666668651688232,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 400,
+        "lines": [
+          "制作の現場"
+        ],
+        "lineHeight": 15.466669544947935,
+        "align": "left",
+        "color": "#111111"
+      },
+      {
+        "role": "欄名",
+        "text": "創作Q&A",
+        "slotIndex": 4,
+        "frameId": "running-head",
+        "x": 51.2,
+        "y": 64.4053376011297,
+        "width": 42.66667460675292,
+        "height": 15.466669544947935,
+        "fontSize": 10.666668651688232,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 400,
+        "lines": [
+          "創作Q&A"
+        ],
+        "lineHeight": 15.466669544947935,
+        "align": "left",
+        "color": "#111111"
+      },
+      {
+        "role": "作者名",
+        "text": "春野 澪",
+        "slotIndex": 3,
+        "frameId": "author",
+        "x": 924.91776,
+        "y": 41.472,
+        "width": 47.882239999999996,
+        "height": 20.7872,
+        "fontSize": 14.336,
+        "fontFamily": "\"Noto Serif CJK JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", Georgia, serif",
+        "fontWeight": 400,
+        "lines": [
+          "春野 澪"
+        ],
+        "lineHeight": 20.7872,
+        "align": "right",
+        "color": "#111111"
+      },
+      {
+        "role": "特集見出し",
+        "text": "街角のファッション",
+        "slotIndex": 1,
+        "frameId": "feature-title",
+        "x": 51.2,
+        "y": 99.84,
+        "width": 599.04,
+        "height": 73.21600000000001,
+        "fontSize": 66.56,
+        "fontFamily": "\"Noto Serif CJK JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", Georgia, serif",
+        "fontWeight": 600,
+        "lines": [
+          "街角のファッション"
+        ],
+        "lineHeight": 73.21600000000001,
+        "align": "left",
+        "color": "#111111"
+      },
+      {
+        "role": "リード文",
+        "text": "街角のファッションを手がかりに、街角の歩道に一つの場面をつくる。現代のテーラードスーツのかたちと、その場に流れる光。その間に、作り手の視点を探してみたい。",
+        "slotIndex": 2,
+        "frameId": "lead",
+        "x": 51.2,
+        "y": 215.04000000000002,
+        "width": 903.1679999999999,
+        "height": 51.60959999999999,
+        "fontSize": 18.432,
+        "fontFamily": "\"Noto Serif CJK JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", Georgia, serif",
+        "fontWeight": 400,
+        "lines": [
+          "街角のファッションを手がかりに、街角の歩道に一つの場面をつくる。現代のテーラードスーツのかたちと、",
+          "その場に流れる光。その間に、作り手の視点を探してみたい。"
+        ],
+        "lineHeight": 25.804799999999997,
+        "align": "left",
+        "color": "#111111"
+      },
+      {
+        "role": "質問1",
+        "text": "Q. この場面で、最初に見つけたものは？",
+        "slotIndex": 5,
+        "frameId": "interview-body",
+        "x": 686.08,
+        "y": 322.56,
+        "width": 247.947264,
+        "height": 66.3552,
+        "fontSize": 22.118399999999998,
+        "fontFamily": "\"Noto Serif CJK JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", Georgia, serif",
+        "fontWeight": 600,
+        "lines": [
+          "Q. この場面で、最初に見",
+          "つけたものは？"
+        ],
+        "lineHeight": 33.1776,
+        "align": "left",
+        "color": "#111111"
+      },
+      {
+        "role": "回答1",
+        "text": "A. 光と距離の関係。近くの小さな形から、遠くの気配へ視線をつなぐ。街角のファッションの世界を、その流れの中で描いてみたい。",
+        "slotIndex": 6,
+        "frameId": "interview-body",
+        "x": 686.08,
+        "y": 394.4448,
+        "width": 280.35071999999997,
+        "height": 138.23999999999998,
+        "fontSize": 18.432,
+        "fontFamily": "\"Noto Serif CJK JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", Georgia, serif",
+        "fontWeight": 400,
+        "lines": [
+          "A. 光と距離の関係。近くの小さな",
+          "形から、遠くの気配へ視線を",
+          "つなぐ。街角のファッションの",
+          "世界を、その流れの中で描いて",
+          "みたい。"
+        ],
+        "lineHeight": 27.647999999999996,
+        "align": "left",
+        "color": "#111111"
+      },
+      {
+        "role": "質問2",
+        "text": "Q. 衣装や素材は、どう物語に関わる？",
+        "slotIndex": 7,
+        "frameId": "interview-body",
+        "x": 686.08,
+        "y": 551.1168,
+        "width": 270.06566399999997,
+        "height": 66.3552,
+        "fontSize": 22.118399999999998,
+        "fontFamily": "\"Noto Serif CJK JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", Georgia, serif",
+        "fontWeight": 600,
+        "lines": [
+          "Q. 衣装や素材は、どう物語",
+          "に関わる？"
+        ],
+        "lineHeight": 33.1776,
+        "align": "left",
+        "color": "#111111"
+      },
+      {
+        "role": "回答2",
+        "text": "A. 現代のテーラードスーツの輪郭を起点に、布の重なりや光の返りを考える。動きの前後を想像できるように、道具と身体の関係も大切にする。",
+        "slotIndex": 8,
+        "frameId": "interview-body",
+        "x": 686.08,
+        "y": 623.0016,
+        "width": 280.35071999999997,
+        "height": 138.23999999999998,
+        "fontSize": 18.432,
+        "fontFamily": "\"Noto Serif CJK JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", Georgia, serif",
+        "fontWeight": 400,
+        "lines": [
+          "A. 現代のテーラードスーツの輪郭",
+          "を起点に、布の重なりや光の返り",
+          "を考える。動きの前後を想像",
+          "できるように、道具と身体の関係",
+          "も大切にする。"
+        ],
+        "lineHeight": 27.647999999999996,
+        "align": "left",
+        "color": "#111111"
+      },
+      {
+        "role": "質問3",
+        "text": "Q. 色の世界を、どこから組み立てる？",
+        "slotIndex": 9,
+        "frameId": "interview-body",
+        "x": 686.08,
+        "y": 779.6736000000001,
+        "width": 247.947264,
+        "height": 66.3552,
+        "fontSize": 22.118399999999998,
+        "fontFamily": "\"Noto Serif CJK JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", Georgia, serif",
+        "fontWeight": 600,
+        "lines": [
+          "Q. 色の世界を、どこから",
+          "組み立てる？"
+        ],
+        "lineHeight": 33.1776,
+        "align": "left",
+        "color": "#111111"
+      },
+      {
+        "role": "回答3",
+        "text": "A. 主色の大きな面に、静かな副色を重ねる。小さな差し色へ視線を集め、画面全体のまとまりをつくる。",
+        "slotIndex": 10,
+        "frameId": "interview-body",
+        "x": 686.08,
+        "y": 851.5584000000001,
+        "width": 280.35071999999997,
+        "height": 110.59199999999998,
+        "fontSize": 18.432,
+        "fontFamily": "\"Noto Serif CJK JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", Georgia, serif",
+        "fontWeight": 400,
+        "lines": [
+          "A. 主色の大きな面に、静かな副色",
+          "を重ねる。小さな差し色へ視線を",
+          "集め、画面全体のまとまりを",
+          "つくる。"
+        ],
+        "lineHeight": 27.647999999999996,
+        "align": "left",
+        "color": "#111111"
+      },
+      {
+        "role": "写真キャプション",
+        "text": "街角のファッション / 春野 澪",
+        "slotIndex": 12,
+        "frameId": "caption",
+        "x": 51.2,
+        "y": 1344,
+        "width": 180.91008,
+        "height": 19.3024,
+        "fontSize": 13.312,
+        "fontFamily": "\"Noto Serif CJK JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", Georgia, serif",
+        "fontWeight": 400,
+        "lines": [
+          "街角のファッション / 春野 澪"
+        ],
+        "lineHeight": 19.3024,
+        "align": "left",
+        "color": "#111111"
+      },
+      {
+        "role": "引き抜き引用",
+        "text": "街角のファッションを、ひとつの場面に。",
+        "slotIndex": 11,
+        "frameId": "quote",
+        "x": 51.2,
+        "y": 1413.1200000000001,
+        "width": 622.592,
+        "height": 47.5136,
+        "fontSize": 32.768,
+        "fontFamily": "\"Noto Serif CJK JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", Georgia, serif",
+        "fontWeight": 600,
+        "lines": [
+          "街角のファッションを、ひとつの場面に。"
+        ],
+        "lineHeight": 47.5136,
+        "align": "left",
+        "color": "#111111"
+      }
+    ]
+  },
+  "notes": [
+    "文字幅は一部または全部を近似計測しています。使用環境のフォントによって字幅が変わる場合があります。"
+  ]
+}

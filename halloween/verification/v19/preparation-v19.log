@@ -1,0 +1,27 @@
+(node:6) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+  "environment": "jsdom application integration; not visual browser/real network",
+  "results": [
+    {
+      "case": "profile first page usable; page 2 still held; double click",
+      "ms": 60,
+      "preparationMs": 20
+    },
+    {
+      "case": "changed ID uses new author"
+    },
+    {
+      "case": "two references prepared without flattening; exact original bytes; prompt attached once",
+      "ms": 83
+    },
+    {
+      "case": "standard ZIP contains one native-image prompt, instructions and exact references; no competing stages"
+    },
+    {
+      "case": "validation error releases preparation lock"
+    }
+  ],
+  "fetchCalls": 4,
+  "canvasWrites": 0
+}

@@ -1,0 +1,33 @@
+{
+  "version": "18.0.1",
+  "publishedCommit": "b7e32fb84f9431007384e26a776cd447f8d1a899",
+  "publishedURL": "https://mumei-s.github.io/mumei-adventure-creators/halloween/",
+  "deployment": {
+    "workflowId": 37562573019,
+    "status": "completed",
+    "conclusion": "success"
+  },
+  "checks": {
+    "requiredSuites": 14,
+    "result": "passed",
+    "pickerDOM": "passed",
+    "preparationDOM": "passed",
+    "instructionOccurrences": 945,
+    "distinctOptions": 546
+  },
+  "visualReview": {
+    "newJapaneseEverydayImages": 8,
+    "accepted": 8,
+    "referenceImagesUsed": 0,
+    "allOptionsImageAcceptance": "not verified",
+    "existingSampleReplacement": "incomplete; see sample-inventory.json"
+  },
+  "liveUI": {
+    "versionFooter": "18.0.1",
+    "tenChoicesRendered": true,
+    "ordinaryMode": true,
+    "dailyPickerImagesLoaded": true,
+    "screenshot": "published-everyday.jpg",
+    "limitation": "Old tab failed to initialise after reload; a fresh same-origin tab rendered and operated successfully. Cross-browser image quality is not implied."
+  }
+}

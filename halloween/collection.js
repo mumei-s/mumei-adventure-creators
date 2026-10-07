@@ -1,6 +1,7 @@
-import {everydayScenes,everydayPlaces,casualClothes,swimClothes,everydayBindings,everydaySamples} from './everyday-options.js?v=27.0.1';
-import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=27.0.1';
-import {poseGroups} from './poses.js?v=27.0.1';
+import {everydayScenes,everydayPlaces,casualClothes,swimClothes,everydayBindings,everydaySamples} from './everyday-options.js?v=28.0.0';
+import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=28.0.0';
+import {poseGroups} from './poses.js?v=28.0.0';
+import {mergeSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.0.0';
 const original=questions.map(q=>({...q,groups:q.groups.map(g=>({...g,values:[...g.values]}))}));
 const originalGroups=key=>original.find(q=>q.key===key).groups;
 const cloneGroups=groups=>groups.map(g=>({...g,values:[...g.values]}));
@@ -56,6 +57,9 @@ const dailyGroups={
  place:[{label:'日常の場所',values:[...dailyPlaces,...everydayPlaces]},{label:'自然・風景の場所',values:scenicPlaces},{label:'スタジオ・造形',values:['白いスタジオ','黒いスタジオ','墨の余白','金箔の空間','紙の箱庭','抽象的な色面','参照風景を舞台にする']},{label:'幻想の場所（選択時のみ）',values:['空中都市','霧の森','屋根の上']}],
  line:[{label:'日本語',values:['今日の光を、忘れない。','小さな一歩が、物語になる。','また、この場所で。','好きな色で、生きていく。','風の向こうへ。','まだ見ぬ景色に会いに。','ここから、はじめよう。','セリフなし']},{label:'英語',values:['A NEW CHAPTER','EVERYDAY WONDERS','FOLLOW THE LIGHT','MAKE YOUR OWN STORY']}]
 };
+// Register ordinary locations even while Halloween is active, so saved scene
+// previews and their recipe source remain stable when switching collections.
+dailyGroups.theme=mergeSceneGroups(dailyGroups.theme,dailyGroups.place);
 const landscapeMedia=['実写風フィルム写真','実写風シネマティック写真','実写風モノクロ銀塩写真','劇場アニメの背景美術','油彩・厚塗り','透明水彩','不透明水彩・ガッシュ','日本画・岩絵具','水墨画','アクリル画','パステル画','鉛筆デッサン'];
 const naturalPalettes=['群青 × 月白 × 銀','翡翠 × 銅 × 濃紺','秋色のブラウン × 生成り','退色したフィルムカラー','白 × 白銀 × 氷青','モノクローム','セピア'];
 const defaultDailyDesigns=['通常の一枚絵','自然・都市の風景画','ファッション雑誌の表紙','カルチャー誌の表紙','写真集の表紙','文芸誌の表紙','ZINEの表紙','インタビュー誌面','見開き特集','新聞の一面','絵本の表紙','小説の装丁','展覧会ポスター','レトロ旅行ポスター','物語の挿絵','ファッション・エディトリアル','noteサムネイル','ポストカード','スマホ壁紙'];
@@ -119,6 +123,7 @@ export function noPersonSelection(values={}){return ['風景を主役にする',
 export function landscapeSelection(values={}){return values.costume==='風景を主役にする'||/風景画/.test(values.design||'')||landscapeScenes.some(([name])=>name===values.theme);}
 function refineSelections(resolved,input,random){
  const values={...resolved};
+ const placeScene=sceneIsUnified(input)&&sceneSourcePlace(values.theme);
  if(activeCollection==='everyday'){
   if(automatic(input,'theme')&&(swimClothes.includes(input.costume)||/プール|海水浴場/.test(input.place||''))){values.theme=input.place==='海水浴場'?'海で過ごす夏の日':'プールサイドの休日';if(automatic(input,'design'))values.design='通常の一枚絵';}
   const explicitFantasy=['theme','costume','place','pose'].some(key=>!automatic(input,key)&&(/星明かりを集める旅|星を集める旅|異世界|空中都市|浮遊する|妖精|精霊|エルフ|ドラゴン|竜人|人魚|不死鳥|ネクロマンサー|錬金術師|星の占い師|不思議の国/.test(input[key])||key==='theme'&&dailyFantasyThemes.includes(input[key])));
@@ -133,19 +138,22 @@ function refineSelections(resolved,input,random){
   const landscapeIntent=input.costume==='風景を主役にする'||/風景画/.test(values.design)||landscapeScenes.some(([name])=>name===values.theme);
   if(landscapeIntent){
    if(automatic(input,'costume'))values.costume='風景を主役にする';
-   if(automatic(input,'theme'))values.theme=pick(landscapeScenes.map(x=>x[0]),random);
+   if(automatic(input,'theme')&&!placeScene)values.theme=pick(landscapeScenes.map(x=>x[0]),random);
    if(automatic(input,'design'))values.design='自然・都市の風景画';
   }
-  const scene=dailySceneChoices[values.theme]||{};
+  const selectedPlace=sceneIsUnified(input)&&sceneSourcePlace(values.theme);
+  const scene=selectedPlace?{places:[selectedPlace]}:dailySceneChoices[values.theme]||{};
   for(const [key,choices]of [['place',scene.places],['costume',scene.clothes],['pose',scene.poses]])if(choices?.length&&automatic(input,key)&&!(key==='costume'&&noPersonSelection(values)))values[key]=pick(choices,random);
   if(noPersonSelection(values)){if(automatic(input,'pose'))values.pose=AUTO;if(automatic(input,'mood'))values.mood='毎回大胆に変える';}
   if(landscapeSelection(values)){if(automatic(input,'medium'))values.medium=pick(landscapeMedia,random);if(automatic(input,'palette'))values.palette=pick(naturalPalettes,random);}
   if(automatic(input,'costume')&&!landscapeIntent&&!scene.clothes)values.costume=pick(ordinaryClothes,random);
  }else{
-  const scene=halloweenSceneChoices[values.theme];
+  const selectedPlace=sceneIsUnified(input)&&sceneSourcePlace(values.theme);
+  const scene=selectedPlace?{places:[selectedPlace]}:halloweenSceneChoices[values.theme];
   if(scene)for(const [key,choices]of [['place',scene.places],['costume',scene.clothes],['pose',scene.poses]])if(choices?.length&&automatic(input,key))values[key]=pick(choices,random);
   if(noPersonSelection(values)&&automatic(input,'pose'))values.pose=AUTO;
  }
+ if(sceneIsUnified(input)&&!sceneSourcePlace(values.theme)&&!(activeCollection==='everyday'?dailySceneChoices:halloweenSceneChoices)[values.theme])values.place=values.theme;
  return values;
 }
 export function applyCollection(collection){
@@ -154,8 +162,10 @@ export function applyCollection(collection){
   const source=original[i],daily=activeCollection==='everyday';q.groups=cloneGroups(daily?(dailyGroups[q.key]||source.groups):source.groups);delete q.autoValues;
   if(daily&&q.key==='type')q.groups=q.groups.map(g=>({...g,values:g.values.filter(v=>!v.includes('HALLOWEEN'))}));
   q.name=source.name;q.hint=source.hint;
+  if(q.key==='theme')q.groups=mergeSceneGroups(q.groups,daily?dailyGroups.place:originalGroups('place'));
+  if(q.key==='angle')q.autoValues=['場面に合わせたアングル'];
   if(daily){
-   if(q.key==='theme'){q.hint='日常・風景・創作の主題と出来事';q.autoValues=[...ordinaryScenes,...landscapeScenes].map(x=>x[0]);}
+   if(q.key==='theme'){q.hint='日常・風景・創作をひとつの場面で選ぶ';q.autoValues=[...ordinaryScenes,...landscapeScenes].map(x=>x[0]);}
    if(q.key==='design')q.autoValues=defaultDailyDesigns;
    if(q.key==='costume')q.autoValues=ordinaryClothes;
    if(q.key==='place')q.autoValues=[...dailyPlaces,...everydayPlaces,...scenicPlaces];

@@ -1,6 +1,7 @@
-import {costumeSpecs,themeSpecs,placeSpecs} from './visual-specs.js?v=27.0.1';
-import {poseItems} from './poses.js?v=27.0.1';
-import {questions} from './catalog.js?v=27.0.1';
+import {costumeSpecs,themeSpecs,placeSpecs} from './visual-specs.js?v=28.0.0';
+import {poseItems} from './poses.js?v=28.0.0';
+import {questions} from './catalog.js?v=28.0.0';
+import {typographyRecipe} from './typography-options.js?v=28.0.0';
 
 // The tables describe the selected title, never the people or settings in a UI thumbnail.
 const rows=source=>Object.assign(Object.create(null),Object.fromEntries(source.trim().split('\n').filter(Boolean).map(line=>{const at=line.indexOf('=');return [line.slice(0,at),line.slice(at+1).split('|')];})));
@@ -505,7 +506,7 @@ function placeDetail(value,context){
  return {known:true,sections:[section('場所固有の構造',placeSpecs[value]+'。'),section('前景・中景・遠景',data[0]),section('接続と光の整合',data[1]),section('今回の主題を置く領域',context.noPerson?'景物・物体・紋章を主題としてこの場所へ配置し、人物や人型の反射を背景の埋め草に追加しない。':'主役の足・座面・持物がこの場所の支持面へつながる位置を確保する。カメラの見える範囲を選んだ構図に合わせ、舞台を別の見本背景へ交換しない。')],checks:checksOf(data[2])};
 }
 function poseDetail(value,context){
- const item=poseItems.find(p=>p.value===value),data=poseSteps[value],known=!!item&&!!data||value==='おまかせ';
+ const item=poseItems.find(p=>p.value===value),data=poseSteps[value]||(item?.support&&item?.contact?[item.support,item.contact,item.checks.join('／')]:null),known=!!item&&!!data||value==='おまかせ';
  if(context.noPerson)return {known,sections:[section('身体ポーズは非適用','人物なしの主題では、選択された身体ポーズを景物へ適用しない。木・建物・物体を立つ・座る・走る身体へ見立てない。'),section('場面にある動き','選んだ舞台の支持面と重力を守り、水・枝葉・雲・布など実際に存在する物だけを自然に動かす。')],checks:['人の身体動作を景物へ移植していない','物体の接地・重力・支持']};
  if(value==='おまかせ')return {known:true,sections:[section('確定したポーズ',context.variant.pose||'今回確定した一つの身体動作について、支持点と重心を先に決める。未確定の複数ポーズを同時に描かない。'),section('左右と接触','両肩から肘・手首、骨盤から膝・足を追い、手と持物・足と地面の接触点を明確にする。')],checks:['一つの確定ポーズ','自然な左右の手足と支持']};
  if(!item||!data)return freeInput('pose',value,context);
@@ -565,6 +566,7 @@ function sizeDetail(value,context){
  return {known:builtInSizes.has(value),sections:[section('希望する出力','用途：'+usage+'。要求寸法は幅'+width+'px × 高さ'+height+'px、指定縦横比は'+ratioW+':'+ratioH+'。これらは要求値であり、生成できた実寸の証明ではない。'),section('この用途の構図',framing),section('実寸の照合','出力画像ファイルの幅と高さを実際に確認する。生成側の対応寸法が限られる場合は最も近い対応サイズで比率を保ち、要求値に達していない点を明記する。ファイル名や指示文だけで4K・8K・300dpiの達成を主張しない。印刷のdpiは実ピクセル数と印刷寸法から区別する。')],checks:['要求比率 '+ratioW+':'+ratioH,'画像ファイルの実幅・実高さ','要求値と実生成値の区別']};
 }
 function typeDetail(value,context){
+ const additional=typographyRecipe(value);if(additional)return additional;
  const data=typeSteps[value];if(!data)return freeInput('type',value,context);
  const sections=[section('使用する原稿の範囲',data[0]),section('字組みと制限',data[1])];
  if(value==='文字を一切入れない')return {known:true,sections,checks:checksOf(data[2])};

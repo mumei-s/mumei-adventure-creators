@@ -1,6 +1,9 @@
-import {compatibleResolved} from './compatibility.js?v=27.0.1';
-import {poseGroups} from './poses.js?v=27.0.1';
-import {colorWorlds,luminousMedia} from './worlds.js?v=27.0.1';
+import {extraTypographyGroups} from './typography-options.js?v=28.0.0';
+import {compatibleResolved} from './compatibility.js?v=28.0.0';
+import {poseGroups} from './poses.js?v=28.0.0';
+import {colorWorlds,luminousMedia} from './worlds.js?v=28.0.0';
+import {mergeSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.0.0';
+import {angleGroups} from './angles.js?v=28.0.0';
 export const AUTO='おまかせ';
 const group=(label,values)=>({label,values:values.split('|')});
 export const questions=[
@@ -16,21 +19,25 @@ export const questions=[
  {key:'size',name:'サイズ・用途',hint:'使う場所に合わせる',groups:[group('note・SNS','noteサムネイル｜1280×670｜128:67|横長16:9｜3840×2160｜16:9|正方形アイコン｜2048×2048｜1:1|縦投稿4:5｜2160×2700｜4:5|スマホ壁紙・ストーリー｜2160×3840｜9:16|縦ポスター2:3｜2400×3600｜2:3|横写真3:2｜3600×2400｜3:2|縦写真3:4｜2400×3200｜3:4|横長バナー｜3600×1200｜3:1'),group('印刷・高解像度','A4縦・300dpi目安｜2480×3508｜210:297|A4横・300dpi目安｜3508×2480｜297:210|A3縦・300dpi目安｜3508×4961｜297:420|A3横・300dpi目安｜4961×3508｜420:297|8K横・16:9｜7680×4320｜16:9')]}
 ];
 questions.splice(6,0,{key:'pose',name:'ポーズ',hint:'身体・手足・重心を選ぶ',groups:poseGroups});
+questions.splice(6,0,{key:'angle',name:'アングル・構図',hint:'カメラの位置・距離・遠近',groups:angleGroups,autoValues:['場面に合わせたアングル']});
 questions.find(q=>q.key==='type').name='文字・広告';
+questions.find(q=>q.key==='type').groups.push(...extraTypographyGroups.map(g=>({...g,values:[...g.values]})));
 questions.find(q=>q.key==='type').groups.forEach(g=>g.values=g.values.filter(v=>v!=='セリフのみ'));
 questions.find(q=>q.key==='line').autoValues=['セリフなし'];
-export const visibleQuestions=questions.filter(q=>q.key!=='line');
+export const visibleQuestions=questions.filter(q=>!['line','place'].includes(q.key));
 const palette=questions.find(q=>q.key==='palette');
 for(const [label,range] of [['光る幻想色',[0,8]],['淡色・空気',[8,16]],['鮮烈な対比',[16,24]],['紙・顔料・制限色',[24,32]]])palette.groups.push({label,values:colorWorlds.slice(...range).map(x=>x.value)});
 questions.find(q=>q.key==='medium').groups.push({label:'光と透明感のアニメ',values:luminousMedia.map(x=>x.value)});
-questions.find(q=>q.key==='theme').name='物語・世界観';
+questions.find(q=>q.key==='theme').name='世界観・シーン';
 questions.find(q=>q.key==='medium').name='作風・画材';
 questions.find(q=>q.key==='medium').hint='専用の描線・塗り・素材の描き方';
 questions.find(q=>q.key==='place').name='舞台・場所';
-questions.find(q=>q.key==='theme').hint='どんな世界で、何が起きる？';
+questions.find(q=>q.key==='theme').hint='物語・世界・場所をひとつの場面で選ぶ';
 questions.find(q=>q.key==='place').hint='選んだ世界の、出来事が起きる場所';
 palette.hint='配色・光源・透け方まで選ぶ';
-export const defaults=[AUTO,AUTO,AUTO,AUTO,'毎回大胆に変える',AUTO,AUTO,AUTO,AUTO,'デザインに合わせて自動編集','noteサムネイル｜1280×670｜128:67'];
+questions.find(q=>q.key==='theme').groups=mergeSceneGroups(questions.find(q=>q.key==='theme').groups,questions.find(q=>q.key==='place').groups);
+const defaultByKey={mood:'毎回大胆に変える',type:'デザインに合わせて自動編集',size:'noteサムネイル｜1280×670｜128:67'};
+export const defaults=questions.map(q=>defaultByKey[q.key]||AUTO);
 export function normalizeCreator(raw){
  let id=raw.trim();if(!id)return '';
  if(/^(www\.)?note\.com\//i.test(id))id='https://'+id;
@@ -40,6 +47,12 @@ export function normalizeCreator(raw){
 let selectionRefiner=null;
 export function setSelectionRefiner(refiner){selectionRefiner=refiner;}
 export function resolveSelections(values={},random=Math.random){
- const resolved=Object.fromEntries(questions.map(q=>{const v=values[q.key];const list=q.autoValues||q.groups.flatMap(g=>g.values);if(v&&v!==AUTO)return [q.key,v];if(q.key==='type')return [q.key,'デザインに合わせて自動編集'];return [q.key,list[Math.min(list.length-1,Math.floor(random()*list.length))]];}));
- return compatibleResolved(selectionRefiner?selectionRefiner(resolved,values,random):resolved,values,questions,random);
+ const unified=sceneIsUnified(values),input=unified?{...values,place:AUTO}:values;
+ const resolved=Object.fromEntries(questions.map(q=>{const v=input[q.key];const list=q.autoValues||q.groups.flatMap(g=>g.values);if(v&&v!==AUTO)return [q.key,v];if(q.key==='type')return [q.key,'デザインに合わせて自動編集'];return [q.key,list[Math.min(list.length-1,Math.floor(random()*list.length))]];}));
+ const sourcePlace=sceneSourcePlace(resolved.theme);
+ if(unified&&sourcePlace)resolved.place=sourcePlace;
+ const refined=selectionRefiner?selectionRefiner(resolved,input,random):resolved;
+ const result=compatibleResolved(refined,input,questions,random);
+ if(unified)result.sceneUnified=true;
+ return result;
 }

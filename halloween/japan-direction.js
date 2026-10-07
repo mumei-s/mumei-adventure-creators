@@ -1,3 +1,4 @@
+import {typographyOption} from './typography-options.js?v=28.0.0';
 // Japanese publishing/drawing is the default grammar, not a replacement identity.
 // Explicit overseas techniques, clothing and architecture retain their origin.
 export const CRYSTAL_OBJECT='クリスタルホログラム造形アニメ';
@@ -48,7 +49,7 @@ const covers={
 
 export function japaneseSections(key,value,{noPerson=false,collection='halloween',values={}}={}){
  let text='';
- const noText=values.type==='文字を一切入れない',limitedText=values.type&&!['デザインに合わせて自動編集','雑誌風・見出しと特集をたっぷり','映画ポスター風・タイトルとクレジット','広告チラシ風・情報をたっぷり','新聞風・記事と段組み','物語の装丁風・タイトルと紹介'].includes(values.type);
+ const noText=values.type==='文字を一切入れない',limitedText=values.type&&!typographyOption(values.type)&&!['デザインに合わせて自動編集','雑誌風・見出しと特集をたっぷり','映画ポスター風・タイトルとクレジット','広告チラシ風・情報をたっぷり','新聞風・記事と段組み','物語の装丁風・タイトルと紹介'].includes(values.type);
  if(key==='design')text=covers[value]||'形式「'+value+'」固有の画像領域と余白を保ち、日本語原稿は日本の編集慣行に合う明朝・ゴシックの大小、禁則、句読点、読み順で組む。欧文や海外由来の明示形式は、その文法を保つ。';
  if(key==='design'&&covers[value]&&(noText||limitedText))text='日本の「'+value+'」の主図版と安全余白、個別の領域配分を保つ。'+(noText?'文字・題字・本文・号数・ロゴを一切追加しない。空いた領域を疑似文字や代用罫線で埋めない。':'名前または指定短文など、確定した許可原稿だけを日本語の正しい文字組みで置く。標準の誌名・本文・特集を補完しない。');
  if(key==='medium'){
@@ -60,6 +61,7 @@ export function japaneseSections(key,value,{noPerson=false,collection='halloween
  if(key==='place')text=(localPlaces[value]||'舞台「'+value+'」の専用構造・前景・中景・遠景を保つ。地名・文化圏の明示があればその特徴を保ち、指定のない日常空間は日本の生活寸法を土台にする。')+'選んだ物語の世界と出来事を、この構造・素材・奥行きに接続して一場面にする。別背景を重ねない。';
  if(key==='costume')text='衣装・主役「'+value+'」の個別構造・着装順・支持点を保持する。和装では襟合わせ・袖と身頃・帯の結びを日本の衣服構造として接続し、洋装・海外の職業・怪物は明示された文化的特徴を保つ。性別は見本から決めない。';
  if(key==='mood')text='表情・角度「'+value+'」の眼瞼・眉・口角と顔の回転を、日本向けの表情演出へ具体化する。顔の向きと身体の向きを独立させ、選択していない泣き顔・首傾げを定型追加しない。';
+ if(key==='angle')text='アングル「'+value+'」のカメラ位置・高さ・方向・画角を、日本の作画でも面の投影・短縮・重なりで実行する。絵画・版画・図案では選択技法の線と面へ翻訳し、写真や3Dへ変更しない。選んだ世界観・主題・ポーズを保持する。';
  if(key==='pose')text='ポーズ「'+value+'」は、その支持点・重心・関節の専用工程で実行する。日本のアニメ・写真の構図でも、指先だけの変更へ縮小せず、体幹の向きと動作のシルエットを読む。';
  if(noPerson&&key==='costume')text='主題「'+value+'」の景物・物体・図案の個別構造、外形と支持点を保持する。日本の景物や日本語の編集構造を土台に、明示した海外由来の形は保つ。衣服や人型の主役を追加しない。';
  if(noPerson&&key==='mood')text='条件「'+value+'」は景物の間隔・余白・明暗へ適用できる範囲だけを使う。人体の顔角度や表情を景物へ描かず、人物を追加しない。';

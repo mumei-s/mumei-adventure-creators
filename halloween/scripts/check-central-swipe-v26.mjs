@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {swipeStep,ringWindow,ringPosition} from '../ring-motion.js?v=27.0.1';
-import {wrappedPage} from '../compatibility.js?v=27.0.1';
+import {swipeStep,ringWindow,ringPosition} from '../ring-motion.js?v=28.0.0';
+import {wrappedPage} from '../compatibility.js?v=28.0.0';
 
 // Exercise the actual event handlers, including the old excluded button targets.
 const source=fs.readFileSync(new URL('../picker.js',import.meta.url),'utf8');

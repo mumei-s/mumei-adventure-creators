@@ -1,10 +1,10 @@
-import {imageOutputContract} from './output-contract.js?v=27.0.1';
-import {visibleQuestions} from './catalog.js?v=27.0.1';
-import {productionPlan,planInstructions,conditionInstructions} from './production-plan.js?v=27.0.1';
-import {sceneContract} from './worlds.js?v=27.0.1';
-import {colorPolicy} from './palette-recipes.js?v=27.0.1';
-import {resolveArtDirection} from './art-direction.js?v=27.0.1';
-import {composeStagedMaster} from './production-workflow.js?v=27.0.1';
+import {imageOutputContract} from './output-contract.js?v=28.0.0';
+import {visibleQuestions} from './catalog.js?v=28.0.0';
+import {productionPlan,planInstructions,conditionInstructions} from './production-plan.js?v=28.0.0';
+import {sceneContract} from './worlds.js?v=28.0.0';
+import {colorPolicy} from './palette-recipes.js?v=28.0.0';
+import {resolveArtDirection} from './art-direction.js?v=28.0.0';
+import {composeStagedMaster} from './production-workflow.js?v=28.0.0';
 export function needsReference(values){const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);return !noPerson||values.place==='参照風景を舞台にする'||values.palette==='参照画像の色を生かす';}
 // Option thumbnails, including legacy styleGuide arguments, never control generation.
 export function composePrompt({collection='halloween',creator,profile,values,variant,references=[],edition,referenceBundle=null,random=Math.random,preparedPlan=null}){

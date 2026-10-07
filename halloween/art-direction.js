@@ -1,7 +1,8 @@
-import {colorPolicy} from './palette-recipes.js?v=27.0.1';
-import {opticalSignature,opticalColors} from './optical-effects.js?v=27.0.1';
-import {detailedSubject} from './subject-recipes.js?v=27.0.1';
-import {detailedFormat} from './format-recipes.js?v=27.0.1';
+import {applyAngle} from './angles.js?v=28.0.0';
+import {colorPolicy} from './palette-recipes.js?v=28.0.0';
+import {opticalSignature,opticalColors} from './optical-effects.js?v=28.0.0';
+import {detailedSubject} from './subject-recipes.js?v=28.0.0';
+import {detailedFormat} from './format-recipes.js?v=28.0.0';
 
 const luminous=new Set(['発光幻想アニメ']);
 const flat=new Set(['線画','リノカット','木版画','浮世絵木版画','シルクスクリーン','ベクターグラフィック','フラットイラスト','ピクセルアート','構成主義','ミニマリズム']);
@@ -43,7 +44,7 @@ export function resolveArtDirection(values,variant={},collection='halloween'){
 
  if(!noPerson&&values.costume==='人魚'){next.pose=detailedSubject('pose',values.pose,{values,variant,noPerson}).sections.map(s=>s.text).join(' ');next.distance=(next.distance||'').replace(/足先|足元|両足|つま先/g,'尾びれ');}
  if(flat.has(values.medium))next.depth='前後関係と距離を、選択した平面技法の色面・輪郭・大小・重なり・余白へ翻訳する。滑らかな3Dの材質へ置換しない。';
- return next;
+ return applyAngle(values,next);
 }
 export function interactionContract(values,{noPerson=false}={}){
  const color=colorPolicy(values),optics=opticalColors(values);

@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {productionPlan} from '../production-plan.js?v=27.0.1';
-import {renderInput} from '../compiled-production.js?v=27.0.1';
-import {detailedPalette} from '../palette-recipes.js?v=27.0.1';
-import {imageOutputContract} from '../output-contract.js?v=27.0.1';
+import {productionPlan} from '../production-plan.js?v=28.0.0';
+import {renderInput} from '../compiled-production.js?v=28.0.0';
+import {detailedPalette} from '../palette-recipes.js?v=28.0.0';
+import {imageOutputContract} from '../output-contract.js?v=28.0.0';
 
 // Reproduce the user's failed cover, including its actual resolved camera.
 const old=JSON.parse(fs.readFileSync(new URL('../verification/v17/failed-user-input.json',import.meta.url)));

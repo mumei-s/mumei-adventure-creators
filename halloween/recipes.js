@@ -1,16 +1,20 @@
-import {optionRecipe} from './option-recipes.js?v=27.0.1';
-import {poseItems} from './poses.js?v=27.0.1';
-import {dailySamples} from './collection.js?v=27.0.1';
-import {individualSamples} from './sample-catalog.js?v=27.0.1';
-import {colorWorlds,luminousMedia} from './worlds.js?v=27.0.1';
+import {optionRecipe} from './option-recipes.js?v=28.0.0';
+import {poseItems} from './poses.js?v=28.0.0';
+import {dailySamples} from './collection.js?v=28.0.0';
+import {individualSamples} from './sample-catalog.js?v=28.0.0';
+import {colorWorlds,luminousMedia} from './worlds.js?v=28.0.0';
+import {sceneIsUnified} from './scene-presets.js?v=28.0.0';
+import {angleItems} from './angles.js?v=28.0.0';
 // Each field owns one semantic role. A word such as "墨" in a story must not change the medium.
 // file is used only to show a picker preview; it must never become a generation reference.
 export function recipeFor(key,value,context={}){
  const spec=optionRecipe(key,value,context);
  const pose=key==='pose'?poseItems.find(p=>p.value===value):null;
+ const angle=key==='angle'?angleItems.find(p=>p.value===value):null;
  const world=(key==='palette'?colorWorlds:key==='medium'?luminousMedia:[]).find(x=>x.value===value);
- const sample=dailySamples[key+'\u0000'+value]||individualSamples[key+'\u0000'+value];
- return {key,value,file:pose?.file||world?.file||sample?.file||null,referenceRole:'ui-only',text:spec.sections[0].text,sections:spec.sections,checks:spec.checks};
+ const sampleKey=spec.sourceKey||key;
+ const sample=dailySamples[sampleKey+'\u0000'+value]||individualSamples[sampleKey+'\u0000'+value];
+ return {key,value,sourceKey:spec.sourceKey||key,file:pose?.file||angle?.file||world?.file||sample?.file||null,referenceRole:'ui-only',text:spec.sections[0].text,sections:spec.sections,checks:spec.checks};
 }
-export const sampleKeys=['medium','design','theme','costume','mood','place','palette','pose'];
-export function selectedRecipes(values){return sampleKeys.map(key=>recipeFor(key,values[key],{values}));}
+export const sampleKeys=['medium','design','theme','costume','mood','place','palette','pose','angle'];
+export function selectedRecipes(values){return sampleKeys.filter(key=>key==='angle'?sceneIsUnified(values):key!=='place'||!sceneIsUnified(values)).map(key=>recipeFor(key,values[key],{values}));}

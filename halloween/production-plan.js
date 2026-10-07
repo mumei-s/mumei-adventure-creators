@@ -1,13 +1,13 @@
-import {creatorLookupInstructions} from './creator-handoff.js?v=27.0.1';
-import {imageOutputContract} from './output-contract.js?v=27.0.1';
-import {modeFoundation} from './japan-direction.js?v=27.0.1';
-import {visibleQuestions} from './catalog.js?v=27.0.1';
-import {formatContract} from './formats.js?v=27.0.1';
-import {buildEditorial,editorialContract} from './editorial.js?v=27.0.1';
-import {optionRecipe} from './option-recipes.js?v=27.0.1';
-import {colorPolicy} from './palette-recipes.js?v=27.0.1';
-import {resolveArtDirection,interactionContract} from './art-direction.js?v=27.0.1';
-import {executionFor} from './option-execution.js?v=27.0.1';
+import {creatorLookupInstructions} from './creator-handoff.js?v=28.0.0';
+import {imageOutputContract} from './output-contract.js?v=28.0.0';
+import {modeFoundation} from './japan-direction.js?v=28.0.0';
+import {questions,visibleQuestions} from './catalog.js?v=28.0.0';
+import {formatContract} from './formats.js?v=28.0.0';
+import {buildEditorial,editorialContract} from './editorial.js?v=28.0.0';
+import {optionRecipe} from './option-recipes.js?v=28.0.0';
+import {colorPolicy} from './palette-recipes.js?v=28.0.0';
+import {resolveArtDirection,interactionContract} from './art-direction.js?v=28.0.0';
+import {executionFor} from './option-execution.js?v=28.0.0';
 
 export function productionPlan(profile,values,variant,collection='halloween',random=Math.random){
  const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);
@@ -21,9 +21,16 @@ export function productionPlan(profile,values,variant,collection='halloween',ran
  if(values.line!=='セリフなし'&&(/文字を一切|クリエイター名だけ|HALLOWEEN|サイン風|落款風/.test(values.type)))notes.push('セリフより限定した文字設定を優先します。');
  if(['クリスタル透光アニメ','宝石ホログラムアニメ'].includes(values.medium)&&color.restricted)notes.push('限定色の指定を優先するため虹色の干渉は使いません。屈折・透過・投影の前後は許可色の明暗で保ちます。');
  if(color.restricted)notes.push('完成画像全体の使用色は'+color.allowed+'。画材の白・虹色・反射色も、この色域の明度へ翻訳します。');
- const conditions=visibleQuestions.map((q,i)=>{
+ const conditionQuestions=values.sceneUnified?visibleQuestions:questions.filter(q=>!['line','angle'].includes(q.key));
+ const conditions=conditionQuestions.map((q,i)=>{
   const recipe=optionRecipe(q.key,values[q.key],context),sections=[...recipe.sections];
   let checks=[...recipe.checks];
+  if(q.key==='theme'&&values.sceneUnified&&recipe.sourceKey!=='place'){
+   const placeRecipe=optionRecipe('place',values.place,context);
+   const existing=new Set(sections.map(section=>section.text));
+   sections.push(...placeRecipe.sections.filter(section=>!existing.has(section.text)).map(section=>({...section,label:'このシーンの空間／'+section.label})));
+   checks=[...new Set([...checks,...placeRecipe.checks])];
+  }
   if(q.key==='mood'&&!noPerson){
    sections.push({label:'今回実行する表情と向き',text:[variant.face,variant.expression,variant.tone].filter(Boolean).join(' / ')+'。選択した目の開閉・顔の回転を保ち、画風の瞳や髪の精密描写を理由に変えない。'});
    checks.push(variant.face,variant.expression);
@@ -38,7 +45,7 @@ export function productionPlan(profile,values,variant,collection='halloween',ran
   const text=sections.map(s=>s.text).join(' ');
   const execution=executionFor(q.key,values[q.key],{...recipe,sections,checks},context);
   if(lineExecution)execution.line=lineExecution;
-  return {index:i+1,key:q.key,name:q.name,value:values[q.key],known:recipe.known,text,sections,checks,execution};
+  return {index:i+1,key:q.key,name:q.key==='theme'&&values.sceneUnified?'世界観・シーン':q.name,value:values[q.key],known:recipe.known,text,sections,checks,execution};
  });
  const format=formatContract(values);
  if(noPerson)format.push('人物なしの形式解釈：形式が主役・肖像・衣装の画像領域を求めても、選んだ風景・物体・紋章をそこへ配置する。人物や人型のマネキンを補わず、レイアウトの情報構造だけを保つ。');

@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=27.0.1';
-import {applyCollection} from '../collection.js?v=27.0.1';
-import {productionPlan} from '../production-plan.js?v=27.0.1';
-import {composePrompt} from '../prompt.js?v=27.0.1';
-import {colorPolicy} from '../color-policy.js?v=27.0.1';
+import {questions,resolveSelections} from '../catalog.js?v=28.0.0';
+import {applyCollection} from '../collection.js?v=28.0.0';
+import {productionPlan} from '../production-plan.js?v=28.0.0';
+import {composePrompt} from '../prompt.js?v=28.0.0';
+import {colorPolicy} from '../color-policy.js?v=28.0.0';
 
 const profile={displayName:'同一性検査',activityEnabled:false},random=()=>.2;
 const base=resolveSelections({design:'通常の一枚絵',medium:'発光幻想アニメ',theme:'宇宙のHalloween',costume:'参照画像の衣装を生かす',place:'星空の砂漠',pose:'片手を差し出す',mood:'俯瞰＋目を見開く',palette:'群青 × 菫 × 星白',type:'文字を一切入れない',line:'セリフなし',size:'縦ポスター2:3｜2400×3600｜2:3'},random);

@@ -1,5 +1,6 @@
-import {formatFor} from './formats.js?v=27.0.1';
-import {formatTextPolicy} from './format-recipes.js?v=27.0.1';
+import {formatFor} from './formats.js?v=28.0.0';
+import {formatTextPolicy} from './format-recipes.js?v=28.0.0';
+import {buildTypographySlots} from './typography-options.js?v=28.0.0';
 const pick=(items,random)=>items[Math.min(items.length-1,Math.floor(random()*items.length))];
 function shuffle(items,random){const a=[...items];for(let i=a.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 const titles={cover:['装い帖','色と暮らし','創作日和','余白の時間','光の便り'],interview:['制作の現場','創作の声','発想の手帖'],spread:['表現の手帖','動きのある世界','新しい視点'],newspaper:['創作通信','彩景新聞','表現日報'],cinema:['BEYOND THE FRAME','A SILENT DOOR','WHEN LIGHT RETURNS'],book:['ひかりを綴る','まだ知らない景色','境界の手紙'],album:['ECHOES IN COLOR','UNFOLDING','SOFT REVERB'],default:['FORM & WONDER','もうひとつの景色','STORIES IN LIGHT']};
@@ -21,20 +22,22 @@ export function buildEditorial(profile,values,random=Math.random){
  noPerson||landscape?'形の輪郭は、置かれた距離によって見え方を変える。手前に重なる面と、遠くに溶ける細部。その違いが、空間の広がりを支えている。光の当たる向きと余白の関係をたどると、見るたびに違う景色が現れる。':'衣装の輪郭は、動きによって表情を変える。袖や裾の重なり、素材が残す陰影。その細部が、物語の中にいる人物の存在を支えている。形と余白の関係をたどると、見るたびに違う景色が現れる。',
  '色を増やすことよりも、どこに置くかを考える。明るい面と静かな影、そして視線を引く小さな差し色。選んだ色の世界を保ちながら、場面の中の時間を感じられる一枚へ。'
  ];
- const slots=[];const add=(role,text,priority=2)=>{if(text)slots.push({role,text,priority});};
+ const slots=[];let typography=null;const add=(role,text,priority=2)=>{if(text)slots.push({role,text,priority});};
  const sourceGuided=profile.activityEnabled!==false&&!limited&&!!(profile.handoff||profile.biography?.trim()||profile.sourceEvidence?.some(a=>a.excerpts?.some(Boolean))||profile.articles?.some(a=>a.text||a.excerpts?.some(Boolean)));
  const result=()=>{
   const generatedSlots=[],fixed=[];
   for(const slot of slots){
-   const editable=/^(?:主特集の補足|補助特集(?:の補足)?|リード文|質問\d+|回答\d+|本文小見出し\d+|本文\d+|副記事見出し\d+|副記事本文\d+|引き抜き引用|(?:写真|図版)キャプション|演目の紹介|紹介|紹介文|短い説明|説明|ジャンル欄)$/.test(slot.role)||slot.role==='キャッチ'&&!line;
+   const editable=slot.editable||/^(?:主特集の補足|補助特集(?:の補足)?|リード文|質問\d+|回答\d+|本文小見出し\d+|本文\d+|副記事見出し\d+|副記事本文\d+|引き抜き引用|(?:写真|図版)キャプション|演目の紹介|紹介|紹介文|短い説明|説明|ジャンル欄)$/.test(slot.role)||slot.role==='キャッチ'&&!line;
    if(sourceGuided&&editable){
-    const long=/本文|回答|リード|紹介|説明/.test(slot.role),maxCharacters=long?Math.min(750,Math.max(45,slot.text.length)):Math.min(32,Math.max(12,slot.text.length));
-    generatedSlots.push({role:slot.role,priority:slot.priority,maxCharacters,instruction:'作者の活動説明と公開記事本文で確認できる内容から、この役割の新しい日本語原稿を一つ作る。選択物語「'+subject+'」と舞台「'+values.place+'」につながる観点を使い、元記事を転載しない。本人の実際の発言・取材・実績として見せず、今回の創作作品の紹介として書く。'+(slot.role.startsWith('質問')?'質問は次の回答と一組にする。':slot.role.startsWith('回答')?'回答は対応する質問を受けた創作の説明とし、本人の発言を捏造しない。':'')});
-   }else fixed.push(slot);
+    const long=/本文|回答|リード|紹介|説明/.test(slot.role),maxCharacters=slot.maxCharacters||(long?Math.min(750,Math.max(45,slot.text.length)):Math.min(32,Math.max(12,slot.text.length)));
+    generatedSlots.push({role:slot.role,priority:slot.priority,maxCharacters,instruction:'作者の活動説明と公開記事本文で確認できる内容から、この役割の新しい日本語原稿を一つ作る。選択物語「'+subject+'」と舞台「'+values.place+'」につながる観点を使い、元記事を転載しない。本人の実際の発言・取材・実績として見せず、今回の創作作品の紹介として書く。'+(slot.instruction||'')+(slot.role.startsWith('質問')?'質問は次の回答と一組にする。':slot.role.startsWith('回答')?'回答は対応する質問を受けた創作の説明とし、本人の発言を捏造しない。':'')});
+   }else fixed.push({role:slot.role,text:slot.text,priority:slot.priority});
   }
-  return {mode,name:slots.some(s=>s.role==='作者名')?name:'',title:slots.some(s=>s.priority===0)?title:'',dense:slots.length>=8,slots:fixed,generatedSlots,blocks:fixed.map(s=>s.text),topics,kind,limited,sourceGuided:generatedSlots.length>0};
+  return {mode,name:slots.some(s=>s.role==='作者名'||s.role==='キャラクター名')?name:'',title:slots.find(s=>s.priority===0)?.text||'',dense:slots.length>=8,slots:fixed,generatedSlots,blocks:fixed.map(s=>s.text),topics,kind,limited,sourceGuided:generatedSlots.length>0,...(typography?{typographyLayout:typography.layout,typographyDensity:typography.density}:{})};
  };
  if(noText)return {mode:'none',name:'',title:'',dense:false,slots:[],blocks:[],topics:[],kind,limited:false};
+ typography=buildTypographySlots(mode,{subject,name,intro,noPerson:noPerson||landscape,values});
+ if(typography){slots.push(...typography.slots);return result();}
  if(mode==='クリエイター名だけ'||/サイン風|落款風/.test(mode)){add('作者名',name,1);return result();}
  if(mode==='HALLOWEENのみ'){add('テーマ名','HALLOWEEN',1);return result();}
  if(mode==='HALLOWEEN＋クリエイター名'){add('テーマ名','HALLOWEEN',1);add('作者名',name);return result();}
@@ -78,10 +81,11 @@ export function buildEditorial(profile,values,random=Math.random){
 }
 export function editorialContract(copy){
  const slots=copy.slots||[];
- if(copy.mode==='none'||!slots.length)return ['文字・数字・ロゴ・サイン・署名・疑似文字を描かない。文字のない完成図版とし、看板や紙面の空きにも代わりの原稿を追加しない。'];
+ if(copy.mode==='none'||!slots.length&&!(copy.generatedSlots||[]).length)return ['文字・数字・ロゴ・サイン・署名・疑似文字を描かない。文字のない完成図版とし、看板や紙面の空きにも代わりの原稿を追加しない。'];
  const limited=copy.limited??formatTextPolicy({type:copy.mode,line:slots.find(s=>s.role==='セリフ')?.text}).limited;
  const roles=new Set(slots.map(s=>s.role)),body=slots.some(s=>/本文|質問|回答/.test(s.role));
- const levels=[...new Set(slots.map(s=>s.priority))].sort((a,b)=>a-b).map(priority=>'階層'+priority+'：'+[...new Set(slots.filter(s=>s.priority===priority).map(s=>s.role))].join('・'));
+ const allRoles=[...slots,...(copy.generatedSlots||[])];
+ const levels=[...new Set(allRoles.map(s=>s.priority))].sort((a,b)=>a-b).map(priority=>'階層'+priority+'：'+[...new Set(allRoles.filter(s=>s.priority===priority).map(s=>s.role))].join('・'));
  const render=(s,i)=>(i+1)+'. 【'+s.role+' / 階層'+s.priority+'】 '+s.text;
  const spreadFrames=copy.kind==='spread'&&!limited?[
   {label:'左本文枠A',roles:['本文小見出し1','本文1'],flow:'この2原稿だけを一つの枠に上から下へ組む。末尾の空きは余白として残す。'},
@@ -96,6 +100,7 @@ export function editorialContract(copy){
  });
  const generated=(copy.generatedSlots||[]).map((slot,index)=>'編集原稿'+(index+1)+' / '+slot.role+' / 階層'+slot.priority+' / '+slot.maxCharacters+'字以内：'+slot.instruction);
  return [
+  ...(copy.typographyLayout?['今回の文字密度：'+copy.typographyDensity+'。今回許可した原稿の役割を使い、形式側に標準の誌名・特集・本文が書かれていても、それを追加原稿として補わない。','今回の文字配置：'+copy.typographyLayout]:[]),
   limited?'許可された原稿は次の'+slots.length+'ブロックだけ。形式の標準文字量を満たすために文言を増やさず、この文字列と役割をそのまま配置する。':generated.length?'次の確定原稿の文字列は変更せず、編集依頼にある役割だけを追加して完成原稿にする。許可した役割以外の文章や情報を増やさない。':'制作原稿は次の役割ごとに確定済み。各原稿を選択形式の個別制作仕様へ配置し、原稿にない文言や情報役割を補わない。',
   ...(emitted.size?['見開きの本文原稿は次の左本文枠A・右本文枠Bの2枠へ割り当てる。3つの話題を3列へ分けず、本文小見出し2と3は同じ右枠Bの中で縦に続ける。本文枠内に小画像やカード枠を追加しない。']:[]),
   ...manuscript,

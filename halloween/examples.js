@@ -1,15 +1,24 @@
-import {japanPreviews} from './japan-preview-catalog.js?v=27.0.1';
-import {poseItems} from './poses.js?v=27.0.1';
-import {dailySamples,currentCollection,landscapeScenes} from './collection.js?v=27.0.1';
-import {questions} from './catalog.js?v=27.0.1';
-import {formatPreviews} from './format-preview-catalog.js?v=27.0.1';
-import {individualSamples} from './sample-catalog.js?v=27.0.1';
-import {colorWorlds,luminousMedia} from './worlds.js?v=27.0.1';
+import {japanPreviews} from './japan-preview-catalog.js?v=28.0.0';
+import {poseItems} from './poses.js?v=28.0.0';
+import {dailySamples,currentCollection,landscapeScenes} from './collection.js?v=28.0.0';
+import {questions} from './catalog.js?v=28.0.0';
+import {formatPreviews} from './format-preview-catalog.js?v=28.0.0';
+import {individualSamples} from './sample-catalog.js?v=28.0.0';
+import {colorWorlds,luminousMedia} from './worlds.js?v=28.0.0';
+import {sceneSourcePlace} from './scene-presets.js?v=28.0.0';
+import {typographyPreview} from './typography-options.js?v=28.0.0';
+import {angleItems} from './angles.js?v=28.0.0';
 for(const item of poseItems)individualSamples['pose\u0000'+item.value]={file:item.file};
 for(const item of colorWorlds)individualSamples['palette\u0000'+item.value]={file:item.file};
 for(const item of luminousMedia)individualSamples['medium\u0000'+item.value]={file:item.file};
 const referenceChoices=new Set(['参照画像の衣装を生かす','参照風景を舞台にする','参照画像の色を生かす']);
 export function sampleFor(key,value=''){
+ if(key==='angle'){
+  const item=angleItems.find(x=>x.value===value);
+  if(item)return {kind:'image',src:'./'+item.file,label:value+'の位置・距離・遠近を示す説明図（生成の参照画像には使いません）'};
+  if(value==='おまかせ'||value==='場面に合わせたアングル')return {kind:'auto',srcs:[0,8,14,25].map(index=>'./'+angleItems[index].file),label:'シーンと動作に合うアングルの例',text:'シーンに合う\nアングル'};
+ }
+ if(key==='theme'&&sceneSourcePlace(value))key='place';
  if(japanPreviews[key+'\u0000'+value])return {kind:'image',src:'./'+japanPreviews[key+'\u0000'+value],label:value+'の日本ベースの説明用見本（生成の参照画像には使いません）'};
  if(key==='design'&&formatPreviews[value])return {kind:'image',src:'./'+formatPreviews[value],label:value+'の版面見本（生成の参照画像には使いません）'};
  const specific=dailySamples[key+'\u0000'+value]||individualSamples[key+'\u0000'+value];
@@ -37,6 +46,7 @@ export function typePreview(mode){
  if(currentCollection()==='everyday'){const p=typePreviewFor(mode);return {...p,blocks:p.blocks.map(s=>s.replaceAll('秋の創作特集','暮らしと創作の特集').replaceAll('ある一夜の物語','ある日々の物語').replaceAll('A HALLOWEEN STORY','オリジナルの物語').replaceAll('HALLOWEEN','創作').replaceAll('AFTER MIDNIGHT','日々の物語').replaceAll('創作の夜','創作の世界').replaceAll('真夜中の物語','日々の物語').replaceAll('真夜中に、また会おう。','また、この場所で。').replaceAll('夜にひらく','日々にひらく').replaceAll('夜の物語','日々の物語').replaceAll('一夜の記録','日々の記録'))};}return typePreviewFor(mode);
 }
 function typePreviewFor(mode){
+ const extra=typographyPreview(mode);if(extra)return extra;
  const name='作者名';
  if(mode==='文字を一切入れない')return {className:'type-none',blocks:[]};
  if(mode==='クリエイター名だけ')return {className:'type-name',blocks:[name]};

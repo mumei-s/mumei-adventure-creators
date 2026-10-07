@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {questions,resolveSelections} from '../catalog.js?v=27.0.1';
-import {applyCollection} from '../collection.js?v=27.0.1';
-import {productionPlan} from '../production-plan.js?v=27.0.1';
-import {composePrompt} from '../prompt.js?v=27.0.1';
-import {creatorHandoff} from '../creator-handoff.js?v=27.0.1';
-import {lightingContract} from '../art-direction.js?v=27.0.1';
-import {detailedSubject} from '../subject-recipes.js?v=27.0.1';
+import {questions,resolveSelections} from '../catalog.js?v=28.0.0';
+import {applyCollection} from '../collection.js?v=28.0.0';
+import {productionPlan} from '../production-plan.js?v=28.0.0';
+import {composePrompt} from '../prompt.js?v=28.0.0';
+import {creatorHandoff} from '../creator-handoff.js?v=28.0.0';
+import {lightingContract} from '../art-direction.js?v=28.0.0';
+import {detailedSubject} from '../subject-recipes.js?v=28.0.0';
 
 const profile=creatorHandoff('test_author','試作作者');
 const fixed={design:'通常の一枚絵',medium:'発光幻想アニメ',costume:'参照画像の衣装を生かす',pose:'四つん這いで進む',mood:'俯瞰＋目を見開く',palette:'群青 × 菫 × 星白',type:'文字を一切入れない',line:'セリフなし',size:'縦ポスター2:3｜2400×3600｜2:3'};
@@ -37,7 +37,7 @@ for(const collection of ['halloween','everyday']){
    }
   }
  }
- assert.equal(questions.find(q=>q.key==='theme').name,'物語・世界観');
+ assert.equal(questions.find(q=>q.key==='theme').name,'世界観・シーン');
  assert.equal(questions.find(q=>q.key==='place').name,'舞台・場所');
  assert.equal(questions.find(q=>q.key==='medium').name,'作風・画材');
 }

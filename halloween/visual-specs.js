@@ -1,9 +1,12 @@
-import {everydayRecipe} from './everyday-options.js?v=27.0.1';
-import {mediumDefinition} from './looks.js?v=27.0.1';
-import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=27.0.1';
-import {poseItems} from './poses.js?v=27.0.1';
-import {colorContract,luminousMedia,colorWorlds,sceneryMaterials} from './worlds.js?v=27.0.1';
-import {formatFor} from './formats.js?v=27.0.1';
+import {everydayRecipe} from './everyday-options.js?v=28.0.0';
+import {mediumDefinition} from './looks.js?v=28.0.0';
+import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=28.0.0';
+import {poseItems} from './poses.js?v=28.0.0';
+import {colorContract,luminousMedia,colorWorlds,sceneryMaterials} from './worlds.js?v=28.0.0';
+import {formatFor} from './formats.js?v=28.0.0';
+import {typographyRecipe} from './typography-options.js?v=28.0.0';
+import {sceneSourcePlace} from './scene-presets.js?v=28.0.0';
+import {angleRecipe} from './angles.js?v=28.0.0';
 const read=source=>Object.fromEntries(source.trim().split('\n').map(line=>{const i=line.indexOf('=');return [line.slice(0,i),line.slice(i+1)];}));
 export const costumeSpecs=read(`
 魔女・魔法使い=尖った帽子・長いローブ・魔術の紋様。布の厚みと帽子の形を明確にする
@@ -241,6 +244,8 @@ HALLOWEENのみ=HALLOWEENの一語だけ。名前・セリフ・補助コピー�
 文字を一切入れない=文字・数字・サイン・ロゴ・透かしを一切描かない。セリフの選択も描画しない
 `);
 export function visualSpec(key,value,{noPerson=false,palette=''}={}){
+ if(key==='theme'&&sceneSourcePlace(value))key='place';
+ if(key==='angle'){const recipe=angleRecipe(value,{noPerson});return {known:recipe.known,text:recipe.sections.map(section=>section.text).join(' '),checks:recipe.checks};}
  const everyday=everydayRecipe(key,value);if(everyday)return {known:true,text:everyday.sections.map(s=>s.text).join(' '),checks:everyday.checks};
  if(key==='medium'&&value===CRYSTAL_ANIME)return crystalAnimeSpec({noPerson,palette});
  if(key==='design'){const f=formatFor(value);return {text:f.layout,checks:f.checks,known:f.kind!=='custom'};}
@@ -249,7 +254,7 @@ export function visualSpec(key,value,{noPerson=false,palette=''}={}){
  if(key==='pose'){const p=poseItems.find(x=>x.value===value);return {text:p?.text||customSpec(key,value),checks:[p?.text||value],known:!!p};}
  if(key==='palette'){const text=colorWorlds.find(x=>x.value===value)?.text||originalColors[value],limited=/墨一色|モノクロ|三色|二色|セピア/.test(value);if(noPerson)return {text:sceneryMaterials(text||colorContract(value,{noPerson:true}))+'。景物・建築・自然素材の色と光を選択配色へ統一する。限定色では素材の識別を形と明度差で保ち、画風や構図は配色の見本から取り込まない。',checks:[sceneryMaterials(text||value)],known:!!text};return {text:(text||colorContract(value))+'。'+(limited?'髪・肌・瞳の元の色も、選択した限定色と明度差へ翻訳する。':'人物の識別に必要な髪・肌・瞳の基礎色は保ち、衣装・周囲の光・景物を選択色で統一する。')+'配色は色と光の役割だけを持ち、見本の人物・物体・構図・画風を取り込まない。',checks:[text||value],known:!!text};}
  if(key==='mood')return {text:'「'+value+'」を目・眉・口の開閉と顔の回転で実行。完全な横顔は片目だけ、正面は左右の首傾き0度。余韻の指定は光・空気・余白にも反映し、今回の具体的な表情と角度は演出欄で照合する。',checks:['今回の顔向き・目・眉・口','指定された感情または空気感'],known:true};
- if(key==='type')return {text:typeSpecs[value]||customSpec(key,value),checks:[typeSpecs[value]||value],known:!!typeSpecs[value]};
+ if(key==='type'){const additional=typographyRecipe(value);return additional?{text:additional.sections.map(section=>section.text).join(' '),checks:additional.checks,known:true}:{text:typeSpecs[value]||customSpec(key,value),checks:[typeSpecs[value]||value],known:!!typeSpecs[value]};}
  if(key==='line')return {text:value==='セリフなし'?'セリフを描かない。タイトルや名前の可否は文字設定で決める。':'選択したセリフ「'+value+'」を一字ずつ正確に使用。文字なし・名前だけ等の限定設定ではセリフを描かず、意味を主題の補助に使う。',checks:[value==='セリフなし'?'セリフなし':'選んだ一文の正確な綴り'],known:true};
  if(key==='size'){const [usage,pixels,ratio]=value.split('｜');return {text:'用途：'+usage+'。希望寸法：'+pixels+'px、縦横比：'+ratio+'。外周に顔・文字の安全余白を確保し、この比率内で形式のグリッドを設計。生成可能な実寸に限界があっても比率と見切れを照合し、実寸を偽らない。',checks:['縦横比 '+ratio,'顔・手足・文字の安全余白','実際の出力寸法'],known:!!pixels&&!!ratio};}
  return {text:customSpec(key,value),checks:[value],known:false};

@@ -1,4 +1,4 @@
-import {opticalSignature,opticalColors} from './optical-effects.js?v=27.0.1';
+import {opticalSignature,opticalColors} from './optical-effects.js?v=28.0.0';
 // This rendering contract is independent of preview artwork and color-world textures.
 export const CRYSTAL_ANIME = 'クリスタル透光アニメ';
 

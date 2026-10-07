@@ -1,10 +1,11 @@
-import {mediumExecution} from './medium-execution.js?v=27.0.1';
-import {formatExecution} from './format-execution.js?v=27.0.1';
-import {colorPolicy} from './color-policy.js?v=27.0.1';
+import {mediumExecution} from './medium-execution.js?v=28.0.0';
+import {formatExecution} from './format-execution.js?v=28.0.0';
+import {colorPolicy} from './color-policy.js?v=28.0.0';
 
 // The option's own physical recipe is the source of its execution contract.
 // No generic "beautiful / atmospheric" default replaces a missing preset.
 const regions={
+ angle:'カメラの高さ・方向・傾き・画角・主題と景物の投影',
  medium:'主画像全域の輪郭・色面・影・素材境界',
  design:'完成作品全体の主画像領域・文字領域・余白・読み順',
  costume:'主役の外形・衣服の重なり・留め具・道具との接点',
@@ -17,7 +18,7 @@ const regions={
  line:'許可されたセリフの全文・句読点・改行順',
  size:'画面外周・縦横比・用途ごとの内側余白'
 };
-const counts={costume:3,theme:2,place:3,mood:5,pose:3,type:2,line:2,size:2};
+const counts={angle:3,costume:3,theme:2,place:3,mood:5,pose:3,type:2,line:2,size:2};
 
 export function executionFor(key,value,recipe,{noPerson=false,values={}}={}){
  const sections=recipe.sections.map(s=>({part:s.label,draw:s.text}));

@@ -2,9 +2,16 @@ export const CREATOR_NAME_TOKEN='〔公開プロフィールのクリエイタ�
 
 // No article corpus, tags, or inferred quotations enter the tool's handoff.
 export function creatorHandoff(id='',name='',biography=''){
+ if(name.trim()===CREATOR_NAME_TOKEN)name='';
  return {id,displayName:name.trim()||(id?CREATOR_NAME_TOKEN:''),name:name.trim(),
   biography:biography.trim(),url:id?'https://note.com/'+id+'/':'',
   handoff:!!id,activityEnabled:true,tagsEnabled:false,topics:[],titles:[]};
+}
+export function creatorDisplayLabel(profile={}){
+ return profile.displayName===CREATOR_NAME_TOKEN?'作者名はChatGPTで確認':profile.displayName||'';
+}
+export function creatorEditableName(profile={}){
+ return profile.name??(profile.displayName===CREATOR_NAME_TOKEN?'':profile.displayName||'');
 }
 export function creatorLookupInstructions(profile={}){
  if(!profile.handoff||!profile.id)return [];

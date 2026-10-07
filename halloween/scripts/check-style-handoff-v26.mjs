@@ -4,7 +4,7 @@ import {questions,resolveSelections} from '../catalog.js?v=26.0.0';
 import {applyCollection} from '../collection.js?v=26.0.0';
 import {productionPlan} from '../production-plan.js?v=26.0.0';
 import {composePrompt} from '../prompt.js?v=26.0.0';
-import {creatorHandoff,CREATOR_NAME_TOKEN} from '../creator-handoff.js?v=26.0.0';
+import {creatorHandoff,CREATOR_NAME_TOKEN,creatorDisplayLabel,creatorEditableName} from '../creator-handoff.js?v=26.0.0';
 import {mediumExecution} from '../medium-execution.js?v=26.0.0';
 
 const profile={...creatorHandoff('test_author'),articles:[{text:'OLD_CORPUS_SENTINEL'}],topics:['OLD_TAG_SENTINEL'],bodyRead:{count:1000},sourceEvidence:[{excerpts:['OLD_CORPUS_SENTINEL']}]};
@@ -37,6 +37,9 @@ assert.equal(count,432);
 assert.equal(new Set(mediumExecution.values()).size,108);
 assert.ok(!mediumExecution.get('クリスタル透光アニメ').includes('opaque cel-painted skin'));
 assert.equal(creatorHandoff('test_author').displayName,CREATOR_NAME_TOKEN);
+assert.equal(creatorEditableName(creatorHandoff('test_author')),'');
+assert.equal(creatorDisplayLabel(creatorHandoff('test_author')),'作者名はChatGPTで確認');
+assert.equal(creatorHandoff('test_author',CREATOR_NAME_TOKEN).name,'');
 assert.equal(creatorHandoff('test_author','指定作者名').displayName,'指定作者名');
 const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8'),html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
 assert.ok(!app.includes('fetch(profileEndpoint')&&!app.includes('await profileController'));

@@ -24,7 +24,7 @@ body[data-lights=night] .favorite-chip{background:#362b49;border-color:#9275ab}
 body[data-lights=night] .favorite-pick{color:#f3eaff}
 body[data-lights=night] .favorite-remove{color:#f1d5ee}
 .night-creatures{display:none;position:absolute;right:1%;bottom:4%;width:190px;height:160px;pointer-events:none;z-index:0;filter:drop-shadow(0 0 16px #bba0ff99)}
-body[data-lights=night] .night-creatures{display:block}.night-creatures i{position:absolute;width:80px;height:90px;display:block;transform:rotate(-9deg)}.night-creatures i svg{width:100%;height:100%}.night-creatures i:nth-child(1){left:12px;top:65px}.night-creatures i:nth-child(2){right:0;top:0}.night-creatures i:nth-child(3){right:20px;bottom:0;width:70px}
+body[data-collection=halloween][data-lights=night] .night-creatures{display:block}.night-creatures i{position:absolute;width:80px;height:90px;display:block;transform:rotate(-9deg)}.night-creatures i svg{width:100%;height:100%}.night-creatures i:nth-child(1){left:12px;top:65px}.night-creatures i:nth-child(2){right:0;top:0}.night-creatures i:nth-child(3){right:20px;bottom:0;width:70px}
 body[data-lights=night] .studio-hero:after{content:'';width:72px;height:72px;border-radius:50%;background:#cdbbf4;box-shadow:0 0 35px #b99ae388;right:8%;top:10%;opacity:.7;animation:none}
 body[data-lights=night][data-motion=on] .night-creatures i{animation:night-hover 5s ease-in-out infinite}.night-creatures i:nth-child(2){animation-delay:-2s!important}.night-creatures i:nth-child(3){animation-delay:-3.5s!important}
 @keyframes night-hover{50%{transform:translateY(-12px) rotate(8deg)}}
@@ -37,3 +37,13 @@ body[data-collection][data-lights=night] :is(input,textarea,select){background:#
 body[data-lights=night] input::placeholder,body[data-lights=night] textarea::placeholder{color:#c4b9d4}
 body[data-collection][data-lights=night] .picker-views button[aria-pressed=true],body[data-collection][data-lights=night] .favorite-toggle[aria-pressed=true]{background:#b49bd5;color:#181129;border-color:#ebd9ff}
 body[data-lights=night] #picker :is(input,textarea,select){background:#222b42;color:#f6ecff;border-color:#9b86b3}
+
+body[data-collection][data-lights=night] .profile-editor{background:#172038;color:#f0e8ff;border-color:#9b86b3}
+body[data-collection][data-lights=night] :is(.profile-fields label,.profile-editor summary,.profile-fields label small,#profile-reading,.reference-thumb figcaption,.inspector-note,.recipe-specs,.picker-example-note,.topic-chips span){color:#e4daf2}
+body[data-collection][data-lights=night] .topic-chips span{background:#332c4b;border-color:#9b86b3}
+body[data-collection][data-lights=night] .page-arrow{background:#332c4bee;color:#fff4ff;border-color:#bb9cdc}
+body[data-collection=everyday][data-lights=night]{background-color:#081a23;background-image:radial-gradient(ellipse at top right,#22475499,transparent 45%),linear-gradient(#081a23,#101c29)}
+body[data-collection=everyday] :is(.night-cast,.night-creatures){display:none!important}
+body[data-collection=everyday][data-lights=night] .studio-hero{background:linear-gradient(90deg,#071b29ee,#091d2bbb),url('./landscape-ordinary-v11.png') center/cover}
+body[data-collection=everyday][data-lights=night] .studio-hero>div:first-child{max-width:100%}
+body[data-collection=everyday][data-lights=night] .studio-hero:after{background:#f5eac5;box-shadow:0 0 32px #d2ead455}

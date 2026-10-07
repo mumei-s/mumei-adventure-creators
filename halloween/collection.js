@@ -1,5 +1,6 @@
-import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=22.0.2';
-import {poseGroups} from './poses.js?v=22.0.2';
+import {everydayScenes,everydayPlaces,casualClothes,swimClothes,everydayBindings,everydaySamples} from './everyday-options.js?v=23.0.0';
+import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=23.0.0';
+import {poseGroups} from './poses.js?v=23.0.0';
 const original=questions.map(q=>({...q,groups:q.groups.map(g=>({...g,values:[...g.values]}))}));
 const originalGroups=key=>original.find(q=>q.key===key).groups;
 const cloneGroups=groups=>groups.map(g=>({...g,values:[...g.values]}));
@@ -27,16 +28,18 @@ export const landscapeScenes=[
  ['建築と街並みの記録','建物の外壁、窓、屋根、通りを同じ街として構成。垂直線と消失点を整える。']
 ];
 export const dailyClothes=['リネンシャツとデニム','現代のテーラードスーツ','ワンピースとカーディガン','スポーツウェア'];
+const ordinaryScenes=[...dailyScenes.slice(0,7),...everydayScenes];
+const ordinaryClothes=[...dailyClothes,...casualClothes];
 const dailyFile=index=>'japan-everyday-'+String(index).padStart(3,'0')+'-v18.png';
 const japanesePlaces=['朝のキッチン','海辺の灯台','駅の改札前','明るい工房','並木道','街角の歩道','窓辺の読書室'];
 const clothingSampleIndices=[1,6,7,2];
-export const dailySamples=Object.fromEntries([
+export const dailySamples={...everydaySamples,...Object.fromEntries([
  ['theme\u0000山岳と湖のパノラマ',{file:'japan-landscape-v19.png',text:'日本の山と湖を透明水彩で描いた見本。富士山と本栖湖を手掛かりにした架空の構図。選択した別の舞台へ富士山を自動追加しない。'}],
  ...dailyScenes.map(([value,text],i)=>['theme\u0000'+value,{file:dailyFile(i+1),text}]),
  ...japanesePlaces.map((value,i)=>['place\u0000'+value,{file:dailyFile(i+1),text:'日本の'+value+'の建築・生活寸法・背景の奥行きの見本。人物・衣装・物語・作風はそれぞれの選択で決める。'}]),
  ...dailyClothes.map((value,i)=>['costume\u0000'+value,{file:dailyFile(clothingSampleIndices[i]),text:'衣服の形・縫製・素材と動きの説明。人物の顔・性別・体型・ポーズ・描画技法は指定しない。'}]),
  ...[['カップを両手で持つ',1],['手を振る',3],['絵を描く',4],['本を読む',7]].map(([value,index])=>['pose\u0000'+value,{file:dailyFile(index),text:'選んだ動作の手と道具・接点・重心の見本。人物・背景・衣装・作風は別の選択で決める。'}])
-]);
+])};
 const dailyFantasyThemes=['星明かりを集める旅','秘密の図書館','星を集める旅','眠らない美術館','鏡の向こうの自分','光と影の寓話','記憶の標本室','異世界のファッションショー'];
 const scenicPlaces=['山岳と湖畔','砂浜と海岸線','田畑と里山','広葉樹の森','川沿いの遊歩道','街並みと広場','海辺の灯台','雪の庭','星空の砂漠'];
 const dailyPlaces=['朝のキッチン','駅の改札前','明るい工房','並木道','街角の歩道','窓辺の読書室','深夜の喫茶店','天窓のあるアトリエ','骨董品店','無人の映画館','雨の路地','ネオンの繁華街'];
@@ -46,19 +49,19 @@ const dailyMoodGroups=originalGroups('mood').filter(g=>!['恐怖','表情を選�
 dailyMoodGroups.push({label:'表情を選ぶ',values:originalGroups('mood').find(g=>g.label==='表情を選ぶ').values.filter(v=>v!=='牙を見せて威嚇')},{label:'表情と角度のセット',values:originalGroups('mood').find(g=>g.label==='表情と角度のセット').values.filter(v=>v!=='ローアングル＋威嚇')},{label:'幻想・演技の表情（選択時のみ）',values:['妖しく気高い','いたずら好き','牙を見せて威嚇','ローアングル＋威嚇',...originalGroups('mood').find(g=>g.label==='恐怖').values]});
 const dailyGroups={
  design:[...originalGroups('design').map(g=>({...g,values:g.values.filter(v=>!['ゴシック雑誌の表紙','幻想風景画','タロットカード'].includes(v))})),{label:'自然・街並み',values:['自然・都市の風景画']},{label:'幻想・ゴシック（選択時のみ）',values:['幻想風景画','ゴシック雑誌の表紙','タロットカード']}],
- theme:[{label:'日常・旅・創作',values:dailyScenes.slice(0,7).map(x=>x[0])},{label:'自然・街並み・風景',values:landscapeScenes.map(x=>x[0])},{label:'自由な幻想（選択時のみ）',values:dailyFantasyThemes}],
- costume:[{label:'普段の装い',values:[...dailyClothes,'参照画像の衣装を生かす']},{label:'職業・制服',values:originalGroups('costume').find(g=>g.label==='職業・制服').values},{label:'人物を描かない',values:['風景を主役にする','モチーフだけで構成する','紋章・アイコンにする']},{label:'ファッション・創作衣装',values:['ヴィクトリア朝の正装','アンティークの旅装','ゴシック・クチュール','ダーク・ロリータ','ロック・パンク','スチームパンク','サイバーパンク']},{label:'コスプレ（選択時のみ）',values:['怪盗','海賊','忍者','侍・武者','巫女','花嫁・花婿','うさぎの着ぐるみ','くまの着ぐるみ','恐竜の着ぐるみ','ペンギンの着ぐるみ']},{label:'幻想の役柄（選択時のみ）',values:originalGroups('costume').find(g=>g.label==='ファンタジー').values}],
+ theme:[{label:'日常・旅・創作',values:ordinaryScenes.map(x=>x[0])},{label:'自然・街並み・風景',values:landscapeScenes.map(x=>x[0])},{label:'自由な幻想（選択時のみ）',values:dailyFantasyThemes}],
+ costume:[{label:'普段の装い',values:[...ordinaryClothes,'参照画像の衣装を生かす']},{label:'水着・海・プール',values:swimClothes},{label:'職業・制服',values:originalGroups('costume').find(g=>g.label==='職業・制服').values},{label:'人物を描かない',values:['風景を主役にする','モチーフだけで構成する','紋章・アイコンにする']},{label:'ファッション・創作衣装',values:['ヴィクトリア朝の正装','アンティークの旅装','ゴシック・クチュール','ダーク・ロリータ','ロック・パンク','スチームパンク','サイバーパンク']},{label:'コスプレ（選択時のみ）',values:['怪盗','海賊','忍者','侍・武者','巫女','花嫁・花婿','うさぎの着ぐるみ','くまの着ぐるみ','恐竜の着ぐるみ','ペンギンの着ぐるみ']},{label:'幻想の役柄（選択時のみ）',values:originalGroups('costume').find(g=>g.label==='ファンタジー').values}],
  mood:dailyMoodGroups,
  pose:dailyPoseGroups,
- place:[{label:'日常の場所',values:dailyPlaces},{label:'自然・風景の場所',values:scenicPlaces},{label:'スタジオ・造形',values:['白いスタジオ','黒いスタジオ','墨の余白','金箔の空間','紙の箱庭','抽象的な色面','参照風景を舞台にする']},{label:'幻想の場所（選択時のみ）',values:['空中都市','霧の森','屋根の上']}],
+ place:[{label:'日常の場所',values:[...dailyPlaces,...everydayPlaces]},{label:'自然・風景の場所',values:scenicPlaces},{label:'スタジオ・造形',values:['白いスタジオ','黒いスタジオ','墨の余白','金箔の空間','紙の箱庭','抽象的な色面','参照風景を舞台にする']},{label:'幻想の場所（選択時のみ）',values:['空中都市','霧の森','屋根の上']}],
  line:[{label:'日本語',values:['今日の光を、忘れない。','小さな一歩が、物語になる。','また、この場所で。','好きな色で、生きていく。','風の向こうへ。','まだ見ぬ景色に会いに。','ここから、はじめよう。','セリフなし']},{label:'英語',values:['A NEW CHAPTER','EVERYDAY WONDERS','FOLLOW THE LIGHT','MAKE YOUR OWN STORY']}]
 };
 const landscapeMedia=['実写風フィルム写真','実写風シネマティック写真','実写風モノクロ銀塩写真','劇場アニメの背景美術','油彩・厚塗り','透明水彩','不透明水彩・ガッシュ','日本画・岩絵具','水墨画','アクリル画','パステル画','鉛筆デッサン'];
 const naturalPalettes=['群青 × 月白 × 銀','翡翠 × 銅 × 濃紺','秋色のブラウン × 生成り','退色したフィルムカラー','白 × 白銀 × 氷青','モノクローム','セピア'];
 const defaultDailyDesigns=['通常の一枚絵','自然・都市の風景画','ファッション雑誌の表紙','カルチャー誌の表紙','写真集の表紙','文芸誌の表紙','ZINEの表紙','インタビュー誌面','見開き特集','新聞の一面','絵本の表紙','小説の装丁','展覧会ポスター','レトロ旅行ポスター','物語の挿絵','ファッション・エディトリアル','noteサムネイル','ポストカード','スマホ壁紙'];
-const dailySceneChoices={
+const dailySceneChoices={...everydayBindings,
  '朝の光と小さな日常':{places:['朝のキッチン'],clothes:['リネンシャツとデニム','ワンピースとカーディガン'],poses:['カップを両手で持つ','背伸びをする','椅子に腰掛ける']},
- '旅先で見つけた景色':{places:['街並みと広場','川沿いの遊歩道','海辺の灯台','山岳と湖畔'],clothes:['リネンシャツとデニム','スポーツウェア','アンティークの旅装'],poses:['ゆっくり歩く','片足に体重を乗せる','振り向く']},
+ '旅先で見つけた景色':{places:['街並みと広場','川沿いの遊歩道','海辺の灯台','山岳と湖畔'],clothes:['リネンシャツとデニム','スポーツウェア','シャツとチノパン'],poses:['ゆっくり歩く','片足に体重を乗せる','振り向く']},
  '大切な人との再会':{places:['駅の改札前','街並みと広場'],clothes:dailyClothes.slice(0,3),poses:['手を振る','片手を差し出す','両手を広げる']},
  'ものづくりの時間':{places:['明るい工房','天窓のあるアトリエ'],clothes:['リネンシャツとデニム','参照画像の衣装を生かす'],poses:['絵を描く','椅子に腰掛ける']},
  '季節を歩く':{places:['並木道','川沿いの遊歩道','広葉樹の森','雪の庭'],clothes:['リネンシャツとデニム','ワンピースとカーディガン','スポーツウェア'],poses:['ゆっくり歩く','大股で歩く','振り向く']},
@@ -117,13 +120,14 @@ export function landscapeSelection(values={}){return values.costume==='風景を
 function refineSelections(resolved,input,random){
  const values={...resolved};
  if(activeCollection==='everyday'){
+  if(automatic(input,'theme')&&(swimClothes.includes(input.costume)||/プール|海水浴場/.test(input.place||''))){values.theme=input.place==='海水浴場'?'海で過ごす夏の日':'プールサイドの休日';if(automatic(input,'design'))values.design='通常の一枚絵';}
   const explicitFantasy=['theme','costume','place','pose'].some(key=>!automatic(input,key)&&(/星明かりを集める旅|星を集める旅|異世界|空中都市|浮遊する|妖精|精霊|エルフ|ドラゴン|竜人|人魚|不死鳥|ネクロマンサー|錬金術師|星の占い師|不思議の国/.test(input[key])||key==='theme'&&dailyFantasyThemes.includes(input[key])));
   const isLandscapeTheme=value=>landscapeScenes.some(([name])=>name===value);
   const explicitLandscape=input.costume==='風景を主役にする'||!automatic(input,'design')&&/風景画/.test(input.design)||!automatic(input,'theme')&&isLandscapeTheme(input.theme);
   const explicitPerson=!automatic(input,'pose')||!automatic(input,'costume')&&!noPersonSelection(input)||!automatic(input,'theme')&&!isLandscapeTheme(input.theme);
   if(!explicitLandscape){
    if(explicitFantasy&&automatic(input,'theme'))values.theme=pick(dailyFantasyThemes,random);
-   else if(explicitPerson&&automatic(input,'theme')&&isLandscapeTheme(values.theme))values.theme=pick(dailyScenes.slice(0,7).map(x=>x[0]),random);
+   else if(explicitPerson&&automatic(input,'theme')&&isLandscapeTheme(values.theme))values.theme=pick(ordinaryScenes.map(x=>x[0]),random);
    if(explicitPerson&&automatic(input,'design')&&/風景画/.test(values.design))values.design='通常の一枚絵';
   }
   const landscapeIntent=input.costume==='風景を主役にする'||/風景画/.test(values.design)||landscapeScenes.some(([name])=>name===values.theme);
@@ -136,7 +140,7 @@ function refineSelections(resolved,input,random){
   for(const [key,choices]of [['place',scene.places],['costume',scene.clothes],['pose',scene.poses]])if(choices?.length&&automatic(input,key)&&!(key==='costume'&&noPersonSelection(values)))values[key]=pick(choices,random);
   if(noPersonSelection(values)){if(automatic(input,'pose'))values.pose=AUTO;if(automatic(input,'mood'))values.mood='毎回大胆に変える';}
   if(landscapeSelection(values)){if(automatic(input,'medium'))values.medium=pick(landscapeMedia,random);if(automatic(input,'palette'))values.palette=pick(naturalPalettes,random);}
-  if(automatic(input,'costume')&&!landscapeIntent&&!scene.clothes)values.costume=pick(dailyClothes,random);
+  if(automatic(input,'costume')&&!landscapeIntent&&!scene.clothes)values.costume=pick(ordinaryClothes,random);
  }else{
   const scene=halloweenSceneChoices[values.theme];
   if(scene)for(const [key,choices]of [['place',scene.places],['costume',scene.clothes],['pose',scene.poses]])if(choices?.length&&automatic(input,key))values[key]=pick(choices,random);
@@ -151,10 +155,10 @@ export function applyCollection(collection){
   if(daily&&q.key==='type')q.groups=q.groups.map(g=>({...g,values:g.values.filter(v=>!v.includes('HALLOWEEN'))}));
   q.name=source.name;q.hint=source.hint;
   if(daily){
-   if(q.key==='theme'){q.hint='日常・風景・創作の出来事';q.autoValues=[...dailyScenes.slice(0,7),...landscapeScenes].map(x=>x[0]);}
+   if(q.key==='theme'){q.hint='日常・風景・創作の出来事';q.autoValues=[...ordinaryScenes,...landscapeScenes].map(x=>x[0]);}
    if(q.key==='design')q.autoValues=defaultDailyDesigns;
-   if(q.key==='costume')q.autoValues=dailyClothes;
-   if(q.key==='place')q.autoValues=[...dailyPlaces,...scenicPlaces];
+   if(q.key==='costume')q.autoValues=ordinaryClothes;
+   if(q.key==='place')q.autoValues=[...dailyPlaces,...everydayPlaces,...scenicPlaces];
    if(q.key==='pose'){q.autoValues=['まっすぐ立つ','片足に体重を乗せる','椅子に腰掛ける','ゆっくり歩く','振り向く','手を振る'];q.hint='日常の動きから、選んだ演技まで';}
    if(q.key==='mood')q.autoValues=['毎回大胆に変える'];
    if(q.key==='medium')q.autoValues=['実写風フィルム写真','実写風スタジオ写真','実写風街角スナップ','実写風シネマティック写真','実写風ファッション写真','実写風モノクロ銀塩写真','現代アニメの一枚絵','手描きアニメのセル画','劇場アニメの背景美術','絵本イラスト','油彩・厚塗り','透明水彩','不透明水彩・ガッシュ','水墨画','浮世絵木版画','色鉛筆画','ベクターグラフィック','フラットイラスト'];
@@ -163,4 +167,4 @@ export function applyCollection(collection){
  });
  setSelectionRefiner(refineSelections);
 }
-export function dailyInspiration(profile){if(!profile.inspiration)return profile;const labels=profile.inspiration.labels||[];const entries=labels.map(label=>/旅/.test(label)?1:/仲間|家族|支え/.test(label)?2:/創作|技術|仕事/.test(label)?3:/自然/.test(label)?4:/心|余白/.test(label)?6:0);return {...profile,inspiration:{...profile.inspiration,themes:[...new Set(entries.map(i=>dailyScenes[i][0]))],phrases:['今日の光を、忘れない。','好きな色で、生きていく。','小さな一歩が、物語になる。'],imagery:entries.map(i=>dailyScenes[i][1]),objects:(profile.inspiration.objects||[]).filter(v=>!/[幽亡]霊|魔女|魔法|召喚|骸骨|カボチャ|怪異/.test(v))}};}
+export function dailyInspiration(profile){if(!profile.inspiration)return profile;const labels=profile.inspiration.labels||[];const entries=labels.map(label=>/旅/.test(label)?1:/仲間|家族|支え/.test(label)?2:/創作|技術|仕事/.test(label)?3:/自然/.test(label)?4:/心|余白/.test(label)?6:0);return {...profile,inspiration:{...profile.inspiration,themes:[...new Set(entries.map(i=>dailyScenes[i][0]))],phrases:['今日の光を、忘れない。','好きな色で、生きていく。','小さな一歩が、物語になる。'],signals:(profile.inspiration.signals||[]).map((signal,i)=>({...signal,theme:dailyScenes[entries[i%Math.max(1,entries.length)]||0][0],imagery:dailyScenes[entries[i%Math.max(1,entries.length)]||0][1],phrases:['今日の光を、忘れない。','好きな色で、生きていく。']})),imagery:entries.map(i=>dailyScenes[i][1]),objects:(profile.inspiration.objects||[]).filter(v=>!/[幽亡]霊|魔女|魔法|召喚|骸骨|カボチャ|怪異/.test(v))}};}

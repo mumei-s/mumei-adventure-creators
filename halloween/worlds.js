@@ -1,5 +1,5 @@
-import {CRYSTAL_OBJECT,crystalObjectRecipe} from './japan-direction.js?v=22.0.2';
-import {crystalAnimeMedium} from './crystal-anime.js?v=22.0.2';
+import {CRYSTAL_OBJECT,crystalObjectRecipe} from './japan-direction.js?v=23.0.0';
+import {crystalAnimeMedium} from './crystal-anime.js?v=23.0.0';
 // Semantic art contracts. Preview artwork never supplies people, objects, or hidden instructions.
 export const colorWorlds=[
  ['星灯りの青紫','群青 × 菫 × 星白',['#121744','#823ae2','#edf4ff'],'群青の暗部を60%、菫の中間色を30%、青白い光を10%。選択舞台にある光源から景物・髪・布へ同じ色の反射を返す。星や発光粒子を色名だけから追加しない。'],

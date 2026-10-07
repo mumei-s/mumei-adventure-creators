@@ -1,8 +1,9 @@
-import {mediumDefinition} from './looks.js?v=22.0.2';
-import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=22.0.2';
-import {poseItems} from './poses.js?v=22.0.2';
-import {colorContract,luminousMedia,colorWorlds,sceneryMaterials} from './worlds.js?v=22.0.2';
-import {formatFor} from './formats.js?v=22.0.2';
+import {everydayRecipe} from './everyday-options.js?v=23.0.0';
+import {mediumDefinition} from './looks.js?v=23.0.0';
+import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=23.0.0';
+import {poseItems} from './poses.js?v=23.0.0';
+import {colorContract,luminousMedia,colorWorlds,sceneryMaterials} from './worlds.js?v=23.0.0';
+import {formatFor} from './formats.js?v=23.0.0';
 const read=source=>Object.fromEntries(source.trim().split('\n').map(line=>{const i=line.indexOf('=');return [line.slice(0,i),line.slice(i+1)];}));
 export const costumeSpecs=read(`
 魔女・魔法使い=尖った帽子・長いローブ・魔術の紋様。布の厚みと帽子の形を明確にする
@@ -240,6 +241,7 @@ HALLOWEENのみ=HALLOWEENの一語だけ。名前・セリフ・補助コピー�
 文字を一切入れない=文字・数字・サイン・ロゴ・透かしを一切描かない。セリフの選択も描画しない
 `);
 export function visualSpec(key,value,{noPerson=false,palette=''}={}){
+ const everyday=everydayRecipe(key,value);if(everyday)return {known:true,text:everyday.sections.map(s=>s.text).join(' '),checks:everyday.checks};
  if(key==='medium'&&value===CRYSTAL_ANIME)return crystalAnimeSpec({noPerson,palette});
  if(key==='design'){const f=formatFor(value);return {text:f.layout,checks:f.checks,known:f.kind!=='custom'};}
  if(key==='medium'){const light=luminousMedia.find(x=>x.value===value),spec=light?{text:light.text,checks:light.checks,known:true}:mediumDefinition(value),detail=spec?.text||customSpec(key,value);if(noPerson)return {text:(value==='ちびキャラ'?'景物を小さく丸い形と低い比率へ省略し、地形・建築・自然素材の識別できる特徴を保つ。':value==='実写風ファッション写真'?'景物・建築・自然素材の質感と造形を、編集写真のように整えた照明・明快な色面・余白のある構図で撮影する。':sceneryMaterials(detail))+' 選択した技法を景物・建築・自然素材・空間の全域へ一貫して適用し、舞台を見本画像から置き換えない。',checks:(spec?.checks||['自由指定の技法・素材・陰影']).map(sceneryMaterials).filter(s=>s.trim()),known:!!spec};return {text:detail+' 選択した技法を描かれる人物・物体・衣装・舞台へ一貫して適用する。項目名に少女・少年・人形などがあっても人物の性別や年齢を変更しない。画面の主役・性別・顔・衣装・場所を見本画像から取り込まない。',checks:spec?.checks||['自由指定の技法・素材・陰影'],known:!!spec};}

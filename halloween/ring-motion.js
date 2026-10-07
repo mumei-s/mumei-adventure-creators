@@ -1,4 +1,4 @@
-export function swipeStep(dx,dy){return Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.5?(dx<0?1:-1):0;}
+export function swipeStep(dx,dy){return Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.5?(dx>0?1:-1):0;}
 export function ringWindow(items,index,limit=6){
  if(!items.length)return {index:0,items:[]};
  const safe=((index%items.length)+items.length)%items.length;

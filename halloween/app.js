@@ -1,28 +1,28 @@
-import {installNightStudio} from './night-studio.js?v=22.0.2';
-import {candidateAvailability,selectionConflicts} from './compatibility.js?v=22.0.2';
-import {appendRecipeEvidence} from './recipe-evidence.js?v=22.0.2';
-import {productionPlan,repairPrompt} from './production-plan.js?v=22.0.2';
-import {stagePrompts} from './production-workflow.js?v=22.0.2';
-import {createLayoutPanel} from './layout-export.js?v=22.0.2';
-import {applyPose} from './poses.js?v=22.0.2';
-import {applyCollection,dailyInspiration} from './collection.js?v=22.0.2';
-import {setupEffects} from './effects.js?v=22.0.2';
-import {colorWorlds} from './worlds.js?v=22.0.2';
-import {mergeCreator} from './creator.js?v=22.0.2';
-import {createCropEditor} from './crop-editor.js?v=22.0.2';
-import {profileForArtwork} from './activity-settings.js?v=22.0.2';
-import {createPicker} from './picker.js?v=22.0.2';
-import {modeKeys,modeCopy,initialSelections,effectiveSelections,propose} from './modes.js?v=22.0.2';
-import {buildReferenceBoard} from './guide-board.js?v=22.0.2';
-import {profileEndpoint,profileHeaders} from './runtime-config.js?v=22.0.2';
-import {questions,visibleQuestions,defaults,AUTO,normalizeCreator,resolveSelections} from './catalog.js?v=22.0.2';
-import {composePrompt,needsReference} from './prompt.js?v=22.0.2';
-import {buildDirection} from './direction.js?v=22.0.2';
-import {sampleFor,typePreview} from './examples.js?v=22.0.2';
-import {makeZip} from './zip.js?v=22.0.2';
-import {imageDeliveryRepairPrompt} from './output-contract.js?v=22.0.2';
-import {editorialReferencesFor} from './editorial-reference-sources.js?v=22.0.2';
-const APP_VERSION=22;
+import {installNightStudio} from './night-studio.js?v=23.0.0';
+import {candidateAvailability,selectionConflicts} from './compatibility.js?v=23.0.0';
+import {appendRecipeEvidence} from './recipe-evidence.js?v=23.0.0';
+import {productionPlan,repairPrompt} from './production-plan.js?v=23.0.0';
+import {stagePrompts} from './production-workflow.js?v=23.0.0';
+import {createLayoutPanel} from './layout-export.js?v=23.0.0';
+import {applyPose} from './poses.js?v=23.0.0';
+import {applyCollection,dailyInspiration} from './collection.js?v=23.0.0';
+import {setupEffects} from './effects.js?v=23.0.0';
+import {colorWorlds} from './worlds.js?v=23.0.0';
+import {mergeCreator} from './creator.js?v=23.0.0';
+import {createCropEditor} from './crop-editor.js?v=23.0.0';
+import {profileForArtwork} from './activity-settings.js?v=23.0.0';
+import {createPicker} from './picker.js?v=23.0.0';
+import {modeKeys,modeCopy,initialSelections,effectiveSelections,propose} from './modes.js?v=23.0.0';
+import {buildReferenceBoard} from './guide-board.js?v=23.0.0';
+import {profileEndpoint,profileHeaders} from './runtime-config.js?v=23.0.0';
+import {questions,visibleQuestions,defaults,AUTO,normalizeCreator,resolveSelections} from './catalog.js?v=23.0.0';
+import {composePrompt,needsReference} from './prompt.js?v=23.0.0';
+import {buildDirection} from './direction.js?v=23.0.0';
+import {sampleFor,typePreview} from './examples.js?v=23.0.0';
+import {makeZip} from './zip.js?v=23.0.0';
+import {imageDeliveryRepairPrompt} from './output-contract.js?v=23.0.0';
+import {editorialReferencesFor} from './editorial-reference-sources.js?v=23.0.0';
+const APP_VERSION=23;
 const $=id=>document.getElementById(id),STORAGE='mumeis-halloween-v2';
 let saved={history:[],used:[],count:0},view='auto';
 try{const v=JSON.parse(localStorage.getItem(STORAGE)||'null');if(v&&Array.isArray(v.history)&&Array.isArray(v.used))saved={history:v.history.map(r=>({...r,values:{pose:AUTO,line:AUTO,...r?.values}})).filter(x=>x&&typeof x.prompt==='string'&&x.values&&questions.every(q=>typeof x.values[q.key]==='string')&&x.variant&&x.profile&&Array.isArray(x.references)).slice(0,12),used:v.used.filter(x=>x&&typeof x.signature==='string').slice(-2000),count:Number.isSafeInteger(v.count)?v.count:0};view=localStorage.getItem('halloween-view')||'auto';}catch{}
@@ -210,8 +210,11 @@ $('copy-delivery').addEventListener('click',async()=>{if(!currentResult)return;c
 const motionMedia=window.matchMedia('(prefers-reduced-motion: reduce)');let motion=true;try{motion=localStorage.getItem('halloween-motion')!=='off';}catch{}function setMotion(on){motion=on;const enabled=on&&!motionMedia.matches;document.body.dataset.motion=enabled?'on':'off';$('motion-label').textContent=motionMedia.matches?'OFF：端末の省動作設定を優先':enabled?(collection==='everyday'?'ON：彩りが動きます':'ON：魔法が動きます'):'OFF：動きと遊びを停止';$('motion-off').setAttribute('aria-pressed',String(!enabled));$('motion-toggle').setAttribute('aria-pressed',String(enabled));$('motion-toggle').disabled=motionMedia.matches;$('play-state').textContent=enabled?(collection==='everyday'?'彩りが動いています':'魔法が動いています'):'演出は止まっています';$('playground').dataset.paused=String(!enabled);['play-spell','play-ghosts'].forEach(id=>$(id).disabled=!enabled);effects.sync();try{localStorage.setItem('halloween-motion',on?'on':'off');}catch{}}setMotion(motion);motionMedia.addEventListener('change',()=>setMotion(motion));$('motion-toggle').addEventListener('click',()=>setMotion(true));$('motion-off').addEventListener('click',()=>setMotion(false));installNightStudio(effects);
 document.querySelectorAll('.collection-switch button').forEach(b=>b.addEventListener('click',()=>setCollection(b.dataset.collection)));
 document.querySelectorAll('[data-decoration]').forEach(b=>{if(b.tagName!=='BUTTON')return;b.addEventListener('click',()=>{document.body.dataset.decoration=b.dataset.decoration;document.querySelectorAll('button[data-decoration]').forEach(n=>n.setAttribute('aria-pressed',String(n===b)));effects.celebrate();});});
-function setCollection(next){if(!['halloween','everyday'].includes(next))return;clearIdeas();collectionSnapshots[collection]={mode,selections:{...selections},modeSnapshots:structuredClone(modeSnapshots),proposals,selectedProposal};collection=next;applyCollection(collection);const state=collectionSnapshots[next];mode=state?.mode||'detail';selections=state?.selections||initialSelections();modeSnapshots=state?.modeSnapshots||{detail:{...selections}};proposals=[];selectedProposal=state?.selectedProposal||null;document.body.dataset.collection=collection;const daily=collection==='everyday';document.querySelectorAll('.collection-switch button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.collection===collection)));$('hero-eyebrow').textContent=daily?'EVERYDAY / ILLUSTRATION STUDIO':'HALLOWEEN / CREATE YOUR WORLD';$('studio-title').replaceChildren(document.createTextNode(daily?'日々を、作品に。':'遊ぶ。描く。'),el('br'),document.createTextNode(daily?'好きな世界を描こう。':'変身する。'));$('hero-copy').textContent=daily?'日常、旅、ファッション、幻想。季節を問わず、自由な一枚へ。':'写真から墨絵まで。あなたの主役で、まだ見ぬ一夜を。';$('intro-copy').textContent=daily?'あなたのキャラで、毎日に新しい一枚を。':'あなたのキャラで、いつもと違うHalloween。';$('stage-brand').textContent=daily?'YOUR ILLUSTRATION':'YOUR HALLOWEEN';$('playground').setAttribute('aria-label',daily?'彩りの遊び場':'魔法の遊び場');$('playground-title').textContent=daily?'彩りの遊び場':'魔法の遊び場';$('play-spell').textContent=daily?'✦ 彩りをひろげる':'✦ 魔法を飛ばす';$('spell-status').textContent=daily?'花・紙片・光の演出を楽しめます。':'７種類の魔法。次は何が起きる？';setMotion(motion);$('play-copy').textContent=daily?'色や写真、身近なモチーフ。飾りに触って、創作のひらめきを。':'飾りをタップして魔法を発見。制作の合間にも、ひと遊び。';$('play-ghosts').textContent=daily?'モチーフをあつめる':'おばけとお菓子集め';$('ghost-title').textContent=daily?'モチーフをあつめる':'おばけとお菓子集め';boardArtKey='';setMode(mode);syncProfilePreview();effects.refresh();try{localStorage.setItem('halloween-collection',collection);}catch{}}
-setView(view);renderRefs(false);setMode('detail');let initialCollection='halloween';try{initialCollection=localStorage.getItem('halloween-collection')||'halloween';}catch{}setCollection(initialCollection);renderHistory();
+function setCollection(next){if(!['halloween','everyday'].includes(next))return;clearIdeas();collectionSnapshots[collection]={mode,selections:{...selections},modeSnapshots:structuredClone(modeSnapshots),proposals,selectedProposal};collection=next;applyCollection(collection);const state=collectionSnapshots[next];mode=state?.mode||'detail';selections=state?.selections||initialSelections();modeSnapshots=state?.modeSnapshots||{detail:{...selections}};proposals=[];selectedProposal=state?.selectedProposal||null;document.body.dataset.collection=collection;const daily=collection==='everyday';document.querySelectorAll('.collection-switch button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.collection===collection)));$('tool-name').replaceChildren(document.createTextNode(daily?'Illustration ':'Halloween '),el('i',null,'Atelier'));$('tool-brand').textContent='無名S note / '+(daily?'Illustration':'Halloween')+' Atelier';document.title='無名S note — '+(daily?'Illustration':'Halloween')+' Atelier';$('hero-eyebrow').textContent=daily?'EVERYDAY / ILLUSTRATION STUDIO':'HALLOWEEN / CREATE YOUR WORLD';$('studio-title').replaceChildren(document.createTextNode(daily?'日々を、作品に。':'遊ぶ。描く。'),el('br'),document.createTextNode(daily?'好きな世界を描こう。':'変身する。'));$('hero-copy').textContent=daily?'日常、旅、ファッション、幻想。季節を問わず、自由な一枚へ。':'写真から墨絵まで。あなたの主役で、まだ見ぬ一夜を。';$('intro-copy').textContent=daily?'あなたのキャラで、毎日に新しい一枚を。':'あなたのキャラで、いつもと違うHalloween。';$('stage-brand').textContent=daily?'YOUR ILLUSTRATION':'YOUR HALLOWEEN';$('playground').setAttribute('aria-label',daily?'彩りの遊び場':'魔法の遊び場');$('playground-title').textContent=daily?'彩りの遊び場':'魔法の遊び場';$('play-spell').textContent=daily?'✦ 彩りをひろげる':'✦ 魔法を飛ばす';$('spell-status').textContent=daily?'花・紙片・光の演出を楽しめます。':'７種類の魔法。次は何が起きる？';setMotion(motion);$('play-copy').textContent=daily?'色や写真、身近なモチーフ。飾りに触って、創作のひらめきを。':'飾りをタップして魔法を発見。制作の合間にも、ひと遊び。';$('play-ghosts').textContent=daily?'モチーフをあつめる':'おばけとお菓子集め';$('ghost-title').textContent=daily?'モチーフをあつめる':'おばけとお菓子集め';boardArtKey='';setMode(mode);syncProfilePreview();effects.refresh();try{localStorage.setItem('halloween-collection',collection);}catch{}}
+let mainCollection='halloween';try{mainCollection=localStorage.getItem('atelier-main-collection-v1')||'halloween';}catch{}
+function orderCollections(){const group=document.querySelector('.collection-switch');for(const key of [mainCollection,mainCollection==='everyday'?'halloween':'everyday'])group.append(group.querySelector('[data-collection="'+key+'"]'));$('main-collection').textContent=mainCollection==='everyday'?'Halloweenをメインに':'普段使いをメインに';$('main-collection').setAttribute('aria-label','TOPの順番と起動時のメインを切り替える');}
+$('main-collection').addEventListener('click',()=>{mainCollection=mainCollection==='everyday'?'halloween':'everyday';try{localStorage.setItem('atelier-main-collection-v1',mainCollection);}catch{}orderCollections();setCollection(mainCollection);});orderCollections();
+setView(view);renderRefs(false);setMode('detail');let initialCollection='halloween';try{initialCollection=localStorage.getItem('atelier-main-collection-v1')||localStorage.getItem('halloween-collection')||'halloween';}catch{}setCollection(initialCollection);renderHistory();
 
 function setMode(next){if(!modeKeys[next])return;modeSnapshots[mode]={...selections};mode=next;selections={...(modeSnapshots[next]||initialSelections()),size:selections.size};document.body.dataset.mode=mode;document.querySelectorAll('.mode-switch button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));$('mode-description').textContent=modeCopy[mode];$('choice-heading').textContent={detail:'2. 10項目で決める',simple:'2. 5項目だけ選ぶ',auto:'2. 見本の組み合わせで決める'}[mode];$('auto-proposals').hidden=mode!=='auto';$('shuffle').hidden=mode==='auto';renderChoices();if(mode==='auto'&&!proposals.length)makeProposals();}
 function makeProposals(){proposals=Array.from({length:3},()=>propose(selections,rng));selectedProposal=null;$('proposal-cards').replaceChildren();proposals.forEach((values,i)=>{const b=el('button','proposal-card');b.type='button';b.setAttribute('aria-pressed','false');const arts=el('span','proposal-art');arts.append(sampleNode('medium',values.medium),sampleNode('design',values.design));b.append(arts,el('b',null,values.medium),el('span',null,values.design),el('small',null,values.theme+' / '+values.palette));b.addEventListener('click',()=>{selectedProposal={...values,size:selections.size};document.querySelectorAll('.proposal-card').forEach(n=>n.setAttribute('aria-pressed',String(n===b)));renderBoard(selectedProposal);tell('この作例の組み合わせを選びました。');});$('proposal-cards').append(b);});renderBoard({...initialSelections(),size:selections.size});$('generation-status').hidden=true;}

@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-07",
+  "scope": "One real image call; instruction coverage is tested separately.",
+  "generationMs": 70187,
+  "previousGenerationMs": 74106,
+  "face": "Improved: clearly iridescent faceted planes extend over forehead, cheeks, nose, chin and ears. Some natural lip/eye detail remains.",
+  "limitations": [
+    "One-minute target not met",
+    "Reference pumpkins leaked into the stair scene",
+    "Head and extended hand readable, but full-body foot framing not completely met"
+  ],
+  "acceptance": "partial",
+  "outputMode": "native generated image displayed inline"
+}

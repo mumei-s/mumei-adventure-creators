@@ -1,11 +1,12 @@
-import {CRYSTAL_OBJECT,crystalObjectRecipe,japaneseSections} from './japan-direction.js?v=22.0.2';
-import {visualSpec} from './visual-specs.js?v=22.0.2';
-import {detailedMedium} from './medium-recipes.js?v=22.0.2';
-import {detailedFormat} from './format-recipes.js?v=22.0.2';
-import {detailedSubject} from './subject-recipes.js?v=22.0.2';
-import {detailedPalette} from './palette-recipes.js?v=22.0.2';
-import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=22.0.2';
-import {executionFor} from './option-execution.js?v=22.0.2';
+import {everydayRecipe} from './everyday-options.js?v=23.0.0';
+import {CRYSTAL_OBJECT,crystalObjectRecipe,japaneseSections} from './japan-direction.js?v=23.0.0';
+import {visualSpec} from './visual-specs.js?v=23.0.0';
+import {detailedMedium} from './medium-recipes.js?v=23.0.0';
+import {detailedFormat} from './format-recipes.js?v=23.0.0';
+import {detailedSubject} from './subject-recipes.js?v=23.0.0';
+import {detailedPalette} from './palette-recipes.js?v=23.0.0';
+import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=23.0.0';
+import {executionFor} from './option-execution.js?v=23.0.0';
 
 function crystalMaterialRecipe({noPerson}){
  if(!noPerson)return crystalObjectRecipe;
@@ -29,12 +30,14 @@ export function optionRecipe(key,value,context={}){
  const values={...(context.values||{}),[key]:value};
  const noPerson=context.noPerson??/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume||'');
  const options={...context,values,noPerson};
- const recipe=key==='medium'?(value===CRYSTAL_OBJECT?crystalMaterialRecipe(options):value===CRYSTAL_ANIME?crystalRecipe(options):detailedMedium(value,options))
+ let recipe=key==='medium'?(value===CRYSTAL_OBJECT?crystalMaterialRecipe(options):value===CRYSTAL_ANIME?crystalRecipe(options):detailedMedium(value,options))
   :key==='design'?detailedFormat(value,options)
   :key==='palette'?detailedPalette(value,options)
-  :detailedSubject(key,value,options);
+  :everydayRecipe(key,value)||detailedSubject(key,value,options);
  if(recipe?.sections?.length){
-  const resolved={...recipe,key,value,sections:[...recipe.sections.map(s=>({...s})),...japaneseSections(key,value,options)],checks:[...(recipe.checks||[])]};
+  recipe={...recipe,sections:recipe.sections.map(s=>({...s}))};
+  if(key==='medium'&&!noPerson&&['クリスタルホログラム造形アニメ','宝石ホログラムアニメ'].includes(value))recipe.sections.push({label:'顔も同一の結晶ホログラム',text:'額・頬・鼻・顎・眼瞼・唇・耳まで透明な結晶で造形する。頬と鼻の面に虹色の干渉帯、厚い縁に二重輪郭、顔の内部に背景光の屈折ずれを描く。自然な肌色や不透明な皮膚を残さず、目鼻口の配置と識別できる顔の形を保つ。'});
+  const resolved={...recipe,key,value,sections:[...recipe.sections.map(s=>({...s})),...japaneseSections(key,value,options)],checks:[...(recipe.checks||[]),...(key==='medium'&&!noPerson&&['クリスタルホログラム造形アニメ','宝石ホログラムアニメ'].includes(value)?['額・頬・鼻・眼瞼・唇・耳まで同一の透明結晶ホログラム']:[])]};
   resolved.execution=executionFor(key,value,resolved,options);
   return resolved;
  }

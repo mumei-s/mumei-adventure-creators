@@ -1,6 +1,6 @@
-import {compileProduction} from './compiled-production.js?v=22.0.2';
-import {composeArtworkStage,composeArtworkRepair} from './artwork-stage.js?v=22.0.2';
-import {needsStagedProduction,composeLayoutStage} from './staged-production.js?v=22.0.2';
+import {compileProduction} from './compiled-production.js?v=23.0.0';
+import {composeArtworkStage,composeArtworkRepair} from './artwork-stage.js?v=23.0.0';
+import {needsStagedProduction,composeLayoutStage} from './staged-production.js?v=23.0.0';
 
 const stagedInputs=new WeakMap();
 export function stagePrompts(plan){

@@ -1,7 +1,7 @@
-import {modeFoundation} from './japan-direction.js?v=22.0.2';
-import {imageOutputContract} from './output-contract.js?v=22.0.2';
-import {opticalSignature} from './optical-effects.js?v=22.0.2';
-import {colorPolicy} from './color-policy.js?v=22.0.2';
+import {modeFoundation} from './japan-direction.js?v=23.0.0';
+import {imageOutputContract} from './output-contract.js?v=23.0.0';
+import {opticalSignature} from './optical-effects.js?v=23.0.0';
+import {colorPolicy} from './color-policy.js?v=23.0.0';
 
 export const conditionOwners=Object.freeze({
  medium:'描線・陰影・画材・光学',design:'画像と原稿の領域・読み順',
@@ -29,6 +29,7 @@ function renderInputObject(plan){
   required_before_details:{
    layout:byKey.design.execution.method,
    medium:material.execution.method,
+   ...(!plan.noPerson&&['クリスタルホログラム造形アニメ','宝石ホログラムアニメ'].includes(selected.medium)?{face_material:'最優先：顔も結晶ホログラム。額・頬・鼻・眼瞼・唇・顎・耳に、透明な厚み、虹色干渉帯、内部反射と屈折ずれを実際に描く。顔だけ自然な皮膚へ戻さない。主参照は形と比率だけに使う。'}:{}),
    palette:color.restricted?'全領域の使用色：'+color.allowed+'。参照の髪・肌・瞳、光、反射、文字もこの色域で描き直す。':byKey.palette.execution.method,
    ...(optical?{optical_geometry:optical+'主題と周囲の空間をまたぐ面として描き、宝飾の点光だけにしない。'+(color.restricted?'透過・屈折・反射も許可色だけ。':'')}:{}),
    frame:plan.noPerson?'選択した主題の全景を指定形式の画像領域へ収める。':v.distance+(/全身|足先|靴から頭/.test(v.distance)?'。文字枠の下に手足を隠さず、頭・手・足・支持面を画像領域内へ収める。':'。指定した画角の対象を文字枠で隠さない。'),
@@ -79,7 +80,6 @@ export function renderDetailedChatInput(plan){
   '【全選択の個別レシピ】',
   ...plan.conditions.flatMap(c=>[
    c.index+'. '+c.name+'：'+c.value,
-   '担当：'+conditionOwners[c.key],
    '描き分け：'+c.sections.map(s=>s.label).join('、'),
    ...unique([c.execution.method,...c.sections.map(s=>s.text).filter(t=>!c.execution.method.includes(t)),c.execution.line?.method]).map(t=>'・'+t)
   ]),
@@ -120,11 +120,9 @@ export function compileProduction(plan,originalLines){
   '制作の基準は各項目のタイトルと具体条件。見本の人物は顔の参照ではない。見本の性別や構図へ置き換えない。',
   ...between(originalLines,'【作成者が添付する参照画像】','【10の選択】'),
   ...originalLines.filter(s=>/^(限定色|墨|水彩)の必須条件：/.test(s)),
-  ...between(originalLines,'【10の選択】','用途：'),
   originalLines.find(s=>s.startsWith('用途：')),
-  '【画像生成へ渡す作画条件：開始】',renderChatInput(plan),'【画像生成へ渡す作画条件：終了】',
   ...between(originalLines,'【物語と舞台を一場面に統合】','【色・光・素材の設計】'),
-  ...between(originalLines,'【似た作品への回帰を防ぐ】','【作品内の文字・広告編集】'),
+  '【画像生成へ渡す作画条件：開始】',renderChatInput(plan),'【画像生成へ渡す作画条件：終了】',
   '完成した画像そのものを1枚、画像作成機能の通常の生成画像として表示する。文章だけで完成扱いにしない。'
  ].join('\n');
 }

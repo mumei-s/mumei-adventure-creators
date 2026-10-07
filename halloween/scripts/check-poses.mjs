@@ -1,15 +1,15 @@
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
-import {questions,visibleQuestions,defaults,resolveSelections} from '../catalog.js?v=22.0.2';
-import {poseItems,applyPose} from '../poses.js?v=22.0.2';
-import {initialSelections,effectiveSelections} from '../modes.js?v=22.0.2';
-import {buildDirection} from '../direction.js?v=22.0.2';
-import {composePrompt} from '../prompt.js?v=22.0.2';
-import {selectedRecipes} from '../recipes.js?v=22.0.2';
+import {questions,visibleQuestions,defaults,resolveSelections} from '../catalog.js?v=23.0.0';
+import {poseItems,applyPose} from '../poses.js?v=23.0.0';
+import {initialSelections,effectiveSelections} from '../modes.js?v=23.0.0';
+import {buildDirection} from '../direction.js?v=23.0.0';
+import {composePrompt} from '../prompt.js?v=23.0.0';
+import {selectedRecipes} from '../recipes.js?v=23.0.0';
 assert.equal(visibleQuestions.length,10);assert.equal(questions.length,11);assert.equal(defaults.length,11);assert.ok(!visibleQuestions.some(q=>q.key==='line'));assert.ok(visibleQuestions.some(q=>q.key==='pose'));assert.equal(poseItems.length,48);
 const values=resolveSelections({...initialSelections(),pose:'全力で走る',mood:'完全な左横顔90度',line:'今日の光を、忘れない。'});assert.equal(effectiveSelections('detail',values).line,values.line);assert.equal(effectiveSelections('simple',values).line,values.line);
 for(const pose of poseItems){assert.ok(fs.existsSync(new URL('../'+pose.file,import.meta.url)));const v=applyPose(buildDirection([],values.mood),pose.value);assert.match(v.face,/左横顔90度/);assert.ok(v.pose.includes(pose.text));assert.match(v.distance,/全身|胸から上/);}
 const variant=applyPose(buildDirection([],values.mood),values.pose),cells=selectedRecipes(values).map((r,i)=>({...r,cell:i+1}));assert.equal(cells.length,8);assert.equal(cells[7].key,'pose');assert.equal(cells[7].file,'pose-028.jpg');
-const prompt=composePrompt({creator:'alice',profile:{displayName:'Alice',topics:[]},values,variant,references:[],edition:'POSE',styleGuide:{name:'reference-board.jpg',combined:true,cells}});assert.ok(!prompt.includes('作例8 /'));assert.ok(!prompt.includes('reference-board.jpg'));assert.match(prompt,/項目名から制作/);assert.match(prompt,/選んだポーズ：全力で走る/);assert.match(prompt,/完全な左横顔90度/);assert.match(prompt,/セリフ：今日の光を、忘れない。/);const count=prompt.split('【10の選択】')[1].split('用途：')[0].trim().split('\n').length;assert.equal(count,10);
+const prompt=composePrompt({creator:'alice',profile:{displayName:'Alice',topics:[]},values,variant,references:[],edition:'POSE',styleGuide:{name:'reference-board.jpg',combined:true,cells}});assert.ok(!prompt.includes('作例8 /'));assert.ok(!prompt.includes('reference-board.jpg'));assert.match(prompt,/項目名から制作/);assert.match(prompt,/選んだポーズ：全力で走る/);assert.match(prompt,/完全な左横顔90度/);assert.match(prompt,/セリフ：今日の光を、忘れない。/);const titles=prompt.match(/^\d+\. .+：.+$/gm)||[];assert.equal(titles.length,10);for(const q of visibleQuestions)assert.ok(titles.some(t=>t.includes(values[q.key])));
 const custom=applyPose(buildDirection([]),'片手で傘を持って階段を登る');assert.match(custom.pose,/片手で傘を持って階段を登る/);assert.match(custom.pose,/自由指定/);
 console.log('PASS pose contracts: 10 visible items, retained phrases/density, 48 native samples, independent left profile and body poses, title-based 10-item instructions, custom pose.');

@@ -26,3 +26,21 @@ body[data-motion=on] dialog[open]{animation:portal-open .3s cubic-bezier(.16,.7,
 .ring-stage{overflow:clip;flex-shrink:0}
 .picker-favorites{flex:none}
 .ring-stage,#picker-options{touch-action:pan-y;user-select:none}
+
+.picker-canvas{position:relative;min-height:0;flex:1;display:flex;isolation:isolate}
+.picker-canvas>.ring-stage,.picker-canvas>#picker-options{width:100%;min-height:0;flex:1}
+.page-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:30;width:38px;height:52px;padding:0;border:2px solid #b66a28;background:#fff5e8eb;color:#542411;font-size:22px;box-shadow:0 3px 9px #0003}
+.page-arrow-prev{left:0}.page-arrow-next{right:0}.page-arrow:disabled{opacity:.3}
+#picker .picker-filters{grid-template-columns:1fr}.picker-filters select{width:100%}
+.ring-stage{touch-action:pan-y;user-select:none;-webkit-touch-callout:none}.ring-grabbing{touch-action:none;cursor:grabbing;outline:2px solid #c68d3c;outline-offset:-2px}.ring-grabbing .ring-pop{animation:none;transition:none}
+#picker #picker-options:not(.comparing){grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:minmax(122px,min-content);gap:7px;align-content:start;padding:3px 40px;max-height:none}
+#picker-options:not(.comparing) .sample-card{padding:5px;gap:3px}
+#picker-options:not(.comparing) .sample-card .look-tags{display:none}
+#picker-options:not(.comparing) .sample-card>.option-button{grid-template-columns:44px minmax(0,1fr);gap:5px}
+#picker-options:not(.comparing) .sample-card>.option-button>.sample-thumb{width:44px;height:55px;min-height:55px}
+#picker-options:not(.comparing) .sample-card>.option-button>b{font-size:.73rem;min-height:0}
+#picker-options:not(.comparing) .sample-tools{flex-wrap:wrap;gap:3px;margin-top:auto}
+#picker-options:not(.comparing) .sample-tools button{font-size:.66rem;min-height:29px;padding:2px 4px}
+.main-collection{display:block;margin:0 4vw 12px;min-height:40px;font-size:.8rem;padding:6px 10px}
+@media(max-width:1099px){#picker #picker-options:not(.comparing){grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:619px){#picker #picker-options:not(.comparing){grid-template-columns:repeat(3,minmax(0,1fr));padding:3px 30px;grid-auto-rows:minmax(115px,min-content)}#picker-options:not(.comparing) .sample-card>.option-button{display:flex;flex-direction:column;gap:3px}#picker-options:not(.comparing) .sample-card>.option-button>.sample-thumb{width:100%;height:48px;min-height:48px}#picker-options:not(.comparing) .sample-card>.option-button>b{font-size:.65rem;line-height:1.35;min-height:2.7em}#picker-options:not(.comparing) .sample-tools{display:grid;grid-template-columns:1fr auto}#picker-options:not(.comparing) .sample-tools button:nth-child(2){display:none}.page-arrow{width:28px;height:48px;font-size:18px}}

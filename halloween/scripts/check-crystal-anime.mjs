@@ -1,16 +1,16 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {CRYSTAL_ANIME,crystalAnimeMedium,crystalAnimeSpec,crystalAnimePalette,isCrystalAnimeLimitedPalette} from '../crystal-anime.js?v=19.0.0';
-import {questions,resolveSelections} from '../catalog.js?v=19.0.0';
-import {applyCollection} from '../collection.js?v=19.0.0';
-import {initialSelections} from '../modes.js?v=19.0.0';
-import {buildDirection} from '../direction.js?v=19.0.0';
-import {poseItems,applyPose} from '../poses.js?v=19.0.0';
-import {visualSpec} from '../visual-specs.js?v=19.0.0';
-import {lookFor} from '../looks.js?v=19.0.0';
-import {sampleFor} from '../examples.js?v=19.0.0';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=19.0.0';
-import {composePrompt} from '../prompt.js?v=19.0.0';
+import {CRYSTAL_ANIME,crystalAnimeMedium,crystalAnimeSpec,crystalAnimePalette,isCrystalAnimeLimitedPalette} from '../crystal-anime.js?v=20.0.0';
+import {questions,resolveSelections} from '../catalog.js?v=20.0.0';
+import {applyCollection} from '../collection.js?v=20.0.0';
+import {initialSelections} from '../modes.js?v=20.0.0';
+import {buildDirection} from '../direction.js?v=20.0.0';
+import {poseItems,applyPose} from '../poses.js?v=20.0.0';
+import {visualSpec} from '../visual-specs.js?v=20.0.0';
+import {lookFor} from '../looks.js?v=20.0.0';
+import {sampleFor} from '../examples.js?v=20.0.0';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=20.0.0';
+import {composePrompt} from '../prompt.js?v=20.0.0';
 
 const profile={displayName:'TEST CREATOR',biography:'',topics:[],activityEnabled:false};
 const random=()=>.22;

@@ -1,7 +1,7 @@
-import {modeFoundation} from './japan-direction.js?v=19.0.0';
-import {imageOutputContract} from './output-contract.js?v=19.0.0';
-import {opticalSignature} from './optical-effects.js?v=19.0.0';
-import {colorPolicy} from './color-policy.js?v=19.0.0';
+import {modeFoundation} from './japan-direction.js?v=20.0.0';
+import {imageOutputContract} from './output-contract.js?v=20.0.0';
+import {opticalSignature} from './optical-effects.js?v=20.0.0';
+import {colorPolicy} from './color-policy.js?v=20.0.0';
 
 export const conditionOwners=Object.freeze({
  medium:'描線・陰影・画材・光学',design:'画像と原稿の領域・読み順',

@@ -1,6 +1,6 @@
-import {opticalColors,opticalSignature} from './optical-effects.js?v=19.0.0';
-import {colorPolicy} from './palette-recipes.js?v=19.0.0';
-import {formatFor} from './formats.js?v=19.0.0';
+import {opticalColors,opticalSignature} from './optical-effects.js?v=20.0.0';
+import {colorPolicy} from './palette-recipes.js?v=20.0.0';
+import {formatFor} from './formats.js?v=20.0.0';
 
 const artworkKeys=['medium','theme','costume','mood','place','pose','palette'];
 const render=c=>[c.name+'：'+c.value,...c.sections.map(s=>'・'+s.label+'：'+s.text)];

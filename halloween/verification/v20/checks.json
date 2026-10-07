@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-07",
+  "requiredSuites": 16,
+  "result": "pass",
+  "uniqueChoices": 546,
+  "optionOccurrences": 945,
+  "recipeSections": 5135,
+  "designPreviews": 48,
+  "newNativeLayoutViews": 41,
+  "meanPromptCharacters": 10456,
+  "visualReview": "All 41 new layout views rendered and reviewed; image sizing and clipped Japanese text corrected.",
+  "limits": [
+    "Not 41 separately generated illustrations",
+    "Other categories retain legacy previews as inventoried",
+    "No claim of all 546 image outputs passing",
+    "ChatGPT 5.5 account and tap/save UI unverified",
+    "One-minute image generation goal not timed in v20"
+  ]
+}

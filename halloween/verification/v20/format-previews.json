@@ -1,0 +1,382 @@
+{
+  "preserved": [
+    "ファッション雑誌の表紙",
+    "週刊誌の表紙",
+    "カルチャー誌の表紙",
+    "インタビュー誌面",
+    "見開き特集",
+    "新聞の一面",
+    "自然・都市の風景画"
+  ],
+  "replaced": [
+    {
+      "value": "ゴシック雑誌の表紙",
+      "id": "format-01",
+      "kind": "gothic",
+      "src": "japan-format-previews-v20.svg#format-01",
+      "asset": "anime",
+      "title": "夜の装い",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "写真集の表紙",
+      "id": "format-02",
+      "kind": "photobook",
+      "src": "japan-format-previews-v20.svg#format-02",
+      "asset": "photo",
+      "title": "窓辺の時間",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "文芸誌の表紙",
+      "id": "format-03",
+      "kind": "literary",
+      "src": "japan-format-previews-v20.svg#format-03",
+      "asset": "land",
+      "title": "余白のことば",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "ZINEの表紙",
+      "id": "format-04",
+      "kind": "zine",
+      "src": "japan-format-previews-v20.svg#format-04",
+      "asset": "photo",
+      "title": "日々を拾う",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "図鑑の扉",
+      "id": "format-05",
+      "kind": "guide",
+      "src": "japan-format-previews-v20.svg#format-05",
+      "asset": "land",
+      "title": "風景の図鑑",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "絵本の表紙",
+      "id": "format-06",
+      "kind": "picturebook",
+      "src": "japan-format-previews-v20.svg#format-06",
+      "asset": "land",
+      "title": "ひかりの森へ",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "小説の装丁",
+      "id": "format-07",
+      "kind": "novel",
+      "src": "japan-format-previews-v20.svg#format-07",
+      "asset": "land",
+      "title": "湖に届く手紙",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "音楽アルバムジャケット",
+      "id": "format-08",
+      "kind": "album",
+      "src": "japan-format-previews-v20.svg#format-08",
+      "asset": "anime",
+      "title": "余韻",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "ゲームのパッケージ",
+      "id": "format-09",
+      "kind": "game",
+      "src": "japan-format-previews-v20.svg#format-09",
+      "asset": "anime",
+      "title": "月灯の旅人",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "映画ポスター",
+      "id": "format-10",
+      "kind": "cinema",
+      "src": "japan-format-previews-v20.svg#format-10",
+      "asset": "photo",
+      "title": "窓の向こうで",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "舞台ポスター",
+      "id": "format-11",
+      "kind": "stage",
+      "src": "japan-format-previews-v20.svg#format-11",
+      "asset": "photo",
+      "title": "光を待つ人",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "音楽フェスポスター",
+      "id": "format-12",
+      "kind": "festival",
+      "src": "japan-format-previews-v20.svg#format-12",
+      "asset": "land",
+      "title": "森と音の一日",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "展覧会ポスター",
+      "id": "format-13",
+      "kind": "exhibition",
+      "src": "japan-format-previews-v20.svg#format-13",
+      "asset": "land",
+      "title": "ひかりを描く",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "タイポグラフィーポスター",
+      "id": "format-14",
+      "kind": "type",
+      "src": "japan-format-previews-v20.svg#format-14",
+      "asset": "photo",
+      "title": "光と、余白。",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "スイス式グリッドポスター",
+      "id": "format-15",
+      "kind": "swiss",
+      "src": "japan-format-previews-v20.svg#format-15",
+      "asset": "photo",
+      "title": "形と余白",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "バウハウスポスター",
+      "id": "format-16",
+      "kind": "bauhaus",
+      "src": "japan-format-previews-v20.svg#format-16",
+      "asset": "photo",
+      "title": "線と面",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "アールデコポスター",
+      "id": "format-17",
+      "kind": "deco",
+      "src": "japan-format-previews-v20.svg#format-17",
+      "asset": "anime",
+      "title": "夜の劇場",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "アールヌーヴォーポスター",
+      "id": "format-18",
+      "kind": "nouveau",
+      "src": "japan-format-previews-v20.svg#format-18",
+      "asset": "anime",
+      "title": "花の記憶",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "サイケデリックポスター",
+      "id": "format-19",
+      "kind": "psychedelic",
+      "src": "japan-format-previews-v20.svg#format-19",
+      "asset": "anime",
+      "title": "ゆらめく世界",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "パンク・フライヤー",
+      "id": "format-20",
+      "kind": "punk",
+      "src": "japan-format-previews-v20.svg#format-20",
+      "asset": "photo",
+      "title": "声を、放て。",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "レトロ旅行ポスター",
+      "id": "format-21",
+      "kind": "travel",
+      "src": "japan-format-previews-v20.svg#format-21",
+      "asset": "land",
+      "title": "湖畔へ",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "通常の一枚絵",
+      "id": "format-22",
+      "kind": "art",
+      "src": "japan-format-previews-v20.svg#format-22",
+      "asset": "anime",
+      "title": null,
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "キャラクターのキービジュアル",
+      "id": "format-23",
+      "kind": "key",
+      "src": "japan-format-previews-v20.svg#format-23",
+      "asset": "anime",
+      "title": null,
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "幻想風景画",
+      "id": "format-24",
+      "kind": "landscape",
+      "src": "japan-format-previews-v20.svg#format-24",
+      "asset": "land",
+      "title": null,
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "映画のワンシーン",
+      "id": "format-25",
+      "kind": "scene",
+      "src": "japan-format-previews-v20.svg#format-25",
+      "asset": "land",
+      "title": null,
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "ファッション・エディトリアル",
+      "id": "format-26",
+      "kind": "fashion",
+      "src": "japan-format-previews-v20.svg#format-26",
+      "asset": "photo",
+      "title": "装う、わたし。",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "物語の挿絵",
+      "id": "format-27",
+      "kind": "insert",
+      "src": "japan-format-previews-v20.svg#format-27",
+      "asset": "land",
+      "title": "風の便り",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "絵巻物",
+      "id": "format-28",
+      "kind": "scroll",
+      "src": "japan-format-previews-v20.svg#format-28",
+      "asset": "land",
+      "title": null,
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "屏風絵",
+      "id": "format-29",
+      "kind": "screen",
+      "src": "japan-format-previews-v20.svg#format-29",
+      "asset": "land",
+      "title": null,
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "掛け軸",
+      "id": "format-30",
+      "kind": "hanging",
+      "src": "japan-format-previews-v20.svg#format-30",
+      "asset": "land",
+      "title": null,
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "タロットカード",
+      "id": "format-31",
+      "kind": "tarot",
+      "src": "japan-format-previews-v20.svg#format-31",
+      "asset": "anime",
+      "title": "月の旅人",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "トレーディングカード",
+      "id": "format-32",
+      "kind": "card",
+      "src": "japan-format-previews-v20.svg#format-32",
+      "asset": "anime",
+      "title": "光の案内人",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "図案・パターン",
+      "id": "format-33",
+      "kind": "pattern",
+      "src": "japan-format-previews-v20.svg#format-33",
+      "asset": null,
+      "title": null,
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "noteサムネイル",
+      "id": "format-34",
+      "kind": "thumbnail",
+      "src": "japan-format-previews-v20.svg#format-34",
+      "asset": "photo",
+      "title": "好きな色で、生きていく。",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "アイコン・肖像",
+      "id": "format-35",
+      "kind": "icon",
+      "src": "japan-format-previews-v20.svg#format-35",
+      "asset": "photo",
+      "title": null,
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "紋章・エンブレム",
+      "id": "format-36",
+      "kind": "emblem",
+      "src": "japan-format-previews-v20.svg#format-36",
+      "asset": null,
+      "title": null,
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "ステッカー",
+      "id": "format-37",
+      "kind": "sticker",
+      "src": "japan-format-previews-v20.svg#format-37",
+      "asset": "anime",
+      "title": null,
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "切手",
+      "id": "format-38",
+      "kind": "stamp",
+      "src": "japan-format-previews-v20.svg#format-38",
+      "asset": "land",
+      "title": "湖のひかり",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "ポストカード",
+      "id": "format-39",
+      "kind": "postcard",
+      "src": "japan-format-previews-v20.svg#format-39",
+      "asset": "land",
+      "title": "風のたより",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "スマホ壁紙",
+      "id": "format-40",
+      "kind": "wallpaper",
+      "src": "japan-format-previews-v20.svg#format-40",
+      "asset": "anime",
+      "title": null,
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    },
+    {
+      "value": "広告ビジュアル",
+      "id": "format-41",
+      "kind": "advert",
+      "src": "japan-format-previews-v20.svg#format-41",
+      "asset": "photo",
+      "title": "創作の時間を、あなたへ。",
+      "scope": "native layout preview; artwork is illustrative, never a production identity reference"
+    }
+  ]
+}

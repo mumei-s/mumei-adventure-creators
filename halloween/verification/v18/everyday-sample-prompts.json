@@ -1,0 +1,178 @@
+[
+  {
+    "index": 1,
+    "theme": "朝の光と小さな日常",
+    "place": "朝のキッチン",
+    "costume": "リネンシャツとデニム",
+    "pose": "カップを両手で持つ",
+    "file": "japan-everyday-001-v18.png",
+    "values": {
+      "design": "通常の一枚絵",
+      "medium": "現代アニメの一枚絵",
+      "theme": "朝の光と小さな日常",
+      "place": "朝のキッチン",
+      "costume": "リネンシャツとデニム",
+      "pose": "カップを両手で持つ",
+      "mood": "静かで美しい",
+      "palette": "参照画像の色を生かす",
+      "type": "文字を一切入れない",
+      "line": "セリフなし",
+      "size": "縦投稿4:5｜2160×2700｜4:5"
+    },
+    "prompt": "Create an original finished Japanese 2D anime illustration, portrait 4:5, no frame, no text, no UI, no collage. A fictional adult Japanese woman in a compact contemporary Japanese apartment kitchen prepares her first cup by the window. Small ceramic mug, shallow sink, compact cabinets, ordinary morning sunlight, lived-in but orderly. Fine clear Japanese anime construction, readable anatomy, clothing material and support points, crisp shaped shadows, coherent depth and natural motivated light. 日本の作画・誌面と生活空間を基本に、明示された海外技法・舞台・衣装を尊重する。通常モードではHalloweenの仮装・カボチャ・幽霊・魔法を自動追加しない。幻想は選択された項目の範囲だけ。\nRedraw the entire scene as contemporary 2D anime: tapered colored outlines, flat base colors, deliberately cut first and second shadows, and small painted highlights over those shapes. 作風「現代アニメの一枚絵」では、日本のアニメ・漫画の造形を描線と塗りで構築する。輪郭線の太さと強弱は個別技法に合わせ、眼瞼の線、簡潔な鼻口、髪の束、形の読める影面を使う。主参照の民族的特徴・顔の識別比率・年齢感は保つ。日本向けという理由だけで別人の顔へ変えない。選択技法を無視した均一輪郭、全体のぼかし、滑らかな人形の肌を標準仕上げにしない。\n窓、朝の一杯、生活道具を一つの日常行為へ結び付ける。 カップの湯気や開いたカーテンで朝の始まりを示す。未選択の発光や幻想の道具は追加しない。 ストーリー「朝の光と小さな日常」は、行為の対象・状態変化・前後の痕跡だけを担当する。タイトルに含まれる場所を追加背景にせず、舞台「朝のキッチン」の一場面に統合する。\n調理台・食器・窓・朝の自然光。窓の方向と食器の影を対応させ、現実的な作業台の高さと生活の配置を描く。 近い食器と調理台、中景の収納と窓、奥の室内を作る。 窓からの朝日と食器の影を対応させ、調理台の高さや戸棚の厚みを実用的な尺度で揃える。 日本の住居のコンパクトな台所。低めの流し台、窓、食器の寸法を生活の縮尺で統一する。物語はここで起きる出来事として載せ、別背景を重ねない。\n麻の襟と織り目・デニムの縫い目・自然な皺。日常の実際の服の構造。 麻の襟・前立て・袖口と、デニムの腰帯・ポケット・縫い目を分ける。薄い麻と厚いデニムで折れの幅を変える。 肘には細かなシャツの皺、腰や膝には厚いデニムの折れを作る。自然な生活の着用感を局所的に示す。 衣装・主役「リネンシャツとデニム」の個別構造・着装順・支持点を保持する。和装では襟合わせ・袖と身頃・帯の結びを日本の衣服構造として接続し、洋装・海外の職業・怪物は明示された文化的特徴を保つ。性別は見本から決めない。\nカップを両手で包み、自然に持つ。指と取っ手の接触を描く。 カップの底か側面を二つの掌で支え、液面は重力に対して水平にする。 左右の指をカップの左右へ回し、取っ手を使う場合は指が通る空洞を残す。指と陶器を融合させない。 ポーズ「カップを両手で持つ」は、その支持点・重心・関節の専用工程で実行する。日本のアニメ・写真の構図でも、指先だけの変更へ縮小せず、体幹の向きと動作のシルエットを読む。"
+  },
+  {
+    "index": 2,
+    "theme": "旅先で見つけた景色",
+    "place": "海辺の灯台",
+    "costume": "スポーツウェア",
+    "pose": "ゆっくり歩く",
+    "file": "japan-everyday-002-v18.png",
+    "values": {
+      "design": "通常の一枚絵",
+      "medium": "現代アニメの一枚絵",
+      "theme": "旅先で見つけた景色",
+      "place": "海辺の灯台",
+      "costume": "スポーツウェア",
+      "pose": "ゆっくり歩く",
+      "mood": "静かで美しい",
+      "palette": "参照画像の色を生かす",
+      "type": "文字を一切入れない",
+      "line": "セリフなし",
+      "size": "縦投稿4:5｜2160×2700｜4:5"
+    },
+    "prompt": "Create an original finished Japanese 2D anime illustration, portrait 4:5, no frame, no text, no UI, no collage. A fictional adult Japanese traveler walking along a Japanese coastal path toward a small lighthouse above a rocky breakwater. Native coastal vegetation and fishing-port shapes below, expansive sea and horizon. Fine clear Japanese anime construction, readable anatomy, clothing material and support points, crisp shaped shadows, coherent depth and natural motivated light. 日本の作画・誌面と生活空間を基本に、明示された海外技法・舞台・衣装を尊重する。通常モードではHalloweenの仮装・カボチャ・幽霊・魔法を自動追加しない。幻想は選択された項目の範囲だけ。\nRedraw the entire scene as contemporary 2D anime: tapered colored outlines, flat base colors, deliberately cut first and second shadows, and small painted highlights over those shapes. 作風「現代アニメの一枚絵」では、日本のアニメ・漫画の造形を描線と塗りで構築する。輪郭線の太さと強弱は個別技法に合わせ、眼瞼の線、簡潔な鼻口、髪の束、形の読める影面を使う。主参照の民族的特徴・顔の識別比率・年齢感は保つ。日本向けという理由だけで別人の顔へ変えない。選択技法を無視した均一輪郭、全体のぼかし、滑らかな人形の肌を標準仕上げにしない。\n初めて気づいた地形や建物を発見の対象にし、そこへ続く道と見通しを確保する。 手前の道から遠い目的地へ視線を通し、まだ旅が続く場面を示す。 ストーリー「旅先で見つけた景色」は、行為の対象・状態変化・前後の痕跡だけを担当する。タイトルに含まれる場所を追加背景にせず、舞台「海辺の灯台」の一場面に統合する。\n海岸・灯台・岩・遠い水平線。海と建築の規模差。 手前の岩と海岸、中景の灯台、遠景の海と水平線を置く。 灯台は地形上に立ち、塔の円柱・窓・頂部が一つの軸に沿う。海の反射は灯りの方向へ対応させる。 日本の海岸の防波堤・灯台・岩場を土地の高低へ接続する。外国の港町は明示時のみ。物語はここで起きる出来事として載せ、別背景を重ねない。\n伸縮する機能布・可動しやすい切替・スポーツ靴。動作と接地。 機能布の切替、腰帯、伸縮する関節部、運動靴のソールを作る。 動作で張る側とたるむ側を描き分け、靴底は接地面に沿う。競技や所属の未指定ロゴを追加しない。 衣装・主役「スポーツウェア」の個別構造・着装順・支持点を保持する。和装では襟合わせ・袖と身頃・帯の結びを日本の衣服構造として接続し、洋装・海外の職業・怪物は明示された文化的特徴を保つ。性別は見本から決めない。\n片足を前へ出してゆっくり歩く。反対の腕を自然に前へ。 前足の踵から足裏へ移る荷重と、後ろ足のつま先の支持を同時刻で整理する。 前へ出す脚と反対の腕を前へ振る。歩幅は穏やかにし、両足が浮く走行状態へしない。 ポーズ「ゆっくり歩く」は、その支持点・重心・関節の専用工程で実行する。日本のアニメ・写真の構図でも、指先だけの変更へ縮小せず、体幹の向きと動作のシルエットを読む。"
+  },
+  {
+    "index": 3,
+    "theme": "大切な人との再会",
+    "place": "駅の改札前",
+    "costume": "ワンピースとカーディガン",
+    "pose": "手を振る",
+    "file": "japan-everyday-003-v18.png",
+    "values": {
+      "design": "通常の一枚絵",
+      "medium": "現代アニメの一枚絵",
+      "theme": "大切な人との再会",
+      "place": "駅の改札前",
+      "costume": "ワンピースとカーディガン",
+      "pose": "手を振る",
+      "mood": "静かで美しい",
+      "palette": "参照画像の色を生かす",
+      "type": "文字を一切入れない",
+      "line": "セリフなし",
+      "size": "縦投稿4:5｜2160×2700｜4:5"
+    },
+    "prompt": "Create an original finished Japanese 2D anime illustration, portrait 4:5, no frame, no text, no UI, no collage. Two clearly adult fictional Japanese friends happily meeting outside automatic ticket gates in a Japanese train station. One raises a hand in greeting as the other approaches. Tactile yellow paving, compact ticket gates, concourse depth, station signs without text. Fine clear Japanese anime construction, readable anatomy, clothing material and support points, crisp shaped shadows, coherent depth and natural motivated light. 日本の作画・誌面と生活空間を基本に、明示された海外技法・舞台・衣装を尊重する。通常モードではHalloweenの仮装・カボチャ・幽霊・魔法を自動追加しない。幻想は選択された項目の範囲だけ。\nRedraw the entire scene as contemporary 2D anime: tapered colored outlines, flat base colors, deliberately cut first and second shadows, and small painted highlights over those shapes. 作風「現代アニメの一枚絵」では、日本のアニメ・漫画の造形を描線と塗りで構築する。輪郭線の太さと強弱は個別技法に合わせ、眼瞼の線、簡潔な鼻口、髪の束、形の読める影面を使う。主参照の民族的特徴・顔の識別比率・年齢感は保つ。日本向けという理由だけで別人の顔へ変えない。選択技法を無視した均一輪郭、全体のぼかし、滑らかな人形の肌を標準仕上げにしない。\n待ち合わせの目印と互いの合図を対応させ、会えたことが分かる一つのやりとりを作る。 離れた距離から近づいた様子や、向かい合う持物で再会の結果を示す。指定ポーズを強制的な抱擁へ変更しない。 ストーリー「大切な人との再会」は、行為の対象・状態変化・前後の痕跡だけを担当する。タイトルに含まれる場所を追加背景にせず、舞台「駅の改札前」の一場面に統合する。\n改札機の列・通路・案内板の形・奥へ続く駅構内。人が通れる寸法と床の遠近を守り、読めない駅名を勝手に捏造しない。 手前の待機できる床、中景の改札機の列、遠景の通路と案内板の形を作る。 改札間は通れる幅を残し、床の線を構内へつなぐ。文字OFFなら案内板に駅名や数字を入れない。 日本の鉄道の自動改札、点字ブロック、ホームへ続く通路を一つの駅の寸法で組む。案内文字は許可原稿だけ。物語はここで起きる出来事として載せ、別背景を重ねない。\n一続きのワンピース・前開きの編み上衣・裾と袖の動き。 一続きのワンピースに、前開きの編み地の上衣を重ねる。襟元・袖口・裾で内外の層を分ける。 カーディガンの編み地は腕で伸び、ワンピースの裾は腰から落ちる。二枚を一枚の服へ融合させない。 衣装・主役「ワンピースとカーディガン」の個別構造・着装順・支持点を保持する。和装では襟合わせ・袖と身頃・帯の結びを日本の衣服構造として接続し、洋装・海外の職業・怪物は明示された文化的特徴を保つ。性別は見本から決めない。\n片腕を上げ、掌を開いて手を振る。肩から肘までの流れ。 体の支持を保ち、上げる片腕の側だけ肩を自然に動かす。 一方の肘を軽く曲げて掌を開き、手首の小さな往復を示す。もう一方の手まで同じ位置へ複製しない。 ポーズ「手を振る」は、その支持点・重心・関節の専用工程で実行する。日本のアニメ・写真の構図でも、指先だけの変更へ縮小せず、体幹の向きと動作のシルエットを読む。"
+  },
+  {
+    "index": 4,
+    "theme": "ものづくりの時間",
+    "place": "明るい工房",
+    "costume": "リネンシャツとデニム",
+    "pose": "絵を描く",
+    "file": "japan-everyday-004-v18.png",
+    "values": {
+      "design": "通常の一枚絵",
+      "medium": "現代アニメの一枚絵",
+      "theme": "ものづくりの時間",
+      "place": "明るい工房",
+      "costume": "リネンシャツとデニム",
+      "pose": "絵を描く",
+      "mood": "静かで美しい",
+      "palette": "参照画像の色を生かす",
+      "type": "文字を一切入れない",
+      "line": "セリフなし",
+      "size": "縦投稿4:5｜2160×2700｜4:5"
+    },
+    "prompt": "Create an original finished Japanese 2D anime illustration, portrait 4:5, no frame, no text, no UI, no collage. A fictional adult Japanese woman painting a small artwork at a practical workbench in a small Japanese craft studio. Paintbrush visibly meets the paper, left hand steadies it, timber shelves, modest window, no European cathedral or magical laboratory. Fine clear Japanese anime construction, readable anatomy, clothing material and support points, crisp shaped shadows, coherent depth and natural motivated light. 日本の作画・誌面と生活空間を基本に、明示された海外技法・舞台・衣装を尊重する。通常モードではHalloweenの仮装・カボチャ・幽霊・魔法を自動追加しない。幻想は選択された項目の範囲だけ。\nRedraw the entire scene as contemporary 2D anime: tapered colored outlines, flat base colors, deliberately cut first and second shadows, and small painted highlights over those shapes. 作風「現代アニメの一枚絵」では、日本のアニメ・漫画の造形を描線と塗りで構築する。輪郭線の太さと強弱は個別技法に合わせ、眼瞼の線、簡潔な鼻口、髪の束、形の読める影面を使う。主参照の民族的特徴・顔の識別比率・年齢感は保つ。日本向けという理由だけで別人の顔へ変えない。選択技法を無視した均一輪郭、全体のぼかし、滑らかな人形の肌を標準仕上げにしない。\n素材、道具、未完成の作品を作業の順序でつなぎ、今回加工している箇所を一つ定める。 切り口・塗り途中の面・使用した道具で工程を示す。完成品だけ並べた展示へ変えない。 ストーリー「ものづくりの時間」は、行為の対象・状態変化・前後の痕跡だけを担当する。タイトルに含まれる場所を追加背景にせず、舞台「明るい工房」の一場面に統合する。\n採光窓・作業台・道具棚・制作途中の素材。道具の用途と置き場所、台の接地と明るい作業光を描く。 近い材料と道具、中景の作業台、遠景の道具棚と採光窓を組む。 台や棚は脚や壁で支持し、道具は用途に合う向きで置く。作業光は素材の加工面へ届くようにする。 日本の小規模工房の作業台、収納、窓を手が届く高さで接続する。物語はここで起きる出来事として載せ、別背景を重ねない。\n麻の襟と織り目・デニムの縫い目・自然な皺。日常の実際の服の構造。 麻の襟・前立て・袖口と、デニムの腰帯・ポケット・縫い目を分ける。薄い麻と厚いデニムで折れの幅を変える。 肘には細かなシャツの皺、腰や膝には厚いデニムの折れを作る。自然な生活の着用感を局所的に示す。 衣装・主役「リネンシャツとデニム」の個別構造・着装順・支持点を保持する。和装では襟合わせ・袖と身頃・帯の結びを日本の衣服構造として接続し、洋装・海外の職業・怪物は明示された文化的特徴を保つ。性別は見本から決めない。\nイーゼルまたは机に向かい、片手の筆で描く。手首・肘・肩の流れ。 紙かキャンバスを机またはイーゼルで支え、描く腕の重さを肩と肘で受ける。 一方の手で筆を握り先端を描画面へ近づけ、反対の手は紙の支持か道具へ置く。筆先と描いた跡を連続させる。 ポーズ「絵を描く」は、その支持点・重心・関節の専用工程で実行する。日本のアニメ・写真の構図でも、指先だけの変更へ縮小せず、体幹の向きと動作のシルエットを読む。"
+  },
+  {
+    "index": 5,
+    "theme": "季節を歩く",
+    "place": "並木道",
+    "costume": "ワンピースとカーディガン",
+    "pose": "ゆっくり歩く",
+    "file": "japan-everyday-005-v18.png",
+    "values": {
+      "design": "通常の一枚絵",
+      "medium": "現代アニメの一枚絵",
+      "theme": "季節を歩く",
+      "place": "並木道",
+      "costume": "ワンピースとカーディガン",
+      "pose": "ゆっくり歩く",
+      "mood": "静かで美しい",
+      "palette": "参照画像の色を生かす",
+      "type": "文字を一切入れない",
+      "line": "セリフなし",
+      "size": "縦投稿4:5｜2160×2700｜4:5"
+    },
+    "prompt": "Create an original finished Japanese 2D anime illustration, portrait 4:5, no frame, no text, no UI, no collage. A fictional adult Japanese woman walking along an ordinary Japanese tree-lined sidewalk in autumn. Japanese streetscape, compact facades, curb and drainage connected, falling gingko leaves, a gentle breeze moving fabric, no Halloween decorations. Fine clear Japanese anime construction, readable anatomy, clothing material and support points, crisp shaped shadows, coherent depth and natural motivated light. 日本の作画・誌面と生活空間を基本に、明示された海外技法・舞台・衣装を尊重する。通常モードではHalloweenの仮装・カボチャ・幽霊・魔法を自動追加しない。幻想は選択された項目の範囲だけ。\nRedraw the entire scene as contemporary 2D anime: tapered colored outlines, flat base colors, deliberately cut first and second shadows, and small painted highlights over those shapes. 作風「現代アニメの一枚絵」では、日本のアニメ・漫画の造形を描線と塗りで構築する。輪郭線の太さと強弱は個別技法に合わせ、眼瞼の線、簡潔な鼻口、髪の束、形の読める影面を使う。主参照の民族的特徴・顔の識別比率・年齢感は保つ。日本向けという理由だけで別人の顔へ変えない。選択技法を無視した均一輪郭、全体のぼかし、滑らかな人形の肌を標準仕上げにしない。\n選んだ一つの季節の植物と道を対象にし、歩くか立ち止まる前後の時間を描く。 風に動く枝葉や続く道で季節と移動を示し、春の花と真冬の葉など矛盾する季節を混ぜない。 ストーリー「季節を歩く」は、行為の対象・状態変化・前後の痕跡だけを担当する。タイトルに含まれる場所を追加背景にせず、舞台「並木道」の一場面に統合する。\n両側に続く樹木・歩道・遠くへ収束する道。木の間隔と高さを遠近に合わせ、一つの季節の葉と自然光で統一する。 手前の樹皮と歩道、中景の等間隔の木、遠景へ収束する道を描く。 樹高と間隔は距離に応じて小さくし、枝の広がりと葉の季節を一つに揃える。 日本の歩道と縁石、根元の植栽、連続する並木を同じ季節で描く。物語はここで起きる出来事として載せ、別背景を重ねない。\n一続きのワンピース・前開きの編み上衣・裾と袖の動き。 一続きのワンピースに、前開きの編み地の上衣を重ねる。襟元・袖口・裾で内外の層を分ける。 カーディガンの編み地は腕で伸び、ワンピースの裾は腰から落ちる。二枚を一枚の服へ融合させない。 衣装・主役「ワンピースとカーディガン」の個別構造・着装順・支持点を保持する。和装では襟合わせ・袖と身頃・帯の結びを日本の衣服構造として接続し、洋装・海外の職業・怪物は明示された文化的特徴を保つ。性別は見本から決めない。\n片足を前へ出してゆっくり歩く。反対の腕を自然に前へ。 前足の踵から足裏へ移る荷重と、後ろ足のつま先の支持を同時刻で整理する。 前へ出す脚と反対の腕を前へ振る。歩幅は穏やかにし、両足が浮く走行状態へしない。 ポーズ「ゆっくり歩く」は、その支持点・重心・関節の専用工程で実行する。日本のアニメ・写真の構図でも、指先だけの変更へ縮小せず、体幹の向きと動作のシルエットを読む。"
+  },
+  {
+    "index": 6,
+    "theme": "街角のファッション",
+    "place": "街角の歩道",
+    "costume": "現代のテーラードスーツ",
+    "pose": "片足に体重を乗せる",
+    "file": "japan-everyday-006-v18.png",
+    "values": {
+      "design": "通常の一枚絵",
+      "medium": "現代アニメの一枚絵",
+      "theme": "街角のファッション",
+      "place": "街角の歩道",
+      "costume": "現代のテーラードスーツ",
+      "pose": "片足に体重を乗せる",
+      "mood": "静かで美しい",
+      "palette": "参照画像の色を生かす",
+      "type": "文字を一切入れない",
+      "line": "セリフなし",
+      "size": "縦投稿4:5｜2160×2700｜4:5"
+    },
+    "prompt": "Create an original finished Japanese 2D anime illustration, portrait 4:5, no frame, no text, no UI, no collage. A fictional adult Japanese woman modeling a contemporary tailored suit on a Japanese urban sidewalk. Full-body composition, tasteful navy tailoring and light top, natural weight on one leg, compact Japanese shop fronts without lettering, clean bright daylight. Fine clear Japanese anime construction, readable anatomy, clothing material and support points, crisp shaped shadows, coherent depth and natural motivated light. 日本の作画・誌面と生活空間を基本に、明示された海外技法・舞台・衣装を尊重する。通常モードではHalloweenの仮装・カボチャ・幽霊・魔法を自動追加しない。幻想は選択された項目の範囲だけ。\nRedraw the entire scene as contemporary 2D anime: tapered colored outlines, flat base colors, deliberately cut first and second shadows, and small painted highlights over those shapes. 作風「現代アニメの一枚絵」では、日本のアニメ・漫画の造形を描線と塗りで構築する。輪郭線の太さと強弱は個別技法に合わせ、眼瞼の線、簡潔な鼻口、髪の束、形の読める影面を使う。主参照の民族的特徴・顔の識別比率・年齢感は保つ。日本向けという理由だけで別人の顔へ変えない。選択技法を無視した均一輪郭、全体のぼかし、滑らかな人形の肌を標準仕上げにしない。\n服の素材・切替・動きが街の建材や空間と対比するよう、一つの装いを見せる出来事にする。 裾の遅れや歩き終えた姿勢で、街の中で装いが動く瞬間を示す。未指定のブランド名を足さない。 ストーリー「街角のファッション」は、行為の対象・状態変化・前後の痕跡だけを担当する。タイトルに含まれる場所を追加背景にせず、舞台「街角の歩道」の一場面に統合する。\n角を曲がる歩道・建物の足元・窓や入口・道路との境界。安全に歩ける空間と街の縮尺を自然な遠近で描く。 近い縁石、中景の曲がる歩道と建物の足元、遠景の道の先を置く。 入口と窓の高さを歩道の尺度へ対応させ、道路との段差を連続させる。人が歩ける空間を背景物で塞がない。 日本の街の狭い歩道、建物の入口、縁石と道路の接続を描く。物語はここで起きる出来事として載せ、別背景を重ねない。\nラペル・肩の仕立て・ジャケットとパンツの縫製。現代の正装。 ラペル・肩の芯・胸の立体・ジャケットの前合わせとパンツの腰を仕立てる。 肩は形を保ち、肘と腰で必要な皺だけを作る。座る時に裾とパンツが支持面へ沿い、体の形と服の厚みを分ける。 衣装・主役「現代のテーラードスーツ」の個別構造・着装順・支持点を保持する。和装では襟合わせ・袖と身頃・帯の結びを日本の衣服構造として接続し、洋装・海外の職業・怪物は明示された文化的特徴を保つ。性別は見本から決めない。\n片脚に重心を置き、反対の膝を緩める。腰と肩の傾きを対にする。 体重を載せる片足を決め、その股関節の上へ骨盤を寄せる。反対の足は軽い支持にする。 支持脚は安定させ、反対の膝を緩める。腰が上がる側と肩が上がる側を対にし、片脚支持の差を見せる。 ポーズ「片足に体重を乗せる」は、その支持点・重心・関節の専用工程で実行する。日本のアニメ・写真の構図でも、指先だけの変更へ縮小せず、体幹の向きと動作のシルエットを読む。"
+  },
+  {
+    "index": 7,
+    "theme": "静かな読書の時間",
+    "place": "窓辺の読書室",
+    "costume": "ワンピースとカーディガン",
+    "pose": "本を読む",
+    "file": "japan-everyday-007-v18.png",
+    "values": {
+      "design": "通常の一枚絵",
+      "medium": "現代アニメの一枚絵",
+      "theme": "静かな読書の時間",
+      "place": "窓辺の読書室",
+      "costume": "ワンピースとカーディガン",
+      "pose": "本を読む",
+      "mood": "静かで美しい",
+      "palette": "参照画像の色を生かす",
+      "type": "文字を一切入れない",
+      "line": "セリフなし",
+      "size": "縦投稿4:5｜2160×2700｜4:5"
+    },
+    "prompt": "Create an original finished Japanese 2D anime illustration, portrait 4:5, no frame, no text, no UI, no collage. A fictional adult Japanese woman quietly reading an open book beside a modest window in a contemporary Japanese home. Small wooden bookshelf, simple chair, domestic dimensions, a small cup on a side table, peaceful afternoon light. No letters readable on the book. Fine clear Japanese anime construction, readable anatomy, clothing material and support points, crisp shaped shadows, coherent depth and natural motivated light. 日本の作画・誌面と生活空間を基本に、明示された海外技法・舞台・衣装を尊重する。通常モードではHalloweenの仮装・カボチャ・幽霊・魔法を自動追加しない。幻想は選択された項目の範囲だけ。\nRedraw the entire scene as contemporary 2D anime: tapered colored outlines, flat base colors, deliberately cut first and second shadows, and small painted highlights over those shapes. 作風「現代アニメの一枚絵」では、日本のアニメ・漫画の造形を描線と塗りで構築する。輪郭線の太さと強弱は個別技法に合わせ、眼瞼の線、簡潔な鼻口、髪の束、形の読める影面を使う。主参照の民族的特徴・顔の識別比率・年齢感は保つ。日本向けという理由だけで別人の顔へ変えない。選択技法を無視した均一輪郭、全体のぼかし、滑らかな人形の肌を標準仕上げにしない。\n開いた本の頁を読む対象にし、手・本・視線を選んだポーズの可能な範囲で結び付ける。 めくりかけの頁、しおり、読み進めた位置で時間を表す。手を使えない姿勢なら本を台で支える。 ストーリー「静かな読書の時間」は、行為の対象・状態変化・前後の痕跡だけを担当する。タイトルに含まれる場所を追加背景にせず、舞台「窓辺の読書室」の一場面に統合する。\n窓に近い椅子と机・本棚・開いた本・柔らかな採光。窓光と家具の影を接続し、静かな余白を残す。 近い本と卓上、中景の椅子、奥の本棚と窓を静かな間隔で配置する。 窓光は頁から机・床へ同方向の影を作り、椅子と机の高さを対応させる。 日本の住居に合う窓・椅子・本棚の生活寸法。畳や障子は和室と明示された場合だけ。物語はここで起きる出来事として載せ、別背景を重ねない。\n一続きのワンピース・前開きの編み上衣・裾と袖の動き。 一続きのワンピースに、前開きの編み地の上衣を重ねる。襟元・袖口・裾で内外の層を分ける。 カーディガンの編み地は腕で伸び、ワンピースの裾は腰から落ちる。二枚を一枚の服へ融合させない。 衣装・主役「ワンピースとカーディガン」の個別構造・着装順・支持点を保持する。和装では襟合わせ・袖と身頃・帯の結びを日本の衣服構造として接続し、洋装・海外の職業・怪物は明示された文化的特徴を保つ。性別は見本から決めない。\n開いた本を両手または片手と台で支え、読む。手・本・視線をつなぐ。 本の重さを両手か片手と台で受け、背と左右の頁を開いた立体として支える。 指は背・頁の端など実際に触れる位置へ置く。顔角度を保持して本の高さを調整し、視線が届く頁を作る。 ポーズ「本を読む」は、その支持点・重心・関節の専用工程で実行する。日本のアニメ・写真の構図でも、指先だけの変更へ縮小せず、体幹の向きと動作のシルエットを読む。"
+  },
+  {
+    "index": 8,
+    "theme": "星明かりを集める旅",
+    "place": "川沿いの遊歩道",
+    "costume": "アンティークの旅装",
+    "pose": "片手を差し出す",
+    "file": "japan-everyday-008-v18.png",
+    "values": {
+      "design": "通常の一枚絵",
+      "medium": "現代アニメの一枚絵",
+      "theme": "星明かりを集める旅",
+      "place": "川沿いの遊歩道",
+      "costume": "アンティークの旅装",
+      "pose": "片手を差し出す",
+      "mood": "静かで美しい",
+      "palette": "参照画像の色を生かす",
+      "type": "文字を一切入れない",
+      "line": "セリフなし",
+      "size": "縦投稿4:5｜2160×2700｜4:5"
+    },
+    "prompt": "Create an original finished Japanese 2D anime illustration, portrait 4:5, no frame, no text, no UI, no collage. A fictional adult Japanese anime traveler on a Japanese riverside promenade under a deep blue starry sky. A small transparent jar in the other hand catches three tiny floating star lights. Japanese riverbank, low bridge, distant Japanese roofline. A deliberately selected gentle fantasy story, no pumpkin, witch or spell circle. Fine clear Japanese anime construction, readable anatomy, clothing material and support points, crisp shaped shadows, coherent depth and natural motivated light. 日本の作画・誌面と生活空間を基本に、明示された海外技法・舞台・衣装を尊重する。通常モードではHalloweenの仮装・カボチャ・幽霊・魔法を自動追加しない。幻想は選択された項目の範囲だけ。\nRedraw the entire scene as contemporary 2D anime: tapered colored outlines, flat base colors, deliberately cut first and second shadows, and small painted highlights over those shapes. 作風「現代アニメの一枚絵」では、日本のアニメ・漫画の造形を描線と塗りで構築する。輪郭線の太さと強弱は個別技法に合わせ、眼瞼の線、簡潔な鼻口、髪の束、形の読める影面を使う。主参照の民族的特徴・顔の識別比率・年齢感は保つ。日本向けという理由だけで別人の顔へ変えない。選択技法を無視した均一輪郭、全体のぼかし、滑らかな人形の肌を標準仕上げにしない。\n選ばれた幻想として、星明かりを集める器と集める途中の光を具体化する。 集まった光とこれから集める光に差を付け、日常モードでもこの選択以外の仮装や祝祭を加えない。 ストーリー「星明かりを集める旅」は、行為の対象・状態変化・前後の痕跡だけを担当する。タイトルに含まれる場所を追加背景にせず、舞台「川沿いの遊歩道」の一場面に統合する。\n川岸・水の流れ・川に沿う歩道・手すりまたは植生。道と水面の消失点を対応させ、水は地形の低い方へ流す。 手前の川岸と舗装、中景の水と並行する歩道、遠景の川の曲がりをつなぐ。 手すりは歩道の縁へ立て、流れは河床の低い方向へ向ける。道と水が同じ地点へ整合して収束する。 日本の河川敷の堤防、遊歩道、川面、橋の高さを揃える。物語はここで起きる出来事として載せ、別背景を重ねない。\n丈夫な外套・革の鞄・紐と留め具・歩きやすい靴。旅の摩耗と布の重み。 丈夫な外套、革鞄、留め具、歩きやすい靴を旅の装備として組む。鞄は肩紐か腰帯で支える。 歩幅に合わせて外套と鞄を遅らせ、重さで紐が張る。擦れは袖口・底・金具の周囲へ限定する。 衣装・主役「アンティークの旅装」の個別構造・着装順・支持点を保持する。和装では襟合わせ・袖と身頃・帯の結びを日本の衣服構造として接続し、洋装・海外の職業・怪物は明示された文化的特徴を保つ。性別は見本から決めない。\n片腕を手前へ伸ばして掌を差し出す。手前の手と胴体の遠近差。 立つか座る支持を安定させ、伸ばした片腕の重みを肩と体幹で受ける。 片方の肩から肘・手首・開いた掌を手前へつなぎ、反対の腕は伸ばさない。手前の手の大きさを遠近で増す。 ポーズ「片手を差し出す」は、その支持点・重心・関節の専用工程で実行する。日本のアニメ・写真の構図でも、指先だけの変更へ縮小せず、体幹の向きと動作のシルエットを読む。"
+  }
+]

@@ -3465,9 +3465,9 @@
       "key": "place",
       "value": "海辺の灯台",
       "kind": "image",
-      "file": "./sample-266.jpg",
+      "file": "./japan-everyday-002-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "existing sample retained; Japan-base replacement pending",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {
@@ -3964,9 +3964,9 @@
       "key": "pose",
       "value": "手を振る",
       "kind": "image",
-      "file": "./pose-038.jpg",
+      "file": "./japan-everyday-003-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "existing sample retained; Japan-base replacement pending",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {
@@ -3994,9 +3994,9 @@
       "key": "pose",
       "value": "本を読む",
       "kind": "image",
-      "file": "./pose-041.jpg",
+      "file": "./japan-everyday-007-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "existing sample retained; Japan-base replacement pending",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {
@@ -4014,9 +4014,9 @@
       "key": "pose",
       "value": "カップを両手で持つ",
       "kind": "image",
-      "file": "./pose-043.jpg",
+      "file": "./japan-everyday-001-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "existing sample retained; Japan-base replacement pending",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {
@@ -4034,9 +4034,9 @@
       "key": "pose",
       "value": "絵を描く",
       "kind": "image",
-      "file": "./pose-045.jpg",
+      "file": "./japan-everyday-004-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "existing sample retained; Japan-base replacement pending",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {
@@ -6547,9 +6547,9 @@
       "key": "theme",
       "value": "朝の光と小さな日常",
       "kind": "image",
-      "file": "./everyday-001.jpg",
+      "file": "./japan-everyday-001-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "existing sample retained; Japan-base replacement pending",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {
@@ -6557,9 +6557,9 @@
       "key": "theme",
       "value": "旅先で見つけた景色",
       "kind": "image",
-      "file": "./everyday-002.jpg",
+      "file": "./japan-everyday-002-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "existing sample retained; Japan-base replacement pending",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {
@@ -6567,9 +6567,9 @@
       "key": "theme",
       "value": "大切な人との再会",
       "kind": "image",
-      "file": "./everyday-003.jpg",
+      "file": "./japan-everyday-003-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "existing sample retained; Japan-base replacement pending",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {
@@ -6577,9 +6577,9 @@
       "key": "theme",
       "value": "ものづくりの時間",
       "kind": "image",
-      "file": "./everyday-004.jpg",
+      "file": "./japan-everyday-004-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "existing sample retained; Japan-base replacement pending",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {
@@ -6587,9 +6587,9 @@
       "key": "theme",
       "value": "季節を歩く",
       "kind": "image",
-      "file": "./everyday-005.jpg",
+      "file": "./japan-everyday-005-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "existing sample retained; Japan-base replacement pending",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {
@@ -6597,9 +6597,9 @@
       "key": "theme",
       "value": "街角のファッション",
       "kind": "image",
-      "file": "./everyday-006.jpg",
+      "file": "./japan-everyday-006-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "existing sample retained; Japan-base replacement pending",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {
@@ -6607,9 +6607,9 @@
       "key": "theme",
       "value": "静かな読書の時間",
       "kind": "image",
-      "file": "./everyday-007.jpg",
+      "file": "./japan-everyday-007-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "existing sample retained; Japan-base replacement pending",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {
@@ -6680,9 +6680,9 @@
       "key": "theme",
       "value": "星明かりを集める旅",
       "kind": "image",
-      "file": "./everyday-008.jpg",
+      "file": "./japan-everyday-008-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "existing sample retained; Japan-base replacement pending",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {
@@ -6760,9 +6760,9 @@
       "key": "costume",
       "value": "リネンシャツとデニム",
       "kind": "image",
-      "file": "./everyday-009.jpg",
+      "file": "./japan-everyday-001-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "existing sample retained; Japan-base replacement pending",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {
@@ -6770,9 +6770,9 @@
       "key": "costume",
       "value": "現代のテーラードスーツ",
       "kind": "image",
-      "file": "./everyday-010.jpg",
+      "file": "./japan-everyday-006-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "existing sample retained; Japan-base replacement pending",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {
@@ -6780,9 +6780,9 @@
       "key": "costume",
       "value": "ワンピースとカーディガン",
       "kind": "image",
-      "file": "./everyday-011.jpg",
+      "file": "./japan-everyday-007-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "existing sample retained; Japan-base replacement pending",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {
@@ -6790,9 +6790,9 @@
       "key": "costume",
       "value": "スポーツウェア",
       "kind": "image",
-      "file": "./everyday-012.jpg",
+      "file": "./japan-everyday-002-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "existing sample retained; Japan-base replacement pending",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {
@@ -7717,54 +7717,60 @@
       "mode": "everyday",
       "key": "place",
       "value": "朝のキッチン",
-      "kind": "custom",
+      "kind": "image",
+      "file": "./japan-everyday-001-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "text/ratio/reference-specific preview",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {
       "mode": "everyday",
       "key": "place",
       "value": "駅の改札前",
-      "kind": "custom",
+      "kind": "image",
+      "file": "./japan-everyday-003-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "text/ratio/reference-specific preview",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {
       "mode": "everyday",
       "key": "place",
       "value": "明るい工房",
-      "kind": "custom",
+      "kind": "image",
+      "file": "./japan-everyday-004-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "text/ratio/reference-specific preview",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {
       "mode": "everyday",
       "key": "place",
       "value": "並木道",
-      "kind": "custom",
+      "kind": "image",
+      "file": "./japan-everyday-005-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "text/ratio/reference-specific preview",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {
       "mode": "everyday",
       "key": "place",
       "value": "街角の歩道",
-      "kind": "custom",
+      "kind": "image",
+      "file": "./japan-everyday-006-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "text/ratio/reference-specific preview",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {
       "mode": "everyday",
       "key": "place",
       "value": "窓辺の読書室",
-      "kind": "custom",
+      "kind": "image",
+      "file": "./japan-everyday-007-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "text/ratio/reference-specific preview",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {
@@ -7886,9 +7892,9 @@
       "key": "place",
       "value": "海辺の灯台",
       "kind": "image",
-      "file": "./sample-266.jpg",
+      "file": "./japan-everyday-002-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "existing sample retained; Japan-base replacement pending",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {
@@ -8365,9 +8371,9 @@
       "key": "pose",
       "value": "手を振る",
       "kind": "image",
-      "file": "./pose-038.jpg",
+      "file": "./japan-everyday-003-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "existing sample retained; Japan-base replacement pending",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {
@@ -8395,9 +8401,9 @@
       "key": "pose",
       "value": "本を読む",
       "kind": "image",
-      "file": "./pose-041.jpg",
+      "file": "./japan-everyday-007-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "existing sample retained; Japan-base replacement pending",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {
@@ -8415,9 +8421,9 @@
       "key": "pose",
       "value": "カップを両手で持つ",
       "kind": "image",
-      "file": "./pose-043.jpg",
+      "file": "./japan-everyday-001-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "existing sample retained; Japan-base replacement pending",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {
@@ -8435,9 +8441,9 @@
       "key": "pose",
       "value": "絵を描く",
       "kind": "image",
-      "file": "./pose-045.jpg",
+      "file": "./japan-everyday-004-v18.png",
       "instruction": "individual-preset + Japan-context; actual render input tested",
-      "sampleStatus": "existing sample retained; Japan-base replacement pending",
+      "sampleStatus": "v18 replacement, visually reviewed",
       "allCombinationsImageAcceptance": "not verified"
     },
     {

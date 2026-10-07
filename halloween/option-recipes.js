@@ -1,11 +1,11 @@
-import {CRYSTAL_OBJECT,crystalObjectRecipe,japaneseSections} from './japan-direction.js?v=18';
-import {visualSpec} from './visual-specs.js?v=18';
-import {detailedMedium} from './medium-recipes.js?v=18';
-import {detailedFormat} from './format-recipes.js?v=18';
-import {detailedSubject} from './subject-recipes.js?v=18';
-import {detailedPalette} from './palette-recipes.js?v=18';
-import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=18';
-import {executionFor} from './option-execution.js?v=18';
+import {CRYSTAL_OBJECT,crystalObjectRecipe,japaneseSections} from './japan-direction.js?v=18.0.1';
+import {visualSpec} from './visual-specs.js?v=18.0.1';
+import {detailedMedium} from './medium-recipes.js?v=18.0.1';
+import {detailedFormat} from './format-recipes.js?v=18.0.1';
+import {detailedSubject} from './subject-recipes.js?v=18.0.1';
+import {detailedPalette} from './palette-recipes.js?v=18.0.1';
+import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=18.0.1';
+import {executionFor} from './option-execution.js?v=18.0.1';
 
 function crystalMaterialRecipe({noPerson}){
  if(!noPerson)return crystalObjectRecipe;

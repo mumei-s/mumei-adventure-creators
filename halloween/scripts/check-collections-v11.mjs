@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import {questions,visibleQuestions,resolveSelections,AUTO} from '../catalog.js?v=18';
-import {applyCollection,landscapeScenes,noPersonSelection,dailyInspiration} from '../collection.js?v=18';
-import {initialSelections,propose,effectiveSelections} from '../modes.js?v=18';
-import {buildDirection} from '../direction.js?v=18';
-import {poseItems,applyPose} from '../poses.js?v=18';
-import {sampleFor,typePreview} from '../examples.js?v=18';
+import {questions,visibleQuestions,resolveSelections,AUTO} from '../catalog.js?v=18.0.1';
+import {applyCollection,landscapeScenes,noPersonSelection,dailyInspiration} from '../collection.js?v=18.0.1';
+import {initialSelections,propose,effectiveSelections} from '../modes.js?v=18.0.1';
+import {buildDirection} from '../direction.js?v=18.0.1';
+import {poseItems,applyPose} from '../poses.js?v=18.0.1';
+import {sampleFor,typePreview} from '../examples.js?v=18.0.1';
 let state=11987;const random=()=>((state=(Math.imul(state,1664525)+1013904223)>>>0)/4294967296);
 const valuesFor=key=>questions.find(q=>q.key===key).groups.flatMap(g=>g.values);
 applyCollection('halloween');
@@ -47,7 +47,7 @@ for(const mode of ['simple','auto']){
  assert.ok(!resolved.costume.includes('魔女'));
 }
 const size='縦投稿4:5｜2160×2700｜4:5';assert.equal(propose({...initialSelections(),size},random).size,size);
-const dailySample=sampleFor('theme',AUTO);assert.ok(dailySample.srcs.every(src=>src.startsWith('./everyday-')));
+const dailySample=sampleFor('theme',AUTO);assert.ok(dailySample.srcs.every(src=>src.startsWith('./japan-everyday-')));
 assert.doesNotMatch(typePreview('新聞風・記事と段組み').blocks.join(' '),/NIGHT|夜の/);
 const inspiration=dailyInspiration({inspiration:{labels:['光彩','旅','創作'],objects:['魔法の杖','本','幽霊']}}).inspiration;
 assert.ok(inspiration.themes.every(name=>!name.includes('星明かり')));assert.deepEqual(inspiration.objects,['本']);

@@ -1,5 +1,5 @@
-import {editorialReferencesFor} from './editorial-reference-sources.js?v=18';
-import {formatTextPolicy} from './format-recipes.js?v=18';
+import {editorialReferencesFor} from './editorial-reference-sources.js?v=18.0.1';
+import {formatTextPolicy} from './format-recipes.js?v=18.0.1';
 // The selected title defines the layout. Medium defines image rendering independently.
 const rows=[
  ['週刊誌の表紙','cover','日本の週刊誌表紙。上端の独自題字、中央主図版、左右に縦組みの太い特集見出し、下部に横見出しと小さな補足。高い情報密度でも顔と重要な形を避ける。本文の長い段組みは内ページへ分離する。','独自題字／縦見出し／横見出し／中央主図版／補助特集の明確な階層'],

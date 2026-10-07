@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=18';
-import {resolveSelections} from '../catalog.js?v=18';
-import {initialSelections} from '../modes.js?v=18';
-import {buildDirection} from '../direction.js?v=18';
-import {applyPose} from '../poses.js?v=18';
-import {productionPlan} from '../production-plan.js?v=18';
-import {composePrompt,needsReference} from '../prompt.js?v=18';
-import {imageDeliveryRepairPrompt} from '../output-contract.js?v=18';
+import {applyCollection} from '../collection.js?v=18.0.1';
+import {resolveSelections} from '../catalog.js?v=18.0.1';
+import {initialSelections} from '../modes.js?v=18.0.1';
+import {buildDirection} from '../direction.js?v=18.0.1';
+import {applyPose} from '../poses.js?v=18.0.1';
+import {productionPlan} from '../production-plan.js?v=18.0.1';
+import {composePrompt,needsReference} from '../prompt.js?v=18.0.1';
+import {imageDeliveryRepairPrompt} from '../output-contract.js?v=18.0.1';
 
 const profile={displayName:'TEST CREATOR',topics:[],biography:'',activityEnabled:false};
 applyCollection('everyday');

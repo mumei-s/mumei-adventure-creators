@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {questions,resolveSelections} from '../catalog.js?v=18';
-import {applyCollection} from '../collection.js?v=18';
-import {initialSelections} from '../modes.js?v=18';
-import {buildDirection} from '../direction.js?v=18';
-import {applyPose} from '../poses.js?v=18';
-import {productionPlan} from '../production-plan.js?v=18';
-import {renderInput} from '../compiled-production.js?v=18';
-import {optionRecipe} from '../option-recipes.js?v=18';
-import {mediumExecution} from '../medium-execution.js?v=18';
-import {formatExecution} from '../format-execution.js?v=18';
+import {questions,resolveSelections} from '../catalog.js?v=18.0.1';
+import {applyCollection} from '../collection.js?v=18.0.1';
+import {initialSelections} from '../modes.js?v=18.0.1';
+import {buildDirection} from '../direction.js?v=18.0.1';
+import {applyPose} from '../poses.js?v=18.0.1';
+import {productionPlan} from '../production-plan.js?v=18.0.1';
+import {renderInput} from '../compiled-production.js?v=18.0.1';
+import {optionRecipe} from '../option-recipes.js?v=18.0.1';
+import {mediumExecution} from '../medium-execution.js?v=18.0.1';
+import {formatExecution} from '../format-execution.js?v=18.0.1';
 
 const random=()=>.28,profile={displayName:'TEST',activityEnabled:false,topics:[],biography:''};
 const entries=new Map();let occurrences=0;

@@ -1,6 +1,6 @@
-import {mediumExecution} from './medium-execution.js?v=18';
-import {formatExecution} from './format-execution.js?v=18';
-import {colorPolicy} from './color-policy.js?v=18';
+import {mediumExecution} from './medium-execution.js?v=18.0.1';
+import {formatExecution} from './format-execution.js?v=18.0.1';
+import {colorPolicy} from './color-policy.js?v=18.0.1';
 
 // The option's own physical recipe is the source of its execution contract.
 // No generic "beautiful / atmospheric" default replaces a missing preset.

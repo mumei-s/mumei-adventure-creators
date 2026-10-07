@@ -1,5 +1,5 @@
-import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=18';
-import {poseGroups} from './poses.js?v=18';
+import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=18.0.1';
+import {poseGroups} from './poses.js?v=18.0.1';
 const original=questions.map(q=>({...q,groups:q.groups.map(g=>({...g,values:[...g.values]}))}));
 const originalGroups=key=>original.find(q=>q.key===key).groups;
 const cloneGroups=groups=>groups.map(g=>({...g,values:[...g.values]}));
@@ -27,7 +27,15 @@ export const landscapeScenes=[
  ['建築と街並みの記録','建物の外壁、窓、屋根、通りを同じ街として構成。垂直線と消失点を整える。']
 ];
 export const dailyClothes=['リネンシャツとデニム','現代のテーラードスーツ','ワンピースとカーディガン','スポーツウェア'];
-export const dailySamples=Object.fromEntries([...dailyScenes.map(([value,text],i)=>['theme\u0000'+value,{file:'everyday-'+String(i+1).padStart(3,'0')+'.jpg',text}]),...dailyClothes.map((value,i)=>['costume\u0000'+value,{file:'everyday-'+String(i+9).padStart(3,'0')+'.jpg',text:'衣服の形・縫製・素材と動きの説明。人物の顔・性別・体型・ポーズ・描画技法は指定しない。'}])]);
+const dailyFile=index=>'japan-everyday-'+String(index).padStart(3,'0')+'-v18.png';
+const japanesePlaces=['朝のキッチン','海辺の灯台','駅の改札前','明るい工房','並木道','街角の歩道','窓辺の読書室'];
+const clothingSampleIndices=[1,6,7,2];
+export const dailySamples=Object.fromEntries([
+ ...dailyScenes.map(([value,text],i)=>['theme\u0000'+value,{file:dailyFile(i+1),text}]),
+ ...japanesePlaces.map((value,i)=>['place\u0000'+value,{file:dailyFile(i+1),text:'日本の'+value+'の建築・生活寸法・背景の奥行きの見本。人物・衣装・物語・作風はそれぞれの選択で決める。'}]),
+ ...dailyClothes.map((value,i)=>['costume\u0000'+value,{file:dailyFile(clothingSampleIndices[i]),text:'衣服の形・縫製・素材と動きの説明。人物の顔・性別・体型・ポーズ・描画技法は指定しない。'}]),
+ ...[['カップを両手で持つ',1],['手を振る',3],['絵を描く',4],['本を読む',7]].map(([value,index])=>['pose\u0000'+value,{file:dailyFile(index),text:'選んだ動作の手と道具・接点・重心の見本。人物・背景・衣装・作風は別の選択で決める。'}])
+]);
 const dailyFantasyThemes=['星明かりを集める旅','秘密の図書館','星を集める旅','眠らない美術館','鏡の向こうの自分','光と影の寓話','記憶の標本室','異世界のファッションショー'];
 const scenicPlaces=['山岳と湖畔','砂浜と海岸線','田畑と里山','広葉樹の森','川沿いの遊歩道','街並みと広場','海辺の灯台','雪の庭','星空の砂漠'];
 const dailyPlaces=['朝のキッチン','駅の改札前','明るい工房','並木道','街角の歩道','窓辺の読書室','深夜の喫茶店','天窓のあるアトリエ','骨董品店','無人の映画館','雨の路地','ネオンの繁華街'];

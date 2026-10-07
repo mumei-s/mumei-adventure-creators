@@ -1,12 +1,12 @@
-import {applyCollection} from '../collection.js?v=18';
-import {resolveSelections} from '../catalog.js?v=18';
-import {initialSelections} from '../modes.js?v=18';
-import {buildDirection} from '../direction.js?v=18';
-import {applyPose} from '../poses.js?v=18';
-import {productionPlan} from '../production-plan.js?v=18';
-import {composePrompt} from '../prompt.js?v=18';
-import {composeArtworkStage} from '../artwork-stage.js?v=18';
-import {stagePrompts} from '../production-workflow.js?v=18';
+import {applyCollection} from '../collection.js?v=18.0.1';
+import {resolveSelections} from '../catalog.js?v=18.0.1';
+import {initialSelections} from '../modes.js?v=18.0.1';
+import {buildDirection} from '../direction.js?v=18.0.1';
+import {applyPose} from '../poses.js?v=18.0.1';
+import {productionPlan} from '../production-plan.js?v=18.0.1';
+import {composePrompt} from '../prompt.js?v=18.0.1';
+import {composeArtworkStage} from '../artwork-stage.js?v=18.0.1';
+import {stagePrompts} from '../production-workflow.js?v=18.0.1';
 
 // Reproducible application output. Test images receive this prompt unchanged.
 // A character test uses a locally supplied owner reference; no sample art is input.

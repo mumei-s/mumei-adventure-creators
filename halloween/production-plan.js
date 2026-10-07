@@ -1,11 +1,11 @@
-import {modeFoundation} from './japan-direction.js?v=18';
-import {visibleQuestions} from './catalog.js?v=18';
-import {formatContract} from './formats.js?v=18';
-import {buildEditorial,editorialContract} from './editorial.js?v=18';
-import {optionRecipe} from './option-recipes.js?v=18';
-import {colorPolicy} from './palette-recipes.js?v=18';
-import {resolveArtDirection,interactionContract} from './art-direction.js?v=18';
-import {executionFor} from './option-execution.js?v=18';
+import {modeFoundation} from './japan-direction.js?v=18.0.1';
+import {visibleQuestions} from './catalog.js?v=18.0.1';
+import {formatContract} from './formats.js?v=18.0.1';
+import {buildEditorial,editorialContract} from './editorial.js?v=18.0.1';
+import {optionRecipe} from './option-recipes.js?v=18.0.1';
+import {colorPolicy} from './palette-recipes.js?v=18.0.1';
+import {resolveArtDirection,interactionContract} from './art-direction.js?v=18.0.1';
+import {executionFor} from './option-execution.js?v=18.0.1';
 
 export function productionPlan(profile,values,variant,collection='halloween',random=Math.random){
  const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);

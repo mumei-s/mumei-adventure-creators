@@ -1,6 +1,6 @@
-import {formatFor} from './formats.js?v=18';
-import {colorPolicy} from './palette-recipes.js?v=18';
-import {colorWorlds} from './worlds.js?v=18';
+import {formatFor} from './formats.js?v=18.0.1';
+import {colorPolicy} from './palette-recipes.js?v=18.0.1';
+import {colorWorlds} from './worlds.js?v=18.0.1';
 
 const MAX_EDGE=4096;
 const SERIF='"Noto Serif CJK JP", "Yu Mincho", "Hiragino Mincho ProN", Georgia, serif';

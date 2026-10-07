@@ -1,15 +1,15 @@
-import {colorPolicy} from './palette-recipes.js?v=26.0.0';
-import {opticalSignature,opticalColors} from './optical-effects.js?v=26.0.0';
-import {detailedSubject} from './subject-recipes.js?v=26.0.0';
-import {detailedFormat} from './format-recipes.js?v=26.0.0';
+import {colorPolicy} from './palette-recipes.js?v=27.0.0';
+import {opticalSignature,opticalColors} from './optical-effects.js?v=27.0.0';
+import {detailedSubject} from './subject-recipes.js?v=27.0.0';
+import {detailedFormat} from './format-recipes.js?v=27.0.0';
 
 const luminous=new Set(['発光幻想アニメ']);
 const flat=new Set(['線画','リノカット','木版画','浮世絵木版画','シルクスクリーン','ベクターグラフィック','フラットイラスト','ピクセルアート','構成主義','ミニマリズム']);
 function sourceFor(values,collection){
  const place=values.place||'',theme=values.theme||'';
  if(/水中|海底/.test(place))return '選択された水面から届く環境光と水中の散乱';
- if(/宇宙|星海/.test(place))return '選択された宇宙空間の恒星や既存の照明';
  if(/抽象|色面|和紙|金箔|無地/.test(place))return '指定された背景面と主題の関係から決めた画面内の明暗';
+ if(/宇宙|星海/.test(place+' '+theme))return '選択舞台へ連続する宇宙の恒星光と、その場所の既存の照明';
  if(/スタジオ/.test(place))return '選択したスタジオの主光と補助光';
  const time=/朝|夜明け|曙/.test(place)?'朝':/夕|黄昏|日没/.test(place)?'夕方':/真昼|昼|日中/.test(place)?'昼':/夜|月下|真夜中|深夜|星空/.test(place)?'夜':/夜|月下|真夜中|深夜|星空/.test(theme)?'夜':'';
  const inside=/キッチン|読書室|工房|アトリエ|広間|書斎|店|室|改札|劇場|舞台/.test(place);
@@ -36,7 +36,7 @@ export function resolveArtDirection(values,variant={},collection='halloween'){
  const next={...variant,light:lightingContract(values,{collection,noPerson})};
  const format=detailedFormat(values.design,{values,noPerson});
  next.layout='選択形式「'+values.design+'」の画像領域と余白を使う。'+(format.sections[1]?.text||'主題と許可された文字を、指定された用途の画面内へ配置する。')+(noPerson?'人物を補わず、選択主題の主要な輪郭を安全領域へ収める。':'その画像領域内で今回の顔角度・ポーズ・撮影距離を保ち、重要な身体の輪郭を見切れさせない。');
- next.background='選択した舞台「'+values.place+'」の固有の構造・素材・背景面だけを使う。別の場所の雲・机・建物・天候を定型として追加しない。';
+ next.background='選択した舞台「'+values.place+'」の構造を、物語「'+values.theme+'」の世界へ接続する。環境・素材・背景面・奥行きを一つの空間に揃え、別の場所の雲・机・建物を定型で足さない。';
  next.motif='道具は選択した物語・衣装・舞台の個別仕様に必要なものだけを置く。指定ポーズで手がふさがる場合は支持面や周囲へ移し、新しい持ち物を握らせない。画風が指定する透光層・投影面・干渉色は光学表現として実行し、道具の制限で削除しない。';
  next.motion=noPerson?'選択主題の支持・重力・面の重なりを保つ。図案は配置と余白、風景や物体は選択場面にある自然な動きで変化を示し、未選択の風・煙・浮遊を追加しない。':/走|跳|ジャンプ|踊|回転|蹴|駆け/.test(values.pose)?'今回の選択動作に沿って重心・支持点・慣性を描く。動く衣装はその素材の可動範囲で遅れ、顔・手足の形を失わない。風や煙は選択場面に根拠がある場合だけ描く。':'今回の指定姿勢と支持点を保ち、手足の位置を別の動作へ変えない。静かな姿勢に走行の慣性・大きな風・煙・浮遊を自動追加しない。';
  next.depth='今回のカメラと撮影距離に合う大小・重なり・遮蔽で前後を示す。奥行きの描き方は選択画風の個別工程を使い、平面の技法は色面と輪郭、立体素材は厚みと支持として読む。別の画角の強い広角や接写を後付けしない。';
@@ -52,7 +52,7 @@ export function interactionContract(values,{noPerson=false}={}){
   '画風は描線・陰影の形と強さ・画材・光学を決める。配色は色相と面積を決める。配色の名称や見本から、画風を低コントラスト・マット・発光・版画など別の方法へ変更しない。',
   color.restricted?'この組み合わせの許可色は'+color.allowed+'。画風の白い点光や虹色という表現は、この許可色の最明部と濃淡に翻訳する。元の色を例外で残さない。':'光と影の基調を指定配色の中で組み立てる。'+optics.instruction+(noPerson?'景物を見分ける形と明度差を保つ。':'人物の識別に必要な固有色がある場合は保ち、反射だけで別の髪色・瞳色へ変えない。'),
   noPerson?'形式が画像と文字の領域を決め、その画像領域へ主景と視点を配置する。主要な景物と綴じ余白が重なる場合は主画像を片側の安全な領域へ収める。':'形式が画像と文字の領域を決め、その画像領域の中で今回のポーズと画角を実行する。身体を誌面の綴じ位置へ割り当てず、関節や主要モチーフと綴じ余白が重なる場合は主画像を片側の安全な領域へ収める。',
-  noPerson?'物語の出来事は、選択した景物と道具、直前直後の痕跡で示し、人や人型へ擬人化しない。物語名の場所を別背景として増やさず、唯一の選択舞台を保持する。':'物語が示す行為と指定ポーズが異なる場合は、ポーズを保持し、相手・道具・行為の直前直後の痕跡で物語を示す。物語名の場所を背景に増やさず、唯一の選択舞台に必要な対象を置く。',
-  '一枚の画像で同時に成立しない明示指定は、無言で片方を捨てたり満たしたと主張したりしない。既定の分担で決められない衝突だけを生成前に短く示し、確認を求める。細部の通常の組み立ては制作側で決めて進める。'
+  noPerson?'物語の世界を、選択舞台とつながる景物・素材・光へ反映する。出来事は自然現象や直前直後の痕跡で示し、人や人型へ擬人化しない。':'物語の世界と選択舞台を同じ空間・光・素材で結ぶ。物語の行為と指定ポーズが異なる場合はポーズを保持し、相手・周囲の景物・直前直後の痕跡で出来事を示す。',
+  '世界と舞台は、一つの場所の環境・素材・奥行きとして組み合わせる。細部は制作側で決めて進める。同時に成立しない明示指定が残る場合だけ、その衝突を短く示す。片方の選択を無言で捨てたり、満たしたと主張したりしない。'
  ];
 }

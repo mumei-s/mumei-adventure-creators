@@ -1,13 +1,13 @@
-import {creatorLookupInstructions} from './creator-handoff.js?v=26.0.0';
-import {imageOutputContract} from './output-contract.js?v=26.0.0';
-import {modeFoundation} from './japan-direction.js?v=26.0.0';
-import {visibleQuestions} from './catalog.js?v=26.0.0';
-import {formatContract} from './formats.js?v=26.0.0';
-import {buildEditorial,editorialContract} from './editorial.js?v=26.0.0';
-import {optionRecipe} from './option-recipes.js?v=26.0.0';
-import {colorPolicy} from './palette-recipes.js?v=26.0.0';
-import {resolveArtDirection,interactionContract} from './art-direction.js?v=26.0.0';
-import {executionFor} from './option-execution.js?v=26.0.0';
+import {creatorLookupInstructions} from './creator-handoff.js?v=27.0.0';
+import {imageOutputContract} from './output-contract.js?v=27.0.0';
+import {modeFoundation} from './japan-direction.js?v=27.0.0';
+import {visibleQuestions} from './catalog.js?v=27.0.0';
+import {formatContract} from './formats.js?v=27.0.0';
+import {buildEditorial,editorialContract} from './editorial.js?v=27.0.0';
+import {optionRecipe} from './option-recipes.js?v=27.0.0';
+import {colorPolicy} from './palette-recipes.js?v=27.0.0';
+import {resolveArtDirection,interactionContract} from './art-direction.js?v=27.0.0';
+import {executionFor} from './option-execution.js?v=27.0.0';
 
 export function productionPlan(profile,values,variant,collection='halloween',random=Math.random){
  const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);

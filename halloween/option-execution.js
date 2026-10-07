@@ -1,6 +1,6 @@
-import {mediumExecution} from './medium-execution.js?v=26.0.0';
-import {formatExecution} from './format-execution.js?v=26.0.0';
-import {colorPolicy} from './color-policy.js?v=26.0.0';
+import {mediumExecution} from './medium-execution.js?v=27.0.0';
+import {formatExecution} from './format-execution.js?v=27.0.0';
+import {colorPolicy} from './color-policy.js?v=27.0.0';
 
 // The option's own physical recipe is the source of its execution contract.
 // No generic "beautiful / atmospheric" default replaces a missing preset.
@@ -8,8 +8,8 @@ const regions={
  medium:'主画像全域の輪郭・色面・影・素材境界',
  design:'完成作品全体の主画像領域・文字領域・余白・読み順',
  costume:'主役の外形・衣服の重なり・留め具・道具との接点',
- theme:'行為の対象・状態の変化・前後の痕跡',
- place:'舞台固有の構造・近景と遠景の接続・支持面',
+ theme:'選んだ世界の環境・素材・空間と、出来事の対象・変化・痕跡',
+ place:'その世界にある舞台の構造・近景と遠景の接続・支持面',
  mood:'眉・眼瞼・頬・口角・鼻と耳の投影・首との接続',
  pose:'肩から手首・骨盤から足先・接触点・重心と支持面',
  palette:'大きな主色面・隣り合う副色面・小さな焦点・最明暗部',

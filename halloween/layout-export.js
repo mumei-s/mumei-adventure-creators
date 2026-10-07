@@ -1,4 +1,4 @@
-import {renderEditorialLayout} from './editorial-layout.js?v=26.0.0';
+import {renderEditorialLayout} from './editorial-layout.js?v=27.0.0';
 
 const node=(tag,text,className)=>{const e=document.createElement(tag);if(text)e.textContent=text;if(className)e.className=className;return e;};
 function asDataUrl(file){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(new Error('主画像を読み込めませんでした。'));reader.readAsDataURL(file);});}

@@ -1,6 +1,6 @@
-import {compatibleResolved} from './compatibility.js?v=26.0.0';
-import {poseGroups} from './poses.js?v=26.0.0';
-import {colorWorlds,luminousMedia} from './worlds.js?v=26.0.0';
+import {compatibleResolved} from './compatibility.js?v=27.0.0';
+import {poseGroups} from './poses.js?v=27.0.0';
+import {colorWorlds,luminousMedia} from './worlds.js?v=27.0.0';
 export const AUTO='おまかせ';
 const group=(label,values)=>({label,values:values.split('|')});
 export const questions=[
@@ -23,12 +23,12 @@ export const visibleQuestions=questions.filter(q=>q.key!=='line');
 const palette=questions.find(q=>q.key==='palette');
 for(const [label,range] of [['光る幻想色',[0,8]],['淡色・空気',[8,16]],['鮮烈な対比',[16,24]],['紙・顔料・制限色',[24,32]]])palette.groups.push({label,values:colorWorlds.slice(...range).map(x=>x.value)});
 questions.find(q=>q.key==='medium').groups.push({label:'光と透明感のアニメ',values:luminousMedia.map(x=>x.value)});
-questions.find(q=>q.key==='theme').name='物語・ストーリー性';
-questions.find(q=>q.key==='medium').name='作風・世界観';
-questions.find(q=>q.key==='medium').hint='専用の描線・塗り・材質・世界観';
-questions.find(q=>q.key==='place').name='テーマ・舞台';
-questions.find(q=>q.key==='theme').hint='何をする？どんな出来事？';
-questions.find(q=>q.key==='place').hint='出来事が起きる、一つの場所';
+questions.find(q=>q.key==='theme').name='物語・世界観';
+questions.find(q=>q.key==='medium').name='作風・画材';
+questions.find(q=>q.key==='medium').hint='専用の描線・塗り・素材の描き方';
+questions.find(q=>q.key==='place').name='舞台・場所';
+questions.find(q=>q.key==='theme').hint='どんな世界で、何が起きる？';
+questions.find(q=>q.key==='place').hint='選んだ世界の、出来事が起きる場所';
 palette.hint='配色・光源・透け方まで選ぶ';
 export const defaults=[AUTO,AUTO,AUTO,AUTO,'毎回大胆に変える',AUTO,AUTO,AUTO,AUTO,'デザインに合わせて自動編集','noteサムネイル｜1280×670｜128:67'];
 export function normalizeCreator(raw){

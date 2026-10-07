@@ -1,12 +1,20 @@
-import {everydayRecipe} from './everyday-options.js?v=26.0.0';
-import {CRYSTAL_OBJECT,crystalObjectRecipe,japaneseSections} from './japan-direction.js?v=26.0.0';
-import {visualSpec} from './visual-specs.js?v=26.0.0';
-import {detailedMedium} from './medium-recipes.js?v=26.0.0';
-import {detailedFormat} from './format-recipes.js?v=26.0.0';
-import {detailedSubject} from './subject-recipes.js?v=26.0.0';
-import {detailedPalette} from './palette-recipes.js?v=26.0.0';
-import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=26.0.0';
-import {executionFor} from './option-execution.js?v=26.0.0';
+import {everydayRecipe} from './everyday-options.js?v=27.0.0';
+import {CRYSTAL_OBJECT,crystalObjectRecipe,japaneseSections} from './japan-direction.js?v=27.0.0';
+import {visualSpec} from './visual-specs.js?v=27.0.0';
+import {detailedMedium} from './medium-recipes.js?v=27.0.0';
+import {detailedFormat} from './format-recipes.js?v=27.0.0';
+import {detailedSubject} from './subject-recipes.js?v=27.0.0';
+import {detailedPalette} from './palette-recipes.js?v=27.0.0';
+import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=27.0.0';
+import {executionFor} from './option-execution.js?v=27.0.0';
+import {colorPolicy} from './color-policy.js?v=27.0.0';
+
+function opticalPaletteText(text,policy){
+ if(!policy.restricted)return text;
+ return text.replace(/シアン・菫・桃・淡金|シアン・菫・マゼンタ・淡金|白・シアン・菫・桃・淡金/g,'許可色の濃淡')
+  .replace(/虹色/g,'許可色の明度差による').replace(/白い/g,'許可色の最明部の')
+  .replace(/白光/g,'許可色の最明部の光');
+}
 
 function crystalMaterialRecipe({noPerson}){
  if(!noPerson)return crystalObjectRecipe;
@@ -38,6 +46,11 @@ export function optionRecipe(key,value,context={}){
   recipe={...recipe,sections:recipe.sections.map(s=>({...s}))};
   if(key==='medium'&&!noPerson&&['クリスタルホログラム造形アニメ','宝石ホログラムアニメ'].includes(value))recipe.sections.push({label:'顔も同一の結晶ホログラム',text:(value==='クリスタルホログラム造形アニメ'?'額・頬・鼻・顎・眼瞼・唇・耳まで厚みのある透明な結晶ガラスで造形する。頬と鼻の面に幅広い虹色干渉帯、厚い縁に暗い二重内部反射、頬を通して見える奥の髪や背景の屈折した像を描く。鼻と唇も透明な結晶面にし、肌に虹の模様を貼るだけで終えない。':'額・頬・鼻・顎・眼瞼・唇・耳も半透明の投影像にする。頬と鼻の広い面に背景が透ける濃度差、干渉帯、位置のずれた二重像を描き、普通の肌の顔の周囲に光の膜だけを足す絵にしない。')+'自然な肌色や不透明な皮膚、自然なピンクの不透明な唇を残さず、目鼻口の配置と識別できる顔の形、指定した表情を透明材質内部の色面と描線で保つ。'});
   const resolved={...recipe,key,value,sections:[...recipe.sections.map(s=>({...s})),...japaneseSections(key,value,options)],checks:[...(recipe.checks||[]),...(key==='medium'&&!noPerson&&['クリスタルホログラム造形アニメ','宝石ホログラムアニメ'].includes(value)?['額・頬・鼻・眼瞼・唇・耳まで同一の透明結晶ホログラム']:[])]};
+  if(key==='medium'&&[CRYSTAL_OBJECT,CRYSTAL_ANIME,'宝石ホログラムアニメ'].includes(value)){
+   const policy=colorPolicy(values);
+   resolved.sections=resolved.sections.map(s=>({...s,text:opticalPaletteText(s.text,policy)}));
+   resolved.checks=resolved.checks.map(s=>opticalPaletteText(s,policy));
+  }
   resolved.execution=executionFor(key,value,resolved,options);
   return resolved;
  }

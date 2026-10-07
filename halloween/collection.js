@@ -1,6 +1,6 @@
-import {everydayScenes,everydayPlaces,casualClothes,swimClothes,everydayBindings,everydaySamples} from './everyday-options.js?v=26.0.0';
-import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=26.0.0';
-import {poseGroups} from './poses.js?v=26.0.0';
+import {everydayScenes,everydayPlaces,casualClothes,swimClothes,everydayBindings,everydaySamples} from './everyday-options.js?v=27.0.0';
+import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=27.0.0';
+import {poseGroups} from './poses.js?v=27.0.0';
 const original=questions.map(q=>({...q,groups:q.groups.map(g=>({...g,values:[...g.values]}))}));
 const originalGroups=key=>original.find(q=>q.key===key).groups;
 const cloneGroups=groups=>groups.map(g=>({...g,values:[...g.values]}));
@@ -155,7 +155,7 @@ export function applyCollection(collection){
   if(daily&&q.key==='type')q.groups=q.groups.map(g=>({...g,values:g.values.filter(v=>!v.includes('HALLOWEEN'))}));
   q.name=source.name;q.hint=source.hint;
   if(daily){
-   if(q.key==='theme'){q.hint='日常・風景・創作の出来事';q.autoValues=[...ordinaryScenes,...landscapeScenes].map(x=>x[0]);}
+   if(q.key==='theme'){q.hint='日常・風景・創作の主題と出来事';q.autoValues=[...ordinaryScenes,...landscapeScenes].map(x=>x[0]);}
    if(q.key==='design')q.autoValues=defaultDailyDesigns;
    if(q.key==='costume')q.autoValues=ordinaryClothes;
    if(q.key==='place')q.autoValues=[...dailyPlaces,...everydayPlaces,...scenicPlaces];

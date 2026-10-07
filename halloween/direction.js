@@ -1,4 +1,4 @@
-import {noPersonSelection,landscapeSelection} from './collection.js?v=26.0.0';
+import {noPersonSelection,landscapeSelection} from './collection.js?v=27.0.0';
 export const shotPlans=[
  {family:'front-close',face:'正面0度。顔をまっすぐ起こし首の傾き0度',expression:'歯を見せた大きな笑顔、頬が上がり目尻が縮む',distance:'顔中心の真正面クローズアップ',pose:'両手で大きく帽子を掲げる。肩は水平',layout:'顔を画面中央上部に置き、下部に大胆な横組み文字',camera:'目線と同じ高さ、正面に水平なカメラ'},
  {family:'left-profile',face:'完全な左横顔90度。片方の目だけ見える。鑑賞者を見ない',expression:'眉を寄せ、唇を引き結ぶ明確な怒り',distance:'膝まで入る左側面のミディアムロング',pose:'横向きに歩く。両腕は後方へ流れ、体軸は前傾',layout:'左向きの横顔と移動を右下から左上へ対角線に配置',camera:'真横から水平に、主役と平行な視線'},
@@ -25,6 +25,7 @@ const spatial=['強い広角パース。手前の物体を大きく、奥の物�
 const motion=['髪・布・煙を同じ風向きに流し、曲線の連なりで流動感を出す','動作の前後が想像できる重心と手足の配置。静止画の中に運動の続きを残す','顔と重要な文字を鮮明に保ち、背景や裾の限定的なブラーで速度を示す','奥から手前へ続く軌跡で迫る勢いを作る。過度な発光に頼らない','小道具と布の慣性を動作に合わせ、身体と環境の相互作用で臨場感を出す','静かな画風では、墨・線・空気・光の方向の流れで動きを示す'];
 function sceneLight(values,collection){
  const context=(values.theme||'')+' '+(values.place||'');
+ if(/宇宙|星海/.test(context))return /墨の余白|抽象|色面|金箔/.test(values.place||'')?['選んだ背景面と余白へ宇宙の明暗を翻訳し、別の空間を足さない']:['選択舞台へ続く宇宙の恒星光と、その場所にある灯り。景物と主役に同じ方向の光と反射を返す'];
  if(/朝の/.test(context))return ['朝の窓から入る柔らかな斜光。光源と影の方向を揃える','低い朝日が床と卓上を照らす。奥は穏やかな反射光','朝の薄曇りの拡散光。物の色と素材が自然に読める'];
  if(/雨|濡れ/.test(context))return ['雨雲からの拡散光と濡れた路面の反射','選択した街灯の光が濡れた床へ反射。映る位置を光源へ対応','曇り空の柔らかな光。近景の水滴と遠景の霞を描き分ける'];
  if(/星空|深夜|真夜中|月夜|月下|夜の|Halloween|ハロウィーン/.test(context))return ['夜の空と選択場面にある実際の灯り。発光する物だけが周囲を照らす','月光と窓や街灯の穏やかな補助光。暗部にも形を残す','夜の弱い環境光と局所の反射。空と景物の明度を分ける'];
@@ -39,7 +40,7 @@ function sceneMotifs(values){
  if(/再会|改札/.test(context))return ['再会した相手との視線と手の合図。場所に必要な物だけを置く','待ち合わせの目印を背景に置き、人物のやりとりを主役にする'];
  if(/朝の|喫茶店/.test(context))return ['カップや日用品を生活の場所へ自然に置く','実際の生活道具を必要な数だけ使い、手の動作と整合させる'];
  if(/ファッション/.test(context))return ['選択した衣服の素材と縫製、風による自然な皺を見せる','装いと街の色・素材の関係を見せる。無関係な持物は加えない'];
- return ['選択した出来事と場所に必要な物だけを使う','既存の景物と主役の関係で場面を成立させる。無関係な道具は加えない'];
+ return ['選択した世界と出来事を、舞台の景物と主役の関係で成立させる','世界の環境・素材・光をその場所へつなぐ。無関係な道具は加えない'];
 }
 const sceneryPlans=[
  {family:'scenery-layers',camera:'地面に立つ目線の高さから景観を見渡す',layout:'手前の景物・中景の主題・遠景を三層に配置する',distance:'景観の広さと奥行きを見渡せる全景'},
@@ -58,7 +59,7 @@ function buildSceneryDirection(used,control,random,collection,values){
   const plan=pick(plans),l=Math.floor(random()*sceneLight(values,collection).length),b=Math.floor(random()*backgrounds.length),d=Math.floor(random()*(spatial.length-1)),m=Math.floor(random()*3),signature=collection+'-'+plan.family+'-'+l+'-'+b+'-'+d+'-'+m;
   if(used.some(x=>x.signature===signature))continue;
   const tone=['静かで美しい','儚く切ない','温かく懐かしい','神秘的で透明感','寂しく詩的','優雅でクラシカル','明るく祝祭的','奇妙でシュール'].includes(control)?control:'';
-  return {...plan,noPerson:true,landscape,face:'',expression:'',pose:'',tone,light:sceneLight(values,collection)[l],motif:landscape?'選択した地形・建築・植生・水域だけで主題を成立させる':'選択された固有モチーフの形・素材だけを構成する',background:landscape?'選択した一つの舞台を保ち、地形・建物・空の位置を一貫させる':'指定した背景と余白を維持し、主題の輪郭を読みやすくする',depth:emblem?'平面の図案として輪郭・重なり・余白を整理する':spatial[d],motion:['風のある場合だけ、枝葉や水面を同じ方向へ動かす','景物の線と光の方向で静かな視線の流れを作る','選択した天候による空気や反射を局所的に表す'][m],signature,locked:'人物の顔・表情・身体ポーズは適用せず、選択した主題の構図を変える',previous:used.slice(-3).map(x=>({layout:x.layout,family:x.family}))};
+  return {...plan,noPerson:true,landscape,face:'',expression:'',pose:'',tone,light:sceneLight(values,collection)[l],motif:landscape?'選択した世界の環境・素材・光を、舞台の地形・建築・植生・水域へつなぐ':'選択された世界とモチーフを、固有の形・素材・余白で一つに構成する',background:landscape?'選択した世界にある一つの舞台を保ち、地形・建物・空の位置を一貫させる':'指定した背景と余白を維持し、主題の輪郭を読みやすくする',depth:emblem?'平面の図案として輪郭・重なり・余白を整理する':spatial[d],motion:['風のある場合だけ、枝葉や水面を同じ方向へ動かす','景物の線と光の方向で静かな視線の流れを作る','選択した天候による空気や反射を局所的に表す'][m],signature,locked:'人物の顔・表情・身体ポーズは適用せず、選択した主題の構図を変える',previous:used.slice(-3).map(x=>({layout:x.layout,family:x.family}))};
  }
  throw new Error('別の風景構図を選び直してください。');
 }
@@ -115,4 +116,4 @@ export function buildDirection(used=[],control='毎回大胆に変える',random
  throw new Error('別の演出を選び直してください。');
 }
 export function isAdvertising(design){return /雑誌|誌面|見開き|新聞|映画ポスター|舞台ポスター|フェス|フライヤー|広告|チラシ/.test(design);}
-export {buildEditorial as buildTextPlan} from './editorial.js?v=26.0.0';
+export {buildEditorial as buildTextPlan} from './editorial.js?v=27.0.0';

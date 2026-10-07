@@ -1,17 +1,33 @@
-import {styleFidelity} from './style-fidelity.js?v=26.0.0';
-import {modeFoundation} from './japan-direction.js?v=26.0.0';
-import {imageOutputContract} from './output-contract.js?v=26.0.0';
-import {opticalSignature} from './optical-effects.js?v=26.0.0';
-import {colorPolicy} from './color-policy.js?v=26.0.0';
+import {styleFidelity} from './style-fidelity.js?v=27.0.0';
+import {modeFoundation} from './japan-direction.js?v=27.0.0';
+import {imageOutputContract} from './output-contract.js?v=27.0.0';
+import {opticalSignature} from './optical-effects.js?v=27.0.0';
+import {colorPolicy} from './color-policy.js?v=27.0.0';
+import {sceneComposition} from './scene-composition.js?v=27.0.0';
 
 export const conditionOwners=Object.freeze({
  medium:'描線・陰影・画材・光学',design:'画像と原稿の領域・読み順',
- theme:'出来事・相手・前後の痕跡',costume:'主役の役柄・衣服と道具の構造',
- mood:'表情・視線・顔の角度',place:'一つの舞台・構造・時刻',
+ theme:'出来事・世界の性質・相手・前後の痕跡',costume:'主役の役柄・衣服と道具の構造',
+ mood:'表情・視線・顔の角度',place:'その世界で出来事が起きる一つの舞台・構造・時刻',
  pose:'身体の配置・支持点・重心',palette:'基調色・副色・面積配分',
  type:'印字を許可する原稿・文字量',size:'作品の縦横比・希望寸法'
 });
 const unique=items=>[...new Set(items.filter(Boolean))];
+function sharedEditorialInstructions(slots){
+ const instructions=unique(slots.map(slot=>slot.instruction));
+ if(!instructions.length)return [];
+ // Preserve every editor clause verbatim, but emit its shared prefix once.
+ // New slot-specific instructions therefore survive without repeating the
+ // author/story/background preamble for every short cover line.
+ let common=instructions[0];
+ for(const instruction of instructions.slice(1)){
+  let length=0;while(length<common.length&&common[length]===instruction[length])length++;
+  common=common.slice(0,length);
+ }
+ const boundary=common.lastIndexOf('。');
+ common=boundary>=0?common.slice(0,boundary+1):'';
+ return [common&&'共通編集条件：'+common,...unique(instructions.map(instruction=>instruction.slice(common.length))).map(instruction=>'追加編集条件：'+instruction)].filter(Boolean);
+}
 const contract=c=>({selected:c.value,applicability:c.execution.applicability,
  method:c.execution.method,...(c.execution.line?{line:{selected:c.execution.line.selected,method:c.execution.line.method}}:{})});
 function renderInputObject(plan){
@@ -22,6 +38,7 @@ function renderInputObject(plan){
  const [,pixels,ratio]=selected.size.split('｜');
  const [width,height]=pixels.split('×').map(Number);
  const side=!plan.noPerson&&/真横/.test(v.camera||'');
+ const gestureBased=['書と墨の抽象','禅画','抽象表現','ミニマリズム'].includes(selected.medium);
  const optical=selected.medium==='クリスタル透光アニメ'?'透明面の境界で背後の輪郭がずれ、その内部に二重反射が見える広い結晶透光層。'
   :selected.medium==='宝石ホログラムアニメ'?'前後に離れた広い半透明投影面、面ごとの二重輪郭と途切れた走査線。':'';
  const drawingPriority='描画の基準は選択画風「'+selected.medium+'」。主参照から取り出すのは識別できる形と配置であり、参照の完成した'+(plan.noPerson?'景物・物体の表面':'顔・肌・髪')+'をそのまま残す基準ではない。最初の一筆から'+(plan.noPerson?'主景・選択物体・物語の対象・背景':'顔・目鼻口・髪・身体・衣服・物語の対象・背景')+'をこの画風の同じ工程で描き直す。細部の精密さはその描線・色面・画材の精密さとして作る。画風の工程と参照の表面が異なる場合は、識別形を維持して画風の工程を採用する。';
@@ -33,12 +50,12 @@ function renderInputObject(plan){
    selected_drawing_process:material.execution.method,
    drawing_priority:drawingPriority,
    story_integration:storyIntegration,
-   ...(!plan.noPerson&&/全身|足先|靴から頭/.test(v.distance)?{full_body_composition:'構図の最優先：主画像領域内に頭頂・両手の全指・両足の靴先・支持面をすべて収める。人物の頭頂から一番下の靴先までを主画像領域の高さの75〜80%以内に置き、頭上に5%以上、最下端の靴先の下に10%以上の床または地面を見せる。左右も指先・衣装の端を外周5%より内側へ。手前へ迫る手と頭の遠近差は保ち、指定カメラの角度を変えずにカメラを引いて全身を収める。顔の拡大のために足先を切らない。'}:{}),
+   ...(!plan.noPerson&&/全身|足先|靴から頭/.test(v.distance)?{full_body_composition:gestureBased?'全身指定は、主役の識別できる全体の姿勢・支持・動作の方向を、選択画風の筆の印・形・間隔・余白で画像領域内へ収める。各指や人体の細部を写実的に追加せず、主役と出来事の対象の関係が全体で読める形に整理する。外周5%の安全余白を保ち、重要な筆の形・支持点・動作の行き先を文字枠や画像端で切らない。':'構図の最優先：主画像領域内に頭頂・両手の全指・両足の靴先・支持面をすべて収める。人物の頭頂から一番下の靴先までを主画像領域の高さの75〜80%以内に置き、頭上に5%以上、最下端の靴先の下に10%以上の床または地面を見せる。左右も指先・衣装の端を外周5%より内側へ。手前へ迫る手と頭の遠近差は保ち、指定カメラの角度を変えずにカメラを引いて全身を収める。顔の拡大のために足先を切らない。'}:{}),
    layout:byKey.design.execution.method,
    ...(!plan.noPerson&&['クリスタルホログラム造形アニメ','宝石ホログラムアニメ'].includes(selected.medium)?{face_material:'最優先：顔も結晶ホログラム。顔そのものを'+(selected.medium==='クリスタルホログラム造形アニメ'?'透明な彫刻用の結晶ガラスとして造形する。額・頬・鼻・眼瞼・唇・顎・耳すべてに透明な厚み、幅広い虹色干渉帯、暗い二重内部反射を描く。頬の内部に奥の髪や背景の屈折した像を見せ、鼻と唇も透明な結晶面にする。':'半透明のホログラム投影像へ変換する。額・頬・鼻・眼瞼・唇・顎・耳にも濃度差、背景が透ける領域、位置のずれた二重像と干渉帯を続ける。')+'肌に虹の模様を貼るだけで終えない。普通の肌色、自然なピンクの不透明な唇を残さない。目鼻口の識別形と表情は透明材質の内部の色面と描線で保つ。主参照は形と比率だけに使う。'}:{}),
    palette:color.restricted?'全領域の使用色：'+color.allowed+'。参照の髪・肌・瞳、光、反射、文字もこの色域で描き直す。':byKey.palette.execution.method,
    ...(optical?{optical_geometry:optical+'主題と周囲の空間をまたぐ面として描き、宝飾の点光だけにしない。'+(color.restricted?'透過・屈折・反射も許可色だけ。':'')}:{}),
-   frame:plan.noPerson?'選択した主題の全景を指定形式の画像領域へ収める。':v.distance+(/全身|足先|靴から頭/.test(v.distance)?'。文字枠の下に手足を隠さず、頭・手・足・支持面を画像領域内へ収める。':'。指定した画角の対象を文字枠で隠さない。'),
+   frame:plan.noPerson?'選択した主題の全景を指定形式の画像領域へ収める。':v.distance+(/全身|足先|靴から頭/.test(v.distance)?gestureBased?'。主役の姿勢・支持・動作を示す印と余白の全体を画像領域内へ収める。':'。文字枠の下に手足を隠さず、頭・手・足・支持面を画像領域内へ収める。':'。指定した画角の対象を文字枠で隠さない。'),
    ...(side?{body_projection:'胴体・肩・骨盤・膝の向きはカメラに対して真横90度。奥側の肩と骨盤が手前側に重なる側面投影。身体を正面や斜め前へ回さない。'}:{})
   },
   canvas:{width_px:width,height_px:height,aspect_ratio:ratio,...contract(byKey.size),format:selected.design},
@@ -74,7 +91,7 @@ function between(lines,start,end){
 
 // Natural-language handoff for ordinary ChatGPT (including 5.5).
 // Full JSON execution exports remain available through renderInput for audits.
-export function renderDetailedChatInput(plan){
+export function renderDetailedChatInput(plan,{referenceRules=[],mandatoryRules=[]}={}){
  const v=plan.variant;
  const compiled=renderInputObject(plan);
  return [
@@ -85,6 +102,9 @@ export function renderDetailedChatInput(plan){
   modeFoundation(plan.collection),
   ...Object.values(compiled.required_before_details),
   '主役：'+compiled.identity,
+  ...referenceRules,
+  ...mandatoryRules,
+  ...sceneComposition(plan),
   '【画像で必ず見える画風の特徴】',
   ...plan.conditions.find(c=>c.key==='medium').checks,
   ...opticalSignature(plan.values,{noPerson:plan.noPerson}),
@@ -112,14 +132,20 @@ export function renderDetailedChatInput(plan){
   ...(compiled.author_context?['【作者の公開活動：本文からの補助資料】',compiled.author_context_rule,compiled.author_context]:[]),
   '【作品内へ印字する確定原稿】',
   plan.copy.mode==='none'?'文字・数字・署名のない完成。':plan.copy.slots.map(slot=>slot.role+'：'+JSON.stringify(slot.text)).join('\n'),
-  ...(plan.copy.generatedSlots?.length?['【確認した活動から新しく編集する許可原稿】','次の役割だけ、新しい日本語原稿を編集して印字する。確定した名前・題名・選択セリフは変更しない。記事の転載や本人の発言の捏造をせず、今回の創作作品の紹介として書く。役割名・字数・編集指示を作品に描かない。',...plan.copy.generatedSlots.map((slot,index)=>(index+1)+'. '+slot.role+' / '+slot.maxCharacters+'字以内 / 階層'+slot.priority+'：'+slot.instruction)]:[]),
+  ...(plan.copy.generatedSlots?.length?[
+   '【確認した活動から新しく編集する許可原稿】',
+   '次の役割だけを編集して印字する。確定した名前・題名・選択セリフは変更しない。記事の転載や本人の発言の捏造をせず、役割名・字数・編集指示を作品へ印字しない。',
+   ...sharedEditorialInstructions(plan.copy.generatedSlots),
+   ...(plan.copy.generatedSlots.some(slot=>/^(質問|回答)/.test(slot.role))?['同じ番号の質問と回答を一組にする。']:[]),
+   ...plan.copy.generatedSlots.map((slot,index)=>(index+1)+'. '+slot.role+' / '+slot.maxCharacters+'字以内 / 階層'+slot.priority)
+  ]:[]),
   '原稿は上記の'+(plan.copy.generatedSlots?.length?'確定文字列と許可した編集原稿だけ。':'確定文字列だけ。')+'項目名・制作番号・未指定の号数・日付・疑似文字を印字しない。'
  ].filter(Boolean).join('\n');
 }
 // Drop duplicate/contained instructions without paraphrasing any recipe clause.
-export function renderChatInput(plan){
+export function renderChatInput(plan,options){
  const seen=new Set();
- const lines=renderDetailedChatInput(plan).split('\n').filter(line=>{
+ const lines=renderDetailedChatInput(plan,options).split('\n').filter(line=>{
   const normalized=line.replace(/^・/,'').trim();
   if(!normalized||seen.has(normalized))return false;seen.add(normalized);return true;
  });
@@ -131,18 +157,14 @@ export function renderChatInput(plan){
  }).join('\n');
 }
 export function compileProduction(plan,originalLines){
+ const referenceRules=between(originalLines,'【作成者が添付する参照画像】','【10の選択】');
+ const mandatoryRules=[originalLines.find(s=>s.startsWith('制作の基準は、各項目のタイトル')), ...originalLines.filter(s=>/^(限定色|墨|水彩)の必須条件：/.test(s)),originalLines.find(s=>s.startsWith('用途：'))].filter(Boolean);
  return [
   ...imageOutputContract,
   ...(plan.creatorLookup||[]),
   '【通常制作：完成画像を1回で生成】',
   originalLines[0],
-  '【参照と人物】',
-  '制作の基準は各項目のタイトルと具体条件。見本の人物は顔の参照ではない。見本の性別や構図へ置き換えない。世界観・人物・舞台は一枚の作品として同時に描く。宇宙などの選択した世界観を誌面の飾りや小道具だけへ縮小しない。',
-  ...between(originalLines,'【作成者が添付する参照画像】','【10の選択】'),
-  ...originalLines.filter(s=>/^(限定色|墨|水彩)の必須条件：/.test(s)),
-  originalLines.find(s=>s.startsWith('用途：')),
-  ...between(originalLines,'【物語と舞台を一場面に統合】','【色・光・素材の設計】'),
-  '【画像生成へ渡す作画条件：開始】',renderChatInput(plan),'【画像生成へ渡す作画条件：終了】',
+  '【画像生成へ渡す作画条件：開始】',renderChatInput(plan,{referenceRules,mandatoryRules}),'【画像生成へ渡す作画条件：終了】',
   '完成した画像そのものを1枚、画像作成機能の通常の生成画像として表示する。文章だけで完成扱いにしない。'
  ].join('\n');
 }

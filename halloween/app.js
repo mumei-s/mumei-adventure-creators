@@ -164,7 +164,7 @@ function showResult(r){
  $('transfer-title').textContent=live?'参照画像＋プロンプト':'プロンプトのみ';
  $('transfer-instruction').textContent=live?'「画像＋プロンプトを共有」で、ご自身の参照画像と prompt.txt を渡します。共有先に画像と指示が届いたことを確認して送信してください。見本の人物や背景は送信しません。':requires?'「プロンプトをコピー」を押し、ChatGPTで自分の参照画像を添付して同じメッセージで送ってください。':'「プロンプトをコピー」を押し、ChatGPTへ送ってください。この選択では人物の参照画像は必要ありません。';
  $('transfer-instruction').textContent+=' ChatGPTの通常の画像作成を使います。5.5でもWorkやコード実行を前提にしません。';
- $('transfer-status').textContent=live?(canShareFiles(shareFiles(r))?'画像と指示ファイルを一緒に共有できます。共有先で両方を確認してください。':'端末の共有対応を確認します。使えない場合は制作セットを保存できます。'):fresh?'完成画像はChatGPT側に表示されます。':'履歴に画像データはありません。必要な場合は元の参照画像をChatGPTへ添付してください。';
+ $('transfer-status').textContent=live?(canShareFiles(shareFiles(r).filter(f=>f.type.startsWith('image/')))?'画像と制作指示の本文を一緒に共有できます。共有先で両方を確認してください。':'端末の共有対応を確認します。使えない場合は制作セットを保存できます。'):fresh?'完成画像はChatGPT側に表示されます。':'履歴に画像データはありません。必要な場合は元の参照画像をChatGPTへ添付してください。';
  $('kit-note').textContent=live?'ZIPを解凍して、reference- で始まる参照画像と prompt.txt を同じメッセージに添付してください。':'生成した画像が表示されない場合は「画像が出ないときの指示」をコピーして、同じチャットへ送れます。';
  if(!$('result').open)$('result').showModal();
 }
@@ -173,7 +173,7 @@ async function copyStage(key){const text=currentResult?.stages?.[key];if(!text)r
 async function shareAll(){
  const r=currentResult;if(!r?.isFresh)return;
  const files=shareFiles(r),images=files.filter(f=>f.type.startsWith('image/'));
- let payload;if(canShareFiles(files))payload={files,text:'添付の prompt.txt と参照画像で絵を1枚描いてください。ChatGPTの画像作成機能を実行し、通常の生成画像としてこのチャットに表示してください。計画・コード・ダウンロードリンクだけで終わらないでください。',title:r.collection==='everyday'?'イラスト制作資料':'Halloween制作資料'};else if(images.length&&canShareFiles(images))payload={files:images,text:r.prompt,title:'画像と制作指示'};
+ let payload;if(images.length&&canShareFiles(images))payload={files:images,text:r.prompt,title:'画像と制作指示'};else if(canShareFiles(files))payload={files,text:'添付の prompt.txt と参照画像で絵を1枚描いてください。ChatGPTの画像作成機能を実行し、通常の生成画像としてこのチャットに表示してください。',title:r.collection==='everyday'?'イラスト制作資料':'Halloween制作資料'};
  if(!payload){$('transfer-status').textContent='この端末では同時共有に対応していません。制作セットを保存し、解凍した画像と prompt.txt をChatGPTへ添付してください。';await downloadKit();return;}
  try{await navigator.share(payload);$('transfer-status').textContent=payload.files.some(f=>f.type==='text/plain')?'共有画面を閉じました。送信先の画像と prompt.txt を確認して送信してください。':'参照画像を共有しました。共有先で指示が表示されない場合は「プロンプトをコピー」で追加してください。';}
  catch(e){if(e.name==='AbortError'){$('transfer-status').textContent='共有を取り消しました。もう一度共有できます。';return;}$('transfer-status').textContent='共有できませんでした。参照画像とプロンプトを別々に保存して添付できます。';tell('共有できませんでした。制作セット保存を使ってください。');}

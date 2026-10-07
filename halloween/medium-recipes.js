@@ -1,7 +1,7 @@
 // Rendering recipes belong to option titles. Picker artwork is never an input.
 // Each section may supply a separate scenery-only instruction in its third cell.
-import {opticalColors} from './optical-effects.js?v=17';
-import {photoDesign} from './photo-design.js?v=17';
+import {opticalColors} from './optical-effects.js?v=18';
+import {photoDesign} from './photo-design.js?v=18';
 const recipes = new Map();
 function add(value, family, sections, checks) {
  if (recipes.has(value)) throw new Error('Duplicate medium recipe: ' + value);
@@ -928,6 +928,7 @@ add('サイケデリックアート','graphic',[
 
 add('発光幻想アニメ','luminous-anime',[
  ['アニメの土台','顔・目鼻口・髪・身体を明確な2Dアニメの線と面で描き、選んだ衣装と動作を実行する。最初に発光なしの状態でも同じ人物とポーズが読める原画を成立させる。','選択景物・建築・自然素材を明確な2Dアニメの線と面へ整理する。最初に発光なしの状態でも場所と前後関係が読める原画を成立させる。'],
+ ['瞳と描線の精度','見える目だけに、暗い瞳孔・虹彩の数枚の色層・小さな鋭い反射を描き分ける。眼瞼と睫毛は細く明確な線、髪は隙間の残る細束へ。輪郭は光側で細く抜き、影側で少し強める。閉眼を開眼へ変えない。','主景の輪郭を細い強弱のある色線へ整理し、近景の細部と遠景の省略を分ける。景物へ目や顔を追加しない。'],
  ['深い影面','ベース色に対して十分暗い第1影と、重なりのさらに深い第2影を置く。暗部は{dark}を基準にし、発光を重ねた後も面の境界と暗さが残るようにする。'],
  ['発光の起点','選択場面に既にある景物や光を、限られた発光の起点にする。芯は{bright}、外側は選択色の光とし、魔法陣・魔女・カボチャ・宝石を自動追加しない。'],
  ['反射先','光源へ向く縁や近い面に強い反射を置き、背を向ける面と離れた面では弱める。{surface}の全域を均等に明るくせず、どこへ光が届くかを描き分ける。'],

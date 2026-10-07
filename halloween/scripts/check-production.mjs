@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=17';
-import {initialSelections} from '../modes.js?v=17';
-import {applyCollection} from '../collection.js?v=17';
-import {buildDirection} from '../direction.js?v=17';
-import {applyPose} from '../poses.js?v=17';
-import {visualSpec} from '../visual-specs.js?v=17';
-import {formatSpecs} from '../formats.js?v=17';
-import {productionPlan,planInstructions,repairPrompt} from '../production-plan.js?v=17.0.2';
-import {buildEditorial} from '../editorial.js?v=17';
-import {composePrompt} from '../prompt.js?v=17.0.2';
-import {profileForArtwork} from '../activity-settings.js?v=17';
+import {questions,resolveSelections} from '../catalog.js?v=18';
+import {initialSelections} from '../modes.js?v=18';
+import {applyCollection} from '../collection.js?v=18';
+import {buildDirection} from '../direction.js?v=18';
+import {applyPose} from '../poses.js?v=18';
+import {visualSpec} from '../visual-specs.js?v=18';
+import {formatSpecs} from '../formats.js?v=18';
+import {productionPlan,planInstructions,repairPrompt} from '../production-plan.js?v=18';
+import {buildEditorial} from '../editorial.js?v=18';
+import {composePrompt} from '../prompt.js?v=18';
+import {profileForArtwork} from '../activity-settings.js?v=18';
 const profile={displayName:'Alice',topics:['写真','創作'],biography:'写真と創作'},base=resolveSelections({...initialSelections(),design:'ファッション雑誌の表紙',costume:'海賊',pose:'全力で走る',mood:'完全な左横顔90度'},()=>0.2);
 const make=values=>applyPose(buildDirection([],values.mood,()=>0.2),values.pose);
 let examined=0;
@@ -27,7 +27,7 @@ for(const collection of ['halloween','everyday']){
 applyCollection('halloween');
 for(const design of Object.keys(formatSpecs)){
  const values={...base,design,type:'デザインに合わせて自動編集'},copy=buildEditorial(profile,values,()=>0.2);assert.ok(copy.slots.length>=3,design);
- if(copy.kind==='cover'){assert.equal(copy.slots.filter(s=>s.role==='補助特集').length,4);assert.equal(copy.slots.filter(s=>s.role==='補助特集の補足').length,4);assert.ok(copy.slots.some(s=>s.role==='誌名'));}
+ if(copy.kind==='cover'){assert.equal(copy.slots.filter(s=>s.role==='補助特集').length,design==='週刊誌の表紙'?6:4);assert.equal(copy.slots.filter(s=>s.role==='補助特集の補足').length,design==='週刊誌の表紙'?6:4);assert.ok(copy.slots.some(s=>s.role==='誌名'));}
  if(copy.kind==='interview'){assert.ok(copy.slots.some(s=>s.role==='リード文'));assert.ok(copy.slots.filter(s=>/^回答/.test(s.role)).every(s=>s.text.length>35));assert.ok(copy.slots.some(s=>/^(写真|図版)キャプション$/.test(s.role)));}
  if(['spread','newspaper'].includes(copy.kind)){assert.equal(copy.slots.filter(s=>/^本文\d/.test(s.role)).length,3);assert.ok(copy.slots.filter(s=>/^本文\d/.test(s.role)).every(s=>s.text.length>60));}
  if(copy.kind==='cinema')assert.equal(copy.slots.filter(s=>s.role.startsWith('ビリング')).length,3);

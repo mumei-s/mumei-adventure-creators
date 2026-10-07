@@ -6,3 +6,5 @@
 .production-details{margin:18px 0;padding:14px;border:2px solid #a87042;border-radius:12px;background:#fff9ed;color:#2b1b12}.production-details summary{font-size:16px;font-weight:800;cursor:pointer}.production-details li{margin:16px 0}.production-details p{font-size:15px;line-height:1.65;overflow-wrap:anywhere}.production-note{padding:10px;background:#ffe3b0;border-radius:8px}#inspector-note{font-size:15px;line-height:1.7;overflow-wrap:anywhere}
 
 .design-sample .sample-image{object-fit:contain!important;background:#f8f1e7}
+
+.compatibility-reason{font-size:.8rem;line-height:1.4;color:#783719;margin:.35rem 0}.sample-card.incompatible{opacity:.67}.option-button:disabled,.ring-pick:disabled{opacity:.5;cursor:not-allowed}.ring-focus .compatibility-reason{max-width:18rem;background:#fff5df;padding:.5rem;border-radius:.5rem}

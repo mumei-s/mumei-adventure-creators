@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-07",
+  "version": "18.0.0",
+  "requiredSuite": {
+    "command": "npm --prefix halloween run check",
+    "result": "passed",
+    "checks": 14
+  },
+  "pickerDOM": {
+    "command": "node --experimental-vm-modules halloween/scripts/check-picker-v18.mjs",
+    "result": "passed",
+    "runtime": "jsdom; not a device browser"
+  },
+  "preparationDOM": {
+    "command": "node --experimental-vm-modules halloween/scripts/check-preparation.mjs",
+    "result": "passed"
+  },
+  "instructionCoverage": {
+    "unique": 546,
+    "occurrences": 945,
+    "autoCombinations": 600,
+    "mediumPalettePairs": 10800
+  },
+  "imageAcceptance": "Six replaced previews visually reviewed; every retained image and every possible combination have not passed generated-image acceptance."
+}

@@ -1,26 +1,27 @@
-import {appendRecipeEvidence} from './recipe-evidence.js?v=17';
-import {productionPlan,repairPrompt} from './production-plan.js?v=17.0.2';
-import {stagePrompts} from './production-workflow.js?v=17.0.2';
-import {createLayoutPanel} from './layout-export.js?v=17.0.2';
-import {applyPose} from './poses.js?v=17';
-import {applyCollection,dailyInspiration} from './collection.js?v=17';
-import {setupEffects} from './effects.js?v=17';
-import {colorWorlds} from './worlds.js?v=17';
-import {mergeCreator} from './creator.js?v=17';
-import {createCropEditor} from './crop-editor.js?v=17';
-import {profileForArtwork} from './activity-settings.js?v=17';
-import {createPicker} from './picker.js?v=17.0.2';
-import {modeKeys,modeCopy,initialSelections,effectiveSelections,propose} from './modes.js?v=17';
-import {buildReferenceBoard} from './guide-board.js?v=17';
-import {profileEndpoint,profileHeaders} from './runtime-config.js?v=17';
-import {questions,visibleQuestions,defaults,AUTO,normalizeCreator,resolveSelections} from './catalog.js?v=17';
-import {composePrompt,needsReference} from './prompt.js?v=17.0.2';
-import {buildDirection} from './direction.js?v=17';
-import {sampleFor,typePreview} from './examples.js?v=17';
-import {makeZip} from './zip.js?v=17';
-import {imageDeliveryRepairPrompt} from './output-contract.js?v=17.0.2';
-import {editorialReferencesFor} from './editorial-reference-sources.js?v=17';
-const APP_VERSION=17;
+import {candidateAvailability,selectionConflicts} from './compatibility.js?v=18';
+import {appendRecipeEvidence} from './recipe-evidence.js?v=18';
+import {productionPlan,repairPrompt} from './production-plan.js?v=18';
+import {stagePrompts} from './production-workflow.js?v=18';
+import {createLayoutPanel} from './layout-export.js?v=18';
+import {applyPose} from './poses.js?v=18';
+import {applyCollection,dailyInspiration} from './collection.js?v=18';
+import {setupEffects} from './effects.js?v=18';
+import {colorWorlds} from './worlds.js?v=18';
+import {mergeCreator} from './creator.js?v=18';
+import {createCropEditor} from './crop-editor.js?v=18';
+import {profileForArtwork} from './activity-settings.js?v=18';
+import {createPicker} from './picker.js?v=18';
+import {modeKeys,modeCopy,initialSelections,effectiveSelections,propose} from './modes.js?v=18';
+import {buildReferenceBoard} from './guide-board.js?v=18';
+import {profileEndpoint,profileHeaders} from './runtime-config.js?v=18';
+import {questions,visibleQuestions,defaults,AUTO,normalizeCreator,resolveSelections} from './catalog.js?v=18';
+import {composePrompt,needsReference} from './prompt.js?v=18';
+import {buildDirection} from './direction.js?v=18';
+import {sampleFor,typePreview} from './examples.js?v=18';
+import {makeZip} from './zip.js?v=18';
+import {imageDeliveryRepairPrompt} from './output-contract.js?v=18';
+import {editorialReferencesFor} from './editorial-reference-sources.js?v=18';
+const APP_VERSION=18;
 const $=id=>document.getElementById(id),STORAGE='mumeis-halloween-v2';
 let saved={history:[],used:[],count:0},view='auto';
 try{const v=JSON.parse(localStorage.getItem(STORAGE)||'null');if(v&&Array.isArray(v.history)&&Array.isArray(v.used))saved={history:v.history.map(r=>({...r,values:{pose:AUTO,line:AUTO,...r?.values}})).filter(x=>x&&typeof x.prompt==='string'&&x.values&&questions.every(q=>typeof x.values[q.key]==='string')&&x.variant&&x.profile&&Array.isArray(x.references)).slice(0,12),used:v.used.filter(x=>x&&typeof x.signature==='string').slice(-2000),count:Number.isSafeInteger(v.count)?v.count:0};view=localStorage.getItem('halloween-view')||'auto';}catch{}
@@ -86,7 +87,7 @@ function setView(mode){if(!['auto','phone','tablet','pc'].includes(mode))mode='a
 const picker=createPicker({$,el,sampleNode,readSelection:()=>selections,choose,onCustom:buildCustom,tell});
 function openPicker(q){const text=q.key==='type'||q.key==='line';if(text){if(q.key==='line')textPart='line';q=questions.find(x=>x.key===textPart);}$('text-subtabs').hidden=!text;document.querySelectorAll('[data-text-part]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.textPart===q.key)));activeQuestion=q;const i=visibleQuestions.findIndex(x=>x.key===(q.key==='line'?'type':q.key));$('picker-index').textContent=String(i+1).padStart(2,'0')+' / 10';picker.open(q);}
 function buildCustom(q){const form=el('form','custom-form');if(q.key==='size'){const w=el('input'),h=el('input');w.type=h.type='number';w.min=h.min='256';w.max=h.max='16000';w.required=h.required=true;w.placeholder='幅px';h.placeholder='高さpx';w.setAttribute('aria-label','希望の幅');h.setAttribute('aria-label','希望の高さ');form.append(w,el('span',null,'×'),h);form.addEventListener('submit',e=>{e.preventDefault();const a=Number(w.value),b=Number(h.value);if(!Number.isInteger(a)||!Number.isInteger(b)||a<256||b<256||a>16000||b>16000)return;const gcd=(x,y)=>y?gcd(y,x%y):x;const d=gcd(a,b);choose('自由サイズ｜'+a+'×'+b+'｜'+a/d+':'+b/d);});}else{const input=el('input');input.required=true;input.maxLength=160;input.placeholder='希望する'+q.name;input.setAttribute('aria-label',q.name+'を自由入力');form.append(input);form.addEventListener('submit',e=>{e.preventDefault();const v=input.value.trim().replace(/[\r\n]/g,' ');if(v)choose(v);});}const b=el('button','dark-button','この内容にする');b.type='submit';form.append(b);$('custom-area').append(form,el('p','microcopy',q.key==='size'?'256〜16,000px。生成環境に対応する実寸で出力されます。':'具体的な技法や角度も指定できます。160文字まで。'));form.querySelector('input').focus();}
-function choose(v){selections[activeQuestion.key]=v;const key=activeQuestion.key;renderChoices(key==='line'?'type':key);$('picker').close();document.querySelector('[data-key="'+(key==='line'?'type':key)+'"]')?.focus();tell(activeQuestion.name+'を選びました');}
+function choose(v){const availability=candidateAvailability(activeQuestion.key,v,selections);if(!availability.enabled){tell(availability.reason);return;}selections[activeQuestion.key]=v;const key=activeQuestion.key;renderChoices(key==='line'?'type':key);$('picker').close();document.querySelector('[data-key="'+(key==='line'?'type':key)+'"]')?.focus();tell(activeQuestion.name+'を選びました');}
 function summarizeName(raw){const bracket=raw.match(/^[〖【「『]([^〗】」』]+)[〗】」』]/);return bracket?bracket[1].trim():raw;}
 async function loadProfile(){
  const id=normalizeCreator($('creator').value);if(!id){tell('noteのIDまたはプロフィールURLを入力してください。');$('creator').focus();return;}
@@ -131,7 +132,7 @@ async function generate(lockedValues=null){
   syncSaved();const input=lockedValues?{...lockedValues}:mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:effectiveSelections(mode,selections);
   if(input.theme===AUTO&&profile.inspiration?.themes?.length)input.theme=profile.inspiration.themes[Math.floor(rng()*profile.inspiration.themes.length)];
   if(input.line===AUTO&&profile.inspiration?.phrases?.length)input.line=profile.inspiration.phrases[Math.floor(rng()*profile.inspiration.phrases.length)];
-  const values=resolveSelections(input,rng);if(input.mood===AUTO)values.mood='毎回大胆に変える';
+  const values=resolveSelections(input,rng);const conflicts=selectionConflicts(values);if(conflicts.length){formError(conflicts[0].reason,$('generate'));throw new Error(conflicts[0].reason);}if(input.mood===AUTO)values.mood='毎回大胆に変える';
   if(attachmentMode==='bundle'&&needsReference(values)&&!refs.some(r=>r.role==='identity')){formError('主参照を添付してください。人物なしの風景は、参照を使う項目を選んでいなければ画像なしでも作れます。',$('image-input'));throw new Error('主参照画像がありません。');}
   let variant;for(let a=0;a<60;a++){variant=applyPose(buildDirection(saved.used,values.mood,rng,collection,values),values.pose);if(!saved.used.some(r=>r.signature===variant.signature))break;if(a===59)throw new Error('構図の演出を選び直してください。');}
   const edition=uid(),ordered=attachmentMode==='bundle'?[refs.find(r=>r.role==='identity'),...refs.filter(r=>r.role!=='identity')].filter(Boolean):[];

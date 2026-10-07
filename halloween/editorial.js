@@ -1,14 +1,14 @@
-import {formatFor} from './formats.js?v=17';
-import {formatTextPolicy} from './format-recipes.js?v=17';
+import {formatFor} from './formats.js?v=18';
+import {formatTextPolicy} from './format-recipes.js?v=18';
 const pick=(items,random)=>items[Math.min(items.length-1,Math.floor(random()*items.length))];
 function shuffle(items,random){const a=[...items];for(let i=a.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-const titles={cover:['LUMEN THREAD','FORM & FABLE','VELVET SIGNAL','LIGHT ARCHIVE','OPEN PALETTE'],interview:['THE MAKING FILE','CREATIVE VOICES','A FIELD OF IDEAS'],spread:['THE VISUAL NOTE','WORLD IN MOTION','A NEW PERSPECTIVE'],newspaper:['創作通信','彩景新聞','表現日報'],cinema:['BEYOND THE FRAME','A SILENT DOOR','WHEN LIGHT RETURNS'],book:['ひかりを綴る','まだ知らない景色','境界の手紙'],album:['ECHOES IN COLOR','UNFOLDING','SOFT REVERB'],default:['FORM & WONDER','もうひとつの景色','STORIES IN LIGHT']};
+const titles={cover:['装い帖','色と暮らし','創作日和','余白の時間','光の便り'],interview:['制作の現場','創作の声','発想の手帖'],spread:['表現の手帖','動きのある世界','新しい視点'],newspaper:['創作通信','彩景新聞','表現日報'],cinema:['BEYOND THE FRAME','A SILENT DOOR','WHEN LIGHT RETURNS'],book:['ひかりを綴る','まだ知らない景色','境界の手紙'],album:['ECHOES IN COLOR','UNFOLDING','SOFT REVERB'],default:['FORM & WONDER','もうひとつの景色','STORIES IN LIGHT']};
 export function buildEditorial(profile,values,random=Math.random){
  const name=(profile.displayName||profile.name||'').trim(),kind=formatFor(values.design).kind,mode=values.type,daily=values.collection==='everyday';
  const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume),landscape=kind==='landscape'||values.costume==='風景を主役にする';
  const captionRole=/^実写風/.test(values.medium)?'写真キャプション':'図版キャプション';
  const {noText,limited,line}=formatTextPolicy(values);
- const title=pick(titles[kind]||titles.default,random),topics=shuffle((profile.topics||[]).filter(v=>typeof v==='string'&&v.trim()),random);
+ const title=values.design==='週刊誌の表紙'?'週刊創作':pick(titles[kind]||titles.default,random),topics=shuffle((profile.topics||[]).filter(v=>typeof v==='string'&&v.trim()),random);
  const subject=values.theme==='おまかせ'?(daily?'日々の創作':'一夜の物語'):values.theme;
  const themeWords=[...new Set([...topics.slice(0,6),subject,...(noPerson||landscape?['景観のかたち','色と光','奥行きの構成','季節と時間','素材の手触り']:['衣装のかたち','色と光','場面づくり','視線の物語','素材の手触り'])])];
  const subjectCopy=pick([subject+'を、ひとつの場面に。',subject+'から始まる、新しい一枚。','見つけたいのは、'+subject+'の向こう側。'],random);
@@ -31,9 +31,9 @@ export function buildEditorial(profile,values,random=Math.random){
  const coverLine=topic=>pick([topic+'を編む',topic+'の向こう側',topic+'に触れる',topic+'の新しい視点'],random);
  const deck=topic=>pick(['形と余白から、'+topic+'の魅力を見つける。',topic+'を、光・色・素材で読み解く。','今度の一枚に、'+topic+'の視点を。'],random);
  if(kind==='cover'&&density){
-  add('誌名',title,0);add('特集ラベル',daily?'ART / LIFE / IMAGINATION':'COSTUME / ART / IMAGINATION',3);
+  add('誌名',title,0);add('特集ラベル',daily?'装い・暮らし・表現':'仮装・祝祭・表現',3);
   add('主特集',subject,1);add('主特集の補足',subjectCopy,2);
-  themeWords.slice(0,4).forEach(t=>{add('補助特集',coverLine(t),2);add('補助特集の補足',deck(t),3);});
+  themeWords.slice(0,values.design==='週刊誌の表紙'?6:4).forEach((t,i)=>{add('補助特集',values.design==='週刊誌の表紙'?t+['を楽しむ','が変わる','の選び方','を見直す','のひと工夫','を深く知る'][i]:coverLine(t),2);add('補助特集の補足',values.design==='週刊誌の表紙'?['毎日に取り入れる小さな発見','作り手の視点で見つめる','初めてでも分かる実践ガイド','形と素材から考える','次の一枚につながる提案','身近な場面を読み解く'][i]:deck(t),3);});
   add('作者名',name,2);add('セリフ',line,2);return result();
  }
  if(['interview','spread','newspaper'].includes(kind)&&density){
@@ -45,8 +45,8 @@ export function buildEditorial(profile,values,random=Math.random){
    add('質問2',noPerson||landscape?'Q. 奥行きや素材は、どう場面に関わる？':'Q. 衣装や素材は、どう物語に関わる？',2);add('回答2',noPerson||landscape?'A. '+values.place+'の形を起点に、面の重なりや光の返りを考える。手前から遠景まで、素材の輪郭と空気の厚みが自然につながるようにする。':'A. '+values.costume+'の輪郭を起点に、布の重なりや光の返りを考える。動きの前後を想像できるように、道具と身体の関係も大切にする。',3);
    add('質問3','Q. 色の世界を、どこから組み立てる？',2);add('回答3','A. 主色の大きな面に、静かな副色を重ねる。小さな差し色へ視線を集め、画面全体のまとまりをつくる。',3);
   }else{
-   prose.forEach((text,i)=>{add('本文小見出し'+(i+1),['光がつくる距離','かたちに宿る動き','色を置く、その理由'][i],2);add('本文'+(i+1),text,3);});
-   if(kind==='newspaper'){themeWords.slice(0,2).forEach((t,i)=>{add('副記事見出し'+(i+1),coverLine(t),2);add('副記事本文'+(i+1),deck(t)+'場面の中にある形や色をたどり、新しい作品の入り口を探す。',3);});}
+   prose.forEach((text,i)=>{if(kind==='newspaper')text+=' '+["窓の位置を確かめると、明るい面がどちらを向いているかが分かる。机や床に落ちる影は、同じ光源から伸びている必要がある。近くのものは輪郭をはっきり残し、遠くのものはコントラストを控える。その差を小さく積み重ねることで、平面の中に一つの空間が生まれる。強い光を増やすだけでは、素材の違いは伝わらない。暗い部分を残すことも、見せたい形を支える大切な仕事だ。見る位置と光の位置を決め、最後までその関係を保つ。", "細部を決める前に、全体の大きな形を確かめたい。線が交わる位置や面の重なりには、それぞれ理由がある。軽い素材は小さく揺れ、厚い素材は重さを感じさせる。支えのある部分と離れた部分を描き分ければ、止まった一枚にも動きの前後が見えてくる。意匠を増やす時も、構造のつながりを失わないことが大切だ。飾りと本体がどのように結びつくかを考える。視線を引く場所に細部を集め、それ以外を静かに整えると、全体の形が読み取りやすくなる。", "使う色を絞ると、明るさや面積の違いがよく見える。主色を広い領域に置き、副色で形をつなぐ。強い色は小さな面に留めると、視線の行き先をつくりやすい。紙面では、題字、見出し、本文の大きさにも同じ考え方が使える。全てを強調すると、読む順番が曖昧になる。一番伝えたいことを先に決め、その周囲へ情報を配置したい。小さく表示した時にも主題が残るか確かめる。画面の大きさが変わっても、光と色の関係を保つことが完成への手がかりになる。"][i];add('本文小見出し'+(i+1),['光がつくる距離','かたちに宿る動き','色を置く、その理由'][i],2);add('本文'+(i+1),text+(kind==='newspaper'&&i===2?'制作の途中では、完成時と同じ大きさだけで確認しない。画面を小さくして見ると、明暗のまとまりや文字の優先順位が分かりやすい。反対に細部を拡大すると、線の接続や色の境界を確かめられる。二つの見方を行き来しながら、全体と部分を整えていく。主題の輪郭と背景の形が重なる時は、明度差をつけるか、どちらかの密度を下げる。余白は情報のない場所ではなく、読者の目を次の場所へ運ぶ役割を持つ。図版と文字の間にある距離も、読みやすさを左右する。原稿の長さに合わせて列を調整し、必要な文章を省かずに収める。書体を増やす前に、太さ、大きさ、揃えの違いで役割を分けたい。試作を保存しておけば、前の状態と見比べられる。どの変更が伝わりやすさにつながったのかを確かめ、理由を次の制作へ引き継ぐ。選んだ素材や色を最後まで大切にすることで、表現の方向がまとまる。':''),3);});
+   if(kind==='newspaper'){themeWords.slice(0,2).forEach((t,i)=>{add('副記事見出し'+(i+1),coverLine(t),2);add('副記事本文'+(i+1),deck(t)+'場面の中にある形や色をたどり、新しい作品の入り口を探す。'+prose[i]+'細部を増やす前に、大きな形と読む順番を確かめたい。小さな発見を一つずつ記録し、次の制作で試してみる。'+['一つの題材でも、見る場所を変えると新しい形が見つかる。まずは目に留まった輪郭や色を短く記録したい。後からまとめて整える時、最初の発見が手がかりになる。身近な素材には、小さな傷や不揃いな線がある。全てを滑らかに消すのではなく、その素材らしさにつながる部分を選んで残す。完成を急がず、光の方向や形の接続を一つずつ確かめる。描き込みが増えたら、少し離れて全体のバランスを見直す。', '作品に使う色は、単独の美しさだけで決めない。隣に置く色や、画面に占める面積によって印象は変わる。同じ色でも明部と暗部の差があれば、形の厚みを表せる。試しに小さな色面を並べ、境界が読めるか確認したい。強い差し色は少量から始める。主題より目立つ場合は、その面積か明るさを控える。細部と余白を行き来して、視線の流れを整える。選んだ色の範囲を保つことが、作品全体のまとまりを支える。'][i],3);});}
   }
   add('引き抜き引用',line||subjectCopy,1);add(captionRole,subject+(name?' / '+name:''),3);
   // A standalone creation has no issue or page sequence. Never invent a folio.

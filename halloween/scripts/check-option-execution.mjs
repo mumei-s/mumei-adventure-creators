@@ -1,22 +1,22 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {questions,resolveSelections} from '../catalog.js?v=17';
-import {applyCollection} from '../collection.js?v=17';
-import {initialSelections} from '../modes.js?v=17';
-import {buildDirection} from '../direction.js?v=17';
-import {applyPose} from '../poses.js?v=17';
-import {productionPlan} from '../production-plan.js?v=17.0.2';
-import {renderInput} from '../compiled-production.js?v=17.0.2';
-import {optionRecipe} from '../option-recipes.js?v=17.0.2';
-import {mediumExecution} from '../medium-execution.js?v=17';
-import {formatExecution} from '../format-execution.js?v=17';
+import {questions,resolveSelections} from '../catalog.js?v=18';
+import {applyCollection} from '../collection.js?v=18';
+import {initialSelections} from '../modes.js?v=18';
+import {buildDirection} from '../direction.js?v=18';
+import {applyPose} from '../poses.js?v=18';
+import {productionPlan} from '../production-plan.js?v=18';
+import {renderInput} from '../compiled-production.js?v=18';
+import {optionRecipe} from '../option-recipes.js?v=18';
+import {mediumExecution} from '../medium-execution.js?v=18';
+import {formatExecution} from '../format-execution.js?v=18';
 
 const random=()=>.28,profile={displayName:'TEST',activityEnabled:false,topics:[],biography:''};
 const entries=new Map();let occurrences=0;
-assert.equal(mediumExecution.size,107);
-assert.equal(formatExecution.size,47);
-assert.equal(new Set(mediumExecution.values()).size,107);
-assert.equal(new Set(formatExecution.values()).size,47);
+assert.equal(mediumExecution.size,108);
+assert.equal(formatExecution.size,48);
+assert.equal(new Set(mediumExecution.values()).size,108);
+assert.equal(new Set(formatExecution.values()).size,48);
 function produce(values,mode){
  const variant=applyPose(buildDirection([],values.mood,random,mode,values),values.pose);
  const plan=productionPlan(profile,values,variant,mode,random);
@@ -63,11 +63,11 @@ for(const mode of ['halloween','everyday']){
  assert.ok(blocked.json.typography.line.method.includes('画像には描かない'));
 }
 applyCollection('halloween');
-assert.equal(entries.size,544);assert.equal(occurrences,941);
+assert.equal(entries.size,546);assert.equal(occurrences,945);
 const byKey=Object.fromEntries([...new Set([...entries.values()].map(e=>e.key))].map(key=>[key,[...entries.values()].filter(e=>e.key===key).length]));
-const report={date:'2026-10-06',scope:'Per-option execution input coverage; not generated-image acceptance',unique:entries.size,occurrences,byKey,entries:[...entries.values()]};
+const report={date:'2026-10-07',scope:'Per-option execution input coverage; not generated-image acceptance',unique:entries.size,occurrences,byKey,entries:[...entries.values()]};
 if(process.argv.includes('--save')){
- const dir=new URL('../verification/v17/',import.meta.url);fs.mkdirSync(dir,{recursive:true});
+ const dir=new URL('../verification/v18/',import.meta.url);fs.mkdirSync(dir,{recursive:true});
  fs.writeFileSync(new URL('option-execution.json',dir),JSON.stringify(report,null,2));
 }
 console.log('PASS individual execution: '+occurrences+' occurrences / '+entries.size+' options. All 10 contracts and each nested line reach the real image-call input; no-person, limited colors and copy boundaries checked. Generated-image quality remains unvalidated.');

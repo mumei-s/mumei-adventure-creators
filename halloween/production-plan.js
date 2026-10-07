@@ -1,10 +1,11 @@
-import {visibleQuestions} from './catalog.js?v=17';
-import {formatContract} from './formats.js?v=17';
-import {buildEditorial,editorialContract} from './editorial.js?v=17';
-import {optionRecipe} from './option-recipes.js?v=17.0.2';
-import {colorPolicy} from './palette-recipes.js?v=17.0.2';
-import {resolveArtDirection,interactionContract} from './art-direction.js?v=17.0.2';
-import {executionFor} from './option-execution.js?v=17';
+import {modeFoundation} from './japan-direction.js?v=18';
+import {visibleQuestions} from './catalog.js?v=18';
+import {formatContract} from './formats.js?v=18';
+import {buildEditorial,editorialContract} from './editorial.js?v=18';
+import {optionRecipe} from './option-recipes.js?v=18';
+import {colorPolicy} from './palette-recipes.js?v=18';
+import {resolveArtDirection,interactionContract} from './art-direction.js?v=18';
+import {executionFor} from './option-execution.js?v=18';
 
 export function productionPlan(profile,values,variant,collection='halloween',random=Math.random){
  const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);
@@ -12,7 +13,7 @@ export function productionPlan(profile,values,variant,collection='halloween',ran
  if(!/^.+｜\d+×\d+｜\d+:\d+$/.test(values.size))throw new Error('サイズの幅・高さ・比率を確認してください。');
  variant=resolveArtDirection(values,variant,collection);
  const context={noPerson,values,variant,collection},color=colorPolicy(values);
- const copy=buildEditorial(profile,{...values,collection},random),notes=[];
+ const copy=buildEditorial(profile,{...values,collection},random),notes=[modeFoundation(collection)];
  if(noPerson)notes.push(values.costume==='風景を主役にする'?'人物なしの指定を優先します。人物用の表情・顔角度・身体ポーズは適用対象外とし、景物を顔や手足に見立てず、風景の視点・自然な配置・光で作品を成立させます。':'人物なしの指定を優先します。人物用の表情・顔角度・身体ポーズは適用対象外とし、主題を顔や手足に見立てず、選択した物体・図案それぞれの配置と描画方法で作品を成立させます。');
  if(/文字を一切|だけ|のみ|サイン風|落款風/.test(values.type)&&/雑誌|誌面|見開き|新聞/.test(values.design))notes.push('文字を限定した設定です。誌面の文字量はこの指定に合わせて減ります。');
  if(values.line!=='セリフなし'&&(/文字を一切|クリエイター名だけ|HALLOWEEN|サイン風|落款風/.test(values.type)))notes.push('セリフより限定した文字設定を優先します。');

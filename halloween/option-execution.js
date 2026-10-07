@@ -1,6 +1,6 @@
-import {mediumExecution} from './medium-execution.js?v=17';
-import {formatExecution} from './format-execution.js?v=17';
-import {colorPolicy} from './color-policy.js?v=17';
+import {mediumExecution} from './medium-execution.js?v=18';
+import {formatExecution} from './format-execution.js?v=18';
+import {colorPolicy} from './color-policy.js?v=18';
 
 // The option's own physical recipe is the source of its execution contract.
 // No generic "beautiful / atmospheric" default replaces a missing preset.
@@ -26,10 +26,12 @@ export function executionFor(key,value,recipe,{noPerson=false,values={}}={}){
   :recipe.executionMethod||sections.slice(0,counts[key]||2).map(s=>s.draw).join(' ');
  if(recipe.known&&!method)throw new Error('個別の実行指示がありません：'+key+' / '+value);
  if(!method)method=sections.map(s=>s.draw).join(' ');
+ if(key==='medium'&&value==='クリスタルホログラム造形アニメ'&&noPerson)method=sections.slice(0,4).map(s=>s.draw).join(' ');
  if(key==='medium'){
   const policy=colorPolicy(values);
   if(policy.restricted)method+=' Use only '+policy.allowed+'. Translate every material color, optical band and reflection into values within those permitted colors. Preserve the technique through its line, layering, boundary and depth structure.';
  }
+ method+=' '+sections.filter(s=>s.part==='日本を基準にした個別条件').map(s=>s.draw).join(' ');
  const inactive=noPerson&&['mood','pose'].includes(key);
  let region=regions[key]||'自由指定の対象領域';
  if(noPerson){

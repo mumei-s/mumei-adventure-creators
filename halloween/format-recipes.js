@@ -443,6 +443,7 @@ export function formatTextPolicy(values={}){
 }
 
 export function detailedFormat(value,{noPerson=false,values={}}={}){
+ if(value==='週刊誌の表紙'){const p=formatTextPolicy(values);return {known:true,sections:[{label:'作品の骨格',text:'日本の週刊誌の正面表紙。内ページの本文を表紙へ置かず、独自誌名・主図版・複数の短い特集を一枚に編集する。'},{label:'領域とグリッド',text:'上端12〜18%を題字、中央の50〜65%を主図版、左右各12〜18%を縦見出し、下部15〜20%を横見出しと短い補足へ。外周3〜5%の安全余白。文字は重要な形へ重ねない。'},{label:'主画像の構成',text:noPerson?'選択した景物を中央の大きな主図版にし、人物を補わない。':'主役の顔と指定動作を中央に保持する。補助写真の顔や実在人物を勝手に追加しない。'},{label:'文字と読み順',text:p.noText?'文字なしの指定を守り、図版と色面の区画だけで編集密度を表す。疑似文字を置かない。':p.limited?'許可原稿だけを対応領域へ置く。未許可の特集や誌名を補わない。':'上端の題字→主特集→左右の縦見出し→下部の横見出し。太いゴシックと白抜き帯を使い、主特集は補助の2〜3倍。'},{label:'画風と形式の分担',text:'文字配置は週刊誌、主図版の作画は選択画風と配色。形式だけで写真へ変えない。'},{label:'避ける失敗',text:'内ページのQ&A、長文本文、実在誌名・疑惑見出し・未入力の価格と号数を補わない。'}],checks:['上端の独自題字','中央の大きな主図版','左右の縦見出しと下部の横見出し',p.noText?'文字なし':p.limited?'許可原稿だけ':'複数の短い特集と文字階層']};}
  const recipe=typeof value==='string'&&Object.hasOwn(entries,value)?entries[value]:null;
  if(!recipe)return {known:false,sections:[],checks:[]};
  const context={

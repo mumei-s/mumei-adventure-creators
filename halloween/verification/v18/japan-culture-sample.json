@@ -1,0 +1,485 @@
+{
+  "values": {
+    "design": "カルチャー誌の表紙",
+    "medium": "実写風ファッション写真",
+    "theme": "街角のファッション",
+    "costume": "現代のテーラードスーツ",
+    "place": "街角の歩道",
+    "palette": "モノクローム",
+    "type": "デザインに合わせて自動編集",
+    "line": "セリフなし",
+    "size": "縦見本｜1024×1536｜2:3",
+    "collection": "everyday"
+  },
+  "copy": {
+    "mode": "デザインに合わせて自動編集",
+    "name": "春野 澪",
+    "title": "色と暮らし",
+    "dense": true,
+    "slots": [
+      {
+        "role": "誌名",
+        "text": "色と暮らし",
+        "priority": 0
+      },
+      {
+        "role": "特集ラベル",
+        "text": "装い・暮らし・表現",
+        "priority": 3
+      },
+      {
+        "role": "主特集",
+        "text": "街角のファッション",
+        "priority": 1
+      },
+      {
+        "role": "主特集の補足",
+        "text": "街角のファッションを、ひとつの場面に。",
+        "priority": 2
+      },
+      {
+        "role": "補助特集",
+        "text": "色と暮らしの向こう側",
+        "priority": 2
+      },
+      {
+        "role": "補助特集の補足",
+        "text": "形と余白から、色と暮らしの魅力を見つける。",
+        "priority": 3
+      },
+      {
+        "role": "補助特集",
+        "text": "秋の装いの向こう側",
+        "priority": 2
+      },
+      {
+        "role": "補助特集の補足",
+        "text": "形と余白から、秋の装いの魅力を見つける。",
+        "priority": 3
+      },
+      {
+        "role": "補助特集",
+        "text": "街角のファッションの向こう側",
+        "priority": 2
+      },
+      {
+        "role": "補助特集の補足",
+        "text": "形と余白から、街角のファッションの魅力を見つける。",
+        "priority": 3
+      },
+      {
+        "role": "補助特集",
+        "text": "衣装のかたちの向こう側",
+        "priority": 2
+      },
+      {
+        "role": "補助特集の補足",
+        "text": "形と余白から、衣装のかたちの魅力を見つける。",
+        "priority": 3
+      },
+      {
+        "role": "作者名",
+        "text": "春野 澪",
+        "priority": 2
+      }
+    ],
+    "blocks": [
+      "色と暮らし",
+      "装い・暮らし・表現",
+      "街角のファッション",
+      "街角のファッションを、ひとつの場面に。",
+      "色と暮らしの向こう側",
+      "形と余白から、色と暮らしの魅力を見つける。",
+      "秋の装いの向こう側",
+      "形と余白から、秋の装いの魅力を見つける。",
+      "街角のファッションの向こう側",
+      "形と余白から、街角のファッションの魅力を見つける。",
+      "衣装のかたちの向こう側",
+      "形と余白から、衣装のかたちの魅力を見つける。",
+      "春野 澪"
+    ],
+    "topics": [
+      "色と暮らし",
+      "秋の装い"
+    ],
+    "kind": "cover",
+    "limited": false
+  },
+  "placements": {
+    "image": {
+      "x": 35.84,
+      "y": 345.60000000000014,
+      "width": 634.88,
+      "height": 952.3199999999999,
+      "container": {
+        "x": 35.84,
+        "y": 307.20000000000005,
+        "width": 634.88,
+        "height": 1029.1200000000001
+      },
+      "sourceWidth": 1024,
+      "sourceHeight": 1536,
+      "preserveAspectRatio": "xMidYMid meet"
+    },
+    "gutter": null,
+    "textFrames": [
+      {
+        "id": "masthead",
+        "x": 35.84,
+        "y": 30.72,
+        "width": 952.32,
+        "height": 176.64000000000001,
+        "roles": [
+          "誌名"
+        ]
+      },
+      {
+        "id": "label",
+        "x": 35.84,
+        "y": 215.04000000000002,
+        "width": 952.32,
+        "height": 38.400000000000006,
+        "roles": [
+          "特集ラベル"
+        ]
+      },
+      {
+        "id": "main-feature",
+        "x": 61.44,
+        "y": 1328.6399999999999,
+        "width": 901.12,
+        "height": 87.552,
+        "roles": [
+          "主特集"
+        ]
+      },
+      {
+        "id": "main-deck",
+        "x": 61.44,
+        "y": 1423.872,
+        "width": 901.12,
+        "height": 46.08,
+        "roles": [
+          "主特集の補足"
+        ]
+      },
+      {
+        "id": "cover-feature-1",
+        "x": 706.56,
+        "y": 322.56,
+        "width": 281.6,
+        "height": 215.04000000000002,
+        "roles": [
+          "補助特集",
+          "補助特集の補足"
+        ]
+      },
+      {
+        "id": "cover-feature-2",
+        "x": 706.56,
+        "y": 552.96,
+        "width": 281.6,
+        "height": 215.04000000000002,
+        "roles": [
+          "補助特集",
+          "補助特集の補足"
+        ]
+      },
+      {
+        "id": "cover-feature-3",
+        "x": 706.56,
+        "y": 783.36,
+        "width": 281.6,
+        "height": 215.04000000000002,
+        "roles": [
+          "補助特集",
+          "補助特集の補足"
+        ]
+      },
+      {
+        "id": "cover-feature-4",
+        "x": 706.56,
+        "y": 1013.7599999999999,
+        "width": 281.6,
+        "height": 215.04000000000002,
+        "roles": [
+          "補助特集",
+          "補助特集の補足"
+        ]
+      },
+      {
+        "id": "author",
+        "x": 61.44,
+        "y": 1486.848,
+        "width": 901.12,
+        "height": 32.256,
+        "roles": [
+          "作者名"
+        ]
+      }
+    ],
+    "textRuns": [
+      {
+        "role": "誌名",
+        "text": "色と暮らし",
+        "slotIndex": 0,
+        "frameId": "masthead",
+        "x": 35.84,
+        "y": 30.72,
+        "width": 614.4,
+        "height": 129.024,
+        "fontSize": 122.88,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 700,
+        "lines": [
+          "色と暮らし"
+        ],
+        "lineHeight": 129.024,
+        "align": "left",
+        "color": "#111111"
+      },
+      {
+        "role": "特集ラベル",
+        "text": "装い・暮らし・表現",
+        "slotIndex": 1,
+        "frameId": "label",
+        "x": 35.84,
+        "y": 215.04000000000002,
+        "width": 165.88799999999998,
+        "height": 26.726399999999998,
+        "fontSize": 18.432,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 400,
+        "lines": [
+          "装い・暮らし・表現"
+        ],
+        "lineHeight": 26.726399999999998,
+        "align": "left",
+        "color": "#111111"
+      },
+      {
+        "role": "主特集",
+        "text": "街角のファッション",
+        "slotIndex": 2,
+        "frameId": "main-feature",
+        "x": 61.44,
+        "y": 1328.6399999999999,
+        "width": 506.88,
+        "height": 61.952000000000005,
+        "fontSize": 56.32,
+        "fontFamily": "\"Noto Serif CJK JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", Georgia, serif",
+        "fontWeight": 700,
+        "lines": [
+          "街角のファッション"
+        ],
+        "lineHeight": 61.952000000000005,
+        "align": "left",
+        "color": "#111111"
+      },
+      {
+        "role": "主特集の補足",
+        "text": "街角のファッションを、ひとつの場面に。",
+        "slotIndex": 3,
+        "frameId": "main-deck",
+        "x": 61.44,
+        "y": 1423.872,
+        "width": 389.12,
+        "height": 29.695999999999998,
+        "fontSize": 20.48,
+        "fontFamily": "\"Noto Serif CJK JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", Georgia, serif",
+        "fontWeight": 400,
+        "lines": [
+          "街角のファッションを、ひとつの場面に。"
+        ],
+        "lineHeight": 29.695999999999998,
+        "align": "left",
+        "color": "#111111"
+      },
+      {
+        "role": "補助特集",
+        "text": "色と暮らしの向こう側",
+        "slotIndex": 4,
+        "frameId": "cover-feature-1",
+        "x": 706.56,
+        "y": 322.56,
+        "width": 230.40000000000003,
+        "height": 88.32000000000001,
+        "fontSize": 38.400000000000006,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 600,
+        "lines": [
+          "色と暮らしの",
+          "向こう側"
+        ],
+        "lineHeight": 44.160000000000004,
+        "align": "left",
+        "color": "#111111"
+      },
+      {
+        "role": "補助特集の補足",
+        "text": "形と余白から、色と暮らしの魅力を見つける。",
+        "slotIndex": 5,
+        "frameId": "cover-feature-1",
+        "x": 706.56,
+        "y": 418.56,
+        "width": 230.4,
+        "height": 88.32,
+        "fontSize": 25.6,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 400,
+        "lines": [
+          "形と余白から、色と",
+          "暮らしの魅力を",
+          "見つける。"
+        ],
+        "lineHeight": 29.439999999999998,
+        "align": "left",
+        "color": "#111111"
+      },
+      {
+        "role": "補助特集",
+        "text": "秋の装いの向こう側",
+        "slotIndex": 6,
+        "frameId": "cover-feature-2",
+        "x": 706.56,
+        "y": 552.96,
+        "width": 192.00000000000003,
+        "height": 88.32000000000001,
+        "fontSize": 38.400000000000006,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 600,
+        "lines": [
+          "秋の装いの",
+          "向こう側"
+        ],
+        "lineHeight": 44.160000000000004,
+        "align": "left",
+        "color": "#111111"
+      },
+      {
+        "role": "補助特集の補足",
+        "text": "形と余白から、秋の装いの魅力を見つける。",
+        "slotIndex": 7,
+        "frameId": "cover-feature-2",
+        "x": 706.56,
+        "y": 648.96,
+        "width": 281.6,
+        "height": 58.879999999999995,
+        "fontSize": 25.6,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 400,
+        "lines": [
+          "形と余白から、秋の装い",
+          "の魅力を見つける。"
+        ],
+        "lineHeight": 29.439999999999998,
+        "align": "left",
+        "color": "#111111"
+      },
+      {
+        "role": "補助特集",
+        "text": "街角のファッションの向こう側",
+        "slotIndex": 8,
+        "frameId": "cover-feature-3",
+        "x": 706.56,
+        "y": 783.36,
+        "width": 268.80000000000007,
+        "height": 88.32000000000001,
+        "fontSize": 38.400000000000006,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 600,
+        "lines": [
+          "街角のファッシ",
+          "ョンの向こう側"
+        ],
+        "lineHeight": 44.160000000000004,
+        "align": "left",
+        "color": "#111111"
+      },
+      {
+        "role": "補助特集の補足",
+        "text": "形と余白から、街角のファッションの魅力を見つける。",
+        "slotIndex": 9,
+        "frameId": "cover-feature-3",
+        "x": 706.56,
+        "y": 879.36,
+        "width": 256,
+        "height": 88.32,
+        "fontSize": 25.6,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 400,
+        "lines": [
+          "形と余白から、街角の",
+          "ファッションの魅力を",
+          "見つける。"
+        ],
+        "lineHeight": 29.439999999999998,
+        "align": "left",
+        "color": "#111111"
+      },
+      {
+        "role": "補助特集",
+        "text": "衣装のかたちの向こう側",
+        "slotIndex": 10,
+        "frameId": "cover-feature-4",
+        "x": 706.56,
+        "y": 1013.7599999999999,
+        "width": 268.80000000000007,
+        "height": 88.32000000000001,
+        "fontSize": 38.400000000000006,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 600,
+        "lines": [
+          "衣装のかたちの",
+          "向こう側"
+        ],
+        "lineHeight": 44.160000000000004,
+        "align": "left",
+        "color": "#111111"
+      },
+      {
+        "role": "補助特集の補足",
+        "text": "形と余白から、衣装のかたちの魅力を見つける。",
+        "slotIndex": 11,
+        "frameId": "cover-feature-4",
+        "x": 706.56,
+        "y": 1109.7599999999998,
+        "width": 256,
+        "height": 88.32,
+        "fontSize": 25.6,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 400,
+        "lines": [
+          "形と余白から、衣装の",
+          "かたちの魅力を",
+          "見つける。"
+        ],
+        "lineHeight": 29.439999999999998,
+        "align": "left",
+        "color": "#111111"
+      },
+      {
+        "role": "作者名",
+        "text": "春野 澪",
+        "slotIndex": 12,
+        "frameId": "author",
+        "x": 914.6777599999999,
+        "y": 1486.848,
+        "width": 47.882239999999996,
+        "height": 20.7872,
+        "fontSize": 14.336,
+        "fontFamily": "\"Noto Serif CJK JP\", \"Yu Mincho\", \"Hiragino Mincho ProN\", Georgia, serif",
+        "fontWeight": 400,
+        "lines": [
+          "春野 澪"
+        ],
+        "lineHeight": 20.7872,
+        "align": "right",
+        "color": "#111111"
+      }
+    ]
+  },
+  "notes": [
+    "文字幅は一部または全部を近似計測しています。使用環境のフォントによって字幅が変わる場合があります。"
+  ]
+}

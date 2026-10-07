@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {questions,resolveSelections} from '../catalog.js?v=17';
-import {applyCollection} from '../collection.js?v=17';
-import {initialSelections} from '../modes.js?v=17';
-import {buildDirection} from '../direction.js?v=17';
-import {applyPose} from '../poses.js?v=17';
-import {productionPlan} from '../production-plan.js?v=17.0.2';
-import {composePrompt} from '../prompt.js?v=17.0.2';
-import {optionRecipe} from '../option-recipes.js?v=17.0.2';
-import {conditionOwners,renderInput} from '../compiled-production.js?v=17.0.2';
-import {opticalColors,opticalSignature} from '../optical-effects.js?v=17';
+import {questions,resolveSelections} from '../catalog.js?v=18';
+import {applyCollection} from '../collection.js?v=18';
+import {initialSelections} from '../modes.js?v=18';
+import {buildDirection} from '../direction.js?v=18';
+import {applyPose} from '../poses.js?v=18';
+import {productionPlan} from '../production-plan.js?v=18';
+import {composePrompt} from '../prompt.js?v=18';
+import {optionRecipe} from '../option-recipes.js?v=18';
+import {conditionOwners,renderInput} from '../compiled-production.js?v=18';
+import {opticalColors,opticalSignature} from '../optical-effects.js?v=18';
 const random=()=>.28,profile={displayName:'REVIEW',activityEnabled:false,topics:[],biography:''};
 const entries=new Map();let occurrences=0,pairs=0,totalLength=0,maxLength=0;
 for(const mode of ['halloween','everyday']){
@@ -48,6 +48,6 @@ for(const mode of ['halloween','everyday']){
  }
 }
 applyCollection('halloween');
-const report={date:'2026-10-06',scope:'Instruction and combination review, not image acceptance',occurrences,unique:entries.size,mediaPalettePairs:pairs,promptCharacters:{mean:Math.round(totalLength/occurrences),max:maxLength},byKey:Object.fromEntries(Object.keys(conditionOwners).map(key=>[key,[...entries.values()].filter(e=>e.key===key).length])),entries:[...entries.values()]};
-if(process.argv.includes('--save'))fs.writeFileSync(new URL('../verification/v16/item-review.json',import.meta.url),JSON.stringify(report,null,2));
+const report={date:'2026-10-07',scope:'Instruction and combination review, not image acceptance',occurrences,unique:entries.size,mediaPalettePairs:pairs,promptCharacters:{mean:Math.round(totalLength/occurrences),max:maxLength},byKey:Object.fromEntries(Object.keys(conditionOwners).map(key=>[key,[...entries.values()].filter(e=>e.key===key).length])),entries:[...entries.values()]};
+if(process.argv.includes('--save'))fs.writeFileSync(new URL('../verification/v18/item-review.json',import.meta.url),JSON.stringify(report,null,2));
 console.log('PASS item review: '+occurrences+' occurrences, '+entries.size+' distinct options, '+pairs+' medium/palette combinations. Exact inputs, all recipe clauses, visual signatures first, one-call output, limited-color optics. Image acceptance is separate.');

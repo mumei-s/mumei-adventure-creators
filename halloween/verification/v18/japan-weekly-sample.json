@@ -1,0 +1,612 @@
+{
+  "values": {
+    "design": "週刊誌の表紙",
+    "medium": "実写風ファッション写真",
+    "theme": "街角のファッション",
+    "costume": "現代のテーラードスーツ",
+    "place": "街角の歩道",
+    "palette": "原色のポップカラー",
+    "type": "デザインに合わせて自動編集",
+    "line": "セリフなし",
+    "size": "縦見本｜1024×1536｜2:3",
+    "collection": "everyday"
+  },
+  "copy": {
+    "mode": "デザインに合わせて自動編集",
+    "name": "春野 澪",
+    "title": "週刊創作",
+    "dense": true,
+    "slots": [
+      {
+        "role": "誌名",
+        "text": "週刊創作",
+        "priority": 0
+      },
+      {
+        "role": "特集ラベル",
+        "text": "装い・暮らし・表現",
+        "priority": 3
+      },
+      {
+        "role": "主特集",
+        "text": "街角のファッション",
+        "priority": 1
+      },
+      {
+        "role": "主特集の補足",
+        "text": "街角のファッションを、ひとつの場面に。",
+        "priority": 2
+      },
+      {
+        "role": "補助特集",
+        "text": "色と暮らしを楽しむ",
+        "priority": 2
+      },
+      {
+        "role": "補助特集の補足",
+        "text": "毎日に取り入れる小さな発見",
+        "priority": 3
+      },
+      {
+        "role": "補助特集",
+        "text": "秋の装いが変わる",
+        "priority": 2
+      },
+      {
+        "role": "補助特集の補足",
+        "text": "作り手の視点で見つめる",
+        "priority": 3
+      },
+      {
+        "role": "補助特集",
+        "text": "街角のファッションの選び方",
+        "priority": 2
+      },
+      {
+        "role": "補助特集の補足",
+        "text": "初めてでも分かる実践ガイド",
+        "priority": 3
+      },
+      {
+        "role": "補助特集",
+        "text": "衣装のかたちを見直す",
+        "priority": 2
+      },
+      {
+        "role": "補助特集の補足",
+        "text": "形と素材から考える",
+        "priority": 3
+      },
+      {
+        "role": "補助特集",
+        "text": "色と光のひと工夫",
+        "priority": 2
+      },
+      {
+        "role": "補助特集の補足",
+        "text": "次の一枚につながる提案",
+        "priority": 3
+      },
+      {
+        "role": "補助特集",
+        "text": "場面づくりを深く知る",
+        "priority": 2
+      },
+      {
+        "role": "補助特集の補足",
+        "text": "身近な場面を読み解く",
+        "priority": 3
+      },
+      {
+        "role": "作者名",
+        "text": "春野 澪",
+        "priority": 2
+      }
+    ],
+    "blocks": [
+      "週刊創作",
+      "装い・暮らし・表現",
+      "街角のファッション",
+      "街角のファッションを、ひとつの場面に。",
+      "色と暮らしを楽しむ",
+      "毎日に取り入れる小さな発見",
+      "秋の装いが変わる",
+      "作り手の視点で見つめる",
+      "街角のファッションの選び方",
+      "初めてでも分かる実践ガイド",
+      "衣装のかたちを見直す",
+      "形と素材から考える",
+      "色と光のひと工夫",
+      "次の一枚につながる提案",
+      "場面づくりを深く知る",
+      "身近な場面を読み解く",
+      "春野 澪"
+    ],
+    "topics": [
+      "色と暮らし",
+      "秋の装い"
+    ],
+    "kind": "cover",
+    "limited": false
+  },
+  "placements": {
+    "image": {
+      "x": 184.32000000000002,
+      "y": 230.39999999999998,
+      "width": 655.36,
+      "height": 983.04,
+      "container": {
+        "x": 174.08,
+        "y": 230.39999999999998,
+        "width": 675.84,
+        "height": 983.04
+      },
+      "sourceWidth": 1024,
+      "sourceHeight": 1536,
+      "preserveAspectRatio": "xMidYMid meet"
+    },
+    "gutter": null,
+    "textFrames": [
+      {
+        "id": "masthead",
+        "x": 35.84,
+        "y": 30.72,
+        "width": 952.32,
+        "height": 161.28,
+        "roles": [
+          "誌名"
+        ]
+      },
+      {
+        "id": "label",
+        "x": 35.84,
+        "y": 192,
+        "width": 952.32,
+        "height": 38.400000000000006,
+        "roles": [
+          "特集ラベル"
+        ]
+      },
+      {
+        "id": "title",
+        "x": 819.2,
+        "y": 261.12,
+        "width": 168.96,
+        "height": 906.24,
+        "roles": [
+          "主特集"
+        ]
+      },
+      {
+        "id": "deck",
+        "x": 204.8,
+        "y": 1113.6,
+        "width": 593.92,
+        "height": 99.84,
+        "roles": [
+          "主特集の補足"
+        ]
+      },
+      {
+        "id": "weekly-feature-0",
+        "x": 35.84,
+        "y": 261.12,
+        "width": 143.36,
+        "height": 430.08000000000004,
+        "roles": [
+          "補助特集",
+          "補助特集の補足"
+        ]
+      },
+      {
+        "id": "weekly-feature-1",
+        "x": 35.84,
+        "y": 721.92,
+        "width": 143.36,
+        "height": 430.08000000000004,
+        "roles": [
+          "補助特集",
+          "補助特集の補足"
+        ]
+      },
+      {
+        "id": "weekly-feature-2",
+        "x": 35.84,
+        "y": 1236.48,
+        "width": 460.8,
+        "height": 113.66399999999999,
+        "roles": [
+          "補助特集",
+          "補助特集の補足"
+        ]
+      },
+      {
+        "id": "weekly-feature-3",
+        "x": 527.36,
+        "y": 1236.48,
+        "width": 460.8,
+        "height": 113.66399999999999,
+        "roles": [
+          "補助特集",
+          "補助特集の補足"
+        ]
+      },
+      {
+        "id": "weekly-feature-4",
+        "x": 35.84,
+        "y": 1357.824,
+        "width": 460.8,
+        "height": 113.66399999999999,
+        "roles": [
+          "補助特集",
+          "補助特集の補足"
+        ]
+      },
+      {
+        "id": "weekly-feature-5",
+        "x": 527.36,
+        "y": 1357.824,
+        "width": 460.8,
+        "height": 113.66399999999999,
+        "roles": [
+          "補助特集",
+          "補助特集の補足"
+        ]
+      },
+      {
+        "id": "author",
+        "x": 35.84,
+        "y": 1494.528,
+        "width": 952.32,
+        "height": 27.647999999999996,
+        "roles": [
+          "作者名"
+        ]
+      }
+    ],
+    "textRuns": [
+      {
+        "role": "誌名",
+        "text": "週刊創作",
+        "slotIndex": 0,
+        "frameId": "masthead",
+        "x": 35.84,
+        "y": 30.72,
+        "width": 444.91034780937514,
+        "height": 161.28000108089847,
+        "fontSize": 111.22758695234378,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 900,
+        "lines": [
+          "週刊創作"
+        ],
+        "lineHeight": 161.28000108089847,
+        "align": "left",
+        "color": "#111111"
+      },
+      {
+        "role": "特集ラベル",
+        "text": "装い・暮らし・表現",
+        "slotIndex": 1,
+        "frameId": "label",
+        "x": 35.84,
+        "y": 192,
+        "width": 202.75199999999998,
+        "height": 32.6656,
+        "fontSize": 22.528,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 400,
+        "lines": [
+          "装い・暮らし・表現"
+        ],
+        "lineHeight": 32.6656,
+        "align": "left",
+        "color": "#111111"
+      },
+      {
+        "role": "主特集",
+        "text": "街角のファッション",
+        "slotIndex": 2,
+        "frameId": "title",
+        "x": 891.6480000000001,
+        "y": 261.12,
+        "width": 96.512,
+        "height": 708.8639999999999,
+        "fontSize": 66.56,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 900,
+        "lines": [
+          "街角のファッション"
+        ],
+        "lineHeight": 76.544,
+        "align": "left",
+        "direction": "vertical-rl",
+        "columnWidth": 96.512,
+        "letterSpacing": 9.984,
+        "color": "#ffffff"
+      },
+      {
+        "role": "主特集の補足",
+        "text": "街角のファッションを、ひとつの場面に。",
+        "slotIndex": 3,
+        "frameId": "deck",
+        "x": 204.8,
+        "y": 1113.6,
+        "width": 583.68,
+        "height": 44.544,
+        "fontSize": 30.72,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 800,
+        "lines": [
+          "街角のファッションを、ひとつの場面に。"
+        ],
+        "lineHeight": 44.544,
+        "align": "left",
+        "color": "#111111"
+      },
+      {
+        "role": "補助特集",
+        "text": "色と暮らしを楽しむ",
+        "slotIndex": 4,
+        "frameId": "weekly-feature-0",
+        "x": 120.64450892715935,
+        "y": 261.12,
+        "width": 58.55549107284067,
+        "height": 430.07998615569176,
+        "fontSize": 40.383097291614256,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 600,
+        "lines": [
+          "色と暮らしを楽しむ"
+        ],
+        "lineHeight": 46.44056188535639,
+        "align": "left",
+        "direction": "vertical-rl",
+        "columnWidth": 58.55549107284067,
+        "letterSpacing": 6.0574645937421385,
+        "color": "#ffffff"
+      },
+      {
+        "role": "補助特集の補足",
+        "text": "毎日に取り入れる小さな発見",
+        "slotIndex": 5,
+        "frameId": "weekly-feature-0",
+        "x": 77.81395119362907,
+        "y": 261.12,
+        "width": 35.48817640778223,
+        "height": 373.23771739219234,
+        "fontSize": 24.474604419160155,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 900,
+        "lines": [
+          "毎日に取り入れる小さな発見"
+        ],
+        "lineHeight": 28.145795082034176,
+        "align": "left",
+        "direction": "vertical-rl",
+        "columnWidth": 35.48817640778223,
+        "letterSpacing": 3.671190662874023,
+        "color": "#ffffff"
+      },
+      {
+        "role": "補助特集",
+        "text": "秋の装いが変わる",
+        "slotIndex": 6,
+        "frameId": "weekly-feature-1",
+        "x": 113.5562144543676,
+        "y": 721.92,
+        "width": 65.64378554563241,
+        "height": 430.07997426448816,
+        "fontSize": 45.27157623836718,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 600,
+        "lines": [
+          "秋の装いが変わる"
+        ],
+        "lineHeight": 52.06231267412225,
+        "align": "left",
+        "direction": "vertical-rl",
+        "columnWidth": 65.64378554563241,
+        "letterSpacing": 6.790736435755077,
+        "color": "#ffffff"
+      },
+      {
+        "role": "補助特集の補足",
+        "text": "作り手の視点で見つめる",
+        "slotIndex": 7,
+        "frameId": "weekly-feature-1",
+        "x": 65.54090632276606,
+        "y": 721.92,
+        "width": 39.78411245189843,
+        "height": 355.3132801738515,
+        "fontSize": 27.437318932343747,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 900,
+        "lines": [
+          "作り手の視点で見つめる"
+        ],
+        "lineHeight": 31.552916772195307,
+        "align": "left",
+        "direction": "vertical-rl",
+        "columnWidth": 39.78411245189843,
+        "letterSpacing": 4.115597839851562,
+        "color": "#ffffff"
+      },
+      {
+        "role": "補助特集",
+        "text": "街角のファッションの選び方",
+        "slotIndex": 8,
+        "frameId": "weekly-feature-2",
+        "x": 35.84,
+        "y": 1236.48,
+        "width": 389.50283201929676,
+        "height": 81.79559472405234,
+        "fontSize": 38.95028320192968,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 600,
+        "lines": [
+          "街角のファッションの",
+          "選び方"
+        ],
+        "lineHeight": 40.89779736202617,
+        "align": "left",
+        "color": "#ffffff"
+      },
+      {
+        "role": "補助特集の補足",
+        "text": "初めてでも分かる実践ガイド",
+        "slotIndex": 9,
+        "frameId": "weekly-feature-2",
+        "x": 35.84,
+        "y": 1325.3574643971306,
+        "width": 306.88101916671866,
+        "height": 24.786543855773434,
+        "fontSize": 23.606232243593745,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 900,
+        "lines": [
+          "初めてでも分かる実践ガイド"
+        ],
+        "lineHeight": 24.786543855773434,
+        "align": "left",
+        "color": "#ffffff"
+      },
+      {
+        "role": "補助特集",
+        "text": "衣装のかたちを見直す",
+        "slotIndex": 10,
+        "frameId": "weekly-feature-3",
+        "x": 527.36,
+        "y": 1236.48,
+        "width": 460.79997255638665,
+        "height": 48.3839971184206,
+        "fontSize": 46.079997255638666,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 600,
+        "lines": [
+          "衣装のかたちを見直す"
+        ],
+        "lineHeight": 48.3839971184206,
+        "align": "left",
+        "color": "#ffffff"
+      },
+      {
+        "role": "補助特集の補足",
+        "text": "形と素材から考える",
+        "slotIndex": 11,
+        "frameId": "weekly-feature-3",
+        "x": 527.36,
+        "y": 1293.2421784376277,
+        "width": 251.34543957621094,
+        "height": 29.32363461722461,
+        "fontSize": 27.927271064023437,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 900,
+        "lines": [
+          "形と素材から考える"
+        ],
+        "lineHeight": 29.32363461722461,
+        "align": "left",
+        "color": "#ffffff"
+      },
+      {
+        "role": "補助特集",
+        "text": "色と光のひと工夫",
+        "slotIndex": 12,
+        "frameId": "weekly-feature-4",
+        "x": 35.84,
+        "y": 1357.824,
+        "width": 432.5376,
+        "height": 56.77056,
+        "fontSize": 54.0672,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 600,
+        "lines": [
+          "色と光のひと工夫"
+        ],
+        "lineHeight": 56.77056,
+        "align": "left",
+        "color": "#ffffff"
+      },
+      {
+        "role": "補助特集の補足",
+        "text": "次の一枚につながる提案",
+        "slotIndex": 13,
+        "frameId": "weekly-feature-4",
+        "x": 35.84,
+        "y": 1424.42496,
+        "width": 360.448,
+        "height": 34.406400000000005,
+        "fontSize": 32.768,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 900,
+        "lines": [
+          "次の一枚につながる提案"
+        ],
+        "lineHeight": 34.406400000000005,
+        "align": "left",
+        "color": "#ffffff"
+      },
+      {
+        "role": "補助特集",
+        "text": "場面づくりを深く知る",
+        "slotIndex": 14,
+        "frameId": "weekly-feature-5",
+        "x": 527.36,
+        "y": 1357.824,
+        "width": 460.79997255638665,
+        "height": 48.3839971184206,
+        "fontSize": 46.079997255638666,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 600,
+        "lines": [
+          "場面づくりを深く知る"
+        ],
+        "lineHeight": 48.3839971184206,
+        "align": "left",
+        "color": "#ffffff"
+      },
+      {
+        "role": "補助特集の補足",
+        "text": "身近な場面を読み解く",
+        "slotIndex": 15,
+        "frameId": "weekly-feature-5",
+        "x": 527.36,
+        "y": 1414.5861784376277,
+        "width": 279.2727106402344,
+        "height": 29.32363461722461,
+        "fontSize": 27.927271064023437,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 900,
+        "lines": [
+          "身近な場面を読み解く"
+        ],
+        "lineHeight": 29.32363461722461,
+        "align": "left",
+        "color": "#ffffff"
+      },
+      {
+        "role": "作者名",
+        "text": "春野 澪",
+        "slotIndex": 16,
+        "frameId": "author",
+        "x": 933.43744,
+        "y": 1494.528,
+        "width": 54.72256,
+        "height": 23.7568,
+        "fontSize": 16.384,
+        "fontFamily": "\"Noto Sans CJK JP\", \"Yu Gothic\", \"Hiragino Kaku Gothic ProN\", Arial, sans-serif",
+        "fontWeight": 400,
+        "lines": [
+          "春野 澪"
+        ],
+        "lineHeight": 23.7568,
+        "align": "right",
+        "color": "#111111"
+      }
+    ]
+  },
+  "notes": [
+    "文字幅は一部または全部を近似計測しています。使用環境のフォントによって字幅が変わる場合があります。"
+  ]
+}

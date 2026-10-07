@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=17';
-import {resolveSelections} from '../catalog.js?v=17';
-import {initialSelections} from '../modes.js?v=17';
-import {buildDirection} from '../direction.js?v=17';
-import {applyPose} from '../poses.js?v=17';
-import {productionPlan} from '../production-plan.js?v=17.0.2';
-import {renderEditorialLayout} from '../editorial-layout.js?v=17.0.2';
+import {applyCollection} from '../collection.js?v=18';
+import {resolveSelections} from '../catalog.js?v=18';
+import {initialSelections} from '../modes.js?v=18';
+import {buildDirection} from '../direction.js?v=18';
+import {applyPose} from '../poses.js?v=18';
+import {productionPlan} from '../production-plan.js?v=18';
+import {renderEditorialLayout} from '../editorial-layout.js?v=18';
 
 // Native SVG composition preserves supplied pixels; it does not generate images.
 // Solid-color, dimensionally correct test PNGs. No person's artwork is stored.
@@ -65,7 +65,7 @@ function checkCopy(output,plan,label){
  assert.ok([...rendered].every(([text,n])=>!text.trim()||n===0),label+' contains unapproved visible text');
 }
 
-const formats=['ファッション雑誌の表紙','インタビュー誌面','見開き特集','新聞の一面'];
+const formats=['週刊誌の表紙','カルチャー誌の表紙','ファッション雑誌の表紙','インタビュー誌面','見開き特集','新聞の一面'];
 for(const design of formats){
  const plan=planFor({design});
  for(const picture of pictures){
@@ -129,4 +129,4 @@ assert.ok(capped.notes.length,'Downscaled output must report the size limitation
 assert.ok(capped.svg.includes('width="2731"')&&capped.svg.includes('height="4096"'),'SVG dimensions must match the actual capped output');
 
 applyCollection('halloween');
-console.log('PASS native editorial layout: four formats × square/wide/tall original images; one uncropped image with contain geometry; spread gutter and aligned A/B body frames; every copy block and escaped character; limited text/colors; invalid image inputs rejected; 4096px size cap reported.');
+console.log('PASS native editorial layout: six formats × square/wide/tall original images; one uncropped image with contain geometry; spread gutter and aligned A/B body frames; every copy block and escaped character; limited text/colors; invalid image inputs rejected; 4096px size cap reported.');

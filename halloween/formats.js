@@ -1,7 +1,8 @@
-import {editorialReferencesFor} from './editorial-reference-sources.js?v=17';
-import {formatTextPolicy} from './format-recipes.js?v=17';
+import {editorialReferencesFor} from './editorial-reference-sources.js?v=18';
+import {formatTextPolicy} from './format-recipes.js?v=18';
 // The selected title defines the layout. Medium defines image rendering independently.
 const rows=[
+ ['週刊誌の表紙','cover','日本の週刊誌表紙。上端の独自題字、中央主図版、左右に縦組みの太い特集見出し、下部に横見出しと小さな補足。高い情報密度でも顔と重要な形を避ける。本文の長い段組みは内ページへ分離する。','独自題字／縦見出し／横見出し／中央主図版／補助特集の明確な階層'],
  ['ファッション雑誌の表紙','cover','上部15〜22%に独自の誌名。主役を中央の高さ65〜85%に置き、左右の細い2列にカバーラインを整列。最重要特集を1本、補助特集を4〜6本。誌名・大特集・小特集・補足の4段階で字の大きさを分ける。全周4〜6%を文字の安全余白にする。','誌名／主役／大特集／補助特集／特集の短い補足'],
  ['カルチャー誌の表紙','cover','6列の非対称グリッド。上部の独自誌名、主役の環境を含む大きな画像、左または右に特集の縦列。主特集1本と文化・制作の小特集4本。書体は2系統、罫線と小さなジャンルラベルで整理。','独自誌名／主特集／4本の文化カバーライン／ジャンルラベル'],
  ['ゴシック雑誌の表紙','cover','独自の細身セリフ誌名、左右の整列したカバーライン、下部の大特集。装飾は文字の端へ限定し、人物の顔と文章を空ける。暗部に明るい字を使い、4段階の文字階層を保つ。画材は別指定を維持。','セリフ誌名／大特集／4〜6本の特集／読める暗背景の文字'],

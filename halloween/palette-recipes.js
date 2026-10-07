@@ -1,6 +1,6 @@
-import {colorPolicy} from './color-policy.js?v=17';
-export {colorPolicy} from './color-policy.js?v=17';
-import {colorWorlds} from './worlds.js?v=17';
+import {colorPolicy} from './color-policy.js?v=18';
+export {colorPolicy} from './color-policy.js?v=18';
+import {colorWorlds} from './worlds.js?v=18';
 
 // A palette owns hue and its allocation. It cannot silently select a material,
 // a time of day, a light source, a subject, or a low-contrast rendering style.
@@ -78,7 +78,7 @@ export const paletteRecipeValues=[...specs.keys()];
 export function detailedPalette(value,{values={},noPerson=false}={}){
  const spec=specs.get(value),policy=colorPolicy({...values,palette:value});
  const scenery=values.costume==='風景を主役にする',emblem=values.costume==='紋章・アイコンにする';
- const optical=['クリスタル透光アニメ','宝石ホログラムアニメ','漆と螺鈿'].includes(values.medium);
+ const optical=['クリスタル透光アニメ','宝石ホログラムアニメ','クリスタルホログラム造形アニメ','漆と螺鈿'].includes(values.medium);
  const opticalColor=optical&&!policy.restricted?'分散・薄膜干渉の局所的なスペクトル色は画風の光学として保つ。':'光を理由に指定外の色を加えない。';
  const subject=noPerson?(scenery?'地形・建築・景物・自然素材':emblem?'図案の主形・副形・余白':'主題の物体・支持面・背景'):'人物の衣装・景物・背景';
  const sections=[];

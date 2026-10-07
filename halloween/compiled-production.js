@@ -1,6 +1,7 @@
-import {imageOutputContract} from './output-contract.js?v=17.0.2';
-import {opticalSignature} from './optical-effects.js?v=17';
-import {colorPolicy} from './color-policy.js?v=17';
+import {modeFoundation} from './japan-direction.js?v=18';
+import {imageOutputContract} from './output-contract.js?v=18';
+import {opticalSignature} from './optical-effects.js?v=18';
+import {colorPolicy} from './color-policy.js?v=18';
 
 export const conditionOwners=Object.freeze({
  medium:'描線・陰影・画材・光学',design:'画像と原稿の領域・読み順',
@@ -24,6 +25,7 @@ export function renderInput(plan){
   :selected.medium==='宝石ホログラムアニメ'?'前後に離れた広い半透明投影面、面ごとの二重輪郭と途切れた走査線。':'';
  const input={
   output:'完成画像を1枚。仕様書・ツール画面として描かない。',
+  cultural_foundation:modeFoundation(plan.collection),
   required_before_details:{
    medium:material.execution.method,
    palette:color.restricted?'全領域の使用色：'+color.allowed+'。参照の髪・肌・瞳、光、反射、文字もこの色域で描き直す。':byKey.palette.execution.method,

@@ -1,0 +1,9 @@
+Create a standalone portrait illustration, 2:3 vertical, no text, no UI, no document. The subject below is fictional, so no character reference image is needed.
+Fictional clearly adult Japanese anime woman with long softly flowing hair, a fully covering elegant dress with layered long sleeves, half-body composition turning sideways and looking back. The hair and outer garment are translucent clear crystal with holographic interference. Quiet dark studio background. No pedestal or surrounding circular ring.
+Construct Japanese anime identity shapes in clear crystalline material: broad curved transparent facets of different thickness, displaced background contours at facet boundaries, dark double internal reflections and rainbow thin-film interference bands following surface angles. Preserve readable anime eyelids and iris geometry, clothing coverage and the selected scene; sharply contrast lit edges against deep shadow masses. No default pedestal, circle, scan lines or particle-only glow. 作風「クリスタルホログラム造形アニメ」では、日本のアニメ・漫画の造形を描線と塗りで構築する。細い線の強弱、眼瞼の線、簡潔な鼻口、髪の細束、形の読める影面を使う。主参照の民族的特徴・顔の識別比率・年齢感は保つ。日本向けという理由だけで別人の顔へ変えない。厚い均一輪郭、全体のぼかし、滑らかな人形の肌を標準仕上げにしない。
+日本アニメの造形: 顔の輪郭・目鼻口の比率・年齢感と髪の識別形を主参照から保つ。造形は細い日本アニメの色線で整理し、透明な造形の内部にも眼瞼・瞳孔・口の位置が読める色面を残す。人物なしなら景物の識別形と支持構造を保つ。
+結晶の厚みと屈折: 主題の髪束・袖・装飾・周囲の薄い板へ、厚みの違う透明な結晶面を作る。厚い縁は暗い二重線、薄い縁は鋭い明線。面の境界を通して背後の輪郭がずれ、厚い部分には二次反射が見える。身体の透視や衣装の被覆低下は行わない。
+ホログラムの薄膜干渉: 透明面の同じ場所にシアンから菫・桃・淡金へ変わる幅のある虹色帯を置く。面の角度と湾曲に沿って帯を曲げ、明るい輪郭と暗い内部反射を対比する。画面をまたぐ広い透明面で材質を見せ、細かい光粒だけで代用しない。
+光と影: 主題の後方または側方に強い白い光源、反対側にまとまった深い影を置く。透明面には鋭い稜線と広い透過領域を併存させる。反射の明るい帯の隣を暗く締める。全体を白く霞ませず、縮小時にも透明な厚みと虹色帯が分かる。
+舞台との接続: 選択舞台の床や壁に、結晶面を通った光の焦線と小さな虹の分離を同じ光源方向で落とす。台座・大きな円環・水晶の山は、舞台や物語で指定された時だけ置く。
+日本を基準にした個別条件: 作風「クリスタルホログラム造形アニメ」では、日本のアニメ・漫画の造形を描線と塗りで構築する。細い線の強弱、眼瞼の線、簡潔な鼻口、髪の細束、形の読める影面を使う。主参照の民族的特徴・顔の識別比率・年齢感は保つ。日本向けという理由だけで別人の顔へ変えない。厚い均一輪郭、全体のぼかし、滑らかな人形の肌を標準仕上げにしない。

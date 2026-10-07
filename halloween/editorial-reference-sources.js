@@ -2,6 +2,10 @@
 // structural research only. No publisher images, people, logos or article copy
 // are bundled into the generated artwork or used as image-model references.
 export const editorialReferenceSources=Object.freeze({
+ 'japan-weekly':{id:'japan-weekly',publisher:'主婦と生活社 / 週刊女性PRIME',title:'週刊女性の公式表紙案内',url:'https://www.jprime.jp/articles/-/43230?display=b',location:'9/8・9/15号の表紙案内。構造はユーザー添付5も照合。',type:'出版社公式',observed:'大きな題字、中央の主図版、縦横の太い見出し群、色の帯による階層。',scope:'表紙の構造のみ。誌名・人物・記事原稿は複製しない。'},
+ 'japan-fashion':{id:'japan-fashion',publisher:'主婦の友社 / GISELe',title:'GISELe MAGAZINE',url:'https://giseleweb.com/magazines/',location:'公式の表紙・誌面案内',type:'出版社公式',observed:'大きな題字、一枚の主図版、日本語と欧文の短い見出し、主特集と補助特集の階層。',scope:'文字組みと配置の研究。誌名・人物・記事原稿は複製しない。'},
+ 'japan-culture':{id:'japan-culture',publisher:'文化出版局 / 装苑',title:'装苑 MAGAZINE',url:'https://soen.tokyo/magazine/',location:'公式の表紙・特集案内',type:'出版社公式',observed:'強い誌名と主図版、特集ごとの独立した文字群、顔と主要な形を避ける見出しの配置。',scope:'表紙の情報階層。誌名・人物・作品・原稿は複製しない。'},
+ 'japan-nie':{id:'japan-nie',publisher:'日本新聞協会',title:'NIE ワークシート',url:'https://nie.jp/worksheet/',location:'公開紙面教材一覧',type:'発行団体公式',observed:'日本語の題字と見出し、本文の段と列、図版・キャプション、記事の区画。',scope:'紙面の構造研究。実在の記事本文や題字は使わない。'},
  'fashion-cover':{
   id:'fashion-cover',publisher:'Vogue / Condé Nast',title:'Photos: Vogue Covers',
   url:'https://www.vogue.com/slideshow/vogue-covers-photos',
@@ -42,12 +46,13 @@ export const editorialReferenceSources=Object.freeze({
 });
 
 const formatSourceIds={
- 'ファッション雑誌の表紙':['fashion-cover'],
- 'カルチャー誌の表紙':['culture-cover'],
+ 'ファッション雑誌の表紙':['japan-fashion','fashion-cover'],
+ 'カルチャー誌の表紙':['japan-culture','culture-cover'],
  'ゴシック雑誌の表紙':['fashion-cover'],
  'インタビュー誌面':['interview-structure','feature-spread'],
  '見開き特集':['feature-spread'],
- '新聞の一面':['japanese-newspaper']
+ '新聞の一面':['japan-nie','japanese-newspaper'],
+ '週刊誌の表紙':['japan-weekly']
 };
 
 export function editorialReferencesFor(value){return (formatSourceIds[value]||[]).map(id=>editorialReferenceSources[id]);}

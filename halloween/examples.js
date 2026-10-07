@@ -1,8 +1,8 @@
-import {poseItems} from './poses.js?v=17';
-import {dailySamples,currentCollection,landscapeScenes} from './collection.js?v=17';
-import {questions} from './catalog.js?v=17';
-import {individualSamples} from './sample-catalog.js?v=17';
-import {colorWorlds,luminousMedia} from './worlds.js?v=17';
+import {poseItems} from './poses.js?v=18';
+import {dailySamples,currentCollection,landscapeScenes} from './collection.js?v=18';
+import {questions} from './catalog.js?v=18';
+import {individualSamples} from './sample-catalog.js?v=18';
+import {colorWorlds,luminousMedia} from './worlds.js?v=18';
 for(const item of poseItems)individualSamples['pose\u0000'+item.value]={file:item.file};
 for(const item of colorWorlds)individualSamples['palette\u0000'+item.value]={file:item.file};
 for(const item of luminousMedia)individualSamples['medium\u0000'+item.value]={file:item.file};
@@ -30,10 +30,10 @@ export function sampleFor(key,value=''){
  return {kind:'custom',label:'自由入力',text:'あなたの\n指定で制作'};
 }
 export function typePreview(mode){
- if(currentCollection()==='everyday'){const p=typePreviewFor(mode);return {...p,blocks:p.blocks.map(s=>s.replaceAll('HALLOWEEN SPECIAL','ART & LIFE SPECIAL').replaceAll('A HALLOWEEN STORY','AN ORIGINAL STORY').replaceAll('HALLOWEEN','ILLUSTRATION').replaceAll('AFTER MIDNIGHT','EVERYDAY STORIES').replaceAll('MIDNIGHT','DAYLIGHT').replaceAll('NIGHT JOURNAL','DAILY JOURNAL').replaceAll('創作の夜','創作の世界').replaceAll('真夜中の物語','日々の物語').replaceAll('真夜中に、また会おう。','また、この場所で。').replaceAll('夜にひらく','日々にひらく').replaceAll('夜の物語','日々の物語').replaceAll('一夜の記録','日々の記録'))};}return typePreviewFor(mode);
+ if(currentCollection()==='everyday'){const p=typePreviewFor(mode);return {...p,blocks:p.blocks.map(s=>s.replaceAll('HALLOWEEN SPECIAL','暮らしと創作の特集').replaceAll('A HALLOWEEN STORY','オリジナルの物語').replaceAll('HALLOWEEN','ILLUSTRATION').replaceAll('AFTER MIDNIGHT','日々の物語').replaceAll('創作の夜','創作の世界').replaceAll('真夜中の物語','日々の物語').replaceAll('真夜中に、また会おう。','また、この場所で。').replaceAll('夜にひらく','日々にひらく').replaceAll('夜の物語','日々の物語').replaceAll('一夜の記録','日々の記録'))};}return typePreviewFor(mode);
 }
 function typePreviewFor(mode){
- const name='CREATOR';
+ const name='作者名';
  if(mode==='文字を一切入れない')return {className:'type-none',blocks:[]};
  if(mode==='クリエイター名だけ')return {className:'type-name',blocks:[name]};
  if(mode==='セリフのみ')return {className:'type-line',blocks:['真夜中に、また会おう。']};
@@ -42,10 +42,10 @@ function typePreviewFor(mode){
  if(mode.includes('手書き'))return {className:'type-sign',blocks:[name]};
  if(mode.includes('落款'))return {className:'type-seal',blocks:['作者']};
  if(mode.includes('映画'))return {className:'type-cinema',blocks:['AFTER MIDNIGHT','A HALLOWEEN STORY',name,'ART / STORY / DESIGN','CREATED BY '+name]};
- if(mode.includes('新聞'))return {className:'type-news',blocks:['NIGHT JOURNAL','創作と写真の特集','夜の物語をたどる','ART & STORIES',name]};
+ if(mode.includes('新聞'))return {className:'type-news',blocks:['創作新聞','創作と写真の特集','夜の物語をたどる','文化・創作',name]};
  if(mode.includes('広告'))return {className:'type-ad',blocks:['HALLOWEEN','創作の夜へようこそ','ART / PHOTO / STORY','特集：作り手の世界',name]};
  if(mode.includes('装丁'))return {className:'type-book',blocks:['真夜中の物語',name,'光と影をめぐる、一夜の記録。']};
- if(mode.includes('雑誌')||mode.includes('自動'))return {className:'type-magazine',blocks:['MIDNIGHT','HALLOWEEN SPECIAL','創作の向こう側','写真と物語の特集','ART & IMAGINATION',name]};
- if(mode==='クリエイター名＋自由な見出し')return {className:'type-editorial',blocks:['THE OTHER SIDE','夜にひらく、もうひとつの世界',name]};
- return {className:'type-title',blocks:['MIDNIGHT',name]};
+ if(mode.includes('雑誌')||mode.includes('自動'))return {className:'type-magazine',blocks:['装い帖','HALLOWEEN SPECIAL','創作の向こう側','写真と物語の特集','色と光の特集',name]};
+ if(mode==='クリエイター名＋自由な見出し')return {className:'type-editorial',blocks:['日々の余白','夜にひらく、もうひとつの世界',name]};
+ return {className:'type-title',blocks:['装い帖',name]};
 }

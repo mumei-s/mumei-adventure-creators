@@ -50,3 +50,5 @@ noteサムネイル=小さな横長表示で主題と見出しが直ちに読め
 export const formatExecution=new Map(rows.trim().split('\n').map(line=>{
  const at=line.indexOf('=');return [line.slice(0,at),line.slice(at+1)];
 }));
+
+formatExecution.set('週刊誌の表紙','日本の週刊誌の正面表紙。上端に大きい独自誌名、中央の主図版を最も大きく、左右に縦組みの強い特集見出し2〜4本、下部に横見出しと短い補足を配置する。文字は太字・白抜き帯・配色内の色面で階層化し、顔と主題を覆わない。内ページの長文本文、実在誌名や未入力の刊行情報を追加しない。');

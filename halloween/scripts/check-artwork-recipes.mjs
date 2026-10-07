@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=17';
-import {applyCollection} from '../collection.js?v=17';
-import {initialSelections} from '../modes.js?v=17';
-import {buildDirection} from '../direction.js?v=17';
-import {applyPose} from '../poses.js?v=17';
-import {optionRecipe} from '../option-recipes.js?v=17.0.2';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=17.0.2';
-import {composePrompt} from '../prompt.js?v=17.0.2';
-import {colorPolicy} from '../palette-recipes.js?v=17.0.2';
+import {questions,resolveSelections} from '../catalog.js?v=18';
+import {applyCollection} from '../collection.js?v=18';
+import {initialSelections} from '../modes.js?v=18';
+import {buildDirection} from '../direction.js?v=18';
+import {applyPose} from '../poses.js?v=18';
+import {optionRecipe} from '../option-recipes.js?v=18';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=18';
+import {composePrompt} from '../prompt.js?v=18';
+import {colorPolicy} from '../palette-recipes.js?v=18';
 
 const profile={displayName:'TEST CREATOR',activityEnabled:false,topics:[],biography:''};
 const random=()=>.28;
@@ -74,7 +74,7 @@ assert.match(paper.plan.variant.light,/塗らない明部/);
 assert.ok(!paper.plan.variant.light.includes('点光へ絞る'));
 const newspaper=produce({...base,design:'新聞の一面',medium:'実写風フィルム写真',type:'クリエイター名だけ'});
 assert.deepEqual(newspaper.plan.copy.blocks,['TEST CREATOR']);
-assert.equal(newspaper.plan.conditions.find(c=>c.key==='design').sections.length,6);
+assert.equal(newspaper.plan.conditions.find(c=>c.key==='design').sections.length,7);
 for(const medium of ['宝石ホログラムアニメ','クリスタル透光アニメ','透明水彩','水墨画','現代アニメの一枚絵','実写風フィルム写真']){
  const scenery=produce({...base,medium,costume:'風景を主役にする',mood:'毎回大胆に変える'},'everyday');
  assert.ok(scenery.plan.noPerson);

@@ -83,3 +83,5 @@ body[data-motion=on] #picker .page-changing{animation:page-arrive .32s ease-out 
 #picker .picker-bottom .custom-toggle{margin-top:0}
 @media(max-height:780px) and (min-width:620px){#picker .ring-focus{padding:4px;gap:2px}#picker .ring-focus>.sample-thumb{width:48px;height:48px;min-height:48px}#picker .ring-focus>b{font-size:.76rem}#picker .ring-pick,#picker .ring-tools button{min-height:27px}}
 @media(max-height:760px){#picker .picker-body{overflow-y:auto}}
+
+#picker>.dialog-header,#swipe-hint,#picker .page-status{user-select:none;-webkit-user-select:none}

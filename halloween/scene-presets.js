@@ -60,7 +60,10 @@ const halloweenGroups=[
   ['異界の鳥居','Halloweenの夜に異界へ開く境界。鳥居の柱と道の構造を保ち、境界の光や人ならぬ気配を示す。']
  ]}
 ];
-const halloweenFocus=new Map(halloweenGroups.flatMap(group=>group.scenes));
+// Preserve an old saved Japanese-folklore story as a legacy free selection,
+// but it is not a Halloween preset or automatic Halloween suggestion.
+const nonHalloweenStories=new Set(['百鬼夜行']);
+const halloweenFocus=new Map(halloweenGroups.flatMap(group=>group.scenes).filter(([name])=>!nonHalloweenStories.has(name)));
 export const halloweenSceneTitles=Object.freeze([...halloweenFocus.keys()]);
 export function halloweenSceneFocus(value){return halloweenFocus.get(value)||null;}
 
@@ -69,6 +72,6 @@ export function halloweenSceneGroups(worldGroups=[],placeGroups=[]){
  // place-only scene must still resolve and preview with its original source.
  const available=new Set(mergeSceneGroups(worldGroups,placeGroups).flatMap(group=>group.values));
  return halloweenGroups.map(({label,sceneSource,scenes})=>({label,sceneSource,
-  values:scenes.map(([value])=>value).filter(value=>available.has(value))
+  values:scenes.map(([value])=>value).filter(value=>available.has(value)&&halloweenFocus.has(value))
  })).filter(group=>group.values.length);
 }

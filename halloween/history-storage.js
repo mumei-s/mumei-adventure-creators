@@ -1,8 +1,8 @@
-import {compactCreatorProfile} from './creator.js?v=28.2.0';
+import {compactCreatorProfile} from './creator.js?v=28.3.0';
 
 export const HISTORY_STORAGE_FORMAT=4;
 const historyLimit=12,usedLimit=2000;
-const recordKeys=['version','collection','creator','profile','values','variant','edition','prompt','date','references','attachmentMode','preparationMs','count','legacy'];
+const recordKeys=['version','collection','creator','profile','values','variant','edition','prompt','date','references','drawingReferences','attachmentMode','preparationMs','count','legacy'];
 const restoredRecords=new Map(),restoringRecords=new WeakMap();
 let restoreEpoch=0;
 export const RESTORED_HISTORY_CACHE_LIMIT=2;

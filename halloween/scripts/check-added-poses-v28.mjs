@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {poseItems,poseGroups,applyPose} from '../poses.js?v=28.2.0';
-import {questions,resolveSelections} from '../catalog.js?v=28.2.0';
-import {applyCollection} from '../collection.js?v=28.2.0';
-import {optionRecipe} from '../option-recipes.js?v=28.2.0';
-import {sampleFor} from '../examples.js?v=28.2.0';
-import {productionPlan} from '../production-plan.js?v=28.2.0';
-import {renderChatInput} from '../compiled-production.js?v=28.2.0';
+import {poseItems,poseGroups,applyPose,poseTechnical} from '../poses.js?v=28.3.0';
+import {questions,resolveSelections} from '../catalog.js?v=28.3.0';
+import {applyCollection} from '../collection.js?v=28.3.0';
+import {optionRecipe} from '../option-recipes.js?v=28.3.0';
+import {sampleFor} from '../examples.js?v=28.3.0';
+import {productionPlan} from '../production-plan.js?v=28.3.0';
+import {renderChatInput} from '../compiled-production.js?v=28.3.0';
 
 const added=poseItems.slice(48),names=poseGroups.flatMap(g=>g.values);
 assert.equal(poseItems.length,72);
@@ -30,7 +30,8 @@ try{
    assert.equal(recipe.known,true,'An added pose needs a dedicated recipe, not generic free input');
    assert.ok(recipe.sections.some(s=>s.text===item.support));
    assert.ok(recipe.sections.some(s=>s.text===item.contact));
-   assert.ok(recipe.checks.every(check=>item.checks.includes(check)));
+   assert.ok(item.checks.every(check=>recipe.checks.includes(check)),'All action-specific checks must survive anatomy adaptation');
+   assert.ok(poseTechnical(item.value,{values,variant}).checks.every(check=>recipe.checks.includes(check)),'Body-fit and support checks must reach the actual recipe');
    assert.ok(recipe.execution.method.includes(item.support)&&recipe.execution.method.includes(item.contact));
    seenMethods.add(recipe.execution.method);
    const posed=applyPose(variant,item.value);

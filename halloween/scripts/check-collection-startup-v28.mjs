@@ -1,9 +1,10 @@
+import {sourceKinds} from '../source-kind.js?v=28.3.0';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {questions} from '../catalog.js?v=28.2.0';
-import {applyCollection,currentCollection} from '../collection.js?v=28.2.0';
-import {initialSelections,modeKeys,modeCopy} from '../modes.js?v=28.2.0';
+import {questions} from '../catalog.js?v=28.3.0';
+import {applyCollection,currentCollection} from '../collection.js?v=28.3.0';
+import {initialSelections,modeKeys,modeCopy} from '../modes.js?v=28.3.0';
 
 // Execute the real switch function. Pool-only tests missed a removed helper
 // that still ran before both initial mode restoration and every button click.
@@ -19,7 +20,7 @@ function application(){
  const modeButtons=['detail','simple','auto'].map(mode=>Object.assign(element(),{dataset:{mode}}));
  const storage=new Map(),document={body:element(),title:'',createTextNode:text=>({textContent:text}),querySelectorAll:selector=>selector==='.collection-switch button'?buttons:selector==='.mode-switch button'?modeButtons:[]};
  const state=initialSelections();
- const context=vm.createContext({collection:'halloween',collectionSnapshots:{},mode:'detail',selections:state,modeSnapshots:{detail:{...state}},proposals:[],selectedProposal:null,motion:false,boardArtKey:'old',document,structuredClone,applyCollection,initialSelections,modeKeys,modeCopy,$:id=>{if(!nodes.has(id))nodes.set(id,element());return nodes.get(id);},el:(tag,cls,text)=>({tag,cls,textContent:text}),setMotion(){},renderChoices(){},makeProposals(){},syncProfilePreview(){},effects:{refresh(){}},localStorage:{setItem:(key,value)=>storage.set(key,value)}});
+ const context=vm.createContext({sourceKinds,sourceKind:'unknown',collection:'halloween',collectionSnapshots:{},mode:'detail',selections:state,modeSnapshots:{detail:{...state}},proposals:[],selectedProposal:null,motion:false,boardArtKey:'old',document,structuredClone,applyCollection,initialSelections,modeKeys,modeCopy,$:id=>{if(!nodes.has(id))nodes.set(id,element());return nodes.get(id);},el:(tag,cls,text)=>({tag,cls,textContent:text}),setMotion(){},renderChoices(){},makeProposals(){},syncProfilePreview(){},effects:{refresh(){}},localStorage:{setItem:(key,value)=>storage.set(key,value)}});
  vm.runInContext(collectionSource+'\n'+modeSource,context);
  return {context,nodes,buttons,storage};
 }
@@ -34,7 +35,8 @@ try{
  assert.equal(buttons.find(b=>b.dataset.collection==='everyday').attributes['aria-pressed'],'true');
  assert.equal(nodes.get('tool-name').children[0].textContent,'イラスト工房');
  assert.ok(questions.find(q=>q.key==='theme').groups.some(g=>g.values.includes('静かな読書の時間')));
- assert.ok(!questions.find(q=>q.key==='theme').groups.some(g=>g.values.includes('宇宙のHalloween')));
+ assert.ok(questions.find(q=>q.key==='theme').groups.some(g=>g.values.includes('宇宙のHalloween')),'Everyday mode allows an explicitly selected seasonal scene');
+ assert.ok(!questions.find(q=>q.key==='theme').autoValues.includes('宇宙のHalloween'),'Restored everyday AUTO must remain ordinary');
 
  context.selections.theme='静かな読書の時間';context.selections.costume='リネンシャツとデニム';
  context.selections.size='横16:9｜3840×2160｜16:9';

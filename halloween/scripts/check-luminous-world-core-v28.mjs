@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
-import {questions} from '../catalog.js?v=28.2.0';
-import {applyCollection} from '../collection.js?v=28.2.0';
-import {initialSelections} from '../modes.js?v=28.2.0';
-import {buildDirection} from '../direction.js?v=28.2.0';
-import {applyPose} from '../poses.js?v=28.2.0';
-import {angleItems,cameraContract} from '../angles.js?v=28.2.0';
-import {luminousWorldContract} from '../luminous-world.js?v=28.2.0';
-import {productionPlan} from '../production-plan.js?v=28.2.0';
-import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.2.0';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.2.0';
-import {artworkBasis} from '../artwork-basis.js?v=28.2.0';
+import {questions} from '../catalog.js?v=28.3.0';
+import {applyCollection} from '../collection.js?v=28.3.0';
+import {initialSelections} from '../modes.js?v=28.3.0';
+import {buildDirection} from '../direction.js?v=28.3.0';
+import {applyPose} from '../poses.js?v=28.3.0';
+import {angleItems,cameraContract} from '../angles.js?v=28.3.0';
+import {luminousWorldContract} from '../luminous-world.js?v=28.3.0';
+import {productionPlan} from '../production-plan.js?v=28.3.0';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.3.0';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.3.0';
+import {artworkBasis} from '../artwork-basis.js?v=28.3.0';
 
 // Reproduce the supplied dragon-person specification without generating an
 // image. These checks expose the old restrictive rules that reduced the world

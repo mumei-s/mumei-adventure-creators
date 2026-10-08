@@ -1,19 +1,19 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.2.0';
-import {applyCollection} from '../collection.js?v=28.2.0';
-import {initialSelections} from '../modes.js?v=28.2.0';
-import {buildDirection} from '../direction.js?v=28.2.0';
-import {applyPose} from '../poses.js?v=28.2.0';
-import {angleItems,cameraContract} from '../angles.js?v=28.2.0';
-import {colorPolicy} from '../color-policy.js?v=28.2.0';
-import {artworkBasisValues,artworkBasis,artworkBasisContract,withArtworkBasis} from '../artwork-basis.js?v=28.2.0';
-import {optionRecipe} from '../option-recipes.js?v=28.2.0';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.2.0';
-import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.2.0';
-import {composePrompt} from '../prompt.js?v=28.2.0';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.2.0';
-import {imageDeliveryRepairPrompt} from '../output-contract.js?v=28.2.0';
-import {selectionConflicts,candidateAvailability,compatibleResolved} from '../compatibility.js?v=28.2.0';
+import {questions,resolveSelections} from '../catalog.js?v=28.3.0';
+import {applyCollection} from '../collection.js?v=28.3.0';
+import {initialSelections} from '../modes.js?v=28.3.0';
+import {buildDirection} from '../direction.js?v=28.3.0';
+import {applyPose} from '../poses.js?v=28.3.0';
+import {angleItems,cameraContract} from '../angles.js?v=28.3.0';
+import {colorPolicy} from '../color-policy.js?v=28.3.0';
+import {artworkBasisValues,artworkBasis,artworkBasisContract,withArtworkBasis} from '../artwork-basis.js?v=28.3.0';
+import {optionRecipe} from '../option-recipes.js?v=28.3.0';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.3.0';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.3.0';
+import {composePrompt} from '../prompt.js?v=28.3.0';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.3.0';
+import {imageDeliveryRepairPrompt} from '../output-contract.js?v=28.3.0';
+import {selectionConflicts,candidateAvailability,compatibleResolved} from '../compatibility.js?v=28.3.0';
 
 // Reference links document authored criteria in the picker. They are not
 // external images, artists to imitate, image-call attachments or style inputs.

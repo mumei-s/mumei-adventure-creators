@@ -1,4 +1,5 @@
-import {colorPolicy} from './color-policy.js?v=28.2.0';
+import {colorPolicy} from './color-policy.js?v=28.3.0';
+import {isNonHumanSource} from './source-kind.js?v=28.3.0';
 
 // Original semantic descriptions extracted from user-provided examples.
 // UI thumbnails remain illustrative: none of their people, clothes, prompts,
@@ -191,7 +192,21 @@ function viewContract(values,variant,noPerson){
 function subjectContract(noPerson,values){
  if(noPerson)return '選択された景物・物体・図案の識別形、固有色、材質、支持構造、接続、可視の背景を保つ。見本の主題へ交換せず、擬人化や別の登場主体を追加しない。';
  const proportions=textOf(values,['proportions','characterProportions','headRatio']);
+ if(isNonHumanSource(values))return '入力の景色・マーク・物体には人物の識別基準がない。人物制作が明示されている場合だけ、入力の固有形・色・紋様・構造から着想した独自の主役を選択作風で設計する。元入力から同じ顔・髪・年齢・性別を復元せず、宝石光彩の画風原画や見本のキャラクターを借りない。年齢感・性別表現・基礎体格は今回の明示条件に従い、見本の若い女性や細身の体へ一律に揃えない。修正では既に生成した独自の主役の識別特徴を保持する。衣装の形・被覆・構造・素材、表情、ポーズ、カメラ、配色は今回の実際の選択を保ち、限定色と入力の識別色が衝突する場合は許可色の濃淡と固有形で翻案する。頭身は選択作風と明示条件に従い、生成済み主役がある修正ではその比率を保つ。'+(proportions?'明示された比率「'+proportions+'」を優先する。':'');
  return '主参照の同じ人物の識別特徴、年齢感、性別表現、髪型、髪と瞳などの識別色を保つ。識別特徴は選択画風の形へ翻訳し、参照の写真寸法を固定してアニメ化を妨げない。明示した限定配色と識別色に衝突がある場合は、許可色の濃淡と識別形で表し、無関係な別キャラクターへ変更しない。衣装は今回の選択に従い、形・被覆・構造・素材を保つ。頭身は主参照または今回の明示設定だけから決め、主参照がちびならその比率を保ち、通常頭身を見本からちび化しない。'+(proportions?'明示された比率「'+proportions+'」を優先する。':'');
+}
+
+function personDrawingContract(entry,values){
+ if(!isNonHumanSource(values))return entry.personDrawing;
+ // Retain each medium's drawing technique without claiming a face exists in
+ // a landscape or mark. The new actor is retained once a repair has a result.
+ return entry.personDrawing
+  .replace(/主参照の識別できる特徴の組合せ/g,'今回設計した独自の主役の特徴の組合せ')
+  .replace(/主参照を同じ識別特徴と年齢感の/g,'独自の主役を今回設計した特徴と年齢感の')
+  .replace(/主参照の/g,'独自の主役の')
+  .replace(/同じ識別特徴/g,'独自の主役の識別特徴')
+  .replace(/参照と異なる髪型/g,'明示条件や生成済み主役と異なる髪型')
+  .replace(/ちび参照/g,'生成済み主役がちびの場合');
 }
 
 function visibleFeaturesContract(values,variant,real){
@@ -199,7 +214,7 @@ function visibleFeaturesContract(values,variant,real){
  const closed=/両目を?閉|目を閉じ|閉眼|目をつむ|目を瞑|瞼を閉じ|closed\s*eyes|eyes\s*closed/i.test(expression)&&!/片目|ウインク|wink/i.test(expression);
  const hair=textOf(values,['hair','hairstyle','appearance']);
  const hairless=/髪なし|頭髪なし|スキンヘッド|禿頭|無毛|hairless|bald/i.test(hair);
- return (closed?'閉眼の表情を保ち、閉じた瞼へ虹彩・瞳孔・開いた目を描かない。':'実際に開いて見える目だけに暗い虹彩の芯、中間の色層、小さな環境反射を描く。光のために目を開かせず、髪や横顔で隠れる目を追加しない。')+' '+(hairless?'髪なしの指定を保ち、毛束、前髪、長い髪を追加しない。':'髪が存在する主参照だけに、その髪型と識別色を保った束と内部影、反射を描く。')+' '+(real?'目の湿り、皮膚、毛髪は自然な写真の素材と光学に統一し、アニメの描線や人形CGへ戻さない。':'顔・見える手・髪がある場合の束も、景物と同じ2Dの線と描いた色面で統一する。');
+ return (closed?'閉眼の表情を保ち、閉じた瞼へ虹彩・瞳孔・開いた目を描かない。':'実際に開いて見える目だけに暗い虹彩の芯、中間の色層、小さな環境反射を描く。光のために目を開かせず、髪や横顔で隠れる目を追加しない。')+' '+(hairless?'髪なしの指定を保ち、毛束、前髪、長い髪を追加しない。':isNonHumanSource(values)?'独自の主役に髪が存在する場合だけ、明示条件または生成済み主役の髪型と識別色を保った束と内部影、反射を描く。入力図案や画風原画から髪を借りない。':'髪が存在する主参照だけに、その髪型と識別色を保った束と内部影、反射を描く。')+' '+(real?'目の湿り、皮膚、毛髪は自然な写真の素材と光学に統一し、アニメの描線や人形CGへ戻さない。':'顔・見える手・髪がある場合の束も、景物と同じ2Dの線と描いた色面で統一する。');
 }
 
 function jewelSurfaceContract(real){
@@ -218,7 +233,8 @@ export function referenceWorldMediumContract(value,{values={},noPerson=false,var
  const palette=paletteContract({...values,medium:value});
  const preservation=subjectContract(noPerson,values);
  const view=viewContract(values,variant,noPerson);
- const drawingCore=entry.drawing+(noPerson?'': ' '+entry.personDrawing);
+ const nonHumanSource=!noPerson&&isNonHumanSource(values);
+ const drawingCore=entry.drawing+(noPerson?'': ' '+personDrawingContract(entry,values));
  const sections=[
   section('世界観ベース／最優先の描画核',drawingCore),
   section('世界観ベース／主参照と選択の分担',preservation),
@@ -234,10 +250,10 @@ export function referenceWorldMediumContract(value,{values={},noPerson=false,var
   section('世界観ベース／完成品の照合','縮小して大きな明暗と主従を確認し、拡大して描線または写真素材、内部影、局所反射、接続が読み分けられることを確認する。見えない細部や未生成の組合せまで合格と主張せず、今回の選択と可視の仕上がりを照合する。')
  ];
  const checks=[...entry.checks,'選択色だけで成立する光と影','固定カメラと可視範囲を保つ構造','主参照と衣装または主景の識別・構造の保持',
-  ...(noPerson?['選択した景物・物体・図案だけの描画']:['同じ主役の年齢感・性別表現・髪型・識別色','見える表情と選択または参照の頭身の保持','選択衣装の形・被覆・構造の保持']),
+  ...(noPerson?['選択した景物・物体・図案だけの描画']:[nonHumanSource?'独自の主役と明示条件、修正時の生成済み識別特徴保持':'同じ主役の年齢感・性別表現・髪型・識別色',nonHumanSource?'見える表情と明示条件または生成済み主役の頭身の保持':'見える表情と選択または参照の頭身の保持','選択衣装の形・被覆・構造の保持']),
   ...(jewel?[noPerson?'主景の局所光と接触部の深い影':'露出して見える肌全域と存在する髪・衣装・景物に、材質別の光彩と強い局所陰影。選択被覆を保持し露出を増やさない']:[])
  ];
- const method=(real?'Build the selected scene as a high-detail photographic image with '+(noPerson?'natural geometry':'natural anatomy')+' and material optics. ':'Completely redraw the selected scene as precise hand-drawn Japanese 2D anime, using drawn lines, planned shadow shapes and layered colour. ')+(noPerson?'Apply this only to the selected scenery, objects or flat motif. ':'Preserve the recognizable reference identity and selected clothing, age impression, proportions, pose and visible expression. ')+sections.map(s=>s.text).join(' ');
+ const method=(real?'Build the selected scene as a high-detail photographic image with '+(noPerson?'natural geometry':'natural anatomy')+' and material optics. ':'Completely redraw the selected scene as precise hand-drawn Japanese 2D anime, using drawn lines, planned shadow shapes and layered colour. ')+(noPerson?'Apply this only to the selected scenery, objects or flat motif. ':nonHumanSource?'Create an original actor only for the explicitly selected person output; keep the generated actor identity during repairs. Never reconstruct a face from the non-person source or borrow the drawing master character. Preserve the selected clothing, age impression, proportions, pose and visible expression. ':'Preserve the recognizable reference identity and selected clothing, age impression, proportions, pose and visible expression. ')+sections.map(s=>s.text).join(' ');
  return {medium:value,value,known:true,family:real?'photography':'luminous-anime',drawingCore,preservation,palette:palette.text,lighting:noPerson?sceneSceneryText(entry.lighting):entry.lighting,depth:view,sections,checks,method,executionMethod:method};
 }
 
@@ -257,7 +273,7 @@ export function referenceWorldSceneRecipe(value,{noPerson=false,values={}}={}){
   section('世界観の舞台／可変の配色',palette.text),
   section('世界観の舞台／参照から借りない範囲','UIの見本は分類の説明用であり、生成の主参照ではない。元画像の構図、固有の装飾、特徴的な小物、文字、看板、施設名、掲載文は使わない。今回のテーマと選択内容に合う形と配置を独自に設計し、別の生き物や登場主体を見本から追加しない。')
  ];
- const checks=[...entry.checks,'選択画材で統一された舞台の表現','選択配色の許可色と明暗関係','固定視点と主題の支持の保持','見本の構図・固有物・文字の不使用',...(noPerson?['選択された景物・物体・図案だけの舞台']:['主参照と選択衣装・ポーズ・表情の保持'])];
+ const checks=[...entry.checks,'選択画材で統一された舞台の表現','選択配色の許可色と明暗関係','固定視点と主題の支持の保持','見本の構図・固有物・文字の不使用',...(noPerson?['選択された景物・物体・図案だけの舞台']:[isNonHumanSource(values)?'独自の主役と選択衣装・ポーズ・表情の保持、修正では生成済み主役保持':'主参照と選択衣装・ポーズ・表情の保持'])];
  const method=sections.map(s=>s.text).join(' ');
  return {known:true,value,family:'reference-world-scene',fantasy:entry.fantasy,description:entry.description,sections,checks,method,executionMethod:method};
 }

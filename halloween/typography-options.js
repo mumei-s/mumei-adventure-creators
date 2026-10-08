@@ -1,6 +1,6 @@
 // Copy modes describe the manuscript and its hierarchy. They never change the
 // selected image technique, scene, costume, pose, or output format.
-import {copyContentRules,publicCopyContext,worldIntroduction,worldFeatureCopy} from './copy-scope.js?v=28.2.0';
+import {copyContentRules,publicCopyContext,worldIntroduction,worldFeatureCopy} from './copy-scope.js?v=28.3.0';
 const choices=[
  {value:'商品広告・キャッチと特徴3点',group:'広告・キャンペーン',density:'見出し＋紹介＋特徴3点',className:'type-ad',preview:['物語の、その先へ。','夜の街に残る秘密をたどる。','帰り道を探す','路地の秘密に出会う','まだ知らない物語へ','作者名'],layout:'主見出しを最大、短い紹介を中程度、3つの特徴を同じ大きさで整列し、作者名を最小にする。特徴は各一文まで。特徴1などの役割名や番号、価格や購入先の欄は作らない。'},
  {value:'ブランド広告・宣言と短いコピー',group:'広告・キャンペーン',density:'宣言＋補足＋名前',className:'type-ad',preview:['好きな世界を、つくろう。','一枚の創作から、次の景色へ。','作者名'],layout:'一つの宣言を大きく置き、補足を一文、作者名を一か所だけ添える。ロゴや広告実績のシールを追加せず、余白を広く保つ。'},
@@ -38,6 +38,7 @@ export function typographyRecipe(value){
 export function buildTypographySlots(value,{subject,name='',intro='',noPerson=false,values={}}={}){
  const item=typographyOption(value);if(!item)return null;
  const contentSources=publicCopyContext(values,{subject,noPerson}),theme=contentSources.story,costume=contentSources.protagonist||'この場所',scene=contentSources.setting;
+ const halloween=contentSources.collection==='halloween';
  const slots=[],add=(role,text,priority=2,editable=false,maxCharacters=36,instruction='',contentDomain='story_world')=>{if(text)slots.push({role,text,priority,editable,maxCharacters,instruction,contentDomain});};
  const headline=text=>add('主見出し',text,0,true,20,'今回の世界観・シーンを一つの訴求にまとめた、20字以内の独自の日本語見出し。');
  const author=()=>add('作者名',name,3);
@@ -47,27 +48,27 @@ export function buildTypographySlots(value,{subject,name='',intro='',noPerson=fa
   headline(theme+'の、その先へ。');describe('商品紹介',worldIntroduction(contentSources),55,'紹介する対象は作品世界内の物語と、そこに入る読者の体験。実在の販売商品を作らず、画像の画材・角度・色・陰影の説明をしない。');
   worldFeatureCopy(contentSources).forEach((text,i)=>describe('特徴'+(i+1),text,28,'この特徴の内容は「'+contentSources.featureAngles[i]+'」。世界内の場所・出来事・目的を読者へ伝える、他の特徴と重複しない一文にする。描画仕様の言い換えや販売性能の捏造にしない。'));author();break;
  case 'ブランド広告・宣言と短いコピー':
-  headline('好きな世界を、つくろう。');add('ブランドコピー',theme+'から、次の景色へ。',2,true,45,'作者の公開活動で確認できる題材や、読者へ届ける内容を紹介する。実績・販売・効果・制作仕様の主張を含めない。','public_activity');author();break;
+  headline(halloween?'Halloweenの物語を、ひらこう。':'好きな世界を、つくろう。');add('ブランドコピー',theme+'から、次の景色へ。',2,true,45,'作者の公開活動で確認できる題材や、読者へ届ける内容を紹介する。実績・販売・効果・制作仕様の主張を含めない。','public_activity');author();break;
  case 'イベント告知・見どころと案内':
   add('企画名',theme,0);describe('企画紹介',theme+'を楽しむ、架空の創作企画。',55,'今回の創作世界を紹介する一文。実際に開催されるイベントとして宣伝しない。');
-  describe('見どころ1',contentSources.purpose+'。',32,'世界内で挑む目的や出来事を一つ。');describe('見どころ2',scene+'に残る秘密をたどる。',32,'この場所で出会うものや発見を一つ。角度・配色・画材の説明にしない。');add('案内','作品の世界へようこそ。',2);author();break;
+  describe('見どころ1',contentSources.purpose+'。',32,'世界内で挑む目的や出来事を一つ。');describe('見どころ2',scene+'に残る'+(halloween?'Halloweenの':'')+'秘密をたどる。',32,'この場所で出会うものや発見を一つ。角度・配色・画材の説明にしない。');add('案内',halloween?'Halloweenの物語へようこそ。':'作品の世界へようこそ。',2);author();break;
  case '展覧会告知・作品名と制作ノート':
   add('作品名',theme,0);describe('展示紹介',theme+'をめぐる、一つの物語。',48);describe('制作ノート',worldIntroduction(contentSources),90,'作品に込めた世界内の物語・場所・主題を読者へ紹介する2〜3文。画材の工程、角度、光や色の実装、実際の作者発言、未確認の展示情報として書かない。');author();break;
  case '映画予告・キャッチとあらすじ':
-  add('作品タイトル',theme,0);add('キャッチ','その先で、何を見つける？',1,true,25,'選択した世界観・シーンの出来事につながる独自の短いキャッチ。');describe('あらすじ',intro||scene+'で始まる一つの出会い。そこに残った光が、まだ知らない景色へつながる。',100,'同じ世界観・シーンの一つの出来事を2〜3文で紹介する。別の舞台、別のキャラクター、別の作品に話を広げない。');author();break;
+  add('作品タイトル',theme,0);add('キャッチ',halloween?'Halloweenの夜、その先には？':'その先で、何を見つける？',1,true,25,'選択した世界観・シーンの出来事につながる独自の短いキャッチ。');describe('あらすじ',intro||scene+'で始まる一つの出会い。そこに残った光が、まだ知らない景色へつながる。',100,'同じ世界観・シーンの一つの出来事を2〜3文で紹介する。別の舞台、別のキャラクター、別の作品に話を広げない。');author();break;
  case '漫画表紙・大見出しと煽り文':
-  add('作品タイトル',theme,0);add('煽り文','その一歩が、世界をひらく！',1,true,24,'今回の動作と出来事に合う、勢いのある独自の一文。');describe('物語紹介',intro||scene+'に残る、小さな発見の物語。',45);author();break;
+  add('作品タイトル',theme,0);add('煽り文',halloween?'Halloweenの夜に、扉がひらく！':'その一歩が、世界をひらく！',1,true,24,'今回の動作と出来事に合う、勢いのある独自の一文。');describe('物語紹介',intro||scene+'に残る、小さな発見の物語。',45);author();break;
  case 'キャラクター名鑑・役柄とスキル':
   if(name)add('キャラクター名',name,0);else add('作品名',theme,0);
   add(noPerson?'主題の分類':'役柄',noPerson?theme:costume,1);
-  describe(noPerson?'特徴1':'スキル1',noPerson?'光の変化を映す。':'景色の手がかりを見つける。',35,'今回の創作設定として、選択した役柄と世界観に合う短い特徴またはスキルを一つ作る。本人の職歴や資格、実際の能力を主張しない。');
-  describe(noPerson?'特徴2':'スキル2',noPerson?'素材の重なりをつなぐ。':'一つの物語をつなぐ。',35,'前の特徴と重複しない別の創作上の特徴またはスキルを一つ。');describe(noPerson?'主題紹介':'キャラクター紹介',intro||theme+'の世界をたどる、創作の主役。',75);break;
+  describe(noPerson?'特徴1':'スキル1',halloween?(noPerson?'Halloweenの一夜の痕跡を残す。':'Halloweenの灯りを道しるべにする。'):(noPerson?'光の変化を映す。':'景色の手がかりを見つける。'),35,'今回の創作設定として、選択した役柄と世界観に合う短い特徴またはスキルを一つ作る。本人の職歴や資格、実際の能力を主張しない。');
+  describe(noPerson?'特徴2':'スキル2',halloween?(noPerson?'Halloweenの祝祭の記憶をつなぐ。':'Halloweenの謎の手がかりを見つける。'):(noPerson?'素材の重なりをつなぐ。':'一つの物語をつなぐ。'),35,'前の特徴と重複しない別の創作上の特徴またはスキルを一つ。');describe(noPerson?'主題紹介':'キャラクター紹介',intro||theme+'の世界をたどる、創作の主役。',75);break;
  case 'ゲーム告知・世界紹介とクエスト':
-  add('作品タイトル',theme,0);describe('世界紹介',intro||scene+'から始まる、架空の冒険世界。',70,'選択した世界観・シーンを一つの架空のゲーム世界として紹介する。販売や実在のゲームの情報を作らない。');describe('クエスト','この景色に残る、物語の手がかりを見つけよう。',38,'選択シーンの出来事に結びつく一つの創作上の目標。別の舞台を増やさない。');describe('見どころ','一つの景色から、次の発見へ。',35);author();break;
+  add('作品タイトル',theme,0);describe('世界紹介',intro||scene+'から始まる、架空の冒険世界。',70,'選択した世界観・シーンを一つの架空のゲーム世界として紹介する。販売や実在のゲームの情報を作らない。');describe('クエスト',halloween?'Halloweenの一夜に残る手がかりを探そう。':'この景色に残る、物語の手がかりを見つけよう。',38,'選択シーンの出来事に結びつく一つの創作上の目標。別の舞台を増やさない。');describe('見どころ',halloween?'Halloweenの祝祭から、次の物語へ。':'一つの景色から、次の発見へ。',35);author();break;
  case '縦書きコピー・一文を大きく':
   add('縦書きコピー',theme+'の、その先へ。',0,true,22,'今回の世界を伝える独自の短い一文。縦書きの3列以内に収まる22字以内。');author();break;
  case '詩のコピー・短い言葉を3行':
-  ['ひとつの光を見つけた','景色が静かにひらいた','ここから物語が始まる'].forEach((text,i)=>add('詩行'+(i+1),text,1,true,18,'独自の短い創作詩の第'+(i+1)+'行。他の2行とつながる同じ場面の詩として、1行18字以内で作る。既存の歌詞・詩・名言を引用しない。'));author();break;
+  (halloween?['Halloweenの灯りがともる','祝祭の向こうに秘密がひらく','一夜の物語がここから始まる']:['ひとつの光を見つけた','景色が静かにひらいた','ここから物語が始まる']).forEach((text,i)=>add('詩行'+(i+1),text,1,true,18,'独自の短い創作詩の第'+(i+1)+'行。他の2行とつながる同じ場面の詩として、1行18字以内で作る。既存の歌詞・詩・名言を引用しない。'));author();break;
  case '大判タイポグラフィー・文字が主役':
   add('主語句',theme,0,true,12,'選択した世界観・シーンを伝える、12字以内の独自の大きい語句。');describe('短い補足',theme+'から生まれる、もうひとつの景色。',35);author();break;
  case 'ミニマル広告・見出しと名前':

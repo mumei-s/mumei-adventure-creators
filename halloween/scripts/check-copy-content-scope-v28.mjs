@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
-import {buildEditorial} from '../editorial.js?v=28.2.0';
-import {copyContentRules} from '../copy-scope.js?v=28.2.0';
-import {typographyValues} from '../typography-options.js?v=28.2.0';
-import {applyCollection} from '../collection.js?v=28.2.0';
-import {buildDirection} from '../direction.js?v=28.2.0';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.2.0';
-import {composePrompt} from '../prompt.js?v=28.2.0';
-import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.2.0';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.2.0';
-import {imageDeliveryRepairPrompt} from '../output-contract.js?v=28.2.0';
-import {renderEditorialLayout} from '../editorial-layout.js?v=28.2.0';
+import {buildEditorial} from '../editorial.js?v=28.3.0';
+import {copyContentRules} from '../copy-scope.js?v=28.3.0';
+import {typographyValues} from '../typography-options.js?v=28.3.0';
+import {applyCollection} from '../collection.js?v=28.3.0';
+import {buildDirection} from '../direction.js?v=28.3.0';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.3.0';
+import {composePrompt} from '../prompt.js?v=28.3.0';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.3.0';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.3.0';
+import {imageDeliveryRepairPrompt} from '../output-contract.js?v=28.3.0';
+import {renderEditorialLayout} from '../editorial-layout.js?v=28.3.0';
 
 // Reproduce the supplied choice combination, including source-guided copy.
 // We inspect source boundaries, transfer routes and actual text placement;

@@ -1,4 +1,4 @@
-import {photoReconstruction} from './photo-design.js?v=28.2.0';
+import {photoReconstruction} from './photo-design.js?v=28.3.0';
 export function styleFidelity(condition,{noPerson=false,values={}}={}){
  const regions=noPerson?'主景・物体・構造・背景':'顔の輪郭・目鼻口・髪・身体・衣装・背景';
  const photo=photoReconstruction(condition.value,{noPerson,values});

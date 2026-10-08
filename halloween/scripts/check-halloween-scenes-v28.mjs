@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
-import {questions,visibleQuestions,resolveSelections,AUTO} from '../catalog.js?v=28.2.0';
-import {applyCollection} from '../collection.js?v=28.2.0';
-import {initialSelections,propose,effectiveSelections} from '../modes.js?v=28.2.0';
-import {halloweenSceneFocus,halloweenSceneTitles,sceneSourcePlace} from '../scene-presets.js?v=28.2.0';
-import {optionRecipe} from '../option-recipes.js?v=28.2.0';
-import {sampleFor} from '../examples.js?v=28.2.0';
-import {buildDirection} from '../direction.js?v=28.2.0';
-import {productionPlan} from '../production-plan.js?v=28.2.0';
-import {renderChatInput} from '../compiled-production.js?v=28.2.0';
-import {compactHistoryRecord,restoreHistoryRecord} from '../history-storage.js?v=28.2.0';
-import {automaticSelection} from '../random-selections.js?v=28.2.0';
+import {questions,visibleQuestions,resolveSelections,AUTO} from '../catalog.js?v=28.3.0';
+import {applyCollection} from '../collection.js?v=28.3.0';
+import {initialSelections,propose,effectiveSelections} from '../modes.js?v=28.3.0';
+import {halloweenSceneFocus,halloweenSceneTitles,sceneSourcePlace} from '../scene-presets.js?v=28.3.0';
+import {optionRecipe} from '../option-recipes.js?v=28.3.0';
+import {sampleFor} from '../examples.js?v=28.3.0';
+import {buildDirection} from '../direction.js?v=28.3.0';
+import {productionPlan} from '../production-plan.js?v=28.3.0';
+import {renderChatInput} from '../compiled-production.js?v=28.3.0';
+import {compactHistoryRecord,restoreHistoryRecord} from '../history-storage.js?v=28.3.0';
+import {automaticSelection} from '../random-selections.js?v=28.3.0';
 
 const valuesFor=key=>questions.find(q=>q.key===key).groups.flatMap(group=>group.values);
 const keptWorlds='月夜の仮面舞踏会|真夜中の魔女のアトリエ|忘れられた劇場|幽霊たちのお茶会|異界に続く駅|鏡の向こうの自分|眠らない美術館|一夜だけの怪奇サーカス|吸血鬼の晩餐会|死神の休日|魔法使いの見習い|悪夢からの脱出|百鬼夜行|妖狐と月の契約|海賊船の亡霊|宇宙のHalloween|機械仕掛けの怪物|呪われたオルゴール|お菓子の王国|カボチャの収穫祭|都会の仮装パレード|花と骸骨の祝祭|墨で描く怪異|雨上がりの怪談|静かなハロウィーン'.split('|');
@@ -89,7 +89,11 @@ assert.ok(renderChatInput(planFor(custom,'halloween')).includes(customTheme));
 // Everyday fantasy and ordinary locations remain available with nine added scenes;
 // selecting a shared title there must not acquire Halloween decoration.
 applyCollection('everyday');
-assert.equal(valuesFor('theme').length,83);
+assert.equal(valuesFor('theme').length,117);
+assert.equal(new Set(valuesFor('theme')).size,117,'Optional genres must not duplicate existing scene titles');
+for(const theme of halloweenSceneTitles)assert.ok(valuesFor('theme').includes(theme),'Explicit seasonal scene is missing: '+theme);
+const ordinaryAuto=questions.find(question=>question.key==='theme').autoValues;
+for(const theme of halloweenSceneTitles)assert.ok(!ordinaryAuto.includes(theme),'Seasonal scene became an ordinary default: '+theme);
 for(const theme of [...removedWorlds,'空中都市','白いスタジオ','朝の光と小さな日常','山岳と湖のパノラマ'])assert.ok(valuesFor('theme').includes(theme));
 for(const theme of valuesFor('theme')){
  const values=resolveSelections({...initialSelections(),...fixed,theme,costume:'参照画像の衣装を生かす'},()=>.2);
@@ -103,4 +107,4 @@ for(let index=0;index<3;index++){
 }
 applyCollection('halloween');
 assert.equal(resolveSelections({...initialSelections(),sceneUnified:true,theme:AUTO},()=>.99).theme,'異界の鳥居');
-console.log('PASS Halloween scenes: 29 seasonal scene contracts (25 stories + 4 locations), 800 automatic/simplified proposals, 31 removed presets still readable through legacy/history inputs, arbitrary scenes retained, 83 everyday scenes (74 retained + nine added), seasonal scope and collection restoration checked.');
+console.log('PASS Halloween scenes: 29 seasonal scene contracts (25 stories + 4 locations), 800 automatic/simplified proposals, 31 legacy presets and arbitrary scenes retained; 117 distinct everyday scenes include 83 retained, 27 missing seasonal titles and seven additional legacy places, with ordinary AUTO unchanged; collection restoration checked.');

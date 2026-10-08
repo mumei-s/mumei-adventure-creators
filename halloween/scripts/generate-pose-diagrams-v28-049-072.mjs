@@ -1,10 +1,11 @@
-// Purpose-built schematic pose previews. These are movement diagrams, not artwork samples.
+// Purpose-built illustrated pose previews with neutral clothing and readable support/contact.
+// The original joint coordinates remain the movement source; visible limbs are tapered silhouettes.
 // Run from any working directory; only writes pose-049.svg through pose-072.svg.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const out = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../pose-diagrams-v28');
+const out = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../pose-illustrations-v28-3');
 fs.mkdirSync(out, { recursive: true });
 const C = { cream: '#f4e8ce', violet: '#a69aef', dark: '#161c31', cyan: '#6de6e0', prop: '#64749b' };
 const esc = s => String(s).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
@@ -13,35 +14,57 @@ function line(points, color = C.cream, width = 14, extra = '') {
   return `<polyline points="${pts(points)}" fill="none" stroke="${color}" stroke-width="${width}" stroke-linecap="round" stroke-linejoin="round" ${extra}/>`;
 }
 function circle(x, y, r, fill, extra = '') { return `<circle cx="${x}" cy="${y}" r="${r}" fill="${fill}" ${extra}/>`; }
-function joint(p) { return circle(p[0], p[1], 4, C.cyan, 'stroke="#172338" stroke-width="1.5"'); }
-function hand(p) { return `<ellipse cx="${p[0]}" cy="${p[1]}" rx="9" ry="7" fill="${C.cream}"/>`; }
+const ink = '#45415a', skin = '#f0d7cd', skinShadow = '#d6b4b0';
+const vec = (a,b) => { const d=[b[0]-a[0],b[1]-a[1]],len=Math.hypot(...d)||1;return [d[0]/len,d[1]/len]; };
+const xy = p => p.map(n=>Number(n.toFixed(2))).join(',');
+// A continuous filled envelope, not a stroked skeleton: cloth thickness narrows at joints.
+function limb(points,widths,fill,shadow='#8a7ca7') {
+  const normals=points.map((p,i)=>{const v=vec(points[Math.max(0,i-1)],points[Math.min(points.length-1,i+1)]);return [-v[1],v[0]];});
+  const a=points.map((p,i)=>[p[0]+normals[i][0]*widths[i],p[1]+normals[i][1]*widths[i]]);
+  const b=points.map((p,i)=>[p[0]-normals[i][0]*widths[i],p[1]-normals[i][1]*widths[i]]);
+  const mid=(u,v)=>[(u[0]+v[0])/2,(u[1]+v[1])/2];
+  const d=`M${xy(a[0])} L${xy(mid(a[0],a[1]))} Q${xy(a[1])} ${xy(mid(a[1],a[2]))} L${xy(a[2])} Q${xy(points[2])} ${xy(b[2])} L${xy(mid(b[2],b[1]))} Q${xy(b[1])} ${xy(mid(b[1],b[0]))} L${xy(b[0])} Q${xy(points[0])} ${xy(a[0])}Z`;
+  const crease=points[1],v=normals[1],u=vec(points[0],points[2]);
+  return `<path d="${d}" fill="${fill}" stroke="${ink}" stroke-width="1.6" stroke-linejoin="round"/><path d="M${xy(mid(b[0],b[1]))} Q${xy(b[1])} ${xy(mid(b[1],b[2]))}" fill="none" stroke="${shadow}" stroke-width="4" opacity=".42" stroke-linecap="round"/><path d="M${crease[0]-v[0]*widths[1]*.65-u[0]*3},${crease[1]-v[1]*widths[1]*.65-u[1]*3}q${v[0]*widths[1]*.85},${v[1]*widths[1]*.85} ${v[0]*widths[1]*1.35+u[0]*2},${v[1]*widths[1]*1.35+u[1]*2}" fill="none" stroke="${ink}" stroke-width="1.2" opacity=".48"/>`;
+}
+const graspPoints=new Set(['266,91','263,111','322,185','239,190','332,177','213,139','271,138','254,208','264,191','352,160','230,153','174,205','341,188']);
+function hand(p,previous=null) {
+  if(p[1]>370&&p[0]<190) return `<g transform="translate(${xy(p)})"><path d="M-7,-5Q0,-9 7,-3L10,1L23,4Q26,6 23,8L6,7L-15,9Q-19,8 -16,6L-4,2Z" fill="${skin}" stroke="${ink}" stroke-width="1.2"/><path d="M6,2L19,5M3,4L14,7M-3,3L-11,7" stroke="${skinShadow}" stroke-width="1.2"/></g>`;
+  if(graspPoints.has(p.join(','))) return `<g transform="translate(${xy(p)})"><path d="M-7,-6Q-3,-12 4,-9Q11,-6 10,3Q8,11 0,10Q-9,10 -9,2Z" fill="${skin}" stroke="${ink}" stroke-width="1.2"/><path d="M-6,-3Q-2,-6 5,-4M-6,0Q0,-3 7,-1M-5,4Q0,1 6,3M-3,7Q1,5 5,6" fill="none" stroke="${skinShadow}" stroke-width="1.25"/><path d="M-7,-4Q-12,-5 -12,0L-7,5Q-3,7 0,3" fill="${skin}" stroke="${ink}" stroke-width="1.1"/></g>`;
+  const angle=previous?Math.atan2(p[0]-previous[0],previous[1]-p[1])*180/Math.PI:0;
+  return `<g transform="translate(${xy(p)}) rotate(${angle})"><path d="M-5,7Q-7,0 -5,-6L-4,-12Q-3,-15 -1.5,-12L-1,-5L-.5,-15Q1,-18 2,-14L2,-5L3,-13Q5,-15 5.7,-11L5.5,-4L6.7,-9Q9,-11 9,-7L8,1Q8,8 3,10L-3,10Z" fill="${skin}" stroke="${ink}" stroke-width="1.2"/><path d="M-4,1L-8,-4Q-11,-6 -11,-2L-7,5Q-5,9 -1,9" fill="${skin}" stroke="${ink}" stroke-width="1.2"/><path d="M-2,4Q2,1 5,3M-1,7L3,7" fill="none" stroke="${skinShadow}" stroke-width="1.1"/></g>`;
+}
+function shoe(p,face='front') {
+  const sign=face==='left'?-1:1;
+  return `<g transform="translate(${xy(p)}) scale(${sign} 1)"><path d="M-10,-8L7,-8L9,-2Q17,-1 22,5Q25,10 18,11L-11,11Q-16,9 -13,2Z" fill="#ebe9ee" stroke="${ink}" stroke-width="1.6"/><path d="M-13,7Q1,10 23,7L20,12H-10Z" fill="#8c91a7"/><path d="M-2,-4L8,-1M-4,-1L8,2M-6,2L7,5" stroke="#abb0c4" stroke-width="1.4"/><path d="M11,2Q15,0 18,4" fill="none" stroke="#fff" stroke-width="1.5"/></g>`;
+}
 function person({ head = [240, 105], shoulder = [[215, 146], [265, 146]], hip = [[222, 243], [258, 243]], arms, legs, face = 'front', headTilt = 0 }) {
-  const [ls, rs] = shoulder, [lh, rh] = hip;
-  let v = '';
-  for (const leg of legs) {
-    v += line(leg, C.violet, 19);
-    v += joint(leg[1]);
-    const f = leg[2];
-    v += line([[f[0] - 5, f[1]], [f[0] + (face === 'left' ? -16 : 16), f[1] + 3]], C.cream, 12);
+  const [ls,rs]=shoulder,[lh,rh]=hip;
+  const sx=(ls[0]+rs[0])/2,sy=(ls[1]+rs[1])/2,hx=(lh[0]+rh[0])/2,hy=(lh[1]+rh[1])/2;
+  let v='';
+  for(const leg of legs) v+=limb(leg,[16,12,8],'url(#trousers)','#74718a')+shoe(leg[2],face);
+  // Neck, trousers waist and softly fitted untucked shirt retain adult body volume.
+  v+=`<path d="M${head[0]-8},${head[1]+15}L${sx-8},${sy+10}Q${sx},${sy+20} ${sx+8},${sy+10}L${head[0]+8},${head[1]+15}Z" fill="${skin}" stroke="${ink}" stroke-width="1.3"/>`;
+  v+=`<path d="M${lh[0]-8},${lh[1]-10}Q${hx},${hy-16} ${rh[0]+8},${rh[1]-10}L${rh[0]+10},${rh[1]+17}Q${hx},${hy+24} ${lh[0]-10},${lh[1]+17}Z" fill="url(#trousers)" stroke="${ink}" stroke-width="1.5"/>`;
+  v+=`<path d="M${ls[0]-4},${ls[1]-1}Q${sx-14},${sy-12} ${sx-8},${sy-8}Q${sx},${sy+4} ${sx+8},${sy-8}Q${sx+14},${sy-12} ${rs[0]+4},${rs[1]-1}Q${rs[0]+13},${rs[1]+24} ${rs[0]+7},${rs[1]+41}L${rh[0]+10},${rh[1]+2}Q${hx},${hy+10} ${lh[0]-10},${lh[1]+2}L${ls[0]-7},${ls[1]+41}Q${ls[0]-13},${ls[1]+24} ${ls[0]-4},${ls[1]-1}Z" fill="url(#shirt)" stroke="${ink}" stroke-width="1.7"/>`;
+  v+=`<path d="M${sx-8},${sy-8}Q${sx},${sy+6} ${sx+8},${sy-8}" fill="none" stroke="#f3ecff" stroke-width="3"/><path d="M${rs[0]+2},${rs[1]+35}L${rh[0]+6},${rh[1]-4}Q${hx+8},${hy+3} ${hx},${hy+4}" fill="none" stroke="#8b80ad" stroke-width="5" opacity=".38"/><path d="M${lh[0]},${lh[1]-9}q13,-7 22,-3M${rh[0]-13},${rh[1]-21}l12,9M${ls[0]+2},${ls[1]+30}l9,8" fill="none" stroke="#8f83aa" stroke-width="1.4" opacity=".7"/>`;
+  for(const a of arms){
+    const sleeve=[a[0][0]*.30+a[1][0]*.70,a[0][1]*.30+a[1][1]*.70];
+    v+=limb(a,[13,10,6.3],skin,skinShadow);
+    v+=limb([a[0],[(a[0][0]+sleeve[0])/2,(a[0][1]+sleeve[1])/2],sleeve],[16,14,12],'url(#shirt)','#8b80ad');
+    const n=vec(a[0],a[1]);
+    v+=`<path d="M${sleeve[0]-n[1]*10},${sleeve[1]+n[0]*10}L${sleeve[0]+n[1]*10},${sleeve[1]-n[0]*10}" stroke="#ddd5f0" stroke-width="2"/>`+hand(a[2],a[1]);
   }
-  v += line([[head[0], head[1] + 21], [(ls[0] + rs[0]) / 2, (ls[1] + rs[1]) / 2 + 9]], C.cream, 13);
-  v += `<path d="M${ls} Q${(ls[0]+rs[0])/2},${(ls[1]+rs[1])/2-8} ${rs} L${rh} Q${(lh[0]+rh[0])/2},${(lh[1]+rh[1])/2+8} ${lh} Z" fill="url(#shirt)" stroke="#d7c9ff" stroke-width="2"/>`;
-  v += line([[lh[0] - 2, lh[1]], [rh[0] + 2, rh[1]]], '#746aab', 8);
-  for (const a of arms) {
-    v += line(a, C.cream, 13);
-    const sleeve = [a[0][0] * .65 + a[1][0] * .35, a[0][1] * .65 + a[1][1] * .35];
-    v += line([a[0], sleeve], C.violet, 18);
-    v += joint(a[1]) + hand(a[2]);
-  }
-  v += `<g transform="rotate(${headTilt} ${head[0]} ${head[1]})">`;
-  v += circle(head[0], head[1], 24, C.cream);
-  v += `<path d="M${head[0]-23},${head[1]+2} Q${head[0]-28},${head[1]-29} ${head[0]},${head[1]-26} Q${head[0]+27},${head[1]-28} ${head[0]+23},${head[1]+2} Q${head[0]+16},${head[1]-10} ${head[0]+5},${head[1]-13} Q${head[0]-11},${head[1]-3} ${head[0]-23},${head[1]+2}" fill="#444161"/>`;
-  if (face === 'front') v += circle(head[0]-8, head[1]+3, 2, C.dark) + circle(head[0]+8, head[1]+3, 2, C.dark) + `<path d="M${head[0]-5},${head[1]+13}q5,3 10,0" fill="none" stroke="#71606c" stroke-width="2"/>`;
-  if (face === 'right' || face === 'left') {
-    const sign = face === 'right' ? 1 : -1;
-    v += circle(head[0] + sign*11, head[1]+3, 2, C.dark) + `<path d="M${head[0]+sign*21},${head[1]+1}l${sign*7},7 -${sign*7},2" fill="${C.cream}"/>`;
-  }
-  v += '</g>';
+  v+=`<g transform="rotate(${headTilt} ${head[0]} ${head[1]})">`;
+  const x=head[0],y=head[1];
+  v+=`<path d="M${x-22},${y+1}Q${x-26},${y-27} ${x},${y-28}Q${x+26},${y-26} ${x+23},${y+4}L${x+20},${y+19}Q${x},${y+34} ${x-20},${y+19}Z" fill="#655c72" stroke="${ink}" stroke-width="1.5"/>`;
+  if(face!=='back'){
+    v+=`<path d="M${x-18},${y-11}Q${x},${y-24} ${x+18},${y-11}L${x+18},${y+10}Q${x+16},${y+23} ${x},${y+25}Q${x-16},${y+23} ${x-18},${y+10}Z" fill="${skin}" stroke="${ink}" stroke-width="1.2"/>`;
+    v+=`<path d="M${x-22},${y+2}Q${x-29},${y-26} ${x},${y-28}Q${x+27},${y-28} ${x+23},${y+5}L${x+17},${y-7}Q${x+8},${y-18} ${x+4},${y-10}L${x-1},${y-5}L${x-3},${y-14}Q${x-12},${y-3} ${x-22},${y+2}Z" fill="#655c72"/>`;
+    if(face==='front') v+=`<path d="M${x-12},${y+1}q4,-3 8,0M${x+4},${y+1}q4,-3 8,0" fill="none" stroke="${ink}" stroke-width="1.4"/>`+circle(x-8,y+5,1.8,ink)+circle(x+8,y+5,1.8,ink)+`<path d="M${x},${y+6}l-1,7 3,0M${x-4},${y+17}q4,2 8,0" fill="none" stroke="#a37d83" stroke-width="1.2"/>`;
+    else {const sign=face==='right'?1:-1;v+=circle(x+sign*10,y+5,1.8,ink)+`<path d="M${x+sign*16},${y+6}l${sign*7},6 -${sign*7},2M${x+sign*10},${y+19}l${sign*5},-1" fill="${skin}" stroke="#a37d83" stroke-width="1.1"/>`;}
+  }else v+=`<path d="M${x-15},${y-17}Q${x-12},${y+11} ${x-7},${y+21}M${x-1},${y-20}Q${x+5},${y+4} ${x+9},${y+19}M${x+12},${y-14}Q${x+18},${y} ${x+16},${y+13}" fill="none" stroke="#82768e" stroke-width="1.4"/>`;
+  v+='</g>';
   return v;
 }
 function arrow(d, color=C.cyan, dashed=false) { return `<path d="${d}" fill="none" stroke="${color}" stroke-width="3" stroke-linecap="round" ${dashed?'stroke-dasharray="8 7"':''} marker-end="url(#arrow)"/>`; }
@@ -52,7 +75,7 @@ const diagrams = [
   {n:49, title:'両手を背中で組む', body: person({face:'back', arms:[[[215,146],[192,199],[239,222]],[[265,146],[288,199],[244,222]]],legs:regularLegs}) + `<path d="M232 219l16 8m-13-2 11-7" stroke="${C.dark}" stroke-width="2"/>` + note('背面',344,162) + arrow('M340 171Q309 191 254 219')},
   {n:50, title:'帽子のつばに手を添える', body: person({arms:[[[215,146],[197,214],[203,259]],[[265,146],[293,135],[266,91]]],legs:regularLegs}) + `<path d="M214 85L218 62Q239 51 261 63L266 86" fill="#7460b5" stroke="${C.cream}" stroke-width="3"/><path d="M215 77H265" stroke="${C.cyan}" stroke-width="7"/><path d="M199 90Q240 78 283 90Q242 105 199 90" fill="#ad96e1" stroke="${C.cream}" stroke-width="3"/>` + hand([266,91]) + circle(266,91,14,'none',`stroke="${C.cyan}" stroke-width="2"`)},
   {n:51, title:'髪を耳にかける', body:person({arms:[[[215,146],[198,215],[207,259]],[[265,146],[294,160],[263,111]]],legs:regularLegs}) + `<path d="M257 81Q276 102 263 134" fill="none" stroke="#645380" stroke-width="9" stroke-linecap="round"/>` + hand([263,111]) + arrow('M306 92Q292 98 273 110')},
-  {n:52, title:'人差し指で行き先を示す', body:person({arms:[[[215,146],[195,211],[202,258]],[[265,146],[319,173],[373,157]]],legs:regularLegs}) + line([[376,155],[402,149]],C.cream,5) + line([[375,159],[388,160]],C.cream,5) + arrow('M369 119H425')},
+  {n:52, title:'人差し指で行き先を示す', body:person({arms:[[[215,146],[195,211],[202,258]],[[265,146],[319,173],[373,157]]],legs:regularLegs}) + `<path d="M370 151Q377 152 386 150L397 147Q401 146 402 149Q402 152 397 153L379 159Q383 161 388 160Q392 161 389 164L378 166Q369 165 368 158Z" fill="${skin}" stroke="${ink}" stroke-width="1.2"/><path d="M379 155L383 157M375 158L377 163" stroke="${skinShadow}" stroke-width="1.2"/>` + arrow('M369 119H425')},
   {n:53, title:'両手でハートを作る', body:person({arms:[[[215,146],[193,190],[229,189]],[[265,146],[287,190],[251,189]]],legs:regularLegs}) + `<path d="M240 193L226 180Q220 172 227 168Q235 164 240 173Q245 164 253 168Q260 172 254 180Z" fill="#252138" stroke="${C.cream}" stroke-width="5" stroke-linejoin="round"/>` + `<path d="M240 187L232 179Q228 173 232 172Q237 170 240 177Q243 170 248 172Q252 173 248 179Z" fill="${C.cyan}" opacity=".7"/>`},
   {n:54, title:'座って脚を組む', before:`<rect x="150" y="248" width="180" height="13" rx="5" fill="${C.prop}"/><path d="M162 260V390M319 260V390" stroke="${C.prop}" stroke-width="9"/>`, body:person({hip:[[222,239],[258,239]],arms:[[[215,146],[188,219],[224,238]],[[265,146],[286,218],[258,244]]],legs:[[[222,239],[225,301],[244,383]],[[258,239],[278,278],[190,321]]]}) + `<path d="M269 275l-9 10" stroke="${C.cyan}" stroke-width="3"/>`},
   {n:55, title:'正座する', body:person({head:[256,191],shoulder:[[232,233],[273,233]],hip:[[239,329],[272,329]],face:'left',arms:[[[232,233],[220,281],[207,327]],[[273,233],[280,282],[260,327]]],legs:[[[239,329],[184,339],[271,351]],[[272,329],[218,341],[296,355]]]}) + `<path d="M163 366H330" stroke="${C.prop}" stroke-width="4"/><path d="M260 343h17" stroke="${C.cyan}" stroke-width="3"/>` + note('腰を踵へ',340,257) + arrow('M333 268Q311 316 275 337')},
@@ -76,7 +99,7 @@ const diagrams = [
 ];
 
 for (const d of diagrams) {
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="480" height="480" viewBox="0 0 480 480" role="img" aria-labelledby="title desc"><title id="title">${esc(d.title)}｜動作の図解</title><desc id="desc">衣服を着た中立的なマネキンによる、${esc(d.title)}の関節と動作を示す専用図解。完成イラストの作画見本ではありません。</desc><defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#222744"/><stop offset="1" stop-color="#101929"/></linearGradient><linearGradient id="shirt" x2="1" y2="1"><stop stop-color="#b8a3ed"/><stop offset="1" stop-color="#8d86d0"/></linearGradient><radialGradient id="lampGlow"><stop stop-color="#ffdf87" stop-opacity=".38"/><stop offset="1" stop-color="#ffdf87" stop-opacity="0"/></radialGradient><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0 0L6 3L0 6" fill="none" stroke="${C.cyan}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><rect width="480" height="480" rx="28" fill="url(#bg)"/><rect x="14" y="14" width="452" height="452" rx="19" fill="none" stroke="#485379" stroke-width="1"/><rect x="165" y="25" width="149" height="32" rx="16" fill="#303654"/><text x="239" y="47" text-anchor="middle" font-family="Noto Sans JP,Hiragino Kaku Gothic ProN,Yu Gothic,sans-serif" font-size="17" fill="${C.cream}">動作の図解</text><text x="434" y="47" text-anchor="end" font-size="17" fill="${C.cyan}" font-family="sans-serif">${String(d.n).padStart(3,'0')}</text><g transform="translate(24 30) scale(.9)">${ground}${d.before || ''}${d.body}</g><rect x="23" y="415" width="434" height="45" rx="11" fill="#29324c"/><text x="240" y="444" text-anchor="middle" font-family="Noto Sans JP,Hiragino Kaku Gothic ProN,Yu Gothic,sans-serif" font-size="22" fill="${C.cream}">${esc(d.title)}</text></svg>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="480" height="480" viewBox="0 0 480 480" role="img" aria-labelledby="title desc"><title id="title">${esc(d.title)}｜動作の図解</title><desc id="desc">落ち着いた中立的な服装の成人による、${esc(d.title)}の人体シルエット・接地・握りと動作を示す専用図解。完成イラストの作画見本ではありません。</desc><defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#222744"/><stop offset="1" stop-color="#101929"/></linearGradient><linearGradient id="shirt" x2="1" y2="1"><stop stop-color="#b8a3ed"/><stop offset="1" stop-color="#8d86d0"/></linearGradient><linearGradient id="trousers" x2="1" y2="1"><stop stop-color="#b6b5ca"/><stop offset="1" stop-color="#8b8da6"/></linearGradient><radialGradient id="lampGlow"><stop stop-color="#ffdf87" stop-opacity=".38"/><stop offset="1" stop-color="#ffdf87" stop-opacity="0"/></radialGradient><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0 0L6 3L0 6" fill="none" stroke="${C.cyan}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><rect width="480" height="480" rx="28" fill="url(#bg)"/><rect x="14" y="14" width="452" height="452" rx="19" fill="none" stroke="#485379" stroke-width="1"/><rect x="165" y="25" width="149" height="32" rx="16" fill="#303654"/><text x="239" y="47" text-anchor="middle" font-family="Noto Sans JP,Hiragino Kaku Gothic ProN,Yu Gothic,sans-serif" font-size="17" fill="${C.cream}">動作の図解</text><text x="434" y="47" text-anchor="end" font-size="17" fill="${C.cyan}" font-family="sans-serif">${String(d.n).padStart(3,'0')}</text><g transform="translate(24 30) scale(.9)">${ground}${d.before || ''}${d.body}</g><rect x="23" y="415" width="434" height="45" rx="11" fill="#29324c"/><text x="240" y="444" text-anchor="middle" font-family="Noto Sans JP,Hiragino Kaku Gothic ProN,Yu Gothic,sans-serif" font-size="22" fill="${C.cream}">${esc(d.title)}</text></svg>`;
   fs.writeFileSync(path.join(out, `pose-${String(d.n).padStart(3, '0')}.svg`), svg);
 }
 console.log(`Wrote ${diagrams.length} purpose-built SVG movement diagrams (049–072).`);

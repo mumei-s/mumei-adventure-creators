@@ -1,8 +1,8 @@
-import {costumeSpecs,themeSpecs,placeSpecs} from './visual-specs.js?v=28.2.0';
-import {poseItems} from './poses.js?v=28.2.0';
-import {questions} from './catalog.js?v=28.2.0';
-import {typographyRecipe} from './typography-options.js?v=28.2.0';
-import {angleItems} from './angles.js?v=28.2.0';
+import {costumeSpecs,themeSpecs,placeSpecs} from './visual-specs.js?v=28.3.0';
+import {poseItems,poseTechnical} from './poses.js?v=28.3.0';
+import {questions} from './catalog.js?v=28.3.0';
+import {typographyRecipe} from './typography-options.js?v=28.3.0';
+import {angleItems} from './angles.js?v=28.3.0';
 
 // The tables describe the selected title, never the people or settings in a UI thumbnail.
 const rows=source=>Object.assign(Object.create(null),Object.fromEntries(source.trim().split('\n').filter(Boolean).map(line=>{const at=line.indexOf('=');return [line.slice(0,at),line.slice(at+1).split('|')];})));
@@ -508,10 +508,12 @@ function placeDetail(value,context){
 }
 function poseDetail(value,context){
  const item=poseItems.find(p=>p.value===value),data=poseSteps[value]||(item?.support&&item?.contact?[item.support,item.contact,item.checks.join('／')]:null),known=!!item&&!!data||value==='おまかせ';
+ const anatomy=poseTechnical(value,context);
+ const withAnatomy=recipe=>anatomy.applicable?{...recipe,sections:[...recipe.sections,...anatomy.sections],checks:[...new Set([...recipe.checks,...anatomy.checks])]}:recipe;
  if(context.noPerson)return {known,sections:[section('身体ポーズは非適用','人物なしの主題では、選択された身体ポーズを景物へ適用しない。木・建物・物体を立つ・座る・走る身体へ見立てない。'),section('場面にある動き','選んだ舞台の支持面と重力を守り、水・枝葉・雲・布など実際に存在する物だけを自然に動かす。')],checks:['人の身体動作を景物へ移植していない','物体の接地・重力・支持']};
- if(value==='おまかせ')return {known:true,sections:[section('確定したポーズ',context.variant.pose||'今回確定した一つの身体動作について、支持点と重心を先に決める。未確定の複数ポーズを同時に描かない。'),section('左右と接触','両肩から肘・手首、骨盤から膝・足を追い、手と持物・足と地面の接触点を明確にする。')],checks:['一つの確定ポーズ','自然な左右の手足と支持']};
- if(!item||!data)return freeInput('pose',value,context);
- if(context.values.costume==='人魚')return {known:true,sections:[section('魚尾への動作翻訳','ポーズ「'+value+'」の上半身・腕・重心の方向を保ち、脚で行う部分だけを一本の魚尾の曲がりと支持へ置き換える。人の膝・足・二本脚を追加しない。'),section('尾と支持面','腰から尾びれまで連続させ、接地する指定は岩・床・座面との接触で支える。浮遊や水中は実際に選ばれている時だけ尾を支持面から離す。'),section('手と顔の維持','左右の腕と持物の接触は選択ポーズの役割を保つ。顔角度は別の指定を守り、魚尾の都合で顔や手を変えない。')],checks:['一本の魚尾で成立する動作','二本脚の自動追加なし','上半身と手の役割の保持']};
+ if(value==='おまかせ')return withAnatomy({known:true,sections:[section('確定したポーズ',context.variant.pose||'今回確定した一つの身体動作について、支持点と重心を先に決める。未確定の複数ポーズを同時に描かない。'),section('左右と接触','両肩から肘・手首、骨盤から膝・足を追い、手と持物・足と地面の接触点を明確にする。')],checks:['一つの確定ポーズ','自然な左右の手足と支持']});
+ if(!item||!data)return withAnatomy(freeInput('pose',value,context));
+ if(context.values.costume==='人魚')return withAnatomy({known:true,sections:[section('魚尾への動作翻訳','ポーズ「'+value+'」の上半身・腕・重心の方向を保ち、脚で行う部分だけを一本の魚尾の曲がりと支持へ置き換える。人の膝・足・二本脚を追加しない。'),section('尾と支持面','腰から尾びれまで連続させ、接地する指定は岩・床・座面との接触で支える。浮遊や水中は実際に選ばれている時だけ尾を支持面から離す。'),section('手と顔の維持','左右の腕と持物の接触は選択ポーズの役割を保つ。顔角度は別の指定を守り、魚尾の都合で顔や手を変えない。')],checks:['一本の魚尾で成立する動作','二本脚の自動追加なし','上半身と手の役割の保持']});
  const fixedCamera=angleItems.some(angle=>angle.value===context.values.angle);
  const withFixedCamera=text=>fixedCamera?text
   .replace('顔角度の指定にはカメラ位置で合わせ、首だけを180度ねじらない。','選択したカメラを固定し、胸郭と首の自然な回転で顔向きを合わせる。両立しない場合は衝突を伝え、首だけを180度ねじらない。')
@@ -521,7 +523,7 @@ function poseDetail(value,context){
  const faceCompatibility=fixedCamera
   ?'表情・顔角度は別の選択を保ち、選択したカメラの位置・投影・画角を固定する。その視点で自然な胸郭と首の回転、動作を変えない持物の高さでこのポーズと両立させる。両立しない明示条件は衝突を短く伝え、カメラや関節の変更で満たしたとしない。ポーズを別の座り方・立ち方に弱めない。'
   :'表情・顔角度は別の選択を保ち、必要ならカメラの位置や持物の高さでこのポーズと両立させる。ポーズを別の座り方・立ち方に弱めない。';
- return {known:true,sections:[section('実行する身体動作',withFixedCamera(item.text)),section('支持と重心',data[0]),section('左右の手足と接触',withFixedCamera(data[1])),section('顔角度との両立',faceCompatibility)],checks:checksOf(data[2])};
+ return withAnatomy({known:true,sections:[section('実行する身体動作',withFixedCamera(item.text)),section('支持と重心',data[0]),section('左右の手足と接触',withFixedCamera(data[1])),section('顔角度との両立',faceCompatibility)],checks:checksOf(data[2])});
 }
 function expressionForVariant(text){
  if(!text)return null;

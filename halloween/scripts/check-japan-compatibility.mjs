@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import {selectionConflicts,candidateAvailability,wrappedPage} from '../compatibility.js?v=28.2.0';
-import {questions,resolveSelections} from '../catalog.js?v=28.2.0';
-import {applyCollection} from '../collection.js?v=28.2.0';
-import {initialSelections} from '../modes.js?v=28.2.0';
-import {optionRecipe} from '../option-recipes.js?v=28.2.0';
-import {modeFoundation} from '../japan-direction.js?v=28.2.0';
+import {selectionConflicts,candidateAvailability,wrappedPage} from '../compatibility.js?v=28.3.0';
+import {questions,resolveSelections} from '../catalog.js?v=28.3.0';
+import {applyCollection} from '../collection.js?v=28.3.0';
+import {initialSelections} from '../modes.js?v=28.3.0';
+import {optionRecipe} from '../option-recipes.js?v=28.3.0';
+import {modeFoundation} from '../japan-direction.js?v=28.3.0';
 const base={...initialSelections(),costume:'風景を主役にする',pose:'おまかせ',mood:'毎回大胆に変える'};
 assert.equal(candidateAvailability('pose','両手を広げる',base).enabled,false);
 assert.equal(candidateAvailability('mood','正面＋満面の笑顔',base).enabled,false);
@@ -43,7 +43,9 @@ for(const mode of ['halloween','everyday']){
 const scenery=optionRecipe('medium','クリスタルホログラム造形アニメ',{values:{costume:'風景を主役にする'}});
 assert.ok(!scenery.sections.map(s=>s.text).join('').match(/眼瞼|瞳孔|眼の|目鼻|袖|髪束/),'No-person material recipe must not introduce anatomy');
 for(const type of ['文字を一切入れない','クリエイター名だけ']){const cover=optionRecipe('design','週刊誌の表紙',{values:{type}});const clause=cover.sections.find(s=>s.label==='日本を基準にした個別条件').text;assert.ok(!clause.includes('大見出し2〜4本'));assert.match(clause,type==='文字を一切入れない'?/一切追加しない/:/補完しない/);}
-assert.match(modeFoundation('everyday'),/自動追加しない/);
-assert.match(modeFoundation('halloween'),/通常モードと同じ日本/);
+assert.match(modeFoundation('everyday'),/日常・幻想・ホラー・Halloweenは明示選択の範囲/);
+assert.match(modeFoundation('everyday'),/AUTOの日常へ仮装・カボチャ・幽霊・魔法を追加しない/);
+assert.match(modeFoundation('halloween'),/すべての作品でHalloweenの出来事・場所・目的を一場面/);
+assert.match(modeFoundation('halloween'),/選択した時刻・主題・画風・衣装と被覆・カメラ・支持を保ち、人物なしを優先/);
 applyCollection('halloween');
 console.log('PASS Japan foundation for every option; incompatible candidates blocked with explicit choices preserved; 600 AUTO combinations; no-person crystal recipe; circular navigation including first-left to last.');

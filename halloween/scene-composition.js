@@ -1,10 +1,11 @@
-import {sceneContract} from './worlds.js?v=28.2.0';
+import {sceneContract} from './worlds.js?v=28.3.0';
 
 // Resolve the selected subject and place as one scene before the individual
 // recipes add detail. World-bearing stories change the environment of that
 // place; they are not reduced to a detached prop or a second picture.
 export function sceneComposition(plan){
  const values=plan.values;
+ const nonHumanSource=['scenery','mark-object'].includes(values.sourceKind);
  const emblem=values.costume==='紋章・アイコンにする';
  const motif=values.costume==='モチーフだけで構成する';
  const abstract=/墨の余白|金箔の空間|抽象的な色面/.test(values.place);
@@ -14,7 +15,7 @@ export function sceneComposition(plan){
  return [
   values.sceneUnified?'【選んだ世界観・シーン】':'【物語・世界観・舞台を一つの場面へ】',
   ...(values.sceneUnified?['選択は「'+values.theme+'」の一場面。物語・世界・テーマ・場所を独立した四つの設定に分けず、このシーンの中で出来事・空間・主役への光を決める。作風は別途選んだ描線・画材で、この世界そのものを変更しない。']:[]),
-  '完成場面：「'+values.place+'」で「'+values.theme+'」が成立している一瞬。'+(plan.noPerson?'主役は選択した景物・物体・図案。':'主役は参照の同じキャラクター、衣装は「'+values.costume+'」、身体の動作は「'+values.pose+'」。')+'項目ごとに別の絵や背景を作らず、出来事の対象と舞台、主役を同じ配置・画風・配色へ結ぶ。',
+  '完成場面：「'+values.place+'」で「'+values.theme+'」が成立している一瞬。'+(plan.noPerson?'主役は選択した景物・物体・図案。':(nonHumanSource?'主役は入力の固有形・色・紋様・構造を翻案した独自の人物':'主役は参照の同じキャラクター')+'、衣装は「'+values.costume+'」、身体の動作は「'+values.pose+'」。')+'項目ごとに別の絵や背景を作らず、出来事の対象と舞台、主役を同じ配置・画風・配色へ結ぶ。',
   '物語名に含まれる世界の性質・素材・光・時間も、この舞台の環境に統合する。単に小物を一つ置いてテーマを代用せず、舞台の識別構造を残したまま場面全体で意味が読めるようにする。別背景の禁止は画像の分割・無関係な場所の追加を防ぐ条件であり、選んだ世界観を消す条件ではない。',
   ...(cosmic?[planar?'選択された宇宙の世界観を主画像から削除しない。宇宙の広がりと舞台の識別形を、同じ図案内の大小・重なり・抜き・選択技法の明暗で結ぶ。星雲や星の間隔を少数の形と余白へ整理し、未選択の地平線・窓・建物・写実的な別景観を追加しない。':'選択された宇宙の世界観を主画像から削除しない。舞台の地形・建築・支持面を保ち、その空・開口部・奥行きへ星雲と遠い星の広がりを連続させる。宇宙光を主役と舞台の同じ面へ返し、宇宙を小さな飾り・窓内の別絵・別枠だけに閉じ込めない。']:[]),
   ...(candy?[planar?'お菓子の王国は、舞台の識別形と菓子の素材・輪郭を一つの図案で結ぶ。菓子を別枠へ並べず、重なりと抜きで主題を作る。':'お菓子の王国は、選んだ舞台の建築・地形・道具の形を保ちながら、飴の透過、焼菓子の層、砂糖の粒などの素材へ置き換えた一つの場所として描く。菓子の小物を添えるだけで終えず、主役の支持面と周囲にも同じ素材と光をつなぐ。']:[]),

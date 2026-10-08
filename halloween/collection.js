@@ -1,10 +1,10 @@
-import {everydayScenes,everydayPlaces,casualClothes,swimClothes,everydayBindings,everydaySamples} from './everyday-options.js?v=28.2.0';
-import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=28.2.0';
-import {poseGroups} from './poses.js?v=28.2.0';
-import {automaticView} from './view-constraints.js?v=28.2.0';
-import {randomChoice} from './random-selections.js?v=28.2.0';
-import {halloweenSceneGroups,mergeSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.2.0';
-import {referenceWorldScenes} from './world-bases.js?v=28.2.0';
+import {everydayScenes,everydayPlaces,casualClothes,swimClothes,everydayBindings,everydaySamples} from './everyday-options.js?v=28.3.0';
+import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=28.3.0';
+import {poseGroups} from './poses.js?v=28.3.0';
+import {automaticView} from './view-constraints.js?v=28.3.0';
+import {randomChoice} from './random-selections.js?v=28.3.0';
+import {halloweenSceneGroups,halloweenSceneTitles,mergeSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.3.0';
+import {referenceWorldScenes} from './world-bases.js?v=28.3.0';
 const original=questions.map(q=>({...q,groups:q.groups.map(g=>({...g,values:[...g.values]}))}));
 const originalGroups=key=>original.find(q=>q.key===key).groups;
 const cloneGroups=groups=>groups.map(g=>({...g,values:[...g.values]}));
@@ -61,6 +61,17 @@ const dailyGroups={
  place:[{label:'日常の場所',values:[...dailyPlaces,...everydayPlaces]},{label:'自然・風景の場所',values:scenicPlaces},{label:'スタジオ・造形',values:['白いスタジオ','黒いスタジオ','墨の余白','金箔の空間','紙の箱庭','抽象的な色面','参照風景を舞台にする']},{label:'幻想の場所（選択時のみ）',values:['空中都市','霧の森','屋根の上']}],
  line:[{label:'日本語',values:['今日の光を、忘れない。','小さな一歩が、物語になる。','また、この場所で。','好きな色で、生きていく。','風の向こうへ。','まだ見ぬ景色に会いに。','ここから、はじめよう。','セリフなし']},{label:'英語',values:['A NEW CHAPTER','EVERYDAY WONDERS','FOLLOW THE LIGHT','MAKE YOUR OWN STORY']}]
 };
+// Every genre is available through an explicit choice. Keep optional seasonal
+// items outside the ordinary AUTO pools rather than making them unavailable.
+const optionalLabel='ホラー・Halloween（選択時のみ）';
+const seasonalScenes=new Set(halloweenSceneTitles);
+dailyGroups.theme=dailyGroups.theme.map(group=>({...group,values:group.values.filter(value=>!seasonalScenes.has(value))}));
+dailyGroups.theme.push({label:optionalLabel,values:[...halloweenSceneTitles]});
+for(const key of ['costume','place']){
+ const seen=new Set(dailyGroups[key].flatMap(group=>group.values));
+ const missing=originalGroups(key).flatMap(group=>group.values).filter(value=>!seen.has(value)&&seen.add(value));
+ if(missing.length)dailyGroups[key].push({label:optionalLabel,values:missing});
+}
 // Register ordinary locations even while Halloween is active, so saved scene
 // previews and their recipe source remain stable when switching collections.
 dailyGroups.theme.push({label:'和の花景・街角',values:referenceWorldScenes.filter(scene=>!scene.fantasy).map(scene=>scene.value)});
@@ -166,12 +177,12 @@ export function applyCollection(collection){
  activeCollection=collection==='everyday'?'everyday':'halloween';
  questions.forEach((q,i)=>{
   const source=original[i],daily=activeCollection==='everyday';q.groups=cloneGroups(daily?(dailyGroups[q.key]||source.groups):source.groups);delete q.autoValues;
-  if(daily&&q.key==='type')q.groups=q.groups.map(g=>({...g,values:g.values.filter(v=>!v.includes('HALLOWEEN'))}));
   q.name=source.name;q.hint=source.hint;
   if(q.key==='theme')q.groups=daily?mergeSceneGroups(q.groups,dailyGroups.place):halloweenSceneGroups(q.groups,originalGroups('place'));
   if(q.key==='angle')q.autoValues=q.groups.flatMap(group=>group.values);
   if(daily){
-   if(q.key==='theme'){q.hint='日常・風景・創作をひとつの場面で選ぶ';q.autoValues=[...ordinaryScenes,...landscapeScenes].map(x=>x[0]);}
+   if(q.key==='theme'){q.hint='日常・幻想・ホラー・Halloweenまで自由に選ぶ';q.autoValues=[...ordinaryScenes,...landscapeScenes].map(x=>x[0]);}
+   if(q.key==='type')q.autoValues=q.groups.flatMap(group=>group.values).filter(value=>!value.includes('HALLOWEEN'));
    if(q.key==='design')q.autoValues=defaultDailyDesigns;
    if(q.key==='costume')q.autoValues=ordinaryClothes;
    if(q.key==='place')q.autoValues=[...dailyPlaces,...everydayPlaces,...scenicPlaces];

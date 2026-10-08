@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict';
-import {questions,visibleQuestions,resolveSelections,AUTO} from '../catalog.js?v=28.2.0';
-import {applyCollection,landscapeScenes,noPersonSelection,dailyInspiration} from '../collection.js?v=28.2.0';
-import {initialSelections,propose,effectiveSelections} from '../modes.js?v=28.2.0';
-import {buildDirection} from '../direction.js?v=28.2.0';
-import {poseItems,applyPose} from '../poses.js?v=28.2.0';
-import {sampleFor,typePreview} from '../examples.js?v=28.2.0';
+import {questions,visibleQuestions,resolveSelections,AUTO} from '../catalog.js?v=28.3.0';
+import {applyCollection,landscapeScenes,noPersonSelection,dailyInspiration} from '../collection.js?v=28.3.0';
+import {initialSelections,propose,effectiveSelections} from '../modes.js?v=28.3.0';
+import {buildDirection} from '../direction.js?v=28.3.0';
+import {halloweenSceneTitles} from '../scene-presets.js?v=28.3.0';
+import {poseItems,applyPose} from '../poses.js?v=28.3.0';
+import {sampleFor,typePreview} from '../examples.js?v=28.3.0';
 let state=11987;const random=()=>((state=(Math.imul(state,1664525)+1013904223)>>>0)/4294967296);
 const valuesFor=key=>questions.find(q=>q.key===key).groups.flatMap(g=>g.values);
 applyCollection('halloween');
@@ -15,7 +16,17 @@ assert.equal(valuesFor('pose').length,poseItems.length);assert.equal(new Set(val
 assert.ok(valuesFor('design').includes('自然・都市の風景画'));
 assert.ok(valuesFor('theme').includes('山岳と湖のパノラマ'));
 assert.ok(valuesFor('costume').includes('森の妖精'),'fantasy remains an explicit option');
-assert.ok(!valuesFor('theme').includes('幽霊たちのお茶会'));
+assert.ok(valuesFor('theme').includes('幽霊たちのお茶会'),'Seasonal stories remain an explicit everyday choice');
+for(const key of ['theme','costume','place'])assert.equal(new Set(valuesFor(key)).size,valuesFor(key).length,key+' duplicates an optional genre');
+for(const theme of halloweenSceneTitles)assert.ok(valuesFor('theme').includes(theme),'Everyday mode lost explicit '+theme);
+for(const [key,value] of [['costume','吸血鬼'],['costume','ゾンビ'],['costume','サイボーグ'],['place','月下の墓地'],['place','古城の大広間'],['type','HALLOWEENのみ']]){
+ assert.ok(valuesFor(key).includes(value),key+' explicit choice is unavailable: '+value);
+ assert.ok(!questions.find(q=>q.key===key).autoValues.includes(value),key+' optional choice leaked into ordinary AUTO: '+value);
+}
+for(const key of ['theme','costume','place'])assert.ok(questions.find(q=>q.key===key).groups.some(group=>group.label==='ホラー・Halloween（選択時のみ）'));
+const optionalInput={...initialSelections(),sceneUnified:true,theme:'吸血鬼の晩餐会',costume:'リネンシャツとデニム',pose:'膝を抱えて座る',mood:'目を閉じて安らぐ',angle:'真上から・90度',palette:'金と黒の二色'};
+const optional=resolveSelections(optionalInput,random);
+for(const key of ['theme','costume','pose','mood','angle','palette'])assert.equal(optional[key],optionalInput[key],'Optional genre changed explicit '+key);
 const landscapeNames=new Set(landscapeScenes.map(x=>x[0]));
 let sceneryCount=0,personCount=0;
 for(let i=0;i<500;i++){
@@ -54,4 +65,4 @@ assert.ok(inspiration.themes.every(name=>!name.includes('星明かり')));assert
 for(let i=0;i<3;i++){applyCollection('halloween');assert.equal(JSON.stringify(questions.map(q=>({key:q.key,name:q.name,hint:q.hint,groups:q.groups}))),halloweenSnapshot);assert.equal(questions.reduce((n,q)=>n+q.groups.flatMap(g=>g.values).length,0),579);applyCollection('everyday');}
 applyCollection('halloween');
 for(let i=0;i<120;i++){const values=resolveSelections(initialSelections(),random);for(const q of questions)assert.ok(values[q.key]===AUTO||valuesFor(q.key).includes(values[q.key])||q.autoValues?.includes(values[q.key]));}
-console.log('v11 collections: ordinary defaults, explicit fantasy, subject-free scenery, 72 poses, mode pools and restoration passed.');
+console.log('v11 collections: ordinary AUTO defaults; explicit fantasy/horror/Halloween scenes, costumes and places without duplicates; retained clothing/closed eyes/pose/camera/limited palette; subject-free scenery, 72 poses and mode restoration passed.');

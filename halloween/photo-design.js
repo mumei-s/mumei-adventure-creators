@@ -1,6 +1,6 @@
 // These are authored rendering specifications, not EXIF or proof of a camera.
 // Selected face/body angle and requested composition take priority over optics.
-import {colorPolicy} from './color-policy.js?v=28.1.0';
+import {colorPolicy} from './color-policy.js?v=28.1.1';
 const designs=new Map([
  ['実写風フィルム写真',['50mm相当の標準レンズ、人物はf/4相当、風景はf/8相当','中間調に細かい不均一な粒子、明部は穏やかに肩へ移る']],
  ['実写風スタジオ写真',['85mm相当、f/8相当','大きな主光と弱い補助光、主題全体の素材が判別できる解像']],

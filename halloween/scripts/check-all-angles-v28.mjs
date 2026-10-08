@@ -1,14 +1,15 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.1.0';
-import {questions,resolveSelections} from '../catalog.js?v=28.1.0';
-import {initialSelections} from '../modes.js?v=28.1.0';
-import {buildDirection,shotPlans} from '../direction.js?v=28.1.0';
-import {applyPose} from '../poses.js?v=28.1.0';
-import {angleItems,applyAngle,cameraContract} from '../angles.js?v=28.1.0';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.1.0';
-import {renderInput,renderChatInput} from '../compiled-production.js?v=28.1.0';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.1.0';
-import {optionRecipe} from '../option-recipes.js?v=28.1.0';
+import {applyCollection} from '../collection.js?v=28.1.1';
+import {questions,resolveSelections} from '../catalog.js?v=28.1.1';
+import {initialSelections} from '../modes.js?v=28.1.1';
+import {buildDirection,shotPlans} from '../direction.js?v=28.1.1';
+import {applyPose} from '../poses.js?v=28.1.1';
+import {angleItems,applyAngle,cameraContract} from '../angles.js?v=28.1.1';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.1.1';
+import {renderInput,renderChatInput} from '../compiled-production.js?v=28.1.1';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.1.1';
+import {optionRecipe} from '../option-recipes.js?v=28.1.1';
+import {angleConstraint} from '../view-constraints.js?v=28.1.1';
 
 // A fixed angle must survive every delivery route, including nonvertical and
 // cropped views. These tests examine the actual handoff, not rendered images.
@@ -52,11 +53,13 @@ for(const collection of ['halloween','everyday']){
    assert.equal(plan.conditions.find(c=>c.key==='angle').value,angle.value,name+' dropped the selected angle');
    assert.equal(plan.conditions.find(c=>c.key==='medium').value,medium,name+' dropped the selected medium');
    assert.equal(plan.conditions.find(c=>c.key==='type').value,values.type,name+' dropped advertising copy');
-   if(/度/.test(angle.value)){
-    assert.equal(geometry.pitch_degrees_from_horizontal,angle.pitch,name+' changed the numeric elevation');
-    if(Math.abs(angle.pitch)!==90)assert.equal(geometry.azimuth_relative_to_subject_degrees,angle.yaw,name+' changed the numeric azimuth');
-   }else assert.equal(Object.hasOwn(geometry,'pitch_degrees_from_horizontal'),false,name+' invented numeric precision');
-   if(angle.roll)assert.equal(geometry.roll_degrees,angle.roll,name+' changed roll');
+   // Fix only the axis the title actually specifies: elevation, azimuth and
+   // screen rotation are independent. Preview row defaults are not constraints.
+   const axes=angleConstraint(angle.value).axes;
+   for(const [axis,field] of [['pitch','pitch_degrees_from_horizontal'],['yaw','azimuth_relative_to_subject_degrees'],['roll','roll_degrees']]){
+    assert.equal(geometry[field],axes[axis],name+' changed or invented the '+axis+' constraint');
+    assert.equal(Object.hasOwn(geometry,field),axes[axis]!==undefined,name+' lost axis ownership for '+axis);
+   }
    if(Math.abs(angle.pitch)===90){
     assert.deepEqual(geometry.optical_axis,angle.pitch===90?[0,0,-1]:[0,0,1],name+' tilted the vertical optical axis');
     assert.equal(geometry.horizontal_component,0,name+' introduced a horizontal optical component');

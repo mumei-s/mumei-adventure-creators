@@ -1,8 +1,8 @@
 // Rendering recipes belong to option titles. Picker artwork is never an input.
 // Each section may supply a separate scenery-only instruction in its third cell.
-import {opticalColors} from './optical-effects.js?v=28.1.0';
-import {photoDesign,photoReconstruction} from './photo-design.js?v=28.1.0';
-import {LUMINOUS_WORLD_MEDIUM,luminousWorldContract} from './luminous-world.js?v=28.1.0';
+import {opticalColors} from './optical-effects.js?v=28.1.1';
+import {photoDesign,photoReconstruction} from './photo-design.js?v=28.1.1';
+import {LUMINOUS_WORLD_MEDIUM,luminousWorldContract} from './luminous-world.js?v=28.1.1';
 const recipes = new Map();
 function add(value, family, sections, checks) {
  if (recipes.has(value)) throw new Error('Duplicate medium recipe: ' + value);

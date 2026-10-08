@@ -1,16 +1,17 @@
+import {createHistoryPersistence} from '../history-persistence.js?v=28.1.1';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {resolveSelections} from '../catalog.js?v=28.1.0';
-import {applyCollection} from '../collection.js?v=28.1.0';
-import {buildDirection} from '../direction.js?v=28.1.0';
-import {applyPose} from '../poses.js?v=28.1.0';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.1.0';
-import {stagePrompts} from '../production-workflow.js?v=28.1.0';
-import {composePrompt} from '../prompt.js?v=28.1.0';
-import {renderChatInput} from '../compiled-production.js?v=28.1.0';
-import {renderEditorialLayout} from '../editorial-layout.js?v=28.1.0';
-import {compactHistoryRecord,restoreHistoryRecord,compactUsedRecords,mergeUsedRecords,saveHistoryState} from '../history-storage.js?v=28.1.0';
+import {resolveSelections} from '../catalog.js?v=28.1.1';
+import {applyCollection} from '../collection.js?v=28.1.1';
+import {buildDirection} from '../direction.js?v=28.1.1';
+import {applyPose} from '../poses.js?v=28.1.1';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.1.1';
+import {stagePrompts} from '../production-workflow.js?v=28.1.1';
+import {composePrompt} from '../prompt.js?v=28.1.1';
+import {renderChatInput} from '../compiled-production.js?v=28.1.1';
+import {renderEditorialLayout} from '../editorial-layout.js?v=28.1.1';
+import {compactHistoryRecord,restoreHistoryRecord,compactUsedRecords,mergeUsedRecords,saveHistoryState} from '../history-storage.js?v=28.1.1';
 
 const random=()=>.28,profile={displayName:'履歴検証🙂',topics:[],activityEnabled:false};
 applyCollection('halloween');
@@ -50,7 +51,7 @@ assert.equal(recovered.saved,true);assert.equal(recovered.state.history.length,1
 assert.equal(quotaStorage.data.get('unrelated'),'KEEP_OTHER_TOOL_DATA');
 const oneState={...saved.state,history:[saved.state.history[0]],used:used.slice(-3)},oneBytes=JSON.stringify(oneState).length*2;
 const tight=storageWithLimit(Math.floor(oneBytes*1.8)),trimmed=await saveHistoryState(tight,'history',state);
-assert.equal(trimmed.saved,true);assert.ok(trimmed.state.history.length<12);assert.equal(trimmed.state.history[0].edition,'LATEST');assert.equal(trimmed.state.history[0].prompt,record.prompt);assert.equal(trimmed.state.count,12);assert.ok(tight.calls>1&&tight.calls<=6);
+assert.equal(trimmed.saved,false);assert.equal(trimmed.quota,true);assert.equal(tight.data.get('history'),'','A tight quota must not replace the prior save with fewer histories');assert.equal(tight.calls,1);
 const impossible=storageWithLimit(10,'LAST_SUCCESSFUL_SAVE'),failed=await saveHistoryState(impossible,'history',state);
 assert.equal(failed.saved,false);assert.equal(failed.quota,true);assert.equal(impossible.data.get('history'),'LAST_SUCCESSFUL_SAVE','Never delete the previous save to make room');
 let blockedCalls=0;const blocked=await saveHistoryState({setItem(){blockedCalls++;throw new DOMException('denied','SecurityError');}},'history',state);
@@ -64,8 +65,8 @@ const preserved=await compactHistoryRecord(corrupt,{Compression:null,Decompressi
 
 // Exercise the actual app save wrapper and lazy-result guard. A delayed older
 // save/click must not overwrite a newer creation or reopen the wrong result.
-const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8'),persistSource=app.slice(app.indexOf('async function persist(){'),app.indexOf('\nfunction syncSaved()',app.indexOf('async function persist(){')));
-const raceStorage=storageWithLimit(),context=vm.createContext({historyWriteRevision:0,saved:state,migrateHistory:true,localStorage:raceStorage,STORAGE:'history',saveHistoryState,tell(){}});
+const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8'),persistSource=app.slice(app.indexOf('async function persist('),app.indexOf('\nasync function initializeHistory()',app.indexOf('async function persist(')));
+const raceStorage=storageWithLimit(),context=vm.createContext({historyWriteRevision:0,saved:state,migrateHistory:true,localStorage:raceStorage,STORAGE:'history',historyPersistence:createHistoryPersistence({key:'history',storage:raceStorage,database:{async update(){throw new DOMException('denied','SecurityError');}},Compression:globalThis.CompressionStream,Decompression:globalThis.DecompressionStream}),normalizeSavedHistory:x=>x,tell(){}});
 vm.runInContext(persistSource,context);
 const first=vm.runInContext('persist()',context);context.saved={history:[{...record,edition:'NEWER',count:13}],used:used.slice(-3),count:13};const second=vm.runInContext('persist()',context);
 await Promise.all([first,second]);assert.equal(JSON.parse(raceStorage.data.get('history')).history[0].edition,'NEWER');assert.equal(context.saved.count,13);
@@ -76,4 +77,4 @@ const older=vm.runInContext("showResult({edition:'A'})",resultContext),newer=vm.
 pending.get('B')({edition:'B'});await newer;pending.get('A')({edition:'A'});await older;assert.equal(resultContext.shown,'B');
 const stale=vm.runInContext("showResult({edition:'C'})",resultContext);resultContext.clearPreparedResult();pending.get('C')({edition:'C'});await stale;assert.equal(resultContext.shown,'B','Changing selection cancels a late historical result');
 
-console.log(JSON.stringify({result:'PASS history storage: exact prompt/plan/stages/layout/repair; older-format compaction; full 12 histories and 2000 signatures; quota recovery; tight-budget latest-history retention; atomic failure; no-codec fallback; stale save and click guards',estimatedUtf16BytesBefore:original.length*2,estimatedUtf16BytesAfter:encoded.length*2,reductionPercent:Math.round((1-encoded.length/original.length)*100),tightBudgetHistoriesRetained:trimmed.state.history.length}));
+console.log(JSON.stringify({result:'PASS history storage: exact prompt/plan/stages/layout/repair; older-format compaction; full 12 histories and 2000 signatures; quota recovery; tight-budget preserves prior save without dropping history; atomic failure; no-codec fallback; stale save and click guards',estimatedUtf16BytesBefore:original.length*2,estimatedUtf16BytesAfter:encoded.length*2,reductionPercent:Math.round((1-encoded.length/original.length)*100),tightBudgetSaveRetained:!trimmed.saved}));

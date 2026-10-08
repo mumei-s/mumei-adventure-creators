@@ -112,3 +112,18 @@ body[data-lights="night"] #picker .ring-current-category { color: #f4eaff; backg
 }
 body[data-lights="night"] #picker .artwork-basis-panel { color: #f4eaff; background: #282d46; }
 body[data-lights="night"] #picker .artwork-basis-preview { color: #f4eaff; background: #332c4b; border-color: #9d83bc; }
+
+/* Compatibility text stays outside orbit geometry and never rotates. */
+.candidate-notice,.selection-notice { flex: none; margin: 8px 0; padding: 10px 12px; border: 2px solid #ad6b18; border-radius: 9px; background: #fff2cb; color: #442909; font-size: .84rem; line-height: 1.6; overflow-wrap: anywhere; touch-action: pan-y; }
+.candidate-notice[data-status="blocked"],.selection-notice[role="alert"] { border-color: #a13d21; background: #fff0e9; }
+.candidate-notice p,.selection-notice p { margin: 4px 0; }
+.candidate-notice[hidden],.selection-notice[hidden] { display: none; }
+.selection-issue + .selection-issue { border-top: 1px solid #ad6b1866; margin-top: 9px; padding-top: 7px; }
+.selection-issue-values { font-weight: 800; }
+.selection-issue-actions { display: flex; flex-wrap: wrap; gap: 6px 12px; }
+.selection-issue-actions button { min-height: 36px; }
+.choice-conflict { outline: 2px solid #b44724; outline-offset: -2px; }
+.choice-warning { outline: 2px solid #ae7624; outline-offset: -2px; }
+.choice-issue { position: absolute; right: 8px; bottom: 4px; padding: 1px 5px; border-radius: 4px; background: #fff0cf; color: #7d2c17; font-size: .64rem; font-weight: 800; }
+.choice-issue[hidden] { display: none; }
+body[data-lights="night"] .candidate-notice,body[data-lights="night"] .selection-notice { background: #332b24; color: #ffe4b5; }

@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {questions,visibleQuestions,defaults,AUTO,resolveSelections} from '../catalog.js?v=28.1.0';
-import {modeKeys,modeCopy,questionsForMode,initialSelections,effectiveSelections,propose} from '../modes.js?v=28.1.0';
-import {applyCollection} from '../collection.js?v=28.1.0';
+import {questions,visibleQuestions,defaults,AUTO,resolveSelections} from '../catalog.js?v=28.1.1';
+import {modeKeys,modeCopy,questionsForMode,initialSelections,effectiveSelections,propose} from '../modes.js?v=28.1.1';
+import {applyCollection} from '../collection.js?v=28.1.1';
 
 const detail=['medium','theme','costume','pose','mood','angle','palette','design','type','size'];
 const simple=['medium','theme','design','type','size'];
@@ -20,7 +20,7 @@ function node(tag='div',cls='',text=''){
 }
 function application(collection){
  const nodes=new Map(),$=id=>{if(!nodes.has(id))nodes.set(id,node());return nodes.get(id);},initial=initialSelections(),opens=[];
- const context=vm.createContext({collection,questions,visibleQuestions,modeKeys,modeCopy,questionsForMode,initialSelections,mode:'detail',modeSnapshots:{detail:{...initial}},selections:initial,refs:[],proposals:[],selectedProposal:null,textPart:'type',activeQuestion:null,$,el:node,sampleNode:(key,value)=>node('span','sample',key+':'+value),displayValue:(q,v)=>q.key==='size'?v.split('｜')[0]:v,renderBoard(){},syncActivity(){},makeProposals(){},document:{body:{dataset:{}},querySelectorAll:()=>[]},picker:{open:q=>opens.push(q.key)}});
+ const context=vm.createContext({collection,questions,visibleQuestions,modeKeys,modeCopy,questionsForMode,initialSelections,mode:'detail',modeSnapshots:{detail:{...initial}},selections:initial,refs:[],proposals:[],selectedProposal:null,textPart:'type',activeQuestion:null,$,el:node,sampleNode:(key,value)=>node('span','sample',key+':'+value),displayValue:(q,v)=>q.key==='size'?v.split('｜')[0]:v,effectiveSelections,selectionConflicts:()=>[],selectionWarnings:()=>[],updateSelectionFeedback(){},renderBoard(){},syncActivity(){},makeProposals(){},document:{body:{dataset:{}},querySelectorAll:()=>[]},picker:{open:q=>opens.push(q.key)}});
  vm.runInContext(appCode,context);
  return {context,$,opens};
 }

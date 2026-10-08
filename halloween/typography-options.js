@@ -1,7 +1,8 @@
 // Copy modes describe the manuscript and its hierarchy. They never change the
 // selected image technique, scene, costume, pose, or output format.
+import {copyContentRules,publicCopyContext,worldIntroduction,worldFeatureCopy} from './copy-scope.js?v=28.1.1';
 const choices=[
- {value:'商品広告・キャッチと特徴3点',group:'広告・キャンペーン',density:'見出し＋紹介＋特徴3点',className:'type-ad',preview:['余韻を、手元に。','夜の創作コレクション','色を楽しむ','素材を味わう','物語を集める','作者名'],layout:'主見出しを最大、短い紹介を中程度、3つの特徴を同じ大きさで整列し、作者名を最小にする。特徴は各一文まで。価格や購入先の欄は作らない。'},
+ {value:'商品広告・キャッチと特徴3点',group:'広告・キャンペーン',density:'見出し＋紹介＋特徴3点',className:'type-ad',preview:['物語の、その先へ。','夜の街に残る秘密をたどる。','帰り道を探す','路地の秘密に出会う','まだ知らない物語へ','作者名'],layout:'主見出しを最大、短い紹介を中程度、3つの特徴を同じ大きさで整列し、作者名を最小にする。特徴は各一文まで。特徴1などの役割名や番号、価格や購入先の欄は作らない。'},
  {value:'ブランド広告・宣言と短いコピー',group:'広告・キャンペーン',density:'宣言＋補足＋名前',className:'type-ad',preview:['好きな世界を、つくろう。','一枚の創作から、次の景色へ。','作者名'],layout:'一つの宣言を大きく置き、補足を一文、作者名を一か所だけ添える。ロゴや広告実績のシールを追加せず、余白を広く保つ。'},
  {value:'イベント告知・見どころと案内',group:'広告・キャンペーン',density:'題名＋紹介＋見どころ2点＋案内',className:'type-ad',preview:['創作の夜へ','光と物語を楽しむ、架空の企画。','見どころ：色の景色','見どころ：衣装の細部','作品の世界へようこそ','作者名'],layout:'企画名を最上位、紹介を一文、見どころ2点を中段、案内を下段へ整理する。入力のない日時・会場・料金・申込先・QRは描かない。'},
  {value:'展覧会告知・作品名と制作ノート',group:'広告・キャンペーン',density:'作品名＋紹介＋制作ノート＋名前',className:'type-editorial',preview:['境界のひかり','一つの景色をめぐる創作展示。','制作ノート','光が重なる場所を探して。','作者名'],layout:'作品名を大きく、紹介を中程度、制作ノートを短い一段落、作者名を欄外へ置く。制作ノートは画風の命令や工程一覧でなく、作品の見どころを述べる。'},
@@ -29,28 +30,29 @@ export function typographyRecipe(value){
   {label:'使用する原稿と文字密度',text:'文字設定「'+item.value+'」は、'+item.density+'で構成する。確定原稿と許可された編集原稿以外の役割を追加しない。'},
   {label:'この文字設定の読み順',text:item.layout},
   {label:'選択した作品への配置',text:'デザイン自体を別形式へ置換しない。選んだ形式の画像領域と安全余白を保ち、今回許可した原稿をその情報領域へ配置する。主画像は選択された作風・世界観・シーン・衣装・アングル・ポーズを保つ。'},
-  {label:'創作コピーと事実の区別',text:'本文は今回の作品に合う独自の創作コピーにする。確認していない販売、日時、会場、価格、効果、受賞、資格、本人の実際の発言を作らない。noteのID、URL、制作指示、文字設定の項目名は印字しない。'}
+  {label:'創作コピーと事実の区別',text:'本文は作品世界内の内容または確認できた作者の公開活動を、読者へ紹介する独自のコピーにする。描画条件を紹介文へ言い換えない。確認していない販売、日時、会場、価格、効果、受賞、資格、本人の実際の発言を作らない。noteのID、URL、制作指示、文字設定の項目名は印字しない。'},
+  {label:'印字原稿の内容境界',text:copyContentRules.join('')}
  ],checks:[item.density,item.layout,'許可原稿の範囲内','一つの作品とつながる独自のコピー','未確認の実績・ID・URLなし']};
 }
 
 export function buildTypographySlots(value,{subject,name='',intro='',noPerson=false,values={}}={}){
  const item=typographyOption(value);if(!item)return null;
- const theme=subject||'新しい景色',costume=values.costume||'旅人',scene=values.place&&values.place!=='おまかせ'?values.place:theme;
- const slots=[],add=(role,text,priority=2,editable=false,maxCharacters=36,instruction='')=>{if(text)slots.push({role,text,priority,editable,maxCharacters,instruction});};
+ const contentSources=publicCopyContext(values,{subject,noPerson}),theme=contentSources.story,costume=contentSources.protagonist||'この場所',scene=contentSources.setting;
+ const slots=[],add=(role,text,priority=2,editable=false,maxCharacters=36,instruction='',contentDomain='story_world')=>{if(text)slots.push({role,text,priority,editable,maxCharacters,instruction,contentDomain});};
  const headline=text=>add('主見出し',text,0,true,20,'今回の世界観・シーンを一つの訴求にまとめた、20字以内の独自の日本語見出し。');
  const author=()=>add('作者名',name,3);
  const describe=(role,text,maxCharacters=60,instruction='')=>add(role,text,2,true,maxCharacters,instruction);
  switch(value){
  case '商品広告・キャッチと特徴3点':
-  headline(theme+'を、手元に。');describe('商品紹介',theme+'を楽しむ、創作のコレクション。',55,'実在の販売商品を捏造せず、今回描いた作品の魅力を紹介する一文。');
-  ['色の奥行きを楽しむ','素材の表情を味わう','一つの場面に物語を見つける'].forEach((text,i)=>describe('特徴'+(i+1),text,28,'特徴'+(i+1)+'は、今回の作品に見える魅力一つを、他の特徴と重複しない短い一文で述べる。販売効果や性能を捏造しない。'));author();break;
+  headline(theme+'の、その先へ。');describe('商品紹介',worldIntroduction(contentSources),55,'紹介する対象は作品世界内の物語と、そこに入る読者の体験。実在の販売商品を作らず、画像の画材・角度・色・陰影の説明をしない。');
+  worldFeatureCopy(contentSources).forEach((text,i)=>describe('特徴'+(i+1),text,28,'この特徴の内容は「'+contentSources.featureAngles[i]+'」。世界内の場所・出来事・目的を読者へ伝える、他の特徴と重複しない一文にする。描画仕様の言い換えや販売性能の捏造にしない。'));author();break;
  case 'ブランド広告・宣言と短いコピー':
-  headline('好きな世界を、つくろう。');describe('ブランドコピー',theme+'から、次の景色へ。',45,'作者の創作活動に合う独自の短いコピー。実績・販売・効果の主張を含めない。');author();break;
+  headline('好きな世界を、つくろう。');add('ブランドコピー',theme+'から、次の景色へ。',2,true,45,'作者の公開活動で確認できる題材や、読者へ届ける内容を紹介する。実績・販売・効果・制作仕様の主張を含めない。','public_activity');author();break;
  case 'イベント告知・見どころと案内':
   add('企画名',theme,0);describe('企画紹介',theme+'を楽しむ、架空の創作企画。',55,'今回の創作世界を紹介する一文。実際に開催されるイベントとして宣伝しない。');
-  describe('見どころ1','色と光がつながる一つの景色。',32,'今回の色と光の見どころを一つ。');describe('見どころ2',noPerson?'形と素材に残る物語。':'衣装と動きに宿る物語。',32,'今回の形・素材・動作の見どころを一つ。');add('案内','作品の世界へようこそ。',2);author();break;
+  describe('見どころ1',contentSources.purpose+'。',32,'世界内で挑む目的や出来事を一つ。');describe('見どころ2',scene+'に残る秘密をたどる。',32,'この場所で出会うものや発見を一つ。角度・配色・画材の説明にしない。');add('案内','作品の世界へようこそ。',2);author();break;
  case '展覧会告知・作品名と制作ノート':
-  add('作品名',theme,0);describe('展示紹介',theme+'をめぐる、創作の一枚。',48);describe('制作ノート',intro||scene+'の空間で、形と光のつながりを探した。',90,'絵の見どころを2〜3文で述べる制作ノート。実際の作者発言、画風の命令、未確認の展示情報として書かない。');author();break;
+  add('作品名',theme,0);describe('展示紹介',theme+'をめぐる、一つの物語。',48);describe('制作ノート',worldIntroduction(contentSources),90,'作品に込めた世界内の物語・場所・主題を読者へ紹介する2〜3文。画材の工程、角度、光や色の実装、実際の作者発言、未確認の展示情報として書かない。');author();break;
  case '映画予告・キャッチとあらすじ':
   add('作品タイトル',theme,0);add('キャッチ','その先で、何を見つける？',1,true,25,'選択した世界観・シーンの出来事につながる独自の短いキャッチ。');describe('あらすじ',intro||scene+'で始まる一つの出会い。そこに残った光が、まだ知らない景色へつながる。',100,'同じ世界観・シーンの一つの出来事を2〜3文で紹介する。別の舞台、別のキャラクター、別の作品に話を広げない。');author();break;
  case '漫画表紙・大見出しと煽り文':
@@ -71,5 +73,5 @@ export function buildTypographySlots(value,{subject,name='',intro='',noPerson=fa
  case 'ミニマル広告・見出しと名前':
   headline(theme+'へ。');author();break;
  }
- return {slots,density:item.density,layout:item.layout};
+ return {slots,density:item.density,layout:item.layout,contentSources};
 }

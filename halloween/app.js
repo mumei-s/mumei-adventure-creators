@@ -1,54 +1,66 @@
-import {artworkBasis} from './artwork-basis.js?v=28.1.0';
-import {creatorHandoff,creatorDisplayLabel,creatorEditableName} from './creator-handoff.js?v=28.1.0';
-import {normalizeImageFile} from './image-files.js?v=28.1.0';
-import {installNightStudio} from './night-studio.js?v=28.1.0';
-import {candidateAvailability,selectionConflicts} from './compatibility.js?v=28.1.0';
-import {appendRecipeEvidence} from './recipe-evidence.js?v=28.1.0';
-import {productionPlan,repairPrompt} from './production-plan.js?v=28.1.0';
-import {stagePrompts} from './production-workflow.js?v=28.1.0';
-import {createLayoutPanel} from './layout-export.js?v=28.1.0';
-import {applyPose} from './poses.js?v=28.1.0';
-import {applyCollection,dailyInspiration} from './collection.js?v=28.1.0';
-import {setupEffects} from './effects.js?v=28.1.0';
-import {colorWorlds} from './worlds.js?v=28.1.0';
-import {compactCreatorProfile} from './creator.js?v=28.1.0';
-import {createCropEditor} from './crop-editor.js?v=28.1.0';
-import {createPicker} from './picker.js?v=28.1.0';
-import {modeKeys,modeCopy,questionsForMode,initialSelections,effectiveSelections,propose} from './modes.js?v=28.1.0';
-import {buildReferenceBoard} from './guide-board.js?v=28.1.0';
-import {questions,visibleQuestions,defaults,AUTO,normalizeCreator,resolveSelections} from './catalog.js?v=28.1.0';
-import {composePrompt,needsReference} from './prompt.js?v=28.1.0';
-import {buildDirection} from './direction.js?v=28.1.0';
-import {sampleFor,typePreview} from './examples.js?v=28.1.0';
-import {makeZip} from './zip.js?v=28.1.0';
-import {imageDeliveryRepairPrompt} from './output-contract.js?v=28.1.0';
-import {editorialReferencesFor} from './editorial-reference-sources.js?v=28.1.0';
-import {HISTORY_STORAGE_FORMAT,saveHistoryState,restoreHistoryRecord,mergeUsedRecords} from './history-storage.js?v=28.1.0';
-const APP_VERSION='28.1.0';
+import {artworkBasis} from './artwork-basis.js?v=28.1.1';
+import {creatorHandoff,creatorDisplayLabel,creatorEditableName} from './creator-handoff.js?v=28.1.1';
+import {normalizeImageFile} from './image-files.js?v=28.1.1';
+import {installNightStudio} from './night-studio.js?v=28.1.1';
+import {candidateAvailability,selectionConflicts,selectionWarnings} from './compatibility.js?v=28.1.1';
+import {updateSelectionFeedback} from './selection-feedback.js?v=28.1.1';
+import {appendRecipeEvidence} from './recipe-evidence.js?v=28.1.1';
+import {productionPlan,repairPrompt} from './production-plan.js?v=28.1.1';
+import {stagePrompts} from './production-workflow.js?v=28.1.1';
+import {createLayoutPanel} from './layout-export.js?v=28.1.1';
+import {applyPose} from './poses.js?v=28.1.1';
+import {applyCollection,dailyInspiration} from './collection.js?v=28.1.1';
+import {setupEffects} from './effects.js?v=28.1.1';
+import {colorWorlds} from './worlds.js?v=28.1.1';
+import {compactCreatorProfile} from './creator.js?v=28.1.1';
+import {createCropEditor} from './crop-editor.js?v=28.1.1';
+import {createPicker} from './picker.js?v=28.1.1';
+import {modeKeys,modeCopy,questionsForMode,initialSelections,effectiveSelections,propose} from './modes.js?v=28.1.1';
+import {buildReferenceBoard} from './guide-board.js?v=28.1.1';
+import {questions,visibleQuestions,defaults,AUTO,normalizeCreator,resolveSelections} from './catalog.js?v=28.1.1';
+import {composePrompt,needsReference} from './prompt.js?v=28.1.1';
+import {buildDirection} from './direction.js?v=28.1.1';
+import {sampleFor,typePreview} from './examples.js?v=28.1.1';
+import {makeZip} from './zip.js?v=28.1.1';
+import {imageDeliveryRepairPrompt} from './output-contract.js?v=28.1.1';
+import {editorialReferencesFor} from './editorial-reference-sources.js?v=28.1.1';
+import {HISTORY_STORAGE_FORMAT,restoreHistoryRecord,restoreHistoryCore,mergeUsedRecords} from './history-storage.js?v=28.1.1';
+import {createHistoryPersistence,mergeHistoryStates} from './history-persistence.js?v=28.1.1';
+const APP_VERSION='28.1.1';
 const $=id=>document.getElementById(id),STORAGE='mumeis-halloween-v2';
-let saved={history:[],used:[],count:0},view='auto',migrateHistory=false,historyWriteRevision=0,resultRequest=0;
-try{const v=JSON.parse(localStorage.getItem(STORAGE)||'null');if(v&&Array.isArray(v.history)&&Array.isArray(v.used)){saved={history:v.history.map(r=>({...r,values:{angle:AUTO,pose:AUTO,line:AUTO,...r?.values}})).filter(x=>x&&typeof x.prompt==='string'&&x.values&&questions.every(q=>typeof x.values[q.key]==='string')&&x.variant&&x.profile&&Array.isArray(x.references)).slice(0,12),used:v.used.filter(x=>x&&typeof x.signature==='string').slice(-2000),count:Number.isSafeInteger(v.count)?v.count:0};migrateHistory=v.storageFormat!==HISTORY_STORAGE_FORMAT;}view=localStorage.getItem('halloween-view')||'auto';}catch{}
+let saved={history:[],used:[],count:0},view='auto',migrateHistory=false,historyWriteRevision=0,resultRequest=0,historyReady=Promise.resolve();
+const historyPersistence=createHistoryPersistence({key:STORAGE});
+function normalizeSavedHistory(value){return {...value,history:value.history.map(r=>({...r,values:{angle:AUTO,pose:AUTO,line:AUTO,...r?.values}})).filter(x=>x&&(typeof x.prompt==='string'||x.coreArchive)&&x.values&&questions.every(q=>typeof x.values[q.key]==='string')&&x.variant&&x.profile&&Array.isArray(x.references)).slice(0,12),used:value.used.filter(x=>x&&typeof x.signature==='string').slice(-2000),count:Number.isSafeInteger(value.count)?value.count:0};}
+try{const v=JSON.parse(localStorage.getItem(STORAGE)||'null');if(v&&Array.isArray(v.history)&&Array.isArray(v.used)){saved=normalizeSavedHistory(v);migrateHistory=v.storageFormat!==HISTORY_STORAGE_FORMAT;}view=localStorage.getItem('halloween-view')||'auto';}catch{}
 let selections=initialSelections(),refs=[],activeQuestion=null,currentResult=null,adding=false,creating=false,loadedProfile=null,profileController=null,toastTimer,textPart='type';
 let disposeLayoutPreview=()=>{},resultObjectURLs=[];
 function clearPreparedResult(){resultRequest++;for(const url of resultObjectURLs)URL.revokeObjectURL(url);resultObjectURLs=[];disposeLayoutPreview();disposeLayoutPreview=()=>{};currentResult=null;$('result').hidden=true;}
 try{
  if(!localStorage.getItem(STORAGE)){
  const old=JSON.parse(localStorage.getItem('mumeis-halloween-v1')||'null');
- if(old?.history?.length){saved.count=Number.isSafeInteger(old.count)?old.count:0;saved.history=old.history.filter(r=>r&&typeof r.prompt==='string'&&r.values&&typeof r.values.size==='string'&&r.variant&&Array.isArray(r.references)).slice(0,12).map(r=>({...r,legacy:true,values:{angle:AUTO,pose:AUTO,line:AUTO,...r.values},profile:{displayName:'旧版 / '+r.creator,biography:'',topics:[]},variant:{...r.variant,face:r.variant.angle,distance:'旧版の演出'}}));}
+ if(old?.history?.length){saved.count=Number.isSafeInteger(old.count)?old.count:0;saved.history=old.history.filter(r=>r&&typeof r.prompt==='string'&&r.values&&typeof r.values.size==='string'&&r.variant&&Array.isArray(r.references)).slice(0,12).map(r=>({...r,legacy:true,values:{angle:AUTO,pose:AUTO,line:AUTO,...r.values},profile:{displayName:'旧版 / '+r.creator,biography:'',topics:[]},variant:{...r.variant,face:r.variant.angle,distance:'旧版の演出'}}));migrateHistory=true;}
  }
 }catch{}
 const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!==undefined)n.textContent=text;return n;};
 const rng=()=>{const b=new Uint32Array(1);crypto.getRandomValues(b);return b[0]/4294967296;};
 const uid=()=>Date.now().toString(36).toUpperCase()+'-'+crypto.getRandomValues(new Uint32Array(1))[0].toString(36).toUpperCase();
 const tell=s=>{$('toast').textContent=s;$('toast').classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('visible'),4500);};
-async function persist(){
- const revision=++historyWriteRevision,snapshot={history:[...saved.history],used:[...saved.used],count:saved.count};
- let result;try{result=await saveHistoryState(localStorage,STORAGE,snapshot,{shouldWrite:()=>revision===historyWriteRevision});}catch{result={saved:false};}
+async function persist({clearHistory=false}={}){
+ const revision=++historyWriteRevision,snapshot={...saved,history:[...saved.history],used:[...saved.used],count:saved.count};
+ let result;try{result=await historyPersistence[clearHistory?'clear':'save'](snapshot,{shouldWrite:()=>revision===historyWriteRevision});}catch{result={saved:false};}
  if(revision!==historyWriteRevision||result.cancelled)return null;
- if(result.saved){saved={history:result.state.history,used:result.state.used,count:result.state.count};migrateHistory=false;if(result.droppedHistory)tell('保存容量に合わせて古い履歴を整理しました。新しい制作指示は保存済みです。');return true;}
- tell(result.quota?'保存容量が足りず、今回の履歴を保存できませんでした。表示中のプロンプトはコピー・共有できます。':'このブラウザでは履歴を保存できません。表示中のプロンプトはコピー・共有できます。');return false;
+ if(result.saved){saved=normalizeSavedHistory(result.state);migrateHistory=false;return true;}
+ if(result.conflict){saved=normalizeSavedHistory(result.state);tell('別の画面で履歴が消されたため、古い履歴は戻していません。今回の制作指示はコピー・共有できます。');return false;}
+ tell(result.quota?'端末の保存容量に空きがなく、履歴を保存できませんでした。既存の保存データは残っています。制作セットを保存できます。':'このブラウザでは履歴を保存できません。既存の保存データは残っています。制作セットを保存できます。');return false;
 }
-function syncSaved(){try{const v=JSON.parse(localStorage.getItem(STORAGE)||'null');if(v&&Array.isArray(v.used)){saved.used=mergeUsedRecords(saved.used,v.used);saved.count=Math.max(saved.count,Number.isSafeInteger(v.count)?v.count:0);}}catch{}}
+async function initializeHistory(){
+ try{const loaded=await historyPersistence.load();if(loaded.state)saved=normalizeSavedHistory(mergeHistoryStates(saved,loaded.state));renderHistory();if(loaded.needsMigration||migrateHistory){await persist();renderHistory();}}catch{}
+}
+async function syncSaved(){
+ await historyReady;
+ try{const loaded=await historyPersistence.load();if(loaded.state){const incoming=normalizeSavedHistory(loaded.state);saved=normalizeSavedHistory(mergeHistoryStates(saved,incoming));}}catch{}
+}
+
 function displayValue(q,v){return q.key==='size'?v.split('｜')[0]:v;}
 function sampleNode(key,value){
  const sample=sampleFor(key,value),n=el('span','sample-thumb'+(key==='design'?' design-sample':''));
@@ -80,7 +92,10 @@ let tagsEnabled=false,excludedTopics=new Set(),ideaSnapshot=null,ideaApplied=nul
 const cropEditor=createCropEditor({$,tell,onApply:async(ref,edit)=>{if(!refs.includes(ref))return;const originalFile=ref.originalFile||ref.file;const url=URL.createObjectURL(edit.file),im=new Image();try{await new Promise((resolve,reject)=>{im.onload=resolve;im.onerror=()=>reject(new Error('編集画像を開けませんでした。'));im.src=url;});URL.revokeObjectURL(ref.url);Object.assign(ref,{originalFile,file:edit.file,url,name:edit.file.name,width:im.naturalWidth,height:im.naturalHeight,crop:edit.crop});renderRefs();}catch(e){URL.revokeObjectURL(url);throw e;}}});
 function renderChoices(picked){
  const existing=new Map([...$('choices').children].map(b=>[b.dataset.key,b])),nodes=[];questionsForMode(mode).forEach((q,i)=>{const stamp=collection+'|'+mode+'|'+i+'|'+q.name+'|'+selections[q.key]+(q.key==='type'?'|'+selections.line:'')+'|'+(q.key==='costume'?refs.find(r=>r.role==='identity')?.url||'':'');const old=existing.get(q.key);if(old?.dataset.stamp===stamp){old.classList.remove('just-picked');nodes.push(old);return;}const b=el('button','choice'+(picked===q.key?' just-picked':''));b.type='button';b.dataset.key=q.key;b.dataset.stamp=stamp;b.setAttribute('aria-haspopup','dialog');b.setAttribute('aria-label',q.name+'：'+displayValue(q,selections[q.key])+'。選択を変更');
- const copy=el('span','choice-content');copy.append(el('span','choice-name',String(i+1).padStart(2,'0')+' / '+q.name),el('b','choice-value',displayValue(q,selections[q.key])),el('span','choice-hint',q.hint));b.append(copy,sampleNode(q.key,selections[q.key]),el('span','choice-plus','＋'));b.addEventListener('click',()=>openPicker(q));nodes.push(b);});$('choices').replaceChildren(...nodes);renderBoard(mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:selections);syncActivity();
+ const copy=el('span','choice-content');copy.append(el('span','choice-name',String(i+1).padStart(2,'0')+' / '+q.name),el('b','choice-value',displayValue(q,selections[q.key])),el('span','choice-hint',q.hint));b.append(copy,sampleNode(q.key,selections[q.key]),el('span','choice-plus','＋'));b.addEventListener('click',()=>openPicker(q));nodes.push(b);});$('choices').replaceChildren(...nodes);
+ const input=mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:effectiveSelections(mode,selections);
+ updateSelectionFeedback({panel:$('selection-notice'),choices:nodes,questions,values:input,el,onEdit:openPicker,issues:[...selectionConflicts(input).map(issue=>({...issue,status:'blocked'})),...selectionWarnings(input).map(issue=>({...issue,status:'warning'}))]});
+ renderBoard(mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:selections);syncActivity();
 }
 const paletteColors={'漆黒 × 琥珀 × 象牙':['#171513','#db7d20','#f4ebd4'],'深紅 × 黒 × 古金':['#811722','#171513','#b79538'],'群青 × 月白 × 銀':['#263774','#f1f5fc','#bbc5d1'],'紫 × 黒 × 酸性グリーン':['#623084','#171513','#d7ed26'],'藍墨 × 朱 × 和紙の白':['#263d51','#c54022','#ebe4d7'],'桃色 × 墨黒 × 真珠':['#ec92b6','#262122','#f1eaed'],'墨一色':['#141414','#707070','#f3f1eb'],'モノクローム':['#191919','#777','#eee'],'セピア':['#533e26','#ab8353','#e7caa2']};
 colorWorlds.forEach(x=>paletteColors[x.value]=x.colors);
@@ -95,10 +110,10 @@ function renderBoard(values=selections,variant=null){
  $('issue-number').textContent='No. '+String(saved.count+1).padStart(3,'0');const artKey=JSON.stringify(['medium','theme','costume','palette','design'].map(k=>values[k]));if(artKey!==boardArtKey){boardArtKey=artKey;$('board-samples').replaceChildren(sampleNode('medium',values.medium),sampleNode('design',values.design));renderHangingGallery(values);}
 }
 function setView(mode){if(!['auto','phone','tablet','pc'].includes(mode))mode='auto';view=mode;document.body.dataset.view=mode;document.querySelectorAll('.view-switch button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===mode)));$('view-status').textContent={auto:'画面幅に合わせて表示',phone:'スマホの幅・大きな文字',tablet:'タブレットの幅・大きな選択枠',pc:'PCの幅・広い作業スペース'}[mode];try{localStorage.setItem('halloween-view',mode);}catch{}}
-const picker=createPicker({$,el,sampleNode,readSelection:()=>selections,choose,onCustom:buildCustom,tell,artworkBasis});
+const picker=createPicker({$,el,sampleNode,readSelection:()=>effectiveSelections(mode,selections),choose,onCustom:buildCustom,tell,artworkBasis});
 function openPicker(q){const text=q.key==='type'||q.key==='line';if(text){if(q.key==='line')textPart='line';q=questions.find(x=>x.key===textPart);}$('text-subtabs').hidden=true;document.querySelectorAll('[data-text-part]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.textPart===q.key)));activeQuestion=q;const activeQuestions=questionsForMode(mode),i=activeQuestions.findIndex(x=>x.key===(q.key==='line'?'type':q.key));$('picker-index').textContent=String(i+1).padStart(2,'0')+' / '+activeQuestions.length;picker.open(q);}
 function buildCustom(q){const form=el('form','custom-form');if(q.key==='size'){const w=el('input'),h=el('input');w.type=h.type='number';w.min=h.min='256';w.max=h.max='16000';w.required=h.required=true;w.placeholder='幅px';h.placeholder='高さpx';w.setAttribute('aria-label','希望の幅');h.setAttribute('aria-label','希望の高さ');form.append(w,el('span',null,'×'),h);form.addEventListener('submit',e=>{e.preventDefault();const a=Number(w.value),b=Number(h.value);if(!Number.isInteger(a)||!Number.isInteger(b)||a<256||b<256||a>16000||b>16000)return;const gcd=(x,y)=>y?gcd(y,x%y):x;const d=gcd(a,b);choose('自由サイズ｜'+a+'×'+b+'｜'+a/d+':'+b/d);});}else{const input=el('input');input.required=true;input.maxLength=160;input.placeholder='希望する'+q.name;input.setAttribute('aria-label',q.name+'を自由入力');form.append(input);form.addEventListener('submit',e=>{e.preventDefault();const v=input.value.trim().replace(/[\r\n]/g,' ');if(v)choose(v);});}const b=el('button','dark-button','この内容にする');b.type='submit';form.append(b);$('custom-area').append(form,el('p','microcopy',q.key==='size'?'256〜16,000px。生成環境に対応する実寸で出力されます。':'具体的な技法や角度も指定できます。160文字まで。'));form.querySelector('input').focus();}
-function choose(v){const availability=candidateAvailability(activeQuestion.key,v,selections);if(!availability.enabled){tell(availability.reason);return;}selections[activeQuestion.key]=v;const key=activeQuestion.key;renderChoices(key==='line'?'type':key);$('picker').close();document.querySelector('[data-key="'+(key==='line'?'type':key)+'"]')?.focus();tell(activeQuestion.name+'を選びました');}
+function choose(v){const availability=candidateAvailability(activeQuestion.key,v,effectiveSelections(mode,selections));if(!availability.enabled){tell(availability.reason);return;}selections[activeQuestion.key]=v;const key=activeQuestion.key;renderChoices(key==='line'?'type':key);$('picker').close();document.querySelector('[data-key="'+(key==='line'?'type':key)+'"]')?.focus();const note=availability.warnings?.[0]?.reason;tell(note?activeQuestion.name+'を選びました。'+note:activeQuestion.name+'を選びました');}
 function summarizeName(raw){const bracket=raw.match(/^[〖【「『]([^〗】」』]+)[〗】」』]/);return bracket?bracket[1].trim():raw;}
 async function loadProfile(){
  const id=normalizeCreator($('creator').value);
@@ -121,6 +136,7 @@ function renderRefs(refresh=true){
 }
 function formError(s,focus){$('form-error').textContent=s;$('form-error').hidden=false;focus?.focus();}
 async function generate(lockedValues=null){
+ await historyReady;
  if(creating||adding)throw new Error('制作の準備中です。');
  const started=performance.now();
  creating=true;$('generate').disabled=true;$('generate').textContent='制作条件を準備中…';$('generation-status').hidden=false;$('generation-status').textContent='制作に使う設定を確認中…';
@@ -130,7 +146,7 @@ async function generate(lockedValues=null){
  const creator=normalizeCreator($('creator').value);if(creator===null){formError('noteのIDまたはURLの形式を確認してください。',$('creator'));throw new Error('ID形式が正しくありません。');}
  const profile=artworkProfile();if(!profile.displayName){$('profile-editor').open=true;formError('noteのIDかクリエイター名を入力してください。',$('creator'));throw new Error('作者の情報がありません。');}
  $('generation-status').textContent='選んだ項目と参照画像を確認しています…';
-  syncSaved();const input=lockedValues?{...lockedValues}:mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:effectiveSelections(mode,selections);
+  await syncSaved();const input=lockedValues?{...lockedValues}:mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:effectiveSelections(mode,selections);
   if(input.theme===AUTO&&profile.inspiration?.themes?.length){const publicThemes=new Set(questions.find(q=>q.key==='theme').groups.flatMap(g=>g.values)),themes=collection==='halloween'?profile.inspiration.themes.filter(theme=>publicThemes.has(theme)):profile.inspiration.themes;if(themes.length)input.theme=themes[Math.floor(rng()*themes.length)];}
   if(input.line===AUTO&&profile.inspiration?.phrases?.length)input.line=profile.inspiration.phrases[Math.floor(rng()*profile.inspiration.phrases.length)];
   input.sceneUnified=true;input.line='セリフなし';const values=resolveSelections(input,rng);values.line='セリフなし';const conflicts=selectionConflicts(values);if(conflicts.length){formError(conflicts[0].reason,$('generate'));throw new Error(conflicts[0].reason);}if(input.mood===AUTO)values.mood='毎回大胆に変える';
@@ -152,7 +168,7 @@ async function generate(lockedValues=null){
 function shareFiles(r){return [...(r.localRefs||[]).map((x,i)=>new File([x.file],r.references[i].name,{type:x.file.type})),new File([r.prompt],'prompt.txt',{type:'text/plain'})];}
 function canShareFiles(files){try{return !!navigator.share&&(!navigator.canShare||navigator.canShare({files}));}catch{return false;}}
 async function showResult(r){
- const request=++resultRequest;let restored=r,detailError=false;try{restored=await restoreHistoryRecord(r);}catch{detailError=true;}
+ const request=++resultRequest;let restored=r,detailError=false;try{restored=await restoreHistoryRecord(r);}catch{detailError=true;try{restored=await restoreHistoryCore(r);}catch{if(request===resultRequest)tell('履歴の本文を読み込めませんでした。保存データは削除していません。');return;}}
  if(request!==resultRequest)return;
  clearPreparedResult();
  r=restored;if(detailError)tell('履歴の制作詳細を読み込めませんでした。保存されたプロンプトは使用できます。');
@@ -216,7 +232,7 @@ $('pick-image').addEventListener('click',()=>$('image-input').click());
 $('paste-image').addEventListener('click',async()=>{try{if(!navigator.clipboard?.read)throw new Error('unsupported');const items=await navigator.clipboard.read(),files=[];for(const item of items){const type=item.types.find(t=>['image/png','image/jpeg','image/webp','image/gif'].includes(t));if(type){const blob=await item.getType(type);files.push(new File([blob],'paste-'+Date.now()+'.'+(type==='image/jpeg'?'jpg':type.split('/')[1]),{type}));}}if(!files.length)throw new Error('no image');await addFiles(files);$('paste-target').hidden=true;}catch{$('paste-target').hidden=false;$('paste-target').focus();tell('貼り付け欄を長押しして貼り付けてください。写真を選ぶこともできます。');}});
 document.addEventListener('paste',e=>{const files=Array.from(e.clipboardData?.items||[]).filter(i=>i.kind==='file').map(i=>i.getAsFile()).filter(Boolean);if(files.length&&!$('picker').open&&!$('crop-dialog').open){e.preventDefault();$('paste-target').hidden=true;addFiles(files);}else if(e.target===$('paste-target'))e.preventDefault();});$('drop-zone').addEventListener('dragover',e=>{e.preventDefault();$('drop-zone').classList.add('dragover');});$('drop-zone').addEventListener('dragleave',()=>$('drop-zone').classList.remove('dragover'));$('drop-zone').addEventListener('drop',e=>{e.preventDefault();$('drop-zone').classList.remove('dragover');addFiles(e.dataTransfer.files);});window.addEventListener('dragover',e=>{if(e.dataTransfer?.types.includes('Files'))e.preventDefault();});window.addEventListener('drop',e=>{if(e.dataTransfer?.types.includes('Files'))e.preventDefault();});
 $('shuffle').addEventListener('click',()=>{const size=selections.size;selections=resolveSelections(Object.fromEntries(questions.map(q=>[q.key,AUTO])),rng);selections.mood='毎回大胆に変える';selections.size=size;if(mode==='auto')selectedProposal={...selections};renderChoices();tell('サイズを保ったまま、新しい組み合わせを選びました。');});$('generate').addEventListener('click',async()=>{try{await generate();}catch(e){if($('form-error').hidden)tell(e.message);}});$('copy').addEventListener('click',copyPrompt);$('copy-repair').addEventListener('click',async()=>{if(!currentResult?.production)return;const text=repairPrompt(currentResult);try{await navigator.clipboard.writeText(text);tell('修正指示をコピーしました。完成画像と同じチャットへ送ってください。');}catch{download(new Blob([text],{type:'text/plain;charset=utf-8'}),'finish-instructions.txt');tell('修正指示を保存しました。完成画像と一緒に送ってください。');}});$('share-all').addEventListener('click',shareAll);$('share-text').addEventListener('click',shareText);$('copy-image').addEventListener('click',copyImage);$('chatgpt').addEventListener('click',()=>{window.open('https://chatgpt.com/','_blank','noopener,noreferrer');tell(currentResult&&!needsReference(currentResult.values)?'コピーした制作指示を送信してください。':'ご自身の参照画像とプロンプトを両方添付してから送信してください。');});$('download-kit').addEventListener('click',downloadKit);$('download-text').addEventListener('click',()=>{if(currentResult)download(new Blob([currentResult.prompt],{type:'text/plain;charset=utf-8'}),'Halloween-'+currentResult.edition+'.txt');});
-$('again').addEventListener('click',async()=>{try{const old=currentResult;if((old.collection||'halloween')!==collection)setCollection(old.collection||'halloween');selections={angle:AUTO,...old.values};if(mode==='auto')selectedProposal={...old.values};$('creator').value=old.creator;$('creator-name').value=creatorEditableName(old.profile);$('activity').value=old.profile.biography;loadedProfile=old.profile;tagsEnabled=old.profile.tagsEnabled===true;excludedTopics.clear();ideaSnapshot=ideaApplied=null;setAttachmentMode(old.attachmentMode||'bundle');syncProfilePreview();refs.forEach(r=>URL.revokeObjectURL(r.url));refs=old.localRefs.map(r=>({...r,url:URL.createObjectURL(r.file)}));renderRefs();renderChoices();await generate(old.values);}catch(e){tell(e.message);}});$('help').addEventListener('click',()=>$('help-dialog').showModal());document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>{const target=$(b.dataset.close);if(target instanceof HTMLDialogElement)target.close();else target.hidden=true;}));document.querySelectorAll('.view-switch button').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}}));$('clear-history').addEventListener('click',async()=>{if(!saved.history.length)return tell('履歴はありません。');if(window.confirm('この端末の制作履歴を消しますか？演出の重複回避記録は残ります。')){saved.history=[];const stored=await persist();renderHistory();if(stored)tell('履歴を消しました。');}});
+$('again').addEventListener('click',async()=>{try{const old=currentResult;if((old.collection||'halloween')!==collection)setCollection(old.collection||'halloween');selections={angle:AUTO,...old.values};if(mode==='auto')selectedProposal={...old.values};$('creator').value=old.creator;$('creator-name').value=creatorEditableName(old.profile);$('activity').value=old.profile.biography;loadedProfile=old.profile;tagsEnabled=old.profile.tagsEnabled===true;excludedTopics.clear();ideaSnapshot=ideaApplied=null;setAttachmentMode(old.attachmentMode||'bundle');syncProfilePreview();refs.forEach(r=>URL.revokeObjectURL(r.url));refs=old.localRefs.map(r=>({...r,url:URL.createObjectURL(r.file)}));renderRefs();renderChoices();await generate(old.values);}catch(e){tell(e.message);}});$('help').addEventListener('click',()=>$('help-dialog').showModal());document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>{const target=$(b.dataset.close);if(target instanceof HTMLDialogElement)target.close();else target.hidden=true;}));document.querySelectorAll('.view-switch button').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}}));$('clear-history').addEventListener('click',async()=>{await historyReady;if(!saved.history.length)return tell('履歴はありません。');if(window.confirm('この端末の制作履歴を消しますか？演出の重複回避記録は残ります。')){const stored=await persist({clearHistory:true});renderHistory();if(stored)tell('履歴を消しました。');}});
 document.querySelectorAll('.mode-switch button').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));$('propose').addEventListener('click',makeProposals);document.querySelectorAll('[data-text-part]').forEach(b=>b.addEventListener('click',()=>{textPart=b.dataset.textPart;openPicker(questions.find(q=>q.key===textPart));}));$('download-guide').addEventListener('click',()=>{if(!currentResult?.production)return;download(new Blob([[...(currentResult.production.interactions||[]),...currentResult.production.conditions.map(c=>c.name+'：'+c.value+'\n'+(c.sections||[{label:'制作条件',text:c.text}]).map(s=>s.label+'：'+s.text).join('\n'))].join('\n\n')],{type:'text/plain;charset=utf-8'}),'selected-conditions.txt');});
 $('copy-delivery').addEventListener('click',async()=>{if(!currentResult)return;const text=imageDeliveryRepairPrompt(currentResult);try{await navigator.clipboard.writeText(text);tell('再表示の指示をコピーしました。画像が出なかった同じチャットへ送ってください。');}catch{download(new Blob([text],{type:'text/plain;charset=utf-8'}),'show-finished-image.txt');tell('再表示の指示を保存しました。同じチャットへ送ってください。');}});
 const motionMedia=window.matchMedia('(prefers-reduced-motion: reduce)');let motion=true;try{motion=localStorage.getItem('halloween-motion')!=='off';}catch{}function setMotion(on){motion=on;const enabled=on&&!motionMedia.matches;document.body.dataset.motion=enabled?'on':'off';$('motion-label').textContent=motionMedia.matches?'OFF：端末の省動作設定を優先':enabled?(collection==='everyday'?'ON：彩りが動きます':'ON：魔法が動きます'):'OFF：動きと遊びを停止';$('motion-off').setAttribute('aria-pressed',String(!enabled));$('motion-toggle').setAttribute('aria-pressed',String(enabled));$('motion-toggle').disabled=motionMedia.matches;$('play-state').textContent=enabled?(collection==='everyday'?'彩りが動いています':'魔法が動いています'):'演出は止まっています';$('playground').dataset.paused=String(!enabled);['play-spell','play-ghosts'].forEach(id=>$(id).disabled=!enabled);effects.sync();try{localStorage.setItem('halloween-motion',on?'on':'off');}catch{}}setMotion(motion);motionMedia.addEventListener('change',()=>setMotion(motion));$('motion-toggle').addEventListener('click',()=>setMotion(true));$('motion-off').addEventListener('click',()=>setMotion(false));installNightStudio(effects);
@@ -226,7 +242,7 @@ function setCollection(next){if(!['halloween','everyday'].includes(next))return;
 let mainCollection='halloween';try{mainCollection=localStorage.getItem('atelier-main-collection-v1')||'halloween';}catch{}
 function orderCollections(){const group=document.querySelector('.collection-switch');for(const key of [mainCollection,mainCollection==='everyday'?'halloween':'everyday'])group.append(group.querySelector('[data-collection="'+key+'"]'));$('main-collection').textContent=mainCollection==='everyday'?'Halloweenをメインに':'普段使いをメインに';$('main-collection').setAttribute('aria-label','TOPの順番を切り替える');}
 $('main-collection').addEventListener('click',()=>{mainCollection=mainCollection==='everyday'?'halloween':'everyday';try{localStorage.setItem('atelier-main-collection-v1',mainCollection);}catch{}orderCollections();setCollection(mainCollection);});orderCollections();
-setView(view);renderRefs(false);setMode('detail');let initialCollection='halloween';try{initialCollection=localStorage.getItem('halloween-collection')||'halloween';}catch{}setCollection(initialCollection);renderHistory();if(migrateHistory)void persist().then(()=>renderHistory());
+setView(view);renderRefs(false);setMode('detail');let initialCollection='halloween';try{initialCollection=localStorage.getItem('halloween-collection')||'halloween';}catch{}setCollection(initialCollection);renderHistory();historyReady=initializeHistory();
 
 function setMode(next){if(!modeKeys[next])return;modeSnapshots[mode]={...selections};mode=next;selections={...(modeSnapshots[next]||initialSelections()),size:selections.size};document.body.dataset.mode=mode;document.querySelectorAll('.mode-switch button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));$('mode-description').textContent=modeCopy[mode];$('choice-heading').textContent={detail:'2. 10項目で決める',simple:'2. 5項目だけ選ぶ',auto:'2. 見本の組み合わせで決める'}[mode];$('auto-proposals').hidden=mode!=='auto';$('shuffle').hidden=mode==='auto';renderChoices();if(mode==='auto'&&!proposals.length)makeProposals();}
 function makeProposals(){proposals=Array.from({length:3},()=>propose(selections,rng));selectedProposal=null;$('proposal-cards').replaceChildren();proposals.forEach((values,i)=>{const b=el('button','proposal-card');b.type='button';b.setAttribute('aria-pressed','false');const arts=el('span','proposal-art');arts.append(sampleNode('medium',values.medium),sampleNode('design',values.design));b.append(arts,el('b',null,values.medium),el('span',null,values.design),el('small',null,values.theme+' / '+values.palette));b.addEventListener('click',()=>{selectedProposal={...values,size:selections.size};document.querySelectorAll('.proposal-card').forEach(n=>n.setAttribute('aria-pressed',String(n===b)));renderBoard(selectedProposal);tell('この作例の組み合わせを選びました。');});$('proposal-cards').append(b);});renderBoard({...initialSelections(),size:selections.size});$('generation-status').hidden=true;}

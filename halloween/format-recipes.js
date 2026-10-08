@@ -1,7 +1,10 @@
 // Individual format recipes. Public editorial research informs the information
 // structures, not the identities, pictures, words or rendering of source pages.
-// No imports: formats.js can consume this module without a circular dependency.
+// Typography choices are independent of formats, so this import introduces no
+// cycle while keeping explicit manuscript scope shared with the copy builder.
+import {typographyOption} from './typography-options.js?v=28.1.1';
 const chooseText=(c,normal,empty,limited)=>c.noText?empty:c.limited?limited:normal;
+const newspaperText=(c,normal,empty,limited,scoped)=>c.roleScoped?scoped:chooseText(c,normal,empty,limited);
 const main=(c,person,scenery)=>c.noPerson?scenery:person;
 const textCheck=(normal,empty,limited=empty)=>c=>chooseText(c,normal,empty,limited);
 const entries={
@@ -78,13 +81,14 @@ const entries={
   checks:['左右同幅・境界x50%','中央x47〜53%が実幅6%の静かな安全帯','主役の必要な外形がx7〜41%に収まり左右の端で切れない',textCheck('本文枠はA・Bの2本だけで先頭はともにy44%','右下は枠や疑似本文のない静かな背景','許可原稿の全ブロックが右上に収まる'),textCheck('左Aは本文1、右Bは本文2→本文3の連続した読み順','主画像1点と左右の余白で構成','未許可の本文・ページ番号なし'),'自動の補助画像・顔アップ・記事カードなし']
  },
  '新聞の一面':{
-  bone:c=>chooseText(c,'題字、主記事、副記事という重さの違いで一面を構成する。主記事を最大の面積にし、別の話題は罫線と余白で独立させ、画像と数行のコピーだけのポスターにしない。','新聞の段組みを図版の大小と細い区切りで表す文字なしの一面。主図版と補助図版の面積差を残し、読めない本文を捏造しない。','許可された原稿を題字位置か一つの見出し位置に限定し、残りは図版と余白で段の構造を保つ。'),
-  grid:'日本語主体なら右上に題字領域、上段中央に主記事、下段または左側に副記事を置く。横段をまず定め、その中を縦の本文列へ分ける。図版は複数列をまとめた長方形へ収め、列を斜めに切らない。',
-  image:c=>main(c,'主記事を説明する人物や出来事の図版を一つ大きく置き、副記事の図版は半分以下の面積にする。同じ人物の肖像を紙面全体へ反復せず、各図版の役割を分ける。','主題を説明する景物や物体を主図版へ、補助的な細部を小図版へ置く。人物写真や群衆を新聞らしさの埋め草として追加しない。'),
-  type:['日本語は明朝体の縦組み本文を基本とし、段内で右から左、読み終えたら次段へ進む。主見出しは本文の数倍、脇見出しは中程度、説明は小さく。英文主体を明示した場合のみ横組み4〜6列へ統一する。','本文に似せた連続縦線や疑似文字を入れない。主図版・副図版の間に細罫と空きを残し、題字位置も無記名の静かな領域とする。','作者名や指定短文以外は加えない。新聞名、発行日、価格、架空の記事や広告を欄を埋めるために作らず、原稿の少なさに合わせて空きを残す。'],
-  medium:c=>'図版の領域と'+(c.noText?'余白の区分':'許可された文字の階層')+'は新聞形式、図版の描写は選択技法が担当する。水彩新聞なら図版は水彩、アニメ新聞なら図版はアニメとし、古い新聞紙の茶色や実写写真を自動的に強制しない。',
-  fail:'すべての記事が同格になる、縦組み本文の流れが途中で横組みに変わる、罫線が文字や図版を切る、同じ記事を複製して紙面を埋める、実在新聞の題字をコピーする、を避ける。',
-  checks:[textCheck('主記事と副記事の面積差','主図版と副図版の面積差','主図版と補助領域の面積差'),textCheck('日本語の段内と段間の読み順','横段と図版の整列','許可原稿を一領域へ整理した読み順'),'図版を囲む明確な領域',textCheck('言語に合う題字と本文の方向','題字領域を静かな空間として処理','許可原稿に合う文字の方向'),'細罫に接しない内容']
+  bone:c=>newspaperText(c,'確定原稿に存在する題字・記事・説明の役割だけを、大小差と細い罫線で新聞の一面へ編集する。主役となる原稿を最大の面積にし、記事数や文字量を新聞形式から補完しない。','主図版1点と横段・細い区切り・自然な余白で表す文字なしの新聞一面。読めない本文や記号を捏造しない。','許可された名前や短文だけを一つの情報領域へ置き、主図版1点と余白・細い区切りで新聞の構造を保つ。','選択した文字設定「'+c.values.type+'」の許可原稿だけを、新聞の横段と縦列へ割り当てる。役割と原稿数は文字設定を優先し、形式側の既定題字・本文・副記事・キャプションを追加しない。'),
+  grid:c=>newspaperText(c,'横段をまず定め、その中に確定原稿の役割に対応する列を置く。題字は原稿にその役割がある場合だけ右上、主題の見出しは上段、その他の原稿は下段へ整理する。図版は複数列をまとめた長方形1点に収める。','横段と主図版1点の矩形を細い区切りで揃え、残りを自然な余白にする。本文列に見せる連続線や空欄のラベルを作らない。','一つの許可原稿領域と主図版1点を横段・細罫へ揃え、未使用の列を余白として残す。','新聞の横段と明確な縦列を保ち、最上位原稿を上段、紹介を主図版の隣か次段、特徴・見どころ等を下段の同じ高さから始まる縦列、作者名を欄外へ置く。日本語の列は右から左へ読む。題字や記事用の空欄を増やさず、原稿の少ない領域は余白へ戻す。'),
+  image:c=>main(c,'全紙面の図版は主図版1点だけ。指定人物・ポーズ・出来事・舞台をその矩形の中へ収め、主図版と原稿の間に余白を取る。副記事用の肖像、顔の接写、別アングル、同じ画像の複製や切り抜きを追加しない。','全紙面の図版は選択景物・物体を描く主図版1点だけ。補助図版や細部の接写、切り抜きを追加せず、人物や群衆を新聞らしさの埋め草にしない。'),
+  type:['確定原稿にある役割だけを組み、題字・本文・副記事・キャプションはその役割の原稿がある場合だけ使う。日本語は明朝体の縦組みを基本に、段内で右から左、読み終えたら次段へ進む。許可された主見出しを最大、説明を小さくし、英文主体を明示した場合のみ横組みへ統一する。','本文に似せた連続縦線や疑似文字を入れない。主図版1点の周囲に細罫と空きを残し、文字用の空欄や無記名の題字枠を作らない。','確定した作者名や指定短文だけを置く。新聞名、発行日、価格、記事、広告の文言を欄を埋めるために作らず、原稿の少なさに合わせて空きを残す。'],
+  scopedType:c=>c.values.type==='商品広告・キャッチと特徴3点'?'許可された主見出し・商品紹介・特徴1・特徴2・特徴3・作者名だけを使う。主見出しを最大、商品紹介をその次、3つの特徴を同じ階層の縦列へ、作者名を小さく欄外へ置く。各列は右から左、各原稿は先頭から末尾まで読む。未許可の題字・記事・脇見出し・キャプションを補わない。':'選択文字設定の許可役割だけを新聞の情報領域へ配置する。'+typographyOption(c.values.type).layout+' 日本語の列は右から左へ読み、確定原稿にない題字・本文・副記事・キャプションを補わない。',
+  medium:c=>'主図版1点の領域と'+(c.noText?'余白の区分':'許可された文字の階層')+'は新聞形式、主図版の描写は選択技法が担当する。水彩新聞なら主図版は水彩、アニメ新聞なら主図版はアニメとし、古い新聞紙の茶色や実写写真を自動的に強制しない。',
+  fail:'形式の既定役割が許可原稿を増やす、顔の接写や補助図版で空きを埋める、同じ人物や記事を複製する、縦組みの読み順が途中で横組みへ変わる、罫線が文字や主図版を切る、実在新聞の題字をコピーする、を避ける。',
+  checks:['主図版1点のみ・補助肖像や接写や複製なし',c=>newspaperText(c,'確定原稿に存在する役割だけの情報階層','横段と主図版と余白の整列','限定した許可原稿だけの情報階層','選択文字設定の許可役割と原稿数だけの情報階層'),c=>newspaperText(c,'日本語の段内と段間の読み順','文字と疑似本文がない','許可原稿の読み順','許可原稿を新聞の横段と右から左の縦列へ配置'),'図版を囲む明確な一つの領域','細罫に接しない内容']
  },
  '図鑑の扉':{
   bone:c=>chooseText(c,'分類の入口となる一つの対象を、全体像から特徴の細部へ読み進める図版にする。対象そのものと解説の役割を分け、飾りのある肖像カードに変えない。','一つの対象の全体像と細部を観察できる文字なし図版。注記線や空のラベルを増やさず、縮尺の異なる図像で特徴を説明する。','許可された原稿だけを小さく添え、対象の全体像と細部の観察構造を維持する。'),
@@ -439,7 +443,8 @@ export function formatTextPolicy(values={}){
  const line=['セリフなし','おまかせ'].includes(input)?'':input;
  const noText=type==='文字を一切入れない'||type==='セリフのみ'&&!line;
  const limited=!noText&&(/だけ|のみ|サイン風|落款風/.test(type)||['HALLOWEEN＋クリエイター名','短いタイトル＋名前','クリエイター名＋自由な見出し'].includes(type));
- return {noText,limited,line};
+ const roleScoped=!noText&&!!typographyOption(type);
+ return {noText,limited,line,roleScoped};
 }
 
 export function detailedFormat(value,{noPerson=false,values={}}={}){
@@ -452,7 +457,7 @@ export function detailedFormat(value,{noPerson=false,values={}}={}){
   values
  };
  const read=part=>typeof part==='function'?part(context):part;
- const typography=context.noText?recipe.type[1]:context.limited?recipe.type[2]:recipe.type[0];
+ const typography=context.roleScoped&&recipe.scopedType?read(recipe.scopedType):context.noText?recipe.type[1]:context.limited?recipe.type[2]:recipe.type[0];
  return {
   known:true,
   sections:[

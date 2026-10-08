@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
-import {createPicker} from '../picker.js?v=28.1.0';
-import {questions,visibleQuestions} from '../catalog.js?v=28.1.0';
-import {applyCollection} from '../collection.js?v=28.1.0';
-import {ringPosition,restingRingPosition,pagePatternTone} from '../ring-motion.js?v=28.1.0';
+import {createPicker} from '../picker.js?v=28.1.1';
+import {questions,visibleQuestions} from '../catalog.js?v=28.1.1';
+import {applyCollection} from '../collection.js?v=28.1.1';
+import {ringPosition,restingRingPosition,pagePatternTone} from '../ring-motion.js?v=28.1.1';
 
 // Short screens retain a 360px scrollable canvas rather than crushing its cards.
 // Exercise measured card bounds and two-line labels at all supported widths.
@@ -104,4 +104,14 @@ for(const finish of ['pointerup','blur','close']){
  else {surface.close();assert.equal($('ring-focus').querySelector('b').textContent,before);picker.open(questions.find(q=>q.key==='medium'));flush();}
  assert.ok(!stage.classList.contains('ring-grabbing'));assert.ok(bounds().every(edge=>edge>=43.99),'Finishing any orbit restores the clear band');
 }
+// The reported conflict must be explained outside the measured orbit cards.
+selection={mood:'ローアングル＋威嚇',angle:'真上から・90度',pose:'四つん這いで進む'};
+picker.open(questions.find(q=>q.key==='angle'));flush();
+const conflictPanel=surface.querySelector('.candidate-notice'),center=$('ring-focus');
+assert.equal(conflictPanel.hidden,false,'Known conflicting angle has a visible reason');
+assert.equal(conflictPanel.dataset.status,'blocked');assert.equal(center.querySelector('.ring-pick').disabled,true);
+assert.equal(center.querySelector('.compatibility-reason'),null,'Conflict text does not stretch the center card');
+assert.ok(!conflictPanel.closest('.ring-stage'),'Notice is outside the swipe band');
+const conflictPage=$('picker-page').textContent;swipe(-100,0,conflictPanel);assert.equal($('picker-page').textContent,conflictPage,'Reading conflict text does not page or rotate');
+picker.open(questions.find(q=>q.key==='medium'));flush();assert.equal(conflictPanel.hidden,true,'Opening an unrelated valid choice clears the old reason');
 console.log(`PASS picker: clear horizontal band at 320/390/620/1024, 1–6 cards and long labels; first open/resize/cancel; ${checkedCategories} categories and ${checkedPages} pages in both collections; current category; distinct adjacent patterns; left-next/right-previous; native vertical pan; taps and intentional orbit preserved.`);

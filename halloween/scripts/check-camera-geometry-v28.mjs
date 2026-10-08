@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.1.0';
-import {questions,resolveSelections} from '../catalog.js?v=28.1.0';
-import {initialSelections} from '../modes.js?v=28.1.0';
-import {buildDirection} from '../direction.js?v=28.1.0';
-import {applyPose} from '../poses.js?v=28.1.0';
-import {cameraContract} from '../angles.js?v=28.1.0';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.1.0';
-import {composePrompt} from '../prompt.js?v=28.1.0';
-import {renderInput,renderChatInput} from '../compiled-production.js?v=28.1.0';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.1.0';
-import {sceneSourcePlace} from '../scene-presets.js?v=28.1.0';
+import {applyCollection} from '../collection.js?v=28.1.1';
+import {questions,resolveSelections} from '../catalog.js?v=28.1.1';
+import {initialSelections} from '../modes.js?v=28.1.1';
+import {buildDirection} from '../direction.js?v=28.1.1';
+import {applyPose} from '../poses.js?v=28.1.1';
+import {cameraContract} from '../angles.js?v=28.1.1';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.1.1';
+import {composePrompt} from '../prompt.js?v=28.1.1';
+import {renderInput,renderChatInput} from '../compiled-production.js?v=28.1.1';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.1.1';
+import {sceneSourcePlace} from '../scene-presets.js?v=28.1.1';
 
 // The failing user combination must retain a vertical optical axis in the
 // native handoff, audit export, artwork stage and both image-repair routes.
@@ -20,7 +20,8 @@ const cases=[
  {name:'top lying',values:{pose:'仰向けに寝る',mood:'毎回大胆に変える'},pitch:90,axis:[0,0,-1],automaticFace:true},
  {name:'bottom floating',values:{angle:'真下から・90度',pose:'浮遊する',mood:'毎回大胆に変える'},pitch:-90,axis:[0,0,1],automaticFace:true},
  {name:'bottom opaque floor occlusion',values:{theme:'白いスタジオ',angle:'真下から・90度',mood:'毎回大胆に変える'},pitch:-90,axis:[0,0,1],automaticFace:true},
- {name:'side sitting',values:{angle:'真横90度'},pitch:0,azimuth:90},
+ // Side90 fixes azimuth. It does not independently request zero elevation.
+ {name:'side sitting',values:{angle:'真横90度'},azimuth:90},
  {name:'top scenery',values:{costume:'風景を主役にする',mood:'毎回大胆に変える',pose:'おまかせ'},pitch:90,axis:[0,0,-1],noPerson:true}
 ];
 const profile={displayName:'カメラ検査用の作者',activityEnabled:false};

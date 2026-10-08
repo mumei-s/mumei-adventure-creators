@@ -1,5 +1,5 @@
-import {typographyOption} from './typography-options.js?v=28.1.0';
-import {isPhotographicMedium} from './photo-design.js?v=28.1.0';
+import {typographyOption} from './typography-options.js?v=28.1.1';
+import {isPhotographicMedium} from './photo-design.js?v=28.1.1';
 // Japanese publishing/drawing is the default grammar, not a replacement identity.
 // Explicit overseas techniques, clothing and architecture retain their origin.
 export const CRYSTAL_OBJECT='クリスタルホログラム造形アニメ';
@@ -45,7 +45,7 @@ const covers={
  'ファッション雑誌の表紙':'日本のファッション誌の表紙。上端に幅75〜90%の大きな独自誌名、中央60〜75%に主図版、左右の空きに3〜5本の短い縦または横のカバーライン。メイン特集は補助見出しの2〜3倍。内ページの長文本文やQ&Aは配置しない。',
  'カルチャー誌の表紙':'日本のカルチャー誌の表紙。大きな独自誌名、一つの主特集、主図版と短い日本語の補助特集を非対称のグリッドへ。明朝とゴシックの役割を分け、題字は紙面の端へ揃える。内ページの本文段組みにしない。',
  '週刊誌の表紙':'日本の週刊誌の表紙。上端に強い独自誌名、中央に主図版、左右に縦組みの大見出し2〜4本、下部に横見出しと短い補足。情報密度は高くても顔・主題の輪郭を避ける。黒い太字、白抜き帯、配色内の差し色で3階層をつくる。実在誌名・実在人物の疑惑・未入力の号数や価格は入れない。',
- '新聞の一面':'日本の新聞一面。右上に縦題字、主見出しと脇見出し、明朝の縦組み本文を記事ごとの複数列と横段へ流す。図版は本文列にまたがる一領域、細い罫線で主記事と副記事を分ける。大きな肖像と数行のコピーだけのポスターにはしない。'
+ '新聞の一面':'日本の新聞一面。主図版は一つだけで、細い罫線・横段と日本語の縦列を使う。題字・見出し・本文・副記事は確定原稿に許可された役割がある場合だけ組む。選択文字が広告なら、その見出し・紹介・特徴だけを同じ新聞の罫線と縦列へ組み、標準の記事や補助肖像を追加しない。'
 };
 
 export function japaneseSections(key,value,{noPerson=false,collection='halloween',values={}}={}){
@@ -53,6 +53,7 @@ export function japaneseSections(key,value,{noPerson=false,collection='halloween
  const noText=values.type==='文字を一切入れない',limitedText=values.type&&!typographyOption(values.type)&&!['デザインに合わせて自動編集','雑誌風・見出しと特集をたっぷり','映画ポスター風・タイトルとクレジット','広告チラシ風・情報をたっぷり','新聞風・記事と段組み','物語の装丁風・タイトルと紹介'].includes(values.type);
  if(key==='design')text=covers[value]||'形式「'+value+'」固有の画像領域と余白を保ち、日本語原稿は日本の編集慣行に合う明朝・ゴシックの大小、禁則、句読点、読み順で組む。欧文や海外由来の明示形式は、その文法を保つ。';
  if(key==='design'&&covers[value]&&(noText||limitedText))text='日本の「'+value+'」の主図版と安全余白、個別の領域配分を保つ。'+(noText?'文字・題字・本文・号数・ロゴを一切追加しない。空いた領域を疑似文字や代用罫線で埋めない。':'名前または指定短文など、確定した許可原稿だけを日本語の正しい文字組みで置く。標準の誌名・本文・特集を補完しない。');
+ if(key==='design'&&value==='新聞の一面'&&typographyOption(values.type)&&!noText)text='日本の新聞一面の細い罫線・横段・縦列を保ち、選択文字設定の許可原稿だけを組む。広告は主見出し、紹介、特徴など指定された役割だけで構成し、題字・記事本文・副記事・キャプションを自動追加しない。主図版は一つだけ。同じ人物の顔アップや別 crop の小図版を追加せず、確定原稿を本文列の高さへ正しく収める。';
  if(key==='medium'){
   if(isPhotographicMedium(value))text='作風「'+value+'」の専用撮影工程で、'+(noPerson?'景物・建築・自然素材を実物の厚み、材質の反射と散乱、レンズ遠近、連続した露光階調として再構成する。人物や人型を追加しない。':'主参照の同じキャラクターを自然な人物の立体、皮膚・毛髪・衣服の実物の構造として再構成する。参照がイラストでも、その描線やセル色を残さず、顔の識別特徴・年齢感・民族的特徴と明示した役柄を保持する。')+'主題と背景を同じ実照明と光学像へ統一し、日本向けの構図を理由に人物や舞台を入れ替えたり、日本アニメへ戻したりしない。';
   else if(noPerson)text='作風「'+value+'」の個別技法で景物・建築・自然素材を描く。指定カメラで見える構造を、その技法の線・面・材料・重なりと余白へ翻訳し、主景と背景を同じ制作工程で統一する。平面・図案・紙の技法へ写真の陰影やぼけ、深い影を一律に追加しない。';

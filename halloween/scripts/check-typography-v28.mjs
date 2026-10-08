@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.1.0';
-import {resolveSelections} from '../catalog.js?v=28.1.0';
-import {initialSelections} from '../modes.js?v=28.1.0';
-import {buildDirection} from '../direction.js?v=28.1.0';
-import {productionPlan} from '../production-plan.js?v=28.1.0';
-import {composePrompt} from '../prompt.js?v=28.1.0';
-import {typePreview} from '../examples.js?v=28.1.0';
-import {typographyValues,typographyOption} from '../typography-options.js?v=28.1.0';
-import {visualSpec} from '../visual-specs.js?v=28.1.0';
-import {renderInput} from '../compiled-production.js?v=28.1.0';
+import {applyCollection} from '../collection.js?v=28.1.1';
+import {resolveSelections} from '../catalog.js?v=28.1.1';
+import {initialSelections} from '../modes.js?v=28.1.1';
+import {buildDirection} from '../direction.js?v=28.1.1';
+import {productionPlan} from '../production-plan.js?v=28.1.1';
+import {composePrompt} from '../prompt.js?v=28.1.1';
+import {typePreview} from '../examples.js?v=28.1.1';
+import {typographyValues,typographyOption} from '../typography-options.js?v=28.1.1';
+import {visualSpec} from '../visual-specs.js?v=28.1.1';
+import {renderInput} from '../compiled-production.js?v=28.1.1';
 
 let examined=0;
 for(const collection of ['halloween','everyday']){

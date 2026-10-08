@@ -1,8 +1,9 @@
-const automatic=v=>!v||['おまかせ','毎回大胆に変える'].includes(v);
+import {automaticView,viewSelectionIssues} from './view-constraints.js?v=28.1.1';
+const automatic=automaticView;
 const noPerson=v=>/風景を主役|モチーフだけ|紋章・アイコン/.test(v||'');
 const faceOnly=v=>/歯|目を|眉|涙|ニヤリ|ウインク|牙|無表情|横顔|正面|俯瞰|ローアングル|振り向く|顔を/.test(v||'');
 const limited=v=>/墨一色|モノクロ|セピア|二色|三色|銀と一滴の赤|焦茶 × シアン光/.test(v||'');
-export function selectionConflicts(values={}){
+function nonViewConflicts(values={}){
  const reasons=[];
  if(noPerson(values.costume))for(const key of ['pose','mood'])if(!automatic(values[key])&&(key==='pose'||faceOnly(values[key])))reasons.push({keys:['costume',key],reason:'「人物なし」では人体の'+(key==='pose'?'ポーズ':'表情・顔角度')+'を実行できません。人物ありにするか、この項目をおまかせにしてください。'});
  if(values.medium==='クリスタルホログラム造形アニメ'&&limited(values.palette))reasons.push({keys:['medium','palette'],reason:'この作風は虹色の干渉帯が必須です。単色・限定色では同じ完成像にならないため選べません。色を変えるか、色数に対応したクリスタル透光アニメを選べます。'});
@@ -13,15 +14,25 @@ export function selectionConflicts(values={}){
  if(landscape[values.theme]&&!automatic(values.place)&&!landscape[values.theme].includes(values.place)&&values.place!=='参照風景を舞台にする')reasons.push({keys:['theme','place'],reason:'「'+values.theme+'」には'+landscape[values.theme].join('・')+'の舞台が必要です。別の場所を同じ背景に混ぜる選択はできません。'});
  return reasons;
 }
-export function candidateAvailability(key,value,values){const conflicts=selectionConflicts({...values,[key]:value}).filter(c=>c.keys.includes(key));return {enabled:!conflicts.length,reason:conflicts.map(c=>c.reason).join(' ')};}
+export function selectionConflicts(values={}){return [...nonViewConflicts(values),...viewSelectionIssues(values).filter(issue=>issue.severity==='error')];}
+export function selectionWarnings(values={}){return viewSelectionIssues(values).filter(issue=>issue.severity==='warning');}
+export function selectionIssues(values={}){return [...selectionConflicts(values).map(issue=>({...issue,severity:'error'})),...selectionWarnings(values)];}
+export function candidateAvailability(key,value,values={}){
+ const candidate={...values,[key]:value},conflicts=selectionConflicts(candidate).filter(c=>c.keys.includes(key)),warnings=selectionWarnings(candidate).filter(c=>c.keys.includes(key));
+ return {enabled:!conflicts.length,status:conflicts.length?'blocked':warnings.length?'warning':'compatible',reason:conflicts.map(c=>c.reason).join(' '),warnings};
+}
 export function compatibleResolved(values,input,questions,random=Math.random){
  const out={...values};
- for(let pass=0;pass<questions.length;pass++){
-  const conflict=selectionConflicts(out)[0];if(!conflict)return out;
-  const key=conflict.keys.find(k=>automatic(input[k]));if(!key)return out; // Never silently change explicit choices.
+ for(let pass=0;pass<questions.length*2;pass++){
+  // Preserve explicit conflicts for review, while resolving independent AUTO
+  // conflicts as well. One explicit issue must not prevent another AUTO fix.
+  const conflict=selectionConflicts(out).find(c=>c.keys.some(k=>automatic(input[k])));if(!conflict)return out;
+  const keys=conflict.keys.filter(k=>automatic(input[k]));
+  const key=keys.find(k=>questions.some(q=>q.key===k));if(!key)return out;
   if(noPerson(out.costume)&&['mood','pose'].includes(key)){out[key]=key==='mood'?'毎回大胆に変える':'おまかせ';continue;}
-  const q=questions.find(q=>q.key===key),candidates=(q.autoValues||q.groups.flatMap(g=>g.values)).filter(value=>candidateAvailability(key,value,out).enabled);
-  if(!candidates.length)return out;out[key]=candidates[Math.min(candidates.length-1,Math.floor(random()*candidates.length))];
+  const q=questions.find(q=>q.key===key),available=(q.autoValues||q.groups.flatMap(g=>g.values)).map(value=>({value,...candidateAvailability(key,value,out)})).filter(candidate=>candidate.enabled);
+  const clear=available.filter(candidate=>candidate.status==='compatible'),candidates=clear.length?clear:available;
+  if(!candidates.length)return out;out[key]=candidates[Math.min(candidates.length-1,Math.floor(random()*candidates.length))].value;
  }
  return out;
 }

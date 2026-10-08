@@ -1,6 +1,6 @@
-import {formatFor} from './formats.js?v=28.1.0';
-import {colorPolicy} from './palette-recipes.js?v=28.1.0';
-import {colorWorlds} from './worlds.js?v=28.1.0';
+import {formatFor} from './formats.js?v=28.1.1';
+import {colorPolicy} from './palette-recipes.js?v=28.1.1';
+import {colorWorlds} from './worlds.js?v=28.1.1';
 
 const MAX_EDGE=4096;
 const SERIF='"Noto Serif CJK JP", "Yu Mincho", "Hiragino Mincho ProN", Georgia, serif';
@@ -204,6 +204,23 @@ export function renderEditorialLayout(plan,{dataUrl,artworkWidth,artworkHeight,m
   }
   role('author',rect(.06,.968,.88,.021),'作者名',{fontSize:width*.014,align:'right'});
   remaining('additional-copy',rect(.035,.175,.93,.021),{fontSize:width*.015});
+ }else if(kind==='newspaper'&&plan.copy.roleScoped){
+  // Explicit advertising/story roles retain a newspaper grid; they must not
+  // fall into the tiny catch-all footer intended for incidental extra copy.
+  imageBox=rect(.035,.235,.93,.43);
+  const japanese=/[\u3040-\u30ff\u3400-\u9fff]/u.test(slots.map(s=>s.text).join(''));
+  const headlineRoles=new Set(['主見出し','作品名','企画名','作品タイトル','キャラクター名','縦書きコピー','主語句']);
+  add('newspaper-selected-headline',rect(.035,.035,.93,.095),pick(s=>headlineRoles.has(s.role)),{fontSize:width*.048,fontWeight:700,lineHeight:1.12});
+  add('newspaper-selected-introduction',rect(.035,.145,.93,.070),pick(s=>/紹介|キャッチ|煽り文|役柄|分類/.test(s.role)),{fontSize:width*.021,lineHeight:1.25});
+  const features=pick(s=>/^(?:特徴|見どころ|スキル|詩行)\d$/.test(s.role));
+  const bodyIndexes=features.length?features:slots.map((s,i)=>i).filter(i=>!assigned.has(i)&&slots[i].role!=='作者名');
+  const count=Math.max(1,bodyIndexes.length),gap=.035,boxWidth=(.93-gap*(count-1))/count;
+  bodyIndexes.forEach((index,i)=>add('newspaper-selected-detail-'+(i+1),rect(.035+(count-1-i)*(boxWidth+gap),.705,boxWidth,.22),[index],{fontSize:width*.023,lineHeight:1.2,vertical:japanese,sharedScale:'newspaper-selected-detail'}));
+  role('author',rect(.035,.95,.93,.025),'作者名',{fontSize:width*.016,align:'right'});
+  remaining('newspaper-selected-remainder',rect(.035,.685,.93,.025),{fontSize:width*.016});
+  rules.push({x1:width*.035,y1:height*.13,x2:width*.965,y2:height*.13});
+  rules.push({x1:width*.035,y1:height*.69,x2:width*.965,y2:height*.69});
+  for(let i=1;i<count;i++)rules.push({x1:width*(.035+i*(boxWidth+gap)-gap/2),y1:height*.705,x2:width*(.035+i*(boxWidth+gap)-gap/2),y2:height*.925});
  }else if(/[\u3040-\u30ff\u3400-\u9fff]/u.test(slots.map(s=>s.text).join(''))){
   imageBox=rect(.035,.215,.36,.275);
   role('masthead',rect(.845,.025,.12,.18),'新聞題字',{fontSize:width*.053,fontWeight:700,vertical:true});

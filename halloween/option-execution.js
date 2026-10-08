@@ -1,9 +1,9 @@
-import {mediumExecution} from './medium-execution.js?v=28.3.0';
-import {artworkBasisContract} from './artwork-basis.js?v=28.3.0';
-import {formatExecution} from './format-execution.js?v=28.3.0';
-import {colorPolicy} from './color-policy.js?v=28.3.0';
-import {photoReconstruction} from './photo-design.js?v=28.3.0';
-import {luminousWorldContract} from './luminous-world.js?v=28.3.0';
+import {mediumExecution} from './medium-execution.js?v=28.3.1';
+import {artworkBasisContract} from './artwork-basis.js?v=28.3.1';
+import {formatExecution} from './format-execution.js?v=28.3.1';
+import {colorPolicy} from './color-policy.js?v=28.3.1';
+import {photoReconstruction} from './photo-design.js?v=28.3.1';
+import {luminousWorldContract} from './luminous-world.js?v=28.3.1';
 
 // The option's own physical recipe is the source of its execution contract.
 // No generic "beautiful / atmospheric" default replaces a missing preset.

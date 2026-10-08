@@ -1,19 +1,19 @@
-import {creatorLookupInstructions} from './creator-handoff.js?v=28.3.0';
-import {imageOutputContract} from './output-contract.js?v=28.3.0';
-import {modeFoundation} from './japan-direction.js?v=28.3.0';
-import {questions,visibleQuestions} from './catalog.js?v=28.3.0';
-import {formatContract} from './formats.js?v=28.3.0';
-import {buildEditorial,editorialContract} from './editorial.js?v=28.3.0';
-import {optionRecipe} from './option-recipes.js?v=28.3.0';
-import {colorPolicy} from './palette-recipes.js?v=28.3.0';
-import {resolveArtDirection,interactionContract} from './art-direction.js?v=28.3.0';
-import {executionFor} from './option-execution.js?v=28.3.0';
-import {cameraContract} from './angles.js?v=28.3.0';
-import {selectionIssues} from './compatibility.js?v=28.3.0';
-import {moodConstraint} from './view-constraints.js?v=28.3.0';
-import {drawingReferenceFor,drawingReferenceInstructions} from './drawing-references.js?v=28.3.0';
-import {sourceKindInstructions,isNonHumanSource} from './source-kind.js?v=28.3.0';
-import {halloweenModeContract} from './halloween-mode-contract.js?v=28.3.0';
+import {creatorLookupInstructions} from './creator-handoff.js?v=28.3.1';
+import {imageOutputContract} from './output-contract.js?v=28.3.1';
+import {modeFoundation} from './japan-direction.js?v=28.3.1';
+import {questions,visibleQuestions} from './catalog.js?v=28.3.1';
+import {formatContract} from './formats.js?v=28.3.1';
+import {buildEditorial,editorialContract} from './editorial.js?v=28.3.1';
+import {optionRecipe} from './option-recipes.js?v=28.3.1';
+import {colorPolicy} from './palette-recipes.js?v=28.3.1';
+import {resolveArtDirection,interactionContract} from './art-direction.js?v=28.3.1';
+import {executionFor} from './option-execution.js?v=28.3.1';
+import {cameraContract} from './angles.js?v=28.3.1';
+import {selectionIssues} from './compatibility.js?v=28.3.1';
+import {moodConstraint} from './view-constraints.js?v=28.3.1';
+import {drawingReferenceFor,drawingReferenceInstructions} from './drawing-references.js?v=28.3.1';
+import {sourceKindInstructions,isNonHumanSource} from './source-kind.js?v=28.3.1';
+import {halloweenModeContract} from './halloween-mode-contract.js?v=28.3.1';
 
 const independentActorText=text=>text.replace(/参照の顔立ち・目鼻口・髪型の特徴的な組合せと年齢感を保ち/g,'今回設計した独自の主役の顔立ち・目鼻口・髪型と明示された年齢感を保ち');
 

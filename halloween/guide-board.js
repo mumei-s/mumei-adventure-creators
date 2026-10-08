@@ -1,4 +1,4 @@
-import {decodeRasterForDraw,releaseCanvas} from './image-resources.js?v=28.3.0';
+import {decodeRasterForDraw,releaseCanvas} from './image-resources.js?v=28.3.1';
 // Only the creator's own uploaded images can enter a reference bundle.
 export async function buildReferenceBoard(refs,metadata){
  if(!refs.length)return null;

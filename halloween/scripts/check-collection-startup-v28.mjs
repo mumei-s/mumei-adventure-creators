@@ -1,10 +1,10 @@
-import {sourceKinds} from '../source-kind.js?v=28.3.0';
+import {sourceKinds,sourceSubjectFor} from '../source-kind.js?v=28.3.1';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {questions} from '../catalog.js?v=28.3.0';
-import {applyCollection,currentCollection} from '../collection.js?v=28.3.0';
-import {initialSelections,modeKeys,modeCopy} from '../modes.js?v=28.3.0';
+import {questions} from '../catalog.js?v=28.3.1';
+import {applyCollection,currentCollection} from '../collection.js?v=28.3.1';
+import {initialSelections,modeKeys,modeCopy} from '../modes.js?v=28.3.1';
 
 // Execute the real switch function. Pool-only tests missed a removed helper
 // that still ran before both initial mode restoration and every button click.
@@ -20,7 +20,7 @@ function application(){
  const modeButtons=['detail','simple','auto'].map(mode=>Object.assign(element(),{dataset:{mode}}));
  const storage=new Map(),document={body:element(),title:'',createTextNode:text=>({textContent:text}),querySelectorAll:selector=>selector==='.collection-switch button'?buttons:selector==='.mode-switch button'?modeButtons:[]};
  const state=initialSelections();
- const context=vm.createContext({sourceKinds,sourceKind:'unknown',collection:'halloween',collectionSnapshots:{},mode:'detail',selections:state,modeSnapshots:{detail:{...state}},proposals:[],selectedProposal:null,motion:false,boardArtKey:'old',document,structuredClone,applyCollection,initialSelections,modeKeys,modeCopy,$:id=>{if(!nodes.has(id))nodes.set(id,element());return nodes.get(id);},el:(tag,cls,text)=>({tag,cls,textContent:text}),setMotion(){},renderChoices(){},makeProposals(){},syncProfilePreview(){},effects:{refresh(){}},localStorage:{setItem:(key,value)=>storage.set(key,value)}});
+ const context=vm.createContext({sourceKinds,sourceSubjectFor,sourceKind:'unknown',collection:'halloween',collectionSnapshots:{},mode:'detail',selections:state,modeSnapshots:{detail:{...state}},proposals:[],selectedProposal:null,motion:false,boardArtKey:'old',document,structuredClone,applyCollection,initialSelections,modeKeys,modeCopy,$:id=>{if(!nodes.has(id))nodes.set(id,element());return nodes.get(id);},el:(tag,cls,text)=>({tag,cls,textContent:text}),setMotion(){},renderChoices(){},makeProposals(){},syncProfilePreview(){},effects:{refresh(){}},localStorage:{setItem:(key,value)=>storage.set(key,value)}});
  vm.runInContext(collectionSource+'\n'+modeSource,context);
  return {context,nodes,buttons,storage};
 }

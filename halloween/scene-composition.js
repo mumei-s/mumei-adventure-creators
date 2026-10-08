@@ -1,4 +1,4 @@
-import {sceneContract} from './worlds.js?v=28.3.0';
+import {sceneContract} from './worlds.js?v=28.3.1';
 
 // Resolve the selected subject and place as one scene before the individual
 // recipes add detail. World-bearing stories change the environment of that

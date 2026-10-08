@@ -2,7 +2,7 @@
 // structures, not the identities, pictures, words or rendering of source pages.
 // Typography choices are independent of formats, so this import introduces no
 // cycle while keeping explicit manuscript scope shared with the copy builder.
-import {typographyOption} from './typography-options.js?v=28.3.0';
+import {typographyOption} from './typography-options.js?v=28.3.1';
 const chooseText=(c,normal,empty,limited)=>c.noText?empty:c.limited?limited:normal;
 const newspaperText=(c,normal,empty,limited,scoped)=>c.roleScoped?scoped:chooseText(c,normal,empty,limited);
 const main=(c,person,scenery)=>c.noPerson?scenery:person;

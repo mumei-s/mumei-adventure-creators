@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {questions,AUTO} from '../catalog.js?v=28.3.0';
-import {applyCollection} from '../collection.js?v=28.3.0';
+import {questions,AUTO} from '../catalog.js?v=28.3.1';
+import {applyCollection} from '../collection.js?v=28.3.1';
 
 // Execute the application statement itself: an independent filter helper would
 // miss a regression in generate() that reintroduces hidden profile suggestions.

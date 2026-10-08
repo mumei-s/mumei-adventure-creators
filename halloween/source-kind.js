@@ -1,4 +1,4 @@
-import {isPhotographicMedium} from './photo-design.js?v=28.3.0';
+import {isPhotographicMedium} from './photo-design.js?v=28.3.1';
 
 // This is an input reading choice, independent of the ten output selections.
 // Unknown and older saved work deliberately retain their original instructions.
@@ -9,6 +9,15 @@ export const sourceKinds=Object.freeze([
  {value:'mark-object',label:'マーク・物体',hint:'固有の輪郭・色・紋様・材質を作品の主題にします。',defaultSubject:'モチーフだけで構成する'}
 ]);
 export function isNonHumanSource(values){return ['scenery','mark-object'].includes(values?.sourceKind);}
+
+// A new unclassified input still means the creator's attached character.
+// Hidden mode fields may be AUTO, so retain an explicitly chosen non-person
+// subject before falling back to the input kind's usual subject.
+export function sourceSubjectFor(sourceKind='unknown',costume='おまかせ',{selectedCostume}={}){
+ if(costume&&costume!=='おまかせ')return costume;
+ if(/風景を主役|モチーフだけ|紋章・アイコン/.test(selectedCostume||''))return selectedCostume;
+ return sourceKinds.find(kind=>kind.value===sourceKind)?.defaultSubject||'参照画像の衣装を生かす';
+}
 
 export function sourceKindInstructions(values={}, {noPerson}={}){
  const kind=sourceKinds.find(source=>source.value===values?.sourceKind);

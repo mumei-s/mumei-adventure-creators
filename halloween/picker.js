@@ -1,12 +1,12 @@
-import {candidateNotice} from './selection-feedback.js?v=28.3.0';
-import {updateArtworkBasis} from './artwork-basis-view.js?v=28.3.0';
-import {FAVORITE_LIMIT,FAVORITE_STORAGE,favoriteKey,normalizeFavorites,toggleFavorite} from './favorites.js?v=28.3.0';
-import {ringWindow,ringPosition,restingRingPosition,swipeStep,pagePatternTone} from './ring-motion.js?v=28.3.0';
-import {candidateAvailability,wrappedPage} from './compatibility.js?v=28.3.0';
-import {appendRecipeEvidence} from './recipe-evidence.js?v=28.3.0';
-import {recipeFor} from './recipes.js?v=28.3.0';
-import {optionRecipe} from './option-recipes.js?v=28.3.0';
-import {lookFor} from './looks.js?v=28.3.0';
+import {candidateNotice} from './selection-feedback.js?v=28.3.1';
+import {updateArtworkBasis} from './artwork-basis-view.js?v=28.3.1';
+import {FAVORITE_LIMIT,FAVORITE_STORAGE,favoriteKey,normalizeFavorites,toggleFavorite} from './favorites.js?v=28.3.1';
+import {ringWindow,ringPosition,restingRingPosition,swipeStep,pagePatternTone} from './ring-motion.js?v=28.3.1';
+import {candidateAvailability,wrappedPage} from './compatibility.js?v=28.3.1';
+import {appendRecipeEvidence} from './recipe-evidence.js?v=28.3.1';
+import {recipeFor} from './recipes.js?v=28.3.1';
+import {optionRecipe} from './option-recipes.js?v=28.3.1';
+import {lookFor} from './looks.js?v=28.3.1';
 export function pageSize(width,height=window.innerHeight){return width<620?18:width<1100?24:32;}
 export function pageSlice(items,page,limit){const pages=Math.max(1,Math.ceil(items.length/limit));const safe=Math.min(Math.max(page,0),pages-1);return {page:safe,pages,items:items.slice(safe*limit,(safe+1)*limit)};}
 export function createPicker({$,el,sampleNode,readSelection,choose,onCustom,tell,artworkBasis=()=>null}){

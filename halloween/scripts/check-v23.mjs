@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.3.0';
-import {applyCollection,dailyInspiration} from '../collection.js?v=28.3.0';
-import {everydayScenes,everydayPlaces,casualClothes,swimClothes} from '../everyday-options.js?v=28.3.0';
-import {optionRecipe} from '../option-recipes.js?v=28.3.0';
-import {productionPlan} from '../production-plan.js?v=28.3.0';
-import {renderChatInput} from '../compiled-production.js?v=28.3.0';
+import {questions,resolveSelections} from '../catalog.js?v=28.3.1';
+import {applyCollection,dailyInspiration} from '../collection.js?v=28.3.1';
+import {everydayScenes,everydayPlaces,casualClothes,swimClothes} from '../everyday-options.js?v=28.3.1';
+import {optionRecipe} from '../option-recipes.js?v=28.3.1';
+import {productionPlan} from '../production-plan.js?v=28.3.1';
+import {renderChatInput} from '../compiled-production.js?v=28.3.1';
 const random=()=>.28,profile={displayName:'TEST',activityEnabled:false,topics:[]};
 applyCollection('everyday');
 for(const [key,values]of [['theme',everydayScenes.map(x=>x[0])],['place',everydayPlaces],['costume',[...casualClothes,...swimClothes]]])for(const value of values){

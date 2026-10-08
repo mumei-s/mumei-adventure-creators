@@ -1,12 +1,12 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-import {questions,visibleQuestions,defaults,resolveSelections} from '../catalog.js?v=28.3.0';
-import {sampleFor} from '../examples.js?v=28.3.0';
-import {modeKeys,effectiveSelections} from '../modes.js?v=28.3.0';
-import {composePrompt} from '../prompt.js?v=28.3.0';
-import {selectedRecipes} from '../recipes.js?v=28.3.0';
-import {buildDirection} from '../direction.js?v=28.3.0';
+import {questions,visibleQuestions,defaults,resolveSelections} from '../catalog.js?v=28.3.1';
+import {sampleFor} from '../examples.js?v=28.3.1';
+import {modeKeys,effectiveSelections} from '../modes.js?v=28.3.1';
+import {composePrompt} from '../prompt.js?v=28.3.1';
+import {selectedRecipes} from '../recipes.js?v=28.3.1';
+import {buildDirection} from '../direction.js?v=28.3.1';
 const keys=questions.map(q=>q.key),values=resolveSelections(Object.fromEntries(questions.map((q,i)=>[q.key,defaults[i]])),()=>0);
 assert.equal(visibleQuestions.length,10);assert.equal(modeKeys.detail.length,10);assert.equal(modeKeys.simple.length,5);assert.equal(modeKeys.auto.length,1);
 let count=0,images=new Set();for(const q of questions)for(const v of q.groups.flatMap(g=>g.values)){count++;const s=sampleFor(q.key,v);assert.notEqual(s.kind,'custom',q.key+':'+v);if(s.kind==='image'){assert.ok(fs.existsSync(new URL(s.src,new URL('../examples.js',import.meta.url))));images.add(s.src);}}

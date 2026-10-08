@@ -1,22 +1,35 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {sourceKinds,sourceKindInstructions,isNonHumanSource} from '../source-kind.js?v=28.3.0';
-import {questions,visibleQuestions,resolveSelections} from '../catalog.js?v=28.3.0';
-import {initialSelections} from '../modes.js?v=28.3.0';
-import {applyCollection} from '../collection.js?v=28.3.0';
-import {productionPlan,planInstructions,repairPrompt} from '../production-plan.js?v=28.3.0';
-import {composePrompt,needsReference} from '../prompt.js?v=28.3.0';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.3.0';
-import {artworkBasisContract,artworkBasisValues} from '../artwork-basis.js?v=28.3.0';
-import {renderInput,renderChatInput} from '../compiled-production.js?v=28.3.0';
-import {drawingReferenceFor,drawingReferenceInstructions} from '../drawing-references.js?v=28.3.0';
-import {halloweenModeContract} from '../halloween-mode-contract.js?v=28.3.0';
+import {sourceKinds,sourceKindInstructions,isNonHumanSource,sourceSubjectFor} from '../source-kind.js?v=28.3.1';
+import {questions,visibleQuestions,resolveSelections,normalizeCreator,AUTO} from '../catalog.js?v=28.3.1';
+import {initialSelections,effectiveSelections,proposalBatch} from '../modes.js?v=28.3.1';
+import {selectionConflicts} from '../compatibility.js?v=28.3.1';
+import {buildDirection} from '../direction.js?v=28.3.1';
+import {applyPose} from '../poses.js?v=28.3.1';
+import {stagePrompts} from '../production-workflow.js?v=28.3.1';
+import {compactCreatorProfile} from '../creator.js?v=28.3.1';
+import {applyCollection} from '../collection.js?v=28.3.1';
+import {productionPlan,planInstructions,repairPrompt} from '../production-plan.js?v=28.3.1';
+import {composePrompt,needsReference} from '../prompt.js?v=28.3.1';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.3.1';
+import {artworkBasisContract,artworkBasisValues} from '../artwork-basis.js?v=28.3.1';
+import {renderInput,renderChatInput} from '../compiled-production.js?v=28.3.1';
+import {drawingReferenceFor,drawingReferenceInstructions} from '../drawing-references.js?v=28.3.1';
+import {halloweenModeContract} from '../halloween-mode-contract.js?v=28.3.1';
 
 const profile={displayName:'INPUT ROUTE CHECK',activityEnabled:false},random=()=>.34;
 assert.deepEqual(sourceKinds.map(kind=>kind.value),['photo-person','illustration-person','scenery','mark-object']);
 assert.equal(sourceKinds.find(kind=>kind.value==='scenery').defaultSubject,'風景を主役にする');
 assert.equal(sourceKinds.find(kind=>kind.value==='mark-object').defaultSubject,'モチーフだけで構成する');
+for(const kind of [undefined,'unknown','obsolete-kind'])assert.equal(sourceSubjectFor(kind,AUTO),'参照画像の衣装を生かす');
+for(const kind of sourceKinds)assert.equal(sourceSubjectFor(kind.value,AUTO),kind.defaultSubject);
+const noPersonSubjects=['風景を主役にする','モチーフだけで構成する','紋章・アイコンにする'];
+for(const kind of ['unknown',...sourceKinds.map(kind=>kind.value)])for(const costume of noPersonSubjects){
+ assert.equal(sourceSubjectFor(kind,costume),costume,'Explicit non-person output takes priority over input kind');
+ assert.equal(sourceSubjectFor(kind,AUTO,{selectedCostume:costume}),costume,'A hidden explicit non-person choice survives AUTO mode fields');
+ assert.equal(sourceSubjectFor(kind,'海賊',{selectedCostume:costume}),'海賊','An actual output choice takes priority over the hidden fallback');
+}
 for(const sourceKind of [undefined,'unknown','obsolete-kind'])assert.deepEqual(sourceKindInstructions({sourceKind,medium:'透明水彩'}),[]);
 assert.equal(isNonHumanSource({sourceKind:'scenery'}),true);
 assert.equal(isNonHumanSource({sourceKind:'mark-object'}),true);
@@ -84,10 +97,10 @@ for(const sourceKind of ['scenery','mark-object']){
 // Execute the actual input picker and selection preparation with small DOM stubs.
 const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8');
 function node(tag='div'){
- return {tag,children:[],dataset:{},listeners:{},attributes:{},textContent:'',hidden:false,append(...children){this.children.push(...children);},addEventListener(event,handler){this.listeners[event]=handler;},setAttribute(key,value){this.attributes[key]=value;},querySelectorAll(tag){return this.children.filter(child=>child.tag===tag);}};
+ return {tag,children:[],dataset:{},listeners:{},attributes:{},textContent:'',hidden:false,classList:{add(){},remove(){}},focus(){},append(...children){this.children.push(...children);},replaceChildren(...children){this.children=[...children];},addEventListener(event,handler){this.listeners[event]=handler;},setAttribute(key,value){this.attributes[key]=value;},querySelectorAll(tag){return this.children.filter(child=>child.tag===tag);}};
 }
 const nodes=new Map(),$=id=>{if(!nodes.has(id))nodes.set(id,node());return nodes.get(id);};
-const context={sourceKinds,sourceKind:'unknown',selections:{...initialSelections()},mode:'detail',modeSnapshots:{detail:{costume:'魔女・魔法使い'},simple:{costume:'海賊'}},collectionSnapshots:{everyday:{selections:{costume:'海賊'},modeSnapshots:{detail:{costume:'海賊'}},proposals:[{}],selectedProposal:{}}},proposals:[{}],selectedProposal:{},$,el:node,renderChoices(){},makeProposals(){},tell(){},localStorage:{setItem(){}},AUTO:'おまかせ',questions,resolveSelections,rng:random,document:{body:{dataset:{}},querySelectorAll:()=>[]},modeKeys:{detail:[],simple:[],auto:[]},modeCopy:{detail:'detail',simple:'simple',auto:'auto'}};
+const context={sourceKinds,sourceSubjectFor,sourceKind:'unknown',selections:{...initialSelections()},mode:'detail',modeSnapshots:{detail:{costume:'魔女・魔法使い'},simple:{costume:'海賊'}},collectionSnapshots:{everyday:{selections:{costume:'海賊'},modeSnapshots:{detail:{costume:'海賊'}},proposals:[{}],selectedProposal:{}}},proposals:[{}],selectedProposal:{},$,el:node,renderChoices(){},makeProposals(){},tell(){},localStorage:{setItem(){}},AUTO:'おまかせ',questions,resolveSelections,rng:random,document:{body:{dataset:{}},querySelectorAll:()=>[]},modeKeys:{detail:[],simple:[],auto:[]},modeCopy:{detail:'detail',simple:'simple',auto:'auto'}};
 vm.createContext(context);
 vm.runInContext(app.slice(app.indexOf('function renderSourceKinds()'),app.indexOf('async function persist(')),context);
 context.renderSourceKinds();assert.equal($('source-kind-options').children.length,4);
@@ -107,5 +120,46 @@ for(const lockedKind of ['photo-person','scenery',undefined]){
  const values=vm.runInContext('(function(){'+prepare+'return values;})()',context);
  assert.equal(values.sourceKind,lockedKind||'unknown','Regeneration must preserve its saved input kind, including legacy unknown');
 }
+
+// Unknown defaults remain character work in every app entry; explicit scenery,
+// motifs and marks remain non-person work even when modes hide that field.
 applyCollection('halloween');
-console.log('PASS source input routes: '+cases+' collection/style/subject cases; four input kinds independent of output media, no-person and explicit person derivation, all generation/repair contracts, Halloween preservation, legacy unknown, artwork bases, picker snapshots, shuffle and saved-kind regeneration.');
+Object.assign(context,{collection:'halloween',saved:{history:[]},initialSelections,proposalBatch,sampleNode:()=>node(),renderBoard(){},formError(message){throw new Error(message);}});
+vm.runInContext(app.slice(app.indexOf('function makeProposals('),app.indexOf('\nsetCollection(',app.indexOf('function makeProposals('))),context);
+for(const costume of [AUTO,...noPersonSubjects]){
+ const expected=costume===AUTO?'参照画像の衣装を生かす':costume;
+ context.sourceKind='unknown';context.mode='detail';context.selections={...initialSelections(),costume};context.modeSnapshots={};context.proposals=[];
+ context.setMode('simple');assert.equal(context.selections.costume,expected,'Switching to a fresh mode must preserve the subject');
+ context.selections={...initialSelections(),costume};
+ vm.runInContext('(function(){'+shuffle+'})()',context);
+ assert.equal(context.selections.costume,expected,'Shuffle must not select an unintended non-person subject');
+ context.selections={...initialSelections(),costume};context.proposals=[];
+ context.makeProposals();assert.equal(context.proposals.length,3);
+ for(const proposal of context.proposals)assert.equal(proposal.costume,expected,'Every proposed combination keeps the intended subject');
+}
+
+// Run the actual generate() function through its attachment checks, metadata,
+// production prompt, save and result path; only browser/storage plumbing is stubbed.
+const generateSource=app.slice(app.indexOf('async function generate('),app.indexOf('\nfunction shareFiles(',app.indexOf('async function generate(')));
+async function generated({sourceKind='unknown',costume=AUTO,mode='detail',attachmentMode='chatgpt',lockedValues=null}={}){
+ const generationNodes=new Map(),get=id=>{if(!generationNodes.has(id))generationNodes.set(id,node());return generationNodes.get(id);};get('creator').value='';
+ const selections={...initialSelections(),medium:'透明水彩',design:'通常の一枚絵',palette:'モノクローム',type:'文字を一切入れない',costume};
+ const route=vm.createContext({sourceKinds,sourceSubjectFor,sourceKind,mode,selections,selectedProposal:mode==='auto'?{...selections}:null,attachmentMode,refs:[],historyReady:Promise.resolve(),draftReady:Promise.resolve(),creating:false,adding:false,resettingReferences:false,referenceGeneration:0,draftProfileRevision:0,performance,requestAnimationFrame:callback=>callback(),$:get,normalizeCreator,artworkProfile:()=>profile,syncSaved:async()=>{},questions,AUTO,effectiveSelections,resolveSelections,rng:random,saved:{history:[],used:[],count:0},collection:'halloween',selectionConflicts,needsReference,formError(message){get('form-error').textContent=message;},buildDirection,applyPose,uid:()=>('SOURCE-ROUTE'),drawingReferenceFor,loadDrawingReferences:async references=>{assert.equal(references.length,0);return [];},productionPlan,composePrompt,APP_VERSION:'28.3.1',stagePrompts,compactCreatorProfile,persist:async()=>{},renderHistory(){},renderBoard(){},showResult:async()=>{},effects:{celebrate(){}},lockedValues});
+ vm.runInContext(generateSource,route);
+ return vm.runInContext('generate(lockedValues)',route);
+}
+for(const mode of ['detail','simple','auto']){
+ const result=await generated({mode});assert.equal(result.values.costume,'参照画像の衣装を生かす',mode+' default uses the attached character');
+ assert.equal(result.values.sourceKind,'unknown');assert.equal(result.production.noPerson,false);
+ for(const costume of noPersonSubjects){const result=await generated({mode,costume});assert.equal(result.values.costume,costume,mode+' preserves explicit non-person output');assert.equal(result.production.noPerson,true);}
+}
+const direct=await generated({sourceKind:'illustration-person',attachmentMode:'chatgpt'});
+assert.equal(direct.values.sourceKind,'illustration-person');assert.equal(direct.references.length,1);assert.equal(direct.references[0].role,'identity');assert.ok(direct.references[0].name);assert.equal(direct.localRefs.length,0);assert.equal(direct.production.noPerson,false);
+await assert.rejects(generated({sourceKind:'illustration-person',attachmentMode:'bundle'}),/主参照/,'Tool-attachment delivery still requires the uploaded main reference');
+for(const sourceKind of ['scenery','mark-object']){
+ const result=await generated({sourceKind});assert.equal(result.values.costume,sourceKinds.find(kind=>kind.value===sourceKind).defaultSubject);assert.equal(result.production.noPerson,true);
+}
+const legacy=await generated({sourceKind:'mark-object',costume:'風景を主役にする',lockedValues:{...initialSelections(),medium:'透明水彩',design:'通常の一枚絵',palette:'モノクローム',type:'文字を一切入れない',costume:'海賊'}});
+assert.equal(legacy.values.sourceKind,'unknown');assert.equal(legacy.values.costume,'海賊','Locked legacy work keeps its concrete character choice');
+applyCollection('halloween');
+console.log('PASS source input routes: '+cases+' collection/style/subject cases; all generation/repair contracts; unknown character defaults and explicit non-person output across real generate/modes/shuffle/proposals; ChatGPT direct identity placeholder and bundle main-reference validation; saved-kind regeneration.');

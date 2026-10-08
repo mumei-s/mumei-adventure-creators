@@ -17,7 +17,7 @@ export function composePrompt({collection='halloween',creator,profile,values,var
  const sampleOnly=values.referenceMode==='preset',presetIncluded=references.some(ref=>ref.role==='preset');
  const wholeMaterial=['クリスタルホログラム造形アニメ','宝石ホログラムアニメ'].includes(values.medium);
  const photo=isPhotographicMedium(values.medium);
- const drawingReference=drawingReferenceFor(values.medium);
+ const drawingReference=references.some(ref=>ref.role==='drawing')?drawingReferenceFor(values.medium):null;
  const sourceInstructions=sampleOnly?[]:sourceKindInstructions(values,{noPerson});
  const objectSource=isNonHumanSource(values);
  const modeContract=halloweenModeContract(values,{collection,noPerson});

@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
-import {buildEditorial,editorialContract} from '../editorial.js?v=28.3.1';
-import {publicCopyContext} from '../copy-scope.js?v=28.3.1';
-import {halloweenModeContract,halloweenCopyRules} from '../halloween-mode-contract.js?v=28.3.1';
-import {typographyValues} from '../typography-options.js?v=28.3.1';
+import {buildEditorial,editorialContract} from '../editorial.js?v=28.4.0';
+import {publicCopyContext} from '../copy-scope.js?v=28.4.0';
+import {halloweenModeContract,halloweenCopyRules} from '../halloween-mode-contract.js?v=28.4.0';
+import {typographyValues} from '../typography-options.js?v=28.4.0';
 
 // Check reader-facing outputs and preservation with a deliberately ordinary
 // source theme. Merely appending a decorative pumpkin is not this contract.

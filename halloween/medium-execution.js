@@ -1,6 +1,6 @@
 // Each medium has its own positive drawing instruction. These describe the
 // visible making process; no preview image or character design is consumed.
-import {referenceWorldMedia,referenceWorldMediumContract} from './world-bases.js?v=28.3.1';
+import {referenceWorldMedia,referenceWorldMediumContract} from './world-bases.js?v=28.4.0';
 const rows=`
 実写風フィルム写真=Build one optical photograph with continuous exposure tones, fine irregular film grain in midtones and shadows, and a gradual focus transition through the scene.
 実写風スタジオ写真=Photograph the selected scene with a broad directional key and weaker fill; separate cloth, skin, stone and polished surfaces by the width of their reflections, with coherent contact shadows.

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
-import {candidateNotice,updateSelectionFeedback} from '../selection-feedback.js?v=28.3.1';
-import {candidateAvailability,selectionConflicts,selectionWarnings} from '../compatibility.js?v=28.3.1';
-import {questions} from '../catalog.js?v=28.3.1';
+import {candidateNotice,updateSelectionFeedback} from '../selection-feedback.js?v=28.4.0';
+import {candidateAvailability,selectionConflicts,selectionWarnings} from '../compatibility.js?v=28.4.0';
+import {questions} from '../catalog.js?v=28.4.0';
 
 function node(tag='div',cls='',text=''){
  const n={tag,className:cls||'',textContent:text||'',dataset:{},attributes:{},children:[],listeners:{},hidden:false,append(...items){this.children.push(...items);},replaceChildren(...items){this.children=items;},setAttribute(k,v){this.attributes[k]=v;},removeAttribute(k){delete this.attributes[k];},addEventListener(k,fn){this.listeners[k]=fn;}};

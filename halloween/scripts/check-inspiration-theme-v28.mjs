@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {questions,AUTO} from '../catalog.js?v=28.3.1';
-import {applyCollection} from '../collection.js?v=28.3.1';
+import {questions,AUTO} from '../catalog.js?v=28.4.0';
+import {applyCollection} from '../collection.js?v=28.4.0';
 
 // Execute the application statement itself: an independent filter helper would
 // miss a regression in generate() that reintroduces hidden profile suggestions.
@@ -28,9 +28,9 @@ try{
  applyCollection('halloween');
  const publicThemes=questions.find(q=>q.key==='theme').groups.flatMap(group=>group.values);
  const publicSet=new Set(publicThemes);
- assert.equal(publicThemes.length,29,'Current Halloween public scene count');
- assert.equal(publicSet.size,29,'Public scenes must be distinct');
- const removedThemes=['秘密の図書館','星を集める旅','光と影の寓話','記憶の標本室','異世界のファッションショー','古城の大広間','雨の路地'];
+ assert.equal(publicThemes.length,28,'Current Halloween public scene count');
+ assert.equal(publicSet.size,28,'Public scenes must be distinct');
+ const removedThemes=['百鬼夜行','秘密の図書館','星を集める旅','光と影の寓話','記憶の標本室','異世界のファッションショー','古城の大広間','雨の路地'];
  for(const theme of removedThemes)assert.ok(!publicSet.has(theme),theme+' must actually be absent from the public Halloween list');
 
  // Every current scene remains eligible, including the public place-based ones.
@@ -41,7 +41,7 @@ try{
  }
  for(let index=0;index<publicThemes.length;index++){
   const result=assignTheme({themes:publicThemes,random:(index+.5)/publicThemes.length});
-  assert.equal(result.input.theme,publicThemes[index],'Random selection must reach every one of the 29 public scenes');
+  assert.equal(result.input.theme,publicThemes[index],'Random selection must reach every one of the 28 public scenes');
  }
 
  // A profile containing only obsolete general fantasy/bare-location choices
@@ -86,4 +86,4 @@ try{
  applyCollection('halloween');
 }
 
-console.log('PASS '+checks+' actual app.js inspiration cases: all 29 public Halloween scenes remain eligible, obsolete-only suggestions retain AUTO, mixed suggestions filter before random selection, everyday suggestions and explicit/history/custom values remain unchanged.');
+console.log('PASS '+checks+' actual app.js inspiration cases: all 28 public Halloween scenes remain eligible, obsolete-only suggestions retain AUTO, mixed suggestions filter before random selection, everyday suggestions and explicit/history/custom values remain unchanged.');

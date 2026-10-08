@@ -1,7 +1,7 @@
 import fs from 'node:fs';
-import {questions} from '../catalog.js?v=28.3.1';
-import {applyCollection} from '../collection.js?v=28.3.1';
-import {sampleFor} from '../examples.js?v=28.3.1';
+import {questions} from '../catalog.js?v=28.4.0';
+import {applyCollection} from '../collection.js?v=28.4.0';
+import {sampleFor} from '../examples.js?v=28.4.0';
 const entries=[];
 for(const mode of ['halloween','everyday']){
  applyCollection(mode);

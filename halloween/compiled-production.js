@@ -1,11 +1,11 @@
-import {styleFidelity} from './style-fidelity.js?v=28.3.1';
-import {modeFoundation} from './japan-direction.js?v=28.3.1';
-import {imageOutputContract} from './output-contract.js?v=28.3.1';
-import {opticalSignature} from './optical-effects.js?v=28.3.1';
-import {colorPolicy} from './color-policy.js?v=28.3.1';
-import {sceneComposition} from './scene-composition.js?v=28.3.1';
-import {cameraContract} from './angles.js?v=28.3.1';
-import {photoReconstruction} from './photo-design.js?v=28.3.1';
+import {styleFidelity} from './style-fidelity.js?v=28.4.0';
+import {modeFoundation} from './japan-direction.js?v=28.4.0';
+import {imageOutputContract} from './output-contract.js?v=28.4.0';
+import {opticalSignature} from './optical-effects.js?v=28.4.0';
+import {colorPolicy} from './color-policy.js?v=28.4.0';
+import {sceneComposition} from './scene-composition.js?v=28.4.0';
+import {cameraContract} from './angles.js?v=28.4.0';
+import {photoReconstruction} from './photo-design.js?v=28.4.0';
 
 export const conditionOwners=Object.freeze({
  angle:'カメラの位置・傾き・距離・遠近',

@@ -1,36 +1,37 @@
-import {artworkBasis} from './artwork-basis.js?v=28.3.1';
-import {creatorHandoff,creatorDisplayLabel,creatorEditableName} from './creator-handoff.js?v=28.3.1';
-import {normalizeImageFile} from './image-files.js?v=28.3.1';
-import {drawingReferenceFor,loadDrawingReferences,deliveryImageFiles} from './drawing-references.js?v=28.3.1';
-import {sourceKinds,sourceSubjectFor} from './source-kind.js?v=28.3.1';
-import {inspectImageResource,createImagePreview,decodeRasterForDraw,releaseCanvas} from './image-resources.js?v=28.3.1';
-import {installNightStudio} from './night-studio.js?v=28.3.1';
-import {candidateAvailability,selectionConflicts,selectionWarnings} from './compatibility.js?v=28.3.1';
-import {updateSelectionFeedback} from './selection-feedback.js?v=28.3.1';
-import {appendRecipeEvidence} from './recipe-evidence.js?v=28.3.1';
-import {productionPlan,repairPrompt} from './production-plan.js?v=28.3.1';
-import {stagePrompts} from './production-workflow.js?v=28.3.1';
-import {createLayoutPanel} from './layout-export.js?v=28.3.1';
-import {applyPose} from './poses.js?v=28.3.1';
-import {applyCollection,dailyInspiration} from './collection.js?v=28.3.1';
-import {setupEffects} from './effects.js?v=28.3.1';
-import {colorWorlds} from './worlds.js?v=28.3.1';
-import {compactCreatorProfile} from './creator.js?v=28.3.1';
-import {createCropEditor} from './crop-editor.js?v=28.3.1';
-import {createPicker} from './picker.js?v=28.3.1';
-import {modeKeys,modeCopy,questionsForMode,initialSelections,effectiveSelections,proposalBatch} from './modes.js?v=28.3.1';
-import {buildReferenceBoard} from './guide-board.js?v=28.3.1';
-import {questions,visibleQuestions,defaults,AUTO,normalizeCreator,resolveSelections} from './catalog.js?v=28.3.1';
-import {composePrompt,needsReference} from './prompt.js?v=28.3.1';
-import {buildDirection} from './direction.js?v=28.3.1';
-import {sampleFor,typePreview} from './examples.js?v=28.3.1';
-import {makeZip} from './zip.js?v=28.3.1';
-import {imageDeliveryRepairPrompt} from './output-contract.js?v=28.3.1';
-import {editorialReferencesFor} from './editorial-reference-sources.js?v=28.3.1';
-import {HISTORY_STORAGE_FORMAT,restoreHistoryRecord,restoreHistoryCore,mergeUsedRecords,clearRestoredHistoryCache} from './history-storage.js?v=28.3.1';
-import {createHistoryPersistence,mergeHistoryStates} from './history-persistence.js?v=28.3.1';
-import {createCreatorDraft} from './creator-draft.js?v=28.3.1';
-const APP_VERSION='28.3.1';
+import {artworkBasis} from './artwork-basis.js?v=28.4.0';
+import {creatorHandoff,creatorDisplayLabel,creatorEditableName} from './creator-handoff.js?v=28.4.0';
+import {normalizeImageFile} from './image-files.js?v=28.4.0';
+import {deliveryImageFiles} from './drawing-references.js?v=28.4.0';
+import {stylePresetFor,loadStylePresets} from './style-presets.js?v=28.4.0';
+import {sourceKinds,sourceSubjectFor} from './source-kind.js?v=28.4.0';
+import {inspectImageResource,createImagePreview,decodeRasterForDraw,releaseCanvas} from './image-resources.js?v=28.4.0';
+import {installNightStudio} from './night-studio.js?v=28.4.0';
+import {candidateAvailability,selectionConflicts,selectionWarnings} from './compatibility.js?v=28.4.0';
+import {updateSelectionFeedback} from './selection-feedback.js?v=28.4.0';
+import {appendRecipeEvidence} from './recipe-evidence.js?v=28.4.0';
+import {productionPlan,repairPrompt} from './production-plan.js?v=28.4.0';
+import {stagePrompts} from './production-workflow.js?v=28.4.0';
+import {createLayoutPanel} from './layout-export.js?v=28.4.0';
+import {applyPose} from './poses.js?v=28.4.0';
+import {applyCollection,dailyInspiration} from './collection.js?v=28.4.0';
+import {setupEffects} from './effects.js?v=28.4.0';
+import {colorWorlds} from './worlds.js?v=28.4.0';
+import {compactCreatorProfile} from './creator.js?v=28.4.0';
+import {createCropEditor} from './crop-editor.js?v=28.4.0';
+import {createPicker} from './picker.js?v=28.4.0';
+import {modeKeys,modeCopy,questionsForMode,initialSelections,effectiveSelections,proposalBatch} from './modes.js?v=28.4.0';
+import {buildReferenceBoard} from './guide-board.js?v=28.4.0';
+import {questions,visibleQuestions,defaults,AUTO,normalizeCreator,resolveSelections} from './catalog.js?v=28.4.0';
+import {composePrompt,needsReference} from './prompt.js?v=28.4.0';
+import {buildDirection} from './direction.js?v=28.4.0';
+import {sampleFor,typePreview} from './examples.js?v=28.4.0';
+import {makeZip} from './zip.js?v=28.4.0';
+import {imageDeliveryRepairPrompt} from './output-contract.js?v=28.4.0';
+import {editorialReferencesFor} from './editorial-reference-sources.js?v=28.4.0';
+import {HISTORY_STORAGE_FORMAT,restoreHistoryRecord,restoreHistoryCore,mergeUsedRecords,clearRestoredHistoryCache} from './history-storage.js?v=28.4.0';
+import {createHistoryPersistence,mergeHistoryStates} from './history-persistence.js?v=28.4.0';
+import {createCreatorDraft} from './creator-draft.js?v=28.4.0';
+const APP_VERSION='28.4.0';
 const $=id=>document.getElementById(id),STORAGE='mumeis-halloween-v2';
 let saved={history:[],used:[],count:0},view='auto',migrateHistory=false,historyWriteRevision=0,resultRequest=0,historyReady=Promise.resolve();
 const historyPersistence=createHistoryPersistence({key:STORAGE});
@@ -143,6 +144,7 @@ const paletteColors={'漆黒 × 琥珀 × 象牙':['#171513','#db7d20','#f4ebd4'
 colorWorlds.forEach(x=>paletteColors[x.value]=x.colors);
 function renderBoard(values=selections,variant=null){
  clearPreparedResult();
+ renderStylePreset(values);
  const name=$('creator-name').value.trim();$('stage-id').textContent=name||'YOUR NAME';
  $('stage-line').textContent=values.type==='文字を一切入れない'||values.line==='セリフなし'?'':values.line===AUTO?(collection==='everyday'?'今日の景色を、一枚に。':'まだ見ぬ、一夜へ。'):values.line;
  $('direction-title').textContent=values.theme===AUTO?'物語は、これから。':values.theme;$('direction-medium').textContent=values.medium+' / '+values.design;$('format-badge').textContent=values.size.split('｜')[2]||'おまかせ';
@@ -153,6 +155,18 @@ function renderBoard(values=selections,variant=null){
 }
 function setView(mode){if(!['auto','phone','tablet','pc'].includes(mode))mode='auto';view=mode;document.body.dataset.view=mode;document.querySelectorAll('.view-switch button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===mode)));$('view-status').textContent={auto:'画面幅に合わせて表示',phone:'スマホの幅・大きな文字',tablet:'タブレットの幅・大きな選択枠',pc:'PCの幅・広い作業スペース'}[mode];try{localStorage.setItem('halloween-view',mode);}catch{}}
 const picker=createPicker({$,el,sampleNode,readSelection:()=>effectiveSelections(mode,selections),choose,onCustom:buildCustom,tell,artworkBasis});
+function renderStylePreset(values=selections){
+ const select=$('style-preset-select');if(!select)return;
+ if(!select.options.length){const auto=el('option',null,'おまかせ（制作時に見本も選びます）');auto.value=AUTO;select.append(auto);for(const group of questions.find(q=>q.key==='medium').groups){const node=el('optgroup');node.label=group.label;for(const medium of group.values){const option=el('option',null,medium);option.value=medium;node.append(option);}select.append(node);}}
+ select.querySelector('[data-custom-preset]')?.remove();
+ const preset=stylePresetFor(values.medium),custom=values.medium&&values.medium!==AUTO&&!preset;
+ if(custom){const option=el('option',null,'自由指定：'+values.medium);option.value=values.medium;option.dataset.customPreset='true';select.append(option);}
+ select.value=preset||custom?values.medium:AUTO;
+ $('style-preset-preview').replaceChildren(sampleNode('medium',preset||custom?values.medium:AUTO));
+ $('style-preset-status').textContent=preset?values.medium+' / 共有・制作セットにこの見本画像が入ります。':custom?'自由指定の画風です。用意済みの見本画像はなく、文章の条件で制作します。':'おまかせ：制作する画風が決まったら、その見本を一緒に準備します。';
+}
+$('style-preset-select').addEventListener('change',e=>{const value=e.target.value;if(mode==='auto'){modeSnapshots.detail={...(selectedProposal||selections)};setMode('detail');}activeQuestion=questions.find(q=>q.key==='medium');choose(value);});
+$('style-preset-browse').addEventListener('click',()=>{if(mode==='auto'){modeSnapshots.detail={...(selectedProposal||selections)};setMode('detail');}openPicker(questions.find(q=>q.key==='medium'));});
 function openPicker(q){const text=q.key==='type'||q.key==='line';if(text){if(q.key==='line')textPart='line';q=questions.find(x=>x.key===textPart);}$('text-subtabs').hidden=true;document.querySelectorAll('[data-text-part]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.textPart===q.key)));activeQuestion=q;const activeQuestions=questionsForMode(mode),i=activeQuestions.findIndex(x=>x.key===(q.key==='line'?'type':q.key));$('picker-index').textContent=String(i+1).padStart(2,'0')+' / '+activeQuestions.length;picker.open(q);}
 function buildCustom(q){const form=el('form','custom-form');if(q.key==='size'){const w=el('input'),h=el('input');w.type=h.type='number';w.min=h.min='256';w.max=h.max='16000';w.required=h.required=true;w.placeholder='幅px';h.placeholder='高さpx';w.setAttribute('aria-label','希望の幅');h.setAttribute('aria-label','希望の高さ');form.append(w,el('span',null,'×'),h);form.addEventListener('submit',e=>{e.preventDefault();const a=Number(w.value),b=Number(h.value);if(!Number.isInteger(a)||!Number.isInteger(b)||a<256||b<256||a>16000||b>16000)return;const gcd=(x,y)=>y?gcd(y,x%y):x;const d=gcd(a,b);choose('自由サイズ｜'+a+'×'+b+'｜'+a/d+':'+b/d);});}else{const input=el('input');input.required=true;input.maxLength=160;input.placeholder='希望する'+q.name;input.setAttribute('aria-label',q.name+'を自由入力');form.append(input);form.addEventListener('submit',e=>{e.preventDefault();const v=input.value.trim().replace(/[\r\n]/g,' ');if(v)choose(v);});}const b=el('button','dark-button','この内容にする');b.type='submit';form.append(b);$('custom-area').append(form,el('p','microcopy',q.key==='size'?'256〜16,000px。生成環境に対応する実寸で出力されます。':'具体的な技法や角度も指定できます。160文字まで。'));form.querySelector('input').focus();}
 function choose(v){const availability=candidateAvailability(activeQuestion.key,v,effectiveSelections(mode,selections));if(!availability.enabled){tell(availability.reason);return;}selections[activeQuestion.key]=v;const key=activeQuestion.key;renderChoices(key==='line'?'type':key);$('picker').close();document.querySelector('[data-key="'+(key==='line'?'type':key)+'"]')?.focus();const note=availability.warnings?.[0]?.reason;tell(note?activeQuestion.name+'を選びました。'+note:activeQuestion.name+'を選びました');}
@@ -199,9 +213,9 @@ async function generate(lockedValues=null){
   let variant=applyPose(buildDirection(saved.used,values.mood,rng,collection,values),values.pose);
   const edition=uid(),ordered=attachmentMode==='bundle'?[refs.find(r=>r.role==='identity'),...refs.filter(r=>r.role!=='identity')].filter(Boolean):[];
   const metadata=ordered.length?ordered.map((r,i)=>({name:'reference-'+String(i+1).padStart(2,'0')+'-'+r.name,role:r.role,width:r.width,height:r.height})):needsReference(values)?[{name:'ChatGPTへ直接添付する主参照',role:'identity'}]:[];
-  const drawing=drawingReferenceFor(values.medium),drawingReferences=drawing?[drawing]:[];
-  if(drawing)$('generation-status').textContent='選んだ宝石光彩の画風原画を準備しています…';
-  const localDrawingRefs=await loadDrawingReferences(drawingReferences);
+  const drawing=stylePresetFor(values.medium),drawingReferences=drawing?[drawing]:[];
+  if(drawing)$('generation-status').textContent='選んだ画風見本を準備しています…';
+  const localDrawingRefs=await loadStylePresets(drawingReferences);
   $('generation-status').textContent='項目名から画風・形式・場面を制作指示にしています…';
   const production=productionPlan(profile,values,variant,collection,rng);variant=production.variant;
   // A one-image bundle preserves the uploaded bytes. Multi-image flattening is optional.
@@ -218,7 +232,7 @@ function canShareFiles(files){try{return !!navigator.share&&(!navigator.canShare
 async function showResult(r){
  const request=++resultRequest;let restored=r,detailError=false;try{restored=await restoreHistoryRecord(r);}catch{detailError=true;try{restored=await restoreHistoryCore(r);}catch{if(request===resultRequest)tell('履歴の本文を読み込めませんでした。保存データは削除していません。');return;}}
  if(request!==resultRequest)return;
- try{if(!restored.localDrawingRefs&&restored.drawingReferences?.length)restored={...restored,localDrawingRefs:await loadDrawingReferences(restored.drawingReferences)};}catch(e){if(request===resultRequest)tell(e.message);return;}
+ try{if(!restored.localDrawingRefs&&restored.drawingReferences?.length)restored={...restored,localDrawingRefs:await loadStylePresets(restored.drawingReferences)};}catch(e){if(request===resultRequest)tell(e.message);return;}
  if(request!==resultRequest)return;
  clearPreparedResult();
  r=restored;if(detailError)tell('履歴の制作詳細を読み込めませんでした。保存されたプロンプトは使用できます。');
@@ -233,22 +247,22 @@ async function showResult(r){
  if(r.production){const details=el('details','production-details');details.append(el('summary',null,'この作品に反映する'+r.production.conditions.length+'項目と文字原稿'));const list=el('ol');r.production.conditions.forEach(c=>{const li=el('li');const item=el('details','recipe-specs');item.append(el('summary',null,c.name+'：'+c.value));for(const section of c.sections||[{label:'制作条件',text:c.text}]){const p=el('p');p.append(el('b',null,section.label+'：'),document.createTextNode(section.text));item.append(p);}appendRecipeEvidence(item,c.key,c.value,{known:c.known});li.append(item);list.append(li);});details.append(list);if(r.production.copy.slots.length){details.append(el('h4',null,'作品内の文字原稿'));r.production.copy.slots.forEach(slot=>details.append(el('p',null,slot.role+'：'+slot.text)));}r.production.notes.forEach(n=>details.append(el('p','production-note',n)));const sources=editorialReferencesFor(r.values.design);if(sources.length){details.append(el('h4',null,'誌面の構成を確認した資料'));for(const source of sources){const a=el('a',null,source.publisher+' / '+source.location);a.href=source.url;a.target='_blank';a.rel='noopener noreferrer';const item=el('p');item.append(a);details.append(item);}}$('result-summary').append(details);}
  if(r.stages){const workflow=el('details','production-details');workflow.id='staged-workflow';workflow.open=false;workflow.append(el('summary',null,'文字を厳密に配置したい場合の段階制作'));workflow.append(el('p',null,'通常制作は完成画像を1回で直接生成します。文字を厳密に配置したい場合は、下の段階制作も使えます。'));workflow.append(el('p',null,'段階ごとに進める場合は、下の指示を順に送れます。画風の修正には作成途中の主画像を、誌面編集には確認した主画像を添付してください。'));const actions=el('div','result-actions');for(const [key,label] of [['artwork','① 主画像の指示をコピー'],['repair','主画像の画風を直す指示'],['layout','② 誌面の指示をコピー']]){const button=el('button','secondary-button',label);button.type='button';button.dataset.stage=key;button.addEventListener('click',()=>copyStage(key));actions.append(button);}workflow.append(actions);const native=createLayoutPanel(r.production,tell);workflow.append(native.element);disposeLayoutPreview=native.dispose;$('result-summary').append(workflow);}
  $('result-refs').replaceChildren();
- if(drawingLive)r.localDrawingRefs.forEach(x=>{const f=el('figure'),im=el('img');im.src=x.url;im.alt=x.label;f.append(im,el('figcaption',null,x.label+' / 光彩と描画だけを使う'));$('result-refs').append(f);});
+ if(drawingLive)r.localDrawingRefs.forEach(x=>{const f=el('figure'),im=el('img');im.src=x.url;im.alt=x.label;f.append(im,el('figcaption',null,'共有する画風見本 / '+x.medium));const save=el('button','secondary-button','画風見本を保存');save.type='button';save.addEventListener('click',()=>download(x.file,x.file.name));f.append(save);$('result-refs').append(f);});
  if(live)r.localRefs.forEach((x,i)=>{const f=el('figure'),im=el('img');im.src=x.url;im.alt=x.name;f.append(im,el('figcaption',null,'共有する参照 '+String(i+1).padStart(2,'0')+' / '+(x.role==='avoid'?'似せない前作':x.role==='identity'?'主参照':'補助')));$('result-refs').append(f);});
  $('download-guide').disabled=!r.production;$('download-kit').disabled=false;$('copy-image').disabled=!live;$('share-all').hidden=true;$('again').hidden=!fresh;$('download-board').hidden=!live;$('download-board').textContent=live&&r.localRefs.length===1?'参照画像を保存':'参照だけを１枚に保存';$('share-board').hidden=!live;
  $('share-board').hidden=!transferLive;
- $('transfer-title').textContent=drawingLive?(live?'主参照・画風原画＋プロンプト':'画風原画＋プロンプト'):live?'参照画像＋プロンプト':'プロンプトのみ';
+ $('transfer-title').textContent=drawingLive?(live?'主参照・画風見本＋プロンプト':'画風見本＋プロンプト'):live?'参照画像＋プロンプト':'プロンプトのみ';
  $('transfer-instruction').textContent=live?'「画像＋プロンプトを共有」で、ご自身の参照画像と指示の本文を渡します。共有先に画像と指示が届いたことを確認して送信してください。見本の人物や背景は送信しません。':requires?'「プロンプトをコピー」を押し、ChatGPTで自分の参照画像を添付して同じメッセージで送ってください。':'「プロンプトをコピー」を押し、ChatGPTへ送ってください。この選択では人物の参照画像は必要ありません。';
- if(drawingLive)$('transfer-instruction').textContent=live?'「画像＋プロンプトを共有」で、ご自身の参照画像・選んだ画風原画・指示を一緒に渡します。原画は光彩と描画の参照です。人物・衣装・背景・配色はご自身の画像と選択から作ります。':requires?'画風原画を共有するか長押しで保存し、ChatGPTでご自身の主参照と一緒に添付してください。指示だけをコピーすると原画は渡りません。':'「画像＋プロンプトを共有」で、画風原画と指示を渡します。原画の人物は描かず、選択した風景や物体へ光彩を移します。';
+ if(drawingLive)$('transfer-instruction').textContent=live?'「画像＋プロンプトを共有」で、ご自身の参照画像・選んだ画風見本・指示を一緒に渡します。見本は描線・塗り・陰影・材質の参照です。人物・衣装・背景・配色はご自身の画像と選択から作ります。':requires?'画風見本を共有するか「画風見本を保存」で保存し、ChatGPTでご自身の主参照と一緒に添付してください。プロンプトのコピーだけでは見本画像は渡りません。':'「画像＋プロンプトを共有」で、画風原画と指示を渡します。見本の人物は描かず、選択した風景や物体へ描き方を移します。';
  $('transfer-instruction').textContent+=' ChatGPTの通常の画像作成を使います。5.5でもWorkやコード実行を前提にしません。';
  $('transfer-status').textContent=live?(canShareFiles(shareFiles(r).filter(f=>f.type.startsWith('image/')))?'画像と制作指示の本文を一緒に共有できます。共有先で両方を確認してください。':'このブラウザでは参照画像を長押しでコピーし、指示と一緒に送れます。'):fresh?'完成画像はChatGPT側に表示されます。':'履歴に画像データはありません。必要な場合は元の参照画像をChatGPTへ添付してください。';
- if(drawingLive)$('transfer-status').textContent=canShareFiles(deliveryImageFiles(r))?'画風原画を含む画像と指示を共有できます。共有先にすべて届いたことを確認して送ってください。':'画風原画を含む表示画像を長押しで保存し、プロンプトと一緒に添付してください。';
+ if(drawingLive)$('transfer-status').textContent=canShareFiles(deliveryImageFiles(r))?'画風見本を含む画像と指示を共有できます。共有先にすべて届いたことを確認して送ってください。':'画風見本を含む表示画像を長押しで保存し、プロンプトと一緒に添付してください。';
  $('kit-note').textContent=live?'「制作セットを保存」を使う場合は、ZIPを解凍して参照画像と prompt.txt を同じメッセージに添付してください。':'生成した画像が表示されない場合は「画像が出ないときの指示」をコピーして、同じチャットへ送れます。';
- if(drawingLive)$('kit-note').textContent='「制作セットを保存」のZIPには画風原画も入ります。解凍した画像と prompt.txt を同じメッセージへ添付してください。'+(!live&&requires?'ご自身の主参照も添付してください。':'');
+ if(drawingLive)$('kit-note').textContent='「制作セットを保存」のZIPには選んだ画風見本も入ります。解凍した画像と prompt.txt を同じメッセージへ添付してください。'+(!live&&requires?'ご自身の主参照も添付してください。':'');
  $('transfer-fallback').hidden=true;delete $('result-refs').dataset.manual;$('result').hidden=false;$('result').scrollIntoView({behavior:document.body.dataset.motion==='off'?'instant':'smooth',block:'start'});
 }
-async function copyPrompt(){if(!currentResult)return false;try{await navigator.clipboard.writeText(currentResult.prompt);tell(currentResult.drawingReferences?.length?(needsReference(currentResult.values)?'プロンプトをコピーしました。ご自身の主参照と、表示された画風原画を一緒に添付してください。':'プロンプトをコピーしました。表示された画風原画も一緒に添付してください。'):needsReference(currentResult.values)?'プロンプトをコピーしました。自分の参照画像と一緒に送ってください。':'プロンプトをコピーしました。ChatGPTへ送って画像を生成します。');return true;}catch{const ta=$('prompt-output');ta.closest('details').open=true;ta.focus();ta.select();try{if(document.execCommand('copy')){tell('プロンプトをコピーしました。');return true;}}catch{}tell('全文を選択しました。長押しでコピーできます。');return false;}}
-async function copyStage(key){const text=currentResult?.stages?.[key];if(!text)return;try{await navigator.clipboard.writeText(text);tell(currentResult.drawingReferences?.length&&['artwork','repair'].includes(key)?(key==='repair'?'修正指示をコピーしました。制作途中の主画像と、表示された画風原画を添付してください。':needsReference(currentResult.values)?'主画像の指示をコピーしました。ご自身の主参照と、表示された画風原画を添付してください。':'主画像の指示をコピーしました。表示された画風原画を添付してください。'):key==='artwork'?(needsReference(currentResult.values)?'主画像の指示をコピーしました。自分の主参照と一緒に送ってください。':'主画像の指示をコピーしました。ChatGPTへ送ってください。'):key==='repair'?'画風の修正指示をコピーしました。制作途中の主画像と一緒に送ってください。':'誌面の指示をコピーしました。確認した主画像と一緒に送ってください。');}catch{download(new Blob([text],{type:'text/plain;charset=utf-8'}),'stage-'+key+'.txt');tell('この段階の指示を保存しました。対象の画像と一緒に送ってください。');}}
+async function copyPrompt(){if(!currentResult)return false;try{await navigator.clipboard.writeText(currentResult.prompt);tell(currentResult.drawingReferences?.length?(needsReference(currentResult.values)?'プロンプトをコピーしました。ご自身の主参照と、表示された画風見本を一緒に添付してください。':'プロンプトをコピーしました。表示された画風見本も一緒に添付してください。'):needsReference(currentResult.values)?'プロンプトをコピーしました。自分の参照画像と一緒に送ってください。':'プロンプトをコピーしました。ChatGPTへ送って画像を生成します。');return true;}catch{const ta=$('prompt-output');ta.closest('details').open=true;ta.focus();ta.select();try{if(document.execCommand('copy')){tell('プロンプトをコピーしました。');return true;}}catch{}tell('全文を選択しました。長押しでコピーできます。');return false;}}
+async function copyStage(key){const text=currentResult?.stages?.[key];if(!text)return;try{await navigator.clipboard.writeText(text);tell(currentResult.drawingReferences?.length&&['artwork','repair'].includes(key)?(key==='repair'?'修正指示をコピーしました。制作途中の主画像と、表示された画風見本を添付してください。':needsReference(currentResult.values)?'主画像の指示をコピーしました。ご自身の主参照と、表示された画風見本を添付してください。':'主画像の指示をコピーしました。表示された画風見本を添付してください。'):key==='artwork'?(needsReference(currentResult.values)?'主画像の指示をコピーしました。自分の主参照と一緒に送ってください。':'主画像の指示をコピーしました。ChatGPTへ送ってください。'):key==='repair'?'画風の修正指示をコピーしました。制作途中の主画像と一緒に送ってください。':'誌面の指示をコピーしました。確認した主画像と一緒に送ってください。');}catch{download(new Blob([text],{type:'text/plain;charset=utf-8'}),'stage-'+key+'.txt');tell('この段階の指示を保存しました。対象の画像と一緒に送ってください。');}}
 async function shareAll(){
  const r=currentResult;if(!r)return;
  const files=shareFiles(r),images=files.filter(f=>f.type.startsWith('image/'));
@@ -274,13 +288,13 @@ async function copyImage(){const r=currentResult?.localRefs?.find(x=>x.role==='i
 function download(blob,name){const url=URL.createObjectURL(blob),a=el('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);}
 async function downloadKit(){const r=currentResult;if(!r)return;const b=$('download-kit');b.disabled=true;b.textContent='セットを準備中…';try{
  const images=deliveryImageFiles(r),imageNames=images.map(file=>file.name);
- const help=['画像制作セット','','1. ZIPを解凍します。',needsReference(r.values)&&!r.localRefs?.some(ref=>ref.role==='identity')?'2. ご自身の主参照を追加し、画風原画がある場合はその原画と prompt.txt を同じChatGPTのメッセージへ添付します。':imageNames.length?'2. 下の参照画像と prompt.txt を同じChatGPTのメッセージへ添付します。':needsReference(r.values)?'2. prompt.txt とご自身の主参照画像を、同じChatGPTのメッセージへ添付します。':'2. prompt.txt をChatGPTへ添付するか、中の指示をコピーして送ります。','3. prompt.txt の条件で画像を1枚描き、ChatGPTの通常の生成画像としてチャットに表示するよう送信します。','4. 完成画像が出ない場合は、ツールの「画像が出ないときの指示」を同じチャットへ送ります。','','添付する参照画像：',...imageNames,'',r.drawingReferences?.length?'宝石光彩の専用画風原画を含みます。人物・衣装・背景をそのまま流用せず、光彩と描画の参照として使います。':'選択画面の見本絵は制作セットに含めません。','名前：'+creatorDisplayLabel(r.profile),'制作番号：'+r.edition].join('\n');
+ const help=['画像制作セット','','1. ZIPを解凍します。',needsReference(r.values)&&!r.localRefs?.some(ref=>ref.role==='identity')?'2. ご自身の主参照を追加し、画風原画がある場合はその原画と prompt.txt を同じChatGPTのメッセージへ添付します。':imageNames.length?'2. 下の参照画像と prompt.txt を同じChatGPTのメッセージへ添付します。':needsReference(r.values)?'2. prompt.txt とご自身の主参照画像を、同じChatGPTのメッセージへ添付します。':'2. prompt.txt をChatGPTへ添付するか、中の指示をコピーして送ります。','3. prompt.txt の条件で画像を1枚描き、ChatGPTの通常の生成画像としてチャットに表示するよう送信します。','4. 完成画像が出ない場合は、ツールの「画像が出ないときの指示」を同じチャットへ送ります。','','添付する参照画像：',...imageNames,'',r.drawingReferences?.length?(r.drawingReferences.some(ref=>ref.role==='drawing')?'宝石光彩の専用画風原画を含みます。人物・衣装・背景をそのまま流用せず、光彩と描画の参照として使います。':'選んだ画風見本を含みます。描き方だけを参照し、人物・衣装・ポーズ・構図・背景・配色は今回の入力で決めます。'):'自由指定の画風には用意済みの見本はありません。' ,'名前：'+creatorDisplayLabel(r.profile),'制作番号：'+r.edition].join('\n');
  const files=[{name:'prompt.txt',data:new TextEncoder().encode(r.prompt)},{name:'使い方.txt',data:new TextEncoder().encode(help)}];
  for(const file of images)files.push({name:file.name,data:new Uint8Array(await file.arrayBuffer())});
  download(makeZip(files),'Artwork-'+r.edition+'.zip');tell('制作セットを保存しました。');
  }catch{tell('保存に失敗しました。プロンプトと参照画像を個別に保存してください。');}finally{b.disabled=false;b.textContent='制作セットを保存';}}
 function renderHistory(){$('history').replaceChildren();if(!saved.history.length){$('history').append(el('p','history-empty','まだ白紙のコレクション。最初の一夜をつくろう。'));return;}saved.history.forEach(r=>{const b=el('button','history-card');b.type='button';b.append(sampleNode('medium',r.values.medium),el('span','hist-id','No. '+String(r.count).padStart(3,'0')),el('b',null,r.values.theme),el('p',null,creatorDisplayLabel(r.profile)+' / '+r.values.medium),el('small',null,r.variant.face));b.addEventListener('click',()=>showResult(r));$('history').append(b);});}
-function setAttachmentMode(next){clearPreparedResult();attachmentMode=next==='bundle'?'bundle':'chatgpt';document.querySelectorAll('[name="attachment-mode"]').forEach(r=>r.checked=r.value===attachmentMode);$('drop-zone').hidden=false;$('reference-note').hidden=false;$('attachment-mode-note').textContent=attachmentMode==='bundle'?'ここにご自身のキャラ・資料を添付し、制作指示と一緒に共有します。宝石光彩を選ぶ場合は、専用の画風原画も別の参照として加わります。':'ご自身のキャラ・資料はChatGPTで直接添付します。このツールへの画像登録は不要です。宝石光彩を選ぶ場合は、専用の画風原画も制作セットから一緒に添付します。ここに画像を登録すると「このツールで添付」に切り替わります。';}
+function setAttachmentMode(next){clearPreparedResult();attachmentMode=next==='bundle'?'bundle':'chatgpt';document.querySelectorAll('[name="attachment-mode"]').forEach(r=>r.checked=r.value===attachmentMode);$('drop-zone').hidden=false;$('reference-note').hidden=false;$('attachment-mode-note').textContent=attachmentMode==='bundle'?'ここにご自身のキャラ・資料を添付し、制作指示と一緒に共有します。選んだ画風見本も別の画像として加わります。':'ご自身のキャラ・資料はChatGPTで直接添付します。このツールへの画像登録は不要です。用意済みの画風見本も、共有または制作セットから一緒に添付します。ここに画像を登録すると「このツールで添付」に切り替わります。';}
 document.querySelectorAll('[name="attachment-mode"]').forEach(r=>r.addEventListener('change',()=>setAttachmentMode(r.value)));
 $('download-board').addEventListener('click',async()=>{const r=currentResult;if(!r?.localRefs?.length)return;const b=$('download-board');b.disabled=true;const label=b.textContent;b.textContent='参照をまとめています…';try{r.referenceBoardFile||=await buildReferenceBoard(r.localRefs,r.references);download(r.referenceBoardFile,r.referenceBoardFile.name);}catch{tell('まとめられませんでした。元の参照画像はそのまま共有できます。');}finally{b.disabled=false;b.textContent=label;}});
 $('share-board').addEventListener('click',shareAll);
@@ -290,7 +304,7 @@ $('reset-profile')?.addEventListener('click',resetCreatorDraft);$('reset-referen
 $('pick-image').addEventListener('click',()=>$('image-input').click());
 $('paste-image').addEventListener('click',async()=>{try{if(!navigator.clipboard?.read)throw new Error('unsupported');const items=await navigator.clipboard.read(),files=[];for(const item of items){const type=item.types.find(t=>['image/png','image/jpeg','image/webp','image/gif'].includes(t));if(type){const blob=await item.getType(type);files.push(new File([blob],'paste-'+Date.now()+'.'+(type==='image/jpeg'?'jpg':type.split('/')[1]),{type}));}}if(!files.length)throw new Error('no image');await addFiles(files);$('paste-target').hidden=true;}catch{$('paste-target').hidden=false;$('paste-target').focus();tell('貼り付け欄を長押しして貼り付けてください。写真を選ぶこともできます。');}});
 document.addEventListener('paste',e=>{const files=Array.from(e.clipboardData?.items||[]).filter(i=>i.kind==='file').map(i=>i.getAsFile()).filter(Boolean);if(files.length&&!$('picker').open&&!$('crop-dialog').open){e.preventDefault();$('paste-target').hidden=true;addFiles(files);}else if(e.target===$('paste-target'))e.preventDefault();});$('drop-zone').addEventListener('dragover',e=>{e.preventDefault();$('drop-zone').classList.add('dragover');});$('drop-zone').addEventListener('dragleave',()=>$('drop-zone').classList.remove('dragover'));$('drop-zone').addEventListener('drop',e=>{e.preventDefault();$('drop-zone').classList.remove('dragover');addFiles(e.dataTransfer.files);});window.addEventListener('dragover',e=>{if(e.dataTransfer?.types.includes('Files'))e.preventDefault();});window.addEventListener('drop',e=>{if(e.dataTransfer?.types.includes('Files'))e.preventDefault();});
-$('shuffle').addEventListener('click',()=>{const size=selections.size,input={...Object.fromEntries(questions.map(q=>[q.key,AUTO])),size,sceneUnified:true};input.costume=sourceSubjectFor(sourceKind,input.costume,{selectedCostume:selections.costume});selections=resolveSelections(input,rng,{recent:[selections]});if(mode==='auto')selectedProposal={...selections};renderChoices();tell('サイズを保ったまま、新しい組み合わせを選びました。');});$('generate').addEventListener('click',async()=>{try{await generate();}catch(e){if($('form-error').hidden)tell(e.message);}});$('copy').addEventListener('click',copyPrompt);$('copy-repair').addEventListener('click',async()=>{if(!currentResult?.production)return;const text=repairPrompt(currentResult);try{await navigator.clipboard.writeText(text);tell('修正指示をコピーしました。完成画像と同じチャットへ送ってください。');}catch{download(new Blob([text],{type:'text/plain;charset=utf-8'}),'finish-instructions.txt');tell('修正指示を保存しました。完成画像と一緒に送ってください。');}});$('share-all').addEventListener('click',shareAll);$('share-text').addEventListener('click',shareText);$('copy-image').addEventListener('click',copyImage);$('chatgpt').addEventListener('click',()=>{window.open('https://chatgpt.com/','_blank','noopener,noreferrer');tell(currentResult&&!needsReference(currentResult.values)?'コピーした制作指示を送信してください。':'ご自身の参照画像とプロンプトを両方添付してから送信してください。');});$('download-kit').addEventListener('click',downloadKit);$('download-text').addEventListener('click',()=>{if(currentResult)download(new Blob([currentResult.prompt],{type:'text/plain;charset=utf-8'}),'Halloween-'+currentResult.edition+'.txt');});
+$('shuffle').addEventListener('click',()=>{const size=selections.size,input={...Object.fromEntries(questions.map(q=>[q.key,AUTO])),size,sceneUnified:true};input.costume=sourceSubjectFor(sourceKind,input.costume,{selectedCostume:selections.costume});selections=resolveSelections(input,rng,{recent:[selections]});if(mode==='auto')selectedProposal={...selections};renderChoices();tell('サイズを保ったまま、新しい組み合わせを選びました。');});$('generate').addEventListener('click',async()=>{try{await generate();}catch(e){if($('form-error').hidden)tell(e.message);}});$('copy').addEventListener('click',copyPrompt);$('copy-repair').addEventListener('click',async()=>{if(!currentResult?.production)return;const text=repairPrompt(currentResult);try{await navigator.clipboard.writeText(text);tell('修正指示をコピーしました。完成画像と同じチャットへ送ってください。');}catch{download(new Blob([text],{type:'text/plain;charset=utf-8'}),'finish-instructions.txt');tell('修正指示を保存しました。完成画像と一緒に送ってください。');}});$('share-all').addEventListener('click',shareAll);$('share-text').addEventListener('click',shareText);$('copy-image').addEventListener('click',copyImage);$('chatgpt').addEventListener('click',()=>{window.open('https://chatgpt.com/','_blank','noopener,noreferrer');tell(currentResult?.drawingReferences?.length?'このボタンはChatGPTを開きます。画像は自動で添付されません。「画像＋プロンプトを共有」または制作セットから、画風見本・必要な主参照・指示を添付してください。':currentResult&&!needsReference(currentResult.values)?'コピーした制作指示を送信してください。':'ご自身の参照画像とプロンプトを両方添付してから送信してください。');});$('download-kit').addEventListener('click',downloadKit);$('download-text').addEventListener('click',()=>{if(currentResult)download(new Blob([currentResult.prompt],{type:'text/plain;charset=utf-8'}),'Halloween-'+currentResult.edition+'.txt');});
 $('again').addEventListener('click',async()=>{try{const old=currentResult;if((old.collection||'halloween')!==collection)setCollection(old.collection||'halloween');sourceKind=sourceKinds.some(kind=>kind.value===old.values.sourceKind)?old.values.sourceKind:'unknown';renderSourceKinds();selections={angle:AUTO,...old.values};if(mode==='auto')selectedProposal={...old.values};renderChoices();await generate(old.values);}catch(e){tell(e.message);}});$('help').addEventListener('click',()=>$('help-dialog').showModal());document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>{const target=$(b.dataset.close);if(target instanceof HTMLDialogElement)target.close();else target.hidden=true;}));document.querySelectorAll('.view-switch button').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}}));$('clear-history').addEventListener('click',async()=>{await historyReady;if(!saved.history.length)return tell('履歴はありません。');if(window.confirm('この端末の制作履歴を消しますか？演出の重複回避記録は残ります。')){const stored=await persist({clearHistory:true});renderHistory();if(stored){clearRestoredHistoryCache();tell('履歴を消しました。');}}});
 document.querySelectorAll('.mode-switch button').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));$('propose').addEventListener('click',makeProposals);document.querySelectorAll('[data-text-part]').forEach(b=>b.addEventListener('click',()=>{textPart=b.dataset.textPart;openPicker(questions.find(q=>q.key===textPart));}));$('download-guide').addEventListener('click',()=>{if(!currentResult?.production)return;download(new Blob([[...(currentResult.production.interactions||[]),...currentResult.production.conditions.map(c=>c.name+'：'+c.value+'\n'+(c.sections||[{label:'制作条件',text:c.text}]).map(s=>s.label+'：'+s.text).join('\n'))].join('\n\n')],{type:'text/plain;charset=utf-8'}),'selected-conditions.txt');});
 $('copy-delivery').addEventListener('click',async()=>{if(!currentResult)return;const text=imageDeliveryRepairPrompt(currentResult);try{await navigator.clipboard.writeText(text);tell('再表示の指示をコピーしました。画像が出なかった同じチャットへ送ってください。');}catch{download(new Blob([text],{type:'text/plain;charset=utf-8'}),'show-finished-image.txt');tell('再表示の指示を保存しました。同じチャットへ送ってください。');}});

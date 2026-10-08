@@ -1,10 +1,10 @@
-import {everydayScenes,everydayPlaces,casualClothes,swimClothes,everydayBindings,everydaySamples} from './everyday-options.js?v=28.3.1';
-import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=28.3.1';
-import {poseGroups} from './poses.js?v=28.3.1';
-import {automaticView} from './view-constraints.js?v=28.3.1';
-import {randomChoice} from './random-selections.js?v=28.3.1';
-import {halloweenSceneGroups,halloweenSceneTitles,mergeSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.3.1';
-import {referenceWorldScenes} from './world-bases.js?v=28.3.1';
+import {everydayScenes,everydayPlaces,casualClothes,swimClothes,everydayBindings,everydaySamples} from './everyday-options.js?v=28.4.0';
+import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=28.4.0';
+import {poseGroups} from './poses.js?v=28.4.0';
+import {automaticView} from './view-constraints.js?v=28.4.0';
+import {randomChoice} from './random-selections.js?v=28.4.0';
+import {halloweenSceneGroups,halloweenSceneTitles,mergeSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.4.0';
+import {referenceWorldScenes} from './world-bases.js?v=28.4.0';
 const original=questions.map(q=>({...q,groups:q.groups.map(g=>({...g,values:[...g.values]}))}));
 const originalGroups=key=>original.find(q=>q.key===key).groups;
 const cloneGroups=groups=>groups.map(g=>({...g,values:[...g.values]}));
@@ -67,6 +67,9 @@ const optionalLabel='ホラー・Halloween（選択時のみ）';
 const seasonalScenes=new Set(halloweenSceneTitles);
 dailyGroups.theme=dailyGroups.theme.map(group=>({...group,values:group.values.filter(value=>!seasonalScenes.has(value))}));
 dailyGroups.theme.push({label:optionalLabel,values:[...halloweenSceneTitles]});
+// Japanese folklore stays available as its own explicit everyday fantasy,
+// without advertising it as a Halloween event or adding it to ordinary AUTO.
+dailyGroups.theme.push({label:'和の怪異（選択時のみ）',values:['百鬼夜行']});
 for(const key of ['costume','place']){
  const seen=new Set(dailyGroups[key].flatMap(group=>group.values));
  const missing=originalGroups(key).flatMap(group=>group.values).filter(value=>!seen.has(value)&&seen.add(value));

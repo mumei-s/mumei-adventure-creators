@@ -1,4 +1,4 @@
-import {poseAnatomyContent,poseAnatomyTechnical} from './pose-anatomy.js?v=28.3.1';
+import {poseAnatomyContent,poseAnatomyTechnical} from './pose-anatomy.js?v=28.4.0';
 
 export const poseItems=[
  {
@@ -267,7 +267,7 @@ export const poseItems=[
   {value:'弓を引く',text:'片腕で弓を前に保持し、反対の手で弦を頬の近くまで引く。一本の矢を射る直前にする。',support:'両足を横へ開き、骨盤と胸郭の安定を保つ。弓側の肩と引き手側の肘で横方向の張力を受ける。',contact:'前手は弓の握りへ、引き手は弦と矢筈へ接する。弦を張った三角形にし、一本の矢を弓の矢受けから矢筈へ連続させる。',checks:['弓を保持する腕と引き手の分離','張った一つの弦','矢受けから矢筈へ続く一本の矢']},
   {value:'長い杖を地面につく',text:'片手で長い杖を握り、杖の先を足元の地面につけて立つ。もう片手は自然に下ろす。',support:'両足裏の支持を主体に、杖先も同じ床へ接する。杖は手から先端まで途切れない一本の硬い軸にする。',contact:'一方の指を杖の中ほどへ巻き、肘を自然に曲げる。杖先へ小さな接地影を置き、魔法や武器攻撃は指定時だけ加える。',checks:['地面に接する杖先','手から先端へ続く一本の軸','杖を握る一つの手']},
   {value:'跳びながら手を伸ばす',text:'両足を地面から離し、片腕を斜め上へ大きく伸ばす。反対の腕と脚で空中の釣り合いを取る。',support:'蹴り終えた身体を地面から離し、落ち影との高さの差を作る。伸ばす手の方向へ体幹の運動を一つにする。',contact:'一本の腕を肩から指先まで伸ばし、反対の腕を横か後ろへ開く。片膝を曲げ、もう一方の脚と近遠を分けて両足の離地を示す。',checks:['斜め上に伸びる一本の腕','両足の離地','反対の腕と脚の釣り合い']}
- ].map((item,index)=>({...item,file:'pose-illustrations-v28-3/pose-'+String(index+49).padStart(3,'0')+'.svg',previewKind:'pose-diagram'}))
+ ].map((item,index)=>({...item,file:'pose-illustrations-v28-4/pose-'+String(index+49).padStart(3,'0')+'.svg',previewKind:'pose-diagram'}))
 ];
 export const poseGroups=[
  {

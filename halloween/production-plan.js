@@ -1,19 +1,19 @@
-import {creatorLookupInstructions} from './creator-handoff.js?v=28.3.1';
-import {imageOutputContract} from './output-contract.js?v=28.3.1';
-import {modeFoundation} from './japan-direction.js?v=28.3.1';
-import {questions,visibleQuestions} from './catalog.js?v=28.3.1';
-import {formatContract} from './formats.js?v=28.3.1';
-import {buildEditorial,editorialContract} from './editorial.js?v=28.3.1';
-import {optionRecipe} from './option-recipes.js?v=28.3.1';
-import {colorPolicy} from './palette-recipes.js?v=28.3.1';
-import {resolveArtDirection,interactionContract} from './art-direction.js?v=28.3.1';
-import {executionFor} from './option-execution.js?v=28.3.1';
-import {cameraContract} from './angles.js?v=28.3.1';
-import {selectionIssues} from './compatibility.js?v=28.3.1';
-import {moodConstraint} from './view-constraints.js?v=28.3.1';
-import {drawingReferenceFor,drawingReferenceInstructions} from './drawing-references.js?v=28.3.1';
-import {sourceKindInstructions,isNonHumanSource} from './source-kind.js?v=28.3.1';
-import {halloweenModeContract} from './halloween-mode-contract.js?v=28.3.1';
+import {creatorLookupInstructions} from './creator-handoff.js?v=28.4.0';
+import {imageOutputContract} from './output-contract.js?v=28.4.0';
+import {modeFoundation} from './japan-direction.js?v=28.4.0';
+import {questions,visibleQuestions} from './catalog.js?v=28.4.0';
+import {formatContract} from './formats.js?v=28.4.0';
+import {buildEditorial,editorialContract} from './editorial.js?v=28.4.0';
+import {optionRecipe} from './option-recipes.js?v=28.4.0';
+import {colorPolicy} from './palette-recipes.js?v=28.4.0';
+import {resolveArtDirection,interactionContract} from './art-direction.js?v=28.4.0';
+import {executionFor} from './option-execution.js?v=28.4.0';
+import {cameraContract} from './angles.js?v=28.4.0';
+import {selectionIssues} from './compatibility.js?v=28.4.0';
+import {moodConstraint} from './view-constraints.js?v=28.4.0';
+import {stylePresetFor,stylePresetInstructions} from './style-presets.js?v=28.4.0';
+import {sourceKindInstructions,isNonHumanSource} from './source-kind.js?v=28.4.0';
+import {halloweenModeContract} from './halloween-mode-contract.js?v=28.4.0';
 
 const independentActorText=text=>text.replace(/参照の顔立ち・目鼻口・髪型の特徴的な組合せと年齢感を保ち/g,'今回設計した独自の主役の顔立ち・目鼻口・髪型と明示された年齢感を保ち');
 
@@ -39,7 +39,7 @@ export function productionPlan(profile,values,variant,collection='halloween',ran
   const recipe=optionRecipe(q.key,values[q.key],context),sections=[...recipe.sections];
   if(q.key==='medium'&&!noPerson&&isNonHumanSource(values))for(let index=0;index<sections.length;index++)sections[index]={...sections[index],text:independentActorText(sections[index].text)};
   let checks=[...recipe.checks];
-  if(q.key==='medium')sections.push(...drawingReferenceInstructions(values.medium,{noPerson,values}).map(text=>({label:'専用画風原画の使い方',text})));
+  if(q.key==='medium')sections.push(...stylePresetInstructions(values.medium,{noPerson,values}).map(text=>({label:'画風プリセットの使い方',text})));
   if(q.key==='medium')sections.push(...sourceInstructions.map(text=>({label:'入力画像の種類と変換',text})));
   if(q.key==='theme'&&halloween){sections.push(...halloween.sections);checks.push(...halloween.checks);}
   sections.push(...(values.automaticResolution?.issues||[]).filter(issue=>issue.keys.includes(q.key)).map(issue=>({label:'自動候補の再利用の注意',text:issue.reason})));
@@ -84,7 +84,7 @@ export function productionPlan(profile,values,variant,collection='halloween',ran
 export function conditionInstructions(condition){return [condition.index+'. '+condition.name+' / '+condition.value,...(condition.sections?.map(s=>'・'+s.label+'：'+s.text)||[condition.text])];}
 export function planInstructions(plan,{omitKeys=[]}={}){return [
  '【選択を具体的に実行する制作条件】',
- drawingReferenceFor(plan.values?.medium)?'基準は選択した項目タイトルと以下の制作仕様。選択画面のUI見本は表示用として除外する。別途添付した選択画風専用の原画だけは描画技法の資料とし、人物・性別・衣装・物体・構図・背景・配色の基準へ使わない。原画の名前だけで実画像を見たと扱わない。':'基準は選択した項目タイトルと以下の制作仕様。項目の見本画像は選びやすくするための表示用であり、生成する人物・性別・物体・画風・構図の参照資料にはしない。',
+ stylePresetFor(plan.values?.medium)?'基準は選択した項目タイトルと以下の制作仕様。別途添付した、ツールが用意した選択作風のプリセット見本だけを描画技法の資料にする。人物・性別・衣装・小道具・構図・背景・配色は主参照と今回の選択から決める。画面一覧やその他の項目画像は使わず、見本の名前だけで実画像を確認したと扱わない。':'基準は選択した項目タイトルと以下の制作仕様。項目の見本画像は選びやすくするための表示用であり、生成する人物・性別・物体・画風・構図の参照資料にはしない。',
  ...sourceKindInstructions(plan.values,{noPerson:plan.noPerson}),
  '【組み合わせの優先規則】',...(plan.interactions||[]),
  ...plan.conditions.filter(c=>!omitKeys.includes(c.key)).flatMap(c=>['',...conditionInstructions(c)]),
@@ -99,7 +99,7 @@ export function repairPrompt(result){
  const noPerson=result.production?.noPerson??/風景を主役|モチーフだけ|紋章・アイコン/.test(result.values?.costume||'');
  const values=result.values||result.production?.values||{};
  const drawingMedium=values.medium;
- const drawingReference=drawingReferenceFor(drawingMedium);
+ const drawingReference=stylePresetFor(drawingMedium);
  const modeContract=halloweenModeContract(values,{collection:result.production?.collection||values.collection||'halloween',noPerson});
  const halloween=modeContract.collection==='halloween'?modeContract:null;
  const camera=cameraContract(result.values||{},{noPerson});
@@ -108,8 +108,8 @@ export function repairPrompt(result){
  ...imageOutputContract,
  '【選択した仕様へ仕上げ直す】',
  ...(camera?['【修正時も固定するカメラ】',...camera.instructions,...camera.checks]:[]),
- drawingReference?'このチャットで直前に生成した完成画像、または今回添付した修正対象の完成画像を実際に見て、下記の制作仕様と照合する。完成画像は修正対象。画風・主題・舞台・形式は項目タイトルと具体的な制作仕様を使い、今回の選択画風に対応する専用画風原画だけを描画技法の資料として併用する。選択画面のUI見本や画面一覧は不要であり、再添付を要求しない。原画の名前だけで画像を確認したと扱わず、主参照・修正対象・専用原画は実際に確認できるものだけを使う。必要な主参照や修正対象を確認できない場合のみ、その画像を求める。':'このチャットで直前に生成した完成画像、または今回添付した修正対象の完成画像を実際に見て、下記の制作仕様と照合する。完成画像は修正対象。画風・主題・舞台・形式は項目タイトルと具体的な制作仕様を使う。項目の見本画像は不要であり、見本や画面一覧の再添付を要求しない。必要な主参照や修正対象を確認できない場合のみ、その画像を求める。',
- ...drawingReferenceInstructions(drawingMedium,{noPerson,values}),
+ drawingReference?'このチャットで直前に生成した完成画像、または今回添付した修正対象の完成画像を実際に見て、下記の制作仕様と照合する。完成画像は修正対象。画風・主題・舞台・形式は項目タイトルと具体的な制作仕様を使い、ツールが用意した選択作風のプリセット見本だけを描画技法の資料として併用する。選択画面のUI見本や画面一覧は不要であり、再添付を要求しない。原画の名前だけで画像を確認したと扱わず、主参照・修正対象・専用原画は実際に確認できるものだけを使う。必要な主参照や修正対象を確認できない場合のみ、その画像を求める。':'このチャットで直前に生成した完成画像、または今回添付した修正対象の完成画像を実際に見て、下記の制作仕様と照合する。完成画像は修正対象。画風・主題・舞台・形式は項目タイトルと具体的な制作仕様を使う。項目の見本画像は不要であり、見本や画面一覧の再添付を要求しない。必要な主参照や修正対象を確認できない場合のみ、その画像を求める。',
+ ...stylePresetInstructions(drawingMedium,{noPerson,values}),
  ...sourceKindInstructions(values,{noPerson}),
  ...(halloween?['【修正時も保つHalloween版の共通世界】',halloween.executionMethod||halloween.method,...halloween.checks.map(check=>'実画像で照合：'+check)]:[]),
  noPerson?'人物なしの指定を保つ。主参照がある場合は選択主題の形・構造・模様だけを用い、人の顔・身体・衣装を新しく導入しない。':isNonHumanSource(values)?'明示された人物作品への翻案では、修正対象に既に成立した独自の主役の識別特徴を保つ。元の景色・マーク・物体を人物の顔の参照へ置き換えず、人物を新しく追加する理由にしない。':'同じ人物の識別特徴は元の主参照から保つ。修正対象の構図や衣装を、別人の顔の基準へ変更しない。',

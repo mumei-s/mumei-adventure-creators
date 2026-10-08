@@ -1,16 +1,16 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {CRYSTAL_ANIME,crystalAnimeMedium,crystalAnimeSpec,crystalAnimePalette,isCrystalAnimeLimitedPalette} from '../crystal-anime.js?v=28.3.1';
-import {questions,resolveSelections} from '../catalog.js?v=28.3.1';
-import {applyCollection} from '../collection.js?v=28.3.1';
-import {initialSelections} from '../modes.js?v=28.3.1';
-import {buildDirection} from '../direction.js?v=28.3.1';
-import {poseItems,applyPose} from '../poses.js?v=28.3.1';
-import {visualSpec} from '../visual-specs.js?v=28.3.1';
-import {lookFor} from '../looks.js?v=28.3.1';
-import {sampleFor} from '../examples.js?v=28.3.1';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.3.1';
-import {composePrompt} from '../prompt.js?v=28.3.1';
+import {CRYSTAL_ANIME,crystalAnimeMedium,crystalAnimeSpec,crystalAnimePalette,isCrystalAnimeLimitedPalette} from '../crystal-anime.js?v=28.4.0';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.0';
+import {applyCollection} from '../collection.js?v=28.4.0';
+import {initialSelections} from '../modes.js?v=28.4.0';
+import {buildDirection} from '../direction.js?v=28.4.0';
+import {poseItems,applyPose} from '../poses.js?v=28.4.0';
+import {visualSpec} from '../visual-specs.js?v=28.4.0';
+import {lookFor} from '../looks.js?v=28.4.0';
+import {sampleFor} from '../examples.js?v=28.4.0';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.0';
+import {composePrompt} from '../prompt.js?v=28.4.0';
 
 const profile={displayName:'TEST CREATOR',biography:'',topics:[],activityEnabled:false};
 const random=()=>.22;
@@ -19,7 +19,7 @@ const sceneFacialDirections=/鼻・口|鼻先|鼻翼|睫毛|虹彩|髪の|肌の
 const image=sampleFor('medium',CRYSTAL_ANIME);
 assert.equal(image.kind,'image');
 assert.match(image.src,/japan-previews-v21\//);
-assert.match(image.label,/生成の参照画像には使いません/);
+assert.match(image.label,/制作時に添付し、描き方だけを参照/);
 assert.ok(fs.existsSync(new URL('../'+crystalAnimeMedium.file,import.meta.url)));
 assert.ok(lookFor('medium',CRYSTAL_ANIME).chips.includes('白い逆光と深い影'));
 

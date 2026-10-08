@@ -1,22 +1,23 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {sourceKinds,sourceKindInstructions,isNonHumanSource,sourceSubjectFor} from '../source-kind.js?v=28.3.1';
-import {questions,visibleQuestions,resolveSelections,normalizeCreator,AUTO} from '../catalog.js?v=28.3.1';
-import {initialSelections,effectiveSelections,proposalBatch} from '../modes.js?v=28.3.1';
-import {selectionConflicts} from '../compatibility.js?v=28.3.1';
-import {buildDirection} from '../direction.js?v=28.3.1';
-import {applyPose} from '../poses.js?v=28.3.1';
-import {stagePrompts} from '../production-workflow.js?v=28.3.1';
-import {compactCreatorProfile} from '../creator.js?v=28.3.1';
-import {applyCollection} from '../collection.js?v=28.3.1';
-import {productionPlan,planInstructions,repairPrompt} from '../production-plan.js?v=28.3.1';
-import {composePrompt,needsReference} from '../prompt.js?v=28.3.1';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.3.1';
-import {artworkBasisContract,artworkBasisValues} from '../artwork-basis.js?v=28.3.1';
-import {renderInput,renderChatInput} from '../compiled-production.js?v=28.3.1';
-import {drawingReferenceFor,drawingReferenceInstructions} from '../drawing-references.js?v=28.3.1';
-import {halloweenModeContract} from '../halloween-mode-contract.js?v=28.3.1';
+import {sourceKinds,sourceKindInstructions,isNonHumanSource,sourceSubjectFor} from '../source-kind.js?v=28.4.0';
+import {questions,visibleQuestions,resolveSelections,normalizeCreator,AUTO} from '../catalog.js?v=28.4.0';
+import {initialSelections,effectiveSelections,proposalBatch} from '../modes.js?v=28.4.0';
+import {selectionConflicts} from '../compatibility.js?v=28.4.0';
+import {buildDirection} from '../direction.js?v=28.4.0';
+import {applyPose} from '../poses.js?v=28.4.0';
+import {stagePrompts} from '../production-workflow.js?v=28.4.0';
+import {compactCreatorProfile} from '../creator.js?v=28.4.0';
+import {applyCollection} from '../collection.js?v=28.4.0';
+import {productionPlan,planInstructions,repairPrompt} from '../production-plan.js?v=28.4.0';
+import {composePrompt,needsReference} from '../prompt.js?v=28.4.0';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.0';
+import {artworkBasisContract,artworkBasisValues} from '../artwork-basis.js?v=28.4.0';
+import {renderInput,renderChatInput} from '../compiled-production.js?v=28.4.0';
+import {drawingReferenceFor,drawingReferenceInstructions} from '../drawing-references.js?v=28.4.0';
+import {stylePresetFor} from '../style-presets.js?v=28.4.0';
+import {halloweenModeContract} from '../halloween-mode-contract.js?v=28.4.0';
 
 const profile={displayName:'INPUT ROUTE CHECK',activityEnabled:false},random=()=>.34;
 assert.deepEqual(sourceKinds.map(kind=>kind.value),['photo-person','illustration-person','scenery','mark-object']);
@@ -144,7 +145,7 @@ const generateSource=app.slice(app.indexOf('async function generate('),app.index
 async function generated({sourceKind='unknown',costume=AUTO,mode='detail',attachmentMode='chatgpt',lockedValues=null}={}){
  const generationNodes=new Map(),get=id=>{if(!generationNodes.has(id))generationNodes.set(id,node());return generationNodes.get(id);};get('creator').value='';
  const selections={...initialSelections(),medium:'透明水彩',design:'通常の一枚絵',palette:'モノクローム',type:'文字を一切入れない',costume};
- const route=vm.createContext({sourceKinds,sourceSubjectFor,sourceKind,mode,selections,selectedProposal:mode==='auto'?{...selections}:null,attachmentMode,refs:[],historyReady:Promise.resolve(),draftReady:Promise.resolve(),creating:false,adding:false,resettingReferences:false,referenceGeneration:0,draftProfileRevision:0,performance,requestAnimationFrame:callback=>callback(),$:get,normalizeCreator,artworkProfile:()=>profile,syncSaved:async()=>{},questions,AUTO,effectiveSelections,resolveSelections,rng:random,saved:{history:[],used:[],count:0},collection:'halloween',selectionConflicts,needsReference,formError(message){get('form-error').textContent=message;},buildDirection,applyPose,uid:()=>('SOURCE-ROUTE'),drawingReferenceFor,loadDrawingReferences:async references=>{assert.equal(references.length,0);return [];},productionPlan,composePrompt,APP_VERSION:'28.3.1',stagePrompts,compactCreatorProfile,persist:async()=>{},renderHistory(){},renderBoard(){},showResult:async()=>{},effects:{celebrate(){}},lockedValues});
+ const route=vm.createContext({sourceKinds,sourceSubjectFor,sourceKind,mode,selections,selectedProposal:mode==='auto'?{...selections}:null,attachmentMode,refs:[],historyReady:Promise.resolve(),draftReady:Promise.resolve(),creating:false,adding:false,resettingReferences:false,referenceGeneration:0,draftProfileRevision:0,performance,requestAnimationFrame:callback=>callback(),$:get,normalizeCreator,artworkProfile:()=>profile,syncSaved:async()=>{},questions,AUTO,effectiveSelections,resolveSelections,rng:random,saved:{history:[],used:[],count:0},collection:'halloween',selectionConflicts,needsReference,formError(message){get('form-error').textContent=message;},buildDirection,applyPose,uid:()=>('SOURCE-ROUTE'),stylePresetFor,loadStylePresets:async references=>{assert.equal(references.length,1,'A known style prepares one assistant-provided preset independently of character attachment mode');const ref=references[0],preset=stylePresetFor(ref.medium);assert.deepEqual(ref,preset);const bytes=fs.readFileSync(new URL('../'+preset.file,import.meta.url));return [{...preset,file:new File([bytes],preset.name,{type:preset.file.endsWith('.png')?'image/png':'image/jpeg'})}];},productionPlan,composePrompt,APP_VERSION:'28.4.0',stagePrompts,compactCreatorProfile,persist:async()=>{},renderHistory(){},renderBoard(){},showResult:async()=>{},effects:{celebrate(){}},lockedValues});
  vm.runInContext(generateSource,route);
  return vm.runInContext('generate(lockedValues)',route);
 }
@@ -155,6 +156,7 @@ for(const mode of ['detail','simple','auto']){
 }
 const direct=await generated({sourceKind:'illustration-person',attachmentMode:'chatgpt'});
 assert.equal(direct.values.sourceKind,'illustration-person');assert.equal(direct.references.length,1);assert.equal(direct.references[0].role,'identity');assert.ok(direct.references[0].name);assert.equal(direct.localRefs.length,0);assert.equal(direct.production.noPerson,false);
+assert.equal(direct.drawingReferences.length,1);assert.equal(direct.drawingReferences[0].role,'style-preset');assert.equal(direct.drawingReferences[0].medium,direct.values.medium);assert.equal(direct.localDrawingRefs.length,1);assert.equal(direct.localDrawingRefs[0].file.name,direct.drawingReferences[0].name);assert.ok(direct.prompt.includes(direct.drawingReferences[0].name),'Direct attachment mode must name the separate preset in its prompt');
 await assert.rejects(generated({sourceKind:'illustration-person',attachmentMode:'bundle'}),/主参照/,'Tool-attachment delivery still requires the uploaded main reference');
 for(const sourceKind of ['scenery','mark-object']){
  const result=await generated({sourceKind});assert.equal(result.values.costume,sourceKinds.find(kind=>kind.value===sourceKind).defaultSubject);assert.equal(result.production.noPerson,true);

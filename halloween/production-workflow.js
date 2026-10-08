@@ -1,6 +1,7 @@
-import {compileProduction} from './compiled-production.js?v=28.3.1';
-import {composeArtworkStage,composeArtworkRepair} from './artwork-stage.js?v=28.3.1';
-import {needsStagedProduction,composeLayoutStage} from './staged-production.js?v=28.3.1';
+import {compileProduction} from './compiled-production.js?v=28.4.0';
+import {stylePresetFor} from './style-presets.js?v=28.4.0';
+import {composeArtworkStage,composeArtworkRepair} from './artwork-stage.js?v=28.4.0';
+import {needsStagedProduction,composeLayoutStage} from './staged-production.js?v=28.4.0';
 
 const stagedInputs=new WeakMap();
 export function stagePrompts(plan){
@@ -29,7 +30,7 @@ export function composeStagedMaster(plan,originalLines,{verbose=false}={}){
   '完成品は1枚。第1段階で主画像を生成し、実画像を検査してから、第2段階でSVGの組版によりその画像を誌面へ配置する。この仕様書全体を一回の画像生成へ渡さない。',
   '会話の担当者が下の参照の役割と全選択を読み、第1段階と必要な画風修正の各仕様を一つの整合した場面の入力へ統合してから画像生成機能へ渡す。個別レシピや仕様資料の全文をそのまま直送しない。第2段階は同梱するSVGテンプレートをコードまたはブラウザーで描画する。照合用の全体資料や別段階の原稿を画像生成の入力に混ぜない。',
   (plan.noPerson?'第1段階は選択主題を人物なしで描く。参照を使う項目が明示されている場合だけ、その景物や配色の参照を使う。':'第1段階では作成者の主参照と、その選択に必要な補助参照だけを使う。')+'出力した主画像を実際に拡大し、画風・主題・姿勢・配色・全外形を確認する。生成した事実だけで合格としない。',
-  '画風が不適合なら、制作途中の主画像だけを添付して「画風修正用入力」を実行する。姿勢や主題の問題はその箇所を直して再検査する。未達の主画像を第2段階へ進めない。',
+  '画風が不適合なら、制作途中の主画像'+(stylePresetFor(plan.values.medium)?'と選択したプリセット見本を別画像で':'を')+'添付して「画風修正用入力」を実行する。見本の人物や場面へ置換せず、姿勢や主題の問題はその箇所を直して再検査する。未達の主画像を第2段階へ進めない。',
   '第2段階は、確認に合格した第1段階の生成画像1枚だけを素材にする。元の人物写真や選択画面の見本を再添付しない。SVGの画像枠へ元画像を埋め込み、同じ外形・画風の1図版として収める。画像生成による再描画では誌面を作らない。',
   '生成機能や確認に制約があり、この手順を完了できない場合は、どの段階が未完了か伝える。一括生成へ無言で戻したり、未検査の画像を完成扱いしたりしない。',
   '',

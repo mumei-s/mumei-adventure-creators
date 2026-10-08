@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
-import {questions,visibleQuestions,resolveSelections,AUTO} from '../catalog.js?v=28.3.1';
-import {applyCollection,landscapeScenes,noPersonSelection,dailyInspiration} from '../collection.js?v=28.3.1';
-import {initialSelections,propose,effectiveSelections} from '../modes.js?v=28.3.1';
-import {buildDirection} from '../direction.js?v=28.3.1';
-import {halloweenSceneTitles} from '../scene-presets.js?v=28.3.1';
-import {poseItems,applyPose} from '../poses.js?v=28.3.1';
-import {sampleFor,typePreview} from '../examples.js?v=28.3.1';
+import {questions,visibleQuestions,resolveSelections,AUTO} from '../catalog.js?v=28.4.0';
+import {applyCollection,landscapeScenes,noPersonSelection,dailyInspiration} from '../collection.js?v=28.4.0';
+import {initialSelections,propose,effectiveSelections} from '../modes.js?v=28.4.0';
+import {buildDirection} from '../direction.js?v=28.4.0';
+import {halloweenSceneTitles} from '../scene-presets.js?v=28.4.0';
+import {poseItems,applyPose} from '../poses.js?v=28.4.0';
+import {sampleFor,typePreview} from '../examples.js?v=28.4.0';
 let state=11987;const random=()=>((state=(Math.imul(state,1664525)+1013904223)>>>0)/4294967296);
 const valuesFor=key=>questions.find(q=>q.key===key).groups.flatMap(g=>g.values);
 applyCollection('halloween');
@@ -62,7 +62,7 @@ const dailySample=sampleFor('theme',AUTO);assert.ok(dailySample.srcs.every(src=>
 assert.doesNotMatch(typePreview('新聞風・記事と段組み').blocks.join(' '),/NIGHT|夜の/);
 const inspiration=dailyInspiration({inspiration:{labels:['光彩','旅','創作'],objects:['魔法の杖','本','幽霊']}}).inspiration;
 assert.ok(inspiration.themes.every(name=>!name.includes('星明かり')));assert.deepEqual(inspiration.objects,['本']);
-for(let i=0;i<3;i++){applyCollection('halloween');assert.equal(JSON.stringify(questions.map(q=>({key:q.key,name:q.name,hint:q.hint,groups:q.groups}))),halloweenSnapshot);assert.equal(questions.reduce((n,q)=>n+q.groups.flatMap(g=>g.values).length,0),579);applyCollection('everyday');}
+for(let i=0;i<3;i++){applyCollection('halloween');assert.equal(JSON.stringify(questions.map(q=>({key:q.key,name:q.name,hint:q.hint,groups:q.groups}))),halloweenSnapshot);assert.equal(questions.reduce((n,q)=>n+q.groups.flatMap(g=>g.values).length,0),578);applyCollection('everyday');}
 applyCollection('halloween');
 for(let i=0;i<120;i++){const values=resolveSelections(initialSelections(),random);for(const q of questions)assert.ok(values[q.key]===AUTO||valuesFor(q.key).includes(values[q.key])||q.autoValues?.includes(values[q.key]));}
 console.log('v11 collections: ordinary AUTO defaults; explicit fantasy/horror/Halloween scenes, costumes and places without duplicates; retained clothing/closed eyes/pose/camera/limited palette; subject-free scenery, 72 poses and mode restoration passed.');

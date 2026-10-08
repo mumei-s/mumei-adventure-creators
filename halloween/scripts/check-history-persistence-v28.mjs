@@ -1,19 +1,19 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {createHistoryPersistence} from '../history-persistence.js?v=28.3.1';
-import {createIndexedHistoryStore} from '../indexed-history.js?v=28.3.1';
-import {compactHistoryRecord,restoreHistoryRecord,restoreHistoryCore} from '../history-storage.js?v=28.3.1';
-import {resolveSelections} from '../catalog.js?v=28.3.1';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.3.1';
-import {stagePrompts} from '../production-workflow.js?v=28.3.1';
-import {composePrompt} from '../prompt.js?v=28.3.1';
-import {buildDirection} from '../direction.js?v=28.3.1';
+import {createHistoryPersistence} from '../history-persistence.js?v=28.4.0';
+import {createIndexedHistoryStore} from '../indexed-history.js?v=28.4.0';
+import {compactHistoryRecord,restoreHistoryRecord,restoreHistoryCore} from '../history-storage.js?v=28.4.0';
+import {resolveSelections} from '../catalog.js?v=28.4.0';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.0';
+import {stagePrompts} from '../production-workflow.js?v=28.4.0';
+import {composePrompt} from '../prompt.js?v=28.4.0';
+import {buildDirection} from '../direction.js?v=28.4.0';
 
 const key='mumeis-halloween-v2',random=()=>.28,profile={displayName:'保存容量の検査',topics:[]};
 const values=resolveSelections({sceneUnified:true,design:'新聞の一面',medium:'クリスタルホログラム造形アニメ',theme:'宇宙のHalloween',costume:'ヴィクトリア朝の正装',pose:'片手を差し出す',type:'新聞風・記事と段組み'},random);
 const production=productionPlan(profile,values,buildDirection([],values.mood,random,'halloween',values),'halloween',random);
-const record={version:'28.3.1',collection:'halloween',profile,values,variant:production.variant,production,stages:stagePrompts(production),edition:'LATEST',references:[],date:'2026-10-08T00:00:00Z',count:12};record.prompt=composePrompt({...record,creator:'',preparedPlan:production});
+const record={version:'28.4.0',collection:'halloween',profile,values,variant:production.variant,production,stages:stagePrompts(production),edition:'LATEST',references:[],date:'2026-10-08T00:00:00Z',count:12};record.prompt=composePrompt({...record,creator:'',preparedPlan:production});
 const state={history:Array.from({length:12},(_,i)=>({...record,edition:i?'OLD-'+i:'LATEST',date:new Date(Date.parse(record.date)-i*1000).toISOString(),count:12-i})),used:Array.from({length:2000},(_,i)=>({signature:'used-'+i,face:'left',pose:'手を上げる',layout:'中央配置'})),count:12};
 const original=JSON.stringify(state);
 class MemoryDatabase{

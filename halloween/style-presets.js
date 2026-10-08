@@ -1,4 +1,4 @@
-import {drawingReferenceFor,drawingReferenceInstructions,loadDrawingReferences} from './drawing-references.js?v=28.4.0';
+import {drawingReferenceFor,drawingReferenceInstructions,loadDrawingReferences} from './drawing-references.js?v=28.4.1';
 
 // Assistant-provided, repository-owned style samples. Character uploads remain separate.
 // File mappings are explicit: no arbitrary URL or filename can become a preset.

@@ -8,3 +8,5 @@
 .design-sample .sample-image{object-fit:contain!important;background:#f8f1e7}
 
 .compatibility-reason{font-size:.8rem;line-height:1.4;color:#783719;margin:.35rem 0}.sample-card.incompatible{opacity:.67}.option-button:disabled,.ring-pick:disabled{opacity:.5;cursor:not-allowed}.ring-focus .compatibility-reason{max-width:18rem;background:#fff5df;padding:.5rem;border-radius:.5rem}
+
+.choice-item{min-width:0;display:flex;flex-direction:column;gap:4px}.choice-item>.choice{width:100%;height:100%;flex:1}.choice-random{align-self:flex-end;min-height:44px;padding:6px 12px;border:1px solid currentColor;border-radius:8px;background:var(--paper,#fff3df);color:var(--ink,#21170d);font:inherit;font-size:.875rem;font-weight:700;cursor:pointer}.choice-random:hover{background:#ffd79a}.choice-random:focus-visible{outline:3px solid #a84810;outline-offset:2px}#picker .picker-bottom #picker-random{min-height:44px;font-size:.875rem;padding:6px 10px}

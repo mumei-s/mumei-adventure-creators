@@ -1,5 +1,5 @@
-import {renderEditorialLayout} from './editorial-layout.js?v=28.4.0';
-import {inspectImageResource,decodeRasterForDraw,releaseCanvas} from './image-resources.js?v=28.4.0';
+import {renderEditorialLayout} from './editorial-layout.js?v=28.4.1';
+import {inspectImageResource,decodeRasterForDraw,releaseCanvas} from './image-resources.js?v=28.4.1';
 
 const node=(tag,text,className)=>{const e=document.createElement(tag);if(text)e.textContent=text;if(className)e.className=className;return e;};
 const placeholder='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/aWQAAAAASUVORK5CYII=';

@@ -1,5 +1,5 @@
-import {candidateAvailability} from './compatibility.js?v=28.4.0';
-import {automaticView} from './view-constraints.js?v=28.4.0';
+import {candidateAvailability} from './compatibility.js?v=28.4.1';
+import {automaticView} from './view-constraints.js?v=28.4.1';
 
 export const automaticSelection=automaticView;
 export function automaticCandidates(question){
@@ -12,6 +12,18 @@ export function randomChoice(values,random=Math.random,{recent=[],offset=0}={}){
  const available=unseen.length?unseen:notLast.length?notLast:values;
  const draw=Number(random()),unit=Number.isFinite(draw)?Math.max(0,Math.min(1-Number.EPSILON,draw)):0;
  return available[(Math.floor(unit*available.length)+offset)%available.length];
+}
+// Draw one real option without resolving or replacing any other field.
+export function randomItemSelection(question,values,random=Math.random){
+ const candidates=[...new Set(question.groups.flatMap(group=>group.values))]
+  .filter(value=>!automaticSelection(value)&&value!==values[question.key])
+  .map(value=>({value,...candidateAvailability(question.key,value,values)}));
+ const allowed=candidates.filter(candidate=>candidate.enabled);
+ const compatible=allowed.filter(candidate=>candidate.status==='compatible');
+ const pool=compatible.length?compatible:allowed;
+ if(!pool.length)return {value:null,reason:candidates[0]?.reason||'他の選択を保ったまま変更できる候補がありません。'};
+ const value=randomChoice(pool.map(candidate=>candidate.value),random);
+ return {value,warnings:pool.find(candidate=>candidate.value===value).warnings};
 }
 export function selectionFingerprint(values,keys){
  // The unified scene owns its internal place. Hidden dialogue and a different

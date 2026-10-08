@@ -1,19 +1,19 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.0';
-import {applyCollection} from '../collection.js?v=28.4.0';
-import {initialSelections} from '../modes.js?v=28.4.0';
-import {buildDirection} from '../direction.js?v=28.4.0';
-import {applyPose} from '../poses.js?v=28.4.0';
-import {optionRecipe} from '../option-recipes.js?v=28.4.0';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.0';
-import {composePrompt} from '../prompt.js?v=28.4.0';
-import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.0';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.0';
-import {isPhotographicMedium,photoReconstruction} from '../photo-design.js?v=28.4.0';
-import {cameraContract} from '../angles.js?v=28.4.0';
-import {colorPolicy} from '../color-policy.js?v=28.4.0';
-import {artworkBasis,artworkBasisContract} from '../artwork-basis.js?v=28.4.0';
-import {referenceWorldMapping,referenceWorldMediumContract,referenceWorldSceneRecipe} from '../world-bases.js?v=28.4.0';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.1';
+import {applyCollection} from '../collection.js?v=28.4.1';
+import {initialSelections} from '../modes.js?v=28.4.1';
+import {buildDirection} from '../direction.js?v=28.4.1';
+import {applyPose} from '../poses.js?v=28.4.1';
+import {optionRecipe} from '../option-recipes.js?v=28.4.1';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.1';
+import {composePrompt} from '../prompt.js?v=28.4.1';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.1';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.1';
+import {isPhotographicMedium,photoReconstruction} from '../photo-design.js?v=28.4.1';
+import {cameraContract} from '../angles.js?v=28.4.1';
+import {colorPolicy} from '../color-policy.js?v=28.4.1';
+import {artworkBasis,artworkBasisContract} from '../artwork-basis.js?v=28.4.1';
+import {referenceWorldMapping,referenceWorldMediumContract,referenceWorldSceneRecipe} from '../world-bases.js?v=28.4.1';
 
 // Verify the actual handoff contracts, not a generated image. No sample pixels
 // or invented interpretation of a reference image is used by these checks.

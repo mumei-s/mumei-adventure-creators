@@ -1,4 +1,4 @@
-import {isPhotographicMedium} from './photo-design.js?v=28.4.0';
+import {isPhotographicMedium} from './photo-design.js?v=28.4.1';
 
 // This is an input reading choice, independent of the ten output selections.
 // Unknown and older saved work deliberately retain their original instructions.
@@ -39,4 +39,10 @@ export function sourceKindInstructions(values={}, {noPerson}={}){
  }
  instructions.push('衣装・主役、表情、ポーズ、カメラ、構図、背景、配色、文字の可否は今回の実際の選択に従う。入力の背景・衣服・ポーズ・文章を自動継承せず、入力区分だけで未選択の人物・小物・文字を追加しない。識別色と明示された限定配色が衝突する場合は、固有の形と許可色の明度差で識別を保つ。');
  return instructions;
+}
+
+export function characterProportionInstruction(values,{noPerson=false}={}){
+ if(noPerson||isNonHumanSource(values)||isPhotographicMedium(values.medium))return '';
+ if(values.medium==='ちびキャラ')return '頭身：ちびキャラを明示したため低い頭身へ整理する。年齢感と本人の識別特徴は維持する。';
+ return '頭身：人物の主参照の基本頭身と体格を保つ。主参照がちびなら、大きな頭・短い胴体と四肢の比率を維持し、通常頭身へ伸ばさない。描線・塗り・発光・透明材質・ポリゴンへの変換だけでは頭身を変更しない。頭身変更が今回明示された場合だけ、その指定を優先する。';
 }

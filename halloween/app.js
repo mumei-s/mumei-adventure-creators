@@ -1,49 +1,50 @@
-import {artworkBasis} from './artwork-basis.js?v=28.4.0';
-import {creatorHandoff,creatorDisplayLabel,creatorEditableName} from './creator-handoff.js?v=28.4.0';
-import {normalizeImageFile} from './image-files.js?v=28.4.0';
-import {deliveryImageFiles} from './drawing-references.js?v=28.4.0';
-import {stylePresetFor,loadStylePresets} from './style-presets.js?v=28.4.0';
-import {sourceKinds,sourceSubjectFor} from './source-kind.js?v=28.4.0';
-import {inspectImageResource,createImagePreview,decodeRasterForDraw,releaseCanvas} from './image-resources.js?v=28.4.0';
-import {installNightStudio} from './night-studio.js?v=28.4.0';
-import {candidateAvailability,selectionConflicts,selectionWarnings} from './compatibility.js?v=28.4.0';
-import {updateSelectionFeedback} from './selection-feedback.js?v=28.4.0';
-import {appendRecipeEvidence} from './recipe-evidence.js?v=28.4.0';
-import {productionPlan,repairPrompt} from './production-plan.js?v=28.4.0';
-import {stagePrompts} from './production-workflow.js?v=28.4.0';
-import {createLayoutPanel} from './layout-export.js?v=28.4.0';
-import {applyPose} from './poses.js?v=28.4.0';
-import {applyCollection,dailyInspiration} from './collection.js?v=28.4.0';
-import {setupEffects} from './effects.js?v=28.4.0';
-import {colorWorlds} from './worlds.js?v=28.4.0';
-import {compactCreatorProfile} from './creator.js?v=28.4.0';
-import {createCropEditor} from './crop-editor.js?v=28.4.0';
-import {createPicker} from './picker.js?v=28.4.0';
-import {modeKeys,modeCopy,questionsForMode,initialSelections,effectiveSelections,proposalBatch} from './modes.js?v=28.4.0';
-import {buildReferenceBoard} from './guide-board.js?v=28.4.0';
-import {questions,visibleQuestions,defaults,AUTO,normalizeCreator,resolveSelections} from './catalog.js?v=28.4.0';
-import {composePrompt,needsReference} from './prompt.js?v=28.4.0';
-import {buildDirection} from './direction.js?v=28.4.0';
-import {sampleFor,typePreview} from './examples.js?v=28.4.0';
-import {makeZip} from './zip.js?v=28.4.0';
-import {imageDeliveryRepairPrompt} from './output-contract.js?v=28.4.0';
-import {editorialReferencesFor} from './editorial-reference-sources.js?v=28.4.0';
-import {HISTORY_STORAGE_FORMAT,restoreHistoryRecord,restoreHistoryCore,mergeUsedRecords,clearRestoredHistoryCache} from './history-storage.js?v=28.4.0';
-import {createHistoryPersistence,mergeHistoryStates} from './history-persistence.js?v=28.4.0';
-import {createCreatorDraft} from './creator-draft.js?v=28.4.0';
-const APP_VERSION='28.4.0';
+import {artworkBasis} from './artwork-basis.js?v=28.4.1';
+import {creatorHandoff,creatorDisplayLabel,creatorEditableName} from './creator-handoff.js?v=28.4.1';
+import {normalizeImageFile} from './image-files.js?v=28.4.1';
+import {deliveryImageFiles} from './drawing-references.js?v=28.4.1';
+import {stylePresetFor,loadStylePresets} from './style-presets.js?v=28.4.1';
+import {sourceKinds,sourceSubjectFor} from './source-kind.js?v=28.4.1';
+import {inspectImageResource,createImagePreview,decodeRasterForDraw,releaseCanvas} from './image-resources.js?v=28.4.1';
+import {installNightStudio} from './night-studio.js?v=28.4.1';
+import {candidateAvailability,selectionConflicts,selectionWarnings} from './compatibility.js?v=28.4.1';
+import {updateSelectionFeedback} from './selection-feedback.js?v=28.4.1';
+import {appendRecipeEvidence} from './recipe-evidence.js?v=28.4.1';
+import {productionPlan,repairPrompt} from './production-plan.js?v=28.4.1';
+import {stagePrompts} from './production-workflow.js?v=28.4.1';
+import {createLayoutPanel} from './layout-export.js?v=28.4.1';
+import {applyPose} from './poses.js?v=28.4.1';
+import {applyCollection,dailyInspiration} from './collection.js?v=28.4.1';
+import {setupEffects} from './effects.js?v=28.4.1';
+import {colorWorlds} from './worlds.js?v=28.4.1';
+import {compactCreatorProfile} from './creator.js?v=28.4.1';
+import {createCropEditor} from './crop-editor.js?v=28.4.1';
+import {createPicker} from './picker.js?v=28.4.1';
+import {modeKeys,modeCopy,questionsForMode,initialSelections,effectiveSelections,proposalBatch} from './modes.js?v=28.4.1';
+import {buildReferenceBoard} from './guide-board.js?v=28.4.1';
+import {questions,visibleQuestions,defaults,AUTO,normalizeCreator,resolveSelections} from './catalog.js?v=28.4.1';
+import {composePrompt,needsReference} from './prompt.js?v=28.4.1';
+import {buildDirection} from './direction.js?v=28.4.1';
+import {sampleFor,typePreview} from './examples.js?v=28.4.1';
+import {makeZip} from './zip.js?v=28.4.1';
+import {imageDeliveryRepairPrompt} from './output-contract.js?v=28.4.1';
+import {editorialReferencesFor} from './editorial-reference-sources.js?v=28.4.1';
+import {HISTORY_STORAGE_FORMAT,restoreHistoryRecord,restoreHistoryCore,mergeUsedRecords,clearRestoredHistoryCache} from './history-storage.js?v=28.4.1';
+import {createHistoryPersistence,mergeHistoryStates} from './history-persistence.js?v=28.4.1';
+import {createCreatorDraft} from './creator-draft.js?v=28.4.1';
+import {randomItemSelection} from './random-selections.js?v=28.4.1';
+const APP_VERSION='28.4.1';
 const $=id=>document.getElementById(id),STORAGE='mumeis-halloween-v2';
 let saved={history:[],used:[],count:0},view='auto',migrateHistory=false,historyWriteRevision=0,resultRequest=0,historyReady=Promise.resolve();
 const historyPersistence=createHistoryPersistence({key:STORAGE});
 const creatorDraft=createCreatorDraft();
-let draftReady=Promise.resolve(),draftProfileRevision=0,draftReferenceRevision=0,referenceGeneration=0,resettingReferences=false;const profileTouched=new Set();
+let draftReady=Promise.resolve(),draftProfileRevision=0,draftReferenceRevision=0,referenceGeneration=0,inputRevision=0,resettingReferences=false;const profileTouched=new Set();
 const draftMessages={profile:'',references:''};
 function normalizeSavedHistory(value){return {...value,history:value.history.map(r=>({...r,values:{angle:AUTO,pose:AUTO,line:AUTO,...r?.values}})).filter(x=>x&&(typeof x.prompt==='string'||x.coreArchive)&&x.values&&questions.every(q=>typeof x.values[q.key]==='string')&&x.variant&&x.profile&&Array.isArray(x.references)).slice(0,12),used:value.used.filter(x=>x&&typeof x.signature==='string').slice(-2000),count:Number.isSafeInteger(value.count)?value.count:0};}
 try{const v=JSON.parse(localStorage.getItem(STORAGE)||'null');if(v&&Array.isArray(v.history)&&Array.isArray(v.used)){saved=normalizeSavedHistory(v);migrateHistory=v.storageFormat!==HISTORY_STORAGE_FORMAT;}view=localStorage.getItem('halloween-view')||'auto';}catch{}
 let selections=initialSelections(),refs=[],activeQuestion=null,currentResult=null,adding=false,creating=false,loadedProfile=null,profileController=null,toastTimer,textPart='type';
 let sourceKind='unknown';try{const stored=localStorage.getItem('atelier-source-kind-v1');if(sourceKinds.some(kind=>kind.value===stored))sourceKind=stored;}catch{}
 let disposeLayoutPreview=()=>{},resultObjectURLs=[];
-function clearPreparedResult(){resultRequest++;for(const url of resultObjectURLs)URL.revokeObjectURL(url);resultObjectURLs=[];disposeLayoutPreview();disposeLayoutPreview=()=>{};currentResult=null;$('result').hidden=true;$('result-refs').replaceChildren();$('result-summary').replaceChildren();$('prompt-output').value='';}
+function clearPreparedResult(){inputRevision++;resultRequest++;for(const url of resultObjectURLs)URL.revokeObjectURL(url);resultObjectURLs=[];disposeLayoutPreview();disposeLayoutPreview=()=>{};currentResult=null;$('result').hidden=true;$('result-refs').replaceChildren();$('result-summary').replaceChildren();$('prompt-output').value='';}
 try{
  if(!localStorage.getItem(STORAGE)){
  const old=JSON.parse(localStorage.getItem('mumeis-halloween-v1')||'null');
@@ -81,7 +82,7 @@ function renderDraftStatus(){const status=$('draft-status');if(status)status.tex
 function draftSaveMessage(result,label){return result.saved?label+'をこの端末に保持しました。':result.conflict?'別の画面で'+label+'がリセットされています。再読み込みして確認してください。':(result.message||'端末内への保存を完了できませんでした。')+' '+label+'の以前の保存内容は残っています。今回の変更は再読み込みで戻る場合があります。';}
 async function prepareReferenceView(file){const dimensions=await inspectImageResource(file),preview=await createImagePreview(file,{dimensions,maxEdge:1200});return {previewFile:preview.file,url:URL.createObjectURL(preview.file),width:dimensions.width,height:dimensions.height};}
 async function persistDraftProfile(field){
- if(field)profileTouched.add(field);const revision=++draftProfileRevision;draftMessages.profile='ID・名前・活動を端末に保存中…';renderDraftStatus();await draftReady;if(revision!==draftProfileRevision)return;
+ if(field)profileTouched.add(field);clearPreparedResult();const revision=++draftProfileRevision;draftMessages.profile='ID・名前・活動を端末に保存中…';renderDraftStatus();await draftReady;if(revision!==draftProfileRevision)return;
  const snapshot={creator:$('creator').value,name:$('creator-name').value,activity:$('activity').value};
  const result=await creatorDraft.saveProfile(snapshot,{shouldWrite:()=>revision===draftProfileRevision});if(revision!==draftProfileRevision||result.cancelled)return;draftMessages.profile=draftSaveMessage(result,'ID・名前・活動');renderDraftStatus();
 }
@@ -133,11 +134,32 @@ let boardArtKey='',attachmentMode='bundle';const effects=setupEffects();
 let collection='halloween',collectionSnapshots={},mode='detail',modeSnapshots={detail:{...selections}},proposals=[],selectedProposal=null;
 let tagsEnabled=false,excludedTopics=new Set(),ideaSnapshot=null,ideaApplied=null;
 const cropEditor=createCropEditor({$,tell,onApply:async(ref,edit)=>{if(!refs.includes(ref))return;const generation=referenceGeneration,originalFile=ref.originalFile||ref.file,preview=await prepareReferenceView(edit.file);if(generation!==referenceGeneration||!refs.includes(ref)){URL.revokeObjectURL(preview.url);return;}URL.revokeObjectURL(ref.url);Object.assign(ref,{...preview,originalFile,file:edit.file,name:edit.file.name,crop:edit.crop});renderRefs();await persistDraftReferences();}});
-function renderChoices(picked){
- const existing=new Map([...$('choices').children].map(b=>[b.dataset.key,b])),nodes=[];questionsForMode(mode).forEach((q,i)=>{const stamp=collection+'|'+mode+'|'+i+'|'+q.name+'|'+selections[q.key]+(q.key==='type'?'|'+selections.line:'')+'|'+(q.key==='costume'?refs.find(r=>r.role==='identity')?.url||'':'');const old=existing.get(q.key);if(old?.dataset.stamp===stamp){old.classList.remove('just-picked');nodes.push(old);return;}const b=el('button','choice'+(picked===q.key?' just-picked':''));b.type='button';b.dataset.key=q.key;b.dataset.stamp=stamp;b.setAttribute('aria-haspopup','dialog');b.setAttribute('aria-label',q.name+'：'+displayValue(q,selections[q.key])+'。選択を変更');
- const copy=el('span','choice-content');copy.append(el('span','choice-name',String(i+1).padStart(2,'0')+' / '+q.name),el('b','choice-value',displayValue(q,selections[q.key])),el('span','choice-hint',q.hint));b.append(copy,sampleNode(q.key,selections[q.key]),el('span','choice-plus','＋'));b.addEventListener('click',()=>openPicker(q));nodes.push(b);});$('choices').replaceChildren(...nodes);
+function randomizeItem(q){
  const input=mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:effectiveSelections(mode,selections);
- updateSelectionFeedback({panel:$('selection-notice'),choices:nodes,questions,values:input,el,onEdit:openPicker,issues:[...selectionConflicts(input).map(issue=>({...issue,status:'blocked'})),...selectionWarnings(input).map(issue=>({...issue,status:'warning'}))]});
+ const draw=randomItemSelection(q,input,rng);
+ if(!draw.value){tell(draw.reason);return;}
+ selections[q.key]=draw.value;
+ if(mode==='auto'&&selectedProposal)selectedProposal={...selectedProposal,[q.key]:draw.value};
+ renderChoices(q.key);
+ tell(q.name+'：'+displayValue(q,draw.value)+(draw.warnings?.[0]?.reason?'。'+draw.warnings[0].reason:''));
+ return true;
+}
+function renderChoices(picked){
+ const existing=new Map([...$('choices').children].map(row=>[row.dataset.choiceKey,row])),nodes=[],buttons=[];
+ questionsForMode(mode).forEach((q,i)=>{
+  const stamp=collection+'|'+mode+'|'+i+'|'+q.name+'|'+selections[q.key]+(q.key==='type'?'|'+selections.line:'')+'|'+(q.key==='costume'?refs.find(r=>r.role==='identity')?.url||'':'');
+  const old=existing.get(q.key);
+  if(old?.dataset.stamp===stamp){const button=old.querySelector('.choice');button.classList.remove('just-picked');buttons.push(button);nodes.push(old);return;}
+  const row=el('div','choice-item');row.dataset.choiceKey=q.key;row.dataset.stamp=stamp;
+  const b=el('button','choice'+(picked===q.key?' just-picked':''));b.type='button';b.dataset.key=q.key;b.setAttribute('aria-haspopup','dialog');b.setAttribute('aria-label',q.name+'：'+displayValue(q,selections[q.key])+'。選択を変更');
+  const copy=el('span','choice-content');copy.append(el('span','choice-name',String(i+1).padStart(2,'0')+' / '+q.name),el('b','choice-value',displayValue(q,selections[q.key])),el('span','choice-hint',q.hint));
+  b.append(copy,sampleNode(q.key,selections[q.key]),el('span','choice-plus','＋'));b.addEventListener('click',()=>openPicker(q));
+  const random=el('button','choice-random','🎲 ランダム');random.type='button';random.dataset.randomKey=q.key;random.setAttribute('aria-label',q.name+'だけをランダムに変更');random.addEventListener('click',()=>randomizeItem(q));
+  row.append(b,random);buttons.push(b);nodes.push(row);
+ });
+ $('choices').replaceChildren(...nodes);
+ const input=mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:effectiveSelections(mode,selections);
+ updateSelectionFeedback({panel:$('selection-notice'),choices:buttons,questions,values:input,el,onEdit:openPicker,issues:[...selectionConflicts(input).map(issue=>({...issue,status:'blocked'})),...selectionWarnings(input).map(issue=>({...issue,status:'warning'}))]});
  renderBoard(mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:selections);syncActivity();
 }
 const paletteColors={'漆黒 × 琥珀 × 象牙':['#171513','#db7d20','#f4ebd4'],'深紅 × 黒 × 古金':['#811722','#171513','#b79538'],'群青 × 月白 × 銀':['#263774','#f1f5fc','#bbc5d1'],'紫 × 黒 × 酸性グリーン':['#623084','#171513','#d7ed26'],'藍墨 × 朱 × 和紙の白':['#263d51','#c54022','#ebe4d7'],'桃色 × 墨黒 × 真珠':['#ec92b6','#262122','#f1eaed'],'墨一色':['#141414','#707070','#f3f1eb'],'モノクローム':['#191919','#777','#eee'],'セピア':['#533e26','#ab8353','#e7caa2']};
@@ -154,7 +176,7 @@ function renderBoard(values=selections,variant=null){
  $('issue-number').textContent='No. '+String(saved.count+1).padStart(3,'0');const artKey=JSON.stringify(['medium','theme','costume','palette','design'].map(k=>values[k]));if(artKey!==boardArtKey){boardArtKey=artKey;$('board-samples').replaceChildren(sampleNode('medium',values.medium),sampleNode('design',values.design));renderHangingGallery(values);}
 }
 function setView(mode){if(!['auto','phone','tablet','pc'].includes(mode))mode='auto';view=mode;document.body.dataset.view=mode;document.querySelectorAll('.view-switch button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===mode)));$('view-status').textContent={auto:'画面幅に合わせて表示',phone:'スマホの幅・大きな文字',tablet:'タブレットの幅・大きな選択枠',pc:'PCの幅・広い作業スペース'}[mode];try{localStorage.setItem('halloween-view',mode);}catch{}}
-const picker=createPicker({$,el,sampleNode,readSelection:()=>effectiveSelections(mode,selections),choose,onCustom:buildCustom,tell,artworkBasis});
+const picker=createPicker({$,el,sampleNode,readSelection:()=>effectiveSelections(mode,selections),choose,onRandom:q=>randomizeItem(q),onCustom:buildCustom,tell,artworkBasis});
 function renderStylePreset(values=selections){
  const select=$('style-preset-select');if(!select)return;
  if(!select.options.length){const auto=el('option',null,'おまかせ（制作時に見本も選びます）');auto.value=AUTO;select.append(auto);for(const group of questions.find(q=>q.key==='medium').groups){const node=el('optgroup');node.label=group.label;for(const medium of group.values){const option=el('option',null,medium);option.value=medium;node.append(option);}select.append(node);}}
@@ -185,7 +207,7 @@ function syncProfilePreview(){clearPreparedResult();const p=currentProfile();$('
 function syncActivity(){}
 function setActivity(on){clearPreparedResult();tagsEnabled=on;syncProfilePreview();}
 async function addFiles(files){
- if(resettingReferences){tell('参照画像をリセット中です。');return;}if(adding){tell('画像を読み込み中です。');return;}const incoming=Array.from(files);if(!incoming.length)return;const generation=referenceGeneration;adding=true;$('generate').disabled=true;
+ if(resettingReferences){tell('参照画像をリセット中です。');return;}if(adding){tell('画像を読み込み中です。');return;}const incoming=Array.from(files);if(!incoming.length)return;clearPreparedResult();const generation=referenceGeneration;adding=true;$('generate').disabled=true;
  try{await draftReady;if(generation!==referenceGeneration)return;setAttachmentMode('bundle');let changed=false;for(const incomingFile of incoming){if(generation!==referenceGeneration)break;const file=normalizeImageFile(incomingFile);if(!file){tell('画像ファイルを選んでください。');continue;}if(refs.length>=4){tell('添付は最大4枚です。');break;}if(file.size>12*1024*1024){tell('画像は1枚12MBまでです。');continue;}const name=file.name.replace(/[\r\n<>]/g,'_').slice(0,120)||'reference.png';if(refs.some(r=>r.name===name&&r.file.size===file.size&&r.file.lastModified===file.lastModified)){tell('同じ画像は添付済みです。');continue;}let preview;try{preview=await prepareReferenceView(file);if(generation!==referenceGeneration){URL.revokeObjectURL(preview.url);break;}refs.push({draftId:uid(),file,name,...preview,role:refs.length?'support':'identity'});changed=true;renderRefs();}catch(e){if(preview)URL.revokeObjectURL(preview.url);tell(e.message);}}if(changed&&generation===referenceGeneration)await persistDraftReferences();}finally{adding=false;$('generate').disabled=creating;$('image-input').value='';}
 }
 function renderRefs(refresh=true){
@@ -195,45 +217,46 @@ function formError(s,focus){$('form-error').textContent=s;$('form-error').hidden
 async function generate(lockedValues=null){
  await historyReady;
  await draftReady;
- if(creating||adding||resettingReferences)throw new Error('制作の準備中です。');const draftGeneration=referenceGeneration,profileRevision=draftProfileRevision;
+ if(creating||adding||resettingReferences)throw new Error('制作の準備中です。');const draftGeneration=referenceGeneration,profileRevision=draftProfileRevision,preparedRevision=inputRevision;
+ const ensureCurrent=()=>{if(preparedRevision!==inputRevision||draftGeneration!==referenceGeneration||profileRevision!==draftProfileRevision)throw new Error('準備中に画像や選択が変更されました。現在の条件で「制作プロンプトをつくる」を押してください。');};
  const started=performance.now();
  creating=true;$('generate').disabled=true;$('generate').textContent='制作条件を準備中…';$('generation-status').hidden=false;$('generation-status').textContent='制作に使う設定を確認中…';
  try{
- await new Promise(resolve=>requestAnimationFrame(()=>resolve()));
+ await new Promise(resolve=>requestAnimationFrame(()=>resolve()));ensureCurrent();
  if(mode==='auto'&&!selectedProposal){formError('気に入った組み合わせを一つ選んでください。',$('propose'));throw new Error('組み合わせを選んでください。');}
  const creator=normalizeCreator($('creator').value);if(creator===null){formError('noteのIDまたはURLの形式を確認してください。',$('creator'));throw new Error('ID形式が正しくありません。');}
  const profile=artworkProfile();if(!profile.displayName){$('profile-editor').open=true;formError('noteのIDかクリエイター名を入力してください。',$('creator'));throw new Error('作者の情報がありません。');}
  $('generation-status').textContent='選んだ項目と参照画像を確認しています…';
-  await syncSaved();const input=lockedValues?{...lockedValues}:mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:effectiveSelections(mode,selections);
+  await syncSaved();ensureCurrent();const input=lockedValues?{...lockedValues}:mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:effectiveSelections(mode,selections);
   if(input.theme===AUTO&&profile.inspiration?.themes?.length){const publicThemes=new Set(questions.find(q=>q.key==='theme').groups.flatMap(g=>g.values)),themes=collection==='halloween'?profile.inspiration.themes.filter(theme=>publicThemes.has(theme)):profile.inspiration.themes;if(themes.length)input.theme=themes[Math.floor(rng()*themes.length)];}
   if(input.line===AUTO&&profile.inspiration?.phrases?.length)input.line=profile.inspiration.phrases[Math.floor(rng()*profile.inspiration.phrases.length)];
   const inputKind=lockedValues?(lockedValues.sourceKind||'unknown'):sourceKind;input.costume=sourceSubjectFor(inputKind,input.costume,{selectedCostume:lockedValues?undefined:selections.costume});
   input.sceneUnified=true;input.line='セリフなし';const values=resolveSelections(input,rng,{recent:saved.history.filter(r=>(r.collection||'halloween')===collection).map(r=>r.values).reverse()});values.sourceKind=inputKind;values.collection=collection;values.line='セリフなし';const conflicts=selectionConflicts(values);if(conflicts.length){formError(conflicts[0].reason,$('generate'));throw new Error(conflicts[0].reason);}
   if(attachmentMode==='bundle'&&needsReference(values)&&!refs.some(r=>r.role==='identity')){formError('主参照を添付してください。人物なしの風景は、参照を使う項目を選んでいなければ画像なしでも作れます。',$('image-input'));throw new Error('主参照画像がありません。');}
   let variant=applyPose(buildDirection(saved.used,values.mood,rng,collection,values),values.pose);
-  const edition=uid(),ordered=attachmentMode==='bundle'?[refs.find(r=>r.role==='identity'),...refs.filter(r=>r.role!=='identity')].filter(Boolean):[];
+  const edition=uid(),ordered=attachmentMode==='bundle'?[refs.find(r=>r.role==='identity'),...refs.filter(r=>r.role!=='identity')].filter(Boolean).map(ref=>({...ref})):[];
   const metadata=ordered.length?ordered.map((r,i)=>({name:'reference-'+String(i+1).padStart(2,'0')+'-'+r.name,role:r.role,width:r.width,height:r.height})):needsReference(values)?[{name:'ChatGPTへ直接添付する主参照',role:'identity'}]:[];
   const drawing=stylePresetFor(values.medium),drawingReferences=drawing?[drawing]:[];
   if(drawing)$('generation-status').textContent='選んだ画風見本を準備しています…';
-  const localDrawingRefs=await loadStylePresets(drawingReferences);
+  const localDrawingRefs=await loadStylePresets(drawingReferences);ensureCurrent();
   $('generation-status').textContent='項目名から画風・形式・場面を制作指示にしています…';
   const production=productionPlan(profile,values,variant,collection,rng);variant=production.variant;
   // A one-image bundle preserves the uploaded bytes. Multi-image flattening is optional.
   // Original files are ready immediately; combine only on explicit request.
   const referenceBoardFile=ordered.length===1?new File([ordered[0].file],metadata[0].name,{type:ordered[0].file.type}):null;
   const prompt=composePrompt({collection,creator:creator||'',profile,values,variant,references:[...drawingReferences,...metadata],edition,referenceBundle:ordered.length>1?{name:'creator-references.jpg',combined:true}:null,preparedPlan:production});
-  saved.count++;const r={version:APP_VERSION,collection,creator:creator||'',profile,values,variant,edition,prompt,production,stages:stagePrompts(production),date:new Date().toISOString(),references:metadata,drawingReferences,localDrawingRefs,localRefs:ordered.map(r=>({...r})),referenceBoardFile,attachmentMode,isFresh:true,preparationMs:Math.round(performance.now()-started),count:saved.count};
+  ensureCurrent();saved.count++;const r={version:APP_VERSION,collection,creator:creator||'',profile,values,variant,edition,prompt,production,stages:stagePrompts(production),date:new Date().toISOString(),references:metadata,drawingReferences,localDrawingRefs,localRefs:ordered.map(r=>({...r})),referenceBoardFile,attachmentMode,isFresh:true,preparationMs:Math.round(performance.now()-started),count:saved.count};
   const {localRefs,localDrawingRefs:localDrawings,referenceBoardFile:boardFile,isFresh,...record}=r;
-  saved.used.push({signature:variant.signature,family:variant.family,face:variant.face,expression:variant.expression,distance:variant.distance,pose:variant.pose,poseChoice:values.pose,layout:variant.layout,camera:variant.camera,directionSignature:variant.directionSignature,directionVariation:variant.directionVariation,automaticCamera:variant.automaticCamera,randomization:variant.randomization,directionWarnings:variant.directionWarnings});saved.used=saved.used.slice(-2000);saved.history.unshift({...record,profile:compactCreatorProfile(record.profile)});saved.history=saved.history.slice(0,12);await persist();renderHistory();if(draftGeneration!==referenceGeneration||profileRevision!==draftProfileRevision)throw new Error('制作中にID・参照画像が変更されたため、結果の表示を中止しました。制作指示は履歴から確認できます。');$('form-error').hidden=true;renderBoard(values,variant);$('issue-number').textContent='No. '+String(saved.count).padStart(3,'0');$('stage').classList.remove('flash');void $('stage').offsetWidth;$('stage').classList.add('flash');await showResult(r);effects.celebrate();return r;
+  saved.used.push({signature:variant.signature,family:variant.family,face:variant.face,expression:variant.expression,distance:variant.distance,pose:variant.pose,poseChoice:values.pose,layout:variant.layout,camera:variant.camera,directionSignature:variant.directionSignature,directionVariation:variant.directionVariation,automaticCamera:variant.automaticCamera,randomization:variant.randomization,directionWarnings:variant.directionWarnings});saved.used=saved.used.slice(-2000);saved.history.unshift({...record,profile:compactCreatorProfile(record.profile)});saved.history=saved.history.slice(0,12);await persist();renderHistory();ensureCurrent();$('form-error').hidden=true;renderBoard(values,variant);$('issue-number').textContent='No. '+String(saved.count).padStart(3,'0');$('stage').classList.remove('flash');void $('stage').offsetWidth;$('stage').classList.add('flash');await showResult(r);effects.celebrate();return r;
  }finally{creating=false;$('generate').disabled=false;$('generate').textContent='制作プロンプトをつくる ✦';$('generation-status').hidden=true;}
 }
 function shareFiles(r){return [...deliveryImageFiles(r),new File([r.prompt],'prompt.txt',{type:'text/plain'})];}
 function canShareFiles(files){try{return !!navigator.share&&(!navigator.canShare||navigator.canShare({files}));}catch{return false;}}
 async function showResult(r){
- const request=++resultRequest;let restored=r,detailError=false;try{restored=await restoreHistoryRecord(r);}catch{detailError=true;try{restored=await restoreHistoryCore(r);}catch{if(request===resultRequest)tell('履歴の本文を読み込めませんでした。保存データは削除していません。');return;}}
- if(request!==resultRequest)return;
+ const request=++resultRequest,revision=inputRevision;let restored=r,detailError=false;try{restored=await restoreHistoryRecord(r);}catch{detailError=true;try{restored=await restoreHistoryCore(r);}catch{if(request===resultRequest)tell('履歴の本文を読み込めませんでした。保存データは削除していません。');return;}}
+ if(request!==resultRequest||revision!==inputRevision)return;
  try{if(!restored.localDrawingRefs&&restored.drawingReferences?.length)restored={...restored,localDrawingRefs:await loadStylePresets(restored.drawingReferences)};}catch(e){if(request===resultRequest)tell(e.message);return;}
- if(request!==resultRequest)return;
+ if(request!==resultRequest||revision!==inputRevision)return;
  clearPreparedResult();
  r=restored;if(detailError)tell('履歴の制作詳細を読み込めませんでした。保存されたプロンプトは使用できます。');
  if(r.localRefs?.length){r={...r,localRefs:r.localRefs.map(ref=>{const url=URL.createObjectURL(ref.previewFile||ref.file);resultObjectURLs.push(url);return {...ref,url};})};}

@@ -1,16 +1,16 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
-import {stylePresets,stylePresetFor,stylePresetInstructions,stylePresetRoleDescription,loadStylePresets} from '../style-presets.js?v=28.4.0';
-import {drawingReferenceFor,deliveryImageFiles} from '../drawing-references.js?v=28.4.0';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.0';
-import {initialSelections} from '../modes.js?v=28.4.0';
-import {applyCollection} from '../collection.js?v=28.4.0';
-import {productionPlan,repairPrompt,planInstructions} from '../production-plan.js?v=28.4.0';
-import {composePrompt} from '../prompt.js?v=28.4.0';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.0';
-import {renderChatInput} from '../compiled-production.js?v=28.4.0';
-import {composeStagedMaster} from '../production-workflow.js?v=28.4.0';
+import {stylePresets,stylePresetFor,stylePresetInstructions,stylePresetRoleDescription,loadStylePresets} from '../style-presets.js?v=28.4.1';
+import {drawingReferenceFor,deliveryImageFiles} from '../drawing-references.js?v=28.4.1';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.1';
+import {initialSelections} from '../modes.js?v=28.4.1';
+import {applyCollection} from '../collection.js?v=28.4.1';
+import {productionPlan,repairPrompt,planInstructions} from '../production-plan.js?v=28.4.1';
+import {composePrompt} from '../prompt.js?v=28.4.1';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.1';
+import {renderChatInput} from '../compiled-production.js?v=28.4.1';
+import {composeStagedMaster} from '../production-workflow.js?v=28.4.1';
 
 const root=new URL('../',import.meta.url),random=()=>.34,profile={displayName:'PRESET CHECK',activityEnabled:false};
 applyCollection('halloween');

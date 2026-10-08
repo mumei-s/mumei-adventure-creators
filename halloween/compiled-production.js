@@ -1,11 +1,12 @@
-import {styleFidelity} from './style-fidelity.js?v=28.4.0';
-import {modeFoundation} from './japan-direction.js?v=28.4.0';
-import {imageOutputContract} from './output-contract.js?v=28.4.0';
-import {opticalSignature} from './optical-effects.js?v=28.4.0';
-import {colorPolicy} from './color-policy.js?v=28.4.0';
-import {sceneComposition} from './scene-composition.js?v=28.4.0';
-import {cameraContract} from './angles.js?v=28.4.0';
-import {photoReconstruction} from './photo-design.js?v=28.4.0';
+import {styleFidelity} from './style-fidelity.js?v=28.4.1';
+import {modeFoundation} from './japan-direction.js?v=28.4.1';
+import {imageOutputContract} from './output-contract.js?v=28.4.1';
+import {opticalSignature} from './optical-effects.js?v=28.4.1';
+import {colorPolicy} from './color-policy.js?v=28.4.1';
+import {sceneComposition} from './scene-composition.js?v=28.4.1';
+import {cameraContract} from './angles.js?v=28.4.1';
+import {photoReconstruction} from './photo-design.js?v=28.4.1';
+import {characterProportionInstruction} from './source-kind.js?v=28.4.1';
 
 export const conditionOwners=Object.freeze({
  angle:'カメラの位置・傾き・距離・遠近',
@@ -74,6 +75,7 @@ function renderInputObject(plan){
   drawing:{...contract(material),medium:selected.medium,
    visible_signature:material.checks,optics:opticalSignature(selected,{noPerson:plan.noPerson})},
   identity:plan.noPerson?'選択した景物・物体・図案。人物なし。':nonHumanSource?'主参照は人物を識別する資料ではなく、入力の固有形・色・紋様・構造を翻案する資料。人物を描く衣装・主役が明示されたため、選択画風・年齢感・衣装・表情・ポーズで独自の主役を作る。元の非人物画像から顔を復元したとは扱わず、専用画風原画の顔・髪・身体を借用しない。'+wardrobeIdentity:photo?('主参照は変換前の人物資料。髪型・顔の輪郭・目鼻口の特徴的な並び・年齢感・性別表現の組合せを読み取り、同じキャラクターと識別できる実物の人物立体へ再構成する。参照イラストの巨大な目・記号的な鼻口・平たい顔面を寸法どおり固定せず、自然な頭蓋・眼球・皮膚・毛髪へ翻訳する。髪型・識別色・固有の印と明示された非人間の形は保持し、参照の撮影角度・表情・ポーズは複写しない。参照の背景・文字・動物・同行者・武器・装飾・持ち物は、選択項目で明示したものだけ採用する。'+wardrobeIdentity.replace('今回の画風の線・色面・反射','今回の写真の実材質・照明・反射')+(color.restricted?'参照の肌色・髪色・瞳色も許可色へ変換し、形と明度差で同じ人を表す。':'')):'主参照は変換前の人物資料。髪型・顔の輪郭・目鼻口の特徴的な並び・年齢感・性別表現の組合せを読み取り、今回の画風で識別できるキャラクターとして新しく造形する。画風が定める形の整理・誇張・省略は実行し、写真の顔の立体や細かな寸法まで固定しない。参照の撮影角度・表情・肌の質感を複製せず、今回の画風と配色で新しく描く。参照写真の背景・文字・動物・同行者・武器・装飾・持ち物は、選択項目で明示したものだけ採用する。'+wardrobeIdentity+(color.restricted?'参照の肌色・髪色・瞳色も許可色へ変換し、形と明度差で同じ人を表す。':''),
+  ...(characterProportionInstruction(selected,{noPerson:plan.noPerson})?{character_proportions:characterProportionInstruction(selected,{noPerson:plan.noPerson})}:{}),
   scene:Object.fromEntries((selected.sceneUnified?['theme','costume','pose','mood','palette']:['theme','costume','place','pose','mood','palette']).map(key=>[key,contract(byKey[key])])),
   camera:plan.noPerson?(geometry?{geometry,note:'人物用の表情・顔向き・身体動作は適用しない。'}:'人物用の表情・顔向き・身体動作は適用しない。'):{...(geometry?{geometry}:{}),face:v.face,expression:v.expression,body:v.pose,distance:v.distance,angle:v.camera,...(side?{torso_yaw_degrees:90,projection:'肩・骨盤・膝は側面投影。顔向きの指定を理由に胴体を鑑賞者側へ回さない。'}:{})},
   layout:contract(byKey.design),
@@ -117,6 +119,7 @@ export function renderDetailedChatInput(plan,{referenceRules=[],mandatoryRules=[
   modeFoundation(plan.collection),
   ...Object.values(compiled.required_before_details),
   '主役：'+compiled.identity,
+  compiled.character_proportions,
   ...referenceRules,
   ...mandatoryRules,
   ...sceneComposition(plan),
@@ -175,9 +178,11 @@ export function renderSelectionMaterial(plan,options){
 export {renderSelectionMaterial as renderChatInput};
 export function compileProduction(plan,originalLines){
  const referenceRules=between(originalLines,'【作成者が添付する参照画像】','【10の選択】');
+ const roleRules=between(originalLines,'【今回の画像の役割】','【最初に確定する作画と画面】').filter(line=>!line.startsWith('頭身：'));
  const mandatoryRules=[originalLines.find(s=>s.startsWith('制作の基準は、各項目のタイトル')), ...originalLines.filter(s=>/^(限定色|墨|水彩)の必須条件：/.test(s)),originalLines.find(s=>s.startsWith('用途：'))].filter(Boolean);
  return [
   ...imageOutputContract,
+  ...roleRules,
   ...(plan.creatorLookup||[]),
   '【通常制作：完成画像を1回で生成】',
   originalLines[0],

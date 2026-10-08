@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.0';
-import {applyCollection} from '../collection.js?v=28.4.0';
-import {productionPlan} from '../production-plan.js?v=28.4.0';
-import {composePrompt} from '../prompt.js?v=28.4.0';
-import {renderInput} from '../compiled-production.js?v=28.4.0';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.1';
+import {applyCollection} from '../collection.js?v=28.4.1';
+import {productionPlan} from '../production-plan.js?v=28.4.1';
+import {composePrompt} from '../prompt.js?v=28.4.1';
+import {renderInput} from '../compiled-production.js?v=28.4.1';
 
 applyCollection('halloween');
 const profile={displayName:'試作作者',activityEnabled:false};

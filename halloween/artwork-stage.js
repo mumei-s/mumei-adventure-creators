@@ -1,14 +1,14 @@
-import {opticalColors,opticalSignature} from './optical-effects.js?v=28.4.0';
-import {colorPolicy} from './palette-recipes.js?v=28.4.0';
-import {formatFor} from './formats.js?v=28.4.0';
-import {cameraContract} from './angles.js?v=28.4.0';
-import {selectionIntegrationInstructions} from './output-contract.js?v=28.4.0';
-import {photoReconstruction} from './photo-design.js?v=28.4.0';
-import {artworkBasisContract} from './artwork-basis.js?v=28.4.0';
-import {stylePresetFor,stylePresetInstructions} from './style-presets.js?v=28.4.0';
-import {sourceKindInstructions,isNonHumanSource} from './source-kind.js?v=28.4.0';
-import {halloweenModeContract} from './halloween-mode-contract.js?v=28.4.0';
-import {poseTechnical} from './poses.js?v=28.4.0';
+import {opticalColors,opticalSignature} from './optical-effects.js?v=28.4.1';
+import {colorPolicy} from './palette-recipes.js?v=28.4.1';
+import {formatFor} from './formats.js?v=28.4.1';
+import {cameraContract} from './angles.js?v=28.4.1';
+import {selectionIntegrationInstructions} from './output-contract.js?v=28.4.1';
+import {photoReconstruction} from './photo-design.js?v=28.4.1';
+import {artworkBasisContract} from './artwork-basis.js?v=28.4.1';
+import {stylePresetFor,stylePresetInstructions} from './style-presets.js?v=28.4.1';
+import {characterProportionInstruction,sourceKindInstructions,isNonHumanSource} from './source-kind.js?v=28.4.1';
+import {halloweenModeContract} from './halloween-mode-contract.js?v=28.4.1';
+import {poseTechnical} from './poses.js?v=28.4.1';
 
 const artworkKeys=['medium','theme','place','costume','pose','mood','angle','palette'];
 const render=c=>[c.name+'：'+c.value,...c.sections.map(s=>'・'+s.label+'：'+s.text)];
@@ -39,10 +39,11 @@ export function composeArtworkStage(plan,{embedded=false}={}){
   ...(photo?['【写真化の基準】',...photo.sections.map(s=>s.label+'：'+s.text)]:[]),
   ...(crystal&&!plan.noPerson?['【最優先の描画方法】手描きの2Dアニメイラスト。輪郭と髪束を細い色線で描き、肌・髪・衣装を明快な色面で塗り、影の境界を鋭いセル影にする。顔の鼻は短い描線、口は簡潔な線と色面で構成する。光の質感も描線と透明な色層の組み合わせで描き、写真的な肌・実写の唇・3D人形の顔を残さない。'+(objectSource?'非人物の入力は固有形を翻案する資料に使い、人物の顔の資料とは扱わない。':'参照は同じ人物と識別する造形だけに使う。')]:[]),
   plan.noPerson?'選択主題の形・素材・配置を今回の画風で描く。人物や人型へ置換しない。':objectSource?'作成者の景色・マーク・物体は人物の顔を識別する資料ではない。明示された人物作品の選択に従う場合だけ、入力の固有形・色・紋様・構造を翻案した独自の主役を今回の作風で描く。専用画風原画の人物へ置き換えない。':photo?'主参照から同じキャラクターと識別できる特徴を読み取り、自然な人物の立体と実物の材質へ再構成する。イラストの目の大きさ・各部の寸法比・セル影を固定せず、選択した衣装・表情・ポーズと識別特徴を保つ。':
-   '作成者の主参照は人物の輪郭、目鼻口の特徴的な並び、髪の形、年齢感、体格の特徴、性別表現、固有の印を読み取るために使う。同じ人物と識別できる特徴の組合せを、選択作画の形の整理・誇張・省略・頭身へ翻訳して最初から描き起こす。ちびキャラでは大きな頭と短い身体へ変更し、参照の各部の寸法や頭身を固定しない。元画像の皮膚・髪の微細質感、照明、表情、顔の傾き、身体のポーズを完成画像の下地に残さない。衣装の名称から別人へ置換しない。',
+   '作成者の主参照は人物の輪郭、目鼻口の特徴的な並び、髪の形、年齢感、体格の特徴、性別表現、固有の印を読み取るために使う。同じ人物と識別できる特徴の組合せを、選択作画の描線・塗り・光・陰影・材質へ翻訳して最初から描き起こす。基本の頭身と体格は主参照を基準にし、明示された頭身変更だけを適用する。元画像の皮膚・髪の微細質感、照明、表情、顔の傾き、身体のポーズを完成画像の下地に残さない。衣装の名称から別人へ置換しない。',
   drawingReference?'ツールが用意した選択作風のプリセット見本を別画像で添付し、描画技法の資料として使う。人物・衣装・ポーズ・小道具・構図・背景・配色は作成者の主参照と次の制作条件から決める。画面一覧や他の項目の画像は混ぜない。実際の見本画像を確認できる場合だけ使う。':'項目の見本画像は入力しない。項目タイトルと次の制作条件だけから画風と場面を作る。',
   ...stylePresetInstructions(values.medium,{noPerson:plan.noPerson,values}),
   ...sourceKindInstructions(values,{noPerson:plan.noPerson}),
+  ...[characterProportionInstruction(values,{noPerson:plan.noPerson})].filter(Boolean),
   ...(halloween?['【主画像もHalloween版の共通世界へ】',halloween.executionMethod||halloween.method]:[]),
   '【画風の必須特徴】',...plan.conditions.find(c=>c.key==='medium').checks,...opticalSignature(values,{noPerson:plan.noPerson}),
   ...selected.filter(c=>c.key!=='medium').flatMap(c=>['',...render(c)]),
@@ -99,8 +100,9 @@ export function composeArtworkRepair(plan,{compact=false}={}){
   drawingReference?'修正対象は直前の主画像1枚。ツールが用意した選択作風のプリセット見本だけを描画技法の補助として別画像で添付する。元の人物写真や画面一覧は再入力せず、見本の人物・衣装・ポーズ・小道具・構図・背景・配色へ置き換えない。実際に確認できる見本だけを使う。':'入力する画像は直前の主画像1枚だけ。元の人物写真や項目の見本は再入力しない。',
   ...stylePresetInstructions(values.medium,{noPerson:plan.noPerson,values}),
   ...sourceKindInstructions(values,{noPerson:plan.noPerson}),
+  ...[characterProportionInstruction(values,{noPerson:plan.noPerson})].filter(Boolean),
   ...(halloween?['【修正時も保つHalloween版の共通世界】',halloween.executionMethod||halloween.method]:[]),
-  plan.noPerson?'主題の外形、配置、固有の模様、背景、光の起点、画角と余白を保つ。人物や人型を追加しない。':objectSource?'修正対象の主画像に成立した独自の主役の識別特徴と、選択衣装・表情・顔向き・動作・支持・構図・背景・指定カメラを保つ。元の景色・マーク・物体から人物の顔を復元せず、専用画風原画の人物へ置換しない。':photo?'同じキャラクターの識別特徴、年齢感、性別表現、髪型と識別色、選択衣装・表情・顔向き・身体配置と支持、背景、指定カメラを保つ。イラストの各部の細寸法・誇張された目の比率・描線と色面は固定せず、自然な人物立体と実物の材質へ作り直す。':'同じ人物の識別特徴の組合せ、年齢感、性別表現、髪の形、選択衣装・表情・顔角度・動作と支持、物体の配置、背景、指定カメラと余白を保つ。参照の各部の寸法や頭身を固定せず、選択作画の形の整理・誇張・省略・頭身へ翻訳する。ちびキャラは大きな頭と短い身体へ作り直す。別人へ変更しない。',
+  plan.noPerson?'主題の外形、配置、固有の模様、背景、光の起点、画角と余白を保つ。人物や人型を追加しない。':objectSource?'修正対象の主画像に成立した独自の主役の識別特徴と、選択衣装・表情・顔向き・動作・支持・構図・背景・指定カメラを保つ。元の景色・マーク・物体から人物の顔を復元せず、専用画風原画の人物へ置換しない。':photo?'同じキャラクターの識別特徴、年齢感、性別表現、髪型と識別色、選択衣装・表情・顔向き・身体配置と支持、背景、指定カメラを保つ。イラストの各部の細寸法・誇張された目の比率・描線と色面は固定せず、自然な人物立体と実物の材質へ作り直す。':'同じ人物の識別特徴の組合せ、年齢感、性別表現、髪の形、選択衣装・表情・顔角度・動作と支持、物体の配置、背景、指定カメラと余白を保つ。基本の頭身と体格は主参照を基準にし、明示された頭身変更だけを適用する。選択作画の描線・塗り・光・陰影・材質で描き直し、別人へ変更しない。',
   ...(geometry?['上の保持条件は指定どおり成立している部分へ適用する。カメラの誤りがある部分の画角・短縮・遮蔽は固定カメラの条件で描き直す。']:[]),
   photo?'変えるのは人体や景物の立体、実物の材質、レンズ遠近、光源に対応する反射・散乱・露光階調。絵の上へ毛穴・粒子・ぼけを足すだけで済ませず、主題と背景を同じ撮影像へ再構成する。':'変えるのは描線、面の塗り方、明暗の境界、素材の表し方。元の表面へ少数の線や光を追加する加工で済ませず、主題の内部の面まで次の工程で置き換える。',
   ...(medium.value==='クリスタル透光アニメ'?[

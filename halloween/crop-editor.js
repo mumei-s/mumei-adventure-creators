@@ -1,4 +1,4 @@
-import {releaseCanvas} from './image-resources.js?v=28.4.0';
+import {releaseCanvas} from './image-resources.js?v=28.4.1';
 export function createCropEditor({$,onApply,tell}){
  const dialog=$('crop-dialog'),canvas=$('crop-canvas'),ctx=canvas.getContext('2d'),zoomInput=$('crop-zoom'),ratioInput=$('crop-ratio');
  let ref=null,img=null,sourceURL='',zoom=1,cx=0,cy=0,frame=null,scale=1,raf=0,opening=0,busy=false;const pointers=new Map();

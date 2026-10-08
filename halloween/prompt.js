@@ -1,15 +1,15 @@
-import {imageOutputContract} from './output-contract.js?v=28.4.0';
-import {visibleQuestions} from './catalog.js?v=28.4.0';
-import {productionPlan,planInstructions,conditionInstructions} from './production-plan.js?v=28.4.0';
-import {sceneContract} from './worlds.js?v=28.4.0';
-import {colorPolicy} from './palette-recipes.js?v=28.4.0';
-import {resolveArtDirection} from './art-direction.js?v=28.4.0';
-import {composeStagedMaster} from './production-workflow.js?v=28.4.0';
-import {isPhotographicMedium} from './photo-design.js?v=28.4.0';
-import {drawingReferenceFor} from './drawing-references.js?v=28.4.0';
-import {stylePresetFor,stylePresetInstructions,stylePresetRoleDescription} from './style-presets.js?v=28.4.0';
-import {sourceKinds,sourceKindInstructions,isNonHumanSource} from './source-kind.js?v=28.4.0';
-import {halloweenModeContract} from './halloween-mode-contract.js?v=28.4.0';
+import {imageOutputContract} from './output-contract.js?v=28.4.1';
+import {visibleQuestions} from './catalog.js?v=28.4.1';
+import {productionPlan,planInstructions,conditionInstructions} from './production-plan.js?v=28.4.1';
+import {sceneContract} from './worlds.js?v=28.4.1';
+import {colorPolicy} from './palette-recipes.js?v=28.4.1';
+import {resolveArtDirection} from './art-direction.js?v=28.4.1';
+import {composeStagedMaster} from './production-workflow.js?v=28.4.1';
+import {isPhotographicMedium} from './photo-design.js?v=28.4.1';
+import {drawingReferenceFor} from './drawing-references.js?v=28.4.1';
+import {stylePresetFor,stylePresetInstructions,stylePresetRoleDescription} from './style-presets.js?v=28.4.1';
+import {characterProportionInstruction,sourceKinds,sourceKindInstructions,isNonHumanSource} from './source-kind.js?v=28.4.1';
+import {halloweenModeContract} from './halloween-mode-contract.js?v=28.4.1';
 export function needsReference(values){const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);return sourceKinds.some(source=>source.value===values.sourceKind)||!noPerson||values.place==='参照風景を舞台にする'||values.palette==='参照画像の色を生かす';}
 // Only the selected assistant preset supplies drawing technique; character identity and scene remain separate.
 export function composePrompt({collection='halloween',creator,profile,values,variant,references=[],edition,referenceBundle=null,random=Math.random,preparedPlan=null}){
@@ -37,6 +37,10 @@ export function composePrompt({collection='halloween',creator,profile,values,var
  const lines=[
  '画像生成の制作仕様 / '+edition,
  '以下の制作条件で、完成画像を1枚生成してください。生成した画像そのものをこの会話に表示してください。',
+ '【今回の画像の役割】',
+ ...references.filter(r=>['identity','drawing','style-preset','avoid','support'].includes(r.role)).map(r=>r.name+'：'+(r.role==='identity'?'主役の識別特徴の参照':r.role==='drawing'||r.role==='style-preset'?'選択した画風の描線・塗り・光・陰影・材質の見本':r.role==='avoid'?'似せない前作':'補助資料')),
+ '画像は添付順ではなく、上のファイル名と役割で区別する。画風見本に描かれた人物へ交代せず、人物の主参照を選択した画風で描き直す。配色・ポーズ・背景は今回の選択を使う。',
+ ...[characterProportionInstruction(values,{noPerson})].filter(Boolean),
  ...(firstConditions.length?[
  '【最初に確定する作画と画面】',
  sourceInstructions.length?'作成者の主参照は「入力画像の種類と読み方」に従って人物の識別特徴または主題の形・構造を読み取る。入力の写真・イラストという媒体で出力を固定せず、選択した主役と作風で描き直す。専用画風原画を人物や主題の識別基準へ使わない。':drawingReference?(noPerson?'作成者の主参照がある場合は選択主題の形・構造・模様を読み取り、人物なしで以下の画風へ描き起こす。専用画風原画にいる人物は完全に無視し、光・材質・線の描き方だけを参照する。':'作成者の主参照だけを同じ人物を識別する形の資料として読み取る。顔の輪郭、目鼻口の位置と比率、髪型、年齢感、性別表現を抽出したうえで、主画像を以下の画風で白紙から描き起こす。専用画風原画は描画技法の資料とし、人物の基準へ使わない。元画像の表面や照明を残した人物切り抜きに、背景・小物・フィルターだけを足す工程にしない。'):'添付画像は同じ人物を識別する形の資料として読み取る。顔の輪郭、目鼻口の位置と比率、髪型、年齢感、性別表現を抽出したうえで、主画像を以下の画風で白紙から描き起こす。元画像の表面や照明を残した人物切り抜きに、背景・小物・フィルターだけを足す工程にしない。',

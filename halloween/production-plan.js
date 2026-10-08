@@ -1,19 +1,19 @@
-import {creatorLookupInstructions} from './creator-handoff.js?v=28.4.0';
-import {imageOutputContract} from './output-contract.js?v=28.4.0';
-import {modeFoundation} from './japan-direction.js?v=28.4.0';
-import {questions,visibleQuestions} from './catalog.js?v=28.4.0';
-import {formatContract} from './formats.js?v=28.4.0';
-import {buildEditorial,editorialContract} from './editorial.js?v=28.4.0';
-import {optionRecipe} from './option-recipes.js?v=28.4.0';
-import {colorPolicy} from './palette-recipes.js?v=28.4.0';
-import {resolveArtDirection,interactionContract} from './art-direction.js?v=28.4.0';
-import {executionFor} from './option-execution.js?v=28.4.0';
-import {cameraContract} from './angles.js?v=28.4.0';
-import {selectionIssues} from './compatibility.js?v=28.4.0';
-import {moodConstraint} from './view-constraints.js?v=28.4.0';
-import {stylePresetFor,stylePresetInstructions} from './style-presets.js?v=28.4.0';
-import {sourceKindInstructions,isNonHumanSource} from './source-kind.js?v=28.4.0';
-import {halloweenModeContract} from './halloween-mode-contract.js?v=28.4.0';
+import {creatorLookupInstructions} from './creator-handoff.js?v=28.4.1';
+import {imageOutputContract} from './output-contract.js?v=28.4.1';
+import {modeFoundation} from './japan-direction.js?v=28.4.1';
+import {questions,visibleQuestions} from './catalog.js?v=28.4.1';
+import {formatContract} from './formats.js?v=28.4.1';
+import {buildEditorial,editorialContract} from './editorial.js?v=28.4.1';
+import {optionRecipe} from './option-recipes.js?v=28.4.1';
+import {colorPolicy} from './palette-recipes.js?v=28.4.1';
+import {resolveArtDirection,interactionContract} from './art-direction.js?v=28.4.1';
+import {executionFor} from './option-execution.js?v=28.4.1';
+import {cameraContract} from './angles.js?v=28.4.1';
+import {selectionIssues} from './compatibility.js?v=28.4.1';
+import {moodConstraint} from './view-constraints.js?v=28.4.1';
+import {stylePresetFor,stylePresetInstructions} from './style-presets.js?v=28.4.1';
+import {characterProportionInstruction,sourceKindInstructions,isNonHumanSource} from './source-kind.js?v=28.4.1';
+import {halloweenModeContract} from './halloween-mode-contract.js?v=28.4.1';
 
 const independentActorText=text=>text.replace(/参照の顔立ち・目鼻口・髪型の特徴的な組合せと年齢感を保ち/g,'今回設計した独自の主役の顔立ち・目鼻口・髪型と明示された年齢感を保ち');
 
@@ -86,6 +86,7 @@ export function planInstructions(plan,{omitKeys=[]}={}){return [
  '【選択を具体的に実行する制作条件】',
  stylePresetFor(plan.values?.medium)?'基準は選択した項目タイトルと以下の制作仕様。別途添付した、ツールが用意した選択作風のプリセット見本だけを描画技法の資料にする。人物・性別・衣装・小道具・構図・背景・配色は主参照と今回の選択から決める。画面一覧やその他の項目画像は使わず、見本の名前だけで実画像を確認したと扱わない。':'基準は選択した項目タイトルと以下の制作仕様。項目の見本画像は選びやすくするための表示用であり、生成する人物・性別・物体・画風・構図の参照資料にはしない。',
  ...sourceKindInstructions(plan.values,{noPerson:plan.noPerson}),
+ ...[characterProportionInstruction(plan.values,{noPerson:plan.noPerson})].filter(Boolean),
  '【組み合わせの優先規則】',...(plan.interactions||[]),
  ...plan.conditions.filter(c=>!omitKeys.includes(c.key)).flatMap(c=>['',...conditionInstructions(c)]),
  ...plan.notes.map(n=>'組み合わせの解釈：'+n),
@@ -107,6 +108,7 @@ export function repairPrompt(result){
  return [
  ...imageOutputContract,
  '【選択した仕様へ仕上げ直す】',
+ ...[characterProportionInstruction(values,{noPerson})].filter(Boolean),
  ...(camera?['【修正時も固定するカメラ】',...camera.instructions,...camera.checks]:[]),
  drawingReference?'このチャットで直前に生成した完成画像、または今回添付した修正対象の完成画像を実際に見て、下記の制作仕様と照合する。完成画像は修正対象。画風・主題・舞台・形式は項目タイトルと具体的な制作仕様を使い、ツールが用意した選択作風のプリセット見本だけを描画技法の資料として併用する。選択画面のUI見本や画面一覧は不要であり、再添付を要求しない。原画の名前だけで画像を確認したと扱わず、主参照・修正対象・専用原画は実際に確認できるものだけを使う。必要な主参照や修正対象を確認できない場合のみ、その画像を求める。':'このチャットで直前に生成した完成画像、または今回添付した修正対象の完成画像を実際に見て、下記の制作仕様と照合する。完成画像は修正対象。画風・主題・舞台・形式は項目タイトルと具体的な制作仕様を使う。項目の見本画像は不要であり、見本や画面一覧の再添付を要求しない。必要な主参照や修正対象を確認できない場合のみ、その画像を求める。',
  ...stylePresetInstructions(drawingMedium,{noPerson,values}),

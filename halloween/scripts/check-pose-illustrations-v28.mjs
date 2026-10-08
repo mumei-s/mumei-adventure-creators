@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
-import {poseItems} from '../poses.js?v=28.4.0';
+import {poseItems} from '../poses.js?v=28.4.1';
 
 const added=poseItems.slice(48),hashes=new Set();
 const source=n=>fs.readFileSync(new URL('../'+added[n-49].file,import.meta.url),'utf8');

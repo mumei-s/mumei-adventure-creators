@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {questions,AUTO} from '../catalog.js?v=28.4.0';
-import {stylePresets,stylePresetFor,loadStylePresets} from '../style-presets.js?v=28.4.0';
-import {deliveryImageFiles} from '../drawing-references.js?v=28.4.0';
-import {compactHistoryRecord,restoreHistoryRecord} from '../history-storage.js?v=28.4.0';
-import {makeZip} from '../zip.js?v=28.4.0';
+import {questions,AUTO} from '../catalog.js?v=28.4.1';
+import {stylePresets,stylePresetFor,loadStylePresets} from '../style-presets.js?v=28.4.1';
+import {deliveryImageFiles} from '../drawing-references.js?v=28.4.1';
+import {compactHistoryRecord,restoreHistoryRecord} from '../history-storage.js?v=28.4.1';
+import {makeZip} from '../zip.js?v=28.4.1';
 const root=new URL('../',import.meta.url),app=fs.readFileSync(new URL('app.js',root),'utf8');
 class Node {
  constructor(tag,text=''){this.tagName=tag;this.textContent=text;this.children=[];this.dataset={};this.value='';this.hidden=false;}

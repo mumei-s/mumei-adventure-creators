@@ -1,17 +1,17 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.1.1';
-import {applyCollection} from '../collection.js?v=28.1.1';
-import {initialSelections} from '../modes.js?v=28.1.1';
-import {buildDirection} from '../direction.js?v=28.1.1';
-import {applyPose} from '../poses.js?v=28.1.1';
-import {angleItems,cameraContract} from '../angles.js?v=28.1.1';
-import {colorPolicy} from '../color-policy.js?v=28.1.1';
-import {LUMINOUS_WORLD_MEDIUM,luminousWorldContract} from '../luminous-world.js?v=28.1.1';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.1.1';
-import {composePrompt} from '../prompt.js?v=28.1.1';
-import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.1.1';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.1.1';
-import {imageDeliveryRepairPrompt,selectionIntegrationInstructions} from '../output-contract.js?v=28.1.1';
+import {questions,resolveSelections} from '../catalog.js?v=28.1.2';
+import {applyCollection} from '../collection.js?v=28.1.2';
+import {initialSelections} from '../modes.js?v=28.1.2';
+import {buildDirection} from '../direction.js?v=28.1.2';
+import {applyPose} from '../poses.js?v=28.1.2';
+import {angleItems,cameraContract} from '../angles.js?v=28.1.2';
+import {colorPolicy} from '../color-policy.js?v=28.1.2';
+import {LUMINOUS_WORLD_MEDIUM,luminousWorldContract} from '../luminous-world.js?v=28.1.2';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.1.2';
+import {composePrompt} from '../prompt.js?v=28.1.2';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.1.2';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.1.2';
+import {imageDeliveryRepairPrompt,selectionIntegrationInstructions} from '../output-contract.js?v=28.1.2';
 
 // This exercises the actual specification and delivery paths. It does not
 // synthesize a prompt with AI, generate an image or infer visual success.
@@ -144,9 +144,11 @@ try{
    const values=makeValues(collection,LUMINOUS_WORLD_MEDIUM,{angle,noPerson,palette:'モノクローム'});
    const plan=makePlan(collection,values),contract=luminousWorldContract(values,{noPerson,variant:plan.variant}),routes=outputs(collection,plan);
    assertSelectionPreserved(values,plan,collection+' / automatic or custom camera / '+angle);
-   contains(contract.depth,angle,'An automatic/custom selected camera');
+   contains(contract.depth,values.angle,'The resolved automatic/custom selected camera');
+   if(angle==='場面に合わせたアングル')assert.ok(angleItems.some(item=>item.value===values.angle),'AUTO camera must become a real compatible angle');
+   else assert.equal(values.angle,angle,'A custom explicit camera must retain its literal requirement');
    for(const check of contract.checks)for(const [name,text] of Object.entries(routes))contains(text,check,name+' automatic/custom camera luminous acceptance');
-   assert.doesNotMatch(contract.depth,/光軸は垂直のまま/,'An automatic/custom camera must not inherit a fixed vertical axis');
+   if(!['真上から・90度','真下から・90度'].includes(values.angle))assert.doesNotMatch(contract.depth,/光軸は垂直のまま/,'A nonvertical resolved camera must not inherit a fixed vertical axis');
    automaticOrCustom++;
   }
   // The supplied iris/hair layer applies only to existing, visible details.

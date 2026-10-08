@@ -1,6 +1,6 @@
 // Copy modes describe the manuscript and its hierarchy. They never change the
 // selected image technique, scene, costume, pose, or output format.
-import {copyContentRules,publicCopyContext,worldIntroduction,worldFeatureCopy} from './copy-scope.js?v=28.1.1';
+import {copyContentRules,publicCopyContext,worldIntroduction,worldFeatureCopy} from './copy-scope.js?v=28.1.2';
 const choices=[
  {value:'商品広告・キャッチと特徴3点',group:'広告・キャンペーン',density:'見出し＋紹介＋特徴3点',className:'type-ad',preview:['物語の、その先へ。','夜の街に残る秘密をたどる。','帰り道を探す','路地の秘密に出会う','まだ知らない物語へ','作者名'],layout:'主見出しを最大、短い紹介を中程度、3つの特徴を同じ大きさで整列し、作者名を最小にする。特徴は各一文まで。特徴1などの役割名や番号、価格や購入先の欄は作らない。'},
  {value:'ブランド広告・宣言と短いコピー',group:'広告・キャンペーン',density:'宣言＋補足＋名前',className:'type-ad',preview:['好きな世界を、つくろう。','一枚の創作から、次の景色へ。','作者名'],layout:'一つの宣言を大きく置き、補足を一文、作者名を一か所だけ添える。ロゴや広告実績のシールを追加せず、余白を広く保つ。'},

@@ -1,5 +1,5 @@
 // Camera geometry is independent of the selected world, expression and pose.
-import {angleConstraint,moodConstraint,viewSelectionIssues} from './view-constraints.js?v=28.1.1';
+import {angleConstraint,moodConstraint,viewSelectionIssues} from './view-constraints.js?v=28.1.2';
 const rows=[
  ['目線の高さ・正面','高さは主題の中心、正面から水平に見る。上下の傾きを付けず、正面の輪郭と奥行きを読む。','主役と周囲が入るミディアムショット',0,0],
  ['斜め前45度','主題の正面から左右いずれか45度にカメラを置く。近い側と遠い側の面を同じ遠近でつなぐ。','主役と周囲が入るミディアムショット',0,45],
@@ -78,6 +78,7 @@ export function cameraContract(values,{noPerson=false}={}){
   '画風・材質・参照の識別特徴の細部条件は、このカメラから実際に見える面に適用する。自然に隠れる目・顔の面・手足や建築の面を、細部を見せるために露出させない。'
  ];
  const checks=[text];
+ if(!noPerson&&['書と墨の抽象','禅画','抽象表現','ミニマリズム'].includes(values.medium))instructions.push('この投影の姿勢・支持・動作は、選択画風の筆の印・形・間隔・余白で表す。各指や人体の細部を写実的に追加せず、主題と出来事の関係を読める形へ整理する。接写でも人体の細密描写を必須にせず、指定部分を選択画風で描く。');
  if(item.pitch===90){
   instructions.push('光軸は水平から下向き90度、真下へ垂直。斜め上からの俯瞰・鳥瞰へ弱めない。支持面の上面と、主題の上から見える面・重なり・短縮を描く。床の画面内での回転は可能だが、地平線や建物の正面を見せるためにカメラを傾けない。周縁の側面が見える場合も垂直視点の遠近に従う。');
   if(/空中都市/.test((values.theme||'')+' '+(values.place||'')))instructions.push('空中都市は、下方にある屋根・街区の上面、橋の接続、街区間の抜け、雲との高低差で見せる。遠景の都市を横から眺める別の視点へ変更しない。');

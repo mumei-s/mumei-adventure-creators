@@ -1,16 +1,16 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {CRYSTAL_ANIME,crystalAnimeMedium,crystalAnimeSpec,crystalAnimePalette,isCrystalAnimeLimitedPalette} from '../crystal-anime.js?v=28.1.1';
-import {questions,resolveSelections} from '../catalog.js?v=28.1.1';
-import {applyCollection} from '../collection.js?v=28.1.1';
-import {initialSelections} from '../modes.js?v=28.1.1';
-import {buildDirection} from '../direction.js?v=28.1.1';
-import {poseItems,applyPose} from '../poses.js?v=28.1.1';
-import {visualSpec} from '../visual-specs.js?v=28.1.1';
-import {lookFor} from '../looks.js?v=28.1.1';
-import {sampleFor} from '../examples.js?v=28.1.1';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.1.1';
-import {composePrompt} from '../prompt.js?v=28.1.1';
+import {CRYSTAL_ANIME,crystalAnimeMedium,crystalAnimeSpec,crystalAnimePalette,isCrystalAnimeLimitedPalette} from '../crystal-anime.js?v=28.1.2';
+import {questions,resolveSelections} from '../catalog.js?v=28.1.2';
+import {applyCollection} from '../collection.js?v=28.1.2';
+import {initialSelections} from '../modes.js?v=28.1.2';
+import {buildDirection} from '../direction.js?v=28.1.2';
+import {poseItems,applyPose} from '../poses.js?v=28.1.2';
+import {visualSpec} from '../visual-specs.js?v=28.1.2';
+import {lookFor} from '../looks.js?v=28.1.2';
+import {sampleFor} from '../examples.js?v=28.1.2';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.1.2';
+import {composePrompt} from '../prompt.js?v=28.1.2';
 
 const profile={displayName:'TEST CREATOR',biography:'',topics:[],activityEnabled:false};
 const random=()=>.22;
@@ -39,9 +39,9 @@ for(const collection of ['halloween','everyday']){
  const base=resolveSelections({...initialSelections(),design:'通常の一枚絵',medium:CRYSTAL_ANIME,theme:collection==='everyday'?'ものづくりの時間':'光と影の寓話',costume:'参照画像の衣装を生かす',place:'白いスタジオ',pose:'全力で走る',mood:'完全な左横顔90度',palette:'桃 × ミルク × 淡金',type:'文字を一切入れない',line:'セリフなし',size:'縦写真3:4｜2400×3200｜3:4'},random);
  const {args,prompt,plan}=produce(base,collection);
  assert.equal(plan.conditions.find(c=>c.key==='medium').value,CRYSTAL_ANIME);
- assert.match(prompt,/顔は細い色線と少数の澄んだ色面/);assert.match(prompt,/鼻・口は位置と大きさの関係を保った簡潔な描線/);
+ assert.match(prompt,/顔は細い色線と少数の澄んだ色面/);assert.match(prompt,/鼻・口は識別できる特徴を簡潔な描線/);
  assert.match(prompt,/目の一律な拡大/);
- assert.match(prompt,/顔の輪郭、目鼻口の形・配置・比率/);
+ assert.match(prompt,/顔立ち・目鼻口・髪型・固有の印の特徴的な組合せ/);
  assert.match(prompt,/強いコントラスト|強い局所的な明度差/);
  assert.match(prompt,/虹彩の暗い奥行き/);
  assert.match(prompt,/反射光で固有色を塗り替えない/);
@@ -66,7 +66,7 @@ for(const collection of ['halloween','everyday']){
   const result=produce(values,collection);
   assert.equal(result.plan.conditions.find(c=>c.key==='pose').value,pose.value);
   assert.ok(result.prompt.includes(result.variant.pose));
-  assert.ok(result.prompt.includes(result.variant.distance));
+  assert.ok(result.prompt.includes(result.plan.variant.distance),'The prompt must preserve framing after selected camera resolution');
   assert.match(result.prompt,/閉じた目を開けたり、後ろ姿や隠れた目へ虹彩を追加したりしない/);
   assert.ok(!result.prompt.includes('undefined'));
   scenarios++;

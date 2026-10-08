@@ -93,7 +93,13 @@ export const movementsPhotoBases = [
         "title": "MoMA — Surrealism",
         "url": "https://www.moma.org/collection/terms/surrealism",
         "kind": "work",
-        "note": "自動描画から精密描写まで幅のある運動。本ツールは明瞭な物体の関係を用いる方法を採用。"
+        "note": "今回取得できたこのURLは作品索引のみ。個別工程は併記した一次資料の本文で照合。自動描画から精密描写まで幅のある運動。本ツールは明瞭な物体の関係を用いる方法を採用。"
+      },
+      {
+        "title": "The Met — Surrealism",
+        "url": "https://www.metmuseum.org/essays/surrealism",
+        "kind": "technique",
+        "note": "自動描画と精密な幻視的描写の幅を本文で確認。本ツールは後者の一方法へ翻訳する。"
       }
     ],
     "status": "synthesis"
@@ -142,7 +148,13 @@ export const movementsPhotoBases = [
         "title": "MoMA — Impressionism",
         "url": "https://www.moma.org/collection/terms/impressionism",
         "kind": "work",
-        "note": "短く分割された筆触と、一時的な光の色関係。"
+        "note": "今回取得できたこのURLは作品索引のみ。個別工程は併記した一次資料の本文で照合。短く分割された筆触と、一時的な光の色関係。"
+      },
+      {
+        "title": "The Met — Impressionism: Art and Modernity",
+        "url": "https://www.metmuseum.org/essays/impressionism-art-and-modernity",
+        "kind": "technique",
+        "note": "短い分割筆触、混ぜない色、光の効果を説明する本文を照合。"
       }
     ],
     "status": "synthesis"
@@ -166,7 +178,13 @@ export const movementsPhotoBases = [
         "title": "MoMA — Expressionism",
         "url": "https://www.moma.org/collection/terms/expressionism",
         "kind": "work",
-        "note": "整理・変形された形と色による感情の強調。"
+        "note": "今回取得できたこのURLは作品索引のみ。個別工程は併記した一次資料の本文で照合。整理・変形された形と色による感情の強調。"
+      },
+      {
+        "title": "MoMA — Masterworks of German Expressionism",
+        "url": "https://www.moma.org/calendar/exhibitions/146",
+        "kind": "technique",
+        "note": "形と色の変形による感情、白黒版画を含む表現の幅を照合。"
       }
     ],
     "status": "synthesis"
@@ -190,7 +208,13 @@ export const movementsPhotoBases = [
         "title": "MoMA — Cubism",
         "url": "https://www.moma.org/collection/terms/cubism",
         "kind": "work",
-        "note": "角張った面・圧縮された空間・複数視点。固定カメラ時の翻訳はツールの合成方針。"
+        "note": "今回取得できたこのURLは作品索引のみ。個別工程は併記した一次資料の本文で照合。角張った面・圧縮された空間・複数視点。固定カメラ時の翻訳はツールの合成方針。"
+      },
+      {
+        "title": "The Met — Cubism",
+        "url": "https://www.metmuseum.org/essays/cubism",
+        "kind": "technique",
+        "note": "面の分析・再構成と浅い空間を本文で照合。固定カメラへ適用する部分はツール独自の翻訳。"
       }
     ],
     "status": "synthesis"
@@ -239,7 +263,13 @@ export const movementsPhotoBases = [
         "title": "MoMA — Constructivism",
         "url": "https://www.moma.org/collection/terms/constructivism",
         "kind": "work",
-        "note": "掲載作品の幾何要素・面の関係。図案への翻訳はツールの方針。"
+        "note": "今回取得できたこのURLは作品索引のみ。個別工程は併記した一次資料の本文で照合。掲載作品の幾何要素・面の関係。図案への翻訳はツールの方針。"
+      },
+      {
+        "title": "MoMA post — The Many Lives of Proun 19D",
+        "url": "https://post.moma.org/the-many-lives-of-el-lissitzkys-proun-19d-1920-or-1921/",
+        "kind": "technique",
+        "note": "幾何面・線・重なりと多様な空間解釈を本文で照合。"
       }
     ],
     "status": "synthesis"
@@ -263,7 +293,13 @@ export const movementsPhotoBases = [
         "title": "MoMA — Pop art",
         "url": "https://www.moma.org/collection/terms/pop-art",
         "kind": "work",
-        "note": "印刷図像・面の反復など複数の方法。本ツールは輪郭と色面の方法を採用。"
+        "note": "今回取得できたこのURLは作品索引のみ。個別工程は併記した一次資料の本文で照合。印刷図像・面の反復など複数の方法。本ツールは輪郭と色面の方法を採用。"
+      },
+      {
+        "title": "MoMA — Drowning Girl audio description",
+        "url": "https://www.moma.org/audio/playlist/3/176",
+        "kind": "technique",
+        "note": "明瞭な黒い輪郭、平らな色面、印刷の網点を本文で照合。全ポップアート共通の必須ではない。"
       }
     ],
     "status": "synthesis"
@@ -312,7 +348,13 @@ export const movementsPhotoBases = [
         "title": "MoMA — Minimalism",
         "url": "https://www.moma.org/collection/terms/minimalism",
         "kind": "work",
-        "note": "単純な形、材料、反復の関係。具象を残す最小構成はツール独自の翻訳。"
+        "note": "今回取得できたこのURLは作品索引のみ。個別工程は併記した一次資料の本文で照合。単純な形、材料、反復の関係。具象を残す最小構成はツール独自の翻訳。"
+      },
+      {
+        "title": "MoMA — Donald Judd, Untitled (Stack)",
+        "url": "https://www.moma.org/collection/works/81324?sov_referrer=art_term",
+        "kind": "technique",
+        "note": "単純な幾何形と形間の空間・間隔を照合。具象を残す本ツールの方法は独自翻訳。"
       }
     ],
     "status": "synthesis"
@@ -409,7 +451,13 @@ export const movementsPhotoBases = [
         "title": "V&A — Henri Cartier-Bresson",
         "url": "https://www.vam.ac.uk/blog/museum-life/henri-cartier-bresson",
         "kind": "work",
-        "note": "実在する街角写真と瞬間の配置。掲載構図・人物は採用しない。"
+        "note": "今回HTTP 403で本文取得不能。併記したFondation Henri Cartier-Bressonの本人説明を代替根拠とする。"
+      },
+      {
+        "title": "Fondation Henri Cartier-Bresson — HCB",
+        "url": "https://www.henricartierbresson.org/en/hcb/",
+        "kind": "technique",
+        "note": "一瞬の事実と見える形の配置を同時に捉える、本人の説明を本文で照合。"
       }
     ],
     "status": "synthesis"

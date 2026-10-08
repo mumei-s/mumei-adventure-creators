@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.1.1';
-import {initialSelections} from '../modes.js?v=28.1.1';
-import {applyCollection} from '../collection.js?v=28.1.1';
-import {buildDirection} from '../direction.js?v=28.1.1';
-import {applyPose} from '../poses.js?v=28.1.1';
-import {visualSpec} from '../visual-specs.js?v=28.1.1';
-import {formatSpecs} from '../formats.js?v=28.1.1';
-import {productionPlan,planInstructions,repairPrompt} from '../production-plan.js?v=28.1.1';
-import {buildEditorial} from '../editorial.js?v=28.1.1';
-import {composePrompt} from '../prompt.js?v=28.1.1';
-import {profileForArtwork} from '../activity-settings.js?v=28.1.1';
+import {questions,resolveSelections} from '../catalog.js?v=28.1.2';
+import {initialSelections} from '../modes.js?v=28.1.2';
+import {applyCollection} from '../collection.js?v=28.1.2';
+import {buildDirection} from '../direction.js?v=28.1.2';
+import {applyPose} from '../poses.js?v=28.1.2';
+import {visualSpec} from '../visual-specs.js?v=28.1.2';
+import {formatSpecs} from '../formats.js?v=28.1.2';
+import {productionPlan,planInstructions,repairPrompt} from '../production-plan.js?v=28.1.2';
+import {buildEditorial} from '../editorial.js?v=28.1.2';
+import {composePrompt} from '../prompt.js?v=28.1.2';
+import {profileForArtwork} from '../activity-settings.js?v=28.1.2';
 // This suite checks fixed manuscript geometry. Source-guided manuscript roles
 // and actual article evidence are exercised separately by check-fidelity-v25.
 const profile={displayName:'Alice',activityEnabled:false,topics:['写真','創作'],biography:'写真と創作'},base=resolveSelections({...initialSelections(),design:'ファッション雑誌の表紙',costume:'海賊',pose:'全力で走る',mood:'完全な左横顔90度'},()=>0.2);
@@ -42,7 +42,9 @@ assert.ok(buildEditorial(profile,{...base,type:'物語の装丁風・タイト�
 const off=buildEditorial(profileForArtwork(profile,false),base,()=>0.2);assert.ok(!off.blocks.join('\n').includes('写真の向こう側'));assert.deepEqual(off.topics,[]);
 const np={...base,costume:'風景を主役にする'},npPlan=productionPlan(profile,np,make(np));assert.ok(npPlan.notes.some(s=>s.includes('人物なし')));assert.match(npPlan.conditions.find(c=>c.key==='pose').text,/物体/);
 assert.throws(()=>productionPlan(profile,{...base,place:'おまかせ'},make(base)),/未確定/);assert.throws(()=>productionPlan(profile,{...base,size:'bad'},make(base)),/幅・高さ/);
-const auto=resolveSelections(Object.fromEntries(questions.map(q=>[q.key,'おまかせ'])),()=>0.99);assert.equal(auto.type,'デザインに合わせて自動編集');
+const auto=resolveSelections(Object.fromEntries(questions.map(q=>[q.key,'おまかせ'])),()=>0.99);
+assert.ok(questions.find(q=>q.key==='type').groups.some(group=>group.values.includes(auto.type)),'AUTO typography must resolve to a real allowed option');
+const fixedType=resolveSelections({...initialSelections(),type:'デザインに合わせて自動編集'},()=>.99);assert.equal(fixedType.type,'デザインに合わせて自動編集','An explicitly selected editorial control must stay fixed');
 const densitySwitch={...base,type:'映画ポスター風・タイトルとクレジット'},p=productionPlan(profile,densitySwitch,make(densitySwitch));assert.ok(planInstructions(p).join('\n').includes('デザイン自体を別形式へ置換しない'));
 assert.ok(repairPrompt({prompt:'EXACT ORIGINAL PROMPT'}).endsWith('EXACT ORIGINAL PROMPT'));
 const mono={...base,medium:'水墨画',palette:'墨一色'},monoPrompt=composePrompt({creator:'alice',profile,values:mono,variant:make(mono),references:[],edition:'MONO'});

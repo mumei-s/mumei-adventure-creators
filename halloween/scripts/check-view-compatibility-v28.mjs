@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.1.1';
-import {applyCollection} from '../collection.js?v=28.1.1';
-import {initialSelections} from '../modes.js?v=28.1.1';
-import {angleItems,applyAngle,cameraContract} from '../angles.js?v=28.1.1';
-import {poseItems,applyPose} from '../poses.js?v=28.1.1';
-import {buildDirection} from '../direction.js?v=28.1.1';
-import {angleConstraint,moodConstraint,poseConstraint,angleConstraintValues,poseConstraintValues} from '../view-constraints.js?v=28.1.1';
-import {selectionConflicts,selectionWarnings,candidateAvailability,compatibleResolved} from '../compatibility.js?v=28.1.1';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.1.1';
-import {renderInput,renderChatInput} from '../compiled-production.js?v=28.1.1';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.1.1';
+import {questions,resolveSelections} from '../catalog.js?v=28.1.2';
+import {applyCollection} from '../collection.js?v=28.1.2';
+import {initialSelections} from '../modes.js?v=28.1.2';
+import {angleItems,applyAngle,cameraContract} from '../angles.js?v=28.1.2';
+import {poseItems,applyPose} from '../poses.js?v=28.1.2';
+import {buildDirection} from '../direction.js?v=28.1.2';
+import {angleConstraint,moodConstraint,poseConstraint,angleConstraintValues,poseConstraintValues} from '../view-constraints.js?v=28.1.2';
+import {selectionConflicts,selectionWarnings,candidateAvailability,compatibleResolved} from '../compatibility.js?v=28.1.2';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.1.2';
+import {renderInput,renderChatInput} from '../compiled-production.js?v=28.1.2';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.1.2';
 
 const moodValues=questions.find(q=>q.key==='mood').groups.flatMap(g=>g.values);
 assert.equal(moodValues.length,43);
@@ -46,7 +46,7 @@ for(const [moods,wrong,right] of [[['真上からの俯瞰','俯瞰＋目を見�
   assert.ok(selectionConflicts({mood,angle:'目線の高さ・正面'}).some(c=>c.code==='opposed-camera-height'));
  }
 for(const key of ['pose','mood'])for(const value of key==='pose'?['振り向く','振り向きながら走る']:['背中から振り向く','背中から振り向く＋ニヤリ']){
- for(const angle of ['目線の高さ・正面','斜め前45度'])assert.ok(selectionConflicts({[key]:value,angle}).some(c=>c.code==='opposed-camera-facing'));
+ for(const angle of ['目線の高さ・正面','斜め前45度','真横90度'])assert.ok(selectionConflicts({[key]:value,angle}).some(c=>c.code==='opposed-camera-facing'));
  for(const angle of ['背面から見る','背面斜め45度','肩越しの視点'])assert.equal(selectionConflicts({[key]:value,angle}).length,0);
 }
 

@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.1.1';
-import {applyCollection} from '../collection.js?v=28.1.1';
-import {productionPlan} from '../production-plan.js?v=28.1.1';
-import {composePrompt} from '../prompt.js?v=28.1.1';
-import {creatorHandoff} from '../creator-handoff.js?v=28.1.1';
+import {questions,resolveSelections} from '../catalog.js?v=28.1.2';
+import {applyCollection} from '../collection.js?v=28.1.2';
+import {productionPlan} from '../production-plan.js?v=28.1.2';
+import {composePrompt} from '../prompt.js?v=28.1.2';
+import {creatorHandoff} from '../creator-handoff.js?v=28.1.2';
 
 applyCollection('halloween');
 const profile=creatorHandoff('scene_author');
@@ -68,7 +68,7 @@ assert.ok(interview.includes('同じ番号の質問と回答を一組に'));
 for(const medium of ['書と墨の抽象','禅画','抽象表現','ミニマリズム']){
  const {input}=make({...base,medium});
  assert.ok(input.includes('各指や人体の細部を写実的に追加せず'));
- assert.ok(input.includes('外周5%の安全余白を保ち'));
+ assert.match(input,/外周5%(?:以上)?の安全余白を保/,'Resolved camera must retain the same minimum safe margin');
  assert.ok(!input.includes('両手の全指'));
  assert.ok(!input.includes('75〜80%'));
 }

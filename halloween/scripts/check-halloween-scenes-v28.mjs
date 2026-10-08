@@ -1,14 +1,15 @@
 import assert from 'node:assert/strict';
-import {questions,visibleQuestions,resolveSelections,AUTO} from '../catalog.js?v=28.1.1';
-import {applyCollection} from '../collection.js?v=28.1.1';
-import {initialSelections,propose,effectiveSelections} from '../modes.js?v=28.1.1';
-import {halloweenSceneFocus,halloweenSceneTitles,sceneSourcePlace} from '../scene-presets.js?v=28.1.1';
-import {optionRecipe} from '../option-recipes.js?v=28.1.1';
-import {sampleFor} from '../examples.js?v=28.1.1';
-import {buildDirection} from '../direction.js?v=28.1.1';
-import {productionPlan} from '../production-plan.js?v=28.1.1';
-import {renderChatInput} from '../compiled-production.js?v=28.1.1';
-import {compactHistoryRecord,restoreHistoryRecord} from '../history-storage.js?v=28.1.1';
+import {questions,visibleQuestions,resolveSelections,AUTO} from '../catalog.js?v=28.1.2';
+import {applyCollection} from '../collection.js?v=28.1.2';
+import {initialSelections,propose,effectiveSelections} from '../modes.js?v=28.1.2';
+import {halloweenSceneFocus,halloweenSceneTitles,sceneSourcePlace} from '../scene-presets.js?v=28.1.2';
+import {optionRecipe} from '../option-recipes.js?v=28.1.2';
+import {sampleFor} from '../examples.js?v=28.1.2';
+import {buildDirection} from '../direction.js?v=28.1.2';
+import {productionPlan} from '../production-plan.js?v=28.1.2';
+import {renderChatInput} from '../compiled-production.js?v=28.1.2';
+import {compactHistoryRecord,restoreHistoryRecord} from '../history-storage.js?v=28.1.2';
+import {automaticSelection} from '../random-selections.js?v=28.1.2';
 
 const valuesFor=key=>questions.find(q=>q.key===key).groups.flatMap(group=>group.values);
 const keptWorlds='月夜の仮面舞踏会|真夜中の魔女のアトリエ|忘れられた劇場|幽霊たちのお茶会|異界に続く駅|鏡の向こうの自分|眠らない美術館|一夜だけの怪奇サーカス|吸血鬼の晩餐会|死神の休日|魔法使いの見習い|悪夢からの脱出|百鬼夜行|妖狐と月の契約|海賊船の亡霊|宇宙のHalloween|機械仕掛けの怪物|呪われたオルゴール|お菓子の王国|カボチャの収穫祭|都会の仮装パレード|花と骸骨の祝祭|墨で描く怪異|雨上がりの怪談|静かなハロウィーン'.split('|');
@@ -41,7 +42,10 @@ for(const theme of expected){
  for(const costume of ['参照画像の衣装を生かす','風景を主役にする']){
   const values=resolveSelections({...initialSelections(),...fixed,theme,costume,place:'STALE_BACKGROUND'},()=>.2);
   assert.equal(values.theme,theme);assert.notEqual(values.place,'STALE_BACKGROUND');
-  for(const [key,value] of Object.entries({...fixed,costume}))assert.equal(values[key],value,theme+' changed explicit '+key);
+  for(const [key,value] of Object.entries({...fixed,costume})){
+   if(automaticSelection(value))assert.ok(valuesFor(key).includes(values[key]),theme+' AUTO '+key+' must become an allowed choice');
+   else assert.equal(values[key],value,theme+' changed explicit '+key);
+  }
   if(keptPlaces.includes(theme))assert.equal(values.place,theme);
   const recipe=optionRecipe('theme',theme,{values,collection:'halloween'});
   assert.ok(recipe.known,theme+' lost its recipe');

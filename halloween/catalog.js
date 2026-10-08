@@ -1,9 +1,11 @@
-import {extraTypographyGroups} from './typography-options.js?v=28.1.1';
-import {compatibleResolved} from './compatibility.js?v=28.1.1';
-import {poseGroups} from './poses.js?v=28.1.1';
-import {colorWorlds,luminousMedia} from './worlds.js?v=28.1.1';
-import {halloweenSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.1.1';
-import {angleGroups} from './angles.js?v=28.1.1';
+import {extraTypographyGroups} from './typography-options.js?v=28.1.2';
+import {compatibleResolved} from './compatibility.js?v=28.1.2';
+import {selectionConflicts} from './compatibility.js?v=28.1.2';
+import {automaticSelection,sampleAutomaticSelections,selectionFingerprint,RepeatedSelectionError} from './random-selections.js?v=28.1.2';
+import {poseGroups} from './poses.js?v=28.1.2';
+import {colorWorlds,luminousMedia} from './worlds.js?v=28.1.2';
+import {halloweenSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.1.2';
+import {angleGroups} from './angles.js?v=28.1.2';
 export const AUTO='おまかせ';
 const group=(label,values)=>({label,values:values.split('|')});
 // Select how to draw first, then the scene, subject, staging and final format.
@@ -47,13 +49,24 @@ export function normalizeCreator(raw){
 }
 let selectionRefiner=null;
 export function setSelectionRefiner(refiner){selectionRefiner=refiner;}
-export function resolveSelections(values={},random=Math.random){
+export function resolveSelections(values={},random=Math.random,{recent=[],requireFresh=false}={}){
  const unified=sceneIsUnified(values),input=unified?{...values,place:AUTO}:values;
- const resolved=Object.fromEntries(questions.map(q=>{const v=input[q.key];const list=q.autoValues||q.groups.flatMap(g=>g.values);if(v&&v!==AUTO)return [q.key,v];if(q.key==='type')return [q.key,'デザインに合わせて自動編集'];return [q.key,list[Math.min(list.length-1,Math.floor(random()*list.length))]];}));
- const sourcePlace=sceneSourcePlace(resolved.theme);
- if(unified&&sourcePlace)resolved.place=sourcePlace;
- const refined=selectionRefiner?selectionRefiner(resolved,input,random):resolved;
- const result=compatibleResolved(refined,input,questions,random);
- if(unified)result.sceneUnified=true;
+ const keys=questions.map(q=>q.key),recentValues=recent.filter(Boolean),seen=new Set(recentValues.map(values=>selectionFingerprint(values,keys)));
+ const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(input.costume||'');
+ const mutable=questions.filter(q=>automaticSelection(input[q.key])&&!(unified&&['place','line'].includes(q.key))&&!(noPerson&&['mood','pose'].includes(q.key))).map(q=>q.key);
+ let result;
+ for(let attempt=0;attempt<(seen.size?24:1);attempt++){
+  const resolved=sampleAutomaticSelections(questions,input,random,{recent:recentValues,attempt});
+  const sourcePlace=sceneSourcePlace(resolved.theme);
+  if(unified&&sourcePlace)resolved.place=sourcePlace;
+  const refined=selectionRefiner?selectionRefiner(resolved,input,random,{recent:recentValues,attempt}):resolved;
+  result=compatibleResolved(refined,input,questions,random,{recent:recentValues,attempt});
+  if(unified)result.sceneUnified=true;
+  // Explicit conflicts stay reviewable, without replacing any fixed choice.
+  if(selectionConflicts(result).length||!seen.has(selectionFingerprint(result,keys))||!mutable.length)return result;
+ }
+ const exhausted=new RepeatedSelectionError(result,mutable);
+ if(requireFresh)throw exhausted;
+ Object.defineProperty(result,'automaticResolution',{value:{reused:true,issues:exhausted.issues,reason:exhausted.message},enumerable:false});
  return result;
 }

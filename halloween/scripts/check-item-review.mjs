@@ -1,15 +1,16 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {questions,resolveSelections} from '../catalog.js?v=28.1.1';
-import {applyCollection} from '../collection.js?v=28.1.1';
-import {initialSelections} from '../modes.js?v=28.1.1';
-import {buildDirection} from '../direction.js?v=28.1.1';
-import {applyPose} from '../poses.js?v=28.1.1';
-import {productionPlan} from '../production-plan.js?v=28.1.1';
-import {composePrompt} from '../prompt.js?v=28.1.1';
-import {optionRecipe} from '../option-recipes.js?v=28.1.1';
-import {conditionOwners,renderInput} from '../compiled-production.js?v=28.1.1';
-import {opticalColors,opticalSignature} from '../optical-effects.js?v=28.1.1';
+import {questions,resolveSelections} from '../catalog.js?v=28.1.2';
+import {applyCollection} from '../collection.js?v=28.1.2';
+import {initialSelections} from '../modes.js?v=28.1.2';
+import {buildDirection} from '../direction.js?v=28.1.2';
+import {applyPose} from '../poses.js?v=28.1.2';
+import {productionPlan} from '../production-plan.js?v=28.1.2';
+import {composePrompt} from '../prompt.js?v=28.1.2';
+import {optionRecipe} from '../option-recipes.js?v=28.1.2';
+import {conditionOwners,renderInput} from '../compiled-production.js?v=28.1.2';
+import {opticalColors,opticalSignature} from '../optical-effects.js?v=28.1.2';
+import {automaticSelection} from '../random-selections.js?v=28.1.2';
 const random=()=>.28,profile={displayName:'REVIEW',activityEnabled:false,topics:[],biography:''};
 const entries=new Map();let occurrences=0,pairs=0,totalLength=0,maxLength=0;
 for(const mode of ['halloween','everyday']){
@@ -18,7 +19,9 @@ for(const mode of ['halloween','everyday']){
  for(const q of questions)for(const value of q.groups.flatMap(g=>g.values)){
   const values={...base,[q.key]:value};
   // Explicit inputs must survive the automatic-selection refiner unchanged.
-  const resolved=resolveSelections(values,random);assert.equal(resolved[q.key],value);
+  const resolved=resolveSelections(values,random);
+  if(automaticSelection(value))assert.ok(q.groups.some(group=>group.values.includes(resolved[q.key])),'AUTO must become an allowed concrete choice');
+  else assert.equal(resolved[q.key],value);
   const variant=applyPose(buildDirection([],values.mood,random,mode,values),values.pose);
   const plan=productionPlan(profile,values,variant,mode,random);
   const prompt=composePrompt({profile,values,variant,preparedPlan:plan,collection:mode,edition:'REVIEW'});

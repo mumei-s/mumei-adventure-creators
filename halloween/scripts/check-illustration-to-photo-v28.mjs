@@ -1,18 +1,18 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.1.1';
-import {questions,resolveSelections} from '../catalog.js?v=28.1.1';
-import {initialSelections} from '../modes.js?v=28.1.1';
-import {buildDirection} from '../direction.js?v=28.1.1';
-import {applyPose} from '../poses.js?v=28.1.1';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.1.1';
-import {composePrompt} from '../prompt.js?v=28.1.1';
-import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.1.1';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.1.1';
-import {photoValues,photoReconstruction,photoDesign,isPhotographicMedium} from '../photo-design.js?v=28.1.1';
-import {styleFidelity} from '../style-fidelity.js?v=28.1.1';
-import {colorPolicy} from '../color-policy.js?v=28.1.1';
-import {detailedMedium} from '../medium-recipes.js?v=28.1.1';
-import {cameraContract,angleItems} from '../angles.js?v=28.1.1';
+import {applyCollection} from '../collection.js?v=28.1.2';
+import {questions,resolveSelections} from '../catalog.js?v=28.1.2';
+import {initialSelections} from '../modes.js?v=28.1.2';
+import {buildDirection} from '../direction.js?v=28.1.2';
+import {applyPose} from '../poses.js?v=28.1.2';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.1.2';
+import {composePrompt} from '../prompt.js?v=28.1.2';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.1.2';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.1.2';
+import {photoValues,photoReconstruction,photoDesign,isPhotographicMedium} from '../photo-design.js?v=28.1.2';
+import {styleFidelity} from '../style-fidelity.js?v=28.1.2';
+import {colorPolicy} from '../color-policy.js?v=28.1.2';
+import {detailedMedium} from '../medium-recipes.js?v=28.1.2';
+import {cameraContract,angleItems} from '../angles.js?v=28.1.2';
 
 // Reference filenames describe the user scenario; no reference pixels or
 // image-generation runtime are inspected by this instruction regression.

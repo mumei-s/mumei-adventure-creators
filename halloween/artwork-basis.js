@@ -1,8 +1,8 @@
-import {illustrationBases} from './artwork-basis-illustration.js?v=28.1.1';
-import {traditionalBases} from './artwork-basis-traditional.js?v=28.1.1';
-import {materialBases} from './artwork-basis-material.js?v=28.1.1';
-import {movementsPhotoBases} from './artwork-basis-movements-photo.js?v=28.1.1';
-import {luminousBases} from './artwork-basis-luminous.js?v=28.1.1';
+import {illustrationBases} from './artwork-basis-illustration.js?v=28.1.2';
+import {traditionalBases} from './artwork-basis-traditional.js?v=28.1.2';
+import {materialBases} from './artwork-basis-material.js?v=28.1.2';
+import {movementsPhotoBases} from './artwork-basis-movements-photo.js?v=28.1.2';
+import {luminousBases} from './artwork-basis-luminous.js?v=28.1.2';
 
 // Sources are documentation for the picker. Only the extracted drawing
 // criteria enter production: no borrowed artist, character, scene or image.

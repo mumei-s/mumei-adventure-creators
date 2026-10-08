@@ -1,12 +1,13 @@
-import {everydayScenes,everydayPlaces,casualClothes,swimClothes,everydayBindings,everydaySamples} from './everyday-options.js?v=28.1.1';
-import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=28.1.1';
-import {poseGroups} from './poses.js?v=28.1.1';
-import {halloweenSceneGroups,mergeSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.1.1';
+import {everydayScenes,everydayPlaces,casualClothes,swimClothes,everydayBindings,everydaySamples} from './everyday-options.js?v=28.1.2';
+import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=28.1.2';
+import {poseGroups} from './poses.js?v=28.1.2';
+import {automaticView} from './view-constraints.js?v=28.1.2';
+import {randomChoice} from './random-selections.js?v=28.1.2';
+import {halloweenSceneGroups,mergeSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.1.2';
 const original=questions.map(q=>({...q,groups:q.groups.map(g=>({...g,values:[...g.values]}))}));
 const originalGroups=key=>original.find(q=>q.key===key).groups;
 const cloneGroups=groups=>groups.map(g=>({...g,values:[...g.values]}));
-const pick=(values,random)=>values[Math.min(values.length-1,Math.floor(random()*values.length))];
-const automatic=(input,key)=>!input[key]||input[key]===AUTO;
+const automatic=(input,key)=>automaticView(input[key]);
 let activeCollection='halloween';
 export function currentCollection(){return activeCollection;}
 export const dailyScenes=[
@@ -121,7 +122,8 @@ const halloweenSceneChoices={
 };
 export function noPersonSelection(values={}){return ['風景を主役にする','モチーフだけで構成する','紋章・アイコンにする'].includes(values.costume);}
 export function landscapeSelection(values={}){return values.costume==='風景を主役にする'||/風景画/.test(values.design||'')||landscapeScenes.some(([name])=>name===values.theme);}
-function refineSelections(resolved,input,random){
+function refineSelections(resolved,input,random,{recent=[],attempt=0}={}){
+ const pick=(choices,rng)=>randomChoice(choices,rng,{recent:recent.map(row=>Object.values(row).find(value=>choices.includes(value))).filter(Boolean),offset:attempt});
  const values={...resolved};
  const placeScene=sceneIsUnified(input)&&sceneSourcePlace(values.theme);
  if(activeCollection==='everyday'){
@@ -163,14 +165,14 @@ export function applyCollection(collection){
   if(daily&&q.key==='type')q.groups=q.groups.map(g=>({...g,values:g.values.filter(v=>!v.includes('HALLOWEEN'))}));
   q.name=source.name;q.hint=source.hint;
   if(q.key==='theme')q.groups=daily?mergeSceneGroups(q.groups,dailyGroups.place):halloweenSceneGroups(q.groups,originalGroups('place'));
-  if(q.key==='angle')q.autoValues=['場面に合わせたアングル'];
+  if(q.key==='angle')q.autoValues=q.groups.flatMap(group=>group.values);
   if(daily){
    if(q.key==='theme'){q.hint='日常・風景・創作をひとつの場面で選ぶ';q.autoValues=[...ordinaryScenes,...landscapeScenes].map(x=>x[0]);}
    if(q.key==='design')q.autoValues=defaultDailyDesigns;
    if(q.key==='costume')q.autoValues=ordinaryClothes;
    if(q.key==='place')q.autoValues=[...dailyPlaces,...everydayPlaces,...scenicPlaces];
    if(q.key==='pose'){q.autoValues=['まっすぐ立つ','片足に体重を乗せる','椅子に腰掛ける','ゆっくり歩く','振り向く','手を振る'];q.hint='日常の動きから、選んだ演技まで';}
-   if(q.key==='mood')q.autoValues=['毎回大胆に変える'];
+   if(q.key==='mood')q.autoValues=q.groups.filter(group=>!['自動','幻想・演技の表情（選択時のみ）'].includes(group.label)).flatMap(group=>group.values);
    if(q.key==='medium')q.autoValues=['実写風フィルム写真','実写風スタジオ写真','実写風街角スナップ','実写風シネマティック写真','実写風ファッション写真','実写風モノクロ銀塩写真','現代アニメの一枚絵','手描きアニメのセル画','劇場アニメの背景美術','絵本イラスト','油彩・厚塗り','透明水彩','不透明水彩・ガッシュ','水墨画','浮世絵木版画','色鉛筆画','ベクターグラフィック','フラットイラスト'];
    if(q.key==='palette')q.autoValues=[...naturalPalettes,'桃色 × 墨黒 × 真珠','原色のポップカラー','墨一色'];
   }

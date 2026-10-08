@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {productionPlan} from '../production-plan.js?v=28.1.1';
-import {renderChatInput,renderInput} from '../compiled-production.js?v=28.1.1';
-import {composePrompt} from '../prompt.js?v=28.1.1';
+import {productionPlan} from '../production-plan.js?v=28.1.2';
+import {renderChatInput,renderInput} from '../compiled-production.js?v=28.1.2';
+import {composePrompt} from '../prompt.js?v=28.1.2';
 
 const settings=JSON.parse(fs.readFileSync(new URL('../verification/v25/machine-anime-settings.json',import.meta.url)));
 const profile={displayName:'検証作者',activityEnabled:true,tagsEnabled:false,topics:['根拠のない宇宙ブランド'],biography:'日常で集めた音を短い映像と文章にしています。',bodyRead:{count:60,status:'complete'},sourceEvidence:Array.from({length:60},(_,index)=>({key:String(index),title:'記録'+index,url:'https://example.test/articles/'+index,excerpts:['本文の観察'+index+'：朝の街角の音を録り、帰宅後に短い映像として組み立てた。']}))};

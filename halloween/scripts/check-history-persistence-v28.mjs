@@ -1,19 +1,19 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {createHistoryPersistence} from '../history-persistence.js?v=28.1.1';
-import {createIndexedHistoryStore} from '../indexed-history.js?v=28.1.1';
-import {compactHistoryRecord,restoreHistoryRecord,restoreHistoryCore} from '../history-storage.js?v=28.1.1';
-import {resolveSelections} from '../catalog.js?v=28.1.1';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.1.1';
-import {stagePrompts} from '../production-workflow.js?v=28.1.1';
-import {composePrompt} from '../prompt.js?v=28.1.1';
-import {buildDirection} from '../direction.js?v=28.1.1';
+import {createHistoryPersistence} from '../history-persistence.js?v=28.1.2';
+import {createIndexedHistoryStore} from '../indexed-history.js?v=28.1.2';
+import {compactHistoryRecord,restoreHistoryRecord,restoreHistoryCore} from '../history-storage.js?v=28.1.2';
+import {resolveSelections} from '../catalog.js?v=28.1.2';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.1.2';
+import {stagePrompts} from '../production-workflow.js?v=28.1.2';
+import {composePrompt} from '../prompt.js?v=28.1.2';
+import {buildDirection} from '../direction.js?v=28.1.2';
 
 const key='mumeis-halloween-v2',random=()=>.28,profile={displayName:'保存容量の検査',topics:[]};
 const values=resolveSelections({sceneUnified:true,design:'新聞の一面',medium:'クリスタルホログラム造形アニメ',theme:'宇宙のHalloween',costume:'ヴィクトリア朝の正装',pose:'片手を差し出す',type:'新聞風・記事と段組み'},random);
 const production=productionPlan(profile,values,buildDirection([],values.mood,random,'halloween',values),'halloween',random);
-const record={version:'28.1.1',collection:'halloween',profile,values,variant:production.variant,production,stages:stagePrompts(production),edition:'LATEST',references:[],date:'2026-10-08T00:00:00Z',count:12};record.prompt=composePrompt({...record,creator:'',preparedPlan:production});
+const record={version:'28.1.2',collection:'halloween',profile,values,variant:production.variant,production,stages:stagePrompts(production),edition:'LATEST',references:[],date:'2026-10-08T00:00:00Z',count:12};record.prompt=composePrompt({...record,creator:'',preparedPlan:production});
 const state={history:Array.from({length:12},(_,i)=>({...record,edition:i?'OLD-'+i:'LATEST',date:new Date(Date.parse(record.date)-i*1000).toISOString(),count:12-i})),used:Array.from({length:2000},(_,i)=>({signature:'used-'+i,face:'left',pose:'手を上げる',layout:'中央配置'})),count:12};
 const original=JSON.stringify(state);
 class MemoryDatabase{
@@ -33,6 +33,8 @@ const packedBytes=JSON.stringify(migrated.state).length*2;assert.ok(packedBytes<
 for(const compact of migrated.state.history){const restored=await restoreHistoryRecord(compact);assert.equal(restored.prompt,record.prompt);assert.deepEqual(restored.variant,record.variant);assert.deepEqual(restored.production,production);assert.deepEqual(restored.stages,record.stages);assert.equal(repairPrompt(restored),repairPrompt(record));}
 assert.deepEqual(migrated.state.used.map(r=>r.signature),state.used.map(r=>r.signature));assert.deepEqual(migrated.state.used.slice(-3),state.used.slice(-3));
 const reopened=createHistoryPersistence({key,storage,database});const afterReload=await reopened.load();assert.equal(afterReload.backend,'indexeddb');assert.equal(afterReload.state.history[0].edition,'LATEST');assert.ok(database.reads>=2,'Reload checks IndexedDB without a localStorage flag');
+assert.equal(reopened.cacheInfo().localParsed,false,'The archived database state does not retain a second fully expanded legacy state');
+database.failRead=true;reopened.invalidate();const temporaryFallback=await reopened.load();assert.equal(temporaryFallback.backend,'localstorage');assert.equal((await restoreHistoryRecord(temporaryFallback.state.history[0])).prompt,record.prompt,'Releasing legacy objects still permits a later exact fallback from the original key');database.failRead=false;
 
 // After migrating eleven existing records, a new twelfth prompt survives a
 // fresh page instance together with every old record, including old recipes.
@@ -45,6 +47,8 @@ const nextPage=createHistoryPersistence({key,storage:reloadStorage,database:relo
 // A denied database still gets a full, smaller atomic localStorage fallback.
 const fallbackStorage=localStore({[key]:original,'other-feature':'KEEP'},packedBytes*1.2),denied=new MemoryDatabase();denied.failRead=denied.failWrite=true;
 const fallback=createHistoryPersistence({key,storage:fallbackStorage,database:denied});await fallback.load();const fallbackSaved=await fallback.save(state);assert.equal(fallbackSaved.saved,true);assert.equal(fallbackSaved.backend,'localstorage');assert.equal(fallbackSaved.state.history.length,12);assert.equal(fallbackSaved.state.used.length,2000);assert.equal(fallbackStorage.data.get('other-feature'),'KEEP');assert.equal((await restoreHistoryRecord(JSON.parse(fallbackStorage.data.get(key)).history[0])).prompt,record.prompt);
+assert.ok(fallbackSaved.state.used.slice(0,-3).every(record=>Object.keys(record).length===1),'Merging a legacy local copy cannot restore 1,997 obsolete direction metadata payloads');
+assert.deepEqual(fallbackSaved.state.used.slice(-3),state.used.slice(-3),'Fallback keeps recent direction comparison metadata and all repeat-avoidance signatures');
 const impossibleStorage=localStore({[key]:original},10),impossible=createHistoryPersistence({key,storage:impossibleStorage,database:denied});const failed=await impossible.save(state);assert.equal(failed.saved,false);assert.equal(failed.quota,true);assert.equal(impossibleStorage.data.get(key),original,'Two failed stores must leave the previous successful save untouched');assert.equal(impossibleStorage.writes,1,'No retry removes older histories or signatures');
 
 // Missing, throwing and unusable codecs preserve exact JSON in the database.
@@ -63,6 +67,7 @@ const oldSnapshot=(await tabB.load()).state,cleared=await tabA.clear((await tabA
 assert.equal(JSON.parse(quiet.getItem(key)).history.length,0,'Confirmed clear writes a small legacy-store tombstone when possible');
 const late=await tabB.save(oldSnapshot);assert.equal(late.saved,false);assert.equal(late.conflict,true);assert.equal((await shared.read(key)).history.length,0);
 quiet.setItem(key,original);const clearReload=await tabA.load();assert.equal(clearReload.state.history.length,0,'A committed empty database is authoritative over the old localStorage copy');
+shared.failRead=true;tabA.invalidate();assert.equal((await tabA.load()).state.history.length,0,'A temporary DB failure cannot roll a live tab back to an already cleared legacy key');shared.failRead=false;
 const cancelled=await tabA.save(state,{shouldWrite:()=>false});assert.equal(cancelled.cancelled,true);assert.equal((await shared.read(key)).history.length,0);
 
 // Test the actual IndexedDB adapter event timing and failed transaction atomicity.

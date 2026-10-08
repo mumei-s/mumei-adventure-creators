@@ -127,3 +127,6 @@ body[data-lights="night"] #picker .artwork-basis-preview { color: #f4eaff; backg
 .choice-issue { position: absolute; right: 8px; bottom: 4px; padding: 1px 5px; border-radius: 4px; background: #fff0cf; color: #7d2c17; font-size: .64rem; font-weight: 800; }
 .choice-issue[hidden] { display: none; }
 body[data-lights="night"] .candidate-notice,body[data-lights="night"] .selection-notice { background: #332b24; color: #ffe4b5; }
+
+#draft-status{line-height:1.65;margin:12px 0;}
+#reset-profile,#reset-references{font-size:.82rem;white-space:normal;}

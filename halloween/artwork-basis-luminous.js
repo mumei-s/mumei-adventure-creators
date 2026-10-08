@@ -8,6 +8,7 @@ const painting={title:'Reuben Lara — Lighting your Painting',url:'https://www.
 const watercolor={title:'InmaR. — Turning anime cell coloring into watercolor',url:'https://tips.clip-studio.com/en-us/articles/1801',kind:'technique',note:'作者本人のアニメ線画・色面を、水彩の質感と色の境界へ変える制作工程。実物の身体を透明にする方法ではない。'};
 const refraction={title:'Exploratorium — Disappearing Glass Rods',url:'https://www.exploratorium.edu/snacks/disappearing-glass-rods',kind:'technique',note:'屈折率と見える境界の関係を示す実験。透過を単なる不透明度低下にせず、輪郭と背後の像の関係として扱う資料。'};
 const dispersion={title:'Exploratorium — Glass Bead Rainbow',url:'https://annex.exploratorium.edu/xref/exhibits/glass_bead_rainbow.html',kind:'technique',note:'ガラス内の反射と分光の展示。透明な厚み、反射、分光を異なる現象として整理し、虹色を全面へ塗る処理と区別。'};
+const thinFilm={title:'OpenStax / Rice University — Interference in Thin Films',url:'https://openstax.org/books/university-physics-volume-3/pages/3-4-interference-in-thin-films',kind:'technique',note:'膜の異なる境界で反射した光の干渉を解説する教科書。ガラスの屈折・分散やホログラム像と区別し、膜厚と観察角に応じる色帯だけを合成作画の局所光学層へ使う。'};
 const holography={title:'S. A. Benton / MIT OpenCourseWare — White-Light Transmission Rainbow Holograms',url:'https://ocw.mit.edu/courses/mas-450-holographic-imaging-spring-2003/d8da840f0c0acd685106df4617eebf91_ch14rainbowholograms.pdf',kind:'technique',note:'観察位置・照明・分光色・像の深度の関係。架空の投影膜や走査線はこの実物技術の再現とは区別する。'};
 
 export const luminousBases=[
@@ -60,7 +61,7 @@ export const luminousBases=[
  ],avoid:[
   '宝石の小物や光粒だけで透光を代用する処理',
   '無関係な多面体へ身体や建物を交換する処理'
- ],references:[anime,refraction,dispersion]},
+ ],references:[anime,refraction,dispersion,thinFilm]},
  {value:'宝石ホログラムアニメ',status:'synthesis',basis:[
   '合成したデジタル作画基準。2Dアニメの主題そのものを半透明の投影像へ変換し、深度の異なる投影層と干渉の縁を連続させる。実物のホログラムの忠実な再現とは区別する。',
   '通常の肌や不透明な景物の外側に光膜を置くだけにせず、本体の広い面にも透過の濃度差、位置のずれた二重像、細い色の境界を続ける。',
@@ -77,12 +78,12 @@ export const luminousBases=[
   '合成したデジタル作画基準。主題の識別できる外形と構造を透明な結晶材質で造形し、アニメの細い線と色面でその内側の厚みを描く。',
   '顔・髪・身体、または主景の広い面そのものに透明な厚みを与え、背後の輪郭の屈折ずれと暗い二重の内部反射を作る。小物だけを光らせた普通の肌へ戻さない。',
   '分光と薄膜干渉は結晶の面や縁へ連続させ、面の向きと深い影で量感を分ける。実物のホログラフィーとは異なる、ガラス光学と投影演出の合成として扱う。',
-  '強い近景や動勢も選択された画角とポーズの中で短縮・遮蔽へ翻訳する。人体や建築の接続、支持点、衣装の被覆を保ち、光のために別ポーズへ変更しない。'
+  '奥行きは指定カメラに見える投影と遮蔽から描く。動勢は選択された移動や風が実在する場合だけ使い、静止に揺れや迫る前景を追加しない。人体や建築の接続、支持点、衣装の構造と被覆を保ち、覆われた人体を透視する窓へ衣装を変えない。'
  ],checks:[
   '本体の広い結晶面、厚い縁、屈折した背後の像、暗い内部反射',
   '結晶面に続く分光・干渉の縁と、保たれた識別形・支持・選択視点'
  ],avoid:[
   '不透明な主題を残して宝飾だけを虹色にする処理',
   '無関係な水晶塊・宝石・飛散粒子や、光を見せるための画角と姿勢の変更'
- ],references:[anime,refraction,dispersion,holography]}
+ ],references:[anime,refraction,dispersion,thinFilm,holography]}
 ];

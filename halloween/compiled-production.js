@@ -1,11 +1,11 @@
-import {styleFidelity} from './style-fidelity.js?v=28.1.1';
-import {modeFoundation} from './japan-direction.js?v=28.1.1';
-import {imageOutputContract} from './output-contract.js?v=28.1.1';
-import {opticalSignature} from './optical-effects.js?v=28.1.1';
-import {colorPolicy} from './color-policy.js?v=28.1.1';
-import {sceneComposition} from './scene-composition.js?v=28.1.1';
-import {cameraContract} from './angles.js?v=28.1.1';
-import {photoReconstruction} from './photo-design.js?v=28.1.1';
+import {styleFidelity} from './style-fidelity.js?v=28.1.2';
+import {modeFoundation} from './japan-direction.js?v=28.1.2';
+import {imageOutputContract} from './output-contract.js?v=28.1.2';
+import {opticalSignature} from './optical-effects.js?v=28.1.2';
+import {colorPolicy} from './color-policy.js?v=28.1.2';
+import {sceneComposition} from './scene-composition.js?v=28.1.2';
+import {cameraContract} from './angles.js?v=28.1.2';
+import {photoReconstruction} from './photo-design.js?v=28.1.2';
 
 export const conditionOwners=Object.freeze({
  angle:'カメラの位置・傾き・距離・遠近',
@@ -63,7 +63,7 @@ function renderInputObject(plan){
    story_integration:storyIntegration,
    ...(!plan.noPerson&&geometry?.whole?{full_body_composition:geometry.framing_instruction}:!plan.noPerson&&!geometry&&/全身|足先|靴から頭/.test(v.distance)?{full_body_composition:gestureBased?'全身指定は、主役の識別できる全体の姿勢・支持・動作の方向を、選択画風の筆の印・形・間隔・余白で画像領域内へ収める。各指や人体の細部を写実的に追加せず、主役と出来事の対象の関係が全体で読める形に整理する。外周5%の安全余白を保ち、重要な筆の形・支持点・動作の行き先を文字枠や画像端で切らない。':'構図の最優先：主画像領域内に頭頂・両手の全指・両足の靴先・支持面をすべて収める。人物の頭頂から一番下の靴先までを主画像領域の高さの75〜80%以内に置き、頭上に5%以上、最下端の靴先の下に10%以上の床または地面を見せる。左右も指先・衣装の端を外周5%より内側へ。手前へ迫る手と頭の遠近差は保ち、指定カメラの角度を変えずにカメラを引いて全身を収める。顔の拡大のために足先を切らない。'}:{}),
    layout:byKey.design.execution.method,
-   ...(!plan.noPerson&&['クリスタルホログラム造形アニメ','宝石ホログラムアニメ'].includes(selected.medium)?{face_material:'最優先：顔も結晶ホログラム。顔そのものを'+(selected.medium==='クリスタルホログラム造形アニメ'?'透明な彫刻用の結晶ガラスとして造形する。額・頬・鼻・眼瞼・唇・顎・耳すべてに透明な厚み、幅広い虹色干渉帯、暗い二重内部反射を描く。頬の内部に奥の髪や背景の屈折した像を見せ、鼻と唇も透明な結晶面にする。':'半透明のホログラム投影像へ変換する。額・頬・鼻・眼瞼・唇・顎・耳にも濃度差、背景が透ける領域、位置のずれた二重像と干渉帯を続ける。')+'肌に虹の模様を貼るだけで終えない。普通の肌色、自然なピンクの不透明な唇を残さない。目鼻口の識別形と表情は透明材質の内部の色面と描線で保つ。主参照は形と比率だけに使う。'}:{}),
+   ...(!plan.noPerson&&['クリスタルホログラム造形アニメ','宝石ホログラムアニメ'].includes(selected.medium)?{face_material:'最優先：顔も結晶ホログラム。顔そのものを'+(selected.medium==='クリスタルホログラム造形アニメ'?'透明な彫刻用の結晶ガラスとして造形する。額・頬・鼻・眼瞼・唇・顎・耳すべてに透明な厚み、幅広い虹色干渉帯、暗い二重内部反射を描く。頬の内部に奥の髪や背景の屈折した像を見せ、鼻と唇も透明な結晶面にする。':'半透明のホログラム投影像へ変換する。額・頬・鼻・眼瞼・唇・顎・耳にも濃度差、背景が透ける領域、位置のずれた二重像と干渉帯を続ける。')+'肌に虹の模様を貼るだけで終えない。普通の肌色、自然なピンクの不透明な唇を残さない。目鼻口の識別形と表情は透明材質の内部の色面と描線で保つ。主参照は識別できる形・特徴の組合せの資料とし、細寸法は選択したアニメ造形へ翻訳する。'}:{}),
    palette:color.restricted?'全領域の使用色：'+color.allowed+'。参照の髪・肌・瞳、光、反射、文字もこの色域で描き直す。':byKey.palette.execution.method,
    ...(optical?{optical_geometry:optical+'主題と周囲の空間をまたぐ面として描き、宝飾の点光だけにしない。'+(color.restricted?'透過・屈折・反射も許可色だけ。':'')}:{}),
    frame:geometry?geometry.framing_instruction:plan.noPerson?'選択した主題の全景を指定形式の画像領域へ収める。':v.distance+(/全身|足先|靴から頭/.test(v.distance)?gestureBased?'。主役の姿勢・支持・動作を示す印と余白の全体を画像領域内へ収める。':'。文字枠の下に手足を隠さず、頭・手・足・支持面を画像領域内へ収める。':'。指定した画角の対象を文字枠で隠さない。'),

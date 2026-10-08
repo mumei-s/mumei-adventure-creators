@@ -1,10 +1,10 @@
-import {applyAngle} from './angles.js?v=28.1.1';
-import {colorPolicy} from './palette-recipes.js?v=28.1.1';
-import {opticalSignature,opticalColors} from './optical-effects.js?v=28.1.1';
-import {detailedSubject} from './subject-recipes.js?v=28.1.1';
-import {detailedFormat} from './format-recipes.js?v=28.1.1';
-import {isPhotographicMedium} from './photo-design.js?v=28.1.1';
-import {luminousWorldContract} from './luminous-world.js?v=28.1.1';
+import {applyAngle} from './angles.js?v=28.1.2';
+import {colorPolicy} from './palette-recipes.js?v=28.1.2';
+import {opticalSignature,opticalColors} from './optical-effects.js?v=28.1.2';
+import {detailedSubject} from './subject-recipes.js?v=28.1.2';
+import {detailedFormat} from './format-recipes.js?v=28.1.2';
+import {isPhotographicMedium} from './photo-design.js?v=28.1.2';
+import {luminousWorldContract} from './luminous-world.js?v=28.1.2';
 
 const flat=new Set(['線画','リノカット','木版画','浮世絵木版画','シルクスクリーン','ベクターグラフィック','フラットイラスト','ピクセルアート','構成主義','ミニマリズム']);
 function sourceFor(values,collection){
@@ -37,6 +37,7 @@ export function lightingContract(values,{collection='halloween',noPerson=false}=
 export function resolveArtDirection(values,variant={},collection='halloween'){
  const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume||'');
  const next={...variant,light:lightingContract(values,{collection,noPerson})};
+ if(variant.directionVariation?.lightDirection)next.light+=' 今回の主光方向：'+variant.directionVariation.lightDirection+'。選択場面に存在する同じ光源を使い、この方向を景物・主題・支持面の明部と影へ一貫して反映する。カメラ・時刻・天候・画材・許可色を変えず、別の照明や発光物を追加しない。平面の技法ではこの明暗方向を色面と余白へ翻訳する。';
  const format=detailedFormat(values.design,{values,noPerson});
  next.layout='選択形式「'+values.design+'」の画像領域と余白を使う。'+(format.sections[1]?.text||'主題と許可された文字を、指定された用途の画面内へ配置する。')+(noPerson?'人物を補わず、選択主題の主要な輪郭を安全領域へ収める。':'その画像領域内で今回の顔角度・ポーズ・撮影距離を保ち、重要な身体の輪郭を見切れさせない。');
  next.background='選択した舞台「'+values.place+'」の構造を、物語「'+values.theme+'」の世界へ接続する。環境・素材・背景面・奥行きを一つの空間に揃え、別の場所の雲・机・建物を定型で足さない。';

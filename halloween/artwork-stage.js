@@ -1,10 +1,10 @@
-import {opticalColors,opticalSignature} from './optical-effects.js?v=28.1.1';
-import {colorPolicy} from './palette-recipes.js?v=28.1.1';
-import {formatFor} from './formats.js?v=28.1.1';
-import {cameraContract} from './angles.js?v=28.1.1';
-import {selectionIntegrationInstructions} from './output-contract.js?v=28.1.1';
-import {photoReconstruction} from './photo-design.js?v=28.1.1';
-import {artworkBasisContract} from './artwork-basis.js?v=28.1.1';
+import {opticalColors,opticalSignature} from './optical-effects.js?v=28.1.2';
+import {colorPolicy} from './palette-recipes.js?v=28.1.2';
+import {formatFor} from './formats.js?v=28.1.2';
+import {cameraContract} from './angles.js?v=28.1.2';
+import {selectionIntegrationInstructions} from './output-contract.js?v=28.1.2';
+import {photoReconstruction} from './photo-design.js?v=28.1.2';
+import {artworkBasisContract} from './artwork-basis.js?v=28.1.2';
 
 const artworkKeys=['medium','theme','place','costume','pose','mood','angle','palette'];
 const render=c=>[c.name+'：'+c.value,...c.sections.map(s=>'・'+s.label+'：'+s.text)];

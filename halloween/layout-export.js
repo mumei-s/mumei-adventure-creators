@@ -1,8 +1,9 @@
-import {renderEditorialLayout} from './editorial-layout.js?v=28.1.1';
+import {renderEditorialLayout} from './editorial-layout.js?v=28.1.2';
+import {inspectImageResource,decodeRasterForDraw,releaseCanvas} from './image-resources.js?v=28.1.2';
 
 const node=(tag,text,className)=>{const e=document.createElement(tag);if(text)e.textContent=text;if(className)e.className=className;return e;};
-function asDataUrl(file){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(new Error('主画像を読み込めませんでした。'));reader.readAsDataURL(file);});}
-async function decodeImage(src){const image=new Image();image.src=src;await image.decode();return image;}
+const placeholder='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/aWQAAAAASUVORK5CYII=';
+let rendering=false;
 async function acceptedRaster(file){
  if(!file||file.size>20*1024*1024)throw new Error('20MB以下のPNG・JPEG・WebP画像を選んでください。');
  const h=new Uint8Array(await file.slice(0,12).arrayBuffer());
@@ -13,23 +14,34 @@ async function acceptedRaster(file){
  return new Blob([file],{type:png?'image/png':jpeg?'image/jpeg':'image/webp'});
 }
 
-// Render a publication document from a finished image. The imported bitmap is
-// embedded once without pixel edits; SVG fixes the geometry and typesetting.
-export async function renderLayoutPng(plan,file){
- const raster=await acceptedRaster(file),dataUrl=await asDataUrl(raster),artwork=await decodeImage(dataUrl);
- if(document.fonts?.ready)await document.fonts.ready;
- const measuring=document.createElement('canvas').getContext('2d');
- const measureText=(text,{fontSize,fontFamily,fontWeight})=>{measuring.font=(fontWeight||400)+' '+fontSize+'px '+fontFamily;return measuring.measureText(text).width;};
- const layout=renderEditorialLayout(plan,{dataUrl,artworkWidth:artwork.naturalWidth,artworkHeight:artwork.naturalHeight,measureText});
- const svgUrl=URL.createObjectURL(new Blob([layout.svg],{type:'image/svg+xml;charset=utf-8'}));
+// The original bitmap is drawn once, without cropping or recoloring. Only
+// text/rules are rasterized from SVG; no full-image base64 string is retained.
+// Standalone self-contained SVG output remains in renderEditorialLayout.
+export async function renderLayoutPng(plan,file,{shouldContinue=()=>true}={}){
+ if(rendering)throw new Error('誌面を作成中です。完了してから次の画像を選んでください。');
+ rendering=true;let decoded=null,page=null,svgUrl=null,canvas=null,measuringCanvas=null;
+ const check=()=>{if(!shouldContinue())throw new DOMException('誌面の作成を中止しました。','AbortError');};
  try{
-  const page=await decodeImage(svgUrl),canvas=document.createElement('canvas');canvas.width=layout.width;canvas.height=layout.height;
+  const raster=await acceptedRaster(file),info=await inspectImageResource(raster);check();
+  if(document.fonts?.ready)await document.fonts.ready;check();
+  measuringCanvas=document.createElement('canvas');const measuring=measuringCanvas.getContext('2d');if(!measuring)throw new Error('この端末では文字を配置できません。');
+  const measureText=(text,{fontSize,fontFamily,fontWeight})=>{measuring.font=(fontWeight||400)+' '+fontSize+'px '+fontFamily;return measuring.measureText(text).width;};
+  const {svg,...layout}=renderEditorialLayout(plan,{dataUrl:placeholder,artworkWidth:info.width,artworkHeight:info.height,measureText});
+  const background=svg.match(/<rect x="0" y="0"[^>]+fill="([^"]+)"\/>/);if(!background)throw new Error('誌面の背景を配置できません。');
+  const overlay=svg.replace(background[0],'').replace(/<image\s[^>]*\/>/,'');
+  const frame=layout.placements.image,scale=Math.min(frame.width/info.width,frame.height/info.height),width=info.width*scale,height=info.height*scale;
+  decoded=await decodeRasterForDraw(raster,{dimensions:info,maxWidth:width,maxHeight:height});check();
+  canvas=document.createElement('canvas');canvas.width=layout.width;canvas.height=layout.height;
   const context=canvas.getContext('2d');if(!context)throw new Error('この端末では誌面を保存できません。');
+  context.fillStyle=background[1];context.fillRect(0,0,canvas.width,canvas.height);context.imageSmoothingEnabled=true;context.imageSmoothingQuality='high';
+  context.drawImage(decoded.image,frame.x+(frame.width-width)/2,frame.y+(frame.height-height)/2,width,height);decoded.dispose();decoded=null;
+  svgUrl=URL.createObjectURL(new Blob([overlay],{type:'image/svg+xml;charset=utf-8'}));page=new Image();page.src=svgUrl;await page.decode();check();
   context.drawImage(page,0,0);
   const png=await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
+  check();
   if(!png)throw new Error('完成PNGを作れませんでした。小さいサイズでお試しください。');
   return {...layout,png};
- }finally{URL.revokeObjectURL(svgUrl);}
+ }finally{decoded?.dispose();page?.removeAttribute('src');if(svgUrl)URL.revokeObjectURL(svgUrl);releaseCanvas(canvas);releaseCanvas(measuringCanvas);rendering=false;}
 }
 
 export function createLayoutPanel(plan,tell=()=>{}){
@@ -44,19 +56,21 @@ export function createLayoutPanel(plan,tell=()=>{}){
  const caption=node('figcaption');figure.append(preview,caption);
  const save=node('button','完成PNGを保存','primary-button');save.type='button';save.id='save-layout-png';save.disabled=true;
  panel.append(title,intro,label,input,status,figure,save);
- let job=0,disposed=false,output=null,previewUrl=null;
+ let job=0,disposed=false,busy=false,output=null,previewUrl=null;
+ function clearPreview(){preview.removeAttribute('src');if(previewUrl)URL.revokeObjectURL(previewUrl);previewUrl=null;output=null;figure.hidden=true;save.disabled=true;}
  input.addEventListener('change',async()=>{
-  const file=input.files?.[0];if(!file)return;const ticket=++job;save.disabled=true;status.textContent='主画像と文字を配置しています…';
+  const file=input.files?.[0];if(!file||busy||disposed)return;const ticket=++job;busy=true;input.disabled=true;clearPreview();status.textContent='主画像と文字を配置しています…';
   try{
-   const result=await renderLayoutPng(plan,file);if(disposed||ticket!==job)return;
-   if(previewUrl)URL.revokeObjectURL(previewUrl);output=result;previewUrl=URL.createObjectURL(result.png);preview.src=previewUrl;figure.hidden=false;
+   const result=await renderLayoutPng(plan,file,{shouldContinue:()=>!disposed&&ticket===job});if(disposed||ticket!==job)return;
+   output=result;previewUrl=URL.createObjectURL(result.png);preview.src=previewUrl;figure.hidden=false;
    caption.textContent=result.width+' × '+result.height+' px / '+plan.values.design;
    status.textContent='完成PNGを表示しました。'+(result.notes?.length?result.notes.join(' '):'画像全体と文字の収まりを確認して保存できます。');
    save.disabled=false;
-  }catch(error){if(disposed||ticket!==job)return;output=null;figure.hidden=true;status.textContent=error.message||'誌面を作れませんでした。';}
+  }catch(error){if(disposed||ticket!==job)return;clearPreview();status.textContent=error.message||'誌面を作れませんでした。';}
+  finally{busy=false;input.value='';if(!disposed)input.disabled=false;}
  });
  save.addEventListener('click',()=>{
   if(!output||!previewUrl)return;const a=node('a');a.href=previewUrl;a.download='finished-layout-'+output.width+'x'+output.height+'.png';document.body.append(a);a.click();a.remove();tell('完成PNGを保存しました。');
  });
- return {element:panel,dispose(){disposed=true;job++;if(previewUrl)URL.revokeObjectURL(previewUrl);output=null;}};
+ return {element:panel,dispose(){disposed=true;job++;input.value='';input.disabled=true;clearPreview();}};
 }

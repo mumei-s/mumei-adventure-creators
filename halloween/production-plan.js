@@ -1,16 +1,16 @@
-import {creatorLookupInstructions} from './creator-handoff.js?v=28.1.1';
-import {imageOutputContract} from './output-contract.js?v=28.1.1';
-import {modeFoundation} from './japan-direction.js?v=28.1.1';
-import {questions,visibleQuestions} from './catalog.js?v=28.1.1';
-import {formatContract} from './formats.js?v=28.1.1';
-import {buildEditorial,editorialContract} from './editorial.js?v=28.1.1';
-import {optionRecipe} from './option-recipes.js?v=28.1.1';
-import {colorPolicy} from './palette-recipes.js?v=28.1.1';
-import {resolveArtDirection,interactionContract} from './art-direction.js?v=28.1.1';
-import {executionFor} from './option-execution.js?v=28.1.1';
-import {cameraContract} from './angles.js?v=28.1.1';
-import {selectionIssues} from './compatibility.js?v=28.1.1';
-import {moodConstraint} from './view-constraints.js?v=28.1.1';
+import {creatorLookupInstructions} from './creator-handoff.js?v=28.1.2';
+import {imageOutputContract} from './output-contract.js?v=28.1.2';
+import {modeFoundation} from './japan-direction.js?v=28.1.2';
+import {questions,visibleQuestions} from './catalog.js?v=28.1.2';
+import {formatContract} from './formats.js?v=28.1.2';
+import {buildEditorial,editorialContract} from './editorial.js?v=28.1.2';
+import {optionRecipe} from './option-recipes.js?v=28.1.2';
+import {colorPolicy} from './palette-recipes.js?v=28.1.2';
+import {resolveArtDirection,interactionContract} from './art-direction.js?v=28.1.2';
+import {executionFor} from './option-execution.js?v=28.1.2';
+import {cameraContract} from './angles.js?v=28.1.2';
+import {selectionIssues} from './compatibility.js?v=28.1.2';
+import {moodConstraint} from './view-constraints.js?v=28.1.2';
 
 export function productionPlan(profile,values,variant,collection='halloween',random=Math.random){
  const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);
@@ -18,8 +18,8 @@ export function productionPlan(profile,values,variant,collection='halloween',ran
  if(!/^.+｜\d+×\d+｜\d+:\d+$/.test(values.size))throw new Error('サイズの幅・高さ・比率を確認してください。');
  variant=resolveArtDirection(values,variant,collection);
  const context={noPerson,values,variant,collection},color=colorPolicy(values),camera=cameraContract(values,{noPerson});
- const issues=selectionIssues(values);
- const copy=buildEditorial(profile,{...values,collection},random),notes=[modeFoundation(collection),...issues.map(issue=>(issue.severity==='error'?'選択の不成立：':'選択の注意：')+issue.reason+(issue.severity==='error'?' 選択を変えるまで画像生成へ進まず、不成立を伝える。':''))];
+ const issues=[...selectionIssues(values),...(values.automaticResolution?.issues||[])];
+ const copy=buildEditorial(profile,{...values,collection},random),notes=[modeFoundation(collection),...(variant.directionWarnings||[]).map(reason=>'自動演出の注意：'+reason),...issues.map(issue=>(issue.severity==='error'?'選択の不成立：':'選択の注意：')+issue.reason+(issue.severity==='error'?' 選択を変えるまで画像生成へ進まず、不成立を伝える。':''))];
  if(noPerson)notes.push(values.costume==='風景を主役にする'?'人物なしの指定を優先します。人物用の表情・顔角度・身体ポーズは適用対象外とし、景物を顔や手足に見立てず、風景の視点・自然な配置・光で作品を成立させます。':'人物なしの指定を優先します。人物用の表情・顔角度・身体ポーズは適用対象外とし、主題を顔や手足に見立てず、選択した物体・図案それぞれの配置と描画方法で作品を成立させます。');
  if(/文字を一切|だけ|のみ|サイン風|落款風/.test(values.type)&&/雑誌|誌面|見開き|新聞/.test(values.design))notes.push('文字を限定した設定です。誌面の文字量はこの指定に合わせて減ります。');
  if(values.line!=='セリフなし'&&(/文字を一切|クリエイター名だけ|HALLOWEEN|サイン風|落款風/.test(values.type)))notes.push('セリフより限定した文字設定を優先します。');
@@ -29,6 +29,7 @@ export function productionPlan(profile,values,variant,collection='halloween',ran
  const conditions=conditionQuestions.map((q,i)=>{
   const recipe=optionRecipe(q.key,values[q.key],context),sections=[...recipe.sections];
   let checks=[...recipe.checks];
+  sections.push(...(values.automaticResolution?.issues||[]).filter(issue=>issue.keys.includes(q.key)).map(issue=>({label:'自動候補の再利用の注意',text:issue.reason})));
   if(q.key==='theme'&&values.sceneUnified&&recipe.sourceKey!=='place'){
    const placeRecipe=optionRecipe('place',values.place,context);
    const existing=new Set(sections.map(section=>section.text));
@@ -37,6 +38,7 @@ export function productionPlan(profile,values,variant,collection='halloween',ran
   }
   if(q.key==='mood'&&!noPerson){
    sections.push({label:'今回実行する表情と向き',text:[variant.face,variant.expression,variant.tone].filter(Boolean).join(' / ')+'。選択した目の開閉・顔の回転を保ち、画風の瞳や髪の精密描写を理由に変えない。'});
+   sections.push(...(variant.directionWarnings||[]).map(reason=>({label:'自動カメラと顔の見え方の注意',text:reason})));
    checks.push(variant.face,variant.expression);
   }
   if(q.key==='pose'&&!noPerson){sections.push({label:'今回実行する動作',text:variant.pose});checks.push(variant.pose);}

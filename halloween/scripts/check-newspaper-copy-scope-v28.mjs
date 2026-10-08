@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.1.1';
-import {resolveSelections} from '../catalog.js?v=28.1.1';
-import {initialSelections} from '../modes.js?v=28.1.1';
-import {buildDirection} from '../direction.js?v=28.1.1';
-import {productionPlan} from '../production-plan.js?v=28.1.1';
-import {renderInput} from '../compiled-production.js?v=28.1.1';
-import {formatTextPolicy,detailedFormat} from '../format-recipes.js?v=28.1.1';
-import {formatFor} from '../formats.js?v=28.1.1';
-import {typographyValues} from '../typography-options.js?v=28.1.1';
+import {applyCollection} from '../collection.js?v=28.1.2';
+import {resolveSelections} from '../catalog.js?v=28.1.2';
+import {initialSelections} from '../modes.js?v=28.1.2';
+import {buildDirection} from '../direction.js?v=28.1.2';
+import {productionPlan} from '../production-plan.js?v=28.1.2';
+import {renderInput} from '../compiled-production.js?v=28.1.2';
+import {formatTextPolicy,detailedFormat} from '../format-recipes.js?v=28.1.2';
+import {formatFor} from '../formats.js?v=28.1.2';
+import {typographyValues} from '../typography-options.js?v=28.1.2';
 
 // Permission boundaries must survive the combination that caused article and
 // portrait additions. These checks inspect the actual production contracts;

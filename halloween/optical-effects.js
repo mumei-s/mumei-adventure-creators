@@ -1,4 +1,4 @@
-import {colorPolicy} from './color-policy.js?v=28.1.1';
+import {colorPolicy} from './color-policy.js?v=28.1.2';
 
 // A color theme controls the base image. Dispersion is part of the selected
 // optical medium; only an explicitly limited palette removes spectral hues.
@@ -15,7 +15,7 @@ export function opticalColors(values={}, {noPerson=false}={}) {
 
 export function opticalSignature(values={}, {noPerson=false}={}) {
  const color=opticalColors(values,{noPerson});
- if(values.medium==='クリスタルホログラム造形アニメ')return [noPerson?'主景そのものまで連続する結晶材質。':'顔・髪・首・腕・手・脚そのものまで連続する透明な結晶材質。肌が不透明なまま、服や宝飾だけを虹色にした絵では成立しない。', noPerson?'近景が迫る短縮遠近と主景の深度差、透明結晶面の厚みと屈折。':'近景が迫る短縮遠近、動作に遅れて流れる髪や衣装、背景との深度差。指定ポーズと支持点を維持する。広い透明結晶面の厚み・背後の輪郭の屈折ずれ・暗い二重内部反射・面の角度に沿う虹色干渉帯・鋭い光と深い影。光粒だけでは成立しない。',color.instruction];
+ if(values.medium==='クリスタルホログラム造形アニメ')return [noPerson?'主景そのものまで連続する結晶材質。':'顔・髪・首・腕・手・脚そのものまで連続する透明な結晶材質。肌が不透明なまま、服や宝飾だけを虹色にした絵では成立しない。', noPerson?'指定カメラに見える投影と遮蔽で主景の深度差を描き、透明結晶面の厚みと屈折を分ける。画風から広角や迫る前景を追加しない。':'指定カメラの投影・距離と選択ポーズの支持点を維持し、その視点に実在する面の前後と遮蔽で奥行きを描く。髪と衣装の動きは選択動作や舞台で明示された移動・風に限り、静止の揺れや短縮の強調を画風から追加しない。衣装の外形・重なり・被覆を保ち、透ける衣装の明示がない限り覆われた人体を透視しない。広い透明結晶面の厚み・背後の輪郭の屈折ずれ・暗い二重内部反射・面の角度に沿う虹色干渉帯・鋭い光と深い影。光粒だけでは成立しない。',color.instruction];
  if(values.medium==='クリスタル透光アニメ')return [
   '縮小しても読める結晶的な透光：主題に沿った透明な色層の重なり、面の境界で曲がる光帯と背後の輪郭の屈折、内部の二重反射、鋭い白光と隣接する深い有彩色の影。宝飾の小さな点光だけでは成立しない。',
   noPerson?'景物そのものの広い面を結晶の透光色層として描き、背後の輪郭が屈折して見える領域を作る。主景の構造と外形は保つ。':'顔・身体・髪を結晶の透光色層として描き、頬や差し出した手の内部に背後の輪郭の屈折と色の重なりを見せる。アニメの目鼻口と識別形は内部の色面と線で作り、主役の外形と衣装の被覆は保つ。',

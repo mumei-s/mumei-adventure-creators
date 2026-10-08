@@ -78,8 +78,8 @@ export function viewSelectionIssues(values={}){
  }
  if(m?.cameraSide&&a.cameraSide&&m.cameraSide!==a.cameraSide)
   result.push(issue('error','opposed-camera-height',['mood','angle'],'「'+values.mood+'」は'+(m.cameraSide==='above'?'主題より上から見下ろす':'主題より下から見上げる')+'視点です。「'+values.angle+'」の'+(a.cameraSide==='level'?'水平な視点':a.cameraSide==='above'?'上から見下ろす視点':'下から見上げる視点')+'とは同じカメラで両立しません。視点を含まない表情か、同じ方向のアングルを選んでください。'));
- for(const [key,spec] of [['mood',m],['pose',p]])if(spec?.cameraFacing==='rear'&&a.cameraFacing==='front')
-  result.push(issue('error','opposed-camera-facing',['angle',key],'「'+values[key]+'」はカメラ側へ背中を向ける指定です。「'+values.angle+'」は主題の正面側から見るため、同じカメラでは両立しません。背面のアングルか、背中向きを含まない'+(key==='mood'?'表情':'ポーズ')+'を選んでください。'));
+ for(const [key,spec] of [['mood',m],['pose',p]])if(spec?.cameraFacing==='rear'&&['front','side'].includes(a.cameraFacing))
+  result.push(issue('error','opposed-camera-facing',['angle',key],'「'+values[key]+'」はカメラ側へ背中を向ける指定です。「'+values.angle+'」は主題の'+(a.cameraFacing==='side'?'側面90度':'正面側')+'から見るため、同じ胴体の投影では両立しません。背面のアングルか、背中向きを含まない'+(key==='mood'?'表情':'ポーズ')+'を選んでください。'));
  if(m?.faceRequired){
   if(['hands','feet'].includes(a.frame))result.push(issue('warning','face-outside-crop',['mood','angle'],'「'+values.angle+'」では顔が画角外になり、「'+values.mood+'」を画像で確認できない場合があります。表情を見せたい場合は顔や上半身が入る画角を選んでください。'));
   else if(a.frame==='wide')result.push(issue('warning','face-small-in-wide-view',['mood','angle'],'「'+values.angle+'」では人物が小さくなり、「'+values.mood+'」の細部を読み取りにくくなります。世界の広がりを保ったまま表情が見える大きさを確認してください。'));

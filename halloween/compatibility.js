@@ -1,4 +1,4 @@
-import {automaticView,viewSelectionIssues} from './view-constraints.js?v=28.1.1';
+import {automaticView,viewSelectionIssues} from './view-constraints.js?v=28.1.2';
 const automatic=automaticView;
 const noPerson=v=>/風景を主役|モチーフだけ|紋章・アイコン/.test(v||'');
 const faceOnly=v=>/歯|目を|眉|涙|ニヤリ|ウインク|牙|無表情|横顔|正面|俯瞰|ローアングル|振り向く|顔を/.test(v||'');
@@ -21,18 +21,25 @@ export function candidateAvailability(key,value,values={}){
  const candidate={...values,[key]:value},conflicts=selectionConflicts(candidate).filter(c=>c.keys.includes(key)),warnings=selectionWarnings(candidate).filter(c=>c.keys.includes(key));
  return {enabled:!conflicts.length,status:conflicts.length?'blocked':warnings.length?'warning':'compatible',reason:conflicts.map(c=>c.reason).join(' '),warnings};
 }
-export function compatibleResolved(values,input,questions,random=Math.random){
+export function compatibleResolved(values,input,questions,random=Math.random,{recent=[],attempt=0}={}){
  const out={...values};
  for(let pass=0;pass<questions.length*2;pass++){
   // Preserve explicit conflicts for review, while resolving independent AUTO
   // conflicts as well. One explicit issue must not prevent another AUTO fix.
   const conflict=selectionConflicts(out).find(c=>c.keys.some(k=>automatic(input[k])));if(!conflict)return out;
-  const keys=conflict.keys.filter(k=>automatic(input[k]));
-  const key=keys.find(k=>questions.some(q=>q.key===k));if(!key)return out;
-  if(noPerson(out.costume)&&['mood','pose'].includes(key)){out[key]=key==='mood'?'毎回大胆に変える':'おまかせ';continue;}
-  const q=questions.find(q=>q.key===key),available=(q.autoValues||q.groups.flatMap(g=>g.values)).map(value=>({value,...candidateAvailability(key,value,out)})).filter(candidate=>candidate.enabled);
-  const clear=available.filter(candidate=>candidate.status==='compatible'),candidates=clear.length?clear:available;
-  if(!candidates.length)return out;out[key]=candidates[Math.min(candidates.length-1,Math.floor(random()*candidates.length))].value;
+  const keys=conflict.keys.filter(k=>automatic(input[k]));let changed=false;
+  for(const key of keys){
+   if(noPerson(out.costume)&&['mood','pose'].includes(key)){out[key]=key==='mood'?'毎回大胆に変える':'おまかせ';changed=true;break;}
+   const q=questions.find(q=>q.key===key);if(!q)continue;
+   const available=(q.autoValues||q.groups.flatMap(g=>g.values)).map(value=>({value,...candidateAvailability(key,value,out)})).filter(candidate=>candidate.enabled);
+   const clear=available.filter(candidate=>candidate.status==='compatible'),allowed=clear.length?clear:available;
+   if(!allowed.length)continue; // Another AUTO field may be the solvable axis.
+   const unseen=allowed.filter(candidate=>!recent.slice(-3).some(row=>row[key]===candidate.value)),notLast=allowed.filter(candidate=>recent.at(-1)?.[key]!==candidate.value);
+   const candidates=unseen.length?unseen:notLast.length?notLast:allowed;
+   const draw=Number(random()),unit=Number.isFinite(draw)?Math.max(0,Math.min(1-Number.EPSILON,draw)):0;
+   out[key]=candidates[(Math.floor(unit*candidates.length)+attempt)%candidates.length].value;changed=true;break;
+  }
+  if(!changed)return out;
  }
  return out;
 }

@@ -25,7 +25,7 @@ export const traditionalBases = [
   '色面は平らな摺りを主とし、ぼかしを必要な面だけの水・顔料の階調として使う。',
   '紙と顔料のわずかな濃度差を局所に残す。版ずれや摩耗を主題の識別点へ強制しない。',
   '指定視点の短縮・重なり・消失方向を版の輪郭へ移し、景物や構図を既存の版画へ交換しない。'
- ],checks:['輪郭と色面が別版として読め、階調は局所に限られる。','顔・衣服・背景が同じ彫線と摺り面から成立する。'],avoid:['水彩の全周滲みや油彩の盛り上がりを主役にする。','版画名から海・富士・江戸の服装を追加する。'],references:[{title:'British Museum — How to make a woodblock print like Hiroshige',url:'https://www.britishmuseum.org/blog/how-make-woodblock-print-hiroshige',kind:'technique',note:'主版・色版と局所のぼかし摺りを照合。'},{title:'The Met — The Great Wave: Anatomy of an Icon',url:'https://www.metmuseum.org/en/about-the-met/conservation-and-scientific-research/conservation-stories/2020/hokusai-great-wave',kind:'work',note:'色の分析と二重摺りによる局所階調を照合。'}]},
+ ],checks:['輪郭と色面が別版として読め、階調は局所に限られる。','顔・衣服・背景が同じ彫線と摺り面から成立する。'],avoid:['水彩の全周滲みや油彩の盛り上がりを主役にする。','版画名から海・富士・江戸の服装を追加する。'],references:[{title:'V&A — Japanese woodblock prints (ukiyo-e)',url:'https://www.vam.ac.uk/articles/japanese-woodblock-prints-ukiyo-e',kind:'technique',note:'制作工程節の主版、色ごとの版、見当による位置合わせを本文で照合。歴史的題材や固定色は条件へ移さない。'},{title:'アダチ版画研究所 — こだわりの品質・素材',url:'https://store.adachi-hanga.com/pages/quality',kind:'technique',note:'水性顔料を和紙へ摺り込む工程、刷毛の調整による局所のぼかしを本文で照合。'},{title:'The Met — The Great Wave: Anatomy of an Icon',url:'https://www.metmuseum.org/essays/hokusai-great-wave',kind:'work',note:'色の分析と二重摺りによる局所階調を本文で照合。藍・プルシアンブルーはこの作例の色で、選択配色へ強制しない。'}]},
  {value:'大和絵',status:'documented',basis:[
   '細い流れる輪郭、整理された顔の識別線、鮮明な厚みのある彩色面で主題を描く。',
   '人物・物・背景の前後は、重なりと色面の区切りを主にして読み取れるようにする。',
@@ -111,11 +111,11 @@ export const traditionalBases = [
   '指定主題・配色・カメラを維持する。金箔・宗教人物・古画の色褪せは技法から追加しない。'
  ],checks:['細筆の積層が顔・服・背景に共通し、小さな形が読める。','広い厚塗りの峰ではなく、薄い層の筆密度が明暗を作る。'],avoid:['テンペラの名称だけで既存祭壇画の構図を導入する。','細密さをエアブラシの連続階調だけで代用する。'],references:[{title:'National Gallery — Tempera',url:'https://www.nationalgallery.org.uk/paintings/glossary/tempera',kind:'technique',note:'広義のテンペラを区別し、この選択は卵黄を媒材とする基準へ明示的に絞る。'},{title:'National Gallery — Andrea Mantegna, The Agony in the Garden',url:'https://www.nationalgallery.org.uk/paintings/andrea-mantegna-the-agony-in-the-garden',kind:'work',note:'速乾の卵テンペラで微小な構造を描く制作例を照合。'}]},
  {value:'フレスコ画',status:'documented',basis:[
-  '新しい湿った漆喰へ顔料が定着した壁面として、細かな粒と描いた色面を一体にする。',
+  'この選択は湿式の buon fresco を基準とし、新しい湿った漆喰へ顔料が定着した壁面として、細かな粒と描いた色面を一体にする。',
   '主題の大きな輪郭と明暗面を先に確定し、顔・衣服・背景を同じ漆喰上の筆から構成する。',
   '漆喰の小粒による表面差と、描いた人物・物の大きな体積影を分けて扱う。',
   '古さや剥落は固有条件ではない。経年が指定された場合だけ局所に加え、カメラ・選択色・識別点を維持する。'
- ],checks:['色が壁の上の厚い光沢塗膜ではなく漆喰の内部へ定着して見える。','表面の粒より主題の輪郭・表情・支持関係が明確である。'],avoid:['必ず古い亀裂・剥落を全画面へ追加する。','壁画を理由に教会・柱・壁の前の部屋を新しく描く。'],references:[{title:'National Gallery — Fresco',url:'https://www.nationalgallery.org.uk/paintings/glossary/fresco',kind:'technique',note:'湿った漆喰へ描く方法と、乾いた漆喰に描く方式との区別を照合。'},{title:'V&A — The South Court and Leighton Frescos',url:'https://www.vam.ac.uk/articles/the-south-court-and-leighton-frescos',kind:'work',note:'漆喰の壁へ描く制作工程を持つ実作品を照合。'}]},
+ ],checks:['色が壁の上の厚い光沢塗膜ではなく漆喰の内部へ定着して見える。','表面の粒より主題の輪郭・表情・支持関係が明確である。'],avoid:['必ず古い亀裂・剥落を全画面へ追加する。','壁画を理由に教会・柱・壁の前の部屋を新しく描く。'],references:[{title:'National Gallery — Fresco',url:'https://www.nationalgallery.org.uk/paintings/glossary/fresco',kind:'technique',note:'buon fresco と a secco を本文で区別し、この選択は前者の湿った漆喰への定着を基準にする。'},{title:'V&A — The South Court and Leighton Frescos',url:'https://www.vam.ac.uk/articles/the-south-court-and-leighton-frescos',kind:'work',note:'明暗・体積を下絵で確定し壁へ転写する工程のみ照合。作例の spirit fresco は湿式 buon fresco の定着機構を直接証明しない。'}]},
  {value:'パステル画',status:'documented',basis:[
   '微細な粉の面を支持紙の目へ載せ、広い面の明暗を先に作る。',
   '棒の側面による紙目を残す面と、先端・圧で作る鮮明な直接線を使い分ける。',
@@ -145,7 +145,7 @@ export const traditionalBases = [
   '曲面には曲がる線、平面には揃う線、細部には短い線を使い、材質と形へ方向を合わせる。',
   '選択した許可色のペン線を使い、明部は下地の隙間、暗部は密な線の重なりとして形成する。',
   '顔・手・背景も同じ線から構築する。写真的な連続陰影や別の絵具面で線の仕事を代用しない。'
- ],checks:['暗部を拡大しても細いインク線が読み取れる。','線の密度が形・材質・指定視点の前後に対応する。'],avoid:['全画面同じハッチング模様を写真へ貼る。','消せない線の性質を、人物の特徴やポーズを変える口実にする。'],references:[{title:'The Met — Robert Kipniss, Study for Interior w/cup, spoon, & window',url:'https://www.metmuseum.org/art/collection/search/742915',kind:'work',note:'ボールペンで描かれた実作品の媒体記録と線による面の成立を照合。線密度の全画面適用は本ツールの合成基準。'},{title:'The Met — David Hockney, Henry Seated with Cigar at Steve’s',url:'https://www.metmuseum.org/art/collection/search/493706',kind:'work',note:'黒いボールペンによる人物素描を参照し、細線で人物が成立することを照合。'}]},
+ ],checks:['暗部を拡大しても細いインク線が読み取れる。','線の密度が形・材質・指定視点の前後に対応する。'],avoid:['全画面同じハッチング模様を写真へ貼る。','消せない線の性質を、人物の特徴やポーズを変える口実にする。'],references:[{title:'The Met — Robert Kipniss, Study for Interior w/cup, spoon, & window',url:'https://www.metmuseum.org/art/collection/search/742915',kind:'work',note:'ボールペンという媒体記録を本文で確認。線密度・方向の全画面適用は本文の制作記述ではなく本ツールの合成基準。'},{title:'The Met — David Hockney, Henry Seated with Cigar at Steve’s',url:'https://www.metmuseum.org/art/collection/search/493706',kind:'work',note:'黒いボールペンによる人物素描という媒体記録を本文で確認。本文はハッチングの工程や線階層を規定していない。'}]},
  {value:'線画',status:'synthesis',basis:[
   '外形・遮蔽・接触・主要な内部構造の線へ主題を整理し、少数の線で識別点を維持する。',
   '手前の重なり・外形を強く、内部や遠景を細くするなど、線の階層を決める。',

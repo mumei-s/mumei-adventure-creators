@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {questions,visibleQuestions,defaults,AUTO,resolveSelections} from '../catalog.js?v=28.1.1';
-import {modeKeys,modeCopy,questionsForMode,initialSelections,effectiveSelections,propose} from '../modes.js?v=28.1.1';
-import {applyCollection} from '../collection.js?v=28.1.1';
+import {questions,visibleQuestions,defaults,AUTO,resolveSelections} from '../catalog.js?v=28.1.2';
+import {modeKeys,modeCopy,questionsForMode,initialSelections,effectiveSelections,propose} from '../modes.js?v=28.1.2';
+import {applyCollection} from '../collection.js?v=28.1.2';
 
 const detail=['medium','theme','costume','pose','mood','angle','palette','design','type','size'];
 const simple=['medium','theme','design','type','size'];
@@ -36,13 +36,14 @@ try{
   questions.forEach((q,i)=>assert.equal(initial[q.key],defaults[i],'Defaults remain attached to the same key'));
   assert.equal(initial.medium,AUTO);assert.equal(initial.design,AUTO);assert.equal(initial.mood,'毎回大胆に変える');assert.equal(initial.type,'デザインに合わせて自動編集');assert.ok(initial.size.startsWith('noteサムネイル'));
 
-  // Each random call follows the actual question being read. Use distinct draws
-  // to show medium resolves first and format only after palette/staging.
-  let lastKey='',randomKeys=[],draws=[];
-  const input=new Proxy(Object.fromEntries(internal.map(key=>[key,AUTO])),{get(target,key){if(internal.includes(key))lastKey=key;return target[key];}});
-  const random=()=>{randomKeys.push(lastKey);const value=randomKeys.length===1?.1:randomKeys.length===2?0:.2;draws.push(value);return value;};
-  const resolved=resolveSelections(input,random),randomOrder=internal.filter(key=>key!=='type');
-  assert.deepEqual(randomKeys.slice(0,randomOrder.length),randomOrder,'Resolver follows drawing-first question order');
+  // Compatibility reads all fixed choices before drawing from an AUTO pool.
+  // Verify the resulting canonical order and the actual first random draw,
+  // rather than treating the last property read as the question being sampled.
+  const input=Object.fromEntries(internal.map(key=>[key,AUTO])),draws=[];
+  const random=()=>{const value=draws.length===0?.1:draws.length===1?0:.2;draws.push(value);return value;};
+  const resolved=resolveSelections(input,random);
+  assert.deepEqual(Object.keys(resolved),internal,'Resolver preserves drawing-first condition order');
+  assert.ok(draws.length>1,'AUTO must actually sample multiple pools');
   const mediumQuestion=questions[0],media=mediumQuestion.autoValues||mediumQuestion.groups.flatMap(g=>g.values);
   assert.equal(resolved.medium,media[Math.floor(draws[0]*media.length)],'First draw determines the medium');
   const explicit={...initial,medium:'透明水彩',design:collection==='everyday'?'自然・都市の風景画':'通常の一枚絵',theme:questions.find(q=>q.key==='theme').groups[0].values[0]};

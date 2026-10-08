@@ -1,9 +1,13 @@
-import {compactCreatorProfile} from './creator.js?v=28.1.1';
+import {compactCreatorProfile} from './creator.js?v=28.1.2';
 
 export const HISTORY_STORAGE_FORMAT=4;
 const historyLimit=12,usedLimit=2000;
 const recordKeys=['version','collection','creator','profile','values','variant','edition','prompt','date','references','attachmentMode','preparationMs','count','legacy'];
-const restoredRecords=new WeakMap();
+const restoredRecords=new Map(),restoringRecords=new WeakMap();
+let restoreEpoch=0;
+export const RESTORED_HISTORY_CACHE_LIMIT=2;
+export function clearRestoredHistoryCache(){restoreEpoch++;restoredRecords.clear();}
+export function restoredHistoryCacheInfo(){return {records:restoredRecords.size,limit:RESTORED_HISTORY_CACHE_LIMIT};}
 const variantSummaryKeys=['signature','family','face','expression','distance','pose','poseChoice','layout'];
 
 function encodeBase64(bytes){
@@ -56,11 +60,17 @@ export async function restoreHistoryCore(record,{Decompression=globalThis.Decomp
 }
 export async function restoreHistoryRecord(record,{Decompression=globalThis.DecompressionStream}={}){
  if(!record.detailArchive&&!record.coreArchive)return record;
- if(restoredRecords.has(record))return restoredRecords.get(record);
- const core=await restoreHistoryCore(record,{Decompression});
- const details=record.detailArchive?await readArchive(record.detailArchive,Decompression):{};
- const restored={...record,...core,...(record.detailArchive?{production:details.production||null,stages:details.stages||null}:{})};
- restoredRecords.set(record,restored);return restored;
+ if(restoredRecords.has(record)){const cached=restoredRecords.get(record);restoredRecords.delete(record);restoredRecords.set(record,cached);return cached;}
+ if(restoringRecords.has(record))return restoringRecords.get(record);
+ const epoch=restoreEpoch,pending=(async()=>{
+  const core=await restoreHistoryCore(record,{Decompression});
+  const details=record.detailArchive?await readArchive(record.detailArchive,Decompression):{};
+  const restored={...record,...core,...(record.detailArchive?{production:details.production||null,stages:details.stages||null}:{})};
+  if(epoch===restoreEpoch){restoredRecords.set(record,restored);while(restoredRecords.size>RESTORED_HISTORY_CACHE_LIMIT)restoredRecords.delete(restoredRecords.keys().next().value);}
+  return restored;
+ })();
+ restoringRecords.set(record,pending);
+ try{return await pending;}finally{restoringRecords.delete(record);}
 }
 
 // All signatures continue to prevent repeats. Only the last three directions

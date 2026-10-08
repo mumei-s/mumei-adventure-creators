@@ -1,0 +1,154 @@
+{
+  "generatedAt": "2026-10-08T01:01:43.560Z",
+  "sourceVersion": "28.1.2",
+  "scope": "Halloween frontend and its reachable module graph; no INSIGHT repository changes, no article or image downloads, no generated images",
+  "measurement": {
+    "environment": "v24.19.0",
+    "kind": "Node instrumented control flow plus exact serialization and calculated raster bounds",
+    "timings": "One local execution, including structuredClone to model database reads; not a browser benchmark",
+    "notMeasured": [
+      "Live browser native heap/GPU memory",
+      "Native decoder peak memory during createImageBitmap resize",
+      "Device-specific canvas/clipboard/share limits",
+      "Visual fidelity of generated or composed images",
+      "INSIGHT runtime: supplied prior symptoms only"
+    ]
+  },
+  "sourceReads": {
+    "reachableModules": 80,
+    "directFetchModules": [],
+    "publicArticleFetchesInFrontend": 0,
+    "explanation": "The current loadProfile only constructs creatorHandoff; the conversation assistant checks public source information. Supabase/profile article readers remain outside the frontend import graph."
+  },
+  "history": {
+    "fixture": {
+      "histories": 12,
+      "signatures": 2000,
+      "values": {
+        "medium": "クリスタルホログラム造形アニメ",
+        "theme": "宇宙のHalloween",
+        "place": "骨董品店",
+        "costume": "ヴィクトリア朝の正装",
+        "pose": "片手を差し出す",
+        "mood": "可愛くコミカル",
+        "angle": "俯瞰・45度",
+        "palette": "参照画像の色を生かす",
+        "design": "新聞の一面",
+        "type": "新聞風・記事と段組み",
+        "line": "セリフなし",
+        "size": "縦投稿4:5｜2160×2700｜4:5",
+        "sceneUnified": true
+      }
+    },
+    "serializationUtf16ByteEstimate": {
+      "raw": 2674106,
+      "packedDatabase": 1908244,
+      "reductionPercent": 28.6,
+      "note": "String storage estimate, not measured JavaScript heap or IndexedDB disk size"
+    },
+    "samePageRepeatedRequests": {
+      "requests": 101,
+      "baselineFullDatabaseReads": 101,
+      "updatedFullDatabaseReads": 1,
+      "baselineLocalParses": 101,
+      "updatedLocalKeyReads": 1,
+      "baselineMs": 621.54,
+      "updatedMs": 7.61,
+      "baseline": "Original load control flow reproduced against the same mock database fixture",
+      "updated": "Actual createHistoryPersistence implementation with a notification channel"
+    },
+    "restoredDetailCache": {
+      "previousMaximumRecords": 12,
+      "currentMeasuredRecords": 2,
+      "currentLimit": 2
+    },
+    "legacyParsedStateRetainedAfterDatabaseRead": false,
+    "correctness": "Cross-tab notifications, concurrent singleflight, visible/BFCache invalidation, no-channel fresh-read fallback, exact old prompt/plan/stages, clear epochs, atomic quota failure and database commit failure verified by check-memory-resources-v28 and check-history-persistence-v28",
+    "fallback": "Original local key and unrelated keys remain untouched after database migration. A later database failure can reparse the original key; a live tab keeps the latest committed clear epoch."
+  },
+  "production": {
+    "oneFixtureUtf16ByteEstimate": {
+      "prompt": 40510,
+      "production": 90418,
+      "stages": 63196,
+      "stagesEach": {
+        "artwork": 22828,
+        "repair": 10290,
+        "layout": 28322
+      }
+    },
+    "oneRunMs": {
+      "plan": 28.58,
+      "prompt": 3.92,
+      "stages": 9.02
+    },
+    "stageCache": "WeakMap reuses strings for the same plan. Current result retains one full plan, bounded restored cache retains at most two; persisted histories keep archives, not images. Stage preparation remains eager for compatible editorial formats."
+  },
+  "images": {
+    "sourceExample": {
+      "width": 4000,
+      "height": 3000,
+      "pixels": 12000000
+    },
+    "displayPreview": {
+      "width": 1200,
+      "height": 900,
+      "pixels": 1080000
+    },
+    "fourDisplayImagesRgbaEstimate": {
+      "beforeBytes": 192000000,
+      "afterBytes": 17280000,
+      "reductionPercent": 91,
+      "note": "Calculated 4-byte RGBA surfaces only; decoder, original compressed Blob, browser cache and GPU copies excluded"
+    },
+    "originalFileBytes": "Preserved unchanged for save/share/ZIP. Preview Blob is separate and never stored in history or creator-draft.",
+    "limits": {
+      "maxPixels": 64000000,
+      "maxEdge": 16384,
+      "previewEdge": 1200,
+      "referenceCount": 4,
+      "sourceFileBytes": 12582912,
+      "layoutInputBytes": 20971520,
+      "layoutOutputMaxEdge": 4096,
+      "layoutOutputMaxRgbaBytes": 67108864,
+      "cropOutputMaxEdge": 4096
+    },
+    "metadata": "PNG/JPEG with EXIF orientation/WebP/GIF/BMP/AVIF/HEIF dimensions are checked before pixel decoding. Header fixture tests do not claim a native decoder measurement.",
+    "sourceDecodeConcurrencyForCombinedBoard": {
+      "before": 4,
+      "afterInstrumentedMaximum": 1
+    },
+    "fallback": "Browsers without createImageBitmap decode one bounded original via Image; the final UI preview is still small. A resize request alone does not prove that native decoding avoids a temporary full-size surface."
+  },
+  "layout": {
+    "mainBitmapPlaced": 1,
+    "mainBitmapCropping": false,
+    "fullImageBase64StringsRetained": 0,
+    "svgOverlayContainsMainBitmap": false,
+    "simultaneousExports": 1,
+    "cleanup": "Bitmaps closed, SVG URLs revoked, temporary canvases reset to 1x1, image src removed; success/failure/cancellation tested. Disposing the panel releases its output Blob and preview URL."
+  },
+  "renderingAndTimers": {
+    "choices": "Only current mode choices are rendered; unchanged stamped choices are reused.",
+    "picker": "Ring renders six choices; list renders the current 18/24/32-item page; comparisons max four and favorites max five per field.",
+    "previews": "Browser lazy/async images are used. Hidden auto proposal cards may remain as six small sample thumbnails, with no source decoding or generation loop.",
+    "effects": "Motion RAF and the game interval stop while document.hidden; spell animations are cancelled on sync. Background canvas remains viewport-sized with devicePixelRatio capped at 1.5.",
+    "downloads": "An explicitly downloaded Blob may remain behind its object URL for 30 seconds; repeated user downloads in that interval can temporarily accumulate memory. This bounded-time retention is unchanged.",
+    "referenceDraft": "Current references max four. Displayed Blobs are loaded once on startup; uncropped originals are requested on demand by crop editing."
+  },
+  "tests": [
+    "scripts/check-history-storage-v28.mjs",
+    "scripts/check-history-persistence-v28.mjs",
+    "scripts/check-memory-resources-v28.mjs",
+    "scripts/check-creator-draft-v28.mjs"
+  ],
+  "changedModules": [
+    "image-resources.js",
+    "layout-export.js",
+    "guide-board.js",
+    "crop-editor.js",
+    "history-storage.js",
+    "history-persistence.js"
+  ],
+  "appIntegration": "Root/ordinary_mode_fix owns app.js: small preview preparation and startup restore, unchanged-original sharing, clearing result DOM/textarea/preview resources. No app/index/version/package edits by this audit agent."
+}

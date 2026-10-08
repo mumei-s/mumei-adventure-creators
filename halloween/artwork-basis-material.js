@@ -26,7 +26,7 @@ export const materialBases = [
     ],
     checks: ['大きな刷り面と抜く面で主景が読める。', '小さな明部が彫りの切り口として面に組み込まれている。'],
     avoid: ['木目をリノリウム固有の必須痕跡として加える。', '全面に写真陰影を残して刃の模様だけを重ねる。'],
-    references: [reference('MoMA — Linoleum cut', 'https://www.moma.org/collection/terms/linoleum-cut', 'technique', 'リノリウムを彫る凸版と明確な色面の関係を照合。'), reference('MoMA — Sybil Andrews, Speedway, 1934', 'https://www.moma.org/collection/works/102223?art_term_slug=linoleum-cut&sov_referrer=art_term', 'work', 'リノカットという材質記録を確認。作品の人物・題材・配置は取り込まない。')]
+    references: [reference('MoMA — Linoleum cut', 'https://www.moma.org/collection/terms/linoleum-cut', 'work', 'リノカットの所蔵作例一覧を確認。制作機構は次の作品ページ内の用語説明で照合。'), reference('MoMA — Sybil Andrews, Speedway, 1934', 'https://www.moma.org/collection/works/102223?art_term_slug=linoleum-cut&sov_referrer=art_term', 'work', '作品ページ内の用語説明で、柔らかいリノリウムを彫る凸版と明確な色面を本文照合。作品の人物・題材・配置は取り込まない。')]
   },
   {
     value: '木版画', status: 'documented',
@@ -38,7 +38,7 @@ export const materialBases = [
     ],
     checks: ['刷る面と彫って抜く線の関係が一貫する。', '色の変化も版の転写として読め、写真面と木のテクスチャが分離していない。'],
     avoid: ['孤立した刷り面がすべてつながる必要があると誤解する。', '木目・かすれ・太い主線を全作品の必須条件にする。'],
-    references: [reference('MoMA — Woodcut', 'https://www.moma.org/collection/terms/woodcut', 'technique', '版木を刃・鑿で彫る制作機構を照合。'), reference('MoMA — Helen Frankenthaler, Essence Mulberry, 1977', 'https://www.moma.org/collection/works/69050?art_term_slug=woodcut&sov_referrer=art_term', 'work', '木版という材質記録を確認し、太い輪郭だけが木版の唯一の成立形ではないことを区別。')]
+    references: [reference('MoMA — Woodcut', 'https://www.moma.org/collection/terms/woodcut', 'work', '木版画の所蔵作例一覧を確認。制作機構は次の作品ページ内の用語説明で照合。'), reference('MoMA — Helen Frankenthaler, Essence Mulberry, 1977', 'https://www.moma.org/collection/works/69050?art_term_slug=woodcut&sov_referrer=art_term', 'work', '作品ページ内の用語説明で刃・鑿による彫刻を照合。異なる樹種の四版で得る柔らかな刷りの記述から、太い輪郭だけに限定しない。')]
   },
   {
     value: 'シルクスクリーン', status: 'documented',
@@ -50,7 +50,7 @@ export const materialBases = [
     ],
     checks: ['色の領域を独立した版に分けて説明できる。', '陰影や重色にもベタまたは網点の刷りの規則が続く。'],
     avoid: ['全スクリーン印刷を不透明ベタ・固定線幅だけに限定する。', '選択色にないポップアートの典型色を自動追加する。'],
-    references: [reference('MoMA — Screenprint', 'https://www.moma.org/collection/terms/screenprint', 'technique', '織ったメッシュへステンシルを使いインクを通す機構を照合。')]
+    references: [reference('MoMA — Screenprint', 'https://www.moma.org/collection/terms/screenprint', 'work', 'スクリーンプリントの所蔵作例一覧を確認。ここにメッシュ・ステンシル工程の本文説明はない。'), reference('The Met — Materials and Techniques: Screenprint', 'https://www.metmuseum.org/perspectives/materials-and-techniques-printmaking-screenprint', 'technique', 'メッシュ、ステンシル、スキージー、色ごとの別版と見当合わせを本文で照合。透明性・網点の細かな仕上げ条件は本ツールの運用上の選択。')]
   },
   {
     value: 'リソグラフ', status: 'documented',

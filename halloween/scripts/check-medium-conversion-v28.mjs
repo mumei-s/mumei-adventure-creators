@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
 import {questions} from '../catalog.js?v=28.1.2';
 import {applyCollection} from '../collection.js?v=28.1.2';
@@ -82,6 +83,6 @@ try{
 }finally{applyCollection('halloween');}
 assert.equal(rows.size,108);assert.equal(cases,864);assert.equal(photoCases,96);assert.equal(drawnCases,768);assert.equal(noPersonCases,648);
 const result={checkedOn:'2026-10-08',script:'scripts/check-medium-conversion-v28.mjs',status:'PASS',counts:{styles:rows.size,cases,photoCases,drawnCases,noPersonCases},limits:['参照写真→選択画風と参照イラスト→写真の命令経路を検査。写真・イラストの実ファイルの意味理解や出力ピクセルは検査していない。','PASSは生成画像の作風達成、顔の同一性、人物なしの完成画像や外部審査通過の実証ではない。'],rows:[...rows.values()]};
-const output=path.resolve(process.argv[2]||'/workspace/scratch/9058838d9966/audit');
+const output=path.resolve(process.argv[2]||fileURLToPath(new URL('../audit/',import.meta.url)));
 fs.mkdirSync(output,{recursive:true});fs.writeFileSync(path.join(output,'medium-conversion-audit-v28.json'),JSON.stringify(result,null,2)+'\n');
 console.log('PASS medium conversion: '+cases+' style/mode/subject instruction routes; '+photoCases+' drawing-to-photo, '+drawnCases+' reference-surface-to-selected-drawing, '+noPersonCases+' scenery/motif/icon cases. No input-pixel interpretation or generated-image verification.');

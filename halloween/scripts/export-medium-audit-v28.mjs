@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
 import {questions} from '../catalog.js?v=28.1.2';
 import {artworkBasisValues,artworkBasis,artworkBasisContract} from '../artwork-basis.js?v=28.1.2';
@@ -12,7 +13,7 @@ import {optionRecipe} from '../option-recipes.js?v=28.1.2';
 
 // Reproducible documentation export. A reference registered in code is not
 // evidence that its page was retrieved or that a generated image succeeded.
-const output=path.resolve(process.argv[2]||'/workspace/scratch/9058838d9966/audit');
+const output=path.resolve(process.argv[2]||fileURLToPath(new URL('../audit/',import.meta.url)));
 fs.mkdirSync(output,{recursive:true});
 const version=JSON.parse(fs.readFileSync(new URL('../package.json',import.meta.url),'utf8')).version;
 const groups=[['illustration','artwork-basis-illustration.js',illustrationBases],['traditional','artwork-basis-traditional.js',traditionalBases],['material-digital','artwork-basis-material.js',materialBases],['movements-photography','artwork-basis-movements-photo.js',movementsPhotoBases],['luminous-optical','artwork-basis-luminous.js',luminousBases]];

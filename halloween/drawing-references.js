@@ -40,6 +40,7 @@ export async function loadDrawingReferences(references,{fetchImpl=globalThis.fet
 export function deliveryImageFiles(result,{FileClass=globalThis.File}={}){
  return [
   ...(result.localDrawingRefs||[]).map(ref=>ref.file),
+  ...(result.localPresetRefs||[]).map(ref=>ref.fileObject),
   ...(result.localRefs||[]).map((ref,i)=>new FileClass([ref.file],result.references[i].name,{type:ref.file.type}))
  ];
 }

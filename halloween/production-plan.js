@@ -1,16 +1,16 @@
-import {creatorLookupInstructions} from './creator-handoff.js?v=28.1.2';
-import {imageOutputContract} from './output-contract.js?v=28.1.2';
-import {modeFoundation} from './japan-direction.js?v=28.1.2';
-import {questions,visibleQuestions} from './catalog.js?v=28.1.2';
-import {formatContract} from './formats.js?v=28.1.2';
-import {buildEditorial,editorialContract} from './editorial.js?v=28.1.2';
-import {optionRecipe} from './option-recipes.js?v=28.1.2';
-import {colorPolicy} from './palette-recipes.js?v=28.1.2';
-import {resolveArtDirection,interactionContract} from './art-direction.js?v=28.1.2';
-import {executionFor} from './option-execution.js?v=28.1.2';
-import {cameraContract} from './angles.js?v=28.1.2';
-import {selectionIssues} from './compatibility.js?v=28.1.2';
-import {moodConstraint} from './view-constraints.js?v=28.1.2';
+import {creatorLookupInstructions} from './creator-handoff.js?v=28.2.0';
+import {imageOutputContract} from './output-contract.js?v=28.2.0';
+import {modeFoundation} from './japan-direction.js?v=28.2.0';
+import {questions,visibleQuestions} from './catalog.js?v=28.2.0';
+import {formatContract} from './formats.js?v=28.2.0';
+import {buildEditorial,editorialContract} from './editorial.js?v=28.2.0';
+import {optionRecipe} from './option-recipes.js?v=28.2.0';
+import {colorPolicy} from './palette-recipes.js?v=28.2.0';
+import {resolveArtDirection,interactionContract} from './art-direction.js?v=28.2.0';
+import {executionFor} from './option-execution.js?v=28.2.0';
+import {cameraContract} from './angles.js?v=28.2.0';
+import {selectionIssues} from './compatibility.js?v=28.2.0';
+import {moodConstraint} from './view-constraints.js?v=28.2.0';
 
 export function productionPlan(profile,values,variant,collection='halloween',random=Math.random){
  const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);

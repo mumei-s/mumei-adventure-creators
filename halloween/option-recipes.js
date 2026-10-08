@@ -1,16 +1,17 @@
-import {everydayRecipe} from './everyday-options.js?v=28.1.2';
-import {CRYSTAL_OBJECT,crystalObjectRecipe,japaneseSections} from './japan-direction.js?v=28.1.2';
-import {visualSpec} from './visual-specs.js?v=28.1.2';
-import {detailedMedium} from './medium-recipes.js?v=28.1.2';
-import {detailedFormat} from './format-recipes.js?v=28.1.2';
-import {detailedSubject} from './subject-recipes.js?v=28.1.2';
-import {detailedPalette} from './palette-recipes.js?v=28.1.2';
-import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=28.1.2';
-import {executionFor} from './option-execution.js?v=28.1.2';
-import {colorPolicy} from './color-policy.js?v=28.1.2';
-import {halloweenSceneFocus,sceneSourcePlace} from './scene-presets.js?v=28.1.2';
-import {angleRecipe} from './angles.js?v=28.1.2';
-import {withArtworkBasis} from './artwork-basis.js?v=28.1.2';
+import {everydayRecipe} from './everyday-options.js?v=28.2.0';
+import {CRYSTAL_OBJECT,crystalObjectRecipe,japaneseSections} from './japan-direction.js?v=28.2.0';
+import {visualSpec} from './visual-specs.js?v=28.2.0';
+import {detailedMedium} from './medium-recipes.js?v=28.2.0';
+import {detailedFormat} from './format-recipes.js?v=28.2.0';
+import {detailedSubject} from './subject-recipes.js?v=28.2.0';
+import {detailedPalette} from './palette-recipes.js?v=28.2.0';
+import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=28.2.0';
+import {executionFor} from './option-execution.js?v=28.2.0';
+import {colorPolicy} from './color-policy.js?v=28.2.0';
+import {halloweenSceneFocus,sceneSourcePlace} from './scene-presets.js?v=28.2.0';
+import {angleRecipe} from './angles.js?v=28.2.0';
+import {withArtworkBasis} from './artwork-basis.js?v=28.2.0';
+import {referenceWorldSceneRecipe} from './world-bases.js?v=28.2.0';
 
 function opticalPaletteText(text,policy){
  if(!policy.restricted)return text;
@@ -45,7 +46,7 @@ export function optionRecipe(key,value,context={}){
  let recipe=key==='angle'?angleRecipe(value,options):key==='medium'?(value===CRYSTAL_OBJECT?crystalMaterialRecipe(options):value===CRYSTAL_ANIME?crystalRecipe(options):detailedMedium(value,options))
   :key==='design'?detailedFormat(value,options)
   :key==='palette'?detailedPalette(value,options)
-  :everydayRecipe(sourceKey,value)||detailedSubject(sourceKey,value,options);
+  :(['theme','place'].includes(key)?referenceWorldSceneRecipe(value,options):null)||everydayRecipe(sourceKey,value)||detailedSubject(sourceKey,value,options);
  if(key==='medium')recipe=withArtworkBasis(recipe,value,options);
  if(recipe?.sections?.length){
   recipe={...recipe,sections:recipe.sections.map(s=>({...s}))};

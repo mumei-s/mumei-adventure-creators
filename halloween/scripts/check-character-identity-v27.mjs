@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.1.2';
-import {applyCollection} from '../collection.js?v=28.1.2';
-import {productionPlan} from '../production-plan.js?v=28.1.2';
-import {composePrompt} from '../prompt.js?v=28.1.2';
-import {colorPolicy} from '../color-policy.js?v=28.1.2';
-import {isPhotographicMedium} from '../photo-design.js?v=28.1.2';
-import {renderInput} from '../compiled-production.js?v=28.1.2';
-import {cameraContract} from '../angles.js?v=28.1.2';
+import {questions,resolveSelections} from '../catalog.js?v=28.2.0';
+import {applyCollection} from '../collection.js?v=28.2.0';
+import {productionPlan} from '../production-plan.js?v=28.2.0';
+import {composePrompt} from '../prompt.js?v=28.2.0';
+import {colorPolicy} from '../color-policy.js?v=28.2.0';
+import {isPhotographicMedium} from '../photo-design.js?v=28.2.0';
+import {renderInput} from '../compiled-production.js?v=28.2.0';
+import {cameraContract} from '../angles.js?v=28.2.0';
 
 const profile={displayName:'同一性検査',activityEnabled:false},random=()=>.2;
 const base=resolveSelections({design:'通常の一枚絵',medium:'発光幻想アニメ',theme:'宇宙のHalloween',costume:'参照画像の衣装を生かす',place:'星空の砂漠',pose:'片手を差し出す',mood:'俯瞰＋目を見開く',angle:'俯瞰・45度',palette:'群青 × 菫 × 星白',type:'文字を一切入れない',line:'セリフなし',size:'縦ポスター2:3｜2400×3600｜2:3'},random);
@@ -75,6 +75,6 @@ for(const mode of ['halloween','everyday']){
  }
 }
 applyCollection('halloween');
-assert.equal(cases,1080);
-assert.equal(photographs,120);
+assert.equal(cases,1140);
+assert.equal(photographs,130);
 console.log('PASS character identity: '+cases+' mode/style/palette combinations preserve identifying features, age, gender and base build; '+photographs+' photographic cases reconstruct natural anatomy, skin, hair and fabric without retaining illustration surfaces or changing selected camera/pose; non-photo chibi/material construction and all color policies remain intact; no-person output receives no face contract. Generated-image adherence is not inferred.');

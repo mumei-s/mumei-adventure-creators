@@ -1,5 +1,5 @@
 // Common ChatGPT image request: no model-specific tool names, code, or file route.
-import {copyContentRules} from './copy-scope.js?v=28.1.2';
+import {copyContentRules} from './copy-scope.js?v=28.2.0';
 export const nativeImageRequest='添付の参照画像と以下の作画条件で、完成した画像そのものを1枚描いてください。ChatGPTの画像作成機能を実行し、結果をこの生成チャットに表示してください。';
 export const selectionIntegrationInstructions=[
  '【ChatGPTが画像生成前に行う統合】',

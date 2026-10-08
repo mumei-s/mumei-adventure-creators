@@ -1,19 +1,19 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.1.2';
-import {applyCollection} from '../collection.js?v=28.1.2';
-import {initialSelections} from '../modes.js?v=28.1.2';
-import {buildDirection} from '../direction.js?v=28.1.2';
-import {applyPose} from '../poses.js?v=28.1.2';
-import {angleItems,cameraContract} from '../angles.js?v=28.1.2';
-import {colorPolicy} from '../color-policy.js?v=28.1.2';
-import {artworkBasisValues,artworkBasis,artworkBasisContract,withArtworkBasis} from '../artwork-basis.js?v=28.1.2';
-import {optionRecipe} from '../option-recipes.js?v=28.1.2';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.1.2';
-import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.1.2';
-import {composePrompt} from '../prompt.js?v=28.1.2';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.1.2';
-import {imageDeliveryRepairPrompt} from '../output-contract.js?v=28.1.2';
-import {selectionConflicts,candidateAvailability,compatibleResolved} from '../compatibility.js?v=28.1.2';
+import {questions,resolveSelections} from '../catalog.js?v=28.2.0';
+import {applyCollection} from '../collection.js?v=28.2.0';
+import {initialSelections} from '../modes.js?v=28.2.0';
+import {buildDirection} from '../direction.js?v=28.2.0';
+import {applyPose} from '../poses.js?v=28.2.0';
+import {angleItems,cameraContract} from '../angles.js?v=28.2.0';
+import {colorPolicy} from '../color-policy.js?v=28.2.0';
+import {artworkBasisValues,artworkBasis,artworkBasisContract,withArtworkBasis} from '../artwork-basis.js?v=28.2.0';
+import {optionRecipe} from '../option-recipes.js?v=28.2.0';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.2.0';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.2.0';
+import {composePrompt} from '../prompt.js?v=28.2.0';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.2.0';
+import {imageDeliveryRepairPrompt} from '../output-contract.js?v=28.2.0';
+import {selectionConflicts,candidateAvailability,compatibleResolved} from '../compatibility.js?v=28.2.0';
 
 // Reference links document authored criteria in the picker. They are not
 // external images, artists to imitate, image-call attachments or style inputs.
@@ -22,22 +22,31 @@ const contains=(text,clause,label)=>assert.ok(text.includes(clause),label+' lost
 const profile={displayName:'作画資料の検査',activityEnabled:false};
 const random=()=>.23;
 const selectedKeys=['medium','theme','place','costume','mood','angle','pose','palette','design','type','size'];
+const analyzedWorldValues=new Set(['宝石光彩アニメ','宝石光彩リアル','花霞の透明アニメ','ミルキーパステルアニメ','夢彩ファンタジーアニメ','宵彩ゴシックアニメ']);
 const knownValues=questions.find(q=>q.key==='medium').groups.flatMap(g=>g.values);
-assert.equal(knownValues.length,108,'All existing public artwork choices must remain represented');
-assert.equal(artworkBasisValues.length,108,'Every public artwork choice needs one source-backed basis');
-assert.equal(new Set(artworkBasisValues).size,108,'Artwork bases must not overwrite duplicate entries');
+assert.equal(knownValues.length,114,'All existing and added public artwork choices must remain represented');
+assert.equal(artworkBasisValues.length,114,'Every public artwork choice needs one documented or analyzed basis');
+assert.equal(new Set(artworkBasisValues).size,114,'Artwork bases must not overwrite duplicate entries');
 assert.deepEqual([...artworkBasisValues].sort(),[...knownValues].sort(),'Source coverage must match the public catalogue exactly');
 assert.equal(artworkBasis('未登録の自由作風'),null,'Custom input must not inherit the last known source');
 assert.equal(artworkBasisContract('未登録の自由作風'),null);
 
 const entries=artworkBasisValues.map(value=>artworkBasis(value));
+assert.equal(entries.filter(entry=>analyzedWorldValues.has(entry.value)).length,6,'Only the six added, analyzed world styles may omit documentation URLs');
+assert.equal(entries.filter(entry=>!analyzedWorldValues.has(entry.value)).length,108,'The original 108 documented bases must remain represented');
 const uniqueChecks=new Map();
 for(const entry of entries){
  assert.equal(entry.value,artworkBasisValues.find(value=>value===entry.value));
  assert.ok(['documented','synthesis'].includes(entry.status),entry.value+' must distinguish documented technique from a synthesized style');
- for(const [field,minimum] of [['basis',3],['checks',2],['avoid',1],['references',1]]){
+ const analyzedWorld=analyzedWorldValues.has(entry.value);
+ for(const [field,minimum] of [['basis',3],['checks',2],['avoid',1],['references',analyzedWorld?0:1]]){
   assert.ok(Array.isArray(entry[field])&&entry[field].length>=minimum,entry.value+' lacks '+field);
   if(field!=='references')for(const text of entry[field])assert.ok(typeof text==='string'&&text.trim(),entry.value+' has an empty '+field+' clause');
+ }
+ if(analyzedWorld){
+  assert.equal(entry.status,'synthesis',entry.value+' must identify the analyzed world basis as synthesis');
+  assert.equal(entry.references.length,0,entry.value+' must not invent documentation URLs for user-provided example analysis');
+  assert.ok(entry.basis.some(text=>/ユーザー.*作例.*(?:整理|分析)/.test(text)&&/合成作画基準/.test(text)),entry.value+' must disclose its user-example analysis origin');
  }
  for(const reference of entry.references){
   assert.ok(typeof reference.title==='string'&&reference.title.trim(),entry.value+' has an unnamed reference');
@@ -126,7 +135,7 @@ try{
   }
  }
 }finally{applyCollection('halloween');}
-console.log('PASS artwork references: all 108 distinct bases have technique/check/avoid/source metadata and documented/synthesis status; '+checked+' mode/subject/palette handoffs preserve selected source criteria, '+noPersonCases+' no-person guards and '+restrictedCases+' restricted color cases. Source URLs and artist/work titles stay out of native, artwork and repair routes. Source availability and image-model adherence are not inferred by this test.');
+console.log('PASS artwork references: all 114 distinct bases have technique/check/avoid metadata and documented/synthesis status, 108 retain documentation links and six synthesized world bases record reference analysis; '+checked+' mode/subject/palette handoffs preserve selected source criteria, '+noPersonCases+' no-person guards and '+restrictedCases+' restricted color cases. Source URLs and artist/work titles stay out of native, artwork and repair routes. Source availability and image-model adherence are not inferred by this test.');
 
 // Explicit color choices remain reviewable conflicts. Only automatic choices
 // may be replaced, so a material restriction never silently recolors a choice.

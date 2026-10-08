@@ -1,4 +1,4 @@
-import {automaticView,viewSelectionIssues} from './view-constraints.js?v=28.1.2';
+import {automaticView,viewSelectionIssues} from './view-constraints.js?v=28.2.0';
 const automatic=automaticView;
 const noPerson=v=>/風景を主役|モチーフだけ|紋章・アイコン/.test(v||'');
 const faceOnly=v=>/歯|目を|眉|涙|ニヤリ|ウインク|牙|無表情|横顔|正面|俯瞰|ローアングル|振り向く|顔を/.test(v||'');

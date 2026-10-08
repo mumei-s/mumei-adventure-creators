@@ -1,9 +1,9 @@
-import {mediumExecution} from './medium-execution.js?v=28.1.2';
-import {artworkBasisContract} from './artwork-basis.js?v=28.1.2';
-import {formatExecution} from './format-execution.js?v=28.1.2';
-import {colorPolicy} from './color-policy.js?v=28.1.2';
-import {photoReconstruction} from './photo-design.js?v=28.1.2';
-import {luminousWorldContract} from './luminous-world.js?v=28.1.2';
+import {mediumExecution} from './medium-execution.js?v=28.2.0';
+import {artworkBasisContract} from './artwork-basis.js?v=28.2.0';
+import {formatExecution} from './format-execution.js?v=28.2.0';
+import {colorPolicy} from './color-policy.js?v=28.2.0';
+import {photoReconstruction} from './photo-design.js?v=28.2.0';
+import {luminousWorldContract} from './luminous-world.js?v=28.2.0';
 
 // The option's own physical recipe is the source of its execution contract.
 // No generic "beautiful / atmospheric" default replaces a missing preset.
@@ -26,7 +26,7 @@ const counts={angle:3,costume:3,theme:2,place:3,mood:5,pose:3,type:2,line:2,size
 export function executionFor(key,value,recipe,{noPerson=false,values={}}={}){
  const sections=recipe.sections.map(s=>({part:s.label,draw:s.text}));
  const luminous=key==='medium'?luminousWorldContract({...values,medium:value},{noPerson}):null;
- let method=luminous?recipe.executionMethod||luminous.method:key==='medium'?mediumExecution.get(value)
+ let method=luminous?recipe.executionMethod||luminous.method:key==='medium'?recipe.executionMethod||mediumExecution.get(value)
   :key==='design'?formatExecution.get(value)
   :recipe.executionMethod||sections.slice(0,counts[key]||2).map(s=>s.draw).join(' ');
  if(recipe.known&&!method)throw new Error('個別の実行指示がありません：'+key+' / '+value);
@@ -35,7 +35,7 @@ export function executionFor(key,value,recipe,{noPerson=false,values={}}={}){
  // already contain the medium's dedicated non-human construction instructions.
  // Starting the actual image call with a face directive would otherwise defeat
  // the user's no-person choice before that choice is even read.
- if(key==='medium'&&noPerson&&!luminous)method=sections.filter(s=>s.part!=='日本を基準にした個別条件'&&!s.part.startsWith('作画基準／')).slice(0,4).map(s=>s.draw).join(' ');
+ if(key==='medium'&&noPerson&&!luminous&&!recipe.executionMethod)method=sections.filter(s=>s.part!=='日本を基準にした個別条件'&&!s.part.startsWith('作画基準／')).slice(0,4).map(s=>s.draw).join(' ');
  if(key==='medium'){
   const basis=artworkBasisContract(value,{noPerson,values});
   if(basis)method=basis.method+' '+method;

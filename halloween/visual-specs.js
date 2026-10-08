@@ -1,12 +1,13 @@
-import {everydayRecipe} from './everyday-options.js?v=28.1.2';
-import {mediumDefinition} from './looks.js?v=28.1.2';
-import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=28.1.2';
-import {poseItems} from './poses.js?v=28.1.2';
-import {colorContract,luminousMedia,colorWorlds,sceneryMaterials} from './worlds.js?v=28.1.2';
-import {formatFor} from './formats.js?v=28.1.2';
-import {typographyRecipe} from './typography-options.js?v=28.1.2';
-import {sceneSourcePlace} from './scene-presets.js?v=28.1.2';
-import {angleRecipe} from './angles.js?v=28.1.2';
+import {everydayRecipe} from './everyday-options.js?v=28.2.0';
+import {mediumDefinition} from './looks.js?v=28.2.0';
+import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=28.2.0';
+import {poseItems} from './poses.js?v=28.2.0';
+import {colorContract,luminousMedia,colorWorlds,sceneryMaterials} from './worlds.js?v=28.2.0';
+import {referenceWorldSceneRecipe} from './world-bases.js?v=28.2.0';
+import {formatFor} from './formats.js?v=28.2.0';
+import {typographyRecipe} from './typography-options.js?v=28.2.0';
+import {sceneSourcePlace} from './scene-presets.js?v=28.2.0';
+import {angleRecipe} from './angles.js?v=28.2.0';
 const read=source=>Object.fromEntries(source.trim().split('\n').map(line=>{const i=line.indexOf('=');return [line.slice(0,i),line.slice(i+1)];}));
 export const costumeSpecs=read(`
 魔女・魔法使い=尖った帽子・長いローブ・魔術の紋様。布の厚みと帽子の形を明確にする
@@ -245,6 +246,8 @@ HALLOWEENのみ=HALLOWEENの一語だけ。名前・セリフ・補助コピー�
 `);
 export function visualSpec(key,value,{noPerson=false,palette=''}={}){
  if(key==='theme'&&sceneSourcePlace(value))key='place';
+ const world=['theme','place'].includes(key)?referenceWorldSceneRecipe(value,{noPerson,values:{palette}}):null;
+ if(world)return {known:true,text:world.sections.map(section=>section.text).join(' '),checks:world.checks};
  if(key==='angle'){const recipe=angleRecipe(value,{noPerson});return {known:recipe.known,text:recipe.sections.map(section=>section.text).join(' '),checks:recipe.checks};}
  const everyday=everydayRecipe(key,value);if(everyday)return {known:true,text:everyday.sections.map(s=>s.text).join(' '),checks:everyday.checks};
  if(key==='medium'&&value===CRYSTAL_ANIME)return crystalAnimeSpec({noPerson,palette});

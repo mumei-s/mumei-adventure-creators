@@ -1,12 +1,54 @@
-import {applyAngle} from './angles.js?v=28.1.2';
-import {colorPolicy} from './palette-recipes.js?v=28.1.2';
-import {opticalSignature,opticalColors} from './optical-effects.js?v=28.1.2';
-import {detailedSubject} from './subject-recipes.js?v=28.1.2';
-import {detailedFormat} from './format-recipes.js?v=28.1.2';
-import {isPhotographicMedium} from './photo-design.js?v=28.1.2';
-import {luminousWorldContract} from './luminous-world.js?v=28.1.2';
+import {applyAngle} from './angles.js?v=28.2.0';
+import {colorPolicy} from './palette-recipes.js?v=28.2.0';
+import {opticalSignature,opticalColors} from './optical-effects.js?v=28.2.0';
+import {detailedSubject} from './subject-recipes.js?v=28.2.0';
+import {detailedFormat} from './format-recipes.js?v=28.2.0';
+import {isPhotographicMedium} from './photo-design.js?v=28.2.0';
+import {luminousWorldContract} from './luminous-world.js?v=28.2.0';
 
 const flat=new Set(['線画','リノカット','木版画','浮世絵木版画','シルクスクリーン','ベクターグラフィック','フラットイラスト','ピクセルアート','構成主義','ミニマリズム']);
+// Drawing atmosphere owns light and depth only. It never supplies a sample's
+// person, outfit, palette, pose or props to a separately selected scene.
+const worldStyleDirections=new Map([
+ ['宝石光彩アニメ',{
+  light:'精密な2Dアニメの描線と影面を残し、明るい主光、広く深い影、澄んだ薄い色層、反射、小さく鋭い最明部を分ける。肌や布をガラスへ変えず、露出して見える顔・耳・首・腕・手・脚・足と、髪・衣装・景物へ同じ光彩を素材別に連続させる。足が見えれば足にも適用し、顔と手だけに限定しない。肌には薄い反射と微小光、髪には束に沿う反射、布には折れと織りに沿う光を描き分ける。瞳の暗い芯と透明な内部色は、今回の開いて見える目だけへ描く。覆われた部位を透視せず、画角外や遮蔽された部位を光彩のために追加しない。光を背景だけへ集めず、全面の白い霧と均一な粒子で陰影を埋めない。',
+  lightScenery:'精密な2Dアニメの描線と影面を残し、明るい主光、広く深い影、澄んだ薄い色層、反射、小さく鋭い最明部を分ける。可視の景物・物体・支持面全体へ、粗い素材の弱い散乱、布の折れと織りに沿う光、金属の硬い反射、既存の透明素材の透過を描き分けて同じ光彩を連続させる。画角外や遮蔽された面を光彩のために追加せず、全面の白い霧と均一な粒子で陰影を埋めない。',
+  depth:'固定した視点に見える輪郭の重なりと遮蔽へ、澄んだ色層、深い内部影、細い縁光と微小反射を配分する。焦点の描線と素材の境界を最も精密にし、周囲は光の密度とコントラストを落とす。'
+ }],
+ ['宝石光彩リアル',{
+  light:'自然な写真の眼球・肌・髪・衣服の材質を保ち、明るい主光、広く深い影、薄い色の散乱と環境反射、小さく鋭い最明部を連続した露光階調で分ける。透明な色層は光の重なりであり、身体や衣装を透明な結晶へ変えない。見える瞳の暗い瞳孔と微細な虹彩を残し、露出して見える顔・耳・首・腕・手・脚・足と、髪・衣装・景物へ素材別の光彩を連続させる。足が見えれば足にも適用し、顔と手だけに限定しない。皮膚は自然な散乱と微小反射、髪は毛流と束の反射、布は繊維と折れ、金属は硬い反射として描き分ける。覆われた部位を透視せず、画角外や遮蔽された部位を光彩のために追加しない。写真をアニメの瞳やセル影、滑らかなCGの肌へ戻さない。',
+  lightScenery:'自然な写真の景物・物体・支持面の材質を保ち、明るい主光、広く深い影、薄い色の散乱と環境反射、小さく鋭い最明部を連続した露光階調で分ける。透明な色層は光の重なりであり、不透明な素材を透明な結晶へ変えない。可視の景物全域に粗い素材の弱い散乱、布の繊維と折れの反射、金属の硬い反射、既存の透明素材の透過を描き分けて同じ光彩を連続させる。画角外や遮蔽された面を追加せず、写真をセル影や滑らかなCGの景物へ戻さない。',
+  depth:'固定したカメラの一つのレンズ像、自然な材質の重なり、接触影と露光差で距離を作る。見えている部分全体の必要な細部が読める焦点深度を取り、光の層は距離と遮蔽へ対応させる。光のためにレンズぼけを増やしたり、別の画角へ変えたりしない。'
+ }],
+ ['花霞の透明アニメ',{
+  light:'細い有色線と透ける薄い重ね色を、柔らかな主光と明るい余白へ結ぶ。淡い面を白く飛ばさず、重なる形の接点と目鼻口へ小さな締まった影を残す。透明は描いた色層の透明感とし、肌や衣装を透視しない。花・光粒・朝日などの具体物は世界観・シーンで選んだ場合だけ用いる。',
+  depth:'可視範囲の重なり、薄い色層の濃度差、細線の硬軟で前後を示す。焦点の輪郭を繊細に締め、周辺は少ない線と抜けた余白へ解放する。白い霞を全画面へ重ねて識別形を消さない。'
+ }],
+ ['ミルキーパステルアニメ',{
+  light:'選択色の明るい低彩度面と柔らかな拡散光を主にし、少量の中間影と接触影で丸み・布の重なり・支持を読む。白や桃色などの特定色へ固定せず、限定色では許可色の明度差を使う。強い宝石鏡面や全面発光へ変えず、柔らかな光の中にも瞳・指・衣装の境界を残す。',
+  depth:'大きく柔らかな形の重なりと、小さな接触影・色面の明度差で前後を作る。主題をぼかさず、奥へ向かって細線と模様の密度を減らす。画風を理由に頭身や年齢感を幼く変更しない。'
+ }],
+ ['夢彩ファンタジーアニメ',{
+  light:'選択した世界の主光と素材反射を細密な2Dアニメの描線・薄い重ね色へつなぎ、広い影面、複数尺度の光の面と小さなきらめきを一つの空間に配分する。高密度の光を焦点へ、静かな陰を周囲へ置く。星・水・花・魔法・透明な物体などの内容はシーンで選んだものだけとし、見本の道具や配色を移さない。',
+  depth:'選択シーンの構造を一つの視点へ接続し、可視の前景・主題・奥の環境の重なり、反射の距離差、細部の密度差で幻想の広がりを作る。接写では写っている素材の重なりへ圧縮し、奥行きのために画角外の建物や生き物を追加しない。'
+ }],
+ ['宵彩ゴシックアニメ',{
+  light:'広く深い選択色の暗部に、細い方向光と小さな反射面を隣接させる。暗部にもレース等の選択素材の厚みと描線を残し、主題の識別点と手の輪郭を局所光で読む。光源の色は選択配色で決め、黒・赤・紫へ固定しない。礼拝堂・薔薇・十字架・蝋燭などはシーンと衣装で選ばれた場合だけ描く。',
+  depth:'固定した視点の重なりと連続する深暗部、狭い光の縁と小さな反射で前後を分ける。焦点の描線と素材の細部を締め、奥は輪郭の省略と明度差で後退させる。画風名から西洋建築や別の衣装を追加しない。'
+ }]
+]);
+function worldStyleLight(values,{color,source,noPerson}){
+ const direction=worldStyleDirections.get(values.medium);if(!direction)return null;
+ const subject=noPerson?'景物・物体・図案だけが対象。人物・顔・瞳・手を追加しない。':'人体の光は露出して実際に見える面だけに用い、閉眼・髪なし・被覆・今回の表情を保つ。';
+ const light=noPerson?direction.lightScenery||sceneryStyleText(direction.light):direction.light;
+ return source+'を光の起点にする。'+subject+' '+light+' 最暗部は'+color.dark+'、最明部は'+color.bright+'。'+(color.restricted?'光・反射・透明な色層も'+color.allowed+'だけで描く。':'基調と反射色は選択配色に従い、'+(noPerson?'景物の':'髪や瞳の')+'識別色を保持する。');
+}
+function sceneryStyleText(text){
+ return text.replace(/肌や布/g,'不透明な景物や布').replace(/身体や衣装/g,'不透明な景物')
+  .replace(/肌や衣装/g,'不透明な景物').replace(/目鼻口/g,'主景の識別点')
+  .replace(/瞳・指・衣装/g,'主景・接点・表面').replace(/手の輪郭/g,'主景の輪郭')
+  .replace(/顔と手を含む/g,'接点と表面を含む').replace(/頭身や年齢感を幼く変更しない/g,'景物へ人体の頭身や年齢感を与えない');
+}
 function sourceFor(values,collection){
  const place=values.place||'',theme=values.theme||'';
  if(/水中|海底/.test(place))return '選択された水面から届く環境光と水中の散乱';
@@ -25,6 +67,8 @@ export function lightingContract(values,{collection='halloween',noPerson=false}=
  const source=sourceFor(values,collection);
  const luminous=luminousWorldContract(values,{noPerson});
  if(luminous)return source+'を光の起点にする。'+luminous.lighting;
+ const worldLight=worldStyleLight(values,{color,source,noPerson});
+ if(worldLight)return worldLight;
  const signature=opticalSignature(values,{noPerson});
  if(signature.length)return source+'を光の起点にし、最明部を'+color.bright+'に置く。主題の深い影面を保ちながら、画風固有の透過と反射を描く。小さく見ても強い局所的な明度差と光学層の前後が分かること。'+signature.join(' ');
  if(/透明水彩|油彩・薄塗り/.test(medium))return source+'を、薄い色層の重なりと塗らない明部で表す。明部は'+(color.restricted?color.bright:'下地や紙の明るさ')+'、影は'+color.dark+'の透ける重ね塗りとして描き、画材の濃淡と縁の差を残す。不透明な塗りつぶしで深さを失わず、主題が読める部分だけ境界を締める。光をレンズフレアや白い霧として後付けせず、選んだ画材の色層で成立させる。';
@@ -46,6 +90,8 @@ export function resolveArtDirection(values,variant={},collection='halloween'){
  next.depth='今回のカメラと撮影距離に合う大小・重なり・遮蔽で前後を示す。奥行きの描き方は選択画風の個別工程を使い、平面の技法は色面と輪郭、立体素材は厚みと支持として読む。別の画角の強い広角や接写を後付けしない。';
  const luminous=luminousWorldContract(values,{noPerson,variant});
  if(luminous)next.depth=luminous.depth;
+ const worldStyle=worldStyleDirections.get(values.medium);
+ if(worldStyle)next.depth='指定カメラ・投影・撮影距離・'+(noPerson?'景物の自然な支持':'ポーズ・支持点')+'を先に固定する。'+(noPerson?sceneryStyleText(worldStyle.depth):worldStyle.depth)+' その可視範囲だけで成立させ、別の背景・物体・人物を追加しない。';
 
  if(!noPerson&&values.costume==='人魚'){next.pose=detailedSubject('pose',values.pose,{values,variant,noPerson}).sections.map(s=>s.text).join(' ');next.distance=(next.distance||'').replace(/足先|足元|両足|つま先/g,'尾びれ');}
  if(flat.has(values.medium))next.depth='前後関係と距離を、選択した平面技法の色面・輪郭・大小・重なり・余白へ翻訳する。滑らかな3Dの材質へ置換しない。';

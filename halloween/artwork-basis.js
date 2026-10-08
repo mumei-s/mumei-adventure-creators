@@ -1,12 +1,13 @@
-import {illustrationBases} from './artwork-basis-illustration.js?v=28.1.2';
-import {traditionalBases} from './artwork-basis-traditional.js?v=28.1.2';
-import {materialBases} from './artwork-basis-material.js?v=28.1.2';
-import {movementsPhotoBases} from './artwork-basis-movements-photo.js?v=28.1.2';
-import {luminousBases} from './artwork-basis-luminous.js?v=28.1.2';
+import {illustrationBases} from './artwork-basis-illustration.js?v=28.2.0';
+import {traditionalBases} from './artwork-basis-traditional.js?v=28.2.0';
+import {materialBases} from './artwork-basis-material.js?v=28.2.0';
+import {movementsPhotoBases} from './artwork-basis-movements-photo.js?v=28.2.0';
+import {luminousBases} from './artwork-basis-luminous.js?v=28.2.0';
+import {referenceWorldArtworkBases} from './world-bases.js?v=28.2.0';
 
 // Sources are documentation for the picker. Only the extracted drawing
 // criteria enter production: no borrowed artist, character, scene or image.
-const entries=[...illustrationBases,...traditionalBases,...materialBases,...movementsPhotoBases,...luminousBases];
+const entries=[...illustrationBases,...traditionalBases,...materialBases,...movementsPhotoBases,...luminousBases,...referenceWorldArtworkBases];
 const byValue=new Map();
 for(const entry of entries){
  if(byValue.has(entry.value))throw new Error('Duplicate artwork basis: '+entry.value);
@@ -29,9 +30,9 @@ export function artworkBasisContract(value,{noPerson=false}={}){
   '選択した景物・物体の識別形を、大きな読みやすい外形と少数の内部形へ簡略化する。人物や人型へ変えない。',
   '線と明快な色面で小さな図版にも読める構造を作り、素材の違いを少数の形と影で表す。',
   '指定カメラの重なり・遮蔽と景物の接続・支持を保ち、選択配色とシーンを変更しない。'
- ]:entry.basis.map(project);
+ ]:(noPerson&&entry.sceneryBasis?entry.sceneryBasis:entry.basis).map(project);
  const sections=[{label:'作画基準／全域への適用',text:scope},...criteria.map((text,i)=>({label:'作画基準／'+(i+1),text})),{label:'作画基準／取り違えを避ける',text:'避ける描き方：'+entry.avoid.map(project).join('。')+'。'}];
- const checks=(noPerson&&value==='ちびキャラ'?['簡略な外形と内部形で景物の識別が読める','指定視点・支持を保ち、景物に顔や手足を追加しない']:entry.checks.map(project)).map(text=>'作画基準の照合：'+text);
+ const checks=(noPerson&&value==='ちびキャラ'?['簡略な外形と内部形で景物の識別が読める','指定視点・支持を保ち、景物に顔や手足を追加しない']:(noPerson&&entry.sceneryChecks?entry.sceneryChecks:entry.checks).map(project)).map(text=>'作画基準の照合：'+text);
  return {sections,checks,method:sections.map(s=>s.text).join(' ')};
 }
 export function withArtworkBasis(recipe,value,context={}){

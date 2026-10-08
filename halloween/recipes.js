@@ -1,10 +1,10 @@
-import {optionRecipe} from './option-recipes.js?v=28.1.2';
-import {poseItems} from './poses.js?v=28.1.2';
-import {dailySamples} from './collection.js?v=28.1.2';
-import {individualSamples} from './sample-catalog.js?v=28.1.2';
-import {colorWorlds,luminousMedia} from './worlds.js?v=28.1.2';
-import {sceneIsUnified} from './scene-presets.js?v=28.1.2';
-import {angleItems} from './angles.js?v=28.1.2';
+import {optionRecipe} from './option-recipes.js?v=28.2.0';
+import {poseItems} from './poses.js?v=28.2.0';
+import {dailySamples} from './collection.js?v=28.2.0';
+import {individualSamples} from './sample-catalog.js?v=28.2.0';
+import {colorWorlds,luminousMedia} from './worlds.js?v=28.2.0';
+import {sceneIsUnified} from './scene-presets.js?v=28.2.0';
+import {angleItems} from './angles.js?v=28.2.0';
 // Each field owns one semantic role. A word such as "墨" in a story must not change the medium.
 // file is used only to show a picker preview; it must never become a generation reference.
 export function recipeFor(key,value,context={}){

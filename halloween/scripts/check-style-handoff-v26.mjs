@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {questions,resolveSelections} from '../catalog.js?v=28.1.2';
-import {applyCollection} from '../collection.js?v=28.1.2';
-import {productionPlan} from '../production-plan.js?v=28.1.2';
-import {composePrompt} from '../prompt.js?v=28.1.2';
-import {creatorHandoff,CREATOR_NAME_TOKEN,creatorDisplayLabel,creatorEditableName} from '../creator-handoff.js?v=28.1.2';
-import {mediumExecution} from '../medium-execution.js?v=28.1.2';
+import {questions,resolveSelections} from '../catalog.js?v=28.2.0';
+import {applyCollection} from '../collection.js?v=28.2.0';
+import {productionPlan} from '../production-plan.js?v=28.2.0';
+import {composePrompt} from '../prompt.js?v=28.2.0';
+import {creatorHandoff,CREATOR_NAME_TOKEN,creatorDisplayLabel,creatorEditableName} from '../creator-handoff.js?v=28.2.0';
+import {mediumExecution} from '../medium-execution.js?v=28.2.0';
 
 const profile={...creatorHandoff('test_author'),articles:[{text:'OLD_CORPUS_SENTINEL'}],topics:['OLD_TAG_SENTINEL'],bodyRead:{count:1000},sourceEvidence:[{excerpts:['OLD_CORPUS_SENTINEL']}]};
 const base=resolveSelections({design:'週刊誌の表紙',medium:'発光幻想アニメ',theme:'宇宙のHalloween',costume:'参照画像の衣装を生かす',place:'雨の路地',pose:'四つん這い',mood:'正面・首をまっすぐ',palette:'星灯りの青紫',type:'デザインに合わせて自動編集',line:'セリフなし',size:'縦ポスター2:3｜2400×3600｜2:3'},()=>.2);
@@ -33,8 +33,8 @@ for(const mode of ['halloween','everyday']){
  }
 }
 applyCollection('halloween');
-assert.equal(count,432);
-assert.equal(new Set(mediumExecution.values()).size,108);
+assert.equal(count,456);
+assert.equal(new Set(mediumExecution.values()).size,114);
 assert.ok(!mediumExecution.get('クリスタル透光アニメ').includes('opaque cel-painted skin'));
 assert.equal(creatorHandoff('test_author').displayName,CREATOR_NAME_TOKEN);
 assert.equal(creatorEditableName(creatorHandoff('test_author')),'');
@@ -46,4 +46,4 @@ assert.ok(!app.includes('fetch(profileEndpoint')&&!app.includes('await profileCo
 assert.ok(!html.includes('id="activity-on"')&&!html.includes('data-text-part="line"'));
 assert.ok(app.includes("input.line='セリフなし'"));
 assert.ok(!questions.find(q=>q.key==='type').groups.flatMap(g=>g.values).includes('セリフのみ'));
-console.log('PASS v26: 108 distinct media × two modes × person/scenery = '+count+' complete drawing contracts; cosmic scene kept; ID lookup delegated before image call; no article/tag corpus; no tool-side fetch or dialogue selector. Maximum '+max+' prompt characters. This validates code and instructions, not 432 generated images.');
+console.log('PASS v26: 114 distinct media × two modes × person/scenery = '+count+' complete drawing contracts; cosmic scene kept; ID lookup delegated before image call; no article/tag corpus; no tool-side fetch or dialogue selector. Maximum '+max+' prompt characters. This validates code and instructions, not 456 generated images.');

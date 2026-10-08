@@ -1,9 +1,10 @@
-import {everydayScenes,everydayPlaces,casualClothes,swimClothes,everydayBindings,everydaySamples} from './everyday-options.js?v=28.1.2';
-import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=28.1.2';
-import {poseGroups} from './poses.js?v=28.1.2';
-import {automaticView} from './view-constraints.js?v=28.1.2';
-import {randomChoice} from './random-selections.js?v=28.1.2';
-import {halloweenSceneGroups,mergeSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.1.2';
+import {everydayScenes,everydayPlaces,casualClothes,swimClothes,everydayBindings,everydaySamples} from './everyday-options.js?v=28.2.0';
+import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=28.2.0';
+import {poseGroups} from './poses.js?v=28.2.0';
+import {automaticView} from './view-constraints.js?v=28.2.0';
+import {randomChoice} from './random-selections.js?v=28.2.0';
+import {halloweenSceneGroups,mergeSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.2.0';
+import {referenceWorldScenes} from './world-bases.js?v=28.2.0';
 const original=questions.map(q=>({...q,groups:q.groups.map(g=>({...g,values:[...g.values]}))}));
 const originalGroups=key=>original.find(q=>q.key===key).groups;
 const cloneGroups=groups=>groups.map(g=>({...g,values:[...g.values]}));
@@ -43,6 +44,8 @@ export const dailySamples={...everydaySamples,...Object.fromEntries([
  ...[['カップを両手で持つ',1],['手を振る',3],['絵を描く',4],['本を読む',7]].map(([value,index])=>['pose\u0000'+value,{file:dailyFile(index),text:'選んだ動作の手と道具・接点・重心の見本。人物・背景・衣装・作風は別の選択で決める。'}])
 ])};
 const dailyFantasyThemes=['星明かりを集める旅','秘密の図書館','星を集める旅','眠らない美術館','鏡の向こうの自分','光と影の寓話','記憶の標本室','異世界のファッションショー'];
+dailyFantasyThemes.push(...referenceWorldScenes.filter(scene=>scene.fantasy).map(scene=>scene.value));
+for(const scene of referenceWorldScenes)dailySamples['theme\u0000'+scene.value]={file:scene.file,text:scene.description};
 const scenicPlaces=['山岳と湖畔','砂浜と海岸線','田畑と里山','広葉樹の森','川沿いの遊歩道','街並みと広場','海辺の灯台','雪の庭','星空の砂漠'];
 const dailyPlaces=['朝のキッチン','駅の改札前','明るい工房','並木道','街角の歩道','窓辺の読書室','深夜の喫茶店','天窓のあるアトリエ','骨董品店','無人の映画館','雨の路地','ネオンの繁華街'];
 const optionalPoseValues=['浮遊する','空中で回転'];
@@ -60,6 +63,7 @@ const dailyGroups={
 };
 // Register ordinary locations even while Halloween is active, so saved scene
 // previews and their recipe source remain stable when switching collections.
+dailyGroups.theme.push({label:'和の花景・街角',values:referenceWorldScenes.filter(scene=>!scene.fantasy).map(scene=>scene.value)});
 dailyGroups.theme=mergeSceneGroups(dailyGroups.theme,dailyGroups.place);
 const landscapeMedia=['実写風フィルム写真','実写風シネマティック写真','実写風モノクロ銀塩写真','劇場アニメの背景美術','油彩・厚塗り','透明水彩','不透明水彩・ガッシュ','日本画・岩絵具','水墨画','アクリル画','パステル画','鉛筆デッサン'];
 const naturalPalettes=['群青 × 月白 × 銀','翡翠 × 銅 × 濃紺','秋色のブラウン × 生成り','退色したフィルムカラー','白 × 白銀 × 氷青','モノクローム','セピア'];

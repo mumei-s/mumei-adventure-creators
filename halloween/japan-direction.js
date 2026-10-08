@@ -1,5 +1,5 @@
-import {typographyOption} from './typography-options.js?v=28.1.2';
-import {isPhotographicMedium} from './photo-design.js?v=28.1.2';
+import {typographyOption} from './typography-options.js?v=28.2.0';
+import {isPhotographicMedium} from './photo-design.js?v=28.2.0';
 // Japanese publishing/drawing is the default grammar, not a replacement identity.
 // Explicit overseas techniques, clothing and architecture retain their origin.
 export const CRYSTAL_OBJECT='クリスタルホログラム造形アニメ';

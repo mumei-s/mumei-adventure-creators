@@ -1,18 +1,18 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.1.2';
-import {questions,resolveSelections} from '../catalog.js?v=28.1.2';
-import {initialSelections} from '../modes.js?v=28.1.2';
-import {buildDirection} from '../direction.js?v=28.1.2';
-import {applyPose} from '../poses.js?v=28.1.2';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.1.2';
-import {composePrompt} from '../prompt.js?v=28.1.2';
-import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.1.2';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.1.2';
-import {photoValues,photoReconstruction,photoDesign,isPhotographicMedium} from '../photo-design.js?v=28.1.2';
-import {styleFidelity} from '../style-fidelity.js?v=28.1.2';
-import {colorPolicy} from '../color-policy.js?v=28.1.2';
-import {detailedMedium} from '../medium-recipes.js?v=28.1.2';
-import {cameraContract,angleItems} from '../angles.js?v=28.1.2';
+import {applyCollection} from '../collection.js?v=28.2.0';
+import {questions,resolveSelections} from '../catalog.js?v=28.2.0';
+import {initialSelections} from '../modes.js?v=28.2.0';
+import {buildDirection} from '../direction.js?v=28.2.0';
+import {applyPose} from '../poses.js?v=28.2.0';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.2.0';
+import {composePrompt} from '../prompt.js?v=28.2.0';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.2.0';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.2.0';
+import {photoValues,photoReconstruction,photoDesign,isPhotographicMedium} from '../photo-design.js?v=28.2.0';
+import {styleFidelity} from '../style-fidelity.js?v=28.2.0';
+import {colorPolicy} from '../color-policy.js?v=28.2.0';
+import {detailedMedium} from '../medium-recipes.js?v=28.2.0';
+import {cameraContract,angleItems} from '../angles.js?v=28.2.0';
 
 // Reference filenames describe the user scenario; no reference pixels or
 // image-generation runtime are inspected by this instruction regression.
@@ -23,9 +23,9 @@ let photographs=0,otherMedia=0,angleCombinations=0;
 try{
  for(const collection of ['halloween','everyday']){
   applyCollection(collection);
-  const presets=questions.find(q=>q.key==='medium').groups.flatMap(g=>g.values).filter(v=>v.startsWith('実写風'));
+  const presets=questions.find(q=>q.key==='medium').groups.flatMap(g=>g.values).filter(isPhotographicMedium);
   assert.deepEqual(presets,photoValues,'Every photographic preset must use the reconstruction path');
-  assert.equal(presets.length,12);
+  assert.equal(presets.length,13);
   for(const medium of presets)for(const noPerson of [false,true])for(const palette of ['群青 × 月白 × 銀','モノクローム','金と黒の二色']){
    const values=resolveSelections({...initialSelections(),...base,medium,palette,...(noPerson?{costume:'風景を主役にする'}:{})},random);
    const variant=applyPose(buildDirection([],values.mood,random,collection,values),values.pose);
@@ -72,12 +72,12 @@ try{
     assert.match(audit.identity,/イラスト|漫画|アニメ/,'Identity must distinguish the illustration reference from the photographed result');
     assert.match(audit.identity,/人物|実写|撮影/);
     if(policy.restricted){
-     includes(photo.sections.at(-1).text,policy.allowed,medium+' permitted photographic palette');
-     assert.match(photo.sections.at(-1).text,/識別色も許可色の明度差へ翻訳/);
-     assert.doesNotMatch(photo.sections.at(-1).text,/髪色を照明の都合で別の色へ変えない/,'Restricted palettes must not preserve source hues as an exception');
+     includes(photo.sections.find(section=>section.label==='同じ撮影空間と識別色').text,policy.allowed,medium+' permitted photographic palette');
+     assert.match(photo.sections.find(section=>section.label==='同じ撮影空間と識別色').text,/識別色も許可色の明度差へ翻訳/);
+     assert.doesNotMatch(photo.sections.find(section=>section.label==='同じ撮影空間と識別色').text,/髪色を照明の都合で別の色へ変えない/,'Restricted palettes must not preserve source hues as an exception');
     }else{
-     assert.match(photo.sections.at(-1).text,/髪と瞳などの識別に必要な基礎色は保ち/);
-     assert.match(photo.sections.at(-1).text,/髪色を照明の都合で別の色へ変えない/);
+     assert.match(photo.sections.find(section=>section.label==='同じ撮影空間と識別色').text,/髪と瞳などの識別に必要な基礎色は保ち/);
+     assert.match(photo.sections.find(section=>section.label==='同じ撮影空間と識別色').text,/髪色を照明の都合で別の色へ変えない/);
     }
    }
    photographs++;
@@ -122,5 +122,5 @@ try{
   }
  }
 }finally{applyCollection('halloween');}
-assert.equal(photographs,144);assert.equal(otherMedia,16);assert.equal(angleCombinations,12*2*2*angleItems.length);
-console.log('PASS illustration-to-photo instructions: 12 photographic presets × two modes × person/scenery × three palettes = '+photographs+' cases reconstruct illustrated references as optical photographs while retaining identity, selected camera/pose, coverage and color constraints; '+angleCombinations+' combinations retain reconstruction across all '+angleItems.length+' angles; '+otherMedia+' non-photo cases keep their own medium. No AI conversion or generated-image adherence was executed or inferred.');
+assert.equal(photographs,156);assert.equal(otherMedia,16);assert.equal(angleCombinations,13*2*2*angleItems.length);
+console.log('PASS illustration-to-photo instructions: 13 photographic presets × two modes × person/scenery × three palettes = '+photographs+' cases reconstruct illustrated references as optical photographs while retaining identity, selected camera/pose, coverage and color constraints; '+angleCombinations+' combinations retain reconstruction across all '+angleItems.length+' angles; '+otherMedia+' non-photo cases keep their own medium. No AI conversion or generated-image adherence was executed or inferred.');

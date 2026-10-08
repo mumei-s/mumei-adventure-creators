@@ -2,21 +2,22 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
-import {questions} from '../catalog.js?v=28.1.2';
-import {artworkBasisValues,artworkBasis,artworkBasisContract} from '../artwork-basis.js?v=28.1.2';
-import {illustrationBases} from '../artwork-basis-illustration.js?v=28.1.2';
-import {traditionalBases} from '../artwork-basis-traditional.js?v=28.1.2';
-import {materialBases} from '../artwork-basis-material.js?v=28.1.2';
-import {movementsPhotoBases} from '../artwork-basis-movements-photo.js?v=28.1.2';
-import {luminousBases} from '../artwork-basis-luminous.js?v=28.1.2';
-import {optionRecipe} from '../option-recipes.js?v=28.1.2';
+import {questions} from '../catalog.js?v=28.2.0';
+import {artworkBasisValues,artworkBasis,artworkBasisContract} from '../artwork-basis.js?v=28.2.0';
+import {illustrationBases} from '../artwork-basis-illustration.js?v=28.2.0';
+import {traditionalBases} from '../artwork-basis-traditional.js?v=28.2.0';
+import {materialBases} from '../artwork-basis-material.js?v=28.2.0';
+import {movementsPhotoBases} from '../artwork-basis-movements-photo.js?v=28.2.0';
+import {luminousBases} from '../artwork-basis-luminous.js?v=28.2.0';
+import {referenceWorldArtworkBases} from '../world-bases.js?v=28.2.0';
+import {optionRecipe} from '../option-recipes.js?v=28.2.0';
 
 // Reproducible documentation export. A reference registered in code is not
 // evidence that its page was retrieved or that a generated image succeeded.
 const output=path.resolve(process.argv[2]||fileURLToPath(new URL('../audit/',import.meta.url)));
 fs.mkdirSync(output,{recursive:true});
 const version=JSON.parse(fs.readFileSync(new URL('../package.json',import.meta.url),'utf8')).version;
-const groups=[['illustration','artwork-basis-illustration.js',illustrationBases],['traditional','artwork-basis-traditional.js',traditionalBases],['material-digital','artwork-basis-material.js',materialBases],['movements-photography','artwork-basis-movements-photo.js',movementsPhotoBases],['luminous-optical','artwork-basis-luminous.js',luminousBases]];
+const groups=[['illustration','artwork-basis-illustration.js',illustrationBases],['traditional','artwork-basis-traditional.js',traditionalBases],['material-digital','artwork-basis-material.js',materialBases],['movements-photography','artwork-basis-movements-photo.js',movementsPhotoBases],['luminous-optical','artwork-basis-luminous.js',luminousBases],['reference-world-synthesis','world-bases.js',referenceWorldArtworkBases]];
 const family=new Map(groups.flatMap(([name,file,entries])=>entries.map(entry=>[entry.value,{name,file}])));
 const reviewFiles=fs.readdirSync(output).filter(file=>file.endsWith('source-review.json')).sort();
 const sourceReviews=reviewFiles.flatMap(file=>{
@@ -69,15 +70,19 @@ const rows=questions.find(q=>q.key==='medium').groups.flatMap(group=>group.value
  const domain=Object.fromEntries(Object.entries(axes).map(([key,regex])=>[key,entry.basis.filter(text=>regex.test(text))]));
  return {index:index+1,medium:value,family:kind.name,basisFile:kind.file,basisStatus:entry.status,
   basis:entry.basis,checks:entry.checks,avoid:entry.avoid,domains:domain,
-  references:perReference,referenceCounts,referenceCoverage:'登録'+referenceCounts.registered+'件／取得試行'+referenceCounts.attempted+'件／本文または代替本文'+referenceCounts.supportedText+'件（作品情報のみ'+referenceCounts.workContextOnly+'件、公式cache'+referenceCounts.cached+'件、代替URL'+referenceCounts.substitute+'件）／工程本文なし'+referenceCounts.unsupported+'件／取得不能'+referenceCounts.retrievalFailed+'件／監査記録なし'+referenceCounts.unreviewed+'件',
+  references:perReference,referenceCounts,referenceCoverage:entry.references.length?'登録'+referenceCounts.registered+'件／取得試行'+referenceCounts.attempted+'件／本文または代替本文'+referenceCounts.supportedText+'件（作品情報のみ'+referenceCounts.workContextOnly+'件、公式cache'+referenceCounts.cached+'件、代替URL'+referenceCounts.substitute+'件）／工程本文なし'+referenceCounts.unsupported+'件／取得不能'+referenceCounts.retrievalFailed+'件／監査記録なし'+referenceCounts.unreviewed+'件':'ユーザー提示作例の分析由来の合成基準／外部資料URL登録なし',
   recipe:{known:person.known&&scenery.known,family:person.family,personSections:person.sections.length,scenerySections:scenery.sections.length,personMethodCharacters:person.execution.method.length,sceneryMethodCharacters:scenery.execution.method.length,sceneryOwnMethodRetained:value==='発光幻想アニメ'?scenery.execution.method.includes(scenery.executionMethod):own.every(section=>scenery.execution.method.includes(section.text))},
   fixedConflicts:conflicts.filter(conflict=>conflict.styles.includes(value)).map(({id,reason,after})=>({id,reason,after})),
-  instructionChecks:['check-medium-conflicts-v28.mjs: 2モード×人物あり/なし、選択カメラ保持・専用景物工程・資料名URL非混入','check-artwork-reference-v28.mjs: 2モード×人物あり/なし×2配色、native/artwork/repairの108基準伝播','check-character-identity-v27.mjs: 2モード×5配色、12写真作風は写真への人体/材質再構築','check-medium-conversion-v28.mjs: 2モード×人物/景物/モチーフ/図案、写真化と描画変換の実際のhandoff値を記録'],
-  instructionTestResults:testEvidence.records.filter(record=>['check-medium-conflicts-v28.mjs','check-artwork-reference-v28.mjs','check-character-identity-v27.mjs','check-medium-conversion-v28.mjs'].includes(record.script)),conversionContracts:conversion?.rows.find(row=>row.medium===value)||null,evidenceType:'一次本文の要素照合と命令契約の検査。作風名や技法記述の存在だけで生成画像の達成を判定しない。',
-  generatedImageVerification:'この監査では生成なし・生成画像の108作風合格は未確認',
+  instructionChecks:['check-medium-conflicts-v28.mjs: 2モード×人物あり/なし、選択カメラ保持・専用景物工程・資料名URL非混入','check-artwork-reference-v28.mjs: 2モード×人物あり/なし×2配色、native/artwork/repairの114基準伝播（既存108資料基準＋作例分析由来6合成基準）','check-character-identity-v27.mjs: 2モード×5配色、13写真作風は写真への人体/材質再構築','check-medium-conversion-v28.mjs: 2モード×人物/景物/モチーフ/図案、写真化と描画変換の実際のhandoff値を記録'],
+  instructionTestResults:testEvidence.records.filter(record=>['check-medium-conflicts-v28.mjs','check-artwork-reference-v28.mjs','check-character-identity-v27.mjs','check-medium-conversion-v28.mjs'].includes(record.script)),conversionContracts:conversion?.rows.find(row=>row.medium===value)||null,evidenceType:entry.references.length?'一次本文の要素照合と命令契約の検査。作風名や技法記述の存在だけで生成画像の達成を判定しない。':'ユーザー提示作例の描画特性を整理した合成基準と命令契約の検査。外部資料の本文照合や生成画像の達成を主張しない。',
+  generatedImageVerification:'この監査では生成なし・生成画像の114作風合格は未確認',
   rejectionCause:'内部判定は非公開。今回の拒否とこの作風の指示競合との因果関係は不明。'};
 });
-assert.equal(rows.length,108);assert.ok(rows.every(row=>row.recipe.known&&row.recipe.sceneryOwnMethodRetained));
+assert.equal(rows.length,114);assert.ok(rows.every(row=>row.recipe.known&&row.recipe.sceneryOwnMethodRetained));
+assert.equal(rows.filter(row=>row.family!=='reference-world-synthesis').length,108);
+assert.ok(rows.filter(row=>row.family!=='reference-world-synthesis').every(row=>row.references.length>=1),'The original 108 bases must retain their registered documentation');
+assert.equal(rows.filter(row=>row.family==='reference-world-synthesis').length,6);
+assert.ok(rows.filter(row=>row.family==='reference-world-synthesis').every(row=>row.basisStatus==='synthesis'&&row.references.length===0),'Analyzed world styles must retain their synthesized origin without fabricated documentation URLs');
 assert.ok(rows.every(row=>row.references.every(reference=>reference.verificationRecord)),'Every registered source needs an explicit retrieval/comparison record, including failure or unsupported outcomes.');
 const sourceMap=new Map();
 for(const row of rows)for(const reference of row.references){
@@ -106,8 +111,8 @@ const evidence={version,checkedOn:'2026-10-08',limits:['全登録URLに取得試
 const csvFields=['index','medium','family','basisStatus','referenceCoverage','line','shape','color','material','lighting','referenceURLs','sourceNotes','sourceVerification','sourceComparisons','instructionTestStatus','conversionContractStatus','fixedConflicts','instructionChecks','sceneryOwnMethodRetained','evidenceType','generatedImageVerification','rejectionCause'];
 const flat=rows.map(row=>({...row,...Object.fromEntries(Object.entries(row.domains).map(([key,value])=>[key,value.join(' | ')||'独立項目としての明文なし（他基準と共同／適用範囲を要検討）'])),referenceURLs:row.references.map(r=>r.url).join(' | '),sourceNotes:row.references.map(r=>r.title+': '+r.note).join(' | '),sourceVerification:row.references.map(r=>r.url+': '+r.verification).join(' | '),sourceComparisons:row.references.map(r=>r.url+': '+(r.verificationRecord?.comparison||'本文照合記録なし')+'／限界：'+(r.verificationRecord?.limits||'根拠未確認')).join(' | '),instructionTestStatus:row.instructionTestResults.map(record=>record.script+': '+record.status+' ('+record.evidenceType+')').join(' | ')||'実行結果記録なし',conversionContractStatus:row.conversionContracts?'PASS instruction_contract; '+row.conversionContracts.cases.length+' cases; 実入力/生成画像は未確認':'未実行',fixedConflicts:row.fixedConflicts.map(c=>c.id+': '+c.reason+' → '+c.after).join(' | ')||'この監査で新たな実衝突を確定していない（完全な意味解釈保証ではない）',instructionChecks:row.instructionChecks.join(' | '),sceneryOwnMethodRetained:row.recipe.sceneryOwnMethodRetained}));
 const quote=value=>'"'+String(value??'').replaceAll('"','""')+'"';
-fs.writeFileSync(path.join(output,'medium-comparison-108-v28.json'),JSON.stringify({version,evidenceScope:evidence.limits,rows},null,2)+'\n');
-fs.writeFileSync(path.join(output,'medium-comparison-108-v28.csv'),'\uFEFF'+[csvFields.map(quote).join(','),...flat.map(row=>csvFields.map(field=>quote(row[field])).join(','))].join('\r\n')+'\r\n');
+fs.writeFileSync(path.join(output,'medium-comparison-114-v28.json'),JSON.stringify({version,evidenceScope:evidence.limits,rows},null,2)+'\n');
+fs.writeFileSync(path.join(output,'medium-comparison-114-v28.csv'),'\uFEFF'+[csvFields.map(quote).join(','),...flat.map(row=>csvFields.map(field=>quote(row[field])).join(','))].join('\r\n')+'\r\n');
 fs.writeFileSync(path.join(output,'medium-audit-evidence-v28.json'),JSON.stringify(evidence,null,2)+'\n');
 fs.writeFileSync(path.join(output,'source-index.json'),JSON.stringify({version,sourceCount:sourceMap.size,styles:rows.length,sourceSummary,sources:uniqueReferences},null,2)+'\n');
 console.log(JSON.stringify({output,...evidence.summary}));

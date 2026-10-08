@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {questions,visibleQuestions,defaults,AUTO,resolveSelections} from '../catalog.js?v=28.1.2';
-import {modeKeys,modeCopy,questionsForMode,initialSelections,effectiveSelections,propose} from '../modes.js?v=28.1.2';
-import {applyCollection} from '../collection.js?v=28.1.2';
+import {questions,visibleQuestions,defaults,AUTO,resolveSelections} from '../catalog.js?v=28.2.0';
+import {modeKeys,modeCopy,questionsForMode,initialSelections,effectiveSelections,propose} from '../modes.js?v=28.2.0';
+import {applyCollection} from '../collection.js?v=28.2.0';
 
 const detail=['medium','theme','costume','pose','mood','angle','palette','design','type','size'];
 const simple=['medium','theme','design','type','size'];

@@ -1,5 +1,6 @@
-import {CRYSTAL_OBJECT,crystalObjectRecipe} from './japan-direction.js?v=28.1.2';
-import {crystalAnimeMedium} from './crystal-anime.js?v=28.1.2';
+import {CRYSTAL_OBJECT,crystalObjectRecipe} from './japan-direction.js?v=28.2.0';
+import {crystalAnimeMedium} from './crystal-anime.js?v=28.2.0';
+import {referenceWorldMedia} from './world-bases.js?v=28.2.0';
 // Semantic art contracts. Preview artwork never supplies people, objects, or hidden instructions.
 export const colorWorlds=[
  ['星灯りの青紫','群青 × 菫 × 星白',['#121744','#823ae2','#edf4ff'],'群青の暗部を60%、菫の中間色を30%、青白い光を10%。選択舞台にある光源から景物・髪・布へ同じ色の反射を返す。星や発光粒子を色名だけから追加しない。'],
@@ -42,6 +43,7 @@ export const luminousMedia=[
  {value:'宝石ホログラムアニメ',file:'world-036.jpg',text:'精密なアニメ輪郭で描く主題を、宝石の分光色を持つ立体ホログラムとして表す。空間に浮かぶ半透明の投影層、視点に応じてずれる虹色の干渉縁、細い走査線、前後の層で変わる透過と発光を見せる。宝石は色の分光の特徴であり、人体を硬い結晶や無関係な多面体へ置換しない。人物の顔・髪・身体にも半透明の投影層を連続させ、普通の肌を残して衣装と小物だけを輝かせない。限定配色では干渉縁をその色の明度差へ翻訳する。',checks:['アニメの線と造形','半透明の投影層','干渉縁と走査線','前後の層の透過と発光']}
 ];
 luminousMedia.push(crystalAnimeMedium,{value:CRYSTAL_OBJECT,file:'japan-crystal-object-v18.png',text:crystalObjectRecipe.sections.map(s=>s.text).join(' '),checks:crystalObjectRecipe.checks});
+luminousMedia.push(...referenceWorldMedia);
 export function sceneryMaterials(text){return String(text).split('。').filter(s=>!/(性別|年齢|成人|子ども|少年や男性|体格|ポーズ)/.test(s)).join('。')
  .replace(/人物の顔と固有特徴|人物の顔と固有の特徴|顔・身体・衣装|顔・肌・衣装|顔・衣装・背景|顔から背景|顔と身体と背景/g,'景物・建築・自然素材')
  .replace(/髪・肌・瞳|髪・布・瞳|髪・頬・衣装|髪・布|髪や肌|顔と衣装|肌と布|肌と衣服|目と髪/g,'木・石・水面')

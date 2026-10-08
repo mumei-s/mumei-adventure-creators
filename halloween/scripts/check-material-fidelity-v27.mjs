@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.1.2';
-import {resolveSelections} from '../catalog.js?v=28.1.2';
-import {productionPlan} from '../production-plan.js?v=28.1.2';
-import {composePrompt} from '../prompt.js?v=28.1.2';
+import {applyCollection} from '../collection.js?v=28.2.0';
+import {resolveSelections} from '../catalog.js?v=28.2.0';
+import {productionPlan} from '../production-plan.js?v=28.2.0';
+import {composePrompt} from '../prompt.js?v=28.2.0';
 
 const profile={displayName:'TEST CREATOR',activityEnabled:false,biography:''};
 const random=()=>.25;

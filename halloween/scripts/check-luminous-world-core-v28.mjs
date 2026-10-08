@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
-import {questions} from '../catalog.js?v=28.1.2';
-import {applyCollection} from '../collection.js?v=28.1.2';
-import {initialSelections} from '../modes.js?v=28.1.2';
-import {buildDirection} from '../direction.js?v=28.1.2';
-import {applyPose} from '../poses.js?v=28.1.2';
-import {angleItems,cameraContract} from '../angles.js?v=28.1.2';
-import {luminousWorldContract} from '../luminous-world.js?v=28.1.2';
-import {productionPlan} from '../production-plan.js?v=28.1.2';
-import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.1.2';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.1.2';
-import {artworkBasis} from '../artwork-basis.js?v=28.1.2';
+import {questions} from '../catalog.js?v=28.2.0';
+import {applyCollection} from '../collection.js?v=28.2.0';
+import {initialSelections} from '../modes.js?v=28.2.0';
+import {buildDirection} from '../direction.js?v=28.2.0';
+import {applyPose} from '../poses.js?v=28.2.0';
+import {angleItems,cameraContract} from '../angles.js?v=28.2.0';
+import {luminousWorldContract} from '../luminous-world.js?v=28.2.0';
+import {productionPlan} from '../production-plan.js?v=28.2.0';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.2.0';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.2.0';
+import {artworkBasis} from '../artwork-basis.js?v=28.2.0';
 
 // Reproduce the supplied dragon-person specification without generating an
 // image. These checks expose the old restrictive rules that reduced the world
@@ -63,6 +63,6 @@ for(const angle of angleItems)for(const noPerson of [false,true])for(const palet
  if(palette==='モノクローム')assert.ok(contract.palette.includes('黒・白・無彩色の灰'));
  count++;
 }
-assert.equal(questions.find(question=>question.key==='medium').groups.flatMap(group=>group.values).length,108);
+assert.equal(questions.find(question=>question.key==='medium').groups.flatMap(group=>group.values).length,114);
 for(const value of ['ちびキャラ','実写風ファッション写真','透明水彩アニメ','クリスタル透光アニメ'])assert.equal(luminousWorldContract({...base,medium:value}),null);
 console.log('PASS luminous drawing core: '+count+' camera/person/scenery/palette cases require drawn 2D faces and world-wide internal color-layer emission while preserving original material, brown hair, selected camera, pose, body proportions and limited colors. This checks instructions against the supplied failure, not generated-image appearance.');

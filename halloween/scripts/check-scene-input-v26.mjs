@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.1.2';
-import {applyCollection} from '../collection.js?v=28.1.2';
-import {productionPlan} from '../production-plan.js?v=28.1.2';
-import {composePrompt} from '../prompt.js?v=28.1.2';
-import {creatorHandoff} from '../creator-handoff.js?v=28.1.2';
+import {questions,resolveSelections} from '../catalog.js?v=28.2.0';
+import {applyCollection} from '../collection.js?v=28.2.0';
+import {productionPlan} from '../production-plan.js?v=28.2.0';
+import {composePrompt} from '../prompt.js?v=28.2.0';
+import {creatorHandoff} from '../creator-handoff.js?v=28.2.0';
 
 applyCollection('halloween');
 const profile=creatorHandoff('scene_author');
@@ -42,7 +42,7 @@ for(const medium of questions.find(q=>q.key==='medium').groups.flatMap(g=>g.valu
   }
  }
 }
-assert.equal(cases,432);
+assert.equal(cases,456);
 for(const changed of [
  {costume:'紋章・アイコンにする'},
  {costume:'モチーフだけで構成する'},

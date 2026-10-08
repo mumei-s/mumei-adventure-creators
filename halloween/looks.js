@@ -1,4 +1,5 @@
-import {CRYSTAL_ANIME} from './crystal-anime.js?v=28.1.2';
+import {CRYSTAL_ANIME} from './crystal-anime.js?v=28.2.0';
+import {referenceWorldMedia} from './world-bases.js?v=28.2.0';
 // The option title and its semantic definition are authoritative. Thumbnails are UI previews only.
 const media = {
  '実写風フィルム写真':'フィルム粒子｜柔らかな階調', '実写風スタジオ写真':'整えた照明｜精密な肌と素材', '実写風街角スナップ':'自然な一瞬｜街の環境光', '実写風シネマティック写真':'映画の光と影｜物語のある空間', '実写風ファッション写真':'衣服の質感｜造形的なポーズ', '実写風モノクロ銀塩写真':'白黒の階調｜銀塩の粒子', '実写風湿板写真':'古い薬品のムラ｜褐色の古写真', '実写風ポラロイド':'白い写真枠｜退色した色', '実写風水中写真':'水の屈折｜浮遊と泡', '実写風マクロ写真':'極小の細部｜浅いピント', '実写風長時間露光':'光の軌跡｜時間の流れ', '実写風インスタントカメラ':'直射フラッシュ｜偶然のスナップ',
@@ -127,12 +128,14 @@ const definitions=Object.fromEntries(`
 サイケデリックアート=連続する曲線、渦、反復、図と地の反転で視覚的なリズムを作る。選択配色内で明暗を設計し、人物や文字の識別を失わない
 `.trim().split('\n').map(line=>{const i=line.indexOf('=');return [line.slice(0,i),line.slice(i+1)];}));
 export function mediumDefinition(value){
+ const world=referenceWorldMedia.find(medium=>medium.value===value);
+ if(world)return {text:world.text,checks:[...world.checks],known:true};
  const text=Object.hasOwn(definitions,value)?definitions[value]:null;
  return text?{text:text+'。',checks:media[value].split('｜'),known:true}:null;
 }
 export function lookFor(key,value,group=''){
  let chips=[];
- if(key==='medium')chips=(Object.hasOwn(media,value)?media[value]:'描線・色面｜画材の質感').split('｜');
+ if(key==='medium')chips=referenceWorldMedia.find(medium=>medium.value===value)?.checks.slice(0,3)||(Object.hasOwn(media,value)?media[value]:'描線・色面｜画材の質感').split('｜');
  else if(key==='size'){const p=value.split('｜');chips=[p[2]||'自由な比率',p[1]?p[1]+'px':'自由サイズ'];}
  else if(key==='palette')chips=value.includes(' × ')?value.split(' × '):[value,'色の数と配分'];
  else if(key==='mood')chips=/顔の角度|セット/.test(group)?['顔の向き・視点','表情との組み合わせ']:group==='表情を選ぶ'?['目・眉・口の形','感情の伝え方']:[group||'表情と空気感','姿勢と動き'];

@@ -1,21 +1,21 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {questions,resolveSelections} from '../catalog.js?v=28.1.2';
-import {applyCollection} from '../collection.js?v=28.1.2';
-import {initialSelections} from '../modes.js?v=28.1.2';
-import {buildDirection} from '../direction.js?v=28.1.2';
-import {applyPose} from '../poses.js?v=28.1.2';
-import {productionPlan} from '../production-plan.js?v=28.1.2';
-import {renderInput} from '../compiled-production.js?v=28.1.2';
-import {optionRecipe} from '../option-recipes.js?v=28.1.2';
-import {mediumExecution} from '../medium-execution.js?v=28.1.2';
-import {formatExecution} from '../format-execution.js?v=28.1.2';
+import {questions,resolveSelections} from '../catalog.js?v=28.2.0';
+import {applyCollection} from '../collection.js?v=28.2.0';
+import {initialSelections} from '../modes.js?v=28.2.0';
+import {buildDirection} from '../direction.js?v=28.2.0';
+import {applyPose} from '../poses.js?v=28.2.0';
+import {productionPlan} from '../production-plan.js?v=28.2.0';
+import {renderInput} from '../compiled-production.js?v=28.2.0';
+import {optionRecipe} from '../option-recipes.js?v=28.2.0';
+import {mediumExecution} from '../medium-execution.js?v=28.2.0';
+import {formatExecution} from '../format-execution.js?v=28.2.0';
 
 const random=()=>.28,profile={displayName:'TEST',activityEnabled:false,topics:[],biography:''};
 const entries=new Map();let occurrences=0;
-assert.equal(mediumExecution.size,108);
+assert.equal(mediumExecution.size,114);
 assert.equal(formatExecution.size,48);
-assert.equal(new Set(mediumExecution.values()).size,108);
+assert.equal(new Set(mediumExecution.values()).size,114);
 assert.equal(new Set(formatExecution.values()).size,48);
 function produce(values,mode){
  const variant=applyPose(buildDirection([],values.mood,random,mode,values),values.pose);
@@ -63,9 +63,9 @@ for(const mode of ['halloween','everyday']){
  assert.ok(blocked.json.typography.line.method.includes('画像には描かない'));
 }
 applyCollection('halloween');
-assert.equal(entries.size,701);assert.equal(occurrences,1166);
+assert.equal(entries.size,716);assert.equal(occurrences,1187);
 const byKey=Object.fromEntries([...new Set([...entries.values()].map(e=>e.key))].map(key=>[key,[...entries.values()].filter(e=>e.key===key).length]));
-const report={date:'2026-10-07',scope:'Per-option execution input coverage; not generated-image acceptance',unique:entries.size,occurrences,byKey,entries:[...entries.values()]};
+const report={date:'2026-10-08',scope:'Per-option execution input coverage; not generated-image acceptance',unique:entries.size,occurrences,byKey,entries:[...entries.values()]};
 if(process.argv.includes('--save')){
  const dir=new URL('../verification/v18/',import.meta.url);fs.mkdirSync(dir,{recursive:true});
  fs.writeFileSync(new URL('option-execution.json',dir),JSON.stringify(report,null,2));

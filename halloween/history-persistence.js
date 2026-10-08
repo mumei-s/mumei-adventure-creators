@@ -1,5 +1,5 @@
-import {HISTORY_STORAGE_FORMAT,compactHistoryRecord,compactUsedRecords,mergeUsedRecords,quotaExceeded} from './history-storage.js?v=28.1.2';
-import {createIndexedHistoryStore} from './indexed-history.js?v=28.1.2';
+import {HISTORY_STORAGE_FORMAT,compactHistoryRecord,compactUsedRecords,mergeUsedRecords,quotaExceeded} from './history-storage.js?v=28.2.0';
+import {createIndexedHistoryStore} from './indexed-history.js?v=28.2.0';
 
 const empty=()=>({history:[],used:[],count:0,historyEpoch:'legacy',clearedAt:0,savedAt:0});
 const valid=state=>!!state&&Array.isArray(state.history)&&Array.isArray(state.used);

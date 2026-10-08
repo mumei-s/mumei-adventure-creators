@@ -1,16 +1,16 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-import {questions,visibleQuestions,defaults,resolveSelections} from '../catalog.js?v=28.1.2';
-import {sampleFor} from '../examples.js?v=28.1.2';
-import {modeKeys,effectiveSelections} from '../modes.js?v=28.1.2';
-import {composePrompt} from '../prompt.js?v=28.1.2';
-import {selectedRecipes} from '../recipes.js?v=28.1.2';
-import {buildDirection} from '../direction.js?v=28.1.2';
+import {questions,visibleQuestions,defaults,resolveSelections} from '../catalog.js?v=28.2.0';
+import {sampleFor} from '../examples.js?v=28.2.0';
+import {modeKeys,effectiveSelections} from '../modes.js?v=28.2.0';
+import {composePrompt} from '../prompt.js?v=28.2.0';
+import {selectedRecipes} from '../recipes.js?v=28.2.0';
+import {buildDirection} from '../direction.js?v=28.2.0';
 const keys=questions.map(q=>q.key),values=resolveSelections(Object.fromEntries(questions.map((q,i)=>[q.key,defaults[i]])),()=>0);
 assert.equal(visibleQuestions.length,10);assert.equal(modeKeys.detail.length,10);assert.equal(modeKeys.simple.length,5);assert.equal(modeKeys.auto.length,1);
 let count=0,images=new Set();for(const q of questions)for(const v of q.groups.flatMap(g=>g.values)){count++;const s=sampleFor(q.key,v);assert.notEqual(s.kind,'custom',q.key+':'+v);if(s.kind==='image'){assert.ok(fs.existsSync(new URL(s.src,new URL('../examples.js',import.meta.url))));images.add(s.src);}}
-assert.equal(count,573);assert.equal(images.size,508);
+assert.equal(count,579);assert.equal(images.size,513);
 const explicit={...values,medium:'水墨画',design:'ファッション雑誌の表紙',mood:'完全な左横顔90度',palette:'墨一色'};
 assert.equal(effectiveSelections('simple',explicit).mood,'毎回大胆に変える');assert.equal(effectiveSelections('simple',explicit).medium,'水墨画');
 const cells=selectedRecipes(explicit).map((r,i)=>({...r,cell:i+1})),variant=buildDirection([],explicit.mood),prompt=composePrompt({creator:'alice',profile:{displayName:'Alice',biography:'写真と創作',topics:['写真','創作']},values:explicit,variant,references:[{name:'reference-01-face.png',role:'identity'}],edition:'CHECK',styleGuide:{name:'selected-style-guide.jpg',cells}});
@@ -24,4 +24,4 @@ assert.match(luminousPrompt,/2D luminous-fantasy anime/);assert.match(luminousPr
 assert.match(luminousPrompt,/完成場面：「星空の砂漠」で「幽霊たちのお茶会」/);
 assert.match(luminousPrompt,/舞台の識別構造を残したまま場面全体で意味が読める/);
 assert.ok(!luminousPrompt.includes('テーマ側の別の場所名は、必要な道具・展示・演目などへ翻案'));
-console.log('573 options / 508 artwork samples, 50 palettes, three modes, scene roles, luminous technique and title-based rendering contract passed.');
+console.log('579 options / 513 referenced artwork samples, 50 palettes, three modes, scene roles, luminous technique and title-based rendering contract passed.');

@@ -1,5 +1,5 @@
 const databaseName='atelier-creator-draft-v1',manifestStore='draft',assetStore='images',draftKey='current';
-const maxBytes=12*1024*1024,roles=new Set(['identity','support','avoid']);
+const maxBytes=12*1024*1024,roles=new Set(['identity','style','support','avoid']);
 const failure=(name,message)=>new DOMException(message,name);
 const empty=()=>({format:1,profile:{creator:'',name:'',activity:''},references:[],profileEpoch:'initial',referenceEpoch:'initial'});
 const fileInfo=file=>({name:file.name||'reference.png',type:file.type,lastModified:Number(file.lastModified)||0});

@@ -49,7 +49,7 @@ const $=id=>{if(!nodes.has(id))nodes.set(id,{textContent:'',disabled:false,hidde
 const context={currentResult:result,deliveryImageFiles,shareFiles:r=>[...deliveryImageFiles(r),new File([r.prompt],'prompt.txt',{type:'text/plain'})],canShareFiles:()=>true,navigator:{share:async data=>{payload=data;}},$,makeZip,TextEncoder,Uint8Array,download:blob=>{zipBlob=blob;},tell(){},needsReference:()=>true,creatorDisplayLabel:()=>''};
 vm.createContext(context);
 vm.runInContext(app.slice(app.indexOf('async function shareAll()'),app.indexOf('async function imagePNG')),context);
-await context.shareAll();assert.equal(payload.files.length,5);assert.equal(payload.text,result.prompt);assert.equal(payload.files[4].name,anime.name);
+await context.shareAll();assert.equal(payload.files.length,6);assert.ok(payload.text.length<180);assert.match(payload.text,/prompt\.txt/);assert.match(payload.text,/画像作成機能/);assert.ok(!payload.text.includes(result.prompt));assert.equal(payload.files[4].name,anime.name);for(let i=0;i<images.length;i++){assert.equal(payload.files[i].name,images[i].name);assert.deepEqual(Buffer.from(await payload.files[i].arrayBuffer()),Buffer.from(await images[i].arrayBuffer()),'Sharing preserves every reference byte and order');}const sharedPrompt=payload.files[5];assert.equal(sharedPrompt.name,'prompt.txt');assert.equal(sharedPrompt.type,'text/plain');assert.equal(await sharedPrompt.text(),result.prompt);
 vm.runInContext(app.slice(app.indexOf('async function downloadKit()'),app.indexOf('function renderHistory()')),context);
 await context.downloadKit();assert.ok(zipBlob,'The production ZIP must be generated');
 const archive=Buffer.from(await zipBlob.arrayBuffer()),entries=new Map();let offset=0;
@@ -70,4 +70,5 @@ for(const noPerson of [false,true])for(const ref of [anime,real]){
  else{assert.match(drawing,/閉眼は開かず/);assert.match(drawing,/髪がない主参照へ髪を足さない/);assert.match(drawing,/脚・足/);}
 }
 applyCollection('halloween');
-console.log('PASS actual drawing transfer: separate anime/real transparent assets, unrelated genres excluded, cached/retryable preparation, unchanged user bytes, 5-image native share + full prompt, original PNG in ZIP, history metadata without image blobs. Image-model fidelity is assessed separately.');
+console.log('PASS actual drawing transfer: separate anime/real transparent assets, unrelated genres excluded, cached/retryable preparation, unchanged user bytes, 5-image native share + exact prompt.txt and short request, original PNG in ZIP, history metadata without image blobs. Image-model fidelity is assessed separately.');
+

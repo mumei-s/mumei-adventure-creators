@@ -1,7 +1,7 @@
-import {formatFor} from './formats.js?v=28.4.2';
-import {colorPolicy} from './palette-recipes.js?v=28.4.2';
-import {colorWorlds} from './worlds.js?v=28.4.2';
-import {limitedNewspaperLayout} from './format-recipes.js?v=28.4.2';
+import {formatFor} from './formats.js?v=28.4.3';
+import {colorPolicy} from './palette-recipes.js?v=28.4.3';
+import {colorWorlds} from './worlds.js?v=28.4.3';
+import {limitedNewspaperLayout} from './format-recipes.js?v=28.4.3';
 
 const MAX_EDGE=4096;
 const SERIF='"Noto Serif CJK JP", "Yu Mincho", "Hiragino Mincho ProN", Georgia, serif';
@@ -132,7 +132,7 @@ export function renderEditorialLayout(plan,{dataUrl,artworkWidth,artworkHeight,m
  if(!supported.has(kind))throw new Error('この形式は誌面組版の対象ではありません。');
  if(!Array.isArray(plan?.copy?.slots))throw new Error('組版する確定原稿がありません。');
  const notes=[],{width,height}=outputSize(values.size,notes),colors=pageColors(values,notes),measure=textMeasurer(measureText,notes);
- const slots=plan.copy.mode==='none'?[]:plan.copy.slots.map((slot,index)=>{
+ const slots=plan.copy.mode==='none'||plan.copy.authority==='none'?[]:plan.copy.slots.map((slot,index)=>{
   if(typeof slot.role!=='string'||typeof slot.text!=='string')throw new Error('原稿の役割と本文は文字列で指定してください。');
   return {...slot,index};
  });
@@ -148,8 +148,75 @@ export function renderEditorialLayout(plan,{dataUrl,artworkWidth,artworkHeight,m
  const remaining=(id,box,options)=>add(id,box,pick(()=>true),options);
  let imageBox,gutter=null;
  const limitedNewspaper=kind==='newspaper'?limitedNewspaperLayout(values):null;
+ const selectedCopy=plan.copy.authority==='selected'||plan.copy.authority===undefined&&!!plan.copy.mode&&!['none','デザインに合わせて自動編集'].includes(plan.copy.mode);
+ // A selected manuscript replaces the design's usual article roles. Give its
+ // actual blocks the main information areas instead of the incidental footer.
+ const selectedParts=()=>{
+  const content=pick(s=>s.role!=='作者名'),priority=index=>Number.isFinite(slots[index].priority)?slots[index].priority:2;
+  const highest=Math.min(...content.map(priority));
+  const headline=content.filter(index=>priority(index)===highest);
+  const introductions=content.filter(index=>!headline.includes(index)&&/^(?:主特集の補足|キャッチ|商品紹介|ブランドコピー|企画紹介|展示紹介|物語紹介|世界紹介|あらすじ|紹介文|短い補足|リード文|煽り文)$/.test(slots[index].role));
+  const captions=content.filter(index=>!headline.includes(index)&&/キャプション/.test(slots[index].role));
+  const detail=content.filter(index=>!headline.includes(index)&&!introductions.includes(index)&&!captions.includes(index)),groups=[];
+  for(let i=0;i<detail.length;i++){
+   const index=detail[i],next=detail[i+1],name=slots[index].role,nextName=slots[next]?.role;
+   const paired=name==='補助特集'&&nextName==='補助特集の補足'||name==='補助見出し'&&nextName==='説明'||
+    /^(?:情報見出し|副見出し|本文小見出し|質問)\d+$/.test(name)&&nextName===name.replace(/^情報見出し/,'情報本文').replace(/^副見出し/,'副記事本文').replace(/^本文小見出し/,'本文').replace(/^質問/,'回答');
+   groups.push(paired?[index,detail[++i]]:[index]);
+  }
+  return {headline,introductions,captions,groups};
+ };
+ const groupWeight=group=>Math.max(24,group.reduce((count,index)=>count+Array.from(slots[index].text).length,0));
+ const stackSelected=(prefix,box,groups,options={})=>{
+  if(!groups.length)return;
+  const weights=groups.map(groupWeight),total=weights.reduce((sum,n)=>sum+n,0),gap=box.height*.015,available=box.height-gap*(groups.length-1);
+  let y=box.y;
+  groups.forEach((indexes,i)=>{const h=available*weights[i]/total;add(prefix+'-'+(i+1),{x:box.x,y,width:box.width,height:h},indexes,{fontSize:width*.021,lineHeight:1.25,gap:.25,...options});y+=h+gap;});
+ };
+ const columnsSelected=(prefix,boxes,groups,options={})=>{
+  const columns=boxes.map(()=>[]),weights=boxes.map(()=>0);
+  for(const group of groups){const column=weights.indexOf(Math.min(...weights));columns[column].push(group);weights[column]+=groupWeight(group);}
+  columns.forEach((items,i)=>stackSelected(prefix+'-column-'+(i+1),boxes[i],items,options));
+ };
 
- if(kind==='spread'){
+ if(selectedCopy&&kind!=='newspaper'){
+  const parts=selectedParts(),vertical=plan.copy.mode==='縦書きコピー・一文を大きく';
+  if(kind==='spread'){
+   imageBox=rect(.07,.12,.34,.75);gutter=rect(.47,0,.06,1);
+   add('selected-headline',rect(.56,.08,.4,vertical?.83:.17),parts.headline,{fontSize:width*.04,fontWeight:600,lineHeight:1.15,vertical,maxColumns:vertical?3:undefined});
+   add('selected-introduction',rect(.56,.27,.4,.14),parts.introductions,{fontSize:width*.021,lineHeight:1.3,gap:.3});
+   columnsSelected('selected-detail',[rect(.56,.44,.18,.46),rect(.78,.44,.18,.46)],parts.groups,{sharedScale:'selected-detail'});
+   add('selected-caption',rect(.07,.91,.34,.037),parts.captions,{fontSize:width*.013,lineHeight:1.3});
+   role('selected-author',rect(.56,plan.copy.limited?.35:.95,.4,.025),'作者名',{fontSize:width*.016,align:'right'});
+  }else if(kind==='interview'){
+   if(!vertical)add('selected-headline',rect(.05,.065,.9,.067),parts.headline,{fontSize:width*.05,fontWeight:600,lineHeight:1.1});
+   add('selected-introduction',rect(.05,.14,.9,.055),parts.introductions,{fontSize:width*.021,lineHeight:1.25,gap:.25});
+   role('selected-author',rect(.67,.027,.28,.025),'作者名',{fontSize:width*.016,align:'right'});
+   if(sourceWidth>=sourceHeight){
+    const imageHeight=Math.min(.5,.9*width/height*sourceHeight/sourceWidth),captionY=.21+imageHeight+.009,bodyY=captionY+.04;
+    imageBox=rect(.05,.21,.9,imageHeight);
+    if(vertical)add('selected-headline',rect(.05,bodyY,.9,.905-bodyY),parts.headline,{fontSize:width*.05,fontWeight:600,vertical,maxColumns:3});
+    add('selected-caption',rect(.05,captionY,.9,.03),parts.captions,{fontSize:width*.013,lineHeight:1.25});
+    columnsSelected('selected-detail',[rect(.05,bodyY,.435,.905-bodyY),rect(.515,bodyY,.435,.905-bodyY)],parts.groups,{sharedScale:'selected-detail'});
+   }else{
+    imageBox=rect(.05,.21,.58,.65);
+    if(vertical)add('selected-headline',rect(.67,.21,.28,.65),parts.headline,{fontSize:width*.05,fontWeight:600,vertical,maxColumns:3});
+    stackSelected('selected-detail',rect(.67,.21,.28,.65),parts.groups,{sharedScale:'selected-detail'});
+    add('selected-caption',rect(.05,.875,.9,.027),parts.captions,{fontSize:width*.013,lineHeight:1.25});
+   }
+  }else{
+   const weekly=values.design==='週刊誌の表紙',culture=values.design==='カルチャー誌の表紙';
+   imageBox=weekly?rect(.17,.15,.66,.64):culture?rect(.035,.20,.62,.67):rect(.08,.15,.84,.77);
+   const headlineBox=vertical?(weekly?rect(.035,.17,.125,.59):culture?rect(.69,.21,.275,.67):rect(.035,.21,.15,.62)):rect(.035,.02,.93,weekly?.105:.115);
+   add('selected-headline',headlineBox,parts.headline,{fontSize:width*.065,fontWeight:weekly?900:700,fontFamily:weekly||culture?SANS:SERIF,lineHeight:1.1,vertical,maxColumns:vertical?3:undefined});
+   add('selected-introduction',weekly?rect(.035,.805,.93,.14):culture?rect(.035,.90,.93,.055):rect(.06,.855,.88,.10),parts.introductions,{fontSize:width*.022,lineHeight:1.25,gap:.25});
+   if(culture)stackSelected('selected-detail',rect(.69,.21,.275,.67),parts.groups,{sharedScale:'selected-detail'});
+   else columnsSelected('selected-detail',weekly?[rect(.035,.17,.125,.59),rect(.845,.17,.12,.59)]:[rect(.035,.21,.15,.62),rect(.815,.21,.15,.62)],parts.groups,{sharedScale:'selected-detail',fontFamily:weekly?SANS:SERIF});
+   // A caption is supplied copy, not permission to invent a second picture.
+   add('selected-caption',rect(.035,weekly?.765:culture?.88:.835,.93,culture?.015:.019),parts.captions,{fontSize:width*.013,lineHeight:1.1});
+   role('selected-author',rect(.035,.968,.93,.021),'作者名',{fontSize:width*.016,align:'right'});
+  }
+ }else if(kind==='spread'){
   imageBox=rect(.07,.12,.34,.75);gutter=rect(.47,0,.06,1);
   role('running-head',rect(.56,.04,.4,.025),'柱',{fontSize:width*.014,align:'left',fontFamily:SANS});
   role('feature-title',rect(.56,.08,.4,.17),s=>['特集見出し','主見出し','作品タイトル','テーマ名'].includes(s.role),{fontSize:width*.04,lineHeight:1.15,fontWeight:600});
@@ -216,18 +283,29 @@ export function renderEditorialLayout(plan,{dataUrl,artworkWidth,artworkHeight,m
   // fall into the tiny catch-all footer intended for incidental extra copy.
   imageBox=rect(.035,.235,.93,.43);
   const japanese=/[\u3040-\u30ff\u3400-\u9fff]/u.test(slots.map(s=>s.text).join(''));
+  const verticalCopy=plan.copy.mode==='縦書きコピー・一文を大きく';
   const headlineRoles=new Set(['主見出し','作品名','企画名','作品タイトル','キャラクター名','縦書きコピー','主語句']);
-  add('newspaper-selected-headline',rect(.035,.035,.93,.095),pick(s=>headlineRoles.has(s.role)),{fontSize:width*.048,fontWeight:700,lineHeight:1.12});
+  add('newspaper-selected-headline',verticalCopy?rect(.035,.705,.93,.22):rect(.035,.035,.93,.095),pick(s=>headlineRoles.has(s.role)),{fontSize:width*.048,fontWeight:700,lineHeight:1.12,vertical:verticalCopy,maxColumns:verticalCopy?3:undefined});
   add('newspaper-selected-introduction',rect(.035,.145,.93,.070),pick(s=>/紹介|キャッチ|煽り文|役柄|分類/.test(s.role)),{fontSize:width*.021,lineHeight:1.25});
   const features=pick(s=>/^(?:特徴|見どころ|スキル|詩行)\d$/.test(s.role));
   const bodyIndexes=features.length?features:slots.map((s,i)=>i).filter(i=>!assigned.has(i)&&slots[i].role!=='作者名');
   const count=Math.max(1,bodyIndexes.length),gap=.035,boxWidth=(.93-gap*(count-1))/count;
   bodyIndexes.forEach((index,i)=>add('newspaper-selected-detail-'+(i+1),rect(.035+(count-1-i)*(boxWidth+gap),.705,boxWidth,.22),[index],{fontSize:width*.023,lineHeight:1.2,vertical:japanese,sharedScale:'newspaper-selected-detail'}));
   role('author',rect(.035,.95,.93,.025),'作者名',{fontSize:width*.016,align:'right'});
-  remaining('newspaper-selected-remainder',rect(.035,.685,.93,.025),{fontSize:width*.016});
+  remaining('newspaper-selected-remainder',rect(.035,.674,.93,.020),{fontSize:width*.016,lineHeight:1.1});
   rules.push({x1:width*.035,y1:height*.13,x2:width*.965,y2:height*.13});
   rules.push({x1:width*.035,y1:height*.69,x2:width*.965,y2:height*.69});
   for(let i=1;i<count;i++)rules.push({x1:width*(.035+i*(boxWidth+gap)-gap/2),y1:height*.705,x2:width*(.035+i*(boxWidth+gap)-gap/2),y2:height*.925});
+ }else if(selectedCopy){
+  imageBox=rect(.035,.235,.93,.43);
+  const parts=selectedParts(),boxes=[rect(.035,.705,.287,.22),rect(.357,.705,.287,.22),rect(.679,.705,.286,.22)];
+  add('newspaper-selected-headline',rect(.035,.035,.93,.095),parts.headline,{fontSize:width*.048,fontWeight:700,lineHeight:1.12});
+  add('newspaper-selected-introduction',rect(.035,.145,.93,.070),parts.introductions,{fontSize:width*.021,lineHeight:1.25,gap:.25});
+  columnsSelected('newspaper-selected-detail',boxes,parts.groups,{sharedScale:'newspaper-selected-detail',fontSize:width*.018});
+  add('newspaper-selected-caption',rect(.035,.674,.93,.020),parts.captions,{fontSize:width*.013,lineHeight:1.1});
+  role('author',rect(.035,.95,.93,.025),'作者名',{fontSize:width*.016,align:'right'});
+  rules.push({x1:width*.035,y1:height*.13,x2:width*.965,y2:height*.13},{x1:width*.035,y1:height*.69,x2:width*.965,y2:height*.69});
+  for(const x of [.34,.662])rules.push({x1:width*x,y1:height*.705,x2:width*x,y2:height*.925});
  }else if(/[\u3040-\u30ff\u3400-\u9fff]/u.test(slots.map(s=>s.text).join(''))){
   imageBox=rect(.035,.215,.36,.275);
   role('masthead',rect(.845,.025,.12,.18),'新聞題字',{fontSize:width*.053,fontWeight:700,vertical:true});
@@ -264,11 +342,12 @@ export function renderEditorialLayout(plan,{dataUrl,artworkWidth,artworkHeight,m
  const scale=Math.min(imageBox.width/sourceWidth,imageBox.height/sourceHeight);
  const imageWidth=sourceWidth*scale,imageHeight=sourceHeight*scale;
  const image={x:imageBox.x+(imageBox.width-imageWidth)/2,y:imageBox.y+(imageBox.height-imageHeight)/2,width:imageWidth,height:imageHeight,container:{...imageBox},sourceWidth,sourceHeight,preserveAspectRatio:'xMidYMid meet'};
+ const headingRole=role=>/小見出し|^質問\d|^補助(?:特集|見出し)$|^(?:副記事見出し|副見出し|情報見出し)\d/.test(role);
  const layoutFrame=(frame,scaleFactor)=>{
   if(frame.vertical){
    let right=frame.x+frame.width,lastGap=0;const runs=[];
    for(const index of frame.indexes){
-    const slot=slots[index],heading=/小見出し|^質問\d|^補助特集$|^副記事見出し/.test(slot.role);
+    const slot=slots[index],heading=headingRole(slot.role);
     const fontSize=frame.fontSize*scaleFactor*(heading?frame.headingScale:1),advance=fontSize*1.15,columnWidth=fontSize*1.45;
     const capacity=Math.max(1,Math.floor((frame.height-fontSize*.3)/advance)),lines=wrapVertical(slot.text,capacity);
     const runWidth=lines.length*columnWidth,runHeight=Math.max(0,...lines.map(line=>Array.from(line).length))*advance+fontSize*.3;
@@ -276,11 +355,11 @@ export function renderEditorialLayout(plan,{dataUrl,artworkWidth,artworkHeight,m
     runs.push({role:slot.role,text:slot.text,slotIndex:index,frameId:frame.id,x,y:frame.y,width:runWidth,height:runHeight,fontSize,fontFamily:frame.fontFamily,fontWeight:heading?600:frame.fontWeight,lines,lineHeight:advance,align:'left',direction:'vertical-rl',columnWidth,letterSpacing:fontSize*.15,color:frame.color||(heading?colors.accent:colors.ink)});
     lastGap=frame.fontSize*scaleFactor*(heading?.3:frame.gap);right=x-lastGap;
    }
-   return {runs,fits:right+lastGap>=frame.x-.00001&&runs.every(run=>run.height<=frame.height+.00001)};
+   return {runs,fits:right+lastGap>=frame.x-.00001&&runs.every(run=>run.height<=frame.height+.00001&&(!frame.maxColumns||run.lines.length<=frame.maxColumns))};
   }
   let y=frame.y;const runs=[];
   for(const index of frame.indexes){
-   const slot=slots[index],heading=/小見出し|^質問\d|^補助特集$|^副記事見出し/.test(slot.role);
+   const slot=slots[index],heading=headingRole(slot.role);
    const fontSize=frame.fontSize*scaleFactor*(heading?frame.headingScale:1),fontWeight=heading?600:frame.fontWeight;
    const style={fontSize,fontFamily:frame.fontFamily,fontWeight};
    const lines=wrapText(slot.text,frame.width,style,measure),lineHeight=fontSize*frame.lineHeight;
@@ -289,7 +368,7 @@ export function renderEditorialLayout(plan,{dataUrl,artworkWidth,artworkHeight,m
    runs.push({role:slot.role,text:slot.text,slotIndex:index,frameId:frame.id,x,y,width:measuredWidth,height:runHeight,...style,lines,lineHeight,align:frame.align,color:frame.color||(heading?colors.accent:colors.ink)});
    y+=runHeight+frame.fontSize*scaleFactor*(heading?.3:frame.gap);
   }
-  if(runs.length)y-=frame.fontSize*scaleFactor*(/小見出し|^質問\d|^補助特集$|^副記事見出し/.test(runs.at(-1).role)?.3:frame.gap);
+  if(runs.length)y-=frame.fontSize*scaleFactor*(headingRole(runs.at(-1).role)?.3:frame.gap);
   return {runs,fits:y<=frame.y+frame.height+.00001&&runs.every(run=>run.width<=frame.width+.00001)};
  };
  const scales=new Map(),shared=new Map();

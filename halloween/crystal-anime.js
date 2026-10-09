@@ -1,4 +1,4 @@
-import {opticalSignature,opticalColors} from './optical-effects.js?v=28.4.2';
+import {opticalSignature,opticalColors} from './optical-effects.js?v=28.4.3';
 // This rendering contract is independent of preview artwork and color-world textures.
 export const CRYSTAL_ANIME = 'クリスタル透光アニメ';
 
@@ -167,7 +167,7 @@ export function crystalAnimeSpec({ noPerson = false, palette = '' } = {}) {
 const defaultSpec = crystalAnimeSpec();
 export const crystalAnimeMedium = {
   value: CRYSTAL_ANIME,
-  file: 'crystal-transmission-anime.png',
+  file: 'assets/style-crystal-transmission-original-v28-4-3.png',
   text: defaultSpec.text,
   checks: [...defaultSpec.checks],
 };

@@ -1,0 +1,20 @@
+{
+  "n": 14,
+  "title": "街角アニメ日和",
+  "slug": "urban-anime-day",
+  "prompt": "Use case: illustration-story. Asset: one original square environment sample for the scene name “街角アニメ日和”.\nCreate a complete modern Japanese street corner in gentle daytime light, drawn as careful 2D anime background artwork: tapered colored contour lines, deliberate three-step cel-style planes on building surfaces, clean precise perspective with readable warm and cool shadow shapes. This is an original place, not a named city, copied movie scene, brand or existing artist's image.\nForeground: a small sidewalk corner with curb stones, a low planting bed and the edge of an ordinary asphalt street; all support levels connect correctly. Middle ground: a simple three-floor contemporary building with a corner entry and a plain blank rectangular sunshade, a neighboring narrow brick-and-plaster facade and a recessed doorway; building heights, window rows and road scale consistent. Background: a quieter lane receding between more small modern buildings and distant roadside trees, all belonging to the same vanishing-point structure. Small realistic service details such as drain grates and a utility pole may appear without clutter.\nCamera at pedestrian eye level, wide but undistorted three-quarter view of the corner into the lane. Directional late-morning natural light from left, crisp cast shadows tied to walls, ground and plant leaves, subtle secondary reflection from pale paving. Clear middle-ground architecture and more lightly simplified distant detail. Mostly neutral sandstone, warmgray, softteal and leafy green, not saturated fantasy neon.\nThis preview illustrates the actual urban setting, so include no people, no anime girls or boys, no school uniforms or school buildings, no human-shaped shadows, no faces, no pets. There must be no sea, beach, pool, mountain panorama, magical objects, lanterns, crystals, Halloween pumpkins, particle effects, labels, place names, store names, street signs, letters, words, logos or watermarks. Do not turn blank walls into fake text patterns. One coherent illustrated street corner fills the whole image, no panels, collage or title card. The thumbnail should immediately read as a contemporary Japanese urban corner, never a seaside holiday.",
+  "source": "/workspace/scratch/ad16ee694a48/generated_images/exec-71579c38-0796-469e-b1ce-6b704cbf4974.png",
+  "file": "urban-anime-day.jpg",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "10819a27ffc7beee406986cd1c58894ef8bea1e4523f8dd7959e90a05e676300",
+  "processing": "Original generated resolution kept; RGB JPEG q85 encoding only",
+  "visualQA": {
+    "status": "accepted",
+    "method": "Individual review of the full generated output; file checks are separate from visual scene assessment.",
+    "observations": "現代の建物の角と入口、接続する歩道の縁石と排水溝、奥へ続く道が見える。日中の壁・地面・植物の落ち影があり、海岸の旧見本とは異なる都市の角である。人物・制服・学校・店名・看板文字は存在しない。"
+  }
+}

@@ -1,16 +1,17 @@
 import assert from 'node:assert/strict';
+import {assertCompactHandoff,containsInstruction} from './compact-handoff-assertions-v28.mjs';
 import fs from 'node:fs';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.2';
-import {applyCollection} from '../collection.js?v=28.4.2';
-import {initialSelections} from '../modes.js?v=28.4.2';
-import {buildDirection} from '../direction.js?v=28.4.2';
-import {applyPose} from '../poses.js?v=28.4.2';
-import {productionPlan} from '../production-plan.js?v=28.4.2';
-import {composePrompt} from '../prompt.js?v=28.4.2';
-import {optionRecipe} from '../option-recipes.js?v=28.4.2';
-import {conditionOwners,renderInput} from '../compiled-production.js?v=28.4.2';
-import {opticalColors,opticalSignature} from '../optical-effects.js?v=28.4.2';
-import {automaticSelection} from '../random-selections.js?v=28.4.2';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.3';
+import {applyCollection} from '../collection.js?v=28.4.3';
+import {initialSelections} from '../modes.js?v=28.4.3';
+import {buildDirection} from '../direction.js?v=28.4.3';
+import {applyPose} from '../poses.js?v=28.4.3';
+import {productionPlan} from '../production-plan.js?v=28.4.3';
+import {composePrompt} from '../prompt.js?v=28.4.3';
+import {optionRecipe} from '../option-recipes.js?v=28.4.3';
+import {conditionOwners,renderInput} from '../compiled-production.js?v=28.4.3';
+import {opticalColors,opticalSignature} from '../optical-effects.js?v=28.4.3';
+import {automaticSelection} from '../random-selections.js?v=28.4.3';
 const random=()=>.28,profile={displayName:'REVIEW',activityEnabled:false,topics:[],biography:''};
 const entries=new Map();let occurrences=0,pairs=0,totalLength=0,maxLength=0;
 for(const mode of ['halloween','everyday']){
@@ -26,11 +27,11 @@ for(const mode of ['halloween','everyday']){
   const plan=productionPlan(profile,values,variant,mode,random);
   const prompt=composePrompt({profile,values,variant,preparedPlan:plan,collection:mode,edition:'REVIEW'});
   assert.ok(!prompt.includes('<svg')&&!prompt.includes('第2段階の生成用入力'));
-  for(const c of plan.conditions){assert.ok(conditionOwners[c.key]);for(const s of c.sections)assert.ok(prompt.includes(s.text),mode+'/'+value+'/'+s.label);}
+  for(const c of plan.conditions){assert.ok(conditionOwners[c.key]);for(const s of c.sections)assert.ok(renderInput(plan).includes(s.text),mode+'/'+value+'/'+s.label);}
   const drawingInput=renderInput(plan);
   for(const c of plan.conditions)for(const s of c.sections)assert.ok(drawingInput.includes(s.text),'Actual ChatGPT integration material lost '+q.key+'/'+value+'/'+s.label);
   const medium=plan.conditions.find(c=>c.key==='medium');
-  assert.ok(prompt.indexOf(medium.checks[0])<prompt.indexOf('【選択済みの仕様資料：一場面へ統合する】'),'Medium signatures must precede detailed recipes');
+  if(assertCompactHandoff(plan,prompt))assert.ok(prompt.indexOf('作風・画材＝'+medium.value)<prompt.indexOf('【選択固有の制作工程】'),'Selected medium must precede physical recipes');
   assert.ok(!plan.copy.slots.some(s=>s.role==='ノンブル'||s.text==='06'||s.text===values.medium));
   const r=optionRecipe(q.key,value,{values,variant,collection:mode});
   const id=q.key+'\u0000'+value;

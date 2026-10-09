@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {poseItems,poseGroups,applyPose,poseTechnical} from '../poses.js?v=28.4.2';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.2';
-import {applyCollection} from '../collection.js?v=28.4.2';
-import {optionRecipe} from '../option-recipes.js?v=28.4.2';
-import {sampleFor} from '../examples.js?v=28.4.2';
-import {productionPlan} from '../production-plan.js?v=28.4.2';
-import {renderChatInput} from '../compiled-production.js?v=28.4.2';
+import {poseItems,poseGroups,applyPose,poseTechnical} from '../poses.js?v=28.4.3';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.3';
+import {applyCollection} from '../collection.js?v=28.4.3';
+import {optionRecipe} from '../option-recipes.js?v=28.4.3';
+import {sampleFor} from '../examples.js?v=28.4.3';
+import {productionPlan} from '../production-plan.js?v=28.4.3';
+import {renderChatInput} from '../compiled-production.js?v=28.4.3';
 
 const added=poseItems.slice(48),names=poseGroups.flatMap(g=>g.values);
 assert.equal(poseItems.length,72);

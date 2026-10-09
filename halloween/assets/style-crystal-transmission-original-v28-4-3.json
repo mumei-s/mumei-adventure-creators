@@ -1,0 +1,34 @@
+{
+  "medium": "クリスタル透光アニメ",
+  "asset": "assets/style-crystal-transmission-original-v28-4-3.png",
+  "delivery_name": "style-preset-107.png",
+  "generator": "ChatGPT built-in image_gen",
+  "origin": "independently generated original adult character and architectural corridor",
+  "external_references": [],
+  "prompt": "Use case: stylized-concept\nAsset type: original square illustrated style-selection preview for the preset クリスタル透光アニメ.\nPrimary request: a high-quality hand-drawn 2D Japanese anime illustration showing CRYSTALLINE TRANSMISSION IN THE PERSON HIMSELF. The character is an entirely original adult man with short softly tousled dark auburn hair, mature gentle features and calm open eyes. He sits on a simple bench in a bright overcast architectural corridor, three-quarter view, fully clothed in an opaque matte charcoal high-collar jacket and trousers. Both visible hands rest naturally on his lap. Waist-up seated composition includes head, neck, hands and lap; face large and unmistakably readable.\nScene/backdrop: an airy corridor with large diagonal and vertical dark window mullions, distant pale teal wall panels, clean perspective and soft white daylight. A diagonal dark window mullion passes visibly BEHIND the man's broad cheek, nose and forehead region.\nStyle/medium: precise 2D anime ink contours and sparse crisp transparent cel-shaded color planes. Face, exposed neck, hands and hair are rendered as THIN, CLEAR TRANSLUCENT COLORED PLANES with original human shapes, NOT opaque flesh and NOT a heavy faceted glass statue. His eyes, nose and mouth remain clear simple anime lines.\nEssential transmission: the recognizable background diagonal mullion and pale teal wall-panel contours can be traced THROUGH the forehead, both broad cheeks, nose and lips, with a small refractive sideways shift exactly at the face silhouette. A second faint displaced internal reflection of the mullion appears inside the cheek. Broad face planes are mostly clear pale cyan and lavender tinted layers, visibly allowing the corridor behind to show through. The shadow-side cheek still has a strong dark translucent violet cel-shadow plane; the background mullion remains readable through it. The transparent hands similarly reveal the bench and trouser seam behind them with small refraction. NOT a normal opaque pink face merely decorated with glowing shards around it.\nLight/material: restrained cyan, violet, pale gold thin-film bands only on transparent planes; narrow sharp white edge highlights beside deep colored shadow boundaries. Human anime proportions and continuous thin luminous planes, no giant polygon facets. Hair keeps dark auburn identity inside translucent strand layers. Opaque jacket remains completely opaque and clothed torso is not visible through it. Strong clean cel contrast readable at thumbnail size.\nConstraints: one original adult person, two natural hands, independent composition, no existing character, no named artist influence, no references to any previous image. NO text, logos, watermark, lantern, magic circle, pedestal, jewelry focus, scan lines, ghost duplicate projection, floating glass debris, nudity, transparent clothing, bones or organs. No photography, no 3D render, no photorealistic skin, no airbrushed opaque face.",
+  "width": 1254,
+  "height": 1254,
+  "dimensions": [
+    1254,
+    1254
+  ],
+  "bytes": 2189641,
+  "sha256": "9ebffa866584f6701d8ae8f39bf1b776bf654ce41f7bb1529b5a3c4b50ffd5b1",
+  "processing": "Copied the original generated PNG byte for byte. No cropping, resizing, retouching, encoding or compositing.",
+  "visual_qa": {
+    "status": "accepted",
+    "method": "Human visual review of the individual full-resolution generated output; structural metadata and hashes do not automatically prove optical accuracy.",
+    "observations": [
+      "An original short auburn-haired adult man sits calmly in a bright corridor with natural hands on his clothed lap.",
+      "Large foreground forehead and cheek regions visibly transmit the diagonal dark window mullion and lighter vertical background contours. Nose and mouth remain concise anime linework within the transparent color planes.",
+      "Face, neck and exposed hands use clear cyan, lavender and pale gold color layers with sharp edges and offset internal background lines; no ordinary opaque pink face is retained.",
+      "The matte high-collar jacket and trousers remain fully opaque. The covered torso has no see-through body, anatomical organs or skeleton.",
+      "The face keeps drawn anime proportions, a continuous human outline and thin color planes rather than a heavy faceted sculpture. Hands use more angular optical planes, which remain separate from an opaque clothing surface.",
+      "No lantern, magic circle, pedestal, scanning lines, ghost projection duplicate, text, watermark or borrowed named character is present."
+    ],
+    "limitations": [
+      "This is a manually reviewed style illustration, not a physical optics simulation. Refraction and double internal lines are stylized rather than numerically verified."
+    ]
+  },
+  "generated_source": "/workspace/scratch/ad16ee694a48/generated_images/exec-02ddfbe5-3f60-4a83-ac7d-bc639df0b918.png"
+}

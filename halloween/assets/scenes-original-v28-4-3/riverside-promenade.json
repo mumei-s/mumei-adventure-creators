@@ -1,0 +1,20 @@
+{
+  "n": 11,
+  "title": "川沿いの遊歩道",
+  "slug": "riverside-promenade",
+  "prompt": "Use case: illustration-story. Asset: ONE original square environment illustration for a Japanese creative website's scene chooser. Complete actual illustrated scenery, refined professional background artwork with convincing depth, natural material texture, soft neutral environmental light, restrained colour and delicate lines. Show specified scene clearly, no title-only placeholder. Environment fills image; foreground/middle/background connected in consistent perspective. No people, faces or human-shaped shadows, no artist references, no copying existing artworks, no lantern, fantasy glow, logos, text/labels, collage or multi-panel contact sheet. Exactly one finished image. Scene: A quiet Japanese RIVERSIDE WALKING PATH in soft spring daytime. Foreground paved footpath curves beside a clearly flowing shallow river on the right; modest railing and stone bank connect to the same riverside terrain. Middle ground fresh-leaf trees shade path and one empty wooden bench sits facing river. A small footbridge in background, low houses softly beyond. Show distinct path/river relationship, water flow and wet stones, not canal street, forest-only track, lake or seashore. No walkers, cyclists or readable signs.",
+  "source": "/workspace/scratch/ad16ee694a48/generated_images/exec-bbda6174-7e3b-4120-8d00-c64e153f3948.png",
+  "file": "riverside-promenade.jpg",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "e57d1de0d59c1ba5bc032e32151ad4e3dba6717b7a8f775820f4fd420f857826",
+  "processing": "Original generated resolution kept; RGB JPEG q85 encoding only",
+  "visualQA": {
+    "status": "accepted",
+    "method": "Individual review of the full generated output; file checks are separate from visual scene assessment.",
+    "observations": "川の水面、並走する手すり付きの遊歩道、空のベンチと奥の橋が一つの場所へ接続する。河川と歩行空間が双方見え、人物はない。"
+  }
+}

@@ -1,19 +1,20 @@
+import {selectionReferenceManifest} from '../selection-references.js?v=28.4.3';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import {File} from 'node:buffer';
-import {questions,AUTO,normalizeCreator,resolveSelections} from '../catalog.js?v=28.4.2';
-import {initialSelections,effectiveSelections} from '../modes.js?v=28.4.2';
-import {sourceSubjectFor} from '../source-kind.js?v=28.4.2';
-import {selectionConflicts,candidateAvailability} from '../compatibility.js?v=28.4.2';
-import {buildDirection} from '../direction.js?v=28.4.2';
-import {applyPose} from '../poses.js?v=28.4.2';
-import {productionPlan} from '../production-plan.js?v=28.4.2';
-import {stagePrompts} from '../production-workflow.js?v=28.4.2';
-import {composePrompt,needsReference} from '../prompt.js?v=28.4.2';
-import {stylePresetFor} from '../style-presets.js?v=28.4.2';
-import {deliveryImageFiles} from '../drawing-references.js?v=28.4.2';
-import {compactCreatorProfile} from '../creator.js?v=28.4.2';
+import {questions,AUTO,normalizeCreator,resolveSelections} from '../catalog.js?v=28.4.3';
+import {initialSelections,effectiveSelections} from '../modes.js?v=28.4.3';
+import {sourceSubjectFor} from '../source-kind.js?v=28.4.3';
+import {selectionConflicts,candidateAvailability} from '../compatibility.js?v=28.4.3';
+import {buildDirection} from '../direction.js?v=28.4.3';
+import {applyPose} from '../poses.js?v=28.4.3';
+import {productionPlan} from '../production-plan.js?v=28.4.3';
+import {stagePrompts} from '../production-workflow.js?v=28.4.3';
+import {composePrompt,needsReference} from '../prompt.js?v=28.4.3';
+import {stylePresetFor} from '../style-presets.js?v=28.4.3';
+import {deliveryImageFiles} from '../drawing-references.js?v=28.4.3';
+import {compactCreatorProfile} from '../creator.js?v=28.4.3';
 
 const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8');
 function actual(start,next){const a=app.indexOf(start),b=app.indexOf(next,a);assert.ok(a>=0&&b>a,'Actual app source exists: '+start);return app.slice(a,b);}
@@ -43,7 +44,7 @@ function fixture({count=2}={}){
   historyReady:Promise.resolve(),draftReady:Promise.resolve(),saved:{history:[],used:[],count:0},requestAnimationFrame:callback=>callback(),
   normalizeCreator,artworkProfile:()=>({displayName:'競合検証',topics:[],activityEnabled:false}),syncSaved:async()=>{},questions,AUTO,effectiveSelections,sourceSubjectFor,resolveSelections,rng:()=>.23,
   selectionConflicts,candidateAvailability,needsReference,buildDirection,applyPose,uid:()=> 'RACE-'+(++edition),stylePresetFor,
-  loadStylePresets:references=>new Promise(resolve=>{styleWait={references,resolve};}),productionPlan,composePrompt,APP_VERSION:app.match(/const APP_VERSION='([^']+)'/)[1],stagePrompts,compactCreatorProfile,
+  loadStylePresets:references=>new Promise(resolve=>{styleWait={references,resolve};}),selectionReferenceManifest,buildSelectionReferenceSheet:async manifest=>new File(['TEST SHEET: '+manifest.items.map(item=>item.key+'='+item.value).join(',')],manifest.name,{type:'image/jpeg'}),productionPlan,composePrompt,APP_VERSION:app.match(/const APP_VERSION='([^']+)'/)[1],stagePrompts,compactCreatorProfile,
   persist:async()=>{stats.persisted++;},renderHistory(){},renderBoard:invalidate,renderChoices:invalidate,syncActivity(){},tell(){},effects:{celebrate(){stats.celebrations++;}},
   showResult:async result=>{stats.shown.push(result);context.currentResult=result;},
   URL:{revokeObjectURL:url=>stats.revoked.push(url)},normalizeImageFile:file=>file,
@@ -64,8 +65,8 @@ async function consistent(result){
   for(const key of ['role','width','height'])assert.equal(meta[key],ref[key],'Prompt metadata and actual file snapshot agree: '+key);
   assert.ok(result.prompt.includes(meta.name),'Prompt names the exact transferred reference');
  }
- const sent=deliveryImageFiles(result),offset=result.localDrawingRefs.length;
- assert.equal(sent.length,offset+result.localRefs.length);
+ const sent=deliveryImageFiles(result),offset=0;
+ assert.equal(sent.length,result.localDrawingRefs.length+result.localRefs.length+1);assert.equal(sent.at(-1).name,'selection-references.jpg');assert.equal(await sent.at(-1).text(),await result.localSelectionReference.file.text());
  for(let i=0;i<result.localRefs.length;i++){
   assert.equal(sent[offset+i].name,result.references[i].name);
   assert.equal(await sent[offset+i].text(),await result.localRefs[i].file.text(),'Transfer preserves the snapshot file bytes');

@@ -43,7 +43,28 @@ body[data-collection][data-lights=night] :is(.profile-fields label,.profile-edit
 body[data-collection][data-lights=night] .topic-chips span{background:#332c4b;border-color:#9b86b3}
 body[data-collection][data-lights=night] #picker .page-arrow{background:transparent;color:#d8c5ef;border-color:transparent;box-shadow:none}
 body[data-collection=everyday][data-lights=night]{background-color:#081a23;background-image:radial-gradient(ellipse at top right,#22475499,transparent 45%),linear-gradient(#081a23,#101c29)}
-body[data-collection=everyday] :is(.night-cast,.night-creatures){display:none!important}
+body[data-collection=everyday] .night-creatures{display:none!important}
 body[data-collection=everyday][data-lights=night] .studio-hero{background:linear-gradient(90deg,#071b29ee,#091d2bbb),url('./landscape-ordinary-v11.png') center/cover}
-body[data-collection=everyday][data-lights=night] .studio-hero>div:first-child{max-width:100%}
+body[data-collection=everyday][data-lights=night] .studio-hero>div:first-child{max-width:73%}
 body[data-collection=everyday][data-lights=night] .studio-hero:after{background:#f5eac5;box-shadow:0 0 32px #d2ead455}
+
+/* Pair text and surface colors. Light text alone made the inspector's yellow
+   feature chips unreadable, while its ID-based note kept the daytime brown. */
+body[data-collection][data-lights=night]{--night-surface:#202b43;--night-chip:#33415c;--night-copy:#eee8fa;--night-secondary:#d2c9e3;--night-border:#9b86b3}
+body[data-collection=everyday][data-lights=night]{--night-surface:#183342;--night-chip:#294c5a;--night-copy:#e7f4f4;--night-secondary:#c6dde2;--night-border:#81b0bd;--ink:#e7f4f4;--paper:#17303e;--muted:#c6dde2;--line:#81b0bd}
+body[data-collection][data-lights=night] :is(#inspector-note,#inspector-specs-body,.recipe-specs,.production-details,.proposal-card small,.crop-dimensions,.profile-preview>span){color:var(--night-copy)}
+body[data-collection][data-lights=night] :is(.recipe-specs,.production-details){background:var(--night-surface);border-color:var(--night-border)}
+body[data-collection][data-lights=night] :is(.production-note,#inspector .look-tags>span,.topic-chips span,.candidate-chip){background:var(--night-chip);color:var(--night-copy);border-color:var(--night-border)}
+body[data-collection][data-lights=night] :is(.look-tags,.compatibility-reason,.recipe-specs summary,.recipe-specs p,.recipe-specs p b){color:inherit}
+body[data-collection][data-lights=night] .inspector-body .look-tags{color:var(--night-copy)}
+body[data-collection][data-lights=night] .inspector-viewport{background:#0c1726;border-color:var(--night-border)}
+body[data-collection][data-lights=night] :is(.sample-card.selected,.proposal-card[aria-pressed=true]){background:var(--night-chip);color:var(--night-copy);border-color:#d6b5f4;box-shadow:inset 0 0 0 2px #b498d6}
+body[data-collection][data-lights=night] :is(.sample-tools button,.filter-tabs button,.source-kind-choice,.topic-chips button){background:var(--night-surface);color:var(--night-copy);border-color:var(--night-border)}
+body[data-collection][data-lights=night] :is(.sample-tools button[aria-pressed=true],.filter-tabs button.active,.source-kind-choice[aria-pressed=true],.topic-chips button[aria-pressed=true]){background:var(--night-chip);color:var(--night-copy);border-color:#d6b5f4}
+body[data-collection][data-lights=night] :is(.sample-tools button:hover,.choice-random:hover){background:var(--night-chip);color:var(--night-copy)}
+body[data-collection][data-lights=night] .profile-status.success{background:#233e3b;color:#dcf6ec;border-color:#8ac8af}
+body[data-collection][data-lights=night] .profile-status.error{background:#4a2a35;color:#ffe2df;border-color:#e6a5b0}
+body[data-collection][data-lights=night] .ring-focus .compatibility-reason{background:#332b24;color:#ffe4b5}
+body[data-collection][data-lights=night] #ghost-status{background:var(--night-chip);color:var(--night-copy)}
+body[data-collection][data-lights=night] :is(.zoom-control,.recipe-specs a,.artwork-basis-sources a){color:var(--night-copy)}
+body[data-collection][data-lights=night] :is(button,a,input,textarea,select,summary):focus-visible{outline-color:#cbb9ff}

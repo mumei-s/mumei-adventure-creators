@@ -1,17 +1,17 @@
-import {createHistoryPersistence} from '../history-persistence.js?v=28.4.2';
+import {createHistoryPersistence} from '../history-persistence.js?v=28.4.3';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {resolveSelections} from '../catalog.js?v=28.4.2';
-import {applyCollection} from '../collection.js?v=28.4.2';
-import {buildDirection} from '../direction.js?v=28.4.2';
-import {applyPose} from '../poses.js?v=28.4.2';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.2';
-import {stagePrompts} from '../production-workflow.js?v=28.4.2';
-import {composePrompt} from '../prompt.js?v=28.4.2';
-import {renderChatInput} from '../compiled-production.js?v=28.4.2';
-import {renderEditorialLayout} from '../editorial-layout.js?v=28.4.2';
-import {compactHistoryRecord,restoreHistoryRecord,compactUsedRecords,mergeUsedRecords,saveHistoryState} from '../history-storage.js?v=28.4.2';
+import {resolveSelections} from '../catalog.js?v=28.4.3';
+import {applyCollection} from '../collection.js?v=28.4.3';
+import {buildDirection} from '../direction.js?v=28.4.3';
+import {applyPose} from '../poses.js?v=28.4.3';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.3';
+import {stagePrompts} from '../production-workflow.js?v=28.4.3';
+import {composePrompt} from '../prompt.js?v=28.4.3';
+import {renderChatInput} from '../compiled-production.js?v=28.4.3';
+import {renderEditorialLayout} from '../editorial-layout.js?v=28.4.3';
+import {compactHistoryRecord,restoreHistoryRecord,compactUsedRecords,mergeUsedRecords,saveHistoryState} from '../history-storage.js?v=28.4.3';
 
 const random=()=>.28,profile={displayName:'履歴検証🙂',topics:[],activityEnabled:false};
 applyCollection('halloween');

@@ -1,0 +1,25 @@
+{
+  "title": "ユニコーン",
+  "file": "assets/costume-unicorn-original-v28-4-3.png",
+  "generator": "built-in image_gen",
+  "sourcePath": "/workspace/scratch/ad16ee694a48/generated_images/exec-e9a799ae-8d80-4f63-b045-bc1917118617.png",
+  "rawPath": "/workspace/scratch/ad16ee694a48/generated_images/exec-e9a799ae-8d80-4f63-b045-bc1917118617.png",
+  "prompt": "Use case: stylized-concept.\nAsset type: one original square costume-selection sample for a character transformation web app.\nPrimary request: a high-quality, visually unmistakable UNICORN role transformation applied to ONE adult main character themselves. Fully clothed, graceful natural adult proportions, appealing original character design, no named artist or existing franchise.\nScene/backdrop: a softly lit simple pale stone courtyard, unobtrusive and spacious, daytime. No other people or animals.\nSubject: one androgynous adult with a recognizable human face, warm brown eyes, some brown hair framing the face. Exactly ONE elegant short ivory spiral horn grows from the centre of the forehead and points with the head's orientation. Two natural horse-like ears connect to their head. A thick white flowing mane grows continuously from the crown down the neck and back, clearly horse-inspired, while the face remains readable. The unicorn character wears an elegant, completely opaque ivory high-collared riding coat with structured horse-inspired shoulder and flank contours, pale fur edging, fitted dark navy riding trousers and ivory boots with restrained hoof-shaped toe caps. A single long white horse tail visibly emerges from the back of the same main character, seen curving beside one leg. These unicorn features belong visibly to this main character, not an animal beside them.\nStyle/medium: polished contemporary Japanese fantasy anime illustration with refined linework, tactile fabric, natural soft shading, restrained highlights and anatomically coherent hands.\nComposition/framing: square full-body image, head, single horn, mane, both hands and both boots entirely in frame; main character occupies most of the image. Quiet relaxed three-quarter standing posture, feet naturally supported on the ground, arms relaxed, hands empty. One head, one torso, two arms, two legs.\nLighting/mood: soft clear daylight so the single horn, white mane, horse ears, flowing horse tail and coat structure remain immediately visible at small thumbnail size.\nText: none.\nConstraints: adult, fully covered garments; actual detailed image, not an icon or stick figure; original composition; no separate horse, no separate unicorn, no petting another animal, no companion; no extra horns, no wings, no wand, no weapon, no book, no lantern, no extra props; no text, title, border, logo or watermark.",
+  "dimensions": [
+    1254,
+    1254
+  ],
+  "hash_sha256": "ebbdc954eec1f7036b567ac0f296205e28441155a703e2d39cd63e59240f3b5e",
+  "processing": "Original generated PNG byte-for-byte copy; no resizing, cropping, retouching, or recompression.",
+  "visualQA": {
+    "status": "accepted",
+    "observations": [
+      "Exactly one central spiral ivory horn is visibly connected to the main character forehead; no second horn or wing.",
+      "A white mane flows from the head down the neck and back, with a horse-like ear visible beside the mane.",
+      "A long white horse tail belongs to the same humanoid main character and curves beside their leg; there is no separate horse or other character.",
+      "Fully clothed adult in opaque ivory coat, dark trousers and boots with hoof-like toe caps; the brown-framed adult face remains visible.",
+      "Both arms, hands, legs and grounded boots are visible with natural relaxed support; hands hold no objects."
+    ],
+    "limits": "Visual review of the complete original image; no reference-person identity matching was requested for this sample."
+  }
+}

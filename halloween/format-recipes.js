@@ -2,7 +2,8 @@
 // structures, not the identities, pictures, words or rendering of source pages.
 // Typography choices are independent of formats, so this import introduces no
 // cycle while keeping explicit manuscript scope shared with the copy builder.
-import {typographyOption} from './typography-options.js?v=28.4.2';
+import {typographyOption} from './typography-options.js?v=28.4.3';
+import {copyAuthority} from './copy-scope.js?v=28.4.3';
 const chooseText=(c,normal,empty,limited)=>c.noText?empty:c.limited?limited:normal;
 const newspaperText=(c,normal,empty,limited,scoped)=>c.roleScoped?scoped:chooseText(c,normal,empty,limited);
 const main=(c,person,scenery)=>c.noPerson?scenery:person;
@@ -457,16 +458,42 @@ export const formatRecipeValues=Object.freeze(Object.keys(entries));
 // Resolve the amount of permitted copy once for format instructions and the
 // actual editorial manuscript. A dialogue-only choice without dialogue is blank.
 export function formatTextPolicy(values={}){
- const type=values.type||'',input=typeof values.line==='string'?values.line.trim():'';
- const line=['セリフなし','おまかせ'].includes(input)?'':input;
- const noText=type==='文字を一切入れない'||type==='セリフのみ'&&!line;
+ const type=values.type||'',{noText,line,authority,automatic}=copyAuthority(values);
  const limited=!noText&&(/だけ|のみ|サイン風|落款風/.test(type)||['HALLOWEEN＋クリエイター名','短いタイトル＋名前','クリエイター名＋自由な見出し'].includes(type));
  const roleScoped=!noText&&!!typographyOption(type);
- return {noText,limited,line,roleScoped};
+ return {noText,limited,line,roleScoped,authority,automatic};
+}
+
+// The geometry survives a manuscript replacement. Names of stock editorial
+// roles describe reserved space, not permission to invent those roles.
+const stockRole=/独自誌名|誌名|主特集|補助特集|特集見出し|縦見出し|横見出し|小見出し|見出し|カバーライン|Q&A|本文|リード|引用|柱|ノンブル|題字|書名|題名|タイトル|作者名|著者名|名前|説明|キャッチ|クレジット/g;
+function manuscriptGeometry(text,blank=false){return text.replace(stockRole,blank?'静かな余白':'許可原稿');}
+function explicitFormatRecipe(value,recipe,context){
+ const blank={...context,noText:true,limited:false,roleScoped:false},read=part=>typeof part==='function'?part(blank):part;
+ const current=part=>typeof part==='function'?part(context):part;
+ const geometry=manuscriptGeometry(current(recipe.grid),context.noText),image=current(recipe.image);
+ const selected=typographyOption(context.values.type);
+ const typography=context.noText?recipe.type[1]:
+  '文字設定が許可する役割と原稿数を優先し、確定原稿・許可された編集原稿を各一度だけ配置する。デザインの標準の誌名・題名・名前・特集・本文・番号は、その役割の確定原稿がある場合だけ置く。原稿の役割を標準記事へ変えず、下記の階層と読み順を指定領域へ割り当てる。'+(context.roleScoped&&recipe.scopedType?recipe.scopedType(context):selected?selected.layout:'限定原稿は一つの読み順に集約し、多い原稿は領域内で見出しと対応する本文を組にする。')+'位置の上中下は、選択デザインの画像領域・外周・綴じ・切り抜き余白内へ適応する。主役を覆わず、長文を極小の欄外へ押し込まない。空きは余白として残し、原稿の複製・省略・疑似文字で文字量を調整しない。';
+ const bone=context.noText?read(recipe.bone):'選択デザイン「'+value+'」の画像領域・枠・列・余白を骨格として保ち、今回許可した原稿だけを配置する。文字設定の名称を根拠に別形式へ変更しない。';
+ const method=bone+' '+geometry+' '+image+' '+typography+' '+current(recipe.medium);
+ return {known:true,executionMethod:method,sections:[
+  {label:'作品の骨格',text:bone},
+  {label:'領域とグリッド',text:geometry},
+  {label:context.noPerson?'主題の景物・物体':'主画像の構成',text:image},
+  {label:context.noText?'文字なしの構成':context.limited?'限定原稿の配置':'文字と読み順',text:typography},
+  {label:'画風と形式の分担',text:current(recipe.medium)},
+  {label:'避ける失敗',text:read(recipe.fail)}
+ ],checks:[...recipe.checks.map(read).map(check=>manuscriptGeometry(check,context.noText)),context.noText?'文字・数字・署名・疑似文字がない':'許可された原稿だけ・各原稿一度・未許可の標準原稿なし',...(context.noPerson?['人物・人型の顔を追加していない']:[])]};
 }
 
 export function detailedFormat(value,{noPerson=false,values={}}={}){
- if(value==='週刊誌の表紙'){const p=formatTextPolicy(values);return {known:true,sections:[{label:'作品の骨格',text:'日本の週刊誌の正面表紙。内ページの本文を表紙へ置かず、独自誌名・主図版・複数の短い特集を一枚に編集する。'},{label:'領域とグリッド',text:'上端12〜18%を題字、中央の50〜65%を主図版、左右各12〜18%を縦見出し、下部15〜20%を横見出しと短い補足へ。外周3〜5%の安全余白。文字は重要な形へ重ねない。'},{label:'主画像の構成',text:noPerson?'選択した景物を中央の大きな主図版にし、人物を補わない。':'主役の顔と指定動作を中央に保持する。補助写真の顔や実在人物を勝手に追加しない。'},{label:'文字と読み順',text:p.noText?'文字なしの指定を守り、図版と色面の区画だけで編集密度を表す。疑似文字を置かない。':p.limited?'許可原稿だけを対応領域へ置く。未許可の特集や誌名を補わない。':'上端の題字→主特集→左右の縦見出し→下部の横見出し。太いゴシックと白抜き帯を使い、主特集は補助の2〜3倍。'},{label:'画風と形式の分担',text:'文字配置は週刊誌、主図版の作画は選択画風と配色。形式だけで写真へ変えない。'},{label:'避ける失敗',text:'内ページのQ&A、長文本文、実在誌名・疑惑見出し・未入力の価格と号数を補わない。'}],checks:['上端の独自題字','中央の大きな主図版','左右の縦見出しと下部の横見出し',p.noText?'文字なし':p.limited?'許可原稿だけ':'複数の短い特集と文字階層']};}
+ if(value==='週刊誌の表紙'){
+  const p=formatTextPolicy(values),context={...p,values,noPerson:noPerson||/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume||'')};
+  const recipe={bone:'日本の週刊誌の正面表紙。中央の大きな主図版と左右・下部の区画を一枚に編集する。',grid:'上端12〜18%、中央の50〜65%を主図版、左右各12〜18%、下部15〜20%を補助領域へ。外周3〜5%の安全余白。',image:c=>c.noPerson?'選択した景物を中央の大きな主図版にし、人物を補わない。':'主役の顔と指定動作を中央に保持する。補助写真の顔や実在人物を勝手に追加しない。',type:['上端の題字→主特集→左右の縦見出し→下部の横見出し。太いゴシックと白抜き帯を使い、主特集は補助の2〜3倍。','文字なしの指定を守り、図版と色面の区画だけで編集密度を表す。疑似文字を置かない。'],medium:'文字配置は週刊誌、主図版の作画は選択画風と配色。形式だけで写真へ変えない。',fail:'実在誌名・疑惑見出し・未入力の価格と号数を補わない。',checks:['中央の大きな主図版','左右と下部の独立区画','外周3〜5%の安全余白']};
+  if(p.authority!=='design')return explicitFormatRecipe(value,recipe,context);
+  return {known:true,sections:[{label:'作品の骨格',text:recipe.bone+'上端の独自誌名と複数の短い特集を使い、内ページの長文本文を追加しない。'},{label:'領域とグリッド',text:recipe.grid+'上端を題字、左右を縦見出し、下部を横見出しと補足へ割り当てる。'},{label:context.noPerson?'主題の景物・物体':'主画像の構成',text:recipe.image(context)},{label:'文字と読み順',text:recipe.type[0]},{label:'画風と形式の分担',text:recipe.medium},{label:'避ける失敗',text:recipe.fail}],checks:[...recipe.checks,'上端の独自題字','左右の縦見出しと下部の横見出し','複数の短い特集と文字階層']};
+ }
  const recipe=typeof value==='string'&&Object.hasOwn(entries,value)?entries[value]:null;
  if(!recipe)return {known:false,sections:[],checks:[]};
  const context={
@@ -488,6 +515,7 @@ export function detailedFormat(value,{noPerson=false,values={}}={}){
   ],
   checks:[...recipe.checks.map(read),...sparseNewspaper.checks,context.noText?'文字・数字・署名・疑似文字がない':'許可された原稿だけで追加文言がない',...(context.noPerson?['人物・人型の顔を追加していない']:[])]
  };
+ if(context.authority!=='design')return explicitFormatRecipe(value,recipe,context);
  const typography=context.roleScoped&&recipe.scopedType?read(recipe.scopedType):context.noText?recipe.type[1]:context.limited?recipe.type[2]:recipe.type[0];
  return {
   known:true,

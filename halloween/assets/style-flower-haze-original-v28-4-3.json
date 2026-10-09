@@ -1,0 +1,26 @@
+{
+  "medium": "花霞の透明アニメ",
+  "asset": "assets/style-flower-haze-original-v28-4-3.png",
+  "delivery_name": "style-preset-111.png",
+  "generator": "ChatGPT built-in image_gen",
+  "origin": "independently generated original character and scene",
+  "external_references": [],
+  "prompt": "Use case: stylized-concept. Asset: an original high-resolution painting-technique preset named 花霞の透明アニメ, one finished illustration, no text.\nCreate an independently designed adult woman with a warm chestnut chin-length bob, straight brows, a long narrow face, and an ivory high-neck linen tunic with a pale sage wrap skirt, standing quietly in a light-filled stone-and-timber conservatory used as a weaving workshop. She holds a simple folded linen textile with both hands. A loom, a translucent skylight, and layered distant trees make one physically connected calm space. Waist-up to knees composition, 3/4 view, leave breathing room, hands visible naturally.\nBuild the face, eyelids, visible iris layers, hair bundles, hands, textile, wood, stone and background from the same Japanese 2D anime drawing process: very fine pale colored lines, transparent watercolor-like glazing with separately visible overlapping pigment layers, elegant controlled lost-and-found edges. Preserve a few decisive contact shadows beneath the jaw, between the fingers and at textile folds; do not wash every plane into blank white. Soft daylight passes through the skylight, pale mint and warm apricot light gently crosses the face and sleeve. Thin textile, matte wood, chalk stone and skylight glass remain different materials. Airy clear illumination, a soft backlit rim, precise thin contours at the face and hands, quiet pigment granulation, more detail at the subject and simpler distant layers.\nThis is translucent PAINT AND AIR, not a transparent glass body or outfit. All human anatomy, clothing folds and joints are drawn rather than photographed. No photographic skin, no smooth plastic 3D render, no petals, bouquets, flower hair decorations, animals, ornate crowns, lanterns, magical rings, Halloween objects, glitter wall, signature, captions or watermark. Do not imitate any real artist, existing artwork or earlier sample.",
+  "width": 1024,
+  "height": 1536,
+  "bytes": 2976514,
+  "sha256": "4be3a24db4141b0ca3cae22826b8d5fb89d269bb88b6fbca1459541196bbb01e",
+  "visual_qa": {
+    "status": "accepted",
+    "observations": [
+      "細い淡色輪郭と透明な水彩状の重ね色が顔・手・布・木・石へ続く。",
+      "対象修正後の顔は描いた眼瞼、整理した鼻口と頬の色面、髪の束で2Dアニメへ統一。",
+      "顎・指・布の接点に短い影が残り、全面の白飛びではない。",
+      "独自の成人女性と織工房。花・ランタン・他作品の人物や構図を使わない。"
+    ]
+  },
+  "generated_source": "/workspace/scratch/ad16ee694a48/generated_images/exec-e2c5b366-f912-4c53-9c3e-cb9ca94c0894.png",
+  "targeted_edit_prompt": "Edit this independently generated illustration. Keep the exact same adult woman, chestnut bob, fully covered high-neck linen tunic and sage skirt, two hands holding folded linen, conservatory-weaving workshop, pale daylight, overall composition and soft transparent pigment layers.\nRebuild the FACE AND HANDS as unmistakable drawn Japanese 2D anime: almond-shaped visibly DRAWN eyes with dark upper eyelid lines, large but adult layered irises, a short simplified nose mark and a tiny flat nose shadow, a minimal thin mouth line, clean flat color planes of cheeks and jaw, no photographic cheek/lip volumes and no pores. The ear and fingers must have simplified illustrated contour marks and distinct gentle shadow planes. Group the hair into drawn locks with fine pale colored outlines. Preserve mature age and recognizably the same original features.\nMake the rest of the scene match that 2D construction with pale fine colored outlines and overlapping transparent watercolor-like glazes rather than dense photoreal fabric or stone detail. Focus shows deliberate contour selection and restrained short contact shadows, distant layers soften and simplify. Preserve the bright clear air, thin layered washes, gentle rim light, linen-versus-timber-versus-stone differences. No blank-white washout, heavy black outlines, photographed face, 3D render, eye sparkle overload, new objects, flowers, characters, text or watermark. This is a 2D anime pigment/air preset, not a photograph made to look painted.",
+  "targeted_edit_reference": "/workspace/scratch/ad16ee694a48/generated_images/exec-1f3cbd84-fb4b-486f-9dc1-101751a0695c.png",
+  "reference_origin": "same independently generated original; no external artwork"
+}

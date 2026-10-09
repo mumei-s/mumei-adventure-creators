@@ -1,19 +1,20 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.4.2';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.2';
-import {initialSelections} from '../modes.js?v=28.4.2';
-import {buildDirection} from '../direction.js?v=28.4.2';
-import {applyPose} from '../poses.js?v=28.4.2';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.2';
-import {composePrompt} from '../prompt.js?v=28.4.2';
-import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.2';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.2';
-import {photoValues,photoReconstruction,photoDesign,isPhotographicMedium} from '../photo-design.js?v=28.4.2';
-import {styleFidelity} from '../style-fidelity.js?v=28.4.2';
-import {colorPolicy} from '../color-policy.js?v=28.4.2';
-import {detailedMedium} from '../medium-recipes.js?v=28.4.2';
-import {cameraContract,angleItems} from '../angles.js?v=28.4.2';
-import {artworkBasisContract} from '../artwork-basis.js?v=28.4.2';
+import {applyCollection} from '../collection.js?v=28.4.3';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.3';
+import {initialSelections} from '../modes.js?v=28.4.3';
+import {buildDirection} from '../direction.js?v=28.4.3';
+import {applyPose} from '../poses.js?v=28.4.3';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.3';
+import {composePrompt} from '../prompt.js?v=28.4.3';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.3';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.3';
+import {photoValues,photoReconstruction,photoDesign,isPhotographicMedium} from '../photo-design.js?v=28.4.3';
+import {styleFidelity} from '../style-fidelity.js?v=28.4.3';
+import {colorPolicy} from '../color-policy.js?v=28.4.3';
+import {detailedMedium} from '../medium-recipes.js?v=28.4.3';
+import {cameraContract,angleItems} from '../angles.js?v=28.4.3';
+import {artworkBasisContract} from '../artwork-basis.js?v=28.4.3';
+import {compactReferences,assertCompactHandoff,assertCompactEngineering} from './compact-handoff-assertions-v28.mjs';
 
 // Reference filenames describe the user scenario; no reference pixels or
 // image-generation runtime are inspected by this instruction regression.
@@ -38,12 +39,14 @@ try{
    const native=renderSelectionMaterial(plan),audit=JSON.parse(renderInput(plan).split('\n\n【全選択の個別レシピ】')[0]);
    assert.doesNotMatch(native,/通常モードと同じ日本の描線・塗り|その同じ特徴を選択画風の線と素材で描き直す/,'Photographs must not receive generic illustration construction instructions');
    const references=[{name:noPerson?'illustrated-landscape-reference.png':'illustrated-character-reference.png',role:'identity'}];
-   const prompt=composePrompt({collection,profile,values,variant:plan.variant,references,edition:'ILLUSTRATION-TO-PHOTO',preparedPlan:plan});
+   const prompt=composePrompt({collection,profile,values,variant:plan.variant,references:compactReferences(plan,references),edition:'ILLUSTRATION-TO-PHOTO',preparedPlan:plan});
    const result={edition:'ILLUSTRATION-TO-PHOTO',prompt,production:plan,values};
-   const routes={native,master:prompt,artwork:composeArtworkStage(plan),artworkRepair:composeArtworkRepair(plan),compactArtworkRepair:composeArtworkRepair(plan,{compact:true}),repair:repairPrompt(result)};
+   const routes={native,audit:renderInput(plan),master:prompt,artwork:composeArtworkStage(plan),artworkRepair:composeArtworkRepair(plan),compactArtworkRepair:composeArtworkRepair(plan,{compact:true}),repair:repairPrompt(result)};
+   const actual=assertCompactHandoff(plan,prompt,collection+' / '+medium+' actual photo');
+   if(actual)assertCompactEngineering(plan,prompt,photo.sections,medium+' actual photo materials');
    for(const section of photo.sections){
     assert.ok(recipe.sections.some(s=>s.label===section.label&&s.text===section.text),medium+' did not prepend its photograph reconstruction recipe');
-    for(const [route,text] of Object.entries(routes))includes(text,section.text,collection+' / '+medium+' / '+route);
+    for(const [route,text] of Object.entries(routes).filter(([route])=>!['master','repair'].includes(route)))includes(text,section.text,collection+' / '+medium+' / '+route);
     includes(recipe.execution.method,section.text,medium+' execution method');
    }
    for(const check of photo.checks)assert.ok(recipe.checks.includes(check),medium+' has no reconstruction acceptance '+check);
@@ -55,7 +58,7 @@ try{
    assert.match(audit.required_before_details.drawing_priority,/レンズ|撮影|実写/,'The leading drawing priority must construct a photograph');
    assert.doesNotMatch(audit.required_before_details.drawing_priority,/細部の精密さはその描線・色面・画材/,'The leading priority must not force illustration layers on photos');
    includes(native,audit.required_before_details.photo_reconstruction,medium+' early photographic reconstruction');
-   includes(prompt,references[0].name,medium+' supplied illustration reference');
+   if(actual)includes(prompt,references[0].name,medium+' supplied illustration reference');
    assert.equal(audit.camera.geometry.selected,values.angle);assert.equal(audit.camera.geometry.pitch_degrees_from_horizontal,45);
    includes(native,values.pose,medium+' selected physical pose');
    assert.equal(plan.noPerson,noPerson);assert.equal(plan.copy.mode,'none');assert.equal(audit.copy.length,0);
@@ -86,9 +89,11 @@ try{
   // Every selected view, including crops, roll, perspective and both vertical
   // axes, must coexist with the photograph's anatomy/material reconstruction.
   for(const medium of presets)for(const noPerson of [false,true])for(const {value:angle} of angleItems){
-   const values=resolveSelections({...initialSelections(),...base,medium,angle,palette:'群青 × 月白 × 銀',...(noPerson?{costume:'風景を主役にする'}:{})},random);
+   const values=resolveSelections({...initialSelections(),...base,medium,angle,palette:colorPolicy({medium}).mode==='monochrome'?'モノクローム':'群青 × 月白 × 銀',...(noPerson?{costume:'風景を主役にする'}:{})},random);
    const variant=applyPose(buildDirection([],values.mood,random,collection,values),values.pose);
    const plan=productionPlan(profile,values,variant,collection,random),photo=photoReconstruction(medium,{noPerson,values});
+   const prompt=composePrompt({collection,profile,values,variant:plan.variant,references:compactReferences(plan,noPerson?[]:[{name:'illustrated-character-reference.png',role:'identity'}]),edition:'PHOTO-CAMERA',preparedPlan:plan});
+   if(assertCompactHandoff(plan,prompt,medium+' / '+angle+' actual camera'))assertCompactEngineering(plan,prompt,photo.sections,medium+' / '+angle+' actual reconstruction');
    const camera=cameraContract(values,{noPerson});
    const audit=JSON.parse(renderInput(plan).split('\n\n【全選択の個別レシピ】')[0]);
    assert.equal(plan.values.angle,angle,'The photography preset must not replace its selected camera');
@@ -125,14 +130,17 @@ try{
   // translate their anatomy instead of retaining a contradictory head-ratio
   // lock at the beginning of the actual execution and repair instructions.
   for(const medium of presets)for(const name of ['two-head-chibi-character.png','ten-head-elongated-character.png']){
-   const values=resolveSelections({...initialSelections(),...base,medium,sourceKind:'illustration-person',palette:'群青 × 月白 × 銀'},random);
+   const values=resolveSelections({...initialSelections(),...base,medium,palette:colorPolicy({medium}).mode==='monochrome'?'モノクローム':'群青 × 月白 × 銀'},random);
+   values.sourceKind='illustration-person';
    const variant=applyPose(buildDirection([],values.mood,random,collection,values),values.pose);
    const plan=productionPlan(profile,values,variant,collection,random),recipe=plan.conditions.find(c=>c.key==='medium');
    const scope=artworkBasisContract(medium,{values}).sections[0].text;
    assert.match(scope,/識別特徴.*髪型.*年齢感.*性別表現.*基礎体格/);
    assert.match(scope,/頭と胴や四肢の寸法比をそのまま固定せず.*自然な頭蓋・眼球・人体比率へ再構成/);
-   const prompt=composePrompt({collection,profile,values,variant:plan.variant,references:[{name,role:'identity'}],edition:'PROPORTION-TO-PHOTO',preparedPlan:plan});
-   for(const text of [recipe.execution.method,renderSelectionMaterial(plan),prompt,composeArtworkStage(plan),composeArtworkRepair(plan),composeArtworkRepair(plan,{compact:true})]){
+   const prompt=composePrompt({collection,profile,values,variant:plan.variant,references:compactReferences(plan,[{name,role:'identity'}]),edition:'PROPORTION-TO-PHOTO',preparedPlan:plan});
+   const actual=assertCompactHandoff(plan,prompt,medium+' / '+name+' actual photographic proportion translation');
+   assert.equal(actual,true,medium+' exaggerated-reference fixture must exercise photographic reconstruction rather than a blocked palette');
+   for(const text of [recipe.execution.method,renderSelectionMaterial(plan),renderInput(plan),composeArtworkStage(plan),composeArtworkRepair(plan),composeArtworkRepair(plan,{compact:true})]){
     includes(text,scope,medium+' / '+name+' photographic proportion scope');
     assert.doesNotMatch(text,/基本頭身は主参照を保ち、ちびキャラなど頭身変更を明示した選択だけ/,'Photographic handoff must not lock exaggerated reference anatomy before its natural reconstruction');
    }

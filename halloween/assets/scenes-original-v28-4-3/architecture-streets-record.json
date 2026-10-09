@@ -1,0 +1,20 @@
+{
+  "n": 6,
+  "title": "建築と街並みの記録",
+  "slug": "architecture-streets-record",
+  "prompt": "Use case: illustration-story. Asset: ONE original square environment illustration for a Japanese creative website's scene chooser. Complete actual illustrated scenery, refined professional background artwork with convincing depth, natural material texture, soft neutral environmental light, restrained colour and delicate lines. Show specified scene clearly, no title-only placeholder. Environment fills image; foreground/middle/background connected in consistent perspective. No people, faces or human-shaped shadows, no artist references, no copying existing artworks, no lantern, fantasy glow, logos, text/labels, collage or multi-panel contact sheet. Exactly one finished image. Scene: Architectural record of a quiet ordinary Japanese town street in clear daylight. Foreground walkway and low stone curb, middle ground complete varied house and small shop facades, tiled roofs, wooden joinery and plaster, background buildings progressively smaller along the same gently curving street. Deliberately readable building structure, windows and roof edges, upright verticals and coherent vanishing point. No mountain-dominated scene, no identical copied houses, no readable signs, people, traffic or decorative fantasy.",
+  "source": "/workspace/scratch/ad16ee694a48/generated_images/exec-d37f4c67-30df-43f5-a7be-fe529eb4f919.png",
+  "file": "architecture-streets-record.jpg",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "4ea1e4d1dcc967672485a493c6544cd73e9711d64a2434a1fd5cf6dde703c07c",
+  "processing": "Original generated resolution kept; RGB JPEG q85 encoding only",
+  "visualQA": {
+    "status": "accepted",
+    "method": "Individual review of the full generated output; file checks are separate from visual scene assessment.",
+    "observations": "日本の木造の家の外壁、窓、瓦屋根と街路の奥行きを示す。建築物の高さと道路の遠近が一貫し、風景・建築の記録の丘陵景とは別の街路図版である。"
+  }
+}

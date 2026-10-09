@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
-import {poseItems} from '../poses.js?v=28.4.2';
-import {sampleFor} from '../examples.js?v=28.4.2';
+import {poseItems} from '../poses.js?v=28.4.3';
+import {sampleFor} from '../examples.js?v=28.4.3';
 
 // File checks protect shipped thumbnails and provenance. Actual pose, hands,
 // support and clothing are reviewed visually; bytes cannot prove anatomy.

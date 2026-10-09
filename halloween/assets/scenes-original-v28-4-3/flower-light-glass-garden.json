@@ -1,0 +1,20 @@
+{
+  "n": 13,
+  "title": "花光のガラス庭園",
+  "slug": "flower-light-glass-garden",
+  "prompt": "Use case: illustration-story. Asset: one original square scene preview for “花光のガラス庭園”, a genuine environment picture rather than a character or lettering.\nPrimary request: a layered garden whose transparent glass architectural surfaces, plant layers and thin natural light form one coherent space. Show a modern modest greenhouse garden, with a shallow raised bed of white and pale rose flowering plants on the left foreground, tall green foliage just beyond, a glass partition held by a slim dark timber frame behind the flowers, and deeper plants and a paved walkway visible through the glass. The glass panels are real supported construction: edges, slight thickness, delicate reflections, a small displaced view of the foliage behind their boundaries, local plant-contact shadows. Different plant species and irregular spacing make a new original garden layout. No borrowed scene or portrait.\nView from slightly above waist height, diagonal three-quarter view down the walkway into the garden. Foreground petals, the middle glass border and distant leaf forms diminish with consistent perspective. Daytime directional sunlight softly passes through the panels and illuminates leaf undersides; broad clear bright air with restrained local shadow, no global white haze. Refined background illustration with crisp focal lines, quiet watercolor-like color planes and softer distant boundaries. Plants remain plants, not crystalline or glowing fantasy bodies.\nThis scene illustrates the garden world only, so include no people, no faces, no little animals, no human-shaped shadows, no jewelry or flowers attached to a head. No mountain or lake panorama. Avoid lanterns, magic circles, greenhouses made from arbitrary floating crystals, jewels, opaque decorative stained glass that hides the plants, copied flowers or architectural compositions, names, logos, labels, UI, watermarks. One actual complete image, no collage.",
+  "source": "/workspace/scratch/ad16ee694a48/generated_images/exec-934a5280-6dd3-46e2-9e79-7154ca0eea5e.png",
+  "file": "flower-light-glass-garden.jpg",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "9031d2f6fffabecdf290d8a09c1b2236c20b1f4ceeb40d692a241c1b00fb89a3",
+  "processing": "Original generated resolution kept; RGB JPEG q85 encoding only",
+  "visualQA": {
+    "status": "accepted",
+    "method": "Individual review of the full generated output; file checks are separate from visual scene assessment.",
+    "observations": "前景の花と葉、木枠の透明なパネル、その奥の植物と通路が見える。ガラスに背景の植物が透け、細い反射と境界の厚みがあり、山と湖の旧見本とは異なる実際の庭園である。人物・顔・花飾りの肖像は存在しない。"
+  }
+}

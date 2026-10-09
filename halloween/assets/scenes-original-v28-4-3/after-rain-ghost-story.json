@@ -1,0 +1,27 @@
+{
+  "title": "雨上がりの怪談",
+  "slug": "after-rain-ghost-story",
+  "prompt": "Use case: illustration-story.\nAsset: ONE original square narrative scene illustration for the scene chooser, internally 雨上がりの怪談. No words in the image.\nScene: a narrow ordinary Japanese neighborhood alley at blue-hour evening just after rainfall on Halloween. Rain has stopped. Wet dark paving stones, one shallow foreground puddle with physically matching building reflections, drain edge, small gutter droplets, plaster-and-brick walls with a sheltered mostly dry wall under a roof eave. A small unlit pumpkin and a paper bat near a distant doorway subtly mark Halloween. Distant ordinary warm window light, consistent perspective and grounded material textures.\nONE essential supernatural anomaly: a single continuous trail of unmistakable DARK WET BAREFOOT PRINTS leads from the shallow puddle on the ground, turns UP the vertical sheltered brick wall, and continues impossibly upward above adult head height. On the wall show five distinct alternating left/right footprints, readable sole-and-toe shapes, fresh water sheen and a few fine downward drips. They are vertical water marks on the wall's plane, NOT steps, shoes lying around, mural art, glowing symbols or footprints on a sloping floor. The uppermost mark is well above the observer's head. No person or animal exists where those wall-climbing wet steps would be. This one impossible footprint trail is the only mismatch with normal reality. All other reflections and shadows remain ordinary.\nSubject and noticing action: one entirely original mature adult man with short curly brown hair, a fully covered muted olive raincoat, dark trousers and plain ankle boots, now stopped in the alley to the side of the prints. Three-quarter view shows his adult face and whole supported posture. He leans back slightly and follows the wall-climbing print trail with an alert uneasy gaze, one empty hand loosely raised near his chest. Both hands empty, no umbrella portrait. His own boots and position are visibly separate from the barefoot marks. The viewed anomaly is large enough to see immediately and his attention clearly points to it.\nComposition: medium-wide square view, visible foreground puddle connected to the wall base and tall wet footprint trail. Camera at modest eye level with enough wall height for the impossible ascent, observer beside it instead of covering the marks. Narrative environment occupies most of image; not a close-up beautiful face with generic rainy background.\nStyle: polished finely drawn Japanese 2D narrative illustration, adult anime proportions, crisp principal forms and coherent restrained cel-painterly shading, wet paving and brick materially distinct, dim blue shadows balanced by warm modest window light. Print shapes remain readable at small preview scale.\nConstraints: one original adult person, no actual ghost or monster, no unrelated second anomaly, no lantern, no magic circle, no sparkling fantasy fog, no glowing footprints, no footprints made of blood, no violence or organs, no nude or translucent clothing, no named artist or borrowed character, no signs or text, logos or watermark. Do not produce an ordinary umbrella-in-rain portrait: the wall-climbing wet print trail is the clear story.",
+  "source": "/workspace/scratch/ad16ee694a48/generated_images/exec-7588779c-9207-49a8-a748-f277a7d7f66b.png",
+  "file": "after-rain-ghost-story.jpg",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "0b4170625d6b3f327e53d7a66b2f1422eac2873f1d029168b947e46f8a7486e7",
+  "processing": "Original generated resolution kept; RGB JPEG q85 encoding only; source PNG retained unchanged",
+  "visualQA": {
+    "status": "accepted",
+    "method": "Individual review of the full generated output; file checks are separate from visual narrative assessment.",
+    "observations": [
+      "雨上がりの濡れた路面と水溜りが路地・排水口・建物へ一続きにつながる。",
+      "濡れた裸足の足跡が水溜りから垂直の壁へ続き、成人の頭より高くまで上る。足裏・指の形と下向きの水滴が明瞭で、床の普通の足跡や靴・壁画とは異なる。",
+      "横に立つ成人男性は自身の靴と足跡を離し、上の足跡へ顔と視線を向けて異変に気付いている。空いた両手に傘を持たない。",
+      "怪異は一本の壁を上る足跡の列へ絞り、実際の幽霊や怪物を出していない。遠いHalloweenのカボチャと紙の蝙蝠は小さな季節の印。"
+    ],
+    "limitations": [
+      "鏡面反射や水滴は生成された絵としての目視評価であり、物理計算で完全な対応を証明したものではありません。"
+    ]
+  }
+}

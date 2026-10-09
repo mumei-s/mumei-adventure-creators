@@ -1,0 +1,20 @@
+{
+  "n": 2,
+  "title": "海辺と水平線",
+  "slug": "seaside-horizon",
+  "prompt": "Use case: illustration-story. Asset: ONE original square environment illustration for a Japanese creative website's scene chooser. Complete actual illustrated scenery, refined professional background artwork with convincing depth, material texture, soft natural daylight, restrained warm-neutral colour and delicate lines. Clearly show the specified actual scene, no title-only placeholder. Large readable environment fills image, foreground/middle/background connected in consistent perspective. No people, no faces or human-shaped shadows, no artist references, no copying existing artworks, no lantern, no fantasy glow, no logos, no text/labels, no collage or multi-panel contact sheet. Exactly one finished image. Scene: Japan's quiet rocky and sandy coast at daylight. Foreground pale beach, a few wet stones and small surf edges, middle ground turquoise-to-blue sea with visible wave spacing, background uninterrupted level far horizon and soft clouds. Shoreline leads gently into distance, sea/sky scale convincing, no houses, lighthouse, boats, people or sunburst. Clear wide open feeling and real sea horizon.",
+  "source": "/workspace/scratch/ad16ee694a48/generated_images/exec-34566cfd-f914-4b65-a052-69f96ed1874f.png",
+  "file": "seaside-horizon.jpg",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "6c4dd81336aadebbfddceb31e15aefb97b7791ddb42bd24eb342e8b7fbee7128",
+  "processing": "Original generated resolution kept; RGB JPEG q85 encoding only",
+  "visualQA": {
+    "status": "accepted",
+    "method": "Individual review of the full generated output; file checks are separate from visual scene assessment.",
+    "observations": "前景の岩と砂浜、海の波、遠い水平線が読み取れる。空と海の境界は連続し、人物や街の見本へすり替わっていない。"
+  }
+}

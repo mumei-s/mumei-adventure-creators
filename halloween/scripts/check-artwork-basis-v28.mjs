@@ -1,17 +1,18 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.2';
-import {applyCollection} from '../collection.js?v=28.4.2';
-import {initialSelections} from '../modes.js?v=28.4.2';
-import {buildDirection} from '../direction.js?v=28.4.2';
-import {applyPose} from '../poses.js?v=28.4.2';
-import {angleItems,cameraContract} from '../angles.js?v=28.4.2';
-import {colorPolicy} from '../color-policy.js?v=28.4.2';
-import {LUMINOUS_WORLD_MEDIUM,luminousWorldContract} from '../luminous-world.js?v=28.4.2';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.2';
-import {composePrompt} from '../prompt.js?v=28.4.2';
-import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.2';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.2';
-import {imageDeliveryRepairPrompt,selectionIntegrationInstructions} from '../output-contract.js?v=28.4.2';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.3';
+import {applyCollection} from '../collection.js?v=28.4.3';
+import {initialSelections} from '../modes.js?v=28.4.3';
+import {buildDirection} from '../direction.js?v=28.4.3';
+import {applyPose} from '../poses.js?v=28.4.3';
+import {angleItems,cameraContract} from '../angles.js?v=28.4.3';
+import {colorPolicy} from '../color-policy.js?v=28.4.3';
+import {LUMINOUS_WORLD_MEDIUM,luminousWorldContract} from '../luminous-world.js?v=28.4.3';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.3';
+import {composePrompt} from '../prompt.js?v=28.4.3';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.3';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.3';
+import {imageDeliveryRepairPrompt,selectionIntegrationInstructions} from '../output-contract.js?v=28.4.3';
+import {compactReferences,assertCompactHandoff,assertCompactEngineering} from './compact-handoff-assertions-v28.mjs';
 
 // This exercises the actual specification and delivery paths. It does not
 // synthesize a prompt with AI, generate an image or infer visual success.
@@ -29,9 +30,9 @@ const makeValues=(collection,medium,{angle='斜め前45度',noPerson=false,palet
 };
 const makePlan=(collection,values)=>productionPlan(profile,values,applyPose(buildDirection([],values.mood,random,collection,values),values.pose),collection,random);
 const outputs=(collection,plan)=>{
- const prompt=composePrompt({collection,profile,values:plan.values,variant:plan.variant,references:[],edition:'ARTWORK-BASIS',preparedPlan:plan});
+ const prompt=composePrompt({collection,profile,values:plan.values,variant:plan.variant,references:compactReferences(plan),edition:'ARTWORK-BASIS',preparedPlan:plan});
  const result={edition:'ARTWORK-BASIS',prompt,production:plan,values:plan.values};
- return {native:renderSelectionMaterial(plan),master:prompt,artwork:composeArtworkStage(plan),
+ return {native:renderSelectionMaterial(plan),audit:renderInput(plan),master:prompt,artwork:composeArtworkStage(plan),
   embedded:composeArtworkStage(plan,{embedded:true}),artworkRepair:composeArtworkRepair(plan),
   compactRepair:composeArtworkRepair(plan,{compact:true}),repair:repairPrompt(result),deliveryRepair:imageDeliveryRepairPrompt(result)};
 };
@@ -94,16 +95,17 @@ try{
    const values=makeValues(collection,LUMINOUS_WORLD_MEDIUM,{angle:angle.value,noPerson,palette});
    const plan=makePlan(collection,values),routes=outputs(collection,plan),contract=luminousWorldContract(values,{noPerson,variant:plan.variant});
    const label=[collection,angle.value,noPerson?'scenery':'person',palette].join(' / ');
+   if(assertCompactHandoff(plan,routes.master,label+' actual master'))assertCompactEngineering(plan,routes.master,contract.sections,label+' actual luminous making');
    assertSelectionPreserved(values,plan,label);
    assert.ok(contract.sections.length>=5,label+' lost the supplied drawing stages');
    assert.ok(contract.checks.length>=4,label+' lost the observable image acceptance conditions');
    const condition=plan.conditions.find(c=>c.key==='medium');
    for(const section of contract.sections){
     assert.ok(condition.sections.some(s=>s.text.includes(section.text)),label+' omitted luminous recipe '+section.label);
-    for(const name of ['native','master','artwork','embedded','artworkRepair','repair','deliveryRepair'])contains(routes[name],section.text,label+' / '+name+' / '+section.label);
+    for(const name of ['native','audit','artwork','embedded','artworkRepair'])contains(routes[name],section.text,label+' / '+name+' / '+section.label);
    }
    for(const check of contract.checks)
-    for(const [name,text] of Object.entries(routes))contains(text,check,label+' / '+name+' acceptance');
+    for(const [name,text] of Object.entries(routes).filter(([name])=>!['master','repair','deliveryRepair'].includes(name)))contains(text,check,label+' / '+name+' acceptance');
    contains(condition.execution.method,contract.method,label+' dedicated rendering method');
    contains(plan.variant.light,contract.lighting.slice(contract.lighting.indexOf('の位置と向きを先に決め')),label+' scene lighting');
    contains(plan.variant.depth,contract.depth,label+' camera-constrained depth');
@@ -147,7 +149,8 @@ try{
    contains(contract.depth,values.angle,'The resolved automatic/custom selected camera');
    if(angle==='場面に合わせたアングル')assert.ok(angleItems.some(item=>item.value===values.angle),'AUTO camera must become a real compatible angle');
    else assert.equal(values.angle,angle,'A custom explicit camera must retain its literal requirement');
-   for(const check of contract.checks)for(const [name,text] of Object.entries(routes))contains(text,check,name+' automatic/custom camera luminous acceptance');
+   if(assertCompactHandoff(plan,routes.master,'automatic/custom actual master'))assertCompactEngineering(plan,routes.master,contract.sections,'automatic/custom actual luminous making');
+   for(const check of contract.checks)for(const [name,text] of Object.entries(routes).filter(([name])=>!['master','repair','deliveryRepair'].includes(name)))contains(text,check,name+' automatic/custom camera luminous acceptance');
    if(!['真上から・90度','真下から・90度'].includes(values.angle))assert.doesNotMatch(contract.depth,/光軸は垂直のまま/,'A nonvertical resolved camera must not inherit a fixed vertical axis');
    automaticOrCustom++;
   }
@@ -167,7 +170,8 @@ try{
     assert.match(visible.text,/髪なしの指定を保ち/,'The hair stage must respect a hairless reference');
     assert.doesNotMatch(visible.text,/髪は大・中・小の束を組み/,'The hairless stage must not create hair for luminous layers');
    }
-   for(const name of ['native','master','artwork','embedded','artworkRepair','repair','deliveryRepair'])contains(routes[name],visible.text,name+' selected eye/hair applicability');
+   for(const name of ['native','audit','artwork','embedded','artworkRepair'])contains(routes[name],visible.text,name+' selected eye/hair applicability');
+   if(assertCompactHandoff(plan,routes.master,'visible detail actual master'))assertCompactEngineering(plan,routes.master,[visible],'actual selected eye/hair applicability');
    visibleDetailCases++;
   }
  }

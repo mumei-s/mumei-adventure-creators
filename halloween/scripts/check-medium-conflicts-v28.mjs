@@ -1,22 +1,22 @@
 import assert from 'node:assert/strict';
-import {questions} from '../catalog.js?v=28.4.2';
-import {applyCollection} from '../collection.js?v=28.4.2';
-import {initialSelections} from '../modes.js?v=28.4.2';
-import {angleItems,cameraContract} from '../angles.js?v=28.4.2';
-import {buildDirection} from '../direction.js?v=28.4.2';
-import {applyPose} from '../poses.js?v=28.4.2';
-import {optionRecipe} from '../option-recipes.js?v=28.4.2';
-import {artworkBasis,artworkBasisValues} from '../artwork-basis.js?v=28.4.2';
-import {mediumExecution} from '../medium-execution.js?v=28.4.2';
-import {productionPlan} from '../production-plan.js?v=28.4.2';
-import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.2';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.2';
+import {questions} from '../catalog.js?v=28.4.3';
+import {applyCollection} from '../collection.js?v=28.4.3';
+import {initialSelections} from '../modes.js?v=28.4.3';
+import {angleItems,cameraContract} from '../angles.js?v=28.4.3';
+import {buildDirection} from '../direction.js?v=28.4.3';
+import {applyPose} from '../poses.js?v=28.4.3';
+import {optionRecipe} from '../option-recipes.js?v=28.4.3';
+import {artworkBasis,artworkBasisValues} from '../artwork-basis.js?v=28.4.3';
+import {mediumExecution} from '../medium-execution.js?v=28.4.3';
+import {productionPlan} from '../production-plan.js?v=28.4.3';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.3';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.3';
 
 // These are instruction-contract tests. They do not claim an image is correct
 // or identify the reason an external image service refused a supplied prompt.
 const profile={displayName:'作画契約監査',activityEnabled:false},random=()=>.23;
 const styles=questions.find(q=>q.key==='medium').groups.flatMap(g=>g.values);
-assert.equal(styles.length,115);
+assert.equal(styles.length,mediumExecution.size);
 assert.deepEqual([...styles].sort(),[...artworkBasisValues].sort());
 assert.deepEqual([...styles].sort(),[...mediumExecution.keys()].sort());
 const base={...initialSelections(),sceneUnified:true,medium:'クリスタルホログラム造形アニメ',
@@ -85,4 +85,4 @@ try{
   }
  }
 }finally{applyCollection('halloween');}
-console.log('PASS medium conflicts: '+generalCases+' all-115 style/mode/subject cases keep the individual scenery method, source isolation and selected axes; '+opticalCases+' optical camera/subject cases retain transparent construction without fixed facial measurements, imposed motion or reduced clothing occlusion. No generation or refusal-cause inference.');
+console.log('PASS medium conflicts: '+generalCases+' all-'+styles.length+' style/mode/subject cases keep the individual scenery method, source isolation and selected axes; '+opticalCases+' optical camera/subject cases retain transparent construction without fixed facial measurements, imposed motion or reduced clothing occlusion. No generation or refusal-cause inference.');

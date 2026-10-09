@@ -1,0 +1,25 @@
+{
+  "title": "エイリアン",
+  "file": "assets/costume-alien-original-v28-4-3.png",
+  "generator": "built-in image_gen",
+  "sourcePath": "/workspace/scratch/ad16ee694a48/generated_images/exec-ed378e19-bcdb-4b4a-9847-a807f71be8a4.png",
+  "rawPath": "/workspace/scratch/ad16ee694a48/generated_images/exec-ed378e19-bcdb-4b4a-9847-a807f71be8a4.png",
+  "prompt": "Use case: stylized-concept.\nAsset type: one original square costume-selection sample for a character transformation web app.\nPrimary request: high-quality original adult ALIEN character transformation, with unmistakably extraterrestrial skin and ear anatomy connected to the same main person's readable face. One fully clothed adult, natural coherent body and joints.\nScene/backdrop: a simple bright science-fiction observation corridor, pale walls and an unobtrusive window with a soft distant blue planet, no other beings or foreground props.\nSubject: one androgynous adult with short, natural dark brown hair, readable adult facial structure, expressive amber eyes and a calm expression. The whole face, neck and both hands have unmistakable opaque aquamarine-blue alien skin with subtle fine biological scale-like tessellation and softly contrasting darker teal cheek/temple patterns; it must not look like ordinary human skin with jewelry or painted glowing tattoos. The face remains a connected, identifiable adult humanoid face rather than a replacement mask or helmet. On each side of the head, ears are wide, rounded three-lobed fin membranes with clearly visible translucent cartilage ribs, attached anatomically beside the temples; these are NOT narrow pointed elf ears. Small organic ridges at the temples connect naturally to the fin ears; no horns or decorative headwear. Exactly two arms and two legs with consistently humanoid joints, natural hands and consistent five-finger structure.\nCostume: a fully opaque structured dark navy expedition tunic with a high collar, simple violet-grey panel seams, full-length matching trousers and practical closed boots; fitted without exaggeration, complete coverage. Both hands are uncovered so the same alien skin is visible there. No armor, no robot parts, no weapons, no carried objects.\nStyle/medium: refined contemporary Japanese science-fiction anime illustration, clear original character design, precise linework, natural soft dimensional shading and high-quality believable fabric. A polished actual illustrative scene, not an icon or anatomy diagram.\nComposition/framing: square full-body image; entire head with both broad fin ears, both arms and hands and both grounded boots visible; character occupies most of the frame, gentle relaxed standing posture with arms hanging naturally and empty hands. Face and ears remain large enough to recognize in a thumbnail.\nLighting/mood: soft clear daylight to distinguish opaque teal-blue skin and broad ribbed fin ears from the navy fabric; clean balanced contrast.\nText: none.\nConstraints: one adult main character only; no additional person or animal; no elf appearance, pointed ears or human skin; no wings, horns, glowing lantern, jewelry clusters, magic book, forced action pose, franchise references, named artist, text, title, border, watermark or logo.",
+  "dimensions": [
+    1254,
+    1254
+  ],
+  "hash_sha256": "9339cfd2c4c48ba95ed16657b5f346c1bfa125bdf9538e1cb53769c4f55d3c48",
+  "processing": "Original generated PNG byte-for-byte copy; no resizing, cropping, retouching, or recompression.",
+  "visualQA": {
+    "status": "accepted",
+    "observations": [
+      "The face, exposed neck and both hands have continuous opaque cyan-blue alien skin with darker teal biological tessellation, rather than human skin with jewelry.",
+      "Broad ribbed fan-like fin ears attach to both sides of the same adult head and are visibly distinct from narrow pointed elf ears.",
+      "Short dark brown hair, adult facial outline and expressive amber eyes remain readable; no mask or replacement animal head.",
+      "One adult main character wears a fully opaque navy expedition tunic, full-length trousers and closed boots; there are no extra characters or separate creatures.",
+      "Both arms and empty hands, two legs and grounded boots are visible in a relaxed naturally supported standing pose, with no extra limb or carried prop."
+    ],
+    "limits": "Visual review of the complete original image; hand digit overlap may obscure individual fingers. No reference-person identity matching was requested for this sample."
+  }
+}

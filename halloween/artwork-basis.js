@@ -1,11 +1,11 @@
-import {illustrationBases} from './artwork-basis-illustration.js?v=28.4.2';
-import {traditionalBases} from './artwork-basis-traditional.js?v=28.4.2';
-import {materialBases} from './artwork-basis-material.js?v=28.4.2';
-import {movementsPhotoBases} from './artwork-basis-movements-photo.js?v=28.4.2';
-import {luminousBases} from './artwork-basis-luminous.js?v=28.4.2';
-import {referenceWorldArtworkBases} from './world-bases.js?v=28.4.2';
-import {isNonHumanSource} from './source-kind.js?v=28.4.2';
-import {isPhotographicMedium} from './photo-design.js?v=28.4.2';
+import {illustrationBases} from './artwork-basis-illustration.js?v=28.4.3';
+import {traditionalBases} from './artwork-basis-traditional.js?v=28.4.3';
+import {materialBases} from './artwork-basis-material.js?v=28.4.3';
+import {movementsPhotoBases} from './artwork-basis-movements-photo.js?v=28.4.3';
+import {luminousBases} from './artwork-basis-luminous.js?v=28.4.3';
+import {referenceWorldArtworkBases} from './world-bases.js?v=28.4.3';
+import {isNonHumanSource} from './source-kind.js?v=28.4.3';
+import {isPhotographicMedium} from './photo-design.js?v=28.4.3';
 
 // Sources are documentation for the picker. Only the extracted drawing
 // criteria enter production: no borrowed artist, character, scene or image.

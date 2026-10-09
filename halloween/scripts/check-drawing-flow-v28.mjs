@@ -1,10 +1,10 @@
-import {sourceKinds,sourceSubjectFor} from '../source-kind.js?v=28.4.2';
+import {sourceKinds,sourceSubjectFor} from '../source-kind.js?v=28.4.3';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {questions,visibleQuestions,defaults,AUTO,resolveSelections} from '../catalog.js?v=28.4.2';
-import {modeKeys,modeCopy,questionsForMode,initialSelections,effectiveSelections,propose} from '../modes.js?v=28.4.2';
-import {applyCollection} from '../collection.js?v=28.4.2';
+import {questions,visibleQuestions,defaults,AUTO,resolveSelections} from '../catalog.js?v=28.4.3';
+import {modeKeys,modeCopy,questionsForMode,initialSelections,effectiveSelections,propose} from '../modes.js?v=28.4.3';
+import {applyCollection} from '../collection.js?v=28.4.3';
 
 const detail=['medium','theme','costume','pose','mood','angle','palette','design','type','size'];
 const simple=['medium','theme','design','type','size'];
@@ -35,7 +35,7 @@ try{
   assert.deepEqual(questionsForMode('detail').map(q=>q.key),detail);assert.deepEqual(questionsForMode('simple').map(q=>q.key),simple);
   const initial=initialSelections();assert.deepEqual(Object.keys(initial),internal);
   questions.forEach((q,i)=>assert.equal(initial[q.key],defaults[i],'Defaults remain attached to the same key'));
-  assert.equal(initial.medium,AUTO);assert.equal(initial.design,AUTO);assert.equal(initial.mood,'毎回大胆に変える');assert.equal(initial.type,'デザインに合わせて自動編集');assert.ok(initial.size.startsWith('noteサムネイル'));
+  assert.equal(initial.medium,AUTO);assert.equal(initial.design,'通常の一枚絵');assert.equal(initial.mood,'毎回大胆に変える');assert.equal(initial.type,'文字を一切入れない');assert.equal(initial.size,'A4縦・300dpi目安｜2480×3508｜210:297');
 
   // Compatibility reads all fixed choices before drawing from an AUTO pool.
   // Verify the resulting canonical order and the actual first random draw,

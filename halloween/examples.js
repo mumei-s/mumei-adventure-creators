@@ -1,19 +1,22 @@
-import {japanPreviews} from './japan-preview-catalog.js?v=28.4.2';
-import {poseItems} from './poses.js?v=28.4.2';
-import {dailySamples,currentCollection,landscapeScenes} from './collection.js?v=28.4.2';
-import {questions} from './catalog.js?v=28.4.2';
-import {formatPreviews} from './format-preview-catalog.js?v=28.4.2';
-import {individualSamples} from './sample-catalog.js?v=28.4.2';
-import {colorWorlds,luminousMedia} from './worlds.js?v=28.4.2';
-import {sceneSourcePlace} from './scene-presets.js?v=28.4.2';
-import {typographyPreview} from './typography-options.js?v=28.4.2';
-import {angleItems} from './angles.js?v=28.4.2';
-import {stylePresetFor} from './style-presets.js?v=28.4.2';
+import {japanPreviews} from './japan-preview-catalog.js?v=28.4.3';
+import {poseItems} from './poses.js?v=28.4.3';
+import {dailySamples,currentCollection,landscapeScenes} from './collection.js?v=28.4.3';
+import {questions} from './catalog.js?v=28.4.3';
+import {formatPreviews} from './format-preview-catalog.js?v=28.4.3';
+import {individualSamples} from './sample-catalog.js?v=28.4.3';
+import {colorWorlds,luminousMedia} from './worlds.js?v=28.4.3';
+import {sceneSourcePlace} from './scene-presets.js?v=28.4.3';
+import {typographyPreview} from './typography-options.js?v=28.4.3';
+import {angleItems} from './angles.js?v=28.4.3';
+import {stylePresetFor} from './style-presets.js?v=28.4.3';
+import {scenePreviews} from './scene-preview-catalog.js?v=28.4.3';
 for(const item of poseItems)individualSamples['pose\u0000'+item.value]={file:item.file};
 for(const item of colorWorlds)individualSamples['palette\u0000'+item.value]={file:item.file};
 for(const item of luminousMedia)individualSamples['medium\u0000'+item.value]={file:item.file};
 const referenceChoices=new Set(['参照画像の衣装を生かす','参照風景を舞台にする','参照画像の色を生かす']);
 export function sampleFor(key,value=''){
+ const scene=(key==='theme'||key==='place')?scenePreviews[value]:null;
+ if(scene)return {kind:'image',src:'./'+scene.file,label:scene.label};
  const drawing=key==='medium'?stylePresetFor(value):null;
  if(drawing)return {kind:'image',src:'./'+drawing.file,label:drawing.label+'（制作時に添付し、描き方だけを参照）'};
  if(key==='angle'){
@@ -66,4 +69,4 @@ function typePreviewFor(mode){
  if(mode==='クリエイター名＋自由な見出し')return {className:'type-editorial',blocks:['日々の余白','夜にひらく、もうひとつの世界',name]};
  return {className:'type-title',blocks:['装い帖',name]};
 }
-import {drawingReferenceFor} from './drawing-references.js?v=28.4.2';
+import {drawingReferenceFor} from './drawing-references.js?v=28.4.3';

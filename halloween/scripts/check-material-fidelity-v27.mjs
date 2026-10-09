@@ -1,8 +1,10 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.4.2';
-import {resolveSelections} from '../catalog.js?v=28.4.2';
-import {productionPlan} from '../production-plan.js?v=28.4.2';
-import {composePrompt} from '../prompt.js?v=28.4.2';
+import {assertCompactHandoff,containsInstruction} from './compact-handoff-assertions-v28.mjs';
+import {applyCollection} from '../collection.js?v=28.4.3';
+import {resolveSelections} from '../catalog.js?v=28.4.3';
+import {productionPlan} from '../production-plan.js?v=28.4.3';
+import {renderChatInput} from '../compiled-production.js?v=28.4.3';
+import {composePrompt} from '../prompt.js?v=28.4.3';
 
 const profile={displayName:'TEST CREATOR',activityEnabled:false,biography:''};
 const random=()=>.25;
@@ -18,11 +20,11 @@ for(const mode of ['halloween','everyday']){
  for(const medium of ['クリスタル透光アニメ','宝石ホログラムアニメ','クリスタルホログラム造形アニメ']){
   for(const costume of ['参照画像の衣装を生かす','風景を主役にする']){
    for(const palette of ['星灯りの青紫','金と黒の二色','モノクローム','黒と白と朱の三色','セピア']){
-    const values={...base,medium,costume,palette};
+    const values={...base,medium,costume,palette,...(costume==='風景を主役にする'?{pose:'おまかせ',mood:'毎回大胆に変える'}:{})};
     const {plan,prompt}=make(values,mode);
     const style=plan.conditions.find(c=>c.key==='medium');
-    assert.ok(prompt.includes(style.execution.method));
-    assert.match(prompt,/宇宙の世界観を主画像から削除しない/);
+    assert.ok(renderChatInput(plan).includes(style.execution.method));if(!assertCompactHandoff(plan,prompt))continue;
+    assert.match(prompt,/宇宙の広がり|恒星|小物だけで宇宙を代用しない/);
     if(medium==='クリスタル透光アニメ'){
      assert.doesNotMatch(prompt,/陰影は手描きセルアニメの不透明な色面/);
      assert.match(prompt,/段階的な透明色面/);
@@ -59,9 +61,9 @@ for(const mode of ['halloween','everyday']){
  const minimal=make({...base,medium:'ミニマリズム'},mode);
  assert.match(minimal.prompt,/迫る近景や主役を小さく退かせない/);
  for(const costume of ['参照画像の衣装を生かす','風景を主役にする']){
-  const cubist=make({...base,medium:'キュビスム',costume},mode);
-  assert.match(cubist.prompt,/指定した視点からの大きなシルエット/);
-  const futurist=make({...base,medium:'未来派',costume},mode);
+  const cubist=make({...base,medium:'キュビスム',costume,...(costume==='風景を主役にする'?{pose:'おまかせ',mood:'毎回大胆に変える'}:{})},mode);
+  assert.match(renderChatInput(cubist.plan),/指定した視点からの大きなシルエット/);if(assertCompactHandoff(cubist.plan,cubist.prompt))assert.match(cubist.prompt,/指定した視点からの大きなシルエット/);
+  const futurist=make({...base,medium:'未来派',costume,...(costume==='風景を主役にする'?{pose:'おまかせ',mood:'毎回大胆に変える'}:{})},mode);
   assert.match(futurist.prompt,/濃度を減らした開いた輪郭/);
  }
 }

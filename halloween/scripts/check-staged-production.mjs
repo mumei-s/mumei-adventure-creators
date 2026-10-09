@@ -1,13 +1,14 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.4.2';
-import {resolveSelections} from '../catalog.js?v=28.4.2';
-import {initialSelections} from '../modes.js?v=28.4.2';
-import {buildDirection} from '../direction.js?v=28.4.2';
-import {applyPose} from '../poses.js?v=28.4.2';
-import {productionPlan} from '../production-plan.js?v=28.4.2';
-import {composePrompt} from '../prompt.js?v=28.4.2';
-import {composeArtworkStage} from '../artwork-stage.js?v=28.4.2';
-import {needsStagedProduction,composeLayoutStage} from '../staged-production.js?v=28.4.2';
+import {assertCompactHandoff} from './compact-handoff-assertions-v28.mjs';
+import {applyCollection} from '../collection.js?v=28.4.3';
+import {resolveSelections} from '../catalog.js?v=28.4.3';
+import {initialSelections} from '../modes.js?v=28.4.3';
+import {buildDirection} from '../direction.js?v=28.4.3';
+import {applyPose} from '../poses.js?v=28.4.3';
+import {productionPlan} from '../production-plan.js?v=28.4.3';
+import {composePrompt} from '../prompt.js?v=28.4.3';
+import {composeArtworkStage} from '../artwork-stage.js?v=28.4.3';
+import {needsStagedProduction,composeLayoutStage} from '../staged-production.js?v=28.4.3';
 
 // The case that kept producing a photographic face when artwork and typesetting
 // were requested together. These assertions check the handoff between stages.
@@ -84,7 +85,7 @@ lacks(layout,drawing,'Layout stage must not restart the character drawing recipe
 for(const costume of ['風景を主役にする','モチーフだけで構成する','紋章・アイコンにする']){
  const subject=fixture({costume}),stage=composeArtworkStage(subject.plan);
  assert.equal(needsStagedProduction(subject.plan),true,costume+' in a populated feature spread needs editorial composition');
- has(subject.prompt,'通常制作：完成画像を1回で生成',costume+' normal delivery returns a finished page in one call');
+ if(assertCompactHandoff(subject.plan,subject.prompt))has(subject.prompt,'通常制作：完成画像を1回で生成',costume+' normal delivery returns a finished page in one call');
  has(stage,costume,'Artwork stage must retain the selected nonhuman subject');
  matches(stage,/人物や人型へ置換しない|人物なし/,'Artwork stage must preserve the no-person requirement');
  for(const heading of ['顔の向き：','表情：','身体の動作：'])assert.ok(!stage.split('\n').some(line=>line.startsWith(heading)),costume+' artwork stage must not execute a human '+heading);

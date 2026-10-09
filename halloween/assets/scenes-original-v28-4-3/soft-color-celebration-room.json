@@ -1,0 +1,20 @@
+{
+  "n": 18,
+  "title": "ふわ彩の祝祭室",
+  "slug": "soft-color-celebration-room",
+  "prompt": "Use case: illustration-story. Asset: one original square environment preview for the selected scene “ふわ彩の祝祭室”.\nPrimary request: a complete original quiet celebratory interior showing a coherent room, soft fabric, glossy surfaces and thin paper decorations under broad gentle light. This is a SCENE sample, not a portrait.\nScene: a modest imaginative living-and-celebration room. Foreground a low oval wooden table with rounded edges on a warm ivory wool rug; a pair of simple folded paper decorations and a small glossy pale-pink ceramic dish rest on the table with visible support and contact shadows. Middle ground a rounded upholstered mint-and-cream bench against a soft rose plaster wall, its cushions showing gentle fabric weave and compressible seams. Background a high window and a shallow arched niche; a few independently shaped thin colored paper rosettes and small folded pennants are suspended securely on two fine cords between actual wall hooks. All paper forms are light and irregular, not a repeated grid or a copy of existing decoration arrangements. Include a narrow doorway into deeper warm-gray room space so the room is clearly three-dimensional.\nThe celebration is expressed by the paper and ceramic arrangement, not named holiday icons, toys, pets, gifts or characters. No Halloween objects or Christmas symbols. No balloons or present boxes.\nComposition: eye-level diagonal view from a room corner, tabletop, rug, bench feet, wall-floor seam and rear doorway connected through consistent perspective. The space fills the image. Material differences remain visible at thumbnail size: soft rounded fabric with broad scattering, matte wool rug with short shadows, tiny sharp highlights on ceramic glaze, thin paper edges casting small local shadows. Refined illustrated environment with deliberate lineweight, calm broad pastel color planes and restrained detail. Bright broad gentle natural window light with real darker overlap/contact areas; no white haze or overexposure.\nColor: peach, soft mint, cream and lavender as calm room materials, not a magical particle cloud.\nAvoid: people, faces, human-shaped shadows, cats, small animals, pumpkins, witches, character figurines, flower-portrait framing, lanterns, gems, magic circles, pedestals, unsupported floating objects, branded decor, logos, labels, letters, signage, text, watermarks, collage or multiple panels. One complete original celebratory ROOM, with supports, soft fabric, glossy ceramic and lightweight paper all clearly visible.",
+  "source": "/workspace/scratch/ad16ee694a48/generated_images/exec-24522c38-2bb2-4c26-8d5a-167de4459476.png",
+  "file": "soft-color-celebration-room.jpg",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "840cc902103c030ca1422cf1368af148f55ab9607cd8c64605088598354d0a3f",
+  "processing": "Original generated resolution kept; RGB JPEG q85 encoding only",
+  "visualQA": {
+    "status": "accepted",
+    "method": "Individual review of the full generated output; file checks are separate from visual scene assessment.",
+    "observations": "木の脚を持つベンチと円い机、床のラグ、壁と奥の入口が接続する実際の室内を示している。布と毛足の柔らかい材質、釉薬の器の小さな反射、壁のフックに支持された薄い紙のロゼットと旗飾りが見える。従来の女性と猫の肖像を採用せず、人物・顔・猫・カボチャを足していない。"
+  }
+}

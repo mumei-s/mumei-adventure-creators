@@ -1,12 +1,13 @@
 import assert from 'node:assert/strict';
+import {assertCompactHandoff,containsInstruction} from './compact-handoff-assertions-v28.mjs';
 import fs from 'node:fs';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.2';
-import {applyCollection} from '../collection.js?v=28.4.2';
-import {productionPlan} from '../production-plan.js?v=28.4.2';
-import {composePrompt} from '../prompt.js?v=28.4.2';
-import {creatorHandoff} from '../creator-handoff.js?v=28.4.2';
-import {lightingContract} from '../art-direction.js?v=28.4.2';
-import {detailedSubject} from '../subject-recipes.js?v=28.4.2';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.3';
+import {applyCollection} from '../collection.js?v=28.4.3';
+import {productionPlan} from '../production-plan.js?v=28.4.3';
+import {composePrompt} from '../prompt.js?v=28.4.3';
+import {creatorHandoff} from '../creator-handoff.js?v=28.4.3';
+import {lightingContract} from '../art-direction.js?v=28.4.3';
+import {detailedSubject} from '../subject-recipes.js?v=28.4.3';
 
 const profile=creatorHandoff('test_author','試作作者');
 const fixed={design:'通常の一枚絵',medium:'発光幻想アニメ',costume:'参照画像の衣装を生かす',pose:'四つん這いで進む',mood:'俯瞰＋目を見開く',palette:'群青 × 菫 × 星白',type:'文字を一切入れない',line:'セリフなし',size:'縦ポスター2:3｜2400×3600｜2:3'};
@@ -22,16 +23,16 @@ for(const collection of ['halloween','everyday']){
     const plan=productionPlan(profile,values,variant,collection,()=>.2);
     const prompt=composePrompt({creator:'test_author',profile,values,variant,preparedPlan:plan,references:costume==='参照画像の衣装を生かす'?[{name:'reference.png',role:'identity'}]:[],edition:'SEMANTICS'});
     const drawing=prompt.split('【統合するための制作仕様：開始】')[1]?.split('【統合するための制作仕様：終了】')[0];
-    assert.ok(drawing,'Drawing input must be explicitly delimited');
+    const generatable=assertCompactHandoff(plan,prompt);if(generatable)assert.ok(drawing,'Drawing input must be explicitly delimited');
     if(collection==='halloween')assert.ok(plan.conditions.every(c=>c.known),'This preset scenario must use real selectable values');
-    for(const stale of oldRestrictions)assert.ok(!drawing.includes(stale),theme+' / '+place+' still restricts the world: '+stale);
-    assert.ok(drawing.includes(theme)&&drawing.includes(place),'Both selections must survive composition');
+    for(const stale of oldRestrictions)assert.ok(!prompt.includes(stale),theme+' / '+place+' still restricts the world: '+stale);
+    if(generatable)assert.ok(drawing.includes(theme)&&drawing.includes(place),'Both selections must survive composition');
     const event=plan.conditions.find(c=>c.key==='theme');
     assert.ok(event.execution.evidence.every(e=>e.region.includes('世界')),'World must be a checked drawing region');
     const text=event.sections.map(s=>s.text).join(' ');
     if(theme.includes('宇宙'))assert.match(text,/恒星|宇宙の広がり|小物だけで宇宙を代用しない/);
     else assert.match(text,/菓子の素材|飴の硬い面/);
-    if(costume==='参照画像の衣装を生かす')assert.ok(drawing.includes('四つん這いで進む'),'Story must preserve the selected pose');
+    if(costume==='参照画像の衣装を生かす'){if(generatable)assert.ok(drawing.includes('四つん這いで進む'),'Story must preserve the selected pose');}
     else assert.match(text,/人型|人体|人物|顔・手足/,'No-person story must retain its boundary');
     checked++;
    }

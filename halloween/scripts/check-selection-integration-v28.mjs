@@ -1,16 +1,17 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.4.2';
-import {resolveSelections} from '../catalog.js?v=28.4.2';
-import {initialSelections} from '../modes.js?v=28.4.2';
-import {buildDirection} from '../direction.js?v=28.4.2';
-import {applyPose} from '../poses.js?v=28.4.2';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.2';
-import {composePrompt} from '../prompt.js?v=28.4.2';
-import {renderSelectionMaterial,renderChatInput,renderInput} from '../compiled-production.js?v=28.4.2';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.2';
-import {cameraContract} from '../angles.js?v=28.4.2';
-import {creatorHandoff} from '../creator-handoff.js?v=28.4.2';
-import {selectionIntegrationInstructions,imageOutputContract,imageDeliveryRepairPrompt} from '../output-contract.js?v=28.4.2';
+import {assertCompactHandoff,containsInstruction} from './compact-handoff-assertions-v28.mjs';
+import {applyCollection} from '../collection.js?v=28.4.3';
+import {resolveSelections} from '../catalog.js?v=28.4.3';
+import {initialSelections} from '../modes.js?v=28.4.3';
+import {buildDirection} from '../direction.js?v=28.4.3';
+import {applyPose} from '../poses.js?v=28.4.3';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.3';
+import {composePrompt} from '../prompt.js?v=28.4.3';
+import {renderSelectionMaterial,renderChatInput,renderInput} from '../compiled-production.js?v=28.4.3';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.3';
+import {cameraContract} from '../angles.js?v=28.4.3';
+import {creatorHandoff} from '../creator-handoff.js?v=28.4.3';
+import {selectionIntegrationInstructions,imageOutputContract,imageDeliveryRepairPrompt} from '../output-contract.js?v=28.4.3';
 
 // These tests inspect the material and instructions sent to ChatGPT. They do
 // not execute AI synthesis or claim that an image model obeyed the selections.
@@ -64,7 +65,7 @@ try{
   const from=prompt.indexOf(sourceStart),to=prompt.indexOf(sourceEnd);
   assert.ok(from>=0&&to>from,item.name+' has no delimited source material');
   const material=prompt.slice(from+sourceStart.length,to);
-  includes(material,selectedSource,item.name+' material heading');
+  includes(material,'【短い統合制作指示】',item.name+' material heading');assertCompactHandoff(plan,prompt);
   assert.ok(prompt.indexOf(selectionIntegrationInstructions[0])<from,'The synthesis contract must be read before the source material');
   assert.ok(native.indexOf('【固定カメラ：描画前に確定】')<native.indexOf(selectedSource),'Camera geometry must precede per-option source clauses');
   assert.ok(!native.includes('【全選択の個別レシピ】'),'The native handoff must label recipes as synthesis material');
@@ -72,11 +73,11 @@ try{
   includes(audit,auditMarker,'audit export compatibility');
   for(const condition of plan.conditions){
    assert.equal(condition.value,values[condition.key],condition.key+' metadata differs from its selected value');
-   for(const [label,text] of [['native',native],['master material',material],['audit',audit]]){
+   for(const [label,text] of [['native',native],['audit',audit]]){
     includes(text,condition.value,item.name+' / '+label+' / '+condition.key);
     for(const section of condition.sections)includes(text,section.text,item.name+' / '+label+' / '+condition.key+' / '+section.label);
    }
-   includes(native,condition.execution.method,item.name+' native execution '+condition.key);
+   includes(material,condition.name+'＝'+condition.value,item.name+' transferred selection '+condition.key);includes(native,condition.execution.method,item.name+' native execution '+condition.key);
    if(condition.execution.line)includes(native,condition.execution.line.method,item.name+' selected dialogue');
    if(artworkKeys.includes(condition.key))for(const section of condition.sections)includes(routes.artwork,section.text,item.name+' artwork source '+condition.key);
   }
@@ -86,9 +87,10 @@ try{
   for(const reference of references)includes(material,reference.name,item.name+' reference role');
   const geometry=cameraContract(values,{noPerson:plan.noPerson});
   assert.equal(structured.camera.geometry.selected,values.angle);
-  for(const clause of geometry.instructions)for(const [route,text] of Object.entries(routes))includes(text,clause,item.name+' fixed camera / '+route);
-  for(const slot of plan.copy.slots){includes(native,JSON.stringify(slot.text),item.name+' fixed manuscript');assert.ok(structured.copy.some(s=>s.role===slot.role&&s.text===slot.text));}
-  for(const slot of plan.copy.generatedSlots||[]){includes(native,slot.role,item.name+' permitted manuscript role');assert.ok(structured.manuscript_requests.some(s=>s.role===slot.role&&s.maxCharacters===slot.maxCharacters));}
+  for(const clause of geometry.instructions)for(const [route,text] of Object.entries(routes).filter(([route])=>!['master','deliveryRepair'].includes(route)))includes(text,clause,item.name+' fixed camera / '+route);
+  assert(containsInstruction(material,geometry.instructions[0]));assert(containsInstruction(material,geometry.framing_instruction));
+  for(const slot of plan.copy.slots){includes(native,JSON.stringify(slot.text),item.name+' fixed manuscript');includes(material,slot.role+'：'+JSON.stringify(slot.text),item.name+' transferred manuscript');assert.ok(structured.copy.some(s=>s.role===slot.role&&s.text===slot.text));}
+  for(const slot of plan.copy.generatedSlots||[]){includes(native,slot.role,item.name+' permitted manuscript role');includes(material,slot.role+' / '+slot.maxCharacters+'字以内 / 階層'+slot.priority,item.name+' transferred permitted manuscript');assert.ok(structured.manuscript_requests.some(s=>s.role===slot.role&&s.maxCharacters===slot.maxCharacters));}
   if(profile.handoff)assert.ok(prompt.indexOf('【ChatGPTで作者を確認')<from,'Author lookup must precede specification synthesis');
   if(item.custom){
    assert.equal(plan.conditions.find(c=>c.key==='theme').known,false,'The custom scene must exercise the deterministic fallback');

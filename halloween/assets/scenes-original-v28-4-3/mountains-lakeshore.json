@@ -1,0 +1,21 @@
+{
+  "n": 7,
+  "title": "山岳と湖畔",
+  "slug": "mountains-lakeshore",
+  "prompt": "Use case: illustration-story. Asset: ONE original square environment illustration for the selectable scene “山岳と湖畔” on a Japanese creative website. Complete actual refined background artwork with natural terrain, controlled perspective, clear material texture, restrained daytime colors. Not a label or placeholder.\nScene: a quiet ordinary mountain lake in Japan, seen from a low pebbly shore. Foreground smooth small stones, a few reeds and the shallow clear water at the bank. Middle ground the wide still lake with a gentle curved wooded shoreline and restrained ripples. Background a series of rounded LOW TO MIDDLE ALTITUDE mountain ridges covered completely in mixed broadleaf and evergreen forest; realistic uneven gentle Japanese mountain contours, NO jagged alpine summits, NO snow peaks, NO glaciers, NO foreign resort or castle. Mild early-summer overcast daylight, soft blue-green forest, neutral pale sky. Keep forested ridges in the upper third and the broad lake in the middle so both mountain terrain and lakeside support are immediately readable at thumbnail size. Lake reflections correspond to those ridges and trees in the same viewpoint.\nCompose one continuous coherent foreground/middle/background landscape with foreground bank, waterline and distant shore properly connected. Gentle illustrated linework and painterly environmental detail, neither a photograph nor anime character portrait. No people, human faces, human-shaped shadows, animals, artist references, lanterns, fantasy light, magic circles, labels, logos, words, watermarks, collage or multiple panels. Entire environment fills the frame.",
+  "source": "/workspace/scratch/ad16ee694a48/generated_images/exec-5cfd5837-39e1-4cb3-8f2e-c47f60b593df.png",
+  "file": "mountains-lakeshore.jpg",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "f545c9060bbed3eb567f6b6fdf4c7f33090403393927911d4ef0d9032f80b80a",
+  "processing": "Original generated resolution kept; RGB JPEG q85 encoding only",
+  "visualQA": {
+    "status": "accepted",
+    "method": "Individual review of the full generated output; file checks are separate from visual scene assessment.",
+    "observations": "前景の小石の湖岸と葦、中景の湖面、遠景の森林に覆われた低中標高の山の稜線が一つの場所へ接続する。稜線と木の反射が水面に対応し、初回の尖峰の高山を採用せず、日本の通常の山間湖という現行レシピへ合わせた。人物や文字はない。"
+  },
+  "revision": "Targeted scene correction after reviewing the Japanese default mountain-lake recipe; rejected initial jagged alpine illustration is not used by UI."
+}

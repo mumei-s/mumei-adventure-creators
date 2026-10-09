@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.2';
-import {applyCollection} from '../collection.js?v=28.4.2';
-import {initialSelections} from '../modes.js?v=28.4.2';
-import {angleItems,applyAngle,cameraContract} from '../angles.js?v=28.4.2';
-import {poseItems,applyPose} from '../poses.js?v=28.4.2';
-import {buildDirection} from '../direction.js?v=28.4.2';
-import {angleConstraint,moodConstraint,poseConstraint,angleConstraintValues,poseConstraintValues} from '../view-constraints.js?v=28.4.2';
-import {selectionConflicts,selectionWarnings,candidateAvailability,compatibleResolved} from '../compatibility.js?v=28.4.2';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.2';
-import {renderInput,renderChatInput} from '../compiled-production.js?v=28.4.2';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.2';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.3';
+import {applyCollection} from '../collection.js?v=28.4.3';
+import {initialSelections} from '../modes.js?v=28.4.3';
+import {angleItems,applyAngle,cameraContract} from '../angles.js?v=28.4.3';
+import {poseItems,applyPose} from '../poses.js?v=28.4.3';
+import {buildDirection} from '../direction.js?v=28.4.3';
+import {angleConstraint,moodConstraint,poseConstraint,angleConstraintValues,poseConstraintValues} from '../view-constraints.js?v=28.4.3';
+import {selectionConflicts,selectionWarnings,candidateAvailability,compatibleResolved} from '../compatibility.js?v=28.4.3';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.3';
+import {renderInput,renderChatInput} from '../compiled-production.js?v=28.4.3';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.3';
 
 const moodValues=questions.find(q=>q.key==='mood').groups.flatMap(g=>g.values);
 assert.equal(moodValues.length,43);

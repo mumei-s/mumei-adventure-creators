@@ -1,15 +1,16 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.4.2';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.2';
-import {initialSelections} from '../modes.js?v=28.4.2';
-import {buildDirection} from '../direction.js?v=28.4.2';
-import {applyPose} from '../poses.js?v=28.4.2';
-import {cameraContract} from '../angles.js?v=28.4.2';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.2';
-import {composePrompt} from '../prompt.js?v=28.4.2';
-import {renderInput,renderChatInput} from '../compiled-production.js?v=28.4.2';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.2';
-import {sceneSourcePlace} from '../scene-presets.js?v=28.4.2';
+import {assertCompactHandoff,containsInstruction} from './compact-handoff-assertions-v28.mjs';
+import {applyCollection} from '../collection.js?v=28.4.3';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.3';
+import {initialSelections} from '../modes.js?v=28.4.3';
+import {buildDirection} from '../direction.js?v=28.4.3';
+import {applyPose} from '../poses.js?v=28.4.3';
+import {cameraContract} from '../angles.js?v=28.4.3';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.3';
+import {composePrompt} from '../prompt.js?v=28.4.3';
+import {renderInput,renderChatInput} from '../compiled-production.js?v=28.4.3';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.3';
+import {sceneSourcePlace} from '../scene-presets.js?v=28.4.3';
 
 // The failing user combination must retain a vertical optical axis in the
 // native handoff, audit export, artwork stage and both image-repair routes.
@@ -49,7 +50,7 @@ for(const collection of ['halloween','everyday']){
   const structured=JSON.parse(renderInput(plan).split('\n\n【全選択の個別レシピ】')[0]);
   const native=renderChatInput(plan),stage=composeArtworkStage(plan),stageRepair=composeArtworkRepair(plan),compactStageRepair=composeArtworkRepair(plan,{compact:true});
   const prompt=composePrompt({collection,profile,values,variant:plan.variant,references:[],edition:'CAMERA-GEOMETRY',preparedPlan:plan});
-  const repair=repairPrompt({prompt,production:plan,values});
+  const repair=repairPrompt({prompt,production:plan,values});assertCompactHandoff(plan,prompt);
   const geometry=structured.camera?.geometry;
   assert.ok(geometry,item.name+' has no camera.geometry in audit input');
   assert.equal(geometry.selected,values.angle,item.name+' changed its selected angle');
@@ -63,7 +64,7 @@ for(const collection of ['halloween','everyday']){
   assert.ok(structured.required_before_details.camera_geometry,item.name+' camera geometry is not required before detail');
   contains(native,structured.required_before_details.camera_geometry,item.name+' native required conditions');
   for(const clause of expected.instructions){
-   for(const [where,text] of [['native',native],['complete prompt',prompt],['artwork stage',stage],['artwork repair',stageRepair],['compact artwork repair',compactStageRepair],['complete repair',repair]])contains(text,clause,item.name+' / '+collection+' / '+where);
+   for(const [where,text] of [['native',native],['artwork stage',stage],['artwork repair',stageRepair],['compact artwork repair',compactStageRepair],['complete repair',repair]])assert.ok(containsInstruction(text,clause),item.name+' / '+collection+' / '+where+' lost camera clause: '+clause);
   }
   assert.match(native,/【固定カメラ：描画前に確定】/);
   assert.ok(native.indexOf('【固定カメラ：描画前に確定】')<native.indexOf('【選択済みの仕様資料：一場面へ統合する】'),item.name+' fixes the camera only after detailed instructions');

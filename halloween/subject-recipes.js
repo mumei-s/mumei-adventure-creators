@@ -1,8 +1,9 @@
-import {costumeSpecs,themeSpecs,placeSpecs} from './visual-specs.js?v=28.4.2';
-import {poseItems,poseTechnical} from './poses.js?v=28.4.2';
-import {questions} from './catalog.js?v=28.4.2';
-import {typographyRecipe} from './typography-options.js?v=28.4.2';
-import {angleItems} from './angles.js?v=28.4.2';
+import {costumeSpecs,themeSpecs,placeSpecs} from './visual-specs.js?v=28.4.3';
+import {poseItems,poseTechnical} from './poses.js?v=28.4.3';
+import {questions} from './catalog.js?v=28.4.3';
+import {typographyRecipe} from './typography-options.js?v=28.4.3';
+import {copyAuthority,copyAllowsDialogue} from './copy-scope.js?v=28.4.3';
+import {angleItems} from './angles.js?v=28.4.3';
 
 // The tables describe the selected title, never the people or settings in a UI thumbnail.
 const rows=source=>Object.assign(Object.create(null),Object.fromEntries(source.trim().split('\n').filter(Boolean).map(line=>{const at=line.indexOf('=');return [line.slice(0,at),line.slice(at+1).split('|')];})));
@@ -578,6 +579,7 @@ function sizeDetail(value,context){
  return {known:builtInSizes.has(value),sections:[section('希望する出力','用途：'+usage+'。要求寸法は幅'+width+'px × 高さ'+height+'px、指定縦横比は'+ratioW+':'+ratioH+'。これらは要求値であり、生成できた実寸の証明ではない。'),section('この用途の構図',framing),section('実寸の照合','出力画像ファイルの幅と高さを実際に確認する。生成側の対応寸法が限られる場合は最も近い対応サイズで比率を保ち、要求値に達していない点を明記する。ファイル名や指示文だけで4K・8K・300dpiの達成を主張しない。印刷のdpiは実ピクセル数と印刷寸法から区別する。')],checks:['要求比率 '+ratioW+':'+ratioH,'画像ファイルの実幅・実高さ','要求値と実生成値の区別']};
 }
 function typeDetail(value,context){
+ if(copyAuthority(context.values).noText)return {known:!!typeSteps[value],sections:[section('有効な原稿なし','今回の文字ポリシーは文字なし。デザインの題名・名前・本文も追加せず、セリフ選択は印字原稿へ追加しない。')],checks:['文字・数字・署名・疑似文字のない完成']};
  const additional=typographyRecipe(value);if(additional)return additional;
  const data=typeSteps[value];if(!data)return freeInput('type',value,context);
  const sections=[section('使用する原稿の範囲',data[0]),section('字組みと制限',data[1])];
@@ -589,6 +591,7 @@ function typeDetail(value,context){
 function lineDetail(value,context){
  const known=builtInLines.has(value),type=context.values.type;
  if(value==='セリフなし')return {known:true,sections:[section('セリフを表示しない','セリフは描かない。名前・題名・本文の可否は文字設定に従い、セリフOFFだけを理由に有効な他の原稿を消さない。')],checks:['セリフの非表示']};
+ if(!copyAllowsDialogue(context.values))return {known,sections:[section('文字設定を優先','セリフ「'+value+'」は保存した選択として扱い、画像には描かない。今回確定した文字設定の役割だけを使い、別のセリフを追加しない。')],checks:['許可原稿の役割だけ','セリフの描画なし']};
  if(lineBlockedTypes.has(type))return {known,sections:[section('文字設定を優先','セリフ「'+value+'」は保存した選択として扱い、画像には描かない。「'+type+'」の限定原稿または文字OFFを優先する。')],checks:['限定した文字設定の優先','セリフの描画なし']};
  if(!value||value==='おまかせ')return {known:false,sections:[section('セリフの確定','セリフの文字列は未確定。確定した原稿が用意されるまで架空のセリフを描かない。')],checks:['未確定原稿の描画なし']};
  return {known,sections:[section('印字する文字列','印字するセリフは「'+value+'」。文字列の中の句読点・英字の大小・単語の間隔を保ち、言い換えや別の末尾を追加しない。'),section('字組み','文節か単語の境界で必要な改行をし、読み順を一つにする。引用符は原稿に含まれる場合だけ印字する。セリフの意味から衣装・場所・表情を自動変更しない。')],checks:['選択したセリフの正確な綴り','一つの読み順','セリフによる他項目の上書きなし']};

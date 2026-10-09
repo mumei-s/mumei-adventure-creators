@@ -1,0 +1,27 @@
+{
+  "title": "鏡の向こうの自分",
+  "slug": "mirror-other-self",
+  "prompt": "Use case: illustration-story.\nAsset: ONE original square narrative illustration for a scene chooser, internally 鏡の向こうの自分. No text.\nScene/backdrop: a quiet, dim old house foyer on Halloween night, one large simple upright rectangular wall mirror in a dark wood frame, plain plaster walls, a small unlit pumpkin and a dish of wrapped candy outside the mirror's reflected view. Restrained warm light and cool night shadows. No elaborate familiar artwork composition.\nSubject: one entirely original mature adult woman, short straight black bob, hazel eyes, a small freckle pattern, fully clothed in a long-sleeved ivory high-collar blouse, muted burgundy waistcoat and dark long skirt. She stands close to the mirror, hands naturally folded together at her waist. The camera looks from an oblique three-quarter side angle, so her REAL face in the near foreground and the SAME FACE reflected in the mirror are both clear and large enough for comparison. The mirror face is not a different person.\nEssential supernatural occurrence: EXACTLY ONE local mismatch, THE MOUTH. The REAL woman's lips are closed, horizontal and quietly serious. Her REFLECTION alone wears a conspicuously broad, slightly crooked tooth-showing smile. This strange smile is the only changed feature. The eyes in both images remain normally open and look at each other; do not add a wink or change the gaze. Hair, freckles, eye color, nose, head angle, shoulders, clothing, folded hand pose, fingers and all other features are the correct physically corresponding left-right mirror reflection. Head and torso positions must be consistent with a single planar mirror at the same instant. No independently moving hands or second body pose. Make both mouths unmistakably visible, not hidden behind hair or a back view.\nComposition/framing: medium close view includes both clear three-quarter faces, the waist and folded hands, the mirror boundary that establishes which woman is the reflection, and just enough foyer to anchor a complete scene. Emphasize the comparison, not general decorative gothic mood. Mirror geometry and reversed body perspective coherent.\nStyle: polished finely drawn Japanese 2D narrative illustration, mature anime proportions, crisp facial linework and readable cel-shadow color planes, carefully painted wood and cloth. No photographic skin or heavy blurry bloom. Small-preview readability.\nConstraints: one real original adult woman and only her mirror image, no other people, no ghost in the background, no glowing red eyes, no alternate dress, no shifted hands, no torn mirror, no multiple mirrors, no battle, no nudity or transparent clothing, no lantern, no named artist or borrowed character, no text, labels, logos or watermark. Do not make an ordinary matching reflection: the mouth mismatch MUST visibly tell the story.",
+  "source": "/workspace/scratch/ad16ee694a48/generated_images/exec-3caeaf72-06ba-4394-a207-67b651570c81.png",
+  "file": "mirror-other-self.jpg",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "e3b2063866c4ec406f393aa5abbc3362244e1b6d29f376a0178723ed59c84c8f",
+  "processing": "Original generated resolution kept; RGB JPEG q85 encoding only; source PNG retained unchanged",
+  "visualQA": {
+    "status": "accepted",
+    "method": "Individual review of the full generated output; file checks are separate from visual narrative assessment.",
+    "observations": [
+      "鏡の木枠で実人物と反射が明確に区切られ、成人女性の髪型・雀斑・高襟ブラウス・胴衣が同じ対象として対応している。",
+      "実人物の口は閉じた静かな形、反射だけは歯を見せる大きな笑み。一箇所の口元の異変が小さく表示しても比較できる。",
+      "両方の目は開いて互いを見る。手は腰で同じ組み方の左右対応を保ち、腕を動かす別事件や異なる衣装へ変えていない。",
+      "背景は静かな夜の玄関、小カボチャと菓子でHalloween。無関係な別人二人や普通に一致した鏡像ではない。"
+    ],
+    "limitations": [
+      "一箇所とは口元の表情の局所的な違いを指す。生成された鏡の投影は目視で整合を確認したが、幾何学的な光線計算の証明ではありません。"
+    ]
+  }
+}

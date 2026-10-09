@@ -1,0 +1,36 @@
+import assert from 'node:assert/strict';
+import {createHistoryPersistence} from '../history-persistence.js?v=28.4.3';
+import {HISTORY_RECORD_LIMIT,HISTORY_USED_LIMIT,HISTORY_BYTE_BUDGET,historyStorageInfo,compactHistoryRecord,restoreHistoryRecord} from '../history-storage.js?v=28.4.3';
+
+const key='history-management';
+class Database{
+ constructor(){this.data=new Map();this.queue=Promise.resolve();this.writeError=null;}
+ async read(k){return structuredClone(this.data.get(k)||null);}
+ update(k,updater,{shouldWrite=()=>true}={}){const task=this.queue.then(()=>{if(this.writeError)throw this.writeError;if(!shouldWrite())return {saved:false,cancelled:true};const result=updater(structuredClone(this.data.get(k)||null));if(result.write!==false)this.data.set(k,structuredClone(result.state));return {...result,saved:result.write!==false};});this.queue=task.catch(()=>{});return task;}
+}
+function storage(){const data=new Map([['creator-reference-images','KEEP CURRENT IMAGES'],['unrelated-tool','KEEP OTHER DATA']]);return {data,getItem:k=>data.get(k)||null,setItem(k,value){assert.equal(k,key);data.set(k,value);}};}
+const record=(edition,count)=>({version:'28.4.3',edition,count,date:new Date(1000*count).toISOString(),profile:{displayName:'検証'},variant:{signature:edition},values:{medium:'発光幻想アニメ'},prompt:'制作指示：'+edition,references:[{name:'identity.png',role:'identity'}],production:{conditions:[{value:edition}]},stages:{artwork:'工程 '+edition},localRefs:[{file:new Blob(['PRIVATE IMAGE']),url:'blob:private'}]});
+const original={history:[record('C',3),record('B',2),record('A',1)],used:[{signature:'A'},{signature:'B'},{signature:'C'}],count:3};
+const db=new Database(),local=storage(),one=createHistoryPersistence({key,database:db,storage:local,now:()=>100}),two=createHistoryPersistence({key,database:db,storage:local,now:()=>100});
+const initial=await one.save(original);assert.equal(initial.saved,true);const stale=(await two.load()).state;
+const deleted=await one.remove(initial.state,'B');assert.equal(deleted.saved,true);assert.deepEqual(deleted.state.history.map(r=>r.edition),['C','A']);assert.deepEqual(deleted.removed.map(r=>r.edition),['B']);assert.deepEqual(deleted.state.used,initial.state.used);assert.equal(deleted.state.count,3);assert.notEqual(deleted.state.historyEpoch,initial.state.historyEpoch);
+assert.equal(local.data.get('creator-reference-images'),'KEEP CURRENT IMAGES');assert.equal(local.data.get('unrelated-tool'),'KEEP OTHER DATA');
+const late=await two.save(stale);assert.equal(late.conflict,true);assert.deepEqual((await db.read(key)).history.map(r=>r.edition),['C','A'],'A delayed old tab cannot bring back the individually deleted entry');
+const reopened=createHistoryPersistence({key,database:db,storage:local});assert.deepEqual((await reopened.load()).state.history.map(r=>r.edition),['C','A']);
+const undo=await one.restore(deleted.state,deleted.removed,{expectedEpoch:deleted.state.historyEpoch});assert.equal(undo.saved,true);assert.deepEqual(undo.state.history.map(r=>r.edition),['C','B','A']);const restored=await restoreHistoryRecord(undo.state.history.find(r=>r.edition==='B'));assert.equal(restored.prompt,original.history[1].prompt);assert.deepEqual(restored.production,original.history[1].production);assert.deepEqual(restored.stages,original.history[1].stages);
+assert.ok(!JSON.stringify(undo.state).includes('PRIVATE IMAGE'));assert.ok(!JSON.stringify(undo.state).includes('blob:private'),'Historical entries contain no local image blob or URL');
+const firstDelete=await one.remove(undo.state,'B'),secondDelete=await two.remove(firstDelete.state,'A'),unsafeUndo=await one.restore(firstDelete.state,firstDelete.removed,{expectedEpoch:firstDelete.state.historyEpoch});assert.equal(unsafeUndo.conflict,true);assert.deepEqual((await db.read(key)).history.map(r=>r.edition),['C'],'Undo cannot reverse another tab’s later deletion');
+const noEntry=await one.remove(secondDelete.state,'MISSING');assert.equal(noEntry.saved,false);assert.equal(noEntry.missing,true);assert.equal((await db.read(key)).historyEpoch,secondDelete.state.historyEpoch);
+const clearing=await one.clear(secondDelete.state);assert.equal(clearing.saved,true);assert.equal(clearing.state.history.length,0);assert.equal(clearing.removed.length,1);assert.deepEqual(clearing.state.used,secondDelete.state.used,'Clear retains bounded repeat-avoidance records');assert.equal(clearing.state.count,3);
+const undoAll=await one.restore(clearing.state,clearing.removed,{expectedEpoch:clearing.state.historyEpoch});assert.equal(undoAll.saved,true);assert.deepEqual(undoAll.state.history.map(r=>r.edition),['C']);
+const cancelled=await one.remove(undoAll.state,'C',{shouldWrite:()=>false});assert.equal(cancelled.cancelled,true);assert.deepEqual((await db.read(key)).history.map(r=>r.edition),['C']);
+
+// A strict feature byte cap rejects additions atomically, never drops existing
+// histories or another feature's images. Deletion still shrinks old big saves.
+const budgetDB=new Database(),budgetLocal=storage(),limited=createHistoryPersistence({key,database:budgetDB,storage:budgetLocal,byteBudget:1800,Compression:null,Decompression:null}),small={history:[record('A',1)],used:[],count:1};
+const smallSave=await limited.save(small);assert.equal(smallSave.saved,true);const before=await budgetDB.read(key),beforeLocal=budgetLocal.getItem(key);const large={...small,history:[{...record('BIG',2),prompt:'x'.repeat(3000)},...small.history],count:2};
+const tooLarge=await limited.save(large);assert.equal(tooLarge.saved,false);assert.equal(tooLarge.budget,true);assert.equal(tooLarge.quota,true);assert.deepEqual(await budgetDB.read(key),before);assert.equal(budgetLocal.getItem(key),beforeLocal);assert.equal(budgetLocal.data.get('creator-reference-images'),'KEEP CURRENT IMAGES');
+budgetDB.data.set(key,{...before,history:[await compactHistoryRecord({...record('BIG',2),prompt:'x'.repeat(3000)},{Compression:null,Decompression:null,archiveCore:true}),...before.history]});const oversized=(await limited.load({fresh:true})).state,shrunk=await limited.remove(oversized,'A');assert.equal(shrunk.saved,true);assert.deepEqual(shrunk.state.history.map(r=>r.edition),['BIG'],'Explicit deletion remains available for a legacy state over the new cap');
+const clearedBig=await limited.clear(shrunk.state);assert.equal(clearedBig.saved,true);assert.equal(clearedBig.state.history.length,0);
+const packed=await one.save({...undoAll.state,history:Array.from({length:20},(_,i)=>record('N'+i,i+1)),used:Array.from({length:2300},(_,i)=>({signature:'used-'+i})),count:30});const info=historyStorageInfo(packed.state);assert.equal(info.count,HISTORY_RECORD_LIMIT);assert.equal(info.usedCount,HISTORY_USED_LIMIT);assert.equal(info.byteBudget,HISTORY_BYTE_BUDGET);assert.equal(info.estimatedBytes,JSON.stringify(packed.state).length*2);assert.equal(info.localOnly,true);assert.equal(info.imageDataStored,false);
+console.log(JSON.stringify({result:'PASS history management: per-item and all deletion, exact undo, count and byte caps, unchanged current references, no image data in history, cross-tab stale resurrection and unsafe undo blocked, cancelled writes, older over-budget history can shrink',limit:info.limit,byteBudget:info.byteBudget,repeatLimit:info.usedLimit}));

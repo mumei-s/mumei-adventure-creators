@@ -1,0 +1,20 @@
+{
+  "n": 19,
+  "title": "和雅・花景",
+  "slug": "wa-flower-scenery",
+  "prompt": "Use case: illustration-story. Asset: ONE independently created square scene illustration for “和雅・花景”, a true flowering environment, no editorial layout.\nPrimary request: a quiet Japanese timber-and-garden space where near flowers, the supporting path and distant flower layers connect in one perspective. An original early-summer Japanese garden viewed diagonally from beside a modest cedar veranda. Foreground at lower left several white and pale-lavender irises with visibly different petals, long upright leaves and grounded stems. Middle ground irregular flat stepping stones pass a small cedar post and lead past an open wooden lattice wall and a simple roof eave into the garden. Farther behind are green shrubs with scattered pale flowers and a soft wooded garden boundary. Timber beams, post bases, stone levels and plant scale must join as one ordinary supported place. No recognizable famous garden or copied composition.\nCamera at standing eye level, broad view down the stepping-stone path. Precise near petal outlines and small local reflections, quieter material grain and soft far flower forms. Morning directional natural light creates broad calm shade under the wood eave and gentle lit stone; the wood, leaves and faintly damp stones reflect the same environment in subtle small highlights. Keep light and texture coherent, without glitter or gold decoration. Seasonal plants all belong to early summer; no simultaneous autumn leaves, snow or cherry blossom canopy.\nDrawing medium: refined illustrated environment with delicate contour drawing and controlled painterly natural color planes; recognizable Japanese cedar construction and natural stone textures. Quiet elegance comes from depth, flower spacing and natural material, not ornamental borders or costumes.\nConstraints: no people, no portrait, no seated woman, no faces, human-shaped shadows, animals, kimonos, umbrellas, lanterns, flower jewelry, golden embroidery, magazine page, newspaper columns, book cover, letter-like texture, names, titles, labels, signage, brands, logos or watermarks. No mountains or lake panorama, magic objects, particles, fantasy characters or ritual symbols. One complete original environment filling the square image, no collage. The thumbnail must immediately read as Japanese architectural garden scenery with a path and layered flowers, not a fashion portrait named after a scene.",
+  "source": "/workspace/scratch/ad16ee694a48/generated_images/exec-e590d5a6-ba13-434f-9907-70764fa3dfee.png",
+  "file": "wa-flower-scenery.jpg",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "ebb69db4be94576d5a04ea9fa97bf422525532058c6aa2321496127941a890be",
+  "processing": "Original generated resolution kept; RGB JPEG q85 encoding only",
+  "visualQA": {
+    "status": "accepted",
+    "method": "Individual review of the full generated output; file checks are separate from visual scene assessment.",
+    "observations": "前景の白と紫の菖蒲、木の柱と格子・軒・縁側、奥へ続く踏み石と花の層が一つの日本の庭園に接続している。木と石と植物の明暗は同じ方向の自然光に対応する。旧見本の雑誌版面と人物肖像を使わず、文字・人物・着物・傘は存在しない。"
+  }
+}

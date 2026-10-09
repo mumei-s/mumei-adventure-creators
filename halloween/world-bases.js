@@ -1,5 +1,6 @@
-import {colorPolicy} from './color-policy.js?v=28.4.2';
-import {isNonHumanSource} from './source-kind.js?v=28.4.2';
+import {fantasyStyleDefinitions} from './fantasy-style-definitions.js?v=28.4.3';
+import {colorPolicy} from './color-policy.js?v=28.4.3';
+import {isNonHumanSource} from './source-kind.js?v=28.4.3';
 
 // Original semantic descriptions extracted from user-provided examples.
 // UI thumbnails remain illustrative: none of their people, clothes, prompts,
@@ -27,7 +28,7 @@ const mediaDefinitions=[
   avoid:['アニメのセル影や描線を残した写真加工','人形CGの皮膚、人体のガラス化、全面ラメや不自然な均一発光']
  },
  {
-  value:'花霞の透明アニメ',file:'world-034.jpg',group:'花霞・パステル・夢彩・宵彩',
+  value:'花霞の透明アニメ',file:'assets/style-flower-haze-original-v28-4-3.png',group:'花霞・パステル・夢彩・宵彩',
   text:'淡い輪郭、透明な重ね色、柔らかな逆光、繊細な局所反射で明るく澄んだ空気を描く。白く薄めるだけにせず、接触影と主要な線を残す。花や衣装を作画名だけから追加しない。',
   drawing:'細く淡い有色線と、下の色が読める透明な薄塗りを重ねる。焦点では輪郭と細かな反射を締め、周辺では境界を柔らかくする。色を全域で同じ薄さにせず、透明層が重なる領域の濃度差と少数の暗い線を使う。',
   personDrawing:'同じ識別特徴を精密な2Dアニメの輪郭、描いた眼瞼、簡潔な鼻口、薄い頬の色面へ翻訳する。写真の顔を残さず、年齢感と特徴を保つ。髪がある場合の束は薄い重ね色と少数の暗い内部線で示し、参照と異なる髪型や花飾りへ変更しない。',
@@ -37,7 +38,7 @@ const mediaDefinitions=[
   avoid:['全面を白く飛ばす処理、形が失われる均一なぼかし','作例の顔・花飾り・小動物・衣装を引き継ぐ処理']
  },
  {
-  value:'ミルキーパステルアニメ',file:'world-009.jpg',group:'花霞・パステル・夢彩・宵彩',
+  value:'ミルキーパステルアニメ',file:'assets/style-milky-pastel-original-v28-4-3.png',group:'花霞・パステル・夢彩・宵彩',
   text:'選択した配色を柔らかな色面へ整理し、丸みのある形、しっとりした布、ふわりとした素材、柔らかな散乱光を描く。淡色の固定配色や特定の服・ぬいぐるみは追加しない。',
   drawing:'2Dの細い輪郭、柔らかな曲線、滑らかな淡い色面を組む。主要な形は明瞭にし、境界の一部だけを柔らかくする。選択された形の角や硬い部材まで丸く溶かさず、柔らかな材質との対比を残す。',
   personDrawing:'主参照を同じ識別特徴と年齢感の2Dアニメ造形へ翻訳する。眼瞼と簡潔な鼻口は細線と薄い色面で描き、頬や見える手の立体は柔らかな明暗と接触影で支える。大きな目や短い手足を見本から取り込み、幼い年齢へ変えることを避ける。',
@@ -47,7 +48,7 @@ const mediaDefinitions=[
   avoid:['輪郭まで溶ける全面ぼかし、淡色に固定する配色','勝手な幼児化やちび化、ぬいぐるみやフリルの追加']
  },
  {
-  value:'夢彩ファンタジーアニメ',file:'world-035.jpg',group:'花霞・パステル・夢彩・宵彩',
+  value:'夢彩ファンタジーアニメ',file:'assets/style-dream-fantasy-original-v28-4-3.png',group:'花霞・パステル・夢彩・宵彩',
   text:'精密なアニメ線と柔らかな色面、素材ごとの小反射、奥へ開く空気で夢のある密度を作る。魔法使い・猫耳・ちび頭身・書庫を画風だけから追加しない。',
   drawing:'精密な細線、柔らかな色面、薄い絵画的な重ね色を全域で揃える。大きな構造を先に読み取れる形へ整理し、焦点に細部と小さな反射を集める。中景と遠景は細部の数を減らしながら、同じ場面の奥行きと素材を保つ。',
   personDrawing:'主参照の識別特徴と年齢感を精密な2Dアニメとして描く。描いた眼瞼、簡潔な鼻口、色面の頬、髪がある場合の束の大小を揃え、顔だけ写真へ戻さない。表情と頭身を見本から変更せず、ちび参照や明示したちび設定だけにその比率を適用する。',
@@ -57,7 +58,7 @@ const mediaDefinitions=[
   avoid:['猫耳・魔法帽・書物・特定の髪型を見本から追加する処理','画風を理由にしたポーズ変更、浮遊、ちび化']
  },
  {
-  value:'宵彩ゴシックアニメ',file:'japan-previews-v21/medium-06-09.jpg',group:'花霞・パステル・夢彩・宵彩',
+  value:'宵彩ゴシックアニメ',file:'assets/style-dusk-gothic-original-v28-4-3.png',group:'花霞・パステル・夢彩・宵彩',
   text:'精密な2Dの輪郭、広い深影、選択色の細い窓光と局所反射で静かな豪華さを描く。暗い美的ムードとホラーは別に扱い、薔薇・十字架・黒ドレスを追加しない。',
   drawing:'精密な2Dの有色輪郭、濃度差のある大きな影面、少数の細い明線で全域を描く。暗部にも重なりと素材の細部を残し、均一な黒い切り抜きにしない。焦点の明瞭な形と周辺の低密度で静かな主従を作る。',
   personDrawing:'主参照の特徴を精密な2Dアニメの眼瞼、簡潔な鼻口、顔の色面へ翻訳する。年齢感、性別表現、表情、髪型と識別色は保ち、退廃的な微笑みや銀髪を画風だけから追加しない。選択衣装は本来の形と被覆のまま濃淡と反射を描く。',
@@ -68,6 +69,7 @@ const mediaDefinitions=[
  }
 ];
 
+mediaDefinitions.push(...fantasyStyleDefinitions);
 export const referenceWorldMedia=mediaDefinitions.map(({value,file,text,checks,group})=>({value,file,text,checks:[...checks],group}));
 
 const sceneDefinitions=[
@@ -90,7 +92,7 @@ const sceneDefinitions=[
   ],checks:['深い星空と生活空間がつながる一つの奥行き','柔らかな小光と透明素材の縁の反射','星の形や動物を借りない独自の空間']
  },
  {
-  value:'水鏡の幻想空間',file:'world-002.jpg',fantasy:true,
+  value:'水鏡の幻想空間',file:'assets/scenes-original-v28-4-3/water-mirror-fantasy-space.jpg',fantasy:true,
   description:'ゆらぐ水の光、反射、屈折が室内の深度へ広がる透明な幻想空間。',
   sections:[
    section('水光の空間構造','実際に選ばれた支持面と建築の接続を保ち、床や壁の可視の面へゆらぐ水光を投影する。反射面、透過する層、奥の構造を一つの遠近でつなぎ、上下を別の背景へ交換しない。元の部屋の配置や特定の椅子を写さない。'),
@@ -99,7 +101,7 @@ const sceneDefinitions=[
   ],checks:['支持面と建築につながる水光の投影','近遠の縮尺と屈折・透過・反射の区別','元の支持とポーズを保つ幻想の透明感']
  },
  {
-  value:'花光のガラス庭園',file:'japan-landscape-v19.png',fantasy:true,
+  value:'花光のガラス庭園',file:'assets/scenes-original-v28-4-3/flower-light-glass-garden.jpg',fantasy:true,
   description:'植物の層と既存の透明面を通る薄い光、明るい空気と局所陰影が重なる庭園。',
   sections:[
    section('庭園の重なり','近い植物の縁、焦点の周辺、奥の枝葉や構造を同じ庭園の深度へ整理する。ガラスの境界は独自の構造と配置で用い、元の肖像の花飾りや隣の小動物を庭の定番にしない。接写なら見える後方の色面と薄い境界だけで空間を伝える。'),
@@ -108,7 +110,7 @@ const sceneDefinitions=[
   ],checks:['植物と透明面が重なる独自の庭園構造','広い明るい面と局所陰影','可視の距離に沿う細部密度と透明面の反射']
  },
  {
-  value:'ふわ彩の祝祭室',file:'world-009.jpg',fantasy:true,
+  value:'ふわ彩の祝祭室',file:'assets/scenes-original-v28-4-3/soft-color-celebration-room.jpg',fantasy:true,
   description:'柔らかな材質と光沢面、軽い紙の装飾が重なり、明るい祝祭の気配を持つ室内。',
   sections:[
    section('祝祭の室内配置','支持面と周囲の空間を明瞭にし、丸い形、薄い紙の縁、選択テーマに合う少数の祝祭装飾を大小で配置する。元画像の風船や贈り物の並びを再現せず、近景・焦点・背景の密度を変えた独自の構図にする。'),
@@ -117,7 +119,7 @@ const sceneDefinitions=[
   ],checks:['独自の祝祭室の配置と支持面','柔らかな素材・光沢面・薄い紙の質感差','明るい面にも残る重なりの影']
  },
  {
-  value:'和雅・花景',file:'japan-culture-v18.png',fantasy:false,
+  value:'和雅・花景',file:'assets/scenes-original-v28-4-3/wa-flower-scenery.jpg',fantasy:false,
   description:'和の建材、奥へ続く花景、自然光と素材の繊細な反射で静かな華やかさを作る。',
   sections:[
    section('和の空間と花の距離','選択した舞台に合う和の建材や自然の外形を独自に構成し、近い花の縁、中景の支持面、奥へ続く花景を同じ遠近へつなぐ。特定の桜道や元画像の配置を固定せず、明示した季節と環境を尊重する。'),
@@ -144,7 +146,7 @@ const sceneDefinitions=[
   ],checks:['独自の建築構造と高低・遮蔽','選択色の色硝子光と支持面の投影','暗部の素材差と静かな局所焦点']
  },
  {
-  value:'街角アニメ日和',file:'japan-everyday-scenes-v23-01.jpg',fantasy:false,
+  value:'街角アニメ日和',file:'assets/scenes-original-v28-4-3/urban-anime-day.jpg',fantasy:false,
   description:'現代の街の遠近、日中の方向光、素材と接地の自然さで日常の臨場感を作る舞台。',
   sections:[
    section('街角の遠近と接地','近い舗装の縁、主題がいる中景、奥の建材や道の先を同じ消失方向へつなぐ。建物、入口、道路の尺度と段差を揃え、支持と接地が自然に読める空間を作る。特定の地名・店舗・看板・ブランドを写さない。'),
@@ -229,7 +231,7 @@ export function referenceWorldMediumContract(value,{values={},noPerson=false,var
  const entry=mediaDefinitions.find(item=>item.value===value);
  if(!entry)return null;
  noPerson=isScenery(noPerson,values);
- const real=value==='宝石光彩リアル',jewel=value==='宝石光彩アニメ'||real;
+ const real=value==='宝石光彩リアル',polished=entry.rendering==='polished-anime',jewel=value==='宝石光彩アニメ'||real;
  const palette=paletteContract({...values,medium:value});
  const preservation=subjectContract(noPerson,values);
  const view=viewContract(values,variant,noPerson);
@@ -241,7 +243,7 @@ export function referenceWorldMediumContract(value,{values={},noPerson=false,var
   section('世界観ベース／カメラと可視範囲',view),
   section('世界観ベース／光と影の階層',noPerson?sceneSceneryText(entry.lighting):entry.lighting),
   section('世界観ベース／素材を保つ描画',noPerson?sceneSceneryText(entry.materials):entry.materials),
-  ...(!noPerson?[section('世界観ベース／見える表情と髪の条件',visibleFeaturesContract(values,variant,real))]:[]),
+  ...(!noPerson?[section('世界観ベース／見える表情と髪の条件',visibleFeaturesContract(values,variant,real).replace(polished?'顔・見える手・髪がある場合の束も、景物と同じ2Dの線と描いた色面で統一する。':'___NO_REPLACEMENT___',polished?'顔・見える手・髪も、背景と同じアニメ造形・精密な線・柔らかな連続陰影で統一する。':'___NO_REPLACEMENT___'))]:[]),
   ...(jewel?[section('世界観ベース／焦点にも届く鋭い光',noPerson
    ?jewelSceneryContract()
    :jewelSurfaceContract(real))]:[]),
@@ -253,7 +255,7 @@ export function referenceWorldMediumContract(value,{values={},noPerson=false,var
   ...(noPerson?['選択した景物・物体・図案だけの描画']:[nonHumanSource?'独自の主役と明示条件、修正時の生成済み識別特徴保持':'同じ主役の年齢感・性別表現・髪型・識別色',nonHumanSource?'見える表情と明示条件または生成済み主役の頭身の保持':'見える表情と選択または参照の頭身の保持','選択衣装の形・被覆・構造の保持']),
   ...(jewel?[noPerson?'主景の局所光と接触部の深い影':'露出して見える肌全域と存在する髪・衣装・景物に、材質別の光彩と強い局所陰影。選択被覆を保持し露出を増やさない']:[])
  ];
- const method=(real?'Build the selected scene as a high-detail photographic image with '+(noPerson?'natural geometry':'natural anatomy')+' and material optics. ':'Completely redraw the selected scene as precise hand-drawn Japanese 2D anime, using drawn lines, planned shadow shapes and layered colour. ')+(noPerson?'Apply this only to the selected scenery, objects or flat motif. ':nonHumanSource?'Create an original actor only for the explicitly selected person output; keep the generated actor identity during repairs. Never reconstruct a face from the non-person source or borrow the drawing master character. Preserve the selected clothing, age impression, proportions, pose and visible expression. ':'Preserve the recognizable reference identity and selected clothing, age impression, proportions, pose and visible expression. ')+sections.map(s=>s.text).join(' ');
+ const method=(polished?'Completely redraw the selected scene as a polished Japanese anime digital illustration, combining stylized identity geometry, fine drawing, softly painted continuous shading and tiny sharp material highlights. Do not force flat cel shading, a photographic face, crystal skin, or a plastic doll. ':real?'Build the selected scene as a high-detail photographic image with '+(noPerson?'natural geometry':'natural anatomy')+' and material optics. ':'Completely redraw the selected scene as precise hand-drawn Japanese 2D anime, using drawn lines, planned shadow shapes and layered colour. ')+(noPerson?'Apply this only to the selected scenery, objects or flat motif. ':nonHumanSource?'Create an original actor only for the explicitly selected person output; keep the generated actor identity during repairs. Never reconstruct a face from the non-person source or borrow the drawing master character. Preserve the selected clothing, age impression, proportions, pose and visible expression. ':'Preserve the recognizable reference identity and selected clothing, age impression, proportions, pose and visible expression. ')+sections.map(s=>s.text).join(' ');
  return {medium:value,value,known:true,family:real?'photography':'luminous-anime',drawingCore,preservation,palette:palette.text,lighting:noPerson?sceneSceneryText(entry.lighting):entry.lighting,depth:view,sections,checks,method,executionMethod:method};
 }
 

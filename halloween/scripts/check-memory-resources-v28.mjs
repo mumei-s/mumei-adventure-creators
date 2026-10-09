@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import {inspectImageResource,readRasterDimensions,createImagePreview,IMAGE_RESOURCE_LIMITS} from '../image-resources.js?v=28.4.2';
-import {renderLayoutPng,createLayoutPanel} from '../layout-export.js?v=28.4.2';
-import {buildReferenceBoard} from '../guide-board.js?v=28.4.2';
-import {createHistoryPersistence} from '../history-persistence.js?v=28.4.2';
-import {restoreHistoryRecord,clearRestoredHistoryCache,restoredHistoryCacheInfo} from '../history-storage.js?v=28.4.2';
+import {inspectImageResource,readRasterDimensions,createImagePreview,IMAGE_RESOURCE_LIMITS} from '../image-resources.js?v=28.4.3';
+import {renderLayoutPng,createLayoutPanel} from '../layout-export.js?v=28.4.3';
+import {buildReferenceBoard} from '../guide-board.js?v=28.4.3';
+import {createHistoryPersistence} from '../history-persistence.js?v=28.4.3';
+import {restoreHistoryRecord,clearRestoredHistoryCache,restoredHistoryCacheInfo} from '../history-storage.js?v=28.4.3';
 
 const png=(width,height)=>{const bytes=new Uint8Array(32),view=new DataView(bytes.buffer);bytes.set([137,80,78,71,13,10,26,10]);view.setUint32(8,13);bytes.set(new TextEncoder().encode('IHDR'),12);view.setUint32(16,width);view.setUint32(20,height);return new File([bytes],'fixture.png',{type:'image/png'});};
 const source=png(4000,3000),originalBytes=await source.arrayBuffer();

@@ -1576,9 +1576,7 @@ export const individualSamples={
   "cell": 20
  },
  "costume\u0000ユニコーン": {
-  "file": "costume-022.jpg",
-  "sheet": "costume-v6-01",
-  "cell": 21
+  "file": "assets/costume-unicorn-original-v28-4-3.png"
  },
  "costume\u0000不死鳥": {
   "file": "costume-023.jpg",
@@ -1711,9 +1709,7 @@ export const individualSamples={
   "cell": 11
  },
  "costume\u0000エイリアン": {
-  "file": "costume-049.jpg",
-  "sheet": "costume-v6-02",
-  "cell": 12
+  "file": "assets/costume-alien-original-v28-4-3.png"
  },
  "costume\u0000パワードスーツ": {
   "file": "costume-050.jpg",

@@ -1,17 +1,17 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.2';
-import {applyCollection} from '../collection.js?v=28.4.2';
-import {initialSelections} from '../modes.js?v=28.4.2';
-import {buildDirection} from '../direction.js?v=28.4.2';
-import {applyPose} from '../poses.js?v=28.4.2';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.2';
-import {composePrompt} from '../prompt.js?v=28.4.2';
-import {renderChatInput,renderInput} from '../compiled-production.js?v=28.4.2';
-import {imageOutputContract,imageDeliveryRepairPrompt,nativeImageRequest} from '../output-contract.js?v=28.4.2';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.3';
+import {applyCollection} from '../collection.js?v=28.4.3';
+import {initialSelections} from '../modes.js?v=28.4.3';
+import {buildDirection} from '../direction.js?v=28.4.3';
+import {applyPose} from '../poses.js?v=28.4.3';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.3';
+import {composePrompt} from '../prompt.js?v=28.4.3';
+import {renderChatInput,renderInput} from '../compiled-production.js?v=28.4.3';
+import {imageOutputContract,imageDeliveryRepairPrompt,nativeImageRequest} from '../output-contract.js?v=28.4.3';
 
 const profile={displayName:'春野 澪',activityEnabled:false,topics:[]},random=()=>.28;
-let count=0,total=0,max=0;
+let count=0,total=0,max=0,blocked=0;
 const samples=[];
 for(const mode of ['halloween','everyday']){
  applyCollection(mode);
@@ -21,10 +21,15 @@ for(const mode of ['halloween','everyday']){
   const variant=applyPose(buildDirection([],values.mood,random,mode,values),values.pose);
   const plan=productionPlan(profile,values,variant,mode,random);
   const result={edition:'NATIVE-19',prompt:composePrompt({profile,values,variant,collection:mode,preparedPlan:plan,edition:'NATIVE-19'})};
-  assert.ok(result.prompt.startsWith(imageOutputContract[0]+'\n'+nativeImageRequest));
+  const errors=plan.issues.filter(issue=>issue.severity==='error');
+  if(errors.length){
+   assert.match(result.prompt,/^【選択の不成立：画像生成を停止】/);
+   for(const issue of errors)assert(result.prompt.includes(issue.reason));
+   assert(!result.prompt.includes(nativeImageRequest)&&!result.prompt.includes(imageOutputContract[0]));
+   blocked++;
+  }else assert.ok(result.prompt.startsWith(imageOutputContract[0]+'\n'+nativeImageRequest));
   assert.doesNotMatch(result.prompt,/"required_before_details"|"cultural_foundation"|【実画像での完成検査】|60秒以内|合格基準|第2段階/);
-  assert.match(result.prompt,/通常の生成画像として表示/);
-  assert.match(result.prompt,/非表示の再生成ループは行わない/);
+  if(!errors.length){assert.match(result.prompt,/通常の生成画像として表示/);assert.match(result.prompt,/非表示の再生成ループは行わない/);assert.match(result.prompt,/【短い統合制作指示】/);}
   const chatInput=renderChatInput(plan),structured=JSON.parse(renderInput(plan).split('\n\n【全選択の個別レシピ】')[0]);
   for(const clause of Object.values(structured.required_before_details))assert.ok(chatInput.includes(clause));
   assert.ok(chatInput.includes(structured.identity));
@@ -45,7 +50,7 @@ for(const mode of ['halloween','everyday']){
  }
 }
 applyCollection('halloween');
-const report={date:'2026-10-07',scope:'Prompt and handoff regression; no claim of ChatGPT 5.5 runtime or native UI validation',count,promptCharacters:{mean:Math.round(total/count),max},samples};
+const report={date:'2026-10-07',scope:'Prompt and handoff regression; no claim of ChatGPT 5.5 runtime or native UI validation',count,blocked,promptCharacters:{mean:Math.round(total/count),max},samples};
 if(process.argv.includes('--save')){
  const dir=new URL('../verification/v19/',import.meta.url);fs.mkdirSync(dir,{recursive:true});
  fs.writeFileSync(new URL('native-handoff.json',dir),JSON.stringify(report,null,2));

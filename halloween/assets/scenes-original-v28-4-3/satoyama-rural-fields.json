@@ -1,0 +1,20 @@
+{
+  "n": 3,
+  "title": "里山と田園風景",
+  "slug": "satoyama-rural-fields",
+  "prompt": "Use case: illustration-story. Asset: ONE original square environment illustration for a Japanese creative website's scene chooser. Complete actual illustrated scenery, refined professional background artwork with convincing depth, natural material texture, soft neutral environmental light, restrained colour and delicate lines. Show specified scene clearly, no title-only placeholder. Environment fills image; foreground/middle/background connected in consistent perspective. No people, faces or human-shaped shadows, no artist references, no copying existing artworks, no lantern, fantasy glow, logos, text/labels, collage or multi-panel contact sheet. Exactly one finished image. Scene: An original quiet Japanese rural satoyama landscape in early summer daylight. Foreground rice paddies with narrow earthen raised paths and young rice shoots, middle ground tiled farmhouses and a small grove, low wooded hills in the background. Irrigation water and field edges follow consistent terrain. Calm green agriculture scenery with distinctive cultivated plots, natural working traces but no workers or machinery. Balanced wide view.",
+  "source": "/workspace/scratch/ad16ee694a48/generated_images/exec-35d489cb-8361-4dfc-a15d-c71511e2735e.png",
+  "file": "satoyama-rural-fields.jpg",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "6cbe5e21147cdb2b995c47c7b911b17ac643a058ffb7089c3315e3734ead17f5",
+  "processing": "Original generated resolution kept; RGB JPEG q85 encoding only",
+  "visualQA": {
+    "status": "accepted",
+    "method": "Individual review of the full generated output; file checks are separate from visual scene assessment.",
+    "observations": "水田の区画と畦道、生活寸法の家々、奥の樹林と里山を同じ初夏の景色として描いている。田畑と自然の丘がつながる。"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "medium": "クリスタルホログラム造形アニメ",
+  "asset": "assets/style-crystal-hologram-original-v28-4-3.png",
+  "generator": "built-in image_gen",
+  "prompt": "Use case: stylized-concept.\nAsset type: one original square high-detail preview painting for the drawing style “クリスタルホログラム造形アニメ” (crystal hologram sculptural anime). No lettering or UI.\nPrimary request: a fully clothed original adult anime person whose VISIBLE FACE, HAIR, NECK AND HANDS are actual thick transparent crystal glass with strong physically coherent refraction, rather than opaque skin under a shiny finish.\nScene: a small quiet Japanese rooftop greenhouse under evening light. Behind the person's head are dark horizontal window crossbars and green broad leaves. These crossbars and leaf contours must be recognizably transmitted, sharply displaced and bent INSIDE the transparent forehead, both cheeks, nose and clear glass lips. The glass face is NOT a human skin-colored mask. No lanterns.\nSubject: a mature androgynous adult with a short cropped hairstyle made from a few clear glass locks, long rectangular face and natural anime eye proportions. They wear an opaque dark aubergine long-sleeved high-collar utility jacket, closed at the neck, with an overlapping stitched front, and stand relaxed beside the greenhouse wall. One hand holds the opposite jacket cuff at waist level so the fingers have a clear simple contact; no extra held prop.\nFraming: chest-up composition from a slightly elevated three-quarter LEFT view with head upright and expression quietly curious, looking to their right. Face takes up a large central area, at least one quarter of the image height. Include both hands at the bottom, keep fingertips in frame. NOT a frontal glamour portrait; no wide angle distortion. This is a completely new character and composition, no artist or other image reference.\nAnime construction: precise colored hand-drawn eye lids, pupils, eyebrows, nose and lip contour lines suspended INSIDE the transparent crystal. All head and hand contours are naturally connected anatomical shapes. The face is sculpted glass with subtle broad planes and curved cheeks: distinguish thick dark double internal edges from thin bright edges. Do not replace the human outline with an unrecognizable polygonal head. NO ordinary pink lips or peach cheeks, no pores, no photo skin, no painted opaque face.\nGlass material: broad fully transparent regions across forehead and both cheeks, the nose is clear projecting glass with refraction increasing through its thickness, lips are a transparent curved glass boundary. Behind them, window lines kink where they cross the glass planes. Show dark secondary internal reflections set behind bright edges, a few wider cyan-violet-rose-pale-gold thin-film interference bands that curve with the glass face/neck/hand surfaces. Hair has translucent sculpted locks with internal dark reflections and faint smoky plum identity tint. These are solid thick crystal forms, NOT scanning hologram sheets and not diffuse ghost fog.\nCoverage: jacket remains opaque matte cloth with coherent cel shadows and real folds, fully covering the torso and arms; visible glass neck and hands extend naturally from the cuffs and collar. Never show the body through covered clothing or add anatomy inside the glass.\nLighting: a concentrated white side-back light gives a few narrow brilliant edges, beside deep dark plum shadow reflections; transmitted spectral caustics touch the adjacent greenhouse wall in a consistent direction. Background remains readable in dark planes, no white haze.\nAvoid: rings, circle motifs, magic circles, pedestals, display stands, crystals floating around the person, crystal crowns, gemstones or jewel necklaces, lanterns, pumpkins, borrowed faces, logos, labels, watermarks, particle confetti. The actual transparent face and hands must demonstrate thickness, broad background refraction, and darker double internal reflections, so this sample is visibly different from flat projection hologram anime and thin translucent cel-color anime.",
+  "source": "/workspace/scratch/ad16ee694a48/generated_images/exec-f59473dc-e1ab-488d-9faf-577cca052562.png",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "02ad9a8227ac0e541872636b1e2dfac9026bef86a232a24844d1f740f0a4af31",
+  "processing": "Original generated PNG copied byte for byte; no image content edits.",
+  "visualQA": {
+    "status": "accepted",
+    "method": "Individual human-style visual review of full generated output; not an automatic optical proof.",
+    "observations": [
+      "額・頬・鼻・透明な唇の内部を背景の窓の横桟と緑の葉が通り、中心に通常の肌色のマスクが残っていない。",
+      "鼻と顎の厚い縁、頬の広面、透明な髪束と手には明るい稜線と暗い二重内部反射があり、投影の薄膜と区別できる厚いガラス材質を示している。",
+      "目の形・眼瞼・鼻口の簡潔な内部色線で成人のアニメ造形を保っている。顔に細かい写真的な肌質や不透明なピンクの唇はない。",
+      "茄子色の高い襟と閉じたジャケットは不透明な布で、人体が透ける衣装には変えていない。手は袖口を持つ接触と自然な接続を保つ。",
+      "側後方の光に対応する干渉帯・壁の小さな虹の焦線が見え、ランタン・大きな円環・台座・文字は存在しない。"
+    ]
+  }
+}

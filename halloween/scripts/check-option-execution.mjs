@@ -1,21 +1,21 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.2';
-import {applyCollection} from '../collection.js?v=28.4.2';
-import {initialSelections} from '../modes.js?v=28.4.2';
-import {buildDirection} from '../direction.js?v=28.4.2';
-import {applyPose} from '../poses.js?v=28.4.2';
-import {productionPlan} from '../production-plan.js?v=28.4.2';
-import {renderInput} from '../compiled-production.js?v=28.4.2';
-import {optionRecipe} from '../option-recipes.js?v=28.4.2';
-import {mediumExecution} from '../medium-execution.js?v=28.4.2';
-import {formatExecution} from '../format-execution.js?v=28.4.2';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.3';
+import {applyCollection} from '../collection.js?v=28.4.3';
+import {initialSelections} from '../modes.js?v=28.4.3';
+import {buildDirection} from '../direction.js?v=28.4.3';
+import {applyPose} from '../poses.js?v=28.4.3';
+import {productionPlan} from '../production-plan.js?v=28.4.3';
+import {renderInput} from '../compiled-production.js?v=28.4.3';
+import {optionRecipe} from '../option-recipes.js?v=28.4.3';
+import {mediumExecution} from '../medium-execution.js?v=28.4.3';
+import {formatExecution} from '../format-execution.js?v=28.4.3';
 
 const random=()=>.28,profile={displayName:'TEST',activityEnabled:false,topics:[],biography:''};
-const entries=new Map();let occurrences=0;
-assert.equal(mediumExecution.size,115);
+const entries=new Map(),expectedChoices=new Set();let occurrences=0,expectedOccurrences=0;
+assert.equal(mediumExecution.size,questions.find(q=>q.key==='medium').groups.flatMap(g=>g.values).length);
 assert.equal(formatExecution.size,48);
-assert.equal(new Set(mediumExecution.values()).size,115);
+assert.equal(new Set(mediumExecution.values()).size,mediumExecution.size);
 assert.equal(new Set(formatExecution.values()).size,48);
 function produce(values,mode){
  const variant=applyPose(buildDirection([],values.mood,random,mode,values),values.pose);
@@ -24,6 +24,7 @@ function produce(values,mode){
 }
 for(const mode of ['halloween','everyday']){
  applyCollection(mode);
+ for(const q of questions)for(const value of q.groups.flatMap(g=>g.values)){expectedChoices.add(q.key+'\0'+value);expectedOccurrences++;}
  const base=resolveSelections({...initialSelections(),costume:'参照画像の衣装を生かす',type:'セリフのみ'},random);
  for(const q of questions)for(const value of q.groups.flatMap(g=>g.values)){
   const values={...base,[q.key]:value};
@@ -63,7 +64,7 @@ for(const mode of ['halloween','everyday']){
  assert.ok(blocked.json.typography.line.method.includes('画像には描かない'));
 }
 applyCollection('halloween');
-assert.equal(entries.size,724);assert.equal(occurrences,1287);
+assert.equal(entries.size,expectedChoices.size);assert.equal(occurrences,expectedOccurrences);
 const byKey=Object.fromEntries([...new Set([...entries.values()].map(e=>e.key))].map(key=>[key,[...entries.values()].filter(e=>e.key===key).length]));
 const report={date:'2026-10-08',scope:'Per-option execution input coverage; not generated-image acceptance',unique:entries.size,occurrences,byKey,entries:[...entries.values()]};
 if(process.argv.includes('--save')){

@@ -1,5 +1,5 @@
-import {editorialReferencesFor} from './editorial-reference-sources.js?v=28.4.2';
-import {formatTextPolicy,limitedNewspaperLayout} from './format-recipes.js?v=28.4.2';
+import {editorialReferencesFor} from './editorial-reference-sources.js?v=28.4.3';
+import {formatTextPolicy,limitedNewspaperLayout} from './format-recipes.js?v=28.4.3';
 // The selected title defines the layout. Medium defines image rendering independently.
 const rows=[
  ['週刊誌の表紙','cover','日本の週刊誌表紙。上端の独自題字、中央主図版、左右に縦組みの太い特集見出し、下部に横見出しと小さな補足。高い情報密度でも顔と重要な形を避ける。本文の長い段組みは内ページへ分離する。','独自題字／縦見出し／横見出し／中央主図版／補助特集の明確な階層'],
@@ -54,7 +54,7 @@ const rows=[
 export const formatSpecs=Object.fromEntries(rows.map(([value,kind,layout,checks])=>[value,{value,kind,layout,checks:checks.split('／'),references:editorialReferencesFor(value)}]));
 export function formatFor(value){return typeof value==='string'&&Object.hasOwn(formatSpecs,value)?formatSpecs[value]:{value,kind:'custom',layout:'自由指定「'+value+'」の用途・情報の順序・画像と文字の面積を読み取り、その形式の構造を具体化する。',checks:['自由指定の形式・情報順序・画像領域']};}
 export function formatContract(values){
- const f=formatFor(values.design),{noText,limited}=formatTextPolicy(values),noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume||'');
+ const f=formatFor(values.design),{noText,limited,authority}=formatTextPolicy(values),noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume||'');
  const references=f.references||[],main=noPerson?'主題の景物・建築・物体':'主役の顔・頭・手・膝・足先と主題の道具';
  return [
   '配置・画像領域・文字の読み順は、上記の選択形式「'+values.design+'」の個別制作仕様に従う。別の文字設定を選んでもデザイン自体を別形式へ置換しない。',
@@ -66,7 +66,7 @@ export function formatContract(values){
   '形式は情報配置と画面構成を担当する。主画像の描線・陰影・素材は選択画風、色相と面積は選択配色で描き、形式名を理由に写真・平面塗り・コピー印刷・白黒へ変えない。',
   '完成は正面から見た平らな完成図版とし、選んだ比率の全面を作品に使う。机上の雑誌・開いた実物・額入り作品・端末画面を撮るモックアップへ置換しない。',
   noPerson?'画像領域には選択した風景・物体・紋章とその視点を配置する。肖像や衣装用の領域にも人物・人型の顔・マネキンを補わない。':'画像領域の中で指定ポーズ・表情・顔角度を保つ。形式を成立させるために身体動作を別のポーズへ変えない。',
-  noText?'文字なしの指定を厳守し、文字・数字・ロゴ・署名・疑似文字を描かない。情報用の領域は個別仕様に従って図版と自然な余白に使い、空欄のフォームや本文風の線を補わない。':limited?'限定した文字設定を厳守し、下記の確定原稿だけを個別仕様の領域に配置する。未許可の誌名・本文・ページ番号・キャッチ・署名を補完しない。':'下記の確定原稿の役割を個別仕様の対応領域へ割り当てる。原稿にない文言・番号・刊行情報は追加せず、用意した本文を見出しの反復で代用しない。',
+  noText?'文字なしの指定を厳守し、文字・数字・ロゴ・署名・疑似文字を描かない。情報用の領域は個別仕様に従って図版と自然な余白に使い、空欄のフォームや本文風の線を補わない。':authority==='selected'?'明示した文字設定でデザインの標準原稿を置き換える。下記の確定原稿と許可編集の役割だけを各一度、選択デザインの領域へ配置する。未許可の誌名・題名・名前・本文・ページ番号・キャッチ・署名を補完しない。':'下記のデザイン標準原稿の役割を個別仕様の対応領域へ各一度割り当てる。原稿にない文言・番号・刊行情報は追加せず、用意した本文を見出しの反復で代用しない。',
   f.kind==='spread'?'中央の綴じ安全帯と左右の外周余白は、見開きの個別仕様の幅を保つ。綴じ安全帯は細線で代用せず、低密度の背景色にした実幅のある空きとして確保する。'+main+'は個別仕様の安全箱へ収め、横幅が超える場合は主画像全体を縮める。'+(noText?'中央の空きを数字や記号で埋めない。':'許可された文字列も綴じ安全帯を横断させない。'):'各形式の個別仕様で定めた外周・切り抜き・折れ位置の安全余白を保ち、'+main+'の重要な輪郭を安全領域内へ収める。',
   noText?'縮小しても主題の輪郭が読み取れるよう、図版の大小と余白の間隔を整える。文字や記号を可読性の補助として追加しない。':(limited?'許可された原稿の範囲内で':'確定原稿に存在する役割の間で')+'大小と明度差を使い、字間・行間・読み順を整える。'+(noPerson?'主景の識別に必要な形':'目・口・手指')+'へ文字を重ねず、装飾枠を増やすだけの編集にしない。'
  ];

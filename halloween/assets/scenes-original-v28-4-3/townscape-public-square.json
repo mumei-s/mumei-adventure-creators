@@ -1,0 +1,20 @@
+{
+  "n": 12,
+  "title": "街並みと広場",
+  "slug": "townscape-public-square",
+  "prompt": "Use case: illustration-story. Asset: ONE original square environment illustration for a Japanese creative website's scene chooser. Complete actual illustrated scenery, refined professional background artwork with convincing depth, natural material texture, soft neutral environmental light, restrained colour and delicate lines. Show specified scene clearly, no title-only placeholder. Environment fills image; foreground/middle/background connected in consistent perspective. No people, faces or human-shaped shadows, no artist references, no copying existing artworks, no lantern, fantasy glow, logos, text/labels, collage or multi-panel contact sheet. Exactly one finished image. Scene: An original quiet Japanese TOWN SQUARE surrounded by modest contemporary and traditional buildings in mild daytime. Broad open paved plaza is the dominant foreground/middle ground, a few planters and one empty bench near edges, connected small side streets beyond. Background mixture of two-storey timber shopfronts and restrained modern community building, varied rooflines and windows with natural proportions. Clearly spacious public gathering square rather than a narrow long street. No iconic landmarks, crowds, people, vehicles, readable signs or logos.",
+  "source": "/workspace/scratch/ad16ee694a48/generated_images/exec-084272af-8e17-4974-97de-6a5ecd79b9a5.png",
+  "file": "townscape-public-square.jpg",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "5f96ac2fe9d05d1c183a8b7c3eae11a2634710995ce65127066b0ad802d99b92",
+  "processing": "Original generated resolution kept; RGB JPEG q85 encoding only",
+  "visualQA": {
+    "status": "accepted",
+    "method": "Individual review of the full generated output; file checks are separate from visual scene assessment.",
+    "observations": "広い公共広場、植栽とベンチ、周囲の異なる家と公共建築が同じ縮尺で見える。狭い街路図版とは異なる広場を主役にしている。"
+  }
+}

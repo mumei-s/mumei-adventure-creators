@@ -1,17 +1,17 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {drawingReferenceFor,drawingReferenceInstructions,loadDrawingReferences,deliveryImageFiles} from '../drawing-references.js?v=28.4.2';
-import {sampleFor} from '../examples.js?v=28.4.2';
-import {compactHistoryRecord,restoreHistoryRecord} from '../history-storage.js?v=28.4.2';
-import {makeZip} from '../zip.js?v=28.4.2';
-import {applyCollection} from '../collection.js?v=28.4.2';
-import {initialSelections} from '../modes.js?v=28.4.2';
-import {resolveSelections} from '../catalog.js?v=28.4.2';
-import {buildDirection} from '../direction.js?v=28.4.2';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.2';
-import {composePrompt} from '../prompt.js?v=28.4.2';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.2';
+import {drawingReferenceFor,drawingReferenceInstructions,loadDrawingReferences,deliveryImageFiles} from '../drawing-references.js?v=28.4.3';
+import {sampleFor} from '../examples.js?v=28.4.3';
+import {compactHistoryRecord,restoreHistoryRecord} from '../history-storage.js?v=28.4.3';
+import {makeZip} from '../zip.js?v=28.4.3';
+import {applyCollection} from '../collection.js?v=28.4.3';
+import {initialSelections} from '../modes.js?v=28.4.3';
+import {resolveSelections} from '../catalog.js?v=28.4.3';
+import {buildDirection} from '../direction.js?v=28.4.3';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.3';
+import {composePrompt} from '../prompt.js?v=28.4.3';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.3';
 
 const root=new URL('../',import.meta.url),anime=drawingReferenceFor('宝石光彩アニメ'),real=drawingReferenceFor('宝石光彩リアル');
 assert.notEqual(anime.file,real.file);
@@ -40,8 +40,8 @@ await assert.rejects(loadDrawingReferences([{...real,file:'https://example.test/
 const localRefs=Array.from({length:4},(_,i)=>({file:new File(['ORIGINAL USER IMAGE '+i],'user-'+i+'.png',{type:'image/png'}),role:i?'support':'identity'}));
 const result={isFresh:true,prompt:'CHARACTER IDENTITY + DRAWING ONLY + ALL SELECTED CONDITIONS',values:{medium:anime.medium},references:localRefs.map((r,i)=>({name:'reference-'+i+'.png',role:r.role})),localRefs,drawingReferences:[anime],localDrawingRefs:drawingRefs};
 const images=deliveryImageFiles(result);assert.equal(images.length,5,'Four user uploads plus one separate drawing input');
-for(let i=0;i<4;i++)assert.equal(await images[i+1].text(),await localRefs[i].file.text());
-assert.equal(images[0].name,anime.name);assert.equal(images[0].type,'image/png');
+for(let i=0;i<4;i++)assert.equal(await images[i].text(),await localRefs[i].file.text());
+assert.equal(images[4].name,anime.name);assert.equal(images[4].type,'image/png');
 assert.equal(deliveryImageFiles({...result,localRefs:[]}).length,1,'Direct ChatGPT attachment mode still transfers the drawing master');
 
 const app=fs.readFileSync(new URL('app.js',root),'utf8'),nodes=new Map();let payload,zipBlob;
@@ -49,7 +49,7 @@ const $=id=>{if(!nodes.has(id))nodes.set(id,{textContent:'',disabled:false,hidde
 const context={currentResult:result,deliveryImageFiles,shareFiles:r=>[...deliveryImageFiles(r),new File([r.prompt],'prompt.txt',{type:'text/plain'})],canShareFiles:()=>true,navigator:{share:async data=>{payload=data;}},$,makeZip,TextEncoder,Uint8Array,download:blob=>{zipBlob=blob;},tell(){},needsReference:()=>true,creatorDisplayLabel:()=>''};
 vm.createContext(context);
 vm.runInContext(app.slice(app.indexOf('async function shareAll()'),app.indexOf('async function imagePNG')),context);
-await context.shareAll();assert.equal(payload.files.length,5);assert.equal(payload.text,result.prompt);assert.equal(payload.files[0].name,anime.name);
+await context.shareAll();assert.equal(payload.files.length,5);assert.equal(payload.text,result.prompt);assert.equal(payload.files[4].name,anime.name);
 vm.runInContext(app.slice(app.indexOf('async function downloadKit()'),app.indexOf('function renderHistory()')),context);
 await context.downloadKit();assert.ok(zipBlob,'The production ZIP must be generated');
 const archive=Buffer.from(await zipBlob.arrayBuffer()),entries=new Map();let offset=0;

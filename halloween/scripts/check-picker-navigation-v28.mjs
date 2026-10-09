@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import {createPicker} from '../picker.js?v=28.4.2';
-import {pickerRecords} from '../picker-priority.js?v=28.4.2';
-import {questions,visibleQuestions} from '../catalog.js?v=28.4.2';
-import {applyCollection} from '../collection.js?v=28.4.2';
-import {ringPosition,restingRingPosition,pagePatternTone} from '../ring-motion.js?v=28.4.2';
+import {createPicker} from '../picker.js?v=28.4.3';
+import {pickerRecords} from '../picker-priority.js?v=28.4.3';
+import {questions,visibleQuestions} from '../catalog.js?v=28.4.3';
+import {applyCollection} from '../collection.js?v=28.4.3';
+import {ringPosition,restingRingPosition,pagePatternTone} from '../ring-motion.js?v=28.4.3';
 
 // Short screens retain a 360px scrollable canvas rather than crushing its cards.
 // Exercise measured card bounds and two-line labels at all supported widths.
@@ -42,7 +42,7 @@ class Node{
  get clientHeight(){return surface.open?height:0;}
  getBoundingClientRect(){return {left:0,top:0,width,height};}
 }
-let width=390,height=360,now=1000,frames=[],observer,chosen=[],selection={};
+let width=390,height=360,now=1000,frames=[],observer,chosen=[],selection={},favoriteEvents=[];
 const ids=new Map(),$=id=>{if(!ids.has(id)){const n=new Node(id==='picker-category'?'select':'div');n.id=id;ids.set(id,n);}return ids.get(id);};
 const surface=$('picker'),canvas=new Node('div','picker-canvas'),stage=$('ring-stage');stage.className='ring-stage';canvas.append(stage,$('picker-options'));surface.append(canvas);stage.append($('ring-focus'),$('ring-options'));$('ring-focus').className='ring-focus';
 const windowEvents={};globalThis.window={innerWidth:width,innerHeight:700,addEventListener:(k,fn)=>(windowEvents[k]??=[]).push(fn)};globalThis.innerWidth=width;
@@ -51,7 +51,7 @@ globalThis.localStorage={getItem:()=>null,setItem(){}};
 globalThis.requestAnimationFrame=fn=>{frames.push(fn);};globalThis.getComputedStyle=()=>({getPropertyValue:()=>width<620?'72px':'76px'});
 globalThis.ResizeObserver=class{constructor(fn){observer=fn;}observe(){}};
 Object.defineProperty(globalThis,'performance',{value:{now:()=>now},configurable:true});
-const el=(tag,cls,text)=>new Node(tag,cls,text),picker=createPicker({$,el,sampleNode:(key,value)=>el('span','sample-thumb',value),readSelection:()=>selection,choose:value=>chosen.push(value),onCustom(){},tell(){},artworkBasis:value=>({value,basis:['描線の基準'],checks:['輪郭を確認'],avoid:['別の技法を混ぜない'],references:[{title:'技法資料',url:'https://example.test/technique',kind:'technique',note:'製法を確認'}],status:'documented'})});
+const el=(tag,cls,text)=>new Node(tag,cls,text),picker=createPicker({$,el,sampleNode:(key,value)=>el('span','sample-thumb',value),readSelection:()=>selection,choose:value=>chosen.push(value),onCustom(){},tell(){},onFavoritesChange:snapshot=>favoriteEvents.push(snapshot),artworkBasis:value=>({value,basis:['描線の基準'],checks:['輪郭を確認'],avoid:['別の技法を混ぜない'],references:[{title:'技法資料',url:'https://example.test/technique',kind:'technique',note:'製法を確認'}],status:'documented'})});
 const flush=()=>{const pending=frames;frames=[];pending.forEach(fn=>fn());};
 const label=()=>surface.querySelector('.ring-current-category'),basis=()=>surface.querySelector('.artwork-basis-panel');
 const bounds=()=>[...$('ring-options').children].map(card=>Math.abs(parseFloat(card.styles['--ry']))*height/100-card.offsetHeight*parseFloat(card.styles['--orbit-scale'])/2);
@@ -78,7 +78,15 @@ const laterValue=originalMedia.at(-1);selection={medium:laterValue};picker.open(
 assert.equal($('ring-focus').querySelector('b').textContent,laterValue,'Reopening restores the actual selected preset');
 $('ring-focus').querySelector('.favorite-toggle').click();selection={};picker.open(mediumQuestion);flush();
 assert.equal($('picker-page').textContent.split(' / ')[0],'1');assert.equal($('ring-options').children[0].dataset.value,laterValue,'Saved favorite moves to the first page');
-assert.equal($('ring-focus').querySelector('b').textContent,laterValue);$('ring-focus').querySelector('.favorite-toggle').click();
+assert.equal($('ring-focus').querySelector('b').textContent,laterValue);
+assert.deepEqual(picker.getFavorites()['halloween:medium'],[laterValue]);const detached=picker.getFavorites();detached['halloween:medium'].push('unexpected');assert.deepEqual(picker.getFavorites()['halloween:medium'],[laterValue],'Returned favorites cannot mutate stored state');
+$('picker-category').value='★ お気に入り';$('picker-category').emit('change');assert.equal($('ring-options').children.length,1);assert.equal($('ring-options').children[0].dataset.value,laterValue,'Favorite filter only contains saved choices');
+assert.equal(picker.removeFavorite('medium',laterValue,'everyday'),false,'Removing from another collection leaves this collection intact');
+assert.equal(picker.removeFavorite('medium',laterValue,'halloween'),true);assert.equal($('ring-options').children.length,0);assert.match($('ring-focus').querySelector('p').textContent,/お気に入りはまだ/);assert.equal(favoriteEvents.length,2,'Add and external remove notify the main favorites shelf');
+assert.deepEqual(favoriteEvents.at(-1)['halloween:medium'],[]);
+windowEvents.storage.forEach(callback=>callback({key:'halloween-option-favorites-v1',newValue:JSON.stringify({'halloween:medium':[laterValue],'everyday:medium':['ちびキャラ']})}));
+assert.equal($('ring-options').children[0].dataset.value,laterValue,'Favorite filter follows cross-tab changes');assert.equal(favoriteEvents.length,3);assert.deepEqual(picker.getFavorites()['everyday:medium'],['ちびキャラ']);
+picker.removeFavorite('medium',laterValue,'halloween');picker.removeFavorite('medium','ちびキャラ','everyday');
 picker.open(mediumQuestion);flush();assert.equal($('ring-options').children[0].dataset.value,'発光幻想アニメ','Removing the favorite restores prepared starting points');
 
 // Every category/page in both collections retains its records and category label.
@@ -133,4 +141,4 @@ assert.equal(center.querySelector('.compatibility-reason'),null,'Conflict text d
 assert.ok(!conflictPanel.closest('.ring-stage'),'Notice is outside the swipe band');
 const conflictPage=$('picker-page').textContent;swipe(-100,0,conflictPanel);assert.equal($('picker-page').textContent,conflictPage,'Reading conflict text does not page or rotate');
 picker.open(questions.find(q=>q.key==='medium'));flush();assert.equal(conflictPanel.hidden,true,'Opening an unrelated valid choice clears the old reason');
-console.log(`PASS picker: clear horizontal band at 320/390/620/1024, 1–6 cards and long labels; first open/resize/cancel; ${checkedCategories} categories and ${checkedPages} pages in both collections; current category; distinct adjacent patterns; left-next/right-previous; recommended/favorite first pages and selected preset restoration; short thumb paging; native vertical pan including bent gestures; taps and intentional orbit preserved.`);
+console.log(`PASS picker: clear horizontal band at 320/390/620/1024, 1–6 cards and long labels; first open/resize/cancel; ${checkedCategories} categories and ${checkedPages} pages in both collections; current category; distinct adjacent patterns; left-next/right-previous; recommended/favorite first pages, readonly favorite API/filter/remove/cross-tab events and selected preset restoration; short thumb paging; native vertical pan including bent gestures; taps and intentional orbit preserved.`);

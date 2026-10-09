@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
-import {buildEditorial,editorialContract} from '../editorial.js?v=28.4.2';
-import {publicCopyContext} from '../copy-scope.js?v=28.4.2';
-import {halloweenModeContract,halloweenCopyRules} from '../halloween-mode-contract.js?v=28.4.2';
-import {typographyValues} from '../typography-options.js?v=28.4.2';
+import {buildEditorial,editorialContract} from '../editorial.js?v=28.4.3';
+import {publicCopyContext} from '../copy-scope.js?v=28.4.3';
+import {halloweenModeContract,halloweenCopyRules} from '../halloween-mode-contract.js?v=28.4.3';
+import {typographyValues} from '../typography-options.js?v=28.4.3';
 
 // Check reader-facing outputs and preservation with a deliberately ordinary
 // source theme. Merely appending a decorative pumpkin is not this contract.
@@ -42,7 +42,8 @@ for(const collection of ['halloween','everyday'])for(const noPerson of [false,tr
    assert.match(copy.slots.find(slot=>slot.role==='本文2').text,seasonal);
    assert.match(copy.slots.find(slot=>slot.role==='本文3').text,seasonal);
   }
-  for(const rule of halloweenCopyRules(copy.contentSources))assert(editorialContract(copy).includes(rule),'The final manuscript contract lost seasonality');
+  if(copy.mode==='none'){assert.deepEqual(copy.slots,[]);assert.match(editorialContract(copy).join(' '),/文字・数字・ロゴ・サイン/,'An image-only design gained seasonal copy');}
+  else for(const rule of halloweenCopyRules(copy.contentSources))assert(editorialContract(copy).includes(rule),'The final manuscript contract lost seasonality');
  }else{
   assert.equal(copy.contentSources.story,base.theme,'Everyday mode acquired a forced seasonal title');
   assert.equal(copy.contentSources.season,undefined);

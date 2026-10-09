@@ -1,14 +1,15 @@
-import {styleFidelity} from './style-fidelity.js?v=28.4.2';
-import {modeFoundation} from './japan-direction.js?v=28.4.2';
-import {imageOutputContract} from './output-contract.js?v=28.4.2';
-import {opticalSignature} from './optical-effects.js?v=28.4.2';
-import {colorPolicy} from './color-policy.js?v=28.4.2';
-import {sceneComposition} from './scene-composition.js?v=28.4.2';
-import {cameraContract} from './angles.js?v=28.4.2';
-import {photoReconstruction} from './photo-design.js?v=28.4.2';
-import {characterProportionInstruction} from './source-kind.js?v=28.4.2';
-import {luminousWorldContract} from './luminous-world.js?v=28.4.2';
-import {limitedNewspaperLayout} from './format-recipes.js?v=28.4.2';
+import {styleFidelity} from './style-fidelity.js?v=28.4.3';
+import {modeFoundation} from './japan-direction.js?v=28.4.3';
+import {imageOutputContract} from './output-contract.js?v=28.4.3';
+import {opticalSignature} from './optical-effects.js?v=28.4.3';
+import {colorPolicy} from './color-policy.js?v=28.4.3';
+import {sceneComposition} from './scene-composition.js?v=28.4.3';
+import {cameraContract} from './angles.js?v=28.4.3';
+import {photoReconstruction} from './photo-design.js?v=28.4.3';
+import {characterProportionInstruction} from './source-kind.js?v=28.4.3';
+import {luminousWorldContract} from './luminous-world.js?v=28.4.3';
+import {limitedNewspaperLayout} from './format-recipes.js?v=28.4.3';
+import {renderCompactChatInput} from './compact-production.js?v=28.4.3';
 
 function luminousPriority(plan){
  const luminous=luminousWorldContract(plan.values,{noPerson:plan.noPerson,variant:plan.variant});
@@ -189,19 +190,24 @@ export function renderSelectionMaterial(plan,options){
  }).join('\n');
 }
 export {renderSelectionMaterial as renderChatInput};
-export function compileProduction(plan,originalLines){
- const referenceRules=between(originalLines,'【作成者が添付する参照画像】','【10の選択】');
- const roleRules=between(originalLines,'【今回の画像の役割】','【最初に確定する作画と画面】').filter(line=>!line.startsWith('頭身：'));
- const mandatoryRules=[originalLines.find(s=>s.startsWith('制作の基準は、各項目のタイトル')), ...originalLines.filter(s=>/^(限定色|墨|水彩)の必須条件：/.test(s)),originalLines.find(s=>s.startsWith('用途：'))].filter(Boolean);
+export function compileProduction(plan,originalLines=[],refs=plan.referenceManifest){
+ // A hard conflict is a stop response, never an image request with a warning
+ // appended after its generation command.
+ const compact=renderCompactChatInput(plan,refs||[]);
+ if((plan.issues||[]).some(issue=>issue.severity==='error'))return compact;
+ // App delivery supplies a typed manifest, including the consolidated sheet.
+ // Older direct callers still supply their named references in these lines.
+ // Use one owner for reference roles; never repeat the manifest as raw prose.
+ const referenceRules=refs?[]:between(originalLines,'【作成者が添付する参照画像】','【10の選択】');
+ const legacyRoles=refs?[]:between(originalLines,'【今回の画像の役割】','【最初に確定する作画と画面】').filter(line=>!line.startsWith('頭身：')&&!line.startsWith('【')&&!/^[^：]+：(主役の識別|選択した画風|似せない前作|補助資料)/.test(line));
  return [
   ...imageOutputContract,
-  ...roleRules,
   ...luminousPriority(plan),
   ...(plan.values.design==='新聞の一面'&&limitedNewspaperLayout(plan.values)?[limitedNewspaperLayout(plan.values).priority]:[]),
   ...(plan.creatorLookup||[]),
   '【通常制作：完成画像を1回で生成】',
   originalLines[0],
-  '【統合するための制作仕様：開始】',renderSelectionMaterial(plan,{referenceRules,mandatoryRules}),'【統合するための制作仕様：終了】',
+  '【統合するための制作仕様：開始】',compact,...referenceRules,...legacyRoles,'【統合するための制作仕様：終了】',
   '完成した画像そのものを1枚、画像作成機能の通常の生成画像として表示する。文章だけで完成扱いにしない。'
- ].join('\n');
+ ].filter(Boolean).join('\n');
 }

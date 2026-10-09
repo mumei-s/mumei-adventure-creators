@@ -1,22 +1,22 @@
-import {formatFor} from './formats.js?v=28.4.2';
-import {formatTextPolicy} from './format-recipes.js?v=28.4.2';
-import {buildTypographySlots} from './typography-options.js?v=28.4.2';
-import {copyContentRules,publicCopyContext,worldIntroduction,copyRoleSources,copyEditingInstruction} from './copy-scope.js?v=28.4.2';
-import {halloweenCopyRules,halloweenTitle} from './halloween-mode-contract.js?v=28.4.2';
+import {formatFor} from './formats.js?v=28.4.3';
+import {formatTextPolicy} from './format-recipes.js?v=28.4.3';
+import {buildTypographySlots} from './typography-options.js?v=28.4.3';
+import {copyContentRules,publicCopyContext,worldIntroduction,copyRoleSources,copyEditingInstruction} from './copy-scope.js?v=28.4.3';
+import {halloweenCopyRules,halloweenTitle} from './halloween-mode-contract.js?v=28.4.3';
 const pick=(items,random)=>items[Math.min(items.length-1,Math.floor(random()*items.length))];
 function shuffle(items,random){const a=[...items];for(let i=a.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 const titles={cover:['装い帖','色と暮らし','創作日和','余白の時間','光の便り'],interview:['制作の現場','創作の声','発想の手帖'],spread:['表現の手帖','動きのある世界','新しい視点'],newspaper:['創作通信','彩景新聞','表現日報'],cinema:['BEYOND THE FRAME','A SILENT DOOR','WHEN LIGHT RETURNS'],book:['ひかりを綴る','まだ知らない景色','境界の手紙'],album:['ECHOES IN COLOR','UNFOLDING','SOFT REVERB'],default:['FORM & WONDER','もうひとつの景色','STORIES IN LIGHT']};
 const halloweenTitles={cover:['ハロウィーン夜帖','ハロウィーン祝祭録','ハロウィーンの便り'],interview:['ハロウィーンの物語','ハロウィーン夜話','ハロウィーンの声'],spread:['ハロウィーンの手帖','ハロウィーン一夜の旅','ハロウィーンの秘密'],newspaper:['ハロウィーン夜報','ハロウィーン祝祭新聞','ハロウィーン怪奇通信']};
 export function buildEditorial(profile,values,random=Math.random){
  const name=(profile.displayName||profile.name||'').trim(),kind=formatFor(values.design).kind,mode=values.type,daily=values.collection==='everyday';
- const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume),landscape=kind==='landscape'||values.costume==='風景を主役にする';
+ const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume),landscape=values.costume==='風景を主役にする';
  const captionRole=/^実写風/.test(values.medium)?'写真キャプション':'図版キャプション';
- const {noText,limited,line,roleScoped=false}=formatTextPolicy(values);
+ const {noText,limited,line,roleScoped=false,authority}=formatTextPolicy(values);
  const selectedSubject=values.theme==='おまかせ'?(daily?'日々の創作':'一夜の物語'):values.theme;
  const contentSources=publicCopyContext(values,{subject:selectedSubject,noPerson:noPerson||landscape}),subject=contentSources.story,intro=worldIntroduction(contentSources);
  // A standalone card/book/poster describes the selected story. Random stock
  // English mastheads otherwise displaced the Japanese story in the artwork.
- const title=values.design==='週刊誌の表紙'?(daily?'週刊創作':'週刊ハロウィーン'):['cover','interview','spread','newspaper'].includes(kind)?pick((daily?titles:halloweenTitles)[kind],random):subject;
+ const title=authority==='selected'?subject:values.design==='週刊誌の表紙'?(daily?'週刊創作':'週刊ハロウィーン'):['cover','interview','spread','newspaper'].includes(kind)?pick((daily?titles:halloweenTitles)[kind],random):subject;
  const topics=shuffle((profile.tagsEnabled===true?profile.topics||[]:[]).filter(v=>typeof v==='string'&&v.trim()),random);
  const themeWords=[...new Set(daily?[...topics.slice(0,6),subject,'この場所の秘密','旅の手がかり','出会いと発見','物語の始まり','まだ知らない道']:[...topics.slice(0,6).map(halloweenTitle),subject,'Halloweenの一夜の手がかり','Halloweenの祝祭と秘密','Halloweenの物語の始まり','Halloweenの夜に続く道','Halloweenの招待と贈り物'])];
  const subjectCopy=daily?pick([subject+'の、その先へ。',subject+'から始まる、新しい物語。','見つけたいのは、'+subject+'の向こう側。'],random):pick([contentSources.purpose+'。','今夜の入口は、'+contentSources.setting+'に。',contentSources.event+'へ、あなたも。'],random);
@@ -34,7 +34,7 @@ export function buildEditorial(profile,values,random=Math.random){
  const result=()=>{
   const generatedSlots=[],fixed=[];
   for(const slot of slots){
-   const editable=slot.editable||/^(?:主特集の補足|補助特集(?:の補足)?|リード文|質問\d+|回答\d+|本文小見出し\d+|本文\d+|副記事見出し\d+|副記事本文\d+|引き抜き引用|(?:写真|図版)キャプション|演目の紹介|紹介|紹介文|短い説明|説明|ジャンル欄)$/.test(slot.role)||slot.role==='キャッチ'&&!line;
+   const editable=slot.editable||/^(?:主特集の補足|補助特集(?:の補足)?|リード文|質問\d+|回答\d+|本文小見出し\d+|本文\d+|副記事見出し\d+|副記事本文\d+|引き抜き引用|(?:写真|図版)キャプション|演目の紹介|紹介|紹介文|作品紹介|世界観紹介|短い説明|説明|ジャンル欄)$/.test(slot.role)||['キャッチ','短い注記'].includes(slot.role)&&!line;
    if(sourceGuided&&editable){
     const long=/本文|回答|リード|紹介|説明/.test(slot.role),maxCharacters=slot.maxCharacters||(long?Math.min(750,Math.max(45,slot.text.length)):Math.min(32,Math.max(12,slot.text.length)));
     const contentDomain=slot.contentDomain||(daily?'public_activity':'story_world');
@@ -42,9 +42,9 @@ export function buildEditorial(profile,values,random=Math.random){
     generatedSlots.push({role:slot.role,priority:slot.priority,maxCharacters,contentDomain,contentSources:copyRoleSources(context,contentDomain),instruction:copyEditingInstruction(context,{domain:contentDomain})+(slot.instruction||'')+(slot.role.startsWith('質問')?'質問は次の回答と一組にする。':slot.role.startsWith('回答')?'回答は対応する質問を受けた公開活動の紹介とし、本人の発言を捏造しない。':'')});
    }else fixed.push({role:slot.role,text:slot.text,priority:slot.priority});
   }
-  return {mode,name:slots.some(s=>s.role==='作者名'||s.role==='キャラクター名')?name:'',title:slots.find(s=>s.priority===0)?.text||'',dense:slots.length>=8,slots:fixed,generatedSlots,blocks:fixed.map(s=>s.text),topics,kind,limited,roleScoped,contentSources:typography?.contentSources||contentSources,sourceGuided:generatedSlots.length>0,...(typography?{typographyLayout:typography.layout,typographyDensity:typography.density}:{})};
+  return {mode,requestedMode:mode,authority,name:slots.some(s=>s.role==='作者名'||s.role==='キャラクター名')?name:'',title:slots.find(s=>s.priority===0)?.text||'',dense:slots.length>=8,slots:fixed,generatedSlots,blocks:fixed.map(s=>s.text),topics,kind,limited,roleScoped,contentSources:typography?.contentSources||contentSources,sourceGuided:generatedSlots.length>0,...(typography?{typographyLayout:typography.layout,typographyDensity:typography.density}:{})};
  };
- if(noText)return {mode:'none',name:'',title:'',dense:false,slots:[],blocks:[],topics:[],kind,limited:false};
+ if(noText)return {mode:'none',requestedMode:mode,authority:'none',name:'',title:'',dense:false,slots:[],generatedSlots:[],blocks:[],topics:[],kind,limited:false,roleScoped:false,contentSources,sourceGuided:false};
  typography=buildTypographySlots(mode,{subject:selectedSubject,name,intro,noPerson:noPerson||landscape,values});
  if(typography){slots.push(...typography.slots);return result();}
  if(mode==='クリエイター名だけ'||/サイン風|落款風/.test(mode)){add('作者名',name,1);return result();}
@@ -73,17 +73,31 @@ export function buildEditorial(profile,values,random=Math.random){
   }else{
    prose.forEach((text,i)=>{add('本文小見出し'+(i+1),(daily?['まだ知らない道','秘密をたどる','次の物語へ']:['Halloweenの一夜の入口','Halloweenの手がかり','Halloweenの物語の先へ'])[i],2);add('本文'+(i+1),text,3);});
    if(kind==='newspaper'){
-    (daily?['この場所の手がかり','物語の、その先へ']:['Halloweenの場所に残る手がかり','Halloweenの物語、その先へ']).forEach((text,i)=>{add('副記事見出し'+(i+1),text,2);add('副記事本文'+(i+1),prose[i],3);});
+    (daily?['この場所の手がかり','物語の、その先へ']:['Halloweenの場所に残る手がかり','Halloweenの物語、その先へ']).forEach((text,i)=>{add('副記事見出し'+(i+1),text,2);add('副記事本文'+(i+1),i===0?contentSources.setting+'に残る小さな痕跡を確かめたい。見慣れたもののそばにも、最初は気づかなかった秘密がある。一つの発見が、この場所の出来事を知る入口になる。':'ここで見つけた手がかりは、次の一歩へつながる。'+contentSources.story+'の続きは、まだ決まっていない。知ったこととまだ分からないことを持って、物語の先を想像したい。',3);});
    }
   }
-  add('引き抜き引用',line||subjectCopy,1);add(captionRole,subject+(name?' / '+name:''),3);
+  add('引き抜き引用',line||subjectCopy,1);add(captionRole,contentSources.setting+'で始まる、'+subject+'。',3);
   // A standalone creation has no issue or page sequence. Never invent a folio.
   return result();
  }
+ if(automatic){
+  if(values.design==='写真集の表紙'||values.design==='絵本の表紙'){add('書名',title,0);add('作者名',name,2);return result();}
+  if(kind==='book'){add('書名',title,0);add('作者名',name,2);add('紹介文',intro,2);return result();}
+  if(kind==='album'){add('アルバム名',title,0);add('作者名',name,2);return result();}
+  if(values.design==='タロットカード'){add('カード題名',subject,0);add('作者名',name,3);return result();}
+  if(values.design==='トレーディングカード'){add(noPerson?'主題名':'キャラクター名',noPerson?subject:name||subject,0);add(noPerson?'主題の分類':'役柄',noPerson?(values.costume==='風景を主役にする'?'物語の舞台':'物語のモチーフ'):contentSources.protagonist,1);add('短い説明',contentSources.purpose+'。',2);return result();}
+  if(kind==='package'){add('ゲームタイトル',subject,0);add('世界観紹介',intro,2);add('作者名',name,3);return result();}
+  if(kind==='thumbnail'||kind==='stamp'||kind==='postcard'){add(kind==='thumbnail'?'主見出し':'題名',subject,0);add('作者名',name,3);return result();}
+  if(kind==='zine'){add('題字',subject,0);add('短い注記',line||subjectCopy,2);add('作者名',name,3);return result();}
+  if(kind==='exhibition'){add('展示テーマ',subject,0);add('作者名',name,3);add('作品紹介',intro,2);add('セリフ',line,2);return result();}
+  if(kind==='stage'){add('演目名',subject,0);add('演目の紹介',intro,2);add('作者名',name,3);add('制作クレジット','創作・演出・美術',3);add('セリフ',line,2);return result();}
+  if(kind==='festival'){add('イベント題名',subject,0);add('ジャンル欄',themeWords.slice(0,4).join(' / '),2);add('紹介',intro,2);add('作者名',name,3);add('セリフ',line,2);return result();}
+  if(kind==='reference'){add('対象名',subject,0);add('分類名',noPerson?'物語の舞台とモチーフ':contentSources.protagonist,1);add('形の注記',contentSources.setting+'に残る、'+(daily?'物語の手がかり。':'Halloweenの一夜の手がかり。'),2);add('短い説明',intro,3);return result();}
+ }
  add(['cinema','stage','festival'].includes(kind)?'作品タイトル':kind==='book'?'書名':kind==='album'?'アルバム名':'主見出し',title,0);add('作者名',name,2);add('キャッチ',line||subjectCopy,1);
- if(kind==='cinema'&&(automatic||/クレジット/.test(mode))){add('ビリング1','ART & STORY  '+name,3);add('ビリング2','VISUAL CONCEPT  '+name+'  /  AN ORIGINAL WORK',3);add('ビリング3','CHARACTER / COSTUME / WORLD DESIGN',3);}
+ if(kind==='cinema'&&(automatic||/クレジット/.test(mode))){add('ビリング1','創作・物語構成',3);add('ビリング2','美術・世界設計',3);add('ビリング3','衣装・舞台設計',3);}
  else if(kind==='stage'&&density){add('演目の紹介',intro,2);add('制作クレジット','CREATIVE DIRECTION / ART  '+name,3);}
- else if(kind==='festival'&&density){add('ジャンル欄',themeWords.slice(0,4).join(' / '),2);add('紹介',subjectCopy,2);}
+ else if(kind==='festival'&&density){add('ジャンル欄',themeWords.slice(0,4).join(' / '),2);add('紹介',intro,2);}
  else if(kind==='editorial'&&automatic){add('リード文',intro,2);add(captionRole,noPerson?values.place:values.costume,3);}
  else if(kind==='reference'&&automatic){add('分類名',noPerson?contentSources.story:contentSources.protagonist,2);add('形の注記',contentSources.purpose,3);add('短い説明',intro,3);}
  else if(kind==='book'||mode==='物語の装丁風・タイトルと紹介'){add('紹介文',intro,2);}
@@ -98,7 +112,7 @@ export function editorialContract(copy){
  const allRoles=[...slots,...(copy.generatedSlots||[])];
  const levels=[...new Set(allRoles.map(s=>s.priority))].sort((a,b)=>a-b).map(priority=>'階層'+priority+'：'+[...new Set(allRoles.filter(s=>s.priority===priority).map(s=>s.role))].join('・'));
  const render=(s,i)=>(i+1)+'. 【'+s.role+' / 階層'+s.priority+'】 '+s.text;
- const spreadFrames=copy.kind==='spread'&&!limited?[
+ const spreadFrames=copy.kind==='spread'&&!limited&&copy.authority!=='selected'?[
   {label:'左本文枠A',roles:['本文小見出し1','本文1'],flow:'この2原稿だけを一つの枠に上から下へ組む。末尾の空きは余白として残す。'},
   {label:'右本文枠B',roles:['本文小見出し2','本文2','本文小見出し3','本文3'],flow:'この4原稿を一つの枠に連続して上から下へ組む。本文3は本文2の直下へ続け、別列や独立カードへ分割しない。'}
  ]:[];
@@ -113,6 +127,7 @@ export function editorialContract(copy){
  return [
   ...copyContentRules,
   ...halloweenCopyRules(copy.contentSources||{collection:'everyday'}),
+  '原稿の決定元：'+(copy.authority==='selected'?'明示した文字設定。デザインの標準原稿は置換済みであり、ここにない役割は追加しない。':'選択デザインの標準原稿。下記に確定した役割だけを各一度ずつ配置する。'),
   ...(copy.typographyLayout?['今回の文字密度：'+copy.typographyDensity+'。今回許可した原稿の役割を使い、形式側に標準の誌名・特集・本文が書かれていても、それを追加原稿として補わない。','今回の文字配置：'+copy.typographyLayout]:[]),
   limited?'許可された原稿は次の'+slots.length+'ブロックだけ。形式の標準文字量を満たすために文言を増やさず、この文字列と役割をそのまま配置する。':generated.length?'次の確定原稿の文字列は変更せず、編集依頼にある役割だけを追加して完成原稿にする。許可した役割以外の文章や情報を増やさない。':'制作原稿は次の役割ごとに確定済み。各原稿を選択形式の個別制作仕様へ配置し、原稿にない文言や情報役割を補わない。',
   ...(emitted.size?['見開きの本文原稿は次の左本文枠A・右本文枠Bの2枠へ割り当てる。3つの話題を3列へ分けず、本文小見出し2と3は同じ右枠Bの中で縦に続ける。本文枠内に小画像やカード枠を追加しない。']:[]),

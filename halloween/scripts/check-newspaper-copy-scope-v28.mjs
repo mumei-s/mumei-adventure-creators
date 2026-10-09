@@ -1,15 +1,16 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.4.2';
-import {resolveSelections} from '../catalog.js?v=28.4.2';
-import {initialSelections} from '../modes.js?v=28.4.2';
-import {buildDirection} from '../direction.js?v=28.4.2';
-import {productionPlan} from '../production-plan.js?v=28.4.2';
-import {renderInput,renderSelectionMaterial,renderChatInput} from '../compiled-production.js?v=28.4.2';
-import {formatTextPolicy,detailedFormat,limitedNewspaperLayout} from '../format-recipes.js?v=28.4.2';
-import {formatFor} from '../formats.js?v=28.4.2';
-import {typographyValues} from '../typography-options.js?v=28.4.2';
-import {composePrompt} from '../prompt.js?v=28.4.2';
-import {renderEditorialLayout} from '../editorial-layout.js?v=28.4.2';
+import {assertCompactHandoff,containsInstruction} from './compact-handoff-assertions-v28.mjs';
+import {applyCollection} from '../collection.js?v=28.4.3';
+import {resolveSelections} from '../catalog.js?v=28.4.3';
+import {initialSelections} from '../modes.js?v=28.4.3';
+import {buildDirection} from '../direction.js?v=28.4.3';
+import {productionPlan} from '../production-plan.js?v=28.4.3';
+import {renderInput,renderSelectionMaterial,renderChatInput} from '../compiled-production.js?v=28.4.3';
+import {formatTextPolicy,detailedFormat,limitedNewspaperLayout} from '../format-recipes.js?v=28.4.3';
+import {formatFor} from '../formats.js?v=28.4.3';
+import {typographyValues} from '../typography-options.js?v=28.4.3';
+import {composePrompt} from '../prompt.js?v=28.4.3';
+import {renderEditorialLayout} from '../editorial-layout.js?v=28.4.3';
 
 // Permission boundaries must survive the combination that caused article and
 // portrait additions. These checks inspect the actual production contracts;
@@ -35,7 +36,7 @@ for(const collection of ['halloween','everyday']){
  applyCollection(collection);
  const base=resolveSelections({...initialSelections(),design:'新聞の一面',medium:'現代アニメの一枚絵',type:'デザインに合わせて自動編集'},random);
  for(const type of typographyValues)for(const sourceGuided of [false,true])for(const noPerson of [false,true]){
-  const values={...base,type,costume:noPerson?'風景を主役にする':'参照画像の衣装を生かす'};
+  const values={...base,type,costume:noPerson?'風景を主役にする':'参照画像の衣装を生かす',...(noPerson?{pose:'おまかせ',mood:'毎回大胆に変える'}:{})};
   const profile={displayName:'検査作者',activityEnabled:sourceGuided,...(sourceGuided?{handoff:{id:'newspaper_scope_test'}}:{})};
   const plan=productionPlan(profile,values,buildDirection([],values.mood,random,collection,values),collection,random);
   const label=[collection,type,sourceGuided?'source':'fixed',noPerson?'scenery':'person'].join(' / ');
@@ -66,14 +67,15 @@ for(const collection of ['halloween','everyday']){
   scopedCases++;
  }
  for(const type of ['デザインに合わせて自動編集','新聞風・記事と段組み','クリエイター名だけ','短いタイトル＋名前','文字を一切入れない'])for(const noPerson of [false,true]){
-  const values={...base,type,costume:noPerson?'風景を主役にする':'参照画像の衣装を生かす'};
+  const values={...base,type,costume:noPerson?'風景を主役にする':'参照画像の衣装を生かす',...(noPerson?{pose:'おまかせ',mood:'毎回大胆に変える'}:{})};
   assert.equal(formatTextPolicy(values).roleScoped,false,type+' became an explicit typography preset');
   const recipe=detailedFormat(values.design,{values,noPerson}),image=recipe.sections.find(section=>section.label===(noPerson?'主題の景物・物体':'主画像の構成')).text;
   assert.match(image,/全紙面の図版は.*主図版1点だけ/,type+' must also prohibit secondary images');
   assert.ok(recipe.checks.includes('主図版1点のみ・補助肖像や接写や複製なし'),type+' lost the observable image count check');
   if(!formatTextPolicy(values).limited&&!formatTextPolicy(values).noText){
    assert.equal(limitedNewspaperLayout(values),null,type+' must keep its existing rich-copy newspaper layout');
-   assert.equal(recipe.executionMethod,undefined,type+' acquired a sparse-copy execution override');
+   if(type==='デザインに合わせて自動編集')assert.equal(recipe.executionMethod,undefined,type+' acquired a sparse-copy execution override');
+   else{assert.equal(formatTextPolicy(values).authority,'selected',type+' lost explicit manuscript authority');assert.match(recipe.executionMethod,/その役割の確定原稿がある場合だけ/,type+' can invent default newspaper copy');assert.doesNotMatch(recipe.executionMethod,/上限40%/,type+' acquired sparse geometry despite its populated manuscript');}
   }
   standardCases++;
  }
@@ -81,7 +83,7 @@ for(const collection of ['halloween','everyday']){
  // artwork. Check the actual opening handoff, its early layout contract and
  // native geometry; empty newspaper columns may not become invented articles.
  for(const type of ['HALLOWEENのみ','クリエイター名だけ','HALLOWEEN＋クリエイター名','短いタイトル＋名前','文字を一切入れない','セリフのみ'])for(const noPerson of [false,true])for(const medium of ['発光幻想アニメ','発光幻想リアル'])for(const size of ['A4縦・300dpi目安｜2480×3508｜210:297','横16:9｜2560×1440｜16:9']){
-  const values={...base,type,medium,size,line:'セリフなし',costume:noPerson?'風景を主役にする':'参照画像の衣装を生かす'},profile={displayName:'検査作者',activityEnabled:false};
+  const values={...base,type,medium,size,line:'セリフなし',costume:noPerson?'風景を主役にする':'参照画像の衣装を生かす',...(noPerson?{pose:'おまかせ',mood:'毎回大胆に変える'}:{})},profile={displayName:'検査作者',activityEnabled:false};
   const plan=productionPlan(profile,values,buildDirection([],values.mood,random,collection,values),collection,random),sparse=limitedNewspaperLayout(values);
   const label=[collection,type,noPerson?'scenery':'person',medium,size].join(' / '),design=plan.conditions.find(c=>c.key==='design');
   assert.ok(sparse,label+' has no sparse-copy newspaper layout');
@@ -93,11 +95,11 @@ for(const collection of ['halloween','everyday']){
   assert.ok(input.required_before_details.layout.includes(sparse.executionMethod),label+' leading layout only received the old generic newspaper row');
   const prompt=composePrompt({collection,profile,values,variant:plan.variant,references:[],edition:'SPARSE-NEWSPAPER',preparedPlan:plan});
   const priorityIndex=prompt.indexOf(sparse.priority),styleIndex=prompt.indexOf('【'+medium+'：人物と背景を一つの光の世界へ】');
-  assert.ok(priorityIndex>styleIndex&&priorityIndex<3500,label+' sparse newspaper priority must follow the selected style near the start');
+  assertCompactHandoff(plan,prompt);assert.ok(priorityIndex>styleIndex&&priorityIndex<3500,label+' sparse newspaper priority must follow the selected style near the start');
   for(const text of [prompt,renderSelectionMaterial(plan),renderChatInput(plan)]){
-   assert.ok(text.includes(sparse.grid),label+' actual drawing handoff lost the newspaper columns and image limit');
-   assert.ok(text.includes(sparse.typography),label+' actual drawing handoff lost its permitted copy boundary');
-   assert.ok(text.includes(sparse.material),label+' forced newspaper paper/ink outside the selected medium and palette');
+   assert.ok(containsInstruction(text,sparse.grid),label+' actual drawing handoff lost the newspaper columns and image limit');
+   assert.ok(containsInstruction(text,sparse.typography),label+' actual drawing handoff lost its permitted copy boundary');
+   assert.ok(containsInstruction(text,sparse.material),label+' forced newspaper paper/ink outside the selected medium and palette');
   }
   const picture={dataUrl:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR4nGMwSAj4DwADhAHgN+DvxQAAAABJRU5ErkJggg==',artworkWidth:1,artworkHeight:1};
   const output=renderEditorialLayout(plan,picture),box=output.placements.image.container;

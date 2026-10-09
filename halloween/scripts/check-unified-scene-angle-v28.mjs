@@ -1,12 +1,13 @@
 import assert from 'node:assert/strict';
-import {questions,visibleQuestions,resolveSelections,AUTO} from '../catalog.js?v=28.4.2';
-import {applyCollection} from '../collection.js?v=28.4.2';
-import {modeKeys,effectiveSelections,initialSelections} from '../modes.js?v=28.4.2';
-import {sceneSourcePlace} from '../scene-presets.js?v=28.4.2';
-import {angleItems} from '../angles.js?v=28.4.2';
-import {buildDirection} from '../direction.js?v=28.4.2';
-import {productionPlan} from '../production-plan.js?v=28.4.2';
-import {composePrompt} from '../prompt.js?v=28.4.2';
+import {assertCompactHandoff,containsInstruction} from './compact-handoff-assertions-v28.mjs';
+import {questions,visibleQuestions,resolveSelections,AUTO} from '../catalog.js?v=28.4.3';
+import {applyCollection} from '../collection.js?v=28.4.3';
+import {modeKeys,effectiveSelections,initialSelections} from '../modes.js?v=28.4.3';
+import {sceneSourcePlace} from '../scene-presets.js?v=28.4.3';
+import {angleItems} from '../angles.js?v=28.4.3';
+import {buildDirection} from '../direction.js?v=28.4.3';
+import {productionPlan} from '../production-plan.js?v=28.4.3';
+import {composePrompt} from '../prompt.js?v=28.4.3';
 const profile={displayName:'Test Creator',biography:'創作',topics:[]};
 let scenes=0,angles=0;
 for(const collection of ['halloween','everyday']){
@@ -35,7 +36,7 @@ for(const collection of ['halloween','everyday']){
   const text=composePrompt({collection,creator:'test',profile,values,variant,references:[],edition:'ANGLE',preparedPlan:plan});
   assert.ok(plan.variant.camera.includes(angle.value));assert.ok(plan.conditions.find(c=>c.key==='angle').known);
   assert.ok(text.includes(angle.value));assert.ok(!text.includes(angle.file),'UI schematic must not become image input');
-  if(collection==='halloween')assert.ok(text.includes('宇宙の世界観を主画像から削除しない'));
+  if(assertCompactHandoff(plan,text)&&collection==='halloween')assert.match(text,/宇宙の広がり|恒星|小物だけで宇宙を代用しない/);
   angles++;
  }
 }

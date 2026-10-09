@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import {poseItems,poseGroups,poseContent,poseTechnical,applyPose} from '../poses.js?v=28.4.2';
-import {optionRecipe} from '../option-recipes.js?v=28.4.2';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.2';
-import {renderChatInput} from '../compiled-production.js?v=28.4.2';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.2';
+import {poseItems,poseGroups,poseContent,poseTechnical,applyPose} from '../poses.js?v=28.4.3';
+import {optionRecipe} from '../option-recipes.js?v=28.4.3';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.3';
+import {renderChatInput} from '../compiled-production.js?v=28.4.3';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.3';
 
 const random=()=>.28;
 const base={face:'正面の顔',expression:'穏やかな表情',pose:'まっすぐ立つ',camera:'正面',distance:'全身',layout:'主役の全身',signature:'ANATOMY',motif:'背景の光',light:'窓光',depth:'前後の奥行き',motion:'静止'};

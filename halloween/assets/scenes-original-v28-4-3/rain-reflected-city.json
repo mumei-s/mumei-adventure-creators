@@ -1,0 +1,20 @@
+{
+  "n": 4,
+  "title": "雨に映る街の風景",
+  "slug": "rain-reflected-city",
+  "prompt": "Use case: illustration-story. Asset: ONE original square environment illustration for a Japanese creative website's scene chooser. Complete actual illustrated scenery, refined professional background artwork with convincing depth, natural material texture, soft neutral environmental light, restrained colour and delicate lines. Show specified scene clearly, no title-only placeholder. Environment fills image; foreground/middle/background connected in consistent perspective. No people, faces or human-shaped shadows, no artist references, no copying existing artworks, no lantern, fantasy glow, logos, text/labels, collage or multi-panel contact sheet. Exactly one finished image. Scene: Japanese urban street immediately after gentle daytime rain. Foreground wet sidewalk paving and shallow puddles clearly reflect facades and the softly overcast sky. Middle ground varied modest shops and apartments along a perspective street, closed awnings, drain edges, muted building colours. Buildings and their wet reflections match one another. A few continuing fine rain streaks, no neon glow or nighttime fantasy. No readable shop signs, no vehicles or people.",
+  "source": "/workspace/scratch/ad16ee694a48/generated_images/exec-a71aed07-3cc8-420d-8ac6-9fbf720a44dc.png",
+  "file": "rain-reflected-city.jpg",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "bc4df786680d07ebe2481312e9fbd99ac14d05995cb6175405d73034319f52ce",
+  "processing": "Original generated resolution kept; RGB JPEG q85 encoding only",
+  "visualQA": {
+    "status": "accepted",
+    "method": "Individual review of the full generated output; file checks are separate from visual scene assessment.",
+    "observations": "雨の日の街路と建物の遠近が接続し、濡れた路面に壁と空が反映している。人物、傘の肖像や無関係な水面ではなく街の全景である。"
+  }
+}

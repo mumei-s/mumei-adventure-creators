@@ -1,0 +1,20 @@
+{
+  "n": 10,
+  "title": "広葉樹の森",
+  "slug": "deciduous-woodland",
+  "prompt": "Use case: illustration-story. Asset: ONE original square environment illustration for a Japanese creative website's scene chooser. Complete actual illustrated scenery, refined professional background artwork with convincing depth, natural material texture, soft neutral environmental light, restrained colour and delicate lines. Show specified scene clearly, no title-only placeholder. Environment fills image; foreground/middle/background connected in consistent perspective. No people, faces or human-shaped shadows, no artist references, no copying existing artworks, no lantern, fantasy glow, logos, text/labels, collage or multi-panel contact sheet. Exactly one finished image. Scene: A lush Japanese DECIDUOUS BROADLEAF WOODLAND in midsummer daylight. Eye-level view between wide mature tree trunks under a dense bright green leaf canopy. Foreground soft moss and ferns, root networks and natural leaf litter, middle ground staggered broadleaf trunks, background layered green foliage. Show rounded broad leaves, branching crowns and textured bark, no conifer-dominated trees, no autumn foliage, no snowfall, no path as central vanishing line. Calm natural shade, no fantasy glows, houses, animals or people.",
+  "source": "/workspace/scratch/ad16ee694a48/generated_images/exec-620faf9f-821b-488b-95f1-3c50a50de1e3.png",
+  "file": "deciduous-woodland.jpg",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "20d0d103eff328880517a3ba7e4b659431521e009fbae5376fc8345224a58d1d",
+  "processing": "Original generated resolution kept; RGB JPEG q85 encoding only",
+  "visualQA": {
+    "status": "accepted",
+    "method": "Individual review of the full generated output; file checks are separate from visual scene assessment.",
+    "observations": "同じ緑の季節の広葉樹の枝葉、根元と苔のある林床、奥の幹の層が見える。秋の小道がある森林図版とは異なる緑の森で、針葉樹だけの森ではない。"
+  }
+}

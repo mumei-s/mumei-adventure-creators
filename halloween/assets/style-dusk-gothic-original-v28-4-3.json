@@ -1,0 +1,23 @@
+{
+  "medium": "宵彩ゴシックアニメ",
+  "asset": "assets/style-dusk-gothic-original-v28-4-3.png",
+  "delivery_name": "style-preset-114.png",
+  "generator": "ChatGPT built-in image_gen",
+  "origin": "independently generated original character and scene",
+  "external_references": [],
+  "prompt": "Use case: stylized-concept. Asset: an original high-resolution painting-technique preset named 宵彩ゴシックアニメ, one finished illustration, no text.\nA wholly original mature adult male librarian, short dark navy hair with a blunt side part, long thoughtful dark eyes, a strong narrow nose and a quietly serious expression, in a fully covered high-collar burgundy-and-indigo librarian coat. He stands still beside a waist-height oak archive table, one hand resting on an unlettered closed folio, the other supporting its fore-edge. The library has tall rib-vaulted stone structure, timber bookcases and one narrow high window; keep the book spines and pages completely blank. A soft warm window beam from the upper right crosses the librarian's face and hands, leaving extensive deep indigo shadows in the vaults and left side. Quiet sophisticated Gothic atmosphere, not horror, not a dynamic battle pose.\nBuild EVERY part with sharply controlled fine Japanese 2D anime colored linework and crisply designed cel-shaded color planes. Face has drawn eyelids, small simplified nose-mouth marks, clear adult anime proportions and large coherent shadow shapes; iris is drawn in two or three colored layers. Hair is grouped into defined illustrated locks. The hands, sleeve folds, book, stone and shelves have the same anime rendering. Deep shadow planes retain thin subtle edge separation and readable overlaps. Narrow amber lit planes and very small sharp reflections create elegant focus, not fog or all-over bloom. Matte cloth, rough stone, varnished wood and paper remain materially different, described through 2D lines and small highlights.\nPortrait 2:3 composition, medium shot down to thighs, both hands visible with correct fingers, no oversized hands reaching at the viewer. No breasts, plunging clothes, black lace dress, roses, crosses, religious altar, pumpkins, bats, horns, blood, lantern, magic ring, combat debris, extra people, photographic face, realistic painted skin, 3D CGI, text, signature or watermark. No artist names, imitation, or reproduction of any external artwork.",
+  "width": 1024,
+  "height": 1536,
+  "bytes": 2070313,
+  "sha256": "5319828cc1ea012df2ad8400d2c12a79b9d033207761fc79d1a8f61d8bc9366a",
+  "visual_qa": {
+    "status": "accepted",
+    "observations": [
+      "成人男性の描いた眼瞼・整理された鼻口・髪の束・手の輪郭が精密な2Dアニメ。",
+      "深い藍のまとまった影と右上からの細い暖かな窓光が顔・手・衣服・棚を同じ方向で結ぶ。",
+      "リブヴォールトと書棚、木の支持面を持つ静かな書庫。暗部にも重なりを残す。",
+      "高襟の閉じた衣装、閉じた無地の本、静止姿勢。ランタン・魔法・戦闘・宗教記号・他作品を使わない。"
+    ]
+  },
+  "generated_source": "/workspace/scratch/ad16ee694a48/generated_images/exec-83c50016-0d7a-45e6-b67d-4086a335a90e.png"
+}

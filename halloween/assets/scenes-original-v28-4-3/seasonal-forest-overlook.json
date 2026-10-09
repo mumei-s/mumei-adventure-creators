@@ -1,0 +1,20 @@
+{
+  "n": 5,
+  "title": "四季の森を見渡す",
+  "slug": "seasonal-forest-overlook",
+  "prompt": "Use case: illustration-story. Asset: ONE original square environment illustration for a Japanese creative website's scene chooser. Complete actual illustrated scenery, refined professional background artwork with convincing depth, natural material texture, soft neutral environmental light, restrained colour and delicate lines. Show specified scene clearly, no title-only placeholder. Environment fills image; foreground/middle/background connected in consistent perspective. No people, faces or human-shaped shadows, no artist references, no copying existing artworks, no lantern, fantasy glow, logos, text/labels, collage or multi-panel contact sheet. Exactly one finished image. Scene: Broad quiet view into ONE coherent Japanese deciduous forest in early autumn. Foreground fallen ochre leaves, ferns and textured trunks frame a path; middle ground many distinct beech and maple trunks and branches, background layered woodland fades softly in natural atmospheric depth. All trees agree with one early autumn season, rich living green mingles naturally with a few amber leaves. Detailed forest floor and trees from near to far, gentle daylight, no surreal glow, no cottages, animals or people.",
+  "source": "/workspace/scratch/ad16ee694a48/generated_images/exec-a4f48064-2a98-48b0-8988-25ec64b6a2ce.png",
+  "file": "seasonal-forest-overlook.jpg",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "efe5b19e2f34a87e27b550c65c352de2a2bc99a3354b588406d6d03c85d29fcd",
+  "processing": "Original generated resolution kept; RGB JPEG q85 encoding only",
+  "visualQA": {
+    "status": "accepted",
+    "method": "Individual review of the full generated output; file checks are separate from visual scene assessment.",
+    "observations": "一つの秋の季節に揃った木々、林床と小道、奥の樹林の層が見える。複数の季節を一枚の木へ混在させず、広い森林の景色を示している。"
+  }
+}

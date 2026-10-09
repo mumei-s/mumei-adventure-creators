@@ -1,0 +1,20 @@
+{
+  "n": 8,
+  "title": "砂浜と海岸線",
+  "slug": "sand-beach-coastline",
+  "prompt": "Use case: illustration-story. Asset: ONE original square environment illustration for a Japanese creative website's scene chooser. Complete actual illustrated scenery, refined professional background artwork with convincing depth, natural material texture, soft neutral environmental light, restrained colour and delicate lines. Show specified scene clearly, no title-only placeholder. Environment fills image; foreground/middle/background connected in consistent perspective. No people, faces or human-shaped shadows, no artist references, no copying existing artworks, no lantern, fantasy glow, logos, text/labels, collage or multi-panel contact sheet. Exactly one finished image. Scene: A long sandy Japanese beach with the sinuous coastline clearly readable from a gently elevated angle in natural midday light. Foreground low beach dune with sparse coastal grasses and delicate sand ripples, middle ground crescent-shaped pale sand beach and shallow breaking surf bands following shore, background coastal headland where beach curves away. Sand is primary subject rather than rocky foreground. Clear geographic land/sea edge and rhythm of waves. No people, buildings, umbrellas, lighthouse, boats or extraordinary glow.",
+  "source": "/workspace/scratch/ad16ee694a48/generated_images/exec-fbc0ae3e-374a-4be1-920b-708dc7526609.png",
+  "file": "sand-beach-coastline.jpg",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "fe8525f81bca832d162e8628e51c4457b87bbcbcca463416f9ca9434abe03045",
+  "processing": "Original generated resolution kept; RGB JPEG q85 encoding only",
+  "visualQA": {
+    "status": "accepted",
+    "method": "Individual review of the full generated output; file checks are separate from visual scene assessment.",
+    "observations": "砂浜と草のある砂丘、曲がる海岸線と帯状の波が大きく見える。海辺と水平線の岩場図版とは異なる砂の海岸で、ヤシ・リゾート建築・人物はない。"
+  }
+}

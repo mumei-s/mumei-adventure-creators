@@ -1,0 +1,28 @@
+{
+  "title": "水鏡の幻想空間",
+  "slug": "water-mirror-fantasy-space",
+  "prompt": "Use case: illustration-story.\nAsset: ONE wholly original square environmental illustration for a scene chooser, internally 水鏡の幻想空間. A complete actual architectural interior scene, with no people and no text.\nPrimary scene: a quiet imaginative contemporary Japanese timber-house living space viewed diagonally from normal eye level at a threshold. Visible joined timber posts and ceiling beams, pale plaster walls, a dry stone-and-wood floor, a low raised wooden alcove and modest built-in storage show connected domestic supporting construction. No chairs, no borrowed furniture layout, no foreign landmark. Foreground threshold, central room and rear corridor share one convincing perspective. No entire underwater room.\nWater-light source and connection: on a low rear stone ledge beside the daylight opening is a shallow rectangular water-mirror basin with gentle ripples, clearly a modest basin rather than an aquarium. Directional soft daylight enters from the upper left, meets the basin and transparent surfaces, and returns fine wavering pale cyan water-light patterns onto the visibly solid adjoining plaster wall, dry floor and timber supports. The patterns follow those surfaces and their corners instead of becoming an unrelated underwater backdrop. Preserve larger calm dark and midtone areas between bright caustic bands; no all-over sparkle or white fog.\nTransparent depth layers: three independently shaped architectural glass partitions stand securely in visible narrow floor rails, at distinct near, middle and far distances. The foreground panel is a large gently curved clear boundary crossing only one corner of the view, with readable glass edge and slight green-blue thickness; the middle panel is smaller and flatter; the far transparent boundary is delicate and weak. Background timber posts and floor seams remain visible THROUGH their broad clear regions, and bend/shift slightly at each pane's edge. Where two panels overlap the transmitted background is visibly darker and bluer than a single layer. Separate the clear transmitted scene, small displaced internal reflected lines, pale reflected waterlight and sharp boundary highlight. Large near boundary, medium interior surface and weak far reflection must be immediately readable. Glass has supported architectural forms, not floating jewelry or human silhouettes.\nComposition and style: restrained, finely drawn Japanese feature-animation background illustration with delicate structural lines, painted material textures, precise yet calm layered light, a fresh original room geometry. Environment fills the square. Strong near/middle/far depth and material differences between matte plaster, stone, wood, water and clear glass. Cool clear waterlight and neutral domestic daylight, muted natural wood; rich dark overlap and fine narrow highlights rather than uniform glow.\nConstraints: no people, faces, bodies, mannequin, humanoid shadows, water creatures, dolphins, jellyfish, fish, aquarium signs or facility setting, submerged chairs, underwater swimming pose, floating ghost, magic circle, lantern, ornate old sample furniture, copied room arrangement, named artist or reference image, foreign city claim, readable writing, logos, watermark, collage or multiple panels. Transparent fantasy must be the same supported indoor room, never a portrait surrounded by sea animals.",
+  "source": "/workspace/scratch/ad16ee694a48/generated_images/exec-91dbed61-1bc2-4ae6-a0aa-31bf4c5cf45b.png",
+  "file": "water-mirror-fantasy-space.jpg",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "51793c57a973342870bbc398aae19b2821d00ac7aba1e404e01335e6a671239f",
+  "processing": "Original generated resolution kept; RGB JPEG q85 encoding only; source PNG retained unchanged",
+  "visualQA": {
+    "status": "accepted",
+    "method": "Individual review of the full generated output against the scene description and all eight no-person referenceWorldSceneRecipe sections; byte checks are separate from visual scene assessment.",
+    "observations": [
+      "日本の木造生活空間として、近い石の敷居から木の床、柱・梁、組込み収納、奥の廊下が同じ遠近でつながる。人物、水中の身体や海の動物はない。",
+      "左の開口部のそばに浅い水鏡があり、ゆらぐ明るい水光が室内の白い壁・床・木の柱へ続く。全景を水中や水族館へ置き換えていない。",
+      "手前の大きい曲面ガラスの縁、中景の平たい透明仕切り、奥の小さな弱い透明境界が別々の距離で読める。床の細い取付けレールと支持金具が見える。",
+      "透明面を通して奥の柱・床・壁が見え、境界で背景線のずれと反射線が重なる。単層の淡い透過と、重なりに見える濃い青緑の領域、細い縁光を分けている。",
+      "木・石・白壁・ガラス・水面の材質差を保つ。特定の椅子・旧ランタン・文字・施設名・人型・クラゲ・イルカを使っていない。"
+    ],
+    "limitations": [
+      "投影・屈折・内部反射は生成された背景美術として目視評価したもので、光線追跡による厳密な物理証明ではありません。"
+    ]
+  }
+}

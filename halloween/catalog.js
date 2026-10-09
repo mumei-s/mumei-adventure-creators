@@ -1,12 +1,12 @@
-import {extraTypographyGroups} from './typography-options.js?v=28.4.2';
-import {compatibleResolved} from './compatibility.js?v=28.4.2';
-import {selectionConflicts} from './compatibility.js?v=28.4.2';
-import {automaticSelection,sampleAutomaticSelections,selectionFingerprint,RepeatedSelectionError} from './random-selections.js?v=28.4.2';
-import {poseGroups} from './poses.js?v=28.4.2';
-import {colorWorlds,luminousMedia} from './worlds.js?v=28.4.2';
-import {halloweenSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.4.2';
-import {angleGroups} from './angles.js?v=28.4.2';
-import {referenceWorldMedia} from './world-bases.js?v=28.4.2';
+import {extraTypographyGroups} from './typography-options.js?v=28.4.3';
+import {compatibleResolved} from './compatibility.js?v=28.4.3';
+import {selectionConflicts} from './compatibility.js?v=28.4.3';
+import {automaticSelection,sampleAutomaticSelections,selectionFingerprint,RepeatedSelectionError} from './random-selections.js?v=28.4.3';
+import {poseGroups} from './poses.js?v=28.4.3';
+import {colorWorlds,luminousMedia} from './worlds.js?v=28.4.3';
+import {halloweenSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.4.3';
+import {angleGroups} from './angles.js?v=28.4.3';
+import {referenceWorldMedia} from './world-bases.js?v=28.4.3';
 export const AUTO='おまかせ';
 const group=(label,values)=>({label,values:values.split('|')});
 // Select how to draw first, then the scene, subject, staging and final format.
@@ -33,7 +33,8 @@ const palette=questions.find(q=>q.key==='palette');
 for(const [label,range] of [['光る幻想色',[0,8]],['淡色・空気',[8,16]],['鮮烈な対比',[16,24]],['紙・顔料・制限色',[24,32]]])palette.groups.push({label,values:colorWorlds.slice(...range).map(x=>x.value)});
 questions.find(q=>q.key==='medium').groups.push({label:'光と透明感',values:luminousMedia.filter(x=>!referenceWorldMedia.some(world=>world.value===x.value)).map(x=>x.value)});
 questions.find(q=>q.key==='medium').groups.push({label:'宝石光彩',values:['宝石光彩アニメ','宝石光彩リアル']});
-questions.find(q=>q.key==='medium').groups.push({label:'花霞・パステル・夢彩・宵彩',values:referenceWorldMedia.filter(x=>!x.value.startsWith('宝石光彩')).map(x=>x.value)});
+questions.find(q=>q.key==='medium').groups.push({label:'花霞・パステル・夢彩・宵彩',values:referenceWorldMedia.filter(x=>x.group==='花霞・パステル・夢彩・宵彩').map(x=>x.value)});
+questions.find(q=>q.key==='medium').groups.push({label:'光彩幻想・高精細',values:referenceWorldMedia.filter(x=>x.group==='光彩幻想・高精細').map(x=>x.value)});
 questions.find(q=>q.key==='theme').name='世界観・シーン';
 questions.find(q=>q.key==='medium').name='作風・画材';
 questions.find(q=>q.key==='medium').hint='専用の描線・塗り・素材の描き方';
@@ -42,7 +43,7 @@ questions.find(q=>q.key==='theme').hint='仮装・お菓子・怪異・秋の夜
 questions.find(q=>q.key==='place').hint='選んだ世界の、出来事が起きる場所';
 palette.hint='配色・光源・透け方まで選ぶ';
 questions.find(q=>q.key==='theme').groups=halloweenSceneGroups(questions.find(q=>q.key==='theme').groups,questions.find(q=>q.key==='place').groups);
-const defaultByKey={mood:'毎回大胆に変える',type:'デザインに合わせて自動編集',size:'noteサムネイル｜1280×670｜128:67'};
+const defaultByKey={mood:'毎回大胆に変える',design:'通常の一枚絵',type:'文字を一切入れない',size:'A4縦・300dpi目安｜2480×3508｜210:297'};
 export const defaults=questions.map(q=>defaultByKey[q.key]||AUTO);
 export function normalizeCreator(raw){
  let id=raw.trim();if(!id)return '';

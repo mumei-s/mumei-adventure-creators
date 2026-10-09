@@ -1,16 +1,16 @@
-import {HISTORY_STORAGE_FORMAT,compactHistoryRecord,compactUsedRecords,mergeUsedRecords,quotaExceeded} from './history-storage.js?v=28.4.2';
-import {createIndexedHistoryStore} from './indexed-history.js?v=28.4.2';
+import {HISTORY_STORAGE_FORMAT,HISTORY_RECORD_LIMIT,HISTORY_BYTE_BUDGET,compactHistoryRecord,compactUsedRecords,mergeUsedRecords,quotaExceeded,enforceHistoryBudget} from './history-storage.js?v=28.4.3';
+import {createIndexedHistoryStore} from './indexed-history.js?v=28.4.3';
 
 const empty=()=>({history:[],used:[],count:0,historyEpoch:'legacy',clearedAt:0,savedAt:0});
 const valid=state=>!!state&&Array.isArray(state.history)&&Array.isArray(state.used);
 const stamp=state=>Number.isFinite(state?.savedAt)?state.savedAt:0;
 const cleared=state=>Number.isFinite(state?.clearedAt)?state.clearedAt:0;
 const epoch=state=>typeof state?.historyEpoch==='string'?state.historyEpoch:'legacy';
-function normalize(state){return {...empty(),...state,history:(state.history||[]).slice(0,12),used:compactUsedRecords(state.used),count:Number.isSafeInteger(state.count)?state.count:0,historyEpoch:epoch(state),clearedAt:cleared(state),savedAt:stamp(state)};}
+function normalize(state){return {...empty(),...state,history:(state.history||[]).slice(0,HISTORY_RECORD_LIMIT),used:compactUsedRecords(state.used),count:Number.isSafeInteger(state.count)?state.count:0,historyEpoch:epoch(state),clearedAt:cleared(state),savedAt:stamp(state)};}
 function mergeHistory(existing,incoming){
  const records=new Map();
  for(const record of [...existing,...incoming])if(record&&typeof record.edition==='string')records.set(record.edition,record);
- return [...records.values()].sort((a,b)=>(Date.parse(b.date)||0)-(Date.parse(a.date)||0)||(b.count||0)-(a.count||0)).slice(0,12);
+ return [...records.values()].sort((a,b)=>(Date.parse(b.date)||0)-(Date.parse(a.date)||0)||(b.count||0)-(a.count||0)).slice(0,HISTORY_RECORD_LIMIT);
 }
 function combine(existing,incoming){
  if(!valid(existing))return normalize(incoming);
@@ -23,7 +23,7 @@ export function mergeHistoryStates(existing,incoming){return combine(existing,in
 
 // IndexedDB is always checked; a localStorage marker itself may fail at quota.
 // Old keys remain untouched after migration. No capacity retry removes history.
-export function createHistoryPersistence({key,storage=()=>globalThis.localStorage,indexedDB=()=>globalThis.indexedDB,database,now=Date.now,Compression=globalThis.CompressionStream,Decompression=globalThis.DecompressionStream,eventTarget=globalThis.window,documentTarget=globalThis.document,channelFactory=typeof globalThis.window!=='undefined'&&typeof globalThis.BroadcastChannel==='function'?name=>new globalThis.BroadcastChannel(name):null}={}){
+export function createHistoryPersistence({key,storage=()=>globalThis.localStorage,indexedDB=()=>globalThis.indexedDB,database,now=Date.now,Compression=globalThis.CompressionStream,Decompression=globalThis.DecompressionStream,byteBudget=HISTORY_BYTE_BUDGET,eventTarget=globalThis.window,documentTarget=globalThis.document,channelFactory=typeof globalThis.window!=='undefined'&&typeof globalThis.BroadcastChannel==='function'?name=>new globalThis.BroadcastChannel(name):null}={}){
  const db=database||createIndexedHistoryStore({indexedDB});
  let lastState=empty(),cached=null,pending=null,dirty=true,revision=0,closed=false,localRaw,localParsed;
  let channel=null;try{channel=channelFactory?.('atelier-history:'+key)||null;}catch{}
@@ -68,29 +68,41 @@ export function createHistoryPersistence({key,storage=()=>globalThis.localStorag
   try{return await task;}finally{if(pending===task)pending=null;}
  }
  async function prepare(state){
-  return {...normalize(state),storageFormat:HISTORY_STORAGE_FORMAT,history:await Promise.all((state.history||[]).slice(0,12).map(record=>compactHistoryRecord(record,{Compression,Decompression,archiveCore:true})))};
+  return {...normalize(state),storageFormat:HISTORY_STORAGE_FORMAT,history:await Promise.all((state.history||[]).slice(0,HISTORY_RECORD_LIMIT).map(record=>compactHistoryRecord(record,{Compression,Decompression,archiveCore:true})))};
  }
- async function write(state,{shouldWrite=()=>true,clearHistory=false}={}){
+ async function write(state,{shouldWrite=()=>true,clearHistory=false,removeEdition=null,restoreRecords=null,expectedEpoch=null}={}){
   const input=await prepare(state);
+  const restoring=Array.isArray(restoreRecords)?await Promise.all(restoreRecords.slice(0,HISTORY_RECORD_LIMIT).map(record=>compactHistoryRecord(record,{Compression,Decompression,archiveCore:true}))):null;
   if(!shouldWrite())return {saved:false,cancelled:true};
   let indexedError=null;
   const update=existing=>{
-   if(!clearHistory&&valid(existing)&&epoch(existing)!==epoch(input)&&cleared(input)<=cleared(existing))return {state:normalize(existing),write:false,conflict:true};
-   let candidate=clearHistory?{...combine(existing,input),history:[],historyEpoch:'clear-'+now()+'-'+Math.random().toString(36).slice(2),clearedAt:Math.max(now(),cleared(existing)+1,cleared(input)+1)}:combine(existing,input);
+   if(!clearHistory&&!removeEdition&&valid(existing)&&epoch(existing)!==epoch(input)&&cleared(input)<=cleared(existing))return {state:normalize(existing),write:false,conflict:true};
+   let candidate=combine(existing,input),removed=[];
+   if(restoring&&expectedEpoch!==epoch(candidate))return {state:candidate,write:false,conflict:true};
+   if(clearHistory||removeEdition){
+    removed=candidate.history.filter(record=>clearHistory||record.edition===removeEdition);
+    if(removeEdition&&!removed.length)return {state:candidate,write:false,missing:true};
+    candidate={...candidate,history:clearHistory?[]:candidate.history.filter(record=>record.edition!==removeEdition),historyEpoch:(clearHistory?'clear-':'delete-')+now()+'-'+Math.random().toString(36).slice(2),clearedAt:Math.max(now(),cleared(existing)+1,cleared(input)+1)};
+   }
+   if(restoring)candidate={...candidate,history:mergeHistory(candidate.history,restoring)};
    candidate={...candidate,storageFormat:HISTORY_STORAGE_FORMAT,savedAt:Math.max(now(),stamp(existing)+1,stamp(input)+1)};
-   return {state:candidate,write:true};
+   // Older saves can exceed the new budget. Explicit deletion is still
+   // allowed to shrink them; adding a new record must fit the stated budget.
+   if(clearHistory||removeEdition){let priorBytes=0;try{priorBytes=JSON.stringify(combine(existing,input)).length*2;}catch{}enforceHistoryBudget(candidate,Math.max(byteBudget,priorBytes));}
+   else enforceHistoryBudget(candidate,byteBudget);
+   return {state:candidate,write:true,...(clearHistory||removeEdition?{removed}:{}),...(restoring?{restored:candidate.history.filter(record=>restoring.some(item=>item.edition===record.edition))}:{})};
   };
   try{
    const result=await db.update(key,update,{shouldWrite});
-   if(result.saved||result.conflict){
+   if(result.saved||result.conflict||result.missing){
     revision++;localParsed=null;remember({state:result.state,backend:'indexeddb',error:null,needsMigration:false});announce(result);
-    // Only an explicitly confirmed clear replaces the old local copy. Its
-    // empty-state tombstone prevents resurrection if IndexedDB later blocks.
-    if(result.saved&&clearHistory)try{local().setItem(key,JSON.stringify(result.state));}catch{}
+    // Explicit deletion and undo replace only this feature's old local copy.
+    // A newer epoch prevents another tab or old fallback restoring a deletion.
+    if(result.saved&&(clearHistory||removeEdition||restoring))try{local().setItem(key,JSON.stringify(result.state));}catch{}
     return {...result,backend:'indexeddb'};
    }
    if(result.cancelled)return result;
-  }catch(error){indexedError=error;}
+  }catch(error){indexedError=error;if(error.historyBudget)return {saved:false,quota:true,budget:true,estimatedBytes:error.estimatedBytes,byteBudget,error};}
   if(!shouldWrite())return {saved:false,cancelled:true};
   // Fallback writes all twelve records and all signatures atomically. It does
   // not delete an old key, another feature's data or the last successful save.
@@ -100,8 +112,8 @@ export function createHistoryPersistence({key,storage=()=>globalThis.localStorag
    local().setItem(key,JSON.stringify(result.state));localRaw=undefined;localParsed=undefined;
    const committed={...result,saved:true,backend:'localstorage',fallback:true};revision++;remember({state:result.state,backend:'localstorage',error:indexedError,needsMigration:true});announce(committed);
    return committed;
-  }catch(error){return {saved:false,quota:quotaExceeded(error)||quotaExceeded(indexedError),error,indexedError};}
+  }catch(error){return {saved:false,quota:quotaExceeded(error)||quotaExceeded(indexedError),budget:!!error.historyBudget,estimatedBytes:error.estimatedBytes,byteBudget,error,indexedError};}
  }
  function close(){closed=true;invalidate();cached=null;localRaw=localParsed=undefined;channel?.removeEventListener?.('message',onMessage);channel?.close?.();eventTarget?.removeEventListener?.('storage',onStorage);eventTarget?.removeEventListener?.('pageshow',onPageShow);documentTarget?.removeEventListener?.('visibilitychange',onVisible);db.close?.();}
- return {load,invalidate,cacheInfo:()=>({snapshot:!!cached,pending:!!pending,localParsed:!!localParsed,notifications:!!channel}),save:(state,options)=>write(state,options),clear:(state,options)=>write(state,{...options,clearHistory:true}),close};
+ return {load,invalidate,cacheInfo:()=>({snapshot:!!cached,pending:!!pending,localParsed:!!localParsed,notifications:!!channel}),save:(state,options)=>write(state,options),clear:(state,options)=>write(state,{...options,clearHistory:true}),remove:(state,edition,options)=>typeof edition==='string'&&edition?write(state,{...options,removeEdition:edition}):Promise.resolve({saved:false,missing:true,state:normalize(state)}),restore:(state,records,options)=>write(state,{...options,restoreRecords:records}),close};
 }

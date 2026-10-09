@@ -1,19 +1,20 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.2';
-import {applyCollection} from '../collection.js?v=28.4.2';
-import {initialSelections} from '../modes.js?v=28.4.2';
-import {buildDirection} from '../direction.js?v=28.4.2';
-import {applyPose} from '../poses.js?v=28.4.2';
-import {optionRecipe} from '../option-recipes.js?v=28.4.2';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.2';
-import {composePrompt} from '../prompt.js?v=28.4.2';
-import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.2';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.2';
-import {isPhotographicMedium,photoReconstruction} from '../photo-design.js?v=28.4.2';
-import {cameraContract} from '../angles.js?v=28.4.2';
-import {colorPolicy} from '../color-policy.js?v=28.4.2';
-import {artworkBasis,artworkBasisContract} from '../artwork-basis.js?v=28.4.2';
-import {referenceWorldMapping,referenceWorldMediumContract,referenceWorldSceneRecipe} from '../world-bases.js?v=28.4.2';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.3';
+import {applyCollection} from '../collection.js?v=28.4.3';
+import {initialSelections} from '../modes.js?v=28.4.3';
+import {buildDirection} from '../direction.js?v=28.4.3';
+import {applyPose} from '../poses.js?v=28.4.3';
+import {optionRecipe} from '../option-recipes.js?v=28.4.3';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.3';
+import {composePrompt} from '../prompt.js?v=28.4.3';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.3';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.3';
+import {isPhotographicMedium,photoReconstruction} from '../photo-design.js?v=28.4.3';
+import {cameraContract} from '../angles.js?v=28.4.3';
+import {colorPolicy} from '../color-policy.js?v=28.4.3';
+import {artworkBasis,artworkBasisContract} from '../artwork-basis.js?v=28.4.3';
+import {referenceWorldMapping,referenceWorldMediumContract,referenceWorldSceneRecipe} from '../world-bases.js?v=28.4.3';
+import {compactReferences,assertCompactHandoff,assertCompactEngineering,includesClause} from './compact-handoff-assertions-v28.mjs';
 
 // Verify the actual handoff contracts, not a generated image. No sample pixels
 // or invented interpretation of a reference image is used by these checks.
@@ -40,8 +41,8 @@ function inspect(supplied,collection){
  const plan=productionPlan(profile,values,variant,collection,random);
  const audit=JSON.parse(renderInput(plan).split('\n\n【全選択の個別レシピ】')[0]);
  const prompt=composePrompt({profile,values,variant:plan.variant,collection,preparedPlan:plan,
-  references:plan.noPerson?[]:[{name:'character-reference.png',role:'identity'}],edition:'REFERENCE-WORLD'});
- const routes={native:renderSelectionMaterial(plan),prompt,artwork:composeArtworkStage(plan),
+  references:compactReferences(plan,plan.noPerson?[]:[{name:'character-reference.png',role:'identity'}]),edition:'REFERENCE-WORLD'});
+ const routes={native:renderSelectionMaterial(plan),audit:renderInput(plan),prompt,artwork:composeArtworkStage(plan),
   embedded:composeArtworkStage(plan,{embedded:true}),artworkRepair:composeArtworkRepair(plan),
   repair:repairPrompt({prompt,production:plan,values})};
  const label=collection+' / '+values.medium+' / '+values.theme+' / '+values.costume+' / '+values.palette;
@@ -55,8 +56,14 @@ function inspect(supplied,collection){
   assert.equal(plan.values[key],values[key],label+' changed selected '+key);
  }
  assert.deepEqual(audit.camera.geometry,cameraContract(values,{noPerson:plan.noPerson}),label+' changed the camera');
+ const actual=assertCompactHandoff(plan,prompt,label+' actual master');
+ if(actual){
+  assertCompactEngineering(plan,prompt,medium.sections,label+' actual medium');
+  assertCompactEngineering(plan,prompt,scene.sections,label+' actual scene');
+ }
  for(const [route,text] of Object.entries(routes)){
   assert.doesNotMatch(text,/undefined|NaN/,label+' / '+route+' has unresolved output');
+  if(['prompt','repair'].includes(route))continue;
   contains(text,values.medium,label+' / '+route);
   contains(text,colorPolicy(values).allowed,label+' / '+route+' palette');
   for(const section of medium.sections)contains(text,section.text,label+' / '+route+' / '+section.label);
@@ -72,7 +79,7 @@ function inspect(supplied,collection){
   assert.equal(optionRecipe('medium',values.medium,{values,noPerson:plan.noPerson}).family,'photography',label+' lost the photographic family used by compatibility');
   assert.ok(photo,label+' has no photographic reconstruction');
   assert.match(audit.required_before_details.drawing_priority,/実物の立体|実物の.*材質|撮影像/);
-  for(const section of photo.sections)for(const [route,text] of Object.entries(routes))contains(text,section.text,label+' / '+route+' photo reconstruction');
+  for(const section of photo.sections)for(const [route,text] of Object.entries(routes).filter(([route])=>!['prompt','repair'].includes(route)))contains(text,section.text,label+' / '+route+' photo reconstruction');
   photoCases++;
  }else{
   assert.equal(isPhotographicMedium(values.medium),false,label+' entered the photo route');
@@ -100,7 +107,7 @@ function inspect(supplied,collection){
   sceneryCases++;
  }else{
   assert.match(plan.variant.expression,/目を閉じ|閉眼|つむ/);
-  for(const route of ['native','prompt','artwork','embedded','repair']){
+  for(const route of ['native','audit','artwork','embedded']){
    contains(routes[route],plan.variant.expression,label+' / '+route+' closed eyes');
    contains(routes[route],plan.variant.pose,label+' / '+route+' selected support/pose');
   }
@@ -112,7 +119,7 @@ function inspect(supplied,collection){
    assert.ok(/閉眼.*保ち.*開いた目を描かない/.test(features.text),label+' may open the selected closed eyes');
    assert.ok(/髪なし.*保ち.*髪を追加しない/.test(features.text),label+' may add hair to a hairless reference');
    contains(contract.preservation,values.proportions,label+' selected chibi proportions');
-   for(const route of ['native','prompt','artwork','embedded','artworkRepair','repair']){
+   for(const route of ['native','audit','artwork','embedded','artworkRepair']){
     contains(routes[route],features.text,label+' / '+route+' visible feature rules');
     contains(routes[route],contract.preservation,label+' / '+route+' identity/coverage/proportions');
    }
@@ -122,7 +129,8 @@ function inspect(supplied,collection){
     assert.ok(/顔・耳・首・肩・腕・手・脚・足/.test(surface.text),label+' restricts light to face and hands');
     assert.ok(/各素材|材質別/.test(surface.text),label+' applies the same sparkle to every material');
     assert.ok(/被覆.*変更せず|露出を増やさない/.test(surface.text),label+' exposes covered body parts to add light');
-    for(const text of Object.values(routes))contains(text,surface.text,label+' visible skin/clothing/environment light');
+    for(const [route,text] of Object.entries(routes).filter(([route])=>!['prompt','repair'].includes(route)))contains(text,surface.text,label+' visible skin/clothing/environment light');
+    if(actual)for(const clause of surface.text.match(/[^。！？]+[。！？]?/gu))includesClause(prompt,clause,label+' actual visible skin/clothing/environment light');
    }else{
     assert.ok(!contract.sections.some(section=>section.label.endsWith('焦点にも届く鋭い光')),label+' inherited the separate jewel-skin requirement');
    }

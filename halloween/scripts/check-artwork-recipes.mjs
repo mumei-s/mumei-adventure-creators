@@ -1,13 +1,15 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.2';
-import {applyCollection} from '../collection.js?v=28.4.2';
-import {initialSelections} from '../modes.js?v=28.4.2';
-import {buildDirection} from '../direction.js?v=28.4.2';
-import {applyPose} from '../poses.js?v=28.4.2';
-import {optionRecipe} from '../option-recipes.js?v=28.4.2';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.2';
-import {composePrompt} from '../prompt.js?v=28.4.2';
-import {colorPolicy} from '../palette-recipes.js?v=28.4.2';
+import {assertCompactHandoff,containsInstruction} from './compact-handoff-assertions-v28.mjs';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.3';
+import {applyCollection} from '../collection.js?v=28.4.3';
+import {initialSelections} from '../modes.js?v=28.4.3';
+import {buildDirection} from '../direction.js?v=28.4.3';
+import {applyPose} from '../poses.js?v=28.4.3';
+import {optionRecipe} from '../option-recipes.js?v=28.4.3';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.3';
+import {composePrompt} from '../prompt.js?v=28.4.3';
+import {renderChatInput} from '../compiled-production.js?v=28.4.3';
+import {colorPolicy} from '../palette-recipes.js?v=28.4.3';
 
 const profile={displayName:'TEST CREATOR',activityEnabled:false,topics:[],biography:''};
 const random=()=>.28;
@@ -15,7 +17,7 @@ const produce=(values,collection='halloween',patch={})=>{
  const variant={...applyPose(buildDirection([],values.mood,random,collection,values),values.pose),...patch};
  const plan=productionPlan(profile,values,variant,collection,random);
  const prompt=composePrompt({collection,profile,values,variant,references:[],edition:'RECIPE TEST',preparedPlan:plan});
- return {variant,plan,prompt};
+ assertCompactHandoff(plan,prompt);return {variant,plan,prompt,audit:renderChatInput(plan)};
 };
 let occurrences=0,sections=0;const keys=new Map();
 for(const collection of ['halloween','everyday']){
@@ -25,9 +27,9 @@ for(const collection of ['halloween','everyday']){
   const values={...base,[q.key]:value},recipe=optionRecipe(q.key,value,{values,collection});
   assert.equal(recipe.known,true,collection+' / '+q.key+' / '+value);
   assert.ok(recipe.sections.length>0&&recipe.checks.length>0,value);
-  const {prompt,plan}=produce(values,collection);
+  const {prompt,plan,audit}=produce(values,collection);
   assert.ok(!/undefined|NaN|\{focal\}|\{surface\}/.test(prompt),value+' leaked an unresolved instruction');
-  for(const c of plan.conditions)for(const s of c.sections){assert.ok(s.label&&s.text,value);assert.ok(prompt.includes(s.text),value+' lost a detailed instruction during export');}
+  for(const c of plan.conditions)for(const s of c.sections){assert.ok(s.label&&s.text,value);assert.ok(audit.includes(s.text),value+' lost a detailed instruction during audit export');}
   assert.ok(!prompt.includes('world-036.jpg')&&!prompt.includes('crystal-transmission-anime.png'),'Picker artwork leaked');
   occurrences++;sections+=recipe.sections.length;
   if(!keys.has(q.key))keys.set(q.key,new Set());keys.get(q.key).add(value);
@@ -57,7 +59,7 @@ for(const type of ['短いタイトル＋名前','クリエイター名＋自由
 const noWords=produce({...base,type:'セリフのみ',line:'セリフなし'});assert.equal(noWords.plan.copy.mode,'none');assert.deepEqual(noWords.plan.copy.slots,[]);
 
 assert.match(jewel.prompt,/目が|閉じた目|閉眼/);
-assert.match(jewel.prompt,/半透明の投影層/);
+assert.match(jewel.prompt,/半透明(?:の)?投影(?:層|面|像)/);
 assert.match(jewel.prompt,/屈折|干渉/);
 assert.equal(jewel.plan.copy.mode,'none');
 assert.deepEqual(jewel.plan.copy.slots,[]);
@@ -78,13 +80,13 @@ const newspaper=produce({...base,design:'新聞の一面',medium:'実写風フ�
 assert.deepEqual(newspaper.plan.copy.blocks,['TEST CREATOR']);
 assert.equal(newspaper.plan.conditions.find(c=>c.key==='design').sections.length,7);
 for(const medium of ['宝石ホログラムアニメ','クリスタル透光アニメ','透明水彩','水墨画','現代アニメの一枚絵','実写風フィルム写真']){
- const scenery=produce({...base,medium,costume:'風景を主役にする',mood:'毎回大胆に変える'},'everyday');
+ const scenery=produce({...base,medium,costume:'風景を主役にする',pose:'おまかせ',mood:'毎回大胆に変える'},'everyday');
  assert.ok(scenery.plan.noPerson);
  assert.ok(!scenery.prompt.includes('顔の向き：')&&!scenery.prompt.includes('身体の動き：'));
  assert.ok(!scenery.prompt.includes('主参照の髪・肌・瞳の基礎色は識別のために残し'));
  for(const key of ['pose','mood'])assert.match(scenery.plan.conditions.find(c=>c.key===key).text,/適用|人物なし|非適用/);
 }
-const emblemValues={...base,costume:'紋章・アイコンにする',design:'紋章・エンブレム',medium:'ベクターグラフィック',place:'抽象的な色面'};
+const emblemValues={...base,costume:'紋章・アイコンにする',pose:'おまかせ',mood:'毎回大胆に変える',design:'紋章・エンブレム',medium:'ベクターグラフィック',place:'抽象的な色面'};
 const emblem=produce(emblemValues,'everyday');
 assert.match(emblem.prompt,/図形の重なり・抜き・余白/);
 const repair=repairPrompt({values:emblemValues,production:emblem.plan,prompt:emblem.prompt});

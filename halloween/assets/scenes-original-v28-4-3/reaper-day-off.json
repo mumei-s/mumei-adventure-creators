@@ -1,0 +1,27 @@
+{
+  "title": "死神の休日",
+  "slug": "reaper-day-off",
+  "prompt": "Use case: illustration-story.\nAsset: ONE original square narrative illustration for the scene chooser, titled internally 死神の休日. No writing in the image.\nScene: a quiet small café on Halloween night, warm lamplight from a ceiling fixture, a dark blue night window, a modest dish of wrapped sweets and two small unlit pumpkins on the windowsill. The simple interior is connected in consistent perspective and is not filled with magical decoration.\nSubject and action: one original mature adult male reaper, short silver hair and a gentle tired smile, wearing a fully covered charcoal hooded robe with its deep hood raised, opaque long sleeves and sturdy shoes. He sits comfortably at a wooden café table, relaxed shoulders, both natural hands around one ceramic cup of hot cocoa, visible gentle steam. The lowered cup is his attention and source of comfort, not a weapon.\nEssential story contrast: his LARGE SCYTHE is completely released from his hands and resting securely against the wall beside the unused adjacent chair, some distance from the drink. Its long wooden handle and a clearly connected curved steel harvest blade are visible within the square frame. The blade and handle make his reaper role instantly recognizable. The robe has an understated bone-shaped clasp, not a gore costume. A closed book lies on the table. Calm daily respite contrasts with the intimidating idle work tool. No combat, harvesting or threatening pose.\nStyle: polished finely drawn Japanese 2D narrative illustration, adult anime proportions, coherent cel and painterly color planes, convincing cloth folds and wooden surfaces, crisp readable principal forms. Warm amber cocoa and café light against deep charcoal robe and a cool blue window. Medium-wide view includes the reaper seated posture, both hands, cup, table and the entire identifiable scythe. A complete scene, not a face-only portrait.\nConstraints: exactly one original adult human character, no borrowed characters or artist references, no source-art imitation, no lantern, no magic circle, no elaborate luminous effects, no bare torso or transparent clothing, no skeleton exposed, no blood or organs, no extra people, no text, logo or watermark. The scythe must NOT be held while both hands hold the cup.",
+  "source": "/workspace/scratch/ad16ee694a48/generated_images/exec-d9dccd0c-1f5a-450f-b571-bd525a42a67c.png",
+  "file": "reaper-day-off.jpg",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "d85d6dd12b41d53bcdf7885a2eeb424cb2a7c0e6e01bef577c38de8cedf19a08",
+  "processing": "Original generated resolution kept; RGB JPEG q85 encoding only; source PNG retained unchanged",
+  "visualQA": {
+    "status": "accepted",
+    "method": "Individual review of the full generated output; file checks are separate from visual narrative assessment.",
+    "observations": [
+      "深いフードと骨形の留め具を持つ成人の死神が喫茶店で座り、両手を一つの温かいカップへ使っている。",
+      "大鎌の長い柄と曲がった刃が明確に接続し、壁・床へ休めてある。手には鎌を持たず、隣の空いた椅子の脇で仕事の道具と飲み物を分けている。",
+      "窓辺の小さなカボチャと包み菓子、夜景、湯気でHalloweenの夜の休息を読める。戦闘や普通の猫カフェの読書肖像ではない。",
+      "衣装の被覆、座面・床・手とカップの接点は自然。文字・旧ランタン・魔法陣・他人を追加していない。"
+    ],
+    "limitations": [
+      "視覚確認は生成結果の物語評価であり、自動ファイル検証だけで意味や解剖を証明するものではありません。"
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "n": 1,
+  "title": "風景・建築の記録",
+  "slug": "landscape-architecture-record",
+  "prompt": "Use case: illustration-story. Asset: ONE original square environment illustration for a Japanese creative website's scene chooser. Complete actual illustrated scenery, refined professional background artwork with convincing depth, material texture, soft natural daylight, restrained warm-neutral colour and delicate lines. Clearly show the specified actual scene, no title-only placeholder. Large readable environment fills image, foreground/middle/background connected in consistent perspective. No people, no faces or human-shaped shadows, no artist references, no copying existing artworks, no lantern, no fantasy glow, no logos, no text/labels, no collage or multi-panel contact sheet. Exactly one finished image. Scene: A quiet Japanese hillside settlement where natural terrain and architecture form a single coherent place. In foreground an old stone retaining wall and gently curving path, middle ground a few timber houses with tiled roofs fitted into terraced slopes, grasses and trees growing around the buildings, background rolling wooded hills under a lightly cloudy daytime sky. Precise roof/window structure, observable terrain changes, plants and natural material wear. Architectural landscape record, broad view, no inhabitants.",
+  "source": "/workspace/scratch/ad16ee694a48/generated_images/exec-dca4bc17-bb50-45d3-98ba-bbe0d9f1e89f.png",
+  "file": "landscape-architecture-record.jpg",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "fe96c13e4e7aa3ff52d83bbc0041b2d8226b2cb33deaea6d485faffea86a927e",
+  "processing": "Original generated resolution kept; RGB JPEG q85 encoding only",
+  "visualQA": {
+    "status": "accepted",
+    "method": "Individual review of the full generated output; file checks are separate from visual scene assessment.",
+    "observations": "石の小道と擁壁、斜面に沿う木造瓦屋根の家、遠い森林の丘が一つの地形へ接続している。風景と建築の双方を広景で示し、人物や文字はない。"
+  }
+}

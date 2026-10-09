@@ -1,0 +1,24 @@
+{
+  "medium": "宝石ホログラムアニメ",
+  "asset": "assets/style-jewel-hologram-original-v28-4-3.png",
+  "generator": "built-in image_gen",
+  "prompt": "Use case: stylized-concept.\nAsset type: an original square drawing-style preview for “宝石ホログラムアニメ” (jewel hologram anime), one finished illustration, no printed words.\nScene: an angular indoor transit concourse drawn entirely as precise 2D animation artwork, empty aside from one adult character. Behind the character are alternating deep teal and warm gray vertical wall fins and a diagonal cream stair railing. These distinct background lines remain visible THROUGH the character's face and uncovered hand.\nSubject and framing: an original adult woman with short asymmetrical dark plum curls and a broad, mature face, in a fully closed mustard cropped work jacket over a dark high-collar shirt. Waist-up view at eye level, body turned left while head looks ahead, head upright; she raises one open palm beside her shoulder. Her face is large and her forehead, both cheeks, nose and lips all visible. No borrowed character, no artist reference.\nDRAWING MEDIUM: hand-drawn Japanese 2D anime with tapered colored contour lines and broad, deliberate three-step cel shadow shapes. Face anatomy is constructed from drawn eyelid strokes, a short nose line, simple lip outline, flat translucent color planes, NEVER a photograph or smooth 3D skin gradient.\nMANDATORY MATERIAL: the CHARACTER'S FACE, HAIR, NECK AND HAND themselves are a semitransparent projected light image. Wide central cheek and forehead regions visibly transmit the railing and wall fins behind them. The nose and lips consist of transparent projected contours and colored celplanes, with NO opaque skin mask and NO solid pink lips. A thin cyan-violet-pale-gold interference band follows portions of the head and raised hand. Two shallow projection sheets follow the head and forearm at different depth; their outlines are slightly displaced double images, overlapping only increases optical color density. Several visible parallel scan lines occupy one limited hand/forearm projection sheet and stop at its edge. The projection layers are thin light films, NOT thick glass or polygonal jewels. Maintain crisp shadow color planes even inside the transmissive face.\nClothes preserve the jacket's actual coverage: jacket and shirt remain closed, matte colored cloth with normal folds and dark cel shadows. No transparent window through covered torso. No x-ray or internal anatomy.\nLight: small sharp white-cyan highlights beside dark teal shadow planes, concentrated spectral color inside the projection layers, a clear readable background. No haze washing out the artwork.\nAvoid: lanterns, glowing handheld objects, necklaces, jewel decorations, crystal chunks, magic circles, pedestals, halos, pumpkins, witches, labels, watermarks, UI, photo skin, ordinary opaque person surrounded by glass. The thumbnail must immediately read as an ANIME CHARACTER MADE OF TRANSMISSIVE PROJECTION LIGHT, with the actual central face visibly transparent, while safely fully clothed.",
+  "source": "/workspace/scratch/ad16ee694a48/generated_images/exec-095c47f2-fe76-4b0d-89a2-5c4946f6f95f.png",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "a9044ed8fe917af4a83bd3fbd98d9a4cb54a0d585494e4a7d63f0a09ce9156aa",
+  "processing": "Original generated PNG copied byte for byte; no image content edits.",
+  "visualQA": {
+    "status": "accepted",
+    "method": "Individual human-style visual review of full generated output; not an automatic optical proof.",
+    "observations": [
+      "額と左右の頬の広い面を背景の縦ルーバーと斜め手すりが透過している。",
+      "目鼻口は簡潔なアニメの描線と透明色面で成立し、通常の不透明な肌やピンクの唇が残っていない。",
+      "掌と前腕に複数の走査線と奥行きの異なる二重輪郭が見え、薄い投影材質を厚い結晶塊と区別できる。",
+      "襟付きジャケットと下のハイネックは閉じており、被覆領域に人体の透視を追加していない。",
+      "独自の短い巻き毛・黄色いジャケット・駅の構造で、ランタンや魔法陣・台座・署名は存在しない。"
+    ]
+  }
+}

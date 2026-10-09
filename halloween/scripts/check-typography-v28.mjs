@@ -1,14 +1,15 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.4.2';
-import {resolveSelections} from '../catalog.js?v=28.4.2';
-import {initialSelections} from '../modes.js?v=28.4.2';
-import {buildDirection} from '../direction.js?v=28.4.2';
-import {productionPlan} from '../production-plan.js?v=28.4.2';
-import {composePrompt} from '../prompt.js?v=28.4.2';
-import {typePreview} from '../examples.js?v=28.4.2';
-import {typographyValues,typographyOption} from '../typography-options.js?v=28.4.2';
-import {visualSpec} from '../visual-specs.js?v=28.4.2';
-import {renderInput} from '../compiled-production.js?v=28.4.2';
+import {assertCompactHandoff,containsInstruction} from './compact-handoff-assertions-v28.mjs';
+import {applyCollection} from '../collection.js?v=28.4.3';
+import {resolveSelections} from '../catalog.js?v=28.4.3';
+import {initialSelections} from '../modes.js?v=28.4.3';
+import {buildDirection} from '../direction.js?v=28.4.3';
+import {productionPlan} from '../production-plan.js?v=28.4.3';
+import {composePrompt} from '../prompt.js?v=28.4.3';
+import {typePreview} from '../examples.js?v=28.4.3';
+import {typographyValues,typographyOption} from '../typography-options.js?v=28.4.3';
+import {visualSpec} from '../visual-specs.js?v=28.4.3';
+import {renderInput} from '../compiled-production.js?v=28.4.3';
 
 let examined=0;
 for(const collection of ['halloween','everyday']){
@@ -32,7 +33,7 @@ for(const collection of ['halloween','everyday']){
   if(type==='キャラクター名鑑・役柄とスキル')assert.equal(roles.filter(role=>noPerson?/^特徴\d$/.test(role):/^スキル\d$/.test(role)).length,2);
   const input=renderInput(plan),prompt=composePrompt({creator:'private_test_id',profile,values,variant:plan.variant,references:[],edition:'TYPOGRAPHY',collection,preparedPlan:plan});
   assert.ok(input.includes(typographyOption(type).layout),type+' layout did not reach ChatGPT integration material');
-  assert.ok(prompt.includes(type),type+' selected mode missing from transferred prompt');
+  assertCompactHandoff(plan,prompt);
   for(const slot of copy.slots)assert.ok(input.includes(slot.text),type+' lost fixed manuscript '+slot.role);
   for(const slot of copy.generatedSlots){assert.ok(input.includes(slot.role),type+' lost generated manuscript '+slot.role);assert.ok(input.includes(slot.instruction),type+' lost role-specific editorial rules');}
   assert.doesNotMatch(copy.blocks.join(' '),/private_test_id|https?:|undefined|NaN/);

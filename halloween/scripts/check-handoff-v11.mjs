@@ -1,12 +1,13 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.4.2';
-import {resolveSelections} from '../catalog.js?v=28.4.2';
-import {initialSelections} from '../modes.js?v=28.4.2';
-import {buildDirection} from '../direction.js?v=28.4.2';
-import {applyPose} from '../poses.js?v=28.4.2';
-import {productionPlan} from '../production-plan.js?v=28.4.2';
-import {composePrompt,needsReference} from '../prompt.js?v=28.4.2';
-import {imageDeliveryRepairPrompt} from '../output-contract.js?v=28.4.2';
+import {applyCollection} from '../collection.js?v=28.4.3';
+import {resolveSelections} from '../catalog.js?v=28.4.3';
+import {initialSelections} from '../modes.js?v=28.4.3';
+import {buildDirection} from '../direction.js?v=28.4.3';
+import {applyPose} from '../poses.js?v=28.4.3';
+import {productionPlan} from '../production-plan.js?v=28.4.3';
+import {composePrompt,needsReference} from '../prompt.js?v=28.4.3';
+import {assertCompactHandoff} from './compact-handoff-assertions-v28.mjs';
+import {imageDeliveryRepairPrompt} from '../output-contract.js?v=28.4.3';
 
 const profile={displayName:'TEST CREATOR',topics:[],biography:'',activityEnabled:false};
 applyCollection('everyday');
@@ -17,7 +18,7 @@ const args={collection:'everyday',creator:'test',profile,values,variant,referenc
 const plain=composePrompt(args),oldStyle=composePrompt({...args,styleGuide:{name:'male-sample.jpg',combined:true,cells:[{cell:1,value:'男性の見本',text:'別の男性を必ず描く'}]}});
 assert.equal(plain,oldStyle,'Legacy sample-image metadata must have no influence on the prompt');
 assert.ok(!plain.includes('male-sample.jpg'));assert.ok(!plain.includes('別の男性を必ず描く'));
-assert.ok(plain.includes('項目のタイトル'));assert.ok(plain.includes('性別の表現'));
+assert.ok(plain.includes('選択確定：'));assert.ok(plain.includes('性別表現'));
 assert.ok(plain.includes('完成した画像そのものを1枚'));assert.ok(plain.includes('文章だけで完成扱いにしない'));
 assert.equal(needsReference(values),true);
 
@@ -27,9 +28,9 @@ for(const medium of ['透明水彩','水墨画','実写風フィルム写真','�
  const prompt=composePrompt({collection:'everyday',creator:'test',profile,values:scenery,variant:shot,references:[],edition:'LANDSCAPE'});
  assert.equal(needsReference(scenery),false);assert.equal(needsReference({...scenery,place:'参照風景を舞台にする'}),true);
  assert.equal(needsReference({...scenery,palette:'参照画像の色を生かす'}),true);
- assert.ok(prompt.includes('参照画像なしでも制作できる'));
+ const sceneryPlan=productionPlan(profile,scenery,shot,'everyday',()=>.3);if(!assertCompactHandoff(sceneryPlan,prompt))continue;assert.ok(prompt.includes('参照画像なしでも制作できる'));
  for(const fragment of ['顔の向き：','明確な表情：','身体の動き：','鼻・頬・唇の形は','水彩の必須条件：顔','墨の必須条件：顔','主役の服','髪・肌・瞳の基礎色は保持'])assert.ok(!prompt.includes(fragment),medium+' should not direct a person: '+fragment);
- assert.ok(prompt.includes('人物の顔・表情・ポーズ：適用しない'));
+ assert.ok(prompt.includes('人物用の表情・顔向き・身体ポーズは非適用'));
  assert.ok(!prompt.includes('undefined'));assert.ok(!prompt.includes('NaN'));
 }
 for(const [medium,palette] of [['実写風モノクロ銀塩写真','原色のポップカラー'],['鉛筆デッサン','群青 × 月白 × 銀'],['現代アニメの一枚絵','金と黒の二色'],['サイアノタイプ','墨一色']]){

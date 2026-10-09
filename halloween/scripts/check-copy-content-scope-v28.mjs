@@ -1,15 +1,16 @@
 import assert from 'node:assert/strict';
-import {buildEditorial} from '../editorial.js?v=28.4.2';
-import {copyContentRules} from '../copy-scope.js?v=28.4.2';
-import {typographyValues} from '../typography-options.js?v=28.4.2';
-import {applyCollection} from '../collection.js?v=28.4.2';
-import {buildDirection} from '../direction.js?v=28.4.2';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.2';
-import {composePrompt} from '../prompt.js?v=28.4.2';
-import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.2';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.2';
-import {imageDeliveryRepairPrompt} from '../output-contract.js?v=28.4.2';
-import {renderEditorialLayout} from '../editorial-layout.js?v=28.4.2';
+import {assertCompactHandoff} from './compact-handoff-assertions-v28.mjs';
+import {buildEditorial} from '../editorial.js?v=28.4.3';
+import {copyContentRules} from '../copy-scope.js?v=28.4.3';
+import {typographyValues} from '../typography-options.js?v=28.4.3';
+import {applyCollection} from '../collection.js?v=28.4.3';
+import {buildDirection} from '../direction.js?v=28.4.3';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.3';
+import {composePrompt} from '../prompt.js?v=28.4.3';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.3';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.3';
+import {imageDeliveryRepairPrompt} from '../output-contract.js?v=28.4.3';
+import {renderEditorialLayout} from '../editorial-layout.js?v=28.4.3';
 
 // Reproduce the supplied choice combination, including source-guided copy.
 // We inspect source boundaries, transfer routes and actual text placement;
@@ -47,7 +48,7 @@ for(const collection of ['halloween','everyday']){
   const values={...fixture,collection},creator=profile(sourceGuided),plan=productionPlan(creator,values,buildDirection([],values.mood,random,collection,values),collection,random);
   const native=renderSelectionMaterial(plan),master=composePrompt({collection,profile:creator,creator:'ss_yr',values,variant:plan.variant,references:[],edition:'COPY-SCOPE',preparedPlan:plan});
   const result={edition:'COPY-SCOPE',prompt:master,production:plan,values};
-  const routes={native,master,artwork:composeArtworkStage(plan),embedded:composeArtworkStage(plan,{embedded:true}),artworkRepair:composeArtworkRepair(plan),repair:repairPrompt(result),deliveryRepair:imageDeliveryRepairPrompt(result)};
+  assertCompactHandoff(plan,master);const routes={native,artwork:composeArtworkStage(plan),embedded:composeArtworkStage(plan,{embedded:true}),artworkRepair:composeArtworkRepair(plan),repair:repairPrompt(result)};
   for(const [name,text] of Object.entries(routes))for(const rule of copyContentRules)assert(text.includes(rule),name+' lost print-content scope');
   const input=JSON.parse(renderInput(plan).split('\n\n【全選択の個別レシピ】')[0]);
   if(sourceGuided){

@@ -1,0 +1,23 @@
+{
+  "medium": "夢彩ファンタジーアニメ",
+  "asset": "assets/style-dream-fantasy-original-v28-4-3.png",
+  "delivery_name": "style-preset-113.png",
+  "generator": "ChatGPT built-in image_gen",
+  "origin": "independently generated original character and scene",
+  "external_references": [],
+  "prompt": "Use case: stylized-concept. Asset: an original high-resolution painting-technique preset named 夢彩ファンタジーアニメ, one finished illustration, no text.\nCreate a wholly original adult woman with a short copper pixie cut, long straight eyebrows and thoughtful amber eyes, wearing a fully covered light slate-blue work coat over a cream high-neck shirt. She stands at a plain wood worktable in an airy loft facing a distant sea inlet and green headland through large high openings. Her two hands carefully hold a single freshly folded paper shape above the table. Three other small folded paper forms lift gently along a short arc from the paper; this quiet, restrained impossible detail is the fantasy. No other magic props. A chair, rafters and plain paper sheets establish real support and spatial scale.\nFine precise Japanese anime colored lines, carefully organized broad SOFT COLOR PLANES, translucent painterly color layers; draw the face, lids, iris, simplified nose/mouth, hair groups, hands, coat, paper, timber and distant landscape in the same coherent 2D process. Entire image is visibly drawn, not photograph or CGI. Air, space, and a dreamlike gentle daylight atmosphere; open composition, large breathing room, soft blue-green sky against warm white interior and muted copper accents. Controlled internal shadows support forms. Small paper edges catch subtle light, timber remains matte, metal hinges get tiny precise reflections. Closest hands and face carry the fine detail, the bay is simplified into distinct depth layers. No crowded dark Gothic city, no orange dusk horror, no witch costume, no hat, no cat ears, no animals, lanterns, circles or crystal piles. No copied artworks, real artists, recognizable existing characters, text, logos, watermark or signature.",
+  "width": 1536,
+  "height": 1024,
+  "bytes": 2278932,
+  "sha256": "289fdf40a329d709c7a5faefd66ce414cb9747f5278eeaf0adf50dc24eaa6ed3",
+  "visual_qa": {
+    "status": "accepted",
+    "observations": [
+      "成人女性の顔・手・服、工房の木と紙、遠景の海が精密な2D線と柔らかな色面でつながる。",
+      "開口部と海の広い空気、主題から遠景へ減る細部密度が見える。",
+      "手元の折紙から浮く3つの紙で現実空間に控えめな幻想をつなぐ。",
+      "魔女・魔法帽・橙の夕景・黒衣の旧作例を再利用しない独自構図。"
+    ]
+  },
+  "generated_source": "/workspace/scratch/ad16ee694a48/generated_images/exec-c4a38692-73f7-484c-ac45-0d9753d9693f.png"
+}

@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {createHistoryPersistence} from '../history-persistence.js?v=28.4.2';
-import {createIndexedHistoryStore} from '../indexed-history.js?v=28.4.2';
-import {compactHistoryRecord,restoreHistoryRecord,restoreHistoryCore} from '../history-storage.js?v=28.4.2';
-import {resolveSelections} from '../catalog.js?v=28.4.2';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.2';
-import {stagePrompts} from '../production-workflow.js?v=28.4.2';
-import {composePrompt} from '../prompt.js?v=28.4.2';
-import {buildDirection} from '../direction.js?v=28.4.2';
+import {createHistoryPersistence} from '../history-persistence.js?v=28.4.3';
+import {createIndexedHistoryStore} from '../indexed-history.js?v=28.4.3';
+import {compactHistoryRecord,restoreHistoryRecord,restoreHistoryCore} from '../history-storage.js?v=28.4.3';
+import {resolveSelections} from '../catalog.js?v=28.4.3';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.3';
+import {stagePrompts} from '../production-workflow.js?v=28.4.3';
+import {composePrompt} from '../prompt.js?v=28.4.3';
+import {buildDirection} from '../direction.js?v=28.4.3';
 
 const key='mumeis-halloween-v2',random=()=>.28,profile={displayName:'保存容量の検査',topics:[]};
 const values=resolveSelections({sceneUnified:true,design:'新聞の一面',medium:'クリスタルホログラム造形アニメ',theme:'宇宙のHalloween',costume:'ヴィクトリア朝の正装',pose:'片手を差し出す',type:'新聞風・記事と段組み'},random);
@@ -83,7 +83,7 @@ let allowed=true;const conditional=indexedFactory(),conditionalAdapter=createInd
 
 // Startup and generation wait for the asynchronous history load; migration of
 // old records uses the same save wrapper, and clear is an explicit operation.
-const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8');assert.match(app,/async function generate\(lockedValues=null\)\{\s*await historyReady;/);assert.match(app,/await syncSaved\(\);ensureCurrent\(\);const input=/);assert.match(app,/historyReady=initializeHistory\(\)/);assert.match(app,/persist\(\{clearHistory:true\}\)/);
+const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8');assert.match(app,/async function generate\(lockedValues=null\)\{\s*await historyReady;/);assert.match(app,/await syncSaved\(\);ensureCurrent\(\);const input=/);assert.match(app,/historyReady=initializeHistory\(\)/);assert.match(app,/\$\('clear-history'\)\.addEventListener\('click',\(\)=>deleteHistory\(null\)\)/);assert.match(app,/historyPersistence\.clear\(saved,\{shouldWrite:/);
 const initSource=app.slice(app.indexOf('async function initializeHistory(){'),app.indexOf('\nasync function syncSaved()',app.indexOf('async function initializeHistory(){')));
 const initContext=vm.createContext({saved:{history:[],used:[],count:0},migrateHistory:false,historyPersistence:{load:async()=>({state:migrated.state,needsMigration:true})},normalizeSavedHistory:x=>x,mergeHistoryStates:(a,b)=>b,renderHistory(){},persist:async()=>{initContext.migrated=true;},migrated:false});vm.runInContext(initSource,initContext);await vm.runInContext('initializeHistory()',initContext);assert.equal(initContext.saved.history.length,12);assert.equal(initContext.migrated,true);
 console.log(JSON.stringify({result:'PASS IndexedDB/history persistence: full 12 histories/2000 signatures, exact prompt/variant/plan/stages/repair, legacy keys preserved, full local fallback, no-codec fallback, cross-tab atomic merge, clear epoch, quota and commit failure, bounded blocked/open timeout, startup awaits read',beforeUtf16Bytes:original.length*2,afterUtf16Bytes:packedBytes,reductionPercent:Math.round((1-packedBytes/(original.length*2))*100)}));

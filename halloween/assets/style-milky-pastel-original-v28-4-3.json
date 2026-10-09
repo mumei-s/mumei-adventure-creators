@@ -1,0 +1,23 @@
+{
+  "medium": "ミルキーパステルアニメ",
+  "asset": "assets/style-milky-pastel-original-v28-4-3.png",
+  "delivery_name": "style-preset-112.png",
+  "generator": "ChatGPT built-in image_gen",
+  "origin": "independently generated original character and scene",
+  "external_references": [],
+  "prompt": "Use case: stylized-concept. Asset: an original high-resolution painting-technique preset named ミルキーパステルアニメ, one finished illustration, no text.\nAn independently designed adult man about 30, softly wavy short brown hair, an adult angular jaw softened by the drawing, blue-grey eyes, a pale lilac loose knit cardigan over a high-neck cream shirt and muted teal trousers. He sits comfortably on a wooden bench in a quiet small railway waiting room, one hand resting on a closed unlettered book and the other on the bench. A rounded window, matte ceramic cup on a low table and plain wall make a coherent ordinary daylight scene. Three-quarter medium composition including both hands and seated upper legs; balanced natural proportions and a calm expression.\nCreate precise Japanese 2D anime linework with gentle rounded curves, narrow warm colored outlines, smooth milky softly blended pastel COLOR PLANES and clear primary silhouettes. The face, eyelids, simplified nose and mouth, thick drawn hair locks, fingers, knit folds, ceramic and window frame use the identical illustrated process. Major light and shadow shapes remain legible; soften selected interior boundaries only. Low-contrast broad diffused window light, pale peach and lilac middle tones, small short contact shadows at collars, fingers and seat. Soft knit edges contrast with hard timber edges and a small clean ceramic reflection. The adult is mature, not a baby, chibi, doll or teenager. Keep the gentle material-rich coloring without glossy hyperreal skin or photographic anatomy.\nNo animals, plush toys, flowers, pumpkins, frills, bows, crowns, lanterns, sparkles, magic, text, signature or watermark. No photoreal face, no 3D CGI, no all-over blur. Independent original character, scene and composition; imitate no artist or existing artwork.",
+  "width": 1312,
+  "height": 1199,
+  "bytes": 2168229,
+  "sha256": "c98d4d4173f004734f2f5815f64bf61184073afefb943bd268763491c55ea73a",
+  "visual_qa": {
+    "status": "accepted",
+    "observations": [
+      "成人男性の顔・髪・手と日常の待合室を細線と柔らかな低コントラスト色面で描く。",
+      "淡いニットの柔らかな縁と硬い木、陶器の小反射が分かれる。",
+      "顎・襟・指・座面の接触影が残り、主要な外形は明瞭。",
+      "独自の成人男性・鉄道待合室。猫・花・南瓜・幼児頭身・魔法を使わない。"
+    ]
+  },
+  "generated_source": "/workspace/scratch/ad16ee694a48/generated_images/exec-8f6f111a-bd95-4976-97d9-75d46842424f.png"
+}

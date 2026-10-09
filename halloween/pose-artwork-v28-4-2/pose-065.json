@@ -1,0 +1,23 @@
+{
+  "number": 65,
+  "title": "傘を差す",
+  "source": "/workspace/scratch/ad16ee694a48/generated_images/exec-7174c16e-3be2-43e0-a45a-a008791f12a7.png",
+  "output": "pose-065.jpg",
+  "method": "built-in image_gen",
+  "prompt": "Use case: illustration-story. Asset: one original square pose preview for an art studio website. Create a finished detailed gouache/anime illustration of ONE clothed young adult with medium tousled brown hair, natural facial features, a cream long sleeve shirt with rolled cuffs, loose indigo trousers, pale sneakers. Action: holding an opened umbrella overhead with ONE hand, other arm naturally relaxed. The hand visibly grips the umbrella shaft at chest height, shaft connects to its central canopy above the head. Whole body including both feet completely visible; person large, about 75% image height, no tiny character. Plain pale ivory studio backdrop, gentle warm natural shading, grounded feet and small floor shadow. Clear human anatomy, articulated natural fingers and joints, dimensional clothing folds, face and expression. Carefully framed umbrella fits completely within square and leaves space above person's head. No rain needed. Gender neutral styling. Exactly one distinct pose illustration, NOT stick figure, NOT schematic, NOT SVG-looking icon, NOT contact sheet. No text, diagram arrows, logos, captions, grid, border, Halloween props or watermark.",
+  "visualQA": {
+    "status": "accepted",
+    "reviewer": "Codex visual inspection of generated image",
+    "observations": "一方の手が傘の連続した軸を握り、天蓋が頭上にある。両足と自由なもう片腕が読める。"
+  },
+  "id": "pose-065",
+  "label": "傘を差す",
+  "asset": "pose-065.jpg",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "0c6fef55024a6da099594f907240a49f58f0e8b5795c4ec7d9a9b521af08383d",
+  "encoding": "RGB JPEG quality 85; generated resolution retained without cropping or retouching"
+}

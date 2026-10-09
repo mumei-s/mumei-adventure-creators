@@ -1,14 +1,14 @@
-import {opticalColors,opticalSignature} from './optical-effects.js?v=28.4.1';
-import {colorPolicy} from './palette-recipes.js?v=28.4.1';
-import {formatFor} from './formats.js?v=28.4.1';
-import {cameraContract} from './angles.js?v=28.4.1';
-import {selectionIntegrationInstructions} from './output-contract.js?v=28.4.1';
-import {photoReconstruction} from './photo-design.js?v=28.4.1';
-import {artworkBasisContract} from './artwork-basis.js?v=28.4.1';
-import {stylePresetFor,stylePresetInstructions} from './style-presets.js?v=28.4.1';
-import {characterProportionInstruction,sourceKindInstructions,isNonHumanSource} from './source-kind.js?v=28.4.1';
-import {halloweenModeContract} from './halloween-mode-contract.js?v=28.4.1';
-import {poseTechnical} from './poses.js?v=28.4.1';
+import {opticalColors,opticalSignature} from './optical-effects.js?v=28.4.2';
+import {colorPolicy} from './palette-recipes.js?v=28.4.2';
+import {formatFor} from './formats.js?v=28.4.2';
+import {cameraContract} from './angles.js?v=28.4.2';
+import {selectionIntegrationInstructions} from './output-contract.js?v=28.4.2';
+import {photoReconstruction} from './photo-design.js?v=28.4.2';
+import {artworkBasisContract} from './artwork-basis.js?v=28.4.2';
+import {stylePresetFor,stylePresetInstructions} from './style-presets.js?v=28.4.2';
+import {characterProportionInstruction,sourceKindInstructions,isNonHumanSource} from './source-kind.js?v=28.4.2';
+import {halloweenModeContract} from './halloween-mode-contract.js?v=28.4.2';
+import {poseTechnical} from './poses.js?v=28.4.2';
 
 const artworkKeys=['medium','theme','place','costume','pose','mood','angle','palette'];
 const render=c=>[c.name+'：'+c.value,...c.sections.map(s=>'・'+s.label+'：'+s.text)];
@@ -104,7 +104,7 @@ export function composeArtworkRepair(plan,{compact=false}={}){
   ...(halloween?['【修正時も保つHalloween版の共通世界】',halloween.executionMethod||halloween.method]:[]),
   plan.noPerson?'主題の外形、配置、固有の模様、背景、光の起点、画角と余白を保つ。人物や人型を追加しない。':objectSource?'修正対象の主画像に成立した独自の主役の識別特徴と、選択衣装・表情・顔向き・動作・支持・構図・背景・指定カメラを保つ。元の景色・マーク・物体から人物の顔を復元せず、専用画風原画の人物へ置換しない。':photo?'同じキャラクターの識別特徴、年齢感、性別表現、髪型と識別色、選択衣装・表情・顔向き・身体配置と支持、背景、指定カメラを保つ。イラストの各部の細寸法・誇張された目の比率・描線と色面は固定せず、自然な人物立体と実物の材質へ作り直す。':'同じ人物の識別特徴の組合せ、年齢感、性別表現、髪の形、選択衣装・表情・顔角度・動作と支持、物体の配置、背景、指定カメラと余白を保つ。基本の頭身と体格は主参照を基準にし、明示された頭身変更だけを適用する。選択作画の描線・塗り・光・陰影・材質で描き直し、別人へ変更しない。',
   ...(geometry?['上の保持条件は指定どおり成立している部分へ適用する。カメラの誤りがある部分の画角・短縮・遮蔽は固定カメラの条件で描き直す。']:[]),
-  photo?'変えるのは人体や景物の立体、実物の材質、レンズ遠近、光源に対応する反射・散乱・露光階調。絵の上へ毛穴・粒子・ぼけを足すだけで済ませず、主題と背景を同じ撮影像へ再構成する。':'変えるのは描線、面の塗り方、明暗の境界、素材の表し方。元の表面へ少数の線や光を追加する加工で済ませず、主題の内部の面まで次の工程で置き換える。',
+  photo?'変えるのは人体や景物の立体、実物の材質、レンズ遠近、光源に対応する反射・散乱・露光階調。絵の上へ毛穴・粒子・ぼけを足すだけで済ませず、主題と背景を同じ撮影像へ再構成する。'+(medium.value==='発光幻想リアル'?'画面に見える素材内部の幻想色光を、広い深暗部、透明な色光の層、小面積の強い光と鋭い最明部として同じ撮影空間へ連続させる。実照明や場面光源の記述を理由に、この色光の密度を弱めない。':''):'変えるのは描線、面の塗り方、明暗の境界、素材の表し方。元の表面へ少数の線や光を追加する加工で済ませず、主題の内部の面まで次の工程で置き換える。',
   ...(medium.value==='クリスタル透光アニメ'?[
    '【必須の作画変換】日本の手描き2Dアニメの一枚絵へ全面変換する。肌・布・髪・背景の物体の輪郭に細い色線を引き、内部を少数の澄んだ色面で塗る。顔・首・腕・膝は明るい面と暗い面を硬いセル影の境界で分け、光と反対側には濃い有彩色の影をまとまって置く。写真や3Dレンダリングの皮膚の艶・毛穴・滑らかな立体陰影は完全に描き直す。',
    ...opticalSignature(values,{noPerson:plan.noPerson})

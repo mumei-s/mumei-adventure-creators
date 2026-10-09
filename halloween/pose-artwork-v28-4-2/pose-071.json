@@ -1,0 +1,23 @@
+{
+  "number": 71,
+  "title": "長い杖を地面につく",
+  "source": "/workspace/scratch/ad16ee694a48/generated_images/exec-1de9c36c-551a-4299-96b0-fe8fbae4ef0b.png",
+  "output": "pose-071.jpg",
+  "method": "built-in image_gen",
+  "prompt": "Use case: illustration-story. Asset: ONE original square pose preview for an art studio website. Create one finished detailed gouache/anime illustration of ONE clothed young adult with medium tousled brown hair, natural facial features, cream long sleeve shirt with rolled cuffs, loose indigo trousers, pale sneakers. Plain pale ivory studio backdrop with soft warm natural shading. Natural face, fingers, joints, dimensional clothing folds, broad gender neutral styling. Whole body including both feet completely visible, character and necessary prop large about 80%canvas, clear action readable as small UI thumbnail. Single distinct image, NOT stick figure, NOT schematic, NOT flat icon, NOT contact sheet. No text, labels, diagram arrows, logos, grid, border, fancy costumes, brands or watermark. Action: Standing comfortably while holding ONE long plain wooden walking staff in one hand. Hand fingers wrap the middle of staff at waist-height, bent elbow connects naturally. Staff shaft continuous from top above shoulder to its end contacting SAME FLOOR as both feet. Staff grounded tip casts small contact shadow. Other arm relaxed. No crystals, glowing effects, ornate lantern, weapon attack or costume.",
+  "visualQA": {
+    "status": "accepted",
+    "reviewer": "Codex visual inspection of generated image",
+    "observations": "一方の手が途切れない杖の中ほどを握り、杖先と両足が同じ床へ接している。"
+  },
+  "id": "pose-071",
+  "label": "長い杖を地面につく",
+  "asset": "pose-071.jpg",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "af057dbb3b9ec2aeedc5b933f8a43cdff1a59d7d4923120be5c8219608f4fdc3",
+  "encoding": "RGB JPEG quality 85; generated resolution retained without cropping or retouching"
+}

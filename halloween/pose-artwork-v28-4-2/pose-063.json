@@ -1,0 +1,22 @@
+{
+  "pose_id": "pose-063",
+  "label": "風に向かって踏み出す",
+  "generation_tool": "image_gen.imagegen",
+  "prompt": "Use case: illustration-story. Asset type: individual pose-selection thumbnail in a Japanese creative tool. Create exactly ONE high-quality original full-body character illustration, not a diagram, showing a clothed adult androgynous person with medium-length brown hair, kind face, cream shirt, loose indigo trousers, a plain lightweight muted sage scarf, and white sneakers. Refined gouache/anime illustration with natural rounded anatomy, detailed face and hands, convincing soft painted shadows, fabric folds and volume. Pale ivory studio background, essential support only. Complete body, all hands and all feet within the image, person occupies 70-85% of canvas, clear silhouette instantly readable in a small thumbnail. Square composition. No text, arrows, labels, grids, brands, decorative Halloween props, stick-figure limbs or schematic joint dots. Primary action: stepping forward AGAINST a strong wind. Full-body side view facing toward the RIGHT side of the canvas; right/front foot takes a grounded step to the right and the body leans slightly forward into the wind. Wind blows RIGHT TO LEFT: hair, loose cream shirt hem and sage scarf tails all trail LEFT behind the body consistently. Arms naturally balance, shoulders steady. Scarf is wrapped around the neck with long tails flowing behind, hands are not holding it. Expression calm and determined. No weather symbols, motion arrows, falling leaves or other props, just coherent wind movement in the existing hair and clothing.",
+  "generated_source": "/workspace/scratch/ad16ee694a48/generated_images/exec-019f9478-500c-496f-a2ad-4a911eb88f1f.png",
+  "asset": "pose-063.jpg",
+  "qa": "右へ踏み出す前足、前傾体、左へ流れる髪・シャツ・スカーフの一致、全身を目視確認。",
+  "id": "pose-063",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "c8040865caae1d60e2577f49b9fb53ecb078962892d34c9ac27cd8edb22d504a",
+  "encoding": "RGB JPEG quality 85; generated resolution retained without cropping or retouching",
+  "visualQA": {
+    "status": "accepted",
+    "reviewer": "Codex visual inspection of generated image",
+    "observations": "右向きの踏み出しで前足を床に置き、髪・シャツ・スカーフの布は同じ後方へ流れている。"
+  }
+}

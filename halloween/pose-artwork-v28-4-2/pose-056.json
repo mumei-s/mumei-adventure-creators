@@ -1,0 +1,22 @@
+{
+  "id": "pose-056",
+  "label": "ベンチの端に腰掛ける",
+  "prompt": "Use case: illustration-story. Asset type: original detailed pose selection thumbnail.\nOne fully illustrated gender-neutral adult with medium-length brown hair, kind gentle face, cream long-sleeved shirt, loose indigo trousers, plain white sneakers.\nPose: sitting at the VERY END of a simple unbranded wooden BENCH, with hips touching the seat at the rightmost edge of the bench. The empty rest of the bench extends clearly to the left of the person. Person is in three-quarter view, both thighs angled down from the seat, both feet rest on floor. One hand gently touches the bench edge beside the hips, the other rests on thigh. Natural gentle forward lean. Show physical hip-to-seat contact. The bench must be recognizable as a short backless wooden bench, not a chair.\nStyle: original detailed softly shaded gouache and anime illustration, actual volumetric person, naturally articulated hands and joints, textured cloth folds, face details, delicate fine outline. Quiet pale ivory studio backdrop with small floor contact shadow.\nFraming: square, whole person fully framed from hair to sneaker soles and entire essential bench, person occupies 70-85% canvas height. Clear readable action thumbnail.\nNo labels, arrows, diagrams, brands, watermarks, extra people, Halloween props, stick figures, mannequin, line skeleton, cropped hands or feet.",
+  "source_generated_file": "/workspace/scratch/ad16ee694a48/generated_images/exec-6e67f011-7278-4a74-98c8-516b20df2420.png",
+  "generator": "built-in image_gen",
+  "qa": "Accepted; full body, clothed volumetric person, specified pose visible; no text, arrows, or diagram. Support contact verified for seated poses.",
+  "destination": "pose-056.jpg",
+  "processing": "Original resolution preserved; RGB JPEG encoding quality 85 only.",
+  "asset": "pose-056.jpg",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "264a62925a9ccef66736e70e052d17a340279c5b3dd01baa810a879b061590e9",
+  "encoding": "RGB JPEG quality 85; generated resolution retained without cropping or retouching",
+  "visualQA": {
+    "status": "accepted",
+    "reviewer": "Codex visual inspection of generated image",
+    "observations": "ベンチ端で腰と太腿が座面に載り、一方の手が天板に接し、両足が床に届く。"
+  }
+}

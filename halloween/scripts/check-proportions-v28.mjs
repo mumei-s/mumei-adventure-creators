@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import {initialSelections} from '../modes.js?v=28.4.1';
-import {resolveSelections} from '../catalog.js?v=28.4.1';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.1';
-import {composePrompt} from '../prompt.js?v=28.4.1';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.1';
-import {renderChatInput} from '../compiled-production.js?v=28.4.1';
+import {initialSelections} from '../modes.js?v=28.4.2';
+import {resolveSelections} from '../catalog.js?v=28.4.2';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.2';
+import {composePrompt} from '../prompt.js?v=28.4.2';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.2';
+import {renderChatInput} from '../compiled-production.js?v=28.4.2';
 const profile={displayName:'PROPORTION CHECK',activityEnabled:false},rng=()=>.24;
 const base=resolveSelections({...initialSelections(),costume:'参照画像の衣装を生かす',medium:'現代アニメの一枚絵',pose:'自然に立つ',mood:'毎回大胆に変える',angle:'場面に合わせたアングル',type:'文字を一切入れない',sceneUnified:true},rng);
 let count=0;

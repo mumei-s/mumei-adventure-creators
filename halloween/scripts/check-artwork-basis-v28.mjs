@@ -1,17 +1,17 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.1';
-import {applyCollection} from '../collection.js?v=28.4.1';
-import {initialSelections} from '../modes.js?v=28.4.1';
-import {buildDirection} from '../direction.js?v=28.4.1';
-import {applyPose} from '../poses.js?v=28.4.1';
-import {angleItems,cameraContract} from '../angles.js?v=28.4.1';
-import {colorPolicy} from '../color-policy.js?v=28.4.1';
-import {LUMINOUS_WORLD_MEDIUM,luminousWorldContract} from '../luminous-world.js?v=28.4.1';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.1';
-import {composePrompt} from '../prompt.js?v=28.4.1';
-import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.1';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.1';
-import {imageDeliveryRepairPrompt,selectionIntegrationInstructions} from '../output-contract.js?v=28.4.1';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.2';
+import {applyCollection} from '../collection.js?v=28.4.2';
+import {initialSelections} from '../modes.js?v=28.4.2';
+import {buildDirection} from '../direction.js?v=28.4.2';
+import {applyPose} from '../poses.js?v=28.4.2';
+import {angleItems,cameraContract} from '../angles.js?v=28.4.2';
+import {colorPolicy} from '../color-policy.js?v=28.4.2';
+import {LUMINOUS_WORLD_MEDIUM,luminousWorldContract} from '../luminous-world.js?v=28.4.2';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.2';
+import {composePrompt} from '../prompt.js?v=28.4.2';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.2';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.2';
+import {imageDeliveryRepairPrompt,selectionIntegrationInstructions} from '../output-contract.js?v=28.4.2';
 
 // This exercises the actual specification and delivery paths. It does not
 // synthesize a prompt with AI, generate an image or infer visual success.
@@ -70,7 +70,7 @@ try{
    const plan=makePlan(collection,values),native=renderSelectionMaterial(plan),label=[collection,medium,noPerson?'scenery':'person'].join(' / ');
    assertSelectionPreserved(values,plan,label);
    const contract=luminousWorldContract(values,{noPerson,variant:plan.variant});
-   if(medium!==LUMINOUS_WORLD_MEDIUM){
+   if(![LUMINOUS_WORLD_MEDIUM,'発光幻想リアル'].includes(medium)){
     assert.equal(contract,null,label+' inherited the luminous-world contract');
     assert.ok(!plan.conditions.find(c=>c.key==='medium').sections.some(s=>/発光幻想世界の|発光世界の6|発光世界の四|発光世界の4/.test(s.label)),label+' inherited the dedicated luminous recipe');
    }else assert.ok(contract,label+' lost its dedicated recipe');

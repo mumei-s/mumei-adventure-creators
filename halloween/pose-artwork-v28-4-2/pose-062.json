@@ -1,0 +1,22 @@
+{
+  "pose_id": "pose-062",
+  "label": "片手を床について着地する",
+  "generation_tool": "image_gen.imagegen",
+  "prompt": "Use case: illustration-story. Asset type: individual pose-selection thumbnail in a Japanese creative tool. Create exactly ONE high-quality original full-body character illustration, not a diagram, showing a clothed adult androgynous person with medium-length brown hair, kind face, cream shirt, loose indigo trousers and white sneakers. Refined gouache/anime illustration with natural rounded anatomy, detailed face and hands, convincing soft painted shadows, fabric folds and volume. Pale ivory studio background, essential support only. Complete body, all hands and all feet within the image, person occupies 70-85% of canvas, clear silhouette instantly readable in a small thumbnail. Square composition. No text, arrows, labels, grids, brands, decorative Halloween props, stick-figure limbs or schematic joint dots. Primary action: a dynamic low landing with ONE HAND on the floor. Three-quarter side view. LEFT PALM lies flat and fully touching the same flat ivory ground as the planted RIGHT sneaker. Right knee is deeply bent over the planted right foot. The OTHER arm (right arm) stretches backward and upward for balance with its hand visibly clear of the floor. The LEFT leg folds behind, left knee bent and left sneaker lifted fully clear of the ground. Only one palm and one shoe support the landing; chest leans diagonally forward, head raised with a kind focused face. Natural anatomy, no superhero costume, weapons or impact effects. Body and supporting hands/feet in full frame.",
+  "generated_source": "/workspace/scratch/ad16ee694a48/generated_images/exec-aeb042ba-d6a0-4609-91b8-5b51d20c0121.png",
+  "asset": "pose-062.jpg",
+  "qa": "床についた片手と片足、上げた反対の手、後ろに曲げて浮いた反対脚、全身を確認。",
+  "id": "pose-062",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "f88fae142adc4da898c33fed5bd8d98f3b3f1cf9f153728b973e16e247b828b5",
+  "encoding": "RGB JPEG quality 85; generated resolution retained without cropping or retouching",
+  "visualQA": {
+    "status": "accepted",
+    "reviewer": "Codex visual inspection of generated image",
+    "observations": "片掌と片足が同じ床面を支え、反対の腕と畳んだ脚は離地。肩肘手首の接続が読める。"
+  }
+}

@@ -1,9 +1,9 @@
 // Rendering recipes belong to option titles. Picker artwork is never an input.
 // Each section may supply a separate scenery-only instruction in its third cell.
-import {opticalColors} from './optical-effects.js?v=28.4.1';
-import {photoDesign,photoReconstruction} from './photo-design.js?v=28.4.1';
-import {LUMINOUS_WORLD_MEDIUM,luminousWorldContract} from './luminous-world.js?v=28.4.1';
-import {referenceWorldMedia,referenceWorldMediumContract} from './world-bases.js?v=28.4.1';
+import {opticalColors} from './optical-effects.js?v=28.4.2';
+import {photoDesign,photoReconstruction} from './photo-design.js?v=28.4.2';
+import {LUMINOUS_WORLD_MEDIUM,LUMINOUS_REAL_MEDIUM,luminousWorldContract} from './luminous-world.js?v=28.4.2';
+import {referenceWorldMedia,referenceWorldMediumContract} from './world-bases.js?v=28.4.2';
 const recipes = new Map();
 function add(value, family, sections, checks) {
  if (recipes.has(value)) throw new Error('Duplicate medium recipe: ' + value);
@@ -934,6 +934,7 @@ add('サイケデリックアート','graphic',[
 // Registered here for catalogue coverage; its context-aware construction is
 // resolved by luminousWorldContract in detailedMedium.
 add(LUMINOUS_WORLD_MEDIUM,'luminous-anime',[],[]);
+add(LUMINOUS_REAL_MEDIUM,'photography',[],[]);
 add('透明水彩アニメ','luminous-anime',[
  ['2Dの形','主参照の顔立ちを簡潔な目鼻口と髪の形に整理し、顔から身体・衣装まで同じアニメの線で描く。透明感を理由に人物の身体や衣装を透けさせない。','景物・建築・自然素材を簡潔な2Dアニメの輪郭へ整理する。透明感は絵具の層で表し、固体の建築や地形を一律に透過させない。'],
  ['薄い線と余白','重要な輪郭には細い乾いた線を残し、光の当たる部分は線を省く。紙の白または許可された下地の最明色を、塗る前から光として予約する。'],
@@ -1002,7 +1003,13 @@ function render(text, noPerson, policy) {
 for(const medium of referenceWorldMedia)add(medium.value,medium.value==='宝石光彩リアル'?'photography':'luminous-anime',[],[]);
 export const mediumRecipeValues = Object.freeze([...recipes.keys()]);
 export function detailedMedium(value, {noPerson = false, values = {}, variant = null} = {}) {
- if(value===LUMINOUS_WORLD_MEDIUM)return luminousWorldContract({...values,medium:value},{noPerson,variant});
+ if(value===LUMINOUS_WORLD_MEDIUM||value===LUMINOUS_REAL_MEDIUM){
+  const luminous=luminousWorldContract({...values,medium:value},{noPerson,variant});
+  if(!luminous.real)return luminous;
+  const reconstruction=photoReconstruction(value,{noPerson,values});
+  const photography=photoDesign(value,{noPerson,values});
+  return {...luminous,sections:[luminous.sections[0],...(reconstruction?.sections||[]),...(photography?[photography]:[]),...luminous.sections.slice(1)],checks:[...luminous.checks,...(reconstruction?.checks||[])],executionMethod:luminous.method+' '+(photography?.text||'')};
+ }
  const world=referenceWorldMediumContract(value,{noPerson,values,variant});
  if(world){
   const reconstruction=photoReconstruction(value,{noPerson,values});

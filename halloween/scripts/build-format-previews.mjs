@@ -1,14 +1,14 @@
 import fs from 'node:fs';
 import {createRequire} from 'node:module';
-import {questions} from '../catalog.js?v=28.4.1';
-import {applyCollection} from '../collection.js?v=28.4.1';
+import {questions} from '../catalog.js?v=28.4.2';
+import {applyCollection} from '../collection.js?v=28.4.2';
 const require=createRequire(process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES+'/sharp/package.json');
 const sharp=require('sharp'),root=new URL('../',import.meta.url);
 const titles=new Set();
 for(const mode of ['halloween','everyday']){applyCollection(mode);for(const g of questions.find(q=>q.key==='design').groups)for(const v of g.values)titles.add(v);}
 applyCollection('halloween');
 const preserved=new Set(['ファッション雑誌の表紙','週刊誌の表紙','カルチャー誌の表紙','インタビュー誌面','見開き特集','新聞の一面','自然・都市の風景画']);
-const assets={photo:'japan-photo-v18.png',anime:'japan-luminous-v18.png',land:'japan-landscape-v19.png'};
+const assets={photo:'japan-photo-v18.png',anime:'assets/style-luminous-original-v28-4-2.png',land:'japan-landscape-v19.png'};
 const defs=[],assetBoxes={};
 for(const [id,file] of Object.entries(assets)){
  // Encode existing artwork for the native SVG layout, without changing its composition

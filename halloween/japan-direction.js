@@ -1,6 +1,6 @@
-import {typographyOption} from './typography-options.js?v=28.4.1';
-import {isPhotographicMedium} from './photo-design.js?v=28.4.1';
-import {isNonHumanSource} from './source-kind.js?v=28.4.1';
+import {typographyOption} from './typography-options.js?v=28.4.2';
+import {isPhotographicMedium} from './photo-design.js?v=28.4.2';
+import {isNonHumanSource} from './source-kind.js?v=28.4.2';
 // Japanese publishing/drawing is the default grammar, not a replacement identity.
 // Explicit overseas techniques, clothing and architecture retain their origin.
 export const CRYSTAL_OBJECT='クリスタルホログラム造形アニメ';
@@ -58,7 +58,7 @@ export function japaneseSections(key,value,{noPerson=false,collection='halloween
  if(key==='design'&&covers[value]&&(noText||limitedText))text='日本の「'+value+'」の主図版と安全余白、個別の領域配分を保つ。'+(noText?'文字・題字・本文・号数・ロゴを一切追加しない。空いた領域を疑似文字や代用罫線で埋めない。':'名前または指定短文など、確定した許可原稿だけを日本語の正しい文字組みで置く。標準の誌名・本文・特集を補完しない。');
  if(key==='design'&&value==='新聞の一面'&&typographyOption(values.type)&&!noText)text='日本の新聞一面の細い罫線・横段・縦列を保ち、選択文字設定の許可原稿だけを組む。広告は主見出し、紹介、特徴など指定された役割だけで構成し、題字・記事本文・副記事・キャプションを自動追加しない。主図版は一つだけ。同じ人物の顔アップや別 crop の小図版を追加せず、確定原稿を本文列の高さへ正しく収める。';
  if(key==='medium'){
-  if(isPhotographicMedium(value))text='作風「'+value+'」の専用撮影工程で、'+(noPerson?'景物・建築・自然素材を実物の厚み、材質の反射と散乱、レンズ遠近、連続した露光階調として再構成する。人物や人型を追加しない。':nonHumanSource?originalActor+'自然な人物の立体と、皮膚・毛髪・衣服の実物の構造を作り、描線やセル色を残さない。':'主参照の同じキャラクターを自然な人物の立体、皮膚・毛髪・衣服の実物の構造として再構成する。参照がイラストでも、その描線やセル色を残さず、顔の識別特徴・年齢感・民族的特徴と明示した役柄を保持する。')+'主題と背景を同じ実照明と光学像へ統一し、日本向けの構図を理由に人物や舞台を入れ替えたり、日本アニメへ戻したりしない。';
+  if(isPhotographicMedium(value))text='作風「'+value+'」の専用撮影工程で、'+(noPerson?'景物・建築・自然素材を実物の厚み、材質の反射と散乱、レンズ遠近、連続した露光階調として再構成する。人物や人型を追加しない。':nonHumanSource?originalActor+'自然な人物の立体と、皮膚・毛髪・衣服の実物の構造を作り、描線やセル色を残さない。':'主参照の同じキャラクターを自然な人物の立体、皮膚・毛髪・衣服の実物の構造として再構成する。参照がイラストでも、その描線やセル色を残さず、顔の識別特徴・年齢感・民族的特徴と明示した役柄を保持する。')+'主題と背景を同じ実照明と光学像へ統一し、日本向けの構図を理由に人物や舞台を入れ替えたり、日本アニメへ戻したりしない。'+(value==='発光幻想リアル'?'画面に見える素材内部の幻想色光を、広い深暗部、透明な色光の層、小面積の強い光と鋭い最明部として同じ撮影空間へ連続させる。実照明や場面光源の記述を理由に、この色光の密度を弱めない。':'');
   else if(noPerson)text='作風「'+value+'」の個別技法で景物・建築・自然素材を描く。指定カメラで見える構造を、その技法の線・面・材料・重なりと余白へ翻訳し、主景と背景を同じ制作工程で統一する。平面・図案・紙の技法へ写真の陰影やぼけ、深い影を一律に追加しない。';
   else if(/アニメ|セル画|OVA|少女漫画|少年漫画|青年漫画|モノクロ漫画|ちびキャラ/.test(value))text='作風「'+value+'」では、日本のアニメ・漫画の造形を描線と塗りで構築する。輪郭線の太さと強弱は個別技法に合わせ、眼瞼の線、簡潔な鼻口、髪の束、形の読める影面を使う。'+(nonHumanSource?originalActor+'形の整理・誇張・省略・頭身は選択作画へ翻訳する。':'主参照の民族的特徴・識別特徴の組合せ・年齢感は保ち、形の整理・誇張・省略・頭身は選択作画へ翻訳する。日本向けという理由だけで別人の顔へ変えない。')+'選択技法を無視した均一輪郭、全体のぼかし、滑らかな人形の肌を標準仕上げにしない。';
   else text='作風「'+value+'」の画材・筆法・光学の専用工程を優先する。'+(nonHumanSource?originalActor:'')+'日本向けの作品として構図と余白を整えるが、アメコミ・工筆・民画・西洋美術など明示された起源の技法を日本アニメへ置換しない。';

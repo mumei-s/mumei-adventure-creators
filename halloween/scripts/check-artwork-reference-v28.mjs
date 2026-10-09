@@ -1,19 +1,19 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.1';
-import {applyCollection} from '../collection.js?v=28.4.1';
-import {initialSelections} from '../modes.js?v=28.4.1';
-import {buildDirection} from '../direction.js?v=28.4.1';
-import {applyPose} from '../poses.js?v=28.4.1';
-import {angleItems,cameraContract} from '../angles.js?v=28.4.1';
-import {colorPolicy} from '../color-policy.js?v=28.4.1';
-import {artworkBasisValues,artworkBasis,artworkBasisContract,withArtworkBasis} from '../artwork-basis.js?v=28.4.1';
-import {optionRecipe} from '../option-recipes.js?v=28.4.1';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.1';
-import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.1';
-import {composePrompt} from '../prompt.js?v=28.4.1';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.1';
-import {imageDeliveryRepairPrompt} from '../output-contract.js?v=28.4.1';
-import {selectionConflicts,candidateAvailability,compatibleResolved} from '../compatibility.js?v=28.4.1';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.2';
+import {applyCollection} from '../collection.js?v=28.4.2';
+import {initialSelections} from '../modes.js?v=28.4.2';
+import {buildDirection} from '../direction.js?v=28.4.2';
+import {applyPose} from '../poses.js?v=28.4.2';
+import {angleItems,cameraContract} from '../angles.js?v=28.4.2';
+import {colorPolicy} from '../color-policy.js?v=28.4.2';
+import {artworkBasisValues,artworkBasis,artworkBasisContract,withArtworkBasis} from '../artwork-basis.js?v=28.4.2';
+import {optionRecipe} from '../option-recipes.js?v=28.4.2';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.2';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.2';
+import {composePrompt} from '../prompt.js?v=28.4.2';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.2';
+import {imageDeliveryRepairPrompt} from '../output-contract.js?v=28.4.2';
+import {selectionConflicts,candidateAvailability,compatibleResolved} from '../compatibility.js?v=28.4.2';
 
 // Reference links document authored criteria in the picker. They are not
 // external images, artists to imitate, image-call attachments or style inputs.
@@ -24,16 +24,16 @@ const random=()=>.23;
 const selectedKeys=['medium','theme','place','costume','mood','angle','pose','palette','design','type','size'];
 const analyzedWorldValues=new Set(['宝石光彩アニメ','宝石光彩リアル','花霞の透明アニメ','ミルキーパステルアニメ','夢彩ファンタジーアニメ','宵彩ゴシックアニメ']);
 const knownValues=questions.find(q=>q.key==='medium').groups.flatMap(g=>g.values);
-assert.equal(knownValues.length,114,'All existing and added public artwork choices must remain represented');
-assert.equal(artworkBasisValues.length,114,'Every public artwork choice needs one documented or analyzed basis');
-assert.equal(new Set(artworkBasisValues).size,114,'Artwork bases must not overwrite duplicate entries');
+assert.equal(knownValues.length,115,'All existing and added public artwork choices must remain represented');
+assert.equal(artworkBasisValues.length,115,'Every public artwork choice needs one documented or analyzed basis');
+assert.equal(new Set(artworkBasisValues).size,115,'Artwork bases must not overwrite duplicate entries');
 assert.deepEqual([...artworkBasisValues].sort(),[...knownValues].sort(),'Source coverage must match the public catalogue exactly');
 assert.equal(artworkBasis('未登録の自由作風'),null,'Custom input must not inherit the last known source');
 assert.equal(artworkBasisContract('未登録の自由作風'),null);
 
 const entries=artworkBasisValues.map(value=>artworkBasis(value));
 assert.equal(entries.filter(entry=>analyzedWorldValues.has(entry.value)).length,6,'Only the six added, analyzed world styles may omit documentation URLs');
-assert.equal(entries.filter(entry=>!analyzedWorldValues.has(entry.value)).length,108,'The original 108 documented bases must remain represented');
+assert.equal(entries.filter(entry=>!analyzedWorldValues.has(entry.value)).length,109,'The original 108 plus the new real luminous documented bases must remain represented');
 const uniqueChecks=new Map();
 for(const entry of entries){
  assert.equal(entry.value,artworkBasisValues.find(value=>value===entry.value));
@@ -135,7 +135,7 @@ try{
   }
  }
 }finally{applyCollection('halloween');}
-console.log('PASS artwork references: all 114 distinct bases have technique/check/avoid metadata and documented/synthesis status, 108 retain documentation links and six synthesized world bases record reference analysis; '+checked+' mode/subject/palette handoffs preserve selected source criteria, '+noPersonCases+' no-person guards and '+restrictedCases+' restricted color cases. Source URLs and artist/work titles stay out of native, artwork and repair routes. Source availability and image-model adherence are not inferred by this test.');
+console.log('PASS artwork references: all 115 distinct bases have technique/check/avoid metadata and documented/synthesis status, 109 retain documentation links and six synthesized world bases record reference analysis; '+checked+' mode/subject/palette handoffs preserve selected source criteria, '+noPersonCases+' no-person guards and '+restrictedCases+' restricted color cases. Source URLs and artist/work titles stay out of native, artwork and repair routes. Source availability and image-model adherence are not inferred by this test.');
 
 // Explicit color choices remain reviewable conflicts. Only automatic choices
 // may be replaced, so a material restriction never silently recolors a choice.

@@ -1,0 +1,22 @@
+{
+  "pose_id": "pose-058",
+  "label": "階段を一段上がる",
+  "generation_tool": "image_gen.imagegen",
+  "prompt": "Use case: illustration-story. Asset type: individual pose-selection thumbnail in a Japanese creative tool. Create exactly ONE high-quality original full-body character illustration, not a diagram, showing a clothed adult androgynous person with medium-length brown hair, kind face, cream shirt, loose indigo trousers and white sneakers. Refined gouache/anime illustration with natural rounded anatomy, detailed face and hands, convincing soft painted shadows, fabric folds and volume. Pale ivory studio background, essential support only. Complete body, all hands and all feet within the image, person occupies 70-85% of canvas, clear silhouette instantly readable in a small thumbnail. Square composition. No text, arrows, labels, grids, brands, decorative Halloween props, stick-figure limbs or schematic joint dots. Primary action: stepping up ONE stair. A small plain three-step wooden stair is the only support. Left sneaker firmly planted on the higher tread, left knee bent and rising; right sneaker still on the lower tread with visible height difference between the two feet. Weight naturally shifts upward with upper body slight forward lean. Both arms hang in a natural gentle counterbalance. Three-quarter full-body side view so both separate feet and stair treads are clearly visible; do not show jumping or both feet at the same level.",
+  "generated_source": "/workspace/scratch/ad16ee694a48/generated_images/exec-0c49ec9f-b39e-4147-9e69-b0542f7417f3.png",
+  "asset": "pose-058.jpg",
+  "qa": "全身、階段の別段に乗った両足、上がる膝と前方への重心を確認。自然な服・手・顔で棒人間ではない。",
+  "id": "pose-058",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "d066d6b9cf02a8ace00f6f973f54d7b892195331410f36fe27b5df298392cc1d",
+  "encoding": "RGB JPEG quality 85; generated resolution retained without cropping or retouching",
+  "visualQA": {
+    "status": "accepted",
+    "reviewer": "Codex visual inspection of generated image",
+    "observations": "上段と下段の両足に一段の高さ差があり、上の膝を曲げて踏み上がる動作が読める。"
+  }
+}

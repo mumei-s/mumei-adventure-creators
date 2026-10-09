@@ -1,5 +1,5 @@
-import {colorPolicy} from './color-policy.js?v=28.4.1';
-import {isNonHumanSource} from './source-kind.js?v=28.4.1';
+import {colorPolicy} from './color-policy.js?v=28.4.2';
+import {isNonHumanSource} from './source-kind.js?v=28.4.2';
 
 // Original semantic descriptions extracted from user-provided examples.
 // UI thumbnails remain illustrative: none of their people, clothes, prompts,

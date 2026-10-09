@@ -1,0 +1,22 @@
+{
+  "id": "pose-052",
+  "label": "人差し指で行き先を示す",
+  "prompt": "Use case: illustration-story. Asset type: original detailed pose selection thumbnail. One fully illustrated gender-neutral adult with medium-length brown hair, a gentle expression, cream long-sleeved shirt, loose indigo trousers, plain white sneakers. Quiet pale ivory studio background, subtle floor contact shadow. High quality softly shaded gouache and anime illustration, actual person with volumetric body and limbs, natural head-to-body ratio, carefully drawn fingers and face, clothing folds, delicate fine outlines and painterly texture. Square composition: full body fully framed from top of hair to both soles, centered occupying 75-85% canvas height, action readable at thumbnail size. No labels, arrows, symbols, brands, watermarks, extra people, Halloween decoration, stick figures, mannequins, skeletons, cropped hands or feet. Pose: standing facing three-quarter toward the right. ONE ARM EXTENDED TO THE RIGHT, INDEX FINGER POINTING CLEARLY IN THAT DIRECTION, other fingers gently curled. Gaze follows the pointed direction. Other arm relaxed near side. Show extended pointing arm and finger entirely inside canvas, hand naturally attached with correct wrist and elbow. No arrow graphic; the pointing finger alone indicates the direction.",
+  "source_generated_file": "/workspace/scratch/ad16ee694a48/generated_images/exec-5a0aa5fa-d7d6-424c-990d-62fb506fce3a.png",
+  "generator": "built-in image_gen",
+  "qa": "Accepted; full body, clothed volumetric person, specified pose visible; no text, arrows, or diagram. Support contact verified for seated poses.",
+  "destination": "pose-052.jpg",
+  "processing": "Original resolution preserved; RGB JPEG encoding quality 85 only.",
+  "asset": "pose-052.jpg",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "f43904bb5334b8513b4adcaf41b10b4ab9b37ff53093ea0ca0c75da4d99e3ec2",
+  "encoding": "RGB JPEG quality 85; generated resolution retained without cropping or retouching",
+  "visualQA": {
+    "status": "accepted",
+    "reviewer": "Codex visual inspection of generated image",
+    "observations": "肩から伸びる一本の腕と一本の人差し指が同じ行き先を示し、もう片腕が下がっている。"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "pose-051",
+  "prompt": "Use case: illustration-story. Asset type: original detailed pose selection thumbnail. One fully illustrated gender-neutral adult with medium-length brown hair, a gentle expression, cream long-sleeved shirt, loose indigo trousers, plain white sneakers. Quiet pale ivory studio background, subtle floor contact shadow. High quality softly shaded gouache and anime illustration, actual person with volumetric body and limbs, natural head-to-body ratio, carefully drawn fingers and face, clothing folds, delicate fine outlines and painterly texture. Square composition: full body fully framed from top of hair to both soles, centered occupying 75-85% canvas height, action readable at thumbnail size. No labels, arrows, symbols, brands, watermarks, extra people, Halloween decoration, stick figures, mannequins, skeletons, cropped hands or feet. Pose: standing in relaxed three-quarter view, ONE HAND TUCKS A STRAND OF HAIR BEHIND THE EAR, with fingertips gently touching hair at the ear. The visible ear and gently arched fingers make the action clear. The other hand rests relaxed at their side. Head slightly angled toward that hand, kind face visible.",
+  "source_generated_file": "/workspace/scratch/ad16ee694a48/generated_images/exec-f6bf7be4-0630-4fe5-9b64-5ab159ed50bb.png",
+  "generator": "built-in image_gen",
+  "qa": "Accepted; full body, clothed volumetric person, specified pose visible; no text, arrows, or diagram.",
+  "destination": "pose-051.jpg",
+  "processing": "Original resolution preserved; RGB JPEG encoding quality 85 only.",
+  "label": "髪を耳にかける",
+  "asset": "pose-051.jpg",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "e36c1862b77d7f11986e7d15447ef682de0a7546355bad8e806e2b4586b2078e",
+  "encoding": "RGB JPEG quality 85; generated resolution retained without cropping or retouching",
+  "visualQA": {
+    "status": "accepted",
+    "reviewer": "Codex visual inspection of generated image",
+    "observations": "片手が同側の耳際へ来て一束の髪を寄せ、腕・手指・髪の輪郭が区別できる。"
+  }
+}

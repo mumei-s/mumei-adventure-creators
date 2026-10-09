@@ -1,0 +1,22 @@
+{
+  "id": "pose-055",
+  "label": "正座する",
+  "prompt": "Use case: illustration-story. Asset type: original detailed pose selection thumbnail. One fully illustrated gender-neutral adult with medium-length brown hair, a gentle expression, cream long-sleeved shirt, loose indigo trousers, plain white sneakers. Quiet pale ivory studio background, subtle floor contact shadow. High quality softly shaded gouache and anime illustration, actual person with volumetric body and limbs, natural head-to-body ratio, carefully drawn fingers and face, clothing folds, delicate fine outlines and painterly texture. Square composition: full body fully framed from top of hair to both soles, centered, action readable at thumbnail size. No labels, arrows, symbols, brands, watermarks, extra people, Halloween decoration, stick figures, mannequins, skeletons, cropped hands or feet. Pose: seated in traditional Japanese SEIZA on the floor, not upright kneeling. View at low three-quarter SIDE angle so the folded legs are unambiguous. Both knees on the floor in front, shins extend flat back along the floor, thighs folded completely onto the calves. PELVIS AND BUTTOCKS REST DIRECTLY ON THE HEELS, sitting low. Straight calm torso, hands rest flat on upper thighs. Both legs are folded underneath, ankles and white shoes tucked behind, not crossed, not dangling, no chair. Preserve physical contact pelvis-to-heels and knee-to-floor. Compose the seated body large in frame, at least 70% canvas height; small visible floor shadow.",
+  "source_generated_file": "/workspace/scratch/ad16ee694a48/generated_images/exec-6fa32894-494c-4c71-a890-a91f330cbec3.png",
+  "generator": "built-in image_gen",
+  "qa": "Accepted; full body, clothed volumetric person, specified pose visible; no text, arrows, or diagram. Support contact verified for seated poses.",
+  "destination": "pose-055.jpg",
+  "processing": "Original resolution preserved; RGB JPEG encoding quality 85 only.",
+  "asset": "pose-055.jpg",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "a42b22d5c98c7251600aeb310eaf70e251335d9d33d68e7e05a326c773587f70",
+  "encoding": "RGB JPEG quality 85; generated resolution retained without cropping or retouching",
+  "visualQA": {
+    "status": "accepted",
+    "reviewer": "Codex visual inspection of generated image",
+    "observations": "腰を踵まで下ろした低い正座で、両すねが床に沿い、両手は腿の上。直立膝立ちと違う。"
+  }
+}

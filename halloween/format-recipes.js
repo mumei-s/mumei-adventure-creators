@@ -2,11 +2,29 @@
 // structures, not the identities, pictures, words or rendering of source pages.
 // Typography choices are independent of formats, so this import introduces no
 // cycle while keeping explicit manuscript scope shared with the copy builder.
-import {typographyOption} from './typography-options.js?v=28.4.1';
+import {typographyOption} from './typography-options.js?v=28.4.2';
 const chooseText=(c,normal,empty,limited)=>c.noText?empty:c.limited?limited:normal;
 const newspaperText=(c,normal,empty,limited,scoped)=>c.roleScoped?scoped:chooseText(c,normal,empty,limited);
 const main=(c,person,scenery)=>c.noPerson?scenery:person;
 const textCheck=(normal,empty,limited=empty)=>c=>chooseText(c,normal,empty,limited);
+
+// Sparse copy still needs a newspaper page, not a full-image poster. These
+// proportions are shared by prompt delivery and the optional local compositor.
+export function limitedNewspaperLayout(values={}){
+ const {noText,limited}=formatTextPolicy(values);
+ if(!noText&&!limited)return null;
+ const imageBox={x:.06,y:.24,width:.57,height:.54},headerBox={x:.05,y:.05,width:.90,height:.11};
+ const rules=[{x1:.05,y1:.19,x2:.95,y2:.19},{x1:.05,y1:.81,x2:.95,y2:.81},...[.65,.80].map(x=>({x1:x,y1:.21,x2:x,y2:.80})),...[.20,.35,.50,.65,.80].map(x=>({x1:x,y1:.84,x2:x,y2:.95}))];
+ const bone='許可原稿が少なくても、新聞の一面として6列・上中下の3段を先に確定し、列の境界、横段の細罫、広い空欄で一目で新聞と分かる版面を保つ。図版で未使用列を埋める一枚絵やポスターへ置換しない。';
+ const grid='外周5%を空け、幅を6列へ分ける。上段y5〜16%を許可原稿、中段y21〜80%を主図版と右2列の空欄、下段y84〜95%を6列の空欄にする。主図版1点は左4列の内側、x6〜63%・y24〜78%の矩形（紙面の約31%、上限40%）に収める。右2列と下段には図版・装飾・文字を追加せず、紙面の40%以上を空欄の地色として明確に残す。y19%とy81%の横罫、右2列の縦罫、下段の6列を分ける縦罫は、図版や文字に触れない細い構造罫として見せる。日本語の列は右から左へ読む。';
+ const typography=noText?'文字・数字・署名・疑似文字は一切描かず、上段も地色の空欄にする。空欄に題字枠のラベルや本文に似せた短い反復線を置かない。':'確定した許可原稿だけを上段y5〜16%へ一度ずつ組む。HALLOWEENのみなら「HALLOWEEN」1語だけを上段に横組みし、文字の高さは紙面の6%以下にする。名前や短文も同じ上段に収め、巨大な題字で上部を占領しない。未許可の新聞名・日付・号数・価格・記事・キャプション・広告は追加せず、空欄は空欄のまま残す。';
+ const image='主図版の人物・出来事・舞台と選択したポーズ・カメラを、一つの指定矩形の中へ収める。画角を保った主図版全体を縮め、主図版の背景や発光を紙面の空欄へはみ出させない。';
+ const material='紙地と細罫の色は選択配色の許可色内の明度差で分ける。主図版には選択画風をそのまま適用し、新聞形式から茶色い古紙・黒インク・白黒写真を強制しない。';
+ const fail='大題字とほぼ全面の主絵だけのポスター、空欄を背景絵や装飾で埋める、本文に似せた短い反復線・疑似文字・未許可記事、主図版の複製を避ける。';
+ const checks=['6列・上中下3段の新聞構造と細い横罫・縦罫','主図版1点は紙面約31%・上限40%の左4列内','右2列と下段の空欄を保ち紙面40%以上が空欄の地色',noText?'上段も文字と疑似本文のない空欄':'許可原稿は上段のみ・文字高さ6%以下・各原稿一度だけ','主図版の背景や発光が空欄へはみ出していない','紙地と罫線は選択配色内・茶色紙や黒インクの自動追加なし'];
+ const priority='【限定原稿でも新聞の版面を保持】6列・3段の細い横罫と縦罫を先に描く。主図版1点は左4列内の紙面約31%（上限40%）だけ。右2列と下段を含む紙面40%以上は空欄の地色にし、主絵の背景や発光で埋めない。'+(noText?'上段も文字なし。':'許可原稿は上段だけ、文字高さ6%以下、各原稿一度だけ。')+'未許可記事・疑似文字・本文風反復線は追加しない。紙地と細罫も選択配色内で描く。';
+ return {imageBox,headerBox,rules,bone,grid,typography,image,material,fail,checks,priority,executionMethod:priority+' '+grid+' '+typography+' '+image+' '+material};
+}
 const entries={
  'ファッション雑誌の表紙':{
   bone:c=>chooseText(c,'誌名で媒体を認識し、中央の主画像へ目を移し、主特集から左右の補助特集へ読む表紙。記事本文を読ませる内面とは区別する。','文字のない表紙として、中央の大きな主画像と上下の落ち着いた空間で一冊の入口を作る。','主画像で表紙を成立させ、許可された名前や短文だけを一つの位置に添える。'),
@@ -457,6 +475,19 @@ export function detailedFormat(value,{noPerson=false,values={}}={}){
   values
  };
  const read=part=>typeof part==='function'?part(context):part;
+ const sparseNewspaper=value==='新聞の一面'?limitedNewspaperLayout(values):null;
+ if(sparseNewspaper)return {
+  known:true,executionMethod:sparseNewspaper.executionMethod,
+  sections:[
+   {label:'作品の骨格',text:sparseNewspaper.bone},
+   {label:'領域とグリッド',text:sparseNewspaper.grid},
+   {label:context.noPerson?'主題の景物・物体':'主画像の構成',text:read(recipe.image)+' '+sparseNewspaper.image},
+   {label:context.noText?'文字なしの構成':'限定原稿の配置',text:sparseNewspaper.typography},
+   {label:'画風と形式の分担',text:read(recipe.medium)+' '+sparseNewspaper.material},
+   {label:'避ける失敗',text:read(recipe.fail)+' '+sparseNewspaper.fail}
+  ],
+  checks:[...recipe.checks.map(read),...sparseNewspaper.checks,context.noText?'文字・数字・署名・疑似文字がない':'許可された原稿だけで追加文言がない',...(context.noPerson?['人物・人型の顔を追加していない']:[])]
+ };
  const typography=context.roleScoped&&recipe.scopedType?read(recipe.scopedType):context.noText?recipe.type[1]:context.limited?recipe.type[2]:recipe.type[0];
  return {
   known:true,

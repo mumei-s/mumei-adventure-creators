@@ -1,0 +1,22 @@
+{
+  "id": "pose-053",
+  "label": "両手でハートを作る",
+  "prompt": "Use case: illustration-story. Asset type: original detailed pose selection thumbnail. One fully illustrated gender-neutral adult with medium-length brown hair, a gentle expression, cream long-sleeved shirt, loose indigo trousers, plain white sneakers. Quiet pale ivory studio background, subtle floor contact shadow. High quality softly shaded gouache and anime illustration, actual person with volumetric body and limbs, natural head-to-body ratio, carefully drawn fingers and face, clothing folds, delicate fine outlines and painterly texture. Square composition: full body fully framed from top of hair to both soles, centered occupying 75-85% canvas height, action readable at thumbnail size. No labels, arrows, symbols, brands, watermarks, extra people, Halloween decoration, stick figures, mannequins, skeletons, cropped hands or feet. Pose: standing facing the viewer, BOTH HANDS HELD AT THE UPPER CHEST FORMING ONE CLEAR HEART SHAPE. The two index fingertips meet at the upper central point and the two thumb tips meet at the lower central point, creating visible heart-shaped empty space between the fingers. Elbows relaxed outwards. Friendly gentle smile. Hands have natural anatomy, no duplicated fingers.",
+  "source_generated_file": "/workspace/scratch/ad16ee694a48/generated_images/exec-91dedc31-bb56-4c7b-8955-0edcec82859b.png",
+  "generator": "built-in image_gen",
+  "qa": "Accepted; full body, clothed volumetric person, specified pose visible; no text, arrows, or diagram. Support contact verified for seated poses.",
+  "destination": "pose-053.jpg",
+  "processing": "Original resolution preserved; RGB JPEG encoding quality 85 only.",
+  "asset": "pose-053.jpg",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "29fa85f4dd7e6d57beca15b78e1067a896631422a3fe3187fc70abedcb07706c",
+  "encoding": "RGB JPEG quality 85; generated resolution retained without cropping or retouching",
+  "visualQA": {
+    "status": "accepted",
+    "reviewer": "Codex visual inspection of generated image",
+    "observations": "胸の前で左右の手が一つのハート形の空間を作り、両肘と手首が区別できる。"
+  }
+}

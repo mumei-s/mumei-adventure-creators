@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {poseItems,poseGroups,applyPose,poseTechnical} from '../poses.js?v=28.4.1';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.1';
-import {applyCollection} from '../collection.js?v=28.4.1';
-import {optionRecipe} from '../option-recipes.js?v=28.4.1';
-import {sampleFor} from '../examples.js?v=28.4.1';
-import {productionPlan} from '../production-plan.js?v=28.4.1';
-import {renderChatInput} from '../compiled-production.js?v=28.4.1';
+import {poseItems,poseGroups,applyPose,poseTechnical} from '../poses.js?v=28.4.2';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.2';
+import {applyCollection} from '../collection.js?v=28.4.2';
+import {optionRecipe} from '../option-recipes.js?v=28.4.2';
+import {sampleFor} from '../examples.js?v=28.4.2';
+import {productionPlan} from '../production-plan.js?v=28.4.2';
+import {renderChatInput} from '../compiled-production.js?v=28.4.2';
 
 const added=poseItems.slice(48),names=poseGroups.flatMap(g=>g.values);
 assert.equal(poseItems.length,72);
@@ -14,7 +14,7 @@ assert.equal(added.length,24);
 assert.equal(new Set(names).size,72);
 assert.deepEqual(new Set(names),new Set(poseItems.map(p=>p.value)));
 for(const [index,item] of poseItems.slice(0,48).entries())assert.equal(item.file,'pose-'+String(index+1).padStart(3,'0')+'.jpg','Existing previews must be retained');
-assert.equal(new Set(added.map(item=>item.file)).size,24,'Every action has its own matching schematic');
+assert.equal(new Set(added.map(item=>item.file)).size,24,'Every action has its own matching illustrated preview');
 const seenMethods=new Set(),random=()=>.28,variant={face:'左向き45度',expression:'穏やかな表情',pose:'立つ',distance:'全身',layout:'身体全体',signature:'POSE',motif:'背景の光',camera:'正面',light:'窓からの光',depth:'前後の奥行き',motion:'静止'};
 try{
  for(const collection of ['halloween','everyday']){
@@ -42,14 +42,15 @@ try{
    assert.equal(noPerson.pose,'');assert.equal(noPerson.face,'');
    const preview=sampleFor('pose',item.value);
    assert.equal(preview.kind,'image');assert.ok(preview.src.endsWith(item.file));
-   const svg=fs.readFileSync(new URL('../'+item.file,import.meta.url),'utf8');
-   assert.match(svg,/<svg\b/);assert.ok(svg.includes(item.value));assert.ok(svg.includes('動作の図解'));
-   assert.doesNotMatch(svg,/<script|<foreignObject|(?:href|src)=["'](?!#)/i,'The preview must be self-contained native vector');
+   const raster=fs.readFileSync(new URL('../'+item.file,import.meta.url));
+   assert.equal(raster.readUInt16BE(0),0xffd8,'The individual person illustration must be a real JPEG');
+   const metadata=JSON.parse(fs.readFileSync(new URL('../'+item.file.replace('.jpg','.json'),import.meta.url),'utf8'));
+   assert.equal(metadata.label,item.value);assert.equal(metadata.visualQA.status,'accepted');
    const plan=productionPlan({displayName:'POSE CHECK',topics:[]},values,posed,collection,random),input=renderChatInput(plan);
    assert.ok(input.includes(item.support)&&input.includes(item.contact));
    assert.ok(!input.includes(item.file)&&!input.includes('<svg'),'Picker schematics must not enter image-generation input');
   }
  }
  assert.equal(seenMethods.size,24,'Every added action has its own physical execution method');
- console.log('PASS 24 added poses / 72 total: both modes expose every action; dedicated support, joint/contact and anatomy checks survive image handoff; face/expression remain independent; 24 matching native schematics stay UI-only.');
+ console.log('PASS 24 added poses / 72 total: both modes expose every action; dedicated support, joint/contact and anatomy checks survive image handoff; face/expression remain independent; 24 matching original person illustrations stay UI-only.');
 }finally{applyCollection('halloween');}

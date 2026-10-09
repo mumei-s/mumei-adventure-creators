@@ -1,0 +1,22 @@
+{
+  "id": "pose-054",
+  "label": "座って脚を組む",
+  "prompt": "Use case: illustration-story. Asset type: original detailed pose selection thumbnail. One fully illustrated gender-neutral adult with medium-length brown hair, a gentle expression, cream long-sleeved shirt, loose indigo trousers, plain white sneakers. Quiet pale ivory studio background, subtle floor contact shadow. High quality softly shaded gouache and anime illustration, actual person with volumetric body and limbs, natural head-to-body ratio, carefully drawn fingers and face, clothing folds, delicate fine outlines and painterly texture. Square composition: full body fully framed from top of hair to both soles, centered, action readable at thumbnail size. No labels, arrows, symbols, brands, watermarks, extra people, Halloween decoration, stick figures, mannequins, skeletons, cropped hands or feet. Pose: sitting on a simple unbranded plain wooden chair in three-quarter view. ONE LEG CROSSED OVER THE OTHER AT THE KNEE, clearly resting knee over the other thigh, lower crossed leg hangs naturally diagonally with the whole shoe visible. The supporting foot rests naturally on the floor. Hips contact the chair seat. Hands relaxed on the crossed knee. Show the whole person and chair, occupying 75-85% height.",
+  "source_generated_file": "/workspace/scratch/ad16ee694a48/generated_images/exec-e3dc479a-152a-4962-833c-a671fc5d4f42.png",
+  "generator": "built-in image_gen",
+  "qa": "Accepted; full body, clothed volumetric person, specified pose visible; no text, arrows, or diagram. Support contact verified for seated poses.",
+  "destination": "pose-054.jpg",
+  "processing": "Original resolution preserved; RGB JPEG encoding quality 85 only.",
+  "asset": "pose-054.jpg",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "8c57c1a9f60bf0bdba57da1de9f51e5c2a01e29e147924accc4a5ffbceed1b03",
+  "encoding": "RGB JPEG quality 85; generated resolution retained without cropping or retouching",
+  "visualQA": {
+    "status": "accepted",
+    "reviewer": "Codex visual inspection of generated image",
+    "observations": "椅子に坐骨を置き、一方の腿が他方の膝上に重なり、下側の足は床を支えている。"
+  }
+}

@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import {questions,visibleQuestions} from '../catalog.js?v=28.4.1';
-import {initialSelections} from '../modes.js?v=28.4.1';
-import {applyCollection} from '../collection.js?v=28.4.1';
-import {randomItemSelection,automaticSelection} from '../random-selections.js?v=28.4.1';
-import {candidateAvailability} from '../compatibility.js?v=28.4.1';
+import {questions,visibleQuestions} from '../catalog.js?v=28.4.2';
+import {initialSelections} from '../modes.js?v=28.4.2';
+import {applyCollection} from '../collection.js?v=28.4.2';
+import {randomItemSelection,automaticSelection} from '../random-selections.js?v=28.4.2';
+import {candidateAvailability} from '../compatibility.js?v=28.4.2';
 let count=0;
 for(const mode of ['halloween','everyday']){
  applyCollection(mode);

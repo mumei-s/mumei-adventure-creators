@@ -1,0 +1,22 @@
+{
+  "pose_id": "pose-057",
+  "label": "机に片肘をついて考える",
+  "generation_tool": "image_gen.imagegen",
+  "prompt": "Use case: illustration-story. Asset type: individual pose-selection thumbnail in a Japanese creative tool. Create exactly ONE high-quality original full-body character illustration, not a diagram, showing a clothed adult androgynous person with medium-length brown hair, kind face, cream shirt, loose indigo trousers and white sneakers. Refined gouache/anime illustration with natural rounded anatomy, detailed face and hands, convincing soft painted shadows, fabric folds and volume. Pale ivory studio background, essential support only. Complete body, all hands and all feet within the image, person occupies 70-85% of canvas, clear silhouette instantly readable in a small thumbnail. Square composition. No text, arrows, labels, grids, brands, decorative Halloween props, stick-figure limbs or schematic joint dots. Primary action: seated at a simple wooden desk and chair, thinking. The person's SINGLE left elbow rests clearly on the desktop, and the left hand gently supports the chin; the other forearm rests naturally flat on the desktop. Head slightly inclined, thoughtful gentle expression. Three-quarter full-body view showing the whole seated body, both feet grounded below the desk, knees naturally bent, the desk surface reaches near lower chest, anatomically plausible elbow and chin contact. No pen, books or unnecessary objects.",
+  "generated_source": "/workspace/scratch/ad16ee694a48/generated_images/exec-9fad7ad4-a27a-42df-b79a-f233faa805cc.png",
+  "asset": "pose-057.jpg",
+  "qa": "全身、椅子、机、片肘と頬の接触、両足の接地を確認。自然な服・手・顔で棒人間ではない。",
+  "id": "pose-057",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "e5d8ee04f430114b082f2934ca26a8b7ea105cd1550fbf524f7b6dcd6937c18d",
+  "encoding": "RGB JPEG quality 85; generated resolution retained without cropping or retouching",
+  "visualQA": {
+    "status": "accepted",
+    "reviewer": "Codex visual inspection of generated image",
+    "observations": "椅子に座り、片肘が机の天板に接して片手が頬を支え、他方の腕と両足は別に読める。"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "pose_id": "pose-061",
+  "label": "身をひねって避ける",
+  "generation_tool": "image_gen.imagegen",
+  "prompt": "Use case: illustration-story. Asset type: individual pose-selection thumbnail in a Japanese creative tool. Create exactly ONE high-quality original full-body character illustration, not a diagram, showing a clothed adult androgynous person with medium-length brown hair, kind face, cream shirt, loose indigo trousers and white sneakers. Refined gouache/anime illustration with natural rounded anatomy, detailed face and hands, convincing soft painted shadows, fabric folds and volume. Pale ivory studio background, essential support only. Complete body, all hands and all feet within the image, person occupies 70-85% of canvas, clear silhouette instantly readable in a small thumbnail. Square composition. No text, arrows, labels, grids, brands, decorative Halloween props, stick-figure limbs or schematic joint dots. Primary action: twisting the upper body to dodge sideways. Both feet planted wide apart on the SAME flat ground in a low athletic stance, both knees naturally flexed; hips still grounded facing mostly forward while shoulders and chest visibly rotate sideways to the person's right, the head looks toward that side. Arms bent and separated for balance, one hand near chest and the other lightly extended to the side. Low stable centre of gravity, coherent hip-spine-shoulder twist. No enemy, weapon, combat, projectile or object. Three-quarter full-body view showing the planted feet and rotated torso clearly.",
+  "generated_source": "/workspace/scratch/ad16ee694a48/generated_images/exec-88c034bf-09f1-4b6b-8141-a6d445992ef0.png",
+  "asset": "pose-061.jpg",
+  "qa": "両足を広く接地し、低く曲げた膝と腰、側方へ向いた胸肩と顔、支える両腕を確認。",
+  "id": "pose-061",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "238d0bcb906ce4b479b99e868cdcd8c9a3f0cb4ad052a00e1043bdc931a000d2",
+  "encoding": "RGB JPEG quality 85; generated resolution retained without cropping or retouching",
+  "visualQA": {
+    "status": "accepted",
+    "reviewer": "Codex visual inspection of generated image",
+    "observations": "両足を開いた低い支持姿勢で腰と肩の向きがずれ、胸郭を横へ避けるひねりが読める。"
+  }
+}

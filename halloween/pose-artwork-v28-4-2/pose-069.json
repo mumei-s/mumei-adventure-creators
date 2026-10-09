@@ -1,0 +1,23 @@
+{
+  "number": 69,
+  "title": "剣を両手で構える",
+  "source": "/workspace/scratch/ad16ee694a48/generated_images/exec-8720fc54-7e5b-4a6c-8d06-d6a3b1004e68.png",
+  "output": "pose-069.jpg",
+  "method": "built-in image_gen",
+  "prompt": "Use case: illustration-story. Asset: ONE original square pose preview for an art studio website. Create one finished detailed gouache/anime illustration of ONE clothed young adult with medium tousled brown hair, natural facial features, cream long sleeve shirt with rolled cuffs, loose indigo trousers, pale sneakers. Plain pale ivory studio backdrop with soft warm natural shading. Natural face, fingers, joints, dimensional clothing folds, broad gender neutral styling. Whole body including both feet completely visible, character and necessary prop large about 80%canvas, clear action readable as small UI thumbnail. Single distinct image, NOT stick figure, NOT schematic, NOT flat icon, NOT contact sheet. No text, labels, diagram arrows, logos, grid, border, fancy costumes, brands or watermark. Action: Holding ONE straight training sword in BOTH hands. Wide grounded forward/back foot stance, bent knees, torso upright with naturally low center of gravity. Two separate hands grip upper and lower portions of SINGLE long handle UNDER the guard. Blade points diagonally upward, clear of person's head/body. Hands touch only handle, not blade. Clearly distinguish the two arms and hands. Plain safety practice context, no attack or enemy.",
+  "visualQA": {
+    "status": "accepted",
+    "reviewer": "Codex visual inspection of generated image",
+    "observations": "両手が一本の柄の異なる位置を握り、鍔から刃が離れて上がる。広い接地脚で構えている。"
+  },
+  "id": "pose-069",
+  "label": "剣を両手で構える",
+  "asset": "pose-069.jpg",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "74c1c9aaaeefe531c570b7ab187741cb7895de32c1e7d1ba88ad42b8ad664ca7",
+  "encoding": "RGB JPEG quality 85; generated resolution retained without cropping or retouching"
+}

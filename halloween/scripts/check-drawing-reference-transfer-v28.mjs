@@ -1,17 +1,17 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {drawingReferenceFor,drawingReferenceInstructions,loadDrawingReferences,deliveryImageFiles} from '../drawing-references.js?v=28.4.1';
-import {sampleFor} from '../examples.js?v=28.4.1';
-import {compactHistoryRecord,restoreHistoryRecord} from '../history-storage.js?v=28.4.1';
-import {makeZip} from '../zip.js?v=28.4.1';
-import {applyCollection} from '../collection.js?v=28.4.1';
-import {initialSelections} from '../modes.js?v=28.4.1';
-import {resolveSelections} from '../catalog.js?v=28.4.1';
-import {buildDirection} from '../direction.js?v=28.4.1';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.1';
-import {composePrompt} from '../prompt.js?v=28.4.1';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.1';
+import {drawingReferenceFor,drawingReferenceInstructions,loadDrawingReferences,deliveryImageFiles} from '../drawing-references.js?v=28.4.2';
+import {sampleFor} from '../examples.js?v=28.4.2';
+import {compactHistoryRecord,restoreHistoryRecord} from '../history-storage.js?v=28.4.2';
+import {makeZip} from '../zip.js?v=28.4.2';
+import {applyCollection} from '../collection.js?v=28.4.2';
+import {initialSelections} from '../modes.js?v=28.4.2';
+import {resolveSelections} from '../catalog.js?v=28.4.2';
+import {buildDirection} from '../direction.js?v=28.4.2';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.2';
+import {composePrompt} from '../prompt.js?v=28.4.2';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.2';
 
 const root=new URL('../',import.meta.url),anime=drawingReferenceFor('宝石光彩アニメ'),real=drawingReferenceFor('宝石光彩リアル');
 assert.notEqual(anime.file,real.file);

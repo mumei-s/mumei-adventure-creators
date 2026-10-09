@@ -1,0 +1,22 @@
+{
+  "pose_id": "pose-064",
+  "label": "流れる布を片手でつかむ",
+  "generation_tool": "image_gen.imagegen",
+  "prompt": "Use case: illustration-story. Asset type: individual pose-selection thumbnail in a Japanese creative tool. Create exactly ONE high-quality original full-body character illustration, not a diagram, showing a clothed adult androgynous person with medium-length brown hair, kind face, cream shirt, loose indigo trousers, a plain lightweight muted sage scarf, and white sneakers. Refined gouache/anime illustration with natural rounded anatomy, detailed face and hands, convincing soft painted shadows, fabric folds and volume. Pale ivory studio background, essential support only. Complete body, all hands and all feet within the image, person occupies 70-85% of canvas, clear silhouette instantly readable in a small thumbnail. Square composition. No text, arrows, labels, grids, brands, decorative Halloween props, stick-figure limbs or schematic joint dots. Primary action: catching and holding the edge of a flowing scarf with ONE hand. Standing full-body three-quarter view facing right, feet stable slightly apart. A LONG sage scarf wraps around the neck continuously and flows to the RIGHT in a light breeze. The person's RIGHT hand holds the scarf's free end to the right at shoulder height with thumb and fingers visibly gripping the actual continuous scarf edge; the scarf makes one clear wide flowing S-curve between neck and gripping hand. The left hand rests open near the hip. Hair and cream shirt hem drift in the same rightward breeze. Clear contact between gripping fingers and fabric, no detached floating pieces or separate duplicate cloth. No text or accessories.",
+  "generated_source": "/workspace/scratch/ad16ee694a48/generated_images/exec-75aadac3-369d-4ee0-b162-dcb09ba3440d.png",
+  "asset": "pose-064.jpg",
+  "qa": "首のスカーフから持ち上げた片手・流れる布への連続性、指と布の把持接触、接地した両足・全身を目視確認。",
+  "id": "pose-064",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "9917a4d54ae8bd5821e5a30c83085119a69ae19c5d85744e88bc5fbd0f56d880",
+  "encoding": "RGB JPEG quality 85; generated resolution retained without cropping or retouching",
+  "visualQA": {
+    "status": "accepted",
+    "reviewer": "Codex visual inspection of generated image",
+    "observations": "片手の指がスカーフの縁を握り、首元の布から握り位置と流れる先端まで連続。両脚は床へ接地している。"
+  }
+}

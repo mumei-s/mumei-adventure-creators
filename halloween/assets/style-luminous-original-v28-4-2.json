@@ -1,0 +1,9 @@
+{
+  "medium": "発光幻想アニメ",
+  "asset": "assets/style-luminous-original-v28-4-2.png",
+  "created": "2026-10-09",
+  "method": "built-in image generation; original written scene, followed by a lighting refinement using only that newly generated image",
+  "external_image_references": [],
+  "design": "Original adult woman with short dark-teal hair, amber eyes, cape, ivory blouse, tailored trousers, full-body stance in an impossible observatory stair-city. Emerald/mint/gold light and broad dark shadows. No lantern, kimono, shrine or over-shoulder composition.",
+  "purpose": "Transfer fine 2D construction, internal color light, reflection density and deep shadow area to the user-selected subject, costume, palette and scene; do not copy sample subject or motifs."
+}

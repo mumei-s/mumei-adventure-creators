@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
-import {createPicker} from '../picker.js?v=28.4.1';
-import {questions,visibleQuestions} from '../catalog.js?v=28.4.1';
-import {applyCollection} from '../collection.js?v=28.4.1';
-import {ringPosition,restingRingPosition,pagePatternTone} from '../ring-motion.js?v=28.4.1';
+import {createPicker} from '../picker.js?v=28.4.2';
+import {pickerRecords} from '../picker-priority.js?v=28.4.2';
+import {questions,visibleQuestions} from '../catalog.js?v=28.4.2';
+import {applyCollection} from '../collection.js?v=28.4.2';
+import {ringPosition,restingRingPosition,pagePatternTone} from '../ring-motion.js?v=28.4.2';
 
 // Short screens retain a 360px scrollable canvas rather than crushing its cards.
 // Exercise measured card bounds and two-line labels at all supported widths.
@@ -57,13 +58,28 @@ const bounds=()=>[...$('ring-options').children].map(card=>Math.abs(parseFloat(c
 function pointer(type,target,x,y){const event={target,pointerId:1,isPrimary:true,clientX:x,clientY:y,preventDefault(){this.prevented=true;},stopImmediatePropagation(){this.stopped=true;}};surface.emit(type,event);return event;}
 function swipe(dx,dy=0,target=stage){now+=1000;pointer('pointerdown',target,width/2,height/2);const move=pointer('pointermove',target,width/2+dx,height/2+dy);pointer('pointerup',target,width/2+dx,height/2+dy);return move;}
 
-picker.open(questions.find(q=>q.key==='medium'));
+const mediumQuestion=questions.find(q=>q.key==='medium');
+picker.open(mediumQuestion);
+assert.equal($('ring-options').children[0].dataset.value,'発光幻想アニメ','Prepared luminous preset starts on the first unfiltered page');
+const firstMedia=$('ring-options').children.map(node=>node.dataset.value);
+assert.ok(firstMedia.includes('宝石光彩アニメ')&&firstMedia.some(value=>/リアル|実写風/.test(value)),'Useful drawn and realistic presets share the first page');
+const originalMedia=mediumQuestion.groups.flatMap(group=>group.values),allMedia=pickerRecords(mediumQuestion).map(record=>record.value);
+assert.deepEqual([...allMedia].sort(),[...originalMedia].sort(),'Priority does not discard or duplicate any medium');
 assert.ok(bounds().some(edge=>edge<36),'Closed-dialog measurement starts at zero');flush();assert.ok(bounds().every(edge=>edge>=43.99),'First shown frame reserves the clear band');
 height=480;observer();assert.ok(bounds().every(edge=>edge>=43.99),'ResizeObserver repositions a taller canvas');
 height=360;width=400;window.innerWidth=innerWidth=400;windowEvents.resize.forEach(fn=>fn());assert.ok(bounds().every(edge=>edge>=43.99),'Resize within the phone breakpoint also repositions');
 basis().open=true;$('ring-options').children[2].click();assert.equal(basis().open,true,'Changing the center keeps notes expanded');assert.equal(basis().dataset.value,$('ring-focus').querySelector('b').textContent);
 const initialPage=$('picker-page').textContent;swipe(-100,0,basis());assert.equal($('picker-page').textContent,initialPage,'Reading source notes does not page or rotate');
 $('picker-list-view').click();const listed=$('picker-options').children[2],listedValue=listed.dataset.value;listed.querySelector('.artwork-basis-preview').click();assert.equal(basis().dataset.value,listedValue);assert.equal(basis().open,true);assert.equal(chosen.length,0,'Inline list basis does not commit a choice or open another popup');$('picker-ring-view').click();
+
+// A choice from a later page reopens in the same center, even with priority
+// ordering. A user favorite is offered before the built-in starting points.
+const laterValue=originalMedia.at(-1);selection={medium:laterValue};picker.open(mediumQuestion);flush();
+assert.equal($('ring-focus').querySelector('b').textContent,laterValue,'Reopening restores the actual selected preset');
+$('ring-focus').querySelector('.favorite-toggle').click();selection={};picker.open(mediumQuestion);flush();
+assert.equal($('picker-page').textContent.split(' / ')[0],'1');assert.equal($('ring-options').children[0].dataset.value,laterValue,'Saved favorite moves to the first page');
+assert.equal($('ring-focus').querySelector('b').textContent,laterValue);$('ring-focus').querySelector('.favorite-toggle').click();
+picker.open(mediumQuestion);flush();assert.equal($('ring-options').children[0].dataset.value,'発光幻想アニメ','Removing the favorite restores prepared starting points');
 
 // Every category/page in both collections retains its records and category label.
 let checkedPages=0,checkedCategories=0;
@@ -73,7 +89,7 @@ for(const collection of ['halloween','everyday']){
   picker.open(q);flush();
   for(const group of ['すべて',...q.groups.map(g=>g.label)]){
    $('picker-category').value=group;$('picker-category').emit('change');
-   const records=q.groups.filter(g=>group==='すべて'||g.label===group).flatMap(g=>g.values.map(value=>({value,group:g.label}))),pages=Math.max(1,Math.ceil(records.length/6));
+   const records=pickerRecords(q,{group,collection}),pages=Math.max(1,Math.ceil(records.length/6));
    checkedCategories++;
    for(let page=0;page<pages;page++){
     const expected=records.slice(page*6,(page+1)*6);
@@ -89,6 +105,9 @@ for(const collection of ['halloween','everyday']){
 }
 applyCollection('halloween');document.body.dataset.collection='halloween';picker.open(questions.find(q=>q.key==='medium'));flush();
 swipe(-100);assert.match($('picker-page').textContent,/^2 \/ /);swipe(100);assert.match($('picker-page').textContent,/^1 \/ /);assert.equal(canvas.styles['--page-enter-x'],'-18px');
+// A short thumb gesture must page without a long drag; taps stay below threshold.
+swipe(-28,8);assert.match($('picker-page').textContent,/^2 \/ /);swipe(28,8);assert.match($('picker-page').textContent,/^1 \/ /);swipe(9,2);assert.match($('picker-page').textContent,/^1 \/ /);
+now+=1000;pointer('pointerdown',stage,200,180);pointer('pointermove',stage,203,210);pointer('pointermove',stage,145,220);pointer('pointerup',stage,145,220);assert.match($('picker-page').textContent,/^1 \/ /,'A gesture beginning vertically remains a scroll when it later bends sideways');
 assert.ok(!swipe(4,100).prevented,'Vertical pan stays native');assert.match($('picker-page').textContent,/^1 \/ /);
 // Starting in the free band stays paging even after the pointer crosses a card.
 now+=1000;pointer('pointerdown',stage,width-20,height/2);pointer('pointermove',$('ring-options').children[1],width-140,height/2);pointer('pointerup',$('ring-options').children[1],width-140,height/2);assert.match($('picker-page').textContent,/^2 \/ /);assert.ok(!stage.classList.contains('ring-grabbing'));
@@ -114,4 +133,4 @@ assert.equal(center.querySelector('.compatibility-reason'),null,'Conflict text d
 assert.ok(!conflictPanel.closest('.ring-stage'),'Notice is outside the swipe band');
 const conflictPage=$('picker-page').textContent;swipe(-100,0,conflictPanel);assert.equal($('picker-page').textContent,conflictPage,'Reading conflict text does not page or rotate');
 picker.open(questions.find(q=>q.key==='medium'));flush();assert.equal(conflictPanel.hidden,true,'Opening an unrelated valid choice clears the old reason');
-console.log(`PASS picker: clear horizontal band at 320/390/620/1024, 1–6 cards and long labels; first open/resize/cancel; ${checkedCategories} categories and ${checkedPages} pages in both collections; current category; distinct adjacent patterns; left-next/right-previous; native vertical pan; taps and intentional orbit preserved.`);
+console.log(`PASS picker: clear horizontal band at 320/390/620/1024, 1–6 cards and long labels; first open/resize/cancel; ${checkedCategories} categories and ${checkedPages} pages in both collections; current category; distinct adjacent patterns; left-next/right-previous; recommended/favorite first pages and selected preset restoration; short thumb paging; native vertical pan including bent gestures; taps and intentional orbit preserved.`);

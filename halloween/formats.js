@@ -1,5 +1,5 @@
-import {editorialReferencesFor} from './editorial-reference-sources.js?v=28.4.1';
-import {formatTextPolicy} from './format-recipes.js?v=28.4.1';
+import {editorialReferencesFor} from './editorial-reference-sources.js?v=28.4.2';
+import {formatTextPolicy,limitedNewspaperLayout} from './format-recipes.js?v=28.4.2';
 // The selected title defines the layout. Medium defines image rendering independently.
 const rows=[
  ['週刊誌の表紙','cover','日本の週刊誌表紙。上端の独自題字、中央主図版、左右に縦組みの太い特集見出し、下部に横見出しと小さな補足。高い情報密度でも顔と重要な形を避ける。本文の長い段組みは内ページへ分離する。','独自題字／縦見出し／横見出し／中央主図版／補助特集の明確な階層'],
@@ -58,6 +58,7 @@ export function formatContract(values){
  const references=f.references||[],main=noPerson?'主題の景物・建築・物体':'主役の顔・頭・手・膝・足先と主題の道具';
  return [
   '配置・画像領域・文字の読み順は、上記の選択形式「'+values.design+'」の個別制作仕様に従う。別の文字設定を選んでもデザイン自体を別形式へ置換しない。',
+  ...(f.kind==='newspaper'&&limitedNewspaperLayout(values)?[limitedNewspaperLayout(values).priority]:[]),
   ...(references.length?[
    '開発時に形式の構造を確認した公開資料：'+references.map(r=>r.publisher+'「'+r.title+'」 / '+r.location+' / '+r.url+(r.documentUrl?' / 公開抜粋 '+r.documentUrl:'')).join('； '),
    '上記は個別制作仕様を整理するための出典。実物の誌面画像を生成モデルへ添付したものではない。資料の人物・性別・衣装・画風・配色・誌名・新聞名・記事は今回の描画対象にせず、情報の配置条件は今回の文字選択に合わせた個別仕様だけを使う。'

@@ -1,7 +1,7 @@
-import {noPersonSelection,landscapeSelection} from './collection.js?v=28.4.1';
-import {applyPose} from './poses.js?v=28.4.1';
-import {resolveArtDirection} from './art-direction.js?v=28.4.1';
-import {automaticView,angleConstraint,moodConstraint,poseConstraint} from './view-constraints.js?v=28.4.1';
+import {noPersonSelection,landscapeSelection} from './collection.js?v=28.4.2';
+import {applyPose} from './poses.js?v=28.4.2';
+import {resolveArtDirection} from './art-direction.js?v=28.4.2';
+import {automaticView,angleConstraint,moodConstraint,poseConstraint} from './view-constraints.js?v=28.4.2';
 export const shotPlans=[
  {family:'front-close',face:'正面0度。顔をまっすぐ起こし首の傾き0度',expression:'歯を見せた大きな笑顔、頬が上がり目尻が縮む',distance:'顔中心の真正面クローズアップ',pose:'両手で大きく帽子を掲げる。肩は水平',layout:'顔を画面中央上部に置き、下部に大胆な横組み文字',camera:'目線と同じ高さ、正面に水平なカメラ'},
  {family:'left-profile',face:'完全な左横顔90度。片方の目だけ見える。鑑賞者を見ない',expression:'眉を寄せ、唇を引き結ぶ明確な怒り',distance:'膝まで入る左側面のミディアムロング',pose:'横向きに歩く。両腕は後方へ流れ、体軸は前傾',layout:'左向きの横顔と移動を右下から左上へ対角線に配置',camera:'真横から水平に、主役と平行な視線'},
@@ -194,4 +194,4 @@ export function buildDirection(used=[],control='毎回大胆に変える',random
  return chooseDirection(bases,used,control,random,collection,values,{automaticExpression});
 }
 export function isAdvertising(design){return /雑誌|誌面|見開き|新聞|映画ポスター|舞台ポスター|フェス|フライヤー|広告|チラシ/.test(design);}
-export {buildEditorial as buildTextPlan} from './editorial.js?v=28.4.1';
+export {buildEditorial as buildTextPlan} from './editorial.js?v=28.4.2';

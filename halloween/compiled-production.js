@@ -1,12 +1,23 @@
-import {styleFidelity} from './style-fidelity.js?v=28.4.1';
-import {modeFoundation} from './japan-direction.js?v=28.4.1';
-import {imageOutputContract} from './output-contract.js?v=28.4.1';
-import {opticalSignature} from './optical-effects.js?v=28.4.1';
-import {colorPolicy} from './color-policy.js?v=28.4.1';
-import {sceneComposition} from './scene-composition.js?v=28.4.1';
-import {cameraContract} from './angles.js?v=28.4.1';
-import {photoReconstruction} from './photo-design.js?v=28.4.1';
-import {characterProportionInstruction} from './source-kind.js?v=28.4.1';
+import {styleFidelity} from './style-fidelity.js?v=28.4.2';
+import {modeFoundation} from './japan-direction.js?v=28.4.2';
+import {imageOutputContract} from './output-contract.js?v=28.4.2';
+import {opticalSignature} from './optical-effects.js?v=28.4.2';
+import {colorPolicy} from './color-policy.js?v=28.4.2';
+import {sceneComposition} from './scene-composition.js?v=28.4.2';
+import {cameraContract} from './angles.js?v=28.4.2';
+import {photoReconstruction} from './photo-design.js?v=28.4.2';
+import {characterProportionInstruction} from './source-kind.js?v=28.4.2';
+import {luminousWorldContract} from './luminous-world.js?v=28.4.2';
+import {limitedNewspaperLayout} from './format-recipes.js?v=28.4.2';
+
+function luminousPriority(plan){
+ const luminous=luminousWorldContract(plan.values,{noPerson:plan.noPerson,variant:plan.variant});
+ if(!luminous)return [];
+ const nonHumanSource=['scenery','mark-object'].includes(plan.values.sourceKind);
+ const subject=nonHumanSource?'非人物入力の固有形・色・構造を手がかりに独自の主役を設計し、存在しない顔や身体を本人として復元しない':'主参照の本人らしい特徴'+(luminous.real?'を自然な人体へ翻訳する':'と基本頭身を保つ');
+ return ['【'+plan.values.medium+'：人物と背景を一つの光の世界へ】',
+  (plan.noPerson?'主景・物体・支持面・可視背景':'顔・開いて見える瞳・髪・耳・首・見えている腕・手指・脚・足・衣装・可視背景')+'の全域を、見本と同じ'+(luminous.real?'自然な実物立体と精密な写真の材質、':'精密な2D描線、')+'広い深暗部、透明な重ね色、小面積の強い幻想光で最初から描く。普通の肌や布を残して背景だけ光らせない。'+(plan.noPerson?'人物や人型を追加しない。':subject+'。選択衣装の構造と被覆を保ち、その見えている面自体に光と深い影の層を描く。')+'見本から移すのは光・陰影・'+(luminous.real?'写真の材質・':'描線・')+'色層の密度。人物・持ち物・構図・舞台は今回の選択、色は選択配色から決める。誌面や物語の照明条件があっても、この描画方式を弱めない。'];
+}
 
 export const conditionOwners=Object.freeze({
  angle:'カメラの位置・傾き・距離・遠近',
@@ -111,6 +122,8 @@ export function renderDetailedChatInput(plan,{referenceRules=[],mandatoryRules=[
  const compiled=renderInputObject(plan);
  return [
   '【主画像の描画方式：ここから完成作品を描き起こす】',
+  ...luminousPriority(plan),
+  ...(plan.values.design==='新聞の一面'&&limitedNewspaperLayout(plan.values)?[limitedNewspaperLayout(plan.values).priority]:[]),
   compiled.required_before_details.selected_drawing_process,
   ...(compiled.required_before_details.camera_geometry?['【固定カメラ：描画前に確定】',compiled.required_before_details.camera_geometry]:[]),
   compiled.required_before_details.wardrobe_selection,
@@ -183,6 +196,8 @@ export function compileProduction(plan,originalLines){
  return [
   ...imageOutputContract,
   ...roleRules,
+  ...luminousPriority(plan),
+  ...(plan.values.design==='新聞の一面'&&limitedNewspaperLayout(plan.values)?[limitedNewspaperLayout(plan.values).priority]:[]),
   ...(plan.creatorLookup||[]),
   '【通常制作：完成画像を1回で生成】',
   originalLines[0],

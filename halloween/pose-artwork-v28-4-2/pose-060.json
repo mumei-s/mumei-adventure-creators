@@ -1,0 +1,22 @@
+{
+  "pose_id": "pose-060",
+  "label": "障害物を跳び越える",
+  "generation_tool": "image_gen.imagegen",
+  "prompt": "Use case: illustration-story. Asset type: individual pose-selection thumbnail in a Japanese creative tool. Create exactly ONE high-quality original full-body character illustration, not a diagram, showing a clothed adult androgynous person with medium-length brown hair, kind face, cream shirt, loose indigo trousers and white sneakers. Refined gouache/anime illustration with natural rounded anatomy, detailed face and hands, convincing soft painted shadows, fabric folds and volume. Pale ivory studio background, essential support only. Complete body, all hands and all feet within the image, person occupies 70-85% of canvas, clear silhouette instantly readable in a small thumbnail. Square composition. No text, arrows, labels, grids, brands, decorative Halloween props, stick-figure limbs or schematic joint dots. Primary action: jumping over ONE LOW wooden obstacle. Full-body profile view at the highest point of the jump, both sneakers clearly airborne and clear of a simple low wooden block, visible ivory space separating soles and block. Front leg stretched forward over the far side of the obstacle, rear leg bent back at the knee, arms separated in a natural balancing swing. Body weight balanced, joint connections anatomically natural, kind focused face. One small ground shadow below and wooden obstacle only. Do not show any foot resting on the obstacle or standing.",
+  "generated_source": "/workspace/scratch/ad16ee694a48/generated_images/exec-1977ac50-d3aa-43c5-b89a-cd010228dc1d.png",
+  "asset": "pose-060.jpg",
+  "qa": "一つの低い障害物に対し両足の離地・前脚伸展・後脚屈曲・全身を確認。",
+  "id": "pose-060",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "0f29a812957b6cef3b12a346ec6ecd1f047c7038c77459383dc0b5977840ea5e",
+  "encoding": "RGB JPEG quality 85; generated resolution retained without cropping or retouching",
+  "visualQA": {
+    "status": "accepted",
+    "reviewer": "Codex visual inspection of generated image",
+    "observations": "一つの低い障害物を前脚と畳んだ後脚で跳び越え、両足が障害物と床から離れている。"
+  }
+}

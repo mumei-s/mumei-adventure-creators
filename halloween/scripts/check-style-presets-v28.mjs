@@ -1,24 +1,24 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
-import {stylePresets,stylePresetFor,stylePresetInstructions,stylePresetRoleDescription,loadStylePresets} from '../style-presets.js?v=28.4.1';
-import {drawingReferenceFor,deliveryImageFiles} from '../drawing-references.js?v=28.4.1';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.1';
-import {initialSelections} from '../modes.js?v=28.4.1';
-import {applyCollection} from '../collection.js?v=28.4.1';
-import {productionPlan,repairPrompt,planInstructions} from '../production-plan.js?v=28.4.1';
-import {composePrompt} from '../prompt.js?v=28.4.1';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.1';
-import {renderChatInput} from '../compiled-production.js?v=28.4.1';
-import {composeStagedMaster} from '../production-workflow.js?v=28.4.1';
+import {stylePresets,stylePresetFor,stylePresetInstructions,stylePresetRoleDescription,loadStylePresets} from '../style-presets.js?v=28.4.2';
+import {drawingReferenceFor,deliveryImageFiles} from '../drawing-references.js?v=28.4.2';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.2';
+import {initialSelections} from '../modes.js?v=28.4.2';
+import {applyCollection} from '../collection.js?v=28.4.2';
+import {productionPlan,repairPrompt,planInstructions} from '../production-plan.js?v=28.4.2';
+import {composePrompt} from '../prompt.js?v=28.4.2';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.2';
+import {renderChatInput} from '../compiled-production.js?v=28.4.2';
+import {composeStagedMaster} from '../production-workflow.js?v=28.4.2';
 
 const root=new URL('../',import.meta.url),random=()=>.34,profile={displayName:'PRESET CHECK',activityEnabled:false};
 applyCollection('halloween');
 const media=questions.find(q=>q.key==='medium').groups.flatMap(g=>g.values).filter(value=>value!=='おまかせ');
-assert.equal(media.length,114);
+assert.equal(media.length,115);
 assert.equal(stylePresets.length,media.length);
 assert.deepEqual(new Set(stylePresets.map(ref=>ref.medium)),new Set(media));
-for(const key of ['medium','file','name'])assert.equal(new Set(stylePresets.map(ref=>ref[key])).size,114,key+' must be distinct for each preset');
+for(const key of ['medium','file','name'])assert.equal(new Set(stylePresets.map(ref=>ref[key])).size,115,key+' must be distinct for each preset');
 assert.notEqual(stylePresetFor('宵彩ゴシックアニメ').file,stylePresetFor('ゴシック・ロマン主義').file,'The anime preset must not reuse a photographic sample');
 assert.equal(stylePresetFor('未登録作風'),null);assert.deepEqual(stylePresetInstructions('未登録作風'),[]);
 const hashes=new Set();let fetches=0;
@@ -35,8 +35,8 @@ for(let index=0;index<stylePresets.length;index++){
  if(jewel){assert.equal(preset.role,'drawing');assert.equal(preset.file,jewel.file);assert.equal(preset.name,jewel.name);}
  else{assert.equal(preset.role,'style-preset');assert.equal(drawingReferenceFor(preset.medium),null);assert.doesNotMatch(stylePresetInstructions(preset.medium).join(' '),/画像編集の土台|背景透過の完成基画|宝石光彩の画風原画/);}
 }
-assert.equal(hashes.size,114,'Distinct preset files must not contain duplicate images');
-assert.equal(fetches,114);await loadStylePresets(stylePresets,{fetchImpl});assert.equal(fetches,114,'Repeated preparation must reuse cached images');
+assert.equal(hashes.size,115,'Distinct preset files must not contain duplicate images');
+assert.equal(fetches,115);await loadStylePresets(stylePresets,{fetchImpl});assert.equal(fetches,115,'Repeated preparation must reuse cached images');
 const ordinary=stylePresetFor('発光幻想アニメ');
 await assert.rejects(loadStylePresets([{...ordinary,file:'https://example.test/image.png'}],{fetchImpl}),/指定/);
 await assert.rejects(loadStylePresets([{...ordinary,name:'forged.png'}],{fetchImpl}),/指定/);
@@ -73,4 +73,4 @@ for(const collection of ['halloween','everyday'])for(const preset of stylePreset
  assert.equal(plan.values.medium,preset.medium);assert.equal(plan.values.palette,'モノクローム');
 }
 applyCollection('halloween');
-console.log('PASS 114 assistant style presets: distinct existing images, exact original bytes and MIME, local validated catalog/cache/retry, separate character + preset transfer, '+routesChecked+' prompt/stage/repair routes, no jewel or sample-identity/scene/palette leakage. Generated appearance requires visual review.');
+console.log('PASS 115 assistant style presets: distinct existing images, exact original bytes and MIME, local validated catalog/cache/retry, separate character + preset transfer, '+routesChecked+' prompt/stage/repair routes, no jewel or sample-identity/scene/palette leakage. Generated appearance requires visual review.');

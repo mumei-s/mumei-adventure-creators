@@ -1,12 +1,13 @@
-import {candidateNotice} from './selection-feedback.js?v=28.4.1';
-import {updateArtworkBasis} from './artwork-basis-view.js?v=28.4.1';
-import {FAVORITE_LIMIT,FAVORITE_STORAGE,favoriteKey,normalizeFavorites,toggleFavorite} from './favorites.js?v=28.4.1';
-import {ringWindow,ringPosition,restingRingPosition,swipeStep,pagePatternTone} from './ring-motion.js?v=28.4.1';
-import {candidateAvailability,wrappedPage} from './compatibility.js?v=28.4.1';
-import {appendRecipeEvidence} from './recipe-evidence.js?v=28.4.1';
-import {recipeFor} from './recipes.js?v=28.4.1';
-import {optionRecipe} from './option-recipes.js?v=28.4.1';
-import {lookFor} from './looks.js?v=28.4.1';
+import {candidateNotice} from './selection-feedback.js?v=28.4.2';
+import {updateArtworkBasis} from './artwork-basis-view.js?v=28.4.2';
+import {FAVORITE_LIMIT,FAVORITE_STORAGE,favoriteKey,normalizeFavorites,toggleFavorite} from './favorites.js?v=28.4.2';
+import {ringWindow,ringPosition,restingRingPosition,swipeStep,pagePatternTone} from './ring-motion.js?v=28.4.2';
+import {candidateAvailability,wrappedPage} from './compatibility.js?v=28.4.2';
+import {appendRecipeEvidence} from './recipe-evidence.js?v=28.4.2';
+import {recipeFor} from './recipes.js?v=28.4.2';
+import {optionRecipe} from './option-recipes.js?v=28.4.2';
+import {lookFor} from './looks.js?v=28.4.2';
+import {pickerRecords} from './picker-priority.js?v=28.4.2';
 export function pageSize(width,height=window.innerHeight){return width<620?18:width<1100?24:32;}
 export function pageSlice(items,page,limit){const pages=Math.max(1,Math.ceil(items.length/limit));const safe=Math.min(Math.max(page,0),pages-1);return {page:safe,pages,items:items.slice(safe*limit,(safe+1)*limit)};}
 export function createPicker({$,el,sampleNode,readSelection,choose,onRandom,onCustom,tell,artworkBasis=()=>null}){
@@ -17,7 +18,7 @@ export function createPicker({$,el,sampleNode,readSelection,choose,onRandom,onCu
  let favorites={};try{favorites=normalizeFavorites(JSON.parse(localStorage.getItem(FAVORITE_STORAGE)||'{}'));}catch{}
  const selected=()=>readSelection()[question.key];
  function locateSelection(){const matches=records(),index=matches.findIndex(r=>r.value===selected());page=Math.floor(Math.max(0,index)/(view==='ring'?6:pageSize(window.innerWidth)));ringOffset=view==='ring'?Math.max(0,index)%6:0;focused=index>=0?matches[index]:null;}
- function records(){const group=$('picker-category').value;return question.groups.filter(g=>group==='すべて'||g.label===group).flatMap(g=>g.values.map(value=>({value,group:g.label})));}
+ function records(){return pickerRecords(question,{group:$('picker-category').value,collection:document.body.dataset.collection||'halloween',favorites:favoriteValues()});}
  function favoriteValues(){return favorites[favoriteKey(document.body.dataset.collection||'halloween',question.key)]||[];}
  function favoriteButton(record,short=false){const b=el('button','favorite-toggle',favoriteValues().includes(record.value)?'★'+(short?'':' 保存済み'):'☆'+(short?'':' お気に入り'));b.type='button';b.setAttribute('aria-pressed',String(favoriteValues().includes(record.value)));b.setAttribute('aria-label',record.value+(favoriteValues().includes(record.value)?'をお気に入りから外す':'をお気に入りに追加'));b.addEventListener('click',()=>changeFavorite(record));return b;}
  function changeFavorite(record){const key=favoriteKey(document.body.dataset.collection||'halloween',question.key),result=toggleFavorite(favoriteValues(),record.value);if(!result.changed){tell('お気に入りはこの項目で5件までです。一つ外してから追加できます。');return;}favorites[key]=result.values;try{localStorage.setItem(FAVORITE_STORAGE,JSON.stringify(favorites));}catch{tell('この端末にお気に入りを保存できませんでした。');}render();if($('inspector').open)syncInspectorFavorite();}
@@ -40,12 +41,12 @@ export function createPicker({$,el,sampleNode,readSelection,choose,onRandom,onCu
  function movePage(delta){if(comparing||!question||!delta)return;const pages=Math.ceil(records().length/(view==='ring'?6:pageSize(innerWidth))),next=wrappedPage(page,delta,pages);if(next===page)return;cancelGesture();page=next;ringOffset=0;focused=null;render();const canvas=$('picker').querySelector('.picker-canvas');clearTimeout(pageEffectTimer);canvas.classList.remove('page-changing');canvas.style.setProperty('--page-enter-x',delta>0?'18px':'-18px');void canvas.offsetWidth;canvas.classList.add('page-changing');pageEffectTimer=setTimeout(()=>canvas.classList.remove('page-changing'),360);}
  function angle(e){const b=stage.getBoundingClientRect();return Math.atan2((e.clientY-b.top-b.height/2)/(b.height*.35),(e.clientX-b.left-b.width/2)/(b.width*.38))*180/Math.PI;}
  function cancelGesture(){const state=swipe;if(state&&surface.hasPointerCapture?.(state.id))surface.releasePointerCapture(state.id);swipe=null;stage.classList.remove('ring-grabbing');if(state?.orbit){ringOffset=state.baseOffset;positionRing();const record=ringWindow(currentRingItems,ringOffset).items[0];if(record)focusRecord(record);}}
- surface.addEventListener('pointerdown',e=>{if(e.target.closest('input,textarea,select,#favorites-options,.compare-tray,.artwork-basis-panel,.candidate-notice')||!e.isPrimary||comparing)return;cancelGesture();swipe={id:e.pointerId,x:e.clientX,y:e.clientY,angle:angle(e),rotation:0,baseOffset:ringOffset,focusStep:0,orbit:false,card:view==='ring'&&!!e.target.closest('.ring-pop')};});
+ surface.addEventListener('pointerdown',e=>{if(e.target.closest('input,textarea,select,#favorites-options,.compare-tray,.artwork-basis-panel,.candidate-notice')||!e.isPrimary||e.button>0||comparing)return;cancelGesture();swipe={id:e.pointerId,x:e.clientX,y:e.clientY,angle:angle(e),rotation:0,baseOffset:ringOffset,focusStep:0,orbit:false,paging:false,vertical:false,card:view==='ring'&&!!e.target.closest('.ring-pop')};});
  surface.addEventListener('dragstart',e=>e.preventDefault());
  surface.addEventListener('contextmenu',e=>{if(e.target.closest('#ring-stage'))e.preventDefault();});
- surface.addEventListener('touchmove',e=>{if(swipe?.orbit)e.preventDefault();},{passive:false});
- surface.addEventListener('pointermove',e=>{if(!swipe||e.pointerId!==swipe.id)return;const dx=e.clientX-swipe.x,dy=e.clientY-swipe.y;if(swipe.card&&!swipe.orbit&&Math.hypot(dx,dy)>5){swipe.orbit=true;stage.classList.add('ring-grabbing');surface.setPointerCapture?.(e.pointerId);}if(swipe.orbit){e.preventDefault();const a=angle(e),d=((a-swipe.angle+540)%360)-180;swipe.rotation+=d;swipe.angle=a;positionRing(swipe.rotation,true);const step=Math.round(swipe.rotation/(360/Math.max(1,currentRingItems.length)));if(step!==swipe.focusStep){swipe.focusStep=step;const record=ringWindow(currentRingItems,swipe.baseOffset+step).items[0];if(record)focusRecord(record);}return;}if(!swipe.card&&Math.abs(dx)>12&&Math.abs(dx)>Math.abs(dy)*1.5){e.preventDefault();surface.setPointerCapture?.(e.pointerId);}});
- surface.addEventListener('pointerup',e=>{if(!swipe||e.pointerId!==swipe.id)return;const state=swipe,dx=e.clientX-state.x,dy=e.clientY-state.y;cancelGesture();if(state.orbit){suppressClickUntil=performance.now()+400;ringOffset=ringWindow(currentRingItems,state.baseOffset+Math.round(state.rotation/(360/Math.max(1,currentRingItems.length)))).index;render();}else if(!state.card&&swipeStep(dx,dy)){suppressClickUntil=performance.now()+400;movePage(swipeStep(dx,dy));}});
+ surface.addEventListener('touchmove',e=>{if(swipe?.orbit||swipe?.paging)e.preventDefault();},{passive:false});
+ surface.addEventListener('pointermove',e=>{if(!swipe||e.pointerId!==swipe.id)return;const dx=e.clientX-swipe.x,dy=e.clientY-swipe.y;if(swipe.card&&!swipe.orbit&&Math.hypot(dx,dy)>5){swipe.orbit=true;stage.classList.add('ring-grabbing');surface.setPointerCapture?.(e.pointerId);}if(swipe.orbit){e.preventDefault();const a=angle(e),d=((a-swipe.angle+540)%360)-180;swipe.rotation+=d;swipe.angle=a;positionRing(swipe.rotation,true);const step=Math.round(swipe.rotation/(360/Math.max(1,currentRingItems.length)));if(step!==swipe.focusStep){swipe.focusStep=step;const record=ringWindow(currentRingItems,swipe.baseOffset+step).items[0];if(record)focusRecord(record);}return;}if(!swipe.paging&&Math.abs(dy)>8&&Math.abs(dy)>Math.abs(dx)*1.15)swipe.vertical=true;if(!swipe.vertical&&!swipe.card&&Math.abs(dx)>=8&&Math.abs(dx)>Math.abs(dy)*1.25){swipe.paging=true;e.preventDefault();surface.setPointerCapture?.(e.pointerId);}});
+ surface.addEventListener('pointerup',e=>{if(!swipe||e.pointerId!==swipe.id)return;const state=swipe,dx=e.clientX-state.x,dy=e.clientY-state.y;cancelGesture();if(state.orbit){suppressClickUntil=performance.now()+400;ringOffset=ringWindow(currentRingItems,state.baseOffset+Math.round(state.rotation/(360/Math.max(1,currentRingItems.length)))).index;render();}else if(!state.card&&!state.vertical&&swipeStep(dx,dy)){suppressClickUntil=performance.now()+400;movePage(swipeStep(dx,dy));}});
  surface.addEventListener('pointercancel',cancelGesture);$('picker').addEventListener('close',cancelGesture);window.addEventListener('blur',cancelGesture);surface.addEventListener('click',e=>{if(performance.now()<suppressClickUntil){e.preventDefault();e.stopImmediatePropagation();}},{capture:true});
  $('picker').addEventListener('keydown',e=>{if(e.target.closest('input,textarea,select,.artwork-basis-panel,.candidate-notice')||!['ArrowLeft','ArrowRight'].includes(e.key))return;e.preventDefault();movePage(e.key==='ArrowRight'?1:-1);});
  if(typeof ResizeObserver!=='undefined')new ResizeObserver(()=>{if(surface.open&&view==='ring'&&!comparing&&!swipe?.orbit)positionRing();}).observe(stage);

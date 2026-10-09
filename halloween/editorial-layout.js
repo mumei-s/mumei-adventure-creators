@@ -1,6 +1,7 @@
-import {formatFor} from './formats.js?v=28.4.1';
-import {colorPolicy} from './palette-recipes.js?v=28.4.1';
-import {colorWorlds} from './worlds.js?v=28.4.1';
+import {formatFor} from './formats.js?v=28.4.2';
+import {colorPolicy} from './palette-recipes.js?v=28.4.2';
+import {colorWorlds} from './worlds.js?v=28.4.2';
+import {limitedNewspaperLayout} from './format-recipes.js?v=28.4.2';
 
 const MAX_EDGE=4096;
 const SERIF='"Noto Serif CJK JP", "Yu Mincho", "Hiragino Mincho ProN", Georgia, serif';
@@ -146,6 +147,7 @@ export function renderEditorialLayout(plan,{dataUrl,artworkWidth,artworkHeight,m
  const role=(id,box,test,options)=>add(id,box,pick(test),options);
  const remaining=(id,box,options)=>add(id,box,pick(()=>true),options);
  let imageBox,gutter=null;
+ const limitedNewspaper=kind==='newspaper'?limitedNewspaperLayout(values):null;
 
  if(kind==='spread'){
   imageBox=rect(.07,.12,.34,.75);gutter=rect(.47,0,.06,1);
@@ -204,6 +206,11 @@ export function renderEditorialLayout(plan,{dataUrl,artworkWidth,artworkHeight,m
   }
   role('author',rect(.06,.968,.88,.021),'作者名',{fontSize:width*.014,align:'right'});
   remaining('additional-copy',rect(.035,.175,.93,.021),{fontSize:width*.015});
+ }else if(limitedNewspaper){
+  const box=limitedNewspaper.imageBox,header=limitedNewspaper.headerBox;
+  imageBox=rect(box.x,box.y,box.width,box.height);
+  add('newspaper-limited-header',rect(header.x,header.y,header.width,header.height),pick(()=>true),{fontSize:Math.min(width*.04,height*.05),fontWeight:700,headingScale:1,lineHeight:1.1,gap:.2});
+  rules.push(...limitedNewspaper.rules.map(rule=>({x1:width*rule.x1,y1:height*rule.y1,x2:width*rule.x2,y2:height*rule.y2})));
  }else if(kind==='newspaper'&&plan.copy.roleScoped){
   // Explicit advertising/story roles retain a newspaper grid; they must not
   // fall into the tiny catch-all footer intended for incidental extra copy.

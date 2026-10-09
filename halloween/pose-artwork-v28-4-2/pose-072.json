@@ -1,0 +1,23 @@
+{
+  "number": 72,
+  "title": "跳びながら手を伸ばす",
+  "source": "/workspace/scratch/ad16ee694a48/generated_images/exec-c2bfd898-c343-4d60-aa4b-033435e711f4.png",
+  "output": "pose-072.jpg",
+  "method": "built-in image_gen",
+  "prompt": "Use case: illustration-story. Asset: ONE original square pose preview for an art studio website. Create one finished detailed gouache/anime illustration of ONE clothed young adult with medium tousled brown hair, natural facial features, cream long sleeve shirt with rolled cuffs, loose indigo trousers, pale sneakers. Plain pale ivory studio backdrop with soft warm natural shading. Natural face, fingers, joints, dimensional clothing folds, broad gender neutral styling. Whole body including both feet completely visible, character and necessary prop large about 80%canvas, clear action readable as small UI thumbnail. Single distinct image, NOT stick figure, NOT schematic, NOT flat icon, NOT contact sheet. No text, labels, diagram arrows, logos, grid, border, fancy costumes, brands or watermark. Action: Jumping while reaching ONE arm diagonally upward. Exactly both feet visibly OFF GROUND; one knee bent backward, other knee lifted differently for dynamic air balance. Reaching arm extends continuously shoulder to fingers upward, opposite arm extended sideways behind. A detached small floor shadow BELOW the figure demonstrates air gap. Whole outstretched hand and both airborne feet within canvas. Light clothing/hair move coherently with upward reaching jump. Not standing on tiptoe, not falling, no floating flatlyingpose.",
+  "visualQA": {
+    "status": "accepted",
+    "reviewer": "Codex visual inspection of generated image",
+    "observations": "一本の腕が斜め上へ伸び、もう片腕が横へ開く。異なる曲げ方の両脚は離地し影と離れている。"
+  },
+  "id": "pose-072",
+  "label": "跳びながら手を伸ばす",
+  "asset": "pose-072.jpg",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "f37c5b72471be965926f118ef9a413bb82860b23ddd977441227eeace805dd84",
+  "encoding": "RGB JPEG quality 85; generated resolution retained without cropping or retouching"
+}

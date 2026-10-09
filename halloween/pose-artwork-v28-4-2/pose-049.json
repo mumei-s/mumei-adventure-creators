@@ -1,0 +1,22 @@
+{
+  "id": "pose-049",
+  "prompt": "Use case: illustration-story. Asset type: original detailed pose selection thumbnail, one fully illustrated adult person, square canvas.\nScene: quiet pale ivory studio background with a subtle floor contact shadow.\nSubject: gender-neutral adult with medium-length brown hair, kind face, cream long-sleeved shirt, loose indigo trousers, plain white sneakers.\nPose: FULL BACK VIEW, standing naturally with BOTH HANDS CLASPED TOGETHER BEHIND THE WAIST. Both elbows relaxed and bent behind the back, both hands and joined fingers clearly visible below the waist. Body from back, head slightly turned enough to show a hint of gentle profile. No front view.\nStyle: high quality softly shaded gouache and anime illustration, actual person with volumetric torso and limbs, detailed clothes folds, natural proportions, carefully drawn hands and face, subtle fine outline and painterly texture. Not a diagram.\nComposition: single person fully framed from hair to both soles, centered occupying 75-85% of canvas height, action readable at thumbnail size.\nConstraints: no labels, no arrows, no extra people, no symbols, no brand, no watermark, no Halloween decoration, no stick figure, no mannequin, no line skeleton, no cropped hands or feet.",
+  "source_generated_file": "/workspace/scratch/ad16ee694a48/generated_images/exec-9f7f383e-b558-46fa-9b32-4d1b0239e41b.png",
+  "generator": "built-in image_gen",
+  "qa": "Accepted; full body, clothed volumetric person, specified pose visible; no text, arrows, or diagram.",
+  "destination": "pose-049.jpg",
+  "processing": "Original resolution preserved; RGB JPEG encoding quality 85 only.",
+  "label": "両手を背中で組む",
+  "asset": "pose-049.jpg",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "56d4cf232eb8af5660633df7aa9b72fe83c01cd5d75a21e1f3aa9893b8a176ab",
+  "encoding": "RGB JPEG quality 85; generated resolution retained without cropping or retouching",
+  "visualQA": {
+    "status": "accepted",
+    "reviewer": "Codex visual inspection of generated image",
+    "observations": "後ろ向きの胴体、腰の後ろで組む二つの手、肘から手への自然な接続と両足の支持が読める。"
+  }
+}

@@ -1,16 +1,16 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-import {questions,visibleQuestions,defaults,resolveSelections} from '../catalog.js?v=28.4.1';
-import {sampleFor} from '../examples.js?v=28.4.1';
-import {modeKeys,effectiveSelections} from '../modes.js?v=28.4.1';
-import {composePrompt} from '../prompt.js?v=28.4.1';
-import {selectedRecipes} from '../recipes.js?v=28.4.1';
-import {buildDirection} from '../direction.js?v=28.4.1';
+import {questions,visibleQuestions,defaults,resolveSelections} from '../catalog.js?v=28.4.2';
+import {sampleFor} from '../examples.js?v=28.4.2';
+import {modeKeys,effectiveSelections} from '../modes.js?v=28.4.2';
+import {composePrompt} from '../prompt.js?v=28.4.2';
+import {selectedRecipes} from '../recipes.js?v=28.4.2';
+import {buildDirection} from '../direction.js?v=28.4.2';
 const keys=questions.map(q=>q.key),values=resolveSelections(Object.fromEntries(questions.map((q,i)=>[q.key,defaults[i]])),()=>0);
 assert.equal(visibleQuestions.length,10);assert.equal(modeKeys.detail.length,10);assert.equal(modeKeys.simple.length,5);assert.equal(modeKeys.auto.length,1);
 let count=0,images=new Set();for(const q of questions)for(const v of q.groups.flatMap(g=>g.values)){count++;const s=sampleFor(q.key,v);assert.notEqual(s.kind,'custom',q.key+':'+v);if(s.kind==='image'){assert.ok(fs.existsSync(new URL(s.src,new URL('../examples.js',import.meta.url))));images.add(s.src);}}
-assert.equal(count,578);assert.equal(images.size,513);
+assert.equal(count,579);assert.equal(images.size,514);
 const explicit={...values,medium:'水墨画',design:'ファッション雑誌の表紙',mood:'完全な左横顔90度',palette:'墨一色'};
 assert.equal(effectiveSelections('simple',explicit).mood,'毎回大胆に変える');assert.equal(effectiveSelections('simple',explicit).medium,'水墨画');
 const cells=selectedRecipes(explicit).map((r,i)=>({...r,cell:i+1})),variant=buildDirection([],explicit.mood),prompt=composePrompt({creator:'alice',profile:{displayName:'Alice',biography:'写真と創作',topics:['写真','創作']},values:explicit,variant,references:[{name:'reference-01-face.png',role:'identity'}],edition:'CHECK',styleGuide:{name:'selected-style-guide.jpg',cells}});

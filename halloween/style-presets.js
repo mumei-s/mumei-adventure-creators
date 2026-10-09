@@ -1,4 +1,4 @@
-import {drawingReferenceFor,drawingReferenceInstructions,loadDrawingReferences} from './drawing-references.js?v=28.4.1';
+import {drawingReferenceFor,drawingReferenceInstructions,loadDrawingReferences} from './drawing-references.js?v=28.4.2';
 
 // Assistant-provided, repository-owned style samples. Character uploads remain separate.
 // File mappings are explicit: no arbitrary URL or filename can become a preset.
@@ -105,18 +105,19 @@ const presetEntries=[
  {"medium":"アウトサイダーアート","file":"japan-previews-v21/medium-07-04.jpg","name":"style-preset-100.jpg","role":"style-preset","label":"アウトサイダーアートのプリセット見本","category":"美術の方向"},
  {"medium":"ミニマリズム","file":"japan-previews-v21/medium-07-05.jpg","name":"style-preset-101.jpg","role":"style-preset","label":"ミニマリズムのプリセット見本","category":"美術の方向"},
  {"medium":"サイケデリックアート","file":"japan-previews-v21/medium-07-06.jpg","name":"style-preset-102.jpg","role":"style-preset","label":"サイケデリックアートのプリセット見本","category":"美術の方向"},
- {"medium":"発光幻想アニメ","file":"japan-luminous-v18.png","name":"style-preset-103.png","role":"style-preset","label":"発光幻想アニメのプリセット見本","category":"光と透明感のアニメ"},
- {"medium":"透明水彩アニメ","file":"japan-previews-v21/medium-07-07.jpg","name":"style-preset-104.jpg","role":"style-preset","label":"透明水彩アニメのプリセット見本","category":"光と透明感のアニメ"},
- {"medium":"絵画的シネマアニメ","file":"japan-previews-v21/medium-07-08.jpg","name":"style-preset-105.jpg","role":"style-preset","label":"絵画的シネマアニメのプリセット見本","category":"光と透明感のアニメ"},
- {"medium":"宝石ホログラムアニメ","file":"japan-previews-v21/medium-07-09.jpg","name":"style-preset-106.jpg","role":"style-preset","label":"宝石ホログラムアニメのプリセット見本","category":"光と透明感のアニメ"},
- {"medium":"クリスタル透光アニメ","file":"japan-previews-v21/medium-07-10.jpg","name":"style-preset-107.jpg","role":"style-preset","label":"クリスタル透光アニメのプリセット見本","category":"光と透明感のアニメ"},
- {"medium":"クリスタルホログラム造形アニメ","file":"japan-crystal-object-v18.png","name":"style-preset-108.png","role":"style-preset","label":"クリスタルホログラム造形アニメのプリセット見本","category":"光と透明感のアニメ"},
+ {"medium":"発光幻想アニメ","file":"assets/style-luminous-original-v28-4-2.png","name":"style-preset-103.png","role":"style-preset","label":"発光幻想アニメのプリセット見本","category":"光と透明感"},
+ {"medium":"透明水彩アニメ","file":"japan-previews-v21/medium-07-07.jpg","name":"style-preset-104.jpg","role":"style-preset","label":"透明水彩アニメのプリセット見本","category":"光と透明感"},
+ {"medium":"絵画的シネマアニメ","file":"japan-previews-v21/medium-07-08.jpg","name":"style-preset-105.jpg","role":"style-preset","label":"絵画的シネマアニメのプリセット見本","category":"光と透明感"},
+ {"medium":"宝石ホログラムアニメ","file":"japan-previews-v21/medium-07-09.jpg","name":"style-preset-106.jpg","role":"style-preset","label":"宝石ホログラムアニメのプリセット見本","category":"光と透明感"},
+ {"medium":"クリスタル透光アニメ","file":"japan-previews-v21/medium-07-10.jpg","name":"style-preset-107.jpg","role":"style-preset","label":"クリスタル透光アニメのプリセット見本","category":"光と透明感"},
+ {"medium":"クリスタルホログラム造形アニメ","file":"japan-crystal-object-v18.png","name":"style-preset-108.png","role":"style-preset","label":"クリスタルホログラム造形アニメのプリセット見本","category":"光と透明感"},
  {"medium":"宝石光彩アニメ","file":"assets/drawing-jewel-anime-v28.png","name":"style-preset-109.png","role":"style-preset","label":"宝石光彩アニメのプリセット見本","category":"宝石光彩"},
  {"medium":"宝石光彩リアル","file":"assets/drawing-jewel-real-v28.png","name":"style-preset-110.png","role":"style-preset","label":"宝石光彩リアルのプリセット見本","category":"宝石光彩"},
  {"medium":"花霞の透明アニメ","file":"world-034.jpg","name":"style-preset-111.jpg","role":"style-preset","label":"花霞の透明アニメのプリセット見本","category":"花霞・パステル・夢彩・宵彩"},
  {"medium":"ミルキーパステルアニメ","file":"world-009.jpg","name":"style-preset-112.jpg","role":"style-preset","label":"ミルキーパステルアニメのプリセット見本","category":"花霞・パステル・夢彩・宵彩"},
  {"medium":"夢彩ファンタジーアニメ","file":"world-035.jpg","name":"style-preset-113.jpg","role":"style-preset","label":"夢彩ファンタジーアニメのプリセット見本","category":"花霞・パステル・夢彩・宵彩"},
- {"medium":"宵彩ゴシックアニメ","file":"world-033.jpg","name":"style-preset-114.jpg","role":"style-preset","label":"宵彩ゴシックアニメのプリセット見本","category":"花霞・パステル・夢彩・宵彩"}
+ {"medium":"宵彩ゴシックアニメ","file":"world-033.jpg","name":"style-preset-114.jpg","role":"style-preset","label":"宵彩ゴシックアニメのプリセット見本","category":"花霞・パステル・夢彩・宵彩"},
+ {"medium":"発光幻想リアル","file":"assets/style-luminous-real-original-v28-4-2.png","name":"style-preset-115.png","role":"style-preset","label":"発光幻想リアル（実写）のプリセット見本","category":"光と透明感"}
 ];
 export const stylePresets=Object.freeze(presetEntries.map(entry=>{
  const drawing=drawingReferenceFor(entry.medium);
@@ -128,7 +129,8 @@ export function stylePresetFor(medium){const preset=presetsByMedium.get(medium);
 
 function matchingPreset(reference){
  const preset=presetsByMedium.get(reference?.medium);
- return preset&&reference.file===preset.file&&reference.name===preset.name&&reference.role===preset.role?preset:null;
+ const legacyLuminous=preset?.medium==='発光幻想アニメ'&&reference.file==='japan-luminous-v18.png';
+ return preset&&(reference.file===preset.file||legacyLuminous)&&reference.name===preset.name&&reference.role===preset.role?preset:null;
 }
 export function stylePresetRoleDescription(reference,values,{noPerson=false}={}){
  const preset=matchingPreset(reference);
@@ -143,7 +145,7 @@ export function stylePresetInstructions(medium,{noPerson=false,values={}}={}){
   '【ツールが用意した画風プリセット：主参照とは別】',
   preset.name+' は「'+preset.medium+'」の見本画像。実際に添付された画像を確認し、描線・塗り・陰影・画材または写真の質感を今回の制作仕様に沿って読み取る。名前だけで画像を見たと扱わない。',
   stylePresetRoleDescription(preset,{...values,medium},{noPerson}),
-  '主役・衣装・表情・ポーズ・小道具・カメラ・背景・色は今回の選択で新しく構成する。見本の配色に固定せず、選択した色へ描き方を翻訳する。見本にある発光・宝石・魔法も、今回選択した作風と場面に必要な範囲だけ使う。',
+  '主役・衣装・表情・ポーズ・小道具・カメラ・背景・色は今回の選択で新しく構成する。見本の配色に固定せず、選択した色へ描き方を翻訳する。'+(['発光幻想アニメ','発光幻想リアル'].includes(medium)?'見本の広い深暗部と鋭い最明部の差、透明な色層と反射の密度を、顔・髪・身体・衣装と背景の見えている面へ移す。これは全域の描画方式であり、場面に光る道具がある場合だけ使う効果ではない。人物なしでは景物の全域へ適用する。見本の人物・天文図・建物・持ち物は採用せず、今回の舞台と主役を同じ光の層で描き直す。':'見本にある発光・宝石・魔法も、今回選択した作風と場面に必要な範囲だけ使う。'),
   'プロンプトのコピーだけでは見本画像は届かない。'+preset.name+' が添付されていない場合は見本未確認と短く伝え、下記の作画仕様で生成する。見本がないことだけを理由に制作を止めない。'
  ];
 }

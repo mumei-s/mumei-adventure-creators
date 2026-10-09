@@ -1,6 +1,6 @@
 // Reader-facing copy has its own sources. Camera, paint and delivery settings
 // remain drawing instructions and are never feature-copy source material.
-import {halloweenStoryContext,halloweenCopyRules} from './halloween-mode-contract.js?v=28.4.1';
+import {halloweenStoryContext,halloweenCopyRules} from './halloween-mode-contract.js?v=28.4.2';
 export const copyContentRules=Object.freeze([
  '自動で編集する印字原稿は、作品世界内の出来事・対象・目的・場所を紹介する読者向けの言葉、または確認済みの作者の公開活動を紹介する言葉にする。画像の作り方やこの依頼の仕様を自己解説する文章にはしない。',
  'アングル・真上や真下の角度・顔の向き・ポーズ指定・配色名・深暗部や反射の描画条件・画材工程・解像度・dpi・px・画像生成・AI・プロンプト・検査条件を、商品紹介、特徴、見どころ、記事本文へ言い換えて印字しない。仕様資料は原稿のネタではない。',

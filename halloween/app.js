@@ -1,38 +1,38 @@
-import {artworkBasis} from './artwork-basis.js?v=28.4.1';
-import {creatorHandoff,creatorDisplayLabel,creatorEditableName} from './creator-handoff.js?v=28.4.1';
-import {normalizeImageFile} from './image-files.js?v=28.4.1';
-import {deliveryImageFiles} from './drawing-references.js?v=28.4.1';
-import {stylePresetFor,loadStylePresets} from './style-presets.js?v=28.4.1';
-import {sourceKinds,sourceSubjectFor} from './source-kind.js?v=28.4.1';
-import {inspectImageResource,createImagePreview,decodeRasterForDraw,releaseCanvas} from './image-resources.js?v=28.4.1';
-import {installNightStudio} from './night-studio.js?v=28.4.1';
-import {candidateAvailability,selectionConflicts,selectionWarnings} from './compatibility.js?v=28.4.1';
-import {updateSelectionFeedback} from './selection-feedback.js?v=28.4.1';
-import {appendRecipeEvidence} from './recipe-evidence.js?v=28.4.1';
-import {productionPlan,repairPrompt} from './production-plan.js?v=28.4.1';
-import {stagePrompts} from './production-workflow.js?v=28.4.1';
-import {createLayoutPanel} from './layout-export.js?v=28.4.1';
-import {applyPose} from './poses.js?v=28.4.1';
-import {applyCollection,dailyInspiration} from './collection.js?v=28.4.1';
-import {setupEffects} from './effects.js?v=28.4.1';
-import {colorWorlds} from './worlds.js?v=28.4.1';
-import {compactCreatorProfile} from './creator.js?v=28.4.1';
-import {createCropEditor} from './crop-editor.js?v=28.4.1';
-import {createPicker} from './picker.js?v=28.4.1';
-import {modeKeys,modeCopy,questionsForMode,initialSelections,effectiveSelections,proposalBatch} from './modes.js?v=28.4.1';
-import {buildReferenceBoard} from './guide-board.js?v=28.4.1';
-import {questions,visibleQuestions,defaults,AUTO,normalizeCreator,resolveSelections} from './catalog.js?v=28.4.1';
-import {composePrompt,needsReference} from './prompt.js?v=28.4.1';
-import {buildDirection} from './direction.js?v=28.4.1';
-import {sampleFor,typePreview} from './examples.js?v=28.4.1';
-import {makeZip} from './zip.js?v=28.4.1';
-import {imageDeliveryRepairPrompt} from './output-contract.js?v=28.4.1';
-import {editorialReferencesFor} from './editorial-reference-sources.js?v=28.4.1';
-import {HISTORY_STORAGE_FORMAT,restoreHistoryRecord,restoreHistoryCore,mergeUsedRecords,clearRestoredHistoryCache} from './history-storage.js?v=28.4.1';
-import {createHistoryPersistence,mergeHistoryStates} from './history-persistence.js?v=28.4.1';
-import {createCreatorDraft} from './creator-draft.js?v=28.4.1';
-import {randomItemSelection} from './random-selections.js?v=28.4.1';
-const APP_VERSION='28.4.1';
+import {artworkBasis} from './artwork-basis.js?v=28.4.2';
+import {creatorHandoff,creatorDisplayLabel,creatorEditableName} from './creator-handoff.js?v=28.4.2';
+import {normalizeImageFile} from './image-files.js?v=28.4.2';
+import {deliveryImageFiles} from './drawing-references.js?v=28.4.2';
+import {stylePresetFor,loadStylePresets} from './style-presets.js?v=28.4.2';
+import {sourceKinds,sourceSubjectFor} from './source-kind.js?v=28.4.2';
+import {inspectImageResource,createImagePreview,decodeRasterForDraw,releaseCanvas} from './image-resources.js?v=28.4.2';
+import {installNightStudio} from './night-studio.js?v=28.4.2';
+import {candidateAvailability,selectionConflicts,selectionWarnings} from './compatibility.js?v=28.4.2';
+import {updateSelectionFeedback} from './selection-feedback.js?v=28.4.2';
+import {appendRecipeEvidence} from './recipe-evidence.js?v=28.4.2';
+import {productionPlan,repairPrompt} from './production-plan.js?v=28.4.2';
+import {stagePrompts} from './production-workflow.js?v=28.4.2';
+import {createLayoutPanel} from './layout-export.js?v=28.4.2';
+import {applyPose} from './poses.js?v=28.4.2';
+import {applyCollection,dailyInspiration} from './collection.js?v=28.4.2';
+import {setupEffects} from './effects.js?v=28.4.2';
+import {colorWorlds} from './worlds.js?v=28.4.2';
+import {compactCreatorProfile} from './creator.js?v=28.4.2';
+import {createCropEditor} from './crop-editor.js?v=28.4.2';
+import {createPicker} from './picker.js?v=28.4.2';
+import {modeKeys,modeCopy,questionsForMode,initialSelections,effectiveSelections,proposalBatch} from './modes.js?v=28.4.2';
+import {buildReferenceBoard} from './guide-board.js?v=28.4.2';
+import {questions,visibleQuestions,defaults,AUTO,normalizeCreator,resolveSelections} from './catalog.js?v=28.4.2';
+import {composePrompt,needsReference} from './prompt.js?v=28.4.2';
+import {buildDirection} from './direction.js?v=28.4.2';
+import {sampleFor,typePreview} from './examples.js?v=28.4.2';
+import {makeZip} from './zip.js?v=28.4.2';
+import {imageDeliveryRepairPrompt} from './output-contract.js?v=28.4.2';
+import {editorialReferencesFor} from './editorial-reference-sources.js?v=28.4.2';
+import {HISTORY_STORAGE_FORMAT,restoreHistoryRecord,restoreHistoryCore,mergeUsedRecords,clearRestoredHistoryCache} from './history-storage.js?v=28.4.2';
+import {createHistoryPersistence,mergeHistoryStates} from './history-persistence.js?v=28.4.2';
+import {createCreatorDraft} from './creator-draft.js?v=28.4.2';
+import {randomItemSelection} from './random-selections.js?v=28.4.2';
+const APP_VERSION='28.4.2';
 const $=id=>document.getElementById(id),STORAGE='mumeis-halloween-v2';
 let saved={history:[],used:[],count:0},view='auto',migrateHistory=false,historyWriteRevision=0,resultRequest=0,historyReady=Promise.resolve();
 const historyPersistence=createHistoryPersistence({key:STORAGE});
@@ -140,27 +140,32 @@ function randomizeItem(q){
  if(!draw.value){tell(draw.reason);return;}
  selections[q.key]=draw.value;
  if(mode==='auto'&&selectedProposal)selectedProposal={...selectedProposal,[q.key]:draw.value};
- renderChoices(q.key);
+ renderChoices(q.key,{keepViewport:true});
  tell(q.name+'：'+displayValue(q,draw.value)+(draw.warnings?.[0]?.reason?'。'+draw.warnings[0].reason:''));
  return true;
 }
-function renderChoices(picked){
+function renderChoices(picked,{keepViewport=false}={}){
+ const retainViewport=keepViewport&&!$('picker').open,viewport=retainViewport?{left:window.scrollX,top:window.scrollY,focused:document.activeElement}:null;
  const existing=new Map([...$('choices').children].map(row=>[row.dataset.choiceKey,row])),nodes=[],buttons=[];
  questionsForMode(mode).forEach((q,i)=>{
   const stamp=collection+'|'+mode+'|'+i+'|'+q.name+'|'+selections[q.key]+(q.key==='type'?'|'+selections.line:'')+'|'+(q.key==='costume'?refs.find(r=>r.role==='identity')?.url||'':'');
   const old=existing.get(q.key);
   if(old?.dataset.stamp===stamp){const button=old.querySelector('.choice');button.classList.remove('just-picked');buttons.push(button);nodes.push(old);return;}
-  const row=el('div','choice-item');row.dataset.choiceKey=q.key;row.dataset.stamp=stamp;
-  const b=el('button','choice'+(picked===q.key?' just-picked':''));b.type='button';b.dataset.key=q.key;b.setAttribute('aria-haspopup','dialog');b.setAttribute('aria-label',q.name+'：'+displayValue(q,selections[q.key])+'。選択を変更');
+  const row=old||el('div','choice-item');row.dataset.choiceKey=q.key;row.dataset.stamp=stamp;
+  const b=old?.querySelector('.choice')||el('button');b.className='choice'+(picked===q.key?' just-picked':'');b.type='button';b.dataset.key=q.key;b.setAttribute('aria-haspopup','dialog');b.setAttribute('aria-label',q.name+'：'+displayValue(q,selections[q.key])+'。選択を変更');
   const copy=el('span','choice-content');copy.append(el('span','choice-name',String(i+1).padStart(2,'0')+' / '+q.name),el('b','choice-value',displayValue(q,selections[q.key])),el('span','choice-hint',q.hint));
-  b.append(copy,sampleNode(q.key,selections[q.key]),el('span','choice-plus','＋'));b.addEventListener('click',()=>openPicker(q));
-  const random=el('button','choice-random','🎲 ランダム');random.type='button';random.dataset.randomKey=q.key;random.setAttribute('aria-label',q.name+'だけをランダムに変更');random.addEventListener('click',()=>randomizeItem(q));
-  row.append(b,random);buttons.push(b);nodes.push(row);
+  b.replaceChildren(copy,sampleNode(q.key,selections[q.key]),el('span','choice-plus','＋'));
+  if(!old){b.addEventListener('click',()=>openPicker(q));const random=el('button','choice-random','🎲 ランダム');random.type='button';random.dataset.randomKey=q.key;random.addEventListener('click',()=>randomizeItem(q));row.append(b,random);}
+  row.querySelector('.choice-random').setAttribute('aria-label',q.name+'だけをランダムに変更');
+  buttons.push(b);nodes.push(row);
  });
- $('choices').replaceChildren(...nodes);
+ // Retain the pressed control and the browser's scroll anchor during updates.
+ // Rebuilding this grid used to detach the focused random button.
+ const current=[...$('choices').children];if(current.length!==nodes.length||nodes.some((row,i)=>row!==current[i]))$('choices').replaceChildren(...nodes);
  const input=mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:effectiveSelections(mode,selections);
  updateSelectionFeedback({panel:$('selection-notice'),choices:buttons,questions,values:input,el,onEdit:openPicker,issues:[...selectionConflicts(input).map(issue=>({...issue,status:'blocked'})),...selectionWarnings(input).map(issue=>({...issue,status:'warning'}))]});
  renderBoard(mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:selections);syncActivity();
+ if(viewport){viewport.focused?.focus?.({preventScroll:true});window.scrollTo({left:viewport.left,top:viewport.top,behavior:'instant'});}
 }
 const paletteColors={'漆黒 × 琥珀 × 象牙':['#171513','#db7d20','#f4ebd4'],'深紅 × 黒 × 古金':['#811722','#171513','#b79538'],'群青 × 月白 × 銀':['#263774','#f1f5fc','#bbc5d1'],'紫 × 黒 × 酸性グリーン':['#623084','#171513','#d7ed26'],'藍墨 × 朱 × 和紙の白':['#263d51','#c54022','#ebe4d7'],'桃色 × 墨黒 × 真珠':['#ec92b6','#262122','#f1eaed'],'墨一色':['#141414','#707070','#f3f1eb'],'モノクローム':['#191919','#777','#eee'],'セピア':['#533e26','#ab8353','#e7caa2']};
 colorWorlds.forEach(x=>paletteColors[x.value]=x.colors);
@@ -327,7 +332,7 @@ $('reset-profile')?.addEventListener('click',resetCreatorDraft);$('reset-referen
 $('pick-image').addEventListener('click',()=>$('image-input').click());
 $('paste-image').addEventListener('click',async()=>{try{if(!navigator.clipboard?.read)throw new Error('unsupported');const items=await navigator.clipboard.read(),files=[];for(const item of items){const type=item.types.find(t=>['image/png','image/jpeg','image/webp','image/gif'].includes(t));if(type){const blob=await item.getType(type);files.push(new File([blob],'paste-'+Date.now()+'.'+(type==='image/jpeg'?'jpg':type.split('/')[1]),{type}));}}if(!files.length)throw new Error('no image');await addFiles(files);$('paste-target').hidden=true;}catch{$('paste-target').hidden=false;$('paste-target').focus();tell('貼り付け欄を長押しして貼り付けてください。写真を選ぶこともできます。');}});
 document.addEventListener('paste',e=>{const files=Array.from(e.clipboardData?.items||[]).filter(i=>i.kind==='file').map(i=>i.getAsFile()).filter(Boolean);if(files.length&&!$('picker').open&&!$('crop-dialog').open){e.preventDefault();$('paste-target').hidden=true;addFiles(files);}else if(e.target===$('paste-target'))e.preventDefault();});$('drop-zone').addEventListener('dragover',e=>{e.preventDefault();$('drop-zone').classList.add('dragover');});$('drop-zone').addEventListener('dragleave',()=>$('drop-zone').classList.remove('dragover'));$('drop-zone').addEventListener('drop',e=>{e.preventDefault();$('drop-zone').classList.remove('dragover');addFiles(e.dataTransfer.files);});window.addEventListener('dragover',e=>{if(e.dataTransfer?.types.includes('Files'))e.preventDefault();});window.addEventListener('drop',e=>{if(e.dataTransfer?.types.includes('Files'))e.preventDefault();});
-$('shuffle').addEventListener('click',()=>{const size=selections.size,input={...Object.fromEntries(questions.map(q=>[q.key,AUTO])),size,sceneUnified:true};input.costume=sourceSubjectFor(sourceKind,input.costume,{selectedCostume:selections.costume});selections=resolveSelections(input,rng,{recent:[selections]});if(mode==='auto')selectedProposal={...selections};renderChoices();tell('サイズを保ったまま、新しい組み合わせを選びました。');});$('generate').addEventListener('click',async()=>{try{await generate();}catch(e){if($('form-error').hidden)tell(e.message);}});$('copy').addEventListener('click',copyPrompt);$('copy-repair').addEventListener('click',async()=>{if(!currentResult?.production)return;const text=repairPrompt(currentResult);try{await navigator.clipboard.writeText(text);tell('修正指示をコピーしました。完成画像と同じチャットへ送ってください。');}catch{download(new Blob([text],{type:'text/plain;charset=utf-8'}),'finish-instructions.txt');tell('修正指示を保存しました。完成画像と一緒に送ってください。');}});$('share-all').addEventListener('click',shareAll);$('share-text').addEventListener('click',shareText);$('copy-image').addEventListener('click',copyImage);$('chatgpt').addEventListener('click',()=>{window.open('https://chatgpt.com/','_blank','noopener,noreferrer');tell(currentResult?.drawingReferences?.length?'このボタンはChatGPTを開きます。画像は自動で添付されません。「画像＋プロンプトを共有」または制作セットから、画風見本・必要な主参照・指示を添付してください。':currentResult&&!needsReference(currentResult.values)?'コピーした制作指示を送信してください。':'ご自身の参照画像とプロンプトを両方添付してから送信してください。');});$('download-kit').addEventListener('click',downloadKit);$('download-text').addEventListener('click',()=>{if(currentResult)download(new Blob([currentResult.prompt],{type:'text/plain;charset=utf-8'}),'Halloween-'+currentResult.edition+'.txt');});
+$('shuffle').addEventListener('click',()=>{const size=selections.size,input={...Object.fromEntries(questions.map(q=>[q.key,AUTO])),size,sceneUnified:true};input.costume=sourceSubjectFor(sourceKind,input.costume,{selectedCostume:selections.costume});selections=resolveSelections(input,rng,{recent:[selections]});if(mode==='auto')selectedProposal={...selections};renderChoices(undefined,{keepViewport:true});tell('サイズを保ったまま、新しい組み合わせを選びました。');});$('generate').addEventListener('click',async()=>{try{await generate();}catch(e){if($('form-error').hidden)tell(e.message);}});$('copy').addEventListener('click',copyPrompt);$('copy-repair').addEventListener('click',async()=>{if(!currentResult?.production)return;const text=repairPrompt(currentResult);try{await navigator.clipboard.writeText(text);tell('修正指示をコピーしました。完成画像と同じチャットへ送ってください。');}catch{download(new Blob([text],{type:'text/plain;charset=utf-8'}),'finish-instructions.txt');tell('修正指示を保存しました。完成画像と一緒に送ってください。');}});$('share-all').addEventListener('click',shareAll);$('share-text').addEventListener('click',shareText);$('copy-image').addEventListener('click',copyImage);$('chatgpt').addEventListener('click',()=>{window.open('https://chatgpt.com/','_blank','noopener,noreferrer');tell(currentResult?.drawingReferences?.length?'このボタンはChatGPTを開きます。画像は自動で添付されません。「画像＋プロンプトを共有」または制作セットから、画風見本・必要な主参照・指示を添付してください。':currentResult&&!needsReference(currentResult.values)?'コピーした制作指示を送信してください。':'ご自身の参照画像とプロンプトを両方添付してから送信してください。');});$('download-kit').addEventListener('click',downloadKit);$('download-text').addEventListener('click',()=>{if(currentResult)download(new Blob([currentResult.prompt],{type:'text/plain;charset=utf-8'}),'Halloween-'+currentResult.edition+'.txt');});
 $('again').addEventListener('click',async()=>{try{const old=currentResult;if((old.collection||'halloween')!==collection)setCollection(old.collection||'halloween');sourceKind=sourceKinds.some(kind=>kind.value===old.values.sourceKind)?old.values.sourceKind:'unknown';renderSourceKinds();selections={angle:AUTO,...old.values};if(mode==='auto')selectedProposal={...old.values};renderChoices();await generate(old.values);}catch(e){tell(e.message);}});$('help').addEventListener('click',()=>$('help-dialog').showModal());document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>{const target=$(b.dataset.close);if(target instanceof HTMLDialogElement)target.close();else target.hidden=true;}));document.querySelectorAll('.view-switch button').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));document.querySelectorAll('dialog').forEach(d=>d.addEventListener('click',e=>{if(e.target===d){const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();}}));$('clear-history').addEventListener('click',async()=>{await historyReady;if(!saved.history.length)return tell('履歴はありません。');if(window.confirm('この端末の制作履歴を消しますか？演出の重複回避記録は残ります。')){const stored=await persist({clearHistory:true});renderHistory();if(stored){clearRestoredHistoryCache();tell('履歴を消しました。');}}});
 document.querySelectorAll('.mode-switch button').forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));$('propose').addEventListener('click',makeProposals);document.querySelectorAll('[data-text-part]').forEach(b=>b.addEventListener('click',()=>{textPart=b.dataset.textPart;openPicker(questions.find(q=>q.key===textPart));}));$('download-guide').addEventListener('click',()=>{if(!currentResult?.production)return;download(new Blob([[...(currentResult.production.interactions||[]),...currentResult.production.conditions.map(c=>c.name+'：'+c.value+'\n'+(c.sections||[{label:'制作条件',text:c.text}]).map(s=>s.label+'：'+s.text).join('\n'))].join('\n\n')],{type:'text/plain;charset=utf-8'}),'selected-conditions.txt');});
 $('copy-delivery').addEventListener('click',async()=>{if(!currentResult)return;const text=imageDeliveryRepairPrompt(currentResult);try{await navigator.clipboard.writeText(text);tell('再表示の指示をコピーしました。画像が出なかった同じチャットへ送ってください。');}catch{download(new Blob([text],{type:'text/plain;charset=utf-8'}),'show-finished-image.txt');tell('再表示の指示を保存しました。同じチャットへ送ってください。');}});

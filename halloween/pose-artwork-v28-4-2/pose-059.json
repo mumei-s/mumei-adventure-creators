@@ -1,0 +1,22 @@
+{
+  "pose_id": "pose-059",
+  "label": "小走りで駆け寄る",
+  "generation_tool": "image_gen.imagegen",
+  "prompt": "Use case: illustration-story. Asset type: individual pose-selection thumbnail in a Japanese creative tool. Create exactly ONE high-quality original full-body character illustration, not a diagram, showing a clothed adult androgynous person with medium-length brown hair, kind face, cream shirt, loose indigo trousers and white sneakers. Refined gouache/anime illustration with natural rounded anatomy, detailed face and hands, convincing soft painted shadows, fabric folds and volume. Pale ivory studio background, essential support only. Complete body, all hands and all feet within the image, person occupies 70-85% of canvas, clear silhouette instantly readable in a small thumbnail. Square composition. No text, arrows, labels, grids, brands, decorative Halloween props, stick-figure limbs or schematic joint dots. Primary action: gently jogging toward someone. A friendly expression, small natural running stride, torso slight forward lean. Right arm bent forward while LEFT thigh and knee advance; left arm swings back while RIGHT leg trails with heel lifted. The two arms counter-swing opposite the advancing legs. One foot is landing and the trailing foot lifts lightly. Three-quarter front view shows full body and clearly separated arms and legs, relaxed short stride rather than sprinting, no other person or props.",
+  "generated_source": "/workspace/scratch/ad16ee694a48/generated_images/exec-bc382cdd-2d5e-4893-9c56-8f0a2f19a874.png",
+  "asset": "pose-059.jpg",
+  "qa": "短い走行ストライド、前進する左脚と右腕、反対の腕と脚の後方動作、全身を確認。",
+  "id": "pose-059",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "26f3835ac54b60fb173dc80d79674fd37f4b81bae73c2f967a50b1a62e4b9dfa",
+  "encoding": "RGB JPEG quality 85; generated resolution retained without cropping or retouching",
+  "visualQA": {
+    "status": "accepted",
+    "reviewer": "Codex visual inspection of generated image",
+    "observations": "小さめの歩幅と腕・脚の逆振り、片足の接地と遊脚による小走りが読める。"
+  }
+}

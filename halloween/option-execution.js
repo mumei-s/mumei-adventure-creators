@@ -1,9 +1,9 @@
-import {mediumExecution} from './medium-execution.js?v=28.4.1';
-import {artworkBasisContract} from './artwork-basis.js?v=28.4.1';
-import {formatExecution} from './format-execution.js?v=28.4.1';
-import {colorPolicy} from './color-policy.js?v=28.4.1';
-import {photoReconstruction} from './photo-design.js?v=28.4.1';
-import {luminousWorldContract} from './luminous-world.js?v=28.4.1';
+import {mediumExecution} from './medium-execution.js?v=28.4.2';
+import {artworkBasisContract} from './artwork-basis.js?v=28.4.2';
+import {formatExecution} from './format-execution.js?v=28.4.2';
+import {colorPolicy} from './color-policy.js?v=28.4.2';
+import {photoReconstruction} from './photo-design.js?v=28.4.2';
+import {luminousWorldContract} from './luminous-world.js?v=28.4.2';
 
 // The option's own physical recipe is the source of its execution contract.
 // No generic "beautiful / atmospheric" default replaces a missing preset.
@@ -27,7 +27,7 @@ export function executionFor(key,value,recipe,{noPerson=false,values={}}={}){
  const sections=recipe.sections.map(s=>({part:s.label,draw:s.text}));
  const luminous=key==='medium'?luminousWorldContract({...values,medium:value},{noPerson}):null;
  let method=luminous?recipe.executionMethod||luminous.method:key==='medium'?recipe.executionMethod||mediumExecution.get(value)
-  :key==='design'?formatExecution.get(value)
+  :key==='design'?recipe.executionMethod||formatExecution.get(value)
   :recipe.executionMethod||sections.slice(0,counts[key]||2).map(s=>s.draw).join(' ');
  if(recipe.known&&!method)throw new Error('個別の実行指示がありません：'+key+' / '+value);
  if(!method)method=sections.map(s=>s.draw).join(' ');

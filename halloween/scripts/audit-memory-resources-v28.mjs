@@ -3,21 +3,21 @@ import path from 'node:path';
 import assert from 'node:assert/strict';
 import {fileURLToPath} from 'node:url';
 import {performance} from 'node:perf_hooks';
-import {resolveSelections} from '../catalog.js?v=28.4.1';
-import {buildDirection} from '../direction.js?v=28.4.1';
-import {productionPlan} from '../production-plan.js?v=28.4.1';
-import {composePrompt} from '../prompt.js?v=28.4.1';
-import {stagePrompts} from '../production-workflow.js?v=28.4.1';
-import {createHistoryPersistence} from '../history-persistence.js?v=28.4.1';
-import {restoreHistoryRecord,clearRestoredHistoryCache,restoredHistoryCacheInfo} from '../history-storage.js?v=28.4.1';
-import {IMAGE_RESOURCE_LIMITS,fittedRasterSize} from '../image-resources.js?v=28.4.1';
+import {resolveSelections} from '../catalog.js?v=28.4.2';
+import {buildDirection} from '../direction.js?v=28.4.2';
+import {productionPlan} from '../production-plan.js?v=28.4.2';
+import {composePrompt} from '../prompt.js?v=28.4.2';
+import {stagePrompts} from '../production-workflow.js?v=28.4.2';
+import {createHistoryPersistence} from '../history-persistence.js?v=28.4.2';
+import {restoreHistoryRecord,clearRestoredHistoryCache,restoredHistoryCacheInfo} from '../history-storage.js?v=28.4.2';
+import {IMAGE_RESOURCE_LIMITS,fittedRasterSize} from '../image-resources.js?v=28.4.2';
 
 const root=fileURLToPath(new URL('../',import.meta.url)),random=()=>.28,profile={displayName:'保存容量の検査',topics:[]};
 const values=resolveSelections({sceneUnified:true,design:'新聞の一面',medium:'クリスタルホログラム造形アニメ',theme:'宇宙のHalloween',costume:'ヴィクトリア朝の正装',pose:'片手を差し出す',type:'新聞風・記事と段組み'},random);
 const started=performance.now(),production=productionPlan(profile,values,buildDirection([],values.mood,random,'halloween',values),'halloween',random),planMs=performance.now()-started;
 let tick=performance.now();const prompt=composePrompt({profile,values,variant:production.variant,references:[],edition:'LATEST',preparedPlan:production}),promptMs=performance.now()-tick;
 tick=performance.now();const stages=stagePrompts(production),stageMs=performance.now()-tick;assert.equal(stagePrompts(production),stages,'Stage strings are reused for the same plan');
-const record={version:'28.4.1',collection:'halloween',profile,values,variant:production.variant,production,stages,edition:'LATEST',references:[],date:'2026-10-08T00:00:00Z',count:12,prompt};
+const record={version:'28.4.2',collection:'halloween',profile,values,variant:production.variant,production,stages,edition:'LATEST',references:[],date:'2026-10-08T00:00:00Z',count:12,prompt};
 const original={history:Array.from({length:12},(_,i)=>({...record,edition:i?'OLD-'+i:'LATEST',date:new Date(Date.parse(record.date)-i*1000).toISOString(),count:12-i})),used:Array.from({length:2000},(_,i)=>({signature:'used-'+i,face:'left',pose:'手を上げる',layout:'中央配置'})),count:12};
 const byteEstimate=value=>JSON.stringify(value).length*2,raw=JSON.stringify(original);
 class Database{
@@ -45,7 +45,7 @@ readModule(path.join(root,'app.js'));
 const fetchModules=[...modules].filter(([,code])=>/\bfetch\s*\(/.test(code)).map(([file])=>path.relative(root,file));assert.equal(fetchModules.length,0);
 const sourcePixels=4000*3000,preview=fittedRasterSize(4000,3000),previewPixels=preview.width*preview.height;
 const report={
- generatedAt:new Date().toISOString(),sourceVersion:'28.4.1',scope:'Halloween frontend and its reachable module graph; no INSIGHT repository changes, no article or image downloads, no generated images',
+ generatedAt:new Date().toISOString(),sourceVersion:'28.4.2',scope:'Halloween frontend and its reachable module graph; no INSIGHT repository changes, no article or image downloads, no generated images',
  measurement:{environment:process.version,kind:'Node instrumented control flow plus exact serialization and calculated raster bounds',timings:'One local execution, including structuredClone to model database reads; not a browser benchmark',notMeasured:['Live browser native heap/GPU memory','Native decoder peak memory during createImageBitmap resize','Device-specific canvas/clipboard/share limits','Visual fidelity of generated or composed images','INSIGHT runtime: supplied prior symptoms only']},
  sourceReads:{reachableModules:modules.size,directFetchModules:fetchModules,publicArticleFetchesInFrontend:0,explanation:'The current loadProfile only constructs creatorHandoff; the conversation assistant checks public source information. Supabase/profile article readers remain outside the frontend import graph.'},
  history:{fixture:{histories:12,signatures:2000,values},serializationUtf16ByteEstimate:{raw:raw.length*2,packedDatabase:byteEstimate(packed),reductionPercent:Number(((1-byteEstimate(packed)/(raw.length*2))*100).toFixed(1)),note:'String storage estimate, not measured JavaScript heap or IndexedDB disk size'},samePageRepeatedRequests:{requests,baselineFullDatabaseReads:oldDB.reads,updatedFullDatabaseReads:newDB.reads,baselineLocalParses:beforeParses,updatedLocalKeyReads:afterGets,baselineMs:Number(beforeMs.toFixed(2)),updatedMs:Number(afterMs.toFixed(2)),baseline:'Original load control flow reproduced against the same mock database fixture',updated:'Actual createHistoryPersistence implementation with a notification channel'},restoredDetailCache:{previousMaximumRecords:12,currentMeasuredRecords:restoredInfo.records,currentLimit:restoredInfo.limit},legacyParsedStateRetainedAfterDatabaseRead:false,correctness:'Cross-tab notifications, concurrent singleflight, visible/BFCache invalidation, no-channel fresh-read fallback, exact old prompt/plan/stages, clear epochs, atomic quota failure and database commit failure verified by check-memory-resources-v28 and check-history-persistence-v28',fallback:'Original local key and unrelated keys remain untouched after database migration. A later database failure can reparse the original key; a live tab keeps the latest committed clear epoch.'},

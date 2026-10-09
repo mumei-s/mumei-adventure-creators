@@ -1,5 +1,5 @@
 // Later pages sit to the right, so moving the content left reveals the next page.
-export function swipeStep(dx,dy){return Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.5?(dx<0?1:-1):0;}
+export function swipeStep(dx,dy){return Math.abs(dx)>=24&&Math.abs(dx)>Math.abs(dy)*1.25?(dx<0?1:-1):0;}
 export function pagePatternTone(page,pages){const tone=page%6;return page>0&&page===pages-1&&tone===0?2:tone;}
 export function ringWindow(items,index,limit=6){
  if(!items.length)return {index:0,items:[]};

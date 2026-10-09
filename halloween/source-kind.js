@@ -1,4 +1,4 @@
-import {isPhotographicMedium} from './photo-design.js?v=28.4.1';
+import {isPhotographicMedium} from './photo-design.js?v=28.4.2';
 
 // This is an input reading choice, independent of the ten output selections.
 // Unknown and older saved work deliberately retain their original instructions.

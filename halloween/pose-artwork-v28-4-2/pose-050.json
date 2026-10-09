@@ -1,0 +1,22 @@
+{
+  "id": "pose-050",
+  "prompt": "Use case: illustration-story. Asset type: original detailed pose selection thumbnail. One fully illustrated gender-neutral adult with medium-length brown hair, a gentle expression, cream long-sleeved shirt, loose indigo trousers, plain white sneakers. Quiet pale ivory studio background, subtle floor contact shadow. High quality softly shaded gouache and anime illustration, actual person with volumetric body and limbs, natural head-to-body ratio, carefully drawn fingers and face, clothing folds, delicate fine outlines and painterly texture. Square composition: full body fully framed from top of hair to both soles, centered occupying 75-85% canvas height, action readable at thumbnail size. No labels, arrows, symbols, brands, watermarks, extra people, Halloween decoration, stick figures, mannequins, skeletons, cropped hands or feet. Pose: standing in a relaxed three-quarter view while wearing a simple navy fabric brimmed sun hat. ONE HAND GENTLY TOUCHES THE FRONT BRIM OF THE HAT with fingertips, elbow naturally raised. The other hand relaxed down by the side. Head slightly tilted, face and fingers on brim clearly visible. The hat is essential for this action; unbranded.",
+  "source_generated_file": "/workspace/scratch/ad16ee694a48/generated_images/exec-3896b066-e48e-491c-9459-cd176ce2ae9f.png",
+  "generator": "built-in image_gen",
+  "qa": "Accepted; full body, clothed volumetric person, specified pose visible; no text, arrows, or diagram.",
+  "destination": "pose-050.jpg",
+  "processing": "Original resolution preserved; RGB JPEG encoding quality 85 only.",
+  "label": "帽子のつばに手を添える",
+  "asset": "pose-050.jpg",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "6e15561e27a5ce20879ee3a4867719993c59218d7904783ceba70e226a8e0c6b",
+  "encoding": "RGB JPEG quality 85; generated resolution retained without cropping or retouching",
+  "visualQA": {
+    "status": "accepted",
+    "reviewer": "Codex visual inspection of generated image",
+    "observations": "片手の指が帽子のつばに接し、帽体が頭に載り、反対の腕が自然に下がっている。"
+  }
+}

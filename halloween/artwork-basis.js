@@ -1,10 +1,11 @@
-import {illustrationBases} from './artwork-basis-illustration.js?v=28.4.1';
-import {traditionalBases} from './artwork-basis-traditional.js?v=28.4.1';
-import {materialBases} from './artwork-basis-material.js?v=28.4.1';
-import {movementsPhotoBases} from './artwork-basis-movements-photo.js?v=28.4.1';
-import {luminousBases} from './artwork-basis-luminous.js?v=28.4.1';
-import {referenceWorldArtworkBases} from './world-bases.js?v=28.4.1';
-import {isNonHumanSource} from './source-kind.js?v=28.4.1';
+import {illustrationBases} from './artwork-basis-illustration.js?v=28.4.2';
+import {traditionalBases} from './artwork-basis-traditional.js?v=28.4.2';
+import {materialBases} from './artwork-basis-material.js?v=28.4.2';
+import {movementsPhotoBases} from './artwork-basis-movements-photo.js?v=28.4.2';
+import {luminousBases} from './artwork-basis-luminous.js?v=28.4.2';
+import {referenceWorldArtworkBases} from './world-bases.js?v=28.4.2';
+import {isNonHumanSource} from './source-kind.js?v=28.4.2';
+import {isPhotographicMedium} from './photo-design.js?v=28.4.2';
 
 // Sources are documentation for the picker. Only the extracted drawing
 // criteria enter production: no borrowed artist, character, scene or image.
@@ -41,7 +42,7 @@ function nonHumanCriterion(text){
 }
 export function artworkBasisContract(value,{noPerson=false,values={}}={}){
  const entry=artworkBasis(value);if(!entry)return null;
- const scope=noPerson?'適用対象は選択された景物・物体・図案だけ。以下の人物・顔・髪・身体・衣装に関する例は非適用とし、人物や人型を追加しない。':isNonHumanSource(values)?'入力の景色・マーク・物体は人物を識別する資料ではない。人物作品への翻案が明示されている場合だけ、固有形・色・紋様・構造から着想した独自の主役を選択作風で構成する。元入力から顔・髪・年齢・性別を復元せず、主役の衣装・表情・ポーズ・頭身は実際の選択へ従う。修正では既に生成した独自の主役の特徴を保つ。':'同じ人物の識別特徴の組合せを、選択作画の線・形の整理・誇張・省略へ翻訳する。基本頭身は主参照を保ち、ちびキャラなど頭身変更を明示した選択だけを実行する。参照の写真や別画風の完成面を固定しない。';
+ const scope=noPerson?'適用対象は選択された景物・物体・図案だけ。以下の人物・顔・髪・身体・衣装に関する例は非適用とし、人物や人型を追加しない。':isNonHumanSource(values)?'入力の景色・マーク・物体は人物を識別する資料ではない。人物作品への翻案が明示されている場合だけ、固有形・色・紋様・構造から着想した独自の主役を選択作風で構成する。元入力から顔・髪・年齢・性別を復元せず、主役の衣装・表情・ポーズ・頭身は実際の選択へ従う。修正では既に生成した独自の主役の特徴を保つ。':isPhotographicMedium(value)?'同じキャラクターの識別特徴の組合せ・髪型・識別色・年齢感・性別表現・基礎体格を保ち、自然な人物立体と実物の材質へ翻訳する。参照がちびや誇張イラストでも、大きな目、記号的な鼻口、頭と胴や四肢の寸法比をそのまま固定せず、同じ特徴と年齢感を持つ自然な頭蓋・眼球・人体比率へ再構成する。未選択の幼児化・年齢変更・別人化はせず、明示した非人間の形・役柄と選択衣装の被覆・ポーズ・カメラを保つ。':'同じ人物の識別特徴の組合せを、選択作画の線・形の整理・誇張・省略へ翻訳する。基本頭身は主参照を保ち、ちびキャラなど頭身変更を明示した選択だけを実行する。参照の写真や別画風の完成面を固定しない。';
  const project=noPerson?sceneryCriterion:isNonHumanSource(values)?nonHumanCriterion:text=>text;
  const criteria=noPerson&&value==='ちびキャラ'?[
   '選択した景物・物体の識別形を、大きな読みやすい外形と少数の内部形へ簡略化する。人物や人型へ変えない。',

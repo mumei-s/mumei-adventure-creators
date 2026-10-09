@@ -1,4 +1,4 @@
-import {colorPolicy} from './color-policy.js?v=28.4.5';
+import {colorPolicy} from './color-policy.js?v=28.4.6';
 
 // A color theme controls the base image. Dispersion is part of the selected
 // optical medium; only an explicitly limited palette removes spectral hues.

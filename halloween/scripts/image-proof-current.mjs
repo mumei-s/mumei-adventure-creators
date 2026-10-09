@@ -1,13 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import {applyCollection} from '../collection.js?v=28.4.5';
-import {resolveSelections} from '../catalog.js?v=28.4.5';
-import {initialSelections} from '../modes.js?v=28.4.5';
-import {buildDirection} from '../direction.js?v=28.4.5';
-import {applyPose} from '../poses.js?v=28.4.5';
-import {productionPlan} from '../production-plan.js?v=28.4.5';
-import {composePrompt} from '../prompt.js?v=28.4.5';
-import {stagePrompts} from '../production-workflow.js?v=28.4.5';
+import {applyCollection} from '../collection.js?v=28.4.6';
+import {resolveSelections} from '../catalog.js?v=28.4.6';
+import {initialSelections} from '../modes.js?v=28.4.6';
+import {buildDirection} from '../direction.js?v=28.4.6';
+import {applyPose} from '../poses.js?v=28.4.6';
+import {productionPlan} from '../production-plan.js?v=28.4.6';
+import {composePrompt} from '../prompt.js?v=28.4.6';
+import {stagePrompts} from '../production-workflow.js?v=28.4.6';
 export function currentImageProof(name){
  const cases={
   'photo-newspaper':{design:'新聞の一面',medium:'実写風フィルム写真',type:'デザインに合わせて自動編集',size:'自由サイズ｜1024×1536｜2:3'},

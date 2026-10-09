@@ -1,4 +1,4 @@
-import {preserveLegacyAssetKeys} from './legacy-selection-aliases.js?v=28.4.5';
+import {preserveLegacyAssetKeys} from './legacy-selection-aliases.js?v=28.4.6';
 // Japan-base explanatory previews only. Never sent as identity/style references.
 export const japanPreviews={
   "medium\u0000実写風フィルム写真": "japan-previews-v21/medium-01-01.jpg",

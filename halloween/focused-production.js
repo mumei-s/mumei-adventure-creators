@@ -1,15 +1,15 @@
-import {cameraContract} from './angles.js?v=28.4.5';
-import {colorPolicy} from './color-policy.js?v=28.4.5';
-import {characterProportionInstruction,isNonHumanSource} from './source-kind.js?v=28.4.5';
-import {halloweenSceneFocus} from './scene-presets.js?v=28.4.5';
-import {designLayoutFor,typographyLayoutFor} from './layout-preview-specs.js?v=28.4.5';
-import {limitedNewspaperLayout} from './format-recipes.js?v=28.4.5';
-import {focusedReferenceMedia,flatFocusedReferenceMedia,volumetricReferenceMedia} from './attachment-policy.js?v=28.4.5';
-import {buildDirection} from './direction.js?v=28.4.5';
-import {applyPose} from './poses.js?v=28.4.5';
-import {resolveArtDirection} from './art-direction.js?v=28.4.5';
-import {stylePresetFor} from './style-presets.js?v=28.4.5';
-import {sceneComposition} from './scene-composition.js?v=28.4.5';
+import {cameraContract} from './angles.js?v=28.4.6';
+import {colorPolicy} from './color-policy.js?v=28.4.6';
+import {characterProportionInstruction,isNonHumanSource} from './source-kind.js?v=28.4.6';
+import {halloweenSceneFocus} from './scene-presets.js?v=28.4.6';
+import {designLayoutFor,typographyLayoutFor} from './layout-preview-specs.js?v=28.4.6';
+import {limitedNewspaperLayout} from './format-recipes.js?v=28.4.6';
+import {focusedReferenceMedia,flatFocusedReferenceMedia,volumetricReferenceMedia} from './attachment-policy.js?v=28.4.6';
+import {buildDirection} from './direction.js?v=28.4.6';
+import {applyPose} from './poses.js?v=28.4.6';
+import {resolveArtDirection} from './art-direction.js?v=28.4.6';
+import {stylePresetFor} from './style-presets.js?v=28.4.6';
+import {sceneComposition} from './scene-composition.js?v=28.4.6';
 
 export const focusedMedia=focusedReferenceMedia;
 export function usesFocusedProduction(plan){return focusedMedia.includes(plan?.values?.medium);}

@@ -1,4 +1,4 @@
-import {canonicalSelectionLabel} from './legacy-selection-aliases.js?v=28.4.5';
+import {canonicalSelectionLabel} from './legacy-selection-aliases.js?v=28.4.6';
 // A selected world, story or location is one scene. The old place key is kept
 // only as an internal detail for saved records and existing drawing recipes.
 const placeTitles=new Set();

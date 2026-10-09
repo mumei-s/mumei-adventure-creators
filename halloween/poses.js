@@ -1,4 +1,4 @@
-import {poseAnatomyContent,poseAnatomyTechnical} from './pose-anatomy.js?v=28.4.5';
+import {poseAnatomyContent,poseAnatomyTechnical} from './pose-anatomy.js?v=28.4.6';
 
 export const poseItems=[
  {

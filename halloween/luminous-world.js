@@ -1,5 +1,5 @@
-import {colorPolicy} from './color-policy.js?v=28.4.5';
-import {cameraContract} from './angles.js?v=28.4.5';
+import {colorPolicy} from './color-policy.js?v=28.4.6';
+import {cameraContract} from './angles.js?v=28.4.6';
 
 export const LUMINOUS_WORLD_MEDIUM='発光幻想アニメ';
 export const LUMINOUS_REAL_MEDIUM='発光幻想リアル';

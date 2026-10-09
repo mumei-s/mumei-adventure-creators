@@ -1,12 +1,12 @@
-import {illustrationBases} from './artwork-basis-illustration.js?v=28.4.5';
-import {traditionalBases} from './artwork-basis-traditional.js?v=28.4.5';
-import {materialBases} from './artwork-basis-material.js?v=28.4.5';
-import {movementsPhotoBases} from './artwork-basis-movements-photo.js?v=28.4.5';
-import {luminousBases} from './artwork-basis-luminous.js?v=28.4.5';
-import {referenceWorldArtworkBases} from './world-bases.js?v=28.4.5';
-import {fantasyStyleDefinitions} from './fantasy-style-definitions.js?v=28.4.5';
-import {isNonHumanSource} from './source-kind.js?v=28.4.5';
-import {isPhotographicMedium} from './photo-design.js?v=28.4.5';
+import {illustrationBases} from './artwork-basis-illustration.js?v=28.4.6';
+import {traditionalBases} from './artwork-basis-traditional.js?v=28.4.6';
+import {materialBases} from './artwork-basis-material.js?v=28.4.6';
+import {movementsPhotoBases} from './artwork-basis-movements-photo.js?v=28.4.6';
+import {luminousBases} from './artwork-basis-luminous.js?v=28.4.6';
+import {referenceWorldArtworkBases} from './world-bases.js?v=28.4.6';
+import {fantasyStyleDefinitions} from './fantasy-style-definitions.js?v=28.4.6';
+import {isNonHumanSource} from './source-kind.js?v=28.4.6';
+import {isPhotographicMedium} from './photo-design.js?v=28.4.6';
 
 // Sources are documentation for the picker. Only the extracted drawing
 // criteria enter production: no borrowed artist, character, scene or image.

@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict';
 import {assertCompactHandoff,containsInstruction} from './compact-handoff-assertions-v28.mjs';
 import fs from 'node:fs';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.5';
-import {applyCollection} from '../collection.js?v=28.4.5';
-import {productionPlan} from '../production-plan.js?v=28.4.5';
-import {composePrompt} from '../prompt.js?v=28.4.5';
-import {creatorHandoff} from '../creator-handoff.js?v=28.4.5';
-import {lightingContract} from '../art-direction.js?v=28.4.5';
-import {detailedSubject} from '../subject-recipes.js?v=28.4.5';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.6';
+import {applyCollection} from '../collection.js?v=28.4.6';
+import {productionPlan} from '../production-plan.js?v=28.4.6';
+import {composePrompt} from '../prompt.js?v=28.4.6';
+import {creatorHandoff} from '../creator-handoff.js?v=28.4.6';
+import {lightingContract} from '../art-direction.js?v=28.4.6';
+import {detailedSubject} from '../subject-recipes.js?v=28.4.6';
 
 const profile=creatorHandoff('test_author','試作作者');
 const fixed={design:'通常の一枚絵',medium:'発光幻想アニメ',costume:'参照画像の衣装を生かす',pose:'四つん這いで進む',mood:'俯瞰＋目を見開く',palette:'群青 × 菫 × 星白',type:'文字を一切入れない',line:'セリフなし',size:'縦ポスター2:3｜2400×3600｜2:3'};

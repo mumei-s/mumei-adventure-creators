@@ -1,10 +1,10 @@
-import {sourceKinds,sourceSubjectFor} from '../source-kind.js?v=28.4.5';
+import {sourceKinds,sourceSubjectFor} from '../source-kind.js?v=28.4.6';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {questions} from '../catalog.js?v=28.4.5';
-import {applyCollection,currentCollection} from '../collection.js?v=28.4.5';
-import {initialSelections,modeKeys,modeCopy} from '../modes.js?v=28.4.5';
+import {questions} from '../catalog.js?v=28.4.6';
+import {applyCollection,currentCollection} from '../collection.js?v=28.4.6';
+import {initialSelections,modeKeys,modeCopy} from '../modes.js?v=28.4.6';
 
 // Execute the real switch function. Pool-only tests missed a removed helper
 // that still ran before both initial mode restoration and every button click.

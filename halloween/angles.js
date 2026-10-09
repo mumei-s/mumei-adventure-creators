@@ -1,6 +1,6 @@
 // Camera geometry is independent of the selected world, expression and pose.
-import {angleConstraint,moodConstraint,poseConstraint,viewSelectionIssues} from './view-constraints.js?v=28.4.5';
-import {poseDefaultFraming} from './poses.js?v=28.4.5';
+import {angleConstraint,moodConstraint,poseConstraint,viewSelectionIssues} from './view-constraints.js?v=28.4.6';
+import {poseDefaultFraming} from './poses.js?v=28.4.6';
 const rows=[
  ['目線の高さ・正面','高さは主題の中心、正面から水平に見る。上下の傾きを付けず、正面の輪郭と奥行きを読む。','主役と周囲が入るミディアムショット',0,0],
  ['斜め前45度','主題の正面から左右いずれか45度にカメラを置く。近い側と遠い側の面を同じ遠近でつなぐ。','主役と周囲が入るミディアムショット',0,45],

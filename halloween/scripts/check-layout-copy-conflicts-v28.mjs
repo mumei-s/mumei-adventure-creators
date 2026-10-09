@@ -1,11 +1,14 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.4.5';
-import {resolveSelections,AUTO} from '../catalog.js?v=28.4.5';
-import {initialSelections} from '../modes.js?v=28.4.5';
-import {selectionConflicts,candidateAvailability} from '../compatibility.js?v=28.4.5';
-import {designLayoutValues} from '../layout-preview-specs.js?v=28.4.5';
-import {buildEditorial} from '../editorial.js?v=28.4.5';
-import {detailedFormat} from '../format-recipes.js?v=28.4.5';
+import {applyCollection} from '../collection.js?v=28.4.6';
+import {resolveSelections,AUTO} from '../catalog.js?v=28.4.6';
+import {initialSelections} from '../modes.js?v=28.4.6';
+import {selectionConflicts,candidateAvailability} from '../compatibility.js?v=28.4.6';
+import {designLayoutValues} from '../layout-preview-specs.js?v=28.4.6';
+import {buildEditorial} from '../editorial.js?v=28.4.6';
+import {detailedFormat} from '../format-recipes.js?v=28.4.6';
+import {productionPlan} from '../production-plan.js?v=28.4.6';
+import {compileProduction} from '../compiled-production.js?v=28.4.6';
+import {stagePrompts,composeStagedMaster} from '../production-workflow.js?v=28.4.6';
 let cases=0;
 for(const collection of ['halloween','everyday']){
  applyCollection(collection);
@@ -19,6 +22,23 @@ for(const collection of ['halloween','everyday']){
  const automatic=resolveSelections({...base,design:AUTO},()=>.23);
  assert.equal(automatic.type,'文字を一切入れない');
  assert.notEqual(automatic.design,'タイポグラフィーポスター','Only AUTO may change to a compatible design.');
+ // Supported saved dialogue-only settings can have no effective manuscript.
+ // Candidate selection and production must use the same no-copy authority.
+ for(const line of ['セリフなし','おまかせ','   ']){
+  const dialogue={...fixed,type:'セリフのみ',line};
+  assert.ok(selectionConflicts(dialogue).some(issue=>issue.code==='typography-design-needs-copy'));
+  for(const key of ['design','type','line'])assert.equal(candidateAvailability(key,dialogue[key],dialogue).enabled,false,'Empty dialogue must not bypass the candidate guard through '+key);
+  const resolved=resolveSelections({...base,design:AUTO,type:'セリフのみ',line},()=>.23);
+  assert.notEqual(resolved.design,'タイポグラフィーポスター');
+  if(line!=='セリフなし'){assert.throws(()=>productionPlan(profile,dialogue,{},collection,()=>.23),/未確定/);continue;}
+  const plan=productionPlan(profile,dialogue,{},collection,()=>.23),output=compileProduction(plan);
+  assert.ok(plan.issues.some(issue=>issue.severity==='error'&&issue.code==='typography-design-needs-copy'));
+  assert.doesNotMatch(output,/Create ONE|通常制作：完成画像を1回|第1段階の生成用入力：開始/);
+  assert.equal(stagePrompts(plan),null);assert.equal(composeStagedMaster(plan,[],{verbose:true}),output);
+ }
+ const spoken={...fixed,type:'セリフのみ',line:'ここから、はじめよう。'};
+ assert.ok(!selectionConflicts(spoken).some(issue=>issue.code==='typography-design-needs-copy'),'A real permitted dialogue must remain usable');
+ assert.equal(candidateAvailability('line',spoken.line,{...spoken,line:'セリフなし'}).enabled,true,'Changing only the dialogue must resolve the no-copy conflict');
  for(const design of designLayoutValues){
   const selected={...base,design};
   const issues=selectionConflicts(selected).filter(c=>c.keys.includes('type')&&c.keys.includes('design'));

@@ -1,6 +1,6 @@
 // Independent synthesized techniques. The visual reference never supplies the
 // selected actor, costume, pose, setting, palette, or finished text.
-import {luminousGeneralReferences} from './artwork-basis-luminous.js?v=28.4.5';
+import {luminousGeneralReferences} from './artwork-basis-luminous.js?v=28.4.6';
 const projection='塗りの前に、指定カメラと選択動作のまま可視面の厚み・短縮・前後の重なりと支持を確定する。2Dの色面でも立体の投影を保ち、動きや迫る手を追加しない。';
 const sceneryProjection='選択世界観・舞台・雰囲気を先に確定する。塗りの前に、指定カメラ内の景物の可視面の厚み・短縮・前後の遮蔽と支持を確定する。配置・接続・視点を変えず、別の登場主体を追加しない。';
 const visibleEyes='実際に見える虹彩の縁・上部・瞳孔は暗く、下部は許可色の明るい重ね色とし、鋭い小反射は光源方向に合わせる。閉眼・遮蔽・眼形・視線は変えない。';

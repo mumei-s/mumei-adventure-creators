@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {creatorHandoff,creatorCopyRequirements,creatorDisplayLabel,CREATOR_NAME_TOKEN} from '../creator-handoff.js?v=28.4.5';
-import {productionPlan} from '../production-plan.js?v=28.4.5';
-import {composePrompt} from '../prompt.js?v=28.4.5';
-import {renderCompactChatInput} from '../compact-production.js?v=28.4.5';
-import {renderInput} from '../compiled-production.js?v=28.4.5';
-import {applyCollection} from '../collection.js?v=28.4.5';
-import {sampleFor} from '../examples.js?v=28.4.5';
-import {selectionReferenceManifest,selectionReferenceCounts,individualSelectionReferenceManifest} from '../selection-references.js?v=28.4.5';
-import {attachmentConditionPolicy} from '../attachment-policy.js?v=28.4.5';
-import {stylePresetFor} from '../style-presets.js?v=28.4.5';
+import {creatorHandoff,creatorCopyRequirements,creatorDisplayLabel,CREATOR_NAME_TOKEN} from '../creator-handoff.js?v=28.4.6';
+import {productionPlan} from '../production-plan.js?v=28.4.6';
+import {composePrompt} from '../prompt.js?v=28.4.6';
+import {renderCompactChatInput} from '../compact-production.js?v=28.4.6';
+import {renderInput} from '../compiled-production.js?v=28.4.6';
+import {applyCollection} from '../collection.js?v=28.4.6';
+import {sampleFor} from '../examples.js?v=28.4.6';
+import {selectionReferenceManifest,selectionReferenceCounts,individualSelectionReferenceManifest} from '../selection-references.js?v=28.4.6';
+import {attachmentConditionPolicy} from '../attachment-policy.js?v=28.4.6';
+import {stylePresetFor} from '../style-presets.js?v=28.4.6';
 import {assertCompactHandoff} from './compact-handoff-assertions-v28.mjs';
 
 const base={sceneUnified:true,medium:'艶彩幻想アニメ',theme:'吸血鬼の晩餐会',place:'古城の大広間',costume:'亡霊騎士',pose:'低くしゃがむ',mood:'牙を見せて威嚇',angle:'超ローアングル・70度',palette:'菫 × マンゴー × 白',design:'通常の一枚絵',type:'文字を一切入れない',line:'セリフなし',size:'A4縦・300dpi目安｜2480×3508｜210:297',sourceKind:'photo-person'};

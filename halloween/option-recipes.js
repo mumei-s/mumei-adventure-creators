@@ -1,17 +1,17 @@
-import {everydayRecipe} from './everyday-options.js?v=28.4.5';
-import {CRYSTAL_OBJECT,crystalObjectRecipe,japaneseSections} from './japan-direction.js?v=28.4.5';
-import {visualSpec} from './visual-specs.js?v=28.4.5';
-import {detailedMedium} from './medium-recipes.js?v=28.4.5';
-import {detailedFormat} from './format-recipes.js?v=28.4.5';
-import {detailedSubject} from './subject-recipes.js?v=28.4.5';
-import {detailedPalette} from './palette-recipes.js?v=28.4.5';
-import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=28.4.5';
-import {executionFor} from './option-execution.js?v=28.4.5';
-import {colorPolicy} from './color-policy.js?v=28.4.5';
-import {halloweenSceneFocus,sceneSourcePlace} from './scene-presets.js?v=28.4.5';
-import {angleRecipe} from './angles.js?v=28.4.5';
-import {withArtworkBasis} from './artwork-basis.js?v=28.4.5';
-import {referenceWorldSceneRecipe} from './world-bases.js?v=28.4.5';
+import {everydayRecipe} from './everyday-options.js?v=28.4.6';
+import {CRYSTAL_OBJECT,crystalObjectRecipe,japaneseSections} from './japan-direction.js?v=28.4.6';
+import {visualSpec} from './visual-specs.js?v=28.4.6';
+import {detailedMedium} from './medium-recipes.js?v=28.4.6';
+import {detailedFormat} from './format-recipes.js?v=28.4.6';
+import {detailedSubject} from './subject-recipes.js?v=28.4.6';
+import {detailedPalette} from './palette-recipes.js?v=28.4.6';
+import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=28.4.6';
+import {executionFor} from './option-execution.js?v=28.4.6';
+import {colorPolicy} from './color-policy.js?v=28.4.6';
+import {halloweenSceneFocus,sceneSourcePlace} from './scene-presets.js?v=28.4.6';
+import {angleRecipe} from './angles.js?v=28.4.6';
+import {withArtworkBasis} from './artwork-basis.js?v=28.4.6';
+import {referenceWorldSceneRecipe} from './world-bases.js?v=28.4.6';
 
 function opticalPaletteText(text,policy){
  if(!policy.restricted)return text;

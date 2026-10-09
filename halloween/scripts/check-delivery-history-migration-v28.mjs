@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import {productionPlan} from '../production-plan.js?v=28.4.5';
-import {recomposeHistoryDelivery} from '../delivery-history-migration.js?v=28.4.5';
-import {selectionReferenceManifest,selectionReferenceCounts} from '../selection-references.js?v=28.4.5';
-import {stylePresetFor} from '../style-presets.js?v=28.4.5';
-import {compactHistoryRecord,restoreHistoryRecord} from '../history-storage.js?v=28.4.5';
-import {composePrompt} from '../prompt.js?v=28.4.5';
+import {productionPlan} from '../production-plan.js?v=28.4.6';
+import {recomposeHistoryDelivery} from '../delivery-history-migration.js?v=28.4.6';
+import {selectionReferenceManifest,selectionReferenceCounts} from '../selection-references.js?v=28.4.6';
+import {stylePresetFor} from '../style-presets.js?v=28.4.6';
+import {compactHistoryRecord,restoreHistoryRecord} from '../history-storage.js?v=28.4.6';
+import {composePrompt} from '../prompt.js?v=28.4.6';
 
 const values={sceneUnified:true,medium:'薄膜光彩アニメ',theme:'吸血鬼の晩餐会',place:'古城の大広間',design:'通常の一枚絵',costume:'亡霊騎士',pose:'低くしゃがむ',mood:'牙を見せて威嚇',angle:'目線の高さ・正面',palette:'菫 × マンゴー × 白',type:'クリエイター名だけ',line:'セリフなし',size:'A4縦・300dpi目安｜2480×3508｜210:297',sourceKind:'photo-person'};
 const profile={displayName:'保存作者',activityEnabled:false},plan=productionPlan(profile,values,{},'halloween',()=>.23);

@@ -1,6 +1,6 @@
 // Two independent synthesized techniques. The original masters demonstrate
 // rendering only; their actors, clothing, objects and scene are never selected.
-import {luminousGeneralReferences} from './artwork-basis-luminous.js?v=28.4.5';
+import {luminousGeneralReferences} from './artwork-basis-luminous.js?v=28.4.6';
 const group='立体光彩・アニメと実写';
 const sourceNote='ユーザーが採用を指定した立体的なアニメと自然な実写の光彩を、造形・素材・光の関係として独自に整理した合成作画基準。元画像の人物・衣装・配置を再現せず、作者の個別工程や生成精度を保証しない。';
 const projection='描画の前に選択カメラ・顔向き・身体ポーズ・支持点を確定し、厚み、短縮、手指や部材の接続、前後の重なり、接触影を同じ投影へそろえる。反射を見せるためにポーズ、画角、衣装の被覆を変えない。';

@@ -2,8 +2,8 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import {createHash} from 'node:crypto';
-import {createCreatorDraft,createIndexedDraftStore} from '../creator-draft.js?v=28.4.5';
-import {deliveryImageFiles} from '../drawing-references.js?v=28.4.5';
+import {createCreatorDraft,createIndexedDraftStore} from '../creator-draft.js?v=28.4.6';
+import {deliveryImageFiles} from '../drawing-references.js?v=28.4.6';
 
 const fresh=()=>({format:1,profile:{creator:'',name:'',activity:''},references:[],profileEpoch:'initial',referenceEpoch:'initial'});
 class MemoryDraftDatabase{

@@ -1,11 +1,11 @@
-import {canonicalSelectionLabel,normalizeSelectionLabels} from './legacy-selection-aliases.js?v=28.4.5';
-import {costumeSpecs,themeSpecs,placeSpecs} from './visual-specs.js?v=28.4.5';
-import {poseItems,poseTechnical} from './poses.js?v=28.4.5';
-import {questions} from './catalog.js?v=28.4.5';
-import {typographyRecipe} from './typography-options.js?v=28.4.5';
-import {typographyLayoutInstruction} from './layout-preview-specs.js?v=28.4.5';
-import {copyAuthority,copyAllowsDialogue} from './copy-scope.js?v=28.4.5';
-import {angleItems} from './angles.js?v=28.4.5';
+import {canonicalSelectionLabel,normalizeSelectionLabels} from './legacy-selection-aliases.js?v=28.4.6';
+import {costumeSpecs,themeSpecs,placeSpecs} from './visual-specs.js?v=28.4.6';
+import {poseItems,poseTechnical} from './poses.js?v=28.4.6';
+import {questions} from './catalog.js?v=28.4.6';
+import {typographyRecipe} from './typography-options.js?v=28.4.6';
+import {typographyLayoutInstruction} from './layout-preview-specs.js?v=28.4.6';
+import {copyAuthority,copyAllowsDialogue} from './copy-scope.js?v=28.4.6';
+import {angleItems} from './angles.js?v=28.4.6';
 
 // The tables describe the selected title, never the people or settings in a UI thumbnail.
 const rows=source=>Object.assign(Object.create(null),Object.fromEntries(source.trim().split('\n').filter(Boolean).map(line=>{const at=line.indexOf('=');return [line.slice(0,at),line.slice(at+1).split('|')];})));

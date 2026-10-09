@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
-import {questions,visibleQuestions,AUTO} from '../catalog.js?v=28.4.5';
-import {applyCollection} from '../collection.js?v=28.4.5';
-import {sampleFor} from '../examples.js?v=28.4.5';
-import {scenePreviews} from '../scene-preview-catalog.js?v=28.4.5';
-import {canonicalSelectionLabel} from '../legacy-selection-aliases.js?v=28.4.5';
+import {questions,visibleQuestions,AUTO} from '../catalog.js?v=28.4.6';
+import {applyCollection} from '../collection.js?v=28.4.6';
+import {sampleFor} from '../examples.js?v=28.4.6';
+import {scenePreviews} from '../scene-preview-catalog.js?v=28.4.6';
+import {canonicalSelectionLabel} from '../legacy-selection-aliases.js?v=28.4.6';
 
 const allowedKinds=new Set(['image','reference','auto','type','line','size']);
 function jpegDimensions(bytes){

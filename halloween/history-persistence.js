@@ -1,5 +1,5 @@
-import {HISTORY_STORAGE_FORMAT,HISTORY_RECORD_LIMIT,HISTORY_BYTE_BUDGET,compactHistoryRecord,compactUsedRecords,mergeUsedRecords,quotaExceeded,enforceHistoryBudget} from './history-storage.js?v=28.4.5';
-import {createIndexedHistoryStore} from './indexed-history.js?v=28.4.5';
+import {HISTORY_STORAGE_FORMAT,HISTORY_RECORD_LIMIT,HISTORY_BYTE_BUDGET,compactHistoryRecord,compactUsedRecords,mergeUsedRecords,quotaExceeded,enforceHistoryBudget} from './history-storage.js?v=28.4.6';
+import {createIndexedHistoryStore} from './indexed-history.js?v=28.4.6';
 
 const empty=()=>({history:[],used:[],count:0,historyEpoch:'legacy',clearedAt:0,savedAt:0});
 const valid=state=>!!state&&Array.isArray(state.history)&&Array.isArray(state.used);

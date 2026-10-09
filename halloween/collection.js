@@ -1,10 +1,10 @@
-import {everydayScenes,everydayPlaces,casualClothes,swimClothes,everydayBindings,everydaySamples} from './everyday-options.js?v=28.4.5';
-import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=28.4.5';
-import {poseGroups} from './poses.js?v=28.4.5';
-import {automaticView} from './view-constraints.js?v=28.4.5';
-import {randomChoice} from './random-selections.js?v=28.4.5';
-import {halloweenSceneGroups,halloweenSceneTitles,mergeSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.4.5';
-import {referenceWorldScenes} from './world-bases.js?v=28.4.5';
+import {everydayScenes,everydayPlaces,casualClothes,swimClothes,everydayBindings,everydaySamples} from './everyday-options.js?v=28.4.6';
+import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=28.4.6';
+import {poseGroups} from './poses.js?v=28.4.6';
+import {automaticView} from './view-constraints.js?v=28.4.6';
+import {randomChoice} from './random-selections.js?v=28.4.6';
+import {halloweenSceneGroups,halloweenSceneTitles,mergeSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.4.6';
+import {referenceWorldScenes} from './world-bases.js?v=28.4.6';
 const original=questions.map(q=>({...q,groups:q.groups.map(g=>({...g,values:[...g.values]}))}));
 const originalGroups=key=>original.find(q=>q.key===key).groups;
 const cloneGroups=groups=>groups.map(g=>({...g,values:[...g.values]}));

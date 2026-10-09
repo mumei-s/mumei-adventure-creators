@@ -1,17 +1,17 @@
-import {japanPreviews} from './japan-preview-catalog.js?v=28.4.5';
-import {poseItems} from './poses.js?v=28.4.5';
-import {dailySamples,currentCollection,landscapeScenes} from './collection.js?v=28.4.5';
-import {questions} from './catalog.js?v=28.4.5';
-import {formatPreviews} from './format-preview-catalog.js?v=28.4.5';
-import {typographyPreviews} from './type-preview-catalog.js?v=28.4.5';
-import {designLayoutFor,typographyLayoutFor} from './layout-preview-specs.js?v=28.4.5';
-import {individualSamples} from './sample-catalog.js?v=28.4.5';
-import {colorWorlds,luminousMedia} from './worlds.js?v=28.4.5';
-import {sceneSourcePlace} from './scene-presets.js?v=28.4.5';
-import {typographyPreview} from './typography-options.js?v=28.4.5';
-import {angleItems} from './angles.js?v=28.4.5';
-import {stylePresetFor} from './style-presets.js?v=28.4.5';
-import {scenePreviews} from './scene-preview-catalog.js?v=28.4.5';
+import {japanPreviews} from './japan-preview-catalog.js?v=28.4.6';
+import {poseItems} from './poses.js?v=28.4.6';
+import {dailySamples,currentCollection,landscapeScenes} from './collection.js?v=28.4.6';
+import {questions} from './catalog.js?v=28.4.6';
+import {formatPreviews} from './format-preview-catalog.js?v=28.4.6';
+import {typographyPreviews} from './type-preview-catalog.js?v=28.4.6';
+import {designLayoutFor,typographyLayoutFor} from './layout-preview-specs.js?v=28.4.6';
+import {individualSamples} from './sample-catalog.js?v=28.4.6';
+import {colorWorlds,luminousMedia} from './worlds.js?v=28.4.6';
+import {sceneSourcePlace} from './scene-presets.js?v=28.4.6';
+import {typographyPreview} from './typography-options.js?v=28.4.6';
+import {angleItems} from './angles.js?v=28.4.6';
+import {stylePresetFor} from './style-presets.js?v=28.4.6';
+import {scenePreviews} from './scene-preview-catalog.js?v=28.4.6';
 for(const item of poseItems)individualSamples['pose\u0000'+item.value]={file:item.file};
 for(const item of colorWorlds)individualSamples['palette\u0000'+item.value]={file:item.file};
 for(const item of luminousMedia)individualSamples['medium\u0000'+item.value]={file:item.file};
@@ -72,4 +72,4 @@ function typePreviewFor(mode){
  if(mode==='クリエイター名＋自由な見出し')return {className:'type-editorial',blocks:['日々の余白','夜にひらく、もうひとつの世界',name]};
  return {className:'type-title',blocks:['装い帖',name]};
 }
-import {drawingReferenceFor} from './drawing-references.js?v=28.4.5';
+import {drawingReferenceFor} from './drawing-references.js?v=28.4.6';

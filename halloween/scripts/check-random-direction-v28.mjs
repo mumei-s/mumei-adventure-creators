@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.5';
-import {applyCollection} from '../collection.js?v=28.4.5';
-import {initialSelections} from '../modes.js?v=28.4.5';
-import {buildDirection,shotCameraConstraints} from '../direction.js?v=28.4.5';
-import {applyPose} from '../poses.js?v=28.4.5';
-import {angleItems} from '../angles.js?v=28.4.5';
-import {productionPlan} from '../production-plan.js?v=28.4.5';
-import {renderInput,renderChatInput} from '../compiled-production.js?v=28.4.5';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.6';
+import {applyCollection} from '../collection.js?v=28.4.6';
+import {initialSelections} from '../modes.js?v=28.4.6';
+import {buildDirection,shotCameraConstraints} from '../direction.js?v=28.4.6';
+import {applyPose} from '../poses.js?v=28.4.6';
+import {angleItems} from '../angles.js?v=28.4.6';
+import {productionPlan} from '../production-plan.js?v=28.4.6';
+import {renderInput,renderChatInput} from '../compiled-production.js?v=28.4.6';
 
 const profile={displayName:'検査作者',biography:'写真とイラストで創作する',topics:['創作']};
 const parsed=plan=>JSON.parse(renderInput(plan).split('\n\n【全選択の個別レシピ】')[0]);

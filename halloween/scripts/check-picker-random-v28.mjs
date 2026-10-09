@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {createPicker} from '../picker.js?v=28.4.5';
-import {questions} from '../catalog.js?v=28.4.5';
-import {initialSelections,effectiveSelections} from '../modes.js?v=28.4.5';
-import {randomItemSelection} from '../random-selections.js?v=28.4.5';
+import {createPicker} from '../picker.js?v=28.4.6';
+import {questions} from '../catalog.js?v=28.4.6';
+import {initialSelections,effectiveSelections} from '../modes.js?v=28.4.6';
+import {randomItemSelection} from '../random-selections.js?v=28.4.6';
 
 class Node{
  constructor(tag='div',cls='',text=''){

@@ -1,9 +1,9 @@
-import {volumetricReferenceMedia} from './attachment-policy.js?v=28.4.5';
-import {stylePresetFor} from './style-presets.js?v=28.4.5';
-import {isNonHumanSource} from './source-kind.js?v=28.4.5';
-import {colorPolicy} from './color-policy.js?v=28.4.5';
-import {focusedDrawingInstructions,focusedSceneStageMaterial,focusedLayoutLines,renderFocusedChatInput} from './focused-production.js?v=28.4.5';
-import {worldTransferLayoutStage} from './world-transfer-layout.js?v=28.4.5';
+import {volumetricReferenceMedia} from './attachment-policy.js?v=28.4.6';
+import {stylePresetFor} from './style-presets.js?v=28.4.6';
+import {isNonHumanSource} from './source-kind.js?v=28.4.6';
+import {colorPolicy} from './color-policy.js?v=28.4.6';
+import {focusedDrawingInstructions,focusedSceneStageMaterial,focusedLayoutLines,renderFocusedChatInput} from './focused-production.js?v=28.4.6';
+import {worldTransferLayoutStage} from './world-transfer-layout.js?v=28.4.6';
 
 export const usesWorldTransferProduction=plan=>volumetricReferenceMedia.includes(plan?.values?.medium);
 const entries=refs=>Array.isArray(refs)?refs:refs?.references||refs?.refs||[];

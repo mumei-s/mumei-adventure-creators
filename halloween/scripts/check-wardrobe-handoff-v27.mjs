@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict';
 import {assertCompactHandoff,containsInstruction} from './compact-handoff-assertions-v28.mjs';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.5';
-import {applyCollection} from '../collection.js?v=28.4.5';
-import {productionPlan} from '../production-plan.js?v=28.4.5';
-import {composePrompt} from '../prompt.js?v=28.4.5';
-import {renderInput,renderChatInput} from '../compiled-production.js?v=28.4.5';
-import {usesFocusedProduction} from '../focused-production.js?v=28.4.5';
-import {usesWorldTransferProduction,worldTransferPrompts} from '../world-transfer-production.js?v=28.4.5';
-import {renderRecipeChatInput} from '../compact-production.js?v=28.4.5';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.6';
+import {applyCollection} from '../collection.js?v=28.4.6';
+import {productionPlan} from '../production-plan.js?v=28.4.6';
+import {composePrompt} from '../prompt.js?v=28.4.6';
+import {renderInput,renderChatInput} from '../compiled-production.js?v=28.4.6';
+import {usesFocusedProduction} from '../focused-production.js?v=28.4.6';
+import {usesWorldTransferProduction,worldTransferPrompts} from '../world-transfer-production.js?v=28.4.6';
+import {renderRecipeChatInput} from '../compact-production.js?v=28.4.6';
 
 applyCollection('halloween');
 const profile={displayName:'試作作者',activityEnabled:false};

@@ -1,17 +1,17 @@
-import {styleFidelity} from './style-fidelity.js?v=28.4.5';
-import {modeFoundation} from './japan-direction.js?v=28.4.5';
-import {compactImageOutputContract} from './output-contract.js?v=28.4.5';
-import {opticalSignature} from './optical-effects.js?v=28.4.5';
-import {colorPolicy} from './color-policy.js?v=28.4.5';
-import {sceneComposition} from './scene-composition.js?v=28.4.5';
-import {cameraContract} from './angles.js?v=28.4.5';
-import {photoReconstruction} from './photo-design.js?v=28.4.5';
-import {characterProportionInstruction} from './source-kind.js?v=28.4.5';
-import {luminousWorldContract} from './luminous-world.js?v=28.4.5';
-import {limitedNewspaperLayout} from './format-recipes.js?v=28.4.5';
-import {renderCompactChatInput} from './compact-production.js?v=28.4.5';
-import {usesFocusedProduction} from './focused-production.js?v=28.4.5';
-import {usesWorldTransferProduction,renderWorldTransferMaster} from './world-transfer-production.js?v=28.4.5';
+import {styleFidelity} from './style-fidelity.js?v=28.4.6';
+import {modeFoundation} from './japan-direction.js?v=28.4.6';
+import {compactImageOutputContract} from './output-contract.js?v=28.4.6';
+import {opticalSignature} from './optical-effects.js?v=28.4.6';
+import {colorPolicy} from './color-policy.js?v=28.4.6';
+import {sceneComposition} from './scene-composition.js?v=28.4.6';
+import {cameraContract} from './angles.js?v=28.4.6';
+import {photoReconstruction} from './photo-design.js?v=28.4.6';
+import {characterProportionInstruction} from './source-kind.js?v=28.4.6';
+import {luminousWorldContract} from './luminous-world.js?v=28.4.6';
+import {limitedNewspaperLayout} from './format-recipes.js?v=28.4.6';
+import {renderCompactChatInput} from './compact-production.js?v=28.4.6';
+import {usesFocusedProduction} from './focused-production.js?v=28.4.6';
+import {usesWorldTransferProduction,renderWorldTransferMaster} from './world-transfer-production.js?v=28.4.6';
 
 function luminousPriority(plan){
  const luminous=luminousWorldContract(plan.values,{noPerson:plan.noPerson,variant:plan.variant});

@@ -1,4 +1,5 @@
-import {drawingReferenceFor,drawingReferenceInstructions,loadDrawingReferences} from './drawing-references.js?v=28.4.5';
+import {drawingReferenceFor,drawingReferenceInstructions,loadDrawingReferences} from './drawing-references.js?v=28.4.6';
+import {fetchAssetBlob} from './asset-network.js?v=28.4.6';
 
 // Assistant-provided, repository-owned style samples. Character uploads remain separate.
 // File mappings are explicit: no arbitrary URL or filename can become a preset.
@@ -159,24 +160,22 @@ export function stylePresetInstructions(medium,{noPerson=false,values={}}={}){
   'プロンプトのコピーだけでは見本画像は届かない。'+preset.name+' が添付されていない場合は見本未確認と短く伝え、下記の作画仕様で生成する。見本がないことだけを理由に制作を止めない。'
  ];
 }
-export async function loadStylePresets(references,{fetchImpl=globalThis.fetch,FileClass=globalThis.File}={}){
+export async function loadStylePresets(references,{fetchImpl=globalThis.fetch,FileClass=globalThis.File,timeoutMs=15000}={}){
  if(typeof fetchImpl!=='function'||typeof FileClass!=='function')throw new Error('見本画像を準備できませんでした。');
  let cache=caches.get(fetchImpl);if(!cache){cache=new Map();caches.set(fetchImpl,cache);}
  return Promise.all(references.map(async reference=>{
   const preset=matchingPreset(reference);if(!preset)throw new Error('画風プリセットの指定を確認できませんでした。');
-  if(preset.role==='drawing')return {...preset,...(await loadDrawingReferences([preset],{fetchImpl,FileClass}))[0]};
+  if(preset.role==='drawing')return {...preset,...(await loadDrawingReferences([preset],{fetchImpl,FileClass,timeoutMs}))[0]};
   if(!cache.has(preset.file)){
    const pending=(async()=>{
-    const response=await fetchImpl(new URL(preset.file,import.meta.url));
-    if(!response.ok)throw new Error('画風プリセットを読み込めませんでした。再読み込みして制作してください。');
-    const blob=await response.blob(),expected=preset.file.endsWith('.png')?'image/png':'image/jpeg';
+    const blob=await fetchAssetBlob(new URL(preset.file,import.meta.url),{fetchImpl,timeoutMs,unavailableMessage:'画風プリセットを読み込めませんでした。通信を確認して再度制作してください。',timeoutMessage:'画風プリセットの通信が時間内に終わりませんでした。通信を確認して再度制作してください。'}),expected=preset.file.endsWith('.png')?'image/png':'image/jpeg';
     if(!blob.size||blob.type.split(';')[0]!==expected)throw new Error('画風プリセットの画像形式を確認できませんでした。');
     const bytes=new Uint8Array(await blob.slice(0,8).arrayBuffer());
     const valid=expected==='image/png'?[137,80,78,71,13,10,26,10].every((value,index)=>bytes[index]===value):bytes[0]===255&&bytes[1]===216&&bytes[2]===255;
     if(!valid)throw new Error('画風プリセットの画像内容を確認できませんでした。');
     return blob;
    })();
-   cache.set(preset.file,pending);pending.catch(()=>cache.delete(preset.file));
+   cache.set(preset.file,pending);pending.catch(()=>{if(cache.get(preset.file)===pending)cache.delete(preset.file);});
   }
   const blob=await cache.get(preset.file);
   return {...preset,name:reference.name,file:new FileClass([blob],reference.name,{type:blob.type})};

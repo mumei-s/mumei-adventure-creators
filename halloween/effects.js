@@ -1,7 +1,7 @@
-import {decorationProfile} from './decoration-effects.js?v=28.4.5';
-import {studioAppearance,refreshNightStudio} from './night-studio.js?v=28.4.5';
-import {createSpells} from './spells.js?v=28.4.5';
-import {nightIcons} from './halloween-icons.js?v=28.4.5';
+import {decorationProfile} from './decoration-effects.js?v=28.4.6';
+import {studioAppearance,refreshNightStudio} from './night-studio.js?v=28.4.6';
+import {createSpells} from './spells.js?v=28.4.6';
+import {nightIcons} from './halloween-icons.js?v=28.4.6';
 export function setupEffects(){
  let appearanceKey='';
  function refresh(){const appearance=studioAppearance(document.body.dataset.collection,document.body.dataset.lights),daily=appearance.everyday,key=(daily?'everyday':'halloween')+':'+document.body.dataset.lights;if(appearanceKey&&appearanceKey!==key)stopGame();appearanceKey=key;for(const id of ['play-ghosts','ghost-title'])document.getElementById(id).textContent=appearance.gameTitle;document.getElementById('ghost-arena')?.setAttribute('aria-label',daily?'身近なモチーフをあつめる場所':'Halloweenの仲間をあつめる場所');document.getElementById('spell-status').textContent=decorationProfile(document.body.dataset.decoration,daily).status;document.querySelectorAll('#magic-scene .ornament').forEach((n,i)=>{n.innerHTML=appearance.icons[i];n.setAttribute('aria-label',appearance.labels[i]+'の飾りで遊ぶ');});const creatures=document.querySelector('.night-creatures');if(creatures){creatures.replaceChildren();if(!daily)for(const icon of nightIcons.slice(0,3)){const n=document.createElement('i');n.innerHTML=icon;creatures.append(n);}}refreshNightStudio();}

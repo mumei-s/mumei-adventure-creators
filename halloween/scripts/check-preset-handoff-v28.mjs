@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {questions,AUTO} from '../catalog.js?v=28.4.5';
-import {stylePresets,stylePresetFor,loadStylePresets} from '../style-presets.js?v=28.4.5';
-import {deliveryImageFiles} from '../drawing-references.js?v=28.4.5';
-import {compactHistoryRecord,restoreHistoryRecord} from '../history-storage.js?v=28.4.5';
-import {makeZip} from '../zip.js?v=28.4.5';
+import {questions,AUTO} from '../catalog.js?v=28.4.6';
+import {stylePresets,stylePresetFor,loadStylePresets} from '../style-presets.js?v=28.4.6';
+import {deliveryImageFiles} from '../drawing-references.js?v=28.4.6';
+import {compactHistoryRecord,restoreHistoryRecord} from '../history-storage.js?v=28.4.6';
+import {makeZip} from '../zip.js?v=28.4.6';
 const root=new URL('../',import.meta.url),app=fs.readFileSync(new URL('app.js',root),'utf8');
 class Node {
  constructor(tag,text=''){this.tagName=tag;this.textContent=text;this.children=[];this.dataset={};this.value='';this.hidden=false;this.attributes={};this.open=false;}
@@ -37,5 +37,5 @@ vm.runInContext(app.slice(app.indexOf('async function downloadKit()'),app.indexO
 await context.downloadKit();const bytes=Buffer.from(await zipBlob.arrayBuffer());assert.ok(bytes.includes(Buffer.from(preset.name)));assert.ok(bytes.includes(Buffer.from('reference-01-character.png')));assert.ok(bytes.includes(Buffer.from('選んだ画風見本を含みます')));
 const record=await compactHistoryRecord(context.currentResult);assert.ok(!record.localDrawingRefs&&!record.localRefs);const restored=await restoreHistoryRecord(record);assert.deepEqual(restored.drawingReferences,[preset]);
 assert.ok(app.includes('localDrawingRefs:await loadStylePresets(restored.drawingReferences)'), 'History must reload preset image bytes');
-const html=fs.readFileSync(new URL('index.html',root),'utf8');assert.match(html,/id="style-preset-select"/);assert.match(html,/<select id="style-preset-select" hidden aria-hidden="true" tabindex="-1"/);assert.match(html,/id="style-preset-trigger".*aria-haspopup="dialog".*aria-controls="picker"/);const css=fs.readFileSync(new URL('corrective-ui.css',root),'utf8');assert.match(css,/picker-group-heading\{[^}]*border-top:3px[^}]*border-bottom:2px/);assert.match(css,/data-question=medium[^}]*\.sample-card\{[^}]*border-bottom:2px/);assert.match(app,/openPicker\(questions\.find\(q=>q\.key==='medium'\),\{view:'list'\}\)/,'Visible style control opens the separated list');assert.match(html,/画風見本を選ぶ/);assert.doesNotMatch(html,/id="style-image-input"|利用者.*画風.*添付/);
+const html=fs.readFileSync(new URL('index.html',root),'utf8');assert.match(html,/id="style-preset-select"/);assert.match(html,/<select id="style-preset-select" hidden aria-hidden="true" tabindex="-1"/);assert.match(html,/id="style-preset-trigger".*aria-haspopup="dialog".*aria-controls="picker"/);const css=fs.readFileSync(new URL('corrective-ui.css',root),'utf8');assert.match(css,/picker-group-heading\{[^}]*border-top:3px[^}]*border-bottom:2px/);assert.match(css,/data-question=medium[^}]*\.sample-card\{[^}]*border-bottom:2px/);assert.match(app,/openPicker\(questions\.find\(q=>q\.key==='medium'\)\)/,'Visible style control opens the airborne picker; an explicit list remains available');assert.match(html,/画風見本を選ぶ/);assert.doesNotMatch(html,/id="style-image-input"|利用者.*画風.*添付/);
 console.log('PASS preset UI and real app handoff: '+stylePresets.length+' options, AUTO/custom sync, distinct original character and luminous preset + full text share, copy warning, original images in ZIP, reloadable history metadata, no user-style-upload controls. Browser layout is not evaluated by this test.');

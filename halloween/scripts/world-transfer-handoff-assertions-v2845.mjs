@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import {worldTransferPrompts,renderWorldTransferMaster} from '../world-transfer-production.js?v=28.4.5';
-import {cameraContract} from '../angles.js?v=28.4.5';
-import {colorPolicy} from '../color-policy.js?v=28.4.5';
-import {isNonHumanSource} from '../source-kind.js?v=28.4.5';
-import {designLayoutFor,typographyLayoutFor} from '../layout-preview-specs.js?v=28.4.5';
+import {worldTransferPrompts,renderWorldTransferMaster} from '../world-transfer-production.js?v=28.4.6';
+import {cameraContract} from '../angles.js?v=28.4.6';
+import {colorPolicy} from '../color-policy.js?v=28.4.6';
+import {isNonHumanSource} from '../source-kind.js?v=28.4.6';
+import {designLayoutFor,typographyLayoutFor} from '../layout-preview-specs.js?v=28.4.6';
 
 const clauses=text=>(String(text||'').match(/[^。！？]+[。！？]?/gu)||[]).map(clause=>clause.trim()).filter(Boolean);
 const includes=(text,value,label)=>assert.ok(text.replace(/\s/g,'').includes(String(value).replace(/\s/g,'')),label+' lost: '+value);

@@ -1,42 +1,42 @@
-import {artworkBasis} from './artwork-basis.js?v=28.4.5';
-import {creatorHandoff,creatorDisplayLabel,creatorEditableName} from './creator-handoff.js?v=28.4.5';
-import {normalizeImageFile} from './image-files.js?v=28.4.5';
-import {deliveryImageFiles} from './drawing-references.js?v=28.4.5';
-import {recomposeHistoryDelivery} from './delivery-history-migration.js?v=28.4.5';
-import {selectionReferenceManifest,buildSelectionReferenceSheet,selectionReferenceCounts,buildIndividualSelectionReferenceZip} from './selection-references.js?v=28.4.5';
-import {createFavoritesPanel} from './favorites-panel.js?v=28.4.5';
-import {copySelectionExplanation} from './copy-scope.js?v=28.4.5';
-import {stylePresetFor,loadStylePresets} from './style-presets.js?v=28.4.5';
-import {sourceKinds,sourceSubjectFor} from './source-kind.js?v=28.4.5';
-import {inspectImageResource,createImagePreview,decodeRasterForDraw,releaseCanvas} from './image-resources.js?v=28.4.5';
-import {installNightStudio} from './night-studio.js?v=28.4.5';
-import {candidateAvailability,selectionConflicts,selectionWarnings} from './compatibility.js?v=28.4.5';
-import {updateSelectionFeedback} from './selection-feedback.js?v=28.4.5';
-import {appendRecipeEvidence} from './recipe-evidence.js?v=28.4.5';
-import {productionPlan,repairPrompt} from './production-plan.js?v=28.4.5';
-import {stagePrompts,optionalIdentityPrompts} from './production-workflow.js?v=28.4.5';
-import {createLayoutPanel} from './layout-export.js?v=28.4.5';
-import {applyPose} from './poses.js?v=28.4.5';
-import {applyCollection,dailyInspiration} from './collection.js?v=28.4.5';
-import {setupEffects} from './effects.js?v=28.4.5';
-import {colorWorlds} from './worlds.js?v=28.4.5';
-import {compactCreatorProfile} from './creator.js?v=28.4.5';
-import {createCropEditor} from './crop-editor.js?v=28.4.5';
-import {createPicker} from './picker.js?v=28.4.5';
-import {modeKeys,modeCopy,questionsForMode,initialSelections,effectiveSelections,proposalBatch} from './modes.js?v=28.4.5';
-import {buildReferenceBoard} from './guide-board.js?v=28.4.5';
-import {questions,visibleQuestions,defaults,AUTO,normalizeCreator,resolveSelections} from './catalog.js?v=28.4.5';
-import {composePrompt,needsReference} from './prompt.js?v=28.4.5';
-import {buildDirection} from './direction.js?v=28.4.5';
-import {sampleFor,typePreview} from './examples.js?v=28.4.5';
-import {makeZip} from './zip.js?v=28.4.5';
-import {imageDeliveryRepairPrompt} from './output-contract.js?v=28.4.5';
-import {editorialReferencesFor} from './editorial-reference-sources.js?v=28.4.5';
-import {HISTORY_STORAGE_FORMAT,restoreHistoryRecord,restoreHistoryCore,mergeUsedRecords,clearRestoredHistoryCache,historyStorageInfo} from './history-storage.js?v=28.4.5';
-import {createHistoryPersistence,mergeHistoryStates} from './history-persistence.js?v=28.4.5';
-import {createCreatorDraft} from './creator-draft.js?v=28.4.5';
-import {randomItemSelection} from './random-selections.js?v=28.4.5';
-const APP_VERSION='28.4.5';
+import {artworkBasis} from './artwork-basis.js?v=28.4.6';
+import {creatorHandoff,creatorDisplayLabel,creatorEditableName} from './creator-handoff.js?v=28.4.6';
+import {normalizeImageFile} from './image-files.js?v=28.4.6';
+import {deliveryImageFiles} from './drawing-references.js?v=28.4.6';
+import {recomposeHistoryDelivery} from './delivery-history-migration.js?v=28.4.6';
+import {selectionReferenceManifest,buildSelectionReferenceSheet,selectionReferenceCounts,buildIndividualSelectionReferenceZip} from './selection-references.js?v=28.4.6';
+import {createFavoritesPanel} from './favorites-panel.js?v=28.4.6';
+import {copySelectionExplanation} from './copy-scope.js?v=28.4.6';
+import {stylePresetFor,loadStylePresets} from './style-presets.js?v=28.4.6';
+import {sourceKinds,sourceSubjectFor} from './source-kind.js?v=28.4.6';
+import {inspectImageResource,createImagePreview,decodeRasterForDraw,releaseCanvas} from './image-resources.js?v=28.4.6';
+import {installNightStudio} from './night-studio.js?v=28.4.6';
+import {candidateAvailability,selectionConflicts,selectionWarnings} from './compatibility.js?v=28.4.6';
+import {updateSelectionFeedback} from './selection-feedback.js?v=28.4.6';
+import {appendRecipeEvidence} from './recipe-evidence.js?v=28.4.6';
+import {productionPlan,repairPrompt} from './production-plan.js?v=28.4.6';
+import {stagePrompts,optionalIdentityPrompts} from './production-workflow.js?v=28.4.6';
+import {createLayoutPanel} from './layout-export.js?v=28.4.6';
+import {applyPose} from './poses.js?v=28.4.6';
+import {applyCollection,dailyInspiration} from './collection.js?v=28.4.6';
+import {setupEffects} from './effects.js?v=28.4.6';
+import {colorWorlds} from './worlds.js?v=28.4.6';
+import {compactCreatorProfile} from './creator.js?v=28.4.6';
+import {createCropEditor} from './crop-editor.js?v=28.4.6';
+import {createPicker} from './picker.js?v=28.4.6';
+import {modeKeys,modeCopy,questionsForMode,initialSelections,effectiveSelections,proposalBatch} from './modes.js?v=28.4.6';
+import {buildReferenceBoard} from './guide-board.js?v=28.4.6';
+import {questions,visibleQuestions,defaults,AUTO,normalizeCreator,resolveSelections} from './catalog.js?v=28.4.6';
+import {composePrompt,needsReference} from './prompt.js?v=28.4.6';
+import {buildDirection} from './direction.js?v=28.4.6';
+import {sampleFor,typePreview} from './examples.js?v=28.4.6';
+import {makeZip} from './zip.js?v=28.4.6';
+import {imageDeliveryRepairPrompt} from './output-contract.js?v=28.4.6';
+import {editorialReferencesFor} from './editorial-reference-sources.js?v=28.4.6';
+import {HISTORY_STORAGE_FORMAT,restoreHistoryRecord,restoreHistoryCore,mergeUsedRecords,clearRestoredHistoryCache,historyStorageInfo} from './history-storage.js?v=28.4.6';
+import {createHistoryPersistence,mergeHistoryStates} from './history-persistence.js?v=28.4.6';
+import {createCreatorDraft} from './creator-draft.js?v=28.4.6';
+import {randomItemSelection} from './random-selections.js?v=28.4.6';
+const APP_VERSION='28.4.6';
 const $=id=>document.getElementById(id),STORAGE='mumeis-halloween-v2';
 let saved={history:[],used:[],count:0},view='auto',migrateHistory=false,historyWriteRevision=0,resultRequest=0,historyReady=Promise.resolve();
 const historyPersistence=createHistoryPersistence({key:STORAGE});
@@ -142,9 +142,9 @@ function randomizeItem(q){
  const input=mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:effectiveSelections(mode,selections);
  const draw=randomItemSelection(q,input,rng);
  if(!draw.value){tell(draw.reason);return;}
- selections[q.key]=draw.value;
- if(mode==='auto'&&selectedProposal)selectedProposal={...selectedProposal,[q.key]:draw.value};
- renderChoices(q.key,{keepViewport:true});
+ const changes=q.key==='line'?{line:draw.value,type:'セリフのみ'}:{[q.key]:draw.value};Object.assign(selections,changes);
+ if(mode==='auto'&&selectedProposal)selectedProposal={...selectedProposal,...changes};
+ renderChoices(q.key==='line'?'type':q.key,{keepViewport:true});
  tell(q.name+'：'+displayValue(q,draw.value)+(draw.warnings?.[0]?.reason?'。'+draw.warnings[0].reason:''));
  return true;
 }
@@ -157,7 +157,7 @@ function renderChoices(picked,{keepViewport=false}={}){
   if(old?.dataset.stamp===stamp){const button=old.querySelector('.choice');button.classList.remove('just-picked');buttons.push(button);nodes.push(old);return;}
   const row=old||el('div','choice-item');row.dataset.choiceKey=q.key;row.dataset.stamp=stamp;
   const b=old?.querySelector('.choice')||el('button');b.className='choice'+(picked===q.key?' just-picked':'');b.type='button';b.dataset.key=q.key;b.setAttribute('aria-haspopup','dialog');b.setAttribute('aria-label',q.name+'：'+displayValue(q,selections[q.key])+'。選択を変更');
-  const copy=el('span','choice-content');copy.append(el('span','choice-name',String(i+1).padStart(2,'0')+' / '+q.name),el('b','choice-value',displayValue(q,selections[q.key])),el('span','choice-hint',q.hint));
+  const copy=el('span','choice-content');copy.append(el('span','choice-name',String(i+1).padStart(2,'0')+' / '+q.name),el('b','choice-value',displayValue(q,selections[q.key])),el('span','choice-hint',q.hint));if(q.key==='type'&&selections.type==='セリフのみ'&&selections.line!==AUTO&&selections.line!=='セリフなし')copy.append(el('span','choice-line','入れる一言：'+selections.line));
   b.replaceChildren(copy,sampleNode(q.key,selections[q.key]),el('span','choice-plus','＋'));
   if(!old){b.addEventListener('click',()=>openPicker(q));const random=el('button','choice-random','🎲 ランダム');random.type='button';random.dataset.randomKey=q.key;random.addEventListener('click',()=>randomizeItem(q));row.append(b,random);}
   row.querySelector('.choice-random').setAttribute('aria-label',q.name+'だけをランダムに変更');
@@ -189,7 +189,7 @@ function renderBoard(values=selections,variant=null){
 function setView(mode){if(!['auto','phone','tablet','pc'].includes(mode))mode='auto';view=mode;document.body.dataset.view=mode;document.querySelectorAll('.view-switch button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===mode)));$('view-status').textContent={auto:'画面幅に合わせて表示',phone:'スマホの幅・大きな文字',tablet:'タブレットの幅・大きな選択枠',pc:'PCの幅・広い作業スペース'}[mode];try{localStorage.setItem('halloween-view',mode);}catch{}}
 let favoritePanel;
 const picker=createPicker({$,el,sampleNode,readSelection:()=>mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:effectiveSelections(mode,selections),choose,onRandom:q=>randomizeItem(q),onCustom:buildCustom,tell,artworkBasis,onFavoritesChange:()=>favoritePanel?.render()});
-favoritePanel=createFavoritesPanel({$,el,picker,questions,sampleNode,collection:()=>collection,onPick:(key,value)=>{const question=questions.find(q=>q.key===key);if(!question)return;const availability=candidateAvailability(key,value,mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:effectiveSelections(mode,selections));if(!availability.enabled)return tell(availability.reason);selections[key]=value;if(mode==='auto'&&selectedProposal)selectedProposal={...selectedProposal,[key]:value};if(!questionsForMode(mode).some(q=>q.key===key)){setMode('detail');selections[key]=value;}renderChoices(key);tell(question.name+'：'+displayValue(question,value));}});
+favoritePanel=createFavoritesPanel({$,el,picker,questions,sampleNode,collection:()=>collection,onPick:(key,value)=>{const question=questions.find(q=>q.key===key);if(!question)return;const availability=candidateAvailability(key,value,mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:effectiveSelections(mode,selections));if(!availability.enabled)return tell(availability.reason);const changes=key==='line'?{line:value,type:'セリフのみ'}:{[key]:value};Object.assign(selections,changes);if(mode==='auto'&&selectedProposal)selectedProposal={...selectedProposal,...changes};if(!questionsForMode(mode).some(q=>q.key===(key==='line'?'type':key))){setMode('detail');Object.assign(selections,changes);}renderChoices(key==='line'?'type':key);tell(question.name+'：'+displayValue(question,value));}});
 function renderStylePreset(values=selections){
  const select=$('style-preset-select');if(!select)return;
  if(!select.options.length){const auto=el('option',null,'おまかせ（制作時に見本も選びます）');auto.value=AUTO;select.append(auto);for(const group of questions.find(q=>q.key==='medium').groups){const node=el('optgroup');node.label=group.label;for(const medium of group.values){const option=el('option',null,medium);option.value=medium;node.append(option);}select.append(node);}}
@@ -202,12 +202,12 @@ function renderStylePreset(values=selections){
  $('style-preset-status').textContent=preset?values.medium+' / 共有・制作セットにこの見本画像が入ります。':custom?'自由指定の画風です。用意済みの見本画像はなく、文章の条件で制作します。':'おまかせ：制作する画風が決まったら、その見本を一緒に準備します。';
 }
 $('style-preset-select').addEventListener('change',e=>{const value=e.target.value;if(mode==='auto'){modeSnapshots.detail={...(selectedProposal||selections)};setMode('detail');}activeQuestion=questions.find(q=>q.key==='medium');choose(value);});
-$('style-preset-trigger').addEventListener('click',()=>{if(mode==='auto'){modeSnapshots.detail={...(selectedProposal||selections)};setMode('detail');}openPicker(questions.find(q=>q.key==='medium'),{view:'list'});$('style-preset-trigger').setAttribute('aria-expanded','true');});
+$('style-preset-trigger').addEventListener('click',()=>{if(mode==='auto'){modeSnapshots.detail={...(selectedProposal||selections)};setMode('detail');}openPicker(questions.find(q=>q.key==='medium'));$('style-preset-trigger').setAttribute('aria-expanded','true');});
 $('picker').addEventListener('close',()=>$('style-preset-trigger').setAttribute('aria-expanded','false'));
 $('style-preset-browse').addEventListener('click',()=>{if(mode==='auto'){modeSnapshots.detail={...(selectedProposal||selections)};setMode('detail');}openPicker(questions.find(q=>q.key==='medium'));});
-function openPicker(q,options={}){const text=q.key==='type'||q.key==='line';if(text){if(q.key==='line')textPart='line';q=questions.find(x=>x.key===textPart);}$('text-subtabs').hidden=true;document.querySelectorAll('[data-text-part]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.textPart===q.key)));activeQuestion=q;const activeQuestions=questionsForMode(mode),i=activeQuestions.findIndex(x=>x.key===(q.key==='line'?'type':q.key));$('picker-index').textContent=String(i+1).padStart(2,'0')+' / '+activeQuestions.length;picker.open(q,options);}
-function buildCustom(q){const form=el('form','custom-form');if(q.key==='size'){const w=el('input'),h=el('input');w.type=h.type='number';w.min=h.min='256';w.max=h.max='16000';w.required=h.required=true;w.placeholder='幅px';h.placeholder='高さpx';w.setAttribute('aria-label','希望の幅');h.setAttribute('aria-label','希望の高さ');form.append(w,el('span',null,'×'),h);form.addEventListener('submit',e=>{e.preventDefault();const a=Number(w.value),b=Number(h.value);if(!Number.isInteger(a)||!Number.isInteger(b)||a<256||b<256||a>16000||b>16000)return;const gcd=(x,y)=>y?gcd(y,x%y):x;const d=gcd(a,b);choose('自由サイズ｜'+a+'×'+b+'｜'+a/d+':'+b/d);});}else{const input=el('input');input.required=true;input.maxLength=160;input.placeholder='希望する'+q.name;input.setAttribute('aria-label',q.name+'を自由入力');form.append(input);form.addEventListener('submit',e=>{e.preventDefault();const v=input.value.trim().replace(/[\r\n]/g,' ');if(v)choose(v);});}const b=el('button','dark-button','この内容にする');b.type='submit';form.append(b);$('custom-area').append(form,el('p','microcopy',q.key==='size'?'256〜16,000px。生成環境に対応する実寸で出力されます。':'具体的な技法や角度も指定できます。160文字まで。'));form.querySelector('input').focus();}
-function choose(v){const availability=candidateAvailability(activeQuestion.key,v,mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:effectiveSelections(mode,selections));if(!availability.enabled){tell(availability.reason);return;}selections[activeQuestion.key]=v;const key=activeQuestion.key;renderChoices(key==='line'?'type':key);$('picker').close();document.querySelector('[data-key="'+(key==='line'?'type':key)+'"]')?.focus();const note=availability.warnings?.[0]?.reason;tell(note?activeQuestion.name+'を選びました。'+note:activeQuestion.name+'を選びました');}
+function openPicker(q,options={}){const text=q.key==='type'||q.key==='line';if(text){textPart=q.key;q=questions.find(x=>x.key===textPart);}$('text-subtabs').hidden=!text;$('text-entry-note').hidden=q.key!=='line';document.querySelectorAll('[data-text-part]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.textPart===q.key)));activeQuestion=q;const activeQuestions=questionsForMode(mode),i=activeQuestions.findIndex(x=>x.key===(q.key==='line'?'type':q.key));$('picker-index').textContent=String(i+1).padStart(2,'0')+' / '+activeQuestions.length;picker.open(q,options);}
+function buildCustom(q){const form=el('form','custom-form');if(q.key==='size'){const w=el('input'),h=el('input');w.type=h.type='number';w.min=h.min='256';w.max=h.max='16000';w.required=h.required=true;w.placeholder='幅px';h.placeholder='高さpx';w.setAttribute('aria-label','希望の幅');h.setAttribute('aria-label','希望の高さ');form.append(w,el('span',null,'×'),h);form.addEventListener('submit',e=>{e.preventDefault();const a=Number(w.value),b=Number(h.value);if(!Number.isInteger(a)||!Number.isInteger(b)||a<256||b<256||a>16000||b>16000)return;const gcd=(x,y)=>y?gcd(y,x%y):x;const d=gcd(a,b);choose('自由サイズ｜'+a+'×'+b+'｜'+a/d+':'+b/d);});}else{const input=el('input');input.required=true;input.maxLength=160;input.placeholder='希望する'+q.name;input.setAttribute('aria-label',q.name+'を自由入力');form.append(input);form.addEventListener('submit',e=>{e.preventDefault();const v=input.value.trim().replace(/[\r\n]/g,' ');if(v)choose(v);});}const b=el('button','dark-button','この内容にする');b.type='submit';form.append(b);$('custom-area').append(form,el('p','microcopy',q.key==='size'?'256〜16,000px。生成環境に対応する実寸で出力されます。':q.key==='line'?'作品へ入れる一言を、そのまま入力してください。160文字まで。':'具体的な技法や角度も指定できます。160文字まで。'));form.querySelector('input').focus();}
+function choose(v){const key=activeQuestion.key,input=mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:effectiveSelections(mode,selections),changes=key==='line'?{line:v,type:'セリフのみ'}:{[key]:v},candidate={...input,...changes},availability=candidateAvailability(key==='line'?'type':key,key==='line'?'セリフのみ':v,candidate);if(!availability.enabled){tell(availability.reason);return;}Object.assign(selections,changes);if(mode==='auto'&&selectedProposal)selectedProposal={...selectedProposal,...changes};renderChoices(key==='line'?'type':key);$('picker').close();document.querySelector('[data-key="'+(key==='line'?'type':key)+'"]')?.focus();const note=availability.warnings?.[0]?.reason;tell(note?activeQuestion.name+'を選びました。'+note:key==='line'?'この一言だけを入れる設定にしました。':activeQuestion.name+'を選びました');}
 function summarizeName(raw){const bracket=raw.match(/^[〖【「『]([^〗】」』]+)[〗】」』]/);return bracket?bracket[1].trim():raw;}
 async function loadProfile(){
  await draftReady;
@@ -247,7 +247,7 @@ async function generate(lockedValues=null){
   if(input.theme===AUTO&&profile.inspiration?.themes?.length){const publicThemes=new Set(questions.find(q=>q.key==='theme').groups.flatMap(g=>g.values)),themes=collection==='halloween'?profile.inspiration.themes.filter(theme=>publicThemes.has(theme)):profile.inspiration.themes;if(themes.length)input.theme=themes[Math.floor(rng()*themes.length)];}
   if(input.line===AUTO&&profile.inspiration?.phrases?.length)input.line=profile.inspiration.phrases[Math.floor(rng()*profile.inspiration.phrases.length)];
   const inputKind=lockedValues?(lockedValues.sourceKind||'unknown'):sourceKind;input.costume=sourceSubjectFor(inputKind,input.costume,{selectedCostume:lockedValues?undefined:selections.costume});
-  input.sceneUnified=true;input.line='セリフなし';const values=resolveSelections(input,rng,{recent:saved.history.filter(r=>(r.collection||'halloween')===collection).map(r=>r.values).reverse()});values.sourceKind=inputKind;values.collection=collection;values.line='セリフなし';const conflicts=selectionConflicts(values);if(conflicts.length){formError(conflicts[0].reason,$('generate'));throw new Error(conflicts[0].reason);}
+  input.sceneUnified=true;const values=resolveSelections(input,rng,{recent:saved.history.filter(r=>(r.collection||'halloween')===collection).map(r=>r.values).reverse()});values.sourceKind=inputKind;values.collection=collection;const conflicts=selectionConflicts(values);if(conflicts.length){formError(conflicts[0].reason,$('generate'));throw new Error(conflicts[0].reason);}
   if(attachmentMode==='bundle'&&needsReference(values)&&!refs.some(r=>r.role==='identity')){formError('主参照を添付してください。人物なしの風景は、参照を使う項目を選んでいなければ画像なしでも作れます。',$('image-input'));throw new Error('主参照画像がありません。');}
   let variant=applyPose(buildDirection(saved.used,values.mood,rng,collection,values),values.pose);
   const edition=uid(),ordered=attachmentMode==='bundle'?[refs.find(r=>r.role==='identity'),...refs.filter(r=>r.role!=='identity')].filter(Boolean).map(ref=>({...ref})):[];

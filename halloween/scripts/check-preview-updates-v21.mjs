@@ -1,12 +1,12 @@
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import assert from 'node:assert/strict';
-import {questions} from '../catalog.js?v=28.4.5';
-import {applyCollection} from '../collection.js?v=28.4.5';
-import {sampleFor} from '../examples.js?v=28.4.5';
-import {japanPreviews} from '../japan-preview-catalog.js?v=28.4.5';
-import {scenePreviews} from '../scene-preview-catalog.js?v=28.4.5';
-import {canonicalSelectionLabel} from '../legacy-selection-aliases.js?v=28.4.5';
+import {questions} from '../catalog.js?v=28.4.6';
+import {applyCollection} from '../collection.js?v=28.4.6';
+import {sampleFor} from '../examples.js?v=28.4.6';
+import {japanPreviews} from '../japan-preview-catalog.js?v=28.4.6';
+import {scenePreviews} from '../scene-preview-catalog.js?v=28.4.6';
+import {canonicalSelectionLabel} from '../legacy-selection-aliases.js?v=28.4.6';
 
 const inventory=JSON.parse(fs.readFileSync(new URL('../verification/v21/preview-inventory.json',import.meta.url)));
 const formats=JSON.parse(fs.readFileSync(new URL('../verification/v21/format-previews.json',import.meta.url)));

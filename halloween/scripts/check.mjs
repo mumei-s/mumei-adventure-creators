@@ -1,16 +1,16 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-import {questions,visibleQuestions,defaults,resolveSelections} from '../catalog.js?v=28.4.5';
-import {sampleFor} from '../examples.js?v=28.4.5';
-import {modeKeys,effectiveSelections} from '../modes.js?v=28.4.5';
-import {composePrompt} from '../prompt.js?v=28.4.5';
-import {selectedRecipes} from '../recipes.js?v=28.4.5';
-import {buildDirection} from '../direction.js?v=28.4.5';
-import {productionPlan} from '../production-plan.js?v=28.4.5';
-import {renderRecipeChatInput} from '../compact-production.js?v=28.4.5';
+import {questions,visibleQuestions,defaults,resolveSelections} from '../catalog.js?v=28.4.6';
+import {sampleFor} from '../examples.js?v=28.4.6';
+import {modeKeys,effectiveSelections} from '../modes.js?v=28.4.6';
+import {composePrompt} from '../prompt.js?v=28.4.6';
+import {selectedRecipes} from '../recipes.js?v=28.4.6';
+import {buildDirection} from '../direction.js?v=28.4.6';
+import {productionPlan} from '../production-plan.js?v=28.4.6';
+import {renderRecipeChatInput} from '../compact-production.js?v=28.4.6';
 import {assertFocusedHandoff} from './focused-handoff-assertions-v28.mjs';
-import {renderChatInput} from '../compiled-production.js?v=28.4.5';
+import {renderChatInput} from '../compiled-production.js?v=28.4.6';
 const keys=questions.map(q=>q.key),values=resolveSelections(Object.fromEntries(questions.map((q,i)=>[q.key,defaults[i]])),()=>0);
 assert.equal(visibleQuestions.length,10);assert.equal(modeKeys.detail.length,10);assert.equal(modeKeys.simple.length,5);assert.equal(modeKeys.auto.length,1);
 let count=0,images=new Set();for(const q of questions)for(const v of q.groups.flatMap(g=>g.values)){count++;const s=sampleFor(q.key,v);assert.notEqual(s.kind,'custom',q.key+':'+v);if(s.kind==='image'){assert.ok(fs.existsSync(new URL(s.src,new URL('../examples.js',import.meta.url))));images.add(s.src);}}

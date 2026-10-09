@@ -1,4 +1,4 @@
-import {preserveLegacyAssetKeys} from './legacy-selection-aliases.js?v=28.4.5';
+import {preserveLegacyAssetKeys} from './legacy-selection-aliases.js?v=28.4.6';
 // Original assistant-created scene illustrations. These thumbnails are
 // explanatory UI assets and are never character or drawing-style references.
 const sceneEntries=[

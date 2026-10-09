@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
 import {assertCompactHandoff,containsInstruction} from './compact-handoff-assertions-v28.mjs';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.5';
-import {applyCollection} from '../collection.js?v=28.4.5';
-import {initialSelections} from '../modes.js?v=28.4.5';
-import {buildDirection} from '../direction.js?v=28.4.5';
-import {applyPose} from '../poses.js?v=28.4.5';
-import {optionRecipe} from '../option-recipes.js?v=28.4.5';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.5';
-import {composePrompt} from '../prompt.js?v=28.4.5';
-import {renderChatInput} from '../compiled-production.js?v=28.4.5';
-import {colorPolicy} from '../palette-recipes.js?v=28.4.5';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.6';
+import {applyCollection} from '../collection.js?v=28.4.6';
+import {initialSelections} from '../modes.js?v=28.4.6';
+import {buildDirection} from '../direction.js?v=28.4.6';
+import {applyPose} from '../poses.js?v=28.4.6';
+import {optionRecipe} from '../option-recipes.js?v=28.4.6';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.6';
+import {composePrompt} from '../prompt.js?v=28.4.6';
+import {renderChatInput} from '../compiled-production.js?v=28.4.6';
+import {colorPolicy} from '../palette-recipes.js?v=28.4.6';
 
 const profile={displayName:'TEST CREATOR',activityEnabled:false,topics:[],biography:''};
 const random=()=>.28;

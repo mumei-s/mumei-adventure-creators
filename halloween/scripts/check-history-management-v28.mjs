@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {createHistoryPersistence} from '../history-persistence.js?v=28.4.5';
-import {HISTORY_RECORD_LIMIT,HISTORY_USED_LIMIT,HISTORY_BYTE_BUDGET,historyStorageInfo,compactHistoryRecord,restoreHistoryRecord} from '../history-storage.js?v=28.4.5';
+import {createHistoryPersistence} from '../history-persistence.js?v=28.4.6';
+import {HISTORY_RECORD_LIMIT,HISTORY_USED_LIMIT,HISTORY_BYTE_BUDGET,historyStorageInfo,compactHistoryRecord,restoreHistoryRecord} from '../history-storage.js?v=28.4.6';
 
 const key='history-management';
 class Database{

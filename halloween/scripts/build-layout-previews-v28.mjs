@@ -1,5 +1,5 @@
 import fs from 'node:fs';
-import {designLayoutValues,designLayoutFor,typographyLayoutValues,typographyLayoutFor,manuscriptFrameBounds} from '../layout-preview-specs.js?v=28.4.5';
+import {designLayoutValues,designLayoutFor,typographyLayoutValues,typographyLayoutFor,manuscriptFrameBounds} from '../layout-preview-specs.js?v=28.4.6';
 const root=new URL('../',import.meta.url),W=1000,H=1400;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
 const ink='#172638',imageFill='#d3e0ea',imageLine='#6b899f',copyFill='#f5d8a1',copyInk='#49321b',paper='#fffdf7';

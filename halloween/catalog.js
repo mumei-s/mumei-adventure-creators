@@ -1,13 +1,13 @@
-import {normalizeSelectionLabels} from './legacy-selection-aliases.js?v=28.4.5';
-import {extraTypographyGroups} from './typography-options.js?v=28.4.5';
-import {compatibleResolved} from './compatibility.js?v=28.4.5';
-import {selectionConflicts} from './compatibility.js?v=28.4.5';
-import {automaticSelection,sampleAutomaticSelections,selectionFingerprint,RepeatedSelectionError} from './random-selections.js?v=28.4.5';
-import {poseGroups} from './poses.js?v=28.4.5';
-import {colorWorlds,luminousMedia} from './worlds.js?v=28.4.5';
-import {halloweenSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.4.5';
-import {angleGroups} from './angles.js?v=28.4.5';
-import {referenceWorldMedia} from './world-bases.js?v=28.4.5';
+import {normalizeSelectionLabels} from './legacy-selection-aliases.js?v=28.4.6';
+import {extraTypographyGroups} from './typography-options.js?v=28.4.6';
+import {compatibleResolved} from './compatibility.js?v=28.4.6';
+import {selectionConflicts} from './compatibility.js?v=28.4.6';
+import {automaticSelection,sampleAutomaticSelections,selectionFingerprint,RepeatedSelectionError} from './random-selections.js?v=28.4.6';
+import {poseGroups} from './poses.js?v=28.4.6';
+import {colorWorlds,luminousMedia} from './worlds.js?v=28.4.6';
+import {halloweenSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.4.6';
+import {angleGroups} from './angles.js?v=28.4.6';
+import {referenceWorldMedia} from './world-bases.js?v=28.4.6';
 export const AUTO='おまかせ';
 const group=(label,values)=>({label,values:values.split('|')});
 // Select how to draw first, then the scene, subject, staging and final format.

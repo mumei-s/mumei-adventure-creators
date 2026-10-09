@@ -1,10 +1,10 @@
-import {visibleQuestions} from './catalog.js?v=28.4.5';
-import {selectionReferenceManifest,selectionReferenceCounts} from './selection-references.js?v=28.4.5';
-import {stylePresetFor} from './style-presets.js?v=28.4.5';
-import {composePrompt} from './prompt.js?v=28.4.5';
-import {stagePrompts} from './production-workflow.js?v=28.4.5';
-import {normalizeSelectionLabels,canonicalSelectionLabel} from './legacy-selection-aliases.js?v=28.4.5';
-import {productionPlan} from './production-plan.js?v=28.4.5';
+import {visibleQuestions} from './catalog.js?v=28.4.6';
+import {selectionReferenceManifest,selectionReferenceCounts} from './selection-references.js?v=28.4.6';
+import {stylePresetFor} from './style-presets.js?v=28.4.6';
+import {composePrompt} from './prompt.js?v=28.4.6';
+import {stagePrompts} from './production-workflow.js?v=28.4.6';
+import {normalizeSelectionLabels,canonicalSelectionLabel} from './legacy-selection-aliases.js?v=28.4.6';
+import {productionPlan} from './production-plan.js?v=28.4.6';
 
 export const DELIVERY_HISTORY_SCHEMA=1;
 const plain=value=>!!value&&typeof value==='object'&&!Array.isArray(value);

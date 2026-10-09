@@ -1,6 +1,6 @@
-import {colorPolicy} from './color-policy.js?v=28.4.5';
-import {halloweenSceneFocus} from './scene-presets.js?v=28.4.5';
-import {canonicalSelectionLabel,normalizeSelectionLabels} from './legacy-selection-aliases.js?v=28.4.5';
+import {colorPolicy} from './color-policy.js?v=28.4.6';
+import {halloweenSceneFocus} from './scene-presets.js?v=28.4.6';
+import {canonicalSelectionLabel,normalizeSelectionLabels} from './legacy-selection-aliases.js?v=28.4.6';
 
 const seasonal=/Halloween|HALLOWEEN|ハロウィン|ハロウィーン/i;
 export const isHalloweenMode=collection=>collection!=='everyday';

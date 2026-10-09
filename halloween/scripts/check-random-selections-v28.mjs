@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections,AUTO} from '../catalog.js?v=28.4.5';
-import {initialSelections,effectiveSelections,propose,proposalBatch,modeKeys} from '../modes.js?v=28.4.5';
-import {applyCollection} from '../collection.js?v=28.4.5';
-import {automaticSelection,automaticCandidates,selectionFingerprint} from '../random-selections.js?v=28.4.5';
-import {selectionConflicts,compatibleResolved} from '../compatibility.js?v=28.4.5';
-import {angleConstraint,moodConstraint} from '../view-constraints.js?v=28.4.5';
-import {buildDirection} from '../direction.js?v=28.4.5';
-import {applyPose} from '../poses.js?v=28.4.5';
-import {productionPlan} from '../production-plan.js?v=28.4.5';
-import {renderInput,renderChatInput} from '../compiled-production.js?v=28.4.5';
+import {questions,resolveSelections,AUTO} from '../catalog.js?v=28.4.6';
+import {initialSelections,effectiveSelections,propose,proposalBatch,modeKeys} from '../modes.js?v=28.4.6';
+import {applyCollection} from '../collection.js?v=28.4.6';
+import {automaticSelection,automaticCandidates,selectionFingerprint} from '../random-selections.js?v=28.4.6';
+import {selectionConflicts,compatibleResolved} from '../compatibility.js?v=28.4.6';
+import {angleConstraint,moodConstraint} from '../view-constraints.js?v=28.4.6';
+import {buildDirection} from '../direction.js?v=28.4.6';
+import {applyPose} from '../poses.js?v=28.4.6';
+import {productionPlan} from '../production-plan.js?v=28.4.6';
+import {renderInput,renderChatInput} from '../compiled-production.js?v=28.4.6';
 
 const rngFor=seed=>{let state=seed;return ()=>((state=Math.imul(state,1664525)+1013904223>>>0)/4294967296);};
 const keys=questions.map(q=>q.key),signature=values=>selectionFingerprint(values,keys);

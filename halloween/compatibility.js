@@ -1,14 +1,15 @@
-import {automaticView,viewSelectionIssues} from './view-constraints.js?v=28.4.5';
-import {colorPolicy} from './color-policy.js?v=28.4.5';
-import {paletteAllocation} from './palette-recipes.js?v=28.4.5';
-import {steepGroundFramingWarning} from './angles.js?v=28.4.5';
-import {layoutCopyConflicts} from './layout-copy-compatibility.js?v=28.4.5';
+import {automaticView,viewSelectionIssues} from './view-constraints.js?v=28.4.6';
+import {colorPolicy} from './color-policy.js?v=28.4.6';
+import {paletteAllocation} from './palette-recipes.js?v=28.4.6';
+import {steepGroundFramingWarning} from './angles.js?v=28.4.6';
+import {layoutCopyConflicts} from './layout-copy-compatibility.js?v=28.4.6';
+import {copyAuthority} from './copy-scope.js?v=28.4.6';
 const automatic=automaticView;
 const noPerson=v=>/風景を主役|モチーフだけ|紋章・アイコン/.test(v||'');
 const faceOnly=v=>/歯|目を|眉|涙|ニヤリ|ウインク|牙|無表情|横顔|正面|俯瞰|ローアングル|振り向く|顔を/.test(v||'');
 function nonViewConflicts(values={}){
  const reasons=[...layoutCopyConflicts(values)];
- if(values.design==='タイポグラフィーポスター'&&values.type==='文字を一切入れない')reasons.push({code:'typography-design-needs-copy',keys:['design','type'],reason:'「タイポグラフィーポスター」は文字の形が主役のデザインです。「文字を一切入れない」とは同時に成立しません。一枚絵など文字なしで成立するデザインを選ぶか、文字を許可する項目を選んでください。'});
+ if(values.design==='タイポグラフィーポスター'&&copyAuthority(values).noText)reasons.push({code:'typography-design-needs-copy',keys:values.type==='セリフのみ'?['design','type','line']:['design','type'],reason:'「タイポグラフィーポスター」は文字の形が主役のデザインです。'+(values.type==='セリフのみ'?'「セリフのみ」でも有効なセリフがないため、文字なしとは同時に成立しません。':'「文字を一切入れない」とは同時に成立しません。')+'一枚絵など文字なしで成立するデザインを選ぶか、文字を許可する項目を選んでください。'});
  if(noPerson(values.costume))for(const key of ['pose','mood'])if(!automatic(values[key])&&(key==='pose'||faceOnly(values[key])))reasons.push({keys:['costume',key],reason:'「人物なし」では人体の'+(key==='pose'?'ポーズ':'表情・顔角度')+'を実行できません。人物ありにするか、この項目をおまかせにしてください。'});
  if(values.medium==='クリスタルホログラム造形アニメ'&&(colorPolicy(values).restricted||values.palette==='銀と一滴の赤'))reasons.push({keys:['medium','palette'],reason:'この作風は虹色の干渉帯が必須です。単色・限定色では同じ完成像にならないため選べません。色を変えるか、色数に対応したクリスタル透光アニメを選べます。'});
  if(['水墨画','鉛筆デッサン','木炭画','モノクロ漫画','実写風モノクロ銀塩写真'].includes(values.medium)&&!automatic(values.palette)&&!['墨一色','モノクローム','参照画像の色を生かす'].includes(values.palette))reasons.push({keys:['medium','palette'],reason:'「'+values.medium+'」は無彩色で描く作画基準です。有彩色の配色は同時に使えません。モノクロームか、墨彩画・色鉛筆画など彩色に対応する作風を選んでください。'});

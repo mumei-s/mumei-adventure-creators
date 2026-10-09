@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import {createPicker,inspectorFitSize} from '../picker.js?v=28.4.5';
-import {pickerRecords} from '../picker-priority.js?v=28.4.5';
-import {questions,visibleQuestions} from '../catalog.js?v=28.4.5';
-import {applyCollection} from '../collection.js?v=28.4.5';
-import {ringPosition,restingRingPosition,pagePatternTone} from '../ring-motion.js?v=28.4.5';
+import {createPicker,inspectorFitSize} from '../picker.js?v=28.4.6';
+import {pickerRecords} from '../picker-priority.js?v=28.4.6';
+import {questions,visibleQuestions} from '../catalog.js?v=28.4.6';
+import {applyCollection} from '../collection.js?v=28.4.6';
+import {ringPosition,restingRingPosition,pagePatternTone} from '../ring-motion.js?v=28.4.6';
 
 // Short screens retain a 360px scrollable canvas rather than crushing its cards.
 // Exercise measured card bounds and two-line labels at all supported widths.
@@ -107,9 +107,11 @@ for(const [viewportWidth,viewportHeight]of [[304,480],[364,530],[844,660]])for(c
 selection={};
 
 
-// New default angle presentation is a readable list. The explicit ring path
-// below still validates the full existing swipe/orbit navigation contract.
-picker.open(questions.find(q=>q.key==='angle'));flush();assert.equal(surface.dataset.pickerView,'list');assert.equal($('ring-stage').hidden,true);assert.equal($('picker-options').hidden,false);const angleCards=$('picker-options').querySelectorAll('.sample-card');assert.ok(angleCards.length>6,'The default angle view presents a full list page');angleCards[0].querySelector('.sample-tools').children[0].click();assert.equal($('inspector-specs').open,false,'Technical detail must not replace the primary large visual');assert.ok($('inspector-specs-body').querySelector('.angle-detail')?.querySelector('img')?.src.endsWith('-detail.svg'),'Optional inspector details preserve the exact selected technical camera diagram');$('inspector').close();
+// Every newly opened item starts with the airborne ring. A deliberate list
+// preference belongs only to that item, never to the next text/angle picker.
+picker.open(questions.find(q=>q.key==='angle'));flush();assert.equal(surface.dataset.pickerView,'ring');assert.equal($('ring-stage').hidden,false);assert.equal($('picker-options').hidden,true);
+$('picker-list-view').click();const angleCards=$('picker-options').querySelectorAll('.sample-card');assert.ok(angleCards.length>6,'An explicitly requested angle list retains a full readable page');angleCards[0].querySelector('.sample-tools').children[0].click();assert.equal($('inspector-specs').open,false,'Technical detail must not replace the primary large visual');assert.ok($('inspector-specs-body').querySelector('.angle-detail')?.querySelector('img')?.src.endsWith('-detail.svg'),'Optional inspector details preserve the exact selected technical camera diagram');$('inspector').close();
+picker.open(questions.find(q=>q.key==='type'));flush();assert.equal(surface.dataset.pickerView,'ring','Angle list cannot hide the text ring');picker.open(questions.find(q=>q.key==='angle'));flush();assert.equal(surface.dataset.pickerView,'list','A deliberate item list preference survives reopening that same item');$('picker-ring-view').click();picker.open(questions.find(q=>q.key==='line'));flush();assert.equal(surface.dataset.pickerView,'ring','Dialogue uses the same airborne picker');
 // Every category/page in both collections retains its records and category label.
 let checkedPages=0,checkedCategories=0;
 for(const collection of ['halloween','everyday']){

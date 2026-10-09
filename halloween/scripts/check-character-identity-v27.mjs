@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.5';
-import {applyCollection} from '../collection.js?v=28.4.5';
-import {productionPlan} from '../production-plan.js?v=28.4.5';
-import {composePrompt} from '../prompt.js?v=28.4.5';
-import {colorPolicy} from '../color-policy.js?v=28.4.5';
-import {isPhotographicMedium} from '../photo-design.js?v=28.4.5';
-import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.5';
-import {cameraContract} from '../angles.js?v=28.4.5';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.6';
+import {applyCollection} from '../collection.js?v=28.4.6';
+import {productionPlan} from '../production-plan.js?v=28.4.6';
+import {composePrompt} from '../prompt.js?v=28.4.6';
+import {colorPolicy} from '../color-policy.js?v=28.4.6';
+import {isPhotographicMedium} from '../photo-design.js?v=28.4.6';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.6';
+import {cameraContract} from '../angles.js?v=28.4.6';
 import {compactReferences,assertCompactHandoff,assertCompactEngineering,includesClause} from './compact-handoff-assertions-v28.mjs';
-import {usesFocusedProduction} from '../focused-production.js?v=28.4.5';
-import {renderRecipeChatInput} from '../compact-production.js?v=28.4.5';
+import {usesFocusedProduction} from '../focused-production.js?v=28.4.6';
+import {renderRecipeChatInput} from '../compact-production.js?v=28.4.6';
 
 const profile={displayName:'同一性検査',activityEnabled:false},random=()=>.2;
 const base=resolveSelections({design:'通常の一枚絵',medium:'発光幻想アニメ',theme:'宇宙のHalloween',costume:'参照画像の衣装を生かす',place:'星空の砂漠',pose:'片手を差し出す',mood:'俯瞰＋目を見開く',angle:'俯瞰・45度',palette:'群青 × 菫 × 星白',type:'文字を一切入れない',line:'セリフなし',size:'縦ポスター2:3｜2400×3600｜2:3'},random);

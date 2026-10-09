@@ -1,9 +1,10 @@
-import {visibleQuestions} from './catalog.js?v=28.4.5';
-import {sampleFor} from './examples.js?v=28.4.5';
-import {releaseCanvas,readRasterDimensions,validateRasterDimensions} from './image-resources.js?v=28.4.5';
-import {stylePresetFor} from './style-presets.js?v=28.4.5';
-import {makeZip} from './zip.js?v=28.4.5';
-import {attachmentConditionPolicy,selectionAttachmentPolicy,focusedReferenceMedia} from './attachment-policy.js?v=28.4.5';
+import {visibleQuestions} from './catalog.js?v=28.4.6';
+import {sampleFor} from './examples.js?v=28.4.6';
+import {releaseCanvas,readRasterDimensions,validateRasterDimensions} from './image-resources.js?v=28.4.6';
+import {stylePresetFor} from './style-presets.js?v=28.4.6';
+import {makeZip} from './zip.js?v=28.4.6';
+import {attachmentConditionPolicy,selectionAttachmentPolicy,focusedReferenceMedia} from './attachment-policy.js?v=28.4.6';
+import {fetchAssetBlob} from './asset-network.js?v=28.4.6';
 
 export const SELECTION_SHEET_NAME='selection-references.jpg';
 export function selectionReferenceManifest(values,{sample=sampleFor,questions=visibleQuestions}={}){
@@ -78,8 +79,7 @@ export async function buildIndividualSelectionReferences(manifest,{documentImpl=
  for(let index=0;index<items.length;index++){
   const item=items[index],reference=references[index];
   if(reference.sourceKind==='original-raster'){
-   const response=await fetchImpl(new URL(reference.source,import.meta.url));if(!response.ok)throw new Error('選択見本を読み込めませんでした：'+item.value);
-   const blob=await response.blob(),dimensions=validateRasterDimensions(await readRasterDimensions(blob));
+   const blob=await fetchAssetBlob(new URL(reference.source,import.meta.url),{fetchImpl,timeoutMs:imageTimeoutMs,unavailableMessage:'選択見本を読み込めませんでした：'+item.value,timeoutMessage:'選択見本の通信が時間内に終わりませんでした。通信を確認して再度お試しください。'}),dimensions=validateRasterDimensions(await readRasterDimensions(blob));
    const type={png:'image/png',jpeg:'image/jpeg',webp:'image/webp',gif:'image/gif',bmp:'image/bmp',avif:'image/avif'}[dimensions.format];if(!type)throw new Error('選択見本の画像形式を確認できませんでした。');
    ready.push({...reference,width:dimensions.width,height:dimensions.height,file:new FileClass([blob],reference.name,{type})});continue;
   }

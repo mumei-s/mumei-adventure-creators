@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
-import {productionPlan} from '../production-plan.js?v=28.4.5';
-import {renderSelectionMaterial,renderInput,compileProduction} from '../compiled-production.js?v=28.4.5';
-import {renderRecipeChatInput as renderCompactChatInput} from '../compact-production.js?v=28.4.5';
-import {usesFocusedProduction} from '../focused-production.js?v=28.4.5';
+import {productionPlan} from '../production-plan.js?v=28.4.6';
+import {renderSelectionMaterial,renderInput,compileProduction} from '../compiled-production.js?v=28.4.6';
+import {renderRecipeChatInput as renderCompactChatInput} from '../compact-production.js?v=28.4.6';
+import {usesFocusedProduction} from '../focused-production.js?v=28.4.6';
 import {assertFocusedHandoff} from './focused-handoff-assertions-v28.mjs';
-import {cameraContract} from '../angles.js?v=28.4.5';
-import {composePrompt} from '../prompt.js?v=28.4.5';
-import {selectionReferenceManifest} from '../selection-references.js?v=28.4.5';
-import {buildDirection} from '../direction.js?v=28.4.5';
-import {applyPose} from '../poses.js?v=28.4.5';
+import {cameraContract} from '../angles.js?v=28.4.6';
+import {composePrompt} from '../prompt.js?v=28.4.6';
+import {selectionReferenceManifest} from '../selection-references.js?v=28.4.6';
+import {buildDirection} from '../direction.js?v=28.4.6';
+import {applyPose} from '../poses.js?v=28.4.6';
 
 // Compare actual selected plans with the detailed audit renderer. Length is a
 // bloat signal only; identity, fixed projection, engineering and copy are the

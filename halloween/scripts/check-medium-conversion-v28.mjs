@@ -2,16 +2,16 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
-import {questions} from '../catalog.js?v=28.4.5';
-import {applyCollection} from '../collection.js?v=28.4.5';
-import {initialSelections} from '../modes.js?v=28.4.5';
-import {buildDirection} from '../direction.js?v=28.4.5';
-import {applyPose} from '../poses.js?v=28.4.5';
-import {productionPlan} from '../production-plan.js?v=28.4.5';
-import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.5';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.5';
-import {isPhotographicMedium,photoReconstruction} from '../photo-design.js?v=28.4.5';
-import {cameraContract} from '../angles.js?v=28.4.5';
+import {questions} from '../catalog.js?v=28.4.6';
+import {applyCollection} from '../collection.js?v=28.4.6';
+import {initialSelections} from '../modes.js?v=28.4.6';
+import {buildDirection} from '../direction.js?v=28.4.6';
+import {applyPose} from '../poses.js?v=28.4.6';
+import {productionPlan} from '../production-plan.js?v=28.4.6';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.6';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.6';
+import {isPhotographicMedium,photoReconstruction} from '../photo-design.js?v=28.4.6';
+import {cameraContract} from '../angles.js?v=28.4.6';
 
 // This tests reference-conversion instructions, not image interpretation. No
 // pixels are submitted: referencePhoto/referenceDrawing describe the intended

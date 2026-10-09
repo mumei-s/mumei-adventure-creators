@@ -1,9 +1,9 @@
-import {compileProduction} from './compiled-production.js?v=28.4.5';
-import {stylePresetFor} from './style-presets.js?v=28.4.5';
-import {composeArtworkStage,composeArtworkRepair} from './artwork-stage.js?v=28.4.5';
-import {needsStagedProduction,composeLayoutStage} from './staged-production.js?v=28.4.5';
-import {identityPreparationStage,renderFocusedChatInput,usesFocusedProduction} from './focused-production.js?v=28.4.5';
-import {usesWorldTransferProduction,worldTransferPrompts} from './world-transfer-production.js?v=28.4.5';
+import {compileProduction} from './compiled-production.js?v=28.4.6';
+import {stylePresetFor} from './style-presets.js?v=28.4.6';
+import {composeArtworkStage,composeArtworkRepair} from './artwork-stage.js?v=28.4.6';
+import {needsStagedProduction,composeLayoutStage} from './staged-production.js?v=28.4.6';
+import {identityPreparationStage,renderFocusedChatInput,usesFocusedProduction} from './focused-production.js?v=28.4.6';
+import {usesWorldTransferProduction,worldTransferPrompts} from './world-transfer-production.js?v=28.4.6';
 
 const stagedInputs=new WeakMap();
 export function stagePrompts(plan,refs=plan.referenceManifest||[],{includeIdentityPreparation=false}={}){

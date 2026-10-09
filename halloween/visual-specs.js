@@ -1,15 +1,15 @@
-import {canonicalSelectionLabel,preserveLegacyAssetKeys} from './legacy-selection-aliases.js?v=28.4.5';
-import {everydayRecipe} from './everyday-options.js?v=28.4.5';
-import {mediumDefinition} from './looks.js?v=28.4.5';
-import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=28.4.5';
-import {poseItems} from './poses.js?v=28.4.5';
-import {colorContract,luminousMedia,colorWorlds,sceneryMaterials} from './worlds.js?v=28.4.5';
-import {referenceWorldSceneRecipe} from './world-bases.js?v=28.4.5';
-import {formatFor} from './formats.js?v=28.4.5';
-import {typographyRecipe} from './typography-options.js?v=28.4.5';
-import {typographyLayoutInstruction} from './layout-preview-specs.js?v=28.4.5';
-import {sceneSourcePlace} from './scene-presets.js?v=28.4.5';
-import {angleRecipe} from './angles.js?v=28.4.5';
+import {canonicalSelectionLabel,preserveLegacyAssetKeys} from './legacy-selection-aliases.js?v=28.4.6';
+import {everydayRecipe} from './everyday-options.js?v=28.4.6';
+import {mediumDefinition} from './looks.js?v=28.4.6';
+import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=28.4.6';
+import {poseItems} from './poses.js?v=28.4.6';
+import {colorContract,luminousMedia,colorWorlds,sceneryMaterials} from './worlds.js?v=28.4.6';
+import {referenceWorldSceneRecipe} from './world-bases.js?v=28.4.6';
+import {formatFor} from './formats.js?v=28.4.6';
+import {typographyRecipe} from './typography-options.js?v=28.4.6';
+import {typographyLayoutInstruction} from './layout-preview-specs.js?v=28.4.6';
+import {sceneSourcePlace} from './scene-presets.js?v=28.4.6';
+import {angleRecipe} from './angles.js?v=28.4.6';
 const read=source=>Object.fromEntries(source.trim().split('\n').map(line=>{const i=line.indexOf('=');return [line.slice(0,i),line.slice(i+1)];}));
 export const costumeSpecs=read(`
 魔女・魔法使い=尖った帽子・長いローブ・魔術の紋様。布の厚みと帽子の形を明確にする

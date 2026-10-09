@@ -1,20 +1,20 @@
-import {selectionReferenceManifest,selectionReferenceCounts} from '../selection-references.js?v=28.4.5';
+import {selectionReferenceManifest,selectionReferenceCounts} from '../selection-references.js?v=28.4.6';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import {File} from 'node:buffer';
-import {questions,AUTO,normalizeCreator,resolveSelections} from '../catalog.js?v=28.4.5';
-import {initialSelections,effectiveSelections} from '../modes.js?v=28.4.5';
-import {sourceSubjectFor} from '../source-kind.js?v=28.4.5';
-import {selectionConflicts,candidateAvailability} from '../compatibility.js?v=28.4.5';
-import {buildDirection} from '../direction.js?v=28.4.5';
-import {applyPose} from '../poses.js?v=28.4.5';
-import {productionPlan} from '../production-plan.js?v=28.4.5';
-import {stagePrompts} from '../production-workflow.js?v=28.4.5';
-import {composePrompt,needsReference} from '../prompt.js?v=28.4.5';
-import {stylePresetFor} from '../style-presets.js?v=28.4.5';
-import {deliveryImageFiles} from '../drawing-references.js?v=28.4.5';
-import {compactCreatorProfile} from '../creator.js?v=28.4.5';
+import {questions,AUTO,normalizeCreator,resolveSelections} from '../catalog.js?v=28.4.6';
+import {initialSelections,effectiveSelections} from '../modes.js?v=28.4.6';
+import {sourceSubjectFor} from '../source-kind.js?v=28.4.6';
+import {selectionConflicts,candidateAvailability} from '../compatibility.js?v=28.4.6';
+import {buildDirection} from '../direction.js?v=28.4.6';
+import {applyPose} from '../poses.js?v=28.4.6';
+import {productionPlan} from '../production-plan.js?v=28.4.6';
+import {stagePrompts} from '../production-workflow.js?v=28.4.6';
+import {composePrompt,needsReference} from '../prompt.js?v=28.4.6';
+import {stylePresetFor} from '../style-presets.js?v=28.4.6';
+import {deliveryImageFiles} from '../drawing-references.js?v=28.4.6';
+import {compactCreatorProfile} from '../creator.js?v=28.4.6';
 
 const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8');
 function actual(start,next){const a=app.indexOf(start),b=app.indexOf(next,a);assert.ok(a>=0&&b>a,'Actual app source exists: '+start);return app.slice(a,b);}

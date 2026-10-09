@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {angleItems,cameraContract} from '../angles.js?v=28.4.5';
-import {angleConstraint} from '../view-constraints.js?v=28.4.5';
-import {applyCollection} from '../collection.js?v=28.4.5';
-import {initialSelections} from '../modes.js?v=28.4.5';
-import {resolveSelections} from '../catalog.js?v=28.4.5';
-import {buildDirection} from '../direction.js?v=28.4.5';
-import {applyPose} from '../poses.js?v=28.4.5';
-import {productionPlan} from '../production-plan.js?v=28.4.5';
-import {composePrompt} from '../prompt.js?v=28.4.5';
-import {renderChatInput} from '../compiled-production.js?v=28.4.5';
+import {angleItems,cameraContract} from '../angles.js?v=28.4.6';
+import {angleConstraint} from '../view-constraints.js?v=28.4.6';
+import {applyCollection} from '../collection.js?v=28.4.6';
+import {initialSelections} from '../modes.js?v=28.4.6';
+import {resolveSelections} from '../catalog.js?v=28.4.6';
+import {buildDirection} from '../direction.js?v=28.4.6';
+import {applyPose} from '../poses.js?v=28.4.6';
+import {productionPlan} from '../production-plan.js?v=28.4.6';
+import {composePrompt} from '../prompt.js?v=28.4.6';
+import {renderChatInput} from '../compiled-production.js?v=28.4.6';
 
 const root=new URL('../',import.meta.url),degrees=r=>r*180/Math.PI;
 function attrs(tag){return Object.fromEntries([...tag.matchAll(/([\w-]+)="([^"]*)"/g)].map(m=>[m[1],m[2]]));}

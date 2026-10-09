@@ -1,16 +1,16 @@
 import assert from 'node:assert/strict';
-import {questions} from '../catalog.js?v=28.4.5';
-import {applyCollection} from '../collection.js?v=28.4.5';
-import {initialSelections} from '../modes.js?v=28.4.5';
-import {angleItems,cameraContract} from '../angles.js?v=28.4.5';
-import {buildDirection} from '../direction.js?v=28.4.5';
-import {applyPose} from '../poses.js?v=28.4.5';
-import {optionRecipe} from '../option-recipes.js?v=28.4.5';
-import {artworkBasis,artworkBasisValues} from '../artwork-basis.js?v=28.4.5';
-import {mediumExecution} from '../medium-execution.js?v=28.4.5';
-import {productionPlan} from '../production-plan.js?v=28.4.5';
-import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.5';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.5';
+import {questions} from '../catalog.js?v=28.4.6';
+import {applyCollection} from '../collection.js?v=28.4.6';
+import {initialSelections} from '../modes.js?v=28.4.6';
+import {angleItems,cameraContract} from '../angles.js?v=28.4.6';
+import {buildDirection} from '../direction.js?v=28.4.6';
+import {applyPose} from '../poses.js?v=28.4.6';
+import {optionRecipe} from '../option-recipes.js?v=28.4.6';
+import {artworkBasis,artworkBasisValues} from '../artwork-basis.js?v=28.4.6';
+import {mediumExecution} from '../medium-execution.js?v=28.4.6';
+import {productionPlan} from '../production-plan.js?v=28.4.6';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.6';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.6';
 
 // These are instruction-contract tests. They do not claim an image is correct
 // or identify the reason an external image service refused a supplied prompt.

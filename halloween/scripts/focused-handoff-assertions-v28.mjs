@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import {cameraContract} from '../angles.js?v=28.4.5';
-import {colorPolicy} from '../color-policy.js?v=28.4.5';
-import {designLayoutFor,typographyLayoutFor} from '../layout-preview-specs.js?v=28.4.5';
-import {limitedNewspaperLayout} from '../format-recipes.js?v=28.4.5';
-import {characterProportionInstruction,isNonHumanSource} from '../source-kind.js?v=28.4.5';
-import {volumetricReferenceMedia} from '../attachment-policy.js?v=28.4.5';
+import {cameraContract} from '../angles.js?v=28.4.6';
+import {colorPolicy} from '../color-policy.js?v=28.4.6';
+import {designLayoutFor,typographyLayoutFor} from '../layout-preview-specs.js?v=28.4.6';
+import {limitedNewspaperLayout} from '../format-recipes.js?v=28.4.6';
+import {characterProportionInstruction,isNonHumanSource} from '../source-kind.js?v=28.4.6';
+import {volumetricReferenceMedia} from '../attachment-policy.js?v=28.4.6';
 import {assertWorldTransferHandoff} from './world-transfer-handoff-assertions-v2845.mjs';
 
 const clauses=text=>(String(text||'').match(/[^。！？]+[。！？]?/gu)||[]).map(clause=>clause.trim()).filter(Boolean);

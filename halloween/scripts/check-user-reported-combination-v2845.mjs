@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {questions,AUTO,resolveSelections} from '../catalog.js?v=28.4.5';
-import {initialSelections,effectiveSelections,questionsForMode,proposalBatch} from '../modes.js?v=28.4.5';
-import {candidateAvailability,selectionConflicts} from '../compatibility.js?v=28.4.5';
-import {randomItemSelection} from '../random-selections.js?v=28.4.5';
-import {productionPlan} from '../production-plan.js?v=28.4.5';
-import {composePrompt} from '../prompt.js?v=28.4.5';
-import {optionalIdentityPrompts} from '../production-workflow.js?v=28.4.5';
-import {structuredCopyRules} from '../layout-copy-compatibility.js?v=28.4.5';
+import {questions,AUTO,resolveSelections} from '../catalog.js?v=28.4.6';
+import {initialSelections,effectiveSelections,questionsForMode,proposalBatch} from '../modes.js?v=28.4.6';
+import {candidateAvailability,selectionConflicts} from '../compatibility.js?v=28.4.6';
+import {randomItemSelection} from '../random-selections.js?v=28.4.6';
+import {productionPlan} from '../production-plan.js?v=28.4.6';
+import {composePrompt} from '../prompt.js?v=28.4.6';
+import {optionalIdentityPrompts} from '../production-workflow.js?v=28.4.6';
+import {structuredCopyRules} from '../layout-copy-compatibility.js?v=28.4.6';
 
 const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8'),random=()=>.27;
 const profile={displayName:'検査作者',activityEnabled:false};

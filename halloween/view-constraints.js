@@ -1,4 +1,4 @@
-import {canonicalSelectionLabel} from './legacy-selection-aliases.js?v=28.4.5';
+import {canonicalSelectionLabel} from './legacy-selection-aliases.js?v=28.4.6';
 // The names below describe independent physical requirements. Preview row
 // coordinates are illustrative; only the axes actually named are fixed.
 const angles=Object.create(null),moods=Object.create(null),poses=Object.create(null);

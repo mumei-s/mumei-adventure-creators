@@ -1,10 +1,10 @@
 // Compose an inspected scene into its selected page. This stage never repeats
 // identity transfer or scene production, and never receives their source images.
-import {formatFor} from './formats.js?v=28.4.5';
-import {detailedFormat,limitedNewspaperLayout} from './format-recipes.js?v=28.4.5';
-import {designLayoutFor,typographyLayoutFor} from './layout-preview-specs.js?v=28.4.5';
-import {publicCopyContext,copyEditingInstruction} from './copy-scope.js?v=28.4.5';
-import {colorPolicy} from './color-policy.js?v=28.4.5';
+import {formatFor} from './formats.js?v=28.4.6';
+import {detailedFormat,limitedNewspaperLayout} from './format-recipes.js?v=28.4.6';
+import {designLayoutFor,typographyLayoutFor} from './layout-preview-specs.js?v=28.4.6';
+import {publicCopyContext,copyEditingInstruction} from './copy-scope.js?v=28.4.6';
+import {colorPolicy} from './color-policy.js?v=28.4.6';
 
 const imageKinds=new Set(['graphic','art','keyvisual','landscape','cinemastill','illustration']);
 const directions={horizontal:'横書き',vertical:'縦書き・右から左',diagonal:'紙面内の斜め書き'};

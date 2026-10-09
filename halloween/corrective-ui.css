@@ -22,4 +22,13 @@ body #picker[data-question=angle] #picker-options:not(.comparing){grid-template-
 #picker[data-question=angle] .ring-focus{width:190px;padding:10px}
 #picker[data-question=angle] .ring-focus>.sample-thumb{width:164px;height:148px;min-height:148px;border-radius:8px}
 .angle-detail{margin:10px 0}.angle-detail img{display:block;width:100%;height:auto;background:#fff}.angle-detail figcaption{font-size:.85rem}
+#picker[data-question=angle][data-picker-view=ring] .picker-body{overflow-y:auto}
+.text-entry-note{margin:0;padding:8px 10px;border:1px solid #ad8158;border-radius:8px;background:#fff0d8;color:#523521;font-size:.8rem;line-height:1.6}
+.choice-line{display:block;margin-top:7px;font-size:.8rem;font-weight:800;line-height:1.5;overflow-wrap:anywhere}
+.mix-result-note{padding:12px 14px;border:2px solid #d3a36d;border-radius:14px;background:#fff5e3}
+.mix-result-note>b{display:block;margin-bottom:4px}
+.mix-repair-hints{margin-top:12px;border:2px solid #b78251;border-radius:14px;padding:12px 14px;background:#fffaf0;color:#35271e}
+.mix-repair-hints>summary{font-weight:800;cursor:pointer;min-height:30px}
+.mix-repair-hints ol{padding-left:1.5em;margin:14px 0 8px}
+.mix-repair-hints li{margin:14px 0}.mix-repair-hints p{overflow-wrap:anywhere;line-height:1.7}
 @media(max-width:619px){#picker[data-question=angle] .ring-pop{width:102px}#picker[data-question=angle] .ring-pop .sample-thumb{width:84px;height:76px}#picker[data-question=angle] .ring-focus{width:166px}#picker[data-question=angle] .ring-focus>.sample-thumb{width:140px;height:126px;min-height:126px}body #picker[data-question=angle] #picker-options:not(.comparing){gap:8px}#picker[data-question=angle] #picker-options .sample-card{padding:6px}#picker[data-question=angle] #picker-options .option-button>b{font-size:.9rem}}

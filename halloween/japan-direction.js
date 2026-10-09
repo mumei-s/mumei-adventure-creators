@@ -1,7 +1,7 @@
-import {typographyOption} from './typography-options.js?v=28.4.5';
-import {copyAuthority} from './copy-scope.js?v=28.4.5';
-import {isPhotographicMedium} from './photo-design.js?v=28.4.5';
-import {isNonHumanSource} from './source-kind.js?v=28.4.5';
+import {typographyOption} from './typography-options.js?v=28.4.6';
+import {copyAuthority} from './copy-scope.js?v=28.4.6';
+import {isPhotographicMedium} from './photo-design.js?v=28.4.6';
+import {isNonHumanSource} from './source-kind.js?v=28.4.6';
 // Japanese publishing/drawing is the default grammar, not a replacement identity.
 // Explicit overseas techniques, clothing and architecture retain their origin.
 export const CRYSTAL_OBJECT='クリスタルホログラム造形アニメ';

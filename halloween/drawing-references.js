@@ -1,11 +1,12 @@
 // These original, transparent completed artworks are production inputs.
 // General picker thumbnails and the nine scene examples remain UI-only.
-import {focusedReferenceMedia} from './attachment-policy.js?v=28.4.5';
+import {focusedReferenceMedia} from './attachment-policy.js?v=28.4.6';
+import {fetchAssetBlob} from './asset-network.js?v=28.4.6';
 const masters=[
  {medium:'宝石光彩アニメ',file:'assets/drawing-jewel-anime-v28.png',name:'drawing-jewel-anime.png',role:'drawing',label:'宝石光彩アニメの画風原画'},
  {medium:'宝石光彩リアル',file:'assets/drawing-jewel-real-v28.png',name:'drawing-jewel-real.png',role:'drawing',label:'宝石光彩リアルの画風原画'}
 ];
-const loaded=new Map();
+const caches=new WeakMap();
 export function drawingReferenceFor(medium){const master=masters.find(ref=>ref.medium===medium);return master?{...master}:null;}
 export function drawingReferenceInstructions(medium,{noPerson=false,values={}}={}){
  const ref=drawingReferenceFor(medium);if(!ref)return [];
@@ -21,21 +22,21 @@ export function drawingReferenceInstructions(medium,{noPerson=false,values={}}={
   noPerson?(medium==='宝石光彩アニメ'?'景物・物体を2Dアニメの描線と色面、透明な重ね色で描く。人物原画の顔・身体の描写は非適用。':'景物・物体を実物の立体と物理的な材質、屈折・反射光で構築する。人物原画の顔・身体の描写は非適用。'):medium==='宝石光彩アニメ'?'2Dアニメの描線・整理した顔の色面を採用し、実際に開いて見える目だけに虹彩の透明層を描く。閉眼は開かず、'+hairRule+''+(nonHumanSource?'元の景色・図案から人物の顔・髪・身体を復元せず、独自の主役を描き起こす。':'主参照の写真の皮膚質感や各部の細寸法を下地に残さず、同じ人物と分かる特徴の組合せを描き起こす。'):'実写の自然な立体と物理的な質感・屈折光を採用する。目の反射は実際に開いて見える目だけに描く。閉眼は開かず、'+hairRule+'アニメ原画や巨大な瞳を混ぜない。'
  ];
 }
-export async function loadDrawingReferences(references,{fetchImpl=globalThis.fetch,FileClass=globalThis.File}={}){
+export async function loadDrawingReferences(references,{fetchImpl=globalThis.fetch,FileClass=globalThis.File,timeoutMs=15000}={}){
+ if(typeof fetchImpl!=='function'||typeof FileClass!=='function')throw new Error('画風原画を準備できませんでした。');
+ let loaded=caches.get(fetchImpl);if(!loaded){loaded=new Map();caches.set(fetchImpl,loaded);}
  return Promise.all(references.map(async reference=>{
   const master=masters.find(ref=>ref.file===reference.file&&ref.name===reference.name&&ref.medium===reference.medium);
   if(!master)throw new Error('画風原画の指定を確認できませんでした。');
   if(!loaded.has(master.file)){
    const pending=(async()=>{
-    const response=await fetchImpl(new URL(master.file,import.meta.url));
-    if(!response.ok)throw new Error('画風原画を読み込めませんでした。再読み込みして制作してください。');
-    const blob=await response.blob();
+    const blob=await fetchAssetBlob(new URL(master.file,import.meta.url),{fetchImpl,timeoutMs,unavailableMessage:'画風原画を読み込めませんでした。通信を確認して再度制作してください。',timeoutMessage:'画風原画の通信が時間内に終わりませんでした。通信を確認して再度制作してください。'});
     if(!blob.size||blob.type.split(';')[0]!=='image/png')throw new Error('画風原画の画像を確認できませんでした。');
-    return new FileClass([blob],master.name,{type:'image/png'});
+    return blob;
    })();
-   loaded.set(master.file,pending);pending.catch(()=>loaded.delete(master.file));
+   loaded.set(master.file,pending);pending.catch(()=>{if(loaded.get(master.file)===pending)loaded.delete(master.file);});
   }
-  return {...master,file:await loaded.get(master.file)};
+  return {...master,file:new FileClass([await loaded.get(master.file)],master.name,{type:'image/png'})};
  }));
 }
 export function deliveryImageFiles(result,{FileClass=globalThis.File}={}){

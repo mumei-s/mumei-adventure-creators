@@ -2,7 +2,7 @@
 // Simple names, headlines and writing directions remain independent choices.
 // A rich preset that explicitly promises another publication structure cannot
 // be squeezed into the chosen format or silently rewritten as different copy.
-import {designLayoutFor} from './layout-preview-specs.js?v=28.4.5';
+import {designLayoutFor} from './layout-preview-specs.js?v=28.4.6';
 
 const magazineCovers=Object.freeze(['週刊誌の表紙','ファッション雑誌の表紙','カルチャー誌の表紙','ゴシック雑誌の表紙','文芸誌の表紙','ZINEの表紙']);
 const informationLayouts=Object.freeze(['広告ビジュアル','スイス式グリッドポスター','音楽フェスポスター','ゲームのパッケージ']);

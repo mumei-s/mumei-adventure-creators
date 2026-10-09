@@ -1,4 +1,4 @@
-import {preserveLegacyAssetKeys} from './legacy-selection-aliases.js?v=28.4.5';
+import {preserveLegacyAssetKeys} from './legacy-selection-aliases.js?v=28.4.6';
 // One artwork for each individual visual choice.
 export const individualSamples={
  "design\u0000ファッション雑誌の表紙": {

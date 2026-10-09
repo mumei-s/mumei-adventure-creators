@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.5';
-import {applyCollection} from '../collection.js?v=28.4.5';
-import {sampleFor} from '../examples.js?v=28.4.5';
-import {scenePreviews} from '../scene-preview-catalog.js?v=28.4.5';
-import {optionRecipe} from '../option-recipes.js?v=28.4.5';
-import {buildDirection} from '../direction.js?v=28.4.5';
-import {productionPlan} from '../production-plan.js?v=28.4.5';
-import {renderChatInput} from '../compiled-production.js?v=28.4.5';
-import {halloweenSceneFocus,halloweenSceneTitles} from '../scene-presets.js?v=28.4.5';
-import {halloweenStoryContext,halloweenModeContract} from '../halloween-mode-contract.js?v=28.4.5';
-import {canonicalSelectionLabel,normalizeSelectionLabels} from '../legacy-selection-aliases.js?v=28.4.5';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.6';
+import {applyCollection} from '../collection.js?v=28.4.6';
+import {sampleFor} from '../examples.js?v=28.4.6';
+import {scenePreviews} from '../scene-preview-catalog.js?v=28.4.6';
+import {optionRecipe} from '../option-recipes.js?v=28.4.6';
+import {buildDirection} from '../direction.js?v=28.4.6';
+import {productionPlan} from '../production-plan.js?v=28.4.6';
+import {renderChatInput} from '../compiled-production.js?v=28.4.6';
+import {halloweenSceneFocus,halloweenSceneTitles} from '../scene-presets.js?v=28.4.6';
+import {halloweenStoryContext,halloweenModeContract} from '../halloween-mode-contract.js?v=28.4.6';
+import {canonicalSelectionLabel,normalizeSelectionLabels} from '../legacy-selection-aliases.js?v=28.4.6';
 
 const options=key=>questions.find(q=>q.key===key).groups.flatMap(g=>g.values);
 const aliases=[['theme','雨上がりの怪談','雨上がりのホラー'],['mood','ひやりとする怪談','ひやりとするホラー']];

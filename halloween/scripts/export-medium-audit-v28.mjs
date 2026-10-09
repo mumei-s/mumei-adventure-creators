@@ -2,15 +2,15 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
-import {questions} from '../catalog.js?v=28.4.5';
-import {artworkBasisValues,artworkBasis,artworkBasisContract} from '../artwork-basis.js?v=28.4.5';
-import {illustrationBases} from '../artwork-basis-illustration.js?v=28.4.5';
-import {traditionalBases} from '../artwork-basis-traditional.js?v=28.4.5';
-import {materialBases} from '../artwork-basis-material.js?v=28.4.5';
-import {movementsPhotoBases} from '../artwork-basis-movements-photo.js?v=28.4.5';
-import {luminousBases} from '../artwork-basis-luminous.js?v=28.4.5';
-import {referenceWorldArtworkBases} from '../world-bases.js?v=28.4.5';
-import {optionRecipe} from '../option-recipes.js?v=28.4.5';
+import {questions} from '../catalog.js?v=28.4.6';
+import {artworkBasisValues,artworkBasis,artworkBasisContract} from '../artwork-basis.js?v=28.4.6';
+import {illustrationBases} from '../artwork-basis-illustration.js?v=28.4.6';
+import {traditionalBases} from '../artwork-basis-traditional.js?v=28.4.6';
+import {materialBases} from '../artwork-basis-material.js?v=28.4.6';
+import {movementsPhotoBases} from '../artwork-basis-movements-photo.js?v=28.4.6';
+import {luminousBases} from '../artwork-basis-luminous.js?v=28.4.6';
+import {referenceWorldArtworkBases} from '../world-bases.js?v=28.4.6';
+import {optionRecipe} from '../option-recipes.js?v=28.4.6';
 
 // Reproducible documentation export. A reference registered in code is not
 // evidence that its page was retrieved or that a generated image succeeded.

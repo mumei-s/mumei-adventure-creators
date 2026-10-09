@@ -1,7 +1,7 @@
-import {fantasyStyleDefinitions} from './fantasy-style-definitions.js?v=28.4.5';
-import {solidGlowStyleDefinitions} from './solid-glow-style-definitions.js?v=28.4.5';
-import {colorPolicy} from './color-policy.js?v=28.4.5';
-import {isNonHumanSource} from './source-kind.js?v=28.4.5';
+import {fantasyStyleDefinitions} from './fantasy-style-definitions.js?v=28.4.6';
+import {solidGlowStyleDefinitions} from './solid-glow-style-definitions.js?v=28.4.6';
+import {colorPolicy} from './color-policy.js?v=28.4.6';
+import {isNonHumanSource} from './source-kind.js?v=28.4.6';
 
 // Original semantic descriptions extracted from user-provided examples.
 // UI thumbnails remain illustrative: none of their people, clothes, prompts,

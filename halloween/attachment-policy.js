@@ -29,7 +29,7 @@ export function selectionAttachmentPolicy(conditions=[],{mode='sheet'}={}){
   selectedCount:conditions.length,conditionVisualCount:visuals.length,styleOriginal:'separate-original',duplicateMedium:false,
   inactiveKeys:conditions.filter(condition=>condition.applicable===false).map(condition=>condition.key),omittedKeys:conditions.filter(condition=>condition.deliverVisual===false).map(condition=>({key:condition.key,reason:condition.omittedReason})),
   qualityStatus:'requires-generated-image-comparison',
-  decision:individual?'全有効見本を個別画像として渡す選択肢。人物・原寸画風・各条件の担当を分け、同じ選択で比較する。今回の検証に使った image_gen は参照5枚が上限だった。利用先の上限を確認し、超える場合は通常の役割別シートへまとめる。個別画像を全部添付できたことや枚数だけで精度が高いと判定しない。':'主参照1枚＋原寸画風1枚＋役割別の選択見本シート1枚を基本に、1回で完成作品を生成する。全選択を本文と資料に保持し、画風の重複・別人の顔・見本の文字を作品へ混ぜない。人物参照なしや複数参照などの場合は実際の添付数を表示する。人物変換は必要な場合だけ選ぶ任意の追加手順。',
+  decision:individual?'全有効見本を個別画像として渡す選択肢。人物・原寸画風・各条件の担当を分け、同じ選択で比較する。立体光彩は会話側で段階ごとに必要な参照だけを渡し、原画の世界観の人物差替、選択場面、必要な文字・版面を順に確認する。今回の検証に使った image_gen は参照5枚が上限だった。利用先の上限を確認し、超える場合は通常の役割別シートへまとめる。個別画像を全部添付できたことや枚数だけで精度が高いと判定しない。':'主参照1枚＋原寸画風1枚＋役割別の選択見本シート1枚を基本に、全選択を本文と資料へ保持する。立体光彩は会話側で原画の世界観の人物差替、選択場面、必要な文字・版面を順に生成・確認する。それ以外の通常制作は1回の生成から開始し、不足箇所だけ修正する。画風の重複・別人の顔・見本の文字を作品へ混ぜない。人物参照なしや複数参照などの場合は実際の添付数を表示する。任意の人物変換は対応する画風で必要な場合だけ選ぶ。',
   precedence:['identity-reference:識別特徴','selected-style-original:描線・塗り・材質・光','selected-pose-and-camera:身体配置・支持・投影','selected-design:画像と文字の領域','selected-type-and-copy:許可原稿・文字量・指定方向'],
   comparison:'同じ主参照・作風原画・確定選択・原稿で比較し、人物同一性、画風、ポーズ、カメラ、版面、文字、季節を生成画像で評価する。未検証の方式を最高精度・完全再現と表示しない。'};
 }

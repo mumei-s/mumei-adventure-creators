@@ -1,11 +1,11 @@
-import {applyAngle} from './angles.js?v=28.4.5';
-import {colorPolicy} from './palette-recipes.js?v=28.4.5';
-import {opticalSignature,opticalColors} from './optical-effects.js?v=28.4.5';
-import {detailedSubject} from './subject-recipes.js?v=28.4.5';
-import {detailedFormat} from './format-recipes.js?v=28.4.5';
-import {isPhotographicMedium} from './photo-design.js?v=28.4.5';
-import {luminousWorldContract} from './luminous-world.js?v=28.4.5';
-import {fantasyStyleDefinitions} from './fantasy-style-definitions.js?v=28.4.5';
+import {applyAngle} from './angles.js?v=28.4.6';
+import {colorPolicy} from './palette-recipes.js?v=28.4.6';
+import {opticalSignature,opticalColors} from './optical-effects.js?v=28.4.6';
+import {detailedSubject} from './subject-recipes.js?v=28.4.6';
+import {detailedFormat} from './format-recipes.js?v=28.4.6';
+import {isPhotographicMedium} from './photo-design.js?v=28.4.6';
+import {luminousWorldContract} from './luminous-world.js?v=28.4.6';
+import {fantasyStyleDefinitions} from './fantasy-style-definitions.js?v=28.4.6';
 
 const flat=new Set(['線画','リノカット','木版画','浮世絵木版画','シルクスクリーン','ベクターグラフィック','フラットイラスト','ピクセルアート','構成主義','ミニマリズム']);
 // Drawing atmosphere owns light and depth only. It never supplies a sample's

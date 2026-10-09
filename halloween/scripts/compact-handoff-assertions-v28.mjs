@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
-import {cameraContract} from '../angles.js?v=28.4.5';
-import {isPhotographicMedium} from '../photo-design.js?v=28.4.5';
-import {colorPolicy} from '../color-policy.js?v=28.4.5';
-import {stylePresetFor} from '../style-presets.js?v=28.4.5';
-import {selectionReferenceManifest} from '../selection-references.js?v=28.4.5';
-import {characterProportionInstruction} from '../source-kind.js?v=28.4.5';
-import {usesFocusedProduction} from '../focused-production.js?v=28.4.5';
-import {renderRecipeChatInput} from '../compact-production.js?v=28.4.5';
+import {cameraContract} from '../angles.js?v=28.4.6';
+import {isPhotographicMedium} from '../photo-design.js?v=28.4.6';
+import {colorPolicy} from '../color-policy.js?v=28.4.6';
+import {stylePresetFor} from '../style-presets.js?v=28.4.6';
+import {selectionReferenceManifest} from '../selection-references.js?v=28.4.6';
+import {characterProportionInstruction} from '../source-kind.js?v=28.4.6';
+import {usesFocusedProduction} from '../focused-production.js?v=28.4.6';
+import {renderRecipeChatInput} from '../compact-production.js?v=28.4.6';
 import {assertFocusedHandoff} from './focused-handoff-assertions-v28.mjs';
 
 const normalize=text=>String(text).replace(/\s+/g,'');

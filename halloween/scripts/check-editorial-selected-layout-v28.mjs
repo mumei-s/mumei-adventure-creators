@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import {buildEditorial} from '../editorial.js?v=28.4.5';
-import {typographyValues} from '../typography-options.js?v=28.4.5';
-import {applyCollection} from '../collection.js?v=28.4.5';
-import {renderEditorialLayout} from '../editorial-layout.js?v=28.4.5';
-import {typographyLayoutValues,designLayoutFor} from '../layout-preview-specs.js?v=28.4.5';
+import {buildEditorial} from '../editorial.js?v=28.4.6';
+import {typographyValues} from '../typography-options.js?v=28.4.6';
+import {applyCollection} from '../collection.js?v=28.4.6';
+import {renderEditorialLayout} from '../editorial-layout.js?v=28.4.6';
+import {typographyLayoutValues,designLayoutFor} from '../layout-preview-specs.js?v=28.4.6';
 
 // Exercise the original failure: selected primary copy must have real editorial
 // space, rather than disappear into an incidental 1.8% footer. No image model

@@ -1,8 +1,8 @@
 import fs from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
-import {angleItems} from '../angles.js?v=28.4.5';
-import {angleConstraint} from '../view-constraints.js?v=28.4.5';
-import {renderAnglePreview} from '../angle-preview-art.js?v=28.4.5';
+import {angleItems} from '../angles.js?v=28.4.6';
+import {angleConstraint} from '../view-constraints.js?v=28.4.6';
+import {renderAnglePreview} from '../angle-preview-art.js?v=28.4.6';
 
 const ink='#233a52',blue='#066e99',amber='#d38122',pale='#dce8f1',muted='#536b80';
 const esc=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');

@@ -1,8 +1,8 @@
-import {formatFor} from './formats.js?v=28.4.5';
-import {colorPolicy} from './palette-recipes.js?v=28.4.5';
-import {colorWorlds} from './worlds.js?v=28.4.5';
-import {limitedNewspaperLayout} from './format-recipes.js?v=28.4.5';
-import {typographyLayoutFor} from './layout-preview-specs.js?v=28.4.5';
+import {formatFor} from './formats.js?v=28.4.6';
+import {colorPolicy} from './palette-recipes.js?v=28.4.6';
+import {colorWorlds} from './worlds.js?v=28.4.6';
+import {limitedNewspaperLayout} from './format-recipes.js?v=28.4.6';
+import {typographyLayoutFor} from './layout-preview-specs.js?v=28.4.6';
 
 const MAX_EDGE=4096;
 const SERIF='"Noto Serif CJK JP", "Yu Mincho", "Hiragino Mincho ProN", Georgia, serif';

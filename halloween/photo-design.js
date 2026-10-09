@@ -1,6 +1,7 @@
 // These are authored rendering specifications, not EXIF or proof of a camera.
 // Selected face/body angle and requested composition take priority over optics.
-import {colorPolicy} from './color-policy.js?v=28.4.4';
+import {colorPolicy} from './color-policy.js?v=28.4.5';
+import {solidGlowStyleDefinitions} from './solid-glow-style-definitions.js?v=28.4.5';
 const designs=new Map([
  ['実写風フィルム写真',['50mm相当の標準レンズ、人物はf/4相当、風景はf/8相当','中間調に細かい不均一な粒子、明部は穏やかに肩へ移る']],
  ['実写風スタジオ写真',['85mm相当、f/8相当','大きな主光と弱い補助光、主題全体の素材が判別できる解像']],
@@ -16,6 +17,7 @@ const designs=new Map([
  ['実写風インスタントカメラ',['35mm相当の固定レンズ、深い被写界深度','わずかな周辺解像の低下とフィルムの色差、主題の形は明瞭に保持']],
  ['宝石光彩リアル',['選択カメラに合う一つのレンズ像と、主題の必要な細部を読める焦点深度','明るい主光と広く深い影を連続した写真の露光階調で結ぶ。透明な色層は光の重なりとして描き、固有材質の内側の散乱、周囲からの反射、小さく鋭い最明部を分ける。写真の肌や布を透明な結晶やプラスチックへ変えない']],
  ['発光幻想リアル',['選択カメラ・画角に合う一つのレンズ像と、必要な素材構造が読める焦点深度','自然な人物立体・眼球・毛髪と実物の材質を持つ写真の光学像で、主題・衣装・景物・背景の可視全域に幻想の内部色光を描く。広い深暗部、透明な色光層の積層、素材別の反射と散乱、小面積の強い光、極小の鋭い最明部を分ける。場面光源は主光方向と落ち影を決める条件とし、内部色光の密度を弱めない。肌・布・木・石は固有材質を保ち、ガラスやプラスチックへ交換しない']],
+ ['立体光彩リアル',['選択カメラ・画角を保つ一つのレンズ像と、可視の素材と支持が読める焦点深度','自然な実写の主題と実物の材質を、曲面の連続陰影、広い深暗部、濃度と幅が異なる高密度の反射色層、小面積の強い光、極小の鋭い最明部で同じ立体空間へつなぐ。周囲の色光を可視の材質全域へ返し、焦点の形・厚み・粗さと深い影を保つ。均一なラメ、宝石の追加、透明な結晶やプラスチックへの交換で代用しない']],
 ]);
 export const photoValues=Object.freeze([...designs.keys()]);
 export const isPhotographicMedium=value=>designs.has(value);
@@ -28,6 +30,15 @@ export function photoReconstruction(value,{noPerson=false,values={}}={}){
  const color=policy.restricted
   ?'使用色は'+policy.allowed+'。参照の識別色も許可色の明度差へ翻訳し、元の有彩色を例外で残さない。'
   :nonHumanSource?'独自の主役の髪や瞳が存在する場合、その明示色または生成済みの識別色を保ち、背景・照明・補助色を選択配色へ合わせる。元の非人物画像から髪色や瞳色を復元しない。':'髪と瞳などの識別に必要な基礎色は保ち、背景・照明・補助色を選択配色へ合わせる。髪色を照明の都合で別の色へ変えない。';
+ if(value==='立体光彩リアル'){
+  const method=solidGlowStyleDefinitions.find(style=>style.value===value);
+  const identity=noPerson?'人物なし。主参照の景物・物体の固有形・構造・模様を保ち、顔・人体・人型を追加しない。':nonHumanSource?'非人物の主参照は顔の識別基準ではない。人物制作が明示された場合だけ固有形・色・模様から独自の主役を作り、修正では生成済み主役の特徴を保つ。画風見本の人物を借りない。':'主参照の輪郭・眉目鼻口の特徴の組合せ・髪型・識別色・固有の印・年齢感・性別表現・基礎体格と基本頭身を保つ。同じ人物の自然な立体と実物の材質へ翻訳する。ちびなら大きい頭と短い胴体・四肢の比率を保ち、実写化だけで通常頭身へ伸ばさない。';
+  return {sections:[
+   {label:'自然な立体と主参照',text:identity+(noPerson?method.drawingScenery:method.drawing)},
+   {label:'自然な実写の全可視域へ続く立体光彩',text:noPerson?method.lightingScenery:method.lighting},
+   {label:'素材と識別色',text:(noPerson?method.materialsScenery:method.materials)+(noPerson?(policy.restricted?'使用色は'+policy.allowed+'。素材色と反射色もその濃淡へ翻訳する。':'選択した素材色と配色を保つ。'):color)}
+  ],checks:[...(noPerson?method.checksScenery:method.checks),noPerson?'人物や人型を追加しない':nonHumanSource?'独自の主役の特徴を修正でも保持':'本人の特徴・年齢感・体格・基本頭身の保持']};
+ }
  const sections=noPerson?[
   {label:'イラスト参照から実物へ',text:'主参照がイラスト・漫画・絵画でも、選択した景物・物体の外形、配置、固有模様を読み取り、実際に存在する材質と厚みを持つ被写体として再構成する。参照の輪郭線、筆跡、網点、セル影、平たい色面を撮影像へ残さず、絵を撮影した紙面や額縁へ置換しない。人物や人型を追加しない。'},
   {label:'実物の材質と光',text:'石・木・金属・ガラス・水・植生など、選択した素材の微細構造、反射と散乱、重なりと接地影を実物の尺度で組み立てる。主景と周囲を同じレンズ遠近、選択カメラ、実在する光源からの連続した露光階調へつなぐ。絵の上へ粒子・ぼけ・光だけを重ねる処理にしない。'+(policy.restricted?'使用色は'+policy.allowed+'。参照の素材色もこの許可色の明度差へ変換する。':'主景の識別に必要な素材色を保ち、照明・背景を選択配色へ合わせる。')}

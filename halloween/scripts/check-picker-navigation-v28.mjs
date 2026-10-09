@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import {createPicker,inspectorFitSize} from '../picker.js?v=28.4.4';
-import {pickerRecords} from '../picker-priority.js?v=28.4.4';
-import {questions,visibleQuestions} from '../catalog.js?v=28.4.4';
-import {applyCollection} from '../collection.js?v=28.4.4';
-import {ringPosition,restingRingPosition,pagePatternTone} from '../ring-motion.js?v=28.4.4';
+import {createPicker,inspectorFitSize} from '../picker.js?v=28.4.5';
+import {pickerRecords} from '../picker-priority.js?v=28.4.5';
+import {questions,visibleQuestions} from '../catalog.js?v=28.4.5';
+import {applyCollection} from '../collection.js?v=28.4.5';
+import {ringPosition,restingRingPosition,pagePatternTone} from '../ring-motion.js?v=28.4.5';
 
 // Short screens retain a 360px scrollable canvas rather than crushing its cards.
 // Exercise measured card bounds and two-line labels at all supported widths.
@@ -62,7 +62,7 @@ function pointer(type,target,x,y){const event={target,pointerId:1,isPrimary:true
 function swipe(dx,dy=0,target=stage){now+=1000;pointer('pointerdown',target,width/2,height/2);const move=pointer('pointermove',target,width/2+dx,height/2+dy);pointer('pointerup',target,width/2+dx,height/2+dy);return move;}
 
 const mediumQuestion=questions.find(q=>q.key==='medium');
-picker.open(mediumQuestion);
+picker.open(mediumQuestion,{view:'ring'});
 assert.equal($('ring-options').children[0].dataset.value,'発光幻想アニメ','Prepared luminous preset starts on the first unfiltered page');
 const firstMedia=$('ring-options').children.map(node=>node.dataset.value);
 assert.ok(firstMedia.includes('宝石光彩アニメ')&&firstMedia.some(value=>/リアル|実写風/.test(value)),'Useful drawn and realistic presets share the first page');
@@ -77,9 +77,9 @@ $('picker-list-view').click();const listed=$('picker-options').children[2],liste
 
 // A choice from a later page reopens in the same center, even with priority
 // ordering. A user favorite is offered before the built-in starting points.
-const laterValue=originalMedia.at(-1);selection={medium:laterValue};picker.open(mediumQuestion);flush();
+const laterValue=originalMedia.at(-1);selection={medium:laterValue};picker.open(mediumQuestion,{view:'ring'});flush();
 assert.equal($('ring-focus').querySelector('b').textContent,laterValue,'Reopening restores the actual selected preset');
-$('ring-focus').querySelector('.favorite-toggle').click();selection={};picker.open(mediumQuestion);flush();
+$('ring-focus').querySelector('.favorite-toggle').click();selection={};picker.open(mediumQuestion,{view:'ring'});flush();
 assert.equal($('picker-page').textContent.split(' / ')[0],'1');assert.equal($('ring-options').children[0].dataset.value,laterValue,'Saved favorite moves to the first page');
 assert.equal($('ring-focus').querySelector('b').textContent,laterValue);
 assert.deepEqual(picker.getFavorites()['halloween:medium'],[laterValue]);const detached=picker.getFavorites();detached['halloween:medium'].push('unexpected');assert.deepEqual(picker.getFavorites()['halloween:medium'],[laterValue],'Returned favorites cannot mutate stored state');
@@ -90,13 +90,13 @@ assert.deepEqual(favoriteEvents.at(-1)['halloween:medium'],[]);
 windowEvents.storage.forEach(callback=>callback({key:'halloween-option-favorites-v1',newValue:JSON.stringify({'halloween:medium':[laterValue],'everyday:medium':['ちびキャラ']})}));
 assert.equal($('ring-options').children[0].dataset.value,laterValue,'Favorite filter follows cross-tab changes');assert.equal(favoriteEvents.length,3);assert.deepEqual(picker.getFavorites()['everyday:medium'],['ちびキャラ']);
 picker.removeFavorite('medium',laterValue,'halloween');picker.removeFavorite('medium','ちびキャラ','everyday');
-picker.open(mediumQuestion);flush();assert.equal($('ring-options').children[0].dataset.value,'発光幻想アニメ','Removing the favorite restores prepared starting points');
+picker.open(mediumQuestion,{view:'ring'});flush();assert.equal($('ring-options').children[0].dataset.value,'発光幻想アニメ','Removing the favorite restores prepared starting points');
 
 // Favorites reorder the records. Keep the visible record rather than its old offset.
 const secondRecord=$('ring-options').children[2].dataset.value;$('ring-options').children[2].click();$('ring-focus').querySelector('.favorite-toggle').click();assert.equal($('ring-focus').querySelector('b').textContent,secondRecord,'Saving a favorite cannot replace the visible center with its neighbor');$('ring-focus').querySelector('.favorite-toggle').click();assert.equal($('ring-focus').querySelector('b').textContent,secondRecord,'Removing a favorite also retains the visible center');
 
 // Test the actual inspector at the same portrait proportions as the native PNG.
-selection={medium:'艶彩幻想アニメ'};picker.open(mediumQuestion);flush();$('ring-focus').querySelector('.ring-tools').children[0].click();
+selection={medium:'艶彩幻想アニメ'};picker.open(mediumQuestion,{view:'ring'});flush();$('ring-focus').querySelector('.ring-tools').children[0].click();
 const inspectedArt=$('inspector-art').firstElementChild,masterLink=inspectorActions.querySelector('.inspector-original');
 assert.equal(parseFloat(inspectedArt.style.width)/parseFloat(inspectedArt.style.height),2/3,'Portrait master retains its proportions');assert.equal(parseFloat(inspectedArt.style.height),height,'Fit image uses all the available portrait height');assert.equal(masterLink.href,'assets/style-gloss-fantasy-original-v28-4-4.png');assert.equal(masterLink.hidden,false);assert.equal(masterLink.target,'_blank');
 $('sample-zoom').value='2';$('sample-zoom').emit('input');assert.equal(inspectorViewport.scrollLeft,40);assert.equal(inspectorViewport.scrollTop,180,'Zoom starts around the viewed center, rather than jumping to the top left');
@@ -106,12 +106,16 @@ const touchEvent={pointerType:'touch',button:0,pointerId:8,clientX:200,clientY:2
 for(const [viewportWidth,viewportHeight]of [[304,480],[364,530],[844,660]])for(const [imageWidth,imageHeight]of [[1024,1536],[1536,1024],[1024,1024]]){const fit=inspectorFitSize(viewportWidth,viewportHeight,imageWidth,imageHeight);assert.ok(fit.width<=viewportWidth&&fit.height<=viewportHeight);assert.ok(Math.abs(fit.width/fit.height-imageWidth/imageHeight)<1e-12);assert.ok(Math.abs(fit.width-viewportWidth)<1e-9||Math.abs(fit.height-viewportHeight)<1e-9,'A fitted image uses at least one full viewport dimension');}
 selection={};
 
+
+// New default angle presentation is a readable list. The explicit ring path
+// below still validates the full existing swipe/orbit navigation contract.
+picker.open(questions.find(q=>q.key==='angle'));flush();assert.equal(surface.dataset.pickerView,'list');assert.equal($('ring-stage').hidden,true);assert.equal($('picker-options').hidden,false);const angleCards=$('picker-options').querySelectorAll('.sample-card');assert.ok(angleCards.length>6,'The default angle view presents a full list page');angleCards[0].querySelector('.sample-tools').children[0].click();assert.equal($('inspector-specs').open,false,'Technical detail must not replace the primary large visual');assert.ok($('inspector-specs-body').querySelector('.angle-detail')?.querySelector('img')?.src.endsWith('-detail.svg'),'Optional inspector details preserve the exact selected technical camera diagram');$('inspector').close();
 // Every category/page in both collections retains its records and category label.
 let checkedPages=0,checkedCategories=0;
 for(const collection of ['halloween','everyday']){
  applyCollection(collection);document.body.dataset.collection=collection;
  for(const q of visibleQuestions){
-  picker.open(q);flush();
+  picker.open(q,{view:'ring'});flush();
   for(const group of ['すべて',...q.groups.map(g=>g.label)]){
    $('picker-category').value=group;$('picker-category').emit('change');
    const records=pickerRecords(q,{group,collection}),pages=Math.max(1,Math.ceil(records.length/6));
@@ -128,7 +132,7 @@ for(const collection of ['halloween','everyday']){
   }
  }
 }
-applyCollection('halloween');document.body.dataset.collection='halloween';picker.open(questions.find(q=>q.key==='medium'));flush();
+applyCollection('halloween');document.body.dataset.collection='halloween';picker.open(questions.find(q=>q.key==='medium'),{view:'ring'});flush();
 swipe(-100);assert.match($('picker-page').textContent,/^2 \/ /);swipe(100);assert.match($('picker-page').textContent,/^1 \/ /);assert.equal(canvas.styles['--page-enter-x'],'-18px');
 // A short thumb gesture must page without a long drag; taps stay below threshold.
 swipe(-28,8);assert.match($('picker-page').textContent,/^2 \/ /);swipe(28,8);assert.match($('picker-page').textContent,/^1 \/ /);swipe(9,2);assert.match($('picker-page').textContent,/^1 \/ /);
@@ -145,17 +149,17 @@ for(const finish of ['pointerup','blur','close']){
  now+=1000;const before=$('ring-focus').querySelector('b').textContent,card=$('ring-options').children[0];pointer('pointerdown',card,width*.88,height/2);pointer('pointermove',card,width/2,height*.85);const preview=$('ring-focus').querySelector('b').textContent;
  if(finish==='pointerup'){pointer('pointerup',card,width/2,height*.85);assert.equal($('ring-focus').querySelector('b').textContent,preview,'Releasing commits the visible preview');}
  else if(finish==='blur'){windowEvents.blur.forEach(fn=>fn());assert.equal($('ring-focus').querySelector('b').textContent,before);}
- else {surface.close();assert.equal($('ring-focus').querySelector('b').textContent,before);picker.open(questions.find(q=>q.key==='medium'));flush();}
+ else {surface.close();assert.equal($('ring-focus').querySelector('b').textContent,before);picker.open(questions.find(q=>q.key==='medium'),{view:'ring'});flush();}
  assert.ok(!stage.classList.contains('ring-grabbing'));assert.ok(bounds().every(edge=>edge>=43.99),'Finishing any orbit restores the clear band');
 }
 // The reported conflict must be explained outside the measured orbit cards.
 selection={mood:'ローアングル＋威嚇',angle:'真上から・90度',pose:'四つん這いで進む'};
-picker.open(questions.find(q=>q.key==='angle'));flush();
+picker.open(questions.find(q=>q.key==='angle'),{view:'ring'});flush();
 const conflictPanel=surface.querySelector('.candidate-notice'),center=$('ring-focus');
 assert.equal(conflictPanel.hidden,false,'Known conflicting angle has a visible reason');
 assert.equal(conflictPanel.dataset.status,'blocked');assert.equal(center.querySelector('.ring-pick').disabled,true);
 assert.equal(center.querySelector('.compatibility-reason'),null,'Conflict text does not stretch the center card');
 assert.ok(!conflictPanel.closest('.ring-stage'),'Notice is outside the swipe band');
 const conflictPage=$('picker-page').textContent;swipe(-100,0,conflictPanel);assert.equal($('picker-page').textContent,conflictPage,'Reading conflict text does not page or rotate');
-picker.open(questions.find(q=>q.key==='medium'));flush();assert.equal(conflictPanel.hidden,true,'Opening an unrelated valid choice clears the old reason');
+picker.open(questions.find(q=>q.key==='medium'),{view:'ring'});flush();assert.equal(conflictPanel.hidden,true,'Opening an unrelated valid choice clears the old reason');
 console.log(`PASS picker: clear horizontal band at 320/390/620/1024, 1–6 cards and long labels; first open/resize/cancel; ${checkedCategories} categories and ${checkedPages} pages in both collections; current category; distinct adjacent patterns; left-next/right-previous; recommended/favorite first pages, readonly favorite API/filter/remove/cross-tab events and selected preset restoration; short thumb paging; native vertical pan including bent gestures; taps and intentional orbit preserved.`);

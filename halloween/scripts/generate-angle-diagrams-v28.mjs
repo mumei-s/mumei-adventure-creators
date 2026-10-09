@@ -1,7 +1,8 @@
 import fs from 'node:fs/promises';
 import {fileURLToPath} from 'node:url';
-import {angleItems} from '../angles.js?v=28.4.4';
-import {angleConstraint} from '../view-constraints.js?v=28.4.4';
+import {angleItems} from '../angles.js?v=28.4.5';
+import {angleConstraint} from '../view-constraints.js?v=28.4.5';
+import {renderAnglePreview} from '../angle-preview-art.js?v=28.4.5';
 
 const ink='#233a52',blue='#066e99',amber='#d38122',pale='#dce8f1',muted='#536b80';
 const esc=s=>String(s).replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
@@ -67,11 +68,18 @@ function specialDiagram(item,spec){
 }
 export function angleDiagramKind(item){const spec=angleConstraint(item.value);if(spec.axes.roll!==undefined)return 'roll';if(spec.axes.yaw!==undefined&&spec.axes.pitch===undefined)return 'yaw';if(spec.axes.pitch!==undefined)return 'pitch';return spec.kind;}
 function levelFrontInset(){const target=[845,450],at=[845,535];return rect(730,385,235,160,'#ffffff',pale)+rect(825,425,40,40,pale,ink)+line('azimuth-axis',at,target)+camera(at,90)+text(743,413,'上面図：正面 0°',20,blue);}
-export function renderAngleDiagram(item){
+export function renderTechnicalAngleDiagram(item){
  const spec=angleConstraint(item.value),kind=angleDiagramKind(item),subtitle=kind==='pitch'?'横から見たカメラ配置':kind==='yaw'?'上から見たカメラ配置':kind==='roll'?'画面軸の回転':spec.kind==='crop'?'接写する範囲の説明':spec.kind==='lens'?'遠近・投影の説明':'位置・画角・構造の説明';
  const body=(kind==='pitch'?pitchDiagram(spec.axes.pitch):kind==='yaw'?yawDiagram(spec.axes.yaw):kind==='roll'?rollDiagram(spec.axes.roll):specialDiagram(item,spec))+(kind==='pitch'&&spec.axes.yaw!==undefined?levelFrontInset():'');
  const fixed=Object.entries(spec.axes).map(([axis,value])=>axis+'='+value+'°').join(' / ')||'数値のカメラ軸は未固定';
  return `<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="760" viewBox="0 0 1000 760" role="img" aria-labelledby="diagram-title diagram-desc" data-diagram-kind="${kind}"><title id="diagram-title">${esc(item.value)}：${subtitle}</title><desc id="diagram-desc">カメラと構図の技術図。主題は箱で示す。${esc(fixed)}。人物・画風・完成投影の作画見本ではありません。</desc><rect width="1000" height="760" rx="18" fill="#f8fbfe"/>${text(38,52,item.value,31)}${text(38,92,subtitle+' / カメラ・構図の技術図',23,muted)}${body}${text(38,715,'箱は説明用の主題形。完成作品・人物・画風の見本ではありません。',23,muted)}</svg>\n`;
 }
-export async function generateAngleDiagrams(){for(const item of angleItems)await fs.writeFile(new URL('../'+item.file,import.meta.url),renderAngleDiagram(item));return angleItems.length;}
+export function renderAngleDiagram(item){return renderAnglePreview(item,angleConstraint(item.value));}
+export async function generateAngleDiagrams(){
+ for(const item of angleItems){
+  await fs.writeFile(new URL('../'+item.file,import.meta.url),renderAngleDiagram(item));
+  await fs.writeFile(new URL('../'+item.detailFile,import.meta.url),renderTechnicalAngleDiagram(item));
+ }
+ return angleItems.length;
+}
 if(process.argv[1]&&fileURLToPath(import.meta.url)===process.argv[1])console.log('Generated '+await generateAngleDiagrams()+' classified camera and composition diagrams.');

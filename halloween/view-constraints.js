@@ -1,3 +1,4 @@
+import {canonicalSelectionLabel} from './legacy-selection-aliases.js?v=28.4.5';
 // The names below describe independent physical requirements. Preview row
 // coordinates are illustrative; only the axes actually named are fixed.
 const angles=Object.create(null),moods=Object.create(null),poses=Object.create(null);
@@ -28,7 +29,7 @@ angle('主役に向き合う一人称',{kind:'subjective'});
 for(const value of ['遮蔽物の隙間から','水平線を低く配置','水平線を高く配置','対角線で奥へ導く','鏡・水面越しの視点'])angle(value,{kind:'layout'});
 
 register(moods,'毎回大胆に変える|おまかせ',{kind:'auto'});
-register(moods,'静かで美しい|妖しく気高い|儚く切ない|温かく懐かしい|神秘的で透明感|寂しく詩的|優雅でクラシカル|強く挑発的|不敵な微笑み|いたずら好き|明るく祝祭的|可愛くコミカル|疾走する冒険|劇的な勝利|少しだけ不気味|ひやりとする怪談|圧倒的な恐怖・流血なし|奇妙でシュール|無表情の緊張感',{kind:'tone'});
+register(moods,'静かで美しい|妖しく気高い|儚く切ない|温かく懐かしい|神秘的で透明感|寂しく詩的|優雅でクラシカル|強く挑発的|不敵な微笑み|いたずら好き|明るく祝祭的|可愛くコミカル|疾走する冒険|劇的な勝利|少しだけ不気味|ひやりとするホラー|圧倒的な恐怖・流血なし|奇妙でシュール|無表情の緊張感',{kind:'tone'});
 register(moods,'歯を見せて大笑い|目を見開いて驚く|眉を寄せて怒る|涙を浮かべる|目を閉じて安らぐ|勝ち誇ってニヤリ|片目を閉じてウインク|牙を見せて威嚇|真剣な無表情',{kind:'expression',faceRequired:true});
 register(moods,'正面・首をまっすぐ|正面＋満面の笑顔',{kind:'face',faceRequired:true,faceProjection:'front'});
 register(moods,'完全な左横顔90度|左横顔＋静かな無表情',{kind:'face',faceRequired:true,faceProjection:'left-profile'});
@@ -64,7 +65,7 @@ export const angleConstraintValues=Object.freeze(Object.keys(angles));
 export const moodConstraintValues=Object.freeze(Object.keys(moods));
 export const poseConstraintValues=Object.freeze(Object.keys(poses));
 export const angleConstraint=value=>angles[value]||null;
-export const moodConstraint=value=>moods[value]||null;
+export const moodConstraint=value=>moods[canonicalSelectionLabel('mood',value)]||null;
 export const poseConstraint=value=>poses[value]||null;
 export const automaticView=value=>!value||['おまかせ','毎回大胆に変える','場面に合わせたアングル'].includes(value);
 

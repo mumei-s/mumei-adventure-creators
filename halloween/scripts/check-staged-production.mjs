@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
 import {assertCompactHandoff} from './compact-handoff-assertions-v28.mjs';
-import {applyCollection} from '../collection.js?v=28.4.4';
-import {resolveSelections} from '../catalog.js?v=28.4.4';
-import {initialSelections} from '../modes.js?v=28.4.4';
-import {buildDirection} from '../direction.js?v=28.4.4';
-import {applyPose} from '../poses.js?v=28.4.4';
-import {productionPlan} from '../production-plan.js?v=28.4.4';
-import {composePrompt} from '../prompt.js?v=28.4.4';
-import {composeArtworkStage} from '../artwork-stage.js?v=28.4.4';
-import {needsStagedProduction,composeLayoutStage} from '../staged-production.js?v=28.4.4';
+import {applyCollection} from '../collection.js?v=28.4.5';
+import {resolveSelections} from '../catalog.js?v=28.4.5';
+import {initialSelections} from '../modes.js?v=28.4.5';
+import {buildDirection} from '../direction.js?v=28.4.5';
+import {applyPose} from '../poses.js?v=28.4.5';
+import {productionPlan} from '../production-plan.js?v=28.4.5';
+import {composePrompt} from '../prompt.js?v=28.4.5';
+import {composeArtworkStage} from '../artwork-stage.js?v=28.4.5';
+import {needsStagedProduction,composeLayoutStage} from '../staged-production.js?v=28.4.5';
 
 // The case that kept producing a photographic face when artwork and typesetting
 // were requested together. These assertions check the handoff between stages.

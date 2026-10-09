@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.4.4';
-import {resolveSelections,AUTO} from '../catalog.js?v=28.4.4';
-import {initialSelections} from '../modes.js?v=28.4.4';
-import {selectionConflicts,candidateAvailability} from '../compatibility.js?v=28.4.4';
-import {designLayoutValues} from '../layout-preview-specs.js?v=28.4.4';
-import {buildEditorial} from '../editorial.js?v=28.4.4';
-import {detailedFormat} from '../format-recipes.js?v=28.4.4';
+import {applyCollection} from '../collection.js?v=28.4.5';
+import {resolveSelections,AUTO} from '../catalog.js?v=28.4.5';
+import {initialSelections} from '../modes.js?v=28.4.5';
+import {selectionConflicts,candidateAvailability} from '../compatibility.js?v=28.4.5';
+import {designLayoutValues} from '../layout-preview-specs.js?v=28.4.5';
+import {buildEditorial} from '../editorial.js?v=28.4.5';
+import {detailedFormat} from '../format-recipes.js?v=28.4.5';
 let cases=0;
 for(const collection of ['halloween','everyday']){
  applyCollection(collection);
@@ -30,6 +30,7 @@ for(const collection of ['halloween','everyday']){
   const copy=buildEditorial(profile,values,()=>.23),all=[...copy.slots,...copy.generatedSlots];
   assert.equal(all.length,11,style+' must retain the eleven selected magazine roles.');
   assert.ok(!all.some(s=>/リード文|本文\d/.test(s.role)),style+' appends standard editorial text over the selected manuscript.');
+  assert.ok(selectionConflicts(values).some(issue=>issue.code==='layout-copy-structure-conflict'),'Preserving eleven manuscript roles must not silently allow incompatible cover-line placement in an inner page.');
  }
  const advert=detailedFormat('新聞の一面',{values:{...base,design:'新聞の一面',type:'商品広告・キャッチと特徴3点'}});
  const reading=advert.sections.find(s=>s.label==='文字と読み順').text;
@@ -37,4 +38,4 @@ for(const collection of ['halloween','everyday']){
  assert.doesNotMatch(reading,/特徴.*同じ階層の縦列/,'Newspaper article direction cannot override an explicit horizontal advertisement.');
 }
 applyCollection('halloween');
-console.log(`PASS ${cases} design/no-copy combinations: incompatible word-led posters remain explicit; AUTO preserves no copy; magazine roles stay eleven in inner pages; newspaper adverts retain horizontal writing.`);
+console.log(`PASS ${cases} design/no-copy combinations: word-led/no-copy conflicts remain explicit, AUTO preserves no copy, and raw recipes retain manuscript roles/directions without allowing incompatible magazine cover-line selection in inner pages.`);

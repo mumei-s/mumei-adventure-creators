@@ -1,0 +1,35 @@
+{
+  "title": "ひやりとするホラー",
+  "file": "mood-01-16.jpg",
+  "source": "assets/halloween-labels-original-v28-4-5/mood-horror.png",
+  "generator": "built-in image_gen",
+  "prompt": "Use case: illustration-story. Asset type: square emotion-choice illustration thumbnail for a Japanese Halloween creator.\nCreate one completely original HAND-DRAWN JAPANESE 2D ANIME illustration with an exceptionally readable facial expression: \"a chilling Halloween horror\". No existing artist imitation, copyrighted character, user-supplied identity or photographic realism.\nFrame a new adult woman from upper chest through whole head, slightly three-quarter, taking roughly seventy percent of the square. She has short auburn wavy hair, an original high-collar opaque dark teal Halloween party outfit and an ordinary fabric cape. A small empty carnival ticket without writing is loosely held at chest level. She has stopped breathing for a moment: eyes widened, eyelids and eyebrows tensed, eyebrows slightly raised inward, lips just parted, jaw rigid. Clear fine anime contours, simple drawn nose/mouth marks, broad opaque cheek and forehead color planes, only two deliberate cel-shadow planes. Adult face proportions; no child, doll or photoreal face.\nA chilling Halloween celebration is visible behind her without overwhelming the expression: a recognizable costume-party entrance with a small strand of paper bats, a candy bowl and a closed stage curtain. One huge bat-like shadow behind the empty curtain bends in the wrong direction while the real paper bat remains still. This is an unsettling anomaly after a Halloween party, not Japanese folklore. No black-haired ghost woman, shrine, torii, kimono, Japanese ghost-tale architecture or gore. The fear comes from that one impossible shadow, not injury or blood. Keep the entire face and hair comfortably inside the frame and enough background to understand the Halloween event.\nFine colored linework, subdued warm amber party light on the left cheek, deep blue-green shadows on the right, thin reflected color accents. A sharply readable face in the foreground, secondary party entrance behind. Entirely drawn 2D anime eyes/hair/skin, no photographic textures, plastic CG, glass skin, wet glossy lips or doll nose. No typography, labels, title, numbers, logo, watermark, signature, collage or panels.",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "hash_sha256": "800cdd5c64618c077c3b53b3988c96504678cf28238018f09830be0c0b9968af",
+  "source_hash_sha256": "ac237b1e61364a859d6eaf8783d2b2c7593f78ca0082f9b06b39daf82b31bb19",
+  "processing": "Original generated PNG retained byte-identical. RGB JPEG q90/subsampling0 encoding only; no cropping, resizing, drawing or compositing.",
+  "replacesPreviousContent": {
+    "hash_sha256": "a2f7b199af308b412195a9e4420c4cae846fe45e6f43599f8b8e6f293c0cf589",
+    "reason": "Replace general Japanese ghost-story imagery with an original Halloween celebration horror scene. Stable old asset path and lookup aliases are retained."
+  },
+  "visualQA": {
+    "status": "accepted",
+    "scope": "Only the scene/emotion preview role. This is not acceptance of final generated-image conditions.",
+    "method": "Direct full-size visual inspection of the actual generated image; file/hash checks are separate.",
+    "observations": [
+      "成人の顔を手描き2Dアニメの輪郭と色面で構成し、ユーザーの人物参照・実在作者名・既存キャラクターを入力していない。",
+      "眉の緊張、見開いた目、半開きの口を大きな顔の構図で示し、縮小時にもひやりと息を呑む表情が読み取れる。",
+      "背景は菓子の器・紙の蝙蝠・仮装パーティーの入口と幕へ統一し、幕の大きい異常な蝙蝠状の影へ反応するHalloweenホラーへ変更している。",
+      "黒髪の和怪談の幽霊や日本家屋、流血・傷で恐怖を代用していない。"
+    ],
+    "limitations": [
+      "この見本の役割は選択項目の視覚説明。人物同一性、最終の指定画風や選択条件の再現性を証明するものではない。",
+      "反射・影は実画像の目視評価であり、光学計算による完全な投影一致は証明していない。",
+      "小さな唇の光と柔らかい陰影は残るため、薄膜光彩など特定の画風見本として使わない。",
+      "髪の細い一部が外周に近いが、顔の目・眉・口と主な髪型は画面内で読み取れる。"
+    ]
+  }
+}

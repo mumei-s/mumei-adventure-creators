@@ -1,4 +1,4 @@
-import {drawingReferenceFor,drawingReferenceInstructions,loadDrawingReferences} from './drawing-references.js?v=28.4.4';
+import {drawingReferenceFor,drawingReferenceInstructions,loadDrawingReferences} from './drawing-references.js?v=28.4.5';
 
 // Assistant-provided, repository-owned style samples. Character uploads remain separate.
 // File mappings are explicit: no arbitrary URL or filename can become a preset.
@@ -120,7 +120,9 @@ const presetEntries=[
  {"medium":"発光幻想リアル","file":"assets/style-luminous-real-original-v28-4-2.png","name":"style-preset-115.png","role":"style-preset","label":"発光幻想リアル（実写）のプリセット見本","category":"光と透明感"},
  {"medium":"薄膜光彩アニメ","file":"assets/style-film-light-original-v28-4-4-refined.png","name":"style-preset-116.png","role":"style-preset","label":"薄膜光彩アニメの独自作画見本","category":"光彩幻想・高精細"},
  {"medium":"白域幾何・宇宙彩アニメ","file":"assets/style-white-geometry-original-v28-4-4.png","name":"style-preset-117.png","role":"style-preset","label":"白域幾何・宇宙彩アニメの独自作画見本","category":"光彩幻想・高精細"},
- {"medium":"艶彩幻想アニメ","file":"assets/style-gloss-fantasy-original-v28-4-4.png","name":"style-preset-118.png","role":"style-preset","label":"艶彩幻想アニメの独自作画見本","category":"光彩幻想・高精細"}
+ {"medium":"艶彩幻想アニメ","file":"assets/style-gloss-fantasy-original-v28-4-4.png","name":"style-preset-118.png","role":"style-preset","label":"艶彩幻想アニメの独自作画見本","category":"光彩幻想・高精細"},
+ {"medium":"立体光彩アニメ","file":"assets/style-solid-glow-anime-v28-4-5.png","name":"style-preset-119.png","role":"style-preset","label":"立体光彩アニメの独自作画見本","category":"立体光彩・アニメと実写"},
+ {"medium":"立体光彩リアル","file":"assets/style-solid-glow-real-v28-4-5.png","name":"style-preset-120.png","role":"style-preset","label":"立体光彩リアル（実写）の独自作画見本","category":"立体光彩・アニメと実写"}
 ];
 export const stylePresets=Object.freeze(presetEntries.map(entry=>{
  const drawing=drawingReferenceFor(entry.medium);
@@ -147,11 +149,13 @@ export function stylePresetRoleDescription(reference,values,{noPerson=false}={})
 export function stylePresetInstructions(medium,{noPerson=false,values={}}={}){
  const preset=stylePresetFor(medium);if(!preset)return [];
  if(preset.role==='drawing')return drawingReferenceInstructions(medium,{noPerson,values});
+ const solid=['立体光彩アニメ','立体光彩リアル'].includes(medium);
+ const solidInstruction=solid?(medium==='立体光彩アニメ'?'トゥーンのアニメ造形と3Dの連続陰影を保ち、純2Dの平面セル影へ変えない。':noPerson?'自然な実写の景物・厚み・微細構造と実物の素材を保ち、アニメの描線・セル影へ変えない。':'自然な実写の造形・眼球・皮膚・毛髪と実物の素材を保ち、アニメの描線・セル影や人形肌へ変えない。')+(noPerson?'主景・支持面・周囲・背景の可視全域':'瞳・顔・露出して見える肌全域・存在する髪・選択衣装・景物の可視全域')+'へ、広い深暗部、曲面の明暗、高密度の反射色層、小面積の強い光、鋭い最明部を同じ光として移す。背景だけを光らせず、反射を見せるために被覆・遮蔽・ポーズ・画角を変えない。見本の人物・衣装・小物・配置・配色を採用しない。':'';
  return [
   '【ツールが用意した画風プリセット：主参照とは別】',
   preset.name+' は「'+preset.medium+'」の見本画像。実際に添付された画像を確認し、描線・塗り・陰影・画材または写真の質感を今回の制作仕様に沿って読み取る。名前だけで画像を見たと扱わない。',
   stylePresetRoleDescription(preset,{...values,medium},{noPerson}),
-  '主役・衣装・表情・ポーズ・小道具・カメラ・背景・色は今回の選択で新しく構成する。見本の配色に固定せず、選択した色へ描き方を翻訳する。'+(['発光幻想アニメ','発光幻想リアル'].includes(medium)?'見本の広い深暗部と鋭い最明部の差、透明な色層と反射の密度を、顔・髪・身体・衣装と背景の見えている面へ移す。これは全域の描画方式であり、場面に光る道具がある場合だけ使う効果ではない。人物なしでは景物の全域へ適用する。見本の人物・天文図・建物・持ち物は採用せず、今回の舞台と主役を同じ光の層で描き直す。':'見本にある発光・宝石・魔法も、今回選択した作風と場面に必要な範囲だけ使う。'),
+  '主役・衣装・表情・ポーズ・小道具・カメラ・背景・色は今回の選択で新しく構成する。見本の配色に固定せず、選択した色へ描き方を翻訳する。'+(solid?solidInstruction:['発光幻想アニメ','発光幻想リアル'].includes(medium)?'見本の広い深暗部と鋭い最明部の差、透明な色層と反射の密度を、顔・髪・身体・衣装と背景の見えている面へ移す。これは全域の描画方式であり、場面に光る道具がある場合だけ使う効果ではない。人物なしでは景物の全域へ適用する。見本の人物・天文図・建物・持ち物は採用せず、今回の舞台と主役を同じ光の層で描き直す。':'見本にある発光・宝石・魔法も、今回選択した作風と場面に必要な範囲だけ使う。'),
   'プロンプトのコピーだけでは見本画像は届かない。'+preset.name+' が添付されていない場合は見本未確認と短く伝え、下記の作画仕様で生成する。見本がないことだけを理由に制作を止めない。'
  ];
 }

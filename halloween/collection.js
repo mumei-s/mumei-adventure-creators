@@ -1,10 +1,10 @@
-import {everydayScenes,everydayPlaces,casualClothes,swimClothes,everydayBindings,everydaySamples} from './everyday-options.js?v=28.4.4';
-import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=28.4.4';
-import {poseGroups} from './poses.js?v=28.4.4';
-import {automaticView} from './view-constraints.js?v=28.4.4';
-import {randomChoice} from './random-selections.js?v=28.4.4';
-import {halloweenSceneGroups,halloweenSceneTitles,mergeSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.4.4';
-import {referenceWorldScenes} from './world-bases.js?v=28.4.4';
+import {everydayScenes,everydayPlaces,casualClothes,swimClothes,everydayBindings,everydaySamples} from './everyday-options.js?v=28.4.5';
+import {questions,AUTO,setSelectionRefiner} from './catalog.js?v=28.4.5';
+import {poseGroups} from './poses.js?v=28.4.5';
+import {automaticView} from './view-constraints.js?v=28.4.5';
+import {randomChoice} from './random-selections.js?v=28.4.5';
+import {halloweenSceneGroups,halloweenSceneTitles,mergeSceneGroups,sceneIsUnified,sceneSourcePlace} from './scene-presets.js?v=28.4.5';
+import {referenceWorldScenes} from './world-bases.js?v=28.4.5';
 const original=questions.map(q=>({...q,groups:q.groups.map(g=>({...g,values:[...g.values]}))}));
 const originalGroups=key=>original.find(q=>q.key===key).groups;
 const cloneGroups=groups=>groups.map(g=>({...g,values:[...g.values]}));
@@ -135,7 +135,7 @@ const halloweenSceneChoices={
  '光と影の寓話':{places:['白いスタジオ','黒いスタジオ'],clothes:['参照画像の衣装を生かす','仮面とドレス'],poses:['片手を差し出す','まっすぐ立つ']},
  '記憶の標本室':{places:['骨董品店','魔女の書斎'],clothes:['ヴィクトリア朝の正装','アンティークの旅装'],poses:['片手を差し出す','椅子に腰掛ける']},
  '異世界のファッションショー':{places:['舞台装置','空中都市'],clothes:['ゴシック・クチュール','スチームパンク','サイバーパンク'],poses:['大股で歩く','腰に手を当てる']},
- '雨上がりの怪談':{places:['雨の路地','異界の鳥居'],clothes:['参照画像の衣装を生かす','幽霊・亡霊'],poses:['振り向く','ゆっくり歩く']},
+ '雨上がりのホラー':{places:['雨の路地','異界の鳥居'],clothes:['参照画像の衣装を生かす','幽霊・亡霊'],poses:['振り向く','ゆっくり歩く']},
  '静かなハロウィーン':{places:['深夜の喫茶店','古い洋館の階段'],clothes:['魔女・魔法使い','参照画像の衣装を生かす'],poses:['椅子に腰掛ける','カップを両手で持つ']}
 };
 export function noPersonSelection(values={}){return ['風景を主役にする','モチーフだけで構成する','紋章・アイコンにする'].includes(values.costume);}

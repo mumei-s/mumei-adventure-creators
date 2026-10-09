@@ -1,19 +1,19 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.4.4';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.4';
-import {initialSelections} from '../modes.js?v=28.4.4';
-import {buildDirection} from '../direction.js?v=28.4.4';
-import {applyPose} from '../poses.js?v=28.4.4';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.4';
-import {composePrompt} from '../prompt.js?v=28.4.4';
-import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.4';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.4';
-import {photoValues,photoReconstruction,photoDesign,isPhotographicMedium} from '../photo-design.js?v=28.4.4';
-import {styleFidelity} from '../style-fidelity.js?v=28.4.4';
-import {colorPolicy} from '../color-policy.js?v=28.4.4';
-import {detailedMedium} from '../medium-recipes.js?v=28.4.4';
-import {cameraContract,angleItems} from '../angles.js?v=28.4.4';
-import {artworkBasisContract} from '../artwork-basis.js?v=28.4.4';
+import {applyCollection} from '../collection.js?v=28.4.5';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.5';
+import {initialSelections} from '../modes.js?v=28.4.5';
+import {buildDirection} from '../direction.js?v=28.4.5';
+import {applyPose} from '../poses.js?v=28.4.5';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.5';
+import {composePrompt} from '../prompt.js?v=28.4.5';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.5';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.5';
+import {photoValues,photoReconstruction,photoDesign,isPhotographicMedium} from '../photo-design.js?v=28.4.5';
+import {styleFidelity} from '../style-fidelity.js?v=28.4.5';
+import {colorPolicy} from '../color-policy.js?v=28.4.5';
+import {detailedMedium} from '../medium-recipes.js?v=28.4.5';
+import {cameraContract,angleItems} from '../angles.js?v=28.4.5';
+import {artworkBasisContract} from '../artwork-basis.js?v=28.4.5';
 import {compactReferences,assertCompactHandoff,assertCompactEngineering} from './compact-handoff-assertions-v28.mjs';
 
 // Reference filenames describe the user scenario; no reference pixels or
@@ -27,7 +27,7 @@ try{
   applyCollection(collection);
   const presets=questions.find(q=>q.key==='medium').groups.flatMap(g=>g.values).filter(isPhotographicMedium);
   assert.deepEqual([...presets].sort(),[...photoValues].sort(),'Every photographic preset must use the reconstruction path');
-  assert.equal(presets.length,14);
+  assert.equal(presets.length,15,'The original fourteen photographs plus solid-glow real remain selectable');
   for(const medium of presets)for(const noPerson of [false,true])for(const palette of ['群青 × 月白 × 銀','モノクローム','金と黒の二色']){
    const values=resolveSelections({...initialSelections(),...base,medium,palette,...(noPerson?{costume:'風景を主役にする'}:{})},random);
    const variant=applyPose(buildDirection([],values.mood,random,collection,values),values.pose);
@@ -68,21 +68,17 @@ try{
     for(const text of [native,routes.artwork])assert.doesNotMatch(text,/^顔の向き：|^身体の動き：|^身体の動作：/m);
     assert.match(audit.identity,/人物なし/);
    }else{
-    assert.match(photo.sections[0].text,/主参照がイラスト・漫画・アニメでも/);
+    assert.match(photo.sections[0].text,medium==='立体光彩リアル'?/主参照の輪郭・眉目鼻口の特徴の組合せ/:/主参照がイラスト・漫画・アニメでも/);
     assert.match(photo.sections[0].text,/年齢感・性別表現・基礎体格/);
-    assert.match(photo.sections[0].text,/人間の頭蓋・眼球・鼻・唇・顎・首/);
-    assert.match(photo.sections[1].text,/毛穴|産毛/);assert.match(photo.sections[1].text,/縫い目・繊維・重力/);
-    assert.match(photo.sections[1].text,/髪なし・閉眼の明示指定/);
+    assert.match(photo.sections[0].text,medium==='立体光彩リアル'?/自然な頭蓋・眼球・鼻・唇・顎・首/:/人間の頭蓋・眼球・鼻・唇・顎・首/);
+    const materials=medium==='立体光彩リアル'?photo.sections.find(section=>section.label==='素材と識別色'):photo.sections[1];
+    assert.match(materials.text,/毛穴|産毛/);assert.match(materials.text,medium==='立体光彩リアル'?/裁断・繊維・折れ・重力/:/縫い目・繊維・重力/);
+    if(medium==='立体光彩リアル'){assert.match(photo.sections.map(section=>section.text).join(' '),/閉眼/);assert.match(materials.text,/存在する髪/);}else assert.match(materials.text,/髪なし・閉眼の明示指定/);
     assert.match(audit.identity,/イラスト|漫画|アニメ/,'Identity must distinguish the illustration reference from the photographed result');
     assert.match(audit.identity,/人物|実写|撮影/);
-    if(policy.restricted){
-     includes(photo.sections.find(section=>section.label==='同じ撮影空間と識別色').text,policy.allowed,medium+' permitted photographic palette');
-     assert.match(photo.sections.find(section=>section.label==='同じ撮影空間と識別色').text,/識別色も許可色の明度差へ翻訳/);
-     assert.doesNotMatch(photo.sections.find(section=>section.label==='同じ撮影空間と識別色').text,/髪色を照明の都合で別の色へ変えない/,'Restricted palettes must not preserve source hues as an exception');
-    }else{
-     assert.match(photo.sections.find(section=>section.label==='同じ撮影空間と識別色').text,/髪と瞳などの識別に必要な基礎色は保ち/);
-     assert.match(photo.sections.find(section=>section.label==='同じ撮影空間と識別色').text,/髪色を照明の都合で別の色へ変えない/);
-    }
+    const colourSection=medium==='立体光彩リアル'?materials:photo.sections.find(section=>section.label==='同じ撮影空間と識別色');
+    if(policy.restricted){includes(colourSection.text,policy.allowed,medium+' permitted photographic palette');assert.match(colourSection.text,/識別色も許可色の明度差へ翻訳/);assert.doesNotMatch(colourSection.text,/髪色を照明の都合で別の色へ変えない/,'Restricted palettes must not preserve source hues as an exception');}
+    else{assert.match(colourSection.text,/髪と瞳などの識別に必要な基礎色は保ち/);assert.match(colourSection.text,/髪色を照明の都合で別の色へ変えない/);}
    }
    photographs++;
   }
@@ -136,7 +132,8 @@ try{
    const plan=productionPlan(profile,values,variant,collection,random),recipe=plan.conditions.find(c=>c.key==='medium');
    const scope=artworkBasisContract(medium,{values}).sections[0].text;
    assert.match(scope,/識別特徴.*髪型.*年齢感.*性別表現.*基礎体格/);
-   assert.match(scope,/頭と胴や四肢の寸法比をそのまま固定せず.*自然な頭蓋・眼球・人体比率へ再構成/);
+   if(medium==='立体光彩リアル'){assert.match(scope,/自然な頭蓋・眼球・鼻口へ翻訳/);assert.match(scope,/基礎体格と基本頭身は主参照を保つ/);assert.match(scope,/ちび.*通常頭身へ伸ばさない/);assert.doesNotMatch(scope,/頭と胴や四肢の寸法比をそのまま固定せず/);}
+   else assert.match(scope,/頭と胴や四肢の寸法比をそのまま固定せず.*自然な頭蓋・眼球・人体比率へ再構成/);
    const prompt=composePrompt({collection,profile,values,variant:plan.variant,references:compactReferences(plan,[{name,role:'identity'}]),edition:'PROPORTION-TO-PHOTO',preparedPlan:plan});
    const actual=assertCompactHandoff(plan,prompt,medium+' / '+name+' actual photographic proportion translation');
    assert.equal(actual,true,medium+' exaggerated-reference fixture must exercise photographic reconstruction rather than a blocked palette');
@@ -151,6 +148,6 @@ try{
   for(const medium of ['現代アニメの一枚絵','ちびキャラ'])assert.equal(artworkBasisContract(medium).sections[0].text,unchangedDrawingScope,'Non-photo and explicit chibi construction must retain its reference-proportion scope');
  }
 }finally{applyCollection('halloween');}
-assert.equal(photographs,168);assert.equal(otherMedia,16);assert.equal(angleCombinations,14*2*2*angleItems.length);
-assert.equal(proportionReferences,56);
-console.log('PASS illustration-to-photo instructions: 14 photographic presets × two modes × person/scenery × three palettes = '+photographs+' cases reconstruct illustrated references as optical photographs while retaining identity, selected camera/pose, coverage and color constraints; '+angleCombinations+' combinations retain reconstruction across all '+angleItems.length+' angles; '+proportionReferences+' exaggerated-reference handoffs use natural photographic proportion translation without the drawing-only ratio lock; '+otherMedia+' non-photo cases and explicit chibi keep their own medium. No AI conversion or generated-image adherence was executed or inferred.');
+assert.equal(photographs,180);assert.equal(otherMedia,16);assert.equal(angleCombinations,15*2*2*angleItems.length);
+assert.equal(proportionReferences,60);
+console.log('PASS illustration-to-photo instructions: 15 photographic presets × two modes × person/scenery × three palettes = '+photographs+' cases reconstruct illustrated references as optical photographs while retaining identity, selected camera/pose, coverage and color constraints; '+angleCombinations+' combinations retain reconstruction across all '+angleItems.length+' angles; '+proportionReferences+' exaggerated-reference handoffs preserve each medium contract, including the new solid real identity proportions; '+otherMedia+' non-photo cases and explicit chibi keep their own medium. No AI conversion or generated-image adherence was executed or inferred.');

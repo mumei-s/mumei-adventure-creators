@@ -1,25 +1,29 @@
-import {creatorLookupInstructions,creatorCopyRequirements} from './creator-handoff.js?v=28.4.4';
-import {imageOutputContract} from './output-contract.js?v=28.4.4';
-import {modeFoundation} from './japan-direction.js?v=28.4.4';
-import {questions,visibleQuestions} from './catalog.js?v=28.4.4';
-import {formatContract} from './formats.js?v=28.4.4';
-import {buildEditorial,editorialContract} from './editorial.js?v=28.4.4';
-import {optionRecipe} from './option-recipes.js?v=28.4.4';
-import {colorPolicy} from './palette-recipes.js?v=28.4.4';
-import {resolveArtDirection,interactionContract} from './art-direction.js?v=28.4.4';
-import {executionFor} from './option-execution.js?v=28.4.4';
-import {cameraContract} from './angles.js?v=28.4.4';
-import {selectionIssues} from './compatibility.js?v=28.4.4';
-import {moodConstraint} from './view-constraints.js?v=28.4.4';
-import {stylePresetFor,stylePresetInstructions} from './style-presets.js?v=28.4.4';
-import {characterProportionInstruction,sourceKindInstructions,isNonHumanSource} from './source-kind.js?v=28.4.4';
-import {halloweenModeContract} from './halloween-mode-contract.js?v=28.4.4';
-import {buildDirection} from './direction.js?v=28.4.4';
-import {applyPose} from './poses.js?v=28.4.4';
+import {renderFocusedRepairPrompt} from './focused-production.js?v=28.4.5';
+import {creatorLookupInstructions,creatorCopyRequirements} from './creator-handoff.js?v=28.4.5';
+import {imageOutputContract} from './output-contract.js?v=28.4.5';
+import {modeFoundation} from './japan-direction.js?v=28.4.5';
+import {questions,visibleQuestions} from './catalog.js?v=28.4.5';
+import {formatContract} from './formats.js?v=28.4.5';
+import {buildEditorial,editorialContract} from './editorial.js?v=28.4.5';
+import {optionRecipe} from './option-recipes.js?v=28.4.5';
+import {colorPolicy} from './palette-recipes.js?v=28.4.5';
+import {resolveArtDirection,interactionContract} from './art-direction.js?v=28.4.5';
+import {executionFor} from './option-execution.js?v=28.4.5';
+import {cameraContract} from './angles.js?v=28.4.5';
+import {selectionIssues} from './compatibility.js?v=28.4.5';
+import {moodConstraint} from './view-constraints.js?v=28.4.5';
+import {stylePresetFor,stylePresetInstructions} from './style-presets.js?v=28.4.5';
+import {characterProportionInstruction,sourceKindInstructions,isNonHumanSource} from './source-kind.js?v=28.4.5';
+import {halloweenModeContract} from './halloween-mode-contract.js?v=28.4.5';
+import {buildDirection} from './direction.js?v=28.4.5';
+import {applyPose} from './poses.js?v=28.4.5';
+import {normalizeSelectionLabels,canonicalSelectionLabel} from './legacy-selection-aliases.js?v=28.4.5';
 
 const independentActorText=text=>text.replace(/参照の顔立ち・目鼻口・髪型の特徴的な組合せと年齢感を保ち/g,'今回設計した独自の主役の顔立ち・目鼻口・髪型と明示された年齢感を保ち');
 
 export function productionPlan(profile,values,variant,collection='halloween',random=Math.random){
+ values=normalizeSelectionLabels(values);
+ if(variant?.tone)variant={...variant,tone:canonicalSelectionLabel('mood',variant.tone)};
  const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);
  const sourceInstructions=sourceKindInstructions(values,{noPerson});
  const modeContract=halloweenModeContract(values,{collection,noPerson});
@@ -105,6 +109,8 @@ export function planInstructions(plan,{omitKeys=[]}={}){return [
  '不足した項目があれば、その項目と領域を特定し、満たしている主役・動作・画風・配色を保って修正する。誌名だけの絵を雑誌の完成、背景だけの交換を新しいポーズ、顔だけ写真の絵をアニメの完成と扱わない。修正できない場合は不足を正直に伝える。'
 ];}
 export function repairPrompt(result){
+ const focused=result.production&&renderFocusedRepairPrompt(result.production,result.production.referenceManifest||result.drawingReferences||[]);
+ if(focused)return focused;
  const noPerson=result.production?.noPerson??/風景を主役|モチーフだけ|紋章・アイコン/.test(result.values?.costume||'');
  const values=result.values||result.production?.values||{};
  const drawingMedium=values.medium;

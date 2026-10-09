@@ -2,19 +2,20 @@ import assert from 'node:assert/strict';
 import {assertCompactHandoff} from './compact-handoff-assertions-v28.mjs';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
-import {stylePresets,stylePresetFor,stylePresetInstructions,stylePresetRoleDescription,loadStylePresets} from '../style-presets.js?v=28.4.4';
-import {drawingReferenceFor,deliveryImageFiles} from '../drawing-references.js?v=28.4.4';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.4';
-import {initialSelections} from '../modes.js?v=28.4.4';
-import {applyCollection} from '../collection.js?v=28.4.4';
-import {productionPlan,repairPrompt,planInstructions} from '../production-plan.js?v=28.4.4';
-import {composePrompt} from '../prompt.js?v=28.4.4';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.4';
-import {renderChatInput} from '../compiled-production.js?v=28.4.4';
-import {composeStagedMaster} from '../production-workflow.js?v=28.4.4';
-import {usesFocusedProduction} from '../focused-production.js?v=28.4.4';
-import {renderRecipeChatInput} from '../compact-production.js?v=28.4.4';
+import {stylePresets,stylePresetFor,stylePresetInstructions,stylePresetRoleDescription,loadStylePresets} from '../style-presets.js?v=28.4.5';
+import {drawingReferenceFor,deliveryImageFiles} from '../drawing-references.js?v=28.4.5';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.5';
+import {initialSelections} from '../modes.js?v=28.4.5';
+import {applyCollection} from '../collection.js?v=28.4.5';
+import {productionPlan,repairPrompt,planInstructions} from '../production-plan.js?v=28.4.5';
+import {composePrompt} from '../prompt.js?v=28.4.5';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.5';
+import {renderChatInput} from '../compiled-production.js?v=28.4.5';
+import {composeStagedMaster} from '../production-workflow.js?v=28.4.5';
+import {usesFocusedProduction} from '../focused-production.js?v=28.4.5';
+import {renderRecipeChatInput} from '../compact-production.js?v=28.4.5';
 import {assertFocusedHandoff} from './focused-handoff-assertions-v28.mjs';
+import {volumetricReferenceMedia} from '../attachment-policy.js?v=28.4.5';
 
 const root=new URL('../',import.meta.url),random=()=>.34,profile={displayName:'PRESET CHECK',activityEnabled:false};
 applyCollection('halloween');
@@ -64,20 +65,30 @@ for(const collection of ['halloween','everyday'])for(const preset of stylePreset
  const focused=usesFocusedProduction(plan),recipe=focused?renderRecipeChatInput(plan,plan.referenceManifest):null;
  if(focused){
   assertFocusedHandoff(plan,prompt,collection+' / '+preset.medium+' actual preset');
-  assert.match(prompt,/原寸の選択画風見本.*(?:制作の土台・編集の基準|描法だけの資料)/,'The actual focused preset must supply full-resolution drawing method');
+  if(volumetricReferenceMedia.includes(preset.medium))assert.match(prompt,/1枚目の選択画風原画を編集の土台にする/,'The supplied original image must own the world-editing step');
+  else assert.match(prompt,/原寸の選択画風見本.*(?:制作の土台・編集の基準|描法だけの資料)/,'The actual focused preset must supply full-resolution drawing method');
   assert.ok(recipe.includes('原寸見本'),'The authored full-resolution wording must survive on the recipe review renderer');
  }else assert.ok(prompt.includes('原寸見本'));
  const routes=[renderChatInput(plan),composeArtworkStage(plan),composeArtworkRepair(plan),composeArtworkRepair(plan,{compact:true}),repairPrompt({production:plan,values}),planInstructions(plan).join('\n')];
- for(const route of routes){
+ for(const [routeIndex,route] of routes.entries()){
   assert.ok(route.includes(preset.name),collection+' / '+preset.medium+' lost the actual attached preset filename');
-  for(const text of stylePresetInstructions(preset.medium,{noPerson,values}))assert.ok(route.includes(text),preset.medium+' lost preset-role instructions');
+  if(routeIndex===4&&volumetricReferenceMedia.includes(preset.medium)){assert.match(route,/完成画像を編集の土台/);assert.match(route,/原画は光彩・造形・材質の描法だけに使う/);assert.match(route,/元の人物写真・元イラスト・見本シート・個別条件見本は再添付しない/);}
+  else for(const text of stylePresetInstructions(preset.medium,{noPerson,values}))assert.ok(route.includes(text),preset.medium+' route '+routeIndex+' lost preset-role instructions');
   routesChecked++;
  }
  const description=stylePresetRoleDescription(preset,values,{noPerson});
  if(preset.role==='style-preset'){
   if(focused){
-   assert.match(prompt,/主参照「character\.png」.*識別特徴だけ|人物識別参照「prepared-identity\.png」の同じ人物/,'The actual character reference must remain separate from the style image');
-   assert.match(prompt,/見本の人物・性別・髪型・衣装・小道具・構図・文字は引き継がない/,'Focused transfer must not import the example identity or scene');
+   if(volumetricReferenceMedia.includes(preset.medium)){
+    assert.match(prompt,/character\.png：最初の差替で読む本人または主題の識別資料。[^\n]*以後の画像入力へ再添付しない/);
+    if(noPerson){assert.match(prompt,/原画の人物を除き/);assert.doesNotMatch(prompt,/本人へ差し替|本人の輪郭/);}else assert.match(prompt,/識別特徴だけを2枚目の本人へ差し替/);
+    assert.match(prompt,/本人画像の衣装・着脱可能な仮装の角・動物耳のカチューシャ・装身具・飾り・撮影姿勢・撮影光・背景は移さない|人物・顔・人体・手足・人型を追加しない/);
+    assert.match(prompt,/選択衣装・場面・ポーズ・表情・投影・配色を描き直す/);
+   }else{
+    if(noPerson){assert.match(prompt,/主参照「character\.png」[^\n]*選択された景物・物体・図案/);assert.doesNotMatch(prompt,/人物を今回の本人へ差し替|今回の本人の識別特徴だけ/,'No-person output cannot borrow a sample or source person');}
+    else assert.match(prompt,/主参照「character\.png」[^\n]*今回の本人の識別特徴だけ|人物識別参照「prepared-identity\.png」の同じ人物/,'The actual character reference must remain separate from the style image');
+    assert.match(prompt,/見本の人物・性別・髪型・衣装・小道具・(?:背景の具体的な配置・)?構図・文字は引き継がない/,'Focused transfer must not import the example identity, costume, props, background arrangement, composition or text');
+   }
    assert.match(recipe,/作成者の主参照/,'Detailed character reference must remain separate');assert.match(recipe,/人物・衣装・小道具・構図・舞台は借用しない/);
   }else {assert.match(prompt,/作成者の主参照/,'Character reference must remain separate');assert.match(prompt,/人物・衣装・小道具・構図・舞台は借用しない/);}
   const verbose=composeStagedMaster(plan,['画像生成の制作仕様','【作品モード】','【作成者が添付する参照画像】','【10の選択】'],{verbose:true});assertCompactHandoff(plan,verbose);assert.ok(verbose.includes(preset.name));

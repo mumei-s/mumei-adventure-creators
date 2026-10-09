@@ -60,7 +60,7 @@ const report={
  {values:Object.keys(scenes.scenePreviews).slice(0,12),before:'18 title-only scene/place option occurrences',after:'12 independently generated actual environments; repeated scene/place names share their own same environment'},
  {values:['花光のガラス庭園','街角アニメ日和','ふわ彩の祝祭室'],before:'Mountain-lake, beach and woman-with-cat portrait respectively',after:'Individual actual glass garden, urban corner and supported paper/fabric/ceramic celebration room'},
  {values:['和雅・花景','水鏡の幻想空間'],before:'Magazine fashion page and underwater woman-with-jellyfish portrait',after:'Original Japanese wood-and-flower garden and supported interior with water-light projection, transparent boundaries and floor-wall reflections'},
- {values:['死神の休日','鏡の向こうの自分','雨上がりの怪談'],before:'Generic cafe, ordinary reflection and ordinary rain portrait',after:'Visible reaper role and resting scythe; reflection mouth differs; wet footprints climb a vertical wall noticed by the person'},
+ {values:['死神の休日','鏡の向こうの自分','雨上がりのホラー'],before:'Generic cafe, ordinary reflection and ordinary rain portrait',after:'Visible reaper role and resting scythe; reflection mouth differs; wet footprints climb a vertical wall noticed by the person'},
  {values:['ユニコーン','エイリアン'],before:'Human beside a separate unicorn; human-skinned elf-like body',after:'One main character with unicorn horn/mane/ears/tail; one clothed main character with alien blue-green skin and wide membrane ears'},
  {values:['宝石ホログラムアニメ','クリスタル透光アニメ','クリスタルホログラム造形アニメ'],before:'Opaque face under nearby shiny panels or vague material treatment',after:'Individual new broad-face transmissive projection, thin anime coloured planes and thick crystal refraction samples; opaque garment coverage retained'}
  ],

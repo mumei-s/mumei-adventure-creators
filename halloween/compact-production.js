@@ -1,13 +1,13 @@
-import {cameraContract} from './angles.js?v=28.4.4';
-import {colorPolicy} from './color-policy.js?v=28.4.4';
-import {isPhotographicMedium,photoReconstruction} from './photo-design.js?v=28.4.4';
-import {characterProportionInstruction,sourceKindInstructions} from './source-kind.js?v=28.4.4';
-import {halloweenCopyRules} from './halloween-mode-contract.js?v=28.4.4';
-import {interactionContract} from './art-direction.js?v=28.4.4';
-import {sceneComposition} from './scene-composition.js?v=28.4.4';
-import {halloweenSceneFocus} from './scene-presets.js?v=28.4.4';
-import {referenceOwnershipRule} from './attachment-policy.js?v=28.4.4';
-import {renderFocusedChatInput} from './focused-production.js?v=28.4.4';
+import {cameraContract} from './angles.js?v=28.4.5';
+import {colorPolicy} from './color-policy.js?v=28.4.5';
+import {isPhotographicMedium,photoReconstruction} from './photo-design.js?v=28.4.5';
+import {characterProportionInstruction,sourceKindInstructions} from './source-kind.js?v=28.4.5';
+import {halloweenCopyRules} from './halloween-mode-contract.js?v=28.4.5';
+import {interactionContract} from './art-direction.js?v=28.4.5';
+import {sceneComposition} from './scene-composition.js?v=28.4.5';
+import {halloweenSceneFocus} from './scene-presets.js?v=28.4.5';
+import {referenceOwnershipRule} from './attachment-policy.js?v=28.4.5';
+import {renderFocusedChatInput} from './focused-production.js?v=28.4.5';
 
 // The complete plan remains the audit record. Only instructions whose owner
 // is explicit below are consolidated; unfamiliar recipes are never truncated.

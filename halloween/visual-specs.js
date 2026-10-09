@@ -1,14 +1,15 @@
-import {everydayRecipe} from './everyday-options.js?v=28.4.4';
-import {mediumDefinition} from './looks.js?v=28.4.4';
-import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=28.4.4';
-import {poseItems} from './poses.js?v=28.4.4';
-import {colorContract,luminousMedia,colorWorlds,sceneryMaterials} from './worlds.js?v=28.4.4';
-import {referenceWorldSceneRecipe} from './world-bases.js?v=28.4.4';
-import {formatFor} from './formats.js?v=28.4.4';
-import {typographyRecipe} from './typography-options.js?v=28.4.4';
-import {typographyLayoutInstruction} from './layout-preview-specs.js?v=28.4.4';
-import {sceneSourcePlace} from './scene-presets.js?v=28.4.4';
-import {angleRecipe} from './angles.js?v=28.4.4';
+import {canonicalSelectionLabel,preserveLegacyAssetKeys} from './legacy-selection-aliases.js?v=28.4.5';
+import {everydayRecipe} from './everyday-options.js?v=28.4.5';
+import {mediumDefinition} from './looks.js?v=28.4.5';
+import {CRYSTAL_ANIME,crystalAnimeSpec} from './crystal-anime.js?v=28.4.5';
+import {poseItems} from './poses.js?v=28.4.5';
+import {colorContract,luminousMedia,colorWorlds,sceneryMaterials} from './worlds.js?v=28.4.5';
+import {referenceWorldSceneRecipe} from './world-bases.js?v=28.4.5';
+import {formatFor} from './formats.js?v=28.4.5';
+import {typographyRecipe} from './typography-options.js?v=28.4.5';
+import {typographyLayoutInstruction} from './layout-preview-specs.js?v=28.4.5';
+import {sceneSourcePlace} from './scene-presets.js?v=28.4.5';
+import {angleRecipe} from './angles.js?v=28.4.5';
 const read=source=>Object.fromEntries(source.trim().split('\n').map(line=>{const i=line.indexOf('=');return [line.slice(0,i),line.slice(i+1)];}));
 export const costumeSpecs=read(`
 魔女・魔法使い=尖った帽子・長いローブ・魔術の紋様。布の厚みと帽子の形を明確にする
@@ -146,7 +147,7 @@ export const themeSpecs=read(`
 光と影の寓話=主役の行為と影の形が意味で対比。光源と投影方向を揃える
 記憶の標本室=写真・小物・手紙を標本として並べ、主役が一つを選ぶ。記憶の対象を具体化
 異世界のファッションショー=衣装を見せる主役と観客。ランウェイの行為は選択舞台へ翻案
-雨上がりの怪談=雨の痕跡と日常の一箇所の異変。主役が気づいた対象を見せる
+雨上がりのホラー=雨の痕跡と日常の一箇所の異変。主役が気づいた対象を見せる
 静かなハロウィーン=小さな仮装や灯りを整える静かなひととき。大群の怪物や派手な爆発を追加しない
 朝の光と小さな日常=朝の一杯や窓の光と主役の日常の関係。生活の道具と柔らかな光
 旅先で見つけた景色=初めての景色に気づく旅人。目的地へ向かう道と発見した対象
@@ -245,7 +246,9 @@ HALLOWEENのみ=HALLOWEENの一語だけ。名前・セリフ・補助コピー�
 セリフのみ=選択したセリフだけを一つのブロックへ。名前・誌名・サインを追加しない
 文字を一切入れない=文字・数字・サイン・ロゴ・透かしを一切描かない。セリフの選択も描画しない
 `);
+preserveLegacyAssetKeys(themeSpecs,{key:'theme'});
 export function visualSpec(key,value,{noPerson=false,palette=''}={}){
+ value=canonicalSelectionLabel(key,value);
  if(key==='theme'&&sceneSourcePlace(value))key='place';
  const world=['theme','place'].includes(key)?referenceWorldSceneRecipe(value,{noPerson,values:{palette}}):null;
  if(world)return {known:true,text:world.sections.map(section=>section.text).join(' '),checks:world.checks};

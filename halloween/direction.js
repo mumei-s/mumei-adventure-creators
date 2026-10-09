@@ -1,7 +1,8 @@
-import {noPersonSelection,landscapeSelection} from './collection.js?v=28.4.4';
-import {applyPose} from './poses.js?v=28.4.4';
-import {resolveArtDirection} from './art-direction.js?v=28.4.4';
-import {automaticView,angleConstraint,moodConstraint,poseConstraint} from './view-constraints.js?v=28.4.4';
+import {canonicalSelectionLabel,normalizeSelectionLabels} from './legacy-selection-aliases.js?v=28.4.5';
+import {noPersonSelection,landscapeSelection} from './collection.js?v=28.4.5';
+import {applyPose} from './poses.js?v=28.4.5';
+import {resolveArtDirection} from './art-direction.js?v=28.4.5';
+import {automaticView,angleConstraint,moodConstraint,poseConstraint} from './view-constraints.js?v=28.4.5';
 export const shotPlans=[
  {family:'front-close',face:'正面0度。顔をまっすぐ起こし首の傾き0度',expression:'歯を見せた大きな笑顔、頬が上がり目尻が縮む',distance:'顔中心の真正面クローズアップ',pose:'両手で大きく帽子を掲げる。肩は水平',layout:'顔を画面中央上部に置き、下部に大胆な横組み文字',camera:'目線と同じ高さ、正面に水平なカメラ'},
  {family:'left-profile',face:'完全な左横顔90度。片方の目だけ見える。鑑賞者を見ない',expression:'眉を寄せ、唇を引き結ぶ明確な怒り',distance:'膝まで入る左側面のミディアムロング',pose:'横向きに歩く。両腕は後方へ流れ、体軸は前傾',layout:'左向きの横顔と移動を右下から左上へ対角線に配置',camera:'真横から水平に、主役と平行な視線'},
@@ -141,9 +142,11 @@ function buildSceneryDirection(used,control,random,collection,values){
  return chooseDirection(bases,used,control,random,collection,values);
 }
 export function buildDirection(used=[],control='毎回大胆に変える',random=Math.random,collection='halloween',values={}){
+ control=canonicalSelectionLabel('mood',control);
+ values=normalizeSelectionLabels(values);
  if(noPersonSelection(values))return buildSceneryDirection(used,control,random,collection,values);
  const allPlans=collection==='everyday'?everydayShotPlans:shotPlans;
- const toneOptions=['静かで美しい','妖しく気高い','儚く切ない','温かく懐かしい','神秘的で透明感','寂しく詩的','優雅でクラシカル','強く挑発的','不敵な微笑み','いたずら好き','明るく祝祭的','可愛くコミカル','疾走する冒険','劇的な勝利','少しだけ不気味','ひやりとする怪談','圧倒的な恐怖・流血なし','奇妙でシュール','無表情の緊張感'];
+ const toneOptions=['静かで美しい','妖しく気高い','儚く切ない','温かく懐かしい','神秘的で透明感','寂しく詩的','優雅でクラシカル','強く挑発的','不敵な微笑み','いたずら好き','明るく祝祭的','可愛くコミカル','疾走する冒険','劇的な勝利','少しだけ不気味','ひやりとするホラー','圧倒的な恐怖・流血なし','奇妙でシュール','無表情の緊張感'];
  const tone=toneOptions.includes(control)?control:'';
  const toneExpressions={
  '静かで美しい':['目を閉じて安らぐ','口元を緩めた自然な笑顔','眉を水平に保ち静かに見つめる'],
@@ -161,7 +164,7 @@ export function buildDirection(used=[],control='毎回大胆に変える',random
  '疾走する冒険':['口を開いて叫ぶ決意','眉を寄せて真剣に見つめる','歯を見せた興奮の笑顔'],
  '劇的な勝利':['口を開けた喜びの笑顔','涙を浮かべて大きく笑う','片眉を上げ勝ち誇って笑う'],
  '少しだけ不気味':['唇を閉じてじっと見つめる','片側の口角だけが上がる笑顔','目を大きく開いた不自然な沈黙'],
- 'ひやりとする怪談':['目を見開いて息を呑む','口が半開きの驚き','眉を寄せて緊張を表す'],
+ 'ひやりとするホラー':['目を見開いて息を呑む','口が半開きの驚き','眉を寄せて緊張を表す'],
  '圧倒的な恐怖・流血なし':['目を見開き口を大きく開ける恐怖','涙を浮かべ眉を上げた恐怖','眉を寄せ歯を露わにした威嚇'],
  '奇妙でシュール':['目を見開き口を丸く開く','片眉だけ上げる不可解な表情','左右で異なる口角の奇妙な笑顔'],
  '無表情の緊張感':['眉を水平に保ち唇を引き結ぶ無表情','まばたきを忘れた真剣な目','口を閉じ緊張を含む無表情']};
@@ -194,4 +197,4 @@ export function buildDirection(used=[],control='毎回大胆に変える',random
  return chooseDirection(bases,used,control,random,collection,values,{automaticExpression});
 }
 export function isAdvertising(design){return /雑誌|誌面|見開き|新聞|映画ポスター|舞台ポスター|フェス|フライヤー|広告|チラシ/.test(design);}
-export {buildEditorial as buildTextPlan} from './editorial.js?v=28.4.4';
+export {buildEditorial as buildTextPlan} from './editorial.js?v=28.4.5';

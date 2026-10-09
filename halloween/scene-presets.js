@@ -1,3 +1,4 @@
+import {canonicalSelectionLabel} from './legacy-selection-aliases.js?v=28.4.5';
 // A selected world, story or location is one scene. The old place key is kept
 // only as an internal detail for saved records and existing drawing recipes.
 const placeTitles=new Set();
@@ -50,7 +51,7 @@ const halloweenGroups=[
   ['海賊船の亡霊','Halloweenに現れる海賊船の亡霊。古い航海道具と使われていない船の痕跡で、失われた船の帰還を示す。'],
   ['呪われたオルゴール','Halloweenに鳴り始める呪われたオルゴール。巻き鍵、動いた人形や影の一点の変化で呪いの発動を示す。'],
   ['墨で描く怪異','Halloweenの怪異を墨の痕跡から呼び出す出来事。墨の跡と異常な影を対象にし、描画技法は選択した作風のまま保つ。'],
-  ['雨上がりの怪談','Halloweenの雨上がりに残る怪異。濡れた足跡や不一致の反射で、人ならぬ気配を示す。']
+  ['雨上がりのホラー','Halloweenの仮装行列が通り過ぎた雨上がりの路地。濡れた菓子包み、片付け途中の仮装飾り、帰路へ続く足跡を同じ道へつなぐ。飾りと一致しない水面の反射を一箇所だけ残し、祝祭が終わった直後のホラーとして描く。']
  ]},
  {label:'魔女の部屋・墓地・秋の境界',sceneSource:'place',scenes:[
   ['魔女の書斎','Halloweenの夜の魔女の書斎。古書、調合容器、今夜の魔法の道具を本棚と机へ置く。'],
@@ -61,7 +62,7 @@ const halloweenGroups=[
 ];
 const halloweenFocus=new Map(halloweenGroups.flatMap(group=>group.scenes));
 export const halloweenSceneTitles=Object.freeze([...halloweenFocus.keys()]);
-export function halloweenSceneFocus(value){return halloweenFocus.get(value)||null;}
+export function halloweenSceneFocus(value){return halloweenFocus.get(canonicalSelectionLabel('theme',value))||null;}
 
 export function halloweenSceneGroups(worldGroups=[],placeGroups=[]){
  // Register every legacy place before narrowing the public list. A saved

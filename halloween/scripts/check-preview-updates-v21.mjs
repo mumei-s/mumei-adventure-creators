@@ -1,19 +1,20 @@
 import fs from 'node:fs';
 import crypto from 'node:crypto';
 import assert from 'node:assert/strict';
-import {questions} from '../catalog.js?v=28.4.4';
-import {applyCollection} from '../collection.js?v=28.4.4';
-import {sampleFor} from '../examples.js?v=28.4.4';
-import {japanPreviews} from '../japan-preview-catalog.js?v=28.4.4';
-import {scenePreviews} from '../scene-preview-catalog.js?v=28.4.4';
+import {questions} from '../catalog.js?v=28.4.5';
+import {applyCollection} from '../collection.js?v=28.4.5';
+import {sampleFor} from '../examples.js?v=28.4.5';
+import {japanPreviews} from '../japan-preview-catalog.js?v=28.4.5';
+import {scenePreviews} from '../scene-preview-catalog.js?v=28.4.5';
+import {canonicalSelectionLabel} from '../legacy-selection-aliases.js?v=28.4.5';
 
 const inventory=JSON.parse(fs.readFileSync(new URL('../verification/v21/preview-inventory.json',import.meta.url)));
 const formats=JSON.parse(fs.readFileSync(new URL('../verification/v21/format-previews.json',import.meta.url)));
-assert.equal(inventory.artworkChoices,350);assert.equal(inventory.paletteChoices,49);assert.equal(Object.keys(japanPreviews).length,406);
+assert.equal(inventory.artworkChoices,350);assert.equal(inventory.paletteChoices,49);assert.equal(Object.keys(japanPreviews).length,406,'Canonical label renames preserve the exact registered preview count');assert.ok(japanPreviews['theme\u0000雨上がりのホラー']);assert.ok(japanPreviews['mood\u0000ひやりとするホラー']);
 const replacements=new Map([
  ['costume\u0000ユニコーン','assets/costume-unicorn-original-v28-4-3.png'],
  ['costume\u0000エイリアン','assets/costume-alien-original-v28-4-3.png'],
- ...['鏡の向こうの自分','死神の休日','雨上がりの怪談'].map(value=>['theme\u0000'+value,scenePreviews[value].file])
+ ...['鏡の向こうの自分','死神の休日','雨上がりのホラー'].map(value=>['theme\u0000'+value,scenePreviews[value].file])
 ]);
 try{
  const old=[];
@@ -31,12 +32,12 @@ try{
  const illustrated=formats.replaced.filter(r=>r.asset);
  assert.equal(illustrated.length,38);assert.equal(new Set(illustrated.map(r=>r.asset)).size,38,'Illustrated formats must have independent primary artwork');
  for(const row of inventory.entries){
-  const key=row.key+'\u0000'+row.value,replacement=replacements.get(key);
+  const key=row.key+'\u0000'+row.value,replacement=replacements.get(row.key+'\u0000'+canonicalSelectionLabel(row.key,row.value));
   assert.equal(japanPreviews[key],replacement||row.file,'Reviewed legacy samples remain stable except explicit semantic corrections');
   if(!replacement)continue;
   const bytes=fs.readFileSync(new URL('../'+replacement,import.meta.url));
   const metadata=JSON.parse(fs.readFileSync(new URL('../'+replacement.replace(/\.(jpg|png)$/u,'.json'),import.meta.url),'utf8'));
-  assert.equal(metadata.title,row.value);assert.match(metadata.generator,/image_gen/);
+  assert.equal(canonicalSelectionLabel(row.key,metadata.title),canonicalSelectionLabel(row.key,row.value));assert.match(metadata.generator,/image_gen/);
   assert.equal(metadata.hash_sha256,crypto.createHash('sha256').update(bytes).digest('hex'));
   assert.equal(metadata.visualQA.status,'accepted');assert(metadata.prompt.length>500);
   assert.equal(sampleFor(row.key,row.value).src,'./'+replacement,'The corrected original image is actually shown by the chooser');

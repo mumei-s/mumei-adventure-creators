@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
-import {questions,visibleQuestions,AUTO} from '../catalog.js?v=28.4.4';
-import {applyCollection} from '../collection.js?v=28.4.4';
-import {sampleFor} from '../examples.js?v=28.4.4';
-import {scenePreviews} from '../scene-preview-catalog.js?v=28.4.4';
+import {questions,visibleQuestions,AUTO} from '../catalog.js?v=28.4.5';
+import {applyCollection} from '../collection.js?v=28.4.5';
+import {sampleFor} from '../examples.js?v=28.4.5';
+import {scenePreviews} from '../scene-preview-catalog.js?v=28.4.5';
+import {canonicalSelectionLabel} from '../legacy-selection-aliases.js?v=28.4.5';
 
 const allowedKinds=new Set(['image','reference','auto','type','line','size']);
 function jpegDimensions(bytes){
@@ -51,7 +52,7 @@ try{
   assert(preview.label.includes(value),'Accessible preview keeps the selected scene name');
   const bytes=fs.readFileSync(new URL('../'+item.file,import.meta.url)),dimensions=jpegDimensions(bytes);
   const metadata=JSON.parse(fs.readFileSync(new URL('../'+item.file.replace('.jpg','.json'),import.meta.url),'utf8'));
-  assert.equal(metadata.title,value);assert.equal(metadata.file,item.file.split('/').at(-1));
+  assert.equal(canonicalSelectionLabel('theme',metadata.title),value);assert.equal(metadata.file,item.file.split('/').at(-1));
   assert.equal(metadata.generator,'built-in image_gen');assert.equal(metadata.visualQA.status,'accepted');
   assert.deepEqual(metadata.dimensions,dimensions,'Recorded dimensions match the actual JPEG frame');
   assert(metadata.dimensions.width>=1024&&metadata.dimensions.height>=1024);

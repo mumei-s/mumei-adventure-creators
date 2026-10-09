@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {updateArtworkBasis} from '../artwork-basis-view.js?v=28.4.4';
+import {updateArtworkBasis} from '../artwork-basis-view.js?v=28.4.5';
 
 const el=(tag,cls,text)=>({tag,className:cls||'',textContent:text||'',children:[],dataset:{},append(...nodes){this.children.push(...nodes);},replaceChildren(...nodes){this.children=nodes;}});
 const descendants=node=>[node,...node.children.flatMap(descendants)];

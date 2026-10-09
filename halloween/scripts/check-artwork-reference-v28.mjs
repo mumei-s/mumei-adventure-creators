@@ -1,22 +1,22 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.4';
-import {applyCollection} from '../collection.js?v=28.4.4';
-import {initialSelections} from '../modes.js?v=28.4.4';
-import {buildDirection} from '../direction.js?v=28.4.4';
-import {applyPose} from '../poses.js?v=28.4.4';
-import {angleItems,cameraContract} from '../angles.js?v=28.4.4';
-import {colorPolicy} from '../color-policy.js?v=28.4.4';
-import {artworkBasisValues,artworkBasis,artworkBasisContract,withArtworkBasis} from '../artwork-basis.js?v=28.4.4';
-import {optionRecipe} from '../option-recipes.js?v=28.4.4';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.4';
-import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.4';
-import {composePrompt} from '../prompt.js?v=28.4.4';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.4';
-import {imageDeliveryRepairPrompt} from '../output-contract.js?v=28.4.4';
-import {selectionConflicts,candidateAvailability,compatibleResolved} from '../compatibility.js?v=28.4.4';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.5';
+import {applyCollection} from '../collection.js?v=28.4.5';
+import {initialSelections} from '../modes.js?v=28.4.5';
+import {buildDirection} from '../direction.js?v=28.4.5';
+import {applyPose} from '../poses.js?v=28.4.5';
+import {angleItems,cameraContract} from '../angles.js?v=28.4.5';
+import {colorPolicy} from '../color-policy.js?v=28.4.5';
+import {artworkBasisValues,artworkBasis,artworkBasisContract,withArtworkBasis} from '../artwork-basis.js?v=28.4.5';
+import {optionRecipe} from '../option-recipes.js?v=28.4.5';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.5';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.5';
+import {composePrompt} from '../prompt.js?v=28.4.5';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.5';
+import {imageDeliveryRepairPrompt} from '../output-contract.js?v=28.4.5';
+import {selectionConflicts,candidateAvailability,compatibleResolved} from '../compatibility.js?v=28.4.5';
 import {compactReferences,assertCompactHandoff,assertCompactEngineering} from './compact-handoff-assertions-v28.mjs';
-import {usesFocusedProduction} from '../focused-production.js?v=28.4.4';
-import {renderRecipeChatInput} from '../compact-production.js?v=28.4.4';
+import {usesFocusedProduction} from '../focused-production.js?v=28.4.5';
+import {renderRecipeChatInput} from '../compact-production.js?v=28.4.5';
 import {assertFocusedHandoff} from './focused-handoff-assertions-v28.mjs';
 
 // Reference links document authored criteria in the picker. They are not
@@ -37,7 +37,7 @@ const generalProcessURLs=new Set([
  'https://tips.clip-studio.com/en-us/articles/7012'
 ]);
 const knownValues=questions.find(q=>q.key==='medium').groups.flatMap(g=>g.values);
-assert.equal(knownValues.length,118,'The original styles and all three additional analyzed media must remain represented');
+assert.equal(knownValues.length,120,'The original styles and both new volumetric media must remain represented');
 for(const value of analyzedWorldValues)assert.ok(knownValues.includes(value),'Missing analyzed public medium '+value);
 assert.equal(artworkBasisValues.length,knownValues.length,'Every public artwork choice needs one documented or analyzed basis');
 assert.equal(new Set(artworkBasisValues).size,knownValues.length,'Artwork bases must not overwrite duplicate entries');
@@ -47,7 +47,7 @@ assert.equal(artworkBasisContract('未登録の自由作風'),null);
 
 const entries=artworkBasisValues.map(value=>artworkBasis(value));
 assert.equal(entries.filter(entry=>analyzedWorldValues.has(entry.value)).length,analyzedWorldValues.size,'Only explicitly analyzed world styles may omit documentation URLs');
-assert.equal(entries.filter(entry=>!analyzedWorldValues.has(entry.value)).length,109,'The original 108 plus the new real luminous documented bases must remain represented');
+assert.equal(entries.filter(entry=>!analyzedWorldValues.has(entry.value)).length,111,'The original documented bases and the two new volumetric documented syntheses must remain represented');
 const uniqueChecks=new Map();
 for(const entry of entries){
  assert.equal(entry.value,artworkBasisValues.find(value=>value===entry.value));
@@ -194,7 +194,7 @@ try{
   }
  }
 }finally{applyCollection('halloween');}
-console.log('PASS artwork references: all '+knownValues.length+' distinct bases have technique/check/avoid metadata and documented/synthesis status, 109 retain documentation links and '+analyzedWorldValues.size+' synthesized world bases record reference analysis ('+generalProcessWorldValues.size+' also retain verified general-process sources); '+checked+' mode/subject/palette handoffs preserve full audit and actual compact engineering, '+generalProcessCases+' verified-process handoffs, '+noPersonCases+' no-person guards and '+restrictedCases+' restricted color cases. Source URLs and artist/work titles stay out of generation routes. Source availability and image-model adherence are not inferred by this test.');
+console.log('PASS artwork references: all '+knownValues.length+' distinct bases have technique/check/avoid metadata and documented/synthesis status, 111 retain documentation links and '+analyzedWorldValues.size+' synthesized world bases record reference analysis ('+generalProcessWorldValues.size+' also retain verified general-process sources); '+checked+' mode/subject/palette handoffs preserve full audit and actual compact engineering, '+generalProcessCases+' verified-process handoffs, '+noPersonCases+' no-person guards and '+restrictedCases+' restricted color cases. Source URLs and artist/work titles stay out of generation routes. Source availability and image-model adherence are not inferred by this test.');
 
 let closedEyeProcessCases=0;
 try{

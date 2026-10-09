@@ -1,0 +1,712 @@
+{
+  "schemaVersion": 1,
+  "version": "28.4.5",
+  "checkedDate": "2026-10-10",
+  "status": "passed-code-contract-checks",
+  "count": 94,
+  "passed": 94,
+  "failed": 0,
+  "evidenceType": "composite: a frozen 94-check batch (90 passed, 4 old route fixtures failed), then a frozen 34-check affected dependency cohort (34 passed)",
+  "singleFrozen94BatchClaimed": false,
+  "initialProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc",
+  "finalProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929",
+  "programFileCount": 1572,
+  "hashAlgorithm": "sha256 of sorted compact JSON mapping relative file names to their sha256; excludes current generated-production-review status JSON and the reserved regression-checks-v28-4-5 report path",
+  "initialFrozenSourceUnchanged": true,
+  "affectedFrozenSourceUnchanged": true,
+  "affectedChecksReexecuted": 34,
+  "unaffectedPriorChecksRetained": 60,
+  "changesBetweenSnapshots": [
+    "audit/generated-production-review-v28-4-5.json",
+    "focused-production.js",
+    "scripts/check-item-review.mjs",
+    "scripts/check-production.mjs",
+    "scripts/check-style-handoff-v26.mjs",
+    "scripts/check-style-presets-v28.mjs",
+    "scripts/check-wardrobe-handoff-v27.mjs",
+    "scripts/check-world-transfer-v2845.mjs",
+    "world-transfer-production.js"
+  ],
+  "sourceDeltaScope": [
+    "world-transfer-production.js: independent-place whole/actual reference-count label, verified source-observation handoff, non-person source clothing branch",
+    "focused-production.js: new scene material only, non-person source clothing interpretation"
+  ],
+  "fixtureDeltaScope": "Four old single-call/delimiter/ref-fixture assumptions updated only for new volumetric workflow; full old flat constraints preserved; style preset identity scope wording and world source-observation/legacy coverage strengthened.",
+  "allOriginal118PresetLookupsAndImageBytes": "preserved; exact baseline sha256 fixture checked",
+  "sourceObservationFixtures": "20 cases exercise exact key/value/source-role and confirmed actual-image-review gates, empty/stale/unreviewed stopping, assigned concrete-text delivery, no original source reattachment; no real person images were reviewed by these controlled fixtures",
+  "qualityAudit": {
+    "file": "audit/generated-production-review-v28-4-5.json",
+    "sha256": "8ff9456677e60f2bd147ac1af139f411e0f395c31204ea30626051859599817f",
+    "status": "not-accepted",
+    "frozen": true,
+    "finalAcceptance": {
+      "acceptedCompleteSelectedOutputs": 0,
+      "normalRoutes": "not-accepted",
+      "animeWorldFirstFinal": "partial-improvement-not-accepted; layout-not-executed",
+      "realWorldFirstPhase2": "not-executed",
+      "conclusion": "実画像には部分改善があるが、全選択を満たした完成出力は0件。通常生成は未合格、アニメ後段は顔の光影ゲート未達・版面未実行、リアル後段は未実行。コード検査や画像の生成・表示を実画合格へ置き換えない。"
+    }
+  },
+  "generatedImageQualityStatus": "not-accepted; program, reference bytes, scope, camera/pose text and layout/copy geometry tests do not establish generated image adherence",
+  "results": [
+    {
+      "script": "scripts/check.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-v8.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-poses.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-production.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-collections-v11.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-handoff-v11.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-crystal-anime.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-artwork-recipes.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-staged-production.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-editorial-layout.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-item-review.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-option-execution.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-render-regressions.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-japan-compatibility.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-native-handoff.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-format-previews.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-preview-updates-v21.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-v22.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-v23.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-inline-share-v23.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-v24.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-profile-articles-v25.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-transfer-v25.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-fidelity-v25.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-style-handoff-v26.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-central-swipe-v26.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-scene-input-v26.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-scene-semantics-v27.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-style-region-v27.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-material-fidelity-v27.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-wardrobe-handoff-v27.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-character-identity-v27.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-collection-startup-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-added-poses-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-unified-scene-angle-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-typography-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-history-storage-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-camera-geometry-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-selection-integration-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-halloween-scenes-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-all-angles-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-illustration-to-photo-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-picker-navigation-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-inspiration-theme-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-drawing-flow-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-artwork-basis-view-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-artwork-basis-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-artwork-reference-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-view-compatibility-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-selection-feedback-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-history-persistence-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-luminous-world-core-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-copy-content-scope-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-newspaper-copy-scope-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-creator-draft-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-random-selections-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-random-direction-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-medium-conflicts-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-memory-resources-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-medium-conversion-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-reference-worlds-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-drawing-reference-transfer-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-halloween-copy-contract-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-source-kind-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-pose-anatomy-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-style-presets-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-preset-handoff-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-pose-illustrations-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-single-item-random-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-reference-race-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-proportions-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-picker-random-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-luminous-transfer-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-night-ui-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-favorites-panel-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-history-management-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-scene-preview-coverage-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-effective-copy-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-editorial-selected-layout-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-compact-production-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-selection-reference-sheet-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-creator-copy-handoff-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-angle-diagrams-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-layout-distinction-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-layout-copy-conflicts-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-editorial-writing-directions-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-delivery-history-migration-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-focused-production-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-halloween-labels-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-layout-copy-availability-v28.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-user-reported-combination-v2845.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "original-frozen-batch",
+      "validatedProgramHash": "494bf0b8f45500b2464139e83e031cd69bc5a5a4a8604a11283a5544909475cc"
+    },
+    {
+      "script": "scripts/check-solid-glow-v2845.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-lens-pose-framing-v2845.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    },
+    {
+      "script": "scripts/check-world-transfer-v2845.mjs",
+      "status": "passed",
+      "exitCode": 0,
+      "provenance": "frozen-affected-recheck",
+      "validatedProgramHash": "2aab5296ff75aa710e0572c5cb4cadde5218260ef13b9de06557f20d67620929"
+    }
+  ],
+  "publicationScope": "コード・契約の修正。実生成品質の完成合格を宣言しない。"
+}

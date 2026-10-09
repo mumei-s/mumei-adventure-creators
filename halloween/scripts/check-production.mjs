@@ -1,17 +1,18 @@
 import assert from 'node:assert/strict';
 import {assertCompactHandoff} from './compact-handoff-assertions-v28.mjs';
-import {usesFocusedProduction} from '../focused-production.js?v=28.4.4';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.4';
-import {initialSelections} from '../modes.js?v=28.4.4';
-import {applyCollection} from '../collection.js?v=28.4.4';
-import {buildDirection} from '../direction.js?v=28.4.4';
-import {applyPose} from '../poses.js?v=28.4.4';
-import {visualSpec} from '../visual-specs.js?v=28.4.4';
-import {formatSpecs} from '../formats.js?v=28.4.4';
-import {productionPlan,planInstructions,repairPrompt} from '../production-plan.js?v=28.4.4';
-import {buildEditorial} from '../editorial.js?v=28.4.4';
-import {composePrompt} from '../prompt.js?v=28.4.4';
-import {profileForArtwork} from '../activity-settings.js?v=28.4.4';
+import {usesFocusedProduction} from '../focused-production.js?v=28.4.5';
+import {usesWorldTransferProduction} from '../world-transfer-production.js?v=28.4.5';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.5';
+import {initialSelections} from '../modes.js?v=28.4.5';
+import {applyCollection} from '../collection.js?v=28.4.5';
+import {buildDirection} from '../direction.js?v=28.4.5';
+import {applyPose} from '../poses.js?v=28.4.5';
+import {visualSpec} from '../visual-specs.js?v=28.4.5';
+import {formatSpecs} from '../formats.js?v=28.4.5';
+import {productionPlan,planInstructions,repairPrompt} from '../production-plan.js?v=28.4.5';
+import {buildEditorial} from '../editorial.js?v=28.4.5';
+import {composePrompt} from '../prompt.js?v=28.4.5';
+import {profileForArtwork} from '../activity-settings.js?v=28.4.5';
 // This suite checks fixed manuscript geometry. Source-guided manuscript roles
 // and actual article evidence are exercised separately by check-fidelity-v25.
 const profile={displayName:'Alice',activityEnabled:false,topics:['写真','創作'],biography:'写真と創作'},base=resolveSelections({...initialSelections(),design:'ファッション雑誌の表紙',costume:'海賊',pose:'全力で走る',mood:'完全な左横顔90度'},()=>0.2);
@@ -33,7 +34,7 @@ for(const collection of ['halloween','everyday']){
    if(usesFocusedProduction(plan)){
     assertCompactHandoff(plan,prompt,collection+' / '+q.key+' / '+value);
     assert.match(prompt,/画像作成機能/);
-    assert.match(prompt,/2段階で実行|完成画像を1回で生成/,'The focused flow must specify the executable image-production stages');
+    assert.match(prompt,usesWorldTransferProduction(plan)?/完成画像の自動制作：利用者の送信は1回/:/完成画像を1回で生成/,'Each focused medium must specify its executable route');
    }else assert.ok(prompt.includes('ChatGPTの画像作成機能を実行'));
   }
   assert.ok(!prompt.includes('undefined'));assert.ok(!prompt.includes('NaN'));assert.ok(!prompt.includes('選択した特徴だけを作品へ反映'));examined++;

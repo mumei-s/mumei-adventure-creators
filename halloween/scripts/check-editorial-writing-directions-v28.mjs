@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.4.4';
-import {buildEditorial} from '../editorial.js?v=28.4.4';
-import {typographyLayoutValues} from '../layout-preview-specs.js?v=28.4.4';
-import {renderEditorialLayout} from '../editorial-layout.js?v=28.4.4';
+import {applyCollection} from '../collection.js?v=28.4.5';
+import {buildEditorial} from '../editorial.js?v=28.4.5';
+import {typographyLayoutValues} from '../layout-preview-specs.js?v=28.4.5';
+import {renderEditorialLayout} from '../editorial-layout.js?v=28.4.5';
 
 // Inspect the actual SVG, not just the wording in typography recipes. An
 // advertising manuscript stays horizontal in a newspaper; the newspaper's

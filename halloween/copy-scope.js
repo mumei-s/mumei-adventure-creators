@@ -1,6 +1,6 @@
 // Reader-facing copy has its own sources. Camera, paint and delivery settings
 // remain drawing instructions and are never feature-copy source material.
-import {halloweenStoryContext,halloweenCopyRules} from './halloween-mode-contract.js?v=28.4.4';
+import {halloweenStoryContext,halloweenCopyRules} from './halloween-mode-contract.js?v=28.4.5';
 export const DESIGN_COPY='デザインに合わせて自動編集';
 // These formats describe an image or a symbol. Automatic editing must not turn
 // their unused space into a title, a slogan and a signature.

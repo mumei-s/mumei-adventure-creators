@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {questions} from '../catalog.js?v=28.4.4';
-import {applyCollection} from '../collection.js?v=28.4.4';
-import {sampleFor,typePreview} from '../examples.js?v=28.4.4';
-import {formatPreviews} from '../format-preview-catalog.js?v=28.4.4';
+import {questions} from '../catalog.js?v=28.4.5';
+import {applyCollection} from '../collection.js?v=28.4.5';
+import {sampleFor,typePreview} from '../examples.js?v=28.4.5';
+import {formatPreviews} from '../format-preview-catalog.js?v=28.4.5';
 const report=JSON.parse(fs.readFileSync(new URL('../audit/layout-distinction-v28.json',import.meta.url)));
 const svg=fs.readFileSync(new URL('../layout-previews-v28.svg',import.meta.url),'utf8');
 const covered=new Set(Object.keys(formatPreviews));

@@ -1,4 +1,4 @@
-import {FAVORITE_LIMIT,favoriteKey} from './favorites.js?v=28.4.4';
+import {FAVORITE_LIMIT,favoriteKey} from './favorites.js?v=28.4.5';
 
 // A collection-specific shelf of saved single-item choices. Applying a favorite
 // is delegated to the app so it follows the same selection rules as the picker.

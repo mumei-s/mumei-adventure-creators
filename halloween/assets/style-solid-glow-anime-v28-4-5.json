@@ -1,0 +1,72 @@
+{
+  "version": "28.4.5",
+  "medium": "立体光彩アニメ",
+  "title": "立体光彩アニメ",
+  "presetName": "style-preset-119.png",
+  "rendering": "solid-anime",
+  "role": "original-style-master",
+  "file": "style-solid-glow-anime-v28-4-5.png",
+  "generator": "built-in image_gen",
+  "source": "original independent character and scene generated from authored technical description; user-owned successful examples were visually analysed for depth/light/whole-person glow, not attached; no third-party note screenshot, named creator, source identity, costume, pose or scene copied",
+  "qualityStatus": "accepted as a specific original medium/light master after one improvement; downstream image adherence requires real-image verification",
+  "width": 1122,
+  "height": 1402,
+  "dimensions": {
+    "width": 1122,
+    "height": 1402
+  },
+  "prompt": "Use case: stylized-concept. Asset: ONE original full-resolution portrait master of \"立体光彩アニメ\", the volumetric luminous 3D anime medium. A standalone polished illustration, no text, panels or reference sheet.\nAn entirely new adult woman aged about 28, short deep cobalt wavy bob, visibly adult proportions, standing upright with BOTH BOOTS SUPPORTED on a curved brass walkway. One relaxed hand rests on a low rail, the other hand opens near her chest. Entire head, hands, body and boots fit comfortably inside the portrait composition. She wears a completely opaque midnight-blue high-collar tailored coat with raised silver embroidery, a long split overskirt over trousers, and substantial boots. No horns, heart-shaped jewelry, lingerie, fishnet, black glass box, kneeling or all-fours pose.\nScene: a completely original rooftop astronomical instrument garden at Halloween night, a large spherical brass armillary instrument beyond her and glass-domed buildings across open rooftop depth. Several smaller suspended luminous green glass orbs light the environment and small folded silver paper bats hang from the railing as part of the evening gathering. Three spatial layers, real rail supports and walkway joints, purposeful detail. No copied castle hall, chandelier corridor, old pose, magic glyph platform or borrowed character.\nMAKE THE FACE AND BODY FULLY VOLUMETRIC ANIME CGI: softly modeled polygonal anatomy with deliberately enlarged designed anime eyes, clean anime brow/eyelid/lash forms, a small clearly modeled anime nose and mouth, coherent solid cheeks/jaw/ears/neck/hands and body. NO realistic photographic face sitting on an anime body, NO flat cel-colored face, NO 2D ink outline or painted flat-paper background. This is high-end physically dimensional 3D anime, not low-poly faceting or a doll photograph.\nTHE STRONG FANTASY LIGHT BELONGS TO THE PERSON TOO. Emerald and pale chartreuse light makes multiple precise luminous reflections INSIDE the iris layers around dark pupils, crisp reflected points in both eyes and wet corneal surfaces. Intensely bright but LOCALIZED shaped emerald reflection bands cross forehead, temples, cheek planes, nose bridge, jaw edge, ear rims, neck, visible fingers and hands. Fine blue-violet fill keeps other face planes legible. Hair clumps catch luminous green strands and coherent rim bands; each raised embroidered fold and metal trim catches intense directional light. Preserve opaque skin, dense woven cloth, metal and glass as distinct materials. Do NOT turn skin into crystal, transparent plastic or a green neon outline. Visible skin has actual shaped colored light and deep soft occlusion shadows between it.\nFull-scene light contrast: near-white emerald cores, saturated emerald mid-light, cobalt/violet reflections, very deep midnight shadows and clean black contact/occlusion pockets; overlapping curving light filaments and scattered tiny facets in the AIR reinforce depth rather than cover the face. Lens bloom is tight around a bright core only. The face, whole body, clothing and the garden share the same dense luminous volume, not a dark ordinary person with decorative sparkles around them. Rich modeled thickness, short crisp highlights separated from longer reflection bands and deep shadows. Spectacular luxurious fantasy clarity at full resolution. The main subject stays distinguishable from the background.\nNo artist imitation, named character, text, letters, numbers, logo, watermark, interface or screenshot. Fully dressed adult, coherent hands and anatomy. Portrait 4:5-ish framing; keep full supported stance and breathing margin.",
+  "improvementPrompt": "Edit ONLY THE LIGHTING AND LUMINOUS SURFACE RESPONSE of this original volumetric 3D anime image. Keep the exact SAME adult anime person, face shape, hair, body proportions, original covered coat/trousers, readable upright supported pose, boots, hand positions, brass rooftop walkway, armillary garden and composition. Do not flatten the 3D anime into 2D cel drawing or replace it with a photographic face.\nThe current person has ordinary pale skin and dark clothing while the background is luminous. Correct that specific failure. Make the person herself just as extravagantly luminous as the environment: illuminate the ACTUAL SURFACES of both eyes, forehead, temples, cheeks, nose, jaw, ears, neck, both hands and fingers, hair masses, torso and coat folds with unmistakably strong EMERALD / PALE CHARTREUSE reflection colors.\nBright broad curving MINT-GREEN REFLECTION BANDS must sweep across the forehead and both cheek planes, wrap around the modeled nose/upper lip/chin and ear rims, continue down the neck, and cross the actual finger/hand planes. These are surface illumination/reflection shapes following solid 3D anatomy, not floating sparkles or thin glowing outlines. Pair near-white green specular cores with saturated bright green surrounding color and very deep blue-violet shadow pockets. Some large visible skin planes should clearly become luminous mint-green, while other planes retain opaque warm skin under violet shadow. Preserve opaque anatomy; no crystal or glass body, no painted neon tattoos. Make the bright reflection contrast spectacular and dense.\nBOTH irises must have several layered emerald reflections and extremely bright crisp corneal glints around darker pupils, without losing the anime eyelids and recognizable face. Thread intense green glints through many hair clumps. Put BRIGHT BROAD GREEN REFLECTION STRIPS onto coat sleeves, chest and bent drapery folds, with tiny concentrated white-green points on raised metal embroidery; preserve woven dark fabric between lit regions. The left rail hand and raised right hand MUST receive high-intensity green colored light, not stay normally lit skin.\nThe whole character, not only the background, now occupies the same luminous fantasy light field. Keep deep dark occlusion shadows for thickness, short contact shadows at boots and hand/rail and separate near-white cores from broader saturated reflection layers. No overall green fog or uniform flat green wash. No extra person, new objects, typography, labels or signature. Do not change composition, camera, pose or 3D anime medium.",
+  "initialAttempt": {
+    "status": "not-accepted",
+    "reason": "The background glowed strongly but face/hands/clothing remained too normally lit.",
+    "sha256": "97edd4365cb26ec351c8039dec5665cdb9bc628a60b2ba163d0e76dc83da9fa9"
+  },
+  "processing": "Final built-in PNG copied byte-identically; no resizing, crop, pixel editing, diagram rendering, compositing or format conversion.",
+  "improvedPlanes": {
+    "eyes": "Both visible eyes have green light accents and compact catchlights; darker pupil regions remain.",
+    "face": "Green bright reflection regions visibly cross forehead and cheek/temple planes instead of leaving an ordinary face against the glowing background.",
+    "earsAndNeck": "Ear edges and visible neck carry the same green reflection family.",
+    "hands": "Both visible hands receive bright green light over actual finger/knuckle planes; hand placement and supported pose remain.",
+    "hair": "Green edges and fine intense reflection threads follow the dark original hair clumps.",
+    "clothing": "Broad green reflected strips follow sleeves, torso, coat folds, trousers and boot planes; unlit cloth remains dense and opaque.",
+    "depthAndSupport": "Rail-hand contacts, supported boots, a continuous walkway/bridge and layered architecture remain visible."
+  },
+  "visualQA": {
+    "status": "accepted",
+    "scope": "Original style master only; not downstream selection or identity acceptance.",
+    "method": "Direct full-image inspection of both initial and improved generated image, separate from dimensions and hash verification.",
+    "observations": [
+      "新規の成人立ち姿・別の短髪・被覆したオリジナル衣装・別の天文庭園または運河温室へ移し、元作例の顔・角・ハート装具・四つん這い・黒箱・館の構図を複写していない。",
+      "初回原画は人物の発光が背景より弱かったため不採用。独立原画1枚だけを編集入力へ渡した一回の照明改善を採用した。",
+      "瞳・額頬・耳首・両手・髪・服とブーツの実際の面へ、鮮明な緑反射色と暗部の対比が増した。",
+      "人体は不透明な固体、衣服は布、金属/ガラスはそれぞれの材質として維持し、全身を透明水晶へ替えていない。",
+      "顔・耳首・手と身体は、拡大した設計的な瞳を持つ立体CGアニメ造形として連続し、セル平面の顔や実写人物の顔を貼り付けていない。"
+    ],
+    "limitations": [
+      "目視で原画の描法・光彩・人物の支持を確認したもの。未知の利用者人物、選択ポーズ、数値カメラ、限定配色、版面、文字、希望寸法を再現できる保証ではない。",
+      "瞳・顔の細部の発光密度が利用者の成功例と完全同等とは判定していない。下流の実生成画像で比較する必要がある。",
+      "照明帯と反射の対応は生成された実画像の目視評価であり、物理光学計算の一致を証明していない。",
+      "この見本の人物・性別・髪型・衣装・小物・構図・緑の配色は、そのまま生成利用者へ取り込まない。選択色へ再配分する技法見本として使う。",
+      "この選択は立体CGアニメの媒体であり、2D薄膜セル作画と同一の媒体差を合格と扱わない。"
+    ]
+  },
+  "visualReview": {
+    "accepted": [
+      "新規の成人立ち姿・別の短髪・被覆したオリジナル衣装・別の天文庭園または運河温室へ移し、元作例の顔・角・ハート装具・四つん這い・黒箱・館の構図を複写していない。",
+      "初回原画は人物の発光が背景より弱かったため不採用。独立原画1枚だけを編集入力へ渡した一回の照明改善を採用した。",
+      "瞳・額頬・耳首・両手・髪・服とブーツの実際の面へ、鮮明な緑反射色と暗部の対比が増した。",
+      "人体は不透明な固体、衣服は布、金属/ガラスはそれぞれの材質として維持し、全身を透明水晶へ替えていない。",
+      "顔・耳首・手と身体は、拡大した設計的な瞳を持つ立体CGアニメ造形として連続し、セル平面の顔や実写人物の顔を貼り付けていない。"
+    ],
+    "limitations": [
+      "目視で原画の描法・光彩・人物の支持を確認したもの。未知の利用者人物、選択ポーズ、数値カメラ、限定配色、版面、文字、希望寸法を再現できる保証ではない。",
+      "瞳・顔の細部の発光密度が利用者の成功例と完全同等とは判定していない。下流の実生成画像で比較する必要がある。",
+      "照明帯と反射の対応は生成された実画像の目視評価であり、物理光学計算の一致を証明していない。",
+      "この見本の人物・性別・髪型・衣装・小物・構図・緑の配色は、そのまま生成利用者へ取り込まない。選択色へ再配分する技法見本として使う。",
+      "この選択は立体CGアニメの媒体であり、2D薄膜セル作画と同一の媒体差を合格と扱わない。"
+    ]
+  },
+  "sha256": "f8919686f32d63a33f493bd7941063427629e05b694d67429ee3b43b11f0795a",
+  "hash_sha256": "f8919686f32d63a33f493bd7941063427629e05b694d67429ee3b43b11f0795a"
+}

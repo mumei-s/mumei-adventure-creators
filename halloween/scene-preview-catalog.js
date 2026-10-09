@@ -1,3 +1,4 @@
+import {preserveLegacyAssetKeys} from './legacy-selection-aliases.js?v=28.4.5';
 // Original assistant-created scene illustrations. These thumbnails are
 // explanatory UI assets and are never character or drawing-style references.
 const sceneEntries=[
@@ -17,13 +18,13 @@ const sceneEntries=[
  ['街角アニメ日和','urban-anime-day'],
  ['死神の休日','reaper-day-off'],
  ['鏡の向こうの自分','mirror-other-self'],
- ['雨上がりの怪談','after-rain-ghost-story'],
+ ['雨上がりのホラー','after-rain-ghost-story'],
  ['ふわ彩の祝祭室','soft-color-celebration-room'],
  ['和雅・花景','wa-flower-scenery'],
  ['水鏡の幻想空間','water-mirror-fantasy-space'],
  ['星糸のアトリエ','star-thread-atelier']
 ];
-export const scenePreviews=Object.freeze(Object.fromEntries(sceneEntries.map(([value,slug])=>[value,Object.freeze({
+export const scenePreviews=Object.freeze(preserveLegacyAssetKeys(Object.fromEntries(sceneEntries.map(([value,slug])=>[value,Object.freeze({
  value,file:'assets/scenes-original-v28-4-3/'+slug+'.jpg',
  label:value+'のシーン見本（見本シートに添付し、出来事と場所の構造だけを参照）'
-})])));
+})])),{key:'theme'}));

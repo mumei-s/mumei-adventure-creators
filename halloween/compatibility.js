@@ -1,16 +1,13 @@
-import {automaticView,viewSelectionIssues} from './view-constraints.js?v=28.4.4';
-import {colorPolicy} from './color-policy.js?v=28.4.4';
-import {paletteAllocation} from './palette-recipes.js?v=28.4.4';
-import {steepGroundFramingWarning} from './angles.js?v=28.4.4';
+import {automaticView,viewSelectionIssues} from './view-constraints.js?v=28.4.5';
+import {colorPolicy} from './color-policy.js?v=28.4.5';
+import {paletteAllocation} from './palette-recipes.js?v=28.4.5';
+import {steepGroundFramingWarning} from './angles.js?v=28.4.5';
+import {layoutCopyConflicts} from './layout-copy-compatibility.js?v=28.4.5';
 const automatic=automaticView;
 const noPerson=v=>/風景を主役|モチーフだけ|紋章・アイコン/.test(v||'');
 const faceOnly=v=>/歯|目を|眉|涙|ニヤリ|ウインク|牙|無表情|横顔|正面|俯瞰|ローアングル|振り向く|顔を/.test(v||'');
-const shortCopyDesigns=new Set(['写真集の表紙','アイコン・肖像','スマホ壁紙','ステッカー','切手','ポストカード','紋章・エンブレム','図案・パターン','通常の一枚絵','キャラクターのキービジュアル','幻想風景画','自然・都市の風景画','映画のワンシーン']);
-// Count manuscript roles, not preview rectangles: an advertising information
-// pair has its own heading and body even when one frame previews the pair.
-const denseCopyRoles=new Map([['雑誌風・見出しと特集をたっぷり',11],['広告チラシ風・情報をたっぷり',9],['新聞風・記事と段組み',11]]);
 function nonViewConflicts(values={}){
- const reasons=[];
+ const reasons=[...layoutCopyConflicts(values)];
  if(values.design==='タイポグラフィーポスター'&&values.type==='文字を一切入れない')reasons.push({code:'typography-design-needs-copy',keys:['design','type'],reason:'「タイポグラフィーポスター」は文字の形が主役のデザインです。「文字を一切入れない」とは同時に成立しません。一枚絵など文字なしで成立するデザインを選ぶか、文字を許可する項目を選んでください。'});
  if(noPerson(values.costume))for(const key of ['pose','mood'])if(!automatic(values[key])&&(key==='pose'||faceOnly(values[key])))reasons.push({keys:['costume',key],reason:'「人物なし」では人体の'+(key==='pose'?'ポーズ':'表情・顔角度')+'を実行できません。人物ありにするか、この項目をおまかせにしてください。'});
  if(values.medium==='クリスタルホログラム造形アニメ'&&(colorPolicy(values).restricted||values.palette==='銀と一滴の赤'))reasons.push({keys:['medium','palette'],reason:'この作風は虹色の干渉帯が必須です。単色・限定色では同じ完成像にならないため選べません。色を変えるか、色数に対応したクリスタル透光アニメを選べます。'});
@@ -26,7 +23,6 @@ export function selectionWarnings(values={}){
  const warnings=viewSelectionIssues(values).filter(issue=>issue.severity==='warning'),color=colorPolicy(values);
  const groundWarning=steepGroundFramingWarning(values);
  if(groundWarning)warnings.push(groundWarning);
- if(shortCopyDesigns.has(values.design)&&(denseCopyRoles.get(values.type)||0)>=7)warnings.push({code:'dense-copy-in-short-copy-design',keys:['design','type'],severity:'warning',reason:'「'+values.design+'」は短い原稿向けの形式です。「'+values.type+'」の複数の見出し・本文を元の情報領域へ収めると、文字が小さくなり、スマホでは読みづらくなる可能性があります。選択したデザインと文字項目を保持し、許可原稿を削除せず、別の誌面形式へ変更しません。'});
  if(values.medium==='白域幾何・宇宙彩アニメ'&&color.restricted&&!/白/.test(color.allowed))warnings.push({keys:['medium','palette'],severity:'warning',reason:'この作風の白域は、限定配色「'+color.allowed+'」では許可された最明部へ翻訳します。白い完成像と同じ色にはならないため、抜きの可視領域・細い幾何線・局所の宇宙色層を保ち、選択配色の面積配分を白域のために無言で変更しません。両立しない白域の広さは注意として伝えます。'});
  if(values.medium==='白域幾何・宇宙彩アニメ'&&!color.restricted){
   const allocation=paletteAllocation(values.palette);
@@ -52,7 +48,12 @@ export function compatibleResolved(values,input,questions,random=Math.random,{re
   for(const key of keys){
    if(noPerson(out.costume)&&['mood','pose'].includes(key)){out[key]=key==='mood'?'毎回大胆に変える':'おまかせ';changed=true;break;}
    const q=questions.find(q=>q.key===key);if(!q)continue;
-   const available=(q.autoValues||q.groups.flatMap(g=>g.values)).map(value=>({value,...candidateAvailability(key,value,out)})).filter(candidate=>candidate.enabled);
+   const candidatesFor=values=>[...new Set(values)].map(value=>({value,...candidateAvailability(key,value,out)})).filter(candidate=>candidate.enabled);
+   let available=candidatesFor(q.autoValues||q.groups.flatMap(g=>g.values));
+   // An explicit rich manuscript can require a format outside the ordinary
+   // AUTO shortlist. Search real design/type choices before calling it
+   // impossible; this does not broaden seasonal scenes or drawing media.
+   if(!available.length&&['design','type'].includes(key)&&['layout-copy-structure-conflict','long-copy-in-short-copy-design'].includes(conflict.code))available=candidatesFor(q.groups.flatMap(g=>g.values));
    const clear=available.filter(candidate=>candidate.status==='compatible'),allowed=clear.length?clear:available;
    if(!allowed.length)continue; // Another AUTO field may be the solvable axis.
    const unseen=allowed.filter(candidate=>!recent.slice(-3).some(row=>row[key]===candidate.value)),notLast=allowed.filter(candidate=>recent.at(-1)?.[key]!==candidate.value);

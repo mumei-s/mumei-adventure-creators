@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {creatorHandoff,creatorCopyRequirements,creatorDisplayLabel,CREATOR_NAME_TOKEN} from '../creator-handoff.js?v=28.4.4';
-import {productionPlan} from '../production-plan.js?v=28.4.4';
-import {composePrompt} from '../prompt.js?v=28.4.4';
-import {renderCompactChatInput} from '../compact-production.js?v=28.4.4';
-import {renderInput} from '../compiled-production.js?v=28.4.4';
-import {applyCollection} from '../collection.js?v=28.4.4';
-import {sampleFor} from '../examples.js?v=28.4.4';
-import {selectionReferenceManifest,selectionReferenceCounts,individualSelectionReferenceManifest} from '../selection-references.js?v=28.4.4';
-import {attachmentConditionPolicy} from '../attachment-policy.js?v=28.4.4';
-import {stylePresetFor} from '../style-presets.js?v=28.4.4';
+import {creatorHandoff,creatorCopyRequirements,creatorDisplayLabel,CREATOR_NAME_TOKEN} from '../creator-handoff.js?v=28.4.5';
+import {productionPlan} from '../production-plan.js?v=28.4.5';
+import {composePrompt} from '../prompt.js?v=28.4.5';
+import {renderCompactChatInput} from '../compact-production.js?v=28.4.5';
+import {renderInput} from '../compiled-production.js?v=28.4.5';
+import {applyCollection} from '../collection.js?v=28.4.5';
+import {sampleFor} from '../examples.js?v=28.4.5';
+import {selectionReferenceManifest,selectionReferenceCounts,individualSelectionReferenceManifest} from '../selection-references.js?v=28.4.5';
+import {attachmentConditionPolicy} from '../attachment-policy.js?v=28.4.5';
+import {stylePresetFor} from '../style-presets.js?v=28.4.5';
 import {assertCompactHandoff} from './compact-handoff-assertions-v28.mjs';
 
 const base={sceneUnified:true,medium:'艶彩幻想アニメ',theme:'吸血鬼の晩餐会',place:'古城の大広間',costume:'亡霊騎士',pose:'低くしゃがむ',mood:'牙を見せて威嚇',angle:'超ローアングル・70度',palette:'菫 × マンゴー × 白',design:'通常の一枚絵',type:'文字を一切入れない',line:'セリフなし',size:'A4縦・300dpi目安｜2480×3508｜210:297',sourceKind:'photo-person'};
@@ -83,9 +83,9 @@ assert.equal(JSON.stringify(owner),before,'Filtering author work must not mutate
 const manifest=selectionReferenceManifest(base);
 assert.equal(manifest.conditions.length,10,'Focused delivery must preserve every selected condition');
 for(const condition of manifest.conditions)assert.equal(condition.value,base[condition.key],'Focused metadata loses '+condition.key);
-assert.deepEqual(selectionReferenceCounts(manifest),{selected:10,sheet:0,separateStyle:1});
-assert.equal(manifest.items.length,0,'Focused normal production cannot attach comparison diagrams as a sheet');
-assert.equal(manifest.attachmentPolicy.mode,'focused-originals');
+assert.deepEqual(selectionReferenceCounts(manifest),{selected:10,sheet:7,separateStyle:1});
+assert.equal(manifest.items.length,7,'Normal production consolidates the seven applicable condition examples');assert.deepEqual(manifest.items.map(item=>item.key),['theme','costume','pose','mood','angle','palette','design']);
+assert.equal(manifest.attachmentPolicy.mode,'scoped-sheet');
 assert.equal(manifest.attachmentPolicy.duplicateMedium,false);
 const preset=stylePresetFor(base.medium),comparison=individualSelectionReferenceManifest(manifest);
 assert.equal(manifest.mediumReference.delivery,'separate-original');
@@ -114,4 +114,4 @@ for(const key of ['theme','costume','pose','mood','angle','design']){
 }
 const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8');
 assert.match(app,/creatorDisplayLabel\(r\.profile,r\.production\?\.copy\)/,'Result, ZIP and history labels must use the same permitted manuscript');
-console.log('PASS '+cases+' real-plan actual handoffs: no author research/context for blank, literal HALLOWEEN and scene-only copy; unresolved name-only lookup; public-activity source lookup preserved; saved profile unchanged; all ten focused conditions survive with no sheet/style duplication, and optional comparison labels, roles and original sources match.');
+console.log('PASS '+cases+' real-plan actual handoffs: no author research/context for blank, literal HALLOWEEN and scene-only copy; unresolved name-only lookup; public-activity source lookup preserved; saved profile unchanged; all ten focused conditions survive with seven scoped-sheet examples and no style duplication, and optional comparison labels, roles and original sources match.');

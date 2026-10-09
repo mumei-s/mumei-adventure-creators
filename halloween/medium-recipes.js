@@ -1,9 +1,9 @@
 // Rendering recipes belong to option titles. Picker artwork is never an input.
 // Each section may supply a separate scenery-only instruction in its third cell.
-import {opticalColors} from './optical-effects.js?v=28.4.4';
-import {photoDesign,photoReconstruction} from './photo-design.js?v=28.4.4';
-import {LUMINOUS_WORLD_MEDIUM,LUMINOUS_REAL_MEDIUM,luminousWorldContract} from './luminous-world.js?v=28.4.4';
-import {referenceWorldMedia,referenceWorldMediumContract} from './world-bases.js?v=28.4.4';
+import {opticalColors} from './optical-effects.js?v=28.4.5';
+import {photoDesign,photoReconstruction} from './photo-design.js?v=28.4.5';
+import {LUMINOUS_WORLD_MEDIUM,LUMINOUS_REAL_MEDIUM,luminousWorldContract} from './luminous-world.js?v=28.4.5';
+import {referenceWorldMedia,referenceWorldMediumContract} from './world-bases.js?v=28.4.5';
 const recipes = new Map();
 function add(value, family, sections, checks) {
  if (recipes.has(value)) throw new Error('Duplicate medium recipe: ' + value);
@@ -1000,7 +1000,7 @@ function render(text, noPerson, policy) {
  }
  return resolved;
 }
-for(const medium of referenceWorldMedia)add(medium.value,medium.value==='宝石光彩リアル'?'photography':'luminous-anime',[],[]);
+for(const medium of referenceWorldMedia)add(medium.value,['宝石光彩リアル','立体光彩リアル'].includes(medium.value)?'photography':'luminous-anime',[],[]);
 export const mediumRecipeValues = Object.freeze([...recipes.keys()]);
 export function detailedMedium(value, {noPerson = false, values = {}, variant = null} = {}) {
  if(value===LUMINOUS_WORLD_MEDIUM||value===LUMINOUS_REAL_MEDIUM){

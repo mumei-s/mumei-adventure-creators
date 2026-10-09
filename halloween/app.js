@@ -1,42 +1,42 @@
-import {artworkBasis} from './artwork-basis.js?v=28.4.4';
-import {creatorHandoff,creatorDisplayLabel,creatorEditableName} from './creator-handoff.js?v=28.4.4';
-import {normalizeImageFile} from './image-files.js?v=28.4.4';
-import {deliveryImageFiles} from './drawing-references.js?v=28.4.4';
-import {recomposeHistoryDelivery} from './delivery-history-migration.js?v=28.4.4';
-import {selectionReferenceManifest,buildSelectionReferenceSheet,selectionReferenceCounts,buildIndividualSelectionReferenceZip} from './selection-references.js?v=28.4.4';
-import {createFavoritesPanel} from './favorites-panel.js?v=28.4.4';
-import {copySelectionExplanation} from './copy-scope.js?v=28.4.4';
-import {stylePresetFor,loadStylePresets} from './style-presets.js?v=28.4.4';
-import {sourceKinds,sourceSubjectFor} from './source-kind.js?v=28.4.4';
-import {inspectImageResource,createImagePreview,decodeRasterForDraw,releaseCanvas} from './image-resources.js?v=28.4.4';
-import {installNightStudio} from './night-studio.js?v=28.4.4';
-import {candidateAvailability,selectionConflicts,selectionWarnings} from './compatibility.js?v=28.4.4';
-import {updateSelectionFeedback} from './selection-feedback.js?v=28.4.4';
-import {appendRecipeEvidence} from './recipe-evidence.js?v=28.4.4';
-import {productionPlan,repairPrompt} from './production-plan.js?v=28.4.4';
-import {stagePrompts} from './production-workflow.js?v=28.4.4';
-import {createLayoutPanel} from './layout-export.js?v=28.4.4';
-import {applyPose} from './poses.js?v=28.4.4';
-import {applyCollection,dailyInspiration} from './collection.js?v=28.4.4';
-import {setupEffects} from './effects.js?v=28.4.4';
-import {colorWorlds} from './worlds.js?v=28.4.4';
-import {compactCreatorProfile} from './creator.js?v=28.4.4';
-import {createCropEditor} from './crop-editor.js?v=28.4.4';
-import {createPicker} from './picker.js?v=28.4.4';
-import {modeKeys,modeCopy,questionsForMode,initialSelections,effectiveSelections,proposalBatch} from './modes.js?v=28.4.4';
-import {buildReferenceBoard} from './guide-board.js?v=28.4.4';
-import {questions,visibleQuestions,defaults,AUTO,normalizeCreator,resolveSelections} from './catalog.js?v=28.4.4';
-import {composePrompt,needsReference} from './prompt.js?v=28.4.4';
-import {buildDirection} from './direction.js?v=28.4.4';
-import {sampleFor,typePreview} from './examples.js?v=28.4.4';
-import {makeZip} from './zip.js?v=28.4.4';
-import {imageDeliveryRepairPrompt} from './output-contract.js?v=28.4.4';
-import {editorialReferencesFor} from './editorial-reference-sources.js?v=28.4.4';
-import {HISTORY_STORAGE_FORMAT,restoreHistoryRecord,restoreHistoryCore,mergeUsedRecords,clearRestoredHistoryCache,historyStorageInfo} from './history-storage.js?v=28.4.4';
-import {createHistoryPersistence,mergeHistoryStates} from './history-persistence.js?v=28.4.4';
-import {createCreatorDraft} from './creator-draft.js?v=28.4.4';
-import {randomItemSelection} from './random-selections.js?v=28.4.4';
-const APP_VERSION='28.4.4';
+import {artworkBasis} from './artwork-basis.js?v=28.4.5';
+import {creatorHandoff,creatorDisplayLabel,creatorEditableName} from './creator-handoff.js?v=28.4.5';
+import {normalizeImageFile} from './image-files.js?v=28.4.5';
+import {deliveryImageFiles} from './drawing-references.js?v=28.4.5';
+import {recomposeHistoryDelivery} from './delivery-history-migration.js?v=28.4.5';
+import {selectionReferenceManifest,buildSelectionReferenceSheet,selectionReferenceCounts,buildIndividualSelectionReferenceZip} from './selection-references.js?v=28.4.5';
+import {createFavoritesPanel} from './favorites-panel.js?v=28.4.5';
+import {copySelectionExplanation} from './copy-scope.js?v=28.4.5';
+import {stylePresetFor,loadStylePresets} from './style-presets.js?v=28.4.5';
+import {sourceKinds,sourceSubjectFor} from './source-kind.js?v=28.4.5';
+import {inspectImageResource,createImagePreview,decodeRasterForDraw,releaseCanvas} from './image-resources.js?v=28.4.5';
+import {installNightStudio} from './night-studio.js?v=28.4.5';
+import {candidateAvailability,selectionConflicts,selectionWarnings} from './compatibility.js?v=28.4.5';
+import {updateSelectionFeedback} from './selection-feedback.js?v=28.4.5';
+import {appendRecipeEvidence} from './recipe-evidence.js?v=28.4.5';
+import {productionPlan,repairPrompt} from './production-plan.js?v=28.4.5';
+import {stagePrompts,optionalIdentityPrompts} from './production-workflow.js?v=28.4.5';
+import {createLayoutPanel} from './layout-export.js?v=28.4.5';
+import {applyPose} from './poses.js?v=28.4.5';
+import {applyCollection,dailyInspiration} from './collection.js?v=28.4.5';
+import {setupEffects} from './effects.js?v=28.4.5';
+import {colorWorlds} from './worlds.js?v=28.4.5';
+import {compactCreatorProfile} from './creator.js?v=28.4.5';
+import {createCropEditor} from './crop-editor.js?v=28.4.5';
+import {createPicker} from './picker.js?v=28.4.5';
+import {modeKeys,modeCopy,questionsForMode,initialSelections,effectiveSelections,proposalBatch} from './modes.js?v=28.4.5';
+import {buildReferenceBoard} from './guide-board.js?v=28.4.5';
+import {questions,visibleQuestions,defaults,AUTO,normalizeCreator,resolveSelections} from './catalog.js?v=28.4.5';
+import {composePrompt,needsReference} from './prompt.js?v=28.4.5';
+import {buildDirection} from './direction.js?v=28.4.5';
+import {sampleFor,typePreview} from './examples.js?v=28.4.5';
+import {makeZip} from './zip.js?v=28.4.5';
+import {imageDeliveryRepairPrompt} from './output-contract.js?v=28.4.5';
+import {editorialReferencesFor} from './editorial-reference-sources.js?v=28.4.5';
+import {HISTORY_STORAGE_FORMAT,restoreHistoryRecord,restoreHistoryCore,mergeUsedRecords,clearRestoredHistoryCache,historyStorageInfo} from './history-storage.js?v=28.4.5';
+import {createHistoryPersistence,mergeHistoryStates} from './history-persistence.js?v=28.4.5';
+import {createCreatorDraft} from './creator-draft.js?v=28.4.5';
+import {randomItemSelection} from './random-selections.js?v=28.4.5';
+const APP_VERSION='28.4.5';
 const $=id=>document.getElementById(id),STORAGE='mumeis-halloween-v2';
 let saved={history:[],used:[],count:0},view='auto',migrateHistory=false,historyWriteRevision=0,resultRequest=0,historyReady=Promise.resolve();
 const historyPersistence=createHistoryPersistence({key:STORAGE});
@@ -111,7 +111,7 @@ async function resetReferenceDraft(){
 
 function displayValue(q,v){return q.key==='size'?v.split('｜')[0]:v;}
 function sampleNode(key,value){
- const sample=sampleFor(key,value),n=el('span','sample-thumb'+(key==='design'?' design-sample':''));
+ const sample=sampleFor(key,value),n=el('span','sample-thumb'+(key==='design'?' design-sample':key==='angle'?' angle-sample':''));
  n.setAttribute('role','img');n.setAttribute('aria-label',sample.label+'：'+value);n.title=sample.label;
  const image=(src,cls='sample-image')=>{const img=el('img',cls);img.src=src;img.alt='';img.loading='lazy';img.decoding='async';return img;};
  if(sample.kind==='image')n.append(image(sample.src));
@@ -188,8 +188,8 @@ function renderBoard(values=selections,variant=null){
 }
 function setView(mode){if(!['auto','phone','tablet','pc'].includes(mode))mode='auto';view=mode;document.body.dataset.view=mode;document.querySelectorAll('.view-switch button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.view===mode)));$('view-status').textContent={auto:'画面幅に合わせて表示',phone:'スマホの幅・大きな文字',tablet:'タブレットの幅・大きな選択枠',pc:'PCの幅・広い作業スペース'}[mode];try{localStorage.setItem('halloween-view',mode);}catch{}}
 let favoritePanel;
-const picker=createPicker({$,el,sampleNode,readSelection:()=>effectiveSelections(mode,selections),choose,onRandom:q=>randomizeItem(q),onCustom:buildCustom,tell,artworkBasis,onFavoritesChange:()=>favoritePanel?.render()});
-favoritePanel=createFavoritesPanel({$,el,picker,questions,sampleNode,collection:()=>collection,onPick:(key,value)=>{const question=questions.find(q=>q.key===key);if(!question)return;const availability=candidateAvailability(key,value,effectiveSelections(mode,selections));if(!availability.enabled)return tell(availability.reason);selections[key]=value;if(mode==='auto'&&selectedProposal)selectedProposal={...selectedProposal,[key]:value};if(!questionsForMode(mode).some(q=>q.key===key)){setMode('detail');selections[key]=value;}renderChoices(key);tell(question.name+'：'+displayValue(question,value));}});
+const picker=createPicker({$,el,sampleNode,readSelection:()=>mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:effectiveSelections(mode,selections),choose,onRandom:q=>randomizeItem(q),onCustom:buildCustom,tell,artworkBasis,onFavoritesChange:()=>favoritePanel?.render()});
+favoritePanel=createFavoritesPanel({$,el,picker,questions,sampleNode,collection:()=>collection,onPick:(key,value)=>{const question=questions.find(q=>q.key===key);if(!question)return;const availability=candidateAvailability(key,value,mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:effectiveSelections(mode,selections));if(!availability.enabled)return tell(availability.reason);selections[key]=value;if(mode==='auto'&&selectedProposal)selectedProposal={...selectedProposal,[key]:value};if(!questionsForMode(mode).some(q=>q.key===key)){setMode('detail');selections[key]=value;}renderChoices(key);tell(question.name+'：'+displayValue(question,value));}});
 function renderStylePreset(values=selections){
  const select=$('style-preset-select');if(!select)return;
  if(!select.options.length){const auto=el('option',null,'おまかせ（制作時に見本も選びます）');auto.value=AUTO;select.append(auto);for(const group of questions.find(q=>q.key==='medium').groups){const node=el('optgroup');node.label=group.label;for(const medium of group.values){const option=el('option',null,medium);option.value=medium;node.append(option);}select.append(node);}}
@@ -197,14 +197,17 @@ function renderStylePreset(values=selections){
  const preset=stylePresetFor(values.medium),custom=values.medium&&values.medium!==AUTO&&!preset;
  if(custom){const option=el('option',null,'自由指定：'+values.medium);option.value=values.medium;option.dataset.customPreset='true';select.append(option);}
  select.value=preset||custom?values.medium:AUTO;
+ const trigger=$('style-preset-trigger');if(trigger){trigger.textContent=(preset||custom?values.medium:'おまかせ')+' ▾';trigger.setAttribute('aria-expanded',String($('picker').open&&activeQuestion?.key==='medium'));}
  $('style-preset-preview').replaceChildren(sampleNode('medium',preset||custom?values.medium:AUTO));
  $('style-preset-status').textContent=preset?values.medium+' / 共有・制作セットにこの見本画像が入ります。':custom?'自由指定の画風です。用意済みの見本画像はなく、文章の条件で制作します。':'おまかせ：制作する画風が決まったら、その見本を一緒に準備します。';
 }
 $('style-preset-select').addEventListener('change',e=>{const value=e.target.value;if(mode==='auto'){modeSnapshots.detail={...(selectedProposal||selections)};setMode('detail');}activeQuestion=questions.find(q=>q.key==='medium');choose(value);});
+$('style-preset-trigger').addEventListener('click',()=>{if(mode==='auto'){modeSnapshots.detail={...(selectedProposal||selections)};setMode('detail');}openPicker(questions.find(q=>q.key==='medium'),{view:'list'});$('style-preset-trigger').setAttribute('aria-expanded','true');});
+$('picker').addEventListener('close',()=>$('style-preset-trigger').setAttribute('aria-expanded','false'));
 $('style-preset-browse').addEventListener('click',()=>{if(mode==='auto'){modeSnapshots.detail={...(selectedProposal||selections)};setMode('detail');}openPicker(questions.find(q=>q.key==='medium'));});
-function openPicker(q){const text=q.key==='type'||q.key==='line';if(text){if(q.key==='line')textPart='line';q=questions.find(x=>x.key===textPart);}$('text-subtabs').hidden=true;document.querySelectorAll('[data-text-part]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.textPart===q.key)));activeQuestion=q;const activeQuestions=questionsForMode(mode),i=activeQuestions.findIndex(x=>x.key===(q.key==='line'?'type':q.key));$('picker-index').textContent=String(i+1).padStart(2,'0')+' / '+activeQuestions.length;picker.open(q);}
+function openPicker(q,options={}){const text=q.key==='type'||q.key==='line';if(text){if(q.key==='line')textPart='line';q=questions.find(x=>x.key===textPart);}$('text-subtabs').hidden=true;document.querySelectorAll('[data-text-part]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.textPart===q.key)));activeQuestion=q;const activeQuestions=questionsForMode(mode),i=activeQuestions.findIndex(x=>x.key===(q.key==='line'?'type':q.key));$('picker-index').textContent=String(i+1).padStart(2,'0')+' / '+activeQuestions.length;picker.open(q,options);}
 function buildCustom(q){const form=el('form','custom-form');if(q.key==='size'){const w=el('input'),h=el('input');w.type=h.type='number';w.min=h.min='256';w.max=h.max='16000';w.required=h.required=true;w.placeholder='幅px';h.placeholder='高さpx';w.setAttribute('aria-label','希望の幅');h.setAttribute('aria-label','希望の高さ');form.append(w,el('span',null,'×'),h);form.addEventListener('submit',e=>{e.preventDefault();const a=Number(w.value),b=Number(h.value);if(!Number.isInteger(a)||!Number.isInteger(b)||a<256||b<256||a>16000||b>16000)return;const gcd=(x,y)=>y?gcd(y,x%y):x;const d=gcd(a,b);choose('自由サイズ｜'+a+'×'+b+'｜'+a/d+':'+b/d);});}else{const input=el('input');input.required=true;input.maxLength=160;input.placeholder='希望する'+q.name;input.setAttribute('aria-label',q.name+'を自由入力');form.append(input);form.addEventListener('submit',e=>{e.preventDefault();const v=input.value.trim().replace(/[\r\n]/g,' ');if(v)choose(v);});}const b=el('button','dark-button','この内容にする');b.type='submit';form.append(b);$('custom-area').append(form,el('p','microcopy',q.key==='size'?'256〜16,000px。生成環境に対応する実寸で出力されます。':'具体的な技法や角度も指定できます。160文字まで。'));form.querySelector('input').focus();}
-function choose(v){const availability=candidateAvailability(activeQuestion.key,v,effectiveSelections(mode,selections));if(!availability.enabled){tell(availability.reason);return;}selections[activeQuestion.key]=v;const key=activeQuestion.key;renderChoices(key==='line'?'type':key);$('picker').close();document.querySelector('[data-key="'+(key==='line'?'type':key)+'"]')?.focus();const note=availability.warnings?.[0]?.reason;tell(note?activeQuestion.name+'を選びました。'+note:activeQuestion.name+'を選びました');}
+function choose(v){const availability=candidateAvailability(activeQuestion.key,v,mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:effectiveSelections(mode,selections));if(!availability.enabled){tell(availability.reason);return;}selections[activeQuestion.key]=v;const key=activeQuestion.key;renderChoices(key==='line'?'type':key);$('picker').close();document.querySelector('[data-key="'+(key==='line'?'type':key)+'"]')?.focus();const note=availability.warnings?.[0]?.reason;tell(note?activeQuestion.name+'を選びました。'+note:activeQuestion.name+'を選びました');}
 function summarizeName(raw){const bracket=raw.match(/^[〖【「『]([^〗】」』]+)[〗】」』]/);return bracket?bracket[1].trim():raw;}
 async function loadProfile(){
  await draftReady;
@@ -274,12 +277,14 @@ async function showResult(r){
  const request=++resultRequest,revision=inputRevision;let restored=r,detailError=false;try{restored=await restoreHistoryRecord(r);}catch{detailError=true;try{restored=await restoreHistoryCore(r);}catch{if(request===resultRequest)tell('履歴の本文を読み込めませんでした。保存データは削除していません。');return;}}
  if(request!==resultRequest||revision!==inputRevision)return;
  try{restored=recomposeHistoryDelivery(restored,{version:APP_VERSION});}catch(e){if(request===resultRequest)tell(e.message);return;}
+ const conflict=restored.production?.issues?.find(issue=>issue.severity==='error');
+ if(conflict){clearPreparedResult();$('form-error').textContent=conflict.reason+' 条件を選び直して制作してください。保存した履歴は保持しています。';$('form-error').hidden=false;tell(conflict.reason);return;}
  try{if(!restored.localDrawingRefs&&restored.drawingReferences?.length)restored={...restored,localDrawingRefs:await loadStylePresets(restored.drawingReferences)};}catch(e){if(request===resultRequest)tell(e.message);return;}
  if(request!==resultRequest||revision!==inputRevision)return;
  if(restored.selectionReference&&selectionReferenceCounts(restored.selectionReference).sheet&&!restored.localSelectionReference){try{restored={...restored,localSelectionReference:{...restored.selectionReference,file:await buildSelectionReferenceSheet(restored.selectionReference)}};}catch(e){if(request===resultRequest)tell(e.message);return;}}
  if(request!==resultRequest||revision!==inputRevision)return;
  clearPreparedResult();
- r=restored;if(detailError)tell('履歴の制作詳細を読み込めませんでした。保存されたプロンプトは使用できます。');
+ r={...restored,optionalStages:optionalIdentityPrompts(restored.production)};if(detailError)tell('履歴の制作詳細を読み込めませんでした。保存されたプロンプトは使用できます。');
  if(r.localRefs?.length){r={...r,localRefs:r.localRefs.map(ref=>{const url=URL.createObjectURL(ref.previewFile||ref.file);resultObjectURLs.push(url);return {...ref,url};})};}
  if(r.localDrawingRefs?.length){r={...r,localDrawingRefs:r.localDrawingRefs.map(ref=>{const url=URL.createObjectURL(ref.file);resultObjectURLs.push(url);return {...ref,url};})};}
  if(r.localSelectionReference){const url=URL.createObjectURL(r.localSelectionReference.file);resultObjectURLs.push(url);r={...r,localSelectionReference:{...r.localSelectionReference,url}};}
@@ -290,14 +295,18 @@ async function showResult(r){
  if(r.values.angle&&r.values.angle!==AUTO)$('result-summary').append(el('p','detail','アングル：'+r.values.angle));
  const source=sourceKinds.find(kind=>kind.value===r.values.sourceKind);if(source)$('result-summary').append(el('p','detail','添付の種類：'+source.label));
  if(r.production){const details=el('details','production-details');details.append(el('summary',null,'この作品に反映する'+r.production.conditions.length+'項目と文字原稿'));const list=el('ol');r.production.conditions.forEach(c=>{const li=el('li');const item=el('details','recipe-specs');item.append(el('summary',null,c.name+'：'+c.value));for(const section of c.sections||[{label:'制作条件',text:c.text}]){const p=el('p');p.append(el('b',null,section.label+'：'),document.createTextNode(section.text));item.append(p);}appendRecipeEvidence(item,c.key,c.value,{known:c.known});li.append(item);list.append(li);});details.append(list);if(r.production.copy.slots.length){details.append(el('h4',null,'作品内の文字原稿'));r.production.copy.slots.forEach(slot=>details.append(el('p',null,slot.role+'：'+slot.text)));}r.production.notes.forEach(n=>details.append(el('p','production-note',n)));const sources=editorialReferencesFor(r.values.design);if(sources.length){details.append(el('h4',null,'誌面の構成を確認した資料'));for(const source of sources){const a=el('a',null,source.publisher+' / '+source.location);a.href=source.url;a.target='_blank';a.rel='noopener noreferrer';const item=el('p');item.append(a);details.append(item);}}$('result-summary').append(details);}
- if(r.stages){
-  const workflow=el('details','production-details');workflow.id='staged-workflow';workflow.open=!!r.stages.identity;
-  workflow.append(el('summary',null,r.stages.identity?'人物の画風を先に固定して制作する':'文字を厳密に配置する段階制作'));
-  workflow.append(el('p',null,r.stages.identity?'① 主参照と画風原画で人物だけを描き直し、顔・髪・年齢感・画風を確認します。② 確認した人物画像と同じ画風原画で完成場面を作ります。元写真や別項目の人物見本は②へ再添付しません。':'段階ごとの指示を順に送れます。主画像を確認した後、許可した原稿を誌面へ配置します。'));
-  if(r.stages.identity)workflow.append(el('p','production-note','実生成では、写真顔への戻り・原画の別人への置換・数値カメラの未達を確認しています。この段階方式も全条件合格には達していません。未達の画像を完成扱いせず、人物変換の修正と実画像の照合を行ってください。'));
- const actions=el('div','result-actions'),labels=r.stages.identity?[['identity','① 人物を画風へ変換する指示'],['identityRepair','人物変換が写真寄りになった場合の修正'],['final','② 完成場面を作る指示'],['repair','主画像の画風を直す指示'],['layout','③ 誌面の指示をコピー']]:[['artwork','① 主画像の指示をコピー'],['repair','主画像の画風を直す指示'],['layout','② 誌面の指示をコピー']];
-  for(const [key,label] of labels){if(!r.stages[key])continue;const button=el('button','secondary-button',label);button.type='button';button.dataset.stage=key;button.addEventListener('click',()=>copyStage(key));actions.append(button);}workflow.append(actions);
-  if(r.stages.layout){const native=createLayoutPanel(r.production,tell);workflow.append(native.element);disposeLayoutPreview=native.dispose;}
+ $('result-summary').append(el('p','production-note','制作の順序：選んだ条件で生成 → 実画像で本人・作画・全身の光と影・姿勢・構図・文字を確認 → 不足した部分だけ同じ画像を修正。完成画像はChatGPTに表示します。'));
+ const internalWorkflow=r.stages?.internal?r.stages:r.optionalStages?.internal?r.optionalStages:null;
+ if(internalWorkflow)$('result-summary').append(el('p','production-note','ChatGPTが内部で、見本の世界へ主役を入れ、全身の光と影を確認してから選択した場面・版面へ仕上げます。中間画像の保存や再添付は不要です。'));
+ const extraStages=internalWorkflow?{}:{...(r.stages||{}),...(r.optionalStages||{})};
+ if(Object.keys(extraStages).length){
+  const workflow=el('details','production-details');workflow.id='staged-workflow';workflow.open=false;
+  workflow.append(el('summary',null,'うまく描けないときの補助工程（任意）'));
+  workflow.append(el('p',null,'通常は上の画像と制作プロンプトを一緒に送り、完成画像を1枚作ります。人物や文字が崩れたときだけ、必要な補助指示を使います。'));
+  if(extraStages.identity)workflow.append(el('p',null,'人物を描き直す場合：元の主参照と画風原画を添付して①を送ります。その画像で本人と画風を確認したら、②には描き直した人物画像と画風原画だけを添付します。'));
+  const actions=el('div','result-actions'),labels=[['identity','① 人物だけを描き直す'],['identityRepair','人物が写真寄りになったときの修正'],['final','② 描き直した人物で完成画像を作る'],['artwork','絵を先に作る'],['repair','絵の画風を修正する'],['layout','文字を後から配置する']];
+  for(const [key,label] of labels){if(!extraStages[key])continue;const button=el('button','secondary-button',label);button.type='button';button.dataset.stage=key;button.addEventListener('click',()=>copyStage(key));actions.append(button);}workflow.append(actions);
+  if(extraStages.layout){const native=createLayoutPanel(r.production,tell);workflow.append(native.element);disposeLayoutPreview=native.dispose;}
   $('result-summary').append(workflow);
  }
  $('result-refs').replaceChildren();
@@ -318,14 +327,14 @@ async function showResult(r){
   const counts=selectionReferenceCounts(r.selectionReference),imageCount=deliveryImageFiles(r).length,identityCount=r.localRefs?.filter(ref=>ref.role==='identity').length||0,diagnosticCount=r.selectionReference.diagnosticItems?.length??counts.sheet;
   $('transfer-title').textContent=(live?'主参照・':'')+'画風原画'+(counts.sheet?'・'+counts.sheet+'項目の見本':'')+'＋制作指示';
   $('transfer-instruction').textContent='このセットは画像'+imageCount+'枚です。'+(counts.sheet?'原寸の画風見本と、必要な'+counts.sheet+'項目の見本シートを分けて添付します。':'原寸の画風見本を描画の土台にし、全選択を本文へまとめます。別人の見本シートは添付しません。')+(identityCount?'主参照'+identityCount+'枚も含みます。':requires?'ご自身の主参照はChatGPTで追加してください。':'人物の主参照は不要です。')+'全'+counts.selected+'項目の条件を保持します。画像と指示を同じメッセージへ添付してください。';
-  $('kit-note').textContent='制作セットには画風原画'+(counts.sheet?'・見本シート':'')+'・prompt.txt・確認用の詳細仕様が入ります。送るのは画像とprompt.txtです。'+(r.stages?.identity?'人物の段階変換には stage-identity.txt と stage-final.txt を順に使います。':'')+'コピーだけでは画像は渡りません。';
-  if($('individual-kit-note'))$('individual-kit-note').textContent='比較資料では'+diagnosticCount+'項目の見本を個別に保存します。通常制作より多数の画像になります。参照上限5枚の画像生成機能では全画像の一括添付は実行できませんでした。全添付を推奨する資料ではありません。通常の制作セットを使い、比較時だけ個別用のprompt.txtと対応する画像を使用してください。';
+  $('kit-note').textContent='制作セットには画風原画'+(counts.sheet?'・見本シート':'')+'・prompt.txt・確認用の詳細仕様が入ります。送るのは画像とprompt.txtです。'+'コピーだけでは画像は渡りません。';
+  if($('individual-kit-note'))$('individual-kit-note').textContent='通常セットは主参照・画風原画・見本シートの基本3枚です。全有効見本を個別に送る場合は、こちらのセットを使います。見本シートを加えず、画風原画と'+diagnosticCount+'項目の個別見本、ご自身の主参照を、個別用prompt.txtと一緒に添付してください。実際の枚数と省略した項目はセット内に明記します。利用先の添付上限に収まらない場合は通常セットを使います。';
  }
 
  $('transfer-fallback').hidden=true;delete $('result-refs').dataset.manual;$('result').hidden=false;$('result').scrollIntoView({behavior:document.body.dataset.motion==='off'?'instant':'smooth',block:'start'});
 }
 async function copyPrompt(){if(!currentResult)return false;try{await navigator.clipboard.writeText(currentResult.prompt);tell(currentResult.drawingReferences?.length?(needsReference(currentResult.values)?'プロンプトをコピーしました。ご自身の主参照と、表示された画風見本'+(currentResult.localSelectionReference?'と見本シート':'')+'を一緒に添付してください。':'プロンプトをコピーしました。表示された画風見本'+(currentResult.localSelectionReference?'と見本シート':'')+'も一緒に添付してください。'):needsReference(currentResult.values)?'プロンプトをコピーしました。自分の参照画像と一緒に送ってください。':'プロンプトをコピーしました。ChatGPTへ送って画像を生成します。');return true;}catch{const ta=$('prompt-output');ta.closest('details').open=true;ta.focus();ta.select();try{if(document.execCommand('copy')){tell('プロンプトをコピーしました。');return true;}}catch{}tell('全文を選択しました。長押しでコピーできます。');return false;}}
-async function copyStage(key){const text=currentResult?.stages?.[key];if(!text)return;try{await navigator.clipboard.writeText(text);if(key==='identity'){tell('人物変換の指示をコピーしました。主参照と画風原画を添付してください。');return;}if(key==='identityRepair'){tell('人物変換の修正指示をコピーしました。未達の人物画像と画風原画を添付して修正し、実画像を確認してください。');return;}if(key==='final'){tell('完成場面の指示をコピーしました。確認済みの人物画像と画風原画を添付してください。元写真は再添付しません。');return;}tell(currentResult.drawingReferences?.length&&['artwork','repair'].includes(key)?(key==='repair'?'修正指示をコピーしました。制作途中の主画像と、表示された画風見本を添付してください。':needsReference(currentResult.values)?'主画像の指示をコピーしました。ご自身の主参照と、表示された画風見本を添付してください。':'主画像の指示をコピーしました。表示された画風見本を添付してください。'):key==='artwork'?(needsReference(currentResult.values)?'主画像の指示をコピーしました。自分の主参照と一緒に送ってください。':'主画像の指示をコピーしました。ChatGPTへ送ってください。'):key==='repair'?'画風の修正指示をコピーしました。制作途中の主画像と一緒に送ってください。':'誌面の指示をコピーしました。確認した主画像と一緒に送ってください。');}catch{download(new Blob([text],{type:'text/plain;charset=utf-8'}),'stage-'+key+'.txt');tell('この段階の指示を保存しました。対象の画像と一緒に送ってください。');}}
+async function copyStage(key){const text=currentResult?.optionalStages?.[key]||currentResult?.stages?.[key];if(!text)return;try{await navigator.clipboard.writeText(text);if(key==='identity'){tell('人物変換の指示をコピーしました。主参照と画風原画を添付してください。');return;}if(key==='identityRepair'){tell('人物変換の修正指示をコピーしました。未達の人物画像と画風原画を添付して修正し、実画像を確認してください。');return;}if(key==='final'){tell('完成場面の指示をコピーしました。確認済みの人物画像と画風原画を添付してください。元写真は再添付しません。');return;}tell(currentResult.drawingReferences?.length&&['artwork','repair'].includes(key)?(key==='repair'?'修正指示をコピーしました。制作途中の主画像と、表示された画風見本を添付してください。':needsReference(currentResult.values)?'主画像の指示をコピーしました。ご自身の主参照と、表示された画風見本を添付してください。':'主画像の指示をコピーしました。表示された画風見本を添付してください。'):key==='artwork'?(needsReference(currentResult.values)?'主画像の指示をコピーしました。自分の主参照と一緒に送ってください。':'主画像の指示をコピーしました。ChatGPTへ送ってください。'):key==='repair'?'画風の修正指示をコピーしました。制作途中の主画像と一緒に送ってください。':'誌面の指示をコピーしました。確認した主画像と一緒に送ってください。');}catch{download(new Blob([text],{type:'text/plain;charset=utf-8'}),'stage-'+key+'.txt');tell('この段階の指示を保存しました。対象の画像と一緒に送ってください。');}}
 async function shareAll(){
  const r=currentResult;if(!r)return;
  const files=shareFiles(r),images=files.filter(f=>f.type.startsWith('image/'));
@@ -351,7 +360,7 @@ async function copyImage(){const r=currentResult?.localRefs?.find(x=>x.role==='i
 function download(blob,name){const url=URL.createObjectURL(blob),a=el('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);}
 async function downloadKit(){const r=currentResult;if(!r)return;const b=$('download-kit');b.disabled=true;b.textContent='セットを準備中…';try{
  const images=deliveryImageFiles(r),imageNames=images.map(file=>file.name);
- const help=['画像制作セット','','1. ZIPを解凍します。',needsReference(r.values)&&!r.localRefs?.some(ref=>ref.role==='identity')?'2. ご自身の主参照を追加し、選んだ画風原画'+(r.localSelectionReference?'・選択項目の見本シート':'')+'と prompt.txt を同じChatGPTのメッセージへ添付します。':imageNames.length?'2. 下の参照画像と prompt.txt を同じChatGPTのメッセージへ添付します。':needsReference(r.values)?'2. prompt.txt とご自身の主参照画像を、同じChatGPTのメッセージへ添付します。':'2. prompt.txt をChatGPTへ添付するか、中の指示をコピーして送ります。',r.stages?.identity?'3. stage-identity.txt で人物だけを選択画風へ描き直し、同一人物と描法を確認します。stage-final.txt に、確認した人物画像と画風原画だけを添付して完成場面を生成します。元写真は最終工程へ再添付しません。':'3. prompt.txt の条件で画像を1枚描き、ChatGPTの通常の生成画像として表示します。','4. 完成画像が出ない場合は、ツールの「画像が出ないときの指示」を同じチャットへ送ります。','','添付する参照画像：',...imageNames,'',r.drawingReferences?.length?(r.drawingReferences.some(ref=>ref.role==='drawing')?'宝石光彩の専用画風原画を含みます。人物・衣装・背景をそのまま流用せず、光彩と描画の参照として使います。':'選んだ画風見本を含みます。描き方だけを参照し、人物・衣装・ポーズ・構図・背景・配色は今回の入力で決めます。'):'自由指定の画風には用意済みの見本はありません。' ,...(creatorDisplayLabel(r.profile,r.production?.copy)?['名前：'+creatorDisplayLabel(r.profile,r.production?.copy)]:[]),'制作番号：'+r.edition].join('\n');
+ const help=['画像制作セット','','1. ZIPを解凍します。',needsReference(r.values)&&!r.localRefs?.some(ref=>ref.role==='identity')?'2. ご自身の主参照を追加し、選んだ画風原画'+(r.localSelectionReference?'・選択項目の見本シート':'')+'と prompt.txt を同じChatGPTのメッセージへ添付します。':imageNames.length?'2. 下の参照画像と prompt.txt を同じChatGPTのメッセージへ添付します。':needsReference(r.values)?'2. prompt.txt とご自身の主参照画像を、同じChatGPTのメッセージへ添付します。':'2. prompt.txt をChatGPTへ添付するか、中の指示をコピーして送ります。',r.stages?.internal?'3. ChatGPTが内部で順に描いて実画像を確認し、完成画像1枚を通常表示します。中間画像を保存・再添付する必要はありません。':'3. prompt.txt の条件で画像を1枚描き、ChatGPTの通常の生成画像として表示します。','4. 完成画像が出ない場合は、ツールの「画像が出ないときの指示」を同じチャットへ送ります。','','添付する参照画像：',...imageNames,'',r.drawingReferences?.length?(r.drawingReferences.some(ref=>ref.role==='drawing')?'宝石光彩の専用画風原画を含みます。人物・衣装・背景をそのまま流用せず、光彩と描画の参照として使います。':'選んだ画風見本を含みます。描き方だけを参照し、人物・衣装・ポーズ・構図・背景・配色は今回の入力で決めます。'):'自由指定の画風には用意済みの見本はありません。' ,...(creatorDisplayLabel(r.profile,r.production?.copy)?['名前：'+creatorDisplayLabel(r.profile,r.production?.copy)]:[]),'制作番号：'+r.edition].join('\n');
  const files=[{name:'prompt.txt',data:new TextEncoder().encode(r.prompt)},{name:'使い方.txt',data:new TextEncoder().encode(help)}];
  for(const key of ['identity','identityRepair','final','artwork','repair','layout'])if(r.stages?.[key])files.push({name:'stage-'+key+'.txt',data:new TextEncoder().encode(r.stages[key])});
   if(r.production)files.push({name:'selected-conditions.txt',data:new TextEncoder().encode(r.production.conditions.map(c=>c.name+'：'+c.value+'\n'+(c.sections||[{label:'条件',text:c.text}]).map(section=>section.label+'：'+section.text).join('\n')).join('\n\n'))});
@@ -368,8 +377,8 @@ async function downloadIndividualKit(){
    const production=structuredClone(r.production);production.referenceManifest=manifest.references;
    return composePrompt({collection:r.collection,creator:r.creator,profile:r.profile,values:r.values,variant:r.variant,edition:r.edition,references:manifest.references,preparedPlan:production});
   }});
-  download(kit.blob,'Artwork-individual-'+r.edition+'.zip');tell('比較資料を保存しました。画像'+kit.manifest.counts.attached+'枚です。利用先の参照枚数上限を確認してください。');
- }catch(error){tell(error.message||'個別添付用セットを保存できませんでした。');}finally{button.disabled=false;button.textContent='比較資料の個別見本を保存';}
+  download(kit.blob,'Artwork-individual-'+r.edition+'.zip');tell('全有効見本の個別セットを保存しました。画像'+kit.manifest.counts.attached+'枚です。利用先の参照枚数上限を確認してください。');
+ }catch(error){tell(error.message||'個別添付用セットを保存できませんでした。');}finally{button.disabled=false;button.textContent='全有効見本の個別セットを保存';}
 }
 let historyUndo=null,historyUndoTimer;
 function clearHistoryUndo(){historyUndo=null;clearTimeout(historyUndoTimer);if($('undo-history'))$('undo-history').hidden=true;}

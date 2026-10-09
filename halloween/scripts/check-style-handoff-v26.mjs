@@ -1,13 +1,14 @@
 import assert from 'node:assert/strict';
 import {assertCompactHandoff} from './compact-handoff-assertions-v28.mjs';
-import {renderChatInput,renderInput} from '../compiled-production.js?v=28.4.4';
+import {renderChatInput,renderInput} from '../compiled-production.js?v=28.4.5';
 import fs from 'node:fs';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.4';
-import {applyCollection} from '../collection.js?v=28.4.4';
-import {productionPlan} from '../production-plan.js?v=28.4.4';
-import {composePrompt} from '../prompt.js?v=28.4.4';
-import {creatorHandoff,CREATOR_NAME_TOKEN,creatorDisplayLabel,creatorEditableName} from '../creator-handoff.js?v=28.4.4';
-import {mediumExecution} from '../medium-execution.js?v=28.4.4';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.5';
+import {applyCollection} from '../collection.js?v=28.4.5';
+import {productionPlan} from '../production-plan.js?v=28.4.5';
+import {composePrompt} from '../prompt.js?v=28.4.5';
+import {creatorHandoff,CREATOR_NAME_TOKEN,creatorDisplayLabel,creatorEditableName} from '../creator-handoff.js?v=28.4.5';
+import {mediumExecution} from '../medium-execution.js?v=28.4.5';
+import {usesWorldTransferProduction} from '../world-transfer-production.js?v=28.4.5';
 
 const profile={...creatorHandoff('test_author'),articles:[{text:'OLD_CORPUS_SENTINEL'}],topics:['OLD_TAG_SENTINEL'],bodyRead:{count:1000},sourceEvidence:[{excerpts:['OLD_CORPUS_SENTINEL']}]};
 const base=resolveSelections({design:'週刊誌の表紙',medium:'発光幻想アニメ',theme:'宇宙のHalloween',costume:'参照画像の衣装を生かす',place:'雨の路地',pose:'四つん這い',mood:'正面・首をまっすぐ',palette:'星灯りの青紫',type:'デザインに合わせて自動編集',line:'セリフなし',size:'縦ポスター2:3｜2400×3600｜2:3'},()=>.2);
@@ -19,12 +20,13 @@ for(const mode of ['halloween','everyday']){
   for(const costume of ['参照画像の衣装を生かす','風景を主役にする']){
    const values={...base,medium,costume};
    const plan=productionPlan(profile,values,variant,mode,()=>.2);
+   if(usesWorldTransferProduction(plan))plan.referenceManifest=[{name:'reference.png',role:'identity'}];
    const prompt=composePrompt({creator:'test_author',profile,values,variant,preparedPlan:plan,references:[{name:'reference.png',role:'identity'}],edition:'V26'});
    const condition=plan.conditions.find(c=>c.key==='medium');
    assert.ok(condition.known&&condition.execution.method&&condition.checks.length,medium);
    assert.ok(renderChatInput(plan).includes(condition.execution.method),medium+' must reach the complete compatibility material');
    for(const section of condition.sections)assert.ok(renderInput(plan).includes(section.text),medium+' audit loses '+section.label);
-   if(assertCompactHandoff(plan,prompt)){assert.match(prompt,/宇宙の広がり|恒星|小物だけで宇宙を代用しない/);assert.ok(prompt.includes('https://note.com/test_author/'));assert.ok(prompt.indexOf('【ChatGPTで作者を確認')<prompt.indexOf('【統合するための制作仕様：開始】'));}
+   if(assertCompactHandoff(plan,prompt)){assert.match(prompt,/宇宙の広がり|恒星|小物だけで宇宙を代用しない/);assert.ok(prompt.includes('https://note.com/test_author/'));assert.ok(prompt.indexOf('【ChatGPTで作者を確認')<prompt.indexOf(usesWorldTransferProduction(plan)?'【完成画像の自動制作':'【統合するための制作仕様：開始】'));}
    assert.ok(!prompt.includes('OLD_CORPUS_SENTINEL')&&!prompt.includes('OLD_TAG_SENTINEL'));
    assert.ok(!prompt.includes('undefined'));
    count++;max=Math.max(max,prompt.length);

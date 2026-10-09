@@ -1,22 +1,22 @@
 import assert from 'node:assert/strict';
 import {assertCompactHandoff,compactReferences,includesClause,sentenceClauses} from './compact-handoff-assertions-v28.mjs';
 import fs from 'node:fs';
-import {initialSelections} from '../modes.js?v=28.4.4';
-import {resolveSelections} from '../catalog.js?v=28.4.4';
-import {productionPlan} from '../production-plan.js?v=28.4.4';
-import {composePrompt} from '../prompt.js?v=28.4.4';
-import {renderChatInput,renderInput} from '../compiled-production.js?v=28.4.4';
-import {stylePresetFor,stylePresetInstructions,loadStylePresets} from '../style-presets.js?v=28.4.4';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.4';
-import {repairPrompt} from '../production-plan.js?v=28.4.4';
-import {sampleFor} from '../examples.js?v=28.4.4';
-import {lightingContract} from '../art-direction.js?v=28.4.4';
-import {colorPolicy} from '../color-policy.js?v=28.4.4';
-import {candidateAvailability} from '../compatibility.js?v=28.4.4';
-import {fantasyStyleDefinitions} from '../fantasy-style-definitions.js?v=28.4.4';
-import {luminousWorldContract} from '../luminous-world.js?v=28.4.4';
-import {usesFocusedProduction} from '../focused-production.js?v=28.4.4';
-import {renderRecipeChatInput} from '../compact-production.js?v=28.4.4';
+import {initialSelections} from '../modes.js?v=28.4.5';
+import {resolveSelections} from '../catalog.js?v=28.4.5';
+import {productionPlan} from '../production-plan.js?v=28.4.5';
+import {composePrompt} from '../prompt.js?v=28.4.5';
+import {renderChatInput,renderInput} from '../compiled-production.js?v=28.4.5';
+import {stylePresetFor,stylePresetInstructions,loadStylePresets} from '../style-presets.js?v=28.4.5';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.5';
+import {repairPrompt} from '../production-plan.js?v=28.4.5';
+import {sampleFor} from '../examples.js?v=28.4.5';
+import {lightingContract} from '../art-direction.js?v=28.4.5';
+import {colorPolicy} from '../color-policy.js?v=28.4.5';
+import {candidateAvailability} from '../compatibility.js?v=28.4.5';
+import {fantasyStyleDefinitions} from '../fantasy-style-definitions.js?v=28.4.5';
+import {luminousWorldContract} from '../luminous-world.js?v=28.4.5';
+import {usesFocusedProduction} from '../focused-production.js?v=28.4.5';
+import {renderRecipeChatInput} from '../compact-production.js?v=28.4.5';
 import {assertFocusedHandoff} from './focused-handoff-assertions-v28.mjs';
 
 const rng=()=>.23,profile={displayName:'WORLD TRANSFER',activityEnabled:false};
@@ -33,7 +33,7 @@ for(const medium of ['発光幻想アニメ','発光幻想リアル'])for(const 
   const drawing=final.indexOf('作画「'+medium+'」');
   assert.ok(drawing>0&&drawing<final.indexOf('固定カメラ：'),'Positive medium construction must precede scene and layout in the final image-call payload');
   assert.match(final,/広い深暗部と小面積の強光/);assert.match(final,/不透明な肌・布・金属をガラス化しない/);
-  assert.match(final,/見本の線、色面、陰影、光の強さと密度を保ったまま|線・色面・陰影・光の強さと密度だけを同じ主役へ適用/);
+  assert.match(final,/見本の線、色面、陰影、光の強さと密度を保ったまま|線・色面・陰影・光の強さと密度だけを同じ主役へ適用|線、色面、陰影、光の強さと密度を今回の主役と場面へ適用|線・顔と身体の2D色面・光と深い影・反射色の重なり・明暗差・描き込みの密度を維持/);
   if(plan.noPerson)assert.match(final,/主景・物体・景物・支持面・可視背景/);
   else assert.match(final,/顔・瞳・見える肌・衣服・景物・背景それぞれに暗部内の色光を連続/);
  }else{
@@ -48,7 +48,7 @@ for(const medium of ['発光幻想アニメ','発光幻想リアル'])for(const 
   if(['scenery','mark-object'].includes(sourceKind)){assert.match(early,/独自の主役を設計/);assert.doesNotMatch(early,/主参照の本人らしい特徴/);}
  }
  assert.doesNotMatch(prompt,/本来の素材のまま薄く光|薄い幻想光/);
- if(medium==='発光幻想アニメ')assert.match(renderChatInput(plan),/見本と同じ精密な2D描線/);
+ if(medium==='発光幻想アニメ')assert.match(renderChatInput(plan),/精密な少女漫画・日本2Dアニメの有色線と描いた平面陰影/);
  for(const instruction of stylePresetInstructions(values.medium,{values}))assert.ok(renderChatInput(plan).includes(instruction));
  assert.match(recipe||prompt,/深暗部と鋭い最明部の差、透明な色層と反射の密度/);assert.match(recipe||prompt,/作風見本を確認できない場合.*本文の作画仕様で生成/);
  checked++;
@@ -195,7 +195,7 @@ assert.match(normalWhiteArea.actual,/厚み.*短縮.*重なり.*支持/,'The act
 for(const clause of sentenceClauses(spatialDepth))includesClause(normalWhiteArea.routes.recipe,clause,'Detailed recipe 117 spatial construction');
 const luminousValues={...base,medium:'発光幻想アニメ'},luminous2DLight=lightingContract(luminousValues);
 includesClause(luminous2DLight,luminousWorldContract(luminousValues).lighting,'The existing 103 dedicated light branch');
-assert.match(renderChatInput(productionPlan(profile,luminousValues,{},'halloween',rng)),/見本と同じ精密な2D描線/, 'The existing 103 drawn construction must remain independent');
+assert.match(renderChatInput(productionPlan(profile,luminousValues,{},'halloween',rng)),/精密な少女漫画・日本2Dアニメの有色線と描いた平面陰影/, 'The existing 103 drawn construction must remain independent');
 assert.match(luminous2DLight,/深暗部|深い.*影/,'The existing 103 dark light hierarchy must remain');
 const preset=stylePresetFor('発光幻想アニメ');
 assert.match(preset.file,/^assets\/style-(?:luminous|fine-light)-original-v28-/);

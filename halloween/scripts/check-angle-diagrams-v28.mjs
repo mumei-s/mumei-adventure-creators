@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {angleItems,cameraContract} from '../angles.js?v=28.4.4';
-import {angleConstraint} from '../view-constraints.js?v=28.4.4';
-import {applyCollection} from '../collection.js?v=28.4.4';
-import {initialSelections} from '../modes.js?v=28.4.4';
-import {resolveSelections} from '../catalog.js?v=28.4.4';
-import {buildDirection} from '../direction.js?v=28.4.4';
-import {applyPose} from '../poses.js?v=28.4.4';
-import {productionPlan} from '../production-plan.js?v=28.4.4';
-import {composePrompt} from '../prompt.js?v=28.4.4';
-import {renderChatInput} from '../compiled-production.js?v=28.4.4';
+import {angleItems,cameraContract} from '../angles.js?v=28.4.5';
+import {angleConstraint} from '../view-constraints.js?v=28.4.5';
+import {applyCollection} from '../collection.js?v=28.4.5';
+import {initialSelections} from '../modes.js?v=28.4.5';
+import {resolveSelections} from '../catalog.js?v=28.4.5';
+import {buildDirection} from '../direction.js?v=28.4.5';
+import {applyPose} from '../poses.js?v=28.4.5';
+import {productionPlan} from '../production-plan.js?v=28.4.5';
+import {composePrompt} from '../prompt.js?v=28.4.5';
+import {renderChatInput} from '../compiled-production.js?v=28.4.5';
 
 const root=new URL('../',import.meta.url),degrees=r=>r*180/Math.PI;
 function attrs(tag){return Object.fromEntries([...tag.matchAll(/([\w-]+)="([^"]*)"/g)].map(m=>[m[1],m[2]]));}
@@ -19,7 +19,19 @@ function close(actual,expected,name){assert.ok(Math.abs(actual-expected)<1e-5,na
 function polygon(svg,id){return element(svg,'polygon',id).points.trim().split(/\s+/).map(pair=>pair.split(',').map(Number));}
 const results=[],kindCounts={};
 for(const [index,item] of angleItems.entries()){
- const svg=fs.readFileSync(new URL(item.file,root),'utf8'),spec=angleConstraint(item.value),kind=attrs(svg.match(/<svg\b[^>]*>/)[0])['data-diagram-kind'];
+ const svg=fs.readFileSync(new URL(item.detailFile,root),'utf8'),preview=fs.readFileSync(new URL(item.file,root),'utf8'),spec=angleConstraint(item.value),kind=attrs(svg.match(/<svg\b[^>]*>/)[0])['data-diagram-kind'];
+ assert.match(preview,/data-preview-version="visual-v2"/,'Main thumbnail must use the visually legible preview');
+ assert.match(preview,/class="preview-artwork"/);assert.doesNotMatch(preview,/<image\b|data:image\/|M151 72v68|cy="57" r="13"/);
+ assert.match(preview,/完成作品の人物・衣装・場所・画風の見本ではありません/);
+ assert.doesNotMatch(preview,/NaN|undefined/);
+ if(spec.axes.pitch!==undefined){
+  assert.match(preview,new RegExp('data-pitch="'+spec.axes.pitch+'"'));assert.match(preview,/data-body-part="(?:head|torso|foot)"/);
+  const ray=vector(preview,'preview-optical-axis');assert.ok(Math.hypot(ray.dx,ray.dy)>200);
+  assert.ok(Math.abs(degrees(Math.atan2(ray.dy,-ray.dx))-spec.axes.pitch)<.001,'The large visible camera arrow must encode the selected pitch');
+ }
+ if(spec.axes.yaw!==undefined)assert.match(preview,new RegExp('data-yaw="'+spec.axes.yaw+'"'));
+ if(spec.axes.roll!==undefined)assert.match(preview,new RegExp('transform="rotate\\('+spec.axes.roll+' 500 400\\)"'));
+ if(spec.kind==='crop'){const part={eyes:'eyes',face:'face',upper:'upper-body',hands:'hands',feet:'feet'}[spec.frame];assert.match(preview,new RegExp('data-preview-subject="'+part+'"'),'Crop preview must show its actual named part, not a generic identical box');}
  assert.match(svg,/<title\b/);assert.match(svg,/<desc\b/);assert.ok(svg.includes(item.value));assert.match(svg,/完成作品|完成投影/);assert.match(svg,/人物.*画風.*見本ではありません/);
  assert.doesNotMatch(svg,/<image\b|data:image\/|M151 72v68|cy="57" r="13"/,'Technical diagram must not contain a finished person or old stick figure');
  kindCounts[kind]=(kindCounts[kind]||0)+1;
@@ -50,7 +62,7 @@ const low=results.find(r=>r.file==='angle-016.svg');close(low.pitch,-70,'Regress
 // These concrete coordinate checks catch the old unequal x/y scales, 9-unit
 // offsets, icon-only rotation, collapsed yaw and identical crop placeholders.
 for(const id of ['angle-007.svg','angle-008.svg','angle-009.svg','angle-010.svg','angle-011.svg','angle-013.svg','angle-014.svg','angle-015.svg','angle-016.svg','angle-017.svg'])assert.ok(results.find(r=>r.file===id).pitch!==undefined);
-const source=id=>fs.readFileSync(new URL(id,root),'utf8');
+const source=id=>fs.readFileSync(new URL(id.replace(/\.svg$/,'-detail.svg'),root),'utf8');
 const lowHorizon=vector(source('angle-033.svg'),'horizon'),highHorizon=vector(source('angle-034.svg'),'horizon');assert.ok(lowHorizon.start[1]>highHorizon.start[1]);assert.equal(lowHorizon.dy,0);assert.equal(highHorizon.dy,0);
 const diagonal=vector(source('angle-035.svg'),'depth-diagonal');assert.ok(diagonal.dx>0&&diagonal.dy<0);assert.doesNotMatch(source('angle-035.svg'),/rotated-frame/,'A diagonal within the scene is not camera roll');
 const mirror=source('angle-036.svg'),plane=vector(mirror,'reflection-plane'),original=element(mirror,'rect','original-shape'),reflection=element(mirror,'rect','reflected-shape');assert.equal(plane.dx,0);assert.equal(Number(original.width),Number(reflection.width));assert.equal(Number(original.x)+Number(original.width)/2+Number(reflection.x)+Number(reflection.width)/2,plane.start[0]*2,'Reflect the same subject at equal distance from the mirror');

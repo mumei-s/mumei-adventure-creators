@@ -1,19 +1,20 @@
 import assert from 'node:assert/strict';
 import {assertCompactHandoff,containsInstruction} from './compact-handoff-assertions-v28.mjs';
-import {usesFocusedProduction} from '../focused-production.js?v=28.4.4';
-import {renderRecipeChatInput} from '../compact-production.js?v=28.4.4';
+import {usesFocusedProduction} from '../focused-production.js?v=28.4.5';
+import {usesWorldTransferProduction,worldTransferPrompts} from '../world-transfer-production.js?v=28.4.5';
+import {renderRecipeChatInput} from '../compact-production.js?v=28.4.5';
 import fs from 'node:fs';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.4';
-import {applyCollection} from '../collection.js?v=28.4.4';
-import {initialSelections} from '../modes.js?v=28.4.4';
-import {buildDirection} from '../direction.js?v=28.4.4';
-import {applyPose} from '../poses.js?v=28.4.4';
-import {productionPlan} from '../production-plan.js?v=28.4.4';
-import {composePrompt} from '../prompt.js?v=28.4.4';
-import {optionRecipe} from '../option-recipes.js?v=28.4.4';
-import {conditionOwners,renderInput} from '../compiled-production.js?v=28.4.4';
-import {opticalColors,opticalSignature} from '../optical-effects.js?v=28.4.4';
-import {automaticSelection} from '../random-selections.js?v=28.4.4';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.5';
+import {applyCollection} from '../collection.js?v=28.4.5';
+import {initialSelections} from '../modes.js?v=28.4.5';
+import {buildDirection} from '../direction.js?v=28.4.5';
+import {applyPose} from '../poses.js?v=28.4.5';
+import {productionPlan} from '../production-plan.js?v=28.4.5';
+import {composePrompt} from '../prompt.js?v=28.4.5';
+import {optionRecipe} from '../option-recipes.js?v=28.4.5';
+import {conditionOwners,renderInput} from '../compiled-production.js?v=28.4.5';
+import {opticalColors,opticalSignature} from '../optical-effects.js?v=28.4.5';
+import {automaticSelection} from '../random-selections.js?v=28.4.5';
 const random=()=>.28,profile={displayName:'REVIEW',activityEnabled:false,topics:[],biography:''};
 const entries=new Map();let occurrences=0,pairs=0,totalLength=0,maxLength=0;
 for(const mode of ['halloween','everyday']){
@@ -35,8 +36,13 @@ for(const mode of ['halloween','everyday']){
   const medium=plan.conditions.find(c=>c.key==='medium');
   if(assertCompactHandoff(plan,prompt)){
    if(usesFocusedProduction(plan)){
-    const final=prompt.split('【統合するための制作仕様：開始】')[1].split('【統合するための制作仕様：終了】')[0];
-    assert.ok(final.indexOf('作画「'+medium.value+'」')>=0&&final.indexOf('作画「'+medium.value+'」')<final.indexOf('固定カメラ：'),'The selected focused drawing method must precede its camera and physical scene');
+    if(usesWorldTransferProduction(plan)){
+     const stages=worldTransferPrompts(plan).stages,world=stages.find(stage=>stage.key==='world'),scene=stages.find(stage=>stage.kind==='scene-edit');
+     assert.equal(stages[0],world);assert.ok(world.prompt.includes('描法は「'+medium.value+'」'));assert.ok(scene.prompt.indexOf('保持する描法：')>=0&&scene.prompt.indexOf('保持する描法：')<scene.prompt.indexOf('固定するアングルは'),'The selected world and drawing method must precede scene projection');
+    }else{
+     const final=prompt.split('【統合するための制作仕様：開始】')[1].split('【統合するための制作仕様：終了】')[0];
+     assert.ok(final.indexOf('作画「'+medium.value+'」')>=0&&final.indexOf('作画「'+medium.value+'」')<final.indexOf('固定カメラ：'),'The selected focused drawing method must precede its camera and physical scene');
+    }
     const recipe=renderRecipeChatInput(plan,plan.referenceManifest||[]);
     assert.ok(recipe.indexOf('作風・画材＝'+medium.value)<recipe.indexOf('【選択固有の制作工程】'),'Selected medium must remain first in the complete recipe review');
    }else assert.ok(prompt.indexOf('作風・画材＝'+medium.value)<prompt.indexOf('【選択固有の制作工程】'),'Selected medium must precede physical recipes');

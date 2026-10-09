@@ -1,0 +1,25 @@
+.preset-field-label{display:block;font-weight:800;margin:12px 0 6px}
+#style-preset-select[hidden]{display:none!important}
+.style-preset-trigger{width:100%;min-height:48px;padding:12px 14px;border:2px solid #805435;border-radius:10px;background:#fffaf0;color:#2f2017;font:inherit;font-weight:800;text-align:left;cursor:pointer}
+.style-preset-trigger:focus-visible{outline:3px solid #d8781d;outline-offset:3px}
+#picker[data-question=medium][data-picker-view=list] #picker-options:not(.comparing){display:flex;flex-direction:column;gap:0;grid-auto-rows:auto}
+.picker-group-heading{margin:12px 0 0;padding:12px 14px;background:#f3dbb7;border-top:3px solid #744827;border-bottom:2px solid #744827;font-size:1rem;color:#382417}
+#picker[data-question=medium][data-picker-view=list] .sample-card{border:0;border-bottom:2px solid #bca282;border-radius:0;padding:9px 4px;background:#fffaf2;box-shadow:none}
+#picker[data-question=medium][data-picker-view=list] .sample-card.selected{background:#ffedcc;border-left:5px solid #9b4a15}
+#picker[data-question=medium][data-picker-view=list] .option-button{display:grid;grid-template-columns:76px minmax(0,1fr);align-items:center;gap:12px;text-align:left}
+#picker[data-question=medium][data-picker-view=list] .option-button>.sample-thumb{width:76px;height:76px;min-height:76px;border-radius:8px}
+#picker[data-question=medium][data-picker-view=list] .option-button>b{font-size:1rem;line-height:1.5;overflow-wrap:anywhere}
+.angle-sample,.angle-sample .sample-image{border-radius:8px;object-fit:contain;background:#f8f5ee}
+#picker[data-question=angle] .picker-canvas{min-height:420px}
+body #picker[data-question=angle] #picker-options:not(.comparing){grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;grid-auto-rows:min-content}
+#picker[data-question=angle] #picker-options .sample-card{padding:10px;min-width:0}
+#picker[data-question=angle] #picker-options .sample-card>.option-button{display:flex;flex-direction:column;gap:8px}
+#picker[data-question=angle] #picker-options .sample-card>.option-button>.sample-thumb{width:100%;height:auto;min-height:0;aspect-ratio:1.1;max-width:240px}
+#picker[data-question=angle] #picker-options .option-button>b{font-size:1rem;line-height:1.4}
+#picker[data-question=angle] .ring-stage{min-height:620px;--swipe-gap:100px}
+#picker[data-question=angle] .ring-pop{width:120px;padding:6px}
+#picker[data-question=angle] .ring-pop .sample-thumb{width:100px;height:90px;border-radius:8px}
+#picker[data-question=angle] .ring-focus{width:190px;padding:10px}
+#picker[data-question=angle] .ring-focus>.sample-thumb{width:164px;height:148px;min-height:148px;border-radius:8px}
+.angle-detail{margin:10px 0}.angle-detail img{display:block;width:100%;height:auto;background:#fff}.angle-detail figcaption{font-size:.85rem}
+@media(max-width:619px){#picker[data-question=angle] .ring-pop{width:102px}#picker[data-question=angle] .ring-pop .sample-thumb{width:84px;height:76px}#picker[data-question=angle] .ring-focus{width:166px}#picker[data-question=angle] .ring-focus>.sample-thumb{width:140px;height:126px;min-height:126px}body #picker[data-question=angle] #picker-options:not(.comparing){gap:8px}#picker[data-question=angle] #picker-options .sample-card{padding:6px}#picker[data-question=angle] #picker-options .option-button>b{font-size:.9rem}}

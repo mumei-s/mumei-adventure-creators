@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.4';
-import {applyCollection} from '../collection.js?v=28.4.4';
-import {productionPlan} from '../production-plan.js?v=28.4.4';
-import {composePrompt} from '../prompt.js?v=28.4.4';
-import {colorPolicy} from '../color-policy.js?v=28.4.4';
-import {isPhotographicMedium} from '../photo-design.js?v=28.4.4';
-import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.4';
-import {cameraContract} from '../angles.js?v=28.4.4';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.5';
+import {applyCollection} from '../collection.js?v=28.4.5';
+import {productionPlan} from '../production-plan.js?v=28.4.5';
+import {composePrompt} from '../prompt.js?v=28.4.5';
+import {colorPolicy} from '../color-policy.js?v=28.4.5';
+import {isPhotographicMedium} from '../photo-design.js?v=28.4.5';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.5';
+import {cameraContract} from '../angles.js?v=28.4.5';
 import {compactReferences,assertCompactHandoff,assertCompactEngineering,includesClause} from './compact-handoff-assertions-v28.mjs';
-import {usesFocusedProduction} from '../focused-production.js?v=28.4.4';
-import {renderRecipeChatInput} from '../compact-production.js?v=28.4.4';
+import {usesFocusedProduction} from '../focused-production.js?v=28.4.5';
+import {renderRecipeChatInput} from '../compact-production.js?v=28.4.5';
 
 const profile={displayName:'同一性検査',activityEnabled:false},random=()=>.2;
 const base=resolveSelections({design:'通常の一枚絵',medium:'発光幻想アニメ',theme:'宇宙のHalloween',costume:'参照画像の衣装を生かす',place:'星空の砂漠',pose:'片手を差し出す',mood:'俯瞰＋目を見開く',angle:'俯瞰・45度',palette:'群青 × 菫 × 星白',type:'文字を一切入れない',line:'セリフなし',size:'縦ポスター2:3｜2400×3600｜2:3'},random);
@@ -26,7 +26,7 @@ function inputFor(values,mode){
  return {plan,input:prompt,identityClauses,audit,detail,native,actual};
 }
 const publicMedia=questions.find(q=>q.key==='medium').groups.flatMap(g=>g.values);
-assert.equal(publicMedia.length,118,'The original styles and all three additional analyzed media must remain selectable');
+assert.equal(publicMedia.length,120,'The original styles and both new volumetric media must remain selectable');
 assert.equal(new Set(publicMedia).size,publicMedia.length);
 for(const medium of ['薄膜光彩アニメ','白域幾何・宇宙彩アニメ','艶彩幻想アニメ'])assert.ok(publicMedia.includes(medium),medium);
 let cases=0,photographs=0,blocked=0;
@@ -43,12 +43,12 @@ for(const mode of ['halloween','everyday']){
     assert.match(audit.identity,/自然な頭蓋・眼球・皮膚・毛髪へ翻訳/);
     for(const text of [native,detail]){
      assert.match(text,/皮膚.*毛穴.*産毛/);
-     assert.match(text,/服は裁断・縫い目・繊維・重力で生じる皺へ再構成/);
+     assert.match(text,medium==='立体光彩リアル'?/布は裁断・繊維・折れ・重力/:/服は裁断・縫い目・繊維・重力で生じる皺へ再構成/);
     }
     assert.match(audit.identity,/巨大な目・記号的な鼻口・平たい顔面を寸法どおり固定せず/);
     if(actual){
-     assert.match(input,/皮膚.*毛穴.*産毛/);
-     assert.match(input,/服は裁断・縫い目・繊維・重力で生じる皺へ再構成/);
+     if(medium==='立体光彩リアル'){assert.match(input,/自然な頭蓋・眼球・鼻・唇・身体の立体/);assert.match(input,/皮膚の散乱、毛流、布の繊維と折れ/);assert.match(input,/連続階調と素材別の艶/);}
+     else{assert.match(input,/皮膚.*毛穴.*産毛/);assert.match(input,/服は裁断・縫い目・繊維・重力で生じる皺へ再構成/);}
     }
     assert.doesNotMatch(audit.required_before_details.drawing_priority,/細部の精密さはその描線・色面・画材/);
     const camera=cameraContract(values);
@@ -96,6 +96,6 @@ for(const mode of ['halloween','everyday']){
 }
 applyCollection('halloween');
 assert.equal(cases,publicMedia.length*2*5);
-assert.equal(photographs,140);
+assert.equal(photographs,150,'All fifteen photographic media must run both collections and all five palettes');
 assert.ok(blocked>0,'Explicit incompatible color/material combinations must exercise the reasoned stop path');
 console.log('PASS character identity: '+cases+' mode/style/palette combinations retain full native/audit recipes and verify actual compact identity/camera/engineering; '+photographs+' photographic cases reconstruct anatomy and real materials; '+blocked+' hard conflicts stop with reasons and no image request. Non-photo proportions, restricted colors and no-person subjects remain intact. Generated-image adherence is not inferred.');

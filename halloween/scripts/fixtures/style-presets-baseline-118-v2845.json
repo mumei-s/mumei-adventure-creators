@@ -1,0 +1,828 @@
+[
+  {
+    "medium": "実写風フィルム写真",
+    "file": "japan-previews-v21/medium-01-01.jpg",
+    "name": "style-preset-001.jpg",
+    "role": "style-preset",
+    "sha256": "b01bfdd8762ef6e7a8b65f72f1d5261251b7f35b5cfaf7ab88acbf75fcd32461"
+  },
+  {
+    "medium": "実写風スタジオ写真",
+    "file": "japan-previews-v21/medium-01-02.jpg",
+    "name": "style-preset-002.jpg",
+    "role": "style-preset",
+    "sha256": "4503c9950a89209c7b96999cb648fd821c5e9fc869b56e200ee2c3d6c4443960"
+  },
+  {
+    "medium": "実写風街角スナップ",
+    "file": "japan-previews-v21/medium-01-03.jpg",
+    "name": "style-preset-003.jpg",
+    "role": "style-preset",
+    "sha256": "55d422ad9a40c5c77f336f67d24005a24c658eda10a7766583781f57999e60ee"
+  },
+  {
+    "medium": "実写風シネマティック写真",
+    "file": "japan-previews-v21/medium-01-04.jpg",
+    "name": "style-preset-004.jpg",
+    "role": "style-preset",
+    "sha256": "41244bb4d7021ab3f7ce88b3a4af9069b4d4869babaff8afcf401928c1fe5edd"
+  },
+  {
+    "medium": "実写風ファッション写真",
+    "file": "japan-previews-v21/medium-01-05.jpg",
+    "name": "style-preset-005.jpg",
+    "role": "style-preset",
+    "sha256": "7440a49fd7617f74a8fc5d36672c1763e3e1a2260ee1e9367b357421765ec47a"
+  },
+  {
+    "medium": "実写風モノクロ銀塩写真",
+    "file": "japan-previews-v21/medium-01-06.jpg",
+    "name": "style-preset-006.jpg",
+    "role": "style-preset",
+    "sha256": "60c0eccf13de2ec2a535f0241f4e76d9dc60da61f3cecf1d7c09e8907c8316e2"
+  },
+  {
+    "medium": "実写風湿板写真",
+    "file": "japan-previews-v21/medium-01-07.jpg",
+    "name": "style-preset-007.jpg",
+    "role": "style-preset",
+    "sha256": "90ae97efc092bb45013da3c03c05671226b942cd19420bf5be397f8d218b02fc"
+  },
+  {
+    "medium": "実写風ポラロイド",
+    "file": "japan-previews-v21/medium-01-08.jpg",
+    "name": "style-preset-008.jpg",
+    "role": "style-preset",
+    "sha256": "66af664ea99b8ff916524632483885341caf1cbc9279d0e6873d3f5a646a260e"
+  },
+  {
+    "medium": "実写風水中写真",
+    "file": "japan-previews-v21/medium-01-09.jpg",
+    "name": "style-preset-009.jpg",
+    "role": "style-preset",
+    "sha256": "80240e57b9ea0f2f59dfb60e08902a65e4f1ecba4c1fd8b7927f9747cdb34991"
+  },
+  {
+    "medium": "実写風マクロ写真",
+    "file": "japan-previews-v21/medium-01-10.jpg",
+    "name": "style-preset-010.jpg",
+    "role": "style-preset",
+    "sha256": "2a42a8901eec338100417af2a72ced296ecabaa07c51a13949c45ecad0510a84"
+  },
+  {
+    "medium": "実写風長時間露光",
+    "file": "japan-previews-v21/medium-01-11.jpg",
+    "name": "style-preset-011.jpg",
+    "role": "style-preset",
+    "sha256": "4a32a4c25f7fbdd3ee0fa20e052d138cf55d471ee7dbbaf4512596950254035c"
+  },
+  {
+    "medium": "実写風インスタントカメラ",
+    "file": "japan-previews-v21/medium-01-12.jpg",
+    "name": "style-preset-012.jpg",
+    "role": "style-preset",
+    "sha256": "b90f75837caf4e90d1b7a4fbce76a5e466785347dc6d3acf910963705fc49360"
+  },
+  {
+    "medium": "手描きアニメのセル画",
+    "file": "japan-previews-v21/medium-01-13.jpg",
+    "name": "style-preset-013.jpg",
+    "role": "style-preset",
+    "sha256": "1d6bb8f236611679e4beae28b3aac4f1efd398857369b13ae3000020e56aede8"
+  },
+  {
+    "medium": "現代アニメの一枚絵",
+    "file": "japan-previews-v21/medium-01-14.jpg",
+    "name": "style-preset-014.jpg",
+    "role": "style-preset",
+    "sha256": "8f11593e5970549f0c2708809a30dcb2ec885ab814be5aed4e32a2d1cbfd5a87"
+  },
+  {
+    "medium": "90年代アニメのセル画",
+    "file": "japan-previews-v21/medium-01-15.jpg",
+    "name": "style-preset-015.jpg",
+    "role": "style-preset",
+    "sha256": "6a9eef26f15cad84a8d463a72085043703453082acd76533062368291b50771a"
+  },
+  {
+    "medium": "80年代OVA",
+    "file": "japan-previews-v21/medium-01-16.jpg",
+    "name": "style-preset-016.jpg",
+    "role": "style-preset",
+    "sha256": "16b4a548726734a4cf0be95ba5ed098a8ea8cef669604016505943df5fe38391"
+  },
+  {
+    "medium": "少女漫画の扉絵",
+    "file": "japan-previews-v21/medium-02-01.jpg",
+    "name": "style-preset-017.jpg",
+    "role": "style-preset",
+    "sha256": "4f7f3410e451ab51ed29a7ba68f0e7960dea7f35b2ce07fe942db4d4649992f2"
+  },
+  {
+    "medium": "少年漫画のカラーページ",
+    "file": "japan-previews-v21/medium-02-02.jpg",
+    "name": "style-preset-018.jpg",
+    "role": "style-preset",
+    "sha256": "6e2e97e1eab56a06f5927696dffb64ee1ada001cd5311c39e76e172ab8667ccd"
+  },
+  {
+    "medium": "青年漫画のペン画",
+    "file": "japan-previews-v21/medium-02-03.jpg",
+    "name": "style-preset-019.jpg",
+    "role": "style-preset",
+    "sha256": "b02ab0e84c576e4dac65085978e6b20807df3f50518b3734339703c70bfb0d13"
+  },
+  {
+    "medium": "モノクロ漫画",
+    "file": "japan-previews-v21/medium-02-04.jpg",
+    "name": "style-preset-020.jpg",
+    "role": "style-preset",
+    "sha256": "c9b971816877cd2e85a90d7f4c10ea7e0829e970105e3093e4a237b87d70da04"
+  },
+  {
+    "medium": "アメコミのインク画",
+    "file": "japan-previews-v21/medium-02-05.jpg",
+    "name": "style-preset-021.jpg",
+    "role": "style-preset",
+    "sha256": "b8fc0174edf8ea8fa329b042d468210fd9b713c054437ffa1cea02f0cb620b5d"
+  },
+  {
+    "medium": "バンド・デシネ",
+    "file": "japan-previews-v21/medium-02-06.jpg",
+    "name": "style-preset-022.jpg",
+    "role": "style-preset",
+    "sha256": "41041f1667682232cd5cea709d48a9952a51d0440ecf69d001c79a4367030103"
+  },
+  {
+    "medium": "ウェブトゥーン",
+    "file": "japan-previews-v21/medium-02-07.jpg",
+    "name": "style-preset-023.jpg",
+    "role": "style-preset",
+    "sha256": "b50432ee60219abe5758324923a629f117e1647e28d99bb7aaeeb524ac806ef6"
+  },
+  {
+    "medium": "劇場アニメの背景美術",
+    "file": "japan-previews-v21/medium-02-08.jpg",
+    "name": "style-preset-024.jpg",
+    "role": "style-preset",
+    "sha256": "5b39f2b9a88c887033b4d0e7d1135891cf85044093e48bb7c107da1d8409c1a4"
+  },
+  {
+    "medium": "ちびキャラ",
+    "file": "japan-previews-v21/medium-02-09.jpg",
+    "name": "style-preset-025.jpg",
+    "role": "style-preset",
+    "sha256": "0b3cfb906915e844f48e149678be2b9f74b7ba8c305afb70fdb55718d875e761"
+  },
+  {
+    "medium": "絵本イラスト",
+    "file": "japan-previews-v21/medium-02-10.jpg",
+    "name": "style-preset-026.jpg",
+    "role": "style-preset",
+    "sha256": "70f7df9e69540acda714d1a30ea8b20b6f00ac4554872089a3e5c9b1219bf1f9"
+  },
+  {
+    "medium": "水墨画",
+    "file": "japan-previews-v21/medium-02-11.jpg",
+    "name": "style-preset-027.jpg",
+    "role": "style-preset",
+    "sha256": "14d658cc5888dcc3924c7f8e4092dc300caa3c60c3f1510bcd4ad0921a83c85a"
+  },
+  {
+    "medium": "墨彩画",
+    "file": "japan-previews-v21/medium-02-12.jpg",
+    "name": "style-preset-028.jpg",
+    "role": "style-preset",
+    "sha256": "4e7f6158606f8f2b1a6b4d21b13ee71aa5364c52627f4a86fb24000b42c3c813"
+  },
+  {
+    "medium": "日本画・岩絵具",
+    "file": "japan-previews-v21/medium-02-13.jpg",
+    "name": "style-preset-029.jpg",
+    "role": "style-preset",
+    "sha256": "57eeaec0df62ddadfee6cf698d760bdc64d244b5ecc6d499db3c6fd2007eec5d"
+  },
+  {
+    "medium": "浮世絵木版画",
+    "file": "japan-previews-v21/medium-02-14.jpg",
+    "name": "style-preset-030.jpg",
+    "role": "style-preset",
+    "sha256": "af98c1ccc45f516641f1d4435c52b3de35086a697ba393e138e3c8087bdf8ef4"
+  },
+  {
+    "medium": "大和絵",
+    "file": "japan-previews-v21/medium-02-15.jpg",
+    "name": "style-preset-031.jpg",
+    "role": "style-preset",
+    "sha256": "be38561493e21623510325deee633a4901fd8c966fc728a813f2dd67b6a8294d"
+  },
+  {
+    "medium": "琳派の金箔表現",
+    "file": "japan-previews-v21/medium-02-16.jpg",
+    "name": "style-preset-032.jpg",
+    "role": "style-preset",
+    "sha256": "d85da56b8f7dc07bbf483df32ba1f5fb5e9d37a6abf85cde629c512cf657d953"
+  },
+  {
+    "medium": "南画",
+    "file": "japan-previews-v21/medium-03-01.jpg",
+    "name": "style-preset-033.jpg",
+    "role": "style-preset",
+    "sha256": "cb0b5f5b13fe0ceb41bddd5d2c33c30bb7cf7a9b973570666c95fdf7b0cc8712"
+  },
+  {
+    "medium": "禅画",
+    "file": "japan-previews-v21/medium-03-02.jpg",
+    "name": "style-preset-034.jpg",
+    "role": "style-preset",
+    "sha256": "392c2dee424a38038037476bb9fcb36a6be137aed86785026f051360d1bdf61c"
+  },
+  {
+    "medium": "書と墨の抽象",
+    "file": "japan-previews-v21/medium-03-03.jpg",
+    "name": "style-preset-035.jpg",
+    "role": "style-preset",
+    "sha256": "31affda8389d1c7d6cdd451c8bbfafe0a7dc72a9bfa0bf472047743e5549240b"
+  },
+  {
+    "medium": "中国工筆画",
+    "file": "japan-previews-v21/medium-03-04.jpg",
+    "name": "style-preset-036.jpg",
+    "role": "style-preset",
+    "sha256": "7fac52f4bc623bee5ea6f2cfa77c755847753b711f94fef459274eee86dde360"
+  },
+  {
+    "medium": "韓国民画",
+    "file": "japan-previews-v21/medium-03-05.jpg",
+    "name": "style-preset-037.jpg",
+    "role": "style-preset",
+    "sha256": "d41bef924820af75b646ed5ece0e1236c4b736084a195a72d4de63f7158f5e35"
+  },
+  {
+    "medium": "和紙ちぎり絵",
+    "file": "japan-previews-v21/medium-03-06.jpg",
+    "name": "style-preset-038.jpg",
+    "role": "style-preset",
+    "sha256": "218965a4c3b2f97cd6d30b89d3bd28b80e6ff4fe33034821e23e295b5a663f99"
+  },
+  {
+    "medium": "油彩・厚塗り",
+    "file": "japan-previews-v21/medium-03-07.jpg",
+    "name": "style-preset-039.jpg",
+    "role": "style-preset",
+    "sha256": "1bdc5dca787b2b933713395e4c51a42cbd5c2dc7d80980be43f9c26c6eacc8cb"
+  },
+  {
+    "medium": "油彩・薄塗り",
+    "file": "japan-previews-v21/medium-03-08.jpg",
+    "name": "style-preset-040.jpg",
+    "role": "style-preset",
+    "sha256": "9ee7d6a513452b77d97a7ace9bc0d265f92a2527aa19288f057d6c18c4bd8606"
+  },
+  {
+    "medium": "透明水彩",
+    "file": "japan-previews-v21/medium-03-09.jpg",
+    "name": "style-preset-041.jpg",
+    "role": "style-preset",
+    "sha256": "57563c93bef2b5fee39ff4d02da663eb2a368da6a3b4dcc97570d42a98bffd86"
+  },
+  {
+    "medium": "不透明水彩・ガッシュ",
+    "file": "japan-previews-v21/medium-03-10.jpg",
+    "name": "style-preset-042.jpg",
+    "role": "style-preset",
+    "sha256": "71be97c0cb9fd51ea7e4cb406134ed5d108dc6b3decb997b506c4cadc763009e"
+  },
+  {
+    "medium": "アクリル画",
+    "file": "japan-previews-v21/medium-03-11.jpg",
+    "name": "style-preset-043.jpg",
+    "role": "style-preset",
+    "sha256": "b248a7f817b5fa8d82aa163fe6773c98a3e5f30071254d63a08bfe3f91d8ea18"
+  },
+  {
+    "medium": "テンペラ画",
+    "file": "japan-previews-v21/medium-03-12.jpg",
+    "name": "style-preset-044.jpg",
+    "role": "style-preset",
+    "sha256": "0865372aa44b47971f2a3f73f3c5108f292aa1c8c1b3c68e23cd75d41a32cd2c"
+  },
+  {
+    "medium": "フレスコ画",
+    "file": "japan-previews-v21/medium-03-13.jpg",
+    "name": "style-preset-045.jpg",
+    "role": "style-preset",
+    "sha256": "d81c098b4080d46b0775845fc071b1a318e040d8b757d29cf6cda9aba0d0614a"
+  },
+  {
+    "medium": "パステル画",
+    "file": "japan-previews-v21/medium-03-14.jpg",
+    "name": "style-preset-046.jpg",
+    "role": "style-preset",
+    "sha256": "3ced6f2ecac47138c614c2c1ffdb834b0906c01aedb592015d862ff95fa93e27"
+  },
+  {
+    "medium": "色鉛筆画",
+    "file": "japan-previews-v21/medium-03-15.jpg",
+    "name": "style-preset-047.jpg",
+    "role": "style-preset",
+    "sha256": "1f635ff6f198ab88fa23865b9f29dd9bfa11f10235bb09720ab9e2e696e86ec6"
+  },
+  {
+    "medium": "鉛筆デッサン",
+    "file": "japan-previews-v21/medium-03-16.jpg",
+    "name": "style-preset-048.jpg",
+    "role": "style-preset",
+    "sha256": "d7d1eb133fa05683ea680a26ce5057a9240bf44bf7f408e8aec215b67cb5dd97"
+  },
+  {
+    "medium": "木炭画",
+    "file": "japan-previews-v21/medium-04-01.jpg",
+    "name": "style-preset-049.jpg",
+    "role": "style-preset",
+    "sha256": "d9e257939882e6e44f685bbaceebc0f2fb316700ae27ec7f379fba8d23713986"
+  },
+  {
+    "medium": "ボールペン画",
+    "file": "japan-previews-v21/medium-04-02.jpg",
+    "name": "style-preset-050.jpg",
+    "role": "style-preset",
+    "sha256": "abd0dce6a5c4fd7003f96785f2ef068cd5c272b47a66a5637dc47a3855e94559"
+  },
+  {
+    "medium": "線画",
+    "file": "japan-previews-v21/medium-04-03.jpg",
+    "name": "style-preset-051.jpg",
+    "role": "style-preset",
+    "sha256": "2a7c7b03009a6fd1c50ea8f1a22d25d3d097b5528085bd76a415c515c90a8ead"
+  },
+  {
+    "medium": "点描画",
+    "file": "japan-previews-v21/medium-04-04.jpg",
+    "name": "style-preset-052.jpg",
+    "role": "style-preset",
+    "sha256": "1870c9b992485f356c784c9ac641ab9d6e07d44600fe9492ef946ffa4a1ea266"
+  },
+  {
+    "medium": "スクラッチボード",
+    "file": "japan-previews-v21/medium-04-05.jpg",
+    "name": "style-preset-053.jpg",
+    "role": "style-preset",
+    "sha256": "f02a3dd7477ce1c0fcc75b336da6bd840ae2496eeb249551d8b52ba9168d0353"
+  },
+  {
+    "medium": "銅版画・エッチング",
+    "file": "japan-previews-v21/medium-04-06.jpg",
+    "name": "style-preset-054.jpg",
+    "role": "style-preset",
+    "sha256": "d2fabcce6b761a4cf7dba54ca6eeaf03251b566f0b73c6960827134095014e11"
+  },
+  {
+    "medium": "リノカット",
+    "file": "japan-previews-v21/medium-04-07.jpg",
+    "name": "style-preset-055.jpg",
+    "role": "style-preset",
+    "sha256": "da575cf29706e6ff277c812cfdacd1067b6084cdbf92efc295a40be4d29c49ea"
+  },
+  {
+    "medium": "木版画",
+    "file": "japan-previews-v21/medium-04-08.jpg",
+    "name": "style-preset-056.jpg",
+    "role": "style-preset",
+    "sha256": "eeb8df6eaa2a5b76c16a5e31f2171a99486cde6402e096f8bf1da50285fc83ee"
+  },
+  {
+    "medium": "シルクスクリーン",
+    "file": "japan-previews-v21/medium-04-09.jpg",
+    "name": "style-preset-057.jpg",
+    "role": "style-preset",
+    "sha256": "33b69b55a62bb88720b5ff0410d2c6749f900b1371b4dbc02ff0eb3f16c4e107"
+  },
+  {
+    "medium": "リソグラフ",
+    "file": "japan-previews-v21/medium-04-10.jpg",
+    "name": "style-preset-058.jpg",
+    "role": "style-preset",
+    "sha256": "e34e1f826e1836b921ffc1e60a8f9b6e3cba276bd9022494fe4eb70d4e6934cc"
+  },
+  {
+    "medium": "レタープレス",
+    "file": "japan-previews-v21/medium-04-11.jpg",
+    "name": "style-preset-059.jpg",
+    "role": "style-preset",
+    "sha256": "32bbabe2cff4adcadf897646f946b86172b7b032cf2269edb8413791a4bccaf7"
+  },
+  {
+    "medium": "サイアノタイプ",
+    "file": "japan-previews-v21/medium-04-12.jpg",
+    "name": "style-preset-060.jpg",
+    "role": "style-preset",
+    "sha256": "68bfcda78b71d7fe3e15d792deca56d425b09e1027000a0b6792190d341cebc4"
+  },
+  {
+    "medium": "切り絵",
+    "file": "japan-previews-v21/medium-04-13.jpg",
+    "name": "style-preset-061.jpg",
+    "role": "style-preset",
+    "sha256": "6726a66afbb96bc6bf47fdec8bd69b5da5b6969fad81263729aa4ab07d316e15"
+  },
+  {
+    "medium": "紙のコラージュ",
+    "file": "japan-previews-v21/medium-04-14.jpg",
+    "name": "style-preset-062.jpg",
+    "role": "style-preset",
+    "sha256": "ed35fd3d5294f9a853f864ac3d35be2ed22867e004a56a734b17765012779d3b"
+  },
+  {
+    "medium": "写真コラージュ",
+    "file": "japan-previews-v21/medium-04-15.jpg",
+    "name": "style-preset-063.jpg",
+    "role": "style-preset",
+    "sha256": "c991f44b5a409435dee81ec9c0d255c0efbb968d31d490015e4ab57e4c0ce86e"
+  },
+  {
+    "medium": "折り紙の立体",
+    "file": "japan-previews-v21/medium-04-16.jpg",
+    "name": "style-preset-064.jpg",
+    "role": "style-preset",
+    "sha256": "b48c04a5092aff33f9d5ad6128f34a08a2c2c6a8acf9baa292dd70eda1c91b66"
+  },
+  {
+    "medium": "刺繍・織物",
+    "file": "japan-previews-v21/medium-05-01.jpg",
+    "name": "style-preset-065.jpg",
+    "role": "style-preset",
+    "sha256": "c0b02c9515313e39e12662d8013480b08bd016f148592fa4b8a618353e276ac3"
+  },
+  {
+    "medium": "タペストリー",
+    "file": "japan-previews-v21/medium-05-02.jpg",
+    "name": "style-preset-066.jpg",
+    "role": "style-preset",
+    "sha256": "cad2d1b5c8d4dc2c2031ddb1ed98a72684a37c7851e769c90707f2e735cf3d86"
+  },
+  {
+    "medium": "ステンドグラス",
+    "file": "japan-previews-v21/medium-05-03.jpg",
+    "name": "style-preset-067.jpg",
+    "role": "style-preset",
+    "sha256": "7056bc7acb380c90f49bfdd6fd3ec5257671b23c61a14d42f0c861b947eb42f3"
+  },
+  {
+    "medium": "モザイク",
+    "file": "japan-previews-v21/medium-05-04.jpg",
+    "name": "style-preset-068.jpg",
+    "role": "style-preset",
+    "sha256": "79df5a9e6881c23eedd30edb9acfb15c682722e2891bc23c191103a9a118f0b9"
+  },
+  {
+    "medium": "陶器・釉薬",
+    "file": "japan-previews-v21/medium-05-05.jpg",
+    "name": "style-preset-069.jpg",
+    "role": "style-preset",
+    "sha256": "20740436ae3af883b5ed944810a77d8022318e872e3bb718366121c4566c0929"
+  },
+  {
+    "medium": "漆と螺鈿",
+    "file": "japan-previews-v21/medium-05-06.jpg",
+    "name": "style-preset-070.jpg",
+    "role": "style-preset",
+    "sha256": "b24fa41fa61d5d4564615a6fde0eb7542142aa48ec34a2a4b2627f5f94826716"
+  },
+  {
+    "medium": "クレイアート",
+    "file": "japan-previews-v21/medium-05-07.jpg",
+    "name": "style-preset-071.jpg",
+    "role": "style-preset",
+    "sha256": "b2a97fbf6ad82ef9d08fe5a9b10f1415b1c0494dc02038b51472158a2001ed47"
+  },
+  {
+    "medium": "ストップモーションの人形",
+    "file": "japan-previews-v21/medium-05-08.jpg",
+    "name": "style-preset-072.jpg",
+    "role": "style-preset",
+    "sha256": "ee0258bdfcec5b27471b130d0e9a34edcc2399e3214109a7512d83e34adff9a4"
+  },
+  {
+    "medium": "フェルトの造形",
+    "file": "japan-previews-v21/medium-05-09.jpg",
+    "name": "style-preset-073.jpg",
+    "role": "style-preset",
+    "sha256": "fe126c8fce052eadf2d99ab15ab99e91e161e818661a6c65e6d6aeaec72b508d"
+  },
+  {
+    "medium": "精密ミニチュア",
+    "file": "japan-previews-v21/medium-05-10.jpg",
+    "name": "style-preset-074.jpg",
+    "role": "style-preset",
+    "sha256": "6fa76e03f7465b0039d2274ccb307ba069d9b0b082b9a2361aee408db1b20de4"
+  },
+  {
+    "medium": "ジオラマ",
+    "file": "japan-previews-v21/medium-05-11.jpg",
+    "name": "style-preset-075.jpg",
+    "role": "style-preset",
+    "sha256": "0117003fc8815e81d6a3c94d5f218cca2267c43a35835adaa5de11d7b7012375"
+  },
+  {
+    "medium": "トイフォト風",
+    "file": "japan-previews-v21/medium-05-12.jpg",
+    "name": "style-preset-076.jpg",
+    "role": "style-preset",
+    "sha256": "86c5f577dcb608badb9b5d1c5194f08ef0310ffa85e6d5453ac55baf3d2aa8c9"
+  },
+  {
+    "medium": "3D彫刻",
+    "file": "japan-previews-v21/medium-05-13.jpg",
+    "name": "style-preset-077.jpg",
+    "role": "style-preset",
+    "sha256": "b92ed1edaa29ef365647e69fba6e14e9be0abae1ea700572a17d1c339cf0ce9c"
+  },
+  {
+    "medium": "ローポリゴン",
+    "file": "japan-previews-v21/medium-05-14.jpg",
+    "name": "style-preset-078.jpg",
+    "role": "style-preset",
+    "sha256": "d52ceffcfd9478726f9897dde05c9a313410094580a20a51da24b92c9ad256fc"
+  },
+  {
+    "medium": "ボクセル",
+    "file": "japan-previews-v21/medium-05-15.jpg",
+    "name": "style-preset-079.jpg",
+    "role": "style-preset",
+    "sha256": "b3a9a5878e9453384ec230d57eb65cc0c6b8e30451c3d76fc7d11ec96bc454b2"
+  },
+  {
+    "medium": "ピクセルアート",
+    "file": "japan-previews-v21/medium-05-16.jpg",
+    "name": "style-preset-080.jpg",
+    "role": "style-preset",
+    "sha256": "95bf3dfc313fd2d8b40764ec2e2be96010be4cd69921322df32dfcbe0e5263ae"
+  },
+  {
+    "medium": "ベクターグラフィック",
+    "file": "japan-previews-v21/medium-06-01.jpg",
+    "name": "style-preset-081.jpg",
+    "role": "style-preset",
+    "sha256": "53c6effe533680e63f320465aa667a3edad3484d6f5cebe05ba2253e9c777a20"
+  },
+  {
+    "medium": "フラットイラスト",
+    "file": "japan-previews-v21/medium-06-02.jpg",
+    "name": "style-preset-082.jpg",
+    "role": "style-preset",
+    "sha256": "f50ad1c8625e72f50b05daa5ccea37be7fe6dc74b252a1ce6d5c3436deebfc45"
+  },
+  {
+    "medium": "インクとデジタル彩色",
+    "file": "japan-previews-v21/medium-06-03.jpg",
+    "name": "style-preset-083.jpg",
+    "role": "style-preset",
+    "sha256": "0a02fbf108ab17ad58f705b184bb6d28861c4b924eb1d586fb505888c140db27"
+  },
+  {
+    "medium": "コンセプトアート",
+    "file": "japan-previews-v21/medium-06-04.jpg",
+    "name": "style-preset-084.jpg",
+    "role": "style-preset",
+    "sha256": "625af2ee52bb8c1161af924233b6e64f53776897b98ac5c8ec98c27d5e902e9e"
+  },
+  {
+    "medium": "マットペインティング",
+    "file": "japan-previews-v21/medium-06-05.jpg",
+    "name": "style-preset-085.jpg",
+    "role": "style-preset",
+    "sha256": "ba6e06288c39425d8d4ee7cb39b9042028a75fb554493378714ba2634bd4a97e"
+  },
+  {
+    "medium": "グリッチアート",
+    "file": "japan-previews-v21/medium-06-06.jpg",
+    "name": "style-preset-086.jpg",
+    "role": "style-preset",
+    "sha256": "59a608d992a7689e44ea9013efe73bfdfec7a61861e5c6ce59ec3f0fe464e091"
+  },
+  {
+    "medium": "フラクタルアート",
+    "file": "japan-previews-v21/medium-06-07.jpg",
+    "name": "style-preset-087.jpg",
+    "role": "style-preset",
+    "sha256": "6da58681a71fc3c38258bbe8d93c5f9bb87ba53ffc5132fcb018d83c7ad19011"
+  },
+  {
+    "medium": "抽象表現",
+    "file": "japan-previews-v21/medium-06-08.jpg",
+    "name": "style-preset-088.jpg",
+    "role": "style-preset",
+    "sha256": "52970858ed78e7ebd93361653e6b4362f51ab7982511eaadbd0ad67c8c73abaf"
+  },
+  {
+    "medium": "ゴシック・ロマン主義",
+    "file": "japan-previews-v21/medium-06-09.jpg",
+    "name": "style-preset-089.jpg",
+    "role": "style-preset",
+    "sha256": "5bb700652dca38b0fa2e3cf930dc285de2f0f764374a5f6fcffc92cb1e0060fd"
+  },
+  {
+    "medium": "バロック",
+    "file": "japan-previews-v21/medium-06-10.jpg",
+    "name": "style-preset-090.jpg",
+    "role": "style-preset",
+    "sha256": "3a1da0f386b565aeab6affa70e670d8c7d30c879076ca634ecb571638def6375"
+  },
+  {
+    "medium": "象徴主義",
+    "file": "japan-previews-v21/medium-06-11.jpg",
+    "name": "style-preset-091.jpg",
+    "role": "style-preset",
+    "sha256": "3c257b557a11bcbc5c46b39da611d7376951ab80d9315297150fdaf5b8d040e0"
+  },
+  {
+    "medium": "シュルレアリスム",
+    "file": "japan-previews-v21/medium-06-12.jpg",
+    "name": "style-preset-092.jpg",
+    "role": "style-preset",
+    "sha256": "cc9dd27c7a9eeeb92015064459569368deaf128f339232eb69876e63265bdfb5"
+  },
+  {
+    "medium": "マジックリアリズム",
+    "file": "japan-previews-v21/medium-06-13.jpg",
+    "name": "style-preset-093.jpg",
+    "role": "style-preset",
+    "sha256": "d6449c823ddd15bea0f510b7a9422911bebf6ef1a576ed1c795daab312f90479"
+  },
+  {
+    "medium": "印象主義",
+    "file": "japan-previews-v21/medium-06-14.jpg",
+    "name": "style-preset-094.jpg",
+    "role": "style-preset",
+    "sha256": "509d01f5374807966c72f064678b0ca0d0d62b1f957608738cc7c90e5100c691"
+  },
+  {
+    "medium": "表現主義",
+    "file": "japan-previews-v21/medium-06-15.jpg",
+    "name": "style-preset-095.jpg",
+    "role": "style-preset",
+    "sha256": "41a57dc17100e636ae73d843ae863d5c50d99d0e821ff7d938bd46fc14736326"
+  },
+  {
+    "medium": "キュビスム",
+    "file": "japan-previews-v21/medium-06-16.jpg",
+    "name": "style-preset-096.jpg",
+    "role": "style-preset",
+    "sha256": "c9e5a368a21a12cb074ec040a80eb574dfb9bef4b62ea95a5022c7e362f3de2d"
+  },
+  {
+    "medium": "未来派",
+    "file": "japan-previews-v21/medium-07-01.jpg",
+    "name": "style-preset-097.jpg",
+    "role": "style-preset",
+    "sha256": "4c704d6da2b931e24f608c7a6cc81137dbb696703803a84c64f6e8b4092844e9"
+  },
+  {
+    "medium": "構成主義",
+    "file": "japan-previews-v21/medium-07-02.jpg",
+    "name": "style-preset-098.jpg",
+    "role": "style-preset",
+    "sha256": "2a756d3979011dd4874e998bd7c7b4be2940d03a3c388bfdd7a7c309485e1632"
+  },
+  {
+    "medium": "ポップアート",
+    "file": "japan-previews-v21/medium-07-03.jpg",
+    "name": "style-preset-099.jpg",
+    "role": "style-preset",
+    "sha256": "4692c40a2ccac7fa2bcc6b246f1366a12923dbf1d6099ec63b1ecc5f814b269b"
+  },
+  {
+    "medium": "アウトサイダーアート",
+    "file": "japan-previews-v21/medium-07-04.jpg",
+    "name": "style-preset-100.jpg",
+    "role": "style-preset",
+    "sha256": "90750dbc781e81614c8c5309a8787fd13e9bbecb17f17636a0661b478cfd640a"
+  },
+  {
+    "medium": "ミニマリズム",
+    "file": "japan-previews-v21/medium-07-05.jpg",
+    "name": "style-preset-101.jpg",
+    "role": "style-preset",
+    "sha256": "64dba515c2d2ae196a00180a6dfa8fefdc2092f52331ccc4e2d4928091404af0"
+  },
+  {
+    "medium": "サイケデリックアート",
+    "file": "japan-previews-v21/medium-07-06.jpg",
+    "name": "style-preset-102.jpg",
+    "role": "style-preset",
+    "sha256": "3aef3ee4b613fc8f4698905e52bd93e9898c42ea69a6d9861801678816409d1b"
+  },
+  {
+    "medium": "発光幻想アニメ",
+    "file": "assets/style-fine-light-original-v28-4-4-refined.png",
+    "name": "style-preset-103.png",
+    "role": "style-preset",
+    "sha256": "8c91242e29b551a5d5a68f6c8b65180afe60d0f65dc876b8bfe02a300440283d"
+  },
+  {
+    "medium": "透明水彩アニメ",
+    "file": "japan-previews-v21/medium-07-07.jpg",
+    "name": "style-preset-104.jpg",
+    "role": "style-preset",
+    "sha256": "f0835336ea53461c33b2a8238d739f5fec8260d21d3540aea6ef21c2f7c86474"
+  },
+  {
+    "medium": "絵画的シネマアニメ",
+    "file": "japan-previews-v21/medium-07-08.jpg",
+    "name": "style-preset-105.jpg",
+    "role": "style-preset",
+    "sha256": "62525843a9ef8d7916277a302328195c8d3be2f7157b03e3fd8b5e74dbdb0884"
+  },
+  {
+    "medium": "宝石ホログラムアニメ",
+    "file": "assets/style-jewel-hologram-original-v28-4-3.png",
+    "name": "style-preset-106.png",
+    "role": "style-preset",
+    "sha256": "a9044ed8fe917af4a83bd3fbd98d9a4cb54a0d585494e4a7d63f0a09ce9156aa"
+  },
+  {
+    "medium": "クリスタル透光アニメ",
+    "file": "assets/style-crystal-transmission-original-v28-4-3.png",
+    "name": "style-preset-107.png",
+    "role": "style-preset",
+    "sha256": "9ebffa866584f6701d8ae8f39bf1b776bf654ce41f7bb1529b5a3c4b50ffd5b1"
+  },
+  {
+    "medium": "クリスタルホログラム造形アニメ",
+    "file": "assets/style-crystal-hologram-original-v28-4-3.png",
+    "name": "style-preset-108.png",
+    "role": "style-preset",
+    "sha256": "02ad9a8227ac0e541872636b1e2dfac9026bef86a232a24844d1f740f0a4af31"
+  },
+  {
+    "medium": "宝石光彩アニメ",
+    "file": "assets/drawing-jewel-anime-v28.png",
+    "name": "drawing-jewel-anime.png",
+    "role": "drawing",
+    "sha256": "68e3724979f3cc9e4323e6afb9d383651944778eb4567be3f0d05e25f28c9b11"
+  },
+  {
+    "medium": "宝石光彩リアル",
+    "file": "assets/drawing-jewel-real-v28.png",
+    "name": "drawing-jewel-real.png",
+    "role": "drawing",
+    "sha256": "df063c09730ac269246773248fe42fbdc6f224cb90bb2a733a5c11ef4b5559c9"
+  },
+  {
+    "medium": "花霞の透明アニメ",
+    "file": "assets/style-flower-haze-original-v28-4-3.png",
+    "name": "style-preset-111.png",
+    "role": "style-preset",
+    "sha256": "4be3a24db4141b0ca3cae22826b8d5fb89d269bb88b6fbca1459541196bbb01e"
+  },
+  {
+    "medium": "ミルキーパステルアニメ",
+    "file": "assets/style-milky-pastel-original-v28-4-3.png",
+    "name": "style-preset-112.png",
+    "role": "style-preset",
+    "sha256": "c98d4d4173f004734f2f5815f64bf61184073afefb943bd268763491c55ea73a"
+  },
+  {
+    "medium": "夢彩ファンタジーアニメ",
+    "file": "assets/style-dream-fantasy-original-v28-4-3.png",
+    "name": "style-preset-113.png",
+    "role": "style-preset",
+    "sha256": "289fdf40a329d709c7a5faefd66ce414cb9747f5278eeaf0adf50dc24eaa6ed3"
+  },
+  {
+    "medium": "宵彩ゴシックアニメ",
+    "file": "assets/style-dusk-gothic-original-v28-4-3.png",
+    "name": "style-preset-114.png",
+    "role": "style-preset",
+    "sha256": "5319828cc1ea012df2ad8400d2c12a79b9d033207761fc79d1a8f61d8bc9366a"
+  },
+  {
+    "medium": "発光幻想リアル",
+    "file": "assets/style-luminous-real-original-v28-4-2.png",
+    "name": "style-preset-115.png",
+    "role": "style-preset",
+    "sha256": "5f1f8f0ef344ae3b41f30bfacb49883a81eb33a61e001b83a1e2f7e6b7e7ba79"
+  },
+  {
+    "medium": "薄膜光彩アニメ",
+    "file": "assets/style-film-light-original-v28-4-4-refined.png",
+    "name": "style-preset-116.png",
+    "role": "style-preset",
+    "sha256": "1b9ac76f0415db32c99adc4cf70d87ed0332b1d9a205bde5201bd8cf1572ca92"
+  },
+  {
+    "medium": "白域幾何・宇宙彩アニメ",
+    "file": "assets/style-white-geometry-original-v28-4-4.png",
+    "name": "style-preset-117.png",
+    "role": "style-preset",
+    "sha256": "ce1e90d4aea9a5e0bbd0c25b281b9c8de1be229369aa648694cc8a2bb4aed7ca"
+  },
+  {
+    "medium": "艶彩幻想アニメ",
+    "file": "assets/style-gloss-fantasy-original-v28-4-4.png",
+    "name": "style-preset-118.png",
+    "role": "style-preset",
+    "sha256": "bb546fa51d0c650ff3410348742885c169de43c49b6bc0dbb82c7cb8d800fb24"
+  }
+]

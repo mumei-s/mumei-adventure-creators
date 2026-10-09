@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.4.4';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.4';
-import {initialSelections} from '../modes.js?v=28.4.4';
-import {buildDirection,shotPlans} from '../direction.js?v=28.4.4';
-import {applyPose} from '../poses.js?v=28.4.4';
-import {angleItems,applyAngle,cameraContract} from '../angles.js?v=28.4.4';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.4';
-import {renderInput,renderChatInput} from '../compiled-production.js?v=28.4.4';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.4';
-import {optionRecipe} from '../option-recipes.js?v=28.4.4';
-import {angleConstraint} from '../view-constraints.js?v=28.4.4';
+import {applyCollection} from '../collection.js?v=28.4.5';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.5';
+import {initialSelections} from '../modes.js?v=28.4.5';
+import {buildDirection,shotPlans} from '../direction.js?v=28.4.5';
+import {applyPose} from '../poses.js?v=28.4.5';
+import {angleItems,applyAngle,cameraContract} from '../angles.js?v=28.4.5';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.5';
+import {renderInput,renderChatInput} from '../compiled-production.js?v=28.4.5';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.5';
+import {optionRecipe} from '../option-recipes.js?v=28.4.5';
+import {angleConstraint} from '../view-constraints.js?v=28.4.5';
 
 // A fixed angle must survive every delivery route, including nonvertical and
 // cropped views. These tests examine the actual handoff, not rendered images.

@@ -1,13 +1,14 @@
 import assert from 'node:assert/strict';
 import {assertCompactHandoff,containsInstruction} from './compact-handoff-assertions-v28.mjs';
-import {renderChatInput} from '../compiled-production.js?v=28.4.4';
-import {renderRecipeChatInput} from '../compact-production.js?v=28.4.4';
-import {usesFocusedProduction,needsIdentityPreparation} from '../focused-production.js?v=28.4.4';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.4';
-import {applyCollection} from '../collection.js?v=28.4.4';
-import {productionPlan} from '../production-plan.js?v=28.4.4';
-import {composePrompt} from '../prompt.js?v=28.4.4';
-import {creatorHandoff} from '../creator-handoff.js?v=28.4.4';
+import {renderChatInput} from '../compiled-production.js?v=28.4.5';
+import {renderRecipeChatInput} from '../compact-production.js?v=28.4.5';
+import {usesFocusedProduction} from '../focused-production.js?v=28.4.5';
+import {usesWorldTransferProduction} from '../world-transfer-production.js?v=28.4.5';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.5';
+import {applyCollection} from '../collection.js?v=28.4.5';
+import {productionPlan} from '../production-plan.js?v=28.4.5';
+import {composePrompt} from '../prompt.js?v=28.4.5';
+import {creatorHandoff} from '../creator-handoff.js?v=28.4.5';
 
 applyCollection('halloween');
 const profile=creatorHandoff('scene_author');
@@ -16,18 +17,19 @@ const variant={face:'正面・首をまっすぐ',expression:'微笑み',distanc
 const references=[{name:'identity.png',role:'identity'},{name:'auxiliary.png',role:'auxiliary'},{name:'avoid.png',role:'avoid'}];
 function make(values){
  const plan=productionPlan(profile,values,variant,'halloween',()=>.2);
+ if(usesWorldTransferProduction(plan))plan.referenceManifest=references;
  const prompt=composePrompt({creator:profile.id,profile,values,variant,preparedPlan:plan,references,edition:'SCENE-INPUT'});
  const start=prompt.indexOf('【統合するための制作仕様：開始】');
  const end=prompt.indexOf('【統合するための制作仕様：終了】');
- assert.ok(start>=0&&end>start);
- assertCompactHandoff(plan,prompt);assert.doesNotMatch(prompt,/undefined|NaN/,'Legacy scene plans must resolve meaningful camera/performance without leaking missing fields');return {plan,prompt,input:prompt.slice(start,end),audit:renderChatInput(plan),recipe:renderRecipeChatInput(plan,references),focused:usesFocusedProduction(plan)};
+ const worldTransfer=usesWorldTransferProduction(plan);if(!worldTransfer)assert.ok(start>=0&&end>start);else assert.match(prompt,/【完成画像の自動制作：利用者の送信は1回】/);
+ assertCompactHandoff(plan,prompt);assert.doesNotMatch(prompt,/undefined|NaN/,'Legacy scene plans must resolve meaningful camera/performance without leaking missing fields');return {plan,prompt,input:worldTransfer?prompt:prompt.slice(start,end),audit:renderChatInput(plan),recipe:renderRecipeChatInput(plan,references),focused:usesFocusedProduction(plan),worldTransfer};
 }
 let cases=0,max=0;
 for(const medium of questions.find(q=>q.key==='medium').groups.flatMap(g=>g.values)){
  for(const theme of ['宇宙のHalloween','お菓子の王国']){
   for(const costume of ['参照画像の衣装を生かす','風景を主役にする']){
    const values={...base,medium,theme,costume,palette:medium==='サイアノタイプ'?'参照画像の色を生かす':medium==='クリスタルホログラム造形アニメ'?'群青 × 菫 × 星白':'モノクローム',...(costume==='風景を主役にする'?{pose:'おまかせ',mood:'毎回大胆に変える'}:{})};
-   const {plan,prompt,input,audit,recipe,focused}=make(values);
+   const {plan,prompt,input,audit,recipe,focused,worldTransfer}=make(values);
    assert.ok(audit.includes('【物語・世界観・舞台を一つの場面へ】'),medium);assert.match(focused?recipe:input,/【出来事と世界】/);
    assert.ok(input.includes('雨の路地')&&input.includes(theme),medium+' separates subject and place');
    assert.ok(audit.includes('別背景の禁止は画像の分割・無関係な場所の追加を防ぐ条件であり、選んだ世界観を消す条件ではない。'));assert.match(focused?recipe:input,/世界を小物だけへ縮めず/);
@@ -40,17 +42,17 @@ for(const medium of questions.find(q=>q.key==='medium').groups.flatMap(g=>g.valu
     for(const ref of references)assert.ok(prompt.includes(ref.name),medium+' loses the exact '+ref.role+' source name from its staged handoff');
     assert.match(prompt,/指定された補助用途だけ|補助用途|指定用途|今回の選択が明示した用途だけ/,'The staged handoff must limit supporting sources rather than blend unrelated examples');
     assert.match(prompt,/似せない前作|似せてはいけない前作|比較する前作/);
-    assert.match(prompt,/人物の識別・作風・衣装・構図を置き換えず/,'Auxiliary evidence must not replace selected production conditions');
+    assert.match(prompt,/顔・作風・衣装・構図を置き換えない/,'Auxiliary evidence must not replace selected production conditions');
     assert.match(prompt,/今回の確定選択を禁止しない/,'Avoid references must not prohibit the same correctly selected world or technique');
-    if(needsIdentityPreparation(plan,references)){assert.ok(input.includes('prepared-identity.png'));assert.ok(!input.includes('「identity.png」'),'The final stage must use the verified translated identity rather than reattach the original face');}
+    if(!plan.noPerson){assert.ok(input.includes(worldTransfer?'identity.png：最初の差替':'「identity.png」'),'Default production must use its actual identity attachment');assert.doesNotMatch(input,/prepared-identity\.png/,'Default production cannot invent a prepared intermediate');}
    }else{for(const ref of references)assert.ok(input.includes(ref.name),medium+' loses '+ref.role+' reference role');assert.ok(input.includes('似せてはいけない前作'));}
    for(const condition of plan.conditions){
     assert.ok(condition.known,condition.key+' / '+condition.value+' uses a custom fallback in this preset test');
     for(const section of condition.sections)assert.ok(audit.includes(section.text),medium+' audit loses '+condition.key+' / '+section.label);
    }
-   assert.ok(prompt.indexOf('【ChatGPTで作者を確認')<prompt.indexOf('【統合するための制作仕様：開始】'));
-   assert.equal((input.match(focused?/自動原稿は次の許可役割だけ編集する。/g:/次の役割だけ内容資料から新しく編集する。/g)||[]).length,1);
-   for(const [index,slot] of plan.copy.generatedSlots.entries())assert.ok(input.includes(slot.role+' / '+slot.maxCharacters+'字以内 / 階層'+slot.priority));
+   assert.ok(prompt.indexOf('【ChatGPTで作者を確認')<prompt.indexOf(worldTransfer?'【完成画像の自動制作':'【統合するための制作仕様：開始】'));
+   assert.equal((input.match(worldTransfer?/画像生成前に、次の許可役割だけの完成文字列を先に確定する。/g:focused?/自動原稿は次の許可役割だけ編集する。/g:/次の役割だけ内容資料から新しく編集する。/g)||[]).length,1);
+   for(const [index,slot] of plan.copy.generatedSlots.entries())assert.ok(input.includes(worldTransfer?'許可編集／'+slot.role+'／'+slot.maxCharacters+'字以内／階層'+slot.priority:slot.role+' / '+slot.maxCharacters+'字以内 / 階層'+slot.priority));
    cases++;max=Math.max(max,prompt.length);
   }
  }
@@ -95,4 +97,4 @@ for(const theme of ['星雲の祝祭','星海の旅','宇宙の記録']){
  assert.ok(planar.includes('星雲や星の間隔を少数の形と余白へ整理'));
  assert.ok(planar.includes('未選択の地平線・窓・建物・写実的な別景観を追加しない'));
 }
-console.log('PASS scene image input: '+cases+' medium/world/subject combinations preserve actual integrated world geometry, named reference roles, color and permitted copy; every authored recipe stays in the public review renderer. Focused final uses the verified prepared identity, scoped supporting/avoid sources stay named in the staged handoff, abstract subjects stay planar, and repeated editorial instructions are reduced. Maximum '+max+' prompt characters. Actual image quality is not inferred by this test.');
+console.log('PASS scene image input: '+cases+' medium/world/subject combinations preserve actual integrated world geometry, named reference roles, color and permitted copy; every authored recipe stays in the public review renderer. Actual source identity and selected original style use each medium route; supporting/avoid scopes remain distinct, abstract subjects retain their geometry, and repeated editorial instructions are reduced. Maximum '+max+' prompt characters. Actual image quality is not inferred by this test.');

@@ -1,5 +1,6 @@
 // These original, transparent completed artworks are production inputs.
 // General picker thumbnails and the nine scene examples remain UI-only.
+import {focusedReferenceMedia} from './attachment-policy.js?v=28.4.5';
 const masters=[
  {medium:'宝石光彩アニメ',file:'assets/drawing-jewel-anime-v28.png',name:'drawing-jewel-anime.png',role:'drawing',label:'宝石光彩アニメの画風原画'},
  {medium:'宝石光彩リアル',file:'assets/drawing-jewel-real-v28.png',name:'drawing-jewel-real.png',role:'drawing',label:'宝石光彩リアルの画風原画'}
@@ -38,9 +39,10 @@ export async function loadDrawingReferences(references,{fetchImpl=globalThis.fet
  }));
 }
 export function deliveryImageFiles(result,{FileClass=globalThis.File}={}){
+ const identity=(result.localRefs||[]).map((ref,i)=>new FileClass([ref.file],result.references[i].name,{type:ref.file.type}));
+ const style=(result.localDrawingRefs||[]).map(ref=>ref.file);
  return [
-  ...(result.localRefs||[]).map((ref,i)=>new FileClass([ref.file],result.references[i].name,{type:ref.file.type})),
-  ...(result.localDrawingRefs||[]).map(ref=>ref.file),
+  ...(focusedReferenceMedia.includes(result.values?.medium)?[...style,...identity]:[...identity,...style]),
   ...(result.localSelectionReference?.file?[result.localSelectionReference.file]:[])
  ];
 }

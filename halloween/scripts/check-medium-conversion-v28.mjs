@@ -2,16 +2,16 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import assert from 'node:assert/strict';
-import {questions} from '../catalog.js?v=28.4.4';
-import {applyCollection} from '../collection.js?v=28.4.4';
-import {initialSelections} from '../modes.js?v=28.4.4';
-import {buildDirection} from '../direction.js?v=28.4.4';
-import {applyPose} from '../poses.js?v=28.4.4';
-import {productionPlan} from '../production-plan.js?v=28.4.4';
-import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.4';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.4';
-import {isPhotographicMedium,photoReconstruction} from '../photo-design.js?v=28.4.4';
-import {cameraContract} from '../angles.js?v=28.4.4';
+import {questions} from '../catalog.js?v=28.4.5';
+import {applyCollection} from '../collection.js?v=28.4.5';
+import {initialSelections} from '../modes.js?v=28.4.5';
+import {buildDirection} from '../direction.js?v=28.4.5';
+import {applyPose} from '../poses.js?v=28.4.5';
+import {productionPlan} from '../production-plan.js?v=28.4.5';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.5';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.5';
+import {isPhotographicMedium,photoReconstruction} from '../photo-design.js?v=28.4.5';
+import {cameraContract} from '../angles.js?v=28.4.5';
 
 // This tests reference-conversion instructions, not image interpretation. No
 // pixels are submitted: referencePhoto/referenceDrawing describe the intended
@@ -44,13 +44,13 @@ try{
     assert.ok(photo);assert.match(drawing,/実物の立体・材質と連続した撮影像へ再構成/);
     for(const section of photo.sections)for(const [route,text] of Object.entries(routes))assert.ok(text.includes(section.text),medium+' '+route+' lost photo reconstruction '+section.label);
     if(noPerson){
-     assert.match(photo.sections[0].text,/景物・物体の外形、配置、固有模様/);
-     assert.match(photo.sections[0].text,/描線|輪郭線/);
-     assert.match(photo.sections[0].text,/紙面や額縁へ置換しない/);
+     if(medium==='立体光彩リアル'){assert.match(photo.sections[0].text,/景物・物体の固有形・構造・模様を保ち/);assert.match(photo.sections[0].text,/自然な実写の立体造形と一つのレンズ像/);assert.match(photo.sections[0].text,/アニメの描線や平面セル影を残さない/);assert.match(photo.sections[0].text,/人物.*追加しない/);}
+     else{assert.match(photo.sections[0].text,/景物・物体の外形、配置、固有模様/);assert.match(photo.sections[0].text,/描線|輪郭線/);assert.match(photo.sections[0].text,/紙面や額縁へ置換しない/);}
     }else{
      assert.match(audit.identity,/同じキャラクターと識別できる実物の人物立体/);
      assert.match(audit.identity,/自然な頭蓋・眼球・皮膚・毛髪へ翻訳/);
-     assert.match(photo.sections[1].text,/服は裁断・縫い目・繊維・重力で生じる皺へ再構成/);
+     if(medium==='立体光彩リアル'){assert.match(photo.sections.find(section=>section.label==='素材と識別色').text,/布は裁断・繊維・折れ・重力/);assert.match(photo.sections[1].text,/選択衣装の折れ・縫い目/);assert.match(photo.sections[0].text,/基本頭身を保つ/);}
+     else assert.match(photo.sections[1].text,/服は裁断・縫い目・繊維・重力で生じる皺へ再構成/);
     }
     photoCases++;
    }else{
@@ -82,7 +82,7 @@ try{
  }
 }finally{applyCollection('halloween');}
 assert.equal(rows.size,styles.length);assert.equal(cases,styles.length*2*subjects.length);assert.equal(photoCases,styles.filter(isPhotographicMedium).length*2*subjects.length);assert.equal(drawnCases,styles.filter(m=>!isPhotographicMedium(m)).length*2*subjects.length);assert.equal(noPersonCases,styles.length*2*(subjects.length-1));
-const result={checkedOn:'2026-10-08',script:'scripts/check-medium-conversion-v28.mjs',status:'PASS',counts:{styles:rows.size,cases,photoCases,drawnCases,noPersonCases},limits:['参照写真→選択画風と参照イラスト→写真の命令経路を検査。写真・イラストの実ファイルの意味理解や出力ピクセルは検査していない。','PASSは生成画像の作風達成、顔の同一性、人物なしの完成画像や外部審査通過の実証ではない。'],rows:[...rows.values()]};
+const result={checkedOn:'2026-10-09',script:'scripts/check-medium-conversion-v28.mjs',status:'PASS',counts:{styles:rows.size,cases,photoCases,drawnCases,noPersonCases},limits:['参照写真→選択画風と参照イラスト→写真の命令経路を検査。写真・イラストの実ファイルの意味理解や出力ピクセルは検査していない。','PASSは生成画像の作風達成、顔の同一性、人物なしの完成画像や外部審査通過の実証ではない。'],rows:[...rows.values()]};
 const output=path.resolve(process.argv[2]||fileURLToPath(new URL('../audit/',import.meta.url)));
 fs.mkdirSync(output,{recursive:true});fs.writeFileSync(path.join(output,'medium-conversion-audit-v28.json'),JSON.stringify(result,null,2)+'\n');
 console.log('PASS medium conversion: '+cases+' style/mode/subject instruction routes; '+photoCases+' drawing-to-photo, '+drawnCases+' reference-surface-to-selected-drawing, '+noPersonCases+' scenery/motif/icon cases. No input-pixel interpretation or generated-image verification.');

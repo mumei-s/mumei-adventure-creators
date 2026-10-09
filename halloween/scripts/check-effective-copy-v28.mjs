@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.4';
-import {initialSelections} from '../modes.js?v=28.4.4';
-import {applyCollection} from '../collection.js?v=28.4.4';
-import {buildEditorial,editorialContract} from '../editorial.js?v=28.4.4';
-import {copyAuthority,copyAllowsDialogue,copySelectionExplanation} from '../copy-scope.js?v=28.4.4';
-import {formatTextPolicy,detailedFormat} from '../format-recipes.js?v=28.4.4';
-import {formatSpecs} from '../formats.js?v=28.4.4';
-import {productionPlan} from '../production-plan.js?v=28.4.4';
-import {buildDirection} from '../direction.js?v=28.4.4';
-import {renderInput} from '../compiled-production.js?v=28.4.4';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.5';
+import {initialSelections} from '../modes.js?v=28.4.5';
+import {applyCollection} from '../collection.js?v=28.4.5';
+import {buildEditorial,editorialContract} from '../editorial.js?v=28.4.5';
+import {copyAuthority,copyAllowsDialogue,copySelectionExplanation} from '../copy-scope.js?v=28.4.5';
+import {formatTextPolicy,detailedFormat} from '../format-recipes.js?v=28.4.5';
+import {formatSpecs} from '../formats.js?v=28.4.5';
+import {productionPlan} from '../production-plan.js?v=28.4.5';
+import {buildDirection} from '../direction.js?v=28.4.5';
+import {renderInput} from '../compiled-production.js?v=28.4.5';
 
 // A design owns geometry. A selected text control owns one manuscript. Cover,
 // card and blank-art combinations must not silently supply a second manuscript.

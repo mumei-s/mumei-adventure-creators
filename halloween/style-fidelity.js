@@ -1,4 +1,4 @@
-import {photoReconstruction} from './photo-design.js?v=28.4.4';
+import {photoReconstruction} from './photo-design.js?v=28.4.5';
 export function styleFidelity(condition,{noPerson=false,values={}}={}){
  const regions=noPerson?'主景・物体・構造・背景':'顔の輪郭・目鼻口・髪・身体・衣装・背景';
  const photo=photoReconstruction(condition.value,{noPerson,values});
@@ -7,7 +7,7 @@ export function styleFidelity(condition,{noPerson=false,values={}}={}){
   ...photo.sections.map(section=>section.text),
   'この作風の見える特徴：'+condition.checks.join(' / '),
   (noPerson?'主景の輪郭・構造・材料の境界':'顔の識別点と選んだ動作のシルエット')+'を、指定カメラから見える範囲で判読できる撮影像へ整える。主題の見やすさを理由に画角やポーズを変更しない。',
-  '主役と背景を同じ実照明、材質の反射、連続した露光階調、レンズ遠近と焦点でつなぐ。写真化は参照へ粒子やぼけを重ねる加工だけで済ませず、指定の画角・ポーズ・主題を保って成立させる。'+(condition.value==='発光幻想リアル'?'画面に見える素材内部の幻想色光を、広い深暗部、透明な色光の層、小面積の強い光と鋭い最明部として同じ撮影空間へ連続させる。実照明や場面光源の記述を理由に、この色光の密度を弱めない。':''),
+  '主役と背景を同じ実照明、材質の反射、連続した露光階調、レンズ遠近と焦点でつなぐ。写真化は参照へ粒子やぼけを重ねる加工だけで済ませず、指定の画角・ポーズ・主題を保って成立させる。'+(['発光幻想リアル','立体光彩リアル'].includes(condition.value)?'画面に見える素材内部の幻想色光を、広い深暗部、透明な色光の層、小面積の強い光と鋭い最明部として同じ撮影空間へ連続させる。実照明や場面光源の記述を理由に、この色光の密度を弱めない。':''),
   '完成画像そのものを確認し、主役と背景の両方が選択した写真の光学像と実物の材質になっているか照合する。未確認の写真変換を達成したと断言しない。'
  ];
  const reduced=/禅画|書と墨の抽象|線画|ピクセルアート|ベクターグラフィック|フラットイラスト|ローポリゴン|ボクセル|フラクタルアート|抽象表現|キュビスム|構成主義|ポップアート|アウトサイダーアート|ミニマリズム/.test(condition.value);

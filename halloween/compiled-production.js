@@ -1,16 +1,17 @@
-import {styleFidelity} from './style-fidelity.js?v=28.4.4';
-import {modeFoundation} from './japan-direction.js?v=28.4.4';
-import {compactImageOutputContract} from './output-contract.js?v=28.4.4';
-import {opticalSignature} from './optical-effects.js?v=28.4.4';
-import {colorPolicy} from './color-policy.js?v=28.4.4';
-import {sceneComposition} from './scene-composition.js?v=28.4.4';
-import {cameraContract} from './angles.js?v=28.4.4';
-import {photoReconstruction} from './photo-design.js?v=28.4.4';
-import {characterProportionInstruction} from './source-kind.js?v=28.4.4';
-import {luminousWorldContract} from './luminous-world.js?v=28.4.4';
-import {limitedNewspaperLayout} from './format-recipes.js?v=28.4.4';
-import {renderCompactChatInput} from './compact-production.js?v=28.4.4';
-import {usesFocusedProduction,identityPreparationStage} from './focused-production.js?v=28.4.4';
+import {styleFidelity} from './style-fidelity.js?v=28.4.5';
+import {modeFoundation} from './japan-direction.js?v=28.4.5';
+import {compactImageOutputContract} from './output-contract.js?v=28.4.5';
+import {opticalSignature} from './optical-effects.js?v=28.4.5';
+import {colorPolicy} from './color-policy.js?v=28.4.5';
+import {sceneComposition} from './scene-composition.js?v=28.4.5';
+import {cameraContract} from './angles.js?v=28.4.5';
+import {photoReconstruction} from './photo-design.js?v=28.4.5';
+import {characterProportionInstruction} from './source-kind.js?v=28.4.5';
+import {luminousWorldContract} from './luminous-world.js?v=28.4.5';
+import {limitedNewspaperLayout} from './format-recipes.js?v=28.4.5';
+import {renderCompactChatInput} from './compact-production.js?v=28.4.5';
+import {usesFocusedProduction} from './focused-production.js?v=28.4.5';
+import {usesWorldTransferProduction,renderWorldTransferMaster} from './world-transfer-production.js?v=28.4.5';
 
 function luminousPriority(plan){
  const luminous=luminousWorldContract(plan.values,{noPerson:plan.noPerson,variant:plan.variant});
@@ -125,8 +126,8 @@ export function renderDetailedChatInput(plan,{referenceRules=[],mandatoryRules=[
  const compiled=renderInputObject(plan);
  return [
   '【主画像の描画方式：ここから完成作品を描き起こす】',
-  ...luminousPriority(plan),
-  ...(plan.values.design==='新聞の一面'&&limitedNewspaperLayout(plan.values)?[limitedNewspaperLayout(plan.values).priority]:[]),
+  ...(!usesFocusedProduction(plan)?luminousPriority(plan):[]),
+  ...(!usesFocusedProduction(plan)&&plan.values.design==='新聞の一面'&&limitedNewspaperLayout(plan.values)?[limitedNewspaperLayout(plan.values).priority]:[]),
   compiled.required_before_details.selected_drawing_process,
   ...(compiled.required_before_details.camera_geometry?['【固定カメラ：描画前に確定】',compiled.required_before_details.camera_geometry]:[]),
   compiled.required_before_details.wardrobe_selection,
@@ -199,25 +200,7 @@ export function compileProduction(plan,originalLines=[],refs=plan.referenceManif
  // appended after its generation command.
  const compact=renderCompactChatInput(plan,refs||[]);
  if((plan.issues||[]).some(issue=>issue.severity==='error'))return compact;
- if(usesFocusedProduction(plan)){
-  const preparation=identityPreparationStage(plan,refs||[]);
-  return [
-   '【描いてほしい完成品】','選択条件を保持した完成作品は1枚。画像作成機能の通常の生成画像として表示する。各段階の生成画像を表示して実画像を確認し、必要な準備・最終の工程を続ける。準備画像を完成作品と呼ばず、未実行・未確認・不合格は短く伝える。機能の上限や失敗は実際に確認した理由を伝え、存在しない画像や未達条件を完成扱いしない。',...(plan.creatorLookup||[]),originalLines[0],
-   ...(Array.isArray(refs)?refs:[]).filter(ref=>['support','auxiliary','avoid'].includes(ref.role)).map(ref=>ref.name+'：'+(ref.role==='avoid'?'比較する前作。顔・舞台の基準へ使わず、今回の確定選択を禁止しない。':'補助資料。今回の選択が明示した用途だけを確認する。人物の識別・作風・衣装・構図を置き換えず、最終画像へ無差別に再添付しない。')),
-   ...(preparation?[
-    '【人物翻訳と完成制作：2段階で実行】',
-    '各段階の本文だけをそれぞれ画像作成機能へ渡す。この全体手順を1回の画像生成へ混ぜない。準備段階では選択画風の原寸原画＋元の人物参照、最終段階では同じ原画＋確認済みのprepared-identity.pngの2画像だけを添付する。元の人物写真・元イラスト・選択図を最終へ再添付しない。',
-    '準備画像は識別基準であり、完成したHalloween作品ではない。本人の特徴・基本頭身・年齢感と選択画風の2D描線を実画像で照合し、不合格の準備画像は修正する。未確認の画像を採用したり、一括生成へ無言で戻したりしない。',
-    '【人物翻訳用入力：開始】',preparation.prompt,'【人物翻訳用入力：終了】',
-    '【人物翻訳が不合格だった場合の修正入力：開始】',preparation.repairPrompt,'【人物翻訳が不合格だった場合の修正入力：終了】',
-    '【統合するための制作仕様：開始】',preparation.finalPrompt,'【統合するための制作仕様：終了】'
-   ]:[
-    '【通常制作：完成画像を1回で生成】',
-    '【統合するための制作仕様：開始】',compact,'【統合するための制作仕様：終了】'
-   ]),
-   '完成画像を実際に確認して表示する。未実行・未確認・不合格の段階があれば短く伝え、生成した事実だけで選択条件を達成したと断言しない。'
-  ].filter(Boolean).join('\n');
- }
+ if(usesWorldTransferProduction(plan))return [...(plan.creatorLookup||[]),originalLines[0],renderWorldTransferMaster(plan,refs||[])].filter(Boolean).join('\n');
  // App delivery supplies a typed manifest, including the consolidated sheet.
  // Older direct callers still supply their named references in these lines.
  // Use one owner for reference roles; never repeat the manifest as raw prose.
@@ -225,8 +208,8 @@ export function compileProduction(plan,originalLines=[],refs=plan.referenceManif
  const legacyRoles=refs?[]:between(originalLines,'【今回の画像の役割】','【最初に確定する作画と画面】').filter(line=>!line.startsWith('頭身：')&&!line.startsWith('【')&&!/^[^：]+：(主役の識別|選択した画風|似せない前作|補助資料)/.test(line));
  return [
   ...compactImageOutputContract,
-  ...luminousPriority(plan),
-  ...(plan.values.design==='新聞の一面'&&limitedNewspaperLayout(plan.values)?[limitedNewspaperLayout(plan.values).priority]:[]),
+  ...(!usesFocusedProduction(plan)?luminousPriority(plan):[]),
+  ...(!usesFocusedProduction(plan)&&plan.values.design==='新聞の一面'&&limitedNewspaperLayout(plan.values)?[limitedNewspaperLayout(plan.values).priority]:[]),
   ...(plan.creatorLookup||[]),
   '【通常制作：完成画像を1回で生成】',
   originalLines[0],

@@ -1,0 +1,234 @@
+{
+  "schemaVersion": 1,
+  "version": "28.4.5",
+  "reviewedDate": "2026-10-09",
+  "kind": "actual-generated-production-review",
+  "status": "not-accepted",
+  "reviewPhase": "final-image-review",
+  "frozen": true,
+  "qualityGuarantee": false,
+  "privacy": {
+    "privateImagesPublished": false,
+    "privatePathsNamesAndImageHashesIncluded": false,
+    "evidence": "実生成画像の目視確認と非公開の個別実行・検証記録から、公開可能な結果だけを集約。"
+  },
+  "validationBoundary": {
+    "programChecks": "選択値の保持、API本文、参照役割、版面座標、文字方向のコード検査は、実画像の達成とは別に扱う。",
+    "imageAcceptance": "人物識別、選択画風、可視面の光と陰、衣装、歩行支持、投影、Halloween場面、版面と原稿、実出力寸法を実画像で判定。",
+    "currentProgramSuite": "最終QAで別途確認。本記録はコード検査全件の合格を証明しない。",
+    "singleTrialLimit": "少数の診断から成功率、安定再現、方式の優越や失敗原因を確定しない。"
+  },
+  "commonDiagnosticConditions": {
+    "collection": "halloween",
+    "scene": "雨上がりのホラー／雨の路地",
+    "costume": "ミイラ",
+    "pose": "ゆっくり歩く",
+    "camera": "魚眼の曲面遠近",
+    "palette": "翡翠 × 銅 × 濃紺",
+    "design": "新聞の一面",
+    "typography": "新聞風・記事と段組み",
+    "creatorCredit": "なし",
+    "diagnosticScope": "新聞に合わせて新聞専用文字を選び、作者名を省略した診断。原画世界の準備画像はこの選択場面の完成ではない。"
+  },
+  "normalProduction": [
+    {
+      "preset": 116,
+      "medium": "薄膜光彩アニメ",
+      "calls": 1,
+      "inputRoles": [
+        "選択原画",
+        "人物識別参照",
+        "選択条件シート"
+      ],
+      "status": "not-accepted",
+      "improvements": [
+        "主図版1点を維持"
+      ],
+      "failures": [
+        "写真・CG寄りの顔表面が残り、原画の細線・広い2D顔色面・設計影に未達",
+        "元参照の未選択装飾を継承",
+        "歩行支持と魚眼曲率を確認できない",
+        "図版領域と右記事の縦組みが未達"
+      ],
+      "dimensions": [
+        [
+          1054,
+          1492
+        ]
+      ]
+    },
+    {
+      "preset": 119,
+      "medium": "立体光彩アニメ",
+      "calls": 2,
+      "route": "通常3参照の初回生成＋出力と原画の2参照で1回修正",
+      "status": "not-accepted",
+      "improvements": [
+        "髪・包帯・脚の翡翠反射が増加",
+        "主図版1点を維持"
+      ],
+      "failures": [
+        "顔と可視肌の原画相当のアニメ造形・局所反射密度が未達",
+        "未選択装飾が残る",
+        "歩行支持と魚眼を十分に確認できない",
+        "図版領域と右記事の縦組みが未達",
+        "許可原稿の全文一致は未確認"
+      ],
+      "dimensions": [
+        [
+          1054,
+          1493
+        ],
+        [
+          1054,
+          1492
+        ]
+      ]
+    },
+    {
+      "preset": 120,
+      "medium": "立体光彩リアル",
+      "calls": 2,
+      "route": "通常3参照の初回生成＋出力と原画の2参照で1回修正",
+      "status": "not-accepted",
+      "improvements": [
+        "自然な人物立体を保持",
+        "目立つ未選択装飾を除去",
+        "髪・包帯・路面の翡翠反射が増加",
+        "主図版1点を維持"
+      ],
+      "failures": [
+        "額・頬・鼻・唇・首・手の表面反射と深暗部が原画密度に未達",
+        "歩行支持と連続した魚眼曲率が未達",
+        "図版領域と右記事の縦組みが未達",
+        "許可外の図版内文字が残り、許可原稿の全文一致も未確認"
+      ],
+      "dimensions": [
+        [
+          1054,
+          1493
+        ],
+        [
+          1054,
+          1492
+        ]
+      ]
+    }
+  ],
+  "worldFirstDiagnostics": [
+    {
+      "preset": 119,
+      "medium": "立体光彩アニメ",
+      "preparationCalls": 2,
+      "preparationStatus": "improved-not-final",
+      "observations": [
+        "原画の衣服・世界・姿勢・構図を保持した人物差替は改善",
+        "元人物写真を再添付しない表面編集で、額・頬・鼻・顎・手の反射と整理されたアニメ造形が改善"
+      ],
+      "limitations": [
+        "人物識別の完全達成や安定再現は未確定",
+        "準備画像の改善はミイラ・歩行・魚眼・新聞の完成合格ではない"
+      ],
+      "preparationDimensions": [
+        1122,
+        1402
+      ],
+      "finalScene": {
+        "status": "partial-improvement-not-accepted",
+        "executed": true,
+        "acceptance": "not-established",
+        "calls": 3,
+        "route": "確認済み準備世界画像と選択シートで場面を生成し、現在の出力だけを使う衣装・配色修正1回と顔・首の局所修正1回を実行。",
+        "inputCounts": [
+          2,
+          1,
+          1
+        ],
+        "dimensions": [
+          [
+            1054,
+            1492
+          ],
+          [
+            1054,
+            1492
+          ],
+          [
+            1054,
+            1492
+          ]
+        ],
+        "improvements": [
+          "整理されたアニメ造形と人物識別の連続性を保持",
+          "ミイラ衣装、全身両足、対側の腕脚と歩行支持、周辺壁の曲率、Halloweenの濡れた路地が改善",
+          "原画由来の不要な衣装装飾を除去",
+          "翡翠の配色と身体・髪の反射が改善"
+        ],
+        "remainingFailure": "顔・首の局所修正で左頬と首の翡翠反射は増えたが、額・鼻・唇の広い翡翠主光と反対面の深い暗部が未達。原画と同密度の全可視面の光影として厳格合格にしない。",
+        "layout": {
+          "status": "not-executed",
+          "executed": false,
+          "reason": "場面の顔・肌の光影ゲートが未達のため、新聞版面・許可文字の最終工程を実行せず"
+        },
+        "reviewConfirmation": "担当者と統合担当者が実生成画像を直接視認して部分改善・未合格を確認。"
+      },
+      "totalDiagnosticCalls": 5
+    },
+    {
+      "preset": 120,
+      "medium": "立体光彩リアル",
+      "preparationCalls": 4,
+      "lastStage": "stage1d",
+      "preparationStatus": "not-accepted",
+      "observations": [
+        "原画の世界・衣服・姿勢・構図と自然な不透明材質を保持",
+        "具体的な面の色処置で、顔・首・手へ翡翠色が届き、長い下ろし髪が改善",
+        "続く局所編集で均一な色かぶりは一部減少"
+      ],
+      "failedGate": "顔の極小白翡翠の強光・狭い反射帯と、反対面の深い紺紫陰を明瞭に達成できない。首・手の局所強弱も部分未達。",
+      "preparationDimensions": [
+        1122,
+        1402
+      ],
+      "finalScene": {
+        "status": "not-executed",
+        "executed": false,
+        "acceptance": "not-established",
+        "reason": "準備画像の光芯・深暗部密度ゲートが未達のためphase2を実行せず"
+      },
+      "causalLimit": "具体短文、参照枚数、原画再添付の有無を変えた診断もあり、改善原因を単一要因へ帰属しない。"
+    }
+  ],
+  "outputSize": {
+    "requestedA4Pixels": [
+      2480,
+      3508
+    ],
+    "observedNormalPixels": [
+      [
+        1054,
+        1493
+      ],
+      [
+        1054,
+        1492
+      ]
+    ],
+    "status": "insufficient-pixels",
+    "dpiAcceptance": "not-established",
+    "observation": "縦横比がA4に近くても要求画素数には不足。300dpiを満たす完成データとは判定しない。準備画像は最終寸法の合格材料にしない。",
+    "observedWorldFirstScenePixels": [
+      [
+        1054,
+        1492
+      ]
+    ]
+  },
+  "finalAcceptance": {
+    "acceptedCompleteSelectedOutputs": 0,
+    "normalRoutes": "not-accepted",
+    "animeWorldFirstFinal": "partial-improvement-not-accepted; layout-not-executed",
+    "realWorldFirstPhase2": "not-executed",
+    "conclusion": "実画像には部分改善があるが、全選択を満たした完成出力は0件。通常生成は未合格、アニメ後段は顔の光影ゲート未達・版面未実行、リアル後段は未実行。コード検査や画像の生成・表示を実画合格へ置き換えない。"
+  }
+}

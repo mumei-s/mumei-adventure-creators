@@ -1,4 +1,4 @@
-import {isPhotographicMedium} from './photo-design.js?v=28.4.4';
+import {isPhotographicMedium} from './photo-design.js?v=28.4.5';
 
 // This is an input reading choice, independent of the ten output selections.
 // Unknown and older saved work deliberately retain their original instructions.
@@ -42,7 +42,7 @@ export function sourceKindInstructions(values={}, {noPerson}={}){
 }
 
 export function characterProportionInstruction(values,{noPerson=false}={}){
- if(noPerson||isNonHumanSource(values)||isPhotographicMedium(values.medium))return '';
+ if(noPerson||isNonHumanSource(values)||(isPhotographicMedium(values.medium)&&values.medium!=='立体光彩リアル'))return '';
  if(values.medium==='ちびキャラ')return '頭身：ちびキャラを明示したため低い頭身へ整理する。年齢感と本人の識別特徴は維持する。';
  return '頭身：人物の主参照の基本頭身と体格を保つ。主参照がちびなら、大きな頭・短い胴体と四肢の比率を維持し、通常頭身へ伸ばさない。描線・塗り・発光・透明材質・ポリゴンへの変換だけでは頭身を変更しない。頭身変更が今回明示された場合だけ、その指定を優先する。';
 }

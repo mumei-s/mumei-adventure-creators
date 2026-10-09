@@ -1,20 +1,20 @@
-import {selectionReferenceManifest,selectionReferenceCounts} from '../selection-references.js?v=28.4.4';
+import {selectionReferenceManifest,selectionReferenceCounts} from '../selection-references.js?v=28.4.5';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import {File} from 'node:buffer';
-import {questions,AUTO,normalizeCreator,resolveSelections} from '../catalog.js?v=28.4.4';
-import {initialSelections,effectiveSelections} from '../modes.js?v=28.4.4';
-import {sourceSubjectFor} from '../source-kind.js?v=28.4.4';
-import {selectionConflicts,candidateAvailability} from '../compatibility.js?v=28.4.4';
-import {buildDirection} from '../direction.js?v=28.4.4';
-import {applyPose} from '../poses.js?v=28.4.4';
-import {productionPlan} from '../production-plan.js?v=28.4.4';
-import {stagePrompts} from '../production-workflow.js?v=28.4.4';
-import {composePrompt,needsReference} from '../prompt.js?v=28.4.4';
-import {stylePresetFor} from '../style-presets.js?v=28.4.4';
-import {deliveryImageFiles} from '../drawing-references.js?v=28.4.4';
-import {compactCreatorProfile} from '../creator.js?v=28.4.4';
+import {questions,AUTO,normalizeCreator,resolveSelections} from '../catalog.js?v=28.4.5';
+import {initialSelections,effectiveSelections} from '../modes.js?v=28.4.5';
+import {sourceSubjectFor} from '../source-kind.js?v=28.4.5';
+import {selectionConflicts,candidateAvailability} from '../compatibility.js?v=28.4.5';
+import {buildDirection} from '../direction.js?v=28.4.5';
+import {applyPose} from '../poses.js?v=28.4.5';
+import {productionPlan} from '../production-plan.js?v=28.4.5';
+import {stagePrompts} from '../production-workflow.js?v=28.4.5';
+import {composePrompt,needsReference} from '../prompt.js?v=28.4.5';
+import {stylePresetFor} from '../style-presets.js?v=28.4.5';
+import {deliveryImageFiles} from '../drawing-references.js?v=28.4.5';
+import {compactCreatorProfile} from '../creator.js?v=28.4.5';
 
 const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8');
 function actual(start,next){const a=app.indexOf(start),b=app.indexOf(next,a);assert.ok(a>=0&&b>a,'Actual app source exists: '+start);return app.slice(a,b);}
@@ -66,7 +66,7 @@ async function consistent(result){
   for(const key of ['role','width','height'])assert.equal(meta[key],ref[key],'Prompt metadata and actual file snapshot agree: '+key);
   assert.ok(result.prompt.includes(meta.name),'Prompt names the exact transferred reference');
  }
- const sent=deliveryImageFiles(result),offset=0,sheetCount=selectionReferenceCounts(result.selectionReference).sheet;
+ const sent=deliveryImageFiles(result),focused=['発光幻想アニメ','薄膜光彩アニメ','白域幾何・宇宙彩アニメ','艶彩幻想アニメ'].includes(result.values.medium),offset=focused?result.localDrawingRefs.length:0,sheetCount=selectionReferenceCounts(result.selectionReference).sheet;
  assert.equal(sent.length,result.localDrawingRefs.length+result.localRefs.length+(sheetCount?1:0));
  if(sheetCount){assert.equal(sent.at(-1).name,'selection-references.jpg');assert.equal(await sent.at(-1).text(),await result.localSelectionReference.file.text());}
  else{assert.equal(result.localSelectionReference,null,'A focused delivery must not create an empty reference sheet');assert.ok(!sent.some(file=>file.name==='selection-references.jpg'),'An empty selection sheet is not attached');assert.equal(selectionReferenceCounts(result.selectionReference).selected,10,'Omitting a duplicate image must retain all ten selected conditions');}

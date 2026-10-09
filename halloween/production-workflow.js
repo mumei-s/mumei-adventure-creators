@@ -1,19 +1,34 @@
-import {compileProduction} from './compiled-production.js?v=28.4.4';
-import {stylePresetFor} from './style-presets.js?v=28.4.4';
-import {composeArtworkStage,composeArtworkRepair} from './artwork-stage.js?v=28.4.4';
-import {needsStagedProduction,composeLayoutStage} from './staged-production.js?v=28.4.4';
-import {identityPreparationStage,renderFocusedChatInput,usesFocusedProduction} from './focused-production.js?v=28.4.4';
+import {compileProduction} from './compiled-production.js?v=28.4.5';
+import {stylePresetFor} from './style-presets.js?v=28.4.5';
+import {composeArtworkStage,composeArtworkRepair} from './artwork-stage.js?v=28.4.5';
+import {needsStagedProduction,composeLayoutStage} from './staged-production.js?v=28.4.5';
+import {identityPreparationStage,renderFocusedChatInput,usesFocusedProduction} from './focused-production.js?v=28.4.5';
+import {usesWorldTransferProduction,worldTransferPrompts} from './world-transfer-production.js?v=28.4.5';
 
 const stagedInputs=new WeakMap();
-export function stagePrompts(plan,refs=plan.referenceManifest||[]){
- const staged=needsStagedProduction(plan),identityPreparation=identityPreparationStage(plan,refs);
+export function stagePrompts(plan,refs=plan.referenceManifest||[],{includeIdentityPreparation=false}={}){
+ if((plan.issues||[]).some(issue=>issue.severity==='error'))return null;
+ if(usesWorldTransferProduction(plan)){
+  if(refs===plan.referenceManifest&&stagedInputs.get(plan)?.has('world'))return stagedInputs.get(plan).get('world');
+  const workflow=Object.freeze(worldTransferPrompts(plan,refs));
+  if(refs===plan.referenceManifest){const cache=stagedInputs.get(plan)||new Map();cache.set('world',workflow);stagedInputs.set(plan,cache);}return workflow;
+ }
+ const staged=needsStagedProduction(plan),identityPreparation=includeIdentityPreparation?identityPreparationStage(plan,refs):null;
  if(!staged&&!identityPreparation)return null;
- if(stagedInputs.has(plan)&&refs===plan.referenceManifest)return stagedInputs.get(plan);
+ const cacheKey=includeIdentityPreparation?'identity':'editorial';
+ if(refs===plan.referenceManifest&&stagedInputs.get(plan)?.has(cacheKey))return stagedInputs.get(plan).get(cacheKey);
  const stages=Object.freeze({
   ...(staged?{artwork:composeArtworkStage(plan),repair:composeArtworkRepair(plan),layout:composeLayoutStage(plan)}:{}),
   ...(identityPreparation?{identity:identityPreparation.prompt,identityRepair:identityPreparation.repairPrompt,identityPreparation,final:identityPreparation.finalPrompt}:usesFocusedProduction(plan)?{final:renderFocusedChatInput(plan,refs)}:{})
  });
- if(refs===plan.referenceManifest)stagedInputs.set(plan,stages);return stages;
+ if(refs===plan.referenceManifest){const cache=stagedInputs.get(plan)||new Map();cache.set(cacheKey,stages);stagedInputs.set(plan,cache);}return stages;
+}
+
+// The default delivered prompt creates the finished work in one image call.
+// Keep identity preparation available when the user deliberately chooses it.
+export function optionalIdentityPrompts(plan,refs=plan.referenceManifest||[]){
+ if(usesWorldTransferProduction(plan))return null;
+ return stagePrompts(plan,refs,{includeIdentityPreparation:true});
 }
 
 function between(lines,start,end){
@@ -27,6 +42,8 @@ function between(lines,start,end){
 // call receives one delimited input, never the entire publication specification.
 export function composeStagedMaster(plan,originalLines,{verbose=false,refs=plan.referenceManifest}={}){
  const productionRefs=usesFocusedProduction(plan)?refs:plan.referenceManifest;
+ if((plan.issues||[]).some(issue=>issue.severity==='error'))return compileProduction(plan,originalLines,productionRefs);
+ if(usesWorldTransferProduction(plan))return compileProduction(plan,originalLines,productionRefs);
  if(!verbose)return compileProduction(plan,originalLines,productionRefs);
  if(!needsStagedProduction(plan))return compileProduction(plan,originalLines,productionRefs);
  const stages=stagePrompts(plan);

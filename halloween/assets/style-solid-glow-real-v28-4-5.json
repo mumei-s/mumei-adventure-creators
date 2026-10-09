@@ -1,0 +1,72 @@
+{
+  "version": "28.4.5",
+  "medium": "立体光彩リアル",
+  "title": "立体光彩リアル",
+  "presetName": "style-preset-120.png",
+  "rendering": "solid-real",
+  "role": "original-style-master",
+  "file": "style-solid-glow-real-v28-4-5.png",
+  "generator": "built-in image_gen",
+  "source": "original independent character and scene generated from authored technical description; user-owned successful examples were visually analysed for depth/light/whole-person glow, not attached; no third-party note screenshot, named creator, source identity, costume, pose or scene copied",
+  "qualityStatus": "accepted as a specific original medium/light master after one improvement; downstream image adherence requires real-image verification",
+  "width": 1122,
+  "height": 1402,
+  "dimensions": {
+    "width": 1122,
+    "height": 1402
+  },
+  "prompt": "Use case: stylized-concept. Asset: ONE completely original full-resolution portrait master of \"立体光彩リアル\", natural realistic human forms in a deeply luminous fantasy world. A standalone illustration, no typography or panels.\nAn entirely new adult woman aged about 34 with short ash-black swept-back hair, ordinary natural adult facial proportions and naturally brown irises, standing upright on a supported narrow carved stone bridge over a dark reflecting canal. Her weight rests visibly on both boots; one hand touches the bridge rail and the other holds a small closed plain metal map case at hip height. All fingers, boots, whole head and adult body fit inside the portrait frame. She wears an original fully covered opaque deep aubergine travel coat, an antique bronze clasp, dark trousers and practical boots. No horns, heart jewelry, lingerie, fishnet, kneeling, all-fours pose, black glass box or copied character.\nScene: a new nighttime Halloween conservatory across canals, curved skeletal metal greenhouse arches, suspended emerald luminous seed-glass vessels and dark towering trees beyond. Warm low copper candle cups sit beside gathered wrapped sweets and folded bat-shaped invitation decorations on the far bridge landing; these belong to an evening Halloween gathering, without text. The canal, supported bridge and glasshouses establish three strong depth layers and coherent environmental reflections. This is not a copied grand castle interior, chandelier hall, camera view or background.\nNATURAL REALISTIC ANATOMY in a sophisticated fantasy illustration: natural eyes/eyelids, recognizable modeled nose/lips/cheeks/ears, fine true skin and hair detail, subtle real adult texture, solid neck/fingers/hands and body. No anime enlarged eyes, no chibi, no flat cel paint, no plastic doll face. This is a fantastical luminous world whose natural realistic person belongs wholly inside it, rather than an ordinary daylight portrait over a glowing backdrop.\nVery strong EMERALD, CHARTREUSE, BLUE-VIOLET reflected light lives on the ENTIRE visible person. Preserve dark natural pupils and brown iris bases but add several precise green light layers and high-intensity crystalline reflections in the corneas and irises. Saturated luminous reflections and softly modeled colored light bands cross the actual forehead, eye sockets, cheekbones, nose plane, lip planes, chin, ear edges, neck and every visible finger and hand. Hair catches many distinct sharp green reflected strands grouped through deep dark clumps. Bright colored bands flow around the travel coat folds and catch the bronze edges. Warm pale inner highlights are separated from saturated green mid-reflections and near-black deep occlusion shadows. NOT just a neon outline, NOT small sparkles decorating an otherwise normally lit skin surface, NOT transparent skin. The cheek and neck surfaces themselves must clearly glow by strong reflected colored light while retaining human opaque material.\nDense air full of fine coherent curved filaments, a handful of glowing glass fragments and small point lights at different depths; tight restrained bloom around bright cores, brilliant local specular glints and huge deep shadow contrast. Environment and person share the same extraordinary continuous light field. Natural dimensional forms remain clear underneath the rich reflection colors; glass, cloth, bronze, opaque skin and hair have different reflective behaviors. Dramatic detailed luxurious fantasy depth, not a flat poster, washed-out mist or generic photographic background.\nNo existing artist imitation, no named fictional characters, no source portrait replication, no text, numbers, signs, watermark, logo, interface or screenshot. Fully dressed adult, solid readable standing pose and coherent supported anatomy. Portrait 4:5-ish framing with full body and safe margin.",
+  "improvementPrompt": "Edit ONLY THE LIGHTING AND LUMINOUS SURFACE RESPONSE of this original natural realistic fantasy image. Keep the exact SAME original adult person, natural realistic facial anatomy, hair, covered travel coat/trousers, upright standing pose, both supported boots, hand positions, bridge/canal/conservatory structure and composition. Maintain natural realistic proportions and solid modeling; no anime face, chibi, cel paint or doll.\nCorrect the ordinary-face-with-glowing-background problem: the ACTUAL FACE, EYES, SKIN, NECK, HANDS, HAIR AND CLOTHING must clearly participate in intensely luminous emerald fantasy illumination. At present the background glows but the woman is too normally lit and dark.\nPut several LARGE, BRIGHT, curved MINT-GREEN and PALE CHARTREUSE reflected light bands across the physical forehead, temples, nose bridge, cheek planes, lip/chin planes, ear edges and visible neck. These shape-following surface reflections must be luminous enough to be unmistakable at thumbnail scale, with near-white green highlight cores, saturated emerald surrounding layers and deep blue-violet shadow pockets. Do NOT settle for a thin green hair rim or a few points around the person. Large cheek and neck planes should carry bright green reflected light directly on opaque skin. Preserve natural realistic human surface underneath; no transparent skin, glass anatomy, glowing tattoos, skin decals or green haze.\nInside BOTH naturally proportioned eyes, keep dark pupils and brown iris structure but place multiple intense green layered reflections and bright crystalline corneal catchlights. Natural adult eyelids and facial identity remain. Illuminate both the hand on the bridge and the hand holding the metal case with wide bright green reflections across knuckles and finger planes. Thread dense sharply luminous green glints through real hair clumps. Add BROAD luminous emerald reflection strips on sleeves, chest and coat folds, tiny sharp near-white green points on metal embroidery and case edges, and deep occlusion pockets between folds; preserve dark woven aubergine cloth in unlit regions.\nPerson, bridge and garden belong to ONE spectacular dense colored light field, not a photographic daylight portrait with sparkles around it. Keep shadows deep and dimensional, skin opaque, cloth dense and metal solid. Tight local bloom around brightest cores only. Avoid a uniform green wash; defined bright bands, darker natural warm skin patches and rich violet shadows must coexist. No new person, object, scene, text, logo or signature. No change of camera, composition, supported standing pose or realistic medium.",
+  "initialAttempt": {
+    "status": "not-accepted",
+    "reason": "The background glowed strongly but face/hands/clothing remained too normally lit.",
+    "sha256": "4a56543a8306c908d48610671651c93dba90874e2284e07fb5d7fdb146616db3"
+  },
+  "processing": "Final built-in PNG copied byte-identically; no resizing, crop, pixel editing, diagram rendering, compositing or format conversion.",
+  "improvedPlanes": {
+    "eyes": "Both visible eyes have green light accents and compact catchlights; darker pupil regions remain.",
+    "face": "Green bright reflection regions visibly cross forehead and cheek/temple planes instead of leaving an ordinary face against the glowing background.",
+    "earsAndNeck": "Ear edges and visible neck carry the same green reflection family.",
+    "hands": "Both visible hands receive bright green light over actual finger/knuckle planes; hand placement and supported pose remain.",
+    "hair": "Green edges and fine intense reflection threads follow the dark original hair clumps.",
+    "clothing": "Broad green reflected strips follow sleeves, torso, coat folds, trousers and boot planes; unlit cloth remains dense and opaque.",
+    "depthAndSupport": "Rail-hand contacts, supported boots, a continuous walkway/bridge and layered architecture remain visible."
+  },
+  "visualQA": {
+    "status": "accepted",
+    "scope": "Original style master only; not downstream selection or identity acceptance.",
+    "method": "Direct full-image inspection of both initial and improved generated image, separate from dimensions and hash verification.",
+    "observations": [
+      "新規の成人立ち姿・別の短髪・被覆したオリジナル衣装・別の天文庭園または運河温室へ移し、元作例の顔・角・ハート装具・四つん這い・黒箱・館の構図を複写していない。",
+      "初回原画は人物の発光が背景より弱かったため不採用。独立原画1枚だけを編集入力へ渡した一回の照明改善を採用した。",
+      "瞳・額頬・耳首・両手・髪・服とブーツの実際の面へ、鮮明な緑反射色と暗部の対比が増した。",
+      "人体は不透明な固体、衣服は布、金属/ガラスはそれぞれの材質として維持し、全身を透明水晶へ替えていない。",
+      "瞳・鼻口・頬と身体を自然な成人の造形で保ち、立体アニメより自然比例の幻想リアルとして区別している。"
+    ],
+    "limitations": [
+      "目視で原画の描法・光彩・人物の支持を確認したもの。未知の利用者人物、選択ポーズ、数値カメラ、限定配色、版面、文字、希望寸法を再現できる保証ではない。",
+      "瞳・顔の細部の発光密度が利用者の成功例と完全同等とは判定していない。下流の実生成画像で比較する必要がある。",
+      "照明帯と反射の対応は生成された実画像の目視評価であり、物理光学計算の一致を証明していない。",
+      "この見本の人物・性別・髪型・衣装・小物・構図・緑の配色は、そのまま生成利用者へ取り込まない。選択色へ再配分する技法見本として使う。",
+      "自然造形と光彩を目視確認したものであり、実在人物の写真や人物本人の同一性を含む原画ではない。"
+    ]
+  },
+  "visualReview": {
+    "accepted": [
+      "新規の成人立ち姿・別の短髪・被覆したオリジナル衣装・別の天文庭園または運河温室へ移し、元作例の顔・角・ハート装具・四つん這い・黒箱・館の構図を複写していない。",
+      "初回原画は人物の発光が背景より弱かったため不採用。独立原画1枚だけを編集入力へ渡した一回の照明改善を採用した。",
+      "瞳・額頬・耳首・両手・髪・服とブーツの実際の面へ、鮮明な緑反射色と暗部の対比が増した。",
+      "人体は不透明な固体、衣服は布、金属/ガラスはそれぞれの材質として維持し、全身を透明水晶へ替えていない。",
+      "瞳・鼻口・頬と身体を自然な成人の造形で保ち、立体アニメより自然比例の幻想リアルとして区別している。"
+    ],
+    "limitations": [
+      "目視で原画の描法・光彩・人物の支持を確認したもの。未知の利用者人物、選択ポーズ、数値カメラ、限定配色、版面、文字、希望寸法を再現できる保証ではない。",
+      "瞳・顔の細部の発光密度が利用者の成功例と完全同等とは判定していない。下流の実生成画像で比較する必要がある。",
+      "照明帯と反射の対応は生成された実画像の目視評価であり、物理光学計算の一致を証明していない。",
+      "この見本の人物・性別・髪型・衣装・小物・構図・緑の配色は、そのまま生成利用者へ取り込まない。選択色へ再配分する技法見本として使う。",
+      "自然造形と光彩を目視確認したものであり、実在人物の写真や人物本人の同一性を含む原画ではない。"
+    ]
+  },
+  "sha256": "923306453707f2167d65c332734825d402e95160bf925848f2758803bda48a1d",
+  "hash_sha256": "923306453707f2167d65c332734825d402e95160bf925848f2758803bda48a1d"
+}

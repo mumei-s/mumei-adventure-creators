@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
-import {productionPlan} from '../production-plan.js?v=28.4.4';
-import {renderSelectionMaterial,renderInput,compileProduction} from '../compiled-production.js?v=28.4.4';
-import {renderRecipeChatInput as renderCompactChatInput} from '../compact-production.js?v=28.4.4';
-import {usesFocusedProduction} from '../focused-production.js?v=28.4.4';
+import {productionPlan} from '../production-plan.js?v=28.4.5';
+import {renderSelectionMaterial,renderInput,compileProduction} from '../compiled-production.js?v=28.4.5';
+import {renderRecipeChatInput as renderCompactChatInput} from '../compact-production.js?v=28.4.5';
+import {usesFocusedProduction} from '../focused-production.js?v=28.4.5';
 import {assertFocusedHandoff} from './focused-handoff-assertions-v28.mjs';
-import {cameraContract} from '../angles.js?v=28.4.4';
-import {composePrompt} from '../prompt.js?v=28.4.4';
-import {selectionReferenceManifest} from '../selection-references.js?v=28.4.4';
-import {buildDirection} from '../direction.js?v=28.4.4';
-import {applyPose} from '../poses.js?v=28.4.4';
+import {cameraContract} from '../angles.js?v=28.4.5';
+import {composePrompt} from '../prompt.js?v=28.4.5';
+import {selectionReferenceManifest} from '../selection-references.js?v=28.4.5';
+import {buildDirection} from '../direction.js?v=28.4.5';
+import {applyPose} from '../poses.js?v=28.4.5';
 
 // Compare actual selected plans with the detailed audit renderer. Length is a
 // bloat signal only; identity, fixed projection, engineering and copy are the
@@ -190,7 +190,7 @@ for(const plan of integrationPlans){
    includes(compact,sentinel,route+' detailed recipe new unique engineering');
    includes(compact,layoutSentinel,route+' detailed recipe selected final layout');
    assert.match(text,/reference-01-character\.png/,'The source is named in preparation');
-   assert.match(text,/prepared-identity\.png/,'The inspected intermediate owns final identity');
+   assert.doesNotMatch(text,/prepared-identity\.png|人物翻訳用入力|2段階で実行/,'Normal production must use its actual delivered identity reference without hidden preparation');
   }else includes(text,compact,route+' actual compact payload');
   assert.equal(occurrences(text,'【短い統合制作指示】'),1,route+' repeated the compact payload');
   if(!focused)for(const reference of plan.referenceManifest)assert.equal(occurrences(text,reference.name),1,route+' repeated/lost reference '+reference.role);
@@ -199,7 +199,7 @@ for(const plan of integrationPlans){
   assert.equal(sheet.items.length,sheet.conditions.filter(condition=>condition.deliverVisual).length,'The role sheet contains only selected visuals that add needed reference information');
   assert.ok(!sheet.items.some(item=>item.key==='size'||item.key==='type'&&item.value==='文字を一切入れない'),'Exact dimensions and the no-copy rule do not need competing visual examples');
   assert.ok(!sheet.items.some(item=>item.key==='medium'),'The original style master must not be duplicated in the sheet');
-  for(const item of sheet.items)includes(text,item.key+'「'+item.value+'」：'+item.scope,route+' selected role '+item.key);
+  if(focused){assert.ok(text.includes(sheet.name),'Focused actual delivery retains its applicable selected-condition sheet filename');assert.match(text,/各セルの担当条件だけとして読む/);assert.match(text,/別人の顔・別の画風・複数パネル・セル名や説明文字を作品へ移さない/);}else for(const item of sheet.items)includes(text,item.key+'「'+item.value+'」：'+item.scope,route+' selected role '+item.key);
   for(const condition of plan.conditions)includes(text,condition.value,route+' actual selection '+condition.key);
   includes(text,sentinel,route+' new unique engineering');
   includes(text,layoutSentinel,route+' selected final layout');

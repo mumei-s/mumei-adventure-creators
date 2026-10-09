@@ -1,6 +1,6 @@
-import {colorPolicy} from './color-policy.js?v=28.4.4';
-export {colorPolicy} from './color-policy.js?v=28.4.4';
-import {colorWorlds} from './worlds.js?v=28.4.4';
+import {colorPolicy} from './color-policy.js?v=28.4.5';
+export {colorPolicy} from './color-policy.js?v=28.4.5';
+import {colorWorlds} from './worlds.js?v=28.4.5';
 
 // A palette owns hue and its allocation. It cannot silently select a material,
 // a time of day, a light source, a subject, or a low-contrast rendering style.

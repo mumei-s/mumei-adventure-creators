@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {questions} from '../catalog.js?v=28.4.4';
-import {styleFidelity} from '../style-fidelity.js?v=28.4.4';
+import {questions} from '../catalog.js?v=28.4.5';
+import {styleFidelity} from '../style-fidelity.js?v=28.4.5';
 const media=questions.find(q=>q.key==='medium').groups.flatMap(g=>g.values);
 for(const value of media){
  const condition={value,checks:['selected material']};

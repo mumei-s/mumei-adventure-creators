@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {createHistoryPersistence} from '../history-persistence.js?v=28.4.4';
-import {createIndexedHistoryStore} from '../indexed-history.js?v=28.4.4';
-import {compactHistoryRecord,restoreHistoryRecord,restoreHistoryCore} from '../history-storage.js?v=28.4.4';
-import {resolveSelections} from '../catalog.js?v=28.4.4';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.4';
-import {stagePrompts} from '../production-workflow.js?v=28.4.4';
-import {composePrompt} from '../prompt.js?v=28.4.4';
-import {buildDirection} from '../direction.js?v=28.4.4';
+import {createHistoryPersistence} from '../history-persistence.js?v=28.4.5';
+import {createIndexedHistoryStore} from '../indexed-history.js?v=28.4.5';
+import {compactHistoryRecord,restoreHistoryRecord,restoreHistoryCore} from '../history-storage.js?v=28.4.5';
+import {resolveSelections} from '../catalog.js?v=28.4.5';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.5';
+import {stagePrompts} from '../production-workflow.js?v=28.4.5';
+import {composePrompt} from '../prompt.js?v=28.4.5';
+import {buildDirection} from '../direction.js?v=28.4.5';
 
 const key='mumeis-halloween-v2',random=()=>.28,profile={displayName:'保存容量の検査',topics:[]};
 const values=resolveSelections({sceneUnified:true,design:'新聞の一面',medium:'クリスタルホログラム造形アニメ',theme:'宇宙のHalloween',costume:'ヴィクトリア朝の正装',pose:'片手を差し出す',type:'新聞風・記事と段組み'},random);

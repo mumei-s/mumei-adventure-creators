@@ -1,4 +1,4 @@
-import {poseAnatomyContent,poseAnatomyTechnical} from './pose-anatomy.js?v=28.4.4';
+import {poseAnatomyContent,poseAnatomyTechnical} from './pose-anatomy.js?v=28.4.5';
 
 export const poseItems=[
  {
@@ -380,10 +380,17 @@ export function poseContent(value,context={}){
 export function poseTechnical(value,context={}){
  return poseAnatomyTechnical(value,{...context,noPerson:context.noPerson||context.variant?.noPerson});
 }
+// Pose supplies a default range only when no selected camera item explicitly
+// owns that range. Lens/projection choices may use it; explicit crops may not.
+export function poseDefaultFraming(value,{noPerson=false,landscape=false}={}){
+ if(noPerson||!value||value==='おまかせ')return null;
+ const close=/頬に手|口元に指|髪を耳|帽子のつば|両手でハート/.test(value),wide=/寝る|横たわる|浮遊|うつ伏せ/.test(value);
+ return {whole:!!landscape||!close,frame:landscape?'wide':close?'upper':'body',distance:landscape?'風景の全景を保つ環境ロング。人物は景観の一部の大きさに留め、全身と動作を切らない':close?'胸から上。手と顔の接触を切らずに入れる':wide?'横長の全身。頭から足先まで切らず、支持面か浮遊の距離が見える':'頭から足先まで入る全身。手足と支持面を切らない'};
+}
 export function applyPose(variant,value){
  if(variant.noPerson)return {...variant,face:'',expression:'',pose:''};
  if(!value||value==='おまかせ')return variant;
  const item=poseItems.find(p=>p.value===value),text=item?.text||'自由指定した動作を骨格・重心・関節の自然さを保って実行する。';
- const close=/頬に手|口元に指|髪を耳|帽子のつば|両手でハート/.test(value),wide=/寝る|横たわる|浮遊|うつ伏せ/.test(value);
- return {...variant,pose:value+'。'+text,distance:variant.landscape?'風景の全景を保つ環境ロング。人物は景観の一部の大きさに留め、全身と動作を切らない':close?'胸から上。手と顔の接触を切らずに入れる':wide?'横長の全身。頭から足先まで切らず、支持面か浮遊の距離が見える':'頭から足先まで入る全身。手足と支持面を切らない',layout:'指定のポーズの身体全体が読める配置。'+variant.layout,signature:variant.signature+'-pose-'+value,motif:variant.motif+'。手が動作や道具で占有される場合、この追加モチーフは背景側へ移し、手に追加で持たせない。'};
+ const framing=poseDefaultFraming(value,{landscape:variant.landscape});
+ return {...variant,pose:value+'。'+text,distance:framing.distance,layout:'指定のポーズの身体全体が読める配置。'+variant.layout,signature:variant.signature+'-pose-'+value,motif:variant.motif+'。手が動作や道具で占有される場合、この追加モチーフは背景側へ移し、手に追加で持たせない。'};
 }

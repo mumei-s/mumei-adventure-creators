@@ -1,27 +1,35 @@
 {
-  "title": "雨上がりの怪談",
-  "slug": "after-rain-ghost-story",
-  "prompt": "Use case: illustration-story.\nAsset: ONE original square narrative scene illustration for the scene chooser, internally 雨上がりの怪談. No words in the image.\nScene: a narrow ordinary Japanese neighborhood alley at blue-hour evening just after rainfall on Halloween. Rain has stopped. Wet dark paving stones, one shallow foreground puddle with physically matching building reflections, drain edge, small gutter droplets, plaster-and-brick walls with a sheltered mostly dry wall under a roof eave. A small unlit pumpkin and a paper bat near a distant doorway subtly mark Halloween. Distant ordinary warm window light, consistent perspective and grounded material textures.\nONE essential supernatural anomaly: a single continuous trail of unmistakable DARK WET BAREFOOT PRINTS leads from the shallow puddle on the ground, turns UP the vertical sheltered brick wall, and continues impossibly upward above adult head height. On the wall show five distinct alternating left/right footprints, readable sole-and-toe shapes, fresh water sheen and a few fine downward drips. They are vertical water marks on the wall's plane, NOT steps, shoes lying around, mural art, glowing symbols or footprints on a sloping floor. The uppermost mark is well above the observer's head. No person or animal exists where those wall-climbing wet steps would be. This one impossible footprint trail is the only mismatch with normal reality. All other reflections and shadows remain ordinary.\nSubject and noticing action: one entirely original mature adult man with short curly brown hair, a fully covered muted olive raincoat, dark trousers and plain ankle boots, now stopped in the alley to the side of the prints. Three-quarter view shows his adult face and whole supported posture. He leans back slightly and follows the wall-climbing print trail with an alert uneasy gaze, one empty hand loosely raised near his chest. Both hands empty, no umbrella portrait. His own boots and position are visibly separate from the barefoot marks. The viewed anomaly is large enough to see immediately and his attention clearly points to it.\nComposition: medium-wide square view, visible foreground puddle connected to the wall base and tall wet footprint trail. Camera at modest eye level with enough wall height for the impossible ascent, observer beside it instead of covering the marks. Narrative environment occupies most of image; not a close-up beautiful face with generic rainy background.\nStyle: polished finely drawn Japanese 2D narrative illustration, adult anime proportions, crisp principal forms and coherent restrained cel-painterly shading, wet paving and brick materially distinct, dim blue shadows balanced by warm modest window light. Print shapes remain readable at small preview scale.\nConstraints: one original adult person, no actual ghost or monster, no unrelated second anomaly, no lantern, no magic circle, no sparkling fantasy fog, no glowing footprints, no footprints made of blood, no violence or organs, no nude or translucent clothing, no named artist or borrowed character, no signs or text, logos or watermark. Do not produce an ordinary umbrella-in-rain portrait: the wall-climbing wet print trail is the clear story.",
-  "source": "/workspace/scratch/ad16ee694a48/generated_images/exec-7588779c-9207-49a8-a748-f277a7d7f66b.png",
+  "title": "雨上がりのホラー",
   "file": "after-rain-ghost-story.jpg",
+  "source": "assets/halloween-labels-original-v28-4-5/rain-horror.png",
   "generator": "built-in image_gen",
+  "prompt": "Use case: illustration-story. Asset type: square story-scene thumbnail for a Japanese Halloween illustration creator.\nCreate one completely original, meticulously HAND-DRAWN JAPANESE 2D ANIME illustration, square composition, without any typography. This is a Halloween horror narrative, not a traditional Japanese ghost tale or a photo.\nScene: a contemporary Japanese city side street immediately after rain, on the night a Halloween costume parade has passed. The actual celebration connects through the scene: damp twisted candy wrappers beside an open shallow candy basket, a half-folded paper bat garland being packed on a small doorway table, and a few wet shoeprints leading along the same street toward home. Warm light comes only from the visible shop entrance and its lamps, while the sky is deep midnight blue. Buildings and wet pavement share consistent perspective and shadows.\nMain figure: a completely new adult with short dark plum hair, wearing an original simple navy vampire-party cape over an opaque ordinary outfit, walking home on supported feet with a closed candy bag. Their head turns slightly toward a disturbing puddle. Retain anatomically coherent adult body proportions and a visibly drawn simple anime nose/mouth, fine inked contours, opaque face color planes, two clear cel-shadow shapes.\nSingle horror clue: above the puddle the doorway has a folded small paper bat garland; in its reflection only, one bat-shaped silhouette is unfolded and larger than its real paper counterpart, as though alive. Keep every other reflection matching its actual source. The person is unsettled by this specific anomaly. No footprints climbing walls, no shrine, kimono, school uniform, Japanese ghost woman or traditional folklore procession. Halloween props are evidence of the completed celebration, not a lone pumpkin decoration.\nComposition: figure occupies about one third of the square at left, doorway packing table at middle-right, disturbing reflection clearly visible in the lower foreground. Show feet contacting the wet pavement, three connected depth layers, no cropped head or limbs. Very fine controlled colored linework, painted flat anime planes, local reflected light on skin and fabric, rich deep shadows; never realistic skin, photographic rendering, plastic 3D or glossy photo face. No panel sheet, labels, title, text, numbers, logos, watermark or signature.",
   "dimensions": {
     "width": 1254,
     "height": 1254
   },
-  "hash_sha256": "0b4170625d6b3f327e53d7a66b2f1422eac2873f1d029168b947e46f8a7486e7",
-  "processing": "Original generated resolution kept; RGB JPEG q85 encoding only; source PNG retained unchanged",
+  "hash_sha256": "7025489933959865eea3bfa12e834a2086bfa43581101a2062d5ec2ab436c7d4",
+  "source_hash_sha256": "fd7759b0d936fb4f052352fb45bd94d1bd8075dae4515f17cc434cf5de768edf",
+  "processing": "Original generated PNG retained byte-identical. RGB JPEG q90/subsampling0 encoding only; no cropping, resizing, drawing or compositing.",
+  "replacesPreviousContent": {
+    "hash_sha256": "0b4170625d6b3f327e53d7a66b2f1422eac2873f1d029168b947e46f8a7486e7",
+    "reason": "Replace general Japanese ghost-story imagery with an original Halloween celebration horror scene. Stable old asset path and lookup aliases are retained."
+  },
   "visualQA": {
     "status": "accepted",
-    "method": "Individual review of the full generated output; file checks are separate from visual narrative assessment.",
+    "scope": "Only the scene/emotion preview role. This is not acceptance of final generated-image conditions.",
+    "method": "Direct full-size visual inspection of the actual generated image; file/hash checks are separate.",
     "observations": [
-      "雨上がりの濡れた路面と水溜りが路地・排水口・建物へ一続きにつながる。",
-      "濡れた裸足の足跡が水溜りから垂直の壁へ続き、成人の頭より高くまで上る。足裏・指の形と下向きの水滴が明瞭で、床の普通の足跡や靴・壁画とは異なる。",
-      "横に立つ成人男性は自身の靴と足跡を離し、上の足跡へ顔と視線を向けて異変に気付いている。空いた両手に傘を持たない。",
-      "怪異は一本の壁を上る足跡の列へ絞り、実際の幽霊や怪物を出していない。遠いHalloweenのカボチャと紙の蝙蝠は小さな季節の印。"
+      "成人の顔を手描き2Dアニメの輪郭と色面で構成し、ユーザーの人物参照・実在作者名・既存キャラクターを入力していない。",
+      "濡れた路地、帰路の人物、菓子袋・散らばった菓子包み・片付け途中の紙の蝙蝠を同じ祝祭後の場所へ接続している。",
+      "壁を上る裸足跡や和怪談の幽霊像を廃し、実在する紙飾りと比べて大きく開いた蝙蝠状の像を水面に一箇所だけ置いてホラーを示している。",
+      "主役の両足と足元の路面が同じ場面へ接続され、足から離れた宙吊り人物ではない。"
     ],
     "limitations": [
-      "鏡面反射や水滴は生成された絵としての目視評価であり、物理計算で完全な対応を証明したものではありません。"
+      "この見本の役割は選択項目の視覚説明。人物同一性、最終の指定画風や選択条件の再現性を証明するものではない。",
+      "反射・影は実画像の目視評価であり、光学計算による完全な投影一致は証明していない。",
+      "新しい原画の人物や衣装・配色を生成利用者へ転用しない。見本はHalloween祝祭後の出来事と空間の因果だけを説明する。",
+      "足跡には指に似た形もあり、すべての歩跡が厳密な靴底形になったとは判定していない。"
     ]
   }
 }

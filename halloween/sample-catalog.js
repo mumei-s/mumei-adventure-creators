@@ -1,3 +1,4 @@
+import {preserveLegacyAssetKeys} from './legacy-selection-aliases.js?v=28.4.5';
 // One artwork for each individual visual choice.
 export const individualSamples={
  "design\u0000ファッション雑誌の表紙": {
@@ -880,7 +881,7 @@ export const individualSamples={
   "sheet": "individual-11",
   "cell": 15
  },
- "theme\u0000雨上がりの怪談": {
+ "theme\u0000雨上がりのホラー": {
   "file": "sample-177.jpg",
   "sheet": "individual-12",
   "cell": 0
@@ -1105,7 +1106,7 @@ export const individualSamples={
   "sheet": "individual-14",
   "cell": 12
  },
- "mood\u0000ひやりとする怪談": {
+ "mood\u0000ひやりとするホラー": {
   "file": "sample-222.jpg",
   "sheet": "individual-14",
   "cell": 13
@@ -1832,3 +1833,5 @@ individualSamples['design\u0000週刊誌の表紙']={file:'japan-weekly-v18.png'
 for(const [title,file] of [['ファッション雑誌の表紙','japan-fashion-v18.png'],['カルチャー誌の表紙','japan-culture-v18.png'],['新聞の一面','japan-newspaper-v18.png']])individualSamples['design\u0000'+title]={file};
 
 for(const [title,file] of [['インタビュー誌面','japan-interview-v19.jpg'],['見開き特集','japan-spread-v19.jpg']])individualSamples['design\u0000'+title]={file};
+
+preserveLegacyAssetKeys(individualSamples);

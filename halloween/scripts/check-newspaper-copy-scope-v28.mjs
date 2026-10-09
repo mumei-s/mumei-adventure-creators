@@ -1,18 +1,18 @@
 import assert from 'node:assert/strict';
 import {assertCompactHandoff,containsInstruction} from './compact-handoff-assertions-v28.mjs';
-import {applyCollection} from '../collection.js?v=28.4.4';
-import {resolveSelections} from '../catalog.js?v=28.4.4';
-import {initialSelections} from '../modes.js?v=28.4.4';
-import {buildDirection} from '../direction.js?v=28.4.4';
-import {productionPlan} from '../production-plan.js?v=28.4.4';
-import {renderInput,renderSelectionMaterial,renderChatInput} from '../compiled-production.js?v=28.4.4';
-import {formatTextPolicy,detailedFormat,limitedNewspaperLayout} from '../format-recipes.js?v=28.4.4';
-import {formatFor} from '../formats.js?v=28.4.4';
-import {typographyValues} from '../typography-options.js?v=28.4.4';
-import {composePrompt} from '../prompt.js?v=28.4.4';
-import {renderRecipeChatInput} from '../compact-production.js?v=28.4.4';
-import {usesFocusedProduction} from '../focused-production.js?v=28.4.4';
-import {renderEditorialLayout} from '../editorial-layout.js?v=28.4.4';
+import {applyCollection} from '../collection.js?v=28.4.5';
+import {resolveSelections} from '../catalog.js?v=28.4.5';
+import {initialSelections} from '../modes.js?v=28.4.5';
+import {buildDirection} from '../direction.js?v=28.4.5';
+import {productionPlan} from '../production-plan.js?v=28.4.5';
+import {renderInput,renderSelectionMaterial,renderChatInput} from '../compiled-production.js?v=28.4.5';
+import {formatTextPolicy,detailedFormat,limitedNewspaperLayout} from '../format-recipes.js?v=28.4.5';
+import {formatFor} from '../formats.js?v=28.4.5';
+import {typographyValues} from '../typography-options.js?v=28.4.5';
+import {composePrompt} from '../prompt.js?v=28.4.5';
+import {renderRecipeChatInput} from '../compact-production.js?v=28.4.5';
+import {usesFocusedProduction} from '../focused-production.js?v=28.4.5';
+import {renderEditorialLayout} from '../editorial-layout.js?v=28.4.5';
 
 // Permission boundaries must survive the combination that caused article and
 // portrait additions. These checks inspect the actual production contracts;

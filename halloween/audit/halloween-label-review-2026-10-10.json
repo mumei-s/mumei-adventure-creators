@@ -1,0 +1,136 @@
+{
+  "reviewedAt": "2026-10-10T02:49:04+09:00",
+  "scope": "Halloween catalogue labels, reusable scene instructions and historical asset/value compatibility. Generated-image adherence is not asserted.",
+  "renamedLabels": {
+    "theme": {
+      "雨上がりの怪談": "雨上がりのホラー"
+    },
+    "mood": {
+      "ひやりとする怪談": "ひやりとするホラー"
+    }
+  },
+  "inventory": [
+    {
+      "key": "medium",
+      "name": "作風・画材",
+      "visible": true,
+      "count": 118,
+      "unwantedJapaneseGhostTitles": []
+    },
+    {
+      "key": "theme",
+      "name": "世界観・シーン",
+      "visible": true,
+      "count": 28,
+      "unwantedJapaneseGhostTitles": []
+    },
+    {
+      "key": "place",
+      "name": "舞台・場所",
+      "visible": false,
+      "count": 30,
+      "unwantedJapaneseGhostTitles": []
+    },
+    {
+      "key": "costume",
+      "name": "衣装・主役",
+      "visible": true,
+      "count": 101,
+      "unwantedJapaneseGhostTitles": []
+    },
+    {
+      "key": "pose",
+      "name": "ポーズ",
+      "visible": true,
+      "count": 72,
+      "unwantedJapaneseGhostTitles": []
+    },
+    {
+      "key": "mood",
+      "name": "感情・表情・顔の角度",
+      "visible": true,
+      "count": 43,
+      "unwantedJapaneseGhostTitles": []
+    },
+    {
+      "key": "angle",
+      "name": "アングル・構図",
+      "visible": true,
+      "count": 36,
+      "unwantedJapaneseGhostTitles": []
+    },
+    {
+      "key": "palette",
+      "name": "色の世界",
+      "visible": true,
+      "count": 50,
+      "unwantedJapaneseGhostTitles": []
+    },
+    {
+      "key": "design",
+      "name": "デザイン",
+      "visible": true,
+      "count": 47,
+      "unwantedJapaneseGhostTitles": []
+    },
+    {
+      "key": "type",
+      "name": "文字・広告",
+      "visible": true,
+      "count": 26,
+      "unwantedJapaneseGhostTitles": []
+    },
+    {
+      "key": "line",
+      "name": "セリフ",
+      "visible": false,
+      "count": 17,
+      "unwantedJapaneseGhostTitles": []
+    },
+    {
+      "key": "size",
+      "name": "サイズ・用途",
+      "visible": true,
+      "count": 14,
+      "unwantedJapaneseGhostTitles": []
+    }
+  ],
+  "sceneCount": 28,
+  "allSceneFocusIsHalloween": true,
+  "afterRainFocus": "Halloweenの仮装行列が通り過ぎた雨上がりの路地。濡れた菓子包み、片付け途中の仮装飾り、帰路へ続く足跡を同じ道へつなぐ。飾りと一致しない水面の反射を一箇所だけ残し、祝祭が終わった直後のホラーとして描く。",
+  "ordinaryJapaneseFantasy": {
+    "title": "百鬼夜行",
+    "status": "Kept as explicit everyday fantasy; excluded from Halloween public choices and ordinary automatic defaults; old archived selections not overwritten."
+  },
+  "preserved": {
+    "files": [
+      "assets/scenes-original-v28-4-3/after-rain-ghost-story.jpg",
+      "japan-previews-v21/mood-01-16.jpg"
+    ],
+    "legacyAssetAliases": "Exact old keys point to the same assets; non-enumerable aliases prevent duplicated public/default inventory.",
+    "archives": "Original history/cached records are not rewritten; delivery view is canonicalised by its migration boundary.",
+    "userCopy": "Explicit user manuscript and arbitrary free-text selections are never globally replaced."
+  },
+  "remainingVerification": "The new scene/emotion previews now show Halloween celebration horror. A standalone thumbnail cannot certify downstream identity, strict camera, selected drawing medium, article typography or output dimensions; these remain separate real-image tests.",
+  "previewReplacement": {
+    "generator": "built-in image_gen",
+    "images": [
+      {
+        "key": "theme",
+        "title": "雨上がりのホラー",
+        "currentAsset": "assets/scenes-original-v28-4-3/after-rain-ghost-story.jpg",
+        "originalPng": "assets/halloween-labels-original-v28-4-5/rain-horror.png",
+        "metadata": "assets/scenes-original-v28-4-3/after-rain-ghost-story.json"
+      },
+      {
+        "key": "mood",
+        "title": "ひやりとするホラー",
+        "currentAsset": "japan-previews-v21/mood-01-16.jpg",
+        "originalPng": "assets/halloween-labels-original-v28-4-5/mood-horror.png",
+        "metadata": "japan-previews-v21/mood-01-16.json"
+      }
+    ],
+    "visualQA": "Accepted only for the specific scene/emotion preview purpose after full-size inspection; final generated-image conditions not certified.",
+    "imageProcessing": "Raw generated PNG retained byte-identical; JPEG encoding only, no visual redraw/crop/resize by code."
+  }
+}

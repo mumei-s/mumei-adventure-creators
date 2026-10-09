@@ -1,5 +1,6 @@
 // Camera geometry is independent of the selected world, expression and pose.
-import {angleConstraint,moodConstraint,poseConstraint,viewSelectionIssues} from './view-constraints.js?v=28.4.4';
+import {angleConstraint,moodConstraint,poseConstraint,viewSelectionIssues} from './view-constraints.js?v=28.4.5';
+import {poseDefaultFraming} from './poses.js?v=28.4.5';
 const rows=[
  ['目線の高さ・正面','高さは主題の中心、正面から水平に見る。上下の傾きを付けず、正面の輪郭と奥行きを読む。','主役と周囲が入るミディアムショット',0,0],
  ['斜め前45度','主題の正面から左右いずれか45度にカメラを置く。近い側と遠い側の面を同じ遠近でつなぐ。','主役と周囲が入るミディアムショット',0,45],
@@ -38,7 +39,7 @@ const rows=[
  ['対角線で奥へ導く','主題を含む場面の道路・建築・地形の方向を対角線へ配置し、手前から奥へ視線を導く。','前景と主題と遠景を結ぶ広い全景',10,45],
  ['鏡・水面越しの視点','選択場面に存在する反射面を通して主題を見る。反射面がなければその素材の反射だけを使い、別の場所を加えない。','反射とその元の対象がつながる画角',20,45]
 ];
-export const angleItems=rows.map(([value,text,distance,pitch,yaw,roll=0],i)=>({value,text,distance,pitch,yaw,roll,file:'angle-'+String(i+1).padStart(3,'0')+'.svg'}));
+export const angleItems=rows.map(([value,text,distance,pitch,yaw,roll=0],i)=>({value,text,distance,pitch,yaw,roll,file:'angle-'+String(i+1).padStart(3,'0')+'.svg',detailFile:'angle-'+String(i+1).padStart(3,'0')+'-detail.svg'}));
 export const angleGroups=[
  {label:'目線・周り込み',values:angleItems.slice(0,6).map(x=>x.value)},
  {label:'見下ろす・俯瞰',values:angleItems.slice(6,12).map(x=>x.value)},
@@ -79,16 +80,26 @@ export function cameraContract(values,{noPerson=false}={}){
  const vertical=Math.abs(axes.pitch)===90;
  const numeric=Object.keys(axes).length>0;
  const text=subjectText(item.text,{noPerson,values});
- const geometry={selected:item.value,...(axes.pitch!==undefined?{pitch_degrees_from_horizontal:axes.pitch}:{}),...(axes.yaw!==undefined?{azimuth_relative_to_subject_degrees:axes.yaw}:{}),...(axes.roll!==undefined?{roll_degrees:axes.roll}:{}),...(mood?.cameraSide?{required_camera_side:mood.cameraSide}:{}),...(mood?.cameraFacing?{required_camera_facing:mood.cameraFacing}:{}),...(vertical?{optical_axis:axes.pitch===90?[0,0,-1]:[0,0,1],horizontal_component:0}:{}),framing:subjectText(item.distance,{noPerson,values})};
- const whole=/全景|全身|広い|ロングショット/.test(item.distance);
+ const angleWhole=/全景|全身|広い|ロングショット/.test(item.distance);
  const close=/クローズアップ|超接写|接写|手元と|支持部と/.test(item.distance);
- const framing_instruction=(noPerson?'主景':whole?'選択ポーズの姿勢全体':close?'指定された接写部分':'主題の指定された範囲')+'を、固定した投影で見える輪郭と必要な周囲ごと画像領域内へ収め、外周5%以上の安全余白を保つ。'+(whole?'自然な短縮・重なり・遮蔽を保ち、隠れる指や足をすべて見せるために手足を広げたりカメラを傾けたりしない。頭から足までが画面の縦方向へ並ぶ立位の比率を強制しない。':close?'接写の指定を全身へ引き直さない。':'選択された画角を保ち、主題の範囲を別の接写や全身へ変更しない。');
+ // Fish-eye and telephoto specify projection/depth, but do not name a crop.
+ // Retain the pose's existing range instead of erasing its supports and then
+ // prohibiting a full view that the selected pose had already requested.
+ const poseFraming=requirement.kind==='lens'&&!angleWhole&&!close?poseDefaultFraming(values.pose,{noPerson}):null;
+ const whole=angleWhole||!!poseFraming?.whole;
+ const framing=poseFraming?poseFraming.distance+'。'+item.distance:item.distance;
+ const geometry={selected:item.value,...(axes.pitch!==undefined?{pitch_degrees_from_horizontal:axes.pitch}:{}),...(axes.yaw!==undefined?{azimuth_relative_to_subject_degrees:axes.yaw}:{}),...(axes.roll!==undefined?{roll_degrees:axes.roll}:{}),...(mood?.cameraSide?{required_camera_side:mood.cameraSide}:{}),...(mood?.cameraFacing?{required_camera_facing:mood.cameraFacing}:{}),...(vertical?{optical_axis:axes.pitch===90?[0,0,-1]:[0,0,1],horizontal_component:0}:{}),framing:subjectText(framing,{noPerson,values})};
+ const framing_instruction=(poseFraming?'画角の範囲は選択ポーズ「'+values.pose+'」から決める。'+poseFraming.distance+'。':'')+(noPerson?'主景':whole?poseFraming?'選択ポーズの姿勢全体と支持点':'選択ポーズの姿勢全体':close?'指定された接写部分':poseFraming?'選択ポーズの上半身と動作の接点':'主題の指定された範囲')+'を、固定した投影で見える輪郭と必要な周囲ごと画像領域内へ収め、外周5%以上の安全余白を保つ。'+(whole?'自然な短縮・重なり・遮蔽を保ち、隠れる指や足をすべて見せるために手足を広げたりカメラを傾けたりしない。頭から足までが画面の縦方向へ並ぶ立位の比率を強制しない。':close?'接写の指定を全身へ引き直さない。':'選択された画角を保ち、主題の範囲を別の接写や全身へ変更しない。');
  const instructions=[
   '固定するアングルは「'+item.value+'」。'+text+(numeric?' 数値で指定した角度を雰囲気の目安にせず、固定条件として実行する。':''),
   '主題・支持面・背景はこの同じカメラから描く。選択項目が指定した高さ・方位・投影・画角を固定し、未指定の軸は選択した視点プリセットとポーズに合わせて決める。画面の傾斜は画面軸の回転だけを固定し、未指定の水平視点や斜め前45度を追加しない。形式・画風・世界観の迫力や顔の見せやすさを理由に、指定された軸を変更しない。指定画角へ収める距離調整は同じ光軸上で行う。背景レシピの前景・中景・遠景は、この視点からの距離と重なりへ翻訳する。',
   '画風・材質・参照の識別特徴の細部条件は、このカメラから実際に見える面に適用する。自然に隠れる目・顔の面・手足や建築の面を、細部を見せるために露出させない。'
  ];
  const checks=[text];
+ if(poseFraming){
+  instructions.push(framing_instruction);
+  checks.push(whole?'選択ポーズの姿勢全体と、同じ投影で見える支持点が画像領域内へ収まる':'選択ポーズの上半身と手・顔の動作の接点が画像領域内へ収まる');
+ }
  const groundWarning=steepGroundFramingWarning(values,{noPerson});
  if(groundWarning)instructions.push('選択の注意：'+groundWarning.reason);
  if(!noPerson&&['書と墨の抽象','禅画','抽象表現','ミニマリズム'].includes(values.medium))instructions.push('この投影の姿勢・支持・動作は、選択画風の筆の印・形・間隔・余白で表す。各指や人体の細部を写実的に追加せず、主題と出来事の関係を読める形へ整理する。接写でも人体の細密描写を必須にせず、指定部分を選択画風で描く。');

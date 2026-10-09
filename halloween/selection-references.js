@@ -1,9 +1,9 @@
-import {visibleQuestions} from './catalog.js?v=28.4.4';
-import {sampleFor} from './examples.js?v=28.4.4';
-import {releaseCanvas,readRasterDimensions,validateRasterDimensions} from './image-resources.js?v=28.4.4';
-import {stylePresetFor} from './style-presets.js?v=28.4.4';
-import {makeZip} from './zip.js?v=28.4.4';
-import {attachmentConditionPolicy,selectionAttachmentPolicy} from './attachment-policy.js?v=28.4.4';
+import {visibleQuestions} from './catalog.js?v=28.4.5';
+import {sampleFor} from './examples.js?v=28.4.5';
+import {releaseCanvas,readRasterDimensions,validateRasterDimensions} from './image-resources.js?v=28.4.5';
+import {stylePresetFor} from './style-presets.js?v=28.4.5';
+import {makeZip} from './zip.js?v=28.4.5';
+import {attachmentConditionPolicy,selectionAttachmentPolicy,focusedReferenceMedia} from './attachment-policy.js?v=28.4.5';
 
 export const SELECTION_SHEET_NAME='selection-references.jpg';
 export function selectionReferenceManifest(values,{sample=sampleFor,questions=visibleQuestions}={}){
@@ -100,17 +100,18 @@ export async function buildIndividualSelectionReferences(manifest,{documentImpl=
 export async function buildIndividualSelectionReferenceZip({manifest,identityReferences=[],styleReferences=[],composeIndividualPrompt,conditionsText=''},dependencies={}){
  if(typeof composeIndividualPrompt!=='function')throw new Error('個別添付用の制作原稿を用意してください。');
  const localSelectionReferences=await buildIndividualSelectionReferences(manifest,dependencies);
- const supplied=[...identityReferences,...styleReferences,...localSelectionReferences];
+ const conditions=selectionReferenceConditions(manifest),styleFirst=focusedReferenceMedia.includes(conditions.find(condition=>condition.key==='medium')?.value);
+ const supplied=[...(styleFirst?[...styleReferences,...identityReferences]:[...identityReferences,...styleReferences]),...localSelectionReferences];
  if(supplied.some(ref=>!ref.file?.arrayBuffer||!ref.name||/[\/\\]/.test(ref.name)))throw new Error('個別見本と主参照のファイルを確認できませんでした。');
  if(new Set(supplied.map(ref=>ref.name)).size!==supplied.length)throw new Error('個別見本のファイル名が重複しています。');
  const FileClass=dependencies.FileClass||globalThis.File,attached=supplied.map(ref=>ref.file.name===ref.name?ref:{...ref,file:new FileClass([ref.file],ref.name,{type:ref.file.type})});
- const references=attached.map(({file,...reference})=>reference),conditions=selectionReferenceConditions(manifest),counts={selected:conditions.length,individual:localSelectionReferences.length,attached:attached.length,identity:identityReferences.length,separateStyle:styleReferences.length};
+ const references=attached.map(({file,...reference})=>reference),counts={selected:conditions.length,individual:localSelectionReferences.length,attached:attached.length,identity:identityReferences.length,separateStyle:styleReferences.length};
  const kitManifest={schemaVersion:2,kind:'individual-reference-comparison',conditions,references,counts,attachmentPolicy:selectionAttachmentPolicy(conditions,{mode:'individual'}),
-  execution:{status:'not-executed',observedTool:'image_gen',observedMaxReferenceImages:5,canUseObservedSingleCall:counts.attached<=5,qualityStatus:'not-accepted',reason:counts.attached>5?'この構成は実測した画像生成の5枚上限を超える。全画像の一括添付を実行済みと扱わない。':'実際に同じ条件を生成して照合するまでは未実行。'},
-  acceptance:'個別画像は通常制作とは別の比較資料。実測した画像生成は参照5枚が上限であり、これを超える全画像一括添付は実行できない。枚数だけで精度が高いと判定せず、未実行・拒否・不合格を記録し、同じ条件の生成画像で照合する。'};
+  execution:{status:'not-executed',observedTool:'image_gen',observedMaxReferenceImages:5,canUseObservedSingleCall:counts.attached<=5,qualityStatus:'not-accepted',reason:counts.attached>5?'この構成は今回の検証に使った image_gen の参照5枚上限を超える。個別全画像の一括生成は未実行。利用先が異なる場合はその実際の上限を確認する。':'実際に同じ条件を生成して照合するまでは未実行。'},
+  acceptance:'全有効見本を個別画像で渡す選択肢。今回の検証に使った image_gen は参照5枚が上限で、これを超える全画像一括添付は実行できなかった。他の利用先へ一律の上限として当てはめず、実際に受け付ける枚数を確認する。全画像を渡せない場合は、主参照＋原寸画風＋役割別シートの通常経路を使い、条件を無言で減らさない。枚数だけで精度が高いと判定せず、同じ選択の完成画像で照合する。'};
  const productionPrompt=await composeIndividualPrompt(kitManifest);
  if(typeof productionPrompt!=='string'||!productionPrompt.trim()||productionPrompt.includes(manifest.name)||conditions.some(condition=>!productionPrompt.includes(condition.value)))throw new Error('個別添付用の原稿と実際の添付ファイルが一致していません。');
- const prompt=['【個別見本の比較資料：全画像の一括実行は保証しない】',kitManifest.acceptance,...references.map(ref=>ref.name+'：'+(ref.role==='identity'?'人物の識別資料。':ref.role==='selection-condition'?ref.key+'「'+ref.value+'」／'+ref.scope:'選択作風の原寸原画。')),'以下は全選択を保持した制作手順。段階ごとの参照だけを使い、比較図を制作へ無差別に追加しない。',productionPrompt].join('\n');
+ const prompt=['【全有効見本を個別画像で渡す場合】','この資料に含まれる画像は合計'+counts.attached+'枚（主参照'+counts.identity+'枚・原寸画風'+counts.separateStyle+'枚・条件見本'+counts.individual+'枚）。役割別シートは含まれない。全'+counts.selected+'選択の条件は下の制作本文に保持している。',kitManifest.acceptance,...references.map(ref=>ref.name+'：'+(ref.role==='identity'?'人物の識別資料。':ref.role==='selection-condition'?ref.key+'「'+ref.value+'」／'+ref.scope:'選択作風の原寸原画。')),'以下の本文と各資料の担当条件を一つの完成場面へ統合する。見本の別人・別の画風・複数のパネル・見本文字をそのまま作品へ描かない。',productionPrompt].join('\n');
  const encode=text=>new TextEncoder().encode(text),files=[{name:'prompt.txt',data:encode(prompt)},{name:'references.json',data:encode(JSON.stringify(kitManifest,null,2))},{name:'selected-conditions.txt',data:encode(conditionsText||conditions.map(item=>item.label+'：'+item.value+'\n読む役割：'+item.scope).join('\n\n'))}];
  for(const ref of attached)files.push({name:ref.name,data:new Uint8Array(await ref.file.arrayBuffer())});
  return {blob:makeZip(files),prompt,manifest:kitManifest,localSelectionReferences,files:attached.map(ref=>ref.file)};

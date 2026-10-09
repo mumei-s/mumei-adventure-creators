@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {setupEffects} from '../effects.js?v=28.4.4';
-import {installNightStudio,everydayNightIcons,nightIcons} from '../night-studio.js?v=28.4.4';
-import {icons,nightIcons as monsterIcons} from '../halloween-icons.js?v=28.4.4';
-import {studioIcons} from '../spells.js?v=28.4.4';
+import {setupEffects} from '../effects.js?v=28.4.5';
+import {installNightStudio,everydayNightIcons,nightIcons} from '../night-studio.js?v=28.4.5';
+import {icons,nightIcons as monsterIcons} from '../halloween-icons.js?v=28.4.5';
+import {studioIcons} from '../spells.js?v=28.4.5';
 
 class Node{
  constructor(tag='div'){this.tagName=tag;this.children=[];this.dataset={};this.attributes={};this.listeners={};this.className='';this.innerHTML='';this.style={setProperty(){}};this.classList={add(){},remove(){}};}

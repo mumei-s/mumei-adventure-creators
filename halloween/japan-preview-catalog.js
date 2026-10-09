@@ -1,3 +1,4 @@
+import {preserveLegacyAssetKeys} from './legacy-selection-aliases.js?v=28.4.5';
 // Japan-base explanatory previews only. Never sent as identity/style references.
 export const japanPreviews={
   "medium\u0000実写風フィルム写真": "japan-previews-v21/medium-01-01.jpg",
@@ -134,7 +135,7 @@ export const japanPreviews={
   "theme\u0000光と影の寓話": "japan-previews-v21/theme-02-10.jpg",
   "theme\u0000記憶の標本室": "japan-previews-v21/theme-02-11.jpg",
   "theme\u0000異世界のファッションショー": "japan-previews-v21/theme-02-12.jpg",
-  "theme\u0000雨上がりの怪談": "assets/scenes-original-v28-4-3/after-rain-ghost-story.jpg",
+  "theme\u0000雨上がりのホラー": "assets/scenes-original-v28-4-3/after-rain-ghost-story.jpg",
   "theme\u0000静かなハロウィーン": "japan-previews-v21/theme-02-14.jpg",
   "costume\u0000魔女・魔法使い": "japan-previews-v21/costume-01-01.jpg",
   "costume\u0000吸血鬼": "japan-previews-v21/costume-01-02.jpg",
@@ -251,7 +252,7 @@ export const japanPreviews={
   "mood\u0000疾走する冒険": "japan-previews-v21/mood-01-13.jpg",
   "mood\u0000劇的な勝利": "japan-previews-v21/mood-01-14.jpg",
   "mood\u0000少しだけ不気味": "japan-previews-v21/mood-01-15.jpg",
-  "mood\u0000ひやりとする怪談": "japan-previews-v21/mood-01-16.jpg",
+  "mood\u0000ひやりとするホラー": "japan-previews-v21/mood-01-16.jpg",
   "mood\u0000圧倒的な恐怖・流血なし": "japan-previews-v21/mood-02-01.jpg",
   "mood\u0000奇妙でシュール": "japan-previews-v21/mood-02-02.jpg",
   "mood\u0000無表情の緊張感": "japan-previews-v21/mood-02-03.jpg",
@@ -407,3 +408,5 @@ export const japanPreviews={
   "design\u0000週刊誌の表紙": "japan-weekly-v21.jpg",
   "design\u0000自然・都市の風景画": "japan-previews-v21/medium-02-08.jpg"
 };
+
+preserveLegacyAssetKeys(japanPreviews);

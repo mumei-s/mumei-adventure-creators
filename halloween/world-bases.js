@@ -1,6 +1,7 @@
-import {fantasyStyleDefinitions} from './fantasy-style-definitions.js?v=28.4.4';
-import {colorPolicy} from './color-policy.js?v=28.4.4';
-import {isNonHumanSource} from './source-kind.js?v=28.4.4';
+import {fantasyStyleDefinitions} from './fantasy-style-definitions.js?v=28.4.5';
+import {solidGlowStyleDefinitions} from './solid-glow-style-definitions.js?v=28.4.5';
+import {colorPolicy} from './color-policy.js?v=28.4.5';
+import {isNonHumanSource} from './source-kind.js?v=28.4.5';
 
 // Original semantic descriptions extracted from user-provided examples.
 // UI thumbnails remain illustrative: none of their people, clothes, prompts,
@@ -70,6 +71,7 @@ const mediaDefinitions=[
 ];
 
 mediaDefinitions.push(...fantasyStyleDefinitions);
+mediaDefinitions.push(...solidGlowStyleDefinitions);
 export const referenceWorldMedia=mediaDefinitions.map(({value,file,text,checks,group})=>({value,file,text,checks:[...checks],group}));
 
 const sceneDefinitions=[
@@ -231,9 +233,10 @@ export function referenceWorldMediumContract(value,{values={},noPerson=false,var
  const entry=mediaDefinitions.find(item=>item.value===value);
  if(!entry)return null;
  noPerson=isScenery(noPerson,values);
- const real=value==='宝石光彩リアル',polished=entry.rendering==='polished-anime',jewel=value==='宝石光彩アニメ'||real;
+ const solidAnime=entry.rendering==='solid-anime',solidReal=entry.rendering==='solid-real';
+ const real=value==='宝石光彩リアル'||solidReal,polished=entry.rendering==='polished-anime',jewel=value==='宝石光彩アニメ'||value==='宝石光彩リアル';
  const palette=paletteContract({...values,medium:value});
- const preservation=subjectContract(noPerson,values);
+ const preservation=solidReal?subjectContract(noPerson,values).replace('識別特徴は選択画風の形へ翻訳し、参照の写真寸法を固定してアニメ化を妨げない。','識別特徴は自然な実写の立体へ翻訳し、アニメ参照の誇張された瞳や平面的な鼻口を固定しない。'):subjectContract(noPerson,values);
  const view=viewContract(values,variant,noPerson);
  const nonHumanSource=!noPerson&&isNonHumanSource(values);
  const drawingCore=(noPerson?entry.drawingScenery||entry.drawing:entry.drawing)+(noPerson?'': ' '+personDrawingContract(entry,values));
@@ -243,7 +246,7 @@ export function referenceWorldMediumContract(value,{values={},noPerson=false,var
   section('世界観ベース／カメラと可視範囲',view),
   section('世界観ベース／光と影の階層',noPerson?entry.lightingScenery||sceneSceneryText(entry.lighting):entry.lighting),
   section('世界観ベース／素材を保つ描画',noPerson?entry.materialsScenery||sceneSceneryText(entry.materials):entry.materials),
-  ...(!noPerson?[section('世界観ベース／見える表情と髪の条件',visibleFeaturesContract(values,variant,real).replace(polished?'顔・見える手・髪がある場合の束も、景物と同じ2Dの線と描いた色面で統一する。':'___NO_REPLACEMENT___',polished?'顔・見える手・髪も、背景と同じアニメ造形・精密な線・柔らかな連続陰影で統一する。':'___NO_REPLACEMENT___'))]:[]),
+  ...(!noPerson?[section('世界観ベース／見える表情と髪の条件',visibleFeaturesContract(values,variant,real).replace(polished||solidAnime?'顔・見える手・髪がある場合の束も、景物と同じ2Dの線と描いた色面で統一する。':'___NO_REPLACEMENT___',solidAnime?'顔・見える身体・手・髪も、景物と同じトゥーンのアニメ造形と3Dの連続陰影、素材別の反射色層で統一する。':polished?'顔・見える手・髪も、背景と同じアニメ造形・精密な線・柔らかな連続陰影で統一する。':'___NO_REPLACEMENT___'))]:[]),
   ...(jewel?[section('世界観ベース／焦点にも届く鋭い光',noPerson
    ?jewelSceneryContract()
    :jewelSurfaceContract(real))]:[]),
@@ -255,7 +258,7 @@ export function referenceWorldMediumContract(value,{values={},noPerson=false,var
   ...(noPerson?['選択した景物・物体・図案だけの描画']:[nonHumanSource?'独自の主役と明示条件、修正時の生成済み識別特徴保持':'同じ主役の年齢感・性別表現・髪型・識別色',nonHumanSource?'見える表情と明示条件または生成済み主役の頭身の保持':'見える表情と選択または参照の頭身の保持','選択衣装の形・被覆・構造の保持']),
   ...(jewel?[noPerson?'主景の局所光と接触部の深い影':'露出して見える肌全域と存在する髪・衣装・景物に、材質別の光彩と強い局所陰影。選択被覆を保持し露出を増やさない']:[])
  ];
- const method=(polished?'Completely redraw the selected scene as a polished Japanese anime digital illustration, combining stylized identity geometry, fine drawing, softly painted continuous shading and tiny sharp material highlights. Do not force flat cel shading, a photographic face, crystal skin, or a plastic doll. ':real?'Build the selected scene as a high-detail photographic image with '+(noPerson?'natural geometry':'natural anatomy')+' and material optics. ':'Completely redraw the selected scene as precise hand-drawn Japanese 2D anime, using drawn lines, planned shadow shapes and layered colour. ')+(noPerson?'Apply this only to the selected scenery, objects or flat motif. ':nonHumanSource?'Create an original actor only for the explicitly selected person output; keep the generated actor identity during repairs. Never reconstruct a face from the non-person source or borrow the drawing master character. Preserve the selected clothing, age impression, proportions, pose and visible expression. ':'Preserve the recognizable reference identity and selected clothing, age impression, proportions, pose and visible expression. ')+sections.map(s=>s.text).join(' ');
+ const method=(solidAnime?'Build the selected scene with recognizable toon anime forms and volumetric 3D continuous shading, material-specific dense reflected colour layers, broad deep shadows and tiny sharp highlights across every visible material. '+(noPerson?'Preserve stylized scenery and material geometry; do not add a person or facial anatomy. ':'Preserve anime facial geometry; do not force flat 2D cel shading or a photographic face. '):polished?'Completely redraw the selected scene as a polished Japanese anime digital illustration, combining stylized identity geometry, fine drawing, softly painted continuous shading and tiny sharp material highlights. Do not force flat cel shading, a photographic face, crystal skin, or a plastic doll. ':real?'Build the selected scene as a high-detail photographic image with '+(noPerson?'natural geometry':'natural anatomy')+' and material optics. ':'Completely redraw the selected scene as precise hand-drawn Japanese 2D anime, using drawn lines, planned shadow shapes and layered colour. ')+(noPerson?'Apply this only to the selected scenery, objects or flat motif. ':nonHumanSource?'Create an original actor only for the explicitly selected person output; keep the generated actor identity during repairs. Never reconstruct a face from the non-person source or borrow the drawing master character. Preserve the selected clothing, age impression, proportions, pose and visible expression. ':'Preserve the recognizable reference identity and selected clothing, age impression, proportions, pose and visible expression. ')+sections.map(s=>s.text).join(' ');
  return {medium:value,value,known:true,family:real?'photography':'luminous-anime',drawingCore,preservation,palette:palette.text,lighting:noPerson?entry.lightingScenery||sceneSceneryText(entry.lighting):entry.lighting,depth:view,sections,checks,method,executionMethod:method};
 }
 
@@ -282,7 +285,7 @@ export function referenceWorldSceneRecipe(value,{noPerson=false,values={}}={}){
 
 export const referenceWorldArtworkBases=mediaDefinitions.map(entry=>({
  value:entry.value,status:'synthesis',
- sourceNote:['宝石光彩アニメ','宝石光彩リアル'].includes(entry.value)?'ユーザーが承認した宝石のような光彩表現と修正指示を作画基準として整理。参考9ジャンルとは独立。':'ユーザー提示の参考画像分析から抽出した作画基準。作者や作品の再現ではなく、線・塗り・光の関係を整理。',
+ sourceNote:entry.rendering?.startsWith('solid-')?entry.sourceNote:['宝石光彩アニメ','宝石光彩リアル'].includes(entry.value)?'ユーザーが承認した宝石のような光彩表現と修正指示を作画基準として整理。参考9ジャンルとは独立。':'ユーザー提示の参考画像分析から抽出した作画基準。作者や作品の再現ではなく、線・塗り・光の関係を整理。',
  basis:[
   'ユーザーの作例から描画特性を整理した合成作画基準。公式流派や作者の再現を主張せず、名称だけで品質を保証しない。',
   entry.drawing,
@@ -303,5 +306,5 @@ export const referenceWorldArtworkBases=mediaDefinitions.map(entry=>({
  ],
  sceneryChecks:[...(entry.checksScenery||entry.checks),'選択景物の識別・素材・支持・接続の保持','固定視点と選択配色への投影'],
  avoid:[...entry.avoid,'作例の人物・髪型・衣装・特徴的な小物・配置・文章・固有名の移植','未選択の配色、猫耳や角、幼児化、ちび化、動作や視点の変更'],
- references:[]
+ references:entry.rendering?.startsWith('solid-')?entry.references:[]
 }));

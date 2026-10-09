@@ -11,6 +11,7 @@ import {compileProduction} from '../compiled-production.js?v=28.4.6';
 import {stylePresetFor} from '../style-presets.js?v=28.4.6';
 import {selectionReferenceManifest,individualSelectionReferenceManifest} from '../selection-references.js?v=28.4.6';
 import {worldTransferPrompts} from '../world-transfer-production.js?v=28.4.6';
+import {randomItemSelection} from '../random-selections.js?v=28.4.6';
 
 const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8');
 const take=(start,end)=>app.slice(app.indexOf(start),app.indexOf(end,app.indexOf(start)));
@@ -24,7 +25,7 @@ class Node{
  focus(){this.focused=true;}
  close(){this.closed=true;}
 }
-let cases=0;
+let cases=0,blockedEntries=0;
 for(const collection of ['halloween','everyday'])for(const mode of ['detail','simple','auto']){
  applyCollection(collection);
  const nodes=new Map(),$=id=>{if(!nodes.has(id))nodes.set(id,new Node());return nodes.get(id);},tabs=['type','line'].map(part=>{const n=new Node('button');n.dataset.textPart=part;return n;}),selection={...initialSelections(),design:'新聞の一面',type:'新聞風・記事と段組み'},before={...selection};
@@ -46,6 +47,16 @@ for(const collection of ['halloween','everyday'])for(const mode of ['detail','si
   const stages=worldTransferPrompts(plan);if(stages){const final=stages.stages.at(-1);assert.equal(final.kind,'layout');assert.ok(final.prompt.includes(input.value),'Exact words are included in the final image-generation stage');assert.ok(!stages.stages.filter(stage=>stage.kind==='scene-edit').some(stage=>stage.prompt.includes('セリフ：')),'Scene stages do not preprint a competing copy block');}
   cases++;
  }
+ // The dialogue control changes its copy mode as well as its words. All
+ // ingress paths must evaluate that same resulting manuscript before writing.
+ const poster={...context.selections,design:'タイポグラフィーポスター',type:'クリエイター名だけ',line:'選択前の一言'};context.selections={...poster};context.selectedProposal=mode==='auto'?{...poster}:null;context.activeQuestion=questions.find(q=>q.key==='line');
+ Object.assign(context,{collection,sampleNode(){},artworkBasis(){},favoritePanel:null,createPicker:options=>{context.pickerOptions=options;return context.picker;},createFavoritesPanel:options=>{context.favoriteOptions=options;return {render(){}};},setMode:next=>{context.mode=next;},displayValue:(q,value)=>value,randomItemSelection,rng:()=>.9});
+ vm.runInContext(take('const picker=createPicker(','function renderStylePreset('),context);
+ const unchanged=()=>{assert.deepEqual({...context.selections},poster);if(mode==='auto')assert.deepEqual({...context.selectedProposal},poster);};
+ const displayed=context.pickerOptions.readSelection();assert.equal(displayed.type,'セリフのみ');assert.equal(candidateAvailability('line','セリフなし',displayed).enabled,false,'The visible line option is disabled against its actual one-line copy mode');unchanged();blockedEntries++;
+ context.choose('セリフなし');unchanged();assert.match(context.message,/タイポグラフィーポスター/);blockedEntries++;
+ context.favoriteOptions.onPick('line','セリフなし');unchanged();assert.match(context.message,/タイポグラフィーポスター/);blockedEntries++;
+ vm.runInContext(take('function randomizeItem(q){','function renderChoices('),context);const onlyBlank={...questions.find(q=>q.key==='line'),groups:[{label:'なし',values:['セリフなし']}]};assert.equal(context.randomizeItem(onlyBlank),undefined);unchanged();assert.match(context.message,/タイポグラフィーポスター/);blockedEntries++;
 }
 applyCollection('halloween');
-console.log(`PASS text entry: real app tab/choose/custom-form handlers in Halloween/everyday × detail/simple/AUTO; ${cases} actual manuscript/handoff routes preserve exact words, one allowed role and the final layout without changing unrelated selections.`);
+console.log(`PASS text entry: real app tab/choose/custom-form handlers in Halloween/everyday × detail/simple/AUTO; ${cases} actual manuscript/handoff routes preserve exact words and one role; ${blockedEntries} visible-option/choose/favorite/random guards reject a blank typography poster without selection or proposal writes.`);

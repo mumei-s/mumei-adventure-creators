@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.4.3';
-import {resolveSelections} from '../catalog.js?v=28.4.3';
-import {initialSelections} from '../modes.js?v=28.4.3';
-import {buildDirection} from '../direction.js?v=28.4.3';
-import {applyPose} from '../poses.js?v=28.4.3';
-import {productionPlan} from '../production-plan.js?v=28.4.3';
-import {renderEditorialLayout} from '../editorial-layout.js?v=28.4.3';
+import {applyCollection} from '../collection.js?v=28.4.4';
+import {resolveSelections} from '../catalog.js?v=28.4.4';
+import {initialSelections} from '../modes.js?v=28.4.4';
+import {buildDirection} from '../direction.js?v=28.4.4';
+import {applyPose} from '../poses.js?v=28.4.4';
+import {productionPlan} from '../production-plan.js?v=28.4.4';
+import {renderEditorialLayout} from '../editorial-layout.js?v=28.4.4';
 
 // Native SVG composition preserves supplied pixels; it does not generate images.
 // Solid-color, dimensionally correct test PNGs. No person's artwork is stored.
@@ -46,6 +46,11 @@ function checkSourceAndGeometry(output,picture,label){
  assert.ok(inside(image,image.container),label+' image extends outside its allotted container');
  assert.ok(inside(image.container,{x:0,y:0,width,height}),label+' image container extends outside the output');
  near(image.width/image.height,picture.artworkWidth/picture.artworkHeight,label+' changed the original aspect ratio',.00001);
+ const fit=Math.min(image.container.width/picture.artworkWidth,image.container.height/picture.artworkHeight);
+ near(image.width,picture.artworkWidth*fit,label+' must use the largest uncropped width inside its selected image region',.00001);
+ near(image.height,picture.artworkHeight*fit,label+' must use the largest uncropped height inside its selected image region',.00001);
+ near(image.x,image.container.x+(image.container.width-image.width)/2,label+' must center the complete source horizontally',.00001);
+ near(image.y,image.container.y+(image.container.height-image.height)/2,label+' must center the complete source vertically',.00001);
  for(const key of ['x','y','width','height'])near(Number(tag.match(new RegExp('\\b'+key+'="([^"]+)"'))?.[1]),image[key],label+' SVG disagrees with image placement '+key);
  if(placements.gutter)assert.ok(!overlaps(image,placements.gutter),label+' image crosses the central safety gutter');
 }
@@ -73,7 +78,10 @@ for(const design of formats){
   checkSourceAndGeometry(output,picture,label);checkCopy(output,plan,label);
   if(design==='インタビュー誌面'){
    const {width,height,placements}=output;
-   assert.ok(placements.image.width*placements.image.height/(width*height)>=.28,'Interview artwork must be a large lead image, not an inset covering 8% of the page');
+   const box=placements.image.container;
+   near(box.x,width*.05,'Interview lead image left');near(box.y,height*.22,'Interview lead image top');
+   near(box.width,width*.90,'Interview lead image width');near(box.height,height*.34,'Interview lead image height');
+   near(box.width*box.height/(width*height),.306,'Interview lead region must cover 30.6% of the page',.000001);
    for(const frame of placements.textFrames)assert.ok(!overlaps(placements.image,frame),'Interview image crosses text frame '+frame.id);
    assert.ok(!plan.copy.slots.some(s=>s.role==='ノンブル'),'A standalone interview must not invent a page number');
    assert.ok(!plan.copy.slots.some(s=>s.text.includes(selected.medium)),'Medium labels must not leak into printed editorial copy');

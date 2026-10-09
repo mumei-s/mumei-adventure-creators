@@ -1,15 +1,16 @@
-import {styleFidelity} from './style-fidelity.js?v=28.4.3';
-import {modeFoundation} from './japan-direction.js?v=28.4.3';
-import {imageOutputContract} from './output-contract.js?v=28.4.3';
-import {opticalSignature} from './optical-effects.js?v=28.4.3';
-import {colorPolicy} from './color-policy.js?v=28.4.3';
-import {sceneComposition} from './scene-composition.js?v=28.4.3';
-import {cameraContract} from './angles.js?v=28.4.3';
-import {photoReconstruction} from './photo-design.js?v=28.4.3';
-import {characterProportionInstruction} from './source-kind.js?v=28.4.3';
-import {luminousWorldContract} from './luminous-world.js?v=28.4.3';
-import {limitedNewspaperLayout} from './format-recipes.js?v=28.4.3';
-import {renderCompactChatInput} from './compact-production.js?v=28.4.3';
+import {styleFidelity} from './style-fidelity.js?v=28.4.4';
+import {modeFoundation} from './japan-direction.js?v=28.4.4';
+import {compactImageOutputContract} from './output-contract.js?v=28.4.4';
+import {opticalSignature} from './optical-effects.js?v=28.4.4';
+import {colorPolicy} from './color-policy.js?v=28.4.4';
+import {sceneComposition} from './scene-composition.js?v=28.4.4';
+import {cameraContract} from './angles.js?v=28.4.4';
+import {photoReconstruction} from './photo-design.js?v=28.4.4';
+import {characterProportionInstruction} from './source-kind.js?v=28.4.4';
+import {luminousWorldContract} from './luminous-world.js?v=28.4.4';
+import {limitedNewspaperLayout} from './format-recipes.js?v=28.4.4';
+import {renderCompactChatInput} from './compact-production.js?v=28.4.4';
+import {usesFocusedProduction,identityPreparationStage} from './focused-production.js?v=28.4.4';
 
 function luminousPriority(plan){
  const luminous=luminousWorldContract(plan.values,{noPerson:plan.noPerson,variant:plan.variant});
@@ -92,6 +93,7 @@ function renderInputObject(plan){
   camera:plan.noPerson?(geometry?{geometry,note:'人物用の表情・顔向き・身体動作は適用しない。'}:'人物用の表情・顔向き・身体動作は適用しない。'):{...(geometry?{geometry}:{}),face:v.face,expression:v.expression,body:v.pose,distance:v.distance,angle:v.camera,...(side?{torso_yaw_degrees:90,projection:'肩・骨盤・膝は側面投影。顔向きの指定を理由に胴体を鑑賞者側へ回さない。'}:{})},
   layout:contract(byKey.design),
   typography:contract(byKey.type),
+  ...(v.previous?.length?{direction_history:{purpose:'演出抽選の監査記録。今回の確定選択を禁じる描画条件ではない。',previous:v.previous}}:{}),
   copy:plan.copy.slots.map(s=>({role:s.role,text:s.text})),
   ...(plan.copy.generatedSlots?.length?{manuscript_requests:plan.copy.generatedSlots}:{}),
   text_rule:plan.copy.mode==='none'?'文字・数字・署名なし。':plan.copy.generatedSlots?.length?'copyの確定原稿をそのまま印字し、manuscript_requestsの役割だけは各役割の内容のネタまたは確認済み公開活動から新しく編集する。制作仕様を広告文のネタにせず、役割名や指示文を印字せず、画風名・ページ番号・制作ID・未指定の文字を加えない。':'copyの原稿だけを正確に印字。画風名・ページ番号・制作ID・未指定の文字を加えない。',
@@ -159,7 +161,9 @@ export function renderDetailedChatInput(plan,{referenceRules=[],mandatoryRules=[
   ...(v.locked?['固定と変更の方針：'+v.locked]:[]),
   ...plan.interactions,
   ...unique(plan.notes.filter(n=>n!==modeFoundation(plan.collection))),
-  ...(v.previous||[]).map((p,i)=>'直近'+(i+1)+'から繰り返さない未指定の演出：'+(plan.noPerson?[p.layout]:[p.face,p.expression,p.distance,p.pose,p.layout]).filter(Boolean).join(' / ')+'。明示した条件は変えない。'),
+  // Resolved directions already use recent history before this renderer.
+  // Historical face/pose/crop/layout are audit data, not exclusions that may
+  // contradict the current resolved physical scene.
   ...(plan.values.line==='セリフなし'?[]:['選択したセリフ：'+plan.values.line]),
   ...(compiled.author_context?['【作者の公開活動：本文からの補助資料】',compiled.author_context_rule,compiled.author_context]:[]),
   ...(compiled.camera?.geometry?['【実画像のカメラ照合】',...compiled.camera.geometry.checks.map(check=>'角度の照合：'+check),'指定を書いた事実だけで角度の達成を判定しない。生成画像の支持面・主題の短縮・遮蔽を確認し、未達なら該当箇所を短く伝える。']:[]),
@@ -195,13 +199,32 @@ export function compileProduction(plan,originalLines=[],refs=plan.referenceManif
  // appended after its generation command.
  const compact=renderCompactChatInput(plan,refs||[]);
  if((plan.issues||[]).some(issue=>issue.severity==='error'))return compact;
+ if(usesFocusedProduction(plan)){
+  const preparation=identityPreparationStage(plan,refs||[]);
+  return [
+   '【描いてほしい完成品】','選択条件を保持した完成作品は1枚。画像作成機能の通常の生成画像として表示する。各段階の生成画像を表示して実画像を確認し、必要な準備・最終の工程を続ける。準備画像を完成作品と呼ばず、未実行・未確認・不合格は短く伝える。機能の上限や失敗は実際に確認した理由を伝え、存在しない画像や未達条件を完成扱いしない。',...(plan.creatorLookup||[]),originalLines[0],
+   ...(Array.isArray(refs)?refs:[]).filter(ref=>['support','auxiliary','avoid'].includes(ref.role)).map(ref=>ref.name+'：'+(ref.role==='avoid'?'比較する前作。顔・舞台の基準へ使わず、今回の確定選択を禁止しない。':'補助資料。今回の選択が明示した用途だけを確認する。人物の識別・作風・衣装・構図を置き換えず、最終画像へ無差別に再添付しない。')),
+   ...(preparation?[
+    '【人物翻訳と完成制作：2段階で実行】',
+    '各段階の本文だけをそれぞれ画像作成機能へ渡す。この全体手順を1回の画像生成へ混ぜない。準備段階では選択画風の原寸原画＋元の人物参照、最終段階では同じ原画＋確認済みのprepared-identity.pngの2画像だけを添付する。元の人物写真・元イラスト・選択図を最終へ再添付しない。',
+    '準備画像は識別基準であり、完成したHalloween作品ではない。本人の特徴・基本頭身・年齢感と選択画風の2D描線を実画像で照合し、不合格の準備画像は修正する。未確認の画像を採用したり、一括生成へ無言で戻したりしない。',
+    '【人物翻訳用入力：開始】',preparation.prompt,'【人物翻訳用入力：終了】',
+    '【人物翻訳が不合格だった場合の修正入力：開始】',preparation.repairPrompt,'【人物翻訳が不合格だった場合の修正入力：終了】',
+    '【統合するための制作仕様：開始】',preparation.finalPrompt,'【統合するための制作仕様：終了】'
+   ]:[
+    '【通常制作：完成画像を1回で生成】',
+    '【統合するための制作仕様：開始】',compact,'【統合するための制作仕様：終了】'
+   ]),
+   '完成画像を実際に確認して表示する。未実行・未確認・不合格の段階があれば短く伝え、生成した事実だけで選択条件を達成したと断言しない。'
+  ].filter(Boolean).join('\n');
+ }
  // App delivery supplies a typed manifest, including the consolidated sheet.
  // Older direct callers still supply their named references in these lines.
  // Use one owner for reference roles; never repeat the manifest as raw prose.
  const referenceRules=refs?[]:between(originalLines,'【作成者が添付する参照画像】','【10の選択】');
  const legacyRoles=refs?[]:between(originalLines,'【今回の画像の役割】','【最初に確定する作画と画面】').filter(line=>!line.startsWith('頭身：')&&!line.startsWith('【')&&!/^[^：]+：(主役の識別|選択した画風|似せない前作|補助資料)/.test(line));
  return [
-  ...imageOutputContract,
+  ...compactImageOutputContract,
   ...luminousPriority(plan),
   ...(plan.values.design==='新聞の一面'&&limitedNewspaperLayout(plan.values)?[limitedNewspaperLayout(plan.values).priority]:[]),
   ...(plan.creatorLookup||[]),

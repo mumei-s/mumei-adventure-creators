@@ -1,0 +1,5115 @@
+{
+  "scope": "Selector engineering diagrams. Acceptance of generated artwork is a separate visual check.",
+  "visualReview": {
+    "date": "2026-10-09",
+    "method": "Four PNG contact sheets inspected by eye; three formerly similar families compared side by side before and after. Local captions use numbers; copy-role labels are omitted only in the private QA render because local CJK fonts are unavailable.",
+    "scope": "All 48 design diagrams and 26 manuscript diagrams; geometry review does not certify generated artwork, glyph legibility or any camera result.",
+    "unchangedDesigns": 45,
+    "comparisons": [
+      {
+        "design": "ゴシック雑誌の表紙",
+        "neighbors": [
+          "ファッション雑誌の表紙",
+          "アールデコポスター",
+          "タロットカード"
+        ],
+        "before": "Centered image and top/bottom information chiefly differed by edge ornament.",
+        "after": "Left narrow image and pointed arch, right-only information axis and lower-left author; asymmetry remains visible with ornament hidden.",
+        "status": "structurally-distinct"
+      },
+      {
+        "design": "インタビュー誌面",
+        "neighbors": [
+          "カルチャー誌の表紙",
+          "スイス式グリッドポスター",
+          "広告ビジュアル"
+        ],
+        "before": "Tall left image with stacked right information resembled other editorial layouts.",
+        "after": "Fixed full-width upper image and three aligned Q&A columns below, independent of source-image aspect ratio.",
+        "status": "structurally-distinct"
+      },
+      {
+        "design": "ゲームのパッケージ",
+        "neighbors": [
+          "絵本の表紙"
+        ],
+        "before": "Top title, large central picture and small lower information band resembled a picture book.",
+        "after": "Shorter central image and two deep, separate lower information panels with unequal widths; picture book retains one large picture and a small byline.",
+        "status": "structurally-distinct"
+      }
+    ],
+    "nativeVerification": "The three revised formats retain their exact preview image containers under all 26 visible copy choices, including automatic and no-copy modes; source aspect ratio is preserved by contain, permitted manuscript is neither omitted nor duplicated, and selected writing direction survives layout adaptation."
+  },
+  "design": [
+    {
+      "value": "ファッション雑誌の表紙",
+      "kind": "fashion-cover",
+      "image": [
+        22,
+        20,
+        56,
+        70
+      ],
+      "frames": [
+        {
+          "x": 6,
+          "y": 5,
+          "w": 88,
+          "h": 12,
+          "role": "題名",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 7,
+          "y": 28,
+          "w": 12,
+          "h": 43,
+          "role": "左特集",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 82,
+          "y": 28,
+          "w": 11,
+          "h": 35,
+          "role": "右特集",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 24,
+          "y": 83,
+          "w": 52,
+          "h": 10,
+          "role": "主特集",
+          "direction": "horizontal",
+          "size": "medium"
+        }
+      ],
+      "signature": "上端の横題字、中央4列、左右の細い縦見出し。",
+      "ornament": "",
+      "note": "",
+      "surface": "page",
+      "id": "design-01",
+      "src": "layout-previews-v28.svg#design-01",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 6,
+          "right": 94,
+          "top": 5,
+          "bottom": 17,
+          "rotation": 0
+        },
+        {
+          "left": 7,
+          "right": 19,
+          "top": 28.000000000000004,
+          "bottom": 71,
+          "rotation": 0
+        },
+        {
+          "left": 82,
+          "right": 93,
+          "top": 27.999999999999996,
+          "bottom": 62.99999999999999,
+          "rotation": 0
+        },
+        {
+          "left": 24,
+          "right": 76,
+          "top": 83,
+          "bottom": 93,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 39.2
+    },
+    {
+      "value": "週刊誌の表紙",
+      "kind": "weekly-cover",
+      "image": [
+        24,
+        22,
+        52,
+        52
+      ],
+      "frames": [
+        {
+          "x": 5,
+          "y": 5,
+          "w": 90,
+          "h": 12,
+          "role": "題名",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 5,
+          "y": 24,
+          "w": 15,
+          "h": 48,
+          "role": "左特集",
+          "direction": "vertical",
+          "size": "medium"
+        },
+        {
+          "x": 80,
+          "y": 24,
+          "w": 15,
+          "h": 48,
+          "role": "右特集",
+          "direction": "vertical",
+          "size": "medium"
+        },
+        {
+          "x": 5,
+          "y": 79,
+          "w": 90,
+          "h": 14,
+          "role": "主特集",
+          "direction": "horizontal",
+          "size": "large"
+        }
+      ],
+      "signature": "上12〜18%の題字、左右の太い縦帯、下15〜20%の横帯。",
+      "ornament": "weekly-bands",
+      "note": "",
+      "surface": "page",
+      "id": "design-02",
+      "src": "layout-previews-v28.svg#design-02",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 5,
+          "right": 95,
+          "top": 5,
+          "bottom": 17,
+          "rotation": 0
+        },
+        {
+          "left": 5,
+          "right": 20,
+          "top": 24,
+          "bottom": 72.00000000000001,
+          "rotation": 0
+        },
+        {
+          "left": 80,
+          "right": 95,
+          "top": 24,
+          "bottom": 72.00000000000001,
+          "rotation": 0
+        },
+        {
+          "left": 5,
+          "right": 95,
+          "top": 79,
+          "bottom": 93,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 27.04
+    },
+    {
+      "value": "カルチャー誌の表紙",
+      "kind": "culture-cover",
+      "image": [
+        7,
+        24,
+        57,
+        67
+      ],
+      "frames": [
+        {
+          "x": 7,
+          "y": 6,
+          "w": 86,
+          "h": 12,
+          "role": "題名",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 69,
+          "y": 24,
+          "w": 24,
+          "h": 12,
+          "role": "主特集",
+          "direction": "horizontal",
+          "size": "medium"
+        },
+        {
+          "x": 69,
+          "y": 42,
+          "w": 24,
+          "h": 10,
+          "role": "小特集",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 69,
+          "y": 58,
+          "w": 24,
+          "h": 10,
+          "role": "小特集",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 69,
+          "y": 74,
+          "w": 24,
+          "h": 10,
+          "role": "小特集",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "左4列の主図版、右2列の編集欄を非対称に分ける。",
+      "ornament": "",
+      "note": "",
+      "surface": "page",
+      "id": "design-03",
+      "src": "layout-previews-v28.svg#design-03",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 7,
+          "right": 93,
+          "top": 6,
+          "bottom": 18.000000000000004,
+          "rotation": 0
+        },
+        {
+          "left": 69,
+          "right": 93,
+          "top": 24,
+          "bottom": 36,
+          "rotation": 0
+        },
+        {
+          "left": 69,
+          "right": 93,
+          "top": 42,
+          "bottom": 52,
+          "rotation": 0
+        },
+        {
+          "left": 69,
+          "right": 93,
+          "top": 58,
+          "bottom": 68,
+          "rotation": 0
+        },
+        {
+          "left": 69,
+          "right": 93,
+          "top": 74,
+          "bottom": 84,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 38.19
+    },
+    {
+      "value": "ゴシック雑誌の表紙",
+      "kind": "gothic-cover",
+      "image": [
+        9,
+        26,
+        49,
+        61
+      ],
+      "frames": [
+        {
+          "x": 68,
+          "y": 8,
+          "w": 27,
+          "h": 16,
+          "role": "題名",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 68,
+          "y": 33,
+          "w": 27,
+          "h": 20,
+          "role": "主特集",
+          "direction": "horizontal",
+          "size": "medium"
+        },
+        {
+          "x": 68,
+          "y": 60,
+          "w": 27,
+          "h": 20,
+          "role": "補助情報",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 9,
+          "y": 91,
+          "w": 49,
+          "h": 4,
+          "role": "作者名",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "左x9〜58%・y26〜87%の細長い図版を尖頭アーチで支え、右x68〜95%へ題字と情報を縦に連ねる非対称版面。文字自体の方向は選択文字設定、作者名は左下。",
+      "ornament": "gothic-arch",
+      "note": "",
+      "surface": "page",
+      "id": "design-04",
+      "src": "layout-previews-v28.svg#design-04",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 68,
+          "right": 95,
+          "top": 8,
+          "bottom": 23.999999999999996,
+          "rotation": 0
+        },
+        {
+          "left": 68,
+          "right": 95,
+          "top": 33,
+          "bottom": 52.99999999999999,
+          "rotation": 0
+        },
+        {
+          "left": 68,
+          "right": 95,
+          "top": 60,
+          "bottom": 80,
+          "rotation": 0
+        },
+        {
+          "left": 9,
+          "right": 58,
+          "top": 91,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 29.89
+    },
+    {
+      "value": "写真集の表紙",
+      "kind": "photobook",
+      "image": [
+        10,
+        10,
+        80,
+        72
+      ],
+      "frames": [
+        {
+          "x": 10,
+          "y": 85,
+          "w": 66,
+          "h": 6,
+          "role": "書名",
+          "direction": "horizontal",
+          "size": "medium"
+        },
+        {
+          "x": 10,
+          "y": 92,
+          "w": 36,
+          "h": 3,
+          "role": "作者名",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "均等10%の余白を囲み、小さな情報領域を左下へ集約する。",
+      "ornament": "",
+      "note": "",
+      "surface": "page",
+      "id": "design-05",
+      "src": "layout-previews-v28.svg#design-05",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 10,
+          "right": 76,
+          "top": 85,
+          "bottom": 91,
+          "rotation": 0
+        },
+        {
+          "left": 10,
+          "right": 46,
+          "top": 92.00000000000001,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 57.6
+    },
+    {
+      "value": "文芸誌の表紙",
+      "kind": "literary",
+      "image": [
+        8,
+        55,
+        68,
+        33
+      ],
+      "frames": [
+        {
+          "x": 84,
+          "y": 8,
+          "w": 8,
+          "h": 48,
+          "role": "題名",
+          "direction": "vertical",
+          "size": "large"
+        },
+        {
+          "x": 70,
+          "y": 8,
+          "w": 8,
+          "h": 35,
+          "role": "特集",
+          "direction": "vertical",
+          "size": "medium"
+        },
+        {
+          "x": 56,
+          "y": 8,
+          "w": 6,
+          "h": 33,
+          "role": "紹介",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 8,
+          "y": 90,
+          "w": 68,
+          "h": 5,
+          "role": "補足",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "右上から左へ読む縦組みと下部25〜45%の図像。",
+      "ornament": "",
+      "note": "",
+      "surface": "page",
+      "id": "design-06",
+      "src": "layout-previews-v28.svg#design-06",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 84,
+          "right": 92,
+          "top": 7.999999999999997,
+          "bottom": 56.00000000000001,
+          "rotation": 0
+        },
+        {
+          "left": 70,
+          "right": 78,
+          "top": 7.999999999999997,
+          "bottom": 43,
+          "rotation": 0
+        },
+        {
+          "left": 56,
+          "right": 62,
+          "top": 8,
+          "bottom": 40.99999999999999,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 76,
+          "top": 90,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 22.44
+    },
+    {
+      "value": "ZINEの表紙",
+      "kind": "zine",
+      "image": [
+        16,
+        34,
+        68,
+        49
+      ],
+      "frames": [
+        {
+          "x": 12,
+          "y": 13,
+          "w": 76,
+          "h": 10,
+          "role": "題名",
+          "direction": "diagonal",
+          "size": "large"
+        },
+        {
+          "x": 10,
+          "y": 85.97065135710234,
+          "w": 55,
+          "h": 5,
+          "role": "注記",
+          "direction": "diagonal",
+          "size": "small"
+        },
+        {
+          "x": 69,
+          "y": 88,
+          "w": 21,
+          "h": 7,
+          "role": "名前",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "主図片は幅68%・高さ49%、周辺2〜4枚以内の無地紙片。上部の短い斜め題字と局所的な5〜12度の紙面内の傾き。",
+      "ornament": "zine-papers",
+      "note": "",
+      "surface": "page",
+      "id": "design-07",
+      "src": "layout-previews-v28.svg#design-07",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 11.375009336391068,
+          "right": 88.62499066360893,
+          "top": 7.465944674134646,
+          "bottom": 28.534055325865353,
+          "rotation": -12
+        },
+        {
+          "left": 9.873250061958187,
+          "right": 65.12674993804183,
+          "top": 81.94130271420471,
+          "bottom": 95,
+          "rotation": -12
+        },
+        {
+          "left": 69,
+          "right": 90,
+          "top": 88,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 33.32
+    },
+    {
+      "value": "インタビュー誌面",
+      "kind": "interview",
+      "image": [
+        5,
+        22,
+        90,
+        34
+      ],
+      "frames": [
+        {
+          "x": 5,
+          "y": 5,
+          "w": 90,
+          "h": 8,
+          "role": "主見出し",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 5,
+          "y": 15,
+          "w": 90,
+          "h": 5,
+          "role": "リード",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 5,
+          "y": 57,
+          "w": 90,
+          "h": 3,
+          "role": "図版説明",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 5,
+          "y": 64,
+          "w": 28,
+          "h": 26,
+          "role": "質問と回答",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 36,
+          "y": 64,
+          "w": 28,
+          "h": 26,
+          "role": "質問と回答",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 67,
+          "y": 64,
+          "w": 28,
+          "h": 26,
+          "role": "質問と回答",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "上x5〜95%・y22〜56%に横長の主図版1点、下y64〜90%に幅28%のQ&A3列。図版の縦横比で左右型へ戻さず、質問と回答を一組ずつ同じ列で読む。",
+      "ornament": "",
+      "note": "",
+      "surface": "page",
+      "id": "design-08",
+      "src": "layout-previews-v28.svg#design-08",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 5,
+          "right": 95,
+          "top": 5,
+          "bottom": 13,
+          "rotation": 0
+        },
+        {
+          "left": 5,
+          "right": 95,
+          "top": 15,
+          "bottom": 20,
+          "rotation": 0
+        },
+        {
+          "left": 5,
+          "right": 95,
+          "top": 57,
+          "bottom": 59.99999999999999,
+          "rotation": 0
+        },
+        {
+          "left": 5,
+          "right": 33,
+          "top": 64,
+          "bottom": 90,
+          "rotation": 0
+        },
+        {
+          "left": 36,
+          "right": 64,
+          "top": 64,
+          "bottom": 90,
+          "rotation": 0
+        },
+        {
+          "left": 67,
+          "right": 95,
+          "top": 64,
+          "bottom": 90,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 30.6
+    },
+    {
+      "value": "見開き特集",
+      "kind": "spread",
+      "image": [
+        4,
+        8,
+        40,
+        82
+      ],
+      "frames": [
+        {
+          "x": 55,
+          "y": 8,
+          "w": 40,
+          "h": 17,
+          "role": "主見出し",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 55,
+          "y": 27,
+          "w": 40,
+          "h": 8,
+          "role": "リード",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 55,
+          "y": 37,
+          "w": 40,
+          "h": 4,
+          "role": "引用",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 56,
+          "y": 44,
+          "w": 18,
+          "h": 46,
+          "role": "本文",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 77,
+          "y": 44,
+          "w": 18,
+          "h": 46,
+          "role": "本文",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "中央47〜53%の綴じ帯を空け、左図版1点、右2本の本文列。",
+      "ornament": "gutter",
+      "note": "",
+      "surface": "spread",
+      "id": "design-09",
+      "src": "layout-previews-v28.svg#design-09",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 55,
+          "right": 95,
+          "top": 7.999999999999998,
+          "bottom": 25,
+          "rotation": 0
+        },
+        {
+          "left": 55,
+          "right": 95,
+          "top": 27,
+          "bottom": 35,
+          "rotation": 0
+        },
+        {
+          "left": 55,
+          "right": 95,
+          "top": 37.00000000000001,
+          "bottom": 41,
+          "rotation": 0
+        },
+        {
+          "left": 56,
+          "right": 74,
+          "top": 44,
+          "bottom": 90,
+          "rotation": 0
+        },
+        {
+          "left": 77,
+          "right": 95,
+          "top": 44,
+          "bottom": 90,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 32.8
+    },
+    {
+      "value": "新聞の一面",
+      "kind": "newspaper",
+      "image": [
+        6,
+        24,
+        57,
+        54
+      ],
+      "frames": [
+        {
+          "x": 6,
+          "y": 5.000000000000001,
+          "w": 88,
+          "h": 11,
+          "role": "許可見出し",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 68,
+          "y": 24,
+          "w": 10,
+          "h": 54,
+          "role": "許可記事",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 83,
+          "y": 24,
+          "w": 10,
+          "h": 54,
+          "role": "許可記事",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 82,
+          "y": 85,
+          "w": 12,
+          "h": 9,
+          "role": "許可記事",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 63,
+          "y": 85,
+          "w": 12,
+          "h": 9,
+          "role": "許可記事",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 44,
+          "y": 85,
+          "w": 12,
+          "h": 9,
+          "role": "許可記事",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 25,
+          "y": 85,
+          "w": 12,
+          "h": 9,
+          "role": "許可記事",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 6,
+          "y": 85,
+          "w": 12,
+          "h": 9,
+          "role": "許可記事",
+          "direction": "vertical",
+          "size": "small"
+        }
+      ],
+      "signature": "6列・3段の細罫、主図版1点。右列と下段に許可原稿だけを配置し、未使用列は空欄。書字方向は文字選択、列の読み順は右から左。",
+      "ornament": "newspaper-rules",
+      "note": "",
+      "surface": "page",
+      "id": "design-10",
+      "src": "layout-previews-v28.svg#design-10",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 6,
+          "right": 94,
+          "top": 4.999999999999999,
+          "bottom": 16,
+          "rotation": 0
+        },
+        {
+          "left": 68,
+          "right": 78,
+          "top": 23.999999999999996,
+          "bottom": 78,
+          "rotation": 0
+        },
+        {
+          "left": 83,
+          "right": 93,
+          "top": 23.999999999999996,
+          "bottom": 78,
+          "rotation": 0
+        },
+        {
+          "left": 82,
+          "right": 94,
+          "top": 85,
+          "bottom": 94,
+          "rotation": 0
+        },
+        {
+          "left": 63,
+          "right": 75,
+          "top": 85,
+          "bottom": 94,
+          "rotation": 0
+        },
+        {
+          "left": 44,
+          "right": 56,
+          "top": 85,
+          "bottom": 94,
+          "rotation": 0
+        },
+        {
+          "left": 25,
+          "right": 37,
+          "top": 85,
+          "bottom": 94,
+          "rotation": 0
+        },
+        {
+          "left": 6,
+          "right": 18,
+          "top": 85,
+          "bottom": 94,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 30.78
+    },
+    {
+      "value": "図鑑の扉",
+      "kind": "field-guide",
+      "image": [
+        20,
+        23,
+        60,
+        61
+      ],
+      "frames": [
+        {
+          "x": 6,
+          "y": 6,
+          "w": 88,
+          "h": 10,
+          "role": "対象名",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 6,
+          "y": 30,
+          "w": 11,
+          "h": 15,
+          "role": "注記",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 83,
+          "y": 54,
+          "w": 11,
+          "h": 15,
+          "role": "注記",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 20,
+          "y": 88,
+          "w": 60,
+          "h": 6,
+          "role": "説明",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "中央60%の全体像1点へ左右注記線を接続し、接写や複製図版を増やさない。",
+      "ornament": "annotation-lines",
+      "note": "",
+      "surface": "page",
+      "id": "design-11",
+      "src": "layout-previews-v28.svg#design-11",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 6,
+          "right": 94,
+          "top": 6,
+          "bottom": 16,
+          "rotation": 0
+        },
+        {
+          "left": 6,
+          "right": 17,
+          "top": 30,
+          "bottom": 45,
+          "rotation": 0
+        },
+        {
+          "left": 83,
+          "right": 94,
+          "top": 54,
+          "bottom": 69,
+          "rotation": 0
+        },
+        {
+          "left": 20,
+          "right": 80,
+          "top": 88,
+          "bottom": 94,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 36.6
+    },
+    {
+      "value": "絵本の表紙",
+      "kind": "picture-book",
+      "image": [
+        5,
+        28,
+        90,
+        61
+      ],
+      "frames": [
+        {
+          "x": 10,
+          "y": 6,
+          "w": 80,
+          "h": 15,
+          "role": "書名",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 30,
+          "y": 91,
+          "w": 40,
+          "h": 4,
+          "role": "作者名",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "上20〜25%の大きな短い書名、下に一続きの物語図版。",
+      "ornament": "",
+      "note": "",
+      "surface": "page",
+      "id": "design-12",
+      "src": "layout-previews-v28.svg#design-12",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 10,
+          "right": 90,
+          "top": 5.999999999999999,
+          "bottom": 21,
+          "rotation": 0
+        },
+        {
+          "left": 30,
+          "right": 70,
+          "top": 91,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 54.9
+    },
+    {
+      "value": "小説の装丁",
+      "kind": "novel",
+      "image": [
+        8,
+        29,
+        69,
+        51
+      ],
+      "frames": [
+        {
+          "x": 83,
+          "y": 8,
+          "w": 9,
+          "h": 49,
+          "role": "書名",
+          "direction": "vertical",
+          "size": "large"
+        },
+        {
+          "x": 9,
+          "y": 8,
+          "w": 6,
+          "h": 19,
+          "role": "作者名",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 8,
+          "y": 85,
+          "w": 84,
+          "h": 9,
+          "role": "紹介",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "片側の縦書名と中央下の図像、紹介がある時だけ下15%以内の帯。",
+      "ornament": "novel-obi",
+      "note": "",
+      "surface": "page",
+      "id": "design-13",
+      "src": "layout-previews-v28.svg#design-13",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 83,
+          "right": 92,
+          "top": 8.000000000000002,
+          "bottom": 57,
+          "rotation": 0
+        },
+        {
+          "left": 9,
+          "right": 15,
+          "top": 8.000000000000002,
+          "bottom": 27,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 92,
+          "top": 85,
+          "bottom": 94,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 35.19
+    },
+    {
+      "value": "音楽アルバムジャケット",
+      "kind": "album",
+      "image": [
+        6,
+        17,
+        76,
+        73
+      ],
+      "frames": [
+        {
+          "x": 56,
+          "y": 5,
+          "w": 38,
+          "h": 8,
+          "role": "作品名",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 59,
+          "y": 91,
+          "w": 35,
+          "h": 4,
+          "role": "作者名",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "正方形でも成立する非対称の図像リズム、作品名と作者名は一群ずつ。",
+      "ornament": "",
+      "note": "",
+      "surface": "page",
+      "id": "design-14",
+      "src": "layout-previews-v28.svg#design-14",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 56,
+          "right": 94,
+          "top": 5,
+          "bottom": 13,
+          "rotation": 0
+        },
+        {
+          "left": 59,
+          "right": 94,
+          "top": 91,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 55.48
+    },
+    {
+      "value": "ゲームのパッケージ",
+      "kind": "game",
+      "image": [
+        5,
+        21,
+        90,
+        45
+      ],
+      "frames": [
+        {
+          "x": 5,
+          "y": 5,
+          "w": 90,
+          "h": 12,
+          "role": "題名",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 5,
+          "y": 72,
+          "w": 58,
+          "h": 19,
+          "role": "世界紹介",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 68,
+          "y": 72,
+          "w": 27,
+          "h": 19,
+          "role": "許可補助情報",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "上y5〜17%の作品名、中央x5〜95%・y21〜66%の主図版1点、下y72〜91%の幅58%と27%の独立情報パネル。左は世界紹介、右は許可された補助原稿だけ。",
+      "ornament": "game-panels",
+      "note": "",
+      "surface": "page",
+      "id": "design-15",
+      "src": "layout-previews-v28.svg#design-15",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 5,
+          "right": 95,
+          "top": 5,
+          "bottom": 17,
+          "rotation": 0
+        },
+        {
+          "left": 5,
+          "right": 63,
+          "top": 72,
+          "bottom": 91,
+          "rotation": 0
+        },
+        {
+          "left": 68,
+          "right": 95,
+          "top": 72,
+          "bottom": 91,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 40.5
+    },
+    {
+      "value": "映画ポスター",
+      "kind": "cinema",
+      "image": [
+        5,
+        15,
+        90,
+        62
+      ],
+      "frames": [
+        {
+          "x": 12,
+          "y": 5.000000000000001,
+          "w": 76,
+          "h": 6,
+          "role": "キャッチ",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 10,
+          "y": 79,
+          "w": 80,
+          "h": 11,
+          "role": "作品名",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 20,
+          "y": 91,
+          "w": 60,
+          "h": 4,
+          "role": "制作情報",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "上10%の短いキャッチ、中央の大図版、下20%のタイトルと細いクレジット。",
+      "ornament": "",
+      "note": "",
+      "surface": "page",
+      "id": "design-16",
+      "src": "layout-previews-v28.svg#design-16",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 12,
+          "right": 88,
+          "top": 4.999999999999999,
+          "bottom": 11,
+          "rotation": 0
+        },
+        {
+          "left": 10,
+          "right": 90,
+          "top": 79,
+          "bottom": 90,
+          "rotation": 0
+        },
+        {
+          "left": 20,
+          "right": 80,
+          "top": 91,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 55.8
+    },
+    {
+      "value": "舞台ポスター",
+      "kind": "stage",
+      "image": [
+        14,
+        22,
+        70,
+        58
+      ],
+      "frames": [
+        {
+          "x": 86,
+          "y": 6,
+          "w": 8,
+          "h": 54,
+          "role": "演目名",
+          "direction": "vertical",
+          "size": "large"
+        },
+        {
+          "x": 14,
+          "y": 84,
+          "w": 70,
+          "h": 6,
+          "role": "紹介",
+          "direction": "horizontal",
+          "size": "medium"
+        },
+        {
+          "x": 14,
+          "y": 92,
+          "w": 70,
+          "h": 3,
+          "role": "制作情報",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "中央70%の舞台と左右の袖、右の縦演目名、下部の制作情報。",
+      "ornament": "stage-sides",
+      "note": "",
+      "surface": "page",
+      "id": "design-17",
+      "src": "layout-previews-v28.svg#design-17",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 86,
+          "right": 94,
+          "top": 5.999999999999999,
+          "bottom": 60,
+          "rotation": 0
+        },
+        {
+          "left": 14,
+          "right": 84,
+          "top": 84,
+          "bottom": 90,
+          "rotation": 0
+        },
+        {
+          "left": 14,
+          "right": 84,
+          "top": 92.00000000000001,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 40.6
+    },
+    {
+      "value": "音楽フェスポスター",
+      "kind": "festival",
+      "image": [
+        6,
+        29,
+        88,
+        47
+      ],
+      "frames": [
+        {
+          "x": 6,
+          "y": 5,
+          "w": 88,
+          "h": 19,
+          "role": "題名",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 6,
+          "y": 82,
+          "w": 26,
+          "h": 11,
+          "role": "情報",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 37,
+          "y": 82,
+          "w": 26,
+          "h": 11,
+          "role": "情報",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 68,
+          "y": 82,
+          "w": 26,
+          "h": 11,
+          "role": "情報",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "上25%の題名、中50%の図像、下25%の均等3列。",
+      "ornament": "",
+      "note": "",
+      "surface": "page",
+      "id": "design-18",
+      "src": "layout-previews-v28.svg#design-18",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 6,
+          "right": 94,
+          "top": 5.000000000000002,
+          "bottom": 24,
+          "rotation": 0
+        },
+        {
+          "left": 6,
+          "right": 32,
+          "top": 82,
+          "bottom": 93,
+          "rotation": 0
+        },
+        {
+          "left": 37,
+          "right": 63,
+          "top": 82,
+          "bottom": 93,
+          "rotation": 0
+        },
+        {
+          "left": 68,
+          "right": 94,
+          "top": 82,
+          "bottom": 93,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 41.36
+    },
+    {
+      "value": "展覧会ポスター",
+      "kind": "exhibition",
+      "image": [
+        10,
+        25,
+        80,
+        56
+      ],
+      "frames": [
+        {
+          "x": 10,
+          "y": 7,
+          "w": 80,
+          "h": 11,
+          "role": "題名",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 10,
+          "y": 85,
+          "w": 80,
+          "h": 5,
+          "role": "作品紹介",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 10,
+          "y": 92,
+          "w": 37,
+          "h": 3,
+          "role": "作者名",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "外周10%の均等余白、図版と左揃えの一辺の情報。",
+      "ornament": "",
+      "note": "",
+      "surface": "page",
+      "id": "design-19",
+      "src": "layout-previews-v28.svg#design-19",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 10,
+          "right": 90,
+          "top": 7.000000000000001,
+          "bottom": 18,
+          "rotation": 0
+        },
+        {
+          "left": 10,
+          "right": 90,
+          "top": 85,
+          "bottom": 90,
+          "rotation": 0
+        },
+        {
+          "left": 10,
+          "right": 47,
+          "top": 92.00000000000001,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 44.8
+    },
+    {
+      "value": "タイポグラフィーポスター",
+      "kind": "type-poster",
+      "image": [
+        58,
+        57,
+        35,
+        32
+      ],
+      "frames": [
+        {
+          "x": 7,
+          "y": 7,
+          "w": 86,
+          "h": 38,
+          "role": "主語句",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 7,
+          "y": 52,
+          "w": 36,
+          "h": 29,
+          "role": "補足",
+          "direction": "vertical",
+          "size": "medium"
+        },
+        {
+          "x": 7,
+          "y": 91,
+          "w": 36,
+          "h": 4,
+          "role": "名前",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "主語句が60〜75%の主形、補助図版は1点だけ小さく、揃えを一軸にする。",
+      "ornament": "",
+      "note": "",
+      "surface": "page",
+      "id": "design-20",
+      "src": "layout-previews-v28.svg#design-20",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 7,
+          "right": 93,
+          "top": 7.000000000000001,
+          "bottom": 45,
+          "rotation": 0
+        },
+        {
+          "left": 7,
+          "right": 43,
+          "top": 52,
+          "bottom": 81,
+          "rotation": 0
+        },
+        {
+          "left": 7,
+          "right": 43,
+          "top": 91,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 11.2
+    },
+    {
+      "value": "スイス式グリッドポスター",
+      "kind": "swiss",
+      "image": [
+        7,
+        29,
+        56,
+        58
+      ],
+      "frames": [
+        {
+          "x": 7,
+          "y": 6,
+          "w": 86,
+          "h": 17,
+          "role": "主見出し",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 68,
+          "y": 29,
+          "w": 25,
+          "h": 13,
+          "role": "補足",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 68,
+          "y": 48,
+          "w": 25,
+          "h": 13,
+          "role": "補足",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 7,
+          "y": 92,
+          "w": 86,
+          "h": 3,
+          "role": "名前",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "均等6列と7%余白。左4列に図版、右2列に情報、全要素の左端を列線に揃える。",
+      "ornament": "swiss-grid",
+      "note": "",
+      "surface": "page",
+      "id": "design-21",
+      "src": "layout-previews-v28.svg#design-21",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 7,
+          "right": 93,
+          "top": 6,
+          "bottom": 23.000000000000004,
+          "rotation": 0
+        },
+        {
+          "left": 68,
+          "right": 93,
+          "top": 28.999999999999996,
+          "bottom": 42,
+          "rotation": 0
+        },
+        {
+          "left": 68,
+          "right": 93,
+          "top": 48,
+          "bottom": 60.99999999999999,
+          "rotation": 0
+        },
+        {
+          "left": 7,
+          "right": 93,
+          "top": 92.00000000000001,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 32.48
+    },
+    {
+      "value": "バウハウスポスター",
+      "kind": "bauhaus",
+      "image": [
+        25,
+        33,
+        56,
+        45
+      ],
+      "frames": [
+        {
+          "x": 10,
+          "y": 78.94616544709025,
+          "w": 83,
+          "h": 10,
+          "role": "題名",
+          "direction": "diagonal",
+          "size": "large"
+        },
+        {
+          "x": 25,
+          "y": 92,
+          "w": 57,
+          "h": 3,
+          "role": "補足",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "一本の垂直軸と斜軸、2〜3個の大きな幾何形、25%以上の空白。",
+      "ornament": "bauhaus-shapes",
+      "note": "",
+      "surface": "page",
+      "id": "design-22",
+      "src": "layout-previews-v28.svg#design-22",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 9.451492733822748,
+          "right": 93.54850726617725,
+          "top": 72.8923308941805,
+          "bottom": 95,
+          "rotation": -12
+        },
+        {
+          "left": 25,
+          "right": 82,
+          "top": 92.00000000000001,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 25.2
+    },
+    {
+      "value": "アールデコポスター",
+      "kind": "deco",
+      "image": [
+        22,
+        23,
+        56,
+        58
+      ],
+      "frames": [
+        {
+          "x": 20,
+          "y": 8,
+          "w": 60,
+          "h": 9,
+          "role": "題名",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 22,
+          "y": 87,
+          "w": 56,
+          "h": 6,
+          "role": "補足",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "一本の中央軸、左右3〜5段の階段状枠、細長い中央題字。",
+      "ornament": "deco-steps",
+      "note": "",
+      "surface": "page",
+      "id": "design-23",
+      "src": "layout-previews-v28.svg#design-23",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 20,
+          "right": 80,
+          "top": 8,
+          "bottom": 17,
+          "rotation": 0
+        },
+        {
+          "left": 22,
+          "right": 78,
+          "top": 87,
+          "bottom": 93,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 32.48
+    },
+    {
+      "value": "アールヌーヴォーポスター",
+      "kind": "nouveau",
+      "image": [
+        25,
+        25,
+        60,
+        59
+      ],
+      "frames": [
+        {
+          "x": 15,
+          "y": 7,
+          "w": 69,
+          "h": 12,
+          "role": "題名",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 25,
+          "y": 88,
+          "w": 60,
+          "h": 6,
+          "role": "補足",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "一つの大きなS字または弧が片側を流れ、題名は曲線内の静かな領域。",
+      "ornament": "nouveau-curve",
+      "note": "",
+      "surface": "page",
+      "id": "design-24",
+      "src": "layout-previews-v28.svg#design-24",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 15,
+          "right": 84,
+          "top": 6.999999999999999,
+          "bottom": 19,
+          "rotation": 0
+        },
+        {
+          "left": 25,
+          "right": 85,
+          "top": 88,
+          "bottom": 94,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 35.4
+    },
+    {
+      "value": "サイケデリックポスター",
+      "kind": "psychedelic",
+      "image": [
+        29,
+        29,
+        47,
+        52
+      ],
+      "frames": [
+        {
+          "x": 13,
+          "y": 8,
+          "w": 75,
+          "h": 15,
+          "role": "主語句",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 20,
+          "y": 87,
+          "w": 60,
+          "h": 6,
+          "role": "補足",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "中央40〜55%の主形と周囲3〜5段の曲線。文字の内側を潰さない。",
+      "ornament": "psychedelic-bands",
+      "note": "",
+      "surface": "page",
+      "id": "design-25",
+      "src": "layout-previews-v28.svg#design-25",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 13,
+          "right": 88,
+          "top": 8,
+          "bottom": 23.000000000000004,
+          "rotation": 0
+        },
+        {
+          "left": 20,
+          "right": 80,
+          "top": 87,
+          "bottom": 93,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 24.44
+    },
+    {
+      "value": "パンク・フライヤー",
+      "kind": "punk",
+      "image": [
+        12,
+        30,
+        76,
+        49
+      ],
+      "frames": [
+        {
+          "x": 11,
+          "y": 14,
+          "w": 78,
+          "h": 12,
+          "role": "主見出し",
+          "direction": "diagonal",
+          "size": "large"
+        },
+        {
+          "x": 11,
+          "y": 84.8568387277215,
+          "w": 70,
+          "h": 5,
+          "role": "補足",
+          "direction": "diagonal",
+          "size": "medium"
+        },
+        {
+          "x": 50,
+          "y": 92,
+          "w": 42,
+          "h": 3,
+          "role": "名前",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "上30%の太い斜め主見出し片、中央に幅76%・高さ49%の主図像、下端に短い補足片。5〜15度の一方向の紙片回転。",
+      "ornament": "punk-cuts",
+      "note": "",
+      "surface": "page",
+      "id": "design-26",
+      "src": "layout-previews-v28.svg#design-26",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 10.1057853685124,
+          "right": 89.8942146314876,
+          "top": 8.339288722816729,
+          "bottom": 31.660711277183275,
+          "rotation": -12
+        },
+        {
+          "left": 11.037143056454644,
+          "right": 80.96285694354536,
+          "top": 79.71367745544299,
+          "bottom": 95,
+          "rotation": -12
+        },
+        {
+          "left": 50,
+          "right": 92,
+          "top": 92.00000000000001,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 37.24
+    },
+    {
+      "value": "レトロ旅行ポスター",
+      "kind": "travel",
+      "image": [
+        5,
+        18,
+        90,
+        70
+      ],
+      "frames": [
+        {
+          "x": 10,
+          "y": 5,
+          "w": 80,
+          "h": 10,
+          "role": "題名",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 10,
+          "y": 90,
+          "w": 80,
+          "h": 5,
+          "role": "コピー",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "景観70〜85%と上または下15〜20%の静かな帯、手前から遠方へ導く輪郭。",
+      "ornament": "",
+      "note": "",
+      "surface": "page",
+      "id": "design-27",
+      "src": "layout-previews-v28.svg#design-27",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 10,
+          "right": 90,
+          "top": 5,
+          "bottom": 15,
+          "rotation": 0
+        },
+        {
+          "left": 10,
+          "right": 90,
+          "top": 90,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 63
+    },
+    {
+      "value": "通常の一枚絵",
+      "kind": "art",
+      "image": [
+        0,
+        0,
+        100,
+        100
+      ],
+      "frames": [],
+      "signature": "枠・帯・文字欄のない一場面。前景・中景・遠景を連続させ、外周5%に核心を置かない。",
+      "ornament": "art-depth",
+      "note": "",
+      "surface": "full",
+      "id": "design-28",
+      "src": "layout-previews-v28.svg#design-28",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [],
+      "imageAreaPercent": 100
+    },
+    {
+      "value": "キャラクターのキービジュアル",
+      "kind": "key-visual",
+      "image": [
+        0,
+        0,
+        100,
+        100
+      ],
+      "frames": [
+        {
+          "x": 66,
+          "y": 83,
+          "w": 28,
+          "h": 9,
+          "role": "許可原稿",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "中央60〜75%に主題を置き、進行方向に余白を寄せ、背景の密度を下げる。",
+      "ornament": "key-direction",
+      "note": "",
+      "surface": "full",
+      "id": "design-29",
+      "src": "layout-previews-v28.svg#design-29",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 66,
+          "right": 94,
+          "top": 83,
+          "bottom": 92.00000000000001,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 100
+    },
+    {
+      "value": "幻想風景画",
+      "kind": "fantasy-landscape",
+      "image": [
+        0,
+        0,
+        100,
+        100
+      ],
+      "frames": [],
+      "signature": "人物を主目的にせず、前景20%・中景45%・遠景35%の同じ幻想空間を大きく見せる。",
+      "ornament": "landscape-depth",
+      "note": "",
+      "surface": "full",
+      "id": "design-30",
+      "src": "layout-previews-v28.svg#design-30",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [],
+      "imageAreaPercent": 100
+    },
+    {
+      "value": "映画のワンシーン",
+      "kind": "film-scene",
+      "image": [
+        0,
+        0,
+        100,
+        100
+      ],
+      "frames": [],
+      "signature": "主題を片側へ、行動・視線の先を反対側へ。一場面であり題字・上下黒帯を自動追加しない。",
+      "ornament": "scene-open-space",
+      "note": "",
+      "surface": "full",
+      "id": "design-31",
+      "src": "layout-previews-v28.svg#design-31",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [],
+      "imageAreaPercent": 100
+    },
+    {
+      "value": "ファッション・エディトリアル",
+      "kind": "fashion-editorial",
+      "image": [
+        5,
+        8,
+        74,
+        85
+      ],
+      "frames": [
+        {
+          "x": 84,
+          "y": 12,
+          "w": 9,
+          "h": 44,
+          "role": "見出し",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 5,
+          "y": 92,
+          "w": 74,
+          "h": 3,
+          "role": "図版説明",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "70〜85%の主図版とその長辺の整列軸、片側15〜30%の静かな編集余白。",
+      "ornament": "",
+      "note": "",
+      "surface": "page",
+      "id": "design-32",
+      "src": "layout-previews-v28.svg#design-32",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 84,
+          "right": 93,
+          "top": 12,
+          "bottom": 56.00000000000001,
+          "rotation": 0
+        },
+        {
+          "left": 5,
+          "right": 79,
+          "top": 92.00000000000001,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 62.9
+    },
+    {
+      "value": "物語の挿絵",
+      "kind": "story-illustration",
+      "image": [
+        10,
+        26,
+        80,
+        55
+      ],
+      "frames": [
+        {
+          "x": 14,
+          "y": 7,
+          "w": 70,
+          "h": 13,
+          "role": "許可原稿",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 40,
+          "y": 88,
+          "w": 50,
+          "h": 5,
+          "role": "短い説明",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "20〜35%の静かな空白と、周辺で弱まる図像の縁。大題字や表紙の帯を足さない。",
+      "ornament": "soft-edges",
+      "note": "",
+      "surface": "page",
+      "id": "design-33",
+      "src": "layout-previews-v28.svg#design-33",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 14,
+          "right": 84,
+          "top": 6.999999999999999,
+          "bottom": 20,
+          "rotation": 0
+        },
+        {
+          "left": 40,
+          "right": 90,
+          "top": 88,
+          "bottom": 93,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 44
+    },
+    {
+      "value": "絵巻物",
+      "kind": "scroll",
+      "image": [
+        7,
+        35,
+        86,
+        34
+      ],
+      "frames": [
+        {
+          "x": 76,
+          "y": 72,
+          "w": 14,
+          "h": 9,
+          "role": "短文",
+          "direction": "vertical",
+          "size": "small"
+        }
+      ],
+      "signature": "横に一続きの図像の流れ、巻頭と巻末の支持。一つの主図版を分割・複製しない。",
+      "ornament": "scroll-rolls",
+      "note": "",
+      "surface": "page",
+      "id": "design-34",
+      "src": "layout-previews-v28.svg#design-34",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 76,
+          "right": 90,
+          "top": 72,
+          "bottom": 81,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 29.24
+    },
+    {
+      "value": "屏風絵",
+      "kind": "screen",
+      "image": [
+        5,
+        24,
+        90,
+        58
+      ],
+      "frames": [
+        {
+          "x": 72,
+          "y": 29,
+          "w": 12,
+          "h": 17,
+          "role": "短文",
+          "direction": "vertical",
+          "size": "small"
+        }
+      ],
+      "signature": "4〜6面の折れ線、主要輪郭は折れ線の左右2〜3%から離し、景色だけ連続させる。",
+      "ornament": "screen-folds",
+      "note": "",
+      "surface": "page",
+      "id": "design-35",
+      "src": "layout-previews-v28.svg#design-35",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 72,
+          "right": 84,
+          "top": 29,
+          "bottom": 46.00000000000001,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 52.2
+    },
+    {
+      "value": "掛け軸",
+      "kind": "hanging-scroll",
+      "image": [
+        15,
+        31,
+        70,
+        50
+      ],
+      "frames": [
+        {
+          "x": 77,
+          "y": 10,
+          "w": 7,
+          "h": 19,
+          "role": "短文",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 22,
+          "y": 87,
+          "w": 6,
+          "h": 7,
+          "role": "名前",
+          "direction": "vertical",
+          "size": "small"
+        }
+      ],
+      "signature": "上25〜35%の空き、中央45〜55%の主題、下15〜25%の余韻と縦長の表装。",
+      "ornament": "hanging-mount",
+      "note": "",
+      "surface": "page",
+      "id": "design-36",
+      "src": "layout-previews-v28.svg#design-36",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 77,
+          "right": 84,
+          "top": 10.000000000000002,
+          "bottom": 29,
+          "rotation": 0
+        },
+        {
+          "left": 22,
+          "right": 28,
+          "top": 87,
+          "bottom": 94,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 35
+    },
+    {
+      "value": "タロットカード",
+      "kind": "tarot",
+      "image": [
+        11,
+        20,
+        78,
+        62
+      ],
+      "frames": [
+        {
+          "x": 18,
+          "y": 7,
+          "w": 64,
+          "h": 8,
+          "role": "許可名",
+          "direction": "horizontal",
+          "size": "medium"
+        },
+        {
+          "x": 18,
+          "y": 87,
+          "w": 64,
+          "h": 7,
+          "role": "短文",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "対称の枠と上下10〜12%の帯、中央70%の象徴図像。原稿のない番号を足さない。",
+      "ornament": "tarot-frame",
+      "note": "",
+      "surface": "page",
+      "id": "design-37",
+      "src": "layout-previews-v28.svg#design-37",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 18,
+          "right": 82,
+          "top": 7.000000000000001,
+          "bottom": 15,
+          "rotation": 0
+        },
+        {
+          "left": 18,
+          "right": 82,
+          "top": 87,
+          "bottom": 94,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 48.36
+    },
+    {
+      "value": "トレーディングカード",
+      "kind": "trading-card",
+      "image": [
+        8,
+        23,
+        84,
+        58
+      ],
+      "frames": [
+        {
+          "x": 8,
+          "y": 6,
+          "w": 84,
+          "h": 11,
+          "role": "名前",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 8,
+          "y": 85,
+          "w": 84,
+          "h": 10,
+          "role": "説明",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "上10〜15%の名前帯、中央60〜70%の図像、下15〜20%の説明枠。",
+      "ornament": "card-lines",
+      "note": "",
+      "surface": "page",
+      "id": "design-38",
+      "src": "layout-previews-v28.svg#design-38",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 8,
+          "right": 92,
+          "top": 5.999999999999999,
+          "bottom": 17,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 92,
+          "top": 85,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 48.72
+    },
+    {
+      "value": "図案・パターン",
+      "kind": "pattern",
+      "image": [
+        5,
+        5,
+        90,
+        90
+      ],
+      "frames": [],
+      "signature": "一つの反復単位と小単位を半幅ずらし格子に揃え、人物の複製ではなく指定モチーフの反復にする。",
+      "ornament": "repeat-grid",
+      "note": "",
+      "surface": "page",
+      "id": "design-39",
+      "src": "layout-previews-v28.svg#design-39",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [],
+      "imageAreaPercent": 81
+    },
+    {
+      "value": "noteサムネイル",
+      "kind": "thumbnail",
+      "image": [
+        42,
+        15,
+        52,
+        72
+      ],
+      "frames": [
+        {
+          "x": 7,
+          "y": 23,
+          "w": 29,
+          "h": 33,
+          "role": "主見出し",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 7,
+          "y": 65,
+          "w": 29,
+          "h": 9,
+          "role": "補足",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 7,
+          "y": 82,
+          "w": 29,
+          "h": 4,
+          "role": "名前",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "主画像55〜70%と短い見出し欄の2領域。縮小して読める1〜3行。",
+      "ornament": "",
+      "note": "",
+      "surface": "page",
+      "id": "design-40",
+      "src": "layout-previews-v28.svg#design-40",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 7,
+          "right": 36,
+          "top": 23.000000000000004,
+          "bottom": 55.99999999999999,
+          "rotation": 0
+        },
+        {
+          "left": 7,
+          "right": 36,
+          "top": 65,
+          "bottom": 74,
+          "rotation": 0
+        },
+        {
+          "left": 7,
+          "right": 36,
+          "top": 82,
+          "bottom": 86,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 37.44
+    },
+    {
+      "value": "アイコン・肖像",
+      "kind": "icon",
+      "image": [
+        12,
+        22,
+        76,
+        54
+      ],
+      "frames": [],
+      "signature": "中央80%の主形、円形切抜きの四隅を空け、重要な細線を外周へ置かない。",
+      "ornament": "circle-crop",
+      "note": "",
+      "surface": "page",
+      "id": "design-41",
+      "src": "layout-previews-v28.svg#design-41",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [],
+      "imageAreaPercent": 41.04
+    },
+    {
+      "value": "紋章・エンブレム",
+      "kind": "emblem",
+      "image": [
+        26,
+        24,
+        48,
+        45
+      ],
+      "frames": [
+        {
+          "x": 20,
+          "y": 78,
+          "w": 60,
+          "h": 9,
+          "role": "短文",
+          "direction": "horizontal",
+          "size": "medium"
+        }
+      ],
+      "signature": "中心記号45〜60%、周囲の支持形15〜20%、外側余白10%の一本の中心軸。",
+      "ornament": "emblem-outline",
+      "note": "",
+      "surface": "page",
+      "id": "design-42",
+      "src": "layout-previews-v28.svg#design-42",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 20,
+          "right": 80,
+          "top": 78,
+          "bottom": 87,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 21.6
+    },
+    {
+      "value": "ステッカー",
+      "kind": "sticker",
+      "image": [
+        13,
+        14,
+        74,
+        67
+      ],
+      "frames": [
+        {
+          "x": 27,
+          "y": 85,
+          "w": 46,
+          "h": 8,
+          "role": "短文",
+          "direction": "horizontal",
+          "size": "medium"
+        }
+      ],
+      "signature": "主形75〜85%と幅の揃った切抜き安全帯、短い文字は主形に連結する。",
+      "ornament": "die-cut",
+      "note": "",
+      "surface": "page",
+      "id": "design-43",
+      "src": "layout-previews-v28.svg#design-43",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 27,
+          "right": 73,
+          "top": 85,
+          "bottom": 93,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 49.58
+    },
+    {
+      "value": "切手",
+      "kind": "stamp",
+      "image": [
+        17,
+        26,
+        66,
+        45
+      ],
+      "frames": [
+        {
+          "x": 21,
+          "y": 75,
+          "w": 58,
+          "h": 7,
+          "role": "短い題名",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "等間隔の目打ちと8〜12%の内側余白、国名・額面・年号を増やさない。",
+      "ornament": "perforations",
+      "note": "",
+      "surface": "page",
+      "id": "design-44",
+      "src": "layout-previews-v28.svg#design-44",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 21,
+          "right": 79,
+          "top": 74.99999999999999,
+          "bottom": 82,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 29.7
+    },
+    {
+      "value": "ポストカード",
+      "kind": "postcard",
+      "image": [
+        6,
+        8,
+        88,
+        73
+      ],
+      "frames": [
+        {
+          "x": 6,
+          "y": 86,
+          "w": 88,
+          "h": 8,
+          "role": "短いメッセージ",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "主画像75〜90%に対して一辺だけに静かなメッセージ余白を寄せる。",
+      "ornament": "",
+      "note": "",
+      "surface": "page",
+      "id": "design-45",
+      "src": "layout-previews-v28.svg#design-45",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 6,
+          "right": 94,
+          "top": 86,
+          "bottom": 94,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 64.24
+    },
+    {
+      "value": "スマホ壁紙",
+      "kind": "wallpaper",
+      "image": [
+        0,
+        0,
+        100,
+        100
+      ],
+      "frames": [
+        {
+          "x": 22,
+          "y": 79,
+          "w": 56,
+          "h": 6,
+          "role": "許可短文",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "上20〜25%は時計想定の低密度空間、主題は中央下、左右7%と下10%の核心安全域。",
+      "ornament": "wallpaper-safe",
+      "note": "",
+      "surface": "full",
+      "id": "design-46",
+      "src": "layout-previews-v28.svg#design-46",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 22,
+          "right": 78,
+          "top": 79,
+          "bottom": 85,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 100
+    },
+    {
+      "value": "広告ビジュアル",
+      "kind": "advert",
+      "image": [
+        7,
+        20,
+        58,
+        66
+      ],
+      "frames": [
+        {
+          "x": 7,
+          "y": 5.000000000000001,
+          "w": 86,
+          "h": 11,
+          "role": "主見出し",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 71,
+          "y": 23,
+          "w": 22,
+          "h": 15,
+          "role": "紹介",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 71,
+          "y": 45,
+          "w": 22,
+          "h": 15,
+          "role": "説明",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 71,
+          "y": 67,
+          "w": 22,
+          "h": 15,
+          "role": "説明",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 7,
+          "y": 91,
+          "w": 86,
+          "h": 4,
+          "role": "名前",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "signature": "均等4列、50〜65%の主画像、15〜20%の主見出し、20〜30%の説明。",
+      "ornament": "",
+      "note": "",
+      "surface": "page",
+      "id": "design-47",
+      "src": "layout-previews-v28.svg#design-47",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 7,
+          "right": 93,
+          "top": 4.999999999999999,
+          "bottom": 16,
+          "rotation": 0
+        },
+        {
+          "left": 71,
+          "right": 93,
+          "top": 22.999999999999996,
+          "bottom": 38,
+          "rotation": 0
+        },
+        {
+          "left": 71,
+          "right": 93,
+          "top": 45,
+          "bottom": 60,
+          "rotation": 0
+        },
+        {
+          "left": 71,
+          "right": 93,
+          "top": 67,
+          "bottom": 82,
+          "rotation": 0
+        },
+        {
+          "left": 7,
+          "right": 93,
+          "top": 91,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "imageAreaPercent": 38.28
+    },
+    {
+      "value": "自然・都市の風景画",
+      "kind": "landscape",
+      "image": [
+        0,
+        0,
+        100,
+        100
+      ],
+      "frames": [],
+      "signature": "地形または建築の前中後景を同じ消失点へ結び、空間の記録を全面に描く。",
+      "ornament": "urban-depth",
+      "note": "",
+      "surface": "full",
+      "id": "design-48",
+      "src": "layout-previews-v28.svg#design-48",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [],
+      "imageAreaPercent": 100
+    }
+  ],
+  "typography": [
+    {
+      "value": "デザインに合わせて自動編集",
+      "frames": [
+        {
+          "x": 8,
+          "y": 7,
+          "w": 84,
+          "h": 11,
+          "role": "許可見出し",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 8,
+          "y": 82,
+          "w": 84,
+          "h": 10,
+          "role": "必要な原稿",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "quantity": "選択デザインの必要原稿だけ",
+      "direction": "デザインに従う",
+      "placement": "図版を保ち、そのデザインの情報領域へ階層を合わせる。",
+      "id": "type-01",
+      "src": "typography-previews-v28.svg#type-01",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 8,
+          "right": 92,
+          "top": 7.000000000000001,
+          "bottom": 18,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 92,
+          "top": 82,
+          "bottom": 92.00000000000001,
+          "rotation": 0
+        }
+      ],
+      "manuscriptGroups": 2,
+      "roleLabelsAreCopy": false
+    },
+    {
+      "value": "クリエイター名＋自由な見出し",
+      "frames": [
+        {
+          "x": 8,
+          "y": 7,
+          "w": 84,
+          "h": 14,
+          "role": "主見出し",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 8,
+          "y": 88,
+          "w": 42,
+          "h": 5,
+          "role": "作者名",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "quantity": "見出し1＋名前1",
+      "direction": "横書き",
+      "placement": "主見出しを情報領域の始点、作者名を同じ揃えの終点に離す。",
+      "id": "type-02",
+      "src": "typography-previews-v28.svg#type-02",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 8,
+          "right": 92,
+          "top": 6.999999999999999,
+          "bottom": 21,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 50,
+          "top": 88,
+          "bottom": 93,
+          "rotation": 0
+        }
+      ],
+      "manuscriptGroups": 2,
+      "roleLabelsAreCopy": false
+    },
+    {
+      "value": "クリエイター名だけ",
+      "frames": [
+        {
+          "x": 56,
+          "y": 88,
+          "w": 36,
+          "h": 5,
+          "role": "作者名",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "quantity": "名前1だけ",
+      "direction": "横書き",
+      "placement": "主図版の静かな右下の余白へ一度だけ。",
+      "id": "type-03",
+      "src": "typography-previews-v28.svg#type-03",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 56,
+          "right": 92,
+          "top": 88,
+          "bottom": 93,
+          "rotation": 0
+        }
+      ],
+      "manuscriptGroups": 1,
+      "roleLabelsAreCopy": false
+    },
+    {
+      "value": "雑誌風・見出しと特集をたっぷり",
+      "frames": [
+        {
+          "x": 8,
+          "y": 6,
+          "w": 84,
+          "h": 11,
+          "role": "主見出し",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 8,
+          "y": 22,
+          "w": 84,
+          "h": 5,
+          "role": "主特集補足",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 8,
+          "y": 35,
+          "w": 11,
+          "h": 12,
+          "role": "特集",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 8,
+          "y": 49,
+          "w": 11,
+          "h": 6,
+          "role": "補足",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 8,
+          "y": 60,
+          "w": 11,
+          "h": 12,
+          "role": "特集",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 8,
+          "y": 74,
+          "w": 11,
+          "h": 6,
+          "role": "補足",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 81,
+          "y": 35,
+          "w": 11,
+          "h": 12,
+          "role": "特集",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 81,
+          "y": 49,
+          "w": 11,
+          "h": 6,
+          "role": "補足",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 81,
+          "y": 60,
+          "w": 11,
+          "h": 12,
+          "role": "特集",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 81,
+          "y": 74,
+          "w": 11,
+          "h": 6,
+          "role": "補足",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 8,
+          "y": 89,
+          "w": 42,
+          "h": 4,
+          "role": "作者名",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "quantity": "主見出し1＋補足1＋特集と補足4組＋名前1",
+      "direction": "見出し横・特集縦",
+      "placement": "大見出しは上、4組の短い特集は左右の縦列、名前は下。選択デザインが内ページでも記事本文やリードを追加しない。",
+      "id": "type-04",
+      "src": "typography-previews-v28.svg#type-04",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 8,
+          "right": 92,
+          "top": 5.999999999999999,
+          "bottom": 17,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 92,
+          "top": 22,
+          "bottom": 27,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 19,
+          "top": 35,
+          "bottom": 47,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 19,
+          "top": 49,
+          "bottom": 55,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 19,
+          "top": 59.99999999999999,
+          "bottom": 72,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 19,
+          "top": 74,
+          "bottom": 80,
+          "rotation": 0
+        },
+        {
+          "left": 81,
+          "right": 92,
+          "top": 35,
+          "bottom": 47,
+          "rotation": 0
+        },
+        {
+          "left": 81,
+          "right": 92,
+          "top": 49,
+          "bottom": 55,
+          "rotation": 0
+        },
+        {
+          "left": 81,
+          "right": 92,
+          "top": 59.99999999999999,
+          "bottom": 72,
+          "rotation": 0
+        },
+        {
+          "left": 81,
+          "right": 92,
+          "top": 74,
+          "bottom": 80,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 50,
+          "top": 89,
+          "bottom": 93,
+          "rotation": 0
+        }
+      ],
+      "manuscriptGroups": 11,
+      "roleLabelsAreCopy": false
+    },
+    {
+      "value": "映画ポスター風・タイトルとクレジット",
+      "frames": [
+        {
+          "x": 16,
+          "y": 8,
+          "w": 68,
+          "h": 6,
+          "role": "キャッチ",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 10,
+          "y": 65,
+          "w": 80,
+          "h": 12,
+          "role": "作品名",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 28,
+          "y": 80,
+          "w": 44,
+          "h": 4,
+          "role": "作者名",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 15,
+          "y": 86,
+          "w": 70,
+          "h": 2,
+          "role": "制作情報1",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 15,
+          "y": 90,
+          "w": 70,
+          "h": 2,
+          "role": "制作情報2",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 15,
+          "y": 94,
+          "w": 70,
+          "h": 1,
+          "role": "制作情報3",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "quantity": "題名1＋キャッチ1＋名前1＋制作情報3行",
+      "direction": "横書き中央揃え",
+      "placement": "キャッチを上、作品名を下部最大、作者名と3行の制作情報を最下部。",
+      "id": "type-05",
+      "src": "typography-previews-v28.svg#type-05",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 16,
+          "right": 84,
+          "top": 8,
+          "bottom": 14.000000000000002,
+          "rotation": 0
+        },
+        {
+          "left": 10,
+          "right": 90,
+          "top": 64.99999999999999,
+          "bottom": 77,
+          "rotation": 0
+        },
+        {
+          "left": 28,
+          "right": 72,
+          "top": 80,
+          "bottom": 84,
+          "rotation": 0
+        },
+        {
+          "left": 15,
+          "right": 85,
+          "top": 86,
+          "bottom": 88,
+          "rotation": 0
+        },
+        {
+          "left": 15,
+          "right": 85,
+          "top": 89.99999999999999,
+          "bottom": 91.99999999999999,
+          "rotation": 0
+        },
+        {
+          "left": 15,
+          "right": 85,
+          "top": 94,
+          "bottom": 94.99999999999999,
+          "rotation": 0
+        }
+      ],
+      "manuscriptGroups": 6,
+      "roleLabelsAreCopy": false
+    },
+    {
+      "value": "広告チラシ風・情報をたっぷり",
+      "frames": [
+        {
+          "x": 8,
+          "y": 6,
+          "w": 84,
+          "h": 12,
+          "role": "主見出し",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 8,
+          "y": 23,
+          "w": 84,
+          "h": 8,
+          "role": "紹介",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 8,
+          "y": 63,
+          "w": 25,
+          "h": 5,
+          "role": "情報見出し1",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 8,
+          "y": 71,
+          "w": 25,
+          "h": 15,
+          "role": "情報本文1",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 37,
+          "y": 63,
+          "w": 25,
+          "h": 5,
+          "role": "情報見出し2",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 37,
+          "y": 71,
+          "w": 25,
+          "h": 15,
+          "role": "情報本文2",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 66,
+          "y": 63,
+          "w": 26,
+          "h": 5,
+          "role": "情報見出し3",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 66,
+          "y": 71,
+          "w": 26,
+          "h": 15,
+          "role": "情報本文3",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 8,
+          "y": 90,
+          "w": 42,
+          "h": 4,
+          "role": "作者名",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "quantity": "見出し1＋紹介1＋見出しと本文3組＋名前1",
+      "direction": "横書き3列",
+      "placement": "見出し・紹介の下に3組の見出しと対応本文を同じ列へ置き、名前を最下部。",
+      "id": "type-06",
+      "src": "typography-previews-v28.svg#type-06",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 8,
+          "right": 92,
+          "top": 6,
+          "bottom": 18.000000000000004,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 92,
+          "top": 22.999999999999996,
+          "bottom": 31,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 33,
+          "top": 63,
+          "bottom": 68,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 33,
+          "top": 71,
+          "bottom": 86,
+          "rotation": 0
+        },
+        {
+          "left": 37,
+          "right": 62,
+          "top": 63,
+          "bottom": 68,
+          "rotation": 0
+        },
+        {
+          "left": 37,
+          "right": 62,
+          "top": 71,
+          "bottom": 86,
+          "rotation": 0
+        },
+        {
+          "left": 66,
+          "right": 92,
+          "top": 63,
+          "bottom": 68,
+          "rotation": 0
+        },
+        {
+          "left": 66,
+          "right": 92,
+          "top": 71,
+          "bottom": 86,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 50,
+          "top": 89.99999999999999,
+          "bottom": 94,
+          "rotation": 0
+        }
+      ],
+      "manuscriptGroups": 9,
+      "roleLabelsAreCopy": false
+    },
+    {
+      "value": "新聞風・記事と段組み",
+      "frames": [
+        {
+          "x": 8,
+          "y": 6,
+          "w": 84,
+          "h": 12,
+          "role": "主見出し",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 8,
+          "y": 23,
+          "w": 84,
+          "h": 6,
+          "role": "リード",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 8,
+          "y": 48,
+          "w": 84,
+          "h": 4,
+          "role": "図版説明",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 80,
+          "y": 56,
+          "w": 12,
+          "h": 36,
+          "role": "本文",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 62,
+          "y": 56,
+          "w": 12,
+          "h": 36,
+          "role": "本文",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 44,
+          "y": 56,
+          "w": 12,
+          "h": 36,
+          "role": "本文",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 26,
+          "y": 56,
+          "w": 12,
+          "h": 9,
+          "role": "副見出し",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 26,
+          "y": 68,
+          "w": 12,
+          "h": 24,
+          "role": "副記事",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 8,
+          "y": 56,
+          "w": 12,
+          "h": 9,
+          "role": "副見出し",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 8,
+          "y": 68,
+          "w": 12,
+          "h": 24,
+          "role": "副記事",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 8,
+          "y": 92,
+          "w": 42,
+          "h": 3,
+          "role": "作者名",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "quantity": "見出し1＋リード1＋本文3＋副記事2組＋図版説明1＋名前1",
+      "direction": "見出し横・記事縦右から左",
+      "placement": "上段の見出しとリードから下段の縦記事へ進み、図版説明は図版直下、名前は欄末。",
+      "id": "type-07",
+      "src": "typography-previews-v28.svg#type-07",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 8,
+          "right": 92,
+          "top": 6,
+          "bottom": 18.000000000000004,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 92,
+          "top": 22.999999999999996,
+          "bottom": 29,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 92,
+          "top": 48,
+          "bottom": 52,
+          "rotation": 0
+        },
+        {
+          "left": 80,
+          "right": 92,
+          "top": 55.99999999999999,
+          "bottom": 91.99999999999999,
+          "rotation": 0
+        },
+        {
+          "left": 62,
+          "right": 74,
+          "top": 55.99999999999999,
+          "bottom": 91.99999999999999,
+          "rotation": 0
+        },
+        {
+          "left": 44,
+          "right": 56,
+          "top": 55.99999999999999,
+          "bottom": 91.99999999999999,
+          "rotation": 0
+        },
+        {
+          "left": 26,
+          "right": 38,
+          "top": 56.00000000000001,
+          "bottom": 65,
+          "rotation": 0
+        },
+        {
+          "left": 26,
+          "right": 38,
+          "top": 68,
+          "bottom": 92.00000000000001,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 20,
+          "top": 56.00000000000001,
+          "bottom": 65,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 20,
+          "top": 68,
+          "bottom": 92.00000000000001,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 50,
+          "top": 92.00000000000001,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "manuscriptGroups": 11,
+      "roleLabelsAreCopy": false
+    },
+    {
+      "value": "物語の装丁風・タイトルと紹介",
+      "frames": [
+        {
+          "x": 80,
+          "y": 9,
+          "w": 10,
+          "h": 39,
+          "role": "作品名",
+          "direction": "vertical",
+          "size": "large"
+        },
+        {
+          "x": 12,
+          "y": 11,
+          "w": 6,
+          "h": 16,
+          "role": "作者名",
+          "direction": "vertical",
+          "size": "small"
+        },
+        {
+          "x": 12,
+          "y": 86,
+          "w": 78,
+          "h": 8,
+          "role": "紹介文",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "quantity": "作品名1＋名前1＋紹介1段落",
+      "direction": "題名縦・紹介横",
+      "placement": "作品名を情報領域の右上、作者名を離した縦列、紹介を下部一段落。",
+      "id": "type-08",
+      "src": "typography-previews-v28.svg#type-08",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 80,
+          "right": 90,
+          "top": 8.999999999999998,
+          "bottom": 48,
+          "rotation": 0
+        },
+        {
+          "left": 12,
+          "right": 18,
+          "top": 11,
+          "bottom": 27,
+          "rotation": 0
+        },
+        {
+          "left": 12,
+          "right": 90,
+          "top": 86,
+          "bottom": 94,
+          "rotation": 0
+        }
+      ],
+      "manuscriptGroups": 3,
+      "roleLabelsAreCopy": false
+    },
+    {
+      "value": "HALLOWEEN＋クリエイター名",
+      "frames": [
+        {
+          "x": 8,
+          "y": 8,
+          "w": 84,
+          "h": 10,
+          "role": "HALLOWEEN",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 57,
+          "y": 88,
+          "w": 35,
+          "h": 4,
+          "role": "作者名",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "quantity": "HALLOWEEN1語＋名前1",
+      "direction": "横書き",
+      "placement": "一語を上部、名前を右下。副題・署名・説明を追加しない。",
+      "id": "type-09",
+      "src": "typography-previews-v28.svg#type-09",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 8,
+          "right": 92,
+          "top": 8,
+          "bottom": 18,
+          "rotation": 0
+        },
+        {
+          "left": 57,
+          "right": 92,
+          "top": 88,
+          "bottom": 92.00000000000001,
+          "rotation": 0
+        }
+      ],
+      "manuscriptGroups": 2,
+      "roleLabelsAreCopy": false
+    },
+    {
+      "value": "HALLOWEENのみ",
+      "frames": [
+        {
+          "x": 8,
+          "y": 8,
+          "w": 84,
+          "h": 10,
+          "role": "HALLOWEEN",
+          "direction": "horizontal",
+          "size": "large"
+        }
+      ],
+      "quantity": "大文字HALLOWEEN1語だけ",
+      "direction": "横書き",
+      "placement": "一語だけを情報領域の最大の一群にする。下部を名前や副題で埋めない。",
+      "id": "type-10",
+      "src": "typography-previews-v28.svg#type-10",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 8,
+          "right": 92,
+          "top": 8,
+          "bottom": 18,
+          "rotation": 0
+        }
+      ],
+      "manuscriptGroups": 1,
+      "roleLabelsAreCopy": false
+    },
+    {
+      "value": "短いタイトル＋名前",
+      "frames": [
+        {
+          "x": 10,
+          "y": 78,
+          "w": 80,
+          "h": 10,
+          "role": "短い題名",
+          "direction": "horizontal",
+          "size": "medium"
+        },
+        {
+          "x": 10,
+          "y": 91,
+          "w": 42,
+          "h": 4,
+          "role": "作者名",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "quantity": "短い題名1＋名前1",
+      "direction": "横書き左揃え",
+      "placement": "静かな下部の同じ左端に題名と作者名を2段でまとめる。",
+      "id": "type-11",
+      "src": "typography-previews-v28.svg#type-11",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 10,
+          "right": 90,
+          "top": 78,
+          "bottom": 88,
+          "rotation": 0
+        },
+        {
+          "left": 10,
+          "right": 52,
+          "top": 91,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "manuscriptGroups": 2,
+      "roleLabelsAreCopy": false
+    },
+    {
+      "value": "手書きサイン風の名前",
+      "frames": [
+        {
+          "x": 52,
+          "y": 85,
+          "w": 39,
+          "h": 7,
+          "role": "作者名",
+          "direction": "diagonal",
+          "size": "medium"
+        }
+      ],
+      "quantity": "名前1だけ",
+      "direction": "筆記風・紙面内で斜め約12度",
+      "placement": "右下の一群だけ。カメラや主図版は傾けない。",
+      "id": "type-12",
+      "src": "typography-previews-v28.svg#type-12",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 51.407354500683766,
+          "right": 91.59264549931623,
+          "top": 82.18057056104146,
+          "bottom": 94.81942943895854,
+          "rotation": -12
+        }
+      ],
+      "manuscriptGroups": 1,
+      "roleLabelsAreCopy": false
+    },
+    {
+      "value": "墨の落款風の名前",
+      "frames": [
+        {
+          "x": 79,
+          "y": 80,
+          "w": 9,
+          "h": 12,
+          "role": "作者",
+          "direction": "vertical",
+          "size": "medium"
+        }
+      ],
+      "quantity": "名前の落款1だけ",
+      "direction": "縦書き小枠",
+      "placement": "主題から離れた下部の余白へ小さな一つの落款。",
+      "id": "type-13",
+      "src": "typography-previews-v28.svg#type-13",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 79,
+          "right": 88,
+          "top": 79.99999999999999,
+          "bottom": 91.99999999999999,
+          "rotation": 0
+        }
+      ],
+      "manuscriptGroups": 1,
+      "roleLabelsAreCopy": false
+    },
+    {
+      "value": "文字を一切入れない",
+      "frames": [],
+      "quantity": "0語・署名もなし",
+      "direction": "文字なし",
+      "placement": "文字枠は作らず、文字・数字・記号・署名・疑似文字を置かない。",
+      "id": "type-14",
+      "src": "typography-previews-v28.svg#type-14",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [],
+      "manuscriptGroups": 0,
+      "roleLabelsAreCopy": false
+    },
+    {
+      "value": "商品広告・キャッチと特徴3点",
+      "frames": [
+        {
+          "x": 8,
+          "y": 6,
+          "w": 84,
+          "h": 12,
+          "role": "主見出し",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 8,
+          "y": 25,
+          "w": 84,
+          "h": 8,
+          "role": "紹介",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 8,
+          "y": 74,
+          "w": 25,
+          "h": 9,
+          "role": "特徴",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 37,
+          "y": 74,
+          "w": 25,
+          "h": 9,
+          "role": "特徴",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 66,
+          "y": 74,
+          "w": 26,
+          "h": 9,
+          "role": "特徴",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 8,
+          "y": 91,
+          "w": 42,
+          "h": 4,
+          "role": "作者名",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "quantity": "見出し1＋紹介1＋特徴3文＋名前1",
+      "direction": "横書き・特徴3列",
+      "placement": "最大見出し、紹介1文、特徴3文を同じ大きさで整列。管理番号は印字しない。",
+      "id": "type-15",
+      "src": "typography-previews-v28.svg#type-15",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 8,
+          "right": 92,
+          "top": 6,
+          "bottom": 18.000000000000004,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 92,
+          "top": 25,
+          "bottom": 33,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 33,
+          "top": 74,
+          "bottom": 83,
+          "rotation": 0
+        },
+        {
+          "left": 37,
+          "right": 62,
+          "top": 74,
+          "bottom": 83,
+          "rotation": 0
+        },
+        {
+          "left": 66,
+          "right": 92,
+          "top": 74,
+          "bottom": 83,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 50,
+          "top": 91,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "manuscriptGroups": 6,
+      "roleLabelsAreCopy": false
+    },
+    {
+      "value": "ブランド広告・宣言と短いコピー",
+      "frames": [
+        {
+          "x": 9,
+          "y": 37,
+          "w": 82,
+          "h": 19,
+          "role": "宣言",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 9,
+          "y": 68,
+          "w": 65,
+          "h": 8,
+          "role": "補足",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 9,
+          "y": 91,
+          "w": 35,
+          "h": 4,
+          "role": "作者名",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "quantity": "宣言1＋補足1文＋名前1",
+      "direction": "横書き左揃え",
+      "placement": "一つの宣言を広く大きく、下に補足1文、名前を離して小さく。",
+      "id": "type-16",
+      "src": "typography-previews-v28.svg#type-16",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 9,
+          "right": 91,
+          "top": 37,
+          "bottom": 55.99999999999999,
+          "rotation": 0
+        },
+        {
+          "left": 9,
+          "right": 74,
+          "top": 68,
+          "bottom": 76,
+          "rotation": 0
+        },
+        {
+          "left": 9,
+          "right": 44,
+          "top": 91,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "manuscriptGroups": 3,
+      "roleLabelsAreCopy": false
+    },
+    {
+      "value": "イベント告知・見どころと案内",
+      "frames": [
+        {
+          "x": 8,
+          "y": 6,
+          "w": 84,
+          "h": 12,
+          "role": "企画名",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 8,
+          "y": 23,
+          "w": 84,
+          "h": 7,
+          "role": "紹介",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 8,
+          "y": 64,
+          "w": 39,
+          "h": 10,
+          "role": "見どころ",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 53,
+          "y": 64,
+          "w": 39,
+          "h": 10,
+          "role": "見どころ",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 8,
+          "y": 82,
+          "w": 84,
+          "h": 6,
+          "role": "案内",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 8,
+          "y": 92,
+          "w": 42,
+          "h": 3,
+          "role": "作者名",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "quantity": "題名1＋紹介1＋見どころ2文＋案内1＋名前1",
+      "direction": "横書き・見どころ2列",
+      "placement": "企画名は上、見どころ2文を並べ、案内はその下の一行。未入力の日時・会場は足さない。",
+      "id": "type-17",
+      "src": "typography-previews-v28.svg#type-17",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 8,
+          "right": 92,
+          "top": 6,
+          "bottom": 18.000000000000004,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 92,
+          "top": 23.000000000000004,
+          "bottom": 30,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 47,
+          "top": 64,
+          "bottom": 74,
+          "rotation": 0
+        },
+        {
+          "left": 53,
+          "right": 92,
+          "top": 64,
+          "bottom": 74,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 92,
+          "top": 82,
+          "bottom": 88,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 50,
+          "top": 92.00000000000001,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "manuscriptGroups": 6,
+      "roleLabelsAreCopy": false
+    },
+    {
+      "value": "展覧会告知・作品名と制作ノート",
+      "frames": [
+        {
+          "x": 9,
+          "y": 9,
+          "w": 82,
+          "h": 13,
+          "role": "作品名",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 9,
+          "y": 32,
+          "w": 82,
+          "h": 7,
+          "role": "紹介",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 9,
+          "y": 72,
+          "w": 62,
+          "h": 17,
+          "role": "制作ノート",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 77,
+          "y": 92,
+          "w": 14,
+          "h": 3,
+          "role": "作者名",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "quantity": "作品名1＋紹介1＋短い制作ノート1段落＋名前1",
+      "direction": "横書き・一段落",
+      "placement": "作品名と紹介を上部、制作ノートを情報領域の下部1段落、名前を欄外。制作条件を記事にしない。",
+      "id": "type-18",
+      "src": "typography-previews-v28.svg#type-18",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 9,
+          "right": 91,
+          "top": 9,
+          "bottom": 22,
+          "rotation": 0
+        },
+        {
+          "left": 9,
+          "right": 91,
+          "top": 32,
+          "bottom": 39,
+          "rotation": 0
+        },
+        {
+          "left": 9,
+          "right": 71,
+          "top": 72,
+          "bottom": 89.00000000000001,
+          "rotation": 0
+        },
+        {
+          "left": 77,
+          "right": 91,
+          "top": 92.00000000000001,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "manuscriptGroups": 4,
+      "roleLabelsAreCopy": false
+    },
+    {
+      "value": "映画予告・キャッチとあらすじ",
+      "frames": [
+        {
+          "x": 15,
+          "y": 7,
+          "w": 70,
+          "h": 6,
+          "role": "キャッチ",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 11,
+          "y": 65,
+          "w": 78,
+          "h": 13,
+          "role": "作品名",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 16,
+          "y": 82,
+          "w": 68,
+          "h": 10,
+          "role": "あらすじ",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 35,
+          "y": 93,
+          "w": 30,
+          "h": 2,
+          "role": "作者名",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "quantity": "題名1＋キャッチ1＋あらすじ2〜3文＋名前1",
+      "direction": "横書き中央揃え",
+      "placement": "上に短いキャッチ、下部の大きい作品名、直下にあらすじの短い段落。",
+      "id": "type-19",
+      "src": "typography-previews-v28.svg#type-19",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 15,
+          "right": 85,
+          "top": 7.000000000000001,
+          "bottom": 13,
+          "rotation": 0
+        },
+        {
+          "left": 11,
+          "right": 89,
+          "top": 65,
+          "bottom": 78,
+          "rotation": 0
+        },
+        {
+          "left": 16,
+          "right": 84,
+          "top": 82,
+          "bottom": 92.00000000000001,
+          "rotation": 0
+        },
+        {
+          "left": 35,
+          "right": 65,
+          "top": 93,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "manuscriptGroups": 4,
+      "roleLabelsAreCopy": false
+    },
+    {
+      "value": "漫画表紙・大見出しと煽り文",
+      "frames": [
+        {
+          "x": 8,
+          "y": 6,
+          "w": 84,
+          "h": 13,
+          "role": "作品名",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 80,
+          "y": 29,
+          "w": 12,
+          "h": 33,
+          "role": "煽り文",
+          "direction": "vertical",
+          "size": "medium"
+        },
+        {
+          "x": 8,
+          "y": 84,
+          "w": 64,
+          "h": 6,
+          "role": "紹介",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 74,
+          "y": 93,
+          "w": 18,
+          "h": 2,
+          "role": "作者名",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "quantity": "題名1＋煽り1文＋紹介1文＋名前1",
+      "direction": "題名横・煽り縦",
+      "placement": "大きい作品名を上、太い煽り1文を片側の縦列、紹介と作者名を下部へ。",
+      "id": "type-20",
+      "src": "typography-previews-v28.svg#type-20",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 8,
+          "right": 92,
+          "top": 6,
+          "bottom": 19,
+          "rotation": 0
+        },
+        {
+          "left": 80,
+          "right": 92,
+          "top": 28.999999999999996,
+          "bottom": 62,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 72,
+          "top": 84,
+          "bottom": 90,
+          "rotation": 0
+        },
+        {
+          "left": 74,
+          "right": 92,
+          "top": 93,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "manuscriptGroups": 4,
+      "roleLabelsAreCopy": false
+    },
+    {
+      "value": "キャラクター名鑑・役柄とスキル",
+      "frames": [
+        {
+          "x": 8,
+          "y": 7,
+          "w": 84,
+          "h": 10,
+          "role": "名前",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 65,
+          "y": 26,
+          "w": 27,
+          "h": 7,
+          "role": "役柄",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 65,
+          "y": 42,
+          "w": 27,
+          "h": 8,
+          "role": "スキル",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 65,
+          "y": 56,
+          "w": 27,
+          "h": 8,
+          "role": "スキル",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 8,
+          "y": 85,
+          "w": 84,
+          "h": 9,
+          "role": "紹介",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "quantity": "名前1＋役柄1＋スキル2件＋紹介1",
+      "direction": "横書き・情報一列",
+      "placement": "名前を上、役柄とスキル2件を同じ情報列に整列、人物紹介を下。人物の接写や複製を足さない。",
+      "id": "type-21",
+      "src": "typography-previews-v28.svg#type-21",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 8,
+          "right": 92,
+          "top": 7.000000000000001,
+          "bottom": 17,
+          "rotation": 0
+        },
+        {
+          "left": 65,
+          "right": 92,
+          "top": 26,
+          "bottom": 33,
+          "rotation": 0
+        },
+        {
+          "left": 65,
+          "right": 92,
+          "top": 41.99999999999999,
+          "bottom": 49.99999999999999,
+          "rotation": 0
+        },
+        {
+          "left": 65,
+          "right": 92,
+          "top": 56.00000000000001,
+          "bottom": 64,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 92,
+          "top": 85,
+          "bottom": 94,
+          "rotation": 0
+        }
+      ],
+      "manuscriptGroups": 5,
+      "roleLabelsAreCopy": false
+    },
+    {
+      "value": "ゲーム告知・世界紹介とクエスト",
+      "frames": [
+        {
+          "x": 8,
+          "y": 6,
+          "w": 84,
+          "h": 13,
+          "role": "作品名",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 8,
+          "y": 66,
+          "w": 84,
+          "h": 7,
+          "role": "世界紹介",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 8,
+          "y": 79,
+          "w": 52,
+          "h": 9,
+          "role": "目標",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 65,
+          "y": 79,
+          "w": 27,
+          "h": 9,
+          "role": "見どころ",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 8,
+          "y": 93,
+          "w": 42,
+          "h": 2,
+          "role": "作者名",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "quantity": "題名1＋世界紹介1＋目標1＋見どころ1＋名前1",
+      "direction": "横書き",
+      "placement": "題名は上、世界紹介は下部一帯、目標と見どころは同じ段で別の幅。ゲームUIは足さない。",
+      "id": "type-22",
+      "src": "typography-previews-v28.svg#type-22",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 8,
+          "right": 92,
+          "top": 6,
+          "bottom": 19,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 92,
+          "top": 66,
+          "bottom": 73,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 60,
+          "top": 79,
+          "bottom": 88,
+          "rotation": 0
+        },
+        {
+          "left": 65,
+          "right": 92,
+          "top": 79,
+          "bottom": 88,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 50,
+          "top": 93,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "manuscriptGroups": 5,
+      "roleLabelsAreCopy": false
+    },
+    {
+      "value": "縦書きコピー・一文を大きく",
+      "frames": [
+        {
+          "x": 74,
+          "y": 12,
+          "w": 14,
+          "h": 54,
+          "role": "短い一文",
+          "direction": "vertical",
+          "size": "large"
+        },
+        {
+          "x": 14,
+          "y": 80,
+          "w": 6,
+          "h": 13,
+          "role": "作者名",
+          "direction": "vertical",
+          "size": "small"
+        }
+      ],
+      "quantity": "一文22字以内・最大3列＋名前1",
+      "direction": "縦書き・右から左",
+      "placement": "一文を情報領域の縦列へ大きく、名前は離した下部の小さい縦列。",
+      "id": "type-23",
+      "src": "typography-previews-v28.svg#type-23",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 74,
+          "right": 88,
+          "top": 12.000000000000004,
+          "bottom": 66,
+          "rotation": 0
+        },
+        {
+          "left": 14,
+          "right": 20,
+          "top": 80,
+          "bottom": 93,
+          "rotation": 0
+        }
+      ],
+      "manuscriptGroups": 2,
+      "roleLabelsAreCopy": false
+    },
+    {
+      "value": "詩のコピー・短い言葉を3行",
+      "frames": [
+        {
+          "x": 9,
+          "y": 60,
+          "w": 80,
+          "h": 5,
+          "role": "詩の一行",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 13,
+          "y": 70,
+          "w": 76,
+          "h": 5,
+          "role": "詩の一行",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 17,
+          "y": 80,
+          "w": 72,
+          "h": 5,
+          "role": "詩の一行",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 68,
+          "y": 92,
+          "w": 21,
+          "h": 3,
+          "role": "作者名",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "quantity": "短い詩3行だけ＋名前1",
+      "direction": "横書き3行",
+      "placement": "一行18字以内の詩を3行、同じ行間で置く。名前は詩の下から離す。",
+      "id": "type-24",
+      "src": "typography-previews-v28.svg#type-24",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 9,
+          "right": 89,
+          "top": 60,
+          "bottom": 65,
+          "rotation": 0
+        },
+        {
+          "left": 13,
+          "right": 89,
+          "top": 70,
+          "bottom": 75,
+          "rotation": 0
+        },
+        {
+          "left": 17,
+          "right": 89,
+          "top": 80,
+          "bottom": 85,
+          "rotation": 0
+        },
+        {
+          "left": 68,
+          "right": 89,
+          "top": 92.00000000000001,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "manuscriptGroups": 4,
+      "roleLabelsAreCopy": false
+    },
+    {
+      "value": "大判タイポグラフィー・文字が主役",
+      "frames": [
+        {
+          "x": 8,
+          "y": 10,
+          "w": 84,
+          "h": 42,
+          "role": "主語句",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 8,
+          "y": 65,
+          "w": 68,
+          "h": 8,
+          "role": "補足",
+          "direction": "horizontal",
+          "size": "small"
+        },
+        {
+          "x": 8,
+          "y": 92,
+          "w": 42,
+          "h": 3,
+          "role": "作者名",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "quantity": "主語句12字以内・1〜2行＋補足1文＋名前1",
+      "direction": "横書き大判",
+      "placement": "主語句を情報領域の最大1〜2行、補足を1文、名前を最小。顔や手へは重ねない。",
+      "id": "type-25",
+      "src": "typography-previews-v28.svg#type-25",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 8,
+          "right": 92,
+          "top": 10,
+          "bottom": 52,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 76,
+          "top": 65,
+          "bottom": 73,
+          "rotation": 0
+        },
+        {
+          "left": 8,
+          "right": 50,
+          "top": 92.00000000000001,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "manuscriptGroups": 3,
+      "roleLabelsAreCopy": false
+    },
+    {
+      "value": "ミニマル広告・見出しと名前",
+      "frames": [
+        {
+          "x": 10,
+          "y": 71,
+          "w": 78,
+          "h": 13,
+          "role": "見出し",
+          "direction": "horizontal",
+          "size": "large"
+        },
+        {
+          "x": 65,
+          "y": 92,
+          "w": 23,
+          "h": 3,
+          "role": "作者名",
+          "direction": "horizontal",
+          "size": "small"
+        }
+      ],
+      "quantity": "見出し1＋名前1の2群だけ",
+      "direction": "横書き",
+      "placement": "広い空白を挟んで一つの見出しを下部に、名前を小さく右下。補足や本文は足さない。",
+      "id": "type-26",
+      "src": "typography-previews-v28.svg#type-26",
+      "asset": null,
+      "characterReference": false,
+      "styleReference": false,
+      "frameBounds": [
+        {
+          "left": 10,
+          "right": 88,
+          "top": 71,
+          "bottom": 84,
+          "rotation": 0
+        },
+        {
+          "left": 65,
+          "right": 88,
+          "top": 92.00000000000001,
+          "bottom": 95,
+          "rotation": 0
+        }
+      ],
+      "manuscriptGroups": 2,
+      "roleLabelsAreCopy": false
+    }
+  ]
+}

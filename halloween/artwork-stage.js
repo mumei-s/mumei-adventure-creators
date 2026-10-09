@@ -1,14 +1,14 @@
-import {opticalColors,opticalSignature} from './optical-effects.js?v=28.4.3';
-import {colorPolicy} from './palette-recipes.js?v=28.4.3';
-import {formatFor} from './formats.js?v=28.4.3';
-import {cameraContract} from './angles.js?v=28.4.3';
-import {selectionIntegrationInstructions} from './output-contract.js?v=28.4.3';
-import {photoReconstruction} from './photo-design.js?v=28.4.3';
-import {artworkBasisContract} from './artwork-basis.js?v=28.4.3';
-import {stylePresetFor,stylePresetInstructions} from './style-presets.js?v=28.4.3';
-import {characterProportionInstruction,sourceKindInstructions,isNonHumanSource} from './source-kind.js?v=28.4.3';
-import {halloweenModeContract} from './halloween-mode-contract.js?v=28.4.3';
-import {poseTechnical} from './poses.js?v=28.4.3';
+import {opticalColors,opticalSignature} from './optical-effects.js?v=28.4.4';
+import {colorPolicy} from './palette-recipes.js?v=28.4.4';
+import {formatFor} from './formats.js?v=28.4.4';
+import {cameraContract} from './angles.js?v=28.4.4';
+import {selectionIntegrationInstructions} from './output-contract.js?v=28.4.4';
+import {photoReconstruction} from './photo-design.js?v=28.4.4';
+import {artworkBasisContract} from './artwork-basis.js?v=28.4.4';
+import {stylePresetFor,stylePresetInstructions} from './style-presets.js?v=28.4.4';
+import {characterProportionInstruction,sourceKindInstructions,isNonHumanSource} from './source-kind.js?v=28.4.4';
+import {halloweenModeContract} from './halloween-mode-contract.js?v=28.4.4';
+import {poseTechnical} from './poses.js?v=28.4.4';
 
 const artworkKeys=['medium','theme','place','costume','pose','mood','angle','palette'];
 const render=c=>[c.name+'：'+c.value,...c.sections.map(s=>'・'+s.label+'：'+s.text)];

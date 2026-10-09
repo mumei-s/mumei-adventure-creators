@@ -1,15 +1,17 @@
-import {japanPreviews} from './japan-preview-catalog.js?v=28.4.3';
-import {poseItems} from './poses.js?v=28.4.3';
-import {dailySamples,currentCollection,landscapeScenes} from './collection.js?v=28.4.3';
-import {questions} from './catalog.js?v=28.4.3';
-import {formatPreviews} from './format-preview-catalog.js?v=28.4.3';
-import {individualSamples} from './sample-catalog.js?v=28.4.3';
-import {colorWorlds,luminousMedia} from './worlds.js?v=28.4.3';
-import {sceneSourcePlace} from './scene-presets.js?v=28.4.3';
-import {typographyPreview} from './typography-options.js?v=28.4.3';
-import {angleItems} from './angles.js?v=28.4.3';
-import {stylePresetFor} from './style-presets.js?v=28.4.3';
-import {scenePreviews} from './scene-preview-catalog.js?v=28.4.3';
+import {japanPreviews} from './japan-preview-catalog.js?v=28.4.4';
+import {poseItems} from './poses.js?v=28.4.4';
+import {dailySamples,currentCollection,landscapeScenes} from './collection.js?v=28.4.4';
+import {questions} from './catalog.js?v=28.4.4';
+import {formatPreviews} from './format-preview-catalog.js?v=28.4.4';
+import {typographyPreviews} from './type-preview-catalog.js?v=28.4.4';
+import {designLayoutFor,typographyLayoutFor} from './layout-preview-specs.js?v=28.4.4';
+import {individualSamples} from './sample-catalog.js?v=28.4.4';
+import {colorWorlds,luminousMedia} from './worlds.js?v=28.4.4';
+import {sceneSourcePlace} from './scene-presets.js?v=28.4.4';
+import {typographyPreview} from './typography-options.js?v=28.4.4';
+import {angleItems} from './angles.js?v=28.4.4';
+import {stylePresetFor} from './style-presets.js?v=28.4.4';
+import {scenePreviews} from './scene-preview-catalog.js?v=28.4.4';
 for(const item of poseItems)individualSamples['pose\u0000'+item.value]={file:item.file};
 for(const item of colorWorlds)individualSamples['palette\u0000'+item.value]={file:item.file};
 for(const item of luminousMedia)individualSamples['medium\u0000'+item.value]={file:item.file};
@@ -19,16 +21,17 @@ export function sampleFor(key,value=''){
  if(scene)return {kind:'image',src:'./'+scene.file,label:scene.label};
  const drawing=key==='medium'?stylePresetFor(value):null;
  if(drawing)return {kind:'image',src:'./'+drawing.file,label:drawing.label+'（制作時に添付し、描き方だけを参照）'};
+ if(key==='design'&&formatPreviews[value])return {kind:'image',src:'./'+formatPreviews[value],label:value+'の版面見本（選択条件の比較見本。画像枠・文字枠・余白だけを参照）。'+designLayoutFor(value).signature+' 見本の枠名は作品に印字しない。',scope:'page geometry only'};
+ if(key==='type'&&typographyPreviews[value]){const layout=typographyLayoutFor(value);return {kind:'image',src:'./'+typographyPreviews[value],label:'文字配置の見本（選択条件の比較見本。原稿の個数と方向だけを参照）。'+layout.quantity+'／'+layout.direction+'。'+layout.placement+' 見本の枠名は作品に印字しない。',scope:'manuscript count and orientation only'};}
  if(key==='angle'){
   const item=angleItems.find(x=>x.value===value);
-  if(item)return {kind:'image',src:'./'+item.file,label:value+'の位置・距離・遠近を示す説明図（生成の参照画像には使いません）'};
+  if(item)return {kind:'image',src:'./'+item.file,label:value+'の位置・距離・遠近を示す説明図（選択条件の比較見本。この役割だけを参照）'};
   if(value==='おまかせ'||value==='場面に合わせたアングル')return {kind:'auto',srcs:[0,8,14,25].map(index=>'./'+angleItems[index].file),label:'シーンと動作に合うアングルの例',text:'シーンに合う\nアングル'};
  }
  if(key==='theme'&&sceneSourcePlace(value))key='place';
- if(japanPreviews[key+'\u0000'+value])return {kind:'image',src:'./'+japanPreviews[key+'\u0000'+value],label:value+'の日本ベースの説明用見本（生成の参照画像には使いません）'};
- if(key==='design'&&formatPreviews[value])return {kind:'image',src:'./'+formatPreviews[value],label:value+'の版面見本（生成の参照画像には使いません）'};
+ if(japanPreviews[key+'\u0000'+value])return {kind:'image',src:'./'+japanPreviews[key+'\u0000'+value],label:value+'の日本ベースの見本（選択条件の比較見本。この項目の役割だけを参照）'};
  const specific=dailySamples[key+'\u0000'+value]||individualSamples[key+'\u0000'+value];
- if(specific)return {kind:'image',src:'./'+specific.file,label:value+'の説明用イメージ（生成の参照画像には使いません）'};
+ if(specific)return {kind:'image',src:'./'+specific.file,label:value+'の見本（選択条件の比較見本。この項目の役割だけを参照）'};
  if(referenceChoices.has(value))return {kind:'reference',label:'添付画像を使う作例'};
  if(key==='line'&&value&&value!=='おまかせ')return {kind:'line',text:value==='セリフなし'?'':value,label:'選んだセリフの文字見本'};
  if(key==='type'&&value&&value!=='おまかせ')return {kind:'type',mode:value,label:'選んだ文字量・組版の見本'};
@@ -39,12 +42,12 @@ export function sampleFor(key,value=''){
  const daily=currentCollection()==='everyday';
  const dailyPicks={design:['ファッション雑誌の表紙','写真集の表紙','通常の一枚絵','ポストカード'],theme:['朝の光と小さな日常','季節を歩く','ものづくりの時間','静かな読書の時間'],costume:['リネンシャツとデニム','現代のテーラードスーツ','ワンピースとカーディガン','スポーツウェア'],place:['天窓のあるアトリエ','海辺の灯台','雪の庭','雨の路地'],pose:['ゆっくり歩く','本を読む','カップを両手で持つ','絵を描く']};
  const list=(daily?dailyPicks[sampleKey]:null)||picks[sampleKey]||questions.find(q=>q.key===sampleKey)?.autoValues?.slice(0,4)||Object.keys(individualSamples).filter(k=>k.startsWith(sampleKey+'\u0000')).slice(0,4).map(k=>k.split('\u0000')[1]);
- const srcs=list.map(v=>japanPreviews[sampleKey+'\u0000'+v]?{file:japanPreviews[sampleKey+'\u0000'+v]}:sampleKey==='design'&&formatPreviews[v]?{file:formatPreviews[v]}:dailySamples[sampleKey+'\u0000'+v]||individualSamples[sampleKey+'\u0000'+v]).filter(Boolean).map(s=>'./'+s.file);
- return {kind:'auto',label:'おまかせ候補の説明用イメージ（生成の参照画像には使いません）',srcs,text:key==='mood'?'表情も\n角度も変化':daily?'日常の場面に\n合わせて選択':'組み合わせを\nおまかせ'};
+ const srcs=list.map(v=>sampleKey==='design'&&formatPreviews[v]?{file:formatPreviews[v]}:japanPreviews[sampleKey+'\u0000'+v]?{file:japanPreviews[sampleKey+'\u0000'+v]}:dailySamples[sampleKey+'\u0000'+v]||individualSamples[sampleKey+'\u0000'+v]).filter(Boolean).map(s=>'./'+s.file);
+ return {kind:'auto',label:'おまかせ候補の見本（選択条件の比較見本。この項目の役割だけを参照）',srcs,text:key==='mood'?'表情も\n角度も変化':daily?'日常の場面に\n合わせて選択':'組み合わせを\nおまかせ'};
  }
  const landscape=key==='theme'?landscapeScenes.find(([name])=>name===value):null;
  if(landscape)return {kind:'custom',label:value+'：'+landscape[1],text:value.replace('と','と\n').replace('の記録','\nの記録')};
- if(key==='design'&&value==='自然・都市の風景画')return {kind:'image',src:'./japan-landscape-v19.png',label:'自然・都市の風景画の説明用イメージ（生成の参照画像には使いません）'};
+ if(key==='design'&&value==='自然・都市の風景画')return {kind:'image',src:'./japan-landscape-v19.png',label:'自然・都市の風景画の見本（選択条件の比較見本。この項目の役割だけを参照）'};
  if(questions.find(q=>q.key===key)?.groups.some(g=>g.values.includes(value)))return {kind:'custom',label:value+'：項目名と説明を制作へ反映します。',text:value.replace('と','と\n')};
  return {kind:'custom',label:'自由入力',text:'あなたの\n指定で制作'};
 }
@@ -69,4 +72,4 @@ function typePreviewFor(mode){
  if(mode==='クリエイター名＋自由な見出し')return {className:'type-editorial',blocks:['日々の余白','夜にひらく、もうひとつの世界',name]};
  return {className:'type-title',blocks:['装い帖',name]};
 }
-import {drawingReferenceFor} from './drawing-references.js?v=28.4.3';
+import {drawingReferenceFor} from './drawing-references.js?v=28.4.4';

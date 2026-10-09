@@ -1,19 +1,26 @@
-import {illustrationBases} from './artwork-basis-illustration.js?v=28.4.3';
-import {traditionalBases} from './artwork-basis-traditional.js?v=28.4.3';
-import {materialBases} from './artwork-basis-material.js?v=28.4.3';
-import {movementsPhotoBases} from './artwork-basis-movements-photo.js?v=28.4.3';
-import {luminousBases} from './artwork-basis-luminous.js?v=28.4.3';
-import {referenceWorldArtworkBases} from './world-bases.js?v=28.4.3';
-import {isNonHumanSource} from './source-kind.js?v=28.4.3';
-import {isPhotographicMedium} from './photo-design.js?v=28.4.3';
+import {illustrationBases} from './artwork-basis-illustration.js?v=28.4.4';
+import {traditionalBases} from './artwork-basis-traditional.js?v=28.4.4';
+import {materialBases} from './artwork-basis-material.js?v=28.4.4';
+import {movementsPhotoBases} from './artwork-basis-movements-photo.js?v=28.4.4';
+import {luminousBases} from './artwork-basis-luminous.js?v=28.4.4';
+import {referenceWorldArtworkBases} from './world-bases.js?v=28.4.4';
+import {fantasyStyleDefinitions} from './fantasy-style-definitions.js?v=28.4.4';
+import {isNonHumanSource} from './source-kind.js?v=28.4.4';
+import {isPhotographicMedium} from './photo-design.js?v=28.4.4';
 
 // Sources are documentation for the picker. Only the extracted drawing
 // criteria enter production: no borrowed artist, character, scene or image.
-const entries=[...illustrationBases,...traditionalBases,...materialBases,...movementsPhotoBases,...luminousBases,...referenceWorldArtworkBases];
+const fantasyDefinitions=new Map(fantasyStyleDefinitions.map(entry=>[entry.value,entry]));
+const referenceEntries=referenceWorldArtworkBases.map(entry=>{
+ const definition=fantasyDefinitions.get(entry.value);
+ if(!definition)return entry;
+ return {...entry,sourceNote:definition.sourceNote,references:definition.references};
+});
+const entries=[...illustrationBases,...traditionalBases,...materialBases,...movementsPhotoBases,...luminousBases,...referenceEntries];
 const byValue=new Map();
 for(const entry of entries){
  if(byValue.has(entry.value))throw new Error('Duplicate artwork basis: '+entry.value);
- byValue.set(entry.value,Object.freeze({...entry,basis:Object.freeze([...entry.basis]),checks:Object.freeze([...entry.checks]),avoid:Object.freeze([...entry.avoid]),references:Object.freeze(entry.references.map(r=>Object.freeze({...r})))}));
+ byValue.set(entry.value,Object.freeze({...entry,basis:Object.freeze([...entry.basis]),process:Object.freeze([...(entry.process||[])]),sceneryProcess:Object.freeze([...(entry.sceneryProcess||[])]),checks:Object.freeze([...entry.checks]),avoid:Object.freeze([...entry.avoid]),references:Object.freeze(entry.references.map(r=>Object.freeze({...r})))}));
 }
 export const artworkBasisValues=Object.freeze([...byValue.keys()]);
 export function artworkBasis(value){return byValue.get(value)||null;}
@@ -49,7 +56,10 @@ export function artworkBasisContract(value,{noPerson=false,values={}}={}){
   '線と明快な色面で小さな図版にも読める構造を作り、素材の違いを少数の形と影で表す。',
   '指定カメラの重なり・遮蔽と景物の接続・支持を保ち、選択配色とシーンを変更しない。'
  ]:(noPerson&&entry.sceneryBasis?entry.sceneryBasis:entry.basis).map(project);
- const sections=[{label:'作画基準／全域への適用',text:scope},...criteria.map((text,i)=>({label:'作画基準／'+(i+1),text})),{label:'作画基準／取り違えを避ける',text:'避ける描き方：'+entry.avoid.map(project).join('。')+'。'}];
+ // Unlike the legacy luminous basis, these new physical clauses are not
+ // consolidated away by the compact renderer. Use an explicit scenery branch.
+ const process=(noPerson?entry.sceneryProcess:entry.process).map(project);
+ const sections=[{label:'作画基準／全域への適用',text:scope},...criteria.map((text,i)=>({label:'作画基準／'+(i+1),text})),...process.map((text,i)=>({label:'光彩の描画工程／'+(i+1),text})),{label:'作画基準／取り違えを避ける',text:'避ける描き方：'+entry.avoid.map(project).join('。')+'。'}];
  const checks=(noPerson&&value==='ちびキャラ'?['簡略な外形と内部形で景物の識別が読める','指定視点・支持を保ち、景物に顔や手足を追加しない']:(noPerson&&entry.sceneryChecks?entry.sceneryChecks:entry.checks).map(project)).map(text=>'作画基準の照合：'+text);
  return {sections,checks,method:sections.map(s=>s.text).join(' ')};
 }

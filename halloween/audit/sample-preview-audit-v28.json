@@ -1,6 +1,6 @@
 {
-  "version": "28.4.3",
-  "checkedAt": "2026-10-09T10:44:25.768Z",
+  "version": "28.4.4",
+  "checkedAt": "2026-10-09T13:05:49.738Z",
   "status": "file_coverage_complete",
   "scope": "Every group option in both collections plus all implicit AUTO previews; physical availability is separate from visual semantic review.",
   "totals": {
@@ -8,10 +8,9 @@
       "all": 582,
       "visible": 535,
       "kinds": {
-        "image": 521,
+        "image": 547,
         "reference": 3,
         "auto": 1,
-        "type": 26,
         "line": 17,
         "size": 14
       },
@@ -36,10 +35,9 @@
       "all": 711,
       "visible": 646,
       "kinds": {
-        "image": 654,
+        "image": 680,
         "reference": 4,
         "auto": 1,
-        "type": 26,
         "line": 12,
         "size": 14
       },
@@ -234,22 +232,22 @@
         {
           "file": "angle-001.svg",
           "exists": true,
-          "hash": "10f547179fea17b5adadf1e3d48e8c81984c2a7c710ad16bc0e63e2b9a8ac965"
+          "hash": "03beaad990779dbf2eeb4325fc087c67122c324532d6008a709f51c537d66875"
         },
         {
           "file": "angle-009.svg",
           "exists": true,
-          "hash": "67020db1e810c4cc132cd544ab8c3ae22cfbb9cb932ac32d8748925740e76d40"
+          "hash": "a6feb463c75c093e94e0719e050c12fef96c3ad4c6412776ca150e70c68cbe87"
         },
         {
           "file": "angle-015.svg",
           "exists": true,
-          "hash": "871e69b7bbe0c45ca0c60cf9fc4179e5686d2edb0349a572cb62b1c6be7e4ed6"
+          "hash": "fc4a2da5e318fc545b37b6a31b5a1efd407bff8a725b9eede803c75ef111dde1"
         },
         {
           "file": "angle-026.svg",
           "exists": true,
-          "hash": "1cc8f1e795675b55645b8ac4c0b6f4ed7bb8a43e9f8e17532f0704e71266ef3e"
+          "hash": "1ae69c69788c99215ed6a890f6a63e1a1707a7562b08b8ea3c88a42c06aaf186"
         }
       ]
     },
@@ -286,26 +284,27 @@
       "kind": "auto",
       "assets": [
         {
-          "file": "japan-fashion-v21.jpg",
+          "file": "layout-previews-v28.svg#design-01",
           "exists": true,
-          "hash": "36a3e55fd63dfda55ac208ebe0ed5170599aa442db1d64a4281cd948241d2824"
-        },
-        {
-          "file": "japan-format-previews-v21.svg#format-10",
-          "exists": true,
-          "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
           "fragmentExists": true
         },
         {
-          "file": "japan-format-previews-v21.svg#format-31",
+          "file": "layout-previews-v28.svg#design-16",
           "exists": true,
-          "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
           "fragmentExists": true
         },
         {
-          "file": "japan-format-previews-v21.svg#format-22",
+          "file": "layout-previews-v28.svg#design-37",
           "exists": true,
-          "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
+          "fragmentExists": true
+        },
+        {
+          "file": "layout-previews-v28.svg#design-28",
+          "exists": true,
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
           "fragmentExists": true
         }
       ]
@@ -316,26 +315,27 @@
       "kind": "auto",
       "assets": [
         {
-          "file": "japan-fashion-v21.jpg",
+          "file": "layout-previews-v28.svg#design-01",
           "exists": true,
-          "hash": "36a3e55fd63dfda55ac208ebe0ed5170599aa442db1d64a4281cd948241d2824"
-        },
-        {
-          "file": "japan-format-previews-v21.svg#format-10",
-          "exists": true,
-          "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
           "fragmentExists": true
         },
         {
-          "file": "japan-format-previews-v21.svg#format-31",
+          "file": "layout-previews-v28.svg#design-16",
           "exists": true,
-          "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
           "fragmentExists": true
         },
         {
-          "file": "japan-format-previews-v21.svg#format-22",
+          "file": "layout-previews-v28.svg#design-37",
           "exists": true,
-          "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
+          "fragmentExists": true
+        },
+        {
+          "file": "layout-previews-v28.svg#design-28",
+          "exists": true,
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
           "fragmentExists": true
         }
       ]
@@ -346,26 +346,27 @@
       "kind": "auto",
       "assets": [
         {
-          "file": "japan-fashion-v21.jpg",
+          "file": "layout-previews-v28.svg#design-01",
           "exists": true,
-          "hash": "36a3e55fd63dfda55ac208ebe0ed5170599aa442db1d64a4281cd948241d2824"
-        },
-        {
-          "file": "japan-format-previews-v21.svg#format-10",
-          "exists": true,
-          "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
           "fragmentExists": true
         },
         {
-          "file": "japan-format-previews-v21.svg#format-31",
+          "file": "layout-previews-v28.svg#design-16",
           "exists": true,
-          "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
           "fragmentExists": true
         },
         {
-          "file": "japan-format-previews-v21.svg#format-22",
+          "file": "layout-previews-v28.svg#design-37",
           "exists": true,
-          "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
+          "fragmentExists": true
+        },
+        {
+          "file": "layout-previews-v28.svg#design-28",
+          "exists": true,
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
           "fragmentExists": true
         }
       ]
@@ -376,26 +377,27 @@
       "kind": "auto",
       "assets": [
         {
-          "file": "japan-fashion-v21.jpg",
+          "file": "layout-previews-v28.svg#design-01",
           "exists": true,
-          "hash": "36a3e55fd63dfda55ac208ebe0ed5170599aa442db1d64a4281cd948241d2824"
-        },
-        {
-          "file": "japan-format-previews-v21.svg#format-10",
-          "exists": true,
-          "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
           "fragmentExists": true
         },
         {
-          "file": "japan-format-previews-v21.svg#format-31",
+          "file": "layout-previews-v28.svg#design-16",
           "exists": true,
-          "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
           "fragmentExists": true
         },
         {
-          "file": "japan-format-previews-v21.svg#format-22",
+          "file": "layout-previews-v28.svg#design-37",
           "exists": true,
-          "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
+          "fragmentExists": true
+        },
+        {
+          "file": "layout-previews-v28.svg#design-28",
+          "exists": true,
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
           "fragmentExists": true
         }
       ]
@@ -570,22 +572,22 @@
         {
           "file": "angle-001.svg",
           "exists": true,
-          "hash": "10f547179fea17b5adadf1e3d48e8c81984c2a7c710ad16bc0e63e2b9a8ac965"
+          "hash": "03beaad990779dbf2eeb4325fc087c67122c324532d6008a709f51c537d66875"
         },
         {
           "file": "angle-009.svg",
           "exists": true,
-          "hash": "67020db1e810c4cc132cd544ab8c3ae22cfbb9cb932ac32d8748925740e76d40"
+          "hash": "a6feb463c75c093e94e0719e050c12fef96c3ad4c6412776ca150e70c68cbe87"
         },
         {
           "file": "angle-015.svg",
           "exists": true,
-          "hash": "871e69b7bbe0c45ca0c60cf9fc4179e5686d2edb0349a572cb62b1c6be7e4ed6"
+          "hash": "fc4a2da5e318fc545b37b6a31b5a1efd407bff8a725b9eede803c75ef111dde1"
         },
         {
           "file": "angle-026.svg",
           "exists": true,
-          "hash": "1cc8f1e795675b55645b8ac4c0b6f4ed7bb8a43e9f8e17532f0704e71266ef3e"
+          "hash": "1ae69c69788c99215ed6a890f6a63e1a1707a7562b08b8ea3c88a42c06aaf186"
         }
       ]
     },
@@ -622,26 +624,27 @@
       "kind": "auto",
       "assets": [
         {
-          "file": "japan-fashion-v21.jpg",
+          "file": "layout-previews-v28.svg#design-01",
           "exists": true,
-          "hash": "36a3e55fd63dfda55ac208ebe0ed5170599aa442db1d64a4281cd948241d2824"
-        },
-        {
-          "file": "japan-format-previews-v21.svg#format-02",
-          "exists": true,
-          "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
           "fragmentExists": true
         },
         {
-          "file": "japan-format-previews-v21.svg#format-22",
+          "file": "layout-previews-v28.svg#design-05",
           "exists": true,
-          "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
           "fragmentExists": true
         },
         {
-          "file": "japan-format-previews-v21.svg#format-39",
+          "file": "layout-previews-v28.svg#design-28",
           "exists": true,
-          "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
+          "fragmentExists": true
+        },
+        {
+          "file": "layout-previews-v28.svg#design-45",
+          "exists": true,
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
           "fragmentExists": true
         }
       ]
@@ -652,26 +655,27 @@
       "kind": "auto",
       "assets": [
         {
-          "file": "japan-fashion-v21.jpg",
+          "file": "layout-previews-v28.svg#design-01",
           "exists": true,
-          "hash": "36a3e55fd63dfda55ac208ebe0ed5170599aa442db1d64a4281cd948241d2824"
-        },
-        {
-          "file": "japan-format-previews-v21.svg#format-02",
-          "exists": true,
-          "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
           "fragmentExists": true
         },
         {
-          "file": "japan-format-previews-v21.svg#format-22",
+          "file": "layout-previews-v28.svg#design-05",
           "exists": true,
-          "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
           "fragmentExists": true
         },
         {
-          "file": "japan-format-previews-v21.svg#format-39",
+          "file": "layout-previews-v28.svg#design-28",
           "exists": true,
-          "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
+          "fragmentExists": true
+        },
+        {
+          "file": "layout-previews-v28.svg#design-45",
+          "exists": true,
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
           "fragmentExists": true
         }
       ]
@@ -682,26 +686,27 @@
       "kind": "auto",
       "assets": [
         {
-          "file": "japan-fashion-v21.jpg",
+          "file": "layout-previews-v28.svg#design-01",
           "exists": true,
-          "hash": "36a3e55fd63dfda55ac208ebe0ed5170599aa442db1d64a4281cd948241d2824"
-        },
-        {
-          "file": "japan-format-previews-v21.svg#format-02",
-          "exists": true,
-          "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
           "fragmentExists": true
         },
         {
-          "file": "japan-format-previews-v21.svg#format-22",
+          "file": "layout-previews-v28.svg#design-05",
           "exists": true,
-          "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
           "fragmentExists": true
         },
         {
-          "file": "japan-format-previews-v21.svg#format-39",
+          "file": "layout-previews-v28.svg#design-28",
           "exists": true,
-          "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
+          "fragmentExists": true
+        },
+        {
+          "file": "layout-previews-v28.svg#design-45",
+          "exists": true,
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
           "fragmentExists": true
         }
       ]
@@ -712,26 +717,27 @@
       "kind": "auto",
       "assets": [
         {
-          "file": "japan-fashion-v21.jpg",
+          "file": "layout-previews-v28.svg#design-01",
           "exists": true,
-          "hash": "36a3e55fd63dfda55ac208ebe0ed5170599aa442db1d64a4281cd948241d2824"
-        },
-        {
-          "file": "japan-format-previews-v21.svg#format-02",
-          "exists": true,
-          "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
           "fragmentExists": true
         },
         {
-          "file": "japan-format-previews-v21.svg#format-22",
+          "file": "layout-previews-v28.svg#design-05",
           "exists": true,
-          "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
           "fragmentExists": true
         },
         {
-          "file": "japan-format-previews-v21.svg#format-39",
+          "file": "layout-previews-v28.svg#design-28",
           "exists": true,
-          "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
+          "fragmentExists": true
+        },
+        {
+          "file": "layout-previews-v28.svg#design-45",
+          "exists": true,
+          "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
           "fragmentExists": true
         }
       ]
@@ -743,20 +749,6 @@
     "design": "41 native format layouts, with remaining actual artwork choices; SVG fragments are checked as named elements"
   },
   "sharedFiles": [
-    {
-      "file": "japan-previews-v21/medium-02-08.jpg",
-      "uses": [
-        {
-          "key": "medium",
-          "value": "劇場アニメの背景美術"
-        },
-        {
-          "key": "design",
-          "value": "自然・都市の風景画"
-        }
-      ],
-      "classification": "one actual explanatory image serves different named selections; see uses and semantic limits"
-    },
     {
       "file": "japan-previews-v21/place-01-03.jpg",
       "uses": [
@@ -942,14 +934,10 @@
         },
         {
           "key": "theme",
-          "value": "星糸のアトリエ"
-        },
-        {
-          "key": "theme",
           "value": "天窓のあるアトリエ"
         }
       ],
-      "classification": "one actual explanatory image serves different named selections; see uses and semantic limits"
+      "classification": "same selected scene shared between scene and internal place"
     },
     {
       "file": "japan-previews-v21/place-01-11.jpg",
@@ -1876,6 +1864,27 @@
           "投影・屈折・内部反射は生成された背景美術として目視評価したもので、光線追跡による厳密な物理証明ではありません。"
         ]
       }
+    },
+    {
+      "value": "星糸のアトリエ",
+      "file": "assets/scenes-original-v28-4-3/star-thread-atelier.jpg",
+      "dimensions": {
+        "width": 1254,
+        "height": 1254
+      },
+      "hash_sha256": "8be1463d660a514ceea7f3c62141b8211f7c0c7eaaccd2eff29b1fb498f56ed3",
+      "visualQA": {
+        "status": "accepted",
+        "reviewed": [
+          "anchored luminous star threads link spools and loom",
+          "supported craft table/shelves/loom in one receding atelier",
+          "dark-violet textile and prepared unlettered invitation",
+          "coherent night window and material reflection"
+        ],
+        "limitations": [
+          "sample shows environment structure; selected subject/pose/medium are independently applied"
+        ]
+      }
     }
   ],
   "semanticCorrections": [
@@ -1947,11 +1956,10 @@
       "121 costume samples inspected by role category, with suspicious ones inspected at full size",
       "42 mood/expression samples inspected at montage size, without treating mood artwork as a source person",
       "72 pose previews from the previous completed pose review, including all 24 new individual illustrations",
-      "All 20 new scene previews inspected individually; eight replaced scenes compared against current named scene contracts",
+      "All 21 new scene previews inspected individually; eight replaced scenes compared against current named scene contracts",
       "Remaining 62 ordinary scene assets and original Halloween scene artwork reviewed at scene-category montage scale for named action/space"
     ],
     "remainingAmbiguities": [
-      "星糸のアトリエ shares the actual skylight atelier with 天窓のあるアトリエ; distinctive light-thread motif is less visible than the room structure",
       "夢彩の魔法書庫 shares the actual witch library; 宵彩の色硝子堂 shares a chapel interior. The spaces are semantically close, but are not individual scene artwork."
     ],
     "limits": [
@@ -2884,9 +2892,9 @@
       "visible": true,
       "value": "発光幻想アニメ",
       "kind": "image",
-      "file": "assets/style-fine-light-original-v28-4-3.png",
+      "file": "assets/style-fine-light-original-v28-4-4.png",
       "exists": true,
-      "hash": "9d66b872b836e1f47b5fc64419cc5755b166b16171034335d9f1669ee9d1437e"
+      "hash": "9bd1a6b816aad9bd8155da8dfc47a01d76d498bf08f03385bccfac0f85f6aa69"
     },
     {
       "key": "medium",
@@ -3001,27 +3009,27 @@
       "visible": true,
       "value": "薄膜光彩アニメ",
       "kind": "image",
-      "file": "assets/style-film-light-original-v28-4-3.png",
+      "file": "assets/style-film-light-original-v28-4-4.png",
       "exists": true,
-      "hash": "9d2e523d7ab7e722583d1b7893a6f501f64d0b5cb2fd82086cf82fe7cab498d9"
+      "hash": "6f9aa398b07f09bd17a1e1a1d24a091cac9d5d4795a17d06e74474d4afd7f337"
     },
     {
       "key": "medium",
       "visible": true,
       "value": "白域幾何・宇宙彩アニメ",
       "kind": "image",
-      "file": "assets/style-white-geometry-original-v28-4-3.png",
+      "file": "assets/style-white-geometry-original-v28-4-4.png",
       "exists": true,
-      "hash": "ced3f52c44386e71bd29c66c20b602fa5b86cb424103b79789a0fd47af6e2ff6"
+      "hash": "ce1e90d4aea9a5e0bbd0c25b281b9c8de1be229369aa648694cc8a2bb4aed7ca"
     },
     {
       "key": "medium",
       "visible": true,
       "value": "艶彩幻想アニメ",
       "kind": "image",
-      "file": "assets/style-gloss-fantasy-original-v28-4-3.png",
+      "file": "assets/style-gloss-fantasy-original-v28-4-4.png",
       "exists": true,
-      "hash": "f90d6a274f9af457db141f8b23097b1068468292f64e400c2fc8340a788c0e65"
+      "hash": "bb546fa51d0c650ff3410348742885c169de43c49b6bc0dbb82c7cb8d800fb24"
     },
     {
       "key": "theme",
@@ -5509,7 +5517,7 @@
       "kind": "image",
       "file": "angle-001.svg",
       "exists": true,
-      "hash": "10f547179fea17b5adadf1e3d48e8c81984c2a7c710ad16bc0e63e2b9a8ac965"
+      "hash": "03beaad990779dbf2eeb4325fc087c67122c324532d6008a709f51c537d66875"
     },
     {
       "key": "angle",
@@ -5518,7 +5526,7 @@
       "kind": "image",
       "file": "angle-002.svg",
       "exists": true,
-      "hash": "c0a2fdf31c62e76b0b1210a685301dfb6d042987c76f94268f77fad4cffb9736"
+      "hash": "98e4df3ff47eb648fbb547638270fb94667a7e7336352b7e422c56d91f05d5af"
     },
     {
       "key": "angle",
@@ -5527,7 +5535,7 @@
       "kind": "image",
       "file": "angle-003.svg",
       "exists": true,
-      "hash": "75d235f38e8c0a90175bb69a06e5477ec49ceb1320a0f79262c5dc30988753da"
+      "hash": "27a5b4bbec5a309ab7b6c7be6acfd927a4a1a19444724925a39006d32e8e1984"
     },
     {
       "key": "angle",
@@ -5536,7 +5544,7 @@
       "kind": "image",
       "file": "angle-004.svg",
       "exists": true,
-      "hash": "75c69087047fe295ca6edd90bbbaae8a484dce020555bea0c4ea4a29628e0ad0"
+      "hash": "2462f0db3f313e0fe38e84d60c16da4ae1d22a6dd0a1ac8a82ecb9e4b8a4bed6"
     },
     {
       "key": "angle",
@@ -5545,7 +5553,7 @@
       "kind": "image",
       "file": "angle-005.svg",
       "exists": true,
-      "hash": "4d3d74f9448d7ace1d48df6a9f0b4e654e369c120573f445c8d30c3381136cae"
+      "hash": "1352dbbaae23dfdffb5962bfe98fd0ab790b70ca8d00b82dbd40f19ba76b6160"
     },
     {
       "key": "angle",
@@ -5554,7 +5562,7 @@
       "kind": "image",
       "file": "angle-006.svg",
       "exists": true,
-      "hash": "af1e24004e1301cbb563b4f107abeb8bfb50d0b23a2508b54ac9bf8ee28cec46"
+      "hash": "e98655eb6153ad83b636b4a811877d56b1b0a2a909920060d7f9bb0568b9d8a5"
     },
     {
       "key": "angle",
@@ -5563,7 +5571,7 @@
       "kind": "image",
       "file": "angle-007.svg",
       "exists": true,
-      "hash": "4476a9e477f25cfc1834a8a1af2d6f391b5b380f037bb6d28f86b6680351a5d6"
+      "hash": "19393670c7df28e5df8368f92d9653770de1584a2411fa90cafa5b4f7dc4635a"
     },
     {
       "key": "angle",
@@ -5572,7 +5580,7 @@
       "kind": "image",
       "file": "angle-008.svg",
       "exists": true,
-      "hash": "afc805e66ebc45be7c17123ba9e27ef1c8e77494faee6e83683c2c82e6c71fcd"
+      "hash": "deab0e864df74dcb7e0873bc902a990572f728bf1cc82a99b8023395c2015231"
     },
     {
       "key": "angle",
@@ -5581,7 +5589,7 @@
       "kind": "image",
       "file": "angle-009.svg",
       "exists": true,
-      "hash": "67020db1e810c4cc132cd544ab8c3ae22cfbb9cb932ac32d8748925740e76d40"
+      "hash": "a6feb463c75c093e94e0719e050c12fef96c3ad4c6412776ca150e70c68cbe87"
     },
     {
       "key": "angle",
@@ -5590,7 +5598,7 @@
       "kind": "image",
       "file": "angle-010.svg",
       "exists": true,
-      "hash": "31ecf92eca6f76dbfe66034f4fe21556e2a1ff6d0137ccb63f004ef2ff5e93bb"
+      "hash": "9c048dc11814fe7bec1b75f8723d73552cf04987fcf146055f1fa8d0f6c040ad"
     },
     {
       "key": "angle",
@@ -5599,7 +5607,7 @@
       "kind": "image",
       "file": "angle-011.svg",
       "exists": true,
-      "hash": "b5b48bb59cc430a218e849f4f09ee016571d7f3130d4e6b54b5fa688b31a89cd"
+      "hash": "477e9d1fc0888f6ad2033c8ea4ae64b2d7ae71b98e06b55d81aaab90e497fc9a"
     },
     {
       "key": "angle",
@@ -5608,7 +5616,7 @@
       "kind": "image",
       "file": "angle-012.svg",
       "exists": true,
-      "hash": "b05fd4d33ebc5b681da622dd47d182c465b2158a75a5421002f6cf7594055bca"
+      "hash": "2c6548ab81a8520f3762ce064e04605ac3411c9f01ae2e7aafea5cec9bf8e6b9"
     },
     {
       "key": "angle",
@@ -5617,7 +5625,7 @@
       "kind": "image",
       "file": "angle-013.svg",
       "exists": true,
-      "hash": "b9e9fa0889b4316b179960f717720921f8bc95e8b7572555f9845682b08ef243"
+      "hash": "2414c567effe31c7754698d82c96f700ffb23c0e1ac346a9a1063059d1bec388"
     },
     {
       "key": "angle",
@@ -5626,7 +5634,7 @@
       "kind": "image",
       "file": "angle-014.svg",
       "exists": true,
-      "hash": "f91c761249256ed32158b25b313802935386bb2a677b85c5b4ebe384bcba98d3"
+      "hash": "c077c416159e2a847ced2165c3eee1cd7aba35677229689437ae51bfb3a9b964"
     },
     {
       "key": "angle",
@@ -5635,7 +5643,7 @@
       "kind": "image",
       "file": "angle-015.svg",
       "exists": true,
-      "hash": "871e69b7bbe0c45ca0c60cf9fc4179e5686d2edb0349a572cb62b1c6be7e4ed6"
+      "hash": "fc4a2da5e318fc545b37b6a31b5a1efd407bff8a725b9eede803c75ef111dde1"
     },
     {
       "key": "angle",
@@ -5644,7 +5652,7 @@
       "kind": "image",
       "file": "angle-016.svg",
       "exists": true,
-      "hash": "7ac9588976832b4eac66a2b86af122e819deff571d526ac131e94d7f0e1bf191"
+      "hash": "dc6c63696ba9f844ad6611117527d65e7f68243801bb8a92955a3acb9086725c"
     },
     {
       "key": "angle",
@@ -5653,7 +5661,7 @@
       "kind": "image",
       "file": "angle-017.svg",
       "exists": true,
-      "hash": "ed2e7e67a9dfbd6b2ca5c7d0a9e75778db174383062fbd1fa35b1825b638744b"
+      "hash": "391794387557fffc619cdfd8132d9c774f6e5664a2af44e36c1e0c0177a52c86"
     },
     {
       "key": "angle",
@@ -5662,7 +5670,7 @@
       "kind": "image",
       "file": "angle-018.svg",
       "exists": true,
-      "hash": "5841f0868fd45bf2cc2828bb1177ce011d1d2af3ab215f37636ff96a855a242a"
+      "hash": "5764a3d7a87d05e34876e9d47a6283cbd821693b90436c99001aad2d5c820bd6"
     },
     {
       "key": "angle",
@@ -5671,7 +5679,7 @@
       "kind": "image",
       "file": "angle-019.svg",
       "exists": true,
-      "hash": "b709498ae3cbec8e4efa7efff1310179ae6f59f5b4008159e5f01aff73cbd4e5"
+      "hash": "a3045b816f2c5a82d7e50a8a1cb119e7090582825bb9897405543d443020d0f9"
     },
     {
       "key": "angle",
@@ -5680,7 +5688,7 @@
       "kind": "image",
       "file": "angle-020.svg",
       "exists": true,
-      "hash": "fe0329b4b4c562bcdaeb8373cee8e74dc31f932032ef23de59987b9d928c79ab"
+      "hash": "f8fcb7e3d5beee1ac0059fedd82d9a234410766a782ffe4b34602120dd888dc6"
     },
     {
       "key": "angle",
@@ -5689,7 +5697,7 @@
       "kind": "image",
       "file": "angle-021.svg",
       "exists": true,
-      "hash": "ebee7e060c584aa11946b2dca312c380774a74f4addec4f6634ff78c77154db5"
+      "hash": "057bd2c0ed93099f58221fcf6dc3339e49f89fdb4e67e46ce5bc1e4125d99ee2"
     },
     {
       "key": "angle",
@@ -5698,7 +5706,7 @@
       "kind": "image",
       "file": "angle-022.svg",
       "exists": true,
-      "hash": "b1903f38ebdf7c0f7c0fb9b5fbe6fc1a1fa67ba43e1aadcab9997a9dec1be8a4"
+      "hash": "c84027a0ae54d2d294f9191c4b0100ec35472ab726e703eef175b88c306f523d"
     },
     {
       "key": "angle",
@@ -5707,7 +5715,7 @@
       "kind": "image",
       "file": "angle-023.svg",
       "exists": true,
-      "hash": "1e60c11f78749af04ea221a3b538b46928449c890946d871fd1693dd9073d595"
+      "hash": "a441f55a7caacd933b76e441292a18132d29a19976ff80eab31ea68e85125ff2"
     },
     {
       "key": "angle",
@@ -5716,7 +5724,7 @@
       "kind": "image",
       "file": "angle-024.svg",
       "exists": true,
-      "hash": "48ba7444db578da560d19b2af76ab32d84e3eb7bad9712a8bb9e4f5e0c94ab9f"
+      "hash": "fc2cfa81fda0db23d96f83899f4fc6b4546c5ffaf39eface3da53ddd83a57bfb"
     },
     {
       "key": "angle",
@@ -5725,7 +5733,7 @@
       "kind": "image",
       "file": "angle-025.svg",
       "exists": true,
-      "hash": "e8e55ee91768d9c7c10eaf3f148e5826c2c52462aeac3e3ac236d679c28986b0"
+      "hash": "a8c081e86b9a008be0826dcf353c68f2b64241ecd73abef6356bad5d1e01164b"
     },
     {
       "key": "angle",
@@ -5734,7 +5742,7 @@
       "kind": "image",
       "file": "angle-026.svg",
       "exists": true,
-      "hash": "1cc8f1e795675b55645b8ac4c0b6f4ed7bb8a43e9f8e17532f0704e71266ef3e"
+      "hash": "1ae69c69788c99215ed6a890f6a63e1a1707a7562b08b8ea3c88a42c06aaf186"
     },
     {
       "key": "angle",
@@ -5743,7 +5751,7 @@
       "kind": "image",
       "file": "angle-027.svg",
       "exists": true,
-      "hash": "583bb42cd1874c656c6a1655afa2397118daaef68bc9db9313b37e1cc650568c"
+      "hash": "a26cb376535892a209dc13ec2d4763cf1be65ba237a319a785c1783d509f0ae3"
     },
     {
       "key": "angle",
@@ -5752,7 +5760,7 @@
       "kind": "image",
       "file": "angle-028.svg",
       "exists": true,
-      "hash": "71915f4162e8256edcbac8e1d5d6ed0fb51b98b632726082f7d3e9d58bde99a3"
+      "hash": "29d8d5c46ce4efef2b9314991f91996986bfea2eeb802f256527ce8c663e48e3"
     },
     {
       "key": "angle",
@@ -5761,7 +5769,7 @@
       "kind": "image",
       "file": "angle-029.svg",
       "exists": true,
-      "hash": "35fe73720775c96e64e4b40918998c4ffc69d0fe36b0df1aadfced1f333babab"
+      "hash": "a9e5539bd1181ec2bf9471dccb7905f167f0f68c902975d164a5e324ca9cfa46"
     },
     {
       "key": "angle",
@@ -5770,7 +5778,7 @@
       "kind": "image",
       "file": "angle-030.svg",
       "exists": true,
-      "hash": "e8add9bdb44936c5c8d0a3b4cbae72ab584ad598a364020dcf788e16bdf7f0b8"
+      "hash": "26d88215a71747648a390ef6ecee2215047cd3415c3d6bba817f2b3de190600f"
     },
     {
       "key": "angle",
@@ -5779,7 +5787,7 @@
       "kind": "image",
       "file": "angle-031.svg",
       "exists": true,
-      "hash": "8e0b9628e318749bb1a6ec09e4dac0c33ff6a3f410de53f0be78a9be281dfbd7"
+      "hash": "cb1d6e3cbe181158d98a96703abf3fe68e319b6bca7a1ea1dc377641b91f2206"
     },
     {
       "key": "angle",
@@ -5788,7 +5796,7 @@
       "kind": "image",
       "file": "angle-032.svg",
       "exists": true,
-      "hash": "aa006a45b07fb0a107ab8f20db575963ea6e15e725873f257bd585166e71aa88"
+      "hash": "9ee19ca988d4b3c5aab218db272762a3fe11be5a76ef482c81dba12239717a20"
     },
     {
       "key": "angle",
@@ -5797,7 +5805,7 @@
       "kind": "image",
       "file": "angle-033.svg",
       "exists": true,
-      "hash": "17e19f01a45f89b8d28d2ae0d0371b141bdc53980d9f4d87e03e06210c4d178d"
+      "hash": "9309b782db7054bcc204bf9ecde1b626bf4aa6d64bfea6d7e5549d28fb888191"
     },
     {
       "key": "angle",
@@ -5806,7 +5814,7 @@
       "kind": "image",
       "file": "angle-034.svg",
       "exists": true,
-      "hash": "6e5c974b4a7f327d7a8999775b6c801b4e860e397bd2483e1a3cc7093e163a3e"
+      "hash": "95ca5e2b5ac092caff9181a8792fbcf3d0d542e28807bc1d35c32042a4351365"
     },
     {
       "key": "angle",
@@ -5815,7 +5823,7 @@
       "kind": "image",
       "file": "angle-035.svg",
       "exists": true,
-      "hash": "e03f38d790f342f10b41bffa79d1fecc00387ec57573614f0a351c044e804972"
+      "hash": "c9a949f32b8b77acef1287e37b5795b5e98b6529e1f0521f1ac4834aa080b8ed"
     },
     {
       "key": "angle",
@@ -5824,7 +5832,7 @@
       "kind": "image",
       "file": "angle-036.svg",
       "exists": true,
-      "hash": "48a3e8414e7066034ffa7cce9ca1a2917987b8e720853d3d14a814f03174709c"
+      "hash": "53814a5a63d2aeac7c3dd754bbb834432ae2af1915ffb45d3d50cd7af027fc41"
     },
     {
       "key": "palette",
@@ -6278,36 +6286,39 @@
       "visible": true,
       "value": "ファッション雑誌の表紙",
       "kind": "image",
-      "file": "japan-fashion-v21.jpg",
+      "file": "layout-previews-v28.svg#design-01",
       "exists": true,
-      "hash": "36a3e55fd63dfda55ac208ebe0ed5170599aa442db1d64a4281cd948241d2824"
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
+      "fragmentExists": true
     },
     {
       "key": "design",
       "visible": true,
       "value": "週刊誌の表紙",
       "kind": "image",
-      "file": "japan-weekly-v21.jpg",
+      "file": "layout-previews-v28.svg#design-02",
       "exists": true,
-      "hash": "3ffcd15a66cf674219acf0e2aa9b83429fba2cbeaa7d35531a0180f5de18941a"
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
+      "fragmentExists": true
     },
     {
       "key": "design",
       "visible": true,
       "value": "カルチャー誌の表紙",
       "kind": "image",
-      "file": "japan-culture-v21.jpg",
+      "file": "layout-previews-v28.svg#design-03",
       "exists": true,
-      "hash": "4418aa249908826c3e82599e796b8a643dcd0a85ff21a8555fbde48ed379785b"
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
+      "fragmentExists": true
     },
     {
       "key": "design",
       "visible": true,
       "value": "ゴシック雑誌の表紙",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-01",
+      "file": "layout-previews-v28.svg#design-04",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6315,9 +6326,9 @@
       "visible": true,
       "value": "写真集の表紙",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-02",
+      "file": "layout-previews-v28.svg#design-05",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6325,9 +6336,9 @@
       "visible": true,
       "value": "文芸誌の表紙",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-03",
+      "file": "layout-previews-v28.svg#design-06",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6335,9 +6346,9 @@
       "visible": true,
       "value": "ZINEの表紙",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-04",
+      "file": "layout-previews-v28.svg#design-07",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6345,36 +6356,39 @@
       "visible": true,
       "value": "インタビュー誌面",
       "kind": "image",
-      "file": "japan-interview-v21.jpg",
+      "file": "layout-previews-v28.svg#design-08",
       "exists": true,
-      "hash": "0c92fd1f12b51716e8538981030238632c745c000bb0aade3ddba9239a38d5ca"
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
+      "fragmentExists": true
     },
     {
       "key": "design",
       "visible": true,
       "value": "見開き特集",
       "kind": "image",
-      "file": "japan-spread-v21.jpg",
+      "file": "layout-previews-v28.svg#design-09",
       "exists": true,
-      "hash": "fa196c2db8208ab7dda405a0dd2177d290a01c193cef04d7acdb444c18d67a26"
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
+      "fragmentExists": true
     },
     {
       "key": "design",
       "visible": true,
       "value": "新聞の一面",
       "kind": "image",
-      "file": "japan-newspaper-v21.jpg",
+      "file": "layout-previews-v28.svg#design-10",
       "exists": true,
-      "hash": "061680aa88c7f5a35b8065da1e5217225c497ba641e1d3bfb7d4ebc2e8af96da"
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
+      "fragmentExists": true
     },
     {
       "key": "design",
       "visible": true,
       "value": "図鑑の扉",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-05",
+      "file": "layout-previews-v28.svg#design-11",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6382,9 +6396,9 @@
       "visible": true,
       "value": "絵本の表紙",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-06",
+      "file": "layout-previews-v28.svg#design-12",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6392,9 +6406,9 @@
       "visible": true,
       "value": "小説の装丁",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-07",
+      "file": "layout-previews-v28.svg#design-13",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6402,9 +6416,9 @@
       "visible": true,
       "value": "音楽アルバムジャケット",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-08",
+      "file": "layout-previews-v28.svg#design-14",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6412,9 +6426,9 @@
       "visible": true,
       "value": "ゲームのパッケージ",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-09",
+      "file": "layout-previews-v28.svg#design-15",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6422,9 +6436,9 @@
       "visible": true,
       "value": "映画ポスター",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-10",
+      "file": "layout-previews-v28.svg#design-16",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6432,9 +6446,9 @@
       "visible": true,
       "value": "舞台ポスター",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-11",
+      "file": "layout-previews-v28.svg#design-17",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6442,9 +6456,9 @@
       "visible": true,
       "value": "音楽フェスポスター",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-12",
+      "file": "layout-previews-v28.svg#design-18",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6452,9 +6466,9 @@
       "visible": true,
       "value": "展覧会ポスター",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-13",
+      "file": "layout-previews-v28.svg#design-19",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6462,9 +6476,9 @@
       "visible": true,
       "value": "タイポグラフィーポスター",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-14",
+      "file": "layout-previews-v28.svg#design-20",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6472,9 +6486,9 @@
       "visible": true,
       "value": "スイス式グリッドポスター",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-15",
+      "file": "layout-previews-v28.svg#design-21",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6482,9 +6496,9 @@
       "visible": true,
       "value": "バウハウスポスター",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-16",
+      "file": "layout-previews-v28.svg#design-22",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6492,9 +6506,9 @@
       "visible": true,
       "value": "アールデコポスター",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-17",
+      "file": "layout-previews-v28.svg#design-23",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6502,9 +6516,9 @@
       "visible": true,
       "value": "アールヌーヴォーポスター",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-18",
+      "file": "layout-previews-v28.svg#design-24",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6512,9 +6526,9 @@
       "visible": true,
       "value": "サイケデリックポスター",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-19",
+      "file": "layout-previews-v28.svg#design-25",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6522,9 +6536,9 @@
       "visible": true,
       "value": "パンク・フライヤー",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-20",
+      "file": "layout-previews-v28.svg#design-26",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6532,9 +6546,9 @@
       "visible": true,
       "value": "レトロ旅行ポスター",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-21",
+      "file": "layout-previews-v28.svg#design-27",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6542,9 +6556,9 @@
       "visible": true,
       "value": "通常の一枚絵",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-22",
+      "file": "layout-previews-v28.svg#design-28",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6552,9 +6566,9 @@
       "visible": true,
       "value": "キャラクターのキービジュアル",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-23",
+      "file": "layout-previews-v28.svg#design-29",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6562,9 +6576,9 @@
       "visible": true,
       "value": "幻想風景画",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-24",
+      "file": "layout-previews-v28.svg#design-30",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6572,9 +6586,9 @@
       "visible": true,
       "value": "映画のワンシーン",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-25",
+      "file": "layout-previews-v28.svg#design-31",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6582,9 +6596,9 @@
       "visible": true,
       "value": "ファッション・エディトリアル",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-26",
+      "file": "layout-previews-v28.svg#design-32",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6592,9 +6606,9 @@
       "visible": true,
       "value": "物語の挿絵",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-27",
+      "file": "layout-previews-v28.svg#design-33",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6602,9 +6616,9 @@
       "visible": true,
       "value": "絵巻物",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-28",
+      "file": "layout-previews-v28.svg#design-34",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6612,9 +6626,9 @@
       "visible": true,
       "value": "屏風絵",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-29",
+      "file": "layout-previews-v28.svg#design-35",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6622,9 +6636,9 @@
       "visible": true,
       "value": "掛け軸",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-30",
+      "file": "layout-previews-v28.svg#design-36",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6632,9 +6646,9 @@
       "visible": true,
       "value": "タロットカード",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-31",
+      "file": "layout-previews-v28.svg#design-37",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6642,9 +6656,9 @@
       "visible": true,
       "value": "トレーディングカード",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-32",
+      "file": "layout-previews-v28.svg#design-38",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6652,9 +6666,9 @@
       "visible": true,
       "value": "図案・パターン",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-33",
+      "file": "layout-previews-v28.svg#design-39",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6662,9 +6676,9 @@
       "visible": true,
       "value": "noteサムネイル",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-34",
+      "file": "layout-previews-v28.svg#design-40",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6672,9 +6686,9 @@
       "visible": true,
       "value": "アイコン・肖像",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-35",
+      "file": "layout-previews-v28.svg#design-41",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6682,9 +6696,9 @@
       "visible": true,
       "value": "紋章・エンブレム",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-36",
+      "file": "layout-previews-v28.svg#design-42",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6692,9 +6706,9 @@
       "visible": true,
       "value": "ステッカー",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-37",
+      "file": "layout-previews-v28.svg#design-43",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6702,9 +6716,9 @@
       "visible": true,
       "value": "切手",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-38",
+      "file": "layout-previews-v28.svg#design-44",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6712,9 +6726,9 @@
       "visible": true,
       "value": "ポストカード",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-39",
+      "file": "layout-previews-v28.svg#design-45",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6722,9 +6736,9 @@
       "visible": true,
       "value": "スマホ壁紙",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-40",
+      "file": "layout-previews-v28.svg#design-46",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
@@ -6732,166 +6746,270 @@
       "visible": true,
       "value": "広告ビジュアル",
       "kind": "image",
-      "file": "japan-format-previews-v21.svg#format-41",
+      "file": "layout-previews-v28.svg#design-47",
       "exists": true,
-      "hash": "af94184f0ad08187da92e11b76391d2af8aa9bd5ddc6c08223065156050c11aa",
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
       "fragmentExists": true
     },
     {
       "key": "type",
       "visible": true,
       "value": "デザインに合わせて自動編集",
-      "kind": "type"
+      "kind": "image",
+      "file": "typography-previews-v28.svg#type-01",
+      "exists": true,
+      "hash": "abaa1bb445cb6fe484cf253cc05021aa2cb4293721dda2060645446a9a666cde",
+      "fragmentExists": true
     },
     {
       "key": "type",
       "visible": true,
       "value": "クリエイター名＋自由な見出し",
-      "kind": "type"
+      "kind": "image",
+      "file": "typography-previews-v28.svg#type-02",
+      "exists": true,
+      "hash": "abaa1bb445cb6fe484cf253cc05021aa2cb4293721dda2060645446a9a666cde",
+      "fragmentExists": true
     },
     {
       "key": "type",
       "visible": true,
       "value": "クリエイター名だけ",
-      "kind": "type"
+      "kind": "image",
+      "file": "typography-previews-v28.svg#type-03",
+      "exists": true,
+      "hash": "abaa1bb445cb6fe484cf253cc05021aa2cb4293721dda2060645446a9a666cde",
+      "fragmentExists": true
     },
     {
       "key": "type",
       "visible": true,
       "value": "雑誌風・見出しと特集をたっぷり",
-      "kind": "type"
+      "kind": "image",
+      "file": "typography-previews-v28.svg#type-04",
+      "exists": true,
+      "hash": "abaa1bb445cb6fe484cf253cc05021aa2cb4293721dda2060645446a9a666cde",
+      "fragmentExists": true
     },
     {
       "key": "type",
       "visible": true,
       "value": "映画ポスター風・タイトルとクレジット",
-      "kind": "type"
+      "kind": "image",
+      "file": "typography-previews-v28.svg#type-05",
+      "exists": true,
+      "hash": "abaa1bb445cb6fe484cf253cc05021aa2cb4293721dda2060645446a9a666cde",
+      "fragmentExists": true
     },
     {
       "key": "type",
       "visible": true,
       "value": "広告チラシ風・情報をたっぷり",
-      "kind": "type"
+      "kind": "image",
+      "file": "typography-previews-v28.svg#type-06",
+      "exists": true,
+      "hash": "abaa1bb445cb6fe484cf253cc05021aa2cb4293721dda2060645446a9a666cde",
+      "fragmentExists": true
     },
     {
       "key": "type",
       "visible": true,
       "value": "新聞風・記事と段組み",
-      "kind": "type"
+      "kind": "image",
+      "file": "typography-previews-v28.svg#type-07",
+      "exists": true,
+      "hash": "abaa1bb445cb6fe484cf253cc05021aa2cb4293721dda2060645446a9a666cde",
+      "fragmentExists": true
     },
     {
       "key": "type",
       "visible": true,
       "value": "物語の装丁風・タイトルと紹介",
-      "kind": "type"
+      "kind": "image",
+      "file": "typography-previews-v28.svg#type-08",
+      "exists": true,
+      "hash": "abaa1bb445cb6fe484cf253cc05021aa2cb4293721dda2060645446a9a666cde",
+      "fragmentExists": true
     },
     {
       "key": "type",
       "visible": true,
       "value": "HALLOWEEN＋クリエイター名",
-      "kind": "type"
+      "kind": "image",
+      "file": "typography-previews-v28.svg#type-09",
+      "exists": true,
+      "hash": "abaa1bb445cb6fe484cf253cc05021aa2cb4293721dda2060645446a9a666cde",
+      "fragmentExists": true
     },
     {
       "key": "type",
       "visible": true,
       "value": "HALLOWEENのみ",
-      "kind": "type"
+      "kind": "image",
+      "file": "typography-previews-v28.svg#type-10",
+      "exists": true,
+      "hash": "abaa1bb445cb6fe484cf253cc05021aa2cb4293721dda2060645446a9a666cde",
+      "fragmentExists": true
     },
     {
       "key": "type",
       "visible": true,
       "value": "短いタイトル＋名前",
-      "kind": "type"
+      "kind": "image",
+      "file": "typography-previews-v28.svg#type-11",
+      "exists": true,
+      "hash": "abaa1bb445cb6fe484cf253cc05021aa2cb4293721dda2060645446a9a666cde",
+      "fragmentExists": true
     },
     {
       "key": "type",
       "visible": true,
       "value": "手書きサイン風の名前",
-      "kind": "type"
+      "kind": "image",
+      "file": "typography-previews-v28.svg#type-12",
+      "exists": true,
+      "hash": "abaa1bb445cb6fe484cf253cc05021aa2cb4293721dda2060645446a9a666cde",
+      "fragmentExists": true
     },
     {
       "key": "type",
       "visible": true,
       "value": "墨の落款風の名前",
-      "kind": "type"
+      "kind": "image",
+      "file": "typography-previews-v28.svg#type-13",
+      "exists": true,
+      "hash": "abaa1bb445cb6fe484cf253cc05021aa2cb4293721dda2060645446a9a666cde",
+      "fragmentExists": true
     },
     {
       "key": "type",
       "visible": true,
       "value": "文字を一切入れない",
-      "kind": "type"
+      "kind": "image",
+      "file": "typography-previews-v28.svg#type-14",
+      "exists": true,
+      "hash": "abaa1bb445cb6fe484cf253cc05021aa2cb4293721dda2060645446a9a666cde",
+      "fragmentExists": true
     },
     {
       "key": "type",
       "visible": true,
       "value": "商品広告・キャッチと特徴3点",
-      "kind": "type"
+      "kind": "image",
+      "file": "typography-previews-v28.svg#type-15",
+      "exists": true,
+      "hash": "abaa1bb445cb6fe484cf253cc05021aa2cb4293721dda2060645446a9a666cde",
+      "fragmentExists": true
     },
     {
       "key": "type",
       "visible": true,
       "value": "ブランド広告・宣言と短いコピー",
-      "kind": "type"
+      "kind": "image",
+      "file": "typography-previews-v28.svg#type-16",
+      "exists": true,
+      "hash": "abaa1bb445cb6fe484cf253cc05021aa2cb4293721dda2060645446a9a666cde",
+      "fragmentExists": true
     },
     {
       "key": "type",
       "visible": true,
       "value": "イベント告知・見どころと案内",
-      "kind": "type"
+      "kind": "image",
+      "file": "typography-previews-v28.svg#type-17",
+      "exists": true,
+      "hash": "abaa1bb445cb6fe484cf253cc05021aa2cb4293721dda2060645446a9a666cde",
+      "fragmentExists": true
     },
     {
       "key": "type",
       "visible": true,
       "value": "展覧会告知・作品名と制作ノート",
-      "kind": "type"
+      "kind": "image",
+      "file": "typography-previews-v28.svg#type-18",
+      "exists": true,
+      "hash": "abaa1bb445cb6fe484cf253cc05021aa2cb4293721dda2060645446a9a666cde",
+      "fragmentExists": true
     },
     {
       "key": "type",
       "visible": true,
       "value": "映画予告・キャッチとあらすじ",
-      "kind": "type"
+      "kind": "image",
+      "file": "typography-previews-v28.svg#type-19",
+      "exists": true,
+      "hash": "abaa1bb445cb6fe484cf253cc05021aa2cb4293721dda2060645446a9a666cde",
+      "fragmentExists": true
     },
     {
       "key": "type",
       "visible": true,
       "value": "漫画表紙・大見出しと煽り文",
-      "kind": "type"
+      "kind": "image",
+      "file": "typography-previews-v28.svg#type-20",
+      "exists": true,
+      "hash": "abaa1bb445cb6fe484cf253cc05021aa2cb4293721dda2060645446a9a666cde",
+      "fragmentExists": true
     },
     {
       "key": "type",
       "visible": true,
       "value": "キャラクター名鑑・役柄とスキル",
-      "kind": "type"
+      "kind": "image",
+      "file": "typography-previews-v28.svg#type-21",
+      "exists": true,
+      "hash": "abaa1bb445cb6fe484cf253cc05021aa2cb4293721dda2060645446a9a666cde",
+      "fragmentExists": true
     },
     {
       "key": "type",
       "visible": true,
       "value": "ゲーム告知・世界紹介とクエスト",
-      "kind": "type"
+      "kind": "image",
+      "file": "typography-previews-v28.svg#type-22",
+      "exists": true,
+      "hash": "abaa1bb445cb6fe484cf253cc05021aa2cb4293721dda2060645446a9a666cde",
+      "fragmentExists": true
     },
     {
       "key": "type",
       "visible": true,
       "value": "縦書きコピー・一文を大きく",
-      "kind": "type"
+      "kind": "image",
+      "file": "typography-previews-v28.svg#type-23",
+      "exists": true,
+      "hash": "abaa1bb445cb6fe484cf253cc05021aa2cb4293721dda2060645446a9a666cde",
+      "fragmentExists": true
     },
     {
       "key": "type",
       "visible": true,
       "value": "詩のコピー・短い言葉を3行",
-      "kind": "type"
+      "kind": "image",
+      "file": "typography-previews-v28.svg#type-24",
+      "exists": true,
+      "hash": "abaa1bb445cb6fe484cf253cc05021aa2cb4293721dda2060645446a9a666cde",
+      "fragmentExists": true
     },
     {
       "key": "type",
       "visible": true,
       "value": "大判タイポグラフィー・文字が主役",
-      "kind": "type"
+      "kind": "image",
+      "file": "typography-previews-v28.svg#type-25",
+      "exists": true,
+      "hash": "abaa1bb445cb6fe484cf253cc05021aa2cb4293721dda2060645446a9a666cde",
+      "fragmentExists": true
     },
     {
       "key": "type",
       "visible": true,
       "value": "ミニマル広告・見出しと名前",
-      "kind": "type"
+      "kind": "image",
+      "file": "typography-previews-v28.svg#type-26",
+      "exists": true,
+      "hash": "abaa1bb445cb6fe484cf253cc05021aa2cb4293721dda2060645446a9a666cde",
+      "fragmentExists": true
     },
     {
       "key": "line",
@@ -7354,9 +7472,9 @@
       "visible": true,
       "value": "星糸のアトリエ",
       "kind": "image",
-      "file": "japan-previews-v21/place-01-10.jpg",
+      "file": "assets/scenes-original-v28-4-3/star-thread-atelier.jpg",
       "exists": true,
-      "hash": "b752c60dc59fd9a7c37df27b9d6bb98bc11b5625ea11c9608237c4302c1a3fae"
+      "hash": "8be1463d660a514ceea7f3c62141b8211f7c0c7eaaccd2eff29b1fb498f56ed3"
     },
     {
       "key": "theme",
@@ -8278,9 +8396,10 @@
       "visible": true,
       "value": "自然・都市の風景画",
       "kind": "image",
-      "file": "japan-previews-v21/medium-02-08.jpg",
+      "file": "layout-previews-v28.svg#design-48",
       "exists": true,
-      "hash": "5b39f2b9a88c887033b4d0e7d1135891cf85044093e48bb7c107da1d8409c1a4"
+      "hash": "aaf8e999232ad853cfbda0100e59ed3edc70323e0e26b59b9724e6315cbbe30f",
+      "fragmentExists": true
     },
     {
       "key": "line",

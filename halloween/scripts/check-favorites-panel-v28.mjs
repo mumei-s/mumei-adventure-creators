@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import {createFavoritesPanel} from '../favorites-panel.js?v=28.4.3';
-import {questions} from '../catalog.js?v=28.4.3';
+import {createFavoritesPanel} from '../favorites-panel.js?v=28.4.4';
+import {questions} from '../catalog.js?v=28.4.4';
 
 class Node{
  constructor(tag='div',cls='',text=''){Object.assign(this,{tagName:tag,className:cls||'',textContent:text,children:[],dataset:{},attributes:{},listeners:{},value:''});}

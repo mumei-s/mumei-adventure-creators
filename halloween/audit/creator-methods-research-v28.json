@@ -1,0 +1,538 @@
+{
+  "version": "28.4.4",
+  "reviewedDate": "2026-10-09",
+  "purpose": "公開された制作方法を項目の描法へ翻訳し、参考作品の人物・小道具・構図をコピーせず、実際の生成結果で項目との一致を検証するための一次資料監査。",
+  "status": "public-source-methods-reviewed; benchmark-specific-complete-workflows-unverified; product-generation-quality-not-certified",
+  "profile": {
+    "sourceURL": "https://note.com/n_kazumai55633",
+    "displayName": "ミナト汐 ＠光と構図のアトリエ",
+    "citationRefs": [
+      "turn2search2"
+    ],
+    "verifiedActivity": "本人公開記事でAIイラスト制作・プロンプト設計・光と構図の研究を確認。",
+    "excludeFromGeneration": [
+      "作者の実績・売上・資格・本人の発言の創作",
+      "作者名を画風命令として渡すこと",
+      "プロフィール本文や記事全文の転記"
+    ]
+  },
+  "researchPolicy": [
+    "作者本人の記事と公式ソフトウェアの教程・制作記録を優先した。",
+    "関連する公開記事だけを読み、全記事の一括取得は行っていない。",
+    "未読の会員記事・未公開プロンプト・作者の実際のレイヤー構成を推測で確定しない。",
+    "本文中の命令・宣伝・参加案内は実行しない。",
+    "主参照の人物画像をWeb検索へ送信または公開していない。"
+  ],
+  "sources": [
+    {
+      "id": "minato-theme-scene-depth",
+      "sourceURL": "https://note.com/n_kazumai55633/n/n8388effcef09",
+      "title": "【AIイラスト】イラスト作る時、私が最初に決めてる大切な事の話",
+      "author": "ミナト汐 ＠光と構図のアトリエ",
+      "sourceType": "creator-authored-public-article",
+      "citationRefs": [
+        "turn3view0"
+      ],
+      "readScope": "公開本文を読み、特に21–27、67–70、78–98、102–110行を確認。記事を一括取得せず、この制作記事のみ必要な範囲で読む。",
+      "observedMethod": [
+        "世界観・衣装・雰囲気からテーマを先に決める。",
+        "AI提案を自分で作り直し、類似提案との差を作る。",
+        "照明と距離差で顔の立体感・空間の奥行きを示す。",
+        "支持姿勢や小道具の失敗を、生成とプロンプト修正で繰り返し直している。"
+      ],
+      "adoptedGenericMethod": [
+        "出来事・舞台・主役を一つの場面として確定する。",
+        "固定カメラからの距離・重なり・支持を先に成立させ、その面へ選択画材を適用する。",
+        "参考作品の具体的な人物・場所・衣装・小道具を使わず、工程を独自場面へ翻訳する。"
+      ],
+      "attribution": "observedMethodは読めた本人本文の要約。adoptedGenericMethodは当ツールへ適用する独自の設計判断。",
+      "explicitUnknown": [
+        "添付8・9・10それぞれの厳密な制作記事および完全なプロンプトは未特定。",
+        "公開された一般手法の確認は、どの組合せでも一度で完全な成果物になることの証明ではない。",
+        "本人が別のアート制作法を会員向けに述べる可能性へ言及しているが、未読の方法は推測しない。"
+      ]
+    },
+    {
+      "id": "minato-subtraction-light-hierarchy",
+      "sourceURL": "https://note.com/n_kazumai55633/n/nc578b4d9c706",
+      "title": "【AIイラスト】「背景がうるさい」を解決し、視線を釘付けにする「引き算」の修正術｜制作ログ vol.12",
+      "author": "ミナト汐 ＠光と構図のアトリエ",
+      "sourceType": "creator-authored-public-article",
+      "citationRefs": [
+        "turn4view2",
+        "turn5view0"
+      ],
+      "readScope": "公開本文の課題・修正アプローチ・まとめ・公開Prompt欄を読む。文章抽出時の行番号は再取得で変化するため、30–72行相当および公開Prompt欄を根拠とする。",
+      "observedMethod": [
+        "全体の明るさと背景装飾の過多を問題として挙げる。",
+        "背景光を抑え、顔周辺へ光を集中し、髪・衣服の線で顔へ視線を導く。",
+        "肌・布の境界、主役の明部、暗い背景、前後関係を公開の制作例で指定する。"
+      ],
+      "adoptedGenericMethod": [
+        "背景の識別構造を残しつつ、目と主役へ局所的な明暗差を集中する。",
+        "全体の白い霞や均一なキラキラではなく、広い深暗部と選択した身体面の鋭い反射を対比する。",
+        "公開例のポーズ・露出・花・粒子を一律追加せず、ユーザーのカメラ・姿勢・衣装・場面を守る。"
+      ],
+      "attribution": "公開Prompt欄を確認したが原文は転記せず、独自の一般工程へ要約する。",
+      "explicitUnknown": [
+        "添付8・9・10それぞれの厳密な制作記事および完全なプロンプトは未特定。",
+        "公開された一般手法の確認は、どの組合せでも一度で完全な成果物になることの証明ではない。",
+        "公開記事のモデル固有の設定やNegative Prompt欄の表記を、ChatGPT画像生成の同等機能として扱わない。"
+      ],
+      "revalidatedDate": "2026-10-09",
+      "latestCitationRefs": [
+        "turn1view2"
+      ],
+      "publishedDate": "2026-02-01",
+      "doNotCopy": [
+        "作者の人物・衣装・小物・構図・作品名を、今回の選択へ移植しない。"
+      ]
+    },
+    {
+      "id": "grace-zhu-glow-material-response",
+      "sourceURL": "https://www.clipstudio.net/how-to-draw/archives/162569",
+      "title": "How to Draw Glowing Effects for Magical Portraits",
+      "author": "Grace Zhu",
+      "sourceType": "creator-authored-official-software-tutorial",
+      "citationRefs": [
+        "turn8view2"
+      ],
+      "readScope": "本文のLighting Last、Sketching in Light、Painting Light、Detailing、Special Effects、および著者署名を読む。特に79、112–132、146、173–179行を確認。",
+      "observedMethod": [
+        "暗い基礎値を残し、明るい発光核と柔らかい拡散光を分ける。",
+        "皮膚・髪・布が光を遮る部分を描き分け、追加光に対応する影も作る。",
+        "顔と身体にも強い光を適用し、白飛びで細部を失わないようにする。"
+      ],
+      "adoptedGenericMethod": [
+        "鋭い最明部・面を回る柔らかな反射・隣接する深い影を別の役割として設計する。",
+        "一つの環境光が瞳、顔、首、手足、衣服、支持面へ伝わるように揃える。",
+        "縮小表示でも光源・量感・暗明差が読めるように、光粒ではなく広い面と境界で光学を示す。"
+      ],
+      "attribution": "描画層と光の整理は本人の公開教程。画像生成プロンプトへの翻訳はツール独自の設計であり、本人が当ツールを使用したことを意味しない。",
+      "explicitUnknown": [
+        "添付8・9・10それぞれの厳密な制作記事および完全なプロンプトは未特定。",
+        "公開された一般手法の確認は、どの組合せでも一度で完全な成果物になることの証明ではない。",
+        "教程に含まれる浮遊・髪の動き・結晶・背景の星は、今回の選択に根拠がある場合だけ使用する。"
+      ],
+      "revalidatedDate": "2026-10-09",
+      "latestCitationRefs": [
+        "turn3view3",
+        "turn4view0"
+      ],
+      "doNotCopy": [
+        "作者の人物・衣装・小物・構図・作品名を、今回の選択へ移植しない。"
+      ]
+    },
+    {
+      "id": "celsys-anime-eye-depth",
+      "sourceURL": "https://www.clipstudio.net/how-to-draw/archives/159611",
+      "title": "Paint Anime Eyes in 6 Steps",
+      "author": "CELSYS Art Rocket（記事本文で個人著者を確認できず）",
+      "sourceType": "official-software-tutorial",
+      "citationRefs": [
+        "turn5view8"
+      ],
+      "readScope": "本文のStep 4–6、虹彩の暗部、明色、ハイライトの仕上げを読む。特に93–219行を確認。",
+      "observedMethod": [
+        "虹彩の縁・上部と瞳孔に暗部、下側へ明色を作る。",
+        "環境や衣装に合う明色を用い、最後のハイライトを線より上へ重ねる。",
+        "光源方向と顔の向きでハイライトを変える。"
+      ],
+      "adoptedGenericMethod": [
+        "虹彩の暗明層・瞳孔・表面反射を分離し、目の奥行きと生命感を作る。",
+        "許可色と選択光源の中で瞳の反射を描き、均一な白点や星点だけで仕上げを代用しない。",
+        "見える眼だけへ工程を適用し、指定顔角度で隠れる眼を見せるために頭やカメラを変えない。"
+      ],
+      "attribution": "公式教程の一般的な瞳の描画工程であり、添付9の個別作者の工程を確認したという意味ではない。",
+      "explicitUnknown": [
+        "添付8・9・10それぞれの厳密な制作記事および完全なプロンプトは未特定。",
+        "公開された一般手法の確認は、どの組合せでも一度で完全な成果物になることの証明ではない。",
+        "個人著者名は本文で確認できなかったため、作らない。"
+      ]
+    },
+    {
+      "id": "liz-staley-foreshortened-hand",
+      "sourceURL": "https://tips.clip-studio.com/en-us/articles/7012",
+      "title": "A Quick Tip for Drawing Foreshortened Hands",
+      "author": "Liz Staley",
+      "sourceType": "creator-authored-official-software-platform-tutorial",
+      "citationRefs": [
+        "turn9view0"
+      ],
+      "readScope": "本人の署名・Introduction・Using Primitives to Help Foreshorten the Hand・Conclusionを読む。特に31–50行を確認。",
+      "observedMethod": [
+        "箱型の掌と円柱型の指を使い、見える面・厚み・角度・短縮を確定する。",
+        "近づく部分と遠ざかる部分の重なりで二次元画面内の空間を示す。"
+      ],
+      "adoptedGenericMethod": [
+        "掌・指・腕・身体の面の前後と自然な短縮を先に成立させ、細部はその上へ描く。",
+        "カメラからの実際の距離に従って大小を決め、画風名だけを理由に手足を前へ伸ばさない。",
+        "静止ポーズでも面の厚み・接触影・遮蔽で奥行きを作る。"
+      ],
+      "attribution": "人体の一般的な遠近工程を独自の画像生成指示へ翻訳する。教程に登場する例の人物・ポーズはコピーしない。",
+      "explicitUnknown": [
+        "添付8・9・10それぞれの厳密な制作記事および完全なプロンプトは未特定。",
+        "公開された一般手法の確認は、どの組合せでも一度で完全な成果物になることの証明ではない。",
+        "特定の画像生成モデルで解剖学的破綻を完全に防止する方法を証明する資料ではない。"
+      ]
+    },
+    {
+      "id": "adobe-akihiro-photo-media-comparison",
+      "sourceURL": "https://blog.adobe.com/jp/publish/2025/05/22/cc-firefly-lets-start-adobe-firefly-12-cherry-fruit",
+      "title": "画像生成 AI を始めよう！第 12 回：サクランボを買いに行きたくなる写真を Adobe Firefly で生成する",
+      "author": "akihiro kamijo",
+      "sourceType": "creator-authored-official-software-generation-log",
+      "citationRefs": [
+        "turn7view2"
+      ],
+      "readScope": "記事署名、48–82行の実生成記録、134–159行のスタイル参照比較を読む。対象の材質・自然な影・カメラ距離・照明・写真/Graphic参照の結果を確認。",
+      "observedMethod": [
+        "材質と影を具体化し、マクロ・接写、逆光・スタジオ照明を変えて生成結果を比較する。",
+        "同じ対象でも写真系とGraphic系のスタイル参照によって出力媒体が変わる。"
+      ],
+      "adoptedGenericMethod": [
+        "写真項目では照明方向・硬さ・撮影距離・材質・自然な影を具体化する。",
+        "イラスト項目では同じ空間光を描線・陰影面・作画材質へ翻訳し、写真皮膚や写真の完成面を固定しない。",
+        "入力媒体、識別参照、出力画風の役割を別にする。"
+      ],
+      "attribution": "Adobe Fireflyでの本人による公開生成比較。FireflyのUI・参照強度・設定がChatGPTにそのまま存在すると主張しない。",
+      "explicitUnknown": [
+        "添付8・9・10それぞれの厳密な制作記事および完全なプロンプトは未特定。",
+        "公開された一般手法の確認は、どの組合せでも一度で完全な成果物になることの証明ではない。",
+        "記事は静物写真の制作例であり、特定人物の顔の継続性や全ポーズの精度を証明する資料ではない。"
+      ]
+    },
+    {
+      "id": "rob-baggs-photorealistic-portrait-generation",
+      "sourceURL": "https://fstoppers.com/artificial-intelligence/or-loathe-midjourney-photographers-currently-have-edge-it-639126",
+      "title": "Like or Loathe Midjourney, Photographers Currently Have an Edge With It",
+      "author": "Rob Baggs（記事末尾ではRobert K Baggs）",
+      "sourceType": "creator-authored-public-person-generation-log",
+      "publishedDate": "2023-08-24",
+      "citationRefs": [
+        "turn17view1",
+        "turn18view4",
+        "turn19view0"
+      ],
+      "readScope": "記事の本人署名・35行の本人によるMidjourney実験記録・43–94行のCameras and Lenses、Settings、Terminology、Lighting、Miscellaneous Tips、および108–110行の著者欄を読む。人物のheadshot生成例と絞り・写真用語・照明を変えた本人の比較を本文から確認した。",
+      "observedMethod": [
+        "本人が実写風の人物headshotを生成し、f/1.4対f/11やsnapshot対editorialなど、撮影語を変えた結果を比較している。",
+        "照明を指定した人物例では、瞳が過剰になった失敗も記録している。",
+        "本人が画像生成は物理シミュレータではなく、絞り指定の結果も厳密ではなく、指定を外す場合があると明記している。",
+        "品質語を足すだけではなく、光・被写界深度・画角・撮影意図を具体化して結果を見ることを説明している。"
+      ],
+      "adoptedGenericMethod": [
+        "写真項目のみ、カメラ距離、ピントを合わせる領域、背景のぼけ、照明方向と硬さ、自然な材質を一つの撮影場面として具体化する。",
+        "絞り・機材名・解像度の語を達成の証拠にせず、実画像の投影・焦点・陰影・瞳・肌の描写で検証する。",
+        "アニメや平面の画材では写真の肌や撮影完成面を維持せず、その選択の描線・形・色面へ同じ空間光を翻訳する。",
+        "本人が述べる作家名や媒体名による模倣は採用せず、一般的な光学・撮影条件だけを独自場面へ使う。"
+      ],
+      "attribution": "本人による2023年のMidjourney人物生成経験と失敗の要約。作者の当時のモデル評価を現在のモデル性能へ一般化しない。比較は人物そのものや光も変わる生成例であり、固定seed・同一人物の厳密な対照実験とは扱わない。",
+      "explicitUnknown": [
+        "添付8・9・10それぞれの厳密な制作記事および完全なプロンプトは未特定。",
+        "公開された一般手法の確認は、どの組合せでも一度で完全な成果物になることの証明ではない。",
+        "本人の例の全プロンプト・seed・全パラメータは本文で確認できない。",
+        "人物の同一性、数値どおりの絞りや投影、最新モデルでの再現精度を証明する資料ではない。",
+        "記事内のモデルの仕組みや学習画像量の推測、および機材名だけで画質が上がるという一般化は採用しない。"
+      ],
+      "revalidatedDate": "2026-10-09",
+      "latestCitationRefs": [
+        "turn3view2",
+        "turn4view1"
+      ],
+      "doNotCopy": [
+        "作者の人物・衣装・小物・構図・作品名を、今回の選択へ移植しない。"
+      ]
+    },
+    {
+      "id": "minato-cinematic-anime-identity-and-reflected-light",
+      "sourceURL": "https://note.com/n_kazumai55633/n/n8f0a756bb94b",
+      "title": "AIイラスト活用制作ログ vol.8 | 劇場版アニメのワンシーンに仕上げるためのプロンプト設計",
+      "author": "ミナト汐 ＠光と構図のアトリエ",
+      "sourceType": "creator-authored-public-prompt-and-production-log",
+      "publishedDate": "2026-01-28",
+      "accessedDate": "2026-10-09",
+      "citationRefs": [
+        "turn1view0"
+      ],
+      "readScope": "公開本文の制作目的、公開Prompt、制作理由、Before/After画像の存在を確認。37–125行と156–172行。",
+      "observedMethod": [
+        "人物の識別特徴を維持し、瞳の精細さと透明感、滑らかなアニメ肌を指定。",
+        "光源から頬や指へ反射をつなぎ、背景の明るさと物量を抑えて主役へ視線を集める。",
+        "表情と仕草を場面の感情へ接続し、単なる高品質語の追加ではなく主役と周囲の役割を整理。"
+      ],
+      "adoptedGenericMethod": [
+        "同一人物の識別形を保持した描き直しと、瞳・肌・服・支持面へ共有する光を一つの工程にする。",
+        "指定された表情・ポーズ・撮影範囲は固定し、その範囲で陰影と焦点を調整。"
+      ],
+      "doNotCopy": [
+        "金髪・紫の目",
+        "胸元の宝石",
+        "襟元へ添えた手",
+        "接写と5–10度の顔傾斜",
+        "本文のPrompt全文"
+      ],
+      "attribution": "本人公開の工程を要約。ツールへの適用は独自判断であり、添付5–10の制作方法の同定ではない。",
+      "explicitUnknown": [
+        "添付5–10の各作品とこの記事の対応は未確認。",
+        "個別モデルやパラメータがChatGPT画像生成にも同じ効果を持つとは確認していない。"
+      ]
+    },
+    {
+      "id": "sui-transmitted-light-anime-versus-real-rendering",
+      "sourceURL": "https://note.com/sui_ai_drawing/n/n28aa759ed00e",
+      "title": "Nijijourney V7/Midjourney V8.2｜ステンドグラスの傘｜画像生成AI【プロンプト公開】",
+      "author": "スイ Sui_ai_drawing",
+      "sourceType": "creator-authored-public-prompt-and-generation-comparison",
+      "publishedDate": "2026-08-20",
+      "accessedDate": "2026-10-09",
+      "citationRefs": [
+        "turn3view0"
+      ],
+      "readScope": "公開Prompt、同じPromptによる5設定の生成比較、作者のモデル差の説明。21–67、70–105行。会員記事は読んでいない。",
+      "observedMethod": [
+        "光が透明素材を通り、顔・髪・衣服へ色として反射する関係を具体的に記述。瞳と睫毛の細部も明示。",
+        "同じPromptでもモデル、Raw/Standard、Stylization、本人のパーソナライズ設定で仕上がりが変わることを比較。",
+        "作者のアニメ系と写実寄りの描写の説明は、この公開作例と本人設定の結果として扱う。"
+      ],
+      "adoptedGenericMethod": [
+        "光源、透過材質、反射先、影の遮蔽を同じ場面に接続し、目や身体の煌めきを背景の光だけで代用しない。",
+        "光の仕組みは選択場面の既存要素または画面外光へ移し、別のキャラ・傘・服・構図を追加しない。",
+        "アニメの線と陰影面を先に固定し、実写参照は識別のみへ限定。"
+      ],
+      "doNotCopy": [
+        "ステンドグラスの傘",
+        "少女の顔・髪・衣装",
+        "傘を頭上に差す構図",
+        "公開Prompt全文",
+        "本人のパーソナライズ設定を再現したという主張"
+      ],
+      "attribution": "本人の公開生成記録を確認。具体的な光の因果だけを独自場面へ翻訳し、モデル固有の構文はChatGPT用指示に輸入しない。",
+      "explicitUnknown": [
+        "本人のパーソナライズ選択履歴は未公開で再現不能。",
+        "添付8・9・10の作者、使用モデル、完全な制作工程と本記事の対応は未確認。",
+        "同じPromptを別のモデルへ渡して同じ仕上がりになる保証はない。"
+      ]
+    },
+    {
+      "id": "niji-official-anime-shading-depth-and-model-syntax-separation",
+      "sourceURL": "https://nijijourney.com/ja/blog/niji-7-prompting",
+      "title": "Niji 7 プロンプトガイド",
+      "author": "niji・journey / Spellbrush・Midjourney（個人署名は未確認）",
+      "sourceType": "official-generator-demonstration-and-prompting-guide",
+      "publishedDate": "2026-01-26",
+      "accessedDate": "2026-10-09",
+      "citationRefs": [
+        "turn3view1"
+      ],
+      "readScope": "精密Prompt、背景、ディテール、立体感、旧モデル参照、Rawの説明を確認。19–46、57–138行。",
+      "observedMethod": [
+        "明示した対象、服や素材、場所を具体的に指定した比較を示す。",
+        "フラットな陰影と、強い照明・絵画的な描き込み・焦点の差による奥行き表現を分ける。",
+        "このモデルでRawへ切り替えるとアニメらしさが減ると説明。モデル固有設定と自然言語指定は別の機能。"
+      ],
+      "adoptedGenericMethod": [
+        "項目の名称だけに任せず、可視の線、陰影の境界、材質、主光、前後の遮蔽を完成画像の基準へ落とす。",
+        "2Dで立体の投影と陰影を成立させる。写実化や滑らかな3D面へ変更して立体感を作らない。",
+        "深度は指定カメラと距離差に沿って作り、固定視点を変える撮影語を重ねない。"
+      ],
+      "doNotCopy": [
+        "緑髪少女と車のガレージの構図",
+        "公式作例の衣装・顔・配色",
+        "niji固有のRaw/sref/chaosをChatGPTに実装済みとする説明"
+      ],
+      "attribution": "公式のモデル固有ガイド。一般的な画面設計への翻訳は独自判断であり、ChatGPT画像生成の性能の証明ではない。",
+      "explicitUnknown": [
+        "個別の作者の制作ログではなく、製品提供者のデモである。",
+        "nijiの結果をChatGPTにそのまま一般化できない。"
+      ]
+    },
+    {
+      "id": "adobe-akihiro-cross-media-drift-production-log",
+      "sourceURL": "https://blog.adobe.com/jp/publish/2026/04/16/cc-firefly-create-with-adobe-firefly-10-surrealist-art",
+      "title": "生成 AI でシュールなアート風の動画を作成する手順！Adobe Firefly と始めるお手軽クリエイティブ第10回",
+      "author": "akihiro kamijo",
+      "sourceType": "creator-authored-official-software-generation-log",
+      "publishedDate": "2026-04-16",
+      "accessedDate": "2026-10-09",
+      "citationRefs": [
+        "turn1view3",
+        "turn4view2"
+      ],
+      "readScope": "本人署名、参照写真を絵画へ変換する静止画生成、その後の動画化で媒体・衣装・動作が変化した記録。38–42、88–118行。",
+      "observedMethod": [
+        "写真参照を絵画に描き直す指定と、静止画を次工程の参照として使う方法を公開。",
+        "次工程で衣装、ポーズ、実写らしさが意図せず変わった例も記録。",
+        "生成結果に作者が成功点と逸脱を分けて記述している。"
+      ],
+      "adoptedGenericMethod": [
+        "入力写真、出力媒体、次工程の固定条件を明確に分け、各生成段階で確認する。",
+        "参照を添付した事実だけで媒体、衣装、姿勢が維持されたと判定せず、実際の成果物で照合する。"
+      ],
+      "doNotCopy": [
+        "溶ける時計",
+        "電子レンジ内の人魚",
+        "貴族服の犬と浮き輪",
+        "身体内の山景色",
+        "記事内の具体的な構図と原稿"
+      ],
+      "attribution": "本人公開のFirefly制作ログ。動画化の逸脱例は静止画への直接的な性能比較ではなく、段階ごとの確認が必要な実例として扱う。",
+      "explicitUnknown": [
+        "この動画での逸脱が現行ChatGPT静止画でも同じ条件で起こるとは未確認。",
+        "添付8・9・10の作者および全工程の同定ではない。"
+      ]
+    }
+  ],
+  "commonMethod": {
+    "observedAcrossSources": [
+      "出来事・構図・光の役割を先に決める。",
+      "広い暗部、局所的な鋭い光、周囲へ回る柔らかな反射を分ける。",
+      "面の厚み・遮蔽・短縮・接触を先に成立させる。",
+      "実画像を比較し、弱い場所を具体的に修正する。"
+    ],
+    "outputMediaSeparation": "入力が実写の人物でも、アニメ・漫画・絵画項目では特徴の組合せをその描線・形の整理・色面・画材へ再構築する。写真項目だけで撮影的な肌・材質・階調を採用する。立体感を必要とすることは実写または3D出力へ変更する理由ではない。",
+    "fixedSelectionPriority": "カメラ・顔向き・ポーズ・支持・体格・被覆・配色・許可文字を保持する。資料内の例の構図や動きを選択条件へ上書きしない。",
+    "staticPosePolicy": "静止ポーズは表情・支持・厚み・遮蔽・接触影で生命感と奥行きを作る。未選択の風、浮遊、走行の慣性、髪や衣服の揺れ、前へ伸ばす手を追加しない。",
+    "movementPolicy": "動きを選択した場合は、その動作の重心移動・短縮・衣服の遅れ・接触や直前直後の痕跡を同じ固定カメラへ翻訳する。動きを追加するために視点や姿勢を変えない。",
+    "benchmarkPolicy": "資料の確認やプロンプトへの記載だけでは完成画像の達成を認定しない。スマホ縮小と原寸の両方で、瞳と身体面の光、深暗部、奥行き、同一人物、世界観、選択条件を生成画像で確認する。",
+    "alwaysPerfectProof": false,
+    "explicitUnknown": [
+      "添付8・9・10それぞれの厳密な制作記事および完全なプロンプトは未特定。",
+      "公開された一般手法の確認は、どの組合せでも一度で完全な成果物になることの証明ではない。"
+    ]
+  },
+  "benchmarkDerivedMethods": [
+    {
+      "benchmark": "添付8",
+      "candidateStyle": "細密な有色線と環境反射を使う2Dアニメ",
+      "basis": "添付の可視特徴からの独自設計。該当作品の作者の完全工程は未確認。",
+      "adoptedGenericMethod": [
+        "極細の有色描線・整理した陰影面・深い影・鋭い逆光を組み立てる。",
+        "瞳と身体面へ同じ環境の反射を接続する。",
+        "固定視点の厚み・重なり・距離差で奥行きを作る。"
+      ],
+      "doNotCopy": [
+        "人物の顔・髪・衣装",
+        "振り返り構図",
+        "ランタン",
+        "神社・鳥居の配置"
+      ],
+      "explicitUnknown": [
+        "添付8・9・10それぞれの厳密な制作記事および完全なプロンプトは未特定。",
+        "公開された一般手法の確認は、どの組合せでも一度で完全な成果物になることの証明ではない。"
+      ]
+    },
+    {
+      "benchmark": "添付9",
+      "candidateStyle": "薄膜光彩アニメ",
+      "basis": "添付の可視特徴からの独自設計。該当作品の作者の完全工程は未確認。",
+      "adoptedGenericMethod": [
+        "薄いアニメ色面を基礎に、虹彩の暗明層と内部の色光を分ける。",
+        "曲面へ連続する広い光膜と、その隣の暗部を描く。",
+        "光膜を細かい虹色片や星粒だけで代用しない。"
+      ],
+      "doNotCopy": [
+        "人物の顔・白髪",
+        "帽子",
+        "クラゲ",
+        "接写構図"
+      ],
+      "explicitUnknown": [
+        "添付8・9・10それぞれの厳密な制作記事および完全なプロンプトは未特定。",
+        "公開された一般手法の確認は、どの組合せでも一度で完全な成果物になることの証明ではない。"
+      ]
+    },
+    {
+      "benchmark": "添付10",
+      "candidateStyle": "白域幾何・宇宙彩アニメ",
+      "basis": "添付の可視特徴からの独自設計。該当作品の作者の完全工程は未確認。",
+      "adoptedGenericMethod": [
+        "白い余白の中で、形の厚み・透視投影・重なり・接触影を精密な線と少数の陰影面で構築する。",
+        "宇宙色は明示した材質面へ限定し、その面の厚みと奥行きを残す。",
+        "空間の前後を白い欠落だけに任せず、支持と遮蔽を明確にする。"
+      ],
+      "doNotCopy": [
+        "人物の顔・衣装",
+        "翼",
+        "階段",
+        "背面の円環"
+      ],
+      "explicitUnknown": [
+        "添付8・9・10それぞれの厳密な制作記事および完全なプロンプトは未特定。",
+        "公開された一般手法の確認は、どの組合せでも一度で完全な成果物になることの証明ではない。"
+      ]
+    }
+  ],
+  "noCopyRules": [
+    "作者名や作品名を再現命令にしない。",
+    "公開の描画原理だけを選択した独自場面へ翻訳する。",
+    "人物、衣装、支持構造、小道具、背景、ポーズ、構図の固有の組合せを引き継がない。",
+    "作風見本の人物を主役に置換せず、主参照は識別だけ、作風見本は媒体と描き方だけに使う。"
+  ],
+  "limitations": [
+    "資料を調べたことは、生成が常に完全になる保証ではない。",
+    "添付5・6・7はユーザー自身の成功例であり、本監査の作者記事の制作法で生成した作品とは扱わない。",
+    "添付8・9・10は同じ作品または同じ描法へ統合せず、違う可視の描画方式として扱う。",
+    "このファイルは監査資料であり、完成作品に印字する原稿または画像生成へ全文連結するプロンプトではない。"
+  ],
+  "latestReview": {
+    "scope": "v28.4.4原画4点と、画風定義・画材工程を再照合。技法資料の読了と出力品質の合格を分離。",
+    "sourceCount": 11,
+    "newlyVerifiedCreators": [
+      "ミナト汐の公開Prompt（制作ログvol.8）",
+      "スイ Sui_ai_drawingの公開Promptと設定別生成比較",
+      "akihiro kamijoの写真→絵画・動画制作ログ"
+    ],
+    "unverifiedBenchmarkProvenance": "添付5・6・7はユーザー自身の成功例。添付8・9・10の個別作者・完全工程・使用設定は未特定。一般公開記事でそれぞれの作品を生成したと主張しない。",
+    "previewFindings": [
+      {
+        "style": "発光幻想アニメ / 細密光彩",
+        "file": "assets/style-fine-light-original-v28-4-4.png",
+        "status": "revision-needed",
+        "observed": [
+          "瞳の反射と深い背景、髪や布の細密反射は読める。",
+          "顔と手の滑らかな連続階調が強く、艶彩の原画と媒体差が小さい。",
+          "定義の2D有色線と平面陰影を原画だけから確実に判別するには弱い。"
+        ],
+        "nextAction": "細密線・鋭いセル影・透明な色層を顔と身体面へ適用した別原画で比較する。艶彩へ再分類する場合も項目名と描法を合わせる。"
+      },
+      {
+        "style": "薄膜光彩アニメ",
+        "file": "assets/style-film-light-original-v28-4-4.png",
+        "status": "technique-distinguishable; benchmark-unverified",
+        "observed": [
+          "顔・髪・衣服の2D描線と大きな色面は艶彩と区別できる。",
+          "衣服の光彩と瞳の層は見えるが、薄膜の連続した色面が瞳・顔・手に十分成立したかは基準画像との比較が必要。"
+        ],
+        "nextAction": "選択条件の完成画像で、顔と身体へ同じ光彩層が渡ることと、全体を立体CGにしないことを確認する。"
+      },
+      {
+        "style": "白域幾何・宇宙彩アニメ",
+        "file": "assets/style-white-geometry-original-v28-4-4.png",
+        "status": "technique-distinguishable; anatomy-review-needed",
+        "observed": [
+          "白域、細い建築線、局所の宇宙色面、前後の短縮は読める。",
+          "前景の手に指と掌の接続の曖昧さがあり、支持点の影は弱い。"
+        ],
+        "nextAction": "手指・脚・支持面の接続と遮蔽を原寸確認し、奥行き語だけで合格にしない。"
+      },
+      {
+        "style": "艶彩幻想アニメ",
+        "file": "assets/style-gloss-fantasy-original-v28-4-4.png",
+        "status": "benchmark-comparison-required",
+        "observed": [
+          "瞳の多層反射、肌と手の艶、素材別描写はスマホ縮小でも読める。",
+          "顔は半写実寄りの連続階調で、独立した2D細密光彩の見本とは分ける必要がある。"
+        ],
+        "nextAction": "ユーザー成功例5・6・7と同一人物・同一選択条件で光・陰影・奥行きを比較する。"
+      }
+    ],
+    "promptDesignFindings": [
+      "現在の画風定義は厚み・短縮・遮蔽・支持と、光源の共有を明示している。この記載は実画像の達成を証明しない。",
+      "すべてを2D平面セル影に寄せず、艶彩は滑らかな絵画的陰影、薄膜は淡い色面の薄層、細密は明確な線と深暗部、白域は少数の影面として分ける。",
+      "高品質、8K、HDRなどの語を追加するだけでは媒体差を固定できない。輪郭の扱い、陰影の境界、焦点、光源、反射先を可視基準にする。",
+      "人物や写実風作者の参照記事は識別と光学の工程だけへ使い、アニメ選択の皮膚・毛髪・唇を写真に戻す命令にしない。"
+    ],
+    "qualityCertified": false
+  }
+}

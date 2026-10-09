@@ -1,20 +1,20 @@
-import {selectionReferenceManifest} from '../selection-references.js?v=28.4.3';
+import {selectionReferenceManifest,selectionReferenceCounts} from '../selection-references.js?v=28.4.4';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import {File} from 'node:buffer';
-import {questions,AUTO,normalizeCreator,resolveSelections} from '../catalog.js?v=28.4.3';
-import {initialSelections,effectiveSelections} from '../modes.js?v=28.4.3';
-import {sourceSubjectFor} from '../source-kind.js?v=28.4.3';
-import {selectionConflicts,candidateAvailability} from '../compatibility.js?v=28.4.3';
-import {buildDirection} from '../direction.js?v=28.4.3';
-import {applyPose} from '../poses.js?v=28.4.3';
-import {productionPlan} from '../production-plan.js?v=28.4.3';
-import {stagePrompts} from '../production-workflow.js?v=28.4.3';
-import {composePrompt,needsReference} from '../prompt.js?v=28.4.3';
-import {stylePresetFor} from '../style-presets.js?v=28.4.3';
-import {deliveryImageFiles} from '../drawing-references.js?v=28.4.3';
-import {compactCreatorProfile} from '../creator.js?v=28.4.3';
+import {questions,AUTO,normalizeCreator,resolveSelections} from '../catalog.js?v=28.4.4';
+import {initialSelections,effectiveSelections} from '../modes.js?v=28.4.4';
+import {sourceSubjectFor} from '../source-kind.js?v=28.4.4';
+import {selectionConflicts,candidateAvailability} from '../compatibility.js?v=28.4.4';
+import {buildDirection} from '../direction.js?v=28.4.4';
+import {applyPose} from '../poses.js?v=28.4.4';
+import {productionPlan} from '../production-plan.js?v=28.4.4';
+import {stagePrompts} from '../production-workflow.js?v=28.4.4';
+import {composePrompt,needsReference} from '../prompt.js?v=28.4.4';
+import {stylePresetFor} from '../style-presets.js?v=28.4.4';
+import {deliveryImageFiles} from '../drawing-references.js?v=28.4.4';
+import {compactCreatorProfile} from '../creator.js?v=28.4.4';
 
 const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8');
 function actual(start,next){const a=app.indexOf(start),b=app.indexOf(next,a);assert.ok(a>=0&&b>a,'Actual app source exists: '+start);return app.slice(a,b);}
@@ -53,6 +53,7 @@ function fixture({count=2}={}){
   activeQuestion:questions.find(q=>q.key==='medium'),document:{querySelectorAll:()=>[],querySelector:()=>node()},
   displayValue:(question,value)=>value
  });
+ context.selectionReferenceCounts=selectionReferenceCounts;
  vm.runInContext(code,context);$('creator').value='ss_yr';context.renderRefs();
  return {context,$,stats,async start(){styleWait=null;const pending=context.generate();for(let i=0;i<50&&!styleWait;i++)await Promise.resolve();assert.ok(styleWait,'Generation reached the deliberately delayed style-image load');return {pending,release(){const wait=styleWait;wait.resolve(wait.references.map(ref=>({...ref,file:new File(['PRESET '+ref.medium],ref.name,{type:'image/png'})})));}};}};
 }
@@ -65,8 +66,10 @@ async function consistent(result){
   for(const key of ['role','width','height'])assert.equal(meta[key],ref[key],'Prompt metadata and actual file snapshot agree: '+key);
   assert.ok(result.prompt.includes(meta.name),'Prompt names the exact transferred reference');
  }
- const sent=deliveryImageFiles(result),offset=0;
- assert.equal(sent.length,result.localDrawingRefs.length+result.localRefs.length+1);assert.equal(sent.at(-1).name,'selection-references.jpg');assert.equal(await sent.at(-1).text(),await result.localSelectionReference.file.text());
+ const sent=deliveryImageFiles(result),offset=0,sheetCount=selectionReferenceCounts(result.selectionReference).sheet;
+ assert.equal(sent.length,result.localDrawingRefs.length+result.localRefs.length+(sheetCount?1:0));
+ if(sheetCount){assert.equal(sent.at(-1).name,'selection-references.jpg');assert.equal(await sent.at(-1).text(),await result.localSelectionReference.file.text());}
+ else{assert.equal(result.localSelectionReference,null,'A focused delivery must not create an empty reference sheet');assert.ok(!sent.some(file=>file.name==='selection-references.jpg'),'An empty selection sheet is not attached');assert.equal(selectionReferenceCounts(result.selectionReference).selected,10,'Omitting a duplicate image must retain all ten selected conditions');}
  for(let i=0;i<result.localRefs.length;i++){
   assert.equal(sent[offset+i].name,result.references[i].name);
   assert.equal(await sent[offset+i].text(),await result.localRefs[i].file.text(),'Transfer preserves the snapshot file bytes');

@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict';
 import {assertCompactHandoff,containsInstruction} from './compact-handoff-assertions-v28.mjs';
-import {questions,visibleQuestions,resolveSelections,AUTO} from '../catalog.js?v=28.4.3';
-import {applyCollection} from '../collection.js?v=28.4.3';
-import {modeKeys,effectiveSelections,initialSelections} from '../modes.js?v=28.4.3';
-import {sceneSourcePlace} from '../scene-presets.js?v=28.4.3';
-import {angleItems} from '../angles.js?v=28.4.3';
-import {buildDirection} from '../direction.js?v=28.4.3';
-import {productionPlan} from '../production-plan.js?v=28.4.3';
-import {composePrompt} from '../prompt.js?v=28.4.3';
+import {questions,visibleQuestions,resolveSelections,AUTO} from '../catalog.js?v=28.4.4';
+import {applyCollection} from '../collection.js?v=28.4.4';
+import {modeKeys,effectiveSelections,initialSelections} from '../modes.js?v=28.4.4';
+import {sceneSourcePlace} from '../scene-presets.js?v=28.4.4';
+import {angleItems} from '../angles.js?v=28.4.4';
+import {buildDirection} from '../direction.js?v=28.4.4';
+import {productionPlan} from '../production-plan.js?v=28.4.4';
+import {composePrompt} from '../prompt.js?v=28.4.4';
 const profile={displayName:'Test Creator',biography:'創作',topics:[]};
 let scenes=0,angles=0;
 for(const collection of ['halloween','everyday']){
@@ -36,7 +36,10 @@ for(const collection of ['halloween','everyday']){
   const text=composePrompt({collection,creator:'test',profile,values,variant,references:[],edition:'ANGLE',preparedPlan:plan});
   assert.ok(plan.variant.camera.includes(angle.value));assert.ok(plan.conditions.find(c=>c.key==='angle').known);
   assert.ok(text.includes(angle.value));assert.ok(!text.includes(angle.file),'UI schematic must not become image input');
-  if(assertCompactHandoff(plan,text)&&collection==='halloween')assert.match(text,/宇宙の広がり|恒星|小物だけで宇宙を代用しない/);
+  if(assertCompactHandoff(plan,text)&&collection==='halloween'){
+   assert.match(text,/宇宙の広がり|星雲と遠い星の広がり|恒星|小物だけで宇宙を代用しない/);
+   assert.match(text,/宇宙を小さな飾り・窓内の別絵・別枠だけに閉じ込めない|小物だけで宇宙を代用しない/,'Actual final image input must retain the cosmic environment rather than a detached prop');
+  }
   angles++;
  }
 }

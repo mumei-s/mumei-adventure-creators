@@ -1,19 +1,21 @@
-import {creatorLookupInstructions} from './creator-handoff.js?v=28.4.3';
-import {imageOutputContract} from './output-contract.js?v=28.4.3';
-import {modeFoundation} from './japan-direction.js?v=28.4.3';
-import {questions,visibleQuestions} from './catalog.js?v=28.4.3';
-import {formatContract} from './formats.js?v=28.4.3';
-import {buildEditorial,editorialContract} from './editorial.js?v=28.4.3';
-import {optionRecipe} from './option-recipes.js?v=28.4.3';
-import {colorPolicy} from './palette-recipes.js?v=28.4.3';
-import {resolveArtDirection,interactionContract} from './art-direction.js?v=28.4.3';
-import {executionFor} from './option-execution.js?v=28.4.3';
-import {cameraContract} from './angles.js?v=28.4.3';
-import {selectionIssues} from './compatibility.js?v=28.4.3';
-import {moodConstraint} from './view-constraints.js?v=28.4.3';
-import {stylePresetFor,stylePresetInstructions} from './style-presets.js?v=28.4.3';
-import {characterProportionInstruction,sourceKindInstructions,isNonHumanSource} from './source-kind.js?v=28.4.3';
-import {halloweenModeContract} from './halloween-mode-contract.js?v=28.4.3';
+import {creatorLookupInstructions,creatorCopyRequirements} from './creator-handoff.js?v=28.4.4';
+import {imageOutputContract} from './output-contract.js?v=28.4.4';
+import {modeFoundation} from './japan-direction.js?v=28.4.4';
+import {questions,visibleQuestions} from './catalog.js?v=28.4.4';
+import {formatContract} from './formats.js?v=28.4.4';
+import {buildEditorial,editorialContract} from './editorial.js?v=28.4.4';
+import {optionRecipe} from './option-recipes.js?v=28.4.4';
+import {colorPolicy} from './palette-recipes.js?v=28.4.4';
+import {resolveArtDirection,interactionContract} from './art-direction.js?v=28.4.4';
+import {executionFor} from './option-execution.js?v=28.4.4';
+import {cameraContract} from './angles.js?v=28.4.4';
+import {selectionIssues} from './compatibility.js?v=28.4.4';
+import {moodConstraint} from './view-constraints.js?v=28.4.4';
+import {stylePresetFor,stylePresetInstructions} from './style-presets.js?v=28.4.4';
+import {characterProportionInstruction,sourceKindInstructions,isNonHumanSource} from './source-kind.js?v=28.4.4';
+import {halloweenModeContract} from './halloween-mode-contract.js?v=28.4.4';
+import {buildDirection} from './direction.js?v=28.4.4';
+import {applyPose} from './poses.js?v=28.4.4';
 
 const independentActorText=text=>text.replace(/参照の顔立ち・目鼻口・髪型の特徴的な組合せと年齢感を保ち/g,'今回設計した独自の主役の顔立ち・目鼻口・髪型と明示された年齢感を保ち');
 
@@ -24,7 +26,12 @@ export function productionPlan(profile,values,variant,collection='halloween',ran
  const halloween=modeContract.collection==='halloween'?modeContract:null;
  for(const key of ['design','medium','theme','costume','mood','place','pose','palette','type','line','size'])if(typeof values[key]!=='string'||!values[key].trim()||(values[key]==='おまかせ'&&!(noPerson&&['mood','pose'].includes(key))))throw new Error('制作条件「'+key+'」が未確定です。');
  if(!/^.+｜\d+×\d+｜\d+:\d+$/.test(values.size))throw new Error('サイズの幅・高さ・比率を確認してください。');
- variant=resolveArtDirection(values,variant,collection);
+ if(!noPerson&&['face','expression','pose'].some(key=>typeof variant?.[key]!=='string'||!variant[key].trim())){
+  const completed=resolveArtDirection(values,applyPose(buildDirection([],values.mood,random,collection,values),values.pose),collection);
+  const preserved=Object.fromEntries(Object.entries(variant||{}).filter(([key,value])=>value!=null&&(!['face','expression','pose'].includes(key)||typeof value==='string'&&value.trim())));
+  variant={...completed,...preserved};
+ }
+ variant=resolveArtDirection(values,variant||{},collection);
  const context={noPerson,values,variant,collection},color=colorPolicy(values),camera=cameraContract(values,{noPerson});
  const issues=[...selectionIssues(values),...(values.automaticResolution?.issues||[])];
  const copy=buildEditorial(profile,{...values,collection},random),notes=[modeFoundation(collection),...(variant.directionWarnings||[]).map(reason=>'自動演出の注意：'+reason),...issues.map(issue=>(issue.severity==='error'?'選択の不成立：':'選択の注意：')+issue.reason+(issue.severity==='error'?' 選択を変えるまで画像生成へ進まず、不成立を伝える。':''))];
@@ -77,9 +84,10 @@ export function productionPlan(profile,values,variant,collection='halloween',ran
  });
  const format=formatContract(values);
  if(noPerson)format.push('人物なしの形式解釈：形式が主役・肖像・衣装の画像領域を求めても、選んだ風景・物体・紋章をそこへ配置する。人物や人型のマネキンを補わず、レイアウトの情報構造だけを保つ。');
- const authorContext=profile.activityEnabled===false?'':(profile.biography?.trim()?'作者が指定した活動説明：'+profile.biography.trim():'');
- const creatorLookup=creatorLookupInstructions(profile);
- return {collection,values:{...values},conditions,notes,issues,copy,noPerson,variant,authorContext,creatorLookup,interactions:interactionContract(values,{noPerson}),format,editorial:editorialContract(copy)};
+ const creatorRequirements=creatorCopyRequirements(copy);
+ const authorContext=!creatorRequirements.needsActivity||profile.activityEnabled===false?'':(profile.biography?.trim()?'作者が指定した活動説明：'+profile.biography.trim():'');
+ const creatorLookup=creatorLookupInstructions(profile,creatorRequirements);
+ return {collection,values:{...values},conditions,notes,issues,copy,noPerson,variant,authorContext,creatorLookup,creatorRequirements,interactions:interactionContract(values,{noPerson}),format,editorial:editorialContract(copy)};
 }
 export function conditionInstructions(condition){return [condition.index+'. '+condition.name+' / '+condition.value,...(condition.sections?.map(s=>'・'+s.label+'：'+s.text)||[condition.text])];}
 export function planInstructions(plan,{omitKeys=[]}={}){return [

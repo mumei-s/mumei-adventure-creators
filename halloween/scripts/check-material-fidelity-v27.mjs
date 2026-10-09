@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
 import {assertCompactHandoff,containsInstruction} from './compact-handoff-assertions-v28.mjs';
-import {applyCollection} from '../collection.js?v=28.4.3';
-import {resolveSelections} from '../catalog.js?v=28.4.3';
-import {productionPlan} from '../production-plan.js?v=28.4.3';
-import {renderChatInput} from '../compiled-production.js?v=28.4.3';
-import {composePrompt} from '../prompt.js?v=28.4.3';
+import {applyCollection} from '../collection.js?v=28.4.4';
+import {resolveSelections} from '../catalog.js?v=28.4.4';
+import {productionPlan} from '../production-plan.js?v=28.4.4';
+import {renderChatInput} from '../compiled-production.js?v=28.4.4';
+import {composePrompt} from '../prompt.js?v=28.4.4';
 
 const profile={displayName:'TEST CREATOR',activityEnabled:false,biography:''};
 const random=()=>.25;

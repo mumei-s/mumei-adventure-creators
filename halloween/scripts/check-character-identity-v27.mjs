@@ -1,13 +1,15 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.3';
-import {applyCollection} from '../collection.js?v=28.4.3';
-import {productionPlan} from '../production-plan.js?v=28.4.3';
-import {composePrompt} from '../prompt.js?v=28.4.3';
-import {colorPolicy} from '../color-policy.js?v=28.4.3';
-import {isPhotographicMedium} from '../photo-design.js?v=28.4.3';
-import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.3';
-import {cameraContract} from '../angles.js?v=28.4.3';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.4';
+import {applyCollection} from '../collection.js?v=28.4.4';
+import {productionPlan} from '../production-plan.js?v=28.4.4';
+import {composePrompt} from '../prompt.js?v=28.4.4';
+import {colorPolicy} from '../color-policy.js?v=28.4.4';
+import {isPhotographicMedium} from '../photo-design.js?v=28.4.4';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.4';
+import {cameraContract} from '../angles.js?v=28.4.4';
 import {compactReferences,assertCompactHandoff,assertCompactEngineering,includesClause} from './compact-handoff-assertions-v28.mjs';
+import {usesFocusedProduction} from '../focused-production.js?v=28.4.4';
+import {renderRecipeChatInput} from '../compact-production.js?v=28.4.4';
 
 const profile={displayName:'同一性検査',activityEnabled:false},random=()=>.2;
 const base=resolveSelections({design:'通常の一枚絵',medium:'発光幻想アニメ',theme:'宇宙のHalloween',costume:'参照画像の衣装を生かす',place:'星空の砂漠',pose:'片手を差し出す',mood:'俯瞰＋目を見開く',angle:'俯瞰・45度',palette:'群青 × 菫 × 星白',type:'文字を一切入れない',line:'セリフなし',size:'縦ポスター2:3｜2400×3600｜2:3'},random);
@@ -18,7 +20,10 @@ function inputFor(values,mode){
  const detail=renderInput(plan),native=renderSelectionMaterial(plan);
  const audit=JSON.parse(detail.split('\n\n【全選択の個別レシピ】')[0]);
  const actual=assertCompactHandoff(plan,prompt,mode+' / '+values.medium+' / '+values.palette+' actual identity');
- return {plan,input:prompt,audit,detail,native,actual};
+ // Focused delivery is checked semantically above, independently of this full
+ // public recipe renderer. Keep its original literal identity/color clauses.
+ const identityClauses=usesFocusedProduction(plan)?renderRecipeChatInput(plan,plan.referenceManifest):prompt;
+ return {plan,input:prompt,identityClauses,audit,detail,native,actual};
 }
 const publicMedia=questions.find(q=>q.key==='medium').groups.flatMap(g=>g.values);
 assert.equal(publicMedia.length,118,'The original styles and all three additional analyzed media must remain selectable');
@@ -29,7 +34,7 @@ for(const mode of ['halloween','everyday']){
  applyCollection(mode);
  for(const medium of questions.find(q=>q.key==='medium').groups.flatMap(g=>g.values)){
   for(const palette of ['群青 × 菫 × 星白','モノクローム','金と黒の二色','黒と白と朱の三色','セピア']){
-   const values={...base,medium,palette},{plan,input,audit,detail,native,actual}=inputFor(values,mode),policy=colorPolicy(values);
+   const values={...base,medium,palette},{plan,input,identityClauses,audit,detail,native,actual}=inputFor(values,mode),policy=colorPolicy(values);
    if(!actual)blocked++;
    if(isPhotographicMedium(medium)){
     assert.match(audit.identity,/同じキャラクターと識別できる実物の人物立体へ再構成/);
@@ -56,9 +61,9 @@ for(const mode of ['halloween','everyday']){
     assert.match(audit.identity,/画風が定める形の整理・誇張・省略は実行/);
     assert.match(audit.identity,/写真の顔の立体や細かな寸法まで固定しない/);
     if(actual){
-     assert.match(input,/同じ人物の顔の輪郭・目鼻口と眉顎鼻首の特徴的な組合せ・髪型・識別色・固有の印/);
-     assert.match(input,/年齢感・性別表現・基礎体格を保つ/);
-     assert.match(input,/主参照の完成面や写真の細寸法を固定せず.*選択作風の線・形の整理・誇張・省略・画材へ翻訳/);
+     assert.match(identityClauses,/同じ人物の顔の輪郭・目鼻口と眉顎鼻首の特徴的な組合せ・髪型・識別色・固有の印/);
+     assert.match(identityClauses,/年齢感・性別表現・基礎体格を保つ/);
+     assert.match(identityClauses,/主参照の完成面や写真の細寸法を固定せず.*選択作風の線・形の整理・誇張・省略・画材へ翻訳/);
     }
    }
    assert.doesNotMatch(input,/固定：顔の輪郭、目の形と間隔|固定：顔の輪郭、目鼻口の形と配置比率/);
@@ -72,13 +77,13 @@ for(const mode of ['halloween','everyday']){
     if(actual)includesClause(input,policy.allowed,medium+' monochrome identity translation');
    }else if(policy.restricted){
     assert.match(audit.identity,/参照の肌色・髪色・瞳色も許可色へ変換し、形と明度差で同じ人を表す/);
-    if(actual)assert.match(input,/主参照の識別色、光、反射、文字もこの許可色の濃淡へ変換/);
+    if(actual)assert.match(identityClauses,/主参照の識別色、光、反射、文字もこの許可色の濃淡へ変換/);
    }else if(['クリスタルホログラム造形アニメ','宝石ホログラムアニメ'].includes(medium)){
     assert.match(native,/透明|半透明/);
     assert.match(native,/肌.*不透明|不透明.*肌/);
     if(actual){assert.match(input,/透明|半透明/);assert.match(input,/肌.*不透明|不透明.*肌/);}
    }else{
-    if(actual)assert.match(input,/参照の識別色を保ち、主色・副色・差し色/);
+    if(actual)assert.match(identityClauses,/参照の識別色を保ち、主色・副色・差し色/);
    }
    cases++;
   }

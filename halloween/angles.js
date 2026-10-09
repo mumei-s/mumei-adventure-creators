@@ -1,5 +1,5 @@
 // Camera geometry is independent of the selected world, expression and pose.
-import {angleConstraint,moodConstraint,viewSelectionIssues} from './view-constraints.js?v=28.4.3';
+import {angleConstraint,moodConstraint,poseConstraint,viewSelectionIssues} from './view-constraints.js?v=28.4.4';
 const rows=[
  ['目線の高さ・正面','高さは主題の中心、正面から水平に見る。上下の傾きを付けず、正面の輪郭と奥行きを読む。','主役と周囲が入るミディアムショット',0,0],
  ['斜め前45度','主題の正面から左右いずれか45度にカメラを置く。近い側と遠い側の面を同じ遠近でつなぐ。','主役と周囲が入るミディアムショット',0,45],
@@ -61,6 +61,17 @@ function subjectText(text,{noPerson=false,values={}}={}){
 }
 // Pitch is measured from the horizontal: positive looks down, negative up.
 // A vertical optical axis can use perspective; it need not be orthographic.
+const groundSupports=new Set(['feet','knees','floor','hands-knees','wall-feet','hand-foot']);
+export function steepGroundFramingWarning(values={}, {noPerson=false}={}){
+ if(noPerson||/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume||''))return null;
+ const item=angleItems.find(item=>item.value===values.angle),support=poseConstraint(values.pose)?.support;
+ if(item?.value!=='超ローアングル・70度'||! /全景|全身/.test(item.distance)||!groundSupports.has(support))return null;
+ // A floor contact is at or below the horizon. With an upright centered
+ // perspective, even camera height zero needs 2*atan(tan(70deg)/.9)=143.73deg
+ // vertically to leave 5% at each edge. Lens/FOV is not selected, so warn
+ // rather than invent a lens, change a pose or reject all possible projections.
+ return {code:'steep-ground-whole-framing',keys:['angle','pose'],severity:'warning',reason:'床際のカメラを70度上向きに固定し、接地した姿勢全体と外周5%の余白を、画面を傾けない中央透視で収める条件は、通常の画角では両立困難です。カメラの床高0でも垂直画角は約144度以上が必要で、床より高ければさらに広くなります。画角は未指定のため注意として扱い、超広角を勝手に追加しません。カメラ角度・姿勢・接地点を変えて達成したと主張しません。'};
+}
 export function cameraContract(values,{noPerson=false}={}){
  const item=angleItems.find(x=>x.value===values.angle);
  if(!item)return null;
@@ -78,6 +89,8 @@ export function cameraContract(values,{noPerson=false}={}){
   '画風・材質・参照の識別特徴の細部条件は、このカメラから実際に見える面に適用する。自然に隠れる目・顔の面・手足や建築の面を、細部を見せるために露出させない。'
  ];
  const checks=[text];
+ const groundWarning=steepGroundFramingWarning(values,{noPerson});
+ if(groundWarning)instructions.push('選択の注意：'+groundWarning.reason);
  if(!noPerson&&['書と墨の抽象','禅画','抽象表現','ミニマリズム'].includes(values.medium))instructions.push('この投影の姿勢・支持・動作は、選択画風の筆の印・形・間隔・余白で表す。各指や人体の細部を写実的に追加せず、主題と出来事の関係を読める形へ整理する。接写でも人体の細密描写を必須にせず、指定部分を選択画風で描く。');
  if(item.pitch===90){
   instructions.push('光軸は水平から下向き90度、真下へ垂直。斜め上からの俯瞰・鳥瞰へ弱めない。支持面の上面と、主題の上から見える面・重なり・短縮を描く。床の画面内での回転は可能だが、地平線や建物の正面を見せるためにカメラを傾けない。周縁の側面が見える場合も垂直視点の遠近に従う。');
@@ -86,6 +99,12 @@ export function cameraContract(values,{noPerson=false}={}){
  }else if(item.pitch===-90){
   instructions.push('光軸は水平から上向き90度、真上へ垂直。下面と上方の重なり・短縮を描き、斜め下の煽りへ弱めない。支持面が視線を遮る場合はその遮蔽を守る。床を透かしたり、座るポーズを浮遊へ変更したりして主題を見せない。');
   checks.push('光軸が真上90度で、下面・上方の重なりと遮蔽が一致している');
+ }else if(axes.pitch===-70){
+  instructions.push(noPerson?'水平から上向き70度の光軸では、上方の天井・空・主景の下面が主要な投影になる。支持面の水平な遠景や広い床の前景を画面の主面にせず、視野内の接地点と必要な縁だけを残す。景物の下面の重なりと自然な短縮を同じ投影で描き、隠れる上面や構造を見せるために支持面を透かしたりカメラを水平へ戻したりしない。':'水平から上向き70度の光軸では、上方の天井・空・主題の下面が主要な投影になる。支持面の水平な遠景や広い床の前景を画面の主面にせず、視野内の接地点と必要な縁だけを残す。主題の頭の上面を広く見せるために首を深く下へ折り、床すれすれの水平カメラで代用しない。顔は実際に見える顎・鼻・口などの下面と自然な短縮で描き、隠れる目や額は作風の細部のために露出させない。');
+  checks.push('上向き70度の投影で下面と上方空間が主になり、水平な床の眺めへ弱めていない');
+ }else if(axes.pitch===70){
+  instructions.push(noPerson?'水平から下向き70度の光軸では、支持面と主景の上面が主要な投影になる。遠方の壁の正面や水平線を画面の主面にせず、景物の上面・接続・支持部の自然な短縮と重なりを保つ。隠れる下面を見せるために景物を反らせたり、支持面を透かしたり、カメラを水平へ戻したりしない。':'水平から下向き70度の光軸では、支持面と主題の上面が主要な投影になる。遠方の壁の正面や水平線を画面の主面にせず、頭・肩・支持部の自然な短縮と重なりを保つ。下から見える顎の下面や正面顔を見せるために、主題を無理に反らせたりカメラを水平へ戻したりしない。');
+  checks.push('下向き70度の投影で上面と支持面が主になり、水平な正面の眺めへ弱めていない');
  }else if(item.value==='真横90度')checks.push('主題の肩・骨盤・支持部が同じ側面投影になっている');
  if(!noPerson){
   const preset=presetCameraText(values.mood);

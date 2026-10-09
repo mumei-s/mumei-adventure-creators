@@ -1,11 +1,11 @@
 import assert from 'node:assert/strict';
-import {questions,visibleQuestions,resolveSelections,AUTO} from '../catalog.js?v=28.4.3';
-import {applyCollection,landscapeScenes,noPersonSelection,dailyInspiration} from '../collection.js?v=28.4.3';
-import {initialSelections,propose,effectiveSelections} from '../modes.js?v=28.4.3';
-import {buildDirection} from '../direction.js?v=28.4.3';
-import {halloweenSceneTitles} from '../scene-presets.js?v=28.4.3';
-import {poseItems,applyPose} from '../poses.js?v=28.4.3';
-import {sampleFor,typePreview} from '../examples.js?v=28.4.3';
+import {questions,visibleQuestions,resolveSelections,AUTO} from '../catalog.js?v=28.4.4';
+import {applyCollection,landscapeScenes,noPersonSelection,dailyInspiration} from '../collection.js?v=28.4.4';
+import {initialSelections,propose,effectiveSelections} from '../modes.js?v=28.4.4';
+import {buildDirection} from '../direction.js?v=28.4.4';
+import {halloweenSceneTitles} from '../scene-presets.js?v=28.4.4';
+import {poseItems,applyPose} from '../poses.js?v=28.4.4';
+import {sampleFor,typePreview} from '../examples.js?v=28.4.4';
 let state=11987;const random=()=>((state=(Math.imul(state,1664525)+1013904223)>>>0)/4294967296);
 const valuesFor=key=>questions.find(q=>q.key===key).groups.flatMap(g=>g.values);
 applyCollection('halloween');

@@ -1,6 +1,6 @@
-import {CRYSTAL_OBJECT,crystalObjectRecipe} from './japan-direction.js?v=28.4.3';
-import {crystalAnimeMedium} from './crystal-anime.js?v=28.4.3';
-import {referenceWorldMedia} from './world-bases.js?v=28.4.3';
+import {CRYSTAL_OBJECT,crystalObjectRecipe} from './japan-direction.js?v=28.4.4';
+import {crystalAnimeMedium} from './crystal-anime.js?v=28.4.4';
+import {referenceWorldMedia} from './world-bases.js?v=28.4.4';
 // Semantic art contracts. Preview artwork never supplies people, objects, or hidden instructions.
 export const colorWorlds=[
  ['星灯りの青紫','群青 × 菫 × 星白',['#121744','#823ae2','#edf4ff'],'群青の暗部を60%、菫の中間色を30%、青白い光を10%。選択舞台にある光源から景物・髪・布へ同じ色の反射を返す。星や発光粒子を色名だけから追加しない。'],
@@ -37,7 +37,7 @@ export const colorWorlds=[
  ['夜の二色印刷','焦茶 × シアン光',['#392725','#42bccd','#a48668'],'焦茶の階調75%、シアン25%。二つの色相に制限し、青白い光を温かい暗部で支える。']
 ].map(([group,value,colors,text],i)=>({group,value,colors,text,file:'world-'+String(i+1).padStart(3,'0')+'.jpg'}));
 export const luminousMedia=[
- {value:'発光幻想アニメ',file:'assets/style-fine-light-original-v28-4-3.png',text:'選択配色の中で先細りの描線、滑らかなセル影、光を透かす色の層を描く。選んだ場面の景物に発光の起点を置き、周囲へ反射光と距離で弱まる光を返す。幻想は光と空気の描き方に適用し、未選択の魔法陣・魔女・カボチャや透ける衣装を追加しない。人物がいる場合は顔も身体も同じアニメ造形にする。',checks:['アニメの線とセル影','発光の起点と周囲の反射','距離に応じた光と空気']},
+ {value:'発光幻想アニメ',file:'assets/style-fine-light-original-v28-4-4-refined.png',text:'選択配色の中で先細りの描線、滑らかなセル影、光を透かす色の層を描く。選んだ場面の景物に発光の起点を置き、周囲へ反射光と距離で弱まる光を返す。幻想は光と空気の描き方に適用し、未選択の魔法陣・魔女・カボチャや透ける衣装を追加しない。人物がいる場合は顔も身体も同じアニメ造形にする。',checks:['アニメの線とセル影','発光の起点と周囲の反射','距離に応じた光と空気']},
  {value:'発光幻想リアル',file:'assets/style-luminous-real-original-v28-4-2.png',text:'選択配色の中で、自然な人物立体・眼球・毛髪と実物の材質を持つ一つの写真の光学像を構成する。可視の主題・衣装・景物・背景へ、広い深暗部、透明な色光層、素材別の反射と散乱、小面積の強い内部色光、極小の鋭い最明部を連続させる。同じ主役の識別特徴・年齢感・性別表現と、被覆・ポーズ・カメラを保ち、イラストの描線やセル面は自然な立体へ翻訳する。見本の人物・小物・背景や未選択の魔法道具を追加しない。',checks:['自然な人物立体と実物の素材','可視全域へ続く内部色光と反射','広い深暗部と小面積の強い光','連続した写真の露光階調']},
  {value:'透明水彩アニメ',file:'world-034.jpg',text:'アニメの顔と形を、細い省略線、透明な重ね塗り、水のにじみ、紙の白、柔らかい縁と乾いた線で描く。透明は絵具の透け方を意味し、人物の身体や衣装を透明にしない。顔・物体・衣装・背景を同じ水彩の描画に統一する。',checks:['アニメの造形','透明な絵具の重なり','水のにじみと紙の白']},
  {value:'絵画的シネマアニメ',file:'world-035.jpg',text:'アニメの造形と大胆な筆の色面、輪郭の硬軟、映画のように設計した明暗を一体にする。逆光と影の色は選択配色を守り、人物がいる場合も顔だけ写実に戻さず全体に同じ筆致を使う。舞台・ポーズ・衣装を画風の題材から追加しない。',checks:['アニメの造形と筆の色面','輪郭の硬軟','選択色の主光と影']},

@@ -1,0 +1,26 @@
+{
+  "title": "星糸のアトリエ",
+  "slug": "star-thread-atelier",
+  "version": "28.4.4",
+  "prompt": "Create ONE original square richly detailed Japanese-anime environment illustration of a STAR-THREAD ATELIER, an actual inhabited craft workspace whose distinguishing material is fine luminous thread. No person, face, creature, lantern, shrine, pumpkin, magic circle, typography or UI.\nOne coherent atelier interior at night: large timber/metal loom and a supported wooden worktable in the foreground, several actual spools of indigo and warm gold star-thread on the table, thin glowing thread stretched in taut continuous paths BETWEEN physically connected spool posts, loom heddles and the woven textile on the loom. Thread paths form an elegant directional flow through depth; near threads are distinct and detailed, farther fine threads are sparse and faint. Luminous thread is the crafted material, not random floating glitter. A partly woven midnight-violet festival mantle and a neatly wrapped finished textile with an unlettered invitation envelope on the same workbench give a purpose of preparing for a one-night autumn masquerade. Preserve cloth texture and loom connections.\nTall atelier skylights and rear shelves have original geometric framing and small stored tools, with no copied architecture or artist motifs. The workbench rests on legs, loom feet touch the floor and shelf brackets support their weight. Foreground table/spool silhouettes overlap the middle loom and mantle, and the rear roof/skylight recedes to the SAME vanishing system. Low seated-workbench-height three-quarter view. Deep blue-violet connected shadow areas, small sharp white/violet light within the threads, narrow warm amber reflections on wood, cloth and tool edges, dark negative-space channels between threads. The light wraps coherently into the loom supports, cloth and floor; strong light-shadow contrast, no full-frame fog.\nFine colored anime linework, organized large painted shadow planes, layered luminous color and precise material boundaries. Rich finished detail and spatial depth, not a title placeholder, not plain skylight room without star-thread. One square image filling canvas, no border, labels, watermark or extra image panels.",
+  "file": "star-thread-atelier.jpg",
+  "generator": "built-in image_gen",
+  "dimensions": {
+    "width": 1254,
+    "height": 1254
+  },
+  "processing": "Original generated resolution kept; RGB JPEG q90 encoding only",
+  "visualQA": {
+    "status": "accepted",
+    "reviewed": [
+      "anchored luminous star threads link spools and loom",
+      "supported craft table/shelves/loom in one receding atelier",
+      "dark-violet textile and prepared unlettered invitation",
+      "coherent night window and material reflection"
+    ],
+    "limitations": [
+      "sample shows environment structure; selected subject/pose/medium are independently applied"
+    ]
+  },
+  "hash_sha256": "8be1463d660a514ceea7f3c62141b8211f7c0c7eaaccd2eff29b1fb498f56ed3"
+}

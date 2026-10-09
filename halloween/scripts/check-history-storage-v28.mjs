@@ -1,17 +1,17 @@
-import {createHistoryPersistence} from '../history-persistence.js?v=28.4.3';
+import {createHistoryPersistence} from '../history-persistence.js?v=28.4.4';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {resolveSelections} from '../catalog.js?v=28.4.3';
-import {applyCollection} from '../collection.js?v=28.4.3';
-import {buildDirection} from '../direction.js?v=28.4.3';
-import {applyPose} from '../poses.js?v=28.4.3';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.3';
-import {stagePrompts} from '../production-workflow.js?v=28.4.3';
-import {composePrompt} from '../prompt.js?v=28.4.3';
-import {renderChatInput} from '../compiled-production.js?v=28.4.3';
-import {renderEditorialLayout} from '../editorial-layout.js?v=28.4.3';
-import {compactHistoryRecord,restoreHistoryRecord,compactUsedRecords,mergeUsedRecords,saveHistoryState} from '../history-storage.js?v=28.4.3';
+import {resolveSelections} from '../catalog.js?v=28.4.4';
+import {applyCollection} from '../collection.js?v=28.4.4';
+import {buildDirection} from '../direction.js?v=28.4.4';
+import {applyPose} from '../poses.js?v=28.4.4';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.4';
+import {stagePrompts} from '../production-workflow.js?v=28.4.4';
+import {composePrompt} from '../prompt.js?v=28.4.4';
+import {renderChatInput} from '../compiled-production.js?v=28.4.4';
+import {renderEditorialLayout} from '../editorial-layout.js?v=28.4.4';
+import {compactHistoryRecord,restoreHistoryRecord,compactUsedRecords,mergeUsedRecords,saveHistoryState} from '../history-storage.js?v=28.4.4';
 
 const random=()=>.28,profile={displayName:'履歴検証🙂',topics:[],activityEnabled:false};
 applyCollection('halloween');
@@ -71,7 +71,9 @@ vm.runInContext(persistSource,context);
 const first=vm.runInContext('persist()',context);context.saved={history:[{...record,edition:'NEWER',count:13}],used:used.slice(-3),count:13};const second=vm.runInContext('persist()',context);
 await Promise.all([first,second]);assert.equal(JSON.parse(raceStorage.data.get('history')).history[0].edition,'NEWER');assert.equal(context.saved.count,13);
 const resultSource=app.slice(app.indexOf('async function showResult(r){'),app.indexOf(' if(r.localRefs?.length)',app.indexOf('async function showResult(r){')));
-const pending=new Map();const resultContext=vm.createContext({resultRequest:0,inputRevision:0,shown:'',restoreHistoryRecord:r=>new Promise(resolve=>pending.set(r.edition,resolve)),tell(){}});resultContext.clearPreparedResult=()=>{resultContext.resultRequest++;resultContext.inputRevision++;};
+// The race-only records deliberately omit production. Delivery compatibility
+// is exercised with real archived plans in check-delivery-history-migration.
+const pending=new Map();const resultContext=vm.createContext({resultRequest:0,inputRevision:0,shown:'',APP_VERSION:'28.4.4',recomposeHistoryDelivery:r=>r,restoreHistoryRecord:r=>new Promise(resolve=>pending.set(r.edition,resolve)),tell(){}});resultContext.clearPreparedResult=()=>{resultContext.resultRequest++;resultContext.inputRevision++;};
 vm.runInContext(resultSource+'shown=r.edition;\n}',resultContext);
 const older=vm.runInContext("showResult({edition:'A'})",resultContext),newer=vm.runInContext("showResult({edition:'B'})",resultContext);
 pending.get('B')({edition:'B'});await newer;pending.get('A')({edition:'A'});await older;assert.equal(resultContext.shown,'B');

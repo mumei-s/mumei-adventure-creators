@@ -10,7 +10,10 @@ body[data-collection][data-lights=night] .studio-hero{background:linear-gradient
 body[data-collection][data-lights=night] :is(.playground,.mode-panel,.gallery-theater,.collection-bar){background:linear-gradient(120deg,#11172b,#28203d);border-color:#806aa8;color:#f2e7ff;box-shadow:0 0 22px #8061aa33}
 body[data-collection][data-lights=night] :is(.choice,.sample-card,.history-card,.option-button,.attachment-mode,.reference-area,.profile-preview,.activity-control,.result-summary,.transfer-notice,.auto-proposals,.proposal-card){background:#222d46;color:#f0e8ff;border-color:#746790}
 body[data-lights=night] :is(.choice:hover,.option-button:hover){background:#34405a!important}
-body[data-collection][data-lights=night] :is(.choice-name,.choice-hint,.option-recipe,.look-tags,.profile-status,.section-caption,.history-empty,.microcopy,.size-note,.generate-note,.view-toolbar,.view-toolbar button,#view-status,.eyebrow,.swipe-hint,.compare-hint,.hist-id,.detail){color:#cfc3e9}
+/* Keep the status ID separate: an ID inside :is() also raises the specificity
+   of its class branches and can override a selected button's dark text. */
+body[data-collection][data-lights=night] :is(.choice-name,.choice-hint,.option-recipe,.look-tags,.profile-status,.section-caption,.history-empty,.microcopy,.size-note,.generate-note,.view-toolbar,.eyebrow,.swipe-hint,.compare-hint,.hist-id,.detail){color:#cfc3e9}
+body[data-collection][data-lights=night] #view-status{color:#cfc3e9}
 body[data-collection][data-lights=night] :is(.collection-switch,.view-switch,.mode-switch,.decoration-controls) button{background:#2b2d49;color:#efeaff;border-color:#8f7ead}
 body[data-collection][data-lights=night] :is(.collection-switch,.view-switch,.mode-switch,.decoration-controls) button[aria-pressed=true]{background:#b397db;color:#140e28;border-color:#e3d4ff;box-shadow:0 0 15px #b38bdf55}
 body[data-collection][data-lights=night] dialog{background:#172038;color:#f0e8ff;border-color:#a78cc6}

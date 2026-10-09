@@ -1,16 +1,16 @@
 import assert from 'node:assert/strict';
 import {assertCompactHandoff,containsInstruction} from './compact-handoff-assertions-v28.mjs';
-import {applyCollection} from '../collection.js?v=28.4.3';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.3';
-import {initialSelections} from '../modes.js?v=28.4.3';
-import {buildDirection} from '../direction.js?v=28.4.3';
-import {applyPose} from '../poses.js?v=28.4.3';
-import {cameraContract} from '../angles.js?v=28.4.3';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.3';
-import {composePrompt} from '../prompt.js?v=28.4.3';
-import {renderInput,renderChatInput} from '../compiled-production.js?v=28.4.3';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.3';
-import {sceneSourcePlace} from '../scene-presets.js?v=28.4.3';
+import {applyCollection} from '../collection.js?v=28.4.4';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.4';
+import {initialSelections} from '../modes.js?v=28.4.4';
+import {buildDirection} from '../direction.js?v=28.4.4';
+import {applyPose} from '../poses.js?v=28.4.4';
+import {cameraContract} from '../angles.js?v=28.4.4';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.4';
+import {composePrompt} from '../prompt.js?v=28.4.4';
+import {renderInput,renderChatInput} from '../compiled-production.js?v=28.4.4';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.4';
+import {sceneSourcePlace} from '../scene-presets.js?v=28.4.4';
 
 // The failing user combination must retain a vertical optical axis in the
 // native handoff, audit export, artwork stage and both image-repair routes.

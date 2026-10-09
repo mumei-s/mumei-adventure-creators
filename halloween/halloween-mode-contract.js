@@ -1,5 +1,5 @@
-import {colorPolicy} from './color-policy.js?v=28.4.3';
-import {halloweenSceneFocus} from './scene-presets.js?v=28.4.3';
+import {colorPolicy} from './color-policy.js?v=28.4.4';
+import {halloweenSceneFocus} from './scene-presets.js?v=28.4.4';
 
 const seasonal=/Halloween|HALLOWEEN|ハロウィン|ハロウィーン/i;
 export const isHalloweenMode=collection=>collection!=='everyday';

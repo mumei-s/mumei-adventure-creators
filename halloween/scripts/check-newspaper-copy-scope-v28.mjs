@@ -1,16 +1,18 @@
 import assert from 'node:assert/strict';
 import {assertCompactHandoff,containsInstruction} from './compact-handoff-assertions-v28.mjs';
-import {applyCollection} from '../collection.js?v=28.4.3';
-import {resolveSelections} from '../catalog.js?v=28.4.3';
-import {initialSelections} from '../modes.js?v=28.4.3';
-import {buildDirection} from '../direction.js?v=28.4.3';
-import {productionPlan} from '../production-plan.js?v=28.4.3';
-import {renderInput,renderSelectionMaterial,renderChatInput} from '../compiled-production.js?v=28.4.3';
-import {formatTextPolicy,detailedFormat,limitedNewspaperLayout} from '../format-recipes.js?v=28.4.3';
-import {formatFor} from '../formats.js?v=28.4.3';
-import {typographyValues} from '../typography-options.js?v=28.4.3';
-import {composePrompt} from '../prompt.js?v=28.4.3';
-import {renderEditorialLayout} from '../editorial-layout.js?v=28.4.3';
+import {applyCollection} from '../collection.js?v=28.4.4';
+import {resolveSelections} from '../catalog.js?v=28.4.4';
+import {initialSelections} from '../modes.js?v=28.4.4';
+import {buildDirection} from '../direction.js?v=28.4.4';
+import {productionPlan} from '../production-plan.js?v=28.4.4';
+import {renderInput,renderSelectionMaterial,renderChatInput} from '../compiled-production.js?v=28.4.4';
+import {formatTextPolicy,detailedFormat,limitedNewspaperLayout} from '../format-recipes.js?v=28.4.4';
+import {formatFor} from '../formats.js?v=28.4.4';
+import {typographyValues} from '../typography-options.js?v=28.4.4';
+import {composePrompt} from '../prompt.js?v=28.4.4';
+import {renderRecipeChatInput} from '../compact-production.js?v=28.4.4';
+import {usesFocusedProduction} from '../focused-production.js?v=28.4.4';
+import {renderEditorialLayout} from '../editorial-layout.js?v=28.4.4';
 
 // Permission boundaries must survive the combination that caused article and
 // portrait additions. These checks inspect the actual production contracts;
@@ -62,7 +64,8 @@ for(const collection of ['halloween','everyday']){
   if(type==='商品広告・キャッチと特徴3点'){
    const typeSection=design.sections.find(section=>section.label==='文字と読み順').text;
    for(const role of expected[type])assert.ok(typeSection.includes(role),label+' has no newspaper placement for '+role);
-   assert.match(typeSection,/3つの特徴を同じ階層の縦列/,label+' feature hierarchy is inconsistent');
+   assert.match(typeSection,/3つの特徴を同じ階層の横書き列/,label+' feature hierarchy or selected horizontal writing direction is inconsistent');
+   assert.doesNotMatch(typeSection,/3つの特徴を同じ階層の縦列/,label+' newspaper structure must not override the selected product-copy direction');
   }
   scopedCases++;
  }
@@ -88,15 +91,24 @@ for(const collection of ['halloween','everyday']){
   const label=[collection,type,noPerson?'scenery':'person',medium,size].join(' / '),design=plan.conditions.find(c=>c.key==='design');
   assert.ok(sparse,label+' has no sparse-copy newspaper layout');
   const grid=design.sections.find(s=>s.label==='領域とグリッド').text;
-  assert.equal(grid,sparse.grid);assert.match(grid,/6列.*右2列の空欄.*下段.*6列の空欄/);
+  // The format may append its distinguishing skeleton/reference scope. The
+  // sparse geometry itself must remain intact, including all coordinates,
+  // rules, blank columns, reading order and unauthorized-copy boundaries.
+  assert.ok(grid.startsWith(sparse.grid),label+' changed or lost sparse newspaper geometry');
+  assert.match(grid,/6列.*右2列の空欄.*下段.*6列の空欄/);
   assert.match(grid,/紙面の約31%、上限40%/);assert.match(grid,/紙面の40%以上を空欄/);
   assert.ok(design.execution.method.includes(sparse.executionMethod),label+' early design execution lost its sparse geometry');
   const input=JSON.parse(renderInput(plan).split('\n\n【全選択の個別レシピ】')[0]);
   assert.ok(input.required_before_details.layout.includes(sparse.executionMethod),label+' leading layout only received the old generic newspaper row');
   const prompt=composePrompt({collection,profile,values,variant:plan.variant,references:[],edition:'SPARSE-NEWSPAPER',preparedPlan:plan});
-  const priorityIndex=prompt.indexOf(sparse.priority),styleIndex=prompt.indexOf('【'+medium+'：人物と背景を一つの光の世界へ】');
-  assertCompactHandoff(plan,prompt);assert.ok(priorityIndex>styleIndex&&priorityIndex<3500,label+' sparse newspaper priority must follow the selected style near the start');
-  for(const text of [prompt,renderSelectionMaterial(plan),renderChatInput(plan)]){
+  const focused=usesFocusedProduction(plan),final=focused?prompt.split('【統合するための制作仕様：開始】')[1].split('【統合するための制作仕様：終了】')[0]:prompt;
+  const priorityIndex=final.indexOf(sparse.priority),styleIndex=final.indexOf(focused?'作画「'+medium+'」':'【'+medium+'：人物と背景を一つの光の世界へ】');
+  assertCompactHandoff(plan,prompt);assert.ok(styleIndex>=0&&priorityIndex>styleIndex,label+' sparse newspaper priority must follow the selected style in the actual final image specification');
+  if(focused){
+   assert.match(final,/6列.*3段/);assert.match(final,/主図版.*約31%（上限40%）/);assert.match(final,/右2列.*下段.*空欄/);assert.match(final,/紙面40%以上/);
+   assert.match(final,/文字量を減らしても形式の領域・罫線・余白を一枚絵へ変えない/,'The actual sparse final must retain newspaper geometry with limited or no copy');
+  }else assert.ok(priorityIndex<3500,label+' normal sparse newspaper priority must remain near the start');
+  for(const text of [focused?renderRecipeChatInput(plan):prompt,renderSelectionMaterial(plan),renderChatInput(plan)]){
    assert.ok(containsInstruction(text,sparse.grid),label+' actual drawing handoff lost the newspaper columns and image limit');
    assert.ok(containsInstruction(text,sparse.typography),label+' actual drawing handoff lost its permitted copy boundary');
    assert.ok(containsInstruction(text,sparse.material),label+' forced newspaper paper/ink outside the selected medium and palette');

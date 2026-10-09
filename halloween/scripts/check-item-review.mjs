@@ -1,17 +1,19 @@
 import assert from 'node:assert/strict';
 import {assertCompactHandoff,containsInstruction} from './compact-handoff-assertions-v28.mjs';
+import {usesFocusedProduction} from '../focused-production.js?v=28.4.4';
+import {renderRecipeChatInput} from '../compact-production.js?v=28.4.4';
 import fs from 'node:fs';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.3';
-import {applyCollection} from '../collection.js?v=28.4.3';
-import {initialSelections} from '../modes.js?v=28.4.3';
-import {buildDirection} from '../direction.js?v=28.4.3';
-import {applyPose} from '../poses.js?v=28.4.3';
-import {productionPlan} from '../production-plan.js?v=28.4.3';
-import {composePrompt} from '../prompt.js?v=28.4.3';
-import {optionRecipe} from '../option-recipes.js?v=28.4.3';
-import {conditionOwners,renderInput} from '../compiled-production.js?v=28.4.3';
-import {opticalColors,opticalSignature} from '../optical-effects.js?v=28.4.3';
-import {automaticSelection} from '../random-selections.js?v=28.4.3';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.4';
+import {applyCollection} from '../collection.js?v=28.4.4';
+import {initialSelections} from '../modes.js?v=28.4.4';
+import {buildDirection} from '../direction.js?v=28.4.4';
+import {applyPose} from '../poses.js?v=28.4.4';
+import {productionPlan} from '../production-plan.js?v=28.4.4';
+import {composePrompt} from '../prompt.js?v=28.4.4';
+import {optionRecipe} from '../option-recipes.js?v=28.4.4';
+import {conditionOwners,renderInput} from '../compiled-production.js?v=28.4.4';
+import {opticalColors,opticalSignature} from '../optical-effects.js?v=28.4.4';
+import {automaticSelection} from '../random-selections.js?v=28.4.4';
 const random=()=>.28,profile={displayName:'REVIEW',activityEnabled:false,topics:[],biography:''};
 const entries=new Map();let occurrences=0,pairs=0,totalLength=0,maxLength=0;
 for(const mode of ['halloween','everyday']){
@@ -31,7 +33,14 @@ for(const mode of ['halloween','everyday']){
   const drawingInput=renderInput(plan);
   for(const c of plan.conditions)for(const s of c.sections)assert.ok(drawingInput.includes(s.text),'Actual ChatGPT integration material lost '+q.key+'/'+value+'/'+s.label);
   const medium=plan.conditions.find(c=>c.key==='medium');
-  if(assertCompactHandoff(plan,prompt))assert.ok(prompt.indexOf('作風・画材＝'+medium.value)<prompt.indexOf('【選択固有の制作工程】'),'Selected medium must precede physical recipes');
+  if(assertCompactHandoff(plan,prompt)){
+   if(usesFocusedProduction(plan)){
+    const final=prompt.split('【統合するための制作仕様：開始】')[1].split('【統合するための制作仕様：終了】')[0];
+    assert.ok(final.indexOf('作画「'+medium.value+'」')>=0&&final.indexOf('作画「'+medium.value+'」')<final.indexOf('固定カメラ：'),'The selected focused drawing method must precede its camera and physical scene');
+    const recipe=renderRecipeChatInput(plan,plan.referenceManifest||[]);
+    assert.ok(recipe.indexOf('作風・画材＝'+medium.value)<recipe.indexOf('【選択固有の制作工程】'),'Selected medium must remain first in the complete recipe review');
+   }else assert.ok(prompt.indexOf('作風・画材＝'+medium.value)<prompt.indexOf('【選択固有の制作工程】'),'Selected medium must precede physical recipes');
+  }
   assert.ok(!plan.copy.slots.some(s=>s.role==='ノンブル'||s.text==='06'||s.text===values.medium));
   const r=optionRecipe(q.key,value,{values,variant,collection:mode});
   const id=q.key+'\u0000'+value;
@@ -54,4 +63,4 @@ for(const mode of ['halloween','everyday']){
 applyCollection('halloween');
 const report={date:'2026-10-07',scope:'Instruction and combination review, not image acceptance',occurrences,unique:entries.size,mediaPalettePairs:pairs,promptCharacters:{mean:Math.round(totalLength/occurrences),max:maxLength},byKey:Object.fromEntries(Object.keys(conditionOwners).map(key=>[key,[...entries.values()].filter(e=>e.key===key).length])),entries:[...entries.values()]};
 if(process.argv.includes('--save'))fs.writeFileSync(new URL('../verification/v18/item-review.json',import.meta.url),JSON.stringify(report,null,2));
-console.log('PASS item review: '+occurrences+' occurrences, '+entries.size+' distinct options, '+pairs+' medium/palette combinations. Exact inputs, all recipe clauses, visual signatures first, one-call output, limited-color optics. Image acceptance is separate.');
+console.log('PASS item review: '+occurrences+' occurrences, '+entries.size+' distinct options, '+pairs+' medium/palette combinations. Exact inputs, all detailed recipe clauses, actual focused drawing signatures first, explicit production stages and limited-color optics. Image acceptance is separate.');

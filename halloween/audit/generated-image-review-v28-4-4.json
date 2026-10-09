@@ -1,0 +1,154 @@
+{
+  "version": "28.4.4",
+  "reviewedDate": "2026-10-09",
+  "scope": "Observed generated images; code tests do not certify image quality.",
+  "status": "not-accepted",
+  "privateInputImagesPublished": false,
+  "qualityGuarantee": false,
+  "findings": [
+    {
+      "case": "Original identity + full-size style + selection sheet",
+      "medium": "薄膜光彩アニメ",
+      "status": "failed",
+      "observed": [
+        "Photo/CG face remained",
+        "Selected 70-degree projection not achieved",
+        "Source accessories inherited",
+        "Armor/material and eye light did not match the selected drawing process"
+      ]
+    },
+    {
+      "case": "All scoped samples as individual images",
+      "referenceCount": 9,
+      "status": "not-generated",
+      "actualToolError": "referenced_image_paths must contain at most 5 paths",
+      "scopeOfLimit": "The built-in image-generation tool used for this test; no claim about all ChatGPT interfaces"
+    },
+    {
+      "case": "Three-reference exact-tool tests",
+      "media": [
+        "艶彩幻想アニメ",
+        "白域幾何・宇宙彩アニメ"
+      ],
+      "status": "failed",
+      "observed": [
+        "Photo-like face or shared glossy rendering",
+        "70-degree camera not achieved",
+        "Source costume accessories inherited",
+        "Selected shield missing",
+        "White-space geometry process not established"
+      ]
+    },
+    {
+      "case": "Shorter focused input + original photograph + style, two images",
+      "medium": "薄膜光彩アニメ",
+      "status": "failed",
+      "observed": [
+        "Photographic face persisted",
+        "Short manual diagnostic improved covered armor and shield, but did not establish the selected 2D face or 70-degree camera"
+      ]
+    },
+    {
+      "case": "Identity-only hand-drawn translation diagnostic",
+      "medium": "薄膜光彩アニメ",
+      "status": "partial-success",
+      "observed": [
+        "Recognizable long brown hair, bangs, adult features and brown eyes were translated into flat 2D planes",
+        "Source horns and jewelry removed"
+      ],
+      "limitation": "This is an intermediate portrait, not a completed Halloween image or evidence of stable repeatability"
+    },
+    {
+      "case": "Inspected 2D portrait + style, final Halloween scene",
+      "medium": "薄膜光彩アニメ",
+      "status": "failed-overall",
+      "observed": [
+        "2D anime face retained",
+        "Selected 70-degree camera not achieved",
+        "Full style/material and pose/seasonal conditions remain unaccepted"
+      ]
+    },
+    {
+      "case": "Identity preparation generated from actual API",
+      "medium": "薄膜光彩アニメ",
+      "status": "not-stable",
+      "observed": [
+        "Two API-generated preparation portraits still mixed photographic/CG facial gradients and lip reflections with drawn planes"
+      ],
+      "decision": "Do not advance an unaccepted preparation image; offer an explicit identity-repair stage"
+    },
+    {
+      "case": "Analytic 70-degree projection guide + inspected anime portrait + style",
+      "status": "failed-overall",
+      "guide": {
+        "pitchUpDegrees": 70,
+        "rollDegrees": 0,
+        "verticalFovDegrees": 156,
+        "cameraFloorHeightMeters": 0.02
+      },
+      "observed": [
+        "More ceiling and lower surfaces visible",
+        "Architectural projection departed from the analytic guide",
+        "Feet entered the lower 5-percent safety region",
+        "Threatening fang expression weak"
+      ]
+    },
+    {
+      "case": "Prepared portrait comparison, 30-degree camera and white palette",
+      "media": [
+        "艶彩幻想アニメ",
+        "白域幾何・宇宙彩アニメ"
+      ],
+      "status": "failed-overall",
+      "observed": [
+        "118 improved anime identity and material highlights",
+        "117 initially adopted the original style sample male identity",
+        "Neither established all shield, foot support and camera conditions"
+      ],
+      "limitation": "The 116 intermediate portrait was reused; each medium-specific preparation stage was omitted"
+    },
+    {
+      "case": "117 final reference ownership reordered and clarified",
+      "status": "partial-improvement-only",
+      "observed": [
+        "Adult woman, long brown hair and brown eyes retained in this single retest",
+        "Flat anime face retained",
+        "White-space geometry process, shield, whole foot support and fixed camera still unaccepted"
+      ],
+      "decision": "Inspected identity is the subject/shape base; style sample is drawing method only"
+    },
+    {
+      "case": "Latest API identity repair, failed portrait + original style only",
+      "medium": "薄膜光彩アニメ",
+      "status": "partial-improvement",
+      "observed": [
+        "Drawn contour, simple nose marks and broad facial color planes improved",
+        "Identifying adult female features and brown hair/eyes retained"
+      ],
+      "limitation": "This single repair result does not establish stable repeatability or all final-stage criteria"
+    },
+    {
+      "case": "Actual preparation → repair → final pipeline, 30-degree camera",
+      "medium": "薄膜光彩アニメ",
+      "status": "failed-overall",
+      "observed": [
+        "Repaired 2D face retained into the Halloween castle scene",
+        "Source horns and heart jewelry did not return",
+        "Shield missing",
+        "Feet/support and fixed camera did not meet the full selected contract"
+      ],
+      "limitations": [
+        "Angle was deliberately changed from the original 70-degree stress test to a 30-degree diagnostic",
+        "Requested 2480×3508 output pixels were not produced",
+        "Successful image display does not establish all selection fidelity"
+      ]
+    }
+  ],
+  "deliveryDecision": {
+    "focusedMedia": "Inspected character illustration + original selected style, two final-stage images; original photograph is used only for character preparation and conversation-side identity comparison.",
+    "otherMedia": "Primary identity + original style + scoped selected-condition sheet when applicable.",
+    "individualSamples": "Comparison material; not a recommendation to attach every image, and not accepted as a superior method.",
+    "allSelections": "All ten selections remain in the plan, final-stage input and condition audit; omitted pictures do not omit the selected conditions."
+  },
+  "acceptancePolicy": "Check actual identity, medium-specific drawing process, light/shadow, clothing/material, pose/support, camera, selected format/copy, Halloween causality and output dimensions. A generated image alone is not a pass. Undersized, unavailable or failed stages are stated explicitly."
+}

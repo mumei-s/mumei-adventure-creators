@@ -1,0 +1,23 @@
+{
+  "version": "28.4.4",
+  "role": "original-style-master",
+  "qualityStatus": "visible eyes/skin/hand reflections and phone-readable subject improved; downstream condition adherence requires actual-image review",
+  "width": 1024,
+  "height": 1536,
+  "prompt": "Create one exceptionally polished ORIGINAL fantasy anime beauty illustration, portrait 2:3. Image 1 is the current original clock-artisan master and the edit target. Images 2,3,4 are the USER'S OWN successful artworks: use only their technical quality of large complex luminous irises, skin receiving colored light, very fine hair, tiny intense highlights, and strong light-shadow contrast. Do not borrow their blonde woman, horns, jewelry, hats, lanterns, pumpkins, Gothic box pose, title or layout.\nRebuild image 1's adult aubergine-haired clock artisan in her original violet high-collared fitted workshop coat, at the SAME original clock conservatory workbench, with newly legible close three-quarter upper-body framing. Both eyes, the face, both hands and substantial forearm areas must be visibly LARGE enough that the technical details read on a 350px-wide phone preview; the dense clock conservatory remains clearly one continuous space behind her. Preserve adult age and original character identity. No added horns, accessories, lanterns, magical circles, moons, wings or text.\nThe critical improvement is INTERNAL EYE LIGHT AND COLOR LIGHT ON THE PERSON, not more background detail. Her visible anime-shaped eyes have deep dark pupils, extremely intricate radial iris filaments, multiple translucent violet/amber light strata, concentrated bright stars of light within the iris, and razor-fine eyelash reflections. Paint the face in clean soft continuous anime-beauty gradients, with clearly localized violet and warm amber reflected-light patches over the cheek, brow, nose bridge, chin and ear, and pin-sharp tiny white highlights on cheek/nose/lip. These are softly curved opaque skin surfaces lit from the world, NOT glass, fragments, hard rainbow facets or a photograph. Visible neck, hands and forearms receive the SAME colored reflections and tiny specular glints; their darker turning planes and contact shadows remain deep, organized and visible. Do not leave ordinary matte hands and a normal pale face against a sparkly environment.\nHair comprises exquisitely drawn fine aubergine strands and large coherent locks, with narrow intense violet/amber white-edged reflected streaks, dark inner strands and crisp rimlight. Cloth has tightly woven texture, seams, folds and small sharp reflections responding to the same physical sources. The clockwork conservatory has broad near-black aubergine shadows, selected intensely illuminated amber clock faces, cool violet glazed window reflections and precise structured details; scene light sources are visible and their reflected colors connect continuously into irises, face, hands, hair, clothing and desk. Subject dominates; the background is less bright than the eyes and lit facial planes.\nContrast is decisive: deep connected shadows directly adjacent to tiny brilliant highlights, broader colored glow planes on the person, elegant midtone faces, not full-frame white haze. The face, body and room must share this luxurious luminous fantasy painting process. This is polished dimensional Japanese-anime beauty, distinct from flat cel-shaded 2D and from crystal bodies. Preserve coherent anatomy, hands, coverage and one scene. Absolutely no typography, poster borders, watermark, UI or copied motifs.",
+  "previousMaster": "style-gloss-fantasy-original-v28-4-3.png",
+  "source": "built-in image generation; original clock artisan; user-owned examples 5/6/7 used for rendering-quality reference only",
+  "visualReview": {
+    "accepted": [
+      "larger detailed irises and face",
+      "fine hair and hand highlights",
+      "deep violet shadows beside sharp amber/white highlights",
+      "original clock-artisan setting without lantern"
+    ],
+    "limitations": [
+      "no equivalence guarantee to all user examples",
+      "selected scene/pose/camera not fixed by this style master"
+    ]
+  },
+  "sha256": "bb546fa51d0c650ff3410348742885c169de43c49b6bc0dbb82c7cb8d800fb24"
+}

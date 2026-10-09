@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {setupEffects} from '../effects.js?v=28.4.3';
-import {installNightStudio,everydayNightIcons,nightIcons} from '../night-studio.js?v=28.4.3';
-import {icons,nightIcons as monsterIcons} from '../halloween-icons.js?v=28.4.3';
-import {studioIcons} from '../spells.js?v=28.4.3';
+import {setupEffects} from '../effects.js?v=28.4.4';
+import {installNightStudio,everydayNightIcons,nightIcons} from '../night-studio.js?v=28.4.4';
+import {icons,nightIcons as monsterIcons} from '../halloween-icons.js?v=28.4.4';
+import {studioIcons} from '../spells.js?v=28.4.4';
 
 class Node{
  constructor(tag='div'){this.tagName=tag;this.children=[];this.dataset={};this.attributes={};this.listeners={};this.className='';this.innerHTML='';this.style={setProperty(){}};this.classList={add(){},remove(){}};}
@@ -77,4 +77,59 @@ const ratio=(a,b)=>{const values=[luminance(a),luminance(b)].sort((a,b)=>b-a);re
 for(const [surface,chip,copy,secondary] of palettes)for(const background of [surface,chip])for(const foreground of [copy,secondary])assert.ok(ratio(background,foreground)>=4.5);
 assert.match(css,/:is\(#inspector-note,#inspector-specs-body[^}]+color:var\(--night-copy\)/,'The actual inspector ID receives the readable foreground');
 assert.match(css,/#inspector \.look-tags>span[^}]+background:var\(--night-chip\);color:var\(--night-copy\)/,'Feature chips receive both their dark background and readable foreground');
-console.log('PASS night UI: persisted night and live collection switches replace actual hero/ornament/game DOM, remove Halloween monsters and cancel stale timers; distinct ordinary day/night motifs; header ON/OFF; both paired night palettes meet 4.5 contrast for inspector notes/features and primary/secondary text.');
+
+// Resolve the actual button rules in stylesheet order. Checking the selected
+// rule alone misses a pale :is(...,#view-status) color with higher specificity.
+const splitSelectors=selector=>{let depth=0,start=0;const parts=[];for(let i=0;i<selector.length;i++){if(selector[i]==='('||selector[i]==='[')depth++;if(selector[i]===')'||selector[i]===']')depth--;if(selector[i]===','&&!depth){parts.push(selector.slice(start,i).trim());start=i+1;}}return [...parts,selector.slice(start).trim()];};
+const compareSpecificity=(a,b)=>a[0]-b[0]||a[1]-b[1]||a[2]-b[2];
+function specificity(selector){
+ const score=[0,0,0];
+ selector=selector.replace(/:(is|where)\(([^()]*)\)/g,(_,kind,choices)=>{if(kind==='is'){const max=splitSelectors(choices).map(specificity).sort(compareSpecificity).at(-1);max.forEach((value,i)=>score[i]+=value);}return '';});
+ const attributes=selector.match(/\[[^\]]+\]/g)||[];selector=selector.replace(/\[[^\]]+\]/g,'');
+ score[0]+=(selector.match(/#[\w-]+/g)||[]).length;
+ score[1]+=attributes.length+(selector.match(/\.[\w-]+|:(?!:)[\w-]+/g)||[]).length;
+ score[2]+=(selector.match(/(^|[\s>+~])[a-z][\w-]*/gi)||[]).length;
+ return score;
+}
+function expandSelector(selector){
+ const match=selector.match(/:(?:is|where)\(([^()]*)\)/);if(!match)return [selector];
+ return splitSelectors(match[1]).flatMap(choice=>expandSelector(selector.slice(0,match.index)+choice+selector.slice(match.index+match[0].length)));
+}
+function matchesCompound(selector,node){
+ if(!node||selector.includes('::'))return false;
+ let matches=true;
+ selector=selector.replace(/:([\w-]+)/g,(_,state)=>{if(!node.cssStates?.has(state))matches=false;return '';});
+ selector=selector.replace(/\[([\w-]+)(?:=(["']?)([^\]"']+)\2)?\]/g,(_,key,quote,value)=>{const actual=key.startsWith('data-')?node.dataset[key.slice(5).replace(/-([a-z])/g,(_,letter)=>letter.toUpperCase())]:node.getAttribute(key);if(actual===undefined||(value!==undefined&&actual!==value))matches=false;return '';});
+ selector=selector.replace(/([.#])([\w-]+)/g,(_,kind,value)=>{if(kind==='#'?node.id!==value:!node.className.split(' ').includes(value))matches=false;return '';});
+ return matches&&(!selector||selector==='*'||node.tagName===selector);
+}
+function matchesSelector(selector,node){
+ return expandSelector(selector).some(expanded=>{
+  const parts=expanded.replace(/>/g,' > ').trim().split(/\s+/);let current=node;
+  if(!matchesCompound(parts.pop(),current))return false;
+  while(parts.length){const part=parts.pop();if(part==='>' ){current=current.parentElement;if(!matchesCompound(parts.pop(),current))return false;}else{do{current=current.parentElement;}while(current&&!matchesCompound(part,current));if(!current)return false;}}
+  return true;
+ });
+}
+function styleRules(source){
+ return [...source.replace(/\/\*[\s\S]*?\*\//g,'').matchAll(/([^{}]+)\{([^{}]*)\}/g)].flatMap(([,selector,declarations])=>selector.trim().startsWith('@')?[]:splitSelectors(selector).map(selector=>({selector,score:specificity(selector),declarations:[...declarations.matchAll(/(?:^|;)\s*(background(?:-color)?|color)\s*:\s*([^;]+)/g)].map(([,property,value])=>({property:property.startsWith('background')?'background':'color',value:value.replace(/\s*!important\s*$/,''),important:value.includes('!important')}))})));
+}
+function buttonPair(rules,node){
+ const winners={};rules.forEach((rule,order)=>{if(!matchesSelector(rule.selector,node))return;for(const declaration of rule.declarations){const old=winners[declaration.property];if(!old||Number(declaration.important)>Number(old.important)||(declaration.important===old.important&&(compareSpecificity(rule.score,old.score)>0||(compareSpecificity(rule.score,old.score)===0&&order>old.order))))winners[declaration.property]={...declaration,score:rule.score,order};}});
+ return {background:winners.background?.value,color:winners.color?.value};
+}
+const stylesheets=[...fs.readFileSync(new URL('../index.html',import.meta.url),'utf8').matchAll(/<link\b[^>]*rel=["']stylesheet["'][^>]*href=["']([^"']+)["']/g)].map(([,href])=>fs.readFileSync(new URL('../'+href.split('?')[0],import.meta.url),'utf8'));
+const rules=styleRules(stylesheets.join('\n'));
+const fixture=(collection,classes,pressed,view='auto',hover=false)=>{const root=new Node('body');root.dataset={collection,lights:'night'};let parent=root;for(const className of classes){const wrapper=new Node();wrapper.className=className;parent.append(wrapper);parent=wrapper;}const button=new Node('button');button.setAttribute('aria-pressed',String(pressed));button.dataset.view=view;button.cssStates=new Set(hover?['hover']:[]);parent.append(button);return button;};
+let buttonPairs=0;
+for(const collection of ['halloween','everyday'])for(const pressed of [false,true])for(const hover of [false,true]){
+ const buttons=[...['auto','phone','tablet','pc'].map(view=>fixture(collection,['view-toolbar','view-switch'],pressed,view,hover)),...['collection-switch','mode-switch','decoration-controls','picker-views'].map(group=>fixture(collection,[group],pressed,'auto',hover))];
+ const favorite=fixture(collection,[],pressed,'auto',hover);favorite.className='favorite-toggle';buttons.push(favorite);
+ for(const button of buttons){const pair=buttonPair(rules,button),label=`${collection}/${button.parentElement.className||button.className}/${button.dataset.view}/${pressed}/${hover}`;assert.match(pair.background,/^#[0-9a-f]{6}$/i,label+' has a concrete paired background');assert.match(pair.color,/^#[0-9a-f]{6}$/i,label+' has a concrete paired foreground');assert.ok(ratio(pair.background,pair.color)>=4.5,label+' effective CSS cascade must meet normal-text contrast');if(pressed)assert.ok(luminance(pair.color)<luminance(pair.background),label+' selected light surface uses dark text');buttonPairs++;}
+}
+// Verify that this cascade regression catches the previously published bug.
+const oldMutedRule='body[data-collection][data-lights=night] :is(.view-toolbar button,#view-status){color:#cfc3e9}';
+const oldPair=buttonPair([...rules,...styleRules(oldMutedRule)],fixture('halloween',['view-toolbar','view-switch'],true));
+assert.deepEqual(oldPair,{background:'#b397db',color:'#cfc3e9'});
+assert.ok(ratio(oldPair.background,oldPair.color)<4.5,'The old ID-bearing :is branch is caught, although the selected rule declares dark text');
+console.log(`PASS night UI: persisted night and live collection switches replace actual hero/ornament/game DOM, remove Halloween monsters and cancel stale timers; distinct ordinary day/night motifs; header ON/OFF; both paired night palettes and ${buttonPairs} effective selected/unselected/hover button pairs meet 4.5 contrast; the prior :is specificity failure is reproduced.`);

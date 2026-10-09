@@ -1,16 +1,16 @@
 import assert from 'node:assert/strict';
 import {assertCompactHandoff} from './compact-handoff-assertions-v28.mjs';
-import {buildEditorial} from '../editorial.js?v=28.4.3';
-import {copyContentRules} from '../copy-scope.js?v=28.4.3';
-import {typographyValues} from '../typography-options.js?v=28.4.3';
-import {applyCollection} from '../collection.js?v=28.4.3';
-import {buildDirection} from '../direction.js?v=28.4.3';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.3';
-import {composePrompt} from '../prompt.js?v=28.4.3';
-import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.3';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.3';
-import {imageDeliveryRepairPrompt} from '../output-contract.js?v=28.4.3';
-import {renderEditorialLayout} from '../editorial-layout.js?v=28.4.3';
+import {buildEditorial} from '../editorial.js?v=28.4.4';
+import {copyContentRules} from '../copy-scope.js?v=28.4.4';
+import {typographyValues} from '../typography-options.js?v=28.4.4';
+import {applyCollection} from '../collection.js?v=28.4.4';
+import {buildDirection} from '../direction.js?v=28.4.4';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.4';
+import {composePrompt} from '../prompt.js?v=28.4.4';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.4';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.4';
+import {imageDeliveryRepairPrompt} from '../output-contract.js?v=28.4.4';
+import {renderEditorialLayout} from '../editorial-layout.js?v=28.4.4';
 
 // Reproduce the supplied choice combination, including source-guided copy.
 // We inspect source boundaries, transfer routes and actual text placement;
@@ -79,7 +79,8 @@ for(const collection of ['halloween','everyday']){
  const features=output.placements.textFrames.filter(f=>f.roles.some(r=>/^特徴\d$/.test(r)));
  assert.equal(features.length,3,'The features must occupy three newspaper columns');
  const featureRuns=output.placements.textRuns.filter(r=>/^特徴\d$/.test(r.role));
- assert(featureRuns.every(r=>r.direction==='vertical-rl'),'Japanese features must retain newspaper vertical columns');
+ assert(featureRuns.every(r=>r.direction==='horizontal'),'The selected product-copy features must retain horizontal writing inside newspaper columns');
+ assert(!featureRuns.some(r=>r.direction==='vertical-rl'),'The newspaper format may not replace the selected horizontal feature direction');
  assert.equal(new Set(features.map(f=>f.y)).size,1,'The feature columns do not share the same baseline');
  assert.equal(new Set(featureRuns.map(r=>r.fontSize)).size,1,'The three feature columns do not share the same hierarchy');
 }

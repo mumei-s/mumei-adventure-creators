@@ -1,0 +1,23 @@
+{
+  "version": "28.4.4",
+  "role": "original-style-master",
+  "qualityStatus": "phone-readable 2D flat-face/iris/curved-film master; not an equivalence guarantee to an external artist or all downstream selections",
+  "width": 1024,
+  "height": 1536,
+  "prompt": "Refine this original thin-film luminous Japanese 2D anime master. Preserve the original ADULT orange-bob-haired female textile artist, her navy artist's coat and the original glazed weaving-workshop pavilion. No lanterns, hat, jellyfish, wings, copied woman, text, posters or UI. Make one fresh portrait2:3 composition of the same original setting, waist-up with the face, visible eyes, neck, both hands and forearms large enough to examine on a phone. Her hands adjust the existing loom threads and her alert gaze responds to the viewer; anatomically connected wrists, cloth and desk support. Foreground loom edge overlaps lower corners, artist in middle, tall patterned pavilion window panes and work surfaces shrink into the far plane.\nThe art is entirely very fine GRAY-LAVENDER HAND-DRAWN Japanese anime colored linework over FLAT PALE IVORY/LAVENDER FACE PLANES, tiny controlled nose/mouth shapes, only a few gentle designed lavender shadows. Facial form has turning contours and selected under-chin/neck/contact shadows but no photoreal/CG continuous face modeling or wet real lips. Original adult age and face proportions, not baby/chibi. Hair has extremely fine colored contour/interior lines, a few broad pale reflection bands, and dark internal contact lines between locks.\nVisible eyes are the focal point: LARGE legible drawn anime irises with a dark central core, transparent overlapping violet/pink painted layers, precisely positioned bright inner reflective filaments and tiny brilliant points; the brightest whites and deep violet cores sit together for powerful local contrast. Long fine lashes, precise eyelid line and small soft lower-eyelid reflections.\nThe distinctive technique is BROAD CONTINUOUS CURVING TRANSLUCENT PAINTED LIGHT FILM. Smooth lilac/rose/cyan/cream reflected-color bands cross the otherwise opaque pale face and both visible hands, neck, hair locks and cloth as soft thin color-glaze layers, with narrow sharp white boundaries in selected places. These bands follow existing surface turning and the window light; they are NOT triangular rainbow shards, hard glass facets, literal transparent flesh, particle-only glow, thick glossy metal or random decorative strokes. Keep skin, hair and cloth structurally intact under the paint-layer film. Broad light layers remain clearly visible when reduced to phone size.\nThe workshop retains depth through drawn window/beam intersections and thin overlapping straight planes, with a few deep violet contact shadows behind the loom and under sleeves. Bright pastel light film on the artist is balanced by deep selected navy coat folds and dark window intersections, while luminous whites stay narrow and deliberate. Transparent window light refracts into broad curved painted layers across the artist and loom surfaces; no generic white haze that erases linework, no default fantasy object additions.\nDeliver a coherent beautifully finished HAND-DRAWN FLAT 2D anime illustration with sophisticated thin-film light, one original character and one original spatial scene. Distinct from the dimensional glossy-face style and from the sparse geometric white-field style. Absolutely no captions, signature, copied motifs or screen borders.",
+  "previousMaster": "style-film-light-original-v28-4-3.png",
+  "source": "built-in image generation; original textile artist and weaving pavilion",
+  "visualReview": {
+    "accepted": [
+      "fine colored 2D lines and pale face planes",
+      "large multi-layer luminous irises",
+      "broad curved painted light layers on coat/hands",
+      "coherent foreground loom and receding windows"
+    ],
+    "limitations": [
+      "style sample pose/content must not replace actual selection",
+      "result adherence requires real image comparison"
+    ]
+  },
+  "sha256": "6f9aa398b07f09bd17a1e1a1d24a091cac9d5d4795a17d06e74474d4afd7f337"
+}

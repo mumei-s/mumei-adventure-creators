@@ -2,16 +2,19 @@ import assert from 'node:assert/strict';
 import {assertCompactHandoff} from './compact-handoff-assertions-v28.mjs';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
-import {stylePresets,stylePresetFor,stylePresetInstructions,stylePresetRoleDescription,loadStylePresets} from '../style-presets.js?v=28.4.3';
-import {drawingReferenceFor,deliveryImageFiles} from '../drawing-references.js?v=28.4.3';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.3';
-import {initialSelections} from '../modes.js?v=28.4.3';
-import {applyCollection} from '../collection.js?v=28.4.3';
-import {productionPlan,repairPrompt,planInstructions} from '../production-plan.js?v=28.4.3';
-import {composePrompt} from '../prompt.js?v=28.4.3';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.3';
-import {renderChatInput} from '../compiled-production.js?v=28.4.3';
-import {composeStagedMaster} from '../production-workflow.js?v=28.4.3';
+import {stylePresets,stylePresetFor,stylePresetInstructions,stylePresetRoleDescription,loadStylePresets} from '../style-presets.js?v=28.4.4';
+import {drawingReferenceFor,deliveryImageFiles} from '../drawing-references.js?v=28.4.4';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.4';
+import {initialSelections} from '../modes.js?v=28.4.4';
+import {applyCollection} from '../collection.js?v=28.4.4';
+import {productionPlan,repairPrompt,planInstructions} from '../production-plan.js?v=28.4.4';
+import {composePrompt} from '../prompt.js?v=28.4.4';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.4';
+import {renderChatInput} from '../compiled-production.js?v=28.4.4';
+import {composeStagedMaster} from '../production-workflow.js?v=28.4.4';
+import {usesFocusedProduction} from '../focused-production.js?v=28.4.4';
+import {renderRecipeChatInput} from '../compact-production.js?v=28.4.4';
+import {assertFocusedHandoff} from './focused-handoff-assertions-v28.mjs';
 
 const root=new URL('../',import.meta.url),random=()=>.34,profile={displayName:'PRESET CHECK',activityEnabled:false};
 applyCollection('halloween');
@@ -57,7 +60,13 @@ for(const collection of ['halloween','everyday'])for(const preset of stylePreset
  const values=resolveSelections({...initialSelections(),sceneUnified:true,sourceKind:noPerson?'scenery':'illustration-person',medium:preset.medium,theme:collection==='halloween'?'都会の仮装パレード':'街角アニメ日和',costume:noPerson?'風景を主役にする':'参照画像の衣装を生かす',...(noPerson?{pose:'おまかせ',mood:'毎回大胆に変える'}:{}),design:'通常の一枚絵',palette:preset.medium==='サイアノタイプ'?'参照画像の色を生かす':preset.medium==='クリスタルホログラム造形アニメ'?'群青 × 菫 × 星白':'モノクローム',type:'文字を一切入れない',line:'セリフなし'},random);
  values.sourceKind=noPerson?'scenery':'illustration-person';
  const plan=productionPlan(profile,values,{},collection,random);plan.referenceManifest=[preset,{role:'identity',name:'character.png'}];const prompt=composePrompt({collection,profile,values,variant:plan.variant,preparedPlan:plan,references:[preset,{role:'identity',name:'character.png'}],edition:'STYLE-PRESET-CHECK'});
- assertCompactHandoff(plan,prompt);assert.ok(prompt.includes(preset.name));assert.ok(prompt.includes('原寸見本'));assert.ok(prompt.includes('character.png'));
+ assertCompactHandoff(plan,prompt);assert.ok(prompt.includes(preset.name));assert.ok(prompt.includes('character.png'));
+ const focused=usesFocusedProduction(plan),recipe=focused?renderRecipeChatInput(plan,plan.referenceManifest):null;
+ if(focused){
+  assertFocusedHandoff(plan,prompt,collection+' / '+preset.medium+' actual preset');
+  assert.match(prompt,/原寸の選択画風見本.*(?:制作の土台・編集の基準|描法だけの資料)/,'The actual focused preset must supply full-resolution drawing method');
+  assert.ok(recipe.includes('原寸見本'),'The authored full-resolution wording must survive on the recipe review renderer');
+ }else assert.ok(prompt.includes('原寸見本'));
  const routes=[renderChatInput(plan),composeArtworkStage(plan),composeArtworkRepair(plan),composeArtworkRepair(plan,{compact:true}),repairPrompt({production:plan,values}),planInstructions(plan).join('\n')];
  for(const route of routes){
   assert.ok(route.includes(preset.name),collection+' / '+preset.medium+' lost the actual attached preset filename');
@@ -66,7 +75,11 @@ for(const collection of ['halloween','everyday'])for(const preset of stylePreset
  }
  const description=stylePresetRoleDescription(preset,values,{noPerson});
  if(preset.role==='style-preset'){
-  assert.match(prompt,/作成者の主参照/,'Character reference must remain separate');assert.match(prompt,/人物・衣装・小道具・構図・舞台は借用しない/);
+  if(focused){
+   assert.match(prompt,/主参照「character\.png」.*識別特徴だけ|人物識別参照「prepared-identity\.png」の同じ人物/,'The actual character reference must remain separate from the style image');
+   assert.match(prompt,/見本の人物・性別・髪型・衣装・小道具・構図・文字は引き継がない/,'Focused transfer must not import the example identity or scene');
+   assert.match(recipe,/作成者の主参照/,'Detailed character reference must remain separate');assert.match(recipe,/人物・衣装・小道具・構図・舞台は借用しない/);
+  }else {assert.match(prompt,/作成者の主参照/,'Character reference must remain separate');assert.match(prompt,/人物・衣装・小道具・構図・舞台は借用しない/);}
   const verbose=composeStagedMaster(plan,['画像生成の制作仕様','【作品モード】','【作成者が添付する参照画像】','【10の選択】'],{verbose:true});assertCompactHandoff(plan,verbose);assert.ok(verbose.includes(preset.name));
   assert.match(description,/小道具・構図・背景・配色はコピーしない/);
   const instructions=stylePresetInstructions(preset.medium,{noPerson,values}).join(' ');

@@ -1,5 +1,5 @@
 // Common ChatGPT image request: no model-specific tool names, code, or file route.
-import {copyContentRules} from './copy-scope.js?v=28.4.3';
+import {copyContentRules} from './copy-scope.js?v=28.4.4';
 export const nativeImageRequest='添付の参照画像と以下の作画条件で、完成した画像そのものを1枚描いてください。ChatGPTの画像作成機能を実行し、結果をこの生成チャットに表示してください。';
 export const selectionIntegrationInstructions=[
  '【ChatGPTが画像生成前に行う統合】',
@@ -22,6 +22,22 @@ export const imageOutputContract=[
  '生成待ち時間・希望ピクセル数・印刷dpiの確認を理由に画像の返却を止めないでください。必要なら対応する縦横比で先に生成してください。',
  '画像作成機能が利用できない、上限に達した、生成が失敗した場合は、実際に確認できた理由を短く伝えてください。存在しない画像を完成したと伝えたり、別モデルへ移れば必ず解決すると断言したりしないでください。'
 ];
+// The actual handoff already has owners for identity, camera, material, world
+// and manuscript. Keep the complete contract above for detailed audits and
+// repair workflows; do not repeat it before that compact material.
+export const compactSelectionIntegrationInstructions=Object.freeze([
+ '【ChatGPTが画像生成前に行う統合】',
+ '全10項目の選択済み条件と添付の役割を読み、作風の線・形・塗り・材質・光を先に確定する。その同じ描画方法で、主役・一つの世界と出来事・衣装・表情・姿勢と支持・固定カメラ・配色を一場面へ統合し、指定形式とサイズに収めてから画像作成する。仕様の全文をそのまま渡したり項目ごとの別場面にしない。',
+ '数値の角度、明示した顔向き・身体配置・支持点、人物の識別・年齢感・性別表現・頭身、被覆、作風固有の工程と許可原稿を保つ。隠れる面を露出させず、未指定部分だけを補う。明示条件が両立しない場合は衝突を短く伝え、条件の削除・角度変更・関節の破綻で満たしたと扱わない。人物なしでは顔・身体ポーズは非適用。',
+ '印字は確定原稿の文字列と明示的に許可された編集役割だけ。文字なし・選択文字量を優先し、形式の標準原稿を追加しない。操作・項目名・管理情報・制作仕様は作品に印字せず、原稿のネタにも使わない。自動原稿は作品世界または確認済みの公開活動から編集し、本人の発言や未確認の事実を作らない。',
+ '統合した一場面・描画工程・画角・許可原稿と必要な参照画像を画像作成機能へ渡し、完成画像1枚の生成と表示まで進める。'
+]);
+export const compactImageOutputContract=Object.freeze([
+ '【描いてほしい完成品】',nativeImageRequest,
+ '1分以内を目標に不要な検索・別工程・長い説明を挟まず画像作成へ進む。参照と条件がそろっていれば再確認で止めない。処理中の生成は時間を理由に打ち切らず、最初の生成画像を直ちにこの会話へ表示し、照合と短い補足はその後に行う。結果は画像作成機能の通常の生成画像として表示する。説明・計画・コード・ダウンロードリンク、Python・SVG・HTML・ブラウザー制作・PNG書き出し・Markdown埋め込みで代用しない。非表示の再生成ループは行わない。',
+ ...compactSelectionIntegrationInstructions,
+ '希望px・dpiや待ち時間を理由に返却を止めず、対応する縦横比で生成する。利用不可・上限・生成失敗は実際に確認できた理由を短く伝え、存在しない画像や未確認の達成を完成扱いしない。'
+]);
 export function imageDeliveryRepairPrompt(result){return [
  'この会話の依頼（制作番号 '+result.edition+'）は、完成した画像そのものを通常の生成画像として表示する依頼です。文章やダウンロードリンクだけで終わっています。',
  '画像作成機能で生成済みの画像があるなら、新しく描き直さず、その最新の生成結果を通常の生成画像としてこのチャットに再表示してください。画像をタップして開ける結果を返してください。',

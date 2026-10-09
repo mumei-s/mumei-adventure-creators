@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.3';
-import {initialSelections} from '../modes.js?v=28.4.3';
-import {applyCollection} from '../collection.js?v=28.4.3';
-import {buildEditorial,editorialContract} from '../editorial.js?v=28.4.3';
-import {copyAuthority,copyAllowsDialogue,copySelectionExplanation} from '../copy-scope.js?v=28.4.3';
-import {formatTextPolicy,detailedFormat} from '../format-recipes.js?v=28.4.3';
-import {formatSpecs} from '../formats.js?v=28.4.3';
-import {productionPlan} from '../production-plan.js?v=28.4.3';
-import {buildDirection} from '../direction.js?v=28.4.3';
-import {renderInput} from '../compiled-production.js?v=28.4.3';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.4';
+import {initialSelections} from '../modes.js?v=28.4.4';
+import {applyCollection} from '../collection.js?v=28.4.4';
+import {buildEditorial,editorialContract} from '../editorial.js?v=28.4.4';
+import {copyAuthority,copyAllowsDialogue,copySelectionExplanation} from '../copy-scope.js?v=28.4.4';
+import {formatTextPolicy,detailedFormat} from '../format-recipes.js?v=28.4.4';
+import {formatSpecs} from '../formats.js?v=28.4.4';
+import {productionPlan} from '../production-plan.js?v=28.4.4';
+import {buildDirection} from '../direction.js?v=28.4.4';
+import {renderInput} from '../compiled-production.js?v=28.4.4';
 
 // A design owns geometry. A selected text control owns one manuscript. Cover,
 // card and blank-art combinations must not silently supply a second manuscript.
@@ -64,7 +64,7 @@ for(const collection of ['halloween','everyday']){
    if(design==='写真集の表紙')assert.deepEqual(roles,['書名','作者名']);
   }else{
    let permitted=expected[type];
-   if(type==='雑誌風・見出しと特集をたっぷり')permitted=[...magazine,...(['インタビュー誌面','見開き特集','新聞の一面'].includes(design)?['リード文','本文1','本文2']:[])];
+   if(type==='雑誌風・見出しと特集をたっぷり')permitted=[...magazine];
    if(type==='キャラクター名鑑・役柄とスキル'&&noPerson)permitted=['キャラクター名','主題の分類','特徴1','特徴2','主題紹介'];
    assert.deepEqual([...roles].sort(),[...permitted].sort(),label+' added default design copy or lost selected manuscript');
    assert.equal(copy.authority,type==='文字を一切入れない'?'none':'selected');

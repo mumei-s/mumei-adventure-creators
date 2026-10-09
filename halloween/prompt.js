@@ -1,15 +1,15 @@
-import {imageOutputContract} from './output-contract.js?v=28.4.3';
-import {visibleQuestions} from './catalog.js?v=28.4.3';
-import {productionPlan,planInstructions,conditionInstructions} from './production-plan.js?v=28.4.3';
-import {sceneContract} from './worlds.js?v=28.4.3';
-import {colorPolicy} from './palette-recipes.js?v=28.4.3';
-import {resolveArtDirection} from './art-direction.js?v=28.4.3';
-import {composeStagedMaster} from './production-workflow.js?v=28.4.3';
-import {isPhotographicMedium} from './photo-design.js?v=28.4.3';
-import {drawingReferenceFor} from './drawing-references.js?v=28.4.3';
-import {stylePresetFor,stylePresetInstructions,stylePresetRoleDescription} from './style-presets.js?v=28.4.3';
-import {characterProportionInstruction,sourceKinds,sourceKindInstructions,isNonHumanSource} from './source-kind.js?v=28.4.3';
-import {halloweenModeContract} from './halloween-mode-contract.js?v=28.4.3';
+import {imageOutputContract} from './output-contract.js?v=28.4.4';
+import {visibleQuestions} from './catalog.js?v=28.4.4';
+import {productionPlan,planInstructions,conditionInstructions} from './production-plan.js?v=28.4.4';
+import {sceneContract} from './worlds.js?v=28.4.4';
+import {colorPolicy} from './palette-recipes.js?v=28.4.4';
+import {resolveArtDirection} from './art-direction.js?v=28.4.4';
+import {composeStagedMaster} from './production-workflow.js?v=28.4.4';
+import {isPhotographicMedium} from './photo-design.js?v=28.4.4';
+import {drawingReferenceFor} from './drawing-references.js?v=28.4.4';
+import {stylePresetFor,stylePresetInstructions,stylePresetRoleDescription} from './style-presets.js?v=28.4.4';
+import {characterProportionInstruction,sourceKinds,sourceKindInstructions,isNonHumanSource} from './source-kind.js?v=28.4.4';
+import {halloweenModeContract} from './halloween-mode-contract.js?v=28.4.4';
 export function needsReference(values){const noPerson=/風景を主役|モチーフだけ|紋章・アイコン/.test(values.costume);return sourceKinds.some(source=>source.value===values.sourceKind)||!noPerson||values.place==='参照風景を舞台にする'||values.palette==='参照画像の色を生かす';}
 // Only the selected assistant preset supplies drawing technique; character identity and scene remain separate.
 export function composePrompt({collection='halloween',creator,profile,values,variant,references=[],edition,referenceBundle=null,random=Math.random,preparedPlan=null}){
@@ -155,5 +155,5 @@ export function composePrompt({collection='halloween',creator,profile,values,var
  '',
  '【生成と納品の最終照合】項目名と具体条件どおりの画風・形式・舞台・配色になっているか。'+(noPerson?'人物なしの'+(subjectKind==='scenery'?'景観':subjectKind==='motif'?'物体構成':'紋章・アイコン')+'として成立しているか。':objectSource?'非人物入力の固有形を明示された主役へ翻案し、今回の表情・角度・動作を実行しているか。':'主参照と同じ人物で、今回の表情・角度・動作になっているか。')+'文字量は形式に合うか。出力画像そのものを確認し、完成画像をこの会話に添付・表示して終了する。文章だけで完成扱いにしない。'
  ];
- return composeStagedMaster(plan,lines);
+ return composeStagedMaster(plan,lines,{refs:plan.referenceManifest||references});
 }

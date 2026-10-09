@@ -2,27 +2,30 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import {File} from 'node:buffer';
-import {selectionReferenceManifest,selectionReferenceRules,buildSelectionReferenceSheet,SELECTION_SHEET_NAME} from '../selection-references.js?v=28.4.3';
-import {deliveryImageFiles} from '../drawing-references.js?v=28.4.3';
-import {questions,visibleQuestions,resolveSelections,normalizeCreator,AUTO} from '../catalog.js?v=28.4.3';
-import {initialSelections,effectiveSelections} from '../modes.js?v=28.4.3';
-import {applyCollection} from '../collection.js?v=28.4.3';
-import {sourceKinds,sourceSubjectFor} from '../source-kind.js?v=28.4.3';
-import {selectionConflicts} from '../compatibility.js?v=28.4.3';
-import {buildDirection} from '../direction.js?v=28.4.3';
-import {applyPose} from '../poses.js?v=28.4.3';
-import {productionPlan} from '../production-plan.js?v=28.4.3';
-import {stagePrompts} from '../production-workflow.js?v=28.4.3';
-import {composePrompt,needsReference} from '../prompt.js?v=28.4.3';
-import {stylePresetFor,loadStylePresets} from '../style-presets.js?v=28.4.3';
-import {compactCreatorProfile} from '../creator.js?v=28.4.3';
-import {compactHistoryRecord,restoreHistoryRecord,restoreHistoryCore} from '../history-storage.js?v=28.4.3';
-import {readRasterDimensions} from '../image-resources.js?v=28.4.3';
-import {makeZip} from '../zip.js?v=28.4.3';
+import {selectionReferenceManifest,selectionReferenceRules,selectionReferenceConditions,selectionReferenceCounts,selectionSheetItems,individualSelectionReferenceManifest,buildIndividualSelectionReferences,buildIndividualSelectionReferenceZip,buildSelectionReferenceSheet,SELECTION_SHEET_NAME} from '../selection-references.js?v=28.4.4';
+import {sampleFor} from '../examples.js?v=28.4.4';
+import {deliveryImageFiles} from '../drawing-references.js?v=28.4.4';
+import {questions,visibleQuestions,resolveSelections,normalizeCreator,AUTO} from '../catalog.js?v=28.4.4';
+import {initialSelections,effectiveSelections} from '../modes.js?v=28.4.4';
+import {applyCollection} from '../collection.js?v=28.4.4';
+import {sourceKinds,sourceSubjectFor} from '../source-kind.js?v=28.4.4';
+import {selectionConflicts} from '../compatibility.js?v=28.4.4';
+import {buildDirection} from '../direction.js?v=28.4.4';
+import {applyPose} from '../poses.js?v=28.4.4';
+import {productionPlan} from '../production-plan.js?v=28.4.4';
+import {stagePrompts} from '../production-workflow.js?v=28.4.4';
+import {composePrompt,needsReference} from '../prompt.js?v=28.4.4';
+import {stylePresetFor,loadStylePresets} from '../style-presets.js?v=28.4.4';
+import {compactCreatorProfile} from '../creator.js?v=28.4.4';
+import {recomposeHistoryDelivery} from '../delivery-history-migration.js?v=28.4.4';
+import {compactHistoryRecord,restoreHistoryRecord,restoreHistoryCore} from '../history-storage.js?v=28.4.4';
+import {readRasterDimensions} from '../image-resources.js?v=28.4.4';
+import {makeZip} from '../zip.js?v=28.4.4';
+import {attachmentConditionPolicy,selectionAttachmentPolicy} from '../attachment-policy.js?v=28.4.4';
 
 const root=new URL('../',import.meta.url),app=fs.readFileSync(new URL('app.js',root),'utf8');
 const visibleKeys=['medium','theme','costume','pose','mood','angle','palette','design','type','size'];
-const fixture={medium:'発光幻想アニメ',theme:'吸血鬼の晩餐会',costume:'亡霊騎士',pose:'低くしゃがむ',mood:'牙を見せて威嚇',angle:'超ローアングル・70度',palette:'菫 × マンゴー × 白',design:'新聞の一面',type:'HALLOWEENのみ',size:'A4縦・300dpi目安｜2480×3508｜210:297',sceneUnified:true,line:'セリフなし'};
+const fixture={medium:'透明水彩',theme:'吸血鬼の晩餐会',costume:'亡霊騎士',pose:'低くしゃがむ',mood:'牙を見せて威嚇',angle:'超ローアングル・70度',palette:'菫 × マンゴー × 白',design:'新聞の一面',type:'HALLOWEENのみ',size:'A4縦・300dpi目安｜2480×3508｜210:297',sceneUnified:true,line:'セリフなし'};
 const profile={displayName:'参照シート検査',activityEnabled:false},random=()=>.34;
 const plain=value=>JSON.parse(JSON.stringify(value));
 function selected(overrides={}){return resolveSelections({...initialSelections(),...fixture,...overrides},random);}
@@ -53,15 +56,20 @@ for(const collection of ['halloween','everyday']){
  applyCollection(collection);
  assert.deepEqual(visibleQuestions.map(q=>q.key),visibleKeys,'The delivered sheet follows the ten visible choices, not hidden place/line settings');
  const base=selected(),manifest=selectionReferenceManifest(base);
- assert.equal(manifest.role,'selection-sheet');assert.equal(manifest.name,SELECTION_SHEET_NAME);assert.equal(manifest.items.length,10);
- assert.deepEqual(manifest.items.map(item=>item.key),visibleKeys);
- assert.equal(new Set(manifest.items.map(item=>item.scope)).size,10,'Every kind of example has a different reading scope');
- assert.match(manifest.items.find(i=>i.key==='medium').scope,/描線.*人物.*借りない/);
+ assert.equal(manifest.schemaVersion,2);assert.equal(manifest.role,'selection-sheet');assert.equal(manifest.name,SELECTION_SHEET_NAME);assert.equal(manifest.items.length,8);
+ assert.deepEqual(manifest.conditions.map(item=>item.key),visibleKeys);
+ assert.deepEqual(manifest.items.map(item=>item.key),visibleKeys.filter(key=>!['medium','size'].includes(key)));
+ assert.deepEqual(manifest.counts,{selected:10,sheet:8,separateStyle:1});
+ assert.equal(new Set(manifest.conditions.map(item=>item.scope)).size,10,'Every kind of example has a different reading scope');
+ assert.match(manifest.mediumReference.scope,/描線.*人物.*借りない/);assert.equal(manifest.mediumReference.inSheet,false);
  assert.match(manifest.items.find(i=>i.key==='pose').scope,/関節.*支持.*カメラ.*借りない/);
  assert.match(manifest.items.find(i=>i.key==='design').scope,/画像枠.*文字枠.*印字しない/);
  assert.match(selectionReferenceRules(manifest).join('\n'),/主参照だけが人物の識別基準/);
  for(const q of visibleQuestions)for(const value of new Set(q.groups.flatMap(group=>group.values))){
-  const item=selectionReferenceManifest({...base,[q.key]:value}).items.find(i=>i.key===q.key);
+  const picked=selectionReferenceManifest({...base,[q.key]:value}),condition=picked.conditions.find(i=>i.key===q.key);assert.equal(condition.value,value);
+  if(q.key==='medium'){const master=stylePresetFor(value);assert.ok(master,'Every registered medium needs a separate original');assert.equal(picked.mediumReference.file,master.file);await inspectAsset('./'+master.file);catalogSelections++;continue;}
+  if(!condition.deliverVisual){assert.ok(!picked.items.some(i=>i.key===q.key),'Redundant or non-applicable diagrams must not enter the image input');catalogSelections++;continue;}
+  const item=picked.items.find(i=>i.key===q.key);
   assert.equal(item.value,value);assert.ok(item.sample,'A selected item needs reference metadata');
   assert.notEqual(item.sample.kind,'custom','Registered choices cannot quietly fall back to a title-only placeholder: '+collection+'/'+q.key+'/'+value);
   if(item.sample.kind==='image')await inspectAsset(item.sample.src);
@@ -90,10 +98,11 @@ function renderer({failure='',failureAt=1,delay=0}={}){
 }
 function assertReleased(run){assert.equal(run.canvas.width,1);assert.equal(run.canvas.height,1);for(const image of run.stats.images){assert.equal(image.onload,null);assert.equal(image.onerror,null);}}
 const manifest=selectionReferenceManifest(selected()),normal=renderer();
+const sampleCalls=[];selectionReferenceManifest(selected(),{sample:(key,value)=>{sampleCalls.push(key);return sampleFor(key,value);}});assert.ok(!sampleCalls.includes('medium'),'Do not load or reduce a duplicate style master into the sheet');
 const sheet=await buildSelectionReferenceSheet(manifest,normal.dependencies);
 assert.equal(sheet.name,SELECTION_SHEET_NAME);assert.equal(sheet.type,'image/jpeg');assert.ok(sheet.size>0);
-assert.equal(normal.stats.draws.length,8);assert.equal(normal.stats.maxActive,1,'Decode each image sequentially to bound memory');
-assert.deepEqual(normal.stats.encodes,[{type:'image/jpeg',quality:.91,width:2048,height:3350}]);
+assert.equal(normal.stats.draws.length,manifest.items.filter(item=>item.sample.kind==='image').length);assert.equal(normal.stats.maxActive,1,'Decode each image sequentially to bound memory');
+assert.deepEqual(normal.stats.encodes,[{type:'image/jpeg',quality:.91,width:3072,height:2010}]);
 for(const draw of normal.stats.draws){const [x,y,width,height]=draw.coords;assert.ok(Number.isFinite(x)&&Number.isFinite(y)&&width>0&&width<=956&&height>0&&height<=410,'Fit each complete example within its own cell');}
 assertReleased(normal);
 const fragmentManifest=selectionReferenceManifest(selected({design:'ゴシック雑誌の表紙'}));
@@ -110,8 +119,10 @@ await assert.rejects(buildSelectionReferenceSheet(manifest,constructorFailure.de
 // Type-picker samples are illustrations, not approved manuscripts. Restrict
 // copy in this sheet to the literal selected HALLOWEEN, or unnamed empty boxes.
 for(const collection of ['halloween','everyday'])for(const type of ['HALLOWEENのみ','HALLOWEEN＋クリエイター名','文字を一切入れない','新聞風・記事と段組み','クリエイター名だけ']){
- applyCollection(collection);const run=renderer();await buildSelectionReferenceSheet(selectionReferenceManifest(selected({type})),run.dependencies);
- const typeBody=run.stats.texts.filter(t=>t.x>=0&&t.x<1024&&t.y>=4*670+100&&t.y<4*670+530).map(t=>t.text);
+ applyCollection(collection);const run=renderer(),m=selectionReferenceManifest(selected({type}),{sample:(key,value)=>key==='type'?{kind:'type'}:sampleFor(key,value)});await buildSelectionReferenceSheet(m,run.dependencies);
+ if(type==='文字を一切入れない'){assert.ok(!m.items.some(item=>item.key==='type'));assertReleased(run);continue;}
+ const index=m.items.findIndex(item=>item.key==='type'),x=index%3*1024,y=Math.floor(index/3)*670;
+ const typeBody=run.stats.texts.filter(t=>t.x>=x&&t.x<x+1024&&t.y>=y+100&&t.y<y+530).map(t=>t.text);
  assert.deepEqual(typeBody,type.startsWith('HALLOWEEN')?['HALLOWEEN']:[],collection+'/'+type+' must not invent names, article text, or substitute a different literal');assertReleased(run);
 }
 applyCollection('halloween');
@@ -124,17 +135,17 @@ async function actualGeneration({attachmentMode='bundle',type='HALLOWEENのみ',
  const selections=selected({type}),character=new File(['ORIGINAL IDENTITY BYTES'],'character.png',{type:'image/png'}),run=renderer({failure});
  let shown=null,persisted=0;
  const saved={history:[],used:[],count:0};
- const context=vm.createContext({sourceKinds,sourceSubjectFor,sourceKind:'photo-person',mode:'detail',selections,selectedProposal:null,attachmentMode,refs:[{file:character,name:character.name,role:'identity',width:600,height:800}],historyReady:Promise.resolve(),draftReady:Promise.resolve(),creating:false,adding:false,resettingReferences:false,referenceGeneration:0,draftProfileRevision:0,inputRevision:0,performance,requestAnimationFrame:callback=>callback(),$,normalizeCreator,artworkProfile:()=>profile,syncSaved:async()=>{},questions,AUTO,effectiveSelections,resolveSelections,rng:random,saved,collection:'halloween',selectionConflicts,needsReference,formError:message=>{$('form-error').textContent=message;},buildDirection,applyPose,uid:()=>('SHEET-ROUTE-'+type),stylePresetFor,loadStylePresets:refs=>loadStylePresets(refs,{fetchImpl,FileClass:File}),selectionReferenceManifest,buildSelectionReferenceSheet:m=>buildSelectionReferenceSheet(m,run.dependencies),productionPlan,composePrompt,APP_VERSION:'28.4.3',stagePrompts,compactCreatorProfile,persist:async()=>{persisted++;},renderHistory(){},renderBoard(){},showResult:async r=>{shown=r;},effects:{celebrate(){}},File,lockedValues:null});
+ const context=vm.createContext({sourceKinds,sourceSubjectFor,sourceKind:'photo-person',mode:'detail',selections,selectedProposal:null,attachmentMode,refs:[{file:character,name:character.name,role:'identity',width:600,height:800}],historyReady:Promise.resolve(),draftReady:Promise.resolve(),creating:false,adding:false,resettingReferences:false,referenceGeneration:0,draftProfileRevision:0,inputRevision:0,performance,requestAnimationFrame:callback=>callback(),$,normalizeCreator,artworkProfile:()=>profile,syncSaved:async()=>{},questions,AUTO,effectiveSelections,resolveSelections,rng:random,saved,collection:'halloween',selectionConflicts,needsReference,formError:message=>{$('form-error').textContent=message;},buildDirection,applyPose,uid:()=>('SHEET-ROUTE-'+type),stylePresetFor,loadStylePresets:refs=>loadStylePresets(refs,{fetchImpl,FileClass:File}),selectionReferenceManifest,selectionReferenceCounts,buildSelectionReferenceSheet:m=>buildSelectionReferenceSheet(m,run.dependencies),productionPlan,composePrompt,APP_VERSION:'28.4.3',stagePrompts,compactCreatorProfile,persist:async()=>{persisted++;},renderHistory(){},renderBoard(){},showResult:async r=>{shown=r;},effects:{celebrate(){}},File,lockedValues:null});
  vm.runInContext(generateSource,context);
  try{return {result:await vm.runInContext('generate(lockedValues)',context),saved,run,character,nodes,shown,persisted,context};}
  catch(error){error.testState={saved,run,nodes,shown,persisted,context};throw error;}
 }
 const generated=await actualGeneration(),result=generated.result;
-assert.strictEqual(generated.shown,result);assert.equal(generated.persisted,1);assert.equal(result.selectionReference.items.length,10);assert.equal(result.localSelectionReference.file.name,SELECTION_SHEET_NAME);
-assert.deepEqual(result.selectionReference.items.map(i=>i.value),visibleKeys.map(k=>result.values[k]));
+assert.strictEqual(generated.shown,result);assert.equal(generated.persisted,1);assert.equal(result.selectionReference.items.length,8);assert.equal(result.selectionReference.conditions.length,10);assert.deepEqual(plain(result.selectionReference.counts),{selected:10,sheet:8,separateStyle:1});assert.equal(result.localSelectionReference.file.name,SELECTION_SHEET_NAME);
+assert.deepEqual(plain(result.selectionReference.conditions.map(i=>i.value)),visibleKeys.map(k=>result.values[k]));
 assert.equal(result.production.referenceManifest.filter(ref=>ref.role==='selection-sheet').length,1);
 assert.deepEqual(plain(result.production.copy.slots).map(slot=>slot.text),['HALLOWEEN']);
-for(const item of result.selectionReference.items)assert.ok(result.prompt.includes(item.value),'The generated concise handoff retains selected '+item.key);
+for(const item of result.selectionReference.conditions)assert.ok(result.prompt.includes(item.value),'The generated concise handoff retains selected '+item.key);
 for(const ref of [...result.references,...result.drawingReferences,result.selectionReference])assert.ok(result.prompt.includes(ref.name),'Handoff names every attached role: '+ref.name);
 assert.match(result.prompt,/主参照/);assert.match(result.prompt,/選択見本シート/);assert.match(result.prompt,/描画.*資料|画風.*見本|原寸見本/);
 const delivered=deliveryImageFiles(result,{FileClass:File});
@@ -160,7 +171,7 @@ while(zipBytes.readUInt32LE(offset)===0x04034b50){const length=zipBytes.readUInt
 assert.deepEqual(zipEntries.map(entry=>entry.name),['prompt.txt','使い方.txt','selected-conditions.txt',...delivered.map(f=>f.name)]);
 assert.equal(zipEntries.find(entry=>entry.name==='prompt.txt').data.toString('utf8'),result.prompt);
 assert.equal(zipEntries.find(entry=>entry.name===result.references[0].name).data.toString('utf8'),await generated.character.text());
-for(const item of result.selectionReference.items)assert.ok(zipEntries.find(e=>e.name==='selected-conditions.txt').data.toString('utf8').includes(item.value));
+for(const item of result.selectionReference.conditions)assert.ok(zipEntries.find(e=>e.name==='selected-conditions.txt').data.toString('utf8').includes(item.value));
 
 // Persist enough metadata to rebuild the same sheet after page reload, while
 // keeping File/image blobs out of the bounded history store.
@@ -169,10 +180,83 @@ assert.deepEqual(roundTrip.selectionReference,plain(result.selectionReference));
 const restored=await restoreHistoryRecord(roundTrip);assert.deepEqual(restored.selectionReference,plain(result.selectionReference));assert.equal(restored.prompt,result.prompt);assert.deepEqual(restored.production.referenceManifest,plain(result.production.referenceManifest));
 const reloaded=renderer(),reloadSheet=await buildSelectionReferenceSheet(restored.selectionReference,reloaded.dependencies);assert.equal(reloadSheet.name,SELECTION_SHEET_NAME);assert.deepEqual(reloaded.stats.requests,generated.run.stats.requests);assertReleased(reloaded);
 
+// Older histories retain every original selection while their regenerated
+// attachment removes the duplicate medium. No migration rewrites their values.
+const legacy={schemaVersion:1,name:manifest.name,role:manifest.role,items:manifest.conditions.map(condition=>({...condition,sample:sampleFor(condition.key,condition.value)}))},legacyBefore=JSON.stringify(legacy),legacyRender=renderer();
+assert.deepEqual(selectionReferenceConditions(legacy).map(item=>item.value),manifest.conditions.map(item=>item.value));assert.deepEqual(selectionReferenceCounts(legacy),{selected:10,sheet:8,separateStyle:1});assert.deepEqual(selectionSheetItems(legacy).map(item=>item.key),manifest.items.map(item=>item.key));
+await buildSelectionReferenceSheet(legacy,legacyRender.dependencies);assert.deepEqual(legacyRender.stats.requests,normal.stats.requests);assert.equal(JSON.stringify(legacy),legacyBefore);assertReleased(legacyRender);
+const customMedium=selectionReferenceManifest(selected({medium:'手入力の画風'}));assert.deepEqual(customMedium.counts,{selected:10,sheet:8,separateStyle:0});assert.equal(customMedium.mediumReference.delivery,'text-only');assert.equal(customMedium.conditions[0].value,'手入力の画風');
+
+// All ten exact selections stay in the audit. Only examples that add relevant
+// visual information are attached; absent people/words cannot leak through an
+// unrelated example. Design-auto manuscript inherits its resolved copy instead
+// of a generic typography sample that might imply a different role count.
+for(const costume of ['亡霊騎士','参照画像の衣装を生かす','風景を主役にする','紋章・アイコンにする'])for(const type of ['HALLOWEENのみ','文字を一切入れない','デザインに合わせて自動編集'])for(const palette of ['菫 × マンゴー × 白','参照画像の色を生かす']){
+ const values=selected({costume,type,palette}),before=JSON.stringify(values),calls=[],m=selectionReferenceManifest(values,{sample:(key,value)=>{calls.push(key);return sampleFor(key,value);}}),expected=m.conditions.filter(condition=>attachmentConditionPolicy(condition.key,values).deliverVisual).map(condition=>condition.key);
+ assert.equal(m.conditions.length,10);assert.deepEqual(m.items.map(item=>item.key),expected);assert.deepEqual(calls,expected);
+ assert.equal(m.attachmentPolicy.qualityStatus,'requires-generated-image-comparison');assert.equal(m.attachmentPolicy.conditionVisualCount,m.items.length);
+ assert.deepEqual(selectionAttachmentPolicy(m.conditions).omittedKeys,m.attachmentPolicy.omittedKeys);
+ assert.deepEqual(individualSelectionReferenceManifest(m).map(item=>item.key),expected);
+ assert.ok(!calls.some(key=>['medium','size'].includes(key)));
+ if(type!=='HALLOWEENのみ')assert.ok(!calls.includes('type'));
+ if(costume==='参照画像の衣装を生かす')assert.ok(!calls.includes('costume'));
+ if(palette==='参照画像の色を生かす')assert.ok(!calls.includes('palette'));
+ if(/風景|紋章/.test(costume)){assert.ok(!calls.includes('pose')&&!calls.includes('mood'));assert.equal(m.conditions.find(c=>c.key==='pose').applicable,false);assert.equal(m.conditions.find(c=>c.key==='mood').applicable,false);}
+ const old={schemaVersion:1,name:m.name,role:m.role,items:m.conditions.map(condition=>({...condition,sample:sampleFor(condition.key,condition.value)}))};assert.deepEqual(selectionSheetItems(old).map(item=>item.key),expected,'Legacy reconstruction must remove the same redundant/person-only visuals');
+ assert.equal(JSON.stringify(values),before,'Attachment policy never rewrites selected conditions');
+}
+
+// Optional per-condition exports retain raster bytes and render a selected SVG
+// view at its natural resolution. Their roles never supply character identity.
+const individualsMeta=individualSelectionReferenceManifest(manifest),individualRender=renderer(),individuals=await buildIndividualSelectionReferences(manifest,{...individualRender.dependencies,fetchImpl});
+assert.equal(individuals.length,8);assert.equal(new Set(individuals.map(item=>item.name)).size,8);assert.deepEqual(individuals.map(item=>item.key),manifest.items.map(item=>item.key));assert.deepEqual(individualsMeta.map(item=>item.selectionIndex),[2,3,4,5,6,7,8,9]);
+for(const individual of individuals){
+ assert.equal(individual.role,'selection-condition');assert.equal(individual.file.name,individual.name);assert.ok(individual.width>0&&individual.height>0);assert.ok(!individual.name.startsWith('style-preset-')&&!individual.name.startsWith('reference-'));
+ if(individual.sourceKind==='original-raster')assert.deepEqual(Buffer.from(await individual.file.arrayBuffer()),fs.readFileSync(new URL(individual.source,root)),'The original condition raster must not be resized or re-encoded');
+ if(individual.sourceKind==='native-svg-view')assert.ok(individualRender.stats.requests.includes(new URL(individual.source,root).href),'Retain the exact selected fragment when exporting an SVG');
+}
+assert.ok(individualRender.stats.encodes.every(encode=>encode.type==='image/png'),'SVG and condition diagrams are independently exported as PNG');assert.equal(individualRender.stats.maxActive,1);assertReleased(individualRender);
+for(const failure of ['context','dimensions','draw','encode','timeout']){const run=renderer({failure});await assert.rejects(buildIndividualSelectionReferences(manifest,{...run.dependencies,fetchImpl}));assertReleased(run);}
+await assert.rejects(buildIndividualSelectionReferences(manifest,{...renderer().dependencies,fetchImpl:async()=>new Response('bad',{status:404})}),/選択見本/);
+const originalProduction=JSON.stringify(result.production),rawRender=renderer();
+const comparison=await buildIndividualSelectionReferenceZip({manifest:result.selectionReference,identityReferences:[{...result.references[0],file:delivered[0]}],styleReferences:[{...result.drawingReferences[0],file:delivered[1]}],composeIndividualPrompt:kit=>composePrompt({collection:'halloween',profile,values:result.values,variant:result.variant,references:kit.references,edition:result.edition,preparedPlan:{...result.production,referenceManifest:kit.references}})},{...rawRender.dependencies,fetchImpl});
+assert.equal(comparison.manifest.conditions.length,10);assert.deepEqual(comparison.manifest.counts,{selected:10,individual:8,attached:10,identity:1,separateStyle:1});assert.deepEqual(comparison.manifest.references.map(item=>item.role),['identity',result.drawingReferences[0].role,...Array(8).fill('selection-condition')]);
+assert.deepEqual(comparison.files.slice(0,2),delivered.slice(0,2));assert.ok(!comparison.prompt.includes(SELECTION_SHEET_NAME));for(const ref of comparison.manifest.references)assert.ok(comparison.prompt.includes(ref.name));assert.ok(comparison.prompt.includes('主参照'));assert.match(comparison.manifest.acceptance,/参照5枚.*一括添付は実行できない/);assert.equal(comparison.manifest.execution.status,'not-executed');assert.equal(comparison.manifest.execution.canUseObservedSingleCall,false);assert.equal(JSON.stringify(result.production),originalProduction,'The comparison route must not mutate the saved production');assertReleased(rawRender);
+const comparisonBytes=Buffer.from(await comparison.blob.arrayBuffer()),comparisonEntries=[];let comparisonAt=0;
+while(comparisonBytes.readUInt32LE(comparisonAt)===0x04034b50){const length=comparisonBytes.readUInt32LE(comparisonAt+18),nameLength=comparisonBytes.readUInt16LE(comparisonAt+26),extra=comparisonBytes.readUInt16LE(comparisonAt+28),name=comparisonBytes.subarray(comparisonAt+30,comparisonAt+30+nameLength).toString('utf8'),start=comparisonAt+30+nameLength+extra;comparisonEntries.push({name,data:comparisonBytes.subarray(start,start+length)});comparisonAt=start+length;}
+assert.deepEqual(comparisonEntries.map(entry=>entry.name),['prompt.txt','references.json','selected-conditions.txt',...comparison.manifest.references.map(ref=>ref.name)]);assert.equal(comparisonEntries.find(entry=>entry.name===delivered[0].name).data.toString('utf8'),await generated.character.text());assert.deepEqual(JSON.parse(comparisonEntries.find(entry=>entry.name==='references.json').data.toString('utf8')),plain(comparison.manifest));assert.ok(!comparisonEntries.some(entry=>entry.name===SELECTION_SHEET_NAME));
+for(const composeIndividualPrompt of [()=>result.prompt,()=>'',()=>comparison.files[0].name])await assert.rejects(buildIndividualSelectionReferenceZip({manifest,composeIndividualPrompt},{...renderer().dependencies,fetchImpl}),/原稿.*添付/);
+await assert.rejects(buildIndividualSelectionReferenceZip({manifest},{...renderer().dependencies,fetchImpl}),/個別添付/);
+
+// Execute the published app's optional handler as well as the API. It must
+// compile a separate plan, preserve the record, and unlock its button after
+// either a successful ZIP or a real asset/decode failure.
+const individualStart=app.indexOf('async function downloadIndividualKit('),individualEnd=app.indexOf('\nlet historyUndo',individualStart),individualHandler=app.slice(individualStart,individualEnd);
+assert.ok(individualStart>=0&&individualEnd>individualStart);
+async function actualIndividualKit({record=result,failure='',fetchFailure=false}={}){
+ const button=domNode('各項目を個別画像で保存'),run=renderer({failure}),messages=[];let savedZip=null,savedName=null,kit=null,callbackCalls=0;
+ const context=vm.createContext({currentResult:record,File,structuredClone,$:id=>{assert.equal(id,'download-individual-kit');return button;},composePrompt,buildIndividualSelectionReferenceZip:async options=>{
+  assert.equal(button.disabled,true);assert.equal(button.textContent,'各項目の画像を準備中…');callbackCalls++;
+  kit=await buildIndividualSelectionReferenceZip(options,{...run.dependencies,fetchImpl:fetchFailure?async()=>new Response('bad',{status:404}):fetchImpl});return kit;
+ },download:(blob,name)=>{savedZip=blob;savedName=name;},tell:message=>messages.push(message)});
+ vm.runInContext(individualHandler,context);await context.downloadIndividualKit();return {button,run,messages,savedZip,savedName,kit,callbackCalls};
+}
+const handlerProductionBefore=JSON.stringify(result.production),handlerPromptBefore=result.prompt,handlerRefsBefore=result.localRefs.map(ref=>ref.file),handlerStyleBefore=result.localDrawingRefs.map(ref=>ref.file),actualIndividual=await actualIndividualKit();
+assert.equal(actualIndividual.callbackCalls,1);assert.equal(actualIndividual.savedName,'Artwork-individual-'+result.edition+'.zip');assert.equal(actualIndividual.kit.manifest.counts.attached,10);assert.deepEqual(actualIndividual.kit.manifest.references.map(ref=>ref.name),comparison.manifest.references.map(ref=>ref.name));assert.equal(actualIndividual.button.disabled,false);assert.equal(actualIndividual.button.textContent,'比較資料の個別見本を保存');assert.match(actualIndividual.messages.at(-1),/10枚/);assertReleased(actualIndividual.run);
+assert.equal(JSON.stringify(result.production),handlerProductionBefore);assert.equal(result.prompt,handlerPromptBefore);assert.deepEqual(result.localRefs.map(ref=>ref.file),handlerRefsBefore);assert.deepEqual(result.localDrawingRefs.map(ref=>ref.file),handlerStyleBefore);
+const actualIndividualBytes=Buffer.from(await actualIndividual.savedZip.arrayBuffer()),actualIndividualEntries=[];let actualIndividualAt=0;
+while(actualIndividualBytes.readUInt32LE(actualIndividualAt)===0x04034b50){const length=actualIndividualBytes.readUInt32LE(actualIndividualAt+18),nameLength=actualIndividualBytes.readUInt16LE(actualIndividualAt+26),extra=actualIndividualBytes.readUInt16LE(actualIndividualAt+28),name=actualIndividualBytes.subarray(actualIndividualAt+30,actualIndividualAt+30+nameLength).toString('utf8'),start=actualIndividualAt+30+nameLength+extra;actualIndividualEntries.push({name,data:actualIndividualBytes.subarray(start,start+length)});actualIndividualAt=start+length;}
+assert.deepEqual(actualIndividualEntries.map(entry=>entry.name),['prompt.txt','references.json','selected-conditions.txt',...actualIndividual.kit.manifest.references.map(ref=>ref.name)]);assert.equal(actualIndividualEntries.filter(entry=>/\.(?:png|jpg|jpeg)$/.test(entry.name)).length,10);assert.ok(!actualIndividualEntries.some(entry=>entry.name===SELECTION_SHEET_NAME));
+assert.deepEqual(actualIndividualEntries.find(entry=>entry.name===result.references[0].name).data,Buffer.from(await generated.character.arrayBuffer()));assert.deepEqual(actualIndividualEntries.find(entry=>entry.name===result.drawingReferences[0].name).data,Buffer.from(await result.localDrawingRefs[0].file.arrayBuffer()));
+assert.equal(actualIndividual.kit.files[0].name,result.references[0].name);assert.equal(actualIndividual.kit.files[1].name,result.drawingReferences[0].name);
+const actualIndividualPrompt=actualIndividualEntries.find(entry=>entry.name==='prompt.txt').data.toString('utf8');for(const ref of actualIndividual.kit.manifest.references)assert.ok(actualIndividualPrompt.includes(ref.name));for(const condition of result.selectionReference.conditions)assert.ok(actualIndividualPrompt.includes(condition.value));assert.ok(!actualIndividualPrompt.includes(SELECTION_SHEET_NAME));
+for(const options of [{failure:'image'},{failure:'timeout'},{fetchFailure:true}]){const failed=await actualIndividualKit(options);assert.equal(failed.callbackCalls,1);assert.equal(failed.savedZip,null);assert.equal(failed.button.disabled,false);assert.equal(failed.button.textContent,'比較資料の個別見本を保存');assert.match(failed.messages.at(-1),/選択見本/);assert.equal(JSON.stringify(result.production),handlerProductionBefore);if(!options.fetchFailure)assertReleased(failed.run);}
+const missingIndividual=await actualIndividualKit({record:null});assert.equal(missingIndividual.callbackCalls,0);assert.equal(missingIndividual.savedZip,null);assert.equal(missingIndividual.button.disabled,false);
+
 // Reload the compacted record through the real result handler. Only DOM,
 // object-URL presentation and layout preview plumbing are mocked here.
 const historyNodes=new Map(),historyNode=id=>{if(!historyNodes.has(id))historyNodes.set(id,domNode());return historyNodes.get(id);},historyRender=renderer(),objectFiles=[];
-const historyContext=vm.createContext({resultRequest:0,inputRevision:0,currentResult:null,resultObjectURLs:[],disposeLayoutPreview(){},restoreHistoryRecord,restoreHistoryCore,loadStylePresets:refs=>loadStylePresets(refs,{fetchImpl,FileClass:File}),buildSelectionReferenceSheet:m=>buildSelectionReferenceSheet(m,historyRender.dependencies),clearPreparedResult(){},tell:message=>{throw new Error(message);},URL:{createObjectURL:file=>{objectFiles.push(file);return 'blob:mock-'+objectFiles.length;}},$:historyNode,APP_VERSION:'28.4.3',needsReference,AUTO,sourceKinds,creatorDisplayLabel:()=>profile.displayName,el:(tag,className,text)=>domNode(text),appendRecipeEvidence(){},document:{createTextNode:domNode,body:{dataset:{motion:'off'}}},editorialReferencesFor:()=>[],createLayoutPanel:()=>({element:domNode(),dispose(){}}),canShareFiles:()=>true,deliveryImageFiles,shareFiles:r=>deliveryImageFiles(r,{FileClass:File}),download(){}});
+const historyContext=vm.createContext({resultRequest:0,inputRevision:0,currentResult:null,resultObjectURLs:[],disposeLayoutPreview(){},recomposeHistoryDelivery,restoreHistoryRecord,restoreHistoryCore,selectionReferenceCounts,loadStylePresets:refs=>loadStylePresets(refs,{fetchImpl,FileClass:File}),buildSelectionReferenceSheet:m=>buildSelectionReferenceSheet(m,historyRender.dependencies),clearPreparedResult(){},tell:message=>{throw new Error(message);},URL:{createObjectURL:file=>{objectFiles.push(file);return 'blob:mock-'+objectFiles.length;}},$:historyNode,APP_VERSION:'28.4.3',needsReference,AUTO,sourceKinds,creatorDisplayLabel:()=>profile.displayName,el:(tag,className,text)=>domNode(text),appendRecipeEvidence(){},document:{createTextNode:domNode,body:{dataset:{motion:'off'}}},editorialReferencesFor:()=>[],createLayoutPanel:()=>({element:domNode(),dispose(){}}),canShareFiles:()=>true,deliveryImageFiles,shareFiles:r=>deliveryImageFiles(r,{FileClass:File}),download(){}});
 vm.runInContext(app.slice(app.indexOf('async function showResult('),app.indexOf('\nasync function copyPrompt(')),historyContext);
 await historyContext.showResult(roundTrip);
 assert.equal(historyContext.currentResult.localSelectionReference.file.name,SELECTION_SHEET_NAME,'Opening saved history rebuilds its selected-condition attachment automatically');
@@ -180,4 +264,4 @@ assert.equal(historyContext.currentResult.localDrawingRefs[0].file.name,result.d
 assert.deepEqual(objectFiles.map(file=>file.name),[result.drawingReferences[0].name,SELECTION_SHEET_NAME]);
 assert.equal(historyNode('prompt-output').value,result.prompt);assert.equal(historyNode('result').hidden,false);assert.equal(historyNode('result-refs').children.length,2);assertReleased(historyRender);
 applyCollection('halloween');
-console.log('PASS selected reference sheet: '+catalogSelections+' registered collection choices / '+checkedAssets.size+' real assets; ten scoped roles, SVG fragment views, bounded sequential decode, release and timeout failures, explicit manuscript only; actual generate/share/ZIP and identity→style→sheet delivery, intact originals, reloadable history metadata. Image quality and browser layout are not evaluated by mocked canvas.');
+console.log('PASS selected reference sheet: '+catalogSelections+' registered collection choices / '+checkedAssets.size+' real assets; ten conditions with scoped applicable visuals and no redundant size/no-copy diagrams with no duplicate medium, SVG fragment views, bounded sequential decode, release and timeout failures, explicit manuscript only; actual generate/share/ZIP identity→style→sheet delivery, legacy history reconstruction, optional individual-image comparison ZIP and actual app handler with intact original files, separately compiled roles, unchanged production and failure-button recovery. Image quality and browser layout are not evaluated by mocked canvas.');

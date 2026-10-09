@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import crypto from 'node:crypto';
-import {questions,visibleQuestions,AUTO} from '../catalog.js?v=28.4.3';
-import {applyCollection} from '../collection.js?v=28.4.3';
-import {sampleFor} from '../examples.js?v=28.4.3';
-import {scenePreviews} from '../scene-preview-catalog.js?v=28.4.3';
+import {questions,visibleQuestions,AUTO} from '../catalog.js?v=28.4.4';
+import {applyCollection} from '../collection.js?v=28.4.4';
+import {sampleFor} from '../examples.js?v=28.4.4';
+import {scenePreviews} from '../scene-preview-catalog.js?v=28.4.4';
 
 const allowedKinds=new Set(['image','reference','auto','type','line','size']);
 function jpegDimensions(bytes){
@@ -45,7 +45,7 @@ try{
  }
  applyCollection('everyday');
  const hashes=new Set();
- assert.equal(Object.keys(scenePreviews).length,20,'Twelve missing scenery choices and eight mismatched scenes have individual original images');
+ assert.equal(Object.keys(scenePreviews).length,21,'Missing scenery choices, mismatched scenes and the star-thread atelier have individual original images');
  for(const [value,item] of Object.entries(scenePreviews)){
   const preview=sampleFor('theme',value);assert.equal(preview.kind,'image');assert(preview.src.endsWith(item.file));
   assert(preview.label.includes(value),'Accessible preview keeps the selected scene name');
@@ -61,7 +61,7 @@ try{
   const place=questions.find(q=>q.key==='place').groups.some(g=>g.values.includes(value));
   if(place)assert.equal(sampleFor('place',value).src,preview.src,'The same selected place shares its own actual environment image');
  }
- assert.equal(hashes.size,20,'No duplicate scene image files');
+ assert.equal(hashes.size,21,'No duplicate scene image files');
  assert.equal(sampleFor('theme','新しい自由指定の舞台').kind,'custom','Free text keeps its explicit custom preview');
- console.log('PASS '+options+' choices across both collections ('+visible+' visible), plus '+autoOptions+' automatic preview montages: every built-in choice has a genuine image, reference, automatic montage, typography, phrase or size preview; 12 original scenery illustrations replace title-only cards and eight original scenes replace mismatched previews. Byte checks are separate from recorded visual QA.');
+ console.log('PASS '+options+' choices across both collections ('+visible+' visible), plus '+autoOptions+' automatic preview montages: every built-in choice has a genuine image, reference, automatic montage, typography, phrase or size preview; 12 original scenery illustrations replace title-only cards and eight original scenes replace mismatched previews and one distinct star-thread workshop replaces a shared skylight room. Byte checks are separate from recorded visual QA.');
 }finally{applyCollection('halloween');}

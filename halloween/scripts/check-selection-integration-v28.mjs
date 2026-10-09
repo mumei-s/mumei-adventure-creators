@@ -1,17 +1,17 @@
 import assert from 'node:assert/strict';
 import {assertCompactHandoff,containsInstruction} from './compact-handoff-assertions-v28.mjs';
-import {applyCollection} from '../collection.js?v=28.4.3';
-import {resolveSelections} from '../catalog.js?v=28.4.3';
-import {initialSelections} from '../modes.js?v=28.4.3';
-import {buildDirection} from '../direction.js?v=28.4.3';
-import {applyPose} from '../poses.js?v=28.4.3';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.3';
-import {composePrompt} from '../prompt.js?v=28.4.3';
-import {renderSelectionMaterial,renderChatInput,renderInput} from '../compiled-production.js?v=28.4.3';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.3';
-import {cameraContract} from '../angles.js?v=28.4.3';
-import {creatorHandoff} from '../creator-handoff.js?v=28.4.3';
-import {selectionIntegrationInstructions,imageOutputContract,imageDeliveryRepairPrompt} from '../output-contract.js?v=28.4.3';
+import {applyCollection} from '../collection.js?v=28.4.4';
+import {resolveSelections} from '../catalog.js?v=28.4.4';
+import {initialSelections} from '../modes.js?v=28.4.4';
+import {buildDirection} from '../direction.js?v=28.4.4';
+import {applyPose} from '../poses.js?v=28.4.4';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.4';
+import {composePrompt} from '../prompt.js?v=28.4.4';
+import {renderSelectionMaterial,renderChatInput,renderInput} from '../compiled-production.js?v=28.4.4';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.4';
+import {cameraContract} from '../angles.js?v=28.4.4';
+import {creatorHandoff} from '../creator-handoff.js?v=28.4.4';
+import {selectionIntegrationInstructions,compactSelectionIntegrationInstructions,imageOutputContract,compactImageOutputContract,imageDeliveryRepairPrompt} from '../output-contract.js?v=28.4.4';
 
 // These tests inspect the material and instructions sent to ChatGPT. They do
 // not execute AI synthesis or claim that an image model obeyed the selections.
@@ -40,6 +40,10 @@ assert.match(integration,/身体配置・支持点|姿勢.*支持/);
 assert.match(integration,/衝突.*伝え|両立.*伝え/,'Impossible explicit selections must not be silently discarded');
 assert.match(integration,/完成画像1枚.*生成と表示|画像.*生成.*表示まで/,'The handoff must continue through image creation and display');
 for(const clause of selectionIntegrationInstructions)includes(imageOutputContract.join('\n'),clause,'common output contract');
+const compactIntegration=compactSelectionIntegrationInstructions.join('\n');
+for(const clause of compactSelectionIntegrationInstructions)includes(compactImageOutputContract.join('\n'),clause,'compact output contract');
+for(const requirement of [/選択済み/,/同じ描画方法/,/一場面へ統合/,/から画像作成/,/全文.*そのまま.*渡.*しない/,/数値の角度/,/身体配置・支持点/,/識別・年齢感・性別表現・頭身/,/被覆/,/作風固有の工程/,/両立しない.*衝突/,/人物なし.*非適用/,/文字なし・選択文字量を優先/,/標準原稿を追加しない/,/公開活動/,/本人の発言.*作らない/,/完成画像1枚の生成と表示/])assert.match(compactIntegration,requirement,'The compact integration contract lost a hard requirement');
+assert(compactImageOutputContract.join('\n').length<imageOutputContract.join('\n').length*.6,'The actual delivery preamble still repeats the full audit contract');
 
 let checked=0;
 try{
@@ -57,7 +61,7 @@ try{
   const result={edition:'SELECTION-INTEGRATION',prompt,production:plan,values};
   const routes={native,master:prompt,artwork:composeArtworkStage(plan),embeddedArtwork:composeArtworkStage(plan,{embedded:true}),artworkRepair:composeArtworkRepair(plan),compactArtworkRepair:composeArtworkRepair(plan,{compact:true}),repair:repairPrompt(result),deliveryRepair:imageDeliveryRepairPrompt(result)};
   for(const [route,text] of Object.entries(routes)){
-   if(route!=='native')for(const clause of selectionIntegrationInstructions)includes(text,clause,item.name+' / '+route);
+   if(route!=='native')for(const clause of ['master','deliveryRepair'].includes(route)?compactSelectionIntegrationInstructions:selectionIntegrationInstructions)includes(text,clause,item.name+' / '+route);
    assert.doesNotMatch(text,/【画像生成へ渡す作画条件：(?:開始|終了)】|以下の描画条件だけを画像生成機能へ渡し|下の「画像生成へ渡す作画条件」の内容/,'An old raw-input instruction survived in '+route);
    assert.doesNotMatch(text,/undefined|NaN/);
    assert.doesNotMatch(text,/(?:このツール|ツール側).{0,20}(?:AIで統合|意味を理解|矛盾を自動解消)|(?:AIで統合|矛盾を自動解消)済み/,'The deterministic tool must not claim completed AI synthesis');

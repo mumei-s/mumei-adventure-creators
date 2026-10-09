@@ -1,5 +1,5 @@
-import {candidateAvailability} from './compatibility.js?v=28.4.3';
-import {automaticView} from './view-constraints.js?v=28.4.3';
+import {candidateAvailability} from './compatibility.js?v=28.4.4';
+import {automaticView} from './view-constraints.js?v=28.4.4';
 
 export const automaticSelection=automaticView;
 export function automaticCandidates(question){

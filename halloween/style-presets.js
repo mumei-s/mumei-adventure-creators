@@ -1,4 +1,4 @@
-import {drawingReferenceFor,drawingReferenceInstructions,loadDrawingReferences} from './drawing-references.js?v=28.4.3';
+import {drawingReferenceFor,drawingReferenceInstructions,loadDrawingReferences} from './drawing-references.js?v=28.4.4';
 
 // Assistant-provided, repository-owned style samples. Character uploads remain separate.
 // File mappings are explicit: no arbitrary URL or filename can become a preset.
@@ -105,7 +105,7 @@ const presetEntries=[
  {"medium":"アウトサイダーアート","file":"japan-previews-v21/medium-07-04.jpg","name":"style-preset-100.jpg","role":"style-preset","label":"アウトサイダーアートのプリセット見本","category":"美術の方向"},
  {"medium":"ミニマリズム","file":"japan-previews-v21/medium-07-05.jpg","name":"style-preset-101.jpg","role":"style-preset","label":"ミニマリズムのプリセット見本","category":"美術の方向"},
  {"medium":"サイケデリックアート","file":"japan-previews-v21/medium-07-06.jpg","name":"style-preset-102.jpg","role":"style-preset","label":"サイケデリックアートのプリセット見本","category":"美術の方向"},
- {"medium":"発光幻想アニメ","file":"assets/style-fine-light-original-v28-4-3.png","name":"style-preset-103.png","role":"style-preset","label":"発光幻想アニメのプリセット見本","category":"光と透明感"},
+ {"medium":"発光幻想アニメ","file":"assets/style-fine-light-original-v28-4-4-refined.png","name":"style-preset-103.png","role":"style-preset","label":"発光幻想アニメのプリセット見本","category":"光と透明感"},
  {"medium":"透明水彩アニメ","file":"japan-previews-v21/medium-07-07.jpg","name":"style-preset-104.jpg","role":"style-preset","label":"透明水彩アニメのプリセット見本","category":"光と透明感"},
  {"medium":"絵画的シネマアニメ","file":"japan-previews-v21/medium-07-08.jpg","name":"style-preset-105.jpg","role":"style-preset","label":"絵画的シネマアニメのプリセット見本","category":"光と透明感"},
  {"medium":"宝石ホログラムアニメ","file":"assets/style-jewel-hologram-original-v28-4-3.png","name":"style-preset-106.png","role":"style-preset","label":"宝石ホログラムアニメのプリセット見本","category":"光と透明感"},
@@ -118,9 +118,9 @@ const presetEntries=[
  {"medium":"夢彩ファンタジーアニメ","file":"assets/style-dream-fantasy-original-v28-4-3.png","name":"style-preset-113.png","role":"style-preset","label":"夢彩ファンタジーアニメのプリセット見本","category":"花霞・パステル・夢彩・宵彩"},
  {"medium":"宵彩ゴシックアニメ","file":"assets/style-dusk-gothic-original-v28-4-3.png","name":"style-preset-114.png","role":"style-preset","label":"宵彩ゴシックアニメのプリセット見本","category":"花霞・パステル・夢彩・宵彩"},
  {"medium":"発光幻想リアル","file":"assets/style-luminous-real-original-v28-4-2.png","name":"style-preset-115.png","role":"style-preset","label":"発光幻想リアル（実写）のプリセット見本","category":"光と透明感"},
- {"medium":"薄膜光彩アニメ","file":"assets/style-film-light-original-v28-4-3.png","name":"style-preset-116.png","role":"style-preset","label":"薄膜光彩アニメの独自作画見本","category":"光彩幻想・高精細"},
- {"medium":"白域幾何・宇宙彩アニメ","file":"assets/style-white-geometry-original-v28-4-3.png","name":"style-preset-117.png","role":"style-preset","label":"白域幾何・宇宙彩アニメの独自作画見本","category":"光彩幻想・高精細"},
- {"medium":"艶彩幻想アニメ","file":"assets/style-gloss-fantasy-original-v28-4-3.png","name":"style-preset-118.png","role":"style-preset","label":"艶彩幻想アニメの独自作画見本","category":"光彩幻想・高精細"}
+ {"medium":"薄膜光彩アニメ","file":"assets/style-film-light-original-v28-4-4-refined.png","name":"style-preset-116.png","role":"style-preset","label":"薄膜光彩アニメの独自作画見本","category":"光彩幻想・高精細"},
+ {"medium":"白域幾何・宇宙彩アニメ","file":"assets/style-white-geometry-original-v28-4-4.png","name":"style-preset-117.png","role":"style-preset","label":"白域幾何・宇宙彩アニメの独自作画見本","category":"光彩幻想・高精細"},
+ {"medium":"艶彩幻想アニメ","file":"assets/style-gloss-fantasy-original-v28-4-4.png","name":"style-preset-118.png","role":"style-preset","label":"艶彩幻想アニメの独自作画見本","category":"光彩幻想・高精細"}
 ];
 export const stylePresets=Object.freeze(presetEntries.map(entry=>{
  const drawing=drawingReferenceFor(entry.medium);

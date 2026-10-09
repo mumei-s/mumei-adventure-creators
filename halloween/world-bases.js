@@ -1,6 +1,6 @@
-import {fantasyStyleDefinitions} from './fantasy-style-definitions.js?v=28.4.3';
-import {colorPolicy} from './color-policy.js?v=28.4.3';
-import {isNonHumanSource} from './source-kind.js?v=28.4.3';
+import {fantasyStyleDefinitions} from './fantasy-style-definitions.js?v=28.4.4';
+import {colorPolicy} from './color-policy.js?v=28.4.4';
+import {isNonHumanSource} from './source-kind.js?v=28.4.4';
 
 // Original semantic descriptions extracted from user-provided examples.
 // UI thumbnails remain illustrative: none of their people, clothes, prompts,
@@ -74,7 +74,7 @@ export const referenceWorldMedia=mediaDefinitions.map(({value,file,text,checks,g
 
 const sceneDefinitions=[
  {
-  value:'星糸のアトリエ',file:'japan-previews-v21/place-01-10.jpg',fantasy:true,
+  value:'星糸のアトリエ',file:'assets/scenes-original-v28-4-3/star-thread-atelier.jpg',fantasy:true,
   description:'細い光の軌跡と透明な反射が奥行きへ連なり、ものづくりの気配がある幻想の作業空間。',
   sections:[
    section('作業空間の構造','主題の周囲に作業面と収納の支持構造を置き、近い素材の縁、中距離の作業領域、奥の細い構造を同じ空間へつなぐ。道具は今回のテーマに具体的な根拠のある種類と数だけにし、服を制作する場面やマネキンを既定にしない。'),
@@ -236,13 +236,13 @@ export function referenceWorldMediumContract(value,{values={},noPerson=false,var
  const preservation=subjectContract(noPerson,values);
  const view=viewContract(values,variant,noPerson);
  const nonHumanSource=!noPerson&&isNonHumanSource(values);
- const drawingCore=entry.drawing+(noPerson?'': ' '+personDrawingContract(entry,values));
+ const drawingCore=(noPerson?entry.drawingScenery||entry.drawing:entry.drawing)+(noPerson?'': ' '+personDrawingContract(entry,values));
  const sections=[
   section('世界観ベース／最優先の描画核',drawingCore),
   section('世界観ベース／主参照と選択の分担',preservation),
   section('世界観ベース／カメラと可視範囲',view),
-  section('世界観ベース／光と影の階層',noPerson?sceneSceneryText(entry.lighting):entry.lighting),
-  section('世界観ベース／素材を保つ描画',noPerson?sceneSceneryText(entry.materials):entry.materials),
+  section('世界観ベース／光と影の階層',noPerson?entry.lightingScenery||sceneSceneryText(entry.lighting):entry.lighting),
+  section('世界観ベース／素材を保つ描画',noPerson?entry.materialsScenery||sceneSceneryText(entry.materials):entry.materials),
   ...(!noPerson?[section('世界観ベース／見える表情と髪の条件',visibleFeaturesContract(values,variant,real).replace(polished?'顔・見える手・髪がある場合の束も、景物と同じ2Dの線と描いた色面で統一する。':'___NO_REPLACEMENT___',polished?'顔・見える手・髪も、背景と同じアニメ造形・精密な線・柔らかな連続陰影で統一する。':'___NO_REPLACEMENT___'))]:[]),
   ...(jewel?[section('世界観ベース／焦点にも届く鋭い光',noPerson
    ?jewelSceneryContract()
@@ -251,12 +251,12 @@ export function referenceWorldMediumContract(value,{values={},noPerson=false,var
   section('世界観ベース／密度と世界の保全','大きな構造→中程度の素材→焦点の細部→反射と局所光の順で仕上げる。焦点と周囲の密度差、暗部の余白を保つ。選択した舞台、テーマ、演出だけを描き、名称やUIの見本から別の主題、衣装、装飾、小道具、動作を補わない。風や浮遊、魔法の演出は実際に選択されている場合だけ反映する。'),
   section('世界観ベース／完成品の照合','縮小して大きな明暗と主従を確認し、拡大して描線または写真素材、内部影、局所反射、接続が読み分けられることを確認する。見えない細部や未生成の組合せまで合格と主張せず、今回の選択と可視の仕上がりを照合する。')
  ];
- const checks=[...entry.checks,'選択色だけで成立する光と影','固定カメラと可視範囲を保つ構造','主参照と衣装または主景の識別・構造の保持',
+ const checks=[...(noPerson?entry.checksScenery||entry.checks:entry.checks),'選択色だけで成立する光と影','固定カメラと可視範囲を保つ構造','主参照と衣装または主景の識別・構造の保持',
   ...(noPerson?['選択した景物・物体・図案だけの描画']:[nonHumanSource?'独自の主役と明示条件、修正時の生成済み識別特徴保持':'同じ主役の年齢感・性別表現・髪型・識別色',nonHumanSource?'見える表情と明示条件または生成済み主役の頭身の保持':'見える表情と選択または参照の頭身の保持','選択衣装の形・被覆・構造の保持']),
   ...(jewel?[noPerson?'主景の局所光と接触部の深い影':'露出して見える肌全域と存在する髪・衣装・景物に、材質別の光彩と強い局所陰影。選択被覆を保持し露出を増やさない']:[])
  ];
  const method=(polished?'Completely redraw the selected scene as a polished Japanese anime digital illustration, combining stylized identity geometry, fine drawing, softly painted continuous shading and tiny sharp material highlights. Do not force flat cel shading, a photographic face, crystal skin, or a plastic doll. ':real?'Build the selected scene as a high-detail photographic image with '+(noPerson?'natural geometry':'natural anatomy')+' and material optics. ':'Completely redraw the selected scene as precise hand-drawn Japanese 2D anime, using drawn lines, planned shadow shapes and layered colour. ')+(noPerson?'Apply this only to the selected scenery, objects or flat motif. ':nonHumanSource?'Create an original actor only for the explicitly selected person output; keep the generated actor identity during repairs. Never reconstruct a face from the non-person source or borrow the drawing master character. Preserve the selected clothing, age impression, proportions, pose and visible expression. ':'Preserve the recognizable reference identity and selected clothing, age impression, proportions, pose and visible expression. ')+sections.map(s=>s.text).join(' ');
- return {medium:value,value,known:true,family:real?'photography':'luminous-anime',drawingCore,preservation,palette:palette.text,lighting:noPerson?sceneSceneryText(entry.lighting):entry.lighting,depth:view,sections,checks,method,executionMethod:method};
+ return {medium:value,value,known:true,family:real?'photography':'luminous-anime',drawingCore,preservation,palette:palette.text,lighting:noPerson?entry.lightingScenery||sceneSceneryText(entry.lighting):entry.lighting,depth:view,sections,checks,method,executionMethod:method};
 }
 
 export function referenceWorldSceneRecipe(value,{noPerson=false,values={}}={}){
@@ -295,13 +295,13 @@ export const referenceWorldArtworkBases=mediaDefinitions.map(entry=>({
  checks:[...entry.checks,'今回の選択と可視の仕上がりだけを照合する'],
  sceneryBasis:[
   'ユーザーの作例と指示から整理した合成作画基準。選択された景物・物体・図案だけに適用する。',
-  sceneSceneryText(entry.drawing),
-  sceneSceneryText(entry.lighting),
-  sceneSceneryText(entry.materials),
+  entry.drawingScenery||sceneSceneryText(entry.drawing),
+  entry.lightingScenery||sceneSceneryText(entry.lighting),
+  entry.materialsScenery||sceneSceneryText(entry.materials),
   ...(['宝石光彩アニメ','宝石光彩リアル'].includes(entry.value)?[jewelSceneryContract()]:[]),
   '景物の識別形、固有色、素材、支持と接続、カメラの可視範囲を保つ。配色は今回の選択へ投影し、明示した限定色の濃淡だけで同じ光と影を表す。擬人化や別の登場主体を追加しない。'
  ],
- sceneryChecks:[...entry.checks,'選択景物の識別・素材・支持・接続の保持','固定視点と選択配色への投影'],
+ sceneryChecks:[...(entry.checksScenery||entry.checks),'選択景物の識別・素材・支持・接続の保持','固定視点と選択配色への投影'],
  avoid:[...entry.avoid,'作例の人物・髪型・衣装・特徴的な小物・配置・文章・固有名の移植','未選択の配色、猫耳や角、幼児化、ちび化、動作や視点の変更'],
  references:[]
 }));

@@ -1,6 +1,7 @@
 // Copy modes describe the manuscript and its hierarchy. They never change the
 // selected image technique, scene, costume, pose, or output format.
-import {copyContentRules,publicCopyContext,worldIntroduction,worldFeatureCopy} from './copy-scope.js?v=28.4.3';
+import {copyContentRules,publicCopyContext,worldIntroduction,worldFeatureCopy} from './copy-scope.js?v=28.4.4';
+import {typographyLayoutInstruction} from './layout-preview-specs.js?v=28.4.4';
 const choices=[
  {value:'商品広告・キャッチと特徴3点',group:'広告・キャンペーン',density:'見出し＋紹介＋特徴3点',className:'type-ad',preview:['物語の、その先へ。','夜の街に残る秘密をたどる。','帰り道を探す','路地の秘密に出会う','まだ知らない物語へ','作者名'],layout:'主見出しを最大、短い紹介を中程度、3つの特徴を同じ大きさで整列し、作者名を最小にする。特徴は各一文まで。特徴1などの役割名や番号、価格や購入先の欄は作らない。'},
  {value:'ブランド広告・宣言と短いコピー',group:'広告・キャンペーン',density:'宣言＋補足＋名前',className:'type-ad',preview:['好きな世界を、つくろう。','一枚の創作から、次の景色へ。','作者名'],layout:'一つの宣言を大きく置き、補足を一文、作者名を一か所だけ添える。ロゴや広告実績のシールを追加せず、余白を広く保つ。'},
@@ -18,16 +19,16 @@ const choices=[
 
 export const extraTypographyGroups=Object.freeze([...new Set(choices.map(item=>item.group))].map(label=>({label,values:choices.filter(item=>item.group===label).map(item=>item.value)})));
 export const typographyValues=Object.freeze(choices.map(item=>item.value));
-const byValue=new Map(choices.map(item=>[item.value,item]));
+const byValue=new Map(choices.map(item=>[item.value,{...item,layout:item.layout+' '+typographyLayoutInstruction(item.value)}]));
 // Earlier genre-labelled text controls specify manuscripts, not a replacement
 // page design. Keep them separate from the twelve added picker options.
 const legacyChoices=new Map([
- ['雑誌風・見出しと特集をたっぷり',{density:'主見出し＋補足＋補助特集4組＋名前',layout:'主見出しを最上位、短い補足を次にし、4組の補助特集と各補足を対応させて整列する。内ページ形式で許可されたリードと本文も同じ情報領域へ組む。標準の誌名や別の特集を追加しない。'}],
+ ['雑誌風・見出しと特集をたっぷり',{density:'主見出し＋補足＋補助特集4組＋名前',layout:'主見出しを最上位、短い補足を次にし、4組の補助特集と各補足を対応させて整列する。内ページ形式でも原稿はこの11群に限定し、リードや記事本文を追加しない。標準の誌名や別の特集を追加しない。'}],
  ['映画ポスター風・タイトルとクレジット',{density:'作品タイトル＋キャッチ＋名前＋制作役割3行',layout:'タイトルを最大、キャッチを次、名前と3行の制作役割を小さく区別する。クレジットは確定原稿だけを使い、別の映画ポスターへ変更しない。'}],
  ['広告チラシ風・情報をたっぷり',{density:'主見出し＋紹介＋情報3組＋名前',layout:'主見出し、紹介、3組の情報見出しと対応する本文、名前の順に読む。本文は各見出しの直下にまとめ、別のチラシ形式へ変更しない。'}],
  ['新聞風・記事と段組み',{density:'主見出し＋リード＋本文3件＋副記事2組＋キャプション＋名前',layout:'主見出しとリードから本文へ読み、副記事の見出しと本文を組にして続ける。キャプションは主図版の近くに置き、選択デザインの情報領域で段を分ける。未許可の新聞題字・日付・号数を追加しない。'}],
  ['物語の装丁風・タイトルと紹介',{density:'作品タイトル＋名前＋紹介文',layout:'作品タイトルを最大、名前を小さく、紹介文を一つの短い段落にする。キャッチ、帯の推薦、別の書名を追加しない。'}]
-].map(([value,details])=>[value,{value,...details}]));
+].map(([value,details])=>[value,{value,...details,layout:details.layout+' '+typographyLayoutInstruction(value)}]));
 export const legacyTypographyValues=Object.freeze([...legacyChoices.keys()]);
 export const typographyOption=value=>byValue.get(value)||null;
 export function typographyPreview(value){
@@ -57,7 +58,6 @@ export function buildTypographySlots(value,{subject,name='',intro='',noPerson=fa
  case '雑誌風・見出しと特集をたっぷり':
   headline(theme);describe('主特集の補足',contentSources.purpose+'。',45);
   [contentSources.setting+'に残る秘密',contentSources.purpose,theme+'の入口',halloween?'Halloweenの物語の先へ':'次の物語へ'].forEach((text,i)=>{add('補助特集',text,2,true,28,'他の特集と異なる世界内の題材を一つ紹介する。');describe('補助特集の補足',[contentSources.setting+'で見つける、小さな手がかり。','まだ知らない出来事を、一つずつたどる。','この世界への最初の一歩を探そう。','見つけた秘密を持って、物語の先へ。'][i],45);});
-  if(/インタビュー誌面|見開き特集|新聞の一面/.test(values.design)){describe('リード文',intro,160);describe('本文1',contentSources.setting+'で始まる「'+theme+'」。'+contentSources.purpose+'。見慣れたもののそばに、まだ知らない出来事が残っている。一つずつ手がかりを確かめることが、この世界を知る入口になる。',200);describe('本文2','見つけた出来事は、物語の続きへつながる。この場所に残る気配をたどり、次に何を選ぶかを考えたい。「'+theme+'」の先は、訪れる人にも開かれている。',200);}
   author();break;
  case '映画ポスター風・タイトルとクレジット':
   add('作品タイトル',theme,0);add('キャッチ',halloween?'Halloweenの一夜、物語が動き出す。':'その先で、物語が動き出す。',1,true,28);author();add('ビリング1','創作・物語構成',3);add('ビリング2','美術・世界設計',3);add('ビリング3','衣装・舞台設計',3);break;

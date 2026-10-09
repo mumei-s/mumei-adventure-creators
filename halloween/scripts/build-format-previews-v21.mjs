@@ -1,8 +1,8 @@
 import fs from 'node:fs';
 import {createRequire} from 'node:module';
-import {questions} from '../catalog.js?v=28.4.3';
+import {questions} from '../catalog.js?v=28.4.4';
 import {japanPreviews} from '../japan-preview-catalog.js';
-import {applyCollection} from '../collection.js?v=28.4.3';
+import {applyCollection} from '../collection.js?v=28.4.4';
 const require=createRequire(process.env.CODEX_PRIMARY_RUNTIME_NODE_MODULES+'/sharp/package.json');
 const sharp=require('sharp'),root=new URL('../',import.meta.url);
 const titles=new Set();

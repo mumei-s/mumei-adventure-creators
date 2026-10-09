@@ -11,6 +11,24 @@ const dispersion={title:'Exploratorium — Glass Bead Rainbow',url:'https://anne
 const thinFilm={title:'OpenStax / Rice University — Interference in Thin Films',url:'https://openstax.org/books/university-physics-volume-3/pages/3-4-interference-in-thin-films',kind:'technique',note:'膜の異なる境界で反射した光の干渉を解説する教科書。ガラスの屈折・分散やホログラム像と区別し、膜厚と観察角に応じる色帯だけを合成作画の局所光学層へ使う。'};
 const holography={title:'S. A. Benton / MIT OpenCourseWare — White-Light Transmission Rainbow Holograms',url:'https://ocw.mit.edu/courses/mas-450-holographic-imaging-spring-2003/d8da840f0c0acd685106df4617eebf91_ch14rainbowholograms.pdf',kind:'technique',note:'観察位置・照明・分光色・像の深度の関係。架空の投影膜や走査線はこの実物技術の再現とは区別する。'};
 
+// Verified component processes only. These articles do not establish the
+// complete process or provenance of any user-supplied example or preset.
+const theme={title:'ミナト汐 — イラスト作る時、私が最初に決めてる大切な事の話',url:'https://note.com/n_kazumai55633/n/n8388effcef09',kind:'work',note:'世界観・衣装・雰囲気を先に決め、場面の反射光と近遠の距離差を設計する制作例。一般工程の資料であり、添付作例の個別制作記事や完全工程とは未確認。人物・魔法陣・生き物・動作は借用しない。'};
+const focus={title:'ミナト汐 — 背景がうるさいを解決する引き算の修正術',url:'https://note.com/n_kazumai55633/n/nc578b4d9c706',kind:'work',note:'周囲の光や装飾を抑え、顔と瞳へ視線を集める一般工程の制作例。添付作例の個別記事や完全工程とは未確認。記事の衣装・花・構図・プロンプトは借用しない。'};
+const eyes={title:'CELSYS — Paint Anime Eyes in 6 Steps',url:'https://www.clipstudio.net/how-to-draw/archives/159611',kind:'technique',note:'虹彩の縁・上部・瞳孔の暗さ、下部の明るさと光源に応じたハイライトを整理する一般工程。特定作例の眼形・色・人物を再現する資料ではない。'};
+const volume={title:'Liz Staley — A Quick Tip for Drawing Foreshortened Hands',url:'https://tips.clip-studio.com/en-us/articles/7012',kind:'technique',note:'選択視点で見える手指の厚みと短縮を立体のガイドで先に確定する一般工程。作例の迫る手やポーズを追加する指示ではない。'};
+export const luminousGeneralReferences=Object.freeze([theme,focus,glow,eyes,volume].map(reference=>Object.freeze({...reference,scope:'general-process'})));
+const luminousProcess=[
+ '光を塗る前に、選択世界観・舞台・衣装・雰囲気を確定し、指定カメラ内の可視面の厚み、短縮、前後の遮蔽と支持を先に描く。光のためにポーズ・視点・被覆を変えず、迫る手や浮遊を追加しない。',
+ '選択場面の各光源に鋭い小さな光の芯と柔らかい拡散を分ける。髪・肌・布などの遮光に合わせ、追加した光源には対応する新しい影を描き、反射光も面の向きと遮蔽へ従わせる。深い基礎明度を保ち、加算光で形を白く飛ばさない。',
+ '背景の局所光と装飾の明暗差を焦点より控え、実際に見える顔と瞳へ精度と光を集める。背景の世界観や全域の内部色光は消さず、閉眼や隠れた顔・目を露出させない。'
+];
+const luminousSceneryProcess=[
+ '光を塗る前に、選択世界観・舞台・雰囲気を確定し、指定カメラ内の景物の可視面の厚み、短縮、前後の遮蔽と支持を先に描く。視点・接続・配置を光のために変えず、別の登場主体を追加しない。',
+ '選択場面の各光源に鋭い小さな光の芯と柔らかい拡散を分ける。素材と部材の遮光に合わせ、追加した光源には対応する新しい影を描き、反射光も面の向きと遮蔽へ従わせる。深い基礎明度を保ち、加算光で形を白く飛ばさない。',
+ '周囲の局所光と装飾の明暗差を主景の焦点より控える。選択背景の世界観や全域の内部色光は消さず、可視の主景細部へ精度と光を集める。'
+];
+
 export const luminousBases=[
  {value:'発光幻想リアル',status:'synthesis',basis:[
   '合成した実写幻想の作画基準。主参照の識別特徴と年齢感・性別表現を、自然な人体・眼球・毛髪・素材の微細構造と写真の連続階調へ翻訳する。',
@@ -24,7 +42,7 @@ export const luminousBases=[
  ],avoid:[
   '背景だけの発光、通常照明だけの肌、均一な粒子の追加',
   'アニメの線・セル面、人形のプラスチック肌、見本の人物や小物の移植'
- ],references:[glow,layers]},
+ ],process:[...luminousProcess,'可視の眼球は自然な立体のまま、虹彩の縁・上部・瞳孔の暗さと下部の透過色を描き分け、鋭い反射は実際の光源方向に合わせる。閉眼・遮蔽を保ち、アニメの大きな眼へ変えない。'],sceneryProcess:luminousSceneryProcess,references:[...luminousGeneralReferences.filter(reference=>reference.url!==eyes.url),layers]},
  {value:'発光幻想アニメ',status:'synthesis',basis:[
   '合成したデジタル作画基準。精密な少女漫画・日本2Dアニメの有色線と描いた平面陰影を先に構築し、写真の連続階調や滑らかな3Dの顔を残さず薄い絵画的な色層を重ねる。',
   '主題、衣装、小物、建築、植物、支持面、可視背景それぞれの内部にも幻想光が読める、一つの発光世界を描く。背景の一灯だけ光る通常の照明へ限定せず、大面積の深暗部と極小の鋭い最明部を保つ。',
@@ -38,7 +56,7 @@ export const luminousBases=[
  ],avoid:[
   '全画面の白いbloom、均一な星粒、写真の顔や人形CGの土台に光を足す処理',
   '作例のキャラクター・宝石・髪型・星・構図の移植や、全素材のガラス化'
- ],references:[glow,layers,anime]},
+ ],process:[...luminousProcess,'実際に見える虹彩は縁・上部・瞳孔を暗く、下部を許可色の明るい透明層として描き分ける。小さく鋭いハイライトは光源方向に合わせ、眼形・視線を変更せず、閉眼や隠れた目には追加しない。'],sceneryProcess:luminousSceneryProcess,references:[...luminousGeneralReferences,layers,anime]},
  {value:'透明水彩アニメ',status:'synthesis',basis:[
   '合成したデジタル作画基準。アニメの識別できる線と大きな影面を、透明水彩の薄い色層、下地の抜け、湿った縁と乾いた縁へ結びつける。',
   '色を重ねた領域の濃度差と紙の明るさで深さを作る。主要輪郭は少数の乾いた線で締め、すべてを均一にぼかさない。',

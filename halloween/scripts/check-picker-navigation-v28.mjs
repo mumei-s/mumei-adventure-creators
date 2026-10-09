@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';
-import {createPicker} from '../picker.js?v=28.4.3';
-import {pickerRecords} from '../picker-priority.js?v=28.4.3';
-import {questions,visibleQuestions} from '../catalog.js?v=28.4.3';
-import {applyCollection} from '../collection.js?v=28.4.3';
-import {ringPosition,restingRingPosition,pagePatternTone} from '../ring-motion.js?v=28.4.3';
+import {createPicker,inspectorFitSize} from '../picker.js?v=28.4.4';
+import {pickerRecords} from '../picker-priority.js?v=28.4.4';
+import {questions,visibleQuestions} from '../catalog.js?v=28.4.4';
+import {applyCollection} from '../collection.js?v=28.4.4';
+import {ringPosition,restingRingPosition,pagePatternTone} from '../ring-motion.js?v=28.4.4';
 
 // Short screens retain a 360px scrollable canvas rather than crushing its cards.
 // Exercise measured card bounds and two-line labels at all supported widths.
@@ -39,19 +39,22 @@ class Node{
  close(){this.open=false;this.emit('close');}
  get offsetHeight(){return surface.open&&this.classList.contains('ring-pop')?108:0;}
  get offsetWidth(){return width;}
+ get firstElementChild(){return this.children[0]||null;}
+ get clientWidth(){return width;}
  get clientHeight(){return surface.open?height:0;}
  getBoundingClientRect(){return {left:0,top:0,width,height};}
 }
 let width=390,height=360,now=1000,frames=[],observer,chosen=[],selection={},favoriteEvents=[];
 const ids=new Map(),$=id=>{if(!ids.has(id)){const n=new Node(id==='picker-category'?'select':'div');n.id=id;ids.set(id,n);}return ids.get(id);};
 const surface=$('picker'),canvas=new Node('div','picker-canvas'),stage=$('ring-stage');stage.className='ring-stage';canvas.append(stage,$('picker-options'));surface.append(canvas);stage.append($('ring-focus'),$('ring-options'));$('ring-focus').className='ring-focus';
+const inspectorViewport=new Node('div','inspector-viewport'),inspectorActions=new Node('div','inspector-actions');inspectorViewport.scrollLeft=inspectorViewport.scrollTop=0;inspectorViewport.append($('inspector-art'));inspectorActions.append($('inspector-pick'));$('inspector').append(inspectorViewport,inspectorActions);
 const windowEvents={};globalThis.window={innerWidth:width,innerHeight:700,addEventListener:(k,fn)=>(windowEvents[k]??=[]).push(fn)};globalThis.innerWidth=width;
-globalThis.document={body:{dataset:{collection:'halloween'}},createTextNode:text=>new Node('text','',text)};
+globalThis.document={body:{dataset:{collection:'halloween'}},createElement:tag=>new Node(tag),createTextNode:text=>new Node('text','',text)};
 globalThis.localStorage={getItem:()=>null,setItem(){}};
 globalThis.requestAnimationFrame=fn=>{frames.push(fn);};globalThis.getComputedStyle=()=>({getPropertyValue:()=>width<620?'72px':'76px'});
 globalThis.ResizeObserver=class{constructor(fn){observer=fn;}observe(){}};
 Object.defineProperty(globalThis,'performance',{value:{now:()=>now},configurable:true});
-const el=(tag,cls,text)=>new Node(tag,cls,text),picker=createPicker({$,el,sampleNode:(key,value)=>el('span','sample-thumb',value),readSelection:()=>selection,choose:value=>chosen.push(value),onCustom(){},tell(){},onFavoritesChange:snapshot=>favoriteEvents.push(snapshot),artworkBasis:value=>({value,basis:['描線の基準'],checks:['輪郭を確認'],avoid:['別の技法を混ぜない'],references:[{title:'技法資料',url:'https://example.test/technique',kind:'technique',note:'製法を確認'}],status:'documented'})});
+const el=(tag,cls,text)=>new Node(tag,cls,text),picker=createPicker({$,el,sampleNode:(key,value)=>{const sample=el('span','sample-thumb',value);if(value==='艶彩幻想アニメ'){const image=el('img','sample-image');Object.assign(image,{src:'assets/style-gloss-fantasy-original-v28-4-4.png',naturalWidth:1024,naturalHeight:1536,complete:true});sample.append(image);}return sample;},readSelection:()=>selection,choose:value=>chosen.push(value),onCustom(){},tell(){},onFavoritesChange:snapshot=>favoriteEvents.push(snapshot),artworkBasis:value=>({value,basis:['描線の基準'],checks:['輪郭を確認'],avoid:['別の技法を混ぜない'],references:[{title:'技法資料',url:'https://example.test/technique',kind:'technique',note:'製法を確認'}],status:'documented'})});
 const flush=()=>{const pending=frames;frames=[];pending.forEach(fn=>fn());};
 const label=()=>surface.querySelector('.ring-current-category'),basis=()=>surface.querySelector('.artwork-basis-panel');
 const bounds=()=>[...$('ring-options').children].map(card=>Math.abs(parseFloat(card.styles['--ry']))*height/100-card.offsetHeight*parseFloat(card.styles['--orbit-scale'])/2);
@@ -88,6 +91,20 @@ windowEvents.storage.forEach(callback=>callback({key:'halloween-option-favorites
 assert.equal($('ring-options').children[0].dataset.value,laterValue,'Favorite filter follows cross-tab changes');assert.equal(favoriteEvents.length,3);assert.deepEqual(picker.getFavorites()['everyday:medium'],['ちびキャラ']);
 picker.removeFavorite('medium',laterValue,'halloween');picker.removeFavorite('medium','ちびキャラ','everyday');
 picker.open(mediumQuestion);flush();assert.equal($('ring-options').children[0].dataset.value,'発光幻想アニメ','Removing the favorite restores prepared starting points');
+
+// Favorites reorder the records. Keep the visible record rather than its old offset.
+const secondRecord=$('ring-options').children[2].dataset.value;$('ring-options').children[2].click();$('ring-focus').querySelector('.favorite-toggle').click();assert.equal($('ring-focus').querySelector('b').textContent,secondRecord,'Saving a favorite cannot replace the visible center with its neighbor');$('ring-focus').querySelector('.favorite-toggle').click();assert.equal($('ring-focus').querySelector('b').textContent,secondRecord,'Removing a favorite also retains the visible center');
+
+// Test the actual inspector at the same portrait proportions as the native PNG.
+selection={medium:'艶彩幻想アニメ'};picker.open(mediumQuestion);flush();$('ring-focus').querySelector('.ring-tools').children[0].click();
+const inspectedArt=$('inspector-art').firstElementChild,masterLink=inspectorActions.querySelector('.inspector-original');
+assert.equal(parseFloat(inspectedArt.style.width)/parseFloat(inspectedArt.style.height),2/3,'Portrait master retains its proportions');assert.equal(parseFloat(inspectedArt.style.height),height,'Fit image uses all the available portrait height');assert.equal(masterLink.href,'assets/style-gloss-fantasy-original-v28-4-4.png');assert.equal(masterLink.hidden,false);assert.equal(masterLink.target,'_blank');
+$('sample-zoom').value='2';$('sample-zoom').emit('input');assert.equal(inspectorViewport.scrollLeft,40);assert.equal(inspectorViewport.scrollTop,180,'Zoom starts around the viewed center, rather than jumping to the top left');
+inspectorViewport.scrollTop=250;$('sample-zoom').value='3';$('sample-zoom').emit('input');assert.equal(inspectorViewport.scrollTop,465,'Further zoom keeps the point the user was inspecting');
+const mouseEvent={pointerType:'mouse',button:0,pointerId:7,clientX:200,clientY:200,preventDefault(){this.prevented=true;}};inspectorViewport.emit('pointerdown',mouseEvent);inspectorViewport.emit('pointermove',{pointerId:7,clientX:180,clientY:160});assert.equal(inspectorViewport.scrollTop,505,'Mouse dragging moves the enlarged image');assert.ok(mouseEvent.prevented);inspectorViewport.emit('pointerup',{pointerId:7});assert.equal(inspectorViewport.classList.contains('is-panning'),false);
+const touchEvent={pointerType:'touch',button:0,pointerId:8,clientX:200,clientY:200,preventDefault(){this.prevented=true;}};inspectorViewport.emit('pointerdown',touchEvent);assert.equal(touchEvent.prevented,undefined,'Touch keeps native pan and pinch behavior');$('inspector').close();
+for(const [viewportWidth,viewportHeight]of [[304,480],[364,530],[844,660]])for(const [imageWidth,imageHeight]of [[1024,1536],[1536,1024],[1024,1024]]){const fit=inspectorFitSize(viewportWidth,viewportHeight,imageWidth,imageHeight);assert.ok(fit.width<=viewportWidth&&fit.height<=viewportHeight);assert.ok(Math.abs(fit.width/fit.height-imageWidth/imageHeight)<1e-12);assert.ok(Math.abs(fit.width-viewportWidth)<1e-9||Math.abs(fit.height-viewportHeight)<1e-9,'A fitted image uses at least one full viewport dimension');}
+selection={};
 
 // Every category/page in both collections retains its records and category label.
 let checkedPages=0,checkedCategories=0;

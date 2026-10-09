@@ -1,6 +1,6 @@
-import {questions,visibleQuestions,AUTO,defaults,resolveSelections} from './catalog.js?v=28.4.3';
-import {selectionConflicts} from './compatibility.js?v=28.4.3';
-import {selectionFingerprint,RepeatedSelectionError} from './random-selections.js?v=28.4.3';
+import {questions,visibleQuestions,AUTO,defaults,resolveSelections} from './catalog.js?v=28.4.4';
+import {selectionConflicts} from './compatibility.js?v=28.4.4';
+import {selectionFingerprint,RepeatedSelectionError} from './random-selections.js?v=28.4.4';
 export const modeKeys={detail:visibleQuestions.map(q=>q.key),simple:['medium','theme','design','type','size'],auto:['size']};
 export const modeCopy={detail:'作風・画材から、シーン・主役・動き・構図を決め、最後に形式・文字・サイズを選びます。',simple:'作風・画材、世界観・シーン、デザイン、文字、サイズの順に選びます。残りは場面に合わせておまかせ。',auto:'サイズを選んで「組み合わせを提案」。気に入った項目の組み合わせで制作します。'};
 export function questionsForMode(mode){return (modeKeys[mode]||modeKeys.detail).map(key=>visibleQuestions.find(q=>q.key===key));}

@@ -30,7 +30,10 @@ body[data-view="phone"] #picker{width:min(570px,calc(100vw - 12px));max-width:ca
 #picker #picker-options:not(.comparing){grid-auto-rows:minmax(min-content,1fr)}
 .sample-card{min-height:min-content}.sample-card .look-tags,.sample-card .sample-tools{flex-shrink:0}
 
-#inspector-art{display:block;min-height:0}#inspector-art .sample-line,#inspector-art .sample-text{font-size:calc(1rem * var(--sample-scale,1))}#inspector-art .type-copy{font-size:calc(.8rem * var(--sample-scale,1))}#inspector-art .type-block{font-size:inherit}#inspector-art .type-block.block-0{font-size:1.25em}#inspector-art .sample-caption{font-size:calc(.8rem * var(--sample-scale,1))}
+#inspector-art{display:block;min-height:0}#inspector-art>.sample-thumb{aspect-ratio:auto}#inspector-art .sample-line,#inspector-art .sample-text{font-size:calc(1rem * var(--sample-scale,1))}#inspector-art .type-copy{font-size:calc(.8rem * var(--sample-scale,1))}#inspector-art .type-block{font-size:inherit}#inspector-art .type-block.block-0{font-size:1.25em}#inspector-art .sample-caption{font-size:calc(.8rem * var(--sample-scale,1))}
+/* The master keeps its own proportions instead of losing portrait width inside a square. */
+.inspector-viewport{height:min(66dvh,660px);flex-shrink:0;touch-action:pan-x pan-y pinch-zoom;scrollbar-width:thin}.inspector-viewport.is-zoomed{cursor:grab}.inspector-viewport.is-panning{cursor:grabbing;user-select:none}.inspector-original{display:flex;align-items:center;justify-content:center;text-align:center;text-decoration:none;grid-column:1/-1;min-height:46px;padding:9px;font-size:.88rem}
+@media(max-width:619px){#inspector{width:calc(100vw - 12px);max-width:calc(100vw - 12px)}.inspector-body{padding:10px 8px}.inspector-viewport{height:min(64dvh,650px);min-height:220px}}
 
 .recipe-specs{margin:14px 0;padding:12px 14px;border:1px solid var(--line,#d9cec4);border-radius:12px;text-align:left;overflow-wrap:anywhere}.recipe-specs summary{cursor:pointer;font-weight:700;line-height:1.6}.recipe-specs p{font-size:14px;line-height:1.9;margin:12px 0}.recipe-specs p b{display:block}.production-details .recipe-specs{margin:8px 0}.production-details ol{padding-left:1.5em}
 

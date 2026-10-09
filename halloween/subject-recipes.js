@@ -1,9 +1,10 @@
-import {costumeSpecs,themeSpecs,placeSpecs} from './visual-specs.js?v=28.4.3';
-import {poseItems,poseTechnical} from './poses.js?v=28.4.3';
-import {questions} from './catalog.js?v=28.4.3';
-import {typographyRecipe} from './typography-options.js?v=28.4.3';
-import {copyAuthority,copyAllowsDialogue} from './copy-scope.js?v=28.4.3';
-import {angleItems} from './angles.js?v=28.4.3';
+import {costumeSpecs,themeSpecs,placeSpecs} from './visual-specs.js?v=28.4.4';
+import {poseItems,poseTechnical} from './poses.js?v=28.4.4';
+import {questions} from './catalog.js?v=28.4.4';
+import {typographyRecipe} from './typography-options.js?v=28.4.4';
+import {typographyLayoutInstruction} from './layout-preview-specs.js?v=28.4.4';
+import {copyAuthority,copyAllowsDialogue} from './copy-scope.js?v=28.4.4';
+import {angleItems} from './angles.js?v=28.4.4';
 
 // The tables describe the selected title, never the people or settings in a UI thumbnail.
 const rows=source=>Object.assign(Object.create(null),Object.fromEntries(source.trim().split('\n').filter(Boolean).map(line=>{const at=line.indexOf('=');return [line.slice(0,at),line.slice(at+1).split('|')];})));
@@ -582,7 +583,7 @@ function typeDetail(value,context){
  if(copyAuthority(context.values).noText)return {known:!!typeSteps[value],sections:[section('有効な原稿なし','今回の文字ポリシーは文字なし。デザインの題名・名前・本文も追加せず、セリフ選択は印字原稿へ追加しない。')],checks:['文字・数字・署名・疑似文字のない完成']};
  const additional=typographyRecipe(value);if(additional)return additional;
  const data=typeSteps[value];if(!data)return freeInput('type',value,context);
- const sections=[section('使用する原稿の範囲',data[0]),section('字組みと制限',data[1])];
+ const sections=[section('使用する原稿の範囲',data[0]),section('字組みと制限',data[1]+' '+typographyLayoutInstruction(value))];
  if(value==='文字を一切入れない')return {known:true,sections,checks:checksOf(data[2])};
  if(value==='セリフのみ'&&(!context.values.line||context.values.line==='セリフなし'))return {known:true,sections:[section('有効な原稿なし','「セリフのみ」と「セリフなし」の組合せでは文字を描かない。代わりのセリフ・名前・サインを生成しない。')],checks:['文字のない完成画像']};
  sections.push(section('綴りと読み順','制作原稿の各文字をそのまま使い、助詞・濁点・大文字・数字を確認する。小さな文字も意味のない線や疑似文字で埋めず、顔や主題と重なる箇所は選んだ形式の余白へ移す。'));

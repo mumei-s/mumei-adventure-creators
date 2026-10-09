@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
 import {assertCompactHandoff,containsInstruction} from './compact-handoff-assertions-v28.mjs';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.3';
-import {applyCollection} from '../collection.js?v=28.4.3';
-import {initialSelections} from '../modes.js?v=28.4.3';
-import {buildDirection} from '../direction.js?v=28.4.3';
-import {applyPose} from '../poses.js?v=28.4.3';
-import {optionRecipe} from '../option-recipes.js?v=28.4.3';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.3';
-import {composePrompt} from '../prompt.js?v=28.4.3';
-import {renderChatInput} from '../compiled-production.js?v=28.4.3';
-import {colorPolicy} from '../palette-recipes.js?v=28.4.3';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.4';
+import {applyCollection} from '../collection.js?v=28.4.4';
+import {initialSelections} from '../modes.js?v=28.4.4';
+import {buildDirection} from '../direction.js?v=28.4.4';
+import {applyPose} from '../poses.js?v=28.4.4';
+import {optionRecipe} from '../option-recipes.js?v=28.4.4';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.4';
+import {composePrompt} from '../prompt.js?v=28.4.4';
+import {renderChatInput} from '../compiled-production.js?v=28.4.4';
+import {colorPolicy} from '../palette-recipes.js?v=28.4.4';
 
 const profile={displayName:'TEST CREATOR',activityEnabled:false,topics:[],biography:''};
 const random=()=>.28;
@@ -78,7 +78,16 @@ assert.match(paper.plan.variant.light,/塗らない明部/);
 assert.ok(!paper.plan.variant.light.includes('点光へ絞る'));
 const newspaper=produce({...base,design:'新聞の一面',medium:'実写風フィルム写真',type:'クリエイター名だけ'});
 assert.deepEqual(newspaper.plan.copy.blocks,['TEST CREATOR']);
-assert.equal(newspaper.plan.conditions.find(c=>c.key==='design').sections.length,7);
+const newspaperSections=newspaper.plan.conditions.find(c=>c.key==='design').sections;
+const newspaperLabels=newspaperSections.map(section=>section.label);
+for(const label of ['作品の骨格','領域とグリッド','主画像の構成','限定原稿の配置','画風と形式の分担','避ける失敗','日本を基準にした個別条件'])
+ assert.ok(newspaperLabels.includes(label),'Limited-copy newspaper loses its distinct '+label+' process');
+assert.equal(new Set(newspaperLabels).size,newspaperLabels.length,'Newspaper process owners must not repeat');
+assert.equal(new Set(newspaperSections.map(section=>section.text)).size,newspaperSections.length,'Additional newspaper engineering must not duplicate existing sections');
+const newspaperGrid=newspaperSections.find(section=>section.label==='領域とグリッド').text;
+assert.match(newspaperGrid,/6列/);assert.match(newspaperGrid,/主図版1点/);assert.match(newspaperGrid,/上限40%/);
+assert.match(newspaperGrid,/40%以上.*空欄/,'Sparse allowed copy must retain newspaper empty-column structure');
+assert.match(newspaper.prompt,/6列/);assert.match(newspaper.prompt,/上限40%/,'The limited-copy grid must reach the actual handoff');
 for(const medium of ['宝石ホログラムアニメ','クリスタル透光アニメ','透明水彩','水墨画','現代アニメの一枚絵','実写風フィルム写真']){
  const scenery=produce({...base,medium,costume:'風景を主役にする',pose:'おまかせ',mood:'毎回大胆に変える'},'everyday');
  assert.ok(scenery.plan.noPerson);

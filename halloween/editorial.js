@@ -1,8 +1,8 @@
-import {formatFor} from './formats.js?v=28.4.3';
-import {formatTextPolicy} from './format-recipes.js?v=28.4.3';
-import {buildTypographySlots} from './typography-options.js?v=28.4.3';
-import {copyContentRules,publicCopyContext,worldIntroduction,copyRoleSources,copyEditingInstruction} from './copy-scope.js?v=28.4.3';
-import {halloweenCopyRules,halloweenTitle} from './halloween-mode-contract.js?v=28.4.3';
+import {formatFor} from './formats.js?v=28.4.4';
+import {formatTextPolicy} from './format-recipes.js?v=28.4.4';
+import {buildTypographySlots} from './typography-options.js?v=28.4.4';
+import {copyContentRules,publicCopyContext,worldIntroduction,copyRoleSources,copyEditingInstruction} from './copy-scope.js?v=28.4.4';
+import {halloweenCopyRules,halloweenTitle} from './halloween-mode-contract.js?v=28.4.4';
 const pick=(items,random)=>items[Math.min(items.length-1,Math.floor(random()*items.length))];
 function shuffle(items,random){const a=[...items];for(let i=a.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 const titles={cover:['装い帖','色と暮らし','創作日和','余白の時間','光の便り'],interview:['制作の現場','創作の声','発想の手帖'],spread:['表現の手帖','動きのある世界','新しい視点'],newspaper:['創作通信','彩景新聞','表現日報'],cinema:['BEYOND THE FRAME','A SILENT DOOR','WHEN LIGHT RETURNS'],book:['ひかりを綴る','まだ知らない景色','境界の手紙'],album:['ECHOES IN COLOR','UNFOLDING','SOFT REVERB'],default:['FORM & WONDER','もうひとつの景色','STORIES IN LIGHT']};
@@ -39,7 +39,7 @@ export function buildEditorial(profile,values,random=Math.random){
     const long=/本文|回答|リード|紹介|説明/.test(slot.role),maxCharacters=slot.maxCharacters||(long?Math.min(750,Math.max(45,slot.text.length)):Math.min(32,Math.max(12,slot.text.length)));
     const contentDomain=slot.contentDomain||(daily?'public_activity':'story_world');
     const context=typography?.contentSources||contentSources;
-    generatedSlots.push({role:slot.role,priority:slot.priority,maxCharacters,contentDomain,contentSources:copyRoleSources(context,contentDomain),instruction:copyEditingInstruction(context,{domain:contentDomain})+(slot.instruction||'')+(slot.role.startsWith('質問')?'質問は次の回答と一組にする。':slot.role.startsWith('回答')?'回答は対応する質問を受けた公開活動の紹介とし、本人の発言を捏造しない。':'')});
+    generatedSlots.push({role:slot.role,priority:slot.priority,maxCharacters,contentDomain,contentSources:copyRoleSources(context,contentDomain),instruction:copyEditingInstruction(context,{domain:contentDomain})+(slot.instruction||'')+(slot.role.startsWith('質問')?'質問は次の回答と一組にする。':slot.role.startsWith('回答')?(contentDomain==='public_activity'?'回答は対応する質問を受けた公開活動の紹介とし、本人の発言を捏造しない。':'回答は対応する質問を受けた作品世界内の説明とし、作者本人の実際の発言として印字しない。'):'')});
    }else fixed.push({role:slot.role,text:slot.text,priority:slot.priority});
   }
   return {mode,requestedMode:mode,authority,name:slots.some(s=>s.role==='作者名'||s.role==='キャラクター名')?name:'',title:slots.find(s=>s.priority===0)?.text||'',dense:slots.length>=8,slots:fixed,generatedSlots,blocks:fixed.map(s=>s.text),topics,kind,limited,roleScoped,contentSources:typography?.contentSources||contentSources,sourceGuided:generatedSlots.length>0,...(typography?{typographyLayout:typography.layout,typographyDensity:typography.density}:{})};

@@ -1,14 +1,19 @@
-import {compileProduction} from './compiled-production.js?v=28.4.3';
-import {stylePresetFor} from './style-presets.js?v=28.4.3';
-import {composeArtworkStage,composeArtworkRepair} from './artwork-stage.js?v=28.4.3';
-import {needsStagedProduction,composeLayoutStage} from './staged-production.js?v=28.4.3';
+import {compileProduction} from './compiled-production.js?v=28.4.4';
+import {stylePresetFor} from './style-presets.js?v=28.4.4';
+import {composeArtworkStage,composeArtworkRepair} from './artwork-stage.js?v=28.4.4';
+import {needsStagedProduction,composeLayoutStage} from './staged-production.js?v=28.4.4';
+import {identityPreparationStage,renderFocusedChatInput,usesFocusedProduction} from './focused-production.js?v=28.4.4';
 
 const stagedInputs=new WeakMap();
-export function stagePrompts(plan){
- if(!needsStagedProduction(plan))return null;
- if(stagedInputs.has(plan))return stagedInputs.get(plan);
- const stages=Object.freeze({artwork:composeArtworkStage(plan),repair:composeArtworkRepair(plan),layout:composeLayoutStage(plan)});
- stagedInputs.set(plan,stages);return stages;
+export function stagePrompts(plan,refs=plan.referenceManifest||[]){
+ const staged=needsStagedProduction(plan),identityPreparation=identityPreparationStage(plan,refs);
+ if(!staged&&!identityPreparation)return null;
+ if(stagedInputs.has(plan)&&refs===plan.referenceManifest)return stagedInputs.get(plan);
+ const stages=Object.freeze({
+  ...(staged?{artwork:composeArtworkStage(plan),repair:composeArtworkRepair(plan),layout:composeLayoutStage(plan)}:{}),
+  ...(identityPreparation?{identity:identityPreparation.prompt,identityRepair:identityPreparation.repairPrompt,identityPreparation,final:identityPreparation.finalPrompt}:usesFocusedProduction(plan)?{final:renderFocusedChatInput(plan,refs)}:{})
+ });
+ if(refs===plan.referenceManifest)stagedInputs.set(plan,stages);return stages;
 }
 
 function between(lines,start,end){
@@ -20,9 +25,10 @@ function between(lines,start,end){
 
 // The master is an execution plan for the conversation assistant. Each image
 // call receives one delimited input, never the entire publication specification.
-export function composeStagedMaster(plan,originalLines,{verbose=false}={}){
- if(!verbose)return compileProduction(plan,originalLines);
- if(!needsStagedProduction(plan))return compileProduction(plan,originalLines);
+export function composeStagedMaster(plan,originalLines,{verbose=false,refs=plan.referenceManifest}={}){
+ const productionRefs=usesFocusedProduction(plan)?refs:plan.referenceManifest;
+ if(!verbose)return compileProduction(plan,originalLines,productionRefs);
+ if(!needsStagedProduction(plan))return compileProduction(plan,originalLines,productionRefs);
  const stages=stagePrompts(plan);
  return [
   originalLines[0],

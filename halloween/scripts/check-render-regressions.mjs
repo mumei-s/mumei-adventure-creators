@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {productionPlan} from '../production-plan.js?v=28.4.3';
-import {renderInput} from '../compiled-production.js?v=28.4.3';
-import {detailedPalette} from '../palette-recipes.js?v=28.4.3';
-import {imageOutputContract} from '../output-contract.js?v=28.4.3';
+import {productionPlan} from '../production-plan.js?v=28.4.4';
+import {renderInput} from '../compiled-production.js?v=28.4.4';
+import {detailedPalette} from '../palette-recipes.js?v=28.4.4';
+import {imageOutputContract} from '../output-contract.js?v=28.4.4';
+import {designLayoutFor,typographyLayoutInstruction} from '../layout-preview-specs.js?v=28.4.4';
 
 // Reproduce the user's failed cover, including its actual resolved camera.
 const old=JSON.parse(fs.readFileSync(new URL('../verification/v17/failed-user-input.json',import.meta.url)));
@@ -41,6 +42,26 @@ assert.doesNotMatch(imageOutputContract.join('\n'),/60秒以内|合格基準/);
 const localized=plan.conditions.flatMap(c=>c.sections.filter(s=>s.label==='日本を基準にした個別条件')).reduce((n,s)=>n+s.text.length,0);
 const constructionCriteria=plan.conditions.flatMap(c=>c.sections.filter(s=>/Halloween|元の体格に合う動作|体格に合わせた支持|選択動作の接触と重なり|投影と演技の独立/.test(s.label))).reduce((n,s)=>n+s.text.length,0);
 const artworkCriteria=plan.conditions.flatMap(c=>c.sections.filter(s=>s.label.startsWith('作画基準／'))).reduce((n,s)=>n+s.text.length,0);
-assert.ok(input.length<JSON.stringify(old,null,2).length+localized*2+artworkCriteria*4+constructionCriteria*3+1600,'Local drawing and source criteria have a bounded audit budget; unrelated documents must stay out of the input');
+// Count the complete local extension, including its reference-role boundary.
+// Measuring only the signature misses the delivered "frames/blank margins
+// only" scope and underestimates this selected format's audit contribution.
+const grid=plan.conditions.find(c=>c.key==='design').sections.find(s=>s.label==='領域とグリッド').text;
+const layoutExtension=grid.match(/この形式を区別する骨格：[^\n]+$/u)?.[0]||'';
+assert.ok(layoutExtension.includes(designLayoutFor(values.design).signature),'The measured layout budget must correspond to the actual selected structure.');
+assert.match(layoutExtension,/枠名は印字せず.*未使用枠は無地/,'The local extension retains the no-placeholder-copy boundary.');
+const selectedTypography=typographyLayoutInstruction(values.type);
+const layoutCriteria=layoutExtension.length+selectedTypography.length;
+assert.ok(layoutCriteria<400,'Only the selected page signature, manuscript amount, direction and placement may extend the layout audit budget.');
+// The structured audit deliberately records the selected typography in the
+// type contract and the early design contract. Bound those exact local
+// copies instead of giving unrelated source documents a larger flat budget.
+const layoutCopies=input.split(layoutExtension).length-1;
+const typographyCopies=input.split(selectedTypography).length-1;
+assert.ok(layoutCopies>0&&layoutCopies<=2,'Selected layout scope must not multiply beyond the audit structure.');
+assert.ok(typographyCopies>0&&typographyCopies<=5,'Selected typography may reach both early design and type contracts, but may not grow without a bound.');
+const layoutAuditBudget=layoutExtension.length*layoutCopies+selectedTypography.length*typographyCopies;
+assert.ok(input.includes(designLayoutFor(values.design).signature));
+assert.ok(input.includes('書字方向：'),'The new orientation budget must correspond to a real delivered drawing condition.');
+assert.ok(input.length<JSON.stringify(old,null,2).length+localized*2+artworkCriteria*4+constructionCriteria*3+layoutAuditBudget+1600,'Local drawing, layout and source criteria have a bounded audit budget; unrelated documents must stay out of the input');
 if(process.argv.includes('--save'))fs.writeFileSync(new URL('../verification/v17/retest-drawing-input.txt',import.meta.url),input);
 console.log('PASS failed-cover regressions: structured audit material owns side projection, full frame, restricted identity colors, broad crystal optics, explicit requested dimensions and all ten recipes; allowed vermilion/gold are retained; failed output is not frozen as final. Image acceptance is still separate.');

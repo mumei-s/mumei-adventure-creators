@@ -1,6 +1,6 @@
-import {colorPolicy} from './color-policy.js?v=28.4.3';
-export {colorPolicy} from './color-policy.js?v=28.4.3';
-import {colorWorlds} from './worlds.js?v=28.4.3';
+import {colorPolicy} from './color-policy.js?v=28.4.4';
+export {colorPolicy} from './color-policy.js?v=28.4.4';
+import {colorWorlds} from './worlds.js?v=28.4.4';
 
 // A palette owns hue and its allocation. It cannot silently select a material,
 // a time of day, a light source, a subject, or a low-contrast rendering style.
@@ -75,11 +75,14 @@ colorWorlds.forEach((world,i)=>{
  specs.set(world.value,{value:world.value,ratios,allocation,hues:world.value.split(' × '),swatches:world.colors});
 });
 export const paletteRecipeValues=[...specs.keys()];
+export function paletteAllocation(value){
+ const spec=specs.get(value);return spec?{hues:[...spec.hues],ratios:spec.ratios?[...spec.ratios]:null}:null;
+}
 export function detailedPalette(value,{values={},noPerson=false}={}){
  const spec=specs.get(value),policy=colorPolicy({...values,palette:value});
  const scenery=values.costume==='風景を主役にする',emblem=values.costume==='紋章・アイコンにする';
  const optical=['クリスタル透光アニメ','宝石ホログラムアニメ','クリスタルホログラム造形アニメ','漆と螺鈿'].includes(values.medium);
- const opticalColor=optical&&!policy.restricted?'分散・薄膜干渉の局所的なスペクトル色は画風の光学として保つ。':'光を理由に指定外の色を加えない。';
+ const opticalColor=policy.restricted?'光を理由に指定外の色を加えない。':optical?'分散・薄膜干渉の局所的なスペクトル色は画風の光学として保つ。':'光や反射の色は選択配色へ合わせ、自然な識別色を反射だけで別の色へ変えない。';
  const wholeMaterial=['クリスタルホログラム造形アニメ','宝石ホログラムアニメ'].includes(values.medium);
  const subject=noPerson?(scenery?'地形・建築・景物・自然素材':emblem?'図案の主形・副形・余白':'主題の物体・支持面・背景'):'人物の衣装・景物・背景';
  const sections=[];

@@ -1,10 +1,14 @@
 import assert from 'node:assert/strict';
-import {productionPlan} from '../production-plan.js?v=28.4.3';
-import {renderSelectionMaterial,renderInput,compileProduction} from '../compiled-production.js?v=28.4.3';
-import {renderCompactChatInput} from '../compact-production.js?v=28.4.3';
-import {cameraContract} from '../angles.js?v=28.4.3';
-import {composePrompt} from '../prompt.js?v=28.4.3';
-import {selectionReferenceManifest} from '../selection-references.js?v=28.4.3';
+import {productionPlan} from '../production-plan.js?v=28.4.4';
+import {renderSelectionMaterial,renderInput,compileProduction} from '../compiled-production.js?v=28.4.4';
+import {renderRecipeChatInput as renderCompactChatInput} from '../compact-production.js?v=28.4.4';
+import {usesFocusedProduction} from '../focused-production.js?v=28.4.4';
+import {assertFocusedHandoff} from './focused-handoff-assertions-v28.mjs';
+import {cameraContract} from '../angles.js?v=28.4.4';
+import {composePrompt} from '../prompt.js?v=28.4.4';
+import {selectionReferenceManifest} from '../selection-references.js?v=28.4.4';
+import {buildDirection} from '../direction.js?v=28.4.4';
+import {applyPose} from '../poses.js?v=28.4.4';
 
 // Compare actual selected plans with the detailed audit renderer. Length is a
 // bloat signal only; identity, fixed projection, engineering and copy are the
@@ -103,6 +107,12 @@ assert.match(richText,/描画条件・制作仕様・カメラ・画材・配色
 assert.match(richText,/未確認の実績・本人の発言を捏造しない/);
 cases++;
 
+// A stale photoreal master must not replace the selected illustrated process.
+const illustrated=make({medium:'薄膜光彩アニメ'}),mixed=renderCompactChatInput(illustrated,[{name:'stale-photo.png',role:'style-preset',medium:'発光幻想リアル'}]);
+assert.match(mixed,/stale-photo\.png.*選択作風に一致しない資料/);assert.match(mixed,/今回の描画工程へ混ぜず/);assert.match(mixed,/主題・衣装・景物・可視背景の全域を選択作風の同じ工程/);
+const exactCopy=make({design:'新聞の一面',type:'デザインに合わせて自動編集'});exactCopy.copy.slots.push({role:'確定の短文',text:'形と明度差で識別を保つ。'});const exactText=renderCompactChatInput(exactCopy);
+assert.ok(exactText.includes('確定の短文："形と明度差で識別を保つ。"'),'Deduplication cannot remove or edit exact copy even when that text appears inside a longer instruction');
+
 // New literal engineering remains intact even when it is longer than any
 // informal length budget; a character limit cannot delete selected clauses.
 const custom=make({medium:'特殊な独自画材',appearance:'髪なし・閉眼',proportions:'明示された比率'}),method='専用工程：金属箔を三層重ね、左縁だけを磨く。',extra='固有工程：右の支持点だけを選択した床へ接続する。';
@@ -119,6 +129,25 @@ const blocked=make();blocked.issues.push({severity:'error',reason:'固定カメ�
 const blockedText=renderCompactChatInput(blocked,refs(blocked));
 assert.match(blockedText,/画像生成を停止/);assert.match(blockedText,/選択を変えるまで画像生成へ進まない/);
 assert.doesNotMatch(blockedText,/完成作品を1枚生成|選択固有の制作工程/);cases++;
+
+// Reproduce the actual handoff conflict: its recent record has the exact
+// selected crouch, fang expression, camera and design. Sampling has already
+// selected the current direction, so none of those choices can become an
+// image-call exclusion. Keep the history in structured audit data instead.
+for(const medium of ['発光幻想アニメ','薄膜光彩アニメ','白域幾何・宇宙彩アニメ','艶彩幻想アニメ']){
+ const values={...base,medium,theme:'吸血鬼の晩餐会',place:'古城の大広間',costume:'亡霊騎士',pose:'低くしゃがむ',mood:'牙を見せて威嚇',angle:'超ローアングル・70度',headRatio:'主参照の基本頭身を維持'};
+ const direction=applyPose(buildDirection([],values.mood,()=>.23,'halloween',values),values.pose);
+ const plan=productionPlan(profile,values,direction,'halloween',()=>.23);
+ plan.variant.previous=[{face:plan.variant.face,expression:plan.variant.expression,distance:plan.variant.distance,pose:plan.variant.pose,layout:plan.variant.layout,camera:plan.variant.camera},{face:'過去だけの顔向き',expression:'過去だけの表情',distance:'過去だけの画角',pose:'過去だけの動作',layout:'過去だけの別形式'}];
+ const snapshot=JSON.stringify(plan),text=compileProduction(plan,['画像生成の制作仕様 / HISTORY-REGRESSION'],refs(plan));
+ assert.doesNotMatch(text,/繰り返さない|過去だけの/,'History vetoes a selected physical scene after its direction was resolved');
+ for(const field of ['face','expression','pose'])for(const clause of clauses(plan.variant[field]))includes(text,clause,'selected current '+field);
+ includes(text,'主参照の基本頭身を維持','explicit head ratio');
+ for(const clause of clauses(cameraContract(plan.values).instructions[0]))includes(text,clause,'current camera');
+ assert.equal(JSON.stringify(plan),snapshot,'History remains audit data');
+ assert.match(renderInput(plan),/過去だけの動作/,'The audit discarded the recent record');
+ cases++;
+}
 
 // Exercise the actual app route, including a stale reference argument. The
 // plan manifest is the attachment identity used by share/transfer and must
@@ -155,11 +184,21 @@ for(const plan of integrationPlans){
  const oldLines=['画像生成の制作仕様 / COMPACT-INTEGRATION','【今回の画像の役割】',...plan.referenceManifest.map(reference=>reference.name+'：旧役割の記述'),'【最初に確定する作画と画面】'];
  const routes={composePrompt:actualPrompt(plan),compileProduction:compileProduction(plan,oldLines),staleArgument:actualPrompt(plan,[{name:'obsolete-identity-name.png',role:'identity'}])};
  for(const [route,text] of Object.entries(routes)){
-  includes(text,compact,route+' actual compact payload');
+  const focused=usesFocusedProduction(plan);
+  if(focused){
+   assertFocusedHandoff(plan,text,route+' focused actual constraints');
+   includes(compact,sentinel,route+' detailed recipe new unique engineering');
+   includes(compact,layoutSentinel,route+' detailed recipe selected final layout');
+   assert.match(text,/reference-01-character\.png/,'The source is named in preparation');
+   assert.match(text,/prepared-identity\.png/,'The inspected intermediate owns final identity');
+  }else includes(text,compact,route+' actual compact payload');
   assert.equal(occurrences(text,'【短い統合制作指示】'),1,route+' repeated the compact payload');
-  for(const reference of plan.referenceManifest)assert.equal(occurrences(text,reference.name),1,route+' repeated/lost reference '+reference.role);
+  if(!focused)for(const reference of plan.referenceManifest)assert.equal(occurrences(text,reference.name),1,route+' repeated/lost reference '+reference.role);
   const sheet=plan.referenceManifest.find(reference=>reference.role==='selection-sheet');
-  assert.equal(sheet.items.length,10,'The actual role sheet lost a visible selection');
+  assert.equal(sheet.conditions.length,10,'All ten selected conditions must remain in the manifest');
+  assert.equal(sheet.items.length,sheet.conditions.filter(condition=>condition.deliverVisual).length,'The role sheet contains only selected visuals that add needed reference information');
+  assert.ok(!sheet.items.some(item=>item.key==='size'||item.key==='type'&&item.value==='文字を一切入れない'),'Exact dimensions and the no-copy rule do not need competing visual examples');
+  assert.ok(!sheet.items.some(item=>item.key==='medium'),'The original style master must not be duplicated in the sheet');
   for(const item of sheet.items)includes(text,item.key+'「'+item.value+'」：'+item.scope,route+' selected role '+item.key);
   for(const condition of plan.conditions)includes(text,condition.value,route+' actual selection '+condition.key);
   includes(text,sentinel,route+' new unique engineering');

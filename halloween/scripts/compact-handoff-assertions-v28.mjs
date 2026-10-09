@@ -1,10 +1,13 @@
 import assert from 'node:assert/strict';
-import {cameraContract} from '../angles.js?v=28.4.3';
-import {isPhotographicMedium} from '../photo-design.js?v=28.4.3';
-import {colorPolicy} from '../color-policy.js?v=28.4.3';
-import {stylePresetFor} from '../style-presets.js?v=28.4.3';
-import {selectionReferenceManifest} from '../selection-references.js?v=28.4.3';
-import {characterProportionInstruction} from '../source-kind.js?v=28.4.3';
+import {cameraContract} from '../angles.js?v=28.4.4';
+import {isPhotographicMedium} from '../photo-design.js?v=28.4.4';
+import {colorPolicy} from '../color-policy.js?v=28.4.4';
+import {stylePresetFor} from '../style-presets.js?v=28.4.4';
+import {selectionReferenceManifest} from '../selection-references.js?v=28.4.4';
+import {characterProportionInstruction} from '../source-kind.js?v=28.4.4';
+import {usesFocusedProduction} from '../focused-production.js?v=28.4.4';
+import {renderRecipeChatInput} from '../compact-production.js?v=28.4.4';
+import {assertFocusedHandoff} from './focused-handoff-assertions-v28.mjs';
 
 const normalize=text=>String(text).replace(/\s+/g,'');
 export const normalized=normalize;
@@ -16,6 +19,7 @@ export function compactReferences(plan,references=[]){
  return plan.referenceManifest;
 }
 export function assertCompactHandoff(plan,text,label){
+ if(usesFocusedProduction(plan))return assertFocusedHandoff(plan,text,label);
  const errors=(plan.issues||[]).filter(issue=>issue.severity==='error');
  if(errors.length){
   assert.match(text,/^【選択の不成立：画像生成を停止】/);
@@ -59,6 +63,11 @@ export function assertCompactHandoff(plan,text,label){
   }else for(const clause of sentenceClauses(characterProportionInstruction(plan.values,{noPerson:false})))includesClause(text,clause,label+' chosen/reference drawing proportions');
  }
  includesClause(text,colorPolicy(plan.values).allowed,label+' allowed colors');
+ assert.match(text,/光と反射は選択配色へ翻訳/,label+' lost selected-color optics');
+ assert.match(text,/最明部は.*最暗部は/,label+' lost value-range hierarchy');
+ assert.match(text,/影の深さ・光の鋭さ・素材は作風が担当し.*弱めない/,label+' palette can weaken the selected medium');
+ assert.match(text,/色名から火花・星・海月・魔法陣を追加しない/,label+' palette can invent objects');
+ assert.match(text,/縮小で大きな明暗と主従、拡大で描線・素材・内部影・局所反射・接続を照合/,label+' lost the shared final visible-quality check');
  if(colorPolicy(plan.values).restricted)assert.match(text,/識別色.*許可色.*濃淡|許可色の明度差/,label+' preserves source hues outside a restricted palette');
  if(plan.copy.mode==='none')assert.match(text,/文字・数字・署名なし/,label+' added a manuscript');
  for(const slot of plan.copy.slots)includesClause(text,slot.role+'：'+JSON.stringify(slot.text),label+' exact copy');
@@ -77,11 +86,20 @@ export function assertCompactHandoff(plan,text,label){
 // These sections are responsibility-wide wording, checked above as identity,
 // camera, manuscript and reference roles. Every other authored physical clause
 // remains literal (ignoring whitespace), rather than merely checking its title.
-const owned=/^(作画基準／全域への適用|入力画像の種類と変換|固定カメラでの解釈|今回実行する表情と向き|今回実行する動作|自動カメラと顔の見え方の注意|自動候補の再利用の注意|イラスト参照から人物へ|イラスト参照から実物へ|非人物入力から独自の人物へ|同一人物への着装|元の体格に合う動作|顔角度との両立|投影と演技の独立|選択した造形とカメラの保持|縮小と拡大での完成照合|実寸の照合|Halloween版／)/;
+const owned=/^(作画基準／全域への適用|入力画像の種類と変換|固定カメラでの解釈|今回実行する表情と向き|今回実行する動作|自動カメラと顔の見え方の注意|自動候補の再利用の注意|イラスト参照から人物へ|イラスト参照から実物へ|非人物入力から独自の人物へ|同一人物への着装|元の体格に合う動作|顔角度との両立|投影と演技の独立|選択した造形とカメラの保持|縮小と拡大での完成照合|実寸の照合|世界観ベース／主参照と選択の分担|世界観ベース／カメラと可視範囲|世界観ベース／選択色へ投影する光|世界観ベース／完成品の照合|画風の明暗を保つ|光と文字の色|画風と形式の分担|Halloween版／)/;
 export function assertCompactEngineering(plan,text,sections,label){
  if((plan.issues||[]).some(issue=>issue.severity==='error'))return;
+ if(usesFocusedProduction(plan)){
+  assertFocusedHandoff(plan,text,label+' focused constraints');
+  // Literal recipe clauses are still tested on their public review renderer;
+  // the focused execution is independently checked for every hard condition.
+  text=renderRecipeChatInput(plan,plan.referenceManifest||[]);
+ }
  for(const section of sections){
   if(owned.test(section.label))continue;
+  if(section.label==='作画基準／1'&&section.text?.startsWith('ユーザーの作例から描画特性を整理した合成作画基準。'))continue; // Provenance is audit metadata, not a painting operation.
+  if(section.label==='作画基準／6'&&section.text?.startsWith('配色は毎回の選択へ投影し、見本の色を固定しない。'))continue; // Identity, coverage, camera, palette and proportions are asserted above.
+  if(section.label==='日本を基準にした個別条件'&&sections.some(item=>item.label==='世界観ベース／最優先の描画核'))continue; // The preset-specific drawing core remains literal below.
   if(section.label==='画風プリセットの使い方'){
    if(['宝石光彩アニメ','宝石光彩リアル'].includes(plan.values.medium)&&!section.text.startsWith('【'))for(const clause of sentenceClauses(section.text))includesClause(text,clause,label+' independent reference density');
    continue;

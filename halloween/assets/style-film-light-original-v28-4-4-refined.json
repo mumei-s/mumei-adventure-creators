@@ -1,0 +1,25 @@
+{
+  "version": "28.4.4",
+  "role": "original-style-master",
+  "qualityStatus": "refined master visually reviewed; original identity and depicted scene retained; benchmark equivalence and downstream adherence not guaranteed",
+  "width": 1024,
+  "height": 1536,
+  "prompt": "Use case: style-transfer. Asset: original high-resolution thin-film luminous 2D anime style sample.\nEDIT IMAGE 1 ONLY, preserving its ORIGINAL adult orange-bob-haired textile artist, face identity and mature proportions, side braid, distinctive navy botanical weaving coat, loom, hand placements, glazed weaving workshop, portrait composition, and all spatial relationships. Image 2 is ONLY a technical benchmark for hand-drawn flat pale facial planes, fine colored lines, internally luminous painted irises, and broad softly curved luminous color layers. Do not reproduce its woman, face shape, age, white hair, eye proportions, hat, jellyfish, bubbles, clothing, background, framing or composition. No artist name imitation, no copied motifs.\nThe exact defect to correct in image 1 is that the irises look like tiny reflected crystal chips and the face/hands receive too little broad continuous luminous color. Replace this handling with LARGE READABLE INTERNAL PAINTED IRIS LIGHT within the original adult eye outlines: rich deep violet pupil/core bordered by internally glowing pink-violet translucent iris zones, intense near-white crescent filaments on the LOWER INNER iris, smaller cyan and rose layers, fine eyelashes and sharp tiny catchlights. Keep original eye outline and adult identity. The iris itself emits delicately layered painted light, rather than a single white reflection pasted on top. At phone size BOTH irises remain obvious light sources.\nPreserve flat pale ivory/lavender Japanese 2D facial planes; tiny drawn nose and mouth, gentle two or three designed shadow shapes, extremely fine warm gray-lavender contour lines, with no photo/CG skin rendering. Carefully paint broad SOFT CONTINUOUS CYAN-LILAC-ROSE LUMINOUS GLAZE on the upper cheek beside the eyes, neck, hands, forearms, bob hair and navy sleeves, following the existing curved surfaces. The broad light film occupies enough area to read on a phone, not tiny shards and not isolated specks. Selected narrow white boundaries and tiny glints create crisp contrast with designed indigo contact shadows under fingers, under chin, between hair locks, in sleeve folds and behind the loom. Skin stays opaque intact; do not turn the body into glass or crystal. Restore continuous color layers where the original coat has triangular glitter shard patterns; retain its botanical embroidery beneath the curved light film.\nThe workshop's woven glass panels transmit the same cyan/violet/rose light as the artist; foreground loom edge and separated thread surfaces overlap naturally, wrist support and connected hands remain anatomically correct. Controlled linework and painted two-dimensional shapes should describe real thickness, contact, distance and atmosphere. Depth is from occlusion, decreasing beam size, consistent perspective and deliberate value groups, not global glossy CGI gradients.\nNo lantern, hat, jellyfish, new symbols, extra people, typography, watermark or decorative UI. Final polished Japanese hand-drawn2D luminous illustration, precise fine linework, distinctly flatter facial painting than a glossy dimensional anime style. One original portrait2:3 image, high resolution.",
+  "previousMaster": "style-film-light-original-v28-4-4.png",
+  "source": "built-in image generation; original project character and setting retained; external image used only to compare drawing/light-layer technique",
+  "externalTechniqueBenchmark": "09-1000015897.jpg; flat pale face planes, internally luminous painted iris layers and soft continuous color light films",
+  "visualReview": {
+    "accepted": [
+      "original adult textile artist, weaving coat, supported loom hands and pavilion retained",
+      "both original eye outlines retained while lower irises contain brighter pink-white internal light",
+      "thin continuous lavender/rose/cyan light layers strengthened across face, neck and hands",
+      "fine colored2D facial contours, soft flat facial planes and coherent foreground/arch depth retained"
+    ],
+    "limitations": [
+      "not guaranteed equivalent to the external benchmark",
+      "broadly bright workshop can still compete with the facial focal point",
+      "downstream character/camera/style adherence needs actual-image testing"
+    ]
+  },
+  "sha256": "1b9ac76f0415db32c99adc4cf70d87ed0332b1d9a205bde5201bd8cf1572ca92"
+}

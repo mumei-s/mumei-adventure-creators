@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
 import {assertCompactHandoff} from './compact-handoff-assertions-v28.mjs';
-import {applyCollection} from '../collection.js?v=28.4.3';
-import {resolveSelections} from '../catalog.js?v=28.4.3';
-import {initialSelections} from '../modes.js?v=28.4.3';
-import {buildDirection} from '../direction.js?v=28.4.3';
-import {applyPose} from '../poses.js?v=28.4.3';
-import {productionPlan} from '../production-plan.js?v=28.4.3';
-import {composePrompt} from '../prompt.js?v=28.4.3';
-import {composeArtworkStage} from '../artwork-stage.js?v=28.4.3';
-import {needsStagedProduction,composeLayoutStage} from '../staged-production.js?v=28.4.3';
+import {applyCollection} from '../collection.js?v=28.4.4';
+import {resolveSelections} from '../catalog.js?v=28.4.4';
+import {initialSelections} from '../modes.js?v=28.4.4';
+import {buildDirection} from '../direction.js?v=28.4.4';
+import {applyPose} from '../poses.js?v=28.4.4';
+import {productionPlan} from '../production-plan.js?v=28.4.4';
+import {composePrompt} from '../prompt.js?v=28.4.4';
+import {composeArtworkStage} from '../artwork-stage.js?v=28.4.4';
+import {needsStagedProduction,composeLayoutStage} from '../staged-production.js?v=28.4.4';
 
 // The case that kept producing a photographic face when artwork and typesetting
 // were requested together. These assertions check the handoff between stages.
@@ -42,6 +42,7 @@ has(spread.prompt,'通常制作：完成画像を1回で生成','Normal delivery
 lacks(spread.prompt,'<svg','Optional SVG templates must not bloat normal delivery');
 lacks(spread.prompt,'【必要な場合の画風修正用入力：開始】','Normal delivery must not duplicate the entire repair recipe');
 has(spread.prompt,'直ちにこの会話へ表示','Normal delivery must display the first result before checking it');
+matches(spread.prompt,/最初の生成画像.*直ちにこの会話へ表示.*照合と短い補足はその後に行う/,'Display must precede inspection and commentary, rather than imply another hidden generation');
 has(spread.prompt,'非表示の再生成ループは行わない','Failed artwork must not cause a hidden unbounded retry loop');
 
 // All selected image decisions survive stage 1, including the 2D construction
@@ -68,6 +69,7 @@ has(layout,'<svg','Layout stage must contain an executable SVG template');
 has(layout,'preserveAspectRatio="xMidYMid meet"','SVG template must preserve the whole source image');
 lacks(layout,'この環境で利用できる画像生成機能を実行し、完成した画像そのものを1枚','Layout stage must not retain the previous image-generation output contract');
 has(spread.prompt,'確定原稿','Single-call delivery retains the final copy');
+for(const slot of spread.plan.copy.slots)has(spread.prompt,slot.role+'：'+JSON.stringify(slot.text),'Single-call delivery lost exact manuscript for '+slot.role);
 for(const s of spread.plan.conditions.find(c=>c.key==='design').sections.filter(s=>['領域とグリッド','文字と読み順'].includes(s.label)))has(layout,s.text,'Layout stage lost '+s.label);
 for(const slot of spread.plan.copy.slots)has(layout,slot.text,'Layout stage lost exact copy for '+slot.role);
 has(layout,generatedArt,'Layout stage must use the generated artwork as its reference');

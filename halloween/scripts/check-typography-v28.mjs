@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
 import {assertCompactHandoff,containsInstruction} from './compact-handoff-assertions-v28.mjs';
-import {applyCollection} from '../collection.js?v=28.4.3';
-import {resolveSelections} from '../catalog.js?v=28.4.3';
-import {initialSelections} from '../modes.js?v=28.4.3';
-import {buildDirection} from '../direction.js?v=28.4.3';
-import {productionPlan} from '../production-plan.js?v=28.4.3';
-import {composePrompt} from '../prompt.js?v=28.4.3';
-import {typePreview} from '../examples.js?v=28.4.3';
-import {typographyValues,typographyOption} from '../typography-options.js?v=28.4.3';
-import {visualSpec} from '../visual-specs.js?v=28.4.3';
-import {renderInput} from '../compiled-production.js?v=28.4.3';
+import {applyCollection} from '../collection.js?v=28.4.4';
+import {resolveSelections} from '../catalog.js?v=28.4.4';
+import {initialSelections} from '../modes.js?v=28.4.4';
+import {buildDirection} from '../direction.js?v=28.4.4';
+import {productionPlan} from '../production-plan.js?v=28.4.4';
+import {composePrompt} from '../prompt.js?v=28.4.4';
+import {typePreview} from '../examples.js?v=28.4.4';
+import {typographyValues,typographyOption} from '../typography-options.js?v=28.4.4';
+import {visualSpec} from '../visual-specs.js?v=28.4.4';
+import {renderInput} from '../compiled-production.js?v=28.4.4';
 
 let examined=0;
 for(const collection of ['halloween','everyday']){

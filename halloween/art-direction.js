@@ -1,10 +1,11 @@
-import {applyAngle} from './angles.js?v=28.4.3';
-import {colorPolicy} from './palette-recipes.js?v=28.4.3';
-import {opticalSignature,opticalColors} from './optical-effects.js?v=28.4.3';
-import {detailedSubject} from './subject-recipes.js?v=28.4.3';
-import {detailedFormat} from './format-recipes.js?v=28.4.3';
-import {isPhotographicMedium} from './photo-design.js?v=28.4.3';
-import {luminousWorldContract} from './luminous-world.js?v=28.4.3';
+import {applyAngle} from './angles.js?v=28.4.4';
+import {colorPolicy} from './palette-recipes.js?v=28.4.4';
+import {opticalSignature,opticalColors} from './optical-effects.js?v=28.4.4';
+import {detailedSubject} from './subject-recipes.js?v=28.4.4';
+import {detailedFormat} from './format-recipes.js?v=28.4.4';
+import {isPhotographicMedium} from './photo-design.js?v=28.4.4';
+import {luminousWorldContract} from './luminous-world.js?v=28.4.4';
+import {fantasyStyleDefinitions} from './fantasy-style-definitions.js?v=28.4.4';
 
 const flat=new Set(['線画','リノカット','木版画','浮世絵木版画','シルクスクリーン','ベクターグラフィック','フラットイラスト','ピクセルアート','構成主義','ミニマリズム']);
 // Drawing atmosphere owns light and depth only. It never supplies a sample's
@@ -43,6 +44,16 @@ function worldStyleLight(values,{color,source,noPerson}){
  const light=noPerson?direction.lightScenery||sceneryStyleText(direction.light):direction.light;
  return source+'を光の起点にする。'+subject+' '+light+' 最暗部は'+color.dark+'、最明部は'+color.bright+'。'+(color.restricted?'光・反射・透明な色層も'+color.allowed+'だけで描く。':'基調と反射色は選択配色に従い、'+(noPerson?'景物の':'髪や瞳の')+'識別色を保持する。');
 }
+function fantasyStyleLight(values,{color,source,noPerson}){
+ const entry=fantasyStyleDefinitions.find(style=>style.value===values.medium);if(!entry)return null;
+ const subject=noPerson?'景物・物体・図案だけを対象にし、人物や人体の部位を追加しない。':'今回の表情・閉眼・髪なし・衣装の被覆を保ち、実際に見える面だけへ適用する。';
+ const structure=entry.rendering==='polished-anime'
+  ?'柔らかな絵画的な連続陰影と精密な素材描画、小さく鋭い艶光を優先し、平面セル影へ固定しない。'
+  :entry.value==='白域幾何・宇宙彩アニメ'
+   ?'広い抜き、細い幾何線、少数の鋭い2D影面、局所の濃い宇宙色層を優先する。'
+   :'細い有色線と明確な2D色面、曲面に沿う連続した薄膜色層を優先し、写真や滑らかなCGの下地を使わない。';
+ return source+'を光の起点にする。場面の照明条件は光の方向・遮蔽を決めるが、選択作風の光彩・反射密度・描画工程を弱めない。'+subject+structure+(noPerson?entry.lightingScenery:entry.lighting)+'最暗部は'+color.dark+'、最明部は'+color.bright+'。'+(color.restricted?'識別色・光・反射も'+color.allowed+'の濃淡へ変換し、形と明度差で識別を保つ。':'基調と反射色は選択配色へ合わせ、参照の自然な識別色は保持する。');
+}
 function sceneryStyleText(text){
  return text.replace(/肌や布/g,'不透明な景物や布').replace(/身体や衣装/g,'不透明な景物')
   .replace(/肌や衣装/g,'不透明な景物').replace(/目鼻口/g,'主景の識別点')
@@ -67,6 +78,8 @@ export function lightingContract(values,{collection='halloween',noPerson=false}=
  const source=sourceFor(values,collection);
  const luminous=luminousWorldContract(values,{noPerson});
  if(luminous)return source+'を光の起点にする。'+luminous.lighting;
+ const fantasyLight=fantasyStyleLight(values,{color,source,noPerson});
+ if(fantasyLight)return fantasyLight;
  const worldLight=worldStyleLight(values,{color,source,noPerson});
  if(worldLight)return worldLight;
  const signature=opticalSignature(values,{noPerson});
@@ -92,6 +105,13 @@ export function resolveArtDirection(values,variant={},collection='halloween'){
  if(luminous)next.depth=luminous.depth;
  const worldStyle=worldStyleDirections.get(values.medium);
  if(worldStyle)next.depth='指定カメラ・投影・撮影距離・'+(noPerson?'景物の自然な支持':'ポーズ・支持点')+'を先に固定する。'+(noPerson?sceneryStyleText(worldStyle.depth):worldStyle.depth)+' その可視範囲だけで成立させ、別の背景・物体・人物を追加しない。';
+ const fantasyStyle=fantasyStyleDefinitions.find(style=>style.value===values.medium);
+ if(fantasyStyle){
+  const structure=fantasyStyle.rendering==='polished-anime'
+   ?'柔らかな連続陰影を形の曲率と素材へ沿わせ、手前と奥の重なり・接触影・反射密度で厚みを読む。'
+   :'2Dの平面色と少数の影面は塗りの工程であり、主題や場面を平坦な板へ変える指定ではない。固定カメラの透視投影、輪郭の重なり、大小と短縮、支持部の接触影で厚みと前後を描く。'+(fantasyStyle.value==='白域幾何・宇宙彩アニメ'?'白域と細い幾何線、局所の宇宙色層を、この立体投影の可視面と抜きへ対応させる。':'薄膜の色層と細い有色線を、同じ曲面の向きと前後へ対応させる。');
+  next.depth='指定カメラ・投影・撮影距離を固定し、可視の手前・主題・奥を一つの空間として接続する。'+structure+(noPerson?'景物の厚み・自然な支持・部材の接続を保つ。':'選択ポーズの胸郭・骨盤・四肢の厚みと関節の連続、重心・支持点・指定したジェスチャーを保ち、その姿勢の短縮と遮蔽を描く。')+'隠れた部位を見せるために姿勢を広げず、未指定の前景の手、走り、跳躍、風、浮遊を迫力のために追加しない。';
+ }
 
  if(!noPerson&&values.costume==='人魚'){next.pose=detailedSubject('pose',values.pose,{values,variant,noPerson}).sections.map(s=>s.text).join(' ');next.distance=(next.distance||'').replace(/足先|足元|両足|つま先/g,'尾びれ');}
  if(flat.has(values.medium))next.depth='前後関係と距離を、選択した平面技法の色面・輪郭・大小・重なり・余白へ翻訳する。滑らかな3Dの材質へ置換しない。';

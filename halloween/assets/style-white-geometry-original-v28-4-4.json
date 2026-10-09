@@ -1,0 +1,24 @@
+{
+  "version": "28.4.4",
+  "role": "original-style-master",
+  "qualityStatus": "white-field 2D line/plane rendering with stronger perspective/support/stepping gesture; downstream adherence still requires visible image review",
+  "width": 1024,
+  "height": 1536,
+  "prompt": "Revise this ORIGINAL white-field geometric cosmic-anime master into a vivid, spatially convincing, LIVING scene. Preserve the existing adult male identity, ivory tailored coat with deep violet cosmic painted lining, and the original angular open pavilion/workbench setting. Do not add wings, staircases, circular rings, halos, lanterns, a new character, typography or UI.\nChange the previously passive seated pose to a coherent decisive step forward beside the same bench, with one foot grounded and the rear heel just beginning to rise, pelvis and chest naturally counter-rotating, one arm reaching forward to guide someone through the passage and the other balanced near his waist. The closer hand and cuff are truly nearer in the selected slightly low three-quarter perspective, with believable forearm foreshortening; no huge disconnected hand, no extra limbs. His focused eyes and small engaged expression, neck alignment, finger tension and weight-bearing foot make the person alive. Coat hem follows this SINGLE actual step, exposing part of its existing cosmic inner surface without exposing the body.\nThe making process stays hand-drawn Japanese 2D anime: extremely fine gray-violet colored outlines, precision inner seams and hair locks, broad ivory white face/clothing areas, only a FEW sharp violet painted shadow planes and restricted deep cosmic-violet painted areas within the coat. No smooth CGI/photo skin or glass. Build volume with actual changing contour directions, overlapping planes, under-chin/cheek/neck shadow, shoulder and elbow anatomy, garment thickness and contact shadows, rather than continuous 3D shading.\nKeep at least half the picture as bright paper-white architectural negative space. Within this white field, use sophisticated precise straight structural lines of the same rectangular pavilion: nearest posts and the edge of the bench overlap the stepping figure at the margins; mid-distance crossbeams sit behind him; far slender pillars and trapezoid openings shrink to the same vanishing system. CLEAR foreground, subject and far space, with coherent scale and support. Thin linework may elegantly fade with distance, but solid contact shadows and cast-shadow fragments connect boots, bench and ground. The nearest beam/bench edge crosses the lower corner and points into depth, making the subject project forward through the picture plane. No frame or inset.\nDeep painted cosmic surfaces contain tiny subtle star flecks and violet/indigo clouds ONLY INSIDE garment lining and small existing pavilion aperture areas, never scattered all over white space. His face/eyes/hair must retain finely drawn detail and adult proportion. This is spatially strong and kinetic anime geometry within white negative space, not a static diagram and not a densely painted fantasy city. Deliver one finished portrait2:3 illustration; preserve originality of character, costume, place and non-copied motif.",
+  "previousMaster": "style-white-geometry-original-v28-4-3.png",
+  "source": "built-in image generation; original pavilion, adult male and ivory coat",
+  "visualReview": {
+    "accepted": [
+      "fine drawn contours and limited violet shadow planes",
+      "grounded advancing foot and receding rear foot",
+      "overlapping forearm/coat/architecture and depth",
+      "cosmic paint restricted to coat/aperture surfaces"
+    ],
+    "limitations": [
+      "master gesture is a technique example, not a replacement for selected pose",
+      "no copied wings/staircase/ring motifs",
+      "not proof of every possible selected-camera result"
+    ]
+  },
+  "sha256": "ce1e90d4aea9a5e0bbd0c25b281b9c8de1be229369aa648694cc8a2bb4aed7ca"
+}

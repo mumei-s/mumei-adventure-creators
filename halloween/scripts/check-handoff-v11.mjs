@@ -1,13 +1,13 @@
 import assert from 'node:assert/strict';
-import {applyCollection} from '../collection.js?v=28.4.3';
-import {resolveSelections} from '../catalog.js?v=28.4.3';
-import {initialSelections} from '../modes.js?v=28.4.3';
-import {buildDirection} from '../direction.js?v=28.4.3';
-import {applyPose} from '../poses.js?v=28.4.3';
-import {productionPlan} from '../production-plan.js?v=28.4.3';
-import {composePrompt,needsReference} from '../prompt.js?v=28.4.3';
+import {applyCollection} from '../collection.js?v=28.4.4';
+import {resolveSelections} from '../catalog.js?v=28.4.4';
+import {initialSelections} from '../modes.js?v=28.4.4';
+import {buildDirection} from '../direction.js?v=28.4.4';
+import {applyPose} from '../poses.js?v=28.4.4';
+import {productionPlan} from '../production-plan.js?v=28.4.4';
+import {composePrompt,needsReference} from '../prompt.js?v=28.4.4';
 import {assertCompactHandoff} from './compact-handoff-assertions-v28.mjs';
-import {imageDeliveryRepairPrompt} from '../output-contract.js?v=28.4.3';
+import {imageDeliveryRepairPrompt} from '../output-contract.js?v=28.4.4';
 
 const profile={displayName:'TEST CREATOR',topics:[],biography:'',activityEnabled:false};
 applyCollection('everyday');

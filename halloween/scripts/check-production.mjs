@@ -1,15 +1,17 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.3';
-import {initialSelections} from '../modes.js?v=28.4.3';
-import {applyCollection} from '../collection.js?v=28.4.3';
-import {buildDirection} from '../direction.js?v=28.4.3';
-import {applyPose} from '../poses.js?v=28.4.3';
-import {visualSpec} from '../visual-specs.js?v=28.4.3';
-import {formatSpecs} from '../formats.js?v=28.4.3';
-import {productionPlan,planInstructions,repairPrompt} from '../production-plan.js?v=28.4.3';
-import {buildEditorial} from '../editorial.js?v=28.4.3';
-import {composePrompt} from '../prompt.js?v=28.4.3';
-import {profileForArtwork} from '../activity-settings.js?v=28.4.3';
+import {assertCompactHandoff} from './compact-handoff-assertions-v28.mjs';
+import {usesFocusedProduction} from '../focused-production.js?v=28.4.4';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.4';
+import {initialSelections} from '../modes.js?v=28.4.4';
+import {applyCollection} from '../collection.js?v=28.4.4';
+import {buildDirection} from '../direction.js?v=28.4.4';
+import {applyPose} from '../poses.js?v=28.4.4';
+import {visualSpec} from '../visual-specs.js?v=28.4.4';
+import {formatSpecs} from '../formats.js?v=28.4.4';
+import {productionPlan,planInstructions,repairPrompt} from '../production-plan.js?v=28.4.4';
+import {buildEditorial} from '../editorial.js?v=28.4.4';
+import {composePrompt} from '../prompt.js?v=28.4.4';
+import {profileForArtwork} from '../activity-settings.js?v=28.4.4';
 // This suite checks fixed manuscript geometry. Source-guided manuscript roles
 // and actual article evidence are exercised separately by check-fidelity-v25.
 const profile={displayName:'Alice',activityEnabled:false,topics:['写真','創作'],biography:'写真と創作'},base=resolveSelections({...initialSelections(),design:'ファッション雑誌の表紙',costume:'海賊',pose:'全力で走る',mood:'完全な左横顔90度'},()=>0.2);
@@ -25,7 +27,15 @@ for(const collection of ['halloween','everyday']){
   const prompt=composePrompt({creator:'alice',profile,values,variant,references:[],edition:'ALL',collection,preparedPlan:plan});
   const errors=plan.issues.filter(issue=>issue.severity==='error');
   if(errors.length){assert.match(prompt,/画像生成を停止/);for(const issue of errors)assert.ok(prompt.includes(issue.reason));assert.ok(!prompt.includes('ChatGPTの画像作成機能を実行'));}
-  else{if(q.key!=='line')assert.ok(prompt.includes(value));for(const slot of plan.copy.slots)assert.ok(prompt.includes(JSON.stringify(slot.text)));assert.ok(prompt.includes('ChatGPTの画像作成機能を実行'));}
+  else{
+   if(q.key!=='line')assert.ok(prompt.includes(value));
+   for(const slot of plan.copy.slots)assert.ok(prompt.includes(JSON.stringify(slot.text)));
+   if(usesFocusedProduction(plan)){
+    assertCompactHandoff(plan,prompt,collection+' / '+q.key+' / '+value);
+    assert.match(prompt,/画像作成機能/);
+    assert.match(prompt,/2段階で実行|完成画像を1回で生成/,'The focused flow must specify the executable image-production stages');
+   }else assert.ok(prompt.includes('ChatGPTの画像作成機能を実行'));
+  }
   assert.ok(!prompt.includes('undefined'));assert.ok(!prompt.includes('NaN'));assert.ok(!prompt.includes('選択した特徴だけを作品へ反映'));examined++;
  }
 }
@@ -59,6 +69,6 @@ const fixedType=resolveSelections({...initialSelections(),type:'デザインに�
 const densitySwitch={...base,type:'映画ポスター風・タイトルとクレジット'},p=productionPlan(profile,densitySwitch,make(densitySwitch));assert.ok(planInstructions(p).join('\n').includes('デザイン自体を別形式へ置換しない'));
 assert.ok(repairPrompt({prompt:'EXACT ORIGINAL PROMPT'}).endsWith('EXACT ORIGINAL PROMPT'));
 const mono={...base,medium:'水墨画',palette:'墨一色'},monoPrompt=composePrompt({creator:'alice',profile,values:mono,variant:make(mono),references:[],edition:'MONO'});
-assert.match(monoPrompt,/髪・肌・瞳の色は無彩色の明度差へ翻訳/);assert.match(monoPrompt,/主参照の識別色.*許可色の濃淡へ変換/);assert.ok(!monoPrompt.includes('髪・肌・瞳の基礎色は保持'));
+assert.match(monoPrompt,/髪・肌・瞳の色は無彩色の明度差へ翻訳|全領域の使用色は黒・白・無彩色の灰/);assert.match(monoPrompt,/主参照の識別色.*許可色の濃淡へ変換/);assert.ok(!monoPrompt.includes('髪・肌・瞳の基礎色は保持'));
 assert.match(formatSpecs['見開き特集'].layout,/同じ高さから始まる横並び2列/);
 console.log('PASS production: '+examined+' Halloween/everyday choices are concrete and present in final prompts; all '+Object.keys(formatSpecs).length+' format structures; full cover lines/decks, Q&A, spread/newspaper body, cinema billing; no-text/name-only/activity OFF; unresolved inputs blocked. These checks validate instructions, not a guarantee of image-model fidelity.');

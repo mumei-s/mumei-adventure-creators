@@ -1,20 +1,23 @@
 import assert from 'node:assert/strict';
-import {questions,resolveSelections} from '../catalog.js?v=28.4.3';
-import {applyCollection} from '../collection.js?v=28.4.3';
-import {initialSelections} from '../modes.js?v=28.4.3';
-import {buildDirection} from '../direction.js?v=28.4.3';
-import {applyPose} from '../poses.js?v=28.4.3';
-import {angleItems,cameraContract} from '../angles.js?v=28.4.3';
-import {colorPolicy} from '../color-policy.js?v=28.4.3';
-import {artworkBasisValues,artworkBasis,artworkBasisContract,withArtworkBasis} from '../artwork-basis.js?v=28.4.3';
-import {optionRecipe} from '../option-recipes.js?v=28.4.3';
-import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.3';
-import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.3';
-import {composePrompt} from '../prompt.js?v=28.4.3';
-import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.3';
-import {imageDeliveryRepairPrompt} from '../output-contract.js?v=28.4.3';
-import {selectionConflicts,candidateAvailability,compatibleResolved} from '../compatibility.js?v=28.4.3';
+import {questions,resolveSelections} from '../catalog.js?v=28.4.4';
+import {applyCollection} from '../collection.js?v=28.4.4';
+import {initialSelections} from '../modes.js?v=28.4.4';
+import {buildDirection} from '../direction.js?v=28.4.4';
+import {applyPose} from '../poses.js?v=28.4.4';
+import {angleItems,cameraContract} from '../angles.js?v=28.4.4';
+import {colorPolicy} from '../color-policy.js?v=28.4.4';
+import {artworkBasisValues,artworkBasis,artworkBasisContract,withArtworkBasis} from '../artwork-basis.js?v=28.4.4';
+import {optionRecipe} from '../option-recipes.js?v=28.4.4';
+import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.4';
+import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.4';
+import {composePrompt} from '../prompt.js?v=28.4.4';
+import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.4';
+import {imageDeliveryRepairPrompt} from '../output-contract.js?v=28.4.4';
+import {selectionConflicts,candidateAvailability,compatibleResolved} from '../compatibility.js?v=28.4.4';
 import {compactReferences,assertCompactHandoff,assertCompactEngineering} from './compact-handoff-assertions-v28.mjs';
+import {usesFocusedProduction} from '../focused-production.js?v=28.4.4';
+import {renderRecipeChatInput} from '../compact-production.js?v=28.4.4';
+import {assertFocusedHandoff} from './focused-handoff-assertions-v28.mjs';
 
 // Reference links document authored criteria in the picker. They are not
 // external images, artists to imitate, image-call attachments or style inputs.
@@ -24,6 +27,15 @@ const profile={displayName:'作画資料の検査',activityEnabled:false};
 const random=()=>.23;
 const selectedKeys=['medium','theme','place','costume','mood','angle','pose','palette','design','type','size'];
 const analyzedWorldValues=new Set(['宝石光彩アニメ','宝石光彩リアル','花霞の透明アニメ','ミルキーパステルアニメ','夢彩ファンタジーアニメ','宵彩ゴシックアニメ','薄膜光彩アニメ','白域幾何・宇宙彩アニメ','艶彩幻想アニメ']);
+const generalProcessWorldValues=new Set(['薄膜光彩アニメ','白域幾何・宇宙彩アニメ','艶彩幻想アニメ']);
+const generalProcessValues=new Set(['発光幻想アニメ','発光幻想リアル',...generalProcessWorldValues]);
+const generalProcessURLs=new Set([
+ 'https://note.com/n_kazumai55633/n/n8388effcef09',
+ 'https://note.com/n_kazumai55633/n/nc578b4d9c706',
+ 'https://www.clipstudio.net/how-to-draw/archives/162569',
+ 'https://www.clipstudio.net/how-to-draw/archives/159611',
+ 'https://tips.clip-studio.com/en-us/articles/7012'
+]);
 const knownValues=questions.find(q=>q.key==='medium').groups.flatMap(g=>g.values);
 assert.equal(knownValues.length,118,'The original styles and all three additional analyzed media must remain represented');
 for(const value of analyzedWorldValues)assert.ok(knownValues.includes(value),'Missing analyzed public medium '+value);
@@ -47,7 +59,11 @@ for(const entry of entries){
  }
  if(analyzedWorld){
   assert.equal(entry.status,'synthesis',entry.value+' must identify the analyzed world basis as synthesis');
-  assert.equal(entry.references.length,0,entry.value+' must not invent documentation URLs for user-provided example analysis');
+  if(generalProcessWorldValues.has(entry.value)){
+   assert.match(entry.sourceNote,/独自合成.*一般工程.*個別制作記事.*完全工程.*未確認/,entry.value+' must separate verified components from unknown original workflows');
+   assert.deepEqual(new Set(entry.references.map(reference=>reference.url)),generalProcessURLs,entry.value+' must retain only verified general-process sources');
+   for(const reference of entry.references)assert.equal(reference.scope,'general-process',entry.value+' must not present a component source as its original example provenance');
+  }else assert.equal(entry.references.length,0,entry.value+' must not invent documentation URLs for user-provided example analysis');
   assert.ok(entry.basis.some(text=>/ユーザー.*作例.*(?:整理|分析)/.test(text)&&/合成作画基準/.test(text)),entry.value+' must disclose its user-example analysis origin');
  }
  for(const reference of entry.references){
@@ -67,7 +83,7 @@ for(const entry of entries){
  assert.deepEqual(again,wrapped,entry.value+' repeats source criteria after wrapping twice');
 }
 
-let checked=0,noPersonCases=0,restrictedCases=0;
+let checked=0,noPersonCases=0,restrictedCases=0,generalProcessCases=0;
 try{
  for(const collection of ['halloween','everyday']){
   applyCollection(collection);
@@ -89,6 +105,46 @@ try{
     compactRepair:composeArtworkRepair(plan,{compact:true}),repair:repairPrompt(result),deliveryRepair:imageDeliveryRepairPrompt(result)};
    const label=[collection,medium,noPerson?'scenery':'person',palette].join(' / ');
    if(assertCompactHandoff(plan,prompt,label+' actual master'))assertCompactEngineering(plan,prompt,basis.sections,label+' actual basis engineering');
+   if(generalProcessValues.has(medium)){
+    // Non-focused/photo calls keep their literal engineering checks on the
+    // actual payload. Four focused calls are separately checked for all hard
+    // conditions and their positive construction/light kernels; the authored
+    // long-form criteria remain mandatory in the public recipe renderer.
+    const processPrompt=usesFocusedProduction(plan)?renderRecipeChatInput(plan,plan.referenceManifest):prompt;
+    if(usesFocusedProduction(plan)){
+     assertFocusedHandoff(plan,prompt,label+' focused general process');
+     assert.match(prompt,/平面陰影を先に描く|(?:2D)?色面.*影面(?:から描き起こす|で描く)|で2Dアニメの形を組む|デジタル描線と柔らかな絵画的連続陰影で描く|2D有色線と描いた平面陰影で組み|有色構造線.*主景と物体を構成|デジタル描線、柔らかな絵画的連続陰影/,label+' loses a positively constructed drawing substrate');
+     assert.match(prompt,/厚み.*短縮.*(?:遮蔽|重なり).*支持/,label+' focused loses fixed-view volume and support');
+     assert.match(prompt,/光は.*深い接触影.*面の向き・遮光・前後/,label+' focused light is detached from shadow and blocking');
+    }
+    assert.match(processPrompt,/光を塗る前に|塗りの前に/,label+' loses ordered construction before lighting');
+    assert.match(processPrompt,/厚み.*短縮.*(?:遮蔽|重なり).*支持/,label+' loses fixed-view volume and occlusion');
+    assert.match(processPrompt,/追加した光源には対応する新しい影|追加光源には対応する新しい影/,label+' adds light without corresponding shadow');
+    assert.match(processPrompt,/遮光/,label+' loses material light blocking');
+    if(noPerson){
+     assert.doesNotMatch(basis.sections.map(section=>section.text).join(' '),/虹彩/,label+' no-person basis leaks an iris drawing instruction');
+     const process=basis.sections.filter(section=>section.label.startsWith('光彩の描画工程／'));
+     assert.doesNotMatch(process.map(section=>section.text).join(' '),/顔|瞳|虹彩|髪|肌|衣装/,label+' no-person process imports positive person detail');
+     if(generalProcessWorldValues.has(medium))assert.match(basis.sections.map(section=>section.text).join(' '),/布|木・石|素材の接続/,label+' no-person material basis must not be punctuation-only');
+     if(generalProcessWorldValues.has(medium)){
+      const sceneryEngineering=selected.sections.filter(section=>['世界観ベース／最優先の描画核','世界観ベース／光と影の階層','世界観ベース／素材を保つ描画'].includes(section.label));
+      assert.equal(sceneryEngineering.length,3,label+' loses dedicated scenery construction/light/material owners');
+      assert.doesNotMatch(sceneryEngineering.map(section=>section.text).join(' '),/顔|瞳|虹彩|髪|肌|衣装|身体|人体|睫毛/,label+' scenery engineering imports positive person anatomy');
+      assert.doesNotMatch(basis.checks.join(' '),/顔|瞳|虹彩|髪|肌|衣装|身体|人体|睫毛/,label+' scenery acceptance demands person detail');
+     }
+    }else{
+     assert.match(processPrompt,/虹彩(?:の|は)縁・上部・瞳孔.*暗/,label+' loses ordered iris dark structure');
+     assert.match(processPrompt,/下部.*(?:明るい|透過色)/,label+' loses the lower iris light layer');
+     assert.match(processPrompt,/光源方向/,label+' substitutes fixed highlight placement');
+     if(usesFocusedProduction(plan)){
+      assert.match(prompt,/虹彩の縁・上部・瞳孔を暗く、下部を透明な明色層/,label+' focused loses layered iris values');
+      assert.match(prompt,/鋭い小反射を光源へ合わせる.*閉眼や隠れる目には描かない/,label+' focused eye optics ignore source direction or visibility');
+     }
+    }
+    if(medium==='白域幾何・宇宙彩アニメ')assert.match(processPrompt,/白い余白は暗く塗り潰さない/,label+' focal lighting erases the white-area technique');
+    assert.doesNotMatch(prompt,/ミナト汐|Grace Zhu|Liz Staley|CELSYS/,label+' leaks source authors into image generation');
+    generalProcessCases++;
+   }
    for(const key of selectedKeys)assert.equal(plan.values[key],values[key],label+' changes '+key+' to match source artwork');
    assert.equal(selected.value,medium,label+' uses another source basis');
    assert.equal(structured.drawing.medium,medium,label+' replaces the selected medium');
@@ -138,7 +194,30 @@ try{
   }
  }
 }finally{applyCollection('halloween');}
-console.log('PASS artwork references: all '+knownValues.length+' distinct bases have technique/check/avoid metadata and documented/synthesis status, 109 retain documentation links and '+analyzedWorldValues.size+' synthesized world bases record reference analysis; '+checked+' mode/subject/palette handoffs preserve full audit and actual compact engineering, '+noPersonCases+' no-person guards and '+restrictedCases+' restricted color cases. Source URLs and artist/work titles stay out of generation routes. Source availability and image-model adherence are not inferred by this test.');
+console.log('PASS artwork references: all '+knownValues.length+' distinct bases have technique/check/avoid metadata and documented/synthesis status, 109 retain documentation links and '+analyzedWorldValues.size+' synthesized world bases record reference analysis ('+generalProcessWorldValues.size+' also retain verified general-process sources); '+checked+' mode/subject/palette handoffs preserve full audit and actual compact engineering, '+generalProcessCases+' verified-process handoffs, '+noPersonCases+' no-person guards and '+restrictedCases+' restricted color cases. Source URLs and artist/work titles stay out of generation routes. Source availability and image-model adherence are not inferred by this test.');
+
+let closedEyeProcessCases=0;
+try{
+ for(const collection of ['halloween','everyday']){
+  applyCollection(collection);
+  for(const medium of generalProcessValues){
+   const values=resolveSelections({...initialSelections(),sceneUnified:true,medium,design:'通常の一枚絵',costume:'参照画像の衣装を生かす',mood:'目を閉じて安らぐ',pose:'膝を抱えて座る',angle:'斜め前45度',palette:'モノクローム',type:'文字を一切入れない',line:'セリフなし'},random);
+   const plan=productionPlan(profile,values,applyPose(buildDirection([],values.mood,random,collection,values),values.pose),collection,random);
+   const prompt=composePrompt({collection,profile,values,variant:plan.variant,references:compactReferences(plan),edition:'CLOSED-EYE-PROCESS',preparedPlan:plan});
+   assertCompactHandoff(plan,prompt,medium+' closed eyes');
+   assert.equal(plan.values.mood,'目を閉じて安らぐ',medium+' changes the selected closed-eye expression');
+   const eyePrompt=usesFocusedProduction(plan)?renderRecipeChatInput(plan,plan.referenceManifest):prompt;
+   assert.match(eyePrompt,/閉眼.*(?:追加しない|変えない)|閉眼・遮蔽.*変えない/,medium+' eye detailing lacks the closed-eye guard');
+   assert.match(eyePrompt,/実際に見える虹彩|可視の眼球/,medium+' iris must apply only to visible detail');
+   if(usesFocusedProduction(plan)){
+    assertFocusedHandoff(plan,prompt,medium+' closed eyes focused');
+    assert.match(prompt,/閉眼は閉じたまま/);assert.match(prompt,/見える瞳.*閉眼や隠れる目には描かない/);
+   }
+   closedEyeProcessCases++;
+  }
+ }
+}finally{applyCollection('halloween');}
+console.log('PASS general-process eye applicability: '+closedEyeProcessCases+' closed-eye mode/style handoffs preserve the expression and conditional iris detail.');
 
 // Explicit color choices remain reviewable conflicts. Only automatic choices
 // may be replaced, so a material restriction never silently recolors a choice.

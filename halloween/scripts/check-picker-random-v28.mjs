@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
-import {createPicker} from '../picker.js?v=28.4.3';
-import {questions} from '../catalog.js?v=28.4.3';
-import {initialSelections,effectiveSelections} from '../modes.js?v=28.4.3';
-import {randomItemSelection} from '../random-selections.js?v=28.4.3';
+import {createPicker} from '../picker.js?v=28.4.4';
+import {questions} from '../catalog.js?v=28.4.4';
+import {initialSelections,effectiveSelections} from '../modes.js?v=28.4.4';
+import {randomItemSelection} from '../random-selections.js?v=28.4.4';
 
 class Node{
  constructor(tag='div',cls='',text=''){
@@ -48,6 +48,7 @@ function fixture(){
  const nodes=new Map(),$=id=>{if(!nodes.has(id)){const node=new Node(id==='picker-category'?'select':'div');node.id=id;nodes.set(id,node);}return nodes.get(id);};
  const surface=$('picker'),canvas=new Node('div','picker-canvas'),stage=$('ring-stage');
  canvas.append(stage,$('picker-options'));surface.append(canvas);stage.append($('ring-focus'),$('ring-options'));
+ const inspectorViewport=new Node('div','inspector-viewport'),inspectorActions=new Node('div','inspector-actions');inspectorViewport.append($('inspector-art'));inspectorActions.append($('inspector-pick'));$('inspector').append(inspectorViewport,inspectorActions);
  const medium=questions.find(question=>question.key==='medium'),selections={...initialSelections(),medium:medium.groups[0].values[0],costume:'参照画像の衣装を生かす',palette:'モノクローム'},stats={renders:0,messages:[],chosen:[]};
  const context=vm.createContext({mode:'detail',selections,selectedProposal:null,effectiveSelections,randomItemSelection,rng:()=>.999999,renderChoices(){stats.renders++;},tell:message=>stats.messages.push(message),displayValue:(question,value)=>value});
  vm.runInContext(actualRandom,context);

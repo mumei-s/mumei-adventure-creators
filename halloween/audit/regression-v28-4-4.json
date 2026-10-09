@@ -1,0 +1,888 @@
+{
+  "version": "28.4.4",
+  "scope": "code regression and bounded local UI/persistence contracts; generated-image quality is a separate acceptance gate",
+  "status": "code regression passed: all 88 declared checks on stable inputs after three visible layout refinements; generated-image quality is not accepted",
+  "firstRun": {
+    "startedAt": "2026-10-09T13:13:25.986Z",
+    "finishedAt": "2026-10-09T13:14:22.135Z",
+    "count": 84,
+    "passed": 82,
+    "failed": 2,
+    "changedDuringRun": [],
+    "head": "14d8fd8b0e71a98ba493fe301a4e2a1382e2ec3b"
+  },
+  "resolvedAssertions": [
+    {
+      "script": "scripts/check-newspaper-copy-scope-v28.mjs",
+      "oldFailure": "strictEqual rejected an appended format distinguishing skeleton while the entire original sparse layout remained intact",
+      "resolution": "startsWith preserves every original coordinate, empty column, rule, permission boundary and reading order; independent geometry and copy tests remain active",
+      "targetedResult": "passed",
+      "additionalRegression": {
+        "trigger": "The product advertising manuscript explicitly selects horizontal writing, while the previous newspaper recipe requested vertical feature columns.",
+        "resolution": "The layout owner corrected the production recipe; the test now requires three horizontal feature columns and rejects the previous vertical-column override.",
+        "targetedResult": "passed",
+        "cases": {
+          "roleCases": 96,
+          "standardCases": 20,
+          "sparseCases": 96
+        }
+      }
+    },
+    {
+      "script": "scripts/check-render-regressions.mjs",
+      "oldFailure": "audit budget counted only selected layout signature, omitting its accompanying reference-role scope",
+      "resolution": "Measure only the complete selected local layout/typography extension actually delivered; keep combined 400-character bound, layout scope copies <=2 and typography audit copies <=5. No flat overall-budget increase. Selected type quantity/direction must reach both its own and early design audit contracts.",
+      "targetedResult": "passed"
+    },
+    {
+      "script": "scripts/check-luminous-transfer-v28.mjs",
+      "oldFailure": "no-person gloss-fantasy painterly continuous-shading recipe intentionally uses scenery wording instead of the old person phrase",
+      "resolution": "scenery requires soft painterly continuous shading explicitly; person branch retains its original criterion; flat-cell and inherited other-pipeline exclusions remain active",
+      "targetedResult": "passed"
+    },
+    {
+      "scripts": [
+        "scripts/check-reference-race-v28.mjs",
+        "scripts/check-source-kind-v28.mjs"
+      ],
+      "oldFailure": "The real app now uses selectionReferenceCounts for its preparation status, but these two VM fixtures omitted that actual imported helper.",
+      "resolution": "Import and inject the actual selectionReferenceCounts helper into the existing VM context; no production source, assertion or behavior was changed.",
+      "targetedResult": "passed"
+    }
+  ],
+  "criticalCoverage": {
+    "nightUI": {
+      "status": "passed",
+      "check": "scripts/check-night-ui-v28.mjs",
+      "cases": 144,
+      "coverage": "actual hero/ornament/game fixture switching, cleanup of stale Halloween monsters/timers, ordinary night motifs and resolved CSS specificity for selected/unselected/hover button colors at 4.5 contrast"
+    },
+    "history": {
+      "status": "passed",
+      "checks": [
+        "scripts/check-history-storage-v28.mjs",
+        "scripts/check-history-persistence-v28.mjs",
+        "scripts/check-history-management-v28.mjs"
+      ],
+      "recordLimit": 12,
+      "byteBudget": 4194304,
+      "repeatLimit": 2000,
+      "coverage": "per-item/all deletion, exact undo, atomic quota failure, no image blobs stored in history, stale cross-tab resurrection blocked"
+    },
+    "favorites": {
+      "status": "passed",
+      "check": "scripts/check-favorites-panel-v28.mjs",
+      "coverage": "main page visible shelf with category/select/remove/filter, independent collection state and filter restoration"
+    },
+    "defaults": {
+      "status": "passed",
+      "check": "scripts/check-drawing-flow-v28.mjs",
+      "canvas": "A4縦・300dpi目安｜2480×3508｜210:297",
+      "design": "通常の一枚絵",
+      "text": "文字を一切入れない"
+    },
+    "allPreviewCoverage": {
+      "status": "passed",
+      "check": "scripts/check-scene-preview-coverage-v28.mjs",
+      "coverage": "both collections, every built-in selection has a real image/reference/automatic/typography/phrase/size preview; 21 original scene assets are byte/hash/dimension verified"
+    },
+    "layoutAndTypography": {
+      "status": "passed",
+      "check": "scripts/check-layout-distinction-v28.mjs",
+      "uniqueDesigns": 48,
+      "typographyLayouts": 26,
+      "coverage": "48 unique personless design structures and 26 manuscript layouts; exact copy count and horizontal/vertical/diagonal direction; 96 layout/copy conflicts; 1872 selected-composition cases including all 26 controls, both modes and three source aspects for the refined designs; 900 actual writing-direction cases and 9984 effective-copy combinations. Largest uncropped centered native image geometry is verified.",
+      "checks": [
+        "scripts/check-layout-distinction-v28.mjs",
+        "scripts/check-layout-copy-conflicts-v28.mjs",
+        "scripts/check-editorial-writing-directions-v28.mjs"
+      ],
+      "visualStatus": "The three previously similar structures were fundamentally changed and independently compared against prior layouts and neighboring designs. All 48 geometry signatures remain distinct."
+    },
+    "actualImageQuality": {
+      "status": "not accepted",
+      "review": "audit/generated-image-review-v28-4-4.json",
+      "coverage": "Root recorded real original/style/sheet, individual-image limit, two-reference focused, identity translation/repair and final rendering trials. Several identity/style/material/support/camera conditions remain visually unaccepted.",
+      "codeLimit": "All 88 code checks pass; they do not certify reference-pixel fidelity, successful 2D face translation or final generated-image appearance."
+    },
+    "browserAndPublishedSite": {
+      "status": "awaiting root verification",
+      "reason": "these checks do not publish or verify the live browser site"
+    },
+    "preparationAndReferenceRaces": {
+      "status": "passed",
+      "checks": [
+        "scripts/check-source-kind-v28.mjs",
+        "scripts/check-reference-race-v28.mjs"
+      ],
+      "coverage": "60 collection/style/subject routes plus six actual edit-handler races; stale result display/history/count/variation writes cancelled; immutable prompt/file/role snapshots and exact transferred bytes retained; focused routes retain ten selected conditions and omit an empty reference sheet."
+    },
+    "focusedProduction": {
+      "status": "passed code contracts; generated image acceptance separate",
+      "check": "scripts/check-focused-production-v28.mjs",
+      "cases": 556,
+      "media": [
+        "発光幻想アニメ",
+        "薄膜光彩アニメ",
+        "白域幾何・宇宙彩アニメ",
+        "艶彩幻想アニメ"
+      ],
+      "longestOrdinaryFinalCharacters": 3693,
+      "coverage": "Real resolved selection combinations, all 36 camera choices, person/nonhuman/no-person routing, positive distinct methods, closed eyes/hairlessness/coverage/proportions, original style and verified prepared identity ownership, palette warnings, explicit geometry/copy/writing direction, Halloween causal context, preparation repair and no original-face reattachment in final."
+    },
+    "deliveryHistoryMigration": {
+      "status": "passed",
+      "check": "scripts/check-delivery-history-migration-v28.mjs",
+      "coverage": "Stored identifiers/direction/copy/source-kind kept, old image bytes not used, current 10-condition manifest and exact recompiled focused prompt, preparation source only in preparation, final excludes original source filename, atomic failure and incompatible-schema rejection."
+    }
+  },
+  "tests": [
+    {
+      "script": "scripts/check.mjs",
+      "status": "passed",
+      "durationMs": 253,
+      "summary": "578 options / 513 referenced artwork samples, 50 palettes, three modes, scene roles, luminous technique and title-based rendering contract passed."
+    },
+    {
+      "script": "scripts/check-v8.mjs",
+      "status": "passed",
+      "durationMs": 1193,
+      "summary": "PASS contracts: independent article context and optional tag exclusions, 12 everyday scene/clothing bindings to 8 Japanese samples, 100 everyday auto proposals and prompt outputs, full Halloween catalogue restored."
+    },
+    {
+      "script": "scripts/check-poses.mjs",
+      "status": "passed",
+      "durationMs": 602,
+      "summary": "PASS pose contracts: 10 visible items, retained phrases/density, 72 dedicated pose previews, independent left profile and body poses, title-based 10-item instructions, custom pose."
+    },
+    {
+      "script": "scripts/check-production.mjs",
+      "status": "passed",
+      "durationMs": 8640,
+      "summary": "PASS production: 1293 Halloween/everyday choices are concrete and present in final prompts; all 48 format structures; full cover lines/decks, Q&A, spread/newspaper body, cinema billing; no-text/name-only/activity OFF; unresolved inputs blocked. These checks validate instructions, not a guarantee of image-model fidelity."
+    },
+    {
+      "script": "scripts/check-collections-v11.mjs",
+      "status": "passed",
+      "durationMs": 2926,
+      "summary": "v11 collections: ordinary AUTO defaults; explicit fantasy/horror/Halloween scenes, costumes and places without duplicates; retained clothing/closed eyes/pose/camera/limited palette; subject-free scenery, 72 poses and mode restoration passed."
+    },
+    {
+      "script": "scripts/check-handoff-v11.mjs",
+      "status": "passed",
+      "durationMs": 221,
+      "summary": "PASS v11 handoff: obsolete sample metadata cannot affect prompts; character identity stays with the user reference; landscape generation works without attachments; face/body instructions suppressed; restricted media/colors agree; image output and redisplay instructions are explicit."
+    },
+    {
+      "script": "scripts/check-crystal-anime.mjs",
+      "status": "passed",
+      "durationMs": 2421,
+      "summary": "PASS crystal anime: 250 mode/pose/palette/scenery cases; 2D face and facial geometry, contrast, original or limited colors, no preview leakage, closed eyes/no hair, explicit transparency, repair output and legacy media separation. Image resemblance still requires visual review."
+    },
+    {
+      "script": "scripts/check-artwork-recipes.mjs",
+      "status": "passed",
+      "durationMs": 10250,
+      "summary": "PASS detailed recipes: 1293 option occurrences / 9036 exported recipe sections; {\"medium\":118,\"theme\":117,\"place\":53,\"costume\":122,\"pose\":72,\"mood\":43,\"angle\":36,\"palette\":50,\"design\":48,\"type\":26,\"line\":28,\"size\":14}; exact selected instructions, image-reference isolation, palette/medium/lighting conflicts, preserved pose and face direction, limited colors, no-person output, text limits and custom input."
+    },
+    {
+      "script": "scripts/check-staged-production.mjs",
+      "status": "passed",
+      "durationMs": 294,
+      "summary": "PASS staged production: artwork preserves style, identity, pose and palette without editorial/profile instructions; native SVG layout preserves the verified picture, selected two-column format and exact copy without image generation; optional no-person artwork/layout stages suppress human instructions; normal delivery uses one generation; no-text, name-only and simple artwork stay single-stage."
+    },
+    {
+      "script": "scripts/check-editorial-layout.mjs",
+      "status": "passed",
+      "durationMs": 607,
+      "summary": "PASS native editorial layout: six formats × square/wide/tall original images; one uncropped image with contain geometry; spread gutter and aligned A/B body frames; every copy block and escaped character; limited text/colors; invalid image inputs rejected; 4096px size cap reported."
+    },
+    {
+      "script": "scripts/check-item-review.mjs",
+      "status": "passed",
+      "durationMs": 18223,
+      "summary": "PASS item review: 1293 occurrences, 727 distinct options, 11800 medium/palette combinations. Exact inputs, all detailed recipe clauses, actual focused drawing signatures first, explicit production stages and limited-color optics. Image acceptance is separate."
+    },
+    {
+      "script": "scripts/check-option-execution.mjs",
+      "status": "passed",
+      "durationMs": 6898,
+      "summary": "PASS individual execution: 1293 occurrences / 727 options. All 10 contracts and each nested line reach the real ChatGPT integration material; no-person, limited colors and copy boundaries checked. Generated-image quality remains unvalidated."
+    },
+    {
+      "script": "scripts/check-render-regressions.mjs",
+      "status": "passed",
+      "durationMs": 121,
+      "summary": "PASS failed-cover regressions: structured audit material owns side projection, full frame, restricted identity colors, broad crystal optics, explicit requested dimensions and all ten recipes; allowed vermilion/gold are retained; failed output is not frozen as final. Image acceptance is still separate."
+    },
+    {
+      "script": "scripts/check-japan-compatibility.mjs",
+      "status": "passed",
+      "durationMs": 666,
+      "summary": "PASS Japan foundation for every option; incompatible candidates blocked with explicit choices preserved; 600 AUTO combinations; no-person crystal recipe; circular navigation including first-left to last."
+    },
+    {
+      "script": "scripts/check-native-handoff.mjs",
+      "status": "passed",
+      "durationMs": 8815,
+      "summary": "PASS native handoff: 1293 choices; direct image request first; detailed recipe clauses retained in audit; actual focused identity/final stages, copy, frame, color and identity checked; no default JSON or unverified completion; native recovery; mean 8943 chars. ChatGPT 5.5 runtime is not tested here."
+    },
+    {
+      "script": "scripts/check-format-previews.mjs",
+      "status": "passed",
+      "durationMs": 103,
+      "summary": "PASS all 48 design choices use distinct personless layout diagrams; 48 individual SVG views and AUTO samples; Japanese typography and explicit English preserved."
+    },
+    {
+      "script": "scripts/check-preview-updates-v21.mjs",
+      "status": "passed",
+      "durationMs": 110,
+      "summary": "PASS reviewed v21 artwork/palette inventory, both current collections, 38 independent illustrated formats and five declared original scene/costume corrections. All corrected previews have matching UI paths and provenance; optical/anatomical quality is assessed separately by individual visual review."
+    },
+    {
+      "script": "scripts/check-v22.mjs",
+      "status": "passed",
+      "durationMs": 112,
+      "summary": "PASS crystal/hologram whole-subject recipes, no-person isolation, actual orbital direction, swipe direction, five-favorite limit/removal/serialization/mode isolation, header night control."
+    },
+    {
+      "script": "scripts/check-v23.mjs",
+      "status": "passed",
+      "durationMs": 143,
+      "summary": "PASS v23: 38 everyday presets have individual recipes; swimming AUTO binds to water; explicit indoor pool/clothing preserved; daily profile signals contain no Halloween; crystal face is prioritized without global mutation; full clauses retained."
+    },
+    {
+      "script": "scripts/check-inline-share-v23.mjs",
+      "status": "passed",
+      "durationMs": 81,
+      "summary": "PASS native share sends references with the full prompt inline first, avoiding a separate prompt.txt read; ZIP export remains an explicit fallback."
+    },
+    {
+      "script": "scripts/check-v24.mjs",
+      "status": "passed",
+      "durationMs": 141,
+      "summary": "PASS v24: frame reserves floor below both shoes without overriding closeups/no-person; reference clothing excludes loose props; every Halloween scene is seasonal while explicit ordinary clothing, morning, camera, medium, restricted colours and text-off remain intact; all 10 full recipes survive containment deduplication."
+    },
+    {
+      "script": "scripts/check-profile-articles-v25.mjs",
+      "status": "passed",
+      "durationMs": 114,
+      "summary": "PASS profile v25: 75 complete public bodies over three pages, independent optional tags, original dialogue context, bounded representative evidence, compact history, explicit partial reads and repair."
+    },
+    {
+      "script": "scripts/check-transfer-v25.mjs",
+      "status": "passed",
+      "durationMs": 68,
+      "summary": "PASS native image+full-text sharing, unsupported/rejected/cancelled file shares, explicit text retry, and screenshots without MIME; no automatic ZIP or downloads."
+    },
+    {
+      "script": "scripts/check-fidelity-v25.mjs",
+      "status": "passed",
+      "durationMs": 147,
+      "summary": "PASS v25 fidelity: selected drawing process first; facial abstraction and clothing redraw permitted; machine-theme relationships; seasonal story heading and edited Halloween manuscript retain the selected subject; unrelated author biography omitted from world-only copy; dialogue and limited text preserved; disabled tags/activities and no-person medium routing. Native visual acceptance is separate."
+    },
+    {
+      "script": "scripts/check-style-handoff-v26.mjs",
+      "status": "passed",
+      "durationMs": 2968,
+      "summary": "PASS v26: 118 distinct media × two modes × person/scenery = 472 complete drawing contracts; cosmic scene kept; ID lookup delegated before image call; no article/tag corpus; no tool-side fetch or dialogue selector. Maximum 16544 prompt characters. This validates code and instructions, not 460 generated images."
+    },
+    {
+      "script": "scripts/check-central-swipe-v26.mjs",
+      "status": "passed",
+      "durationMs": 81,
+      "summary": "PASS central swipe: sample, image, title and central controls all page horizontally; tap controls preserved; vertical scroll, wrap direction and pointer cancellation retained."
+    },
+    {
+      "script": "scripts/check-scene-input-v26.mjs",
+      "status": "passed",
+      "durationMs": 2919,
+      "summary": "PASS scene image input: 472 medium/world/subject combinations preserve actual integrated world geometry, named reference roles, color and permitted copy; every authored recipe stays in the public review renderer. Focused final uses the verified prepared identity, scoped supporting/avoid sources stay named in the staged handoff, abstract subjects stay planar, and repeated editorial instructions are reduced. Maximum 15857 prompt characters. Actual image quality is not inferred by this test."
+    },
+    {
+      "script": "scripts/check-scene-semantics-v27.mjs",
+      "status": "passed",
+      "durationMs": 216,
+      "summary": "PASS v27 semantics: 48 world/place/person/scenery/motif/emblem combinations keep one selected scene; no old world-to-prop restrictions; world-aware light, custom stories and UI roles are coherent. Instruction validation only, not generated-image quality."
+    },
+    {
+      "script": "scripts/check-style-region-v27.mjs",
+      "status": "passed",
+      "durationMs": 99,
+      "summary": "PASS v27: all 114 scenery styles avoid human detail instructions; reduced media keep marks, planes and negative space."
+    },
+    {
+      "script": "scripts/check-material-fidelity-v27.mjs",
+      "status": "passed",
+      "durationMs": 382,
+      "summary": "PASS v27 material fidelity: 44 composed optical mode/person/palette cases; painted transmission and sculptural material remain distinct; main scenery becomes holographic; correct model texture scale, woodcut light, and selected composition through cubist/futurist/minimal styles."
+    },
+    {
+      "script": "scripts/check-wardrobe-handoff-v27.mjs",
+      "status": "passed",
+      "durationMs": 1365,
+      "summary": "PASS wardrobe handoff: 354 drawing-style/wardrobe combinations use identity separately from clothing; Victorian and firefighter outfits replace reference garments and headwear, while explicit reference-clothing selection retains its construction; no-person output receives no wardrobe directive. Actual image acceptance remains separate."
+    },
+    {
+      "script": "scripts/check-character-identity-v27.mjs",
+      "status": "passed",
+      "durationMs": 4452,
+      "summary": "PASS character identity: 1180 mode/style/palette combinations retain full native/audit recipes and verify actual compact identity/camera/engineering; 140 photographic cases reconstruct anatomy and real materials; 58 hard conflicts stop with reasons and no image request. Non-photo proportions, restricted colors and no-person subjects remain intact. Generated-image adherence is not inferred."
+    },
+    {
+      "script": "scripts/check-collection-startup-v28.mjs",
+      "status": "passed",
+      "durationMs": 107,
+      "summary": "PASS collection startup: saved everyday starts, buttons switch both directions, matching catalogs and labels update, and each mode retains its selected scene/costume/size."
+    },
+    {
+      "script": "scripts/check-added-poses-v28.mjs",
+      "status": "passed",
+      "durationMs": 299,
+      "summary": "PASS 24 added poses / 72 total: both modes expose every action; dedicated support, joint/contact and anatomy checks survive image handoff; face/expression remain independent; 24 matching original person illustrations stay UI-only."
+    },
+    {
+      "script": "scripts/check-unified-scene-angle-v28.mjs",
+      "status": "passed",
+      "durationMs": 3582,
+      "summary": "PASS 145 unified scene presets, stale independent places removed, one public scene contract, 144 camera/person/scenery cases and 36 UI-only angle diagrams."
+    },
+    {
+      "script": "scripts/check-typography-v28.mjs",
+      "status": "passed",
+      "durationMs": 748,
+      "summary": "PASS v28 typography: 12 copy choices and 96 mode/source/person combinations preserve explicit manuscript counts, role-specific editing, matching previews, and selected layout inside ChatGPT integration material; no unrequested factual claims or ID copy."
+    },
+    {
+      "script": "scripts/check-history-storage-v28.mjs",
+      "status": "passed",
+      "durationMs": 717,
+      "summary": "{\"result\":\"PASS history storage: exact prompt/plan/stages/layout/repair; older-format compaction; full 12 histories and 2000 signatures; quota recovery; tight-budget preserves prior save without dropping history; atomic failure; no-codec fallback; stale save and click guards\",\"estimatedUtf16BytesBefore\":3673376,\"estimatedUtf16BytesAfter\":2055556,\"reductionPercent\":44,\"tightBudgetSaveRetained\":true}"
+    },
+    {
+      "script": "scripts/check-camera-geometry-v28.mjs",
+      "status": "passed",
+      "durationMs": 427,
+      "summary": "PASS camera geometry: 14 mode/pose/scene cases retain fixed optical-axis geometry in native, audit, artwork and repair inputs, top-city projection, vertical whole-pose framing and bottom-floor occlusion; automatic face presets cannot move the camera. Image-model adherence remains unverified."
+    },
+    {
+      "script": "scripts/check-selection-integration-v28.mjs",
+      "status": "passed",
+      "durationMs": 244,
+      "summary": "PASS selection integration: 4 user-camera/custom-scene/no-person/limited-copy cases preserve selected source material and hard constraints while the master, artwork and repair handoffs require ChatGPT synthesis before image creation; raw specification forwarding is prohibited and the legacy native-material alias remains compatible. AI synthesis and generated-image adherence are not executed or inferred by this test."
+    },
+    {
+      "script": "scripts/check-halloween-scenes-v28.mjs",
+      "status": "passed",
+      "durationMs": 1663,
+      "summary": "PASS Halloween scenes: 28 seasonal scene contracts (24 stories + 4 locations), 800 automatic/simplified proposals, 32 legacy presets and arbitrary scenes retained; 117 distinct everyday scenes include 83 retained, 27 missing seasonal titles and seven additional legacy places, with ordinary AUTO unchanged; collection restoration checked."
+    },
+    {
+      "script": "scripts/check-all-angles-v28.mjs",
+      "status": "passed",
+      "durationMs": 5287,
+      "summary": "PASS all 36 angles: 432 mode/subject/ink/photo handoffs, 864 automatic facial-view reconciliations, 144 explicit profile choices and 108 fixed-camera pose recipes. Numeric axes, roll, crop, pose, single scene, nonhuman anatomy and advertising selections survive. Image-model adherence remains unverified."
+    },
+    {
+      "script": "scripts/check-illustration-to-photo-v28.mjs",
+      "status": "passed",
+      "durationMs": 21822,
+      "summary": "PASS illustration-to-photo instructions: 14 photographic presets × two modes × person/scenery × three palettes = 168 cases reconstruct illustrated references as optical photographs while retaining identity, selected camera/pose, coverage and color constraints; 2016 combinations retain reconstruction across all 36 angles; 56 exaggerated-reference handoffs use natural photographic proportion translation without the drawing-only ratio lock; 16 non-photo cases and explicit chibi keep their own medium. No AI conversion or generated-image adherence was executed or inferred."
+    },
+    {
+      "script": "scripts/check-picker-navigation-v28.mjs",
+      "status": "passed",
+      "durationMs": 687,
+      "summary": "PASS picker: clear horizontal band at 320/390/620/1024, 1–6 cards and long labels; first open/resize/cancel; 157 categories and 459 pages in both collections; current category; distinct adjacent patterns; left-next/right-previous; recommended/favorite first pages, readonly favorite API/filter/remove/cross-tab events and selected preset restoration; short thumb paging; native vertical pan including bent gestures; taps and intentional orbit preserved."
+    },
+    {
+      "script": "scripts/check-inspiration-theme-v28.mjs",
+      "status": "passed",
+      "durationMs": 118,
+      "summary": "PASS 81 actual app.js inspiration cases: all 28 public Halloween scenes remain eligible, obsolete-only suggestions retain AUTO, mixed suggestions filter before random selection, everyday suggestions and explicit/history/custom values remain unchanged."
+    },
+    {
+      "script": "scripts/check-drawing-flow-v28.mjs",
+      "status": "passed",
+      "durationMs": 118,
+      "summary": "PASS drawing-first flow: canonical questions/defaults/random order, both collections, detail/simple/auto mode switches, 123 real rendered buttons and picker numbers, cached numbering, first tap, preserved selections and random viewport/focus retention."
+    },
+    {
+      "script": "scripts/check-artwork-basis-view-v28.mjs",
+      "status": "passed",
+      "durationMs": 61,
+      "summary": "PASS inline artwork basis: named source/basis/checks/avoid text, documented/synthesis distinction, primary text links, preserved fold state, no new popup/image, stale notes removed."
+    },
+    {
+      "script": "scripts/check-artwork-basis-v28.mjs",
+      "status": "passed",
+      "durationMs": 12229,
+      "summary": "PASS artwork basis: 472 all-media mode/subject cases, 432 all-camera/person/scenery/palette luminous-world handoffs, 16 explicit-proportion mermaid cases, 8 automatic/custom-camera cases and 8 eye/hair applicability cases. Selected camera, pose, scene, restricted colors, text-off and rendering basis survive native, artwork and repair delivery. AI synthesis and image-model adherence remain unverified."
+    },
+    {
+      "script": "scripts/check-artwork-reference-v28.mjs",
+      "status": "passed",
+      "durationMs": 10868,
+      "summary": "PASS artwork references: all 118 distinct bases have technique/check/avoid metadata and documented/synthesis status, 109 retain documentation links and 9 synthesized world bases record reference analysis (3 also retain verified general-process sources); 944 mode/subject/palette handoffs preserve full audit and actual compact engineering, 40 verified-process handoffs, 472 no-person guards and 496 restricted color cases. Source URLs and artist/work titles stay out of generation routes. Source availability and image-model adherence are not inferred by this test."
+    },
+    {
+      "script": "scripts/check-view-compatibility-v28.mjs",
+      "status": "passed",
+      "durationMs": 1387,
+      "summary": "PASS all 43 moods / 72 poses / 36 angles; 111456 selection combinations (2686 blocked, 27900 warning); all 6 selection orders; AUTO-only correction; 54 preset-preserving handoff cases; unsupported direct inputs disclose conflicts. No images generated."
+    },
+    {
+      "script": "scripts/check-selection-feedback-v28.mjs",
+      "status": "passed",
+      "durationMs": 95,
+      "summary": "PASS selection feedback: the reported camera conflict is visible on both fields and the candidate; edit actions open the correct field, values are preserved, unchanged issues stay quiet, and cleared/warning states do not leave stale blockers."
+    },
+    {
+      "script": "scripts/check-history-persistence-v28.mjs",
+      "status": "passed",
+      "durationMs": 1102,
+      "summary": "{\"result\":\"PASS IndexedDB/history persistence: full 12 histories/2000 signatures, exact prompt/variant/plan/stages/repair, legacy keys preserved, full local fallback, no-codec fallback, cross-tab atomic merge, clear epoch, quota and commit failure, bounded blocked/open timeout, startup awaits read\",\"beforeUtf16Bytes\":3004250,\"afterUtf16Bytes\":2066740,\"reductionPercent\":31}"
+    },
+    {
+      "script": "scripts/check-luminous-world-core-v28.mjs",
+      "status": "passed",
+      "durationMs": 1130,
+      "summary": "PASS luminous drawing core: 216 camera/person/scenery/palette cases require drawn 2D faces and world-wide internal color-layer emission while preserving original material, brown hair, selected camera, pose, body proportions and limited colors. This checks instructions against the supplied failure, not generated-image appearance."
+    },
+    {
+      "script": "scripts/check-copy-content-scope-v28.mjs",
+      "status": "passed",
+      "durationMs": 250,
+      "summary": "PASS reader-copy scope: 96 mode/typography/source/subject combinations keep production settings out of copy sources and fixed text; supplied newspaper fixture retains six roles, one image, readable feature columns and hard camera across native, artwork and repair routes. AI editing and generated-image adherence remain unverified."
+    },
+    {
+      "script": "scripts/check-newspaper-copy-scope-v28.mjs",
+      "status": "passed",
+      "durationMs": 1962,
+      "summary": "PASS newspaper copy scope: 96 explicit typography/source/subject/mode combinations retain their allowed roles and editable source copy; 20 ordinary/limited/no-text cases keep one main image; 96 sparse-copy anime/real/portrait/landscape cases send the six-column, three-band newspaper priority near the opening and preserve a 31% image container, empty columns, structural rules and exact permitted copy in native composition. No images generated."
+    },
+    {
+      "script": "scripts/check-creator-draft-v28.mjs",
+      "status": "passed",
+      "durationMs": 533,
+      "summary": "PASS creator draft: 4 × 12MB exact Blob/File restoration, ID/name/activity, role-only writes, crop-original lazy load/restore, atomic quota/abort preservation, separate committed resets, stale queue/tab epochs, bounded open, no localStorage/base64/network, startup typing merge, URL disposal and reset/decode/generation races, 1200px UI-only previews with original clipboard/share bytes and disposed result DOM."
+    },
+    {
+      "script": "scripts/check-random-selections-v28.mjs",
+      "status": "passed",
+      "durationMs": 1764,
+      "summary": "PASS fresh AUTO selections: 1440 resolutions across 3 modes / 2 collections, 12 deterministic-RNG proposal batches, 30 actual camera handoffs; fixed choices preserved, compatible pool sampling, recent tuples avoided, finite/incompatible combinations retain reasons. No images generated."
+    },
+    {
+      "script": "scripts/check-random-direction-v28.mjs",
+      "status": "passed",
+      "durationMs": 1044,
+      "summary": "PASS random effective directions: 152 final production/compiled/material deliveries across both collections; AUTO rear camera, constant RNG, nonrecent expressions, all 36 angles, explicit mood preservation, compact history, finite honest reuse and no-person subjects. No images generated."
+    },
+    {
+      "script": "scripts/check-medium-conflicts-v28.mjs",
+      "status": "passed",
+      "durationMs": 4225,
+      "summary": "PASS medium conflicts: 472 all-118 style/mode/subject cases keep the individual scenery method, source isolation and selected axes; 432 optical camera/subject cases retain transparent construction without fixed facial measurements, imposed motion or reduced clothing occlusion. No generation or refusal-cause inference."
+    },
+    {
+      "script": "scripts/check-memory-resources-v28.mjs",
+      "status": "passed",
+      "durationMs": 209,
+      "summary": "{\"result\":\"PASS memory/read resources: pre-decode dimension limits, unchanged original bytes, 1200px previews, one uncropped layout bitmap, no image base64 in SVG overlay, canvas/URL/image cleanup including failure/cancellation, sequential reference board, history read caching/singleflight, cross-tab notifications, visible/BFCache refresh, authoritative compact records, clear epoch, unsupported-channel fallback, bounded 2-record restored cache\",\"samePageHistoryReadsBefore\":101,\"samePageHistoryReadsAfter\":1,\"decodedPreviewPixels\":1080000,\"sourcePixels\":12000000,\"imageLimit\":{\"maxPixels\":64000000,\"maxEdge\":16384,\"previewEdge\":1200},\"measurement\":\"Node instrumented control flow and resource lifecycle; browser native heap and image rendering not measured\"}"
+    },
+    {
+      "script": "scripts/check-medium-conversion-v28.mjs",
+      "status": "passed",
+      "durationMs": 2928,
+      "summary": "PASS medium conversion: 944 style/mode/subject instruction routes; 112 drawing-to-photo, 832 reference-surface-to-selected-drawing, 708 scenery/motif/icon cases. No input-pixel interpretation or generated-image verification."
+    },
+    {
+      "script": "scripts/check-reference-worlds-v28.mjs",
+      "status": "passed",
+      "durationMs": 4242,
+      "summary": "PASS reference worlds: 453 selected medium/world/subject/palette cases retain authored recipes through native, master prompt, artwork and repair; 74 real-photo routes and 168 no-person cases. Checks cover selected camera, pose and closed eyes, variable/restricted palettes and worlds independent of costume/pose. Reference-pixel identity and generated-image appearance remain unverified."
+    },
+    {
+      "script": "scripts/check-drawing-reference-transfer-v28.mjs",
+      "status": "passed",
+      "durationMs": 254,
+      "summary": "PASS actual drawing transfer: separate anime/real transparent assets, unrelated genres excluded, cached/retryable preparation, unchanged user bytes, 5-image native share + full prompt, original PNG in ZIP, history metadata without image blobs. Image-model fidelity is assessed separately."
+    },
+    {
+      "script": "scripts/check-halloween-copy-contract-v28.mjs",
+      "status": "passed",
+      "durationMs": 120,
+      "summary": "PASS Halloween story and copy contract: 960 format/type/source/subject/mode combinations preserve selections, adapt ordinary themes into seasonal stories, season newspaper headlines and bodies, keep exact user text and text-off, and leave everyday themes unrestricted. Generated-image adherence is not asserted."
+    },
+    {
+      "script": "scripts/check-source-kind-v28.mjs",
+      "status": "passed",
+      "durationMs": 720,
+      "summary": "PASS source input routes: 60 collection/style/subject cases; all generation/repair contracts; unknown character defaults and explicit non-person output across real generate/modes/shuffle/proposals; ChatGPT direct identity placeholder and bundle main-reference validation; saved-kind regeneration."
+    },
+    {
+      "script": "scripts/check-pose-anatomy-v28.mjs",
+      "status": "passed",
+      "durationMs": 177,
+      "summary": "PASS internal pose anatomy contracts: 72 poses × 3 immutable identity descriptors; support, hand/face overlap, automatic/no-person/fish-tail exceptions; 32 artwork and repair routes. Source pixels and generated-image anatomy are not tested."
+    },
+    {
+      "script": "scripts/check-style-presets-v28.mjs",
+      "status": "passed",
+      "durationMs": 3634,
+      "summary": "PASS 118 assistant style presets: distinct existing images, exact original bytes and MIME, local validated catalog/cache/retry, separate character + preset transfer, 2832 prompt/stage/repair routes, no jewel or sample-identity/scene/palette leakage. Generated appearance requires visual review."
+    },
+    {
+      "script": "scripts/check-preset-handoff-v28.mjs",
+      "status": "passed",
+      "durationMs": 159,
+      "summary": "PASS preset UI and real app handoff: 118 options, AUTO/custom sync, distinct original character and luminous preset + full text share, copy warning, original images in ZIP, reloadable history metadata, no user-style-upload controls. Browser layout is not evaluated by this test."
+    },
+    {
+      "script": "scripts/check-pose-illustrations-v28.mjs",
+      "status": "passed",
+      "durationMs": 93,
+      "summary": "PASS 24 original individual raster pose previews: real square JPEGs, preserved generation resolution, independent hashes/prompts, matching UI assets and per-image visual review records. Existing 48 illustration assets retained."
+    },
+    {
+      "script": "scripts/check-single-item-random-v28.mjs",
+      "status": "passed",
+      "durationMs": 130,
+      "summary": "PASS 100 single-item draws: only one actual compatible option changes, inputs stay intact, no-person rejects body poses and monochrome style remains fixed."
+    },
+    {
+      "script": "scripts/check-reference-race-v28.mjs",
+      "status": "passed",
+      "durationMs": 314,
+      "summary": "PASS reference races: six actual edit handlers during a delayed style-image load cancel display, history, count and variation writes; immutable metadata/file/role snapshots; exact transfer bytes; late attachment preserves choices and prepares current references with a separate preset."
+    },
+    {
+      "script": "scripts/check-proportions-v28.mjs",
+      "status": "passed",
+      "durationMs": 298,
+      "summary": "PASS 40 actual normal/staged/repair handoffs preserve chibi-reference proportions across unknown/illustration inputs and luminous/crystal/polygon styles; no-person output stays isolated."
+    },
+    {
+      "script": "scripts/check-picker-random-v28.mjs",
+      "status": "passed",
+      "durationMs": 146,
+      "summary": "PASS picker random: 4 real picker/app-handler routes across ring/list, category filters and comparison reveal the new selected value without closing or changing other fields; incompatible draw preserves the filtered view; AUTO size updates both selections and chosen proposal."
+    },
+    {
+      "script": "scripts/check-luminous-transfer-v28.mjs",
+      "status": "passed",
+      "durationMs": 1598,
+      "summary": "PASS 30 actual luminous handoffs retain whole-body anime/real light and replacement assets; 84 independent 116/117/118 mode/palette/person-scene cases propagate their dedicated lighting through actual/native/audit/artwork/repair, plus 7 white-area attentions. Natural and explicitly limited identity colours remain distinct. Appearance still requires image review."
+    },
+    {
+      "script": "scripts/check-night-ui-v28.mjs",
+      "status": "passed",
+      "durationMs": 265,
+      "summary": "PASS night UI: persisted night and live collection switches replace actual hero/ornament/game DOM, remove Halloween monsters and cancel stale timers; distinct ordinary day/night motifs; header ON/OFF; both paired night palettes and 72 effective selected/unselected/hover button pairs meet 4.5 contrast; the prior :is specificity failure is reproduced."
+    },
+    {
+      "script": "scripts/check-favorites-panel-v28.mjs",
+      "status": "passed",
+      "durationMs": 94,
+      "summary": "PASS favorites shelf: persistent main-page preview/category/select/remove controls; all category filters; exact single-item pick dispatch; independent collection contents and filter restoration; deletion/empty state; no duplicate filter after updates."
+    },
+    {
+      "script": "scripts/check-history-management-v28.mjs",
+      "status": "passed",
+      "durationMs": 126,
+      "summary": "{\"result\":\"PASS history management: per-item and all deletion, exact undo, count and byte caps, unchanged current references, no image data in history, cross-tab stale resurrection and unsafe undo blocked, cancelled writes, older over-budget history can shrink\",\"limit\":12,\"byteBudget\":4194304,\"repeatLimit\":2000}"
+    },
+    {
+      "script": "scripts/check-scene-preview-coverage-v28.mjs",
+      "status": "passed",
+      "durationMs": 268,
+      "summary": "PASS 1293 choices across both collections (1181 visible), plus 24 automatic preview montages: every built-in choice has a genuine image, reference, automatic montage, typography, phrase or size preview; 12 original scenery illustrations replace title-only cards and eight original scenes replace mismatched previews and one distinct star-thread workshop replaces a shared skylight room. Byte checks are separate from recorded visual QA."
+    },
+    {
+      "script": "scripts/check-effective-copy-v28.mjs",
+      "status": "passed",
+      "durationMs": 1926,
+      "summary": "PASS effective copy: 9984 combinations across all 48 designs, 26 visible text controls, Halloween/everyday, person/scenery and fixed/source-edited manuscript; 120 real integration inputs; explicit roles replace defaults, image-only auto stays blank, no duplicate copy, and remembered dialogue stays within permission."
+    },
+    {
+      "script": "scripts/check-editorial-selected-layout-v28.mjs",
+      "status": "passed",
+      "durationMs": 1596,
+      "summary": "PASS selected editorial layout: 1872 collection/design/explicit-copy/source-aspect cases preserve every manuscript block exactly once in primary copy frames; one complete image, spread safety, no copy-frame collisions, and readable six-role advertising fixtures. No images were generated."
+    },
+    {
+      "script": "scripts/check-compact-production-v28.mjs",
+      "status": "passed",
+      "durationMs": 499,
+      "summary": "compact production: 28 semantic comparisons and 9 actual integration cases passed; maximum detailed-length ratio 0.515"
+    },
+    {
+      "script": "scripts/check-selection-reference-sheet-v28.mjs",
+      "status": "passed",
+      "durationMs": 707,
+      "summary": "PASS selected reference sheet: 1181 registered collection choices / 538 real assets; ten conditions with scoped applicable visuals and no redundant size/no-copy diagrams with no duplicate medium, SVG fragment views, bounded sequential decode, release and timeout failures, explicit manuscript only; actual generate/share/ZIP identity→style→sheet delivery, legacy history reconstruction, optional individual-image comparison ZIP and actual app handler with intact original files, separately compiled roles, unchanged production and failure-button recovery. Image quality and browser layout are not evaluated by mocked canvas.",
+      "deliveryMeaning": "Four focused media omit the default condition sheet while retaining ten selections; other media use applicable scoped visuals. Individual images remain comparison material, not an all-images recommendation."
+    },
+    {
+      "script": "scripts/check-creator-copy-handoff-v28.mjs",
+      "status": "passed",
+      "durationMs": 292,
+      "summary": "PASS 20 real-plan actual handoffs: no author research/context for blank, literal HALLOWEEN and scene-only copy; unresolved name-only lookup; public-activity source lookup preserved; saved profile unchanged; all ten focused conditions survive with no sheet/style duplication, and optional comparison labels, roles and original sources match."
+    },
+    {
+      "script": "scripts/check-angle-diagrams-v28.mjs",
+      "status": "passed",
+      "durationMs": 221,
+      "summary": "{\"result\":\"PASS visible angle-diagram geometry: all 36 technical diagrams; exact side-view pitch, top-view yaw, whole-image roll; no stick figure or unrequested fixed axes; crop/lens/layout distinctions; 70-degree visible surfaces in actual handoffs\",\"kindCounts\":{\"pitch\":11,\"yaw\":3,\"position\":4,\"roll\":2,\"crop\":5,\"frame\":2,\"lens\":3,\"subjective\":1,\"layout\":5},\"measurements\":[{\"file\":\"angle-001.svg\",\"pitch\":0,\"yaw\":0},{\"file\":\"angle-002.svg\",\"yaw\":45},{\"file\":\"angle-003.svg\",\"yaw\":90},{\"file\":\"angle-005.svg\",\"yaw\":135},{\"file\":\"angle-007.svg\",\"pitch\":14.999999961741429},{\"file\":\"angle-008.svg\",\"pitch\":29.999999968670377},{\"file\":\"angle-009.svg\",\"pitch\":44.999999999999986},{\"file\":\"angle-010.svg\",\"pitch\":70.00000007530446},{\"file\":\"angle-011.svg\",\"pitch\":90},{\"file\":\"angle-013.svg\",\"pitch\":-14.999999961741429},{\"file\":\"angle-014.svg\",\"pitch\":-29.999999968670377},{\"file\":\"angle-015.svg\",\"pitch\":-44.999999999999986},{\"file\":\"angle-016.svg\",\"pitch\":-70.00000007530446},{\"file\":\"angle-017.svg\",\"pitch\":-90},{\"file\":\"angle-019.svg\",\"roll\":14.999999976368944},{\"file\":\"angle-020.svg\",\"roll\":29.99999996517674}],\"handoffs\":4}"
+    },
+    {
+      "script": "scripts/check-layout-distinction-v28.mjs",
+      "status": "passed",
+      "durationMs": 566,
+      "summary": "PASS 48 unique personless design structures, 26 manuscript layouts, exact limited-copy counts and 337 selection routes. No generated artwork acceptance is asserted."
+    },
+    {
+      "script": "scripts/check-layout-copy-conflicts-v28.mjs",
+      "status": "passed",
+      "durationMs": 108,
+      "summary": "PASS 96 design/no-copy combinations: incompatible word-led posters remain explicit; AUTO preserves no copy; magazine roles stay eleven in inner pages; newspaper adverts retain horizontal writing."
+    },
+    {
+      "script": "scripts/check-editorial-writing-directions-v28.mjs",
+      "status": "passed",
+      "durationMs": 612,
+      "summary": "PASS actual editorial writing directions: 900 mode/design/type/language cases preserve the selected horizontal, vertical or diagonal roles, exact copy quantity, three poem rows, safe bounds and one complete artwork; newspapers retain the matching 31% artwork and six-column/three-band skeleton. No images generated."
+    },
+    {
+      "script": "scripts/check-delivery-history-migration-v28.mjs",
+      "status": "passed",
+      "durationMs": 216,
+      "summary": "PASS delivery history: old archive/cache preserved; current style and selection manifest paired with exact recompiled prompt; saved manuscript, direction, source kind and identifiers retained; old image bytes discarded; fresh preparation retained; incompatible schemas and compile failure fail atomically. No generated-image quality claim."
+    },
+    {
+      "script": "scripts/check-focused-production-v28.mjs",
+      "status": "passed",
+      "durationMs": 5315,
+      "summary": "PASS focused production: 556 real resolved selections; four positive media, all camera options, source/no-person, palettes, design/copy direction, exact copy, two-stage identity, no unnecessary sheet or undefined/foreign-layout leakage. Longest ordinary final 3693 characters. Generated image quality remains unaccepted."
+    }
+  ],
+  "legacyOptionalChecks": {
+    "status": "unavailable",
+    "scripts": [
+      "scripts/check-effects-v24.mjs",
+      "scripts/check-picker-v18.mjs",
+      "scripts/check-preparation.mjs"
+    ],
+    "reason": "These three older integration helpers are not in package.check and require jsdom, which is not installed in this project or the primary runtime. No dependency or previous production behavior was changed to run them.",
+    "replacementCoverage": [
+      "scripts/check-night-ui-v28.mjs",
+      "scripts/check-picker-navigation-v28.mjs",
+      "scripts/check-picker-random-v28.mjs",
+      "scripts/check-transfer-v25.mjs",
+      "scripts/check-native-handoff.mjs",
+      "scripts/check-inline-share-v23.mjs",
+      "scripts/check-collection-startup-v28.mjs"
+    ]
+  },
+  "pendingAfterFirstRun": [],
+  "finalVerification": {
+    "completedAt": "2026-10-09T14:37:19.155Z",
+    "version": "28.4.4",
+    "declaredChecks": 88,
+    "passed": 88,
+    "failed": 0,
+    "execution": "All 88 declared package.check scripts ran independently in one three-worker batch after final layout/source freeze. No enumerated code, test, reference-image or audit input changed during the run; no targeted rerun is substituted for this result.",
+    "batch": {
+      "startedAt": "2026-10-09T14:36:16.678Z",
+      "finishedAt": "2026-10-09T14:37:19.155Z",
+      "passed": 88,
+      "failed": 0,
+      "changedDuringRun": []
+    },
+    "inputFileCount": 899,
+    "fingerprintScope": "All root code/config/HTML/CSS/SVG and PNG/JPEG/WebP/GIF/AVIF raster references plus recursively matched scripts, assets and dependent audit JSON/SVG/image inputs. Only this final regression report is excluded to avoid hashing its own result.",
+    "validatedInputAggregateSha256": "0ca8900ade3f0dfe345c3978f9d2cc1a4603055201b484690c2dd3b8ea05b515",
+    "headAtVerification": "14d8fd8b0e71a98ba493fe301a4e2a1382e2ec3b",
+    "sourceSha256": {
+      "app.js": "b2e9233465269beccc708b8f0edf13802cc47c9a7a8580ab3fa307779a312007",
+      "prompt.js": "0450f772608b7aea20dcbe550648e6284aa0b6d384111a7b39003572e5be6aef",
+      "production-plan.js": "aa0b77e6958373f82451c62817d8d869080e9c2fb0053316ef4521f2fc43e3e1",
+      "focused-production.js": "81e1dd3358192d8dce7ec05e10aeba589086fd566adb07e5abbf6d62d0c8c619",
+      "compact-production.js": "d53c0a0a038a08f8902e05aca3ba64053ac36366782046ecdb728206377c37c8",
+      "compiled-production.js": "dce73b57885f58761630c3d71e8800043b3195eee7be79521ba7fcfc8ac5783a",
+      "production-workflow.js": "a179e51cf66c7bacf269a9c7844cf3cc2d975039487142e89b2a99da35e28267",
+      "attachment-policy.js": "1cb2f117cdecff312f4b24050577519e781bcc7861905ec4b60582724fc53ea4",
+      "selection-references.js": "bb62b9ea143ba04cf6c3a566cda04316f3d4674531392e84be248d4dfe7f97ee",
+      "examples.js": "23244110add83dc7410eca7c682214298f539490007ed094c105a0ca7ef352b5",
+      "package.json": "4f2919fdd3515d4384d39be4b1cc2cebc7b1bd1c82ebbfd148999871891647b5",
+      "layout-preview-specs.js": "247fea0e502b49c3949b43c7c80f0fe72cc2c4fd6ae21ea6f71b2c1688309255",
+      "layout-previews-v28.svg": "53c0196b406b4b090499e5a15f570cdb3df69d86e5e5294db9b7ceb4e9154444",
+      "format-recipes.js": "b951e814e5117b32ee993d98fcb31b2f186169a9a945ac522ee9bb76160fb5c5",
+      "formats.js": "3d483b84307b812549cde28913382729924682bb10dae212ae405076d038c79b",
+      "editorial-layout.js": "0bc7f26a4f7e8c8cf1271e10bf43fbba31118cc3db68b9b91a37ff80f09dac5b",
+      "audit/layout-distinction-v28.json": "07632d013f288dd837cad6afe67d2bbb6f15c6d201990617214b7c9933b5aa8f"
+    },
+    "localLogs": {
+      "text": "/workspace/scratch/ad16ee694a48/check-v2844-final-layout-88.log",
+      "json": "/workspace/scratch/ad16ee694a48/check-v2844-final-layout-88.json"
+    },
+    "browserVerification": "Local browser automation was unavailable because Chromium is not installed; root owns live browser verification separately.",
+    "postRunInputComparison": {
+      "changedInputs": [],
+      "verifiedFileCount": 899
+    }
+  },
+  "nextIntegration": {
+    "status": "code and layout integration complete; live browser verification belongs to root; generated-image appearance not accepted",
+    "reason": "The final 88 declared checks passed after source freeze with all 899 code, test, reference-image and dependent audit inputs unchanged. Root owns publication and live browser verification. Visual generation failures remain recorded in the separate image review."
+  },
+  "previousVerification": {
+    "completedAt": "2026-10-09T13:31:39.526Z",
+    "version": "28.4.4",
+    "declaredChecks": 86,
+    "passed": 86,
+    "failed": 0,
+    "execution": "86 independent checks in a three-worker batch, followed by real-helper VM fixture fixes and three targeted current-test reruns. The sources and assets did not change during the batch or subsequent fixture reruns.",
+    "batch": {
+      "startedAt": "2026-10-09T13:27:17.018Z",
+      "finishedAt": "2026-10-09T13:28:13.068Z",
+      "passed": 84,
+      "failedBeforeVMFixtureUpdate": 2,
+      "changedDuringRun": []
+    },
+    "changedAfterBatch": [
+      "scripts/check-layout-copy-conflicts-v28.mjs",
+      "scripts/check-reference-race-v28.mjs",
+      "scripts/check-source-kind-v28.mjs"
+    ],
+    "changedSourceOrAssetsAfterBatch": [],
+    "inputFileCount": 361,
+    "validatedInputAggregateSha256": "c01a3d77107f32869c1c27dabd5a5b07ddde85e0b1e6874e340e0177e64760f1",
+    "headAtVerification": "14d8fd8b0e71a98ba493fe301a4e2a1382e2ec3b"
+  },
+  "integrationCheckpoints": [
+    {
+      "startedAt": "2026-10-09T14:00:36.347Z",
+      "finishedAt": "2026-10-09T14:01:18.295Z",
+      "count": 87,
+      "passed": 69,
+      "failed": 18,
+      "changedDuringRun": []
+    },
+    {
+      "startedAt": "2026-10-09T14:16:50.404Z",
+      "finishedAt": "2026-10-09T14:17:54.819Z",
+      "count": 88,
+      "passed": 87,
+      "failed": 1,
+      "changedDuringRun": [
+        "focused-production.js",
+        "scripts/check-focused-production-v28.mjs"
+      ],
+      "note": "Focused source/test changed during this checkpoint. The one failing format-preview label still promised a sheet despite the revised focused policy; updated narrow comparison role and no-sheet-promise assertions before the stable final run."
+    }
+  ],
+  "resolvedSourceDefects": [
+    {
+      "defect": "Focused raw-reference route could lose the exact source identity name or legacy auxiliary-role name.",
+      "resolution": "Source owners retained exact named identity purpose in preparation and auxiliary/support/avoid purpose in the staged handoff; final uses verified prepared identity and selected original style only.",
+      "checks": [
+        "scripts/check-proportions-v28.mjs",
+        "scripts/check-scene-input-v26.mjs",
+        "scripts/check-reference-race-v28.mjs"
+      ]
+    },
+    {
+      "defect": "Legacy saved plans lacking selected performance or public angle could print undefined into actual focused repair/final inputs.",
+      "resolution": "Resolve missing performance through the normal direction resolver; when angle is absent, retain the saved camera and distance explicitly rather than stringify a missing value.",
+      "checks": [
+        "scripts/check-luminous-transfer-v28.mjs",
+        "scripts/check-scene-input-v26.mjs",
+        "scripts/check-focused-production-v28.mjs"
+      ]
+    },
+    {
+      "defect": "White-area medium warnings disappeared from focused execution.",
+      "resolution": "Preserve actual warning meaning, including restricted gold/black selections, in final image input.",
+      "checks": [
+        "scripts/check-luminous-transfer-v28.mjs",
+        "scripts/check-focused-production-v28.mjs"
+      ]
+    },
+    {
+      "defect": "Focused world condensation needed selected cosmic/candy/planar geometry rather than only the world title.",
+      "resolution": "Actual final keeps continuous cosmic space, shared candy material/support light, planar negative constraints and chosen stage structure without importing unrelated generic lighting.",
+      "checks": [
+        "scripts/check-scene-input-v26.mjs",
+        "scripts/check-unified-scene-angle-v28.mjs"
+      ]
+    }
+  ],
+  "focusedTestAdaptation": {
+    "principle": "Actual focused execution is checked independently for all selected constraints, positive medium techniques, identity/proportions, opacity, visible camera/occlusion, allowed color/value hierarchy, selected layout/copy/writing direction, Halloween causality, dimensions and verified stages. Full authored recipe literals remain in the public detailed recipe/native/audit renderers; they are not substitutes for actual focused checks.",
+    "nonFocused": "Existing actual literal checks for other media and photographic execution are retained. Named-reference grammar accepts only exact legacy or exact typed-manifest identity-role text.",
+    "independentReview": "An independent read-only review of newspaper, scene and native tests found no material actual-condition check moved entirely to the review renderer.",
+    "additionalAssertions": [
+      "All ten conditions stay in focused manifests despite zero default sheet images.",
+      "Common preview labels must state comparison role without promising an omitted sheet.",
+      "Exact immutable source bytes and filenames survive six actual UI edit races.",
+      "Supporting and previous-work sources stay scoped and cannot replace the selected person/style/costume/composition or prohibit correct current choices.",
+      "Identity repair takes failed prepared image plus style; source photo remains conversation-side comparison only.",
+      "Biological horns/ears are retained while removable costume accessories are excluded."
+    ]
+  },
+  "stable88BeforeLayoutRefinement": {
+    "completedAt": "2026-10-09T14:19:42.477Z",
+    "version": "28.4.4",
+    "declaredChecks": 88,
+    "passed": 88,
+    "failed": 0,
+    "execution": "All 88 declared package.check scripts ran independently in one three-worker batch after final source freeze; no application/source/test/asset inputs changed during this run. No targeted rerun is substituted for this final result.",
+    "batch": {
+      "startedAt": "2026-10-09T14:18:36.789Z",
+      "finishedAt": "2026-10-09T14:19:42.477Z",
+      "passed": 88,
+      "failed": 0,
+      "changedDuringRun": []
+    },
+    "inputFileCount": 366,
+    "validatedInputAggregateSha256": "15afcd51949462716900ed8d981f3ab61879ff2151edea480c6eaa4e89f68538",
+    "headAtVerification": "14d8fd8b0e71a98ba493fe301a4e2a1382e2ec3b",
+    "sourceSha256": {
+      "app.js": "b2e9233465269beccc708b8f0edf13802cc47c9a7a8580ab3fa307779a312007",
+      "prompt.js": "0450f772608b7aea20dcbe550648e6284aa0b6d384111a7b39003572e5be6aef",
+      "production-plan.js": "aa0b77e6958373f82451c62817d8d869080e9c2fb0053316ef4521f2fc43e3e1",
+      "focused-production.js": "81e1dd3358192d8dce7ec05e10aeba589086fd566adb07e5abbf6d62d0c8c619",
+      "compact-production.js": "d53c0a0a038a08f8902e05aca3ba64053ac36366782046ecdb728206377c37c8",
+      "compiled-production.js": "dce73b57885f58761630c3d71e8800043b3195eee7be79521ba7fcfc8ac5783a",
+      "production-workflow.js": "a179e51cf66c7bacf269a9c7844cf3cc2d975039487142e89b2a99da35e28267",
+      "attachment-policy.js": "1cb2f117cdecff312f4b24050577519e781bcc7861905ec4b60582724fc53ea4",
+      "selection-references.js": "bb62b9ea143ba04cf6c3a566cda04316f3d4674531392e84be248d4dfe7f97ee",
+      "examples.js": "23244110add83dc7410eca7c682214298f539490007ed094c105a0ca7ef352b5",
+      "package.json": "4f2919fdd3515d4384d39be4b1cc2cebc7b1bd1c82ebbfd148999871891647b5"
+    },
+    "localLogs": {
+      "text": "/workspace/scratch/ad16ee694a48/check-v2844-final-stable-88.log",
+      "json": "/workspace/scratch/ad16ee694a48/check-v2844-final-stable-88.json"
+    },
+    "browserVerification": "Unavailable in this local QA environment because Chromium is not installed; root will verify the published site separately.",
+    "fingerprintScope": "Root JS/CSS/HTML/JSON/SVG and recursively matched scripts/assets. Top-level 527 PNG/JPEG assets are independently checked by relevant image suites but were not included in this earlier aggregate. The next final aggregate expands to include those raster assets too."
+  },
+  "layoutRefinement": {
+    "status": "integrated and code verified",
+    "trigger": "Root visual review found three layout pairs too similar despite their earlier unique geometry hashes.",
+    "changes": {
+      "ゴシック雑誌の表紙": "Left narrow pointed arch/image region [9,26,49,61] and separate right information axis.",
+      "インタビュー誌面": "Fixed upper wide image region [5,22,90,34] and lower three matching Q&A columns; source aspect cannot restore the former left/right split.",
+      "ゲームのパッケージ": "Central image region [5,21,90,45] and lower separate 58%/27% information panels."
+    },
+    "semanticGuards": "Exact geometry, frame regions, drawing/input contracts, three visibly distinct structures and negative checks for obsolete conflicting layout instructions. Preview, recipes, fallback and native composition use the new structure.",
+    "nativeContain": "All six native format fixtures across square/wide/tall sources assert largest complete-image contain dimensions and exact centering, original bytes, no crop/transform/filter/mask, no copy loss or overlap. Interview container is exactly 30.6% of page area; portrait sources remain whole rather than being cropped to inflate displayed area.",
+    "independentVisualReview": "QA inspected three-pairs-before-after.png; the refined 04/08/15 structures are visibly distinguishable from their former layouts and listed comparison neighbors. This is a page-geometry review, not generated artwork acceptance.",
+    "audit": "audit/layout-distinction-v28.json",
+    "selectedLayoutCases": 1872,
+    "writingDirectionCases": 900,
+    "effectiveCopyCases": 9984
+  }
+}

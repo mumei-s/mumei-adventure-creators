@@ -38,6 +38,20 @@ import {createCreatorDraft} from './creator-draft.js?v=28.4.6';
 import {randomItemSelection} from './random-selections.js?v=28.4.6';
 const APP_VERSION='28.4.7';
 const $=id=>document.getElementById(id),STORAGE='mumeis-halloween-v2';
+// Always provide an explicit way to fold long help text back into one compact row.
+const mixGuide=$('mix-guide');
+mixGuide?.addEventListener('toggle',()=>{
+ if(!mixGuide.open){const repair=mixGuide.querySelector('.mix-repair-hints');if(repair)repair.open=false;}
+});
+document.querySelectorAll('[data-close-mix]').forEach(button=>button.addEventListener('click',()=>{
+ const panel=button.dataset.closeMix==='repair'?mixGuide?.querySelector('.mix-repair-hints'):mixGuide;
+ if(!(panel instanceof HTMLDetailsElement))return;
+ if(panel===mixGuide){const repair=panel.querySelector('.mix-repair-hints');if(repair)repair.open=false;}
+ panel.open=false;
+ const summary=panel.querySelector(':scope > summary');
+ summary?.focus({preventScroll:true});
+ summary?.scrollIntoView({block:'nearest',behavior:'auto'});
+}));
 let saved={history:[],used:[],count:0},view='auto',migrateHistory=false,historyWriteRevision=0,resultRequest=0,historyReady=Promise.resolve();
 const historyPersistence=createHistoryPersistence({key:STORAGE});
 const creatorDraft=createCreatorDraft();

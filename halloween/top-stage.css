@@ -673,3 +673,80 @@ body[data-motion=off] .hero-spectacle :is(.hero-pumpkin,.hero-ghost,.hero-prism,
 body[data-motion=off] .hero-spectacle .hero-ghost svg ellipse{
   animation:none!important;will-change:auto!important;
 }
+
+/* TOP dock v28.4.14: decoration is a FIRST-ROW control, never
+   underneath the game or left in a late row of the TOP dock. */
+.atelier-deck .deck-primary{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  grid-template-areas:
+    "collection effects"
+    "size actions";
+  align-items:stretch;
+  gap:10px;
+}
+.atelier-deck .deck-primary > .collection-bar{
+  grid-area:collection;
+  min-width:0;
+  align-self:stretch;
+  align-content:center;
+}
+.atelier-deck .deck-primary > .deck-effects{
+  grid-area:effects;
+  grid-column:auto;
+  min-width:0;
+  margin:0;
+  align-self:stretch;
+  justify-content:flex-start;
+  align-content:center;
+}
+.atelier-deck .deck-primary > .deck-secondary{
+  grid-area:size;
+  display:flex;
+  align-items:stretch;
+  min-width:0;
+  margin:0;
+  padding:0;
+  border:0;
+  background:transparent;
+}
+.atelier-deck .deck-primary > .deck-secondary > .deck-size{
+  width:100%;
+  min-width:0;
+  flex:1 1 auto;
+}
+body[data-collection] .atelier-deck .deck-primary > .deck-secondary .view-toolbar{
+  height:100%;
+  min-height:52px;
+}
+.atelier-deck .deck-primary > .header-actions{
+  grid-area:actions;
+  align-self:stretch;
+  justify-content:flex-end;
+  width:100%;
+  min-width:0;
+}
+@media(max-width:1050px){
+  .atelier-deck .deck-primary{
+    grid-template-columns:minmax(0,1fr);
+    grid-template-areas:
+      "collection"
+      "effects"
+      "size"
+      "actions";
+    gap:8px;
+  }
+}
+@media(max-width:620px){
+  .atelier-deck .deck-primary{gap:6px}
+  .atelier-deck .deck-primary > .deck-effects{
+    padding:7px 8px;
+  }
+  .atelier-deck .deck-primary > .deck-secondary{
+    padding:0;
+    margin:0;
+  }
+  .atelier-deck .deck-primary > .deck-secondary .view-toolbar{
+    min-height:46px;
+  }
+}

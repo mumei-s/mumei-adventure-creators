@@ -28,6 +28,6 @@ for(const medium of ['クリスタルホログラム造形アニメ','宝石ホ�
 }
 const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
 assert.equal((html.match(/id="light-play"/g)||[]).length,1);
-assert.ok(html.indexOf('id="light-play"')<html.indexOf('</header>'));
+assert.ok(html.indexOf('id="light-play"')>html.indexOf('</header>')&&html.indexOf('id="light-play"')>html.indexOf('class="atelier-deck"')&&html.indexOf('id="light-play"')<html.indexOf('<main class="app-shell">'),'Night toggle belongs in the TOP dock above the studio');
 assert.match(html,/id="inspector-favorite"/);assert.match(html,/id="picker-favorites"/);
-console.log('PASS crystal/hologram whole-subject recipes, no-person isolation, actual orbital direction, swipe direction, five-favorite limit/removal/serialization/mode isolation, header night control.');
+console.log('PASS crystal/hologram whole-subject recipes, no-person isolation, actual orbital direction, swipe direction, five-favorite limit/removal/serialization/mode isolation, TOP command-deck night control.');

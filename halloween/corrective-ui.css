@@ -32,3 +32,91 @@ body #picker[data-question=angle] #picker-options:not(.comparing){grid-template-
 .mix-repair-hints ol{padding-left:1.5em;margin:14px 0 8px}
 .mix-repair-hints li{margin:14px 0}.mix-repair-hints p{overflow-wrap:anywhere;line-height:1.7}
 @media(max-width:619px){#picker[data-question=angle] .ring-pop{width:102px}#picker[data-question=angle] .ring-pop .sample-thumb{width:84px;height:76px}#picker[data-question=angle] .ring-focus{width:166px}#picker[data-question=angle] .ring-focus>.sample-thumb{width:140px;height:126px;min-height:126px}body #picker[data-question=angle] #picker-options:not(.comparing){gap:8px}#picker[data-question=angle] #picker-options .sample-card{padding:6px}#picker[data-question=angle] #picker-options .option-button>b{font-size:.9rem}}
+
+/* Notice readability: pair each panel surface with an explicit text color.
+   Night-mode colors are unique to Halloween and everyday, and never affect
+   generation options or the illustration palette. */
+body[data-collection=halloween][data-lights=night] {
+  background-color:#110a1d;
+  background-image:radial-gradient(ellipse at 89% 6%,#823b325c,transparent 34%),
+    radial-gradient(ellipse at 8% 57%,#62337b55,transparent 53%),
+    linear-gradient(160deg,#0c0a1d,#261331 54%,#171026);
+  background-attachment:scroll;
+}
+body[data-collection=everyday][data-lights=night] {
+  background-color:#071f2e;
+  background-image:radial-gradient(ellipse at 86% 6%,#25697e66,transparent 38%),
+    radial-gradient(ellipse at 8% 64%,#22465c66,transparent 55%),
+    linear-gradient(160deg,#071a2b,#0c2f3f 54%,#091e30);
+  background-attachment:scroll;
+}
+body[data-collection=halloween][data-lights=night] .mix-notice {
+  background:linear-gradient(145deg,#281d39,#3b2338);
+  color:#fff4ec;
+  border-color:#dba36d;
+  box-shadow:0 8px 28px #07051480;
+}
+body[data-collection=everyday][data-lights=night] .mix-notice {
+  background:linear-gradient(145deg,#103445,#17485a);
+  color:#eaf9ff;
+  border-color:#77c3d2;
+  box-shadow:0 8px 28px #03152280;
+}
+body[data-collection=halloween][data-lights=night] .mix-result-note {
+  background:#39273d;
+  color:#fff4ec;
+  border-color:#dc9b69;
+}
+body[data-collection=everyday][data-lights=night] .mix-result-note {
+  background:#153d4b;
+  color:#eaf9ff;
+  border-color:#81c9d7;
+}
+body[data-collection=halloween][data-lights=night] .mix-result-note>b {
+  color:#ffe0ba;
+}
+body[data-collection=everyday][data-lights=night] .mix-result-note>b {
+  color:#bcefff;
+}
+body[data-collection=halloween][data-lights=night] .mix-repair-hints {
+  background:#291e39;
+  color:#f1eaff;
+  border-color:#b69adc;
+}
+body[data-collection=everyday][data-lights=night] .mix-repair-hints {
+  background:#103544;
+  color:#dff5ff;
+  border-color:#78bfd0;
+}
+body[data-collection=halloween][data-lights=night] .mix-repair-hints>summary {
+  color:#ffe0ba;
+}
+body[data-collection=everyday][data-lights=night] .mix-repair-hints>summary {
+  color:#bcefff;
+}
+body[data-collection=halloween][data-lights=night] .mix-mascot {
+  background:#51304e;
+  color:#ffd2a0;
+  border-color:#dca76e;
+}
+body[data-collection=everyday][data-lights=night] .mix-mascot {
+  background:#1e5667;
+  color:#caf5ff;
+  border-color:#8bcddd;
+}
+/* Day mode also identifies the selected studio, including inner notes. */
+body[data-collection=halloween]:not([data-lights=night]) .mix-result-note {
+  background:#fff0d6;
+  color:#50301b;
+  border-color:#c78645;
+}
+body[data-collection=everyday]:not([data-lights=night]) .mix-result-note {
+  background:#e6f7fb;
+  color:#21495a;
+  border-color:#77b9c7;
+}
+body[data-collection=everyday]:not([data-lights=night]) .mix-repair-hints {
+  background:#f1fbfe;
+  color:#224657;
+  border-color:#81bbc9;
+}

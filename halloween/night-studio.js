@@ -19,7 +19,7 @@ export function studioAppearance(collection='halloween',lights='day'){
  const everyday=collection==='everyday',night=lights==='night';
  const labels=everyday?(night?['月','星空','窓の灯り','本と灯り']:['太陽','花','カメラ','鉛筆']):(night?['おばけ','コウモリ','一つ目モンスター','スケルトン']:['おばけ','カボチャ','コウモリ','お菓子']);
  const gameLabels=everyday?labels:(night?['魔法使いのおばけ','黒猫','光るコウモリ','ランタン']:labels);
- return {everyday,night,icons:everyday?(night?everydayNightIcons:studioIcons):(night?halloweenNightIcons:icons),gameIcons:everyday?(night?everydayNightIcons:studioIcons):(night?nightIcons:icons),labels,gameLabels,heroIcons:night?(everyday?everydayNightIcons:nightIcons):[],gameTitle:everyday?(night?'夜のモチーフあつめ':'モチーフあつめ'):night?'夜の仲間あつめ':'おばけとお菓子集め',item:everyday?'モチーフ':night?'仲間':'お菓子'};
+ return {everyday,night,icons:everyday?(night?everydayNightIcons:studioIcons):(night?halloweenNightIcons:icons),gameIcons:everyday?(night?everydayNightIcons:studioIcons):(night?nightIcons:icons),labels,gameLabels,heroIcons:everyday?(night?everydayNightIcons:studioIcons):(night?nightIcons:icons),gameTitle:everyday?(night?'夜のモチーフあつめ':'モチーフあつめ'):night?'夜の仲間あつめ':'おばけとお菓子集め',item:everyday?'モチーフ':night?'仲間':'お菓子'};
 }
 export function refreshNightStudio(){
  const cast=document.querySelector('.night-cast');if(!cast)return;

@@ -364,3 +364,17 @@ body[data-collection] .playground{margin-top:15px}
 @media(prefers-reduced-motion:reduce){
   body .masthead::before,.hero-spectacle :is(.hero-arch,.hero-figure,.hero-celestial,.hero-bat,.hero-starry){animation:none!important}
 }
+
+
+/* Night selectors in older stylesheets are more specific than the day
+   selectors above. Keep the new luminous sign in each mode's true palette. */
+body[data-collection][data-lights=night] .masthead{
+  background:var(--deck-bg);border-color:var(--deck-border);color:var(--deck-ink);
+}
+body[data-collection][data-lights=night] .masthead .tool-title,
+body[data-collection][data-lights=night] .masthead .tool-title h1{
+  color:var(--deck-ink);
+}
+body[data-collection][data-lights=night] .masthead .tool-title h1{
+  text-shadow:0 3px 5px #0005,0 0 26px #ffffff45;
+}

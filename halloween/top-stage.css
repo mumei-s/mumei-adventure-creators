@@ -506,3 +506,170 @@ body[data-motion=off] .studio-hero .night-companion{
 @media(prefers-reduced-motion:reduce){
   .studio-hero .night-companion{animation:none!important;will-change:auto!important}
 }
+
+/* V28.4.13: conspicuous but gentle hand-drawn TOP motion and visitor pill */
+/* Make drawing-specific decorators an obvious TOP setting, never a game control. */
+.atelier-deck .deck-effects {
+  grid-column:1 / -1;display:flex;align-items:center;gap:12px;
+  padding:8px 12px;border:1px solid var(--deck-button-border);
+  border-radius:12px;background:#ffffff0b;min-width:0;
+}
+.atelier-deck .deck-effects-title{
+  flex:none;font-size:.77rem;line-height:1.5;font-weight:900;
+  color:var(--deck-ink);white-space:nowrap;
+}
+.atelier-deck .deck-effects .decoration-controls{
+  display:flex;align-items:center;justify-content:flex-start;gap:8px;flex-wrap:wrap;
+  margin:0;padding:0;min-width:0;
+}
+body[data-collection] .atelier-deck .deck-effects .decoration-controls button{
+  min-height:43px;padding:7px 13px;border:2px solid var(--deck-button-border);
+  border-radius:999px;background:var(--deck-button);color:var(--deck-button-ink);
+  font-size:.76rem;font-weight:900;
+}
+body[data-collection] .atelier-deck .deck-effects .decoration-controls button[aria-pressed=true]{
+  background:var(--deck-active);color:var(--deck-active-ink);
+  border-color:var(--deck-active);box-shadow:0 0 16px #e8c0f966;
+}
+.atelier-deck .deck-secondary{
+  display:block;min-width:0;margin-top:8px;padding-top:8px;
+}
+.atelier-deck .deck-secondary .deck-size{width:100%;min-width:0}
+body[data-collection] .atelier-deck .deck-secondary .view-toolbar{
+  width:100%;justify-content:center;
+  border:1px solid var(--deck-button-border);background:var(--deck-button);
+  color:var(--deck-button-ink);
+}
+body[data-collection] .atelier-deck .collection-switch button{
+  white-space:normal;overflow-wrap:anywhere;line-height:1.4;
+}
+/* A tiny visitor pill, no misleading inherited note article totals. */
+body[data-collection] .masthead .atelier-counter{
+  position:relative;z-index:2;display:flex;align-items:center;justify-content:center;
+  gap:8px;flex:0 0 auto;margin-left:auto;min-width:140px;max-width:100%;
+  padding:7px 11px;border-radius:999px;
+  border:1.5px solid var(--deck-border);background:var(--deck-button);
+  color:var(--deck-button-ink);
+  box-shadow:inset 0 1px 0 #ffffff33,0 5px 16px #00000025;
+}
+.atelier-counter .counter-glyph{font-size:1.5rem;line-height:1.1;flex:none;filter:drop-shadow(0 1px 4px #ffffff30)}
+.atelier-counter .counter-glyph-everyday{display:none}
+body[data-collection=everyday] .atelier-counter .counter-glyph-everyday{display:block}
+body[data-collection=everyday] .atelier-counter .counter-glyph-halloween{display:none}
+.atelier-counter .counter-meta{display:flex;flex-direction:column;gap:0;align-items:flex-start;line-height:1.22;min-width:0}
+.atelier-counter .counter-caption{font-size:.63rem;font-weight:900;letter-spacing:.05em;white-space:nowrap}
+.atelier-counter .counter-number{
+  display:block;letter-spacing:.065em;font-size:1.09rem;
+  font-weight:950;font-variant-numeric:tabular-nums;line-height:1.4;
+  font-family:ui-monospace,"SFMono-Regular",Consolas,monospace;
+  color:var(--deck-ink);text-shadow:0 0 10px #ffffff22;
+}
+.atelier-counter .counter-note{display:block;font-size:.57rem;font-weight:750;opacity:.92;white-space:nowrap}
+.atelier-counter[data-status=unavailable] .counter-number{opacity:.65}
+@media(max-width:1050px){
+  .atelier-deck .deck-effects{flex-wrap:wrap;gap:7px}
+  .atelier-deck .deck-effects-title{width:100%}
+}
+@media(max-width:620px){
+  body[data-collection] .masthead{
+    display:flex;flex-direction:row;flex-wrap:wrap;
+    align-items:center;justify-content:space-between;gap:6px;
+  }
+  body[data-collection] .masthead .atelier-counter{
+    min-width:119px;gap:5px;padding:6px 8px;
+    margin-left:auto;
+  }
+  .atelier-counter .counter-glyph{font-size:1.2rem}
+  .atelier-counter .counter-number{font-size:.93rem}
+  .atelier-counter .counter-caption{font-size:.56rem}
+  .atelier-counter .counter-note{font-size:.53rem}
+  .atelier-deck .deck-effects{display:flex;gap:6px;padding:7px 8px}
+  .atelier-deck .deck-effects-title{font-size:.7rem}
+  .atelier-deck .deck-effects .decoration-controls{
+    display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+    width:100%;gap:6px;
+  }
+  body[data-collection] .atelier-deck .deck-effects .decoration-controls button{
+    width:100%;padding:6px 3px;min-height:43px;font-size:.7rem;
+  }
+  body[data-collection] .atelier-deck .collection-switch button{
+    min-height:47px;line-height:1.27;font-size:.74rem;
+  }
+}
+/* A strong, visible orbit for the illustrated title-stage figures. The
+   scene remains legible and obeys explicit motion-off / OS reduced-motion. */
+body[data-motion=on] .hero-spectacle .hero-pumpkin{
+  animation:top-title-pumpkin-waltz 4.8s ease-in-out infinite;
+  transform-origin:52% 75%;will-change:transform;
+}
+body[data-motion=on] .hero-spectacle .hero-ghost{
+  animation:top-title-ghost-drift 3.6s ease-in-out infinite alternate;
+  transform-origin:52% 64%;will-change:transform;
+}
+body[data-motion=on] .hero-spectacle .hero-prism{
+  animation:top-title-crystal-turn 5.3s ease-in-out infinite alternate;
+  transform-origin:50% 53%;will-change:transform;
+}
+body[data-motion=on] .hero-spectacle .hero-bat{
+  animation:top-title-bat-flight 4s ease-in-out infinite alternate;
+  will-change:transform;
+}
+body[data-motion=on] .hero-spectacle .hero-arch{
+  animation:top-title-portal-orbit 10s ease-in-out infinite alternate;
+}
+body[data-motion=on] .hero-spectacle .hero-celestial{
+  animation:top-title-lantern-glow 5s ease-in-out infinite alternate;
+}
+body[data-motion=on] .hero-spectacle .hero-ghost svg ellipse{
+  transform-box:fill-box;transform-origin:center;
+  animation:top-title-ghost-wink 7s ease-in-out infinite;
+}
+body[data-motion=on] .hero-spectacle .hero-starry--a{animation:top-title-twinkle 2.4s ease-in-out infinite}
+body[data-motion=on] .hero-spectacle .hero-starry--b{animation:top-title-twinkle 2.9s ease-in-out infinite -1.5s}
+body[data-motion=on] .hero-spectacle .hero-starry--c{animation:top-title-twinkle 2.7s ease-in-out infinite -2.2s}
+@keyframes top-title-pumpkin-waltz{
+  0%,100%{transform:translate3d(0,7px,0) rotate(-8deg) scale(.98)}
+  25%{transform:translate3d(-12px,-13px,0) rotate(3deg) scale(1.03)}
+  55%{transform:translate3d(7px,-19px,0) rotate(10deg) scale(1.07)}
+  78%{transform:translate3d(12px,3px,0) rotate(-2deg) scale(1.01)}
+}
+@keyframes top-title-ghost-drift{
+  0%{transform:translate3d(6px,12px,0) rotate(-13deg) scale(.94)}
+  50%{transform:translate3d(-21px,-16px,0) rotate(7deg) scale(1.07)}
+  100%{transform:translate3d(12px,19px,0) rotate(15deg) scale(1)}
+}
+@keyframes top-title-crystal-turn{
+  0%{transform:translate3d(-13px,12px,0) rotate(-18deg) rotateY(-14deg) scale(.9)}
+  50%{transform:translate3d(6px,-22px,0) rotate(6deg) rotateY(18deg) scale(1.07)}
+  100%{transform:translate3d(17px,-1px,0) rotate(16deg) rotateY(-10deg) scale(1)}
+}
+@keyframes top-title-bat-flight{
+  0%{transform:translate3d(-10px,10px,0) rotate(-24deg) scale(.85)}
+  55%{transform:translate3d(20px,-14px,0) rotate(11deg) scale(1.08)}
+  100%{transform:translate3d(-16px,-28px,0) rotate(-18deg) scale(.94)}
+}
+@keyframes top-title-portal-orbit{
+  0%{transform:rotate(-10deg) scale(.91);opacity:.62}
+  50%{transform:rotate(4deg) scale(1.05);opacity:.98}
+  100%{transform:rotate(12deg) scale(.95);opacity:.72}
+}
+@keyframes top-title-lantern-glow{
+  0%{transform:translate3d(0,0,0) scale(.92);opacity:.55}
+  100%{transform:translate3d(-9px,7px,0) scale(1.13);opacity:.94}
+}
+@keyframes top-title-ghost-wink{
+  0%,42%,47%,92%,100%{transform:scaleY(1)}
+  44%{transform:scaleY(.12)}
+}
+@keyframes top-title-twinkle{
+  0%,100%{opacity:.3;transform:rotate(-25deg) scale(.7)}
+  50%{opacity:1;transform:rotate(25deg) scale(1.48)}
+}
+@media(prefers-reduced-motion:reduce){
+  body .hero-spectacle :is(.hero-pumpkin,.hero-ghost,.hero-prism,.hero-bat,.hero-arch,.hero-celestial,.hero-starry),
+  body .hero-spectacle .hero-ghost svg ellipse{animation:none!important;will-change:auto}
+}
+body[data-motion=off] .hero-spectacle :is(.hero-pumpkin,.hero-ghost,.hero-prism,.hero-bat,.hero-arch,.hero-celestial,.hero-starry),
+body[data-motion=off] .hero-spectacle .hero-ghost svg ellipse{
+  animation:none!important;will-change:auto!important;
+}

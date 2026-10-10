@@ -33,7 +33,7 @@ try{
  assert.equal(currentCollection(),'everyday');
  assert.equal(storage.get('halloween-collection'),'everyday');
  assert.equal(buttons.find(b=>b.dataset.collection==='everyday').attributes['aria-pressed'],'true');
- assert.equal(nodes.get('tool-name').children[0].textContent,'イラスト工房');
+ assert.equal(nodes.get('tool-name').children[0].textContent,'普段の使い作成');
  assert.ok(questions.find(q=>q.key==='theme').groups.some(g=>g.values.includes('静かな読書の時間')));
  assert.ok(questions.find(q=>q.key==='theme').groups.some(g=>g.values.includes('宇宙のHalloween')),'Everyday mode allows an explicitly selected seasonal scene');
  assert.ok(!questions.find(q=>q.key==='theme').autoValues.includes('宇宙のHalloween'),'Restored everyday AUTO must remain ordinary');

@@ -60,7 +60,7 @@ for(const [collection,lights,expected] of [['everyday','day',studioIcons],['hall
   assert.equal(creatures().children.length,0);
   assert.ok(scene.children.every(node=>!/おばけ|コウモリ|モンスター|スケルトン|カボチャ/.test(node.getAttribute('aria-label'))));
  }
- if(lights==='day')assert.equal(cast().innerHTML,'','Day mode removes the night hero illustrations');
+ if(lights==='day'){const daylightIcons=collection==='everyday'?studioIcons:icons;assert.ok(daylightIcons.every(icon=>cast().innerHTML.includes(icon)),'Daytime TOP also shows its own floating illustrated companions');}
  assert.equal(intervals.size,0);
 }
 // The header control still owns the persisted ON/OFF state and its label.
@@ -132,4 +132,4 @@ const oldMutedRule='body[data-collection][data-lights=night] :is(.view-toolbar b
 const oldPair=buttonPair([...rules,...styleRules(oldMutedRule)],fixture('halloween',['view-toolbar','view-switch'],true));
 assert.deepEqual(oldPair,{background:'#b397db',color:'#cfc3e9'});
 assert.ok(ratio(oldPair.background,oldPair.color)<4.5,'The old ID-bearing :is branch is caught, although the selected rule declares dark text');
-console.log(`PASS night UI: persisted night and live collection switches replace actual hero/ornament/game DOM, remove Halloween monsters and cancel stale timers; distinct ordinary day/night motifs; header ON/OFF; both paired night palettes and ${buttonPairs} effective selected/unselected/hover button pairs meet 4.5 contrast; the prior :is specificity failure is reproduced.`);
+console.log(`PASS night UI: persisted night and live collection switches replace actual hero/ornament/game DOM, remove Halloween monsters and cancel stale timers; distinct illustrated day and night floating motifs in both modes; header ON/OFF; both paired night palettes and ${buttonPairs} effective selected/unselected/hover button pairs meet 4.5 contrast; the prior :is specificity failure is reproduced.`);

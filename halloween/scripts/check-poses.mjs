@@ -10,6 +10,13 @@ assert.equal(visibleQuestions.length,10);assert.equal(questions.length,12);asser
 const values=resolveSelections({...initialSelections(),pose:'全力で走る',mood:'完全な左横顔90度',type:'セリフのみ',line:'今日の光を、忘れない。'});assert.equal(effectiveSelections('detail',values).line,values.line);assert.equal(effectiveSelections('simple',values).line,values.line);
 for(const pose of poseItems){assert.ok(fs.existsSync(new URL('../'+pose.file,import.meta.url)));const v=applyPose(buildDirection([],values.mood),pose.value);assert.match(v.face,/左横顔90度/);assert.ok(v.pose.includes(pose.text));assert.match(v.distance,/全身|胸から上/);}
 const variant=applyPose(buildDirection([],values.mood),values.pose),cells=selectedRecipes(values).map((r,i)=>({...r,cell:i+1}));assert.equal(cells.length,8);assert.equal(cells[7].key,'pose');assert.equal(cells[7].file,'pose-028.jpg');
-const prompt=composePrompt({creator:'alice',profile:{displayName:'Alice',topics:[]},values:{...values,sceneUnified:true},variant,references:[],edition:'POSE',styleGuide:{name:'reference-board.jpg',combined:true,cells}});assert.ok(!prompt.includes('作例8 /'));assert.ok(!prompt.includes('reference-board.jpg'));assert.match(prompt,/項目名から制作|全10選択：/);assert.match(prompt,/ポーズ＝全力で走る/);assert.match(prompt,/完全な左横顔90度/);assert.match(prompt,/今日の光を、忘れない。/);const staged=prompt.includes('全10選択：'),selections=staged?prompt.split('全10選択：')[1].split('\n')[0].split('／'):prompt.split('選択確定：')[1].split('\n')[0].split(' / ');assert.equal(selections.length,10);for(const q of visibleQuestions)assert.ok(selections.some(t=>t.includes(values[q.key])));
+const prompt=composePrompt({creator:'alice',profile:{displayName:'Alice',topics:[]},values:{...values,sceneUnified:true},variant,references:[],edition:'POSE',styleGuide:{name:'reference-board.jpg',combined:true,cells}});assert.ok(!prompt.includes('作例8 /'));assert.ok(!prompt.includes('reference-board.jpg'));assert.match(prompt,/項目名から制作|全10選択：|選択確定：/);
+assert.match(prompt,/ポーズ＝全力で走る/);
+assert.match(prompt,/完全な左横顔90度/);
+assert.match(prompt,/今日の光を、忘れない。/);
+const selectionLine=prompt.match(/(?:全10選択：|選択確定：)([^\n]+)/)?.[1];
+assert.ok(selectionLine,'Prompt must list actual chosen conditions');
+const selections=selectionLine.split(/\s*／\s*|\s+\/\s+/);
+assert.equal(selections.length,10);for(const q of visibleQuestions)assert.ok(selections.some(t=>t.includes(values[q.key])));
 const custom=applyPose(buildDirection([]),'片手で傘を持って階段を登る');assert.match(custom.pose,/片手で傘を持って階段を登る/);assert.match(custom.pose,/自由指定/);
 console.log('PASS pose contracts: 10 visible items, retained phrases/density, 72 dedicated pose previews, independent left profile and body poses, title-based 10-item instructions, custom pose.');

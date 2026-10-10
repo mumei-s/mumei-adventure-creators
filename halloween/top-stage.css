@@ -378,3 +378,131 @@ body[data-collection][data-lights=night] .masthead .tool-title h1{
 body[data-collection][data-lights=night] .masthead .tool-title h1{
   text-shadow:0 3px 5px #0005,0 0 26px #ffffff45;
 }
+
+
+/* Daylight spectacle and fully visible TOP configuration */
+/* Primary mode and default-main choice always share a grouped control. */
+.atelier-deck .collection-bar{flex:1 1 auto}
+.atelier-deck .deck-main-switch{
+  display:flex;align-items:center;gap:7px;flex-wrap:wrap;
+  min-width:0;padding:5px 7px 5px 10px;
+  border-left:1px solid var(--deck-button-border);
+}
+.atelier-deck .deck-main-switch>span{
+  font-size:.7rem;font-weight:900;color:var(--deck-ink);opacity:.94;
+  line-height:1.5;white-space:nowrap;
+}
+body[data-collection] .atelier-deck .deck-main-switch #main-collection {
+  margin:0;min-height:44px;padding:7px 11px;border-radius:9px;
+  background:var(--deck-button);border:2px solid var(--deck-button-border);
+  color:var(--deck-button-ink);font-size:.78rem;box-shadow:none;
+  white-space:normal;text-wrap:balance;
+}
+body[data-collection] .atelier-deck .deck-main-switch #main-collection:focus-visible {
+  outline:3px solid var(--deck-active);outline-offset:3px;
+}
+/* Desktop: view sizes and visual style fit in one settings ribbon. */
+.atelier-deck .deck-secondary{justify-content:space-between;gap:9px;margin-top:11px}
+.atelier-deck .deck-size{min-width:0;flex:1 1 375px}
+body[data-collection] .atelier-deck .deck-size .view-toolbar{
+  width:100%;padding:8px 10px;min-height:52px;gap:7px;
+  border:1px solid var(--deck-button-border);border-radius:10px;
+  background:var(--deck-button);color:var(--deck-button-ink);
+}
+.atelier-deck .deck-size .view-switch{
+  display:flex;align-items:center;gap:5px;flex-wrap:wrap
+}
+body[data-collection] .atelier-deck .deck-size .view-switch button{
+  min-height:40px;padding:5px 10px;
+}
+body[data-collection] .atelier-deck .deck-size #view-status{
+  display:none;
+}
+body[data-collection] .atelier-deck .decoration-controls{
+  flex:1 1 295px;justify-content:center;
+  padding:5px 0;
+}
+/* Daylight gains four original floating illustrated characters per mode.
+   The dark night cast remains independent and keeps its existing artwork. */
+body[data-collection][data-lights=day] .studio-hero .night-cast{
+  position:absolute;inset:0;display:block;z-index:2;pointer-events:none;overflow:hidden;
+}
+body[data-collection][data-lights=day] .studio-hero .night-companion{
+  position:absolute;display:block;width:64px;height:76px;
+  opacity:.97;transform-origin:50% 50%;
+  filter:drop-shadow(0 6px 6px #30284166) drop-shadow(0 0 12px #ffeab4b8);
+}
+body[data-collection=halloween][data-lights=day] .studio-hero .night-companion-0{right:27%;top:4%;width:66px}
+body[data-collection=halloween][data-lights=day] .studio-hero .night-companion-1{right:5%;top:52%;width:66px}
+body[data-collection=halloween][data-lights=day] .studio-hero .night-companion-2{right:23%;top:70%;width:47px}
+body[data-collection=halloween][data-lights=day] .studio-hero .night-companion-3{right:7%;top:6%;width:44px}
+body[data-collection=everyday][data-lights=day] .studio-hero .night-companion{
+  filter:drop-shadow(0 8px 7px #30617c44) drop-shadow(0 0 14px #fffffff2);
+}
+body[data-collection=everyday][data-lights=day] .studio-hero .night-companion-0{right:28%;top:4%;width:77px}
+body[data-collection=everyday][data-lights=day] .studio-hero .night-companion-1{right:4%;top:53%;width:68px}
+body[data-collection=everyday][data-lights=day] .studio-hero .night-companion-2{right:23%;top:72%;width:53px}
+body[data-collection=everyday][data-lights=day] .studio-hero .night-companion-3{right:7%;top:10%;width:53px}
+/* Daytime light and shadow have a different ambience from nighttime. */
+body[data-collection=halloween][data-lights=day] .hero-spectacle .hero-arch{
+  border-color:#ffdd9b;box-shadow:inset 0 0 26px #fff3d5,0 0 38px #ffcb82c8,0 0 64px #fff1b583;
+}
+body[data-collection=everyday][data-lights=day] .hero-spectacle .hero-arch{
+  border-color:#99d6e9;box-shadow:inset 0 0 25px #edfeff,0 0 33px #bef2f2c2,0 0 65px #ffffffa1;
+}
+body[data-collection=halloween][data-lights=day] .studio-hero::before{
+  background:radial-gradient(ellipse at 72% 28%,#fff1acdd 0%,#ffc67666 30%,transparent 63%);
+  opacity:.6;filter:blur(8px);
+}
+body[data-collection=everyday][data-lights=day] .studio-hero::before{
+  background:radial-gradient(ellipse at 72% 28%,#ffffffee 0%,#c3f5ed95 32%,transparent 63%);
+  opacity:.75;filter:blur(10px);
+}
+body[data-motion=on][data-collection][data-lights=day] .studio-hero .night-companion-0{
+  animation:top-day-float-a 7s ease-in-out infinite alternate;
+}
+body[data-motion=on][data-collection][data-lights=day] .studio-hero .night-companion-1{
+  animation:top-day-float-b 6.5s ease-in-out infinite alternate;
+}
+body[data-motion=on][data-collection][data-lights=day] .studio-hero .night-companion-2{
+  animation:top-day-float-a 9s ease-in-out infinite alternate-reverse;
+}
+body[data-motion=on][data-collection][data-lights=day] .studio-hero .night-companion-3{
+  animation:top-day-float-b 8s ease-in-out infinite alternate-reverse;
+}
+@keyframes top-day-float-a {to{translate:0 -11px;rotate:10deg}}
+@keyframes top-day-float-b {to{translate:9px 9px;rotate:-10deg}}
+@media(max-width:1050px){
+  .atelier-deck .deck-secondary{align-items:stretch}
+  .atelier-deck .deck-size{flex:1 1 100%}
+  .atelier-deck .decoration-controls{flex:1 1 100%}
+}
+@media(max-width:620px){
+  .atelier-deck .deck-main-switch{
+    margin-top:5px;padding:7px 0 0;border-left:none;border-top:1px solid var(--deck-button-border);
+    width:100%;justify-content:center;
+  }
+  .atelier-deck .deck-main-switch>span{font-size:.69rem}
+  body[data-collection] .atelier-deck .deck-main-switch #main-collection{
+    min-height:40px;font-size:.73rem;padding:4px 10px;
+  }
+  .atelier-deck .deck-size{width:100%;min-width:0}
+  body[data-collection] .atelier-deck .deck-size .view-toolbar{
+    display:flex;min-height:46px;gap:5px;padding:6px 7px;
+  }
+  body[data-collection] .atelier-deck .deck-size .view-switch button{
+    min-height:39px;padding:5px 8px;font-size:.72rem;
+  }
+  .atelier-deck .deck-secondary{gap:4px;margin-top:8px;padding-top:7px}
+  .atelier-deck .decoration-controls{padding:4px 0}
+  body[data-collection][data-lights=day] .studio-hero .night-companion-0{width:45px;right:26%}
+  body[data-collection][data-lights=day] .studio-hero .night-companion-1{width:48px;right:4%}
+  body[data-collection][data-lights=day] .studio-hero .night-companion-2{width:35px;right:22%}
+  body[data-collection][data-lights=day] .studio-hero .night-companion-3{width:34px;right:7%}
+}
+body[data-motion=off] .studio-hero .night-companion{
+  animation:none!important;will-change:auto!important;
+}
+@media(prefers-reduced-motion:reduce){
+  .studio-hero .night-companion{animation:none!important;will-change:auto!important}
+}

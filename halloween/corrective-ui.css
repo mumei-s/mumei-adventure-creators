@@ -138,3 +138,23 @@ body[data-collection=everyday]:not([data-lights=night]) .mix-repair-hints {
   color:#224657;
   border-color:#81bbc9;
 }
+
+/* Compact, reliably closable hint panel in both studios and light modes. */
+.mix-notice .mix-guide{flex:1 1 auto;min-width:0;width:100%}
+.mix-guide-toggle{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;align-items:center;column-gap:10px;row-gap:2px;min-height:48px;padding:3px 0;border-radius:10px;cursor:pointer;list-style:none}
+.mix-guide-toggle::-webkit-details-marker,.mix-repair-hints>summary::-webkit-details-marker{display:none}
+.mix-guide-toggle::marker,.mix-repair-hints>summary::marker{content:""}
+.mix-guide-toggle>b{grid-column:1;grid-row:1;min-width:0;line-height:1.5}
+.mix-guide-toggle>small{grid-column:1;grid-row:2;line-height:1.5;font-size:.75rem;font-weight:750;opacity:.9}
+.mix-guide-state{grid-column:2;grid-row:1/span 2;padding:8px 10px;border:1px solid currentColor;border-radius:20px;font-size:.73rem;font-weight:900;white-space:nowrap}
+.mix-guide-state::after{content:"▼ 開く"}
+.mix-guide[open]>.mix-guide-toggle .mix-guide-state::after{content:"▲ しまう"}
+.mix-guide-body{padding-top:7px}
+.mix-guide-body>p:first-child{margin-top:0}
+.mix-repair-hints>summary{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px;list-style:none}
+.mix-repair-hints>summary::after{content:"▼ 開く";flex:none;padding:4px 7px;border:1px solid currentColor;border-radius:16px;font-size:.72rem;white-space:nowrap}
+.mix-repair-hints[open]>summary::after{content:"▲ しまう"}
+.mix-hint-close{display:block;max-width:100%;margin:14px 0 0 auto;padding:9px 13px;min-height:44px;border:2px solid currentColor;border-radius:11px;background:transparent;color:inherit;font:inherit;font-size:.8rem;font-weight:900;line-height:1.4;cursor:pointer}
+.mix-hint-close:hover{background:#8882}
+.mix-guide-toggle:focus-visible,.mix-repair-hints>summary:focus-visible,.mix-hint-close:focus-visible{outline:3px solid currentColor;outline-offset:3px}
+@media(max-width:619px){.mix-guide-toggle>small{font-size:.7rem}.mix-guide-state{padding:7px 9px;font-size:.7rem}.mix-repair-hints>summary{font-size:.83rem}}

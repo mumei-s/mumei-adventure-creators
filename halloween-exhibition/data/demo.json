@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "creators": [
+    {"id":"demo-a","name":"サンプル参加者 A","bio":"ここに参加者の紹介が入ります。これは表示確認用の架空データです。"},
+    {"id":"demo-b","name":"サンプル参加者 B","bio":"作品やひとことを自由に添えられます。実際の参加者ではありません。"},
+    {"id":"demo-c","name":"サンプル参加者 C","bio":"次の年も、同じ参加者IDで思い出をつなげられます。表示確認用です。"},
+    {"id":"demo-d","name":"サンプル参加者 D"},
+    {"id":"demo-e","name":"サンプル参加者 E"},
+    {"id":"demo-f","name":"サンプル参加者 F"}
+  ],
+  "years": [{"year":2026,"title":"夜がひらく、出会いの扉。","description":"ひとつの扉に、ひとりの物語。\nハロウィンに集まったみんなの、小さな記念館。","entries":[
+    {"creatorId":"demo-a","title":"月あかりのアトリエ","message":"今年のひとことが入ります。","tags":["イラスト"],"theme":"moon","works":[]},
+    {"creatorId":"demo-b","title":"森の小さな魔法店","tags":["ものづくり"],"theme":"forest"},
+    {"creatorId":"demo-c","title":"星をあつめる書斎","tags":["写真"],"theme":"star"},
+    {"creatorId":"demo-d","title":"おばけの喫茶室","tags":["イラスト"],"theme":"ghost"},
+    {"creatorId":"demo-e","title":"かぼちゃ色の台所","tags":["ものづくり"],"theme":"pumpkin"},
+    {"creatorId":"demo-f","title":"夜ふかしの音楽室","tags":["音楽"],"theme":"violet"}
+  ]}]
+}

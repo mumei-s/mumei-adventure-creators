@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
+import { readFile, access } from 'node:fs/promises';
 import vm from 'node:vm';
 import { validateArchive, safeURL, normalizeSearch } from '../data-model.js';
 
@@ -195,4 +195,15 @@ test('all eight stories produce completion, and reset removes completion', async
   assert.equal(h.$('visit-count').textContent, '8'); assert.equal(h.$('theater').classList.contains('complete'), true);
   h.$('passport-open').click(); h.$('reset').click();
   assert.equal(h.$('visit-count').textContent, '0'); assert.equal(h.$('theater').classList.contains('complete'), false);
+});
+
+
+test('every displayed local room background exists', async () => {
+  const h = await harness();
+  for (let i = 0; i < archive.years[0].entries.length; i++) {
+    await h.api.navigate(i);
+    const url = h.$('world-backdrop').style.backgroundImage.match(/^url\("([^"]+)"\)$/)?.[1];
+    assert.ok(url?.startsWith('./assets/'));
+    await access(new URL('../' + url, import.meta.url));
+  }
 });

@@ -1,0 +1,11 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {validateArchive,safeURL,normalizeSearch} from '../data-model.js';
+const source=JSON.parse(await readFile(new URL('../data/archive.json',import.meta.url)));
+test('real source plus seven marked fictional entries',()=>{validateArchive(source);assert.equal(source.creators.length,8);assert.equal(source.creators.filter(c=>c.provisional).length,7);assert.equal(source.years[0].entries.length,8);});
+test('stable creator IDs may recur across years',()=>{const data=structuredClone(source);data.years.push({...structuredClone(data.years[0]),year:2027});assert.equal(validateArchive(data).years.length,2);});
+test('empty year and roster are valid',()=>{assert.doesNotThrow(()=>validateArchive({schemaVersion:1,creators:[],years:[{year:2026,title:'',description:'',entries:[]}]}));});
+test('duplicate creators, duplicate annual entries, unknown IDs, duplicate years reject',()=>{for(const change of [d=>d.creators.push(d.creators[0]),d=>d.years[0].entries.push(d.years[0].entries[0]),d=>d.years[0].entries[0].creatorId='missing',d=>d.years.push(d.years[0])]){const d=structuredClone(source);change(d);assert.throws(()=>validateArchive(d));}});
+test('unsafe URLs and traversal reject',()=>{for(const url of ['javascript:alert(1)','data:text/html,x','http://example.com','//example.com','assets/../private.png','https://user:secret@example.com','https://x.com/\nx'])assert.equal(safeURL(url,{image:true}),null);assert.equal(safeURL('./assets/portal.svg',{image:true}),'./assets/portal.svg');assert.equal(safeURL('https://example.com'),'https://example.com/');});
+test('search normalizes width, case, whitespace',()=>{assert.equal(normalizeSearch(' ＡＢＣ '),'abc');});

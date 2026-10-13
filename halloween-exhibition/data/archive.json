@@ -52,8 +52,8 @@
   "years": [
     {
       "year": 2026,
-      "title": "夜がひらく、出会いの扉。",
-      "description": "ひとつの扉に、ひとりの物語。\nハロウィンに集まったみんなの、小さな記念館。",
+      "title": "出会うたび、灯りがともる。",
+      "description": "扉の向こうに、ひとりの物語。\nあなたの訪問で、この館に灯りがともります。",
       "entries": [
         {
           "creatorId": "ss-yr",
@@ -130,7 +130,7 @@
         {
           "creatorId": "fictional-7",
           "title": "ひみつの郵便室",
-          "theme": "forest",
+          "theme": "letter",
           "tags": [
             "展示サンプル"
           ],

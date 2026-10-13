@@ -854,3 +854,12 @@ test('opt-in touch view moves decorative viewpoint without navigating and pause 
 test('reduced-motion cannot enter touch view and leaves ordinary navigation available',async()=>{
  const h=await harness({reduced:true});h.$('view-toggle').click();assert.equal(h.$('theater').dataset.viewMode,'false');h.$('next').click();assert.equal(h.api.state.currentIndex,1);
 });
+
+test('spatial seal targets follow each annual roster instead of hardcoded people',async()=>{
+ const data=structuredClone(archive);data.years.push({year:2027,title:'',description:'',entries:data.years[0].entries.slice(0,2)});data.years.push({year:2028,title:'',description:'',entries:[]});
+ const h=await harness({data});assert.deepEqual(JSON.parse(h.$('theater').dataset.sealRooms),[]);
+ h.api.setYear(2026);assert.deepEqual(JSON.parse(h.$('theater').dataset.sealRooms),['ss_yr','mama_ca','fond_holly3483']);assert.equal(h.$('theater').dataset.creatorId,'ss_yr');
+ await h.api.navigate(6,{immediate:true});assert.equal(h.$('theater').dataset.creatorId,'fond_holly3483');
+ h.api.setYear(2027);assert.deepEqual(JSON.parse(h.$('theater').dataset.sealRooms),['ss_yr','ss_yr','koakumako']);
+ h.api.setYear(2028);assert.equal(h.$('theater').dataset.creatorId,'');assert.deepEqual(JSON.parse(h.$('theater').dataset.sealRooms),[]);
+});

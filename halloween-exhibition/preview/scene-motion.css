@@ -18,30 +18,41 @@
 .scene-controls button:focus-visible{outline:2px solid #f4da9e;outline-offset:3px}
 .theater[data-mode=normal] .scene-controls{color:#4e6861}.theater[data-mode=normal] .scene-pause{background:#fffdf2d9;border-color:#476d6444}.theater[data-mode=normal] .scene-seed{color:#5c8777;text-shadow:0 0 15px #cfb77755}.theater[data-mode=normal] .scene-seed:before{border-color:#5c877755}.theater[data-mode=normal] .scene-controls button:focus-visible{outline-color:#446f64}
 .theater[data-horror=true] .scene-controls{color:#a3b7b2}.theater[data-horror=true] .scene-seed{color:#a9c7c3;text-shadow:0 0 15px #8fb0b16a}
-.theater[data-motion-paused=true] *, .theater[data-motion-paused=true] *:before, .theater[data-motion-paused=true] *:after{animation-play-state:paused!important}
+.theater[data-motion-paused=true] .hanging-lantern i,.theater[data-motion-paused=true] .haunted-mist,.theater[data-motion-paused=true] .scene-beam,.theater[data-motion-paused=true] .scene-seed:before{animation-play-state:paused!important}
 @keyframes scene-light-drift{to{transform:rotate(12deg) translateX(5%)}}
 @keyframes scene-seed-orbit{to{transform:rotateX(65deg) rotateZ(40deg)}}
 @media(max-width:650px){.scene-controls{bottom:5px;gap:5px;font-size:9px}.scene-pause{padding:0 9px}.scene-count{min-width:80px}.scene-seeds{gap:0}.scene-beam{width:46%}.scene-flow{opacity:.7}}
 @media(prefers-reduced-motion:reduce){.scene-beam,.scene-seed:before{animation:none!important}.scene-seed{transition:none}}
 
-/* Reserve a separate bottom band, preserving the original room and footer space. */
-.theater[data-scene-ready=true]{height:calc(100svh + 84px);min-height:684px}
-.theater[data-scene-ready=true] .stage{bottom:205px}
-.theater[data-scene-ready=true] .stage-footer{bottom:112px}
-.scene-controls{left:20px;right:auto;bottom:28px;transform:none;justify-content:flex-start;max-width:calc(100% - 40px);flex-wrap:wrap}
-.scene-view{min-height:44px;min-width:66px;padding:0 11px;border:1px solid #ceb58435;border-radius:30px;background:#081322a8;color:inherit;font:inherit}
+/* First-viewport controls; the stage retains its native height and navigation. */
+.scene-controls{left:auto;right:4%;top:132px;bottom:auto;transform:none;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px 6px;max-width:220px;font-size:9px}
+.scene-controls .scene-count{order:3;flex-basis:100%;min-width:0;text-align:right;font-size:8px;line-height:16px;pointer-events:none}
+.scene-view{min-height:44px;min-width:74px;padding:0 9px;border:1px solid #ceb58435;border-radius:30px;background:#081322a8;color:inherit;font:inherit}
+.scene-pause{padding:0 9px}
 .theater[data-mode=normal] .scene-view{background:#fffdf2d9;border-color:#476d6444}
-@media(min-width:1600px){.theater[data-scene-ready=true] .stage{bottom:224px}}
-@media(max-width:1100px){.theater[data-scene-ready=true] .stage{bottom:212px}}
-@media(max-width:650px){
- .theater[data-scene-ready=true]{height:calc(100svh + 116px);min-height:716px}
- .theater[data-scene-ready=true] .stage{bottom:244px}
- .theater[data-scene-ready=true] .stage-footer{bottom:144px}
- .scene-controls{left:12px;right:12px;bottom:23px;max-width:none;display:grid;grid-template-columns:minmax(66px,1fr) 132px minmax(66px,1fr);gap:4px 6px;justify-items:center;font-size:9px}
- .scene-pause{grid-column:1;grid-row:1;padding:0 8px}
- .scene-seeds{grid-column:2;grid-row:1}
- .scene-view{grid-column:3;grid-row:1;padding:0 8px}
- .scene-count{grid-column:1/-1;grid-row:2;text-align:center;min-height:18px;line-height:18px}
-}
-@media(max-width:560px){.theater[data-scene-ready=true] .stage{bottom:267px}}
-@media(max-width:560px) and (max-height:720px){.theater[data-scene-ready=true] .stage{bottom:253px}.theater[data-scene-ready=true] .stage-footer{bottom:138px}}
+.scene-seeds{position:absolute;inset:0;z-index:19;pointer-events:none;display:block}
+.scene-seed{position:absolute;width:48px;height:48px;pointer-events:auto;font-size:31px;background:radial-gradient(ellipse,#e6b95830,transparent 72%);border:1px solid #e6c28765;box-shadow:0 0 24px #dcab4d24;color:#ffe4a6}
+.scene-seed:nth-child(1){left:8%;top:12%}
+.scene-seed:nth-child(2){right:5%;top:62%}
+.scene-seed:nth-child(3){left:9%;top:70%}
+.scene-seed:after{content:'光をひろう';position:absolute;top:48px;left:50%;transform:translateX(-50%);font-size:9px;letter-spacing:.05em;white-space:nowrap;color:#edd8ab;text-shadow:0 1px 5px #07131f}
+.scene-seed[aria-pressed=true]{opacity:.4}.scene-seed[aria-pressed=true]:after{content:'集めた光'}
+.scene-seed:focus-visible{outline:2px solid #ffe4a6;outline-offset:5px}
+.theater[data-mode=normal] .scene-seed:after{color:#386457;text-shadow:0 1px 5px #fff}.theater[data-mode=normal] .scene-seed{box-shadow:0 0 25px #89b49d44;border-color:#67988188}
+@media(max-width:1100px){.scene-controls{top:148px}}
+@media(max-width:650px){.scene-controls{right:13px;max-width:210px;top:135px}.scene-flow{opacity:1}.scene-count{min-width:0}.scene-seed:nth-child(1){left:5%;top:16%}.scene-seed:nth-child(3){left:6%;top:70%}}
+@media(max-width:560px){.scene-controls{top:124px}}
+@media(max-width:560px) and (max-height:720px){.scene-controls{top:119px}}
+
+/* Compact first-viewport footer controls; preserve room navigation and reading. */
+.stage-footer .scene-controls{position:relative;inset:auto;transform:none;display:flex;flex-wrap:nowrap;gap:3px;max-width:none;flex:0 0 91px;justify-content:center;font-size:10px;z-index:26}
+.scene-controls .scene-pause,.scene-controls .scene-view{width:44px;min-width:44px;max-width:44px;height:44px;padding:0 2px;font-size:10px;overflow:hidden}
+.scene-controls .scene-count{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+/* Keep luminous volume behind faces and reading copy, bright along architecture. */
+.scene-atmosphere{mask-image:linear-gradient(90deg,#000 0 14%,transparent 29% 71%,#000 86% 100%),linear-gradient(180deg,#000 0 16%,transparent 24% 94%,#000);mask-composite:add}
+.scene-flow{opacity:1}.scene-beam{opacity:.4}.scene-atmosphere[data-palette=normal] .scene-beam{opacity:.3;mix-blend-mode:soft-light}
+@media(max-width:560px){.stage-footer .scene-controls{margin-left:auto;margin-right:auto}.scene-seed:after{font-size:8px}}
+@media(max-width:360px){.theater .stage-footer{gap:4px;left:12px;right:12px}.theater .stage-footer .story-open{min-width:122px;padding:0 7px}.theater .stage-footer .story-open span{margin-left:8px}.theater .chapter-index{gap:4px}.theater .index-line{width:19px}}
+.scene-seed[hidden]{display:none!important}
+@media(min-width:561px) and (max-width:900px){.theater .stage-footer .room-dots{position:absolute;left:0;right:0;top:-44px;justify-content:center}.theater .stage-footer .scene-controls{margin-left:0;margin-right:auto}}
+@media(max-width:370px){.theater .stage-footer .story-open{min-width:112px;padding:0 6px}.theater .stage-footer .index-line{width:10px}.theater .stage-footer .chapter-index{gap:4px}}

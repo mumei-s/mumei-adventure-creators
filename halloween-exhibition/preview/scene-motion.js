@@ -13,9 +13,14 @@ export function initSceneMotion(root) {
   make('div', 'scene-beam scene-beam-right', atmosphere);
   const canvas = make('canvas', 'scene-flow', atmosphere), ctx = canvas.getContext('2d', {alpha: true});
   const controls = make('div', 'scene-controls', root);
+  const footer = root.querySelector('.stage-footer');
+  if (footer) footer.insertBefore(controls, footer.querySelector('.story-open'));
   const pause = make('button', 'scene-pause', controls);
   pause.type = 'button';
-  const seeds = make('div', 'scene-seeds', controls);
+  const seeds = make('div', 'scene-seeds', root.querySelector('.stage') || root);
+  function sealOwners() {
+    try { const owners = JSON.parse(root.dataset.sealRooms || '[]'); return Array.isArray(owners) ? owners.slice(0, 3) : []; } catch { return []; }
+  }
   seeds.setAttribute('role', 'group'); seeds.setAttribute('aria-label', '3つの光を集めて、星座の封印を完成させる');
   const seedButtons = Array.from({length: 3}, (_, i) => {
     const b = make('button', 'scene-seed', seeds, '✧'); b.type = 'button'; b.dataset.seal = `light-${i + 1}`;
@@ -33,6 +38,13 @@ export function initSceneMotion(root) {
   let x = 0, y = 0, targetX = 0, targetY = 0, mode = 'halloween', collected = new Set(), payoff = 0;
   let rect = root.getBoundingClientRect();
   const ids = ['light-1', 'light-2', 'light-3'];
+  function availableSeal(index) {
+    const owners = sealOwners();
+    return Boolean(root.dataset.creatorId && owners[index] === root.dataset.creatorId);
+  }
+  function syncArtifacts() {
+    seedButtons.forEach((button, index) => { button.hidden = !availableSeal(index); button.disabled = collected.has(ids[index]); });
+  }
   const palettes = {
     normal: {rgb: '73,132,122', glow: '214,186,127', opacity: .75},
     halloween: {rgb: '236,173,91', glow: '159,182,201', opacity: 1},
@@ -43,7 +55,8 @@ export function initSceneMotion(root) {
   function readSeals() {
     try { const values = JSON.parse(root.dataset.seals || '[]'); collected = new Set(Array.isArray(values) ? values.filter(v => ids.includes(v)) : []); } catch { collected = new Set(); }
     seedButtons.forEach((b, i) => { const done = collected.has(ids[i]); b.setAttribute('aria-pressed', String(done)); b.textContent = done ? '✦' : '✧'; b.setAttribute('aria-label', `${i + 1}つ目の光${done ? '：収集済み' : 'を集める'}`); });
-    count.textContent = collected.size === 3 ? '星座の封印が完成' : `光を集める ${collected.size} / 3`;
+    count.textContent = collected.size === 3 ? '星座の封印が完成' : `光のかけら ${collected.size} / 3 · 部屋を探索`;
+    syncArtifacts();
     root.dataset.constellation = String(collected.size === 3); dirty = true;
   }
   function applyMode() {
@@ -55,7 +68,7 @@ export function initSceneMotion(root) {
     const changed = root.dataset.motionPaused !== String(stopped);
     root.dataset.motionPaused = String(stopped);
     if (changed) root.dispatchEvent(new CustomEvent('yearbook:motion-state', {bubbles: true, detail: {paused: stopped}}));
-    pause.textContent = media.matches ? '静止表示' : userPaused ? '動きを再開' : '動きを止める';
+    pause.textContent = media.matches ? '静止' : userPaused ? '再開' : '停止';
     pause.setAttribute('aria-pressed', String(staticMotion()));
     pause.setAttribute('aria-label', media.matches ? '端末の設定に合わせて動きを抑えています' : userPaused ? '背景の動きを再開する' : '背景の動きを止める');
     pause.disabled = media.matches;
@@ -95,8 +108,8 @@ export function initSceneMotion(root) {
           const point = pathPoint(a, band);
           if (!k) ctx.moveTo(point.x, point.y); else ctx.lineTo(point.x, point.y);
         }
-        ctx.strokeStyle = `rgba(${p.rgb},${(half ? .025 : .13) * p.opacity})`;
-        ctx.lineWidth = band === 2 ? 1 : .7; ctx.stroke();
+        ctx.strokeStyle = `rgba(${p.rgb},${(half ? .07 : .24) * p.opacity})`;
+        ctx.lineWidth = band === 2 ? 2 : 1.3; ctx.stroke();
       }
       // A short ribbon, not a blinking particle, travels continuously along each plane.
       const head = time * (.16 + band * .028) + band * 2.1;
@@ -106,7 +119,7 @@ export function initSceneMotion(root) {
         const rear = Math.sin(a) < 0 ? .2 : 1;
         ctx.beginPath(); ctx.moveTo(from.x, from.y); ctx.lineTo(to.x, to.y);
         ctx.strokeStyle = `rgba(${p.rgb},${(1 - segment / 14) * .63 * rear * p.opacity})`;
-        ctx.lineWidth = 1.7 + band * .6; ctx.stroke();
+        ctx.lineWidth = 4.5 + band * 1.3; ctx.shadowColor = `rgba(${p.rgb},.6)`; ctx.shadowBlur = 13; ctx.stroke(); ctx.shadowBlur = 0;
       }
     }
     // Seeded air currents use depth-dependent drift. No random noise per frame.
@@ -120,16 +133,24 @@ export function initSceneMotion(root) {
       ctx.fillStyle = `rgba(${i % 4 ? p.rgb : p.glow},${(center ? .12 : .42) * depth * p.opacity})`;
       ctx.beginPath(); ctx.arc(px, py, .7 + depth * 1.5, 0, Math.PI * 2); ctx.fill();
     }
-    // Collection completes a stable constellation at the upper edge of the stage.
-    const nodes = [{x: .46, y: .18}, {x: .5, y: .145}, {x: .54, y: .18}];
+    // Persistent chamber-spanning canopy: three finds connect the architecture.
+    const nodes = [{x: .12, y: .63}, {x: .5, y: .16}, {x: .88, y: .63}];
+    if (collected.size === 3) {
+      for (let arch = 0; arch < 3; arch++) {
+        const spread = arch * .025;
+        ctx.beginPath(); ctx.moveTo(width * (.12 - spread), height * .75);
+        ctx.bezierCurveTo(width * (.08 - spread), height * -.05, width * (.92 + spread), height * -.05, width * (.88 + spread), height * .75);
+        ctx.strokeStyle = `rgba(${p.rgb},${.6 - arch * .16})`;
+        ctx.lineWidth = arch === 0 ? 3 : 1.5; ctx.shadowColor = `rgba(${p.rgb},.7)`; ctx.shadowBlur = 20; ctx.stroke(); ctx.shadowBlur = 0;
+      }
+      ctx.beginPath(); ctx.moveTo(width * .12, height * .63); ctx.lineTo(width * .5, height * .16); ctx.lineTo(width * .88, height * .63);
+      ctx.strokeStyle = `rgba(${p.rgb},.16)`; ctx.lineWidth = 1; ctx.stroke();
+    }
     nodes.forEach((point, i) => {
       if (!collected.has(ids[i])) return;
       const px = point.x * width, py = point.y * height;
-      if (collected.size === 3) {
-        const next = nodes[(i + 1) % 3]; ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(next.x * width, next.y * height);
-        ctx.strokeStyle = `rgba(${p.rgb},.4)`; ctx.lineWidth = 1; ctx.stroke();
-      }
-      ctx.fillStyle = `rgba(${p.rgb},.85)`; ctx.beginPath(); ctx.arc(px, py, 2.2, 0, Math.PI * 2); ctx.fill();
+      ctx.save(); ctx.translate(px, py); ctx.rotate(Math.PI / 4);
+      ctx.fillStyle = `rgba(${p.rgb},.9)`; ctx.shadowColor = `rgba(${p.rgb},.75)`; ctx.shadowBlur = 18; ctx.fillRect(-4, -4, 8, 8); ctx.restore();
     });
     if (payoff > 0 && !staticMotion()) {
       const alpha = Math.min(1, payoff) * .24;
@@ -162,7 +183,7 @@ export function initSceneMotion(root) {
     updatePause();
   });
   seedButtons.forEach((button, i) => listen(button, 'click', () => {
-    if (collected.has(ids[i])) return;
+    if (collected.has(ids[i]) || !availableSeal(i)) return;
     collected.add(ids[i]); root.dataset.seals = JSON.stringify([...collected]); readSeals();
     payoff = 2;
     live.textContent = collected.size === 3 ? '3つの光がつながり、星座の封印が完成しました。旅のしおりに残ります。' : `${collected.size}つ目の光を集めました。あと${3 - collected.size}つ。`;
@@ -171,9 +192,9 @@ export function initSceneMotion(root) {
   }));
   const observer = new MutationObserver(records => {
     if (records.some(r => r.attributeName === 'data-seals')) readSeals();
-    applyMode(); if (!active()) draw();
+    applyMode(); syncArtifacts(); if (!active()) draw();
   });
-  observer.observe(root, {attributes: true, attributeFilter: ['data-mode', 'data-horror', 'data-theme', 'data-seals']});
+  observer.observe(root, {attributes: true, attributeFilter: ['data-mode', 'data-horror', 'data-theme', 'data-seals', 'data-room-index', 'data-creator-id', 'data-seal-rooms']});
   const dialogs = new MutationObserver(updatePause);
   document.querySelectorAll('dialog').forEach(el => dialogs.observe(el, {attributes: true, attributeFilter: ['open']}));
   const resizeObserver = new ResizeObserver(resize); resizeObserver.observe(root);
@@ -192,7 +213,7 @@ export function initSceneMotion(root) {
     destroy() {
       cancelAnimationFrame(frame); abort.abort(); observer.disconnect(); dialogs.disconnect(); resizeObserver.disconnect();
       layers.forEach(({el, initial}) => el.style.translate = initial);
-      atmosphere.remove(); controls.remove(); delete root.dataset.sceneReady; delete root.dataset.motionPaused; delete root.dataset.constellation;
+      atmosphere.remove(); controls.remove(); seeds.remove(); delete root.dataset.sceneReady; delete root.dataset.motionPaused; delete root.dataset.constellation;
     }
   };
 }

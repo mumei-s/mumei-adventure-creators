@@ -21,3 +21,8 @@ body[data-mode=normal]{background:#edf0e9}.theater[data-mode=normal]{--night:#f0
 
 .theater[data-view-mode=true] .stage{touch-action:none;cursor:move}.scene-view[aria-pressed=true]{background:#a3814b66;border-color:#e0bf86}.theater[data-mode=normal] .scene-view[aria-pressed=true]{background:#a9cbbb;color:#284f47}
 @media(max-width:1100px){.mode-switch button,.horror-toggle{min-height:44px}.mode-switch{top:64px}.horror-toggle{top:65px}}@media(max-width:560px){.mode-switch{top:55px}.horror-toggle{top:56px}}
+
+/* Ambient pause must never leave a finite room entrance half-folded. */
+.theater[data-motion-paused=true] .artwork-frame,.theater[data-motion-paused=true] .wall-wing,.theater[data-motion-paused=true] .stage-caption{animation:none!important;transition:none!important}
+.theater[data-mode=normal] .room-kicker,.theater[data-mode=normal] #creator-name>span{color:#345d58}.theater[data-mode=normal] #creator-name>small{color:#294f47;background:#fffdf3;border-color:#709788}.theater[data-mode=normal] .edition-label,.theater[data-mode=normal] .edition-label>span:last-child{color:#3c645d}
+@media(max-width:370px){.stage-footer{left:13px;right:13px;gap:5px}.chapter-index{gap:4px}.chapter-index .index-line{width:10px}.chapter-index>span:first-child{font-size:24px}.story-open{min-width:112px;padding:0 8px;font-size:10px}.story-open span{margin-left:8px}}

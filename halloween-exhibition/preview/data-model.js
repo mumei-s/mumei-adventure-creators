@@ -12,11 +12,13 @@ export function validateArchive(data) {
   for (const creator of data.creators) {
     if (!creator || typeof creator.id !== 'string' || !/^[a-z0-9][a-z0-9_-]*$/i.test(creator.id) || ids.has(creator.id) || typeof creator.name !== 'string' || !creator.name.trim()) throw Error('参加者ID・名前が不正、または重複しています。');
     if (creator.bio !== undefined && typeof creator.bio !== 'string') throw Error('紹介文の形式が不正です。');
+    for(const key of ['avatar','avatarSource','profileURL']) if(creator[key] !== undefined && typeof creator[key] !== 'string') throw Error('プロフィール情報の形式を確認してください。');
     ids.add(creator.id);
   }
   const years = new Set();
   for (const year of data.years) {
     if (!Number.isInteger(year.year) || year.year < 2000 || year.year > 9999 || years.has(year.year) || !Array.isArray(year.entries) || typeof year.title !== 'string' || typeof year.description !== 'string') throw Error('年度データを確認してください。');
+    if(year.plannedSlots !== undefined && (!Number.isInteger(year.plannedSlots) || year.plannedSlots<0 || year.plannedSlots>100)) throw Error('追加予定枠は0以上の整数にしてください。');
     years.add(year.year); const entered = new Set();
     for (const entry of year.entries) {
       if (!entry || !ids.has(entry.creatorId) || entered.has(entry.creatorId)) throw Error('年度の参加者IDが不正、または重複しています。');

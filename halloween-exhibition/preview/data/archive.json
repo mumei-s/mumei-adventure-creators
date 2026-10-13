@@ -2,62 +2,79 @@
   "schemaVersion": 1,
   "creators": [
     {
-      "id": "ss-yr",
+      "id": "ss_yr",
       "name": "無名S note",
-      "bio": "ハロウィン企画への招待状。主催者の記事から、この夜の物語がはじまります。"
+      "avatar": "assets/portraits/ss_yr.jpg",
+      "avatarSource": "https://assets.st-note.com/production/uploads/images/280421627/profile_54172438db482342de0ca9ef8c6395ec.jpg?fit=bounds&format=jpeg&quality=85&width=330",
+      "profileURL": "https://note.com/ss_yr"
     },
     {
-      "id": "fictional-1",
-      "name": "月あかりの絵描き",
-      "provisional": true,
-      "bio": "展示の雰囲気を確認するための架空の参加者です。実在の人物・参加表明・作品紹介ではありません。"
+      "id": "koakumako",
+      "name": "こあくまこ",
+      "avatar": "assets/portraits/koakumako.jpg",
+      "avatarSource": "https://assets.st-note.com/production/uploads/images/308977904/profile_b64fb940574861864545a89d8fa9788e.png?fit=bounds&format=jpeg&quality=85&width=330",
+      "profileURL": "https://note.com/koakumako"
     },
     {
-      "id": "fictional-2",
-      "name": "森の魔法道具屋",
-      "provisional": true,
-      "bio": "展示の雰囲気を確認するための架空の参加者です。実在の人物・参加表明・作品紹介ではありません。"
+      "id": "n_kazumai55633",
+      "name": "ミナト汐",
+      "avatar": "assets/portraits/n_kazumai55633.jpg",
+      "avatarSource": "https://assets.st-note.com/production/uploads/images/322474239/profile_fce4138c4bb1001cc51b60785c106073.png?fit=bounds&format=jpeg&quality=85&width=330",
+      "profileURL": "https://note.com/n_kazumai55633"
     },
     {
-      "id": "fictional-3",
-      "name": "星あつめの写真家",
-      "provisional": true,
-      "bio": "展示の雰囲気を確認するための架空の参加者です。実在の人物・参加表明・作品紹介ではありません。"
+      "id": "mama_ca",
+      "name": "Pajama de mama",
+      "avatar": "assets/portraits/mama_ca.jpg",
+      "avatarSource": "https://assets.st-note.com/production/uploads/images/302879278/profile_680f428bdf06a11c197bae98b43534d2.jpeg?fit=bounds&format=jpeg&quality=85&width=330",
+      "profileURL": "https://note.com/mama_ca"
     },
     {
-      "id": "fictional-4",
-      "name": "おばけの喫茶店主",
-      "provisional": true,
-      "bio": "展示の雰囲気を確認するための架空の参加者です。実在の人物・参加表明・作品紹介ではありません。"
+      "id": "naemotion",
+      "name": "なえも",
+      "avatar": "assets/portraits/naemotion.jpg",
+      "avatarSource": "https://assets.st-note.com/production/uploads/images/322149524/profile_cc2db5ed230314a1474eba2d1c3bb1e7.png?fit=bounds&format=jpeg&quality=85&width=330",
+      "profileURL": "https://note.com/naemotion"
     },
     {
-      "id": "fictional-5",
-      "name": "かぼちゃの仕立て屋",
-      "provisional": true,
-      "bio": "展示の雰囲気を確認するための架空の参加者です。実在の人物・参加表明・作品紹介ではありません。"
+      "id": "imota14",
+      "name": "たけち",
+      "avatar": "assets/portraits/imota14.jpg",
+      "avatarSource": "https://assets.st-note.com/production/uploads/images/259177693/profile_b5ff6284738bbb28852546a5c0804f69.png?fit=bounds&format=jpeg&quality=85&width=330",
+      "profileURL": "https://note.com/imota14"
     },
     {
-      "id": "fictional-6",
-      "name": "夜ふかしの音楽家",
-      "provisional": true,
-      "bio": "展示の雰囲気を確認するための架空の参加者です。実在の人物・参加表明・作品紹介ではありません。"
+      "id": "fond_holly3483",
+      "name": "やまこん",
+      "avatar": "assets/portraits/fond_holly3483.jpg",
+      "avatarSource": "https://assets.st-note.com/production/uploads/images/323473720/profile_b7bfdc9c5ae46f9ac3f6494be5b50fef.png?fit=bounds&format=jpeg&quality=85&width=330",
+      "profileURL": "https://note.com/fond_holly3483"
     },
     {
-      "id": "fictional-7",
-      "name": "手紙を運ぶ黒ねこ",
-      "provisional": true,
-      "bio": "展示の雰囲気を確認するための架空の参加者です。実在の人物・参加表明・作品紹介ではありません。"
+      "id": "tenkai_notes",
+      "name": "天界記録",
+      "avatar": "assets/portraits/tenkai_notes.jpg",
+      "avatarSource": "https://assets.st-note.com/production/uploads/images/253576749/profile_70a01c50c971bc4c57351b9f5cc8a299.png?fit=bounds&format=jpeg&quality=85&width=330",
+      "profileURL": "https://note.com/tenkai_notes"
+    },
+    {
+      "id": "soh_style_work",
+      "name": "まりも",
+      "avatar": "assets/portraits/soh_style_work.jpg",
+      "avatarSource": "https://assets.st-note.com/production/uploads/images/320068478/profile_9e897d69b1d229aac8f4ed9286831c28.jpeg?fit=bounds&format=jpeg&quality=85&width=330",
+      "profileURL": "https://note.com/soh_style_work"
     }
   ],
   "years": [
     {
       "year": 2026,
-      "title": "出会うたび、灯りがともる。",
-      "description": "扉の向こうに、ひとりの物語。\nあなたの訪問で、この館に灯りがともります。",
+      "title": "ひとりひとりが、今夜の主役。",
+      "description": "参加者の顔と名前から、ハロウィンの出会いがはじまります。",
+      "plannedSlots": 2,
       "entries": [
         {
-          "creatorId": "ss-yr",
-          "title": "魔法の入口へ、ようこそ。",
+          "creatorId": "ss_yr",
+          "title": "ハロウィン企画への招待状",
           "message": "【🎃ハロウィンアート2026】派生企画 無名S note 𝑯𝒂𝒍𝒍𝒐𝒘𝒆𝒆𝒏 𝑨𝒕𝒆𝒍𝒊𝒆𝒓‼️あなたの作品を『魔法の入口』へ🎃",
           "tags": [
             "企画紹介"
@@ -69,72 +86,142 @@
             {
               "title": "主催者の企画紹介記事を読む",
               "url": "https://note.com/ss_yr/n/n52be511ec082"
+            },
+            {
+              "title": "noteプロフィールを見る",
+              "url": "https://note.com/ss_yr"
             }
           ],
-          "role": "host"
+          "role": "host",
+          "submissionStatus": "introduction"
         },
         {
-          "creatorId": "fictional-1",
-          "title": "月あかりのアトリエ",
-          "theme": "moon",
-          "tags": [
-            "展示サンプル"
-          ],
-          "message": "ここには参加者の作品やひとことが入ります。今はまだ、想像の扉。"
-        },
-        {
-          "creatorId": "fictional-2",
-          "title": "森の小さな魔法店",
-          "theme": "forest",
-          "tags": [
-            "展示サンプル"
-          ],
-          "message": "ここには参加者の作品やひとことが入ります。今はまだ、想像の扉。"
-        },
-        {
-          "creatorId": "fictional-3",
-          "title": "星をあつめる書斎",
-          "theme": "star",
-          "tags": [
-            "展示サンプル"
-          ],
-          "message": "ここには参加者の作品やひとことが入ります。今はまだ、想像の扉。"
-        },
-        {
-          "creatorId": "fictional-4",
-          "title": "おばけの喫茶室",
-          "theme": "ghost",
-          "tags": [
-            "展示サンプル"
-          ],
-          "message": "ここには参加者の作品やひとことが入ります。今はまだ、想像の扉。"
-        },
-        {
-          "creatorId": "fictional-5",
-          "title": "かぼちゃ色の衣装部屋",
-          "theme": "pumpkin",
-          "tags": [
-            "展示サンプル"
-          ],
-          "message": "ここには参加者の作品やひとことが入ります。今はまだ、想像の扉。"
-        },
-        {
-          "creatorId": "fictional-6",
-          "title": "夜ふかしの音楽室",
+          "creatorId": "koakumako",
+          "title": "作品準備中",
           "theme": "violet",
+          "submissionStatus": "pending",
           "tags": [
-            "展示サンプル"
+            "参加者",
+            "作品準備中"
           ],
-          "message": "ここには参加者の作品やひとことが入ります。今はまだ、想像の扉。"
+          "links": [
+            {
+              "title": "noteプロフィールを見る",
+              "url": "https://note.com/koakumako"
+            }
+          ]
         },
         {
-          "creatorId": "fictional-7",
-          "title": "ひみつの郵便室",
-          "theme": "letter",
+          "creatorId": "n_kazumai55633",
+          "title": "作品準備中",
+          "theme": "star",
+          "submissionStatus": "pending",
           "tags": [
-            "展示サンプル"
+            "参加者",
+            "作品準備中"
           ],
-          "message": "ここには参加者の作品やひとことが入ります。今はまだ、想像の扉。"
+          "links": [
+            {
+              "title": "noteプロフィールを見る",
+              "url": "https://note.com/n_kazumai55633"
+            }
+          ]
+        },
+        {
+          "creatorId": "mama_ca",
+          "title": "作品準備中",
+          "theme": "forest",
+          "submissionStatus": "pending",
+          "tags": [
+            "参加者",
+            "作品準備中"
+          ],
+          "links": [
+            {
+              "title": "noteプロフィールを見る",
+              "url": "https://note.com/mama_ca"
+            }
+          ]
+        },
+        {
+          "creatorId": "naemotion",
+          "title": "作品準備中",
+          "theme": "moon",
+          "submissionStatus": "pending",
+          "tags": [
+            "参加者",
+            "作品準備中"
+          ],
+          "links": [
+            {
+              "title": "noteプロフィールを見る",
+              "url": "https://note.com/naemotion"
+            }
+          ]
+        },
+        {
+          "creatorId": "imota14",
+          "title": "作品準備中",
+          "theme": "letter",
+          "submissionStatus": "pending",
+          "tags": [
+            "参加者",
+            "作品準備中"
+          ],
+          "links": [
+            {
+              "title": "noteプロフィールを見る",
+              "url": "https://note.com/imota14"
+            }
+          ]
+        },
+        {
+          "creatorId": "fond_holly3483",
+          "title": "作品準備中",
+          "theme": "pumpkin",
+          "submissionStatus": "pending",
+          "tags": [
+            "参加者",
+            "作品準備中"
+          ],
+          "links": [
+            {
+              "title": "noteプロフィールを見る",
+              "url": "https://note.com/fond_holly3483"
+            }
+          ]
+        },
+        {
+          "creatorId": "tenkai_notes",
+          "title": "作品準備中",
+          "theme": "star",
+          "submissionStatus": "pending",
+          "tags": [
+            "参加者",
+            "作品準備中"
+          ],
+          "links": [
+            {
+              "title": "noteプロフィールを見る",
+              "url": "https://note.com/tenkai_notes"
+            }
+          ]
+        },
+        {
+          "creatorId": "soh_style_work",
+          "title": "作品準備中",
+          "theme": "ghost",
+          "submissionStatus": "pending",
+          "tags": [
+            "参加者",
+            "作品準備中"
+          ],
+          "links": [
+            {
+              "title": "noteプロフィールを見る",
+              "url": "https://note.com/soh_style_work"
+            }
+          ]
         }
       ]
     }

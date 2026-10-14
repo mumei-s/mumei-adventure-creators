@@ -81,16 +81,23 @@
 .theater[data-motion-paused=true] .atelier-mascot,.theater[data-motion-paused=true] .magic-trail i {animation-play-state:paused!important}
 .theater[data-motion-paused=true] .portal-left {transform:rotateY(-104deg)!important}
 .theater[data-motion-paused=true] .portal-right {transform:rotateY(104deg)!important}
-@media(max-width:1100px){
+/* The action group grows when install/settings controls mount. Give its row
+ * exclusive space before the absolute door can touch year/passport at 1180px. */
+@media(max-width:1500px){
  .header-actions{gap:12px}.brand{gap:7px}.brand-mark{font-size:24px}
- .masthead{height:121px;padding-top:12px}.mode-switch{top:71px}.horror-entrance{top:71px}
+ .masthead{height:121px;padding-top:12px;align-items:flex-start}
+ .mode-switch{left:5%;top:71px;transform:none;padding:2px}
+ .mode-switch button{min-height:44px}
+ .horror-entrance{left:calc(5% + 169px);top:71px;min-height:44px;padding:3px 10px 3px 5px;gap:8px}
+ .door-mini{height:34px;width:24px}
  .edition-label{top:137px}.stage{top:172px}
  .stage-footer{gap:10px}.roulette-open{font-size:10px;padding-inline:12px}
 }
 @media(max-width:680px){
  .theater{min-height:800px}.masthead{padding:12px 16px 0;height:154px;align-items:flex-start}
  .brand-mark{display:none}#site-title>span{font-size:8px}#site-title>strong{font-size:15px}#site-title>small{font-size:9px}
- .header-actions{gap:5px;max-width:54%;flex-wrap:wrap;justify-content:flex-end}.header-actions button{font-size:9px;letter-spacing:0;padding-inline:7px}
+ .header-actions{gap:5px;max-width:54%;flex-wrap:wrap;justify-content:flex-end}.header-actions button{font-size:9px;letter-spacing:0;padding-inline:7px;min-width:44px;min-height:44px}
+ .header-actions #passport-open{min-width:44px}
  .header-actions #year-open{font-size:14px}#visit-count{font-size:13px;margin-left:3px}.list-open>span{font-size:13px;margin-left:3px}
  .header-actions #visitor-settings-open{padding-inline:7px}
  .mode-switch{left:16px;top:110px}.horror-entrance{left:185px;top:110px}
@@ -115,6 +122,15 @@
 @media(max-width:370px){
  .theater{min-height:800px}.header-actions{max-width:51%}.header-actions button{font-size:8px;padding-inline:5px}.horror-entrance{left:178px;font-size:9px;padding-inline:4px;gap:5px}
  #site-title>strong{font-size:13px}.stage-footer .chapter-index{gap:4px}.theater .stage-footer{grid-template-columns:80px 1fr 1fr;gap:6px;left:12px;right:12px}
+}
+/* On short phones, keep navigation in the viewport; shrink scenery, not targets. */
+@media(max-width:680px) and (max-height:740px){
+ .theater{height:100svh;min-height:560px;--short-art-height:clamp(108px,calc(100svh - 455px),160px)}
+ .theater .stage{bottom:165px}
+ .theater .stage-footer{bottom:35px}
+ .theater .stage-caption{bottom:0}
+ .theater[data-portrait=true] .artwork-frame{top:0;width:calc(var(--short-art-height) * .85);max-width:48%;height:auto}
+ .theater[data-theme=host] .artwork-frame{top:0;width:min(73%,calc(var(--short-art-height) * 1.91));height:auto}
 }
 @media(prefers-reduced-motion:reduce){
  .portal-door,.artwork-mat img,.portal-crown,.atelier-mascot,.magic-trail i,.roulette-open{animation:none!important;transition:none!important}

@@ -56,7 +56,7 @@ test('2D, encounters, exit, and shared preferences remain first-class controls',
   assert.equal((html.match(/href="\.\.\/\?mode=halloween"/g)||[]).length,3);
   const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8');
   assert(app.includes("import { initVisitorPreferences } from '../visitor-preferences.js'"));
-  assert(app.includes("if(view==='3d')world?.render"));assert(app.includes("else drawMap($('fallback'),true,true)"));
+  assert(app.includes("if(view==='3d')world?.render"));assert(app.includes("stageRenderer.render({canvas:$('fallback')"));
   assert(app.includes("battle=null;clearInput();returnFocus?.focus()"));
   assert(!app.includes('setInterval'));assert(!app.includes('AudioContext'));
 });

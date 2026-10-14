@@ -1,0 +1,176 @@
+/* Flow layout: text scaling and wrapping change height rather than overlapping. */
+.theater {
+ display:grid;grid-template-columns:minmax(0,1fr);
+ grid-template-rows:auto auto minmax(220px,1fr) auto auto;row-gap:8px;
+ height:auto;min-height:100svh;padding-bottom:10px;overflow:hidden;
+}
+.theater .masthead {
+ position:relative;inset:auto;height:auto;min-height:0;display:grid;
+ grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"brand actions" "navigation actions";
+ gap:10px 24px;padding:14px 5%;align-items:center;
+}
+.masthead .brand {grid-area:brand;min-width:0;max-width:100%;overflow-wrap:anywhere}
+.header-navigation {grid-area:navigation;display:flex;flex-wrap:wrap;align-items:center;gap:10px;min-width:0}
+.theater .mode-switch,.theater .horror-entrance {
+ position:static;inset:auto;transform:none;flex:0 1 auto;margin:0;max-width:100%;
+}
+.theater .mode-switch {padding:2px;flex-wrap:wrap;justify-content:center}
+.theater .mode-switch button {min-width:44px;min-height:44px;height:auto;padding:0 14px;white-space:normal;overflow-wrap:anywhere}
+.theater .horror-entrance {min-height:44px;padding:4px 10px;gap:8px}
+.theater .horror-entrance span:not(.door-mini) {white-space:normal;overflow-wrap:anywhere}
+.theater .header-actions {
+ grid-area:actions;display:flex;flex-wrap:wrap;justify-content:flex-end;align-content:center;
+ align-items:center;gap:8px;max-width:none;min-width:0;
+}
+.theater .header-actions button {min-width:44px;min-height:44px;height:auto;padding:4px 10px;white-space:normal;overflow-wrap:anywhere}
+.theater .header-actions #passport-open {min-width:44px;font-size:11px}
+.theater .header-actions #passport-open:before {content:none}
+.theater .header-actions .visitor-settings-trigger {width:auto;max-width:none;border-radius:22px}
+.theater .edition-label {position:relative;inset:auto;display:flex;flex-wrap:wrap;gap:8px;margin:0 5%;min-height:20px;align-items:center}
+.theater .stage {
+ position:relative;inset:auto;width:100%;height:auto;
+ min-height:0;margin:0;display:flex;flex-direction:column;gap:8px;
+}
+.theater .room-world {position:relative;inset:auto;width:100%;height:clamp(180px,calc(100svh - 480px),600px);flex-shrink:0;container-type:size}
+.theater .stage-caption {position:relative;inset:auto;margin:0 8%;min-width:0}
+.theater .stage-caption h1 {font-size:clamp(23px,3vw,38px)}
+.theater .stage-arrow {min-width:44px;min-height:44px}
+.theater[data-portrait=true] .artwork-frame {
+ top:0;left:50%;width:clamp(112px,calc((100cqh - 18px) * .85),280px);
+ max-width:52%;height:auto;
+}
+.theater[data-theme=host] .artwork-frame {
+ top:0;width:min(66%,calc((100cqh - 18px) * 1.91));height:auto;
+}
+.theater .stage-footer {
+ position:relative;inset:auto;height:auto;min-height:0;display:grid;
+ grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"index faces faces" "playback playback roulette" "status status status" "hint hint hint";
+ gap:6px 14px;margin:8px 5% 0;align-items:center;
+}
+.stage-footer .chapter-index {grid-area:index;gap:8px}
+.theater .stage-footer .room-dots {
+ grid-area:faces;position:static;inset:auto;min-width:0;display:flex;justify-content:flex-end;
+ gap:2px;overflow-x:auto;overscroll-behavior:contain;scrollbar-width:thin;pointer-events:auto;
+}
+.theater .room-dot.face-dot {width:44px;min-width:44px;min-height:44px;flex-shrink:0}
+.theater .room-dot.face-dot img,.theater .face-dot .face-initial {width:28px;height:28px;left:8px;top:8px}
+.gallery-playback {grid-area:playback;display:flex;align-items:center;flex-wrap:wrap;gap:8px;min-width:0}
+.gallery-playback button,.gallery-playback select {
+ min-height:44px;border:1px solid #dba27388;border-radius:12px;
+ background:#2a2130;color:#ffe2bb;padding:7px 12px;font:inherit;font-size:12px;
+}
+.gallery-playback button[aria-pressed=true] {background:#955126;border-color:#f8bc79;color:#fff4de}
+.slideshow-speed {display:flex;align-items:center;gap:6px;font-size:11px;white-space:nowrap;color:#dbb998}
+.gallery-playback select {min-width:74px;padding:7px 9px;cursor:pointer}
+.gallery-playback select:focus-visible {outline:2px solid #ffd099;outline-offset:3px}
+.theater .stage-footer .roulette-open {grid-area:roulette;padding:0 14px;font-size:11px;min-width:0}
+.slideshow-status {grid-area:status;line-height:1.5;font-size:10px;color:#d2bea6;min-height:15px;overflow-wrap:anywhere}
+.theater .journey-hint {grid-area:hint;position:static;inset:auto;font-size:10px;line-height:1.5;text-align:left;letter-spacing:0;pointer-events:none}
+.theater .preview-ribbon {position:relative;inset:auto;margin:0 5%;font-size:7px;line-height:1.5;letter-spacing:.3px;text-align:left}
+.visitor-preferences .scene-controls {position:static;inset:auto;transform:none;display:block;max-width:none;margin-top:12px}
+.visitor-preferences .scene-controls .scene-pause {width:auto;max-width:none;min-width:44px;min-height:44px;height:auto;padding:8px 14px;font-size:12px;overflow:visible}
+.visitor-preferences .scene-count {display:none}
+.theater[data-mode=normal] .scene-seeds {display:none!important}
+.theater[data-mode=normal] .gallery-playback button,.theater[data-mode=normal] .gallery-playback select {background:#f7fbef;color:#305c51;border-color:#8cae9b}
+.theater[data-mode=normal] .gallery-playback button[aria-pressed=true] {background:#376d5c;color:#fffdf0}
+.theater[data-mode=normal] .slideshow-speed,.theater[data-mode=normal] .slideshow-status {color:#3d6658}
+.theater[data-mode=normal] .stage-footer {grid-template-areas:"index faces faces" "playback playback playback" "status status status" "hint hint hint"}
+.passport-stamp {text-align:center;min-height:76px}
+.passport-stamp:hover {border-color:var(--gold)}
+
+/* Warm, unmistakably Halloween accents; ordinary mode keeps its quiet palette. */
+.theater[data-mode=halloween] {--gold:#ffbd70;--glow:#f5a45c;--edge:#eeb57a}
+.theater[data-mode=halloween] .night-sky {background:radial-gradient(ellipse at 50% 32%,#774b55,#29243b 54%,#121a2c)}
+.theater[data-mode=halloween] .world-shade {background:radial-gradient(ellipse at 50% 45%,#ee8b3b20,transparent 58%),linear-gradient(0deg,#271927dd,transparent 65%)}
+.theater[data-mode=halloween] .masthead {border-bottom-color:#e4965144}
+.theater[data-mode=halloween] #site-title>strong {color:#ffd097}
+.theater[data-mode=halloween] .mode-switch button[aria-pressed=true] {background:#edab62;color:#2c1c21}
+.theater[data-mode=halloween] .portal-door {border-color:#f7c28b;background:linear-gradient(115deg,#915a58,#452f48 40%,#6a4050 75%,#c17c53)}
+.theater[data-mode=halloween] .glass-orbit {border-color:#ebae795f}
+.theater[data-mode=halloween] .roulette-open {border-color:#e9ad77aa;color:#ffe0b7;background:linear-gradient(120deg,#75452f,#3c2942)}
+.theater[data-mode=halloween] .mascot-pumpkin {background:radial-gradient(ellipse at 48% 30%,#ffd090,#ef9a4b 62%,#c4683a)}
+body[data-mode=halloween] #roster {
+ background:radial-gradient(ellipse at 90% 0,#7e493544,transparent 60%),linear-gradient(145deg,#272137,#171e30);
+ border-color:#e8ae74aa;
+}
+body[data-mode=halloween] #roster-title {color:#ffd7a5}
+body[data-mode=halloween] #roster-grid {gap:16px}
+body[data-mode=halloween] .roster-card {
+ position:relative;isolation:isolate;overflow:hidden;min-height:128px;gap:14px;padding:20px;
+ border:1px solid #d9976499;border-radius:18px 18px 10px 10px;
+ background:linear-gradient(125deg,#5b384a,#262b43 65%,#3d2c40);box-shadow:inset 0 0 0 5px #e8b37b0b,0 8px 24px #090e1e44;
+ transition:transform .3s,border-color .3s,box-shadow .3s;
+ animation:roster-arrive .5s ease-out both;animation-delay:calc(var(--card-order,0) * 35ms);
+}
+body[data-mode=halloween] .roster-card:before {
+ content:'✧';position:absolute;right:16px;top:12px;color:#e9b78a77;font-size:24px;pointer-events:none;
+}
+body[data-mode=halloween] .roster-card:after {
+ content:'';position:absolute;inset:6px;border:1px solid #e9ae7350;border-radius:14px 14px 6px 6px;pointer-events:none;
+}
+body[data-mode=halloween] .roster-card:hover,body[data-mode=halloween] .roster-card:focus-visible {transform:translateY(-3px);border-color:#ffd298;box-shadow:0 12px 30px #e5974524}
+body[data-mode=halloween] .roster-thumb {width:72px;min-width:72px;height:82px;border-radius:40px 40px 8px 8px;border:2px solid #e9b780;box-shadow:0 0 0 5px #f0bd7f14;background:#392b43}
+body[data-mode=halloween] .roster-thumb img {border-radius:inherit}
+body[data-mode=halloween] .roster-card .sample-label {color:#ecc196;font-size:10px}
+body[data-mode=halloween] .roster-card strong {color:#fff0d4;line-height:1.5}
+body[data-mode=halloween] .roster-card small {color:#d0bed3}
+.roster-invitation {display:block;margin-top:10px;font-size:11px;color:#efb477}
+body[data-mode=normal] .roster-invitation {color:#477364}
+@keyframes roster-arrive {from{opacity:.4;transform:translateY(9px)}to{opacity:1;transform:none}}
+@media(max-width:680px){
+ .theater{row-gap:6px;padding-bottom:8px}
+ .theater .masthead {grid-template-areas:"brand navigation" "actions actions";grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px 12px;padding:10px 16px}
+ .header-navigation{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+ .theater .mode-switch{flex-wrap:nowrap;align-self:flex-end}
+ .theater .mode-switch button{font-size:10px;padding:0 10px}
+ .theater .horror-entrance{font-size:9px;padding:3px 8px;gap:6px}
+ .theater .header-actions{justify-content:flex-start;gap:4px}
+ .theater .header-actions button{font-size:9px;padding:3px 6px}
+ .theater .header-actions #passport-open{font-size:9px}
+ .theater .header-actions #year-open{font-size:14px}
+ .theater .header-actions #visit-count{font-size:12px;margin-left:3px}
+ .theater .header-actions .list-open>span{font-size:12px;margin-left:2px}
+ .theater .header-actions .visitor-settings-trigger{margin-left:auto}
+ .theater .edition-label{margin:0 16px;font-size:8px;letter-spacing:1px;min-height:20px}
+ .theater .edition-label>span:last-child{margin:0;font-size:9px}
+ .theater .stage{height:auto;gap:6px}
+ .theater .room-world{height:clamp(128px,calc(100svh - 470px),500px)}
+ .theater .stage-caption{position:relative;inset:auto;margin:0 5%}
+ .theater .stage-caption h1{font-size:23px}
+ .theater .room-kicker{font-size:7px!important;margin-bottom:4px}
+ .theater #creator-name{margin-top:4px}
+ .theater #creator-name>small{font-size:9px!important;margin-top:4px;padding:2px 8px;line-height:1.4}
+ .theater[data-portrait=true] .artwork-frame{width:clamp(108px,calc((100cqh - 12px) * .85),220px);max-width:55%}
+ .theater[data-theme=host] .artwork-frame{width:min(70%,calc((100cqh - 12px) * 1.91))}
+ .theater .stage-footer{margin:4px 16px 0;gap:4px 8px;grid-template-columns:auto minmax(0,1fr) auto}
+ .theater .stage-footer .room-dots{justify-content:flex-start}
+ .gallery-playback{gap:5px}
+ .gallery-playback button{font-size:10px;padding:6px 8px;white-space:nowrap}
+ .slideshow-speed{font-size:9px;gap:4px}
+ .gallery-playback select{font-size:11px;min-width:62px;padding:6px}
+ .theater .stage-footer .roulette-open{font-size:9px;padding:0 8px;gap:4px;white-space:nowrap}
+ .roulette-open>span{font-size:17px}
+ .slideshow-status{font-size:9px;min-height:14px}
+ .theater .journey-hint{font-size:9px}
+ .theater .preview-ribbon{margin:0 16px;font-size:6px}
+ body[data-mode=halloween] .roster-card{padding:16px;gap:12px}
+ body[data-mode=halloween] .roster-thumb{width:60px;min-width:60px;height:70px}
+}
+@media(max-width:370px){
+ .theater .masthead{padding-inline:12px;column-gap:8px}
+ .theater .header-actions{gap:3px}
+ .theater .header-actions button,.theater .header-actions #passport-open{font-size:8px;padding-inline:5px}
+ .theater .header-actions #year-open{font-size:12px}
+ .theater .header-actions #visit-count{font-size:11px}
+ .theater .header-actions .list-open>span{font-size:11px}
+ .theater .stage-footer{margin-inline:12px;column-gap:5px}
+ .gallery-playback button{padding-inline:6px}
+ .theater .stage-footer .roulette-open{padding-inline:6px}
+}
+@media(prefers-reduced-motion:reduce){
+ body[data-mode=halloween] .roster-card{animation:none!important;transition:none!important}
+ body[data-mode=halloween] .roster-card:hover{transform:none}
+}
+body[data-ambient-paused=true] .roster-card{animation:none!important;transition:none!important}
+
+.theater[data-mode=normal] .face-dot.visited:after{content:"✓"}

@@ -1,5 +1,5 @@
 /** Decorative, bounded scene simulation. No network, dependencies or text transforms. */
-export function initSceneMotion(root) {
+export function initSceneMotion(root, {controlsParent} = {}) {
   if (!root || root.dataset.sceneReady) return null;
   root.dataset.sceneReady = 'true';
   const media = matchMedia('(prefers-reduced-motion: reduce)');
@@ -12,9 +12,8 @@ export function initSceneMotion(root) {
   make('div', 'scene-beam scene-beam-left', atmosphere);
   make('div', 'scene-beam scene-beam-right', atmosphere);
   const canvas = make('canvas', 'scene-flow', atmosphere), ctx = canvas.getContext('2d', {alpha: true});
-  const controls = make('div', 'scene-controls', root);
-  const footer = root.querySelector('.stage-footer');
-  if (footer) footer.insertBefore(controls, footer.querySelector('.story-open'));
+  const controls = make('div', 'scene-controls', controlsParent || root);
+  controls.setAttribute('aria-label', '背景の演出');
   const pause = make('button', 'scene-pause', controls);
   pause.type = 'button';
   const seeds = make('div', 'scene-seeds', root.querySelector('.stage') || root);
@@ -40,9 +39,10 @@ export function initSceneMotion(root) {
   const ids = ['light-1', 'light-2', 'light-3'];
   function availableSeal(index) {
     const owners = sealOwners();
-    return Boolean(root.dataset.creatorId && owners[index] === root.dataset.creatorId);
+    return Boolean(root.dataset.mode !== 'normal' && root.dataset.creatorId && owners[index] === root.dataset.creatorId);
   }
   function syncArtifacts() {
+    seeds.hidden = root.dataset.mode === 'normal'; count.hidden = root.dataset.mode === 'normal';
     seedButtons.forEach((button, index) => { button.hidden = !availableSeal(index); button.disabled = collected.has(ids[index]); });
   }
   const palettes = {
@@ -55,20 +55,21 @@ export function initSceneMotion(root) {
   function readSeals() {
     try { const values = JSON.parse(root.dataset.seals || '[]'); collected = new Set(Array.isArray(values) ? values.filter(v => ids.includes(v)) : []); } catch { collected = new Set(); }
     seedButtons.forEach((b, i) => { const done = collected.has(ids[i]); b.setAttribute('aria-pressed', String(done)); b.textContent = done ? '✦' : '✧'; b.setAttribute('aria-label', `${i + 1}つ目の光${done ? '：収集済み' : 'を集める'}`); });
-    count.textContent = collected.size === 3 ? '星座の封印が完成' : `光のかけら ${collected.size} / 3 · 部屋を探索`;
+    count.textContent = root.dataset.mode === 'normal' ? '' : collected.size === 3 ? '星座の封印が完成' : `光のかけら ${collected.size} / 3 · 部屋を探索`;
     syncArtifacts();
-    root.dataset.constellation = String(collected.size === 3); dirty = true;
+    root.dataset.constellation = String(root.dataset.mode !== 'normal' && collected.size === 3); dirty = true;
   }
   function applyMode() {
     mode = root.dataset.mode === 'normal' ? 'normal' : 'halloween';
-    atmosphere.dataset.palette = mode; dirty = true;
+    atmosphere.dataset.palette = mode; readSeals(); dirty = true;
   }
   function updatePause() {
     const stopped = staticMotion() || document.hidden || !!document.querySelector('dialog[open]');
     const changed = root.dataset.motionPaused !== String(stopped);
     root.dataset.motionPaused = String(stopped);
+    if(document.body)document.body.dataset.ambientPaused=String(staticMotion());
     if (changed) root.dispatchEvent(new CustomEvent('yearbook:motion-state', {bubbles: true, detail: {paused: stopped}}));
-    pause.textContent = media.matches ? '静止' : userPaused ? '再開' : '停止';
+    pause.textContent = media.matches ? '演出は静止（端末設定）' : userPaused ? '演出を動かす' : '演出を止める';
     pause.setAttribute('aria-pressed', String(staticMotion()));
     pause.setAttribute('aria-label', media.matches ? '端末の設定に合わせて動きを抑えています' : userPaused ? '背景の動きを再開する' : '背景の動きを止める');
     pause.disabled = media.matches;
@@ -135,7 +136,7 @@ export function initSceneMotion(root) {
     }
     // Persistent chamber-spanning canopy: three finds connect the architecture.
     const nodes = [{x: .12, y: .63}, {x: .5, y: .16}, {x: .88, y: .63}];
-    if (collected.size === 3) {
+    if (mode === 'halloween' && collected.size === 3) {
       for (let arch = 0; arch < 3; arch++) {
         const spread = arch * .025;
         ctx.beginPath(); ctx.moveTo(width * (.12 - spread), height * .75);
@@ -147,12 +148,12 @@ export function initSceneMotion(root) {
       ctx.strokeStyle = `rgba(${p.rgb},.16)`; ctx.lineWidth = 1; ctx.stroke();
     }
     nodes.forEach((point, i) => {
-      if (!collected.has(ids[i])) return;
+      if (mode !== 'halloween' || !collected.has(ids[i])) return;
       const px = point.x * width, py = point.y * height;
       ctx.save(); ctx.translate(px, py); ctx.rotate(Math.PI / 4);
       ctx.fillStyle = `rgba(${p.rgb},.9)`; ctx.shadowColor = `rgba(${p.rgb},.75)`; ctx.shadowBlur = 18; ctx.fillRect(-4, -4, 8, 8); ctx.restore();
     });
-    if (payoff > 0 && !staticMotion()) {
+    if (mode === 'halloween' && payoff > 0 && !staticMotion()) {
       const alpha = Math.min(1, payoff) * .24;
       ctx.strokeStyle = `rgba(${p.rgb},${alpha})`; ctx.lineWidth = 1;
       ctx.beginPath(); ctx.ellipse(width * .5, height * .17, (1 - payoff / 2) * 85, (1 - payoff / 2) * 28, 0, 0, Math.PI * 2); ctx.stroke();
@@ -217,3 +218,4 @@ export function initSceneMotion(root) {
     }
   };
 }
+

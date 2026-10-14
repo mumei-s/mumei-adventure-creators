@@ -1,12 +1,12 @@
 /* Public exhibition shell only. No admin, maze, archive data, remote portraits,
  * API requests, query-bearing files, authentication or background activity. */
 const SCOPE = new URL('./', self.location.href);
-const CACHE = 'mumei-atelier-shell-v1:' + SCOPE.pathname;
+const CACHE = 'mumei-atelier-shell-v2:' + SCOPE.pathname;
 const SHELL = [
   'index.html', 'theater.js', 'theater.css', 'data-model.js',
   'scene-motion.js', 'scene-motion.css', 'gallery-depth.css',
   'visitor-preferences.js', 'visitor-preferences.css',
-  'magical-entrance.css', 'pwa.js', 'manifest.webmanifest',
+  'magical-entrance.css', 'gallery-controls.css', 'slideshow.js', 'pwa.js', 'manifest.webmanifest',
   'assets/atelier-icon.svg', 'assets/atelier-icon-192.png',
   'assets/atelier-icon-512.png', 'assets/atelier-maskable-512.png'
 ];
@@ -45,3 +45,4 @@ self.addEventListener('fetch', event => {
     }
   })());
 });
+

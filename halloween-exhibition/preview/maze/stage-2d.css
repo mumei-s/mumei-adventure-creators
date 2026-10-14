@@ -1,0 +1,45 @@
+/* A dedicated 2D game layout. The canvas owns the middle row, never a HUD square. */
+#menu-open{display:none}
+body[data-view="2d"] #game{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:52px 48px 34px minmax(0,1fr) 104px 24px;height:100svh;min-height:480px;isolation:isolate;background:#11111d}
+body[data-view="2d"] #fallback{position:relative!important;inset:auto!important;grid-area:4/1;align-self:stretch;justify-self:stretch;display:block;width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;max-width:none!important;max-height:none!important;aspect-ratio:auto!important;transform:none!important;border:0;border-radius:0;z-index:1;background:#151420;touch-action:none}
+body[data-view="2d"] .vignette,body[data-view="2d"] .minimap,body[data-view="2d"] #crosshair{display:none!important}
+body[data-view="2d"] header{position:relative!important;inset:auto!important;grid-area:1/1;align-self:stretch;display:flex;flex-wrap:nowrap;align-items:center;gap:6px;padding:3px 198px 3px 12px;z-index:2;background:#17121f;border-bottom:1px solid #80604655}
+body[data-view="2d"] .brand{width:auto!important;min-width:0;min-height:44px;gap:6px;color:#f0d3ac}
+body[data-view="2d"] .brand>span{font-size:20px;display:none}
+body[data-view="2d"] .brand b{font:600 14px/1.2 "Yu Gothic",sans-serif;letter-spacing:.5px;white-space:nowrap}
+body[data-view="2d"] .brand small{font-size:8px;letter-spacing:1px;margin-top:5px}
+body[data-view="2d"] header nav{display:none!important}
+body[data-view="2d"] #menu-open{display:block;position:absolute;right:10px;top:4px;width:72px;min-height:44px;background:#2d2338;border:1px solid #9b795777;font-size:12px}
+body[data-view="2d"] .mode-bar{position:relative!important;inset:auto!important;grid-area:2/1;display:flex;align-items:center;gap:8px;padding:2px 10px;z-index:2;background:#17121f}
+body[data-view="2d"] .mode-bar>div{gap:4px;flex:none}
+body[data-view="2d"] .mode-bar button{min-height:44px!important;min-width:44px!important;padding:0 10px;font-size:11px;border-radius:8px}
+body[data-view="2d"] #view-2d{min-width:99px!important}
+body[data-view="2d"] #view-3d{width:48px}
+body[data-view="2d"] #creatures-open{flex:1;min-width:0!important;margin-left:0;font-size:11px;white-space:nowrap;background:#302034;color:#f6cca0;border-color:#96613f}
+body[data-view="2d"] .place{position:relative!important;inset:auto!important;grid-area:3/1;display:flex;align-items:center;gap:9px;max-width:none!important;min-width:0;padding:0 12px;background:#21192b;border-top:1px solid #a5795150;border-bottom:1px solid #b1814b75;z-index:2;pointer-events:none;text-shadow:none}
+body[data-view="2d"] .place>span{display:none}
+body[data-view="2d"] .place h1{display:block;flex:none;margin:0;font:600 12px/1.3 "Yu Gothic",sans-serif;letter-spacing:0;color:#f1cc95}
+body[data-view="2d"] .place p{margin:0;max-width:none;min-width:0;color:#ddcfdb;font-size:10px;line-height:1.3;letter-spacing:0}
+body[data-view="2d"] .move-pad{position:relative!important;inset:auto!important;grid-area:5/1;align-self:center;justify-self:start;width:144px;height:92px;margin:0 0 0 12px;display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(2,44px);gap:4px;z-index:2}
+body[data-view="2d"] .move-pad>span{display:none}
+body[data-view="2d"] .move-pad button{min-height:44px;min-width:44px!important;width:44px;background:linear-gradient(#45334d,#2a2238);border-color:#a6876380;font-size:22px;border-radius:11px;box-shadow:0 2px 0 #080612;backdrop-filter:none}
+body[data-view="2d"] .move-pad button.active{background:#e3b57b;color:#302038}
+body[data-view="2d"] .nearby{position:relative!important;inset:auto!important;transform:none!important;grid-area:5/1;align-self:center;justify-self:end;display:flex;flex-direction:column;align-items:stretch;gap:4px;width:calc(100% - 178px)!important;max-width:410px;margin:0 12px 0 0;z-index:2}
+body[data-view="2d"] .nearby>span{display:none!important}
+body[data-view="2d"] .nearby button{min-width:0;width:100%;min-height:44px!important;padding:0 8px;border-radius:10px;font-size:12px;line-height:1.2;box-shadow:none}
+body[data-view="2d"] .nearby #battle-open{font-size:10px}
+body[data-view="2d"] .nearby #interact:disabled{color:#d9c7da;background:#292237;border-color:#706177}
+body[data-view="2d"] .look-pad{position:relative!important;inset:auto!important;grid-area:1/1;align-self:center;justify-self:end;margin:0 90px 0 0;z-index:3;width:100px}
+body[data-view="2d"] .look-pad>span,body[data-view="2d"] .look-pad>div{display:none!important}
+body[data-view="2d"] .look-pad #lantern{display:block;width:100px;min-width:100px;min-height:44px;margin:0;padding:0 4px;border-radius:8px;font-size:10px;background:#3d2a20;border-color:#b0804f}
+body[data-view="2d"] .look-pad #lantern[aria-pressed=false]{background:#242031;color:#b8aabf}
+body[data-view="2d"] footer{position:relative!important;inset:auto!important;grid-area:6/1;display:flex;align-items:center;justify-content:center;gap:12px;margin:0;padding:0 8px;border-radius:0;background:#17121f;border-top:1px solid #a5784e33;color:#cfc2d0;font-size:10px;z-index:2}
+body[data-view="2d"] footer>span:first-child{font-size:10px;color:#e9c493}
+body[data-view="2d"] footer>span:nth-child(2){display:none}
+body[data-view="2d"] footer>button,body[data-view="2d"] footer>.exit-link{display:none}
+body[data-view="2d"] #toast{bottom:132px;z-index:4;font-size:12px;max-width:calc(100% - 24px);padding:8px 12px;pointer-events:none}
+.explore-menu{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:20px}.explore-menu>*{display:flex;min-height:48px;align-items:center;justify-content:center;margin:0;padding:8px 10px;text-align:center;font-size:13px}
+body[data-view="2d"] [hidden]{display:none!important}
+@media(min-width:750px){body[data-view="2d"] #game{grid-template-rows:58px 50px 38px minmax(0,1fr) 108px 28px}body[data-view="2d"] header{padding-left:22px}body[data-view="2d"] .brand b{font-size:18px}body[data-view="2d"] .brand small{font-size:9px}body[data-view="2d"] .brand>span{display:block}body[data-view="2d"] .mode-bar{padding-left:22px;max-width:none}body[data-view="2d"] #creatures-open{flex:none;min-width:180px!important}body[data-view="2d"] .place{padding:0 24px;gap:16px}body[data-view="2d"] .place h1{font-size:14px}body[data-view="2d"] .place p{font-size:12px}body[data-view="2d"] .move-pad{justify-self:center;margin-left:-320px}body[data-view="2d"] .nearby{justify-self:center;margin-left:170px;width:250px!important}body[data-view="2d"] footer>span:nth-child(2){display:block;max-width:none;font-size:10px}}
+@media(max-width:360px){body[data-view="2d"] header{padding-left:8px}body[data-view="2d"] .brand b{font-size:12px}body[data-view="2d"] .brand small{font-size:7px;letter-spacing:.5px}body[data-view="2d"] #creatures-open{font-size:10px;padding:0 5px}body[data-view="2d"] .place{gap:6px;padding:0 8px}body[data-view="2d"] .place h1{font-size:11px}body[data-view="2d"] .place p{font-size:9px}body[data-view="2d"] .nearby{width:calc(100% - 168px)!important;margin-right:8px}body[data-view="2d"] .move-pad{margin-left:8px}}
+@media(prefers-reduced-motion:reduce){body[data-view="2d"] *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}

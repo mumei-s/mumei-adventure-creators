@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import crypto from 'node:crypto';
+const root=new URL('../',import.meta.url),manifest=JSON.parse(fs.readFileSync(new URL('runtime-build.json',root)));
+const hash=file=>crypto.createHash('sha256').update(fs.readFileSync(new URL(file,root))).digest('hex');
+for(const [file,row] of Object.entries(manifest.inputs))assert.equal(hash(file.split('?')[0]),row.sha256,file+' changed: run npm run build before publishing');
+assert.equal(hash(manifest.output.file),manifest.output.sha256,'The runtime must match the checked sources');
+assert(manifest.output.bytes<Object.values(manifest.inputs).reduce((sum,row)=>sum+row.bytes,0),'Bundling reduces transferred JavaScript');
+const html=fs.readFileSync(new URL('index.html',root),'utf8');
+assert.match(html,/<script type="module" src="\.\/app\.bundle\.js\?v=28\.4\.16"><\/script>/);
+assert.doesNotMatch(html,/<script type="module" src="\.\/app\.js/);
+assert.match(html,/rel="modulepreload" href="\.\/app\.bundle\.js\?v=28\.4\.16"/);
+console.log('PASS runtime bundle: source and output hashes match; one preloaded module entry replaces the application module waterfall.');

@@ -8,15 +8,15 @@ export function previewSource(src,{retry=false}={}){
  return resource+separator+'atelier-preview='+PREVIEW_VERSION+(retry?'&preview-retry=1':'')+(fragment===undefined?'':'#'+fragment);
 }
 
-export function createSampleImage(el,src,{className='sample-image',onState=()=>{}}={}){
+export function createSampleImage(el,src,{className='sample-image',onState=()=>{},loading='eager',priority='auto',fallbackSrc=src}={}){
  const img=el('img',className);let retried=false;
  // Set scheduling and listeners before src, including for cached responses.
- img.loading='eager';img.decoding='async';img.alt='';
+ img.loading=loading;img.fetchPriority=priority;img.decoding='async';img.alt='';
  const state=value=>{img.dataset.previewState=value;onState(value);};
  img.addEventListener('load',()=>state('ready'));
  img.addEventListener('error',()=>{
   if(!retried&&!/^(?:data:|blob:)/i.test(src)){
-   retried=true;state('retrying');img.src=previewSource(src,{retry:true});
+   retried=true;state('retrying');img.src=previewSource(fallbackSrc,{retry:true});
   }else{img.alt='見本画像を読み込めませんでした';state('failed');}
  });
  state('loading');img.src=previewSource(src);

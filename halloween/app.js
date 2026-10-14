@@ -1,5 +1,6 @@
 import {artworkBasis} from './artwork-basis.js?v=28.4.6';
-import {createSampleImage} from './sample-image.js?v=28.4.15';
+import {createSampleImage} from './sample-image.js?v=28.4.16';
+import {previewThumbnailFor} from './preview-thumbnails.js?v=28.4.16';
 import {creatorHandoff,creatorDisplayLabel,creatorEditableName} from './creator-handoff.js?v=28.4.6';
 import {normalizeImageFile} from './image-files.js?v=28.4.6';
 import {deliveryImageFiles} from './drawing-references.js?v=28.4.6';
@@ -23,7 +24,7 @@ import {setupEffects} from './effects.js?v=28.4.6';
 import {colorWorlds} from './worlds.js?v=28.4.6';
 import {compactCreatorProfile} from './creator.js?v=28.4.6';
 import {createCropEditor} from './crop-editor.js?v=28.4.6';
-import {createPicker} from './picker.js?v=28.4.15';
+import {createPicker} from './picker.js?v=28.4.16';
 import {modeKeys,modeCopy,questionsForMode,initialSelections,effectiveSelections,proposalBatch} from './modes.js?v=28.4.6';
 import {buildReferenceBoard} from './guide-board.js?v=28.4.6';
 import {questions,visibleQuestions,defaults,AUTO,normalizeCreator,resolveSelections} from './catalog.js?v=28.4.6';
@@ -125,10 +126,10 @@ async function resetReferenceDraft(){
 }
 
 function displayValue(q,v){return q.key==='size'?v.split('｜')[0]:v;}
-function sampleNode(key,value){
+function sampleNode(key,value,{eager=false,priority='auto',original=false}={}){
  const sample=sampleFor(key,value),n=el('span','sample-thumb'+(key==='design'?' design-sample':key==='angle'?' angle-sample':''));
  n.setAttribute('role','img');n.setAttribute('aria-label',sample.label+'：'+value);n.title=sample.label;
- const image=(src,cls='sample-image')=>createSampleImage(el,src,{className:cls,onState:state=>{if(sample.kind==='image')n.dataset.previewState=state;}});
+ const image=(src,cls='sample-image')=>createSampleImage(el,original?src:previewThumbnailFor(src),{className:cls,loading:eager?'eager':'lazy',priority,fallbackSrc:src,onState:state=>{if(sample.kind==='image')n.dataset.previewState=state;}});
  if(sample.kind==='image')n.append(image(sample.src));
  else if(sample.kind==='reference'){
  const ref=refs.find(r=>r.role==='identity');if(ref)n.append(image(ref.url));else n.append(el('span','sample-text','添付から\nつくる'));
@@ -206,6 +207,7 @@ function setView(mode){if(!['auto','phone','tablet','pc'].includes(mode))mode='a
 let favoritePanel;
 const picker=createPicker({$,el,sampleNode,readSelection:()=>{const values=mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:effectiveSelections(mode,selections);return activeQuestion?.key==='line'?{...values,type:'セリフのみ'}:values;},choose,onRandom:q=>randomizeItem(q),onCustom:buildCustom,tell,artworkBasis,onFavoritesChange:()=>favoritePanel?.render()});
 favoritePanel=createFavoritesPanel({$,el,picker,questions,sampleNode,collection:()=>collection,onPick:(key,value)=>{const question=questions.find(q=>q.key===key);if(!question)return;const input=mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:effectiveSelections(mode,selections);if(key==='line')input.type='セリフのみ';const availability=candidateAvailability(key,value,input);if(!availability.enabled)return tell(availability.reason);const changes=key==='line'?{line:value,type:'セリフのみ'}:{[key]:value};Object.assign(selections,changes);if(mode==='auto'&&selectedProposal)selectedProposal={...selectedProposal,...changes};if(!questionsForMode(mode).some(q=>q.key===(key==='line'?'type':key))){setMode('detail');Object.assign(selections,changes);}renderChoices(key==='line'?'type':key);tell(question.name+'：'+displayValue(question,value));}});
+let stylePreviewKey='';
 function renderStylePreset(values=selections){
  const select=$('style-preset-select');if(!select)return;
  if(!select.options.length){const auto=el('option',null,'おまかせ（制作時に見本も選びます）');auto.value=AUTO;select.append(auto);for(const group of questions.find(q=>q.key==='medium').groups){const node=el('optgroup');node.label=group.label;for(const medium of group.values){const option=el('option',null,medium);option.value=medium;node.append(option);}select.append(node);}}
@@ -214,7 +216,7 @@ function renderStylePreset(values=selections){
  if(custom){const option=el('option',null,'自由指定：'+values.medium);option.value=values.medium;option.dataset.customPreset='true';select.append(option);}
  select.value=preset||custom?values.medium:AUTO;
  const trigger=$('style-preset-trigger');if(trigger){trigger.textContent=(preset||custom?values.medium:'おまかせ')+' ▾';trigger.setAttribute('aria-expanded',String($('picker').open&&activeQuestion?.key==='medium'));}
- $('style-preset-preview').replaceChildren(sampleNode('medium',preset||custom?values.medium:AUTO));
+ const previewKey=collection+'\u0000'+(preset||custom?values.medium:AUTO);if(previewKey!==stylePreviewKey){stylePreviewKey=previewKey;$('style-preset-preview').replaceChildren(sampleNode('medium',preset||custom?values.medium:AUTO));}
  $('style-preset-status').textContent=preset?values.medium+' / 共有・制作セットにこの見本画像が入ります。':custom?'自由指定の画風です。用意済みの見本画像はなく、文章の条件で制作します。':'おまかせ：制作する画風が決まったら、その見本を一緒に準備します。';
 }
 $('style-preset-select').addEventListener('change',e=>{const value=e.target.value;if(mode==='auto'){modeSnapshots.detail={...(selectedProposal||selections)};setMode('detail');}activeQuestion=questions.find(q=>q.key==='medium');choose(value);});
@@ -438,7 +440,7 @@ function setCollection(next){if(!['halloween','everyday'].includes(next))return;
 let mainCollection='halloween';try{mainCollection=localStorage.getItem('atelier-main-collection-v1')||'halloween';}catch{}
 function orderCollections(){const group=document.querySelector('.collection-switch');for(const key of [mainCollection,mainCollection==='everyday'?'halloween':'everyday'])group.append(group.querySelector('[data-collection="'+key+'"]'));$('main-collection').textContent=mainCollection==='everyday'?'Halloweenをメインに':'普段の使い作成をメインに';$('main-collection').setAttribute('aria-label','TOPの順番を切り替える');}
 $('main-collection').addEventListener('click',()=>{mainCollection=mainCollection==='everyday'?'halloween':'everyday';try{localStorage.setItem('atelier-main-collection-v1',mainCollection);}catch{}orderCollections();setCollection(mainCollection);});orderCollections();
-setView(view);renderSourceKinds();renderRefs(false);setMode('detail');let initialCollection='halloween';try{initialCollection=localStorage.getItem('halloween-collection')||'halloween';}catch{}setCollection(initialCollection);renderHistory();historyReady=initializeHistory();draftReady=initializeCreatorDraft();renderDraftStatus();
+setView(view);renderSourceKinds();renderRefs(false);let initialCollection='halloween';try{initialCollection=localStorage.getItem('halloween-collection')||'halloween';}catch{}setCollection(initialCollection);renderHistory();historyReady=initializeHistory();draftReady=initializeCreatorDraft();renderDraftStatus();
 
 function setMode(next){if(!modeKeys[next])return;const selectedCostume=selections.costume;modeSnapshots[mode]={...selections};mode=next;selections={...(modeSnapshots[next]||initialSelections()),size:selections.size};selections.costume=sourceSubjectFor(sourceKind,selections.costume,{selectedCostume});document.body.dataset.mode=mode;document.querySelectorAll('.mode-switch button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===mode)));$('mode-description').textContent=modeCopy[mode];$('choice-heading').textContent={detail:'2. 10項目で決める',simple:'2. 5項目だけ選ぶ',auto:'2. 見本の組み合わせで決める'}[mode];$('auto-proposals').hidden=mode!=='auto';$('shuffle').hidden=mode==='auto';renderChoices();if(mode==='auto'&&!proposals.length)makeProposals();}
 function makeProposals(){const input={...selections};input.costume=sourceSubjectFor(sourceKind,input.costume);const batch=proposalBatch(input,rng,{recent:[...proposals,...saved.history.filter(r=>(r.collection||'halloween')===collection).map(r=>r.values)],count:3});proposals=batch.proposals;selectedProposal=null;if(batch.issues.length)formError(batch.issues.map(issue=>issue.reason).join(' '));else $('form-error').hidden=true;$('proposal-cards').replaceChildren();proposals.forEach((values,i)=>{const b=el('button','proposal-card');b.type='button';b.setAttribute('aria-pressed','false');const arts=el('span','proposal-art');arts.append(sampleNode('medium',values.medium),sampleNode('design',values.design));b.append(arts,el('b',null,values.medium),el('span',null,values.design),el('small',null,values.theme+' / '+values.palette));b.addEventListener('click',()=>{selectedProposal={...values,size:selections.size};document.querySelectorAll('.proposal-card').forEach(n=>n.setAttribute('aria-pressed',String(n===b)));renderChoices();renderBoard(selectedProposal);$('form-error').hidden=true;tell('この作例の組み合わせを選びました。');});$('proposal-cards').append(b);});renderBoard({...initialSelections(),size:selections.size});$('generation-status').hidden=true;}

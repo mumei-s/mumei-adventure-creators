@@ -18,7 +18,7 @@ class Node {
  scrollIntoView(){}
 }
 const nodes=new Map(),$=id=>{if(!nodes.has(id))nodes.set(id,new Node(id==='style-preset-select'?'select':'div'));return nodes.get(id);};
-let shared,zipBlob;const context={$,questions,AUTO,activeQuestion:null,selections:{medium:AUTO},stylePresetFor,el:(tag,cls,text)=>new Node(tag,text),sampleNode:(key,value)=>new Node('sample',value),deliveryImageFiles,File,Uint8Array,TextEncoder,makeZip,download:b=>{zipBlob=b;},creatorDisplayLabel:()=>'',needsReference:()=>true,tell:s=>{$('toast').textContent=s;},canShareFiles:()=>true,navigator:{share:async data=>{shared=data;},clipboard:{writeText:async()=>{}}},shareFiles:r=>[...deliveryImageFiles(r),new File([r.prompt],'prompt.txt',{type:'text/plain'})]};
+let shared,zipBlob;const context={$,questions,AUTO,collection:'halloween',stylePreviewKey:'',activeQuestion:null,selections:{medium:AUTO},stylePresetFor,el:(tag,cls,text)=>new Node(tag,text),sampleNode:(key,value)=>new Node('sample',value),deliveryImageFiles,File,Uint8Array,TextEncoder,makeZip,download:b=>{zipBlob=b;},creatorDisplayLabel:()=>'',needsReference:()=>true,tell:s=>{$('toast').textContent=s;},canShareFiles:()=>true,navigator:{share:async data=>{shared=data;},clipboard:{writeText:async()=>{}}},shareFiles:r=>[...deliveryImageFiles(r),new File([r.prompt],'prompt.txt',{type:'text/plain'})]};
 vm.createContext(context);
 vm.runInContext(app.slice(app.indexOf('function renderStylePreset('),app.indexOf("$('style-preset-select').addEventListener")),context);
 context.renderStylePreset({medium:AUTO});assert.equal($('style-preset-select').options.length,stylePresets.length+1);

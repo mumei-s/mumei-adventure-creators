@@ -1,0 +1,2308 @@
+{
+  "version": "28.4.16",
+  "scope": "Mapped previews in Halloween and everyday, including implicit AUTO sources",
+  "policy": {
+    "maxEdge": 384,
+    "quality": 78,
+    "format": "WebP",
+    "minimumSourceBytesExclusive": 60000,
+    "minimumSourceMaxEdgeExclusive": 384,
+    "crop": false,
+    "preserveAspect": true,
+    "preserveAlpha": true,
+    "preserveOriginals": true,
+    "originalBinding": "items[].originalSource is the inspector and generation source; items[].thumbnail is display-only"
+  },
+  "totals": {
+    "mappedRasterSources": 453,
+    "mappedRasterSourceBytes": 92988581,
+    "thumbnailSources": 73,
+    "sourceBytes": 82862712,
+    "thumbnailBytes": 1754950,
+    "savedBytes": 81107762,
+    "savedPercent": 97.882,
+    "allMappedRasterDisplayBytes": 11880819
+  },
+  "items": [
+    {
+      "source": "assets/costume-alien-original-v28-4-3.png",
+      "originalSource": "assets/costume-alien-original-v28-4-3.png",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/4d8be74cc1041390bd39.webp",
+      "sourceSha256": "9339cfd2c4c48ba95ed16657b5f346c1bfa125bdf9538e1cb53769c4f55d3c48",
+      "thumbnailSha256": "4d8be74cc1041390bd39734090718a5d0be4892fc91b83974e10230df3e311bc",
+      "sourceBytes": 2014045,
+      "thumbnailBytes": 19560,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "costume",
+          "value": "エイリアン"
+        },
+        {
+          "collection": "everyday",
+          "key": "costume",
+          "value": "エイリアン"
+        }
+      ]
+    },
+    {
+      "source": "assets/costume-unicorn-original-v28-4-3.png",
+      "originalSource": "assets/costume-unicorn-original-v28-4-3.png",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/096610cc45b5b6523432.webp",
+      "sourceSha256": "ebbdc954eec1f7036b567ac0f296205e28441155a703e2d39cd63e59240f3b5e",
+      "thumbnailSha256": "096610cc45b5b6523432b8eef553f9a77e7f741f5f5202c8968bfc737d911f78",
+      "sourceBytes": 2313326,
+      "thumbnailBytes": 26044,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "costume",
+          "value": "ユニコーン"
+        },
+        {
+          "collection": "everyday",
+          "key": "costume",
+          "value": "ユニコーン"
+        }
+      ]
+    },
+    {
+      "source": "assets/drawing-jewel-anime-v28.png",
+      "originalSource": "assets/drawing-jewel-anime-v28.png",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/d6eeb01a14aacba5bbcd.webp",
+      "sourceSha256": "68e3724979f3cc9e4323e6afb9d383651944778eb4567be3f0d05e25f28c9b11",
+      "thumbnailSha256": "d6eeb01a14aacba5bbcd92cb201ad35a463a8c36aa9a90accb272b5e3ca302d7",
+      "sourceBytes": 1464588,
+      "thumbnailBytes": 23618,
+      "sourceDimensions": [
+        941,
+        1672
+      ],
+      "thumbnailDimensions": [
+        216,
+        384
+      ],
+      "hasAlpha": true,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "medium",
+          "value": "宝石光彩アニメ"
+        },
+        {
+          "collection": "everyday",
+          "key": "medium",
+          "value": "宝石光彩アニメ"
+        }
+      ]
+    },
+    {
+      "source": "assets/drawing-jewel-real-v28.png",
+      "originalSource": "assets/drawing-jewel-real-v28.png",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/cbcfe5a1a7176848cfb7.webp",
+      "sourceSha256": "df063c09730ac269246773248fe42fbdc6f224cb90bb2a733a5c11ef4b5559c9",
+      "thumbnailSha256": "cbcfe5a1a7176848cfb75f628d96eecb4d8ef4a6bb6b38a9e23dd2b93c13bde1",
+      "sourceBytes": 2055075,
+      "thumbnailBytes": 24262,
+      "sourceDimensions": [
+        941,
+        1672
+      ],
+      "thumbnailDimensions": [
+        216,
+        384
+      ],
+      "hasAlpha": true,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "medium",
+          "value": "宝石光彩リアル"
+        },
+        {
+          "collection": "everyday",
+          "key": "medium",
+          "value": "宝石光彩リアル"
+        }
+      ]
+    },
+    {
+      "source": "assets/scenes-original-v28-4-3/after-rain-ghost-story.jpg",
+      "originalSource": "assets/scenes-original-v28-4-3/after-rain-ghost-story.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/3565e0602e088aee19f1.webp",
+      "sourceSha256": "7025489933959865eea3bfa12e834a2086bfa43581101a2062d5ec2ab436c7d4",
+      "thumbnailSha256": "3565e0602e088aee19f1fa59d87af2d7c9da944ef62f2c33f1b9bfad35b3ef50",
+      "sourceBytes": 699592,
+      "thumbnailBytes": 38284,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "theme",
+          "value": "雨上がりのホラー"
+        },
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "雨上がりのホラー"
+        }
+      ]
+    },
+    {
+      "source": "assets/scenes-original-v28-4-3/architecture-streets-record.jpg",
+      "originalSource": "assets/scenes-original-v28-4-3/architecture-streets-record.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/3d888f89088d141c8d51.webp",
+      "sourceSha256": "4ea1e4d1dcc967672485a493c6544cd73e9711d64a2434a1fd5cf6dde703c07c",
+      "thumbnailSha256": "3d888f89088d141c8d515e0084a429320eb89be83f38bb2465a2a9b62540d975",
+      "sourceBytes": 431279,
+      "thumbnailBytes": 34494,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "建築と街並みの記録"
+        }
+      ]
+    },
+    {
+      "source": "assets/scenes-original-v28-4-3/cultivated-fields-low-hills.jpg",
+      "originalSource": "assets/scenes-original-v28-4-3/cultivated-fields-low-hills.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/d874596170e62a147d07.webp",
+      "sourceSha256": "670606f7355f5b8ec5a0e3581e41a8f4d1a6b4f8a46d671de1249e296fc65eed",
+      "thumbnailSha256": "d874596170e62a147d07418d6b36ff8078fbfe13222ddebdd4fdf0c4735eb722",
+      "sourceBytes": 554813,
+      "thumbnailBytes": 47384,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "田畑と里山"
+        },
+        {
+          "collection": "everyday",
+          "key": "place",
+          "value": "田畑と里山"
+        }
+      ]
+    },
+    {
+      "source": "assets/scenes-original-v28-4-3/deciduous-woodland.jpg",
+      "originalSource": "assets/scenes-original-v28-4-3/deciduous-woodland.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/6173b088d7bde41498aa.webp",
+      "sourceSha256": "20d0d103eff328880517a3ba7e4b659431521e009fbae5376fc8345224a58d1d",
+      "thumbnailSha256": "6173b088d7bde41498aae4bade68a1c95dae4458a86a7b1a17e2f5afb85fd44e",
+      "sourceBytes": 617337,
+      "thumbnailBytes": 59468,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "広葉樹の森"
+        },
+        {
+          "collection": "everyday",
+          "key": "place",
+          "value": "広葉樹の森"
+        }
+      ]
+    },
+    {
+      "source": "assets/scenes-original-v28-4-3/flower-light-glass-garden.jpg",
+      "originalSource": "assets/scenes-original-v28-4-3/flower-light-glass-garden.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/29e49f18478af4568e83.webp",
+      "sourceSha256": "9031d2f6fffabecdf290d8a09c1b2236c20b1f4ceeb40d692a241c1b00fb89a3",
+      "thumbnailSha256": "29e49f18478af4568e8359a9c78a9cfbb2ab522fd9b6045fa510daf4bbb15bae",
+      "sourceBytes": 541638,
+      "thumbnailBytes": 52958,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "花光のガラス庭園"
+        }
+      ]
+    },
+    {
+      "source": "assets/scenes-original-v28-4-3/landscape-architecture-record.jpg",
+      "originalSource": "assets/scenes-original-v28-4-3/landscape-architecture-record.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/3aab49c95bb4540f927b.webp",
+      "sourceSha256": "fe96c13e4e7aa3ff52d83bbc0041b2d8226b2cb33deaea6d485faffea86a927e",
+      "thumbnailSha256": "3aab49c95bb4540f927b25ca300db23b17dbe2b7711f3d038b0aa72a61200ee9",
+      "sourceBytes": 535988,
+      "thumbnailBytes": 47758,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "風景・建築の記録"
+        }
+      ]
+    },
+    {
+      "source": "assets/scenes-original-v28-4-3/mirror-other-self.jpg",
+      "originalSource": "assets/scenes-original-v28-4-3/mirror-other-self.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/db8ec38ddafa21a5c520.webp",
+      "sourceSha256": "e3b2063866c4ec406f393aa5abbc3362244e1b6d29f376a0178723ed59c84c8f",
+      "thumbnailSha256": "db8ec38ddafa21a5c5203058c6f07b664811659ad604b6ec018542d0d8ac5cea",
+      "sourceBytes": 223422,
+      "thumbnailBytes": 15096,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "theme",
+          "value": "鏡の向こうの自分"
+        },
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "鏡の向こうの自分"
+        }
+      ]
+    },
+    {
+      "source": "assets/scenes-original-v28-4-3/mountains-lakeshore.jpg",
+      "originalSource": "assets/scenes-original-v28-4-3/mountains-lakeshore.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/017f8968e91823042b22.webp",
+      "sourceSha256": "f545c9060bbed3eb567f6b6fdf4c7f33090403393927911d4ef0d9032f80b80a",
+      "thumbnailSha256": "017f8968e91823042b22facb8bf471ca417b4ad8a98c9a7fd85497f2def440f8",
+      "sourceBytes": 431387,
+      "thumbnailBytes": 37672,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "山岳と湖畔"
+        },
+        {
+          "collection": "everyday",
+          "key": "place",
+          "value": "山岳と湖畔"
+        }
+      ]
+    },
+    {
+      "source": "assets/scenes-original-v28-4-3/rain-reflected-city.jpg",
+      "originalSource": "assets/scenes-original-v28-4-3/rain-reflected-city.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/0e10f8549bcd8ecab059.webp",
+      "sourceSha256": "bc4df786680d07ebe2481312e9fbd99ac14d05995cb6175405d73034319f52ce",
+      "thumbnailSha256": "0e10f8549bcd8ecab0596fa7f6cc4ecf3ed2f3c4c4c242db66ad4368106903de",
+      "sourceBytes": 474914,
+      "thumbnailBytes": 38774,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "雨に映る街の風景"
+        }
+      ]
+    },
+    {
+      "source": "assets/scenes-original-v28-4-3/reaper-day-off.jpg",
+      "originalSource": "assets/scenes-original-v28-4-3/reaper-day-off.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/5c9ba53d5f1bf56518d8.webp",
+      "sourceSha256": "d85d6dd12b41d53bcdf7885a2eeb424cb2a7c0e6e01bef577c38de8cedf19a08",
+      "thumbnailSha256": "5c9ba53d5f1bf56518d8d704dfa9330830073af5a117817df5eeca322cacba79",
+      "sourceBytes": 292218,
+      "thumbnailBytes": 24254,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "theme",
+          "value": "死神の休日"
+        },
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "死神の休日"
+        }
+      ]
+    },
+    {
+      "source": "assets/scenes-original-v28-4-3/riverside-promenade.jpg",
+      "originalSource": "assets/scenes-original-v28-4-3/riverside-promenade.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/87defc7bde0e2c95b4f4.webp",
+      "sourceSha256": "e57d1de0d59c1ba5bc032e32151ad4e3dba6717b7a8f775820f4fd420f857826",
+      "thumbnailSha256": "87defc7bde0e2c95b4f4e532c72a6c77432d0c05ab377011aec7759dbd781b51",
+      "sourceBytes": 579068,
+      "thumbnailBytes": 53274,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "川沿いの遊歩道"
+        },
+        {
+          "collection": "everyday",
+          "key": "place",
+          "value": "川沿いの遊歩道"
+        }
+      ]
+    },
+    {
+      "source": "assets/scenes-original-v28-4-3/sand-beach-coastline.jpg",
+      "originalSource": "assets/scenes-original-v28-4-3/sand-beach-coastline.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/8729aecdb36f287017c5.webp",
+      "sourceSha256": "fe8525f81bca832d162e8628e51c4457b87bbcbcca463416f9ca9434abe03045",
+      "thumbnailSha256": "8729aecdb36f287017c57e0880495325514896f29d0bb7f8f6ccee016ecf275a",
+      "sourceBytes": 367513,
+      "thumbnailBytes": 26246,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "砂浜と海岸線"
+        },
+        {
+          "collection": "everyday",
+          "key": "place",
+          "value": "砂浜と海岸線"
+        }
+      ]
+    },
+    {
+      "source": "assets/scenes-original-v28-4-3/satoyama-rural-fields.jpg",
+      "originalSource": "assets/scenes-original-v28-4-3/satoyama-rural-fields.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/b2606ad4412121d6dc4b.webp",
+      "sourceSha256": "6cbe5e21147cdb2b995c47c7b911b17ac643a058ffb7089c3315e3734ead17f5",
+      "thumbnailSha256": "b2606ad4412121d6dc4b124f027c0d1068f64822c16ad7f054821a0db039a5f1",
+      "sourceBytes": 449249,
+      "thumbnailBytes": 36824,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "里山と田園風景"
+        }
+      ]
+    },
+    {
+      "source": "assets/scenes-original-v28-4-3/seaside-horizon.jpg",
+      "originalSource": "assets/scenes-original-v28-4-3/seaside-horizon.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/9ee7c30280356c78eac9.webp",
+      "sourceSha256": "6c4dd81336aadebbfddceb31e15aefb97b7791ddb42bd24eb342e8b7fbee7128",
+      "thumbnailSha256": "9ee7c30280356c78eac95ad689a642bda7f33176d3c5c54a9a4b1072e53aee72",
+      "sourceBytes": 379116,
+      "thumbnailBytes": 29584,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "海辺と水平線"
+        }
+      ]
+    },
+    {
+      "source": "assets/scenes-original-v28-4-3/seasonal-forest-overlook.jpg",
+      "originalSource": "assets/scenes-original-v28-4-3/seasonal-forest-overlook.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/811f567e191018fe8a3f.webp",
+      "sourceSha256": "efe5b19e2f34a87e27b550c65c352de2a2bc99a3354b588406d6d03c85d29fcd",
+      "thumbnailSha256": "811f567e191018fe8a3fa6d95c90471d4a6ffbd0dcdf50d989c292f5f0991fbd",
+      "sourceBytes": 654842,
+      "thumbnailBytes": 62138,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "四季の森を見渡す"
+        }
+      ]
+    },
+    {
+      "source": "assets/scenes-original-v28-4-3/soft-color-celebration-room.jpg",
+      "originalSource": "assets/scenes-original-v28-4-3/soft-color-celebration-room.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/bb75f09c59b5c495583a.webp",
+      "sourceSha256": "840cc902103c030ca1422cf1368af148f55ab9607cd8c64605088598354d0a3f",
+      "thumbnailSha256": "bb75f09c59b5c495583a0816032ff1137f30d9a929fec6a727a743fafe159d46",
+      "sourceBytes": 316481,
+      "thumbnailBytes": 25556,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "ふわ彩の祝祭室"
+        }
+      ]
+    },
+    {
+      "source": "assets/scenes-original-v28-4-3/star-thread-atelier.jpg",
+      "originalSource": "assets/scenes-original-v28-4-3/star-thread-atelier.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/01f7fd88b9603b433879.webp",
+      "sourceSha256": "8be1463d660a514ceea7f3c62141b8211f7c0c7eaaccd2eff29b1fb498f56ed3",
+      "thumbnailSha256": "01f7fd88b9603b4338798e1c0804956c0623ba56adced02bd15e223394f49787",
+      "sourceBytes": 583511,
+      "thumbnailBytes": 41220,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "星糸のアトリエ"
+        }
+      ]
+    },
+    {
+      "source": "assets/scenes-original-v28-4-3/townscape-public-square.jpg",
+      "originalSource": "assets/scenes-original-v28-4-3/townscape-public-square.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/78bbef025f899cfef48f.webp",
+      "sourceSha256": "5f96ac2fe9d05d1c183a8b7c3eae11a2634710995ce65127066b0ad802d99b92",
+      "thumbnailSha256": "78bbef025f899cfef48fc6f598d3a2acbfc5d5cffd19bda36f5073222ba45bf4",
+      "sourceBytes": 384178,
+      "thumbnailBytes": 31018,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "街並みと広場"
+        },
+        {
+          "collection": "everyday",
+          "key": "place",
+          "value": "街並みと広場"
+        }
+      ]
+    },
+    {
+      "source": "assets/scenes-original-v28-4-3/urban-anime-day.jpg",
+      "originalSource": "assets/scenes-original-v28-4-3/urban-anime-day.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/c85207856dd165f405ff.webp",
+      "sourceSha256": "10819a27ffc7beee406986cd1c58894ef8bea1e4523f8dd7959e90a05e676300",
+      "thumbnailSha256": "c85207856dd165f405ff4134283e57803e977ed00817600ffe8e5fa821f054d3",
+      "sourceBytes": 460090,
+      "thumbnailBytes": 36656,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "街角アニメ日和"
+        }
+      ]
+    },
+    {
+      "source": "assets/scenes-original-v28-4-3/wa-flower-scenery.jpg",
+      "originalSource": "assets/scenes-original-v28-4-3/wa-flower-scenery.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/e3cdeefbe548ac7d4c71.webp",
+      "sourceSha256": "ebb69db4be94576d5a04ea9fa97bf422525532058c6aa2321496127941a890be",
+      "thumbnailSha256": "e3cdeefbe548ac7d4c7132185cd94117440fef09aa31775b0c1ba4d0b71947da",
+      "sourceBytes": 569956,
+      "thumbnailBytes": 54824,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "和雅・花景"
+        }
+      ]
+    },
+    {
+      "source": "assets/scenes-original-v28-4-3/water-mirror-fantasy-space.jpg",
+      "originalSource": "assets/scenes-original-v28-4-3/water-mirror-fantasy-space.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/34dab9ee2e652b4ea24d.webp",
+      "sourceSha256": "51793c57a973342870bbc398aae19b2821d00ac7aba1e404e01335e6a671239f",
+      "thumbnailSha256": "34dab9ee2e652b4ea24d6ae775b25b80269eef06590471709b5c6414f2e39cdc",
+      "sourceBytes": 323685,
+      "thumbnailBytes": 22786,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "水鏡の幻想空間"
+        }
+      ]
+    },
+    {
+      "source": "assets/style-crystal-hologram-original-v28-4-3.png",
+      "originalSource": "assets/style-crystal-hologram-original-v28-4-3.png",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/2616b62dc82d96d4d341.webp",
+      "sourceSha256": "02ad9a8227ac0e541872636b1e2dfac9026bef86a232a24844d1f740f0a4af31",
+      "thumbnailSha256": "2616b62dc82d96d4d341f63c700cd042e820f2efd8364050b6b601cd8423f387",
+      "sourceBytes": 2614916,
+      "thumbnailBytes": 30696,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "medium",
+          "value": "クリスタルホログラム造形アニメ"
+        },
+        {
+          "collection": "everyday",
+          "key": "medium",
+          "value": "クリスタルホログラム造形アニメ"
+        }
+      ]
+    },
+    {
+      "source": "assets/style-crystal-transmission-original-v28-4-3.png",
+      "originalSource": "assets/style-crystal-transmission-original-v28-4-3.png",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/37f4efbfe6ac16086cf4.webp",
+      "sourceSha256": "9ebffa866584f6701d8ae8f39bf1b776bf654ce41f7bb1529b5a3c4b50ffd5b1",
+      "thumbnailSha256": "37f4efbfe6ac16086cf489963c8760209e4985c9907f44ab06387ee4568d3f0d",
+      "sourceBytes": 2189641,
+      "thumbnailBytes": 18558,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "medium",
+          "value": "クリスタル透光アニメ"
+        },
+        {
+          "collection": "everyday",
+          "key": "medium",
+          "value": "クリスタル透光アニメ"
+        }
+      ]
+    },
+    {
+      "source": "assets/style-dream-fantasy-original-v28-4-3.png",
+      "originalSource": "assets/style-dream-fantasy-original-v28-4-3.png",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/f0dcb608d0e97e360aed.webp",
+      "sourceSha256": "289fdf40a329d709c7a5faefd66ce414cb9747f5278eeaf0adf50dc24eaa6ed3",
+      "thumbnailSha256": "f0dcb608d0e97e360aeda832fa0a46ded71214ecc8b00e854c8e6b18851f3259",
+      "sourceBytes": 2278932,
+      "thumbnailBytes": 18288,
+      "sourceDimensions": [
+        1536,
+        1024
+      ],
+      "thumbnailDimensions": [
+        384,
+        256
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "medium",
+          "value": "夢彩ファンタジーアニメ"
+        },
+        {
+          "collection": "everyday",
+          "key": "medium",
+          "value": "夢彩ファンタジーアニメ"
+        }
+      ]
+    },
+    {
+      "source": "assets/style-dusk-gothic-original-v28-4-3.png",
+      "originalSource": "assets/style-dusk-gothic-original-v28-4-3.png",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/7426af6983b7f0a93707.webp",
+      "sourceSha256": "5319828cc1ea012df2ad8400d2c12a79b9d033207761fc79d1a8f61d8bc9366a",
+      "thumbnailSha256": "7426af6983b7f0a937074330dfb04f069c690f2f99b76bfec0be7708b8fcaa1f",
+      "sourceBytes": 2070313,
+      "thumbnailBytes": 13738,
+      "sourceDimensions": [
+        1024,
+        1536
+      ],
+      "thumbnailDimensions": [
+        256,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "medium",
+          "value": "宵彩ゴシックアニメ"
+        },
+        {
+          "collection": "everyday",
+          "key": "medium",
+          "value": "宵彩ゴシックアニメ"
+        }
+      ]
+    },
+    {
+      "source": "assets/style-film-light-original-v28-4-4-refined.png",
+      "originalSource": "assets/style-film-light-original-v28-4-4-refined.png",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/0393d4ccc8f3f8d77c77.webp",
+      "sourceSha256": "1b9ac76f0415db32c99adc4cf70d87ed0332b1d9a205bde5201bd8cf1572ca92",
+      "thumbnailSha256": "0393d4ccc8f3f8d77c770a25b8124684d4b20150ce67eec1d0f95e7e7b8acbdb",
+      "sourceBytes": 2871358,
+      "thumbnailBytes": 33270,
+      "sourceDimensions": [
+        1024,
+        1536
+      ],
+      "thumbnailDimensions": [
+        256,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "medium",
+          "value": "薄膜光彩アニメ"
+        },
+        {
+          "collection": "everyday",
+          "key": "medium",
+          "value": "薄膜光彩アニメ"
+        }
+      ]
+    },
+    {
+      "source": "assets/style-fine-light-original-v28-4-4-refined.png",
+      "originalSource": "assets/style-fine-light-original-v28-4-4-refined.png",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/57e22a78508ba18c836b.webp",
+      "sourceSha256": "8c91242e29b551a5d5a68f6c8b65180afe60d0f65dc876b8bfe02a300440283d",
+      "thumbnailSha256": "57e22a78508ba18c836b5a69daba646ac879323af5600d36061813ffbfdbadbd",
+      "sourceBytes": 3034292,
+      "thumbnailBytes": 31600,
+      "sourceDimensions": [
+        1024,
+        1536
+      ],
+      "thumbnailDimensions": [
+        256,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "medium",
+          "value": "発光幻想アニメ"
+        },
+        {
+          "collection": "everyday",
+          "key": "medium",
+          "value": "発光幻想アニメ"
+        }
+      ]
+    },
+    {
+      "source": "assets/style-flower-haze-original-v28-4-3.png",
+      "originalSource": "assets/style-flower-haze-original-v28-4-3.png",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/c730c1a4f458df15fab6.webp",
+      "sourceSha256": "4be3a24db4141b0ca3cae22826b8d5fb89d269bb88b6fbca1459541196bbb01e",
+      "thumbnailSha256": "c730c1a4f458df15fab6e288bebbd448fdef5bd832ced637dfd1a54e98d27f20",
+      "sourceBytes": 2976514,
+      "thumbnailBytes": 19880,
+      "sourceDimensions": [
+        1024,
+        1536
+      ],
+      "thumbnailDimensions": [
+        256,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "medium",
+          "value": "花霞の透明アニメ"
+        },
+        {
+          "collection": "everyday",
+          "key": "medium",
+          "value": "花霞の透明アニメ"
+        }
+      ]
+    },
+    {
+      "source": "assets/style-gloss-fantasy-original-v28-4-4.png",
+      "originalSource": "assets/style-gloss-fantasy-original-v28-4-4.png",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/4337937cae20946832f1.webp",
+      "sourceSha256": "bb546fa51d0c650ff3410348742885c169de43c49b6bc0dbb82c7cb8d800fb24",
+      "thumbnailSha256": "4337937cae20946832f13c014f1bab74fe9bfb07cab770e4c771c48bb94f733b",
+      "sourceBytes": 3291158,
+      "thumbnailBytes": 34164,
+      "sourceDimensions": [
+        1024,
+        1536
+      ],
+      "thumbnailDimensions": [
+        256,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "medium",
+          "value": "艶彩幻想アニメ"
+        },
+        {
+          "collection": "everyday",
+          "key": "medium",
+          "value": "艶彩幻想アニメ"
+        }
+      ]
+    },
+    {
+      "source": "assets/style-jewel-hologram-original-v28-4-3.png",
+      "originalSource": "assets/style-jewel-hologram-original-v28-4-3.png",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/d490802b350c6223e49d.webp",
+      "sourceSha256": "a9044ed8fe917af4a83bd3fbd98d9a4cb54a0d585494e4a7d63f0a09ce9156aa",
+      "thumbnailSha256": "d490802b350c6223e49d79b50633a2d821f80023f9a521cdd31b34eef31c3014",
+      "sourceBytes": 2028658,
+      "thumbnailBytes": 23850,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "medium",
+          "value": "宝石ホログラムアニメ"
+        },
+        {
+          "collection": "everyday",
+          "key": "medium",
+          "value": "宝石ホログラムアニメ"
+        }
+      ]
+    },
+    {
+      "source": "assets/style-luminous-real-original-v28-4-2.png",
+      "originalSource": "assets/style-luminous-real-original-v28-4-2.png",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/02a2ef21b30fc6534dae.webp",
+      "sourceSha256": "5f1f8f0ef344ae3b41f30bfacb49883a81eb33a61e001b83a1e2f7e6b7e7ba79",
+      "thumbnailSha256": "02a2ef21b30fc6534dae79506a1c7de4b717629ac1b439dc7e26a704797ab934",
+      "sourceBytes": 3310848,
+      "thumbnailBytes": 33958,
+      "sourceDimensions": [
+        1024,
+        1536
+      ],
+      "thumbnailDimensions": [
+        256,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "medium",
+          "value": "発光幻想リアル"
+        },
+        {
+          "collection": "everyday",
+          "key": "medium",
+          "value": "発光幻想リアル"
+        }
+      ]
+    },
+    {
+      "source": "assets/style-milky-pastel-original-v28-4-3.png",
+      "originalSource": "assets/style-milky-pastel-original-v28-4-3.png",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/ace50f663d2328a51592.webp",
+      "sourceSha256": "c98d4d4173f004734f2f5815f64bf61184073afefb943bd268763491c55ea73a",
+      "thumbnailSha256": "ace50f663d2328a51592891bcbc2916b9815ac1923c89c11f541508458c35d31",
+      "sourceBytes": 2168229,
+      "thumbnailBytes": 15540,
+      "sourceDimensions": [
+        1312,
+        1199
+      ],
+      "thumbnailDimensions": [
+        384,
+        351
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "medium",
+          "value": "ミルキーパステルアニメ"
+        },
+        {
+          "collection": "everyday",
+          "key": "medium",
+          "value": "ミルキーパステルアニメ"
+        }
+      ]
+    },
+    {
+      "source": "assets/style-solid-glow-anime-v28-4-5.png",
+      "originalSource": "assets/style-solid-glow-anime-v28-4-5.png",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/9a461bdd61debc81ffdd.webp",
+      "sourceSha256": "f8919686f32d63a33f493bd7941063427629e05b694d67429ee3b43b11f0795a",
+      "thumbnailSha256": "9a461bdd61debc81ffddd55f81a2a1428a936b8723af948f4859a5cb470b9645",
+      "sourceBytes": 3225781,
+      "thumbnailBytes": 44008,
+      "sourceDimensions": [
+        1122,
+        1402
+      ],
+      "thumbnailDimensions": [
+        307,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "medium",
+          "value": "立体光彩アニメ"
+        },
+        {
+          "collection": "everyday",
+          "key": "medium",
+          "value": "立体光彩アニメ"
+        }
+      ]
+    },
+    {
+      "source": "assets/style-solid-glow-real-v28-4-5.png",
+      "originalSource": "assets/style-solid-glow-real-v28-4-5.png",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/4cfa09fdad73b13cbe77.webp",
+      "sourceSha256": "923306453707f2167d65c332734825d402e95160bf925848f2758803bda48a1d",
+      "thumbnailSha256": "4cfa09fdad73b13cbe770c051d86bd4e087c3d589fb816b4fe5ed09b55fa2325",
+      "sourceBytes": 3122947,
+      "thumbnailBytes": 44952,
+      "sourceDimensions": [
+        1122,
+        1402
+      ],
+      "thumbnailDimensions": [
+        307,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "medium",
+          "value": "立体光彩リアル"
+        },
+        {
+          "collection": "everyday",
+          "key": "medium",
+          "value": "立体光彩リアル"
+        }
+      ]
+    },
+    {
+      "source": "assets/style-white-geometry-original-v28-4-4.png",
+      "originalSource": "assets/style-white-geometry-original-v28-4-4.png",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/9a1ae7eecc07b08cfae9.webp",
+      "sourceSha256": "ce1e90d4aea9a5e0bbd0c25b281b9c8de1be229369aa648694cc8a2bb4aed7ca",
+      "thumbnailSha256": "9a1ae7eecc07b08cfae9260c96ecc61d0ceda3ea919b77156b4e66985a2a777a",
+      "sourceBytes": 2085439,
+      "thumbnailBytes": 17550,
+      "sourceDimensions": [
+        1024,
+        1536
+      ],
+      "thumbnailDimensions": [
+        256,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "medium",
+          "value": "白域幾何・宇宙彩アニメ"
+        },
+        {
+          "collection": "everyday",
+          "key": "medium",
+          "value": "白域幾何・宇宙彩アニメ"
+        }
+      ]
+    },
+    {
+      "source": "japan-everyday-001-v18.png",
+      "originalSource": "japan-everyday-001-v18.png",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/7d66cf616fb55bde5620.webp",
+      "sourceSha256": "c45012bbf689c2a26154aee956a6a4adb9f7e1ac1d142a6e09bc20a9832b23de",
+      "thumbnailSha256": "7d66cf616fb55bde56204371a0dcbce951187f8aa210ea0a2efa6e1a7af4e048",
+      "sourceBytes": 2339551,
+      "thumbnailBytes": 21710,
+      "sourceDimensions": [
+        1122,
+        1402
+      ],
+      "thumbnailDimensions": [
+        307,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "カップを両手で持つ"
+        },
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "おまかせ"
+        },
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "朝の光と小さな日常"
+        },
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "朝のキッチン"
+        },
+        {
+          "collection": "everyday",
+          "key": "place",
+          "value": "朝のキッチン"
+        },
+        {
+          "collection": "everyday",
+          "key": "costume",
+          "value": "おまかせ"
+        },
+        {
+          "collection": "everyday",
+          "key": "costume",
+          "value": "リネンシャツとデニム"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "おまかせ"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "カップを両手で持つ"
+        }
+      ]
+    },
+    {
+      "source": "japan-everyday-002-v18.png",
+      "originalSource": "japan-everyday-002-v18.png",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/651374d525a348527332.webp",
+      "sourceSha256": "41a479ea2eb736e2755ce7dc7b4e7fa9238fa5d0284e48bbd92484253d1bca4e",
+      "thumbnailSha256": "651374d525a348527332df54d072d8a3c38c75fb528f270c54ad861320027017",
+      "sourceBytes": 3307682,
+      "thumbnailBytes": 37438,
+      "sourceDimensions": [
+        1122,
+        1402
+      ],
+      "thumbnailDimensions": [
+        307,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "place",
+          "value": "海辺の灯台"
+        },
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "旅先で見つけた景色"
+        },
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "海辺の灯台"
+        },
+        {
+          "collection": "everyday",
+          "key": "place",
+          "value": "おまかせ"
+        },
+        {
+          "collection": "everyday",
+          "key": "place",
+          "value": "海辺の灯台"
+        },
+        {
+          "collection": "everyday",
+          "key": "costume",
+          "value": "おまかせ"
+        },
+        {
+          "collection": "everyday",
+          "key": "costume",
+          "value": "スポーツウェア"
+        }
+      ]
+    },
+    {
+      "source": "japan-everyday-003-v18.png",
+      "originalSource": "japan-everyday-003-v18.png",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/7c022cd3832cded52003.webp",
+      "sourceSha256": "39b5b44930990bc7399b42ff0f3b28764741c43ec268d9b62385959fe5501a74",
+      "thumbnailSha256": "7c022cd3832cded52003cb525e50bf494e322e8941ad41b6f6c856d4e2005695",
+      "sourceBytes": 2404273,
+      "thumbnailBytes": 25508,
+      "sourceDimensions": [
+        1122,
+        1402
+      ],
+      "thumbnailDimensions": [
+        307,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "手を振る"
+        },
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "大切な人との再会"
+        },
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "駅の改札前"
+        },
+        {
+          "collection": "everyday",
+          "key": "place",
+          "value": "駅の改札前"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "手を振る"
+        }
+      ]
+    },
+    {
+      "source": "japan-everyday-004-v18.png",
+      "originalSource": "japan-everyday-004-v18.png",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/c59425ea9f559d71feb0.webp",
+      "sourceSha256": "39786f1030c239a0380df770df023c7fe5df68dfaf80d574f8a1b25a7fff2e21",
+      "thumbnailSha256": "c59425ea9f559d71feb009241c79f7f2debecb56ef3223b8cf4ceaa0f156a30c",
+      "sourceBytes": 2310249,
+      "thumbnailBytes": 25552,
+      "sourceDimensions": [
+        1122,
+        1402
+      ],
+      "thumbnailDimensions": [
+        307,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "絵を描く"
+        },
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "おまかせ"
+        },
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "ものづくりの時間"
+        },
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "明るい工房"
+        },
+        {
+          "collection": "everyday",
+          "key": "place",
+          "value": "明るい工房"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "おまかせ"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "絵を描く"
+        }
+      ]
+    },
+    {
+      "source": "japan-everyday-005-v18.png",
+      "originalSource": "japan-everyday-005-v18.png",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/afb385608931f6a2079a.webp",
+      "sourceSha256": "68bc9c1455d7c694e05e6b557bff522a17d311f27f6e4749cacead2afda3d38b",
+      "thumbnailSha256": "afb385608931f6a2079a681af5859711bd6ef0dbd26ae095915a87a82803f94a",
+      "sourceBytes": 3014539,
+      "thumbnailBytes": 38810,
+      "sourceDimensions": [
+        1122,
+        1402
+      ],
+      "thumbnailDimensions": [
+        307,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "おまかせ"
+        },
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "季節を歩く"
+        },
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "並木道"
+        },
+        {
+          "collection": "everyday",
+          "key": "place",
+          "value": "並木道"
+        }
+      ]
+    },
+    {
+      "source": "japan-everyday-006-v18.png",
+      "originalSource": "japan-everyday-006-v18.png",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/91b1491d991b0da1385d.webp",
+      "sourceSha256": "de65f5046d7779cb296bb253e73edac034ff6aa57ad51be2b4a6a5cf8cc828e1",
+      "thumbnailSha256": "91b1491d991b0da1385d22dcc2d1365a910de5641f998802965ec30a8b79f335",
+      "sourceBytes": 2628515,
+      "thumbnailBytes": 28672,
+      "sourceDimensions": [
+        1122,
+        1402
+      ],
+      "thumbnailDimensions": [
+        307,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "街角のファッション"
+        },
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "街角の歩道"
+        },
+        {
+          "collection": "everyday",
+          "key": "place",
+          "value": "街角の歩道"
+        },
+        {
+          "collection": "everyday",
+          "key": "costume",
+          "value": "おまかせ"
+        },
+        {
+          "collection": "everyday",
+          "key": "costume",
+          "value": "現代のテーラードスーツ"
+        }
+      ]
+    },
+    {
+      "source": "japan-everyday-007-v18.png",
+      "originalSource": "japan-everyday-007-v18.png",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/1ececb028dbdf3cc81ba.webp",
+      "sourceSha256": "c302cbcc0e1387897c92c9ad7a57c38d47c28ce9aa6ec8f13c60b56e79d6c24a",
+      "thumbnailSha256": "1ececb028dbdf3cc81bad66c2f8dcc299c0ab23471e45e78b8286b02821456af",
+      "sourceBytes": 2306878,
+      "thumbnailBytes": 22410,
+      "sourceDimensions": [
+        1122,
+        1402
+      ],
+      "thumbnailDimensions": [
+        307,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "本を読む"
+        },
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "おまかせ"
+        },
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "静かな読書の時間"
+        },
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "窓辺の読書室"
+        },
+        {
+          "collection": "everyday",
+          "key": "place",
+          "value": "窓辺の読書室"
+        },
+        {
+          "collection": "everyday",
+          "key": "costume",
+          "value": "おまかせ"
+        },
+        {
+          "collection": "everyday",
+          "key": "costume",
+          "value": "ワンピースとカーディガン"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "おまかせ"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "本を読む"
+        }
+      ]
+    },
+    {
+      "source": "japan-everyday-008-v18.png",
+      "originalSource": "japan-everyday-008-v18.png",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/f0a59fd028926db481f7.webp",
+      "sourceSha256": "bc9374b2f0d271f1662d6a1b9db90fbf2ad8a31a89e0ea29bd0785f7bb72d7f6",
+      "thumbnailSha256": "f0a59fd028926db481f7afa395c01f844a8cdcf63b7caf0987263ed10ccdbead",
+      "sourceBytes": 2661871,
+      "thumbnailBytes": 27836,
+      "sourceDimensions": [
+        1122,
+        1402
+      ],
+      "thumbnailDimensions": [
+        307,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "星明かりを集める旅"
+        }
+      ]
+    },
+    {
+      "source": "japan-landscape-v19.png",
+      "originalSource": "japan-landscape-v19.png",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/73ffb7c1e952da86d6a4.webp",
+      "sourceSha256": "423cd53bbf1de34b66bda0272566fafa976d7617ac3b6654314e9cc3561f25eb",
+      "thumbnailSha256": "73ffb7c1e952da86d6a45523744d37227f4f4a2710e55e66abd0fd0990c66c99",
+      "sourceBytes": 3583511,
+      "thumbnailBytes": 29808,
+      "sourceDimensions": [
+        1536,
+        1024
+      ],
+      "thumbnailDimensions": [
+        384,
+        256
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "everyday",
+          "key": "theme",
+          "value": "山岳と湖のパノラマ"
+        }
+      ]
+    },
+    {
+      "source": "japan-previews-v21/mood-01-16.jpg",
+      "originalSource": "japan-previews-v21/mood-01-16.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/a554361eb76dfa5241a0.webp",
+      "sourceSha256": "800cdd5c64618c077c3b53b3988c96504678cf28238018f09830be0c0b9968af",
+      "thumbnailSha256": "a554361eb76dfa5241a0e03c37a6b0f7b851edf0a42dd871500b8350854bbf6f",
+      "sourceBytes": 393910,
+      "thumbnailBytes": 22760,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "mood",
+          "value": "ひやりとするホラー"
+        },
+        {
+          "collection": "everyday",
+          "key": "mood",
+          "value": "ひやりとするホラー"
+        }
+      ]
+    },
+    {
+      "source": "pose-artwork-v28-4-2/pose-049.jpg",
+      "originalSource": "pose-artwork-v28-4-2/pose-049.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/100b619b48e2d03d7c8b.webp",
+      "sourceSha256": "56d4cf232eb8af5660633df7aa9b72fe83c01cd5d75a21e1f3aa9893b8a176ab",
+      "thumbnailSha256": "100b619b48e2d03d7c8bc99e4f4875155994f1a19e85853a706069c4d8c79c07",
+      "sourceBytes": 94700,
+      "thumbnailBytes": 5596,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "両手を背中で組む"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "両手を背中で組む"
+        }
+      ]
+    },
+    {
+      "source": "pose-artwork-v28-4-2/pose-050.jpg",
+      "originalSource": "pose-artwork-v28-4-2/pose-050.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/6a7b2e6fc500c57e45a6.webp",
+      "sourceSha256": "6e15561e27a5ce20879ee3a4867719993c59218d7904783ceba70e226a8e0c6b",
+      "thumbnailSha256": "6a7b2e6fc500c57e45a6d88f6c4d3d2ead5e05527478269ccff45f2c694c08a8",
+      "sourceBytes": 108621,
+      "thumbnailBytes": 5482,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "帽子のつばに手を添える"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "帽子のつばに手を添える"
+        }
+      ]
+    },
+    {
+      "source": "pose-artwork-v28-4-2/pose-051.jpg",
+      "originalSource": "pose-artwork-v28-4-2/pose-051.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/a3b06799cafcd7844f4f.webp",
+      "sourceSha256": "e36c1862b77d7f11986e7d15447ef682de0a7546355bad8e806e2b4586b2078e",
+      "thumbnailSha256": "a3b06799cafcd7844f4fed30c2781e9bc8ae35abd72bc027efd15a107a1afa4d",
+      "sourceBytes": 99381,
+      "thumbnailBytes": 5394,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "髪を耳にかける"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "髪を耳にかける"
+        }
+      ]
+    },
+    {
+      "source": "pose-artwork-v28-4-2/pose-052.jpg",
+      "originalSource": "pose-artwork-v28-4-2/pose-052.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/bdbda9cd2af7f86f6192.webp",
+      "sourceSha256": "f43904bb5334b8513b4adcaf41b10b4ab9b37ff53093ea0ca0c75da4d99e3ec2",
+      "thumbnailSha256": "bdbda9cd2af7f86f61929b67b8d931c9e1ea6157b013e00c8a01c735a2e8201d",
+      "sourceBytes": 94608,
+      "thumbnailBytes": 6108,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "人差し指で行き先を示す"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "人差し指で行き先を示す"
+        }
+      ]
+    },
+    {
+      "source": "pose-artwork-v28-4-2/pose-053.jpg",
+      "originalSource": "pose-artwork-v28-4-2/pose-053.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/51cc5526a139b8e218a1.webp",
+      "sourceSha256": "29fa85f4dd7e6d57beca15b78e1067a896631422a3fe3187fc70abedcb07706c",
+      "thumbnailSha256": "51cc5526a139b8e218a135a1f19ff20995f997b0a649374491ad17a167c716f7",
+      "sourceBytes": 97879,
+      "thumbnailBytes": 5700,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "両手でハートを作る"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "両手でハートを作る"
+        }
+      ]
+    },
+    {
+      "source": "pose-artwork-v28-4-2/pose-054.jpg",
+      "originalSource": "pose-artwork-v28-4-2/pose-054.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/3e80a40fbf265446cf29.webp",
+      "sourceSha256": "8c57c1a9f60bf0bdba57da1de9f51e5c2a01e29e147924accc4a5ffbceed1b03",
+      "thumbnailSha256": "3e80a40fbf265446cf2952309bf2d383c36f9ba99053172e5b96207f29a7833e",
+      "sourceBytes": 141004,
+      "thumbnailBytes": 8094,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "座って脚を組む"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "座って脚を組む"
+        }
+      ]
+    },
+    {
+      "source": "pose-artwork-v28-4-2/pose-055.jpg",
+      "originalSource": "pose-artwork-v28-4-2/pose-055.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/b7a031e0ac7d9181f5f7.webp",
+      "sourceSha256": "a42b22d5c98c7251600aeb310eaf70e251335d9d33d68e7e05a326c773587f70",
+      "thumbnailSha256": "b7a031e0ac7d9181f5f721125032f444d432cf8791e98685bb2610586cf5a6e2",
+      "sourceBytes": 133845,
+      "thumbnailBytes": 7406,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "正座する"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "正座する"
+        }
+      ]
+    },
+    {
+      "source": "pose-artwork-v28-4-2/pose-056.jpg",
+      "originalSource": "pose-artwork-v28-4-2/pose-056.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/bf221ae3815f483e0885.webp",
+      "sourceSha256": "264a62925a9ccef66736e70e052d17a340279c5b3dd01baa810a879b061590e9",
+      "thumbnailSha256": "bf221ae3815f483e088514b6d2a41d01a752151e62cdf5f2c920a51e40395f68",
+      "sourceBytes": 132051,
+      "thumbnailBytes": 8056,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "ベンチの端に腰掛ける"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "ベンチの端に腰掛ける"
+        }
+      ]
+    },
+    {
+      "source": "pose-artwork-v28-4-2/pose-057.jpg",
+      "originalSource": "pose-artwork-v28-4-2/pose-057.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/6b81c74456eb029073f6.webp",
+      "sourceSha256": "e5d8ee04f430114b082f2934ca26a8b7ea105cd1550fbf524f7b6dcd6937c18d",
+      "thumbnailSha256": "6b81c74456eb029073f682f51295f686f82cc97b6155893d340a6b3746bebb44",
+      "sourceBytes": 164218,
+      "thumbnailBytes": 10868,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "机に片肘をついて考える"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "机に片肘をついて考える"
+        }
+      ]
+    },
+    {
+      "source": "pose-artwork-v28-4-2/pose-058.jpg",
+      "originalSource": "pose-artwork-v28-4-2/pose-058.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/a8a65a537ccf2cf51543.webp",
+      "sourceSha256": "d066d6b9cf02a8ace00f6f973f54d7b892195331410f36fe27b5df298392cc1d",
+      "thumbnailSha256": "a8a65a537ccf2cf5154341238693adc06a5e6037a1557bb1e7bfe3c50e86ee28",
+      "sourceBytes": 133159,
+      "thumbnailBytes": 8388,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "階段を一段上がる"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "階段を一段上がる"
+        }
+      ]
+    },
+    {
+      "source": "pose-artwork-v28-4-2/pose-059.jpg",
+      "originalSource": "pose-artwork-v28-4-2/pose-059.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/7bbc3e84d8d118234f52.webp",
+      "sourceSha256": "26f3835ac54b60fb173dc80d79674fd37f4b81bae73c2f967a50b1a62e4b9dfa",
+      "thumbnailSha256": "7bbc3e84d8d118234f5290a62e398d0c538b31cb516e2b45347ff4f828b8bc36",
+      "sourceBytes": 87441,
+      "thumbnailBytes": 5542,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "小走りで駆け寄る"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "小走りで駆け寄る"
+        }
+      ]
+    },
+    {
+      "source": "pose-artwork-v28-4-2/pose-060.jpg",
+      "originalSource": "pose-artwork-v28-4-2/pose-060.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/4aabc99049823ce83ee2.webp",
+      "sourceSha256": "0f29a812957b6cef3b12a346ec6ecd1f047c7038c77459383dc0b5977840ea5e",
+      "thumbnailSha256": "4aabc99049823ce83ee29dade0ef42a4b6373143ce39979335f18aa9ef220a94",
+      "sourceBytes": 119276,
+      "thumbnailBytes": 8136,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "障害物を跳び越える"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "障害物を跳び越える"
+        }
+      ]
+    },
+    {
+      "source": "pose-artwork-v28-4-2/pose-061.jpg",
+      "originalSource": "pose-artwork-v28-4-2/pose-061.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/ca893b8bc8299d13053e.webp",
+      "sourceSha256": "238d0bcb906ce4b479b99e868cdcd8c9a3f0cb4ad052a00e1043bdc931a000d2",
+      "thumbnailSha256": "ca893b8bc8299d13053e10e5a4e3dcd9bb36664e3712ae85652af994a4d04205",
+      "sourceBytes": 130239,
+      "thumbnailBytes": 9078,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "身をひねって避ける"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "身をひねって避ける"
+        }
+      ]
+    },
+    {
+      "source": "pose-artwork-v28-4-2/pose-062.jpg",
+      "originalSource": "pose-artwork-v28-4-2/pose-062.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/1ca47f51eef38ad30e4d.webp",
+      "sourceSha256": "f88fae142adc4da898c33fed5bd8d98f3b3f1cf9f153728b973e16e247b828b5",
+      "thumbnailSha256": "1ca47f51eef38ad30e4d85fef4b818e6d899ea259838925a05922fd3b07765c5",
+      "sourceBytes": 157886,
+      "thumbnailBytes": 11078,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "片手を床について着地する"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "片手を床について着地する"
+        }
+      ]
+    },
+    {
+      "source": "pose-artwork-v28-4-2/pose-063.jpg",
+      "originalSource": "pose-artwork-v28-4-2/pose-063.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/65bdf6d67eeb2b22351c.webp",
+      "sourceSha256": "c8040865caae1d60e2577f49b9fb53ecb078962892d34c9ac27cd8edb22d504a",
+      "thumbnailSha256": "65bdf6d67eeb2b22351c06f79292ab307ed60a3d04fd58def8f5cb669324b4bb",
+      "sourceBytes": 166711,
+      "thumbnailBytes": 11356,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "風に向かって踏み出す"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "風に向かって踏み出す"
+        }
+      ]
+    },
+    {
+      "source": "pose-artwork-v28-4-2/pose-064.jpg",
+      "originalSource": "pose-artwork-v28-4-2/pose-064.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/8182e5812b707fe663ad.webp",
+      "sourceSha256": "9917a4d54ae8bd5821e5a30c83085119a69ae19c5d85744e88bc5fbd0f56d880",
+      "thumbnailSha256": "8182e5812b707fe663ad2302f2ce0c83de795292faf8322473a9cc6b678a5cc7",
+      "sourceBytes": 119406,
+      "thumbnailBytes": 8038,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "流れる布を片手でつかむ"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "流れる布を片手でつかむ"
+        }
+      ]
+    },
+    {
+      "source": "pose-artwork-v28-4-2/pose-065.jpg",
+      "originalSource": "pose-artwork-v28-4-2/pose-065.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/25ae11b8c4042a29ff43.webp",
+      "sourceSha256": "0c6fef55024a6da099594f907240a49f58f0e8b5795c4ec7d9a9b521af08383d",
+      "thumbnailSha256": "25ae11b8c4042a29ff43a29e9dee5b0bf7cc1aaab5fde2878807b1fb45ffa357",
+      "sourceBytes": 106406,
+      "thumbnailBytes": 6588,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "傘を差す"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "傘を差す"
+        }
+      ]
+    },
+    {
+      "source": "pose-artwork-v28-4-2/pose-066.jpg",
+      "originalSource": "pose-artwork-v28-4-2/pose-066.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/bd72a3ec440a8b76f8a0.webp",
+      "sourceSha256": "09eb3c1c7413fa0ef31726ebf1ff416e3ce60cdc56184ce01accd2498d2ff94d",
+      "thumbnailSha256": "bd72a3ec440a8b76f8a01c7ed939dc01b668340a47a11ea0f14758e285f2529c",
+      "sourceBytes": 113222,
+      "thumbnailBytes": 7240,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "灯りを前に掲げる"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "灯りを前に掲げる"
+        }
+      ]
+    },
+    {
+      "source": "pose-artwork-v28-4-2/pose-067.jpg",
+      "originalSource": "pose-artwork-v28-4-2/pose-067.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/a9e2d0fcba6fec034b71.webp",
+      "sourceSha256": "b11860d1dd0b7c161ddb7101694127d0ee9f028abc6d3639bac50bb4a3ef1cb3",
+      "thumbnailSha256": "a9e2d0fcba6fec034b713c8f5d8dc2a62fc1e6d150090beec45b09ed19dca931",
+      "sourceBytes": 114993,
+      "thumbnailBytes": 6796,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "カメラを構える"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "カメラを構える"
+        }
+      ]
+    },
+    {
+      "source": "pose-artwork-v28-4-2/pose-068.jpg",
+      "originalSource": "pose-artwork-v28-4-2/pose-068.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/ba6deda9198f510021d7.webp",
+      "sourceSha256": "a20c35cdf7747c17a64346ef4d02d4c4e67e2cae88bbe142a54e49c6c4300fe1",
+      "thumbnailSha256": "ba6deda9198f510021d7731b9c2d67d4fc66112ee1f2700a6c74336a76bda86a",
+      "sourceBytes": 137835,
+      "thumbnailBytes": 7820,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "片手で扉を開く"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "片手で扉を開く"
+        }
+      ]
+    },
+    {
+      "source": "pose-artwork-v28-4-2/pose-069.jpg",
+      "originalSource": "pose-artwork-v28-4-2/pose-069.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/861762ff976ccb44e3d7.webp",
+      "sourceSha256": "74c1c9aaaeefe531c570b7ab187741cb7895de32c1e7d1ba88ad42b8ad664ca7",
+      "thumbnailSha256": "861762ff976ccb44e3d7390815e085a9a0ef4461be74d529cd0fccf30cf02fbf",
+      "sourceBytes": 125525,
+      "thumbnailBytes": 8856,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "剣を両手で構える"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "剣を両手で構える"
+        }
+      ]
+    },
+    {
+      "source": "pose-artwork-v28-4-2/pose-070.jpg",
+      "originalSource": "pose-artwork-v28-4-2/pose-070.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/1167d72990951cbf5c0e.webp",
+      "sourceSha256": "280ce2f6e765832a1a36b2685719b5d78434e5efa6246e26ab8e4b54b0612571",
+      "thumbnailSha256": "1167d72990951cbf5c0eba624b1d82d0fbbbb84187074184c868a672e942b96e",
+      "sourceBytes": 127015,
+      "thumbnailBytes": 8226,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "弓を引く"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "弓を引く"
+        }
+      ]
+    },
+    {
+      "source": "pose-artwork-v28-4-2/pose-071.jpg",
+      "originalSource": "pose-artwork-v28-4-2/pose-071.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/9c20ca4efffe1fd94457.webp",
+      "sourceSha256": "af057dbb3b9ec2aeedc5b933f8a43cdff1a59d7d4923120be5c8219608f4fdc3",
+      "thumbnailSha256": "9c20ca4efffe1fd94457f1e25efeec27055ba1f466713797d87d91a865ea0596",
+      "sourceBytes": 114085,
+      "thumbnailBytes": 7452,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "長い杖を地面につく"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "長い杖を地面につく"
+        }
+      ]
+    },
+    {
+      "source": "pose-artwork-v28-4-2/pose-072.jpg",
+      "originalSource": "pose-artwork-v28-4-2/pose-072.jpg",
+      "thumbnail": "assets/preview-thumbnails-v28-4-16/e7f6f8971f03401fa07d.webp",
+      "sourceSha256": "f37c5b72471be965926f118ef9a413bb82860b23ddd977441227eeace805dd84",
+      "thumbnailSha256": "e7f6f8971f03401fa07d61dca47dceb8d7154aa86635bd3699fb935b8ca44508",
+      "sourceBytes": 105890,
+      "thumbnailBytes": 7344,
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "thumbnailDimensions": [
+        384,
+        384
+      ],
+      "hasAlpha": false,
+      "uses": [
+        {
+          "collection": "halloween",
+          "key": "pose",
+          "value": "跳びながら手を伸ばす"
+        },
+        {
+          "collection": "everyday",
+          "key": "pose",
+          "value": "跳びながら手を伸ばす"
+        }
+      ]
+    }
+  ]
+}

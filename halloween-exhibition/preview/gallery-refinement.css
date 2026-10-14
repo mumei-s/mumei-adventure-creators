@@ -1,0 +1,55 @@
+/* A single control strip survives text scaling; unusually large text scrolls locally. */
+body[data-layout-page=gallery] .theater .palace-toolbar {
+ display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;gap:6px;
+ min-width:0;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;
+ scrollbar-width:thin;padding:3px 2px 6px;
+}
+body[data-layout-page=gallery] .theater .header-navigation {flex:0 0 auto;flex-wrap:nowrap;gap:0}
+body[data-layout-page=gallery] .theater .header-actions {flex:1 0 auto;flex-wrap:nowrap;gap:5px;min-width:max-content}
+body[data-layout-page=gallery] .theater .mode-switch {flex:none;flex-wrap:nowrap}
+body[data-layout-page=gallery] .theater .mode-switch button,
+body[data-layout-page=gallery] .theater .header-actions button {
+ flex:0 0 auto;white-space:nowrap;overflow-wrap:normal;min-width:44px;min-height:44px;
+ font-size:11px;letter-spacing:0;padding-inline:6px;
+}
+body[data-layout-page=gallery] .theater .header-actions #year-open {width:44px;min-width:44px;height:44px;min-height:44px}
+body[data-layout-page=gallery] .theater .header-actions .visitor-settings-trigger {min-width:44px;margin-left:auto;padding-inline:6px}
+body[data-layout-page=gallery] .theater .header-actions .list-open>span {display:none}
+/* Image and arrows share a row, but occupy separate, reserved horizontal gutters. */
+body[data-layout-page=gallery] .theater .stage {display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto;touch-action:pan-y pinch-zoom}
+body[data-layout-page=gallery] .theater .room-world {grid-area:1/1}
+body[data-layout-page=gallery] .theater .stage-navigation {
+ grid-area:1/1;align-self:center;position:relative;inset:auto;display:flex;
+ justify-content:space-between;gap:0;width:100%;height:44px;min-height:44px;
+ padding:0 4px;pointer-events:none;z-index:21;
+}
+body[data-layout-page=gallery] .theater .stage-navigation .stage-arrow {
+ width:44px;height:44px;min-width:44px;min-height:44px;padding:0;gap:0;
+ border-radius:50%;pointer-events:auto;background:#172638ed;border:1px solid #d8b47d;
+ box-shadow:0 3px 12px #0006;
+}
+body[data-layout-page=gallery] .theater .stage-navigation .stage-arrow small {display:none}
+body[data-layout-page=gallery] .theater .stage-navigation .stage-arrow>span {font-size:22px;line-height:1}
+body[data-layout-page=gallery] .theater .stage-caption {grid-area:2/1}
+body[data-layout-page=gallery] .theater:is([data-portrait=true],[data-portrait=false]) .artwork-frame {max-width:calc(100% - 112px);touch-action:pan-y pinch-zoom}
+body[data-layout-page=gallery] .theater .artwork-frame * {touch-action:pan-y pinch-zoom}
+body[data-layout-page=gallery] .theater[data-mode=normal] .stage-arrow {background:#f7fbef;color:#315746;border-color:#6f9683}
+/* The announcement is a signed invitation, distinct from the owner's personal work. */
+body[data-layout-page=gallery] .theater[data-entry-kind=introduction] .atelier-mascot,
+body[data-layout-page=gallery] .theater[data-entry-kind=introduction] .magic-trail {display:none}
+body[data-layout-page=gallery] .theater[data-entry-kind=introduction] .artwork-frame {
+ border:2px solid #f9dca1;background:linear-gradient(135deg,#fff0be,#aa713b 35%,#f7d893 65%,#71482c);
+ box-shadow:0 0 0 3px #33233b,0 0 0 4px #d7a864,0 16px 32px #0008;
+}
+body[data-layout-page=gallery] .theater[data-entry-kind=introduction] .stage-caption {
+ position:relative;padding:16px 18px;margin:8px max(20px,8%) 0;
+ border:1px solid #d6ad6f;border-radius:22px 22px 8px 8px;
+ background:linear-gradient(135deg,#3a2436f5,#1e1b30f5);box-shadow:inset 0 0 0 5px #dfba7b12;
+}
+body[data-layout-page=gallery] .theater .stage-caption .host-avatar {
+ position:relative;inset:auto;display:block;width:64px;height:64px;min-width:64px;
+ margin:0 auto 10px;border:3px solid #f7db9d;box-shadow:0 0 0 4px #ab7d3940;z-index:1;
+}
+body[data-layout-page=gallery] .theater .stage-caption .host-avatar[hidden] {display:none}
+body[data-layout-page=gallery] .theater[data-entry-kind=introduction] .room-kicker {color:#ffe1a5;letter-spacing:.16em;font-size:11px;line-height:1.6}
+body[data-layout-page=gallery] .theater[data-entry-kind=introduction] #creator-name>small {background:none;border:0;color:#e4cba2}

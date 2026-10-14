@@ -1,3 +1,4 @@
+import { installGalleryGesture } from '../gallery-gesture.js';
 import { initPalaceEntrance } from '../palace-entrance.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -93,7 +94,7 @@ async function harness({ data = archive, reduced = true, storageThrows = false, 
     return walk(doc.documentElement);
   };
   const requests = [], storageWrites = [], motionInitializations = [], viewCalls = [];
-  const context = vm.createContext({ createSlideshowController, initPalaceEntrance:entrance?(args)=>initPalaceEntrance({...args,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}):({root,onViewChange})=>{root.dataset.palaceState='gallery';return {enter(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});},home(){root.dataset.palaceState='palace';onViewChange({view:'palace',opening:false});},setMode(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});}}}, initDisplayMode:()=>({}), document: doc, initVisitorPreferences:()=>({}), initSceneMotion:root=>{motionInitializations.push(root);const dock=doc.createElement('div');dock.className='scene-controls';root.append(dock);return {setView(x,y){viewCalls.push([x,y]);}};}, validateArchive, safeURL, normalizeSearch, doorIdFor,
+  const context = vm.createContext({ installGalleryGesture, createSlideshowController, initPalaceEntrance:entrance?(args)=>initPalaceEntrance({...args,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}):({root,onViewChange})=>{root.dataset.palaceState='gallery';return {enter(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});},home(){root.dataset.palaceState='palace';onViewChange({view:'palace',opening:false});},setMode(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});}}}, initDisplayMode:()=>({}), document: doc, initVisitorPreferences:()=>({}), initSceneMotion:root=>{motionInitializations.push(root);const dock=doc.createElement('div');dock.className='scene-controls';root.append(dock);return {setView(x,y){viewCalls.push([x,y]);}};}, validateArchive, safeURL, normalizeSearch, doorIdFor,
     matchMedia: () => ({ matches: reduced }),
     // Native browser timers reject a plain-object receiver (Illegal invocation).
     setTimeout: function(fn, delay) { if (strictTimerReceiver && this != null && this.document !== doc) throw new TypeError('Illegal invocation'); return queue(fn, delay); },
@@ -185,19 +186,19 @@ test('previous and next wrap around and selected dots match the room', async () 
 test('swipe advances once and suppresses following synthetic artwork click', async () => {
   const h = await harness(); const stage = h.$('stage');
   stage.dispatch('pointerdown', { pointerType: 'touch', pointerId: 1, clientX: 200, clientY: 200 });
-  stage.dispatch('pointerup', { pointerId: 1, clientX: 80, clientY: 210 });
+  for(const fn of h.doc.handlers.pointerup||[])fn({ pointerType:'touch', pointerId: 1, clientX: 80, clientY: 210 });
   await h.flush(); assert.equal(h.api.state.currentIndex, 1);
   h.$('artwork-open').click(); assert.equal(h.$('detail').open, false);
-  await h.tick(451); h.$('artwork-open').click(); assert.equal(h.$('detail').open, true);
+  await h.tick(501); h.$('artwork-open').click(); assert.equal(h.$('detail').open, true);
 });
 
 test('vertical gestures do not change rooms and cancelled touches do nothing', async () => {
   const h = await harness(); const stage = h.$('stage');
   stage.dispatch('pointerdown', { pointerType: 'touch', pointerId: 1, clientX: 100, clientY: 100 });
-  stage.dispatch('pointerup', { pointerId: 1, clientX: 110, clientY: 250 });
+  for(const fn of h.doc.handlers.pointerup||[])fn({ pointerType:'touch', pointerId: 1, clientX: 110, clientY: 250 });
   assert.equal(h.api.state.currentIndex, 0);
   stage.dispatch('pointerdown', { pointerType: 'touch', pointerId: 2, clientX: 200, clientY: 100 });
-  stage.dispatch('pointercancel'); stage.dispatch('pointerup', { pointerId: 2, clientX: 0, clientY: 100 });
+  for(const fn of h.doc.handlers.pointercancel||[])fn({pointerType:'touch',pointerId:2}); for(const fn of h.doc.handlers.pointerup||[])fn({ pointerType:'touch', pointerId: 2, clientX: 0, clientY: 100 });
   assert.equal(h.api.state.currentIndex, 0);
 });
 
@@ -394,7 +395,7 @@ test('profile names, handles and link labels render as text, and unsafe links ar
   assert.equal(h.$('room-title').children.length, 0);
   assert.equal(h.$('detail-title').textContent, attack);
   assert.equal(h.$('detail-title').children.length, 0);
-  const links = h.$('detail-content').querySelectorAll('a');
+  const links = h.$('detail-content').querySelectorAll('a').filter(a=>!a.classList.contains('magazine-link'));
   assert.equal(links.length, 2);
   assert.ok(links[0].textContent.startsWith(attack));
   assert.equal(links[0].href, safeURL(data.years[0].entries[1].links[0].url));
@@ -746,7 +747,7 @@ test('pausing during an outgoing turn skips the remaining entrance animation', a
 test('confusing view and duplicate CTA are absent; ordinary swipe still navigates',async()=>{
  const h=await harness({reduced:true});assert.equal(h.$('view-toggle'),undefined);assert.equal(h.$('story-open'),undefined);
  h.$('stage').dispatch('pointerdown',{pointerType:'touch',pointerId:2,clientX:180,clientY:100});
- h.$('stage').dispatch('pointerup',{pointerId:2,clientX:60,clientY:110});
+ for(const fn of h.doc.handlers.pointerup||[])fn({pointerType:'touch',pointerId:2,clientX:60,clientY:110});
  assert.equal(h.api.state.currentIndex,1);assert.equal(h.viewCalls.length,0);
 });
 
@@ -788,7 +789,7 @@ test('hidden exhibition work becomes a verified profile without leaking article 
  assert.equal(h.$('artwork-image').src,data.creators[0].avatar);
  h.$('artwork-open').click();const text=h.$('detail-content').textContent;
  assert.doesNotMatch(text,/ハロウィン企画への招待状|主催者の企画紹介記事/);
- assert.equal(h.$('detail-content').querySelectorAll('a').length,1);
+ assert.equal(h.$('detail-content').querySelectorAll('a').filter(a=>!a.classList.contains('magazine-link')).length,1);
  assert.equal(h.$('detail-content').querySelector('a').href,data.creators[0].profileURL);
 });
 test('numeric order is stable and normal mode keeps the same creator across collections',async()=>{
@@ -800,7 +801,7 @@ test('numeric order is stable and normal mode keeps the same creator across coll
 test('multiple published links remain accessible and individually hidden links stay absent',async()=>{
  const data=structuredClone(archive);data.years[0].entries[1].links=[{title:'Second',url:'https://example.com/2',order:2},{title:'Hidden secret title',url:'https://example.com/hidden',visible:false},{title:'First',url:'https://example.com/1',order:1}];
  const h=await harness({data});await h.api.navigate(1);h.$('artwork-open').click();
- const links=h.$('detail-content').querySelectorAll('a');assert.equal(links.length,3);
+ const links=h.$('detail-content').querySelectorAll('a').filter(a=>!a.classList.contains('magazine-link'));assert.equal(links.length,3);
  assert.equal(links[0].href,'https://example.com/1');assert.equal(links[1].href,'https://example.com/2');
  assert.doesNotMatch(h.$('detail-content').textContent,/Hidden secret title/);
 });
@@ -834,7 +835,7 @@ test('reduced-motion roulette chooses a real different door without recording or
  assert.equal(h.$('roulette-reel').hidden,true);assert.equal(h.$('detail').open,false);assert.equal(String(h.api.countPeople()),'0');
  assert.equal(h.$('theater').classList.contains('turning-in'),false);
  h.$('artwork-open').click();assert.match(h.$('detail-content').textContent,/プロフィール/);
- assert.ok(h.$('detail-content').querySelectorAll('a').every(a=>archive.creators.some(c=>c.profileURL===a.href)||archive.years[0].entries.some(e=>e.links?.some(l=>l.url===a.href))));
+ assert.ok(h.$('detail-content').querySelectorAll('a').filter(a=>!a.classList.contains('magazine-link')).every(a=>archive.creators.some(c=>c.profileURL===a.href)||archive.years[0].entries.some(e=>e.links?.some(l=>l.url===a.href))));
 });
 
 test('animated roulette resolves to an existing creator and does not leave controls busy', async()=>{
@@ -996,7 +997,7 @@ test('owner personal door survives page two selection, detail return, and exact 
  card.click();await h.tick(0);assert.equal(h.$('theater').dataset.doorId,'owner-work-2026');assert.equal(h.$('theater').dataset.creatorId,'ss_yr');
  assert.equal(h.$('artwork-image').src,archive.creators[0].avatar);assert.match(h.$('artwork-image').alt,/プロフィール画像/);
  h.$('artwork-open').click();assert.doesNotMatch(h.$('detail-content').textContent,/ハロウィン企画への招待状/);
- assert.deepEqual(h.$('detail-content').querySelectorAll('a').map(a=>a.href),[archive.creators[0].profileURL]);
+ assert.deepEqual(h.$('detail-content').querySelectorAll('a').filter(a=>!a.classList.contains('magazine-link')).map(a=>a.href),[archive.creators[0].profileURL]);
  h.$('detail').close();await h.tick(0);h.$('list-open').click();assert.equal(h.$('roster-page-status').textContent,`2 / ${pageCount} ページ`);
  h.$('roster').close();await h.tick(0);h.$('horror-entrance').click();const state=JSON.parse(h.getReturn().value);
  assert.equal(state.doorId,'owner-work-2026');assert.equal(state.rosterPage,1);
@@ -1056,4 +1057,19 @@ test('normal mode bypasses the Halloween palace and exact maze return opens the 
 test('selecting the second owner door from the TOP roster reveals that exact article theater door',async()=>{
  const h=await harness({entrance:true});h.$('list-open').click();h.$('roster-next').click();h.$('roster-grid').children.find(b=>b.dataset.doorId==='owner-work-2026').click();await h.tick(0);
  assert.equal(h.$('article-theater').hidden,false);assert.equal(h.$('theater').dataset.doorId,'owner-work-2026');assert.equal(h.$('palace-entrance').hidden,true);
+});
+
+
+test('host announcement has its own invitation treatment, not the personal-work door',async()=>{
+ const h=await harness();assert.equal(h.$('theater').dataset.entryKind,'introduction');
+ assert.equal(h.$('host-avatar').parentNode.className,'stage-caption');
+ assert.equal(h.$('host-avatar').hidden,false);
+ await h.api.navigate(ownerWorkIndex);assert.equal(h.$('theater').dataset.entryKind,'article');assert.equal(h.$('host-avatar').hidden,true);
+});
+test('2026 Halloween details retain individual links and add a separate shared magazine',async()=>{
+ const h=await harness();await h.api.navigate(creatorDoorIndex('koakumako'));h.api.openStory();
+ const links=h.$('detail-content').querySelectorAll('a');
+ assert.ok(links.some(a=>a.href==='https://note.com/koakumako/n/na9731433238f'));
+ const magazine=links.find(a=>a.classList.contains('magazine-link'));assert.equal(magazine.href,'https://note.com/ss_yr/m/m642b82518aeb');assert.equal(magazine.rel,'noopener noreferrer');
+ h.$('detail').close();await h.tick(0);h.api.setMode('normal');h.api.openStory();assert.equal(h.$('detail-content').querySelector('.magazine-link'),null);
 });

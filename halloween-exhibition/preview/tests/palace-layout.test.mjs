@@ -38,3 +38,5 @@ test('palace scene and gate share one cover-scaled artwork coordinate system',()
   assert.ok(gate.left>=0&&gate.left+gate.width<=w);assert.ok(gate.top>=0&&gate.top+gate.height<=h);assert.ok(gate.width>=44&&gate.height>=44);
  }
 });
+
+test("narrow eerie scenery stays above invitation copy",async()=>{const css=await readFile(new URL("../palace-entrance.css",import.meta.url),"utf8");assert.equal((css.match(/\.palace-eerie-corner\{left:1%;top:30%;bottom:auto;width:90px;height:100px\}/g)||[]).length,2);assert.doesNotMatch(css,/bottom:17%;width:109px/);});

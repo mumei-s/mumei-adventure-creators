@@ -1,0 +1,37 @@
+/* Each article owns a bounded image area. Navigation is a separate flow row. */
+body[data-layout-page=gallery] .theater .stage-navigation {
+ position:relative;inset:auto;z-index:21;display:flex;justify-content:center;
+ align-items:center;gap:24px;width:100%;min-height:44px;flex:none;margin:0;
+}
+body[data-layout-page=gallery] .theater .stage-navigation .stage-arrow {
+ position:relative;inset:auto;transform:none;display:flex;align-items:center;justify-content:center;
+ gap:10px;width:auto;height:auto;min-width:112px;min-height:44px;padding:7px 16px;
+ border-radius:22px;flex:none;
+}
+body[data-layout-page=gallery] .theater .stage-navigation .stage-arrow small {
+ display:block;font:500 11px/1.4 sans-serif;letter-spacing:.04em;
+}
+body[data-layout-page=gallery] .theater .stage-navigation .stage-arrow>span {font-size:22px;line-height:1}
+body[data-layout-page=gallery] .theater .artwork-frame {
+ top:0;left:50%;height:auto;max-height:calc(100% - 12px);padding:8px;
+ transform:translateX(-50%)!important;clip-path:none;filter:none;display:grid;place-items:center;
+}
+body[data-layout-page=gallery] .theater[data-portrait=false] .artwork-frame {
+ width:min(82%,calc((100cqh - 20px) * 1.91),820px);max-width:82%;aspect-ratio:1.91;
+ border-radius:8px;border:1px solid #d8b77f;background:linear-gradient(135deg,#d1ad71,#5c4938 35%,#bb945d);
+}
+body[data-layout-page=gallery] .theater[data-portrait=true] .artwork-frame {
+ width:min(60%,calc((100cqh - 20px) * .85),280px);max-width:60%;aspect-ratio:.85;
+}
+body[data-layout-page=gallery] .theater .artwork-mat {
+ width:100%;height:100%;min-width:0;min-height:0;overflow:hidden;border-radius:0;
+}
+body[data-layout-page=gallery] .theater[data-portrait=true] .artwork-mat {
+ height:auto;aspect-ratio:1;border-radius:0;
+}
+body[data-layout-page=gallery] .theater .artwork-mat img {
+ width:100%;height:100%;object-fit:contain;object-position:center;clip-path:none;border-radius:0;
+}
+body[data-layout-page=gallery] .theater .artwork-frame:hover .artwork-mat img {transform:none}
+body[data-layout-page=gallery] #detail .detail-art {object-fit:contain;object-position:center;border-radius:0;clip-path:none;height:auto;max-height:55dvh;width:100%}
+@media(max-width:370px){body[data-layout-page=gallery] .theater .stage-navigation{gap:16px}}

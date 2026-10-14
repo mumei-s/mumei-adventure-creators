@@ -1,21 +1,21 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile, access} from 'node:fs/promises';
-import {validateArchive,safeURL,normalizeSearch} from '../data-model.js';
+import {validateArchive,safeURL,normalizeSearch,doorIdFor} from '../data-model.js';
 const source=JSON.parse(await readFile(new URL('../data/archive.json',import.meta.url)));
 // Snapshot of yearbook-roster/verified-profiles.json, verified 2026-10-13.
 // Kept local so the shipped preview tests remain independently runnable.
 const verified=JSON.parse(await readFile(new URL('./fixtures/verified-profiles.json',import.meta.url)));
 
-test('nine verified public profiles with no future slots, with no invented creators',()=>{
+test('nine verified profiles and ten article doors without invented creators',()=>{
   validateArchive(source);
   assert.equal(source.creators.length,9);
   assert.deepEqual(source.creators.map(c=>c.id),verified.map(c=>c.id));
   assert.equal(source.creators.filter(c=>c.provisional).length,0);
-  assert.equal(source.years[0].entries.length,9);
+  assert.equal(source.years[0].entries.length,10);
   assert.equal(source.years[0].plannedSlots,undefined);
   assert.deepEqual(source.evergreenEntries,[]);
-  assert.deepEqual(source.years[0].entries.map(e=>e.creatorId),verified.map(c=>c.id));
+  assert.deepEqual(source.years[0].entries.slice(0,9).map(e=>e.creatorId),verified.map(c=>c.id));
 });
 
 test('creator identities use only names, handles, public profile links and profile images',async()=>{
@@ -33,7 +33,7 @@ test('creator identities use only names, handles, public profile links and profi
   }
 });
 
-test('host introduction and confirmed Mako article are present; seven entries await submissions',()=>{
+test('host introduction and confirmed Mako article are present; eight doors await submissions',()=>{
   const [host,mako,...participants]=source.years[0].entries;
   assert.equal(host.creatorId,'ss_yr');
   assert.equal(host.role,'host');
@@ -54,7 +54,7 @@ test('host introduction and confirmed Mako article are present; seven entries aw
   assert.equal(mako.works,undefined);
   assert.equal(source.years[0].entries.filter(e=>e.submissionStatus==='introduction').length,1);
   assert.equal(source.years[0].entries.filter(e=>e.submissionStatus==='submitted').length,1);
-  assert.equal(participants.length,7);
+  assert.equal(participants.length,8);
   for(const entry of participants){
     const profile=verified.find(c=>c.id===entry.creatorId);
     assert.equal(entry.submissionStatus,'pending');
@@ -62,7 +62,7 @@ test('host introduction and confirmed Mako article are present; seven entries aw
     assert.equal(entry.image,undefined);
     assert.equal(entry.message,undefined);
     assert.equal(entry.works,undefined);
-    assert.deepEqual(entry.links,[{title:'noteプロフィールを見る',url:profile.profileURL}]);
+    assert.deepEqual(entry.links,entry.doorId==='owner-work-2026'?[]:[{title:'noteプロフィールを見る',url:profile.profileURL}]);
   }
 });
 
@@ -71,9 +71,25 @@ test('empty year and roster are valid',()=>{assert.doesNotThrow(()=>validateArch
 test('duplicate creators, duplicate annual entries, unknown IDs, duplicate years reject',()=>{for(const change of [d=>d.creators.push(d.creators[0]),d=>d.years[0].entries.push(d.years[0].entries[0]),d=>d.years[0].entries[0].creatorId='missing',d=>d.years.push(d.years[0])]){const d=structuredClone(source);change(d);assert.throws(()=>validateArchive(d));}});
 test('planned slots are optional nonnegative integers and do not create entries',()=>{
   for(const value of [-1,1.5,101,'2',null]){const data=structuredClone(source);data.years[0].plannedSlots=value;assert.throws(()=>validateArchive(data));}
-  for(const value of [0,2,100]){const data=structuredClone(source);data.years[0].plannedSlots=value;assert.equal(validateArchive(data).years[0].entries.length,9);}
+  for(const value of [0,2,100]){const data=structuredClone(source);data.years[0].plannedSlots=value;assert.equal(validateArchive(data).years[0].entries.length,10);}
   const data=structuredClone(source);delete data.years[0].plannedSlots;assert.doesNotThrow(()=>validateArchive(data));
 });
 test('malformed profile field types reject',()=>{for(const key of ['avatar','avatarSource','profileURL']){const data=structuredClone(source);data.creators[0][key]={url:'bad'};assert.throws(()=>validateArchive(data));}});
 test('unsafe URLs and traversal reject',()=>{for(const url of ['javascript:alert(1)','data:text/html,x','http://example.com','//example.com','assets/../private.png','https://user:secret@example.com','https://x.com/\nx'])assert.equal(safeURL(url,{image:true}),null);assert.equal(safeURL('./assets/portal.svg',{image:true}),'./assets/portal.svg');assert.equal(safeURL('https://example.com'),'https://example.com/');});
 test('search normalizes width, case, whitespace',()=>{assert.equal(normalizeSearch(' ＡＢＣ '),'abc');});
+
+test('the one requested owner work placeholder is a separate door, with no invented work URL or art',()=>{
+ const extra=source.years[0].entries.at(-1);
+ assert.deepEqual(extra,{doorId:'owner-work-2026',creatorId:'ss_yr',theme:'letter',submissionStatus:'pending',title:'作品準備中',tags:['参加者','作品準備中'],links:[]});
+ assert.equal(source.years[0].entries.filter(e=>e.role==='host').length,1);
+ assert.equal(new Set(source.years[0].entries.map(e=>e.creatorId)).size,9);
+});
+test('door IDs survive reordered and retitled legacy entries, and distinguish same-creator articles',()=>{
+ const entry=source.years[0].entries[0],scope='archive:2026';
+ assert.equal(doorIdFor(entry,scope),'legacy-archive-2026-ss_yr');
+ assert.equal(doorIdFor({...entry,title:'Edited',order:200},scope),doorIdFor(entry,scope));
+ const data=structuredClone(source);data.years[0].entries.push({...entry,doorId:'another-owner-work'});assert.doesNotThrow(()=>validateArchive(data));
+ data.years[0].entries.at(-1).doorId='owner-work-2026';assert.throws(()=>validateArchive(data),/扉ID/);
+ data.years[0].entries.at(-1).doorId=doorIdFor(entry,scope);assert.throws(()=>validateArchive(data),/扉ID/);
+ for(const id of ['',{},'a b','../x','x'.repeat(121)]){data.years[0].entries.at(-1).doorId=id;assert.throws(()=>validateArchive(data),/扉ID/);}
+});

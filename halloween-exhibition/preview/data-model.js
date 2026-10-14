@@ -1,3 +1,10 @@
+/** Stable article-door identity. Legacy entries remain compatible without rewriting data. */
+export function doorIdFor(entry, scope = 'evergreen') {
+  if (typeof entry?.doorId === 'string' && entry.doorId) return entry.doorId;
+  return `legacy-${String(scope).replace(/[^a-z0-9_-]/gi,'-')}-${entry?.creatorId || ''}`;
+}
+export function validDoorId(value) { return typeof value === 'string' && /^[a-z0-9][a-z0-9_-]{0,119}$/i.test(value); }
+
 export function safeURL(value, { image = false } = {}) {
   if (typeof value !== 'string' || !value.trim()) return null;
   const text = value.trim();
@@ -22,8 +29,11 @@ export function validateArchive(data) {
     if(year.plannedSlots !== undefined && (!Number.isInteger(year.plannedSlots) || year.plannedSlots<0 || year.plannedSlots>100)) throw Error('追加予定枠は0以上の整数にしてください。');
     if(!year.evergreen)years.add(year.year); const entered = new Set();
     for (const entry of year.entries) {
-      if (!entry || !ids.has(entry.creatorId) || entered.has(entry.creatorId)) throw Error('年度の参加者IDが不正、または重複しています。');
-      entered.add(entry.creatorId);
+      if (!entry || !ids.has(entry.creatorId)) throw Error('年度の参加者IDが不正です。');
+      if (entry.doorId !== undefined && !validDoorId(entry.doorId)) throw Error('扉IDは英数字・ハイフン・アンダースコアで指定してください。');
+      const doorId = doorIdFor(entry, year.evergreen ? 'evergreen' : `archive:${year.year}`);
+      if (entered.has(doorId)) throw Error('扉IDが重複しています。同じ参加者の別記事には別の扉IDが必要です。');
+      entered.add(doorId);
       if(entry.visible!==undefined&&typeof entry.visible!=='boolean')throw Error('展示の表示設定を確認してください。');
       if(entry.order!==undefined&&(typeof entry.order!=='number'||!Number.isFinite(entry.order)))throw Error('展示順を確認してください。');
       for (const key of ['title','message','theme','image']) if (entry[key] !== undefined && typeof entry[key] !== 'string') throw Error('参加者の表示項目を確認してください。');

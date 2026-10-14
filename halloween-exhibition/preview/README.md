@@ -1,18 +1,18 @@
 # Original participant yearbook preview
 
-Independent static exhibition at `halloween-exhibition/preview/`. The original folding-theatre interface, creator navigation, profile detail, searchable roster, and passport are retained. CSS perspective, vaulted scenery, layered glass, polished floor, moving light ribbons and lanterns provide decorative depth. No WebGL is required here.
+Independent static exhibition at `halloween-exhibition/preview/`. The original folding-theatre interface, creator navigation, profile detail, searchable roster, and passport are retained. CSS perspective, vaulted scenery, moving light ribbons and lanterns provide decorative depth. No WebGL is required here.
 
 ## Content boundaries
 
-`data/archive.json` contains nine verified public creator profiles. Profile avatars are not submitted works. There are no planned slots or invented participants.
+`data/archive.json` contains nine verified public creator profiles. Profile avatars are not submitted works. There are no invented participants. The owner requested one separate personal-work door marked 作品準備中, without an article URL or invented work image.
 
-- Halloween reads the selected year's `years[].entries`. The owner's confirmed invitation article `n52be511ec082` and こあく まこ's submitted article `na9731433238f` are available in 2026; the other seven entries remain preparation labels and profile links.
+- Halloween reads the selected year's `years[].entries`. The owner's confirmed invitation article `n52be511ec082` and こあく まこ's submitted article `na9731433238f` are available in 2026; seven other creators remain preparation labels and profile links. A separate tenth door reserves the owner’s personal work, independently of the host invitation. There are nine unique participants and ten article doors.
 - Normal mode reads `evergreenEntries`, independent of year. This collection is currently empty. Nine creator profiles remain browsable, with neutral preparation labels. Halloween article images, titles, messages, and article links are never reused as normal content.
-- New actual normal submissions belong in `evergreenEntries`; new Halloween submissions belong in the specified year's entries. The validator checks creator identity, duplicate entries, and field structure.
+- New actual normal submissions belong in `evergreenEntries`; new Halloween submissions belong in the specified year's entries. The validator checks creator identity, duplicate door IDs, and field structure. Multiple articles from one creator are allowed.
 
 ## Separate Halloween adventure room
 
-Only Halloween displays the hinged-door entrance at `./maze/?return=theatre`. There is no inline horror lighting mode. The separate room returns to `../?mode=halloween`. The original display restores its selected creator, year, and roster search from its own prefixed session storage. The explicit return mode overrides a stored normal preference once; the return query is removed afterward. Storage restrictions degrade safely; restoration across navigation cannot be guaranteed when browser storage is unavailable.
+Only Halloween displays the hinged-door entrance at `./maze/?return=theatre`. There is no inline horror lighting mode. The separate room returns to `../?mode=halloween`. The original display restores its selected article door, year, and roster search from its own prefixed session storage. The explicit return mode overrides a stored normal preference once; the return query is removed afterward. Storage restrictions degrade safely; restoration across navigation cannot be guaranteed when browser storage is unavailable.
 
 ## Interaction and accessibility
 
@@ -53,7 +53,7 @@ The roulette selects only an existing non-fictional creator with a safe public p
 
 The `sw.js` scope is exactly this `halloween-exhibition/preview/` directory. Both registration and worker execution refuse a copied root/other-app location. Registration checks all overlapping workers and leaves any different application alone. It never unregisters workers, calls `skipWaiting`, or claims existing clients.
 
-Only an explicit list of public shell files is precached. Fetch handling is network-first and limited to those exact URLs. The one release query `?v=20261014-layout1` is allowed only for explicitly listed public JS/CSS; all other queries bypass. The public `data/archive.json` stays network-only so current visibility and order are not served from an old offline cache. Admin, private drafts, maze, external images/links, APIs, root and INSIGHT are never cached or intercepted. Offline/latest-content limitations are explained in the install guide and load-error UI. Old cache deletion is restricted to this application's cache prefix and exact scope. This is an installable online-first gallery, not an offline article archive.
+Only an explicit list of public shell files is precached. Fetch handling is network-first and limited to those exact URLs. Exact per-asset release queries are allowed only for explicitly listed public JS/CSS; all other queries bypass. The public `data/archive.json` stays network-only so current visibility and order are not served from an old offline cache. Admin, private drafts, maze, external images/links, APIs, root and INSIGHT are never cached or intercepted. Offline/latest-content limitations are explained in the install guide and load-error UI. Old cache deletion is restricted to this application's cache prefix and exact scope. This is an installable online-first gallery, not an offline article archive.
 
 Tests cover the title, ordinary submitted-title display, valid roulette destinations and cancellation races, reduced motion, manifest/image dimensions, local shell paths, scope guards, worker conflicts, network-first caching, forbidden-path bypass, and user-triggered install prompting. Real browser installation, native focus handling, mobile layout and artistic motion still require browser QA; the lightweight tests do not prove them.
 
@@ -71,9 +71,9 @@ Halloween has warmer orange/copper highlights and framed participant cards with 
 
 `slideshow.js` is a DOM-independent controller. The visible “自動送り OFF / ON” button controls it; speed is explicitly labelled as 5, 10 or 20 seconds. Every new page starts OFF. Only speed is saved, under `halloween-exhibition:preview:slideshow:v1`; enabled state is never restored. Storage denial keeps the current-page controls usable.
 
-The slideshow blocks while loading, in a collection with fewer than two creators, with a dialog open, in hidden tabs, during roulette, while ambient effects are paused, or when reduced motion is requested. Resume waits a complete interval. Manual navigation invalidates any pending automatic transition and resets timing; stale async completions cannot overwrite a newer choice. The controller never opens external links or counts a viewed profile. Page exit turns it OFF, while returning through browser history still leaves the controls usable.
+The slideshow blocks while loading, in a collection with fewer than two doors, with a dialog open, in hidden tabs, during roulette, while ambient effects are paused, or when reduced motion is requested. Resume waits a complete interval. Manual navigation invalidates any pending automatic transition and resets timing; stale async completions cannot overwrite a newer choice. The controller never opens external links or counts a viewed profile. Page exit turns it OFF, while returning through browser history still leaves the controls usable.
 
-The service worker remains strictly scoped to this preview. Its v3 release-versioned public-shell allowlist includes `slideshow.js`, `gallery-controls.css` and the shared display module/styles; archive/admin/maze/private/remote data still bypass cache handling. The exact title, original profile archive, ordinary article isolation, OG asset and visitor brightness/music behavior remain intact.
+The service worker remains strictly scoped to this preview. Its v5 release-versioned public-shell allowlist includes `slideshow.js`, `gallery-controls.css` and the shared display module/styles; archive/admin/maze/private/remote data still bypass cache handling. The exact title, original profile archive, ordinary article isolation, OG asset and visitor brightness/music behavior remain intact.
 
 ## Display size and iPhone/iPad Home Screen
 
@@ -92,8 +92,16 @@ The separate entrance is labeled `Halloween冒険室`. Its genre-unrestricted `�
 
 ## Roster pages and complete portraits
 
-The participant list paginates the filtered real result set in groups of five. Nine creators are 5 + 4; the current seven pending creators are 5 + 2. The range, page count and previous/next buttons describe the current filter. Search, tags, year and normal/Halloween mode changes reset to page one. Reopening the roster after selecting a creator preserves the current page; restored pages are clamped to available results. Both buttons are native keyboard controls with 44px targets.
+The participant list paginates article doors in groups of five. Ten doors for nine unique creators are 5 + 5; the eight pending doors are 5 + 3. Participant counts are deduplicated by creator ID, while page ranges count doors. The range, page count and previous/next buttons describe the current filter. Search, tags, year and normal/Halloween mode changes reset to page one. Reopening the roster after selecting a creator preserves the current page; restored pages are clamped to available results. Both buttons are native keyboard controls with 44px targets.
 
 Portraits use `object-fit: contain` within proportional insets, replacing the legacy fixed-width image that overflowed the narrower ornamental door. Images are not cropped or covered by a half-door. The card surface is warmer orange only in Halloween mode.
 
-All current main/editor JS/CSS entry URLs and local module imports carry the same `20261014-layout1` release query. This ensures a prior controlled page bypasses stale unversioned modules while the new v3 worker waits normally; it does not call skipWaiting, clients.claim, unregister, clear storage or delete other apps’ caches. The new worker precaches only exact public shell URLs and their known release variants. Archive/editor/maze data remains network-only. Manual slideshow navigation keeps ON selected and restarts the full chosen interval; this is stated in the live control hint.
+Changed theater/data-model/article-door CSS and editor app/model URLs carry `20261014-doors1`; unchanged presentation assets retain their previous exact release queries. This ensures a prior controlled page bypasses stale unversioned modules while the new v5 worker waits normally; it does not call skipWaiting, clients.claim, unregister, clear storage or delete other apps’ caches. The new worker precaches only exact public shell URLs and their known release variants. Archive/editor/maze data remains network-only. Manual slideshow navigation keeps ON selected and restarts the full chosen interval; this is stated in the live control hint.
+
+## Independent article doors
+
+Schema version 1 and existing `links`/`works` remain compatible. Optional `doorId` identifies an article within its collection/year. An older record without it deterministically resolves to `legacy-<collection-scope>-<creatorId>`, independent of ordering and title. The editor preserves that ID on edit and generates a separate stable ID for a new article. A second same-creator record needs a distinct ID. The archive keeps all original nine records unchanged and appends only `owner-work-2026`, labelled 作品準備中, without a work image or unknown article URL.
+
+Roster, dots, history, roulette, slideshow and return selection address individual door IDs. Legacy creator-based return state selects the original door. Existing creator visits migrate only to that original legacy door; a newly added work is never automatically marked viewed. Viewing two doors from one creator records two doors but one participant. Existing browser storage keys stay scoped and are not wiped. Normal mode independently displays every evergreen article, with profile-only fallbacks for creators who have no ordinary article.
+
+`article-doors.css` places both arrow controls in a dedicated flow row below the artwork world, with 44px minimum targets. Both submitted images and profile images use `object-fit: contain`, bounded width/height and no hover enlargement or forward-Z projection. Detail images are also contained. Static sizing guards cover 400×606, 333×619, 320px and desktop contracts; the included browser regression requires real layout execution before visual acceptance.

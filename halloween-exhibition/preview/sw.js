@@ -3,17 +3,18 @@
 const SCOPE = new URL('./', self.location.href);
 const RELEASE = '20261014-layout1';
 const STYLE_RELEASE = '20261014-portrait1';
-const CACHE = 'mumei-atelier-shell-v4-' + STYLE_RELEASE + ':' + SCOPE.pathname;
+const DOOR_RELEASE = '20261014-doors1';
+const CACHE = 'mumei-atelier-shell-v5-' + DOOR_RELEASE + ':' + SCOPE.pathname;
 const SHELL = [
   'index.html', 'theater.js', 'theater.css', 'data-model.js',
   'scene-motion.js', 'scene-motion.css', 'gallery-depth.css',
   'visitor-preferences.js', 'visitor-preferences.css', 'display-mode.js', 'display-mode.css',
-  'magical-entrance.css', 'gallery-controls.css', 'slideshow.js', 'pwa.js', 'manifest.webmanifest',
+  'magical-entrance.css', 'article-doors.css', 'gallery-controls.css', 'slideshow.js', 'pwa.js', 'manifest.webmanifest',
   'assets/atelier-icon.svg', 'assets/atelier-icon-192.png',
   'assets/atelier-icon-512.png', 'assets/atelier-maskable-512.png'
 ];
 // Only exact public asset release queries are cacheable; tokens/other queries bypass.
-const PUBLIC_URLS = SHELL.flatMap(path => [new URL(path, SCOPE).href, ...(/\.(?:js|css)$/.test(path) ? [new URL(path + '?v=' + (path === 'gallery-controls.css' ? STYLE_RELEASE : RELEASE), SCOPE).href] : [])]);
+const PUBLIC_URLS = SHELL.flatMap(path => [new URL(path, SCOPE).href, ...(/\.(?:js|css)$/.test(path) ? [new URL(path + '?v=' + (['theater.js','data-model.js','article-doors.css'].includes(path) ? DOOR_RELEASE : path === 'gallery-controls.css' ? STYLE_RELEASE : RELEASE), SCOPE).href] : [])]);
 const ALLOWED = new Set(PUBLIC_URLS);
 const inPreview = SCOPE.pathname.endsWith('/halloween-exhibition/preview/');
 self.addEventListener('install', event => {
@@ -32,7 +33,7 @@ self.addEventListener('fetch', event => {
   if (url.origin !== SCOPE.origin || !url.pathname.startsWith(SCOPE.pathname)) return;
   // The live public archive stays network-only so hidden/reordered work isn't stale.
   // Every path except the exact shell allowlist (including admin and maze) bypasses.
-  if ((url.search && url.search !== '?v=' + RELEASE && url.search !== '?v=' + STYLE_RELEASE) || !ALLOWED.has(url.href)) return;
+  if (!ALLOWED.has(url.href)) return;
   event.respondWith((async () => {
     try {
       const response = await fetch(event.request);

@@ -33,12 +33,28 @@ test('creator identities use only names, handles, public profile links and profi
   }
 });
 
-test('only the host has article artwork; other entries explicitly await submissions',()=>{
-  const [host,...participants]=source.years[0].entries;
+test('host introduction and confirmed Mako article are present; seven entries await submissions',()=>{
+  const [host,mako,...participants]=source.years[0].entries;
   assert.equal(host.creatorId,'ss_yr');
   assert.equal(host.role,'host');
   assert.equal(host.links[0].url,'https://note.com/ss_yr/n/n52be511ec082');
   assert.match(host.image,/322657367\/rectangle_large_type_2_6cd807a5c7b4cef57389ab4adf353974/);
+  assert.equal(mako.creatorId,'koakumako');
+  assert.equal(mako.submissionStatus,'submitted');
+  assert.equal(mako.title,'本場のHalloweenを見せてあげる');
+  assert.equal(mako.image,'https://assets.st-note.com/production/uploads/images/323659898/rectangle_large_type_2_d5a9c6f7f951e84d30ffa44d72e80886.png');
+  assert.equal(mako.imageAlt,'こあく まこの記事「本場のHalloweenを見せてあげる」の見出し画像');
+  assert.notEqual(mako.image,verified.find(c=>c.id===mako.creatorId).avatarURL);
+  assert.deepEqual(mako.tags,['参加者','ハロウィン']);
+  assert.deepEqual(mako.links,[
+    {title:'本場のHalloweenを見せてあげる（note記事）',url:'https://note.com/koakumako/n/na9731433238f'},
+    {title:'noteプロフィールを見る',url:'https://note.com/koakumako'}
+  ]);
+  assert.equal(mako.message,undefined);
+  assert.equal(mako.works,undefined);
+  assert.equal(source.years[0].entries.filter(e=>e.submissionStatus==='introduction').length,1);
+  assert.equal(source.years[0].entries.filter(e=>e.submissionStatus==='submitted').length,1);
+  assert.equal(participants.length,7);
   for(const entry of participants){
     const profile=verified.find(c=>c.id===entry.creatorId);
     assert.equal(entry.submissionStatus,'pending');

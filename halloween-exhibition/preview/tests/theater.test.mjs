@@ -116,9 +116,23 @@ test('initial load renders nine real rooms without planned placeholders', async 
   assert.equal(h.$('room-title').textContent, archive.creators[0].name);
   assert.equal(h.$('artwork-image').src, archive.years[0].entries[0].image);
   await h.api.navigate(1);
+  const mako = archive.years[0].entries[1];
+  assert.equal(mako.creatorId, 'koakumako');
+  assert.equal(mako.submissionStatus, 'submitted');
+  assert.match(h.$('creator-name').textContent, /本場のHalloweenを見せてあげる/);
+  assert.match(h.$('creator-name').textContent, /参加者の展示/);
+  assert.equal(h.$('artwork-image').src, mako.image);
+  assert.equal(h.$('artwork-image').alt, mako.imageAlt);
+  h.$('artwork-open').click();
+  assert.match(h.$('detail-content').textContent, /本場のHalloweenを見せてあげる/);
+  assert.doesNotMatch(h.$('detail-content').textContent, /ハロウィン作品は準備中|架空の参加者|展示サンプル/);
+  assert.ok(h.$('detail-content').querySelectorAll('a').some(link => link.href === 'https://note.com/koakumako/n/na9731433238f'));
+  h.$('detail').close(); await h.tick(0);
+  await h.api.navigate(2);
+  assert.equal(archive.years[0].entries[2].submissionStatus, 'pending');
   assert.match(h.$('creator-name').textContent, /プロフィール画像 · 作品準備中/);
-  assert.equal(h.$('artwork-image').src, archive.creators[1].avatar);
-  assert.equal(h.$('artwork-image').alt, `${archive.creators[1].name}のnoteプロフィール画像`);
+  assert.equal(h.$('artwork-image').src, archive.creators[2].avatar);
+  assert.equal(h.$('artwork-image').alt, `${archive.creators[2].name}のnoteプロフィール画像`);
   h.$('artwork-open').click();
   assert.match(h.$('detail-content').textContent, /ハロウィン作品は準備中/);
   assert.doesNotMatch(h.$('detail-content').textContent, /架空の参加者|展示サンプル/);
@@ -400,8 +414,9 @@ test('failed navigation and roster avatars leave named initials behind', async (
 
 test('missing or unsafe portrait URLs display labelled initials without an image request', async () => {
   for (const url of [undefined, 'javascript:alert(1)', 'data:image/svg+xml,<svg/>', 'assets/../private.jpg']) {
-    const data = structuredClone(archive); data.creators[1].avatar = url;
-    const h = await harness({ data }); await h.api.navigate(1);
+    const data = structuredClone(archive); data.creators[2].avatar = url;
+    assert.equal(data.years[0].entries[2].submissionStatus, 'pending');
+    const h = await harness({ data }); await h.api.navigate(2);
     assert.equal(h.$('artwork-image').hidden, true);
     assert.equal(h.$('artwork-fallback').hidden, false);
     assert.match(h.$('artwork-fallback').textContent, /プロフィール画像/);
@@ -436,7 +451,7 @@ test('name and @note-handle search work, and pending-work tag excludes future pl
   h.$('tags').children.find(n => n.textContent === '作品準備中').click();
   assert.equal(h.$('roster-grid').querySelectorAll('button').length, 5);
   assert.equal(h.$('roster-grid').querySelectorAll('.future-card').length, 0);
-  assert.equal(h.$('results').textContent, '参加者 8 / 9人 · 1〜5人目を表示');
+  assert.equal(h.$('results').textContent, '参加者 7 / 9人 · 1〜5人目を表示');
 });
 
 test('future slots do not change year-picker counts and an empty year stays incomplete', async () => {
@@ -956,11 +971,11 @@ test('roster pagination exposes all nine real creators as five plus four without
  h.$('roster-next').click();assert.equal(h.$('roster-grid').querySelectorAll('button').length,4);
  h.$('roster-previous').click();assert.equal(h.$('roster-grid').querySelectorAll('button').length,5);
 });
-test('filtered pending roster uses five plus three; search and tag changes reset pagination',async()=>{
+test('filtered pending roster uses five plus two; search and tag changes reset pagination',async()=>{
  const h=await harness();h.$('list-open').click();h.$('roster-next').click();
  h.$('tags').children.find(n=>n.textContent==='作品準備中').click();assert.equal(h.$('roster-page-status').textContent,'1 / 2 ページ');
  assert.equal(h.$('roster-grid').querySelectorAll('button').length,5);h.$('roster-next').click();
- assert.equal(h.$('roster-grid').querySelectorAll('button').length,3);assert.equal(h.$('results').textContent,'参加者 8 / 9人 · 6〜8人目を表示');
+ assert.equal(h.$('roster-grid').querySelectorAll('button').length,2);assert.equal(h.$('results').textContent,'参加者 7 / 9人 · 6〜7人目を表示');
  h.$('search').value='ミナト';h.$('search').dispatch('input');assert.equal(h.$('roster-page-status').textContent,'1 / 1 ページ');
  assert.equal(h.$('roster-grid').querySelectorAll('button').length,1);assert.equal(h.$('roster-next').disabled,true);assert.equal(h.$('roster-previous').disabled,true);
  h.$('search').value='存在しない作品';h.$('search').dispatch('input');assert.equal(h.$('roster-page-status').textContent,'0 / 0 ページ');

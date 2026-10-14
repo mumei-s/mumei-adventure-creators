@@ -6,7 +6,7 @@ Independent static exhibition at `halloween-exhibition/preview/`. The original f
 
 `data/archive.json` contains nine verified public creator profiles. Profile avatars are not submitted works. There are no planned slots or invented participants.
 
-- Halloween reads the selected year's `years[].entries`. Only the owner's confirmed invitation article `n52be511ec082` is currently available; the other eight entries remain preparation labels and profile links.
+- Halloween reads the selected year's `years[].entries`. The owner's confirmed invitation article `n52be511ec082` and こあく まこ's submitted article `na9731433238f` are available in 2026; the other seven entries remain preparation labels and profile links.
 - Normal mode reads `evergreenEntries`, independent of year. This collection is currently empty. Nine creator profiles remain browsable, with neutral preparation labels. Halloween article images, titles, messages, and article links are never reused as normal content.
 - New actual normal submissions belong in `evergreenEntries`; new Halloween submissions belong in the specified year's entries. The validator checks creator identity, duplicate entries, and field structure.
 
@@ -92,7 +92,7 @@ The separate entrance is labeled `Halloween冒険室`. Its genre-unrestricted `�
 
 ## Roster pages and complete portraits
 
-The participant list paginates the filtered real result set in groups of five. Nine creators are 5 + 4; the current eight pending creators are 5 + 3. The range, page count and previous/next buttons describe the current filter. Search, tags, year and normal/Halloween mode changes reset to page one. Reopening the roster after selecting a creator preserves the current page; restored pages are clamped to available results. Both buttons are native keyboard controls with 44px targets.
+The participant list paginates the filtered real result set in groups of five. Nine creators are 5 + 4; the current seven pending creators are 5 + 2. The range, page count and previous/next buttons describe the current filter. Search, tags, year and normal/Halloween mode changes reset to page one. Reopening the roster after selecting a creator preserves the current page; restored pages are clamped to available results. Both buttons are native keyboard controls with 44px targets.
 
 Portraits use `object-fit: contain` within proportional insets, replacing the legacy fixed-width image that overflowed the narrower ornamental door. Images are not cropped or covered by a half-door. The card surface is warmer orange only in Halloween mode.
 

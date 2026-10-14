@@ -96,19 +96,25 @@
         },
         {
           "creatorId": "koakumako",
-          "title": "作品準備中",
+          "title": "本場のHalloweenを見せてあげる",
           "theme": "violet",
-          "submissionStatus": "pending",
+          "submissionStatus": "submitted",
           "tags": [
             "参加者",
-            "作品準備中"
+            "ハロウィン"
           ],
           "links": [
+            {
+              "title": "本場のHalloweenを見せてあげる（note記事）",
+              "url": "https://note.com/koakumako/n/na9731433238f"
+            },
             {
               "title": "noteプロフィールを見る",
               "url": "https://note.com/koakumako"
             }
-          ]
+          ],
+          "image": "https://assets.st-note.com/production/uploads/images/323659898/rectangle_large_type_2_d5a9c6f7f951e84d30ffa44d72e80886.png",
+          "imageAlt": "こあく まこの記事「本場のHalloweenを見せてあげる」の見出し画像"
         },
         {
           "creatorId": "n_kazumai55633",

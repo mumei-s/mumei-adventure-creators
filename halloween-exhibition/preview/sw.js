@@ -2,7 +2,8 @@
  * API requests, unknown query strings, authentication or background activity. */
 const SCOPE = new URL('./', self.location.href);
 const RELEASE = '20261014-layout1';
-const CACHE = 'mumei-atelier-shell-v3-' + RELEASE + ':' + SCOPE.pathname;
+const STYLE_RELEASE = '20261014-portrait1';
+const CACHE = 'mumei-atelier-shell-v4-' + STYLE_RELEASE + ':' + SCOPE.pathname;
 const SHELL = [
   'index.html', 'theater.js', 'theater.css', 'data-model.js',
   'scene-motion.js', 'scene-motion.css', 'gallery-depth.css',
@@ -11,8 +12,8 @@ const SHELL = [
   'assets/atelier-icon.svg', 'assets/atelier-icon-192.png',
   'assets/atelier-icon-512.png', 'assets/atelier-maskable-512.png'
 ];
-// Only this exact public release query is cacheable; tokens/other queries bypass.
-const PUBLIC_URLS = SHELL.flatMap(path => [new URL(path, SCOPE).href, ...(/\.(?:js|css)$/.test(path) ? [new URL(path + '?v=' + RELEASE, SCOPE).href] : [])]);
+// Only exact public asset release queries are cacheable; tokens/other queries bypass.
+const PUBLIC_URLS = SHELL.flatMap(path => [new URL(path, SCOPE).href, ...(/\.(?:js|css)$/.test(path) ? [new URL(path + '?v=' + (path === 'gallery-controls.css' ? STYLE_RELEASE : RELEASE), SCOPE).href] : [])]);
 const ALLOWED = new Set(PUBLIC_URLS);
 const inPreview = SCOPE.pathname.endsWith('/halloween-exhibition/preview/');
 self.addEventListener('install', event => {
@@ -31,7 +32,7 @@ self.addEventListener('fetch', event => {
   if (url.origin !== SCOPE.origin || !url.pathname.startsWith(SCOPE.pathname)) return;
   // The live public archive stays network-only so hidden/reordered work isn't stale.
   // Every path except the exact shell allowlist (including admin and maze) bypasses.
-  if ((url.search && url.search !== '?v=' + RELEASE) || !ALLOWED.has(url.href)) return;
+  if ((url.search && url.search !== '?v=' + RELEASE && url.search !== '?v=' + STYLE_RELEASE) || !ALLOWED.has(url.href)) return;
   event.respondWith((async () => {
     try {
       const response = await fetch(event.request);

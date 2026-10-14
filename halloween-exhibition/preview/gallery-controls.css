@@ -197,3 +197,7 @@ body[data-mode=normal] .roster-pagination button{background:#f4faf0;border-color
  body .roster-thumb,body[data-mode=halloween] .roster-thumb{width:64px;min-width:0;height:78px;min-height:0}
  .roster-pagination{gap:6px}.roster-pagination button{font-size:11px;padding:8px}
 }
+
+/* Portrait clarity: the tilted floor can intersect a portrait in shared 3D space.
+   Remove only the crossing decorative floor/horizon and orbital rings. */
+.theater .stage-floor,.theater .glass-orbit{display:none!important}

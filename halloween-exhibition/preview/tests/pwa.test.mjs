@@ -183,7 +183,7 @@ test('release-versioned JS/CSS are coherent and only the exact public release qu
  for(const path of ['index.html','admin/index.html']){
   const text=await readFile(new URL('../'+path,import.meta.url),'utf8');
   for(const match of text.matchAll(/(?:href|src)="(\.\.?\/[^"?]+\.(?:js|css))(\?[^" ]*)?"/g)){
-   assert.equal(match[2],'?v='+release,match[1]);await access(new URL('../'+(path.startsWith('admin/')?'admin/':'')+match[1],import.meta.url));
+   assert.equal(match[2],'?v='+(match[1]==='./gallery-controls.css'?'20261014-portrait1':release),match[1]);await access(new URL('../'+(path.startsWith('admin/')?'admin/':'')+match[1],import.meta.url));
   }
  }
  for(const path of ['theater.js','admin/app.js','admin/display-settings.js']){
@@ -194,6 +194,16 @@ test('release-versioned JS/CSS are coherent and only the exact public release qu
  for(const path of ['theater.js','slideshow.js','display-mode.js','display-mode.css'])assert.equal((await h.dispatch('fetch',base+path+'?v='+release)).intercepted,true);
  for(const path of ['admin/app.js','admin/index.html','maze/app.js','data/archive.json','unknown.js'])assert.equal((await h.dispatch('fetch',base+path+'?v='+release)).intercepted,false);
  for(const query of ['?v=old','?v='+release+'&token=private','?token=private','?v='+release+'&v=other'])assert.equal((await h.dispatch('fetch',base+'theater.js'+query)).intercepted,false);
- assert.match(workerSource,/mumei-atelier-shell-v3-/);assert.match(workerSource,/cacheName: CACHE/);
+ assert.match(workerSource,/mumei-atelier-shell-v4-/);assert.match(workerSource,/cacheName: CACHE/);
  assert.doesNotMatch(workerSource,/localStorage|sessionStorage|\.clear\(/);
+});
+
+
+test('portrait stylesheet hotfix has one exact cache-busted URL without expanding cache scope',async()=>{
+ const h=workerHarness(),query='?v=20261014-portrait1';
+ assert.match(html,/gallery-controls\.css\?v=20261014-portrait1/);
+ assert.equal((await h.dispatch('fetch',base+'gallery-controls.css'+query)).intercepted,true);
+ for(const path of ['theater.js','index.html','admin/app.js','maze/app.js','data/archive.json','unknown.css'])assert.equal((await h.dispatch('fetch',base+path+query)).intercepted,false,path);
+ assert.equal((await h.dispatch('fetch',base+'gallery-controls.css'+query+'&token=private')).intercepted,false);
+ assert.equal((await h.dispatch('fetch',base+'gallery-controls.css?v=20261014-layout1')).intercepted,false);
 });

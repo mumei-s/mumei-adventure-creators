@@ -47,3 +47,16 @@ body[data-layout="tablet"] #panel.library-mode{width:min(900px,95vw)}
 body[data-layout="desktop"] #panel.library-mode{width:min(1100px,95vw)}
 @media(min-width:750px){body[data-layout="phone"][data-view="2d"] #game{grid-template-rows:52px 48px 34px minmax(0,1fr) 104px 24px}body[data-layout="phone"][data-view="2d"] .mode-bar{max-width:540px}body[data-layout="tablet"] .library-creators{grid-template-columns:repeat(3,minmax(0,1fr))}body[data-layout="desktop"] .library-creators{grid-template-columns:repeat(4,minmax(0,1fr))}body[data-layout="phone"] .library-hero h3{font-size:22px}}
 @media(prefers-reduced-motion:reduce){.library-creator,.library-creator::after{animation:none!important;transition:none!important}.library-creators .library-creator:hover,.library-creators .library-creator:focus-visible{transform:none}}
+
+/* Long-press game controls are controls, not copyable article text. */
+#game :is(button,a,canvas,.place,.minimap,.move-pad,.look-pad,.nearby,footer),
+#game :is(button,a,.place,.minimap,.move-pad,.look-pad,.nearby,footer) *{
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
+}
+#game :is(button,a){touch-action:manipulation}
+#game :is([data-move],#turn-left,#turn-right){touch-action:none}
+/* Keep editable descendants usable if a future HUD adds an input. */
+#game :is(input,textarea,select,[contenteditable]:not([contenteditable="false"])),
+#game [contenteditable]:not([contenteditable="false"]) *{
+  -webkit-user-select:text;user-select:text;-webkit-touch-callout:default;touch-action:auto;
+}

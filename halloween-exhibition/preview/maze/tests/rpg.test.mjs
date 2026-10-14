@@ -57,8 +57,8 @@ test('maze participates in shared layout preference and coherent cache release',
   const app=read('app.js'),html=read('index.html');const version='20261014-layout1';
   assert(app.includes("initDisplayMode({controlsParent:visitorSection,page:'maze'})"));assert(app.includes("document.addEventListener('yearbook:layout-change'"));
   for(const name of ['visitor-preferences','display-mode']){assert(app.includes(`../${name}.js?v=${version}`));assert(html.includes(`../${name}.css?v=${version}`));}
-  for(const file of ['style','stage-2d','rpg-ui'])assert(html.includes(`./${file}.css?v=${version}`));assert(html.includes(`./app.js?v=${version}`));
-  for(const name of ['app.js','stage-2d.js','rpg-model.js','battle-scene.js'])for(const match of read(name).matchAll(/(?:from\s+|import\()'((?:\.\/|\.\.\/)[^']+\.js[^']*)'/g))assert(match[1].endsWith('?v='+version),`${name}: ${match[1]}`);
+  for(const file of ['style','stage-2d'])assert(html.includes(`./${file}.css?v=${version}`));assert(html.includes('./rpg-ui.css?v=20261014-touch1'));assert(html.includes('./app.js?v=20261014-touch1'));
+  for(const name of ['app.js','stage-2d.js','rpg-model.js','battle-scene.js'])for(const match of read(name).matchAll(/(?:from\s+|import\()'((?:\.\/|\.\.\/)[^']+\.js[^']*)'/g))assert(match[1].endsWith('?v='+(match[1].startsWith('./game-input.js')?'20261014-touch1':version)),`${name}: ${match[1]}`);
   assert(html.includes('viewport-fit=cover'));assert(html.includes('apple-touch-icon'));assert(html.includes('apple-mobile-web-app-capable'));assert(!app.includes('serviceWorker.register'));
 });
 

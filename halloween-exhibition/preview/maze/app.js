@@ -8,11 +8,12 @@ import { createStageRenderer, EXIT } from './stage-2d.js?v=20261014-layout1';
 import {createArtLibrary,ART_FILES} from './rpg-art.js?v=20261014-layout1';
 import {renderBattleScene} from './battle-scene.js?v=20261014-layout1';
 import {directionFromMovement,moveAroundFurniture} from './rpg-model.js?v=20261014-layout1';
+import {protectGameSurface,bindHeldGameButton} from './game-input.js?v=20261014-touch1';
 const rpgArt=createArtLibrary();
 let stageRenderer,battleCanvas=null,battleEffect=null,visualTime=0;
 let facing='down',walking=false,walkPhase=0;
 const $=id=>document.getElementById(id),panel=$('panel'),content=$('panel-content');
-const names={horror:'物語の書庫'},keys=new Set(),held=new Set();
+const names={horror:'物語の書庫'},keys=new Set(),held=new Set(),heldControls=[];
 const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
 const element=(tag,text,cls)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e;};
 let catalog,world,state=initialState(),year=2026,activeCollection='horror',motion=!reducedMotion.matches,frame=0,last=0,time=0,toastTimer,returnFocus,gameReady=false,storageOK=true;
@@ -29,7 +30,7 @@ initDisplayMode({controlsParent:visitorSection,page:'maze'});
 function saveLight(){try{localStorage.setItem(lightKey,JSON.stringify({lantern}));}catch{}}
 function save(){progress[year]={hasKey:state.hasKey,unlocked:state.unlocked,visited:progress[year]?.visited||[]};try{localStorage.setItem(storageKey,JSON.stringify(progress));}catch{storageOK=false;}}
 function notify(text){$('toast').textContent=text;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),3500);}
-function clearInput(){walking=false;keys.clear();held.clear();look=null;for(const b of document.querySelectorAll('.move-pad .active'))b.classList.remove('active');}
+function clearInput(){walking=false;keys.clear();for(const control of heldControls)control.reset();held.clear();look=null;for(const b of document.querySelectorAll('.move-pad .active'))b.classList.remove('active');}
 function openPanel(){clearInput();if(!panel.open){returnFocus=document.activeElement;panel.showModal();}}
 function title(kicker,name){panel.classList.remove('battle-mode','library-mode');const heading=element('h2',name);heading.id='panel-title';content.replaceChildren(element('p',kicker,'eyebrow'),heading);}
 function toggleLantern(){lantern=!lantern;$('lantern').textContent=lantern?'ランタン ON':'ランタン OFF';$('lantern').setAttribute('aria-pressed',String(lantern));saveLight();}
@@ -57,7 +58,7 @@ function restore(){const p=progress[year]||{};state={...initialState(),hasKey:p.
 function askHorror(){title('AN INNER CHAMBER','肖像の回廊へ、入りますか。');content.append(element('p','ここは冒険室の奥にある、肖像の回廊です。暗い回廊と揺れる額縁があります。大きな音・点滅・突然驚かす演出はありません。'),element('p','現在は記事未登録の空展示です。舞台の装飾は、参加者の作品ではありません。'));const b=element('button','回廊の扉をひらく','primary');b.onclick=()=>{state.horrorAccepted=true;panel.close();notify('肖像の回廊の扉がひらいた。中へ歩いて進めます。');};content.append(b);openPanel();}
 function interact(){if(Math.hypot(state.x-EXIT.x*CELL,state.z-EXIT.z*CELL)<3.2){showExit();return;}const kind=nearby(state);if(kind==='key'){state.hasKey=true;save();notify('書庫の鍵を手に入れた。中央の奥にある格子扉へ。');}else if(kind==='gate'){if(!state.hasKey)notify('格子扉には鍵が必要です。東の鍵の間を探してください。');else{state.unlocked=true;save();notify('鍵が回り、書庫の扉がひらく。浮かぶ本の奥へ進めます。');}}else if(kind==='article'){const a=articles('horror')[0];if(a&&articles('horror').length===1)articlePanel(a);else{renderCatalog('horror');openPanel();}}else if(kind==='horror')askHorror();else if(kind==='horror-art'){renderCatalog('horror');openPanel();}else if(kind==='vault'){title('THE LIVING ARCHIVE','あなたがひらいた、物語の書庫。');content.append(element('p','分かれ道で鍵を見つけ、扉を開いて、この書庫までたどり着きました。ここはジャンルを問わない記事を収める、名鑑とは別の部屋です。'),element('p','この別室の展示記事は、まだ登録されていません。記事の追加に合わせて、実際の展示が増えていきます。'));const b=element('button','展示記事を見る','primary');b.onclick=()=>renderCatalog('horror');content.append(b);openPanel();}updateHUD();}
 function showMap(){title('EXPLORE AT YOUR PACE','迷宮の見取り図');const cv=element('canvas',undefined,'bigmap');cv.width=510;cv.height=510;drawMap(cv,true);content.append(cv,element('p','三角が現在位置です。3Dでは向きも表示します。右の鍵の間で鍵を見つけ、北の格子扉に使います。青い点は記事の額縁。歩かずに記事一覧から直接読むこともできます。'));const tabs=element('div',undefined,'tabs');for(const [label,point,yaw]of[['入口へ',FEATURES.spawn,0],['鍵の間へ',{x:13,z:10},Math.PI/2],['肖像の扉へ',{x:5,z:10},Math.PI/2]]){const b=element('button',label);b.onclick=()=>{state={...state,...toWorld(point),yaw,pitch:0};panel.close();updateHUD();};tabs.append(b);}content.append(tabs);openPanel();}
-function resetPosition(){state={...state,...toWorld(FEATURES.spawn),yaw:0,pitch:0};keys.clear();held.clear();updateHUD();notify('入口に戻りました。手に入れた鍵は、そのままです。');}
+function resetPosition(){state={...state,...toWorld(FEATURES.spawn),yaw:0,pitch:0};clearInput();updateHUD();notify('入口に戻りました。手に入れた鍵は、そのままです。');}
 function showExit(){title('RETURN TO HALLOWEEN','名鑑へ戻りますか。');content.append(element('p','鍵と記事の記録は保存されています。住人とのミニ対戦は、次の訪問でリセットされます。'));const back=element('a','Halloweenの名鑑へ戻る','primary');back.href='../?mode=halloween';content.append(back);openPanel();}
 function showExploreMenu(){
   title('EXPLORE AT YOUR PACE','探索メニュー');
@@ -179,18 +180,18 @@ function tick(now){
 function start(){if(!frame&&gameReady){last=0;frame=requestAnimationFrame(tick);}}
 window.addEventListener('resize',()=>{world?.resize();if(view==='2d')resizeFlat();});
 document.addEventListener('yearbook:layout-change',()=>requestAnimationFrame(()=>{if(view==='2d')resizeFlat();else world?.resize();if(battle)drawBattleVisual();}));
-$('world').addEventListener('pointerdown',e=>{if(panel.open||view!=='3d')return;look={id:e.pointerId,x:e.clientX,y:e.clientY};$('world').setPointerCapture(e.pointerId);});
+protectGameSurface($('game'));
+$('world').addEventListener('pointerdown',e=>{if(panel.open||view!=='3d'||e.button>0)return;if(e.cancelable)e.preventDefault();look={id:e.pointerId,x:e.clientX,y:e.clientY};$('world').setPointerCapture(e.pointerId);});
 $('world').addEventListener('pointermove',e=>{if(!look||look.id!==e.pointerId||view!=='3d')return;state.yaw-=(e.clientX-look.x)*.005;state.pitch=Math.max(-.6,Math.min(.6,state.pitch-(e.clientY-look.y)*.004));look={id:e.pointerId,x:e.clientX,y:e.clientY};});
 for(const type of['pointerup','pointercancel','lostpointercapture'])$('world').addEventListener(type,()=>look=null);
 for(const button of document.querySelectorAll('[data-move],#turn-left,#turn-right')){
-  const name=button.dataset.move||button.id;button.addEventListener('pointerdown',e=>{if(panel.open)return;button.setPointerCapture(e.pointerId);held.add(name);button.classList.add('active');});
-  for(const type of['pointerup','pointercancel','lostpointercapture'])button.addEventListener(type,()=>{held.delete(name);button.classList.remove('active');});
-  button.addEventListener('keydown',e=>{if(e.key===' '||e.key==='Enter'){e.preventDefault();held.add(name);}});button.addEventListener('keyup',()=>held.delete(name));
+  const name=button.dataset.move||button.id;
+  heldControls.push(bindHeldGameButton(button,{blocked:()=>panel.open,onChange:active=>{if(active)held.add(name);else held.delete(name);}}));
 }
 document.addEventListener('keydown',e=>{
   const k=e.key.toLowerCase();
   if(panel.open){if(battle?.status==='playing'&&!e.repeat&&['1','2'].includes(k)){e.preventDefault();actBattle(k==='1'?'shine':'guard');}return;}
-  if(!gameReady||['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName))return;
+  if(!gameReady||(['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)||e.target.isContentEditable))return;
   if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'].includes(k)){e.preventDefault();keys.add(k);}
   if(e.repeat)return;if(k==='e')interact();if(k==='b')startBattle();if(k==='l')toggleLantern();if(k==='escape')resetPosition();
 });

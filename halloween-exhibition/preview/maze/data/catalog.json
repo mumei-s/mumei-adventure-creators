@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 2,
+  "creators": [
+    {
+      "id": "ss_yr",
+      "name": "無名S note",
+      "avatar": "assets/portraits/ss_yr.jpg",
+      "avatarSource": "https://assets.st-note.com/production/uploads/images/280421627/profile_54172438db482342de0ca9ef8c6395ec.jpg?fit=bounds&format=jpeg&quality=85&width=330",
+      "profileURL": "https://note.com/ss_yr"
+    },
+    {
+      "id": "koakumako",
+      "name": "こあくまこ",
+      "avatar": "assets/portraits/koakumako.jpg",
+      "avatarSource": "https://assets.st-note.com/production/uploads/images/308977904/profile_b64fb940574861864545a89d8fa9788e.png?fit=bounds&format=jpeg&quality=85&width=330",
+      "profileURL": "https://note.com/koakumako"
+    },
+    {
+      "id": "n_kazumai55633",
+      "name": "ミナト汐",
+      "avatar": "assets/portraits/n_kazumai55633.jpg",
+      "avatarSource": "https://assets.st-note.com/production/uploads/images/322474239/profile_fce4138c4bb1001cc51b60785c106073.png?fit=bounds&format=jpeg&quality=85&width=330",
+      "profileURL": "https://note.com/n_kazumai55633"
+    },
+    {
+      "id": "mama_ca",
+      "name": "Pajama de mama",
+      "avatar": "assets/portraits/mama_ca.jpg",
+      "avatarSource": "https://assets.st-note.com/production/uploads/images/302879278/profile_680f428bdf06a11c197bae98b43534d2.jpeg?fit=bounds&format=jpeg&quality=85&width=330",
+      "profileURL": "https://note.com/mama_ca"
+    },
+    {
+      "id": "naemotion",
+      "name": "なえも",
+      "avatar": "assets/portraits/naemotion.jpg",
+      "avatarSource": "https://assets.st-note.com/production/uploads/images/322149524/profile_cc2db5ed230314a1474eba2d1c3bb1e7.png?fit=bounds&format=jpeg&quality=85&width=330",
+      "profileURL": "https://note.com/naemotion"
+    },
+    {
+      "id": "imota14",
+      "name": "たけち",
+      "avatar": "assets/portraits/imota14.jpg",
+      "avatarSource": "https://assets.st-note.com/production/uploads/images/259177693/profile_b5ff6284738bbb28852546a5c0804f69.png?fit=bounds&format=jpeg&quality=85&width=330",
+      "profileURL": "https://note.com/imota14"
+    },
+    {
+      "id": "fond_holly3483",
+      "name": "やまこん",
+      "avatar": "assets/portraits/fond_holly3483.jpg",
+      "avatarSource": "https://assets.st-note.com/production/uploads/images/323473720/profile_b7bfdc9c5ae46f9ac3f6494be5b50fef.png?fit=bounds&format=jpeg&quality=85&width=330",
+      "profileURL": "https://note.com/fond_holly3483"
+    },
+    {
+      "id": "tenkai_notes",
+      "name": "天界記録",
+      "avatar": "assets/portraits/tenkai_notes.jpg",
+      "avatarSource": "https://assets.st-note.com/production/uploads/images/253576749/profile_70a01c50c971bc4c57351b9f5cc8a299.png?fit=bounds&format=jpeg&quality=85&width=330",
+      "profileURL": "https://note.com/tenkai_notes"
+    },
+    {
+      "id": "soh_style_work",
+      "name": "まりも",
+      "avatar": "assets/portraits/soh_style_work.jpg",
+      "avatarSource": "https://assets.st-note.com/production/uploads/images/320068478/profile_9e897d69b1d229aac8f4ed9286831c28.jpeg?fit=bounds&format=jpeg&quality=85&width=330",
+      "profileURL": "https://note.com/soh_style_work"
+    }
+  ],
+  "collections": [
+    {
+      "id": "normal",
+      "name": "ふだんの記事館",
+      "archive": "evergreen"
+    },
+    {
+      "id": "halloween",
+      "name": "ハロウィンの年鑑",
+      "archive": "annual"
+    },
+    {
+      "id": "horror",
+      "name": "怪異画廊",
+      "archive": "evergreen"
+    }
+  ],
+  "years": [
+    2026
+  ],
+  "articles": [
+    {
+      "id": "ss-yr-halloween-invitation-2026",
+      "creatorId": "ss_yr",
+      "collection": "halloween",
+      "year": 2026,
+      "title": "ハロウィン企画への招待状",
+      "kind": "企画紹介記事",
+      "url": "https://note.com/ss_yr/n/n52be511ec082",
+      "image": "./assets/owner-article.png",
+      "confirmed": true
+    }
+  ]
+}

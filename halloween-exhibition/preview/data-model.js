@@ -24,9 +24,11 @@ export function validateArchive(data) {
     for (const entry of year.entries) {
       if (!entry || !ids.has(entry.creatorId) || entered.has(entry.creatorId)) throw Error('年度の参加者IDが不正、または重複しています。');
       entered.add(entry.creatorId);
+      if(entry.visible!==undefined&&typeof entry.visible!=='boolean')throw Error('展示の表示設定を確認してください。');
+      if(entry.order!==undefined&&(typeof entry.order!=='number'||!Number.isFinite(entry.order)))throw Error('展示順を確認してください。');
       for (const key of ['title','message','theme','image']) if (entry[key] !== undefined && typeof entry[key] !== 'string') throw Error('参加者の表示項目を確認してください。');
       if (entry.tags !== undefined && (!Array.isArray(entry.tags) || entry.tags.some(tag => typeof tag !== 'string'))) throw Error('タグの形式を確認してください。');
-      for (const field of ['works','links']) if (entry[field] !== undefined && (!Array.isArray(entry[field]) || entry[field].some(item => !item || typeof item.title !== 'string' || typeof item.url !== 'string'))) throw Error('作品・リンクの形式を確認してください。');
+      for (const field of ['works','links']) if (entry[field] !== undefined && (!Array.isArray(entry[field]) || entry[field].some(item => !item || typeof item.title !== 'string' || typeof item.url !== 'string' || (item.visible!==undefined&&typeof item.visible!=='boolean') || (item.order!==undefined&&(typeof item.order!=='number'||!Number.isFinite(item.order)))))) throw Error('作品・リンクの形式を確認してください。');
     }
   }
   return data;

@@ -27,3 +27,13 @@ Halloween visits and light seals are scoped per year. Normal visits and seals us
 ## Verification
 
 Run `npm test`. Node tests cover real identities, safe URLs, content separation, missing images, search, navigation races, reduced-motion, pause, touch-view arbitration, separate-room link visibility and return-state restoration. DOM mocks do not prove browser layout, native focus trapping, performance, or artistic quality. Live browser QA at 400px and desktop remains a separate gate.
+
+## Visitor brightness and music
+
+The settings control mounts `visitor-preferences.js`. Brightness (75–175%) affects scenic surfaces, leaving reading and navigation unchanged; volume (0–100%) and brightness use the exhibition-only `halloween-exhibition:visitor-preferences:v1` key. The separate room can mount the same controls inside its existing dialog via `initVisitorPreferences({container,onBrightness,legacyBrightness})`.
+
+Music is an original local WebAudio four-chord ambient pad with no recording or network dependency. It starts only after the visitor presses ON, is always OFF on a new page, and stops on tab hiding/page exit without auto-resuming. Volume zero mutes. Playback preference is never persisted. Audio availability errors and denied storage show readable status. Automated audio tests use a mock AudioContext; audible quality and real browser playback require separate browser QA.
+
+## Owner-managed visibility and ordering
+
+Canonical metadata is `visible: false` and numeric `order`, on entries and on individual `links`/`works`. Sorting is stable, using array position when order is absent. Hiding an entry removes its submitted image, title, message, tags and article links, but keeps the verified creator as a profile-only introduction. It does not remove membership. Individually hidden links/works are absent from both display and search. Multiple visible links/works remain available; no single-article truncation is applied.

@@ -1,3 +1,4 @@
+import { initVisitorPreferences } from './visitor-preferences.js';
 import { initSceneMotion } from './scene-motion.js';
 import { validateArchive, safeURL, normalizeSearch } from './data-model.js';
 const $=id=>document.getElementById(id), root=$('theater');
@@ -24,9 +25,16 @@ const returnStateKey='halloween-yearbook:theatre-return:v1';
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 function node(tag,text,cls){const el=document.createElement(tag);if(text!==undefined)el.textContent=text;if(cls)el.className=cls;return el;}
 function year(){return archive?.years.find(y=>y.year===currentYear);}
+function ordered(list){return list.map((value,index)=>({value,index})).sort((a,b)=>(Number.isFinite(a.value.order)?a.value.order:a.index)-(Number.isFinite(b.value.order)?b.value.order:b.index)||a.index-b.index).map(item=>item.value);}
+function publicEntry(entry){
+ const profile=archive.creators.find(c=>c.id===entry.creatorId);
+ if(entry.visible===false)return {creatorId:entry.creatorId,theme:entry.theme,order:entry.order,submissionStatus:'pending',title:'作品準備中',tags:[],links:profile?.profileURL?[{title:'noteプロフィールを見る',url:profile.profileURL}]:[]};
+ return {...entry,works:ordered((entry.works||[]).filter(item=>item.visible!==false)),links:ordered((entry.links||[]).filter(item=>item.visible!==false))};
+}
 function entries(){
- if(displayMode==='halloween')return year()?.entries||[];
- return (archive?.creators||[]).map((c,i)=>({creatorId:c.id,theme:['moon','violet','star','forest','ghost','pumpkin','letter'][i%7],submissionStatus:'pending',title:'通常作品は準備中',tags:[],links:c.profileURL?[{title:'noteプロフィールを見る',url:c.profileURL}]:[],...(archive.evergreenEntries||[]).find(e=>e.creatorId===c.id)}));
+ if(!archive)return [];
+ const collection=displayMode==='halloween'?(year()?.entries||[]):archive.creators.map((c,i)=>({creatorId:c.id,theme:['moon','violet','star','forest','ghost','pumpkin','letter'][i%7],submissionStatus:'pending',title:'通常作品は準備中',tags:[],links:c.profileURL?[{title:'noteプロフィールを見る',url:c.profileURL}]:[],...(archive.evergreenEntries||[]).find(e=>e.creatorId===c.id)}));
+ return ordered(collection).map(publicEntry);
 }
 function current(){return entries()[currentIndex];}
 function creator(entry){return archive.creators.find(c=>c.id===entry.creatorId);}
@@ -72,6 +80,7 @@ let touch=null,viewMode=false;function setViewMode(value){viewMode=Boolean(value
 let viewTouch=null;
 $('stage').addEventListener('pointerdown',e=>{if(e.pointerType==='touch'&&viewMode){viewTouch={x:e.clientX,y:e.clientY,id:e.pointerId};return;}if(e.pointerType==='touch')touch={x:e.clientX,y:e.clientY,id:e.pointerId};});$('stage').addEventListener('pointerup',e=>{if(viewTouch&&e.pointerId===viewTouch.id){viewTouch=null;suppressClickUntil=Date.now()+450;sceneMotion.setView(0,0);return;}if(!touch||e.pointerId!==touch.id)return;const dx=e.clientX-touch.x,dy=e.clientY-touch.y;touch=null;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(dy)*1.4){suppressClickUntil=Date.now()+450;navigate(currentIndex+(dx<0?1:-1));}});$('stage').addEventListener('pointermove',e=>{if(!viewMode||!viewTouch||e.pointerId!==viewTouch.id)return;sceneMotion.setView((e.clientX-viewTouch.x)/100,(e.clientY-viewTouch.y)/100);});$('stage').addEventListener('pointercancel',()=>{touch=null;viewTouch=null;sceneMotion.setView(0,0);});$('retry').addEventListener('click',load);$('mode-halloween').addEventListener('click',()=>setMode('halloween'));$('mode-normal').addEventListener('click',()=>setMode('normal'));$('horror-entrance').addEventListener('click',()=>{try{sessionStorage.setItem(returnStateKey,JSON.stringify({year:currentYear,creatorId:current()?.creatorId,search,activeTag}));}catch{}});setMode(displayMode,{save:false});
 root.addEventListener('yearbook:seal-collected',event=>{const id=event.detail?.id;if(!currentYear||!sealIDs.includes(id)||seals().includes(id))return;progress.seals[key()]=[...seals(),id];persist();refreshSeals();});
+initVisitorPreferences({triggerParent:document.querySelector('.header-actions'),onBrightness:value=>root.style.setProperty('--visitor-brightness',String(value/100))});
 const sceneMotion=initSceneMotion(root);
 const viewButton=node('button','視点','scene-pause scene-view');viewButton.id='view-toggle';viewButton.setAttribute('aria-pressed','false');viewButton.setAttribute('aria-label','視点操作を切り替える。有効な間は舞台をドラッグして奥行きを見渡せます');viewButton.addEventListener('click',()=>setViewMode(!viewMode));document.querySelector('.scene-controls')?.append(viewButton);viewButton.disabled=root.dataset.motionPaused==='true';root.addEventListener('yearbook:motion-state',e=>{viewButton.disabled=Boolean(e.detail?.paused);if(e.detail?.paused)setViewMode(false);});
 

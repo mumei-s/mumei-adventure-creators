@@ -76,7 +76,7 @@ async function harness({ data = archive, reduced = true, storageThrows = false, 
     return walk(doc.documentElement);
   };
   const requests = [], storageWrites = [], motionInitializations = [], viewCalls = [];
-  const context = vm.createContext({ document: doc, initSceneMotion:root=>{motionInitializations.push(root);const dock=doc.createElement('div');dock.className='scene-controls';root.append(dock);return {setView(x,y){viewCalls.push([x,y]);}};}, validateArchive, safeURL, normalizeSearch,
+  const context = vm.createContext({ document: doc, initVisitorPreferences:()=>({}), initSceneMotion:root=>{motionInitializations.push(root);const dock=doc.createElement('div');dock.className='scene-controls';root.append(dock);return {setView(x,y){viewCalls.push([x,y]);}};}, validateArchive, safeURL, normalizeSearch,
     matchMedia: () => ({ matches: reduced }), setTimeout: queue, clearTimeout: id => timers.delete(id),
     URLSearchParams, location:{search:urlSearch},sessionStorage:{getItem(){return returnState},setItem(k,v){context.savedReturn={key:k,value:v};}},
     Date: class extends Date { static now() { return now; } },
@@ -771,4 +771,28 @@ test('switching from an empty Halloween year to normal restores visible usable p
  const h=await harness({data});assert.equal(h.$('stage').hidden,true);
  h.$('mode-normal').click();assert.equal(h.$('stage').hidden,false);assert.equal(h.$('story-open').disabled,false);
  h.$('mode-halloween').click();assert.equal(h.$('stage').hidden,true);assert.equal(h.$('total-index').textContent,'00');
+});
+
+test('hidden exhibition work becomes a verified profile without leaking article material',async()=>{
+ const data=structuredClone(archive);data.years[0].entries[0].visible=false;
+ const h=await harness({data});assert.equal(h.$('total-index').textContent,'09');
+ assert.equal(h.$('room-title').textContent,data.creators[0].name);
+ assert.equal(h.$('artwork-image').src,data.creators[0].avatar);
+ h.$('story-open').click();const text=h.$('detail-content').textContent;
+ assert.doesNotMatch(text,/ハロウィン企画への招待状|主催者の企画紹介記事/);
+ assert.equal(h.$('detail-content').querySelectorAll('a').length,1);
+ assert.equal(h.$('detail-content').querySelector('a').href,data.creators[0].profileURL);
+});
+test('numeric order is stable and normal mode keeps the same creator across collections',async()=>{
+ const data=structuredClone(archive);data.years[0].entries[4].order=-1;
+ const h=await harness({data});assert.equal(h.$('room-title').textContent,data.creators[4].name);
+ h.$('mode-normal').click();assert.equal(h.$('room-title').textContent,data.creators[4].name);
+ h.$('mode-halloween').click();assert.equal(h.api.state.currentIndex,0);
+});
+test('multiple published links remain accessible and individually hidden links stay absent',async()=>{
+ const data=structuredClone(archive);data.years[0].entries[1].links=[{title:'Second',url:'https://example.com/2',order:2},{title:'Hidden secret title',url:'https://example.com/hidden',visible:false},{title:'First',url:'https://example.com/1',order:1}];
+ const h=await harness({data});await h.api.navigate(1);h.$('story-open').click();
+ const links=h.$('detail-content').querySelectorAll('a');assert.equal(links.length,2);
+ assert.equal(links[0].href,'https://example.com/1');assert.equal(links[1].href,'https://example.com/2');
+ assert.doesNotMatch(h.$('detail-content').textContent,/Hidden secret title/);
 });

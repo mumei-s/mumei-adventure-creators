@@ -15,7 +15,7 @@ test('2D has its own full-width gameplay grid, not a small square minimap',()=>{
 test('close-up player is centered and tiles remain large on both target phones',()=>{
   for(const [w,h]of[[400,344],[390,582],[1280,618]]){const c=stageCamera(initialState(),w,h);assert(c.tile>=52);assert(c.tile<=86);assert.equal(c.originX,w/2);assert.equal(c.originY,h*.55);assert.equal(c.x,initialState().x/CELL*72);}
 });
-test('2D camera has no autonomous movement, rotation, interpolation or shaking',()=>{
+test('2D camera target has no autonomous movement, rotation or shaking',()=>{
   const a=stageCamera(initialState(),400,344),b=stageCamera({...initialState(),yaw:2,pitch:1,time:999},400,344);assert.deepEqual(a,b);
   assert.equal(stageCamera({...initialState(),x:36},400,344).x-a.x,72);
   const source=fs.readFileSync(new URL('../stage-2d.js',import.meta.url),'utf8');assert(!source.includes('Math.random'));assert(!source.includes('setInterval'));assert(!source.includes('AudioContext'));
@@ -30,5 +30,5 @@ test('touch controls occupy a separate dock, including compact settings and exit
 test('renderer is separate from overview map and invalidates on resize/mode change',()=>{
   assert(app.includes("stageRenderer.render({canvas:$('fallback')"));assert(app.includes("drawMap($('mini'))"));
   assert(app.includes('stageRenderer?.invalidate()'));assert(app.includes('motion:motion&&!reducedMotion.matches'));
-  assert(html.includes('href="./stage-2d.css"'));assert(css.includes('body[data-view="2d"] .vignette'));
+  assert(html.includes('href="./stage-2d.css?v=20261014-layout1"'));assert(css.includes('body[data-view="2d"] .vignette'));
 });

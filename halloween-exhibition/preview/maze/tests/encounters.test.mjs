@@ -5,8 +5,8 @@ import { MONSTERS, nearestMonster, newBattle, battleTurn, intentFor } from '../e
 import { chooseView, movementVector } from '../view-model.js';
 import { initialState, blocked, move, FEATURES, toWorld } from '../maze-model.js';
 import { NIGHT_LIGHTING } from '../lighting-model.js';
-test('three fictional monsters stand on walkable floor, first is discoverable from entry',()=>{
-  assert.equal(MONSTERS.length,3);assert.equal(nearestMonster(initialState()).id,'pumpkin');
+test('five fictional monsters stand on walkable floor, first is discoverable from entry',()=>{
+  assert.equal(MONSTERS.length,5);assert.equal(nearestMonster(initialState()).id,'pumpkin');
   for(const m of MONSTERS)assert(!blocked(m.x*4,m.z*4,{unlocked:true,horrorAccepted:true}));
   assert(!JSON.stringify(MONSTERS).includes('creatorId'));
 });
@@ -55,8 +55,28 @@ test('2D, encounters, exit, and shared preferences remain first-class controls',
   for(const id of ['view-2d','view-3d','creatures-open','battle-open','lantern'])assert(html.includes(`id="${id}"`));
   assert.equal((html.match(/href="\.\.\/\?mode=halloween"/g)||[]).length,3);
   const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8');
-  assert(app.includes("import { initVisitorPreferences } from '../visitor-preferences.js'"));
+  assert(app.includes("import { initVisitorPreferences } from '../visitor-preferences.js?v=20261014-layout1'"));
   assert(app.includes("if(view==='3d')world?.render"));assert(app.includes("stageRenderer.render({canvas:$('fallback')"));
-  assert(app.includes("battle=null;clearInput();returnFocus?.focus()"));
+  assert(app.includes("battle=null;battleCanvas=null;battleEffect=null"));assert(app.includes("clearInput();returnFocus?.focus()"));
   assert(!app.includes('setInterval'));assert(!app.includes('AudioContext'));
+});
+
+test('zombie and vampire have distinct named readable patterns and remain optional',()=>{
+  let zombie=newBattle('zombie'),vampire=newBattle('vampire');assert(intentFor(zombie).includes('のんびり足踏み'));assert(intentFor(vampire).includes('マント'));
+  zombie=battleTurn(zombie,'shine');vampire=battleTurn(vampire,'shine');assert.equal(zombie.energy,4);assert.equal(vampire.energy,2);
+  assert(intentFor(zombie).includes('ステップ'));assert(intentFor(vampire).includes('挨拶'));
+  for(const id of ['zombie','vampire']){let b=newBattle(id);for(const a of ['guard','shine','shine'])b=battleTurn(b,a);assert.equal(b.status,'won');}
+  const corridor={...initialState(),x:8,z:44};assert.equal(nearestMonster(corridor),null);assert.equal(nearestMonster({...corridor,horrorAccepted:true}).id,'vampire');
+  assert.equal(nearestMonster({...initialState(),x:25.6,z:52.8}).id,'zombie');
+  const world=fs.readFileSync(new URL('../world.js',import.meta.url),'utf8');assert(world.includes("definition.id==='zombie'||definition.id==='vampire'"));assert(world.includes('monsterAvailable(spirit.definition'));
+});
+
+test('all five residents have traversable 2D and 3D approach routes after relevant doors open',async()=>{
+ const {moveAroundFurniture}=await import('../rpg-model.js');
+ for(const movement of [move,moveAroundFurniture])for(const monster of MONSTERS){
+  const start={...initialState(),unlocked:true,horrorAccepted:true},queue=[start],seen=new Set([`${start.x},${start.z}`]);let found=false;
+  for(let i=0;i<queue.length&&!found;i++){const s=queue[i];if(Math.hypot(s.x-monster.x*4,s.z-monster.z*4)<.51){found=true;break;}
+   for(const [dx,dz]of[[.5,0],[-.5,0],[0,.5],[0,-.5]]){const next=movement(s,dx,dz),key=`${next.x},${next.z}`;if(!seen.has(key)){seen.add(key);queue.push(next);}}
+  }assert(found,monster.id);
+ }
 });

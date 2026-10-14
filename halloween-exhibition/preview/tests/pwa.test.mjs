@@ -95,7 +95,7 @@ test('a copied worker outside preview does not precache, activate, or intercept'
  assert.equal(h.precached.length,0);assert.equal(h.deleted.length,0);
 });
 
-async function installerHarness({registrations=[], secure=true, script=base+'pwa.js', prompt=null}={}){
+async function installerHarness({registrations=[], secure=true, script=base+'pwa.js', prompt=null,userAgent='Test browser',platform='Linux',maxTouchPoints=0,isStandalone=false}={}){
  const calls=[],events={},elements=[];
  class El {
   constructor(tag){this.tagName=tag;this.handlers={};this.children=[];this.open=false;this.hidden=false;this.disabled=false;elements.push(this);}
@@ -109,9 +109,9 @@ async function installerHarness({registrations=[], secure=true, script=base+'pwa
  }
  const header=new El('div'),body=new El('body');
  const context=vm.createContext({
-  URL, isSecureContext:secure, matchMedia:()=>({matches:false}),
+  URL, isSecureContext:secure, matchMedia:()=>({matches:isStandalone}),
   document:{createElement:tag=>new El(tag),querySelector:()=>header,body},
-  navigator:{userAgent:'Test browser',platform:'Linux',maxTouchPoints:0,serviceWorker:{getRegistrations:async()=>registrations,register:async(...args)=>calls.push(args)}},
+  navigator:{userAgent,platform,maxTouchPoints,standalone:isStandalone,serviceWorker:{getRegistrations:async()=>registrations,register:async(...args)=>calls.push(args)}},
   window:{addEventListener:(type,fn)=>events[type]=fn}
  });
  vm.runInContext(installSource.replaceAll('import.meta.url',JSON.stringify(script)),context);
@@ -147,4 +147,53 @@ test('Halloween decorative layers have static, pause, pointer, and normal-mode g
  assert.match(css,/data-mode=normal[^}]*portal-doors[^}]*display:none/);
  assert.doesNotMatch(css,/@keyframes[^}]*flash|strobe/i);
  assert.match(html,/id="roulette-help"/);
+});
+
+
+
+test('iPhone and desktop-UA iPad show four honest Safari steps, never a fabricated install prompt',async()=>{
+ for(const device of [{userAgent:'iPhone',platform:'iPhone',maxTouchPoints:5},{userAgent:'Macintosh Safari',platform:'MacIntel',maxTouchPoints:5}]){
+  const h=await installerHarness(device);h.elements.find(e=>e.id==='atelier-install-open').handlers.click();
+  const steps=h.elements.find(e=>e.className==='pwa-steps');assert.equal(steps.hidden,false);assert.equal(steps.children.length,4);
+  assert.match(steps.children.map(e=>e.textContent).join(' '),/Safari.*共有.*ホーム画面に追加.*Webアプリとして開く/);
+  assert.equal(h.elements.find(e=>e.className==='pwa-install').hidden,true);
+  const links=h.elements.find(e=>e.className==='pwa-apple-links');assert.equal(links.hidden,false);
+  assert.ok(links.children.every(e=>e.href.startsWith('https://support.apple.com/guide/')&&e.rel==='noopener noreferrer'));
+ }
+});
+test('standalone and unsupported browsers keep accurate installation states',async()=>{
+ const app=await installerHarness({userAgent:'iPhone',isStandalone:true});app.elements.find(e=>e.id==='atelier-install-open').handlers.click();
+ assert.equal(app.elements.find(e=>e.className==='pwa-steps').hidden,true);assert.equal(app.elements.find(e=>e.className==='pwa-install').hidden,true);
+ assert.ok(app.elements.some(e=>e.textContent==='このアトリエはアプリ表示で開いています。'));
+ const unsupported=await installerHarness();unsupported.elements.find(e=>e.id==='atelier-install-open').handlers.click();
+ assert.equal(unsupported.elements.find(e=>e.className==='pwa-install').hidden,true);assert.equal(unsupported.elements.find(e=>e.className==='pwa-steps').hidden,true);
+ assert.ok(unsupported.elements.some(e=>e.textContent?.includes('表示されていれば')));
+});
+test('gallery and editor include Apple icon, standalone metadata and zoom-safe viewport',async()=>{
+ for(const page of ['index.html','admin/index.html']){
+  const text=await readFile(new URL('../'+page,import.meta.url),'utf8');
+  assert.match(text,/rel="apple-touch-icon"/);assert.match(text,/name="apple-mobile-web-app-capable" content="yes"/);
+  assert.match(text,/name="apple-mobile-web-app-status-bar-style" content="default"/);assert.match(text,/viewport-fit=cover/);
+  assert.doesNotMatch(text,/maximum-scale=1|user-scalable=no/);
+ }
+});
+
+test('release-versioned JS/CSS are coherent and only the exact public release query is cacheable',async()=>{
+ const release='20261014-layout1';
+ for(const path of ['index.html','admin/index.html']){
+  const text=await readFile(new URL('../'+path,import.meta.url),'utf8');
+  for(const match of text.matchAll(/(?:href|src)="(\.\.?\/[^"?]+\.(?:js|css))(\?[^" ]*)?"/g)){
+   assert.equal(match[2],'?v='+release,match[1]);await access(new URL('../'+(path.startsWith('admin/')?'admin/':'')+match[1],import.meta.url));
+  }
+ }
+ for(const path of ['theater.js','admin/app.js','admin/display-settings.js']){
+  const text=await readFile(new URL('../'+path,import.meta.url),'utf8');
+  for(const match of text.matchAll(/from '(\.\.?\/[^'?]+\.js)(\?[^']*)?'/g))assert.equal(match[2],'?v='+release,match[1]);
+ }
+ const h=workerHarness();
+ for(const path of ['theater.js','slideshow.js','display-mode.js','display-mode.css'])assert.equal((await h.dispatch('fetch',base+path+'?v='+release)).intercepted,true);
+ for(const path of ['admin/app.js','admin/index.html','maze/app.js','data/archive.json','unknown.js'])assert.equal((await h.dispatch('fetch',base+path+'?v='+release)).intercepted,false);
+ for(const query of ['?v=old','?v='+release+'&token=private','?token=private','?v='+release+'&v=other'])assert.equal((await h.dispatch('fetch',base+'theater.js'+query)).intercepted,false);
+ assert.match(workerSource,/mumei-atelier-shell-v3-/);assert.match(workerSource,/cacheName: CACHE/);
+ assert.doesNotMatch(workerSource,/localStorage|sessionStorage|\.clear\(/);
 });

@@ -1,20 +1,23 @@
 /* Public exhibition shell only. No admin, maze, archive data, remote portraits,
- * API requests, query-bearing files, authentication or background activity. */
+ * API requests, unknown query strings, authentication or background activity. */
 const SCOPE = new URL('./', self.location.href);
-const CACHE = 'mumei-atelier-shell-v2:' + SCOPE.pathname;
+const RELEASE = '20261014-layout1';
+const CACHE = 'mumei-atelier-shell-v3-' + RELEASE + ':' + SCOPE.pathname;
 const SHELL = [
   'index.html', 'theater.js', 'theater.css', 'data-model.js',
   'scene-motion.js', 'scene-motion.css', 'gallery-depth.css',
-  'visitor-preferences.js', 'visitor-preferences.css',
+  'visitor-preferences.js', 'visitor-preferences.css', 'display-mode.js', 'display-mode.css',
   'magical-entrance.css', 'gallery-controls.css', 'slideshow.js', 'pwa.js', 'manifest.webmanifest',
   'assets/atelier-icon.svg', 'assets/atelier-icon-192.png',
   'assets/atelier-icon-512.png', 'assets/atelier-maskable-512.png'
 ];
-const ALLOWED = new Set(SHELL.map(path => new URL(path, SCOPE).href));
+// Only this exact public release query is cacheable; tokens/other queries bypass.
+const PUBLIC_URLS = SHELL.flatMap(path => [new URL(path, SCOPE).href, ...(/\.(?:js|css)$/.test(path) ? [new URL(path + '?v=' + RELEASE, SCOPE).href] : [])]);
+const ALLOWED = new Set(PUBLIC_URLS);
 const inPreview = SCOPE.pathname.endsWith('/halloween-exhibition/preview/');
 self.addEventListener('install', event => {
   if (!inPreview) return;
-  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL.map(path => new Request(new URL(path, SCOPE), { cache: 'reload', credentials: 'omit' })))));
+  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(PUBLIC_URLS.map(url => new Request(url, { cache: 'reload', credentials: 'omit' })))));
   // No skipWaiting: an open gallery keeps a coherent version until it is closed.
 });
 self.addEventListener('activate', event => {
@@ -28,7 +31,7 @@ self.addEventListener('fetch', event => {
   if (url.origin !== SCOPE.origin || !url.pathname.startsWith(SCOPE.pathname)) return;
   // The live public archive stays network-only so hidden/reordered work isn't stale.
   // Every path except the exact shell allowlist (including admin and maze) bypasses.
-  if (url.search || !ALLOWED.has(url.href)) return;
+  if ((url.search && url.search !== '?v=' + RELEASE) || !ALLOWED.has(url.href)) return;
   event.respondWith((async () => {
     try {
       const response = await fetch(event.request);

@@ -1,45 +1,49 @@
-# The Haunted Annex: separate horror room
+# Halloween冒険室 / The Lantern Archive
 
-This directory is ONLY the horror-room maze. Ordinary and Halloween exhibitions remain the non-maze yearbook at `../`. Its Halloween-only door enters `./maze/?return=theatre`; every exit here returns to `../?mode=halloween`. The parent owns restoration of its selected creator/year/search state. This room never writes those preferences.
+A game-first adventure annex, entered from the Halloween yearbook door. All exits return to `../?mode=halloween`. The normal/Halloween yearbook remains independent and owns its creator/year/search restoration. This room never writes those preferences.
 
-## Run
+## Run and assemble
 
-Serve the assembled `preview/` directory with a local static server and open `/maze/`. Run `npm test` in this directory. There is no build or runtime CDN. Three.js 0.180.0 (official npm, MIT) is vendored with its license. Keep the existing `assets/`, `data/catalog.json`, and sibling `visitor-preferences.js`/`.css` when assembling the site.
+Serve the assembled `halloween-exhibition/preview/` directory and open `maze/`. Run `npm test` here. No build, runtime CDN or service-worker registration is required. Keep the existing data, portraits and vendored Three.js/license. The sibling `visitor-preferences.js`/`.css` and `display-mode.js`/`.css` are shared dependencies, supplied by the parent exhibition. JS/CSS release URLs use `?v=20261014-layout1` consistently.
 
-## Exploration and comfort
+## Play
 
-- Explicit, always-available **2D・酔いにくい / 3D** buttons. 2D works independently of WebGL, including movement, collisions, keys, gate, inner-corridor consent, article dialogs and battles. Switching preserves position, keys and current-session battle rewards. The 2D map is fixed top-down with no camera rotation or bob.
-- 3D uses WASD to move, left/right arrows or drag to look. 2D uses WASD or all four arrows for cardinal movement. Touch buttons work in both. E inspects, B begins a nearby optional duel, L toggles the lantern, and Escape closes dialogs or returns to the room entrance.
-- System reduced-motion defaults to 2D when no display choice is saved; all ambient animation is suppressed while reduced-motion is active, including in explicitly selected 3D. The scene camera never bobs. The “演出停止” button stops decorative animation, not movement.
-- A dark violet night baseline, warm localized handheld spot/near light, jack-o’-lanterns and quiet cobweb scenery replace the former broad pale lighting. Lantern OFF removes both light sources and its visible model. Architectural markers, readable controls and the minimap remain available. Brightness still uses the shared visitor range of 75–175%; it never dims UI text or controls.
-- When WebGL creation/context fails, the same playable 2D mode takes over. Visibility and blur clear held input. Dialogs freeze walking; leaving an article resumes in the same position.
+- Choose **2D・酔いにくい** or **3D** at any time. Both preserve position, keys, gates, articles and current-session duel rewards. If WebGL is unavailable, 2D remains playable.
+- In 2D, WASD/arrows move north/south/east/west. In 3D, WASD moves, left/right arrows or drag turn. Touch movement buttons work in both. E inspects, B begins an optional nearby duel, L toggles the lantern. Escape closes dialogs; outside a dialog it returns to the entrance.
+- Find the key in the east chamber, unlock the north gate and enter the archive. The west portrait corridor still has a voluntary entry dialog. Open articles directly from the menu without completing the game.
+- **モンスターと遊ぶ** introduces five original fictional creatures. Encounters start OFF each visit. “入口のカボチャに会う” enables them and returns to the entrance. Approach and choose the battle button/B; proximity never starts a battle.
+- Duels are untimed, turn-based, non-gory and silent. Light (1) reduces mischief; guard (2) blocks a prank and doubles the next light. Text, meters and scene feedback show the result. Escape/Close exits without penalty. Retry and encounter-only reset are available. Battles never block articles, keys or exits. The slow stitched zombie alternates a harmless step and a stronger prank; the vampire count opens with a cloak prank, then gives gentler bows. Their named next actions are displayed before each turn.
 
-## Optional lantern duels
+## Original 2D RPG presentation
 
-The visible “🎃 モンスターと遊ぶ” control introduces three **fictional stage characters**, a pumpkin guardian near the entrance, a book-loving ghost in the key chamber, and a bat in the unlocked archive. They have authored geometry in 3D and map icons in 2D; no participant portrait or submitted artwork is used as a monster.
+Twelve locally bundled original WebP images total **1,371,058 bytes**. The raster environment combines slate floors, painted floor inlay, shelves, moon windows, lantern columns and pumpkins with existing architectural geometry. The hero uses a normalized four-direction/four-frame atlas with a shared foot anchor. Its limited hand-painted walk cycle has similar second/fourth poses; this is not a commercial-animation parity claim. Ground shadows and foot-depth sorting place characters behind foreground walls and shelves. Two freestanding shelf bases have compact physical collisions; all interaction routes remain traversable.
 
-Encounters default OFF on every load. “入口のカボチャに会う” enables them and returns to the entrance. Approach a character, then press its clearly labeled nearby battle button or B. Nothing starts by proximity alone.
+The camera follows walking with gentle translation only. Room-edge bounds keep the full hero and nearby architecture onscreen rather than exposing large blank areas. There is no rotation, bob or shake. Reduced-motion or “演出停止” suppresses interpolation and decorative character/particle/effect motion. The handheld lantern uses a local, wall-clipped light veil, while UI and wayfinding stay readable. Lantern OFF and the shared 75–175% brightness range remain usable. A failed artwork load reports a simple-rendering notice rather than silently claiming the full artwork loaded.
 
-Duels are untimed, turn-based, non-gory and silent. “光を当てる” (1) reduces mischief; “ランタンを守る” (2) prevents the next prank and doubles the next light. Intent, courage and mischief are displayed in text. Three ordinary light actions win; guarding offers a gentler alternative. Escape/Close/“逃げて探索に戻る” exits immediately with no penalty. Results offer retry, and the monster menu resets only duel progress. Battles never gate keys, articles or exits and never modify catalog data. Candy marks are local session rewards only, with no payments, score upload or real-world value.
+The battle scene uses the painted library, actual hero/enemy sprites, local light projectiles, a visible guard shield, small damage text and restrained reaction motion. No full-screen flashes, jump scares or autoplay battle audio are added. Optional music remains controlled by the shared explicit-ON preference.
 
-## Content and state boundaries
+## Screen layout and accessibility
 
-Nine supplied public identities remain in the participant list. This room's collection is `horror` only and currently contains **zero confirmed articles**. Empty frames are labeled environmental placeholders. The owner's Halloween invitation is not a horror article. Historical unused assets are retained, not displayed as horror submissions.
+The 2D canvas owns a full-width grid row, independent from the overview map. With zero safe-area inset, the 400×606 layout targets a 400×344 stage (56.8% of the viewport); 390×844 targets 390×582 (69.0%). Touch controls are at least 44 px and sit outside the stage. Safe-area padding reduces the available stage only as needed for a notch/home indicator.
 
-Maze keys use `halloween-exhibition:labyrinth:v1`; lantern preference uses `halloween-exhibition:horror-light:v1`; the optional display preference uses `halloween-exhibition:horror-view:v1`. Brightness/volume share `halloween-exhibition:visitor-preferences:v1` with the exhibition. No encounter consent or duel progress is persisted. Storage errors degrade to session memory. Music starts only from the shared setting's explicit ON gesture, stops on hidden pages, and never auto-resumes.
+The menu retains library, map, lighting/audio, monsters, entrance reset, motion and return. Shared Auto / Phone / Tablet / PC presentation is available in settings. It changes responsive presentation, not the physical viewport or zoom, and resizes the canvas after changes. Manual PC on a phone still wraps within the viewport. iOS home-screen metadata and the existing touch icon are included; no maze service worker is registered. Actual iOS installation is not locally verified.
 
-Article additions remain owner-managed through the existing separate `../admin/` local-draft editor and its manual export/publication flow. `visible:false` hides a record from lists and frames; numeric order sorts stably. Hidden JSON records are still public, not private. No database, authentication, uploads, self-submission, extra participant slots, or unrelated service is added here.
+## Library and data boundaries
 
-## Verification
+**物語の書庫 accepts all genres**, including illustrations, stories and essays. The internal `collection:'horror'` identifier remains for backward compatibility only, not as a genre filter. There is no schema migration. The existing article selector filters collection/visibility/order, never genre.
 
-Current assembled-source checks: 32/32 model/static tests and the offline controller simulation pass. Existing portrait assets are present and the original asset-existence check passes. These are not browser interaction tests. The new Canvas illustration has additionally been rendered and visually inspected with native Canvas; see the update below for the exact scope and remaining browser checks. Earlier local Chromium launch was blocked by the execution environment; no unsupported retry or rendered 3D claim is made.
+Currently there are **zero confirmed articles**. The modal reports that compactly and separately presents nine real participant profile links. Their avatars are identity portraits, never submitted artwork or monster skins. Empty scene frames remain labeled environmental placeholders. The host invitation is not repurposed as a submission.
 
-## Illustrated 2D gameplay stage (October 14 update)
+Articles remain owner-managed through the separate `../admin/` local-draft export/publication workflow. Hidden JSON records remain public, not private. No database, authentication, upload or self-submission flow is added.
 
-2D now has a dedicated layout and close-up Canvas renderer (`stage-2d.css` / `stage-2d.js`). It is a full-width, player-led illustrated game viewport, separate from the overview map. A lantern keeper replaces the position triangle; stone masonry, drapery, bookshelves, patterned rugs, lunar inlays, plants, candles, pumpkins, a key pedestal, doors and fictional creatures are all authored geometry. No external images or participant likenesses are used. The overview stays available in the menu.
+Maze keys use `halloween-exhibition:labyrinth:v1`; lantern uses `halloween-exhibition:horror-light:v1`; 2D/3D uses `halloween-exhibition:horror-view:v1`. Brightness/audio share `halloween-exhibition:visitor-preferences:v1`; device layout shares `halloween-exhibition:preview:layout:v1`. Encounters and duel rewards are session-only. Storage errors degrade to memory. Hidden pages and blur clear held input; dialogs pause exploration.
 
-On 400×606 the layout reserves 400×344 for the game (56.8% of viewport area); on 390×844 it reserves 390×582 (69.0%). These are CSS grid targets, not measurements from a browser. The top HUD totals 134 px; the bottom touch dock/status totals 128 px. Controls are at least 44 px and remain outside the stage. The compact menu retains articles, overview, brightness/music, monsters, entrance reset, animation control and Halloween return. The drawn exit at the south of the hall opens a return confirmation dialog when inspected.
+## Verification and remaining limits
 
-The view moves only as the player moves, with no camera easing, rotation, shake, bob, autonomous drift or animated sprite loops. Reduced-motion is honored. Static 2D frames are cached until position, size, lighting or game state changes. The lantern veil affects scene pixels only; controls and edge wayfinding stay readable. Mode switching retains the same keys, gates, positions, article navigation and optional turn-based duels.
+- **44/44** model/static regression tests pass, including animation frames, bounded camera behavior, shelf collisions and full route reachability, all-genre selection, assets, battle effects, cache versioning and layout hooks.
+- Offline controller simulation passes movement, both mode choices, explicit encounter entry, guard/light victory, retry/escape/reset, key/gate, all-genre empty library with nine profiles, map/lantern and shared display selection. This is not a browser test.
+- The actual Canvas renderer loaded all twelve WebP assets successfully and rendered 400×344 and 390×582 exploration, east/north chambers, four directions, lantern OFF and attack/guard battle scenes. Those composed pixels were visually reviewed. This proves renderer output, not HTML/CSS layout, browser input or timing.
+- New browser checks remain necessary for all four device layouts, modal scrolling, safe areas, movement/occlusion/collision, action feedback and focus. The previous full-stage revision was browser-checked at 400×606; that does not certify this RPG revision.
+- Local Chromium was previously restricted; no repeated launch or bypass was attempted. No rendered 3D or actual iOS-install verification is claimed.
 
-Validation for this update: 32/32 model/static tests pass against the assembled source, including unchanged portrait assets. Controller simulation covers movement, modes, duels, reset, key/gate and dialogs. The actual Canvas renderer was rasterized with native Canvas at both phone-stage dimensions, plus lantern OFF, the key room and the library, and its pixels were visually reviewed. This validates illustration output, not HTML/CSS layout or browser input. No new local Chromium attempt was made after the earlier known execution restriction. Permitted browser verification of exact HUD bounds, 44 px hit targets, short-screen modal scrolling and gameplay remains required. No 3D rendered verification is claimed.
+See `assets/rpg/README.md` for artwork provenance and exact atlas integration details.

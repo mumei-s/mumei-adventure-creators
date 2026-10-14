@@ -10,7 +10,7 @@ Independent static exhibition at `halloween-exhibition/preview/`. The original f
 - Normal mode reads `evergreenEntries`, independent of year. This collection is currently empty. Nine creator profiles remain browsable, with neutral preparation labels. Halloween article images, titles, messages, and article links are never reused as normal content.
 - New actual normal submissions belong in `evergreenEntries`; new Halloween submissions belong in the specified year's entries. The validator checks creator identity, duplicate entries, and field structure.
 
-## Separate horror room
+## Separate Halloween adventure room
 
 Only Halloween displays the hinged-door entrance at `./maze/?return=theatre`. There is no inline horror lighting mode. The separate room returns to `../?mode=halloween`. The original display restores its selected creator, year, and roster search from its own prefixed session storage. The explicit return mode overrides a stored normal preference once; the return query is removed afterward. Storage restrictions degrade safely; restoration across navigation cannot be guaranteed when browser storage is unavailable.
 
@@ -53,7 +53,7 @@ The roulette selects only an existing non-fictional creator with a safe public p
 
 The `sw.js` scope is exactly this `halloween-exhibition/preview/` directory. Both registration and worker execution refuse a copied root/other-app location. Registration checks all overlapping workers and leaves any different application alone. It never unregisters workers, calls `skipWaiting`, or claims existing clients.
 
-Only an explicit list of public shell files is precached. Fetch handling is network-first and limited to those exact URLs, with no query strings. The public `data/archive.json` stays network-only so current visibility and order are not served from an old offline cache. Admin, private drafts, maze, external images/links, APIs, root and INSIGHT are never cached or intercepted. Offline/latest-content limitations are explained in the install guide and load-error UI. Old cache deletion is restricted to this application's cache prefix and exact scope. This is an installable online-first gallery, not an offline article archive.
+Only an explicit list of public shell files is precached. Fetch handling is network-first and limited to those exact URLs. The one release query `?v=20261014-layout1` is allowed only for explicitly listed public JS/CSS; all other queries bypass. The public `data/archive.json` stays network-only so current visibility and order are not served from an old offline cache. Admin, private drafts, maze, external images/links, APIs, root and INSIGHT are never cached or intercepted. Offline/latest-content limitations are explained in the install guide and load-error UI. Old cache deletion is restricted to this application's cache prefix and exact scope. This is an installable online-first gallery, not an offline article archive.
 
 Tests cover the title, ordinary submitted-title display, valid roulette destinations and cancellation races, reduced motion, manifest/image dimensions, local shell paths, scope guards, worker conflicts, network-first caching, forbidden-path bypass, and user-triggered install prompting. Real browser installation, native focus handling, mobile layout and artistic motion still require browser QA; the lightweight tests do not prove them.
 
@@ -73,4 +73,27 @@ Halloween has warmer orange/copper highlights and framed participant cards with 
 
 The slideshow blocks while loading, in a collection with fewer than two creators, with a dialog open, in hidden tabs, during roulette, while ambient effects are paused, or when reduced motion is requested. Resume waits a complete interval. Manual navigation invalidates any pending automatic transition and resets timing; stale async completions cannot overwrite a newer choice. The controller never opens external links or counts a viewed profile. Page exit turns it OFF, while returning through browser history still leaves the controls usable.
 
-The service worker remains strictly scoped to this preview. Its v2 public-shell allowlist adds only `slideshow.js` and `gallery-controls.css`; archive/admin/maze/private/remote data still bypass cache handling. The exact title, original profile archive, ordinary article isolation, OG asset and visitor brightness/music behavior remain intact.
+The service worker remains strictly scoped to this preview. Its v3 release-versioned public-shell allowlist includes `slideshow.js`, `gallery-controls.css` and the shared display module/styles; archive/admin/maze/private/remote data still bypass cache handling. The exact title, original profile archive, ordinary article isolation, OG asset and visitor brightness/music behavior remain intact.
+
+## Display size and iPhone/iPad Home Screen
+
+The visitor Settings now includes Auto / スマホ / タブレット / PC. `display-mode.js` uses the separate `halloween-exhibition:preview:layout:v1` key, shared by the gallery, adventure room and editor presentation only. Auto resolves at 680px and 1100px; manual choices change composition and maximum content width (520 / 1000 / 1440px). They do not spoof a device, modify viewport scale, disable zoom, change content collection or touch editor drafts. At small widths every choice still wraps and scrolls. The preference can be changed even if storage is denied, and Auto restores viewport-based behavior. The init function is inert outside `/halloween-exhibition/preview/`.
+
+The gallery's Home Screen help now gives the current Safari steps for iPhone and iPad, with official Apple links. `apple-touch-icon`, standalone metadata, `viewport-fit=cover`, safe-area padding and bounded scrollable dialogs are provided. On supported Apple versions: open Safari, Share (sometimes through the page menu), Add to Home Screen, enable Open as Web App if shown, then Add. Menu names vary by OS and layout. A native install button appears only after the browser actually supplies its install event. No notification, account or background-sync permission is requested.
+
+Official references checked 2026-10-14:
+- https://support.apple.com/guide/iphone/iphea86e5236/ios
+- https://support.apple.com/guide/ipad/open-as-web-app-ipad8f1f7a29/ipados
+
+Node tests cover mode validation, viewport boundaries, manual overrides, shared scoped storage, denial/malformed fallback, DOM controls, resize/storage updates, iPhone/iPad guidance and standalone/unsupported states. They do not prove installation on a real iPhone/iPad. Native device installation and visual checks at 320/400/768/1024/1440px, including landscape and enlarged text, remain manual acceptance checks.
+
+The separate entrance is labeled `Halloween冒険室`. Its genre-unrestricted `物語の書庫` is edited as `冒険室の書庫`; the internal `horror` collection ID and `catalog.json` remain compatible. No article content or migration is included in this presentation update.
+
+
+## Roster pages and complete portraits
+
+The participant list paginates the filtered real result set in groups of five. Nine creators are 5 + 4; the current eight pending creators are 5 + 3. The range, page count and previous/next buttons describe the current filter. Search, tags, year and normal/Halloween mode changes reset to page one. Reopening the roster after selecting a creator preserves the current page; restored pages are clamped to available results. Both buttons are native keyboard controls with 44px targets.
+
+Portraits use `object-fit: contain` within proportional insets, replacing the legacy fixed-width image that overflowed the narrower ornamental door. Images are not cropped or covered by a half-door. The card surface is warmer orange only in Halloween mode.
+
+All current main/editor JS/CSS entry URLs and local module imports carry the same `20261014-layout1` release query. This ensures a prior controlled page bypasses stale unversioned modules while the new v3 worker waits normally; it does not call skipWaiting, clients.claim, unregister, clear storage or delete other apps’ caches. The new worker precaches only exact public shell URLs and their known release variants. Archive/editor/maze data remains network-only. Manual slideshow navigation keeps ON selected and restarts the full chosen interval; this is stated in the live control hint.

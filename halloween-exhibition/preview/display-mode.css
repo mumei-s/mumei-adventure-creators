@@ -1,0 +1,136 @@
+/* Preview-only presentation modes. They never change the physical viewport or zoom. */
+:root{--safe-top:env(safe-area-inset-top,0px);--safe-right:env(safe-area-inset-right,0px);--safe-bottom:env(safe-area-inset-bottom,0px);--safe-left:env(safe-area-inset-left,0px)}
+body[data-layout]{--display-content-max:1440px;--display-card-min:270px}
+body[data-layout=phone]{--display-content-max:520px;--display-card-min:100%}
+body[data-layout=tablet]{--display-content-max:1000px;--display-card-min:220px}
+body[data-layout=desktop]{--display-content-max:1440px;--display-card-min:270px}
+.display-preferences{min-width:0;margin-top:20px;padding-top:18px;border-top:1px solid #b8aa8266;color:inherit;line-height:1.7;text-align:left}
+.display-preferences label{display:block;font-size:14px;font-weight:600;margin:0 0 8px;letter-spacing:0}
+.display-preferences select{display:block;box-sizing:border-box;width:100%;min-width:0;min-height:44px;padding:9px 12px;border:1px solid #bda67499;border-radius:8px;background:#1b2e3b;color:#fff4dc;font:inherit;font-size:16px;cursor:pointer}
+.display-preferences select:focus-visible{outline:3px solid #e8c891;outline-offset:3px}
+.display-mode-help,.display-mode-status{font-size:12px;line-height:1.8;letter-spacing:0;margin:10px 0 0;overflow-wrap:anywhere}
+.display-mode-help{opacity:.8}.display-mode-status{font-weight:600}
+body[data-mode=normal] .display-preferences select{background:#f4f9ee;border-color:#648c78;color:#254b3d}
+/* Dialogs remain reachable with a home indicator, landscape notch or larger text. */
+body[data-layout] dialog{box-sizing:border-box;max-height:calc(100dvh - 24px - var(--safe-top) - var(--safe-bottom));max-width:calc(100% - 24px - var(--safe-left) - var(--safe-right));overflow:auto;overscroll-behavior:contain}
+body[data-layout] .visitor-settings-dialog{padding-bottom:max(26px,var(--safe-bottom))}
+body[data-layout-page=gallery]{overflow-x:hidden}
+body[data-layout-page=gallery] .theater{box-sizing:border-box;width:100%;max-width:var(--display-content-max);margin-inline:auto;padding-top:var(--safe-top);padding-right:var(--safe-right);padding-bottom:max(10px,var(--safe-bottom));padding-left:var(--safe-left)}
+body[data-layout-page=gallery] #roster{width:min(94vw,var(--display-content-max))}
+body[data-layout-page=gallery] #roster-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,var(--display-card-min)),1fr))}
+body[data-layout-page=gallery] .roster-card{min-width:0;overflow-wrap:anywhere}
+body[data-layout-page=gallery] .roster-card>div{min-width:0}
+body[data-layout-page=gallery] .masthead,body[data-layout-page=gallery] .stage-footer{min-width:0}
+body[data-layout-page=gallery] .gallery-playback{min-width:0;flex-wrap:wrap}
+body[data-layout-page=gallery] .gallery-playback button,body[data-layout-page=gallery] .roulette-open{height:auto;min-height:44px;white-space:normal;overflow-wrap:anywhere}
+/* A chosen phone layout also works on a large desktop window. */
+body[data-layout=phone] .theater .masthead{grid-template-areas:"brand navigation" "actions actions";grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px 12px;padding:10px 16px}
+body[data-layout=phone] .theater .header-navigation{flex-direction:column;align-items:flex-end;gap:6px}
+body[data-layout=phone] .theater .mode-switch{flex-wrap:wrap;align-self:flex-end}
+body[data-layout=phone] .theater .mode-switch button{font-size:11px;padding:0 9px}
+body[data-layout=phone] .theater .header-actions{justify-content:flex-start;gap:5px}
+body[data-layout=phone] .theater .header-actions button{font-size:11px;padding:4px 8px}
+body[data-layout=phone] .theater .header-actions .visitor-settings-trigger{margin-left:auto}
+body[data-layout=phone] .theater .horror-entrance{font-size:10px;gap:6px;padding:4px 8px}
+body[data-layout=phone] .theater .edition-label{margin-inline:16px;letter-spacing:1px}
+body[data-layout=phone] .theater .room-world{height:clamp(128px,calc(100svh - 490px),500px)}
+body[data-layout=phone] .theater .stage-caption{margin-inline:5%}
+body[data-layout=phone] .theater .stage-caption h1{font-size:clamp(23px,4vw,30px)}
+body[data-layout=phone] .theater[data-portrait=true] .artwork-frame{width:clamp(108px,calc((100cqh - 12px) * .85),220px);max-width:55%}
+body[data-layout=phone] .theater[data-theme=host] .artwork-frame{width:min(70%,calc((100cqh - 12px) * 1.91))}
+body[data-layout=phone] .theater .stage-footer{margin-inline:16px;gap:6px 8px}
+body[data-layout=phone] .theater .room-dots{justify-content:flex-start}
+body[data-layout=phone] .theater .gallery-playback{gap:5px}
+body[data-layout=phone] .theater .gallery-playback button{font-size:11px;padding:6px 8px}
+body[data-layout=phone] .theater .slideshow-speed{font-size:10px}
+body[data-layout=phone] .theater .roulette-open{font-size:10px;padding:7px 9px}
+body[data-layout=tablet] .theater .masthead{padding-inline:4%;column-gap:18px}
+body[data-layout=tablet] .theater .stage-caption h1{font-size:clamp(24px,3vw,34px)}
+body[data-layout=desktop] .theater .stage-caption h1{font-size:clamp(24px,3vw,38px)}
+/* Safety depends on available space, even for manually chosen PC/tablet modes. */
+@media(max-width:680px){
+ body[data-layout-page=gallery] .theater .masthead{grid-template-areas:"brand navigation" "actions actions";grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;padding-inline:12px}
+ body[data-layout-page=gallery] .theater .mode-switch{flex-wrap:wrap}
+ body[data-layout-page=gallery] .theater .header-actions{justify-content:flex-start}
+ body[data-layout-page=gallery] .theater .stage-footer{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"index faces faces" "playback playback roulette" "status status status" "hint hint hint";margin-inline:12px}
+ body[data-layout-page=gallery] .theater[data-mode=normal] .stage-footer{grid-template-areas:"index faces faces" "playback playback playback" "status status status" "hint hint hint"}
+ body[data-layout-page=gallery] .theater .roulette-open{justify-self:start}
+ body[data-layout-page=gallery] .theater .gallery-playback{justify-content:flex-start}
+ body[data-layout-page=gallery] .theater .room-world{height:clamp(128px,calc(100svh - 510px),460px)}
+ body[data-layout-page=gallery] .theater #site-title{overflow-wrap:anywhere}
+}
+/* The article editor has presentation settings only; no auth/draft side effects. */
+body[data-layout-page=admin]{padding:var(--safe-top) var(--safe-right) var(--safe-bottom) var(--safe-left);overflow-wrap:anywhere}
+body[data-layout-page=admin]>header,body[data-layout-page=admin]>main,body[data-layout-page=admin]>footer{max-width:var(--display-content-max);width:100%;min-width:0}
+body[data-layout-page=admin] header{flex-wrap:wrap;gap:16px}
+body[data-layout-page=admin] .editor-display-panel{margin:0 0 20px;padding:14px 18px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+body[data-layout-page=admin] .editor-display-panel summary{min-height:44px;display:flex;align-items:center;font-size:14px}
+body[data-layout-page=admin] .display-preferences{max-width:640px;margin-top:8px}
+body[data-layout-page=admin] .display-preferences select{background:#101916;color:var(--ink);border-color:var(--line)}
+body[data-layout-page=admin] .workspace{grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr))}
+body[data-layout-page=admin] .collections{grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+body[data-layout-page=admin] .panel,body[data-layout-page=admin] .two>div{min-width:0}
+body[data-layout-page=admin] .section-head,body[data-layout-page=admin] .intro,body[data-layout-page=admin] .preview-heading{flex-wrap:wrap}
+body[data-layout-page=admin] button,body[data-layout-page=admin] select,body[data-layout-page=admin] input,body[data-layout-page=admin] textarea{max-width:100%;min-width:0;overflow-wrap:anywhere}
+body[data-layout-page=admin] button{min-height:44px;white-space:normal}
+body[data-layout-page=admin][data-layout=phone] .workspace,body[data-layout-page=admin][data-layout=phone] .collections,body[data-layout-page=admin][data-layout=phone] .steps{grid-template-columns:minmax(0,1fr)}
+body[data-layout-page=admin][data-layout=phone] .intro{flex-direction:column;align-items:flex-start;gap:8px}
+body[data-layout-page=admin][data-layout=phone] .entry-list{max-height:280px}
+body[data-layout-page=admin][data-layout=phone]>header,body[data-layout-page=admin][data-layout=phone]>main,body[data-layout-page=admin][data-layout=phone]>footer{padding-inline:18px}
+body[data-layout-page=admin][data-layout=tablet] .workspace{grid-template-columns:repeat(auto-fit,minmax(min(100%,310px),1fr))}
+body[data-layout-page=admin][data-layout=desktop] .workspace{grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr))}
+@media(max-width:680px){
+ body[data-layout-page=admin]>header,body[data-layout-page=admin]>main,body[data-layout-page=admin]>footer{padding-inline:14px}
+ body[data-layout-page=admin] .two{grid-template-columns:minmax(0,1fr)}
+ body[data-layout-page=admin] .steps{grid-template-columns:minmax(0,1fr)}
+ body[data-layout-page=admin] .panel{padding:18px 14px}
+}
+.pwa-steps{padding-left:22px;margin:18px 0;line-height:1.85;font-size:13px}.pwa-steps li{padding-left:3px;margin:10px 0}.pwa-apple-links{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:12px;line-height:1.8}.pwa-apple-links a{color:inherit;text-underline-offset:4px}.pwa-guide .pwa-open,.pwa-guide .pwa-install{min-height:44px}
+
+@media(max-width:370px){
+ body[data-layout-page=gallery] .theater .stage-footer{grid-template-columns:auto minmax(0,1fr);grid-template-areas:"index faces" "playback playback" "roulette roulette" "status status" "hint hint"}
+ body[data-layout-page=gallery] .theater[data-mode=normal] .stage-footer{grid-template-areas:"index faces" "playback playback" "status status" "hint hint"}
+}
+
+/* Halloween title has its own flow row; controls never sit over its lettering. */
+body[data-layout-page=gallery] .theater[data-mode=halloween] .masthead{
+ grid-template-areas:"brand brand" "navigation actions";grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:9px 20px;
+}
+body[data-layout-page=gallery] .theater[data-mode=halloween] .brand{
+ width:100%;justify-content:center;text-align:center;padding:3px 0 8px;
+ border-bottom:1px solid #eeb57955;background:radial-gradient(ellipse at 50% 70%,#e98a2e20,transparent 68%);
+ animation:atelier-title-arrive .65s ease-out both;
+}
+body[data-layout-page=gallery] .theater[data-mode=halloween] .brand-mark{display:none}
+body[data-layout-page=gallery] .theater[data-mode=halloween] #site-title{gap:3px;min-width:0;max-width:100%;align-items:center}
+body[data-layout-page=gallery] .theater[data-mode=halloween] #site-title>span{font:500 10px/1.2 sans-serif;letter-spacing:2px;color:#ead0ad}
+body[data-layout-page=gallery] .theater[data-mode=halloween] #site-title>strong{
+ font:600 clamp(26px,3.2vw,42px)/1.12 Georgia,serif;letter-spacing:.02em;color:#ffd58d;
+ text-shadow:0 1px 1px #6b341e,0 0 18px #f5a55366,0 0 36px #e1842b22;
+}
+body[data-layout-page=gallery] .theater[data-mode=halloween] #site-title>small{font:500 14px/1.35 sans-serif;letter-spacing:2px;color:#ffe9c8;margin:0}
+body[data-layout-page=gallery] .theater[data-mode=halloween] .header-navigation{flex-direction:row;align-items:center;justify-content:flex-start;flex-wrap:wrap;gap:8px}
+body[data-layout-page=gallery] .theater[data-mode=halloween] .header-actions{justify-content:flex-end}
+@keyframes atelier-title-arrive{from{opacity:.65;transform:translateY(4px)}to{opacity:1;transform:none}}
+body[data-layout-page=gallery][data-layout=phone] .theater[data-mode=halloween] .masthead{
+ grid-template-areas:"brand" "navigation" "actions";grid-template-columns:minmax(0,1fr);gap:5px;padding:8px 12px 6px;
+}
+body[data-layout-page=gallery][data-layout=phone] .theater[data-mode=halloween] .brand{padding:0 0 5px}
+body[data-layout-page=gallery][data-layout=phone] .theater[data-mode=halloween] #site-title{gap:2px}
+body[data-layout-page=gallery][data-layout=phone] .theater[data-mode=halloween] #site-title>span{font-size:9px}
+body[data-layout-page=gallery][data-layout=phone] .theater[data-mode=halloween] #site-title>strong{font-size:clamp(22px,6.2vw,28px)}
+body[data-layout-page=gallery][data-layout=phone] .theater[data-mode=halloween] #site-title>small{font-size:12px;letter-spacing:1.5px}
+body[data-layout-page=gallery][data-layout=phone] .theater[data-mode=halloween] .header-navigation{justify-content:center}
+body[data-layout-page=gallery][data-layout=phone] .theater[data-mode=halloween] .header-actions{justify-content:flex-start}
+@media(max-width:680px){
+ body[data-layout-page=gallery] .theater[data-mode=halloween] .masthead{grid-template-areas:"brand" "navigation" "actions";grid-template-columns:minmax(0,1fr);gap:5px;padding:8px 12px 6px}
+ body[data-layout-page=gallery] .theater[data-mode=halloween] .brand{padding:0 0 5px}
+ body[data-layout-page=gallery] .theater[data-mode=halloween] #site-title{gap:2px}
+ body[data-layout-page=gallery] .theater[data-mode=halloween] #site-title>span{font-size:9px}
+ body[data-layout-page=gallery] .theater[data-mode=halloween] #site-title>strong{font-size:clamp(22px,6.2vw,28px)}
+ body[data-layout-page=gallery] .theater[data-mode=halloween] #site-title>small{font-size:12px;letter-spacing:1.5px}
+ body[data-layout-page=gallery] .theater[data-mode=halloween] .header-navigation{justify-content:center}
+ body[data-layout-page=gallery] .theater[data-mode=halloween] .header-actions{justify-content:flex-start}
+}
+@media(prefers-reduced-motion:reduce){body[data-layout-page=gallery] .theater[data-mode=halloween] .brand{animation:none!important}}
+body[data-ambient-paused=true] .theater[data-mode=halloween] .brand,.theater[data-motion-paused=true] .brand{animation:none!important}

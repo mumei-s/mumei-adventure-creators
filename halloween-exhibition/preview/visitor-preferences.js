@@ -67,7 +67,7 @@ export function initVisitorPreferences({ container, triggerParent, onBrightness 
     const close = make('button', 'visitor-settings-close', '×'); close.type = 'button'; close.setAttribute('aria-label', '設定を閉じる');
     const title = make('h2', '', 'この端末の設定'); title.id = `${id}-title`;
     dialog.append(close, title); document.body.append(dialog); container = dialog;
-    trigger = make('button', 'visitor-settings-trigger', '設定'); trigger.type = 'button'; trigger.setAttribute('aria-label', '明るさ・音楽の設定'); trigger.setAttribute('aria-haspopup', 'dialog');
+    trigger = make('button', 'visitor-settings-trigger', '設定'); trigger.type = 'button'; trigger.setAttribute('aria-label', '明るさ・音楽・表示サイズの設定'); trigger.setAttribute('aria-haspopup', 'dialog');
     (triggerParent || document.body).append(trigger);
     trigger.addEventListener('click', () => { returnFocus = document.activeElement; if (!dialog.open) dialog.showModal(); });
     close.addEventListener('click', () => dialog.close());
@@ -102,3 +102,4 @@ export function initVisitorPreferences({ container, triggerParent, onBrightness 
   render(); player.setVolume(preferences.volume); onBrightness(preferences.brightness);
   return { setBrightness, getPreferences: () => ({ ...preferences }), destroy() { player.stop(); document.removeEventListener('visibilitychange', onHidden); window.removeEventListener('pagehide', onPageHide); controls.remove(); trigger?.remove(); dialog?.remove(); } };
 }
+

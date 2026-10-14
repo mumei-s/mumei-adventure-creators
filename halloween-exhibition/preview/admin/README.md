@@ -27,3 +27,9 @@ Download or copy validated JSON, open the corresponding GitHub edit link, review
 `node halloween-yearbook/preview/admin/tests/browser.test.cjs` is a Playwright UI regression script with a local fixture server. It remaps the local source maze path to the deployment layout and checks initial load, CRUD, draft persistence, multi-link editing, restore, collection separation, JSON preview/download, storage isolation, input labels, and 390px overflow. Browser execution was attempted but blocked by the environment's Chromium `socket() Operation not permitted` failure; no rendered/mobile/a11y interaction pass is claimed. Run in a permitted browser environment before declaring browser QA complete. The test accepts `CHROMIUM_PATH` and defaults to `/usr/bin/chromium`.
 
 No runtime dependencies. Deploy `index.html`, `style.css`, `app.js`, `model.js` together; README and tests may be retained as source documentation.
+
+## Presentation size
+
+The collapsible display-size setting selects Auto / スマホ / タブレット / PC through the same preview-only presentation preference as the gallery and adventure room. The setting does not modify drafts, authentication, content visibility, export or publication. Even a manually chosen PC layout wraps on narrow screens; browser zoom remains available. iOS standalone metadata and safe-area padding do not add an editor service worker or cache drafts.
+
+The former horror collection is now visibly named `冒険室の書庫`, accepting genuine articles of any genre. Its internal `horror` ID and export schema are unchanged.

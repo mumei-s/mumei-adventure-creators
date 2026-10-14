@@ -1,7 +1,7 @@
 import * as THREE from './vendor/three.module.js';
-import { MAP, CELL, FEATURES, toWorld } from './maze-model.js';
-import { NIGHT_LIGHTING } from './lighting-model.js';
-import { MONSTERS } from './encounter-model.js';
+import { MAP, CELL, FEATURES, toWorld } from './maze-model.js?v=20261014-layout1';
+import { NIGHT_LIGHTING } from './lighting-model.js?v=20261014-layout1';
+import { MONSTERS, monsterAvailable } from './encounter-model.js?v=20261014-layout1';
 
 // All architectural objects live in world space. Camera motion, collision and
 // interaction remain in the controller, making the gallery usable with keys,
@@ -202,6 +202,18 @@ export function createWorld({ canvas, onReady } = {}) {
       mesh(new THREE.SphereGeometry(.62,16,12),body,0,1.55,0,g);
       for(const side of [-1,1]){mesh(new THREE.SphereGeometry(.09,8,6),eye,side*.22,1.63,.55,g);const arm=mesh(new THREE.SphereGeometry(.26,8,8),body,side*.63,1.1,0,g);arm.scale.set(1.5,.7,.7);}
       mesh(new THREE.SphereGeometry(.09,8,6),eye,0,1.37,.59,g);
+    }else if(definition.id==='zombie'||definition.id==='vampire'){
+      const vampire=definition.id==='vampire',cloth=mat(vampire?'#422438':'#4a6258'),skin=mat(vampire?'#d9c6cc':'#9ab589'),hair=mat('#302438');
+      mesh(new THREE.ConeGeometry(vampire?.74:.5,1.4,8),cloth,0,.85,0,g);
+      mesh(new THREE.SphereGeometry(.38,12,10),skin,0,1.75,0,g);
+      const cap=mesh(new THREE.SphereGeometry(.39,12,8),hair,0,1.91,-.04,g);cap.scale.y=.45;
+      for(const side of[-1,1]){
+        mesh(new THREE.SphereGeometry(.06,8,6),eye,side*.14,1.76,.34,g);
+        mesh(new THREE.SphereGeometry(.15,8,6),skin,side*.52,vampire?1.1:1.35,vampire?.1:.3,g);
+        mesh(new THREE.SphereGeometry(.16,8,6),eye,side*.22,.17,.1,g);
+      }
+      if(vampire){for(const side of[-1,1])mesh(new THREE.ConeGeometry(.04,.12,3),glint,side*.08,1.57,.36,g);}
+      else{const stitch=mesh(new THREE.BoxGeometry(.25,.025,.025),eye,.08,1.94,.29,g);stitch.rotation.z=.25;}
     }else{
       mesh(new THREE.SphereGeometry(.49,14,10),body,0,1.4,0,g);
       for(const side of [-1,1]){
@@ -212,7 +224,7 @@ export function createWorld({ canvas, onReady } = {}) {
       }
     }
     sign(definition.name,'LANTERN DUEL · B',0,2.6,0,0,2.1,g);
-    spirits.push({node:g,index,id:definition.id,needsKey:definition.needsKey,baseY:0});
+    spirits.push({node:g,index,id:definition.id,definition,baseY:0});
   }
   // A drifting orbital mobile is sculpture, explicitly environmental decoration.
   const center=point(FEATURES.mobile||FEATURES.spawn||{x:Math.floor(cols/2),z:Math.floor(rows/2)});
@@ -286,7 +298,7 @@ export function createWorld({ canvas, onReady } = {}) {
     camera.position.set(x,1.65,z);camera.rotation.set(pitch,yaw,0,'YXZ');
     heldLantern.visible=!!lantern;headlamp.visible=!!lantern;nearLamp.visible=!!lantern;
     for(const spirit of spirits){
-      spirit.node.visible=encounters&&!cleared.includes(spirit.id)&&(!spirit.needsKey||unlocked);
+      spirit.node.visible=encounters&&!cleared.includes(spirit.id)&&monsterAvailable(spirit.definition,{unlocked,horrorAccepted});
       spirit.node.rotation.y=Math.atan2(x-spirit.node.position.x,z-spirit.node.position.z);
       if(!motion)spirit.node.position.y=spirit.baseY;
     }
@@ -296,7 +308,7 @@ export function createWorld({ canvas, onReady } = {}) {
     const collected=Array.isArray(collection)?collection.some(v=>typeof v==='string'?v.includes('key'):v?.id?.includes('key')):!!collection?.key;
     key.visible=!collected&&!hasKey&&!unlocked;horrorDoor.position.y=horrorAccepted?5.5:0;keyLight.visible=key.visible;
     if(motion){heldLantern.rotation.z=Math.sin(t*.8)*.015;
-      for(const spirit of spirits){spirit.node.position.y=spirit.baseY+Math.sin(t*.55+spirit.index)*.055;}
+      for(const spirit of spirits){spirit.node.position.y=spirit.baseY+(spirit.id==='zombie'?Math.abs(Math.sin(t*.4))*.025:Math.sin(t*(spirit.id==='vampire'?.35:.55)+spirit.index)*.055);}
       key.rotation.y=t*.8;key.position.y=1.57+Math.sin(t*1.4)*.09;mobile.rotation.y=t*.085;mobile.rotation.z=Math.sin(t*.28)*.1;dust.rotation.y=Math.sin(t*.025)*.006;
       folios.rotation.y=Math.sin(t*.085)*.085;
       for(const f of folioMotion){f.node.position.y=f.baseY+Math.sin(t*.65+f.phase)*.12;f.node.rotation.x=f.baseX+Math.sin(t*.48+f.phase)*.035;f.node.rotation.z=f.baseZ+Math.cos(t*.4+f.phase)*.04;}

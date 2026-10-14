@@ -7,13 +7,14 @@ const source=JSON.parse(await readFile(new URL('../data/archive.json',import.met
 // Kept local so the shipped preview tests remain independently runnable.
 const verified=JSON.parse(await readFile(new URL('./fixtures/verified-profiles.json',import.meta.url)));
 
-test('nine verified public profiles plus two future slots, with no invented creators',()=>{
+test('nine verified public profiles with no future slots, with no invented creators',()=>{
   validateArchive(source);
   assert.equal(source.creators.length,9);
   assert.deepEqual(source.creators.map(c=>c.id),verified.map(c=>c.id));
   assert.equal(source.creators.filter(c=>c.provisional).length,0);
   assert.equal(source.years[0].entries.length,9);
-  assert.equal(source.years[0].plannedSlots,2);
+  assert.equal(source.years[0].plannedSlots,undefined);
+  assert.deepEqual(source.evergreenEntries,[]);
   assert.deepEqual(source.years[0].entries.map(e=>e.creatorId),verified.map(c=>c.id));
 });
 

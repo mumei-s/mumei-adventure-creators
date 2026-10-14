@@ -53,7 +53,7 @@ class Element {
   querySelector(selector) { return this.querySelectorAll(selector)[0] || null; }
 }
 
-async function harness({ data = archive, reduced = true, storageThrows = false, storageWriteThrows = false, saved = null, savedMode = null, autoLoad = true } = {}) {
+async function harness({ data = archive, reduced = true, storageThrows = false, storageWriteThrows = false, saved = null, savedMode = null, urlSearch = '', returnState = null, autoLoad = true } = {}) {
   let now = 0, seq = 0; const timers = new Map(), storage = new Map(saved ? [['halloween-yearbook:night-doors:v1', saved]] : []);
   if (savedMode !== null) storage.set('halloween-yearbook:display-mode:v1', savedMode);
   const queue = (fn, delay = 0) => { const id = ++seq; timers.set(id, { at: now + delay, fn }); return id; };
@@ -78,11 +78,12 @@ async function harness({ data = archive, reduced = true, storageThrows = false, 
   const requests = [], storageWrites = [], motionInitializations = [], viewCalls = [];
   const context = vm.createContext({ document: doc, initSceneMotion:root=>{motionInitializations.push(root);const dock=doc.createElement('div');dock.className='scene-controls';root.append(dock);return {setView(x,y){viewCalls.push([x,y]);}};}, validateArchive, safeURL, normalizeSearch,
     matchMedia: () => ({ matches: reduced }), setTimeout: queue, clearTimeout: id => timers.delete(id),
+    URLSearchParams, location:{search:urlSearch},sessionStorage:{getItem(){return returnState},setItem(k,v){context.savedReturn={key:k,value:v};}},
     Date: class extends Date { static now() { return now; } },
     localStorage: { getItem(k) { if (storageThrows) throw Error('blocked'); return storage.get(k) || null; }, setItem(k, v) { storageWrites.push({key:k,value:v}); if (storageThrows || storageWriteThrows) throw Error('blocked'); storage.set(k, v); } },
     fetch: () => new Promise((resolve, reject) => requests.push({ resolve, reject }))
   });
-  vm.runInContext(source.replace(/^import[^\n]+\n/gm, '') + '\nglobalThis.testAPI={navigate,setYear,load,openStory,renderProgress,setMode,setHorror, get state(){return {currentYear,currentIndex,busy,storageOK,progress,displayMode,horrorActive,search,activeTag};}};', context);
+  vm.runInContext(source.replace(/^import[^\n]+\n/gm, '') + '\nglobalThis.testAPI={navigate,setYear,load,openStory,renderProgress,setMode, get state(){return {currentYear,currentIndex,busy,storageOK,progress,displayMode,search,activeTag};}};', context);
   async function flush() { for (let i = 0; i < 10; i++) await Promise.resolve(); }
   async function tick(ms) { const end = now + ms; for (;;) { const item = [...timers.entries()].filter(([,v]) => v.at <= end).sort((a,b) => a[1].at - b[1].at || a[0] - b[0])[0]; if (!item) break; now = item[1].at; timers.delete(item[0]); item[1].fn(); await flush(); } now = end; await flush(); }
   async function succeed(request, result = data) { request.resolve({ ok: true, json: async () => structuredClone(result) }); await flush(); }
@@ -99,14 +100,14 @@ async function harness({ data = archive, reduced = true, storageThrows = false, 
   return { doc, keydown, $: doc.getElementById, api: context.testAPI, requests, storage, storageWrites, motionInitializations, viewCalls, tick, flush, succeed };
 }
 
-test('initial load renders nine real rooms plus two upcoming markers, never eleven participants', async () => {
+test('initial load renders nine real rooms without planned placeholders', async () => {
   const h = await harness();
   assert.equal(h.$('load-error').hidden, true);
   assert.equal(h.$('room-dots').querySelectorAll('button').length, 9);
-  assert.equal(h.$('room-dots').querySelectorAll('.future-face').length, 2);
+  assert.equal(h.$('room-dots').querySelectorAll('.future-face').length, 0);
   assert.equal(h.$('total-index').textContent, '09');
-  assert.equal(h.$('sample-notice').textContent, '参加者9人 · あと2人が追加予定');
-  assert.equal(h.$('results').textContent, '参加者 9 / 9人 · ほか2人追加予定');
+  assert.equal(h.$('sample-notice').textContent, '参加者9人');
+  assert.equal(h.$('results').textContent, '参加者 9 / 9人');
   assert.match(h.$('creator-name').textContent, /主催者の企画紹介記事/);
   assert.equal(h.$('room-title').textContent, archive.creators[0].name);
   assert.equal(h.$('artwork-image').src, archive.years[0].entries[0].image);
@@ -299,11 +300,11 @@ test('completion is exactly nine unique real participants, ignoring stale and pl
   assert.equal(h.$('passport-content').querySelectorAll('.passport-stamp').length, 9);
 });
 
-test('upcoming placeholders are labelled, noninteractive, and absent from the passport', async () => {
+test('removed future slots are absent from every interface', async () => {
   const h = await harness(); h.$('list-open').click();
   assert.equal(h.$('roster-grid').querySelectorAll('button').length, 9);
   const markers = [...h.$('room-dots').querySelectorAll('.future-face'), ...h.$('roster-grid').querySelectorAll('.future-card')];
-  assert.equal(markers.length, 4);
+  assert.equal(markers.length, 0);
   for (const marker of markers) {
     assert.notEqual(marker.tagName, 'BUTTON');
     assert.notEqual(marker.tagName, 'A');
@@ -431,7 +432,7 @@ test('name and @note-handle search work, and pending-work tag excludes future pl
   h.$('tags').children.find(n => n.textContent === '作品準備中').click();
   assert.equal(h.$('roster-grid').querySelectorAll('button').length, 8);
   assert.equal(h.$('roster-grid').querySelectorAll('.future-card').length, 0);
-  assert.equal(h.$('results').textContent, '参加者 8 / 9人 · ほか2人追加予定');
+  assert.equal(h.$('results').textContent, '参加者 8 / 9人');
 });
 
 test('future slots do not change year-picker counts and an empty year stays incomplete', async () => {
@@ -441,199 +442,85 @@ test('future slots do not change year-picker counts and an empty year stays inco
   assert.equal(h.$('visit-count').textContent, '0');
   assert.equal(h.$('theater').classList.contains('complete'), false);
   assert.equal(h.$('room-dots').querySelectorAll('button').length, 0);
-  assert.equal(h.$('room-dots').querySelectorAll('.future-face').length, 2);
+  assert.equal(h.$('room-dots').querySelectorAll('.future-face').length, 0);
   h.$('year-open').click();
   assert.match(h.$('year-list').children[0].textContent, /2027.*0の物語/);
   assert.match(h.$('year-list').children[1].textContent, /2026.*9の物語/);
 });
 
-test('Halloween is the default mode and horror always starts off', async () => {
-  const h = await harness();
-  assert.equal(h.api.state.displayMode, 'halloween');
-  assert.equal(h.$('theater').dataset.mode, 'halloween');
-  assert.equal(h.doc.body.dataset.mode, 'halloween');
-  assert.equal(h.$('mode-halloween').getAttribute('aria-pressed'), 'true');
-  assert.equal(h.$('mode-normal').getAttribute('aria-pressed'), 'false');
-  assert.equal(h.$('horror-toggle').hidden, false);
-  assert.equal(h.$('horror-toggle').getAttribute('aria-pressed'), 'false');
-  assert.equal(h.$('theater').dataset.horror, 'false');
-  assert.match(h.doc.title, /ハロウィン参加者年鑑/);
-  assert.match(h.$('site-title').textContent, /^夜のとびら/);
+test('Halloween-only entrance is a separate maze link, never an inline horror mode', async () => {
+ const h=await harness();
+ assert.equal(h.$('horror-entrance').tagName,'A');
+ assert.equal(h.$('horror-entrance').getAttribute('href'),'./maze/?return=theatre');
+ assert.equal(h.$('horror-entrance').hidden,false);
+ assert.equal(h.$('horror-toggle'),undefined);
+ h.$('mode-normal').click();
+ assert.equal(h.$('horror-entrance').hidden,true);
+ assert.equal(h.$('year-open').hidden,true);
+ h.$('mode-halloween').click();
+ assert.equal(h.$('horror-entrance').hidden,false);
+ assert.equal(h.$('year-open').hidden,false);
 });
 
-test('normal and Halloween mode persist independently of visits and restore the correct copy', async () => {
-  const h = await harness();
-  h.$('story-open').click(); h.$('detail').close(); await h.tick(0);
-  const progressBefore = h.storage.get('halloween-yearbook:night-doors:v1');
-  h.$('mode-normal').click();
-  assert.equal(h.storage.get('halloween-yearbook:display-mode:v1'), 'normal');
-  assert.equal(h.storage.get('halloween-yearbook:night-doors:v1'), progressBefore);
-  assert.equal(h.$('mode-normal').getAttribute('aria-pressed'), 'true');
-  assert.equal(h.$('mode-halloween').getAttribute('aria-pressed'), 'false');
-  assert.equal(h.doc.body.dataset.mode, 'normal');
-  assert.equal(h.$('horror-toggle').hidden, true);
-  assert.match(h.$('site-title').textContent, /^みんなのとびら/);
-  assert.match(h.doc.title, /クリエイター年鑑/);
-  assert.equal(h.$('edition-text').textContent, '2026 · CREATORS YEARBOOK');
-  assert.equal(h.$('invitation-year').textContent, 'CREATORS 2026');
-  const normalReload = await harness({ savedMode: h.storage.get('halloween-yearbook:display-mode:v1'), saved: progressBefore });
-  assert.equal(normalReload.api.state.displayMode, 'normal');
-  assert.equal(normalReload.$('visit-count').textContent, '1');
-  assert.equal(normalReload.$('horror-toggle').hidden, true);
-  normalReload.$('mode-halloween').click();
-  assert.equal(normalReload.storage.get('halloween-yearbook:display-mode:v1'), 'halloween');
-  assert.equal(normalReload.$('edition-text').textContent, '2026 · HALLOWEEN YEARBOOK');
-  const halloweenReload = await harness({ savedMode: normalReload.storage.get('halloween-yearbook:display-mode:v1') });
-  assert.equal(halloweenReload.api.state.displayMode, 'halloween');
-  assert.equal(halloweenReload.$('theater').dataset.horror, 'false');
+test('normal mode binds evergreen content, not Halloween article image or links', async()=>{
+ const h=await harness();h.$('mode-normal').click();
+ assert.equal(h.$('artwork-image').src,archive.creators[0].avatar);
+ assert.equal(h.$('edition-text').textContent,'CREATORS’ YEARBOOK · 通年');
+ assert.equal(h.$('invitation-year').textContent,'CREATORS’ COLLECTION');
+ h.$('story-open').click();
+ assert.match(h.$('detail-content').textContent,/作品の掲載は準備中/);
+ assert.doesNotMatch(h.$('detail-content').textContent,/ハロウィン企画|招待状/);
+ assert.equal(h.$('detail-content').querySelectorAll('a').length,1);
+ assert.equal(h.$('detail-content').querySelector('a').href,archive.creators[0].profileURL);
+ h.$('detail').close();h.$('mode-halloween').click();
+ assert.equal(h.$('artwork-image').src,archive.years[0].entries[0].image);
 });
 
-test('unknown stored mode falls back safely to Halloween without enabling horror', async () => {
-  for (const value of ['horror', '<script>alert(1)</script>', 'NORMAL', '{broken']) {
-    const h = await harness({ savedMode: value });
-    assert.equal(h.api.state.displayMode, 'halloween');
-    assert.equal(h.$('theater').dataset.mode, 'halloween');
-    assert.equal(h.$('theater').dataset.horror, 'false');
-    assert.equal(h.$('load-error').hidden, true);
-  }
+test('normal visits are evergreen and separate from annual Halloween visits',async()=>{
+ const h=await harness();h.$('story-open').click();h.$('detail').close();
+ h.$('mode-normal').click();assert.equal(h.$('visit-count').textContent,'0');
+ h.$('story-open').click();h.$('detail').close();
+ assert.equal(h.api.state.progress.stamps.evergreen.length,1);
+ h.api.setYear(2025);assert.equal(h.$('visit-count').textContent,'1');
+ h.api.setYear(2026);h.$('mode-halloween').click();assert.equal(h.$('visit-count').textContent,'1');
 });
 
-test('repeated mode switches preserve selected person, year, search, tags and visits', async () => {
-  const data = structuredClone(archive); data.years.push({ ...structuredClone(data.years[0]), year: 2025 });
-  const h = await harness({ data }); h.api.setYear(2025); await h.api.navigate(3);
-  h.$('story-open').click(); h.$('detail').close(); await h.tick(0);
-  h.$('list-open').click(); h.$('search').value = '@mama_ca'; h.$('search').dispatch('input');
-  h.$('tags').children.find(n => n.textContent === '作品準備中').click();
-  const name = h.$('room-title').textContent, image = h.$('artwork-image').src;
-  const expectedProgress = JSON.stringify(h.api.state.progress);
-  for (let i = 0; i < 8; i++) {
-    const mode = i % 2 === 0 ? 'normal' : 'halloween'; h.$(`mode-${mode}`).click();
-    assert.equal(h.api.state.currentYear, 2025);
-    assert.equal(h.api.state.currentIndex, 3);
-    assert.equal(h.$('room-title').textContent, name);
-    assert.equal(h.$('artwork-image').src, image);
-    assert.equal(h.$('visit-count').textContent, '1');
-    assert.equal(JSON.stringify(h.api.state.progress), expectedProgress);
-    assert.equal(h.api.state.search, '@mama_ca');
-    assert.equal(h.api.state.activeTag, '作品準備中');
-    assert.equal(h.$('search').value, '@mama_ca');
-    assert.equal(h.$('roster-grid').querySelectorAll('button').length, 1);
-    assert.equal(h.$('roster').open, true);
-    assert.equal(h.$('edition-text').textContent, `2025 · ${mode === 'normal' ? 'CREATORS' : 'HALLOWEEN'} YEARBOOK`);
-  }
+test('explicit maze return restores Halloween, year, creator and search over saved normal mode',async()=>{
+ const h=await harness({savedMode:'normal',urlSearch:'?mode=halloween',returnState:JSON.stringify({year:2026,creatorId:'mama_ca',search:'@mama_ca',activeTag:'作品準備中'})});
+ assert.equal(h.api.state.displayMode,'halloween');assert.equal(h.api.state.currentYear,2026);
+ assert.equal(h.api.state.currentIndex,3);assert.equal(h.api.state.search,'@mama_ca');
+ assert.equal(h.$('roster-grid').querySelectorAll('button').length,1);
+ assert.equal(h.$('horror-entrance').hidden,false);
 });
 
-test('switching modes updates an open pending-profile dialog without re-recording visits', async () => {
-  const h = await harness(); await h.api.navigate(1); h.$('story-open').click();
-  const pending = h.$('detail-content').querySelector('.pending-copy');
-  assert.match(pending.textContent, /ハロウィン作品は準備中/);
-  const title = h.$('detail-title'), link = h.$('detail-content').querySelector('a');
-  h.$('mode-normal').click();
-  assert.equal(h.$('detail').open, true);
-  assert.match(pending.textContent, /^作品の掲載は準備中/);
-  assert.doesNotMatch(pending.textContent, /ハロウィン/);
-  assert.equal(h.$('detail-title'), title);
-  assert.equal(h.$('detail-content').querySelector('a'), link);
-  assert.equal(h.$('visit-count').textContent, '1');
-  h.$('mode-halloween').click();
-  assert.match(pending.textContent, /ハロウィン作品は準備中/);
-  assert.equal(h.$('visit-count').textContent, '1');
+test('malformed or stale maze return state safely falls back to real current records',async()=>{
+ for(const state of ['{broken','null',JSON.stringify({year:1900,creatorId:'fake',search:4})]){
+ const h=await harness({urlSearch:'?mode=halloween',returnState:state});
+ assert.equal(h.$('load-error').hidden,true);assert.equal(h.api.state.currentYear,2026);
+ assert.equal(h.api.state.currentIndex,0);
+ }
 });
 
-test('storage denial never blocks mode changes, horror controls or real-roster navigation', async () => {
-  const h = await harness({ storageThrows: true });
-  assert.equal(h.$('load-error').hidden, true);
-  h.$('mode-normal').click(); assert.equal(h.api.state.displayMode, 'normal');
-  await h.api.navigate(4); assert.equal(h.api.state.currentIndex, 4);
-  h.$('story-open').click(); assert.equal(h.$('visit-count').textContent, '1');
-  assert.match(h.$('detail-content').textContent, /保存できません/);
-  h.$('detail').close(); await h.tick(0);
-  h.$('mode-halloween').click(); h.$('horror-toggle').click();
-  assert.equal(h.$('theater').dataset.horror, 'true');
-  h.$('mode-normal').click(); assert.equal(h.$('theater').dataset.horror, 'false');
-  assert.equal(h.$('visit-count').textContent, '1');
+test('storage denial still permits mode switches, navigation, and separate-room entrance',async()=>{
+ const h=await harness({storageThrows:true});h.$('mode-normal').click();
+ await h.api.navigate(4);assert.equal(h.api.state.currentIndex,4);
+ h.$('story-open').click();assert.match(h.$('detail-content').textContent,/保存できません/);
+ h.$('detail').close();h.$('mode-halloween').click();
+ assert.equal(h.$('horror-entrance').hidden,false);
 });
 
-test('horror requires opt-in, toggles off, stays Halloween-only, and never persists', async () => {
-  const h = await harness();
-  await h.api.navigate(5); h.$('mode-halloween').click();
-  assert.equal(h.$('theater').dataset.horror, 'false');
-  const beforeHorror = JSON.stringify([...h.storage.entries()]);
-  h.$('horror-toggle').click();
-  assert.equal(h.$('theater').dataset.horror, 'true');
-  assert.equal(h.$('horror-toggle').getAttribute('aria-pressed'), 'true');
-  assert.match(h.$('horror-toggle').textContent, /明るい館へ戻る/);
-  assert.equal(JSON.stringify([...h.storage.entries()]), beforeHorror, 'horror changes no saved state');
-  assert.equal(h.api.state.currentIndex, 5);
-  h.$('horror-toggle').click(); assert.equal(h.$('theater').dataset.horror, 'false');
-  h.$('horror-toggle').click(); assert.equal(h.$('theater').dataset.horror, 'true');
-  const reloaded = await harness({ savedMode: h.storage.get('halloween-yearbook:display-mode:v1'), saved: h.storage.get('halloween-yearbook:night-doors:v1') });
-  assert.equal(reloaded.$('theater').dataset.horror, 'false');
-  h.$('mode-normal').click();
-  assert.equal(h.$('theater').dataset.horror, 'false');
-  assert.equal(h.$('horror-toggle').hidden, true);
-  h.api.setHorror(true); assert.equal(h.$('theater').dataset.horror, 'false', 'normal mode also rejects direct enabling');
-  h.$('mode-halloween').click();
-  assert.equal(h.$('horror-toggle').hidden, false);
-  assert.equal(h.$('theater').dataset.horror, 'false', 'returning to Halloween does not re-enable horror');
-  assert.equal(h.api.state.currentIndex, 5);
+test('mode switch cancels obsolete animation and retains current creator',async()=>{
+ const h=await harness({reduced:false});h.$('next').click();await h.tick(100);
+ h.$('mode-normal').click();await h.flush();
+ assert.equal(h.api.state.currentIndex,0);assert.equal(h.api.state.busy,false);
+ assert.equal(h.$('artwork-image').src,archive.creators[0].avatar);
 });
 
-test('Escape closes an open dialog first, then exits horror on a separate press', async () => {
-  const h = await harness();
-  h.$('horror-toggle').click(); h.$('story-open').focus(); h.$('story-open').click();
-  assert.equal(h.$('detail').open, true);
-  assert.equal(h.keydown('Escape'), false, 'app leaves the first Escape to native dialog dismissal');
-  await h.tick(0);
-  assert.equal(h.$('detail').open, false);
-  assert.equal(h.$('theater').dataset.horror, 'true');
-  assert.equal(h.doc.activeElement, h.$('story-open'));
-  assert.equal(h.keydown('Escape'), true, 'the next Escape exits horror');
-  assert.equal(h.$('theater').dataset.horror, 'false');
-});
-
-test('mode and horror switches add no callbacks or duplicate navigation and story actions', async () => {
-  const h = await harness();
-  for (let i = 0; i < 6; i++) {
-    h.$('mode-normal').click(); h.$('mode-halloween').click();
-    h.$('horror-toggle').click(); h.$('horror-toggle').click();
-  }
-  for (const id of ['mode-normal', 'mode-halloween', 'horror-toggle', 'next', 'previous', 'story-open', 'artwork-open']) {
-    assert.equal(h.$(id).handlers.click.length, 1, `${id} retains one click handler`);
-  }
-  assert.equal(h.doc.handlers.keydown.length, 1);
-  h.$('next').click(); await h.flush(); assert.equal(h.api.state.currentIndex, 1);
-  h.$('story-open').click(); assert.equal(h.$('visit-count').textContent, '1');
-  h.$('detail-content').querySelector('.secondary').click(); await h.tick(0);
-  assert.equal(h.api.state.currentIndex, 2);
-  h.$('story-open').click(); assert.equal(h.$('visit-count').textContent, '2');
-});
-
-test('a mode switch during an animated turn preserves the latest mode and one navigation', async () => {
-  const h = await harness({ reduced: false });
-  h.$('next').click(); await h.tick(100); h.$('mode-normal').click();
-  assert.equal(h.api.state.busy, true);
-  await h.tick(100); assert.equal(h.api.state.currentIndex, 1);
-  assert.equal(h.api.state.displayMode, 'normal');
-  assert.equal(h.$('theater').dataset.mode, 'normal');
-  assert.equal(h.$('invitation-year').textContent, 'CREATORS 2026');
-  await h.tick(450); assert.equal(h.api.state.busy, false);
-});
-
-test('changing years or reloading in normal mode preserves neutral copy, including empty years', async () => {
-  const data = structuredClone(archive);
-  data.years.push({ year: 2027, title: '', description: '', plannedSlots: 2, entries: [] });
-  const h = await harness({ data, savedMode: 'normal' });
-  assert.equal(h.$('edition-text').textContent, '2027 · CREATORS YEARBOOK');
-  assert.equal(h.$('horror-toggle').hidden, true);
-  h.api.setYear(2026);
-  assert.equal(h.$('edition-text').textContent, '2026 · CREATORS YEARBOOK');
-  await h.api.navigate(8);
-  assert.equal(h.$('invitation-year').textContent, 'CREATORS 2026');
-  h.api.load(); await h.succeed(h.requests.at(-1));
-  assert.equal(h.api.state.displayMode, 'normal');
-  assert.equal(h.$('edition-text').textContent, '2027 · CREATORS YEARBOOK');
-  assert.equal(h.$('theater').dataset.horror, 'false');
+test('evergreen collection persists across new empty Halloween years',async()=>{
+ const data=structuredClone(archive);data.years.push({year:2027,title:'',description:'',entries:[]});
+ const h=await harness({data,savedMode:'normal'});
+ assert.equal(h.$('total-index').textContent,'09');
+ assert.equal(h.$('edition-text').textContent,'CREATORS’ YEARBOOK · 通年');
 });
 
 const sealEvent = (h, id) => h.$('theater').dispatch('yearbook:seal-collected', { detail: { id } });
@@ -696,10 +583,10 @@ test('seal collection is independent for each year and survives mode changes and
   sealEvent(h, 'light-2');
   for (const mode of ['normal', 'halloween', 'normal']) {
     h.$(`mode-${mode}`).click(); await h.api.navigate(4);
-    assert.deepEqual(activeSeals(h), ['light-2']);
+    assert.deepEqual(activeSeals(h), mode==='normal'?[]:['light-2']);
     assert.equal(h.api.state.currentYear, 2025);
   }
-  h.api.setYear(2026); assert.deepEqual(activeSeals(h), ['light-1', 'light-3']);
+  h.$('mode-halloween').click();h.api.setYear(2026); assert.deepEqual(activeSeals(h), ['light-1', 'light-3']);
   h.api.setYear(2025); assert.deepEqual(activeSeals(h), ['light-2']);
   const saved = JSON.parse(h.storage.get('halloween-yearbook:night-doors:v1'));
   assert.deepEqual(saved.seals, { 'archive:2026': ['light-1', 'light-3'], 'archive:2025': ['light-2'] });
@@ -862,4 +749,26 @@ test('spatial seal targets follow each annual roster instead of hardcoded people
  await h.api.navigate(6,{immediate:true});assert.equal(h.$('theater').dataset.creatorId,'fond_holly3483');
  h.api.setYear(2027);assert.deepEqual(JSON.parse(h.$('theater').dataset.sealRooms),['ss_yr','ss_yr','koakumako']);
  h.api.setYear(2028);assert.equal(h.$('theater').dataset.creatorId,'');assert.deepEqual(JSON.parse(h.$('theater').dataset.sealRooms),[]);
+});
+
+
+test('normal roster jumps to the selected creator despite derived evergreen records',async()=>{
+ const h=await harness({savedMode:'normal'});h.$('list-open').click();
+ h.$('roster-grid').querySelectorAll('button')[2].click();await h.tick(0);
+ assert.equal(h.api.state.currentIndex,2);assert.equal(h.$('room-title').textContent,archive.creators[2].name);
+});
+
+test('normal real submissions bind only to their creator and remain independent of Halloween',async()=>{
+ const data=structuredClone(archive);data.evergreenEntries=[{creatorId:'koakumako',title:'Evergreen test entry',submissionStatus:'published',message:'Normal-only fixture',links:[{title:'Normal test link',url:'https://example.com/normal'}]}];
+ const h=await harness({data,savedMode:'normal'});await h.api.navigate(1);h.$('story-open').click();
+ assert.match(h.$('detail-content').textContent,/Normal-only fixture/);
+ h.$('detail').close();h.$('mode-halloween').click();h.$('story-open').click();
+ assert.doesNotMatch(h.$('detail-content').textContent,/Normal-only fixture|Normal test link/);
+});
+
+test('switching from an empty Halloween year to normal restores visible usable profiles',async()=>{
+ const data=structuredClone(archive);data.years.push({year:2027,title:'',description:'',entries:[]});
+ const h=await harness({data});assert.equal(h.$('stage').hidden,true);
+ h.$('mode-normal').click();assert.equal(h.$('stage').hidden,false);assert.equal(h.$('story-open').disabled,false);
+ h.$('mode-halloween').click();assert.equal(h.$('stage').hidden,true);assert.equal(h.$('total-index').textContent,'00');
 });

@@ -29,7 +29,7 @@ export function initSceneMotion(root) {
   const count = make('span', 'scene-count', controls);
   const live = make('span', 'sr-only', controls); live.setAttribute('role', 'status'); live.setAttribute('aria-live', 'polite');
   const layers = [
-    ['.world-backdrop', 9], ['.haunted-branches', 13], ['.hanging-lantern', 14],
+    ['.world-backdrop', 9], ['.ceiling-vault', 5], ['.glass-orbit', 17], ['.gallery-aura', 7], ['.hanging-lantern', 14],
     ['.foreground-left', 23], ['.foreground-right', 23], ['.floor-light', 7]
   ].flatMap(([sel, depth]) => [...root.querySelectorAll(sel)].map(el => ({el, depth, initial: el.style.translate})));
   let userPaused = false;
@@ -60,7 +60,7 @@ export function initSceneMotion(root) {
     root.dataset.constellation = String(collected.size === 3); dirty = true;
   }
   function applyMode() {
-    mode = root.dataset.mode === 'normal' ? 'normal' : root.dataset.horror === 'true' ? 'horror' : 'halloween';
+    mode = root.dataset.mode === 'normal' ? 'normal' : 'halloween';
     atmosphere.dataset.palette = mode; dirty = true;
   }
   function updatePause() {
@@ -194,7 +194,7 @@ export function initSceneMotion(root) {
     if (records.some(r => r.attributeName === 'data-seals')) readSeals();
     applyMode(); syncArtifacts(); if (!active()) draw();
   });
-  observer.observe(root, {attributes: true, attributeFilter: ['data-mode', 'data-horror', 'data-theme', 'data-seals', 'data-room-index', 'data-creator-id', 'data-seal-rooms']});
+  observer.observe(root, {attributes: true, attributeFilter: ['data-mode', 'data-theme', 'data-seals', 'data-room-index', 'data-creator-id', 'data-seal-rooms']});
   const dialogs = new MutationObserver(updatePause);
   document.querySelectorAll('dialog').forEach(el => dialogs.observe(el, {attributes: true, attributeFilter: ['open']}));
   const resizeObserver = new ResizeObserver(resize); resizeObserver.observe(root);

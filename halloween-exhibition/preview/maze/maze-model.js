@@ -5,7 +5,7 @@ room(5,7,11,14);room(5,1,11,5);room(7,5,9,7);room(1,8,3,12);room(13,8,15,12);roo
 export const MAP=grid.map(r=>r.join(''));
 export const FEATURES={spawn:{x:8,z:12},key:{x:14,z:10},gate:{x:8,z:6},article:{x:9,z:8},horrorDoor:{x:4,z:10},normalDoor:{x:12,z:10},horrorArt:{x:2,z:9},vault:{x:8,z:3}};
 export const toWorld=p=>({x:p.x*CELL,z:p.z*CELL});
-export function collectionAt(x,z){return x<CELL*4.5?'horror':x>CELL*12.5?'normal':'halloween';}
+export function collectionAt(x,z){return 'horror';}
 export function blocked(x,z,{unlocked=false,horrorAccepted=false}={}){const tx=Math.floor((x+CELL/2)/CELL),tz=Math.floor((z+CELL/2)/CELL);if(MAP[tz]?.[tx]!=='.')return true;if(!unlocked&&tz===6&&tx>=7&&tx<=9)return true;if(!horrorAccepted&&tx===4&&tz===10)return true;return false;}
 export function move(state,dx,dz){const next={...state},radius=.45;const okay=(x,z)=>[-radius,radius].every(a=>[-radius,radius].every(b=>!blocked(x+a,z+b,state)));if(okay(next.x+dx,next.z))next.x+=dx;if(okay(next.x,next.z+dz))next.z+=dz;return next;}
 export function distance(state,feature){const p=toWorld(feature);return Math.hypot(state.x-p.x,state.z-p.z);}

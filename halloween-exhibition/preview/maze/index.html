@@ -1,14 +1,14 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#101b28"><title>物語の迷宮 — 記事を歩く年鑑</title><link rel="stylesheet" href="./style.css"><script type="module" src="./app.js"></script></head><body>
-<main id="game"><canvas id="world" aria-label="歩いて探索する三つの記事館"></canvas><canvas id="fallback" hidden aria-label="平面探索マップ"></canvas><div class="vignette" aria-hidden="true"></div>
-<header><a class="brand" href="./"><span>✦</span><b>物語の迷宮<small>THE LIVING ARCHIVE</small></b></a><nav><button id="list-open">記事・参加者</button><button id="map-open">地図</button><button id="pause" aria-pressed="false">動き停止</button></nav></header>
-<div class="place"><span id="wing">HALLOWEEN / 2026</span><h1 id="place-title">灯りの交差廊</h1><p id="objective">白い回廊で鍵を見つけ、奥の書庫をひらく。</p></div>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#101b28"><title>ホラーの別室 — 灯りを持って歩く迷宮</title><link rel="stylesheet" href="./style.css"><script type="module" src="./app.js"></script></head><body>
+<main id="game"><canvas id="world" aria-label="灯りを持って歩くホラーの別室"></canvas><canvas id="fallback" hidden aria-label="平面探索マップ"></canvas><div class="vignette" aria-hidden="true"></div>
+<header><a class="brand" href="../?mode=halloween"><span>✦</span><b>ホラーの別室<small>THE HAUNTED ANNEX</small></b></a><nav><button id="list-open">記事一覧</button><button id="map-open">地図</button><button id="tools-open">灯り</button><button id="pause" aria-pressed="false">動き停止</button></nav></header>
+<div class="place"><span id="wing">HORROR ANNEX</span><h1 id="place-title">灯りの交差廊</h1><p id="objective">東の鍵の間を探し、封印された書庫をひらく。</p></div>
 <aside class="minimap" aria-label="現在位置"><canvas id="mini" width="170" height="170"></canvas><span>YOU ARE HERE</span></aside>
 <div id="crosshair" aria-hidden="true">＋</div><div class="nearby"><span id="object-label">歩いて、物語を見つける。</span><button id="interact" disabled>近づいて調べる <b>Ｅ</b></button></div>
 <div class="move-pad" role="group" aria-label="移動。ボタンを押している間歩きます"><span>MOVE</span><button data-move="forward" aria-label="前へ進む">↑</button><button data-move="left" aria-label="左へ移動">←</button><button data-move="back" aria-label="後ろへ下がる">↓</button><button data-move="right" aria-label="右へ移動">→</button></div>
-<div class="look-pad"><span>LOOK · 画面をドラッグ</span><div><button id="turn-left" aria-label="左を向く">↶</button><button id="turn-right" aria-label="右を向く">↷</button></div></div>
-<footer><span id="key-state">◇ 鍵を探す</span><span>WASDで移動 · ドラッグで視点 · Eで調べる</span><button id="home">入口へ戻る</button></footer>
+<div class="look-pad"><button id="lantern" aria-pressed="true">ランタン ON</button><span>LOOK · 画面をドラッグ</span><div><button id="turn-left" aria-label="左を向く">↶</button><button id="turn-right" aria-label="右を向く">↷</button></div></div>
+<footer><span id="key-state">◇ 鍵を探す</span><span>WASDで移動 · ドラッグで視点 · Eで調べる</span><button id="home">迷宮の入口へ</button><a class="exit-link" href="../?mode=halloween">名鑑へ戻る ↗</a></footer>
 <p id="loading">迷宮の扉をひらいています…</p><p id="toast" role="status" aria-live="polite"></p>
 </main>
 <dialog id="panel"><button class="close" aria-label="閉じる">×</button><div id="panel-content"></div></dialog>
-<noscript><p>探索にはJavaScriptが必要です。主催者の記事は <a href="https://note.com/ss_yr/n/n52be511ec082">noteで読む</a>ことができます。</p></noscript>
+<noscript><p>探索にはJavaScriptが必要です。<a href="../?mode=halloween">通常・Halloweenの名鑑に戻れます。</a></p></noscript>
 </body></html>

@@ -16,10 +16,11 @@ export function validateArchive(data) {
     ids.add(creator.id);
   }
   const years = new Set();
-  for (const year of data.years) {
-    if (!Number.isInteger(year.year) || year.year < 2000 || year.year > 9999 || years.has(year.year) || !Array.isArray(year.entries) || typeof year.title !== 'string' || typeof year.description !== 'string') throw Error('年度データを確認してください。');
+  if(data.evergreenEntries !== undefined && !Array.isArray(data.evergreenEntries)) throw Error('通常作品の形式を確認してください。');
+  for (const year of [...data.years,...(data.evergreenEntries?[{year:9999,title:'Evergreen',description:'',entries:data.evergreenEntries,evergreen:true}]:[])]) {
+    if (!Number.isInteger(year.year) || year.year < 2000 || year.year > 9999 || (!year.evergreen&&years.has(year.year)) || !Array.isArray(year.entries) || typeof year.title !== 'string' || typeof year.description !== 'string') throw Error('年度データを確認してください。');
     if(year.plannedSlots !== undefined && (!Number.isInteger(year.plannedSlots) || year.plannedSlots<0 || year.plannedSlots>100)) throw Error('追加予定枠は0以上の整数にしてください。');
-    years.add(year.year); const entered = new Set();
+    if(!year.evergreen)years.add(year.year); const entered = new Set();
     for (const entry of year.entries) {
       if (!entry || !ids.has(entry.creatorId) || entered.has(entry.creatorId)) throw Error('年度の参加者IDが不正、または重複しています。');
       entered.add(entry.creatorId);

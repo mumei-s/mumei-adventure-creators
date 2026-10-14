@@ -1,25 +1,29 @@
-# Participant yearbook preview
+# Original participant yearbook preview
 
-Independent static exhibition. Serve this directory with any static HTTP server, or open the deployed GitHub Pages `halloween-exhibition/preview/` path. No build, backend, account, analytics, or external data service is required. JavaScript is required.
+Independent static exhibition at `halloween-exhibition/preview/`. The original folding-theatre interface, creator navigation, profile detail, searchable roster, and passport are retained. CSS perspective, vaulted scenery, layered glass, polished floor, moving light ribbons and lanterns provide decorative depth. No WebGL is required here.
 
-## Data and annual additions
+## Content boundaries
 
-`data/archive.json` separates stable creator IDs from annual entries. Add a creator once to `creators`; append the creator ID to the relevant year's `entries`. Append a new year without replacing earlier years. `plannedSlots` is a count of unknown future places: these do not enter navigation, visits, or completion.
+`data/archive.json` contains nine verified public creator profiles. Profile avatars are not submitted works. There are no planned slots or invented participants.
 
-The current 2026 preview has nine supplied members and two planned places. Public profile photographs/illustrations are identified as profile images. Only the host's invitation article is confirmed here; other entries remain `submissionStatus: "pending"`. Do not assign decorative stage art to a participant as submitted work. Names and avatars are not biographies.
+- Halloween reads the selected year's `years[].entries`. Only the owner's confirmed invitation article `n52be511ec082` is currently available; the other eight entries remain preparation labels and profile links.
+- Normal mode reads `evergreenEntries`, independent of year. This collection is currently empty. Nine creator profiles remain browsable, with neutral preparation labels. Halloween article images, titles, messages, and article links are never reused as normal content.
+- New actual normal submissions belong in `evergreenEntries`; new Halloween submissions belong in the specified year's entries. The validator checks creator identity, duplicate entries, and field structure.
 
-Optional entry fields: `image`, `imageAlt`, `message`, `works`, `links`, `tags`. Use an explicit `role: "host"` only for the host. Profile links and public avatar sources are recorded on each creator. The validator rejects duplicate IDs/annual entries and unsafe links.
+## Separate horror room
 
-## Modes and controls
+Only Halloween displays the hinged-door entrance at `./maze/?return=theatre`. There is no inline horror lighting mode. The separate room returns to `../?mode=halloween`. The original display restores its selected creator, year, and roster search from its own prefixed session storage. The explicit return mode overrides a stored normal preference once; the return query is removed afterward. Storage restrictions degrade safely; restoration across navigation cannot be guaranteed when browser storage is unavailable.
 
-Halloween, ordinary daylight gallery, and an optional Halloween-only horror atmosphere share the same people and records. Horror never restores itself after reload. Previous/next, arrow keys, and ordinary horizontal touch swipes change people. The explicit view control instead lets a touch drag move decorative depth layers; it can be turned off without changing the selected person. A direct searchable roster is always available.
+## Interaction and accessibility
 
-A motion control stops continuous effects. Reduced-motion settings start static. The simulation stops when hidden or while a dialog is open, caps drawing at 30 fps, and limits canvas pixel cost. Three optional light seals form a constellation without gating profiles.
+Previous/next, arrow keys, and horizontal touch swipes navigate. Roster selection jumps directly. The explicit view control reserves touch dragging for decorative depth; default swipe navigation remains available. Three optional collectible lights are distributed across the real roster and never gate profile access. Finishing their constellation illuminates the surrounding architecture.
+
+Motion pause stops ambient effects and cancels finite entrance effects safely. Reduced-motion starts static. Hidden tabs and open dialogs pause rendering. Drawing is capped at 30 fps and 2.2 million canvas pixels. All decorative layers ignore pointer input. No account setup, analytics, submission form, shared service, or authentication implementation is included.
 
 ## Local records
 
-Visits and seals are stored only in this browser, independently per year. Completion counts only current real entries. Removed sample IDs are excluded; the old host ID is migrated once. Reset deletes only this year's records. Storage denial falls back to memory for the open session. Mode and pause preferences have separate exhibition-prefixed keys. Nothing clears shared-origin storage.
+Halloween visits and light seals are scoped per year. Normal visits and seals use the evergreen collection. Reset affects only the current collection. Old sample IDs are filtered from completion; legacy host IDs are migrated. Only exhibition-prefixed storage keys are used; storage denial falls back to session memory.
 
-## Tests
+## Verification
 
-Run `npm test`. Tests cover data validation, nine-versus-two counts, old-sample exclusion, image fallback, search, navigation races, mode/horror transitions, local storage failure, annual seals, and touch-view arbitration. DOM mocks do not establish browser rendering, native focus trapping, or actual-device performance; those require browser review. Dialog close and Escape are supported. Browser Back is not mapped to dialog dismissal.
+Run `npm test`. Node tests cover real identities, safe URLs, content separation, missing images, search, navigation races, reduced-motion, pause, touch-view arbitration, separate-room link visibility and return-state restoration. DOM mocks do not prove browser layout, native focus trapping, performance, or artistic quality. Live browser QA at 400px and desktop remains a separate gate.

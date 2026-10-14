@@ -70,7 +70,6 @@
       "year": 2026,
       "title": "ひとりひとりが、今夜の主役。",
       "description": "参加者の顔と名前から、ハロウィンの出会いがはじまります。",
-      "plannedSlots": 2,
       "entries": [
         {
           "creatorId": "ss_yr",
@@ -225,5 +224,6 @@
         }
       ]
     }
-  ]
+  ],
+  "evergreenEntries": []
 }

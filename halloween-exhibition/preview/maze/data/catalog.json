@@ -67,35 +67,13 @@
   ],
   "collections": [
     {
-      "id": "normal",
-      "name": "ふだんの記事館",
-      "archive": "evergreen"
-    },
-    {
-      "id": "halloween",
-      "name": "ハロウィンの年鑑",
-      "archive": "annual"
-    },
-    {
       "id": "horror",
-      "name": "怪異画廊",
+      "name": "ホラーの別室",
       "archive": "evergreen"
     }
   ],
   "years": [
     2026
   ],
-  "articles": [
-    {
-      "id": "ss-yr-halloween-invitation-2026",
-      "creatorId": "ss_yr",
-      "collection": "halloween",
-      "year": 2026,
-      "title": "ハロウィン企画への招待状",
-      "kind": "企画紹介記事",
-      "url": "https://note.com/ss_yr/n/n52be511ec082",
-      "image": "./assets/owner-article.png",
-      "confirmed": true
-    }
-  ]
+  "articles": []
 }

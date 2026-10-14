@@ -11,8 +11,8 @@ export function createWorld({ canvas, onReady } = {}) {
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.22;
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color('#080d12');
-  scene.fog = new THREE.FogExp2('#0a1118', .023);
+  scene.background = new THREE.Color('#39464b');
+  scene.fog = new THREE.FogExp2('#526468', .010);
   const camera = new THREE.PerspectiveCamera(69, 1, .075, 115);
   camera.rotation.order = 'YXZ';
   const resources = new Set(), animated = [], lamps = [], lanternSources = [], exhibitGroup = new THREE.Group();
@@ -23,19 +23,19 @@ export function createWorld({ canvas, onReady } = {}) {
   const mat = (color, extra={}) => { const m = new THREE.MeshStandardMaterial({color, roughness:.82, ...extra}); resources.add(m); return m; };
   const gold = mat('#a37e40', {metalness:.7, roughness:.32});
   const brass = mat('#d9b775', {metalness:.72, roughness:.25});
-  const dark = mat('#0b1117');
-  const wall = [mat('#17292d'), mat('#21272d'), mat('#59635f')];
-  const trim = [mat('#456c65'), gold, mat('#a7a995')];
-  const matFloorLight=mat('#465652');
-  const floor = [mat('#19212b'), mat('#253235'), mat('#68716b')];
-  const zone = x => x < cols * .35 ? 0 : x > cols * .68 ? 2 : 1;
+  const dark = mat('#293d40');
+  const wall = [mat('#4a4d61'), mat('#526c6c'), mat('#636878')];
+  const trim = [mat('#95a5b6'), gold, mat('#8faead')];
+  const matFloorLight=mat('#66787e');
+  const floor = [mat('#5b6379'), mat('#78918a'), mat('#8a929a')];
+  const zone = x => x < 4.5 ? 0 : x > 12.5 ? 2 : 1;
   const mesh = (geometry, material, x=0,y=0,z=0, parent=scene) => {resources.add(geometry); const m=new THREE.Mesh(geometry,material); m.position.set(x,y,z); parent.add(m); return m;};
   const boxGeo = new THREE.BoxGeometry(1,1,1); resources.add(boxGeo);
   const box = (w,h,d,x,y,z,m=gold,parent=scene) => {const o=new THREE.Mesh(boxGeo,m);o.scale.set(w,h,d);o.position.set(x,y,z);parent.add(o);return o;};
   const textTexture = (title, subtitle, color='#e9cb8e', bg='#101e23') => {
     const c=document.createElement('canvas'); c.width=1024;c.height=512; const g=c.getContext('2d');
     g.fillStyle=bg;g.fillRect(0,0,1024,512);g.strokeStyle=color;g.lineWidth=2;g.strokeRect(28,28,968,456);
-    g.textAlign='center';g.fillStyle=color;g.font='24px sans-serif';g.fillText('THE LIVING YEARBOOK',512,111);
+    g.textAlign='center';g.fillStyle=color;g.font='24px sans-serif';g.fillText('THE HAUNTED ARCHIVE',512,111);
     g.font=`${title.length>23?46:60}px Georgia, serif`;g.fillText(title,512,252,925);
     g.font='22px sans-serif';g.fillStyle='#b1c2bd';g.fillText(subtitle||'',512,336,900);
     const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;resources.add(t);return t;
@@ -60,7 +60,7 @@ export function createWorld({ canvas, onReady } = {}) {
       if(walk(x+dx,z+dz))continue;
       const horizontal=!!dz, px=wx+dx*CELL/2,pz=wz+dz*CELL/2;
       box(horizontal?CELL:.22,wallHeight,horizontal?.22:CELL,px,wallHeight/2,pz,wall[zi]);
-      box(horizontal?CELL:.3,1.03,horizontal?.3:CELL,px,.515,pz,dark);
+      box(horizontal?CELL:.3,1.03,horizontal?.3:CELL,px,.515,pz,zi===2?trim[2]:dark);
       box(horizontal?CELL:.37,.07,horizontal?.37:CELL,px,1.04,pz,trim[zi]);
       box(horizontal?CELL:.42,.18,horizontal?.42:CELL,px,6.98,pz,trim[zi]);
       box(horizontal?CELL:.37,.065,horizontal?.37:CELL,px,.12,pz,trim[zi]);
@@ -103,9 +103,30 @@ export function createWorld({ canvas, onReady } = {}) {
     if(lamps.length<8){const l=new THREE.PointLight(color,13,12,2);l.position.set(x,y-.1,z);scene.add(l);lamps.push(l);}
     animated.push({node:g,kind:'lantern',seed,base:y});return g;
   }
-  const ambient=new THREE.HemisphereLight('#accfc8','#282133',1.3);scene.add(ambient);
-  const headlamp=new THREE.PointLight('#ffdaab',10,13,1.7);scene.add(headlamp);
-  const moon=new THREE.DirectionalLight('#7597ae',1.05);moon.position.set(5,12,4);scene.add(moon);
+  const ambient=new THREE.HemisphereLight('#e4f5ed','#8a818e',2.5);scene.add(ambient);
+  const moon=new THREE.DirectionalLight('#e5f3ef',1.7);moon.position.set(5,12,4);scene.add(moon);
+  // The hand lamp is attached to the camera, and OFF disables both its geometry
+  // and beam. Independent architectural light keeps navigation readable.
+  scene.add(camera);
+  const heldLantern=new THREE.Group();heldLantern.name='Handheld lantern';
+  heldLantern.position.set(.36,-.34,-.7);heldLantern.scale.setScalar(.42);camera.add(heldLantern);
+  const lampGlass=mat('#ffe7ab',{emissive:'#ffcc76',emissiveIntensity:1.3,roughness:.3});
+  mesh(new THREE.CylinderGeometry(.19,.23,.42,8),lampGlass,0,0,0,heldLantern);
+  mesh(new THREE.ConeGeometry(.29,.2,8),brass,0,.3,0,heldLantern);
+  mesh(new THREE.CylinderGeometry(.27,.27,.09,8),gold,0,-.27,0,heldLantern);
+  mesh(new THREE.TorusGeometry(.15,.022,6,22),gold,0,.54,0,heldLantern);
+  for(let n=0;n<4;n++){const a=n*Math.PI/2;box(.024,.51,.024,Math.cos(a)*.2,0,Math.sin(a)*.2,gold,heldLantern);}
+  const headlamp=new THREE.SpotLight('#ffe2ae',30,24,Math.PI*.28,.72,1.4);
+  headlamp.position.set(.3,-.15,-.25);camera.add(headlamp);
+  const beamTarget=new THREE.Object3D();beamTarget.position.set(0,-.2,-9);camera.add(beamTarget);headlamp.target=beamTarget;
+  // Frosted high windows read as moonlight throughout the haunted chambers.
+  const moonGlass=mat('#a8c2d7',{emissive:'#859fb9',emissiveIntensity:.35});
+  for(const zz of [34,40,46]){
+    box(.09,2.7,1.8,61.78,4.5,zz,moonGlass);
+    for(const dy of [-1.45,0,1.45])box(.17,.09,2,61.68,4.5+dy,zz,trim[2]);
+    box(.17,3,.08,61.67,4.5,zz,trim[2]);
+  }
+  const chamberFill=new THREE.PointLight('#c6d7f1',35,24,1.6);chamberFill.position.set(56,5.9,40);scene.add(chamberFill);
   function point(fallback){return fallback?toWorld(fallback):{x:0,z:0};}
   const gatePoint=point(FEATURES.gate), gate=new THREE.Group();gate.position.set(gatePoint.x,0,gatePoint.z);scene.add(gate);
   for(let i=-17;i<=17;i++){box(.075,3.75,.11,i*.32,1.875,0,gold,gate);mesh(new THREE.ConeGeometry(.105,.25,4),brass,i*.32,3.88,0,gate);}
@@ -127,8 +148,8 @@ export function createWorld({ canvas, onReady } = {}) {
     const pts=[];for(let j=0;j<=40;j++){let a=j*Math.PI/40;pts.push(new THREE.Vector3(32+10.5*Math.cos(a),5.25+2*Math.sin(a),zz));}
     mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts),40,.13,7,false),gold);
   }
-  // The eastern gallery has clean ivory plinths; the western room uses crooked
-  // geometric frames and violet glass. These are architecture, never fake work.
+  // Different haunted chambers have stone piers or crooked violet framing.
+  // These are fictional architecture, never fabricated submitted work.
   for(const xx of [52,60])for(const zz of [34,46]){
     box(.6,4.8,.6,xx,2.4,zz,wall[2]);box(.8,.16,.8,xx,4.85,zz,brass);
   }
@@ -136,15 +157,27 @@ export function createWorld({ canvas, onReady } = {}) {
     const post=box(.24,4.8,.3,xx,2.4,zz,trim[0]);post.rotation.z=xx===4?.12:-.12;
     const beam=box(7.7,.15,.23,8,4.75,zz,trim[0]);beam.rotation.z=Math.sin(zz)*.06;
   }
-  sign('THE DAYLIGHT ARCHIVE','The collection in its everyday light',56,2.6,30.2,0,4.2);
+  sign('THE LANTERN CHAMBER','A quiet room beyond the passage',56,2.6,30.2,0,4.2);
   sign('BEYOND THE VEIL','This room is awaiting its first work',8,2.6,30.2,0,4.2);
-  sign('THE OCTOBER VAULT','Some stories ask you to look a little closer',32,3.5,2.25,0,7);
+  sign('THE SEALED ARCHIVE','Some stories ask you to look a little closer',32,3.5,2.25,0,7);
   const keyPoint=point(FEATURES.key),key=new THREE.Group();key.position.set(keyPoint.x,1.6,keyPoint.z);scene.add(key);
   mesh(new THREE.TorusGeometry(.17,.035,8,24),brass,0,.15,0,key);box(.05,.43,.05,0,-.2,0,brass,key);box(.15,.05,.05,.06,-.36,0,brass,key);box(.14,.05,.05,.06,-.25,0,brass,key);
   mesh(new THREE.CylinderGeometry(.53,.66,.85,8),wall[1],keyPoint.x,.425,keyPoint.z);
   mesh(new THREE.CylinderGeometry(.65,.65,.07,8),gold,keyPoint.x,.88,keyPoint.z);
   const keyLight=new THREE.PointLight('#ffbe58',7,7,2);keyLight.position.set(keyPoint.x,2,keyPoint.z);scene.add(keyLight);
   sign('THE BRASS KEY','A small object. An unexpected door.',keyPoint.x,1.22,keyPoint.z+.45,0,1.4);
+  // Optional fictional lantern spirits stay beside the route. Their soft,
+  // proximity-driven appearance never blocks collision or controls an exit.
+  const spirits=[];
+  for(const [index,tx,tz] of [[0,1,8.4],[1,3,11.6],[2,6,8],[3,14,11.6]]){
+    const g=new THREE.Group();g.position.set(tx*CELL,1.2,tz*CELL);scene.add(g);
+    const body=mat(index?'#93abae':'#b8abc8',{transparent:true,opacity:0,depthWrite:false,roughness:1});
+    const eye=mat('#e6c692',{emissive:'#b69255',emissiveIntensity:.35,transparent:true,opacity:0,depthWrite:false});
+    const cloak=mesh(new THREE.ConeGeometry(.44,1.25,9),body,0,0,0,g);cloak.scale.z=.68;
+    mesh(new THREE.SphereGeometry(.29,12,9),body,0,.68,0,g);
+    for(const side of [-1,1]){mesh(new THREE.SphereGeometry(.035,8,6),eye,side*.1,.72,.27,g);const horn=mesh(new THREE.ConeGeometry(.07,.28,5),body,side*.2,.97,0,g);horn.rotation.z=-side*.3;}
+    spirits.push({node:g,materials:[body,eye],reveal:0,baseY:1.2,index});
+  }
   // A drifting orbital mobile is sculpture, explicitly environmental decoration.
   const center=point(FEATURES.mobile||FEATURES.spawn||{x:Math.floor(cols/2),z:Math.floor(rows/2)});
   const mobile=new THREE.Group();mobile.position.set(center.x,3.45,center.z);scene.add(mobile);
@@ -192,7 +225,7 @@ export function createWorld({ canvas, onReady } = {}) {
   for(let i=0;i<150;i++){const x=1+((i*17)%Math.max(1,cols-2)),z=1+((i*13)%Math.max(1,rows-2));if(walk(x,z))positions.push(x*CELL+Math.sin(i)*1.5,.5+(i%29)/9,z*CELL+Math.cos(i)*1.5);}
   particles.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));resources.add(particles);
   const pm=new THREE.PointsMaterial({color:'#cfc29b',size:.024,transparent:true,opacity:.48,depthWrite:false});resources.add(pm);const dust=new THREE.Points(particles,pm);scene.add(dust);
-  const featureSigns=[['entrance','THE LIVING YEARBOOK','A maze of stories, still becoming'],['normal','THE DAYLIGHT ARCHIVE','Original work · familiar faces'],['halloween','THE OCTOBER WING','Follow the warm light'],['horror','BEYOND THE VEIL','An open room for future work']];
+  const featureSigns=[['entrance','THE HAUNTED ARCHIVE','A maze of stories, still becoming'],['normal','THE LANTERN CHAMBER','The old collection awaits'],['halloween','THE ECHO HALL','Follow the warm light'],['horror','BEYOND THE VEIL','An open room for future work']];
   for(const [name,title,sub] of featureSigns){if(FEATURES[name]){const p=point(FEATURES[name]);sign(title,sub,p.x,2.55,p.z-CELL/2+.2,0,2.8);}}
   // Exhibits are only populated from parent-provided real collection records.
   const textureLoader=new THREE.TextureLoader();
@@ -208,21 +241,32 @@ export function createWorld({ canvas, onReady } = {}) {
       if(src)textureLoader.load(src,t=>{t.colorSpace=THREE.SRGBColorSpace;resources.add(t);m.map=t;m.needsUpdate=true;},undefined,()=>{});
     });
   }
-  let last=0,gateY=0;
-  function resize(){const w=canvas.clientWidth||window.innerWidth,h=canvas.clientHeight||window.innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
-  function render({x=0,z=0,yaw=0,pitch=0,time=0,motion=true,unlocked=false,horrorAccepted=false,hasKey=false,collection=[]}={}){
-    const t=time*.001;const dt=Math.min(.05,Math.max(.001,t-last));last=t;
+  let last=0,gateY=0,ambientTime=0;
+  function resize(){const w=canvas.clientWidth||window.innerWidth,h=canvas.clientHeight||window.innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;heldLantern.position.x=Math.min(.36,.36*camera.aspect);camera.updateProjectionMatrix();}
+  function render({x=0,z=0,yaw=0,pitch=0,time=0,motion=true,unlocked=false,horrorAccepted=false,hasKey=false,collection=[],brightness=1,lantern=true,encounters=false}={}){
+    const seconds=time*.001;const dt=Math.min(.05,Math.max(0,seconds-last));last=seconds;if(motion)ambientTime+=dt;const t=ambientTime;
+    const level=Math.max(.75,Math.min(1.75,Number.isFinite(Number(brightness))?Number(brightness):1));
+    renderer.toneMappingExposure=1.38*level;
     camera.position.set(x,1.65,z);camera.rotation.set(pitch,yaw,0,'YXZ');
-    headlamp.position.set(x,2.3,z);
+    heldLantern.visible=!!lantern;headlamp.visible=!!lantern;
+    for(const spirit of spirits){
+      const distance=Math.hypot(x-spirit.node.position.x,z-spirit.node.position.z);
+      const target=encounters?THREE.MathUtils.smoothstep(12-distance,0,7)*.8:0;
+      spirit.reveal=motion?THREE.MathUtils.lerp(spirit.reveal,target,Math.min(1,dt*1.4)):target;
+      if(!encounters)spirit.reveal=0;
+      spirit.node.visible=spirit.reveal>.005;spirit.materials.forEach(m=>{m.opacity=spirit.reveal;});
+    }
     const nearest=lanternSources.slice().sort((a,b)=>(a.x-x)**2+(a.z-z)**2-((b.x-x)**2+(b.z-z)**2));
     lamps.forEach((lamp,i)=>{const p=nearest[i];if(p){lamp.position.set(p.x,p.y,p.z);lamp.color.set(p.color);}});
     gateY=motion?gateY+(unlocked?4.6-gateY:-gateY)*Math.min(1,dt*4):(unlocked?4.6:0);gate.position.y=gateY;
     const collected=Array.isArray(collection)?collection.some(v=>typeof v==='string'?v.includes('key'):v?.id?.includes('key')):!!collection?.key;
     key.visible=!collected&&!hasKey&&!unlocked;horrorDoor.position.y=horrorAccepted?5.5:0;keyLight.visible=key.visible;
-    if(motion){key.rotation.y=t*.8;key.position.y=1.57+Math.sin(t*1.4)*.09;mobile.rotation.y=t*.085;mobile.rotation.z=Math.sin(t*.28)*.1;dust.rotation.y=Math.sin(t*.025)*.006;
+    if(motion){heldLantern.rotation.z=Math.sin(t*.8)*.015;
+      for(const spirit of spirits){spirit.node.position.y=spirit.baseY+Math.sin(t*.55+spirit.index)*.055;}
+      key.rotation.y=t*.8;key.position.y=1.57+Math.sin(t*1.4)*.09;mobile.rotation.y=t*.085;mobile.rotation.z=Math.sin(t*.28)*.1;dust.rotation.y=Math.sin(t*.025)*.006;
       folios.rotation.y=Math.sin(t*.085)*.085;
       for(const f of folioMotion){f.node.position.y=f.baseY+Math.sin(t*.65+f.phase)*.12;f.node.rotation.x=f.baseX+Math.sin(t*.48+f.phase)*.035;f.node.rotation.z=f.baseZ+Math.cos(t*.4+f.phase)*.04;}
-      for(const a of animated){if(a.kind==='lantern')a.node.rotation.z=Math.sin(t*.65+a.seed)*.045;else{a.node.rotation.y=t*.4+a.seed;a.node.position.y=a.base+Math.sin(t*.75+a.seed)*.09;}}
+      for(const a of animated){if(a.kind==='lantern')a.node.rotation.z=Math.sin(t*.65+a.seed)*.045;else if(a.kind==='flag')a.node.rotation.x=Math.sin(t*.55+a.seed)*.1;else{a.node.rotation.y=t*.4+a.seed;a.node.position.y=a.base+Math.sin(t*.75+a.seed)*.09;}}
     }
     renderer.render(scene,camera);
   }

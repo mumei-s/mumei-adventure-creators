@@ -1,6 +1,6 @@
 # Original participant yearbook preview
 
-Independent static exhibition at `halloween-exhibition/preview/`. The original folding-theatre interface, creator navigation, profile detail, searchable roster, and passport are retained. CSS perspective, vaulted scenery, moving light ribbons and lanterns provide decorative depth. No WebGL is required here.
+Independent static exhibition at `halloween-exhibition/preview/`. The original folding-theatre interface, creator navigation, profile detail, and searchable roster are retained behind a dedicated palace gate. CSS perspective, vaulted scenery, moving light ribbons and lanterns provide decorative depth. No WebGL is required here.
 
 ## Content boundaries
 
@@ -22,7 +22,7 @@ Motion pause stops ambient effects and cancels finite entrance effects safely. R
 
 ## Local records
 
-Halloween visits and optional light seals are scoped per year. Normal mode keeps only genuine viewed-creator history from the evergreen collection; light controls and completion effects are hidden and cannot collect. Reset affects only the current collection. Old sample IDs are filtered from completion; legacy host IDs are migrated. Only exhibition-prefixed storage keys are used; storage denial falls back to session memory.
+Halloween visits and optional light seals are scoped per year. Legacy local records remain compatible and are not erased. The history button, panel, counter and reset UI have been removed. Normal mode has no light controls or completion goal. Old sample IDs are filtered from completion; legacy host IDs are migrated. Only exhibition-prefixed storage keys are used; storage denial falls back to session memory.
 
 ## Verification
 
@@ -63,7 +63,7 @@ Tests cover the title, ordinary submitted-title display, valid roulette destinat
 
 The header now uses two named grid areas for navigation and actions. The Halloween doorway and mode switch are in normal flow, and all action buttons wrap within their own area. The stage caption and footer are also in flow, so additional text height pushes following content downward rather than covering another control. The old forced 800px mobile page and absolute-coordinate collision fixes are overridden by `gallery-controls.css`. Narrow screens or enlarged text may scroll naturally; controls remain available. Verify 320px, 333px, 400px and desktop sizes, plus browser-supported text enlargement, in real-browser QA.
 
-The redundant “参加者をひらく” CTA is removed; tapping a creator image opens the same real detail. The confusing “視点 / 戻す” toggle is removed. The useful ambient pause is under Settings with explicit “演出を止める / 演出を動かす” labels. Normal mode's viewing history lists only creators whose detail the visitor actually opened, and each history item can return to that creator. It has no light currency or completion target.
+The redundant “参加者をひらく” CTA is removed; tapping a creator image opens the same real detail. The confusing “視点 / 戻す” toggle is removed. The useful ambient pause is under Settings with explicit “演出を止める / 演出を動かす” labels. No viewing-history UI is exposed. Existing local records are left intact; normal mode has no light currency or completion target.
 
 Halloween has warmer orange/copper highlights and framed participant cards with a short, staggered entrance, visible real names and profile/content labels. Card motion stops for reduced motion or an explicit ambient pause. Decorative borders never replace submitted works or portraits.
 
@@ -73,7 +73,7 @@ Halloween has warmer orange/copper highlights and framed participant cards with 
 
 The slideshow blocks while loading, in a collection with fewer than two doors, with a dialog open, in hidden tabs, during roulette, while ambient effects are paused, or when reduced motion is requested. Resume waits a complete interval. Manual navigation invalidates any pending automatic transition and resets timing; stale async completions cannot overwrite a newer choice. The controller never opens external links or counts a viewed profile. Page exit turns it OFF, while returning through browser history still leaves the controls usable.
 
-The service worker remains strictly scoped to this preview. Its v5 release-versioned public-shell allowlist includes `slideshow.js`, `gallery-controls.css` and the shared display module/styles; archive/admin/maze/private/remote data still bypass cache handling. The exact title, original profile archive, ordinary article isolation, OG asset and visitor brightness/music behavior remain intact.
+The service worker remains strictly scoped to this preview. Its v6 release-versioned public-shell allowlist includes `slideshow.js`, `gallery-controls.css` and the shared display module/styles; archive/admin/maze/private/remote data still bypass cache handling. The exact title, original profile archive, ordinary article isolation, OG asset and visitor brightness/music behavior remain intact.
 
 ## Display size and iPhone/iPad Home Screen
 
@@ -96,7 +96,7 @@ The participant list paginates article doors in groups of five. Ten doors for ni
 
 Portraits use `object-fit: contain` within proportional insets, replacing the legacy fixed-width image that overflowed the narrower ornamental door. Images are not cropped or covered by a half-door. The card surface is warmer orange only in Halloween mode.
 
-Changed theater/data-model/article-door CSS and editor app/model URLs carry `20261014-doors1`; unchanged presentation assets retain their previous exact release queries. This ensures a prior controlled page bypasses stale unversioned modules while the new v5 worker waits normally; it does not call skipWaiting, clients.claim, unregister, clear storage or delete other apps’ caches. The new worker precaches only exact public shell URLs and their known release variants. Archive/editor/maze data remains network-only. Manual slideshow navigation keeps ON selected and restarts the full chosen interval; this is stated in the live control hint.
+Changed theater/data-model/article-door CSS and editor app/model URLs carry `20261014-doors1`; unchanged presentation assets retain their previous exact release queries. This ensures a prior controlled page bypasses stale unversioned modules while the new v6 worker waits normally; it does not call skipWaiting, clients.claim, unregister, clear storage or delete other apps’ caches. The new worker precaches only exact public shell URLs and their known release variants. Archive/editor/maze data remains network-only. Manual slideshow navigation keeps ON selected and restarts the full chosen interval; this is stated in the live control hint.
 
 ## Independent article doors
 
@@ -105,3 +105,13 @@ Schema version 1 and existing `links`/`works` remain compatible. Optional `doorI
 Roster, dots, history, roulette, slideshow and return selection address individual door IDs. Legacy creator-based return state selects the original door. Existing creator visits migrate only to that original legacy door; a newly added work is never automatically marked viewed. Viewing two doors from one creator records two doors but one participant. Existing browser storage keys stay scoped and are not wiped. Normal mode independently displays every evergreen article, with profile-only fallbacks for creators who have no ordinary article.
 
 `article-doors.css` places both arrow controls in a dedicated flow row below the artwork world, with 44px minimum targets. Both submitted images and profile images use `object-fit: contain`, bounded width/height and no hover enlargement or forward-Z projection. Detail images are also contained. Static sizing guards cover 400×606, 333×619, 320px and desktop contracts; the included browser regression requires real layout execution before visual acceptance.
+
+## Palace TOP entrance
+
+Halloween starts in a separate original palace scene, not an article card. The entire article theater is hidden and inert until the visitor activates the large native-button gate or explicitly chooses an article from the roster. The large sparkling title, round year control, capsule participant list and separate `宮殿の奥に進む…` adventure-room link sit above the scene; Settings stays at the far right of the control row. Normal mode bypasses the palace and retains ordinary articles.
+
+`palace-entrance.js` owns a cancellable 600 ms two-leaf opening, the visible/inert state and focus restoration. Reduced motion, an explicit motion pause or a hidden tab completes safely without a camera move. Repeated activation never multiplies timers. The `宮殿の入口へ` control preserves the selected stable door ID; a valid return from the separate room opens that same article door directly. The slideshow is blocked on TOP and during the opening. No music starts automatically.
+
+The desktop and phone palace artwork are original coordinated compositions, with a measured empty portal. Their independently sized gate overlays share each composition’s cover-sized coordinate space. Floating ghosts, lanterns, bats and flowing sparkles are separate bounded CSS layers. They do not intercept pointer input, flash, pan the camera or force zoom; reduced motion, the existing pause setting and tab visibility stop them. Brightness affects the scenic art. Existing nine profiles, ten article doors, source JSON, ordinary content and adventure gameplay are unchanged.
+
+Changed TOP files use the exact `20261014-palace1` query and the preview-only v6 worker. Old article/data modules retain their existing exact release queries. Only the explicit new public palace assets are added to the allowlist; archive, admin, maze, drafts and unrelated applications are still bypassed. Real-browser composition checks at 400×606, 333×619 and desktop remain a separate acceptance gate; Node state/layout-contract tests do not substitute for rendered pixels.

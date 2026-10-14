@@ -4,8 +4,10 @@ const SCOPE = new URL('./', self.location.href);
 const RELEASE = '20261014-layout1';
 const STYLE_RELEASE = '20261014-portrait1';
 const DOOR_RELEASE = '20261014-doors1';
-const CACHE = 'mumei-atelier-shell-v5-' + DOOR_RELEASE + ':' + SCOPE.pathname;
+const PALACE_RELEASE = '20261014-palace1';
+const CACHE = 'mumei-atelier-shell-v6-' + PALACE_RELEASE + ':' + SCOPE.pathname;
 const SHELL = [
+  'palace-entrance.js', 'palace-entrance.css', 'assets/palace/palace-desktop.webp', 'assets/palace/palace-phone.webp', 'assets/palace/gate-desktop.webp', 'assets/palace/gate-phone.webp',
   'index.html', 'theater.js', 'theater.css', 'data-model.js',
   'scene-motion.js', 'scene-motion.css', 'gallery-depth.css',
   'visitor-preferences.js', 'visitor-preferences.css', 'display-mode.js', 'display-mode.css',
@@ -14,7 +16,7 @@ const SHELL = [
   'assets/atelier-icon-512.png', 'assets/atelier-maskable-512.png'
 ];
 // Only exact public asset release queries are cacheable; tokens/other queries bypass.
-const PUBLIC_URLS = SHELL.flatMap(path => [new URL(path, SCOPE).href, ...(/\.(?:js|css)$/.test(path) ? [new URL(path + '?v=' + (['theater.js','data-model.js','article-doors.css'].includes(path) ? DOOR_RELEASE : path === 'gallery-controls.css' ? STYLE_RELEASE : RELEASE), SCOPE).href] : [])]);
+const PUBLIC_URLS = SHELL.flatMap(path => [new URL(path, SCOPE).href, ...(/\.(?:js|css)$/.test(path) ? [new URL(path + '?v=' + (['theater.js','palace-entrance.js','palace-entrance.css'].includes(path) ? PALACE_RELEASE : ['data-model.js','article-doors.css'].includes(path) ? DOOR_RELEASE : path === 'gallery-controls.css' ? STYLE_RELEASE : RELEASE), SCOPE).href] : [])]);
 const ALLOWED = new Set(PUBLIC_URLS);
 const inPreview = SCOPE.pathname.endsWith('/halloween-exhibition/preview/');
 self.addEventListener('install', event => {

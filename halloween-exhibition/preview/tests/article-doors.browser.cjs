@@ -16,6 +16,10 @@ const http=require('node:http'),fs=require('node:fs'),path=require('node:path'),
   const page=await browser.newPage({reducedMotion:'reduce'}),errors=[];page.on('pageerror',e=>errors.push(e.message));
   for(const viewport of [{width:400,height:606},{width:333,height:619},{width:1180,height:758}]){
    await page.setViewportSize(viewport);await page.goto(`http://127.0.0.1:${server.address().port}${prefix}`);await page.waitForFunction(()=>document.getElementById('total-index').textContent==='10'&&!document.getElementById('artwork-open').disabled);
+   assert.equal(await page.locator('#article-theater').isVisible(),false);assert.equal(await page.locator('#passport-open').count(),0);
+   const top=await page.locator('#palace-gate').boundingBox();assert(top.width>=44&&top.height>=44);
+   await page.screenshot({path:`/tmp/palace-top-${viewport.width}x${viewport.height}.png`,fullPage:true});
+   await page.locator('#palace-gate').click();assert.equal(await page.locator('#article-theater').isVisible(),true);
    for(const index of [0,1,2,9]){
     await page.locator('#room-dots button').nth(index).click();
     const geometry=await page.evaluate(()=>{
@@ -33,6 +37,7 @@ const http=require('node:http'),fs=require('node:fs'),path=require('node:path'),
    await page.locator('#artwork-open').click();assert.match(await page.locator('#detail-content').textContent(),/主催者の個人作品/);await page.locator('#detail .close').click();
    await page.locator('#list-open').click();assert.equal(await page.locator('#roster-page-status').textContent(),'2 / 2 ページ');await page.locator('#roster .close').click();
    await page.screenshot({path:`/tmp/article-doors-${viewport.width}x${viewport.height}.png`,fullPage:true});
+   await page.locator('#palace-return').click();assert.equal(await page.locator('#article-theater').isVisible(),false);await page.locator('#palace-gate').click();assert.equal(await page.locator('#theater').getAttribute('data-door-id'),'owner-work-2026');
   }
   assert.deepEqual(errors,[]);console.log('PASS: contained images, navigation below art, all target viewports, and page-two owner door return.');
  }finally{await browser?.close();await new Promise(resolve=>server.close(resolve));}

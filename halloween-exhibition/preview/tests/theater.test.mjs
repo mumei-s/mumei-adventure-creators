@@ -1,3 +1,4 @@
+import { initPalaceEntrance } from '../palace-entrance.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile, access } from 'node:fs/promises';
@@ -24,6 +25,10 @@ class Element {
       toggle: (c, force) => { const on = force === undefined ? !this.classList.contains(c) : force; this.classList[on ? 'add' : 'remove'](c); return on; }
     };
   }
+  get ownerDocument() { return this.doc; }
+  hasAttribute(k) { return Object.hasOwn(this.attrs,k); }
+  contains(el) { for(let n=el;n;n=n.parentNode)if(n===this)return true;return false; }
+  removeEventListener(type,fn) { this.handlers[type]=(this.handlers[type]||[]).filter(f=>f!==fn); }
   get className() { return this.attrs.class || ''; }
   set className(v) { this.attrs.class = v; }
   get id() { return this.attrs.id || ''; }
@@ -47,18 +52,19 @@ class Element {
   getBoundingClientRect() { return { left: 0, top: 0, right: 500, bottom: 500 }; }
   querySelectorAll(selector) {
     const selectors = selector.split(','); const out = [];
-    const matches = (el, sel) => sel.startsWith('.') ? el.classList.contains(sel.slice(1)) : sel === 'dialog[open]' ? el.tagName === 'DIALOG' && el.open : el.tagName === sel.toUpperCase();
+    const matches = (el, sel) => sel.startsWith('#') ? el.id === sel.slice(1) : sel.startsWith('.') ? el.classList.contains(sel.slice(1)) : sel === 'dialog[open]' ? el.tagName === 'DIALOG' && el.open : el.tagName === sel.toUpperCase();
     const walk = el => { for (const c of el.children) { if (selectors.some(sel => matches(c, sel.trim()))) out.push(c); walk(c); } };
     walk(this); return out;
   }
   querySelector(selector) { return this.querySelectorAll(selector)[0] || null; }
 }
 
-async function harness({ data = archive, reduced = true, storageThrows = false, storageWriteThrows = false, saved = null, savedMode = null, urlSearch = '', returnState = null, autoLoad = true, strictTimerReceiver = false } = {}) {
+async function harness({ data = archive, reduced = true, storageThrows = false, storageWriteThrows = false, saved = null, savedMode = null, urlSearch = '', returnState = null, autoLoad = true, strictTimerReceiver = false, entrance = false } = {}) {
   let now = 0, seq = 0; const timers = new Map(), storage = new Map(saved ? [['halloween-yearbook:night-doors:v1', saved]] : []);
   if (savedMode !== null) storage.set('halloween-yearbook:display-mode:v1', savedMode);
   const queue = (fn, delay = 0) => { const id = ++seq; timers.set(id, { at: now + delay, fn }); return id; };
   const doc = { queue, handlers: {}, activeElement: null, createElement(tag) { return new Element(tag, this); }, createTextNode(text) { const el = new Element('#text', this); el.textContent = text; return el; }, addEventListener(type, fn) { (this.handlers[type] ||= []).push(fn); } };
+  doc.defaultView={matchMedia:()=>({matches:reduced,addEventListener(){},removeEventListener(){}}),addEventListener(){},removeEventListener(){}};
   doc.documentElement = doc.createElement('html'); doc.activeElement = doc.documentElement;
   const stack = [doc.documentElement]; const voids = new Set(['meta','link','input','img','br','hr']);
   for (const token of html.matchAll(/<\/?([a-z][\w-]*)([^>]*)>/gi)) {
@@ -77,7 +83,7 @@ async function harness({ data = archive, reduced = true, storageThrows = false, 
     return walk(doc.documentElement);
   };
   const requests = [], storageWrites = [], motionInitializations = [], viewCalls = [];
-  const context = vm.createContext({ createSlideshowController, initDisplayMode:()=>({}), document: doc, initVisitorPreferences:()=>({}), initSceneMotion:root=>{motionInitializations.push(root);const dock=doc.createElement('div');dock.className='scene-controls';root.append(dock);return {setView(x,y){viewCalls.push([x,y]);}};}, validateArchive, safeURL, normalizeSearch, doorIdFor,
+  const context = vm.createContext({ createSlideshowController, initPalaceEntrance:entrance?(args)=>initPalaceEntrance({...args,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}):({root,onViewChange})=>{root.dataset.palaceState='gallery';return {enter(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});},home(){root.dataset.palaceState='palace';onViewChange({view:'palace',opening:false});},setMode(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});}}}, initDisplayMode:()=>({}), document: doc, initVisitorPreferences:()=>({}), initSceneMotion:root=>{motionInitializations.push(root);const dock=doc.createElement('div');dock.className='scene-controls';root.append(dock);return {setView(x,y){viewCalls.push([x,y]);}};}, validateArchive, safeURL, normalizeSearch, doorIdFor,
     matchMedia: () => ({ matches: reduced }),
     // Native browser timers reject a plain-object receiver (Illegal invocation).
     setTimeout: function(fn, delay) { if (strictTimerReceiver && this != null && this.document !== doc) throw new TypeError('Illegal invocation'); return queue(fn, delay); },
@@ -87,7 +93,7 @@ async function harness({ data = archive, reduced = true, storageThrows = false, 
     localStorage: { getItem(k) { if (storageThrows) throw Error('blocked'); return storage.get(k) || null; }, setItem(k, v) { storageWrites.push({key:k,value:v}); if (storageThrows || storageWriteThrows) throw Error('blocked'); storage.set(k, v); } },
     fetch: () => new Promise((resolve, reject) => requests.push({ resolve, reject }))
   });
-  vm.runInContext(source.replace(/^import[^\n]+\n/gm, '') + '\nglobalThis.testAPI={navigate,setYear,load,openStory,renderProgress,setMode, get state(){return {currentYear,currentIndex,busy,storageOK,progress,displayMode,search,activeTag,slideshow:slideshow?.getState()};}};', context);
+  vm.runInContext(source.replace(/^import[^\n]+\n/gm, '') + '\nglobalThis.testAPI={countPeople:()=>validStamps().length,seenDoors:viewedDoors,navigate,setYear,load,openStory,renderProgress,setMode, get state(){return {currentYear,currentIndex,busy,storageOK,progress,displayMode,search,activeTag,slideshow:slideshow?.getState()};}};', context);
   async function flush() { for (let i = 0; i < 10; i++) await Promise.resolve(); }
   async function tick(ms) { const end = now + ms; for (;;) { const item = [...timers.entries()].filter(([,v]) => v.at <= end).sort((a,b) => a[1].at - b[1].at || a[0] - b[0])[0]; if (!item) break; now = item[1].at; timers.delete(item[0]); item[1].fn(); await flush(); } now = end; await flush(); }
   async function succeed(request, result = data) { request.resolve({ ok: true, json: async () => structuredClone(result) }); await flush(); }
@@ -163,19 +169,17 @@ test('vertical gestures do not change rooms and cancelled touches do nothing', a
   assert.equal(h.api.state.currentIndex, 0);
 });
 
-test('opening the same story twice counts it once and reset is year-specific', async () => {
-  const data = structuredClone(archive); data.years.push({ ...structuredClone(data.years[0]), year: 2025 });
-  const h = await harness({ data }); h.$('artwork-open').click(); h.$('detail').close(); await h.tick(0);
-  h.$('artwork-open').click(); h.$('detail').close(); await h.tick(0); assert.equal(h.$('visit-count').textContent, '1');
-  h.api.setYear(2025); h.$('artwork-open').click(); h.$('detail').close(); await h.tick(0);
-  h.$('passport-open').click(); h.$('reset').click(); assert.equal(h.$('visit-count').textContent, '0');
-  h.api.setYear(2026); assert.equal(h.$('visit-count').textContent, '1');
+test('opening the same story twice remains deduplicated and collection changes preserve stored records', async()=>{
+ const data=structuredClone(archive);data.years.push({...structuredClone(data.years[0]),year:2025});const h=await harness({data});
+ for(let i=0;i<2;i++){h.$('artwork-open').click();h.$('detail').close();await h.tick(0);}assert.equal(h.api.countPeople(),1);
+ h.api.setYear(2025);assert.equal(h.api.countPeople(),0);h.$('artwork-open').click();h.$('detail').close();await h.tick(0);h.api.setYear(2026);assert.equal(h.api.countPeople(),1);
+ assert.equal(h.$('passport-open'),undefined);assert.equal(h.$('reset'),undefined);assert.equal(h.$('visit-count'),undefined);
 });
 
-test('storage denial keeps the page usable and tells the reader memory is temporary', async () => {
+test('storage denial keeps article access usable without history controls', async () => {
   const h = await harness({ storageThrows: true }); h.$('artwork-open').click();
-  assert.equal(h.api.state.storageOK, false); assert.equal(h.$('visit-count').textContent, '1');
-  assert.match(h.$('detail-content').textContent, /保存できません/);
+  assert.equal(h.api.state.storageOK, false); assert.equal(String(h.api.countPeople()), '1');
+  assert.ok(h.$('detail-content').querySelectorAll('a').length>0);
 });
 
 test('dialog close restores its opener', async () => {
@@ -232,14 +236,11 @@ test('a failed reload recovers and re-enables navigation on retry', async () => 
   assert.equal(h.$('load-error').hidden, true); assert.equal(h.$('next').disabled, false);
 });
 
-test('all nine real profiles produce completion, and reset removes completion', async () => {
-  const h = await harness();
-  for (let i = 0; i < 9; i++) { await h.api.navigate(i); h.$('artwork-open').click(); h.$('detail').close(); await h.tick(0); }
-  assert.equal(h.$('visit-count').textContent, '9'); assert.equal(h.$('theater').classList.contains('complete'), true);
-  h.$('passport-open').click(); h.$('reset').click();
-  assert.equal(h.$('visit-count').textContent, '0'); assert.equal(h.$('theater').classList.contains('complete'), false);
+test('all nine real profiles remain deduplicated with no history panel or destructive reset UI',async()=>{
+ const h=await harness();for(let i=0;i<9;i++){await h.api.navigate(i);h.$('artwork-open').click();h.$('detail').close();await h.tick(0);}
+ assert.equal(h.api.countPeople(),9);assert.equal(h.api.seenDoors().length,9);assert.equal(h.$('passport'),undefined);assert.equal(h.$('reset'),undefined);
+ const before=JSON.stringify(h.api.state.progress);h.api.setMode('normal');h.api.setMode('halloween');assert.equal(JSON.stringify(h.api.state.progress).includes('owner-work-2026'),false);assert.ok(before.includes('ss_yr'));
 });
-
 
 test('every displayed local room background exists', async () => {
   const h = await harness();
@@ -256,66 +257,58 @@ const savedProgress = (ids, extra = {}) => JSON.stringify({ stamps: { 'archive:2
 
 test('old seven fictional stamps never increase real-roster progress', async () => {
   const h = await harness({ saved: savedProgress(legacyFictionalIDs) });
-  assert.equal(h.$('visit-count').textContent, '0');
+  assert.equal(String(h.api.countPeople()), '0');
   assert.equal(h.$('theater').classList.contains('complete'), false);
   assert.equal(h.$('theater').style['--journey-progress'], '0');
   assert.equal(h.$('room-dots').querySelectorAll('.visited').length, 0);
-  h.$('passport-open').click();
-  assert.match(h.$('passport-content').textContent, /紹介を見た参加者 0人/);
-  assert.equal(h.$('passport-content').querySelectorAll('.passport-stamp').length, 10);
-  assert.equal(h.$('passport-content').querySelectorAll('.visited').length, 0);
+  assert.equal(h.$('room-dots').querySelectorAll('button').length, 10);
+  assert.equal(h.api.seenDoors().length, 0);
 });
 
 test('ss-yr migrates to ss_yr and only the real owner visit survives legacy progress', async () => {
   const h = await harness({ saved: savedProgress(['ss-yr', ...legacyFictionalIDs]) });
-  assert.equal(h.$('visit-count').textContent, '1');
+  assert.equal(String(h.api.countPeople()), '1');
   assert.equal(h.$('theater').classList.contains('complete'), false);
   assert.deepEqual(h.$('room-dots').querySelectorAll('.visited').map(n => n.dataset.creatorId), ['ss_yr']);
   assert.equal(h.$('theater').style['--journey-progress'], String(1 / 9));
   h.$('artwork-open').click(); h.$('detail').close(); await h.tick(0);
-  assert.equal(h.$('visit-count').textContent, '1', 'opening the migrated owner does not add another visit');
-  h.$('passport-open').click();
-  assert.match(h.$('passport-content').textContent, /紹介を見た参加者 1人/);
-  assert.equal(h.$('passport-content').querySelectorAll('.visited').length, 1);
+  assert.equal(String(h.api.countPeople()), '1', 'opening the migrated owner does not add another visit');
+  assert.equal(h.api.seenDoors().length, 1);
   const reloaded = await harness({ saved: h.storage.get('halloween-yearbook:night-doors:v1') });
-  assert.equal(reloaded.$('visit-count').textContent, '1', 'saved migration is idempotent across reloads');
+  assert.equal(String(reloaded.api.countPeople()), '1', 'saved migration is idempotent across reloads');
 });
 
 test('migration does not double-count an already-current owner or touch another year', async () => {
   const data = structuredClone(archive);
   data.years.push({ ...structuredClone(data.years[0]), year: 2025 });
   const h = await harness({ data, saved: savedProgress(['ss-yr', 'ss_yr', ...legacyFictionalIDs], { 'archive:2025': ['koakumako'] }) });
-  assert.equal(h.$('visit-count').textContent, '1');
-  h.api.setYear(2025); assert.equal(h.$('visit-count').textContent, '1');
+  assert.equal(String(h.api.countPeople()), '1');
+  h.api.setYear(2025); assert.equal(String(h.api.countPeople()), '1');
   assert.deepEqual(h.$('room-dots').querySelectorAll('.visited').map(n => n.dataset.creatorId), ['koakumako']);
-  h.api.setYear(2026); assert.equal(h.$('visit-count').textContent, '1');
+  h.api.setYear(2026); assert.equal(String(h.api.countPeople()), '1');
 });
 
 test('duplicate persisted IDs do not inflate progress or produce premature completion', async () => {
   const h = await harness({ saved: savedProgress(Array(9).fill('ss_yr')) });
-  assert.equal(h.$('visit-count').textContent, '1');
+  assert.equal(String(h.api.countPeople()), '1');
   assert.equal(h.$('theater').classList.contains('complete'), false);
-  h.$('passport-open').click();
-  assert.match(h.$('passport-content').textContent, /紹介を見た参加者 1人/);
-  assert.equal(h.$('passport-content').querySelectorAll('.visited').length, 1);
+  assert.equal(h.api.seenDoors().length, 1);
 });
 
 test('completion is exactly nine unique real participants, ignoring stale and planned IDs', async () => {
   const realIDs = archive.creators.map(c => c.id);
   const stale = ['future-1', 'future-2', 'pending-1', 'pending-2', ...legacyFictionalIDs];
   const h = await harness({ saved: savedProgress([...stale, ...realIDs.slice(0, 8), realIDs[0]]) });
-  assert.equal(h.$('visit-count').textContent, '8');
+  assert.equal(String(h.api.countPeople()), '8');
   assert.equal(h.$('theater').classList.contains('complete'), false);
   await h.api.navigate(8); h.$('artwork-open').click(); h.$('detail').close(); await h.tick(0);
-  assert.equal(h.$('visit-count').textContent, '9');
+  assert.equal(String(h.api.countPeople()), '9');
   assert.equal(h.$('theater').style['--journey-progress'], '1');
   assert.equal(h.$('theater').classList.contains('complete'), true);
   assert.equal(h.$('room-dots').querySelectorAll('.visited').length, 9);
   assert.ok(h.$('room-dots').querySelectorAll('.future-face').every(n => !n.classList.contains('visited')));
-  assert.match(h.$('toast').textContent, /9人との出会い/);
-  h.$('passport-open').click();
-  assert.match(h.$('passport-content').textContent, /紹介を見た参加者 9人/);
-  assert.equal(h.$('passport-content').querySelectorAll('.passport-stamp').length, 10);
+  assert.doesNotMatch(h.$('toast').textContent, /9人との出会い/);
+  assert.equal(h.$('room-dots').querySelectorAll('button').length, 10);
 });
 
 test('removed future slots are absent from every interface', async () => {
@@ -333,10 +326,9 @@ test('removed future slots are absent from every interface', async () => {
     marker.click();
   }
   assert.equal(h.api.state.currentIndex, 0);
-  assert.equal(h.$('visit-count').textContent, '0');
-  h.$('roster').close(); await h.tick(0); h.$('passport-open').click();
-  assert.equal(h.$('passport-content').querySelectorAll('.passport-stamp').length, 10);
-  assert.doesNotMatch(h.$('passport-content').textContent, /追加予定/);
+  assert.equal(String(h.api.countPeople()), '0');
+  h.$('roster').close(); await h.tick(0);
+  assert.equal(h.$('room-dots').querySelectorAll('button').length, 10);
 });
 
 test('all nine profile links have safe URLs and safe new-tab attributes', async () => {
@@ -458,7 +450,7 @@ test('future slots do not change year-picker counts and an empty year stays inco
   const data = structuredClone(archive);
   data.years.push({ year: 2027, title: '', description: '', plannedSlots: 2, entries: [] });
   const h = await harness({ data });
-  assert.equal(h.$('visit-count').textContent, '0');
+  assert.equal(String(h.api.countPeople()), '0');
   assert.equal(h.$('theater').classList.contains('complete'), false);
   assert.equal(h.$('room-dots').querySelectorAll('button').length, 0);
   assert.equal(h.$('room-dots').querySelectorAll('.future-face').length, 0);
@@ -497,11 +489,11 @@ test('normal mode binds evergreen content, not Halloween article image or links'
 
 test('normal visits are evergreen and separate from annual Halloween visits',async()=>{
  const h=await harness();h.$('artwork-open').click();h.$('detail').close();
- h.$('mode-normal').click();assert.equal(h.$('visit-count').textContent,'0');
+ h.$('mode-normal').click();assert.equal(String(h.api.countPeople()),'0');
  h.$('artwork-open').click();h.$('detail').close();
  assert.equal(h.api.state.progress.stamps.evergreen.length,1);
- h.api.setYear(2025);assert.equal(h.$('visit-count').textContent,'1');
- h.api.setYear(2026);h.$('mode-halloween').click();assert.equal(h.$('visit-count').textContent,'1');
+ h.api.setYear(2025);assert.equal(String(h.api.countPeople()),'1');
+ h.api.setYear(2026);h.$('mode-halloween').click();assert.equal(String(h.api.countPeople()),'1');
 });
 
 test('explicit maze return restores Halloween, year, creator and search over saved normal mode',async()=>{
@@ -523,7 +515,7 @@ test('malformed or stale maze return state safely falls back to real current rec
 test('storage denial still permits mode switches, navigation, and separate-room entrance',async()=>{
  const h=await harness({storageThrows:true});h.$('mode-normal').click();
  await h.api.navigate(4);assert.equal(h.api.state.currentIndex,4);
- h.$('artwork-open').click();assert.match(h.$('detail-content').textContent,/保存できません/);
+ h.$('artwork-open').click();assert.equal(h.api.state.storageOK,false);
  h.$('detail').close();h.$('mode-halloween').click();
  assert.equal(h.$('horror-entrance').hidden,false);
 });
@@ -554,17 +546,14 @@ test('all three valid light seals persist without adding participant visits or c
     assert.deepEqual(activeSeals(h), ['light-1', 'light-2', 'light-3'].slice(0, i + 1));
     const saved = JSON.parse(h.storage.get('halloween-yearbook:night-doors:v1'));
     assert.deepEqual(saved.seals['archive:2026'], activeSeals(h));
-    assert.equal(h.$('visit-count').textContent, '0');
+    assert.equal(String(h.api.countPeople()), '0');
     assert.equal(h.$('theater').classList.contains('complete'), false);
     assert.equal(h.$('room-dots').querySelectorAll('.visited').length, 0);
     assert.equal(h.api.state.currentIndex, 0);
   }
-  h.$('passport-open').click();
-  assert.match(h.$('passport-content').textContent, /光の封印 3 \/ 3/);
-  assert.match(h.$('passport-content').textContent, /紹介を見た参加者 0人/);
   const reloaded = await harness({ saved: h.storage.get('halloween-yearbook:night-doors:v1') });
   assert.deepEqual(activeSeals(reloaded), ['light-1', 'light-2', 'light-3']);
-  assert.equal(reloaded.$('visit-count').textContent, '0');
+  assert.equal(String(reloaded.api.countPeople()), '0');
 });
 
 test('invalid, missing and duplicate seal events leave state and saved writes unchanged', async () => {
@@ -611,35 +600,22 @@ test('seal collection is independent for each year and survives mode changes and
   assert.deepEqual(saved.seals, { 'archive:2026': ['light-1', 'light-3'], 'archive:2025': ['light-2'] });
 });
 
-test('year reset removes only that year’s seals and visits and allows collecting again', async () => {
-  const data = structuredClone(archive); data.years.push({ ...structuredClone(data.years[0]), year: 2025 });
-  const h = await harness({ data });
-  sealEvent(h, 'light-1'); h.$('artwork-open').click(); h.$('detail').close(); await h.tick(0);
-  h.api.setYear(2025); sealEvent(h, 'light-2'); sealEvent(h, 'light-3');
-  h.$('artwork-open').click(); h.$('detail').close(); await h.tick(0);
-  h.$('passport-open').click(); h.$('reset').click(); await h.tick(0);
-  assert.deepEqual(activeSeals(h), []);
-  assert.equal(h.$('visit-count').textContent, '0');
-  assert.equal(h.api.state.progress.seals['archive:2025'], undefined);
-  const saved = JSON.parse(h.storage.get('halloween-yearbook:night-doors:v1'));
-  assert.equal(saved.seals['archive:2025'], undefined);
-  assert.deepEqual(saved.seals['archive:2026'], ['light-1']);
-  assert.deepEqual(saved.stamps['archive:2026'], ['ss_yr']);
-  sealEvent(h, 'light-2'); assert.deepEqual(activeSeals(h), ['light-2']);
-  h.api.setYear(2026);
-  assert.deepEqual(activeSeals(h), ['light-1']);
-  assert.equal(h.$('visit-count').textContent, '1');
+test('mode and year changes never purge existing seals or article-door records',async()=>{
+ const data=structuredClone(archive);data.years.push({...structuredClone(data.years[0]),year:2025});const h=await harness({data});
+ h.$('artwork-open').click();h.$('detail').close();await h.tick(0);h.$('theater').dispatch('yearbook:seal-collected',{detail:{id:'light-1'}});
+ const original=JSON.stringify(h.api.state.progress);h.api.setYear(2025);h.api.setMode('normal');h.api.setMode('halloween');h.api.setYear(2026);
+ assert.equal(h.api.countPeople(),1);assert.deepEqual([...h.api.state.progress.seals['archive:2026']],['light-1']);assert.equal(h.$('reset'),undefined);assert.ok(original.includes('legacy-archive-2026-ss_yr'));
 });
 
 test('missing and malformed saved seals maps recover safely while preserving ordinary visits', async () => {
   for (const malformed of [undefined, null, [], ['light-1'], '', 'light-1', 17, false]) {
     const h = await harness({ saved: savedSeals(malformed, { 'archive:2026': ['ss_yr'] }) });
     assert.equal(h.$('load-error').hidden, true);
-    assert.equal(h.$('visit-count').textContent, '1');
+    assert.equal(String(h.api.countPeople()), '1');
     assert.deepEqual(activeSeals(h), []);
     sealEvent(h, 'light-2');
     assert.deepEqual(activeSeals(h), ['light-2']);
-    assert.equal(h.$('visit-count').textContent, '1');
+    assert.equal(String(h.api.countPeople()), '1');
     assert.deepEqual(JSON.parse(h.storage.get('halloween-yearbook:night-doors:v1')).seals, { 'archive:2026': ['light-2'] });
   }
 });
@@ -652,27 +628,15 @@ test('malformed annual seals, unknown IDs and duplicate saved IDs never inflate 
     sealEvent(h, 'light-1'); assert.deepEqual(activeSeals(h), ['light-1']);
   }
   const h = await harness({ saved: savedSeals({ 'archive:2026': ['light-1', 'light-1', 'light-3', 'unknown', null, 3, {}, ['light-2']] }) });
-  assert.deepEqual(activeSeals(h), ['light-1', 'light-3']);
-  h.$('passport-open').click(); assert.match(h.$('passport-content').textContent, /光の封印 2 \/ 3/);
-  h.$('passport').close(); await h.tick(0);
+  assert.deepEqual(activeSeals(h), ['light-1', 'light-3']); await h.tick(0);
   sealEvent(h, 'light-2');
   assert.deepEqual(activeSeals(h), ['light-1', 'light-3', 'light-2']);
   assert.deepEqual(JSON.parse(h.storage.get('halloween-yearbook:night-doors:v1')).seals['archive:2026'], ['light-1', 'light-3', 'light-2']);
 });
 
-test('blocked storage keeps seal collection and annual reset working for the current session', async () => {
-  const h = await harness({ storageThrows: true });
-  sealEvent(h, 'light-1'); sealEvent(h, 'light-2'); sealEvent(h, 'light-2');
-  assert.equal(h.api.state.storageOK, false);
-  assert.deepEqual(activeSeals(h), ['light-1', 'light-2']);
-  assert.equal(h.$('load-error').hidden, true);
-  h.$('passport-open').click();
-  assert.match(h.$('passport-content').textContent, /光の封印 2 \/ 3/);
-  assert.match(h.$('passport-content').textContent, /保存できません/);
-  h.$('reset').click(); await h.tick(0);
-  assert.deepEqual(activeSeals(h), []);
-  sealEvent(h, 'light-3'); assert.deepEqual(activeSeals(h), ['light-3']);
-  assert.equal(h.storage.size, 0);
+test('blocked storage keeps seal collection and local records usable without history UI',async()=>{
+ const h=await harness({storageThrows:true});h.$('theater').dispatch('yearbook:seal-collected',{detail:{id:'light-1'}});h.$('artwork-open').click();
+ assert.equal(h.api.state.storageOK,false);assert.equal(h.api.countPeople(),1);assert.deepEqual([...h.api.state.progress.seals['archive:2026']],['light-1']);assert.equal(h.$('passport-open'),undefined);
 });
 
 test('storage write failure preserves loaded seals and records new seals in memory without claiming persistence', async () => {
@@ -684,8 +648,7 @@ test('storage write failure preserves loaded seals and records new seals in memo
   assert.equal(h.api.state.storageOK, false);
   assert.deepEqual(activeSeals(h), ['light-1', 'light-2']);
   assert.equal(h.storage.get('halloween-yearbook:night-doors:v1'), saved);
-  assert.equal(h.$('visit-count').textContent, '1');
-  h.$('passport-open').click(); assert.match(h.$('passport-content').textContent, /保存できません/);
+  assert.equal(String(h.api.countPeople()), '1');
 });
 
 test('scene motion is initialized once and seal listeners do not multiply on reload or mode changes', async () => {
@@ -836,7 +799,7 @@ test('reduced-motion roulette chooses a real different door without recording or
  h.$('roulette-open').click();await h.flush();
  assert.ok(h.api.state.currentIndex>0&&h.api.state.currentIndex<archive.years[0].entries.length);
  assert.equal(h.$('room-title').textContent,archive.creators.find(c=>c.id===archive.years[0].entries[h.api.state.currentIndex].creatorId).name);
- assert.equal(h.$('roulette-reel').hidden,true);assert.equal(h.$('detail').open,false);assert.equal(h.$('visit-count').textContent,'0');
+ assert.equal(h.$('roulette-reel').hidden,true);assert.equal(h.$('detail').open,false);assert.equal(String(h.api.countPeople()),'0');
  assert.equal(h.$('theater').classList.contains('turning-in'),false);
  h.$('artwork-open').click();assert.match(h.$('detail-content').textContent,/プロフィール/);
  assert.ok(h.$('detail-content').querySelectorAll('a').every(a=>archive.creators.some(c=>c.profileURL===a.href)||archive.years[0].entries.some(e=>e.links?.some(l=>l.url===a.href))));
@@ -929,18 +892,11 @@ test('reduced-motion and explicit ambience pause block automatic movement but le
  h.$('theater').dispatch('yearbook:motion-state',{detail:{paused:false}});await h.tick(10200);assert.equal(h.api.state.currentIndex,1);
 });
 
-test('normal history shows only genuinely viewed creators, without lights or a completion goal',async()=>{
- const h=await harness({savedMode:'normal'});h.$('passport-open').click();
- assert.match(h.$('passport-content').textContent,/まだ閲覧履歴はありません/);
- assert.equal(h.$('passport-content').querySelectorAll('.passport-stamp').length,0);
- assert.doesNotMatch(h.$('passport-content').textContent,/光|封印|0 \/ 9/);
- h.$('passport').close();await h.tick(0);await h.api.navigate(3);h.$('artwork-open').click();h.$('detail').close();await h.tick(0);
- h.$('passport-open').click();assert.equal(h.$('passport-content').querySelectorAll('.passport-stamp').length,1);
- assert.match(h.$('passport-content').textContent,/Pajama de mama/);assert.doesNotMatch(h.$('passport-content').textContent,/光|封印/);
- sealEvent(h,'light-1');assert.deepEqual(activeSeals(h),[]);
- const item=h.$('passport-content').querySelector('.passport-stamp');item.click();await h.tick(0);assert.equal(h.api.state.currentIndex,3);assert.equal(h.$('passport').open,false);
+test('normal mode retains only genuine local door records without exposing history controls',async()=>{
+ const h=await harness({savedMode:'normal'});assert.equal(h.api.seenDoors().length,0);assert.equal(h.$('passport'),undefined);
+ await h.api.navigate(3);h.$('artwork-open').click();h.$('detail').close();await h.tick(0);assert.equal(h.api.seenDoors().length,1);assert.equal(h.api.countPeople(),1);
+ assert.equal(h.api.state.progress.doorStamps.evergreen[0],'legacy-evergreen-mama_ca');assert.equal(h.$('visit-count'),undefined);assert.equal(h.$('passport-open'),undefined);
 });
-
 
 test('slideshow ON, speed changes and OFF preserve the native browser timer receiver',async()=>{
  const h=await harness({reduced:false,strictTimerReceiver:true});
@@ -1013,29 +969,52 @@ test('creator history migrates only the original owner door; new work is never a
  const h=await harness({saved:savedProgress(['ss_yr'])});
  const dots=h.$('room-dots').children;assert.equal(dots[0].classList.contains('visited'),true);assert.equal(dots[9].classList.contains('visited'),false);
  await h.api.navigate(9);h.$('artwork-open').click();h.$('detail').close();await h.tick(0);
- assert.equal(h.$('visit-count').textContent,'1');h.$('passport-open').click();assert.match(h.$('passport-content').textContent,/参加者 1人 · 閲覧した扉 2枚/);
+ assert.equal(String(h.api.countPeople()),'1');
  const data=structuredClone(archive);data.years[0].entries=data.years[0].entries.filter(e=>e.role!=='host');
  const removed=await harness({data,saved:savedProgress(['ss_yr'])});assert.equal(removed.$('room-dots').children.find(b=>b.dataset.doorId==='owner-work-2026').classList.contains('visited'),false);
 });
 test('viewing the new owner door first does not mark the host announcement as viewed',async()=>{
  const h=await harness();await h.api.navigate(9);h.$('artwork-open').click();h.$('detail').close();await h.tick(0);
  assert.equal(h.$('room-dots').children[0].classList.contains('visited'),false);assert.equal(h.$('room-dots').children[9].classList.contains('visited'),true);
- await h.api.navigate(0);h.$('artwork-open').click();assert.equal(h.$('visit-count').textContent,'1');
+ await h.api.navigate(0);h.$('artwork-open').click();assert.equal(String(h.api.countPeople()),'1');
  assert.deepEqual([...h.api.state.progress.doorStamps['archive:2026']],['owner-work-2026','legacy-archive-2026-ss_yr']);
 });
 test('roulette selects both same-creator doors independently and never counts a view',async()=>{
  const data=structuredClone(archive);data.years[0].entries=[data.years[0].entries[0],data.years[0].entries[9]];
  const h=await harness({data});h.$('roulette-open').click();await h.flush();assert.equal(h.$('theater').dataset.doorId,'owner-work-2026');
- h.$('roulette-open').click();await h.flush();assert.equal(h.$('theater').dataset.doorId,'legacy-archive-2026-ss_yr');assert.equal(h.$('visit-count').textContent,'0');
+ h.$('roulette-open').click();await h.flush();assert.equal(h.$('theater').dataset.doorId,'legacy-archive-2026-ss_yr');assert.equal(String(h.api.countPeople()),'0');
 });
 test('automatic slideshow selects both same-creator doors independently',async()=>{
  const data=structuredClone(archive);data.years[0].entries=[data.years[0].entries[0],data.years[0].entries[9]];
  const h=await harness({data,reduced:false});h.$('slideshow-speed').value='5';h.$('slideshow-speed').dispatch('change');h.$('slideshow-toggle').click();
- await h.tick(5700);assert.equal(h.$('theater').dataset.doorId,'owner-work-2026');await h.tick(5700);assert.equal(h.$('theater').dataset.doorId,'legacy-archive-2026-ss_yr');assert.equal(h.$('visit-count').textContent,'0');
+ await h.tick(5700);assert.equal(h.$('theater').dataset.doorId,'owner-work-2026');await h.tick(5700);assert.equal(h.$('theater').dataset.doorId,'legacy-archive-2026-ss_yr');assert.equal(String(h.api.countPeople()),'0');
 });
 test('multiple ordinary articles each retain their own door, title, image and URL',async()=>{
  const data=structuredClone(archive);data.evergreenEntries=[{doorId:'ordinary-a',creatorId:'ss_yr',submissionStatus:'submitted',title:'普通の作品 A',image:'https://example.com/a.png',links:[{title:'A',url:'https://note.com/ss_yr/n/aaa'}]},{doorId:'ordinary-b',creatorId:'ss_yr',submissionStatus:'submitted',title:'普通の作品 B',image:'https://example.com/b.png',links:[{title:'B',url:'https://note.com/ss_yr/n/bbb'}]}];
  const h=await harness({data,savedMode:'normal'});assert.equal(h.$('total-index').textContent,'10');assert.equal(h.$('sample-notice').textContent,'参加者9人 · 扉10枚');
  for(const index of [0,1]){await h.api.navigate(index);const entry=data.evergreenEntries[index];assert.equal(h.$('theater').dataset.doorId,entry.doorId);assert.equal(h.$('artwork-image').src,entry.image);h.$('artwork-open').click();assert.match(h.$('detail-content').textContent,new RegExp(entry.title));assert.ok(h.$('detail-content').querySelectorAll('a').some(a=>a.href===entry.links[0].url));assert.doesNotMatch(h.$('detail-content').textContent,/ハロウィン企画への招待状|作品準備中/);h.$('detail').close();await h.tick(0);}
- h.api.setMode('halloween');assert.equal(h.$('theater').dataset.doorId,'legacy-archive-2026-ss_yr');assert.equal(h.$('visit-count').textContent,'0');
+ h.api.setMode('halloween');assert.equal(h.$('theater').dataset.doorId,'legacy-archive-2026-ss_yr');assert.equal(String(h.api.countPeople()),'0');
+});
+
+test('real palace adapter keeps TOP article-free until gate activation and retains the selected door on return',async()=>{
+ const h=await harness({entrance:true});assert.equal(h.$('theater').dataset.palaceState,'palace');assert.equal(h.$('article-theater').hidden,true);assert.equal(h.$('article-theater').inert,true);assert.equal(h.$('palace-entrance').hidden,false);
+ for(const id of ['passport','passport-open','visit-count','reset'])assert.equal(h.$(id),undefined);
+ assert.equal(h.keydown('ArrowRight'),false);assert.equal(h.api.state.currentIndex,0);assert.equal(h.$('article-theater').hidden,true);
+ h.$('palace-gate').click();assert.equal(h.$('article-theater').hidden,false);assert.equal(h.$('theater').dataset.palaceState,'gallery');
+ await h.api.navigate(9);h.$('palace-return').click();assert.equal(h.$('article-theater').hidden,true);assert.equal(h.$('theater').dataset.doorId,'owner-work-2026');assert.equal(h.doc.activeElement,h.$('palace-gate'));
+ h.$('palace-gate').click();assert.equal(h.$('theater').dataset.doorId,'owner-work-2026');assert.equal(h.$('total-index').textContent,'10');
+});
+test('real gate opening cannot auto-advance the hidden theater and a new home action cancels an opening',async()=>{
+ const h=await harness({entrance:true,reduced:false});h.$('slideshow-speed').value='5';h.$('slideshow-speed').dispatch('change');h.$('slideshow-toggle').click();await h.tick(20000);assert.equal(h.api.state.currentIndex,0);
+ h.$('palace-gate').click();await h.tick(300);assert.equal(h.$('article-theater').hidden,true);assert.equal(h.$('theater').dataset.palaceState,'opening');
+ h.$('mode-normal').click();assert.equal(h.$('article-theater').hidden,false);h.$('mode-halloween').click();await h.tick(1000);assert.equal(h.$('article-theater').hidden,true);assert.equal(h.$('theater').dataset.palaceState,'palace');
+ h.$('palace-gate').click();await h.tick(600);assert.equal(h.$('article-theater').hidden,false);await h.tick(5700);assert.equal(h.api.state.currentIndex,1);
+});
+test('normal mode bypasses the Halloween palace and exact maze return opens the existing personal-work door',async()=>{
+ const normal=await harness({entrance:true,savedMode:'normal'});assert.equal(normal.$('palace-entrance').hidden,true);assert.equal(normal.$('article-theater').hidden,false);assert.equal(normal.$('palace-return').hidden,true);assert.equal(normal.$('horror-entrance').hidden,true);
+ const restored=await harness({entrance:true,urlSearch:'?mode=halloween',returnState:JSON.stringify({year:2026,creatorId:'ss_yr',doorId:'owner-work-2026',rosterPage:1})});assert.equal(restored.$('article-theater').hidden,false);assert.equal(restored.$('theater').dataset.doorId,'owner-work-2026');assert.equal(restored.$('roster-page-status').textContent,'2 / 2 ページ');
+});
+test('selecting the second owner door from the TOP roster reveals that exact article theater door',async()=>{
+ const h=await harness({entrance:true});h.$('list-open').click();h.$('roster-next').click();h.$('roster-grid').children.find(b=>b.dataset.doorId==='owner-work-2026').click();await h.tick(0);
+ assert.equal(h.$('article-theater').hidden,false);assert.equal(h.$('theater').dataset.doorId,'owner-work-2026');assert.equal(h.$('palace-entrance').hidden,true);
 });

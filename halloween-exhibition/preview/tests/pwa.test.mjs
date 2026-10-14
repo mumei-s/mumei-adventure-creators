@@ -183,18 +183,18 @@ test('release-versioned JS/CSS are coherent and only the exact public release qu
  for(const path of ['index.html','admin/index.html']){
   const text=await readFile(new URL('../'+path,import.meta.url),'utf8');
   for(const match of text.matchAll(/(?:href|src)="(\.\.?\/[^"?]+\.(?:js|css))(\?[^" ]*)?"/g)){
-   assert.equal(match[2],'?v='+(['./theater.js','./article-doors.css','./app.js'].includes(match[1])?'20261014-doors1':match[1]==='./gallery-controls.css'?'20261014-portrait1':release),match[1]);await access(new URL('../'+(path.startsWith('admin/')?'admin/':'')+match[1],import.meta.url));
+   assert.equal(match[2],'?v='+(['./theater.js','./palace-entrance.css'].includes(match[1])?'20261014-palace1':['./article-doors.css','./app.js'].includes(match[1])?'20261014-doors1':match[1]==='./gallery-controls.css'?'20261014-portrait1':release),match[1]);await access(new URL('../'+(path.startsWith('admin/')?'admin/':'')+match[1],import.meta.url));
   }
  }
  for(const path of ['theater.js','admin/app.js','admin/display-settings.js']){
   const text=await readFile(new URL('../'+path,import.meta.url),'utf8');
-  for(const match of text.matchAll(/from '(\.\.?\/[^'?]+\.js)(\?[^']*)?'/g))assert.equal(match[2],'?v='+(['./model.js','./data-model.js','../data-model.js'].includes(match[1])?'20261014-doors1':release),match[1]);
+  for(const match of text.matchAll(/from '(\.\.?\/[^'?]+\.js)(\?[^']*)?'/g))assert.equal(match[2],'?v='+(match[1]==='./palace-entrance.js'?'20261014-palace1':['./model.js','./data-model.js','../data-model.js'].includes(match[1])?'20261014-doors1':release),match[1]);
  }
  const h=workerHarness();
  for(const path of ['slideshow.js','display-mode.js','display-mode.css'])assert.equal((await h.dispatch('fetch',base+path+'?v='+release)).intercepted,true);
  for(const path of ['admin/app.js','admin/index.html','maze/app.js','data/archive.json','unknown.js'])assert.equal((await h.dispatch('fetch',base+path+'?v='+release)).intercepted,false);
  for(const query of ['?v=old','?v='+release+'&token=private','?token=private','?v='+release+'&v=other'])assert.equal((await h.dispatch('fetch',base+'theater.js'+query)).intercepted,false);
- assert.match(workerSource,/mumei-atelier-shell-v5-/);assert.match(workerSource,/cacheName: CACHE/);
+ assert.match(workerSource,/mumei-atelier-shell-v6-/);assert.match(workerSource,/cacheName: CACHE/);
  assert.doesNotMatch(workerSource,/localStorage|sessionStorage|\.clear\(/);
 });
 
@@ -219,10 +219,22 @@ test('editor door-model module version never expands service-worker caching',asy
 
 test('door release assets and dependency are coherently versioned while private paths still bypass',async()=>{
  const h=workerHarness();await h.dispatch('install');
- for(const path of ['theater.js','data-model.js','article-doors.css']){
+ for(const path of ['data-model.js','article-doors.css']){
   const url=base+path+'?v=20261014-doors1';assert.ok(h.precached.some(r=>r.url===url));assert.equal((await h.dispatch('fetch',url)).intercepted,true);
   assert.equal((await h.dispatch('fetch',base+path+'?v=20261014-layout1')).intercepted,false);
  }
  for(const path of ['slideshow.js','admin/model.js','maze/app.js','data/archive.json','index.html'])assert.equal((await h.dispatch('fetch',base+path+'?v=20261014-doors1')).intercepted,false,path);
- assert.match(workerSource,/mumei-atelier-shell-v5-/);assert.match(workerSource,/const DOOR_RELEASE = '20261014-doors1'/);
+ assert.match(workerSource,/mumei-atelier-shell-v6-/);assert.match(workerSource,/const DOOR_RELEASE = '20261014-doors1'/);
+});
+
+test('palace release is exact, independently cache-busted and confined to public preview assets',async()=>{
+ const h=workerHarness();await h.dispatch('install');
+ for(const path of ['theater.js','palace-entrance.js','palace-entrance.css']){
+  assert.equal((await h.dispatch('fetch',base+path+'?v=20261014-palace1')).intercepted,true);
+  assert.equal((await h.dispatch('fetch',base+path+'?v=20261014-doors1')).intercepted,false);
+ }
+ for(const name of ['palace-desktop','palace-phone','gate-desktop','gate-phone'])assert.equal((await h.dispatch('fetch',base+'assets/palace/'+name+'.webp')).intercepted,true);
+ for(const path of ['admin/app.js','maze/app.js','data/archive.json','unknown.js'])assert.equal((await h.dispatch('fetch',base+path+'?v=20261014-palace1')).intercepted,false);
+ assert.equal((await h.dispatch('fetch',base+'palace-entrance.js?v=20261014-palace1&token=private')).intercepted,false);
+ assert.match(workerSource,/mumei-atelier-shell-v6-/);
 });

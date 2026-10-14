@@ -12,7 +12,7 @@ test('flow-based header gives navigation and actions separate grid areas',()=>{
  assert.match(css,/\.theater \.mode-switch,\.theater \.horror-entrance\s*\{[^}]*position:static;inset:auto;transform:none/s);
  assert.match(css,/\.theater \.header-actions\s*\{[^}]*flex-wrap:wrap/s);
  assert.match(html,/<div class="header-navigation"><div class="mode-switch"/);
- assert.match(html,/<\/small><\/span><\/a><\/div><div class="header-actions">/);
+ assert.match(html,/<\/span><\/a><\/div><div class="header-actions">/);
 });
 
 test('text enlargement grows reading and control rows instead of an 800px clipped canvas',()=>{

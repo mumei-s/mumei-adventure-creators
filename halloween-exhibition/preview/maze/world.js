@@ -1,7 +1,8 @@
+import {ART_FILES,ART_BOUNDS,ART_ANCHORS} from './rpg-art.js?v=20261014-adventure2';
 import * as THREE from './vendor/three.module.js';
-import { MAP, CELL, FEATURES, toWorld } from './maze-model.js?v=20261014-layout1';
-import { NIGHT_LIGHTING } from './lighting-model.js?v=20261014-layout1';
-import { MONSTERS, monsterAvailable } from './encounter-model.js?v=20261014-layout1';
+import { MAP, CELL, FEATURES, toWorld } from './maze-model.js?v=20261014-adventure2';
+import { NIGHT_LIGHTING } from './lighting-model.js?v=20261014-adventure2';
+import { MONSTERS, monsterAvailable, monsterPose } from './encounter-model.js?v=20261014-adventure2';
 
 // All architectural objects live in world space. Camera motion, collision and
 // interaction remain in the controller, making the gallery usable with keys,
@@ -111,7 +112,7 @@ export function createWorld({ canvas, onReady } = {}) {
   // and beam. Independent architectural light keeps navigation readable.
   scene.add(camera);
   const heldLantern=new THREE.Group();heldLantern.name='Handheld lantern';
-  heldLantern.position.set(.36,-.34,-.7);heldLantern.scale.setScalar(.42);camera.add(heldLantern);
+  heldLantern.position.set(.3,-.3,-.78);heldLantern.scale.setScalar(.24);camera.add(heldLantern);
   const lampGlass=mat('#ffe7ab',{emissive:'#ffcc76',emissiveIntensity:1.3,roughness:.3});
   mesh(new THREE.CylinderGeometry(.19,.23,.42,8),lampGlass,0,0,0,heldLantern);
   mesh(new THREE.ConeGeometry(.29,.2,8),brass,0,.3,0,heldLantern);
@@ -188,9 +189,9 @@ export function createWorld({ canvas, onReady } = {}) {
     for(let i=0;i<=5;i++){const a=i*Math.PI/10;const geo=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(xx,6.8,zz),new THREE.Vector3(xx+Math.cos(a)*2.2,6.8-Math.sin(a)*2.2,zz)]);resources.add(geo);scene.add(new THREE.Line(geo,webMaterial));}
     for(const r of [.7,1.4,2.1]){const pts=[];for(let i=0;i<=10;i++){const a=i*Math.PI/20;pts.push(new THREE.Vector3(xx+Math.cos(a)*r,6.8-Math.sin(a)*r,zz));}const geo=new THREE.BufferGeometry().setFromPoints(pts);resources.add(geo);scene.add(new THREE.Line(geo,webMaterial));}
   }
-  const spirits=[];
+  const spirits=[],residentTextures=new THREE.TextureLoader();
   for(const [index,definition]of MONSTERS.entries()){
-    const g=new THREE.Group();g.position.set(definition.x*CELL,0,definition.z*CELL);g.name=definition.name;scene.add(g);
+    const root=new THREE.Group();root.position.set(definition.x*CELL,0,definition.z*CELL);root.name=definition.name;scene.add(root);const g=new THREE.Group();root.add(g);
     const body=mat(definition.color,{emissive:definition.color,emissiveIntensity:.28,roughness:.8});
     const eye=mat('#28192c',{roughness:1});
     const glint=mat('#fff0b6',{emissive:'#ffeaa0',emissiveIntensity:.7});
@@ -202,6 +203,10 @@ export function createWorld({ canvas, onReady } = {}) {
       mesh(new THREE.SphereGeometry(.62,16,12),body,0,1.55,0,g);
       for(const side of [-1,1]){mesh(new THREE.SphereGeometry(.09,8,6),eye,side*.22,1.63,.55,g);const arm=mesh(new THREE.SphereGeometry(.26,8,8),body,side*.63,1.1,0,g);arm.scale.set(1.5,.7,.7);}
       mesh(new THREE.SphereGeometry(.09,8,6),eye,0,1.37,.59,g);
+    }else if(definition.id==='franken'){
+      const coat=mat('#6b4545'),skin=mat('#8f9d78');box(.95,1.05,.55,0,.9,0,coat,g);box(.67,.63,.5,0,1.8,0,skin,g);
+      for(const side of[-1,1]){box(.34,.8,.38,side*.7,.92,.1,skin,g);box(.3,.4,.5,side*.27,.22,.1,eye,g);mesh(new THREE.SphereGeometry(.07,8,6),glint,side*.16,1.83,.26,g);}
+      box(.4,.025,.03,0,1.97,.27,eye,g);mesh(new THREE.TorusGeometry(.15,.045,5,12),brass,0,1.07,.3,g);
     }else if(definition.id==='zombie'||definition.id==='vampire'){
       const vampire=definition.id==='vampire',cloth=mat(vampire?'#422438':'#4a6258'),skin=mat(vampire?'#d9c6cc':'#9ab589'),hair=mat('#302438');
       mesh(new THREE.ConeGeometry(vampire?.74:.5,1.4,8),cloth,0,.85,0,g);
@@ -223,8 +228,16 @@ export function createWorld({ canvas, onReady } = {}) {
         mesh(new THREE.SphereGeometry(.07,8,6),glint,side*.18,1.48,.43,g);
       }
     }
-    sign(definition.name,'LANTERN DUEL · B',0,2.6,0,0,2.1,g);
-    spirits.push({node:g,index,id:definition.id,definition,baseY:0});
+    sign(definition.name,'話しかける · B',0,2.7,0,0,2.1,root);
+    const shadowMaterial=new THREE.MeshBasicMaterial({color:'#05050b',transparent:true,opacity:.3,depthWrite:false});resources.add(shadowMaterial);const shadow=mesh(new THREE.CircleGeometry(.58,20),shadowMaterial,0,.025,0,root);shadow.rotation.x=-Math.PI/2;
+    // The same original enemy art is visible in 3D as grounded billboards.
+    const spriteMaterial=new THREE.SpriteMaterial({transparent:true,alphaTest:.05,depthWrite:false});resources.add(spriteMaterial);const sprite=new THREE.Sprite(spriteMaterial);sprite.visible=false;root.add(sprite);
+    residentTextures.load(new URL(`./assets/rpg/${ART_FILES[definition.id]}`,import.meta.url).href,texture=>{
+      texture.colorSpace=THREE.SRGBColorSpace;resources.add(texture);const bounds=ART_BOUNDS[definition.id]||[0,0,512,512],anchor=ART_ANCHORS[definition.id]||{anchorX:.5,anchorY:1};
+      texture.repeat.set(bounds[2]/512,bounds[3]/512);texture.offset.set(bounds[0]/512,1-(bounds[1]+bounds[3])/512);
+      spriteMaterial.map=texture;spriteMaterial.needsUpdate=true;sprite.center.set(anchor.anchorX,1-anchor.anchorY);const height=definition.id==='franken'?2.35:definition.id==='bat'?1.85:2.15;sprite.scale.set(height*bounds[2]/bounds[3],height,1);sprite.position.y=.04;sprite.visible=true;g.visible=false;root.userData.originalArt=true;
+    },undefined,()=>console.warn('Original resident art unavailable; using the distinct 3D model:',definition.id));
+    spirits.push({node:root,model:g,sprite,index,id:definition.id,definition,baseY:0});
   }
   // A drifting orbital mobile is sculpture, explicitly environmental decoration.
   const center=point(FEATURES.mobile||FEATURES.spawn||{x:Math.floor(cols/2),z:Math.floor(rows/2)});
@@ -290,8 +303,8 @@ export function createWorld({ canvas, onReady } = {}) {
     });
   }
   let last=0,gateY=0,ambientTime=0;
-  function resize(){const w=canvas.clientWidth||window.innerWidth,h=canvas.clientHeight||window.innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;heldLantern.position.x=Math.min(.36,.36*camera.aspect);camera.updateProjectionMatrix();}
-  function render({x=0,z=0,yaw=0,pitch=0,time=0,motion=true,unlocked=false,horrorAccepted=false,hasKey=false,collection=[],brightness=1,lantern=true,encounters=false,cleared=[]}={}){
+  function resize(){const w=canvas.clientWidth||window.innerWidth,h=canvas.clientHeight||window.innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;heldLantern.position.x=Math.min(.3,.3*camera.aspect);camera.updateProjectionMatrix();}
+  function render({x=0,z=0,yaw=0,pitch=0,time=0,motion=true,unlocked=false,horrorAccepted=false,hasKey=false,collection=[],brightness=1,lantern=true,encounters=true,cleared=[]}={}){
     const seconds=time*.001;const dt=Math.min(.05,Math.max(0,seconds-last));last=seconds;if(motion)ambientTime+=dt;const t=ambientTime;
     const level=Math.max(.75,Math.min(1.75,Number.isFinite(Number(brightness))?Number(brightness):1));
     renderer.toneMappingExposure=NIGHT_LIGHTING.exposure*level;
@@ -299,6 +312,7 @@ export function createWorld({ canvas, onReady } = {}) {
     heldLantern.visible=!!lantern;headlamp.visible=!!lantern;nearLamp.visible=!!lantern;
     for(const spirit of spirits){
       spirit.node.visible=encounters&&!cleared.includes(spirit.id)&&monsterAvailable(spirit.definition,{unlocked,horrorAccepted});
+      const pose=monsterPose(spirit.definition,t,motion,{unlocked,horrorAccepted});spirit.node.position.x=pose.x*CELL;spirit.node.position.z=pose.z*CELL;
       spirit.node.rotation.y=Math.atan2(x-spirit.node.position.x,z-spirit.node.position.z);
       if(!motion)spirit.node.position.y=spirit.baseY;
     }
@@ -308,7 +322,7 @@ export function createWorld({ canvas, onReady } = {}) {
     const collected=Array.isArray(collection)?collection.some(v=>typeof v==='string'?v.includes('key'):v?.id?.includes('key')):!!collection?.key;
     key.visible=!collected&&!hasKey&&!unlocked;horrorDoor.position.y=horrorAccepted?5.5:0;keyLight.visible=key.visible;
     if(motion){heldLantern.rotation.z=Math.sin(t*.8)*.015;
-      for(const spirit of spirits){spirit.node.position.y=spirit.baseY+(spirit.id==='zombie'?Math.abs(Math.sin(t*.4))*.025:Math.sin(t*(spirit.id==='vampire'?.35:.55)+spirit.index)*.055);}
+      for(const spirit of spirits){spirit.node.position.y=spirit.baseY+(['zombie','franken'].includes(spirit.id)?Math.abs(Math.sin(t*.4))*.025:Math.sin(t*(spirit.id==='vampire'?.35:.55)+spirit.index)*.055);}
       key.rotation.y=t*.8;key.position.y=1.57+Math.sin(t*1.4)*.09;mobile.rotation.y=t*.085;mobile.rotation.z=Math.sin(t*.28)*.1;dust.rotation.y=Math.sin(t*.025)*.006;
       folios.rotation.y=Math.sin(t*.085)*.085;
       for(const f of folioMotion){f.node.position.y=f.baseY+Math.sin(t*.65+f.phase)*.12;f.node.rotation.x=f.baseX+Math.sin(t*.48+f.phase)*.035;f.node.rotation.z=f.baseZ+Math.cos(t*.4+f.phase)*.04;}

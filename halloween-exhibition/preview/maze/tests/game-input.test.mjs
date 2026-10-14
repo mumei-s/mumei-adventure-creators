@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import {protectGameSurface,bindHeldGameButton,EDITABLE_SURFACE,GAME_SURFACE} from '../game-input.js';
+import {protectGameSurface,bindHeldGameButton,bindDirectionPad,directionAtPoint,EDITABLE_SURFACE,GAME_SURFACE} from '../game-input.js';
 class Element{
   constructor(tag,{parent=null,cls='',editable=false}={}){this.tagName=tag.toUpperCase();this.parentElement=parent;this.cls=cls;this.editable=editable;this.handlers={};this.disabled=false;this.active=false;this.captures=[];this.classList={toggle:(_,v)=>this.active=v};}
-  closest(selector){for(let node=this;node;node=node.parentElement){if(selector===EDITABLE_SURFACE&&(['INPUT','TEXTAREA','SELECT'].includes(node.tagName)||node.editable))return node;if(selector===GAME_SURFACE&&(['BUTTON','A','CANVAS','FOOTER'].includes(node.tagName)||['place','minimap','move-pad','look-pad','nearby'].includes(node.cls)))return node;}return null;}
+  closest(selector){for(let node=this;node;node=node.parentElement){if(selector===EDITABLE_SURFACE&&(['INPUT','TEXTAREA','SELECT'].includes(node.tagName)||node.editable))return node;if(selector===GAME_SURFACE&&(['BUTTON','A','CANVAS','FOOTER'].includes(node.tagName)||['place','minimap','move-pad','look-pad','nearby','encounter-help'].includes(node.cls)))return node;}return null;}
   contains(node){for(;node;node=node.parentElement)if(node===this)return true;return false;}
   addEventListener(type,handler){(this.handlers[type]||=[]).push(handler);}
   emit(type,values={}){const event={target:this,cancelable:true,defaultPrevented:false,button:0,pointerId:1,key:'',preventDefault(){this.defaultPrevented=true;},...values};for(const handler of this.handlers[type]||[])handler(event);if(type==='click'&&!event.defaultPrevented)this.onclick?.();return event;}
@@ -18,6 +18,7 @@ test('game HUD long-press selection, drag and callout are prevented only in the 
   for(const tag of ['button','a','canvas'])for(const type of ['selectstart','contextmenu','dragstart']){const el=new Element(tag,{parent:game});assert(game.emit(type,{target:el}).defaultPrevented);}
   const button=new Element('button',{parent:game}),label=new Element('span',{parent:button});assert(game.emit('selectstart',{target:label}).defaultPrevented);
   assert(game.emit('selectstart',{target:{parentElement:label}}).defaultPrevented,'Text nodes follow their parent control');
+  assert(game.emit('selectstart',{target:new Element('aside',{parent:game,cls:'encounter-help'})}).defaultPrevented);
   const outside=new Element('button');assert(!game.emit('contextmenu',{target:outside}).defaultPrevented);
 });
 test('article prose, form controls and editable descendants keep selection and native menus',()=>{
@@ -68,5 +69,22 @@ test('app integrates scoped guards, resets holds on interruption and cache-busts
   const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8'),html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
   assert(app.includes("protectGameSurface($('game'))"));assert(app.includes('for(const control of heldControls)control.reset()'));assert(app.includes("window.addEventListener('blur',clearInput)"));assert(app.includes('e.target.isContentEditable'));
   assert(app.includes("$('lantern').onclick=toggleLantern"));assert(!app.includes("$('lantern').addEventListener('pointerdown'"));
-  assert(html.includes('./app.js?v=20261014-touch1'));assert(html.includes('./rpg-ui.css?v=20261014-touch1'));assert(app.includes('./game-input.js?v=20261014-touch1'));assert(html.includes('width=device-width,initial-scale=1,viewport-fit=cover'));assert(!html.includes('user-scalable=no'));
+  assert(html.includes('./app.js?v=20261014-adventure2'));assert(html.includes('./rpg-ui.css?v=20261014-adventure2'));assert(app.includes('./game-input.js?v=20261014-adventure2'));assert(html.includes('width=device-width,initial-scale=1,viewport-fit=cover'));assert(!html.includes('user-scalable=no'));
+});
+
+function roundPad(){const pad=new Element('div');pad.style={setProperty(){}};pad.dataset={};pad.getBoundingClientRect=()=>({left:10,top:20,width:112,height:112});const changes=[];const binding=bindDirectionPad(pad,{onChange:d=>changes.push(d)});return {pad,changes,...binding};}
+test('circular pad uses four cardinal sectors and a neutral center',()=>{
+ for(const [x,y,d]of[[56,0,'forward'],[56,112,'back'],[0,56,'left'],[112,56,'right'],[56,56,null],[60,60,null]])assert.equal(directionAtPoint(x,y,112,112),d);
+});
+test('one captured drag changes direction continuously without lifting',()=>{
+ const {pad,changes}=roundPad();assert(pad.emit('pointerdown',{clientX:66,clientY:24}).defaultPrevented);pad.emit('pointermove',{clientX:118,clientY:76});pad.emit('pointermove',{clientX:66,clientY:128});pad.emit('pointermove',{clientX:14,clientY:76});assert.deepEqual(changes,['forward','right','back','left']);pad.emit('pointerup');assert.equal(changes.at(-1),null);assert.equal(pad.dataset.direction,'');
+});
+test('round pad cancel, lost capture and clear-input reset cannot retain movement',()=>{
+ for(const end of ['pointercancel','lostpointercapture','reset']){const {pad,changes,reset}=roundPad();pad.emit('pointerdown',{clientX:66,clientY:24});if(end==='reset')reset();else pad.emit(end);pad.emit('pointermove',{clientX:118,clientY:76});assert.deepEqual(changes,['forward',null]);}
+});
+test('secondary touches cannot steal or release the active circular drag',()=>{
+ const {pad,changes}=roundPad();pad.emit('pointerdown',{clientX:66,clientY:24});pad.emit('pointerdown',{pointerId:2,clientX:118,clientY:76});pad.emit('pointerup',{pointerId:2});assert.deepEqual(changes,['forward']);pad.emit('pointercancel');assert.equal(changes.at(-1),null);
+});
+test('circular direction buttons preserve keyboard hold without competing pointer capture',()=>{
+ const {button,changes}=hold({pointer:false});button.emit('pointerdown');assert.deepEqual(changes,[]);button.emit('keydown',{key:'Enter'});button.emit('keyup',{key:'Enter'});assert.deepEqual(changes,[true,false]);
 });

@@ -10,7 +10,7 @@ export function followCamera(previous,target,dt,reducedMotion=false){
 export function depthOrder(items){return items.map((item,index)=>({...item,index})).sort((a,b)=>a.depth-b.depth||a.index-b.index);}
 
 // Physical feet of two freestanding shelves. All existing routes remain open.
-import {move} from './maze-model.js?v=20261014-layout1';
+import {move} from './maze-model.js?v=20261014-adventure2';
 export const FURNITURE_FOOTPRINTS=[{x:24.8,z:44.8,halfWidth:2.1,halfDepth:.65},{x:39.2,z:44.8,halfWidth:2.1,halfDepth:.65}];
 export function inFurniture(x,z){return FURNITURE_FOOTPRINTS.some(p=>Math.abs(x-p.x)<p.halfWidth+.45&&Math.abs(z-p.z)<p.halfDepth+.45);}
 export function moveAroundFurniture(state,dx,dz){let next=move(state,dx,0);if(inFurniture(next.x,next.z))next=state;const moved=move(next,0,dz);return inFurniture(moved.x,moved.z)?next:moved;}

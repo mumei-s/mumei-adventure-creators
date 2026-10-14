@@ -10,3 +10,29 @@ test('bad imports and duplicate creators do not mutate drafts',()=>{let s=saveEn
 test('unsafe URL and nonfinite order rejected',()=>{for(const url of ['javascript:alert(1)','data:text/html,x','http://example.com','https://name:secret@example.com','https://example.com\\x'])assert.equal(safeURL(url),null);assert.equal(safeURL('assets/../private.png',true),null);assert.equal(safeURL('assets/art.png',true),'assets/art.png');assert.throws(()=>saveEntry(state(),'normal',null,null,{...values,url:'javascript:alert(1)'}));assert.throws(()=>saveEntry(state(),'normal',null,null,{...values,order:NaN}));});
 test('incomplete or wrong schema and unknown creator IDs rejected',()=>{const s=state();s.archive.creators[0].id='outsider';assert.throws(()=>validateState(s));assert.throws(()=>validateCatalog({...catalog,collections:[{id:'normal'}]}));});
 test('storage is exhibition-scoped; source never clears unrelated state or uses secrets',()=>{assert.equal(STORAGE_KEY,'halloween-exhibition:article-editor:v1');const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8');assert.equal(/localStorage\.clear|sessionStorage\.clear|INSIGHT|Authorization|access_token/.test(app),false);});
+
+test('library validation messages are genre-neutral and compatibility IDs stay unchanged',()=>{
+ assert.throws(()=>validateCatalog({}),/schemaVersion: 2 の書庫データ/);
+ const s=saveEntry(state(),'horror',null,null,values);
+ assert.equal(s.catalog.articles[0].collection,'horror');assert.equal(s.catalog.articles[0].kind,'作品');
+ const invalid=cloneForTest(s.catalog);invalid.articles[0].url='javascript:alert(1)';
+ assert.throws(()=>validateCatalog(invalid),/記事のID・書庫・HTTPS URL/);
+ const duplicate=cloneForTest(s.catalog);duplicate.articles.push({...duplicate.articles[0]});
+ assert.throws(()=>validateCatalog(duplicate),/記事IDが重複/);
+ const legacy=cloneForTest(s);legacy.catalog.articles[0].kind='ホラーイラスト';
+ const edited=saveEntry(legacy,'horror',null,0,{...values,title:'変更後'});
+ assert.equal(edited.catalog.articles[0].kind,legacy.catalog.articles[0].kind,'existing metadata is preserved, not migrated');
+ assert.equal(edited.catalog.articles[0].id,legacy.catalog.articles[0].id);
+});
+function cloneForTest(value){return JSON.parse(JSON.stringify(value));}
+
+test('main/editor UI, aria/help source and README contain no genre-only article wording',()=>{
+ const root=new URL('../../',import.meta.url);
+ for(const directory of ['', 'admin/']){
+  for(const item of fs.readdirSync(new URL(directory,root),{withFileTypes:true})){
+   if(!item.isFile()||!/[.](?:js|html|css|md|webmanifest)$/.test(item.name))continue;
+   const path=directory+item.name,source=fs.readFileSync(new URL(path,root),'utf8');
+   assert.doesNotMatch(source,/ホラー記事|ホラーイラスト|ホラー専用/,path);
+  }
+ }
+});

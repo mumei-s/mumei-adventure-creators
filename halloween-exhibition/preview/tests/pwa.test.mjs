@@ -183,12 +183,12 @@ test('release-versioned JS/CSS are coherent and only the exact public release qu
  for(const path of ['index.html','admin/index.html']){
   const text=await readFile(new URL('../'+path,import.meta.url),'utf8');
   for(const match of text.matchAll(/(?:href|src)="(\.\.?\/[^"?]+\.(?:js|css))(\?[^" ]*)?"/g)){
-   assert.equal(match[2],'?v='+(match[1]==='./gallery-controls.css'?'20261014-portrait1':release),match[1]);await access(new URL('../'+(path.startsWith('admin/')?'admin/':'')+match[1],import.meta.url));
+   assert.equal(match[2],'?v='+(match[1]==='./gallery-controls.css'?'20261014-portrait1':path==='admin/index.html'&&match[1]==='./app.js'?'20261014-neutral1':release),match[1]);await access(new URL('../'+(path.startsWith('admin/')?'admin/':'')+match[1],import.meta.url));
   }
  }
  for(const path of ['theater.js','admin/app.js','admin/display-settings.js']){
   const text=await readFile(new URL('../'+path,import.meta.url),'utf8');
-  for(const match of text.matchAll(/from '(\.\.?\/[^'?]+\.js)(\?[^']*)?'/g))assert.equal(match[2],'?v='+release,match[1]);
+  for(const match of text.matchAll(/from '(\.\.?\/[^'?]+\.js)(\?[^']*)?'/g))assert.equal(match[2],'?v='+(path==='admin/app.js'&&match[1]==='./model.js'?'20261014-neutral1':release),match[1]);
  }
  const h=workerHarness();
  for(const path of ['theater.js','slideshow.js','display-mode.js','display-mode.css'])assert.equal((await h.dispatch('fetch',base+path+'?v='+release)).intercepted,true);
@@ -206,4 +206,13 @@ test('portrait stylesheet hotfix has one exact cache-busted URL without expandin
  for(const path of ['theater.js','index.html','admin/app.js','maze/app.js','data/archive.json','unknown.css'])assert.equal((await h.dispatch('fetch',base+path+query)).intercepted,false,path);
  assert.equal((await h.dispatch('fetch',base+'gallery-controls.css'+query+'&token=private')).intercepted,false);
  assert.equal((await h.dispatch('fetch',base+'gallery-controls.css?v=20261014-layout1')).intercepted,false);
+});
+
+
+test('editor neutral-copy module version never expands service-worker caching',async()=>{
+ const editor=await readFile(new URL('../admin/index.html',import.meta.url),'utf8');
+ const app=await readFile(new URL('../admin/app.js',import.meta.url),'utf8');
+ assert.match(editor,/app\.js\?v=20261014-neutral1/);assert.match(app,/model\.js\?v=20261014-neutral1/);
+ const h=workerHarness();
+ for(const path of ['admin/index.html','admin/app.js','admin/model.js','admin/private-draft.json'])assert.equal((await h.dispatch('fetch',base+path+'?v=20261014-neutral1')).intercepted,false);
 });

@@ -1,12 +1,12 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { MONSTERS, nearestMonster, newBattle, battleTurn, intentFor } from '../encounter-model.js';
+import { MONSTERS, nearestMonster, newBattle, battleTurn, intentFor, monsterPose, guidePoint } from '../encounter-model.js';
 import { chooseView, movementVector } from '../view-model.js';
 import { initialState, blocked, move, FEATURES, toWorld } from '../maze-model.js';
 import { NIGHT_LIGHTING } from '../lighting-model.js';
-test('five fictional monsters stand on walkable floor, first is discoverable from entry',()=>{
-  assert.equal(MONSTERS.length,5);assert.equal(nearestMonster(initialState()).id,'pumpkin');
+test('six fictional monsters stand on walkable floor, first is discoverable from entry',()=>{
+  assert.equal(MONSTERS.length,6);assert.equal(nearestMonster(initialState()).id,'pumpkin');
   for(const m of MONSTERS)assert(!blocked(m.x*4,m.z*4,{unlocked:true,horrorAccepted:true}));
   assert(!JSON.stringify(MONSTERS).includes('creatorId'));
 });
@@ -55,7 +55,7 @@ test('2D, encounters, exit, and shared preferences remain first-class controls',
   for(const id of ['view-2d','view-3d','creatures-open','battle-open','lantern'])assert(html.includes(`id="${id}"`));
   assert.equal((html.match(/href="\.\.\/\?mode=halloween"/g)||[]).length,3);
   const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8');
-  assert(app.includes("import { initVisitorPreferences } from '../visitor-preferences.js?v=20261014-layout1'"));
+  assert(app.includes("import { initVisitorPreferences } from '../visitor-preferences.js?v=20261014-adventure2'"));
   assert(app.includes("if(view==='3d')world?.render"));assert(app.includes("stageRenderer.render({canvas:$('fallback')"));
   assert(app.includes("battle=null;battleCanvas=null;battleEffect=null"));assert(app.includes("clearInput();returnFocus?.focus()"));
   assert(!app.includes('setInterval'));assert(!app.includes('AudioContext'));
@@ -71,7 +71,7 @@ test('zombie and vampire have distinct named readable patterns and remain option
   const world=fs.readFileSync(new URL('../world.js',import.meta.url),'utf8');assert(world.includes("definition.id==='zombie'||definition.id==='vampire'"));assert(world.includes('monsterAvailable(spirit.definition'));
 });
 
-test('all five residents have traversable 2D and 3D approach routes after relevant doors open',async()=>{
+test('all six residents have traversable 2D and 3D approach routes after relevant doors open',async()=>{
  const {moveAroundFurniture}=await import('../rpg-model.js');
  for(const movement of [move,moveAroundFurniture])for(const monster of MONSTERS){
   const start={...initialState(),unlocked:true,horrorAccepted:true},queue=[start],seen=new Set([`${start.x},${start.z}`]);let found=false;
@@ -79,4 +79,20 @@ test('all five residents have traversable 2D and 3D approach routes after releva
    for(const [dx,dz]of[[.5,0],[-.5,0],[0,.5],[0,-.5]]){const next=movement(s,dx,dz),key=`${next.x},${next.z}`;if(!seen.has(key)){seen.add(key);queue.push(next);}}
   }assert(found,monster.id);
  }
+});
+
+test('all six residents roam gently on floor and remain static with reduced motion',()=>{
+ const flags={unlocked:true,horrorAccepted:true};for(const m of MONSTERS){const samples=[];for(let t=0;t<=30;t++){const p=monsterPose(m,t,true,flags);assert(!blocked(p.x*4,p.z*4,flags));assert(Math.hypot(p.x-m.x,p.z-m.z)<.21);samples.push(JSON.stringify(p));assert.deepEqual(monsterPose(m,t,false,flags),{x:m.x,z:m.z});}assert(new Set(samples).size>10);}
+});
+test('resident guides expose all species while respecting locked doors and consent',()=>{
+ for(const m of MONSTERS)for(const state of [{},{unlocked:true,horrorAccepted:true}]){const p=guidePoint(m,state);assert(!blocked(p.x*4,p.z*4,state));assert(p.hint.length);assert.equal(state.hasKey,undefined);}
+ assert.equal(guidePoint(MONSTERS.find(m=>m.id==='bat'),{}).z,7.4);assert.equal(guidePoint(MONSTERS.find(m=>m.id==='vampire'),{}).x,5);
+});
+test('golem has a distinct wind-up pattern and three actions can resolve the duel',()=>{
+ let b=newBattle('franken');assert(intentFor(b).includes('足踏み'));b=battleTurn(b,'shine');assert(intentFor(b).includes('ぜんまい'));const energy=b.energy;b=battleTurn(b,'shine');assert.equal(b.energy,energy);assert(intentFor(b).includes('手拍子'));assert.equal(battleTurn(b,'shine').status,'won');
+});
+test('both modes wire six residents and battles require an explicit second choice',()=>{
+ const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8'),world=fs.readFileSync(new URL('../world.js',import.meta.url),'utf8'),html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
+ assert(app.includes('let encounters=true'));assert(app.includes("fight.id='encounter-confirm'"));assert(app.includes("leave.id='encounter-leave'"));assert(html.includes('モンスターに出会ったら'));assert(html.includes('id="direction-pad"'));
+ assert(world.includes('new THREE.Sprite(spriteMaterial)'));assert(world.includes('ART_FILES[definition.id]'));assert(world.includes("definition.id==='franken'"));assert(world.includes('monsterPose(spirit.definition'));assert(world.includes('heldLantern.scale.setScalar(.24)'));
 });

@@ -1,5 +1,5 @@
-import {drawArtSprite,playerPose} from './rpg-art.js?v=20261014-layout1';
-import {drawCreature} from './stage-2d.js?v=20261014-layout1';
+import {drawArtSprite,playerPose} from './rpg-art.js?v=20261014-adventure2';
+import {drawCreature} from './stage-2d.js?v=20261014-adventure2';
 const clamp=x=>Math.max(0,Math.min(1,x));
 function glow(c,x,y,r,color){const g=c.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,color);g.addColorStop(1,'transparent');c.fillStyle=g;c.fillRect(x-r,y-r,r*2,r*2);}
 function ellipse(c,x,y,rx,ry,color){c.fillStyle=color;c.beginPath();c.ellipse(x,y,rx,ry,0,0,Math.PI*2);c.fill();}
@@ -15,7 +15,7 @@ export function renderBattleScene({canvas,art,battle,effect=null,time=0,motion=t
   const attack=effect?.type==='shine',guard=effect?.type==='guard';
   const lunge=attack&&phase<.35?Math.sin(phase/.35*Math.PI)*9:0;
   const recoil=attack&&phase>.25&&phase<.65?Math.sin((phase-.25)/.4*Math.PI)*7:0;
-  const hover=motion?(battle.id==='zombie'?Math.abs(Math.sin(time*.8))*.8:battle.id==='vampire'?Math.sin(time*.9)*1.3:Math.sin(time*1.7)*2):0;
+  const hover=motion?(battle.id==='franken'?Math.abs(Math.sin(time*.65))*1.1:battle.id==='zombie'?Math.abs(Math.sin(time*.8))*.8:battle.id==='vampire'?Math.sin(time*.9)*1.3:Math.sin(time*1.7)*2):0;
   glow(c,px,py-heroSize*.4,heroSize,'#edc47630');glow(c,ex,ey-enemySize*.4,enemySize,'#9f7fe02e');
   ellipse(c,px,py+3,heroSize*.29,8,'#06060ba6');ellipse(c,ex,ey+4,enemySize*.37,10,'#08051099');
   const hero=playerPose(art,'right',motion&&attack&&phase<.35,phase*12);

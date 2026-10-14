@@ -1,9 +1,9 @@
-import { MAP, CELL, FEATURES, blocked, nearby } from './maze-model.js?v=20261014-layout1';
-import { MONSTERS, nearestMonster, monsterAvailable } from './encounter-model.js?v=20261014-layout1';
+import { MAP, CELL, FEATURES, blocked, nearby } from './maze-model.js?v=20261014-adventure2';
+import { MONSTERS, nearestMonster, monsterAvailable, monsterPose } from './encounter-model.js?v=20261014-adventure2';
 
 // Canvas illustration authored for this room; no participant art or remote assets.
-import {drawArtSprite,playerPose} from './rpg-art.js?v=20261014-layout1';
-import {followCamera,depthOrder,clampSceneCamera} from './rpg-model.js?v=20261014-layout1';
+import {drawArtSprite,playerPose} from './rpg-art.js?v=20261014-adventure2';
+import {followCamera,depthOrder,clampSceneCamera} from './rpg-model.js?v=20261014-adventure2';
 const TILE=72,TAU=Math.PI*2;
 export const EXIT={x:8,z:14};
 export function stageCamera(state,width,height){
@@ -109,7 +109,7 @@ export function createStageRenderer({makeCanvas=(w,h)=>{const c=document.createE
       {kind:'exit',x:EXIT.x*TILE,y:EXIT.z*TILE,depth:EXIT.z*TILE},
       {kind:'player',x:player.x,y:player.y,depth:player.y}];
     if(!state.horrorAccepted)objects.push({kind:'door',x:FEATURES.horrorDoor.x*TILE,y:FEATURES.horrorDoor.z*TILE,depth:FEATURES.horrorDoor.z*TILE});
-    if(encounters)for(const m of MONSTERS)if(monsterAvailable(m,state))objects.push({kind:'enemy',id:m.id,x:m.x*TILE,y:m.z*TILE,depth:m.z*TILE,cleared:cleared.includes(m.id)});
+    if(encounters)for(const m of MONSTERS)if(monsterAvailable(m,state)){const p=monsterPose(m,time,motion,state);objects.push({kind:'enemy',id:m.id,x:p.x*TILE,y:p.z*TILE,depth:p.z*TILE,cleared:cleared.includes(m.id)});}
     for(const o of depthOrder(objects)){
       if(Math.abs((o.x-cam.x)*cam.scale)>w*.7+150||Math.abs((o.y-cam.y)*cam.scale)>h*.7+180)continue;
       if(o.kind==='wall')drawWall(c,o,player);
@@ -125,11 +125,12 @@ export function createStageRenderer({makeCanvas=(w,h)=>{const c=document.createE
         if(!drawArtSprite(c,sprite,o.x,o.y-Math.abs(step)*1.5+breathe,86,{scaleX:1+step*.008,scaleY:1-Math.abs(step)*.012}))drawPlayer(c,o.x,o.y-18,lantern);
       }else if(o.kind==='enemy'){
         if(o.cleared){ellipse(c,o.x,o.y,15,8,'#d2ac65');text(c,'✓',o.x,o.y,16,'#362b35');continue;}
-        const idle=motion?(o.id==='zombie'?Math.abs(Math.sin(time*.8))*.8:o.id==='vampire'?Math.sin(time*.9)*1.3:Math.sin(time*1.9+o.x)*2.2):0;ellipse(c,o.x,o.y+3,25,8,'#07091488');
-        if(!drawArtSprite(c,art.images[o.id],o.x,o.y+idle,o.id==='bat'?92:100,{rotation:motion&&o.id==='zombie'?Math.sin(time*.8)*.018:0,scaleX:1+(motion?Math.sin(time*1.4)*.018:0),scaleY:1+(motion?Math.cos(time*1.4)*.012:0)}))drawCreature(c,o.id,o.x,o.y-25,1.1);
+        const idle=motion?(o.id==='franken'?Math.abs(Math.sin(time*.65))*1.1:o.id==='zombie'?Math.abs(Math.sin(time*.8))*.8:o.id==='vampire'?Math.sin(time*.9)*1.3:Math.sin(time*1.9+o.x)*2.2):0;ellipse(c,o.x,o.y+3,25,8,'#07091488');
+        if(!drawArtSprite(c,art.images[o.id],o.x,o.y+idle,o.id==='bat'?92:100,{rotation:motion&&['zombie','franken'].includes(o.id)?Math.sin(time*(o.id==='franken'?.65:.8))*.018:0,scaleX:1+(motion?Math.sin(time*1.4)*.018:0),scaleY:1+(motion?Math.cos(time*1.4)*.012:0)}))drawCreature(c,o.id,o.x,o.y-25,1.1);
       }else{
         ellipse(c,o.x,o.y+2,o.size*.25,7,'#080b1477');
-        if(!drawArtSprite(c,art.images[o.kind],o.x,o.y,o.size)){
+        const foregroundAlpha=o.kind==='bookcase'&&o.y>player.y&&o.y-player.y<o.size*.9&&Math.abs(o.x-player.x)<o.size*.4?.4:1;
+        if(!drawArtSprite(c,art.images[o.kind],o.x,o.y,o.size,{alpha:foregroundAlpha})){
           if(o.kind==='pumpkins')drawPumpkin(c,o.x,o.y-20,.9);
           else if(o.kind==='bookcase')shelf(c,o.x,o.y-20,110);
           else if(o.kind==='column'){rounded(c,o.x-14,o.y-100,28,100,4,'#4b4c5f','#a1a0a0');candle(c,o.x,o.y-90,.9);}
@@ -146,10 +147,10 @@ export function createStageRenderer({makeCanvas=(w,h)=>{const c=document.createE
     c.drawImage(shade,0,0,w,h);
     if(lantern)glow(c,px+18*cam.scale,py-36*cam.scale,85*cam.scale,'#e8ad5933');
     if(motion&&lantern)for(let i=0;i<19;i++){const angle=i*2.39996+time*.035,rad=30+(i*31%130),x=px+Math.cos(angle)*rad*cam.scale,y=py-20+Math.sin(angle*.8)*rad*cam.scale+Math.sin(time*.4+i)*4;ellipse(c,x,y,.8+(i%2)*.5,.8+(i%2)*.5,'#d8cb9e45');}
-    const n=nearby(state),nearMonster=encounters?nearestMonster(state,cleared):null;
+    const n=nearby(state),nearMonster=encounters?nearestMonster(state,cleared,{time,motion}):null;
     const cue={key:'E · 鍵を手に取る',gate:state.hasKey?'E · 書庫をひらく':'E · 鍵が必要です',article:'E · 展示を見る',horror:'E · 肖像の扉','horror-art':'E · 展示を見る',vault:'E · 書庫を調べる'}[n];
     const nearExit=Math.hypot(state.x-EXIT.x*CELL,state.z-EXIT.z*CELL)<3.2;
-    const hint=nearExit?'E · 名鑑へ戻る':cue||(nearMonster?'B · 住人と対戦':null);
+    const hint=nearExit?'E · 名鑑へ戻る':cue||(nearMonster?'B · 話しかける':null);
     if(hint){const yy=Math.min(h-28,py+35*cam.scale),ww=Math.min(w-24,150);rounded(c,Math.max(12,Math.min(w-ww-12,px-ww/2)),yy-14,ww,28,9,'#101523ef','#c8ad6c');text(c,hint,Math.max(12+ww/2,Math.min(w-12-ww/2,px)),yy,12,'#f1dcae');}
     if(!state.hasKey)drawWayfinder(c,FEATURES.key,'鍵の間','#efd09b',cam,w,h);else if(!state.unlocked)drawWayfinder(c,FEATURES.gate,'書庫の扉','#efd09b',cam,w,h);else drawWayfinder(c,FEATURES.vault,'浮遊書庫','#a9d1b3',cam,w,h);
     c.strokeStyle='#c6a77255';c.lineWidth=1;c.strokeRect(5.5,5.5,w-11,h-11);return true;

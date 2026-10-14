@@ -1,10 +1,10 @@
 // Original, locally bundled Halloween RPG art. No external/franchise art requests.
 export const ART_FILES = {
-  playerAtlas:'lantern-keeper-atlas.webp',pumpkin:'pumpkin.webp',ghost:'ghost.webp',bat:'bat.webp',zombie:'zombie.webp',vampire:'vampire.webp',battle:'battle-library.webp',
+  playerAtlas:'lantern-keeper-atlas.webp',pumpkin:'pumpkin.webp',ghost:'ghost.webp',bat:'bat.webp',zombie:'zombie.webp',vampire:'vampire.webp',franken:'franken.webp',battle:'battle-library.webp',
   bookcase:'bookcase.webp',window:'window.webp',column:'column.webp',pumpkins:'pumpkins.webp',floor:'floor.webp',
 };
-export const ART_BOUNDS={zombie:[106,34,330,443],vampire:[102,35,381,439],pumpkin:[41,28,441,457],ghost:[101,29,322,450],bat:[24,56,470,360],bookcase:[10,14,437,634],window:[19,14,309,623],column:[24,8,285,626],pumpkins:[19,17,619,319]};
-export const ART_ANCHORS={zombie:{anchorX:(284-106)/330,anchorY:1},vampire:{anchorX:(285-102)/381,anchorY:1}};
+export const ART_BOUNDS={franken:[51,27,414,457],zombie:[106,34,330,443],vampire:[102,35,381,439],pumpkin:[41,28,441,457],ghost:[101,29,322,450],bat:[24,56,470,360],bookcase:[10,14,437,634],window:[19,14,309,623],column:[24,8,285,626],pumpkins:[19,17,619,319]};
+export const ART_ANCHORS={franken:{anchorX:(271-51)/414,anchorY:(481-27)/457},zombie:{anchorX:(284-106)/330,anchorY:1},vampire:{anchorX:(285-102)/381,anchorY:1}};
 export const PLAYER_ATLAS={cell:256,columns:4,rows:4,anchorX:128,anchorY:238,contentHeight:218,directions:['down','left','right','up']};
 export function createArtLibrary({loadImage=src=>new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=reject;image.src=src;})}={}){
   const images={},failures=[];let version=0;

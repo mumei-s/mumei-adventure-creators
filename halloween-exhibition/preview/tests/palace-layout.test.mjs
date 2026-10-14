@@ -40,3 +40,5 @@ test('palace scene and gate share one cover-scaled artwork coordinate system',()
 });
 
 test("narrow eerie scenery stays above invitation copy",async()=>{const css=await readFile(new URL("../palace-entrance.css",import.meta.url),"utf8");assert.equal((css.match(/\.palace-eerie-corner\{left:1%;top:30%;bottom:auto;width:90px;height:100px\}/g)||[]).length,2);assert.doesNotMatch(css,/bottom:17%;width:109px/);});
+
+test("gate captions render above noninteractive creature layers",async()=>{const css=await readFile(new URL("../palace-entrance.css",import.meta.url),"utf8");assert.equal((css.match(/\.palace-gate-wrap\{z-index:10\}/g)||[]).length,2);});

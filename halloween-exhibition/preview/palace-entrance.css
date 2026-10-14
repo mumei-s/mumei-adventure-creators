@@ -171,6 +171,7 @@ body[data-mode=normal] .visitor-preferences>.pwa-open{background:#edf4e8;color:#
  .palace-gate-invitation{left:-65%;right:-65%;font-size:17px;padding:6px 10px;top:calc(100% + 10px)}
  .palace-gate-hint{left:-60%;right:-60%;font-size:10px;padding:4px 8px;top:calc(100% + 45px)}
  .palace-scene-note{font-size:10px;padding:4px 12px;bottom:7px}
+ .palace-gate-wrap{z-index:10}
  .palace-eerie-corner{left:1%;top:30%;bottom:auto;width:90px;height:100px}
  .palace-bats span:nth-child(1){left:10%;top:27%}.palace-bats span:nth-child(2){right:13%;top:21%}.palace-bats span:nth-child(3){right:25%;top:31%}
  .theater .palace-return-row{margin-inline:12px;gap:8px}.theater .palace-return-row .horror-entrance{font-size:10px;padding-inline:10px}.palace-return{font-size:11px;padding-inline:12px}
@@ -187,6 +188,7 @@ body[data-mode=normal] .visitor-preferences>.pwa-open{background:#edf4e8;color:#
  .palace-gate-invitation{left:-65%;right:-65%;font-size:17px;padding:6px 10px;top:calc(100% + 10px)}
  .palace-gate-hint{left:-60%;right:-60%;font-size:10px;padding:4px 8px;top:calc(100% + 45px)}
  .palace-scene-note{font-size:10px;padding:4px 12px;bottom:7px}
+ .palace-gate-wrap{z-index:10}
  .palace-eerie-corner{left:1%;top:30%;bottom:auto;width:90px;height:100px}
  .palace-bats span:nth-child(1){left:10%;top:27%}.palace-bats span:nth-child(2){right:13%;top:21%}.palace-bats span:nth-child(3){right:25%;top:31%}
  .theater .palace-return-row{margin-inline:12px;gap:8px}.theater .palace-return-row .horror-entrance{font-size:10px;padding-inline:10px}.palace-return{font-size:11px;padding-inline:12px}

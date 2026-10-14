@@ -116,7 +116,7 @@ function updateSlideshowState(state){
  if($('slideshow-status').textContent!==status)$('slideshow-status').textContent=status;
 }
 let slideshowStorage=null;try{slideshowStorage=localStorage;}catch{}
-slideshow=createSlideshowController({timers:{setTimeout,clearTimeout},storage:slideshowStorage,onState:updateSlideshowState,onAdvance:async control=>{
+slideshow=createSlideshowController({timers:{setTimeout:(fn,delay)=>setTimeout(fn,delay),clearTimeout:id=>clearTimeout(id)},storage:slideshowStorage,onState:updateSlideshowState,onAdvance:async control=>{
  if(!archive||document.hidden||reduced.matches||root.dataset.motionPaused==='true'||document.querySelector('dialog[open]')||rouletteRunning)return;
  await navigate(currentIndex+1,{automatic:true,isCurrent:control.isCurrent});
 }});

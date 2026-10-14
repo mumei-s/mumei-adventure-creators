@@ -54,7 +54,7 @@ class Element {
   querySelector(selector) { return this.querySelectorAll(selector)[0] || null; }
 }
 
-async function harness({ data = archive, reduced = true, storageThrows = false, storageWriteThrows = false, saved = null, savedMode = null, urlSearch = '', returnState = null, autoLoad = true } = {}) {
+async function harness({ data = archive, reduced = true, storageThrows = false, storageWriteThrows = false, saved = null, savedMode = null, urlSearch = '', returnState = null, autoLoad = true, strictTimerReceiver = false } = {}) {
   let now = 0, seq = 0; const timers = new Map(), storage = new Map(saved ? [['halloween-yearbook:night-doors:v1', saved]] : []);
   if (savedMode !== null) storage.set('halloween-yearbook:display-mode:v1', savedMode);
   const queue = (fn, delay = 0) => { const id = ++seq; timers.set(id, { at: now + delay, fn }); return id; };
@@ -78,7 +78,10 @@ async function harness({ data = archive, reduced = true, storageThrows = false, 
   };
   const requests = [], storageWrites = [], motionInitializations = [], viewCalls = [];
   const context = vm.createContext({ createSlideshowController, document: doc, initVisitorPreferences:()=>({}), initSceneMotion:root=>{motionInitializations.push(root);const dock=doc.createElement('div');dock.className='scene-controls';root.append(dock);return {setView(x,y){viewCalls.push([x,y]);}};}, validateArchive, safeURL, normalizeSearch,
-    matchMedia: () => ({ matches: reduced }), setTimeout: queue, clearTimeout: id => timers.delete(id),
+    matchMedia: () => ({ matches: reduced }),
+    // Native browser timers reject a plain-object receiver (Illegal invocation).
+    setTimeout: function(fn, delay) { if (strictTimerReceiver && this != null && this.document !== doc) throw new TypeError('Illegal invocation'); return queue(fn, delay); },
+    clearTimeout: function(id) { if (strictTimerReceiver && this != null && this.document !== doc) throw new TypeError('Illegal invocation'); return timers.delete(id); },
     URLSearchParams, location:{search:urlSearch},sessionStorage:{getItem(){return returnState},setItem(k,v){context.savedReturn={key:k,value:v};}},
     Date: class extends Date { static now() { return now; } },
     localStorage: { getItem(k) { if (storageThrows) throw Error('blocked'); return storage.get(k) || null; }, setItem(k, v) { storageWrites.push({key:k,value:v}); if (storageThrows || storageWriteThrows) throw Error('blocked'); storage.set(k, v); } },
@@ -921,4 +924,21 @@ test('normal history shows only genuinely viewed creators, without lights or a c
  assert.match(h.$('passport-content').textContent,/Pajama de mama/);assert.doesNotMatch(h.$('passport-content').textContent,/光|封印/);
  sealEvent(h,'light-1');assert.deepEqual(activeSeals(h),[]);
  const item=h.$('passport-content').querySelector('.passport-stamp');item.click();await h.tick(0);assert.equal(h.api.state.currentIndex,3);assert.equal(h.$('passport').open,false);
+});
+
+
+test('slideshow ON, speed changes and OFF preserve the native browser timer receiver',async()=>{
+ const h=await harness({reduced:false,strictTimerReceiver:true});
+ assert.doesNotThrow(()=>h.$('slideshow-toggle').click());
+ assert.equal(h.$('slideshow-toggle').getAttribute('aria-pressed'),'true');
+ for(const seconds of [5,10,20]){
+  h.$('slideshow-speed').value=String(seconds);
+  assert.doesNotThrow(()=>h.$('slideshow-speed').dispatch('change'));
+  const before=h.api.state.currentIndex;
+  await h.tick(seconds*1000+650);
+  assert.equal(h.api.state.currentIndex,(before+1)%9);
+ }
+ assert.doesNotThrow(()=>h.$('slideshow-toggle').click());
+ assert.equal(h.$('slideshow-toggle').getAttribute('aria-pressed'),'false');
+ const last=h.api.state.currentIndex;await h.tick(60000);assert.equal(h.api.state.currentIndex,last);
 });

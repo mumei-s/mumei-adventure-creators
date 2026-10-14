@@ -150,6 +150,44 @@ export function createWorld({ canvas, onReady } = {}) {
   const mobile=new THREE.Group();mobile.position.set(center.x,3.45,center.z);scene.add(mobile);
   for(let i=0;i<3;i++){const ring=mesh(new THREE.TorusGeometry(.7+i*.29,.018,5,70),brass,0,0,0,mobile);ring.rotation.set(i*.65+.5,i*.5,.3+i*.7);}
   for(let i=0;i<9;i++){const a=i*2.4;const o=mesh(new THREE.OctahedronGeometry(.065+(i%3)*.04),i%2?brass:trim[0],Math.cos(a)*1.3,Math.sin(a*.8)*.55,Math.sin(a)*1.3,mobile);animated.push({node:o,kind:'facet',seed:i,base:o.position.y});}
+  // Authored environmental installation: blank folios spiral over the vault.
+  // They are physical covers, spines and bowed leaves, not submitted articles.
+  const vaultPoint=point(FEATURES.vault),folios=new THREE.Group(),folioMotion=[];
+  folios.name='Environmental floating folio installation';
+  folios.position.set(vaultPoint.x,0,vaultPoint.z);scene.add(folios);
+  const paper=mat('#e8d6ae',{side:THREE.DoubleSide,roughness:.93});
+  const pageEdge=mat('#b9a680',{roughness:.9});
+  const bookCovers=[mat('#274e4c'),mat('#694135'),mat('#393a53')];
+  function bowedLeaf(side,offset=0){
+    const geometry=new THREE.PlaneGeometry(.78,1.04,12,2),pos=geometry.attributes.position;
+    for(let n=0;n<pos.count;n++){
+      const u=(pos.getX(n)+.39)/.78,v=pos.getY(n);
+      pos.setXYZ(n,side*(.025+u*.78),.09+Math.sin(u*Math.PI)*.16+u*.15+offset,v);
+    }
+    geometry.computeVertexNormals();return geometry;
+  }
+  for(let i=0;i<15;i++){
+    const a=i*2.39996,r=2.2+(i%4)*.92,y=2.65+i*.205;
+    const book=new THREE.Group();book.position.set(Math.cos(a)*r,y,Math.sin(a)*r);
+    book.rotation.set(.27+Math.sin(a)*.22,-a+Math.PI/2,Math.cos(a)*.16);folios.add(book);
+    const cover=bookCovers[i%bookCovers.length];
+    for(const side of [-1,1]){
+      const board=box(.87,.06,1.16,side*.44,.055,0,cover,book);board.rotation.z=side*.19;
+      const edge=box(.79,.07,1.05,side*.42,.11,0,pageEdge,book);edge.rotation.z=side*.19;
+      for(let leaf=0;leaf<3;leaf++)mesh(bowedLeaf(side,leaf*.012),paper,0,0,0,book);
+      const corner=box(.12,.024,.12,side*.78,.235,.5,gold,book);corner.rotation.z=side*.19;
+      box(.018,.025,1.08,side*.8,.25,0,brass,book);
+    }
+    box(.072,.15,1.17,0,.045,0,cover,book);
+    const ribbon=box(.035,.014,.52,.045,.16,.66,gold,book);ribbon.rotation.x=-.17;
+    folioMotion.push({node:book,baseY:y,baseX:book.rotation.x,baseZ:book.rotation.z,phase:a});
+  }
+  // Low concentric brass inlays anchor the installation without blocking paths.
+  for(const r of [1.45,2.2,5.5]){
+    const orbit=mesh(new THREE.TorusGeometry(r,.025,6,96),gold,vaultPoint.x,.018,vaultPoint.z);orbit.rotation.x=Math.PI/2;
+  }
+  const vaultGlow=new THREE.PointLight('#ffcc82',22,16,2);vaultGlow.position.set(vaultPoint.x,4.4,vaultPoint.z);scene.add(vaultGlow);
+  sign('THE FLOATING ARCHIVE','An installation of unwritten pages',vaultPoint.x,1.75,vaultPoint.z+5.6,0,2.8);
   const particles=new THREE.BufferGeometry(),positions=[];
   for(let i=0;i<150;i++){const x=1+((i*17)%Math.max(1,cols-2)),z=1+((i*13)%Math.max(1,rows-2));if(walk(x,z))positions.push(x*CELL+Math.sin(i)*1.5,.5+(i%29)/9,z*CELL+Math.cos(i)*1.5);}
   particles.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));resources.add(particles);
@@ -182,6 +220,8 @@ export function createWorld({ canvas, onReady } = {}) {
     const collected=Array.isArray(collection)?collection.some(v=>typeof v==='string'?v.includes('key'):v?.id?.includes('key')):!!collection?.key;
     key.visible=!collected&&!hasKey&&!unlocked;horrorDoor.position.y=horrorAccepted?5.5:0;keyLight.visible=key.visible;
     if(motion){key.rotation.y=t*.8;key.position.y=1.57+Math.sin(t*1.4)*.09;mobile.rotation.y=t*.085;mobile.rotation.z=Math.sin(t*.28)*.1;dust.rotation.y=Math.sin(t*.025)*.006;
+      folios.rotation.y=Math.sin(t*.085)*.085;
+      for(const f of folioMotion){f.node.position.y=f.baseY+Math.sin(t*.65+f.phase)*.12;f.node.rotation.x=f.baseX+Math.sin(t*.48+f.phase)*.035;f.node.rotation.z=f.baseZ+Math.cos(t*.4+f.phase)*.04;}
       for(const a of animated){if(a.kind==='lantern')a.node.rotation.z=Math.sin(t*.65+a.seed)*.045;else{a.node.rotation.y=t*.4+a.seed;a.node.position.y=a.base+Math.sin(t*.75+a.seed)*.09;}}
     }
     renderer.render(scene,camera);

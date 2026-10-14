@@ -63,6 +63,13 @@
       "avatar": "assets/portraits/soh_style_work.jpg",
       "avatarSource": "https://assets.st-note.com/production/uploads/images/320068478/profile_9e897d69b1d229aac8f4ed9286831c28.jpeg?fit=bounds&format=jpeg&quality=85&width=330",
       "profileURL": "https://note.com/soh_style_work"
+    },
+    {
+      "id": "clever_hare2654",
+      "name": "カモミール",
+      "avatar": "https://assets.st-note.com/production/uploads/images/292743934/profile_f29fb47a7423a0ddcbd3f4bd4b498a35.png?fit=bounds&format=jpeg&quality=85&width=330",
+      "avatarSource": "https://assets.st-note.com/production/uploads/images/292743934/profile_f29fb47a7423a0ddcbd3f4bd4b498a35.png?fit=bounds&format=jpeg&quality=85&width=330",
+      "profileURL": "https://note.com/clever_hare2654"
     }
   ],
   "years": [
@@ -166,19 +173,25 @@
         },
         {
           "creatorId": "imota14",
-          "title": "作品準備中",
+          "title": "死神と貴公子と、顔に張り紙を貼った私。",
           "theme": "letter",
-          "submissionStatus": "pending",
+          "submissionStatus": "submitted",
           "tags": [
             "参加者",
-            "作品準備中"
+            "ハロウィン"
           ],
           "links": [
+            {
+              "title": "死神と貴公子と、顔に張り紙を貼った私。（note記事）",
+              "url": "https://note.com/imota14/n/n618813fb0e89"
+            },
             {
               "title": "noteプロフィールを見る",
               "url": "https://note.com/imota14"
             }
-          ]
+          ],
+          "image": "https://assets.st-note.com/production/uploads/images/324418285/rectangle_large_type_2_8f476e89aa9927c037214fe8d447d6ae.jpg?width=4000&height=4000&fit=bounds&format=jpg&quality=90",
+          "imageAlt": "たけちの記事「死神と貴公子と、顔に張り紙を貼った私。」の見出し画像"
         },
         {
           "creatorId": "fond_holly3483",
@@ -239,6 +252,29 @@
             "作品準備中"
           ],
           "links": []
+        },
+        {
+          "doorId": "chamomile-halloween-2026",
+          "creatorId": "clever_hare2654",
+          "title": "「🧙‍♀Happy Halloween🎃」｜ハロウィン企画に参加してみた話",
+          "theme": "moon",
+          "submissionStatus": "submitted",
+          "tags": [
+            "参加者",
+            "ハロウィン"
+          ],
+          "links": [
+            {
+              "title": "「🧙‍♀Happy Halloween🎃」｜ハロウィン企画に参加してみた話（note記事）",
+              "url": "https://note.com/clever_hare2654/n/nf731501cfb0e"
+            },
+            {
+              "title": "noteプロフィールを見る",
+              "url": "https://note.com/clever_hare2654"
+            }
+          ],
+          "image": "https://assets.st-note.com/production/uploads/images/324417758/rectangle_large_type_2_71b577e1ed8ffdaeecd1af87bd58ecab.jpeg?width=1200",
+          "imageAlt": "カモミールの記事「「🧙‍♀Happy Halloween🎃」｜ハロウィン企画に参加してみた話」の見出し画像"
         }
       ]
     }

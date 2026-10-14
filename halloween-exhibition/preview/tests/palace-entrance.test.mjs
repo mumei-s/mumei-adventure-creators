@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { PALACE_OPENING_MS, createPalaceEntranceController, initPalaceEntrance } from '../palace-entrance.js';
+import { PALACE_OPENING_MS, PALACE_WALK_MS, createPalaceEntranceController, initPalaceEntrance } from '../palace-entrance.js';
 
 class FakeTimers {
   now = 0;
@@ -130,24 +130,26 @@ function dom({ mode = 'halloween', paused = false, reduced = false, disabled = f
 // Pure transition tests deliberately invoke cancelled callbacks as a hostile scheduler.
 test('Halloween waits at the palace indefinitely; normal starts in the gallery', () => {
   const { controller, timers, states } = setup();
-  assert.deepEqual(controller.getState(), { mode: 'halloween', view: 'palace', opening: false });
+  assert.deepEqual(controller.getState(), { mode: 'halloween', view: 'palace', opening: false, walking: false });
   timers.tick(60_000);
   assert.equal(states.length, 1);
   assert.equal(timers.jobs.size, 0);
   assert.equal(states[0].focus, false);
-  assert.deepEqual(setup({ initialMode: 'normal' }).controller.getState(), { mode: 'normal', view: 'gallery', opening: false });
+  assert.deepEqual(setup({ initialMode: 'normal' }).controller.getState(), { mode: 'normal', view: 'gallery', opening: false, walking: false });
   assert.equal(setup({ initialMode: 'invalid' }).controller.getState().mode, 'halloween');
 });
 
-test('one click opens in at most 650 ms, keeping the palace visible until completion', () => {
+test('one click opens the leaves then takes one short step before revealing articles', () => {
   const { controller, timers, states } = setup();
   assert.ok(PALACE_OPENING_MS > 0 && PALACE_OPENING_MS <= 650);
   controller.enter();
-  assert.deepEqual(controller.getState(), { mode: 'halloween', view: 'palace', opening: true });
+  assert.deepEqual(controller.getState(), { mode: 'halloween', view: 'palace', opening: true, walking: false });
   timers.tick(PALACE_OPENING_MS - 1);
   assert.equal(controller.getState().view, 'palace');
   timers.tick(1);
-  assert.deepEqual(controller.getState(), { mode: 'halloween', view: 'gallery', opening: false });
+  assert.equal(controller.getState().walking,true);assert.equal(controller.getState().view,'palace');
+  timers.tick(PALACE_WALK_MS);
+  assert.deepEqual(controller.getState(), { mode: 'halloween', view: 'gallery', opening: false, walking: false });
   assert.equal(states.at(-1).focus, true);
   assert.equal(timers.jobs.size, 0);
 });
@@ -157,12 +159,12 @@ test('repeated clicks never delay completion, multiply timers or refocus the gal
   controller.enter();
   timers.tick(200);
   for (let i = 0; i < 30; i++) controller.enter();
-  timers.tick(PALACE_OPENING_MS - 200);
+  timers.tick(PALACE_OPENING_MS + PALACE_WALK_MS - 200);
   assert.equal(controller.getState().view, 'gallery');
   controller.enter();
   assert.equal(states.filter(state => state.focus).length, 1);
   assert.equal(timers.maxPending, 1);
-  assert.equal(states.length, 3);
+  assert.equal(states.length, 4);
 });
 
 test('home cancels timer zero and a stale callback cannot complete a newer opening', () => {
@@ -174,7 +176,7 @@ test('home cancels timer zero and a stale callback cannot complete a newer openi
   timers.fireCancelled(0);
   assert.equal(controller.getState().opening, true);
   assert.equal(controller.getState().view, 'palace');
-  timers.tick(PALACE_OPENING_MS);
+  timers.tick(PALACE_OPENING_MS + PALACE_WALK_MS);
   assert.equal(controller.getState().view, 'gallery');
 });
 
@@ -194,7 +196,7 @@ test('switching modes cancels transitions, preserves a same-mode visit, and reje
   const { controller, timers } = setup();
   controller.enter();
   assert.equal(controller.setMode('normal'), true);
-  assert.deepEqual(controller.getState(), { mode: 'normal', view: 'gallery', opening: false });
+  assert.deepEqual(controller.getState(), { mode: 'normal', view: 'gallery', opening: false, walking: false });
   timers.fireCancelled(0);
   controller.home();
   assert.equal(controller.getState().view, 'gallery');
@@ -239,7 +241,7 @@ test('destroy resets an interrupted opening and prevents every later transition'
   const { controller, timers, states } = setup();
   controller.enter();
   controller.destroy();
-  assert.deepEqual(controller.getState(), { mode: 'halloween', view: 'palace', opening: false });
+  assert.deepEqual(controller.getState(), { mode: 'halloween', view: 'palace', opening: false, walking: false });
   const count = states.length;
   controller.enter();
   controller.home();
@@ -294,7 +296,7 @@ test('DOM opening updates only its state, then reveals the gallery before focusi
   assert.equal(f.gate.getAttribute('aria-busy'), 'true');
   assert.match(f.status.textContent, /開いています/);
   assert.equal(f.heading.focusCalls.length, 0);
-  f.timers.tick(PALACE_OPENING_MS);
+  f.timers.tick(PALACE_OPENING_MS + PALACE_WALK_MS);
   assert.equal(f.root.dataset.palaceState, 'gallery');
   assert.equal(f.palace.hidden, true);
   assert.equal(f.palace.inert, true);
@@ -307,7 +309,7 @@ test('DOM opening updates only its state, then reveals the gallery before focusi
   assert.match(f.status.textContent, /展示室へようこそ/);
   assert.equal(f.heading.getAttribute('tabindex'), '-1');
   assert.deepEqual(f.heading.focusCalls, [{ preventScroll: true }]);
-  assert.deepEqual(f.views, [{ view: 'palace', opening: false }, { view: 'palace', opening: true }, { view: 'gallery', opening: false }]);
+  assert.deepEqual(f.views, [{ view: 'palace', opening: false }, { view: 'palace', opening: true }, { view: 'palace', opening: true }, { view: 'gallery', opening: false }]);
   f.back.click();
   assert.equal(f.root.dataset.palaceState, 'palace');
   assert.equal(f.gallery.hidden, true);
@@ -361,7 +363,7 @@ test('native buttons retain standard Enter/Space activation without custom keybo
   f.gate.click(); // This is the browser's common activation path for pointer, Enter and Space.
   f.gate.click();
   assert.equal(f.timers.jobs.size, 1);
-  f.timers.tick(PALACE_OPENING_MS);
+  f.timers.tick(PALACE_OPENING_MS + PALACE_WALK_MS);
   assert.equal(f.heading.focusCalls.length, 1);
 });
 

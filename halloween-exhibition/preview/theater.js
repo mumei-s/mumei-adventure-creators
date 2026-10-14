@@ -1,4 +1,4 @@
-import { initPalaceEntrance } from './palace-entrance.js?v=20261014-palace1';
+import { initPalaceEntrance } from './palace-entrance.js?v=20261014-palace2';
 import { initDisplayMode } from './display-mode.js?v=20261014-layout1';
 import { createSlideshowController } from './slideshow.js?v=20261014-layout1';
 import { initVisitorPreferences } from './visitor-preferences.js?v=20261014-layout1';
@@ -148,6 +148,7 @@ $('stage').addEventListener('pointercancel',()=>{touch=null;});
 $('retry').addEventListener('click',load);$('mode-halloween').addEventListener('click',()=>setMode('halloween'));$('mode-normal').addEventListener('click',()=>setMode('normal'));$('horror-entrance').addEventListener('click',()=>{try{sessionStorage.setItem(returnStateKey,JSON.stringify({year:currentYear,creatorId:current()?.creatorId,doorId:current()?.doorId,search,activeTag,rosterPage}));}catch{}});setMode(displayMode,{save:false});
 root.addEventListener('yearbook:seal-collected',event=>{const id=event.detail?.id;if(displayMode!=='halloween'||!currentYear||!sealIDs.includes(id)||seals().includes(id))return;progress.seals[key()]=[...seals(),id];persist();refreshSeals();});
 initVisitorPreferences({triggerParent:document.querySelector('.header-actions'),onBrightness:value=>root.style.setProperty('--visitor-brightness',String(value/100))});
+const installControl=$('atelier-install-open');if(installControl)document.querySelector('.visitor-preferences')?.append(installControl);
 initDisplayMode({controlsParent:document.querySelector('.visitor-preferences'),page:'gallery'});
 const sceneMotion=initSceneMotion(root,{controlsParent:document.querySelector('.visitor-preferences')});
 function updateSlideshowState(state){

@@ -1,5 +1,6 @@
 /** A visitor-initiated palace gate. It never changes articles or opens their links. */
 export const PALACE_OPENING_MS = 600;
+export const PALACE_WALK_MS = 550;
 
 const validMode = value => value === 'halloween' || value === 'normal';
 const browserTimers = {
@@ -19,8 +20,8 @@ export function createPalaceEntranceController({
 } = {}) {
   let mode = validMode(initialMode) ? initialMode : 'halloween';
   let view = mode === 'normal' ? 'gallery' : 'palace';
-  let opening = false, disposed = false, timer = null, version = 0, pendingFocus = false;
-  const getState = () => ({ mode, view, opening });
+  let opening = false, walking = false, disposed = false, timer = null, version = 0, pendingFocus = false;
+  const getState = () => ({ mode, view, opening, walking });
   const notify = (focus = false, reason = 'navigation') => {
     onChange(getState(), { focus: Boolean(focus && !hidden()), reason });
     return getState();
@@ -34,7 +35,7 @@ export function createPalaceEntranceController({
   function finish({ focus = pendingFocus } = {}) {
     if (disposed || !opening) return getState();
     cancelPending();
-    opening = false;
+    opening = false; walking = false;
     view = 'gallery';
     return notify(focus);
   }
@@ -45,7 +46,7 @@ export function createPalaceEntranceController({
     if (opening && !skipMotion) return getState();
     cancelPending();
     if (skipMotion) {
-      opening = false;
+      opening = false; walking = false;
       view = 'gallery';
       return notify(focus);
     }
@@ -58,14 +59,21 @@ export function createPalaceEntranceController({
     timer = timers.setTimeout(() => {
       if (disposed || token !== version || !opening) return;
       timer = null;
-      finish();
+      walking = true;
+      notify(false);
+      if (disposed || token !== version || !opening) return;
+      timer = timers.setTimeout(() => {
+        if (disposed || token !== version || !opening) return;
+        timer = null;
+        finish();
+      }, PALACE_WALK_MS);
     }, PALACE_OPENING_MS);
     return getState();
   }
   function home({ focus = true } = {}) {
     if (disposed) return getState();
     cancelPending();
-    opening = false;
+    opening = false; walking = false;
     view = mode === 'normal' ? 'gallery' : 'palace';
     return notify(focus);
   }
@@ -74,7 +82,7 @@ export function createPalaceEntranceController({
     if (value === mode) return true;
     cancelPending();
     mode = value;
-    opening = false;
+    opening = false; walking = false;
     view = mode === 'normal' ? 'gallery' : 'palace';
     notify(false, 'mode');
     return true;
@@ -90,7 +98,7 @@ export function createPalaceEntranceController({
     const wasOpening = opening;
     cancelPending();
     disposed = true;
-    opening = false;
+    opening = false; walking = false;
     // Disposing during an opening leaves a closed, usable view, not aria-busy.
     if (wasOpening) notify(false, 'destroy');
   }
@@ -99,9 +107,11 @@ export function createPalaceEntranceController({
 }
 
 const instances = new WeakMap();
-const statusText = ({ mode, view, opening }) => mode === 'normal'
+const statusText = ({ mode, view, opening, walking }) => mode === 'normal'
   ? '通常展示を表示しています。'
-  : opening
+  : walking
+    ? '宮殿の中へ進んでいます。まもなく記事の展示室です。'
+    : opening
     ? '大きな扉を開いています。まもなく記事の展示室へ入ります。'
     : view === 'gallery'
       ? '記事の展示室へようこそ。気になる扉を選んでください。'
@@ -109,7 +119,7 @@ const statusText = ({ mode, view, opening }) => mode === 'normal'
 
 /**
  * Attach to native buttons and the two distinct views. The host owns loading
- * disabled states. Only this gate's door leaves should animate in CSS.
+ * disabled states. The door leaves open first, followed by one bounded visitor-triggered step forward.
  */
 export function initPalaceEntrance({ root, initialMode = 'halloween', onViewChange = () => {}, timers } = {}) {
   if (!root?.querySelector || !root.dataset) return null;
@@ -168,7 +178,7 @@ export function initPalaceEntrance({ root, initialMode = 'halloween', onViewChan
       const galleryVisible = state.view === 'gallery';
       const hiddenView = galleryVisible ? palace : gallery;
       const restoreHiddenFocus = reason === 'mode' && hiddenView.contains(doc?.activeElement);
-      root.dataset.palaceState = state.opening ? 'opening' : state.view;
+      root.dataset.palaceState = state.walking ? 'walking' : state.opening ? 'opening' : state.view;
       show(palace, !galleryVisible);
       show(gallery, galleryVisible);
       back.hidden = state.mode !== 'halloween' || !galleryVisible;

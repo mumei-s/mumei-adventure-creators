@@ -1,5 +1,9 @@
 .preset-field-label{display:block;font-weight:800;margin:12px 0 6px}
 #style-preset-select[hidden]{display:none!important}
+.sample-thumb[data-preview-state=loading]::after,.sample-thumb[data-preview-state=retrying]::after,.sample-thumb[data-preview-state=failed]::after{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:2px;background:#fff2da;color:#59361f;font-size:.6rem;line-height:1.2;pointer-events:none}
+.sample-thumb[data-preview-state=loading]::after{content:'読込中'}
+.sample-thumb[data-preview-state=retrying]::after{content:'再読込中'}
+.sample-thumb[data-preview-state=failed]::after{content:'通信を確認';background:#ffe6c9}
 .style-preset-trigger{width:100%;min-height:48px;padding:12px 14px;border:2px solid #805435;border-radius:10px;background:#fffaf0;color:#2f2017;font:inherit;font-weight:800;text-align:left;cursor:pointer}
 .style-preset-trigger:focus-visible{outline:3px solid #d8781d;outline-offset:3px}
 #picker[data-question=medium][data-picker-view=list] #picker-options:not(.comparing){display:flex;flex-direction:column;gap:0;grid-auto-rows:auto}

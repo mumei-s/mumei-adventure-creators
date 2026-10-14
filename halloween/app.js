@@ -1,4 +1,5 @@
 import {artworkBasis} from './artwork-basis.js?v=28.4.6';
+import {createSampleImage} from './sample-image.js?v=28.4.15';
 import {creatorHandoff,creatorDisplayLabel,creatorEditableName} from './creator-handoff.js?v=28.4.6';
 import {normalizeImageFile} from './image-files.js?v=28.4.6';
 import {deliveryImageFiles} from './drawing-references.js?v=28.4.6';
@@ -22,7 +23,7 @@ import {setupEffects} from './effects.js?v=28.4.6';
 import {colorWorlds} from './worlds.js?v=28.4.6';
 import {compactCreatorProfile} from './creator.js?v=28.4.6';
 import {createCropEditor} from './crop-editor.js?v=28.4.6';
-import {createPicker} from './picker.js?v=28.4.6';
+import {createPicker} from './picker.js?v=28.4.15';
 import {modeKeys,modeCopy,questionsForMode,initialSelections,effectiveSelections,proposalBatch} from './modes.js?v=28.4.6';
 import {buildReferenceBoard} from './guide-board.js?v=28.4.6';
 import {questions,visibleQuestions,defaults,AUTO,normalizeCreator,resolveSelections} from './catalog.js?v=28.4.6';
@@ -127,7 +128,7 @@ function displayValue(q,v){return q.key==='size'?v.split('｜')[0]:v;}
 function sampleNode(key,value){
  const sample=sampleFor(key,value),n=el('span','sample-thumb'+(key==='design'?' design-sample':key==='angle'?' angle-sample':''));
  n.setAttribute('role','img');n.setAttribute('aria-label',sample.label+'：'+value);n.title=sample.label;
- const image=(src,cls='sample-image')=>{const img=el('img',cls);img.src=src;img.alt='';img.loading='lazy';img.decoding='async';return img;};
+ const image=(src,cls='sample-image')=>createSampleImage(el,src,{className:cls,onState:state=>{if(sample.kind==='image')n.dataset.previewState=state;}});
  if(sample.kind==='image')n.append(image(sample.src));
  else if(sample.kind==='reference'){
  const ref=refs.find(r=>r.role==='identity');if(ref)n.append(image(ref.url));else n.append(el('span','sample-text','添付から\nつくる'));

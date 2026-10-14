@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+<defs>
+ <radialGradient id="night"><stop stop-color="#574667"/><stop offset="1" stop-color="#121d30"/></radialGradient>
+ <linearGradient id="gold" x2="1" y2="1"><stop stop-color="#ffe5ae"/><stop offset=".45" stop-color="#bd8f68"/><stop offset="1" stop-color="#f8d5a0"/></linearGradient>
+ <linearGradient id="inside" x2=".2" y2="1"><stop stop-color="#a6aacd"/><stop offset=".45" stop-color="#dcc2d4"/><stop offset="1" stop-color="#f5dcb0"/></linearGradient>
+ <linearGradient id="wood" x2="1" y2=".4"><stop stop-color="#876780"/><stop offset=".6" stop-color="#393451"/><stop offset="1" stop-color="#65496c"/></linearGradient>
+ <linearGradient id="ghost" x2=".6" y2="1"><stop stop-color="#fff8e8"/><stop offset="1" stop-color="#cfbde0"/></linearGradient>
+ <radialGradient id="pumpkin"><stop stop-color="#fbd5a0"/><stop offset="1" stop-color="#d68b67"/></radialGradient>
+ <filter id="glow"><feGaussianBlur stdDeviation="16"/></filter>
+ <filter id="shadow"><feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#060918" flood-opacity=".55"/></filter>
+ <g id="star"><path d="M0-11 3-3 11 0 3 3 0 11-3 3-11 0-3-3Z" fill="#f3d8ab"/></g>
+</defs>
+<rect width="1200" height="630" fill="url(#night)"/>
+<ellipse cx="910" cy="357" rx="237" ry="278" fill="#aa82b6" opacity=".12"/>
+<rect x="24" y="24" width="1152" height="582" rx="23" fill="none" stroke="#c5a47c" stroke-opacity=".55"/>
+<rect x="32" y="32" width="1136" height="566" rx="18" fill="none" stroke="#c5a47c" stroke-opacity=".17"/>
+<path d="M57 97V57H97M1103 57H1143V97M57 533V573H97M1103 573H1143V533" fill="none" stroke="#dcc098" stroke-width="2"/>
+<g fill="#dabaca" opacity=".5"><circle cx="135" cy="153" r="1.5"/><circle cx="384" cy="104" r="2"/><circle cx="596" cy="171" r="1.5"/><circle cx="715" cy="98" r="2"/><circle cx="1120" cy="182" r="2"/><circle cx="1084" cy="493" r="1.5"/><circle cx="580" cy="514" r="2"/><circle cx="103" cy="415" r="1.5"/><circle cx="498" cy="70" r="1"/><circle cx="732" cy="459" r="1.5"/></g>
+<g fill="none" stroke="#b6b5ce" opacity=".2"><ellipse cx="885" cy="533" rx="245" ry="42"/><ellipse cx="885" cy="535" rx="212" ry="28"/></g>
+<g font-family="Noto Serif CJK JP,serif">
+ <text x="100" y="192" font-size="29" letter-spacing="3" fill="#e8cbb7">無名S note</text>
+ <path d="M100 219H174M190 219H563" stroke="#c6a077" stroke-opacity=".6"/><use href="#star" transform="translate(182 219) scale(.45)"/>
+ <text x="95" y="294" font-size="56" font-weight="500" fill="#ffe5b4">Halloween</text>
+ <text x="96" y="357" font-size="66" font-style="italic" fill="#ecd7e5">Atelier</text>
+ <text x="101" y="434" font-size="36" letter-spacing="7" fill="#fff0d5">魔法の入口</text>
+</g>
+<text x="101" y="484" font-family="Noto Sans CJK JP,sans-serif" font-size="14" letter-spacing="2" fill="#c9b5d2">とびらの向こうで、物語に出会う。</text>
+<g transform="translate(610 346)" opacity=".9"><use href="#star" transform="scale(.8)"/><use href="#star" transform="translate(37 -36) scale(.35)"/><use href="#star" transform="translate(-17 59) scale(.38)"/></g>
+<g filter="url(#shadow)">
+ <path d="M750 509V262a135 135 0 0 1 270 0v247Z" fill="#1d2138" stroke="url(#gold)" stroke-width="13"/>
+ <path d="M764 505V262a121 121 0 0 1 242 0v243Z" fill="url(#inside)" stroke="#b48e73" stroke-width="2"/>
+ <ellipse cx="887" cy="373" rx="84" ry="158" fill="#ffe3b0" opacity=".18" filter="url(#glow)"/>
+ <path d="M775 494V263a111 111 0 0 1 222 0v231" fill="none" stroke="#fff0cd" opacity=".8"/>
+ <path d="M748 510V264q0-102 104-132l-18 340Z" fill="url(#wood)" stroke="url(#gold)" stroke-width="5"/>
+ <path d="M1019 510V264q0-102-104-132l18 340Z" fill="url(#wood)" stroke="url(#gold)" stroke-width="5"/>
+ <path d="M761 480V272q0-83 77-111l-14 296Z" fill="none" stroke="#bc947a" stroke-width="2"/>
+ <path d="M1006 480V272q0-83-77-111l14 296Z" fill="none" stroke="#bc947a" stroke-width="2"/>
+ <path d="M764 498 832 470M1004 498 936 470" stroke="#e7c094"/>
+ <ellipse cx="821" cy="362" rx="4" ry="10" fill="#f5d59e"/><ellipse cx="947" cy="362" rx="4" ry="10" fill="#f5d59e"/>
+ <path d="M737 516H1032L1048 533H721Z" fill="url(#gold)"/><path d="M721 533H1048L1066 549H703Z" fill="#6f5a65" stroke="#d2ae88"/>
+</g>
+<g transform="translate(886 108)"><use href="#star" transform="scale(1.3)"/><path d="M-41 9Q0 40 41 9" fill="none" stroke="#d9b88e"/></g>
+<path d="M899 201a29 29 0 1 0 18 49 29 29 0 0 1-18-49" fill="#fff3d5"/>
+<g fill="#fff2d1"><circle cx="881" cy="309" r="3"/><circle cx="910" cy="354" r="2"/><circle cx="862" cy="384" r="2"/><circle cx="902" cy="427" r="3"/></g>
+<use href="#star" transform="translate(891 332) scale(.7)"/><use href="#star" transform="translate(863 279) scale(.35)"/><use href="#star" transform="translate(915 395) scale(.4)"/>
+<g transform="translate(716 415) rotate(-9)" filter="url(#shadow)">
+ <path d="M-34 40V-7a35 35 0 0 1 70 0v47q-11 9-19-1-8 12-18 0-10 12-19 1-8 10-14 0Z" fill="url(#ghost)"/>
+ <ellipse cx="-10" cy="0" rx="4" ry="6" fill="#57405b"/><ellipse cx="12" cy="0" rx="4" ry="6" fill="#57405b"/>
+ <path d="M-4 13q6 7 12-1" fill="none" stroke="#906b84" stroke-width="2.5" stroke-linecap="round"/>
+ <ellipse cx="-20" cy="12" rx="6" ry="3" fill="#eebccc"/><ellipse cx="23" cy="12" rx="6" ry="3" fill="#eebccc"/>
+ <path d="M-33 12q-29-7-15 14M36 11q26-16 19 10" fill="url(#ghost)"/>
+</g>
+<g transform="translate(1045 511)" filter="url(#shadow)">
+ <ellipse cx="0" cy="0" rx="56" ry="43" fill="url(#pumpkin)"/>
+ <ellipse cx="0" cy="0" rx="28" ry="43" fill="none" stroke="#c78263" stroke-opacity=".5" stroke-width="2"/>
+ <path d="M-6-42q-1-18 11-23l7 10q-9 5-7 16" fill="#8c977a"/>
+ <ellipse cx="-19" cy="-4" rx="5" ry="7" fill="#624455"/><ellipse cx="19" cy="-4" rx="5" ry="7" fill="#624455"/>
+ <path d="M-8 13q8 8 16 0" fill="none" stroke="#805066" stroke-width="3" stroke-linecap="round"/>
+ <ellipse cx="-32" cy="9" rx="7" ry="4" fill="#eeaaa0"/><ellipse cx="31" cy="9" rx="7" ry="4" fill="#eeaaa0"/>
+</g>
+<use href="#star" transform="translate(1072 262) scale(.8)"/><use href="#star" transform="translate(1088 225) scale(.35)"/><use href="#star" transform="translate(693 278) scale(.45)"/>
+<text x="101" y="549" font-family="Georgia,serif" font-size="11" letter-spacing="4" fill="#b9a2bc">OPEN A DOOR. MEET A STORY.</text>
+</svg>

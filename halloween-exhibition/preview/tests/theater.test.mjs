@@ -796,3 +796,76 @@ test('multiple published links remain accessible and individually hidden links s
  assert.equal(links[0].href,'https://example.com/1');assert.equal(links[1].href,'https://example.com/2');
  assert.doesNotMatch(h.$('detail-content').textContent,/Hidden secret title/);
 });
+
+
+test('requested exact Halloween title is visible, with a neutral normal-mode title', async () => {
+ const h=await harness();
+ assert.equal(h.doc.title,'無名S note / 🎃Halloween Atelier / 魔法の入口🚪');
+ assert.match(h.$('site-title').textContent,/無名S note🎃Halloween Atelier魔法の入口🚪/);
+ h.$('mode-normal').click();
+ assert.doesNotMatch(h.$('site-title').textContent,/Halloween|ハロウィン|🎃|魔法/);
+ assert.doesNotMatch(h.doc.title,/Halloween|ハロウィン|🎃/);
+ assert.equal(h.$('roulette-open').hidden,true);
+});
+
+test('ordinary submitted title is displayed on stage, in detail, and in roster', async()=>{
+ const data=structuredClone(archive);
+ data.evergreenEntries=[{creatorId:'ss_yr',title:'日々の文章と、小さな発見',submissionStatus:'published',links:[{title:'本文を読む',url:'https://note.com/ss_yr/n/n123456789abc'}]}];
+ const h=await harness({data,savedMode:'normal'});
+ assert.match(h.$('creator-name').textContent,/日々の文章と、小さな発見/);
+ h.$('story-open').click();assert.match(h.$('detail-content').textContent,/日々の文章と、小さな発見/);
+ h.$('detail').close();h.$('list-open').click();assert.match(h.$('roster-grid').children[0].textContent,/日々の文章と、小さな発見/);
+ assert.doesNotMatch(h.$('detail-content').textContent,/ハロウィン企画への招待状/);
+});
+
+test('reduced-motion roulette chooses a real different creator immediately without recording or an external link', async()=>{
+ const h=await harness();
+ h.$('roulette-open').click();await h.flush();
+ assert.ok(h.api.state.currentIndex>0&&h.api.state.currentIndex<archive.creators.length);
+ assert.equal(h.$('room-title').textContent,archive.creators[h.api.state.currentIndex].name);
+ assert.equal(h.$('roulette-reel').hidden,true);assert.equal(h.$('detail').open,false);assert.equal(h.$('visit-count').textContent,'0');
+ assert.equal(h.$('theater').classList.contains('turning-in'),false);
+ h.$('story-open').click();assert.match(h.$('detail-content').textContent,/プロフィール/);
+ assert.ok(h.$('detail-content').querySelectorAll('a').every(a=>archive.creators.some(c=>c.profileURL===a.href)));
+});
+
+test('animated roulette resolves to an existing creator and does not leave controls busy', async()=>{
+ const h=await harness({reduced:false});h.$('roulette-open').click();
+ assert.equal(h.$('roulette-reel').hidden,false);assert.equal(h.$('roulette-open').getAttribute('aria-pressed'),'true');
+ await h.tick(4000);assert.ok(h.api.state.currentIndex>0);assert.equal(h.api.state.busy,false);
+ assert.equal(h.$('roulette-reel').hidden,true);assert.equal(h.$('roulette-open').getAttribute('aria-pressed'),'false');
+ h.$('next').click();await h.tick(700);assert.equal(h.api.state.busy,false);
+});
+
+test('roulette cancellation and newer navigation win over every delayed roll', async()=>{
+ const h=await harness({reduced:false});h.$('roulette-open').click();await h.tick(200);
+ h.$('roulette-open').click();await h.tick(4000);assert.equal(h.api.state.currentIndex,0);
+ h.$('roulette-open').click();await h.tick(200);h.$('next').click();await h.tick(4000);
+ assert.equal(h.api.state.currentIndex,1);assert.equal(h.$('roulette-reel').hidden,true);
+});
+
+test('mode changes, dialog opening, and pause cancel the roulette instead of a later surprise jump', async()=>{
+ for(const action of ['normal','dialog','pause']){
+  const h=await harness({reduced:false});h.$('roulette-open').click();await h.tick(200);
+  if(action==='normal')h.$('mode-normal').click();
+  if(action==='dialog')h.$('list-open').click();
+  if(action==='pause')h.$('theater').dispatch('yearbook:motion-state',{detail:{paused:true}});
+  await h.tick(4000);assert.equal(h.api.state.currentIndex,0,action);assert.equal(h.$('roulette-reel').hidden,true,action);
+ }
+});
+
+test('roulette is disabled while loading and for an empty active collection', async()=>{
+ const data=structuredClone(archive);data.years.push({year:2027,title:'',description:'',entries:[]});
+ const h=await harness({data,autoLoad:false});assert.equal(h.$('roulette-open').disabled,true);
+ await h.succeed(h.requests[0]);assert.equal(h.$('roulette-open').disabled,true);
+ h.api.setYear(2026);assert.equal(h.$('roulette-open').disabled,false);
+ h.api.load();assert.equal(h.$('roulette-open').disabled,true);
+});
+
+test('roulette excludes creators without a safe public destination and never invents one', async()=>{
+ const data=structuredClone(archive);
+ for(const c of data.creators)c.profileURL='javascript:alert(1)';
+ for(const e of data.years[0].entries)e.links=[];
+ const h=await harness({data});assert.equal(h.$('roulette-open').disabled,true);
+ assert.equal(h.api.state.currentIndex,0);
+});

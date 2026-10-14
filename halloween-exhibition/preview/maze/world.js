@@ -1,5 +1,7 @@
 import * as THREE from './vendor/three.module.js';
 import { MAP, CELL, FEATURES, toWorld } from './maze-model.js';
+import { NIGHT_LIGHTING } from './lighting-model.js';
+import { MONSTERS } from './encounter-model.js';
 
 // All architectural objects live in world space. Camera motion, collision and
 // interaction remain in the controller, making the gallery usable with keys,
@@ -11,8 +13,8 @@ export function createWorld({ canvas, onReady } = {}) {
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.22;
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color('#39464b');
-  scene.fog = new THREE.FogExp2('#526468', .010);
+  scene.background = new THREE.Color('#05050e');
+  scene.fog = new THREE.FogExp2('#090711', NIGHT_LIGHTING.fog);
   const camera = new THREE.PerspectiveCamera(69, 1, .075, 115);
   camera.rotation.order = 'YXZ';
   const resources = new Set(), animated = [], lamps = [], lanternSources = [], exhibitGroup = new THREE.Group();
@@ -100,11 +102,11 @@ export function createWorld({ canvas, onReady } = {}) {
     mesh(new THREE.CylinderGeometry(.26,.16,.1,6),gold,0,-.26,0,g);
     // A small bounded pool of real lamps; all lanterns remain emissive.
     lanternSources.push({x,y:y-.1,z,color});
-    if(lamps.length<8){const l=new THREE.PointLight(color,13,12,2);l.position.set(x,y-.1,z);scene.add(l);lamps.push(l);}
+    if(lamps.length<8){const l=new THREE.PointLight(color,3.2,8.5,2);l.position.set(x,y-.1,z);scene.add(l);lamps.push(l);}
     animated.push({node:g,kind:'lantern',seed,base:y});return g;
   }
-  const ambient=new THREE.HemisphereLight('#e4f5ed','#8a818e',2.5);scene.add(ambient);
-  const moon=new THREE.DirectionalLight('#e5f3ef',1.7);moon.position.set(5,12,4);scene.add(moon);
+  const ambient=new THREE.HemisphereLight('#acacd4','#21122d',NIGHT_LIGHTING.ambient);scene.add(ambient);
+  const moon=new THREE.DirectionalLight('#b5bbef',NIGHT_LIGHTING.moon);moon.position.set(5,12,4);scene.add(moon);
   // The hand lamp is attached to the camera, and OFF disables both its geometry
   // and beam. Independent architectural light keeps navigation readable.
   scene.add(camera);
@@ -116,17 +118,18 @@ export function createWorld({ canvas, onReady } = {}) {
   mesh(new THREE.CylinderGeometry(.27,.27,.09,8),gold,0,-.27,0,heldLantern);
   mesh(new THREE.TorusGeometry(.15,.022,6,22),gold,0,.54,0,heldLantern);
   for(let n=0;n<4;n++){const a=n*Math.PI/2;box(.024,.51,.024,Math.cos(a)*.2,0,Math.sin(a)*.2,gold,heldLantern);}
-  const headlamp=new THREE.SpotLight('#ffe2ae',30,24,Math.PI*.28,.72,1.4);
+  const headlamp=new THREE.SpotLight('#ffd599',NIGHT_LIGHTING.beam,24,Math.PI*.25,.55,1.2);
   headlamp.position.set(.3,-.15,-.25);camera.add(headlamp);
+  const nearLamp=new THREE.PointLight('#ffc578',NIGHT_LIGHTING.nearLight,8,1.5);nearLamp.position.set(.3,-.1,-.5);camera.add(nearLamp);
   const beamTarget=new THREE.Object3D();beamTarget.position.set(0,-.2,-9);camera.add(beamTarget);headlamp.target=beamTarget;
   // Frosted high windows read as moonlight throughout the haunted chambers.
-  const moonGlass=mat('#a8c2d7',{emissive:'#859fb9',emissiveIntensity:.35});
+  const moonGlass=mat('#a8c2d7',{emissive:'#859fb9',emissiveIntensity:.08});
   for(const zz of [34,40,46]){
     box(.09,2.7,1.8,61.78,4.5,zz,moonGlass);
     for(const dy of [-1.45,0,1.45])box(.17,.09,2,61.68,4.5+dy,zz,trim[2]);
     box(.17,3,.08,61.67,4.5,zz,trim[2]);
   }
-  const chamberFill=new THREE.PointLight('#c6d7f1',35,24,1.6);chamberFill.position.set(56,5.9,40);scene.add(chamberFill);
+  const chamberFill=new THREE.PointLight('#9e9ce5',5,13,1.8);chamberFill.position.set(56,5.9,40);scene.add(chamberFill);
   function point(fallback){return fallback?toWorld(fallback):{x:0,z:0};}
   const gatePoint=point(FEATURES.gate), gate=new THREE.Group();gate.position.set(gatePoint.x,0,gatePoint.z);scene.add(gate);
   for(let i=-17;i<=17;i++){box(.075,3.75,.11,i*.32,1.875,0,gold,gate);mesh(new THREE.ConeGeometry(.105,.25,4),brass,i*.32,3.88,0,gate);}
@@ -166,17 +169,50 @@ export function createWorld({ canvas, onReady } = {}) {
   mesh(new THREE.CylinderGeometry(.65,.65,.07,8),gold,keyPoint.x,.88,keyPoint.z);
   const keyLight=new THREE.PointLight('#ffbe58',7,7,2);keyLight.position.set(keyPoint.x,2,keyPoint.z);scene.add(keyLight);
   sign('THE BRASS KEY','A small object. An unexpected door.',keyPoint.x,1.22,keyPoint.z+.45,0,1.4);
-  // Optional fictional lantern spirits stay beside the route. Their soft,
-  // proximity-driven appearance never blocks collision or controls an exit.
+  // Authored Halloween props. These are scenery, never submitted illustrations.
+  const pumpkinSkin=mat('#ba4517',{emissive:'#5d1a05',emissiveIntensity:.16});
+  const pumpkinFace=mat('#ffd070',{emissive:'#ff9c27',emissiveIntensity:1.5});
+  const stem=mat('#4c643a');
+  function pumpkin(parent,x,y,z,scale=1){
+    const g=new THREE.Group();g.position.set(x,y,z);g.scale.setScalar(scale);parent.add(g);
+    for(let i=0;i<7;i++){const a=i*Math.PI*2/7;const lobe=mesh(new THREE.SphereGeometry(.47,10,8),pumpkinSkin,Math.cos(a)*.27,.55,Math.sin(a)*.27,g);lobe.scale.y=1.03;}
+    const stalk=box(.12,.3,.13,0,1.08,0,stem,g);stalk.rotation.z=.23;
+    for(const side of [-1,1]){const eye=mesh(new THREE.ConeGeometry(.14,.23,3),pumpkinFace,side*.24,.67,.65,g);eye.rotation.x=Math.PI/2;}
+    const grin=mesh(new THREE.TorusGeometry(.23,.05,4,12,Math.PI),pumpkinFace,0,.48,.685,g);grin.rotation.z=Math.PI;
+    return g;
+  }
+  for(const [x,z,scale]of[[22,34,.65],[42,34,.8],[22,50,.75],[42,50,.55],[54,34,.65],[60,46,.75],[6,34,.65],[10,46,.8],[23,8,.65],[41,8,.7]])pumpkin(scene,x,.02,z,scale);
+  // Quiet cobwebs catch the lantern in corners, with no flashing animation.
+  const webMaterial=new THREE.LineBasicMaterial({color:'#b6a6cc',transparent:true,opacity:.4});resources.add(webMaterial);
+  for(const [xx,zz]of[[22.2,29],[41.8,29],[53,32],[5,32]]){
+    for(let i=0;i<=5;i++){const a=i*Math.PI/10;const geo=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(xx,6.8,zz),new THREE.Vector3(xx+Math.cos(a)*2.2,6.8-Math.sin(a)*2.2,zz)]);resources.add(geo);scene.add(new THREE.Line(geo,webMaterial));}
+    for(const r of [.7,1.4,2.1]){const pts=[];for(let i=0;i<=10;i++){const a=i*Math.PI/20;pts.push(new THREE.Vector3(xx+Math.cos(a)*r,6.8-Math.sin(a)*r,zz));}const geo=new THREE.BufferGeometry().setFromPoints(pts);resources.add(geo);scene.add(new THREE.Line(geo,webMaterial));}
+  }
   const spirits=[];
-  for(const [index,tx,tz] of [[0,1,8.4],[1,3,11.6],[2,6,8],[3,14,11.6]]){
-    const g=new THREE.Group();g.position.set(tx*CELL,1.2,tz*CELL);scene.add(g);
-    const body=mat(index?'#93abae':'#b8abc8',{transparent:true,opacity:0,depthWrite:false,roughness:1});
-    const eye=mat('#e6c692',{emissive:'#b69255',emissiveIntensity:.35,transparent:true,opacity:0,depthWrite:false});
-    const cloak=mesh(new THREE.ConeGeometry(.44,1.25,9),body,0,0,0,g);cloak.scale.z=.68;
-    mesh(new THREE.SphereGeometry(.29,12,9),body,0,.68,0,g);
-    for(const side of [-1,1]){mesh(new THREE.SphereGeometry(.035,8,6),eye,side*.1,.72,.27,g);const horn=mesh(new THREE.ConeGeometry(.07,.28,5),body,side*.2,.97,0,g);horn.rotation.z=-side*.3;}
-    spirits.push({node:g,materials:[body,eye],reveal:0,baseY:1.2,index});
+  for(const [index,definition]of MONSTERS.entries()){
+    const g=new THREE.Group();g.position.set(definition.x*CELL,0,definition.z*CELL);g.name=definition.name;scene.add(g);
+    const body=mat(definition.color,{emissive:definition.color,emissiveIntensity:.28,roughness:.8});
+    const eye=mat('#28192c',{roughness:1});
+    const glint=mat('#fff0b6',{emissive:'#ffeaa0',emissiveIntensity:.7});
+    if(definition.id==='pumpkin'){
+      pumpkin(g,0,.3,0,1.25);
+      for(const side of [-1,1]){const shoe=mesh(new THREE.SphereGeometry(.22,10,8),eye,side*.4,.2,.15,g);shoe.scale.set(1.1,.6,1.5);}
+    }else if(definition.id==='ghost'){
+      mesh(new THREE.ConeGeometry(.72,1.7,12),body,0,.87,0,g);
+      mesh(new THREE.SphereGeometry(.62,16,12),body,0,1.55,0,g);
+      for(const side of [-1,1]){mesh(new THREE.SphereGeometry(.09,8,6),eye,side*.22,1.63,.55,g);const arm=mesh(new THREE.SphereGeometry(.26,8,8),body,side*.63,1.1,0,g);arm.scale.set(1.5,.7,.7);}
+      mesh(new THREE.SphereGeometry(.09,8,6),eye,0,1.37,.59,g);
+    }else{
+      mesh(new THREE.SphereGeometry(.49,14,10),body,0,1.4,0,g);
+      for(const side of [-1,1]){
+        const ear=mesh(new THREE.ConeGeometry(.19,.62,3),body,side*.29,1.93,0,g);ear.rotation.z=-side*.25;
+        const shape=new THREE.Shape();shape.moveTo(side*.3,1.5);shape.lineTo(side*1.6,2);shape.lineTo(side*1.3,1.25);shape.lineTo(side*.85,1.45);shape.lineTo(side*.6,1);shape.closePath();
+        const wingMaterial=mat('#73528e',{side:THREE.DoubleSide,emissive:'#4d356c',emissiveIntensity:.3});mesh(new THREE.ShapeGeometry(shape),wingMaterial,0,0,-.08,g);
+        mesh(new THREE.SphereGeometry(.07,8,6),glint,side*.18,1.48,.43,g);
+      }
+    }
+    sign(definition.name,'LANTERN DUEL · B',0,2.6,0,0,2.1,g);
+    spirits.push({node:g,index,id:definition.id,needsKey:definition.needsKey,baseY:0});
   }
   // A drifting orbital mobile is sculpture, explicitly environmental decoration.
   const center=point(FEATURES.mobile||FEATURES.spawn||{x:Math.floor(cols/2),z:Math.floor(rows/2)});
@@ -219,7 +255,7 @@ export function createWorld({ canvas, onReady } = {}) {
   for(const r of [1.45,2.2,5.5]){
     const orbit=mesh(new THREE.TorusGeometry(r,.025,6,96),gold,vaultPoint.x,.018,vaultPoint.z);orbit.rotation.x=Math.PI/2;
   }
-  const vaultGlow=new THREE.PointLight('#ffcc82',22,16,2);vaultGlow.position.set(vaultPoint.x,4.4,vaultPoint.z);scene.add(vaultGlow);
+  const vaultGlow=new THREE.PointLight('#ffb85b',7,12,2);vaultGlow.position.set(vaultPoint.x,4.4,vaultPoint.z);scene.add(vaultGlow);
   sign('THE FLOATING ARCHIVE','An installation of unwritten pages',vaultPoint.x,1.75,vaultPoint.z+5.6,0,2.8);
   const particles=new THREE.BufferGeometry(),positions=[];
   for(let i=0;i<150;i++){const x=1+((i*17)%Math.max(1,cols-2)),z=1+((i*13)%Math.max(1,rows-2));if(walk(x,z))positions.push(x*CELL+Math.sin(i)*1.5,.5+(i%29)/9,z*CELL+Math.cos(i)*1.5);}
@@ -243,18 +279,16 @@ export function createWorld({ canvas, onReady } = {}) {
   }
   let last=0,gateY=0,ambientTime=0;
   function resize(){const w=canvas.clientWidth||window.innerWidth,h=canvas.clientHeight||window.innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;heldLantern.position.x=Math.min(.36,.36*camera.aspect);camera.updateProjectionMatrix();}
-  function render({x=0,z=0,yaw=0,pitch=0,time=0,motion=true,unlocked=false,horrorAccepted=false,hasKey=false,collection=[],brightness=1,lantern=true,encounters=false}={}){
+  function render({x=0,z=0,yaw=0,pitch=0,time=0,motion=true,unlocked=false,horrorAccepted=false,hasKey=false,collection=[],brightness=1,lantern=true,encounters=false,cleared=[]}={}){
     const seconds=time*.001;const dt=Math.min(.05,Math.max(0,seconds-last));last=seconds;if(motion)ambientTime+=dt;const t=ambientTime;
     const level=Math.max(.75,Math.min(1.75,Number.isFinite(Number(brightness))?Number(brightness):1));
-    renderer.toneMappingExposure=1.38*level;
+    renderer.toneMappingExposure=NIGHT_LIGHTING.exposure*level;
     camera.position.set(x,1.65,z);camera.rotation.set(pitch,yaw,0,'YXZ');
-    heldLantern.visible=!!lantern;headlamp.visible=!!lantern;
+    heldLantern.visible=!!lantern;headlamp.visible=!!lantern;nearLamp.visible=!!lantern;
     for(const spirit of spirits){
-      const distance=Math.hypot(x-spirit.node.position.x,z-spirit.node.position.z);
-      const target=encounters?THREE.MathUtils.smoothstep(12-distance,0,7)*.8:0;
-      spirit.reveal=motion?THREE.MathUtils.lerp(spirit.reveal,target,Math.min(1,dt*1.4)):target;
-      if(!encounters)spirit.reveal=0;
-      spirit.node.visible=spirit.reveal>.005;spirit.materials.forEach(m=>{m.opacity=spirit.reveal;});
+      spirit.node.visible=encounters&&!cleared.includes(spirit.id)&&(!spirit.needsKey||unlocked);
+      spirit.node.rotation.y=Math.atan2(x-spirit.node.position.x,z-spirit.node.position.z);
+      if(!motion)spirit.node.position.y=spirit.baseY;
     }
     const nearest=lanternSources.slice().sort((a,b)=>(a.x-x)**2+(a.z-z)**2-((b.x-x)**2+(b.z-z)**2));
     lamps.forEach((lamp,i)=>{const p=nearest[i];if(p){lamp.position.set(p.x,p.y,p.z);lamp.color.set(p.color);}});
@@ -281,4 +315,5 @@ export function createWorld({ canvas, onReady } = {}) {
   for(const [material,matrices] of batches){const instanced=new THREE.InstancedMesh(boxGeo,material,matrices.length);matrices.forEach((matrix,index)=>instanced.setMatrixAt(index,matrix));instanced.computeBoundingSphere();scene.add(instanced);}
   resize();onReady?.();return {render,resize,dispose,setExhibits,scene,camera};
 }
+
 

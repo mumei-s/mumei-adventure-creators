@@ -1,0 +1,123 @@
+/* Original, Halloween-only invitation doors. Decorative layers never block input. */
+.brand {gap:10px;letter-spacing:1px}
+#site-title {display:flex;flex-direction:column;gap:3px}
+#site-title>span {font:10px/1.2 sans-serif;letter-spacing:1.8px;color:#d2c3dd}
+#site-title>strong {font:600 clamp(15px,1.35vw,21px)/1.15 Georgia,serif;color:#ffe6b8}
+#site-title>small {font:11px/1.3 sans-serif;letter-spacing:2px;margin:0;color:#d8c5ed}
+.brand-mark {font-size:29px;text-shadow:0 0 18px #d9adff66}
+.theater[data-mode=halloween] {--gold:#f3cd96}
+.theater[data-mode=halloween] .night-sky {background:radial-gradient(ellipse at 50% 24%,#514261,#192238 54%,#081322)}
+.theater[data-mode=halloween] .world-shade {background:radial-gradient(ellipse at 50% 35%,#b28bc818,transparent 55%),linear-gradient(0deg,#141020ee,transparent 50%,#19122855)}
+.theater[data-mode=halloween] .gallery-aura {filter:blur(2px);background:conic-gradient(from 165deg at 50% -10%,transparent 0 12deg,#e0b8fd1f 16deg 28deg,transparent 32deg 64deg,#b7dfeb1c 67deg 79deg,transparent 82deg 280deg,#e5badc14 285deg 298deg,transparent 302deg 324deg,#f8d29b20 330deg 347deg,transparent 352deg)}
+.theater[data-mode=halloween] .artwork-frame {perspective:1000px}
+.theater[data-mode=halloween][data-portrait=true] .artwork-frame {aspect-ratio:.85;border-radius:48% 48% 4px 4px}
+.theater[data-mode=halloween][data-portrait=true] .artwork-frame:before {border-radius:48% 48% 4px 4px;border-style:solid}
+.theater[data-mode=halloween][data-portrait=true] .artwork-frame:after {display:none}
+.theater[data-mode=halloween][data-portrait=true] .artwork-mat {border-radius:48% 48% 3px 3px}
+.theater[data-mode=halloween][data-portrait=true] .artwork-mat img {object-fit:contain;background:radial-gradient(ellipse at 50% 10%,#745578,#182a3d 72%)}
+.portal-doors {position:absolute;inset:0;pointer-events:none;transform-style:preserve-3d;z-index:5}
+.portal-door {position:absolute;top:-1px;bottom:-1px;width:50%;display:grid;place-items:center;transform-style:preserve-3d;border:2px solid #e7c286;background:linear-gradient(115deg,#654f75,#282e4a 40%,#4a395c 75%,#9d7772);box-shadow:inset 0 0 0 6px #161b35,inset 0 0 0 7px #be9761,inset 0 0 30px #080b2080,0 12px 25px #03071577;transition:transform .18s ease-in;backface-visibility:visible}
+.portal-door:before {content:'';position:absolute;inset:12px;border:1px solid #edcb9699;border-radius:45% 45% 3px 3px;background:repeating-linear-gradient(90deg,transparent 0 21%,#d7acd017 22% 23%,transparent 24% 47%)}
+.portal-door:after {content:'';position:absolute;inset:23px;border:1px solid #d9b78866;border-radius:45% 45% 3px 3px}
+.portal-left {border-radius:80% 0 0 0;left:0;transform-origin:left center;transform:rotateY(-104deg)}
+.portal-right {border-radius:0 80% 0 0;right:0;transform-origin:right center;transform:rotateY(104deg)}
+.portal-door i {font:normal 32px Georgia,serif;color:#ffe4ae;text-shadow:0 0 18px #f9ce9390;transform:translateZ(4px)}
+.portal-door b {position:absolute;top:60%;right:10%;width:8px;height:15px;border-radius:50%;background:#f8dba0;box-shadow:0 0 15px #edc77c66}
+.portal-right b {left:10%;right:auto}
+.portal-crown {position:absolute;left:50%;top:-31px;transform:translateX(-50%);font:37px Georgia,serif;color:#ffdfab;text-shadow:0 0 23px #b9b0ffa3}
+.theater[data-mode=halloween].turning-out .artwork-frame {transform:translateX(-50%) translateZ(55px);opacity:1;filter:none}
+.theater[data-mode=halloween].turning-out .portal-door {transform:rotateY(0)}
+.theater[data-mode=halloween].turning-out .artwork-mat img {transform:scale(.92);opacity:.5}
+.theater[data-mode=halloween].turning-in .artwork-frame {animation:portal-arrive .45s cubic-bezier(.18,.7,.2,1)}
+.theater[data-mode=halloween].turning-in .portal-left {animation:door-open-left .45s cubic-bezier(.2,.65,.2,1) both}
+.theater[data-mode=halloween].turning-in .portal-right {animation:door-open-right .45s cubic-bezier(.2,.65,.2,1) both}
+.theater[data-mode=halloween].turning-in .artwork-mat img {animation:creator-arrive .45s ease-out both}
+.theater[data-mode=halloween].turning-in .stage-caption {animation:caption-enter .45s ease-out both}
+.theater[data-mode=halloween] .artwork-mat img {transition:transform .18s ease-in,opacity .18s}
+.atelier-mascot {position:absolute;pointer-events:none;z-index:8;filter:drop-shadow(0 9px 11px #040a1b55);animation:mascot-hover 6s ease-in-out infinite alternate}
+.mascot-ghost {width:48px;height:58px;left:19%;bottom:8%;border-radius:50% 50% 35% 35%;background:linear-gradient(130deg,#fff9e7,#d6caf0 70%);transform:rotate(-8deg)}
+.mascot-ghost:before,.mascot-ghost:after {content:'';position:absolute;width:13px;height:21px;border-radius:70%;background:#e6d9f6;top:25px;left:-8px;transform:rotate(-45deg)}
+.mascot-ghost:after {left:auto;right:-8px;transform:rotate(45deg)}
+.mascot-ghost i {position:absolute;width:5px;height:8px;border-radius:50%;background:#493753;left:14px;top:21px;box-shadow:15px 0 #493753}
+.mascot-ghost b {position:absolute;width:8px;height:5px;border-bottom:2px solid #684964;border-radius:50%;top:32px;left:21px}
+.mascot-pumpkin {right:18%;bottom:5%;width:65px;height:52px;border-radius:45%;background:radial-gradient(ellipse at 48% 30%,#ffd595,#e8a16f 62%,#b96962);box-shadow:inset 12px 0 #b2655226,inset -12px 0 #b2655226;animation-delay:-3s}
+.mascot-pumpkin:before {content:'';position:absolute;width:12px;height:15px;left:26px;top:-10px;background:#71815f;border-radius:7px 3px;transform:rotate(18deg)}
+.mascot-pumpkin i {position:absolute;width:6px;height:8px;border-radius:50%;background:#65435a;top:21px;left:17px;box-shadow:25px 0 #65435a}
+.mascot-pumpkin b {position:absolute;left:27px;top:29px;width:12px;height:8px;border-bottom:2px solid #694253;border-radius:50%}
+.magic-trail {position:absolute;inset:0;pointer-events:none;z-index:6;color:#edcaa8}
+.magic-trail i {position:absolute;font:normal 17px Georgia,serif;left:22%;top:26%;opacity:.65;animation:star-drift 8s ease-in-out infinite alternate}
+.magic-trail i:nth-child(2){left:72%;top:17%;font-size:29px;animation-delay:-2s;color:#d7bded}
+.magic-trail i:nth-child(3){left:13%;top:64%;font-size:11px;animation-delay:-4s}
+.magic-trail i:nth-child(4){left:81%;top:61%;animation-delay:-5s;color:#a8d2d4}
+.magic-trail i:nth-child(5){left:59%;top:0%;font-size:12px;animation-delay:-1s}
+.roulette-open {display:flex;align-items:center;justify-content:center;gap:7px;border:1px solid #c2a0d9aa;border-radius:30px;padding:0 18px;min-height:44px;color:#f3d9fd;background:linear-gradient(120deg,#46315be6,#18283ae6);box-shadow:inset 0 1px #e9c0ff27,0 5px 20px #060b2329;font-size:11px;white-space:nowrap;transition:transform .2s,background .2s}
+.roulette-open:hover {transform:translateY(-2px);background:#573b6c}
+.roulette-open[aria-pressed=true] {color:#ffe6bb;border-color:#edc69b}
+.roulette-open>span {font-size:20px}
+.roulette-reel {position:absolute;z-index:18;left:50%;top:40%;transform:translate(-50%,-50%);width:min(340px,72%);padding:20px 18px;border:1px solid #e5c39b99;border-radius:16px;color:#fff2d4;text-align:center;background:linear-gradient(130deg,#332b50ef,#182638f2);box-shadow:0 18px 60px #05091788;pointer-events:none;backdrop-filter:blur(12px)}
+.roulette-reel small {display:block;font:9px/1.5 Georgia,serif;letter-spacing:2px;color:#d5b9e6}
+.roulette-reel span {display:block;font-size:22px;line-height:1.5;margin-top:7px;min-height:1.5em}
+.roulette-running .portal-crown {animation:crown-turn 2.1s ease-in-out infinite}
+.portal-doors,.atelier-mascot,.magic-trail {filter:brightness(var(--visitor-brightness,1))}
+.theater[data-mode=normal] .portal-doors,.theater[data-mode=normal] .atelier-mascot,.theater[data-mode=normal] .magic-trail,.theater[data-mode=normal] .roulette-open {display:none}
+.theater[data-mode=normal] #site-title>span,.theater[data-mode=normal] #site-title>small {color:#456d63}
+.theater[data-mode=normal] #site-title>strong {color:#234d49}
+.theater #creator-name>span {display:block;max-width:680px;margin-inline:auto;overflow-wrap:anywhere;line-height:1.6}
+.pwa-open {border:1px solid #c3a88566;border-radius:20px;padding:0 10px}
+.pwa-guide {width:min(440px,calc(100% - 30px));padding:32px 26px}
+.pwa-guide p {line-height:1.8;margin-top:15px}
+.pwa-guide h2 {font-size:21px}
+.pwa-install {margin-top:20px;width:100%;padding:12px;background:#eed0a1;color:#252036;border-radius:10px}
+.pwa-note {font-size:12px;color:#bdc4cd}
+.theater [hidden],.roulette-reel[hidden],.pwa-guide [hidden] {display:none!important}
+@keyframes door-open-left {from{transform:rotateY(0)}to{transform:rotateY(-104deg)}}
+@keyframes door-open-right {from{transform:rotateY(0)}to{transform:rotateY(104deg)}}
+@keyframes creator-arrive {from{transform:scale(.84) translateY(12px);opacity:.25}to{transform:scale(1);opacity:1}}
+@keyframes portal-arrive {from{transform:translateX(-50%) translateZ(20px) scale(.98)}to{transform:translateX(-50%) translateZ(55px) scale(1)}}
+@keyframes mascot-hover {to{translate:0 -10px;rotate:4deg}}
+@keyframes star-drift {to{translate:5px -12px;rotate:15deg}}
+@keyframes crown-turn {to{rotate:180deg}}
+.theater[data-motion-paused=true] .portal-door,.theater[data-motion-paused=true] .artwork-mat img,.theater[data-motion-paused=true] .portal-crown {animation:none!important;transition:none!important}
+.theater[data-motion-paused=true] .atelier-mascot,.theater[data-motion-paused=true] .magic-trail i {animation-play-state:paused!important}
+.theater[data-motion-paused=true] .portal-left {transform:rotateY(-104deg)!important}
+.theater[data-motion-paused=true] .portal-right {transform:rotateY(104deg)!important}
+@media(max-width:1100px){
+ .header-actions{gap:12px}.brand{gap:7px}.brand-mark{font-size:24px}
+ .masthead{height:121px;padding-top:12px}.mode-switch{top:71px}.horror-entrance{top:71px}
+ .edition-label{top:137px}.stage{top:172px}
+ .stage-footer{gap:10px}.roulette-open{font-size:10px;padding-inline:12px}
+}
+@media(max-width:680px){
+ .theater{min-height:800px}.masthead{padding:12px 16px 0;height:154px;align-items:flex-start}
+ .brand-mark{display:none}#site-title>span{font-size:8px}#site-title>strong{font-size:15px}#site-title>small{font-size:9px}
+ .header-actions{gap:5px;max-width:54%;flex-wrap:wrap;justify-content:flex-end}.header-actions button{font-size:9px;letter-spacing:0;padding-inline:7px}
+ .header-actions #year-open{font-size:14px}#visit-count{font-size:13px;margin-left:3px}.list-open>span{font-size:13px;margin-left:3px}
+ .header-actions #visitor-settings-open{padding-inline:7px}
+ .mode-switch{left:16px;top:110px}.horror-entrance{left:185px;top:110px}
+ .edition-label{top:166px;left:17px;right:17px}.stage{inset:205px 0 205px}
+ .theater .stage-footer{left:17px;right:17px;bottom:41px;height:116px;display:grid;grid-template-columns:86px 1fr 1fr;grid-template-rows:48px 48px;gap:8px}
+ .stage-footer .chapter-index{grid-column:1;grid-row:1;gap:6px}.chapter-index .index-line{width:13px}
+ .theater .stage-footer .room-dots{position:static;grid-column:2 / 4;grid-row:1;gap:0;justify-content:flex-start;min-width:0;overflow-x:auto;overscroll-behavior:contain;scrollbar-width:thin;pointer-events:auto}
+ .theater .stage-footer .scene-controls{grid-column:1;grid-row:2;position:relative;margin:0;gap:0;min-width:0;flex-basis:auto}
+ .stage-footer .roulette-open{grid-column:2;grid-row:2;padding:0 6px;font-size:9px;gap:4px}
+ .stage-footer .story-open{grid-column:3;grid-row:2;min-width:0;padding:0 6px;font-size:10px}
+ .stage-footer .story-open span{margin-left:5px}
+ .theater .journey-hint{bottom:-10px;font-size:8px;letter-spacing:0}
+ .theater .preview-ribbon{bottom:12px;padding-inline:12px;font-size:6px}
+ .theater[data-mode=normal] .stage-footer .story-open{grid-column:2 / 4}
+ .face-dot{width:44px!important;min-width:44px!important;flex-shrink:0}.face-dot img,.face-dot .face-initial{width:28px!important;height:28px!important;left:8px!important}
+ .mascot-ghost{left:9%;bottom:3%;scale:.7}.mascot-pumpkin{right:6%;bottom:2%;scale:.7}
+ .portal-door:before{inset:7px}.portal-door:after{inset:13px}.portal-door i{font-size:24px}
+ .theater #creator-name>span{font-size:10px;max-width:85%}
+ .theater[data-theme=host] .artwork-frame{width:73%;top:5%}
+ .theater .stage-caption{bottom:-4%;left:5%;right:5%}
+}
+@media(max-width:370px){
+ .theater{min-height:800px}.header-actions{max-width:51%}.header-actions button{font-size:8px;padding-inline:5px}.horror-entrance{left:178px;font-size:9px;padding-inline:4px;gap:5px}
+ #site-title>strong{font-size:13px}.stage-footer .chapter-index{gap:4px}.theater .stage-footer{grid-template-columns:80px 1fr 1fr;gap:6px;left:12px;right:12px}
+}
+@media(prefers-reduced-motion:reduce){
+ .portal-door,.artwork-mat img,.portal-crown,.atelier-mascot,.magic-trail i,.roulette-open{animation:none!important;transition:none!important}
+ .theater .portal-left{transform:rotateY(-104deg)!important}.theater .portal-right{transform:rotateY(104deg)!important}
+ .theater[data-mode=halloween].turning-out .artwork-mat img{opacity:1;transform:none}
+}

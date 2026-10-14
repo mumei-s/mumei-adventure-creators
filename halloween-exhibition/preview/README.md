@@ -37,3 +37,22 @@ Music is an original local WebAudio four-chord ambient pad with no recording or 
 ## Owner-managed visibility and ordering
 
 Canonical metadata is `visible: false` and numeric `order`, on entries and on individual `links`/`works`. Sorting is stable, using array position when order is absent. Hiding an entry removes its submitted image, title, message, tags and article links, but keeps the verified creator as a profile-only introduction. It does not remove membership. Individually hidden links/works are absent from both display and search. Multiple visible links/works remain available; no single-article truncation is applied.
+
+
+## Magical entrance, roulette, and sharing card
+
+Halloween now uses the requested title, “無名S note / 🎃Halloween Atelier / 魔法の入口🚪”. The existing folding theatre gains gold-edged hinged doors, a soft creator entrance, floating original ghost/pumpkin ornaments, and a “運命のとびら” roulette. These ornaments and roulette are absent in normal mode. Ordinary submitted titles now appear on the stage, in the detail and in the roster; unsubmitted/hidden entries remain profile-only.
+
+The roulette selects only an existing non-fictional creator with a safe public profile or visible work link in the current collection. It does not fabricate submissions, open tabs, or count a visit automatically. Pressing it again, navigating, switching modes/years, opening a dialog, hiding the tab, or pausing motion cancels it. Reduced motion skips the reel and door animation. Decorative layers never intercept input. On narrow screens, the portrait strip scrolls horizontally with 44px-wide targets.
+
+`assets/atelier-og.svg` is an original vector illustration, rendered to the crawler-facing `assets/atelier-og.png` (1200×630). The HTML uses absolute HTTPS PNG metadata and the exact requested textual title. It does not use the supplied external reference's art or code.
+
+## Optional PWA installation
+
+`manifest.webmanifest`, original 192px/512px/maskable icons, and `pwa.js` provide optional installation. The “アプリ” control shows browser-specific guidance; a native install button appears only after a supported browser supplies `beforeinstallprompt`. No prompt is promised on every browser, and native prompting requires a visitor click. No push permission, sign-in, analytics, background sync or music autoplay is added.
+
+The `sw.js` scope is exactly this `halloween-exhibition/preview/` directory. Both registration and worker execution refuse a copied root/other-app location. Registration checks all overlapping workers and leaves any different application alone. It never unregisters workers, calls `skipWaiting`, or claims existing clients.
+
+Only an explicit list of public shell files is precached. Fetch handling is network-first and limited to those exact URLs, with no query strings. The public `data/archive.json` stays network-only so current visibility and order are not served from an old offline cache. Admin, private drafts, maze, external images/links, APIs, root and INSIGHT are never cached or intercepted. Offline/latest-content limitations are explained in the install guide and load-error UI. Old cache deletion is restricted to this application's cache prefix and exact scope. This is an installable online-first gallery, not an offline article archive.
+
+Tests cover the title, ordinary submitted-title display, valid roulette destinations and cancellation races, reduced motion, manifest/image dimensions, local shell paths, scope guards, worker conflicts, network-first caching, forbidden-path bypass, and user-triggered install prompting. Real browser installation, native focus handling, mobile layout and artistic motion still require browser QA; the lightweight tests do not prove them.

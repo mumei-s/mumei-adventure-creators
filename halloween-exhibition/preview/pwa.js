@@ -1,0 +1,84 @@
+// Installation is optional. No account, notification permission or background sync.
+const scope = new URL('./', import.meta.url);
+const worker = new URL('./sw.js', import.meta.url);
+let installEvent = null;
+const standalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+const trigger = document.createElement('button');
+trigger.id = 'atelier-install-open';
+trigger.className = 'pwa-open';
+trigger.textContent = 'アプリ';
+trigger.setAttribute('aria-label', 'ホーム画面への追加方法をひらく');
+document.querySelector('.header-actions')?.append(trigger);
+const dialog = document.createElement('dialog');
+dialog.className = 'pwa-guide';
+dialog.setAttribute('aria-labelledby', 'pwa-title');
+const close = document.createElement('button');
+close.className = 'close';
+close.setAttribute('aria-label', 'アプリの案内を閉じる');
+close.textContent = '×';
+const title = document.createElement('h2');
+title.id = 'pwa-title';
+title.textContent = 'とびらを、ホーム画面に。';
+const guide = document.createElement('p');
+const note = document.createElement('p');
+note.className = 'pwa-note';
+note.textContent = '追加方法は端末やブラウザで異なります。項目がない場合は、通常のブラウザでこのページを開いてください。作品・プロフィール・最新の年鑑にはインターネット接続が必要です。';
+const status = document.createElement('p');
+status.className = 'pwa-note';
+status.setAttribute('role', 'status');
+const install = document.createElement('button');
+install.className = 'pwa-install';
+install.textContent = 'このアトリエを追加';
+install.hidden = true;
+dialog.append(close, title, guide, install, status, note);
+document.body.append(dialog);
+function refreshGuide() {
+  install.hidden = !installEvent || standalone();
+  guide.textContent = standalone() ? 'このアトリエはアプリ表示で開いています。' : installEvent ?
+    '下のボタンから、このアトリエをホーム画面やアプリ一覧に追加できます。' :
+    /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) ?
+      'Safariなど対応ブラウザの共有メニューから「ホーム画面に追加」を選んでください。' :
+      '対応ブラウザのメニューに「アプリをインストール」「ホーム画面に追加」などが表示されていれば、そこから追加できます。';
+}
+trigger.addEventListener('click', () => { refreshGuide(); if (!dialog.open) dialog.showModal(); });
+close.addEventListener('click', () => dialog.close());
+dialog.addEventListener('close', () => trigger.focus());
+dialog.addEventListener('click', event => {
+  if (event.target !== dialog) return;
+  const r = dialog.getBoundingClientRect();
+  if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) dialog.close();
+});
+window.addEventListener('beforeinstallprompt', event => { event.preventDefault(); installEvent = event; refreshGuide(); });
+window.addEventListener('appinstalled', () => { installEvent = null; status.textContent = 'ホーム画面への追加が完了しました。'; refreshGuide(); });
+install.addEventListener('click', async () => {
+  if (!installEvent) return;
+  const event = installEvent;
+  installEvent = null;
+  install.disabled = true;
+  try {
+    await event.prompt();
+    const result = await event.userChoice;
+    status.textContent = result.outcome === 'accepted' ? '追加の操作を受け付けました。端末側の案内をご確認ください。' : '追加は見送りました。ブラウザでそのまま楽しめます。';
+  } catch {
+    status.textContent = 'このブラウザでは追加画面を開けませんでした。ブラウザのメニューをご確認ください。';
+  } finally { install.disabled = false; refreshGuide(); }
+});
+
+async function registerPreviewWorker() {
+  // Even an accidentally copied module must not install a root/other-app worker.
+  if (!isSecureContext || !('serviceWorker' in navigator) || !scope.pathname.endsWith('/halloween-exhibition/preview/')) return;
+  try {
+    const registrations = await navigator.serviceWorker.getRegistrations();
+    const overlapping = registrations.filter(reg => scope.href.startsWith(reg.scope) || reg.scope.startsWith(scope.href));
+    const conflict = overlapping.some(reg => reg.scope !== scope.href || [reg.active, reg.waiting, reg.installing].some(sw => sw && sw.scriptURL !== worker.href));
+    if (conflict) {
+      status.textContent = 'このサイトには別のオフライン機能があるため、既存の設定をそのまま使います。';
+      return;
+    }
+    await navigator.serviceWorker.register(worker.href, { scope: scope.href, updateViaCache: 'none' });
+  } catch {
+    // Network, private browsing and storage restrictions never block the gallery.
+    status.textContent = 'この環境ではオフライン用の保存を利用できません。オンラインでご覧ください。';
+  }
+}
+registerPreviewWorker();

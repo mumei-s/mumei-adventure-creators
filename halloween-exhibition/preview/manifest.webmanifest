@@ -1,0 +1,17 @@
+{
+  "id": "./",
+  "name": "無名S note / 🎃Halloween Atelier / 魔法の入口🚪",
+  "short_name": "魔法の入口",
+  "description": "作り手と出会う、小さな魔法のアトリエ。",
+  "lang": "ja",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#101727",
+  "theme_color": "#192238",
+  "icons": [
+    {"src": "./assets/atelier-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "./assets/atelier-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "./assets/atelier-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}

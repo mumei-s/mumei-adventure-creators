@@ -1,0 +1,44 @@
+/* A luminous threshold, never a black interstitial. No extra waiting time. */
+.palace-gate-inner{background:radial-gradient(ellipse at 50% 75%,#ffda91,#b26980 28%,#482454 65%,#20152f);font-size:0;perspective:360px}
+.gate-corridor{position:absolute;inset:8% 7% 0;overflow:hidden}
+.gate-corridor i{position:absolute;inset:0 0 -10%;border:3px solid #ffdf9b;border-radius:50% 50% 0 0;box-shadow:0 0 14px #ffc87e99,inset 0 0 14px #ffd79077;background:linear-gradient(90deg,#71376755,transparent 30% 70%,#71376755)}
+.gate-corridor i:nth-child(2){inset:15% 15% -10%;opacity:.75}.gate-corridor i:nth-child(3){inset:30% 30% -10%;opacity:.6}
+.gate-corridor b{position:absolute;inset:50% -40% -30%;background:repeating-linear-gradient(0deg,transparent 0 22px,#ffe7ac66 23px 25px),linear-gradient(90deg,transparent,#ffd99488,transparent);transform:rotateX(65deg);transform-origin:50% 100%}
+.gate-fireflies i{position:absolute;left:20%;top:70%;width:4px;height:4px;border-radius:50%;background:#ffe9bb;box-shadow:0 0 9px 3px #ffd99a88;animation:gate-ember 2.3s ease-in-out infinite}.gate-fireflies i:nth-child(2){left:75%;animation-delay:-.7s}.gate-fireflies i:nth-child(3){left:38%;animation-delay:-1.4s}.gate-fireflies i:nth-child(4){left:60%;animation-delay:-1.9s}.gate-fireflies i:nth-child(5){left:48%;animation-delay:-.4s}
+@keyframes gate-ember{0%{transform:translateY(10px);opacity:.2}70%{opacity:1}100%{transform:translateY(-70px);opacity:.2}}
+/* Walkers are siblings of the composition: explicitly constrain their lifetime. */
+.theater:not([data-palace-state=palace]) .palace-path-walkers{display:none!important}
+.palace-entrance[hidden]{display:none!important}
+.theater[data-palace-state=opening] .palace-caption-stack{visibility:hidden}
+@keyframes palace-step-forward{from{transform:translate(-50%,-50%) scale(1);opacity:1}to{transform:translate(-50%,-52%) scale(1.18);opacity:1}}
+.palace-journey{display:none;position:absolute;inset:0;z-index:16;pointer-events:none;overflow:hidden;background:radial-gradient(ellipse at 50% 65%,#fff1c9aa,#b66d9c44 38%,#35204799 85%);isolation:isolate}
+.theater[data-palace-state=walking] .palace-journey{display:block;animation:journey-arrival .55s ease-out both}
+.journey-halo{position:absolute;inset:12% 13% 5%;border-radius:50%;background:radial-gradient(ellipse,transparent 22%,#fcd59d55 44%,transparent 65%);filter:blur(8px)}
+.journey-arches{position:absolute;inset:10% 12% -15%;perspective:500px}
+.journey-arches i{position:absolute;inset:0;border:3px solid #ffe7b7;border-radius:48% 48% 0 0;box-shadow:0 0 25px #f9cf80,inset 0 0 20px #d58cb977;animation:journey-arch .55s ease-out both}
+.journey-arches i:nth-child(2){inset:12%;animation-delay:.06s}.journey-arches i:nth-child(3){inset:25%;animation-delay:.12s}
+.journey-motes i{position:absolute;left:20%;top:55%;font-style:normal;font-size:clamp(16px,4vw,36px);color:#ffe9b3;text-shadow:0 0 15px #ffdc90;animation:journey-mote .55s ease-out both}.journey-motes i:nth-child(2){left:35%;top:35%}.journey-motes i:nth-child(3){left:70%;top:40%}.journey-motes i:nth-child(4){left:80%;top:65%}.journey-motes i:nth-child(5){left:60%;top:75%}
+.palace-journey p{position:absolute;left:10%;right:10%;bottom:16%;text-align:center;color:#fff6dc;font-size:clamp(14px,4vw,24px);letter-spacing:.15em;text-shadow:0 2px 8px #3c193c,0 0 18px #c582a6}
+@keyframes journey-arrival{from{opacity:0}to{opacity:1}}@keyframes journey-arch{from{transform:scale(.8);opacity:.3}to{transform:scale(1.4);opacity:.9}}@keyframes journey-mote{from{transform:translateY(16px) scale(.6);opacity:.2}to{transform:translateY(-24px) scale(1.2);opacity:1}}
+/* Keep the castle visible during startup, adding a small enchanted status crest. */
+.palace-load-status{border:1px solid #e6be7977;background:linear-gradient(120deg,#432345ee,#24182fee);box-shadow:0 0 24px #b9825b33;color:#fff1d3}
+.theater[data-palace-ready=loading] .palace-load-status:before{content:'☾';display:inline-block;margin-right:8px;color:#ffdb91;animation:loading-float 1.8s ease-in-out infinite}
+.theater[data-palace-ready=loading] .palace-load-status:after{content:'';display:block;height:2px;margin-top:5px;background:linear-gradient(90deg,transparent,#f6cb80,#edb4da,transparent);background-size:200% 100%;animation:loading-sweep 2s linear infinite}
+.archive-loading{display:none;position:absolute;z-index:35;left:50%;top:calc(var(--palace-header-height,180px) + 25px);transform:translateX(-50%);width:min(78%,310px);padding:15px 20px;border:1px solid #f5d49688;border-radius:22px;background:linear-gradient(140deg,#532849f5,#211930f5);color:#fff0cf;box-shadow:0 12px 45px #23102777,0 0 20px #d6a17533;text-align:center;pointer-events:none;font-size:13px}
+.theater[data-archive-state=loading] .archive-loading{display:grid;gap:7px;justify-items:center}
+.theater[data-mode=halloween][data-palace-ready=loading] .archive-loading{display:none}
+.theater[data-archive-state=loading][data-palace-state=gallery] #stage{visibility:hidden}
+.loading-medallion{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;border:1px solid #eacb92;color:#ffe4ac;font-size:26px;box-shadow:0 0 0 5px #d5ac6b15,0 0 23px #d8ab6a44;animation:loading-float 2s ease-in-out infinite}
+.loading-ribbon{width:80%;height:3px;border-radius:4px;background:linear-gradient(90deg,transparent,#efbb78,#f9d6e8,transparent);background-size:200% 100%;animation:loading-sweep 2s linear infinite}
+.artwork-loading{position:absolute;inset:0;display:grid;align-content:center;justify-items:center;gap:20px;background:radial-gradient(ellipse at 50% 35%,#69426f,#301d40 65%,#20152c);color:#fff0cf;font-size:12px;text-shadow:0 1px 4px #251226}
+.artwork-loading[hidden]{display:none!important}.artwork-loading:before{content:'';position:absolute;inset:8%;border:1px solid #d5ad6d66;border-radius:45% 45% 4px 4px;box-shadow:inset 0 0 22px #d7a75c18}
+.detail-image-loading{position:relative;min-height:160px;display:grid;place-items:center;padding:25px;border:1px solid #dfba7c66;border-radius:18px;background:radial-gradient(ellipse,#69436f,#261c36);color:#fff0cf;font-size:13px;text-align:center;overflow:hidden}
+.detail-image-loading[data-state=loading]:after{content:'';position:absolute;left:15%;right:15%;bottom:30px;height:2px;background:linear-gradient(90deg,transparent,#ffe1a6,transparent);background-size:200% 100%;animation:loading-sweep 2s linear infinite}.detail-image-loading[hidden]{display:none!important}
+.theater[data-mode=normal] .archive-loading,.theater[data-mode=normal] .artwork-loading,body[data-mode=normal] .detail-image-loading{background:radial-gradient(ellipse,#f4efd8,#e1ece3);color:#345750;text-shadow:none;border-color:#749a8a}
+.theater[data-mode=normal] .loading-medallion{color:#587962;border-color:#809d73}
+@keyframes loading-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}@keyframes loading-sweep{to{background-position:-200% 0}}
+@media(prefers-reduced-motion:reduce){.palace-journey *,.gate-fireflies i,.loading-medallion,.loading-ribbon,.palace-load-status:before,.palace-load-status:after,.detail-image-loading:after{animation:none!important}}
+.theater[data-motion-paused=true] .palace-journey *,.theater[data-motion-paused=true] .gate-fireflies i,.theater[data-motion-paused=true] .loading-medallion,.theater[data-motion-paused=true] .loading-ribbon,.theater[data-motion-paused=true] .palace-load-status:before,.theater[data-motion-paused=true] .palace-load-status:after,body[data-ambient-paused=true] .detail-image-loading:after{animation:none!important}
+body[data-page-hidden=true] .palace-journey *,body[data-page-hidden=true] .gate-fireflies i,body[data-page-hidden=true] .loading-medallion,body[data-page-hidden=true] .loading-ribbon,body[data-page-hidden=true] .detail-image-loading:after{animation-play-state:paused!important}
+@media(prefers-reduced-motion:reduce){.palace-journey{animation:none!important}}
+body[data-page-hidden=true] .palace-load-status:before,body[data-page-hidden=true] .palace-load-status:after{animation-play-state:paused!important}

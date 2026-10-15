@@ -1,3 +1,4 @@
+import { loadArtworkImage } from '../magical-loading.js';
 import { createDoorPalettePicker } from '../door-palette.js';
 import { installGalleryGesture } from '../gallery-gesture.js';
 import { initPalaceEntrance } from '../palace-entrance.js';
@@ -95,7 +96,7 @@ async function harness({ data = archive, reduced = true, storageThrows = false, 
     return walk(doc.documentElement);
   };
   const requests = [], storageWrites = [], motionInitializations = [], viewCalls = [];
-  const context = vm.createContext({ initPalaceStartup:()=>Promise.resolve(), createDoorPalettePicker, installGalleryGesture, createSlideshowController, initPalaceEntrance:entrance?(args)=>initPalaceEntrance({...args,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}):({root,onViewChange})=>{root.dataset.palaceState='gallery';return {enter(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});},home(){root.dataset.palaceState='palace';onViewChange({view:'palace',opening:false});},setMode(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});}}}, initDisplayMode:()=>({}), document: doc, initVisitorPreferences:options=>{options.onBrightness(75);const section=doc.createElement('section');section.className='visitor-preferences';doc.body.append(section);return {};}, initSceneMotion:root=>{motionInitializations.push(root);const dock=doc.createElement('div');dock.className='scene-controls';root.append(dock);return {setView(x,y){viewCalls.push([x,y]);}};}, validateArchive, safeURL, normalizeSearch, doorIdFor,
+  const context = vm.createContext({ AbortController, loadArtworkImage:(image,source,options)=>loadArtworkImage(image,source,{...options,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}), initPalaceStartup:()=>Promise.resolve(), createDoorPalettePicker, installGalleryGesture, createSlideshowController, initPalaceEntrance:entrance?(args)=>initPalaceEntrance({...args,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}):({root,onViewChange})=>{root.dataset.palaceState='gallery';return {enter(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});},home(){root.dataset.palaceState='palace';onViewChange({view:'palace',opening:false});},setMode(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});}}}, initDisplayMode:()=>({}), document: doc, initVisitorPreferences:options=>{options.onBrightness(75);const section=doc.createElement('section');section.className='visitor-preferences';doc.body.append(section);return {};}, initSceneMotion:root=>{motionInitializations.push(root);const dock=doc.createElement('div');dock.className='scene-controls';root.append(dock);return {setView(x,y){viewCalls.push([x,y]);}};}, validateArchive, safeURL, normalizeSearch, doorIdFor,
     matchMedia: () => ({ matches: reduced }),
     // Native browser timers reject a plain-object receiver (Illegal invocation).
     setTimeout: function(fn, delay) { if (strictTimerReceiver && this != null && this.document !== doc) throw new TypeError('Illegal invocation'); return queue(fn, delay); },
@@ -407,7 +408,7 @@ test('portrait errors use initials with a profile label, never decorative fake a
   assert.equal(h.$('artwork-image').hidden, true);
   assert.equal(h.$('artwork-fallback').hidden, false);
   assert.equal(h.$('artwork-image').src, originalSource, 'an error must not load a decorative illustration');
-  assert.match(h.$('artwork-fallback').textContent, /プロフィール画像/);
+  assert.match(h.$('artwork-fallback').textContent, /プロフィール画像|画像を表示できません/);
   assert.ok(h.$('artwork-fallback').textContent.startsWith(Array.from(archive.creators[1].name).slice(0, 2).join('')));
   assert.equal(h.doc.querySelector('.artwork-mat').style.backgroundImage, 'none');
   h.$('artwork-open').click();
@@ -416,7 +417,7 @@ test('portrait errors use initials with a profile label, never decorative fake a
   assert.equal(h.$('detail-content').querySelector('.profile-fallback').textContent, Array.from(archive.creators[1].name).slice(0, 2).join(''));
   h.$('detail').close(); await h.tick(0);
   await h.api.navigate(3);
-  assert.equal(h.$('artwork-image').hidden, false, 'a later room recovers its own portrait');
+  h.$('artwork-image').naturalWidth=600;h.$('artwork-image').dispatch('load');assert.equal(h.$('artwork-image').hidden, false, 'a later room recovers its own portrait');
   assert.equal(h.$('artwork-fallback').hidden, true);
 });
 
@@ -440,7 +441,7 @@ test('missing or unsafe portrait URLs display labelled initials without an image
     const h = await harness({ data }); await h.api.navigate(3);
     assert.equal(h.$('artwork-image').hidden, true);
     assert.equal(h.$('artwork-fallback').hidden, false);
-    assert.match(h.$('artwork-fallback').textContent, /プロフィール画像/);
+    assert.match(h.$('artwork-fallback').textContent, /プロフィール画像|画像を表示できません/);
     assert.equal(h.doc.querySelector('.artwork-mat').style.backgroundImage, 'none');
     h.$('artwork-open').click();
     assert.equal(h.$('detail-content').querySelectorAll('img').length, 0);

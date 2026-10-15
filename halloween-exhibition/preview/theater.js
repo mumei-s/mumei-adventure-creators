@@ -200,3 +200,14 @@ slideshow.setBlocked('palace',root.dataset.palaceState!=='gallery');
 load();
 
 
+
+// A small illustrated playground. Native button supports touch, Enter and Space.
+const festivalScenes=[['./assets/palace/palace-phone.webp','魔法の庭'],['./assets/palace/palace-interior.webp','光の回廊'],['./assets/palace/host-invitation.webp','招待状の部屋']];
+let festivalScene=0,cancelFestivalImage=()=>{};
+$('festival-play').addEventListener('click',()=>{
+ festivalScene=(festivalScene+1)%festivalScenes.length;
+ const [source,title]=festivalScenes[festivalScene],button=$('festival-play'),image=$('festival-picture');
+ cancelFestivalImage();button.dataset.scene=String(festivalScene);button.setAttribute('aria-label',`${title}。次の景色へ`);
+ button.classList.remove('festival-awake');void button.offsetWidth;button.classList.add('festival-awake');
+ cancelFestivalImage=loadArtworkImage(image,source,{onState:state=>{button.dataset.state=state;button.setAttribute('aria-busy',String(state==='loading'));image.hidden=state!=='ready';if(state==='error')button.setAttribute('aria-label',`${title}の画像を表示できません。もう一度押すと次の景色へ`);}});
+});

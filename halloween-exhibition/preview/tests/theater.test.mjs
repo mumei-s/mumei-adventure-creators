@@ -1095,3 +1095,16 @@ test('new Yamacon and Aihan submissions use the same cancellable opening and exa
   assert.ok(h.$('detail-content').querySelectorAll('a').some(a=>a.href===`https://note.com/${id}/n/${note}`));assert.doesNotMatch(h.$('detail-content').textContent,/作品は準備中/);
  }
 });
+
+test('illustrated footer cycles scenes, settles load and recovers after errors',async()=>{
+ const h=await harness();const button=h.$('festival-play'),picture=h.$('festival-picture');
+ button.click();assert.equal(button.dataset.scene,'1');assert.equal(button.dataset.state,'loading');
+ picture.naturalWidth=600;picture.dispatch('load');assert.equal(button.dataset.state,'ready');assert.equal(picture.hidden,false);
+ button.click();assert.equal(button.dataset.scene,'2');picture.dispatch('error');assert.equal(button.dataset.state,'error');assert.equal(button.getAttribute('aria-busy'),'false');
+ button.click();assert.equal(button.dataset.scene,'0');picture.dispatch('load');assert.equal(button.dataset.state,'ready');
+});
+test('rapid footer taps cancel stale image deadlines',async()=>{
+ const h=await harness();const button=h.$('festival-play'),picture=h.$('festival-picture');
+ button.click();button.click();button.click();picture.naturalWidth=600;picture.dispatch('load');
+ await h.tick(10000);assert.equal(button.dataset.scene,'0');assert.equal(button.dataset.state,'ready');
+});

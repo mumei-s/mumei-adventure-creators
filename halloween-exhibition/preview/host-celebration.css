@@ -41,3 +41,24 @@ body[data-layout-page=gallery] #theater[data-mode=halloween][data-entry-kind=int
 #theater[data-mode=halloween][data-entry-kind=introduction] .scene-seeds {position:relative;inset:auto;grid-area:2/1;height:48px;z-index:22;pointer-events:none}
 #theater[data-mode=halloween][data-entry-kind=introduction] .scene-seed {left:calc(50% - 24px);right:auto;top:0;bottom:auto}
 #theater[data-mode=halloween][data-entry-kind=introduction] .scene-seed:after {display:none}
+/* Illustrated invitation: the article is the hero; the host signature is compact. */
+body[data-layout-page=gallery] #theater[data-mode=halloween][data-entry-kind=introduction] .room-world{min-height:260px;height:clamp(260px,46vw,560px)}
+body[data-layout-page=gallery] #theater[data-mode=halloween][data-entry-kind=introduction] .room-world>.artwork-frame{top:42px;width:min(92%,850px);max-width:calc(100% - 36px);max-height:calc(100% - 68px);padding:7px}
+#theater[data-mode=halloween][data-entry-kind=introduction] .host-crown{display:none}
+#theater[data-mode=halloween][data-entry-kind=introduction] .host-banner{top:13px;font-size:10px}
+#theater[data-mode=halloween][data-entry-kind=introduction] .host-beams,#theater[data-mode=halloween][data-entry-kind=introduction] .host-halo,#theater[data-mode=halloween][data-entry-kind=introduction] .host-plinth{display:none}
+#theater[data-mode=halloween][data-entry-kind=introduction] .host-coronation{background:linear-gradient(#321c3933,#321c3988),url('./assets/palace/palace-interior.webp') center 60%/cover;opacity:.7;border-radius:24px}
+body[data-layout-page=gallery] #theater[data-mode=halloween][data-entry-kind=introduction] .stage-caption{padding:12px 16px;border-radius:28px 28px 12px 12px;background:linear-gradient(#23152d55,#23152d88),url('./assets/palace/host-invitation.webp') center/cover}
+body[data-layout-page=gallery] #theater[data-mode=halloween][data-entry-kind=introduction] .host-avatar{width:50px;height:50px;min-width:50px;margin:0 auto 8px;border-width:2px;box-shadow:0 0 0 3px #975478,0 0 0 5px #f5cd81,0 0 18px #fbb45e55}
+body[data-layout-page=gallery] #theater[data-mode=halloween][data-entry-kind=introduction] .stage-caption #room-title{font-size:clamp(24px,4vw,32px);line-height:1.2;margin:4px 0;letter-spacing:.05em}
+body[data-layout-page=gallery] #theater[data-mode=halloween][data-entry-kind=introduction] .stage-caption .room-kicker{font-size:10px;line-height:1.2;margin:4px 0}
+body[data-layout-page=gallery] #theater[data-mode=halloween][data-entry-kind=introduction] .stage-caption #creator-name{margin:5px 0 0;line-height:1.3}
+body[data-layout-page=gallery] #theater[data-mode=halloween][data-entry-kind=introduction] .stage-caption #creator-name>span{font-size:11px;line-height:1.4;color:#fff4dd;text-shadow:0 1px 4px #1d122a}
+body[data-layout-page=gallery] #theater[data-mode=halloween][data-entry-kind=introduction] .stage-caption #creator-name>small{display:block;background:none;font-size:10px;line-height:1.2;margin:4px 0 0;padding:0;color:#e8cfa7}
+#theater[data-mode=halloween][data-entry-kind=introduction] .stage-caption:before,#theater[data-mode=halloween][data-entry-kind=introduction] .stage-caption:after{display:none}
+#theater[data-mode=halloween][data-entry-kind=introduction] .host-caption-aurora{inset:0;background:linear-gradient(110deg,transparent 20%,#ffe7a51c 48%,transparent 70%);animation:host-sweep 8s ease-in-out infinite;z-index:0;pointer-events:none}
+#theater[data-mode=halloween][data-entry-kind=introduction] .stage-caption>*:not(.host-caption-aurora){position:relative;z-index:1}
+#theater[data-mode=halloween][data-entry-kind=introduction] .host-magazine{background:linear-gradient(90deg,#23152d44,#23152d99 25% 75%,#23152d44),url('./assets/palace/host-invitation.webp') center 80%/cover;min-height:96px}
+#theater[data-mode=halloween][data-entry-kind=introduction] .host-magazine .magazine-emblem{width:54px;height:62px;font-size:0;background:url('./assets/palace/palace-franken.webp') center/contain no-repeat;animation:host-float 4s ease-in-out infinite alternate;flex:none}
+#theater[data-mode=halloween][data-entry-kind=introduction] .host-magazine .magazine-stars{display:none}
+body[data-page-hidden=true] .host-coronation *,body[data-page-hidden=true] .host-caption-aurora,body[data-page-hidden=true] .host-magazine:before,body[data-page-hidden=true] .magazine-emblem{animation-play-state:paused!important}

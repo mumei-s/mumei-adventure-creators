@@ -143,3 +143,31 @@ body[data-layout-page=gallery] .theater[data-entry-kind=introduction] #room-titl
 @media(prefers-reduced-motion:reduce){#theater .portal-door{opacity:0!important;animation:none!important}.magazine-emblem{animation:none}}
 /* Keep the magazine name together on phones without shrinking tap targets. */
 @media(max-width:420px){.host-magazine{gap:8px;padding:16px 12px}.host-magazine strong{font-size:18px;letter-spacing:.04em}.host-magazine small{letter-spacing:.03em}.magazine-emblem{font-size:26px}.magazine-stars{display:none}}
+
+/* Retire the visible read-history badge without deleting the visitor's data. */
+#theater .face-dot:after,#theater .face-dot.visited:after,#theater .face-dot.visited[aria-current=true]:after,#theater .face-dot.visited+.face-dot.visited:before{display:none!important}
+#theater.complete .room-dots:before{display:none}
+/* Playable illustrated finale: no explanatory text or invisible click surfaces. */
+body[data-layout-page=gallery] .theater .festival-coda{height:clamp(240px,56vw,380px);padding:12px 14px 22px;background:none;border:0;overflow:visible;pointer-events:auto}
+body[data-layout-page=gallery] .theater .festival-coda:before,body[data-layout-page=gallery] .theater .festival-coda:after{display:none}
+.festival-play{position:relative;display:block;width:100%;height:100%;min-height:220px;padding:0;border:2px solid #f1ca84;border-radius:38% 38% 18px 18px;overflow:hidden;isolation:isolate;cursor:pointer;background:#2a1936 url('./assets/palace/palace-phone.webp') center 60%/cover;box-shadow:0 0 0 4px #392538,0 0 26px #b47b4d44}
+.festival-play:focus-visible{outline:3px solid #fff0bc;outline-offset:5px}
+.festival-picture{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 60%;transition:transform .7s ease}
+.festival-picture[hidden]{display:none!important}
+.festival-play[data-scene="1"] .festival-picture{object-position:center 68%}
+.festival-play[data-scene="2"] .festival-picture{object-position:center 75%}
+.festival-glimmer{position:absolute;inset:0;background:linear-gradient(110deg,transparent 25%,#ffe6a32b 50%,transparent 75%);pointer-events:none;animation:festival-light-drift 8s ease-in-out infinite alternate}
+.festival-friend,.festival-bat{position:absolute;display:block;pointer-events:none;filter:drop-shadow(0 3px 5px #1b1239)}
+.festival-friend{width:21%;max-width:95px;aspect-ratio:1;left:6%;bottom:6%;transition:left .65s ease,transform .65s ease}
+.festival-bat{width:17%;max-width:80px;aspect-ratio:1;right:12%;top:13%;animation:festival-bat-hover 4s ease-in-out infinite alternate}
+.festival-friend img,.festival-bat img{width:100%;height:100%;object-fit:contain}
+.festival-play[data-scene="1"] .festival-friend{left:68%;transform:rotate(7deg)}
+.festival-play[data-scene="2"] .festival-friend{left:43%;transform:translateY(-8px)}
+.festival-awake .festival-picture{animation:festival-picture-wake .7s ease-out both}
+.festival-play[data-state=loading] .festival-glimmer{animation:festival-light-drift 1.8s ease-in-out infinite alternate}
+@keyframes festival-light-drift{from{transform:translateX(-40%)}to{transform:translateX(40%)}}
+@keyframes festival-bat-hover{from{transform:translate(-12px,4px) rotate(-7deg)}to{transform:translate(12px,-6px) rotate(7deg)}}
+@keyframes festival-picture-wake{from{transform:scale(1.06)}to{transform:scale(1)}}
+#theater[data-motion-paused=true] .festival-play *,body[data-ambient-paused=true] .festival-play *{animation:none!important;transition:none!important}
+body[data-page-hidden=true] .festival-play *{animation-play-state:paused!important}
+@media(prefers-reduced-motion:reduce){.festival-play *{animation:none!important;transition:none!important}}

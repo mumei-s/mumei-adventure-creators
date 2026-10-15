@@ -38,7 +38,8 @@ test('artwork cannot inherit scenic brightness, saturation, screen sheen or fore
 
 
 test('Halloween ornament owns a separate flow area and stops with reduced or paused motion',()=>{
- assert.match(html,/class="festival-coda" aria-hidden="true"/);
+ assert.match(html,/class="festival-coda">/);
+ assert.match(html,/id="festival-play"[^>]*type="button"[^>]*aria-label=/);
  assert.match(css,/festival-coda \{[^}]*position:relative[^}]*height:170px/s);
  assert.match(css,/data-mode=normal[^}]*festival-coda \{display:none\}/);
  assert.match(css,/data-motion-paused=true[^}]*festival-coda \* \{animation:none!important\}/);
@@ -65,4 +66,11 @@ test('compact magazine tier reserves room for its full name without decorative s
  assert.match(css,/@media\(max-width:420px\)\{\.host-magazine\{gap:8px;padding:16px 12px\}/);
  assert.match(css,/\.host-magazine strong\{font-size:18px;letter-spacing:\.04em\}/);
  assert.match(css,/\.magazine-stars\{display:none\}/);
+});
+
+ test('visited star is hidden without deleting saved history and finale uses illustration',()=>{
+ assert.match(css,/\.face-dot\.visited:after/);
+ assert.match(css,/festival-picture/);
+ assert.match(html,/id="festival-picture"[^>]*palace-phone.webp/);
+ assert.doesNotMatch(html,/class="festival-caption"/);
 });

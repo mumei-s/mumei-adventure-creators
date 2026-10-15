@@ -9,11 +9,11 @@ const CONTROL_RELEASE = '20261015-controls1';
 const COLOR_RELEASE = '20261015-festival1';
 const SETTINGS_RELEASE = '20261015-settings2';
 const DOORSTAGE_RELEASE = '20261015-reveal1';
-const MAGAZINE_RELEASE = '20261015-doorstage2';
-const HOST_RELEASE = '20261015-host2';
+const MAGAZINE_RELEASE = '20261015-finale1';
+const HOST_RELEASE = '20261015-host3';
 const CACHE = 'mumei-atelier-shell-v21-' + PALACE_RELEASE + ':' + SCOPE.pathname;
 const SHELL = [
-  'assets/palace/palace-interior.webp', 'magical-loading.css', 'magical-loading.js', 'palace-startup.js', 'host-celebration.css', 'door-reveal.css',
+  'assets/palace/host-invitation.webp', 'assets/palace/palace-interior.webp', 'magical-loading.css', 'magical-loading.js', 'palace-startup.js', 'host-celebration.css', 'door-reveal.css',
   'gallery-refinement.css', 'gallery-gesture.js', 'door-palette.js',
   'assets/palace/palace-franken.webp', 'assets/palace/palace-zombie.webp', 'assets/palace/palace-bat.webp',
   'palace-entrance.js', 'palace-entrance.css', 'assets/palace/palace-desktop.webp', 'assets/palace/palace-phone.webp', 'assets/palace/gate-desktop.webp', 'assets/palace/gate-phone.webp',

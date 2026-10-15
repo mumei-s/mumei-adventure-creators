@@ -39,15 +39,20 @@ export function bindHeldGameButton(button,{blocked=()=>false,onChange,pointer=tr
 }
 
 // One continuous drag may change direction without lifting the finger.
-export function directionAtPoint(x,y,width,height){
+export function directionAtPoint(x,y,width,height,previous=null){
   const dx=x-width/2,dy=y-height/2,r=Math.max(1,Math.min(width,height)/2);
-  if(Math.hypot(dx,dy)<r*.24)return null;
+  if(Math.hypot(dx,dy)<r*.16)return null;
+  // A small sector hysteresis prevents diagonal finger jitter from fighting turns.
+  if(previous==='left'&&dx<0&&Math.abs(dx)*1.22>=Math.abs(dy))return previous;
+  if(previous==='right'&&dx>0&&Math.abs(dx)*1.22>=Math.abs(dy))return previous;
+  if(previous==='forward'&&dy<0&&Math.abs(dy)*1.22>=Math.abs(dx))return previous;
+  if(previous==='back'&&dy>0&&Math.abs(dy)*1.22>=Math.abs(dx))return previous;
   return Math.abs(dx)>Math.abs(dy)?dx>0?'right':'left':dy>0?'back':'forward';
 }
 export function bindDirectionPad(pad,{blocked=()=>false,onChange}){
   let pointerId=null,direction=null;
   const update=event=>{const rect=pad.getBoundingClientRect(),x=event.clientX-rect.left,y=event.clientY-rect.top;
-    const next=directionAtPoint(x,y,rect.width,rect.height);if(next!==direction){direction=next;onChange(direction);}
+    const next=directionAtPoint(x,y,rect.width,rect.height,direction);if(next!==direction){direction=next;onChange(direction);}
     const dx=x-rect.width/2,dy=y-rect.height/2,length=Math.hypot(dx,dy)||1,scale=Math.min(1,rect.width*.24/length);
     pad.style.setProperty('--pad-x',`${dx*scale}px`);pad.style.setProperty('--pad-y',`${dy*scale}px`);pad.dataset.direction=direction||'';
   };

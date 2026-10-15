@@ -8,7 +8,7 @@ import { createStageRenderer, EXIT } from './stage-2d.js?v=20261014-adventure2';
 import {createArtLibrary,ART_FILES} from './rpg-art.js?v=20261014-adventure2';
 import {renderBattleScene} from './battle-scene.js?v=20261014-adventure2';
 import {directionFromMovement,moveAroundFurniture} from './rpg-model.js?v=20261014-adventure2';
-import {protectGameSurface,bindHeldGameButton,bindDirectionPad} from './game-input.js?v=20261014-adventure2';
+import {protectGameSurface,bindHeldGameButton,bindDirectionPad} from './game-input.js?v=20261015-touch3';
 const rpgArt=createArtLibrary();
 let stageRenderer,battleCanvas=null,battleEffect=null,visualTime=0;
 let facing='down',walking=false,walkPhase=0,padDirection=null;
@@ -175,7 +175,7 @@ function step(dt){
   const down=name=>held.has(name)||padDirection===name;
   const f=(keys.has('w')||keys.has('arrowup')||down('forward')?1:0)-(keys.has('s')||keys.has('arrowdown')||down('back')?1:0);
   const r=(keys.has('d')||(view==='2d'&&down('right'))||(view==='2d'&&keys.has('arrowright'))?1:0)-(keys.has('a')||(view==='2d'&&down('left'))||(view==='2d'&&keys.has('arrowleft'))?1:0);
-  if(view==='3d'){if(keys.has('arrowleft')||held.has('turn-left')||down('left'))state.yaw+=dt*1.6;if(keys.has('arrowright')||held.has('turn-right')||down('right'))state.yaw-=dt*1.6;}
+  if(view==='3d'){if(keys.has('arrowleft')||held.has('turn-left')||down('left'))state.yaw+=dt*2.3;if(keys.has('arrowright')||held.has('turn-right')||down('right'))state.yaw-=dt*2.3;}
   const {dx,dz}=movementVector(view,state.yaw,f,r,6.8*dt);const old=state;state=view==='2d'?moveAroundFurniture(state,dx,dz):move(state,dx,dz);const mx=state.x-old.x,mz=state.z-old.z;walking=Math.hypot(mx,mz)>.0001;facing=directionFromMovement(dx,dz,facing);if(walking)walkPhase=(walkPhase+Math.hypot(mx,mz)*2.3)%(Math.PI*2);
 }
 function tick(now){

@@ -21,10 +21,18 @@ test('host motion stops for explicit pause and reduced motion, without rapid fla
 });
 test('host release is isolated in the preview cache and follows existing styles',()=>{
  assert.ok(html.indexOf('host-celebration.css')>html.indexOf('gallery-refinement.css'));
- assert.match(html,/host-celebration.css\?v=20261015-host2/);
- assert.match(sw,/HOST_RELEASE = '20261015-host2'/);
+ assert.match(html,/host-celebration.css\?v=20261015-host3/);
+ assert.match(sw,/HOST_RELEASE = '20261015-host3'/);
  assert.match(sw,/path==='host-celebration.css' \? HOST_RELEASE/);
  assert.match(html,/id="host-magazine"[^>]*href="https:\/\/note.com\/ss_yr\/m\/m642b82518aeb"/);
 });
 
 test("optional host collectible shares only the reserved arrow row",()=>{assert.match(css,/scene-seeds \{position:relative;inset:auto;grid-area:2\/1;height:48px/);assert.match(css,/scene-seed \{left:calc\(50% - 24px\);right:auto;top:0/);});
+
+test('illustrated host signature is compact and reserves more space for the project article',()=>{
+ assert.match(css,/host-invitation\.webp/);
+ assert.match(css,/host-avatar\{width:50px;height:50px;min-width:50px/);
+ assert.match(css,/stage-caption\{padding:12px 16px/);
+ assert.match(css,/width:min\(92%,850px\)/);
+ assert.match(sw,/assets\/palace\/host-invitation.webp/);
+});

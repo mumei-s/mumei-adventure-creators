@@ -228,19 +228,25 @@
         },
         {
           "creatorId": "fond_holly3483",
-          "title": "作品準備中",
+          "title": "𝑯𝒂𝒍𝒍𝒐𝒘𝒆𝒆𝒏 𝑨𝒕𝒆𝒍𝒊𝒆𝒓‼️　参加してみた！",
           "theme": "pumpkin",
-          "submissionStatus": "pending",
+          "submissionStatus": "submitted",
           "tags": [
             "参加者",
-            "作品準備中"
+            "ハロウィン"
           ],
           "links": [
+            {
+              "title": "𝑯𝒂𝒍𝒍𝒐𝒘𝒆𝒆𝒏 𝑨𝒕𝒆𝒍𝒊𝒆𝒓‼️　参加してみた！（note記事）",
+              "url": "https://note.com/fond_holly3483/n/ne5a25ae27a20"
+            },
             {
               "title": "noteプロフィールを見る",
               "url": "https://note.com/fond_holly3483"
             }
-          ]
+          ],
+          "image": "https://assets.st-note.com/production/uploads/images/324565762/rectangle_large_type_2_36f20f590d33edddd6206751ed39564b.png?fit=bounds&quality=85&width=1280",
+          "imageAlt": "やまこんの記事「𝑯𝒂𝒍𝒍𝒐𝒘𝒆𝒆𝒏 𝑨𝒕𝒆𝒍𝒊𝒆𝒓‼️　参加してみた！」の見出し画像"
         },
         {
           "creatorId": "tenkai_notes",
@@ -315,19 +321,25 @@
         },
         {
           "creatorId": "aihan_days",
-          "title": "作品準備中",
+          "title": "ちょっと試すつもりが…柴犬とハロウィン大冒険！🎃",
           "theme": "star",
-          "submissionStatus": "pending",
+          "submissionStatus": "submitted",
           "tags": [
             "参加者",
-            "作品準備中"
+            "ハロウィン"
           ],
           "links": [
+            {
+              "title": "ちょっと試すつもりが…柴犬とハロウィン大冒険！🎃（note記事）",
+              "url": "https://note.com/aihan_days/n/nfa274d6fe464"
+            },
             {
               "title": "noteプロフィールを見る",
               "url": "https://note.com/aihan_days"
             }
-          ]
+          ],
+          "image": "https://assets.st-note.com/production/uploads/images/324560660/rectangle_large_type_2_377f1d6d58ea2fae9b97c4af89277aac.png?fit=bounds&quality=85&width=1280",
+          "imageAlt": "あいはんの記事「ちょっと試すつもりが…柴犬とハロウィン大冒険！🎃」の見出し画像"
         },
         {
           "creatorId": "cheeky_rhino7031",

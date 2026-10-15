@@ -156,13 +156,13 @@ test('initial load renders all real article doors and creators', async () => {
   assert.doesNotMatch(h.$('detail-content').textContent, /架空の参加者|展示サンプル/);
 });
 
-test('expanded roster renders all three confirmed submissions with their own art and links', async () => {
+test('expanded roster renders all five confirmed submissions with their own art and links', async () => {
   assert.equal(creatorCount, 13);
   assert.equal(doorCount, 14);
-  assert.equal(pendingCount, 10);
+  assert.equal(pendingCount, 8);
   assert.equal(annualEntries.filter(entry => entry.submissionStatus === 'introduction').length, 1);
   const submitted = annualEntries.filter(entry => entry.submissionStatus === 'submitted');
-  assert.deepEqual(new Set(submitted.map(entry => entry.creatorId)), new Set(['koakumako', 'imota14', 'clever_hare2654']));
+  assert.deepEqual(new Set(submitted.map(entry => entry.creatorId)), new Set(['koakumako', 'imota14', 'clever_hare2654', 'fond_holly3483', 'aihan_days']));
   const h = await harness();
   for (const entry of submitted) {
     await h.api.navigate(annualEntries.indexOf(entry));
@@ -1122,4 +1122,11 @@ test('host magazine occupies a distinct lower tier only for the introduction',as
  const h=await harness();assert.equal(h.$('host-magazine').hidden,false);assert.equal(h.$('host-magazine').getAttribute('href'),'https://note.com/ss_yr/m/m642b82518aeb');
  h.api.openStory();assert.equal(h.$('detail').dataset.entryKind,'introduction');h.$('detail').close();await h.tick(0);
  await h.api.navigate(1);assert.equal(h.$('host-magazine').hidden,true);h.api.setMode('normal');assert.equal(h.$('host-magazine').hidden,true);
+});
+
+test('new Yamacon and Aihan submissions use the same cancellable opening and exact links',async()=>{
+ for(const [id,note] of [['fond_holly3483','ne5a25ae27a20'],['aihan_days','nfa274d6fe464']]){
+  const h=await harness({reduced:false});await h.api.navigate(creatorDoorIndex(id),{immediate:true});assert.equal(h.$('theater').dataset.portrait,'false');h.$('artwork-open').click();assert.equal(h.$('detail').open,false);await h.tick(900);assert.equal(h.$('detail').open,true);
+  assert.ok(h.$('detail-content').querySelectorAll('a').some(a=>a.href===`https://note.com/${id}/n/${note}`));assert.doesNotMatch(h.$('detail-content').textContent,/作品は準備中/);
+ }
 });

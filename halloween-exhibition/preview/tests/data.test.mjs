@@ -34,7 +34,7 @@ test('creator identities use only names, handles, public profile links and profi
   }
 });
 
-test('host introduction and three confirmed participant articles are present; ten doors await submissions',()=>{
+test('host introduction and five confirmed participant articles are present; eight doors await submissions',()=>{
   const [host,owner,mako]=source.years[0].entries;
   assert.equal(owner.doorId,'owner-work-2026');
   assert.equal(owner.submissionStatus,'pending');
@@ -57,8 +57,8 @@ test('host introduction and three confirmed participant articles are present; te
   assert.equal(mako.message,undefined);
   assert.equal(mako.works,undefined);
   assert.equal(source.years[0].entries.filter(e=>e.submissionStatus==='introduction').length,1);
-  assert.equal(source.years[0].entries.filter(e=>e.submissionStatus==='submitted').length,3);
-  assert.equal(participants.length,10);
+  assert.equal(source.years[0].entries.filter(e=>e.submissionStatus==='submitted').length,5);
+  assert.equal(participants.length,8);
   for(const entry of participants){
     const profile=verified.find(c=>c.id===entry.creatorId);
     assert.equal(entry.submissionStatus,'pending');
@@ -120,12 +120,22 @@ test('door IDs survive reordered and retitled legacy entries, and distinguish sa
 
 test("verified Takechi work is submitted without altering skipped Marimo or owner placeholder",()=>{const e=source.years[0].entries.find(e=>e.creatorId==="imota14");assert.equal(e.title,"死神と貴公子と、顔に張り紙を貼った私。");assert.equal(e.submissionStatus,"submitted");assert.equal(e.links[0].url,"https://note.com/imota14/n/n618813fb0e89");assert.match(e.image,/324418285/);assert.equal(source.years[0].entries.find(e=>e.creatorId==="soh_style_work").submissionStatus,"pending");assert.deepEqual(source.years[0].entries.find(e=>e.doorId==="owner-work-2026").links,[]);});
 
-// These three people were requested as participants, not as submitted works.
-test('new participant doors remain pending and exclude unrelated Tantan work',()=>{
- for(const id of ['glossy_guppy6230','aihan_days','cheeky_rhino7031']){
+// Tantan and Rokiron still await works; Aihan now has an explicitly supplied article.
+test('remaining new participant doors stay pending and exclude unrelated Tantan work',()=>{
+ for(const id of ['glossy_guppy6230','cheeky_rhino7031']){
   const entries=source.years[0].entries.filter(e=>e.creatorId===id);assert.equal(entries.length,1);
   const e=entries[0];assert.equal(e.submissionStatus,'pending');assert.equal(e.image,undefined);assert.equal(e.works,undefined);assert.equal(e.message,undefined);
   assert.deepEqual(e.links,[{title:'noteプロフィールを見る',url:`https://note.com/${id}`}]);
  }
  assert.doesNotMatch(JSON.stringify(source),/キャラクターを変身させたら物語が生まれた/);
+});
+
+test('explicit Yamacon and Aihan articles replace existing pending doors without adding people',()=>{
+ for(const [id,note,image,title] of [
+  ['fond_holly3483','ne5a25ae27a20','324565762','𝑯𝒂𝒍𝒍𝒐𝒘𝒆𝒆𝒏 𝑨𝒕𝒆𝒍𝒊𝒆𝒓‼️　参加してみた！'],
+  ['aihan_days','nfa274d6fe464','324560660','ちょっと試すつもりが…柴犬とハロウィン大冒険！🎃']]){
+  const entries=source.years[0].entries.filter(e=>e.creatorId===id);assert.equal(entries.length,1);const e=entries[0];
+  assert.equal(e.submissionStatus,'submitted');assert.equal(e.title,title);assert.equal(e.links[0].url,`https://note.com/${id}/n/${note}`);assert.ok(e.image.includes(image));assert.deepEqual(e.tags,['参加者','ハロウィン']);
+ }
+ assert.equal(source.creators.length,13);assert.equal(source.years[0].entries.length,14);assert.equal(source.years[0].entries[0].submissionStatus,'introduction');assert.equal(source.years[0].entries[1].doorId,'owner-work-2026');assert.equal(source.years[0].entries[1].submissionStatus,'pending');
 });

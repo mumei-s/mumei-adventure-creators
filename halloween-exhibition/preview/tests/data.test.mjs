@@ -34,7 +34,7 @@ test('creator identities use only names, handles, public profile links and profi
   }
 });
 
-test('host introduction and nine confirmed participant articles are present; six doors await submissions',()=>{
+test('host introduction and thirteen confirmed participant articles are present; two doors await submissions',()=>{
   const [host,owner,mako]=source.years[0].entries;
   assert.equal(owner.doorId,'owner-work-2026');
   assert.equal(owner.submissionStatus,'pending');
@@ -57,8 +57,8 @@ test('host introduction and nine confirmed participant articles are present; six
   assert.equal(mako.message,undefined);
   assert.equal(mako.works,undefined);
   assert.equal(source.years[0].entries.filter(e=>e.submissionStatus==='introduction').length,1);
-  assert.equal(source.years[0].entries.filter(e=>e.submissionStatus==='submitted').length,9);
-  assert.equal(participants.length,6);
+  assert.equal(source.years[0].entries.filter(e=>e.submissionStatus==='submitted').length,13);
+  assert.equal(participants.length,2);
   for(const entry of participants){
     const profile=verified.find(c=>c.id===entry.creatorId);
     assert.equal(entry.submissionStatus,'pending');
@@ -86,7 +86,7 @@ test('confirmed Chamomile article uses public article art distinct from the new 
   assert.equal(entry.message,undefined);
   assert.equal(source.years[0].entries.find(e=>e.creatorId==='soh_style_work').submissionStatus,'submitted');
   assert.equal(source.years[0].entries.find(e=>e.creatorId==='imota14').submissionStatus,'submitted');
-  assert.equal(source.years[0].entries.find(e=>e.creatorId==='glossy_guppy6230').submissionStatus,'pending');
+  assert.equal(source.years[0].entries.find(e=>e.creatorId==='glossy_guppy6230').submissionStatus,'submitted');
   assert.deepEqual(source.evergreenEntries,[]);
 });
 
@@ -120,14 +120,9 @@ test('door IDs survive reordered and retitled legacy entries, and distinguish sa
 
 test("verified Takechi work is submitted alongside newly available Marimo while owner placeholder remains",()=>{const e=source.years[0].entries.find(e=>e.creatorId==="imota14");assert.equal(e.title,"死神と貴公子と、顔に張り紙を貼った私。");assert.equal(e.submissionStatus,"submitted");assert.equal(e.links[0].url,"https://note.com/imota14/n/n618813fb0e89");assert.match(e.image,/324418285/);assert.equal(source.years[0].entries.find(e=>e.creatorId==="soh_style_work").submissionStatus,"submitted");assert.deepEqual(source.years[0].entries.find(e=>e.doorId==="owner-work-2026").links,[]);});
 
-// Tantan and Rokiron still await works; Aihan now has an explicitly supplied article.
-test('remaining new participant doors stay pending and exclude unrelated Tantan work',()=>{
- for(const id of ['glossy_guppy6230','cheeky_rhino7031']){
-  const entries=source.years[0].entries.filter(e=>e.creatorId===id);assert.equal(entries.length,1);
-  const e=entries[0];assert.equal(e.submissionStatus,'pending');assert.equal(e.image,undefined);assert.equal(e.works,undefined);assert.equal(e.message,undefined);
-  assert.deepEqual(e.links,[{title:'noteプロフィールを見る',url:`https://note.com/${id}`}]);
- }
- assert.doesNotMatch(JSON.stringify(source),/キャラクターを変身させたら物語が生まれた/);
+test('only CNA and the owner personal work remain pending; unrelated Tantan article is excluded',()=>{
+ assert.deepEqual(source.years[0].entries.filter(e=>e.submissionStatus==='pending').map(e=>e.creatorId),['ss_yr','grand_daisy8632']);
+ assert.doesNotMatch(JSON.stringify(source),/ne1d31629fa6e|キャラクターを変身させたら物語が生まれた/);
 });
 
 test('explicit Yamacon and Aihan articles replace existing pending doors without adding people',()=>{
@@ -152,4 +147,9 @@ test('Iris joins once with the verified public Halloween article and original fu
  const entries=source.years[0].entries.filter(e=>e.creatorId===c.id);assert.equal(entries.length,1);const e=entries[0];
  assert.equal(e.title,'かぼちゃの灯りがともる、アイリスのハロウィン');assert.equal(e.submissionStatus,'submitted');assert.equal(e.links[0].url,'https://note.com/real_hyena9474/n/nde7d4a19044d');assert.match(e.image,/324726369/);
  assert.equal(source.years[0].entries[0].role,'host');assert.equal(source.years[0].entries[1].doorId,'owner-work-2026');
+});
+
+test("four explicit Halloween submissions replace only their existing pending doors",()=>{
+ const expected=[{"id": "n72ea89e9a32e", "title": "『午前零時の解決屋』ハロウィン特別編｜黒猫さん、魔法の入口から音がします。", "image": "https://assets.st-note.com/production/uploads/images/324081013/rectangle_large_type_2_fc66dccba7fc2ce4a5584afc6a2ac55f.png?fit=bounds&quality=85&width=1280", "creatorId": "tenkai_notes", "name": "天界記録", "avatar": "https://assets.st-note.com/production/uploads/images/253576749/profile_70a01c50c971bc4c57351b9f5cc8a299.png?fit=bounds&format=jpeg&quality=85&width=330"}, {"id": "n4cc7e57a4182", "title": "【今日は一斉投稿の日✨️】AIイラスト・ハロウィン・企画参加で魔法の入口をくぐった話🎃", "image": "https://assets.st-note.com/production/uploads/images/324716686/rectangle_large_type_2_f5ef48b0cad2793cfecb16450223d790.png?fit=bounds&quality=85&width=1280", "creatorId": "n_kazumai55633", "name": "ミナト汐　＠光と構図のアトリエ", "avatar": "https://assets.st-note.com/production/uploads/images/322474239/profile_fce4138c4bb1001cc51b60785c106073.png?fit=bounds&format=jpeg&quality=85&width=330"}, {"id": "nd58ac4b4c53d", "title": "【企画に初参加】したんだけど…ハロウィン🎃", "image": "https://assets.st-note.com/production/uploads/images/324587601/rectangle_large_type_2_8ec8a44b2cb35c23f8d86061c2329f25.png?fit=bounds&quality=85&width=1280", "creatorId": "cheeky_rhino7031", "name": "ロキろん", "avatar": "https://assets.st-note.com/production/uploads/images/281429856/profile_394e2eb8124ebdada2bc028db6563ed2.png?fit=bounds&format=jpeg&quality=85&width=330"}, {"id": "n4b2ef2311c28", "title": "今年のハロウィン、どう楽しもう？🎃", "image": "https://assets.st-note.com/production/uploads/images/324762618/rectangle_large_type_2_c16cb3a36f6db9ce02b6436313464842.jpg?fit=bounds&quality=85&width=1280", "creatorId": "glossy_guppy6230", "name": "🍞たんたん🐼", "avatar": "https://assets.st-note.com/production/uploads/images/318256859/profile_d2fbdcbda06d06e5d51adea51865b4a6.jpeg?fit=bounds&format=jpeg&quality=85&width=330"}];
+ for(const j of expected){const es=source.years[0].entries.filter(e=>e.creatorId===j.creatorId);assert.equal(es.length,1);const e=es[0];assert.equal(e.submissionStatus,"submitted");assert.equal(e.title,j.title);assert.equal(e.image,j.image);assert.equal(e.links[0].url,`https://note.com/${j.creatorId}/n/${j.id}`);}
 });

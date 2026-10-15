@@ -5,3 +5,13 @@
 .visit-finish-button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 16px;border:1px solid #9c835c;border-radius:8px;background:#14202d;color:#f6e7ca;font:inherit;text-decoration:none;cursor:pointer}
 .visit-finish-button:focus-visible,.visit-finish-panel>summary:focus-visible{outline:3px solid #eec67d;outline-offset:3px}
 dialog .close,dialog .safe-dialog-back{position:sticky;top:0;float:right;z-index:3;width:auto;min-width:84px;min-height:44px;padding:8px 12px;font-size:13px;line-height:1.4;border-radius:8px;background:#14202d;color:#f6e7ca}
+/* Only the castle exposes app exit. The static fallback never navigates away. */
+.app-exit-trigger[hidden],.app-ended-screen[hidden],.visit-return-panel[hidden]{display:none!important}
+body[data-layout-page=gallery] .theater .header-actions .app-exit-trigger{order:101;min-height:44px;min-width:82px;padding:8px 12px;border:1px solid #c8976d;border-radius:99px;background:#342238;color:#fff0d3;font-size:11px;white-space:nowrap}
+.visit-return-panel{margin:16px 0}
+body[data-app-ended=true]>*:not(.app-ended-screen){display:none!important}
+.app-ended-screen{box-sizing:border-box;min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:32px max(20px,env(safe-area-inset-right)) 32px max(20px,env(safe-area-inset-left));background:#161321;color:#fff0d3;text-align:center;line-height:1.8;overflow-wrap:anywhere}
+.app-ended-screen h1{max-width:28rem;margin:0;font-size:clamp(24px,6vw,36px);line-height:1.5}
+.app-ended-screen p{max-width:30rem;margin:0}.app-ended-guidance{font-size:14px;color:#e1d0c1}
+.app-ended-return{min-height:48px;margin-top:12px;padding:12px 24px;border:1px solid #dcb57f;border-radius:12px;background:#37263e;color:#fff0d3;font:inherit;cursor:pointer}
+.app-exit-trigger:focus-visible,.app-ended-return:focus-visible,.app-ended-screen h1:focus-visible{outline:3px solid #eec67d;outline-offset:4px}

@@ -51,7 +51,9 @@ export function initFestivalScene({scene, root, doc = document, win = window}) {
  const observer = new win.MutationObserver(sync);
  observer.observe(root,{attributes:true,attributeFilter:['data-motion-paused']});
  observer.observe(doc.body,{attributes:true,attributeFilter:['data-ambient-paused','data-page-hidden']}); sync();
- const dispose = () => { controller.dispose();observer.disconnect();scene.removeEventListener('click',click);doc.removeEventListener('visibilitychange',sync);reduced.removeEventListener('change',sync);win.removeEventListener('pagehide',pagehide);win.removeEventListener('pageshow',sync); };
+ const viewport = typeof win.IntersectionObserver==='function' ? new win.IntersectionObserver(entries=>{const visible=entries.some(entry=>entry.isIntersecting);scene.dataset.visible=String(visible);if(!visible)controller.setHidden(true);else sync();},{threshold:0.01}) : null;
+ viewport?.observe(scene);
+ const dispose = () => { controller.dispose();viewport?.disconnect();observer.disconnect();scene.removeEventListener('click',click);doc.removeEventListener('visibilitychange',sync);reduced.removeEventListener('change',sync);win.removeEventListener('pagehide',pagehide);win.removeEventListener('pageshow',sync); };
  // A bfcache page stays wired; clear its current reaction and resync on return.
  const pagehide = event => { if(event.persisted) controller.setHidden(true); else dispose(); };
  win.addEventListener('pagehide',pagehide);win.addEventListener('pageshow',sync);

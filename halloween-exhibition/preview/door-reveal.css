@@ -20,3 +20,19 @@
 #theater[data-motion-paused=true] .artwork-mat {animation:none!important;visibility:visible!important}
 #theater[data-motion-paused=true] .door-burst i {animation:none!important;opacity:0!important}
 @media(prefers-reduced-motion:reduce){#theater .artwork-mat{animation:none!important;visibility:visible!important}#theater .door-burst i{animation:none!important;opacity:0!important}}
+/* Gilded carved leaves with a brief seam glow before the measured opening. */
+#theater .portal-doors{isolation:isolate;perspective:1300px}
+#theater .portal-door{box-shadow:inset 0 0 0 4px #1c102e,inset 0 0 0 6px var(--door-edge,#dfba77),inset 9px 0 14px #fff1bd22,inset -8px 0 14px #08061188,0 12px 18px #09051299;backface-visibility:hidden}
+#theater .portal-door:before{inset:10px;border:2px solid var(--door-edge,#dfba77);background:linear-gradient(110deg,#fff1c522,transparent 35%,#0005);box-shadow:inset 0 0 0 3px #24132c,inset 0 0 18px #0006}
+#theater .portal-door:after{inset:19px;border:1px solid #f9dca277;box-shadow:0 0 0 2px #25142a66}
+#theater .door-filigree{position:absolute;inset:14% 20%;width:60%;height:70%;color:var(--door-edge,#f4d397);filter:drop-shadow(0 2px 1px #160c24);opacity:.9}
+#theater .portal-door b{width:12px;height:20px;border:2px solid #ffe7a9;background:linear-gradient(110deg,#fff1b3,#a27138);box-shadow:2px 4px 3px #130b23,0 0 0 3px #382035}
+.portal-seam-light{position:absolute;left:calc(50% - 2px);top:3%;width:4px;height:94%;background:#fff1b8;box-shadow:0 0 14px 6px #ffd270,0 0 36px 14px #b489ed77;z-index:6;opacity:0;pointer-events:none}
+#theater.door-reveal .portal-seam-light{animation:portal-seam-awaken 1.2s ease-out both}
+#theater.door-reveal .artwork-mat>img{animation:article-step-forward .38s 1.2s ease-out both}
+#theater .door-burst i{font-size:0;width:7px;height:13px;border:1px solid #ffe8a2;border-radius:70% 10%;background:linear-gradient(30deg,#b88bdf,#ffebb4);box-shadow:0 0 10px #ffe5ac88}
+@keyframes portal-seam-awaken{0%{opacity:0;transform:scaleY(.3)}12%,25%{opacity:.9;transform:scaleY(1)}60%{opacity:.35}100%{opacity:0}}
+@keyframes article-step-forward{from{transform:scale(.94)}to{transform:scale(1)}}
+#theater[data-motion-paused=true] .portal-seam-light{animation:none!important;opacity:0!important}
+#theater[data-motion-paused=true] .artwork-mat>img{animation:none!important;transform:none!important}
+@media(prefers-reduced-motion:reduce){#theater .portal-seam-light{animation:none!important;opacity:0!important}#theater .artwork-mat>img{animation:none!important;transform:none!important}}

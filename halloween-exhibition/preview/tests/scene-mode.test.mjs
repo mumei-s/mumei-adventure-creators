@@ -52,3 +52,13 @@ test('clearly labelled ambience toggle lives in settings and respects reduced mo
  assert.equal(h.root.querySelector('.scene-controls'),null);button.click();assert.equal(button.textContent,'演出を動かす');assert.equal(h.body.dataset.ambientPaused,'true');h.api.destroy();
  const reduced=harness({reduced:true});assert.equal(reduced.settings.querySelector('.scene-pause').textContent,'演出は静止（端末設定）');assert.equal(reduced.settings.querySelector('.scene-pause').disabled,true);reduced.api.destroy();
 });
+
+test('temporary exit pause can restore the real user setting even under reduced motion',()=>{
+ for(const reduced of [false,true]){
+  const h=harness({reduced});assert.equal(h.api.isUserPaused(),false);
+  const original=h.api.isUserPaused();h.api.setPaused(true);assert.equal(h.api.isUserPaused(),true);
+  h.api.setPaused(original);assert.equal(h.api.isUserPaused(),false);h.api.destroy();
+ }
+ const h=harness();h.settings.querySelector('.scene-pause').click();assert.equal(h.api.isUserPaused(),true);
+ const original=h.api.isUserPaused();h.api.setPaused(true);h.api.setPaused(original);assert.equal(h.api.isUserPaused(),true);h.api.destroy();
+});

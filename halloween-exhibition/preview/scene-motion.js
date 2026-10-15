@@ -210,6 +210,7 @@ export function initSceneMotion(root, {controlsParent} = {}) {
       targetX = Number.isFinite(viewX) ? Math.max(-1, Math.min(1, viewX)) : 0;
       targetY = Number.isFinite(viewY) ? Math.max(-1, Math.min(1, viewY)) : 0;
     },
+    isUserPaused() { return userPaused; },
     setPaused(value) { userPaused = Boolean(value); updatePause(); },
     destroy() {
       cancelAnimationFrame(frame); abort.abort(); observer.disconnect(); dialogs.disconnect(); resizeObserver.disconnect();

@@ -1,5 +1,6 @@
+import { initAppExit } from './app-exit.js?v=20261015-glamour1';
 import { createDoorRevealClock } from './door-reveal-clock.js?v=20261015-playful1';
-import { initFestivalScene } from './festival-scene.js?v=20261015-playful1';
+import { initFestivalScene } from './festival-scene.js?v=20261015-glamour1';
 import { loadArtworkImage } from './magical-loading.js?v=20261015-journey1';
 import { initPalaceStartup } from './palace-startup.js?v=20261015-interior1';
 import { createDoorPalettePicker } from './door-palette.js?v=20261015-festival1';
@@ -8,7 +9,7 @@ import { initPalaceEntrance } from './palace-entrance.js?v=20261014-palace2';
 import { initDisplayMode } from './display-mode.js?v=20261014-layout1';
 import { createSlideshowController } from './slideshow.js?v=20261015-festival1';
 import { initVisitorPreferences } from './visitor-preferences.js?v=20261015-return1';
-import { initSceneMotion } from './scene-motion.js?v=20261015-music-garden1';
+import { initSceneMotion } from './scene-motion.js?v=20261015-glamour1';
 import { validateArchive, safeURL, normalizeSearch, doorIdFor } from './data-model.js?v=20261014-doors1';
 const $=id=>document.getElementById(id), root=$('theater');
 let palaceVisualReady;
@@ -115,11 +116,15 @@ async function openStory(){if(Date.now()<suppressClickUntil||$('detail').open)re
  const next=node('button','次の扉へ →','secondary');next.addEventListener('click',()=>{$('detail').close();adjacentDoor(1);});area.append(next);showDialog($('detail'));}
 function filterEntries(){return entries().filter(e=>(!activeTag||(e.tags||[]).includes(activeTag))&&(!search||normalizeSearch([creator(e).name,`@${creator(e).id}`,e.title||'',...(e.tags||[]),...(e.works||[]).map(w=>w.title)].join(' ')).includes(search)));}
 function renderRoster(){
- const area=$('roster-grid'),list=filterEntries(),pages=Math.ceil(list.length/ROSTER_PAGE_SIZE);
+ const host=displayMode==='halloween'?entries().find(e=>e.role==='host'&&e.submissionStatus==='introduction'):null;
+ const fixed=$('roster-host-fixed');fixed.replaceChildren();fixed.hidden=!host;
+ if(host){const card=node('button',undefined,'roster-host-project');card.dataset.doorId=host.doorId;card.setAttribute('aria-label','主催者の企画記事をひらく');const image=safeURL(host.image,{image:true});if(image){const img=node('img');img.src=image;img.alt='';card.append(img);}const title=node('span');title.append(node('small','固定 · 企画記事'),node('strong',host.title||'Halloween Atelier'),node('span','企画記事へ →'));card.append(title);card.addEventListener('click',()=>{returnTarget=$('artwork-open');$('roster').close();navigateDoor(host.doorId,{immediate:true});$('artwork-open').focus();});fixed.append(card);}
+ const rosterEntries=entries().filter(e=>!host||e.creatorId!==host.creatorId);
+ const area=$('roster-grid'),list=filterEntries().filter(e=>!host||e.creatorId!==host.creatorId),pages=Math.ceil(list.length/ROSTER_PAGE_SIZE);
  rosterPage=Math.max(0,Math.min(rosterPage,Math.max(0,pages-1)));
  const start=rosterPage*ROSTER_PAGE_SIZE,visible=list.slice(start,start+ROSTER_PAGE_SIZE);
  area.replaceChildren();
- $('results').textContent=`扉 ${list.length} / ${entries().length}枚 · ${list.length?start+1:0}〜${start+visible.length}枚目を表示 · 参加者${participantCount(list)}人`;
+ $('results').textContent=`扉 ${list.length} / ${rosterEntries.length}枚 · ${list.length?start+1:0}〜${start+visible.length}枚目を表示 · 参加者${participantCount(list)}人`;
  $('roster-page-status').textContent=`${pages?rosterPage+1:0} / ${pages} ページ`;
  $('roster-previous').disabled=rosterPage===0;
  $('roster-next').disabled=rosterPage>=pages-1;
@@ -162,17 +167,17 @@ installGalleryGesture($('stage'),{onNavigate:direction=>adjacentDoor(direction),
 $('palace-return').addEventListener('click',cancelStoryOpening);document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelStoryOpening();});$('retry').addEventListener('click',load);$('mode-halloween').addEventListener('click',()=>setMode('halloween'));$('mode-normal').addEventListener('click',()=>setMode('normal'));$('horror-entrance').addEventListener('click',()=>{try{sessionStorage.setItem(returnStateKey,JSON.stringify({year:currentYear,creatorId:current()?.creatorId,doorId:current()?.doorId,search,activeTag,rosterPage}));}catch{}});setMode(displayMode,{save:false});
 root.addEventListener('yearbook:seal-collected',event=>{const id=event.detail?.id;if(displayMode!=='halloween'||!currentYear||!sealIDs.includes(id)||seals().includes(id))return;progress.seals[key()]=[...seals(),id];persist();refreshSeals();});
 const visitorSettings=initVisitorPreferences({brightnessRange:{min:0,max:100,defaultValue:75},preferenceKey:'halloween-exhibition:main-preferences:v2',migrateFromKey:'halloween-exhibition:visitor-preferences:v1',triggerParent:document.querySelector('.header-actions'),onBrightness:value=>{root.style.setProperty('--visitor-brightness',String(value/100));root.style.setProperty('--art-brightness',String(value/75));}});
-// Explicit in-app finish: no history traversal, tab closing, or preference reset.
-function finishVisit(){
- visitorSettings.stopMusic();slideshow?.setEnabled(false);cancelStoryOpening();cancelRoulette();
+// Returning to the castle is navigation only; app exit is a separate castle action.
+function returnToCastle(){
+ cancelStoryOpening();cancelRoulette();
  for(const dialog of document.querySelectorAll('dialog[open]'))dialog.close();
  setMode('halloween',{save:false});palace?.home();
- notice('音楽と自動送りを止めて、お城へ戻りました。');
+ notice('お城に戻りました。');
 }
-const finishPanel=node('details',undefined,'visit-finish-panel');
-finishPanel.append(node('summary','終了'));
-const finishButton=node('button','終了・お城へ','visit-finish-button');finishButton.type='button';finishButton.addEventListener('click',()=>{finishPanel.open=false;finishVisit();});
-finishPanel.append(finishButton);document.querySelector('.visitor-preferences').append(finishPanel);
+const returnPanel=node('div',undefined,'visit-return-panel');
+const castleButton=node('button','お城に戻る','visit-finish-button');castleButton.type='button';castleButton.addEventListener('click',returnToCastle);
+returnPanel.append(castleButton);document.querySelector('.visitor-preferences').append(returnPanel);
+$('palace-return').textContent='← お城に戻る';
 const colorNote=node('p','記事画像の明るさ75%が元の色です。背景の明るさを変えても、文字のコントラストは保たれます。','visitor-settings-note');document.querySelector('.visitor-preferences')?.append(colorNote);
 const playback=document.querySelector('.gallery-playback');if(playback){document.querySelector('.visitor-preferences')?.append(playback);playback.append($('slideshow-status'));}
 const installControl=$('atelier-install-open');if(installControl)document.querySelector('.visitor-preferences')?.append(installControl);
@@ -181,6 +186,14 @@ const displayPreferences=document.querySelector('.display-preferences');
 if(displayPreferences){document.querySelector('.visitor-preferences').prepend(displayPreferences);const displayLabel=displayPreferences.querySelector('label');if(displayLabel)displayLabel.textContent='表示サイズ（この端末）';}
 palaceVisualReady=initPalaceStartup(root);
 const sceneMotion=initSceneMotion(root,{controlsParent:document.querySelector('.visitor-preferences')});
+let motionPausedBeforeExit=false;
+const appExit=initAppExit({root,triggerParent:document.querySelector('.header-actions'),onStop(){
+ visitorSettings.stopMusic();slideshow?.setEnabled(false);cancelStoryOpening();cancelRoulette();doorClock.cancel();cancelArtworkLoad();
+ turnVersion++;busy=false;root.classList.remove('turning-in','turning-out','door-reveal');
+ motionPausedBeforeExit=sceneMotion?.isUserPaused()||false;sceneMotion?.setPaused(true);
+},onResume(){
+ setMode('halloween',{save:false});palace?.home({focus:false});sceneMotion?.setPaused(motionPausedBeforeExit);
+}});
 function updateSlideshowState(state){
  $('slideshow-toggle').textContent=state.enabled?'自動送り ON':'自動送り OFF';
  $('slideshow-toggle').setAttribute('aria-pressed',String(state.enabled));
@@ -189,7 +202,7 @@ function updateSlideshowState(state){
  const status=state.error?'自動送りを停止しました。手動の左右ボタンでご覧ください。':!state.enabled?'自動送りはOFFです。':reason.includes('reduced-motion')?'端末の「動きを減らす」設定中は、自動送りも停止します。':reason.includes('dialog')?'詳細や設定を見ている間は、自動送りを一時停止します。':reason.includes('motion')?'演出を止めている間は、自動送りも一時停止します。':reason.length?'自動送りは一時停止中です。再開時は設定した間隔から始めます。':`扉が開いてから${state.intervalSeconds}秒間展示します。手動で移動すると数え直します。`;
  if($('slideshow-status').textContent!==status)$('slideshow-status').textContent=status;
 }
-palace=initPalaceEntrance({root,initialMode:displayMode,onViewChange:state=>{slideshow?.setBlocked('palace',state.view!=='gallery'||state.opening);if(state.view==='gallery'&&!state.opening)revealDoor();if(state.view!=='gallery'){cancelStoryOpening();cancelRoulette();turnVersion++;busy=false;root.classList.remove('turning-in','turning-out');}}});
+palace=initPalaceEntrance({root,initialMode:displayMode,onViewChange:state=>{returnPanel.hidden=state.view!=='gallery';appExit?.refresh();slideshow?.setBlocked('palace',state.view!=='gallery'||state.opening);if(state.view==='gallery'&&!state.opening)revealDoor();if(state.view!=='gallery'){cancelStoryOpening();cancelRoulette();turnVersion++;busy=false;root.classList.remove('turning-in','turning-out');}}});
 let slideshowStorage=null;try{slideshowStorage=localStorage;}catch{}
 slideshow=createSlideshowController({timers:{setTimeout:(fn,delay)=>setTimeout(fn,delay),clearTimeout:id=>clearTimeout(id)},storage:slideshowStorage,onState:updateSlideshowState,onAdvance:async control=>{
  if(!archive||document.hidden||reduced.matches||root.dataset.motionPaused==='true'||document.querySelector('dialog[open]')||rouletteRunning)return;

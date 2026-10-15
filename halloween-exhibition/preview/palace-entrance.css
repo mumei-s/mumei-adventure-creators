@@ -218,3 +218,11 @@ body[data-layout-page=gallery] .theater:not([data-palace-state=gallery]) .palace
 .theater[data-motion-paused=true] .palace-path-walkers *,body[data-ambient-paused=true] .palace-path-walkers *{animation:none!important}
 
 .visitor-preferences>.display-preferences:first-child{margin-top:0;padding-top:0;border-top:0}
+
+/* Walkers use visible entrance bounds, not the cover-cropped illustration canvas. */
+.palace-entrance>.palace-path-walkers .path-walker{bottom:7px;width:min(17%,115px);height:clamp(55px,12vw,130px)}
+.palace-entrance>.palace-path-walkers .path-franken{left:0;--walk-x:3px}
+.palace-entrance>.palace-path-walkers .path-zombie{right:0;--walk-x:-3px}
+.palace-entrance>.palace-path-walkers .path-werewolf{left:4%;bottom:88px;width:min(10%,72px);height:clamp(42px,8vw,90px);--walk-x:3px}
+/* On short portrait screens, spend only existing crop slack to expose the path. */
+@media(max-height:560px) and (orientation:portrait){.palace-composition{top:calc(50% - clamp(0px,calc((100cqw / .75 - 100cqh) / 2),24px))}}

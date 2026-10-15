@@ -140,13 +140,24 @@
           "doorId": "owner-work-2026",
           "creatorId": "ss_yr",
           "theme": "letter",
-          "submissionStatus": "pending",
-          "title": "作品準備中",
+          "submissionStatus": "submitted",
+          "title": "【🎃本格スタート】 無名S note 𝑯𝒂𝒍𝒍𝒐𝒘𝒆𝒆𝒏 𝑨𝒕𝒆𝒍𝒊𝒆𝒓‼️あなたの作品を『魔法の入口🚪』へ🎃",
           "tags": [
             "参加者",
-            "作品準備中"
+            "ハロウィン"
           ],
-          "links": []
+          "links": [
+            {
+              "title": "【🎃本格スタート】 無名S note 𝑯𝒂𝒍𝒍𝒐𝒘𝒆𝒆𝒏 𝑨𝒕𝒆𝒍𝒊𝒆𝒓‼️あなたの作品を『魔法の入口🚪』へ🎃（note記事）",
+              "url": "https://note.com/ss_yr/n/n15700f2773c6"
+            },
+            {
+              "title": "noteプロフィールを見る",
+              "url": "https://note.com/ss_yr"
+            }
+          ],
+          "image": "https://assets.st-note.com/production/uploads/images/324657828/rectangle_large_type_2_459273410eb989ab713248ac628c65c9.png?fit=bounds&quality=85&width=1280",
+          "imageAlt": "無名S noteの記事「【🎃本格スタート】 無名S note 𝑯𝒂𝒍𝒍𝒐𝒘𝒆𝒆𝒏 𝑨𝒕𝒆𝒍𝒊𝒆𝒓‼️あなたの作品を『魔法の入口🚪』へ🎃」の見出し画像"
         },
         {
           "creatorId": "koakumako",

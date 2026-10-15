@@ -34,10 +34,10 @@ test('creator identities use only names, handles, public profile links and profi
   }
 });
 
-test('host introduction and thirteen confirmed participant articles are present; two doors await submissions',()=>{
+test('host introduction and fourteen confirmed participant articles are present; one door await submissions',()=>{
   const [host,owner,mako]=source.years[0].entries;
   assert.equal(owner.doorId,'owner-work-2026');
-  assert.equal(owner.submissionStatus,'pending');
+  assert.equal(owner.submissionStatus,'submitted');
   const participants=source.years[0].entries.filter(entry=>entry.submissionStatus==='pending');
   assert.equal(host.creatorId,'ss_yr');
   assert.equal(host.role,'host');
@@ -57,8 +57,8 @@ test('host introduction and thirteen confirmed participant articles are present;
   assert.equal(mako.message,undefined);
   assert.equal(mako.works,undefined);
   assert.equal(source.years[0].entries.filter(e=>e.submissionStatus==='introduction').length,1);
-  assert.equal(source.years[0].entries.filter(e=>e.submissionStatus==='submitted').length,13);
-  assert.equal(participants.length,2);
+  assert.equal(source.years[0].entries.filter(e=>e.submissionStatus==='submitted').length,14);
+  assert.equal(participants.length,1);
   for(const entry of participants){
     const profile=verified.find(c=>c.id===entry.creatorId);
     assert.equal(entry.submissionStatus,'pending');
@@ -102,9 +102,9 @@ test('malformed profile field types reject',()=>{for(const key of ['avatar','ava
 test('unsafe URLs and traversal reject',()=>{for(const url of ['javascript:alert(1)','data:text/html,x','http://example.com','//example.com','assets/../private.png','https://user:secret@example.com','https://x.com/\nx'])assert.equal(safeURL(url,{image:true}),null);assert.equal(safeURL('./assets/portal.svg',{image:true}),'./assets/portal.svg');assert.equal(safeURL('https://example.com'),'https://example.com/');});
 test('search normalizes width, case, whitespace',()=>{assert.equal(normalizeSearch(' ＡＢＣ '),'abc');});
 
-test('the one requested owner work placeholder is a separate door, with no invented work URL or art',()=>{
+test('the published owner work retains its separate door and the fixed project introduction',()=>{
  const extra=source.years[0].entries.find(e=>e.doorId==='owner-work-2026');
- assert.deepEqual(extra,{doorId:'owner-work-2026',creatorId:'ss_yr',theme:'letter',submissionStatus:'pending',title:'作品準備中',tags:['参加者','作品準備中'],links:[]});
+ assert.equal(extra.submissionStatus,'submitted');assert.equal(extra.links[0].url,'https://note.com/ss_yr/n/n15700f2773c6');assert.equal(extra.title,"【🎃本格スタート】 無名S note 𝑯𝒂𝒍𝒍𝒐𝒘𝒆𝒆𝒏 𝑨𝒕𝒆𝒍𝒊𝒆𝒓‼️あなたの作品を『魔法の入口🚪』へ🎃");assert.equal(extra.image,"https://assets.st-note.com/production/uploads/images/324657828/rectangle_large_type_2_459273410eb989ab713248ac628c65c9.png?fit=bounds&quality=85&width=1280");assert.equal(source.years[0].entries[0].links[0].url,'https://note.com/ss_yr/n/n52be511ec082');
  assert.equal(source.years[0].entries.filter(e=>e.role==='host').length,1);
  assert.equal(new Set(source.years[0].entries.map(e=>e.creatorId)).size,15);
 });
@@ -118,10 +118,10 @@ test('door IDs survive reordered and retitled legacy entries, and distinguish sa
  for(const id of ['',{},'a b','../x','x'.repeat(121)]){data.years[0].entries.at(-1).doorId=id;assert.throws(()=>validateArchive(data),/扉ID/);}
 });
 
-test("verified Takechi work is submitted alongside newly available Marimo while owner placeholder remains",()=>{const e=source.years[0].entries.find(e=>e.creatorId==="imota14");assert.equal(e.title,"死神と貴公子と、顔に張り紙を貼った私。");assert.equal(e.submissionStatus,"submitted");assert.equal(e.links[0].url,"https://note.com/imota14/n/n618813fb0e89");assert.match(e.image,/324418285/);assert.equal(source.years[0].entries.find(e=>e.creatorId==="soh_style_work").submissionStatus,"submitted");assert.deepEqual(source.years[0].entries.find(e=>e.doorId==="owner-work-2026").links,[]);});
+test("verified Takechi work is submitted alongside newly available Marimo while owner work uses its separate door",()=>{const e=source.years[0].entries.find(e=>e.creatorId==="imota14");assert.equal(e.title,"死神と貴公子と、顔に張り紙を貼った私。");assert.equal(e.submissionStatus,"submitted");assert.equal(e.links[0].url,"https://note.com/imota14/n/n618813fb0e89");assert.match(e.image,/324418285/);assert.equal(source.years[0].entries.find(e=>e.creatorId==="soh_style_work").submissionStatus,"submitted");assert.equal(source.years[0].entries.find(e=>e.doorId==="owner-work-2026").links[0].url,"https://note.com/ss_yr/n/n15700f2773c6");});
 
-test('only CNA and the owner personal work remain pending; unrelated Tantan article is excluded',()=>{
- assert.deepEqual(source.years[0].entries.filter(e=>e.submissionStatus==='pending').map(e=>e.creatorId),['ss_yr','grand_daisy8632']);
+test('only CNA remains pending; unrelated Tantan article is excluded',()=>{
+ assert.deepEqual(source.years[0].entries.filter(e=>e.submissionStatus==='pending').map(e=>e.creatorId),['grand_daisy8632']);
  assert.doesNotMatch(JSON.stringify(source),/ne1d31629fa6e|キャラクターを変身させたら物語が生まれた/);
 });
 
@@ -132,7 +132,7 @@ test('explicit Yamacon and Aihan articles replace existing pending doors without
   const entries=source.years[0].entries.filter(e=>e.creatorId===id);assert.equal(entries.length,1);const e=entries[0];
   assert.equal(e.submissionStatus,'submitted');assert.equal(e.title,title);assert.equal(e.links[0].url,`https://note.com/${id}/n/${note}`);assert.ok(e.image.includes(image));assert.deepEqual(e.tags,['参加者','ハロウィン']);
  }
- assert.equal(source.creators.length,15);assert.equal(source.years[0].entries.length,16);assert.equal(source.years[0].entries[0].submissionStatus,'introduction');assert.equal(source.years[0].entries[1].doorId,'owner-work-2026');assert.equal(source.years[0].entries[1].submissionStatus,'pending');
+ assert.equal(source.creators.length,15);assert.equal(source.years[0].entries.length,16);assert.equal(source.years[0].entries[0].submissionStatus,'introduction');assert.equal(source.years[0].entries[1].doorId,'owner-work-2026');assert.equal(source.years[0].entries[1].submissionStatus,'submitted');
 });
 
 test("CNA is a new pending participant with no invented article",()=>{const c=source.creators.find(c=>c.id==="grand_daisy8632");assert.equal(c.name,"CNA運営");assert.equal(c.profileURL,"https://note.com/grand_daisy8632");const e=source.years[0].entries.find(e=>e.creatorId===c.id);assert.equal(e.submissionStatus,"pending");assert.equal(e.image,undefined);assert.equal(e.links.length,1);assert.equal(e.links[0].url,c.profileURL);});

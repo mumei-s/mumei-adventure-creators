@@ -161,13 +161,13 @@ test('initial load renders all real article doors and creators', async () => {
   assert.doesNotMatch(h.$('detail-content').textContent, /架空の参加者|展示サンプル/);
 });
 
-test('expanded roster renders all thirteen confirmed submissions with their own art and links', async () => {
+test('expanded roster renders all fourteen confirmed submissions with their own art and links', async () => {
   assert.equal(creatorCount, 15);
   assert.equal(doorCount, 16);
-  assert.equal(pendingCount, 2);
+  assert.equal(pendingCount, 1);
   assert.equal(annualEntries.filter(entry => entry.submissionStatus === 'introduction').length, 1);
   const submitted = annualEntries.filter(entry => entry.submissionStatus === 'submitted');
-  assert.deepEqual(new Set(submitted.map(entry => entry.creatorId)), new Set(['koakumako', 'imota14', 'clever_hare2654', 'fond_holly3483', 'aihan_days', 'mama_ca', 'naemotion', 'soh_style_work', 'real_hyena9474', 'tenkai_notes', 'n_kazumai55633', 'cheeky_rhino7031', 'glossy_guppy6230']));
+  assert.deepEqual(new Set(submitted.map(entry => entry.creatorId)), new Set(['ss_yr', 'koakumako', 'imota14', 'clever_hare2654', 'fond_holly3483', 'aihan_days', 'mama_ca', 'naemotion', 'soh_style_work', 'real_hyena9474', 'tenkai_notes', 'n_kazumai55633', 'cheeky_rhino7031', 'glossy_guppy6230']));
   const h = await harness();
   for (const entry of submitted) {
     await h.api.navigate(annualEntries.indexOf(entry));
@@ -475,9 +475,9 @@ test('name and @note-handle search work, and pending-work tag excludes future pl
   }
   h.$('search').value = ''; h.$('search').dispatch('input');
   h.$('tags').children.find(n => n.textContent === '作品準備中').click();
-  assert.equal(h.$('roster-grid').querySelectorAll('button').length, Math.min(5,pendingCount-1));
+  assert.equal(h.$('roster-grid').querySelectorAll('button').length, Math.min(5,pendingCount));
   assert.equal(h.$('roster-grid').querySelectorAll('.future-card').length, 0);
-  assert.equal(h.$('results').textContent, `扉 ${pendingCount-1} / ${rosterCount}枚 · 1〜${Math.min(5,pendingCount-1)}枚目を表示 · 参加者${pendingPeople-1}人`);
+  assert.equal(h.$('results').textContent, `扉 ${pendingCount} / ${rosterCount}枚 · 1〜${Math.min(5,pendingCount)}枚目を表示 · 参加者${pendingPeople}人`);
 });
 
 test('future slots do not change year-picker counts and an empty year stays incomplete', async () => {
@@ -952,8 +952,8 @@ test('roster pagination exposes every distinct door and deduplicates creator cou
 test('filtered pending roster paginates all pending doors; search and tag changes reset pagination',async()=>{
  const h=await harness();h.$('list-open').click();h.$('roster-next').click();
  h.$('tags').children.find(n=>n.textContent==='作品準備中').click();assert.equal(h.$('roster-page-status').textContent,'1 / 1 ページ');
- assert.equal(h.$('roster-grid').querySelectorAll('button').length,Math.min(5,pendingCount-1));h.$('roster-next').click();
- assert.equal(h.$('roster-grid').querySelectorAll('button').length,pendingCount-1);assert.equal(h.$('results').textContent,`扉 ${pendingCount-1} / ${rosterCount}枚 · 1〜${pendingCount-1}枚目を表示 · 参加者${pendingPeople-1}人`);
+ assert.equal(h.$('roster-grid').querySelectorAll('button').length,Math.min(5,pendingCount));h.$('roster-next').click();
+ assert.equal(h.$('roster-grid').querySelectorAll('button').length,pendingCount);assert.equal(h.$('results').textContent,`扉 ${pendingCount} / ${rosterCount}枚 · 1〜${pendingCount}枚目を表示 · 参加者${pendingPeople}人`);
  h.$('search').value='CNA';h.$('search').dispatch('input');assert.equal(h.$('roster-page-status').textContent,'1 / 1 ページ');
  assert.equal(h.$('roster-grid').querySelectorAll('button').length,1);assert.equal(h.$('roster-next').disabled,true);assert.equal(h.$('roster-previous').disabled,true);
  h.$('search').value='存在しない作品';h.$('search').dispatch('input');assert.equal(h.$('roster-page-status').textContent,'0 / 0 ページ');
@@ -978,9 +978,9 @@ test('owner personal door survives first-page selection, detail return, and exac
  const h=await harness();h.$('list-open').click();
  const duplicate=h.$('roster-grid').children.find(b=>b.dataset.doorId==='owner-work-2026');assert.equal(duplicate,undefined);h.$('roster').close();await h.api.navigate(ownerWorkIndex);
  await h.tick(0);assert.equal(h.$('theater').dataset.doorId,'owner-work-2026');assert.equal(h.$('theater').dataset.creatorId,'ss_yr');
- assert.equal(h.$('artwork-image').src,archive.creators[0].avatar);assert.match(h.$('artwork-image').alt,/プロフィール画像/);
+ assert.equal(h.$('artwork-image').src,annualEntries[ownerWorkIndex].image);assert.equal(h.$('artwork-image').alt,annualEntries[ownerWorkIndex].imageAlt);
  h.$('artwork-open').click();assert.doesNotMatch(h.$('detail-content').textContent,/ハロウィン企画への招待状/);
- assert.deepEqual(h.$('detail-content').querySelectorAll('a').filter(a=>!a.classList.contains('magazine-link')).map(a=>a.href),[archive.creators[0].profileURL]);
+ assert.deepEqual(h.$('detail-content').querySelectorAll('a').filter(a=>!a.classList.contains('magazine-link')).map(a=>a.href),['https://note.com/ss_yr/n/n15700f2773c6',archive.creators[0].profileURL]);
  h.$('detail').close();await h.tick(0);h.$('list-open').click();assert.equal(h.$('roster-page-status').textContent,`1 / ${pageCount} ページ`);
  h.$('roster').close();await h.tick(0);h.$('horror-entrance').click();const state=JSON.parse(h.getReturn().value);
  assert.equal(state.doorId,'owner-work-2026');assert.equal(state.rosterPage,0);

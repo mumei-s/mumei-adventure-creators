@@ -1,0 +1,28 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+const css=await readFile(new URL('../host-celebration.css',import.meta.url),'utf8');
+const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
+const sw=await readFile(new URL('../sw.js',import.meta.url),'utf8');
+test('host-only ceremony sits behind the untouched thumbnail with bounded decorations',()=>{
+ assert.match(css,/\.host-coronation,\.host-caption-aurora \{display:none;pointer-events:none\}/);
+ assert.match(css,/#theater\[data-mode=halloween\]\[data-entry-kind=introduction\] \.host-coronation/);
+ assert.match(css,/z-index:9;overflow:hidden;pointer-events:none/);
+ assert.match(css,/room-world>\.artwork-frame \{[^}]*border:2px solid #fff0b4/);
+ assert.doesNotMatch(css,/artwork-mat|object-fit|filter:brightness/);
+ assert.equal((html.match(/style="--n:/g)||[]).length,12);
+ assert.match(html,/class="host-coronation" aria-hidden="true"/);
+});
+test('host motion stops for explicit pause and reduced motion, without rapid flashing',()=>{
+ assert.match(css,/data-motion-paused=true/);assert.match(css,/prefers-reduced-motion:reduce/);
+ assert.match(css,/animation:none!important/);
+ assert.doesNotMatch(css,/animation:[^;]*\s0\.[0-9]+s/);
+ assert.match(css,/host-turn 52s/);
+});
+test('host release is isolated in the preview cache and follows existing styles',()=>{
+ assert.ok(html.indexOf('host-celebration.css')>html.indexOf('gallery-refinement.css'));
+ assert.match(html,/host-celebration.css\?v=20261015-host1/);
+ assert.match(sw,/HOST_RELEASE = '20261015-host1'/);
+ assert.match(sw,/path==='host-celebration.css' \? HOST_RELEASE/);
+ assert.match(html,/id="host-magazine"[^>]*href="https:\/\/note.com\/ss_yr\/m\/m642b82518aeb"/);
+});

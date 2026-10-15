@@ -1,0 +1,39 @@
+/* The host invitation owns a ceremonial stage. Decoration never covers the art.
+   No timers, video, canvas, external assets or persistent state are introduced. */
+.host-coronation,.host-caption-aurora {display:none;pointer-events:none}
+#theater[data-mode=halloween][data-entry-kind=introduction] .host-coronation {display:block;position:absolute;inset:0;z-index:9;overflow:hidden;pointer-events:none;isolation:isolate}
+body[data-layout-page=gallery] #theater[data-mode=halloween][data-entry-kind=introduction] .room-world {min-height:300px;height:clamp(300px,36vw,520px);overflow:visible}
+body[data-layout-page=gallery] #theater[data-mode=halloween][data-entry-kind=introduction] .room-world>.artwork-frame {top:90px;width:min(76%,680px);max-width:calc(100% - 74px);max-height:calc(100% - 118px);padding:10px;border:2px solid #fff0b4;border-radius:14px;background:linear-gradient(135deg,#fff4b5,#ce8e32 22%,#fff1a3 45%,#a84878 68%,#e6b349 85%,#fff6c6);box-shadow:0 0 0 3px #713858,0 0 0 5px #ffe6a2,0 0 25px #fcae6880,0 22px 40px #000a;overflow:visible}
+#theater[data-mode=halloween][data-entry-kind=introduction] .artwork-frame:before,#theater[data-mode=halloween][data-entry-kind=introduction] .artwork-frame:after {content:'✦';position:absolute;top:calc(50% - 19px);font-size:34px;line-height:38px;color:#fff2ad;text-shadow:0 0 12px #ffb74b;pointer-events:none;animation:host-jewel 4s ease-in-out infinite alternate}
+#theater[data-mode=halloween][data-entry-kind=introduction] .artwork-frame:before {left:-28px}
+#theater[data-mode=halloween][data-entry-kind=introduction] .artwork-frame:after {right:-28px;animation-delay:-2s}
+#theater[data-mode=halloween][data-entry-kind=introduction] .artwork-invitation {display:none}
+.host-beams {position:absolute;inset:-30% -20%;background:repeating-conic-gradient(from 0deg at 50% 53%,transparent 0deg 12deg,#f5b64b30 13deg 16deg,transparent 17deg 29deg);animation:host-turn 52s linear infinite;opacity:.75}
+.host-halo {position:absolute;left:50%;top:52%;width:78%;aspect-ratio:1;border:1px solid #f7d591a0;border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 0 7px #f2bc7320,0 0 0 9px #f2bc7340,inset 0 0 40px #c67ae52a,0 0 30px #ffb94625}
+.host-halo:before,.host-halo:after {content:'✧';position:absolute;top:12%;left:12%;font-size:30px;color:#ffe1a6;text-shadow:0 0 14px #ffbb55}
+.host-halo:after {top:auto;left:auto;bottom:12%;right:12%}
+.halo-outer {animation:host-orbit 26s linear infinite;border-style:dashed}
+.halo-inner {width:64%;animation:host-orbit 38s linear infinite reverse}
+.host-crown {position:absolute;top:8px;left:calc(50% - 28px);width:56px;text-align:center;font:52px/1 Georgia,serif;color:#ffe3a2;text-shadow:0 2px #8e4a28,0 0 8px #ffdc99,0 0 25px #ec9b49;animation:host-float 4.5s ease-in-out infinite alternate}
+.host-banner {position:absolute;top:64px;left:10%;width:80%;text-align:center;color:#fff0bd;font:10px/1.4 Georgia,serif;letter-spacing:.28em;text-shadow:0 0 9px #ffb857}
+.host-plinth {position:absolute;left:9%;right:9%;bottom:3px;height:26px;border:1px solid #eab665;border-radius:50%;background:repeating-radial-gradient(ellipse,#ba745d44 0 5px,#ffc77466 6px 7px,transparent 8px 15px);box-shadow:0 -12px 35px #e5a34644;animation:host-jewel 5s ease-in-out infinite alternate}
+.host-sparks {position:absolute;inset:0}
+.host-sparks i {position:absolute;left:calc(4% + var(--n)*8%);bottom:5%;color:#ffe7ae;font:15px/1 Georgia,serif;text-shadow:0 0 9px #ffd374;animation:host-rise 6s linear infinite;animation-delay:calc(var(--n)*-.63s)}
+body[data-layout-page=gallery] #theater[data-mode=halloween][data-entry-kind=introduction] .stage-caption {isolation:isolate;overflow:hidden;padding:28px 20px 24px;border:2px solid #ffdfa3;border-radius:48px 48px 16px 16px;background:radial-gradient(ellipse at 50% 0,#804275,#311c3e 58%,#191a30);box-shadow:0 0 0 4px #5e344b,0 0 0 5px #c48c4c,inset 0 0 44px #d1974938,0 0 32px #d39d4933}
+#theater[data-mode=halloween][data-entry-kind=introduction] .host-caption-aurora {display:block;position:absolute;inset:-50%;z-index:-1;background:conic-gradient(from 0deg,transparent,#f4bd5c30,transparent,#d384ff22,transparent,#f4bd5c30,transparent);animation:host-turn 32s linear infinite}
+#theater[data-mode=halloween][data-entry-kind=introduction] .stage-caption:before,#theater[data-mode=halloween][data-entry-kind=introduction] .stage-caption:after {content:'✧';position:absolute;top:32px;font:40px/1 Georgia,serif;color:#ffd78f;text-shadow:0 0 15px #ffb555;pointer-events:none;animation:host-float 5s ease-in-out infinite alternate}
+#theater[data-mode=halloween][data-entry-kind=introduction] .stage-caption:before {left:10%}
+#theater[data-mode=halloween][data-entry-kind=introduction] .stage-caption:after {right:10%;animation-delay:-2.5s}
+body[data-layout-page=gallery] #theater[data-mode=halloween][data-entry-kind=introduction] .host-avatar {width:76px;height:76px;box-shadow:0 0 0 5px #975478,0 0 0 7px #f5cd81,0 0 28px #fbb45e55;margin-bottom:20px}
+#theater[data-mode=halloween][data-entry-kind=introduction] .host-magazine {border:2px solid #ffdc94;background:radial-gradient(ellipse at top,#784566,#30203d 75%);box-shadow:inset 0 0 0 4px #f6c46a1a,0 0 24px #e4ae4230}
+#theater[data-mode=halloween][data-entry-kind=introduction] .host-magazine:before {content:'';position:absolute;inset:0;background:linear-gradient(110deg,transparent 25%,#ffe2a326 48%,transparent 70%);transform:translateX(-100%);animation:host-sweep 7s ease-in-out infinite;pointer-events:none}
+#theater[data-mode=halloween][data-entry-kind=introduction] .host-magazine>span {position:relative;z-index:1}
+@keyframes host-turn {to{transform:rotate(360deg)}}
+@keyframes host-orbit {to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes host-float {to{transform:translateY(-5px)}}
+@keyframes host-jewel {from{opacity:.65}to{opacity:1}}
+@keyframes host-rise {0%{transform:translateY(0) rotate(0);opacity:0}15%,75%{opacity:.9}100%{transform:translateY(-260px) rotate(100deg);opacity:0}}
+@keyframes host-sweep {0%,25%{transform:translateX(-100%)}75%,100%{transform:translateX(100%)}}
+#theater[data-motion-paused=true] .host-coronation *,#theater[data-motion-paused=true] .host-caption-aurora,#theater[data-motion-paused=true] .artwork-frame:before,#theater[data-motion-paused=true] .artwork-frame:after,#theater[data-motion-paused=true] .stage-caption:before,#theater[data-motion-paused=true] .stage-caption:after,#theater[data-motion-paused=true] .host-magazine:before {animation:none!important}
+@media(prefers-reduced-motion:reduce){.host-coronation *,.host-caption-aurora,#theater .artwork-frame:before,#theater .artwork-frame:after,#theater .stage-caption:before,#theater .stage-caption:after,#theater .host-magazine:before{animation:none!important}}
+@media(max-width:420px){body[data-layout-page=gallery] #theater[data-mode=halloween][data-entry-kind=introduction] .room-world{height:300px}body[data-layout-page=gallery] #theater[data-mode=halloween][data-entry-kind=introduction] .room-world>.artwork-frame{top:100px;max-width:calc(100% - 60px);padding:7px}.host-banner{font-size:9px;letter-spacing:.14em}.host-halo{width:87%}.halo-inner{width:72%}}

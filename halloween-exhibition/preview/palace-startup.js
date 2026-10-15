@@ -21,7 +21,7 @@ export function initPalaceStartup(root) {
  return Promise.all([settlePalaceImage(image),settlePalaceImage(gateTexture)]).then(results=>{
   const fallback=results.includes('fallback');root.dataset.palaceReady=fallback?'fallback':'ready';
   const status=doc.getElementById('palace-load-status');
-  if(status)status.textContent=fallback?'軽量表示で開けます。門をタップしてください。':'';
+  if(status){status.textContent='';status.hidden=true;} // A ready embedded castle is a valid display, not a persistent warning.
   return results;
  });
 }

@@ -184,18 +184,18 @@ test('release-versioned JS/CSS are coherent and only the exact public release qu
  for(const path of ['index.html','admin/index.html']){
   const text=await readFile(new URL('../'+path,import.meta.url),'utf8');
   for(const match of text.matchAll(/(?:href|src)="(\.\.?\/[^"?]+\.(?:js|css))(\?[^" ]*)?"/g)){
-   assert.equal(match[2],'?v='+(['./magical-loading.css','./theater.js'].includes(match[1])?'20261015-journey1':match[1]==='./palace-entrance.css'?'20261015-startup2':['./palace-startup.js','./theater.js','./pwa.js'].includes(match[1])?'20261015-startup1':match[1]==='./host-celebration.css'?'20261015-host2':match[1]==='./gallery-refinement.css'?'20261015-doorstage2':['./theater.js','./door-reveal.css'].includes(match[1])?'20261015-reveal1':match[1]==='./visitor-preferences.css'?'20261015-settings2':match[1]==='./palace-entrance.css'?'20261014-corner2':['./theater.js','./gallery-refinement.css'].includes(match[1])?'20261015-festival1':match[1]==='./app.js'?'20261015-roster4':match[1]==='./article-doors.css'?'20261014-doors1':match[1]==='./gallery-controls.css'?'20261014-portrait1':release),match[1]);await access(new URL('../'+(path.startsWith('admin/')?'admin/':'')+match[1],import.meta.url));
+   assert.equal(match[2],'?v='+(['./magical-loading.css','./theater.js','./palace-startup.js'].includes(match[1])?'20261015-interior1':match[1]==='./palace-entrance.css'?'20261015-startup2':['./palace-startup.js','./theater.js','./pwa.js'].includes(match[1])?'20261015-startup1':match[1]==='./host-celebration.css'?'20261015-host2':match[1]==='./gallery-refinement.css'?'20261015-doorstage2':['./theater.js','./door-reveal.css'].includes(match[1])?'20261015-reveal1':match[1]==='./visitor-preferences.css'?'20261015-settings2':match[1]==='./palace-entrance.css'?'20261014-corner2':['./theater.js','./gallery-refinement.css'].includes(match[1])?'20261015-festival1':match[1]==='./app.js'?'20261015-roster4':match[1]==='./article-doors.css'?'20261014-doors1':match[1]==='./gallery-controls.css'?'20261014-portrait1':release),match[1]);await access(new URL('../'+(path.startsWith('admin/')?'admin/':'')+match[1],import.meta.url));
   }
  }
  for(const path of ['theater.js','admin/app.js','admin/display-settings.js']){
   const text=await readFile(new URL('../'+path,import.meta.url),'utf8');
-  for(const match of text.matchAll(/from '(\.\.?\/[^'?]+\.js)(\?[^']*)?'/g))assert.equal(match[2],'?v='+(match[1]==='./magical-loading.js'?'20261015-journey1':match[1]==='./palace-startup.js'?'20261015-startup1':match[1]==='./visitor-preferences.js'?'20261015-settings2':['./door-palette.js','./slideshow.js'].includes(match[1])?'20261015-festival1':match[1]==='./gallery-gesture.js'?'20261015-controls1':match[1]==='./palace-entrance.js'?'20261014-palace2':match[1]==='./model.js'?'20261015-roster4':['./data-model.js','../data-model.js'].includes(match[1])?'20261014-doors1':release),match[1]);
+  for(const match of text.matchAll(/from '(\.\.?\/[^'?]+\.js)(\?[^']*)?'/g))assert.equal(match[2],'?v='+(match[1]==='./magical-loading.js'?'20261015-journey1':match[1]==='./palace-startup.js'?'20261015-interior1':match[1]==='./visitor-preferences.js'?'20261015-settings2':['./door-palette.js','./slideshow.js'].includes(match[1])?'20261015-festival1':match[1]==='./gallery-gesture.js'?'20261015-controls1':match[1]==='./palace-entrance.js'?'20261014-palace2':match[1]==='./model.js'?'20261015-roster4':['./data-model.js','../data-model.js'].includes(match[1])?'20261014-doors1':release),match[1]);
  }
  const h=workerHarness();
  for(const path of ['slideshow.js','display-mode.js','display-mode.css'])assert.equal((await h.dispatch('fetch',base+path+'?v='+(path==='slideshow.js'?'20261015-festival1':release))).intercepted,true);
  for(const path of ['admin/app.js','admin/index.html','maze/app.js','data/archive.json','unknown.js'])assert.equal((await h.dispatch('fetch',base+path+'?v='+release)).intercepted,false);
  for(const query of ['?v=old','?v='+release+'&token=private','?token=private','?v='+release+'&v=other'])assert.equal((await h.dispatch('fetch',base+'theater.js'+query)).intercepted,false);
- assert.match(workerSource,/mumei-atelier-shell-v20-/);assert.match(workerSource,/cacheName: CACHE/);
+ assert.match(workerSource,/mumei-atelier-shell-v21-/);assert.match(workerSource,/cacheName: CACHE/);
  assert.doesNotMatch(workerSource,/localStorage|sessionStorage|\.clear\(/);
 });
 
@@ -225,17 +225,17 @@ test('door release assets and dependency are coherently versioned while private 
   assert.equal((await h.dispatch('fetch',base+path+'?v=20261014-layout1')).intercepted,false);
  }
  for(const path of ['slideshow.js','admin/model.js','maze/app.js','data/archive.json','index.html'])assert.equal((await h.dispatch('fetch',base+path+'?v=20261014-doors1')).intercepted,false,path);
- assert.match(workerSource,/mumei-atelier-shell-v20-/);assert.match(workerSource,/const DOOR_RELEASE = '20261014-doors1'/);
+ assert.match(workerSource,/mumei-atelier-shell-v21-/);assert.match(workerSource,/const DOOR_RELEASE = '20261014-doors1'/);
 });
 
 test('palace release is exact, independently cache-busted and confined to public preview assets',async()=>{
  const h=workerHarness();await h.dispatch('install');
  for(const path of ['theater.js','palace-entrance.js','palace-entrance.css']){
-  assert.equal((await h.dispatch('fetch',base+path+'?v='+(path==='palace-entrance.css'?'20261015-startup2':path==='theater.js'?'20261015-journey1':'20261014-palace2'))).intercepted,true);
+  assert.equal((await h.dispatch('fetch',base+path+'?v='+(path==='palace-entrance.css'?'20261015-startup2':path==='theater.js'?'20261015-interior1':'20261014-palace2'))).intercepted,true);
   assert.equal((await h.dispatch('fetch',base+path+'?v=20261014-doors1')).intercepted,false);
  }
  for(const name of ['palace-desktop','palace-phone','gate-desktop','gate-phone'])assert.equal((await h.dispatch('fetch',base+'assets/palace/'+name+'.webp')).intercepted,true);
- for(const path of ['admin/app.js','maze/app.js','data/archive.json','unknown.js'])assert.equal((await h.dispatch('fetch',base+path+'?v='+(path==='palace-entrance.css'?'20261015-startup2':path==='theater.js'?'20261015-journey1':'20261014-palace2'))).intercepted,false);
+ for(const path of ['admin/app.js','maze/app.js','data/archive.json','unknown.js'])assert.equal((await h.dispatch('fetch',base+path+'?v='+(path==='palace-entrance.css'?'20261015-startup2':path==='theater.js'?'20261015-interior1':'20261014-palace2'))).intercepted,false);
  assert.equal((await h.dispatch('fetch',base+'palace-entrance.js?v=20261014-palace2&token=private')).intercepted,false);
- assert.match(workerSource,/mumei-atelier-shell-v20-/);
+ assert.match(workerSource,/mumei-atelier-shell-v21-/);
 });

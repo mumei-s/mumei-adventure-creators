@@ -1,5 +1,5 @@
 import { loadArtworkImage } from './magical-loading.js?v=20261015-journey1';
-import { initPalaceStartup } from './palace-startup.js?v=20261015-startup1';
+import { initPalaceStartup } from './palace-startup.js?v=20261015-interior1';
 import { createDoorPalettePicker } from './door-palette.js?v=20261015-festival1';
 import { installGalleryGesture } from './gallery-gesture.js?v=20261015-controls1';
 import { initPalaceEntrance } from './palace-entrance.js?v=20261014-palace2';

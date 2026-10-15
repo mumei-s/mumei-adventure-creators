@@ -69,3 +69,40 @@ body[data-layout-page=gallery] .theater[data-entry-kind=introduction] #creator-n
 body[data-layout-page=gallery] .theater .chapter-index {display:none}
 body[data-layout-page=gallery] .theater .stage-footer {grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"faces faces" "playback roulette" "status status" "hint hint"}
 body[data-layout-page=gallery] .theater[data-mode=normal] .stage-footer {grid-template-areas:"faces faces" "playback playback" "status status" "hint hint"}
+/* The frame changes its jewelry; the image keeps its own colors. */
+body[data-layout-page=gallery] .theater[data-mode=halloween] .artwork-frame {
+ background:linear-gradient(135deg,var(--door-edge),var(--door-color) 35%,var(--door-shadow) 65%,var(--door-edge));
+ border-color:var(--door-edge);box-shadow:0 0 0 3px var(--door-shadow),0 0 0 4px var(--door-edge),0 16px 32px #0008;
+}
+body[data-layout-page=gallery] .theater[data-mode=halloween] .portal-door {
+ background:linear-gradient(115deg,var(--door-color),var(--door-shadow) 45%,var(--door-color));border-color:var(--door-edge);
+}
+#theater .room-kicker:empty {display:none}
+.visitor-preferences .gallery-playback {display:grid;grid-template-columns:1fr auto;gap:12px;margin:24px 0 12px;padding-top:18px;border-top:1px solid #a88c6655}
+.visitor-preferences .gallery-playback .slideshow-status {grid-column:1/-1;grid-area:auto;color:inherit;font-size:11px}
+.visitor-preferences .gallery-playback button,.visitor-preferences .gallery-playback select {font:inherit;font-size:13px;min-height:44px;padding:8px 12px}
+.visitor-preferences .gallery-playback select {min-width:80px}
+body[data-layout-page=gallery] .theater .stage-footer {grid-template-areas:"faces faces" "hint roulette"}
+body[data-layout-page=gallery] .theater[data-mode=normal] .stage-footer {grid-template-areas:"faces faces" "hint hint"}
+/* A dedicated ornamental stage, never laid over artwork, captions or controls. */
+.festival-coda {position:relative;isolation:isolate;overflow:hidden;flex:none;height:170px;margin:8px 12px 0;border-radius:48% 48% 14px 14px;background:linear-gradient(#17162b99,#1b1934dd),url(./assets/palace/palace-desktop.webp) center 68%/cover;pointer-events:none;contain:paint}
+.festival-aurora {position:absolute;inset:5% -20%;background:conic-gradient(from 0deg at 50% 100%,transparent,#bb6bdf33,transparent,#f2b04c33,transparent,#70d9c42e,transparent);filter:blur(15px);animation:festival-breathe 9s ease-in-out infinite alternate}
+.festival-arc {position:absolute;width:70%;height:170%;left:15%;top:5%;border:1px solid #e7b26f88;border-radius:50%;box-shadow:0 0 0 8px #dba26d09,0 0 0 13px #ca955b22,inset 0 0 45px #ca995415}
+.festival-stars {position:absolute;left:10%;right:10%;top:14%;color:#ffe3a3;font-size:19px;text-align:center;letter-spacing:5px;text-shadow:0 0 12px #ffc967;animation:festival-drift 10s ease-in-out infinite alternate}
+.festival-lanterns {position:absolute;inset:0 8%;display:flex;justify-content:space-around;align-items:flex-start}
+.festival-lanterns>i {position:relative;display:block;width:24px;height:39px;margin-top:calc(14px + var(--i)*3px);border:1px solid #f5bd7a;border-radius:40% 40% 25% 25%;background:radial-gradient(ellipse,#fff3bc,#e79a4c88 48%,#67344c 75%);box-shadow:0 0 20px #edaf4d44,inset 0 0 0 3px #472c49;transform-origin:50% -35px;animation:festival-sway 4.5s ease-in-out infinite alternate;animation-delay:calc(var(--i)*-.7s)}
+.festival-lanterns>i:before {content:'';position:absolute;left:50%;bottom:100%;height:40px;border-left:1px solid #dcac7699}
+.festival-lanterns>i:after {content:'✦';position:absolute;inset:8px 0;text-align:center;font-style:normal;color:#fff6ce;font-size:14px}
+.festival-lanterns>i b {position:absolute;left:7px;right:7px;bottom:-5px;height:4px;background:#e7b679;border-radius:4px}
+.festival-floor {position:absolute;bottom:-60%;left:0;right:0;height:100%;border-radius:50%;border:1px solid #dca36b99;background:repeating-radial-gradient(ellipse,transparent 0 10px,#dbb27820 11px 12px,transparent 13px 25px);transform:rotateX(55deg);box-shadow:0 -10px 40px #cd784720}
+.festival-pumpkins {position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;align-items:flex-end;gap:15px}
+.festival-pumpkins i {position:relative;display:grid;place-items:center;width:45px;height:34px;border-radius:43%;background:radial-gradient(ellipse at 40% 20%,#ffd095,#eb8f42 60%,#a94b36);box-shadow:inset 8px 0 #8a4d4122,inset -8px 0 #99494733,0 0 19px #dc8c4133;color:#fff4b9;font-size:18px;font-style:normal;animation:festival-breathe 3.5s ease-in-out infinite alternate}
+.festival-pumpkins i:nth-child(2){width:62px;height:46px;animation-delay:-1s}
+.festival-pumpkins i:before{content:'';position:absolute;width:8px;height:10px;top:-8px;left:45%;border-radius:4px;background:#9eb17e;transform:rotate(13deg)}
+.festival-inscription {position:absolute;bottom:7px;left:10px;right:10px;color:#e2bd8c;text-align:center;font:9px/1.4 Georgia,serif;letter-spacing:.14em}
+#theater[data-mode=normal] .festival-coda {display:none}
+#theater[data-motion-paused=true] .festival-coda * {animation:none!important}
+@keyframes festival-sway {from{transform:rotate(-8deg)}to{transform:rotate(8deg)}}
+@keyframes festival-breathe {from{opacity:.65}to{opacity:1}}
+@keyframes festival-drift {from{transform:translateX(-9px)}to{transform:translateX(9px)}}
+@media(prefers-reduced-motion:reduce){.festival-coda * {animation:none!important}}

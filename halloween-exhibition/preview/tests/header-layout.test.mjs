@@ -27,7 +27,7 @@ test('text enlargement grows reading and control rows instead of an 800px clippe
 test('new controls replace duplicate CTA and use explicit labels, bounded speeds and reduced motion',()=>{
  assert.doesNotMatch(html,/id="story-open"|id="view-toggle"/);
  assert.match(html,/id="slideshow-toggle"[^>]*aria-pressed="false"[^>]*>自動送り OFF/);
- assert.match(html,/<option value="5">5秒<\/option><option value="10" selected>10秒<\/option><option value="20">20秒/);
+ const options=[...html.matchAll(/<option value="(\d+)"(?: selected)?>(\d+)秒<\/option>/g)];assert.deepEqual(options.map(m=>Number(m[1])),[1,2,3,4,5,6,7,8,9,10]);assert.match(html,/<option value="5" selected>5秒/);
  assert.match(css,/prefers-reduced-motion:reduce/);
  assert.match(css,/body\[data-mode=halloween\] \.roster-card/);
  assert.match(css,/body\[data-ambient-paused=true\] \.roster-card/);

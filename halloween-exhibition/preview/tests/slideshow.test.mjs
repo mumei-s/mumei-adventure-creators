@@ -67,12 +67,12 @@ function setup(options = {}) {
   return { controller, timers, storage, advances, states };
 }
 
-test('starts OFF at 10 seconds without a timer, advance, or storage write', async () => {
+test('starts OFF at 5 seconds without a timer, advance, or storage write', async () => {
   const { controller, timers, advances, states, storage } = setup();
-  assert.deepEqual(SLIDESHOW_INTERVALS_SECONDS, [5, 10, 20]);
-  assert.equal(DEFAULT_SLIDESHOW_INTERVAL_SECONDS, 10);
+  assert.deepEqual(SLIDESHOW_INTERVALS_SECONDS, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+  assert.equal(DEFAULT_SLIDESHOW_INTERVAL_SECONDS, 5);
   assert.deepEqual(controller.getState(), {
-    enabled: false, intervalSeconds: 10, blocked: false, blockers: [],
+    enabled: false, intervalSeconds: 5, blocked: false, blockers: [],
     scheduled: false, advancing: false, disposed: false, error: null,
   });
   assert.equal(states.length, 1);
@@ -86,12 +86,12 @@ test('first enabled advance and each subsequent advance wait a full interval', a
   const { controller, timers, advances } = setup();
   controller.setEnabled(true);
   assert.equal(timers.jobs.size, 1);
-  await timers.tick(9_999);
+  await timers.tick(4_999);
   assert.equal(advances.length, 0);
   await timers.tick(1);
-  assert.deepEqual(advances.map(a => a.at), [10_000]);
-  await timers.tick(20_000);
-  assert.deepEqual(advances.map(a => a.at), [10_000, 20_000, 30_000]);
+  assert.deepEqual(advances.map(a => a.at), [5_000]);
+  await timers.tick(10_000);
+  assert.deepEqual(advances.map(a => a.at), [5_000, 10_000, 15_000]);
   assert.equal(timers.maxPending, 1);
 });
 
@@ -108,11 +108,11 @@ test('OFF cancels a timer including handle zero and prevents a queued callback',
 
 test('speed is saved only under the preview-specific key and ON is never saved', () => {
   const { controller, storage } = setup();
-  controller.setIntervalSeconds(20);
+  controller.setIntervalSeconds(10);
   controller.setEnabled(true);
   assert.equal(SLIDESHOW_STORAGE_KEY, 'halloween-exhibition:preview:slideshow:v1');
   assert.deepEqual(storage.reads, [SLIDESHOW_STORAGE_KEY]);
-  assert.deepEqual(storage.writes, [[SLIDESHOW_STORAGE_KEY, '{"intervalSeconds":20}']]);
+  assert.deepEqual(storage.writes, [[SLIDESHOW_STORAGE_KEY, '{"intervalSeconds":10}']]);
 });
 
 test('reload remembers speed but always starts OFF despite a saved enabled preference', async () => {
@@ -120,22 +120,22 @@ test('reload remembers speed but always starts OFF despite a saved enabled prefe
   const first = setup({ storage });
   assert.equal(first.controller.getState().enabled, false);
   first.controller.setEnabled(true);
-  first.controller.setIntervalSeconds(20);
+  first.controller.setIntervalSeconds(10);
   first.controller.dispose();
   const reload = setup({ storage });
-  assert.equal(reload.controller.getState().intervalSeconds, 20);
+  assert.equal(reload.controller.getState().intervalSeconds, 10);
   assert.equal(reload.controller.getState().enabled, false);
   await reload.timers.tick(100_000);
   assert.equal(reload.advances.length, 0);
 });
 
-test('malformed or unapproved saved speeds fall back to 10 seconds', () => {
+test('malformed or unapproved saved speeds fall back to 5 seconds', () => {
   for (const value of ['{broken', 'null', 'false', '[]', '20', '"5"', '{}', '{"intervalSeconds":"5"}', '{"intervalSeconds":0}', '{"intervalSeconds":15}']) {
     const { controller } = setup({ storage: memoryStorage(value) });
-    assert.equal(controller.getState().intervalSeconds, 10, value);
+    assert.equal(controller.getState().intervalSeconds, 5, value);
     assert.equal(controller.getState().enabled, false, value);
   }
-  for (const intervalSeconds of [5, 10, 20]) {
+  for (const intervalSeconds of SLIDESHOW_INTERVALS_SECONDS) {
     assert.equal(setup({ storage: memoryStorage(JSON.stringify({ intervalSeconds })) }).controller.getState().intervalSeconds, intervalSeconds);
   }
 });
@@ -151,13 +151,13 @@ test('missing and denied storage still allow session changes and scheduling', as
   }
 });
 
-test('only numeric 5, 10, and 20 second selections are accepted', async () => {
+test('invalid selections leave the five-second default and running timer unchanged', async () => {
   const { controller, timers, storage, advances } = setup();
   controller.setEnabled(true);
-  await timers.tick(7_000);
-  for (const invalid of [undefined, null, false, true, '5', '10', 0, -5, 15, 10.1, NaN, Infinity, {}, []]) {
+  await timers.tick(2_000);
+  for (const invalid of [undefined, null, false, true, '5', '10', 0, -5, 11, 15, 20, 1.5, 10.1, NaN, Infinity, {}, []]) {
     assert.equal(controller.setIntervalSeconds(invalid), false);
-    assert.equal(controller.getState().intervalSeconds, 10);
+    assert.equal(controller.getState().intervalSeconds, 5);
   }
   assert.equal(storage.writes.length, 0);
   await timers.tick(3_000);
@@ -167,34 +167,34 @@ test('only numeric 5, 10, and 20 second selections are accepted', async () => {
 test('changing interval resets the full new interval; repeated same selection is idempotent', async () => {
   const { controller, timers, advances } = setup();
   controller.setEnabled(true);
-  await timers.tick(9_000);
-  controller.setIntervalSeconds(5);
   await timers.tick(4_000);
-  controller.setIntervalSeconds(5);
-  await timers.tick(999);
+  controller.setIntervalSeconds(1);
+  await timers.tick(500);
+  controller.setIntervalSeconds(1);
+  await timers.tick(499);
   assert.equal(advances.length, 0);
   await timers.tick(1);
-  assert.deepEqual(advances.map(a => a.at), [14_000]);
-  controller.setIntervalSeconds(20);
-  await timers.tick(19_999);
+  assert.deepEqual(advances.map(a => a.at), [5_000]);
+  controller.setIntervalSeconds(10);
+  await timers.tick(9_999);
   assert.equal(advances.length, 1);
   await timers.tick(1);
   assert.equal(advances.length, 2);
 });
 
 test('each external blocker pauses ticking and unblocking waits a full interval', async () => {
-  for (const reason of ['modal', 'hidden', 'reduced-motion', 'ambience-paused', 'data-unavailable', 'roulette']) {
+  for (const reason of ['modal', 'dialog', 'hidden', 'palace', 'reduced-motion', 'ambience-paused', 'data-unavailable', 'roulette']) {
     const { controller, timers, advances } = setup();
     controller.setEnabled(true);
-    await timers.tick(9_000);
+    await timers.tick(4_000);
     controller.setBlocked(reason, true);
     assert.equal(controller.getState().enabled, true, reason);
     assert.equal(controller.getState().blocked, true, reason);
     assert.deepEqual(controller.getState().blockers, [reason]);
-    await timers.tick(30_000);
+    await timers.tick(15_000);
     assert.equal(advances.length, 0, reason);
     controller.setBlocked(reason, false);
-    await timers.tick(9_999);
+    await timers.tick(4_999);
     assert.equal(advances.length, 0, reason);
     await timers.tick(1);
     assert.equal(advances.length, 1, reason);
@@ -208,18 +208,18 @@ test('all simultaneous blockers must clear, even after enabling while blocked', 
   controller.setBlocked('hidden', true);
   controller.setEnabled(true);
   controller.setBlocked('modal', false);
-  await timers.tick(20_000);
+  await timers.tick(10_000);
   assert.equal(advances.length, 0);
   assert.equal(timers.jobs.size, 0);
   controller.setBlocked('hidden', false);
-  await timers.tick(10_000);
+  await timers.tick(5_000);
   assert.equal(advances.length, 1);
 });
 
 test('repeated blocker updates are idempotent and invalid inputs cannot create blockers', async () => {
   const { controller, timers, advances } = setup();
   controller.setEnabled(true);
-  await timers.tick(8_000);
+  await timers.tick(3_000);
   assert.equal(controller.setBlocked('hidden', false), true);
   for (const [reason, blocked] of [['', true], ['   ', true], [null, true], ['hidden', 'true']]) {
     assert.equal(controller.setBlocked(reason, blocked), false);
@@ -236,13 +236,13 @@ test('repeated blocker updates are idempotent and invalid inputs cannot create b
 test('manual navigation restarts a complete interval and cancelled queued ticks cannot race', async () => {
   const { controller, timers, advances } = setup();
   controller.setEnabled(true);
-  await timers.tick(9_000);
+  await timers.tick(4_000);
   controller.manualNavigation();
   timers.fireCancelled(0);
-  await timers.tick(9_999);
+  await timers.tick(4_999);
   assert.equal(advances.length, 0);
   await timers.tick(1);
-  assert.deepEqual(advances.map(a => a.at), [19_000]);
+  assert.deepEqual(advances.map(a => a.at), [9_000]);
   assert.equal(timers.maxPending, 1);
 });
 
@@ -264,7 +264,7 @@ test('awaits async advance before scheduling, without concurrent advances or cat
   let count = 0;
   const { controller, timers } = setup({ onAdvance() { count++; return pending.promise; } });
   controller.setEnabled(true);
-  await timers.tick(10_000);
+  await timers.tick(5_000);
   assert.equal(controller.getState().advancing, true);
   assert.equal(controller.getState().scheduled, false);
   await timers.tick(100_000);
@@ -274,7 +274,7 @@ test('awaits async advance before scheduling, without concurrent advances or cat
   await flush();
   assert.equal(controller.getState().advancing, false);
   assert.equal(timers.jobs.size, 1);
-  await timers.tick(9_999);
+  await timers.tick(4_999);
   assert.equal(count, 1);
   await timers.tick(1);
   assert.equal(count, 2);
@@ -290,7 +290,7 @@ test('manual navigation during async advance wins and stale completion cannot co
     if (current.isCurrent()) automaticCommits++;
   } });
   controller.setEnabled(true);
-  await timers.tick(10_000);
+  await timers.tick(5_000);
   assert.equal(context.isCurrent(), true);
   controller.manualNavigation();
   assert.equal(context.signal.aborted, true);
@@ -301,7 +301,7 @@ test('manual navigation during async advance wins and stale completion cannot co
   pending.resolve();
   await flush();
   assert.equal(automaticCommits, 0);
-  await timers.tick(9_999);
+  await timers.tick(4_999);
   assert.equal(calls, 1);
   await timers.tick(1);
   assert.equal(calls, 2);
@@ -314,7 +314,7 @@ test('OFF during async advance cannot be undone by stale completion or failure',
     let context;
     const { controller, timers } = setup({ onAdvance(current) { context = current; return pending.promise; } });
     controller.setEnabled(true);
-    await timers.tick(10_000);
+    await timers.tick(5_000);
     controller.setEnabled(false);
     if (reject) pending.reject(Error('old failure'));
     else pending.resolve();
@@ -331,7 +331,7 @@ test('rapid OFF/ON during pending async work keeps a single lock and respects cu
   let calls = 0;
   const { controller, timers } = setup({ onAdvance() { calls++; return pending.promise; } });
   controller.setEnabled(true);
-  await timers.tick(10_000);
+  await timers.tick(5_000);
   for (let i = 0; i < 30; i++) { controller.setEnabled(false); controller.setEnabled(true); }
   await timers.tick(60_000);
   assert.equal(calls, 1);
@@ -339,7 +339,7 @@ test('rapid OFF/ON during pending async work keeps a single lock and respects cu
   pending.resolve();
   await flush();
   assert.equal(timers.jobs.size, 1);
-  await timers.tick(10_000);
+  await timers.tick(5_000);
   assert.equal(calls, 2);
   assert.equal(timers.maxPending, 1);
 });
@@ -349,15 +349,15 @@ test('block and unblock during async advance cancel it and wait after its settle
   let context, count = 0;
   const { controller, timers } = setup({ onAdvance(current) { context = current; count++; return pending.promise; } });
   controller.setEnabled(true);
-  await timers.tick(10_000);
+  await timers.tick(5_000);
   controller.setBlocked('modal', true);
   controller.setBlocked('modal', false);
   assert.equal(context.isCurrent(), false);
-  await timers.tick(30_000);
+  await timers.tick(15_000);
   assert.equal(count, 1);
   pending.resolve();
   await flush();
-  await timers.tick(9_999);
+  await timers.tick(4_999);
   assert.equal(count, 1);
   await timers.tick(1);
   assert.equal(count, 2);
@@ -368,12 +368,12 @@ test('changing speed during async work invalidates it and uses the new full inte
   let context, count = 0;
   const { controller, timers } = setup({ onAdvance(current) { context = current; count++; return pending.promise; } });
   controller.setEnabled(true);
-  await timers.tick(10_000);
-  controller.setIntervalSeconds(20);
+  await timers.tick(5_000);
+  controller.setIntervalSeconds(10);
   assert.equal(context.signal.aborted, true);
   pending.resolve();
   await flush();
-  await timers.tick(19_999);
+  await timers.tick(9_999);
   assert.equal(count, 1);
   await timers.tick(1);
   assert.equal(count, 2);
@@ -382,14 +382,14 @@ test('changing speed during async work invalidates it and uses the new full inte
 test('repeated ON is idempotent and rapid toggles never leave duplicate timers', async () => {
   const { controller, timers, advances } = setup();
   controller.setEnabled(true);
-  await timers.tick(9_000);
+  await timers.tick(4_000);
   for (let i = 0; i < 30; i++) controller.setEnabled(true);
   await timers.tick(1_000);
   assert.equal(advances.length, 1);
   for (let i = 0; i < 30; i++) { controller.setEnabled(false); controller.setEnabled(true); }
   assert.equal(timers.jobs.size, 1);
   assert.equal(timers.maxPending, 1);
-  await timers.tick(10_000);
+  await timers.tick(5_000);
   assert.equal(advances.length, 2);
   assert.equal(controller.setEnabled('false'), false);
   assert.equal(controller.getState().enabled, true);
@@ -399,7 +399,7 @@ test('synchronous and asynchronous callback failures stop safely until explicitl
   for (const fail of [() => { throw Error('advance failed'); }, () => Promise.reject(Error('advance failed'))]) {
     const { controller, timers } = setup({ onAdvance: fail });
     controller.setEnabled(true);
-    await timers.tick(10_000);
+    await timers.tick(5_000);
     assert.equal(controller.getState().enabled, false);
     assert.equal(controller.getState().error, 'advance failed');
     assert.equal(timers.jobs.size, 0);
@@ -414,7 +414,7 @@ test('a completed callback context cannot be used for a later detached UI commit
   let context;
   const { controller, timers } = setup({ onAdvance(current) { context = current; assert.equal(current.isCurrent(), true); } });
   controller.setEnabled(true);
-  await timers.tick(10_000);
+  await timers.tick(5_000);
   assert.equal(context.isCurrent(), false);
 });
 
@@ -425,7 +425,7 @@ test('state snapshots are independent and failed state rendering does not strand
   assert.deepEqual(controller.getState().blockers, ['modal']);
   controller.setBlocked('modal', false);
   controller.setEnabled(true);
-  await timers.tick(20_000);
+  await timers.tick(10_000);
   assert.equal(advances.length, 2);
 });
 
@@ -434,7 +434,7 @@ test('a state callback may turn OFF at the firing boundary before any advance oc
   const setupResult = setup({ onState(state) { if (state.advancing) controller.setEnabled(false); } });
   controller = setupResult.controller;
   controller.setEnabled(true);
-  await setupResult.timers.tick(10_000);
+  await setupResult.timers.tick(5_000);
   assert.equal(setupResult.advances.length, 0);
   assert.equal(controller.getState().enabled, false);
   assert.equal(setupResult.timers.jobs.size, 0);
@@ -465,7 +465,7 @@ test('dispose during async advance aborts it and settlement sends no late state 
   let context;
   const { controller, timers, states } = setup({ onAdvance(current) { context = current; return pending.promise; } });
   controller.setEnabled(true);
-  await timers.tick(10_000);
+  await timers.tick(5_000);
   controller.dispose();
   const count = states.length;
   assert.equal(context.signal.aborted, true);
@@ -475,4 +475,63 @@ test('dispose during async advance aborts it and settlement sends no late state 
   assert.equal(states.length, count);
   assert.equal(timers.jobs.size, 0);
   assert.equal(controller.getState().advancing, false);
+});
+
+
+test('every integer speed from one through ten persists and uses its full cadence', async () => {
+  for (let intervalSeconds = 1; intervalSeconds <= 10; intervalSeconds++) {
+    const { controller, timers, advances, storage } = setup();
+    assert.equal(controller.setIntervalSeconds(intervalSeconds), true);
+    assert.equal(controller.getState().intervalSeconds, intervalSeconds);
+    assert.deepEqual(JSON.parse(storage.entries.get(SLIDESHOW_STORAGE_KEY)), { intervalSeconds });
+    controller.setEnabled(true);
+    await timers.tick(intervalSeconds * 1000 - 1);
+    assert.equal(advances.length, 0, `${intervalSeconds}s must not fire early`);
+    await timers.tick(1);
+    assert.equal(advances.length, 1);
+    await timers.tick(intervalSeconds * 1000);
+    assert.equal(advances.length, 2);
+    assert.equal(timers.maxPending, 1);
+    controller.dispose();
+    const reload = setup({ storage });
+    assert.equal(reload.controller.getState().intervalSeconds, intervalSeconds);
+    assert.equal(reload.controller.getState().enabled, false);
+    assert.equal(reload.timers.jobs.size, 0);
+  }
+});
+
+test('legacy twenty-second preference safely loads as ten seconds and stays OFF', async () => {
+  const storage = memoryStorage('{"intervalSeconds":20,"enabled":true}');
+  const { controller, timers, advances } = setup({ storage });
+  assert.equal(controller.getState().intervalSeconds, 10);
+  assert.equal(controller.getState().enabled, false);
+  assert.equal(storage.writes.length, 0);
+  controller.setEnabled(true);
+  await timers.tick(9_999);
+  assert.equal(advances.length, 0);
+  await timers.tick(1);
+  assert.equal(advances.length, 1);
+  controller.dispose();
+});
+
+test('timer functions retain their host receiver for native browser compatibility', () => {
+  let calls = 0;
+  const timers = {
+    setTimeout(callback, delay) {
+      assert.equal(this, timers);
+      assert.equal(typeof callback, 'function');
+      assert.equal(delay, 5000);
+      calls++;
+      return 0;
+    },
+    clearTimeout(handle) {
+      assert.equal(this, timers);
+      assert.equal(handle, 0);
+      calls++;
+    },
+  };
+  const { controller } = setup({ timers });
+  controller.setEnabled(true);
+  controller.setEnabled(false);
+  assert.equal(calls, 2);
 });

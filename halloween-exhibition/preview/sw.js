@@ -6,10 +6,10 @@ const STYLE_RELEASE = '20261014-portrait1';
 const DOOR_RELEASE = '20261014-doors1';
 const PALACE_RELEASE = '20261014-palace2';
 const CONTROL_RELEASE = '20261015-controls1';
-const COLOR_RELEASE = '20261015-colors1';
-const CACHE = 'mumei-atelier-shell-v11-' + PALACE_RELEASE + ':' + SCOPE.pathname;
+const COLOR_RELEASE = '20261015-festival1';
+const CACHE = 'mumei-atelier-shell-v12-' + PALACE_RELEASE + ':' + SCOPE.pathname;
 const SHELL = [
-  'gallery-refinement.css', 'gallery-gesture.js',
+  'gallery-refinement.css', 'gallery-gesture.js', 'door-palette.js',
   'assets/palace/palace-franken.webp', 'assets/palace/palace-zombie.webp', 'assets/palace/palace-bat.webp',
   'palace-entrance.js', 'palace-entrance.css', 'assets/palace/palace-desktop.webp', 'assets/palace/palace-phone.webp', 'assets/palace/gate-desktop.webp', 'assets/palace/gate-phone.webp',
   'index.html', 'theater.js', 'theater.css', 'data-model.js',
@@ -20,7 +20,7 @@ const SHELL = [
   'assets/atelier-icon-512.png', 'assets/atelier-maskable-512.png'
 ];
 // Only exact public asset release queries are cacheable; tokens/other queries bypass.
-const PUBLIC_URLS = SHELL.flatMap(path => [new URL(path, SCOPE).href, ...(/\.(?:js|css)$/.test(path) ? [new URL(path + '?v=' + (['theater.js','gallery-refinement.css'].includes(path) ? COLOR_RELEASE : path==='gallery-gesture.js' ? CONTROL_RELEASE : path === 'palace-entrance.css' ? '20261014-corner2' : ['theater.js','assets/palace/palace-franken.webp', 'assets/palace/palace-zombie.webp', 'assets/palace/palace-bat.webp',
+const PUBLIC_URLS = SHELL.flatMap(path => [new URL(path, SCOPE).href, ...(/\.(?:js|css)$/.test(path) ? [new URL(path + '?v=' + (['theater.js','gallery-refinement.css','door-palette.js','slideshow.js'].includes(path) ? COLOR_RELEASE : path==='gallery-gesture.js' ? CONTROL_RELEASE : path === 'palace-entrance.css' ? '20261014-corner2' : ['theater.js','assets/palace/palace-franken.webp', 'assets/palace/palace-zombie.webp', 'assets/palace/palace-bat.webp',
   'palace-entrance.js','palace-entrance.css'].includes(path) ? PALACE_RELEASE : ['data-model.js','article-doors.css'].includes(path) ? DOOR_RELEASE : path === 'gallery-controls.css' ? STYLE_RELEASE : RELEASE), SCOPE).href] : [])]);
 const ALLOWED = new Set(PUBLIC_URLS);
 const inPreview = SCOPE.pathname.endsWith('/halloween-exhibition/preview/');

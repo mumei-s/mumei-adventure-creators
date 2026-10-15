@@ -1,7 +1,7 @@
 /** Optional creator slideshow. Its speed belongs only to this gallery preview. */
 export const SLIDESHOW_STORAGE_KEY = 'halloween-exhibition:preview:slideshow:v1';
-export const SLIDESHOW_INTERVALS_SECONDS = Object.freeze([5, 10, 20]);
-export const DEFAULT_SLIDESHOW_INTERVAL_SECONDS = 10;
+export const SLIDESHOW_INTERVALS_SECONDS = Object.freeze(Array.from({ length: 10 }, (_, index) => index + 1));
+export const DEFAULT_SLIDESHOW_INTERVAL_SECONDS = 5;
 
 const validInterval = value => SLIDESHOW_INTERVALS_SECONDS.includes(value);
 
@@ -34,6 +34,8 @@ export function createSlideshowController({
   try {
     const saved = JSON.parse(storage?.getItem(SLIDESHOW_STORAGE_KEY) ?? 'null');
     if (saved && validInterval(saved.intervalSeconds)) intervalSeconds = saved.intervalSeconds;
+    // Preserve the slowest legacy preference within the new supported range.
+    else if (saved?.intervalSeconds === 20) intervalSeconds = 10;
   } catch { /* Storage and malformed preferences must not prevent browsing. */ }
 
   let enabled = false;

@@ -34,3 +34,12 @@ test('artwork cannot inherit scenic brightness, saturation, screen sheen or fore
  assert.match(css,/chapter-index \{display:none\}/);
  assert.match(css,/stage-caption \{[^}]*background:#171b2cf5;color:#fff3de/s);
 });
+
+
+test('Halloween ornament owns a separate flow area and stops with reduced or paused motion',()=>{
+ assert.match(html,/class="festival-coda" aria-hidden="true"/);
+ assert.match(css,/festival-coda \{[^}]*position:relative[^}]*height:170px/s);
+ assert.match(css,/data-mode=normal[^}]*festival-coda \{display:none\}/);
+ assert.match(css,/data-motion-paused=true[^}]*festival-coda \* \{animation:none!important\}/);
+ assert.match(css,/@media\(prefers-reduced-motion:reduce\)\{\.festival-coda \* \{animation:none!important\}/);
+});

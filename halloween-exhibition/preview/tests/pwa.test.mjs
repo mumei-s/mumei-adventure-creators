@@ -28,8 +28,8 @@ test('social metadata has the exact title and a real 1200 by 630 absolute HTTPS 
  assert.ok(html.includes('<title>'+title+'</title>'));
  assert.ok(html.includes('property="og:title" content="'+title+'"'));
  const image=html.match(/property="og:image" content="([^"]+)"/)[1];
- assert.equal(image,base+'assets/atelier-og.png');
- const bytes=await readFile(new URL('../assets/atelier-og.png',import.meta.url));
+ assert.equal(image,base+'assets/atelier-palace-og-20261015.png');
+ const bytes=await readFile(new URL('../assets/atelier-palace-og-20261015.png',import.meta.url));
  assert.equal(bytes.readUInt32BE(16),1200);assert.equal(bytes.readUInt32BE(20),630);
  assert.match(html,/name="twitter:card" content="summary_large_image"/);
 });
@@ -183,18 +183,18 @@ test('release-versioned JS/CSS are coherent and only the exact public release qu
  for(const path of ['index.html','admin/index.html']){
   const text=await readFile(new URL('../'+path,import.meta.url),'utf8');
   for(const match of text.matchAll(/(?:href|src)="(\.\.?\/[^"?]+\.(?:js|css))(\?[^" ]*)?"/g)){
-   assert.equal(match[2],'?v='+(match[1]==='./palace-entrance.css'?'20261014-corner2':['./theater.js','./gallery-refinement.css'].includes(match[1])?'20261015-festival1':match[1]==='./app.js'?'20261015-roster3':match[1]==='./article-doors.css'?'20261014-doors1':match[1]==='./gallery-controls.css'?'20261014-portrait1':release),match[1]);await access(new URL('../'+(path.startsWith('admin/')?'admin/':'')+match[1],import.meta.url));
+   assert.equal(match[2],'?v='+(['./theater.js','./visitor-preferences.css'].includes(match[1])?'20261015-settings2':match[1]==='./palace-entrance.css'?'20261014-corner2':['./theater.js','./gallery-refinement.css'].includes(match[1])?'20261015-festival1':match[1]==='./app.js'?'20261015-roster3':match[1]==='./article-doors.css'?'20261014-doors1':match[1]==='./gallery-controls.css'?'20261014-portrait1':release),match[1]);await access(new URL('../'+(path.startsWith('admin/')?'admin/':'')+match[1],import.meta.url));
   }
  }
  for(const path of ['theater.js','admin/app.js','admin/display-settings.js']){
   const text=await readFile(new URL('../'+path,import.meta.url),'utf8');
-  for(const match of text.matchAll(/from '(\.\.?\/[^'?]+\.js)(\?[^']*)?'/g))assert.equal(match[2],'?v='+(['./door-palette.js','./slideshow.js'].includes(match[1])?'20261015-festival1':match[1]==='./gallery-gesture.js'?'20261015-controls1':match[1]==='./palace-entrance.js'?'20261014-palace2':match[1]==='./model.js'?'20261015-roster3':['./data-model.js','../data-model.js'].includes(match[1])?'20261014-doors1':release),match[1]);
+  for(const match of text.matchAll(/from '(\.\.?\/[^'?]+\.js)(\?[^']*)?'/g))assert.equal(match[2],'?v='+(match[1]==='./visitor-preferences.js'?'20261015-settings2':['./door-palette.js','./slideshow.js'].includes(match[1])?'20261015-festival1':match[1]==='./gallery-gesture.js'?'20261015-controls1':match[1]==='./palace-entrance.js'?'20261014-palace2':match[1]==='./model.js'?'20261015-roster3':['./data-model.js','../data-model.js'].includes(match[1])?'20261014-doors1':release),match[1]);
  }
  const h=workerHarness();
  for(const path of ['slideshow.js','display-mode.js','display-mode.css'])assert.equal((await h.dispatch('fetch',base+path+'?v='+(path==='slideshow.js'?'20261015-festival1':release))).intercepted,true);
  for(const path of ['admin/app.js','admin/index.html','maze/app.js','data/archive.json','unknown.js'])assert.equal((await h.dispatch('fetch',base+path+'?v='+release)).intercepted,false);
  for(const query of ['?v=old','?v='+release+'&token=private','?token=private','?v='+release+'&v=other'])assert.equal((await h.dispatch('fetch',base+'theater.js'+query)).intercepted,false);
- assert.match(workerSource,/mumei-atelier-shell-v12-/);assert.match(workerSource,/cacheName: CACHE/);
+ assert.match(workerSource,/mumei-atelier-shell-v13-/);assert.match(workerSource,/cacheName: CACHE/);
  assert.doesNotMatch(workerSource,/localStorage|sessionStorage|\.clear\(/);
 });
 
@@ -224,17 +224,17 @@ test('door release assets and dependency are coherently versioned while private 
   assert.equal((await h.dispatch('fetch',base+path+'?v=20261014-layout1')).intercepted,false);
  }
  for(const path of ['slideshow.js','admin/model.js','maze/app.js','data/archive.json','index.html'])assert.equal((await h.dispatch('fetch',base+path+'?v=20261014-doors1')).intercepted,false,path);
- assert.match(workerSource,/mumei-atelier-shell-v12-/);assert.match(workerSource,/const DOOR_RELEASE = '20261014-doors1'/);
+ assert.match(workerSource,/mumei-atelier-shell-v13-/);assert.match(workerSource,/const DOOR_RELEASE = '20261014-doors1'/);
 });
 
 test('palace release is exact, independently cache-busted and confined to public preview assets',async()=>{
  const h=workerHarness();await h.dispatch('install');
  for(const path of ['theater.js','palace-entrance.js','palace-entrance.css']){
-  assert.equal((await h.dispatch('fetch',base+path+'?v='+(path==='theater.js'?'20261015-festival1':path==='palace-entrance.css'?'20261014-corner2':'20261014-palace2'))).intercepted,true);
+  assert.equal((await h.dispatch('fetch',base+path+'?v='+(path==='theater.js'?'20261015-settings2':path==='palace-entrance.css'?'20261014-corner2':'20261014-palace2'))).intercepted,true);
   assert.equal((await h.dispatch('fetch',base+path+'?v=20261014-doors1')).intercepted,false);
  }
  for(const name of ['palace-desktop','palace-phone','gate-desktop','gate-phone'])assert.equal((await h.dispatch('fetch',base+'assets/palace/'+name+'.webp')).intercepted,true);
- for(const path of ['admin/app.js','maze/app.js','data/archive.json','unknown.js'])assert.equal((await h.dispatch('fetch',base+path+'?v='+(path==='theater.js'?'20261015-festival1':path==='palace-entrance.css'?'20261014-corner2':'20261014-palace2'))).intercepted,false);
+ for(const path of ['admin/app.js','maze/app.js','data/archive.json','unknown.js'])assert.equal((await h.dispatch('fetch',base+path+'?v='+(path==='theater.js'?'20261015-settings2':path==='palace-entrance.css'?'20261014-corner2':'20261014-palace2'))).intercepted,false);
  assert.equal((await h.dispatch('fetch',base+'palace-entrance.js?v=20261014-palace2&token=private')).intercepted,false);
- assert.match(workerSource,/mumei-atelier-shell-v12-/);
+ assert.match(workerSource,/mumei-atelier-shell-v13-/);
 });

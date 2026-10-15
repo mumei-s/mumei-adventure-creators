@@ -84,27 +84,9 @@ body[data-layout-page=gallery] .theater[data-mode=halloween] .portal-door {
 body[data-layout-page=gallery] .theater .stage-footer {grid-template-areas:"faces faces" "hint roulette"}
 body[data-layout-page=gallery] .theater[data-mode=normal] .stage-footer {grid-template-areas:"faces faces" "hint hint"}
 /* A dedicated ornamental stage, never laid over artwork, captions or controls. */
-.festival-coda {position:relative;isolation:isolate;overflow:hidden;flex:none;height:170px;margin:8px 12px 0;border-radius:48% 48% 14px 14px;background:linear-gradient(#17162b99,#1b1934dd),url(./assets/palace/palace-desktop.webp) center 68%/cover;pointer-events:none;contain:paint}
-.festival-aurora {position:absolute;inset:5% -20%;background:conic-gradient(from 0deg at 50% 100%,transparent,#bb6bdf33,transparent,#f2b04c33,transparent,#70d9c42e,transparent);filter:blur(15px);animation:festival-breathe 9s ease-in-out infinite alternate}
-.festival-arc {position:absolute;width:70%;height:170%;left:15%;top:5%;border:1px solid #e7b26f88;border-radius:50%;box-shadow:0 0 0 8px #dba26d09,0 0 0 13px #ca955b22,inset 0 0 45px #ca995415}
-.festival-stars {position:absolute;left:10%;right:10%;top:14%;color:#ffe3a3;font-size:19px;text-align:center;letter-spacing:5px;text-shadow:0 0 12px #ffc967;animation:festival-drift 10s ease-in-out infinite alternate}
-.festival-lanterns {position:absolute;inset:0 8%;display:flex;justify-content:space-around;align-items:flex-start}
-.festival-lanterns>i {position:relative;display:block;width:24px;height:39px;margin-top:calc(14px + var(--i)*3px);border:1px solid #f5bd7a;border-radius:40% 40% 25% 25%;background:radial-gradient(ellipse,#fff3bc,#e79a4c88 48%,#67344c 75%);box-shadow:0 0 20px #edaf4d44,inset 0 0 0 3px #472c49;transform-origin:50% -35px;animation:festival-sway 4.5s ease-in-out infinite alternate;animation-delay:calc(var(--i)*-.7s)}
-.festival-lanterns>i:before {content:'';position:absolute;left:50%;bottom:100%;height:40px;border-left:1px solid #dcac7699}
-.festival-lanterns>i:after {content:'✦';position:absolute;inset:8px 0;text-align:center;font-style:normal;color:#fff6ce;font-size:14px}
-.festival-lanterns>i b {position:absolute;left:7px;right:7px;bottom:-5px;height:4px;background:#e7b679;border-radius:4px}
-.festival-floor {position:absolute;bottom:-60%;left:0;right:0;height:100%;border-radius:50%;border:1px solid #dca36b99;background:repeating-radial-gradient(ellipse,transparent 0 10px,#dbb27820 11px 12px,transparent 13px 25px);transform:rotateX(55deg);box-shadow:0 -10px 40px #cd784720}
-.festival-pumpkins {position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;align-items:flex-end;gap:15px}
-.festival-pumpkins i {position:relative;display:grid;place-items:center;width:45px;height:34px;border-radius:43%;background:radial-gradient(ellipse at 40% 20%,#ffd095,#eb8f42 60%,#a94b36);box-shadow:inset 8px 0 #8a4d4122,inset -8px 0 #99494733,0 0 19px #dc8c4133;color:#fff4b9;font-size:18px;font-style:normal;animation:festival-breathe 3.5s ease-in-out infinite alternate}
-.festival-pumpkins i:nth-child(2){width:62px;height:46px;animation-delay:-1s}
-.festival-pumpkins i:before{content:'';position:absolute;width:8px;height:10px;top:-8px;left:45%;border-radius:4px;background:#9eb17e;transform:rotate(13deg)}
-.festival-inscription {position:absolute;bottom:7px;left:10px;right:10px;color:#e2bd8c;text-align:center;font:9px/1.4 Georgia,serif;letter-spacing:.14em}
 #theater[data-mode=normal] .festival-coda {display:none}
-#theater[data-motion-paused=true] .festival-coda * {animation:none!important}
-@keyframes festival-sway {from{transform:rotate(-8deg)}to{transform:rotate(8deg)}}
 @keyframes festival-breathe {from{opacity:.65}to{opacity:1}}
-@keyframes festival-drift {from{transform:translateX(-9px)}to{transform:translateX(9px)}}
-@media(prefers-reduced-motion:reduce){.festival-coda * {animation:none!important}}
+
 
 /* Interior navigation: three equal destinations in one safe, touchable row. */
 body[data-layout-page=gallery] .theater .palace-return-row {display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:4px 12px 10px;flex-wrap:nowrap}
@@ -116,7 +98,7 @@ body[data-layout-page=gallery] .theater .stage-navigation {grid-area:2/1;align-s
 body[data-layout-page=gallery] .theater .stage-caption {grid-area:3/1}
 body[data-layout-page=gallery] .theater .stage-footer,
 body[data-layout-page=gallery] .theater[data-mode=normal] .stage-footer {grid-template-columns:minmax(0,1fr);grid-template-areas:"faces";padding-bottom:0;gap:0}
-body[data-layout-page=gallery] .theater .festival-coda {height:220px;margin-top:0}
+
 /* Every artwork can reveal its doors, including submitted landscape articles.
    Leaves exist only during the reveal and cannot cover the final image. */
 #theater[data-mode=halloween][data-portrait=false] .portal-doors {display:block}
@@ -147,27 +129,40 @@ body[data-layout-page=gallery] .theater[data-entry-kind=introduction] #room-titl
 /* Retire the visible read-history badge without deleting the visitor's data. */
 #theater .face-dot:after,#theater .face-dot.visited:after,#theater .face-dot.visited[aria-current=true]:after,#theater .face-dot.visited+.face-dot.visited:before{display:none!important}
 #theater.complete .room-dots:before{display:none}
-/* Playable illustrated finale: no explanatory text or invisible click surfaces. */
-body[data-layout-page=gallery] .theater .festival-coda{height:clamp(240px,56vw,380px);padding:12px 14px 22px;background:none;border:0;overflow:visible;pointer-events:auto}
-body[data-layout-page=gallery] .theater .festival-coda:before,body[data-layout-page=gallery] .theater .festival-coda:after{display:none}
-.festival-play{position:relative;display:block;width:100%;height:100%;min-height:220px;padding:0;border:2px solid #f1ca84;border-radius:38% 38% 18px 18px;overflow:hidden;isolation:isolate;cursor:pointer;background:#2a1936 url('./assets/palace/palace-phone.webp') center 60%/cover;box-shadow:0 0 0 4px #392538,0 0 26px #b47b4d44}
-.festival-play:focus-visible{outline:3px solid #fff0bc;outline-offset:5px}
-.festival-picture{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 60%;transition:transform .7s ease}
-.festival-picture[hidden]{display:none!important}
-.festival-play[data-scene="1"] .festival-picture{object-position:center 68%}
-.festival-play[data-scene="2"] .festival-picture{object-position:center 75%}
-.festival-glimmer{position:absolute;inset:0;background:linear-gradient(110deg,transparent 25%,#ffe6a32b 50%,transparent 75%);pointer-events:none;animation:festival-light-drift 8s ease-in-out infinite alternate}
-.festival-friend,.festival-bat{position:absolute;display:block;pointer-events:none;filter:drop-shadow(0 3px 5px #1b1239)}
-.festival-friend{width:21%;max-width:95px;aspect-ratio:1;left:6%;bottom:6%;transition:left .65s ease,transform .65s ease}
-.festival-bat{width:17%;max-width:80px;aspect-ratio:1;right:12%;top:13%;animation:festival-bat-hover 4s ease-in-out infinite alternate}
-.festival-friend img,.festival-bat img{width:100%;height:100%;object-fit:contain}
-.festival-play[data-scene="1"] .festival-friend{left:68%;transform:rotate(7deg)}
-.festival-play[data-scene="2"] .festival-friend{left:43%;transform:translateY(-8px)}
-.festival-awake .festival-picture{animation:festival-picture-wake .7s ease-out both}
-.festival-play[data-state=loading] .festival-glimmer{animation:festival-light-drift 1.8s ease-in-out infinite alternate}
-@keyframes festival-light-drift{from{transform:translateX(-40%)}to{transform:translateX(40%)}}
-@keyframes festival-bat-hover{from{transform:translate(-12px,4px) rotate(-7deg)}to{transform:translate(12px,-6px) rotate(7deg)}}
-@keyframes festival-picture-wake{from{transform:scale(1.06)}to{transform:scale(1)}}
-#theater[data-motion-paused=true] .festival-play *,body[data-ambient-paused=true] .festival-play *{animation:none!important;transition:none!important}
-body[data-page-hidden=true] .festival-play *{animation-play-state:paused!important}
-@media(prefers-reduced-motion:reduce){.festival-play *{animation:none!important;transition:none!important}}
+/* Full-bleed illustrated courtyard. This final rule owns footer sizing. */
+#theater .festival-coda,body[data-layout-page=gallery] #theater .festival-coda{position:relative;isolation:isolate;flex:none;height:auto;min-height:0;padding:0;margin:12px 14px 22px;overflow:hidden;pointer-events:auto;contain:paint;border:1px solid #e3b971;border-radius:22px;background:#21152c;box-shadow:0 0 0 3px #3b2845,0 8px 25px #0b061c66}
+#theater .festival-coda:before,#theater .festival-coda:after{display:none}
+.festival-scene{position:relative;aspect-ratio:2.4;overflow:hidden;isolation:isolate}
+.festival-canvas{position:absolute;inset:0}
+.festival-picture{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.festival-hotspot{position:absolute;z-index:3;display:block;min-width:44px;min-height:44px;padding:0;border:0;border-radius:50%;background:transparent;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+.festival-hotspot:focus-visible{outline:2px solid #fff2b9;outline-offset:3px;box-shadow:0 0 20px #ffe59a}
+.festival-hotspot:hover{box-shadow:inset 0 0 22px #fff0b133}
+.festival-cauldron{left:37%;top:46%;width:27%;height:44%}
+.festival-pumpkin{left:9%;top:48%;width:24%;height:42%}
+.festival-ghost{left:56%;top:13%;width:19%;height:40%}
+.festival-potion-light{position:absolute;left:40%;top:46%;width:22%;height:9%;border-radius:50%;background:#b4ff8a;mix-blend-mode:screen;filter:blur(9px);opacity:.15;animation:brew-simmer 3s ease-in-out infinite alternate;pointer-events:none}
+.festival-effects{position:absolute;inset:0;pointer-events:none;z-index:4;overflow:hidden}
+.festival-spark{position:absolute;left:var(--x);top:var(--y);width:var(--size);height:var(--size);border:1px solid #e6ffb4;border-radius:50%;background:radial-gradient(circle at 30% 25%,#fff9,#b2ff7433 50%,#70edb477);box-shadow:0 0 10px #aeff8b;animation:brew-bubble 1.5s ease-out both;animation-delay:var(--delay)}
+.festival-spark[data-kind=pumpkin]{border:0;border-radius:0;background:#ffe6a3;clip-path:polygon(50% 0,62% 37%,100% 50%,62% 63%,50% 100%,38% 63%,0 50%,38% 37%);box-shadow:none;animation-name:magic-star}
+.festival-spark[data-kind=ghost]{border:0;border-radius:50% 50% 30% 30%;background:#fff8de;box-shadow:0 0 15px #fff5b7;animation-name:ghost-hello}
+.festival-spark[data-kind=ghost]:before{content:'';position:absolute;left:26%;top:35%;width:13%;height:20%;border-radius:50%;background:#4c305c;box-shadow:calc(var(--size)*.35) 0 #4c305c}
+.festival-scene[data-magic=brew] .festival-potion-light{opacity:.65;box-shadow:0 0 34px 16px #a2ff83aa}
+.festival-scene[data-magic=pumpkin] .festival-effects{background:radial-gradient(ellipse at 22% 71%,#ffc94e66,transparent 23%);mix-blend-mode:screen}
+.festival-scene[data-magic=ghost] .festival-effects{background:radial-gradient(ellipse at 65% 32%,#fff1bd55,transparent 22%)}
+.festival-status{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+@keyframes brew-simmer{to{opacity:.32}}
+@keyframes brew-bubble{0%{opacity:0;transform:translate(0,0) scale(.2)}20%{opacity:1}100%{opacity:0;transform:translate(var(--drift),-95px) scale(1.15)}}
+@keyframes magic-star{0%{opacity:0;transform:scale(.2) rotate(0)}25%{opacity:1}100%{opacity:0;transform:translate(var(--drift),-38px) scale(1.4) rotate(95deg)}}
+@keyframes ghost-hello{0%{opacity:0;transform:translateY(8px) scale(.2)}25%{opacity:.95}100%{opacity:0;transform:translate(var(--drift),-60px) scale(1.1)}}
+#theater[data-motion-paused=true] .festival-coda *,body[data-ambient-paused=true] .festival-coda *{animation:none!important;transition:none!important}
+body[data-page-hidden=true] .festival-coda *{animation-play-state:paused!important}
+.festival-scene[data-still=true] .festival-spark{animation:none;opacity:.8}
+@media(max-width:600px){.festival-scene{aspect-ratio:1.7}.festival-canvas{left:-20.588%;right:-20.588%}#theater .festival-coda,body[data-layout-page=gallery] #theater .festival-coda{margin:10px 12px 18px;border-radius:17px}}
+@media(prefers-reduced-motion:reduce){.festival-coda *{animation:none!important;transition:none!important}}
+
+/* Preserve complete official creator names below the artwork. */
+body[data-layout-page=gallery] #theater .stage-caption #room-title{max-width:100%;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;word-break:normal;line-height:1.4;letter-spacing:.025em}
+body[data-layout-page=gallery] #theater:not([data-entry-kind=introduction]) .stage-caption #room-title{font-size:clamp(19px,2.5vw,28px)}
+
+body[data-layout-page=gallery] #theater[data-mode] .stage-caption #room-title.long-creator-name{font-size:clamp(17px,2vw,22px);line-height:1.5;letter-spacing:0}

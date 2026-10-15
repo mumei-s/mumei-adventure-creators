@@ -39,11 +39,12 @@ test('normal mode hides the light game and rejects collection even if a hidden b
  h.seeds.children[0].click();assert.equal(h.root.dataset.seals,'[]');h.api.destroy();
 });
 
-test('Halloween preserves its optional real-room seal while returning to normal hides the reward',()=>{
- const h=harness();assert.equal(h.seeds.hidden,false);assert.equal(h.seeds.children[0].hidden,false);
- h.seeds.children[0].click();assert.equal(h.root.dataset.seals,'["light-1"]');
- h.changeMode('normal');assert.equal(h.seeds.hidden,true);assert.equal(h.root.dataset.constellation,'false');
- h.changeMode('halloween');assert.equal(h.seeds.hidden,false);assert.equal(h.seeds.children[0].attrs['aria-pressed'],'true');h.api.destroy();
+test('retired light game stays hidden across modes and cannot change saved progress',()=>{
+ const h=harness();assert.equal(h.seeds.hidden,true);assert.equal(h.seeds.children.every(b=>b.hidden),true);
+ h.seeds.children[0].click();assert.equal(h.root.dataset.seals,'[]');
+ h.root.dataset.seals='["light-1"]';h.changeMode('normal');h.changeMode('halloween');
+ assert.equal(h.seeds.hidden,true);assert.equal(h.root.dataset.seals,'["light-1"]');assert.equal(h.root.dataset.constellation,'false');
+ assert.equal(h.settings.querySelector('.scene-count').textContent,'');h.api.destroy();
 });
 
 test('clearly labelled ambience toggle lives in settings and respects reduced motion',()=>{

@@ -35,8 +35,8 @@
 .scene-seed:nth-child(1){left:8%;top:12%}
 .scene-seed:nth-child(2){right:5%;top:62%}
 .scene-seed:nth-child(3){left:9%;top:70%}
-.scene-seed:after{content:'光をひろう';position:absolute;top:48px;left:50%;transform:translateX(-50%);font-size:9px;letter-spacing:.05em;white-space:nowrap;color:#edd8ab;text-shadow:0 1px 5px #07131f}
-.scene-seed[aria-pressed=true]{opacity:.4}.scene-seed[aria-pressed=true]:after{content:'集めた光'}
+.scene-seed:after{content:none;position:absolute;top:48px;left:50%;transform:translateX(-50%);font-size:9px;letter-spacing:.05em;white-space:nowrap;color:#edd8ab;text-shadow:0 1px 5px #07131f}
+.scene-seed[aria-pressed=true]{opacity:.4}.scene-seed[aria-pressed=true]:after{content:none}
 .scene-seed:focus-visible{outline:2px solid #ffe4a6;outline-offset:5px}
 .theater[data-mode=normal] .scene-seed:after{color:#386457;text-shadow:0 1px 5px #fff}.theater[data-mode=normal] .scene-seed{box-shadow:0 0 25px #89b49d44;border-color:#67988188}
 @media(max-width:1100px){.scene-controls{top:148px}}
@@ -56,3 +56,6 @@
 .scene-seed[hidden]{display:none!important}
 @media(min-width:561px) and (max-width:900px){.theater .stage-footer .room-dots{position:absolute;left:0;right:0;top:-44px;justify-content:center}.theater .stage-footer .scene-controls{margin-left:0;margin-right:auto}}
 @media(max-width:370px){.theater .stage-footer .story-open{min-width:112px;padding:0 6px}.theater .stage-footer .index-line{width:10px}.theater .stage-footer .chapter-index{gap:4px}}
+
+/* Retired collection UI; stored progress is preserved. */
+#theater .scene-seeds,#theater .scene-count,.visitor-settings-dialog .scene-count{display:none!important}

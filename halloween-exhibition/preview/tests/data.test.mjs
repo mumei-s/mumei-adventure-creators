@@ -34,7 +34,7 @@ test('creator identities use only names, handles, public profile links and profi
   }
 });
 
-test('host introduction and seven confirmed participant articles are present; seven doors await submissions',()=>{
+test('host introduction and eight confirmed participant articles are present; six doors await submissions',()=>{
   const [host,owner,mako]=source.years[0].entries;
   assert.equal(owner.doorId,'owner-work-2026');
   assert.equal(owner.submissionStatus,'pending');
@@ -57,8 +57,8 @@ test('host introduction and seven confirmed participant articles are present; se
   assert.equal(mako.message,undefined);
   assert.equal(mako.works,undefined);
   assert.equal(source.years[0].entries.filter(e=>e.submissionStatus==='introduction').length,1);
-  assert.equal(source.years[0].entries.filter(e=>e.submissionStatus==='submitted').length,7);
-  assert.equal(participants.length,7);
+  assert.equal(source.years[0].entries.filter(e=>e.submissionStatus==='submitted').length,8);
+  assert.equal(participants.length,6);
   for(const entry of participants){
     const profile=verified.find(c=>c.id===entry.creatorId);
     assert.equal(entry.submissionStatus,'pending');
@@ -84,7 +84,7 @@ test('confirmed Chamomile article uses public article art distinct from the new 
   assert.equal(entry.links[1].url,creator.profileURL);
   assert.deepEqual(entry.tags,['参加者','ハロウィン']);
   assert.equal(entry.message,undefined);
-  assert.equal(source.years[0].entries.find(e=>e.creatorId==='soh_style_work').submissionStatus,'pending');
+  assert.equal(source.years[0].entries.find(e=>e.creatorId==='soh_style_work').submissionStatus,'submitted');
   assert.equal(source.years[0].entries.find(e=>e.creatorId==='imota14').submissionStatus,'submitted');
   assert.equal(source.years[0].entries.find(e=>e.creatorId==='glossy_guppy6230').submissionStatus,'pending');
   assert.deepEqual(source.evergreenEntries,[]);
@@ -118,7 +118,7 @@ test('door IDs survive reordered and retitled legacy entries, and distinguish sa
  for(const id of ['',{},'a b','../x','x'.repeat(121)]){data.years[0].entries.at(-1).doorId=id;assert.throws(()=>validateArchive(data),/扉ID/);}
 });
 
-test("verified Takechi work is submitted without altering skipped Marimo or owner placeholder",()=>{const e=source.years[0].entries.find(e=>e.creatorId==="imota14");assert.equal(e.title,"死神と貴公子と、顔に張り紙を貼った私。");assert.equal(e.submissionStatus,"submitted");assert.equal(e.links[0].url,"https://note.com/imota14/n/n618813fb0e89");assert.match(e.image,/324418285/);assert.equal(source.years[0].entries.find(e=>e.creatorId==="soh_style_work").submissionStatus,"pending");assert.deepEqual(source.years[0].entries.find(e=>e.doorId==="owner-work-2026").links,[]);});
+test("verified Takechi work is submitted alongside newly available Marimo while owner placeholder remains",()=>{const e=source.years[0].entries.find(e=>e.creatorId==="imota14");assert.equal(e.title,"死神と貴公子と、顔に張り紙を貼った私。");assert.equal(e.submissionStatus,"submitted");assert.equal(e.links[0].url,"https://note.com/imota14/n/n618813fb0e89");assert.match(e.image,/324418285/);assert.equal(source.years[0].entries.find(e=>e.creatorId==="soh_style_work").submissionStatus,"submitted");assert.deepEqual(source.years[0].entries.find(e=>e.doorId==="owner-work-2026").links,[]);});
 
 // Tantan and Rokiron still await works; Aihan now has an explicitly supplied article.
 test('remaining new participant doors stay pending and exclude unrelated Tantan work',()=>{
@@ -141,3 +141,8 @@ test('explicit Yamacon and Aihan articles replace existing pending doors without
 });
 
 test("CNA is a new pending participant with no invented article",()=>{const c=source.creators.find(c=>c.id==="grand_daisy8632");assert.equal(c.name,"CNA運営");assert.equal(c.profileURL,"https://note.com/grand_daisy8632");const e=source.years[0].entries.find(e=>e.creatorId===c.id);assert.equal(e.submissionStatus,"pending");assert.equal(e.image,undefined);assert.equal(e.links.length,1);assert.equal(e.links[0].url,c.profileURL);});
+
+ test('Marimo supplied article is now live and all official names match verified profiles',()=>{
+ const e=source.years[0].entries.find(e=>e.creatorId==='soh_style_work');assert.equal(e.submissionStatus,'submitted');assert.equal(e.links[0].url,'https://note.com/soh_style_work/n/nc02977b1ebf9');assert.ok(e.image.startsWith('https://assets.st-note.com/'));
+ for(const c of source.creators)assert.equal(c.name,verified.find(v=>v.id===c.id).displayName);
+ });

@@ -1,3 +1,4 @@
+import { initFestivalScene } from '../festival-scene.js';
 import { loadArtworkImage } from '../magical-loading.js';
 import { createDoorPalettePicker } from '../door-palette.js';
 import { installGalleryGesture } from '../gallery-gesture.js';
@@ -96,7 +97,7 @@ async function harness({ data = archive, reduced = true, storageThrows = false, 
     return walk(doc.documentElement);
   };
   const requests = [], storageWrites = [], motionInitializations = [], viewCalls = [];
-  const context = vm.createContext({ AbortController, loadArtworkImage:(image,source,options)=>loadArtworkImage(image,source,{...options,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}), initPalaceStartup:()=>Promise.resolve(), createDoorPalettePicker, installGalleryGesture, createSlideshowController, initPalaceEntrance:entrance?(args)=>initPalaceEntrance({...args,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}):({root,onViewChange})=>{root.dataset.palaceState='gallery';return {enter(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});},home(){root.dataset.palaceState='palace';onViewChange({view:'palace',opening:false});},setMode(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});}}}, initDisplayMode:()=>({}), document: doc, initVisitorPreferences:options=>{options.onBrightness(75);const section=doc.createElement('section');section.className='visitor-preferences';doc.body.append(section);return {};}, initSceneMotion:root=>{motionInitializations.push(root);const dock=doc.createElement('div');dock.className='scene-controls';root.append(dock);return {setView(x,y){viewCalls.push([x,y]);}};}, validateArchive, safeURL, normalizeSearch, doorIdFor,
+  const context = vm.createContext({ AbortController, initFestivalScene:args=>initFestivalScene({...args,doc,win:{...doc.defaultView,setTimeout:queue,clearTimeout:id=>timers.delete(id),MutationObserver:class{observe(){}disconnect(){}}}}), loadArtworkImage:(image,source,options)=>loadArtworkImage(image,source,{...options,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}), initPalaceStartup:()=>Promise.resolve(), createDoorPalettePicker, installGalleryGesture, createSlideshowController, initPalaceEntrance:entrance?(args)=>initPalaceEntrance({...args,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}):({root,onViewChange})=>{root.dataset.palaceState='gallery';return {enter(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});},home(){root.dataset.palaceState='palace';onViewChange({view:'palace',opening:false});},setMode(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});}}}, initDisplayMode:()=>({}), document: doc, initVisitorPreferences:options=>{options.onBrightness(75);const section=doc.createElement('section');section.className='visitor-preferences';doc.body.append(section);return {};}, initSceneMotion:root=>{motionInitializations.push(root);const dock=doc.createElement('div');dock.className='scene-controls';root.append(dock);return {setView(x,y){viewCalls.push([x,y]);}};}, validateArchive, safeURL, normalizeSearch, doorIdFor,
     matchMedia: () => ({ matches: reduced }),
     // Native browser timers reject a plain-object receiver (Illegal invocation).
     setTimeout: function(fn, delay) { if (strictTimerReceiver && this != null && this.document !== doc) throw new TypeError('Illegal invocation'); return queue(fn, delay); },
@@ -157,13 +158,13 @@ test('initial load renders all real article doors and creators', async () => {
   assert.doesNotMatch(h.$('detail-content').textContent, /架空の参加者|展示サンプル/);
 });
 
-test('expanded roster renders all seven confirmed submissions with their own art and links', async () => {
+test('expanded roster renders all eight confirmed submissions with their own art and links', async () => {
   assert.equal(creatorCount, 14);
   assert.equal(doorCount, 15);
-  assert.equal(pendingCount, 7);
+  assert.equal(pendingCount, 6);
   assert.equal(annualEntries.filter(entry => entry.submissionStatus === 'introduction').length, 1);
   const submitted = annualEntries.filter(entry => entry.submissionStatus === 'submitted');
-  assert.deepEqual(new Set(submitted.map(entry => entry.creatorId)), new Set(['koakumako', 'imota14', 'clever_hare2654', 'fond_holly3483', 'aihan_days', 'mama_ca', 'naemotion']));
+  assert.deepEqual(new Set(submitted.map(entry => entry.creatorId)), new Set(['koakumako', 'imota14', 'clever_hare2654', 'fond_holly3483', 'aihan_days', 'mama_ca', 'naemotion', 'soh_style_work']));
   const h = await harness();
   for (const entry of submitted) {
     await h.api.navigate(annualEntries.indexOf(entry));
@@ -1096,15 +1097,19 @@ test('new Yamacon and Aihan submissions use the same cancellable opening and exa
  }
 });
 
-test('illustrated footer cycles scenes, settles load and recovers after errors',async()=>{
+test('illustrated courtyard uses its real controller and never swaps the image',async()=>{
  const h=await harness();const button=h.$('festival-play'),picture=h.$('festival-picture');
- button.click();assert.equal(button.dataset.scene,'1');assert.equal(button.dataset.state,'loading');
- picture.naturalWidth=600;picture.dispatch('load');assert.equal(button.dataset.state,'ready');assert.equal(picture.hidden,false);
- button.click();assert.equal(button.dataset.scene,'2');picture.dispatch('error');assert.equal(button.dataset.state,'error');assert.equal(button.getAttribute('aria-busy'),'false');
- button.click();assert.equal(button.dataset.scene,'0');picture.dispatch('load');assert.equal(button.dataset.state,'ready');
+ const scene=picture.parentNode.parentNode;const effects=scene.querySelector('.festival-effects');
+ const src=picture.getAttribute('src');button.dataset.magic='brew';button.closest=()=>button;
+ scene.dispatch('click',{target:button});assert.equal(scene.dataset.magic,'brew');assert.equal(effects.children.length,12);
+ assert.equal(scene.dataset.still,'true');assert.equal(picture.getAttribute('src'),src);
+ await h.tick(1800);assert.equal(scene.dataset.magic,undefined);assert.equal(effects.children.length,0);
 });
-test('rapid footer taps cancel stale image deadlines',async()=>{
+test('rapid courtyard taps replace effects and leave no delayed image changes',async()=>{
  const h=await harness();const button=h.$('festival-play'),picture=h.$('festival-picture');
- button.click();button.click();button.click();picture.naturalWidth=600;picture.dispatch('load');
- await h.tick(10000);assert.equal(button.dataset.scene,'0');assert.equal(button.dataset.state,'ready');
+ const scene=picture.parentNode.parentNode;button.dataset.magic='brew';button.closest=()=>button;
+ for(let i=0;i<20;i++)scene.dispatch('click',{target:button});
+ assert.equal(scene.querySelector('.festival-effects').children.length,12);
+ await h.tick(10000);assert.equal(scene.dataset.magic,undefined);assert.equal(scene.querySelector('.festival-effects').children.length,0);
+ assert.match(picture.getAttribute('src'),/magic-courtyard.webp/);
 });

@@ -1,0 +1,21 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {createFestivalController} from '../festival-scene.js';
+function fixture(){const tasks=new Map();let id=0;const renders=[];let clears=0;const control=createFestivalController({render:(...args)=>renders.push(args),clear:()=>clears++,schedule:fn=>{tasks.set(++id,fn);return id},cancel:id=>tasks.delete(id)});return {control,tasks,renders,get clears(){return clears}};}
+test('repeated scene taps replace reactions and leave only one cleanup timer',()=>{const f=fixture();for(let i=0;i<100;i++)f.control.play(['brew','pumpkin','ghost'][i%3]);assert.equal(f.tasks.size,1);assert.equal(f.renders.length,100);f.control.dispose();assert.equal(f.tasks.size,0);assert.equal(f.control.play('brew'),false)});
+test('hidden tabs cancel effects, ignore input, and resume only on visibility',()=>{const f=fixture();f.control.play('brew');f.control.setHidden(true);assert.equal(f.tasks.size,0);assert.equal(f.control.play('ghost'),false);f.control.setHidden(false);assert.equal(f.control.play('pumpkin'),true)});
+test('paused and reduced motion allow static accessible reactions and clean old effects',()=>{const f=fixture();f.control.play('brew');f.control.setStill(true);assert.equal(f.tasks.size,0);f.control.play('ghost');assert.deepEqual(f.renders.at(-1),['ghost',true]);f.control.setStill(false);assert.equal(f.tasks.size,0);assert.equal(f.control.play('invalid'),false)});
+test('completion clears reaction, and disposal is idempotent',()=>{const f=fixture();f.control.play('brew');const [id,run]=[...f.tasks][0];f.tasks.delete(id);run();assert.equal(f.clears,2);f.control.dispose();f.control.dispose();assert.equal(f.tasks.size,0)});
+test('footer has original scene, three native accessible hotspots, compact responsive ratios',async()=>{const html=await readFile(new URL('../index.html',import.meta.url),'utf8');const css=await readFile(new URL('../gallery-refinement.css',import.meta.url),'utf8');const footer=html.match(/<div class="festival-coda">.*?role="status"[^]*?<\/div><\/div>/)[0];assert.match(footer,/magic-courtyard.webp/);assert.equal((footer.match(/type="button" aria-label=/g)||[]).length,3);assert.doesNotMatch(footer,/palace-phone|franken|host-invitation|festival-caption/);assert.match(css,/aspect-ratio:2.4/);assert.match(css,/aspect-ratio:1.7/);assert.match(css,/body\[data-layout-page=gallery\] #theater \.festival-coda\{[^}]*height:auto/);});
+test('bfcache return resumes interactions; disposal removes listeners and timers',async()=>{
+ const {initFestivalScene}=await import('../festival-scene.js');const handlers=new Map(),tasks=new Map();let id=0;
+ const effects={children:[],append(p){this.children.push(p)},replaceChildren(){this.children=[]}};const status={textContent:''};
+ const scene={dataset:{},querySelector:s=>s==='.festival-effects'?effects:status,contains:()=>true,addEventListener:(k,fn)=>handlers.set('scene:'+k,fn),removeEventListener:k=>handlers.delete('scene:'+k)};
+ const root={dataset:{}};const media={matches:false,addEventListener:(k,fn)=>handlers.set('media:'+k,fn),removeEventListener:k=>handlers.delete('media:'+k)};
+ const doc={hidden:false,body:{dataset:{}},createElement:()=>({dataset:{},style:{}}),addEventListener:(k,fn)=>handlers.set('doc:'+k,fn),removeEventListener:k=>handlers.delete('doc:'+k)};
+ let disconnected=false;const win={matchMedia:()=>media,MutationObserver:class{observe(){}disconnect(){disconnected=true}},setTimeout:fn=>{tasks.set(++id,fn);return id},clearTimeout:id=>tasks.delete(id),addEventListener:(k,fn)=>handlers.set('win:'+k,fn),removeEventListener:k=>handlers.delete('win:'+k)};
+ const dispose=initFestivalScene({scene,root,doc,win});const button={tagName:'BUTTON',dataset:{magic:'brew'}};const tap=()=>handlers.get('scene:click')({target:{closest:()=>button}});
+ tap();assert.equal(effects.children.length,12);handlers.get('win:pagehide')({persisted:true});assert.equal(tasks.size,0);tap();assert.equal(effects.children.length,0);
+ handlers.get('win:pageshow')();tap();assert.equal(effects.children.length,12);dispose();assert.equal(tasks.size,0);assert.equal(handlers.size,0);assert.equal(disconnected,true);
+});

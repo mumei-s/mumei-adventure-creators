@@ -11,8 +11,9 @@ const SETTINGS_RELEASE = '20261015-settings2';
 const DOORSTAGE_RELEASE = '20261015-reveal1';
 const MAGAZINE_RELEASE = '20261015-finale1';
 const HOST_RELEASE = '20261015-host3';
-const CACHE = 'mumei-atelier-shell-v21-' + PALACE_RELEASE + ':' + SCOPE.pathname;
+const CACHE = 'mumei-atelier-shell-v22-' + PALACE_RELEASE + ':' + SCOPE.pathname;
 const SHELL = [
+  'festival-scene.js', 'assets/palace/magic-courtyard.webp',
   'assets/palace/host-invitation.webp', 'assets/palace/palace-interior.webp', 'magical-loading.css', 'magical-loading.js', 'palace-startup.js', 'host-celebration.css', 'door-reveal.css',
   'gallery-refinement.css', 'gallery-gesture.js', 'door-palette.js',
   'assets/palace/palace-franken.webp', 'assets/palace/palace-zombie.webp', 'assets/palace/palace-bat.webp',
@@ -25,7 +26,7 @@ const SHELL = [
   'assets/atelier-icon-512.png', 'assets/atelier-maskable-512.png'
 ];
 // Only exact public asset release queries are cacheable; tokens/other queries bypass.
-const PUBLIC_URLS = SHELL.flatMap(path => [new URL(path, SCOPE).href, ...(/\.(?:js|css)$/.test(path) ? [new URL(path + '?v=' + (['magical-loading.css','theater.js','palace-startup.js'].includes(path)?'20261015-interior1':path==='magical-loading.js'?'20261015-journey1':path==='palace-entrance.css'?'20261015-startup2':['palace-startup.js','theater.js','pwa.js'].includes(path) ? '20261015-startup1' : path==='host-celebration.css' ? HOST_RELEASE : path==='gallery-refinement.css' ? MAGAZINE_RELEASE : ['theater.js','door-reveal.css'].includes(path) ? DOORSTAGE_RELEASE : ['visitor-preferences.js','visitor-preferences.css'].includes(path) ? SETTINGS_RELEASE : ['gallery-refinement.css','door-palette.js','slideshow.js'].includes(path) ? COLOR_RELEASE : path==='gallery-gesture.js' ? CONTROL_RELEASE : path === 'palace-entrance.css' ? '20261014-corner2' : ['theater.js','assets/palace/palace-franken.webp', 'assets/palace/palace-zombie.webp', 'assets/palace/palace-bat.webp',
+const PUBLIC_URLS = SHELL.flatMap(path => [new URL(path, SCOPE).href, ...(/\.(?:js|css)$/.test(path) ? [new URL(path + '?v=' + (['theater.js','gallery-refinement.css','visitor-preferences.js','festival-scene.js','scene-motion.js','scene-motion.css'].includes(path)?'20261015-music-garden1':['magical-loading.css','theater.js','palace-startup.js'].includes(path)?'20261015-interior1':path==='magical-loading.js'?'20261015-journey1':path==='palace-entrance.css'?'20261015-startup2':['palace-startup.js','theater.js','pwa.js'].includes(path) ? '20261015-startup1' : path==='host-celebration.css' ? HOST_RELEASE : path==='gallery-refinement.css' ? MAGAZINE_RELEASE : ['theater.js','door-reveal.css'].includes(path) ? DOORSTAGE_RELEASE : ['visitor-preferences.js','visitor-preferences.css'].includes(path) ? SETTINGS_RELEASE : ['gallery-refinement.css','door-palette.js','slideshow.js'].includes(path) ? COLOR_RELEASE : path==='gallery-gesture.js' ? CONTROL_RELEASE : path === 'palace-entrance.css' ? '20261014-corner2' : ['theater.js','assets/palace/palace-franken.webp', 'assets/palace/palace-zombie.webp', 'assets/palace/palace-bat.webp',
   'palace-entrance.js','palace-entrance.css'].includes(path) ? PALACE_RELEASE : ['data-model.js','article-doors.css'].includes(path) ? DOOR_RELEASE : path === 'gallery-controls.css' ? STYLE_RELEASE : RELEASE), SCOPE).href] : [])]);
 const ALLOWED = new Set(PUBLIC_URLS);
 const inPreview = SCOPE.pathname.endsWith('/halloween-exhibition/preview/');

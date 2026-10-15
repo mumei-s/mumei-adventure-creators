@@ -1,22 +1,22 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {PREFERENCE_KEY, normalizePreferences, readPreferences, writePreferences, createAmbientPlayer, initVisitorPreferences} from '../visitor-preferences.js';
+import {PREFERENCE_KEY, normalizePreferences, readPreferences, writePreferences, createAmbientPlayer, initVisitorPreferences, musicScore, MUSIC_BEAT_SECONDS} from '../visitor-preferences.js';
 
 test('visitor defaults are bounded and contain no autoplay preference',()=>{
- assert.deepEqual(normalizePreferences(),{brightness:100,volume:20});
- for(const value of [null,[],true,'invalid'])assert.deepEqual(normalizePreferences(value),{brightness:100,volume:20});
+ assert.deepEqual(normalizePreferences(),{brightness:100,volume:0});
+ for(const value of [null,[],true,'invalid'])assert.deepEqual(normalizePreferences(value),{brightness:100,volume:0});
  assert.deepEqual(normalizePreferences({brightness:0,volume:1000,playing:true}),{brightness:75,volume:100});
  assert.deepEqual(normalizePreferences({brightness:1000,volume:-5}),{brightness:175,volume:0});
- assert.deepEqual(normalizePreferences({brightness:NaN,volume:Infinity}),{brightness:100,volume:20});
+ assert.deepEqual(normalizePreferences({brightness:NaN,volume:Infinity}),{brightness:100,volume:0});
 });
 test('legacy brightness migrates only when shared key is absent',()=>{
- assert.deepEqual(readPreferences({getItem:()=>null},125),{brightness:125,volume:20});
- assert.deepEqual(readPreferences({getItem:()=>'{broken'},125),{brightness:100,volume:20});
- assert.deepEqual(readPreferences({getItem:()=>'{"brightness":90,"volume":35}'},125),{brightness:90,volume:35});
+ assert.deepEqual(readPreferences({getItem:()=>null},125),{brightness:125,volume:0});
+ assert.deepEqual(readPreferences({getItem:()=>'{broken'},125),{brightness:100,volume:0});
+ assert.deepEqual(readPreferences({getItem:()=>'{"brightness":90,"volume":35}'},125),{brightness:90,volume:0});
 });
 test('storage denied reads and writes safely preserve scoped behavior',()=>{
  const blocked={getItem(){throw Error('denied')},setItem(){throw Error('denied')}};
- assert.deepEqual(readPreferences(blocked),{brightness:100,volume:20});
+ assert.deepEqual(readPreferences(blocked),{brightness:100,volume:0});
  assert.equal(writePreferences(blocked,{brightness:100,volume:0}),false);
  let saved;assert.equal(writePreferences({setItem(k,v){saved={k,v}}},{brightness:125,volume:40,playing:true}),true);
  assert.equal(saved.k,PREFERENCE_KEY);assert.deepEqual(JSON.parse(saved.v),{brightness:125,volume:40});
@@ -26,18 +26,18 @@ class FakeAudio {
  constructor(){this.state='suspended';this.currentTime=0;this.destination={};this.closed=0;this.gains=[];this.voices=[];FakeAudio.instances.push(this)}
  async resume(){this.state='running'}
  async close(){this.closed++;this.state='closed'}
- createGain(){const gain={value:0,events:[],setTargetAtTime(v,t,d){this.events.push({v,t,d})}};const n={gain,connect(){}};this.gains.push(n);return n}
- createOscillator(){const frequency={value:0,setTargetAtTime(){}};const n={frequency,detune:{value:0},connect(){},start(){this.started=true}};this.voices.push(n);return n}
+ createGain(){const gain={value:0,events:[],setTargetAtTime(v,t,d){this.events.push({v,t,d})},setValueAtTime(v,t){this.events.push({v,t})},linearRampToValueAtTime(v,t){this.events.push({v,t})},exponentialRampToValueAtTime(v,t){this.events.push({v,t})}};const n={gain,connect(){},disconnect(){this.disconnected=true}};this.gains.push(n);return n}
+ createOscillator(){const frequency={value:0,setTargetAtTime(){}};const n={frequency,detune:{value:0},connect(){},disconnect(){this.disconnected=true},start(t){this.started=true;this.startTime=t},stop(t){this.stopTime=t;this.stopped=true}};this.voices.push(n);return n}
 }
 test('creating ambient player never starts audio or creates a context',()=>{
  const before=FakeAudio.instances.length;const p=createAmbientPlayer({AudioContextCtor:FakeAudio});
  p.setVolume(50);assert.equal(FakeAudio.instances.length,before);assert.equal(p.isPlaying(),false);
 });
-test('explicit music start creates quiet original voices; zero volume mutes; OFF closes context',async()=>{
+test('explicit music start creates articulated original voices; zero volume mutes; OFF closes context',async()=>{
  const states=[],p=createAmbientPlayer({AudioContextCtor:FakeAudio,onState:x=>states.push(x)});
  p.setVolume(25);await p.start();const audio=FakeAudio.instances.at(-1);
- assert.equal(p.isPlaying(),true);assert.equal(audio.voices.length,3);assert.ok(audio.voices.every(v=>v.started));
- assert.equal(audio.gains[0].gain.events.at(-1).v,.0175);
+ assert.equal(p.isPlaying(),true);assert.equal(audio.voices.length,2);assert.ok(audio.voices.every(v=>v.started));
+ assert.equal(audio.gains[0].gain.events.at(-1).v,.25);
  p.setVolume(0);assert.equal(audio.gains[0].gain.events.at(-1).v,0);
  p.stop();assert.equal(p.isPlaying(),false);assert.equal(audio.closed,1);assert.deepEqual(states,[false,true,false]);
 });
@@ -55,7 +55,7 @@ test('unavailable audio provides a clear status without blocking settings',async
 
 const mainOptions = { brightnessRange: { min: 0, max: 100, defaultValue: 75 }, preferenceKey: 'halloween-exhibition:main-preferences:v2', migrateFromKey: PREFERENCE_KEY };
 test('main supports 0/75/100 and default75 without changing maze legacy range',()=>{
- assert.deepEqual(normalizePreferences({},undefined,mainOptions),{brightness:75,volume:20});
+ assert.deepEqual(normalizePreferences({},undefined,mainOptions),{brightness:75,volume:0});
  for(const brightness of [0,75,100])assert.equal(normalizePreferences({brightness},undefined,mainOptions).brightness,brightness);
  assert.equal(normalizePreferences({brightness:175},undefined,mainOptions).brightness,100);
  assert.equal(normalizePreferences({brightness:0}).brightness,75);
@@ -63,16 +63,16 @@ test('main supports 0/75/100 and default75 without changing maze legacy range',(
  assert.equal(normalizePreferences().brightness,100);
 });
 test('explicit main migration clamps older values and never writes maze namespace',()=>{
- const data=new Map([[PREFERENCE_KEY,JSON.stringify({brightness:175,volume:46,playing:true})]]);
+ const data=new Map([[PREFERENCE_KEY,JSON.stringify({brightness:175,volume:0,playing:true})]]);
  const storage={getItem:k=>data.get(k)??null,setItem:(k,v)=>data.set(k,v)};
- assert.deepEqual(readPreferences(storage,undefined,mainOptions),{brightness:100,volume:46});
+ assert.deepEqual(readPreferences(storage,undefined,mainOptions),{brightness:100,volume:0});
  const original=data.get(PREFERENCE_KEY);
  writePreferences(storage,{brightness:0,volume:100,playing:true},mainOptions);
- assert.deepEqual(readPreferences(storage,undefined,mainOptions),{brightness:0,volume:100});
+ assert.deepEqual(readPreferences(storage,undefined,mainOptions),{brightness:0,volume:0});
  assert.equal(data.get(PREFERENCE_KEY),original);
- assert.deepEqual(readPreferences(storage),{brightness:175,volume:46});
+ assert.deepEqual(readPreferences(storage),{brightness:175,volume:0});
  data.set(mainOptions.preferenceKey,'broken');
- assert.deepEqual(readPreferences(storage,undefined,mainOptions),{brightness:75,volume:20});
+ assert.deepEqual(readPreferences(storage,undefined,mainOptions),{brightness:75,volume:0});
  data.delete(mainOptions.preferenceKey);data.set(PREFERENCE_KEY,'{"brightness":100}');
  assert.equal(readPreferences(storage,undefined,mainOptions).brightness,100);
  assert.equal(readPreferences({getItem(){throw Error()}},undefined,mainOptions).brightness,75);
@@ -99,14 +99,14 @@ test('rapid ON/OFF/ON cannot let an old pending resume close or start the newer 
  const states=[],p=createAmbientPlayer({AudioContextCtor:Deferred,onState:on=>states.push(on)});
  const first=p.start(),old=FakeAudio.instances.at(-1);assert.equal(p.isActive(),true);p.stop();
  const second=p.start(),latest=FakeAudio.instances.at(-1);pending[1]();await second;pending[0]();await first;
- assert.equal(p.isPlaying(),true);assert.equal(old.voices.length,0);assert.equal(latest.closed,0);assert.equal(latest.voices.length,3);
+ assert.equal(p.isPlaying(),true);assert.equal(old.voices.length,0);assert.equal(latest.closed,0);assert.equal(latest.voices.length,2);
  assert.equal(states.filter(Boolean).length,1);p.stop();
 });
 test('volume covers zero to100 linearly with bounded gain and no automatic start',async()=>{
  const p=createAmbientPlayer({AudioContextCtor:FakeAudio});p.setVolume(0);assert.equal(p.isActive(),false);await p.start();
  const gain=FakeAudio.instances.at(-1).gains[0].gain;
- for(const volume of [0,20,50,100]){p.setVolume(volume);assert.equal(gain.events.at(-1).v,volume/100*.07)}
- p.setVolume(1000);assert.equal(gain.events.at(-1).v,.07);p.stop();
+ for(const volume of [0,20,50,100]){p.setVolume(volume);assert.equal(gain.events.at(-1).v,volume/100)}
+ p.setVolume(1000);assert.equal(gain.events.at(-1).v,1);p.stop();
 });
 
 class Element {
@@ -132,21 +132,52 @@ test('UI starts OFF, main slider uses range and hidden/pagehide stop pending or 
   assert.equal(FakeAudio.instances.length,before);assert.equal(music.attributes['aria-pressed'],'false');
   assert.equal(brightness.children[2].min,'0');assert.equal(brightness.children[2].max,'100');assert.equal(brightness.children[2].value,'75');
   for(const value of [0,75,100]){brightness.children[2].value=String(value);brightness.children[2].emit('input');assert.equal(brightnessValues.at(-1),value)}
-  music.emit('click');await Promise.resolve();assert.equal(music.attributes['aria-pressed'],'true');
+  music.emit('click');await new Promise(r=>setImmediate(r));assert.equal(music.attributes['aria-pressed'],'true');assert.match(status.textContent,/ミュート中/);assert.equal(volume.children[2].value,'0');
+  volume.children[2].value='40';volume.children[2].emit('input');assert.match(status.textContent,/再生しています/);
   document.hidden=true;document.emit('visibilitychange');assert.equal(music.attributes['aria-pressed'],'false');
   document.hidden=false;document.emit('visibilitychange');assert.equal(music.attributes['aria-pressed'],'false');
-  music.emit('click');await Promise.resolve();window.emit('pagehide');assert.equal(music.attributes['aria-pressed'],'false');
+  music.emit('click');await new Promise(r=>setImmediate(r));window.emit('pagehide');assert.equal(music.attributes['aria-pressed'],'false');
   let release;class Pending extends FakeAudio {resume(){return new Promise(r=>release=r)}}
   globalThis.AudioContext=Pending;music.emit('click');assert.match(music.textContent,/キャンセル/);
-  document.hidden=true;document.emit('visibilitychange');release();await Promise.resolve();
+  document.hidden=true;document.emit('visibilitychange');release();await new Promise(r=>setImmediate(r));
   assert.equal(music.attributes['aria-pressed'],'false');assert.equal(FakeAudio.instances.at(-1).voices.length,0);
   const count=FakeAudio.instances.length;music.emit('click');assert.equal(FakeAudio.instances.length,count);
   assert.equal(data.has(PREFERENCE_KEY),false);
  }finally{settings?.destroy();for(const [k,v]of Object.entries(prior)){if(v===undefined)delete globalThis[k];else globalThis[k]=v}}
 });
-test('maze audio opts into phone-friendly tone without changing gallery defaults',async()=>{
- for(const [audioOptions,wave,frequency,level] of [[undefined,'sine',196,.07],[{masterLevel:.16,waveform:'triangle',pitchScale:2},'triangle',392,.16],[{masterLevel:999,waveform:'square',pitchScale:99},'sine',196,.2]]){
-  const p=createAmbientPlayer({AudioContextCtor:FakeAudio,audioOptions});await p.start();const a=FakeAudio.instances.at(-1);
-  assert.equal(a.voices[0].type,wave);assert.equal(a.voices[0].frequency.value,frequency);assert.equal(a.gains[0].gain.events.at(-1).v,.2*level);p.stop();
+test('music score contains an articulated original melody and bounded midrange accompaniment',()=>{
+ const {notes,beats}=musicScore();assert.equal(beats,24);assert.ok(notes.length>40);
+ assert.ok(new Set(notes.map(n=>n.midi)).size>10);
+ assert.ok(notes.every(n=>n.midi>=59&&n.midi<=84&&n.duration<=.82&&n.level<=.37));
+ assert.ok(notes.some(n=>n.wave==='triangle'));assert.ok(notes.some(n=>n.wave==='sine'));
+ // Conservative simultaneous peak, counting complete envelopes and release tails.
+ let peak=0;
+ for(let t=0;t<beats*MUSIC_BEAT_SECONDS;t+=.001){
+  const active=notes.filter(n=>t>=n.beat*MUSIC_BEAT_SECONDS&&t<(n.beat+n.duration)*MUSIC_BEAT_SECONDS+.04);
+  peak=Math.max(peak,active.reduce((sum,n)=>sum+n.level,0));
  }
+ assert.ok(peak<=.65,`peak ${peak}`);
+});
+test('every visit starts at zero, including old saved maximum and current saved values',()=>{
+ for(const volume of [20,100]){
+  const storage={getItem:()=>JSON.stringify({brightness:120,volume,playing:true})};
+  assert.deepEqual(readPreferences(storage),{brightness:120,volume:0});
+ }
+});
+test('scheduler produces finite envelopes, advances melody and cancels all voices on stop',async()=>{
+ let tick,cancelled=false;
+ const p=createAmbientPlayer({AudioContextCtor:FakeAudio,schedule:fn=>{tick=fn;return 7},cancel:id=>{assert.equal(id,7);cancelled=true}});
+ await p.start();const a=FakeAudio.instances.at(-1);
+ assert.equal(a.gains[0].gain.events.at(-1).v,0);
+ a.currentTime=.4;tick();assert.ok(a.voices.length>2);
+ assert.ok(a.voices.every(v=>v.stopTime>v.startTime&&v.stopTime-v.startTime<.5));
+ assert.ok(a.gains.slice(1).every(g=>g.gain.events[0].v===0&&g.gain.events.at(-1).v===0));
+ p.stop();assert.equal(cancelled,true);assert.ok(a.voices.every(v=>v.disconnected));
+ const count=a.voices.length;tick();assert.equal(a.voices.length,count);
+});
+test('stalled resume is bounded and cancellation closes the pending context',async()=>{
+ let expire;class Stalled extends FakeAudio{resume(){return new Promise(()=>{})}}
+ const p=createAmbientPlayer({AudioContextCtor:Stalled,deadline:fn=>{expire=fn;return 1},cancelDeadline:()=>{}});
+ const pending=p.start();expire();await pending;
+ assert.equal(p.isActive(),false);assert.equal(p.isPlaying(),false);assert.equal(FakeAudio.instances.at(-1).closed,1);
 });

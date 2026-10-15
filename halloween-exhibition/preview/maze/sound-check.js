@@ -6,7 +6,7 @@ export function createSoundCheck({AudioContextCtor,onState=()=>{},schedule=setTi
   if(old){old.onstatechange=null;try{old.close()?.catch?.(()=>{});}catch{}}
   onState(false,message);
  }
- async function play(volume=20){
+ async function play(volume=0){
   stop('');const token=version;
   if(!(volume>0)){onState(false,'音量が0%です。音量を上げてからお試しください。');return;}
   const Ctor=AudioContextCtor||globalThis.AudioContext||globalThis.webkitAudioContext;

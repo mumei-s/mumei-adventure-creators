@@ -1,3 +1,4 @@
+import { initFestivalScene } from './festival-scene.js?v=20261015-music-garden1';
 import { loadArtworkImage } from './magical-loading.js?v=20261015-journey1';
 import { initPalaceStartup } from './palace-startup.js?v=20261015-interior1';
 import { createDoorPalettePicker } from './door-palette.js?v=20261015-festival1';
@@ -5,8 +6,8 @@ import { installGalleryGesture } from './gallery-gesture.js?v=20261015-controls1
 import { initPalaceEntrance } from './palace-entrance.js?v=20261014-palace2';
 import { initDisplayMode } from './display-mode.js?v=20261014-layout1';
 import { createSlideshowController } from './slideshow.js?v=20261015-festival1';
-import { initVisitorPreferences } from './visitor-preferences.js?v=20261015-settings2';
-import { initSceneMotion } from './scene-motion.js?v=20261014-layout1';
+import { initVisitorPreferences } from './visitor-preferences.js?v=20261015-music-garden1';
+import { initSceneMotion } from './scene-motion.js?v=20261015-music-garden1';
 import { validateArchive, safeURL, normalizeSearch, doorIdFor } from './data-model.js?v=20261014-doors1';
 const $=id=>document.getElementById(id), root=$('theater');
 let palaceVisualReady;
@@ -101,7 +102,7 @@ function paint({redisplay=false}={}){cancelStoryOpening();const entry=current();
  $('artwork-fallback').replaceChildren(node('span',Array.from(c.name).slice(0,2).join('')),node('small',real?'画像を表示できません · タップで記事へ':'プロフィール画像 · 読み込めませんでした'));
  if(source){image.alt=real?(entry.imageAlt||entry.title||c.name):`${c.name}のnoteプロフィール画像`;image.referrerPolicy='no-referrer';cancelArtworkLoad=loadArtworkImage(image,source,{onState:state=>{root.dataset.artworkState=state;image.hidden=state!=='ready';$('artwork-loading').hidden=state!=='loading';$('artwork-fallback').hidden=state!=='error';mat.setAttribute('aria-busy',String(state==='loading'));}});}else{image.removeAttribute('src');image.alt='';root.dataset.artworkState='error';mat.setAttribute('aria-busy','false');$('artwork-fallback').hidden=false;}
  const hostAvatar=$('host-avatar');hostAvatar.hidden=entry.role!=='host'||!portrait;if(!hostAvatar.hidden){hostAvatar.src=portrait;hostAvatar.alt=`${c.name}のnoteプロフィール画像`;hostAvatar.onerror=()=>hostAvatar.hidden=true;}else hostAvatar.removeAttribute('src');
- $('room-title').textContent=c.name;$('room-kicker').textContent=entry.role==='host'?'主催者からの招待状':'';$('creator-name').replaceChildren(node('span',entry.submissionStatus==='pending'?'作品準備中':entryHeading(entry)),node('small',label(entry)));$('current-index').textContent=String(currentIndex+1).padStart(2,'0');$('total-index').textContent=String(entries().length).padStart(2,'0');$('invitation-year').textContent=`HALLOWEEN ${currentYear}`;$('invitation-number').textContent='WELCOME TO THE ATELIER';$('artwork-open').setAttribute('aria-label',`${c.name} · ${doorCaption(entry)}の扉をひらく`);$('stage-status').textContent=`${currentIndex+1} / ${entries().length}、${c.name}、${label(entry)}`;renderDots();refreshModeCopy();revealDoor();}
+ $('room-title').textContent=c.name;$('room-title').classList.toggle('long-creator-name',Array.from(c.name).length>32);$('room-kicker').textContent=entry.role==='host'?'主催者からの招待状':'';$('creator-name').replaceChildren(node('span',entry.submissionStatus==='pending'?'作品準備中':entryHeading(entry)),node('small',label(entry)));$('current-index').textContent=String(currentIndex+1).padStart(2,'0');$('total-index').textContent=String(entries().length).padStart(2,'0');$('invitation-year').textContent=`HALLOWEEN ${currentYear}`;$('invitation-number').textContent='WELCOME TO THE ATELIER';$('artwork-open').setAttribute('aria-label',`${c.name} · ${doorCaption(entry)}の扉をひらく`);$('stage-status').textContent=`${currentIndex+1} / ${entries().length}、${c.name}、${label(entry)}`;renderDots();refreshModeCopy();revealDoor();}
 async function navigate(index,{immediate=false,fromRoulette=false,automatic=false,isCurrent=()=>true}={}){cancelStoryOpening();if(!automatic)palace?.enter({immediate:true,focus:false});if(!automatic)slideshow?.manualNavigation();if(!fromRoulette)cancelRoulette();if(!entries().length||!isCurrent())return;const next=(index+entries().length)%entries().length;if(next===currentIndex&&!immediate)return;turnVersion++;busy=false;root.classList.remove('turning-in','turning-out');currentIndex=next;paint({redisplay:true});}
 function showDialog(dialog){cancelStoryOpening();cancelRoulette();slideshow?.setBlocked('dialog',true);returnTarget=document.activeElement;dialog.showModal();}
 async function openStory(){if(Date.now()<suppressClickUntil||$('detail').open)return;const entry=current();if(!entry)return;cancelStoryOpening();record(entry);const c=creator(entry),area=$('detail-content');$('detail').dataset.entryKind=root.dataset.entryKind;area.replaceChildren();const real=safeURL(entry.image,{image:true}),portrait=avatar(entry),source=real||portrait;if(source){const img=node('img',undefined,real?'detail-art':'detail-art detail-portrait');img.alt=real?(entry.imageAlt||entry.title||c.name):`${c.name}のnoteプロフィール画像`;img.referrerPolicy='no-referrer';const wait=node('div','作品を招いています…','detail-image-loading');wait.setAttribute('role','status');area.append(wait,img);const cancel=loadArtworkImage(img,source,{onState:state=>{img.hidden=state!=='ready';wait.hidden=state==='ready';wait.dataset.state=state;if(state==='error'){wait.textContent='画像を表示できません。下の記事リンクからご覧ください。';const fallback=node('div',Array.from(c.name).slice(0,2).join(''),'detail-art profile-fallback');img.replaceWith(fallback);}}});$('detail').addEventListener('close',cancel,{once:true});}else area.append(node('div',Array.from(c.name).slice(0,2).join(''),'detail-art profile-fallback'));
@@ -201,13 +202,5 @@ load();
 
 
 
-// A small illustrated playground. Native button supports touch, Enter and Space.
-const festivalScenes=[['./assets/palace/palace-phone.webp','魔法の庭'],['./assets/palace/palace-interior.webp','光の回廊'],['./assets/palace/host-invitation.webp','招待状の部屋']];
-let festivalScene=0,cancelFestivalImage=()=>{};
-$('festival-play').addEventListener('click',()=>{
- festivalScene=(festivalScene+1)%festivalScenes.length;
- const [source,title]=festivalScenes[festivalScene],button=$('festival-play'),image=$('festival-picture');
- cancelFestivalImage();button.dataset.scene=String(festivalScene);button.setAttribute('aria-label',`${title}。次の景色へ`);
- button.classList.remove('festival-awake');void button.offsetWidth;button.classList.add('festival-awake');
- cancelFestivalImage=loadArtworkImage(image,source,{onState:state=>{button.dataset.state=state;button.setAttribute('aria-busy',String(state==='loading'));image.hidden=state!=='ready';if(state==='error')button.setAttribute('aria-label',`${title}の画像を表示できません。もう一度押すと次の景色へ`);}});
-});
+// Scene-contained magic with native touch and keyboard controls.
+initFestivalScene({ scene: document.querySelector('.festival-scene'), root });

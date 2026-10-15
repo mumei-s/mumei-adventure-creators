@@ -1,5 +1,5 @@
-import {createSoundCheck} from './sound-check.js?v=20261015-sound4';
-import { initVisitorPreferences } from '../visitor-preferences.js?v=20261015-sound4';
+import {createSoundCheck} from './sound-check.js?v=20261015-music-garden1';
+import { initVisitorPreferences } from '../visitor-preferences.js?v=20261015-music-garden1';
 import { initDisplayMode } from '../display-mode.js?v=20261014-adventure2';
 import { normalizeLighting } from './lighting-model.js?v=20261014-adventure2';
 import { MAP, CELL, FEATURES, toWorld, collectionAt, move, nearby, initialState, visibleArticles } from './maze-model.js?v=20261014-adventure2';
@@ -26,7 +26,7 @@ try{const saved=JSON.parse(localStorage.getItem(lightKey)||'{}');({brightness,la
 try{view=chooseView(localStorage.getItem(viewKey),reducedMotion.matches);const p=JSON.parse(localStorage.getItem(storageKey)||'{}');if(p&&typeof p==='object'&&!Array.isArray(p))progress=p;}catch{storageOK=false;view=chooseView(null,reducedMotion.matches);}
 const queryView=new URLSearchParams(location.search).get('view');if(['2d','3d'].includes(queryView))view=queryView;
 const visitorSection=element('section');
-const visitorSettings=initVisitorPreferences({container:visitorSection,legacyBrightness,audioOptions:{masterLevel:.16,waveform:'triangle',pitchScale:2},onBrightness:percent=>{brightness=percent/100;}});
+const visitorSettings=initVisitorPreferences({container:visitorSection,legacyBrightness,onBrightness:percent=>{brightness=percent/100;}});
 initDisplayMode({controlsParent:visitorSection,page:'maze'});
 const soundCheckButton=element('button','確認音を鳴らす（約1秒）');soundCheckButton.type='button';
 const soundCheckStatus=element('p','');soundCheckStatus.setAttribute('role','status');
@@ -43,7 +43,7 @@ function clearInput(){walking=false;keys.clear();for(const control of heldContro
 function openPanel(){clearInput();if(!panel.open){returnFocus=document.activeElement;panel.showModal();}}
 function title(kicker,name){panel.classList.remove('battle-mode','library-mode');const heading=element('h2',name);heading.id='panel-title';content.replaceChildren(element('p',kicker,'eyebrow'),heading);}
 function toggleLantern(){lantern=!lantern;$('lantern').textContent=lantern?'ランタン ON':'ランタン OFF';$('lantern').setAttribute('aria-pressed',String(lantern));saveLight();}
-function showLighting(){title('YOUR LIGHT & SOUND','夜の暗さと、手元の灯り。');content.append(visitorSection,element('p','夜の回廊は暗く、ランタンを点けると足元と前方が暖かく照らされます。暗すぎるときは明るさを上げるか、2D表示へ。文字・操作・地図の明るさは変わりません。'),element('p','音楽は自分でONにしたときだけ流れます。モンスターとの対戦に音・点滅・時間制限はありません。'));content.append(element('p','冒険室の表示バージョン：20261015-sound4','build-label'));openPanel();}
+function showLighting(){title('YOUR LIGHT & SOUND','夜の暗さと、手元の灯り。');content.append(visitorSection,element('p','夜の回廊は暗く、ランタンを点けると足元と前方が暖かく照らされます。暗すぎるときは明るさを上げるか、2D表示へ。文字・操作・地図の明るさは変わりません。'),element('p','音楽は自分でONにしたときだけ流れます。モンスターとの対戦に音・点滅・時間制限はありません。'));content.append(element('p','冒険室の表示バージョン：20261015-music-garden1','build-label'));openPanel();}
 function safeURL(v){try{const u=new URL(v);return u.protocol==='https:'&&!u.username&&!u.password?u.href:null;}catch{return null;}}
 function displayArticleKind(kind){return ({'ホラー記事':'記事','ホラーイラスト':'イラスト','ホラー作品':'作品'})[kind]||kind||'作品';}
 function articles(collection=activeCollection){return visibleArticles(catalog.articles,collection);}

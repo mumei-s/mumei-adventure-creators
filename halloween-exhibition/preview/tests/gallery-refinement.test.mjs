@@ -40,10 +40,10 @@ test('artwork cannot inherit scenic brightness, saturation, screen sheen or fore
 test('Halloween ornament owns a separate flow area and stops with reduced or paused motion',()=>{
  assert.match(html,/class="festival-coda">/);
  assert.match(html,/id="festival-play"[^>]*type="button"[^>]*aria-label=/);
- assert.match(css,/festival-coda \{[^}]*position:relative[^}]*height:170px/s);
+ assert.match(css,/festival-coda\{[^}]*position:relative[^}]*height:auto/s);
  assert.match(css,/data-mode=normal[^}]*festival-coda \{display:none\}/);
- assert.match(css,/data-motion-paused=true[^}]*festival-coda \* \{animation:none!important\}/);
- assert.match(css,/@media\(prefers-reduced-motion:reduce\)\{\.festival-coda \* \{animation:none!important\}/);
+ assert.match(css,/data-motion-paused=true[^}]*festival-coda \*[^}]*animation:none!important/);
+ assert.match(css,/@media\(prefers-reduced-motion:reduce\)\{\.festival-coda \*\{animation:none!important/);
 });
 
 test('roulette is centered in upper navigation and bottom hints are removed',()=>{
@@ -52,7 +52,7 @@ test('roulette is centered in upper navigation and bottom hints are removed',()=
  assert.doesNotMatch(html,/id="journey-hint"|class="preview-ribbon"/);
  assert.match(css,/palace-return-row \{display:grid;grid-template-columns:1fr 1fr 1fr/);
  assert.match(css,/stage-navigation \{grid-area:2\/1/);assert.match(css,/stage-caption \{grid-area:3\/1/);
- assert.match(css,/festival-coda \{height:220px/);
+ assert.match(css,/festival-scene\{position:relative;aspect-ratio:2.4/);
 });
 test('landscape doors reveal without leaving overlays over the final artwork',()=>{
  assert.match(css,/data-portrait=false\] \.portal-doors \{display:block\}/);
@@ -71,6 +71,6 @@ test('compact magazine tier reserves room for its full name without decorative s
  test('visited star is hidden without deleting saved history and finale uses illustration',()=>{
  assert.match(css,/\.face-dot\.visited:after/);
  assert.match(css,/festival-picture/);
- assert.match(html,/id="festival-picture"[^>]*palace-phone.webp/);
+ assert.match(html,/id="festival-picture"[^>]*magic-courtyard.webp/);
  assert.doesNotMatch(html,/class="festival-caption"/);
 });

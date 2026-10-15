@@ -39,10 +39,10 @@ export function initSceneMotion(root, {controlsParent} = {}) {
   const ids = ['light-1', 'light-2', 'light-3'];
   function availableSeal(index) {
     const owners = sealOwners();
-    return Boolean(root.dataset.mode !== 'normal' && root.dataset.creatorId && owners[index] === root.dataset.creatorId);
+    return false; // Retired collectible controls; keep saved history untouched.
   }
   function syncArtifacts() {
-    seeds.hidden = root.dataset.mode === 'normal'; count.hidden = root.dataset.mode === 'normal';
+    seeds.hidden = true; count.hidden = true;
     seedButtons.forEach((button, index) => { button.hidden = !availableSeal(index); button.disabled = collected.has(ids[index]); });
   }
   const palettes = {
@@ -55,9 +55,9 @@ export function initSceneMotion(root, {controlsParent} = {}) {
   function readSeals() {
     try { const values = JSON.parse(root.dataset.seals || '[]'); collected = new Set(Array.isArray(values) ? values.filter(v => ids.includes(v)) : []); } catch { collected = new Set(); }
     seedButtons.forEach((b, i) => { const done = collected.has(ids[i]); b.setAttribute('aria-pressed', String(done)); b.textContent = done ? '✦' : '✧'; b.setAttribute('aria-label', `${i + 1}つ目の光${done ? '：収集済み' : 'を集める'}`); });
-    count.textContent = root.dataset.mode === 'normal' ? '' : collected.size === 3 ? '星座の封印が完成' : `光のかけら ${collected.size} / 3 · 部屋を探索`;
+    count.textContent = '';
     syncArtifacts();
-    root.dataset.constellation = String(root.dataset.mode !== 'normal' && collected.size === 3); dirty = true;
+    root.dataset.constellation = 'false'; dirty = true;
   }
   function applyMode() {
     mode = root.dataset.mode === 'normal' ? 'normal' : 'halloween';

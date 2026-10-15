@@ -6,7 +6,7 @@ import { installGalleryGesture } from './gallery-gesture.js?v=20261015-controls1
 import { initPalaceEntrance } from './palace-entrance.js?v=20261014-palace2';
 import { initDisplayMode } from './display-mode.js?v=20261014-layout1';
 import { createSlideshowController } from './slideshow.js?v=20261015-festival1';
-import { initVisitorPreferences } from './visitor-preferences.js?v=20261015-music-garden1';
+import { initVisitorPreferences } from './visitor-preferences.js?v=20261015-return1';
 import { initSceneMotion } from './scene-motion.js?v=20261015-music-garden1';
 import { validateArchive, safeURL, normalizeSearch, doorIdFor } from './data-model.js?v=20261014-doors1';
 const $=id=>document.getElementById(id), root=$('theater');
@@ -35,7 +35,7 @@ function seals(){return [...new Set((Array.isArray(progress.seals[key()])?progre
 function refreshSeals(){root.dataset.seals=JSON.stringify(seals());}
 let rouletteVersion=0,rouletteTimer=null,rouletteRunning=false,slideshow=null;
 let displayMode='halloween';const modeStorageKey='halloween-yearbook:display-mode:v1';try{if(localStorage.getItem(modeStorageKey)==='normal')displayMode='normal';}catch{}
-try{if(new URLSearchParams(location.search).get('mode')==='halloween')displayMode='halloween';}catch{}
+try{if(new URLSearchParams(location.search).get('mode')==='halloween'||new URLSearchParams(location.search).get('return')==='palace')displayMode='halloween';}catch{}
 const returnStateKey='halloween-yearbook:theatre-return:v1';
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 function node(tag,text,cls){const el=document.createElement(tag);if(text!==undefined)el.textContent=text;if(cls)el.className=cls;return el;}
@@ -159,7 +159,18 @@ document.addEventListener('keydown',e=>{if(!archive||root.dataset.palaceState!==
 installGalleryGesture($('stage'),{onNavigate:direction=>adjacentDoor(direction),onSuppressClick:()=>{suppressClickUntil=Date.now()+500;}});
 $('palace-return').addEventListener('click',cancelStoryOpening);document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelStoryOpening();});$('retry').addEventListener('click',load);$('mode-halloween').addEventListener('click',()=>setMode('halloween'));$('mode-normal').addEventListener('click',()=>setMode('normal'));$('horror-entrance').addEventListener('click',()=>{try{sessionStorage.setItem(returnStateKey,JSON.stringify({year:currentYear,creatorId:current()?.creatorId,doorId:current()?.doorId,search,activeTag,rosterPage}));}catch{}});setMode(displayMode,{save:false});
 root.addEventListener('yearbook:seal-collected',event=>{const id=event.detail?.id;if(displayMode!=='halloween'||!currentYear||!sealIDs.includes(id)||seals().includes(id))return;progress.seals[key()]=[...seals(),id];persist();refreshSeals();});
-initVisitorPreferences({brightnessRange:{min:0,max:100,defaultValue:75},preferenceKey:'halloween-exhibition:main-preferences:v2',migrateFromKey:'halloween-exhibition:visitor-preferences:v1',triggerParent:document.querySelector('.header-actions'),onBrightness:value=>{root.style.setProperty('--visitor-brightness',String(value/100));root.style.setProperty('--art-brightness',String(value/75));}});
+const visitorSettings=initVisitorPreferences({brightnessRange:{min:0,max:100,defaultValue:75},preferenceKey:'halloween-exhibition:main-preferences:v2',migrateFromKey:'halloween-exhibition:visitor-preferences:v1',triggerParent:document.querySelector('.header-actions'),onBrightness:value=>{root.style.setProperty('--visitor-brightness',String(value/100));root.style.setProperty('--art-brightness',String(value/75));}});
+// Explicit in-app finish: no history traversal, tab closing, or preference reset.
+function finishVisit(){
+ visitorSettings.stopMusic();slideshow?.setEnabled(false);cancelStoryOpening();cancelRoulette();
+ for(const dialog of document.querySelectorAll('dialog[open]'))dialog.close();
+ setMode('halloween',{save:false});palace?.home();
+ notice('音楽と自動送りを止めて、お城へ戻りました。');
+}
+const finishPanel=node('details',undefined,'visit-finish-panel');
+finishPanel.append(node('summary','終了'));
+const finishButton=node('button','終了・お城へ','visit-finish-button');finishButton.type='button';finishButton.addEventListener('click',()=>{finishPanel.open=false;finishVisit();});
+finishPanel.append(finishButton);document.querySelector('.visitor-preferences').append(finishPanel);
 const colorNote=node('p','記事画像の明るさ75%が元の色です。背景の明るさを変えても、文字のコントラストは保たれます。','visitor-settings-note');document.querySelector('.visitor-preferences')?.append(colorNote);
 const playback=document.querySelector('.gallery-playback');if(playback){document.querySelector('.visitor-preferences')?.append(playback);playback.append($('slideshow-status'));}
 const installControl=$('atelier-install-open');if(installControl)document.querySelector('.visitor-preferences')?.append(installControl);

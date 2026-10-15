@@ -1,0 +1,7 @@
+/* Scoped in-app navigation with phone-sized touch targets. */
+.visit-finish-panel{position:relative;font-size:12px;color:inherit}
+.visit-finish-panel>summary{cursor:pointer;min-height:44px;display:flex;align-items:center;padding:0 12px;list-style:none}
+.visit-finish-panel[open]>.visit-finish-button{min-width:150px;margin:4px 0 12px}
+.visit-finish-button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:10px 16px;border:1px solid #9c835c;border-radius:8px;background:#14202d;color:#f6e7ca;font:inherit;text-decoration:none;cursor:pointer}
+.visit-finish-button:focus-visible,.visit-finish-panel>summary:focus-visible{outline:3px solid #eec67d;outline-offset:3px}
+dialog .close,dialog .safe-dialog-back{position:sticky;top:0;float:right;z-index:3;width:auto;min-width:84px;min-height:44px;padding:8px 12px;font-size:13px;line-height:1.4;border-radius:8px;background:#14202d;color:#f6e7ca}

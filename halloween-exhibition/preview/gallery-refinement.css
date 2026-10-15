@@ -165,4 +165,4 @@ body[data-page-hidden=true] .festival-coda *{animation-play-state:paused!importa
 body[data-layout-page=gallery] #theater .stage-caption #room-title{max-width:100%;white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;word-break:normal;line-height:1.4;letter-spacing:.025em}
 body[data-layout-page=gallery] #theater:not([data-entry-kind=introduction]) .stage-caption #room-title{font-size:clamp(19px,2.5vw,28px)}
 
-body[data-layout-page=gallery] #theater[data-mode] .stage-caption #room-title.long-creator-name{font-size:clamp(17px,2vw,22px);line-height:1.5;letter-spacing:0}
+body[data-layout-page=gallery] #theater[data-mode][data-entry-kind] .stage-caption #room-title.long-creator-name{font-size:clamp(17px,2vw,22px);line-height:1.5;letter-spacing:0}

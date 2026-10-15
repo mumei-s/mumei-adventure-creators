@@ -53,9 +53,10 @@ test('night baseline is substantially below prior flood lights, lantern is a loc
 test('2D, encounters, exit, and shared preferences remain first-class controls',()=>{
   const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
   for(const id of ['view-2d','view-3d','creatures-open','battle-open','lantern'])assert(html.includes(`id="${id}"`));
-  assert.equal((html.match(/href="\.\.\/\?mode=halloween"/g)||[]).length,3);
+  assert.equal((html.match(/href="\.\.\/\?mode=halloween"/g)||[]).length,2);
+  assert.equal((html.match(/href="\.\.\/\?return=palace"/g)||[]).length,1);
   const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8');
-  assert(app.includes("import { initVisitorPreferences } from '../visitor-preferences.js?v=20261015-music-garden1'"));
+  assert(app.includes("import { initVisitorPreferences } from '../visitor-preferences.js?v=20261015-return1'"));
   assert(app.includes("if(view==='3d')world?.render"));assert(app.includes("stageRenderer.render({canvas:$('fallback')"));
   assert(app.includes("battle=null;battleCanvas=null;battleEffect=null"));assert(app.includes("clearInput();returnFocus?.focus()"));
   assert(!app.includes('setInterval'));assert(!app.includes('AudioContext'));

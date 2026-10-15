@@ -110,7 +110,7 @@ test('editing the host preserves its role while a new owner door has no host rol
 test('editor presents fixed door identity and status-sensitive main URL guidance',()=>{
  const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8'),html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
  assert.match(html,/<input id="door-id" readonly/);assert.match(html,/id="url-requirement"/);assert.match(html,/id="url-guidance"/);assert.match(app,/\$\('url'\)\.required=!pending/);
- assert.doesNotMatch(app+html,/1人につき1つ/);assert.match(app,/model\.js\?v=20261015-roster4/);assert.match(html,/app\.js\?v=20261015-roster4/);
+ assert.doesNotMatch(app+html,/1人につき1つ/);assert.match(app,/model\.js\?v=20261015-roster4/);assert.match(html,/app\.js\?v=20261015-return1/);
  assert.match(fs.readFileSync(new URL('../model.js',import.meta.url),'utf8'),/data-model\.js\?v=20261014-doors1/);
 });
 

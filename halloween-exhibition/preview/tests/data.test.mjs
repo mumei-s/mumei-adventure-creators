@@ -7,12 +7,12 @@ const source=JSON.parse(await readFile(new URL('../data/archive.json',import.met
 // Kept local so the shipped preview tests remain independently runnable.
 const verified=JSON.parse(await readFile(new URL('./fixtures/verified-profiles.json',import.meta.url)));
 
-test('thirteen verified profiles and fourteen article doors without invented creators',()=>{
+test('fourteen verified profiles and fifteen article doors without invented creators',()=>{
   validateArchive(source);
-  assert.equal(source.creators.length,13);
+  assert.equal(source.creators.length,14);
   assert.deepEqual(source.creators.map(c=>c.id),verified.map(c=>c.id));
   assert.equal(source.creators.filter(c=>c.provisional).length,0);
-  assert.equal(source.years[0].entries.length,14);
+  assert.equal(source.years[0].entries.length,15);
   assert.equal(source.years[0].plannedSlots,undefined);
   assert.deepEqual(source.evergreenEntries,[]);
   assert.deepEqual([...new Set(source.years[0].entries.map(e=>e.creatorId))],verified.map(c=>c.id));
@@ -34,7 +34,7 @@ test('creator identities use only names, handles, public profile links and profi
   }
 });
 
-test('host introduction and five confirmed participant articles are present; eight doors await submissions',()=>{
+test('host introduction and seven confirmed participant articles are present; seven doors await submissions',()=>{
   const [host,owner,mako]=source.years[0].entries;
   assert.equal(owner.doorId,'owner-work-2026');
   assert.equal(owner.submissionStatus,'pending');
@@ -57,8 +57,8 @@ test('host introduction and five confirmed participant articles are present; eig
   assert.equal(mako.message,undefined);
   assert.equal(mako.works,undefined);
   assert.equal(source.years[0].entries.filter(e=>e.submissionStatus==='introduction').length,1);
-  assert.equal(source.years[0].entries.filter(e=>e.submissionStatus==='submitted').length,5);
-  assert.equal(participants.length,8);
+  assert.equal(source.years[0].entries.filter(e=>e.submissionStatus==='submitted').length,7);
+  assert.equal(participants.length,7);
   for(const entry of participants){
     const profile=verified.find(c=>c.id===entry.creatorId);
     assert.equal(entry.submissionStatus,'pending');
@@ -95,7 +95,7 @@ test('empty year and roster are valid',()=>{assert.doesNotThrow(()=>validateArch
 test('duplicate creators, duplicate annual entries, unknown IDs, duplicate years reject',()=>{for(const change of [d=>d.creators.push(d.creators[0]),d=>d.years[0].entries.push(d.years[0].entries[0]),d=>d.years[0].entries[0].creatorId='missing',d=>d.years.push(d.years[0])]){const d=structuredClone(source);change(d);assert.throws(()=>validateArchive(d));}});
 test('planned slots are optional nonnegative integers and do not create entries',()=>{
   for(const value of [-1,1.5,101,'2',null]){const data=structuredClone(source);data.years[0].plannedSlots=value;assert.throws(()=>validateArchive(data));}
-  for(const value of [0,2,100]){const data=structuredClone(source);data.years[0].plannedSlots=value;assert.equal(validateArchive(data).years[0].entries.length,14);}
+  for(const value of [0,2,100]){const data=structuredClone(source);data.years[0].plannedSlots=value;assert.equal(validateArchive(data).years[0].entries.length,15);}
   const data=structuredClone(source);delete data.years[0].plannedSlots;assert.doesNotThrow(()=>validateArchive(data));
 });
 test('malformed profile field types reject',()=>{for(const key of ['avatar','avatarSource','profileURL']){const data=structuredClone(source);data.creators[0][key]={url:'bad'};assert.throws(()=>validateArchive(data));}});
@@ -106,7 +106,7 @@ test('the one requested owner work placeholder is a separate door, with no inven
  const extra=source.years[0].entries.find(e=>e.doorId==='owner-work-2026');
  assert.deepEqual(extra,{doorId:'owner-work-2026',creatorId:'ss_yr',theme:'letter',submissionStatus:'pending',title:'作品準備中',tags:['参加者','作品準備中'],links:[]});
  assert.equal(source.years[0].entries.filter(e=>e.role==='host').length,1);
- assert.equal(new Set(source.years[0].entries.map(e=>e.creatorId)).size,13);
+ assert.equal(new Set(source.years[0].entries.map(e=>e.creatorId)).size,14);
 });
 test('door IDs survive reordered and retitled legacy entries, and distinguish same-creator articles',()=>{
  const entry=source.years[0].entries[0],scope='archive:2026';
@@ -137,5 +137,7 @@ test('explicit Yamacon and Aihan articles replace existing pending doors without
   const entries=source.years[0].entries.filter(e=>e.creatorId===id);assert.equal(entries.length,1);const e=entries[0];
   assert.equal(e.submissionStatus,'submitted');assert.equal(e.title,title);assert.equal(e.links[0].url,`https://note.com/${id}/n/${note}`);assert.ok(e.image.includes(image));assert.deepEqual(e.tags,['参加者','ハロウィン']);
  }
- assert.equal(source.creators.length,13);assert.equal(source.years[0].entries.length,14);assert.equal(source.years[0].entries[0].submissionStatus,'introduction');assert.equal(source.years[0].entries[1].doorId,'owner-work-2026');assert.equal(source.years[0].entries[1].submissionStatus,'pending');
+ assert.equal(source.creators.length,14);assert.equal(source.years[0].entries.length,15);assert.equal(source.years[0].entries[0].submissionStatus,'introduction');assert.equal(source.years[0].entries[1].doorId,'owner-work-2026');assert.equal(source.years[0].entries[1].submissionStatus,'pending');
 });
+
+test("CNA is a new pending participant with no invented article",()=>{const c=source.creators.find(c=>c.id==="grand_daisy8632");assert.equal(c.name,"CNA運営");assert.equal(c.profileURL,"https://note.com/grand_daisy8632");const e=source.years[0].entries.find(e=>e.creatorId===c.id);assert.equal(e.submissionStatus,"pending");assert.equal(e.image,undefined);assert.equal(e.links.length,1);assert.equal(e.links[0].url,c.profileURL);});

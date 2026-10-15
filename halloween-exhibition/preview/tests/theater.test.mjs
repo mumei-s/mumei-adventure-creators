@@ -156,13 +156,13 @@ test('initial load renders all real article doors and creators', async () => {
   assert.doesNotMatch(h.$('detail-content').textContent, /架空の参加者|展示サンプル/);
 });
 
-test('expanded roster renders all five confirmed submissions with their own art and links', async () => {
-  assert.equal(creatorCount, 13);
-  assert.equal(doorCount, 14);
-  assert.equal(pendingCount, 8);
+test('expanded roster renders all seven confirmed submissions with their own art and links', async () => {
+  assert.equal(creatorCount, 14);
+  assert.equal(doorCount, 15);
+  assert.equal(pendingCount, 7);
   assert.equal(annualEntries.filter(entry => entry.submissionStatus === 'introduction').length, 1);
   const submitted = annualEntries.filter(entry => entry.submissionStatus === 'submitted');
-  assert.deepEqual(new Set(submitted.map(entry => entry.creatorId)), new Set(['koakumako', 'imota14', 'clever_hare2654', 'fond_holly3483', 'aihan_days']));
+  assert.deepEqual(new Set(submitted.map(entry => entry.creatorId)), new Set(['koakumako', 'imota14', 'clever_hare2654', 'fond_holly3483', 'aihan_days', 'mama_ca', 'naemotion']));
   const h = await harness();
   for (const entry of submitted) {
     await h.api.navigate(annualEntries.indexOf(entry));
@@ -242,12 +242,8 @@ test('selecting a roster room interrupts an in-progress turn rather than losing 
   assert.equal(h.api.state.currentIndex, 4); assert.equal(h.$('roster').open, false);
 });
 
-test('a cancelled old transition cannot clear the new year transition busy state', async () => {
-  const data = structuredClone(archive); data.years.push({ ...structuredClone(data.years[0]), year: 2025 });
-  const h = await harness({ data, reduced: false }); h.$('next').click(); await h.tick(100);
-  h.api.setYear(2025); h.$('next').click(); await h.tick(100);
-  assert.equal(h.api.state.busy, true, 'new transition is still waiting for its own 200ms turn');
-  await h.tick(100); assert.equal(h.api.state.currentIndex, 1);
+test('rapid navigation across years selects immediately with no stale transition',async()=>{
+const data=structuredClone(archive);data.years.push({...structuredClone(data.years[0]),year:2025});const h=await harness({data,reduced:false});h.$('next').click();assert.equal(h.api.state.currentIndex,1);h.api.setYear(2025);h.$('next').click();assert.equal(h.api.state.currentIndex,1);assert.equal(h.api.state.busy,false);await h.tick(1000);assert.equal(h.api.state.currentIndex,1);
 });
 
 test('a stale failed load cannot overwrite a later successful retry', async () => {
@@ -256,11 +252,8 @@ test('a stale failed load cannot overwrite a later successful retry', async () =
   assert.equal(h.$('load-error').hidden, true);
 });
 
-test('old load animation timer does not remove a newer room entrance animation', async () => {
-  const h = await harness({ reduced: false }); await h.tick(600);
-  h.$('next').click(); await h.tick(200); assert.equal(h.$('theater').classList.contains('turning-in'), true);
-  await h.tick(100); assert.equal(h.api.state.busy, true);
-  assert.equal(h.$('theater').classList.contains('turning-in'), true, 'new animation should remain until its own 450ms completes');
+test('old load animation timer cannot disrupt a newly selected door',async()=>{
+const h=await harness({reduced:false});await h.tick(600);h.$('next').click();assert.equal(h.api.state.currentIndex,1);assert.equal(h.$('theater').classList.contains('door-reveal'),true);await h.tick(900);assert.equal(h.api.state.currentIndex,1);assert.equal(h.$('theater').classList.contains('door-reveal'),true);assert.equal(h.api.state.busy,false);
 });
 
 test('a failed reload recovers and re-enables navigation on retry', async () => {
@@ -533,7 +526,7 @@ test('normal visits are evergreen and separate from annual Halloween visits',asy
 });
 
 test('explicit maze return restores Halloween, year, creator and search over saved normal mode',async()=>{
- const h=await harness({savedMode:'normal',urlSearch:'?mode=halloween',returnState:JSON.stringify({year:2026,creatorId:'mama_ca',search:'@mama_ca',activeTag:'作品準備中'})});
+ const h=await harness({savedMode:'normal',urlSearch:'?mode=halloween',returnState:JSON.stringify({year:2026,creatorId:'mama_ca',search:'@mama_ca',activeTag:'ハロウィン'})});
  assert.equal(h.api.state.displayMode,'halloween');assert.equal(h.api.state.currentYear,2026);
  assert.equal(h.api.state.currentIndex,creatorDoorIndex('mama_ca'));assert.equal(h.api.state.search,'@mama_ca');
  assert.equal(h.$('roster-grid').querySelectorAll('button').length,1);
@@ -719,19 +712,8 @@ test('motionPaused makes navigation immediate even when reduced-motion is not re
   assert.equal(h.api.state.busy, false);
 });
 
-test('resuming motion restores the existing outgoing and incoming navigation timing', async () => {
-  const h = await harness({ reduced: false });
-  h.$('theater').dataset.motionPaused = 'true'; h.$('next').click();
-  assert.equal(h.api.state.currentIndex, 1);
-  h.$('theater').dataset.motionPaused = 'false'; h.$('next').click();
-  assert.equal(h.api.state.currentIndex, 1);
-  assert.equal(h.api.state.busy, true);
-  await h.tick(199); assert.equal(h.api.state.currentIndex, 1);
-  await h.tick(1); assert.equal(h.api.state.currentIndex, 2);
-  assert.equal(h.api.state.busy, true);
-  await h.tick(449); assert.equal(h.api.state.busy, true);
-  await h.tick(1); assert.equal(h.api.state.busy, false);
-  assert.equal(h.$('theater').classList.contains('turning-in'), false);
+test('resuming motion keeps creator switching instant and starts the door reveal',async()=>{
+const h=await harness({reduced:false});h.$('theater').dataset.motionPaused='true';h.$('next').click();assert.equal(h.api.state.currentIndex,1);h.$('theater').dataset.motionPaused='false';h.$('next').click();assert.equal(h.api.state.currentIndex,2);assert.equal(h.api.state.busy,false);assert.equal(h.$('theater').classList.contains('door-reveal'),true);h.$('next').click();assert.equal(h.api.state.currentIndex,3);await h.tick(1000);assert.equal(h.api.state.currentIndex,3);
 });
 
 test('pausing during an outgoing turn skips the remaining entrance animation', async () => {
@@ -906,19 +888,12 @@ test('dialogs hold slideshow and closing starts a complete fresh interval',async
  await h.tick(201);assert.equal(h.api.state.currentIndex,1);
 });
 
-test('manual navigation resets slideshow timing and wins over an in-flight automatic transition',async()=>{
- const h=await harness({reduced:false});h.$('slideshow-toggle').click();await h.tick(5100);
- h.$('room-dots').children[4].click();await h.tick(700);
- assert.equal(h.api.state.currentIndex,4);assert.equal(h.api.state.busy,false);
- await h.tick(4300);assert.equal(h.api.state.currentIndex,4);
- await h.tick(300);assert.equal(h.api.state.currentIndex,5);
+test('manual navigation resets the precise interval after immediate auto selection',async()=>{
+const h=await harness({reduced:false});h.$('slideshow-toggle').click();await h.tick(5100);h.$('room-dots').children[4].click();assert.equal(h.api.state.currentIndex,4);await h.tick(4999);assert.equal(h.api.state.currentIndex,4);await h.tick(1);assert.equal(h.api.state.currentIndex,5);assert.equal(h.api.state.busy,false);
 });
 
-test('hidden tab cancels an unfinished automatic entrance without a stuck shutter',async()=>{
- const h=await harness({reduced:false});h.$('slideshow-toggle').click();await h.tick(5100);
- h.doc.hidden=true;for(const fn of h.doc.handlers.visibilitychange||[])fn();await h.tick(50000);
- assert.equal(h.api.state.currentIndex,0);assert.equal(h.api.state.busy,false);assert.equal(h.$('theater').classList.contains('turning-out'),false);
- h.doc.hidden=false;for(const fn of h.doc.handlers.visibilitychange||[])fn();await h.tick(5200);assert.equal(h.api.state.currentIndex,1);
+test('hidden tab holds the already selected door and resumes after a fresh interval',async()=>{
+const h=await harness({reduced:false});h.$('slideshow-toggle').click();await h.tick(5100);assert.equal(h.api.state.currentIndex,1);h.doc.hidden=true;for(const fn of h.doc.handlers.visibilitychange||[])fn();await h.tick(50000);assert.equal(h.api.state.currentIndex,1);assert.equal(h.api.state.busy,false);h.doc.hidden=false;for(const fn of h.doc.handlers.visibilitychange||[])fn();await h.tick(5000);assert.equal(h.api.state.currentIndex,2);
 });
 
 test('reduced-motion and explicit ambience pause block automatic movement but leave manual controls',async()=>{
@@ -1094,22 +1069,11 @@ test('door palette changes on redisplay, but details and same-mode settings leav
  await h.api.navigate(0);assert.notEqual(h.$('theater').style['--door-color'],initial);assert.equal(h.$('theater').style['--art-brightness'],'1');
 });
 
-test('submitted articles reveal visible doors before detail, suppressing repeated taps',async()=>{
- const h=await harness({reduced:false});await h.api.navigate(2,{immediate:true});
- assert.equal(h.$('theater').dataset.portrait,'false');assert.equal(h.$('theater').classList.contains('door-reveal'),true);
- h.$('artwork-open').click();h.$('artwork-open').click();assert.equal(h.$('detail').open,false);assert.equal(h.$('theater').classList.contains('story-opening'),true);
- await h.tick(899);assert.equal(h.$('detail').open,false);await h.tick(1);assert.equal(h.$('detail').open,true);
- assert.match(h.$('detail-content').textContent,/本場のHalloween/);assert.equal(h.$('theater').classList.contains('story-opening'),false);
+test('door reveal starts on selection and detail opens immediately without a second wait',async()=>{
+const h=await harness({reduced:false});h.api.navigate(2,{immediate:true});assert.equal(h.$('theater').dataset.portrait,'false');assert.equal(h.$('theater').classList.contains('door-reveal'),true);h.$('artwork-open').click();assert.equal(h.$('detail').open,true);const count=h.$('detail-content').children.length;h.$('artwork-open').click();assert.equal(h.$('detail-content').children.length,count);assert.match(h.$('detail-content').textContent,/本場のHalloween/);
 });
-test('new navigation or another dialog cancels stale story-opening completion',async()=>{
- for(const interrupt of ['navigation','roster','mode','home']){
-  const h=await harness({reduced:false});await h.api.navigate(2,{immediate:true});h.$('artwork-open').click();
-  if(interrupt==='navigation')await h.api.navigate(3,{immediate:true});
-  if(interrupt==='roster')h.$('list-open').click();
-  if(interrupt==='mode')h.api.setMode('normal');
-  if(interrupt==='home')h.$('palace-return').click();
-  await h.tick(1200);assert.equal(h.$('detail').open,false,interrupt);
- }
+test('rapid next previous and mode changes never schedule a stale detail',async()=>{
+const h=await harness({reduced:false});h.api.navigate(2,{immediate:true});h.$('next').click();h.$('previous').click();h.$('next').click();assert.equal(h.api.state.currentIndex,3);h.api.setMode('normal');await h.tick(1200);assert.equal(h.$('detail').open,false);assert.equal(h.$('theater').classList.contains('door-reveal'),false);
 });
 test('pending, normal, reduced and paused articles open without an animation delay',async()=>{
  for(const mode of ['pending','normal','reduced','paused']){
@@ -1125,8 +1089,8 @@ test('host magazine occupies a distinct lower tier only for the introduction',as
 });
 
 test('new Yamacon and Aihan submissions use the same cancellable opening and exact links',async()=>{
- for(const [id,note] of [['fond_holly3483','ne5a25ae27a20'],['aihan_days','nfa274d6fe464']]){
-  const h=await harness({reduced:false});await h.api.navigate(creatorDoorIndex(id),{immediate:true});assert.equal(h.$('theater').dataset.portrait,'false');h.$('artwork-open').click();assert.equal(h.$('detail').open,false);await h.tick(900);assert.equal(h.$('detail').open,true);
+ for(const [id,note] of [['fond_holly3483','ne5a25ae27a20'],['aihan_days','nfa274d6fe464'],['mama_ca','n8e74b9e2b535'],['naemotion','n26b717b6c247']]){
+  const h=await harness({reduced:false});await h.api.navigate(creatorDoorIndex(id),{immediate:true});assert.equal(h.$('theater').dataset.portrait,'false');h.$('artwork-open').click();assert.equal(h.$('detail').open,true);
   assert.ok(h.$('detail-content').querySelectorAll('a').some(a=>a.href===`https://note.com/${id}/n/${note}`));assert.doesNotMatch(h.$('detail-content').textContent,/作品は準備中/);
  }
 });

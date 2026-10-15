@@ -1,0 +1,22 @@
+/* Selection is immediate; the image waits until the two leaves clear it.
+   A 500ms reveal leaves half of the shortest autoplay interval unobstructed. */
+#theater.door-reveal .portal-left {animation:quick-door-left .5s cubic-bezier(.2,.65,.2,1) both}
+#theater.door-reveal .portal-right {animation:quick-door-right .5s cubic-bezier(.2,.65,.2,1) both}
+#theater.door-reveal .artwork-mat {animation:article-after-door .5s steps(1,end) both}
+#theater.door-reveal .artwork-frame {overflow:visible}
+@keyframes quick-door-left {0%,12%{opacity:1;transform:rotateY(0)}90%{opacity:1;transform:rotateY(-105deg)}100%{opacity:0;transform:rotateY(-110deg)}}
+@keyframes quick-door-right {0%,12%{opacity:1;transform:rotateY(0)}90%{opacity:1;transform:rotateY(105deg)}100%{opacity:0;transform:rotateY(110deg)}}
+@keyframes article-after-door {0%{visibility:hidden}100%{visibility:visible}}
+.door-burst {position:absolute;inset:0;pointer-events:none;z-index:20}
+.door-burst i {position:absolute;top:35%;left:0;opacity:0;font-size:22px;font-style:normal;pointer-events:none;--x:-24px;--y:-42px;--spin:-22deg}
+.door-burst i:nth-child(2){top:65%;--x:-27px;--y:18px;--spin:35deg}
+.door-burst i:nth-child(3){top:10%;--x:-12px;--y:-35px;--spin:-15deg}
+.door-burst i:nth-child(n+4){left:auto;right:0;--x:24px;--spin:25deg}
+.door-burst i:nth-child(5){top:65%;--y:18px;--spin:-35deg}
+.door-burst i:nth-child(6){top:10%;--y:-32px}
+#theater.door-reveal .door-burst i {animation:door-party .65s .25s ease-out both}
+@keyframes door-party {0%{opacity:0;transform:translate(0,0) scale(.45)}20%{opacity:1}70%{opacity:1}100%{opacity:0;transform:translate(var(--x),var(--y)) rotate(var(--spin)) scale(1.1)}}
+#theater[data-mode=normal] .door-burst {display:none}
+#theater[data-motion-paused=true] .artwork-mat {animation:none!important;visibility:visible!important}
+#theater[data-motion-paused=true] .door-burst i {animation:none!important;opacity:0!important}
+@media(prefers-reduced-motion:reduce){#theater .artwork-mat{animation:none!important;visibility:visible!important}#theater .door-burst i{animation:none!important;opacity:0!important}}

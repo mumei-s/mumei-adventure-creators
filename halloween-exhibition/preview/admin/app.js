@@ -1,4 +1,4 @@
-import {STORAGE_KEY,createState,validateState,listEntries,getURL,getPrimaryLink,getExtraLinks,entryDoorId,saveEntry,deleteEntry,restoreEntry,importData,publicFiles,safeURL,clone} from './model.js?v=20261015-roster3';
+import {STORAGE_KEY,createState,validateState,listEntries,getURL,getPrimaryLink,getExtraLinks,entryDoorId,saveEntry,deleteEntry,restoreEntry,importData,publicFiles,safeURL,clone} from './model.js?v=20261015-roster4';
 const $=id=>document.getElementById(id),names={normal:'通常の展示',halloween:'Halloween',horror:'冒険室の書庫'};let state,collection='normal',selectedYear=2026,selected=null,dirty=false,storageOK=true,links=[],works=[],primaryTitle='記事を読む',loading=false,corruptDraft=null;
 const el=(tag,text,className)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(className)n.className=className;return n;};
 function status(text,error=false){$('status').textContent=text;$('status').className=error?'error':'';}

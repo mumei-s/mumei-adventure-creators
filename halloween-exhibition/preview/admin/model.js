@@ -1,6 +1,6 @@
 import {doorIdFor,validDoorId} from '../data-model.js?v=20261014-doors1';
 
-export const CREATOR_IDS=['ss_yr','koakumako','n_kazumai55633','mama_ca','naemotion','imota14','fond_holly3483','tenkai_notes','soh_style_work','clever_hare2654','glossy_guppy6230','aihan_days','cheeky_rhino7031'];
+export const CREATOR_IDS=['ss_yr','koakumako','n_kazumai55633','mama_ca','naemotion','imota14','fond_holly3483','tenkai_notes','soh_style_work','clever_hare2654','glossy_guppy6230','aihan_days','cheeky_rhino7031','grand_daisy8632'];
 export const STORAGE_KEY='halloween-exhibition:article-editor:v1';
 export const clone=x=>JSON.parse(JSON.stringify(x));
 export function safeURL(value,image=false){if(typeof value!=='string'||/[\u0000-\u001f\\]/.test(value))return null;const s=value.trim();if(image&&/^(?:\.\/)?assets\/[\w./-]+$/.test(s)&&!s.split('/').includes('..'))return s;try{const u=new URL(s);return u.protocol==='https:'&&!u.username&&!u.password?u.href:null;}catch{return null;}}

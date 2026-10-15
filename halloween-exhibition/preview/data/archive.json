@@ -91,6 +91,13 @@
       "avatar": "https://assets.st-note.com/production/uploads/images/281429856/profile_394e2eb8124ebdada2bc028db6563ed2.png?fit=bounds&format=jpeg&quality=85&width=330",
       "avatarSource": "https://assets.st-note.com/production/uploads/images/281429856/profile_394e2eb8124ebdada2bc028db6563ed2.png?fit=bounds&format=jpeg&quality=85&width=330",
       "profileURL": "https://note.com/cheeky_rhino7031"
+    },
+    {
+      "id": "grand_daisy8632",
+      "name": "CNA運営",
+      "avatar": "https://assets.st-note.com/production/uploads/images/273849383/profile_adc57e6cad51fd8b4c335b93f52b9a31.png?fit=bounds&format=jpeg&quality=85&width=330",
+      "avatarSource": "https://assets.st-note.com/production/uploads/images/273849383/profile_adc57e6cad51fd8b4c335b93f52b9a31.png?fit=bounds&format=jpeg&quality=85&width=330",
+      "profileURL": "https://note.com/grand_daisy8632"
     }
   ],
   "years": [
@@ -174,35 +181,47 @@
         },
         {
           "creatorId": "mama_ca",
-          "title": "作品準備中",
+          "title": "詰め込みハロウィン 🎃🍭🍰🍫🍬･:*+.: | Trick or treatで飛べるかも🧹🪄",
           "theme": "forest",
-          "submissionStatus": "pending",
+          "submissionStatus": "submitted",
           "tags": [
             "参加者",
-            "作品準備中"
+            "ハロウィン"
           ],
           "links": [
+            {
+              "title": "詰め込みハロウィン 🎃🍭🍰🍫🍬･:*+.: | Trick or treatで飛べるかも🧹🪄（note記事）",
+              "url": "https://note.com/mama_ca/n/n8e74b9e2b535"
+            },
             {
               "title": "noteプロフィールを見る",
               "url": "https://note.com/mama_ca"
             }
-          ]
+          ],
+          "image": "https://assets.st-note.com/production/uploads/images/324633515/rectangle_large_type_2_edec925a969b54ccce00ee9016a1614b.jpg",
+          "imageAlt": "詰め込みハロウィン 🎃🍭🍰🍫🍬･:*+.: | Trick or treatで飛べるかも🧹🪄の見出し画像"
         },
         {
           "creatorId": "naemotion",
-          "title": "作品準備中",
+          "title": "【企画参加】カボチャ畑で踊ったら、魔法の入口が開いた",
           "theme": "moon",
-          "submissionStatus": "pending",
+          "submissionStatus": "submitted",
           "tags": [
             "参加者",
-            "作品準備中"
+            "ハロウィン"
           ],
           "links": [
+            {
+              "title": "【企画参加】カボチャ畑で踊ったら、魔法の入口が開いた（note記事）",
+              "url": "https://note.com/naemotion/n/n26b717b6c247"
+            },
             {
               "title": "noteプロフィールを見る",
               "url": "https://note.com/naemotion"
             }
-          ]
+          ],
+          "image": "https://assets.st-note.com/production/uploads/images/324617440/rectangle_large_type_2_cac912cd8caaf723f3f0dd542b83ce7d.png",
+          "imageAlt": "【企画参加】カボチャ畑で踊ったら、魔法の入口が開いたの見出し画像"
         },
         {
           "creatorId": "imota14",
@@ -354,6 +373,22 @@
             {
               "title": "noteプロフィールを見る",
               "url": "https://note.com/cheeky_rhino7031"
+            }
+          ]
+        },
+        {
+          "creatorId": "grand_daisy8632",
+          "title": "作品準備中",
+          "theme": "violet",
+          "submissionStatus": "pending",
+          "tags": [
+            "参加者",
+            "作品準備中"
+          ],
+          "links": [
+            {
+              "title": "noteプロフィールを見る",
+              "url": "https://note.com/grand_daisy8632"
             }
           ]
         }

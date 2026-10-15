@@ -1,4 +1,5 @@
-import { initVisitorPreferences } from '../visitor-preferences.js?v=20261014-adventure2';
+import {createSoundCheck} from './sound-check.js?v=20261015-sound4';
+import { initVisitorPreferences } from '../visitor-preferences.js?v=20261015-sound4';
 import { initDisplayMode } from '../display-mode.js?v=20261014-adventure2';
 import { normalizeLighting } from './lighting-model.js?v=20261014-adventure2';
 import { MAP, CELL, FEATURES, toWorld, collectionAt, move, nearby, initialState, visibleArticles } from './maze-model.js?v=20261014-adventure2';
@@ -25,8 +26,16 @@ try{const saved=JSON.parse(localStorage.getItem(lightKey)||'{}');({brightness,la
 try{view=chooseView(localStorage.getItem(viewKey),reducedMotion.matches);const p=JSON.parse(localStorage.getItem(storageKey)||'{}');if(p&&typeof p==='object'&&!Array.isArray(p))progress=p;}catch{storageOK=false;view=chooseView(null,reducedMotion.matches);}
 const queryView=new URLSearchParams(location.search).get('view');if(['2d','3d'].includes(queryView))view=queryView;
 const visitorSection=element('section');
-initVisitorPreferences({container:visitorSection,legacyBrightness,onBrightness:percent=>{brightness=percent/100;}});
+const visitorSettings=initVisitorPreferences({container:visitorSection,legacyBrightness,audioOptions:{masterLevel:.16,waveform:'triangle',pitchScale:2},onBrightness:percent=>{brightness=percent/100;}});
 initDisplayMode({controlsParent:visitorSection,page:'maze'});
+const soundCheckButton=element('button','確認音を鳴らす（約1秒）');soundCheckButton.type='button';
+const soundCheckStatus=element('p','');soundCheckStatus.setAttribute('role','status');
+const soundCheck=createSoundCheck({onState:(playing,message)=>{soundCheckButton.textContent=playing?'確認音を停止':'確認音を鳴らす（約1秒）';soundCheckButton.dataset.playing=String(playing);soundCheckStatus.textContent=message;}});
+soundCheckButton.onclick=()=>{if(soundCheckButton.dataset.playing==='true')soundCheck.stop();else if(!document.hidden)soundCheck.play(visitorSettings.getPreferences().volume);};
+visitorSection.append(soundCheckButton,soundCheckStatus);
+window.addEventListener('pagehide',()=>soundCheck.stop(''));
+document.addEventListener('visibilitychange',()=>{if(document.hidden)soundCheck.stop('');});
+
 function saveLight(){try{localStorage.setItem(lightKey,JSON.stringify({lantern}));}catch{}}
 function save(){progress[year]={hasKey:state.hasKey,unlocked:state.unlocked,visited:progress[year]?.visited||[]};try{localStorage.setItem(storageKey,JSON.stringify(progress));}catch{storageOK=false;}}
 function notify(text){$('toast').textContent=text;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),3500);}
@@ -34,7 +43,7 @@ function clearInput(){walking=false;keys.clear();for(const control of heldContro
 function openPanel(){clearInput();if(!panel.open){returnFocus=document.activeElement;panel.showModal();}}
 function title(kicker,name){panel.classList.remove('battle-mode','library-mode');const heading=element('h2',name);heading.id='panel-title';content.replaceChildren(element('p',kicker,'eyebrow'),heading);}
 function toggleLantern(){lantern=!lantern;$('lantern').textContent=lantern?'ランタン ON':'ランタン OFF';$('lantern').setAttribute('aria-pressed',String(lantern));saveLight();}
-function showLighting(){title('YOUR LIGHT & SOUND','夜の暗さと、手元の灯り。');content.append(visitorSection,element('p','夜の回廊は暗く、ランタンを点けると足元と前方が暖かく照らされます。暗すぎるときは明るさを上げるか、2D表示へ。文字・操作・地図の明るさは変わりません。'),element('p','音楽は自分でONにしたときだけ流れます。モンスターとの対戦に音・点滅・時間制限はありません。'));content.append(element('p','冒険室の表示バージョン：20261014-adventure2','build-label'));openPanel();}
+function showLighting(){title('YOUR LIGHT & SOUND','夜の暗さと、手元の灯り。');content.append(visitorSection,element('p','夜の回廊は暗く、ランタンを点けると足元と前方が暖かく照らされます。暗すぎるときは明るさを上げるか、2D表示へ。文字・操作・地図の明るさは変わりません。'),element('p','音楽は自分でONにしたときだけ流れます。モンスターとの対戦に音・点滅・時間制限はありません。'));content.append(element('p','冒険室の表示バージョン：20261015-sound4','build-label'));openPanel();}
 function safeURL(v){try{const u=new URL(v);return u.protocol==='https:'&&!u.username&&!u.password?u.href:null;}catch{return null;}}
 function displayArticleKind(kind){return ({'ホラー記事':'記事','ホラーイラスト':'イラスト','ホラー作品':'作品'})[kind]||kind||'作品';}
 function articles(collection=activeCollection){return visibleArticles(catalog.articles,collection);}
@@ -65,8 +74,10 @@ function showExploreMenu(){
   title('EXPLORE AT YOUR PACE','探索メニュー');
   content.append(element('p','円形パッドは、押したまま指を動かして方向を変えられます。2Dは東西南北へ移動。3Dは左右で向きを変え、上下で前進・後退します。3Dの画面ドラッグとWASDも使えます。Eで調べる、Bで話しかける。動きを減らす設定では住人の歩行や装飾の動きを止めます。'));
   const menu=element('div',undefined,'explore-menu');
-  for(const [label,action]of[['記事一覧',()=>{showCatalog();panel.querySelector('.close').focus();}],['迷宮全体の地図',()=>{showMap();panel.querySelector('.close').focus();}],['明るさ・音楽',()=>{showLighting();panel.querySelector('.close').focus();}],['モンスターと遊ぶ',()=>{showEncounters();panel.querySelector('.close').focus();}],['迷宮の入口へ',()=>{panel.close();resetPosition();}],['演出の動きを切り替え',()=>{$('pause').click();}]]){const button=element('button',label);button.onclick=action;menu.append(button);}
-  const back=element('a','Halloweenの名鑑へ戻る','primary');back.href='../?mode=halloween';menu.append(back);content.append(menu);openPanel();
+  for(const [label,action]of[['記事一覧',()=>{showCatalog();panel.querySelector('.close').focus();}],['迷宮全体の地図',()=>{showMap();panel.querySelector('.close').focus();}],['明るさ・音楽',()=>{showLighting();panel.querySelector('.close').focus();}],['モンスターと遊ぶ',()=>{showEncounters();panel.querySelector('.close').focus();}],['迷宮の入口へ',()=>{panel.close();resetPosition();}]]){const button=element('button',label);button.onclick=action;menu.append(button);}
+  const motionButton=element('button');motionButton.id='menu-motion-toggle';motionButton.onclick=()=>{$('pause').click();};menu.append(motionButton);
+  const motionStatus=element('p',motion?'住人の歩行・光の揺らぎ：再生中':'住人の歩行・光の揺らぎ：停止中');motionStatus.id='menu-motion-status';motionStatus.setAttribute('role','status');menu.append(motionStatus);
+  const back=element('a','Halloweenの名鑑へ戻る','primary');back.href='../?mode=halloween';menu.append(back);content.append(menu);updateMotion();openPanel();
 }
 
 function updateHUD(){
@@ -209,10 +220,14 @@ $('tools-open').onclick=showLighting;$('lantern').onclick=toggleLantern;$('lante
 $('interact').onclick=interact;$('list-open').onclick=()=>{if(catalog)showCatalog();};$('map-open').onclick=()=>{if(catalog)showMap();};$('home').onclick=resetPosition;
 $('menu-open').onclick=showExploreMenu;$('creatures-open').onclick=showEncounters;$('battle-open').onclick=startBattle;
 $('view-2d').onclick=()=>setView('2d');$('view-3d').onclick=()=>setView('3d');
-function updateMotion(){const enabled=motion&&!reducedMotion.matches;$('pause').textContent=enabled?'演出停止':reducedMotion.matches?'動きを抑制中':'演出再開';$('pause').setAttribute('aria-pressed',String(!enabled));}
+function updateMotion(){const enabled=motion&&!reducedMotion.matches;
+  $('pause').textContent=enabled?'演出を停止':reducedMotion.matches?'端末設定で演出停止中':'演出を再開';$('pause').setAttribute('aria-pressed',String(!enabled));
+  const toggle=$('menu-motion-toggle');if(toggle){toggle.textContent=reducedMotion.matches?'端末設定で演出停止中':enabled?'演出：ON → 停止する':'演出：OFF → 再開する';toggle.setAttribute('aria-pressed',String(enabled));toggle.disabled=reducedMotion.matches;}
+  const status=$('menu-motion-status');if(status)status.textContent=reducedMotion.matches?'端末の「動きを減らす」設定を優先しています。自分の移動操作は使えます。':enabled?'住人の歩行・光の揺らぎ：再生中。メニューを閉じると確認できます。':'住人の歩行・光の揺らぎ：停止中。自分の移動操作は使えます。';
+}
 $('pause').onclick=()=>{if(reducedMotion.matches){notify('端末の「動きを減らす」設定を優先しています。2D表示も選べます。');return;}motion=!motion;updateMotion();};
 reducedMotion.addEventListener('change',()=>{if(reducedMotion.matches){motion=false;setView('2d',{persist:false});}updateMotion();});updateMotion();
-panel.querySelector('.close').onclick=()=>panel.close();panel.addEventListener('close',()=>{battle=null;battleCanvas=null;battleEffect=null;panel.classList.remove('battle-mode','library-mode');clearInput();returnFocus?.focus();last=0;});
+panel.querySelector('.close').onclick=()=>panel.close();panel.addEventListener('close',()=>{soundCheck.stop('');battle=null;battleCanvas=null;battleEffect=null;panel.classList.remove('battle-mode','library-mode');clearInput();returnFocus?.focus();last=0;});
 $('world').addEventListener('webglcontextlost',e=>{e.preventDefault();worldFailed=true;world?.dispose();world=null;setView('2d',{persist:false});notify('3D描画が止まったため、同じ場所から2D表示で続けられます。');});
 async function init(){
   try{const response=await fetch('./data/catalog.json');if(!response.ok)throw Error('catalog fetch failed');catalog=await response.json();if(catalog.schemaVersion!==2||!Array.isArray(catalog.creators)||!Array.isArray(catalog.articles))throw Error('invalid catalog');year=Math.max(...catalog.years);restore();await setView(view,{persist:false,quiet:true});gameReady=true;$('loading').hidden=true;start();}

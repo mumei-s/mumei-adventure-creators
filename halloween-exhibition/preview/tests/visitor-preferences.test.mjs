@@ -144,3 +144,9 @@ test('UI starts OFF, main slider uses range and hidden/pagehide stop pending or 
   assert.equal(data.has(PREFERENCE_KEY),false);
  }finally{settings?.destroy();for(const [k,v]of Object.entries(prior)){if(v===undefined)delete globalThis[k];else globalThis[k]=v}}
 });
+test('maze audio opts into phone-friendly tone without changing gallery defaults',async()=>{
+ for(const [audioOptions,wave,frequency,level] of [[undefined,'sine',196,.07],[{masterLevel:.16,waveform:'triangle',pitchScale:2},'triangle',392,.16],[{masterLevel:999,waveform:'square',pitchScale:99},'sine',196,.2]]){
+  const p=createAmbientPlayer({AudioContextCtor:FakeAudio,audioOptions});await p.start();const a=FakeAudio.instances.at(-1);
+  assert.equal(a.voices[0].type,wave);assert.equal(a.voices[0].frequency.value,frequency);assert.equal(a.gains[0].gain.events.at(-1).v,.2*level);p.stop();
+ }
+});

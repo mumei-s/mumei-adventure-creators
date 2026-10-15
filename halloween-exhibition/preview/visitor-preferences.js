@@ -26,12 +26,15 @@ export function writePreferences(storage, value, options = {}) {
 }
 
 /** An original quiet four-chord pad, synthesized locally; no recordings or requests. */
-export function createAmbientPlayer({ AudioContextCtor, onState = () => {} } = {}) {
+export function createAmbientPlayer({ AudioContextCtor, onState = () => {}, audioOptions = {} } = {}) {
   let context = null, master = null, timer = null, version = 0, running = false, volume = 20;
+  const masterLevel = Number.isFinite(audioOptions.masterLevel) ? Math.max(.01,Math.min(.2,audioOptions.masterLevel)) : .07;
+  const waveform = audioOptions.waveform === 'triangle' ? 'triangle' : 'sine';
+  const pitchScale = audioOptions.pitchScale === 2 ? 2 : 1;
   const chords = [[196,246.94,293.66],[174.61,220,261.63],[164.81,196,246.94],[146.83,196,220]];
   function setVolume(value) {
     volume = clamp(value, 0, 100, 20);
-    if (master && context) master.gain.setTargetAtTime(volume / 100 * .07, context.currentTime, .16);
+    if (master && context) master.gain.setTargetAtTime(volume / 100 * masterLevel, context.currentTime, .16);
   }
   function stop(message) {
     version++; running = false; clearInterval(timer); timer = null;
@@ -57,7 +60,7 @@ export function createAmbientPlayer({ AudioContextCtor, onState = () => {} } = {
       master = audio.createGain(); master.gain.value = 0; master.connect(audio.destination);
       const voices = chords[0].map((frequency, i) => {
         const oscillator = audio.createOscillator(), gain = audio.createGain();
-        oscillator.type = 'sine'; oscillator.frequency.value = frequency; oscillator.detune.value = (i - 1) * 3;
+        oscillator.type = waveform; oscillator.frequency.value = frequency * pitchScale; oscillator.detune.value = (i - 1) * 3;
         gain.gain.value = .24; oscillator.connect(gain); gain.connect(master); oscillator.start();
         return oscillator;
       });
@@ -65,7 +68,7 @@ export function createAmbientPlayer({ AudioContextCtor, onState = () => {} } = {
       timer = setInterval(() => {
         if (context !== audio) return;
         chord = (chord + 1) % chords.length;
-        voices.forEach((voice, i) => voice.frequency.setTargetAtTime(chords[chord][i], audio.currentTime, 1.1));
+        voices.forEach((voice, i) => voice.frequency.setTargetAtTime(chords[chord][i] * pitchScale, audio.currentTime, 1.1));
       }, 8000);
       running = true; setVolume(volume); onState(true);
     } catch { if (token === version) stop('音楽を開始できませんでした。もう一度ONを押してください。'); }
@@ -74,7 +77,7 @@ export function createAmbientPlayer({ AudioContextCtor, onState = () => {} } = {
 }
 
 let instance = 0;
-export function initVisitorPreferences({ container, triggerParent, onBrightness = () => {}, legacyBrightness, brightnessRange: range, preferenceKey = PREFERENCE_KEY, migrateFromKey } = {}) {
+export function initVisitorPreferences({ container, triggerParent, onBrightness = () => {}, legacyBrightness, brightnessRange: range, preferenceKey = PREFERENCE_KEY, migrateFromKey, audioOptions } = {}) {
   let storage; try { storage = localStorage; } catch {}
   const options = { brightnessRange: range, preferenceKey, migrateFromKey };
   const bounds = brightnessRange(options);
@@ -106,7 +109,7 @@ export function initVisitorPreferences({ container, triggerParent, onBrightness 
   const status = make('p', 'visitor-settings-status', '音楽はOFFです。ONにすると、静かなオリジナルの環境音楽が流れます。'); status.setAttribute('role', 'status'); status.setAttribute('aria-live', 'polite'); controls.append(status);
   controls.append(make('p', 'visitor-settings-note', '明るさと音量は、この端末に保存します。音楽は画面を離れると止まり、次に開いたときもOFFです。'));
   container.append(controls);
-  const player = createAmbientPlayer({ onState(playing, error, pending = false) {
+  const player = createAmbientPlayer({ audioOptions, onState(playing, error, pending = false) {
     music.textContent = pending ? '音楽の開始をキャンセル' : playing ? '音楽をOFF' : '音楽をON'; music.setAttribute('aria-pressed', String(playing));
     status.textContent = error || (playing ? '音楽を再生しています。音量0でミュートできます。' : '音楽はOFFです。ONにすると、静かなオリジナルの環境音楽が流れます。');
   }});

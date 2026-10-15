@@ -60,3 +60,9 @@ test('landscape doors reveal without leaving overlays over the final artwork',()
  assert.match(css,/100%\{opacity:0;transform:rotateY\(-110deg\)\}/);
  assert.match(css,/prefers-reduced-motion:reduce\)\{#theater \.portal-door\{opacity:0!important;animation:none!important\}/);
 });
+
+test('compact magazine tier reserves room for its full name without decorative stars',()=>{
+ assert.match(css,/@media\(max-width:420px\)\{\.host-magazine\{gap:8px;padding:16px 12px\}/);
+ assert.match(css,/\.host-magazine strong\{font-size:18px;letter-spacing:\.04em\}/);
+ assert.match(css,/\.magazine-stars\{display:none\}/);
+});

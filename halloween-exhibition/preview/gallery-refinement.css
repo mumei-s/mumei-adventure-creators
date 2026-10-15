@@ -141,3 +141,5 @@ body[data-layout-page=gallery] .theater[data-entry-kind=introduction] #room-titl
 #detail[data-entry-kind=introduction] .magazine-link{margin-top:24px;padding:22px;border:2px solid #ebc582;background:linear-gradient(125deg,#5e3a58,#493921);color:#ffdf9e;border-radius:10px 10px 24px 24px}
 #theater[data-motion-paused=true] .magazine-emblem{animation:none}
 @media(prefers-reduced-motion:reduce){#theater .portal-door{opacity:0!important;animation:none!important}.magazine-emblem{animation:none}}
+/* Keep the magazine name together on phones without shrinking tap targets. */
+@media(max-width:420px){.host-magazine{gap:8px;padding:16px 12px}.host-magazine strong{font-size:18px;letter-spacing:.04em}.host-magazine small{letter-spacing:.03em}.magazine-emblem{font-size:26px}.magazine-stars{display:none}}

@@ -1,3 +1,4 @@
+import { createDoorRevealClock } from '../door-reveal-clock.js';
 import { initFestivalScene } from '../festival-scene.js';
 import { loadArtworkImage } from '../magical-loading.js';
 import { createDoorPalettePicker } from '../door-palette.js';
@@ -97,7 +98,7 @@ async function harness({ data = archive, reduced = true, storageThrows = false, 
     return walk(doc.documentElement);
   };
   const requests = [], storageWrites = [], motionInitializations = [], viewCalls = [];
-  const context = vm.createContext({ AbortController, initFestivalScene:args=>initFestivalScene({...args,doc,win:{...doc.defaultView,setTimeout:queue,clearTimeout:id=>timers.delete(id),MutationObserver:class{observe(){}disconnect(){}}}}), loadArtworkImage:(image,source,options)=>loadArtworkImage(image,source,{...options,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}), initPalaceStartup:()=>Promise.resolve(), createDoorPalettePicker, installGalleryGesture, createSlideshowController, initPalaceEntrance:entrance?(args)=>initPalaceEntrance({...args,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}):({root,onViewChange})=>{root.dataset.palaceState='gallery';return {enter(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});},home(){root.dataset.palaceState='palace';onViewChange({view:'palace',opening:false});},setMode(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});}}}, initDisplayMode:()=>({}), document: doc, initVisitorPreferences:options=>{options.onBrightness(75);const section=doc.createElement('section');section.className='visitor-preferences';doc.body.append(section);return {};}, initSceneMotion:root=>{motionInitializations.push(root);const dock=doc.createElement('div');dock.className='scene-controls';root.append(dock);return {setView(x,y){viewCalls.push([x,y]);}};}, validateArchive, safeURL, normalizeSearch, doorIdFor,
+  const context = vm.createContext({ AbortController, createDoorRevealClock:args=>createDoorRevealClock({...args,schedule:queue,clear:id=>timers.delete(id)}), initFestivalScene:args=>initFestivalScene({...args,doc,win:{...doc.defaultView,setTimeout:queue,clearTimeout:id=>timers.delete(id),MutationObserver:class{observe(){}disconnect(){}}}}), loadArtworkImage:(image,source,options)=>loadArtworkImage(image,source,{...options,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}), initPalaceStartup:()=>Promise.resolve(), createDoorPalettePicker, installGalleryGesture, createSlideshowController, initPalaceEntrance:entrance?(args)=>initPalaceEntrance({...args,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}):({root,onViewChange})=>{root.dataset.palaceState='gallery';return {enter(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});},home(){root.dataset.palaceState='palace';onViewChange({view:'palace',opening:false});},setMode(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});}}}, initDisplayMode:()=>({}), document: doc, initVisitorPreferences:options=>{options.onBrightness(75);const section=doc.createElement('section');section.className='visitor-preferences';doc.body.append(section);return {};}, initSceneMotion:root=>{motionInitializations.push(root);const dock=doc.createElement('div');dock.className='scene-controls';root.append(dock);return {setView(x,y){viewCalls.push([x,y]);}};}, validateArchive, safeURL, normalizeSearch, doorIdFor,
     matchMedia: () => ({ matches: reduced }),
     // Native browser timers reject a plain-object receiver (Illegal invocation).
     setTimeout: function(fn, delay) { if (strictTimerReceiver && this != null && this.document !== doc) throw new TypeError('Illegal invocation'); return queue(fn, delay); },
@@ -879,7 +880,7 @@ test('slideshow interval control uses every integer from 1 to 10 seconds and per
  const h=await harness({reduced:false});h.$('slideshow-speed').value='5';h.$('slideshow-speed').dispatch('change');
  assert.equal(h.api.state.slideshow.intervalSeconds,5);
  assert.deepEqual(JSON.parse(h.storage.get('halloween-exhibition:preview:slideshow:v1')),{intervalSeconds:5});
- h.$('slideshow-toggle').click();await h.tick(4999);assert.equal(h.api.state.currentIndex,0);await h.tick(201);assert.equal(h.api.state.currentIndex,1);
+ h.$('slideshow-toggle').click();await h.tick(6199);assert.equal(h.api.state.currentIndex,0);await h.tick(1);assert.equal(h.api.state.currentIndex,1);
  h.$('slideshow-speed').value='1';h.$('slideshow-speed').dispatch('change');assert.equal(h.api.state.slideshow.intervalSeconds,1);h.$('slideshow-speed').value='11';h.$('slideshow-speed').dispatch('change');assert.equal(h.api.state.slideshow.intervalSeconds,1);
 });
 
@@ -891,11 +892,11 @@ test('dialogs hold slideshow and closing starts a complete fresh interval',async
 });
 
 test('manual navigation resets the precise interval after immediate auto selection',async()=>{
-const h=await harness({reduced:false});h.$('slideshow-toggle').click();await h.tick(5100);h.$('room-dots').children[4].click();assert.equal(h.api.state.currentIndex,4);await h.tick(4999);assert.equal(h.api.state.currentIndex,4);await h.tick(1);assert.equal(h.api.state.currentIndex,5);assert.equal(h.api.state.busy,false);
+const h=await harness({reduced:false});h.$('slideshow-toggle').click();await h.tick(5100);h.$('room-dots').children[4].click();assert.equal(h.api.state.currentIndex,4);await h.tick(6199);assert.equal(h.api.state.currentIndex,4);await h.tick(1);assert.equal(h.api.state.currentIndex,5);assert.equal(h.api.state.busy,false);
 });
 
 test('hidden tab holds the already selected door and resumes after a fresh interval',async()=>{
-const h=await harness({reduced:false});h.$('slideshow-toggle').click();await h.tick(5100);assert.equal(h.api.state.currentIndex,1);h.doc.hidden=true;for(const fn of h.doc.handlers.visibilitychange||[])fn();await h.tick(50000);assert.equal(h.api.state.currentIndex,1);assert.equal(h.api.state.busy,false);h.doc.hidden=false;for(const fn of h.doc.handlers.visibilitychange||[])fn();await h.tick(5000);assert.equal(h.api.state.currentIndex,2);
+const h=await harness({reduced:false});h.$('slideshow-toggle').click();await h.tick(6200);assert.equal(h.api.state.currentIndex,1);h.doc.hidden=true;for(const fn of h.doc.handlers.visibilitychange||[])fn();await h.tick(50000);assert.equal(h.api.state.currentIndex,1);assert.equal(h.api.state.busy,false);h.doc.hidden=false;for(const fn of h.doc.handlers.visibilitychange||[])fn();await h.tick(5000);assert.equal(h.api.state.currentIndex,2);
 });
 
 test('reduced-motion and explicit ambience pause block automatic movement but leave manual controls',async()=>{
@@ -919,7 +920,7 @@ test('slideshow ON, speed changes and OFF preserve the native browser timer rece
   h.$('slideshow-speed').value=String(seconds);
   assert.doesNotThrow(()=>h.$('slideshow-speed').dispatch('change'));
   const before=h.api.state.currentIndex;
-  await h.tick(seconds*1000+650);
+  await h.tick(seconds*1000+1200);
   assert.equal(h.api.state.currentIndex,(before+1)%doorCount);
  }
  assert.doesNotThrow(()=>h.$('slideshow-toggle').click());
@@ -1006,7 +1007,7 @@ test('roulette selects both same-creator doors independently and never counts a 
 test('automatic slideshow selects both same-creator doors independently',async()=>{
  const data=structuredClone(archive);data.years[0].entries=[data.years[0].entries[0],data.years[0].entries.find(entry => entry.doorId === 'owner-work-2026')];
  const h=await harness({data,reduced:false});h.$('slideshow-speed').value='5';h.$('slideshow-speed').dispatch('change');h.$('slideshow-toggle').click();
- await h.tick(5700);assert.equal(h.$('theater').dataset.doorId,'owner-work-2026');await h.tick(5700);assert.equal(h.$('theater').dataset.doorId,'legacy-archive-2026-ss_yr');assert.equal(String(h.api.countPeople()),'0');
+ await h.tick(6200);assert.equal(h.$('theater').dataset.doorId,'owner-work-2026');await h.tick(6200);assert.equal(h.$('theater').dataset.doorId,'legacy-archive-2026-ss_yr');assert.equal(String(h.api.countPeople()),'0');
 });
 test('multiple ordinary articles each retain their own door, title, image and URL',async()=>{
  const data=structuredClone(archive);data.evergreenEntries=[{doorId:'ordinary-a',creatorId:'ss_yr',submissionStatus:'submitted',title:'普通の作品 A',image:'https://example.com/a.png',links:[{title:'A',url:'https://note.com/ss_yr/n/aaa'}]},{doorId:'ordinary-b',creatorId:'ss_yr',submissionStatus:'submitted',title:'普通の作品 B',image:'https://example.com/b.png',links:[{title:'B',url:'https://note.com/ss_yr/n/bbb'}]}];
@@ -1028,7 +1029,7 @@ test('real gate opening cannot auto-advance the hidden theater and a new home ac
  const h=await harness({entrance:true,reduced:false});h.$('slideshow-speed').value='5';h.$('slideshow-speed').dispatch('change');h.$('slideshow-toggle').click();await h.tick(20000);assert.equal(h.api.state.currentIndex,0);
  h.$('palace-gate').click();await h.tick(300);assert.equal(h.$('article-theater').hidden,true);assert.equal(h.$('theater').dataset.palaceState,'opening');
  h.$('mode-normal').click();assert.equal(h.$('article-theater').hidden,false);h.$('mode-halloween').click();await h.tick(1000);assert.equal(h.$('article-theater').hidden,true);assert.equal(h.$('theater').dataset.palaceState,'palace');
- h.$('palace-gate').click();await h.tick(600);assert.equal(h.$('theater').dataset.palaceState,'walking');assert.equal(h.$('article-theater').hidden,true);await h.tick(550);assert.equal(h.$('article-theater').hidden,false);await h.tick(5700);assert.equal(h.api.state.currentIndex,1);
+ h.$('palace-gate').click();await h.tick(600);assert.equal(h.$('theater').dataset.palaceState,'walking');assert.equal(h.$('article-theater').hidden,true);await h.tick(550);assert.equal(h.$('article-theater').hidden,false);await h.tick(6200);assert.equal(h.api.state.currentIndex,1);
 });
 test('normal mode bypasses the Halloween palace and exact maze return opens the existing personal-work door',async()=>{
  const normal=await harness({entrance:true,savedMode:'normal'});assert.equal(normal.$('palace-entrance').hidden,true);assert.equal(normal.$('article-theater').hidden,false);assert.equal(normal.$('palace-return').hidden,true);assert.equal(normal.$('horror-entrance').hidden,true);
@@ -1103,7 +1104,7 @@ test('illustrated courtyard uses its real controller and never swaps the image',
  const src=picture.getAttribute('src');button.dataset.magic='brew';button.closest=()=>button;
  scene.dispatch('click',{target:button});assert.equal(scene.dataset.magic,'brew');assert.equal(effects.children.length,12);
  assert.equal(scene.dataset.still,'true');assert.equal(picture.getAttribute('src'),src);
- await h.tick(1800);assert.equal(scene.dataset.magic,undefined);assert.equal(effects.children.length,0);
+ await h.tick(2300);assert.equal(scene.dataset.magic,undefined);assert.equal(effects.children.length,0);
 });
 test('rapid courtyard taps replace effects and leave no delayed image changes',async()=>{
  const h=await harness();const button=h.$('festival-play'),picture=h.$('festival-picture');
@@ -1112,4 +1113,21 @@ test('rapid courtyard taps replace effects and leave no delayed image changes',a
  assert.equal(scene.querySelector('.festival-effects').children.length,12);
  await h.tick(10000);assert.equal(scene.dataset.magic,undefined);assert.equal(scene.querySelector('.festival-effects').children.length,0);
  assert.match(picture.getAttribute('src'),/magic-courtyard.webp/);
+});
+
+test('tool entry belongs only to host introduction, between host and magazine',async()=>{
+ const h=await harness();assert.equal(h.$('host-illustration-tool').hidden,false);
+ assert.equal(h.$('host-illustration-tool').getAttribute('href'),'https://mumei-s.github.io/mumei-adventure-creators/halloween/');
+ await h.api.navigate(1);assert.equal(h.$('host-illustration-tool').hidden,true);await h.api.navigate(0);assert.equal(h.$('host-illustration-tool').hidden,false);h.api.setMode('normal');assert.equal(h.$('host-illustration-tool').hidden,true);
+});
+test('one-second autoplay leaves the artwork visible for a full second after each opening',async()=>{
+ const h=await harness({reduced:false});h.$('slideshow-speed').value='1';h.$('slideshow-speed').dispatch('change');h.$('slideshow-toggle').click();
+ await h.tick(1199);assert.equal(h.api.state.currentIndex,0);assert(h.api.state.slideshow.blockers.includes('door-opening'));
+ await h.tick(1);assert(!h.api.state.slideshow.blockers.includes('door-opening'));await h.tick(999);assert.equal(h.api.state.currentIndex,0);await h.tick(1);assert.equal(h.api.state.currentIndex,1);
+ await h.tick(2199);assert.equal(h.api.state.currentIndex,1);await h.tick(1);assert.equal(h.api.state.currentIndex,2);
+});
+test('courtyard alternating taps create spatial light chains and cap effects at 24 particles',async()=>{
+ const h=await harness({reduced:false});const picture=h.$('festival-picture'),scene=picture.parentNode.parentNode,effects=scene.querySelector('.festival-effects');
+ for(const kind of ['brew','pumpkin','cat','moon','ghost','brew']){const button=scene.querySelectorAll('button').find(b=>b.getAttribute('data-magic')===kind);button.dataset.magic=kind;button.closest=()=>button;scene.dispatch('click',{target:button});assert(effects.children.length<=24);assert(effects.children.length>=5);}
+ assert.equal(scene.dataset.combo,'true');assert.equal(effects.children.filter(e=>e.dataset.chain==='true').length,12);await h.tick(2300);assert.equal(effects.children.length,0);
 });

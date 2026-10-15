@@ -1,0 +1,5 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {normalizeWalkingSpeed,advanceWithSubsteps} from '../walking-speed.js';import {move,blocked} from '../maze-model.js';import {moveAroundFurniture,inFurniture} from '../rpg-model.js';
+test('speed defaults 1 and clamps to quarter-step 0.5–2',()=>{for(const v of [null,'',undefined,'bad'])assert.equal(normalizeWalkingSpeed(v),1);assert.equal(normalizeWalkingSpeed(10),2);assert.equal(normalizeWalkingSpeed(-1),.5);assert.equal(normalizeWalkingSpeed(1.26),1.25);});
+test('substeps prevent crossing closed gate even at excessive delta in both collision modes',()=>{for(const movement of [move,moveAroundFurniture]){const p=advanceWithSubsteps({x:32,z:30,unlocked:false},0,-20,movement);assert.ok(p.z>26);assert.equal(blocked(p.x,p.z,p),false);}});
+test('2D furniture is not tunneled through at high speed',()=>{const p=advanceWithSubsteps({x:24.8,z:48,unlocked:true},0,-8,moveAroundFurniture);assert.ok(p.z>45);assert.equal(inFurniture(p.x,p.z),false);});

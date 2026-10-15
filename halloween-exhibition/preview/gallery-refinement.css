@@ -166,3 +166,25 @@ body[data-layout-page=gallery] #theater .stage-caption #room-title{max-width:100
 body[data-layout-page=gallery] #theater:not([data-entry-kind=introduction]) .stage-caption #room-title{font-size:clamp(19px,2.5vw,28px)}
 
 body[data-layout-page=gallery] #theater[data-mode][data-entry-kind] .stage-caption #room-title.long-creator-name{font-size:clamp(17px,2vw,22px);line-height:1.5;letter-spacing:0}
+/* A compact illustrated passage between the host's signature and magazine. */
+.host-illustration-tool{position:relative;display:flex;align-items:center;justify-content:center;gap:16px;min-height:88px;margin:10px 14px;padding:12px 20px;overflow:hidden;border:1px solid #f6d38b;border-radius:20px;color:#fff5d8;text-decoration:none;background:linear-gradient(90deg,#251439cc,#39234a77,#251439cc),url('./assets/palace/magic-courtyard.webp') center 42%/cover;box-shadow:inset 0 0 24px #edb45922,0 4px 18px #160b2c44}
+.host-illustration-tool[hidden]{display:none}.host-illustration-tool strong{font-size:clamp(17px,3vw,23px);text-shadow:0 2px 5px #170b28}.tool-portal{display:grid;place-items:center;width:47px;height:57px;border:2px solid #efd99b;border-radius:50% 50% 9px 9px;background:radial-gradient(ellipse,#e4b9ff99,#543a8555);font-size:28px;box-shadow:0 0 15px #dec2ff66;animation:tool-portal-glow 4s ease-in-out infinite alternate}.host-illustration-tool:focus-visible{outline:3px solid #fff;outline-offset:3px}
+@keyframes tool-portal-glow{to{box-shadow:0 0 24px #f5d5ff99;filter:brightness(1.25)}}
+/* The courtyard stays alive without JavaScript frame loops. All motion is clipped. */
+.festival-ambient,.festival-mist{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:2}.festival-ambient i{position:absolute;left:calc(8% + var(--i)*7%);top:75%;width:5px;height:5px;border-radius:50%;background:#fff0bc;box-shadow:0 0 9px 3px #efb44888;opacity:0;animation:courtyard-firefly calc(5s + var(--i)*.31s) calc(var(--i)*-.71s) ease-in-out infinite}
+.festival-mist{inset:26% 32% 38%;border-radius:50%;background:radial-gradient(ellipse,#aceb7433,transparent 65%);filter:blur(9px);transform-origin:bottom;animation:courtyard-mist 6s ease-in-out infinite alternate;mix-blend-mode:screen}
+.festival-cat{left:68%;top:47%;width:18%;height:39%}.festival-moon{left:27%;top:4%;width:13%;height:30%}
+.festival-picture{animation:courtyard-breathe 14s ease-in-out infinite alternate;transform-origin:50% 55%}
+.festival-scene[data-magic] .festival-picture{filter:brightness(1.08)}
+.festival-spark[data-kind=cat]{border:0;border-radius:50%;background:#ffe2a9;box-shadow:0 0 12px #ffbb55;animation-name:cat-chase}
+.festival-spark[data-kind=moon]{border:0;background:#fff1b8;box-shadow:0 0 12px #ffedb1;animation-name:moon-river}
+.festival-scene[data-combo=true] .festival-mist{background:radial-gradient(ellipse,#ffc89d88,#e4a8ff33,transparent 70%)}
+.festival-spark[data-chain=true]{animation-duration:1.8s;background:#ffdf93;box-shadow:0 0 13px #fbc86a}
+@keyframes courtyard-firefly{0%,100%{opacity:0;transform:translate(0,8px) scale(.5)}25%,70%{opacity:.85}50%{transform:translate(20px,-50px) scale(1.2)}}
+@keyframes courtyard-mist{from{opacity:.35;transform:translate(-6px,8px) scale(.8)}to{opacity:.75;transform:translate(9px,-12px) scale(1.12)}}
+@keyframes courtyard-breathe{to{transform:scale(1.025)}}
+@keyframes cat-chase{0%{opacity:0;transform:translate(-28px,-9px) scale(.4)}25%{opacity:1}65%{transform:translate(15px,-35px) scale(1)}100%{opacity:0;transform:translate(40px,-12px) scale(.3)}}
+@keyframes moon-river{0%{opacity:0;transform:translate(-18px,0) scale(.4)}20%{opacity:1}100%{opacity:0;transform:translate(95px,32px) scale(.1)}}
+#theater[data-motion-paused=true] .host-illustration-tool *,body[data-ambient-paused=true] .host-illustration-tool *{animation:none!important}
+body[data-page-hidden=true] .host-illustration-tool *{animation-play-state:paused!important}
+@media(prefers-reduced-motion:reduce){.host-illustration-tool *{animation:none!important}}

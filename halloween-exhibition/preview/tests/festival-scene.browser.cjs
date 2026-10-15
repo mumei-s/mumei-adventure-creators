@@ -18,9 +18,9 @@ const http=require('node:http'),fs=require('node:fs'),path=require('node:path'),
    await page.evaluate(()=>window.dispatchEvent(new PageTransitionEvent('pagehide',{persisted:true})));assert.equal(await page.locator('.festival-spark').count(),0);
    await page.evaluate(()=>window.dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true})));await page.locator('#festival-play').click();assert.equal(await page.locator('.festival-scene').getAttribute('data-magic'),'brew');
    await page.emulateMedia({reducedMotion:'reduce'});await page.locator('#festival-play').click();assert.equal(await page.locator('.festival-scene').getAttribute('data-still'),'true');
-   await page.waitForTimeout(1900);assert.equal(await page.locator('.festival-spark').count(),0);await page.emulateMedia({reducedMotion:'no-preference'});
+   await page.waitForTimeout(2400);assert.equal(await page.locator('.festival-spark').count(),0);await page.emulateMedia({reducedMotion:'no-preference'});
    console.log(JSON.stringify({viewport:width,...metrics}));
   }
-  assert.deepEqual(errors,[]);console.log('Browser checks passed: responsive geometry, keyboard, three reactions, reduced motion, bfcache, cleanup, no runtime errors.');
+  assert.deepEqual(errors,[]);console.log('Browser checks passed: responsive geometry, keyboard, five reactions, reduced motion, bfcache, cleanup, no runtime errors.');
  } finally{await browser?.close();server.close()}
 })().catch(e=>{console.error(e);process.exitCode=1});

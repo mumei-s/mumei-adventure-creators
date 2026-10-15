@@ -1,4 +1,5 @@
-import { initFestivalScene } from './festival-scene.js?v=20261015-music-garden1';
+import { createDoorRevealClock } from './door-reveal-clock.js?v=20261015-playful1';
+import { initFestivalScene } from './festival-scene.js?v=20261015-playful1';
 import { loadArtworkImage } from './magical-loading.js?v=20261015-journey1';
 import { initPalaceStartup } from './palace-startup.js?v=20261015-interior1';
 import { createDoorPalettePicker } from './door-palette.js?v=20261015-festival1';
@@ -95,9 +96,10 @@ function renderDots(){const area=$('room-dots');area.replaceChildren();entries()
 const pickDoorPalette=createDoorPalettePicker();let paintedPaletteKey='';
 let storyVersion=0,storyOpening=false;
 function cancelStoryOpening(){storyVersion++;storyOpening=false;root.classList.remove('story-opening');slideshow?.setBlocked('story-opening',false);}
-function revealDoor(){root.classList.remove('door-reveal');void $('artwork-open').offsetWidth;if(displayMode==='halloween'&&!reduced.matches&&root.dataset.motionPaused!=='true')root.classList.add('door-reveal');}
+const doorClock=createDoorRevealClock({setBlocked:value=>slideshow?.setBlocked('door-opening',value)});
+function revealDoor(){doorClock.cancel();root.classList.remove('door-reveal');void $('artwork-open').offsetWidth;if(displayMode==='halloween'&&!reduced.matches&&root.dataset.motionPaused!=='true'){root.classList.add('door-reveal');doorClock.start();}}
 
-function paint({redisplay=false}={}){cancelStoryOpening();const entry=current();if(!entry)return;const paletteKey=`${displayMode}:${currentYear}:${entry.doorId}`;if(redisplay||paintedPaletteKey!==paletteKey){const colors=pickDoorPalette(paletteKey);['--door-color','--door-edge','--door-shadow'].forEach((name,i)=>root.style.setProperty(name,colors[i]));paintedPaletteKey=paletteKey;}const c=creator(entry),p=displayProfile(entry),scene=palette(entry),real=safeURL(entry.image,{image:true}),portrait=avatar(entry);root.dataset.entryKind=entry.role==='host'&&entry.submissionStatus==='introduction'?'introduction':'article';$('host-magazine').hidden=!(root.dataset.entryKind==='introduction'&&displayMode==='halloween'&&currentYear===2026);root.dataset.theme=theme(entry);root.dataset.creatorId=entry.creatorId;root.dataset.doorId=entry.doorId;root.dataset.roomIndex=String(currentIndex);root.dataset.roomCount=String(entries().length);root.dataset.portrait=String(!real);root.style.setProperty('--glow',p.color);root.style.setProperty('--tint',p.tint);root.style.setProperty('--room-image',`url("${scene.image}")`);const architecture=entry.role==='host'?'./assets/manor-hero.webp':`./assets/stage-rooms/${theme(entry)}.svg`;for(const el of[$('world-backdrop'),...document.querySelectorAll('.wall-wing,.back-wall')]){el.style.backgroundImage=`url("${architecture}")`;el.style.backgroundPosition='center';el.style.backgroundSize='cover';}
+function paint({redisplay=false}={}){cancelStoryOpening();const entry=current();if(!entry)return;const paletteKey=`${displayMode}:${currentYear}:${entry.doorId}`;if(redisplay||paintedPaletteKey!==paletteKey){const colors=pickDoorPalette(paletteKey);['--door-color','--door-edge','--door-shadow'].forEach((name,i)=>root.style.setProperty(name,colors[i]));paintedPaletteKey=paletteKey;}const c=creator(entry),p=displayProfile(entry),scene=palette(entry),real=safeURL(entry.image,{image:true}),portrait=avatar(entry);root.dataset.entryKind=entry.role==='host'&&entry.submissionStatus==='introduction'?'introduction':'article';$('host-magazine').hidden=!(root.dataset.entryKind==='introduction'&&displayMode==='halloween'&&currentYear===2026);$('host-illustration-tool').hidden=$('host-magazine').hidden;root.dataset.theme=theme(entry);root.dataset.creatorId=entry.creatorId;root.dataset.doorId=entry.doorId;root.dataset.roomIndex=String(currentIndex);root.dataset.roomCount=String(entries().length);root.dataset.portrait=String(!real);root.style.setProperty('--glow',p.color);root.style.setProperty('--tint',p.tint);root.style.setProperty('--room-image',`url("${scene.image}")`);const architecture=entry.role==='host'?'./assets/manor-hero.webp':`./assets/stage-rooms/${theme(entry)}.svg`;for(const el of[$('world-backdrop'),...document.querySelectorAll('.wall-wing,.back-wall')]){el.style.backgroundImage=`url("${architecture}")`;el.style.backgroundPosition='center';el.style.backgroundSize='cover';}
  const image=$('artwork-image'),mat=document.querySelector('.artwork-mat');cancelArtworkLoad();image.onerror=null;image.hidden=true;$('artwork-fallback').hidden=true;$('artwork-loading').hidden=true;mat.style.backgroundImage='none';mat.style.backgroundColor='#25162e';mat.removeAttribute('role');mat.removeAttribute('aria-label');const source=real||portrait;
  $('artwork-fallback').replaceChildren(node('span',Array.from(c.name).slice(0,2).join('')),node('small',real?'画像を表示できません · タップで記事へ':'プロフィール画像 · 読み込めませんでした'));
  if(source){image.alt=real?(entry.imageAlt||entry.title||c.name):`${c.name}のnoteプロフィール画像`;image.referrerPolicy='no-referrer';cancelArtworkLoad=loadArtworkImage(image,source,{onState:state=>{root.dataset.artworkState=state;image.hidden=state!=='ready';$('artwork-loading').hidden=state!=='loading';$('artwork-fallback').hidden=state!=='error';mat.setAttribute('aria-busy',String(state==='loading'));}});}else{image.removeAttribute('src');image.alt='';root.dataset.artworkState='error';mat.setAttribute('aria-busy','false');$('artwork-fallback').hidden=false;}
@@ -184,7 +186,7 @@ function updateSlideshowState(state){
  $('slideshow-toggle').setAttribute('aria-pressed',String(state.enabled));
  $('slideshow-speed').value=String(state.intervalSeconds);
  const reason=state.blockers||[];
- const status=state.error?'自動送りを停止しました。手動の左右ボタンでご覧ください。':!state.enabled?'自動送りはOFFです。':reason.includes('reduced-motion')?'端末の「動きを減らす」設定中は、自動送りも停止します。':reason.includes('dialog')?'詳細や設定を見ている間は、自動送りを一時停止します。':reason.includes('motion')?'演出を止めている間は、自動送りも一時停止します。':reason.length?'自動送りは一時停止中です。再開時は設定した間隔から始めます。':`${state.intervalSeconds}秒ごとに次の扉へ。手動で移動すると間隔を数え直します。`;
+ const status=state.error?'自動送りを停止しました。手動の左右ボタンでご覧ください。':!state.enabled?'自動送りはOFFです。':reason.includes('reduced-motion')?'端末の「動きを減らす」設定中は、自動送りも停止します。':reason.includes('dialog')?'詳細や設定を見ている間は、自動送りを一時停止します。':reason.includes('motion')?'演出を止めている間は、自動送りも一時停止します。':reason.length?'自動送りは一時停止中です。再開時は設定した間隔から始めます。':`扉が開いてから${state.intervalSeconds}秒間展示します。手動で移動すると数え直します。`;
  if($('slideshow-status').textContent!==status)$('slideshow-status').textContent=status;
 }
 palace=initPalaceEntrance({root,initialMode:displayMode,onViewChange:state=>{slideshow?.setBlocked('palace',state.view!=='gallery'||state.opening);if(state.view==='gallery'&&!state.opening)revealDoor();if(state.view!=='gallery'){cancelStoryOpening();cancelRoulette();turnVersion++;busy=false;root.classList.remove('turning-in','turning-out');}}});
@@ -201,12 +203,12 @@ $('slideshow-toggle').addEventListener('click',()=>slideshow.setEnabled(!slidesh
 $('slideshow-speed').addEventListener('change',e=>slideshow.setIntervalSeconds(Number(e.target.value)));
 document.addEventListener('visibilitychange',()=>slideshow.setBlocked('hidden',Boolean(document.hidden)));
 reduced.addEventListener?.('change',()=>slideshow.setBlocked('reduced-motion',reduced.matches));
-root.addEventListener('yearbook:motion-state',e=>{slideshow.setBlocked('motion',Boolean(e.detail?.paused));if(e.detail?.paused)cancelRoulette();});
+root.addEventListener('yearbook:motion-state',e=>{slideshow.setBlocked('motion',Boolean(e.detail?.paused));if(e.detail?.paused){cancelRoulette();doorClock.cancel();}});
 if(typeof MutationObserver!=='undefined'){
  const dialogObserver=new MutationObserver(()=>slideshow.setBlocked('dialog',Boolean(document.querySelector('dialog[open]'))));
  document.querySelectorAll('dialog').forEach(dialog=>dialogObserver.observe(dialog,{attributes:true,attributeFilter:['open']}));
 }
-if(typeof window!=='undefined')window.addEventListener('pagehide',()=>slideshow.setEnabled(false));
+if(typeof window!=='undefined')window.addEventListener('pagehide',()=>{doorClock.cancel();slideshow.setEnabled(false);});
 
 slideshow.setBlocked('palace',root.dataset.palaceState!=='gallery');
 load();

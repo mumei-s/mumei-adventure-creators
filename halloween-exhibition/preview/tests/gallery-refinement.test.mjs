@@ -9,10 +9,11 @@ test('last stylesheet prevents both header groups wrapping without clipping or s
  assert.match(css,/overflow-x:auto/);assert.match(css,/min-width:44px;min-height:44px/);
  assert.doesNotMatch(css,/text-size-adjust|font-size:[0-9]px|overflow-x:hidden/);
 });
-test('edge arrows reserve independent gutters beside contained artwork and leave the caption below',()=>{
+test('edge arrows retain accessible targets and a final lower row below contained artwork',()=>{
  assert.match(css,/room-world \{grid-area:1\/1\}/);
- assert.match(css,/stage-navigation \{[^}]*grid-area:1\/1[^}]*justify-content:space-between/s);
- assert.match(css,/stage-caption \{grid-area:2\/1\}/);
+ const nav=[...css.matchAll(/stage-navigation \{([^}]*)\}/g)].at(-1)[1];
+ const caption=[...css.matchAll(/stage-caption \{([^}]*)\}/g)].filter(m=>m[1].includes('grid-area')).at(-1)[1];
+ assert.match(nav,/grid-area:2\/1/);assert.match(caption,/grid-area:3\/1/);
  assert.match(css,/stage-arrow \{[^}]*width:44px;height:44px;min-width:44px;min-height:44px/s);
  assert.match(css,/max-width:calc\(100% - 112px\)/);
  for(const width of [333,400,770,1180])assert.ok((width-112)/2>0);
@@ -42,4 +43,20 @@ test('Halloween ornament owns a separate flow area and stops with reduced or pau
  assert.match(css,/data-mode=normal[^}]*festival-coda \{display:none\}/);
  assert.match(css,/data-motion-paused=true[^}]*festival-coda \* \{animation:none!important\}/);
  assert.match(css,/@media\(prefers-reduced-motion:reduce\)\{\.festival-coda \* \{animation:none!important\}/);
+});
+
+test('roulette is centered in upper navigation and bottom hints are removed',()=>{
+ const row=html.match(/<div class="palace-return-row">([\s\S]*?)<\/div>/)[1];
+ assert.ok(row.indexOf('palace-return"')<row.indexOf('roulette-open'));assert.ok(row.indexOf('roulette-open')<row.indexOf('horror-entrance'));
+ assert.doesNotMatch(html,/id="journey-hint"|class="preview-ribbon"/);
+ assert.match(css,/palace-return-row \{display:grid;grid-template-columns:1fr 1fr 1fr/);
+ assert.match(css,/stage-navigation \{grid-area:2\/1/);assert.match(css,/stage-caption \{grid-area:3\/1/);
+ assert.match(css,/festival-coda \{height:220px/);
+});
+test('landscape doors reveal without leaving overlays over the final artwork',()=>{
+ assert.match(css,/data-portrait=false\] \.portal-doors \{display:block\}/);
+ assert.doesNotMatch(css,/#theater\[data-portrait=false\] \.portal-doors \{display:none\}/);
+ assert.match(css,/\.portal-door \{opacity:0;pointer-events:none\}/);
+ assert.match(css,/100%\{opacity:0;transform:rotateY\(-110deg\)\}/);
+ assert.match(css,/prefers-reduced-motion:reduce\)\{#theater \.portal-door\{opacity:0!important;animation:none!important\}/);
 });

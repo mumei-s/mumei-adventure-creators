@@ -60,7 +60,6 @@ body[data-layout-page=gallery] .theater[data-entry-kind=introduction] #creator-n
 #theater .artwork-mat {background:#f4f4f4!important;mix-blend-mode:normal;opacity:1}
 #theater .artwork-mat:after {display:none}
 #theater .artwork-mat img {filter:brightness(var(--art-brightness,1));mix-blend-mode:normal;background:#f4f4f4;opacity:1}
-#theater[data-portrait=false] .portal-doors {display:none}
 #theater .stage-caption {position:relative;z-index:12;background:#171b2cf5;color:#fff3de;border-radius:16px;padding:12px 16px;text-shadow:none}
 #theater #creator-name>span {color:#f2e6d3}
 #theater #creator-name>small {color:#e8d4b4;background:#172536}
@@ -106,3 +105,39 @@ body[data-layout-page=gallery] .theater[data-mode=normal] .stage-footer {grid-te
 @keyframes festival-breathe {from{opacity:.65}to{opacity:1}}
 @keyframes festival-drift {from{transform:translateX(-9px)}to{transform:translateX(9px)}}
 @media(prefers-reduced-motion:reduce){.festival-coda * {animation:none!important}}
+
+/* Interior navigation: three equal destinations in one safe, touchable row. */
+body[data-layout-page=gallery] .theater .palace-return-row {display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin:4px 12px 10px;flex-wrap:nowrap}
+body[data-layout-page=gallery] .theater .palace-return-row> :is(button,a) {display:flex;align-items:center;justify-content:center;gap:3px;min-width:0;min-height:44px;width:100%;margin:0;padding:8px 4px;font-size:clamp(9px,2.6vw,13px);letter-spacing:0;line-height:1.35;white-space:normal;text-align:center;border-radius:99px;grid-area:auto}
+body[data-layout-page=gallery] .theater .palace-return-row .roulette-open {background:linear-gradient(125deg,#76502c,#4b294f);border-color:#f9c678;color:#ffe5aa;box-shadow:inset 0 0 18px #f5b25722,0 0 16px #efb15c18}
+/* Arrows stay at the outer edges, below the artwork rather than across its center. */
+body[data-layout-page=gallery] .theater .stage {grid-template-rows:auto 48px auto auto}
+body[data-layout-page=gallery] .theater .stage-navigation {grid-area:2/1;align-self:center;padding:0 8px}
+body[data-layout-page=gallery] .theater .stage-caption {grid-area:3/1}
+body[data-layout-page=gallery] .theater .stage-footer,
+body[data-layout-page=gallery] .theater[data-mode=normal] .stage-footer {grid-template-columns:minmax(0,1fr);grid-template-areas:"faces";padding-bottom:0;gap:0}
+body[data-layout-page=gallery] .theater .festival-coda {height:220px;margin-top:0}
+/* Every artwork can reveal its doors, including submitted landscape articles.
+   Leaves exist only during the reveal and cannot cover the final image. */
+#theater[data-mode=halloween][data-portrait=false] .portal-doors {display:block}
+#theater .portal-doors {perspective:1000px;overflow:hidden;border-radius:inherit}
+#theater .portal-door {opacity:0;pointer-events:none}
+#theater.door-reveal .portal-left {animation:article-door-left 1.05s cubic-bezier(.2,.65,.2,1) both}
+#theater.door-reveal .portal-right {animation:article-door-right 1.05s cubic-bezier(.2,.65,.2,1) both}
+#theater .portal-crown {display:none}
+@keyframes article-door-left {0%,12%{opacity:1;transform:rotateY(0)}85%{opacity:1;transform:rotateY(-100deg)}100%{opacity:0;transform:rotateY(-110deg)}}
+@keyframes article-door-right {0%,12%{opacity:1;transform:rotateY(0)}85%{opacity:1;transform:rotateY(100deg)}100%{opacity:0;transform:rotateY(110deg)}}
+#theater[data-motion-paused=true] .portal-door {opacity:0!important;animation:none!important}
+/* The host invitation has its own ceremonial treatment and magazine shelf. */
+body[data-layout-page=gallery] .theater[data-entry-kind=introduction] .stage-caption {border:2px solid #f3cf8d;border-radius:36px 36px 12px 12px;background:radial-gradient(ellipse at top,#85466677,transparent 65%),linear-gradient(135deg,#39203b,#17182d);box-shadow:inset 0 0 0 5px #e7ba6f19,0 12px 32px #0005;padding-top:22px}
+body[data-layout-page=gallery] .theater[data-entry-kind=introduction] .room-kicker:before {content:'✦  ';color:#ffcf6d}
+body[data-layout-page=gallery] .theater[data-entry-kind=introduction] .room-kicker:after {content:'  ✦';color:#ffcf6d}
+body[data-layout-page=gallery] .theater[data-entry-kind=introduction] #room-title {color:#ffe5af;text-shadow:0 0 18px #e7ae4a55}
+.host-magazine {grid-area:4/1;position:relative;isolation:isolate;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:18px;margin:12px max(20px,8%) 8px;padding:19px 16px;min-height:100px;border:1px solid #e7b66b;border-radius:12px 12px 28px 28px;background:linear-gradient(120deg,#30223e,#57422f,#30223e);color:#ffdf9e;text-decoration:none;box-shadow:inset 0 0 0 5px #edc78a12,0 8px 24px #0005}
+.host-magazine[hidden]{display:none}
+.host-magazine>span:nth-child(2){display:grid;gap:6px;text-align:center}.host-magazine small{font-size:10px;letter-spacing:.16em}.host-magazine strong{font-size:22px;letter-spacing:.12em}.host-magazine span span{font-size:12px;color:#fff1d4}
+.magazine-emblem{font-size:34px;text-shadow:0 0 20px #ffce68;animation:festival-breathe 3s ease-in-out infinite alternate}.magazine-stars{font-size:20px;color:#efbf79}
+#detail[data-entry-kind=introduction]{border:2px solid #f2cb8b;background:radial-gradient(ellipse at top,#6b3c5d,#211c30 70%);box-shadow:inset 0 0 0 6px #edc78a18,0 20px 80px #000b}
+#detail[data-entry-kind=introduction] .magazine-link{margin-top:24px;padding:22px;border:2px solid #ebc582;background:linear-gradient(125deg,#5e3a58,#493921);color:#ffdf9e;border-radius:10px 10px 24px 24px}
+#theater[data-motion-paused=true] .magazine-emblem{animation:none}
+@media(prefers-reduced-motion:reduce){#theater .portal-door{opacity:0!important;animation:none!important}.magazine-emblem{animation:none}}

@@ -1093,3 +1093,33 @@ test('door palette changes on redisplay, but details and same-mode settings leav
  h.api.openStory();assert.equal(h.$('theater').style['--door-color'],second);h.$('detail').close();await h.tick(0);h.api.setMode('halloween');assert.equal(h.$('theater').style['--door-color'],second);
  await h.api.navigate(0);assert.notEqual(h.$('theater').style['--door-color'],initial);assert.equal(h.$('theater').style['--art-brightness'],'1');
 });
+
+test('submitted articles reveal visible doors before detail, suppressing repeated taps',async()=>{
+ const h=await harness({reduced:false});await h.api.navigate(2,{immediate:true});
+ assert.equal(h.$('theater').dataset.portrait,'false');assert.equal(h.$('theater').classList.contains('door-reveal'),true);
+ h.$('artwork-open').click();h.$('artwork-open').click();assert.equal(h.$('detail').open,false);assert.equal(h.$('theater').classList.contains('story-opening'),true);
+ await h.tick(899);assert.equal(h.$('detail').open,false);await h.tick(1);assert.equal(h.$('detail').open,true);
+ assert.match(h.$('detail-content').textContent,/本場のHalloween/);assert.equal(h.$('theater').classList.contains('story-opening'),false);
+});
+test('new navigation or another dialog cancels stale story-opening completion',async()=>{
+ for(const interrupt of ['navigation','roster','mode','home']){
+  const h=await harness({reduced:false});await h.api.navigate(2,{immediate:true});h.$('artwork-open').click();
+  if(interrupt==='navigation')await h.api.navigate(3,{immediate:true});
+  if(interrupt==='roster')h.$('list-open').click();
+  if(interrupt==='mode')h.api.setMode('normal');
+  if(interrupt==='home')h.$('palace-return').click();
+  await h.tick(1200);assert.equal(h.$('detail').open,false,interrupt);
+ }
+});
+test('pending, normal, reduced and paused articles open without an animation delay',async()=>{
+ for(const mode of ['pending','normal','reduced','paused']){
+  const h=await harness({reduced:mode==='reduced'});await h.api.navigate(mode==='pending'?3:2,{immediate:true});
+  if(mode==='normal')h.api.setMode('normal');if(mode==='paused')h.$('theater').dataset.motionPaused='true';
+  h.$('artwork-open').click();assert.equal(h.$('detail').open,true,mode);
+ }
+});
+test('host magazine occupies a distinct lower tier only for the introduction',async()=>{
+ const h=await harness();assert.equal(h.$('host-magazine').hidden,false);assert.equal(h.$('host-magazine').getAttribute('href'),'https://note.com/ss_yr/m/m642b82518aeb');
+ h.api.openStory();assert.equal(h.$('detail').dataset.entryKind,'introduction');h.$('detail').close();await h.tick(0);
+ await h.api.navigate(1);assert.equal(h.$('host-magazine').hidden,true);h.api.setMode('normal');assert.equal(h.$('host-magazine').hidden,true);
+});

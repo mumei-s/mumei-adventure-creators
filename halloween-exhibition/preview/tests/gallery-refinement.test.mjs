@@ -24,3 +24,13 @@ test('host avatar lives in a protected invitation caption rather than underneath
  assert.match(css,/stage-caption \.host-avatar \{[^}]*position:relative;inset:auto/s);
  assert.match(css,/host-avatar\[hidden\] \{display:none\}/);
 });
+
+
+test('artwork cannot inherit scenic brightness, saturation, screen sheen or foreground overlays',()=>{
+ assert.match(css,/#theater \.room-world > \.artwork-frame \{filter:none!important;isolation:isolate;z-index:12\}/);
+ assert.match(css,/artwork-mat:after \{display:none\}/);
+ assert.match(css,/artwork-mat img \{filter:brightness\(var\(--art-brightness,1\)\);mix-blend-mode:normal/);
+ assert.match(css,/#theater \.stage \{z-index:4\}/);
+ assert.match(css,/chapter-index \{display:none\}/);
+ assert.match(css,/stage-caption \{[^}]*background:#171b2cf5;color:#fff3de/s);
+});

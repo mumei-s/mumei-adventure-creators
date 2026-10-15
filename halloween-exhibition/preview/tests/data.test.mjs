@@ -7,12 +7,12 @@ const source=JSON.parse(await readFile(new URL('../data/archive.json',import.met
 // Kept local so the shipped preview tests remain independently runnable.
 const verified=JSON.parse(await readFile(new URL('./fixtures/verified-profiles.json',import.meta.url)));
 
-test('ten verified profiles and eleven article doors without invented creators',()=>{
+test('thirteen verified profiles and fourteen article doors without invented creators',()=>{
   validateArchive(source);
-  assert.equal(source.creators.length,10);
+  assert.equal(source.creators.length,13);
   assert.deepEqual(source.creators.map(c=>c.id),verified.map(c=>c.id));
   assert.equal(source.creators.filter(c=>c.provisional).length,0);
-  assert.equal(source.years[0].entries.length,11);
+  assert.equal(source.years[0].entries.length,14);
   assert.equal(source.years[0].plannedSlots,undefined);
   assert.deepEqual(source.evergreenEntries,[]);
   assert.deepEqual([...new Set(source.years[0].entries.map(e=>e.creatorId))],verified.map(c=>c.id));
@@ -29,13 +29,15 @@ test('creator identities use only names, handles, public profile links and profi
     for(const key of Object.keys(creator))assert.ok(allowed.has(key),`${creator.id}: unexpected profile field ${key}`);
     assert.equal(safeURL(creator.profileURL),creator.profileURL);
     assert.ok(safeURL(creator.avatar,{image:true}));
-    if(creator.id==='clever_hare2654')assert.equal(creator.avatar,profile.avatarURL);
+    if(creator.avatar.startsWith('https:'))assert.equal(creator.avatar,profile.avatarURL);
     else await access(new URL('../'+creator.avatar,import.meta.url));
   }
 });
 
-test('host introduction and three confirmed participant articles are present; seven doors await submissions',()=>{
-  const [host,mako]=source.years[0].entries;
+test('host introduction and three confirmed participant articles are present; ten doors await submissions',()=>{
+  const [host,owner,mako]=source.years[0].entries;
+  assert.equal(owner.doorId,'owner-work-2026');
+  assert.equal(owner.submissionStatus,'pending');
   const participants=source.years[0].entries.filter(entry=>entry.submissionStatus==='pending');
   assert.equal(host.creatorId,'ss_yr');
   assert.equal(host.role,'host');
@@ -56,7 +58,7 @@ test('host introduction and three confirmed participant articles are present; se
   assert.equal(mako.works,undefined);
   assert.equal(source.years[0].entries.filter(e=>e.submissionStatus==='introduction').length,1);
   assert.equal(source.years[0].entries.filter(e=>e.submissionStatus==='submitted').length,3);
-  assert.equal(participants.length,7);
+  assert.equal(participants.length,10);
   for(const entry of participants){
     const profile=verified.find(c=>c.id===entry.creatorId);
     assert.equal(entry.submissionStatus,'pending');
@@ -84,7 +86,7 @@ test('confirmed Chamomile article uses public article art distinct from the new 
   assert.equal(entry.message,undefined);
   assert.equal(source.years[0].entries.find(e=>e.creatorId==='soh_style_work').submissionStatus,'pending');
   assert.equal(source.years[0].entries.find(e=>e.creatorId==='imota14').submissionStatus,'submitted');
-  assert.equal(source.creators.some(c=>c.id==='glossy_guppy6230'),false);
+  assert.equal(source.years[0].entries.find(e=>e.creatorId==='glossy_guppy6230').submissionStatus,'pending');
   assert.deepEqual(source.evergreenEntries,[]);
 });
 
@@ -93,7 +95,7 @@ test('empty year and roster are valid',()=>{assert.doesNotThrow(()=>validateArch
 test('duplicate creators, duplicate annual entries, unknown IDs, duplicate years reject',()=>{for(const change of [d=>d.creators.push(d.creators[0]),d=>d.years[0].entries.push(d.years[0].entries[0]),d=>d.years[0].entries[0].creatorId='missing',d=>d.years.push(d.years[0])]){const d=structuredClone(source);change(d);assert.throws(()=>validateArchive(d));}});
 test('planned slots are optional nonnegative integers and do not create entries',()=>{
   for(const value of [-1,1.5,101,'2',null]){const data=structuredClone(source);data.years[0].plannedSlots=value;assert.throws(()=>validateArchive(data));}
-  for(const value of [0,2,100]){const data=structuredClone(source);data.years[0].plannedSlots=value;assert.equal(validateArchive(data).years[0].entries.length,11);}
+  for(const value of [0,2,100]){const data=structuredClone(source);data.years[0].plannedSlots=value;assert.equal(validateArchive(data).years[0].entries.length,14);}
   const data=structuredClone(source);delete data.years[0].plannedSlots;assert.doesNotThrow(()=>validateArchive(data));
 });
 test('malformed profile field types reject',()=>{for(const key of ['avatar','avatarSource','profileURL']){const data=structuredClone(source);data.creators[0][key]={url:'bad'};assert.throws(()=>validateArchive(data));}});
@@ -104,7 +106,7 @@ test('the one requested owner work placeholder is a separate door, with no inven
  const extra=source.years[0].entries.find(e=>e.doorId==='owner-work-2026');
  assert.deepEqual(extra,{doorId:'owner-work-2026',creatorId:'ss_yr',theme:'letter',submissionStatus:'pending',title:'作品準備中',tags:['参加者','作品準備中'],links:[]});
  assert.equal(source.years[0].entries.filter(e=>e.role==='host').length,1);
- assert.equal(new Set(source.years[0].entries.map(e=>e.creatorId)).size,10);
+ assert.equal(new Set(source.years[0].entries.map(e=>e.creatorId)).size,13);
 });
 test('door IDs survive reordered and retitled legacy entries, and distinguish same-creator articles',()=>{
  const entry=source.years[0].entries[0],scope='archive:2026';
@@ -117,3 +119,13 @@ test('door IDs survive reordered and retitled legacy entries, and distinguish sa
 });
 
 test("verified Takechi work is submitted without altering skipped Marimo or owner placeholder",()=>{const e=source.years[0].entries.find(e=>e.creatorId==="imota14");assert.equal(e.title,"死神と貴公子と、顔に張り紙を貼った私。");assert.equal(e.submissionStatus,"submitted");assert.equal(e.links[0].url,"https://note.com/imota14/n/n618813fb0e89");assert.match(e.image,/324418285/);assert.equal(source.years[0].entries.find(e=>e.creatorId==="soh_style_work").submissionStatus,"pending");assert.deepEqual(source.years[0].entries.find(e=>e.doorId==="owner-work-2026").links,[]);});
+
+// These three people were requested as participants, not as submitted works.
+test('new participant doors remain pending and exclude unrelated Tantan work',()=>{
+ for(const id of ['glossy_guppy6230','aihan_days','cheeky_rhino7031']){
+  const entries=source.years[0].entries.filter(e=>e.creatorId===id);assert.equal(entries.length,1);
+  const e=entries[0];assert.equal(e.submissionStatus,'pending');assert.equal(e.image,undefined);assert.equal(e.works,undefined);assert.equal(e.message,undefined);
+  assert.deepEqual(e.links,[{title:'noteプロフィールを見る',url:`https://note.com/${id}`}]);
+ }
+ assert.doesNotMatch(JSON.stringify(source),/キャラクターを変身させたら物語が生まれた/);
+});

@@ -70,6 +70,27 @@
       "avatar": "https://assets.st-note.com/production/uploads/images/292743934/profile_f29fb47a7423a0ddcbd3f4bd4b498a35.png?fit=bounds&format=jpeg&quality=85&width=330",
       "avatarSource": "https://assets.st-note.com/production/uploads/images/292743934/profile_f29fb47a7423a0ddcbd3f4bd4b498a35.png?fit=bounds&format=jpeg&quality=85&width=330",
       "profileURL": "https://note.com/clever_hare2654"
+    },
+    {
+      "id": "glossy_guppy6230",
+      "name": "🍞たんたん🐼",
+      "avatar": "https://assets.st-note.com/production/uploads/images/318256859/profile_d2fbdcbda06d06e5d51adea51865b4a6.jpeg?fit=bounds&format=jpeg&quality=85&width=330",
+      "avatarSource": "https://assets.st-note.com/production/uploads/images/318256859/profile_d2fbdcbda06d06e5d51adea51865b4a6.jpeg?fit=bounds&format=jpeg&quality=85&width=330",
+      "profileURL": "https://note.com/glossy_guppy6230"
+    },
+    {
+      "id": "aihan_days",
+      "name": "あいはん",
+      "avatar": "https://assets.st-note.com/production/uploads/images/318226325/profile_f65224485bea2e310e8667b5c1ff9f46.png?width=80&height=80&dpr=2",
+      "avatarSource": "https://assets.st-note.com/production/uploads/images/318226325/profile_f65224485bea2e310e8667b5c1ff9f46.png?width=80&height=80&dpr=2",
+      "profileURL": "https://note.com/aihan_days"
+    },
+    {
+      "id": "cheeky_rhino7031",
+      "name": "ロキろん",
+      "avatar": "https://assets.st-note.com/production/uploads/images/281429856/profile_394e2eb8124ebdada2bc028db6563ed2.png?fit=bounds&format=jpeg&quality=85&width=330",
+      "avatarSource": "https://assets.st-note.com/production/uploads/images/281429856/profile_394e2eb8124ebdada2bc028db6563ed2.png?fit=bounds&format=jpeg&quality=85&width=330",
+      "profileURL": "https://note.com/cheeky_rhino7031"
     }
   ],
   "years": [
@@ -100,6 +121,18 @@
           ],
           "role": "host",
           "submissionStatus": "introduction"
+        },
+        {
+          "doorId": "owner-work-2026",
+          "creatorId": "ss_yr",
+          "theme": "letter",
+          "submissionStatus": "pending",
+          "title": "作品準備中",
+          "tags": [
+            "参加者",
+            "作品準備中"
+          ],
+          "links": []
         },
         {
           "creatorId": "koakumako",
@@ -242,18 +275,6 @@
           ]
         },
         {
-          "doorId": "owner-work-2026",
-          "creatorId": "ss_yr",
-          "theme": "letter",
-          "submissionStatus": "pending",
-          "title": "作品準備中",
-          "tags": [
-            "参加者",
-            "作品準備中"
-          ],
-          "links": []
-        },
-        {
           "doorId": "chamomile-halloween-2026",
           "creatorId": "clever_hare2654",
           "title": "「🧙‍♀Happy Halloween🎃」｜ハロウィン企画に参加してみた話",
@@ -275,6 +296,54 @@
           ],
           "image": "https://assets.st-note.com/production/uploads/images/324417758/rectangle_large_type_2_71b577e1ed8ffdaeecd1af87bd58ecab.jpeg?width=1200",
           "imageAlt": "カモミールの記事「「🧙‍♀Happy Halloween🎃」｜ハロウィン企画に参加してみた話」の見出し画像"
+        },
+        {
+          "creatorId": "glossy_guppy6230",
+          "title": "作品準備中",
+          "theme": "forest",
+          "submissionStatus": "pending",
+          "tags": [
+            "参加者",
+            "作品準備中"
+          ],
+          "links": [
+            {
+              "title": "noteプロフィールを見る",
+              "url": "https://note.com/glossy_guppy6230"
+            }
+          ]
+        },
+        {
+          "creatorId": "aihan_days",
+          "title": "作品準備中",
+          "theme": "star",
+          "submissionStatus": "pending",
+          "tags": [
+            "参加者",
+            "作品準備中"
+          ],
+          "links": [
+            {
+              "title": "noteプロフィールを見る",
+              "url": "https://note.com/aihan_days"
+            }
+          ]
+        },
+        {
+          "creatorId": "cheeky_rhino7031",
+          "title": "作品準備中",
+          "theme": "violet",
+          "submissionStatus": "pending",
+          "tags": [
+            "参加者",
+            "作品準備中"
+          ],
+          "links": [
+            {
+              "title": "noteプロフィールを見る",
+              "url": "https://note.com/cheeky_rhino7031"
+            }
+          ]
         }
       ]
     }

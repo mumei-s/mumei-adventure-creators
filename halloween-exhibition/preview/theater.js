@@ -146,7 +146,8 @@ document.addEventListener('keydown',e=>{if(!archive||root.dataset.palaceState!==
 installGalleryGesture($('stage'),{onNavigate:direction=>adjacentDoor(direction),onSuppressClick:()=>{suppressClickUntil=Date.now()+500;}});
 $('retry').addEventListener('click',load);$('mode-halloween').addEventListener('click',()=>setMode('halloween'));$('mode-normal').addEventListener('click',()=>setMode('normal'));$('horror-entrance').addEventListener('click',()=>{try{sessionStorage.setItem(returnStateKey,JSON.stringify({year:currentYear,creatorId:current()?.creatorId,doorId:current()?.doorId,search,activeTag,rosterPage}));}catch{}});setMode(displayMode,{save:false});
 root.addEventListener('yearbook:seal-collected',event=>{const id=event.detail?.id;if(displayMode!=='halloween'||!currentYear||!sealIDs.includes(id)||seals().includes(id))return;progress.seals[key()]=[...seals(),id];persist();refreshSeals();});
-initVisitorPreferences({triggerParent:document.querySelector('.header-actions'),onBrightness:value=>root.style.setProperty('--visitor-brightness',String(value/100))});
+initVisitorPreferences({triggerParent:document.querySelector('.header-actions'),onBrightness:value=>{root.style.setProperty('--visitor-brightness',String(value/100));root.style.setProperty('--art-brightness',String(value/75));}});
+const colorNote=node('p','記事画像の明るさ75%が元の色です。背景の明るさを変えても、文字のコントラストは保たれます。','visitor-settings-note');document.querySelector('.visitor-preferences')?.append(colorNote);
 const installControl=$('atelier-install-open');if(installControl)document.querySelector('.visitor-preferences')?.append(installControl);
 initDisplayMode({controlsParent:document.querySelector('.visitor-preferences'),page:'gallery'});
 const sceneMotion=initSceneMotion(root,{controlsParent:document.querySelector('.visitor-preferences')});

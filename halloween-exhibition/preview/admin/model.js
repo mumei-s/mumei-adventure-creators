@@ -1,6 +1,6 @@
 import {doorIdFor,validDoorId} from '../data-model.js?v=20261014-doors1';
 
-export const CREATOR_IDS=['ss_yr','koakumako','n_kazumai55633','mama_ca','naemotion','imota14','fond_holly3483','tenkai_notes','soh_style_work','clever_hare2654'];
+export const CREATOR_IDS=['ss_yr','koakumako','n_kazumai55633','mama_ca','naemotion','imota14','fond_holly3483','tenkai_notes','soh_style_work','clever_hare2654','glossy_guppy6230','aihan_days','cheeky_rhino7031'];
 export const STORAGE_KEY='halloween-exhibition:article-editor:v1';
 export const clone=x=>JSON.parse(JSON.stringify(x));
 export function safeURL(value,image=false){if(typeof value!=='string'||/[\u0000-\u001f\\]/.test(value))return null;const s=value.trim();if(image&&/^(?:\.\/)?assets\/[\w./-]+$/.test(s)&&!s.split('/').includes('..'))return s;try{const u=new URL(s);return u.protocol==='https:'&&!u.username&&!u.password?u.href:null;}catch{return null;}}
@@ -13,7 +13,7 @@ function isCreatorProfile(e,link){if(!safeURL(link?.url))return false;const url=
 export function getPrimaryLink(e){const first=e.links?.[0];if(first)return e.submissionStatus==='pending'&&isCreatorProfile(e,first)?null:first;return !e.doorId&&e.submissionStatus!=='pending'?e.works?.[0]||null:null;}
 export function getExtraLinks(e){return e.submissionStatus==='pending'&&isCreatorProfile(e,e.links?.[0])?e.links||[]:(e.links||[]).slice(1);}
 export function getURL(e,horror=false){return horror?e.url:getPrimaryLink(e)?.url||'';}
-function creators(data){if(!Array.isArray(data.creators)||![CREATOR_IDS.length-1,CREATOR_IDS.length].includes(data.creators.length)||new Set(data.creators.map(c=>c.id)).size!==data.creators.length||CREATOR_IDS.slice(0,-1).some(id=>!data.creators.some(c=>c.id===id))||data.creators.some(c=>!CREATOR_IDS.includes(c.id)))fail('参加者は登録済みの参加者IDを保ってください。');for(const c of data.creators)if(typeof c.name!=='string'||!c.name.trim())fail('参加者名が必要です。');}
+function creators(data){if(!Array.isArray(data.creators)||(data.creators.length<9||data.creators.length>CREATOR_IDS.length)||new Set(data.creators.map(c=>c.id)).size!==data.creators.length||CREATOR_IDS.slice(0,9).some(id=>!data.creators.some(c=>c.id===id))||data.creators.some(c=>!CREATOR_IDS.includes(c.id)))fail('参加者は登録済みの参加者IDを保ってください。');for(const c of data.creators)if(typeof c.name!=='string'||!c.name.trim())fail('参加者名が必要です。');}
 function entry(e,horror=false){
   if(!e||!CREATOR_IDS.includes(e.creatorId))fail('参加者IDが不正です。');
   for(const key of ['title','message','description','image','imageAlt','theme','kind'])if(e[key]!==undefined&&typeof e[key]!=='string')fail(`${key}は文字列が必要です。`);

@@ -53,3 +53,19 @@ body[data-layout-page=gallery] .theater .stage-caption .host-avatar {
 body[data-layout-page=gallery] .theater .stage-caption .host-avatar[hidden] {display:none}
 body[data-layout-page=gallery] .theater[data-entry-kind=introduction] .room-kicker {color:#ffe1a5;letter-spacing:.16em;font-size:11px;line-height:1.6}
 body[data-layout-page=gallery] .theater[data-entry-kind=introduction] #creator-name>small {background:none;border:0;color:#e4cba2}
+
+/* Original article colors have a neutral 75% baseline, independent of scenery. */
+#theater .stage {z-index:4}
+#theater .room-world > .artwork-frame {filter:none!important;isolation:isolate;z-index:12}
+#theater .artwork-mat {background:#f4f4f4!important;mix-blend-mode:normal;opacity:1}
+#theater .artwork-mat:after {display:none}
+#theater .artwork-mat img {filter:brightness(var(--art-brightness,1));mix-blend-mode:normal;background:#f4f4f4;opacity:1}
+#theater[data-portrait=false] .portal-doors {display:none}
+#theater .stage-caption {position:relative;z-index:12;background:#171b2cf5;color:#fff3de;border-radius:16px;padding:12px 16px;text-shadow:none}
+#theater #creator-name>span {color:#f2e6d3}
+#theater #creator-name>small {color:#e8d4b4;background:#172536}
+#theater[data-mode=normal] .stage-caption {background:#f7faf2fa;color:#244537}
+#theater[data-mode=normal] #creator-name>span,#theater[data-mode=normal] #creator-name>small {color:#315546;background:transparent}
+body[data-layout-page=gallery] .theater .chapter-index {display:none}
+body[data-layout-page=gallery] .theater .stage-footer {grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"faces faces" "playback roulette" "status status" "hint hint"}
+body[data-layout-page=gallery] .theater[data-mode=normal] .stage-footer {grid-template-areas:"faces faces" "playback playback" "status status" "hint hint"}

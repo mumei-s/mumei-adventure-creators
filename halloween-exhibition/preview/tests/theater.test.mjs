@@ -158,13 +158,13 @@ test('initial load renders all real article doors and creators', async () => {
   assert.doesNotMatch(h.$('detail-content').textContent, /架空の参加者|展示サンプル/);
 });
 
-test('expanded roster renders all eight confirmed submissions with their own art and links', async () => {
-  assert.equal(creatorCount, 14);
-  assert.equal(doorCount, 15);
+test('expanded roster renders all nine confirmed submissions with their own art and links', async () => {
+  assert.equal(creatorCount, 15);
+  assert.equal(doorCount, 16);
   assert.equal(pendingCount, 6);
   assert.equal(annualEntries.filter(entry => entry.submissionStatus === 'introduction').length, 1);
   const submitted = annualEntries.filter(entry => entry.submissionStatus === 'submitted');
-  assert.deepEqual(new Set(submitted.map(entry => entry.creatorId)), new Set(['koakumako', 'imota14', 'clever_hare2654', 'fond_holly3483', 'aihan_days', 'mama_ca', 'naemotion', 'soh_style_work']));
+  assert.deepEqual(new Set(submitted.map(entry => entry.creatorId)), new Set(['koakumako', 'imota14', 'clever_hare2654', 'fond_holly3483', 'aihan_days', 'mama_ca', 'naemotion', 'soh_style_work', 'real_hyena9474']));
   const h = await harness();
   for (const entry of submitted) {
     await h.api.navigate(annualEntries.indexOf(entry));

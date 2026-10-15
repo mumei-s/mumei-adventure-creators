@@ -98,6 +98,13 @@
       "avatar": "https://assets.st-note.com/production/uploads/images/273849383/profile_adc57e6cad51fd8b4c335b93f52b9a31.png?fit=bounds&format=jpeg&quality=85&width=330",
       "avatarSource": "https://assets.st-note.com/production/uploads/images/273849383/profile_adc57e6cad51fd8b4c335b93f52b9a31.png?fit=bounds&format=jpeg&quality=85&width=330",
       "profileURL": "https://note.com/grand_daisy8632"
+    },
+    {
+      "id": "real_hyena9474",
+      "name": "アイリス｜AIで眠る物語を形にする",
+      "avatar": "https://assets.st-note.com/production/uploads/images/274163002/profile_53ed201190910b3e84f2f77c5074f084.png?fit=bounds&format=jpeg&quality=85&width=330",
+      "avatarSource": "https://assets.st-note.com/production/uploads/images/274163002/profile_53ed201190910b3e84f2f77c5074f084.png?fit=bounds&format=jpeg&quality=85&width=330",
+      "profileURL": "https://note.com/real_hyena9474"
     }
   ],
   "years": [
@@ -397,6 +404,28 @@
               "url": "https://note.com/grand_daisy8632"
             }
           ]
+        },
+        {
+          "creatorId": "real_hyena9474",
+          "title": "かぼちゃの灯りがともる、アイリスのハロウィン",
+          "theme": "violet",
+          "submissionStatus": "submitted",
+          "tags": [
+            "参加者",
+            "ハロウィン"
+          ],
+          "links": [
+            {
+              "title": "かぼちゃの灯りがともる、アイリスのハロウィン（note記事）",
+              "url": "https://note.com/real_hyena9474/n/nde7d4a19044d"
+            },
+            {
+              "title": "noteプロフィールを見る",
+              "url": "https://note.com/real_hyena9474"
+            }
+          ],
+          "image": "https://assets.st-note.com/production/uploads/images/324726369/rectangle_large_type_2_b178b2a36b7ca097bf1ac87a6049a965.png?fit=bounds&quality=85&width=1280",
+          "imageAlt": "アイリスの記事「かぼちゃの灯りがともる、アイリスのハロウィン」の見出し画像"
         }
       ]
     }

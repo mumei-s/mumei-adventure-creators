@@ -96,4 +96,6 @@ async function registerPreviewWorker() {
     status.textContent = 'この環境ではオフライン用の保存を利用できません。オンラインでご覧ください。';
   }
 }
-registerPreviewWorker();
+// Keep shell precaching off the first castle image and archive critical path.
+function schedulePreviewWorker(){if('requestIdleCallback' in window)window.requestIdleCallback(()=>registerPreviewWorker(),{timeout:5000});else setTimeout(()=>registerPreviewWorker(),1500);}
+if(document.readyState==='complete')schedulePreviewWorker();else window.addEventListener('load',schedulePreviewWorker,{once:true});

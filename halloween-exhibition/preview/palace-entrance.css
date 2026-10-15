@@ -140,12 +140,12 @@ body[data-mode=normal] .visitor-preferences>.pwa-open{background:#edf4e8;color:#
 .palace-gate-invitation{padding:7px 12px;top:calc(100% + 10px);font-size:clamp(16px,1.7vw,24px)}
 .palace-gate-hint{padding:5px 10px;top:calc(100% + 56px);font-size:11px}
 .palace-scene-note{left:50%;right:auto;transform:translateX(-50%);width:max-content;max-width:calc(100% - 32px);bottom:8px;padding:5px 14px;font-size:11px;letter-spacing:.1em}
-.palace-eerie-corner{position:absolute;left:3%;bottom:9%;width:clamp(115px,17vw,245px);height:clamp(105px,18vw,245px);z-index:8;overflow:hidden;pointer-events:none;border-radius:48% 48% 3px 3px;isolation:isolate}
-.eerie-fog{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 80%,#172c2edf,#18212c66 50%,transparent 72%);filter:blur(2px);animation:palace-eerie-mist 8s ease-in-out infinite}
-.palace-eerie-corner>img{position:absolute;width:68%;height:auto;bottom:-23%;filter:drop-shadow(0 4px 7px #03070ae0);animation:palace-corner-peek 8s ease-in-out infinite;transform-origin:center bottom}
-.eerie-franken{left:-6%;z-index:2}.palace-eerie-corner>.eerie-zombie{right:-9%;width:61%;bottom:-15%;animation-delay:-4s;z-index:1}
-.eerie-parapet{position:absolute;left:0;right:0;bottom:-1px;height:27%;z-index:3;background:linear-gradient(0deg,#15202e,#273342 65%,#4c5c62 68%,#202a36 80%);border-top:3px solid #5e706d;border-radius:6px 6px 0 0;box-shadow:0 -6px 18px #12192666}
-.eerie-parapet:after{content:'';position:absolute;inset:15% 0 0;background:repeating-linear-gradient(90deg,transparent 0 23%,#10192399 24% 25%);opacity:.65}
+
+
+
+
+
+
 .palace-bats span{display:block;width:clamp(34px,5.7vw,80px);height:clamp(34px,5.7vw,80px);animation:palace-bat-flight 7.5s ease-in-out infinite;filter:drop-shadow(0 4px 5px #11102699)}
 .palace-bats span:before,.palace-bats span:after{display:none}
 .palace-bats span img{width:100%;height:100%;object-fit:contain;animation:palace-bat-wings .72s ease-in-out infinite;transform-origin:50% 60%}
@@ -172,7 +172,7 @@ body[data-mode=normal] .visitor-preferences>.pwa-open{background:#edf4e8;color:#
  .palace-gate-hint{left:-60%;right:-60%;font-size:10px;padding:4px 8px;top:calc(100% + 45px)}
  .palace-scene-note{font-size:10px;padding:4px 12px;bottom:7px}
  .palace-gate-wrap{z-index:10}
- .palace-eerie-corner{left:1%;top:30%;bottom:auto;width:90px;height:100px}
+ 
  .palace-bats span:nth-child(1){left:10%;top:27%}.palace-bats span:nth-child(2){right:13%;top:21%}.palace-bats span:nth-child(3){right:25%;top:31%}
  .theater .palace-return-row{margin-inline:12px;gap:8px}.theater .palace-return-row .horror-entrance{font-size:10px;padding-inline:10px}.palace-return{font-size:11px;padding-inline:12px}
 }
@@ -189,9 +189,32 @@ body[data-mode=normal] .visitor-preferences>.pwa-open{background:#edf4e8;color:#
  .palace-gate-hint{left:-60%;right:-60%;font-size:10px;padding:4px 8px;top:calc(100% + 45px)}
  .palace-scene-note{font-size:10px;padding:4px 12px;bottom:7px}
  .palace-gate-wrap{z-index:10}
- .palace-eerie-corner{left:1%;top:30%;bottom:auto;width:90px;height:100px}
+ 
  .palace-bats span:nth-child(1){left:10%;top:27%}.palace-bats span:nth-child(2){right:13%;top:21%}.palace-bats span:nth-child(3){right:25%;top:31%}
  .theater .palace-return-row{margin-inline:12px;gap:8px}.theater .palace-return-row .horror-entrance{font-size:10px;padding-inline:10px}.palace-return{font-size:11px;padding-inline:12px}
 }
 @media(prefers-reduced-motion:reduce){.palace-entrance *{animation:none!important;transition:none!important}}
 .theater[data-motion-paused=true] .palace-entrance *,body[data-ambient-paused=true] .palace-entrance *{animation:none!important;transition:none!important}
+
+/* Compact entrance: keep all three captions inside the viewport, leaving the approach visible. */
+body[data-layout-page=gallery] .theater:not([data-palace-state=gallery]) .palace-entrance{height:calc(100svh - var(--palace-header-height,180px));min-height:230px;flex:1 1 auto}
+.palace-art{display:block;background-position:center;background-size:100% 100%;background-repeat:no-repeat}
+.palace-art>img{display:block;width:100%;height:100%;object-fit:fill}
+.palace-caption-stack{position:absolute;z-index:12;bottom:8px;left:50%;transform:translateX(-50%);width:min(62%,330px);display:flex;flex-direction:column;align-items:stretch;gap:3px;pointer-events:none}
+.palace-caption-stack>p{position:static;inset:auto;transform:none;width:auto;max-width:none;margin:0;padding:3px 7px;letter-spacing:.02em;border-radius:12px;line-height:1.25;text-align:center;background:#101225dc;box-shadow:0 2px 8px #08061355}
+.palace-caption-stack>.palace-gate-invitation{font-size:clamp(12px,1.5vw,19px)}
+.palace-caption-stack>.palace-gate-hint,.palace-caption-stack>.palace-scene-note{font-size:clamp(9px,1vw,11px)}
+.palace-path-walkers{position:absolute;inset:0;z-index:8;pointer-events:none;overflow:hidden}
+.path-walker{position:absolute;bottom:3%;width:clamp(45px,8vw,115px);height:clamp(70px,12vw,160px);animation:palace-path-stroll 13s ease-in-out infinite;transform-origin:50% 100%;filter:drop-shadow(0 5px 4px #08041588)}
+.path-walker img,.path-walker svg{display:block;width:100%;height:100%;object-fit:contain;animation:palace-walking-step .65s ease-in-out infinite}
+.path-franken{left:6%;--walk-x:18px;animation-delay:-2s}.path-zombie{right:5%;--walk-x:-16px;animation-delay:-7s}.path-werewolf{left:19%;bottom:12%;width:clamp(30px,5vw,72px);height:clamp(48px,8vw,100px);--walk-x:-12px;animation-delay:-10s}
+.palace-load-status{position:absolute;top:12px;left:50%;transform:translateX(-50%);z-index:15;margin:0;padding:7px 12px;border-radius:99px;background:#171329eb;color:#fff4cf;font-size:12px;text-align:center;pointer-events:none}
+.theater[data-palace-ready=ready] .palace-load-status{display:none}
+.theater[data-palace-ready=loading] .palace-path-walkers{visibility:hidden}
+@keyframes palace-path-stroll{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(var(--walk-x),-28px) scale(.83)}}
+@keyframes palace-walking-step{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-4px) rotate(3deg)}}
+@media(max-height:480px) and (orientation:landscape){.palace-caption-stack{width:min(36%,300px);gap:1px;bottom:4px}.palace-caption-stack>p{padding-block:1px;font-size:9px}.palace-caption-stack>.palace-gate-invitation{font-size:11px}.path-walker{height:58px;width:40px}}
+@media(prefers-reduced-motion:reduce){.palace-path-walkers *{animation:none!important}}
+.theater[data-motion-paused=true] .palace-path-walkers *,body[data-ambient-paused=true] .palace-path-walkers *{animation:none!important}
+
+.visitor-preferences>.display-preferences:first-child{margin-top:0;padding-top:0;border-top:0}

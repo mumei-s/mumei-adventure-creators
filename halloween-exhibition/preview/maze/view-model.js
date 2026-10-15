@@ -9,3 +9,8 @@ export function movementVector(view, yaw, forward, right, speed) {
     dz:(-Math.cos(yaw)*forward-Math.sin(yaw)*right)/length*speed,
   };
 }
+
+// North stays at the top in both views; the pointer follows the player.
+export function mapHeading(view,yaw,facing){
+  return view==='2d'?({up:0,right:Math.PI/2,down:Math.PI,left:-Math.PI/2}[facing]??0):-yaw;
+}

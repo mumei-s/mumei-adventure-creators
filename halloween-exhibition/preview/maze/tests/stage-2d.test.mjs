@@ -30,5 +30,5 @@ test('touch controls occupy a separate dock, including compact settings and exit
 test('renderer is separate from overview map and invalidates on resize/mode change',()=>{
   assert(app.includes("stageRenderer.render({canvas:$('fallback')"));assert(app.includes("drawMap($('mini'))"));
   assert(app.includes('stageRenderer?.invalidate()'));assert(app.includes('motion:motion&&!reducedMotion.matches'));
-  assert(html.includes('href="./stage-2d.css?v=20261014-adventure2"'));assert(css.includes(':is(.vignette,.minimap,#crosshair)')); 
+  assert(html.includes('href="./stage-2d.css?v=20261014-adventure2"'));assert(css.includes(':is(.vignette,#crosshair)')); 
 });

@@ -70,7 +70,7 @@ function drawFrame(c,x,y,ghost=false){ellipse(c,x,y+25,31,9,'#0b06177f');rounded
 function drawGate(c,state){const x=FEATURES.gate.x*TILE,y=FEATURES.gate.z*TILE;
   glow(c,x,y,125,state.unlocked?'#60c1a124':'#d4a55820');
   if(!state.unlocked){for(let i=-5;i<=5;i++){rounded(c,x+i*18-3,y-20,6,45,2,'#bd9563','#392741');path(c,p=>{p.moveTo(x+i*18-6,y-20);p.lineTo(x+i*18,y-31);p.lineTo(x+i*18+6,y-20);p.closePath();},'#d6b27a');}rounded(c,x-101,y-2,202,5,2,'#c7a174');rounded(c,x-12,y-8,24,25,5,'#e4b365','#3c2943');ellipse(c,x,y+3,3,4,'#5d3f44');}
-  plaque(c,state.unlocked?'OPEN · 浮遊書庫':'鍵でひらく · 浮遊書庫',x,y-53,175);
+  plaque(c,state.unlocked?'解錠済み｜浮遊書庫':state.hasKey?'解錠できる｜浮遊書庫':'鍵が必要｜浮遊書庫',x,y-53,175);
 }
 function drawKey(c,state){if(state.hasKey)return;const x=FEATURES.key.x*TILE,y=FEATURES.key.z*TILE;glow(c,x,y,58,'#ffd67555');ellipse(c,x,y+25,32,15,'#151024aa');ellipse(c,x,y+10,28,16,'#655565');ellipse(c,x,y+5,28,16,'#a17c6c');c.save();c.translate(x,y-10);c.rotate(-.55);c.strokeStyle='#ffe6a1';c.lineWidth=7;c.beginPath();c.arc(0,-16,11,0,TAU);c.stroke();c.beginPath();c.moveTo(0,-4);c.lineTo(0,24);c.lineTo(12,24);c.moveTo(0,15);c.lineTo(9,15);c.stroke();c.restore();plaque(c,'書庫の鍵',x,y+51,95);}
 function drawExit(c){const x=EXIT.x*TILE,y=EXIT.z*TILE;glow(c,x,y-5,75,'#83bba333');rounded(c,x-36,y-20,72,55,11,'#18232a','#9abea5');rounded(c,x-28,y-14,56,43,7,'#31534d','#bad2a6');c.fillStyle='#c4b786';c.fillRect(x-2,y-14,3,43);ellipse(c,x+9,y+10,3,3,'#f6d992');plaque(c,'EXIT · 名鑑へ',x,y+51,124);}

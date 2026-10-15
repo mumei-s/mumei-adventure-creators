@@ -1,7 +1,7 @@
 /* Same compact frame and centered circular controls in both playable modes. */
 body[data-view] #game,body[data-layout][data-view] #game{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:52px 44px 34px minmax(0,1fr) 120px 24px;height:100svh;min-height:480px;isolation:isolate;padding:var(--safe-top,0px) var(--safe-right,0px) var(--safe-bottom,0px) var(--safe-left,0px);background:#111b2a}
 body[data-view] :is(#world,#fallback){position:relative!important;inset:auto!important;grid-area:4/1;display:block;width:100%!important;height:100%!important;min-width:0!important;min-height:0!important;max-width:none!important;max-height:none!important;aspect-ratio:auto!important;transform:none!important;border:0;border-radius:0;z-index:1;touch-action:none}
-body[data-view] :is(.vignette,.minimap,#crosshair){display:none!important}
+body[data-view] :is(.vignette,#crosshair){display:none!important}
 body[data-view] header{position:relative!important;inset:auto!important;grid-area:1/1;display:flex;align-items:center;flex-wrap:nowrap;padding:3px 194px 3px 10px;gap:5px;z-index:2;background:#141d2a;border-bottom:1px solid #b59a6044}
 body[data-view] .brand{min-width:0;min-height:44px;gap:0;color:#f0d3ac}body[data-view] .brand>span{display:none}body[data-view] .brand b{font:600 13px/1.25 "Yu Gothic",sans-serif;letter-spacing:.1px;white-space:nowrap}body[data-view] .brand small{font:8px/1.2 sans-serif;letter-spacing:.5px;margin-top:5px}body[data-view] header nav{display:none!important}
 body[data-view] #menu-open{display:block;position:absolute;right:8px;top:4px;width:72px;min-height:44px;font-size:12px}
@@ -53,3 +53,32 @@ body[data-view] #toast{bottom:170px}
 @keyframes maze-keeper-sway{from{transform:translateX(0) rotate(-2deg)}to{transform:translateX(-10px) rotate(2deg)}}
 @keyframes maze-glow{from{opacity:.4}to{opacity:1}}
 @media(prefers-reduced-motion:reduce){#loading *{animation:none!important}}
+
+
+/* Persistent north-up map occupies only the scene corner, never the controls. */
+body[data-view] .minimap{
+ position:relative!important;inset:auto!important;grid-area:4/1;align-self:start;justify-self:end;
+ display:flex!important;flex-direction:column;pointer-events:auto;width:108px;height:auto;
+ margin:8px;padding:5px;z-index:3;border-radius:12px;border:1px solid #e9c58b99;
+ background:#110d20ed;box-shadow:0 4px 14px #0006;touch-action:manipulation;
+}
+body[data-view] .minimap canvas{display:block;width:96px;height:96px;border-radius:5px}
+body[data-view] .minimap span{margin:2px 0;font:10px/1.3 sans-serif;letter-spacing:0;color:#ffe4b8}
+body[data-view] .minimap .map-north{align-self:center;font-weight:700}
+@media(min-width:750px) and (min-height:600px){
+ body[data-view] .minimap{width:140px}
+ body[data-view] .minimap canvas{width:128px;height:128px}
+}
+@media(max-height:580px) and (orientation:landscape){
+ body[data-view] #game,body[data-layout][data-view] #game{min-height:320px;grid-template-columns:minmax(0,1fr) 260px;grid-template-rows:44px 44px 28px minmax(0,1fr) 24px}
+ body[data-view] header{grid-area:1/1/2/3}
+ body[data-view] .mode-bar{grid-area:2/1/3/3}
+ body[data-view] .place{grid-area:3/1/4/3}
+ body[data-view] :is(.move-pad,.encounter-help,.nearby){grid-area:4/2}
+ body[data-view] footer{grid-area:5/1/6/3}
+ body[data-view] .encounter-help{justify-self:start;margin-left:0;width:62px;padding-left:4px}
+ body[data-view] .nearby{justify-self:end;margin-right:4px;width:62px!important}
+ body[data-view] .minimap{width:84px;margin:4px;padding:3px}
+ body[data-view] .minimap canvas{width:76px;height:76px}
+ body[data-view] .minimap span{font-size:9px;line-height:1.1;margin:1px 0}
+}

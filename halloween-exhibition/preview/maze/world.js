@@ -2,7 +2,7 @@ import {ART_FILES,ART_BOUNDS,ART_ANCHORS,PALACE_ART} from './rpg-art.js?v=202610
 import * as THREE from './vendor/three.module.js';
 import { MAP, CELL, FEATURES, toWorld } from './maze-model.js?v=20261014-adventure2';
 import { NIGHT_LIGHTING } from './lighting-model.js?v=20261014-adventure2';
-import { MONSTERS, monsterAvailable, monsterPose } from './encounter-model.js?v=20261016-creator-rpg1';
+import { MONSTERS, monsterAvailable, monsterPose } from './encounter-model.js?v=20261016-battle-visible1';
 
 // All architectural objects live in world space. Camera motion, collision and
 // interaction remain in the controller, making the gallery usable with keys,

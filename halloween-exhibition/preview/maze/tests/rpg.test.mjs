@@ -43,24 +43,25 @@ test('all thirteen core and six palace runtime assets exist and loader reports f
   const failed=createArtLibrary({loadImage:async()=>{throw Error('offline');}});await failed.ready;assert.equal(failed.version,0);assert.equal(failed.failures.length,19);
 });
 test('library accepts every genre with legacy collection ID and no invented submissions',()=>{
-  const app=read('app.js'),html=read('index.html');assert(html.includes('Halloween冒険室'));assert(app.includes('物語の書庫'));assert(app.includes('ジャンルを問わず'));assert(app.includes('記事の掲載状況とは別の一覧'));
+  const app=read('app.js'),html=read('index.html');assert(html.includes('無名S note / Halloween Atelier'));assert(!html.includes('Halloween冒険室'));assert(app.includes('物語の書庫'));assert(app.includes('ジャンルを問わず'));assert(app.includes('記事の掲載状況とは別の一覧'));
   assert(!app.includes('ホラーイラストの記事を、ここに。'));assert(!app.includes('ホラー別室'));
   const a=['イラスト','詩','エッセイ','旅の記録'].map((kind,i)=>({id:String(i),kind,collection:'horror'}));assert.equal(visibleArticles(a).length,4);
   assert.match(read('app.js'),/libraryFromArchive/);assert.match(read('app.js'),/\.\.\/data\/archive\.json/);
 });
 test('battle uses original scene, meaningful meters and motion-safe local action effects',()=>{
   const app=read('app.js'),scene=read('battle-scene.js'),css=read('rpg-ui.css');
-  assert(app.includes("battleCanvas=element('canvas'"));assert(app.includes("element('meter'"));assert(app.includes('battleEffect={type:action,...battle.lastAction,started:visualTime}'));assert(app.includes('battle.maxEnergy'));assert(app.includes('battle.maxSpirit'));assert(app.includes('battle.maxFocus'));assert(app.includes('commandFor(battle,action).disabled'));  
-  assert(scene.includes("if(effect&&motion&&age<1.2)"));assert(scene.includes("effect?.type==='guard'"));assert(scene.includes('art.images[battle.id]'));assert(!scene.includes('AudioContext'));
+  assert(app.includes("battleCanvas=element('canvas'"));assert(app.includes("element('meter'"));assert(app.includes('battleEffect={type:action,...battle.lastAction,started:visualTime,'));assert(app.includes('battle.maxEnergy'));assert(app.includes('battle.maxSpirit'));assert(app.includes('battle.maxFocus'));assert(app.includes('commandFor(battle,action).disabled'));  
+  assert(scene.includes("if(effect&&age<battleEffectDuration(effect.type,motion))"));assert(scene.includes("effect?.type==='guard'"));assert(scene.includes('art.images[battle.id]'));assert(!scene.includes('AudioContext'));
   assert(css.includes('min-height:44px'));assert(css.includes('@media(prefers-reduced-motion:reduce)'));assert(css.includes('animation:none!important'));
 });
 test('maze participates in shared layout preference and coherent cache release',()=>{
   const app=read('app.js'),html=read('index.html');const version='20261014-adventure2';
   assert(app.includes("initDisplayMode({controlsParent:visitorSection,page:'maze'})"));assert(app.includes("document.addEventListener('yearbook:layout-change'"));
   assert(app.includes(`../display-mode.js?v=${version}`));for(const name of ['visitor-preferences','display-mode'])assert(html.includes(`../${name}.css?v=${version}`));assert(app.includes('./adventure-audio.js?v=20261016-menu-audio1'));
-  for(const file of ['style','stage-2d'])assert(html.includes(`./${file}.css?v=${version}`));assert(html.includes('./rpg-ui.css?v=20261014-adventure2'));assert(html.includes('./app.js?v=20261016-creator-rpg1'));
+  for(const file of ['style','stage-2d'])assert(html.includes(`./${file}.css?v=${version}`));assert(html.includes('./rpg-ui.css?v=20261014-adventure2'));assert(html.includes('./app.js?v=20261016-battle-visible1'));
   const expected={'clear-reward':'20261015-clear1','walking-speed':'20261015-clear1','library-catalog':'20261015-clear1','view-model':'20261015-minimap1','game-input':'20261015-touch3','adventure-audio':'20261016-menu-audio1','sound-check':'20261015-music-garden1'};
   for(const module of ['ending-ui','stage-2d','world','battle-scene','story-model','encounter-model','rpg-art','creator-runtime','creator-ui'])expected[module]='20261016-creator-rpg1';
+  for(const module of ['minimap-size','ending-ui','stage-2d','world','battle-scene','story-model','encounter-model','creator-ui'])expected[module]='20261016-battle-visible1';
   for(const name of ['app.js','stage-2d.js','rpg-model.js','battle-scene.js','world.js','creator-ui.js','creator-runtime.js','encounter-model.js','ending-ui.js'])for(const match of read(name).matchAll(/(?:from\s+|import\()'((?:\.\/|\.\.\/)[^']+\.js[^']*)'/g)){const module=match[1].match(/([^/]+)\.js/)[1];if(match[1].startsWith('./vendor/'))continue;assert(match[1].endsWith('?v='+(expected[module]||version)),`${name}: ${match[1]}`);}
   assert(html.includes('viewport-fit=cover'));assert(html.includes('apple-touch-icon'));assert(html.includes('apple-mobile-web-app-capable'));assert(!app.includes('serviceWorker.register'));
 });

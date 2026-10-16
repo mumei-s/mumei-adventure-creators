@@ -3,13 +3,14 @@ export const STORY_MONSTER_IDS = Object.freeze(['pumpkin','ghost','zombie','vamp
 export const STORY = Object.freeze({
   title:'夜明けを綴る六つの灯',
   subtitle:'THE PALACE OF SIX LANTERNS',
+  protagonistName:'無名S note',
   protagonistRole:'宮殿の主',
   fictionLabel:'冒険の物語・住人の台詞はフィクションです。',
-  premise:'展示会の最後の夜。宮殿の「夜明けの鐘」から、六つの音が消えてしまった。宮殿の主であるあなたはランタンを手に、書庫に朝を取り戻す旅へ出る。',
+  premise:'展示会の最後の夜。宮殿の「夜明けの鐘」から、六つの音が消えてしまった。宮殿の主「無名S note」であるあなたはランタンを手に、書庫に朝を取り戻す旅へ出る。',
   opening:Object.freeze([
     Object.freeze({speaker:'語り',text:'最後の来客を見送るはずだった夜、宮殿の時計が十二時の手前で止まった。窓の向こうには、まだ来ない夜明け。'}),
     Object.freeze({speaker:'語り',text:'書庫からこぼれた物語の影が、六人の住人の大切な記憶を包んでいる。影をほどき、六つの「キャンディのしるし」を集めよう。'}),
-    Object.freeze({speaker:'冒険の手引き',text:'あなたはこの宮殿の主。住人に話しかけ、予告を読み、杖・ランタン・守りを使い分ける。まずは入口のカボチャの番人へ。東の鍵が、北の書庫への道をひらく。'}),
+    Object.freeze({speaker:'冒険の手引き',text:'あなたはこの宮殿の主、無名S note。住人に話しかけ、予告を読み、杖・ランタン・守りを使い分ける。まずは入口のカボチャの番人へ。東の鍵が、北の書庫への道をひらく。'}),
   ]),
   ending:'六つのしるしが、夜明けの鐘に六つの音を返した。遠くで一度だけ鐘が鳴り、書庫の窓が金色にほどける。宮殿の主が守ったのは、誰かの物語を迎え入れる場所だった。',
   endingDialogue:'「次のページは、明るいところで読もう。」住人たちが笑う。ここから先の物語は、展示された作品の中へ。',

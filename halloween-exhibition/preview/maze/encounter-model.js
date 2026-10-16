@@ -1,4 +1,4 @@
-import {encounterStory} from './story-model.js?v=20261016-creator-rpg1';
+import {encounterStory} from './story-model.js?v=20261016-battle-visible1';
 import {blocked} from './maze-model.js?v=20261014-adventure2';
 // Fictional stage characters only. Never derived from participant identities.
 export const MONSTERS = Object.freeze([

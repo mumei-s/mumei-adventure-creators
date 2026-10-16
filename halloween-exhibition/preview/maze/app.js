@@ -1,22 +1,23 @@
+import {initMinimapSize} from './minimap-size.js?v=20261016-battle-visible1';
 import {libraryFromArchive} from './library-catalog.js?v=20261015-clear1';
 import {WALKING_SPEED_KEY,normalizeWalkingSpeed,advanceWithSubsteps} from './walking-speed.js?v=20261015-clear1';
 import {createRewardStore,newRunId,eligibleForEnding} from './clear-reward.js?v=20261015-clear1';
-import {renderEnding} from './ending-ui.js?v=20261016-creator-rpg1';
+import {renderEnding} from './ending-ui.js?v=20261016-battle-visible1';
 import {createSoundCheck} from './sound-check.js?v=20261015-music-garden1';
 import {initAdventureAudio} from './adventure-audio.js?v=20261016-menu-audio1';
 import { initDisplayMode } from '../display-mode.js?v=20261014-adventure2';
 import { normalizeLighting } from './lighting-model.js?v=20261014-adventure2';
 import { MAP, CELL, FEATURES, toWorld, collectionAt, move, nearby, initialState, visibleArticles } from './maze-model.js?v=20261014-adventure2';
-import { MONSTERS, nearestMonster, newBattle, battleTurn, intentFor, monsterAvailable, prankFor, commandFor, monsterPose, guidePoint } from './encounter-model.js?v=20261016-creator-rpg1';
+import { MONSTERS, nearestMonster, newBattle, battleTurn, intentFor, monsterAvailable, prankFor, commandFor, monsterPose, guidePoint } from './encounter-model.js?v=20261016-battle-visible1';
 import { chooseView, movementVector, mapHeading } from './view-model.js?v=20261015-minimap1';
-import { createStageRenderer, EXIT } from './stage-2d.js?v=20261016-creator-rpg1';
+import { createStageRenderer, EXIT } from './stage-2d.js?v=20261016-battle-visible1';
 import {createArtLibrary,ART_FILES} from './rpg-art.js?v=20261016-creator-rpg1';
-import {renderBattleScene} from './battle-scene.js?v=20261016-creator-rpg1';
+import {renderBattleScene,battleEffectDuration} from './battle-scene.js?v=20261016-battle-visible1';
 import {directionFromMovement,moveAroundFurniture} from './rpg-model.js?v=20261014-adventure2';
 import {protectGameSurface,bindHeldGameButton,bindDirectionPad} from './game-input.js?v=20261015-touch3';
-import {STORY,encounterStory,chapterFor} from './story-model.js?v=20261016-creator-rpg1';
+import {STORY,encounterStory,chapterFor} from './story-model.js?v=20261016-battle-visible1';
 import {compileCharacterRoster,placeCreatorNPCs,createCharacterAssets,chooseCreatorAssets,buildCreatorActors,nearestCreator,creatorGuide,isCharacterTap,scaledCharacterLayout,compileCompanions,companionActor} from './creator-runtime.js?v=20261016-creator-rpg1';
-import {renderCreatorConversation,renderCreatorDirectory} from './creator-ui.js?v=20261016-creator-rpg1';
+import {renderCreatorConversation,renderCreatorDirectory} from './creator-ui.js?v=20261016-battle-visible1';
 const rpgArt=createArtLibrary();
 let creatorRoster={hero:null,npcs:[],omitted:[]},creatorActors=[],activeCreators=[],companions=[],creatorPointer=null,creatorAssetCheck=0,creatorTrail=[];
 const characterAssets=createCharacterAssets();
@@ -31,6 +32,7 @@ let catalog,world,state=initialState(),year=2026,activeCollection='horror',motio
 let runId=newRunId(),reachedVault=false;
 let rewardStorage;try{rewardStorage=localStorage;}catch{}
 const rewardStore=createRewardStore({storage:rewardStorage});
+initMinimapSize({button:$('minimap-size'),root:document.body,storage:rewardStorage,onChange:()=>requestAnimationFrame(()=>{if(view==='2d')resizeFlat();else world?.resize();})});
 let encounters=true,cleared=[],battle=null,look=null,view='3d',viewRequest=0,worldFailed=false;
 let {brightness,lantern}=normalizeLighting(null),legacyBrightness;
 const lightKey='halloween-exhibition:horror-light:v1',viewKey='halloween-exhibition:horror-view:v1',storageKey='halloween-exhibition:labyrinth:v1';
@@ -63,7 +65,7 @@ function clearInput(){walking=false;keys.clear();for(const control of heldContro
 function openPanel(){clearInput();if(!panel.open){returnFocus=document.activeElement;panel.showModal();}}
 function title(kicker,name){panel.classList.remove('battle-mode','library-mode');const heading=element('h2',name);heading.id='panel-title';content.replaceChildren(element('p',kicker,'eyebrow'),heading);}
 function toggleLantern(){lantern=!lantern;$('lantern').textContent=lantern?'ランタン ON':'ランタン OFF';$('lantern').setAttribute('aria-pressed',String(lantern));saveLight();}
-function showLighting(){title('YOUR LIGHT & SOUND','夜の暗さと、手元の灯り。');content.append(visitorSection,element('p','夜の回廊は暗く、ランタンを点けると足元と前方が暖かく照らされます。暗すぎるときは明るさを上げるか、2D表示へ。文字・操作・地図の明るさは変わりません。'),element('p','メニューの「明るさ・音楽」でBGMと音量を調整できます。音量を上げると、冒険室専用の音楽が流れます。毎回OFF・音量0で始まります。対戦の効果音・点滅・時間制限はありません。'));content.append(element('p','冒険室の表示バージョン：20261016-creator-rpg1','build-label'));openPanel();}
+function showLighting(){title('YOUR LIGHT & SOUND','夜の暗さと、手元の灯り。');content.append(visitorSection,element('p','夜の回廊は暗く、ランタンを点けると足元と前方が暖かく照らされます。暗すぎるときは明るさを上げるか、2D表示へ。文字・操作・地図の明るさは変わりません。'),element('p','メニューの「明るさ・音楽」でBGMと音量を調整できます。音量を上げると、冒険室専用の音楽が流れます。毎回OFF・音量0で始まります。対戦の効果音・点滅・時間制限はありません。'));content.append(element('p','冒険室の表示バージョン：20261016-battle-visible1','build-label'));openPanel();}
 function safeURL(v){try{const u=new URL(v);return u.protocol==='https:'&&!u.username&&!u.password?u.href:null;}catch{return null;}}
 function displayArticleKind(kind){return ({'ホラー記事':'記事','ホラーイラスト':'イラスト','ホラー作品':'作品'})[kind]||kind||'作品';}
 function articles(collection=activeCollection){return visibleArticles(catalog.articles,collection);}
@@ -161,7 +163,6 @@ function updateHUD(){
   const monster=encounters?nearestMonster(state,cleared,{time,motion:motion&&!reducedMotion.matches}):null;
   $('battle-open').hidden=!encounters;$('battle-open').disabled=!monster;
   $('battle-open').textContent=monster?`${monster.icon} 話しかける [B]`:'住人に近づこう';
-  $('creatures-open').textContent=`${MONSTERS.length}種の居場所`; 
 }
 function showEncounters(){
   title('MEET THE RESIDENTS','モンスターに出会ったら。');
@@ -179,33 +180,47 @@ function showEncounters(){
 function startBattle(){
   if(!encounters)return;const monster=nearestMonster(state,cleared,{time,motion:motion&&!reducedMotion.matches});if(!monster)return;
   title('A FRIENDLY ENCOUNTER',monster.name);const portrait=element('img',undefined,'encounter-portrait');portrait.src=new URL(`./assets/rpg/${ART_FILES[monster.id]}`,import.meta.url).href;portrait.alt='';const story=encounterStory(monster.id);content.append(portrait,element('p',story.intro),element('p',story.dialogue,'story-dialogue'),element('p',story.advice),element('p','対戦は自分で選ぶまで始まりません。音や時間制限はありません。'));
-  const actions=element('div',undefined,'tabs'),fight=element('button','対戦する','primary'),leave=element('button','立ち去る');fight.id='encounter-confirm';fight.onclick=()=>{battle=newBattle(monster.id);battleEffect=null;renderBattle();$('battle-shine')?.focus();};leave.id='encounter-leave';leave.onclick=()=>panel.close();actions.append(fight,leave);content.append(actions);openPanel();
+  const actions=element('div',undefined,'tabs'),fight=element('button','対戦する','primary'),leave=element('button','立ち去る');fight.id='encounter-confirm';fight.onclick=()=>{battle=newBattle(monster.id);battleEffect=null;renderBattle();$('battle-shine')?.focus({preventScroll:true});};leave.id='encounter-leave';leave.onclick=()=>panel.close();actions.append(fight,leave);content.append(actions);openPanel();
 }
 function renderBattle(){
   const m=MONSTERS.find(m=>m.id===battle.id);title('LANTERN DUEL · 時間制限なし',m.name);panel.classList.add('battle-mode');
-  battleCanvas=element('canvas',undefined,'battle-scene');battleCanvas.id='battle-scene';battleCanvas.setAttribute('aria-label',`${m.name}とのランタン対戦。操作は下のコマンドから。`);content.append(battleCanvas);
-  const status=element('p',battle.message,'duel-status');status.setAttribute('role','status');status.setAttribute('aria-live','polite');content.append(status);
+  const heading=element('div',undefined,'battle-heading');heading.append(...content.children);content.replaceChildren(heading);
+  const viewPane=element('section',undefined,'battle-view'),controls=element('section',undefined,'battle-controls'),log=element('div',undefined,'battle-log');log.setAttribute('aria-label','対戦の状況と説明');log.tabIndex=0;
+  battleCanvas=element('canvas',undefined,'battle-scene');battleCanvas.id='battle-scene';battleCanvas.setAttribute('aria-label',`${m.name}とのランタン対戦。操作は別枠のコマンドから。`);viewPane.append(battleCanvas);
   const stats=element('div',undefined,'duel-stats');
-  for(const [name,value,max,kind]of[['あなたの勇気',battle.energy,battle.maxEnergy,'courage'],['住人のいたずら',battle.spirit,battle.maxSpirit,'mischief'],['ランタンの灯り',battle.focus,battle.maxFocus,'focus']]){const item=element('div',undefined,'duel-stat');item.append(element('span',`${name} ${value}/${max}`));const bar=element('meter',undefined,kind);bar.min=0;bar.max=max;bar.value=value;bar.setAttribute('aria-label',name);item.append(bar);stats.append(item);}content.append(stats);
-  const actions=element('div',undefined,'tabs battle-commands');
+  for(const [name,value,max,kind]of[['勇気',battle.energy,battle.maxEnergy,'courage'],['影',battle.spirit,battle.maxSpirit,'mischief'],['灯り',battle.focus,battle.maxFocus,'focus']]){const item=element('div',undefined,'duel-stat');item.append(element('span',`${name} ${value}/${max}`));const bar=element('meter',undefined,kind);bar.min=0;bar.max=max;bar.value=value;bar.setAttribute('aria-label',name==='灯り'?'ランタンの灯り':name==='影'?'住人のいたずら':name);item.append(bar);stats.append(item);}viewPane.append(stats);
+  const status=element('p',battle.message,'duel-status');status.id='battle-live-status';status.setAttribute('role','status');status.setAttribute('aria-live','polite');log.append(status);
+  const actions=element('div',undefined,'tabs battle-commands');actions.setAttribute('aria-label','対戦コマンド');
   if(battle.status==='playing'){
-    content.append(element('p',intentFor(battle),'battle-intent'),element('p',battle.dialogue,'battle-dialogue'),element('p',STORY.fictionLabel,'subtle'));
-    for(const [action,key]of[['shine','1'],['guard','2'],['attack','3']]){const command=commandFor(battle,action),button=element('button',`${command.label} [${key}]`,action==='shine'?'primary':'');button.id='battle-'+action;button.disabled=command.disabled;button.classList.toggle('battle-command-recommended',command.recommended);button.dataset.recommended=String(command.recommended);button.append(element('small',command.description,'battle-command-preview'));button.onclick=()=>actBattle(action);actions.append(button);}
-
+    log.append(element('p',intentFor(battle),'battle-intent'));
+    const details=element('details',undefined,'battle-details'),summary=element('summary','会話・技の説明');details.append(summary,element('p',battle.dialogue,'battle-dialogue'),element('p',STORY.fictionLabel,'subtle'));
+    for(const [action,key,label]of[['shine','1','光を放つ'],['guard','2','守る'],['attack','3','杖を振る']]){const command=commandFor(battle,action),button=element('button',`${label} [${key}]`,action==='shine'?'primary':'');button.id='battle-'+action;button.disabled=command.disabled;button.classList.toggle('battle-command-recommended',command.recommended);button.dataset.recommended=String(command.recommended);button.setAttribute('aria-label',command.label+'。'+command.description);button.append(element('small',action==='guard'?`灯り +${command.focusAfter-battle.focus}・防御`:`影 −${command.damage} / 勇気 −${command.retaliation}`,'battle-command-preview'));button.onclick=()=>actBattle(action);actions.append(button);details.append(element('p',command.label+'：'+command.description));}log.append(details);
   }else{
-    if(battle.status==='rest')content.append(element('p',battle.dialogue,'battle-dialogue'));
-    if(battle.status==='won'){if(!cleared.includes(m.id)){cleared.push(m.id);save();}const story=encounterStory(m.id);content.append(element('p',story.victory,'story-dialogue'),element('p',`${story.keepsake}を受け取った。キャンディのしるし ${cleared.length}/${MONSTERS.length}。`,'battle-reward'));}
-    const again=element('button','もう一度対戦');again.id='battle-retry';again.onclick=()=>{battle=newBattle(m.id);battleEffect=null;renderBattle();$('battle-shine')?.focus();};actions.append(again);
+    if(battle.status==='rest')log.append(element('p',battle.dialogue,'battle-dialogue'));
+    if(battle.status==='won'){if(!cleared.includes(m.id)){cleared.push(m.id);save();}const story=encounterStory(m.id);log.append(element('p',story.victory,'story-dialogue'),element('p',`${story.keepsake}を受け取った。キャンディのしるし ${cleared.length}/${MONSTERS.length}。`,'battle-reward'));}
+    const again=element('button','もう一度対戦');again.id='battle-retry';again.onclick=()=>{battle=newBattle(m.id);battleEffect=null;renderBattle();$('battle-shine')?.focus({preventScroll:true});};actions.append(again);
+    const exit=element('button','探索を続ける','battle-exit');exit.id='battle-exit';exit.onclick=()=>panel.close();actions.append(exit);
   }
-  const exit=element('button',battle.status==='playing'?'探索に戻る [Esc]':'探索を続ける','battle-exit');exit.id='battle-exit';exit.onclick=()=>panel.close();actions.append(exit);content.append(actions);
+  controls.append(log,actions);content.append(viewPane,controls);panel.scrollTop=0;content.scrollTop=0;
   drawBattleVisual();
+}
+function battleAnimationBusy(){const duration=motion&&!reducedMotion.matches?battleEffect?.duration:Math.min(battleEffect?.duration||0,battleEffectDuration(battleEffect?.type,false));return !!(battleEffect?.pendingUI&&visualTime-battleEffect.started<duration);}
+function settleBattleAnimation(){
+  if(!battleEffect?.pendingUI||battleAnimationBusy()||!panel.open||!battle)return;
+  const action=battleEffect.type;battleEffect.pendingUI=false;renderBattle();const nextFocus=battle.status==='playing'?(!commandFor(battle,action).disabled?'battle-'+action:'battle-guard'):'battle-exit';$(nextFocus)?.focus({preventScroll:true});updateHUD();
 }
 function drawBattleVisual(){
   if(!battle||!battleCanvas)return;const ratio=Math.min(devicePixelRatio||1,2),width=battleCanvas.clientWidth||360,height=battleCanvas.clientHeight||210;
   if(battleCanvas.width!==Math.round(width*ratio)||battleCanvas.height!==Math.round(height*ratio)){battleCanvas.width=Math.round(width*ratio);battleCanvas.height=Math.round(height*ratio);}
   renderBattleScene({canvas:battleCanvas,art:rpgArt,battle,effect:battleEffect,time:visualTime,motion:motion&&!reducedMotion.matches,pixelRatio:ratio});
 }
-function actBattle(action){if(!battle||battle.status!=='playing'||commandFor(battle,action).disabled)return;battle=battleTurn(battle,action);battleEffect={type:action,...battle.lastAction,started:visualTime};renderBattle();const nextFocus=battle.status==='playing'?(!commandFor(battle,action).disabled?'battle-'+action:'battle-guard'):'battle-exit';$(nextFocus)?.focus();updateHUD();}
+function actBattle(action){
+  if(!battle||battle.status!=='playing'||battleAnimationBusy()||commandFor(battle,action).disabled)return;
+  battle=battleTurn(battle,action);if(battle.status==='won'&&!cleared.includes(battle.id)){cleared.push(battle.id);save();}battleEffect={type:action,...battle.lastAction,started:visualTime,duration:battleEffectDuration(action,motion&&!reducedMotion.matches),pendingUI:true};
+  for(const id of['battle-shine','battle-guard','battle-attack'])if($(id))$(id).disabled=true;
+  const status=$('battle-live-status');if(status)status.textContent=action==='shine'?'無名S note が光を集めている…':action==='guard'?'ランタンの守りを広げている…':'杖を振って、影を払っている…';
+  drawBattleVisual();
+}
 
 
 function drawMap(canvas,large=false,night=false){
@@ -244,7 +259,7 @@ async function setView(next,{persist=true,quiet=false}={}){
   const request=++viewRequest;let failed=false;clearInput();view=next;state.pitch=0;updateViewUI();
   if(next==='3d'&&!world){
     $('view-3d').disabled=true;
-    try{if(worldFailed)throw Error('WebGL unavailable');const {createWorld}=await import('./world.js?v=20261016-creator-rpg1');if(request!==viewRequest)return;world=createWorld({canvas:$('world')});restoreExhibits();}
+    try{if(worldFailed)throw Error('WebGL unavailable');const {createWorld}=await import('./world.js?v=20261016-battle-visible1');if(request!==viewRequest)return;world=createWorld({canvas:$('world')});restoreExhibits();}
     catch(e){if(request!==viewRequest)return;failed=true;worldFailed=true;view='2d';console.warn('3D unavailable; 2D remains fully playable.',e);if(!quiet)notify('3Dを利用できないため、2Dで探索できます。対戦と記事もそのまま使えます。');}
     finally{$('view-3d').disabled=false;}
   }
@@ -261,8 +276,8 @@ function step(dt){
   const {dx,dz}=movementVector(view,state.yaw,f,r,6.8*dt*walkingSpeed);const old=state;state=advanceWithSubsteps(state,dx,dz,view==='2d'?moveAroundFurniture:move);const mx=state.x-old.x,mz=state.z-old.z;walking=Math.hypot(mx,mz)>.0001;facing=directionFromMovement(dx,dz,facing);if(walking)walkPhase=(walkPhase+Math.hypot(mx,mz)*2.3)%(Math.PI*2);
 }
 function tick(now){
-  frame=0;if(document.hidden)return;const dt=Math.min((now-(last||now))/1000,.05);last=now;if(motion&&!reducedMotion.matches)visualTime+=dt;
-  if(panel.open&&battle)drawBattleVisual();
+  frame=0;if(document.hidden)return;const dt=Math.min((now-(last||now))/1000,.05);last=now;visualTime+=dt;
+  if(panel.open&&battle){settleBattleAnimation();drawBattleVisual();}
   if(!panel.open){step(dt);if(motion&&!reducedMotion.matches)time+=dt;updateCreatorFrames(now);if(view==='3d')world?.render({...state,time:time*1000,motion:motion&&!reducedMotion.matches,brightness,lantern,encounters,cleared,creatorActors});else {stageRenderer??=createStageRenderer({art:rpgArt});stageRenderer.render({canvas:$('fallback'),state,brightness,lantern,encounters,cleared,pixelRatio:Math.min(devicePixelRatio||1,2),time,dt,motion:motion&&!reducedMotion.matches,facing,walking:walking&&motion&&!reducedMotion.matches,walkPhase,creatorActors});}drawMap($('mini'));updateHUD();}
   frame=requestAnimationFrame(tick);
 }
@@ -292,7 +307,7 @@ document.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));window.ad
 document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(frame);frame=0;clearInput();}else start();});
 $('tools-open').onclick=showLighting;$('lantern').onclick=toggleLantern;$('lantern').textContent=lantern?'ランタン ON':'ランタン OFF';$('lantern').setAttribute('aria-pressed',String(lantern));
 $('interact').onclick=interact;$('list-open').onclick=()=>{if(catalog)showCatalog();};$('map-open').onclick=()=>{if(catalog)showMap();};$('minimap-open').onclick=()=>{if(catalog)showMap();};$('home').onclick=resetPosition;
-$('menu-open').onclick=showExploreMenu;$('creatures-open').onclick=showEncounters;$('battle-open').onclick=startBattle;$('creator-open').onclick=talkToCreator;
+$('menu-open').onclick=showExploreMenu;$('battle-open').onclick=startBattle;$('creator-open').onclick=talkToCreator;
 $('view-2d').onclick=()=>setView('2d');$('view-3d').onclick=()=>setView('3d');
 function updateMotion(){const enabled=motion&&!reducedMotion.matches;
   $('pause').textContent=enabled?'演出を停止':reducedMotion.matches?'端末設定で演出停止中':'演出を再開';$('pause').setAttribute('aria-pressed',String(!enabled));

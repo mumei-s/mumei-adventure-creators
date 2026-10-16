@@ -69,7 +69,7 @@ test('app integrates scoped guards, resets holds on interruption and cache-busts
   const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8'),html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
   assert(app.includes("protectGameSurface($('game'))"));assert(app.includes('for(const control of heldControls)control.reset()'));assert(app.includes("window.addEventListener('blur',clearInput)"));assert(app.includes('e.target.isContentEditable'));
   assert(app.includes("$('lantern').onclick=toggleLantern"));assert(!app.includes("$('lantern').addEventListener('pointerdown'"));
-  assert(html.includes('./app.js?v=20261016-creator-rpg1'));assert(html.includes('./rpg-ui.css?v=20261014-adventure2'));assert(app.includes('./game-input.js?v=20261015-touch3'));assert(html.includes('width=device-width,initial-scale=1,viewport-fit=cover'));assert(!html.includes('user-scalable=no'));
+  assert(html.includes('./app.js?v=20261016-battle-visible1'));assert(html.includes('./rpg-ui.css?v=20261014-adventure2'));assert(app.includes('./game-input.js?v=20261015-touch3'));assert(html.includes('width=device-width,initial-scale=1,viewport-fit=cover'));assert(!html.includes('user-scalable=no'));
 });
 
 function roundPad(){const pad=new Element('div');pad.style={setProperty(){}};pad.dataset={};pad.getBoundingClientRect=()=>({left:10,top:20,width:112,height:112});const changes=[];const binding=bindDirectionPad(pad,{onChange:d=>changes.push(d)});return {pad,changes,...binding};}
@@ -95,12 +95,12 @@ test('pad reduces neutral travel and stabilizes near-diagonal turning',()=>{
  assert.equal(directionAtPoint(70,0,112,112,'right'),'forward');
  assert.equal(directionAtPoint(56,56,112,112,'right'),null);
 });
-test('lantern lives last in right action stack; loading shows actual illustrated scene',()=>{
+test('lantern has its own left dock; loading shows actual illustrated scene',()=>{
  const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
  const stack=html.match(/<div class="nearby">([\s\S]*?)<\/div>/)[1];
- assert(stack.indexOf('id="lantern"')>stack.indexOf('id="interact"'));
+ assert(!stack.includes('id="lantern"'));assert.match(html,/<aside class="lantern-dock"[^>]*><button id="lantern"/);
  assert.equal((html.match(/id="lantern"/g)||[]).length,1);
  assert(html.includes('assets/rpg/battle-library.webp'));assert(html.includes('maze-loading-ghost'));assert(html.includes('role="status"'));
  const css=fs.readFileSync(new URL('../adventure-controls.css',import.meta.url),'utf8');
- assert(css.includes('prefers-reduced-motion:reduce'));assert(css.includes('144px 24px'));
+ assert(css.includes('prefers-reduced-motion:reduce'));assert(css.includes('120px 20px')); 
 });

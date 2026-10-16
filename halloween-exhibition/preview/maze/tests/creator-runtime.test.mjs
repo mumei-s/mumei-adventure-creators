@@ -99,9 +99,9 @@ test('current avatar entities and explicit owner/Mako exceptions define the comp
  const expected=['ss-yr-lantern-hero','ss-yr-black-cat','koakumako-base-devil','minato-shio-witch','mama-avatar-woman','mama-avatar-creature','naemo-masquerade','takechi-bread-avatar','yamakon-navy-figure','yamakon-pink-figure','tenkai-moon-robed-avatar','marimo','marimo-cat','chamomile-flower-avatar','tantan-streetwalker','tantan-avatar-hedgehog-pink-bow','tantan-avatar-hedgehog-green-cap','tantan-avatar-hedgehog-pacifier','aihan-avatar-woman','aihan-avatar-shiba','lokiron-avatar','iris'].sort();
  const actual=allDefinitions().filter(e=>e.ready).flatMap(e=>e.entityIds);assert.equal(new Set(actual).size,actual.length);assert.deepEqual(actual.sort(),expected);assert(!actual.includes('ss-yr-white-lavender-character'));
 });
-test('four nearby actions use two rows of44px controls within144px portrait dock',()=>{
+test('nearby actions use two rows of44px controls within120px portrait dock',()=>{
  const css=fs.readFileSync(new URL('../creator-ui.css',import.meta.url),'utf8');assert(css.includes('.nearby:has(#creator-open:not([hidden])){display:grid;grid-template-columns:repeat(2,minmax(44px,1fr));gap:4px}'));
- assert(css.includes('height:44px;max-height:44px;min-width:44px!important'));assert(2*44+4<=144);assert(css.includes('width:96px!important;max-width:96px'));assert(css.includes('.move-pad{justify-self:start;margin-left:8px!important}'));
+ assert(css.includes('height:44px;max-height:44px;min-width:44px!important'));assert(2*44+4<=120);assert(css.includes('width:96px!important;max-width:96px'));assert(css.includes('.move-pad{justify-self:start;margin-left:50px!important}'));
  for(const width of[320,360,390,750])assert((width-136)/2>=44*2+4,`portrait width ${width}`);
 });
 

@@ -1,5 +1,5 @@
 import { MAP, CELL, FEATURES, blocked, nearby } from './maze-model.js?v=20261014-adventure2';
-import { MONSTERS, nearestMonster, monsterAvailable, monsterPose } from './encounter-model.js?v=20261016-creator-rpg1';
+import { MONSTERS, nearestMonster, monsterAvailable, monsterPose } from './encounter-model.js?v=20261016-battle-visible1';
 
 // Canvas illustration authored for this room; no participant art or remote assets.
 import {drawArtSprite,playerPose} from './rpg-art.js?v=20261016-creator-rpg1';

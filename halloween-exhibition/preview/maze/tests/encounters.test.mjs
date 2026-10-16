@@ -52,7 +52,7 @@ test('night baseline is substantially below prior flood lights, lantern is a loc
 });
 test('2D, encounters, exit, and game-only audio remain first-class controls',()=>{
   const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
-  for(const id of ['view-2d','view-3d','creatures-open','battle-open','lantern'])assert(html.includes(`id="${id}"`));
+  for(const id of ['view-2d','view-3d','menu-open','battle-open','lantern'])assert(html.includes(`id="${id}"`));
   assert.equal((html.match(/href="\.\.\/\?mode=halloween"/g)||[]).length,2);
   assert.equal((html.match(/href="\.\.\/\?return=palace"/g)||[]).length,1);
   const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8');
@@ -94,6 +94,6 @@ test('golem telegraphs armor, wind-up and handclap before each legal decision',(
 });
 test('both modes wire six residents and battles require an explicit second choice',()=>{
  const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8'),world=fs.readFileSync(new URL('../world.js',import.meta.url),'utf8'),html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
- assert(app.includes('let encounters=true'));assert(app.includes("fight.id='encounter-confirm'"));assert(app.includes("leave.id='encounter-leave'"));assert(html.includes('モンスターに出会ったら'));assert(html.includes('id="direction-pad"'));
+ assert(app.includes('let encounters=true'));assert(app.includes("fight.id='encounter-confirm'"));assert(app.includes("leave.id='encounter-leave'"));assert(!html.includes('モンスターに出会ったら'));assert(app.includes("['モンスターと遊ぶ'"));assert(html.includes('id="direction-pad"'));
  assert(world.includes('new THREE.Sprite(spriteMaterial)'));assert(world.includes('ART_FILES[definition.id]'));assert(world.includes("definition.id==='franken'"));assert(world.includes('monsterPose(spirit.definition'));assert(world.includes('heldLantern.scale.setScalar(.24)'));
 });

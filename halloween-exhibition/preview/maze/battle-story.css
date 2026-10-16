@@ -35,3 +35,52 @@
 @media(max-width:620px){#panel.battle-mode{padding:14px 12px}#panel.battle-mode .battle-scene{height:clamp(275px,38svh,340px)}#panel.battle-mode .duel-stats{gap:8px;padding:10px}#panel.battle-mode .duel-stat{font-size:10px}#panel.battle-mode .battle-commands{gap:7px}#panel.battle-mode .battle-commands button{font-size:11px;padding:9px 7px;min-height:75px}#panel.battle-mode .battle-commands button small{font-size:10px}#panel.battle-mode .battle-intent{font-size:12px}#panel .clear-memories{grid-template-columns:1fr}#panel :is(.story-opening,.story-chapter,.encounter-story){padding:14px}}
 @media(max-height:540px) and (min-width:621px){#panel.battle-mode .battle-scene{height:290px}#panel.battle-mode{max-height:96svh}}
 @media(prefers-reduced-motion:reduce){#panel.battle-mode *,#panel .clear-memories *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+
+/* Keep action and view in the same safe viewport; only the narrative log scrolls. */
+#panel.battle-mode{box-sizing:border-box;inset:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);width:min(1080px,calc(100vw - env(safe-area-inset-left) - env(safe-area-inset-right) - 16px));height:calc(100svh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 16px);height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 16px);max-height:none;margin:auto;padding:10px;overflow:hidden;scrollbar-gutter:auto}
+#panel.battle-mode[open]{display:flex;flex-direction:column}
+#panel.battle-mode>.close{position:absolute;top:10px;right:10px;float:none;min-height:44px;height:44px;margin:0;padding:6px 10px;font-size:12px;z-index:2}
+#panel.battle-mode #panel-content{display:grid;grid-template-rows:44px minmax(120px,1.4fr) minmax(136px,1fr);gap:8px;min-width:0;min-height:0;height:100%;overflow:hidden}
+#panel.battle-mode .battle-heading{min-width:0;min-height:44px;padding-right:134px;overflow:hidden}
+#panel.battle-mode .battle-heading .eyebrow{font-size:8px;line-height:1.2;margin:0 0 3px;letter-spacing:.04em}
+#panel.battle-mode .battle-heading h2{font-size:clamp(14px,3.8vw,22px);line-height:1.25;margin:0;letter-spacing:0;overflow-wrap:anywhere}
+#panel.battle-mode .battle-view{display:grid;grid-template-rows:minmax(0,1fr) 40px;gap:6px;min-height:0;min-width:0;overflow:hidden}
+#panel.battle-mode .battle-scene{box-sizing:border-box;width:100%;height:100%;min-height:0;max-height:none;min-width:0}
+#panel.battle-mode .duel-stats{box-sizing:border-box;min-height:0;height:40px;gap:8px;padding:4px 7px;margin:0}
+#panel.battle-mode .duel-stat{min-width:0;gap:2px;font-size:10px;line-height:1.2}
+#panel.battle-mode .duel-stat meter{height:8px;min-width:0}
+#panel.battle-mode .battle-controls{display:grid;grid-template-rows:minmax(0,1fr) 64px;gap:8px;min-width:0;min-height:0;overflow:hidden}
+#panel.battle-mode .battle-log{min-height:0;min-width:0;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;padding:2px 5px 2px 0;scroll-padding:5px}
+#panel.battle-mode .battle-log:focus-visible{outline:2px solid #f3df9f;outline-offset:-2px}
+#panel.battle-mode .duel-status{font-size:12px;line-height:1.45;margin:0 0 6px;padding-left:7px;min-height:0}
+#panel.battle-mode .battle-intent{font-size:11px;line-height:1.5;margin:0 0 6px;padding:6px 8px}
+#panel.battle-mode .battle-dialogue{font-size:12px;line-height:1.6;margin:6px 0}
+#panel.battle-mode .battle-details summary{display:flex;align-items:center;min-height:44px;cursor:pointer;font-size:12px;color:#e7d5ad}
+#panel.battle-mode .battle-details p{font-size:12px;line-height:1.6}
+#panel.battle-mode .battle-commands{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin:0;min-height:0;height:64px;padding:0}
+#panel.battle-mode .battle-commands button{display:flex;flex-direction:column;justify-content:center;align-items:center;min-width:0!important;min-height:44px;height:64px;max-height:64px;padding:4px 3px;margin:0!important;line-height:1.25;font-size:12px;letter-spacing:0;touch-action:manipulation}
+#panel.battle-mode .battle-commands button small{display:block;min-width:0;font-size:10px;line-height:1.25;margin-top:4px}
+#panel.battle-mode .battle-commands:has(#battle-retry){grid-template-columns:repeat(2,minmax(0,1fr))}
+#panel.battle-mode .battle-commands #battle-exit{grid-column:auto;min-height:44px}
+@media(min-width:1120px){#panel.battle-mode{margin:auto}}
+@media(max-height:480px) and (min-width:560px){
+ #panel.battle-mode #panel-content{grid-template-columns:minmax(0,1.25fr) minmax(230px,1fr);grid-template-rows:44px minmax(0,1fr);gap:7px}
+ #panel.battle-mode .battle-heading{grid-column:1/-1}
+ #panel.battle-mode .battle-view{grid-column:1;grid-row:2}
+ #panel.battle-mode .battle-controls{grid-column:2;grid-row:2;grid-template-rows:minmax(0,1fr) 72px}
+ #panel.battle-mode .battle-commands,#panel.battle-mode .battle-commands button{height:72px;max-height:72px}
+}
+@media(max-width:559px) and (max-height:440px){
+ #panel.battle-mode{padding:6px}
+ #panel.battle-mode>.close{top:6px;right:6px}
+ #panel.battle-mode #panel-content{grid-template-columns:minmax(0,1fr) minmax(132px,1fr);grid-template-rows:44px minmax(0,1fr);gap:5px}
+ #panel.battle-mode .battle-heading{grid-column:1/-1}
+ #panel.battle-mode .battle-view{grid-column:1;grid-row:2;grid-template-rows:minmax(0,1fr) 34px;gap:4px}
+ #panel.battle-mode .duel-stats{height:34px;padding:2px 3px;gap:3px}
+ #panel.battle-mode .duel-stat{font-size:9px}
+ #panel.battle-mode .battle-controls{grid-column:2;grid-row:2;grid-template-rows:minmax(0,1fr) 140px;gap:5px}
+ #panel.battle-mode .battle-commands{grid-template-columns:1fr;grid-template-rows:repeat(3,44px);height:140px;gap:4px}
+ #panel.battle-mode .battle-commands button{height:44px;max-height:44px;padding:2px;font-size:11px}
+ #panel.battle-mode .battle-commands button small{margin-top:2px;font-size:9px}
+ #panel.battle-mode .battle-commands:has(#battle-retry){grid-template-columns:1fr;grid-template-rows:repeat(2,44px)}
+}

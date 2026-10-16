@@ -1,15 +1,55 @@
+import {encounterStory} from './story-model.js?v=20261016-creator-rpg1';
 import {blocked} from './maze-model.js?v=20261014-adventure2';
 // Fictional stage characters only. Never derived from participant identities.
 export const MONSTERS = Object.freeze([
   {id:'pumpkin', name:'カボチャの番人', icon:'🎃', color:'#ec8236', x:8.7, z:11, hint:'入口の少し先'},
   {id:'ghost', name:'おばけの本好き', icon:'👻', color:'#b9d3e0', x:14, z:11, hint:'東の鍵の間'},
-  {id:'zombie', name:'つぎはぎゾンビ', icon:'🧟', color:'#8baf83', x:6.4, z:13.2, hint:'南側のランタン柱のそば', pattern:[0,2], moves:['のんびり足踏み','つぎはぎステップ']},
-  {id:'vampire', name:'宵の吸血伯爵', icon:'🧛', color:'#ac688c', x:2, z:11, hint:'西の肖像の回廊（扉から入室）', needsCorridor:true, pattern:[2,1,1], moves:['マントのいたずら','月明かりの挨拶','気まぐれな一礼']},
-  {id:'franken', name:'錬金術のゴーレム', icon:'⚙', color:'#99ae87', x:10.4, z:8.8, hint:'中央の交差廊・東側の月紋', pattern:[1,0,2], moves:['重たい足踏み','ぜんまいを巻く','やさしい手拍子']},
+  {id:'zombie', name:'つぎはぎゾンビ', icon:'🧟', color:'#8baf83', x:6.4, z:13.2, hint:'南側のランタン柱のそば'},
+  {id:'vampire', name:'宵の吸血伯爵', icon:'🧛', color:'#ac688c', x:2, z:11, hint:'西の肖像の回廊（扉から入室）', needsCorridor:true},
+  {id:'franken', name:'錬金術のゴーレム', icon:'⚙', color:'#99ae87', x:10.4, z:8.8, hint:'中央の交差廊・東側の月紋'},
   {id:'bat', name:'書庫のコウモリ', icon:'🦇', color:'#b5a0da', x:8, z:3.8, hint:'解錠した北の書庫', needsKey:true},
 ]);
 export function monsterAvailable(monster,state){return (!monster.needsKey||state.unlocked)&&(!monster.needsCorridor||state.horrorAccepted);}
-export function prankFor(battle){const m=MONSTERS.find(m=>m.id===battle.id),pattern=m?.pattern||[1,2],index=battle.turn%pattern.length;return {damage:pattern[index],name:m?.moves?.[index]||(index===0?'小さないたずら':'大きないたずら')};}
+export const BATTLE_ACTIONS = Object.freeze(['shine','guard','attack']);
+// A telegraph is shown before every decision. There are no hidden rolls or timers.
+const turn=(name,damage,stance,hint,weakness=null,armor=0)=>Object.freeze({name,damage,stance,hint,weakness,armor});
+export const ENCOUNTER_RULES = Object.freeze({
+  pumpkin:Object.freeze({spirit:12,turns:Object.freeze([
+    turn('火種をかばう',1,'火種が見えている','光が影に届く。次は大きな枝の一振り。','shine'),
+    turn('枝の大きな一振り',3,'枝を振り上げた','守れば勇気を失わず、次の一手を強められる。'),
+    turn('ランタンを置く',0,'腕を下ろしている','杖で枝の影を払う好機。反撃はない。','attack'),
+  ])}),
+  ghost:Object.freeze({spirit:14,turns:Object.freeze([
+    turn('閉じた本のささやき',1,'本に影が隠れている','閉じた本には杖が届きにくい。光を通そう。','shine',1),
+    turn('忘れられた紙吹雪',3,'ページが舞い上がる','守ってページが静まるのを待とう。'),
+    turn('しおりを拾う',0,'しおりが床に落ちた','杖でまとわりつく影を払おう。','attack'),
+  ])}),
+  zombie:Object.freeze({spirit:15,turns:Object.freeze([
+    turn('のんびり足踏み',0,'影の糸が足元にある','杖で糸を払うと、次の光もたまる。','attack'),
+    turn('つぎはぎステップ',3,'足元の糸が暴れている','守って、ほどける瞬間を待とう。'),
+    turn('縫い目をたしかめる',1,'針の穴が暗い','光で手元を照らすと影がほどける。','shine'),
+  ])}),
+  vampire:Object.freeze({spirit:16,turns:Object.freeze([
+    turn('マントのいたずら',3,'マントに身を隠した','杖はマントに遮られる。守って一礼を待とう。',null,1),
+    turn('月明かりの挨拶',1,'深く一礼している','マントの内側へ光を。影が大きくほどける。','shine'),
+    turn('影のワルツ',2,'影の分身が残っている','杖で分身を払えば、反撃も少し弱まる。','attack'),
+  ])}),
+  franken:Object.freeze({spirit:18,turns:Object.freeze([
+    turn('重たい足踏み',2,'石の装甲を閉じた','杖は装甲に阻まれる。胸のすき間へ光を。','shine',1),
+    turn('ぜんまいを巻く',0,'歯車が止まっている','杖で歯車の影を払う好機。反撃はない。','attack'),
+    turn('大きな手拍子',4,'両手を大きく広げた','いちばん大きないたずら。守れば完全に防げる。'),
+  ])}),
+  bat:Object.freeze({spirit:20,turns:Object.freeze([
+    turn('翼で起こす夜風',2,'翼を大きく広げた','光で飛ぶ道を示すと、夜風も弱まる。','shine'),
+    turn('封筒の急降下',4,'高い書架から構えている','急降下を予告。守って着地を待とう。'),
+    turn('止まり木でひと息',0,'翼をたたんで休んでいる','杖で封筒の影を払おう。反撃はない。','attack'),
+  ])}),
+});
+export function prankFor(battle){
+  const rules=ENCOUNTER_RULES[battle.id]||ENCOUNTER_RULES.pumpkin;
+  const index=Math.max(0,Math.floor(battle.turn||0))%rules.turns.length;
+  return {...rules.turns[index],index,total:rules.turns.length};
+}
 export function monsterPose(monster,time=0,motion=true,state={}){
   if(!motion)return {x:monster.x,z:monster.z};
   const seed=MONSTERS.findIndex(m=>m.id===monster.id)*1.7,speed=monster.id==='franken'?.32:monster.id==='zombie'?.4:.55;
@@ -29,24 +69,41 @@ export function nearestMonster(state, cleared = [],{time=0,motion=false}={}) {
 }
 export function newBattle(id) {
   if (!MONSTERS.some(m=>m.id===id)) throw new Error('Unknown stage character');
-  return {id, energy:4, spirit:3, turn:0, charged:false, status:'playing', message:'光を当てて、いたずらをしずめよう。時間制限はありません。'};
+  const maxSpirit=ENCOUNTER_RULES[id].spirit,story=encounterStory(id);
+  return {id,energy:8,maxEnergy:8,spirit:maxSpirit,maxSpirit,focus:2,maxFocus:3,turn:0,charged:false,status:'playing',
+    message:'予告を見て、光・守り・杖を選ぼう。時間制限はありません。',dialogue:story.dialogue,lastAction:null};
+}
+export function commandFor(battle,action){
+  if(!BATTLE_ACTIONS.includes(action))return null;
+  const intent=prankFor(battle),focus=battle.focus??2,maxFocus=battle.maxFocus??3,guard=action==='guard';
+  const disabled=battle.status!=='playing'||(action==='shine'&&focus<2);
+  const weakness=!guard&&intent.weakness===action;
+  const base=action==='shine'?3:action==='attack'?2:0;
+  const damage=guard||disabled?0:Math.min(battle.spirit,Math.max(1,base+(battle.charged?1:0)+(weakness?1:0)-(action==='attack'?intent.armor:0)));
+  const finishing=damage>=battle.spirit;
+  const retaliation=guard||disabled||finishing?0:Math.max(0,intent.damage-(weakness?1:0));
+  const focusAfter=disabled?focus:Math.min(maxFocus,Math.max(0,focus+(action==='shine'?-2:1)));
+  const label={shine:'光を放つ',guard:'ランタンを守る',attack:'杖で影を払う'}[action];
+  const description=disabled&&action==='shine'&&focus<2?'灯りが2必要。守るか杖で1ためよう。':guard?'次のいたずらを完全に防ぐ。灯り＋1、次の攻め＋1。':`影 −${damage} ／ 勇気 −${retaliation} ／ 灯り ${action==='shine'?'−2':'＋1'}${weakness?' · 好機！':''}`;
+  const recommended=!disabled&&(finishing||(intent.damage>=3?guard:intent.weakness===action));
+  return {action,label,description,disabled,damage,retaliation,focusAfter,recommended,weakness,finishing};
 }
 export function battleTurn(current, action) {
-  if (current.status !== 'playing' || !['shine','guard'].includes(action)) return current;
-  const next={...current,turn:current.turn+1};
-  if(action==='shine') {
-    const power=current.charged?2:1;
-    next.spirit=Math.max(0,current.spirit-power);next.charged=false;
-    if(!next.spirit) return {...next,status:'won',message:'いたずらがおさまった！住人からキャンディのしるしをもらいました。'};
-    const {damage,name}=prankFor(current);
-    next.energy=Math.max(0,current.energy-damage);
-    next.message=damage?`ランタンの光が${power}届いた。${name}で勇気が${damage}減った。`:`ランタンの光が${power}届いた。相手は${name}。勇気は減りません。`;
-    if(!next.energy){next.status='rest';next.message='ひと休み。失うものはありません。もう一度挑戦するか、探索に戻れます。';}
-  } else {
-    next.charged=true;
-    next.message='ランタンを守って、いたずらを防いだ！次の光は2倍です。';
+  const command=commandFor(current,action);
+  if(!command||command.disabled)return current;
+  const intent=prankFor(current),story=encounterStory(current.id),guard=action==='guard';
+  const next={...current,turn:current.turn+1,focus:command.focusAfter,charged:guard,
+    spirit:Math.max(0,current.spirit-command.damage),energy:Math.max(0,current.energy-command.retaliation)};
+  next.lastAction={action,damage:command.damage,retaliation:command.retaliation,blocked:guard?intent.damage:0,focusChange:next.focus-current.focus,weakness:command.weakness,finished:next.spirit===0};
+  if(!next.spirit){
+    next.status='won';next.message=`影がほどけた！「${story.keepsake}」を受け取りました。`;next.dialogue=story.victory;return next;
   }
-  return next;
+  if(!next.energy){next.status='rest';next.message='勇気を使い切ったので、ひと休み。鍵や集めたしるしは失いません。';next.dialogue=story.reactions.rest;return next;}
+  if(guard){next.message=`${intent.name}を防いだ（勇気 −0）。灯り ${next.focus}/${next.maxFocus}。次の攻め＋1。`;}
+  else {next.message=`${command.label}：影 −${command.damage}${command.weakness?'、影の弱点をほどいた':''}。${intent.name}：勇気 −${command.retaliation}。`;}
+  next.dialogue=story.reactions[command.weakness?'weakness':action];return next;
 }
-export function intentFor(battle) {const {damage,name}=prankFor(battle);return `${name}（勇気 −${damage}）`;}
-
+export function intentFor(battle) {
+  const {damage,name,stance,hint}=prankFor(battle);
+  return `${name}（勇気 −${damage}） · ${stance}。${hint}`;
+}

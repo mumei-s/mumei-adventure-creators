@@ -1,16 +1,20 @@
 import {buildCardPrompt} from './clear-reward.js?v=20261015-clear1';
-import {MONSTERS} from './encounter-model.js?v=20261014-adventure2';
-import {ART_FILES} from './rpg-art.js?v=20261014-adventure2';
+import {MONSTERS} from './encounter-model.js?v=20261016-creator-rpg1';
+import {STORY,encounterStory} from './story-model.js?v=20261016-creator-rpg1';
+import {ART_FILES} from './rpg-art.js?v=20261016-creator-rpg1';
 const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
 export function renderEnding({container,receipt,onNewRun,onBack,motion=true}){
   const scene=el('section',undefined,'clear-celebration');scene.dataset.motion=String(motion);
   const backdrop=el('img',undefined,'clear-backdrop');backdrop.src='./assets/rpg/battle-library.webp';backdrop.alt='';scene.append(backdrop);
   const light=el('div',undefined,'clear-dawn');light.setAttribute('aria-hidden','true');scene.append(light);
-  const heading=el('div',undefined,'clear-story');heading.append(el('p','HALLOWEEN ATELIER','eyebrow'),el('h3','夜明けの書庫が、ひらいた。'),el('p','6つのキャンディのしるしが重なり、宮殿に朝の光が戻る。いたずら好きな住人たちは、あなたを仲間として迎えてくれました。'));
+  const heading=el('div',undefined,'clear-story');heading.append(el('p','HALLOWEEN ATELIER','eyebrow'),el('h3','夜明けの書庫が、ひらいた。'),el('p',STORY.ending),el('p',STORY.endingDialogue));
   scene.append(heading);
   const friends=el('div',undefined,'clear-friends');
   MONSTERS.forEach((m,i)=>{const img=el('img');img.src=`./assets/rpg/${ART_FILES[m.id]}`;img.alt=m.name;img.style.setProperty('--order',i);friends.append(img);});scene.append(friends);
   scene.append(el('p','物語はここでひと区切り。次の冒険も、魔法の入口から。','clear-last-line'));container.append(scene);
+  const memories=el('section',undefined,'clear-memories');memories.setAttribute('aria-label','取り戻した六つの記憶');
+  for(const m of MONSTERS){const story=encounterStory(m.id),card=el('article',undefined,'clear-memory');card.append(el('strong',`${m.icon} ${story.keepsake}`),el('p',story.memory));memories.append(card);}
+  container.append(memories,el('p',STORY.fictionLabel,'story-fiction'));
   const badge=el('p',`このブラウザでのクリア No.${receipt.serial}`,'clear-number');container.append(badge);
   if(!receipt.persistent)container.append(el('p','保存できないため、この番号は今の画面を閉じるまでの記録です。','clear-storage-warning'));
   container.append(el('p','記念カードを作りたい方だけ、プロンプトを使えます。','clear-optional'));

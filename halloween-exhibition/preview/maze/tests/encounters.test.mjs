@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { MONSTERS, nearestMonster, newBattle, battleTurn, intentFor, monsterPose, guidePoint } from '../encounter-model.js';
+import { MONSTERS, nearestMonster, newBattle, battleTurn, intentFor, monsterPose, guidePoint, commandFor, BATTLE_ACTIONS } from '../encounter-model.js';
 import { chooseView, movementVector } from '../view-model.js';
 import { initialState, blocked, move, FEATURES, toWorld } from '../maze-model.js';
 import { NIGHT_LIGHTING } from '../lighting-model.js';
@@ -15,23 +15,23 @@ test('cleared characters cannot be farmed; sealed archive creature requires gate
   const s={...initialState(),...toWorld(FEATURES.vault)};
   assert.equal(nearestMonster(s),null);assert.equal(nearestMonster({...s,unlocked:true}).id,'bat');
 });
-test('simple three-hit victory is possible, yields bounded stats and cannot double-complete',()=>{
+test('visible tactical commands yield bounded victory and cannot double-complete',()=>{
   const initial=newBattle('pumpkin');let b=initial;
-  for(let i=0;i<3;i++)b=battleTurn(b,'shine');
-  assert.equal(b.status,'won');assert.equal(b.spirit,0);assert.equal(b.energy,1);
+  for(let i=0;i<20&&b.status==='playing';i++){const options=BATTLE_ACTIONS.map(a=>commandFor(b,a));const choice=options.find(c=>c.finishing&&!c.disabled)||options.find(c=>c.recommended&&!c.disabled)||options.find(c=>c.action==='attack');b=battleTurn(b,choice.action);}
+  assert.equal(b.status,'won');assert.equal(b.spirit,0);assert(b.energy>0&&b.energy<=b.maxEnergy);
   assert.deepEqual(initial,newBattle('pumpkin'));assert.equal(battleTurn(b,'shine'),b);
 });
 test('guard blocks damage, charges next light, and never stacks unbounded power',()=>{
   let b=newBattle('ghost');b=battleTurn(b,'guard');b=battleTurn(b,'guard');
-  assert.equal(b.energy,4);assert.equal(b.charged,true);
-  b=battleTurn(b,'shine');assert.equal(b.spirit,1);assert.equal(b.charged,false);assert.equal(b.energy,3);
-  assert.equal(battleTurn(b,'shine').status,'won');
+  assert.equal(b.energy,8);assert.equal(b.charged,true);assert.equal(b.focus,3);
+  const predicted=commandFor(b,'shine');const before=b;b=battleTurn(b,'shine');assert.equal(before.spirit-b.spirit,predicted.damage);assert.equal(b.charged,false);assert.equal(b.energy,8);assert.equal(b.focus,1);
+  assert.equal(battleTurn(b,'shine'),b,'insufficient focus must not advance a turn');
 });
 test('rest and restart are deterministic, invalid actions cannot mutate battle',()=>{
   let b=battleTurn({...newBattle('bat'),energy:1},'shine');assert.equal(b.status,'rest');assert.equal(b.energy,0);
-  assert.equal(battleTurn(b,'guard'),b);assert.equal(newBattle('bat').energy,4);
+  assert.equal(battleTurn(b,'guard'),b);assert.equal(newBattle('bat').energy,8);
   assert.throws(()=>newBattle('participant'));const fresh=newBattle('ghost');assert.equal(battleTurn(fresh,'unknown'),fresh);
-  assert(intentFor(fresh).includes('−1'));assert(intentFor({...fresh,turn:1}).includes('−2'));
+  assert(intentFor(fresh).includes('−1'));assert(intentFor({...fresh,turn:1}).includes('−3'));
 });
 test('reduced motion defaults to 2D and explicit view choice remains functional',()=>{
   assert.equal(chooseView(null,true),'2d');assert.equal(chooseView(null,false),'3d');
@@ -64,9 +64,9 @@ test('2D, encounters, exit, and game-only audio remain first-class controls',()=
 
 test('zombie and vampire have distinct named readable patterns and remain optional',()=>{
   let zombie=newBattle('zombie'),vampire=newBattle('vampire');assert(intentFor(zombie).includes('のんびり足踏み'));assert(intentFor(vampire).includes('マント'));
-  zombie=battleTurn(zombie,'shine');vampire=battleTurn(vampire,'shine');assert.equal(zombie.energy,4);assert.equal(vampire.energy,2);
+  zombie=battleTurn(zombie,'shine');vampire=battleTurn(vampire,'shine');assert.equal(zombie.energy,8);assert.equal(vampire.energy,5);
   assert(intentFor(zombie).includes('ステップ'));assert(intentFor(vampire).includes('挨拶'));
-  for(const id of ['zombie','vampire']){let b=newBattle(id);for(const a of ['guard','shine','shine'])b=battleTurn(b,a);assert.equal(b.status,'won');}
+  for(const id of ['zombie','vampire']){let b=newBattle(id);for(let t=0;t<20&&b.status==='playing';t++){const commands=BATTLE_ACTIONS.map(a=>commandFor(b,a)),choice=commands.find(c=>c.finishing&&!c.disabled)||commands.find(c=>c.recommended&&!c.disabled)||commands.find(c=>c.action==='attack');b=battleTurn(b,choice.action);}assert.equal(b.status,'won');}
   const corridor={...initialState(),x:8,z:44};assert.equal(nearestMonster(corridor),null);assert.equal(nearestMonster({...corridor,horrorAccepted:true}).id,'vampire');
   assert.equal(nearestMonster({...initialState(),x:25.6,z:52.8}).id,'zombie');
   const world=fs.readFileSync(new URL('../world.js',import.meta.url),'utf8');assert(world.includes("definition.id==='zombie'||definition.id==='vampire'"));assert(world.includes('monsterAvailable(spirit.definition'));
@@ -89,8 +89,8 @@ test('resident guides expose all species while respecting locked doors and conse
  for(const m of MONSTERS)for(const state of [{},{unlocked:true,horrorAccepted:true}]){const p=guidePoint(m,state);assert(!blocked(p.x*4,p.z*4,state));assert(p.hint.length);assert.equal(state.hasKey,undefined);}
  assert.equal(guidePoint(MONSTERS.find(m=>m.id==='bat'),{}).z,7.4);assert.equal(guidePoint(MONSTERS.find(m=>m.id==='vampire'),{}).x,5);
 });
-test('golem has a distinct wind-up pattern and three actions can resolve the duel',()=>{
- let b=newBattle('franken');assert(intentFor(b).includes('足踏み'));b=battleTurn(b,'shine');assert(intentFor(b).includes('ぜんまい'));const energy=b.energy;b=battleTurn(b,'shine');assert.equal(b.energy,energy);assert(intentFor(b).includes('手拍子'));assert.equal(battleTurn(b,'shine').status,'won');
+test('golem telegraphs armor, wind-up and handclap before each legal decision',()=>{
+ let b=newBattle('franken');assert(intentFor(b).includes('足踏み'));b=battleTurn(b,'shine');assert(intentFor(b).includes('ぜんまい'));const energy=b.energy;b=battleTurn(b,'attack');assert.equal(b.energy,energy);assert(intentFor(b).includes('手拍子'));b=battleTurn(b,'guard');assert.equal(b.energy,energy);assert.equal(b.charged,true);assert.equal(b.turn,3);
 });
 test('both modes wire six residents and battles require an explicit second choice',()=>{
  const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8'),world=fs.readFileSync(new URL('../world.js',import.meta.url),'utf8'),html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');

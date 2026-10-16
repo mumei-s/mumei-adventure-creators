@@ -1,0 +1,37 @@
+/* Story and duel presentation. Scoped so article and exhibition layouts stay intact. */
+#panel.battle-mode{width:min(1080px,96vw);max-height:94svh;padding:clamp(14px,2vw,24px);background:radial-gradient(ellipse at 70% 15%,#39404c44,transparent 65%),linear-gradient(140deg,#17232e,#181724);border:1px solid #b89a6d;overflow:auto;scrollbar-gutter:stable}
+#panel.battle-mode h2{font-family:"Yu Mincho",serif;font-size:clamp(21px,2.5vw,30px);letter-spacing:.06em;margin:7px 0 14px;color:#f1dfbd}
+#panel.battle-mode .eyebrow{font-size:10px;letter-spacing:.15em;line-height:1.6;color:#cbb78e}
+#panel.battle-mode .battle-scene{width:100%;height:clamp(290px,43svh,470px);border-radius:10px;border-color:#a88b5c;background:#142234}
+#panel.battle-mode .duel-status{font-size:13px;line-height:1.7;min-height:0;margin:12px 0;color:#f1e7d0;padding-left:12px;border-left:2px solid #c5a56b}
+#panel.battle-mode .duel-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:12px 14px;border-radius:8px;background:#0e1723d9;border-color:#b3986b44}
+#panel.battle-mode .duel-stat{font-size:12px;gap:6px;line-height:1.5}
+#panel.battle-mode .duel-stat meter{height:12px}
+#panel.battle-mode .duel-stat .focus::-webkit-meter-optimum-value{background:linear-gradient(90deg,#b48148,#f1d594)}
+#panel.battle-mode .duel-stat .focus::-moz-meter-bar{background:#e8c47e}
+#panel.battle-mode .battle-intent{font-size:13px;line-height:1.7;color:#e6d8ed;padding:11px 13px;border:1px solid #a893bd66;background:#493b5c33;border-radius:8px;margin:12px 0}
+#panel.battle-mode .battle-dialogue{font-family:"Yu Mincho",serif;font-size:14px;line-height:1.9;margin:12px 0;color:#eadfce}
+#panel.battle-mode .battle-reward{padding:12px 14px;border:1px solid #b9a16488;border-radius:8px;background:#b6a35d15;color:#f0d9a8;font-size:13px;line-height:1.8}
+#panel.battle-mode .battle-commands{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:13px 0 2px;align-items:stretch}
+#panel.battle-mode .battle-commands button{min-height:64px;padding:10px 11px;font-size:13px;line-height:1.55;white-space:normal;border-radius:8px;position:relative}
+#panel.battle-mode .battle-commands button small{display:block;font-size:11px;line-height:1.55;margin-top:5px;opacity:.9;font-weight:400}
+#panel.battle-mode .battle-commands #battle-attack{background:linear-gradient(#574954,#302a3c);border-color:#c4a3a4;color:#f7dfd3}
+#panel.battle-mode .battle-commands #battle-guard{background:linear-gradient(#354c51,#253740);border-color:#98b9b2;color:#e3f2e8}
+#panel.battle-mode .battle-commands #battle-shine{background:linear-gradient(#e7c591,#b59261);border-color:#f3d6a0;color:#172433}
+#panel.battle-mode .battle-commands button[disabled]{opacity:.5;cursor:not-allowed;filter:saturate(.3)}
+#panel.battle-mode .battle-commands button[data-recommended="true"]{box-shadow:inset 0 0 0 2px #e9dbad,0 3px 10px #0003}
+#panel.battle-mode .battle-commands #battle-exit{grid-column:1/-1;min-height:44px;font-size:12px;border-color:#8f806066;background:transparent;color:#d7c9b1}
+#panel.battle-mode :is(button,a):focus-visible{outline:3px solid #f3df9f;outline-offset:3px}
+#panel :is(.story-opening,.story-chapter,.encounter-story){padding:18px 20px;border:1px solid #ac91624d;border-radius:10px;background:linear-gradient(135deg,#263243,#211d2c);margin:14px 0;color:#e9dfca}
+#panel :is(.story-opening,.story-chapter,.encounter-story) h3{font-family:"Yu Mincho",serif;color:#f0d7a5;line-height:1.6;margin:0 0 12px}
+#panel :is(.story-opening,.story-chapter,.encounter-story) p{font-size:13px;line-height:1.9}
+#panel :is(.story-fiction,.fiction-label){font-size:10px!important;color:#b7aebc;line-height:1.6}
+#panel .encounter-portrait{height:clamp(200px,32svh,340px);width:100%;object-fit:contain;filter:drop-shadow(0 12px 14px #0007)}
+#panel .encounter-dialogue{font-family:"Yu Mincho",serif;font-size:16px;line-height:1.9;padding:12px 16px;border-left:2px solid #c4a377;background:#dec89d08;color:#f0dfc4}
+#panel .clear-memories{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:22px 0}
+#panel .clear-memory{border:1px solid #b89d6c55;padding:13px 16px;border-radius:8px;background:#1e2535}
+#panel .clear-memory strong{display:block;color:#e7cb97;font-size:13px;line-height:1.7}
+#panel .clear-memory p{font-family:"Yu Mincho",serif;font-size:12px;line-height:1.8;margin:7px 0 0;color:#ded5c7}
+@media(max-width:620px){#panel.battle-mode{padding:14px 12px}#panel.battle-mode .battle-scene{height:clamp(275px,38svh,340px)}#panel.battle-mode .duel-stats{gap:8px;padding:10px}#panel.battle-mode .duel-stat{font-size:10px}#panel.battle-mode .battle-commands{gap:7px}#panel.battle-mode .battle-commands button{font-size:11px;padding:9px 7px;min-height:75px}#panel.battle-mode .battle-commands button small{font-size:10px}#panel.battle-mode .battle-intent{font-size:12px}#panel .clear-memories{grid-template-columns:1fr}#panel :is(.story-opening,.story-chapter,.encounter-story){padding:14px}}
+@media(max-height:540px) and (min-width:621px){#panel.battle-mode .battle-scene{height:290px}#panel.battle-mode{max-height:96svh}}
+@media(prefers-reduced-motion:reduce){#panel.battle-mode *,#panel .clear-memories *{animation:none!important;transition:none!important;scroll-behavior:auto!important}}

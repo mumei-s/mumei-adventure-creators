@@ -19,7 +19,7 @@ test('battle replay preserves earned marks and all three keyboard commands are g
 test('owner readiness gates first paint and downscaled player crops use measured layout',()=>{
  assert(app.includes("if(!creatorRoster.hero)throw Error('Owner character is not ready')"));assert(app.includes('rpgArt.setPlayerAtlas(heroImage,scaledCharacterLayout(creatorRoster.hero.asset,heroImage))'));
  assert(app.indexOf('rpgArt.setPlayerAtlas(heroImage')<app.indexOf('gameReady=true;'));
- assert(app.includes('compileCompanions(manifest)'));assert(app.includes('creatorPointer=null;look=null;if(isCharacterTap'));
+ assert(app.includes('compileCompanions(manifest)'));assert(app.includes('creatorPointer?.pointerId!==e.pointerId'));assert(app.includes('creatorPointer=null;look=null;try{canvas.releasePointerCapture'));assert(app.includes('if(isCharacterTap(start,'));
 });
 test('paired characters appear atomically after both atlas requests finish',async()=>{
  const {buildCreatorActors}=await import('../creator-runtime.js');const manifest=JSON.parse(fs.readFileSync(new URL('../data/creator-characters.json',import.meta.url)));const pair=manifest.characters.filter(c=>c.creatorId==='fond_holly3483').map((c,i)=>({...c,x:7+i*.6,z:8}));assert.equal(pair.length,2);

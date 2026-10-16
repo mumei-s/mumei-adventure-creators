@@ -35,7 +35,7 @@ export function adventureScore() {
 
 export function createAdventurePlayer({AudioContextCtor, onState = () => {},
   schedule = setInterval, cancel = clearInterval, deadline = setTimeout, cancelDeadline = clearTimeout} = {}) {
-  let context = null, master = null, timer = null, resumeTimer = null, cancelStart = null, version = 0, volume = 0, running = false;
+  let context = null, master = null, timer = null, resumeTimer = null, cancelStart = null, resumePending = null, version = 0, volume = 0, running = false;
   const voices = new Set(), score = adventureScore();
   function setVolume(value) {
     volume = clamp(value, 0, 100);
@@ -46,7 +46,7 @@ export function createAdventurePlayer({AudioContextCtor, onState = () => {},
     }
   }
   function stop(message = '') {
-    version++; running = false;
+    version++; running = false; resumePending = null;
     if (cancelStart) { cancelStart(); cancelStart = null; }
     if (timer !== null) cancel(timer); timer = null;
     if (resumeTimer !== null) cancelDeadline(resumeTimer); resumeTimer = null;
@@ -55,6 +55,7 @@ export function createAdventurePlayer({AudioContextCtor, onState = () => {},
       try { oscillator.disconnect(); gain.disconnect(); } catch {}
     }
     voices.clear();
+    try { master?.disconnect(); } catch {}
     const old = context; context = master = null;
     if (old) { old.onstatechange = null; try { old.close()?.catch?.(() => {}); } catch {} }
     onState(false, message);
@@ -66,11 +67,17 @@ export function createAdventurePlayer({AudioContextCtor, onState = () => {},
     try {
       const audio = new Ctor(); context = audio;
       onState(false, 'BGMを準備しています…', true);
+      // Keep resume synchronous with the control gesture. Slider input may
+      // precede touch activation; its release can retry this same
+      // context without adding a player, restarting the deadline, or autoplay.
+      const resumed = new Promise((resolve,reject) => {
+        resumePending = () => { try { Promise.resolve(audio.resume()).then(resolve,reject); } catch (error) { reject(error); } };
+        resumePending();
+      });
       const timeout = new Promise((_,reject) => { cancelStart = () => reject(Error('Audio start cancelled')); resumeTimer = deadline(() => reject(Error('Audio resume timed out')), 5000); });
-      // This call is synchronous within the ON/volume gesture, including on mobile.
-      await Promise.race([audio.resume(), timeout]);
+      await Promise.race([resumed, timeout]);
       if (token !== version) return;
-      cancelDeadline(resumeTimer); resumeTimer = null; cancelStart = null;
+      cancelDeadline(resumeTimer); resumeTimer = null; cancelStart = null; resumePending = null;
       if (audio.state !== 'running') throw Error('Audio is not running');
       audio.onstatechange = () => {
         if (context === audio && audio.state !== 'running') stop('BGMが中断されました。ONを押すか、音量を動かすと再開できます。');
@@ -79,6 +86,8 @@ export function createAdventurePlayer({AudioContextCtor, onState = () => {},
       let index = 0, cycleStart = audio.currentTime + .04;
       function tick() {
         if (context !== audio) return;
+        // An interruption may reach the scheduler before its statechange event.
+        if (audio.state !== 'running') { stop('BGMが中断されました。ONを押すか、音量を動かすと再開できます。'); return; }
         // Do not burst through a backlog after a throttled timer.
         if (cycleStart + score.notes[index].beat * ADVENTURE_BEAT_SECONDS < audio.currentTime - .15) {
           index = 0; cycleStart = audio.currentTime + .04;
@@ -99,7 +108,7 @@ export function createAdventurePlayer({AudioContextCtor, onState = () => {},
       tick(); timer = schedule(tick, 50); running = true; setVolume(volume); onState(true);
     } catch { if (token === version) stop('BGMを開始できませんでした。ONを押してもう一度お試しください。'); }
   }
-  return {start,stop,setVolume,isPlaying:() => running && context?.state === 'running',isActive:() => context !== null};
+  return {start,stop,setVolume,resumeFromGesture:() => resumePending?.(),isPlaying:() => running && context?.state === 'running',isActive:() => context !== null};
 }
 
 /** Game-only settings. The main gallery's audio implementation is deliberately independent. */
@@ -150,7 +159,9 @@ export function initAdventureAudio({settingsContainer, legacyBrightness, onBrigh
     input.setAttribute('aria-describedby',status.id); button.setAttribute('aria-describedby',status.id);
     button.addEventListener('click',toggle); input.addEventListener('input',() => setVolume(input.value,true));
     // A final change is also a direct gesture and permits a retry on mobile browsers.
-    input.addEventListener('change',() => setVolume(input.value,true));
+    const retryResume = () => { if (pending && volume > 0 && !document.hidden) player.resumeFromGesture?.(); };
+    input.addEventListener('change',() => { const wasPending = pending; setVolume(input.value,true); if (wasPending) retryResume(); });
+    input.addEventListener('pointerup',retryResume);
     bindings.push({button,input,output,status}); wrap.append(button,label,input,output,status); parent.append(wrap); return wrap;
   }
   const settingControls = addControls(brightnessSection);

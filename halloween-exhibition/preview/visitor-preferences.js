@@ -51,7 +51,7 @@ export function musicScore() {
 }
 export function createAmbientPlayer({ AudioContextCtor, onState = () => {},
   schedule = setInterval, cancel = clearInterval, deadline = setTimeout, cancelDeadline = clearTimeout } = {}) {
-  let context = null, master = null, timer = null, resumeTimer = null, version = 0, running = false, volume = 0;
+  let context = null, master = null, timer = null, resumeTimer = null, cancelStart = null, version = 0, running = false, volume = 0;
   const voices = new Set(), score = musicScore();
   function setVolume(value) {
     volume = clamp(value, 0, 100, 0);
@@ -59,10 +59,15 @@ export function createAmbientPlayer({ AudioContextCtor, onState = () => {},
   }
   function stop(message) {
     version++; running = false;
+    if (cancelStart) { cancelStart(); cancelStart = null; }
     if (timer !== null) cancel(timer); timer = null;
     if (resumeTimer !== null) cancelDeadline(resumeTimer); resumeTimer = null;
-    for (const voice of voices) { try { voice.stop(); voice.disconnect(); } catch {} }
+    for (const {oscillator,gain} of voices) {
+      try { oscillator.stop(); } catch {}
+      try { oscillator.disconnect(); gain.disconnect(); } catch {}
+    }
     voices.clear();
+    try { master?.disconnect(); } catch {}
     const old = context; context = master = null;
     if (old) { old.onstatechange = null; try { old.close()?.catch?.(() => {}); } catch {} }
     onState(false, message);
@@ -76,10 +81,13 @@ export function createAmbientPlayer({ AudioContextCtor, onState = () => {},
       const audio = new Ctor(); context = audio;
       onState(false, '音楽を準備しています…', true);
       // Resume in the explicit ON gesture. A stalled permission prompt cannot hang forever.
-      const timeout = new Promise((_, reject) => { resumeTimer = deadline(() => reject(Error('Audio resume timed out')), 5000); });
-      await Promise.race([audio.resume(), timeout]);
+      // Call before creating the cancellation promise, so a synchronous WebKit
+      // failure cannot leave a rejected promise without a handler.
+      const resumed = audio.resume();
+      const timeout = new Promise((_, reject) => { cancelStart = () => reject(Error('Audio start cancelled')); resumeTimer = deadline(() => reject(Error('Audio resume timed out')), 5000); });
+      await Promise.race([resumed, timeout]);
       if (token !== version) return;
-      cancelDeadline(resumeTimer); resumeTimer = null;
+      cancelDeadline(resumeTimer); resumeTimer = null; cancelStart = null;
       if (audio.state !== 'running') throw new Error('Audio context did not enter running state');
       audio.onstatechange = () => {
         if (context === audio && audio.state !== 'running') stop('音楽の再生が中断されました。再開するにはONを押してください。');
@@ -88,6 +96,7 @@ export function createAmbientPlayer({ AudioContextCtor, onState = () => {},
       let index = 0, cycleStart = audio.currentTime + .04;
       function tick() {
         if (context !== audio) return;
+        if (audio.state !== 'running') { stop('音楽の再生が中断されました。再開するにはONを押してください。'); return; }
         // Never replay a backlog after a throttled/background timer.
         if (cycleStart + score.notes[index].beat * MUSIC_BEAT_SECONDS < audio.currentTime - .15) {
           index = 0; cycleStart = audio.currentTime + .04;
@@ -95,14 +104,14 @@ export function createAmbientPlayer({ AudioContextCtor, onState = () => {},
         while (cycleStart + score.notes[index].beat * MUSIC_BEAT_SECONDS < audio.currentTime + .2) {
           const note = score.notes[index], start = cycleStart + note.beat * MUSIC_BEAT_SECONDS;
           const end = start + note.duration * MUSIC_BEAT_SECONDS;
-          const oscillator = audio.createOscillator(), gain = audio.createGain();
+          const oscillator = audio.createOscillator(), gain = audio.createGain(), voice = {oscillator,gain};
           oscillator.type = note.wave; oscillator.frequency.value = 440 * 2 ** ((note.midi - 69) / 12);
           gain.gain.setValueAtTime(0, start);
           gain.gain.linearRampToValueAtTime(note.level, start + .018);
           gain.gain.exponentialRampToValueAtTime(.001, end);
           gain.gain.linearRampToValueAtTime(0, end + .035);
-          oscillator.connect(gain); gain.connect(master); voices.add(oscillator);
-          oscillator.onended = () => { voices.delete(oscillator); oscillator.disconnect(); gain.disconnect(); };
+          oscillator.connect(gain); gain.connect(master); voices.add(voice);
+          oscillator.onended = () => { voices.delete(voice); oscillator.disconnect(); gain.disconnect(); };
           oscillator.start(start); oscillator.stop(end + .04);
           if (++index === score.notes.length) { index = 0; cycleStart += score.beats * MUSIC_BEAT_SECONDS; }
         }
@@ -159,8 +168,9 @@ export function initVisitorPreferences({ container, triggerParent, onBrightness 
   music.addEventListener('click', () => { if (player.isActive()) player.stop(); else if (!document.hidden) player.start(); });
   const onHidden = () => { if (document.hidden) player.stop(); };
   const onPageHide = () => player.stop();
-  document.addEventListener('visibilitychange', onHidden); window.addEventListener('pagehide', onPageHide);
+  const onReturn = event => { if (event.persisted) { preferences.volume = 0; player.setVolume(0); player.stop(); render(); } };
+  document.addEventListener('visibilitychange', onHidden); window.addEventListener('pagehide', onPageHide); window.addEventListener('blur', onPageHide); window.addEventListener('pageshow', onReturn);
   render(); player.setVolume(preferences.volume); onBrightness(preferences.brightness);
-  return { setBrightness, stopMusic: () => player.stop(), getPreferences: () => ({ ...preferences }), destroy() { player.stop(); document.removeEventListener('visibilitychange', onHidden); window.removeEventListener('pagehide', onPageHide); controls.remove(); trigger?.remove(); dialog?.remove(); } };
+  return { setBrightness, stopMusic: () => player.stop(), getPreferences: () => ({ ...preferences }), destroy() { player.stop(); document.removeEventListener('visibilitychange', onHidden); window.removeEventListener('pagehide', onPageHide); window.removeEventListener('blur', onPageHide); window.removeEventListener('pageshow', onReturn); controls.remove(); trigger?.remove(); dialog?.remove(); } };
 }
 

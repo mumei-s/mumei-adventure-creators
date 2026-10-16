@@ -65,13 +65,19 @@ export function installGalleryGesture(stage, { onNavigate, onSuppressClick = () 
     event.stopImmediatePropagation();
   }
   function reset() { touches.clear(); gesture = null; blocked = false; }
+  // Safari can suspend a page or rotate the viewport without delivering the
+  // last touch's pointercancel. Do not carry its ID into the next gesture.
+  const onVisibility = () => { if (document.hidden) reset(); };
+  const onReturn = event => { if (event.persisted) reset(); };
   document.addEventListener('pointerdown', trackDown, true);
   stage.addEventListener('pointerdown', start, { passive: true });
   document.addEventListener('pointermove', move, { passive: true });
   document.addEventListener('pointerup', finish, { passive: true });
   document.addEventListener('pointercancel', cancel, { passive: true });
   stage.addEventListener('click', suppressClick, true);
-  document.defaultView?.addEventListener('blur', reset);
+  document.addEventListener('visibilitychange', onVisibility);
+  for (const event of ['blur', 'pagehide', 'orientationchange']) document.defaultView?.addEventListener(event, reset);
+  document.defaultView?.addEventListener('pageshow', onReturn);
   return () => {
     document.removeEventListener('pointerdown', trackDown, true);
     stage.removeEventListener('pointerdown', start);
@@ -79,7 +85,9 @@ export function installGalleryGesture(stage, { onNavigate, onSuppressClick = () 
     document.removeEventListener('pointerup', finish);
     document.removeEventListener('pointercancel', cancel);
     stage.removeEventListener('click', suppressClick, true);
-    document.defaultView?.removeEventListener('blur', reset);
+    document.removeEventListener('visibilitychange', onVisibility);
+    for (const event of ['blur', 'pagehide', 'orientationchange']) document.defaultView?.removeEventListener(event, reset);
+    document.defaultView?.removeEventListener('pageshow', onReturn);
     reset();
   };
 }

@@ -1,3 +1,4 @@
+import {initViewport} from '../viewport.js?v=20261016-ios1';
 import {resolveContextAction,actionButtonFor} from './context-action.js?v=20261016-resident1';
 import {compileResidents,RESIDENT_STORIES,RESIDENT_FICTION} from './resident-model.js?v=20261016-resident1';
 import {initMinimapSize} from './minimap-size.js?v=20261016-battle-visible1';
@@ -5,8 +6,8 @@ import {libraryFromArchive} from './library-catalog.js?v=20261015-clear1';
 import {WALKING_SPEED_KEY,normalizeWalkingSpeed,advanceWithSubsteps} from './walking-speed.js?v=20261015-clear1';
 import {createRewardStore,newRunId,eligibleForEnding} from './clear-reward.js?v=20261015-clear1';
 import {renderEnding} from './ending-ui.js?v=20261016-resident1';
-import {createSoundCheck} from './sound-check.js?v=20261015-music-garden1';
-import {initAdventureAudio} from './adventure-audio.js?v=20261016-menu-audio1';
+import {createSoundCheck} from './sound-check.js?v=20261016-ios1';
+import {initAdventureAudio} from './adventure-audio.js?v=20261016-ios1';
 import { initDisplayMode } from '../display-mode.js?v=20261016-resident1';
 import { normalizeLighting } from './lighting-model.js?v=20261014-adventure2';
 import { MAP, CELL, FEATURES, toWorld, collectionAt, move, nearby, initialState, visibleArticles } from './maze-model.js?v=20261014-adventure2';
@@ -16,7 +17,7 @@ import { createStageRenderer, EXIT } from './stage-2d.js?v=20261016-resident1';
 import {createArtLibrary,ART_FILES} from './rpg-art.js?v=20261016-resident1';
 import {renderBattleScene,battleEffectDuration} from './battle-scene.js?v=20261016-resident1';
 import {directionFromMovement,moveAroundFurniture} from './rpg-model.js?v=20261014-adventure2';
-import {protectGameSurface,bindHeldGameButton,bindDirectionPad} from './game-input.js?v=20261015-touch3';
+import {protectGameSurface,bindHeldGameButton,bindDirectionPad} from './game-input.js?v=20261016-ios1';
 import {STORY,encounterStory,chapterFor} from './story-model.js?v=20261016-resident1';
 import {compileCharacterRoster,placeCreatorNPCs,createCharacterAssets,chooseCreatorAssets,buildCreatorActors,nearestCreator,creatorGuide,isCharacterTap,scaledCharacterLayout,compileCompanions,companionActor,creatorPose} from './creator-runtime.js?v=20261016-resident1';
 import {renderCreatorConversation,renderCreatorDirectory} from './creator-ui.js?v=20261016-resident1';
@@ -64,9 +65,9 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)soundCheck.
 function saveLight(){try{localStorage.setItem(lightKey,JSON.stringify({lantern}));}catch{}}
 function save(){progress[year]={runId,reachedVault,cleared:[...cleared],hasKey:state.hasKey,unlocked:state.unlocked,visited:progress[year]?.visited||[],storySeen:progress[year]?.storySeen===true};try{localStorage.setItem(storageKey,JSON.stringify(progress));}catch{storageOK=false;}}
 function notify(text){$('toast').textContent=text;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),3500);}
-function clearInput(){walking=false;keys.clear();for(const control of heldControls)control.reset();held.clear();look=null;creatorPointer=null;for(const b of document.querySelectorAll('.move-pad .active'))b.classList.remove('active');}
+function clearInput(){walking=false;keys.clear();for(const control of heldControls)control.reset();held.clear();const captured=creatorPointer;creatorPointer=null;look=null;if(captured)try{captured.canvas?.releasePointerCapture(captured.pointerId);}catch{}for(const b of document.querySelectorAll('.move-pad .active'))b.classList.remove('active');}
 function openPanel(){clearInput();if(!panel.open){returnFocus=document.activeElement;panel.showModal();}}
-function title(kicker,name){panel.classList.remove('battle-mode','library-mode');const heading=element('h2',name);heading.id='panel-title';content.replaceChildren(element('p',kicker,'eyebrow'),heading);}
+function title(kicker,name){panel.scrollTop=0;content.scrollTop=0;panel.classList.remove('battle-mode','library-mode');const heading=element('h2',name);heading.id='panel-title';content.replaceChildren(element('p',kicker,'eyebrow'),heading);}
 function toggleLantern(){lantern=!lantern;$('lantern').textContent=lantern?'ランタン ON':'ランタン OFF';$('lantern').setAttribute('aria-pressed',String(lantern));saveLight();}
 function showLighting(){title('YOUR LIGHT & SOUND','夜の暗さと、手元の灯り。');content.append(visitorSection,element('p','夜の回廊は暗く、ランタンを点けると足元と前方が暖かく照らされます。暗すぎるときは明るさを上げるか、2D表示へ。文字・操作・地図の明るさは変わりません。'),element('p','メニューの「明るさ・音楽」でBGMと音量を調整できます。音量を上げると、冒険室専用の音楽が流れます。毎回OFF・音量0で始まります。対戦の効果音・点滅・時間制限はありません。'));content.append(element('p','冒険室の表示バージョン：20261016-resident1','build-label'));openPanel();}
 function safeURL(v){try{const u=new URL(v);return u.protocol==='https:'&&!u.username&&!u.password?u.href:null;}catch{return null;}}
@@ -296,14 +297,19 @@ function tick(now){
   frame=requestAnimationFrame(tick);
 }
 function start(){if(!frame&&gameReady){last=0;frame=requestAnimationFrame(tick);}}
-window.addEventListener('resize',()=>{world?.resize();if(view==='2d')resizeFlat();});
+function resizeGameViewport(){world?.resize();if(view==='2d')resizeFlat();if(battle)drawBattleVisual();}
+initViewport({onChange:()=>{clearInput();resizeGameViewport();}});
+if(typeof ResizeObserver==='function'){const canvasSizeObserver=new ResizeObserver(()=>requestAnimationFrame(resizeGameViewport));canvasSizeObserver.observe($('world'));canvasSizeObserver.observe($('fallback'));}
+window.addEventListener('orientationchange',clearInput);
+window.addEventListener('pagehide',()=>{cancelAnimationFrame(frame);frame=0;last=0;clearInput();if(gameReady)save();});
+window.addEventListener('pageshow',()=>{clearInput();resizeGameViewport();if(!document.hidden)start();});
 document.addEventListener('yearbook:layout-change',()=>requestAnimationFrame(()=>{if(view==='2d')resizeFlat();else world?.resize();if(battle)drawBattleVisual();}));
 protectGameSurface($('game'));
 for(const canvas of[$('world'),$('fallback')]){
-  canvas.addEventListener('pointerdown',e=>{if(panel.open||!gameReady||e.button>0)return;if(e.cancelable)e.preventDefault();creatorPointer={pointerId:e.pointerId,x:e.clientX,y:e.clientY,time:performance.now(),moved:false};if(view==='3d')look={id:e.pointerId,x:e.clientX,y:e.clientY};canvas.setPointerCapture(e.pointerId);});
+  canvas.addEventListener('pointerdown',e=>{if(panel.open||!gameReady||e.button>0||creatorPointer)return;if(e.cancelable)e.preventDefault();try{canvas.setPointerCapture(e.pointerId);}catch{return;}creatorPointer={pointerId:e.pointerId,canvas,x:e.clientX,y:e.clientY,time:performance.now(),moved:false};if(view==='3d')look={id:e.pointerId,x:e.clientX,y:e.clientY};});
   canvas.addEventListener('pointermove',e=>{if(creatorPointer?.pointerId===e.pointerId&&Math.hypot(e.clientX-creatorPointer.x,e.clientY-creatorPointer.y)>8)creatorPointer.moved=true;if(!look||look.id!==e.pointerId||view!=='3d')return;state.yaw-=(e.clientX-look.x)*.005;state.pitch=Math.max(-.6,Math.min(.6,state.pitch-(e.clientY-look.y)*.004));look={id:e.pointerId,x:e.clientX,y:e.clientY};});
-  canvas.addEventListener('pointerup',e=>{const start=creatorPointer;creatorPointer=null;look=null;if(isCharacterTap(start,{pointerId:e.pointerId,x:e.clientX,y:e.clientY,time:performance.now()})&&!panel.open){const bounds=canvas.getBoundingClientRect(),renderer=view==='3d'?world:stageRenderer,id=renderer?.pickCreator?.(e.clientX-bounds.left,e.clientY-bounds.top);if(id){if(residents.some(npc=>npc.id===id))showResident(id);else showCreator(id);}}});
-  for(const event of['pointercancel','lostpointercapture'])canvas.addEventListener(event,()=>{creatorPointer=null;look=null;});
+  canvas.addEventListener('pointerup',e=>{if(creatorPointer?.pointerId!==e.pointerId)return;const start=creatorPointer;creatorPointer=null;look=null;try{canvas.releasePointerCapture(e.pointerId);}catch{}if(isCharacterTap(start,{pointerId:e.pointerId,x:e.clientX,y:e.clientY,time:performance.now()})&&!panel.open){const bounds=canvas.getBoundingClientRect(),renderer=view==='3d'?world:stageRenderer,id=renderer?.pickCreator?.(e.clientX-bounds.left,e.clientY-bounds.top);if(id){if(residents.some(npc=>npc.id===id))showResident(id);else showCreator(id);}}});
+  for(const event of['pointercancel','lostpointercapture'])canvas.addEventListener(event,e=>{if(creatorPointer?.pointerId===e.pointerId){creatorPointer=null;look=null;}});
 }
 for(const button of document.querySelectorAll('[data-move],#turn-left,#turn-right')){
   const name=button.dataset.move||button.id;
@@ -317,7 +323,7 @@ document.addEventListener('keydown',e=>{
   if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'].includes(k)){e.preventDefault();keys.add(k);}
   if(e.repeat)return;if(k==='e')performContextAction();if(k==='b')startBattle();if(k==='c')talkToCreator();if(k==='l')toggleLantern();if(k==='escape')resetPosition();
 });
-document.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));window.addEventListener('blur',clearInput);
+document.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));window.addEventListener('blur',()=>{clearInput();soundCheck.stop('');});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(frame);frame=0;clearInput();}else start();});
 $('tools-open').onclick=showLighting;$('lantern').onclick=toggleLantern;$('lantern').textContent=lantern?'ランタン ON':'ランタン OFF';$('lantern').setAttribute('aria-pressed',String(lantern));
 $('interact').onclick=performContextAction;$('list-open').onclick=()=>{if(catalog)showCatalog();};$('map-open').onclick=()=>{if(catalog)showMap();};$('minimap-open').onclick=()=>{if(catalog)showMap();};$('home').onclick=resetPosition;
@@ -330,7 +336,7 @@ function updateMotion(){const enabled=motion&&!reducedMotion.matches;
 }
 $('pause').onclick=()=>{if(reducedMotion.matches){notify('端末の「動きを減らす」設定を優先しています。2D表示も選べます。');return;}motion=!motion;updateMotion();};
 reducedMotion.addEventListener('change',()=>{if(reducedMotion.matches){motion=false;setView('2d',{persist:false});}updateMotion();});updateMotion();
-panel.querySelector('.close').onclick=()=>panel.close();panel.addEventListener('close',()=>{soundCheck.stop('');battle=null;battleCanvas=null;battleEffect=null;panel.classList.remove('battle-mode','library-mode');clearInput();returnFocus?.focus();last=0;});
+panel.querySelector('.close').onclick=()=>panel.close();panel.addEventListener('close',()=>{soundCheck.stop('');battle=null;battleCanvas=null;battleEffect=null;panel.classList.remove('battle-mode','library-mode');clearInput();returnFocus?.focus({preventScroll:true});last=0;});
 $('world').addEventListener('webglcontextlost',e=>{e.preventDefault();worldFailed=true;world?.dispose();world=null;setView('2d',{persist:false});notify('3D描画が止まったため、同じ場所から2D表示で続けられます。');});
 async function init(){
   try{const response=await fetch('../data/archive.json',{cache:'no-store'});if(!response.ok)throw Error('archive fetch failed');const archive=await response.json();const extraResponse=await fetch('./data/catalog.json',{cache:'no-store'});if(!extraResponse.ok)throw Error('supplemental catalog fetch failed');const supplemental=await extraResponse.json();catalog=libraryFromArchive(archive,undefined,supplemental);year=catalog.selectedYear;

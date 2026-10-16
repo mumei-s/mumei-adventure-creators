@@ -1,17 +1,19 @@
+import {initViewport} from './viewport.js?v=20261016-ios1';
 import { initAppExit } from './app-exit.js?v=20261016-fate1';
 import { createDoorRevealClock } from './door-reveal-clock.js?v=20261015-playful1';
 import { initFestivalScene } from './festival-scene.js?v=20261015-glamour1';
 import { loadArtworkImage } from './magical-loading.js?v=20261015-journey1';
 import { initPalaceStartup } from './palace-startup.js?v=20261015-interior1';
 import { createDoorPalettePicker } from './door-palette.js?v=20261015-festival1';
-import { installGalleryGesture } from './gallery-gesture.js?v=20261015-controls1';
+import { installGalleryGesture } from './gallery-gesture.js?v=20261016-ios1';
 import { initPalaceEntrance } from './palace-entrance.js?v=20261014-palace2';
 import { initDisplayMode } from './display-mode.js?v=20261014-layout1';
 import { createSlideshowController } from './slideshow.js?v=20261015-festival1';
-import { initVisitorPreferences } from './visitor-preferences.js?v=20261015-return1';
+import { initVisitorPreferences } from './visitor-preferences.js?v=20261016-ios1';
 import { initSceneMotion } from './scene-motion.js?v=20261015-glamour1';
 import { validateArchive, safeURL, normalizeSearch, doorIdFor } from './data-model.js?v=20261014-doors1';
 const $=id=>document.getElementById(id), root=$('theater');
+initViewport();
 let palaceVisualReady;
 let cancelArtworkLoad=()=>{};
 const profiles={

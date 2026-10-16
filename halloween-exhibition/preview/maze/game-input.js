@@ -14,10 +14,15 @@ export function protectGameSurface(root){
 
 // Held movement is separate from native click actions such as the lantern.
 // Track each pointer independently so releasing one finger cannot strand another.
+function releaseCapture(element,pointerId){
+  // Resetting for a dialog, rotation or page suspension must also release the
+  // browser's capture, even if no final pointerup arrives on iPhone/iPad.
+  try{if(element.hasPointerCapture?.(pointerId)!==false)element.releasePointerCapture?.(pointerId);}catch{}
+}
 export function bindHeldGameButton(button,{blocked=()=>false,onChange,pointer=true}){
   const pointers=new Set(),keys=new Set();let active=false;
   const update=()=>{const next=pointers.size>0||keys.size>0;if(next===active)return;active=next;button.classList.toggle('active',active);onChange(active);};
-  const reset=()=>{pointers.clear();keys.clear();update();};
+  const reset=()=>{const captured=[...pointers];pointers.clear();keys.clear();update();for(const id of captured)releaseCapture(button,id);};
   if(pointer)button.addEventListener('pointerdown',event=>{
     if(blocked()||button.disabled||event.button>0)return;
     if(event.cancelable)event.preventDefault();
@@ -26,7 +31,7 @@ export function bindHeldGameButton(button,{blocked=()=>false,onChange,pointer=tr
     try{button.setPointerCapture(event.pointerId);}catch{return;}
     pointers.add(event.pointerId);update();
   });
-  const release=event=>{pointers.delete(event.pointerId);update();};
+  const release=event=>{if(!pointers.delete(event.pointerId))return;update();releaseCapture(button,event.pointerId);};
   if(pointer)for(const type of ['pointerup','pointercancel','lostpointercapture'])button.addEventListener(type,release);
   button.addEventListener('keydown',event=>{
     if(![' ','Enter'].includes(event.key)||blocked()||button.disabled)return;
@@ -56,7 +61,7 @@ export function bindDirectionPad(pad,{blocked=()=>false,onChange}){
     const dx=x-rect.width/2,dy=y-rect.height/2,length=Math.hypot(dx,dy)||1,scale=Math.min(1,rect.width*.24/length);
     pad.style.setProperty('--pad-x',`${dx*scale}px`);pad.style.setProperty('--pad-y',`${dy*scale}px`);pad.dataset.direction=direction||'';
   };
-  const reset=()=>{pointerId=null;direction=null;onChange(null);pad.style.setProperty('--pad-x','0px');pad.style.setProperty('--pad-y','0px');pad.dataset.direction='';};
+  const reset=()=>{const captured=pointerId;pointerId=null;direction=null;onChange(null);pad.style.setProperty('--pad-x','0px');pad.style.setProperty('--pad-y','0px');pad.dataset.direction='';if(captured!==null)releaseCapture(pad,captured);};
   pad.addEventListener('pointerdown',event=>{if(blocked()||event.button>0||pointerId!==null)return;if(event.cancelable)event.preventDefault();
     event.target.closest?.('button')?.focus({preventScroll:true});try{pad.setPointerCapture(event.pointerId);}catch{return;}pointerId=event.pointerId;update(event);
   });

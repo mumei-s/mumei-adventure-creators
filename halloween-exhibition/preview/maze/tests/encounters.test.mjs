@@ -56,9 +56,9 @@ test('2D, encounters, exit, and game-only audio remain first-class controls',()=
   assert.equal((html.match(/href="\.\.\/\?mode=halloween"/g)||[]).length,2);
   assert.equal((html.match(/href="\.\.\/\?return=palace"/g)||[]).length,1);
   const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8');
-  assert(app.includes("import {initAdventureAudio} from './adventure-audio.js?v=20261016-menu-audio1'"));
+  assert(app.includes("import {initAdventureAudio} from './adventure-audio.js?v=20261016-ios1'"));
   assert(app.includes("if(view==='3d')world?.render"));assert(app.includes("stageRenderer.render({canvas:$('fallback')"));
-  assert(app.includes("battle=null;battleCanvas=null;battleEffect=null"));assert(app.includes("clearInput();returnFocus?.focus()"));
+  assert(app.includes("battle=null;battleCanvas=null;battleEffect=null"));assert(app.includes("clearInput();returnFocus?.focus({preventScroll:true})"));
   assert(!app.includes('setInterval'));assert(!app.includes('AudioContext'));
 });
 

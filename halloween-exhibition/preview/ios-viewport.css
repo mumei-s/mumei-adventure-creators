@@ -1,0 +1,58 @@
+/* Shared visible-viewport fallback; no user-agent lock, zoom restriction or page-wide touch trap. */
+:root{--app-viewport-height:100vh;--app-viewport-width:100vw;--app-viewport-top:0px;--app-viewport-left:0px;--app-viewport-right:0px;--app-viewport-bottom:0px}
+@supports(height:100dvh){:root{--app-viewport-height:100dvh}}
+body[data-layout-page=gallery] .theater{min-height:var(--app-viewport-height);height:auto}
+body[data-layout-page=gallery] .theater:not([data-palace-state=gallery]) .palace-entrance{height:calc(var(--app-viewport-height) - var(--palace-header-height,180px) - var(--safe-top,0px) - var(--safe-bottom,0px))}
+body[data-layout-page=gallery] .app-ended-screen{min-height:var(--app-viewport-height);padding-top:max(32px,var(--safe-top,0px));padding-bottom:max(32px,var(--safe-bottom,0px))}
+/* Per-side insets position the modal inside the actually visible rectangle, including an open keyboard. */
+body[data-layout-page] dialog,
+body[data-layout-page=maze] #panel:not(.battle-mode),
+body[data-layout-page=maze] #panel.battle-mode{
+ position:fixed;inset:calc(var(--app-viewport-top) + var(--safe-top,0px)) calc(var(--app-viewport-right) + var(--safe-right,0px)) calc(var(--app-viewport-bottom) + var(--safe-bottom,0px)) calc(var(--app-viewport-left) + var(--safe-left,0px));margin:auto;
+ max-width:calc(var(--app-viewport-width) - var(--safe-left,0px) - var(--safe-right,0px) - 16px);
+ max-height:max(44px,calc(var(--app-viewport-height) - var(--safe-top,0px) - var(--safe-bottom,0px) - 16px));
+ overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+}
+body[data-layout-page=maze] #panel.battle-mode{height:calc(var(--app-viewport-height) - var(--safe-top,0px) - var(--safe-bottom,0px) - 16px)}
+/* Text entry retains native zoom/pan; 16px prevents involuntary iPhone focus zoom. */
+body[data-layout-page] dialog :is(input:not([type=range]),textarea,select){font-size:16px;max-width:100%}
+body[data-layout-page=maze]{overflow:hidden;overscroll-behavior:none}
+body[data-view] #game,body[data-layout][data-view] #game{height:var(--app-viewport-height);min-height:0}
+body[data-view]{--map-visible-size:min(var(--map-side),26vw,max(44px,calc(var(--app-viewport-height) - var(--safe-top,0px) - var(--safe-bottom,0px) - 342px)))}
+/* Safari's visual viewport can rotate/shrink before CSS layout-height media queries update. */
+:root[data-viewport-landscape=true] body[data-view] #game{grid-template-columns:minmax(0,1fr) 260px;grid-template-rows:48px 0 auto minmax(0,1fr) 20px}
+:root[data-viewport-landscape=true] body[data-view] header{grid-area:1/1/2/3}
+:root[data-viewport-landscape=true] body[data-view] .exploration-hud{grid-area:3/1/4/3;padding:3px 8px}
+:root[data-viewport-landscape=true] body[data-view] :is(.move-pad,.nearby,.lantern-dock){grid-area:4/2}
+:root[data-viewport-landscape=true] body[data-view] .move-pad{justify-self:center;margin-left:0!important}
+:root[data-viewport-landscape=true] body[data-view] .nearby{display:flex;grid-template-columns:minmax(0,1fr);justify-self:end;margin-right:4px;width:62px!important;max-width:62px}
+:root[data-viewport-landscape=true] body[data-view] .lantern-dock{justify-self:start;margin-left:0;width:62px;padding-left:4px}
+:root[data-viewport-landscape=true] body[data-view] footer{grid-area:5/1/6/3}
+:root[data-viewport-landscape=true] body[data-view]{--map-visible-size:min(var(--map-side),26vw,max(44px,calc(var(--app-viewport-height) - var(--safe-top,0px) - var(--safe-bottom,0px) - 208px)))}
+:root[data-viewport-landscape=true] body[data-view] .minimap span{display:none}
+:root[data-viewport-short=true] #panel.battle-mode #panel-content{grid-template-columns:minmax(0,1.25fr) minmax(230px,1fr);grid-template-rows:44px minmax(0,1fr);gap:7px}
+:root[data-viewport-short=true] #panel.battle-mode .battle-heading{grid-column:1/-1}
+:root[data-viewport-short=true] #panel.battle-mode .battle-view{grid-column:1;grid-row:2}
+:root[data-viewport-short=true] #panel.battle-mode .battle-controls{grid-column:2;grid-row:2;grid-template-rows:minmax(0,1fr) 72px}
+:root[data-viewport-short=true] #panel.battle-mode .battle-commands,:root[data-viewport-short=true] #panel.battle-mode .battle-commands button{height:72px;max-height:72px}
+:root[data-viewport-tiny=true] #panel.battle-mode{padding:6px}
+:root[data-viewport-tiny=true] #panel.battle-mode>.close{top:6px;right:6px}
+:root[data-viewport-tiny=true] #panel.battle-mode #panel-content{grid-template-columns:minmax(0,1fr) minmax(132px,1fr);grid-template-rows:44px minmax(0,1fr);gap:5px}
+:root[data-viewport-tiny=true] #panel.battle-mode .battle-heading{grid-column:1/-1}
+:root[data-viewport-tiny=true] #panel.battle-mode .battle-view{grid-column:1;grid-row:2;grid-template-rows:minmax(0,1fr) 34px;gap:4px}
+:root[data-viewport-tiny=true] #panel.battle-mode .duel-stats{height:34px;padding:2px 3px;gap:3px}
+:root[data-viewport-tiny=true] #panel.battle-mode .duel-stat{font-size:9px}
+:root[data-viewport-tiny=true] #panel.battle-mode .battle-controls{grid-column:2;grid-row:2;grid-template-rows:minmax(0,1fr) 140px;gap:5px}
+:root[data-viewport-tiny=true] #panel.battle-mode .battle-commands{grid-template-columns:1fr;grid-template-rows:repeat(3,44px);height:140px;gap:4px}
+:root[data-viewport-tiny=true] #panel.battle-mode .battle-commands button{height:44px;max-height:44px;padding:2px;font-size:11px}
+:root[data-viewport-tiny=true] #panel.battle-mode .battle-commands button small{margin-top:2px;font-size:9px}
+:root[data-viewport-tiny=true] #panel.battle-mode .battle-commands:has(#battle-retry){grid-template-columns:1fr;grid-template-rows:repeat(2,44px)}
+
+/* Very short Safari landscape: keep the full-size pad in its own column.
+   The small story/map panel overlays only the world corner, not the controls. */
+:root[data-viewport-compact=true] body[data-view] #game{grid-template-rows:44px 0 0 minmax(0,1fr) 0}
+:root[data-viewport-compact=true] body[data-view] header{padding-block:0}
+:root[data-viewport-compact=true] body[data-view] .exploration-hud{grid-area:4/1;align-self:start;padding:2px 4px;gap:4px;background:#202739df}
+:root[data-viewport-compact=true] body[data-view] .exploration-hud .place p{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:10px;line-height:1.25}
+:root[data-viewport-compact=true] body[data-view]{--map-visible-size:44px}
+:root[data-viewport-compact=true] body[data-view] footer{display:none}

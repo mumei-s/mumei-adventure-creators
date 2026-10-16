@@ -69,7 +69,7 @@ test('app integrates scoped guards, resets holds on interruption and cache-busts
   const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8'),html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
   assert(app.includes("protectGameSurface($('game'))"));assert(app.includes('for(const control of heldControls)control.reset()'));assert(app.includes("window.addEventListener('blur',clearInput)"));assert(app.includes('e.target.isContentEditable'));
   assert(app.includes("$('lantern').onclick=toggleLantern"));assert(!app.includes("$('lantern').addEventListener('pointerdown'"));
-  assert(html.includes('./app.js?v=20261015-glamour1'));assert(html.includes('./rpg-ui.css?v=20261014-adventure2'));assert(app.includes('./game-input.js?v=20261015-touch3'));assert(html.includes('width=device-width,initial-scale=1,viewport-fit=cover'));assert(!html.includes('user-scalable=no'));
+  assert(html.includes('./app.js?v=20261016-music1'));assert(html.includes('./rpg-ui.css?v=20261014-adventure2'));assert(app.includes('./game-input.js?v=20261015-touch3'));assert(html.includes('width=device-width,initial-scale=1,viewport-fit=cover'));assert(!html.includes('user-scalable=no'));
 });
 
 function roundPad(){const pad=new Element('div');pad.style={setProperty(){}};pad.dataset={};pad.getBoundingClientRect=()=>({left:10,top:20,width:112,height:112});const changes=[];const binding=bindDirectionPad(pad,{onChange:d=>changes.push(d)});return {pad,changes,...binding};}

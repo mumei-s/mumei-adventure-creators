@@ -1,0 +1,31 @@
+/* A bounded miniature palace, not an overlay over the article or title. */
+body[data-layout-page=gallery] .theater .palace-return-row .roulette-open{position:relative;overflow:hidden;border:1px solid #e9bd76;background:linear-gradient(120deg,#352046,#613248 48%,#2e2243);box-shadow:inset 0 0 0 3px #21152b,inset 0 0 0 4px #ad7e47,0 3px 12px #10071766;gap:9px;padding:7px 15px;color:#fff0c9}
+.roulette-open #roulette-label{font-size:11px;letter-spacing:.05em}
+.roulette-open .fate-button-gate{position:relative;display:block;flex:0 0 22px;width:22px;height:29px;border:2px solid #eac582;border-radius:14px 14px 2px 2px;background:linear-gradient(90deg,#472548 46%,#ffe5a0 49%,#fff6d6 51%,#472548 54%);box-shadow:0 0 9px #ffc87555,inset 0 0 0 2px #2b1833;animation:fate-button-breathe 3.8s ease-in-out infinite}
+.fate-button-gate::after{content:"";position:absolute;inset:4px 3px;border:1px solid #e4b36e99;border-radius:10px 10px 1px 1px}
+.fate-button-gate i{position:absolute;left:8px;top:13px;width:3px;height:6px;border-radius:50% 50% 1px 1px;background:#ffebac;box-shadow:0 0 8px #ffe5a1}
+.theater .roulette-reel.fate-theatre{position:relative;left:auto;top:auto;transform:none;isolation:isolate;display:block;width:calc(100% - 24px);max-width:760px;height:270px;margin:12px auto 6px;padding:0;overflow:hidden;border:1px solid #b88953;border-radius:50% 50% 18px 18px / 28px 28px 18px 18px;background:#20152c;box-shadow:inset 0 0 0 4px #211328,inset 0 0 0 5px #b68c4a88,0 8px 22px #10071e55;backdrop-filter:none;pointer-events:none}
+.fate-vault{position:absolute;inset:0;background:linear-gradient(0deg,#170e28 1%,#21112a22 65%,#24112d99),url('./assets/palace/palace-interior.webp') center 50%/cover;opacity:.85}
+.fate-vault::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 74%,#ffce8033,transparent 60%);box-shadow:inset 0 0 40px 12px #1b102c}
+.fate-orbit{position:absolute;width:75%;height:40%;left:12.5%;top:41%;border:1px solid #f2cc8688;border-radius:50%;box-shadow:0 0 10px #ffc76b55,inset 0 0 16px #f1c67944;transform:rotate(-7deg)}
+.fate-orbit::before,.fate-orbit::after{content:"";position:absolute;inset:9px -9px;border:1px solid #c1a9f966;border-radius:50%;transform:rotate(14deg)}
+.fate-orbit::after{inset:-14px 12px;transform:rotate(-10deg);border-color:#fff0b533}
+.fate-gates{position:absolute;inset:12px 0 48px;perspective:700px}
+.fate-gate{position:absolute;left:calc(50% - 31px);top:28px;width:62px;height:112px;border:3px solid #e7bd7b;border-radius:34px 34px 3px 3px;background:linear-gradient(90deg,transparent 47%,#fbe0a8 49%,#55345d 52%,transparent 54%),linear-gradient(115deg,hsl(var(--gate-hue) 30% 36%),hsl(var(--gate-hue) 38% 15%));box-shadow:inset 0 0 0 3px #29172e,inset 0 0 0 4px #c79960,5px 5px 0 #27162c,6px 5px 0 #b48c53,0 15px 15px #0e061aaa;transform-origin:center bottom;animation:fate-gate-orbit 1.85s linear infinite;animation-delay:calc(var(--gate-index) * -.37s)}
+.fate-gate::before{content:"";position:absolute;inset:8px 7px;border:1px solid #e4c186aa;border-radius:27px 27px 1px 1px;box-shadow:inset 0 0 12px #e2b65d22}
+.fate-carving{position:absolute;width:21px;height:32px;left:17px;top:29px;border:1px solid #e8c98f;transform:rotate(45deg);border-radius:12px 0;box-shadow:inset 0 0 0 4px #b28c4644}
+.fate-keyhole{position:absolute;left:26px;top:65px;width:5px;height:12px;background:#ffe9b5;border-radius:50% 50% 2px 2px;box-shadow:0 0 12px #ffe3a7}
+.fate-step{position:absolute;bottom:-9px;left:-9px;right:-9px;height:7px;background:linear-gradient(#ebcd94,#6d4934);transform:skewX(-18deg);box-shadow:3px 5px 0 #221625}
+.theater .fate-theatre .fate-caption{position:absolute;bottom:10px;left:18px;right:18px;margin:0;min-height:30px;color:#fff1ce;font-size:13px;line-height:1.4;text-align:center;text-shadow:0 2px 5px #000;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.fate-theatre[data-phase=chosen] .fate-gate{animation:none;opacity:0;transition:opacity .25s}
+.fate-theatre[data-phase=chosen] .fate-gate.fate-chosen{opacity:1;transform:translate(0,6px) scale(1.17);box-shadow:inset 0 0 0 3px #29172e,inset 0 0 0 4px #c79960,5px 5px 0 #27162c,0 0 32px #ffce8266;animation:fate-destination .65s ease-out both}
+.fate-theatre[data-phase=chosen] .fate-orbit{transition:transform .6s,opacity .6s;transform:scale(.4);opacity:.2}
+/* The real article door opens after this miniature selection, once only. */
+.roulette-running .portal-crown{animation:none!important}
+@keyframes fate-button-breathe{50%{box-shadow:0 0 15px #ffc87588,inset 0 0 0 2px #2b1833}}
+@keyframes fate-gate-orbit{0%{transform:translate(-120px,24px) rotateY(26deg) scale(.85);opacity:.8}25%{transform:translate(0,-14px) rotateY(0) scale(.66);opacity:.55}50%{transform:translate(120px,24px) rotateY(-26deg) scale(.85);opacity:.8}75%{transform:translate(0,48px) rotateY(0) scale(1);opacity:1}100%{transform:translate(-120px,24px) rotateY(26deg) scale(.85);opacity:.8}}
+@keyframes fate-destination{from{transform:translate(0,34px) scale(.9);opacity:.5}to{transform:translate(0,6px) scale(1.17);opacity:1}}
+@media(max-width:480px){.theater .roulette-reel.fate-theatre{height:240px;width:calc(100% - 12px)}.fate-gates{transform:scale(.83);transform-origin:50% 35%}.theater .fate-theatre .fate-caption{font-size:12px;bottom:12px}.roulette-open #roulette-label{font-size:10px}body[data-layout-page=gallery] .theater .palace-return-row .roulette-open{padding:5px 10px;gap:6px}}
+.theater[data-motion-paused=true] .fate-button-gate,.theater[data-motion-paused=true] .fate-gate{animation:none!important}
+.theater:not([data-palace-state=gallery]) .fate-button-gate{animation-play-state:paused}
+@media(prefers-reduced-motion:reduce){.fate-button-gate,.fate-gate{animation:none!important;transition:none!important}.fate-orbit{transition:none!important}}

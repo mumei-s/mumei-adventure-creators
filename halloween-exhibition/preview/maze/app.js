@@ -3,7 +3,7 @@ import {WALKING_SPEED_KEY,normalizeWalkingSpeed,advanceWithSubsteps} from './wal
 import {createRewardStore,newRunId,eligibleForEnding} from './clear-reward.js?v=20261015-clear1';
 import {renderEnding} from './ending-ui.js?v=20261015-clear1';
 import {createSoundCheck} from './sound-check.js?v=20261015-music-garden1';
-import { initVisitorPreferences } from '../visitor-preferences.js?v=20261015-return1';
+import {initAdventureAudio} from './adventure-audio.js?v=20261016-music1';
 import { initDisplayMode } from '../display-mode.js?v=20261014-adventure2';
 import { normalizeLighting } from './lighting-model.js?v=20261014-adventure2';
 import { MAP, CELL, FEATURES, toWorld, collectionAt, move, nearby, initialState, visibleArticles } from './maze-model.js?v=20261014-adventure2';
@@ -34,12 +34,12 @@ try{view=chooseView(localStorage.getItem(viewKey),reducedMotion.matches);const p
 const queryView=new URLSearchParams(location.search).get('view');if(['2d','3d'].includes(queryView))view=queryView;
 let walkingSpeed=1;try{walkingSpeed=normalizeWalkingSpeed(localStorage.getItem(WALKING_SPEED_KEY));}catch{}
 const visitorSection=element('section');
-const visitorSettings=initVisitorPreferences({container:visitorSection,legacyBrightness,onBrightness:percent=>{brightness=percent/100;}});
+const visitorSettings=initAdventureAudio({container:$('game-audio-controls'),settingsContainer:visitorSection,legacyBrightness,onBrightness:percent=>{brightness=percent/100;},onAudioInput:()=>soundCheck.stop('')});
 initDisplayMode({controlsParent:visitorSection,page:'maze'});
 const soundCheckButton=element('button','確認音を鳴らす（約1秒）');soundCheckButton.type='button';
 const soundCheckStatus=element('p','');soundCheckStatus.setAttribute('role','status');
 const soundCheck=createSoundCheck({onState:(playing,message)=>{soundCheckButton.textContent=playing?'確認音を停止':'確認音を鳴らす（約1秒）';soundCheckButton.dataset.playing=String(playing);soundCheckStatus.textContent=message;}});
-soundCheckButton.onclick=()=>{if(soundCheckButton.dataset.playing==='true')soundCheck.stop();else if(!document.hidden)soundCheck.play(visitorSettings.getPreferences().volume);};
+soundCheckButton.onclick=()=>{if(soundCheckButton.dataset.playing==='true')soundCheck.stop();else if(!document.hidden){visitorSettings.stopMusic();soundCheck.play(visitorSettings.getPreferences().volume);}};
 visitorSection.append(soundCheckButton,soundCheckStatus);
 const speedSection=element('section',undefined,'walking-speed-setting'),speedLabel=element('label','歩く速さ');speedLabel.htmlFor='walking-speed';const speedInput=element('input');speedInput.id='walking-speed';speedInput.type='range';speedInput.min='.5';speedInput.max='2';speedInput.step='.25';speedInput.value=String(walkingSpeed);const speedValue=element('output',`${walkingSpeed}倍`);speedValue.htmlFor='walking-speed';speedInput.setAttribute('aria-valuetext',`${walkingSpeed}倍`);speedInput.oninput=()=>{walkingSpeed=normalizeWalkingSpeed(speedInput.value);speedValue.textContent=`${walkingSpeed}倍`;speedInput.setAttribute('aria-valuetext',`${walkingSpeed}倍`);try{localStorage.setItem(WALKING_SPEED_KEY,String(walkingSpeed));}catch{}};speedSection.append(speedLabel,speedInput,speedValue);visitorSection.append(speedSection);
 const finishButton=element('a','お城に戻る','visit-finish-button');finishButton.href='../?return=palace';
@@ -57,7 +57,7 @@ function clearInput(){walking=false;keys.clear();for(const control of heldContro
 function openPanel(){clearInput();if(!panel.open){returnFocus=document.activeElement;panel.showModal();}}
 function title(kicker,name){panel.classList.remove('battle-mode','library-mode');const heading=element('h2',name);heading.id='panel-title';content.replaceChildren(element('p',kicker,'eyebrow'),heading);}
 function toggleLantern(){lantern=!lantern;$('lantern').textContent=lantern?'ランタン ON':'ランタン OFF';$('lantern').setAttribute('aria-pressed',String(lantern));saveLight();}
-function showLighting(){title('YOUR LIGHT & SOUND','夜の暗さと、手元の灯り。');content.append(visitorSection,element('p','夜の回廊は暗く、ランタンを点けると足元と前方が暖かく照らされます。暗すぎるときは明るさを上げるか、2D表示へ。文字・操作・地図の明るさは変わりません。'),element('p','音楽は自分でONにしたときだけ流れます。モンスターとの対戦に音・点滅・時間制限はありません。'));content.append(element('p','冒険室の表示バージョン：20261015-music-garden1','build-label'));openPanel();}
+function showLighting(){title('YOUR LIGHT & SOUND','夜の暗さと、手元の灯り。');content.append(visitorSection,element('p','夜の回廊は暗く、ランタンを点けると足元と前方が暖かく照らされます。暗すぎるときは明るさを上げるか、2D表示へ。文字・操作・地図の明るさは変わりません。'),element('p','ゲーム画面上部の「BGM」と「音量」で調整できます。音量を上げると、冒険室専用の音楽が流れます。毎回OFF・音量0で始まります。対戦の効果音・点滅・時間制限はありません。'));content.append(element('p','冒険室の表示バージョン：20261016-music1','build-label'));openPanel();}
 function safeURL(v){try{const u=new URL(v);return u.protocol==='https:'&&!u.username&&!u.password?u.href:null;}catch{return null;}}
 function displayArticleKind(kind){return ({'ホラー記事':'記事','ホラーイラスト':'イラスト','ホラー作品':'作品'})[kind]||kind||'作品';}
 function articles(collection=activeCollection){return visibleArticles(catalog.articles,collection);}

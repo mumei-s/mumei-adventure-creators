@@ -19,7 +19,7 @@ const archive = JSON.parse(await readFile(new URL('../data/archive.json', import
 const annualEntries = archive.years[0].entries;
 const doorCount = annualEntries.length;
 const creatorCount = archive.creators.length;
-const rosterCount = annualEntries.filter(e=>e.creatorId!=='ss_yr').length;
+const rosterCount = annualEntries.filter(e=>e.role!=='host').length;
 const pageCount = Math.ceil(rosterCount / 5);
 const pendingEntries = annualEntries.filter(entry => entry.submissionStatus === 'pending');
 const pendingCount = pendingEntries.length;
@@ -134,7 +134,7 @@ test('initial load renders all real article doors and creators', async () => {
   assert.equal(h.$('room-dots').querySelectorAll('.future-face').length, 0);
   assert.equal(h.$('total-index').textContent, String(doorCount).padStart(2, '0'));
   assert.equal(h.$('sample-notice').textContent, `参加者${creatorCount}人 · 扉${doorCount}枚`);
-  assert.equal(h.$('results').textContent, `扉 ${rosterCount} / ${rosterCount}枚 · 1〜5枚目を表示 · 参加者${creatorCount-1}人`);
+  assert.equal(h.$('results').textContent, `扉 ${rosterCount} / ${rosterCount}枚 · 1〜5枚目を表示 · 参加者${creatorCount}人`);
   assert.match(h.$('creator-name').textContent, /主催者の企画紹介記事/);
   assert.equal(h.$('room-title').textContent, archive.creators[0].name);
   assert.equal(h.$('artwork-image').src, archive.years[0].entries[0].image);
@@ -244,7 +244,7 @@ test('an empty newest year can switch to a populated year with navigation fully 
 test('selecting a roster room interrupts an in-progress turn rather than losing the selection', async () => {
   const h = await harness({ reduced: false }); h.$('next').click(); await h.tick(100);
   h.$('list-open').click(); h.$('roster-grid').children[4].click(); await h.tick(700);
-  assert.equal(h.api.state.currentIndex, 6); assert.equal(h.$('roster').open, false);
+  assert.equal(h.api.state.currentIndex, 5); assert.equal(h.$('roster').open, false);
 });
 
 test('rapid navigation across years selects immediately with no stale transition',async()=>{
@@ -939,13 +939,13 @@ test('roster pagination exposes every distinct door and deduplicates creator cou
   assert.equal(h.$('roster-previous').disabled,page===0);
   assert.equal(h.$('roster-next').disabled,page===pageCount-1);
   assert.equal(h.$('roster-page-status').textContent,`${page+1} / ${pageCount} ページ`);
-  assert.equal(h.$('results').textContent,`扉 ${rosterCount} / ${rosterCount}枚 · ${page*5+1}〜${Math.min((page+1)*5,rosterCount)}枚目を表示 · 参加者${creatorCount-1}人`);
+  assert.equal(h.$('results').textContent,`扉 ${rosterCount} / ${rosterCount}枚 · ${page*5+1}〜${Math.min((page+1)*5,rosterCount)}枚目を表示 · 参加者${creatorCount}人`);
   creators.push(...cards.map(card=>card.dataset.creatorId));doors.push(...cards.map(card=>card.dataset.doorId));
   if(page<pageCount-1){h.$('roster-next').click();assert.equal(h.doc.activeElement,h.$('roster-page-status'));}
  }
  assert.equal(new Set(doors).size,rosterCount);
- assert.deepEqual(new Set(creators),new Set(archive.creators.filter(c=>c.id!=='ss_yr').map(c=>c.id)));
- assert.deepEqual(new Set(doors),new Set(h.$('room-dots').children.filter(dot=>dot.dataset.creatorId!=='ss_yr').map(dot=>dot.dataset.doorId)));
+ assert.deepEqual(new Set(creators),new Set(archive.creators.map(c=>c.id)));
+ assert.deepEqual(new Set(doors),new Set(h.$('room-dots').children.filter(dot=>dot.dataset.doorId!=='legacy-archive-2026-ss_yr').map(dot=>dot.dataset.doorId)));
  h.$('roster-next').click();assert.equal(h.$('roster-grid').querySelectorAll('button').length,rosterCount%5||5);
  h.$('roster-previous').click();assert.equal(h.$('roster-grid').querySelectorAll('button').length,5);
 });
@@ -967,7 +967,7 @@ test('roster retains page on creator/detail return and resets for mode or year c
  h.$('artwork-open').click();h.$('detail').close();await h.tick(0);h.$('list-open').click();assert.equal(h.$('roster-page-status').textContent,`2 / ${pageCount} ページ`);
  h.api.setMode('normal');assert.equal(h.$('roster-page-status').textContent,`1 / ${Math.ceil(creatorCount/5)} ページ`);
  h.$('roster-next').click();h.api.setMode('halloween');assert.equal(h.$('roster-page-status').textContent,`1 / ${pageCount} ページ`);
- h.$('roster-next').click();h.api.setYear(2025);assert.equal(h.$('roster-page-status').textContent,'0 / 0 ページ');assert.equal(h.$('roster-grid').querySelectorAll('button').length,0);
+ h.$('roster-next').click();h.api.setYear(2025);assert.equal(h.$('roster-page-status').textContent,'1 / 1 ページ');assert.equal(h.$('roster-grid').querySelectorAll('button').length,1);
 });
 test('restored roster page is clamped against the current filtered real roster',async()=>{
  const h=await harness({urlSearch:'?mode=halloween',returnState:JSON.stringify({year:2026,creatorId:'ss_yr',search:'',activeTag:'',rosterPage:999})});
@@ -976,7 +976,7 @@ test('restored roster page is clamped against the current filtered real roster',
 
 test('owner personal door survives first-page selection, detail return, and exact session return',async()=>{
  const h=await harness();h.$('list-open').click();
- const duplicate=h.$('roster-grid').children.find(b=>b.dataset.doorId==='owner-work-2026');assert.equal(duplicate,undefined);h.$('roster').close();await h.api.navigate(ownerWorkIndex);
+ const personal=h.$('roster-grid').children.find(b=>b.dataset.doorId==='owner-work-2026');assert.ok(personal);personal.click();
  await h.tick(0);assert.equal(h.$('theater').dataset.doorId,'owner-work-2026');assert.equal(h.$('theater').dataset.creatorId,'ss_yr');
  assert.equal(h.$('artwork-image').src,annualEntries[ownerWorkIndex].image);assert.equal(h.$('artwork-image').alt,annualEntries[ownerWorkIndex].imageAlt);
  h.$('artwork-open').click();assert.doesNotMatch(h.$('detail-content').textContent,/ハロウィン企画への招待状/);
@@ -1133,8 +1133,8 @@ test('courtyard alternating taps create spatial light chains and cap effects at 
  for(const kind of ['brew','pumpkin','cat','moon','ghost','brew']){const button=scene.querySelectorAll('button').find(b=>b.getAttribute('data-magic')===kind);button.dataset.magic=kind;button.closest=()=>button;scene.dispatch('click',{target:button});assert(effects.children.length<=24);assert(effects.children.length>=5);}
  assert.equal(scene.dataset.combo,'true');assert.equal(effects.children.filter(e=>e.dataset.chain==='true').length,12);await h.tick(2300);assert.equal(effects.children.length,0);
 });
-test('roster pins one compact project article and hides owner duplicate without deleting personal door',async()=>{
- const h=await harness();h.$('list-open').click();const fixed=h.$('roster-host-fixed');assert.equal(fixed.hidden,false);assert.equal(fixed.children.length,1);assert.match(fixed.textContent,/固定 · 企画記事/);assert.doesNotMatch(fixed.textContent,/フォロワー|個人作品/);assert.equal(h.$('roster-grid').children.some(c=>c.dataset.creatorId==='ss_yr'),false);
+test('roster pins one compact project article and includes exactly one personal owner work',async()=>{
+ const h=await harness();h.$('list-open').click();const fixed=h.$('roster-host-fixed');assert.equal(fixed.hidden,false);assert.equal(fixed.children.length,1);assert.match(fixed.textContent,/固定 · 企画記事/);assert.doesNotMatch(fixed.textContent,/フォロワー|個人作品/);const ownerCards=h.$('roster-grid').children.filter(c=>c.dataset.creatorId==='ss_yr');assert.equal(ownerCards.length,1);assert.equal(ownerCards[0].dataset.doorId,'owner-work-2026');
  fixed.children[0].click();assert.equal(h.$('theater').dataset.doorId,'legacy-archive-2026-ss_yr');await h.api.navigate(ownerWorkIndex);assert.equal(h.$('theater').dataset.doorId,'owner-work-2026');assert.equal(h.$('room-dots').children.length,doorCount);
  h.api.setMode('normal');assert.equal(fixed.hidden,true);
 });
@@ -1170,4 +1170,20 @@ test('normal mode must return to the castle before exit without overwriting the 
  assert.equal(h.storage.get('halloween-yearbook:display-mode:v1'),'normal');assert.equal(h.doc.closeAttempts||0,0);
  h.$('app-exit').click();h.doc.querySelector('.app-ended-return').click();
  assert.equal(h.storage.get('halloween-yearbook:display-mode:v1'),'normal');assert.equal(h.doc.closeAttempts,1);
+});
+
+
+test('fate selection circles five ornamental gates then announces one destination before real door opens',async()=>{
+ const h=await harness({reduced:false});h.$('roulette-open').click();
+ assert.equal(h.$('fate-gates').children.length,5);assert.equal(h.$('roulette-reel').dataset.phase,'circling');
+ assert.equal(h.api.state.currentIndex,0);await h.tick(1850);
+ assert.equal(h.$('roulette-reel').dataset.phase,'chosen');assert.equal(h.api.state.currentIndex,0);
+ const chosenName=h.$('roulette-name').textContent;assert.ok(archive.creators.some(c=>c.name===chosenName));
+ assert.equal(h.$('fate-gates').children.filter(c=>c.classList.contains('fate-chosen')).length,1);
+ await h.tick(650);assert.equal(h.$('roulette-reel').hidden,true);assert.equal(h.$('fate-gates').children.length,0);assert.equal(h.$('room-title').textContent,chosenName);assert.equal(h.$('theater').classList.contains('door-reveal'),true);
+});
+test('escape during chosen fate cancels the pending destination and restores button focus',async()=>{
+ const h=await harness({reduced:false});h.$('roulette-open').click();await h.tick(1900);
+ for(const fn of h.doc.handlers.keydown||[])fn({key:'Escape',target:h.$('roulette-open')});await h.tick(4000);
+ assert.equal(h.api.state.currentIndex,0);assert.equal(h.$('roulette-reel').hidden,true);assert.equal(h.$('fate-gates').children.length,0);assert.equal(h.doc.activeElement.id,'roulette-open');
 });

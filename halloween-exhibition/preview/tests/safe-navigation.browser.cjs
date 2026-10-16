@@ -7,7 +7,15 @@ const http=require('node:http'),fs=require('node:fs'),path=require('node:path'),
  try{
  browser=await chromium.launch({headless:true,executablePath:'/usr/bin/chromium',args:['--no-sandbox']});
  const page=await browser.newPage({viewport:{width:390,height:844},reducedMotion:'reduce'}),errors=[];page.on('pageerror',e=>errors.push(e.message));const base=`http://127.0.0.1:${server.address().port}${prefix}`;
- await page.goto(base);await page.waitForFunction(()=>!document.getElementById('palace-gate').disabled);await page.locator('#palace-gate').click();
+ await page.goto(base);await page.waitForFunction(()=>!document.getElementById('palace-gate').disabled);
+ // Run only through the authorized browser QA route. Narrow layouts must not
+ // require horizontal toolbar scrolling to discover the castle exit.
+ for(const width of [320,360,390,768,1280]){
+  await page.setViewportSize({width,height:844});
+  const placement=await page.locator('#app-exit').evaluate(button=>{const r=button.getBoundingClientRect(),p=button.closest('.castle-exit-panel'),header=button.closest('.masthead');return {left:r.left,right:r.right,height:r.height,viewport:innerWidth,inToolbar:!!button.closest('.palace-toolbar'),dedicated:!!p&&p.parentElement===header};});
+  assert.equal(placement.inToolbar,false);assert.equal(placement.dedicated,true);assert.ok(placement.left>=0&&placement.right<=placement.viewport);assert.ok(placement.height>=48);
+ }
+ await page.setViewportSize({width:390,height:844});await page.locator('#palace-gate').click();
  for(const [button,dialog] of [['#list-open','#roster'],['#year-open','#years'],['#artwork-open','#detail']]){await page.locator(button).click();await page.locator(`${dialog} .safe-dialog-back`).click();assert.equal(await page.locator(dialog).isVisible(),false);}
  await page.locator('#mode-normal').click();await page.locator('.visitor-settings-trigger').click();await page.locator('.visit-finish-button').click();assert.equal(await page.locator('#palace-entrance').isVisible(),true);assert.equal(await page.evaluate(()=>localStorage.getItem('halloween-yearbook:display-mode:v1')),'normal');assert.equal(await page.locator('.visitor-music-toggle').getAttribute('aria-pressed'),'false');
  await page.evaluate(()=>{window.exitCloseCalls=0;window.close=()=>{window.exitCloseCalls++;};});await page.locator('#app-exit').click();assert.equal(await page.locator('#app-ended-screen').isVisible(),true);assert.equal(await page.evaluate(()=>window.exitCloseCalls),1);assert.equal(await page.locator('#theater').isVisible(),false);await page.locator('.app-ended-return').click();assert.equal(await page.locator('#palace-entrance').isVisible(),true);await page.locator('#palace-gate').click();assert.equal(await page.locator('#app-exit').isVisible(),false);assert.equal(await page.evaluate(()=>window.exitCloseCalls),1);

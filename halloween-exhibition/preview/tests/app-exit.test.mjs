@@ -36,19 +36,19 @@ class Element {
   removeEventListener(name) { this.handlers.delete(name); }
   click() { if (!this.disabled) this.handlers.get('click')?.(); }
   focus() { for (let el = this; el; el = el.parentElement) assert.equal(el.hidden || el.inert, false); this.ownerDocument.activeElement = this; }
-  querySelector(selector) { for (const child of this.children) { if (selector === '#' + child.id) return child; const found = child.querySelector(selector); if (found) return found; } return null; }
+  querySelector(selector) { for (const child of this.children) { if (selector === '#' + child.id || (selector.startsWith('.') && (child.className || '').split(' ').includes(selector.slice(1)))) return child; const found = child.querySelector(selector); if (found) return found; } return null; }
   remove() { this.parentElement.children = this.parentElement.children.filter(el => el !== this); }
 }
 function dom({ standalone = false, ios = false } = {}) {
   const doc = new Element(null); doc.hidden = false; doc.createElement = tag => new Element(doc, tag);
   const calls = [], observers = [];
   doc.defaultView = { navigator: { standalone: ios }, matchMedia: () => ({ matches: standalone }), close: () => calls.push('close'), MutationObserver: class { constructor(callback) { this.callback = callback; observers.push(this); } observe() {} disconnect() {} } };
-  doc.body = doc.createElement('body'); const root = doc.createElement('main'), toolbar = doc.createElement('nav'), gate = doc.createElement('button'); gate.id = 'palace-gate';
-  root.dataset.palaceState = 'palace'; root.append(toolbar, gate); doc.body.append(root);
+  doc.body = doc.createElement('body'); const root = doc.createElement('main'), header = doc.createElement('header'), toolbar = doc.createElement('nav'), gate = doc.createElement('button'); header.className = 'masthead'; toolbar.className = 'header-actions'; gate.id = 'palace-gate';
+  root.dataset.palaceState = 'palace'; header.append(toolbar); root.append(header, gate); doc.body.append(root);
   const dialog = { close() { calls.push('dialog-close'); } }; doc.querySelectorAll = () => [dialog];
   const api = initAppExit({ root, triggerParent: toolbar, onStop: () => calls.push('stop'), onResume: () => calls.push('resume') });
   const trigger = root.querySelector('#app-exit'), screen = doc.body.querySelector('#app-ended-screen');
-  return { doc, root, gate, trigger, screen, api, calls, observers };
+  return { doc, root, header, toolbar, gate, trigger, panel: root.querySelector('#castle-exit-panel'), screen, api, calls, observers };
 }
 test('DOM exit hides and inerts the app, focuses the end heading, and resumes the castle', () => {
   const h = dom(); assert.equal(h.trigger.hidden, false); h.trigger.click();
@@ -62,7 +62,7 @@ test('castle exit disappears during transitions and ignores stale direct calls',
   const h = dom();
   for (const state of ['opening', 'walking', 'gallery']) {
     h.root.dataset.palaceState = state; h.observers[0].callback();
-    assert.equal(h.trigger.hidden, true); assert.equal(h.trigger.disabled, true); assert.equal(h.api.end(), false);
+    assert.equal(h.panel.hidden, true); assert.equal(h.panel.inert, true); assert.equal(h.trigger.hidden, true); assert.equal(h.trigger.disabled, true); assert.equal(h.api.end(), false);
   }
   h.root.dataset.palaceState = 'palace'; h.api.refresh(); assert.equal(h.trigger.hidden, false);
   h.doc.hidden = true; h.api.refresh(); assert.equal(h.api.end(), false); assert.deepEqual(h.calls, []);
@@ -80,4 +80,22 @@ test('exit has no navigation workaround, preference reset, or automatic lifecycl
   assert.doesNotMatch(source, /history\.(back|go)|about:blank|window\.open|location\.(href|replace|assign)|localStorage\.(clear|removeItem)|beforeunload/);
   assert.match(source, /close: \(\) => win\.close\(\)/);
   assert.match(source, /trigger\.addEventListener\('click', \(\) => controller\.end\(\)\)/);
+});
+
+test('castle exit has its own header row outside the scrolling action strip', () => {
+  const h = dom();
+  assert.equal(h.panel.parentElement, h.header); assert.equal(h.trigger.parentElement, h.panel);
+  assert.equal(h.toolbar.querySelector('#app-exit'), null);
+  assert.equal(h.panel.hidden, false); assert.equal(h.panel.inert, false);
+  assert.equal(h.panel.children[0].textContent, 'お城の入口'); assert.equal(h.trigger.textContent, 'アプリ終了');
+  h.trigger.click(); assert.equal(h.panel.hidden, true); assert.equal(h.panel.inert, true);
+  h.api.resume(); assert.equal(h.panel.hidden, false); assert.equal(h.panel.inert, false);
+  h.api.destroy(); assert.equal(h.root.querySelector('#castle-exit-panel'), null);
+});
+test('castle exit panel uses wrapping normal flow and a readable touch target', async () => {
+  const css = await readFile(new URL('../safe-navigation.css', import.meta.url), 'utf8');
+  assert.match(css, /\.masthead>\.castle-exit-panel\{[^}]*position:relative[^}]*flex-wrap:wrap[^}]*max-width:100%[^}]*min-width:0[^}]*overflow:visible/);
+  assert.match(css, /\.castle-exit-panel>\.app-exit-trigger\{[^}]*position:static[^}]*min-height:48px[^}]*max-width:100%[^}]*font:700 16px[^}]*white-space:normal/);
+  assert.match(css, /\.castle-exit-panel\[hidden\][^}]*display:none!important/);
+  assert.doesNotMatch(css, /\.header-actions \.app-exit-trigger/);
 });

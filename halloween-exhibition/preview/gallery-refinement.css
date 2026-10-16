@@ -207,3 +207,9 @@ body[data-page-hidden=true] .host-illustration-tool *{animation-play-state:pause
 @media(prefers-reduced-motion:reduce){.festival-flight{display:none}.festival-bubbles i{opacity:.3}.festival-river path{opacity:.3}}
 /* One compact pinned project, never two owner identity cards in the roster. */
 .roster-host-fixed[hidden]{display:none}.roster-host-fixed{margin:10px 0 16px}.roster-host-project{display:flex;align-items:center;gap:14px;width:100%;min-height:88px;max-width:100%;padding:12px;border:1px solid #ebc98c;border-radius:18px;text-align:left;color:#fff1d5;background:linear-gradient(110deg,#87512d,#36243c 70%);box-shadow:inset 0 0 0 3px #d8ad5d22;cursor:pointer}.roster-host-project>img{width:96px;height:64px;object-fit:contain;background:#261b30;border:1px solid #c99c5b;border-radius:8px;flex:none}.roster-host-project>span{min-width:0;display:grid;gap:5px}.roster-host-project small{font-size:11px;color:#f6cb8a}.roster-host-project strong{font-size:clamp(13px,2vw,17px);line-height:1.45;overflow-wrap:anywhere}.roster-host-project>span>span{font-size:11px;color:#f2ce93}.roster-host-project:focus-visible{outline:3px solid #ffecae;outline-offset:3px}
+
+/* Keep the project invitation compact; the owner also has a separate work. */
+#roster .close{position:relative;top:auto;right:auto;float:none;display:block;margin:0 0 12px auto}
+#roster .roster-host-project{min-height:76px;padding:9px;gap:10px;align-items:center}
+#roster .roster-host-project>img{width:82px;height:54px;max-width:82px;max-height:54px;object-fit:contain;flex:0 0 82px}
+#roster .roster-host-project strong{font-size:13px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}

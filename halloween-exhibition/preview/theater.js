@@ -1,4 +1,4 @@
-import { initAppExit } from './app-exit.js?v=20261015-glamour1';
+import { initAppExit } from './app-exit.js?v=20261016-fate1';
 import { createDoorRevealClock } from './door-reveal-clock.js?v=20261015-playful1';
 import { initFestivalScene } from './festival-scene.js?v=20261015-glamour1';
 import { loadArtworkImage } from './magical-loading.js?v=20261015-journey1';
@@ -119,8 +119,8 @@ function renderRoster(){
  const host=displayMode==='halloween'?entries().find(e=>e.role==='host'&&e.submissionStatus==='introduction'):null;
  const fixed=$('roster-host-fixed');fixed.replaceChildren();fixed.hidden=!host;
  if(host){const card=node('button',undefined,'roster-host-project');card.dataset.doorId=host.doorId;card.setAttribute('aria-label','主催者の企画記事をひらく');const image=safeURL(host.image,{image:true});if(image){const img=node('img');img.src=image;img.alt='';card.append(img);}const title=node('span');title.append(node('small','固定 · 企画記事'),node('strong',host.title||'Halloween Atelier'),node('span','企画記事へ →'));card.append(title);card.addEventListener('click',()=>{returnTarget=$('artwork-open');$('roster').close();navigateDoor(host.doorId,{immediate:true});$('artwork-open').focus();});fixed.append(card);}
- const rosterEntries=entries().filter(e=>!host||e.creatorId!==host.creatorId);
- const area=$('roster-grid'),list=filterEntries().filter(e=>!host||e.creatorId!==host.creatorId),pages=Math.ceil(list.length/ROSTER_PAGE_SIZE);
+ const rosterEntries=entries().filter(e=>!host||e.doorId!==host.doorId);
+ const area=$('roster-grid'),list=filterEntries().filter(e=>!host||e.doorId!==host.doorId),pages=Math.ceil(list.length/ROSTER_PAGE_SIZE);
  rosterPage=Math.max(0,Math.min(rosterPage,Math.max(0,pages-1)));
  const start=rosterPage*ROSTER_PAGE_SIZE,visible=list.slice(start,start+ROSTER_PAGE_SIZE);
  area.replaceChildren();
@@ -147,17 +147,25 @@ async function load(){root.dataset.archiveState='loading';const abort=new AbortC
 // Roulette lands only on verified creator rooms in the active public collection.
 // It never invents an article and never opens an external tab on a timer.
 function rouletteCandidates(){return entries().filter(entry=>{const c=creator(entry);return c&&!c.provisional&&(safeURL(c.profileURL)||[...(entry.works||[]),...(entry.links||[])].some(item=>safeURL(item.url)));});}
-function cancelRoulette(){slideshow?.setBlocked('roulette',false);rouletteVersion++;clearTimeout(rouletteTimer);rouletteTimer=null;rouletteRunning=false;root.classList.remove('roulette-running');$('roulette-reel').hidden=true;$('roulette-open').setAttribute('aria-pressed','false');$('roulette-open').replaceChildren(node('span','✧'),document.createTextNode(' 運命のとびら'));}
+function cancelRoulette(){slideshow?.setBlocked('roulette',false);rouletteVersion++;clearTimeout(rouletteTimer);rouletteTimer=null;rouletteRunning=false;root.classList.remove('roulette-running');$('roulette-reel').hidden=true;$('roulette-open').setAttribute('aria-pressed','false');$('roulette-label').textContent='運命のとびら';$('roulette-reel').dataset.phase='idle';$('fate-gates').replaceChildren();}
 function spinRoulette(){
  if(rouletteRunning){cancelRoulette();notice('とびら選びを中止しました。');return;}
  if(displayMode!=='halloween'||!archive)return;
  let pool=rouletteCandidates();if(pool.length>1)pool=pool.filter(entry=>entry.doorId!==current()?.doorId);if(!pool.length){notice('今は選べる参加者がいません。');return;}
  cancelRoulette();const token=rouletteVersion,target=pool[Math.floor(Math.random()*pool.length)],finish=()=>{if(token!==rouletteVersion)return;const index=entries().findIndex(entry=>entry.doorId===target.doorId);cancelRoulette();if(index<0)return;turnVersion++;busy=false;navigate(index,{immediate:reduced.matches||root.dataset.motionPaused==='true',fromRoulette:true});notice(`${creator(target).name}のとびらへ。紹介をひらいて会いにいきましょう。`);};
  if(reduced.matches||root.dataset.motionPaused==='true'){finish();return;}
- rouletteRunning=true;slideshow?.setBlocked('roulette',true);root.classList.add('roulette-running');$('roulette-open').setAttribute('aria-pressed','true');$('roulette-open').textContent='選んでいます · 中止';$('roulette-reel').hidden=false;let beat=0;
- const roll=()=>{if(token!==rouletteVersion)return;$('roulette-name').textContent=creator(pool[beat%pool.length]).name;beat++;rouletteTimer=setTimeout(beat>=7?finish:roll,140+beat*28);};roll();
+ rouletteRunning=true;slideshow?.setBlocked('roulette',true);root.classList.add('roulette-running');$('roulette-open').setAttribute('aria-pressed','true');$('roulette-label').textContent='選ぶのをやめる';$('roulette-reel').hidden=false;$('roulette-reel').dataset.phase='circling';$('roulette-name').textContent='運命のとびらが巡っています…';
+ // Decorative gates carry no invented creator identity. Exactly one destination
+ // is chosen above; its name is announced only after the constellation settles.
+ for(let i=0;i<5;i++){const gate=node('div',undefined,'fate-gate');gate.style.setProperty('--gate-index',String(i));gate.style.setProperty('--gate-hue',String([24,268,171,325,210][i]));gate.append(node('i',undefined,'fate-carving'),node('b',undefined,'fate-keyhole'),node('i',undefined,'fate-step'));$('fate-gates').append(gate);}
+ rouletteTimer=setTimeout(()=>{
+  if(token!==rouletteVersion)return;
+  $('roulette-reel').dataset.phase='chosen';$('fate-gates').children[0]?.classList.add('fate-chosen');$('roulette-name').textContent=creator(target).name;
+  rouletteTimer=setTimeout(finish,650);
+ },1850);
 }
 $('roulette-open').addEventListener('click',spinRoulette);
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&rouletteRunning){cancelRoulette();$('roulette-open').focus();}});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelRoulette();});
 $('previous').addEventListener('click',()=>adjacentDoor(-1));$('next').addEventListener('click',()=>adjacentDoor(1));$('artwork-open').addEventListener('click',openStory);$('list-open').addEventListener('click',()=>{renderRoster();showDialog($('roster'));});$('search').addEventListener('input',e=>{search=normalizeSearch(e.target.value);rosterPage=0;renderRoster();});$('year-open').addEventListener('click',()=>{const area=$('year-list');area.replaceChildren();for(const year of[...archive.years].sort((a,b)=>b.year-a.year)){const button=node('button',String(year.year),'year-option');button.append(node('small',`${year.entries.length}枚の扉${year.year===currentYear?' · 表示中':''}`));button.addEventListener('click',()=>{$('years').close();setYear(year.year);});area.append(button);}showDialog($('years'));});
 
@@ -215,13 +223,13 @@ slideshow.setBlocked('hidden',Boolean(document.hidden));
 $('slideshow-toggle').addEventListener('click',()=>slideshow.setEnabled(!slideshow.getState().enabled));
 $('slideshow-speed').addEventListener('change',e=>slideshow.setIntervalSeconds(Number(e.target.value)));
 document.addEventListener('visibilitychange',()=>slideshow.setBlocked('hidden',Boolean(document.hidden)));
-reduced.addEventListener?.('change',()=>slideshow.setBlocked('reduced-motion',reduced.matches));
+reduced.addEventListener?.('change',()=>{slideshow.setBlocked('reduced-motion',reduced.matches);if(reduced.matches)cancelRoulette();});
 root.addEventListener('yearbook:motion-state',e=>{slideshow.setBlocked('motion',Boolean(e.detail?.paused));if(e.detail?.paused){cancelRoulette();doorClock.cancel();}});
 if(typeof MutationObserver!=='undefined'){
  const dialogObserver=new MutationObserver(()=>slideshow.setBlocked('dialog',Boolean(document.querySelector('dialog[open]'))));
  document.querySelectorAll('dialog').forEach(dialog=>dialogObserver.observe(dialog,{attributes:true,attributeFilter:['open']}));
 }
-if(typeof window!=='undefined')window.addEventListener('pagehide',()=>{doorClock.cancel();slideshow.setEnabled(false);});
+if(typeof window!=='undefined')window.addEventListener('pagehide',()=>{cancelRoulette();doorClock.cancel();slideshow.setEnabled(false);});
 
 slideshow.setBlocked('palace',root.dataset.palaceState!=='gallery');
 load();

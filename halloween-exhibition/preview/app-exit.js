@@ -32,9 +32,16 @@ export function initAppExit({ root, triggerParent, onStop, onResume } = {}) {
     if (className) element.className = className;
     return element;
   };
+  // Keep exit outside the horizontally scrolling toolbar so it is discoverable
+  // on narrow screens. The header's existing ResizeObserver reserves this row.
+  const panel = make('div', undefined, 'castle-exit-panel');
+  panel.id = 'castle-exit-panel'; panel.hidden = true; panel.inert = true;
+  panel.setAttribute('role', 'group'); panel.setAttribute('aria-label', 'お城の入口の操作');
+  const label = make('span', 'お城の入口', 'castle-exit-label');
   const trigger = make('button', 'アプリ終了', 'app-exit-trigger');
   trigger.id = 'app-exit'; trigger.type = 'button'; trigger.hidden = true;
-  triggerParent.append(trigger);
+  panel.append(label, trigger);
+  (root.querySelector('.masthead') || triggerParent).append(panel);
   const screen = make('section', undefined, 'app-ended-screen');
   screen.id = 'app-ended-screen'; screen.hidden = true;
   screen.setAttribute('aria-labelledby', 'app-ended-title');
@@ -76,6 +83,7 @@ export function initAppExit({ root, triggerParent, onStop, onResume } = {}) {
   });
   function refresh() {
     const available = atCastle() && !controller.getState().ended;
+    panel.hidden = !available; panel.inert = !available;
     trigger.hidden = !available; trigger.disabled = !available;
   }
   trigger.addEventListener('click', () => controller.end());
@@ -84,5 +92,5 @@ export function initAppExit({ root, triggerParent, onStop, onResume } = {}) {
   const observer = new win.MutationObserver(refresh);
   observer.observe(root, { attributes: true, attributeFilter: ['data-palace-state'] });
   refresh();
-  return { ...controller, refresh, destroy() { observer.disconnect(); doc.removeEventListener('visibilitychange', refresh); trigger.remove(); screen.remove(); } };
+  return { ...controller, refresh, destroy() { observer.disconnect(); doc.removeEventListener('visibilitychange', refresh); panel.remove(); screen.remove(); } };
 }

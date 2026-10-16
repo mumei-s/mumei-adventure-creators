@@ -1,13 +1,14 @@
-import {drawArtSprite,playerPose} from './rpg-art.js?v=20261016-resident1';
-import {drawCreature} from './stage-2d.js?v=20261016-resident1';
-import {prankFor} from './encounter-model.js?v=20261016-resident1';
-import {encounterStory} from './story-model.js?v=20261016-resident1';
+import {monsterSprite} from './monster-motion.js?v=20261016-living1';
+import {drawArtSprite,playerPose} from './rpg-art.js?v=20261016-living1';
+import {drawCreature} from './stage-2d.js?v=20261016-living1';
+import {prankFor} from './encounter-model.js?v=20261016-living1';
+import {encounterStory} from './story-model.js?v=20261016-living1';
 const clamp=x=>Math.max(0,Math.min(1,x));
 function glow(c,x,y,r,color){const g=c.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,color);g.addColorStop(1,'transparent');c.fillStyle=g;c.fillRect(x-r,y-r,r*2,r*2);}
 function ellipse(c,x,y,rx,ry,color){c.fillStyle=color;c.beginPath();c.ellipse(x,y,rx,ry,0,0,Math.PI*2);c.fill();}
 function label(c,text,x,y,color,size=18,align='center',maxWidth=null){c.font=`600 ${size}px "Yu Gothic",sans-serif`;c.textAlign=align;c.lineJoin='round';c.lineWidth=4;c.strokeStyle='#111421';if(maxWidth)c.strokeText(text,x,y,maxWidth);else c.strokeText(text,x,y);c.fillStyle=color;if(maxWidth)c.fillText(text,x,y,maxWidth);else c.fillText(text,x,y);}
 function ring(c,x,y,rx,ry,color){c.strokeStyle=color;c.lineWidth=1;c.beginPath();c.ellipse(x,y,rx,ry,0,0,Math.PI*2);c.stroke();}
-function spriteAspect(sprite){return sprite?(sprite.frame?.[2]||sprite.width)/(sprite.frame?.[3]||sprite.height):.75;}
+function spriteAspect(sprite){return sprite?(sprite.frame?.[2]||sprite.width)/(sprite.contentHeight||sprite.frame?.[3]||sprite.height):.75;}
 export function battleLayout(width,height,{enemyAspect=.75}={}){
   const w=Math.max(1,width),h=Math.max(1,height),safeAspect=Number.isFinite(enemyAspect)&&enemyAspect>0?enemyAspect:.75;
   return {px:w*.24,py:h*.87,ex:w*.73,ey:h*.87,heroSize:Math.max(1,Math.min(h*.62,w*.39,310,h*.87-42)),enemySize:Math.max(1,Math.min(h*.74,w*.46/safeAspect,370,h*.87-42))};
@@ -58,7 +59,7 @@ export function renderBattleScene({canvas,art,battle,effect=null,time=0,motion=t
   if(bg){const scale=Math.max(w/bg.width,h/bg.height);c.drawImage(bg,(w-bg.width*scale)/2,(h-bg.height*scale)*.42,bg.width*scale,bg.height*scale);}else{const g=c.createLinearGradient(0,0,0,h);g.addColorStop(0,'#102838');g.addColorStop(1,'#342437');c.fillStyle=g;c.fillRect(0,0,w,h);}
   const shade=c.createLinearGradient(0,0,0,h);shade.addColorStop(0,'#070b19c9');shade.addColorStop(.26,'#080f1b2b');shade.addColorStop(.7,'#090d1c11');shade.addColorStop(1,'#080b17d9');c.fillStyle=shade;c.fillRect(0,0,w,h);
   const effectAge=effect?Math.max(0,time-effect.started):99;
-  const won=battle.status==='won'&&!(effect?.type==='shine'&&motion&&effectAge<1.28),enemy=art.images[battle.id],story=encounterStory(battle.id),intent=prankFor(battle);
+  const won=battle.status==='won'&&!(effect?.type==='shine'&&motion&&effectAge<1.28),enemy=monsterSprite(art,battle.id,{time,motion,battle:true,facing:'left'}),story=encounterStory(battle.id),intent=prankFor(battle);
   const {px,py,ex,ey,heroSize,enemySize}=battleLayout(w,h,{enemyAspect:spriteAspect(enemy)});
   const age=effect?Math.max(0,time-effect.started):99,phase=motion?age:99;
   const shine=effect?.type==='shine',attack=effect?.type==='attack',guard=effect?.type==='guard';
@@ -80,7 +81,7 @@ export function renderBattleScene({canvas,art,battle,effect=null,time=0,motion=t
   if(!drawArtSprite(c,hero,px+lunge,py,heroSize,{rotation:casting?-.035*seq.charge:0,scaleY:casting?1-.025*seq.charge:1}))heroFallback(c,px+lunge,py,heroSize);
   const breathing=motion?1+Math.sin(drift*(battle.id==='franken'?.55:1.15))*.004:1;
   const rotation=motion?(battle.id==='bat'?Math.sin(drift*1.9)*.018:battle.id==='ghost'?Math.sin(drift*.8)*.01:0):0;
-  if(!drawArtSprite(c,enemy,ex+recoil,ey+hover,enemySize,{alpha:won?.92:1,rotation,scaleY:breathing}))drawCreature(c,battle.id,ex+recoil,ey-enemySize*.45+hover,enemySize/75);
+  if(!drawArtSprite(c,enemy,ex+recoil,ey+hover,enemySize,{alpha:won?.92:1,flip:enemy?.flip,rotation,scaleY:breathing}))drawCreature(c,battle.id,ex+recoil,ey-enemySize*.45+hover,enemySize/75);
   if(effect&&age<battleEffectDuration(effect.type,motion)){
     if(shine)shineEffect(c,{px,py,ex,ey,heroSize,enemySize,w,h,age,motion,seq});
     const sx=px+heroSize*.18,sy=py-heroSize*.48,tx=ex,ty=ey-enemySize*.48;

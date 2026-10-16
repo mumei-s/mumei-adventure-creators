@@ -1,13 +1,14 @@
-import {ART_FILES,ART_BOUNDS,ART_ANCHORS,PALACE_ART} from './rpg-art.js?v=20261016-resident1';
+import {monsterSprite,spriteTextureUV} from './monster-motion.js?v=20261016-living1';
+import {ART_FILES,ART_BOUNDS,ART_ANCHORS,PALACE_ART} from './rpg-art.js?v=20261016-living1';
 import * as THREE from './vendor/three.module.js';
 import { MAP, CELL, FEATURES, toWorld } from './maze-model.js?v=20261014-adventure2';
 import { NIGHT_LIGHTING } from './lighting-model.js?v=20261014-adventure2';
-import { ALL_MONSTERS as MONSTERS, monsterAvailable, monsterPose } from './encounter-model.js?v=20261016-resident1';
+import { ALL_MONSTERS as MONSTERS, monsterAvailable, monsterPose } from './encounter-model.js?v=20261016-living1';
 
 // All architectural objects live in world space. Camera motion, collision and
 // interaction remain in the controller, making the gallery usable with keys,
 // touch controls, and pointer-lock alike.
-export function createWorld({ canvas, onReady } = {}) {
+export function createWorld({ canvas, onReady, art } = {}) {
   const compactViewport=Math.min(canvas.clientWidth||window.innerWidth,canvas.clientHeight||window.innerHeight)<720;
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, compactViewport?1.35:1.7));
@@ -223,7 +224,7 @@ export function createWorld({ canvas, onReady } = {}) {
     for(let i=0;i<=5;i++){const a=i*Math.PI/10;const geo=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(xx,6.8,zz),new THREE.Vector3(xx+Math.cos(a)*2.2,6.8-Math.sin(a)*2.2,zz)]);resources.add(geo);scene.add(new THREE.Line(geo,webMaterial));}
     for(const r of [.7,1.4,2.1]){const pts=[];for(let i=0;i<=10;i++){const a=i*Math.PI/20;pts.push(new THREE.Vector3(xx+Math.cos(a)*r,6.8-Math.sin(a)*r,zz));}const geo=new THREE.BufferGeometry().setFromPoints(pts);resources.add(geo);scene.add(new THREE.Line(geo,webMaterial));}
   }
-  const spirits=[],residentTextures=new THREE.TextureLoader();
+  const spirits=[],residentTextures=new THREE.TextureLoader();let disposed=false;
   for(const [index,definition]of MONSTERS.entries()){
     const root=new THREE.Group();root.position.set(definition.x*CELL,0,definition.z*CELL);root.name=definition.name;scene.add(root);const g=new THREE.Group();root.add(g);
     const body=mat(definition.color,{emissive:definition.color,emissiveIntensity:.28,roughness:.8});
@@ -266,11 +267,10 @@ export function createWorld({ canvas, onReady } = {}) {
     const shadowMaterial=new THREE.MeshBasicMaterial({color:'#05050b',transparent:true,opacity:.3,depthWrite:false});resources.add(shadowMaterial);const shadow=mesh(new THREE.CircleGeometry(.58,20),shadowMaterial,0,.025,0,root);shadow.rotation.x=-Math.PI/2;
     // The same original enemy art is visible in 3D as grounded billboards.
     const spriteMaterial=new THREE.SpriteMaterial({transparent:true,alphaTest:.05,depthWrite:false});resources.add(spriteMaterial);const sprite=new THREE.Sprite(spriteMaterial);sprite.visible=false;root.add(sprite);
-    residentTextures.load(new URL(`./assets/rpg/${ART_FILES[definition.id]}`,import.meta.url).href,texture=>{
-      texture.colorSpace=THREE.SRGBColorSpace;resources.add(texture);const bounds=ART_BOUNDS[definition.id]||[0,0,512,512],anchor=ART_ANCHORS[definition.id]||{anchorX:.5,anchorY:1};
-      texture.repeat.set(bounds[2]/texture.image.width,bounds[3]/texture.image.height);texture.offset.set(bounds[0]/texture.image.width,1-(bounds[1]+bounds[3])/texture.image.height);
-      spriteMaterial.map=texture;spriteMaterial.needsUpdate=true;sprite.center.set(anchor.anchorX,1-anchor.anchorY);const height=definition.id==='franken'?2.35:definition.id==='bat'?1.85:2.15;sprite.scale.set(height*bounds[2]/bounds[3],height,1);sprite.position.y=.04;sprite.visible=true;g.visible=false;root.userData.originalArt=true;
-    },undefined,()=>console.warn('Original resident art unavailable; using the distinct 3D model:',definition.id));
+    function installMonsterTexture(texture){if(disposed){texture.dispose();return false;}texture.colorSpace=THREE.SRGBColorSpace;resources.add(texture);spriteMaterial.map=texture;spriteMaterial.needsUpdate=true;sprite.position.y=.04;sprite.visible=true;g.visible=false;root.userData.originalArt=true;return true;}
+    const source=art?.images?.[definition.id];
+    if(source){const texture=new THREE.Texture(source.image||source);texture.needsUpdate=true;installMonsterTexture(texture);}
+    else if(!art&&ART_FILES[definition.id])residentTextures.load(new URL(`./assets/rpg/${ART_FILES[definition.id]}`,import.meta.url).href,texture=>{if(!installMonsterTexture(texture))return;const bounds=ART_BOUNDS[definition.id]||[0,0,512,512],anchor=ART_ANCHORS[definition.id]||{anchorX:.5,anchorY:1};texture.repeat.set(bounds[2]/texture.image.width,bounds[3]/texture.image.height);texture.offset.set(bounds[0]/texture.image.width,1-(bounds[1]+bounds[3])/texture.image.height);sprite.center.set(anchor.anchorX,1-anchor.anchorY);const height=definition.id==='franken'?2.35:definition.id==='bat'?1.85:2.15;sprite.scale.set(height*bounds[2]/bounds[3],height,1);},undefined,()=>console.warn('Original monster art unavailable:',definition.id));
     spirits.push({node:root,model:g,sprite,index,id:definition.id,definition,baseY:0});
   }
   // A drifting orbital mobile is sculpture, explicitly environmental decoration.
@@ -380,7 +380,10 @@ export function createWorld({ canvas, onReady } = {}) {
     heldLantern.visible=!!lantern;headlamp.visible=!!lantern;nearLamp.visible=!!lantern;
     for(const spirit of spirits){
       spirit.node.visible=encounters&&(!spirit.definition.optional||spirit.node.userData.originalArt)&&!cleared.includes(spirit.id)&&monsterAvailable(spirit.definition,{unlocked,horrorAccepted});
-      const pose=monsterPose(spirit.definition,seconds,motion,{unlocked,horrorAccepted});spirit.node.position.x=pose.x*CELL;spirit.node.position.z=pose.z*CELL;
+      const pose=monsterPose(spirit.definition,seconds,motion,{unlocked,horrorAccepted});
+      const sampled=art&&monsterSprite(art,spirit.id,{time:seconds,motion,walking:pose.walking,facing:pose.facing});
+      if(sampled&&spirit.sprite.material.map){const uv=spriteTextureUV(sampled),texture=spirit.sprite.material.map,height=(spirit.id==='franken'?2.35:spirit.id==='bat'?1.85:2.15)*uv.heightScale;texture.repeat.set(uv.repeatX,uv.repeatY);texture.offset.set(uv.offsetX,uv.offsetY);spirit.sprite.center.set(uv.centerX,uv.centerY);spirit.sprite.scale.set(height*uv.aspect,height,1);}
+      spirit.node.position.x=pose.x*CELL;spirit.node.position.z=pose.z*CELL;
       spirit.node.rotation.y=Math.atan2(x-spirit.node.position.x,z-spirit.node.position.z);
       if(!motion)spirit.node.position.y=spirit.baseY;
     }
@@ -398,7 +401,7 @@ export function createWorld({ canvas, onReady } = {}) {
     }
     renderer.render(scene,camera);
   }
-  function dispose(){for(const r of resources)r.dispose?.();renderer.dispose();}
+  function dispose(){disposed=true;for(const r of resources)r.dispose?.();renderer.dispose();}
   // Instance static masonry by material. Thousands of architectural details
   // become a handful of GPU draw calls while movable objects remain separate.
   // Batch repeated pieces inside moving parents, retaining their local transforms.

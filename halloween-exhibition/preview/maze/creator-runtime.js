@@ -1,4 +1,4 @@
-import {createActorPatrol,samplePatrolPosition} from './patrol-model.js?v=20261016-resident1';
+import {createActorPatrol,samplePatrolPosition} from './patrol-model.js?v=20261016-living1';
 import { blocked, CELL } from './maze-model.js?v=20261014-adventure2';
 import { inFurniture } from './rpg-model.js?v=20261014-adventure2';
 
@@ -171,7 +171,7 @@ export function buildCreatorActors(npcs,assets,{state,time=0,motion=true}={}) {
 }
 
 export async function browserImage(url,asset) {
-  const image=await new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=()=>reject(Error('Character image failed'));im.src=url;});
+  const image=await new Promise((resolve,reject)=>{const im=new Image();let active=true;const finish=error=>{if(!active)return;active=false;clearTimeout(timer);im.onload=im.onerror=null;error?reject(error):resolve(im);};const timer=setTimeout(()=>finish(Error('Character image timed out')),10000);im.onload=()=>finish();im.onerror=()=>finish(Error('Character image failed'));im.src=url;});
   if(asset&&(image.width!==asset.width||image.height!==asset.height))throw Error('Character source dimensions mismatch');
   // Runtime decoding uses a bounded bitmap; original asset bytes remain intact.
   if(Math.max(image.width,image.height)>1024){

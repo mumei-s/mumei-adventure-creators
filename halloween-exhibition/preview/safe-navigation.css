@@ -8,9 +8,9 @@ dialog .close,dialog .safe-dialog-back{position:sticky;top:0;float:right;z-index
 /* Only the castle exposes app exit. The static fallback never navigates away. */
 .castle-exit-panel[hidden],.app-exit-trigger[hidden],.app-ended-screen[hidden],.visit-return-panel[hidden]{display:none!important}
 /* A separate in-flow header row needs no horizontal swipe or scene overlay. */
-.theater .masthead>.castle-exit-panel{position:relative;inset:auto;display:flex;flex:0 0 auto;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;box-sizing:border-box;width:100%;max-width:100%;min-width:0;margin:0;padding:8px max(10px,env(safe-area-inset-right)) 8px max(10px,env(safe-area-inset-left));border:1px solid #c89a6655;border-radius:12px;background:#151020;overflow:visible}
+.theater .masthead>.castle-exit-panel{position:relative;inset:auto;display:flex;flex:0 0 auto;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;box-sizing:border-box;width:100%;max-width:100%;min-width:0;margin:0;padding:0 max(3px,env(safe-area-inset-right)) 0 max(3px,env(safe-area-inset-left));border:0;border-radius:0;background:transparent;overflow:visible}
 .castle-exit-label{flex:1 1 auto;min-width:0;color:#f4dbb5;font-size:13px;line-height:1.5;overflow-wrap:anywhere}
-.theater .castle-exit-panel>.app-exit-trigger{position:static;flex:0 1 auto;min-height:48px;min-width:124px;max-width:100%;height:auto;padding:10px 18px;border:2px solid #f4c47e;border-radius:10px;background:#513047;color:#fff8e9;font:700 16px/1.4 sans-serif;letter-spacing:.03em;white-space:normal;overflow-wrap:anywhere;cursor:pointer;box-shadow:0 3px 10px #09051055}
+.theater .castle-exit-panel>.app-exit-trigger{position:static;flex:0 1 auto;min-height:44px;min-width:96px;max-width:100%;height:auto;padding:4px 12px;border:1px solid #d6ad75;border-radius:99px;background:#3d293d;color:#fff8e9;font:600 13px/1.4 sans-serif;letter-spacing:.03em;white-space:normal;overflow-wrap:anywhere;cursor:pointer;box-shadow:0 3px 10px #09051055}
 .theater .castle-exit-panel>.app-exit-trigger:hover{background:#693a53}
 .visit-return-panel{margin:16px 0}
 body[data-app-ended=true]>*:not(.app-ended-screen){display:none!important}

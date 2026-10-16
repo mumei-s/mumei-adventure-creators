@@ -1,0 +1,1592 @@
+{
+  "pumpkin": {
+    "src": "pumpkin-walk.webp",
+    "width": 512,
+    "height": 512,
+    "frames": [
+      {
+        "frame": [
+          0,
+          0,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 216,
+        "sourceRect": [
+          77,
+          4,
+          471,
+          617
+        ]
+      },
+      {
+        "frame": [
+          256,
+          0,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 216,
+        "sourceRect": [
+          638,
+          8,
+          563,
+          609
+        ]
+      },
+      {
+        "frame": [
+          0,
+          256,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 216,
+        "sourceRect": [
+          143,
+          622,
+          490,
+          604
+        ]
+      },
+      {
+        "frame": [
+          256,
+          256,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 216,
+        "sourceRect": [
+          681,
+          625,
+          548,
+          593
+        ]
+      }
+    ],
+    "idleFrame": 0,
+    "walkFrames": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "fps": 5,
+    "faces": "right",
+    "runtimeReady": true,
+    "sourceIdentity": "pumpkin-story-v2.webp",
+    "castleSrc": "pumpkin-castle.webp",
+    "castleWidth": 256,
+    "castleHeight": 256,
+    "castleFrames": [
+      {
+        "frame": [
+          0.0,
+          0.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 108.0,
+        "sourceRect": [
+          77,
+          4,
+          471,
+          617
+        ]
+      },
+      {
+        "frame": [
+          128.0,
+          0.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 108.0,
+        "sourceRect": [
+          638,
+          8,
+          563,
+          609
+        ]
+      },
+      {
+        "frame": [
+          0.0,
+          128.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 108.0,
+        "sourceRect": [
+          143,
+          622,
+          490,
+          604
+        ]
+      },
+      {
+        "frame": [
+          128.0,
+          128.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 108.0,
+        "sourceRect": [
+          681,
+          625,
+          548,
+          593
+        ]
+      }
+    ]
+  },
+  "ghost": {
+    "src": "ghost-walk.webp",
+    "width": 512,
+    "height": 512,
+    "frames": [
+      {
+        "frame": [
+          0,
+          0,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 224,
+        "sourceRect": [
+          33,
+          1,
+          617,
+          624
+        ]
+      },
+      {
+        "frame": [
+          256,
+          0,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 224,
+        "sourceRect": [
+          680,
+          1,
+          556,
+          644
+        ]
+      },
+      {
+        "frame": [
+          0,
+          256,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 224,
+        "sourceRect": [
+          22,
+          610,
+          651,
+          638
+        ]
+      },
+      {
+        "frame": [
+          256,
+          256,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 224,
+        "sourceRect": [
+          721,
+          616,
+          520,
+          638
+        ]
+      }
+    ],
+    "idleFrame": 0,
+    "walkFrames": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "fps": 5,
+    "faces": "left",
+    "runtimeReady": true,
+    "sourceIdentity": "ghost-story-v2.webp",
+    "castleSrc": "ghost-castle.webp",
+    "castleWidth": 256,
+    "castleHeight": 256,
+    "castleFrames": [
+      {
+        "frame": [
+          0.0,
+          0.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 112.0,
+        "sourceRect": [
+          33,
+          1,
+          617,
+          624
+        ]
+      },
+      {
+        "frame": [
+          128.0,
+          0.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 112.0,
+        "sourceRect": [
+          680,
+          1,
+          556,
+          644
+        ]
+      },
+      {
+        "frame": [
+          0.0,
+          128.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 112.0,
+        "sourceRect": [
+          22,
+          610,
+          651,
+          638
+        ]
+      },
+      {
+        "frame": [
+          128.0,
+          128.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 112.0,
+        "sourceRect": [
+          721,
+          616,
+          520,
+          638
+        ]
+      }
+    ]
+  },
+  "bat": {
+    "src": "bat-walk.webp",
+    "width": 512,
+    "height": 512,
+    "frames": [
+      {
+        "frame": [
+          0,
+          0,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 207,
+        "sourceRect": [
+          5,
+          13,
+          657,
+          598
+        ]
+      },
+      {
+        "frame": [
+          256,
+          0,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 207,
+        "sourceRect": [
+          623,
+          118,
+          623,
+          482
+        ]
+      },
+      {
+        "frame": [
+          0,
+          256,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 207,
+        "sourceRect": [
+          37,
+          648,
+          669,
+          556
+        ]
+      },
+      {
+        "frame": [
+          256,
+          256,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 207,
+        "sourceRect": [
+          696,
+          648,
+          549,
+          521
+        ]
+      }
+    ],
+    "idleFrame": 0,
+    "walkFrames": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "fps": 6,
+    "faces": "left",
+    "runtimeReady": true,
+    "sourceIdentity": "bat-story-v2.webp",
+    "castleSrc": "bat-castle.webp",
+    "castleWidth": 256,
+    "castleHeight": 256,
+    "castleFrames": [
+      {
+        "frame": [
+          0.0,
+          0.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 103.5,
+        "sourceRect": [
+          5,
+          13,
+          657,
+          598
+        ]
+      },
+      {
+        "frame": [
+          128.0,
+          0.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 103.5,
+        "sourceRect": [
+          623,
+          118,
+          623,
+          482
+        ]
+      },
+      {
+        "frame": [
+          0.0,
+          128.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 103.5,
+        "sourceRect": [
+          37,
+          648,
+          669,
+          556
+        ]
+      },
+      {
+        "frame": [
+          128.0,
+          128.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 103.5,
+        "sourceRect": [
+          696,
+          648,
+          549,
+          521
+        ]
+      }
+    ]
+  },
+  "zombie": {
+    "src": "zombie-walk.webp",
+    "width": 512,
+    "height": 512,
+    "frames": [
+      {
+        "frame": [
+          0,
+          0,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 165,
+        "sourceRect": [
+          50,
+          12,
+          593,
+          611
+        ]
+      },
+      {
+        "frame": [
+          256,
+          0,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 165,
+        "sourceRect": [
+          648,
+          12,
+          558,
+          592
+        ]
+      },
+      {
+        "frame": [
+          0,
+          256,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 165,
+        "sourceRect": [
+          80,
+          615,
+          615,
+          604
+        ]
+      },
+      {
+        "frame": [
+          256,
+          256,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 165,
+        "sourceRect": [
+          666,
+          610,
+          575,
+          621
+        ]
+      }
+    ],
+    "idleFrame": 0,
+    "walkFrames": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "fps": 5,
+    "faces": "left",
+    "runtimeReady": true,
+    "sourceIdentity": "zombie-story-v2.webp",
+    "castleSrc": "zombie-castle.webp",
+    "castleWidth": 256,
+    "castleHeight": 256,
+    "castleFrames": [
+      {
+        "frame": [
+          0.0,
+          0.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 82.5,
+        "sourceRect": [
+          50,
+          12,
+          593,
+          611
+        ]
+      },
+      {
+        "frame": [
+          128.0,
+          0.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 82.5,
+        "sourceRect": [
+          648,
+          12,
+          558,
+          592
+        ]
+      },
+      {
+        "frame": [
+          0.0,
+          128.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 82.5,
+        "sourceRect": [
+          80,
+          615,
+          615,
+          604
+        ]
+      },
+      {
+        "frame": [
+          128.0,
+          128.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 82.5,
+        "sourceRect": [
+          666,
+          610,
+          575,
+          621
+        ]
+      }
+    ]
+  },
+  "vampire": {
+    "src": "vampire-walk.webp",
+    "width": 512,
+    "height": 512,
+    "frames": [
+      {
+        "frame": [
+          0,
+          0,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 184,
+        "sourceRect": [
+          46,
+          12,
+          585,
+          607
+        ]
+      },
+      {
+        "frame": [
+          256,
+          0,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 184,
+        "sourceRect": [
+          732,
+          10,
+          511,
+          603
+        ]
+      },
+      {
+        "frame": [
+          0,
+          256,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 184,
+        "sourceRect": [
+          47,
+          634,
+          550,
+          608
+        ]
+      },
+      {
+        "frame": [
+          256,
+          256,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 184,
+        "sourceRect": [
+          734,
+          633,
+          500,
+          606
+        ]
+      }
+    ],
+    "idleFrame": 0,
+    "walkFrames": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "fps": 5,
+    "faces": "left",
+    "runtimeReady": true,
+    "sourceIdentity": "vampire-story-v2.webp",
+    "castleSrc": "vampire-castle.webp",
+    "castleWidth": 256,
+    "castleHeight": 256,
+    "castleFrames": [
+      {
+        "frame": [
+          0.0,
+          0.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 92.0,
+        "sourceRect": [
+          46,
+          12,
+          585,
+          607
+        ]
+      },
+      {
+        "frame": [
+          128.0,
+          0.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 92.0,
+        "sourceRect": [
+          732,
+          10,
+          511,
+          603
+        ]
+      },
+      {
+        "frame": [
+          0.0,
+          128.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 92.0,
+        "sourceRect": [
+          47,
+          634,
+          550,
+          608
+        ]
+      },
+      {
+        "frame": [
+          128.0,
+          128.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 92.0,
+        "sourceRect": [
+          734,
+          633,
+          500,
+          606
+        ]
+      }
+    ]
+  },
+  "franken": {
+    "src": "franken-walk.webp",
+    "width": 512,
+    "height": 512,
+    "frames": [
+      {
+        "frame": [
+          0,
+          0,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 211,
+        "sourceRect": [
+          70,
+          3,
+          552,
+          617
+        ]
+      },
+      {
+        "frame": [
+          256,
+          0,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 211,
+        "sourceRect": [
+          721,
+          2,
+          525,
+          591
+        ]
+      },
+      {
+        "frame": [
+          0,
+          256,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 211,
+        "sourceRect": [
+          45,
+          621,
+          538,
+          614
+        ]
+      },
+      {
+        "frame": [
+          256,
+          256,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 211,
+        "sourceRect": [
+          712,
+          628,
+          534,
+          598
+        ]
+      }
+    ],
+    "idleFrame": 0,
+    "walkFrames": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "fps": 5,
+    "faces": "left",
+    "runtimeReady": true,
+    "sourceIdentity": "franken-story-v2.webp",
+    "castleSrc": "franken-castle.webp",
+    "castleWidth": 256,
+    "castleHeight": 256,
+    "castleFrames": [
+      {
+        "frame": [
+          0.0,
+          0.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 105.5,
+        "sourceRect": [
+          70,
+          3,
+          552,
+          617
+        ]
+      },
+      {
+        "frame": [
+          128.0,
+          0.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 105.5,
+        "sourceRect": [
+          721,
+          2,
+          525,
+          591
+        ]
+      },
+      {
+        "frame": [
+          0.0,
+          128.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 105.5,
+        "sourceRect": [
+          45,
+          621,
+          538,
+          614
+        ]
+      },
+      {
+        "frame": [
+          128.0,
+          128.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 105.5,
+        "sourceRect": [
+          712,
+          628,
+          534,
+          598
+        ]
+      }
+    ]
+  },
+  "witch": {
+    "src": "witch-walk.webp",
+    "width": 512,
+    "height": 512,
+    "frames": [
+      {
+        "frame": [
+          0,
+          0,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 224,
+        "sourceRect": [
+          91,
+          6,
+          482,
+          621
+        ]
+      },
+      {
+        "frame": [
+          256,
+          0,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 224,
+        "sourceRect": [
+          658,
+          7,
+          517,
+          618
+        ]
+      },
+      {
+        "frame": [
+          0,
+          256,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 224,
+        "sourceRect": [
+          74,
+          622,
+          553,
+          609
+        ]
+      },
+      {
+        "frame": [
+          256,
+          256,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 224,
+        "sourceRect": [
+          673,
+          622,
+          522,
+          615
+        ]
+      }
+    ],
+    "idleFrame": 0,
+    "walkFrames": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "fps": 5,
+    "faces": "right",
+    "runtimeReady": true,
+    "sourceIdentity": "witch-story-v3.webp",
+    "castleSrc": "witch-castle.webp",
+    "castleWidth": 256,
+    "castleHeight": 256,
+    "castleFrames": [
+      {
+        "frame": [
+          0.0,
+          0.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 112.0,
+        "sourceRect": [
+          91,
+          6,
+          482,
+          621
+        ]
+      },
+      {
+        "frame": [
+          128.0,
+          0.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 112.0,
+        "sourceRect": [
+          658,
+          7,
+          517,
+          618
+        ]
+      },
+      {
+        "frame": [
+          0.0,
+          128.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 112.0,
+        "sourceRect": [
+          74,
+          622,
+          553,
+          609
+        ]
+      },
+      {
+        "frame": [
+          128.0,
+          128.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 112.0,
+        "sourceRect": [
+          673,
+          622,
+          522,
+          615
+        ]
+      }
+    ]
+  },
+  "masked_wanderer": {
+    "src": "masked_wanderer-walk.webp",
+    "width": 512,
+    "height": 512,
+    "frames": [
+      {
+        "frame": [
+          0,
+          0,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 224,
+        "sourceRect": [
+          211,
+          10,
+          351,
+          614
+        ]
+      },
+      {
+        "frame": [
+          256,
+          0,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 224,
+        "sourceRect": [
+          710,
+          11,
+          335,
+          606
+        ]
+      },
+      {
+        "frame": [
+          0,
+          256,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 224,
+        "sourceRect": [
+          214,
+          626,
+          377,
+          604
+        ]
+      },
+      {
+        "frame": [
+          256,
+          256,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 224,
+        "sourceRect": [
+          713,
+          622,
+          372,
+          601
+        ]
+      }
+    ],
+    "idleFrame": 0,
+    "walkFrames": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "fps": 5,
+    "faces": "right",
+    "runtimeReady": true,
+    "sourceIdentity": "masked_wanderer-story-v3.webp",
+    "castleSrc": "masked_wanderer-castle.webp",
+    "castleWidth": 256,
+    "castleHeight": 256,
+    "castleFrames": [
+      {
+        "frame": [
+          0.0,
+          0.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 112.0,
+        "sourceRect": [
+          211,
+          10,
+          351,
+          614
+        ]
+      },
+      {
+        "frame": [
+          128.0,
+          0.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 112.0,
+        "sourceRect": [
+          710,
+          11,
+          335,
+          606
+        ]
+      },
+      {
+        "frame": [
+          0.0,
+          128.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 112.0,
+        "sourceRect": [
+          214,
+          626,
+          377,
+          604
+        ]
+      },
+      {
+        "frame": [
+          128.0,
+          128.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 112.0,
+        "sourceRect": [
+          713,
+          622,
+          372,
+          601
+        ]
+      }
+    ]
+  },
+  "werewolf": {
+    "src": "werewolf-walk.webp",
+    "width": 512,
+    "height": 512,
+    "frames": [
+      {
+        "frame": [
+          0,
+          0,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 165,
+        "sourceRect": [
+          72,
+          1,
+          535,
+          621
+        ]
+      },
+      {
+        "frame": [
+          256,
+          0,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 165,
+        "sourceRect": [
+          692,
+          2,
+          510,
+          612
+        ]
+      },
+      {
+        "frame": [
+          0,
+          256,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 165,
+        "sourceRect": [
+          44,
+          625,
+          569,
+          619
+        ]
+      },
+      {
+        "frame": [
+          256,
+          256,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 165,
+        "sourceRect": [
+          683,
+          626,
+          531,
+          611
+        ]
+      }
+    ],
+    "idleFrame": 0,
+    "walkFrames": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "fps": 5,
+    "faces": "right",
+    "runtimeReady": true,
+    "sourceIdentity": "Original Halloween character generated 2026-10-16",
+    "castleSrc": "werewolf-castle.webp",
+    "castleWidth": 256,
+    "castleHeight": 256,
+    "castleFrames": [
+      {
+        "frame": [
+          0.0,
+          0.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 82.5,
+        "sourceRect": [
+          72,
+          1,
+          535,
+          621
+        ]
+      },
+      {
+        "frame": [
+          128.0,
+          0.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 82.5,
+        "sourceRect": [
+          692,
+          2,
+          510,
+          612
+        ]
+      },
+      {
+        "frame": [
+          0.0,
+          128.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 82.5,
+        "sourceRect": [
+          44,
+          625,
+          569,
+          619
+        ]
+      },
+      {
+        "frame": [
+          128.0,
+          128.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 82.5,
+        "sourceRect": [
+          683,
+          626,
+          531,
+          611
+        ]
+      }
+    ]
+  },
+  "mummy": {
+    "src": "mummy-walk.webp",
+    "width": 512,
+    "height": 512,
+    "frames": [
+      {
+        "frame": [
+          0,
+          0,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 201,
+        "sourceRect": [
+          101,
+          5,
+          512,
+          601
+        ]
+      },
+      {
+        "frame": [
+          256,
+          0,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 201,
+        "sourceRect": [
+          698,
+          3,
+          503,
+          597
+        ]
+      },
+      {
+        "frame": [
+          0,
+          256,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 201,
+        "sourceRect": [
+          99,
+          631,
+          554,
+          606
+        ]
+      },
+      {
+        "frame": [
+          256,
+          256,
+          256,
+          256
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 201,
+        "sourceRect": [
+          722,
+          626,
+          487,
+          600
+        ]
+      }
+    ],
+    "idleFrame": 0,
+    "walkFrames": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "fps": 5,
+    "faces": "right",
+    "runtimeReady": true,
+    "sourceIdentity": "Original Halloween character generated 2026-10-16",
+    "castleSrc": "mummy-castle.webp",
+    "castleWidth": 256,
+    "castleHeight": 256,
+    "castleFrames": [
+      {
+        "frame": [
+          0.0,
+          0.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 100.5,
+        "sourceRect": [
+          101,
+          5,
+          512,
+          601
+        ]
+      },
+      {
+        "frame": [
+          128.0,
+          0.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 100.5,
+        "sourceRect": [
+          698,
+          3,
+          503,
+          597
+        ]
+      },
+      {
+        "frame": [
+          0.0,
+          128.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 100.5,
+        "sourceRect": [
+          99,
+          631,
+          554,
+          606
+        ]
+      },
+      {
+        "frame": [
+          128.0,
+          128.0,
+          128.0,
+          128.0
+        ],
+        "anchorX": 0.5,
+        "anchorY": 0.953125,
+        "contentHeight": 100.5,
+        "sourceRect": [
+          722,
+          626,
+          487,
+          600
+        ]
+      }
+    ]
+  }
+}

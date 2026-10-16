@@ -1,4 +1,4 @@
-import {OPTIONAL_STORIES} from './optional-encounters.js?v=20261016-resident1';
+import {OPTIONAL_STORIES} from './optional-encounters.js?v=20261016-living1';
 // Original fiction for the palace adventure. No participant speech or biography is invented here.
 export const STORY_MONSTER_IDS = Object.freeze(['pumpkin','ghost','zombie','vampire','franken','bat']);
 export const STORY = Object.freeze({

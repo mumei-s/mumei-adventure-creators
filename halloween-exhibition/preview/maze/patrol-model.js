@@ -34,6 +34,8 @@ export const PATROL_ROUTES=Object.freeze({
     bat:lane(8,2.45,8,3.95),
     witch:lane(7.8,4.85,8.9,4.85),
     masked_wanderer:lane(2.65,8,3.3,8),
+    werewolf:lane(14.4,12.2,15.15,12.2),
+    mummy:lane(9.9,5.2,10.7,5.2),
   }),
   resident:Object.freeze({
     'resident-archivist':lane(7.6,1.05,8.65,1.05),

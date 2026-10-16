@@ -1,0 +1,19 @@
+/* Depth is additive light, never a dark grade over the visitor's brightness choice. */
+.palace-living-cast{position:absolute;inset:0;width:100%;height:100%;z-index:9;pointer-events:none;filter:brightness(var(--visitor-brightness,1))}
+.palace-living-air{position:absolute;inset:0;overflow:hidden;z-index:4;pointer-events:none;contain:strict}
+.palace-living-air i{display:block;position:absolute;pointer-events:none}
+.palace-light-shaft{left:12%;top:-12%;width:45%;height:96%;transform:rotate(19deg);transform-origin:50% 0;background:linear-gradient(90deg,transparent,#e5d3ff0a 35%,#fff2d315 50%,#e5d3ff06 65%,transparent);animation:palace-shaft-breathe 12s ease-in-out infinite}
+.palace-ground-mist{left:-10%;right:-10%;bottom:9%;height:15%;opacity:.55;background:radial-gradient(ellipse at 23% 80%,#d6c2e923,transparent 48%),radial-gradient(ellipse at 77% 60%,#e1c9a61c,transparent 48%);animation:palace-mist-drift 19s ease-in-out infinite}
+.palace-threshold-light{left:27%;right:27%;bottom:15%;height:16%;background:radial-gradient(ellipse at 50% 0%,#ffd48424,transparent 72%);transform:perspective(300px) rotateX(35deg);animation:palace-shaft-breathe 7s ease-in-out infinite}
+.palace-entrance[data-living-bat=ready] .palace-bats{display:none}
+.palace-entrance[data-living-ghost=ready] .palace-ghost{display:none}
+.palace-entrance[data-living-scene=ready] .palace-path-walkers{display:none}
+/* The gate remains the highest decorative plane, with an unobstructed native button. */
+.palace-gate-wrap{z-index:10}
+.palace-gate{transition:box-shadow .25s ease}
+.palace-gate:hover,.palace-gate:focus-visible{box-shadow:0 0 25px #ffc05b70,0 0 65px #f4b66330}
+.theater[data-palace-state=opening] .palace-threshold-light,.theater[data-palace-state=walking] .palace-threshold-light{opacity:1;background:radial-gradient(ellipse at 50% 0%,#ffe7b55c,transparent 75%)}
+@keyframes palace-shaft-breathe{0%,100%{opacity:.5}50%{opacity:.9}}
+@keyframes palace-mist-drift{0%,100%{translate:-2% 0}50%{translate:2% -3%}}
+@media(prefers-reduced-motion:reduce){.palace-living-air *{animation:none!important}.palace-gate{transition:none}}
+.theater[data-motion-paused=true] .palace-living-air *,body[data-ambient-paused=true] .palace-living-air *{animation-play-state:paused!important}

@@ -95,7 +95,7 @@ test('castle exit has its own header row outside the scrolling action strip', ()
 test('castle exit panel uses wrapping normal flow and a readable touch target', async () => {
   const css = await readFile(new URL('../safe-navigation.css', import.meta.url), 'utf8');
   assert.match(css, /\.masthead>\.castle-exit-panel\{[^}]*position:relative[^}]*flex-wrap:wrap[^}]*max-width:100%[^}]*min-width:0[^}]*overflow:visible/);
-  assert.match(css, /\.castle-exit-panel>\.app-exit-trigger\{[^}]*position:static[^}]*min-height:48px[^}]*max-width:100%[^}]*font:700 16px[^}]*white-space:normal/);
+  assert.match(css, /\.castle-exit-panel>\.app-exit-trigger\{[^}]*position:static[^}]*min-height:44px[^}]*max-width:100%[^}]*font:600 13px[^}]*white-space:normal/);
   assert.match(css, /\.castle-exit-panel\[hidden\][^}]*display:none!important/);
   assert.doesNotMatch(css, /\.header-actions \.app-exit-trigger/);
 });

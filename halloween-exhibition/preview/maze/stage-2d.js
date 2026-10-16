@@ -1,8 +1,9 @@
+import {monsterSprite} from './monster-motion.js?v=20261016-living1';
 import { MAP, CELL, FEATURES, blocked, nearby } from './maze-model.js?v=20261014-adventure2';
-import { ALL_MONSTERS as MONSTERS, nearestMonster, monsterAvailable, monsterPose } from './encounter-model.js?v=20261016-resident1';
+import { ALL_MONSTERS as MONSTERS, nearestMonster, monsterAvailable, monsterPose } from './encounter-model.js?v=20261016-living1';
 
 // Canvas illustration authored for this room; no participant art or remote assets.
-import {drawArtSprite,playerPose} from './rpg-art.js?v=20261016-resident1';
+import {drawArtSprite,playerPose} from './rpg-art.js?v=20261016-living1';
 import {followCamera,depthOrder,clampSceneCamera} from './rpg-model.js?v=20261014-adventure2';
 const TILE=72,TAU=Math.PI*2;
 export const EXIT={x:8,z:14};
@@ -203,7 +204,7 @@ export function createStageRenderer({makeCanvas=(w,h)=>{const c=document.createE
       {kind:'player',x:player.x,y:player.y,depth:player.y}];
     for(const actor of creatorActors)if(actor.sprite)objects.push({kind:'creator',x:actor.x*TILE,y:actor.z*TILE,depth:actor.z*TILE,actor});
     if(!state.horrorAccepted)objects.push({kind:'door',x:FEATURES.horrorDoor.x*TILE,y:FEATURES.horrorDoor.z*TILE,depth:FEATURES.horrorDoor.z*TILE});
-    if(encounters)for(const m of MONSTERS)if(monsterAvailable(m,state)&&(!m.optional||art.images[m.id])){const p=monsterPose(m,time,motion,state);objects.push({kind:'enemy',id:m.id,x:p.x*TILE,y:p.z*TILE,depth:p.z*TILE,cleared:cleared.includes(m.id)});}
+    if(encounters)for(const m of MONSTERS)if(monsterAvailable(m,state)&&(!m.optional||art.images[m.id])){const p=monsterPose(m,time,motion,state);objects.push({kind:'enemy',id:m.id,pose:p,x:p.x*TILE,y:p.z*TILE,depth:p.z*TILE,cleared:cleared.includes(m.id)});}
     for(const o of depthOrder(objects)){
       if(Math.abs((o.x-cam.x)*cam.scale)>w*.7+150||Math.abs((o.y-cam.y)*cam.scale)>h*.7+180)continue;
       if(o.kind==='wall'){drawWall(c,o,player,art);const side=o.orientation==='side',hh=side?115:o.orientation==='north'?92:40;addHit({x:o.x-(side?13:37),y:o.y-(side?76:o.orientation==='north'?89:33),w:side?26:74,h:hh});}
@@ -227,7 +228,8 @@ export function createStageRenderer({makeCanvas=(w,h)=>{const c=document.createE
       }else if(o.kind==='enemy'){
         if(o.cleared){ellipse(c,o.x,o.y,15,8,'#d2ac65');text(c,'✓',o.x,o.y,16,'#362b35');continue;}
         const idle=motion?(o.id==='franken'?Math.abs(Math.sin(time*.65))*1.1:o.id==='zombie'?Math.abs(Math.sin(time*.8))*.8:o.id==='vampire'?Math.sin(time*.9)*1.3:Math.sin(time*1.9+o.x)*2.2):0;ellipse(c,o.x,o.y+3,25,8,'#07091488');
-        if(!drawArtSprite(c,art.images[o.id],o.x,o.y+idle,o.id==='bat'?92:100,{rotation:motion&&['zombie','franken'].includes(o.id)?Math.sin(time*(o.id==='franken'?.65:.8))*.018:0,scaleX:1+(motion?Math.sin(time*1.4)*.018:0),scaleY:1+(motion?Math.cos(time*1.4)*.012:0)}))drawCreature(c,o.id,o.x,o.y-25,1.1);
+        const monster=monsterSprite(art,o.id,{time,motion,walking:o.pose.walking,facing:o.pose.facing});
+        if(!drawArtSprite(c,monster,o.x,o.y+(monster?.animated?0:idle),o.id==='bat'?92:100,{flip:monster?.flip,rotation:motion&&['zombie','franken'].includes(o.id)?Math.sin(time*(o.id==='franken'?.65:.8))*.018:0,scaleX:1+(motion?Math.sin(time*1.4)*.018:0),scaleY:1+(motion?Math.cos(time*1.4)*.012:0)}))drawCreature(c,o.id,o.x,o.y-25,1.1);
       }else{
         ellipse(c,o.x,o.y+2,o.size*.25,7,'#080b1477');
         const foregroundAlpha=o.y>player.y&&o.y-player.y<o.size*.85&&Math.abs(o.x-player.x)<o.size*.45?.35:1;

@@ -34,7 +34,7 @@ test('invalid points and wall-crossing interpolation are rejected, including fur
   assert.deepEqual(samplePatrolPosition(r,2),samplePatrolPosition(r,9));
 });
 test('original six monster IDs plus optional encounters have explicit lanes',()=>{
-  assert.deepEqual(Object.keys(PATROL_ROUTES.monster).sort(),['pumpkin','zombie','franken','ghost','vampire','bat','witch','masked_wanderer'].sort());
+  assert.deepEqual(Object.keys(PATROL_ROUTES.monster).sort(),['pumpkin','zombie','franken','ghost','vampire','bat','witch','masked_wanderer','werewolf','mummy'].sort());
 });
 test('world floor pumpkins and key pedestal are forbidden, including their foot clearance',()=>{
   for(const [x,z]of[[22,34],[42,34],[22,50],[42,50],[54,34],[60,46],[6,34],[10,46],[23,8],[41,8],[56,40]])assert.equal(patrolPointSafe({x:x/4,z:z/4},state),false,`${x},${z}`);

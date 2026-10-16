@@ -1,6 +1,6 @@
-import {createActorPatrol,samplePatrolPosition,patrolPointSafe,patrolSegmentSafe} from './patrol-model.js?v=20261016-resident1';
-import {OPTIONAL_MONSTERS} from './optional-encounters.js?v=20261016-resident1';
-import {encounterStory} from './story-model.js?v=20261016-resident1';
+import {createActorPatrol,samplePatrolPosition,patrolPointSafe,patrolSegmentSafe} from './patrol-model.js?v=20261016-living1';
+import {OPTIONAL_MONSTERS} from './optional-encounters.js?v=20261016-living1';
+import {encounterStory} from './story-model.js?v=20261016-living1';
 import {blocked} from './maze-model.js?v=20261014-adventure2';
 // Fictional stage characters only. Never derived from participant identities.
 export const MONSTERS = Object.freeze([
@@ -19,6 +19,18 @@ export const BATTLE_ACTIONS = Object.freeze(['shine','guard','attack']);
 // A telegraph is shown before every decision. There are no hidden rolls or timers.
 const turn=(name,damage,stance,hint,weakness=null,armor=0)=>Object.freeze({name,damage,stance,hint,weakness,armor});
 export const ENCOUNTER_RULES = Object.freeze({
+  werewolf:Object.freeze({spirit:21,turns:Object.freeze([
+    turn('星の音に耳を澄ます',0,'耳を立て、足元の影を見失った','杖で星に絡まる影を払う好機。','attack'),
+    turn('星を数える遠吠え',4,'銀の鈴を持ち、息を大きく吸った','守って、遠吠えの合図を聞こう。'),
+    turn('銀の足跡をたどる',1,'窓明かりに足跡の影が浮かぶ','光で銀の足跡を照らそう。','shine'),
+    turn('星影を跳び越える',3,'両足をそろえて跳ぶ構え','もう一度守り、着地するのを待とう。'),
+  ])}),
+  mummy:Object.freeze({spirit:19,turns:Object.freeze([
+    turn('砂時計をかざす',1,'ガラスの中で砂の影が止まった','包帯には杖が届きにくい。光を通そう。','shine',1),
+    turn('包帯で輪を描く',4,'ほどいた包帯が大きく輪になる','守って、包帯の輪が静まるのを待とう。'),
+    turn('古い結び目をたしかめる',0,'手元の包帯に影の結び目が見える','杖で小さな結び目の影を払おう。','attack'),
+    turn('砂の影を集める',2,'床にこぼれた影を集めている','もう一度杖を使い、砂の影を払おう。','attack'),
+  ])}),
   witch:Object.freeze({spirit:18,turns:Object.freeze([
     turn('月影の魔法陣',4,'杖の先に月影が集まる','守って、魔法陣が消えるのを待とう。'),
     turn('杖を休める',0,'帽子の影が開いた','光で月影をほどく好機。','shine'),

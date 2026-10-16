@@ -52,7 +52,7 @@ test('resized owner and NPC frames preserve anchors and all sixteen crops fit th
 test('all declared NPC groups fit safe slots and all actor homes, motion and guides remain on floor',()=>{
   const placed=placeCreatorNPCs(roster().npcs,manifest.slotAssignments);assert.deepEqual(placed.omitted,[]);
   for(const npc of placed.placed){const state={unlocked:true,horrorAccepted:true};assert(!blocked(npc.x*CELL,npc.z*CELL,state),npc.id);assert(!inFurniture(npc.x*CELL,npc.z*CELL),npc.id);
-    for(let t=0;t<48;t+=.25){const p=creatorPose(npc,t,true,state);assert(!blocked(p.x*CELL,p.z*CELL,state),npc.id);assert(!inFurniture(p.x*CELL,p.z*CELL),npc.id);assert.deepEqual(creatorPose(npc,t,false,state),{x:npc.x,z:npc.z,facing:'down',walking:false,phase:0});}
+    for(let t=0;t<48;t+=.25){const p=creatorPose(npc,t,true,state);assert(!blocked(p.x*CELL,p.z*CELL,state),npc.id);assert(!inFurniture(p.x*CELL,p.z*CELL),npc.id);assert.deepEqual(creatorPose(npc,t,false,state),creatorPose(npc,0,false,state));}
     for(const s of [{},state]){const guide=creatorGuide(npc,s);assert(!blocked(guide.x*CELL,guide.z*CELL,s),npc.id);assert(!inFurniture(guide.x*CELL,guide.z*CELL),npc.id);}
   }
 });

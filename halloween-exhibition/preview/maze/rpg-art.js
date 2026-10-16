@@ -1,10 +1,10 @@
 // Original, locally bundled Halloween RPG art. No external/franchise art requests.
 export const ART_FILES = {
-  playerAtlas:'lantern-keeper-atlas.webp',pumpkin:'pumpkin-story-v2.webp',ghost:'ghost-story-v2.webp',bat:'bat-story-v2.webp',zombie:'zombie-story-v2.webp',vampire:'vampire-story-v2.webp',franken:'franken-story-v2.webp',battle:'battle-library.webp',
+  playerAtlas:'lantern-keeper-atlas.webp',witch:'witch-story-v3.webp',masked_wanderer:'masked_wanderer-story-v3.webp',pumpkin:'pumpkin-story-v2.webp',ghost:'ghost-story-v2.webp',bat:'bat-story-v2.webp',zombie:'zombie-story-v2.webp',vampire:'vampire-story-v2.webp',franken:'franken-story-v2.webp',battle:'battle-library.webp',
   bookcase:'bookcase.webp',window:'window.webp',column:'column.webp',pumpkins:'pumpkins.webp',floor:'floor.webp',
 };
-export const ART_BOUNDS={franken:[31,4,710,760],zombie:[49,15,671,736],vampire:[129,10,517,748],pumpkin:[140,7,493,752],ghost:[148,11,532,741],bat:[21,31,734,674],bookcase:[10,14,437,634],window:[19,14,309,623],column:[24,8,285,626],pumpkins:[19,17,619,319]};
-export const ART_ANCHORS={pumpkin:{anchorX:(390-140)/493,anchorY:1},zombie:{anchorX:(445-49)/671,anchorY:1},vampire:{anchorX:(410-129)/517,anchorY:1},franken:{anchorX:(420-31)/710,anchorY:1}};
+export const ART_BOUNDS={witch:[144,17,481,731],masked_wanderer:[225,17,323,727],franken:[31,4,710,760],zombie:[49,15,671,736],vampire:[129,10,517,748],pumpkin:[140,7,493,752],ghost:[148,11,532,741],bat:[21,31,734,674],bookcase:[10,14,437,634],window:[19,14,309,623],column:[24,8,285,626],pumpkins:[19,17,619,319]};
+export const ART_ANCHORS={witch:{anchorX:.5654885655,anchorY:1},masked_wanderer:{anchorX:.4922600619,anchorY:1},pumpkin:{anchorX:(390-140)/493,anchorY:1},zombie:{anchorX:(445-49)/671,anchorY:1},vampire:{anchorX:(410-129)/517,anchorY:1},franken:{anchorX:(420-31)/710,anchorY:1}};
 export const PLAYER_ATLAS={cell:256,columns:4,rows:4,anchorX:128,anchorY:238,contentHeight:218,directions:['down','left','right','up']};
 // Generated original scenery is one shared transparent atlas plus four surface textures.
 export const PALACE_ART = Object.freeze({

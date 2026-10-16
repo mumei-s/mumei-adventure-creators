@@ -1,25 +1,27 @@
+import {resolveContextAction,actionButtonFor} from './context-action.js?v=20261016-resident1';
+import {compileResidents,RESIDENT_STORIES,RESIDENT_FICTION} from './resident-model.js?v=20261016-resident1';
 import {initMinimapSize} from './minimap-size.js?v=20261016-battle-visible1';
 import {libraryFromArchive} from './library-catalog.js?v=20261015-clear1';
 import {WALKING_SPEED_KEY,normalizeWalkingSpeed,advanceWithSubsteps} from './walking-speed.js?v=20261015-clear1';
 import {createRewardStore,newRunId,eligibleForEnding} from './clear-reward.js?v=20261015-clear1';
-import {renderEnding} from './ending-ui.js?v=20261016-battle-visible1';
+import {renderEnding} from './ending-ui.js?v=20261016-resident1';
 import {createSoundCheck} from './sound-check.js?v=20261015-music-garden1';
 import {initAdventureAudio} from './adventure-audio.js?v=20261016-menu-audio1';
-import { initDisplayMode } from '../display-mode.js?v=20261014-adventure2';
+import { initDisplayMode } from '../display-mode.js?v=20261016-resident1';
 import { normalizeLighting } from './lighting-model.js?v=20261014-adventure2';
 import { MAP, CELL, FEATURES, toWorld, collectionAt, move, nearby, initialState, visibleArticles } from './maze-model.js?v=20261014-adventure2';
-import { MONSTERS, nearestMonster, newBattle, battleTurn, intentFor, monsterAvailable, prankFor, commandFor, monsterPose, guidePoint } from './encounter-model.js?v=20261016-battle-visible1';
+import { ALL_MONSTERS as MONSTERS, REQUIRED_MONSTER_IDS, nearestMonster, newBattle, battleTurn, intentFor, monsterAvailable, prankFor, commandFor, monsterPose, guidePoint } from './encounter-model.js?v=20261016-resident1';
 import { chooseView, movementVector, mapHeading } from './view-model.js?v=20261015-minimap1';
-import { createStageRenderer, EXIT } from './stage-2d.js?v=20261016-battle-visible1';
-import {createArtLibrary,ART_FILES} from './rpg-art.js?v=20261016-creator-rpg1';
-import {renderBattleScene,battleEffectDuration} from './battle-scene.js?v=20261016-battle-visible1';
+import { createStageRenderer, EXIT } from './stage-2d.js?v=20261016-resident1';
+import {createArtLibrary,ART_FILES} from './rpg-art.js?v=20261016-resident1';
+import {renderBattleScene,battleEffectDuration} from './battle-scene.js?v=20261016-resident1';
 import {directionFromMovement,moveAroundFurniture} from './rpg-model.js?v=20261014-adventure2';
 import {protectGameSurface,bindHeldGameButton,bindDirectionPad} from './game-input.js?v=20261015-touch3';
-import {STORY,encounterStory,chapterFor} from './story-model.js?v=20261016-battle-visible1';
-import {compileCharacterRoster,placeCreatorNPCs,createCharacterAssets,chooseCreatorAssets,buildCreatorActors,nearestCreator,creatorGuide,isCharacterTap,scaledCharacterLayout,compileCompanions,companionActor} from './creator-runtime.js?v=20261016-creator-rpg1';
-import {renderCreatorConversation,renderCreatorDirectory} from './creator-ui.js?v=20261016-battle-visible1';
+import {STORY,encounterStory,chapterFor} from './story-model.js?v=20261016-resident1';
+import {compileCharacterRoster,placeCreatorNPCs,createCharacterAssets,chooseCreatorAssets,buildCreatorActors,nearestCreator,creatorGuide,isCharacterTap,scaledCharacterLayout,compileCompanions,companionActor,creatorPose} from './creator-runtime.js?v=20261016-resident1';
+import {renderCreatorConversation,renderCreatorDirectory} from './creator-ui.js?v=20261016-resident1';
 const rpgArt=createArtLibrary();
-let creatorRoster={hero:null,npcs:[],omitted:[]},creatorActors=[],activeCreators=[],companions=[],creatorPointer=null,creatorAssetCheck=0,creatorTrail=[];
+let creatorRoster={hero:null,npcs:[],omitted:[]},creatorActors=[],activeCreators=[],residents=[],companions=[],creatorPointer=null,creatorAssetCheck=0,creatorTrail=[];
 const characterAssets=createCharacterAssets();
 
 let stageRenderer,battleCanvas=null,battleEffect=null,visualTime=0;
@@ -44,6 +46,7 @@ let walkingSpeed=1;try{walkingSpeed=normalizeWalkingSpeed(localStorage.getItem(W
 const visitorSection=element('section');
 const visitorSettings=initAdventureAudio({settingsContainer:visitorSection,legacyBrightness,onBrightness:percent=>{brightness=percent/100;},onAudioInput:()=>soundCheck.stop('')});
 initDisplayMode({controlsParent:visitorSection,page:'maze'});
+const displaySection=visitorSection.querySelector('.display-preferences');
 const soundCheckButton=element('button','確認音を鳴らす（約1秒）');soundCheckButton.type='button';
 const soundCheckStatus=element('p','');soundCheckStatus.setAttribute('role','status');
 const soundCheck=createSoundCheck({onState:(playing,message)=>{soundCheckButton.textContent=playing?'確認音を停止':'確認音を鳴らす（約1秒）';soundCheckButton.dataset.playing=String(playing);soundCheckStatus.textContent=message;}});
@@ -65,7 +68,7 @@ function clearInput(){walking=false;keys.clear();for(const control of heldContro
 function openPanel(){clearInput();if(!panel.open){returnFocus=document.activeElement;panel.showModal();}}
 function title(kicker,name){panel.classList.remove('battle-mode','library-mode');const heading=element('h2',name);heading.id='panel-title';content.replaceChildren(element('p',kicker,'eyebrow'),heading);}
 function toggleLantern(){lantern=!lantern;$('lantern').textContent=lantern?'ランタン ON':'ランタン OFF';$('lantern').setAttribute('aria-pressed',String(lantern));saveLight();}
-function showLighting(){title('YOUR LIGHT & SOUND','夜の暗さと、手元の灯り。');content.append(visitorSection,element('p','夜の回廊は暗く、ランタンを点けると足元と前方が暖かく照らされます。暗すぎるときは明るさを上げるか、2D表示へ。文字・操作・地図の明るさは変わりません。'),element('p','メニューの「明るさ・音楽」でBGMと音量を調整できます。音量を上げると、冒険室専用の音楽が流れます。毎回OFF・音量0で始まります。対戦の効果音・点滅・時間制限はありません。'));content.append(element('p','冒険室の表示バージョン：20261016-battle-visible1','build-label'));openPanel();}
+function showLighting(){title('YOUR LIGHT & SOUND','夜の暗さと、手元の灯り。');content.append(visitorSection,element('p','夜の回廊は暗く、ランタンを点けると足元と前方が暖かく照らされます。暗すぎるときは明るさを上げるか、2D表示へ。文字・操作・地図の明るさは変わりません。'),element('p','メニューの「明るさ・音楽」でBGMと音量を調整できます。音量を上げると、冒険室専用の音楽が流れます。毎回OFF・音量0で始まります。対戦の効果音・点滅・時間制限はありません。'));content.append(element('p','冒険室の表示バージョン：20261016-resident1','build-label'));openPanel();}
 function safeURL(v){try{const u=new URL(v);return u.protocol==='https:'&&!u.username&&!u.password?u.href:null;}catch{return null;}}
 function displayArticleKind(kind){return ({'ホラー記事':'記事','ホラーイラスト':'イラスト','ホラー作品':'作品'})[kind]||kind||'作品';}
 function articles(collection=activeCollection){return visibleArticles(catalog.articles,collection);}
@@ -88,7 +91,7 @@ function renderCatalog(collection=activeCollection){
 
 function showCatalog(){renderCatalog();openPanel();}
 function restore(){const p=progress[year]||{};runId=typeof p.runId==='string'&&p.runId?p.runId:newRunId();reachedVault=p.reachedVault===true;cleared=Array.isArray(p.cleared)?MONSTERS.map(m=>m.id).filter(id=>p.cleared.includes(id)):[];state={...initialState(),hasKey:p.hasKey===true,unlocked:p.unlocked===true};if(state.unlocked)state.hasKey=true;save();world?.setExhibits(articles('horror').length?articles('horror').slice(0,1).map(a=>({title:a.title,subtitle:catalog.creators.find(c=>c.id===a.creatorId)?.name,image:a.image,position:FEATURES.article})):[{title:'展示記事を待つ額縁',subtitle:'記事未登録 · 舞台装飾',position:FEATURES.article}]);updateHUD();}
-function isAdventureComplete(){return eligibleForEnding({unlocked:state.unlocked,cleared,reachedVault},MONSTERS.map(m=>m.id));}
+function isAdventureComplete(){return eligibleForEnding({unlocked:state.unlocked,cleared,reachedVault},REQUIRED_MONSTER_IDS);}
 async function showEnding(){
   if(!isAdventureComplete()&&!rewardStore.read(runId))return;
   const thisRun=runId;title('DAWN OF THE ATELIER','冒険クリア');openPanel();content.append(element('p','6つのしるしが、夜明けの光へ…'));
@@ -105,26 +108,39 @@ function visitVault(){
   reachedVault=true;save();
   if(isAdventureComplete()||rewardStore.read(runId)){showEnding();return;}
   title('THE LIVING ARCHIVE','夜明けを待つ、物語の書庫。');
-  content.append(element('p',`キャンディのしるし ${cleared.length}/${MONSTERS.length}。6体すべての住人と仲直りして、ここへ戻ると夜明けの扉がひらきます。`));
-  const residents=element('button','住人の居場所を見る','primary');residents.onclick=showEncounters;const browse=element('button','展示記事を見る');browse.onclick=()=>renderCatalog('horror');content.append(residents,browse);openPanel();
+  content.append(element('p',`キャンディのしるし ${requiredClearCount()}/6。六つのしるしを持つモンスターと仲直りして、ここへ戻ると夜明けの扉がひらきます。`));
+  const residents=element('button','モンスターの居場所を見る','primary');residents.onclick=showEncounters;const browse=element('button','展示記事を見る');browse.onclick=()=>renderCatalog('horror');content.append(residents,browse);openPanel();
 }
 function askHorror(){title('AN INNER CHAMBER','肖像の回廊へ、入りますか。');content.append(element('p','ここは冒険室の奥にある、肖像の回廊です。暗い回廊と揺れる額縁があります。大きな音・点滅・突然驚かす演出はありません。'),element('p','現在は記事未登録の空展示です。舞台の装飾は、参加者の作品ではありません。'));const b=element('button','回廊の扉をひらく','primary');b.onclick=()=>{state.horrorAccepted=true;panel.close();notify('肖像の回廊の扉がひらいた。中へ歩いて進めます。');};content.append(b);openPanel();}
 function showCreator(id){const npc=creatorRoster.npcs.find(npc=>npc.id===id&&npc.interactive!==false);if(!npc)return;title('FRIENDS OF THE ATELIER',npc.label);renderCreatorConversation(content,npc,{onDirectory:showCreators,onGuide:guideCreator});openPanel();}
-function guideCreator(npc){const p=creatorGuide(npc,state);state={...state,...toWorld(p),yaw:p.yaw,pitch:0};creatorTrail=[];panel.close();clearInput();creatorAssetCheck=0;updateHUD();notify(p.hint);}
-function nearbyCreator(){return nearestCreator(creatorActors.filter(a=>a.interactive),{x:state.x/CELL,z:state.z/CELL},state);}
-function talkToCreator(){const npc=nearbyCreator();if(npc)showCreator(npc.id);}
+function guideCreator(npc){const pose=creatorPose(npc,time,motion&&!reducedMotion.matches,state),p=creatorGuide({...npc,...pose},state);state={...state,...toWorld(p),yaw:p.yaw,pitch:0};creatorTrail=[];panel.close();clearInput();creatorAssetCheck=0;updateHUD();notify(p.hint);}
+function requiredClearCount(){return REQUIRED_MONSTER_IDS.filter(id=>cleared.includes(id)).length;}
+function nearbyCreator(){return nearestCreator(creatorActors.filter(a=>a.interactive&&a.actorKind!=='resident'),{x:state.x/CELL,z:state.z/CELL},state);}
+function nearbyResident(){return nearestCreator(creatorActors.filter(a=>a.interactive&&a.actorKind==='resident'),{x:state.x/CELL,z:state.z/CELL},state);}
+function showResident(id){const npc=residents.find(npc=>npc.id===id);if(!npc)return;const story=RESIDENT_STORIES[id];title('PALACE RESIDENT',story.label);content.append(element('p',story.role,'creator-author'),element('p',story.greeting,'creator-dialogue'));const response=element('p',undefined,'resident-response');response.setAttribute('role','status');const topics=element('div',undefined,'tabs');for(const topic of story.topics){const b=element('button',topic.label);b.onclick=()=>{response.textContent=topic.reply;};topics.append(b);}content.append(topics,response,element('p',RESIDENT_FICTION,'subtle'));openPanel();}
+function showResidents(){title('PALACE RESIDENTS','宮殿の住人');const list=element('div',undefined,'resident-roster');for(const npc of residents){const card=element('section',undefined,'creator-npc-card'),story=RESIDENT_STORIES[npc.id];card.append(element('h3',story.label),element('p',story.role));const talk=element('button','話す');talk.onclick=()=>showResident(npc.id);const guide=element('button','会いに行く');guide.onclick=()=>guideCreator(npc);card.append(talk,guide);list.append(card);}content.append(list,element('p',RESIDENT_FICTION,'subtle'));openPanel();}
+function talkToCreator(){const target=contextTarget();if(target?.kind==='resident')showResident(target.id);else if(target?.kind==='creator')showCreator(target.id);}
+function contextTarget(){
+ const point={x:state.x/CELL,z:state.z/CELL},n=nearby(state),map={key:'key',gate:'gate',article:'article',horror:'horrorDoor','horror-art':'horrorArt',vault:'vault'},feature=n?FEATURES[map[n]]:null;
+ const creator=nearbyCreator(),resident=nearbyResident(),monster=encounters?nearestMonster(state,cleared,{time,motion:motion&&!reducedMotion.matches}):null,monsterPoint=monster?monsterPose(monster,time,motion&&!reducedMotion.matches,state):null;
+ const measured=(target,position=target)=>target?{...target,distance:Math.hypot(point.x-position.x,point.z-position.z)}:null;
+ const exitDistance=Math.hypot(point.x-EXIT.x,point.z-EXIT.z);
+ return resolveContextAction({exit:exitDistance<.8?{id:'exit',distance:exitDistance}:null,feature:feature?{id:n,distance:Math.hypot(point.x-feature.x,point.z-feature.z)}:null,creator:measured(creator),resident:measured(resident),monster:monster?.optional&&!rpgArt.images[monster.id]?null:measured(monster,monsterPoint)});
+}
+function performContextAction(){const target=contextTarget();if(!target)return;if(target.kind==='creator')showCreator(target.id);else if(target.kind==='resident')showResident(target.id);else if(target.kind==='monster')startBattle();else interact();}
+
 function showCreators(){title('FRIENDS OF THE ATELIER','宮殿に集まった仲間');renderCreatorDirectory(content,{roster:creatorRoster,state,status:characterAssets.status(),onTalk:showCreator,onGuide:guideCreator,onRetry:()=>{characterAssets.retry();creatorAssetCheck=0;panel.close();notify('仲間の画像を再読み込みします。');}});openPanel();}
 function showStory(){
   progress[year]={...progress[year],storySeen:true};save();const chapter=chapterFor({...state,cleared,reachedVault});title(chapter.kicker,STORY.title);const page=element('section',undefined,'story-journal');
   page.append(element('p',STORY.subtitle),element('p',STORY.premise),element('h3',chapter.title),element('p',chapter.summary),element('p',chapter.objective));
-  const chapterProgress=element('progress',undefined,'story-chapter-progress');chapterProgress.max=6;chapterProgress.value=cleared.length;chapterProgress.setAttribute('aria-label',`集めたしるし ${cleared.length}/6`);page.append(chapterProgress);
+  const chapterProgress=element('progress',undefined,'story-chapter-progress');chapterProgress.max=6;chapterProgress.value=requiredClearCount();chapterProgress.setAttribute('aria-label',`集めたしるし ${requiredClearCount()}/6`);page.append(chapterProgress);
   for(const line of STORY.opening)page.append(element('p',`${line.speaker}：${line.text}`,'story-dialogue'));
-  if(cleared.length){page.append(element('h3','集めた記憶'));for(const id of cleared){const story=encounterStory(id);page.append(element('p',`${story.keepsake}：${story.memory}`));}}
+  if(cleared.length){page.append(element('h3','集めた記憶'));for(const id of cleared.filter(id=>REQUIRED_MONSTER_IDS.includes(id))){const story=encounterStory(id);page.append(element('p',`${story.keepsake}：${story.memory}`));}}
   page.append(element('p',STORY.fictionLabel,'subtle'));content.append(page);openPanel();
 }
 function updateCreatorFrames(now){
   if(now>=creatorAssetCheck){
-    activeCreators=chooseCreatorAssets(creatorRoster.npcs,{x:state.x/CELL,z:state.z/CELL},state,5);
+    activeCreators=chooseCreatorAssets([...creatorRoster.npcs,...residents],{x:state.x/CELL,z:state.z/CELL},state,5,{time,motion:motion&&!reducedMotion.matches});
     const definitions=[creatorRoster.hero,...companions,...activeCreators].filter(Boolean);
     characterAssets.setPinned(definitions.map(c=>c.asset.src));for(const c of definitions)characterAssets.request(c.asset);creatorAssetCheck=now+750;
   }
@@ -137,16 +153,16 @@ function updateCreatorFrames(now){
 function interact(){if(Math.hypot(state.x-EXIT.x*CELL,state.z-EXIT.z*CELL)<3.2){showExit();return;}const kind=nearby(state);if(kind==='key'){state.hasKey=true;save();notify('書庫の鍵を手に入れた。中央の奥にある格子扉へ。');}else if(kind==='gate'){if(!state.hasKey)notify('格子扉には鍵が必要です。東の鍵の間を探してください。');else{state.unlocked=true;save();notify('鍵が回り、書庫の扉がひらく。浮かぶ本の奥へ進めます。');}}else if(kind==='article'){const a=articles('horror')[0];if(a&&articles('horror').length===1)articlePanel(a);else{renderCatalog('horror');openPanel();}}else if(kind==='horror')askHorror();else if(kind==='horror-art'){renderCatalog('horror');openPanel();}else if(kind==='vault'){visitVault();}else talkToCreator();updateHUD();}
 function showMap(){title('EXPLORE AT YOUR PACE','迷宮の見取り図');const cv=element('canvas',undefined,'bigmap');cv.width=510;cv.height=510;drawMap(cv,true);content.append(cv,element('p','上が北。三角が現在位置と向きです。右の鍵の間で鍵を見つけ、北の格子扉に使います。青い点は記事の額縁。歩かずに記事一覧から直接読むこともできます。'));const hints=element('ul',undefined,'resident-hint-list');for(const m of MONSTERS)hints.append(element('li',`${m.icon} ${m.name}：${m.hint}${monsterAvailable(m,state)?'':' · 扉をひらくと会えます'}`));content.append(hints);const tabs=element('div',undefined,'tabs');for(const [label,point,yaw]of[['入口へ',FEATURES.spawn,0],['鍵の間へ',{x:13,z:10},Math.PI/2],['肖像の扉へ',{x:5,z:10},Math.PI/2]]){const b=element('button',label);b.onclick=()=>{state={...state,...toWorld(point),yaw,pitch:0};panel.close();updateHUD();};tabs.append(b);}content.append(tabs);openPanel();}
 function resetPosition(){state={...state,...toWorld(FEATURES.spawn),yaw:0,pitch:0};clearInput();updateHUD();notify('入口に戻りました。手に入れた鍵は、そのままです。');}
-function showExit(){title('RETURN TO THE CASTLE','お城に戻りますか。');content.append(element('p','鍵と記事の記録は保存されています。住人との対戦記録も、このブラウザに保存されます。'));const back=element('a','Halloweenの名鑑へ戻る','primary');back.href='../?return=palace';back.textContent='お城に戻る';back.addEventListener('click',()=>{clearInput();soundCheck.stop('');visitorSettings.stopMusic();save();});content.append(back);openPanel();}
+function showExit(){title('RETURN TO THE CASTLE','お城に戻りますか。');content.append(element('p','鍵と記事の記録は保存されています。モンスターとの対戦記録も、このブラウザに保存されます。'));const back=element('a','Halloweenの名鑑へ戻る','primary');back.href='../?return=palace';back.textContent='お城に戻る';back.addEventListener('click',()=>{clearInput();soundCheck.stop('');visitorSettings.stopMusic();save();});content.append(back);openPanel();}
 function showExploreMenu(){
   title('EXPLORE AT YOUR PACE','探索メニュー');
+  if(displaySection){const label=displaySection.querySelector('label');if(label)label.textContent='画面レイアウト';for(const option of displaySection.querySelectorAll('option'))option.textContent=({auto:'自動',phone:'スマホ用',tablet:'タブレット用',desktop:'PC用'})[option.value]||option.textContent;content.append(displaySection);}
   if(rewardStore.read(runId)){const reward=element('button','クリア記念をもう一度見る');reward.onclick=showEnding;content.append(reward);}
-  content.append(element('p','円形パッドは、押したまま指を動かして方向を変えられます。2Dは東西南北へ移動。3Dは左右で向きを変え、上下で前進・後退します。3Dの画面ドラッグとWASDも使えます。Eで調べる、Cで仲間と話す、Bで住人と対戦。仲間の名前もタップできます。動きを減らす設定では住人の歩行や装飾の動きを止めます。'));
   const menu=element('div',undefined,'explore-menu');
   const clearGallery=element('a','クリア名鑑','primary');clearGallery.href='./clear-gallery/';menu.append(clearGallery);
-  for(const [label,action]of[['冒険の物語',showStory],['物語の仲間',showCreators],['記事一覧',()=>{showCatalog();panel.querySelector('.close').focus();}],['迷宮全体の地図',()=>{showMap();panel.querySelector('.close').focus();}],['明るさ・音楽',()=>{showLighting();panel.querySelector('.close').focus();}],['モンスターと遊ぶ',()=>{showEncounters();panel.querySelector('.close').focus();}],['迷宮の入口へ',()=>{panel.close();resetPosition();}]]){const button=element('button',label);button.onclick=action;menu.append(button);}
+  for(const [label,action]of[['冒険の物語',showStory],['物語の仲間',showCreators],['宮殿の住人',showResidents],['記事一覧',()=>{showCatalog();panel.querySelector('.close').focus();}],['迷宮全体の地図',()=>{showMap();panel.querySelector('.close').focus();}],['明るさ・音楽',()=>{showLighting();panel.querySelector('.close').focus();}],['モンスターと遊ぶ',()=>{showEncounters();panel.querySelector('.close').focus();}],['迷宮の入口へ',()=>{panel.close();resetPosition();}]]){const button=element('button',label);button.onclick=action;menu.append(button);}
   const motionButton=element('button');motionButton.id='menu-motion-toggle';motionButton.onclick=()=>{$('pause').click();};menu.append(motionButton);
-  const motionStatus=element('p',motion?'住人の歩行・光の揺らぎ：再生中':'住人の歩行・光の揺らぎ：停止中');motionStatus.id='menu-motion-status';motionStatus.setAttribute('role','status');menu.append(motionStatus);
+  const motionStatus=element('p',motion?'キャラクターの歩行・光の揺らぎ：再生中':'キャラクターの歩行・光の揺らぎ：停止中');motionStatus.id='menu-motion-status';motionStatus.setAttribute('role','status');menu.append(motionStatus);
   const back=element('a','Halloweenの名鑑へ戻る','primary');back.href='../?mode=halloween';menu.append(back);content.append(menu);updateMotion();openPanel();
 }
 
@@ -157,28 +173,26 @@ function updateHUD(){
   $('key-state').textContent=state.unlocked?'✦ 書庫の扉を解錠':state.hasKey?'⚿ 書庫の鍵を入手':'◇ 鍵を探す';
   const n=nearby(state),copy={key:['台座に、金色の鍵が浮かんでいる。','鍵を手に取る'],gate:['奥へ続く、書庫の格子扉。',state.hasKey?'解錠する':'鍵が必要'],article:['物語の書庫につながる展示場所。','展示記事を見る'],horror:['奥の肖像の回廊へ続く扉。','肖像の回廊へ'],'horror-art':['肖像の回廊の展示場所。','物語の書庫を見る'],vault:['本が漂う、封印の書庫。','書庫に入る']}[n];
   $('object-label').textContent=copy?.[0]||'ランタンを持って、夜の回廊を歩こう。';
-  const nearExit=Math.hypot(state.x-EXIT.x*CELL,state.z-EXIT.z*CELL)<3.2;
-  $('interact').textContent=nearExit?'出口をひらく':copy?.[1]||'近づいて調べる';$('interact').disabled=!n&&!nearExit&&!nearbyCreator();
-  const friend=nearbyCreator();$('creator-open').hidden=!friend;$('creator-open').disabled=!friend;$('creator-open').textContent='仲間と話す [C]';$('creator-open').setAttribute('aria-label',friend?`${friend.label}と話す`:'仲間と話す');$('creator-open').title=friend?friend.label:'';
-  const monster=encounters?nearestMonster(state,cleared,{time,motion:motion&&!reducedMotion.matches}):null;
-  $('battle-open').hidden=!encounters;$('battle-open').disabled=!monster;
-  $('battle-open').textContent=monster?`${monster.icon} 話しかける [B]`:'住人に近づこう';
+  const target=contextTarget(),buttonId=actionButtonFor(target);
+  for(const id of ['interact','creator-open','battle-open']){$(id).hidden=id!==buttonId;$(id).disabled=id!==buttonId;}
+  if(target){const button=$(buttonId);button.textContent=target.kind==='creator'?'仲間と話す':target.kind==='resident'?'住人と話す':target.kind==='monster'?'モンスターと話す':target.kind==='exit'?'出口をひらく':copy?.[1]||'調べる';button.setAttribute('aria-label',target.label||target.name?`${target.label||target.name}と話す`:button.textContent);button.title=target.label||target.name||'';}
+
 }
 function showEncounters(){
-  title('MEET THE RESIDENTS','モンスターに出会ったら。');
-  content.append(element('p','6種の架空の住人が部屋をゆっくり歩いています。近づいて話しかけ、対戦するか立ち去るかを選べます。突然戦闘にはなりません。参加者や投稿作品とは無関係です。'));
+  title('MEET THE MONSTERS','モンスターに出会ったら。');
+  content.append(element('p','8種の架空のモンスターが、それぞれの通りを巡回しています。近づいて話しかけ、対戦するか立ち去るかを選べます。突然戦闘にはなりません。参加者や投稿作品とは無関係です。'));
   const roster=element('div',undefined,'monster-roster');
-  for(const m of MONSTERS){const card=element('div',undefined,'monster-card');const portrait=element('img',undefined,'monster-portrait');portrait.src=new URL(`./assets/rpg/${ART_FILES[m.id]}`,import.meta.url).href;portrait.alt='';card.append(portrait,element('strong',m.name),element('small',`${m.hint}${cleared.includes(m.id)?' · クリア済み':''}`));const guide=element('button','近くへ案内','monster-guide-button');guide.onclick=()=>{const p=guidePoint(m,state);encounters=true;state={...state,...toWorld(p),yaw:p.yaw,pitch:0};panel.close();clearInput();updateHUD();notify(p.hint);};card.append(guide);roster.append(card);}
+  for(const m of MONSTERS){const card=element('div',undefined,'monster-card');const portrait=element('img',undefined,'monster-portrait');portrait.src=new URL(`./assets/rpg/${ART_FILES[m.id]}`,import.meta.url).href;portrait.alt='';card.append(portrait,element('strong',m.name),element('small',`${m.hint}${cleared.includes(m.id)?' · クリア済み':''}`));const guide=element('button','近くへ案内','monster-guide-button');guide.onclick=()=>{const p=guidePoint(m,state,time,motion&&!reducedMotion.matches);encounters=true;state={...state,...toWorld(p),yaw:p.yaw,pitch:0};panel.close();clearInput();updateHUD();notify(p.hint);};card.append(guide);roster.append(card);}
   content.append(roster,element('p','「話しかける」のあと「対戦する」を選ぶとスタート。光を放つ／守る／杖で挑むの3つを選びます。相手の予告と弱点を読み、集中をためて光を放ちましょう。いつでも逃げて探索に戻れます。'));
   const actions=element('div',undefined,'tabs');
-  const enable=element('button',encounters?'住人を一時的に隠す':'住人を表示する','primary');
-  enable.id='encounters-toggle';enable.onclick=()=>{encounters=!encounters;battle=null;panel.close();updateHUD();notify(encounters?'住人たちが待っています。入口の少し先にカボチャの番人。':'モンスターをOFFにしました。探索はそのまま続けられます。');};
+  const enable=element('button',encounters?'モンスターを一時的に隠す':'モンスターを表示する','primary');
+  enable.id='encounters-toggle';enable.onclick=()=>{encounters=!encounters;battle=null;panel.close();updateHUD();notify(encounters?'モンスターたちが待っています。入口の少し先にカボチャの番人。':'モンスターをOFFにしました。探索はそのまま続けられます。');};
   const visit=element('button','入口のカボチャに会う');visit.onclick=()=>{encounters=true;resetPosition();panel.close();updateHUD();notify('目の前のカボチャに近づき「対戦」を押してください。');};
-  const reset=element('button','対戦だけリセット');reset.onclick=()=>{cleared=[];battle=null;save();showEncounters();$('encounters-toggle')?.focus();notify('住人との対戦をリセットしました。鍵と記事の記録はそのままです。');};
-  actions.append(enable,visit,reset);content.append(actions,element('p','住人は最初から表示されます。ここで一時的に隠すこともできます。対戦の記録はこのブラウザに保存。6体と仲直りしたら北の書庫へ。','subtle'));openPanel();
+  const reset=element('button','対戦だけリセット');reset.onclick=()=>{cleared=[];battle=null;save();showEncounters();$('encounters-toggle')?.focus();notify('モンスターとの対戦をリセットしました。鍵と記事の記録はそのままです。');};
+  actions.append(enable,visit,reset);content.append(actions,element('p','モンスターは最初から表示されます。ここで一時的に隠すこともできます。対戦の記録はこのブラウザに保存。六つのしるしを集めたら北の書庫へ。魔女と仮面の散歩者は任意の腕試しです。','subtle'));openPanel();
 }
 function startBattle(){
-  if(!encounters)return;const monster=nearestMonster(state,cleared,{time,motion:motion&&!reducedMotion.matches});if(!monster)return;
+  if(!encounters||contextTarget()?.kind!=='monster')return;const monster=nearestMonster(state,cleared,{time,motion:motion&&!reducedMotion.matches});if(!monster)return;
   title('A FRIENDLY ENCOUNTER',monster.name);const portrait=element('img',undefined,'encounter-portrait');portrait.src=new URL(`./assets/rpg/${ART_FILES[monster.id]}`,import.meta.url).href;portrait.alt='';const story=encounterStory(monster.id);content.append(portrait,element('p',story.intro),element('p',story.dialogue,'story-dialogue'),element('p',story.advice),element('p','対戦は自分で選ぶまで始まりません。音や時間制限はありません。'));
   const actions=element('div',undefined,'tabs'),fight=element('button','対戦する','primary'),leave=element('button','立ち去る');fight.id='encounter-confirm';fight.onclick=()=>{battle=newBattle(monster.id);battleEffect=null;renderBattle();$('battle-shine')?.focus({preventScroll:true});};leave.id='encounter-leave';leave.onclick=()=>panel.close();actions.append(fight,leave);content.append(actions);openPanel();
 }
@@ -188,7 +202,7 @@ function renderBattle(){
   const viewPane=element('section',undefined,'battle-view'),controls=element('section',undefined,'battle-controls'),log=element('div',undefined,'battle-log');log.setAttribute('aria-label','対戦の状況と説明');log.tabIndex=0;
   battleCanvas=element('canvas',undefined,'battle-scene');battleCanvas.id='battle-scene';battleCanvas.setAttribute('aria-label',`${m.name}とのランタン対戦。操作は別枠のコマンドから。`);viewPane.append(battleCanvas);
   const stats=element('div',undefined,'duel-stats');
-  for(const [name,value,max,kind]of[['勇気',battle.energy,battle.maxEnergy,'courage'],['影',battle.spirit,battle.maxSpirit,'mischief'],['灯り',battle.focus,battle.maxFocus,'focus']]){const item=element('div',undefined,'duel-stat');item.append(element('span',`${name} ${value}/${max}`));const bar=element('meter',undefined,kind);bar.min=0;bar.max=max;bar.value=value;bar.setAttribute('aria-label',name==='灯り'?'ランタンの灯り':name==='影'?'住人のいたずら':name);item.append(bar);stats.append(item);}viewPane.append(stats);
+  for(const [name,value,max,kind]of[['勇気',battle.energy,battle.maxEnergy,'courage'],['影',battle.spirit,battle.maxSpirit,'mischief'],['灯り',battle.focus,battle.maxFocus,'focus']]){const item=element('div',undefined,'duel-stat');item.append(element('span',`${name} ${value}/${max}`));const bar=element('meter',undefined,kind);bar.min=0;bar.max=max;bar.value=value;bar.setAttribute('aria-label',name==='灯り'?'ランタンの灯り':name==='影'?'モンスターの影':name);item.append(bar);stats.append(item);}viewPane.append(stats);
   const status=element('p',battle.message,'duel-status');status.id='battle-live-status';status.setAttribute('role','status');status.setAttribute('aria-live','polite');log.append(status);
   const actions=element('div',undefined,'tabs battle-commands');actions.setAttribute('aria-label','対戦コマンド');
   if(battle.status==='playing'){
@@ -197,7 +211,7 @@ function renderBattle(){
     for(const [action,key,label]of[['shine','1','光を放つ'],['guard','2','守る'],['attack','3','杖を振る']]){const command=commandFor(battle,action),button=element('button',`${label} [${key}]`,action==='shine'?'primary':'');button.id='battle-'+action;button.disabled=command.disabled;button.classList.toggle('battle-command-recommended',command.recommended);button.dataset.recommended=String(command.recommended);button.setAttribute('aria-label',command.label+'。'+command.description);button.append(element('small',action==='guard'?`灯り +${command.focusAfter-battle.focus}・防御`:`影 −${command.damage} / 勇気 −${command.retaliation}`,'battle-command-preview'));button.onclick=()=>actBattle(action);actions.append(button);details.append(element('p',command.label+'：'+command.description));}log.append(details);
   }else{
     if(battle.status==='rest')log.append(element('p',battle.dialogue,'battle-dialogue'));
-    if(battle.status==='won'){if(!cleared.includes(m.id)){cleared.push(m.id);save();}const story=encounterStory(m.id);log.append(element('p',story.victory,'story-dialogue'),element('p',`${story.keepsake}を受け取った。キャンディのしるし ${cleared.length}/${MONSTERS.length}。`,'battle-reward'));}
+    if(battle.status==='won'){if(!cleared.includes(m.id)){cleared.push(m.id);save();}const story=encounterStory(m.id);log.append(element('p',story.victory,'story-dialogue'),element('p',m.optional?`${story.keepsake}を受け取った。任意の腕試しをクリア。`:`${story.keepsake}を受け取った。キャンディのしるし ${requiredClearCount()}/6。`,'battle-reward'));}
     const again=element('button','もう一度対戦');again.id='battle-retry';again.onclick=()=>{battle=newBattle(m.id);battleEffect=null;renderBattle();$('battle-shine')?.focus({preventScroll:true});};actions.append(again);
     const exit=element('button','探索を続ける','battle-exit');exit.id='battle-exit';exit.onclick=()=>panel.close();actions.append(exit);
   }
@@ -241,7 +255,7 @@ function drawMap(canvas,large=false,night=false){
   c.fillStyle=state.unlocked?'#80c9ad':'#dfa34d';c.fillRect(7*s,6*s,3*s,s*.22);
   if(!state.horrorAccepted){c.fillStyle='#b695ce';c.fillRect(4*s,10*s,s*.22,s);}
   for(const [f,color]of[[FEATURES.article,'#9be0f2'],[FEATURES.key,state.hasKey?'#66574b':'#ffdc77'],[FEATURES.horrorArt,'#d498dc'],[FEATURES.vault,'#80c9ad']]){c.fillStyle=color;c.beginPath();c.arc((f.x+.5)*s,(f.z+.5)*s,s*.18,0,Math.PI*2);c.fill();}
-  if(encounters){c.textAlign='center';c.textBaseline='middle';c.font=`${Math.max(11,s*.75)}px sans-serif`;for(const m of MONSTERS){c.globalAlpha=!monsterAvailable(m,state)?.4:cleared.includes(m.id)?.5:1;c.fillText(cleared.includes(m.id)?'🍬':m.icon,(m.x+.5)*s,(m.z+.5)*s);}c.globalAlpha=1;}
+  if(encounters){c.textAlign='center';c.textBaseline='middle';c.font=`${Math.max(11,s*.75)}px sans-serif`;for(const m of MONSTERS){c.globalAlpha=!monsterAvailable(m,state)?.4:cleared.includes(m.id)?.5:1;c.fillText(cleared.includes(m.id)?'🍬':m.icon,(monsterPose(m,time,motion&&!reducedMotion.matches,state).x+.5)*s,(monsterPose(m,time,motion&&!reducedMotion.matches,state).z+.5)*s);}c.globalAlpha=1;}
   c.save();c.translate(px,pz);c.rotate(mapHeading(view,state.yaw,facing));c.fillStyle='#fff2cb';c.strokeStyle='#1b1025';c.lineWidth=2;c.beginPath();c.moveTo(0,-s*.36);c.lineTo(-s*.27,s*.28);c.lineTo(s*.27,s*.28);c.closePath();c.fill();c.stroke();c.restore();
   if(large){c.font=`${Math.max(11,s*.33)}px sans-serif`;c.textAlign='center';c.fillStyle='#e8d7c2';c.fillText('西：肖像の回廊　 北：書庫　 東：鍵の間',s*8.5,s*16.4);}
   c.restore();
@@ -259,7 +273,7 @@ async function setView(next,{persist=true,quiet=false}={}){
   const request=++viewRequest;let failed=false;clearInput();view=next;state.pitch=0;updateViewUI();
   if(next==='3d'&&!world){
     $('view-3d').disabled=true;
-    try{if(worldFailed)throw Error('WebGL unavailable');const {createWorld}=await import('./world.js?v=20261016-battle-visible1');if(request!==viewRequest)return;world=createWorld({canvas:$('world')});restoreExhibits();}
+    try{if(worldFailed)throw Error('WebGL unavailable');const {createWorld}=await import('./world.js?v=20261016-resident1');if(request!==viewRequest)return;world=createWorld({canvas:$('world')});restoreExhibits();}
     catch(e){if(request!==viewRequest)return;failed=true;worldFailed=true;view='2d';console.warn('3D unavailable; 2D remains fully playable.',e);if(!quiet)notify('3Dを利用できないため、2Dで探索できます。対戦と記事もそのまま使えます。');}
     finally{$('view-3d').disabled=false;}
   }
@@ -288,7 +302,7 @@ protectGameSurface($('game'));
 for(const canvas of[$('world'),$('fallback')]){
   canvas.addEventListener('pointerdown',e=>{if(panel.open||!gameReady||e.button>0)return;if(e.cancelable)e.preventDefault();creatorPointer={pointerId:e.pointerId,x:e.clientX,y:e.clientY,time:performance.now(),moved:false};if(view==='3d')look={id:e.pointerId,x:e.clientX,y:e.clientY};canvas.setPointerCapture(e.pointerId);});
   canvas.addEventListener('pointermove',e=>{if(creatorPointer?.pointerId===e.pointerId&&Math.hypot(e.clientX-creatorPointer.x,e.clientY-creatorPointer.y)>8)creatorPointer.moved=true;if(!look||look.id!==e.pointerId||view!=='3d')return;state.yaw-=(e.clientX-look.x)*.005;state.pitch=Math.max(-.6,Math.min(.6,state.pitch-(e.clientY-look.y)*.004));look={id:e.pointerId,x:e.clientX,y:e.clientY};});
-  canvas.addEventListener('pointerup',e=>{const start=creatorPointer;creatorPointer=null;look=null;if(isCharacterTap(start,{pointerId:e.pointerId,x:e.clientX,y:e.clientY,time:performance.now()})&&!panel.open){const bounds=canvas.getBoundingClientRect(),renderer=view==='3d'?world:stageRenderer,id=renderer?.pickCreator?.(e.clientX-bounds.left,e.clientY-bounds.top);if(id)showCreator(id);}});
+  canvas.addEventListener('pointerup',e=>{const start=creatorPointer;creatorPointer=null;look=null;if(isCharacterTap(start,{pointerId:e.pointerId,x:e.clientX,y:e.clientY,time:performance.now()})&&!panel.open){const bounds=canvas.getBoundingClientRect(),renderer=view==='3d'?world:stageRenderer,id=renderer?.pickCreator?.(e.clientX-bounds.left,e.clientY-bounds.top);if(id){if(residents.some(npc=>npc.id===id))showResident(id);else showCreator(id);}}});
   for(const event of['pointercancel','lostpointercapture'])canvas.addEventListener(event,()=>{creatorPointer=null;look=null;});
 }
 for(const button of document.querySelectorAll('[data-move],#turn-left,#turn-right')){
@@ -301,18 +315,18 @@ document.addEventListener('keydown',e=>{
   if(panel.open){if(battle?.status==='playing'&&!e.repeat&&['1','2','3'].includes(k)){e.preventDefault();actBattle(({1:'shine',2:'guard',3:'attack'})[k]);}return;}
   if(!gameReady||(['INPUT','SELECT','TEXTAREA'].includes(e.target.tagName)||e.target.isContentEditable))return;
   if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'].includes(k)){e.preventDefault();keys.add(k);}
-  if(e.repeat)return;if(k==='e')interact();if(k==='b')startBattle();if(k==='c')talkToCreator();if(k==='l')toggleLantern();if(k==='escape')resetPosition();
+  if(e.repeat)return;if(k==='e')performContextAction();if(k==='b')startBattle();if(k==='c')talkToCreator();if(k==='l')toggleLantern();if(k==='escape')resetPosition();
 });
 document.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));window.addEventListener('blur',clearInput);
 document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(frame);frame=0;clearInput();}else start();});
 $('tools-open').onclick=showLighting;$('lantern').onclick=toggleLantern;$('lantern').textContent=lantern?'ランタン ON':'ランタン OFF';$('lantern').setAttribute('aria-pressed',String(lantern));
-$('interact').onclick=interact;$('list-open').onclick=()=>{if(catalog)showCatalog();};$('map-open').onclick=()=>{if(catalog)showMap();};$('minimap-open').onclick=()=>{if(catalog)showMap();};$('home').onclick=resetPosition;
+$('interact').onclick=performContextAction;$('list-open').onclick=()=>{if(catalog)showCatalog();};$('map-open').onclick=()=>{if(catalog)showMap();};$('minimap-open').onclick=()=>{if(catalog)showMap();};$('home').onclick=resetPosition;
 $('menu-open').onclick=showExploreMenu;$('battle-open').onclick=startBattle;$('creator-open').onclick=talkToCreator;
 $('view-2d').onclick=()=>setView('2d');$('view-3d').onclick=()=>setView('3d');
 function updateMotion(){const enabled=motion&&!reducedMotion.matches;
   $('pause').textContent=enabled?'演出を停止':reducedMotion.matches?'端末設定で演出停止中':'演出を再開';$('pause').setAttribute('aria-pressed',String(!enabled));
   const toggle=$('menu-motion-toggle');if(toggle){toggle.textContent=reducedMotion.matches?'端末設定で演出停止中':enabled?'演出：ON → 停止する':'演出：OFF → 再開する';toggle.setAttribute('aria-pressed',String(enabled));toggle.disabled=reducedMotion.matches;}
-  const status=$('menu-motion-status');if(status)status.textContent=reducedMotion.matches?'端末の「動きを減らす」設定を優先しています。自分の移動操作は使えます。':enabled?'住人の歩行・光の揺らぎ：再生中。メニューを閉じると確認できます。':'住人の歩行・光の揺らぎ：停止中。自分の移動操作は使えます。';
+  const status=$('menu-motion-status');if(status)status.textContent=reducedMotion.matches?'端末の「動きを減らす」設定を優先しています。自分の移動操作は使えます。':enabled?'キャラクターの歩行・光の揺らぎ：再生中。メニューを閉じると確認できます。':'キャラクターの歩行・光の揺らぎ：停止中。自分の移動操作は使えます。';
 }
 $('pause').onclick=()=>{if(reducedMotion.matches){notify('端末の「動きを減らす」設定を優先しています。2D表示も選べます。');return;}motion=!motion;updateMotion();};
 reducedMotion.addEventListener('change',()=>{if(reducedMotion.matches){motion=false;setView('2d',{persist:false});}updateMotion();});updateMotion();
@@ -321,6 +335,7 @@ $('world').addEventListener('webglcontextlost',e=>{e.preventDefault();worldFaile
 async function init(){
   try{const response=await fetch('../data/archive.json',{cache:'no-store'});if(!response.ok)throw Error('archive fetch failed');const archive=await response.json();const extraResponse=await fetch('./data/catalog.json',{cache:'no-store'});if(!extraResponse.ok)throw Error('supplemental catalog fetch failed');const supplemental=await extraResponse.json();catalog=libraryFromArchive(archive,undefined,supplemental);year=catalog.selectedYear;
     const characterResponse=await fetch('./data/creator-characters.json?v=20261016-creator-rpg1',{cache:'no-store'});if(!characterResponse.ok)throw Error('Character manifest failed');const manifest=await characterResponse.json();creatorRoster=compileCharacterRoster(archive,manifest,year);const placements=placeCreatorNPCs(creatorRoster.npcs,manifest.slotAssignments);creatorRoster.npcs=placements.placed;creatorRoster.omitted.push(...placements.omitted);companions=compileCompanions(manifest);
+    try{const residentResponse=await fetch('./data/residents.json?v=20261016-resident1',{cache:'no-store'});if(residentResponse.ok)residents=compileResidents(await residentResponse.json());}catch(e){console.warn('Palace resident art is unavailable',e);}
     if(!creatorRoster.hero)throw Error('Owner character is not ready');characterAssets.setPinned([creatorRoster.hero.asset.src]);const [heroImage]=await Promise.all([characterAssets.request(creatorRoster.hero.asset),rpgArt.ready]);if(!heroImage)throw Error('Owner character image failed');rpgArt.setPlayerAtlas(heroImage,scaledCharacterLayout(creatorRoster.hero.asset,heroImage));
     restore();await setView(view,{persist:false,quiet:true});gameReady=true;$('loading').hidden=true;start();if(!progress[year]?.storySeen)showStory();}
   catch(e){$('loading').textContent='冒険のデータや主人公の画像を読み込めませんでした。再読み込みでお試しください。';const back=element('a','Halloweenの名鑑へ戻る','primary');back.href='../?mode=halloween';const retry=element('button','再読み込み');retry.onclick=()=>location.reload();$('loading').append(back,retry);console.error(e);}

@@ -1,8 +1,8 @@
 import { MAP, CELL, FEATURES, blocked, nearby } from './maze-model.js?v=20261014-adventure2';
-import { MONSTERS, nearestMonster, monsterAvailable, monsterPose } from './encounter-model.js?v=20261016-battle-visible1';
+import { ALL_MONSTERS as MONSTERS, nearestMonster, monsterAvailable, monsterPose } from './encounter-model.js?v=20261016-resident1';
 
 // Canvas illustration authored for this room; no participant art or remote assets.
-import {drawArtSprite,playerPose} from './rpg-art.js?v=20261016-creator-rpg1';
+import {drawArtSprite,playerPose} from './rpg-art.js?v=20261016-resident1';
 import {followCamera,depthOrder,clampSceneCamera} from './rpg-model.js?v=20261014-adventure2';
 const TILE=72,TAU=Math.PI*2;
 export const EXIT={x:8,z:14};
@@ -203,7 +203,7 @@ export function createStageRenderer({makeCanvas=(w,h)=>{const c=document.createE
       {kind:'player',x:player.x,y:player.y,depth:player.y}];
     for(const actor of creatorActors)if(actor.sprite)objects.push({kind:'creator',x:actor.x*TILE,y:actor.z*TILE,depth:actor.z*TILE,actor});
     if(!state.horrorAccepted)objects.push({kind:'door',x:FEATURES.horrorDoor.x*TILE,y:FEATURES.horrorDoor.z*TILE,depth:FEATURES.horrorDoor.z*TILE});
-    if(encounters)for(const m of MONSTERS)if(monsterAvailable(m,state)){const p=monsterPose(m,time,motion,state);objects.push({kind:'enemy',id:m.id,x:p.x*TILE,y:p.z*TILE,depth:p.z*TILE,cleared:cleared.includes(m.id)});}
+    if(encounters)for(const m of MONSTERS)if(monsterAvailable(m,state)&&(!m.optional||art.images[m.id])){const p=monsterPose(m,time,motion,state);objects.push({kind:'enemy',id:m.id,x:p.x*TILE,y:p.z*TILE,depth:p.z*TILE,cleared:cleared.includes(m.id)});}
     for(const o of depthOrder(objects)){
       if(Math.abs((o.x-cam.x)*cam.scale)>w*.7+150||Math.abs((o.y-cam.y)*cam.scale)>h*.7+180)continue;
       if(o.kind==='wall'){drawWall(c,o,player,art);const side=o.orientation==='side',hh=side?115:o.orientation==='north'?92:40;addHit({x:o.x-(side?13:37),y:o.y-(side?76:o.orientation==='north'?89:33),w:side?26:74,h:hh});}
@@ -258,11 +258,7 @@ export function createStageRenderer({makeCanvas=(w,h)=>{const c=document.createE
     const edge=c.createRadialGradient(w*.5,h*.48,Math.min(w,h)*.3,w*.5,h*.48,Math.max(w,h)*.73);edge.addColorStop(0,'#0b101c00');edge.addColorStop(1,'#0b101c55');c.fillStyle=edge;c.fillRect(0,0,w,h);
     if(lantern)glow(c,px+18*cam.scale,py-36*cam.scale,85*cam.scale,'#e8ad5933');
     if(motion&&lantern)for(let i=0;i<7;i++){const angle=i*2.39996+time*.035,rad=30+(i*31%130),x=px+Math.cos(angle)*rad*cam.scale,y=py-20+Math.sin(angle*.8)*rad*cam.scale+Math.sin(time*.4+i)*4;ellipse(c,x,y,.8+(i%2)*.5,.8+(i%2)*.5,'#d8cb9e45');}
-    const n=nearby(state),nearMonster=encounters?nearestMonster(state,cleared,{time,motion}):null;
-    const cue={key:'E · 鍵を手に取る',gate:state.hasKey?'E · 書庫をひらく':'E · 鍵が必要です',article:'E · 展示を見る',horror:'E · 肖像の扉','horror-art':'E · 展示を見る',vault:'E · 書庫を調べる'}[n];
-    const nearExit=Math.hypot(state.x-EXIT.x*CELL,state.z-EXIT.z*CELL)<3.2;
-    const hint=nearExit?'E · 名鑑へ戻る':cue||(nearMonster?'B · 話しかける':null);
-    if(hint){const yy=Math.min(h-28,py+35*cam.scale),ww=Math.min(w-24,150);rounded(c,Math.max(12,Math.min(w-ww-12,px-ww/2)),yy-14,ww,28,9,'#101523ef','#c8ad6c');text(c,hint,Math.max(12+ww/2,Math.min(w-12-ww/2,px)),yy,12,'#f1dcae');}
+    // The DOM context action is the single interaction prompt in both modes.
     if(!state.hasKey)drawWayfinder(c,FEATURES.key,'鍵の間','#efd09b',cam,w,h);else if(!state.unlocked)drawWayfinder(c,FEATURES.gate,'書庫の扉','#efd09b',cam,w,h);else drawWayfinder(c,FEATURES.vault,'浮遊書庫','#a9d1b3',cam,w,h);
     c.strokeStyle='#c6a77255';c.lineWidth=1;c.strokeRect(5.5,5.5,w-11,h-11);return true;
   }};

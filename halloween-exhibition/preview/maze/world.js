@@ -1,8 +1,8 @@
-import {ART_FILES,ART_BOUNDS,ART_ANCHORS,PALACE_ART} from './rpg-art.js?v=20261016-creator-rpg1';
+import {ART_FILES,ART_BOUNDS,ART_ANCHORS,PALACE_ART} from './rpg-art.js?v=20261016-resident1';
 import * as THREE from './vendor/three.module.js';
 import { MAP, CELL, FEATURES, toWorld } from './maze-model.js?v=20261014-adventure2';
 import { NIGHT_LIGHTING } from './lighting-model.js?v=20261014-adventure2';
-import { MONSTERS, monsterAvailable, monsterPose } from './encounter-model.js?v=20261016-battle-visible1';
+import { ALL_MONSTERS as MONSTERS, monsterAvailable, monsterPose } from './encounter-model.js?v=20261016-resident1';
 
 // All architectural objects live in world space. Camera motion, collision and
 // interaction remain in the controller, making the gallery usable with keys,
@@ -262,7 +262,7 @@ export function createWorld({ canvas, onReady } = {}) {
         mesh(new THREE.SphereGeometry(.07,8,6),glint,side*.18,1.48,.43,g);
       }
     }
-    sign(definition.name,'話しかける · B',0,2.7,0,0,2.1,root);
+    sign(definition.name,'モンスター',0,2.7,0,0,2.1,root);
     const shadowMaterial=new THREE.MeshBasicMaterial({color:'#05050b',transparent:true,opacity:.3,depthWrite:false});resources.add(shadowMaterial);const shadow=mesh(new THREE.CircleGeometry(.58,20),shadowMaterial,0,.025,0,root);shadow.rotation.x=-Math.PI/2;
     // The same original enemy art is visible in 3D as grounded billboards.
     const spriteMaterial=new THREE.SpriteMaterial({transparent:true,alphaTest:.05,depthWrite:false});resources.add(spriteMaterial);const sprite=new THREE.Sprite(spriteMaterial);sprite.visible=false;root.add(sprite);
@@ -379,8 +379,8 @@ export function createWorld({ canvas, onReady } = {}) {
     camera.position.set(x,1.65,z);camera.rotation.set(pitch,yaw,0,'YXZ');
     heldLantern.visible=!!lantern;headlamp.visible=!!lantern;nearLamp.visible=!!lantern;
     for(const spirit of spirits){
-      spirit.node.visible=encounters&&!cleared.includes(spirit.id)&&monsterAvailable(spirit.definition,{unlocked,horrorAccepted});
-      const pose=monsterPose(spirit.definition,t,motion,{unlocked,horrorAccepted});spirit.node.position.x=pose.x*CELL;spirit.node.position.z=pose.z*CELL;
+      spirit.node.visible=encounters&&(!spirit.definition.optional||spirit.node.userData.originalArt)&&!cleared.includes(spirit.id)&&monsterAvailable(spirit.definition,{unlocked,horrorAccepted});
+      const pose=monsterPose(spirit.definition,seconds,motion,{unlocked,horrorAccepted});spirit.node.position.x=pose.x*CELL;spirit.node.position.z=pose.z*CELL;
       spirit.node.rotation.y=Math.atan2(x-spirit.node.position.x,z-spirit.node.position.z);
       if(!motion)spirit.node.position.y=spirit.baseY;
     }

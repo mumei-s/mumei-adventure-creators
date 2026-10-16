@@ -15,7 +15,8 @@ export function readDisplayMode(storage) {
   catch { return 'auto'; }
 }
 export function createDisplayModeController({storage, getWidth = () => 320, onChange = () => {}} = {}) {
-  let mode = readDisplayMode(storage), saved = true, last = '';
+  let mode = readDisplayMode(storage), saved = !!storage, last = '';
+  try { storage?.getItem(DISPLAY_MODE_KEY); } catch { saved=false; }
   function getState() { return {mode, layout:resolveDisplayMode(mode,getWidth()), saved}; }
   function refresh(force=false) {
     const state=getState(), signature=JSON.stringify(state);
@@ -29,7 +30,7 @@ export function createDisplayModeController({storage, getWidth = () => 320, onCh
     catch { saved=false; }
     refresh();return true;
   }
-  function reload() { mode=readDisplayMode(storage);saved=true;return refresh(); }
+  function reload() { mode=readDisplayMode(storage);saved=!!storage;try{storage?.getItem(DISPLAY_MODE_KEY);}catch{saved=false;}return refresh(); }
   refresh();
   return {getState,setMode,refresh,reload};
 }

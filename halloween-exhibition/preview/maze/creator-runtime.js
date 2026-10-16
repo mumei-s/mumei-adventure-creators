@@ -1,3 +1,4 @@
+import {createActorPatrol,samplePatrolPosition} from './patrol-model.js?v=20261016-resident1';
 import { blocked, CELL } from './maze-model.js?v=20261014-adventure2';
 import { inFurniture } from './rpg-model.js?v=20261014-adventure2';
 
@@ -10,7 +11,7 @@ const idOkay = value => typeof value==='string' && /^[a-zA-Z0-9][a-zA-Z0-9_-]{0,
 export function noteArticleURL(value) {
   try { const u=new URL(value); return u.protocol==='https:' && u.hostname==='note.com' && !u.port && !u.username && !u.password && /^\/[^/]+\/n\/n[a-zA-Z0-9]+\/?$/.test(u.pathname) ? u.origin+u.pathname.replace(/\/$/,'') : null; } catch { return null; }
 }
-export function characterAssetPath(value) { return typeof value==='string' && /^assets\/creator-npcs\/[a-zA-Z0-9_-]+\.(png|webp)$/.test(value); }
+export function characterAssetPath(value) { return typeof value==='string' && /^assets\/(?:creator-npcs|residents)\/[a-zA-Z0-9_-]+\.(png|webp)$/.test(value); }
 export function layoutProblem(asset) {
   if (!asset || !characterAssetPath(asset.src) || !finite(asset.width,64,4096) || !finite(asset.height,64,4096)) return 'invalid-local-asset';
   const layout=asset.layout;
@@ -122,25 +123,11 @@ export function placeCreatorNPCs(npcs, assignments={}) {
   return {placed,omitted};
 }
 export const creatorAvailable=(npc,state={})=>(!npc.needsKey||state.unlocked)&&(!npc.needsCorridor||state.horrorAccepted);
-function seed(id){let n=0;for(const c of id)n=(Math.imul(n,31)+c.charCodeAt(0))>>>0;return n/4294967296;}
-export function creatorPose(npc,time=0,motion=true,state={}) {
-  const home={x:npc.x,z:npc.z,facing:'down',walking:false,phase:0};
-  if(!motion)return home;
-  // A tiny four-direction stroll stays inside the assigned floor footprint.
-  const t=((time+seed(npc.id)*20)%20+20)%20;
-  let dx=0,dz=0,facing='down',walking=false,phase=0;
-  if(t>=3&&t<6){dx=(t-3)*.045;facing='right';walking=true;phase=(t-3)*5;}
-  else if(t>=6&&t<8){dx=.135;facing='down';}
-  else if(t>=8&&t<11){dx=.135;dz=(t-8)*.045;walking=true;phase=(t-8)*5;}
-  else if(t>=11&&t<13){dx=.135;dz=.135;facing='left';}
-  else if(t>=13&&t<16){dx=.135-(t-13)*.045;dz=.135;facing='left';walking=true;phase=(t-13)*5;}
-  else if(t>=16&&t<18){dz=.135;facing='up';}
-  else if(t>=18){dz=.135-(t-18)*.0675;facing='up';walking=true;phase=(t-18)*5;}
-  for(const ox of[-.1,.1])for(const oz of[-.1,.1]){
-    const x=(npc.x+dx+ox)*CELL,z=(npc.z+dz+oz)*CELL;
-    if(blocked(x,z,state)||inFurniture(x,z))return home;
-  }
-  return {x:npc.x+dx,z:npc.z+dz,facing,walking,phase};
+const actorPatrols=new WeakMap();
+export function creatorPose(npc,time=0,motion=true,state={}){
+ if(!npc.slotId&&npc.actorKind!=='resident')return{x:npc.x,z:npc.z,facing:'down',walking:false,phase:0};
+ let route=actorPatrols.get(npc);if(!route){route=createActorPatrol(npc,{role:npc.actorKind==='resident'?'resident':'creator'});actorPatrols.set(npc,route);}
+ return samplePatrolPosition(route,time,{motion,state});
 }
 
 export function characterSprite(asset,image,facing='down',walking=false,phase=0) {
@@ -167,10 +154,11 @@ export function creatorGuide(npc,state={}) {
   }
   return{x:8,z:12,yaw:0,hint:'入口に戻りました。記事は仲間の一覧からいつでも読めます。'};
 }
-export function chooseCreatorAssets(npcs,player,state={},max=CHARACTER_BUDGET.active) {
+export function chooseCreatorAssets(npcs,player,state={},max=CHARACTER_BUDGET.active,{time=0,motion=true}={}) {
   const groups=new Map();
   for(const npc of npcs.filter(npc=>creatorAvailable(npc,state))){if(!groups.has(npc.groupId))groups.set(npc.groupId,[]);groups.get(npc.groupId).push(npc);}
-  const sorted=[...groups.values()].sort((a,b)=>Math.min(...a.map(npc=>Math.hypot(npc.x-player.x,npc.z-player.z)))-Math.min(...b.map(npc=>Math.hypot(npc.x-player.x,npc.z-player.z))));
+  const distance=npc=>{const pose=creatorPose(npc,time,motion,state);return Math.hypot(pose.x-player.x,pose.z-player.z);};
+  const sorted=[...groups.values()].sort((a,b)=>Math.min(...a.map(distance))-Math.min(...b.map(distance)));
   const chosen=[];for(const group of sorted){if(chosen.length+group.length<=max)chosen.push(...group);}return chosen;
 }
 export function buildCreatorActors(npcs,assets,{state,time=0,motion=true}={}) {

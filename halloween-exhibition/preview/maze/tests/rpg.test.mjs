@@ -34,13 +34,13 @@ test('solid shelf feet prevent crossing while keeping interaction routes open',(
   function reachable(target,flags={}){const start={...initialState(),...flags},q=[start],seen=new Set([`${start.x},${start.z}`]);for(let i=0;i<q.length;i++){const s=q[i];if(Math.hypot(s.x-target.x*4,s.z-target.z*4)<.51)return true;for(const [dx,dz]of[[.5,0],[-.5,0],[0,.5],[0,-.5]]){const n=moveAroundFurniture(s,dx,dz),k=`${n.x},${n.z}`;if(!seen.has(k)){seen.add(k);q.push(n);}}}return false;}
   assert(reachable(FEATURES.key));assert(reachable(FEATURES.article));assert(reachable(FEATURES.horrorArt,{horrorAccepted:true}));assert(!reachable(FEATURES.vault));assert(reachable(FEATURES.vault,{unlocked:true}));
 });
-test('all thirteen core and six palace runtime assets exist and loader reports failures explicitly',async()=>{
-  assert.equal(Object.keys(ART_FILES).length,13);let bytes=0;
+test('all fifteen core and six palace runtime assets exist and loader reports failures explicitly',async()=>{
+  assert.equal(Object.keys(ART_FILES).length,15);let bytes=0;
   for(const file of Object.values(ART_FILES)){assert(file.endsWith('.webp'));const b=fs.readFileSync(new URL('../assets/rpg/'+file,import.meta.url));assert.equal(b.toString('ascii',0,4),'RIFF');assert.equal(b.toString('ascii',8,12),'WEBP');bytes+=b.length;}
   assert(bytes<2500000);
   for(const file of ['props-atlas.webp',...Object.values(PALACE_TEXTURES)]){const b=fs.readFileSync(new URL('../assets/rpg/palace/'+file,import.meta.url));assert.equal(b.toString('ascii',0,4),'RIFF');bytes+=b.length;}assert(bytes<3500000);
-  const success=createArtLibrary({loadImage:async()=>({width:1024,height:1024})});await success.ready;assert.equal(success.version,19);assert.deepEqual(success.failures,[]);
-  const failed=createArtLibrary({loadImage:async()=>{throw Error('offline');}});await failed.ready;assert.equal(failed.version,0);assert.equal(failed.failures.length,19);
+  const success=createArtLibrary({loadImage:async()=>({width:1024,height:1024})});await success.ready;assert.equal(success.version,21);assert.deepEqual(success.failures,[]);
+  const failed=createArtLibrary({loadImage:async()=>{throw Error('offline');}});await failed.ready;assert.equal(failed.version,0);assert.equal(failed.failures.length,21);
 });
 test('library accepts every genre with legacy collection ID and no invented submissions',()=>{
   const app=read('app.js'),html=read('index.html');assert(html.includes('無名S note / Halloween Atelier'));assert(!html.includes('Halloween冒険室'));assert(app.includes('物語の書庫'));assert(app.includes('ジャンルを問わず'));assert(app.includes('記事の掲載状況とは別の一覧'));
@@ -57,11 +57,12 @@ test('battle uses original scene, meaningful meters and motion-safe local action
 test('maze participates in shared layout preference and coherent cache release',()=>{
   const app=read('app.js'),html=read('index.html');const version='20261014-adventure2';
   assert(app.includes("initDisplayMode({controlsParent:visitorSection,page:'maze'})"));assert(app.includes("document.addEventListener('yearbook:layout-change'"));
-  assert(app.includes(`../display-mode.js?v=${version}`));for(const name of ['visitor-preferences','display-mode'])assert(html.includes(`../${name}.css?v=${version}`));assert(app.includes('./adventure-audio.js?v=20261016-menu-audio1'));
-  for(const file of ['style','stage-2d'])assert(html.includes(`./${file}.css?v=${version}`));assert(html.includes('./rpg-ui.css?v=20261014-adventure2'));assert(html.includes('./app.js?v=20261016-battle-visible1'));
+  assert(app.includes('../display-mode.js?v=20261016-resident1'));for(const name of ['visitor-preferences','display-mode'])assert(html.includes(`../${name}.css?v=${version}`));assert(app.includes('./adventure-audio.js?v=20261016-menu-audio1'));
+  for(const file of ['style','stage-2d'])assert(html.includes(`./${file}.css?v=${version}`));assert(html.includes('./rpg-ui.css?v=20261014-adventure2'));assert(html.includes('./app.js?v=20261016-resident1'));
   const expected={'clear-reward':'20261015-clear1','walking-speed':'20261015-clear1','library-catalog':'20261015-clear1','view-model':'20261015-minimap1','game-input':'20261015-touch3','adventure-audio':'20261016-menu-audio1','sound-check':'20261015-music-garden1'};
   for(const module of ['ending-ui','stage-2d','world','battle-scene','story-model','encounter-model','rpg-art','creator-runtime','creator-ui'])expected[module]='20261016-creator-rpg1';
   for(const module of ['minimap-size','ending-ui','stage-2d','world','battle-scene','story-model','encounter-model','creator-ui'])expected[module]='20261016-battle-visible1';
+  for(const module of ['display-mode','context-action','resident-model','patrol-model','optional-encounters','ending-ui','stage-2d','world','battle-scene','story-model','encounter-model','rpg-art','creator-runtime','creator-ui'])expected[module]='20261016-resident1';
   for(const name of ['app.js','stage-2d.js','rpg-model.js','battle-scene.js','world.js','creator-ui.js','creator-runtime.js','encounter-model.js','ending-ui.js'])for(const match of read(name).matchAll(/(?:from\s+|import\()'((?:\.\/|\.\.\/)[^']+\.js[^']*)'/g)){const module=match[1].match(/([^/]+)\.js/)[1];if(match[1].startsWith('./vendor/'))continue;assert(match[1].endsWith('?v='+(expected[module]||version)),`${name}: ${match[1]}`);}
   assert(html.includes('viewport-fit=cover'));assert(html.includes('apple-touch-icon'));assert(html.includes('apple-mobile-web-app-capable'));assert(!app.includes('serviceWorker.register'));
 });

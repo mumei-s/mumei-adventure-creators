@@ -7,8 +7,8 @@ function fakeElement(tag,text,cls){return{tag,text,cls,children:[],attributes:{}
 test('first-run story opening executes without shadowing progress and preserves article visits',()=>{
  const body=app.split('function showStory(){')[1].split('\nfunction updateCreatorFrames')[0].trim().replace(/}\s*$/,'');
  const progress={2026:{visited:['article-1'],cleared:[]}},content=fakeElement('main');let saves=0,opens=0;
- const run=new Function('progress','year','save','chapterFor','title','STORY','element','cleared','state','reachedVault','content','openPanel','encounterStory',body);
- for(const cleared of[[],['pumpkin'],['pumpkin','ghost','bat']])run(progress,2026,()=>saves++,chapterFor,()=>{},STORY,fakeElement,cleared,{unlocked:false},false,content,()=>opens++,encounterStory);
+ const run=new Function('progress','year','save','chapterFor','title','STORY','element','cleared','state','reachedVault','content','openPanel','encounterStory','requiredClearCount','REQUIRED_MONSTER_IDS',body);
+ for(const cleared of[[],['pumpkin'],['pumpkin','ghost','bat']])run(progress,2026,()=>saves++,chapterFor,()=>{},STORY,fakeElement,cleared,{unlocked:false},false,content,()=>opens++,encounterStory,()=>cleared.length,['pumpkin','ghost','bat']);
  assert.equal(saves,3);assert.equal(opens,3);assert.equal(progress[2026].storySeen,true);assert.deepEqual(progress[2026].visited,['article-1']);assert.equal(content.children.length,3);
  assert(content.children.every(page=>page.children.some(item=>item.tag==='progress'&&item.max===6)));
 });

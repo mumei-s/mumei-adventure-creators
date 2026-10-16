@@ -1,0 +1,448 @@
+{
+  "schemaVersion": 1,
+  "fictional": true,
+  "residents": [
+    {
+      "id": "resident-archivist",
+      "ready": true,
+      "animationReviewed": true,
+      "source": {
+        "kind": "original-game-character"
+      },
+      "x": 7.6,
+      "z": 1.05,
+      "needsKey": true,
+      "asset": {
+        "src": "assets/residents/resident-archivist-walk.webp",
+        "width": 1024,
+        "height": 1024,
+        "bytes": 226162,
+        "sha256": "d36c4ea558a59f573048d2b45d729cbfa4292ef85665a78ef1bad3f490d4fb49",
+        "layout": {
+          "columns": 4,
+          "rows": 4,
+          "directions": [
+            "down",
+            "left",
+            "right",
+            "up"
+          ],
+          "idleColumn": 0,
+          "walkColumns": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "frames": [
+            [
+              {
+                "frame": [
+                  0,
+                  0,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 223
+              },
+              {
+                "frame": [
+                  256,
+                  0,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 222
+              },
+              {
+                "frame": [
+                  512,
+                  0,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 222
+              },
+              {
+                "frame": [
+                  768,
+                  0,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 222
+              }
+            ],
+            [
+              {
+                "frame": [
+                  0,
+                  256,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 213
+              },
+              {
+                "frame": [
+                  256,
+                  256,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 218
+              },
+              {
+                "frame": [
+                  512,
+                  256,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 218
+              },
+              {
+                "frame": [
+                  768,
+                  256,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 218
+              }
+            ],
+            [
+              {
+                "frame": [
+                  0,
+                  512,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 218
+              },
+              {
+                "frame": [
+                  256,
+                  512,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 218
+              },
+              {
+                "frame": [
+                  512,
+                  512,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 217
+              },
+              {
+                "frame": [
+                  768,
+                  512,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 214
+              }
+            ],
+            [
+              {
+                "frame": [
+                  0,
+                  768,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 227
+              },
+              {
+                "frame": [
+                  256,
+                  768,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 226
+              },
+              {
+                "frame": [
+                  512,
+                  768,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 226
+              },
+              {
+                "frame": [
+                  768,
+                  768,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 221
+              }
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "resident-gardener",
+      "ready": true,
+      "animationReviewed": true,
+      "source": {
+        "kind": "original-game-character"
+      },
+      "x": 8.8,
+      "z": 12.65,
+      "needsKey": false,
+      "asset": {
+        "src": "assets/residents/resident-gardener-walk.webp",
+        "width": 1024,
+        "height": 1024,
+        "bytes": 228304,
+        "sha256": "29faa47021c864c2db12fd79669ffb33f1e7088d29ddbb5102374d44fe411553",
+        "layout": {
+          "columns": 4,
+          "rows": 4,
+          "directions": [
+            "down",
+            "left",
+            "right",
+            "up"
+          ],
+          "idleColumn": 0,
+          "walkColumns": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "frames": [
+            [
+              {
+                "frame": [
+                  0,
+                  0,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 218
+              },
+              {
+                "frame": [
+                  256,
+                  0,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 221
+              },
+              {
+                "frame": [
+                  512,
+                  0,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 221
+              },
+              {
+                "frame": [
+                  768,
+                  0,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 221
+              }
+            ],
+            [
+              {
+                "frame": [
+                  0,
+                  256,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 218
+              },
+              {
+                "frame": [
+                  256,
+                  256,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 215
+              },
+              {
+                "frame": [
+                  512,
+                  256,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 215
+              },
+              {
+                "frame": [
+                  768,
+                  256,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 214
+              }
+            ],
+            [
+              {
+                "frame": [
+                  0,
+                  512,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 218
+              },
+              {
+                "frame": [
+                  256,
+                  512,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 219
+              },
+              {
+                "frame": [
+                  512,
+                  512,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 219
+              },
+              {
+                "frame": [
+                  768,
+                  512,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 218
+              }
+            ],
+            [
+              {
+                "frame": [
+                  0,
+                  768,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 220
+              },
+              {
+                "frame": [
+                  256,
+                  768,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 223
+              },
+              {
+                "frame": [
+                  512,
+                  768,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 226
+              },
+              {
+                "frame": [
+                  768,
+                  768,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.953125,
+                "contentHeight": 225
+              }
+            ]
+          ]
+        }
+      }
+    }
+  ]
+}

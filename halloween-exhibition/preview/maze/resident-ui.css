@@ -1,0 +1,32 @@
+/* The existing shared preference now changes real palace UI, without device spoofing. */
+body[data-layout-page=maze]{--game-hud-font:11px;--game-title-font:12px;--game-panel-font:13px;--game-panel-max:620px;--game-menu-columns:1}
+body[data-layout-page=maze][data-layout=tablet]{--game-hud-font:12px;--game-title-font:14px;--game-panel-font:14px;--game-panel-max:900px;--game-menu-columns:2}
+body[data-layout-page=maze][data-layout=desktop]{--game-hud-font:13px;--game-title-font:15px;--game-panel-font:15px;--game-panel-max:1080px;--game-menu-columns:3}
+body[data-layout-page=maze] #game .exploration-hud .place h1{font-size:var(--game-title-font)}
+body[data-layout-page=maze] #game .exploration-hud .place p{font-size:var(--game-hud-font)}
+body[data-layout-page=maze] #panel:not(.battle-mode){inset:var(--safe-top,0px) var(--safe-right,0px) var(--safe-bottom,0px) var(--safe-left,0px);margin:auto;width:min(var(--game-panel-max),calc(100vw - var(--safe-left,0px) - var(--safe-right,0px) - 24px));max-width:calc(100vw - var(--safe-left,0px) - var(--safe-right,0px) - 24px)}
+body[data-layout-page=maze] #panel:not(.battle-mode) p{font-size:var(--game-panel-font)}
+body[data-layout-page=maze] .explore-menu{display:grid;grid-template-columns:repeat(var(--game-menu-columns),minmax(0,1fr));gap:8px}
+body[data-layout-page=maze] .explore-menu>*{min-width:0;max-width:100%;overflow-wrap:anywhere;min-height:44px}
+body[data-layout-page=maze] .display-preferences{margin:0 0 16px;padding:0 0 12px;border-top:0;border-bottom:1px solid #b8aa8266}
+body[data-layout-page=maze] .display-preferences .display-mode-help{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+body[data-layout-page=maze] .display-mode-status{margin:5px 0 0;font-size:11px}
+body[data-layout-page=maze] .resident-roster{display:grid;grid-template-columns:repeat(var(--game-menu-columns),minmax(0,1fr));gap:12px}
+body[data-layout-page=maze] .resident-response{padding:12px;border-left:2px solid #8dc9bb;min-height:1em}
+/* One target at a time; no idle or generic duplicate button beside a conversation. */
+body[data-view] .nearby:has(#creator-open:not([hidden])){display:flex;width:calc((100% - 136px)/2)!important;max-width:200px}
+body[data-view] .nearby:has(#creator-open:not([hidden])) button{width:100%;font-size:11px}
+@media(min-width:750px){body[data-view] .nearby:has(#creator-open:not([hidden])){width:150px!important}}
+@media(max-height:580px) and (orientation:landscape){
+ body[data-view] #game:has(#creator-open:not([hidden])){grid-template-columns:minmax(0,1fr) 260px}
+ body[data-view] #game:has(#creator-open:not([hidden])) .nearby{display:flex;grid-template-columns:minmax(0,1fr);width:62px!important;max-width:62px}
+ body[data-view] #game:has(#creator-open:not([hidden])) .lantern-dock{width:62px;padding-left:4px}
+ body[data-view] #game:has(#creator-open:not([hidden])) .move-pad{justify-self:center;margin-left:0!important}
+}
+@media(max-width:680px){
+ body[data-layout-page=maze][data-layout]{--game-menu-columns:1}
+ body[data-layout-page=maze] #panel:not(.battle-mode){padding:22px 14px}
+ body[data-layout-page=maze] .exploration-hud .place p{max-width:100%}
+}
+@media(max-width:400px){body[data-view] header{gap:2px;padding-inline:2px}body[data-view] #view-controls{gap:2px}body[data-view] #view-controls button{width:44px;padding-inline:2px}body[data-view] #minimap-size{width:60px;flex-basis:60px}body[data-view] #menu-open{width:62px}}
+body[data-layout-page=maze] #game :is(.nearby button,.lantern-dock #lantern){font-size:var(--game-hud-font)}

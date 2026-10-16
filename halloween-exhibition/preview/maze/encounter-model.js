@@ -1,4 +1,6 @@
-import {encounterStory} from './story-model.js?v=20261016-battle-visible1';
+import {createActorPatrol,samplePatrolPosition,patrolPointSafe,patrolSegmentSafe} from './patrol-model.js?v=20261016-resident1';
+import {OPTIONAL_MONSTERS} from './optional-encounters.js?v=20261016-resident1';
+import {encounterStory} from './story-model.js?v=20261016-resident1';
 import {blocked} from './maze-model.js?v=20261014-adventure2';
 // Fictional stage characters only. Never derived from participant identities.
 export const MONSTERS = Object.freeze([
@@ -9,11 +11,24 @@ export const MONSTERS = Object.freeze([
   {id:'franken', name:'錬金術のゴーレム', icon:'⚙', color:'#99ae87', x:10.4, z:8.8, hint:'中央の交差廊・東側の月紋'},
   {id:'bat', name:'書庫のコウモリ', icon:'🦇', color:'#b5a0da', x:8, z:3.8, hint:'解錠した北の書庫', needsKey:true},
 ]);
+export {OPTIONAL_MONSTERS};
+export const REQUIRED_MONSTER_IDS=Object.freeze(MONSTERS.map(m=>m.id));
+export const ALL_MONSTERS=Object.freeze([...MONSTERS,...OPTIONAL_MONSTERS]);
 export function monsterAvailable(monster,state){return (!monster.needsKey||state.unlocked)&&(!monster.needsCorridor||state.horrorAccepted);}
 export const BATTLE_ACTIONS = Object.freeze(['shine','guard','attack']);
 // A telegraph is shown before every decision. There are no hidden rolls or timers.
 const turn=(name,damage,stance,hint,weakness=null,armor=0)=>Object.freeze({name,damage,stance,hint,weakness,armor});
 export const ENCOUNTER_RULES = Object.freeze({
+  witch:Object.freeze({spirit:18,turns:Object.freeze([
+    turn('月影の魔法陣',4,'杖の先に月影が集まる','守って、魔法陣が消えるのを待とう。'),
+    turn('杖を休める',0,'帽子の影が開いた','光で月影をほどく好機。','shine'),
+    turn('リボンを結ぶ',1,'影の結び目が見える','杖で結び目を払おう。','attack'),
+  ])}),
+  masked_wanderer:Object.freeze({spirit:20,turns:Object.freeze([
+    turn('重たい構え',4,'大きく腕を構えた','守って、振り終わりを待とう。',null,1),
+    turn('足を止める',0,'足元に影が残った','杖で足元の影を払う好機。','attack'),
+    turn('仮面を上げる',1,'仮面の影が開く','光を通して影をほどこう。','shine'),
+  ])}),
   pumpkin:Object.freeze({spirit:12,turns:Object.freeze([
     turn('火種をかばう',1,'火種が見えている','光が影に届く。次は大きな枝の一振り。','shine'),
     turn('枝の大きな一振り',3,'枝を振り上げた','守れば勇気を失わず、次の一手を強められる。'),
@@ -50,25 +65,27 @@ export function prankFor(battle){
   const index=Math.max(0,Math.floor(battle.turn||0))%rules.turns.length;
   return {...rules.turns[index],index,total:rules.turns.length};
 }
+const monsterPatrols=new Map();
 export function monsterPose(monster,time=0,motion=true,state={}){
-  if(!motion)return {x:monster.x,z:monster.z};
-  const seed=MONSTERS.findIndex(m=>m.id===monster.id)*1.7,speed=monster.id==='franken'?.32:monster.id==='zombie'?.4:.55;
-  const x=monster.x+Math.sin(time*speed+seed)*.16,z=monster.z+Math.cos(time*speed*.8+seed)*.11;
-  return blocked(x*4,z*4,state)?{x:monster.x,z:monster.z}:{x,z};
+ let route=monsterPatrols.get(monster.id);if(!route){route=createActorPatrol(monster,{role:'monster'});monsterPatrols.set(monster.id,route);}
+ return samplePatrolPosition(route,time,{motion,state});
 }
-export function guidePoint(monster,state={}){
+
+export function guidePoint(monster,state={},time=0,motion=true){
   if(monster.needsKey&&!state.unlocked)return {x:8,z:7.4,yaw:0,hint:'北の格子扉です。東の鍵の間で鍵を見つけ、ここで使います。'};
   if(monster.needsCorridor&&!state.horrorAccepted)return {x:5,z:10,yaw:Math.PI/2,hint:'西の扉です。「調べる」から回廊へ入れます。'};
-  const points={pumpkin:[8,12,-.45],ghost:[13,10,-Math.PI/2],zombie:[7.1,13.3,Math.PI/2],vampire:[2,12,0],bat:[8,4.8,0],franken:[9.4,8.8,-Math.PI/2]};
-  const [x,z,yaw]=points[monster.id];return {x,z,yaw,hint:`${monster.name}の近くです。近づいて「話しかける」を選びます。`};
+  const position=monsterPose(monster,time,motion,state);
+  for(const [dx,dz]of[[0,.7],[.7,0],[-.7,0],[0,-.7]]){const p={x:position.x+dx,z:position.z+dz};if(patrolPointSafe(p,state)&&patrolSegmentSafe(position,p,state))return{...p,yaw:Math.atan2(dx,dz),hint:`${monster.name}の近くです。`};}
+  return{x:8,z:12,yaw:0,hint:'入口から、地図でモンスターの位置を確認できます。'};
+
 }
 export function nearestMonster(state, cleared = [],{time=0,motion=false}={}) {
-  return MONSTERS.filter(m => !cleared.includes(m.id) && monsterAvailable(m,state))
+  return ALL_MONSTERS.filter(m => !cleared.includes(m.id) && monsterAvailable(m,state))
     .map(m => {const p=monsterPose(m,time,motion,state);return {monster:m,distance:Math.hypot(state.x-p.x*4,state.z-p.z*4)};})
-    .filter(m=>m.distance<5.5).sort((a,b)=>a.distance-b.distance)[0]?.monster || null;
+    .filter(m=>m.distance<5.5&&patrolSegmentSafe({x:state.x/4,z:state.z/4},monsterPose(m.monster,time,motion,state),state,0)).sort((a,b)=>a.distance-b.distance)[0]?.monster || null;
 }
 export function newBattle(id) {
-  if (!MONSTERS.some(m=>m.id===id)) throw new Error('Unknown stage character');
+  if (!ALL_MONSTERS.some(m=>m.id===id)) throw new Error('Unknown stage character');
   const maxSpirit=ENCOUNTER_RULES[id].spirit,story=encounterStory(id);
   return {id,energy:8,maxEnergy:8,spirit:maxSpirit,maxSpirit,focus:2,maxFocus:3,turn:0,charged:false,status:'playing',
     message:'予告を見て、光・守り・杖を選ぼう。時間制限はありません。',dialogue:story.dialogue,lastAction:null};

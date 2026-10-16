@@ -1,3 +1,4 @@
+import {OPTIONAL_STORIES} from './optional-encounters.js?v=20261016-resident1';
 // Original fiction for the palace adventure. No participant speech or biography is invented here.
 export const STORY_MONSTER_IDS = Object.freeze(['pumpkin','ghost','zombie','vampire','franken','bat']);
 export const STORY = Object.freeze({
@@ -5,15 +6,15 @@ export const STORY = Object.freeze({
   subtitle:'THE PALACE OF SIX LANTERNS',
   protagonistName:'無名S note',
   protagonistRole:'宮殿の主',
-  fictionLabel:'冒険の物語・住人の台詞はフィクションです。',
+  fictionLabel:'冒険の物語・モンスターの台詞はフィクションです。',
   premise:'展示会の最後の夜。宮殿の「夜明けの鐘」から、六つの音が消えてしまった。宮殿の主「無名S note」であるあなたはランタンを手に、書庫に朝を取り戻す旅へ出る。',
   opening:Object.freeze([
     Object.freeze({speaker:'語り',text:'最後の来客を見送るはずだった夜、宮殿の時計が十二時の手前で止まった。窓の向こうには、まだ来ない夜明け。'}),
-    Object.freeze({speaker:'語り',text:'書庫からこぼれた物語の影が、六人の住人の大切な記憶を包んでいる。影をほどき、六つの「キャンディのしるし」を集めよう。'}),
-    Object.freeze({speaker:'冒険の手引き',text:'あなたはこの宮殿の主、無名S note。住人に話しかけ、予告を読み、杖・ランタン・守りを使い分ける。まずは入口のカボチャの番人へ。東の鍵が、北の書庫への道をひらく。'}),
+    Object.freeze({speaker:'語り',text:'書庫からこぼれた物語の影が、六体のモンスターの大切な記憶を包んでいる。影をほどき、六つの「キャンディのしるし」を集めよう。'}),
+    Object.freeze({speaker:'冒険の手引き',text:'あなたはこの宮殿の主、無名S note。モンスターに話しかけ、予告を読み、杖・ランタン・守りを使い分ける。まずは入口のカボチャの番人へ。東の鍵が、北の書庫への道をひらく。'}),
   ]),
   ending:'六つのしるしが、夜明けの鐘に六つの音を返した。遠くで一度だけ鐘が鳴り、書庫の窓が金色にほどける。宮殿の主が守ったのは、誰かの物語を迎え入れる場所だった。',
-  endingDialogue:'「次のページは、明るいところで読もう。」住人たちが笑う。ここから先の物語は、展示された作品の中へ。',
+  endingDialogue:'「次のページは、明るいところで読もう。」モンスターたちが笑う。ここから先の物語は、展示された作品の中へ。',
 });
 const residents = {
   pumpkin:{
@@ -73,13 +74,13 @@ const residents = {
 };
 for(const value of Object.values(residents)){Object.freeze(value.reactions);Object.freeze(value);}
 export const RESIDENT_STORIES = Object.freeze(residents);
-export function encounterStory(id){return RESIDENT_STORIES[id]||null;}
+export function encounterStory(id){return RESIDENT_STORIES[id]||OPTIONAL_STORIES[id]||null;}
 export function chapterFor({cleared=[],unlocked=false,hasKey=false,reachedVault=false}={}){
   const recovered=STORY_MONSTER_IDS.filter(id=>cleared.includes(id));const count=recovered.length;
   const common={recovered,total:6,count,progress:`六つの灯 ${count}/6`,fictionLabel:STORY.fictionLabel};
   if(unlocked&&count===6&&reachedVault)return {...common,id:'dawn',index:4,kicker:'EPILOGUE',title:'終章 · 夜明けを綴る',summary:STORY.ending,objective:'書庫で夜明けの物語を読み、展示された作品へ。'};
   if(count===6)return {...common,id:'return',index:3,kicker:'THE SIXTH LIGHT',title:'終章 · 鐘を鳴らすとき',summary:'六つのしるしが、ランタンの中で静かに響いている。',objective:unlocked?'北の物語の書庫に戻り、夜明けの鐘を鳴らそう。':'東の鍵を見つけ、北の格子扉から物語の書庫へ。'};
-  if(unlocked||count>=4)return {...common,id:'archive',index:3,kicker:'CHAPTER III',title:'第三章 · 朝を待つ書庫',summary:'物語の終わりを怖がっていた住人たちが、少しずつ明日を思い出していく。',objective:unlocked?`残る${6-count}人と仲直りしよう。北の書庫には、夜の配達人が待っている。`:'東の鍵を北の格子扉に使い、書庫への道をひらこう。'};
-  if(hasKey||count>=2)return {...common,id:'memories',index:2,kicker:'CHAPTER II',title:'第二章 · ほどける記憶',summary:'しるしは、住人が大切にしてきた記憶のかけら。力を合わせれば、夜明けの鐘はもう一度鳴る。',objective:hasKey?'東の鍵を北の格子扉に使おう。西の回廊にも、ひとりの住人が待っている。':'東の鍵の間を調べよう。仕立て屋と修理工にも、話を聞いてみよう。'};
-  return {...common,id:'lantern',index:1,kicker:'CHAPTER I',title:'第一章 · 消えないランタン',summary:STORY.premise,objective:count?'東の鍵の間へ。司書の話を聞き、北の書庫の鍵を探そう。':'入口のカボチャの番人に話しかけよう。予告を読み、光・守り・杖を使い分けよう。'};
+  if(unlocked||count>=4)return {...common,id:'archive',index:3,kicker:'CHAPTER III',title:'第三章 · 朝を待つ書庫',summary:'物語の終わりを怖がっていたモンスターたちが、少しずつ明日を思い出していく。',objective:unlocked?`残る${6-count}人と仲直りしよう。北の書庫には、夜の配達人が待っている。`:'東の鍵を北の格子扉に使い、書庫への道をひらこう。'};
+  if(hasKey||count>=2)return {...common,id:'memories',index:2,kicker:'CHAPTER II',title:'第二章 · ほどける記憶',summary:'しるしは、モンスターが大切にしてきた記憶のかけら。力を合わせれば、夜明けの鐘はもう一度鳴る。',objective:hasKey?'東の鍵を北の格子扉に使おう。西の回廊にも、ひとりのモンスターが待っている。':'東の鍵の間を調べよう。ゾンビとゴーレムにも、話を聞いてみよう。'};
+  return {...common,id:'lantern',index:1,kicker:'CHAPTER I',title:'第一章 · 消えないランタン',summary:STORY.premise,objective:count?'東の鍵の間へ。おばけの本好きの話を聞き、北の書庫の鍵を探そう。':'入口のカボチャの番人に話しかけよう。予告を読み、光・守り・杖を使い分けよう。'};
 }

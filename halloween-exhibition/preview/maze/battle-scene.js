@@ -1,7 +1,7 @@
-import {drawArtSprite,playerPose} from './rpg-art.js?v=20261016-creator-rpg1';
-import {drawCreature} from './stage-2d.js?v=20261016-battle-visible1';
-import {prankFor} from './encounter-model.js?v=20261016-battle-visible1';
-import {encounterStory} from './story-model.js?v=20261016-battle-visible1';
+import {drawArtSprite,playerPose} from './rpg-art.js?v=20261016-resident1';
+import {drawCreature} from './stage-2d.js?v=20261016-resident1';
+import {prankFor} from './encounter-model.js?v=20261016-resident1';
+import {encounterStory} from './story-model.js?v=20261016-resident1';
 const clamp=x=>Math.max(0,Math.min(1,x));
 function glow(c,x,y,r,color){const g=c.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,color);g.addColorStop(1,'transparent');c.fillStyle=g;c.fillRect(x-r,y-r,r*2,r*2);}
 function ellipse(c,x,y,rx,ry,color){c.fillStyle=color;c.beginPath();c.ellipse(x,y,rx,ry,0,0,Math.PI*2);c.fill();}

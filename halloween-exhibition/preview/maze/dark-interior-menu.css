@@ -40,3 +40,10 @@ body[data-layout-page=maze] #panel .explore-menu>#menu-motion-status{grid-column
 @media(max-width:360px){#panel:has(.explore-menu){padding:15px}#panel .explore-menu>:is(button,a){font-size:12px;padding:10px 6px}#panel:has(.explore-menu)>.close{font-size:11px;padding:8px}}
 @media(min-width:900px){body[data-layout=desktop] #panel .explore-menu{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(forced-colors:active){#panel:has(.explore-menu){background:Canvas;border-color:CanvasText}#panel .explore-menu>:is(button,a){background:ButtonFace;color:ButtonText;border:1px solid ButtonText}}
+
+/* Respect the actual saved layout, including phone selected on a wide screen. */
+body[data-layout-page=maze][data-layout] #panel .explore-menu{grid-template-columns:repeat(var(--game-menu-columns),minmax(0,1fr))}
+body[data-layout-page=maze][data-layout=phone] #panel .explore-menu{gap:8px}
+body[data-layout-page=maze][data-layout=tablet] #panel .explore-menu{gap:10px}
+body[data-layout-page=maze][data-layout=desktop] #panel .explore-menu{gap:12px}
+@media(max-width:680px){body[data-layout-page=maze][data-layout] #panel .explore-menu{grid-template-columns:minmax(0,1fr);gap:8px}}

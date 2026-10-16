@@ -1,3 +1,4 @@
+import {withDeadline} from './transition-effects.js?v=20261017-review1';
 /** Original illustrated residents, with independent pose frames and continuous paths.
  * This decorative canvas never receives input, changes navigation or reads storage. */
 export const CASTLE_CAST = Object.freeze([
@@ -63,14 +64,37 @@ export function drawCastleCast(ctx,images,time,width,height){
 
 // Kept local so the entrance does not initialize or download the game runtime.
 export const CASTLE_ATLAS_BASE = './maze/assets/rpg/animated/';
-export async function loadCastleMotionManifest(fetcher=globalThis.fetch){
+export async function loadCastleMotionManifest(fetcher=globalThis.fetch,{signal,timers=globalThis,timeout=8000}={}){
  const url=new URL(`${CASTLE_ATLAS_BASE}monster-motion.json?v=20261016-living1`,import.meta.url);
- const response=await fetcher(url);if(!response.ok)throw new Error('Castle motion manifest unavailable');
- const json=await response.json(),entries=json.monsters||json;
- return Object.fromEntries(CASTLE_CAST.flatMap(({id})=>{
-  const entry=entries[id];if(!entry?.runtimeReady||!entry.frames?.length)return [];
-  return [[id,{...entry,src:new URL(entry.castleSrc||entry.src,url).href,frames:entry.castleFrames||entry.frames}]];
- }));
+ const request=new AbortController(),cancel=()=>request.abort();
+ if(signal?.aborted)cancel();else signal?.addEventListener('abort',cancel,{once:true});
+ try{
+  const json=await withDeadline((async()=>{
+   const response=await fetcher(url,{signal:request.signal});if(!response.ok)throw new Error('Castle motion manifest unavailable');
+   return response.json();
+  })(),{signal,timers,timeout,onTimeout:cancel});
+  const entries=json.monsters||json;
+  return Object.fromEntries(CASTLE_CAST.flatMap(({id})=>{
+   const entry=entries[id];if(!entry?.runtimeReady||!entry.frames?.length)return [];
+   return [[id,{...entry,src:new URL(entry.castleSrc||entry.src,url).href,frames:entry.castleFrames||entry.frames}]];
+  }));
+ }finally{signal?.removeEventListener('abort',cancel);}
+}
+/** Optional residents are bounded independently; no late image can restart a
+ * hidden/destroyed scene, and decoding failures keep the existing illustration. */
+export function loadPalaceActorImage(src,{ImageClass=globalThis.Image,signal,timers=globalThis,timeout=10000}={}){
+ return new Promise((resolve,reject)=>{
+  const image=new ImageClass();let settled=false,timer=null;
+  const finish=(error)=>{if(settled)return;settled=true;timers.clearTimeout(timer);signal?.removeEventListener('abort',cancel);image.onload=image.onerror=null;if(error){image.removeAttribute?.('src');reject(error);}else resolve(image);};
+  const cancel=()=>finish(new Error('Castle artwork cancelled'));
+  image.onload=()=>{if(!image.naturalWidth){finish(new Error('Castle artwork unavailable'));return;}if(typeof image.decode==='function')Promise.resolve().then(()=>image.decode()).then(()=>finish(),error=>finish(error));else finish();};
+  image.onerror=()=>finish(new Error('Castle artwork unavailable'));
+  image.decoding='async';image.fetchPriority='low';
+  if(signal?.aborted){cancel();return;}
+  signal?.addEventListener('abort',cancel,{once:true});
+  timer=timers.setTimeout(()=>finish(new Error('Castle artwork deadline exceeded')),timeout);
+  image.src=src;
+ });
 }
 export function initPalaceLivingScene(root,{atlases=null,loadImage}={}){
   const palace=root?.querySelector?.('#palace-entrance');
@@ -85,26 +109,29 @@ export function initPalaceLivingScene(root,{atlases=null,loadImage}={}){
   const atmosphere=doc.createElement('div');atmosphere.className='palace-living-air';atmosphere.setAttribute('aria-hidden','true');
   for(const className of ['palace-light-shaft','palace-ground-mist','palace-threshold-light']){const layer=doc.createElement('i');layer.className=className;atmosphere.append(layer);}palace.append(atmosphere);
   const media=win.matchMedia('(prefers-reduced-motion: reduce)');
-  const images=new Map(),replaced=[];let frame=0,last=0,time=0,width=1,height=1,disposed=false;
-  const active=()=>images.size>0&&!disposed&&!doc.hidden&&!root.hidden&&!palace.hidden&&root.dataset.motionPaused!=='true'&&doc.body.dataset.ambientPaused!=='true'&&!media.matches&&root.dataset.palaceState==='palace'&&!doc.querySelector('dialog[open]');
+  const images=new Map(),replaced=[],abort=new AbortController();
+  const timers=win.setTimeout?{setTimeout:(fn,delay)=>win.setTimeout(fn,delay),clearTimeout:id=>win.clearTimeout(id)}:globalThis;
+  let frame=0,last=0,time=0,width=1,height=1,disposed=false,suspended=false,generation=0;
+  const active=()=>images.size>0&&!disposed&&!suspended&&!doc.hidden&&doc.body.dataset.pageHidden!=='true'&&!root.hidden&&!palace.hidden&&root.dataset.motionPaused!=='true'&&doc.body.dataset.ambientPaused!=='true'&&!media.matches&&root.dataset.palaceState==='palace'&&!doc.querySelector('dialog[open]');
   function draw(){drawCastleCast(ctx,images,time,width,height);}
   function resize(){const rect=palace.getBoundingClientRect();width=Math.max(1,rect.width);height=Math.max(1,rect.height);const dpr=Math.min(win.devicePixelRatio||1,1.5,Math.sqrt(1200000/(width*height)));canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);draw();}
-  function tick(stamp){frame=0;if(!active())return;if(!last)last=stamp;if(stamp-last>=30){time+=Math.min((stamp-last)/1000,.06);last=stamp;draw();}frame=win.requestAnimationFrame(tick);}
-  function stop(){win.cancelAnimationFrame(frame);frame=0;last=0;}
-  function sync(){if(!active()){win.cancelAnimationFrame(frame);frame=0;last=0;draw();}else if(!frame){last=0;frame=win.requestAnimationFrame(tick);}}
-  const load=loadImage||((src)=>new Promise((resolve,reject)=>{const image=new win.Image();image.onload=()=>resolve(image);image.onerror=reject;image.decoding='async';image.fetchPriority='low';image.src=src;}));
-  const manifest=atlases?Promise.resolve(atlases):loadCastleMotionManifest(win.fetch.bind(win)).catch(()=>({}));
+  function tick(stamp,token){if(token!==generation)return;frame=0;if(!active())return;if(!last)last=stamp;if(stamp-last>=30){time+=Math.min((stamp-last)/1000,.06);last=stamp;draw();}frame=win.requestAnimationFrame(stamp=>tick(stamp,token));}
+  function stop(){generation++;win.cancelAnimationFrame(frame);frame=0;last=0;}
+  function sync(){if(!active()){stop();draw();}else if(!frame){last=0;const token=generation;frame=win.requestAnimationFrame(stamp=>tick(stamp,token));}}
+  const load=loadImage||((src)=>loadPalaceActorImage(src,{ImageClass:win.Image,signal:abort.signal,timers}));
+  const manifest=atlases?Promise.resolve(atlases):loadCastleMotionManifest(win.fetch.bind(win),{signal:abort.signal,timers}).catch(()=>({}));
   const ready=manifest.then(atlases=>Promise.all(CASTLE_CAST.map(async actor=>{
     const layout=atlases[actor.id];if(!layout)return false;
-    try{const image=await load(new URL(layout.src,import.meta.url).href);if(disposed)return false;images.set(actor.id,{image,layout});
+    try{const image=await withDeadline(load(new URL(layout.src,import.meta.url).href),{signal:abort.signal,timers,timeout:10000});if(disposed)return false;images.set(actor.id,{image,layout});
       // Remove the old polygon wolf/static rocking cutouts only after real artwork arrives.
       palace.dataset.livingScene='partial';const old=palace.querySelector(`.palace-path-walkers .path-${actor.id}`);if(old){replaced.push([old,old.hidden]);old.hidden=true;}
       if(actor.id==='ghost')palace.dataset.livingGhost='ready';if(actor.id==='bat')palace.dataset.livingBat='ready';draw();sync();return true;
     }catch{return false;}
   }))).then(results=>{if(!disposed)palace.dataset.livingScene=results.every(Boolean)?'ready':results.some(Boolean)?'partial':'fallback';return results;});
-  const observer=new win.MutationObserver(sync);observer.observe(root,{attributes:true,attributeFilter:['data-motion-paused','data-palace-state','hidden']});observer.observe(doc.body,{attributes:true,attributeFilter:['data-ambient-paused']});doc.querySelectorAll('dialog').forEach(dialog=>observer.observe(dialog,{attributes:true,attributeFilter:['open']}));
+  const observer=new win.MutationObserver(sync);observer.observe(root,{attributes:true,attributeFilter:['data-motion-paused','data-palace-state','hidden']});observer.observe(doc.body,{attributes:true,attributeFilter:['data-ambient-paused','data-page-hidden']});doc.querySelectorAll('dialog').forEach(dialog=>observer.observe(dialog,{attributes:true,attributeFilter:['open']}));
   const resizeObserver=new win.ResizeObserver(resize);resizeObserver.observe(palace);
-  doc.addEventListener('visibilitychange',sync);media.addEventListener?.('change',sync);win.addEventListener('pagehide',stop);win.addEventListener('pageshow',sync);
+  const hide=()=>{suspended=true;stop();},show=()=>{suspended=false;resize();sync();};
+  doc.addEventListener('visibilitychange',sync);media.addEventListener?.('change',sync);win.addEventListener('pagehide',hide);win.addEventListener('pageshow',show);
   resize();sync();
-  return {ready,draw,destroy(){disposed=true;win.cancelAnimationFrame(frame);observer.disconnect();resizeObserver.disconnect();doc.removeEventListener('visibilitychange',sync);media.removeEventListener?.('change',sync);win.removeEventListener('pagehide',stop);win.removeEventListener('pageshow',sync);canvas.remove();atmosphere.remove();stylesheet.remove();for(const [element,hidden]of replaced)element.hidden=hidden;delete palace.dataset.livingScene;delete palace.dataset.livingGhost;delete palace.dataset.livingBat;}};
+  return {ready,draw,destroy(){disposed=true;abort.abort();stop();observer.disconnect();resizeObserver.disconnect();doc.removeEventListener('visibilitychange',sync);media.removeEventListener?.('change',sync);win.removeEventListener('pagehide',hide);win.removeEventListener('pageshow',show);canvas.remove();atmosphere.remove();stylesheet.remove();for(const [element,hidden]of replaced)element.hidden=hidden;delete palace.dataset.livingScene;delete palace.dataset.livingGhost;delete palace.dataset.livingBat;}};
 }

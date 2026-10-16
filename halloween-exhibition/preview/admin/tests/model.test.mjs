@@ -110,7 +110,7 @@ test('editing the host preserves its role while a new owner door has no host rol
 test('editor presents fixed door identity and status-sensitive main URL guidance',()=>{
  const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8'),html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
  assert.match(html,/<input id="door-id" readonly/);assert.match(html,/id="url-requirement"/);assert.match(html,/id="url-guidance"/);assert.match(app,/\$\('url'\)\.required=!pending/);
- assert.doesNotMatch(app+html,/1人につき1つ/);assert.match(app,/model\.js\?v=20261015-iris1/);assert.match(html,/app\.js\?v=20261015-clear1/);
+ assert.doesNotMatch(app+html,/1人につき1つ/);assert.match(app,/model\.js\?v=20261017-draft-guard1/);assert.match(html,/app\.js\?v=20261017-draft-guard1/);
  assert.match(fs.readFileSync(new URL('../model.js',import.meta.url),'utf8'),/data-model\.js\?v=20261014-doors1/);
 });
 
@@ -127,4 +127,45 @@ test('three added participant IDs edit independently and preserve the adventure 
   assert.doesNotThrow(()=>validateArchive(old));
  }
  for(const change of [d=>d.creators.push(d.creators[0]),d=>d.creators.splice(0,1),d=>d.creators.push({id:'unknown',name:'Unknown'})]){const d=structuredClone(archive);change(d);assert.throws(()=>validateArchive(d));}
+});
+
+test('corrupt recovery records are rejected before import or export can replace a valid draft',()=>{
+ const s=deleteEntry(state(),'halloween',2026,0),before=JSON.stringify(s);
+ const mutations=[
+  x=>x.trash.push(null),
+  x=>x.trash[0].collection='unknown',
+  x=>x.trash[0].index=-1,
+  x=>x.trash[0].year='2026',
+  x=>x.trash[0].deletedAt='not-a-date',
+  x=>delete x.trash[0].entry.title,
+  x=>x.trash[0].entry.links[0].url='javascript:alert(1)',
+  x=>x.trash[0].yearMetadata.year=2027
+ ];
+ for(const change of mutations){const corrupt=cloneForTest(s);change(corrupt);assert.throws(()=>importData(s,corrupt));assert.throws(()=>publicFiles(corrupt));}
+ assert.equal(JSON.stringify(s),before);
+});
+
+test('deleted article restores its exact year metadata after a different archive is imported',()=>{
+ const original=state();original.archive.years[0].description='年度に固有の紹介';original.archive.years[0].plannedSlots=2;
+ const removed=cloneForTest(original.archive.years[0].entries[0]);
+ let s=deleteEntry(original,'halloween',2026,0);
+ const replacement=cloneForTest(archive);replacement.years=[{year:2027,title:'次の年度',description:'別の年度',entries:[]}];
+ s=importData(s,replacement);assert.equal(s.archive.years.some(y=>y.year===2026),false);
+ const restored=restoreEntry(s,0),year=restored.archive.years.find(y=>y.year===2026);
+ assert.equal(year.title,original.archive.years[0].title);assert.equal(year.description,'年度に固有の紹介');assert.equal(year.plannedSlots,2);assert.deepEqual(year.entries,[removed]);assert.equal(restored.trash.length,0);
+ assert.equal(s.trash.length,1,'restoring remains immutable');
+});
+
+test('legacy deleted article is never discarded when its destination year is missing',()=>{
+ let s=deleteEntry(state(),'halloween',2026,0);delete s.trash[0].yearMetadata;
+ const replacement=cloneForTest(archive);replacement.years=[{year:2027,title:'次の年度',description:'',entries:[]}];s=importData(s,replacement);
+ const before=JSON.stringify(s);assert.throws(()=>restoreEntry(s,0),/年度を追加/);assert.equal(JSON.stringify(s),before);assert.equal(s.trash.length,1);
+ s.archive.years.push({year:2026,title:'HALLOWEEN 2026',description:'',entries:[]});
+ assert.deepEqual(restoreEntry(s,0).archive.years.find(y=>y.year===2026).entries,[s.trash[0].entry]);
+});
+
+test('archive import cannot leave an article referencing a participant missing from its creator data',()=>{
+ const invalid=cloneForTest(archive);invalid.creators=invalid.creators.filter(c=>c.id!=='real_hyena9474');
+ assert.throws(()=>validateArchive(invalid),/参加者IDがこのarchive.jsonに登録/);
+ const s=state(),before=JSON.stringify(s);assert.throws(()=>importData(s,invalid));assert.equal(JSON.stringify(s),before);
 });

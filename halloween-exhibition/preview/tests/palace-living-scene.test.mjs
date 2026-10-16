@@ -61,6 +61,7 @@ test('loading, paused, hidden and destroyed lifecycles do not leave a running an
  media.matches=false;mediaEvents.get('change')();assert.equal(pending.size,1);
  doc.hidden=true;events.get('visibilitychange')();assert.equal(pending.size,0);
  doc.hidden=false;events.get('visibilitychange')();assert.equal(pending.size,1);
+ const queuedBeforeSuspend=[...pending.values()][0];events.get('pagehide')();assert.equal(pending.size,0);observers[0]();assert.equal(pending.size,0,'observers cannot resume a suspended page');events.get('pageshow')();assert.equal(pending.size,1);queuedBeforeSuspend(100000);assert.equal(pending.size,1,'late old frame cannot multiply the restored loop');events.get('pageshow')();assert.equal(pending.size,1,'page restoration cannot multiply the loop');
  api.destroy();assert.equal(pending.size,0);assert.equal(palace.dataset.livingScene,undefined);
  // A lone flying resident must never erase the three ground-character fallbacks.
  const atlasFrames=[0,1,2,3].map(i=>({frame:[i%2*128,Math.floor(i/2)*128,128,128],anchorX:.5,anchorY:.94,contentHeight:115}));
@@ -119,5 +120,25 @@ test('every full pose-cell silhouette stays inside both edges with stable contin
    const next=castleSafeActorPose(actor,time+1/30,w,h,layout);
    assert.ok(Math.abs(next.x-pose.x)<w*.002,actor.id);
   }
+ }
+});
+
+test('optional resident manifest has a real deadline even when fetch ignores abort',async()=>{
+ const {loadCastleMotionManifest}=await import('../palace-living-scene.js');const tasks=new Map();let id=0,signal;
+ const timers={setTimeout:fn=>{tasks.set(++id,fn);return id;},clearTimeout:id=>tasks.delete(id)};
+ const wait=loadCastleMotionManifest(async(_url,options)=>{signal=options.signal;return new Promise(()=>{});},{timers});
+ const rejected=assert.rejects(wait,/deadline/);[...tasks.values()][0]();await rejected;
+ assert.equal(signal.aborted,true);assert.equal(tasks.size,0);
+});
+test('resident image failure, stalled decode and cancellation clear all handlers and deadlines',async()=>{
+ const {loadPalaceActorImage}=await import('../palace-living-scene.js');
+ for(const mode of ['decode','abort','error']){
+  const tasks=new Map();let image,id=0;const abort=new AbortController();
+  class ImageClass{constructor(){image=this;this.naturalWidth=800;}decode(){return new Promise(()=>{});}removeAttribute(){this.removed=true;}}
+  const timers={setTimeout:fn=>{tasks.set(++id,fn);return id;},clearTimeout:id=>tasks.delete(id)};
+  const wait=loadPalaceActorImage('./resident.webp',{ImageClass,timers,signal:abort.signal});const rejected=assert.rejects(wait,/cancelled|deadline|unavailable/);
+  if(mode==='decode'){image.onload();await Promise.resolve();[...tasks.values()][0]();}
+  if(mode==='abort')abort.abort();if(mode==='error')image.onerror();await rejected;
+  assert.equal(tasks.size,0);assert.equal(image.onload,null);assert.equal(image.onerror,null);assert.equal(image.removed,true);
  }
 });

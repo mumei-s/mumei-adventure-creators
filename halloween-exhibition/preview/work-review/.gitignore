@@ -1,0 +1,7 @@
+# Review media is preserved in the private comparison Site source/version.
+# Rebuild native proof with tools/render-evidence.mjs; do not preload it in the app.
+assets/*.png
+assets/*.webp
+evidence/*
+!evidence/README.md
+!evidence/measurements.json

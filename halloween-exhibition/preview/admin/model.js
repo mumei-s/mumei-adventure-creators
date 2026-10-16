@@ -42,15 +42,29 @@ function entry(e,horror=false){
 }
 export function validateArchive(data){
   if(!data||data.schemaVersion!==1||!Array.isArray(data.years)||!data.years.length||!Array.isArray(data.evergreenEntries))fail('archive.json は schemaVersion: 1、years、evergreenEntries が必要です。');
-  creators(data);const ys=new Set();
+  creators(data);const creatorIDs=new Set(data.creators.map(c=>c.id)),ys=new Set();
   for(const y of data.years){if(!Number.isInteger(y.year)||y.year<2000||y.year>9999||ys.has(y.year)||typeof y.title!=='string'||typeof y.description!=='string'||!Array.isArray(y.entries))fail('年度・見出し・説明・記事一覧を確認してください。');ys.add(y.year);}
   for(const {entries,scope} of [{entries:data.evergreenEntries,scope:'evergreen'},...data.years.map(y=>({entries:y.entries,scope:`archive:${y.year}`}))]){
-    const ids=new Set();for(const e of entries){entry(e);const id=doorIdFor(e,scope);if(ids.has(id))fail('扉IDが重複しています。同じ参加者の別記事には別の扉IDを使ってください。');ids.add(id);}
+    const ids=new Set();for(const e of entries){entry(e);if(!creatorIDs.has(e.creatorId))fail('記事の参加者IDがこのarchive.jsonに登録されていません。参加者情報を含むJSONを確認してください。');const id=doorIdFor(e,scope);if(ids.has(id))fail('扉IDが重複しています。同じ参加者の別記事には別の扉IDを使ってください。');ids.add(id);}
   }
   return data;
 }
 export function validateCatalog(data){if(!data||data.schemaVersion!==2||!Array.isArray(data.articles)||!Array.isArray(data.years)||!data.years.length||data.years.some(y=>!Number.isInteger(y)||y<2000||y>9999)||!Array.isArray(data.collections)||data.collections.length!==1||data.collections[0]?.id!=='horror')fail('catalog.json は schemaVersion: 2 の書庫データが必要です。');creators(data);const ids=new Set();for(const e of data.articles){entry(e,true);if(ids.has(e.id))fail('記事IDが重複しています。');ids.add(e.id);}return data;}
-export function validateState(s){if(!s||s.editorVersion!==1)fail('編集ツールのバックアップ形式が不正です。');validateArchive(s.archive);validateCatalog(s.catalog);if(!Array.isArray(s.trash))fail('復元一覧の形式が不正です。');return s;}
+export function validateState(s){
+  if(!s||s.editorVersion!==1)fail('編集ツールのバックアップ形式が不正です。');
+  validateArchive(s.archive);validateCatalog(s.catalog);
+  if(!Array.isArray(s.trash))fail('復元一覧の形式が不正です。');
+  for(const item of s.trash){
+    if(!item||!['normal','halloween','horror'].includes(item.collection)||!Number.isInteger(item.index)||item.index<0||typeof item.deletedAt!=='string'||!Number.isFinite(Date.parse(item.deletedAt)))fail('復元一覧の保存先・位置・削除日時が不正です。');
+    if(item.collection==='halloween'&&(!Number.isInteger(item.year)||item.year<2000||item.year>9999))fail('復元一覧の年度が不正です。');
+    entry(item.entry,item.collection==='horror');
+    if(item.yearMetadata!==undefined){
+      if(item.collection!=='halloween'||!item.yearMetadata||item.yearMetadata.year!==item.year||item.yearMetadata.entries!==undefined)fail('復元一覧の年度情報が不正です。');
+      validateArchive({...s.archive,evergreenEntries:[],years:[{...item.yearMetadata,entries:[]}]});
+    }
+  }
+  return s;
+}
 export function createState(archive,catalog){return validateState({editorVersion:1,archive:clone(archive),catalog:clone(catalog),trash:[],updatedAt:null});}
 export function listEntries(s,collection,year){return collection==='horror'?s.catalog.articles:collection==='normal'?s.archive.evergreenEntries:s.archive.years.find(y=>y.year===Number(year))?.entries||[];}
 function newDoorId(s,collection,year){
@@ -74,7 +88,22 @@ export function saveEntry(s,collection,year,index,values){
   }
   if(index===null)list.push(e);else list[index]=e;next.updatedAt=new Date().toISOString();validateState(next);return next;
 }
-export function deleteEntry(s,collection,year,index){const next=clone(s),list=listEntries(next,collection,year);if(!list[index])fail('削除対象が見つかりません。');next.trash.push({collection,year:Number(year)||null,index,entry:list.splice(index,1)[0],deletedAt:new Date().toISOString()});next.updatedAt=new Date().toISOString();return validateState(next);}
-export function restoreEntry(s,index){const next=clone(s),item=next.trash[index];if(!item)fail('復元対象が見つかりません。');const list=listEntries(next,item.collection,item.year);list.splice(Math.min(item.index,list.length),0,item.entry);next.trash.splice(index,1);next.updatedAt=new Date().toISOString();return validateState(next);}
+export function deleteEntry(s,collection,year,index){
+  const next=clone(s),list=listEntries(next,collection,year);
+  if(!['normal','halloween','horror'].includes(collection)||!Number.isInteger(index)||!list[index])fail('削除対象が見つかりません。');
+  const item={collection,year:Number(year)||null,index,entry:list.splice(index,1)[0],deletedAt:new Date().toISOString()};
+  if(collection==='halloween'){const {entries,...metadata}=next.archive.years.find(y=>y.year===Number(year));item.yearMetadata=metadata;}
+  next.trash.push(item);next.updatedAt=new Date().toISOString();return validateState(next);
+}
+export function restoreEntry(s,index){
+  validateState(s);const next=clone(s),item=next.trash[index];
+  if(!Number.isInteger(index)||!item)fail('復元対象が見つかりません。');
+  if(item.collection==='halloween'&&!next.archive.years.some(y=>y.year===item.year)){
+    if(!item.yearMetadata)fail(`復元先の${item.year}年度がありません。「年度を追加」で同じ年度を作成してから復元してください。下書きは復元一覧に残っています。`);
+    next.archive.years.push({...item.yearMetadata,entries:[]});
+  }
+  const list=listEntries(next,item.collection,item.year);list.splice(Math.min(item.index,list.length),0,item.entry);
+  next.trash.splice(index,1);next.updatedAt=new Date().toISOString();return validateState(next);
+}
 export function importData(s,data){const next=clone(s);if(data.editorVersion===1)return validateState(clone(data));if(data.schemaVersion===1)next.archive=validateArchive(clone(data));else if(data.schemaVersion===2)next.catalog=validateCatalog(clone(data));else fail('archive.json、catalog.json または編集バックアップを選んでください。');next.updatedAt=new Date().toISOString();return validateState(next);}
 export function publicFiles(s){validateState(s);return{archive:JSON.stringify(s.archive,null,2)+'\n',catalog:JSON.stringify(s.catalog,null,2)+'\n'};}

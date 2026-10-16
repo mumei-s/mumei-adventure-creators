@@ -131,3 +131,8 @@ body[data-view] #toast{bottom:140px}
  body[data-view] .lantern-dock{grid-area:4/2;justify-self:start;margin-left:0;width:62px;padding-left:4px}
  body[data-view] #game:has(#creator-open:not([hidden])) .nearby button{font-size:9px}
 }
+
+/* A failed optional renderer never overlays the playable world or navigation. */
+body[data-view] #view-loading{position:absolute;left:8px;right:8px;bottom:142px;max-width:32em;margin-inline:auto;z-index:4;pointer-events:none}
+body[data-view] #view-retry{position:absolute;right:8px;bottom:194px;z-index:4;min-width:100px;min-height:44px;background:#33243a;color:#ffe3af;border:1px solid #d5af73;border-radius:8px;padding:7px 12px}
+@media(max-height:580px) and (orientation:landscape){body[data-view] #view-loading{left:8px;right:268px;bottom:24px;font-size:11px}body[data-view] #view-retry{right:268px;bottom:76px}}

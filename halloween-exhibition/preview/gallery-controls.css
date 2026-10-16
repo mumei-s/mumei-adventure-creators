@@ -185,7 +185,10 @@ body .roster-thumb img,body[data-mode=halloween] .roster-thumb img{
  position:absolute;inset:12px 6px 8px;width:calc(100% - 12px);height:calc(100% - 20px);
  object-fit:contain;object-position:center;border:0;border-radius:3px;background:var(--roster-thumb-bg);transform:none;
 }
-.roster-pagination{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;margin:14px 0 18px}
+.roster-pagination{position:static;display:grid;grid-template-columns:44px minmax(0,1fr) 44px;align-items:center;gap:12px;margin:18px 0 0}
+#roster-grid{touch-action:pan-y pinch-zoom}
+.roster-pagination button{width:44px;max-width:44px}
+.roster-pagination #roster-page-status{text-align:center}
 .roster-pagination button{min-width:44px;min-height:44px;padding:8px 12px;border:1px solid #bca27588;border-radius:9px;font-size:12px}
 .roster-pagination button:disabled{opacity:.45;cursor:default}
 #roster-page-status{font-size:12px;line-height:1.7}

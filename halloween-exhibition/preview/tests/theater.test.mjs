@@ -1,4 +1,5 @@
-import {initTransitionEffects} from '../transition-effects.js';
+import {initTransitionEffects, withDeadline} from '../transition-effects.js';
+import {paginateRoster} from '../roster-pagination.js';
 import {initViewport} from '../viewport.js';
 import { initAppExit } from '../app-exit.js';
 import { createDoorRevealClock } from '../door-reveal-clock.js';
@@ -78,7 +79,7 @@ class Element {
   querySelector(selector) { return this.querySelectorAll(selector)[0] || null; }
 }
 
-async function harness({ data = archive, reduced = true, storageThrows = false, storageWriteThrows = false, saved = null, savedMode = null, urlSearch = '', returnState = null, autoLoad = true, strictTimerReceiver = false, entrance = false } = {}) {
+async function harness({ data = archive, reduced = true, storageThrows = false, storageWriteThrows = false, saved = null, savedMode = null, urlSearch = '', returnState = null, autoLoad = true, strictTimerReceiver = false, entrance = false, artworkReady = !reduced, visualReady = Promise.resolve() } = {}) {
   let now = 0, seq = 0; const timers = new Map(), storage = new Map(saved ? [['halloween-yearbook:night-doors:v1', saved]] : []);
   if (savedMode !== null) storage.set('halloween-yearbook:display-mode:v1', savedMode);
   const queue = (fn, delay = 0) => { const id = ++seq; timers.set(id, { at: now + delay, fn }); return id; };
@@ -102,7 +103,7 @@ async function harness({ data = archive, reduced = true, storageThrows = false, 
     return walk(doc.documentElement);
   };
   const requests = [], storageWrites = [], motionInitializations = [], viewCalls = [];
-  const context = vm.createContext({ AbortController, initTransitionEffects:()=>initTransitionEffects({window:doc.defaultView,document:doc}), initViewport:()=>initViewport({window:doc.defaultView,document:doc}), initAppExit, createDoorRevealClock:args=>createDoorRevealClock({...args,schedule:queue,clear:id=>timers.delete(id)}), initFestivalScene:args=>initFestivalScene({...args,doc,win:{...doc.defaultView,setTimeout:queue,clearTimeout:id=>timers.delete(id),MutationObserver:class{observe(){}disconnect(){}}}}), loadArtworkImage:(image,source,options)=>loadArtworkImage(image,source,{...options,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}), initPalaceStartup:()=>Promise.resolve(), createDoorPalettePicker, installGalleryGesture, createSlideshowController, initPalaceEntrance:entrance?(args)=>initPalaceEntrance({...args,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}):({root,onViewChange})=>{root.dataset.palaceState='gallery';return {enter(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});},home(){root.dataset.palaceState='palace';onViewChange({view:'palace',opening:false});},setMode(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});}}}, initDisplayMode:()=>({}), document: doc, initVisitorPreferences:options=>{options.onBrightness(75);const section=doc.createElement('section');section.className='visitor-preferences';doc.body.append(section);return {stopMusic(){doc.musicStops=(doc.musicStops||0)+1;}};}, initSceneMotion:root=>{motionInitializations.push(root);const dock=doc.createElement('div');dock.className='scene-controls';root.append(dock);let userPaused=false;return {isUserPaused(){return userPaused;},setPaused(value){userPaused=Boolean(value);},setView(x,y){viewCalls.push([x,y]);}};}, validateArchive, safeURL, normalizeSearch, doorIdFor,
+  const context = vm.createContext({ AbortController, paginateRoster, withDeadline:(promise,options)=>withDeadline(promise,{...options,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}), initTransitionEffects:()=>initTransitionEffects({window:doc.defaultView,document:doc}), initViewport:()=>initViewport({window:doc.defaultView,document:doc}), initAppExit, createDoorRevealClock:args=>createDoorRevealClock({...args,schedule:queue,clear:id=>timers.delete(id)}), initFestivalScene:args=>initFestivalScene({...args,doc,win:{...doc.defaultView,setTimeout:queue,clearTimeout:id=>timers.delete(id),MutationObserver:class{observe(){}disconnect(){}}}}), loadArtworkImage:(image,source,options)=>{if(artworkReady){image.complete=true;image.naturalWidth=800;}return loadArtworkImage(image,source,{...options,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}});}, initPalaceStartup:()=>visualReady, createDoorPalettePicker, installGalleryGesture, createSlideshowController, initPalaceEntrance:entrance?(args)=>initPalaceEntrance({...args,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}):({root,onViewChange})=>{root.dataset.palaceState='gallery';return {enter(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});},home(){root.dataset.palaceState='palace';onViewChange({view:'palace',opening:false});},setMode(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});}}}, initDisplayMode:()=>({}), document: doc, initVisitorPreferences:options=>{options.onBrightness(75);const section=doc.createElement('section');section.className='visitor-preferences';doc.body.append(section);return {stopMusic(){doc.musicStops=(doc.musicStops||0)+1;}};}, initSceneMotion:root=>{motionInitializations.push(root);const dock=doc.createElement('div');dock.className='scene-controls';root.append(dock);let userPaused=false;return {isUserPaused(){return userPaused;},setPaused(value){userPaused=Boolean(value);},setView(x,y){viewCalls.push([x,y]);}};}, validateArchive, safeURL, normalizeSearch, doorIdFor,
     matchMedia: () => ({ matches: reduced }),
     // Native browser timers reject a plain-object receiver (Illegal invocation).
     setTimeout: function(fn, delay) { if (strictTimerReceiver && this != null && this.document !== doc) throw new TypeError('Illegal invocation'); return queue(fn, delay); },
@@ -110,7 +111,7 @@ async function harness({ data = archive, reduced = true, storageThrows = false, 
     URLSearchParams, location:{search:urlSearch},sessionStorage:{getItem(){return returnState},setItem(k,v){context.savedReturn={key:k,value:v};}},
     Date: class extends Date { static now() { return now; } },
     localStorage: { getItem(k) { if (storageThrows) throw Error('blocked'); return storage.get(k) || null; }, setItem(k, v) { storageWrites.push({key:k,value:v}); if (storageThrows || storageWriteThrows) throw Error('blocked'); storage.set(k, v); } },
-    fetch: () => new Promise((resolve, reject) => requests.push({ resolve, reject }))
+    fetch: (_url,options) => new Promise((resolve, reject) => requests.push({ resolve, reject, signal:options.signal }))
   });
   vm.runInContext(source.replace(/^import[^\n]+\n/gm, '') + '\nglobalThis.testAPI={countPeople:()=>validStamps().length,seenDoors:viewedDoors,navigate,setYear,load,openStory,renderProgress,setMode, get state(){return {currentYear,currentIndex,busy,storageOK,progress,displayMode,search,activeTag,slideshow:slideshow?.getState()};}};', context);
   async function flush() { for (let i = 0; i < 10; i++) await Promise.resolve(); }
@@ -136,7 +137,7 @@ test('initial load renders all real article doors and creators', async () => {
   assert.equal(h.$('room-dots').querySelectorAll('.future-face').length, 0);
   assert.equal(h.$('total-index').textContent, String(doorCount).padStart(2, '0'));
   assert.equal(h.$('sample-notice').textContent, `参加者${creatorCount}人 · 扉${doorCount}枚`);
-  assert.equal(h.$('results').textContent, `扉 ${rosterCount} / ${rosterCount}枚 · 1〜5枚目を表示 · 参加者${creatorCount}人`);
+  assert.equal(h.$('results').textContent, `扉 ${rosterCount} / ${rosterCount}枚 · 参加者1〜5人目 / ${creatorCount}人を表示`);
   assert.match(h.$('creator-name').textContent, /主催者の企画紹介記事/);
   assert.equal(h.$('room-title').textContent, archive.creators[0].name);
   assert.equal(h.$('artwork-image').src, archive.years[0].entries[0].image);
@@ -479,7 +480,7 @@ test('name and @note-handle search work, and pending-work tag excludes future pl
   h.$('tags').children.find(n => n.textContent === '作品準備中').click();
   assert.equal(h.$('roster-grid').querySelectorAll('button').length, Math.min(5,pendingCount));
   assert.equal(h.$('roster-grid').querySelectorAll('.future-card').length, 0);
-  assert.equal(h.$('results').textContent, `扉 ${pendingCount} / ${rosterCount}枚 · 1〜${Math.min(5,pendingCount)}枚目を表示 · 参加者${pendingPeople}人`);
+  assert.equal(h.$('results').textContent, `扉 ${pendingCount} / ${rosterCount}枚 · 参加者1〜${Math.min(5,pendingPeople)}人目 / ${pendingPeople}人を表示`);
 });
 
 test('future slots do not change year-picker counts and an empty year stays incomplete', async () => {
@@ -941,7 +942,7 @@ test('roster pagination exposes every distinct door and deduplicates creator cou
   assert.equal(h.$('roster-previous').disabled,page===0);
   assert.equal(h.$('roster-next').disabled,page===pageCount-1);
   assert.equal(h.$('roster-page-status').textContent,`${page+1} / ${pageCount} ページ`);
-  assert.equal(h.$('results').textContent,`扉 ${rosterCount} / ${rosterCount}枚 · ${page*5+1}〜${Math.min((page+1)*5,rosterCount)}枚目を表示 · 参加者${creatorCount}人`);
+  assert.equal(h.$('results').textContent,`扉 ${rosterCount} / ${rosterCount}枚 · 参加者${page*5+1}〜${Math.min((page+1)*5,creatorCount)}人目 / ${creatorCount}人を表示`);
   creators.push(...cards.map(card=>card.dataset.creatorId));doors.push(...cards.map(card=>card.dataset.doorId));
   if(page<pageCount-1){h.$('roster-next').click();assert.equal(h.doc.activeElement,h.$('roster-page-status'));}
  }
@@ -955,7 +956,7 @@ test('filtered pending roster paginates all pending doors; search and tag change
  const h=await harness();h.$('list-open').click();h.$('roster-next').click();
  h.$('tags').children.find(n=>n.textContent==='作品準備中').click();assert.equal(h.$('roster-page-status').textContent,'1 / 1 ページ');
  assert.equal(h.$('roster-grid').querySelectorAll('button').length,Math.min(5,pendingCount));h.$('roster-next').click();
- assert.equal(h.$('roster-grid').querySelectorAll('button').length,pendingCount);assert.equal(h.$('results').textContent,`扉 ${pendingCount} / ${rosterCount}枚 · 1〜${pendingCount}枚目を表示 · 参加者${pendingPeople}人`);
+ assert.equal(h.$('roster-grid').querySelectorAll('button').length,pendingCount);assert.equal(h.$('results').textContent,`扉 ${pendingCount} / ${rosterCount}枚 · 参加者1〜${pendingPeople}人目 / ${pendingPeople}人を表示`);
  h.$('search').value='CNA';h.$('search').dispatch('input');assert.equal(h.$('roster-page-status').textContent,'1 / 1 ページ');
  assert.equal(h.$('roster-grid').querySelectorAll('button').length,1);assert.equal(h.$('roster-next').disabled,true);assert.equal(h.$('roster-previous').disabled,true);
  h.$('search').value='存在しない作品';h.$('search').dispatch('input');assert.equal(h.$('roster-page-status').textContent,'0 / 0 ページ');
@@ -1188,4 +1189,47 @@ test('escape during chosen fate cancels the pending destination and restores but
  const h=await harness({reduced:false});h.$('roulette-open').click();await h.tick(1900);
  for(const fn of h.doc.handlers.keydown||[])fn({key:'Escape',target:h.$('roulette-open')});await h.tick(4000);
  assert.equal(h.api.state.currentIndex,0);assert.equal(h.$('roulette-reel').hidden,true);assert.equal(h.$('fate-gates').children.length,0);assert.equal(h.doc.activeElement.id,'roulette-open');
+});
+
+test('slow artwork is never skipped and receives the full reading interval after ready',async()=>{
+ const h=await harness({reduced:false,artworkReady:false});h.$('slideshow-speed').value='1';h.$('slideshow-speed').dispatch('change');h.$('slideshow-toggle').click();
+ await h.tick(6500);assert.equal(h.api.state.currentIndex,0);assert.ok(h.api.state.slideshow.blockers.includes('artwork'));
+ h.$('artwork-image').naturalWidth=800;h.$('artwork-image').dispatch('load');
+ await h.tick(999);assert.equal(h.api.state.currentIndex,0);await h.tick(1);assert.equal(h.api.state.currentIndex,1);
+ assert.ok(h.api.state.slideshow.blockers.includes('artwork'));
+});
+test('a failed artwork wait exposes fallback before slideshow starts its complete interval',async()=>{
+ const h=await harness({reduced:false,artworkReady:false});h.$('slideshow-speed').value='1';h.$('slideshow-speed').dispatch('change');h.$('slideshow-toggle').click();
+ await h.tick(10000);assert.equal(h.$('artwork-fallback').hidden,false);assert.equal(h.api.state.currentIndex,0);
+ await h.tick(999);assert.equal(h.api.state.currentIndex,0);await h.tick(1);assert.equal(h.api.state.currentIndex,1);
+});
+test('archive deadline fails and retries even if fetch ignores abort; late result cannot overwrite retry',async()=>{
+ const h=await harness({autoLoad:false});const old=h.requests[0];await h.tick(12000);
+ assert.equal(h.$('theater').dataset.archiveState,'error');assert.equal(h.$('load-error').hidden,false);assert.equal(old.signal.aborted,true);
+ h.$('retry').click();await h.succeed(h.requests.at(-1));const selected=h.$('theater').dataset.doorId;
+ const stale=structuredClone(archive);stale.years[0].year=1999;await h.succeed(old,stale);
+ assert.equal(h.$('theater').dataset.archiveState,'ready');assert.equal(h.api.state.currentYear,2026);assert.equal(h.$('theater').dataset.doorId,selected);
+});
+test('archive deadline also covers a body that never parses and a new attempt cancels old work',async()=>{
+ const h=await harness({autoLoad:false});h.requests[0].resolve({ok:true,json:()=>new Promise(()=>{})});await h.flush();await h.tick(12000);
+ assert.equal(h.$('load-error').hidden,false);h.$('retry').click();const request=h.requests.at(-1);h.api.load();
+ assert.equal(request.signal.aborted,true);await h.succeed(h.requests.at(-1));assert.equal(h.$('load-error').hidden,true);
+});
+test('embedded palace allows entry while optional full artwork remains stalled',async()=>{
+ const h=await harness({entrance:true,visualReady:new Promise(()=>{})});
+ assert.equal(h.$('palace-gate').disabled,false);assert.equal(h.$('theater').dataset.archiveState,'ready');
+ h.$('palace-gate').click();assert.equal(h.$('article-theater').hidden,false);
+});
+test('roster swipe changes people pages and a vertical scroll leaves the current page intact',async()=>{
+ const h=await harness();h.$('list-open').click();const grid=h.$('roster-grid');
+ const swipe=(dx,dy=0)=>{grid.dispatch('pointerdown',{pointerType:'touch',pointerId:42,clientX:200,clientY:100});for(const fn of h.doc.handlers.pointerup||[])fn({pointerType:'touch',pointerId:42,clientX:200+dx,clientY:100+dy});};
+ swipe(-80);assert.equal(h.$('roster-page-status').textContent,`2 / ${pageCount} ページ`);assert.equal(h.$('roster').open,true);
+ swipe(10,90);assert.equal(h.$('roster-page-status').textContent,`2 / ${pageCount} ページ`);swipe(80);assert.equal(h.$('roster-page-status').textContent,`1 / ${pageCount} ページ`);
+});
+test('ordinary people pages preserve additional separate article doors without splitting a person',async()=>{
+ const data=structuredClone(archive);data.evergreenEntries=[0,1].map(i=>({doorId:`ordinary-${i}`,creatorId:'ss_yr',submissionStatus:'submitted',title:`作品 ${i}`,links:[{title:'記事',url:`https://note.com/ss_yr/n/n${i}`}]}));
+ const h=await harness({data,savedMode:'normal'});h.$('list-open').click();const cards=h.$('roster-grid').children;
+ assert.equal(new Set(cards.map(c=>c.dataset.creatorId)).size,5);assert.equal(cards.length,6);
+ assert.deepEqual(cards.filter(c=>c.dataset.creatorId==='ss_yr').map(c=>c.dataset.doorId),['ordinary-0','ordinary-1']);
+ h.$('roster-next').click();assert.ok(h.$('roster-grid').children.every(c=>c.dataset.creatorId!=='ss_yr'));
 });

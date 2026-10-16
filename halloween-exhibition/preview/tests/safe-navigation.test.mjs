@@ -29,9 +29,13 @@ test('maze castle return preserves progress and never offers app exit',async()=>
  assert.match(source,/← 記事一覧に戻る/);
  assert.doesNotMatch(source+html,/終了・お城へ|アプリ終了|window\.close/);
 });
-test('admin local return preserves unsaved input without beforeunload interception',async()=>{
+test('admin local return retains input and page exit guards only unsaved or unpersisted drafts',async()=>{
  const source=await read('admin/app.js');
  assert.match(source,/if\(dirty\|\|!storageOK\)\{event\.preventDefault\(\)/);
- assert.doesNotMatch(source,/beforeunload/);
+ // The rebuild specification explicitly requires unsaved exit protection.
+ // Local castle return retains the form; reload/close may request a native
+ // warning, guarded by draft state. It must not force navigation or closure.
+ assert.match(source,/window\.addEventListener\('beforeunload',event=>\{\s*if\(dirty\|\|\(state&&!storageOK\)\)\{event\.preventDefault\(\);event\.returnValue='';\}/);
+ assert.doesNotMatch(source,/window\.close|history\.(?:back|go)|location\.(?:replace|assign)|localStorage\.clear/);
  assert.match(source,/入力はこの画面に残しています/);
 });

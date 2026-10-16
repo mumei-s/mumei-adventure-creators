@@ -19,7 +19,7 @@ test('battle commits earned marks immediately but keeps canvas and commands lock
  assert(act.includes("if(battle.status==='won'&&!cleared.includes(battle.id)){cleared.push(battle.id);save();}"));
  assert(!act.includes('renderBattle()'));assert(act.includes('.disabled=true'));
  assert(app.includes('visualTime+=dt'));assert(!app.includes('if(motion&&!reducedMotion.matches)visualTime+=dt'));
- assert(app.includes('Math.min(battleEffect?.duration||0,battleEffectDuration(battleEffect?.type,false))'));
+ assert(app.includes('battleEffectPending(battleEffect,visualTime,motion&&!reducedMotion.matches)')); // duration and reduced-motion behavior are exercised in battle-effects.test.mjs
  assert.equal((app.match(/\$\('battle-shine'\)\?\.focus\(\{preventScroll:true\}\)/g)||[]).length,2);
  assert(app.includes('$(nextFocus)?.focus({preventScroll:true})'));
 });

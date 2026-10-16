@@ -1,9 +1,9 @@
-import {monsterSprite} from './monster-motion.js?v=20261016-living1';
+import {monsterSprite} from './monster-motion.js?v=20261017-review1';
 import { MAP, CELL, FEATURES, blocked, nearby } from './maze-model.js?v=20261014-adventure2';
 import { ALL_MONSTERS as MONSTERS, nearestMonster, monsterAvailable, monsterPose } from './encounter-model.js?v=20261016-living1';
 
 // Canvas illustration authored for this room; no participant art or remote assets.
-import {drawArtSprite,playerPose} from './rpg-art.js?v=20261016-living1';
+import {drawArtSprite,playerPose} from './rpg-art.js?v=20261017-review1';
 import {followCamera,depthOrder,clampSceneCamera} from './rpg-model.js?v=20261014-adventure2';
 const TILE=72,TAU=Math.PI*2;
 export const EXIT={x:8,z:14};
@@ -210,7 +210,7 @@ export function createStageRenderer({makeCanvas=(w,h)=>{const c=document.createE
       if(o.kind==='wall'){drawWall(c,o,player,art);const side=o.orientation==='side',hh=side?115:o.orientation==='north'?92:40;addHit({x:o.x-(side?13:37),y:o.y-(side?76:o.orientation==='north'?89:33),w:side?26:74,h:hh});}
       else if(o.kind==='web')web(c,o.x,o.y,o.flip);
       else if(o.kind==='sconce'){const flicker=motion?Math.sin(time*3.4+o.x)*.025+Math.sin(time*5.3+o.y)*.012:0;ellipse(c,o.x,o.y-2,15,5,'#19111f99');rounded(c,o.x-9,o.y-31,18,28,3,'#654a36','#c9a363');candle(c,o.x,o.y-12,.73+flicker);}
-      else if(o.kind==='creator'){const a=o.actor,step=motion&&a.walking?Math.sin(a.phase||0):0,idle=motion&&!a.walking?Math.sin(time*1.2+o.x)*.45:0,hh=a.heightPx||86,yy=o.y-Math.abs(step)*1.2+idle;ellipse(c,o.x,o.y+3,Math.min(24,hh*.23),7,'#10101a77');drawArtSprite(c,a.sprite,o.x,yy,hh);addHit(spriteBox(a.sprite,o.x,yy,hh),a.interactive===false?null:a.id,a.x*CELL,a.z*CELL);
+      else if(o.kind==='creator'){const a=o.actor,hh=a.heightPx||86,yy=o.y;ellipse(c,o.x,o.y+3,Math.min(24,hh*.23),7,'#10101a77');drawArtSprite(c,a.sprite,o.x,yy,hh);addHit(spriteBox(a.sprite,o.x,yy,hh),a.interactive===false?null:a.id,a.x*CELL,a.z*CELL);
         if(a.interactive!==false&&(a.label||a.name||a.characterName)){const label=String(a.label||a.name||a.characterName);c.font='600 11px "Yu Gothic", sans-serif';const ww=Math.min(124,Math.max(48,c.measureText(label).width+16)),row=Math.round(a.z);let left=Math.round(a.x),right=left;while(MAP[row]?.[left-1]==='.')left--;while(MAP[row]?.[right+1]==='.')right++;const viewLeft=cam.x+(10-cam.originX)/cam.scale,viewRight=cam.x+(w-10-cam.originX)/cam.scale,xx=Math.max(Math.max((left-.5)*TILE+18,viewLeft)+ww/2,Math.min(Math.min((right+.5)*TILE-18,viewRight)-ww/2,o.x)),yy=o.y+15,screenX=cam.originX+(o.x-cam.x)*cam.scale,screenY=cam.originY+(yy-cam.y)*cam.scale;if(screenX>=8&&screenX<=w-8&&screenY>=10&&screenY<=h-15){nameTags.push({label,xx,yy,ww,id:a.id,worldX:a.x*CELL,worldZ:a.z*CELL});}}
       }
       
@@ -220,16 +220,16 @@ export function createStageRenderer({makeCanvas=(w,h)=>{const c=document.createE
       else if(o.kind==='exit')drawExit(c);
       else if(o.kind==='door')rounded(c,o.x-11,o.y-65,22,70,4,'#684e73','#c2a1a6');
       else if(o.kind==='player'){
-        const step=motion&&walking?Math.sin(walkPhase):0,breathe=motion&&!walking?Math.sin(time*1.7)*.6:0;
+        const step=motion&&walking?Math.sin(walkPhase):0;
         ellipse(c,o.x,o.y+3,19-Math.abs(step),7,'#050b1499');
         const sprite=playerPose(art,facing,walking&&motion,walkPhase);
-        if(sprite)addHit(spriteBox(sprite,o.x,o.y-Math.abs(step)*1.5+breathe,86));
-        if(!drawArtSprite(c,sprite,o.x,o.y-Math.abs(step)*1.5+breathe,86,{scaleX:1+step*.008,scaleY:1-Math.abs(step)*.012}))drawPlayer(c,o.x,o.y-18,lantern);
+        if(sprite)addHit(spriteBox(sprite,o.x,o.y,86));
+        if(!drawArtSprite(c,sprite,o.x,o.y,86))drawPlayer(c,o.x,o.y-18,lantern);
       }else if(o.kind==='enemy'){
         if(o.cleared){ellipse(c,o.x,o.y,15,8,'#d2ac65');text(c,'✓',o.x,o.y,16,'#362b35');continue;}
-        const idle=motion?(o.id==='franken'?Math.abs(Math.sin(time*.65))*1.1:o.id==='zombie'?Math.abs(Math.sin(time*.8))*.8:o.id==='vampire'?Math.sin(time*.9)*1.3:Math.sin(time*1.9+o.x)*2.2):0;ellipse(c,o.x,o.y+3,25,8,'#07091488');
-        const monster=monsterSprite(art,o.id,{time,motion,walking:o.pose.walking,facing:o.pose.facing});
-        if(!drawArtSprite(c,monster,o.x,o.y+(monster?.animated?0:idle),o.id==='bat'?92:100,{flip:monster?.flip,rotation:motion&&['zombie','franken'].includes(o.id)?Math.sin(time*(o.id==='franken'?.65:.8))*.018:0,scaleX:1+(motion?Math.sin(time*1.4)*.018:0),scaleY:1+(motion?Math.cos(time*1.4)*.012:0)}))drawCreature(c,o.id,o.x,o.y-25,1.1);
+        ellipse(c,o.x,o.y+3,25,8,'#07091488');
+        const monster=monsterSprite(art,o.id,{time,motion,walking:o.pose.walking,facing:o.pose.facing,phase:o.pose.phase,turning:o.pose.turning});
+        if(!drawArtSprite(c,monster,o.x,o.y,o.id==='bat'?92:100,{flip:monster?.flip}))drawCreature(c,o.id,o.x,o.y-25,1.1);
       }else{
         ellipse(c,o.x,o.y+2,o.size*.25,7,'#080b1477');
         const foregroundAlpha=o.y>player.y&&o.y-player.y<o.size*.85&&Math.abs(o.x-player.x)<o.size*.45?.35:1;

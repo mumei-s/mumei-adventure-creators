@@ -10,7 +10,9 @@ test('arrows occupy one flow navigation row between the image world and caption'
  assert.ok(html.indexOf('id="room-world"')<html.indexOf(nav));assert.ok(html.indexOf(nav)<html.indexOf('class="stage-caption"'));
  assert.match(css,/stage-navigation \{[^}]*position:relative;inset:auto[^}]*display:flex/s);
  assert.match(css,/stage-navigation \.stage-arrow \{[^}]*position:relative;inset:auto;transform:none[^}]*min-height:44px/s);
- assert.match(html,/前の5扉/);assert.match(html,/次の5扉/);
+ assert.match(html,/aria-label="前の5人を表示"/);assert.match(html,/aria-label="次の5人を表示"/);
+ const roster=html.match(/<dialog id="roster"[\s\S]*?<\/dialog>/)?.[0];assert.ok(roster.indexOf('id="roster-grid"')<roster.indexOf('class="roster-pagination"'));
+ assert.match(roster,/参加者5人ずつ/);
 });
 test('article and profile images are contained inside bounded frames without hover enlargement',()=>{
  assert.match(css,/data-portrait=false[^}]*width:min\(82%,calc\(\(100cqh - 20px\) \* 1\.91\),820px\)[^}]*aspect-ratio:1\.91/s);

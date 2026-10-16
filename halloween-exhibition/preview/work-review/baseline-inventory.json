@@ -1,0 +1,1868 @@
+{
+  "baselineCommit": "e989cd523efec7a1eb72685d94ad9912ee53e06e",
+  "recordedAt": "2026-10-17 Asia/Tokyo",
+  "evidence": "Git baseline blobs and image metadata; no browser or device verification performed by this audit",
+  "archiveSchema": 1,
+  "catalogSchema": 2,
+  "registeredCreators": 15,
+  "evergreenEntries": 0,
+  "supplementalCatalogArticles": 0,
+  "years": [
+    {
+      "year": 2026,
+      "doorCount": 16,
+      "registeredCreatorCount": 15,
+      "submittedCreators": [
+        "aihan_days",
+        "cheeky_rhino7031",
+        "clever_hare2654",
+        "fond_holly3483",
+        "glossy_guppy6230",
+        "imota14",
+        "koakumako",
+        "mama_ca",
+        "n_kazumai55633",
+        "naemotion",
+        "real_hyena9474",
+        "soh_style_work",
+        "ss_yr",
+        "tenkai_notes"
+      ],
+      "pendingCreators": [
+        "grand_daisy8632"
+      ],
+      "introductionDoors": 1,
+      "links": 31,
+      "works": 0,
+      "hiddenDoors": 0,
+      "explicitDoorIds": 2
+    }
+  ],
+  "cast": {
+    "creatorManifestRevision": "20261016-avatar-rpg2",
+    "heroAtlases": 1,
+    "npcAtlases": 16,
+    "catAtlases": 1,
+    "castEntities": 22,
+    "npcDialogueTargets": 15,
+    "fictionalResidents": 2,
+    "monsters": 10,
+    "characterBytes": 7171642,
+    "initialHeroAndCatBytes": 886498,
+    "gameMonsterAtlasBytes": 729440,
+    "castleMonsterAtlasBytes": 236682
+  },
+  "files": [
+    {
+      "path": "halloween-exhibition/preview/data/archive.json",
+      "bytes": 23165,
+      "sha256": "75d4a63418426310c81ebb288218ee5e17c3318e21fc5e7df5db2fb92d7d706e"
+    },
+    {
+      "path": "halloween-exhibition/preview/maze/data/creator-characters.json",
+      "bytes": 205483,
+      "sha256": "46eab84ce24b1d3dc5d93a8d3ec790c3d171e0b111c211cdb68d5057d0111769"
+    },
+    {
+      "path": "halloween-exhibition/preview/maze/data/residents.json",
+      "bytes": 10741,
+      "sha256": "97df05c7aeed6af1a5a159610ed856d12b5381d94b328feac42413a5cf1507cf"
+    },
+    {
+      "path": "halloween-exhibition/preview/maze/data/catalog.json",
+      "bytes": 6670,
+      "sha256": "5ab4358fb92225f5eb27108975abf46ad3a78c7b2d56cb71b383ee4b6636b9b5"
+    },
+    {
+      "path": "halloween-exhibition/preview/maze/assets/rpg/animated/monster-motion.json",
+      "bytes": 26918,
+      "sha256": "24d0b1f697743d942c22e6b23cd43bb4f0b0e5bca176b5c5045a5d0a5bb04e28"
+    }
+  ],
+  "characterAssets": [
+    {
+      "id": "owner-lantern-hero",
+      "role": "hero",
+      "creatorId": "ss_yr",
+      "entityIds": [
+        "ss-yr-lantern-hero"
+      ],
+      "interactive": false,
+      "path": "halloween-exhibition/preview/maze/assets/creator-npcs/owner-lantern-walk.webp",
+      "bytes": 545770,
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "sha256": "bfa859d95117dcc7233283cdb14b0e06892152f99883ca71e42ea085481296eb",
+      "manifestSHA256Matches": true,
+      "sourceKind": "user-upload",
+      "sourceReference": {
+        "kind": "user-upload",
+        "referenceId": "owner-lantern-reference-20261016",
+        "referenceSHA256": "04b38f44043704243740cb7bcc1b7dbb58603162001bf1bc611a47687240eabd",
+        "verified": true
+      },
+      "referenceDecision": "owner-user-reference",
+      "originalDimensions": [
+        1254,
+        1254
+      ],
+      "originalSHA256": "d741a18ce52025ec867cfc18dac4791ecb0b4fd1fb468cde1877f6207d4689f2",
+      "encoding": {
+        "format": "WebP",
+        "quality": 88,
+        "alpha": "lossless-after-runtime-resize",
+        "runtimeMaxDimension": 1024
+      },
+      "directions": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "walkColumns": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "idleColumn": 0,
+      "frameCount": 16
+    },
+    {
+      "id": "iris",
+      "role": "npc",
+      "creatorId": "real_hyena9474",
+      "entityIds": [
+        "iris"
+      ],
+      "interactive": true,
+      "path": "halloween-exhibition/preview/maze/assets/creator-npcs/iris-walk.webp",
+      "bytes": 300980,
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "sha256": "a465b6431b3f1aec64fc321599413adc58378627a848d619bfd219d5f3bb8844",
+      "manifestSHA256Matches": true,
+      "sourceKind": "article-art",
+      "sourceReference": {
+        "kind": "article-art",
+        "articleURL": "https://note.com/real_hyena9474/n/nde7d4a19044d",
+        "imageURL": "https://assets.st-note.com/img/1792064668-qfgFtDjbzWmQ8hOHPCad1xvk.png?width=1200",
+        "verified": true
+      },
+      "referenceDecision": "profile-avatar-match",
+      "originalDimensions": [
+        1254,
+        1254
+      ],
+      "originalSHA256": "4e8a4e5788c4ac83eee9eeea6c4d7c3b06ff19e9ca53715a85888e2d1e324eff",
+      "encoding": {
+        "format": "WebP",
+        "quality": 88,
+        "alpha": "lossless-after-runtime-resize",
+        "runtimeMaxDimension": 1024
+      },
+      "directions": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "walkColumns": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "idleColumn": 0,
+      "frameCount": 16
+    },
+    {
+      "id": "koakumako-base-devil",
+      "role": "npc",
+      "creatorId": "koakumako",
+      "entityIds": [
+        "koakumako-base-devil"
+      ],
+      "interactive": true,
+      "path": "halloween-exhibition/preview/maze/assets/creator-npcs/koakumako-base-devil-walk.webp",
+      "bytes": 376696,
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "sha256": "a1f5d2957fc62042845aa2bf66ac87dff15518b702a8c6517b35a15b257a08e7",
+      "manifestSHA256Matches": true,
+      "sourceKind": "article-art",
+      "sourceReference": {
+        "kind": "article-art",
+        "articleURL": "https://note.com/koakumako/n/n8c03103e9874",
+        "imageURL": "https://assets.st-note.com/img/1788184948-95czaCOhItNB8j1uVG2gQdZn.png?width=4000&height=4000&fit=bounds&format=jpg&quality=90",
+        "verified": true
+      },
+      "referenceDecision": "official-character-sheet",
+      "originalDimensions": [
+        1254,
+        1254
+      ],
+      "originalSHA256": "6cbd87e7fdf11c69795e15839874e02189a759627e00cbe54aeb83f8a683ac35",
+      "encoding": {
+        "format": "WebP",
+        "quality": 88,
+        "alpha": "lossless-after-runtime-resize",
+        "runtimeMaxDimension": 1024
+      },
+      "directions": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "walkColumns": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "idleColumn": 1,
+      "frameCount": 16
+    },
+    {
+      "id": "minato-shio-witch",
+      "role": "npc",
+      "creatorId": "n_kazumai55633",
+      "entityIds": [
+        "minato-shio-witch"
+      ],
+      "interactive": true,
+      "path": "halloween-exhibition/preview/maze/assets/creator-npcs/minato-shio-witch-walk.webp",
+      "bytes": 501516,
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "sha256": "d4e9022fab44a2e2c05c121b5af39d54fa41ba2218d0a50632679a081c1eb757",
+      "manifestSHA256Matches": true,
+      "sourceKind": "article-art",
+      "sourceReference": {
+        "kind": "article-art",
+        "articleURL": "https://note.com/n_kazumai55633/n/n4cc7e57a4182",
+        "imageURL": "https://assets.st-note.com/img/1792062512-umEQVOijcgFlZf1bMJCnexkq.png?width=1200",
+        "verified": true
+      },
+      "referenceDecision": "profile-avatar-match",
+      "originalDimensions": [
+        1254,
+        1254
+      ],
+      "originalSHA256": "f6731b98bda97151627130ff8a928b6266b255fde0313bc325afa293ad87e59d",
+      "encoding": {
+        "format": "WebP",
+        "quality": 88,
+        "alpha": "lossless-after-runtime-resize",
+        "runtimeMaxDimension": 1024
+      },
+      "directions": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "walkColumns": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "idleColumn": 1,
+      "frameCount": 16
+    },
+    {
+      "id": "naemo-masquerade",
+      "role": "npc",
+      "creatorId": "naemotion",
+      "entityIds": [
+        "naemo-masquerade"
+      ],
+      "interactive": true,
+      "path": "halloween-exhibition/preview/maze/assets/creator-npcs/naemo-masquerade-walk.webp",
+      "bytes": 589706,
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "sha256": "2390e9b16df4ab8f6ff9b3998160295482c8067ff807c3c360ca3bc99652b768",
+      "manifestSHA256Matches": true,
+      "sourceKind": "article-art",
+      "sourceReference": {
+        "kind": "article-art",
+        "articleURL": "https://note.com/naemotion/n/n26b717b6c247",
+        "imageURL": "https://assets.st-note.com/img/1792044760-17UcFrMmuyXg59BLD8ewbVKC.png?width=1200",
+        "verified": true
+      },
+      "referenceDecision": "profile-avatar-match",
+      "originalDimensions": [
+        1254,
+        1254
+      ],
+      "originalSHA256": "e2f7cc15a9bcaed4983a831b97732d842b314a2ba853916cc0f070c5e3ea6283",
+      "encoding": {
+        "format": "WebP",
+        "quality": 88,
+        "alpha": "lossless-after-runtime-resize",
+        "runtimeMaxDimension": 1024
+      },
+      "directions": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "walkColumns": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "idleColumn": 1,
+      "frameCount": 16
+    },
+    {
+      "id": "yamakon-navy-figure",
+      "role": "npc",
+      "creatorId": "fond_holly3483",
+      "entityIds": [
+        "yamakon-navy-figure"
+      ],
+      "interactive": true,
+      "path": "halloween-exhibition/preview/maze/assets/creator-npcs/yamakon-navy-figure-walk.webp",
+      "bytes": 366722,
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "sha256": "feb8fed1b976c6041b92ba58967f053cdac166101f8f9d3a97b80feb37a8b6d9",
+      "manifestSHA256Matches": true,
+      "sourceKind": "article-art",
+      "sourceReference": {
+        "kind": "article-art",
+        "articleURL": "https://note.com/fond_holly3483/n/ne5a25ae27a20",
+        "imageURL": "https://assets.st-note.com/img/1792032751-bWFZXTUwro7cE2C41jas5KNL.png?width=1200",
+        "verified": true
+      },
+      "referenceDecision": "profile-avatar-match",
+      "originalDimensions": [
+        1254,
+        1254
+      ],
+      "originalSHA256": "3867d541386135b9552d74c41d8602a95fe7add120a196e9a2426031d10b4a66",
+      "encoding": {
+        "format": "WebP",
+        "quality": 88,
+        "alpha": "lossless-after-runtime-resize",
+        "runtimeMaxDimension": 1024
+      },
+      "directions": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "walkColumns": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "idleColumn": 0,
+      "frameCount": 16
+    },
+    {
+      "id": "yamakon-pink-figure",
+      "role": "npc",
+      "creatorId": "fond_holly3483",
+      "entityIds": [
+        "yamakon-pink-figure"
+      ],
+      "interactive": true,
+      "path": "halloween-exhibition/preview/maze/assets/creator-npcs/yamakon-pink-figure-walk.webp",
+      "bytes": 482808,
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "sha256": "d01c917af4438b9fd6e019f0059cc855f85ac3eb5f1b8f4c80910df41e90afe9",
+      "manifestSHA256Matches": true,
+      "sourceKind": "article-art",
+      "sourceReference": {
+        "kind": "article-art",
+        "articleURL": "https://note.com/fond_holly3483/n/ne5a25ae27a20",
+        "imageURL": "https://assets.st-note.com/img/1792032751-bWFZXTUwro7cE2C41jas5KNL.png?width=1200",
+        "verified": true
+      },
+      "referenceDecision": "profile-avatar-match",
+      "originalDimensions": [
+        1254,
+        1254
+      ],
+      "originalSHA256": "9a68ae29b0541eef66f053cc24311c8cb39f44f721908b2a66e51e71b75e64d1",
+      "encoding": {
+        "format": "WebP",
+        "quality": 88,
+        "alpha": "lossless-after-runtime-resize",
+        "runtimeMaxDimension": 1024
+      },
+      "directions": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "walkColumns": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "idleColumn": 0,
+      "frameCount": 16
+    },
+    {
+      "id": "marimo-headcat",
+      "role": "npc",
+      "creatorId": "soh_style_work",
+      "entityIds": [
+        "marimo",
+        "marimo-cat"
+      ],
+      "interactive": true,
+      "path": "halloween-exhibition/preview/maze/assets/creator-npcs/marimo-walk.webp",
+      "bytes": 319562,
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "sha256": "11ac7a9cae9115db26713613a4ae031d7fef0c7b9ac9d0fb1f3eae05cac8cb00",
+      "manifestSHA256Matches": true,
+      "sourceKind": "article-art",
+      "sourceReference": {
+        "kind": "article-art",
+        "articleURL": "https://note.com/soh_style_work/n/nc02977b1ebf9",
+        "imageURL": "https://assets.st-note.com/img/1791977927-fIVwqAQa0RK3tkyHc7dizJxX.png?width=1200",
+        "verified": true
+      },
+      "referenceDecision": "profile-avatar-match",
+      "originalDimensions": [
+        1254,
+        1254
+      ],
+      "originalSHA256": "907069b34d5906c93cba93abd0b7e494c2911e22a06c86d1e4c7c5aaa9935c2e",
+      "encoding": {
+        "format": "WebP",
+        "quality": 88,
+        "alpha": "lossless-after-runtime-resize",
+        "runtimeMaxDimension": 1024
+      },
+      "directions": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "walkColumns": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "idleColumn": 0,
+      "frameCount": 16
+    },
+    {
+      "id": "tantan-streetwalker",
+      "role": "npc",
+      "creatorId": "glossy_guppy6230",
+      "entityIds": [
+        "tantan-streetwalker"
+      ],
+      "interactive": true,
+      "path": "halloween-exhibition/preview/maze/assets/creator-npcs/tantan-streetwalker-walk.webp",
+      "bytes": 404736,
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "sha256": "de07a915b6ac976c70428fc814aaafff5b6bc1e651cb5ac62618391292b66d2b",
+      "manifestSHA256Matches": true,
+      "sourceKind": "article-art",
+      "sourceReference": {
+        "kind": "article-art",
+        "articleURL": "https://note.com/glossy_guppy6230/n/n4b2ef2311c28",
+        "imageURL": "https://assets.st-note.com/img/1792070385-rtPaK2kZm5Dqi8hQzOfYSMVd.png?width=1200",
+        "verified": true
+      },
+      "referenceDecision": "profile-avatar-match",
+      "originalDimensions": [
+        1254,
+        1254
+      ],
+      "originalSHA256": "f591bea2b268f5f81de2a6ded792896153ec3d52ddf538a4ec9fa49cb629d89b",
+      "encoding": {
+        "format": "WebP",
+        "quality": 88,
+        "alpha": "lossless-after-runtime-resize",
+        "runtimeMaxDimension": 1024
+      },
+      "directions": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "walkColumns": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "idleColumn": 0,
+      "frameCount": 16
+    },
+    {
+      "id": "takechi-bread-avatar",
+      "role": "npc",
+      "creatorId": "imota14",
+      "entityIds": [
+        "takechi-bread-avatar"
+      ],
+      "interactive": true,
+      "path": "halloween-exhibition/preview/maze/assets/creator-npcs/takechi-bread-avatar-walk.webp",
+      "bytes": 187006,
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "sha256": "d5f86460b1c955f5512f6bc967ba416c8e43ef1cda0d31da04338392cca38ecd",
+      "manifestSHA256Matches": true,
+      "sourceKind": "profile-avatar",
+      "sourceReference": {
+        "kind": "profile-avatar",
+        "profileURL": "https://note.com/imota14",
+        "dimensions": [
+          330,
+          330
+        ],
+        "userSelected": true,
+        "imageURL": "https://assets.st-note.com/production/uploads/images/259177693/profile_b5ff6284738bbb28852546a5c0804f69.png?fit=bounds&format=jpeg&quality=85&width=330",
+        "referenceSHA256": "e2a63eb97102fac30d6025a9e7c2a523277441600b6dcb926762c41f06dc9ca8",
+        "verified": true
+      },
+      "referenceDecision": "profile-avatar-replacement",
+      "originalDimensions": [
+        1254,
+        1254
+      ],
+      "originalSHA256": "47c24b46bfe5871790b9cea04d56376e261a4a78e1b180de2b7ddfc1ccd5a4b9",
+      "encoding": {
+        "format": "WebP",
+        "quality": 88,
+        "alpha": "lossless-after-runtime-resize",
+        "runtimeMaxDimension": 1024
+      },
+      "directions": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "walkColumns": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "idleColumn": 0,
+      "frameCount": 16
+    },
+    {
+      "id": "chamomile-flower-avatar",
+      "role": "npc",
+      "creatorId": "clever_hare2654",
+      "entityIds": [
+        "chamomile-flower-avatar"
+      ],
+      "interactive": true,
+      "path": "halloween-exhibition/preview/maze/assets/creator-npcs/chamomile-flower-avatar-walk.webp",
+      "bytes": 338316,
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "sha256": "7ff851e933b9d9bebdddf151908aff77ae18162dbe0a4be310810de99cb74373",
+      "manifestSHA256Matches": true,
+      "sourceKind": "profile-avatar",
+      "sourceReference": {
+        "kind": "profile-avatar",
+        "profileURL": "https://note.com/clever_hare2654",
+        "imageURL": "https://assets.st-note.com/production/uploads/images/292743934/profile_f29fb47a7423a0ddcbd3f4bd4b498a35.png",
+        "profileRenderedAvatarURL": "https://assets.st-note.com/production/uploads/images/292743934/profile_f29fb47a7423a0ddcbd3f4bd4b498a35.png?fit=bounds&format=jpeg&quality=85&width=330",
+        "referenceSHA256": "cf52f4579307cd3fe9ffc575b92cca01bf1bd1982edcaa4897478e42f1945d47",
+        "verifiedAtUTC": "2026-10-16T12:44:13.269655+00:00",
+        "verified": true,
+        "userSelected": true
+      },
+      "referenceDecision": "profile-avatar-replacement",
+      "originalDimensions": [
+        1254,
+        1254
+      ],
+      "originalSHA256": "11eaaec2fc03d8f0ef94f13d9c685b0d612a8a7a9bec966cb32a2695625b4cc7",
+      "encoding": {
+        "format": "WebP",
+        "quality": 88,
+        "alpha": "lossless-after-runtime-resize",
+        "runtimeMaxDimension": 1024
+      },
+      "directions": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "walkColumns": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "idleColumn": 0,
+      "frameCount": 16
+    },
+    {
+      "id": "tenkai-moon-robed-avatar",
+      "role": "npc",
+      "creatorId": "tenkai_notes",
+      "entityIds": [
+        "tenkai-moon-robed-avatar"
+      ],
+      "interactive": true,
+      "path": "halloween-exhibition/preview/maze/assets/creator-npcs/tenkai-moon-robed-avatar-walk.webp",
+      "bytes": 390018,
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "sha256": "6ff6af2f0365a64e3885c2e1f1ffb1cb4d60d1d87518bceb056a94e81f71c724",
+      "manifestSHA256Matches": true,
+      "sourceKind": "profile-avatar",
+      "sourceReference": {
+        "kind": "profile-avatar",
+        "profileURL": "https://note.com/tenkai_notes",
+        "imageURL": "https://assets.st-note.com/production/uploads/images/253576749/profile_70a01c50c971bc4c57351b9f5cc8a299.png",
+        "profileRenderedAvatarURL": "https://assets.st-note.com/production/uploads/images/253576749/profile_70a01c50c971bc4c57351b9f5cc8a299.png?fit=bounds&format=jpeg&quality=85&width=330",
+        "referenceSHA256": "d8e547b87bc6c03cc8241a28d7db7190c1c3fa4365882c4311f65fd75554f634",
+        "verifiedAtUTC": "2026-10-16T12:44:13.723356+00:00",
+        "verified": true,
+        "userSelected": true
+      },
+      "referenceDecision": "profile-avatar-replacement",
+      "originalDimensions": [
+        1254,
+        1254
+      ],
+      "originalSHA256": "c283bcc629f4002d1620a25a253f13c7120cb57cf07339cb0976beea48e0354c",
+      "encoding": {
+        "format": "WebP",
+        "quality": 88,
+        "alpha": "lossless-after-runtime-resize",
+        "runtimeMaxDimension": 1024
+      },
+      "directions": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "walkColumns": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "idleColumn": 0,
+      "frameCount": 16
+    },
+    {
+      "id": "aihan-avatar-woman",
+      "role": "npc",
+      "creatorId": "aihan_days",
+      "entityIds": [
+        "aihan-avatar-woman"
+      ],
+      "interactive": true,
+      "path": "halloween-exhibition/preview/maze/assets/creator-npcs/aihan-avatar-woman-walk.webp",
+      "bytes": 312740,
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "sha256": "ea4bd3473244b292f7b3a6e8de3094359e80386fd187b3ac96b2364dc44bcb3f",
+      "manifestSHA256Matches": true,
+      "sourceKind": "profile-avatar",
+      "sourceReference": {
+        "profileURL": "https://note.com/aihan_days",
+        "imageURL": "https://assets.st-note.com/production/uploads/images/318226325/profile_f65224485bea2e310e8667b5c1ff9f46.png",
+        "referenceSHA256": "a87c4375eb420ed8ffd07f5a66d722b14b92eea5c3c4da016a6f58fbe87d6911",
+        "dimensions": [
+          1048,
+          1048
+        ],
+        "verifiedAtUTC": "2026-10-16T12:46:00Z",
+        "verified": true,
+        "userSelected": true,
+        "kind": "profile-avatar",
+        "profileRenderedAvatarURL": "https://assets.st-note.com/production/uploads/images/318226325/profile_f65224485bea2e310e8667b5c1ff9f46.png?fit=bounds&format=jpeg&quality=85&width=330",
+        "profileRenderedAvatarSHA256": "f76b09e1057923a561f399b884e0e8c8c45861c1aaf1e1b623a375305e5736f1",
+        "mimeType": "image/jpeg"
+      },
+      "referenceDecision": "profile-avatar-replacement",
+      "originalDimensions": [
+        1254,
+        1254
+      ],
+      "originalSHA256": "cd7fa6e2869bf9b6b73c2522cd89afc1709832441c2b3a409d9faad05b38b1f4",
+      "encoding": {
+        "format": "WebP",
+        "quality": 88,
+        "alpha": "lossless-after-runtime-resize",
+        "runtimeMaxDimension": 1024
+      },
+      "directions": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "walkColumns": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "idleColumn": 0,
+      "frameCount": 16
+    },
+    {
+      "id": "aihan-avatar-shiba",
+      "role": "npc",
+      "creatorId": "aihan_days",
+      "entityIds": [
+        "aihan-avatar-shiba"
+      ],
+      "interactive": true,
+      "path": "halloween-exhibition/preview/maze/assets/creator-npcs/aihan-avatar-shiba-walk.webp",
+      "bytes": 470400,
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "sha256": "50a5fda8381ccf471b3360bd89d60e136dd961618e67ef8a44d72e1b60d8bc88",
+      "manifestSHA256Matches": true,
+      "sourceKind": "profile-avatar",
+      "sourceReference": {
+        "profileURL": "https://note.com/aihan_days",
+        "imageURL": "https://assets.st-note.com/production/uploads/images/318226325/profile_f65224485bea2e310e8667b5c1ff9f46.png",
+        "referenceSHA256": "a87c4375eb420ed8ffd07f5a66d722b14b92eea5c3c4da016a6f58fbe87d6911",
+        "dimensions": [
+          1048,
+          1048
+        ],
+        "verifiedAtUTC": "2026-10-16T12:46:00Z",
+        "verified": true,
+        "userSelected": true,
+        "kind": "profile-avatar",
+        "profileRenderedAvatarURL": "https://assets.st-note.com/production/uploads/images/318226325/profile_f65224485bea2e310e8667b5c1ff9f46.png?fit=bounds&format=jpeg&quality=85&width=330",
+        "profileRenderedAvatarSHA256": "f76b09e1057923a561f399b884e0e8c8c45861c1aaf1e1b623a375305e5736f1",
+        "mimeType": "image/jpeg"
+      },
+      "referenceDecision": "profile-avatar-replacement",
+      "originalDimensions": [
+        1254,
+        1254
+      ],
+      "originalSHA256": "7721e90fd67824a5c6fa35443552b5c467446338fbcb407c2ab7c580e667355c",
+      "encoding": {
+        "format": "WebP",
+        "quality": 88,
+        "alpha": "lossless-after-runtime-resize",
+        "runtimeMaxDimension": 1024
+      },
+      "directions": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "walkColumns": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "idleColumn": 0,
+      "frameCount": 16
+    },
+    {
+      "id": "mama-avatar-pair",
+      "role": "npc",
+      "creatorId": "mama_ca",
+      "entityIds": [
+        "mama-avatar-woman",
+        "mama-avatar-creature"
+      ],
+      "interactive": true,
+      "path": "halloween-exhibition/preview/maze/assets/creator-npcs/mama-avatar-pair-walk.webp",
+      "bytes": 561004,
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "sha256": "a6b053423048e44a26103982be7566719bd6524db134b218c1bef3b29713a8f1",
+      "manifestSHA256Matches": true,
+      "sourceKind": "profile-avatar",
+      "sourceReference": {
+        "kind": "profile-avatar",
+        "profileURL": "https://note.com/mama_ca",
+        "imageURL": "https://assets.st-note.com/production/uploads/images/302879278/profile_680f428bdf06a11c197bae98b43534d2.jpeg",
+        "referenceSHA256": "0e3b141cb452a6c29b7c486dbe51ddebddc0530c3ce55fae4098f929fe834eef",
+        "verified": true,
+        "userSelected": true,
+        "verifiedAtUTC": "2026-10-16T12:44:49.618901+00:00",
+        "dimensions": [
+          3762,
+          3762
+        ]
+      },
+      "referenceDecision": "profile-avatar-replacement",
+      "originalDimensions": [
+        1254,
+        1254
+      ],
+      "originalSHA256": "0e67e52c0b54521a39b12f2ddfa5dc284581c8606afd24cb6d9c2db282d07986",
+      "encoding": {
+        "format": "WebP",
+        "quality": 88,
+        "alpha": "lossless-after-runtime-resize",
+        "runtimeMaxDimension": 1024
+      },
+      "directions": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "walkColumns": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "idleColumn": 1,
+      "frameCount": 16
+    },
+    {
+      "id": "lokiron-avatar",
+      "role": "npc",
+      "creatorId": "cheeky_rhino7031",
+      "entityIds": [
+        "lokiron-avatar"
+      ],
+      "interactive": true,
+      "path": "halloween-exhibition/preview/maze/assets/creator-npcs/lokiron-avatar-walk.webp",
+      "bytes": 246756,
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "sha256": "a85a219f89bd2eb38e96a3ed2f067b2e7de3eb753abe9561a8e673dc659c5d6c",
+      "manifestSHA256Matches": true,
+      "sourceKind": "profile-avatar",
+      "sourceReference": {
+        "kind": "profile-avatar",
+        "profileURL": "https://note.com/cheeky_rhino7031",
+        "imageURL": "https://assets.st-note.com/production/uploads/images/281429856/profile_394e2eb8124ebdada2bc028db6563ed2.png",
+        "referenceSHA256": "9ae223a8478a42a849e541d4f821b50204ae4b69b9290543c2460763021fd0b5",
+        "verified": true,
+        "userSelected": true,
+        "verifiedAtUTC": "2026-10-16T12:44:13.447383+00:00",
+        "dimensions": [
+          1302,
+          1302
+        ]
+      },
+      "referenceDecision": "profile-avatar-replacement",
+      "originalDimensions": [
+        1254,
+        1254
+      ],
+      "originalSHA256": "c5a7fe0c4f67765a4a2fbd6b734127d510af21b110970e87a879155d3fe819b1",
+      "encoding": {
+        "format": "WebP",
+        "quality": 88,
+        "alpha": "lossless-after-runtime-resize",
+        "runtimeMaxDimension": 1024
+      },
+      "directions": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "walkColumns": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "idleColumn": 1,
+      "frameCount": 16
+    },
+    {
+      "id": "tantan-avatar-hedgehogs",
+      "role": "npc",
+      "creatorId": "glossy_guppy6230",
+      "entityIds": [
+        "tantan-avatar-hedgehog-pink-bow",
+        "tantan-avatar-hedgehog-green-cap",
+        "tantan-avatar-hedgehog-pacifier"
+      ],
+      "interactive": false,
+      "path": "halloween-exhibition/preview/maze/assets/creator-npcs/tantan-avatar-hedgehogs-walk.webp",
+      "bytes": 436178,
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "sha256": "e604cb62a63c2340c43ee746726e8e78d4c0340644220623214b237e2deec340",
+      "manifestSHA256Matches": true,
+      "sourceKind": "profile-avatar",
+      "sourceReference": {
+        "kind": "profile-avatar",
+        "profileURL": "https://note.com/glossy_guppy6230",
+        "imageURL": "https://assets.st-note.com/production/uploads/images/318256859/profile_d2fbdcbda06d06e5d51adea51865b4a6.jpeg",
+        "referenceSHA256": "8979bb2ff73bc25905191761a6a36e77d76c95e1bec01ec169e624e07d09a056",
+        "verified": true,
+        "userSelected": true,
+        "verifiedAtUTC": "2026-10-16T12:44:13.159639+00:00",
+        "dimensions": [
+          3759,
+          3759
+        ]
+      },
+      "referenceDecision": "profile-avatar-match",
+      "originalDimensions": [
+        1254,
+        1254
+      ],
+      "originalSHA256": "e70d22701652dc5974924a43f7515b50d6aa6ad14f4e362afb6bb534dcc81bd7",
+      "encoding": {
+        "format": "WebP",
+        "quality": 88,
+        "alpha": "lossless-after-runtime-resize",
+        "runtimeMaxDimension": 1024
+      },
+      "directions": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "walkColumns": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "idleColumn": 1,
+      "frameCount": 16
+    },
+    {
+      "id": "owner-black-cat",
+      "role": "companion",
+      "creatorId": null,
+      "entityIds": [
+        "ss-yr-black-cat"
+      ],
+      "interactive": false,
+      "path": "halloween-exhibition/preview/maze/assets/creator-npcs/owner-black-cat-walk.webp",
+      "bytes": 340728,
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "sha256": "58daf1ef16de6e78f54e79599b55ee16728974999fa57a36f47743e7be7cde0c",
+      "manifestSHA256Matches": true,
+      "sourceKind": "user-upload",
+      "sourceReference": {
+        "kind": "user-upload",
+        "referenceId": "owner-lantern-reference-20261016",
+        "referenceSHA256": "04b38f44043704243740cb7bcc1b7dbb58603162001bf1bc611a47687240eabd",
+        "verified": true
+      },
+      "referenceDecision": null,
+      "originalDimensions": [
+        1254,
+        1254
+      ],
+      "originalSHA256": "ed544d680d675c42c85ae404e0af161ee2f6fd93b60f847e2539b1607266cf88",
+      "encoding": {
+        "format": "WebP",
+        "quality": 88,
+        "alpha": "lossless-after-runtime-resize",
+        "runtimeMaxDimension": 1024
+      },
+      "directions": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "walkColumns": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "idleColumn": 0,
+      "frameCount": 16
+    },
+    {
+      "id": "resident-archivist",
+      "role": "resident",
+      "creatorId": null,
+      "entityIds": [],
+      "interactive": false,
+      "path": "halloween-exhibition/preview/maze/assets/residents/resident-archivist-walk.webp",
+      "bytes": 226162,
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "sha256": "d36c4ea558a59f573048d2b45d729cbfa4292ef85665a78ef1bad3f490d4fb49",
+      "manifestSHA256Matches": true,
+      "sourceKind": "original-game-character",
+      "sourceReference": {
+        "kind": "original-game-character"
+      },
+      "referenceDecision": null,
+      "originalDimensions": null,
+      "originalSHA256": null,
+      "encoding": null,
+      "directions": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "walkColumns": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "idleColumn": 0,
+      "frameCount": 16
+    },
+    {
+      "id": "resident-gardener",
+      "role": "resident",
+      "creatorId": null,
+      "entityIds": [],
+      "interactive": false,
+      "path": "halloween-exhibition/preview/maze/assets/residents/resident-gardener-walk.webp",
+      "bytes": 228304,
+      "dimensions": [
+        1024,
+        1024
+      ],
+      "sha256": "29faa47021c864c2db12fd79669ffb33f1e7088d29ddbb5102374d44fe411553",
+      "manifestSHA256Matches": true,
+      "sourceKind": "original-game-character",
+      "sourceReference": {
+        "kind": "original-game-character"
+      },
+      "referenceDecision": null,
+      "originalDimensions": null,
+      "originalSHA256": null,
+      "encoding": null,
+      "directions": [
+        "down",
+        "left",
+        "right",
+        "up"
+      ],
+      "walkColumns": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "idleColumn": 0,
+      "frameCount": 16
+    }
+  ],
+  "monsterAssets": [
+    {
+      "id": "pumpkin",
+      "variant": "game",
+      "path": "halloween-exhibition/preview/maze/assets/rpg/animated/pumpkin-walk.webp",
+      "bytes": 85032,
+      "dimensions": [
+        512,
+        512
+      ],
+      "sha256": "343d6c5006339c91d7975385084a37492f88a72e99210f46a3ce6d485379bee0",
+      "frames": 4,
+      "fps": 5,
+      "faces": "right"
+    },
+    {
+      "id": "pumpkin",
+      "variant": "castle",
+      "path": "halloween-exhibition/preview/maze/assets/rpg/animated/pumpkin-castle.webp",
+      "bytes": 26462,
+      "dimensions": [
+        256,
+        256
+      ],
+      "sha256": "e003f9065b9c1f2a28a8470c90a5988521e4b5748f85095cda0a28e481fb3b8f",
+      "frames": 4,
+      "fps": 5,
+      "faces": "right"
+    },
+    {
+      "id": "ghost",
+      "variant": "game",
+      "path": "halloween-exhibition/preview/maze/assets/rpg/animated/ghost-walk.webp",
+      "bytes": 108978,
+      "dimensions": [
+        512,
+        512
+      ],
+      "sha256": "d03ac4668d57e73e76e8fe639b82dea03527bc84623727997e3341c90e1268b3",
+      "frames": 4,
+      "fps": 5,
+      "faces": "left"
+    },
+    {
+      "id": "ghost",
+      "variant": "castle",
+      "path": "halloween-exhibition/preview/maze/assets/rpg/animated/ghost-castle.webp",
+      "bytes": 33068,
+      "dimensions": [
+        256,
+        256
+      ],
+      "sha256": "21ae947e1f46308d7e37fed928ff7a6471e3674690d5fecbfcedd2b7cb90ab44",
+      "frames": 4,
+      "fps": 5,
+      "faces": "left"
+    },
+    {
+      "id": "bat",
+      "variant": "game",
+      "path": "halloween-exhibition/preview/maze/assets/rpg/animated/bat-walk.webp",
+      "bytes": 70164,
+      "dimensions": [
+        512,
+        512
+      ],
+      "sha256": "29913359f7afad0073514e7d0012955fbc05924f99135ee20d8233964bdf4ba1",
+      "frames": 4,
+      "fps": 6,
+      "faces": "left"
+    },
+    {
+      "id": "bat",
+      "variant": "castle",
+      "path": "halloween-exhibition/preview/maze/assets/rpg/animated/bat-castle.webp",
+      "bytes": 24064,
+      "dimensions": [
+        256,
+        256
+      ],
+      "sha256": "af2fcfb7df688faa5451852ae41cb8ecea9cd7187a0bbd64710b93235c2a3825",
+      "frames": 4,
+      "fps": 6,
+      "faces": "left"
+    },
+    {
+      "id": "zombie",
+      "variant": "game",
+      "path": "halloween-exhibition/preview/maze/assets/rpg/animated/zombie-walk.webp",
+      "bytes": 54038,
+      "dimensions": [
+        512,
+        512
+      ],
+      "sha256": "f98e6b9ed21cfd028774d2a69adc574f2e916643b8176598c0b3cb7390f21112",
+      "frames": 4,
+      "fps": 5,
+      "faces": "left"
+    },
+    {
+      "id": "zombie",
+      "variant": "castle",
+      "path": "halloween-exhibition/preview/maze/assets/rpg/animated/zombie-castle.webp",
+      "bytes": 18260,
+      "dimensions": [
+        256,
+        256
+      ],
+      "sha256": "b3a06d1ddcd7ed6b6e779f5d4357ddf8febbad38a1911e611c692a7eb51dc4c8",
+      "frames": 4,
+      "fps": 5,
+      "faces": "left"
+    },
+    {
+      "id": "vampire",
+      "variant": "game",
+      "path": "halloween-exhibition/preview/maze/assets/rpg/animated/vampire-walk.webp",
+      "bytes": 49346,
+      "dimensions": [
+        512,
+        512
+      ],
+      "sha256": "f17a7e0d25947dd3dfdf0a6db0e1bc0a1832d7ca7e3c1ceacb14939bdbabf934",
+      "frames": 4,
+      "fps": 5,
+      "faces": "left"
+    },
+    {
+      "id": "vampire",
+      "variant": "castle",
+      "path": "halloween-exhibition/preview/maze/assets/rpg/animated/vampire-castle.webp",
+      "bytes": 17268,
+      "dimensions": [
+        256,
+        256
+      ],
+      "sha256": "2c87f99fba69829ea8976a22ea0d819714d4d7d13cd38c52e8e71e55a3abdd05",
+      "frames": 4,
+      "fps": 5,
+      "faces": "left"
+    },
+    {
+      "id": "franken",
+      "variant": "game",
+      "path": "halloween-exhibition/preview/maze/assets/rpg/animated/franken-walk.webp",
+      "bytes": 77424,
+      "dimensions": [
+        512,
+        512
+      ],
+      "sha256": "795edc6f1909c2c0dcc4d424f4bf0e1834b9a946633ef17680a9b23ebf2fafea",
+      "frames": 4,
+      "fps": 5,
+      "faces": "left"
+    },
+    {
+      "id": "franken",
+      "variant": "castle",
+      "path": "halloween-exhibition/preview/maze/assets/rpg/animated/franken-castle.webp",
+      "bytes": 25104,
+      "dimensions": [
+        256,
+        256
+      ],
+      "sha256": "f3e0d77a40691e4d56910f3fb852aa6c701234e7388220c3dfcbdb702f987228",
+      "frames": 4,
+      "fps": 5,
+      "faces": "left"
+    },
+    {
+      "id": "witch",
+      "variant": "game",
+      "path": "halloween-exhibition/preview/maze/assets/rpg/animated/witch-walk.webp",
+      "bytes": 97818,
+      "dimensions": [
+        512,
+        512
+      ],
+      "sha256": "681d8904d83737eb81fdbe80fe272dbe7fdd0218f6f4f42f2619a18ab4671efb",
+      "frames": 4,
+      "fps": 5,
+      "faces": "right"
+    },
+    {
+      "id": "witch",
+      "variant": "castle",
+      "path": "halloween-exhibition/preview/maze/assets/rpg/animated/witch-castle.webp",
+      "bytes": 30166,
+      "dimensions": [
+        256,
+        256
+      ],
+      "sha256": "8555e4548144027d56801a3fca6192798da9a1ed52887f315d595467ec185703",
+      "frames": 4,
+      "fps": 5,
+      "faces": "right"
+    },
+    {
+      "id": "masked_wanderer",
+      "variant": "game",
+      "path": "halloween-exhibition/preview/maze/assets/rpg/animated/masked_wanderer-walk.webp",
+      "bytes": 51844,
+      "dimensions": [
+        512,
+        512
+      ],
+      "sha256": "89f84042f5bfb24b1db4468011934daeaee523e558d9d1499366a1fe4427862f",
+      "frames": 4,
+      "fps": 5,
+      "faces": "right"
+    },
+    {
+      "id": "masked_wanderer",
+      "variant": "castle",
+      "path": "halloween-exhibition/preview/maze/assets/rpg/animated/masked_wanderer-castle.webp",
+      "bytes": 18286,
+      "dimensions": [
+        256,
+        256
+      ],
+      "sha256": "66f8d00da86b649a81be3ba18622fd6c1d025945c3cce18fd260aee984a68320",
+      "frames": 4,
+      "fps": 5,
+      "faces": "right"
+    },
+    {
+      "id": "werewolf",
+      "variant": "game",
+      "path": "halloween-exhibition/preview/maze/assets/rpg/animated/werewolf-walk.webp",
+      "bytes": 50094,
+      "dimensions": [
+        512,
+        512
+      ],
+      "sha256": "5fefe0250f087e9fde41ffb4e94b92c6da8b6c135d9fafa96d79a514136156fd",
+      "frames": 4,
+      "fps": 5,
+      "faces": "right"
+    },
+    {
+      "id": "werewolf",
+      "variant": "castle",
+      "path": "halloween-exhibition/preview/maze/assets/rpg/animated/werewolf-castle.webp",
+      "bytes": 16990,
+      "dimensions": [
+        256,
+        256
+      ],
+      "sha256": "07b330931db644d22d28546b1eecf6b21d26f304c6145619990f2219478b5b59",
+      "frames": 4,
+      "fps": 5,
+      "faces": "right"
+    },
+    {
+      "id": "mummy",
+      "variant": "game",
+      "path": "halloween-exhibition/preview/maze/assets/rpg/animated/mummy-walk.webp",
+      "bytes": 84702,
+      "dimensions": [
+        512,
+        512
+      ],
+      "sha256": "36abef570e5e11ad0a3af148d42f43bd0fa7b8b9ea73f4f2c893c529ed1e6c9c",
+      "frames": 4,
+      "fps": 5,
+      "faces": "right"
+    },
+    {
+      "id": "mummy",
+      "variant": "castle",
+      "path": "halloween-exhibition/preview/maze/assets/rpg/animated/mummy-castle.webp",
+      "bytes": 27014,
+      "dimensions": [
+        256,
+        256
+      ],
+      "sha256": "a611fec872cbb9247fdfadf7fe0cf88e36ac42f9c7a1c78d05056ed61eba0a23",
+      "frames": 4,
+      "fps": 5,
+      "faces": "right"
+    }
+  ],
+  "unchangedArchiveSnapshot": {
+    "schemaVersion": 1,
+    "creators": [
+      {
+        "id": "ss_yr",
+        "name": "【無名 S note】18日でフォロワー1000名🚨連続収益中！48マガ・13共マガ運営 参加72🙆",
+        "avatar": "assets/portraits/ss_yr.jpg",
+        "avatarSource": "https://assets.st-note.com/production/uploads/images/280421627/profile_54172438db482342de0ca9ef8c6395ec.jpg?fit=bounds&format=jpeg&quality=85&width=330",
+        "profileURL": "https://note.com/ss_yr"
+      },
+      {
+        "id": "koakumako",
+        "name": "こあく まこ",
+        "avatar": "assets/portraits/koakumako.jpg",
+        "avatarSource": "https://assets.st-note.com/production/uploads/images/308977904/profile_b64fb940574861864545a89d8fa9788e.png?fit=bounds&format=jpeg&quality=85&width=330",
+        "profileURL": "https://note.com/koakumako"
+      },
+      {
+        "id": "n_kazumai55633",
+        "name": "ミナト汐　＠光と構図のアトリエ",
+        "avatar": "assets/portraits/n_kazumai55633.jpg",
+        "avatarSource": "https://assets.st-note.com/production/uploads/images/322474239/profile_fce4138c4bb1001cc51b60785c106073.png?fit=bounds&format=jpeg&quality=85&width=330",
+        "profileURL": "https://note.com/n_kazumai55633"
+      },
+      {
+        "id": "mama_ca",
+        "name": "Pajama de mama*4歳娘ママ",
+        "avatar": "assets/portraits/mama_ca.jpg",
+        "avatarSource": "https://assets.st-note.com/production/uploads/images/302879278/profile_680f428bdf06a11c197bae98b43534d2.jpeg?fit=bounds&format=jpeg&quality=85&width=330",
+        "profileURL": "https://note.com/mama_ca"
+      },
+      {
+        "id": "naemotion",
+        "name": "なえも｜Kindle作家・支援と当事者の視点",
+        "avatar": "https://assets.st-note.com/production/uploads/images/324956810/profile_38e6c7db64b5f16f7f09c53de58785df.png?fit=bounds&format=jpeg&quality=85&width=330",
+        "avatarSource": "https://assets.st-note.com/production/uploads/images/324956810/profile_38e6c7db64b5f16f7f09c53de58785df.png?fit=bounds&format=jpeg&quality=85&width=330",
+        "profileURL": "https://note.com/naemotion"
+      },
+      {
+        "id": "imota14",
+        "name": "たけち",
+        "avatar": "assets/portraits/imota14.jpg",
+        "avatarSource": "https://assets.st-note.com/production/uploads/images/259177693/profile_b5ff6284738bbb28852546a5c0804f69.png?fit=bounds&format=jpeg&quality=85&width=330",
+        "profileURL": "https://note.com/imota14"
+      },
+      {
+        "id": "fond_holly3483",
+        "name": "やまこん/自信なし会社やめたい状態からのゆっくり成長記録！",
+        "avatar": "assets/portraits/fond_holly3483.jpg",
+        "avatarSource": "https://assets.st-note.com/production/uploads/images/323473720/profile_b7bfdc9c5ae46f9ac3f6494be5b50fef.png?fit=bounds&format=jpeg&quality=85&width=330",
+        "profileURL": "https://note.com/fond_holly3483"
+      },
+      {
+        "id": "tenkai_notes",
+        "name": "天界記録",
+        "avatar": "assets/portraits/tenkai_notes.jpg",
+        "avatarSource": "https://assets.st-note.com/production/uploads/images/253576749/profile_70a01c50c971bc4c57351b9f5cc8a299.png?fit=bounds&format=jpeg&quality=85&width=330",
+        "profileURL": "https://note.com/tenkai_notes"
+      },
+      {
+        "id": "soh_style_work",
+        "name": "まりも🌱｜猫とちゅ〜ると異世界掃除婦",
+        "avatar": "assets/portraits/soh_style_work.jpg",
+        "avatarSource": "https://assets.st-note.com/production/uploads/images/320068478/profile_9e897d69b1d229aac8f4ed9286831c28.jpeg?fit=bounds&format=jpeg&quality=85&width=330",
+        "profileURL": "https://note.com/soh_style_work"
+      },
+      {
+        "id": "clever_hare2654",
+        "name": "カモミール",
+        "avatar": "https://assets.st-note.com/production/uploads/images/292743934/profile_f29fb47a7423a0ddcbd3f4bd4b498a35.png?fit=bounds&format=jpeg&quality=85&width=330",
+        "avatarSource": "https://assets.st-note.com/production/uploads/images/292743934/profile_f29fb47a7423a0ddcbd3f4bd4b498a35.png?fit=bounds&format=jpeg&quality=85&width=330",
+        "profileURL": "https://note.com/clever_hare2654"
+      },
+      {
+        "id": "glossy_guppy6230",
+        "name": "🍞たんたん🐼",
+        "avatar": "https://assets.st-note.com/production/uploads/images/318256859/profile_d2fbdcbda06d06e5d51adea51865b4a6.jpeg?fit=bounds&format=jpeg&quality=85&width=330",
+        "avatarSource": "https://assets.st-note.com/production/uploads/images/318256859/profile_d2fbdcbda06d06e5d51adea51865b4a6.jpeg?fit=bounds&format=jpeg&quality=85&width=330",
+        "profileURL": "https://note.com/glossy_guppy6230"
+      },
+      {
+        "id": "aihan_days",
+        "name": "あいはん｜これからの働き方を考える",
+        "avatar": "https://assets.st-note.com/production/uploads/images/318226325/profile_f65224485bea2e310e8667b5c1ff9f46.png?width=80&height=80&dpr=2",
+        "avatarSource": "https://assets.st-note.com/production/uploads/images/318226325/profile_f65224485bea2e310e8667b5c1ff9f46.png?width=80&height=80&dpr=2",
+        "profileURL": "https://note.com/aihan_days"
+      },
+      {
+        "id": "cheeky_rhino7031",
+        "name": "ロキろん",
+        "avatar": "https://assets.st-note.com/production/uploads/images/281429856/profile_394e2eb8124ebdada2bc028db6563ed2.png?fit=bounds&format=jpeg&quality=85&width=330",
+        "avatarSource": "https://assets.st-note.com/production/uploads/images/281429856/profile_394e2eb8124ebdada2bc028db6563ed2.png?fit=bounds&format=jpeg&quality=85&width=330",
+        "profileURL": "https://note.com/cheeky_rhino7031"
+      },
+      {
+        "id": "grand_daisy8632",
+        "name": "CNA運営",
+        "avatar": "https://assets.st-note.com/production/uploads/images/273849383/profile_adc57e6cad51fd8b4c335b93f52b9a31.png?fit=bounds&format=jpeg&quality=85&width=330",
+        "avatarSource": "https://assets.st-note.com/production/uploads/images/273849383/profile_adc57e6cad51fd8b4c335b93f52b9a31.png?fit=bounds&format=jpeg&quality=85&width=330",
+        "profileURL": "https://note.com/grand_daisy8632"
+      },
+      {
+        "id": "real_hyena9474",
+        "name": "アイリス｜AIで眠る物語を形にする",
+        "avatar": "https://assets.st-note.com/production/uploads/images/274163002/profile_53ed201190910b3e84f2f77c5074f084.png?fit=bounds&format=jpeg&quality=85&width=330",
+        "avatarSource": "https://assets.st-note.com/production/uploads/images/274163002/profile_53ed201190910b3e84f2f77c5074f084.png?fit=bounds&format=jpeg&quality=85&width=330",
+        "profileURL": "https://note.com/real_hyena9474"
+      }
+    ],
+    "years": [
+      {
+        "year": 2026,
+        "title": "ひとりひとりが、今夜の主役。",
+        "description": "参加者の顔と名前から、ハロウィンの出会いがはじまります。",
+        "entries": [
+          {
+            "creatorId": "ss_yr",
+            "title": "ハロウィン企画への招待状",
+            "message": "【🎃ハロウィンアート2026】派生企画 無名S note 𝑯𝒂𝒍𝒍𝒐𝒘𝒆𝒆𝒏 𝑨𝒕𝒆𝒍𝒊𝒆𝒓‼️あなたの作品を『魔法の入口』へ🎃",
+            "tags": [
+              "企画紹介"
+            ],
+            "theme": "pumpkin",
+            "image": "https://assets.st-note.com/production/uploads/images/322657367/rectangle_large_type_2_6cd807a5c7b4cef57389ab4adf353974.png?width=1240",
+            "imageAlt": "無名S noteのハロウィン企画紹介記事のメイン画像",
+            "links": [
+              {
+                "title": "主催者の企画紹介記事を読む",
+                "url": "https://note.com/ss_yr/n/n52be511ec082"
+              },
+              {
+                "title": "noteプロフィールを見る",
+                "url": "https://note.com/ss_yr"
+              }
+            ],
+            "role": "host",
+            "submissionStatus": "introduction"
+          },
+          {
+            "doorId": "owner-work-2026",
+            "creatorId": "ss_yr",
+            "theme": "letter",
+            "submissionStatus": "submitted",
+            "title": "【🎃本格スタート】 無名S note 𝑯𝒂𝒍𝒍𝒐𝒘𝒆𝒆𝒏 𝑨𝒕𝒆𝒍𝒊𝒆𝒓‼️あなたの作品を『魔法の入口🚪』へ🎃",
+            "tags": [
+              "参加者",
+              "ハロウィン"
+            ],
+            "links": [
+              {
+                "title": "【🎃本格スタート】 無名S note 𝑯𝒂𝒍𝒍𝒐𝒘𝒆𝒆𝒏 𝑨𝒕𝒆𝒍𝒊𝒆𝒓‼️あなたの作品を『魔法の入口🚪』へ🎃（note記事）",
+                "url": "https://note.com/ss_yr/n/n15700f2773c6"
+              },
+              {
+                "title": "noteプロフィールを見る",
+                "url": "https://note.com/ss_yr"
+              }
+            ],
+            "image": "https://assets.st-note.com/production/uploads/images/324657828/rectangle_large_type_2_459273410eb989ab713248ac628c65c9.png?fit=bounds&quality=85&width=1280",
+            "imageAlt": "無名S noteの記事「【🎃本格スタート】 無名S note 𝑯𝒂𝒍𝒍𝒐𝒘𝒆𝒆𝒏 𝑨𝒕𝒆𝒍𝒊𝒆𝒓‼️あなたの作品を『魔法の入口🚪』へ🎃」の見出し画像"
+          },
+          {
+            "creatorId": "koakumako",
+            "title": "本場のHalloweenを見せてあげる",
+            "theme": "violet",
+            "submissionStatus": "submitted",
+            "tags": [
+              "参加者",
+              "ハロウィン"
+            ],
+            "links": [
+              {
+                "title": "本場のHalloweenを見せてあげる（note記事）",
+                "url": "https://note.com/koakumako/n/na9731433238f"
+              },
+              {
+                "title": "noteプロフィールを見る",
+                "url": "https://note.com/koakumako"
+              }
+            ],
+            "image": "https://assets.st-note.com/production/uploads/images/323659898/rectangle_large_type_2_d5a9c6f7f951e84d30ffa44d72e80886.png",
+            "imageAlt": "こあく まこの記事「本場のHalloweenを見せてあげる」の見出し画像"
+          },
+          {
+            "creatorId": "n_kazumai55633",
+            "title": "【今日は一斉投稿の日✨️】AIイラスト・ハロウィン・企画参加で魔法の入口をくぐった話🎃",
+            "theme": "star",
+            "submissionStatus": "submitted",
+            "tags": [
+              "参加者",
+              "ハロウィン"
+            ],
+            "links": [
+              {
+                "title": "【今日は一斉投稿の日✨️】AIイラスト・ハロウィン・企画参加で魔法の入口をくぐった話🎃（note記事）",
+                "url": "https://note.com/n_kazumai55633/n/n4cc7e57a4182"
+              },
+              {
+                "title": "noteプロフィールを見る",
+                "url": "https://note.com/n_kazumai55633"
+              }
+            ],
+            "image": "https://assets.st-note.com/production/uploads/images/324716686/rectangle_large_type_2_f5ef48b0cad2793cfecb16450223d790.png?fit=bounds&quality=85&width=1280",
+            "imageAlt": "ミナト汐　＠光と構図のアトリエの記事「【今日は一斉投稿の日✨️】AIイラスト・ハロウィン・企画参加で魔法の入口をくぐった話🎃」の見出し画像"
+          },
+          {
+            "creatorId": "mama_ca",
+            "title": "詰め込みハロウィン 🎃🍭🍰🍫🍬･:*+.: | Trick or treatで飛べるかも🧹🪄",
+            "theme": "forest",
+            "submissionStatus": "submitted",
+            "tags": [
+              "参加者",
+              "ハロウィン"
+            ],
+            "links": [
+              {
+                "title": "詰め込みハロウィン 🎃🍭🍰🍫🍬･:*+.: | Trick or treatで飛べるかも🧹🪄（note記事）",
+                "url": "https://note.com/mama_ca/n/n8e74b9e2b535"
+              },
+              {
+                "title": "noteプロフィールを見る",
+                "url": "https://note.com/mama_ca"
+              }
+            ],
+            "image": "https://assets.st-note.com/production/uploads/images/324633515/rectangle_large_type_2_edec925a969b54ccce00ee9016a1614b.jpg",
+            "imageAlt": "詰め込みハロウィン 🎃🍭🍰🍫🍬･:*+.: | Trick or treatで飛べるかも🧹🪄の見出し画像"
+          },
+          {
+            "creatorId": "naemotion",
+            "title": "【企画参加】カボチャ畑で踊ったら、魔法の入口が開いた",
+            "theme": "moon",
+            "submissionStatus": "submitted",
+            "tags": [
+              "参加者",
+              "ハロウィン"
+            ],
+            "links": [
+              {
+                "title": "【企画参加】カボチャ畑で踊ったら、魔法の入口が開いた（note記事）",
+                "url": "https://note.com/naemotion/n/n26b717b6c247"
+              },
+              {
+                "title": "noteプロフィールを見る",
+                "url": "https://note.com/naemotion"
+              }
+            ],
+            "image": "https://assets.st-note.com/production/uploads/images/324617440/rectangle_large_type_2_cac912cd8caaf723f3f0dd542b83ce7d.png",
+            "imageAlt": "【企画参加】カボチャ畑で踊ったら、魔法の入口が開いたの見出し画像"
+          },
+          {
+            "creatorId": "imota14",
+            "title": "死神と貴公子と、顔に張り紙を貼った私。",
+            "theme": "letter",
+            "submissionStatus": "submitted",
+            "tags": [
+              "参加者",
+              "ハロウィン"
+            ],
+            "links": [
+              {
+                "title": "死神と貴公子と、顔に張り紙を貼った私。（note記事）",
+                "url": "https://note.com/imota14/n/n618813fb0e89"
+              },
+              {
+                "title": "noteプロフィールを見る",
+                "url": "https://note.com/imota14"
+              }
+            ],
+            "image": "https://assets.st-note.com/production/uploads/images/324418285/rectangle_large_type_2_8f476e89aa9927c037214fe8d447d6ae.jpg?width=4000&height=4000&fit=bounds&format=jpg&quality=90",
+            "imageAlt": "たけちの記事「死神と貴公子と、顔に張り紙を貼った私。」の見出し画像"
+          },
+          {
+            "creatorId": "fond_holly3483",
+            "title": "𝑯𝒂𝒍𝒍𝒐𝒘𝒆𝒆𝒏 𝑨𝒕𝒆𝒍𝒊𝒆𝒓‼️　参加してみた！",
+            "theme": "pumpkin",
+            "submissionStatus": "submitted",
+            "tags": [
+              "参加者",
+              "ハロウィン"
+            ],
+            "links": [
+              {
+                "title": "𝑯𝒂𝒍𝒍𝒐𝒘𝒆𝒆𝒏 𝑨𝒕𝒆𝒍𝒊𝒆𝒓‼️　参加してみた！（note記事）",
+                "url": "https://note.com/fond_holly3483/n/ne5a25ae27a20"
+              },
+              {
+                "title": "noteプロフィールを見る",
+                "url": "https://note.com/fond_holly3483"
+              }
+            ],
+            "image": "https://assets.st-note.com/production/uploads/images/324565762/rectangle_large_type_2_36f20f590d33edddd6206751ed39564b.png?fit=bounds&quality=85&width=1280",
+            "imageAlt": "やまこんの記事「𝑯𝒂𝒍𝒍𝒐𝒘𝒆𝒆𝒏 𝑨𝒕𝒆𝒍𝒊𝒆𝒓‼️　参加してみた！」の見出し画像"
+          },
+          {
+            "creatorId": "tenkai_notes",
+            "title": "『午前零時の解決屋』ハロウィン特別編｜黒猫さん、魔法の入口から音がします。",
+            "theme": "star",
+            "submissionStatus": "submitted",
+            "tags": [
+              "参加者",
+              "ハロウィン"
+            ],
+            "links": [
+              {
+                "title": "『午前零時の解決屋』ハロウィン特別編｜黒猫さん、魔法の入口から音がします。（note記事）",
+                "url": "https://note.com/tenkai_notes/n/n72ea89e9a32e"
+              },
+              {
+                "title": "noteプロフィールを見る",
+                "url": "https://note.com/tenkai_notes"
+              }
+            ],
+            "image": "https://assets.st-note.com/production/uploads/images/324081013/rectangle_large_type_2_fc66dccba7fc2ce4a5584afc6a2ac55f.png?fit=bounds&quality=85&width=1280",
+            "imageAlt": "天界記録の記事「『午前零時の解決屋』ハロウィン特別編｜黒猫さん、魔法の入口から音がします。」の見出し画像"
+          },
+          {
+            "creatorId": "soh_style_work",
+            "title": "無名S note様の 𝑯𝒂𝒍𝒍𝒐𝒘𝒆𝒆𝒏 𝑨𝒕𝒆𝒍𝒊𝒆𝒓 に参加させていただきました！",
+            "theme": "ghost",
+            "submissionStatus": "submitted",
+            "tags": [
+              "参加者",
+              "ハロウィン"
+            ],
+            "links": [
+              {
+                "title": "無名S note様の 𝑯𝒂𝒍𝒍𝒐𝒘𝒆𝒆𝒏 𝑨𝒕𝒆𝒍𝒊𝒆𝒓 に参加させていただきました！（note記事）",
+                "url": "https://note.com/soh_style_work/n/nc02977b1ebf9"
+              },
+              {
+                "title": "noteプロフィールを見る",
+                "url": "https://note.com/soh_style_work"
+              }
+            ],
+            "image": "https://assets.st-note.com/production/uploads/images/324671829/rectangle_large_type_2_79bc88386abef750082b85c04454949c.png?fit=bounds&quality=85&width=1280",
+            "imageAlt": "無名S note様の 𝑯𝒂𝒍𝒍𝒐𝒘𝒆𝒆𝒏 𝑨𝒕𝒆𝒍𝒊𝒆𝒓 に参加させていただきました！の見出し画像"
+          },
+          {
+            "doorId": "chamomile-halloween-2026",
+            "creatorId": "clever_hare2654",
+            "title": "「🧙‍♀Happy Halloween🎃」｜ハロウィン企画に参加してみた話",
+            "theme": "moon",
+            "submissionStatus": "submitted",
+            "tags": [
+              "参加者",
+              "ハロウィン"
+            ],
+            "links": [
+              {
+                "title": "「🧙‍♀Happy Halloween🎃」｜ハロウィン企画に参加してみた話（note記事）",
+                "url": "https://note.com/clever_hare2654/n/nf731501cfb0e"
+              },
+              {
+                "title": "noteプロフィールを見る",
+                "url": "https://note.com/clever_hare2654"
+              }
+            ],
+            "image": "https://assets.st-note.com/production/uploads/images/324417758/rectangle_large_type_2_71b577e1ed8ffdaeecd1af87bd58ecab.jpeg?width=1200",
+            "imageAlt": "カモミールの記事「「🧙‍♀Happy Halloween🎃」｜ハロウィン企画に参加してみた話」の見出し画像"
+          },
+          {
+            "creatorId": "glossy_guppy6230",
+            "title": "今年のハロウィン、どう楽しもう？🎃",
+            "theme": "forest",
+            "submissionStatus": "submitted",
+            "tags": [
+              "参加者",
+              "ハロウィン"
+            ],
+            "links": [
+              {
+                "title": "今年のハロウィン、どう楽しもう？🎃（note記事）",
+                "url": "https://note.com/glossy_guppy6230/n/n4b2ef2311c28"
+              },
+              {
+                "title": "noteプロフィールを見る",
+                "url": "https://note.com/glossy_guppy6230"
+              }
+            ],
+            "image": "https://assets.st-note.com/production/uploads/images/324762618/rectangle_large_type_2_c16cb3a36f6db9ce02b6436313464842.jpg?fit=bounds&quality=85&width=1280",
+            "imageAlt": "🍞たんたん🐼の記事「今年のハロウィン、どう楽しもう？🎃」の見出し画像"
+          },
+          {
+            "creatorId": "aihan_days",
+            "title": "ちょっと試すつもりが…柴犬とハロウィン大冒険！🎃",
+            "theme": "star",
+            "submissionStatus": "submitted",
+            "tags": [
+              "参加者",
+              "ハロウィン"
+            ],
+            "links": [
+              {
+                "title": "ちょっと試すつもりが…柴犬とハロウィン大冒険！🎃（note記事）",
+                "url": "https://note.com/aihan_days/n/nfa274d6fe464"
+              },
+              {
+                "title": "noteプロフィールを見る",
+                "url": "https://note.com/aihan_days"
+              }
+            ],
+            "image": "https://assets.st-note.com/production/uploads/images/324560660/rectangle_large_type_2_377f1d6d58ea2fae9b97c4af89277aac.png?fit=bounds&quality=85&width=1280",
+            "imageAlt": "あいはんの記事「ちょっと試すつもりが…柴犬とハロウィン大冒険！🎃」の見出し画像"
+          },
+          {
+            "creatorId": "cheeky_rhino7031",
+            "title": "【企画に初参加】したんだけど…ハロウィン🎃",
+            "theme": "violet",
+            "submissionStatus": "submitted",
+            "tags": [
+              "参加者",
+              "ハロウィン"
+            ],
+            "links": [
+              {
+                "title": "【企画に初参加】したんだけど…ハロウィン🎃（note記事）",
+                "url": "https://note.com/cheeky_rhino7031/n/nd58ac4b4c53d"
+              },
+              {
+                "title": "noteプロフィールを見る",
+                "url": "https://note.com/cheeky_rhino7031"
+              }
+            ],
+            "image": "https://assets.st-note.com/production/uploads/images/324587601/rectangle_large_type_2_8ec8a44b2cb35c23f8d86061c2329f25.png?fit=bounds&quality=85&width=1280",
+            "imageAlt": "ロキろんの記事「【企画に初参加】したんだけど…ハロウィン🎃」の見出し画像"
+          },
+          {
+            "creatorId": "grand_daisy8632",
+            "title": "作品準備中",
+            "theme": "violet",
+            "submissionStatus": "pending",
+            "tags": [
+              "参加者",
+              "作品準備中"
+            ],
+            "links": [
+              {
+                "title": "noteプロフィールを見る",
+                "url": "https://note.com/grand_daisy8632"
+              }
+            ]
+          },
+          {
+            "creatorId": "real_hyena9474",
+            "title": "かぼちゃの灯りがともる、アイリスのハロウィン",
+            "theme": "violet",
+            "submissionStatus": "submitted",
+            "tags": [
+              "参加者",
+              "ハロウィン"
+            ],
+            "links": [
+              {
+                "title": "かぼちゃの灯りがともる、アイリスのハロウィン（note記事）",
+                "url": "https://note.com/real_hyena9474/n/nde7d4a19044d"
+              },
+              {
+                "title": "noteプロフィールを見る",
+                "url": "https://note.com/real_hyena9474"
+              }
+            ],
+            "image": "https://assets.st-note.com/production/uploads/images/324726369/rectangle_large_type_2_b178b2a36b7ca097bf1ac87a6049a965.png?fit=bounds&quality=85&width=1280",
+            "imageAlt": "アイリスの記事「かぼちゃの灯りがともる、アイリスのハロウィン」の見出し画像"
+          }
+        ]
+      }
+    ],
+    "evergreenEntries": []
+  }
+}

@@ -1,4 +1,4 @@
-import {createActorPatrol,samplePatrolPosition,patrolPointSafe,patrolSegmentSafe} from './patrol-model.js?v=20261016-living1';
+import {createActorPatrol,samplePatrolPosition,patrolPointSafe,patrolSegmentSafe} from './patrol-model.js?v=20261017-review1';
 import {OPTIONAL_MONSTERS} from './optional-encounters.js?v=20261016-living1';
 import {encounterStory} from './story-model.js?v=20261016-living1';
 import {blocked} from './maze-model.js?v=20261014-adventure2';

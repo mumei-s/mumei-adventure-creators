@@ -1,5 +1,5 @@
-import {monsterSprite,spriteTextureUV} from './monster-motion.js?v=20261016-living1';
-import {ART_FILES,ART_BOUNDS,ART_ANCHORS,PALACE_ART} from './rpg-art.js?v=20261016-living1';
+import {monsterSprite,spriteTextureUV} from './monster-motion.js?v=20261017-review1';
+import {ART_FILES,ART_BOUNDS,ART_ANCHORS,PALACE_ART} from './rpg-art.js?v=20261017-review1';
 import * as THREE from './vendor/three.module.js';
 import { MAP, CELL, FEATURES, toWorld } from './maze-model.js?v=20261014-adventure2';
 import { NIGHT_LIGHTING } from './lighting-model.js?v=20261014-adventure2';
@@ -20,6 +20,7 @@ export function createWorld({ canvas, onReady, art } = {}) {
   scene.fog = new THREE.FogExp2('#202233', Math.min(.024,NIGHT_LIGHTING.fog));
   const camera = new THREE.PerspectiveCamera(69, 1, .075, 115);
   camera.rotation.order = 'YXZ';
+  let disposed=false,sceneryVersion=0;
   const resources = new Set(), animated = [], lamps = [], lanternSources = [], lanternMaterials = new Map(), exhibitGroup = new THREE.Group();
   scene.add(exhibitGroup);
   const map = MAP.map(row => typeof row === 'string' ? [...row] : row);
@@ -54,13 +55,13 @@ export function createWorld({ canvas, onReady, art } = {}) {
   // Original painted surfaces, shared with the 2D palace. Materials remain local and deterministic.
   const floorPlaneGeo=new THREE.PlaneGeometry(CELL,CELL);resources.add(floorPlaneGeo);
   const surfaceLoader=new THREE.TextureLoader(),surfaceMaterials={parquet:mat('#b58a60',{roughness:.72}),limestone:mat('#c5c5ae',{roughness:.86}),marble:mat('#72677f',{roughness:.46})};
-  function loadSurface(key,file,material){surfaceLoader.load(new URL(`./assets/rpg/palace/${file}`,import.meta.url).href,t=>{t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());resources.add(t);material.map=t;material.needsUpdate=true;},undefined,()=>{});}
+  function loadSurface(key,file,material){surfaceLoader.load(new URL(`./assets/rpg/palace/${file}`,import.meta.url).href,t=>{if(disposed){t.dispose();return;}sceneryVersion++;t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());resources.add(t);material.map=t;material.needsUpdate=true;},undefined,()=>{});}
   for(const [key,material]of Object.entries(surfaceMaterials))loadSurface(key,`${key}.webp`,material);
   // Tactile plaster, fine stone joints, and walnut wainscoting replace flat box faces.
   function masonryTexture(palette){const cv=document.createElement('canvas');cv.width=512;cv.height=512;const c=cv.getContext('2d');c.fillStyle=palette[0];c.fillRect(0,0,512,512);for(let i=0;i<2200;i++){const n=(i*79)%257,x=(i*137)%512,y=(i*191)%512;c.fillStyle=n%2?'#fff8dd09':'#1520350b';c.fillRect(x,y,1+n%4,1+n%2);}for(let row=0;row<8;row++){c.strokeStyle=palette[1];c.lineWidth=2;c.beginPath();c.moveTo(0,row*64);c.lineTo(512,row*64);c.stroke();for(let col=-1;col<5;col++){const x=col*128+(row%2)*64;c.beginPath();c.moveTo(x,row*64);c.lineTo(x,row*64+64);c.stroke();}}const t=new THREE.CanvasTexture(cv);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;resources.add(t);return t;}
   wall[0].color.set('#887593');wall[1].color.set('#c2b394');wall[2].color.set('#bdc7bc');
   for(const [i,m]of wall.entries()){m.map=masonryTexture(i===0?['#93839d','#71647b']:i===1?['#c6b89c','#aa9d85']:['#bfcabf','#a3afa7']);m.needsUpdate=true;}
-  const panelMaterials=wall.map(m=>{const material=m.clone();resources.add(material);return material;});surfaceLoader.load(new URL('./assets/rpg/palace/wainscot-wall.webp',import.meta.url).href,t=>{t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());resources.add(t);for(const material of panelMaterials){material.map=t;material.needsUpdate=true;}},undefined,()=>{});
+  const panelMaterials=wall.map(m=>{const material=m.clone();resources.add(material);return material;});surfaceLoader.load(new URL('./assets/rpg/palace/wainscot-wall.webp',import.meta.url).href,t=>{if(disposed){t.dispose();return;}sceneryVersion++;t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());resources.add(t);for(const material of panelMaterials){material.map=t;material.needsUpdate=true;}},undefined,()=>{});
   const walnut=mat('#5e3b27',{roughness:.68}),walnutEdge=mat('#936841',{roughness:.65}),velvet=mat('#173e46',{roughness:.97}),plumVelvet=mat('#4f2b48',{roughness:.97});
   const furniturePaper=mat('#e8d5ad'),plantLeaf=mat('#3d6541'),flowerPetal=mat('#e5d8b9'),potBronze=mat('#967242',{metalness:.4,roughness:.52});
   const bookColors=['#5e314b','#284e54','#997248','#39405c','#758063'].map(c=>mat(c,{roughness:.89}));
@@ -82,7 +83,7 @@ export function createWorld({ canvas, onReady, art } = {}) {
   function rug3D(x,z,w,d){const g=mesh(new THREE.PlaneGeometry(w,d),rugMat,x,.021,z);g.rotation.x=-Math.PI/2;for(const sx of[-1,1])box(.035,.016,d,x+sx*w/2,.025,z,gold);for(const sz of[-1,1])box(w,.016,.035,x,.025,z+sz*d/2,gold);return g;}
   rug3D(32,44.6,10.2,20.4);rug3D(32,12,13.8,12.4);rug3D(56,40,6.6,13.5);rug3D(8,40,6.6,13.5);rug3D(32,24,5.5,8.4);
   const windowMat=new THREE.MeshBasicMaterial({color:'#bacdea',transparent:true,alphaTest:.08,side:THREE.DoubleSide});resources.add(windowMat);
-  surfaceLoader.load(new URL('./assets/rpg/palace/props-atlas.webp',import.meta.url).href,texture=>{texture.colorSpace=THREE.SRGBColorSpace;const f=PALACE_ART.moonWindow;texture.repeat.set(f[2]/texture.image.width,f[3]/texture.image.height);texture.offset.set(f[0]/texture.image.width,1-(f[1]+f[3])/texture.image.height);resources.add(texture);windowMat.map=texture;windowMat.needsUpdate=true;},undefined,()=>{});
+  surfaceLoader.load(new URL('./assets/rpg/palace/props-atlas.webp',import.meta.url).href,texture=>{if(disposed){texture.dispose();return;}sceneryVersion++;texture.colorSpace=THREE.SRGBColorSpace;const f=PALACE_ART.moonWindow;texture.repeat.set(f[2]/texture.image.width,f[3]/texture.image.height);texture.offset.set(f[0]/texture.image.width,1-(f[1]+f[3])/texture.image.height);resources.add(texture);windowMat.map=texture;windowMat.needsUpdate=true;},undefined,()=>{});
   for(const [x,z,ry]of[[32,2.17,0],[18.17,36,Math.PI/2],[45.83,36,-Math.PI/2],[56,30.17,0]]){const win=mesh(new THREE.PlaneGeometry(3.1,4.6),windowMat,x,4.45,z);win.rotation.y=ry;lanternSources.push({x:x+Math.sin(ry)*1.5,y:4,z:z+Math.cos(ry)*1.5,color:'#abc9ef',intensity:6,distance:13});}
   // Floor insets, wainscoting and piers define real navigable space, not a panorama.
   const wallHeight=7.3;
@@ -224,7 +225,7 @@ export function createWorld({ canvas, onReady, art } = {}) {
     for(let i=0;i<=5;i++){const a=i*Math.PI/10;const geo=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(xx,6.8,zz),new THREE.Vector3(xx+Math.cos(a)*2.2,6.8-Math.sin(a)*2.2,zz)]);resources.add(geo);scene.add(new THREE.Line(geo,webMaterial));}
     for(const r of [.7,1.4,2.1]){const pts=[];for(let i=0;i<=10;i++){const a=i*Math.PI/20;pts.push(new THREE.Vector3(xx+Math.cos(a)*r,6.8-Math.sin(a)*r,zz));}const geo=new THREE.BufferGeometry().setFromPoints(pts);resources.add(geo);scene.add(new THREE.Line(geo,webMaterial));}
   }
-  const spirits=[],residentTextures=new THREE.TextureLoader();let disposed=false;
+  const spirits=[],residentTextures=new THREE.TextureLoader();
   for(const [index,definition]of MONSTERS.entries()){
     const root=new THREE.Group();root.position.set(definition.x*CELL,0,definition.z*CELL);root.name=definition.name;scene.add(root);const g=new THREE.Group();root.add(g);
     const body=mat(definition.color,{emissive:definition.color,emissiveIntensity:.28,roughness:.8});
@@ -323,17 +324,22 @@ export function createWorld({ canvas, onReady, art } = {}) {
   const featureSigns=[['entrance','THE HAUNTED ARCHIVE','A maze of stories, still becoming'],['normal','THE LANTERN CHAMBER','The old collection awaits'],['halloween','THE ECHO HALL','Follow the warm light'],['horror','BEYOND THE VEIL','An open room for future work']];
   for(const [name,title,sub] of featureSigns){if(FEATURES[name]){const p=point(FEATURES[name]);sign(title,sub,p.x,2.55,p.z-CELL/2+.2,0,2.8);}}
   // Exhibits are only populated from parent-provided real collection records.
-  const textureLoader=new THREE.TextureLoader();
+  const textureLoader=new THREE.TextureLoader();let exhibitGeneration=0;
+  const exhibitResources=new Set();
   function setExhibits(items=[]){
+    if(disposed)return;sceneryVersion++;const generation=++exhibitGeneration;
     while(exhibitGroup.children.length)exhibitGroup.remove(exhibitGroup.children[0]);
+    for(const resource of exhibitResources){resource.dispose();resources.delete(resource);}exhibitResources.clear();
     items.forEach((item,i)=>{
       const f=item.position||FEATURES[item.feature]||(i===0?FEATURES.article:null);if(!f)return;
       const p=point(f),g=new THREE.Group();g.position.set(p.x,f.y||2.1,p.z);g.rotation.y=f.yaw||item.yaw||0;exhibitGroup.add(g);
+      // The frame borrows the world's shared boxGeo/gold; only its Mesh is removed.
+      // Never add those shared resources to exhibitResources or dispose them here.
       box(3.58,1.94,.12,0,0,-.09,gold,g);
-      const m=new THREE.MeshBasicMaterial({map:textTexture(item.title||'Archive in progress',item.subtitle||'A place for a real memory')});resources.add(m);
-      mesh(new THREE.PlaneGeometry(3.42,1.79),m,0,0,0,g);
+      const m=new THREE.MeshBasicMaterial({map:textTexture(item.title||'Archive in progress',item.subtitle||'A place for a real memory')});resources.add(m);exhibitResources.add(m);exhibitResources.add(m.map);
+      const exhibit=mesh(new THREE.PlaneGeometry(3.42,1.79),m,0,0,0,g);exhibitResources.add(exhibit.geometry);
       const src=item.image||item.imageUrl||item.src;
-      if(src)textureLoader.load(src,t=>{t.colorSpace=THREE.SRGBColorSpace;resources.add(t);m.map=t;m.needsUpdate=true;},undefined,()=>{});
+      if(src)textureLoader.load(src,t=>{if(disposed||generation!==exhibitGeneration){t.dispose();return;}sceneryVersion++;t.colorSpace=THREE.SRGBColorSpace;resources.add(t);exhibitResources.add(t);if(m.map){m.map.dispose();resources.delete(m.map);exhibitResources.delete(m.map);}m.map=t;m.needsUpdate=true;},undefined,()=>{});
     });
   }
   function creatorNameTexture(value){const cv=document.createElement('canvas');cv.width=512;cv.height=96;const c=cv.getContext('2d');c.fillStyle='#152032ed';c.fillRect(5,8,502,78);c.strokeStyle='#c6ac75';c.lineWidth=2;c.strokeRect(6,9,500,76);c.font='500 34px "Yu Gothic", sans-serif';c.textAlign='center';c.textBaseline='middle';c.fillStyle='#f5e4bc';c.fillText(value,256,49,470);const texture=new THREE.CanvasTexture(cv);texture.colorSpace=THREE.SRGBColorSpace;resources.add(texture);return texture;}
@@ -367,9 +373,12 @@ export function createWorld({ canvas, onReady, art } = {}) {
   // Thin volumetric-looking mist is a bounded transparent sheet, rather than a particle storm.
   const mistCv=document.createElement('canvas');mistCv.width=256;mistCv.height=128;const mistCtx=mistCv.getContext('2d');for(let i=0;i<6;i++){const xx=35+i*39,yy=63+Math.sin(i)*12,g=mistCtx.createRadialGradient(xx,yy,3,xx,yy,61);g.addColorStop(0,'#c2cde21c');g.addColorStop(1,'#c2cde200');mistCtx.fillStyle=g;mistCtx.fillRect(xx-61,yy-61,122,122);}const mistTex=new THREE.CanvasTexture(mistCv);resources.add(mistTex);const mistMat=new THREE.MeshBasicMaterial({map:mistTex,transparent:true,depthWrite:false,side:THREE.DoubleSide,opacity:.42});resources.add(mistMat);const mistSheets=[];
   for(const [x,z,w]of[[32,51,17],[32,16,13],[8,43,8]]){const sheet=mesh(new THREE.PlaneGeometry(w,3),mistMat,x,.3,z);sheet.rotation.x=-Math.PI/2;sheet.userData.ignorePicking=true;mistSheets.push({node:sheet,x,z});}
-  let last=0,gateY=0,ambientTime=0;
-  function resize(){const w=canvas.clientWidth||window.innerWidth,h=canvas.clientHeight||window.innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;heldLantern.position.x=Math.min(.3,.3*camera.aspect);camera.updateProjectionMatrix();}
+  let last=0,gateY=0,ambientTime=0,lastStaticSignature='';
+  function resize(){if(disposed)return;lastStaticSignature='';const w=canvas.clientWidth||window.innerWidth,h=canvas.clientHeight||window.innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;heldLantern.position.x=Math.min(.3,.3*camera.aspect);camera.updateProjectionMatrix();}
   function render({x=0,z=0,yaw=0,pitch=0,time=0,motion=true,unlocked=false,horrorAccepted=false,hasKey=false,collection=[],brightness=1,lantern=true,encounters=true,cleared=[],creatorActors=[]}={}){
+    if(disposed)return;
+    const staticSignature=motion?'':[sceneryVersion,art?.version,x,z,yaw,pitch,unlocked,horrorAccepted,hasKey,brightness,lantern,encounters,cleared.join(','),creatorActors.map(a=>[a.id,a.x,a.z,a.sprite?.frame?.join(',')].join(':')).join(';')].join('|');
+    if(!motion&&staticSignature===lastStaticSignature)return;lastStaticSignature=staticSignature;
     const seconds=time*.001;const dt=Math.min(.05,Math.max(0,seconds-last));last=seconds;if(motion)ambientTime+=dt;const t=ambientTime;
     updateCreatorActors(creatorActors);
     folios.visible=Math.hypot(x-vaultPoint.x,z-vaultPoint.z)<(compactViewport?26:42);
@@ -381,7 +390,7 @@ export function createWorld({ canvas, onReady, art } = {}) {
     for(const spirit of spirits){
       spirit.node.visible=encounters&&(!spirit.definition.optional||spirit.node.userData.originalArt)&&!cleared.includes(spirit.id)&&monsterAvailable(spirit.definition,{unlocked,horrorAccepted});
       const pose=monsterPose(spirit.definition,seconds,motion,{unlocked,horrorAccepted});
-      const sampled=art&&monsterSprite(art,spirit.id,{time:seconds,motion,walking:pose.walking,facing:pose.facing});
+      const sampled=art&&monsterSprite(art,spirit.id,{time:seconds,motion,walking:pose.walking,facing:pose.facing,phase:pose.phase,turning:pose.turning});
       if(sampled&&spirit.sprite.material.map){const uv=spriteTextureUV(sampled),texture=spirit.sprite.material.map,height=(spirit.id==='franken'?2.35:spirit.id==='bat'?1.85:2.15)*uv.heightScale;texture.repeat.set(uv.repeatX,uv.repeatY);texture.offset.set(uv.offsetX,uv.offsetY);spirit.sprite.center.set(uv.centerX,uv.centerY);spirit.sprite.scale.set(height*uv.aspect,height,1);}
       spirit.node.position.x=pose.x*CELL;spirit.node.position.z=pose.z*CELL;
       spirit.node.rotation.y=Math.atan2(x-spirit.node.position.x,z-spirit.node.position.z);
@@ -393,7 +402,7 @@ export function createWorld({ canvas, onReady, art } = {}) {
     const collected=Array.isArray(collection)?collection.some(v=>typeof v==='string'?v.includes('key'):v?.id?.includes('key')):!!collection?.key;
     key.visible=!collected&&!hasKey&&!unlocked;horrorDoor.position.y=horrorAccepted?5.5:0;keyLight.visible=key.visible;
     if(motion){heldLantern.rotation.z=Math.sin(t*.8)*.015;
-      for(const spirit of spirits){spirit.node.position.y=spirit.baseY+(['zombie','franken'].includes(spirit.id)?Math.abs(Math.sin(t*.4))*.025:Math.sin(t*(spirit.id==='vampire'?.35:.55)+spirit.index)*.055);}
+      for(const spirit of spirits)spirit.node.position.y=spirit.baseY;
       key.rotation.y=t*.8;key.position.y=1.57+Math.sin(t*1.4)*.09;mobile.rotation.y=t*.085;mobile.rotation.z=Math.sin(t*.28)*.1;dust.rotation.y=Math.sin(t*.025)*.006;
       folios.rotation.y=Math.sin(t*.085)*.085;
       for(const f of folioMotion){f.node.position.y=f.baseY+Math.sin(t*.65+f.phase)*.12;f.node.rotation.x=f.baseX+Math.sin(t*.48+f.phase)*.035;f.node.rotation.z=f.baseZ+Math.cos(t*.4+f.phase)*.04;}
@@ -401,7 +410,7 @@ export function createWorld({ canvas, onReady, art } = {}) {
     }
     renderer.render(scene,camera);
   }
-  function dispose(){disposed=true;for(const r of resources)r.dispose?.();renderer.dispose();}
+  function dispose(){if(disposed)return;disposed=true;exhibitGeneration++;for(const r of resources)r.dispose?.();resources.clear();exhibitResources.clear();renderer.dispose();}
   // Instance static masonry by material. Thousands of architectural details
   // become a handful of GPU draw calls while movable objects remain separate.
   // Batch repeated pieces inside moving parents, retaining their local transforms.

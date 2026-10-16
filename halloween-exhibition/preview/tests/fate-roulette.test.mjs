@@ -19,7 +19,7 @@ test('motion has mobile bounds and disabled-motion safeguards, with no audio cha
  assert.match(css,/@media\(max-width:480px\)/);assert.match(css,/@media\(prefers-reduced-motion:reduce\)/);
  assert.match(css,/data-motion-paused=true/);assert.match(css,/not\(\[data-palace-state=gallery\]\)/);
  assert.match(js,/event.key==='Escape'&&rouletteRunning/);assert.match(js,/pagehide',\(\)=>\{cancelRoulette\(\)/);
- assert.match(js,/if\(reduced.matches\)cancelRoulette\(\)/);
+ assert.match(js,/if\(reduced.matches\)\{cancelRoulette\(\);cancelDoorReveal\(\);\}/);
 });
 test('only the pinned host entry is excluded and its compact project art cannot expand',()=>{
  assert.match(js,/!host\|\|e.doorId!==host.doorId/);assert.doesNotMatch(js,/!host\|\|e.creatorId!==host.creatorId/);

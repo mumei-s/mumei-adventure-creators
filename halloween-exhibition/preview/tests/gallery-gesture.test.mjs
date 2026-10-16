@@ -8,12 +8,12 @@ class Target {
   removeEventListener(type, fn) { this.listeners.get(type)?.delete(fn); }
   emit(type, event) { for (const fn of this.listeners.get(type) || []) fn(event); }
 }
-function fixture() {
+function fixture(options = {}) {
   const document = new Target();
   document.defaultView = new Target();
   const stage = new Target(); stage.ownerDocument = document;
   const navigation = [], suppression = [];
-  const cleanup = installGalleryGesture(stage, { onNavigate: d => navigation.push(d), onSuppressClick: t => suppression.push(t) });
+  const cleanup = installGalleryGesture(stage, { onNavigate: d => navigation.push(d), onSuppressClick: t => suppression.push(t), ...options });
   const event = (x, y = 0, extra = {}) => ({ pointerType: 'touch', pointerId: 1, clientX: x, clientY: y, target: { closest: () => null }, preventDefault() { throw Error('Pointer scrolling must not be prevented'); }, ...extra });
   const down = (x = 0, y = 0, extra = {}) => { const e = event(x, y, extra); document.emit('pointerdown', e); stage.emit('pointerdown', e); };
   const move = (x, y = 0, extra = {}) => document.emit('pointermove', event(x, y, extra));
@@ -75,4 +75,10 @@ test('cancelling one finger does not revive a remaining multitouch contact', () 
 test('a horizontal start ending in a predominantly vertical motion does not swipe', () => {
   const f = fixture(); f.down(); f.move(12, 0); f.up(25, 80);
   assert.deepEqual(f.navigation, []); assert.deepEqual(f.suppression, []);
+});
+test('roster card opt-in allows flicks without enabling swipe navigation from unrelated inputs',()=>{
+ const f=fixture({allowControl:control=>control.className==='roster-card'});
+ f.down(0,0,{target:{closest:()=>({className:'roster-card'})}});f.up(-50);
+ f.down(0,0,{target:{closest:()=>({className:'search'})}});f.up(-50);
+ assert.deepEqual(f.navigation,[1]);
 });

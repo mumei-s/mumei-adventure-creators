@@ -31,9 +31,9 @@ export function initSceneMotion(root, {controlsParent} = {}) {
     ['.world-backdrop', 9], ['.ceiling-vault', 5], ['.glass-orbit', 17], ['.gallery-aura', 7], ['.hanging-lantern', 14],
     ['.foreground-left', 23], ['.foreground-right', 23], ['.floor-light', 7]
   ].flatMap(([sel, depth]) => [...root.querySelectorAll(sel)].map(el => ({el, depth, initial: el.style.translate})));
-  let userPaused = false;
+  let userPaused = false, suspended = false, disposed = false;
   try { userPaused = localStorage.getItem('halloween-yearbook:motion-paused:v1') === 'true'; } catch {}
-  let width = 1, height = 1, dpr = 1, frame = 0, last = 0, time = 0, dirty = true;
+  let width = 1, height = 1, dpr = 1, frame = 0, last = 0, time = 0, dirty = true, generation = 0;
   let x = 0, y = 0, targetX = 0, targetY = 0, mode = 'halloween', collected = new Set(), payoff = 0;
   let rect = root.getBoundingClientRect();
   const ids = ['light-1', 'light-2', 'light-3'];
@@ -51,7 +51,7 @@ export function initSceneMotion(root, {controlsParent} = {}) {
     horror: {rgb: '130,165,158', glow: '155,146,177', opacity: .65}
   };
   const staticMotion = () => userPaused || media.matches;
-  const active = () => !staticMotion() && !document.hidden && !document.querySelector('dialog[open]');
+  const active = () => !disposed && !suspended && !root.hidden && document.body?.dataset.pageHidden!=='true' && !staticMotion() && !document.hidden && !document.querySelector('dialog[open]');
   function readSeals() {
     try { const values = JSON.parse(root.dataset.seals || '[]'); collected = new Set(Array.isArray(values) ? values.filter(v => ids.includes(v)) : []); } catch { collected = new Set(); }
     seedButtons.forEach((b, i) => { const done = collected.has(ids[i]); b.setAttribute('aria-pressed', String(done)); b.textContent = done ? '✦' : '✧'; b.setAttribute('aria-label', `${i + 1}つ目の光${done ? '：収集済み' : 'を集める'}`); });
@@ -64,7 +64,8 @@ export function initSceneMotion(root, {controlsParent} = {}) {
     atmosphere.dataset.palette = mode; readSeals(); dirty = true;
   }
   function updatePause() {
-    const stopped = staticMotion() || document.hidden || !!document.querySelector('dialog[open]');
+    if(disposed)return;
+    const stopped = suspended || root.hidden || document.body?.dataset.pageHidden==='true' || staticMotion() || document.hidden || !!document.querySelector('dialog[open]');
     const changed = root.dataset.motionPaused !== String(stopped);
     root.dataset.motionPaused = String(stopped);
     if(document.body)document.body.dataset.ambientPaused=String(staticMotion());
@@ -73,7 +74,7 @@ export function initSceneMotion(root, {controlsParent} = {}) {
     pause.setAttribute('aria-pressed', String(staticMotion()));
     pause.setAttribute('aria-label', media.matches ? '端末の設定に合わせて動きを抑えています' : userPaused ? '背景の動きを再開する' : '背景の動きを止める');
     pause.disabled = media.matches;
-    if (stopped) { cancelAnimationFrame(frame); frame = 0; last = 0; }
+    if (stopped) { generation++;cancelAnimationFrame(frame); frame = 0; last = 0; }
     else start();
     if (media.matches) { x = y = targetX = targetY = 0; setLayers(); }
     if (dirty) draw();
@@ -159,7 +160,8 @@ export function initSceneMotion(root, {controlsParent} = {}) {
       ctx.beginPath(); ctx.ellipse(width * .5, height * .17, (1 - payoff / 2) * 85, (1 - payoff / 2) * 28, 0, 0, Math.PI * 2); ctx.stroke();
     }
   }
-  function tick(stamp) {
+  function tick(stamp, token) {
+    if(token!==generation)return;
     frame = 0; if (!active()) { updatePause(); return; }
     if (!last) last = stamp;
     // Render at <= 30fps; smooth exponential damping is independent of frame cadence.
@@ -168,9 +170,9 @@ export function initSceneMotion(root, {controlsParent} = {}) {
       const damp = 1 - Math.exp(-dt * 4.2); x += (targetX - x) * damp; y += (targetY - y) * damp;
       payoff = Math.max(0, payoff - dt); setLayers(); draw();
     }
-    frame = requestAnimationFrame(tick);
+    frame = requestAnimationFrame(stamp=>tick(stamp,token));
   }
-  function start() { if (!frame && active()) { last = 0; frame = requestAnimationFrame(tick); } }
+  function start() { if (!frame && active()) { last = 0; const token=generation;frame = requestAnimationFrame(stamp=>tick(stamp,token)); } }
   listen(root, 'pointermove', event => {
     // Touch remains native scroll/swipe; its game interaction is the three seed buttons.
     if (event.pointerType === 'touch' || !active() || event.target.closest('button,a,input,dialog')) return;
@@ -193,14 +195,16 @@ export function initSceneMotion(root, {controlsParent} = {}) {
   }));
   const observer = new MutationObserver(records => {
     if (records.some(r => r.attributeName === 'data-seals')) readSeals();
-    applyMode(); syncArtifacts(); if (!active()) draw();
+    applyMode(); syncArtifacts(); if(records.some(r=>r.attributeName==='hidden'))updatePause(); if (!active()) draw();
   });
-  observer.observe(root, {attributes: true, attributeFilter: ['data-mode', 'data-theme', 'data-seals', 'data-room-index', 'data-creator-id', 'data-seal-rooms']});
+  observer.observe(root, {attributes: true, attributeFilter: ['data-mode', 'data-theme', 'data-seals', 'data-room-index', 'data-creator-id', 'data-seal-rooms', 'hidden']});
   const dialogs = new MutationObserver(updatePause);
   document.querySelectorAll('dialog').forEach(el => dialogs.observe(el, {attributes: true, attributeFilter: ['open']}));
   const resizeObserver = new ResizeObserver(resize); resizeObserver.observe(root);
   listen(document, 'visibilitychange', updatePause); listen(media, 'change', updatePause);
   listen(window, 'resize', resize, {passive: true});
+  listen(window, 'pagehide', () => { suspended=true;targetX=targetY=0;updatePause(); });
+  listen(window, 'pageshow', () => { suspended=false;last=0;resize();updatePause(); });
   applyMode(); readSeals(); resize(); updatePause();
   return {
     // Explicit opt-in touch-look may feed normalized coordinates; the caller owns
@@ -213,7 +217,7 @@ export function initSceneMotion(root, {controlsParent} = {}) {
     isUserPaused() { return userPaused; },
     setPaused(value) { userPaused = Boolean(value); updatePause(); },
     destroy() {
-      cancelAnimationFrame(frame); abort.abort(); observer.disconnect(); dialogs.disconnect(); resizeObserver.disconnect();
+      disposed=true;generation++;cancelAnimationFrame(frame); abort.abort(); observer.disconnect(); dialogs.disconnect(); resizeObserver.disconnect();
       layers.forEach(({el, initial}) => el.style.translate = initial);
       atmosphere.remove(); controls.remove(); seeds.remove(); delete root.dataset.sceneReady; delete root.dataset.motionPaused; delete root.dataset.constellation;
     }

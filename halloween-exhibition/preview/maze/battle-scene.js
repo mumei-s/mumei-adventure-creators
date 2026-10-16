@@ -1,6 +1,6 @@
-import {monsterSprite} from './monster-motion.js?v=20261016-living1';
-import {drawArtSprite,playerPose} from './rpg-art.js?v=20261016-living1';
-import {drawCreature} from './stage-2d.js?v=20261016-living1';
+import {monsterSprite} from './monster-motion.js?v=20261017-review1';
+import {drawArtSprite,playerPose} from './rpg-art.js?v=20261017-review1';
+import {drawCreature} from './stage-2d.js?v=20261017-review1';
 import {prankFor} from './encounter-model.js?v=20261016-living1';
 import {encounterStory} from './story-model.js?v=20261016-living1';
 const clamp=x=>Math.max(0,Math.min(1,x));
@@ -14,6 +14,12 @@ export function battleLayout(width,height,{enemyAspect=.75}={}){
   return {px:w*.24,py:h*.87,ex:w*.73,ey:h*.87,heroSize:Math.max(1,Math.min(h*.62,w*.39,310,h*.87-42)),enemySize:Math.max(1,Math.min(h*.74,w*.46/safeAspect,370,h*.87-42))};
 }
 export function battleEffectDuration(type,motion=true){return motion?(type==='shine'?2.4:1.2):.65;}
+/** UI locks follow a bounded effect clock, also when motion is disabled mid-action. */
+export function battleEffectPending(effect,time,motion=true){
+  if(!effect?.pendingUI||!Number.isFinite(effect.started)||!Number.isFinite(time))return false;
+  const maximum=battleEffectDuration(effect.type,motion),duration=Number.isFinite(effect.duration)?Math.max(0,Math.min(effect.duration,maximum)):maximum;
+  return duration>0&&time<effect.started+duration;
+}
 export function shineSequence(age,motion=true){
   const t=Math.max(0,Number.isFinite(age)?age:0);
   if(!motion)return {stage:t<.65?'impact':'done',charge:0,travel:1,impact:clamp(t/.65),lunge:0};
@@ -79,9 +85,9 @@ export function renderBattleScene({canvas,art,battle,effect=null,time=0,motion=t
   const hero=playerPose(art,'right',motion&&((shine&&seq.lunge>0)||(attack&&phase<.38)),phase*12);
   const casting=shine&&motion&&age<.86;
   if(!drawArtSprite(c,hero,px+lunge,py,heroSize,{rotation:casting?-.035*seq.charge:0,scaleY:casting?1-.025*seq.charge:1}))heroFallback(c,px+lunge,py,heroSize);
-  const breathing=motion?1+Math.sin(drift*(battle.id==='franken'?.55:1.15))*.004:1;
+  // Keep painted anatomy intact; animated atlas poses own body movement.
   const rotation=motion?(battle.id==='bat'?Math.sin(drift*1.9)*.018:battle.id==='ghost'?Math.sin(drift*.8)*.01:0):0;
-  if(!drawArtSprite(c,enemy,ex+recoil,ey+hover,enemySize,{alpha:won?.92:1,flip:enemy?.flip,rotation,scaleY:breathing}))drawCreature(c,battle.id,ex+recoil,ey-enemySize*.45+hover,enemySize/75);
+  if(!drawArtSprite(c,enemy,ex+recoil,ey+hover,enemySize,{alpha:won?.92:1,flip:enemy?.flip,rotation}))drawCreature(c,battle.id,ex+recoil,ey-enemySize*.45+hover,enemySize/75);
   if(effect&&age<battleEffectDuration(effect.type,motion)){
     if(shine)shineEffect(c,{px,py,ex,ey,heroSize,enemySize,w,h,age,motion,seq});
     const sx=px+heroSize*.18,sy=py-heroSize*.48,tx=ex,ty=ey-enemySize*.48;

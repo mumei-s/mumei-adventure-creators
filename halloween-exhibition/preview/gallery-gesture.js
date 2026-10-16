@@ -3,7 +3,7 @@
  * onSuppressClick receives the absolute suppression deadline (milliseconds).
  * Returns a cleanup function. No pointer handler prevents native scrolling.
  */
-export function installGalleryGesture(stage, { onNavigate, onSuppressClick = () => {} }) {
+export function installGalleryGesture(stage, { onNavigate, onSuppressClick = () => {}, allowControl = control => control.id === 'artwork-open' }) {
   const document = stage.ownerDocument;
   const touches = new Set();
   let gesture = null;
@@ -24,7 +24,7 @@ export function installGalleryGesture(stage, { onNavigate, onSuppressClick = () 
     touches.add(event.pointerId);
     if (touches.size !== 1) { blocked = true; gesture = null; return; }
     const control = event.target?.closest?.(controls);
-    if (control && control.id !== 'artwork-open') return;
+    if (control && !allowControl(control)) return;
     gesture = { id: event.pointerId, x: event.clientX, y: event.clientY, axis: null };
   }
   function measure(event) {

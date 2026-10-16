@@ -1,4 +1,5 @@
-import {STORAGE_KEY,createState,validateState,listEntries,getURL,getPrimaryLink,getExtraLinks,entryDoorId,saveEntry,deleteEntry,restoreEntry,importData,publicFiles,safeURL,clone} from './model.js?v=20261015-iris1';
+import {STORAGE_KEY,validateState,listEntries,getURL,getPrimaryLink,getExtraLinks,entryDoorId,saveEntry,deleteEntry,restoreEntry,importData,publicFiles,safeURL,clone} from './model.js?v=20261017-draft-guard1';
+import {fetchDraft} from './draft-io.js?v=20261017-draft-guard1';
 const $=id=>document.getElementById(id),names={normal:'通常の展示',halloween:'Halloween',horror:'冒険室の書庫'};let state,collection='normal',selectedYear=2026,selected=null,dirty=false,storageOK=true,links=[],works=[],primaryTitle='記事を読む',loading=false,corruptDraft=null;
 const el=(tag,text,className)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(className)n.className=className;return n;};
 function status(text,error=false){$('status').textContent=text;$('status').className=error?'error':'';}
@@ -17,16 +18,53 @@ function preview(){$('preview-title').textContent=$('title').value||'あなた�
 function download(name,text){const blob=new Blob([text],{type:'application/json;charset=utf-8'}),url=URL.createObjectURL(blob),a=el('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),30000);}
 function backup(){validateState(state);download(`atelier-editor-backup-${new Date().toISOString().replace(/[:.]/g,'-')}.json`,JSON.stringify(state,null,2)+'\n');status('保存済み下書きのバックアップを書き出しました。未保存のフォーム入力は含まれません。');}
 function exportFile(kind){if(dirty&&!confirm('保存していないフォーム入力は書き出しに含まれません。保存済み下書きを書き出しますか？'))return;try{download(kind==='archive'?'archive.json':'catalog.json',publicFiles(state)[kind]);status(`${kind}.json を書き出しました。GitHubで更新するまでは未公開です。`);}catch(e){status(e.message,true);}}
-async function fetchPublic(){const [archive,catalog]=await Promise.all(['../data/archive.json','../maze/data/catalog.json'].map(async path=>{const r=await fetch(path,{cache:'no-store'});if(!r.ok)throw Error(`${path} を読み込めませんでした（${r.status}）。`);return r.json();}));return createState(archive,catalog);}
-async function init(){if(loading)return;loading=true;$('load-error').hidden=true;try{let restored=null;let stored=null;try{stored=localStorage.getItem(STORAGE_KEY);}catch{storageOK=false;}if(stored){try{restored=validateState(JSON.parse(stored));}catch(e){corruptDraft=stored;$('recover-draft').hidden=false;throw Error(`保存済み下書きを読み込めません。自動で上書きせず保護しています。下の退避ボタンから保存内容をダウンロードし、公開データから作り直せます。詳細: ${e.message}`);}}state=restored||await fetchPublic();selectedYear=Math.max(...state.archive.years.map(y=>y.year));$('creator').replaceChildren(...state.archive.creators.map(c=>new Option(c.name,c.id)));renderYears();renderTrash();loadForm(null);persist();$('workspace').disabled=false;if(storageOK)status(restored?'このブラウザの保存済み下書きを復元しました。公開データを読み直す場合はページ下部から。':'公開中のJSONを読み込みました。編集内容はこの端末の下書きとして保存できます。');}catch(e){$('load-error').hidden=false;$('load-error-text').textContent=e.message;status('読み込みが完了していません。',true);}finally{loading=false;}}
+async function withDataLoad(action){
+ if(loading)return;loading=true;const workspace=$('workspace'),wasDisabled=workspace.disabled;workspace.disabled=true;workspace.setAttribute('aria-busy','true');
+ try{return await action();}finally{loading=false;workspace.disabled=wasDisabled;workspace.removeAttribute('aria-busy');}
+}
+async function init(){if(loading)return;loading=true;$('load-error').hidden=true;$('workspace').setAttribute('aria-busy','true');status('公開データと下書きを読み込み中…');try{let restored=null;let stored=null;try{stored=localStorage.getItem(STORAGE_KEY);}catch{storageOK=false;}if(stored){try{restored=validateState(JSON.parse(stored));}catch(e){corruptDraft=stored;$('recover-draft').hidden=false;throw Error(`保存済み下書きを読み込めません。自動で上書きせず保護しています。下の退避ボタンから保存内容をダウンロードし、公開データから作り直せます。詳細: ${e.message}`);}}state=restored||await fetchDraft();selectedYear=Math.max(...state.archive.years.map(y=>y.year));$('creator').replaceChildren(...state.archive.creators.map(c=>new Option(c.name,c.id)));renderYears();renderTrash();loadForm(null);persist();$('workspace').disabled=false;if(storageOK)status(restored?'このブラウザの保存済み下書きを復元しました。公開データを読み直す場合はページ下部から。':'公開中のJSONを読み込みました。編集内容はこの端末の下書きとして保存できます。');}catch(e){$('load-error').hidden=false;$('load-error-text').textContent=e.message;status('読み込みが完了していません。',true);}finally{loading=false;$('workspace').removeAttribute('aria-busy');}}
 $('entry-form').addEventListener('input',setDirty);$('entry-form').addEventListener('change',setDirty);$('entry-form').onsubmit=event=>{event.preventDefault();try{const values={creatorId:$('creator').value,title:$('title').value,url:$('url').value,image:$('image').value,description:$('description').value,order:$('order').value,visible:$('visible').checked,year:$('article-year').value,submissionStatus:$('submission').value,primaryLinkTitle:$('primary-title').value,primaryOrder:$('primary-order').value,primaryVisible:$('primary-visible').checked,extraLinks:links,works};const index=selected??listEntries(state,collection,selectedYear).length;apply(saveEntry(state,collection,selectedYear,selected,values),'下書きに保存しました。');renderYears();loadForm(index);}catch(e){$('form-error').textContent=e.message;}};
 $('add').onclick=()=>{if(canLeave()){loadForm(null);$('title').focus();}};$('cancel').onclick=()=>{if(canLeave())loadForm(selected);};$('delete').onclick=()=>{if(confirm('この記事・扉を下書きの復元一覧へ移しますか？公開中の展示は変わりません。')){try{apply(deleteEntry(state,collection,selectedYear,selected),'下書きを削除しました。復元一覧から戻せます。');loadForm(null);}catch(e){status(e.message,true);}}};
 for(const b of document.querySelectorAll('[data-collection]'))b.onclick=()=>{if(!canLeave())return;collection=b.dataset.collection;for(const btn of document.querySelectorAll('[data-collection]'))btn.setAttribute('aria-pressed',String(btn===b));$('list-heading').textContent=names[collection];$('year-picker').hidden=collection!=='halloween';$('search').value='';loadForm(null);};
 $('year-select').onchange=()=>{if(!canLeave()){$('year-select').value=String(selectedYear);return;}selectedYear=Number($('year-select').value);loadForm(null);};$('add-year').onclick=()=>{if(!canLeave())return;const value=prompt('追加する年度（2000〜9999）',String(new Date().getFullYear()+1));if(value===null)return;const y=Number(value);if(!Number.isInteger(y)||y<2000||y>9999){status('年度は2000〜9999の整数にしてください。',true);return;}if(!state.archive.years.some(item=>item.year===y)){const next=clone(state);next.archive.years.push({year:y,title:`HALLOWEEN ${y}`,description:'',entries:[]});next.updatedAt=new Date().toISOString();apply(validateState(next),'年度の下書きを追加しました。');}selectedYear=y;renderYears();loadForm(null);};$('search').oninput=renderList;
 $('add-link').onclick=()=>{links.push({title:'',url:'',visible:true,order:links.length+1});linkRows();setDirty();};$('add-work').onclick=()=>{works.push({title:'',url:'',visible:true,order:works.length+1});linkRows();setDirty();};$('preview-image').onerror=()=>{$('preview-image-wrap').hidden=true;};
 $('backup').onclick=backup;$('export-archive').onclick=()=>exportFile('archive');$('export-catalog').onclick=()=>exportFile('catalog');$('show-json').onclick=()=>{try{$('json-output').value=publicFiles(state)[$('json-kind').value];$('copy-status').textContent='';$('json-dialog').showModal();}catch(e){status(e.message,true);}};$('json-kind').onchange=()=>{$('json-output').value=publicFiles(state)[$('json-kind').value];$('copy-status').textContent='';};$('json-close').onclick=()=>$('json-dialog').close();$('copy-json').onclick=async()=>{try{await navigator.clipboard.writeText($('json-output').value);$('copy-status').textContent='コピーしました。対応するGitHubのファイルに全文を貼り付けてください。';}catch{$('json-output').focus();$('json-output').select();$('copy-status').textContent='自動コピーが使えません。選択された全文を手動でコピーしてください。';}};
-$('import-open').onclick=()=>{if(!canLeave())return;backup();if(confirm('バックアップのダウンロードを確認しましたか？読み込んだJSONで対応する下書きを置き換えます。'))$('import-file').click();};$('import-file').onchange=async()=>{const file=$('import-file').files[0];if(!file)return;try{if(file.size>5*1024*1024)throw Error('JSONは5MB以下にしてください。');const next=importData(state,JSON.parse(await file.text()));apply(next,'JSONを下書きへ読み込みました。');renderYears();loadForm(null);}catch(e){status(`読み込めませんでした。元の下書きは保持されています。${e.message}`,true);}finally{$('import-file').value='';}};
-$('reload-public').onclick=async()=>{if(!canLeave())return;backup();if(!confirm('バックアップを確認してください。現在の下書きと復元一覧を、公開中のJSONで置き換えますか？この操作はこのブラウザの編集ツールだけに影響します。'))return;try{$('reload-public').disabled=true;const next=await fetchPublic();apply(next,'公開データから下書きを作り直しました。');renderYears();loadForm(null);}catch(e){status(`再読み込みに失敗しました。元の下書きは保持されています。${e.message}`,true);}finally{$('reload-public').disabled=false;}};$('retry').onclick=init;$('recover-draft').onclick=()=>{if(corruptDraft===null)return;download('atelier-editor-recovery.json',corruptDraft);if(!confirm('保存内容の退避ファイルを確認してください。この編集ツールの下書きだけをリセットし、公開データから作り直しますか？'))return;try{localStorage.removeItem(STORAGE_KEY);corruptDraft=null;$('recover-draft').hidden=true;init();}catch(e){status(`下書きをリセットできませんでした。${e.message}`,true);}};
+$('import-open').onclick=()=>{if(!canLeave())return;backup();if(confirm('バックアップのダウンロードを確認しましたか？読み込んだJSONで対応する下書きを置き換えます。'))$('import-file').click();};$('import-file').onchange=async()=>{
+ const file=$('import-file').files[0];if(!file||loading)return;
+ if(!canLeave()){$('import-file').value='';return;}
+ try{await withDataLoad(async()=>{
+   status('JSONファイルを確認中…');
+   if(file.size>5*1024*1024)throw Error('JSONは5MB以下にしてください。');
+   const next=importData(state,JSON.parse(await file.text()));apply(next,'JSONを下書きへ読み込みました。');renderYears();loadForm(null);
+ });}catch(e){status(`読み込めませんでした。元の下書きは保持されています。${e.message}`,true);}finally{$('import-file').value='';}
+};
+$('reload-public').onclick=async()=>{
+ if(loading||!canLeave())return;backup();
+ if(!confirm('バックアップを確認してください。現在の下書きと復元一覧を、公開中のJSONで置き換えますか？この操作はこのブラウザの編集ツールだけに影響します。'))return;
+ try{await withDataLoad(async()=>{status('公開データを読み込み中…');const next=await fetchDraft();apply(next,'公開データから下書きを作り直しました。');renderYears();loadForm(null);});}
+ catch(e){status(`再読み込みに失敗しました。元の下書きは保持されています。${e.message}`,true);}
+};
+$('retry').onclick=init;
+$('recover-draft').onclick=async()=>{
+ if(corruptDraft===null||loading)return;download('atelier-editor-recovery.json',corruptDraft);
+ if(!confirm('保存内容の退避ファイルを確認してください。この編集ツールの下書きだけをリセットし、公開データから作り直しますか？'))return;
+ try{
+   await withDataLoad(async()=>{
+     status('退避前の下書きを保護したまま公開データを確認中…');
+     const next=await fetchDraft();
+     // Do not remove the protected raw draft before a complete, valid replacement exists.
+     localStorage.setItem(STORAGE_KEY,JSON.stringify(next));
+     state=next;storageOK=true;corruptDraft=null;$('recover-draft').hidden=true;$('load-error').hidden=true;
+     selectedYear=Math.max(...state.archive.years.map(y=>y.year));renderYears();renderTrash();loadForm(null);persist();
+     status('公開データから下書きを作り直しました。元の内容は退避ファイルから確認できます。');
+   });
+   $('workspace').disabled=false;
+ }catch(e){status(`下書きを作り直せませんでした。保存内容は元のまま保護されています。${e.message}`,true);}
+};
+window.addEventListener('beforeunload',event=>{
+ if(dirty||(state&&!storageOK)){event.preventDefault();event.returnValue='';}
+});
+
 // In-app return never silently discards an unsaved form or an unpersisted draft.
 for(const link of document.querySelectorAll('a[href^="../"]:not([target="_blank"])'))link.addEventListener('click',event=>{
  if(dirty||!storageOK){event.preventDefault();status(dirty?'入力はこの画面に残しています。「下書きに保存」してから、お城へ戻ってください。':'下書きを端末に保存できません。編集バックアップを保存してから、別のタブで展示を開いてください。',true);$('entry-form').scrollIntoView({block:'start'});}

@@ -1,0 +1,11 @@
+Use case: identity-preserve. Make a GAME WALK ANIMATION ONLY. 8 full-body sprites in a 4-column by 2-row grid. Transparent background. One entire two-step walk cycle, read left-to-right row1 then row2. Use the attached exact heroine design and quality: same face, silver pink-tipped hair, black/silver/white pointed witch hat with decorations, black white silver layered lace dress, tall boots, golden lantern. All 8 sprites face RIGHT, true side view, same camera/scale, consistent foot-floor height and complete hat with generous transparent margins. No text or guides.
+Most important is physically ALTERNATING feet with distinct animation poses, not repeated mini variations. Near leg means camera-side leg; far leg partly behind it.
+1: contact, near leg extends forward to right, far leg extends behind to left. Both soles near common ground.
+2: down, near foot remains planted ahead, near knee bends absorbing weight, far heel lifts behind.
+3: passing, near leg vertical under pelvis, far knee passes forward in front with far foot clearly raised off floor.
+4: up, near leg extends BEHIND left on toes, far leg reaches forward RIGHT with raised toes about to contact.
+5: opposite contact, FAR leg extended forward RIGHT planted, NEAR leg extended behind LEFT. This is visibly opposite from pose1, with opposite overlapping legs.
+6: opposite down, far foot planted ahead, near heel lifts behind.
+7: opposite passing, far leg vertical support; near knee and boot pass forward raised.
+8: opposite up, far leg behind on toe, near leg forward/right about to land and seamlessly return pose1.
+Arms/shoulders counter-swing gently. Lantern remains in SAME anatomical hand and well attached, with gentle lag. Hair and dress follow limbs naturally, do not hide feet. No new characters. Faithfully keep reference drawing style and face, no loss of fine detail. Do not copy the same legs across frames. We need animation keyframes with clear foot contact and passing phases, not a pose catalogue.

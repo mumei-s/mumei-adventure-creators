@@ -1,4 +1,4 @@
-import {CREATOR_FICTION_NOTICE,creatorAvailable} from './creator-runtime.js?v=20261016-living1';
+import {CREATOR_FICTION_NOTICE,creatorAvailable} from './creator-runtime.js?v=20261017-review1';
 const el=(tag,text,cls)=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=text;if(cls)node.className=cls;return node;};
 export function renderCreatorConversation(container,npc,{onDirectory,onGuide}={}){
   const card=el('section',undefined,'creator-conversation');

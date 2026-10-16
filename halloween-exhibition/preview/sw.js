@@ -1,17 +1,49 @@
 /* Public exhibition shell only. No admin, maze, archive data, remote portraits,
  * API requests, unknown query strings, authentication or background activity. */
 const SCOPE = new URL('./', self.location.href);
-const RELEASE = '20261014-layout1';
-const STYLE_RELEASE = '20261014-portrait1';
-const DOOR_RELEASE = '20261014-doors1';
-const PALACE_RELEASE = '20261014-palace2';
-const CONTROL_RELEASE = '20261015-controls1';
-const COLOR_RELEASE = '20261015-festival1';
-const SETTINGS_RELEASE = '20261015-settings2';
-const DOORSTAGE_RELEASE = '20261015-reveal1';
-const MAGAZINE_RELEASE = '20261015-finale1';
-const HOST_RELEASE = '20261015-host3';
-const CACHE = 'mumei-atelier-shell-v30-' + PALACE_RELEASE + ':' + SCOPE.pathname;
+const CACHE = 'mumei-atelier-shell-v31-20261017-review1:' + SCOPE.pathname;
+const PUBLIC_RELEASES = Object.freeze({
+  "transition-effects.js": "20261017-review1",
+  "transition-effects.css": "20261016-living1",
+  "palace-living-scene.js": "20261017-review1",
+  "palace-living-scene.css": "20261016-living1",
+  "viewport.js": "20261016-ios1",
+  "ios-viewport.css": "20261016-ios1",
+  "fate-roulette.css": "20261016-fate1",
+  "castle-counter-bootstrap.js": "20261016-visits1",
+  "castle-visit-counter.js": "20261016-visits1",
+  "castle-visit-counter.css": "20261016-visits1",
+  "app-exit.js": "20261016-fate1",
+  "safe-navigation.css": "20261016-living1",
+  "door-reveal-clock.js": "20261015-playful1",
+  "festival-scene.js": "20261015-glamour1",
+  "magical-loading.css": "20261015-interior1",
+  "magical-loading.js": "20261017-review1",
+  "palace-startup.js": "20261017-review1",
+  "host-celebration.css": "20261015-host3",
+  "door-reveal.css": "20261015-glamour1",
+  "gallery-refinement.css": "20261016-fate1",
+  "gallery-gesture.js": "20261017-review1",
+  "door-palette.js": "20261015-festival1",
+  "palace-entrance.js": "20261014-palace2",
+  "palace-entrance.css": "20261016-living1",
+  "theater.js": "20261017-review1",
+  "theater.css": "20261014-layout1",
+  "data-model.js": "20261014-doors1",
+  "roster-pagination.js": "20261017-review1",
+  "scene-motion.js": "20261017-review1",
+  "scene-motion.css": "20261015-music-garden1",
+  "gallery-depth.css": "20261014-layout1",
+  "visitor-preferences.js": "20261016-ios1",
+  "visitor-preferences.css": "20261015-settings2",
+  "display-mode.js": "20261014-layout1",
+  "display-mode.css": "20261014-layout1",
+  "magical-entrance.css": "20261014-layout1",
+  "article-doors.css": "20261014-doors1",
+  "gallery-controls.css": "20261017-review1",
+  "slideshow.js": "20261015-festival1",
+  "pwa.js": "20261015-startup1"
+});
 const SHELL = [
   'transition-effects.js', 'transition-effects.css', 'palace-living-scene.js', 'palace-living-scene.css',
   'viewport.js', 'ios-viewport.css',
@@ -23,7 +55,7 @@ const SHELL = [
   'gallery-refinement.css', 'gallery-gesture.js', 'door-palette.js',
   'assets/palace/palace-franken.webp', 'assets/palace/palace-zombie.webp', 'assets/palace/palace-bat.webp',
   'palace-entrance.js', 'palace-entrance.css', 'assets/palace/palace-desktop.webp', 'assets/palace/palace-phone.webp', 'assets/palace/gate-desktop.webp', 'assets/palace/gate-phone.webp',
-  'index.html', 'theater.js', 'theater.css', 'data-model.js',
+  'index.html', 'theater.js', 'theater.css', 'data-model.js', 'roster-pagination.js',
   'scene-motion.js', 'scene-motion.css', 'gallery-depth.css',
   'visitor-preferences.js', 'visitor-preferences.css', 'display-mode.js', 'display-mode.css',
   'magical-entrance.css', 'article-doors.css', 'gallery-controls.css', 'slideshow.js', 'pwa.js', 'manifest.webmanifest',
@@ -31,8 +63,7 @@ const SHELL = [
   'assets/atelier-icon-512.png', 'assets/atelier-maskable-512.png'
 ];
 // Only exact public asset release queries are cacheable; tokens/other queries bypass.
-const PUBLIC_URLS = SHELL.flatMap(path => [new URL(path, SCOPE).href, ...(/\.(?:js|css)$/.test(path) ? [new URL(path + '?v=' + (['transition-effects.js','transition-effects.css','palace-living-scene.js','palace-living-scene.css','palace-startup.js','palace-entrance.css','safe-navigation.css','theater.js'].includes(path)?'20261016-living1':['theater.js','viewport.js','ios-viewport.css','gallery-gesture.js','visitor-preferences.js'].includes(path)?'20261016-ios1':['theater.js','fate-roulette.css','gallery-refinement.css','app-exit.js','safe-navigation.css'].includes(path)?'20261016-fate1':['castle-counter-bootstrap.js','castle-visit-counter.js','castle-visit-counter.css'].includes(path)?'20261016-visits1':['theater.js','gallery-refinement.css','door-reveal.css','festival-scene.js','app-exit.js','safe-navigation.css','scene-motion.js'].includes(path)?'20261015-glamour1':path==='door-reveal-clock.js'?'20261015-playful1':['theater.js','visitor-preferences.js','gallery-refinement.css','safe-navigation.css'].includes(path)?'20261015-return1':['theater.js','gallery-refinement.css','visitor-preferences.js','festival-scene.js','scene-motion.js','scene-motion.css'].includes(path)?'20261015-music-garden1':['magical-loading.css','theater.js','palace-startup.js'].includes(path)?'20261015-interior1':path==='magical-loading.js'?'20261015-journey1':path==='palace-entrance.css'?'20261015-startup2':['palace-startup.js','theater.js','pwa.js'].includes(path) ? '20261015-startup1' : path==='host-celebration.css' ? HOST_RELEASE : path==='gallery-refinement.css' ? MAGAZINE_RELEASE : ['theater.js','door-reveal.css'].includes(path) ? DOORSTAGE_RELEASE : ['visitor-preferences.js','visitor-preferences.css'].includes(path) ? SETTINGS_RELEASE : ['gallery-refinement.css','door-palette.js','slideshow.js'].includes(path) ? COLOR_RELEASE : path==='gallery-gesture.js' ? CONTROL_RELEASE : path === 'palace-entrance.css' ? '20261014-corner2' : ['theater.js','assets/palace/palace-franken.webp', 'assets/palace/palace-zombie.webp', 'assets/palace/palace-bat.webp',
-  'palace-entrance.js','palace-entrance.css'].includes(path) ? PALACE_RELEASE : ['data-model.js','article-doors.css'].includes(path) ? DOOR_RELEASE : path === 'gallery-controls.css' ? STYLE_RELEASE : RELEASE), SCOPE).href] : [])]);
+const PUBLIC_URLS = SHELL.flatMap(path => [new URL(path, SCOPE).href, ...(PUBLIC_RELEASES[path] ? [new URL(path + '?v=' + PUBLIC_RELEASES[path], SCOPE).href] : [])]);
 const ALLOWED = new Set(PUBLIC_URLS);
 const inPreview = SCOPE.pathname.endsWith('/halloween-exhibition/preview/');
 self.addEventListener('install', event => {

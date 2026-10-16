@@ -34,3 +34,19 @@ test('136px compact stage keeps primary labels centered and bounded without seco
     if(status!=='won')assert(labels.some(v=>v[1]==='無名S note'));
   }
 });
+
+test('effect locks release after a bounded interval, including a mid-action reduced-motion change',async()=>{
+ const {battleEffectPending}=await import('../battle-scene.js');
+ for(const type of ['shine','attack','guard']){
+  const effect={type,pendingUI:true,started:10,duration:battleEffectDuration(type,true)};
+  assert.equal(battleEffectPending(effect,10,true),true);
+  assert.equal(battleEffectPending(effect,10.5,false),true);
+  assert.equal(battleEffectPending(effect,10.66,false),false);
+  assert.equal(battleEffectPending(effect,10+battleEffectDuration(type),true),false);
+  assert.equal(battleEffectPending({...effect,duration:Infinity},100,true),false);
+  assert.equal(battleEffectPending({...effect,duration:1e9},13,true),false);
+  assert.equal(battleEffectPending({...effect,pendingUI:false},10,true),false);
+ }
+ assert.equal(battleEffectPending({pendingUI:true,started:NaN},100,false),false);
+ assert.equal(battleEffectPending(null,100,true),false);
+});

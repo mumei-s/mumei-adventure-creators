@@ -22,8 +22,8 @@ test('host motion stops for explicit pause and reduced motion, without rapid fla
 test('host release is isolated in the preview cache and follows existing styles',()=>{
  assert.ok(html.indexOf('host-celebration.css')>html.indexOf('gallery-refinement.css'));
  assert.match(html,/host-celebration.css\?v=20261015-host3/);
- assert.match(sw,/HOST_RELEASE = '20261015-host3'/);
- assert.match(sw,/path==='host-celebration.css' \? HOST_RELEASE/);
+ assert.match(sw,/["']host-celebration\.css["']:\s*["']20261015-host3["']/);
+ assert.match(sw,/PUBLIC_RELEASES\[path\]/);
  assert.match(html,/id="host-magazine"[^>]*href="https:\/\/note.com\/ss_yr\/m\/m642b82518aeb"/);
 });
 

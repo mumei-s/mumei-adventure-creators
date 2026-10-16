@@ -1,0 +1,1411 @@
+{
+  "generatedAt": "2026-10-16T23:28:59.687Z",
+  "method": "Offline @napi-rs/canvas software rendering of actual JS renderers; raw RGBA encoded by ffmpeg libx264; no browser or device was used.",
+  "notVerified": [
+    "DOM/CSS layout",
+    "browser input",
+    "actual iPhone/iPad/Android",
+    "WebGL/GPU",
+    "device FPS",
+    "network transfer time",
+    "actual audio"
+  ],
+  "baselineRoot": "/workspace/scratch/cefda76ea734/baseline",
+  "modifiedRoot": "/workspace/scratch/cefda76ea734/mumei-adventure-creators",
+  "canvasViewport": {
+    "width": 390,
+    "height": 420,
+    "pixelRatio": 1,
+    "framesPerSecondInEncodedVideo": 24
+  },
+  "font": {
+    "file": "NotoSansCJKjp-Regular.otf",
+    "sha256": "68a3fc98800b2a27b371f2fb79991daf3633bd89309d4ffaa6946fd587f375b5",
+    "source": "https://raw.githubusercontent.com/notofonts/noto-cjk/main/Sans/OTF/Japanese/NotoSansCJKjp-Regular.otf",
+    "license": "SIL Open Font License 1.1",
+    "licenseSource": "https://github.com/notofonts/noto-cjk/blob/main/Sans/LICENSE",
+    "delivery": "font used from scratch for offline evidence only, not shipped with runtime"
+  },
+  "sourceFiles": [
+    {
+      "version": "baseline",
+      "path": "maze/stage-2d.js",
+      "sha256": "bfd8811d75e14e558f850c19e23ca27d99afa5791775e09fc61b4258ea2fbe3e"
+    },
+    {
+      "version": "baseline",
+      "path": "maze/rpg-art.js",
+      "sha256": "d9cd5e91b5abb8f74c2c18628565ef59320b083e7b13f28b96fdbeba37f2dfa5"
+    },
+    {
+      "version": "baseline",
+      "path": "maze/creator-runtime.js",
+      "sha256": "215fac517805f2e7b554b34b525cfc5b3ea9d072fb489891fcaef91a79e261de"
+    },
+    {
+      "version": "baseline",
+      "path": "maze/patrol-model.js",
+      "sha256": "5827d2b2b3a066a3913e59751d889d9eb8ecafbf68f154eec6d792b48761572e"
+    },
+    {
+      "version": "baseline",
+      "path": "maze/monster-motion.js",
+      "sha256": "8923910bc522681ae6baabc44c8d9c4bd167a271e0ad07e78c0386f2de38aa12"
+    },
+    {
+      "version": "baseline",
+      "path": "maze/battle-scene.js",
+      "sha256": "b0052cd80607724ca72fdb5c826e252a93b989b838f38644b272f41c74853f87"
+    },
+    {
+      "version": "baseline",
+      "path": "maze/encounter-model.js",
+      "sha256": "d6a16aa9ffe8a81df19675984ab039fe2d926151381cbb04dafc102419a862b8"
+    },
+    {
+      "version": "baseline",
+      "path": "data/archive.json",
+      "sha256": "75d4a63418426310c81ebb288218ee5e17c3318e21fc5e7df5db2fb92d7d706e"
+    },
+    {
+      "version": "baseline",
+      "path": "maze/data/creator-characters.json",
+      "sha256": "46eab84ce24b1d3dc5d93a8d3ec790c3d171e0b111c211cdb68d5057d0111769"
+    },
+    {
+      "version": "baseline",
+      "path": "maze/data/residents.json",
+      "sha256": "97df05c7aeed6af1a5a159610ed856d12b5381d94b328feac42413a5cf1507cf"
+    },
+    {
+      "version": "baseline",
+      "path": "maze/assets/rpg/animated/monster-motion.json",
+      "sha256": "24d0b1f697743d942c22e6b23cd43bb4f0b0e5bca176b5c5045a5d0a5bb04e28"
+    },
+    {
+      "version": "work",
+      "path": "maze/stage-2d.js",
+      "sha256": "6d596bfd829bef3561a2abf1d0f130e1d33053f64926382e8d63539c3e466492"
+    },
+    {
+      "version": "work",
+      "path": "maze/rpg-art.js",
+      "sha256": "336916d8aadea0d51b3b39c9248e87d652d25227551c6368c294eea625aee755"
+    },
+    {
+      "version": "work",
+      "path": "maze/creator-runtime.js",
+      "sha256": "2c36cdcebe6df9dbb5184f07c1f48c8811bd4bfcecf151cf63372b4d1f50aafa"
+    },
+    {
+      "version": "work",
+      "path": "maze/patrol-model.js",
+      "sha256": "2b69068e1d78762f5fc0613eb8ef0ddb454942d828f5cb804e15075b9e32d04a"
+    },
+    {
+      "version": "work",
+      "path": "maze/monster-motion.js",
+      "sha256": "d44d9babf2d77a8acd7ce9a8ff517a15ba2724d5acfd29959573705f3e9527ff"
+    },
+    {
+      "version": "work",
+      "path": "maze/battle-scene.js",
+      "sha256": "500c7805f1c7e8dc4b31cea58d7d3abd6ca257a4850bc09f8c3410a8bc2a9b58"
+    },
+    {
+      "version": "work",
+      "path": "maze/encounter-model.js",
+      "sha256": "18d1b8be99cd2e925bd310dcaf105520f48429f3a9c16519ef91fb0781a20846"
+    },
+    {
+      "version": "work",
+      "path": "maze/movement-runtime.js",
+      "sha256": "77eae4d2fc866a82710573d5ddc13f69e224588a24b2b79443523b3b1ebdb07b"
+    },
+    {
+      "version": "work",
+      "path": "data/archive.json",
+      "sha256": "75d4a63418426310c81ebb288218ee5e17c3318e21fc5e7df5db2fb92d7d706e"
+    },
+    {
+      "version": "work",
+      "path": "maze/data/creator-characters.json",
+      "sha256": "46eab84ce24b1d3dc5d93a8d3ec790c3d171e0b111c211cdb68d5057d0111769"
+    },
+    {
+      "version": "work",
+      "path": "maze/data/residents.json",
+      "sha256": "97df05c7aeed6af1a5a159610ed856d12b5381d94b328feac42413a5cf1507cf"
+    },
+    {
+      "version": "work",
+      "path": "maze/assets/rpg/animated/monster-motion.json",
+      "sha256": "24d0b1f697743d942c22e6b23cd43bb4f0b0e5bca176b5c5045a5d0a5bb04e28"
+    }
+  ],
+  "assets": [
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/battle-library.webp",
+      "bytes": 492736,
+      "sha256": "a9b93deb568f6243acf31fd8b508662e736287ebd42c6480a8200b19282ab463",
+      "width": 1536,
+      "height": 1024,
+      "estimatedRGBABytes": 6291456,
+      "nativeDecodeMs": 35.89730300000002
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/bookcase.webp",
+      "bytes": 108570,
+      "sha256": "1aba1f179d99ff0a149e3e3af48373fee4071b436ef942ceaea1fb78c95c2576",
+      "width": 459,
+      "height": 656,
+      "estimatedRGBABytes": 1204416,
+      "nativeDecodeMs": 6.502999999999986
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/window.webp",
+      "bytes": 79008,
+      "sha256": "ff2df2772213564d2fa7437aab84e79f7a4dd03bea906e9dae382d984f9c5efb",
+      "width": 348,
+      "height": 656,
+      "estimatedRGBABytes": 913152,
+      "nativeDecodeMs": 5.455106000000001
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/column.webp",
+      "bytes": 73900,
+      "sha256": "0f4d748c87c1b6a1801285c9da1585b47b1a9292d5026fa7de509ad5bcd63105",
+      "width": 330,
+      "height": 656,
+      "estimatedRGBABytes": 865920,
+      "nativeDecodeMs": 4.801562999999987
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/pumpkins.webp",
+      "bytes": 73986,
+      "sha256": "05cb1a78a0185cfd35d73309a0818a620d292d497a9f0108b9f39e74359ac14e",
+      "width": 656,
+      "height": 359,
+      "estimatedRGBABytes": 942016,
+      "nativeDecodeMs": 5.037910999999951
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/floor.webp",
+      "bytes": 53730,
+      "sha256": "7c9e767e9aed96115a3143b7884c6aee16a7df03d9e22c77a06098c92dbe17bd",
+      "width": 512,
+      "height": 512,
+      "estimatedRGBABytes": 1048576,
+      "nativeDecodeMs": 3.6408340000000408
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/animated/pumpkin-walk.webp",
+      "bytes": 85032,
+      "sha256": "343d6c5006339c91d7975385084a37492f88a72e99210f46a3ce6d485379bee0",
+      "width": 512,
+      "height": 512,
+      "estimatedRGBABytes": 1048576,
+      "nativeDecodeMs": 4.093299999999999
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/animated/ghost-walk.webp",
+      "bytes": 108978,
+      "sha256": "d03ac4668d57e73e76e8fe639b82dea03527bc84623727997e3341c90e1268b3",
+      "width": 512,
+      "height": 512,
+      "estimatedRGBABytes": 1048576,
+      "nativeDecodeMs": 5.282871999999998
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/animated/bat-walk.webp",
+      "bytes": 70164,
+      "sha256": "29913359f7afad0073514e7d0012955fbc05924f99135ee20d8233964bdf4ba1",
+      "width": 512,
+      "height": 512,
+      "estimatedRGBABytes": 1048576,
+      "nativeDecodeMs": 3.8212199999999825
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/animated/zombie-walk.webp",
+      "bytes": 54038,
+      "sha256": "f98e6b9ed21cfd028774d2a69adc574f2e916643b8176598c0b3cb7390f21112",
+      "width": 512,
+      "height": 512,
+      "estimatedRGBABytes": 1048576,
+      "nativeDecodeMs": 3.263467999999989
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/animated/vampire-walk.webp",
+      "bytes": 49346,
+      "sha256": "f17a7e0d25947dd3dfdf0a6db0e1bc0a1832d7ca7e3c1ceacb14939bdbabf934",
+      "width": 512,
+      "height": 512,
+      "estimatedRGBABytes": 1048576,
+      "nativeDecodeMs": 3.050003000000004
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/animated/franken-walk.webp",
+      "bytes": 77424,
+      "sha256": "795edc6f1909c2c0dcc4d424f4bf0e1834b9a946633ef17680a9b23ebf2fafea",
+      "width": 512,
+      "height": 512,
+      "estimatedRGBABytes": 1048576,
+      "nativeDecodeMs": 3.8713339999999903
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/animated/witch-walk.webp",
+      "bytes": 97818,
+      "sha256": "681d8904d83737eb81fdbe80fe272dbe7fdd0218f6f4f42f2619a18ab4671efb",
+      "width": 512,
+      "height": 512,
+      "estimatedRGBABytes": 1048576,
+      "nativeDecodeMs": 4.85363000000001
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/animated/masked_wanderer-walk.webp",
+      "bytes": 51844,
+      "sha256": "89f84042f5bfb24b1db4468011934daeaee523e558d9d1499366a1fe4427862f",
+      "width": 512,
+      "height": 512,
+      "estimatedRGBABytes": 1048576,
+      "nativeDecodeMs": 3.040108000000032
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/animated/werewolf-walk.webp",
+      "bytes": 50094,
+      "sha256": "5fefe0250f087e9fde41ffb4e94b92c6da8b6c135d9fafa96d79a514136156fd",
+      "width": 512,
+      "height": 512,
+      "estimatedRGBABytes": 1048576,
+      "nativeDecodeMs": 2.458111000000031
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/animated/mummy-walk.webp",
+      "bytes": 84702,
+      "sha256": "36abef570e5e11ad0a3af148d42f43bd0fa7b8b9ea73f4f2c893c529ed1e6c9c",
+      "width": 512,
+      "height": 512,
+      "estimatedRGBABytes": 1048576,
+      "nativeDecodeMs": 3.7204810000000066
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/palace/props-atlas.webp",
+      "bytes": 598636,
+      "sha256": "d817c5df525ca7a2e1c0555e302ba3150176044b6cf60ea38ac09dc1c13eafd0",
+      "width": 1448,
+      "height": 1086,
+      "estimatedRGBABytes": 6290112,
+      "nativeDecodeMs": 34.12445100000002
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/palace/parquet.webp",
+      "bytes": 73200,
+      "sha256": "1e391e5ac777c9d6ae4341b9430ba9a9784144161be212b9919a9680cdc39eb8",
+      "width": 512,
+      "height": 512,
+      "estimatedRGBABytes": 1048576,
+      "nativeDecodeMs": 4.5141100000000165
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/palace/limestone.webp",
+      "bytes": 77526,
+      "sha256": "860ebddf13826cbab68681a4ea98459c453c0eed491c2fdfac8b7b97cc1f4d78",
+      "width": 512,
+      "height": 512,
+      "estimatedRGBABytes": 1048576,
+      "nativeDecodeMs": 4.839890000000082
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/palace/marble.webp",
+      "bytes": 58414,
+      "sha256": "f75b426cf861e4e25dea9cbcb1fcf5f36fd586c2bd04d9602d3a8b8d597df6ab",
+      "width": 512,
+      "height": 512,
+      "estimatedRGBABytes": 1048576,
+      "nativeDecodeMs": 3.5880059999999503
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/palace/carpet.webp",
+      "bytes": 66436,
+      "sha256": "858153effcf19b5e944dcd0a7b8d1abcc6cfe1cbd774448dfd84524fe900710f",
+      "width": 512,
+      "height": 512,
+      "estimatedRGBABytes": 1048576,
+      "nativeDecodeMs": 4.5378749999999854
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/palace/wainscot-wall.webp",
+      "bytes": 195012,
+      "sha256": "e3005526a5f9fe2175bf8fb622c4ed4d789c347b66676306abca15fb80049f1f",
+      "width": 768,
+      "height": 768,
+      "estimatedRGBABytes": 2359296,
+      "nativeDecodeMs": 11.502505000000042
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/creator-npcs/owner-lantern-walk.webp",
+      "bytes": 545770,
+      "sha256": "bfa859d95117dcc7233283cdb14b0e06892152f99883ca71e42ea085481296eb",
+      "width": 1024,
+      "height": 1024,
+      "estimatedRGBABytes": 4194304,
+      "nativeDecodeMs": 29.623830999999996
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/creator-npcs/iris-walk.webp",
+      "bytes": 300980,
+      "sha256": "a465b6431b3f1aec64fc321599413adc58378627a848d619bfd219d5f3bb8844",
+      "width": 1024,
+      "height": 1024,
+      "estimatedRGBABytes": 4194304,
+      "nativeDecodeMs": 17.667057
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/creator-npcs/chamomile-flower-avatar-walk.webp",
+      "bytes": 338316,
+      "sha256": "7ff851e933b9d9bebdddf151908aff77ae18162dbe0a4be310810de99cb74373",
+      "width": 1024,
+      "height": 1024,
+      "estimatedRGBABytes": 4194304,
+      "nativeDecodeMs": 20.54427499999997
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/creator-npcs/mama-avatar-pair-walk.webp",
+      "bytes": 561004,
+      "sha256": "a6b053423048e44a26103982be7566719bd6524db134b218c1bef3b29713a8f1",
+      "width": 1024,
+      "height": 1024,
+      "estimatedRGBABytes": 4194304,
+      "nativeDecodeMs": 27.225593000000003
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/creator-npcs/owner-black-cat-walk.webp",
+      "bytes": 340728,
+      "sha256": "58daf1ef16de6e78f54e79599b55ee16728974999fa57a36f47743e7be7cde0c",
+      "width": 1024,
+      "height": 1024,
+      "estimatedRGBABytes": 4194304,
+      "nativeDecodeMs": 17.62572499999999
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/animated/franken-castle.webp",
+      "bytes": 25104,
+      "sha256": "f3e0d77a40691e4d56910f3fb852aa6c701234e7388220c3dfcbdb702f987228",
+      "width": 256,
+      "height": 256,
+      "estimatedRGBABytes": 262144,
+      "nativeDecodeMs": 1.6172719999995024
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/animated/zombie-castle.webp",
+      "bytes": 18260,
+      "sha256": "b3a06d1ddcd7ed6b6e779f5d4357ddf8febbad38a1911e611c692a7eb51dc4c8",
+      "width": 256,
+      "height": 256,
+      "estimatedRGBABytes": 262144,
+      "nativeDecodeMs": 0.9757570000001579
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/animated/werewolf-castle.webp",
+      "bytes": 16990,
+      "sha256": "07b330931db644d22d28546b1eecf6b21d26f304c6145619990f2219478b5b59",
+      "width": 256,
+      "height": 256,
+      "estimatedRGBABytes": 262144,
+      "nativeDecodeMs": 1.0908269999999902
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/animated/mummy-castle.webp",
+      "bytes": 27014,
+      "sha256": "a611fec872cbb9247fdfadf7fe0cf88e36ac42f9c7a1c78d05056ed61eba0a23",
+      "width": 256,
+      "height": 256,
+      "estimatedRGBABytes": 262144,
+      "nativeDecodeMs": 1.3161999999992986
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/animated/witch-castle.webp",
+      "bytes": 30166,
+      "sha256": "8555e4548144027d56801a3fca6192798da9a1ed52887f315d595467ec185703",
+      "width": 256,
+      "height": 256,
+      "estimatedRGBABytes": 262144,
+      "nativeDecodeMs": 1.2898999999997613
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/animated/vampire-castle.webp",
+      "bytes": 17268,
+      "sha256": "2c87f99fba69829ea8976a22ea0d819714d4d7d13cd38c52e8e71e55a3abdd05",
+      "width": 256,
+      "height": 256,
+      "estimatedRGBABytes": 262144,
+      "nativeDecodeMs": 0.9476149999991321
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/animated/ghost-castle.webp",
+      "bytes": 33068,
+      "sha256": "21ae947e1f46308d7e37fed928ff7a6471e3674690d5fecbfcedd2b7cb90ab44",
+      "width": 256,
+      "height": 256,
+      "estimatedRGBABytes": 262144,
+      "nativeDecodeMs": 1.4591499999987718
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/maze/assets/rpg/animated/bat-castle.webp",
+      "bytes": 24064,
+      "sha256": "af2fcfb7df688faa5451852ae41cb8ecea9cd7187a0bbd64710b93235c2a3825",
+      "width": 256,
+      "height": 256,
+      "estimatedRGBABytes": 262144,
+      "nativeDecodeMs": 1.4670610000011948
+    },
+    {
+      "file": "../baseline/halloween-exhibition/preview/assets/palace/palace-phone.webp",
+      "bytes": 456442,
+      "sha256": "7e69403bed63e354d80f83b0eaddac690826da1c3f8aa25f26dd2ceec99bce98",
+      "width": 1086,
+      "height": 1448,
+      "estimatedRGBABytes": 6290112,
+      "nativeDecodeMs": 31.064548999998806
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/creator-npcs/owner-lantern-walk.webp",
+      "bytes": 545770,
+      "sha256": "bfa859d95117dcc7233283cdb14b0e06892152f99883ca71e42ea085481296eb",
+      "width": 1024,
+      "height": 1024,
+      "estimatedRGBABytes": 4194304,
+      "nativeDecodeMs": 32.516076999998404
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/creator-npcs/iris-walk.webp",
+      "bytes": 300980,
+      "sha256": "a465b6431b3f1aec64fc321599413adc58378627a848d619bfd219d5f3bb8844",
+      "width": 1024,
+      "height": 1024,
+      "estimatedRGBABytes": 4194304,
+      "nativeDecodeMs": 18.274462000001222
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/creator-npcs/koakumako-base-devil-walk.webp",
+      "bytes": 376696,
+      "sha256": "a1f5d2957fc62042845aa2bf66ac87dff15518b702a8c6517b35a15b257a08e7",
+      "width": 1024,
+      "height": 1024,
+      "estimatedRGBABytes": 4194304,
+      "nativeDecodeMs": 21.373766999999134
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/creator-npcs/minato-shio-witch-walk.webp",
+      "bytes": 501516,
+      "sha256": "d4e9022fab44a2e2c05c121b5af39d54fa41ba2218d0a50632679a081c1eb757",
+      "width": 1024,
+      "height": 1024,
+      "estimatedRGBABytes": 4194304,
+      "nativeDecodeMs": 28.693520999999237
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/creator-npcs/naemo-masquerade-walk.webp",
+      "bytes": 589706,
+      "sha256": "2390e9b16df4ab8f6ff9b3998160295482c8067ff807c3c360ca3bc99652b768",
+      "width": 1024,
+      "height": 1024,
+      "estimatedRGBABytes": 4194304,
+      "nativeDecodeMs": 30.268715000000157
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/creator-npcs/yamakon-navy-figure-walk.webp",
+      "bytes": 366722,
+      "sha256": "feb8fed1b976c6041b92ba58967f053cdac166101f8f9d3a97b80feb37a8b6d9",
+      "width": 1024,
+      "height": 1024,
+      "estimatedRGBABytes": 4194304,
+      "nativeDecodeMs": 19.376178999998956
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/creator-npcs/yamakon-pink-figure-walk.webp",
+      "bytes": 482808,
+      "sha256": "d01c917af4438b9fd6e019f0059cc855f85ac3eb5f1b8f4c80910df41e90afe9",
+      "width": 1024,
+      "height": 1024,
+      "estimatedRGBABytes": 4194304,
+      "nativeDecodeMs": 24.17661600000065
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/creator-npcs/marimo-walk.webp",
+      "bytes": 319562,
+      "sha256": "11ac7a9cae9115db26713613a4ae031d7fef0c7b9ac9d0fb1f3eae05cac8cb00",
+      "width": 1024,
+      "height": 1024,
+      "estimatedRGBABytes": 4194304,
+      "nativeDecodeMs": 22.64031299999988
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/creator-npcs/tantan-streetwalker-walk.webp",
+      "bytes": 404736,
+      "sha256": "de07a915b6ac976c70428fc814aaafff5b6bc1e651cb5ac62618391292b66d2b",
+      "width": 1024,
+      "height": 1024,
+      "estimatedRGBABytes": 4194304,
+      "nativeDecodeMs": 27.655941999999413
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/creator-npcs/takechi-bread-avatar-walk.webp",
+      "bytes": 187006,
+      "sha256": "d5f86460b1c955f5512f6bc967ba416c8e43ef1cda0d31da04338392cca38ecd",
+      "width": 1024,
+      "height": 1024,
+      "estimatedRGBABytes": 4194304,
+      "nativeDecodeMs": 18.927734000000783
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/creator-npcs/chamomile-flower-avatar-walk.webp",
+      "bytes": 338316,
+      "sha256": "7ff851e933b9d9bebdddf151908aff77ae18162dbe0a4be310810de99cb74373",
+      "width": 1024,
+      "height": 1024,
+      "estimatedRGBABytes": 4194304,
+      "nativeDecodeMs": 21.703723000002356
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/creator-npcs/tenkai-moon-robed-avatar-walk.webp",
+      "bytes": 390018,
+      "sha256": "6ff6af2f0365a64e3885c2e1f1ffb1cb4d60d1d87518bceb056a94e81f71c724",
+      "width": 1024,
+      "height": 1024,
+      "estimatedRGBABytes": 4194304,
+      "nativeDecodeMs": 24.201664000000164
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/creator-npcs/aihan-avatar-woman-walk.webp",
+      "bytes": 312740,
+      "sha256": "ea4bd3473244b292f7b3a6e8de3094359e80386fd187b3ac96b2364dc44bcb3f",
+      "width": 1024,
+      "height": 1024,
+      "estimatedRGBABytes": 4194304,
+      "nativeDecodeMs": 18.09359499999846
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/creator-npcs/aihan-avatar-shiba-walk.webp",
+      "bytes": 470400,
+      "sha256": "50a5fda8381ccf471b3360bd89d60e136dd961618e67ef8a44d72e1b60d8bc88",
+      "width": 1024,
+      "height": 1024,
+      "estimatedRGBABytes": 4194304,
+      "nativeDecodeMs": 25.211982000000717
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/creator-npcs/mama-avatar-pair-walk.webp",
+      "bytes": 561004,
+      "sha256": "a6b053423048e44a26103982be7566719bd6524db134b218c1bef3b29713a8f1",
+      "width": 1024,
+      "height": 1024,
+      "estimatedRGBABytes": 4194304,
+      "nativeDecodeMs": 27.222944000001007
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/creator-npcs/lokiron-avatar-walk.webp",
+      "bytes": 246756,
+      "sha256": "a85a219f89bd2eb38e96a3ed2f067b2e7de3eb753abe9561a8e673dc659c5d6c",
+      "width": 1024,
+      "height": 1024,
+      "estimatedRGBABytes": 4194304,
+      "nativeDecodeMs": 15.360694000002695
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/creator-npcs/tantan-avatar-hedgehogs-walk.webp",
+      "bytes": 436178,
+      "sha256": "e604cb62a63c2340c43ee746726e8e78d4c0340644220623214b237e2deec340",
+      "width": 1024,
+      "height": 1024,
+      "estimatedRGBABytes": 4194304,
+      "nativeDecodeMs": 24.047845999997662
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/creator-npcs/owner-black-cat-walk.webp",
+      "bytes": 340728,
+      "sha256": "58daf1ef16de6e78f54e79599b55ee16728974999fa57a36f47743e7be7cde0c",
+      "width": 1024,
+      "height": 1024,
+      "estimatedRGBABytes": 4194304,
+      "nativeDecodeMs": 18.93098900000041
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/residents/resident-archivist-walk.webp",
+      "bytes": 226162,
+      "sha256": "d36c4ea558a59f573048d2b45d729cbfa4292ef85665a78ef1bad3f490d4fb49",
+      "width": 1024,
+      "height": 1024,
+      "estimatedRGBABytes": 4194304,
+      "nativeDecodeMs": 13.813640000000305
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/residents/resident-gardener-walk.webp",
+      "bytes": 228304,
+      "sha256": "29faa47021c864c2db12fd79669ffb33f1e7088d29ddbb5102374d44fe411553",
+      "width": 1024,
+      "height": 1024,
+      "estimatedRGBABytes": 4194304,
+      "nativeDecodeMs": 13.366471000001184
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/rpg/animated/pumpkin-walk.webp",
+      "bytes": 85032,
+      "sha256": "343d6c5006339c91d7975385084a37492f88a72e99210f46a3ce6d485379bee0",
+      "width": 512,
+      "height": 512,
+      "estimatedRGBABytes": 1048576,
+      "nativeDecodeMs": 4.2531549999985145
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/rpg/animated/ghost-walk.webp",
+      "bytes": 108978,
+      "sha256": "d03ac4668d57e73e76e8fe639b82dea03527bc84623727997e3341c90e1268b3",
+      "width": 512,
+      "height": 512,
+      "estimatedRGBABytes": 1048576,
+      "nativeDecodeMs": 5.699917000001733
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/rpg/animated/zombie-walk.webp",
+      "bytes": 54038,
+      "sha256": "f98e6b9ed21cfd028774d2a69adc574f2e916643b8176598c0b3cb7390f21112",
+      "width": 512,
+      "height": 512,
+      "estimatedRGBABytes": 1048576,
+      "nativeDecodeMs": 3.1846909999985655
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/rpg/animated/vampire-walk.webp",
+      "bytes": 49346,
+      "sha256": "f17a7e0d25947dd3dfdf0a6db0e1bc0a1832d7ca7e3c1ceacb14939bdbabf934",
+      "width": 512,
+      "height": 512,
+      "estimatedRGBABytes": 1048576,
+      "nativeDecodeMs": 3.1078789999992296
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/rpg/animated/franken-walk.webp",
+      "bytes": 77424,
+      "sha256": "795edc6f1909c2c0dcc4d424f4bf0e1834b9a946633ef17680a9b23ebf2fafea",
+      "width": 512,
+      "height": 512,
+      "estimatedRGBABytes": 1048576,
+      "nativeDecodeMs": 4.040071999999782
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/rpg/animated/bat-walk.webp",
+      "bytes": 70164,
+      "sha256": "29913359f7afad0073514e7d0012955fbc05924f99135ee20d8233964bdf4ba1",
+      "width": 512,
+      "height": 512,
+      "estimatedRGBABytes": 1048576,
+      "nativeDecodeMs": 3.741953000000649
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/rpg/animated/witch-walk.webp",
+      "bytes": 97818,
+      "sha256": "681d8904d83737eb81fdbe80fe272dbe7fdd0218f6f4f42f2619a18ab4671efb",
+      "width": 512,
+      "height": 512,
+      "estimatedRGBABytes": 1048576,
+      "nativeDecodeMs": 4.679689000000508
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/rpg/animated/masked_wanderer-walk.webp",
+      "bytes": 51844,
+      "sha256": "89f84042f5bfb24b1db4468011934daeaee523e558d9d1499366a1fe4427862f",
+      "width": 512,
+      "height": 512,
+      "estimatedRGBABytes": 1048576,
+      "nativeDecodeMs": 4.7980680000000575
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/rpg/animated/werewolf-walk.webp",
+      "bytes": 50094,
+      "sha256": "5fefe0250f087e9fde41ffb4e94b92c6da8b6c135d9fafa96d79a514136156fd",
+      "width": 512,
+      "height": 512,
+      "estimatedRGBABytes": 1048576,
+      "nativeDecodeMs": 3.091013999997813
+    },
+    {
+      "file": "halloween-exhibition/preview/maze/assets/rpg/animated/mummy-walk.webp",
+      "bytes": 84702,
+      "sha256": "36abef570e5e11ad0a3af148d42f43bd0fa7b8b9ea73f4f2c893c529ed1e6c9c",
+      "width": 512,
+      "height": 512,
+      "estimatedRGBABytes": 1048576,
+      "nativeDecodeMs": 4.544815000001108
+    }
+  ],
+  "timings": {
+    "baselineArchitectureConstructionMs": {
+      "samples": 1,
+      "meanMs": 12.535147000000052,
+      "medianMs": 12.535147000000052,
+      "p95Ms": 12.535147000000052,
+      "maximumMs": 12.535147000000052,
+      "excludes": "image decoding, encoder, browser, DOM, GPU; architecture construction is separate"
+    },
+    "workArchitectureConstructionMs": {
+      "samples": 1,
+      "meanMs": 11.947589999999991,
+      "medianMs": 11.947589999999991,
+      "p95Ms": 11.947589999999991,
+      "maximumMs": 11.947589999999991,
+      "excludes": "image decoding, encoder, browser, DOM, GPU; architecture construction is separate"
+    },
+    "baselineStageRenderMs": {
+      "samples": 288,
+      "meanMs": 5.700186420138879,
+      "medianMs": 5.466473999999835,
+      "p95Ms": 6.995726000000104,
+      "maximumMs": 44.36337400000002,
+      "excludes": "image decoding, encoder, browser, DOM, GPU; architecture construction is separate"
+    },
+    "workStageRenderMs": {
+      "samples": 288,
+      "meanMs": 5.252505517361094,
+      "medianMs": 4.953748000000132,
+      "p95Ms": 6.1938539999999875,
+      "maximumMs": 40.51423399999999,
+      "excludes": "image decoding, encoder, browser, DOM, GPU; architecture construction is separate"
+    },
+    "baselineBattleRenderMs": {
+      "samples": 144,
+      "meanMs": 0.4988272013889754,
+      "medianMs": 0.4665079999995214,
+      "p95Ms": 0.7745809999996709,
+      "maximumMs": 2.9003429999993386,
+      "excludes": "image decoding, encoder, browser, DOM, GPU; architecture construction is separate"
+    },
+    "workBattleRenderMs": {
+      "samples": 144,
+      "meanMs": 0.3340831180555344,
+      "medianMs": 0.3146629999992001,
+      "p95Ms": 0.470433000000412,
+      "maximumMs": 1.1175860000003013,
+      "excludes": "image decoding, encoder, browser, DOM, GPU; architecture construction is separate"
+    }
+  },
+  "clips": [],
+  "limitations": [
+    "Four-pose source atlases have no authored continuous turning or attack clip. These videos expose that limitation; they are not an animation acceptance claim.",
+    "Phone-sized Canvas content is not a screenshot from a phone or browser.",
+    "Image byte counts are local file sizes, not network measurements. Decode estimates use width*height*4 and exclude GPU/native overhead."
+  ],
+  "actors": [
+    {
+      "id": "owner-lantern-hero",
+      "kind": "hero",
+      "contact": "contacts/01-owner-lantern-hero.png",
+      "clip": "cast-clips/01-owner-lantern-hero.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 32,
+      "workTurnSamples": 0,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "iris",
+      "kind": "npc",
+      "contact": "contacts/02-iris.png",
+      "clip": "cast-clips/02-iris.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 16,
+      "workTurnSamples": 16,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "koakumako-base-devil",
+      "kind": "npc",
+      "contact": "contacts/03-koakumako-base-devil.png",
+      "clip": "cast-clips/03-koakumako-base-devil.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 16,
+      "workTurnSamples": 16,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "minato-shio-witch",
+      "kind": "npc",
+      "contact": "contacts/04-minato-shio-witch.png",
+      "clip": "cast-clips/04-minato-shio-witch.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 17,
+      "workTurnSamples": 31,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "naemo-masquerade",
+      "kind": "npc",
+      "contact": "contacts/05-naemo-masquerade.png",
+      "clip": "cast-clips/05-naemo-masquerade.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 17,
+      "workTurnSamples": 31,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "yamakon-navy-figure",
+      "kind": "npc",
+      "contact": "contacts/06-yamakon-navy-figure.png",
+      "clip": "cast-clips/06-yamakon-navy-figure.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 17,
+      "workTurnSamples": 31,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "yamakon-pink-figure",
+      "kind": "npc",
+      "contact": "contacts/07-yamakon-pink-figure.png",
+      "clip": "cast-clips/07-yamakon-pink-figure.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 17,
+      "workTurnSamples": 31,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "marimo-headcat",
+      "kind": "npc",
+      "contact": "contacts/08-marimo-headcat.png",
+      "clip": "cast-clips/08-marimo-headcat.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 17,
+      "workTurnSamples": 31,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "tantan-streetwalker",
+      "kind": "npc",
+      "contact": "contacts/09-tantan-streetwalker.png",
+      "clip": "cast-clips/09-tantan-streetwalker.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 17,
+      "workTurnSamples": 31,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "takechi-bread-avatar",
+      "kind": "npc",
+      "contact": "contacts/10-takechi-bread-avatar.png",
+      "clip": "cast-clips/10-takechi-bread-avatar.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 16,
+      "workTurnSamples": 16,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "chamomile-flower-avatar",
+      "kind": "npc",
+      "contact": "contacts/11-chamomile-flower-avatar.png",
+      "clip": "cast-clips/11-chamomile-flower-avatar.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 17,
+      "workTurnSamples": 31,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "tenkai-moon-robed-avatar",
+      "kind": "npc",
+      "contact": "contacts/12-tenkai-moon-robed-avatar.png",
+      "clip": "cast-clips/12-tenkai-moon-robed-avatar.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 17,
+      "workTurnSamples": 31,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "aihan-avatar-woman",
+      "kind": "npc",
+      "contact": "contacts/13-aihan-avatar-woman.png",
+      "clip": "cast-clips/13-aihan-avatar-woman.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 17,
+      "workTurnSamples": 31,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "aihan-avatar-shiba",
+      "kind": "npc",
+      "contact": "contacts/14-aihan-avatar-shiba.png",
+      "clip": "cast-clips/14-aihan-avatar-shiba.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 17,
+      "workTurnSamples": 31,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "mama-avatar-pair",
+      "kind": "npc",
+      "contact": "contacts/15-mama-avatar-pair.png",
+      "clip": "cast-clips/15-mama-avatar-pair.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 17,
+      "workTurnSamples": 31,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "lokiron-avatar",
+      "kind": "npc",
+      "contact": "contacts/16-lokiron-avatar.png",
+      "clip": "cast-clips/16-lokiron-avatar.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 16,
+      "workTurnSamples": 21,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "tantan-avatar-hedgehogs",
+      "kind": "npc",
+      "contact": "contacts/17-tantan-avatar-hedgehogs.png",
+      "clip": "cast-clips/17-tantan-avatar-hedgehogs.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 17,
+      "workTurnSamples": 31,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "owner-black-cat",
+      "kind": "companion",
+      "contact": "contacts/18-owner-black-cat.png",
+      "clip": "cast-clips/18-owner-black-cat.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 32,
+      "workTurnSamples": 0,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "resident-archivist",
+      "kind": "resident",
+      "contact": "contacts/19-resident-archivist.png",
+      "clip": "cast-clips/19-resident-archivist.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 15,
+      "workTurnSamples": 16,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "resident-gardener",
+      "kind": "resident",
+      "contact": "contacts/20-resident-gardener.png",
+      "clip": "cast-clips/20-resident-gardener.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 16,
+      "workTurnSamples": 16,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "pumpkin",
+      "kind": "monster",
+      "contact": "contacts/21-pumpkin.png",
+      "clip": "cast-clips/21-pumpkin.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 16,
+      "workTurnSamples": 16,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "ghost",
+      "kind": "monster",
+      "contact": "contacts/22-ghost.png",
+      "clip": "cast-clips/22-ghost.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 16,
+      "workTurnSamples": 16,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "zombie",
+      "kind": "monster",
+      "contact": "contacts/23-zombie.png",
+      "clip": "cast-clips/23-zombie.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 17,
+      "workTurnSamples": 16,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "vampire",
+      "kind": "monster",
+      "contact": "contacts/24-vampire.png",
+      "clip": "cast-clips/24-vampire.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 16,
+      "workTurnSamples": 16,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "franken",
+      "kind": "monster",
+      "contact": "contacts/25-franken.png",
+      "clip": "cast-clips/25-franken.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 16,
+      "workTurnSamples": 16,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "bat",
+      "kind": "monster",
+      "contact": "contacts/26-bat.png",
+      "clip": "cast-clips/26-bat.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 16,
+      "workTurnSamples": 16,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "witch",
+      "kind": "monster",
+      "contact": "contacts/27-witch.png",
+      "clip": "cast-clips/27-witch.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 16,
+      "workTurnSamples": 16,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "masked_wanderer",
+      "kind": "monster",
+      "contact": "contacts/28-masked_wanderer.png",
+      "clip": "cast-clips/28-masked_wanderer.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 17,
+      "workTurnSamples": 31,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "werewolf",
+      "kind": "monster",
+      "contact": "contacts/29-werewolf.png",
+      "clip": "cast-clips/29-werewolf.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 18,
+      "workTurnSamples": 26,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    },
+    {
+      "id": "mummy",
+      "kind": "monster",
+      "contact": "contacts/30-mummy.png",
+      "clip": "cast-clips/30-mummy.mp4",
+      "seconds": 8,
+      "uniqueSampledPoseKeys": 16,
+      "workTurnSamples": 20,
+      "animationQualityPassed": false,
+      "knownLimitation": "Only 4 authored walking poses; no authored continuous turn/attack clip. Manual quality assessment still required."
+    }
+  ],
+  "imageCache": {
+    "sharedDecodedImageCount": 36,
+    "sharedEstimatedRGBABytes": 63953792,
+    "characterPolicy": "3 nearby NPC renderables + hero + follower cached for scene evidence; atlas review decodes one additional actor at a time. No full roster preload.",
+    "maximumSceneCharacterRenderables": 5,
+    "fullRosterDecodePerformed": false
+  },
+  "outputs": [
+    {
+      "name": "exploration-comparison.mp4",
+      "bytes": 4475486,
+      "sha256": "e20daaeb6fd75f69bc50e82c7245806afb64e8a961225f1374e6db447b1eeeaf"
+    },
+    {
+      "name": "special-move-comparison.mp4",
+      "bytes": 763358,
+      "sha256": "3c2bea5eb4d0fcefd9fe258e0554ad96fa4da89b253c295cc993680fb0a0b97d"
+    },
+    {
+      "name": "castle-cast-comparison.mp4",
+      "bytes": 859324,
+      "sha256": "49e14992f41bedc5216d3096fdade08751a1005b31ed9909003bbe6f39ba65e5"
+    },
+    {
+      "name": "all-cast-review.mp4",
+      "bytes": 6020566,
+      "sha256": "dd384d81410b6681adbd17042b4c872ac2a4ca9280db229316d7ec4a00eba2ac"
+    },
+    {
+      "name": "all-cast-overview.png",
+      "bytes": 403878,
+      "sha256": "a28d778d476b587ac39df1583ae3cb85337cd61340ed3cd2558b1d2f6eaf3f3e"
+    }
+  ],
+  "encodedVideoVerification": {
+    "method": "ffprobe -count_frames after all atomic outputs and concat completed",
+    "videos": [
+      {
+        "file": "cast-clips/22-ghost.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/29-werewolf.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/10-takechi-bread-avatar.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/04-minato-shio-witch.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/21-pumpkin.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/23-zombie.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/24-vampire.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/01-owner-lantern-hero.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/05-naemo-masquerade.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/26-bat.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/15-mama-avatar-pair.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/02-iris.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/16-lokiron-avatar.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/19-resident-archivist.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/12-tenkai-moon-robed-avatar.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/06-yamakon-navy-figure.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/07-yamakon-pink-figure.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/18-owner-black-cat.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/09-tantan-streetwalker.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/14-aihan-avatar-shiba.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/03-koakumako-base-devil.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/28-masked_wanderer.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/25-franken.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/30-mummy.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/17-tantan-avatar-hedgehogs.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/20-resident-gardener.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/27-witch.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/11-chamomile-flower-avatar.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/08-marimo-headcat.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "cast-clips/13-aihan-avatar-woman.mp4",
+        "frames": 192,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "special-move-comparison.mp4",
+        "frames": 144,
+        "width": 804,
+        "height": 492,
+        "durationSeconds": 6.0
+      },
+      {
+        "file": "all-cast-review.mp4",
+        "frames": 5760,
+        "width": 390,
+        "height": 420,
+        "durationSeconds": 240.0
+      },
+      {
+        "file": "castle-cast-comparison.mp4",
+        "frames": 192,
+        "width": 804,
+        "height": 492,
+        "durationSeconds": 8.0
+      },
+      {
+        "file": "exploration-comparison.mp4",
+        "frames": 288,
+        "width": 804,
+        "height": 492,
+        "durationSeconds": 12.0
+      }
+    ],
+    "all30CastClipsPass": true,
+    "allCastReelFrames": 5760,
+    "allCastReelSeconds": 240
+  },
+  "timingInterpretation": "One fixed native Canvas path replay. CPU observations are not a benchmark of browser frame rate or a statistical speedup claim."
+}

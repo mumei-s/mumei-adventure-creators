@@ -65,18 +65,18 @@ const flush=()=>new Promise(r=>setImmediate(r));
 async function ui(run,{saved={brightness:125,volume:100,playing:true},storageBlocked=false}={}){
  const old=Object.fromEntries(['document','window','localStorage'].map(k=>[k,globalThis[k]]));const doc=new Element('document'),win=new Element('window');doc.hidden=false;doc.createElement=tag=>new Element(tag);
  const data=new Map([[ADVENTURE_PREFERENCE_KEY,JSON.stringify(saved)]]),writes=[];Object.assign(globalThis,{document:doc,window:win,localStorage:{getItem:k=>{if(storageBlocked)throw Error('blocked');return data.get(k)??null;},setItem:(k,v)=>{if(storageBlocked)throw Error('blocked');writes.push(k);data.set(k,v);}}});
- const container=new Element('div'),settingsContainer=new Element('div'),c=clock();let interactions=0;const bright=[];
- const settings=initAdventureAudio({container,settingsContainer,legacyBrightness:130,onBrightness:v=>bright.push(v),onAudioInput:()=>interactions++,playerFactory:opts=>createAdventurePlayer({...opts,AudioContextCtor:Audio,...c})});
- const [button,label,input,output,status]=container.children[0].children,section=settingsContainer.children[0],[modalButton,,modalInput,modalOutput,modalStatus]=section.children[1].children;
- try{await run({settings,doc,win,button,label,input,output,status,modalButton,modalInput,modalOutput,modalStatus,section,bright,data,writes,interactions:()=>interactions,c});}
+ const settingsContainer=new Element('div'),c=clock();let interactions=0;const bright=[];
+ const settings=initAdventureAudio({settingsContainer,legacyBrightness:130,onBrightness:v=>bright.push(v),onAudioInput:()=>interactions++,playerFactory:opts=>createAdventurePlayer({...opts,AudioContextCtor:Audio,...c})});
+ const section=settingsContainer.children[0],[button,label,input,output,status]=section.children[1].children;
+ try{await run({settings,doc,win,button,label,input,output,status,section,bright,data,writes,interactions:()=>interactions,c});}
  finally{settings.destroy();for(const [k,v]of Object.entries(old)){if(v===undefined)delete globalThis[k];else globalThis[k]=v;}}
 }
-test('game HUD and settings both expose matching native ON/OFF and 0–100 range controls at initial zero',async()=>{
+test('menu settings expose one native ON/OFF and 0–100 range control at initial zero',async()=>{
  const before=Audio.all.length;await ui(async h=>{
   assert.equal(Audio.all.length,before);assert.deepEqual(h.settings.getPreferences(),{brightness:125,volume:0});assert.equal(h.button.attributes['aria-pressed'],'false');assert.equal(h.input.value,'0');assert.equal(h.input.min,'0');assert.equal(h.input.max,'100');assert.equal(h.input.step,'1');assert.equal(h.label.htmlFor,h.input.id);assert.equal(h.writes.length,0);
-  h.input.value='30';h.input.emit('input');await flush();assert.equal(h.button.attributes['aria-pressed'],'true');assert.equal(h.modalButton.attributes['aria-pressed'],'true');assert.equal(h.modalInput.value,'30');assert.equal(h.modalOutput.textContent,'30%');assert.match(h.status.textContent,/灯りの散歩道/);
-  const a=Audio.all.at(-1);assert.equal(a.gains[0].gain.events.at(-1).v,.3);h.modalInput.value='0';h.modalInput.emit('input');assert.equal(a.gains[0].gain.events.at(-1).v,0);assert.equal(h.input.value,'0');assert.match(h.status.textContent,/ミュート/);
-  h.modalButton.emit('click');assert.equal(h.button.attributes['aria-pressed'],'false');assert.equal(a.closed,1);
+  h.input.value='30';h.input.emit('input');await flush();assert.equal(h.button.attributes['aria-pressed'],'true');assert.equal(h.input.value,'30');assert.equal(h.output.textContent,'30%');assert.equal(h.section.children.filter(e=>e.className==='game-audio-settings').length,1);assert.match(h.status.textContent,/灯りの散歩道/);
+  const a=Audio.all.at(-1);assert.equal(a.gains[0].gain.events.at(-1).v,.3);h.input.value='0';h.input.emit('input');assert.equal(a.gains[0].gain.events.at(-1).v,0);assert.equal(h.input.value,'0');assert.match(h.status.textContent,/ミュート/);
+  h.button.emit('click');assert.equal(h.button.attributes['aria-pressed'],'false');assert.equal(a.closed,1);
   h.button.emit('click');await flush();assert.equal(h.input.value,'0');assert.equal(Audio.all.at(-1).gains[0].gain.events.at(-1).v,0);
   assert(h.interactions()>=4);
  });
@@ -88,7 +88,7 @@ test('background, pagehide and blur stop game BGM with no automatic return or mo
    if(event==='visibilitychange'){h.doc.hidden=true;h.doc.emit(event);h.doc.hidden=false;h.doc.emit(event);}else h.win.emit(event);
    assert.equal(h.button.attributes['aria-pressed'],'false');assert.equal(a.closed,1);const count=Audio.all.length;h.win.emit('focus');h.section.emit('close');assert.equal(Audio.all.length,count);
   }
-  h.input.value='50';h.input.emit('input');await flush();h.win.emit('pagehide');const restoredCount=Audio.all.length;h.win.emit('pageshow',{persisted:true});assert.equal(h.input.value,'0');assert.equal(h.modalInput.value,'0');assert.equal(h.button.attributes['aria-pressed'],'false');assert.equal(Audio.all.length,restoredCount);
+  h.input.value='50';h.input.emit('input');await flush();h.win.emit('pagehide');const restoredCount=Audio.all.length;h.win.emit('pageshow',{persisted:true});assert.equal(h.input.value,'0');assert.equal(h.button.attributes['aria-pressed'],'false');assert.equal(Audio.all.length,restoredCount);
   h.doc.hidden=true;const count=Audio.all.length;h.input.value='50';h.input.emit('input');h.button.emit('click');await flush();assert.equal(Audio.all.length,count);
  });
 });
@@ -96,12 +96,12 @@ test('brightness keeps existing namespace/range; failed storage is safe; no audi
  await ui(async h=>{h.section.children[0].children[2].value='175';h.section.children[0].children[2].emit('input');assert.equal(h.bright.at(-1),175);assert.deepEqual(h.writes,[ADVENTURE_PREFERENCE_KEY]);assert.deepEqual(JSON.parse(h.data.get(ADVENTURE_PREFERENCE_KEY)),{brightness:175,volume:0});});
  await ui(async h=>{assert.equal(h.settings.getPreferences().volume,0);h.settings.setBrightness(0);assert.equal(h.bright.at(-1),75);h.settings.setBrightness(999);assert.equal(h.bright.at(-1),175);},{storageBlocked:true});
 });
-test('game wiring is independent of gallery audio, visible above the stage, and safe around dialogs/exits/check tone',()=>{
+test('game audio is menu-only and safe around dialogs/exits/check tone',()=>{
  const app=read('app.js'),html=read('index.html'),css=read('adventure-controls.css'),source=read('adventure-audio.js');
- assert(!app.includes('initVisitorPreferences'));assert(!source.includes('fetch('));assert(!source.includes('https://'));assert(html.includes('id="game-audio-controls"'));
- assert(app.includes("container:$('game-audio-controls'),settingsContainer:visitorSection"));assert(app.includes("onAudioInput:()=>soundCheck.stop('')"));assert(app.includes('visitorSettings.stopMusic();soundCheck.play'));
+ assert(!app.includes('initVisitorPreferences'));assert(!source.includes('fetch('));assert(!source.includes('https://'));assert(!html.includes('game-audio-controls'));assert(!source.includes('game-audio-bar'));assert(!source.includes('compactControls'));
+ assert(app.includes("initAdventureAudio({settingsContainer:visitorSection"));assert(app.includes("['明るさ・音楽',()=>{showLighting();"));assert(app.includes("onAudioInput:()=>soundCheck.stop('')"));assert(app.includes('visitorSettings.stopMusic();soundCheck.play'));
  assert(app.includes("clearInput();soundCheck.stop('');visitorSettings.stopMusic();save()"));assert(app.includes("panel.addEventListener('close',()=>{soundCheck.stop('')"));
- assert(css.includes('grid-template-rows:44px 44px'));assert(css.includes('#game-audio-controls{grid-area:2/1/3/3'));assert(css.includes('minmax(64px,1fr)'));
- for(const width of [320,360,390,400])assert(width-20-96-30-38-18>=64);
- assert(html.includes('./app.js?v=20261016-music1'));assert(html.includes('./adventure-controls.css?v=20261016-music1'));assert(html.includes('../safe-navigation.css?v=20261016-fate1'));
+ assert(!css.includes('game-audio-controls'));assert(!css.includes('52px 88px'));assert(!css.includes('44px 88px'));assert(css.includes('.game-audio-settings .game-music-toggle{grid-column:1/-1;min-height:44px}'));assert(css.includes('.game-volume-input{display:block;min-width:0;width:100%;height:44px'));
+ assert(app.includes('メニューの「明るさ・音楽」でBGMと音量を調整できます。'));
+ assert(html.includes('./app.js?v=20261016-menu-audio1'));assert(html.includes('./adventure-controls.css?v=20261016-menu-audio1'));assert(html.includes('../safe-navigation.css?v=20261016-fate1'));
 });

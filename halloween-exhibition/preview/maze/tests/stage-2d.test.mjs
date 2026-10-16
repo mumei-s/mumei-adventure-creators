@@ -7,13 +7,13 @@ const css=fs.readFileSync(new URL('../adventure-controls.css',import.meta.url),'
 const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8');
 const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
 test('2D has its own full-width gameplay grid, not a small square minimap',()=>{
-  assert(css.includes('grid-template-rows:52px 88px 34px minmax(0,1fr) 144px 24px'));
+  assert(css.includes('grid-template-rows:52px 44px 34px minmax(0,1fr) 144px 24px'));
   assert(css.includes('grid-area:4/1'));assert(css.includes('width:100%!important;height:100%!important'));
   assert(css.includes('aspect-ratio:auto!important'));assert(css.includes('transform:none!important'));
-  for(const [w,h]of[[400,606],[390,844]]){const stageHeight=h-52-88-34-144-24;assert(stageHeight>=264);assert(stageHeight/h>.43);assert(w*stageHeight/(w*h)>.43);}
+  for(const [w,h]of[[400,606],[390,844]]){const stageHeight=h-52-44-34-144-24;assert(stageHeight>=308);assert(stageHeight/h>.50);assert(w*stageHeight/(w*h)>.50);}
 });
 test('close-up player is centered and tiles remain large on both target phones',()=>{
-  for(const [w,h]of[[400,264],[390,502],[1280,618]]){const c=stageCamera(initialState(),w,h);assert(c.tile>=52);assert(c.tile<=86);assert.equal(c.originX,w/2);assert.equal(c.originY,h*.55);assert.equal(c.x,initialState().x/CELL*72);}
+  for(const [w,h]of[[400,308],[390,546],[1280,618]]){const c=stageCamera(initialState(),w,h);assert(c.tile>=52);assert(c.tile<=86);assert.equal(c.originX,w/2);assert.equal(c.originY,h*.55);assert.equal(c.x,initialState().x/CELL*72);}
 });
 test('2D camera target has no autonomous movement, rotation or shaking',()=>{
   const a=stageCamera(initialState(),400,344),b=stageCamera({...initialState(),yaw:2,pitch:1,time:999},400,344);assert.deepEqual(a,b);

@@ -103,7 +103,7 @@ export function createAdventurePlayer({AudioContextCtor, onState = () => {},
 }
 
 /** Game-only settings. The main gallery's audio implementation is deliberately independent. */
-export function initAdventureAudio({container, settingsContainer, legacyBrightness, onBrightness = () => {},
+export function initAdventureAudio({settingsContainer, legacyBrightness, onBrightness = () => {},
   onAudioInput = () => {}, playerFactory = createAdventurePlayer} = {}) {
   let storage, brightness = clamp(legacyBrightness,75,175,100), volume = 0, playing = false, pending = false, message = '';
   try {
@@ -139,21 +139,21 @@ export function initAdventureAudio({container, settingsContainer, legacyBrightne
     // Raising this dedicated music slider is an explicit request to hear the game music.
     if (fromGesture) { onAudioInput(); if (volume > 0 && !document.hidden && !player.isActive()) player.start(); }
   }
-  function addControls(parent, compact) {
-    const wrap = make('section',compact ? 'game-audio-bar' : 'game-audio-settings'); wrap.setAttribute('aria-label','ゲームのBGMと音量');
+  function addControls(parent) {
+    const wrap = make('section','game-audio-settings'); wrap.setAttribute('aria-label','ゲームのBGMと音量');
     const button = make('button','game-music-toggle'); button.type = 'button';
-    const label = make('label','game-volume-label',compact ? '音量' : 'ゲームのBGM音量');
+    const label = make('label','game-volume-label','ゲームのBGM音量');
     const input = make('input','game-volume-input'), output = make('output','game-volume-value');
-    input.type = 'range'; input.id = compact ? 'game-music-volume' : 'game-settings-volume'; input.min = '0'; input.max = '100'; input.step = '1';
+    input.type = 'range'; input.id = 'game-settings-volume'; input.min = '0'; input.max = '100'; input.step = '1';
     label.htmlFor = input.id; output.setAttribute('for',input.id); input.setAttribute('aria-label','ゲームのBGM音量');
-    const status = make('p',compact ? 'game-audio-sr-only' : 'game-audio-status'); status.id = `${input.id}-status`; status.setAttribute('role','status'); status.setAttribute('aria-live','polite');
+    const status = make('p','game-audio-status'); status.id = `${input.id}-status`; status.setAttribute('role','status'); status.setAttribute('aria-live','polite');
     input.setAttribute('aria-describedby',status.id); button.setAttribute('aria-describedby',status.id);
     button.addEventListener('click',toggle); input.addEventListener('input',() => setVolume(input.value,true));
     // A final change is also a direct gesture and permits a retry on mobile browsers.
     input.addEventListener('change',() => setVolume(input.value,true));
     bindings.push({button,input,output,status}); wrap.append(button,label,input,output,status); parent.append(wrap); return wrap;
   }
-  const compactControls = addControls(container,true), settingControls = addControls(brightnessSection,false);
+  const settingControls = addControls(brightnessSection);
   brightnessSection.append(make('p','visitor-settings-note','ゲーム専用BGM「灯りの散歩道」。毎回OFF・音量0で始まります。画面を離れると止まり、自動では再開しません。'));
   function setBrightness(value) {
     brightness = clamp(value,75,175,100); render(); onBrightness(brightness);
@@ -166,5 +166,5 @@ export function initAdventureAudio({container, settingsContainer, legacyBrightne
   document.addEventListener('visibilitychange',onHidden); window.addEventListener('pagehide',onLeave); window.addEventListener('blur',onLeave); window.addEventListener('pageshow',onReturn);
   render(); player.setVolume(0); onBrightness(brightness);
   return {setBrightness,setVolume,stopMusic:() => player.stop(),getPreferences:() => ({brightness,volume}),
-    destroy() { player.stop(); document.removeEventListener('visibilitychange',onHidden); window.removeEventListener('pagehide',onLeave); window.removeEventListener('blur',onLeave); window.removeEventListener('pageshow',onReturn); compactControls.remove(); settingControls.remove(); brightnessSection.remove(); }};
+    destroy() { player.stop(); document.removeEventListener('visibilitychange',onHidden); window.removeEventListener('pagehide',onLeave); window.removeEventListener('blur',onLeave); window.removeEventListener('pageshow',onReturn); settingControls.remove(); brightnessSection.remove(); }};
 }

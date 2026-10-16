@@ -103,5 +103,5 @@ test('game audio is menu-only and safe around dialogs/exits/check tone',()=>{
  assert(app.includes("clearInput();soundCheck.stop('');visitorSettings.stopMusic();save()"));assert(app.includes("panel.addEventListener('close',()=>{soundCheck.stop('')"));
  assert(!css.includes('game-audio-controls'));assert(!css.includes('52px 88px'));assert(!css.includes('44px 88px'));assert(css.includes('.game-audio-settings .game-music-toggle{grid-column:1/-1;min-height:44px}'));assert(css.includes('.game-volume-input{display:block;min-width:0;width:100%;height:44px'));
  assert(app.includes('メニューの「明るさ・音楽」でBGMと音量を調整できます。'));
- assert(html.includes('./app.js?v=20261016-ios1'));assert(html.includes('./adventure-controls.css?v=20261016-battle-visible1'));assert(html.includes('../safe-navigation.css?v=20261016-fate1'));
+ assert(html.includes('./app.js?v=20261016-dark-menu1'));assert(html.includes('./adventure-controls.css?v=20261016-battle-visible1'));assert(html.includes('../safe-navigation.css?v=20261016-fate1'));
 });

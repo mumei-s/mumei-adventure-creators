@@ -1,0 +1,42 @@
+/* Menu-only indoor treatment. Viewport, dialog scrolling and safe-area geometry
+   remain owned by ios-viewport.css. No scene brightness/filter is changed. */
+#panel:has(.explore-menu){
+ background-color:#14111d;
+ background-image:linear-gradient(90deg,#100d1744,#100d1700 20% 80%,#100d1744),url('./assets/rpg/palace/menu-sconces.svg');
+ background-size:100% 100%;background-repeat:no-repeat;
+ border:1px solid #a17d50;border-radius:16px;
+ box-shadow:inset 0 0 0 3px #15101a,inset 0 0 0 4px #b18a4933,0 24px 80px #000b;
+ padding:20px;color:#f9ecd6;
+}
+#panel:has(.explore-menu)>.close{background:linear-gradient(#302532,#1b1823);border-color:#b48c5a;color:#fff0d3;box-shadow:inset 0 1px #ebcc9433,0 3px 10px #0005;font-size:12px}
+#panel:has(.explore-menu) #panel-content>.eyebrow{font-size:9px;line-height:1.6;letter-spacing:1.5px;color:#dfb978;margin:3px 0 6px;max-width:44%;overflow-wrap:anywhere}
+#panel:has(.explore-menu) #panel-title{clear:both;font-size:clamp(24px,5.8vw,32px);line-height:1.4;letter-spacing:.08em;margin:12px 0 14px;padding:0 0 14px;border-bottom:1px solid #bc935652;text-shadow:0 2px 12px #000}
+#panel:has(.explore-menu) .display-preferences{padding:10px 12px;margin:0 0 14px;border:1px solid #9e805344;border-radius:8px;background:#12111cdd;box-shadow:inset 0 1px #eac78e0d}
+#panel:has(.explore-menu) .display-preferences label{font-size:12px;letter-spacing:.06em;margin-bottom:6px;color:#e3c79b}
+#panel:has(.explore-menu) .display-preferences select{background:#25212e;border-color:#9b805b;color:#fff0d7;min-height:44px;padding:7px 10px}
+#panel:has(.explore-menu) .display-mode-status{font-size:11px;line-height:1.5;color:#d5c8ba;margin-top:6px}
+body[data-layout-page=maze] #panel .explore-menu{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:12px;align-items:stretch}
+#panel .explore-menu>:is(button,a){
+ position:relative;isolation:isolate;min-height:58px;padding:12px 8px;
+ border:1px solid #8d7054;border-radius:8px;background:linear-gradient(145deg,#342536f5,#1a1724fa 65%);
+ color:#f7e6ce;font-size:13px;line-height:1.5;letter-spacing:.025em;text-decoration:none;
+ box-shadow:inset 0 1px #ebca8c24,inset 0 -3px #09081166,0 3px 9px #0004;
+ transition:border-color .2s,background-color .2s;
+}
+#panel .explore-menu>:is(button,a)::before{content:"";position:absolute;inset:4px;border:1px solid #d7b77820;border-radius:4px;pointer-events:none}
+#panel .explore-menu>:is(button,a):nth-child(2n){background:linear-gradient(145deg,#233038f5,#171b27fa 65%);border-color:#7f8072}
+#panel .explore-menu>a:first-child{grid-column:1/-1;min-height:56px;background:linear-gradient(110deg,#65442f,#93613b 48%,#50342e);border-color:#dab174;color:#fff2d7;font-size:16px;letter-spacing:.12em;box-shadow:inset 0 1px #ffe0a766,inset 0 -3px #29172588,0 3px 16px #0005}
+#panel .explore-menu>a:first-child::after{content:"";position:absolute;width:7px;height:7px;left:18px;top:calc(50% - 4px);border:1px solid #f4cb83;transform:rotate(45deg);box-shadow:0 0 12px #fbb15a77;pointer-events:none}
+#panel .explore-menu>a:last-child{grid-column:1/-1;background:#1c1a26;border-color:#9c8563;color:#ead7b7;min-height:48px;font-size:12px}
+#panel .explore-menu>#menu-motion-toggle{grid-column:1/-1;min-height:44px;background:#24202f;color:#e6d4c4;font-size:12px}
+body[data-layout-page=maze] #panel .explore-menu>#menu-motion-status{grid-column:1/-1;min-height:0;padding:2px 8px 5px;font-size:11px;line-height:1.65;color:#d5c8bc;text-align:left;justify-content:flex-start}
+#panel .explore-menu>:is(button,a):focus-visible{outline:3px solid #ffe1a0;outline-offset:2px;border-color:#ffe1a0}
+@media(hover:hover){#panel .explore-menu>:is(button,a):hover{border-color:#f3ce92;background-color:#4b3443}}
+/* A tiny localized brass light glint, only while this menu is open and motion is on.
+   No new timer, particle pool, blur filter, backdrop filter or animated shadow. */
+#panel[open][data-menu-motion=true] .explore-menu>a:first-child::after{animation:menu-lamplight 4.8s ease-in-out infinite}
+@keyframes menu-lamplight{0%,100%{opacity:.55}50%{opacity:1}}
+@media(prefers-reduced-motion:reduce){#panel .explore-menu *,#panel .explore-menu *::after{animation:none!important;transition:none!important}}
+@media(max-width:360px){#panel:has(.explore-menu){padding:15px}#panel .explore-menu>:is(button,a){font-size:12px;padding:10px 6px}#panel:has(.explore-menu)>.close{font-size:11px;padding:8px}}
+@media(min-width:900px){body[data-layout=desktop] #panel .explore-menu{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(forced-colors:active){#panel:has(.explore-menu){background:Canvas;border-color:CanvasText}#panel .explore-menu>:is(button,a){background:ButtonFace;color:ButtonText;border:1px solid ButtonText}}

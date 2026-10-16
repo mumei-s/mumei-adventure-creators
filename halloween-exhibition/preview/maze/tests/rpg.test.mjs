@@ -58,7 +58,7 @@ test('maze participates in shared layout preference and coherent cache release',
   const app=read('app.js'),html=read('index.html');const version='20261014-adventure2';
   assert(app.includes("initDisplayMode({controlsParent:visitorSection,page:'maze'})"));assert(app.includes("document.addEventListener('yearbook:layout-change'"));
   assert(app.includes('../display-mode.js?v=20261016-resident1'));for(const name of ['visitor-preferences','display-mode'])assert(html.includes(`../${name}.css?v=${version}`));assert(app.includes('./adventure-audio.js?v=20261016-ios1'));
-  for(const file of ['style','stage-2d'])assert(html.includes(`./${file}.css?v=${version}`));assert(html.includes('./rpg-ui.css?v=20261014-adventure2'));assert(html.includes('./app.js?v=20261016-ios1'));
+  for(const file of ['style','stage-2d'])assert(html.includes(`./${file}.css?v=${version}`));assert(html.includes('./rpg-ui.css?v=20261014-adventure2'));assert(html.includes('./app.js?v=20261016-dark-menu1'));
   const expected={'viewport':'20261016-ios1','clear-reward':'20261015-clear1','walking-speed':'20261015-clear1','library-catalog':'20261015-clear1','view-model':'20261015-minimap1','game-input':'20261016-ios1','adventure-audio':'20261016-ios1','sound-check':'20261016-ios1'};
   for(const module of ['ending-ui','stage-2d','world','battle-scene','story-model','encounter-model','rpg-art','creator-runtime','creator-ui'])expected[module]='20261016-creator-rpg1';
   for(const module of ['minimap-size','ending-ui','stage-2d','world','battle-scene','story-model','encounter-model','creator-ui'])expected[module]='20261016-battle-visible1';

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import {normalizeImageFile} from '../image-files.js';
+import {imageGenerationRequest} from '../output-contract.js?v=28.4.6';
 
 const source=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8');
 const share=source.slice(source.indexOf('async function shareAll()'),source.indexOf('async function imagePNG'));
@@ -10,7 +11,7 @@ const promptText='TEN CONDITIONS + WHOLE RECIPES';
 const prompt=new File([promptText],'prompt.txt',{type:'text/plain'});
 function environment(support,error){
  const nodes=new Map();const get=id=>{if(!nodes.has(id))nodes.set(id,{textContent:'',hidden:true,dataset:{},scrollIntoView(){}});return nodes.get(id);};
- const calls=[];const context={currentResult:{isFresh:true,prompt:promptText,collection:'halloween'},shareFiles:()=>[image,prompt],canShareFiles:()=>support,navigator:{share:async data=>{calls.push(data);if(error)throw error;}},$:get};
+ const calls=[];const context={imageGenerationRequest,currentResult:{isFresh:true,prompt:promptText,collection:'halloween'},shareFiles:()=>[image,prompt],canShareFiles:()=>support,navigator:{share:async data=>{calls.push(data);if(error)throw error;}},$:get};
  vm.createContext(context);vm.runInContext(share,context);
  return {context,calls,get};
 }

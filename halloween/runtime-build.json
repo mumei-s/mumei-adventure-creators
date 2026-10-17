@@ -8,8 +8,8 @@
       "bytes": 25788
     },
     "app.js": {
-      "sha256": "367ccf04123146b036a2f5010a97964e06ccd74e8ed37447958a323c3f119ac8",
-      "bytes": 92110
+      "sha256": "e86b617760408ca98e5352d1988e17454ee1b19b8d2d26c9a2daa0a1b70b4915",
+      "bytes": 91855
     },
     "art-direction.js?v=28.4.6": {
       "sha256": "d543d1d928d0d6281e94c83317c897e8861a38d6b18f3f40f271fd235db73bab",
@@ -68,16 +68,16 @@
       "bytes": 1813
     },
     "compact-production.js?v=28.4.6": {
-      "sha256": "345701366753b6715f144d54407fa45bc7a62a92d8425fb9719a3141a00f1939",
-      "bytes": 25038
+      "sha256": "e32c1719850779f9966882176705e52c7bf0aba4450264797135e0defb25310d",
+      "bytes": 24964
     },
     "compatibility.js?v=28.4.6": {
       "sha256": "251e587e6933b98a98e2e85a8d77c942807c8e6c498221c4f0a571b12923a1ba",
       "bytes": 8980
     },
     "compiled-production.js?v=28.4.6": {
-      "sha256": "4cf854988ca318e405840999b5ad9fd8dd602e0a5e9de27195bc1a9d6d2e7581",
-      "bytes": 27362
+      "sha256": "3c0a7c0f938bc980df34ea8dc7f5edd5710a304d498cc11c092660791ec3b519",
+      "bytes": 27392
     },
     "copy-scope.js?v=28.4.6": {
       "sha256": "f9802f63b5cfba4b39c144580c1850b94989a24704f4e20ced333bdd2c26db3f",
@@ -156,8 +156,8 @@
       "bytes": 893
     },
     "focused-production.js?v=28.4.6": {
-      "sha256": "e690996aabd17fb9b9fed6848fde39d9410b897115b1b94c0c1636e71d55d475",
-      "bytes": 47907
+      "sha256": "637723aecf7efc77e73631d33d17a5434f3246562260af1f0bc03e2fa0b1f7c0",
+      "bytes": 47525
     },
     "format-execution.js?v=28.4.6": {
       "sha256": "fcea463b3c6848d1686d1e9f24631842d08b611bbd42b681bbc97874cb0944e5",
@@ -268,8 +268,8 @@
       "bytes": 7067
     },
     "output-contract.js?v=28.4.6": {
-      "sha256": "a9776ed3577d16ae7655ea8610dfe6389ba04f8d8961fcf0750f5b52eb783d7d",
-      "bytes": 9365
+      "sha256": "25a2dd1cb31442155d0ff11778856f68a1586cc92d4f91582b78bb1b4349c56a",
+      "bytes": 7641
     },
     "palette-recipes.js?v=28.4.6": {
       "sha256": "fada864422f88ef7bf18e2e8981d13500e16d7f19dabe7d63d6637e8b5545ed0",
@@ -408,12 +408,12 @@
       "bytes": 47913
     },
     "world-transfer-layout.js?v=28.4.6": {
-      "sha256": "bce1e62605d596f6bf4c0325007a1b0786cfbfe7d02afe38063264aa78d487df",
-      "bytes": 12576
+      "sha256": "f4694edc5c369804437705ac9cff5e5e96f49c9c0677dc94b26febc722991a6c",
+      "bytes": 13488
     },
     "world-transfer-production.js?v=28.4.6": {
-      "sha256": "96e0cc6a5b530464e44f83aaea3c1f634816293e85a6c0ed4eafaaf54adc5577",
-      "bytes": 24546
+      "sha256": "d527a533cac812b1f6dd61df548ac4b3f8c0ae9e9ee516910aa3340bffd5c2e0",
+      "bytes": 21271
     },
     "worlds.js?v=28.4.6": {
       "sha256": "ebb2df9d5c7225713d762b6ba4c1e20cc5a4e8ede46b5b4cafcf9c9b043adcf5",
@@ -426,7 +426,7 @@
   },
   "output": {
     "file": "app.bundle.js",
-    "sha256": "f30de2d847cc3bf077829e7847b4f51717846e1a39acd60bf794b1ef7daae8c4",
-    "bytes": 1651186
+    "sha256": "15b197b1e32706e276839828f98d5e494257e385ce1e52401a986a7355afcec4",
+    "bytes": 1645632
   }
 }

@@ -22,6 +22,7 @@ import {compactHistoryRecord,restoreHistoryRecord,restoreHistoryCore} from '../h
 import {readRasterDimensions} from '../image-resources.js?v=28.4.6';
 import {makeZip} from '../zip.js?v=28.4.6';
 import {attachmentConditionPolicy,selectionAttachmentPolicy} from '../attachment-policy.js?v=28.4.6';
+import {imageGenerationRequest,imageDeliveryRepairPrompt} from '../output-contract.js?v=28.4.6';
 
 const root=new URL('../',import.meta.url),app=fs.readFileSync(new URL('app.js',root),'utf8');
 const visibleKeys=['medium','theme','costume','pose','mood','angle','palette','design','type','size'];
@@ -163,7 +164,7 @@ for(const failure of ['image','timeout'])await assert.rejects(actualGeneration({
 
 // Exercise real app share and ZIP handlers, not only deliveryImageFiles().
 let shared,zip;
-const shareContext=vm.createContext({currentResult:result,File,deliveryImageFiles,navigator:{share:async payload=>{shared=payload;}},canShareFiles:()=>true,$:id=>generated.nodes.get(id)||domNode(),showShareFallback(){throw new Error('Unexpected share fallback');},needsReference,TextEncoder,Uint8Array,makeZip,creatorDisplayLabel:()=>profile.displayName,download:blob=>{zip=blob;},tell(){}});
+const shareContext=vm.createContext({imageGenerationRequest,imageDeliveryRepairPrompt,currentResult:result,File,deliveryImageFiles,navigator:{share:async payload=>{shared=payload;}},canShareFiles:()=>true,$:id=>generated.nodes.get(id)||domNode(),showShareFallback(){throw new Error('Unexpected share fallback');},needsReference,TextEncoder,Uint8Array,makeZip,creatorDisplayLabel:()=>profile.displayName,download:blob=>{zip=blob;},tell(){}});
 vm.runInContext(app.slice(app.indexOf('function shareFiles('),app.indexOf('\nfunction canShareFiles(')),shareContext);
 vm.runInContext(app.slice(app.indexOf('async function shareAll()'),app.indexOf('\nfunction showShareFallback(')),shareContext);
 await shareContext.shareAll();assert.deepEqual(plain(shared.files.map(f=>f.name)),[...delivered.map(f=>f.name),'prompt.txt']);for(let i=0;i<delivered.length;i++)assert.deepEqual(Buffer.from(await shared.files[i].arrayBuffer()),Buffer.from(await delivered[i].arrayBuffer()),'Native sharing keeps every identity, style and sheet byte unchanged');assert.ok(shared.text.length<180);assert.match(shared.text,/prompt\.txt/);assert.match(shared.text,/画像作成機能/);assert.ok(!shared.text.includes(result.prompt));const sharedPrompt=shared.files.at(-1);assert.equal(sharedPrompt.name,'prompt.txt');assert.equal(sharedPrompt.type,'text/plain');assert.equal(await sharedPrompt.text(),result.prompt);

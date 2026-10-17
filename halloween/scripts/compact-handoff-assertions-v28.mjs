@@ -67,7 +67,10 @@ export function assertCompactHandoff(plan,text,label){
  assert.match(text,/最明部は.*最暗部は/,label+' lost value-range hierarchy');
  assert.match(text,/影の深さ・光の鋭さ・素材は作風が担当し.*弱めない/,label+' palette can weaken the selected medium');
  assert.match(text,/色名から火花・星・海月・魔法陣を追加しない/,label+' palette can invent objects');
- assert.match(text,/縮小で大きな明暗と主従、拡大で描線・素材・内部影・局所反射・接続を照合/,label+' lost the shared final visible-quality check');
+ assert.match(text,/希望サイズ.*縦横比と安全余白/,label+' lost requested size framing');
+ assert.match(text,/完成画像1枚.*通常の生成画像としてこの返信に表示/,label+' lost the final native image output');
+ assert.match(text,/生成後の実ファイル検査や解像度確認を始めず.*画像の返却まで進める/,label+' lets file inspection interrupt delivery');
+ assert.doesNotMatch(text,/要求サイズ.*実ファイルで照合/,label+' restarts a file audit before delivery');
  if(colorPolicy(plan.values).restricted)assert.match(text,/識別色.*許可色.*濃淡|許可色の明度差/,label+' preserves source hues outside a restricted palette');
  if(plan.copy.mode==='none')assert.match(text,/文字・数字・署名なし/,label+' added a manuscript');
  for(const slot of plan.copy.slots)includesClause(text,slot.role+'：'+JSON.stringify(slot.text),label+' exact copy');

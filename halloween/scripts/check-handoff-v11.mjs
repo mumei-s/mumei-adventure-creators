@@ -8,6 +8,7 @@ import {productionPlan} from '../production-plan.js?v=28.4.6';
 import {composePrompt,needsReference} from '../prompt.js?v=28.4.6';
 import {assertCompactHandoff} from './compact-handoff-assertions-v28.mjs';
 import {imageDeliveryRepairPrompt} from '../output-contract.js?v=28.4.6';
+import {assertDeliveryRetry} from './image-delivery-assertions-v28417.mjs';
 
 const profile={displayName:'TEST CREATOR',topics:[],biography:'',activityEnabled:false};
 applyCollection('everyday');
@@ -39,6 +40,6 @@ for(const [medium,palette] of [['実写風モノクロ銀塩写真','原色の�
  if(medium==='サイアノタイプ'){assert.ok(p.includes('プルシアンブルーと紙の白'));assert.ok(!p.includes('限定色の必須条件：完成画像の全領域を黒'));}
 }
 const repair=imageDeliveryRepairPrompt({edition:'TEST',prompt:plain});
-assert.ok(repair.includes('新しく描き直さず'));assert.ok(repair.endsWith(plain));
+assertDeliveryRetry(repair,plain);
 applyCollection('halloween');
 console.log('PASS v11 handoff: obsolete sample metadata cannot affect prompts; character identity stays with the user reference; landscape generation works without attachments; face/body instructions suppressed; restricted media/colors agree; image output and redisplay instructions are explicit.');

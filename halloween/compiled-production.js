@@ -200,7 +200,7 @@ export function compileProduction(plan,originalLines=[],refs=plan.referenceManif
  // appended after its generation command.
  const compact=renderCompactChatInput(plan,refs||[]);
  if((plan.issues||[]).some(issue=>issue.severity==='error'))return compact;
- if(usesWorldTransferProduction(plan))return [...(plan.creatorLookup||[]),originalLines[0],renderWorldTransferMaster(plan,refs||[])].filter(Boolean).join('\n');
+ if(usesWorldTransferProduction(plan))return [...compactImageOutputContract,...(plan.creatorLookup||[]),originalLines[0],renderWorldTransferMaster(plan,refs||[])].filter(Boolean).join('\n');
  // App delivery supplies a typed manifest, including the consolidated sheet.
  // Older direct callers still supply their named references in these lines.
  // Use one owner for reference roles; never repeat the manifest as raw prose.

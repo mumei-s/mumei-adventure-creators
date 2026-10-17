@@ -12,3 +12,6 @@ body[data-lights=night] :is(.generation-status,.form-error){background:#ffe5cc;c
 body[data-lights=night] :is(.generation-status,.form-error) *{color:inherit}
 body[data-lights=night] .result-panel :is(.result-intro,.transfer-notice p,.microcopy,summary,figcaption){color:#e5dbf1}
 @media(max-width:620px){.prompt-receiver{padding:15px;margin-top:18px}.result-panel .result-body{padding:12px}.result-panel>.dialog-header{padding:12px}.result-panel .result-actions{grid-template-columns:1fr}.result-panel .result-actions .primary-button{grid-column:auto}}
+
+.delivery-help{margin:1rem 0;padding:1rem;border:1px solid var(--accent,#f97818);border-radius:16px;background:color-mix(in srgb,var(--accent,#f97818) 8%,transparent)}
+.delivery-help p{font-size:.9rem;line-height:1.7}.delivery-help button{margin:.25rem 0}.delivery-help label{display:block;margin:.75rem 0 .4rem}.delivery-help textarea{display:block;width:100%;max-width:100%;box-sizing:border-box;min-height:9em;font:inherit;font-size:16px;line-height:1.6;padding:.75rem;border:1px solid #9a8170;border-radius:10px;color:inherit;background:transparent;resize:vertical}

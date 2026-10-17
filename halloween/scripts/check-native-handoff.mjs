@@ -12,6 +12,7 @@ import {productionPlan,repairPrompt} from '../production-plan.js?v=28.4.6';
 import {composePrompt} from '../prompt.js?v=28.4.6';
 import {renderChatInput,renderInput} from '../compiled-production.js?v=28.4.6';
 import {imageOutputContract,imageDeliveryRepairPrompt,nativeImageRequest} from '../output-contract.js?v=28.4.6';
+import {assertDeliveryRetry,assertImmediateImageDelivery} from './image-delivery-assertions-v28417.mjs';
 
 const profile={displayName:'春野 澪',activityEnabled:false,topics:[]},random=()=>.28;
 let count=0,total=0,max=0,blocked=0;
@@ -38,8 +39,9 @@ for(const mode of ['halloween','everyday']){
   assert.doesNotMatch(result.prompt,/"required_before_details"|"cultural_foundation"|【実画像での完成検査】|60秒以内|合格基準|第2段階/);
   if(!errors.length){
    assert.doesNotMatch(result.prompt,/人物翻訳用入力|prepared-identity\.png|2段階で実行/,'Ordinary handoff must not require user preparation');
-   if(volumetricReferenceMedia.includes(plan.values.medium)){assert.match(result.prompt,/完成画像の自動制作：利用者の送信は1回/);assert.match(result.prompt,/各回の本文と、その回の参照だけ/);assert.match(result.prompt,/利用者へ中間画像の保存・命名・再アップロードを求めない/);assert.match(result.prompt,/途中画像も画像作成機能の通常表示で実際に見せ/);assert.match(result.prompt,/最終の完成画像1枚を通常表示/);}
-   else{assert.match(result.prompt,/通常の生成画像として表示/);assert.match(result.prompt,/非表示の再生成ループは行わない/);assert.match(result.prompt,/通常制作：完成画像を1回で生成/);assert.match(result.prompt,/【短い統合制作指示】/);}
+   assertImmediateImageDelivery(result.prompt,mode+' / '+q.key+' / '+value);
+   assert.match(result.prompt,/完成画像を1回で生成|完成画像1枚.*1回|1回.*完成画像1枚/,'All standard media must generate a final image in one call');
+   assert.doesNotMatch(result.prompt,/各回の本文と、その回の参照だけ|途中画像も画像作成機能|順に描いて実画像を確認|非表示.*(?:繰り返|ループ)/,'Standard delivery must not ask ChatGPT to manage hidden intermediate images');
   }
   const chatInput=renderChatInput(plan),structured=JSON.parse(renderInput(plan).split('\n\n【全選択の個別レシピ】')[0]);
   for(const clause of Object.values(structured.required_before_details))assert.ok(chatInput.includes(clause));
@@ -51,9 +53,7 @@ for(const mode of ['halloween','everyday']){
   }
   for(const slot of plan.copy.slots)assert.ok(chatInput.includes(JSON.stringify(slot.text)));
   const recovery=imageDeliveryRepairPrompt(result);
-  assert.match(recovery,/新しく描き直さず/);
-  assert.match(recovery,/実際の状態/);
-  assert.ok(recovery.endsWith(result.prompt));
+  assertDeliveryRetry(recovery,result.prompt);
   const repaired=repairPrompt({...result,production:plan});
   if(volumetricReferenceMedia.includes(plan.values.medium)){
    if(errors.length){assert.match(repaired,/^【選択の不成立：画像生成を停止】/);for(const issue of errors)assert.ok(repaired.includes(issue.reason));}
@@ -70,4 +70,4 @@ if(process.argv.includes('--save')){
  const dir=new URL('../verification/v19/',import.meta.url);fs.mkdirSync(dir,{recursive:true});
  fs.writeFileSync(new URL('native-handoff.json',dir),JSON.stringify(report,null,2));
 }
-console.log('PASS native handoff: '+count+' choices; direct image execution and detailed recipe audits; original single-call and new automatic internal routes, optional flat identity preparation, copy, frame, color and identity checked; no default JSON or unverified completion; native recovery; mean '+Math.round(total/count)+' chars. ChatGPT runtime is not tested here.');
+console.log('PASS native handoff: '+count+' choices; single-call final image requests, detailed recipe audits, copy, frame, color and identity checked; no default JSON or unverified completion; short same-chat recovery; mean '+Math.round(total/count)+' chars. ChatGPT runtime is not tested here.');

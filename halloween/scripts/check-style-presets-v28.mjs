@@ -16,6 +16,7 @@ import {usesFocusedProduction} from '../focused-production.js?v=28.4.6';
 import {renderRecipeChatInput} from '../compact-production.js?v=28.4.6';
 import {assertFocusedHandoff} from './focused-handoff-assertions-v28.mjs';
 import {volumetricReferenceMedia} from '../attachment-policy.js?v=28.4.6';
+import {worldTransferPrompts} from '../world-transfer-production.js?v=28.4.6';
 
 const root=new URL('../',import.meta.url),random=()=>.34,profile={displayName:'PRESET CHECK',activityEnabled:false};
 applyCollection('halloween');
@@ -65,8 +66,15 @@ for(const collection of ['halloween','everyday'])for(const preset of stylePreset
  const focused=usesFocusedProduction(plan),recipe=focused?renderRecipeChatInput(plan,plan.referenceManifest):null;
  if(focused){
   assertFocusedHandoff(plan,prompt,collection+' / '+preset.medium+' actual preset');
-  if(volumetricReferenceMedia.includes(preset.medium))assert.match(prompt,/1枚目の選択画風原画を編集の土台にする/,'The supplied original image must own the world-editing step');
-  else assert.match(prompt,/原寸の選択画風見本.*(?:制作の土台・編集の基準|描法だけの資料)/,'The actual focused preset must supply full-resolution drawing method');
+  assert.match(prompt,/原寸の選択画風見本.*(?:制作の土台・編集の基準|描法だけの資料)/,'The actual focused preset must supply full-resolution drawing method');
+  if(volumetricReferenceMedia.includes(preset.medium)){
+   const world=worldTransferPrompts(plan).stages.find(stage=>stage.key==='world');
+   assert.equal(world.references.find(ref=>ref.role==='style-preset')?.name,preset.name,'The optional world edit must use the exact selected original');
+   assert.equal(world.references.find(ref=>ref.role==='identity')?.name,'character.png');
+   assert.match(world.prompt,/1枚目の選択画風原画を編集の土台にする/,'The original must own a deliberately chosen world-editing step');
+   assert(!prompt.includes(world.prompt),'Standard delivery must not require the optional intermediate world image');
+   assert.match(prompt,/完成画像1枚を1回で生成.*通常の生成画像として表示/);
+  }
   assert.ok(recipe.includes('原寸見本'),'The authored full-resolution wording must survive on the recipe review renderer');
  }else assert.ok(prompt.includes('原寸見本'));
  const routes=[renderChatInput(plan),composeArtworkStage(plan),composeArtworkRepair(plan),composeArtworkRepair(plan,{compact:true}),repairPrompt({production:plan,values}),planInstructions(plan).join('\n')];
@@ -79,16 +87,15 @@ for(const collection of ['halloween','everyday'])for(const preset of stylePreset
  const description=stylePresetRoleDescription(preset,values,{noPerson});
  if(preset.role==='style-preset'){
   if(focused){
-   if(volumetricReferenceMedia.includes(preset.medium)){
-    assert.match(prompt,/character\.png：最初の差替で読む本人または主題の識別資料。[^\n]*以後の画像入力へ再添付しない/);
-    if(noPerson){assert.match(prompt,/原画の人物を除き/);assert.doesNotMatch(prompt,/本人へ差し替|本人の輪郭/);}else assert.match(prompt,/識別特徴だけを2枚目の本人へ差し替/);
-    assert.match(prompt,/本人画像の衣装・着脱可能な仮装の角・動物耳のカチューシャ・装身具・飾り・撮影姿勢・撮影光・背景は移さない|人物・顔・人体・手足・人型を追加しない/);
-    assert.match(prompt,/選択衣装・場面・ポーズ・表情・投影・配色を描き直す/);
-   }else{
-    if(noPerson){assert.match(prompt,/主参照「character\.png」[^\n]*選択された景物・物体・図案/);assert.doesNotMatch(prompt,/人物を今回の本人へ差し替|今回の本人の識別特徴だけ/,'No-person output cannot borrow a sample or source person');}
-    else assert.match(prompt,/主参照「character\.png」[^\n]*今回の本人の識別特徴だけ|人物識別参照「prepared-identity\.png」の同じ人物/,'The actual character reference must remain separate from the style image');
-    assert.match(prompt,/見本の人物・性別・髪型・衣装・小道具・(?:背景の具体的な配置・)?構図・文字は引き継がない/,'Focused transfer must not import the example identity, costume, props, background arrangement, composition or text');
+   if(noPerson){assert.match(prompt,/主参照「character\.png」[^\n]*選択された景物・物体・図案/);assert.doesNotMatch(prompt,/人物を今回の本人へ差し替|今回の本人の識別特徴だけ/,'No-person output cannot borrow a sample or source person');}
+   else{
+    assert.match(prompt,/主参照「character\.png」[^\n]*今回の本人の識別特徴だけ/,'The actual character reference must remain separate from the style image');
+    assert.match(prompt,/顔の輪郭、眉・目鼻口・顎・首.*髪型.*年齢感・性別表現・基礎体格.*同じ人物として保ち/);
+    assert.match(prompt,/主参照の基本頭身と体格を保つ/);
    }
+   assert.doesNotMatch(prompt,/character\.png：最初の差替|prepared-identity\.png/,'Standard delivery must read the attached source without an intermediate image');
+   assert.match(prompt,/見本の人物・性別・髪型・衣装・小道具・(?:背景の具体的な配置・)?構図・文字は引き継がない/,'Focused transfer must not import the example identity, costume, props, background arrangement, composition or text');
+   assert.match(prompt,/衣装・舞台・ポーズ・カメラ・配色は今回の選択へ描き直す/);
    assert.match(recipe,/作成者の主参照/,'Detailed character reference must remain separate');assert.match(recipe,/人物・衣装・小道具・構図・舞台は借用しない/);
   }else {assert.match(prompt,/作成者の主参照/,'Character reference must remain separate');assert.match(prompt,/人物・衣装・小道具・構図・舞台は借用しない/);}
   const verbose=composeStagedMaster(plan,['画像生成の制作仕様','【作品モード】','【作成者が添付する参照画像】','【10の選択】'],{verbose:true});assertCompactHandoff(plan,verbose);assert.ok(verbose.includes(preset.name));

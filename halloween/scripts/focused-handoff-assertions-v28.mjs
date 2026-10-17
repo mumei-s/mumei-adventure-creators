@@ -66,7 +66,11 @@ export function assertFocusedHandoff(plan,text,label='focused actual'){
  for(const slot of plan.copy.generatedSlots||[]){includes(final,slot.role+' / '+slot.maxCharacters+'字以内 / 階層'+slot.priority,label+' generated role');if(slot.contentSources)includes(final,JSON.stringify(slot.contentSources),label+' content source');}
  if(plan.copy.mode!=='none'){assert.match(final,/形式は許可役割や文字量を増やさない/);const type=typographyLayoutFor(plan.values.type);if(type&&plan.values.type!=='デザインに合わせて自動編集'){includes(final,type.quantity,label+' quantity');includes(final,type.direction,label+' direction');includes(final,type.placement,label+' placement');}}
  if(plan.collection==='halloween'){assert.match(final,/Halloween版/);assert.match(final,/10月31日/);assert.match(final,/出来事・この場所・目的/);assert.match(final,/カボチャ一個・題名だけ/);}else assert.match(final,/Halloweenを自動追加しない/);
- includes(final,plan.values.size,label+' requested dimensions');assert.match(final,/実際の生成寸法/);assert.match(final,/実画像.*未達を合格としない/);
+ includes(final,plan.values.size,label+' requested dimensions');
+ assert.match(final,/縦横比と安全余白/,label+' lost size framing');
+ assert.match(final,/完成画像そのものを1枚.*通常の生成画像.*表示/,label+' cannot stop with a completion message');
+ assert.match(final,/画像表示前に.*実測.*自動再編集を挟まず.*通常の画像表示まで進む/,label+' adds a blocking inspection/edit workflow');
+ assert.doesNotMatch(final,/実際の生成寸法が不足なら|不足があればその生成画像を編集/,label+' restarts production before display');
  if(text.includes('【人物翻訳用入力：開始】')){assert.match(text,/2段階で実行/);assert.match(final,/prepared-identity\.png/);assert.match(final,/元の人物写真・元イラストを再添付しない/);assert.match(final,/描法だけの資料/);assert.match(final,/顔・性別・髪型・衣服・小道具・背景・構図を完全に除外/);assert.match(text,/不合格の準備画像は修正/);assert.match(text,/人物翻訳が不合格だった場合の修正入力/);}
  return true;
 }

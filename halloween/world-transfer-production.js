@@ -3,7 +3,7 @@ import {stylePresetFor} from './style-presets.js?v=28.4.6';
 import {isNonHumanSource} from './source-kind.js?v=28.4.6';
 import {colorPolicy} from './color-policy.js?v=28.4.6';
 import {focusedDrawingInstructions,focusedSceneStageMaterial,focusedLayoutLines,renderFocusedChatInput} from './focused-production.js?v=28.4.6';
-import {worldTransferLayoutStage} from './world-transfer-layout.js?v=28.4.6';
+import {worldTransferLayoutStage,worldTransferLayoutMaterial} from './world-transfer-layout.js?v=28.4.6';
 
 export const usesWorldTransferProduction=plan=>volumetricReferenceMedia.includes(plan?.values?.medium);
 const entries=refs=>Array.isArray(refs)?refs:refs?.references||refs?.refs||[];
@@ -100,27 +100,26 @@ export function worldTransferPrompts(plan,refs=plan?.referenceManifest||[]){
   conditions:plan.conditions.map(({key,name,value})=>({key,name,value})),sourceObservationRequirements:worldTransferSourceObservationRequirements(plan).map(requirement=>({...requirement,stageKeys:scenes.filter(stage=>stage.sourceObservationRequirements.some(item=>item.sourceField===requirement.sourceField)).map(stage=>stage.key)})),finalStage:layout?.key||scenes.at(-1).key,sourceReattachment:false};
 }
 
+// Standard delivery is one complete artwork request. The independently scoped
+// workflow above remains available for a deliberate repair, rather than making
+// intermediate images and file handoffs prerequisites for seeing any result.
 export function renderWorldTransferMaster(plan,refs=plan?.referenceManifest||[]){
  if(!usesWorldTransferProduction(plan))return null;
  if((plan.issues||[]).some(issue=>issue.severity==='error'))return renderFocusedChatInput(plan,[]);
  const workflow=worldTransferPrompts(plan,refs);
  if(workflow.blocked)return workflow.prompt;
- return ['【完成画像の自動制作：利用者の送信は1回】',
-  '完成品は1枚。添付された通常3枚または全個別資料と、この指示を一度受け取り、ChatGPTが内部で下の画像制作を順に実行する。利用者へ中間画像の保存・命名・再アップロードを求めない。途中画像も画像作成機能の通常表示で実際に見せ、完成とは呼ばず確認後に内部で続ける。',
-  '画像作成機能には各回の本文と、その回の参照だけを渡す。この全手順・他の回・管理情報を一回の画像入力へ混ぜない。最初だけ元の主参照を使い、以後は実際に生成され照合した画像を編集の土台にする。生成画像のファイル名や説明だけで生成・確認済みと扱わない。',
-  '全'+plan.conditions.length+'選択：'+selected(plan,plan.conditions.map(condition=>condition.key)),
-  ...workflow.initialReferences.map(ref=>(ref.name||ref.file)+'：'+(ref.role==='identity'?'最初の差替で読む本人または主題の識別資料。'+(workflow.sourceObservationRequirements.length?'下記で選択が求めた構造・色・景観だけを最初に観察する。':'')+'以後の画像入力へ再添付しない。':['style-preset','drawing'].includes(ref.role)?'選択原画の世界と描法。人物や場面の識別基準へ置換しない。':ref.role==='selection-sheet'?'選択条件の担当セルだけを各回で読む。':ref.role==='selection-condition'?ref.key+'の個別資料。担当回だけで使う。':ref.role==='avoid'?'会話側で比較する前作。顔や舞台の基準へ使わず、今回の確定選択を禁止しない。画像入力へ添付しない。':'会話側の補助資料。今回の選択が明示した用途だけに使い、顔・作風・衣装・構図を置き換えない。画像入力へ添付しない。')),
-  ...(workflow.sourceObservationRequirements.length?['【最初の画像制作前：選択された参照情報の確認】','ChatGPTが元の主参照の実画像を見て、次の選択が必要とする可視情報だけを具体的な文章へ確定する。利用者へ手作業のメモ作成を求めない。',...workflow.sourceObservationRequirements.map(requirement=>requirement.sourceField+'「'+requirement.value+'」：'+requirement.scope),'確認した観察文は会話側に保持し、その選択を担当する場面編集の画像入力本文だけへ追記する。仮原画の衣装・配色・背景を元の参照情報へ置換しない。実画像を見られない、必要な構造や色や景観が見えない場合は推測せず、最初の制作を停止して未確認の項目を短く伝える。元の主参照は最初の差替後の画像入力へ再添付しない。']:[]),
-  '必要な実画像が見えない場合だけ、その画像を求める。実画像を見て未達がある場合は任意の光彩修正または不足箇所だけの編集を行い、なお不合格ならその段階と理由を短く伝えて次へ進めない。本人・主題・画風を置き換えた未検査画像を採用しない。',
-  ...(workflow.route==='individual'?['全個別資料は最初にすべて読む。内部の場面編集は衣装・姿勢・表情と、舞台・投影・配色に分け、各回の確認済み画像＋担当見本'+Math.max(...workflow.stages.filter(stage=>stage.kind==='scene-edit').map(stage=>stage.references.length-1))+'枚以内で実行する。これは不要な参照の重複を避ける分割であり、今回の検証工具で確認した参照5枚の上限をすべてのChatGPTへ一般化しない。']:[]),
-  ...workflow.stages.flatMap((stage,index)=>[
-   '【内部制作'+(index+1)+'：'+stage.key+(stage.optional?'／実画像の不足がある場合だけ':'')+'】',
-   'この回の添付：'+stage.references.map(ref=>ref.name||ref.file).join('＋')+'。'+(stage.optional?stage.appliesWhen+'。':''),
-   ...(stage.sourceObservationRequirements?.length?['画像入力を組み立てる前に、最初に確認した'+stage.sourceObservationRequirements.map(requirement=>requirement.sourceField).join('・')+'の具体的な観察文をこの回の本文末尾へ追記する。未確認・未追記なら、この回は生成停止。元画像や他の回の観察を添付して代用しない。']:[]),
-   '【この回だけの画像入力：開始】',stage.prompt,'【この回だけの画像入力：終了】',
-   '実画像で確認：'+(stage.acceptance||[]).join('／')+'。合格を確認した実画像だけを次へ渡す。'
-  ]),
-  ...(workflow.stages.some(stage=>stage.kind==='layout')?[]:['選択場面が最終段階。この1枚について全'+plan.conditions.length+'選択・文字の不在・外周余白を実画像で照合して完成画像として通常表示する。']),
-  '最後に選択画風、同じ本人または指定主題、衣装・舞台・姿勢・カメラ・配色・版面・許可原稿と文字方向を実画像で確認し、最終の完成画像1枚を通常表示する。実際の寸法不足、未実行・未確認・不合格を短く伝え、未達を完成と報告しない。'
+ const layoutMaterial=workflow.stages.some(stage=>stage.kind==='layout')?worldTransferLayoutMaterial(plan):undefined;
+ return [
+  '【完成画像の自動制作：利用者の送信は1回】',
+  '画像作成機能を実行し、以下の全条件を統合した完成画像1枚を1回で生成して、このチャットの通常の生成画像として表示する。',
+  '添付された主参照・画風原画・選択資料を同じ制作入力として読み、本人または指定主題、光と影、全'+plan.conditions.length+'選択、版面と許可原稿を最初から同じ完成画像へ反映する。利用者へ中間画像の保存・命名・再アップロードを求めない。',
+  '原稿の確定と参照の読み分けは制作条件の解釈として行う。中間画像の生成・検査・ファイル引継ぎ・再生成を先に並べる手順へ切り替えず、完成画像の生成と通常表示まで進む。',
+  ...(workflow.sourceObservationRequirements.length?[
+   '【今回の選択が主参照から使う可視情報】',
+   '元の主参照の実画像を読み、次の選択に必要な可視情報を今回の完成画像へ直接反映する。利用者へ観察メモや中間画像を用意させず、見えない構造を推測しない。',
+   ...workflow.sourceObservationRequirements.map(requirement=>requirement.sourceField+'「'+requirement.value+'」：'+requirement.scope),
+   '画風原画の仮の衣装・配色・背景を主参照の情報へ置換しない。必要な主参照そのものが見えない場合だけ、その画像を短く求める。'
+  ]:[]),
+  renderFocusedChatInput(plan,workflow.initialReferences,{layoutMaterial})
  ].filter(Boolean).join('\n');
 }

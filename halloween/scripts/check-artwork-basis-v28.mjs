@@ -12,6 +12,7 @@ import {composePrompt} from '../prompt.js?v=28.4.6';
 import {renderInput,renderSelectionMaterial} from '../compiled-production.js?v=28.4.6';
 import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28.4.6';
 import {imageDeliveryRepairPrompt,selectionIntegrationInstructions} from '../output-contract.js?v=28.4.6';
+import {assertDeliveryRetry} from './image-delivery-assertions-v28417.mjs';
 import {compactReferences,assertCompactHandoff,assertCompactEngineering} from './compact-handoff-assertions-v28.mjs';
 
 // This exercises the actual specification and delivery paths. It does not
@@ -139,7 +140,8 @@ try{
    const plan=makePlan(collection,values),contract=luminousWorldContract(values,{variant:plan.variant}),routes=outputs(collection,plan);
    assertSelectionPreserved(values,plan,collection+' / luminous mermaid / '+angle);
    contains(contract.preservation,values.proportions,'An explicitly supplied body proportion');
-   for(const name of ['native','master','artwork','embedded','artworkRepair','repair','deliveryRepair'])contains(routes[name],values.proportions,name+' explicitly supplied proportion');
+   for(const name of ['native','master','artwork','embedded','artworkRepair','repair'])contains(routes[name],values.proportions,name+' explicitly supplied proportion');
+   assertDeliveryRetry(routes.deliveryRepair,routes.master,'mermaid same-chat recovery');
    nonhumanCases++;
   }
   for(const angle of ['場面に合わせたアングル','水面の高さで左斜め20度・膝まで'])for(const noPerson of [false,true]){

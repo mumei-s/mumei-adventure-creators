@@ -12,6 +12,7 @@ import {composeArtworkStage,composeArtworkRepair} from '../artwork-stage.js?v=28
 import {cameraContract} from '../angles.js?v=28.4.6';
 import {creatorHandoff} from '../creator-handoff.js?v=28.4.6';
 import {selectionIntegrationInstructions,compactSelectionIntegrationInstructions,imageOutputContract,compactImageOutputContract,imageDeliveryRepairPrompt} from '../output-contract.js?v=28.4.6';
+import {assertDeliveryRetry} from './image-delivery-assertions-v28417.mjs';
 
 // These tests inspect the material and instructions sent to ChatGPT. They do
 // not execute AI synthesis or claim that an image model obeyed the selections.
@@ -61,7 +62,8 @@ try{
   const result={edition:'SELECTION-INTEGRATION',prompt,production:plan,values};
   const routes={native,master:prompt,artwork:composeArtworkStage(plan),embeddedArtwork:composeArtworkStage(plan,{embedded:true}),artworkRepair:composeArtworkRepair(plan),compactArtworkRepair:composeArtworkRepair(plan,{compact:true}),repair:repairPrompt(result),deliveryRepair:imageDeliveryRepairPrompt(result)};
   for(const [route,text] of Object.entries(routes)){
-   if(route!=='native')for(const clause of ['master','deliveryRepair'].includes(route)?compactSelectionIntegrationInstructions:selectionIntegrationInstructions)includes(text,clause,item.name+' / '+route);
+   if(route==='deliveryRepair')assertDeliveryRetry(text,prompt,item.name+' delivery recovery');
+   else if(route!=='native')for(const clause of route==='master'?compactSelectionIntegrationInstructions:selectionIntegrationInstructions)includes(text,clause,item.name+' / '+route);
    assert.doesNotMatch(text,/【画像生成へ渡す作画条件：(?:開始|終了)】|以下の描画条件だけを画像生成機能へ渡し|下の「画像生成へ渡す作画条件」の内容/,'An old raw-input instruction survived in '+route);
    assert.doesNotMatch(text,/undefined|NaN/);
    assert.doesNotMatch(text,/(?:このツール|ツール側).{0,20}(?:AIで統合|意味を理解|矛盾を自動解消)|(?:AIで統合|矛盾を自動解消)済み/,'The deterministic tool must not claim completed AI synthesis');

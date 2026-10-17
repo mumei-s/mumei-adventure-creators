@@ -44,7 +44,13 @@ for(const medium of questions.find(q=>q.key==='medium').groups.flatMap(g=>g.valu
     assert.match(prompt,/似せない前作|似せてはいけない前作|比較する前作/);
     assert.match(prompt,/顔・作風・衣装・構図を置き換えない/,'Auxiliary evidence must not replace selected production conditions');
     assert.match(prompt,/今回の確定選択を禁止しない/,'Avoid references must not prohibit the same correctly selected world or technique');
-    if(!plan.noPerson){assert.ok(input.includes(worldTransfer?'identity.png：最初の差替':'「identity.png」'),'Default production must use its actual identity attachment');assert.doesNotMatch(input,/prepared-identity\.png/,'Default production cannot invent a prepared intermediate');}
+    if(!plan.noPerson){
+     assert.match(input,/^主参照「identity\.png」：.*今回の本人の識別特徴だけ/m,'Default production must read the actual identity attachment');
+     assert.match(input,/顔の輪郭、眉・目鼻口・顎・首.*髪型.*年齢感・性別表現・基礎体格.*同じ人物として保ち/,'Scene changes must preserve the supplied person');
+     assert.match(input,/主参照の基本頭身と体格を保つ/,'A selected style must not silently change proportions');
+     assert.match(input,/見本の若い女性、別の性別、幼児、細身の身体へ交換せず/,'A drawing sample must not replace the source person');
+     assert.doesNotMatch(input,/prepared-identity\.png|identity\.png：最初の差替/,'Default production cannot require an intermediate identity stage');
+    }
    }else{for(const ref of references)assert.ok(input.includes(ref.name),medium+' loses '+ref.role+' reference role');assert.ok(input.includes('似せてはいけない前作'));}
    for(const condition of plan.conditions){
     assert.ok(condition.known,condition.key+' / '+condition.value+' uses a custom fallback in this preset test');

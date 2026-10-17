@@ -68,7 +68,8 @@ function checkInputBranch(plan,text){
  assert.doesNotMatch(text,/undefined|NaN|prepared-identity\.png|人物翻訳用入力/);
  for(const condition of plan.conditions)assert.ok(text.includes(condition.name+'＝'+condition.value),'A fixed selection disappeared: '+condition.key);
  assert.match(text,/制作の土台・編集の基準/);assert.ok(text.includes(stylePresetFor(plan.values.medium).name));
- assert.match(text,/画像生成|画像作成/);assert.match(text,/実画像.*未達を合格としない/);
+ assert.match(text,/画像生成|画像作成/);assert.match(text,/完成画像そのものを1枚.*通常の生成画像.*表示/);
+ assert.match(text,/画像表示前に.*実測.*自動再編集を挟まず.*通常の画像表示まで進む/);
  if(plan.noPerson){
   assert.match(text,/人物なし/);assert.match(text,/顔・人体・手足・人型や擬人化を追加しない/);
   assert.doesNotMatch(text,/人物を今回の本人へ差し替|本人の識別特徴だけ|この本人の輪郭|同じ人物として保ち|顔と身体の(?:2D)?色面/,'No-person instructions cannot also request a person replacement');

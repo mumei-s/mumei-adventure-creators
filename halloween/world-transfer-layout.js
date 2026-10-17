@@ -64,23 +64,47 @@ function manuscriptLines(plan,type,design){
  ];
 }
 
-export function worldTransferLayoutStage(plan,{sceneName='確認済みの選択場面',refs=[]}={}){
- if(!plan?.values||!plan.copy||!Array.isArray(plan.conditions))throw new TypeError('誌面工程に必要な確定制作計画がありません。');
- const errors=(plan.issues||[]).filter(issue=>issue.severity==='error');
- if(errors.length)return stopped(errors.map(issue=>issue.reason));
- const v=plan.values,format=formatFor(v.design),copy=plan.copy;
+function layoutSpecification(plan){
+ const v=plan.values,format=formatFor(v.design),copy=plan.copy,design=designLayoutFor(v.design),type=typographyLayoutFor(v.type),palette=colorPolicy(v);
  const noCopy=copy.mode==='none'||!(copy.slots||[]).length&&!(copy.generatedSlots||[]).length;
- if(imageKinds.has(format.kind)&&noCopy)return null;
- if(typeof sceneName!=='string'||!sceneName.trim())throw new TypeError('確認済み場面の画像名がありません。');
- const chosen=layoutReferences(refs,v);
- if(chosen.errors)return stopped(chosen.errors);
- const scene={role:'scene-result',name:sceneName,generated:true,source:'previous-confirmed-image',scope:'確認済みの人物・主題・場面の可視矩形全体。描き直さず主図版1点として配置する。'};
- const references=[scene,...chosen.references],design=designLayoutFor(v.design),type=typographyLayoutFor(v.type),palette=colorPolicy(v);
  const layoutValues=noCopy?{...v,type:'文字を一切入れない'}:v;
  const recipe=detailedFormat(v.design,{values:layoutValues,noPerson:plan.noPerson});
  const sparse=format.kind==='newspaper'?limitedNewspaperLayout(layoutValues):null;
  const box=sparse?[sparse.imageBox.x*100,sparse.imageBox.y*100,sparse.imageBox.width*100,sparse.imageBox.height*100]:design?.image;
  const geometry=(recipe.sections||[]).filter(section=>['作品の骨格','領域とグリッド','文字と読み順','限定原稿の配置','文字なしの構成','避ける失敗'].includes(section.label));
+ return {v,format,copy,noCopy,design,type,palette,sparse,box,geometry};
+}
+
+// Shared artwork constraints, without a requirement for an already generated
+// scene. Standard delivery and the optional page editor use the same geometry
+// and manuscript authority; only the optional editor preserves an input image.
+export function worldTransferLayoutMaterial(plan,{preserveGeneratedScene=false}={}){
+ const {v,format,design,type,palette,sparse,box,geometry}=layoutSpecification(plan);
+ return [
+  '主図版はこの場面1点だけ。'+(preserveGeneratedScene?'その可視矩形全体を縦横比を保った同一縮尺で画像領域へ収める。':'今回の一続きの場面全体を、指定したカメラ・姿勢・支持面・安全余白を保って画像領域へ描く。')+'余る領域は選択配色の地色にする。幅や高さを埋めるためのトリミング、引き伸ばし、関節や背景の切断、別視点の描き直しをしない。主図版の顔アップ・部分図・複製・副写真を追加せず、図版の光や背景を情報欄へはみ出させない。',
+  '版面の骨格：'+(design?.signature||format.layout),
+  ...(box?['主図版の領域は完成画像全体の左上を原点とし、x'+box[0]+'%・y'+box[1]+'%・幅'+box[2]+'%・高さ'+box[3]+'%。この領域は画像を切る枠ではなく、'+(preserveGeneratedScene?'確認済み矩形全体':'今回の場面全体')+'を収める領域。']:[]),
+  ...geometry.map(section=>section.label+'：'+section.text),
+  ...(sparse?[sparse.priority,sparse.grid]:[]),
+  ...(format.kind==='newspaper'?['新聞の主図版は1点だけ。右列・下段・副記事の領域は許可原稿または余白にし、小風景図・下段3図・複製肖像を追加しない。']:[]),
+  ...(design?.frames?.length?['次の予約情報領域は原稿の配置だけを示す。使用原稿の役割・数・方向は下の文字設定が優先し、未使用枠は無地にする。',...design.frames.map(frameLine)]:[]),
+  '紙地・罫線・文字・装飾枠も選択配色「'+palette.allowed+'」内で明度差を作る。最明部は'+palette.bright+'、最暗部は'+palette.dark+'。新聞だから古紙や白黒、雑誌だから実写へ変えず、主図版の材質と光の密度を保つ。',
+  '【許可原稿と文字配置】',...manuscriptLines(plan,type,design),
+  '版面の文字方向と画像内カメラを区別する。縦書き・横書き・斜め書きは許可文字列の配置だけを変え、カメラや主図版の投影を回転・変形しない。'
+ ].filter(Boolean);
+}
+
+export function worldTransferLayoutStage(plan,{sceneName='確認済みの選択場面',refs=[]}={}){
+ if(!plan?.values||!plan.copy||!Array.isArray(plan.conditions))throw new TypeError('誌面工程に必要な確定制作計画がありません。');
+ const errors=(plan.issues||[]).filter(issue=>issue.severity==='error');
+ if(errors.length)return stopped(errors.map(issue=>issue.reason));
+ const {v,format,copy,noCopy,design,box}=layoutSpecification(plan);
+ if(imageKinds.has(format.kind)&&noCopy)return null;
+ if(typeof sceneName!=='string'||!sceneName.trim())throw new TypeError('確認済み場面の画像名がありません。');
+ const chosen=layoutReferences(refs,v);
+ if(chosen.errors)return stopped(chosen.errors);
+ const scene={role:'scene-result',name:sceneName,generated:true,source:'previous-confirmed-image',scope:'確認済みの人物・主題・場面の可視矩形全体。描き直さず主図版1点として配置する。'};
+ const references=[scene,...chosen.references];
  const prompt=[
   '【確認済み場面から選択版面を完成】',
   '画像作成機能で「'+sceneName+'」を編集の土台にし、選択デザイン「'+v.design+'」と文字「'+v.type+'」の平らな完成画像1枚へ構成する。SVG・HTML・コード・文字だけの説明や実物の雑誌を撮ったモックアップで代用しない。',
@@ -88,16 +112,7 @@ export function worldTransferLayoutStage(plan,{sceneName='確認済みの選択�
   ...chosen.references.map(ref=>nameOf(ref)+'：'+ref.scope+(ref.role==='selection-sheet'?'読むのは'+(ref.items||[]).map(item=>(item.selectionIndex||'')+' '+item.key+'「'+item.value+'」').join('／')+'のセルだけ。その他のセルやシート全体の複数パネルを作品へ移さない。':'')),
   '全選択を保持：'+plan.conditions.map(condition=>condition.name+'＝'+condition.value).join('／'),
   '確認済み場面の人物識別または人物なしの主題、衣装、顔向き・表情、ポーズ・支持、カメラ投影・画角、背景の出来事、季節、配色、選択作風「'+v.medium+'」と全可視域の光彩は検査済みの画面内条件として保持する。この工程で再描画・再投影・着替え・新しい顔や場面への交換を指示しない。人物なしなら顔・人体・人型も追加しない。',
-  '主図版はこの場面1点だけ。その可視矩形全体を縦横比を保った同一縮尺で画像領域へ収め、余る領域は選択配色の地色にする。幅や高さを埋めるためのトリミング、引き伸ばし、関節や背景の切断、別視点の描き直しをしない。主図版の顔アップ・部分図・複製・副写真を追加せず、図版の光や背景を情報欄へはみ出させない。',
-  '版面の骨格：'+(design?.signature||format.layout),
-  ...(box?['主図版の領域は完成画像全体の左上を原点とし、x'+box[0]+'%・y'+box[1]+'%・幅'+box[2]+'%・高さ'+box[3]+'%。この領域は画像を切る枠ではなく、確認済み矩形全体を収める領域。']:[]),
-  ...geometry.map(section=>section.label+'：'+section.text),
-  ...(sparse?[sparse.priority,sparse.grid]:[]),
-  ...(format.kind==='newspaper'?['新聞の主図版は1点だけ。右列・下段・副記事の領域は許可原稿または余白にし、小風景図・下段3図・複製肖像を追加しない。']:[]),
-  ...(design?.frames?.length?['次の予約情報領域は原稿の配置だけを示す。使用原稿の役割・数・方向は下の文字設定が優先し、未使用枠は無地にする。',...design.frames.map(frameLine)]:[]),
-  '紙地・罫線・文字・装飾枠も選択配色「'+palette.allowed+'」内で明度差を作る。最明部は'+palette.bright+'、最暗部は'+palette.dark+'。新聞だから古紙や白黒、雑誌だから実写へ変えず、主図版の材質と光の密度を保つ。',
-  '【許可原稿と文字配置】',...manuscriptLines(plan,type,design),
-  '版面の文字方向と画像内カメラを区別する。縦書き・横書き・斜め書きは許可文字列の配置だけを変え、カメラや主図版の投影を回転・変形しない。',
+  ...worldTransferLayoutMaterial(plan,{preserveGeneratedScene:true}),
   '要求サイズ「'+v.size+'」の比率と外周安全余白を保つ。実生成画像で主図版1点の矩形全体・識別・ポーズ・カメラ・作風の維持、選択版面の領域・列・綴じ余白、許可原稿の全数・正確な文字列・方向を照合する。未達ならその出力画像の不足箇所だけを編集し、満たした部分を保持する。完成画像1枚を通常表示し、実際の寸法不足や未確認・未達は短く伝える。'
  ].filter(Boolean).join('\n');
  return {kind:'layout',prompt,references,sceneName,requiresInspection:true,copyAuthority:noCopy?'none':copy.authority,layout:{design:v.design,type:v.type,imageBox:box?[...box]:null,informationFrames:(design?.frames||[]).map(frame=>({...frame})),manuscriptCount:noCopy?0:(copy.slots||[]).length+(copy.generatedSlots||[]).length},checks:['確認済み矩形全体を保った主図版1点','人物・主題・ポーズ・カメラ・作風・季節の保持','選択版面の固有配置と安全余白',noCopy?'文字・数字・署名・疑似文字なし':'許可原稿の役割・全数・方向・正確な印字']};

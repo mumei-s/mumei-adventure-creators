@@ -41,9 +41,11 @@ assert.ok(artwork.trim()&&layout.trim(),'Both stages must contain actual instruc
 has(spread.prompt,'通常制作：完成画像を1回で生成','Normal delivery has one generation for the finished page');
 lacks(spread.prompt,'<svg','Optional SVG templates must not bloat normal delivery');
 lacks(spread.prompt,'【必要な場合の画風修正用入力：開始】','Normal delivery must not duplicate the entire repair recipe');
-has(spread.prompt,'直ちにこの会話へ表示','Normal delivery must display the first result before checking it');
-matches(spread.prompt,/最初の生成画像.*直ちにこの会話へ表示.*照合と短い補足はその後に行う/,'Display must precede inspection and commentary, rather than imply another hidden generation');
-has(spread.prompt,'非表示の再生成ループは行わない','Failed artwork must not cause a hidden unbounded retry loop');
+matches(spread.prompt,/完成画像1枚.*通常の生成画像としてこの返信に表示/,'Normal delivery must return the native generated picture');
+matches(spread.prompt,/生成後の実ファイル検査や解像度確認を始めず.*画像の返却まで進める/,'File inspection must not block the first image result');
+matches(spread.prompt,/画像が返るまでは.*完成しました.*表示しました.*伝えない/,'Only an actual returned image can count as delivery');
+lacks(spread.prompt,'各回の本文と、その回の参照だけ','Standard delivery must not start intermediate generation management');
+lacks(spread.prompt,'実ファイルで照合','Standard delivery must not start a file audit before returning the image');
 
 // All selected image decisions survive stage 1, including the 2D construction
 // that failed in the single-pass image proof. Editorial copy does not enter it.

@@ -1,0 +1,28 @@
+/* Physical narrow screens need a bounded header, regardless of selected profile.
+   Keep the controls on one row; only that row may scroll at enlarged text sizes. */
+@media(max-width:480px){
+ body[data-layout-page=gallery][data-layout] .theater .masthead{gap:4px;padding:6px max(8px,env(safe-area-inset-right)) 4px max(8px,env(safe-area-inset-left))}
+ body[data-layout-page=gallery][data-layout] .theater #site-title{gap:2px;min-width:0}
+ body[data-layout-page=gallery][data-layout] .theater[data-mode=halloween] #site-title>span{font-size:10px;line-height:1.2;letter-spacing:.14em}
+ body[data-layout-page=gallery][data-layout] .theater[data-mode=halloween] #site-title>strong{font-size:clamp(20px,5.6vw,26px);line-height:1.1;letter-spacing:0;white-space:normal;max-width:100%;overflow-wrap:normal}
+ body[data-layout-page=gallery][data-layout] .theater[data-mode=halloween] #site-title>small{font-size:12px;line-height:1.2;letter-spacing:.08em}
+ body[data-layout-page=gallery][data-layout] .theater #site-title:before,
+ body[data-layout-page=gallery][data-layout] .theater #site-title:after{display:none}
+ body[data-layout-page=gallery][data-layout] .theater .palace-toolbar{flex-flow:row nowrap;justify-content:space-between;gap:4px;min-width:0;max-width:100%;overflow-x:auto;overflow-y:hidden;scroll-padding-inline:4px}
+ body[data-layout-page=gallery][data-layout] .theater .header-navigation,
+ body[data-layout-page=gallery][data-layout] .theater .header-actions{display:contents}
+ body[data-layout-page=gallery][data-layout] .theater .mode-switch{flex:0 0 auto;flex-wrap:nowrap;gap:0;padding:0;min-width:0}
+ body[data-layout-page=gallery][data-layout] .theater .palace-toolbar button{flex:0 0 auto;font-size:14px;line-height:1.2;letter-spacing:0;min-height:44px;height:44px;min-width:44px;padding:4px;white-space:nowrap;overflow-wrap:normal}
+ body[data-layout-page=gallery][data-layout] .theater .header-actions #year-open{width:44px;min-width:44px;height:44px;min-height:44px;font-size:14px;padding:0}
+ body[data-layout-page=gallery][data-layout] .theater .header-actions .visitor-settings-trigger{min-width:44px;margin-left:0}
+ body[data-layout-page=gallery][data-layout] .theater .list-open>span{display:none}
+ body[data-layout-page=gallery][data-layout] .theater .castle-exit-panel{gap:4px;flex-wrap:nowrap}
+ body[data-layout-page=gallery][data-layout] .theater .castle-exit-label{font-size:12px;line-height:1.3}
+ body[data-layout-page=gallery][data-layout] .theater .castle-exit-panel>.app-exit-trigger{font-size:13px;min-height:44px;min-width:88px;padding:4px 8px;line-height:1.2}
+ body[data-layout-page=gallery][data-layout] .castle-visit-counter{top:6px;font-size:12px;line-height:1.25;padding:4px 7px;gap:1px 6px}
+ body[data-layout-page=gallery][data-layout] .castle-visit-counter strong{font-size:14px;line-height:1.25}
+ body[data-layout-page=gallery][data-layout] .castle-visit-counter small{font-size:11px;line-height:1.25}
+ body[data-layout-page=gallery][data-layout] .theater .palace-caption-stack{gap:2px;bottom:5px}
+ body[data-layout-page=gallery][data-layout] .theater .palace-caption-stack>p{font-size:12px;line-height:1.3;padding:3px 6px}
+ body[data-layout-page=gallery][data-layout] .theater .palace-caption-stack>.palace-gate-invitation{font-size:14px}
+}

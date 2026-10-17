@@ -1,0 +1,778 @@
+{
+  "down": {
+    "head": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 2,
+      "sourceRect": [
+        20,
+        13,
+        177,
+        165
+      ],
+      "resample": 1
+    },
+    "backHair": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 1,
+      "sourceRect": [
+        205,
+        6,
+        173,
+        179
+      ],
+      "resample": 1
+    },
+    "bodiceTorso": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 7,
+      "sourceRect": [
+        397,
+        48,
+        120,
+        123
+      ],
+      "resample": 1
+    },
+    "pelvisFrontSkirt": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 8,
+      "sourceRect": [
+        529,
+        63,
+        170,
+        105
+      ],
+      "resample": 1
+    },
+    "leftUpperArm": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 4,
+      "sourceRect": [
+        722,
+        34,
+        86,
+        132
+      ],
+      "resample": 1
+    },
+    "leftForearmHand": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 6,
+      "sourceRect": [
+        854,
+        38,
+        98,
+        121
+      ],
+      "resample": 1
+    },
+    "rightUpperArm": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 3,
+      "sourceRect": [
+        997,
+        33,
+        86,
+        134
+      ],
+      "resample": 1
+    },
+    "rightForearmHand": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 5,
+      "sourceRect": [
+        1114,
+        35,
+        102,
+        112
+      ],
+      "resample": 1
+    },
+    "leftUpperLeg": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 11,
+      "sourceRect": [
+        51,
+        192,
+        63,
+        134
+      ],
+      "resample": 1
+    },
+    "leftLowerLegBoot": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 14,
+      "sourceRect": [
+        173,
+        198,
+        78,
+        147
+      ],
+      "resample": 1
+    },
+    "rightUpperLeg": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 12,
+      "sourceRect": [
+        336,
+        194,
+        60,
+        131
+      ],
+      "resample": 1
+    },
+    "rightLowerLegBoot": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 13,
+      "sourceRect": [
+        475,
+        194,
+        85,
+        151
+      ],
+      "resample": 1
+    },
+    "leftWing": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 15,
+      "sourceRect": [
+        611,
+        198,
+        168,
+        135
+      ],
+      "resample": 1
+    },
+    "rightWing": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 16,
+      "sourceRect": [
+        818,
+        199,
+        159,
+        134
+      ],
+      "resample": 1
+    },
+    "tailBase": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 18,
+      "sourceRect": [
+        998,
+        211,
+        122,
+        112
+      ],
+      "resample": 1
+    },
+    "tailTip": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 20,
+      "sourceRect": [
+        1122,
+        214,
+        117,
+        120
+      ],
+      "resample": 1
+    }
+  },
+  "right": {
+    "head": {
+      "file": "exec-3e573c02-60b9-45ef-bdbc-20c45bb4ecc1.png",
+      "sha256": "2780e14fcea6fa6274b659527520c3107655dbb84c52992677bad72425aaa374",
+      "component": 1,
+      "sourceRect": [
+        31,
+        4,
+        351,
+        342
+      ],
+      "resample": 0.6837606837606838
+    },
+    "backHair": {
+      "file": "exec-3e573c02-60b9-45ef-bdbc-20c45bb4ecc1.png",
+      "sha256": "2780e14fcea6fa6274b659527520c3107655dbb84c52992677bad72425aaa374",
+      "component": 2,
+      "sourceRect": [
+        449,
+        4,
+        301,
+        351
+      ],
+      "resample": 0.6837606837606838
+    },
+    "bodiceTorso": {
+      "file": "exec-3e573c02-60b9-45ef-bdbc-20c45bb4ecc1.png",
+      "sha256": "2780e14fcea6fa6274b659527520c3107655dbb84c52992677bad72425aaa374",
+      "component": 3,
+      "sourceRect": [
+        839,
+        54,
+        226,
+        280
+      ],
+      "resample": 0.8571428571428571
+    },
+    "pelvisFrontSkirt": {
+      "file": "exec-3e573c02-60b9-45ef-bdbc-20c45bb4ecc1.png",
+      "sha256": "2780e14fcea6fa6274b659527520c3107655dbb84c52992677bad72425aaa374",
+      "component": 4,
+      "sourceRect": [
+        1149,
+        133,
+        270,
+        193
+      ],
+      "resample": 0.8888888888888888
+    },
+    "leftUpperArm": {
+      "file": "exec-3e573c02-60b9-45ef-bdbc-20c45bb4ecc1.png",
+      "sha256": "2780e14fcea6fa6274b659527520c3107655dbb84c52992677bad72425aaa374",
+      "component": 18,
+      "sourceRect": [
+        65,
+        362,
+        178,
+        213
+      ],
+      "resample": 1
+    },
+    "leftForearmHand": {
+      "file": "exec-3e573c02-60b9-45ef-bdbc-20c45bb4ecc1.png",
+      "sha256": "2780e14fcea6fa6274b659527520c3107655dbb84c52992677bad72425aaa374",
+      "component": 19,
+      "sourceRect": [
+        489,
+        370,
+        161,
+        205
+      ],
+      "resample": 1
+    },
+    "rightUpperArm": {
+      "file": "exec-3e573c02-60b9-45ef-bdbc-20c45bb4ecc1.png",
+      "sha256": "2780e14fcea6fa6274b659527520c3107655dbb84c52992677bad72425aaa374",
+      "component": 17,
+      "sourceRect": [
+        837,
+        360,
+        169,
+        222
+      ],
+      "resample": 1
+    },
+    "rightForearmHand": {
+      "file": "exec-3e573c02-60b9-45ef-bdbc-20c45bb4ecc1.png",
+      "sha256": "2780e14fcea6fa6274b659527520c3107655dbb84c52992677bad72425aaa374",
+      "component": 16,
+      "sourceRect": [
+        1215,
+        359,
+        189,
+        224
+      ],
+      "resample": 1
+    },
+    "leftUpperLeg": {
+      "file": "exec-3e573c02-60b9-45ef-bdbc-20c45bb4ecc1.png",
+      "sha256": "2780e14fcea6fa6274b659527520c3107655dbb84c52992677bad72425aaa374",
+      "component": 20,
+      "sourceRect": [
+        124,
+        585,
+        140,
+        219
+      ],
+      "resample": 1
+    },
+    "leftLowerLegBoot": {
+      "file": "exec-3e573c02-60b9-45ef-bdbc-20c45bb4ecc1.png",
+      "sha256": "2780e14fcea6fa6274b659527520c3107655dbb84c52992677bad72425aaa374",
+      "component": 22,
+      "sourceRect": [
+        501,
+        591,
+        174,
+        265
+      ],
+      "resample": 0.9056603773584906
+    },
+    "rightUpperLeg": {
+      "file": "exec-3e573c02-60b9-45ef-bdbc-20c45bb4ecc1.png",
+      "sha256": "2780e14fcea6fa6274b659527520c3107655dbb84c52992677bad72425aaa374",
+      "component": 21,
+      "sourceRect": [
+        868,
+        586,
+        123,
+        211
+      ],
+      "resample": 1
+    },
+    "rightLowerLegBoot": {
+      "file": "exec-3e573c02-60b9-45ef-bdbc-20c45bb4ecc1.png",
+      "sha256": "2780e14fcea6fa6274b659527520c3107655dbb84c52992677bad72425aaa374",
+      "component": 23,
+      "sourceRect": [
+        1227,
+        594,
+        180,
+        269
+      ],
+      "resample": 0.8921933085501859
+    },
+    "leftWing": {
+      "file": "exec-3e573c02-60b9-45ef-bdbc-20c45bb4ecc1.png",
+      "sha256": "2780e14fcea6fa6274b659527520c3107655dbb84c52992677bad72425aaa374",
+      "component": 26,
+      "sourceRect": [
+        31,
+        856,
+        295,
+        203
+      ],
+      "resample": 0.8135593220338984
+    },
+    "rightWing": {
+      "file": "exec-3e573c02-60b9-45ef-bdbc-20c45bb4ecc1.png",
+      "sha256": "2780e14fcea6fa6274b659527520c3107655dbb84c52992677bad72425aaa374",
+      "component": 24,
+      "sourceRect": [
+        439,
+        852,
+        304,
+        223
+      ],
+      "resample": 0.7894736842105263
+    },
+    "tailBase": {
+      "file": "exec-3e573c02-60b9-45ef-bdbc-20c45bb4ecc1.png",
+      "sha256": "2780e14fcea6fa6274b659527520c3107655dbb84c52992677bad72425aaa374",
+      "component": 25,
+      "sourceRect": [
+        831,
+        853,
+        268,
+        192
+      ],
+      "resample": 0.8955223880597015
+    },
+    "tailTip": {
+      "file": "exec-3e573c02-60b9-45ef-bdbc-20c45bb4ecc1.png",
+      "sha256": "2780e14fcea6fa6274b659527520c3107655dbb84c52992677bad72425aaa374",
+      "component": 27,
+      "sourceRect": [
+        1210,
+        900,
+        207,
+        134
+      ],
+      "resample": 1
+    }
+  },
+  "up": {
+    "head": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 42,
+      "sourceRect": [
+        12,
+        668,
+        173,
+        180
+      ],
+      "resample": 1
+    },
+    "backHair": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 43,
+      "sourceRect": [
+        190,
+        671,
+        174,
+        176
+      ],
+      "resample": 1
+    },
+    "bodiceTorso": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 49,
+      "sourceRect": [
+        385,
+        707,
+        129,
+        126
+      ],
+      "resample": 1
+    },
+    "pelvisFrontSkirt": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 51,
+      "sourceRect": [
+        533,
+        720,
+        176,
+        107
+      ],
+      "resample": 1
+    },
+    "leftUpperArm": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 46,
+      "sourceRect": [
+        724,
+        688,
+        97,
+        129
+      ],
+      "resample": 1
+    },
+    "leftForearmHand": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 50,
+      "sourceRect": [
+        859,
+        710,
+        101,
+        104
+      ],
+      "resample": 1
+    },
+    "rightUpperArm": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 47,
+      "sourceRect": [
+        998,
+        688,
+        98,
+        129
+      ],
+      "resample": 1
+    },
+    "rightForearmHand": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 48,
+      "sourceRect": [
+        1116,
+        697,
+        104,
+        110
+      ],
+      "resample": 1
+    },
+    "leftUpperLeg": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 58,
+      "sourceRect": [
+        54,
+        851,
+        59,
+        123
+      ],
+      "resample": 1
+    },
+    "leftLowerLegBoot": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 59,
+      "sourceRect": [
+        178,
+        851,
+        57,
+        126
+      ],
+      "resample": 1
+    },
+    "rightUpperLeg": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 57,
+      "sourceRect": [
+        335,
+        850,
+        59,
+        127
+      ],
+      "resample": 1
+    },
+    "rightLowerLegBoot": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 60,
+      "sourceRect": [
+        476,
+        851,
+        72,
+        127
+      ],
+      "resample": 1
+    },
+    "leftWing": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 56,
+      "sourceRect": [
+        599,
+        849,
+        168,
+        117
+      ],
+      "resample": 1
+    },
+    "rightWing": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 55,
+      "sourceRect": [
+        850,
+        848,
+        169,
+        118
+      ],
+      "resample": 1
+    },
+    "tailBase": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 61,
+      "sourceRect": [
+        1022,
+        857,
+        109,
+        99
+      ],
+      "resample": 1
+    },
+    "tailTip": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 54,
+      "sourceRect": [
+        1156,
+        842,
+        78,
+        128
+      ],
+      "resample": 1
+    }
+  },
+  "left": {
+    "head": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 64,
+      "sourceRect": [
+        24,
+        972,
+        165,
+        166
+      ],
+      "resample": 1
+    },
+    "backHair": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 65,
+      "sourceRect": [
+        196,
+        972,
+        170,
+        165
+      ],
+      "resample": 1
+    },
+    "bodiceTorso": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 67,
+      "sourceRect": [
+        386,
+        996,
+        104,
+        127
+      ],
+      "resample": 1
+    },
+    "pelvisFrontSkirt": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 72,
+      "sourceRect": [
+        523,
+        1023,
+        176,
+        102
+      ],
+      "resample": 1
+    },
+    "leftUpperArm": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 68,
+      "sourceRect": [
+        718,
+        1000,
+        90,
+        123
+      ],
+      "resample": 1
+    },
+    "leftForearmHand": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 71,
+      "sourceRect": [
+        872,
+        1006,
+        90,
+        107
+      ],
+      "resample": 1
+    },
+    "rightUpperArm": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 69,
+      "sourceRect": [
+        1005,
+        1001,
+        88,
+        123
+      ],
+      "resample": 1
+    },
+    "rightForearmHand": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 70,
+      "sourceRect": [
+        1121,
+        1005,
+        97,
+        100
+      ],
+      "resample": 1
+    },
+    "leftUpperLeg": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 81,
+      "sourceRect": [
+        33,
+        1134,
+        58,
+        103
+      ],
+      "resample": 1
+    },
+    "leftLowerLegBoot": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 80,
+      "sourceRect": [
+        169,
+        1133,
+        80,
+        107
+      ],
+      "resample": 1
+    },
+    "rightUpperLeg": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 78,
+      "sourceRect": [
+        338,
+        1131,
+        60,
+        108
+      ],
+      "resample": 1
+    },
+    "rightLowerLegBoot": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 79,
+      "sourceRect": [
+        468,
+        1131,
+        83,
+        111
+      ],
+      "resample": 1
+    },
+    "leftWing": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 76,
+      "sourceRect": [
+        617,
+        1128,
+        150,
+        111
+      ],
+      "resample": 1
+    },
+    "rightWing": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 77,
+      "sourceRect": [
+        824,
+        1130,
+        156,
+        110
+      ],
+      "resample": 1
+    },
+    "tailBase": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 82,
+      "sourceRect": [
+        1000,
+        1137,
+        92,
+        92
+      ],
+      "resample": 1
+    },
+    "tailTip": {
+      "file": "exec-fe888fb7-95ff-4f89-bfd8-a22d6595aeb1.png",
+      "sha256": "dc6fe5e5b88d23ab9f2598d6c191a3974799ea092534e10746033d3fff5b2257",
+      "component": 83,
+      "sourceRect": [
+        1153,
+        1141,
+        82,
+        97
+      ],
+      "resample": 1
+    }
+  }
+}

@@ -1,0 +1,786 @@
+{
+  "down": {
+    "head": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 1,
+      "sourceRect": [
+        25,
+        21,
+        143,
+        139
+      ],
+      "resample": 1
+    },
+    "backHair": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 2,
+      "sourceRect": [
+        182,
+        24,
+        139,
+        126
+      ],
+      "resample": 1
+    },
+    "bodiceTorso": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 3,
+      "sourceRect": [
+        340,
+        31,
+        137,
+        130
+      ],
+      "resample": 1
+    },
+    "pelvisFrontSkirt": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 10,
+      "sourceRect": [
+        500,
+        42,
+        99,
+        118
+      ],
+      "resample": 1
+    },
+    "leftUpperArm": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 5,
+      "sourceRect": [
+        631,
+        38,
+        69,
+        116
+      ],
+      "resample": 1
+    },
+    "leftForearmHand": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 7,
+      "sourceRect": [
+        729,
+        39,
+        77,
+        116
+      ],
+      "resample": 1
+    },
+    "rightUpperArm": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 8,
+      "sourceRect": [
+        857,
+        39,
+        65,
+        114
+      ],
+      "resample": 1
+    },
+    "rightForearmHand": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 9,
+      "sourceRect": [
+        940,
+        39,
+        77,
+        123
+      ],
+      "resample": 1
+    },
+    "leftUpperLeg": {
+      "file": "exec-337a4c2b-a4c5-4c82-b493-b58144fb31b6.png",
+      "sha256": "4612d5a92ab5e9cc01140f2d32f973dfde503290305b5d807aeb58f02b8215f7",
+      "component": 3,
+      "sourceRect": [
+        162,
+        112,
+        120,
+        229
+      ],
+      "resample": 1,
+      "repair": "New painted cloth-covered knee overlaps, no skin/ankle/shoe on thigh."
+    },
+    "leftLowerLegBoot": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 12,
+      "sourceRect": [
+        223,
+        177,
+        81,
+        129
+      ],
+      "resample": 1
+    },
+    "rightUpperLeg": {
+      "file": "exec-337a4c2b-a4c5-4c82-b493-b58144fb31b6.png",
+      "sha256": "4612d5a92ab5e9cc01140f2d32f973dfde503290305b5d807aeb58f02b8215f7",
+      "component": 4,
+      "sourceRect": [
+        609,
+        113,
+        121,
+        228
+      ],
+      "resample": 1,
+      "repair": "New painted cloth-covered knee overlaps, no skin/ankle/shoe on thigh."
+    },
+    "rightLowerLegBoot": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 14,
+      "sourceRect": [
+        499,
+        177,
+        84,
+        133
+      ],
+      "resample": 1
+    },
+    "leftHemPanel": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 18,
+      "sourceRect": [
+        659,
+        195,
+        92,
+        107
+      ],
+      "resample": 1
+    },
+    "rightHemPanel": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 16,
+      "sourceRect": [
+        823,
+        194,
+        94,
+        108
+      ],
+      "resample": 1
+    },
+    "leftFrontHair": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 15,
+      "sourceRect": [
+        974,
+        193,
+        82,
+        106
+      ],
+      "resample": 1
+    },
+    "rightFrontHair": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 17,
+      "sourceRect": [
+        1123,
+        194,
+        79,
+        104
+      ],
+      "resample": 1
+    }
+  },
+  "right": {
+    "head": {
+      "file": "exec-b5547beb-218a-4835-bd8d-cff66aef753c.png",
+      "sha256": "47ccbf4bd144704523f474fd882615f89fa064ea8a467658902a47af57f443b3",
+      "component": 1,
+      "sourceRect": [
+        23,
+        10,
+        323,
+        282
+      ],
+      "resample": 0.7430340557275542
+    },
+    "backHair": {
+      "file": "exec-b5547beb-218a-4835-bd8d-cff66aef753c.png",
+      "sha256": "47ccbf4bd144704523f474fd882615f89fa064ea8a467658902a47af57f443b3",
+      "component": 2,
+      "sourceRect": [
+        364,
+        18,
+        274,
+        272
+      ],
+      "resample": 0.8759124087591241
+    },
+    "bodiceTorso": {
+      "file": "exec-b5547beb-218a-4835-bd8d-cff66aef753c.png",
+      "sha256": "47ccbf4bd144704523f474fd882615f89fa064ea8a467658902a47af57f443b3",
+      "component": 3,
+      "sourceRect": [
+        740,
+        24,
+        216,
+        283
+      ],
+      "resample": 0.8480565371024735
+    },
+    "pelvisFrontSkirt": {
+      "file": "exec-b5547beb-218a-4835-bd8d-cff66aef753c.png",
+      "sha256": "47ccbf4bd144704523f474fd882615f89fa064ea8a467658902a47af57f443b3",
+      "component": 4,
+      "sourceRect": [
+        1069,
+        97,
+        191,
+        203
+      ],
+      "resample": 1
+    },
+    "leftUpperArm": {
+      "file": "exec-b5547beb-218a-4835-bd8d-cff66aef753c.png",
+      "sha256": "47ccbf4bd144704523f474fd882615f89fa064ea8a467658902a47af57f443b3",
+      "component": 5,
+      "sourceRect": [
+        100,
+        351,
+        139,
+        222
+      ],
+      "resample": 1
+    },
+    "leftForearmHand": {
+      "file": "exec-b5547beb-218a-4835-bd8d-cff66aef753c.png",
+      "sha256": "47ccbf4bd144704523f474fd882615f89fa064ea8a467658902a47af57f443b3",
+      "component": 8,
+      "sourceRect": [
+        461,
+        363,
+        120,
+        229
+      ],
+      "resample": 1
+    },
+    "rightUpperArm": {
+      "file": "exec-b5547beb-218a-4835-bd8d-cff66aef753c.png",
+      "sha256": "47ccbf4bd144704523f474fd882615f89fa064ea8a467658902a47af57f443b3",
+      "component": 7,
+      "sourceRect": [
+        765,
+        353,
+        149,
+        228
+      ],
+      "resample": 1
+    },
+    "rightForearmHand": {
+      "file": "exec-b5547beb-218a-4835-bd8d-cff66aef753c.png",
+      "sha256": "47ccbf4bd144704523f474fd882615f89fa064ea8a467658902a47af57f443b3",
+      "component": 6,
+      "sourceRect": [
+        1096,
+        351,
+        131,
+        241
+      ],
+      "resample": 0.995850622406639
+    },
+    "leftUpperLeg": {
+      "file": "exec-337a4c2b-a4c5-4c82-b493-b58144fb31b6.png",
+      "sha256": "4612d5a92ab5e9cc01140f2d32f973dfde503290305b5d807aeb58f02b8215f7",
+      "component": 2,
+      "sourceRect": [
+        986,
+        16,
+        268,
+        413
+      ],
+      "resample": 0.5811138014527845,
+      "repair": "New painted cloth-covered knee overlaps, no skin/ankle/shoe on thigh."
+    },
+    "leftLowerLegBoot": {
+      "file": "exec-b5547beb-218a-4835-bd8d-cff66aef753c.png",
+      "sha256": "47ccbf4bd144704523f474fd882615f89fa064ea8a467658902a47af57f443b3",
+      "component": 11,
+      "sourceRect": [
+        445,
+        629,
+        180,
+        259
+      ],
+      "resample": 0.9266409266409267
+    },
+    "rightUpperLeg": {
+      "file": "exec-337a4c2b-a4c5-4c82-b493-b58144fb31b6.png",
+      "sha256": "4612d5a92ab5e9cc01140f2d32f973dfde503290305b5d807aeb58f02b8215f7",
+      "component": 1,
+      "sourceRect": [
+        1437,
+        14,
+        267,
+        416
+      ],
+      "resample": 0.5769230769230769,
+      "repair": "New painted cloth-covered knee overlaps, no skin/ankle/shoe on thigh."
+    },
+    "rightLowerLegBoot": {
+      "file": "exec-b5547beb-218a-4835-bd8d-cff66aef753c.png",
+      "sha256": "47ccbf4bd144704523f474fd882615f89fa064ea8a467658902a47af57f443b3",
+      "component": 12,
+      "sourceRect": [
+        1076,
+        632,
+        171,
+        253
+      ],
+      "resample": 0.9486166007905138
+    },
+    "leftHemPanel": {
+      "file": "exec-b5547beb-218a-4835-bd8d-cff66aef753c.png",
+      "sha256": "47ccbf4bd144704523f474fd882615f89fa064ea8a467658902a47af57f443b3",
+      "component": 14,
+      "sourceRect": [
+        103,
+        931,
+        139,
+        221
+      ],
+      "resample": 1
+    },
+    "rightHemPanel": {
+      "file": "exec-b5547beb-218a-4835-bd8d-cff66aef753c.png",
+      "sha256": "47ccbf4bd144704523f474fd882615f89fa064ea8a467658902a47af57f443b3",
+      "component": 13,
+      "sourceRect": [
+        448,
+        928,
+        139,
+        222
+      ],
+      "resample": 1
+    },
+    "leftFrontHair": {
+      "file": "exec-b5547beb-218a-4835-bd8d-cff66aef753c.png",
+      "sha256": "47ccbf4bd144704523f474fd882615f89fa064ea8a467658902a47af57f443b3",
+      "component": 15,
+      "sourceRect": [
+        833,
+        943,
+        86,
+        171
+      ],
+      "resample": 1
+    },
+    "rightFrontHair": {
+      "file": "exec-b5547beb-218a-4835-bd8d-cff66aef753c.png",
+      "sha256": "47ccbf4bd144704523f474fd882615f89fa064ea8a467658902a47af57f443b3",
+      "component": 16,
+      "sourceRect": [
+        1077,
+        951,
+        113,
+        191
+      ],
+      "resample": 1
+    }
+  },
+  "up": {
+    "head": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 43,
+      "sourceRect": [
+        26,
+        625,
+        146,
+        125
+      ],
+      "resample": 1
+    },
+    "backHair": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 44,
+      "sourceRect": [
+        184,
+        631,
+        146,
+        125
+      ],
+      "resample": 1
+    },
+    "bodiceTorso": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 45,
+      "sourceRect": [
+        349,
+        634,
+        151,
+        138
+      ],
+      "resample": 1
+    },
+    "pelvisFrontSkirt": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 49,
+      "sourceRect": [
+        520,
+        640,
+        101,
+        125
+      ],
+      "resample": 1
+    },
+    "leftUpperArm": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 50,
+      "sourceRect": [
+        658,
+        640,
+        63,
+        112
+      ],
+      "resample": 1
+    },
+    "leftForearmHand": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 51,
+      "sourceRect": [
+        757,
+        640,
+        55,
+        120
+      ],
+      "resample": 1
+    },
+    "rightUpperArm": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 52,
+      "sourceRect": [
+        853,
+        640,
+        63,
+        113
+      ],
+      "resample": 1
+    },
+    "rightForearmHand": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 48,
+      "sourceRect": [
+        950,
+        639,
+        56,
+        124
+      ],
+      "resample": 1
+    },
+    "leftUpperLeg": {
+      "file": "exec-337a4c2b-a4c5-4c82-b493-b58144fb31b6.png",
+      "sha256": "4612d5a92ab5e9cc01140f2d32f973dfde503290305b5d807aeb58f02b8215f7",
+      "component": 6,
+      "sourceRect": [
+        164,
+        559,
+        124,
+        220
+      ],
+      "resample": 1,
+      "repair": "New painted cloth-covered knee overlaps, no skin/ankle/shoe on thigh."
+    },
+    "leftLowerLegBoot": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 55,
+      "sourceRect": [
+        222,
+        774,
+        87,
+        130
+      ],
+      "resample": 1
+    },
+    "rightUpperLeg": {
+      "file": "exec-337a4c2b-a4c5-4c82-b493-b58144fb31b6.png",
+      "sha256": "4612d5a92ab5e9cc01140f2d32f973dfde503290305b5d807aeb58f02b8215f7",
+      "component": 7,
+      "sourceRect": [
+        608,
+        560,
+        127,
+        218
+      ],
+      "resample": 1,
+      "repair": "New painted cloth-covered knee overlaps, no skin/ankle/shoe on thigh."
+    },
+    "rightLowerLegBoot": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 57,
+      "sourceRect": [
+        523,
+        775,
+        78,
+        131
+      ],
+      "resample": 1
+    },
+    "leftHemPanel": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 58,
+      "sourceRect": [
+        669,
+        791,
+        99,
+        108
+      ],
+      "resample": 1
+    },
+    "rightHemPanel": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 59,
+      "sourceRect": [
+        832,
+        791,
+        100,
+        106
+      ],
+      "resample": 1
+    },
+    "leftFrontHair": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 60,
+      "sourceRect": [
+        970,
+        794,
+        71,
+        100
+      ],
+      "resample": 1
+    },
+    "rightFrontHair": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 61,
+      "sourceRect": [
+        1139,
+        794,
+        66,
+        100
+      ],
+      "resample": 1
+    }
+  },
+  "left": {
+    "head": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 63,
+      "sourceRect": [
+        28,
+        920,
+        156,
+        145
+      ],
+      "resample": 1
+    },
+    "backHair": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 65,
+      "sourceRect": [
+        194,
+        926,
+        147,
+        125
+      ],
+      "resample": 1
+    },
+    "bodiceTorso": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 64,
+      "sourceRect": [
+        354,
+        925,
+        111,
+        143
+      ],
+      "resample": 1
+    },
+    "pelvisFrontSkirt": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 66,
+      "sourceRect": [
+        511,
+        927,
+        96,
+        138
+      ],
+      "resample": 1
+    },
+    "leftUpperArm": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 67,
+      "sourceRect": [
+        655,
+        938,
+        71,
+        119
+      ],
+      "resample": 1
+    },
+    "leftForearmHand": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 70,
+      "sourceRect": [
+        763,
+        941,
+        67,
+        121
+      ],
+      "resample": 1
+    },
+    "rightUpperArm": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 68,
+      "sourceRect": [
+        849,
+        939,
+        66,
+        119
+      ],
+      "resample": 1
+    },
+    "rightForearmHand": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 69,
+      "sourceRect": [
+        945,
+        940,
+        75,
+        125
+      ],
+      "resample": 1
+    },
+    "leftUpperLeg": {
+      "file": "exec-337a4c2b-a4c5-4c82-b493-b58144fb31b6.png",
+      "sha256": "4612d5a92ab5e9cc01140f2d32f973dfde503290305b5d807aeb58f02b8215f7",
+      "component": 5,
+      "sourceRect": [
+        1057,
+        554,
+        127,
+        235
+      ],
+      "resample": 1,
+      "repair": "New painted cloth-covered knee overlaps, no skin/ankle/shoe on thigh."
+    },
+    "leftLowerLegBoot": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 80,
+      "sourceRect": [
+        211,
+        1082,
+        83,
+        129
+      ],
+      "resample": 1
+    },
+    "rightUpperLeg": {
+      "file": "exec-337a4c2b-a4c5-4c82-b493-b58144fb31b6.png",
+      "sha256": "4612d5a92ab5e9cc01140f2d32f973dfde503290305b5d807aeb58f02b8215f7",
+      "component": 8,
+      "sourceRect": [
+        1505,
+        561,
+        129,
+        224
+      ],
+      "resample": 1,
+      "repair": "New painted cloth-covered knee overlaps, no skin/ankle/shoe on thigh."
+    },
+    "rightLowerLegBoot": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 76,
+      "sourceRect": [
+        526,
+        1077,
+        68,
+        132
+      ],
+      "resample": 1
+    },
+    "leftHemPanel": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 82,
+      "sourceRect": [
+        664,
+        1102,
+        99,
+        98
+      ],
+      "resample": 1
+    },
+    "rightHemPanel": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 81,
+      "sourceRect": [
+        835,
+        1098,
+        100,
+        101
+      ],
+      "resample": 1
+    },
+    "leftFrontHair": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 78,
+      "sourceRect": [
+        983,
+        1081,
+        68,
+        111
+      ],
+      "resample": 1
+    },
+    "rightFrontHair": {
+      "file": "exec-1889d0b9-3ffe-4500-9249-12bba3283e71.png",
+      "sha256": "3028a0320758c9ec8efa921970e62bbee9fdac60fac30794a72db891b78b101d",
+      "component": 79,
+      "sourceRect": [
+        1144,
+        1081,
+        66,
+        109
+      ],
+      "resample": 1
+    }
+  }
+}

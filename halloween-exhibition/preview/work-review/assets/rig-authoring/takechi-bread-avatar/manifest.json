@@ -1,0 +1,453 @@
+{
+  "version": 1,
+  "id": "takechi-bread-avatar-authored-rig-v1",
+  "label": "たけち",
+  "archetype": "bread",
+  "atlas": "main",
+  "atlases": {
+    "main": "./main.webp"
+  },
+  "width": 1280,
+  "height": 1280,
+  "contentHeight": 159,
+  "output": {
+    "width": 320,
+    "height": 320,
+    "anchorX": 0.5,
+    "anchorY": 0.94,
+    "scale": 1
+  },
+  "directions": [
+    "down",
+    "right",
+    "up",
+    "left"
+  ],
+  "views": {
+    "down": {
+      "heading": 0,
+      "atlas": "main",
+      "parts": {
+        "body": {
+          "rect": [
+            37,
+            42,
+            246,
+            235
+          ],
+          "pivot": [
+            123,
+            117.5
+          ],
+          "contentHeight": 235,
+          "sourceRect": [
+            29,
+            77,
+            246,
+            235
+          ],
+          "sourceKey": "body_down",
+          "independentlyAuthored": true
+        },
+        "appendageBase": {
+          "rect": [
+            78,
+            431,
+            163,
+            98
+          ],
+          "pivot": [
+            18,
+            49
+          ],
+          "contentHeight": 98,
+          "sourceRect": [
+            85,
+            456,
+            163,
+            98
+          ],
+          "sourceKey": "appendageBase_down",
+          "independentlyAuthored": true,
+          "end": [
+            140,
+            50
+          ],
+          "span": 122.0041
+        },
+        "appendageTip": {
+          "rect": [
+            73,
+            742,
+            173,
+            115
+          ],
+          "pivot": [
+            20,
+            61
+          ],
+          "contentHeight": 115,
+          "sourceRect": [
+            86,
+            720,
+            173,
+            115
+          ],
+          "sourceKey": "appendageTip_down",
+          "independentlyAuthored": true,
+          "end": [
+            143,
+            55
+          ],
+          "span": 123.14625
+        }
+      },
+      "rig": {
+        "appendageRoot": [
+          54,
+          -72
+        ],
+        "appendageAngle": 0
+      }
+    },
+    "right": {
+      "heading": 1.5707963267948966,
+      "atlas": "main",
+      "parts": {
+        "body": {
+          "rect": [
+            367,
+            45,
+            225,
+            230
+          ],
+          "pivot": [
+            112.5,
+            115
+          ],
+          "contentHeight": 230,
+          "sourceRect": [
+            359,
+            81,
+            225,
+            230
+          ],
+          "sourceKey": "body_right",
+          "independentlyAuthored": true
+        },
+        "appendageBase": {
+          "rect": [
+            409,
+            440,
+            142,
+            80
+          ],
+          "pivot": [
+            15,
+            40
+          ],
+          "contentHeight": 80,
+          "sourceRect": [
+            406,
+            465,
+            142,
+            80
+          ],
+          "sourceKey": "appendageBase_right",
+          "independentlyAuthored": true,
+          "end": [
+            123,
+            44
+          ],
+          "span": 108.07405
+        },
+        "appendageTip": {
+          "rect": [
+            390,
+            743,
+            179,
+            114
+          ],
+          "pivot": [
+            21,
+            66
+          ],
+          "contentHeight": 114,
+          "sourceRect": [
+            398,
+            716,
+            179,
+            114
+          ],
+          "sourceKey": "appendageTip_right",
+          "independentlyAuthored": true,
+          "end": [
+            150,
+            53
+          ],
+          "span": 129.65338
+        }
+      },
+      "rig": {
+        "appendageRoot": [
+          54,
+          -72
+        ],
+        "appendageAngle": 0
+      }
+    },
+    "up": {
+      "heading": 3.141592653589793,
+      "atlas": "main",
+      "parts": {
+        "body": {
+          "rect": [
+            675,
+            42,
+            250,
+            235
+          ],
+          "pivot": [
+            125,
+            117.5
+          ],
+          "contentHeight": 235,
+          "sourceRect": [
+            658,
+            77,
+            250,
+            235
+          ],
+          "sourceKey": "body_up",
+          "independentlyAuthored": true
+        },
+        "appendageBase": {
+          "rect": [
+            723,
+            438,
+            153,
+            84
+          ],
+          "pivot": [
+            135,
+            42
+          ],
+          "contentHeight": 84,
+          "sourceRect": [
+            708,
+            464,
+            153,
+            84
+          ],
+          "sourceKey": "appendageBase_up",
+          "independentlyAuthored": true,
+          "end": [
+            18,
+            42
+          ],
+          "span": 117
+        },
+        "appendageTip": {
+          "rect": [
+            713,
+            743,
+            174,
+            114
+          ],
+          "pivot": [
+            154,
+            58
+          ],
+          "contentHeight": 114,
+          "sourceRect": [
+            698,
+            720,
+            174,
+            114
+          ],
+          "sourceKey": "appendageTip_up",
+          "independentlyAuthored": true,
+          "end": [
+            25,
+            56
+          ],
+          "span": 129.0155
+        }
+      },
+      "rig": {
+        "appendageRoot": [
+          54,
+          -72
+        ],
+        "appendageAngle": 0
+      }
+    },
+    "left": {
+      "heading": -1.5707963267948966,
+      "atlas": "main",
+      "parts": {
+        "body": {
+          "rect": [
+            1012,
+            44,
+            216,
+            231
+          ],
+          "pivot": [
+            108,
+            115.5
+          ],
+          "contentHeight": 231,
+          "sourceRect": [
+            1008,
+            79,
+            216,
+            231
+          ],
+          "sourceKey": "body_left",
+          "independentlyAuthored": true
+        },
+        "appendageBase": {
+          "rect": [
+            1048,
+            439,
+            143,
+            81
+          ],
+          "pivot": [
+            126,
+            42
+          ],
+          "contentHeight": 81,
+          "sourceRect": [
+            1035,
+            466,
+            143,
+            81
+          ],
+          "sourceKey": "appendageBase_left",
+          "independentlyAuthored": true,
+          "end": [
+            17,
+            43
+          ],
+          "span": 109.00459
+        },
+        "appendageTip": {
+          "rect": [
+            1036,
+            747,
+            168,
+            106
+          ],
+          "pivot": [
+            146,
+            55
+          ],
+          "contentHeight": 106,
+          "sourceRect": [
+            1014,
+            731,
+            168,
+            106
+          ],
+          "sourceKey": "appendageTip_left",
+          "independentlyAuthored": true,
+          "end": [
+            22,
+            52
+          ],
+          "span": 124.03629
+        }
+      },
+      "rig": {
+        "appendageRoot": [
+          -54,
+          -72
+        ],
+        "appendageAngle": 3.141592653589793
+      }
+    }
+  },
+  "rig": {
+    "bodyHeight": 160,
+    "bodyCenter": [
+      0,
+      -80
+    ],
+    "appendageRoot": [
+      57,
+      -72
+    ],
+    "appendageBase": 22,
+    "appendageTip": 43,
+    "appendageAngle": 0,
+    "appendageBend": 0
+  },
+  "continuousTurnComplete": false,
+  "attackArtComplete": false,
+  "artworkComplete": false,
+  "authoredPartCount": 12,
+  "review": {
+    "passed": true,
+    "status": "native35-60-shape-and-motion-reviewed",
+    "scope": "four-cardinal-new-parts-fixed-shape-physical-motion",
+    "reviewer": "town-webgl-independent-source-and-native-review",
+    "continuousTurnComplete": false,
+    "attackArtComplete": false,
+    "checks": [
+      "Exact approved mascot identity compared at actual35/60px",
+      "No full-body squash/bob or added limbs",
+      "Fixed body origin, shape and scale over180 frames",
+      "Contact world drift0 after initial projection",
+      "Pause and reduced-motion clock freeze",
+      "Bread exactly one two-link appendage; flower exactly two tiny feet with original book/die"
+    ]
+  },
+  "provenance": {
+    "method": "built-in-imagegen",
+    "sourceReference": "adopted-reference.png",
+    "sourceReferenceSha256": "e7292753dbc8e5c0e8b63335f0e344127ca3315f2ec3503a0f2880b0242b8ac7",
+    "sourceRaw": "parts-front-v1-original.png",
+    "sourceRawSha256": "010b8b2d82b6fd79b57aa9b94c029fc0a13cc60eee07c20f2209925469859aaf",
+    "sourceRawSize": [
+      1254,
+      1254
+    ],
+    "sourceWholeBodySlicing": false,
+    "packing": "Core alpha>230 connected-component ownership; original RGBA retained with 3px antialias margin. No resizing, redrawing, morphing or reference whole-body slicing.",
+    "sharedLimbParts": false,
+    "correctedSources": [],
+    "limitations": [
+      "Four cardinal body/head or mascot views only; no independently painted intermediate turn surfaces.",
+      "Species-specific mascot rig required; human arms/legs are not substituted."
+    ]
+  },
+  "referenceComposedBounds": {
+    "down": {
+      "x": 217,
+      "y": 241,
+      "w": 212,
+      "h": 158
+    },
+    "right": {
+      "x": 222,
+      "y": 241,
+      "w": 206,
+      "h": 158
+    },
+    "up": {
+      "x": 216,
+      "y": 241,
+      "w": 211,
+      "h": 158
+    },
+    "left": {
+      "x": 174,
+      "y": 240,
+      "w": 200,
+      "h": 159
+    }
+  },
+  "animationReviewed": true
+}

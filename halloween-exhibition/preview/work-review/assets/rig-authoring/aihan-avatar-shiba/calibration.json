@@ -1,0 +1,183 @@
+{
+  "archetype": "quadruped",
+  "label": "あいはん 柴犬",
+  "rig": {
+    "upperLeg": 23,
+    "lowerLeg": 21,
+    "hipHeight": 34,
+    "bodyHeight": 68,
+    "neckHeight": 1,
+    "headHeight": 74,
+    "earsHeight": 1,
+    "pawHeight": 12,
+    "bodyHalfLength": 0.58,
+    "footSpacing": 0.17,
+    "tailBase": 28,
+    "tailTip": 26,
+    "collarHeight": 1
+  },
+  "parts": {
+    "body_down": {
+      "pivot": [
+        124.0,
+        -21.6
+      ]
+    },
+    "head_down": {
+      "pivot": [
+        129.5,
+        330.0
+      ]
+    },
+    "fore_lower": {
+      "pivot": [
+        66.5,
+        24.84
+      ],
+      "end": [
+        66.5,
+        272
+      ]
+    },
+    "fore_paw": {
+      "pivot": [
+        69.0,
+        160
+      ]
+    },
+    "hind_lower": {
+      "pivot": [
+        66.5,
+        22.95
+      ],
+      "end": [
+        66.5,
+        251
+      ]
+    },
+    "hind_paw": {
+      "pivot": [
+        72.5,
+        167
+      ]
+    },
+    "body_right": {
+      "pivot": [
+        136.5,
+        39.96
+      ]
+    },
+    "head_right": {
+      "pivot": [
+        116.33999999999999,
+        264
+      ]
+    },
+    "body_up": {
+      "pivot": [
+        114.0,
+        -22.0
+      ]
+    },
+    "head_up": {
+      "pivot": [
+        125.0,
+        121.5
+      ]
+    },
+    "body_left": {
+      "pivot": [
+        135.5,
+        41.04
+      ]
+    },
+    "head_left": {
+      "pivot": [
+        160.66,
+        264
+      ]
+    },
+    "tail_base": {
+      "pivot": [
+        220,
+        100
+      ],
+      "end": [
+        75,
+        225
+      ]
+    },
+    "tail_tip": {
+      "pivot": [
+        60,
+        225
+      ],
+      "end": [
+        65,
+        100
+      ]
+    }
+  },
+  "viewCalibration": {
+    "down": {
+      "rig": {
+        "tailRootOffset": [
+          -44,
+          36
+        ],
+        "tailAngle": -1.5707963267948966,
+        "tailTipLayer": "back"
+      }
+    },
+    "right": {
+      "rig": {
+        "tailRootOffset": [
+          0,
+          -15
+        ],
+        "tailAngle": -2.0106192982974678,
+        "tailTipLayer": "back"
+      }
+    },
+    "up": {
+      "rig": {
+        "tailRootOffset": [
+          0,
+          15
+        ],
+        "tailAngle": -1.5707963267948966,
+        "tailTipLayer": "front"
+      }
+    },
+    "left": {
+      "rig": {
+        "tailRootOffset": [
+          0,
+          -15
+        ],
+        "tailAngle": -1.1309733552923256,
+        "tailTipLayer": "back"
+      }
+    }
+  },
+  "contentHeight": 160,
+  "calibrationStatus": "Measured actual body/head orientation, compact four-legged proportions, sole contacts, true tail cap/inner-curl endpoints and rear-tail occlusion. Native runtime35/60 + 3D stance/bone verification complete; final parent visual review pending.",
+  "slotKeys": [
+    "body_down",
+    "body_right",
+    "body_up",
+    "body_left",
+    "head_down",
+    "head_left",
+    "head_up",
+    "head_right",
+    "fore_upper",
+    "fore_lower",
+    "fore_paw",
+    "hind_upper",
+    "hind_lower",
+    "hind_paw",
+    "tail_base",
+    "tail_tip"
+  ]
+}

@@ -1,0 +1,582 @@
+{
+  "version": 1,
+  "id": "town-innkeeper-authored-rig-v1",
+  "label": "宿屋 アンネ",
+  "archetype": "biped",
+  "atlas": "main",
+  "atlases": {
+    "main": "./main.webp"
+  },
+  "width": 1536,
+  "height": 1536,
+  "contentHeight": 253,
+  "output": {
+    "width": 256,
+    "height": 320,
+    "anchorX": 0.5,
+    "anchorY": 0.94,
+    "scale": 1
+  },
+  "directions": [
+    "down-threequarter"
+  ],
+  "views": {
+    "down-threequarter": {
+      "heading": 0,
+      "atlas": "main",
+      "parts": {
+        "head": {
+          "rect": [
+            48,
+            66,
+            288,
+            251
+          ],
+          "pivot": [
+            144,
+            240.96
+          ],
+          "contentHeight": 251,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            16,
+            41,
+            288,
+            251
+          ]
+        },
+        "backHair": {
+          "rect": [
+            443,
+            74,
+            266,
+            235
+          ],
+          "pivot": [
+            133,
+            225.6
+          ],
+          "contentHeight": 235,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            344,
+            43,
+            266,
+            235
+          ]
+        },
+        "bodiceTorso": {
+          "rect": [
+            845,
+            69,
+            229,
+            245
+          ],
+          "pivot": [
+            114.5,
+            14.7
+          ],
+          "contentHeight": 245,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            679,
+            54,
+            229,
+            245
+          ]
+        },
+        "pelvisFrontSkirt": {
+          "rect": [
+            1185,
+            42,
+            318,
+            300
+          ],
+          "pivot": [
+            159,
+            18
+          ],
+          "contentHeight": 300,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            922,
+            30,
+            318,
+            300
+          ]
+        },
+        "leftUpperArm": {
+          "rect": [
+            80,
+            458,
+            224,
+            236
+          ],
+          "pivot": [
+            180.559,
+            41.592
+          ],
+          "contentHeight": 236,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            59,
+            342,
+            224,
+            236
+          ],
+          "end": [
+            67.214,
+            189.834
+          ],
+          "span": 186.6083
+        },
+        "leftForearmHand": {
+          "rect": [
+            452,
+            490,
+            248,
+            172
+          ],
+          "pivot": [
+            37.61,
+            55.735
+          ],
+          "contentHeight": 172,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            362,
+            400,
+            248,
+            172
+          ],
+          "end": [
+            202.005,
+            139.721
+          ],
+          "span": 184.6057
+        },
+        "rightUpperArm": {
+          "rect": [
+            854,
+            459,
+            211,
+            234
+          ],
+          "pivot": [
+            48.422,
+            35.064
+          ],
+          "contentHeight": 234,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            673,
+            343,
+            211,
+            234
+          ],
+          "end": [
+            140.309,
+            183.756
+          ],
+          "span": 174.7924
+        },
+        "rightForearmHand": {
+          "rect": [
+            1219,
+            487,
+            250,
+            178
+          ],
+          "pivot": [
+            37.03,
+            56.949
+          ],
+          "contentHeight": 178,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            956,
+            379,
+            250,
+            178
+          ],
+          "end": [
+            199.327,
+            150.574
+          ],
+          "span": 187.3658
+        },
+        "leftUpperLeg": {
+          "rect": [
+            101,
+            830,
+            182,
+            259
+          ],
+          "pivot": [
+            91,
+            12.95
+          ],
+          "contentHeight": 259,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            84,
+            622,
+            182,
+            259
+          ],
+          "end": [
+            91,
+            246.05
+          ],
+          "span": 233.1
+        },
+        "leftLowerLegBoot": {
+          "rect": [
+            505,
+            818,
+            141,
+            284
+          ],
+          "pivot": [
+            69,
+            24.3
+          ],
+          "contentHeight": 284,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            393,
+            614,
+            141,
+            284
+          ],
+          "end": [
+            69,
+            280
+          ],
+          "span": 255.7
+        },
+        "rightUpperLeg": {
+          "rect": [
+            868,
+            833,
+            184,
+            253
+          ],
+          "pivot": [
+            92,
+            12.65
+          ],
+          "contentHeight": 253,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            675,
+            622,
+            184,
+            253
+          ],
+          "end": [
+            92,
+            240.35
+          ],
+          "span": 227.7
+        },
+        "rightLowerLegBoot": {
+          "rect": [
+            1268,
+            816,
+            152,
+            287
+          ],
+          "pivot": [
+            70,
+            24.525
+          ],
+          "contentHeight": 287,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            1030,
+            612,
+            152,
+            287
+          ],
+          "end": [
+            70,
+            283
+          ],
+          "span": 258.475
+        },
+        "lantern": {
+          "visible": false,
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "pivot": [
+            0,
+            0
+          ],
+          "contentHeight": 1,
+          "optionalEmpty": true
+        },
+        "backSkirtTails": {
+          "rect": [
+            416,
+            1193,
+            320,
+            301
+          ],
+          "pivot": [
+            160,
+            24.08
+          ],
+          "contentHeight": 301,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            319,
+            921,
+            320,
+            301
+          ]
+        },
+        "leftFrontHair": {
+          "visible": false,
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "pivot": [
+            0,
+            0
+          ],
+          "contentHeight": 1,
+          "optionalEmpty": true
+        },
+        "rightFrontHair": {
+          "visible": false,
+          "rect": [
+            0,
+            0,
+            1,
+            1
+          ],
+          "pivot": [
+            0,
+            0
+          ],
+          "contentHeight": 1,
+          "optionalEmpty": true
+        },
+        "heldProp": {
+          "rect": [
+            44,
+            1284,
+            295,
+            120
+          ],
+          "pivot": [
+            147.5,
+            104.4
+          ],
+          "contentHeight": 120,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            14,
+            1009,
+            295,
+            120
+          ]
+        }
+      },
+      "screenSides": {
+        "left": 1,
+        "right": -1
+      },
+      "legSides": {
+        "left": 1,
+        "right": -1
+      },
+      "rig": {
+        "upperArm": 42,
+        "forearm": 45,
+        "hipHalfWidth": 17,
+        "frontHairHeight": 1,
+        "lanternHeight": 1,
+        "waistOffset": 36,
+        "thigh": 41,
+        "shin": 36,
+        "hipHeight": 76,
+        "neckHeight": 106,
+        "shoulderHeight": 88,
+        "shoulderHalfWidth": 36,
+        "headHeight": 74,
+        "hairHeight": 73,
+        "torsoHeight": 105,
+        "skirtHeight": 96,
+        "tailsHeight": 96
+      },
+      "restHands": {
+        "left": [
+          45,
+          -36
+        ],
+        "right": [
+          9,
+          -28
+        ]
+      },
+      "appendages": [
+        {
+          "part": "heldProp",
+          "anchor": "leftWrist",
+          "offset": [
+            -8,
+            6
+          ],
+          "height": 54,
+          "layer": "front",
+          "amplitude": 0,
+          "frequency": 1
+        }
+      ],
+      "idleHands": {
+        "left": {
+          "amplitude": [
+            1.2,
+            2.8
+          ],
+          "frequency": 0.9,
+          "phase": 0
+        },
+        "right": {
+          "amplitude": [
+            1.2,
+            2.8
+          ],
+          "frequency": 0.9,
+          "phase": 0
+        }
+      }
+    }
+  },
+  "screenSides": {
+    "left": 1,
+    "right": -1
+  },
+  "legSides": {
+    "left": 1,
+    "right": -1
+  },
+  "anatomicalSides": {
+    "left": 1,
+    "right": -1
+  },
+  "restHands": {
+    "left": [
+      45,
+      -36
+    ],
+    "right": [
+      9,
+      -28
+    ]
+  },
+  "rig": {
+    "upperArm": 42,
+    "forearm": 45,
+    "hipHalfWidth": 17,
+    "frontHairHeight": 1,
+    "lanternHeight": 1,
+    "waistOffset": 36,
+    "thigh": 41,
+    "shin": 36,
+    "hipHeight": 76,
+    "neckHeight": 106,
+    "shoulderHeight": 88,
+    "shoulderHalfWidth": 36,
+    "headHeight": 74,
+    "hairHeight": 73,
+    "torsoHeight": 105,
+    "skirtHeight": 96,
+    "tailsHeight": 96
+  },
+  "idleHands": {
+    "left": {
+      "amplitude": [
+        1.2,
+        2.8
+      ],
+      "frequency": 0.9,
+      "phase": 0
+    },
+    "right": {
+      "amplitude": [
+        1.2,
+        2.8
+      ],
+      "frequency": 0.9,
+      "phase": 0
+    }
+  },
+  "activity": {
+    "kind": "balance-shared-tray-grip",
+    "stationaryBody": true,
+    "plantedFeet": true,
+    "runtimeHookRequired": "idleHands-before-arm-IK",
+    "runtimeHookStatus": "verified-active-in-clean-owner-rig",
+    "twoHandedGrip": true,
+    "notes": "Hand targets move before IK; held objects use measured wrist pivots. Two-hand book/tray movements share identical offsets and keep grip vector constant. No root/body sliding, scaling, squash or sprite crossfade."
+  },
+  "continuousTurnComplete": false,
+  "attackArtComplete": false,
+  "artworkComplete": false,
+  "stationaryQuestNpc": true,
+  "authoredPartCount": 14,
+  "review": {
+    "passed": false,
+    "status": "native76-proof-created-awaiting-visual-review"
+  },
+  "provenance": {
+    "method": "built-in-imagegen",
+    "sourceReference": "adopted-identity-reference.png",
+    "sourceReferenceSha256": "97c88263089aaa212275261f9831e3e15a41350e74fb943b06fd5efc334500ee",
+    "sourceWholeBodySlicing": false,
+    "newlyAuthoredHiddenSurfaces": true,
+    "packing": "NEW independently drawn slot components. Original RGBA retained within 3px of alpha>230 components; no scaling, reshaping, redrawing, or whole-body slicing.",
+    "sourceRaw": "parts-front-v1-original.png",
+    "sourceRawSha256": "150c9a91f5a8b3f6520e3ed3b39a1db6b68d41c63b3eb27fc6f2595b2a0cbdfd",
+    "sourceRawSize": [
+      1254,
+      1254
+    ],
+    "correctedSourceFiles": [
+      {
+        "file": "parts-front-torso-corrected.png",
+        "sha256": "22c92c65ecf0cb1907b04892e612f38645b99eb604092edd7cf5d18b2491b130",
+        "size": [
+          1254,
+          1254
+        ]
+      }
+    ],
+    "limitations": [
+      "One authored front three-quarter pose only.",
+      "No profile, back or intermediate turn drawings.",
+      "Native 76px anatomy/held-prop proof required before adoption."
+    ],
+    "generationPrompt": "parts-front-v1.prompt.txt",
+    "preservedOriginalPropCount": 1,
+    "stationaryFrontViewReason": "Story NPC keeps its original fixed station and front-facing identity. No side/back fallback is claimed."
+  },
+  "referenceComposedBounds": {
+    "x": 147,
+    "y": 137,
+    "w": 156,
+    "h": 253,
+    "pixels": 21764
+  },
+  "animationReviewed": true
+}

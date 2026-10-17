@@ -1,0 +1,30 @@
+{
+  "id": "tantan-streetwalker",
+  "method": "Real current rig runtime, native Canvas, actual64pxworldunit and76/86pxdisplaybodyheight. New independent parts; no browser/GPU/device/gameplay certification.",
+  "manifestSHA256": "2201432df2e1bc63a6c35f89b102efd4b5ac47c4b4ace43a97005571ea889893",
+  "runtimeSHA256": "60173e3c2e5580c524e42679f8eb88db61313e52c63c473f3b5d12165ff39a77",
+  "cardinalGaitFrames": 360,
+  "motionFrames": 692,
+  "maxFootReach": 1.4210854715202004e-14,
+  "unsupportedFrames": [],
+  "liveCanvasClippingFrames": [],
+  "maxStanceDrift": 0,
+  "cardinalIdleBounds": {
+    "down": {
+      "height": 72.98177083333334,
+      "width": 40.8203125
+    },
+    "right": {
+      "height": 75.86805555555556,
+      "width": 45.76822916666667
+    },
+    "up": {
+      "height": 72.98177083333334,
+      "width": 41.232638888888886
+    },
+    "left": {
+      "height": 75.04340277777779,
+      "width": 44.118923611111114
+    }
+  }
+}

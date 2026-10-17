@@ -1,0 +1,194 @@
+{
+  "archetype": "flower",
+  "label": "カモミール",
+  "largestComponentOnly": true,
+  "slotKeys": [
+    "body_down",
+    "body_right",
+    "body_up",
+    "body_left",
+    "face_down",
+    "face_left",
+    "face_up",
+    "face_right",
+    "petalRing_down",
+    "petalRing_right",
+    "petalRing_up",
+    "petalRing_left",
+    "leftFoot",
+    "rightFoot",
+    "book",
+    "die"
+  ],
+  "rig": {
+    "bodyHeight": 100,
+    "bodyCenter": [
+      0,
+      -60
+    ],
+    "headHeight": 108,
+    "petalHeight": 180,
+    "footHeight": 14,
+    "footSpacing": 19,
+    "legLength": 80,
+    "strideLength": 0.45,
+    "faceOffset": [
+      0,
+      -148
+    ],
+    "petalOffset": [
+      0,
+      -148
+    ],
+    "bookOffset": [
+      -45,
+      -62
+    ],
+    "dieOffset": [
+      45,
+      -62
+    ],
+    "bookHeight": 30,
+    "dieHeight": 25
+  },
+  "parts": {
+    "body_down": {
+      "pivot": [
+        117.0,
+        99.0
+      ]
+    },
+    "face_down": {
+      "pivot": [
+        113.5,
+        103.5
+      ]
+    },
+    "petalRing_down": {
+      "pivot": [
+        141.5,
+        148.5
+      ]
+    },
+    "body_right": {
+      "pivot": [
+        98.0,
+        99.0
+      ]
+    },
+    "face_right": {
+      "pivot": [
+        103.5,
+        104.5
+      ]
+    },
+    "petalRing_right": {
+      "pivot": [
+        108.0,
+        144.5
+      ]
+    },
+    "body_up": {
+      "pivot": [
+        117.0,
+        99.5
+      ]
+    },
+    "face_up": {
+      "pivot": [
+        113.5,
+        102.5
+      ]
+    },
+    "petalRing_up": {
+      "pivot": [
+        147.0,
+        148.5
+      ]
+    },
+    "body_left": {
+      "pivot": [
+        98.0,
+        100.0
+      ]
+    },
+    "face_left": {
+      "pivot": [
+        107.0,
+        105.5
+      ]
+    },
+    "petalRing_left": {
+      "pivot": [
+        108.5,
+        143.5
+      ]
+    }
+  },
+  "contentHeight": 240,
+  "calibrationStatus": "Source face/petal center measured independently; fixed flared body, two tiny painted feet on hidden support bones, exact book/die handedness. Body hem held 10 rig pixels above foot soles to expose original tiny feet.",
+  "viewCalibration": {
+    "down": {
+      "rig": {}
+    },
+    "right": {
+      "rig": {
+        "faceOffset": [
+          7,
+          -148
+        ],
+        "petalOffset": [
+          0,
+          -148
+        ],
+        "bookOffset": [
+          28,
+          -61
+        ],
+        "dieOffset": [
+          -25,
+          -61
+        ]
+      }
+    },
+    "up": {
+      "rig": {
+        "bookOffset": [
+          45,
+          -62
+        ],
+        "dieOffset": [
+          -45,
+          -62
+        ]
+      }
+    },
+    "left": {
+      "rig": {
+        "faceOffset": [
+          -7,
+          -148
+        ],
+        "petalOffset": [
+          0,
+          -148
+        ],
+        "bookOffset": [
+          -28,
+          -61
+        ],
+        "dieOffset": [
+          25,
+          -61
+        ]
+      }
+    }
+  },
+  "output": {
+    "width": 320,
+    "height": 320,
+    "anchorX": 0.5,
+    "anchorY": 0.94,
+    "scale": 1
+  }
+}

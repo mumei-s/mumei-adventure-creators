@@ -1,0 +1,172 @@
+{
+  "archetype": "bread",
+  "label": "たけち",
+  "rig": {
+    "bodyHeight": 160,
+    "bodyCenter": [
+      0,
+      -80
+    ],
+    "appendageRoot": [
+      57,
+      -72
+    ],
+    "appendageBase": 22,
+    "appendageTip": 43,
+    "appendageAngle": 0,
+    "appendageBend": 0
+  },
+  "parts": {
+    "body_down": {
+      "pivot": [
+        123.0,
+        117.5
+      ]
+    },
+    "body_right": {
+      "pivot": [
+        112.5,
+        115.0
+      ]
+    },
+    "body_up": {
+      "pivot": [
+        125.0,
+        117.5
+      ]
+    },
+    "body_left": {
+      "pivot": [
+        108.0,
+        115.5
+      ]
+    },
+    "appendageBase_down": {
+      "pivot": [
+        18,
+        49
+      ],
+      "end": [
+        140,
+        50
+      ]
+    },
+    "appendageBase_right": {
+      "pivot": [
+        15,
+        40
+      ],
+      "end": [
+        123,
+        44
+      ]
+    },
+    "appendageBase_up": {
+      "pivot": [
+        135,
+        42
+      ],
+      "end": [
+        18,
+        42
+      ]
+    },
+    "appendageBase_left": {
+      "pivot": [
+        126,
+        42
+      ],
+      "end": [
+        17,
+        43
+      ]
+    },
+    "appendageTip_down": {
+      "pivot": [
+        20,
+        61
+      ],
+      "end": [
+        143,
+        55
+      ]
+    },
+    "appendageTip_right": {
+      "pivot": [
+        21,
+        66
+      ],
+      "end": [
+        150,
+        53
+      ]
+    },
+    "appendageTip_up": {
+      "pivot": [
+        154,
+        58
+      ],
+      "end": [
+        25,
+        56
+      ]
+    },
+    "appendageTip_left": {
+      "pivot": [
+        146,
+        55
+      ],
+      "end": [
+        22,
+        52
+      ]
+    }
+  },
+  "contentHeight": 165,
+  "calibrationStatus": "New source socket/tip axes measured per actual authored view; fixed body center and one horizontal two-link appendage, no feet.",
+  "viewCalibration": {
+    "down": {
+      "rig": {
+        "appendageRoot": [
+          54,
+          -72
+        ],
+        "appendageAngle": 0
+      }
+    },
+    "right": {
+      "rig": {
+        "appendageRoot": [
+          54,
+          -72
+        ],
+        "appendageAngle": 0
+      }
+    },
+    "up": {
+      "rig": {
+        "appendageRoot": [
+          54,
+          -72
+        ],
+        "appendageAngle": 0
+      }
+    },
+    "left": {
+      "rig": {
+        "appendageRoot": [
+          -54,
+          -72
+        ],
+        "appendageAngle": 3.141592653589793
+      }
+    }
+  },
+  "output": {
+    "width": 320,
+    "height": 320,
+    "anchorX": 0.5,
+    "anchorY": 0.94,
+    "scale": 1
+  }
+}

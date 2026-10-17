@@ -1,0 +1,30 @@
+{
+  "id": "lokiron-avatar",
+  "method": "Real current rig runtime, native Canvas, actual64pxworldunit and76/86pxdisplaybodyheight. New independent parts; no browser/GPU/device/gameplay certification.",
+  "manifestSHA256": "5a345184b85f029e3912d5267c2d150911debbc526f7732576c9627d8291cbef",
+  "runtimeSHA256": "60173e3c2e5580c524e42679f8eb88db61313e52c63c473f3b5d12165ff39a77",
+  "cardinalGaitFrames": 360,
+  "motionFrames": 692,
+  "maxFootReach": 8.881784197001252e-15,
+  "unsupportedFrames": [],
+  "liveCanvasClippingFrames": [],
+  "maxStanceDrift": 0,
+  "cardinalIdleBounds": {
+    "down": {
+      "height": 74.21875,
+      "width": 42.05729166666667
+    },
+    "right": {
+      "height": 76.69270833333334,
+      "width": 43.70659722222222
+    },
+    "up": {
+      "height": 73.80642361111111,
+      "width": 41.232638888888886
+    },
+    "left": {
+      "height": 76.28038194444444,
+      "width": 43.70659722222222
+    }
+  }
+}

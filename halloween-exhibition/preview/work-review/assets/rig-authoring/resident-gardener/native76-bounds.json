@@ -1,0 +1,75 @@
+{
+  "id": "resident-gardener",
+  "contentHeight": 271,
+  "views": [
+    {
+      "dir": "down",
+      "composedBounds": {
+        "x": 187,
+        "y": 197,
+        "w": 126,
+        "h": 254
+      },
+      "nativeBounds": {
+        "x": 38,
+        "y": 25,
+        "w": 36,
+        "h": 71
+      },
+      "contactFrames": 100,
+      "frames": 100
+    },
+    {
+      "dir": "right",
+      "composedBounds": {
+        "x": 178,
+        "y": 199,
+        "w": 120,
+        "h": 271
+      },
+      "nativeBounds": {
+        "x": 36,
+        "y": 26,
+        "w": 33,
+        "h": 76
+      },
+      "contactFrames": 100,
+      "frames": 100
+    },
+    {
+      "dir": "up",
+      "composedBounds": {
+        "x": 198,
+        "y": 197,
+        "w": 104,
+        "h": 254
+      },
+      "nativeBounds": {
+        "x": 41,
+        "y": 25,
+        "w": 30,
+        "h": 71
+      },
+      "contactFrames": 100,
+      "frames": 100
+    },
+    {
+      "dir": "left",
+      "composedBounds": {
+        "x": 209,
+        "y": 199,
+        "w": 103,
+        "h": 268
+      },
+      "nativeBounds": {
+        "x": 44,
+        "y": 26,
+        "w": 29,
+        "h": 75
+      },
+      "contactFrames": 100,
+      "frames": 100
+    }
+  ],
+  "claims": "4cardinal static+distance gait diagnostic only; intermediate turn and attack artwork not certified"
+}

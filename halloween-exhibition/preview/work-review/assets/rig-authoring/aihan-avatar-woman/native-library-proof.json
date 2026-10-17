@@ -1,0 +1,58 @@
+{
+  "method": "Real game rig-animation.js and its rig runtime, injected in-memory candidate sidecar, authored images decoded and rendered with native @napi-rs/canvas. No source registry change. Not browser, HTTP, WebGL, GPU, device or gameplay validation.",
+  "id": "aihan-avatar-woman",
+  "manifest": "aihan-avatar-woman",
+  "sourceManifestSHA256": "bbfc681bffb249d6b594312f94b565e0b83b086fadda5e256f425fb273d2e960",
+  "runtimeSHA256": "e515f63c67cafac12c138f0c4be7501217688184ef9790e76e632dad4c665d01",
+  "cardinalViews": [
+    "down",
+    "right",
+    "up",
+    "left"
+  ],
+  "samples": 240,
+  "maxFootReach": 1.2080532582046505e-14,
+  "unsupportedFrames": 0,
+  "canvasStable": true,
+  "statuses": {
+    "loaded": {
+      "metadataReady": true,
+      "definitions": 1,
+      "loaded": 1,
+      "pending": 0,
+      "failures": [],
+      "active": 0,
+      "sourceBytes": 4194304,
+      "maxActive": 16,
+      "maxSourceBytes": 67108864,
+      "revision": 2,
+      "destroyed": false
+    },
+    "active": {
+      "metadataReady": true,
+      "definitions": 1,
+      "loaded": 1,
+      "pending": 0,
+      "failures": [],
+      "active": 2,
+      "sourceBytes": 4194304,
+      "maxActive": 16,
+      "maxSourceBytes": 67108864,
+      "revision": 2,
+      "destroyed": false
+    },
+    "destroyed": {
+      "metadataReady": true,
+      "definitions": 0,
+      "loaded": 0,
+      "pending": 0,
+      "failures": [],
+      "active": 0,
+      "sourceBytes": 0,
+      "maxActive": 16,
+      "maxSourceBytes": 67108864,
+      "revision": 2,
+      "destroyed": true
+    }
+  }
+}

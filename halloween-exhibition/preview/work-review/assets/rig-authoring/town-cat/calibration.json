@@ -1,0 +1,153 @@
+{
+  "archetype": "quadruped",
+  "label": "猫 コハク",
+  "rig": {
+    "upperLeg": 22,
+    "lowerLeg": 20,
+    "hipHeight": 33,
+    "bodyHeight": 68,
+    "neckHeight": 1,
+    "headHeight": 76,
+    "earsHeight": 1,
+    "pawHeight": 11,
+    "bodyHalfLength": 0.53,
+    "footSpacing": 0.15,
+    "tailBase": 32,
+    "tailTip": 30,
+    "collarHeight": 1
+  },
+  "parts": {
+    "body_down": {
+      "pivot": [
+        134.5,
+        -29.0
+      ]
+    },
+    "head_down": {
+      "pivot": [
+        137.0,
+        341.25
+      ]
+    },
+    "fore_lower": {
+      "pivot": [
+        61.0,
+        26.55
+      ],
+      "end": [
+        61.0,
+        291
+      ]
+    },
+    "fore_paw": {
+      "pivot": [
+        75.0,
+        144
+      ]
+    },
+    "hind_lower": {
+      "pivot": [
+        86.5,
+        27.18
+      ],
+      "end": [
+        86.5,
+        298
+      ]
+    },
+    "hind_paw": {
+      "pivot": [
+        73.5,
+        160
+      ]
+    },
+    "body_right": {
+      "pivot": [
+        149.5,
+        51.12
+      ]
+    },
+    "head_right": {
+      "pivot": [
+        106.25999999999999,
+        276
+      ]
+    },
+    "body_up": {
+      "pivot": [
+        122.5,
+        -28.6
+      ]
+    },
+    "head_up": {
+      "pivot": [
+        132.0,
+        124.2
+      ]
+    },
+    "body_left": {
+      "pivot": [
+        146.5,
+        51.839999999999996
+      ]
+    },
+    "head_left": {
+      "pivot": [
+        147.32,
+        273
+      ]
+    }
+  },
+  "viewCalibration": {
+    "down": {
+      "rig": {
+        "tailRootOffset": [
+          -12,
+          0
+        ],
+        "tailAngle": -2.0106192982974678
+      }
+    },
+    "right": {
+      "rig": {
+        "tailRootOffset": [
+          0,
+          -20
+        ],
+        "tailAngle": -2.0106192982974678
+      }
+    },
+    "up": {
+      "rig": {
+        "tailRootOffset": [
+          0,
+          -25
+        ],
+        "tailAngle": -1.5707963267948966
+      }
+    },
+    "left": {
+      "rig": {
+        "tailRootOffset": [
+          0,
+          -20
+        ],
+        "tailAngle": -1.1309733552923256
+      }
+    }
+  },
+  "contentHeight": 160,
+  "calibrationStatus": "Actual source-sized head/body and paw contacts measured; cardinal rump offsets and tail angles fitted to independently painted curved parts with root factory hooks.",
+  "sourceOverrides": {
+    "body_left": {
+      "file": "parts-front-v2-original.png",
+      "region": [
+        940.5,
+        0,
+        313.5,
+        313.5
+      ],
+      "reason": "NEW independently repainted true left-facing feline torso; v1 fourth torso was a duplicate right-facing view and is not adopted."
+    }
+  }
+}

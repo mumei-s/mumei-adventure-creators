@@ -1,0 +1,75 @@
+{
+  "id": "resident-archivist",
+  "contentHeight": 266,
+  "views": [
+    {
+      "dir": "down",
+      "composedBounds": {
+        "x": 195,
+        "y": 197,
+        "w": 112,
+        "h": 253
+      },
+      "nativeBounds": {
+        "x": 40,
+        "y": 24,
+        "w": 32,
+        "h": 72
+      },
+      "contactFrames": 100,
+      "frames": 100
+    },
+    {
+      "dir": "right",
+      "composedBounds": {
+        "x": 194,
+        "y": 199,
+        "w": 112,
+        "h": 266
+      },
+      "nativeBounds": {
+        "x": 40,
+        "y": 24,
+        "w": 32,
+        "h": 76
+      },
+      "contactFrames": 100,
+      "frames": 100
+    },
+    {
+      "dir": "up",
+      "composedBounds": {
+        "x": 193,
+        "y": 197,
+        "w": 114,
+        "h": 253
+      },
+      "nativeBounds": {
+        "x": 40,
+        "y": 24,
+        "w": 32,
+        "h": 72
+      },
+      "contactFrames": 100,
+      "frames": 100
+    },
+    {
+      "dir": "left",
+      "composedBounds": {
+        "x": 191,
+        "y": 199,
+        "w": 118,
+        "h": 263
+      },
+      "nativeBounds": {
+        "x": 39,
+        "y": 24,
+        "w": 34,
+        "h": 75
+      },
+      "contactFrames": 100,
+      "frames": 100
+    }
+  ],
+  "claims": "4cardinal static+distance gait diagnostic only; intermediate turn and attack artwork not certified"
+}

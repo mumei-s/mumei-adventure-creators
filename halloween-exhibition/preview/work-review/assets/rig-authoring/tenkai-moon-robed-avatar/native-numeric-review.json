@@ -1,0 +1,30 @@
+{
+  "id": "tenkai-moon-robed-avatar",
+  "method": "Real current rig runtime, native Canvas, actual64pxworldunit and76/86pxdisplaybodyheight. New independent parts; no browser/GPU/device/gameplay certification.",
+  "manifestSHA256": "ceb7c05888396c407019f1303b3cfba860932f68357a6e10e223de13cf7f9100",
+  "runtimeSHA256": "e515f63c67cafac12c138f0c4be7501217688184ef9790e76e632dad4c665d01",
+  "cardinalGaitFrames": 360,
+  "motionFrames": 692,
+  "maxFootReach": 1.4210854715202004e-14,
+  "unsupportedFrames": [],
+  "liveCanvasClippingFrames": [],
+  "maxStanceDrift": 0,
+  "cardinalIdleBounds": {
+    "down": {
+      "height": 72.734375,
+      "width": 54.427083333333336
+    },
+    "right": {
+      "height": 75.703125,
+      "width": 74.21875
+    },
+    "up": {
+      "height": 73.22916666666667,
+      "width": 59.375
+    },
+    "left": {
+      "height": 74.71354166666667,
+      "width": 70.26041666666667
+    }
+  }
+}

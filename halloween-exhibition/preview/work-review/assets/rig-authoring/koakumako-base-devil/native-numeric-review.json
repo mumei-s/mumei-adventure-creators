@@ -1,0 +1,30 @@
+{
+  "id": "koakumako-base-devil",
+  "method": "Real current rig runtime, native Canvas, actual64pxworldunit and76/86pxdisplaybodyheight. New independent parts; no browser/GPU/device/gameplay certification.",
+  "manifestSHA256": "3a5339b33cb9ffb91ff7cdf8ecbfaa079a2f2abe2dd2e298dd724296f8b8ce53",
+  "runtimeSHA256": "60173e3c2e5580c524e42679f8eb88db61313e52c63c473f3b5d12165ff39a77",
+  "cardinalGaitFrames": 360,
+  "motionFrames": 692,
+  "maxFootReach": 9.565974336450908e-15,
+  "unsupportedFrames": [],
+  "liveCanvasClippingFrames": [],
+  "maxStanceDrift": 0,
+  "cardinalIdleBounds": {
+    "down": {
+      "height": 72.15711805555556,
+      "width": 69.68315972222223
+    },
+    "right": {
+      "height": 74.63107638888889,
+      "width": 51.12847222222222
+    },
+    "up": {
+      "height": 72.15711805555556,
+      "width": 80.40364583333334
+    },
+    "left": {
+      "height": 74.63107638888889,
+      "width": 49.47916666666667
+    }
+  }
+}

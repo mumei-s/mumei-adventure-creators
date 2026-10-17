@@ -1,0 +1,1596 @@
+{
+  "version": 1,
+  "id": "monster:ghost",
+  "label": "幽霊",
+  "archetype": "float",
+  "atlas": "down",
+  "atlases": {
+    "down": "./down.webp",
+    "right": "./right.webp",
+    "up": "./up.webp",
+    "left": "./left.webp"
+  },
+  "width": 2304,
+  "height": 2304,
+  "contentHeight": 256,
+  "output": {
+    "width": 320,
+    "height": 384,
+    "anchorX": 0.5,
+    "anchorY": 0.85,
+    "scale": 1
+  },
+  "rig": {
+    "upperArm": 38,
+    "forearm": 42,
+    "shoulderHalfWidth": 24,
+    "torsoHeight": 155,
+    "neckHeight": 174,
+    "headHeight": 82,
+    "bodyHeight": 88,
+    "handHeight": 19,
+    "trailBack": 45,
+    "trailMid": 30,
+    "trailTip": 22,
+    "period": 2.4
+  },
+  "views": {
+    "down": {
+      "heading": 0,
+      "atlas": "down",
+      "parts": {
+        "trail_back": {
+          "rect": [
+            63,
+            133,
+            450,
+            310
+          ],
+          "pivot": [
+            250,
+            107
+          ],
+          "contentHeight": 310,
+          "sourceRect": [
+            16,
+            40,
+            450,
+            310
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            254,
+            201
+          ],
+          "span": 94.08506789071261,
+          "jointCalibration": "Both bone anchors lie inside painted opaque overlap; no alpha edit"
+        },
+        "sleeve_far": {
+          "rect": [
+            757,
+            127,
+            214,
+            321
+          ],
+          "pivot": [
+            41.3579573642666,
+            36.27785594946552
+          ],
+          "contentHeight": 321,
+          "sourceRect": [
+            468,
+            33,
+            214,
+            321
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            137.70652742555873,
+            251.76176887078427
+          ],
+          "span": 236.0431394485724
+        },
+        "forearm_far": {
+          "rect": [
+            1321,
+            138,
+            238,
+            300
+          ],
+          "pivot": [
+            204.94906209834284,
+            46.07768356016072
+          ],
+          "contentHeight": 300,
+          "sourceRect": [
+            720,
+            59,
+            238,
+            300
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            82.81834194461992,
+            214.19729754119453
+          ],
+          "span": 207.7982613266983
+        },
+        "hand_far": {
+          "rect": [
+            1932,
+            192,
+            167,
+            192
+          ],
+          "pivot": [
+            66.8,
+            165.12
+          ],
+          "contentHeight": 192,
+          "sourceRect": [
+            1051,
+            85,
+            167,
+            192
+          ],
+          "independentlyAuthored": true
+        },
+        "hood_back": {
+          "rect": [
+            92,
+            692,
+            392,
+            344
+          ],
+          "pivot": [
+            196,
+            86
+          ],
+          "contentHeight": 344,
+          "sourceRect": [
+            19,
+            337,
+            392,
+            344
+          ],
+          "independentlyAuthored": true
+        },
+        "torso_cloth": {
+          "rect": [
+            746,
+            716,
+            235,
+            296
+          ],
+          "pivot": [
+            117.5,
+            97.68
+          ],
+          "contentHeight": 296,
+          "sourceRect": [
+            417,
+            366,
+            235,
+            296
+          ],
+          "independentlyAuthored": true
+        },
+        "head": {
+          "rect": [
+            1279,
+            698,
+            322,
+            331
+          ],
+          "pivot": [
+            161,
+            271.41999999999996
+          ],
+          "contentHeight": 331,
+          "sourceRect": [
+            684,
+            343,
+            322,
+            331
+          ],
+          "independentlyAuthored": true
+        },
+        "sleeve_near": {
+          "rect": [
+            1889,
+            686,
+            254,
+            355
+          ],
+          "pivot": [
+            48.51189120332364,
+            44.529358278203944
+          ],
+          "contentHeight": 355,
+          "sourceRect": [
+            987,
+            345,
+            254,
+            355
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            190.28135049530403,
+            277.38740149906334
+          ],
+          "span": 272.61960289125966
+        },
+        "forearm_near": {
+          "rect": [
+            128,
+            1309,
+            320,
+            262
+          ],
+          "pivot": [
+            294.46250822070084,
+            69.59944862493685
+          ],
+          "contentHeight": 262,
+          "sourceRect": [
+            32,
+            673,
+            320,
+            262
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            69.80682914458522,
+            208.41682521314448
+          ],
+          "span": 264.08414981589283
+        },
+        "hand_near": {
+          "rect": [
+            774,
+            1373,
+            179,
+            134
+          ],
+          "pivot": [
+            71.60000000000001,
+            115.24
+          ],
+          "contentHeight": 134,
+          "sourceRect": [
+            391,
+            745,
+            179,
+            134
+          ],
+          "independentlyAuthored": true
+        },
+        "trail_mid": {
+          "rect": [
+            1221,
+            1292,
+            438,
+            296
+          ],
+          "pivot": [
+            164,
+            102
+          ],
+          "contentHeight": 296,
+          "sourceRect": [
+            602,
+            671,
+            438,
+            296
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            184,
+            192
+          ],
+          "span": 92.19544457292888,
+          "jointCalibration": "Both bone anchors lie inside painted opaque overlap; no alpha edit"
+        },
+        "trail_tip": {
+          "rect": [
+            1875,
+            1332,
+            282,
+            215
+          ],
+          "pivot": [
+            143,
+            74
+          ],
+          "contentHeight": 215,
+          "sourceRect": [
+            963,
+            720,
+            282,
+            215
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            186,
+            140
+          ],
+          "span": 78.77182237323191,
+          "jointCalibration": "Both bone anchors lie inside painted opaque overlap; no alpha edit"
+        },
+        "book": {
+          "rect": [
+            118,
+            1879,
+            340,
+            274
+          ],
+          "pivot": [
+            292.4,
+            38.36000000000001
+          ],
+          "contentHeight": 274,
+          "sourceRect": [
+            34,
+            962,
+            340,
+            274
+          ],
+          "independentlyAuthored": true
+        },
+        "staff": {
+          "rect": [
+            788,
+            1842,
+            151,
+            347
+          ],
+          "pivot": [
+            75.5,
+            242.89999999999998
+          ],
+          "contentHeight": 347,
+          "sourceRect": [
+            428,
+            880,
+            151,
+            347
+          ],
+          "independentlyAuthored": true
+        },
+        "front_hair_left": {
+          "rect": [
+            1323,
+            1885,
+            234,
+            261
+          ],
+          "pivot": [
+            117,
+            31.32
+          ],
+          "contentHeight": 261,
+          "sourceRect": [
+            610,
+            969,
+            234,
+            261
+          ],
+          "independentlyAuthored": true
+        },
+        "front_hair_right": {
+          "rect": [
+            1875,
+            1884,
+            281,
+            263
+          ],
+          "pivot": [
+            140.5,
+            31.56
+          ],
+          "contentHeight": 263,
+          "sourceRect": [
+            946,
+            969,
+            281,
+            263
+          ],
+          "independentlyAuthored": true
+        }
+      }
+    },
+    "right": {
+      "heading": 1.5707963267948966,
+      "atlas": "right",
+      "parts": {
+        "trail_back": {
+          "rect": [
+            89,
+            116,
+            398,
+            344
+          ],
+          "pivot": [
+            266,
+            119
+          ],
+          "contentHeight": 344,
+          "sourceRect": [
+            19,
+            19,
+            398,
+            344
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            280,
+            223
+          ],
+          "span": 104.93807697875924,
+          "jointCalibration": "Both bone anchors lie inside painted opaque overlap; no alpha edit"
+        },
+        "sleeve_far": {
+          "rect": [
+            740,
+            105,
+            248,
+            366
+          ],
+          "pivot": [
+            130.42004959085284,
+            52.36591391554765
+          ],
+          "contentHeight": 366,
+          "sourceRect": [
+            432,
+            7,
+            248,
+            366
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            110.54670313811958,
+            308.7215840604812
+          ],
+          "span": 257.1248325516
+        },
+        "forearm_far": {
+          "rect": [
+            1305,
+            126,
+            269,
+            324
+          ],
+          "pivot": [
+            28.134489242993595,
+            47.17968699677394
+          ],
+          "contentHeight": 324,
+          "sourceRect": [
+            684,
+            36,
+            269,
+            324
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            207.89384827014322,
+            249.29718855228003
+          ],
+          "span": 270.49013215437583
+        },
+        "hand_far": {
+          "rect": [
+            1897,
+            184,
+            238,
+            207
+          ],
+          "pivot": [
+            95.2,
+            178.02
+          ],
+          "contentHeight": 207,
+          "sourceRect": [
+            970,
+            106,
+            238,
+            207
+          ],
+          "independentlyAuthored": true
+        },
+        "hood_back": {
+          "rect": [
+            98,
+            691,
+            379,
+            346
+          ],
+          "pivot": [
+            189.5,
+            86.5
+          ],
+          "contentHeight": 346,
+          "sourceRect": [
+            16,
+            365,
+            379,
+            346
+          ],
+          "independentlyAuthored": true
+        },
+        "torso_cloth": {
+          "rect": [
+            737,
+            701,
+            254,
+            326
+          ],
+          "pivot": [
+            127,
+            107.58
+          ],
+          "contentHeight": 326,
+          "sourceRect": [
+            411,
+            364,
+            254,
+            326
+          ],
+          "independentlyAuthored": true
+        },
+        "head": {
+          "rect": [
+            1292,
+            697,
+            296,
+            333
+          ],
+          "pivot": [
+            148,
+            273.06
+          ],
+          "contentHeight": 333,
+          "sourceRect": [
+            672,
+            364,
+            296,
+            333
+          ],
+          "independentlyAuthored": true
+        },
+        "sleeve_near": {
+          "rect": [
+            1883,
+            677,
+            265,
+            373
+          ],
+          "pivot": [
+            172.44690674668706,
+            48.463448451267595
+          ],
+          "contentHeight": 373,
+          "sourceRect": [
+            967,
+            345,
+            265,
+            373
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            132.71298352782662,
+            316.9595588914948
+          ],
+          "span": 271.42023869986735
+        },
+        "forearm_near": {
+          "rect": [
+            165,
+            1303,
+            245,
+            274
+          ],
+          "pivot": [
+            24.34256735161749,
+            46.39009499723879
+          ],
+          "contentHeight": 274,
+          "sourceRect": [
+            48,
+            710,
+            245,
+            274
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            172.69097219272052,
+            189.64914785025817
+          ],
+          "span": 206.22901212788662
+        },
+        "hand_near": {
+          "rect": [
+            752,
+            1348,
+            224,
+            184
+          ],
+          "pivot": [
+            89.60000000000001,
+            158.24
+          ],
+          "contentHeight": 184,
+          "sourceRect": [
+            327,
+            776,
+            224,
+            184
+          ],
+          "independentlyAuthored": true
+        },
+        "trail_mid": {
+          "rect": [
+            1241,
+            1286,
+            398,
+            308
+          ],
+          "pivot": [
+            90,
+            102
+          ],
+          "contentHeight": 308,
+          "sourceRect": [
+            577,
+            694,
+            398,
+            308
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            138,
+            200
+          ],
+          "span": 109.12378292562992,
+          "jointCalibration": "Both bone anchors lie inside painted opaque overlap; no alpha edit"
+        },
+        "trail_tip": {
+          "rect": [
+            1866,
+            1298,
+            300,
+            283
+          ],
+          "pivot": [
+            103,
+            96
+          ],
+          "contentHeight": 283,
+          "sourceRect": [
+            945,
+            708,
+            300,
+            283
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            165,
+            183
+          ],
+          "span": 106.83164325236227,
+          "jointCalibration": "Both bone anchors lie inside painted opaque overlap; no alpha edit"
+        },
+        "book": {
+          "rect": [
+            115,
+            1891,
+            346,
+            250
+          ],
+          "pivot": [
+            297.56,
+            35
+          ],
+          "contentHeight": 250,
+          "sourceRect": [
+            40,
+            993,
+            346,
+            250
+          ],
+          "independentlyAuthored": true
+        },
+        "staff": {
+          "rect": [
+            800,
+            1854,
+            128,
+            324
+          ],
+          "pivot": [
+            64,
+            226.79999999999998
+          ],
+          "contentHeight": 324,
+          "sourceRect": [
+            448,
+            919,
+            128,
+            324
+          ],
+          "independentlyAuthored": true
+        },
+        "front_hair_left": {
+          "rect": [
+            1319,
+            1891,
+            242,
+            249
+          ],
+          "pivot": [
+            121,
+            29.88
+          ],
+          "contentHeight": 249,
+          "sourceRect": [
+            676,
+            996,
+            242,
+            249
+          ],
+          "independentlyAuthored": true
+        },
+        "front_hair_right": {
+          "rect": [
+            1886,
+            1874,
+            260,
+            283
+          ],
+          "pivot": [
+            130,
+            33.96
+          ],
+          "contentHeight": 283,
+          "sourceRect": [
+            982,
+            961,
+            260,
+            283
+          ],
+          "independentlyAuthored": true
+        }
+      },
+      "attachments": [
+        {
+          "part": "book",
+          "parent": "wrist_far",
+          "offset": [
+            -3,
+            0
+          ],
+          "height": 61
+        },
+        {
+          "part": "staff",
+          "parent": "wrist_near",
+          "offset": [
+            12,
+            0
+          ],
+          "height": 106
+        }
+      ]
+    },
+    "up": {
+      "heading": 3.141592653589793,
+      "atlas": "up",
+      "parts": {
+        "trail_back": {
+          "rect": [
+            26,
+            118,
+            523,
+            339
+          ],
+          "pivot": [
+            275,
+            117
+          ],
+          "contentHeight": 339,
+          "sourceRect": [
+            11,
+            8,
+            523,
+            339
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            206,
+            220
+          ],
+          "span": 123.97580409095961,
+          "jointCalibration": "Both bone anchors lie inside painted opaque overlap; no alpha edit"
+        },
+        "sleeve_far": {
+          "rect": [
+            747,
+            137,
+            233,
+            302
+          ],
+          "pivot": [
+            43.96297965730737,
+            45.101940318078874
+          ],
+          "contentHeight": 302,
+          "sourceRect": [
+            515,
+            34,
+            233,
+            302
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            173.47015737984373,
+            261.47554354694205
+          ],
+          "span": 252.16987380711862
+        },
+        "forearm_far": {
+          "rect": [
+            1324,
+            159,
+            231,
+            257
+          ],
+          "pivot": [
+            26.380997961983056,
+            41.15770164170674
+          ],
+          "contentHeight": 257,
+          "sourceRect": [
+            777,
+            75,
+            231,
+            257
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            181.2904515684864,
+            226.6491240720561
+          ],
+          "span": 241.669209068718
+        },
+        "hand_far": {
+          "rect": [
+            1924,
+            186,
+            183,
+            203
+          ],
+          "pivot": [
+            73.2,
+            174.57999999999998
+          ],
+          "contentHeight": 203,
+          "sourceRect": [
+            1052,
+            111,
+            183,
+            203
+          ],
+          "independentlyAuthored": true
+        },
+        "hood_back": {
+          "rect": [
+            85,
+            700,
+            405,
+            327
+          ],
+          "pivot": [
+            202.5,
+            81.75
+          ],
+          "contentHeight": 327,
+          "sourceRect": [
+            11,
+            351,
+            405,
+            327
+          ],
+          "independentlyAuthored": true
+        },
+        "torso_cloth": {
+          "rect": [
+            722,
+            714,
+            284,
+            299
+          ],
+          "pivot": [
+            142,
+            98.67
+          ],
+          "contentHeight": 299,
+          "sourceRect": [
+            430,
+            364,
+            284,
+            299
+          ],
+          "independentlyAuthored": true
+        },
+        "head": {
+          "rect": [
+            1305,
+            708,
+            269,
+            312
+          ],
+          "pivot": [
+            134.5,
+            255.83999999999997
+          ],
+          "contentHeight": 312,
+          "sourceRect": [
+            725,
+            356,
+            269,
+            312
+          ],
+          "independentlyAuthored": true
+        },
+        "sleeve_near": {
+          "rect": [
+            1909,
+            715,
+            213,
+            297
+          ],
+          "pivot": [
+            169.88326407039375,
+            41.75824863276348
+          ],
+          "contentHeight": 297,
+          "sourceRect": [
+            998,
+            371,
+            213,
+            297
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            58.171671171786684,
+            256.43170402814707
+          ],
+          "span": 242.00035627936143
+        },
+        "forearm_near": {
+          "rect": [
+            150,
+            1315,
+            276,
+            250
+          ],
+          "pivot": [
+            244.67885679291902,
+            41.6665041011414
+          ],
+          "contentHeight": 250,
+          "sourceRect": [
+            25,
+            690,
+            276,
+            250
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            61.8596782051617,
+            206.48511337283207
+          ],
+          "span": 246.14635081950036
+        },
+        "hand_near": {
+          "rect": [
+            789,
+            1343,
+            149,
+            194
+          ],
+          "pivot": [
+            59.6,
+            166.84
+          ],
+          "contentHeight": 194,
+          "sourceRect": [
+            393,
+            723,
+            149,
+            194
+          ],
+          "independentlyAuthored": true
+        },
+        "trail_mid": {
+          "rect": [
+            1224,
+            1282,
+            432,
+            316
+          ],
+          "pivot": [
+            189,
+            109
+          ],
+          "contentHeight": 316,
+          "sourceRect": [
+            579,
+            648,
+            432,
+            316
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            191,
+            205
+          ],
+          "span": 96.02083107326243,
+          "jointCalibration": "Both bone anchors lie inside painted opaque overlap; no alpha edit"
+        },
+        "trail_tip": {
+          "rect": [
+            1888,
+            1303,
+            256,
+            273
+          ],
+          "pivot": [
+            64,
+            86
+          ],
+          "contentHeight": 273,
+          "sourceRect": [
+            983,
+            677,
+            256,
+            273
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            200,
+            185
+          ],
+          "span": 168.21712160181556,
+          "jointCalibration": "Both bone anchors lie inside painted opaque overlap; no alpha edit"
+        },
+        "book": {
+          "rect": [
+            92,
+            1874,
+            392,
+            283
+          ],
+          "pivot": [
+            337.12,
+            39.620000000000005
+          ],
+          "contentHeight": 283,
+          "sourceRect": [
+            46,
+            931,
+            392,
+            283
+          ],
+          "independentlyAuthored": true
+        },
+        "staff": {
+          "rect": [
+            788,
+            1856,
+            151,
+            320
+          ],
+          "pivot": [
+            75.5,
+            224
+          ],
+          "contentHeight": 320,
+          "sourceRect": [
+            469,
+            914,
+            151,
+            320
+          ],
+          "independentlyAuthored": true
+        },
+        "front_hair_left": {
+          "rect": [
+            1354,
+            1870,
+            172,
+            292
+          ],
+          "pivot": [
+            86,
+            35.04
+          ],
+          "contentHeight": 292,
+          "sourceRect": [
+            669,
+            956,
+            172,
+            292
+          ],
+          "independentlyAuthored": true
+        },
+        "front_hair_right": {
+          "rect": [
+            1933,
+            1870,
+            166,
+            291
+          ],
+          "pivot": [
+            83,
+            34.92
+          ],
+          "contentHeight": 291,
+          "sourceRect": [
+            1040,
+            955,
+            166,
+            291
+          ],
+          "independentlyAuthored": true
+        }
+      },
+      "attachments": [
+        {
+          "part": "book",
+          "parent": "wrist_far",
+          "offset": [
+            -3,
+            0
+          ],
+          "height": 61,
+          "layer": "back"
+        },
+        {
+          "part": "staff",
+          "parent": "wrist_near",
+          "offset": [
+            0,
+            0
+          ],
+          "height": 106,
+          "layer": "back"
+        }
+      ]
+    },
+    "left": {
+      "heading": -1.5707963267948966,
+      "atlas": "left",
+      "parts": {
+        "trail_back": {
+          "rect": [
+            92,
+            141,
+            392,
+            294
+          ],
+          "pivot": [
+            128,
+            101
+          ],
+          "contentHeight": 294,
+          "sourceRect": [
+            26,
+            45,
+            392,
+            294
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            197,
+            191
+          ],
+          "span": 113.4063490286148,
+          "jointCalibration": "Both bone anchors lie inside painted opaque overlap; no alpha edit"
+        },
+        "sleeve_far": {
+          "rect": [
+            742,
+            143,
+            243,
+            290
+          ],
+          "pivot": [
+            44.50876027623167,
+            35.26156162730919
+          ],
+          "contentHeight": 290,
+          "sourceRect": [
+            381,
+            25,
+            243,
+            290
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            186.99077234286017,
+            255.99027307562258
+          ],
+          "span": 262.72093144663535
+        },
+        "forearm_far": {
+          "rect": [
+            1313,
+            162,
+            253,
+            252
+          ],
+          "pivot": [
+            237.8257208724345,
+            76.34388055942924
+          ],
+          "contentHeight": 252,
+          "sourceRect": [
+            657,
+            64,
+            253,
+            252
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            60.63798990698328,
+            175.31309830422234
+          ],
+          "span": 202.9541772561023
+        },
+        "hand_far": {
+          "rect": [
+            1907,
+            208,
+            218,
+            160
+          ],
+          "pivot": [
+            87.2,
+            137.6
+          ],
+          "contentHeight": 160,
+          "sourceRect": [
+            999,
+            119,
+            218,
+            160
+          ],
+          "independentlyAuthored": true
+        },
+        "hood_back": {
+          "rect": [
+            128,
+            706,
+            319,
+            315
+          ],
+          "pivot": [
+            159.5,
+            78.75
+          ],
+          "contentHeight": 315,
+          "sourceRect": [
+            47,
+            341,
+            319,
+            315
+          ],
+          "independentlyAuthored": true
+        },
+        "torso_cloth": {
+          "rect": [
+            741,
+            701,
+            245,
+            326
+          ],
+          "pivot": [
+            122.5,
+            107.58
+          ],
+          "contentHeight": 326,
+          "sourceRect": [
+            380,
+            331,
+            245,
+            326
+          ],
+          "independentlyAuthored": true
+        },
+        "head": {
+          "rect": [
+            1301,
+            719,
+            277,
+            289
+          ],
+          "pivot": [
+            138.5,
+            236.98
+          ],
+          "contentHeight": 289,
+          "sourceRect": [
+            662,
+            330,
+            277,
+            289
+          ],
+          "independentlyAuthored": true
+        },
+        "sleeve_near": {
+          "rect": [
+            1885,
+            725,
+            262,
+            277
+          ],
+          "pivot": [
+            33.61531518949262,
+            40.98783407494021
+          ],
+          "contentHeight": 277,
+          "sourceRect": [
+            968,
+            349,
+            262,
+            277
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            188.2378669561286,
+            218.4133832038574
+          ],
+          "span": 235.3464658721771
+        },
+        "forearm_near": {
+          "rect": [
+            150,
+            1308,
+            275,
+            264
+          ],
+          "pivot": [
+            30.261168162608243,
+            56.18136372478264
+          ],
+          "contentHeight": 264,
+          "sourceRect": [
+            46,
+            652,
+            275,
+            264
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            236.81511810180288,
+            209.65684459928272
+          ],
+          "span": 257.3310270160642
+        },
+        "hand_near": {
+          "rect": [
+            758,
+            1349,
+            211,
+            182
+          ],
+          "pivot": [
+            84.4,
+            156.52
+          ],
+          "contentHeight": 182,
+          "sourceRect": [
+            358,
+            716,
+            211,
+            182
+          ],
+          "independentlyAuthored": true
+        },
+        "trail_mid": {
+          "rect": [
+            1244,
+            1287,
+            391,
+            306
+          ],
+          "pivot": [
+            99,
+            102
+          ],
+          "contentHeight": 306,
+          "sourceRect": [
+            641,
+            631,
+            391,
+            306
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            169,
+            198
+          ],
+          "span": 118.81077392223317,
+          "jointCalibration": "Both bone anchors lie inside painted opaque overlap; no alpha edit"
+        },
+        "trail_tip": {
+          "rect": [
+            1893,
+            1316,
+            245,
+            247
+          ],
+          "pivot": [
+            90,
+            85
+          ],
+          "contentHeight": 247,
+          "sourceRect": [
+            990,
+            663,
+            245,
+            247
+          ],
+          "independentlyAuthored": true,
+          "end": [
+            218,
+            160
+          ],
+          "span": 148.35430563350698,
+          "jointCalibration": "Both bone anchors lie inside painted opaque overlap; no alpha edit"
+        },
+        "book": {
+          "rect": [
+            116,
+            1895,
+            344,
+            242
+          ],
+          "pivot": [
+            295.84,
+            33.88
+          ],
+          "contentHeight": 242,
+          "sourceRect": [
+            31,
+            964,
+            344,
+            242
+          ],
+          "independentlyAuthored": true
+        },
+        "staff": {
+          "rect": [
+            799,
+            1858,
+            130,
+            316
+          ],
+          "pivot": [
+            65,
+            221.2
+          ],
+          "contentHeight": 316,
+          "sourceRect": [
+            450,
+            908,
+            130,
+            316
+          ],
+          "independentlyAuthored": true
+        },
+        "front_hair_left": {
+          "rect": [
+            1369,
+            1866,
+            141,
+            300
+          ],
+          "pivot": [
+            70.5,
+            36
+          ],
+          "contentHeight": 300,
+          "sourceRect": [
+            695,
+            931,
+            141,
+            300
+          ],
+          "independentlyAuthored": true
+        },
+        "front_hair_right": {
+          "rect": [
+            1930,
+            1867,
+            171,
+            298
+          ],
+          "pivot": [
+            85.5,
+            35.76
+          ],
+          "contentHeight": 298,
+          "sourceRect": [
+            1028,
+            931,
+            171,
+            298
+          ],
+          "independentlyAuthored": true
+        }
+      },
+      "attachments": [
+        {
+          "part": "book",
+          "parent": "wrist_far",
+          "offset": [
+            -3,
+            0
+          ],
+          "height": 61
+        },
+        {
+          "part": "staff",
+          "parent": "wrist_near",
+          "offset": [
+            -12,
+            0
+          ],
+          "height": 106
+        }
+      ]
+    }
+  },
+  "attachments": [
+    {
+      "part": "book",
+      "parent": "wrist_far",
+      "offset": [
+        -3,
+        0
+      ],
+      "height": 61
+    },
+    {
+      "part": "staff",
+      "parent": "wrist_near",
+      "offset": [
+        0,
+        0
+      ],
+      "height": 106
+    }
+  ],
+  "directions": [
+    "down",
+    "right",
+    "up",
+    "left"
+  ],
+  "authoredPartCount": 64,
+  "continuousTurnComplete": false,
+  "attackArtComplete": false,
+  "review": {
+    "passed": false
+  },
+  "provenance": {
+    "method": "built-in-imagegen; four independently newly authored16part views",
+    "wholeBodyReferenceSlicing": false,
+    "componentOwnership": "Measured alpha connected components retained at original RGBA; no redraw, mirror or deformation",
+    "identityReference": "maze/assets/rpg/ghost-story-v2.webp"
+  },
+  "animationReviewed": true
+}

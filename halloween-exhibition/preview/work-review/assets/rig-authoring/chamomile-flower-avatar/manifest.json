@@ -1,0 +1,784 @@
+{
+  "version": 1,
+  "id": "chamomile-flower-avatar-authored-rig-v1",
+  "label": "カモミール",
+  "archetype": "flower",
+  "atlas": "main",
+  "atlases": {
+    "main": "./main.webp"
+  },
+  "width": 1280,
+  "height": 1280,
+  "contentHeight": 246,
+  "output": {
+    "width": 320,
+    "height": 320,
+    "anchorX": 0.5,
+    "anchorY": 0.94,
+    "scale": 1
+  },
+  "directions": [
+    "down",
+    "right",
+    "up",
+    "left"
+  ],
+  "views": {
+    "down": {
+      "heading": 0,
+      "atlas": "main",
+      "parts": {
+        "body": {
+          "rect": [
+            43,
+            61,
+            234,
+            198
+          ],
+          "pivot": [
+            117,
+            99
+          ],
+          "contentHeight": 198,
+          "sourceRect": [
+            54,
+            84,
+            234,
+            198
+          ],
+          "sourceKey": "body_down",
+          "independentlyAuthored": true
+        },
+        "face": {
+          "rect": [
+            46,
+            376,
+            227,
+            207
+          ],
+          "pivot": [
+            113.5,
+            103.5
+          ],
+          "contentHeight": 207,
+          "sourceRect": [
+            56,
+            391,
+            227,
+            207
+          ],
+          "sourceKey": "face_down",
+          "independentlyAuthored": true
+        },
+        "petalRing": {
+          "rect": [
+            18,
+            651,
+            283,
+            297
+          ],
+          "pivot": [
+            141.5,
+            148.5
+          ],
+          "contentHeight": 297,
+          "sourceRect": [
+            25,
+            666,
+            283,
+            297
+          ],
+          "sourceKey": "petalRing_down",
+          "independentlyAuthored": true
+        },
+        "leftFoot": {
+          "rect": [
+            101,
+            1072,
+            117,
+            95
+          ],
+          "pivot": [
+            58.5,
+            91
+          ],
+          "contentHeight": 95,
+          "sourceRect": [
+            107,
+            1077,
+            117,
+            95
+          ],
+          "sourceKey": "leftFoot",
+          "independentlyAuthored": true
+        },
+        "rightFoot": {
+          "rect": [
+            421,
+            1072,
+            118,
+            95
+          ],
+          "pivot": [
+            59,
+            91
+          ],
+          "contentHeight": 95,
+          "sourceRect": [
+            409,
+            1077,
+            118,
+            95
+          ],
+          "sourceKey": "rightFoot",
+          "independentlyAuthored": true
+        },
+        "book": {
+          "rect": [
+            712,
+            1042,
+            176,
+            155
+          ],
+          "pivot": [
+            88,
+            77.5
+          ],
+          "contentHeight": 155,
+          "sourceRect": [
+            693,
+            1032,
+            176,
+            155
+          ],
+          "sourceKey": "book",
+          "independentlyAuthored": true
+        },
+        "die": {
+          "rect": [
+            1043,
+            1045,
+            153,
+            149
+          ],
+          "pivot": [
+            76.5,
+            74.5
+          ],
+          "contentHeight": 149,
+          "sourceRect": [
+            1012,
+            1041,
+            153,
+            149
+          ],
+          "sourceKey": "die",
+          "independentlyAuthored": true
+        }
+      },
+      "rig": {}
+    },
+    "right": {
+      "heading": 1.5707963267948966,
+      "atlas": "main",
+      "parts": {
+        "body": {
+          "rect": [
+            382,
+            61,
+            196,
+            198
+          ],
+          "pivot": [
+            98,
+            99
+          ],
+          "contentHeight": 198,
+          "sourceRect": [
+            382,
+            84,
+            196,
+            198
+          ],
+          "sourceKey": "body_right",
+          "independentlyAuthored": true
+        },
+        "face": {
+          "rect": [
+            1016,
+            375,
+            207,
+            209
+          ],
+          "pivot": [
+            103.5,
+            104.5
+          ],
+          "contentHeight": 209,
+          "sourceRect": [
+            978,
+            389,
+            207,
+            209
+          ],
+          "sourceKey": "face_right",
+          "independentlyAuthored": true
+        },
+        "petalRing": {
+          "rect": [
+            372,
+            655,
+            216,
+            289
+          ],
+          "pivot": [
+            108,
+            144.5
+          ],
+          "contentHeight": 289,
+          "sourceRect": [
+            359,
+            671,
+            216,
+            289
+          ],
+          "sourceKey": "petalRing_right",
+          "independentlyAuthored": true
+        },
+        "leftFoot": {
+          "rect": [
+            101,
+            1072,
+            117,
+            95
+          ],
+          "pivot": [
+            58.5,
+            91
+          ],
+          "contentHeight": 95,
+          "sourceRect": [
+            107,
+            1077,
+            117,
+            95
+          ],
+          "sourceKey": "leftFoot",
+          "independentlyAuthored": true
+        },
+        "rightFoot": {
+          "rect": [
+            421,
+            1072,
+            118,
+            95
+          ],
+          "pivot": [
+            59,
+            91
+          ],
+          "contentHeight": 95,
+          "sourceRect": [
+            409,
+            1077,
+            118,
+            95
+          ],
+          "sourceKey": "rightFoot",
+          "independentlyAuthored": true
+        },
+        "book": {
+          "rect": [
+            712,
+            1042,
+            176,
+            155
+          ],
+          "pivot": [
+            88,
+            77.5
+          ],
+          "contentHeight": 155,
+          "sourceRect": [
+            693,
+            1032,
+            176,
+            155
+          ],
+          "sourceKey": "book",
+          "independentlyAuthored": true
+        },
+        "die": {
+          "rect": [
+            1043,
+            1045,
+            153,
+            149
+          ],
+          "pivot": [
+            76.5,
+            74.5
+          ],
+          "contentHeight": 149,
+          "sourceRect": [
+            1012,
+            1041,
+            153,
+            149
+          ],
+          "sourceKey": "die",
+          "independentlyAuthored": true
+        }
+      },
+      "rig": {
+        "faceOffset": [
+          7,
+          -148
+        ],
+        "petalOffset": [
+          0,
+          -148
+        ],
+        "bookOffset": [
+          28,
+          -61
+        ],
+        "dieOffset": [
+          -25,
+          -61
+        ]
+      }
+    },
+    "up": {
+      "heading": 3.141592653589793,
+      "atlas": "main",
+      "parts": {
+        "body": {
+          "rect": [
+            683,
+            60,
+            234,
+            199
+          ],
+          "pivot": [
+            117,
+            99.5
+          ],
+          "contentHeight": 199,
+          "sourceRect": [
+            658,
+            84,
+            234,
+            199
+          ],
+          "sourceKey": "body_up",
+          "independentlyAuthored": true
+        },
+        "face": {
+          "rect": [
+            686,
+            377,
+            227,
+            205
+          ],
+          "pivot": [
+            113.5,
+            102.5
+          ],
+          "contentHeight": 205,
+          "sourceRect": [
+            671,
+            390,
+            227,
+            205
+          ],
+          "sourceKey": "face_up",
+          "independentlyAuthored": true
+        },
+        "petalRing": {
+          "rect": [
+            653,
+            651,
+            294,
+            297
+          ],
+          "pivot": [
+            147,
+            148.5
+          ],
+          "contentHeight": 297,
+          "sourceRect": [
+            637,
+            669,
+            294,
+            297
+          ],
+          "sourceKey": "petalRing_up",
+          "independentlyAuthored": true
+        },
+        "leftFoot": {
+          "rect": [
+            101,
+            1072,
+            117,
+            95
+          ],
+          "pivot": [
+            58.5,
+            91
+          ],
+          "contentHeight": 95,
+          "sourceRect": [
+            107,
+            1077,
+            117,
+            95
+          ],
+          "sourceKey": "leftFoot",
+          "independentlyAuthored": true
+        },
+        "rightFoot": {
+          "rect": [
+            421,
+            1072,
+            118,
+            95
+          ],
+          "pivot": [
+            59,
+            91
+          ],
+          "contentHeight": 95,
+          "sourceRect": [
+            409,
+            1077,
+            118,
+            95
+          ],
+          "sourceKey": "rightFoot",
+          "independentlyAuthored": true
+        },
+        "book": {
+          "rect": [
+            712,
+            1042,
+            176,
+            155
+          ],
+          "pivot": [
+            88,
+            77.5
+          ],
+          "contentHeight": 155,
+          "sourceRect": [
+            693,
+            1032,
+            176,
+            155
+          ],
+          "sourceKey": "book",
+          "independentlyAuthored": true
+        },
+        "die": {
+          "rect": [
+            1043,
+            1045,
+            153,
+            149
+          ],
+          "pivot": [
+            76.5,
+            74.5
+          ],
+          "contentHeight": 149,
+          "sourceRect": [
+            1012,
+            1041,
+            153,
+            149
+          ],
+          "sourceKey": "die",
+          "independentlyAuthored": true
+        }
+      },
+      "rig": {
+        "bookOffset": [
+          45,
+          -62
+        ],
+        "dieOffset": [
+          -45,
+          -62
+        ]
+      }
+    },
+    "left": {
+      "heading": -1.5707963267948966,
+      "atlas": "main",
+      "parts": {
+        "body": {
+          "rect": [
+            1022,
+            60,
+            196,
+            200
+          ],
+          "pivot": [
+            98,
+            100
+          ],
+          "contentHeight": 200,
+          "sourceRect": [
+            992,
+            82,
+            196,
+            200
+          ],
+          "sourceKey": "body_left",
+          "independentlyAuthored": true
+        },
+        "face": {
+          "rect": [
+            373,
+            374,
+            214,
+            211
+          ],
+          "pivot": [
+            107,
+            105.5
+          ],
+          "contentHeight": 211,
+          "sourceRect": [
+            380,
+            388,
+            214,
+            211
+          ],
+          "sourceKey": "face_left",
+          "independentlyAuthored": true
+        },
+        "petalRing": {
+          "rect": [
+            1011,
+            656,
+            217,
+            287
+          ],
+          "pivot": [
+            108.5,
+            143.5
+          ],
+          "contentHeight": 287,
+          "sourceRect": [
+            994,
+            675,
+            217,
+            287
+          ],
+          "sourceKey": "petalRing_left",
+          "independentlyAuthored": true
+        },
+        "leftFoot": {
+          "rect": [
+            101,
+            1072,
+            117,
+            95
+          ],
+          "pivot": [
+            58.5,
+            91
+          ],
+          "contentHeight": 95,
+          "sourceRect": [
+            107,
+            1077,
+            117,
+            95
+          ],
+          "sourceKey": "leftFoot",
+          "independentlyAuthored": true
+        },
+        "rightFoot": {
+          "rect": [
+            421,
+            1072,
+            118,
+            95
+          ],
+          "pivot": [
+            59,
+            91
+          ],
+          "contentHeight": 95,
+          "sourceRect": [
+            409,
+            1077,
+            118,
+            95
+          ],
+          "sourceKey": "rightFoot",
+          "independentlyAuthored": true
+        },
+        "book": {
+          "rect": [
+            712,
+            1042,
+            176,
+            155
+          ],
+          "pivot": [
+            88,
+            77.5
+          ],
+          "contentHeight": 155,
+          "sourceRect": [
+            693,
+            1032,
+            176,
+            155
+          ],
+          "sourceKey": "book",
+          "independentlyAuthored": true
+        },
+        "die": {
+          "rect": [
+            1043,
+            1045,
+            153,
+            149
+          ],
+          "pivot": [
+            76.5,
+            74.5
+          ],
+          "contentHeight": 149,
+          "sourceRect": [
+            1012,
+            1041,
+            153,
+            149
+          ],
+          "sourceKey": "die",
+          "independentlyAuthored": true
+        }
+      },
+      "rig": {
+        "faceOffset": [
+          -7,
+          -148
+        ],
+        "petalOffset": [
+          0,
+          -148
+        ],
+        "bookOffset": [
+          -28,
+          -61
+        ],
+        "dieOffset": [
+          25,
+          -61
+        ]
+      }
+    }
+  },
+  "rig": {
+    "bodyHeight": 100,
+    "bodyCenter": [
+      0,
+      -60
+    ],
+    "headHeight": 108,
+    "petalHeight": 180,
+    "footHeight": 14,
+    "footSpacing": 19,
+    "legLength": 80,
+    "strideLength": 0.45,
+    "faceOffset": [
+      0,
+      -148
+    ],
+    "petalOffset": [
+      0,
+      -148
+    ],
+    "bookOffset": [
+      -45,
+      -62
+    ],
+    "dieOffset": [
+      45,
+      -62
+    ],
+    "bookHeight": 30,
+    "dieHeight": 25
+  },
+  "continuousTurnComplete": false,
+  "attackArtComplete": false,
+  "artworkComplete": false,
+  "authoredPartCount": 16,
+  "review": {
+    "passed": true,
+    "status": "native35-60-shape-and-motion-reviewed",
+    "scope": "four-cardinal-new-parts-fixed-shape-physical-motion",
+    "reviewer": "town-webgl-independent-source-and-native-review",
+    "continuousTurnComplete": false,
+    "attackArtComplete": false,
+    "checks": [
+      "Exact approved mascot identity compared at actual35/60px",
+      "No full-body squash/bob or added limbs",
+      "Fixed body origin, shape and scale over180 frames",
+      "Contact world drift0 after initial projection",
+      "Pause and reduced-motion clock freeze",
+      "Bread exactly one two-link appendage; flower exactly two tiny feet with original book/die"
+    ]
+  },
+  "provenance": {
+    "method": "built-in-imagegen",
+    "sourceReference": "adopted-reference.png",
+    "sourceReferenceSha256": "1ef9e3d61cecc20dae6312bdee859acca71e70c1e7a20bcf7d3b7f141eb89766",
+    "sourceRaw": "parts-front-v1-original.png",
+    "sourceRawSha256": "b32e01771fa65b1c1de9ffe5a39eff2b17ade69b4307e102242ab90cdc974e54",
+    "sourceRawSize": [
+      1254,
+      1254
+    ],
+    "sourceWholeBodySlicing": false,
+    "packing": "Core alpha>230 connected-component ownership; original RGBA retained with 3px antialias margin. No resizing, redrawing, morphing or reference whole-body slicing.",
+    "sharedLimbParts": false,
+    "correctedSources": [],
+    "limitations": [
+      "Four cardinal body/head or mascot views only; no independently painted intermediate turn surfaces.",
+      "Species-specific mascot rig required; human arms/legs are not substituted."
+    ]
+  },
+  "referenceComposedBounds": {
+    "down": {
+      "x": 215,
+      "y": 162,
+      "w": 170,
+      "h": 238
+    },
+    "right": {
+      "x": 233,
+      "y": 163,
+      "w": 134,
+      "h": 246
+    },
+    "up": {
+      "x": 212,
+      "y": 163,
+      "w": 177,
+      "h": 237
+    },
+    "left": {
+      "x": 233,
+      "y": 163,
+      "w": 134,
+      "h": 246
+    }
+  },
+  "animationReviewed": true
+}

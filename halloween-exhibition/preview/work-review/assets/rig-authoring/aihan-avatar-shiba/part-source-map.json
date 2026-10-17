@@ -1,0 +1,306 @@
+{
+  "body_down": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "9b4e9ac5de6f29f965828d2c30c7cd123773f439c39978eb188c4117505059a8",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      32,
+      91,
+      248,
+      216
+    ],
+    "components": [
+      3
+    ],
+    "corePixels": 40337,
+    "independentlyAuthored": true
+  },
+  "body_right": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "9b4e9ac5de6f29f965828d2c30c7cd123773f439c39978eb188c4117505059a8",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      334,
+      90,
+      273,
+      222
+    ],
+    "components": [
+      2
+    ],
+    "corePixels": 42860,
+    "independentlyAuthored": true
+  },
+  "body_up": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "9b4e9ac5de6f29f965828d2c30c7cd123773f439c39978eb188c4117505059a8",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      662,
+      92,
+      228,
+      220
+    ],
+    "components": [
+      4
+    ],
+    "corePixels": 39501,
+    "independentlyAuthored": true
+  },
+  "body_left": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "9b4e9ac5de6f29f965828d2c30c7cd123773f439c39978eb188c4117505059a8",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      963,
+      84,
+      271,
+      228
+    ],
+    "components": [
+      1
+    ],
+    "corePixels": 42273,
+    "independentlyAuthored": true
+  },
+  "head_down": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "9b4e9ac5de6f29f965828d2c30c7cd123773f439c39978eb188c4117505059a8",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      34,
+      350,
+      259,
+      264
+    ],
+    "components": [
+      5
+    ],
+    "corePixels": 49600,
+    "independentlyAuthored": true
+  },
+  "head_left": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "9b4e9ac5de6f29f965828d2c30c7cd123773f439c39978eb188c4117505059a8",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      337,
+      350,
+      277,
+      264
+    ],
+    "components": [
+      6
+    ],
+    "corePixels": 43201,
+    "independentlyAuthored": true
+  },
+  "head_up": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "9b4e9ac5de6f29f965828d2c30c7cd123773f439c39978eb188c4117505059a8",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      663,
+      359,
+      250,
+      270
+    ],
+    "components": [
+      8
+    ],
+    "corePixels": 50967,
+    "independentlyAuthored": true
+  },
+  "head_right": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "9b4e9ac5de6f29f965828d2c30c7cd123773f439c39978eb188c4117505059a8",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      963,
+      350,
+      277,
+      264
+    ],
+    "components": [
+      7
+    ],
+    "corePixels": 43434,
+    "independentlyAuthored": true
+  },
+  "fore_upper": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "9b4e9ac5de6f29f965828d2c30c7cd123773f439c39978eb188c4117505059a8",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      76,
+      633,
+      166,
+      284
+    ],
+    "components": [
+      9
+    ],
+    "corePixels": 29243,
+    "independentlyAuthored": true
+  },
+  "fore_lower": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "9b4e9ac5de6f29f965828d2c30c7cd123773f439c39978eb188c4117505059a8",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      415,
+      638,
+      133,
+      276
+    ],
+    "components": [
+      11
+    ],
+    "corePixels": 24795,
+    "independentlyAuthored": true
+  },
+  "fore_paw": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "9b4e9ac5de6f29f965828d2c30c7cd123773f439c39978eb188c4117505059a8",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      713,
+      737,
+      138,
+      164
+    ],
+    "components": [
+      12
+    ],
+    "corePixels": 16375,
+    "independentlyAuthored": true
+  },
+  "hind_upper": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "9b4e9ac5de6f29f965828d2c30c7cd123773f439c39978eb188c4117505059a8",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      991,
+      637,
+      209,
+      280
+    ],
+    "components": [
+      10
+    ],
+    "corePixels": 35771,
+    "independentlyAuthored": true
+  },
+  "hind_lower": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "9b4e9ac5de6f29f965828d2c30c7cd123773f439c39978eb188c4117505059a8",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      96,
+      937,
+      133,
+      255
+    ],
+    "components": [
+      14
+    ],
+    "corePixels": 22709,
+    "independentlyAuthored": true
+  },
+  "hind_paw": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "9b4e9ac5de6f29f965828d2c30c7cd123773f439c39978eb188c4117505059a8",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      404,
+      1021,
+      145,
+      171
+    ],
+    "components": [
+      17
+    ],
+    "corePixels": 17776,
+    "independentlyAuthored": true
+  },
+  "tail_base": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "9b4e9ac5de6f29f965828d2c30c7cd123773f439c39978eb188c4117505059a8",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      653,
+      949,
+      251,
+      243
+    ],
+    "components": [
+      16
+    ],
+    "corePixels": 39618,
+    "independentlyAuthored": true
+  },
+  "tail_tip": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "9b4e9ac5de6f29f965828d2c30c7cd123773f439c39978eb188c4117505059a8",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      985,
+      943,
+      231,
+      252
+    ],
+    "components": [
+      15
+    ],
+    "corePixels": 40494,
+    "independentlyAuthored": true
+  }
+}

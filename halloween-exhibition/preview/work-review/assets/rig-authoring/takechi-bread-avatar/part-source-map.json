@@ -1,0 +1,230 @@
+{
+  "body_down": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "010b8b2d82b6fd79b57aa9b94c029fc0a13cc60eee07c20f2209925469859aaf",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      29,
+      77,
+      246,
+      235
+    ],
+    "components": [
+      1
+    ],
+    "corePixels": 45750,
+    "independentlyAuthored": true
+  },
+  "body_right": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "010b8b2d82b6fd79b57aa9b94c029fc0a13cc60eee07c20f2209925469859aaf",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      359,
+      81,
+      225,
+      230
+    ],
+    "components": [
+      4
+    ],
+    "corePixels": 39322,
+    "independentlyAuthored": true
+  },
+  "body_up": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "010b8b2d82b6fd79b57aa9b94c029fc0a13cc60eee07c20f2209925469859aaf",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      658,
+      77,
+      250,
+      235
+    ],
+    "components": [
+      2
+    ],
+    "corePixels": 45479,
+    "independentlyAuthored": true
+  },
+  "body_left": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "010b8b2d82b6fd79b57aa9b94c029fc0a13cc60eee07c20f2209925469859aaf",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      1008,
+      79,
+      216,
+      231
+    ],
+    "components": [
+      3
+    ],
+    "corePixels": 38260,
+    "independentlyAuthored": true
+  },
+  "appendageBase_down": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "010b8b2d82b6fd79b57aa9b94c029fc0a13cc60eee07c20f2209925469859aaf",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      85,
+      456,
+      163,
+      98
+    ],
+    "components": [
+      5
+    ],
+    "corePixels": 9559,
+    "independentlyAuthored": true
+  },
+  "appendageBase_right": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "010b8b2d82b6fd79b57aa9b94c029fc0a13cc60eee07c20f2209925469859aaf",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      406,
+      465,
+      142,
+      80
+    ],
+    "components": [
+      7
+    ],
+    "corePixels": 6697,
+    "independentlyAuthored": true
+  },
+  "appendageBase_up": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "010b8b2d82b6fd79b57aa9b94c029fc0a13cc60eee07c20f2209925469859aaf",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      708,
+      464,
+      153,
+      84
+    ],
+    "components": [
+      6
+    ],
+    "corePixels": 7570,
+    "independentlyAuthored": true
+  },
+  "appendageBase_left": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "010b8b2d82b6fd79b57aa9b94c029fc0a13cc60eee07c20f2209925469859aaf",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      1035,
+      466,
+      143,
+      81
+    ],
+    "components": [
+      8
+    ],
+    "corePixels": 6728,
+    "independentlyAuthored": true
+  },
+  "appendageTip_down": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "010b8b2d82b6fd79b57aa9b94c029fc0a13cc60eee07c20f2209925469859aaf",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      86,
+      720,
+      173,
+      115
+    ],
+    "components": [
+      10
+    ],
+    "corePixels": 12701,
+    "independentlyAuthored": true
+  },
+  "appendageTip_right": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "010b8b2d82b6fd79b57aa9b94c029fc0a13cc60eee07c20f2209925469859aaf",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      398,
+      716,
+      179,
+      114
+    ],
+    "components": [
+      9
+    ],
+    "corePixels": 12627,
+    "independentlyAuthored": true
+  },
+  "appendageTip_up": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "010b8b2d82b6fd79b57aa9b94c029fc0a13cc60eee07c20f2209925469859aaf",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      698,
+      720,
+      174,
+      114
+    ],
+    "components": [
+      11
+    ],
+    "corePixels": 12618,
+    "independentlyAuthored": true
+  },
+  "appendageTip_left": {
+    "source": "parts-front-v1-original.png",
+    "sourceSha256": "010b8b2d82b6fd79b57aa9b94c029fc0a13cc60eee07c20f2209925469859aaf",
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "sourceRect": [
+      1014,
+      731,
+      168,
+      106
+    ],
+    "components": [
+      12
+    ],
+    "corePixels": 10936,
+    "independentlyAuthored": true
+  }
+}

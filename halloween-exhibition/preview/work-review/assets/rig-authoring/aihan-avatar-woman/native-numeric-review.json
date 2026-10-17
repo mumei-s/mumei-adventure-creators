@@ -1,0 +1,30 @@
+{
+  "id": "aihan-avatar-woman",
+  "method": "Real current rig runtime, native Canvas, actual64pxworldunit and76/86pxdisplaybodyheight. New independent parts; no browser/GPU/device/gameplay certification.",
+  "manifestSHA256": "211b3915d86c02b728b023932e704f9a8f09ad3224872e69e8fcbc880e4407b9",
+  "runtimeSHA256": "60173e3c2e5580c524e42679f8eb88db61313e52c63c473f3b5d12165ff39a77",
+  "cardinalGaitFrames": 360,
+  "motionFrames": 692,
+  "maxFootReach": 8.881784197001252e-15,
+  "unsupportedFrames": [],
+  "liveCanvasClippingFrames": [],
+  "maxStanceDrift": 0,
+  "cardinalIdleBounds": {
+    "down": {
+      "height": 73.80642361111111,
+      "width": 37.93402777777778
+    },
+    "right": {
+      "height": 76.28038194444444,
+      "width": 43.294270833333336
+    },
+    "up": {
+      "height": 73.80642361111111,
+      "width": 42.88194444444445
+    },
+    "left": {
+      "height": 75.86805555555556,
+      "width": 39.583333333333336
+    }
+  }
+}

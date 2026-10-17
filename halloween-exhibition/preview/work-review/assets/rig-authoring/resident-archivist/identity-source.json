@@ -1,0 +1,108 @@
+{
+  "id": "resident-archivist",
+  "category": "palace-resident",
+  "label": "司書エルマ",
+  "entityIds": [
+    "resident-archivist"
+  ],
+  "entityCount": 1,
+  "interactive": true,
+  "identitySource": {
+    "kind": "original-game-character"
+  },
+  "identityLocks": [
+    "Original friendly fictional palace resident; not participant or monster.",
+    "Keep adopted age, face, clothes and accessories."
+  ],
+  "asset": {
+    "path": "maze/assets/residents/resident-archivist-walk.webp",
+    "absolutePath": "/workspace/projects/cna-animation-work/halloween-exhibition/preview/maze/assets/residents/resident-archivist-walk.webp",
+    "bytes": 226162,
+    "sha256": "d36c4ea558a59f573048d2b45d729cbfa4292ef85665a78ef1bad3f490d4fb49",
+    "manifestSHA256": "d36c4ea558a59f573048d2b45d729cbfa4292ef85665a78ef1bad3f490d4fb49",
+    "manifestHashMatches": true
+  },
+  "firstPoses": [
+    {
+      "direction": "down",
+      "atlasPath": "maze/assets/residents/resident-archivist-walk.webp",
+      "cropXYWH": [
+        0,
+        0,
+        256,
+        256
+      ],
+      "anchorNormalized": [
+        0.5,
+        0.953125
+      ],
+      "contentHeight": 223
+    },
+    {
+      "direction": "left",
+      "atlasPath": "maze/assets/residents/resident-archivist-walk.webp",
+      "cropXYWH": [
+        0,
+        256,
+        256,
+        256
+      ],
+      "anchorNormalized": [
+        0.5,
+        0.953125
+      ],
+      "contentHeight": 213
+    },
+    {
+      "direction": "right",
+      "atlasPath": "maze/assets/residents/resident-archivist-walk.webp",
+      "cropXYWH": [
+        0,
+        512,
+        256,
+        256
+      ],
+      "anchorNormalized": [
+        0.5,
+        0.953125
+      ],
+      "contentHeight": 218
+    },
+    {
+      "direction": "up",
+      "atlasPath": "maze/assets/residents/resident-archivist-walk.webp",
+      "cropXYWH": [
+        0,
+        768,
+        256,
+        256
+      ],
+      "anchorNormalized": [
+        0.5,
+        0.953125
+      ],
+      "contentHeight": 227
+    }
+  ],
+  "archetype": "biped",
+  "components": [
+    {
+      "entityId": "resident-archivist",
+      "archetype": "biped",
+      "attachment": "actor.root"
+    }
+  ],
+  "requiredRigTemplates": [
+    "biped"
+  ],
+  "generationStatus": "blocked-until-owner-pilot-visual-pass",
+  "adoptedNewRig": false,
+  "requiredDirections": [
+    "down",
+    "left",
+    "right",
+    "up",
+    "authored three-quarter turn surfaces"
+  ],
+  "partsAuthoringRule": "Use first-pose crop and every existing direction as identity references, not finished modular layers. Paint hidden joints/overlap and obscured surfaces. Preserve visible accessories and side-specific grip."
+}

@@ -1,0 +1,20 @@
+{
+  "sources": [
+    {
+      "key": "main",
+      "originalSHA256": "9fc4cdbe4e3700044ff4960ffbab53c2b6f81e63dd5023cae3cff00a106c8e35",
+      "authoringSHA256": "b9f54aad36c294b15adf61e50a8a3c8c5b2859019d0b41f54633f227c4789a4a",
+      "sourceWidth": 2048,
+      "sourceHeight": 1792,
+      "transform": {
+        "scale": 0.5,
+        "x": 0,
+        "y": 0
+      }
+    }
+  ],
+  "width": 1024,
+  "height": 1024,
+  "productionSHA256": "2e2c26872f47850b0ac22c532edc37ac468b706323c0e9602a936c72a0119c34",
+  "skeletonRescaled": false
+}

@@ -1,0 +1,912 @@
+{
+  "sources": [
+    {
+      "key": "main",
+      "originalSHA256": "9b8ac838701b561714ace9318f7c55b63993d254f78e5c3255231e0e541b1ba2",
+      "authoringSHA256": "59625ee9839361ee4bed8b985a7953cb3d4f1a2145f0ea2c3a8fd19c9d3540c4",
+      "sourceWidth": 2048,
+      "sourceHeight": 2240,
+      "transform": {
+        "scale": 0.45714285714285713,
+        "x": 0,
+        "y": 0
+      }
+    }
+  ],
+  "width": 768,
+  "height": 1280,
+  "productionSHA256": "d221a2a6e94e1a5fe5964b1aa49d880bd6c26d6aeae9582f8d5ea2e58c3bbb9b",
+  "skeletonRescaled": false,
+  "densePacking": {
+    "intermediateSize": [
+      1024,
+      1024
+    ],
+    "receipts": [
+      {
+        "sourceRect": [
+          226,
+          0,
+          229,
+          292
+        ],
+        "packedRect": [
+          0,
+          0,
+          229,
+          292
+        ],
+        "rgbaSHA256": "eac35bb841607d7eca873ef61c893e24093ce3284a38acdd471791f4b61d865d",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          456,
+          0,
+          286,
+          266
+        ],
+        "packedRect": [
+          229,
+          0,
+          286,
+          266
+        ],
+        "rgbaSHA256": "19fe8e8a7d079361c42f2a0dc67887c64d5fbc92c7d4c8ad82ae1786268c5147",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          0,
+          0,
+          225,
+          220
+        ],
+        "packedRect": [
+          515,
+          0,
+          225,
+          220
+        ],
+        "rgbaSHA256": "39dcb44835b484502dbe6faff994d463f126fff35e11f22ac822be7dc5fcc836",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          743,
+          0,
+          176,
+          202
+        ],
+        "packedRect": [
+          0,
+          292,
+          176,
+          202
+        ],
+        "rgbaSHA256": "a3d3790f2b39ae1e3861c087618e1bc9d53e4afb400f60ede5d24143555825c8",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          93,
+          305,
+          93,
+          177
+        ],
+        "packedRect": [
+          176,
+          292,
+          93,
+          177
+        ],
+        "rgbaSHA256": "ceed216461ab03d1883cf5a12b913d28bde7b5043466e48b157a5a1eb1f04eee",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          0,
+          305,
+          92,
+          177
+        ],
+        "packedRect": [
+          269,
+          292,
+          92,
+          177
+        ],
+        "rgbaSHA256": "c9c640335ff3f6f36c87a4baea3349c6d03e53a491e84475aa6fe25100986113",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          186,
+          305,
+          85,
+          174
+        ],
+        "packedRect": [
+          361,
+          292,
+          85,
+          174
+        ],
+        "rgbaSHA256": "3794e3545612c4d90e5e6983df6944e8ea8f1ea65244d3d53b51e015357e4be1",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          272,
+          305,
+          85,
+          174
+        ],
+        "packedRect": [
+          446,
+          292,
+          85,
+          174
+        ],
+        "rgbaSHA256": "409a194975f9461250d76e8229a3e3430a2f2b887210db15c216d5a8a271bff9",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          533,
+          305,
+          93,
+          164
+        ],
+        "packedRect": [
+          531,
+          292,
+          93,
+          164
+        ],
+        "rgbaSHA256": "1d01ab5ac047cdfb641f4adf2b083c043c5042a1953af2ec783fddf5a83609ef",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          357,
+          305,
+          87,
+          164
+        ],
+        "packedRect": [
+          624,
+          292,
+          87,
+          164
+        ],
+        "rgbaSHA256": "3621b71a913f615d01c24db4192d142ed91656379ee47dbfc8cfeb4c370f0ec2",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          445,
+          305,
+          87,
+          164
+        ],
+        "packedRect": [
+          0,
+          494,
+          87,
+          164
+        ],
+        "rgbaSHA256": "7d279dea99e87c8b6baeaeeec8d0eaa645e844161ac32eadea2eac5858a60742",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          626,
+          305,
+          93,
+          163
+        ],
+        "packedRect": [
+          87,
+          494,
+          93,
+          163
+        ],
+        "rgbaSHA256": "954ec1d78acb9f348f85e5e78dbe93bbc296936465e8eaf250def959b7f5c899",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          719,
+          305,
+          155,
+          148
+        ],
+        "packedRect": [
+          180,
+          494,
+          155,
+          148
+        ],
+        "rgbaSHA256": "ab341c735d0104e7fcde5ff152a98ab17b7f04e580000f8671d41a187092b4fc",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          874,
+          305,
+          61,
+          146
+        ],
+        "packedRect": [
+          335,
+          494,
+          61,
+          146
+        ],
+        "rgbaSHA256": "627bb50f3adcf339db7ee59bd3882e53da747423d27d5727434b0a7dab6b0af2",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          0,
+          483,
+          69,
+          145
+        ],
+        "packedRect": [
+          396,
+          494,
+          69,
+          145
+        ],
+        "rgbaSHA256": "4b486de93472844d75b027df4766dc8de16b12b5a882fdaa32342d511c4f627b",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          69,
+          483,
+          63,
+          145
+        ],
+        "packedRect": [
+          465,
+          494,
+          63,
+          145
+        ],
+        "rgbaSHA256": "c20d060da30d400a046dde30f778d92b0b37dda3fdca1e05ad2c3b1d28cd34c7",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          132,
+          483,
+          61,
+          145
+        ],
+        "packedRect": [
+          528,
+          494,
+          61,
+          145
+        ],
+        "rgbaSHA256": "de0c949f5aaa4940adcde05f5118434f9c120fa1f9f9634785bef921fec25ceb",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          194,
+          483,
+          103,
+          144
+        ],
+        "packedRect": [
+          589,
+          494,
+          103,
+          144
+        ],
+        "rgbaSHA256": "18483382e1a5b2cf34c687c88ff778cf816d0727e124d58136aeddf9b1647a58",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          297,
+          483,
+          105,
+          143
+        ],
+        "packedRect": [
+          0,
+          658,
+          105,
+          143
+        ],
+        "rgbaSHA256": "1387a635b2e5e5a99b731831fbdf82d143cd7cbc6e61ad39c246ba51fd59b602",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          403,
+          483,
+          102,
+          141
+        ],
+        "packedRect": [
+          105,
+          658,
+          102,
+          141
+        ],
+        "rgbaSHA256": "ff2d9220d3ae6749c200f45f6503c40fc1f1ad3936df7f8bdc341e088ca6ceb3",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          506,
+          483,
+          95,
+          140
+        ],
+        "packedRect": [
+          207,
+          658,
+          95,
+          140
+        ],
+        "rgbaSHA256": "7f9d202965bf1dffc71c3cd348c902268740c837717767ebcbc2af2efd386289",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          601,
+          483,
+          120,
+          139
+        ],
+        "packedRect": [
+          302,
+          658,
+          120,
+          139
+        ],
+        "rgbaSHA256": "60e7adbef7d1199448e1efee613e9994fed266c4df0a468dcecc55e956b85b24",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          722,
+          483,
+          122,
+          133
+        ],
+        "packedRect": [
+          422,
+          658,
+          122,
+          133
+        ],
+        "rgbaSHA256": "4970992cf7010cd5c2f9fa4cc3860f45d009334eacd279009e7d3cc7ee90ba66",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          0,
+          629,
+          117,
+          133
+        ],
+        "packedRect": [
+          544,
+          658,
+          117,
+          133
+        ],
+        "rgbaSHA256": "27f9b591bc7a20e588aa17fc281d1cbe3b35f82362c6112df3e9d726d8779489",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          118,
+          629,
+          108,
+          132
+        ],
+        "packedRect": [
+          0,
+          801,
+          108,
+          132
+        ],
+        "rgbaSHA256": "4e10cf4b07040dda44086c6378cb41c76c3ad144736d836458e70efa48c825db",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          227,
+          629,
+          108,
+          131
+        ],
+        "packedRect": [
+          108,
+          801,
+          108,
+          131
+        ],
+        "rgbaSHA256": "d1d03f65cc2078c2e438fffd018aa8bd220b06b4c487d457244500c373aa0de6",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          336,
+          629,
+          117,
+          130
+        ],
+        "packedRect": [
+          216,
+          801,
+          117,
+          130
+        ],
+        "rgbaSHA256": "b47c6758f8a4bd389d738b63fa2ed256bbe43c2b8e3fc26d92771fce3bb6bdf6",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          454,
+          629,
+          119,
+          128
+        ],
+        "packedRect": [
+          333,
+          801,
+          119,
+          128
+        ],
+        "rgbaSHA256": "d4cc6cb9fffb434c849efaf3a00ee9fa749a93d5a68bbb80a85cdce9b3f9e2d8",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          574,
+          629,
+          121,
+          125
+        ],
+        "packedRect": [
+          452,
+          801,
+          121,
+          125
+        ],
+        "rgbaSHA256": "697bb779610b6cb9c0079b3671eee81b7c7f7a5219796185ed0030ec169c089e",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          696,
+          629,
+          128,
+          123
+        ],
+        "packedRect": [
+          573,
+          801,
+          128,
+          123
+        ],
+        "rgbaSHA256": "8993f344ac10b97c4a212bc9b6b8dc869fab6369c7aad7a8aee5e90f7a887ac6",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          0,
+          762,
+          125,
+          120
+        ],
+        "packedRect": [
+          0,
+          933,
+          125,
+          120
+        ],
+        "rgbaSHA256": "362786dd6e2300a24bbb0ca415357e4e08b15514e9a97f420eab902f7bec3a8f",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          247,
+          762,
+          133,
+          119
+        ],
+        "packedRect": [
+          125,
+          933,
+          133,
+          119
+        ],
+        "rgbaSHA256": "dc89647e1bea71cd64f93972c458ccdeac1aba3f2f6c5b45e3cf7f12d1ab4b78",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          126,
+          762,
+          120,
+          119
+        ],
+        "packedRect": [
+          258,
+          933,
+          120,
+          119
+        ],
+        "rgbaSHA256": "2ae02174a45f92331287f90b126539a6c3fe889e47ab3efcedf9ebb25f99073c",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          844,
+          483,
+          86,
+          115
+        ],
+        "packedRect": [
+          378,
+          933,
+          86,
+          115
+        ],
+        "rgbaSHA256": "ccc8d79bbd66e77154bb592d02e363423f5a934c0c64d4db698d0c0e6f5ba3b1",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          824,
+          629,
+          86,
+          109
+        ],
+        "packedRect": [
+          464,
+          933,
+          86,
+          109
+        ],
+        "rgbaSHA256": "bbd361b4193510a7d3337b57e8fb25c76bd448fa29b2770fafd430a5eb744c34",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          380,
+          762,
+          153,
+          108
+        ],
+        "packedRect": [
+          550,
+          933,
+          153,
+          108
+        ],
+        "rgbaSHA256": "04d4203180d703d49071d59f9182f1709cf8d80963b72906dbec9645da774383",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          533,
+          762,
+          147,
+          106
+        ],
+        "packedRect": [
+          0,
+          1053,
+          147,
+          106
+        ],
+        "rgbaSHA256": "74b18813607112a6783f57dd786a0c877e1b9744acbf6d8cdc8d5b42d1bc2f23",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          681,
+          762,
+          137,
+          102
+        ],
+        "packedRect": [
+          147,
+          1053,
+          137,
+          102
+        ],
+        "rgbaSHA256": "802329f441284c7c1e2d74d06f683f47ca006473e2540f15bedb3a5d28ebd242",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          819,
+          762,
+          73,
+          101
+        ],
+        "packedRect": [
+          284,
+          1053,
+          73,
+          101
+        ],
+        "rgbaSHA256": "7b99f88469eeebcc0c25cce59c12d2b18574a8e802ba2aa0552ae536749f8feb",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          0,
+          882,
+          161,
+          98
+        ],
+        "packedRect": [
+          357,
+          1053,
+          161,
+          98
+        ],
+        "rgbaSHA256": "ee1421860cc7767fb323980cc5582ec1fbf4612a622fae6136b7eadc0dbf3345",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          892,
+          762,
+          44,
+          94
+        ],
+        "packedRect": [
+          518,
+          1053,
+          44,
+          94
+        ],
+        "rgbaSHA256": "2d4202800fbed17d8d794c2a8636b72d581b0fe5fa6edcbf98b6ccb88d669fba",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          161,
+          882,
+          43,
+          93
+        ],
+        "packedRect": [
+          562,
+          1053,
+          43,
+          93
+        ],
+        "rgbaSHA256": "9dc46969f294480385343c45647ca4954ed3e7ee5e4b1de7ebc084df2608e74b",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          205,
+          882,
+          43,
+          90
+        ],
+        "packedRect": [
+          605,
+          1053,
+          43,
+          90
+        ],
+        "rgbaSHA256": "4b34d8732529db89c61d56647d12e5c3c67f717506a2e35cb0e5036fc00e131f",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          248,
+          882,
+          42,
+          88
+        ],
+        "packedRect": [
+          648,
+          1053,
+          42,
+          88
+        ],
+        "rgbaSHA256": "0ac5cc9863d083ed08223e58160c51ab33b00686df879cac54d18b439ebe0d88",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          291,
+          882,
+          65,
+          77
+        ],
+        "packedRect": [
+          690,
+          1053,
+          65,
+          77
+        ],
+        "rgbaSHA256": "2a28b3edb19e4c7da787e0e77411cecef0e036cfae12450a4f27afd472270159",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          356,
+          882,
+          169,
+          73
+        ],
+        "packedRect": [
+          0,
+          1159,
+          169,
+          73
+        ],
+        "rgbaSHA256": "d71b338a599313add3ea02bfe643e40d4c74abf2006d280b82d2cc54b7e50819",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          526,
+          882,
+          180,
+          72
+        ],
+        "packedRect": [
+          169,
+          1159,
+          180,
+          72
+        ],
+        "rgbaSHA256": "ae99fe114e73cbf5582f8c135deb4ea92f90a61dcfbbffa72f767fff260cd1b9",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          706,
+          882,
+          64,
+          69
+        ],
+        "packedRect": [
+          349,
+          1159,
+          64,
+          69
+        ],
+        "rgbaSHA256": "867c2dd08db5ee80d507372645efa231a914b9edb1cadf0906e8c37c7264984b",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          771,
+          882,
+          64,
+          66
+        ],
+        "packedRect": [
+          413,
+          1159,
+          64,
+          66
+        ],
+        "rgbaSHA256": "f6b7b7eb4b0361eb1a49985fa6666c4fb20e22048876dfbc8e5c31d97bc60cd2",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          836,
+          882,
+          45,
+          47
+        ],
+        "packedRect": [
+          477,
+          1159,
+          45,
+          47
+        ],
+        "rgbaSHA256": "ffd9127c7932fbcab1afd05d8267506d9409203ae2ce6fa436c32aea70f7c98a",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          882,
+          882,
+          41,
+          43
+        ],
+        "packedRect": [
+          522,
+          1159,
+          41,
+          43
+        ],
+        "rgbaSHA256": "01ce4b34e7b52d1c007d6fbb0c9ae2d87079ca5ba01d0cad8078cf1338d76e67",
+        "byteExact": true,
+        "references": 1
+      },
+      {
+        "sourceRect": [
+          0,
+          981,
+          50,
+          42
+        ],
+        "packedRect": [
+          563,
+          1159,
+          50,
+          42
+        ],
+        "rgbaSHA256": "654c3e0f02842fd3a0911be537737b9dc1c9e7cbc10d2a42101512796eb983db",
+        "byteExact": true,
+        "references": 1
+      }
+    ]
+  }
+}

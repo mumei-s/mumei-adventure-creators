@@ -1,0 +1,368 @@
+{
+  "id": "aihan-avatar-shiba",
+  "archetype": "quadruped",
+  "newParts": 16,
+  "sourceRawSize": [
+    1254,
+    1254
+  ],
+  "contentHeight": 153,
+  "measured": [
+    {
+      "x": 197,
+      "y": 226,
+      "w": 92,
+      "h": 153
+    },
+    {
+      "x": 180,
+      "y": 215,
+      "w": 152,
+      "h": 146
+    },
+    {
+      "x": 215,
+      "y": 227,
+      "w": 73,
+      "h": 152
+    },
+    {
+      "x": 168,
+      "y": 215,
+      "w": 176,
+      "h": 146
+    }
+  ],
+  "views": [
+    {
+      "view": "down",
+      "rigBounds": {
+        "x": 197,
+        "y": 226,
+        "w": 92,
+        "h": 153
+      },
+      "neutral35": {
+        "x": 68,
+        "y": 97,
+        "w": 21,
+        "h": 35
+      },
+      "neutral60": {
+        "x": 59,
+        "y": 76,
+        "w": 36,
+        "h": 60
+      },
+      "sourceReferenceView": "down",
+      "source35Height": 35,
+      "source60Height": 60,
+      "scale35": 0.22875816993464052,
+      "scale60": 0.39215686274509803,
+      "normalization": "Actual native strips use one GLOBAL manifest.contentHeight for every direction; only the separately labeled 3x inspection normalizes each view.",
+      "projection35": {
+        "unitsToPixels": 279.77142857142854,
+        "depthScale": 0.78,
+        "groundYaw": 0,
+        "strideLength": 0.204452614379085
+      },
+      "projection60": {
+        "unitsToPixels": 163.2,
+        "depthScale": 0.78,
+        "groundYaw": 0,
+        "strideLength": 0.3504901960784314
+      },
+      "worldPixelsPerUnit": 64,
+      "displayHeightPx": [
+        35,
+        60
+      ],
+      "groundDepthScale": 0.78,
+      "minSupport": 2,
+      "maxStanceDrift": 0,
+      "minSupport60": 2,
+      "maxStanceDrift60": 0,
+      "maxUpper3DError": 1.0658141036401503e-14,
+      "maxLower3DError": 1.0658141036401503e-14,
+      "allStoppedPlanted": true,
+      "allStoppedPlanted60": true,
+      "gait": [
+        {
+          "frame": 20,
+          "contacts": {
+            "fore_near": true,
+            "hind_far": true,
+            "fore_far": false,
+            "hind_near": false
+          }
+        },
+        {
+          "frame": 45,
+          "contacts": {
+            "fore_near": false,
+            "hind_far": false,
+            "fore_far": true,
+            "hind_near": true
+          }
+        },
+        {
+          "frame": 75,
+          "contacts": {
+            "fore_near": false,
+            "hind_far": false,
+            "fore_far": true,
+            "hind_near": true
+          }
+        }
+      ]
+    },
+    {
+      "view": "right",
+      "rigBounds": {
+        "x": 180,
+        "y": 215,
+        "w": 152,
+        "h": 146
+      },
+      "neutral35": {
+        "x": 64,
+        "y": 94,
+        "w": 35,
+        "h": 33
+      },
+      "neutral60": {
+        "x": 53,
+        "y": 72,
+        "w": 59,
+        "h": 57
+      },
+      "sourceReferenceView": "right",
+      "source35Height": 35,
+      "source60Height": 60,
+      "scale35": 0.22875816993464052,
+      "scale60": 0.39215686274509803,
+      "normalization": "Actual native strips use one GLOBAL manifest.contentHeight for every direction; only the separately labeled 3x inspection normalizes each view.",
+      "projection35": {
+        "unitsToPixels": 279.77142857142854,
+        "depthScale": 0.78,
+        "groundYaw": 0,
+        "strideLength": 0.204452614379085
+      },
+      "projection60": {
+        "unitsToPixels": 163.2,
+        "depthScale": 0.78,
+        "groundYaw": 0,
+        "strideLength": 0.3504901960784314
+      },
+      "worldPixelsPerUnit": 64,
+      "displayHeightPx": [
+        35,
+        60
+      ],
+      "groundDepthScale": 0.78,
+      "minSupport": 2,
+      "maxStanceDrift": 0,
+      "minSupport60": 2,
+      "maxStanceDrift60": 0,
+      "maxUpper3DError": 1.0658141036401503e-14,
+      "maxLower3DError": 1.0658141036401503e-14,
+      "allStoppedPlanted": true,
+      "allStoppedPlanted60": true,
+      "gait": [
+        {
+          "frame": 20,
+          "contacts": {
+            "fore_near": true,
+            "hind_far": true,
+            "fore_far": false,
+            "hind_near": false
+          }
+        },
+        {
+          "frame": 45,
+          "contacts": {
+            "fore_near": false,
+            "hind_far": false,
+            "fore_far": true,
+            "hind_near": true
+          }
+        },
+        {
+          "frame": 75,
+          "contacts": {
+            "fore_near": false,
+            "hind_far": false,
+            "fore_far": true,
+            "hind_near": true
+          }
+        }
+      ]
+    },
+    {
+      "view": "up",
+      "rigBounds": {
+        "x": 215,
+        "y": 227,
+        "w": 73,
+        "h": 152
+      },
+      "neutral35": {
+        "x": 72,
+        "y": 97,
+        "w": 17,
+        "h": 35
+      },
+      "neutral60": {
+        "x": 66,
+        "y": 77,
+        "w": 29,
+        "h": 59
+      },
+      "sourceReferenceView": "up",
+      "source35Height": 35,
+      "source60Height": 60,
+      "scale35": 0.22875816993464052,
+      "scale60": 0.39215686274509803,
+      "normalization": "Actual native strips use one GLOBAL manifest.contentHeight for every direction; only the separately labeled 3x inspection normalizes each view.",
+      "projection35": {
+        "unitsToPixels": 279.77142857142854,
+        "depthScale": 0.78,
+        "groundYaw": 0,
+        "strideLength": 0.204452614379085
+      },
+      "projection60": {
+        "unitsToPixels": 163.2,
+        "depthScale": 0.78,
+        "groundYaw": 0,
+        "strideLength": 0.3504901960784314
+      },
+      "worldPixelsPerUnit": 64,
+      "displayHeightPx": [
+        35,
+        60
+      ],
+      "groundDepthScale": 0.78,
+      "minSupport": 2,
+      "maxStanceDrift": 0,
+      "minSupport60": 2,
+      "maxStanceDrift60": 0,
+      "maxUpper3DError": 1.0658141036401503e-14,
+      "maxLower3DError": 1.0658141036401503e-14,
+      "allStoppedPlanted": true,
+      "allStoppedPlanted60": true,
+      "gait": [
+        {
+          "frame": 20,
+          "contacts": {
+            "fore_near": true,
+            "hind_far": true,
+            "fore_far": false,
+            "hind_near": false
+          }
+        },
+        {
+          "frame": 45,
+          "contacts": {
+            "fore_near": false,
+            "hind_far": false,
+            "fore_far": true,
+            "hind_near": true
+          }
+        },
+        {
+          "frame": 75,
+          "contacts": {
+            "fore_near": false,
+            "hind_far": false,
+            "fore_far": true,
+            "hind_near": true
+          }
+        }
+      ]
+    },
+    {
+      "view": "left",
+      "rigBounds": {
+        "x": 168,
+        "y": 215,
+        "w": 176,
+        "h": 146
+      },
+      "neutral35": {
+        "x": 61,
+        "y": 94,
+        "w": 40,
+        "h": 34
+      },
+      "neutral60": {
+        "x": 48,
+        "y": 72,
+        "w": 69,
+        "h": 57
+      },
+      "sourceReferenceView": "left",
+      "source35Height": 35,
+      "source60Height": 60,
+      "scale35": 0.22875816993464052,
+      "scale60": 0.39215686274509803,
+      "normalization": "Actual native strips use one GLOBAL manifest.contentHeight for every direction; only the separately labeled 3x inspection normalizes each view.",
+      "projection35": {
+        "unitsToPixels": 279.77142857142854,
+        "depthScale": 0.78,
+        "groundYaw": 0,
+        "strideLength": 0.204452614379085
+      },
+      "projection60": {
+        "unitsToPixels": 163.2,
+        "depthScale": 0.78,
+        "groundYaw": 0,
+        "strideLength": 0.3504901960784314
+      },
+      "worldPixelsPerUnit": 64,
+      "displayHeightPx": [
+        35,
+        60
+      ],
+      "groundDepthScale": 0.78,
+      "minSupport": 2,
+      "maxStanceDrift": 0,
+      "minSupport60": 2,
+      "maxStanceDrift60": 0,
+      "maxUpper3DError": 1.0658141036401503e-14,
+      "maxLower3DError": 1.0658141036401503e-14,
+      "allStoppedPlanted": true,
+      "allStoppedPlanted60": true,
+      "gait": [
+        {
+          "frame": 20,
+          "contacts": {
+            "fore_near": true,
+            "hind_far": true,
+            "fore_far": false,
+            "hind_near": false
+          }
+        },
+        {
+          "frame": 45,
+          "contacts": {
+            "fore_near": false,
+            "hind_far": false,
+            "fore_far": true,
+            "hind_near": true
+          }
+        },
+        {
+          "frame": 75,
+          "contacts": {
+            "fore_near": false,
+            "hind_far": false,
+            "fore_far": true,
+            "hind_near": true
+          }
+        }
+      ]
+    }
+  ],
+  "sharedLimbParts": true,
+  "continuousTurnComplete": false
+}

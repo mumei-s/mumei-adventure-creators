@@ -1,0 +1,1869 @@
+{
+  "version": 1,
+  "id": "monster:witch",
+  "label": "witch",
+  "atlas": "main",
+  "atlases": {
+    "main": "./main.webp"
+  },
+  "width": 2048,
+  "height": 704,
+  "contentHeight": 260,
+  "locomotion": "biped",
+  "rig": {
+    "thigh": 54,
+    "shin": 56,
+    "hipHeight": 107,
+    "hipHalfWidth": 13,
+    "neckHeight": 73,
+    "shoulderHeight": 63,
+    "shoulderHalfWidth": 31,
+    "upperArm": 48,
+    "forearm": 48,
+    "headHeight": 74,
+    "hairHeight": 101,
+    "frontHairHeight": 40,
+    "torsoHeight": 92,
+    "skirtHeight": 112,
+    "tailsHeight": 125,
+    "lanternHeight": 192,
+    "waistOffset": 17
+  },
+  "anatomicalSides": {
+    "left": -1,
+    "right": 1
+  },
+  "screenSides": {
+    "left": -1,
+    "right": 1
+  },
+  "legSides": {
+    "left": -1,
+    "right": 1
+  },
+  "restHands": {
+    "left": [
+      -48,
+      -46
+    ],
+    "right": [
+      39,
+      -12
+    ]
+  },
+  "appendages": [
+    {
+      "part": "greenOrb",
+      "anchor": "leftWrist",
+      "height": 39,
+      "layer": "front",
+      "amplitude": 0.02
+    }
+  ],
+  "views": {
+    "down": {
+      "heading": 0,
+      "atlas": "main",
+      "parts": {
+        "head": {
+          "pivot": [
+            83.5,
+            134.64000000000001
+          ],
+          "contentHeight": 153,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              12,
+              2,
+              167,
+              153
+            ],
+            "component": 2
+          },
+          "rect": [
+            377,
+            234,
+            167,
+            153
+          ]
+        },
+        "backHair": {
+          "pivot": [
+            62.5,
+            59.2
+          ],
+          "contentHeight": 148,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              190,
+              10,
+              125,
+              148
+            ],
+            "component": 4
+          },
+          "rect": [
+            1261,
+            234,
+            125,
+            148
+          ]
+        },
+        "bodiceTorso": {
+          "pivot": [
+            63.5,
+            11.025
+          ],
+          "contentHeight": 147,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              336,
+              11,
+              127,
+              147
+            ],
+            "component": 5
+          },
+          "rect": [
+            1558,
+            234,
+            127,
+            147
+          ]
+        },
+        "pelvisFrontSkirt": {
+          "pivot": [
+            60,
+            12.600000000000001
+          ],
+          "contentHeight": 126,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              483,
+              29,
+              120,
+              126
+            ],
+            "component": 8
+          },
+          "rect": [
+            1479,
+            405,
+            120,
+            126
+          ]
+        },
+        "leftUpperArm": {
+          "pivot": [
+            49.02015116749899,
+            18
+          ],
+          "contentHeight": 131,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              39,
+              159,
+              121,
+              131
+            ],
+            "component": 88
+          },
+          "end": [
+            46.35137515043001,
+            107
+          ],
+          "span": 89.04000429823262,
+          "rect": [
+            945,
+            405,
+            121,
+            131
+          ]
+        },
+        "leftForearmHand": {
+          "pivot": [
+            11.4,
+            29.700000000000003
+          ],
+          "contentHeight": 54,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              182,
+              195,
+              114,
+              54
+            ],
+            "component": 94
+          },
+          "end": [
+            87.78,
+            24.3
+          ],
+          "span": 76.5706497295145,
+          "rect": [
+            1145,
+            559,
+            114,
+            54
+          ]
+        },
+        "rightUpperArm": {
+          "pivot": [
+            53.18477383704231,
+            18
+          ],
+          "contentHeight": 134,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              338,
+              159,
+              118,
+              134
+            ],
+            "component": 89
+          },
+          "end": [
+            66.44017355685993,
+            110
+          ],
+          "span": 92.95001679253286,
+          "rect": [
+            417,
+            405,
+            118,
+            134
+          ]
+        },
+        "rightForearmHand": {
+          "pivot": [
+            19.62,
+            85.02
+          ],
+          "contentHeight": 109,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              481,
+              168,
+              109,
+              109
+            ],
+            "component": 92
+          },
+          "end": [
+            78.48,
+            30.520000000000003
+          ],
+          "span": 80.21689098936706,
+          "rect": [
+            116,
+            559,
+            109,
+            109
+          ]
+        },
+        "leftUpperLeg": {
+          "pivot": [
+            30.72034222644724,
+            15
+          ],
+          "contentHeight": 131,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              70,
+              296,
+              75,
+              131
+            ],
+            "component": 102
+          },
+          "end": [
+            53.69777180059297,
+            111
+          ],
+          "span": 98.7115103209085,
+          "rect": [
+            1966,
+            234,
+            75,
+            131
+          ]
+        },
+        "leftLowerLegBoot": {
+          "pivot": [
+            24.15457263858633,
+            12
+          ],
+          "contentHeight": 162,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              210,
+              293,
+              95,
+              162
+            ],
+            "component": 98
+          },
+          "end": [
+            71.04444444444445,
+            159
+          ],
+          "span": 154.297310663439,
+          "rect": [
+            1564,
+            6,
+            95,
+            162
+          ],
+          "contactCalibration": "Measured opaque boot outsole; end is sole contact rather than bounding-box fraction."
+        },
+        "rightUpperLeg": {
+          "pivot": [
+            28.83079003283755,
+            14
+          ],
+          "contentHeight": 119,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              353,
+              297,
+              97,
+              119
+            ],
+            "component": 104
+          },
+          "end": [
+            74.19167679827795,
+            101
+          ],
+          "span": 98.11528957378205,
+          "rect": [
+            1733,
+            405,
+            97,
+            119
+          ]
+        },
+        "rightLowerLegBoot": {
+          "pivot": [
+            27.519764143510006,
+            12
+          ],
+          "contentHeight": 163,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              513,
+              293,
+              54,
+              163
+            ],
+            "component": 99
+          },
+          "end": [
+            16.39189189189189,
+            159
+          ],
+          "span": 147.42058723546157,
+          "rect": [
+            1498,
+            6,
+            54,
+            163
+          ],
+          "contactCalibration": "Measured opaque boot outsole; end is sole contact rather than bounding-box fraction."
+        },
+        "lantern": {
+          "pivot": [
+            43.52,
+            92.88
+          ],
+          "contentHeight": 216,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              35,
+              405,
+              136,
+              216
+            ],
+            "component": 106
+          },
+          "rect": [
+            6,
+            6,
+            136,
+            216
+          ],
+          "rotationOffset": -0.31,
+          "alphaIsolation": {
+            "coreThreshold": 230,
+            "antiAliasMargin": 3,
+            "purpose": "Remove faint detached sheet-line noise; unchanged retained RGBA pixels."
+          }
+        },
+        "backSkirtTails": {
+          "pivot": [
+            95.5,
+            13.200000000000001
+          ],
+          "contentHeight": 165,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              184,
+              460,
+              191,
+              165
+            ],
+            "component": 115
+          },
+          "rect": [
+            1072,
+            6,
+            191,
+            165
+          ]
+        },
+        "greenOrb": {
+          "pivot": [
+            36,
+            48.5
+          ],
+          "contentHeight": 97,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              381,
+              478,
+              72,
+              97
+            ],
+            "component": 117
+          },
+          "rect": [
+            575,
+            559,
+            72,
+            97
+          ]
+        }
+      },
+      "screenSides": {
+        "left": -1,
+        "right": 1
+      },
+      "legSides": {
+        "left": -1,
+        "right": 1
+      },
+      "rig": {},
+      "restHands": {
+        "left": [
+          -48,
+          -46
+        ],
+        "right": [
+          39,
+          -12
+        ]
+      }
+    },
+    "right": {
+      "heading": 1.5707963267948966,
+      "atlas": "main",
+      "parts": {
+        "head": {
+          "pivot": [
+            100.2,
+            139.92
+          ],
+          "contentHeight": 159,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              639,
+              0,
+              167,
+              159
+            ],
+            "component": 1
+          },
+          "rect": [
+            6,
+            234,
+            167,
+            159
+          ]
+        },
+        "backHair": {
+          "pivot": [
+            74,
+            59.2
+          ],
+          "contentHeight": 148,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              817,
+              11,
+              148,
+              148
+            ],
+            "component": 6
+          },
+          "rect": [
+            1398,
+            234,
+            148,
+            148
+          ]
+        },
+        "bodiceTorso": {
+          "pivot": [
+            53,
+            11.025
+          ],
+          "contentHeight": 147,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              978,
+              9,
+              106,
+              147
+            ],
+            "component": 3
+          },
+          "rect": [
+            1697,
+            234,
+            106,
+            147
+          ]
+        },
+        "pelvisFrontSkirt": {
+          "pivot": [
+            58.5,
+            14.200000000000001
+          ],
+          "contentHeight": 142,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              1112,
+              16,
+              117,
+              142
+            ],
+            "component": 7
+          },
+          "rect": [
+            6,
+            405,
+            117,
+            142
+          ]
+        },
+        "leftUpperArm": {
+          "pivot": [
+            72.98679289570457,
+            18
+          ],
+          "contentHeight": 132,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              664,
+              159,
+              96,
+              132
+            ],
+            "component": 90
+          },
+          "end": [
+            43.54479839739184,
+            108
+          ],
+          "span": 94.69335267081146,
+          "rect": [
+            837,
+            405,
+            96,
+            132
+          ]
+        },
+        "leftForearmHand": {
+          "pivot": [
+            13.32,
+            23.400000000000002
+          ],
+          "contentHeight": 52,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              819,
+              199,
+              111,
+              52
+            ],
+            "component": 95
+          },
+          "end": [
+            86.58,
+            28.6
+          ],
+          "span": 73.44431632195918,
+          "rect": [
+            1408,
+            559,
+            111,
+            52
+          ]
+        },
+        "rightUpperArm": {
+          "pivot": [
+            66.30681539593037,
+            18
+          ],
+          "contentHeight": 130,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              964,
+              161,
+              92,
+              130
+            ],
+            "component": 91
+          },
+          "end": [
+            39.028394593652976,
+            107
+          ],
+          "span": 93.08658464819794,
+          "rect": [
+            1172,
+            405,
+            92,
+            130
+          ]
+        },
+        "rightForearmHand": {
+          "pivot": [
+            16.65,
+            69.3
+          ],
+          "contentHeight": 99,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              1112,
+              175,
+              111,
+              99
+            ],
+            "component": 93
+          },
+          "end": [
+            82.14,
+            25.740000000000002
+          ],
+          "span": 78.65375833359776,
+          "rect": [
+            452,
+            559,
+            111,
+            99
+          ]
+        },
+        "leftUpperLeg": {
+          "pivot": [
+            41.38081525136173,
+            15
+          ],
+          "contentHeight": 127,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              695,
+              294,
+              75,
+              127
+            ],
+            "component": 100
+          },
+          "end": [
+            44.96069122673756,
+            108
+          ],
+          "span": 93.06887509795675,
+          "rect": [
+            1392,
+            405,
+            75,
+            127
+          ]
+        },
+        "leftLowerLegBoot": {
+          "pivot": [
+            36.53366145944789,
+            12
+          ],
+          "contentHeight": 159,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              839,
+              298,
+              74,
+              159
+            ],
+            "component": 105
+          },
+          "end": [
+            52.70175438596491,
+            155
+          ],
+          "span": 143.91110877510636,
+          "rect": [
+            1920,
+            6,
+            74,
+            159
+          ],
+          "contactCalibration": "Measured opaque boot outsole; end is sole contact rather than bounding-box fraction."
+        },
+        "rightUpperLeg": {
+          "pivot": [
+            36.397204680866245,
+            14
+          ],
+          "contentHeight": 120,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              972,
+              296,
+              110,
+              120
+            ],
+            "component": 103
+          },
+          "end": [
+            87.69090962133147,
+            102
+          ],
+          "span": 101.8579607420034,
+          "rect": [
+            1611,
+            405,
+            110,
+            120
+          ]
+        },
+        "rightLowerLegBoot": {
+          "pivot": [
+            31.22079190697301,
+            12
+          ],
+          "contentHeight": 161,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              1140,
+              295,
+              60,
+              161
+            ],
+            "component": 101
+          },
+          "end": [
+            14.50909090909091,
+            158
+          ],
+          "span": 146.9533291567177,
+          "rect": [
+            1671,
+            6,
+            60,
+            161
+          ],
+          "contactCalibration": "Measured opaque boot outsole; end is sole contact rather than bounding-box fraction."
+        },
+        "lantern": {
+          "pivot": [
+            49.6,
+            89.44
+          ],
+          "contentHeight": 208,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              681,
+              416,
+              155,
+              208
+            ],
+            "component": 107
+          },
+          "rect": [
+            310,
+            6,
+            155,
+            208
+          ],
+          "rotationOffset": -0.31,
+          "alphaIsolation": {
+            "coreThreshold": 230,
+            "antiAliasMargin": 3,
+            "purpose": "Remove faint detached sheet-line noise; unchanged retained RGBA pixels."
+          }
+        },
+        "backSkirtTails": {
+          "pivot": [
+            89.5,
+            13.280000000000001
+          ],
+          "contentHeight": 166,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              843,
+              460,
+              179,
+              166
+            ],
+            "component": 116
+          },
+          "rect": [
+            881,
+            6,
+            179,
+            166
+          ]
+        },
+        "greenOrb": {
+          "pivot": [
+            34.5,
+            46
+          ],
+          "contentHeight": 92,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              1022,
+              490,
+              69,
+              92
+            ],
+            "component": 118
+          },
+          "rect": [
+            783,
+            559,
+            69,
+            92
+          ]
+        }
+      },
+      "screenSides": {
+        "left": -1,
+        "right": 1
+      },
+      "legSides": {
+        "left": -1,
+        "right": 1
+      },
+      "rig": {
+        "shoulderHalfWidth": 4,
+        "hipHalfWidth": 4
+      },
+      "restHands": {
+        "left": [
+          19.999999999999996,
+          -50
+        ],
+        "right": [
+          20.000000000000004,
+          -8
+        ]
+      }
+    },
+    "up": {
+      "heading": 3.141592653589793,
+      "atlas": "main",
+      "parts": {
+        "head": {
+          "pivot": [
+            90,
+            138.16
+          ],
+          "contentHeight": 157,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              11,
+              636,
+              180,
+              157
+            ],
+            "component": 170
+          },
+          "rect": [
+            185,
+            234,
+            180,
+            157
+          ]
+        },
+        "backHair": {
+          "pivot": [
+            61,
+            60.400000000000006
+          ],
+          "contentHeight": 151,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              191,
+              641,
+              122,
+              151
+            ],
+            "component": 172
+          },
+          "rect": [
+            556,
+            234,
+            122,
+            151
+          ]
+        },
+        "bodiceTorso": {
+          "pivot": [
+            60.5,
+            10.575
+          ],
+          "contentHeight": 141,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              333,
+              651,
+              121,
+              141
+            ],
+            "component": 176
+          },
+          "rect": [
+            135,
+            405,
+            121,
+            141
+          ]
+        },
+        "pelvisFrontSkirt": {
+          "pivot": [
+            69.5,
+            14.4
+          ],
+          "contentHeight": 144,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              472,
+              647,
+              139,
+              144
+            ],
+            "component": 174
+          },
+          "rect": [
+            1815,
+            234,
+            139,
+            144
+          ]
+        },
+        "leftUpperArm": {
+          "pivot": [
+            90.30870686112114,
+            18
+          ],
+          "contentHeight": 134,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              14,
+              792,
+              143,
+              134
+            ],
+            "component": 251
+          },
+          "end": [
+            83.63654469838605,
+            110
+          ],
+          "span": 92.24162698004537,
+          "rect": [
+            547,
+            405,
+            143,
+            134
+          ]
+        },
+        "leftForearmHand": {
+          "pivot": [
+            102.5,
+            24.3
+          ],
+          "contentHeight": 54,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              191,
+              827,
+              125,
+              54
+            ],
+            "component": 258
+          },
+          "end": [
+            27.5,
+            29.700000000000003
+          ],
+          "span": 75.19414870852651,
+          "rect": [
+            1271,
+            559,
+            125,
+            54
+          ]
+        },
+        "rightUpperArm": {
+          "pivot": [
+            54.88671799807507,
+            18
+          ],
+          "contentHeight": 133,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              334,
+              792,
+              123,
+              133
+            ],
+            "component": 252
+          },
+          "end": [
+            64.66428355743442,
+            109
+          ],
+          "span": 91.52377171132956,
+          "rect": [
+            702,
+            405,
+            123,
+            133
+          ]
+        },
+        "rightForearmHand": {
+          "pivot": [
+            86.1,
+            71.39999999999999
+          ],
+          "contentHeight": 102,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              493,
+              812,
+              105,
+              102
+            ],
+            "component": 255
+          },
+          "end": [
+            28.35,
+            25.5
+          ],
+          "span": 73.76904838751818,
+          "rect": [
+            335,
+            559,
+            105,
+            102
+          ]
+        },
+        "leftUpperLeg": {
+          "pivot": [
+            30.833472483128087,
+            13
+          ],
+          "contentHeight": 112,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              74,
+              928,
+              61,
+              112
+            ],
+            "component": 271
+          },
+          "end": [
+            21.090404499349166,
+            95
+          ],
+          "span": 82.57679682414751,
+          "rect": [
+            1963,
+            405,
+            61,
+            112
+          ]
+        },
+        "leftLowerLegBoot": {
+          "pivot": [
+            29.55873136127277,
+            11
+          ],
+          "contentHeight": 150,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              216,
+              924,
+              50,
+              150
+            ],
+            "component": 265
+          },
+          "end": [
+            21.45,
+            147
+          ],
+          "span": 136.2415190912421,
+          "rect": [
+            1142,
+            234,
+            50,
+            150
+          ],
+          "contactCalibration": "Measured opaque boot outsole; end is sole contact rather than bounding-box fraction."
+        },
+        "rightUpperLeg": {
+          "pivot": [
+            53.66851402840319,
+            12
+          ],
+          "contentHeight": 106,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              342,
+              929,
+              86,
+              106
+            ],
+            "component": 272
+          },
+          "end": [
+            24.043469235240387,
+            90
+          ],
+          "span": 83.43646252686473,
+          "rect": [
+            237,
+            559,
+            86,
+            106
+          ]
+        },
+        "rightLowerLegBoot": {
+          "pivot": [
+            22.960907186759606,
+            11
+          ],
+          "contentHeight": 150,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              513,
+              925,
+              45,
+              150
+            ],
+            "component": 266
+          },
+          "end": [
+            22.11764705882353,
+            147
+          ],
+          "span": 136.00261426768003,
+          "rect": [
+            1204,
+            234,
+            45,
+            150
+          ],
+          "contactCalibration": "Measured opaque boot outsole; end is sole contact rather than bounding-box fraction."
+        },
+        "lantern": {
+          "pivot": [
+            46.08,
+            90.3
+          ],
+          "contentHeight": 210,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              30,
+              1030,
+              144,
+              210
+            ],
+            "component": 273
+          },
+          "rect": [
+            154,
+            6,
+            144,
+            210
+          ],
+          "rotationOffset": 0.05,
+          "alphaIsolation": {
+            "coreThreshold": 230,
+            "antiAliasMargin": 3,
+            "purpose": "Remove faint detached sheet-line noise; unchanged retained RGBA pixels."
+          }
+        },
+        "backSkirtTails": {
+          "pivot": [
+            105.5,
+            13.200000000000001
+          ],
+          "contentHeight": 165,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              183,
+              1079,
+              211,
+              165
+            ],
+            "component": 280
+          },
+          "rect": [
+            1275,
+            6,
+            211,
+            165
+          ]
+        },
+        "greenOrb": {
+          "pivot": [
+            32,
+            41
+          ],
+          "contentHeight": 82,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              390,
+              1107,
+              64,
+              82
+            ],
+            "component": 282
+          },
+          "rect": [
+            942,
+            559,
+            64,
+            82
+          ]
+        }
+      },
+      "screenSides": {
+        "left": 1,
+        "right": -1
+      },
+      "legSides": {
+        "left": 1,
+        "right": -1
+      },
+      "rig": {},
+      "restHands": {
+        "left": [
+          48,
+          -46
+        ],
+        "right": [
+          -39,
+          -12
+        ]
+      }
+    },
+    "left": {
+      "heading": -1.5707963267948966,
+      "atlas": "main",
+      "parts": {
+        "head": {
+          "pivot": [
+            66,
+            140.8
+          ],
+          "contentHeight": 160,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              633,
+              632,
+              165,
+              160
+            ],
+            "component": 169
+          },
+          "rect": [
+            1743,
+            6,
+            165,
+            160
+          ]
+        },
+        "backHair": {
+          "pivot": [
+            72.5,
+            60.400000000000006
+          ],
+          "contentHeight": 151,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              818,
+              641,
+              145,
+              151
+            ],
+            "component": 173
+          },
+          "rect": [
+            690,
+            234,
+            145,
+            151
+          ]
+        },
+        "bodiceTorso": {
+          "pivot": [
+            56,
+            11.325
+          ],
+          "contentHeight": 151,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              964,
+              639,
+              112,
+              151
+            ],
+            "component": 171
+          },
+          "rect": [
+            847,
+            234,
+            112,
+            151
+          ]
+        },
+        "pelvisFrontSkirt": {
+          "pivot": [
+            68.5,
+            14
+          ],
+          "contentHeight": 140,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              1106,
+              649,
+              137,
+              140
+            ],
+            "component": 175
+          },
+          "rect": [
+            268,
+            405,
+            137,
+            140
+          ]
+        },
+        "leftUpperArm": {
+          "pivot": [
+            29.231681142895468,
+            18
+          ],
+          "contentHeight": 131,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              704,
+              793,
+              82,
+              131
+            ],
+            "component": 253
+          },
+          "end": [
+            37.509935572607496,
+            107
+          ],
+          "span": 89.38416804111927,
+          "rect": [
+            1078,
+            405,
+            82,
+            131
+          ]
+        },
+        "leftForearmHand": {
+          "pivot": [
+            94.3,
+            24.400000000000002
+          ],
+          "contentHeight": 61,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              815,
+              824,
+              115,
+              61
+            ],
+            "component": 257
+          },
+          "end": [
+            25.3,
+            33.550000000000004
+          ],
+          "span": 69.60404083097475,
+          "rect": [
+            1018,
+            559,
+            115,
+            61
+          ]
+        },
+        "rightUpperArm": {
+          "pivot": [
+            33.887776123667315,
+            18
+          ],
+          "contentHeight": 130,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              978,
+              794,
+              104,
+              130
+            ],
+            "component": 254
+          },
+          "end": [
+            55.99112726218578,
+            107
+          ],
+          "span": 91.70364295682394,
+          "rect": [
+            1276,
+            405,
+            104,
+            130
+          ]
+        },
+        "rightForearmHand": {
+          "pivot": [
+            91.83999999999999,
+            62.400000000000006
+          ],
+          "contentHeight": 96,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              1116,
+              812,
+              112,
+              96
+            ],
+            "component": 256
+          },
+          "end": [
+            28,
+            24
+          ],
+          "span": 74.49903086617972,
+          "rect": [
+            659,
+            559,
+            112,
+            96
+          ]
+        },
+        "leftUpperLeg": {
+          "pivot": [
+            58.31347576638518,
+            13
+          ],
+          "contentHeight": 110,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              677,
+              927,
+              98,
+              110
+            ],
+            "component": 270
+          },
+          "end": [
+            20.505509905089497,
+            93
+          ],
+          "span": 88.48413576776856,
+          "rect": [
+            6,
+            559,
+            98,
+            110
+          ]
+        },
+        "leftLowerLegBoot": {
+          "pivot": [
+            39.73196827647082,
+            12
+          ],
+          "contentHeight": 151,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              836,
+              926,
+              74,
+              151
+            ],
+            "component": 267
+          },
+          "end": [
+            25.39189189189189,
+            148
+          ],
+          "span": 136.75393153659445,
+          "rect": [
+            971,
+            234,
+            74,
+            151
+          ],
+          "contactCalibration": "Measured opaque boot outsole; end is sole contact rather than bounding-box fraction."
+        },
+        "rightUpperLeg": {
+          "pivot": [
+            73.47295053373334,
+            13
+          ],
+          "contentHeight": 113,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              950,
+              926,
+              109,
+              113
+            ],
+            "component": 268
+          },
+          "end": [
+            22.460594518181104,
+            96
+          ],
+          "span": 97.42310027020002,
+          "rect": [
+            1842,
+            405,
+            109,
+            113
+          ]
+        },
+        "rightLowerLegBoot": {
+          "pivot": [
+            24.520346446666842,
+            12
+          ],
+          "contentHeight": 151,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              1149,
+              926,
+              73,
+              151
+            ],
+            "component": 269
+          },
+          "end": [
+            52.75,
+            149
+          ],
+          "span": 139.87820895243553,
+          "rect": [
+            1057,
+            234,
+            73,
+            151
+          ],
+          "contactCalibration": "Measured opaque boot outsole; end is sole contact rather than bounding-box fraction."
+        },
+        "lantern": {
+          "pivot": [
+            54.72,
+            88.58
+          ],
+          "contentHeight": 206,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              649,
+              1034,
+              171,
+              206
+            ],
+            "component": 274
+          },
+          "rect": [
+            477,
+            6,
+            171,
+            206
+          ],
+          "rotationOffset": 0.05,
+          "alphaIsolation": {
+            "coreThreshold": 230,
+            "antiAliasMargin": 3,
+            "purpose": "Remove faint detached sheet-line noise; unchanged retained RGBA pixels."
+          }
+        },
+        "backSkirtTails": {
+          "pivot": [
+            104.5,
+            13.36
+          ],
+          "contentHeight": 167,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              820,
+              1078,
+              209,
+              167
+            ],
+            "component": 279
+          },
+          "rect": [
+            660,
+            6,
+            209,
+            167
+          ]
+        },
+        "greenOrb": {
+          "pivot": [
+            33,
+            42.5
+          ],
+          "contentHeight": 85,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              1025,
+              1101,
+              66,
+              85
+            ],
+            "component": 281
+          },
+          "rect": [
+            864,
+            559,
+            66,
+            85
+          ]
+        }
+      },
+      "screenSides": {
+        "left": 1,
+        "right": -1
+      },
+      "legSides": {
+        "left": 1,
+        "right": -1
+      },
+      "rig": {
+        "shoulderHalfWidth": 4,
+        "hipHalfWidth": 4
+      },
+      "restHands": {
+        "left": [
+          -20.000000000000004,
+          -42
+        ],
+        "right": [
+          -19.999999999999996,
+          -16
+        ]
+      }
+    }
+  },
+  "directions": [
+    "down",
+    "right",
+    "up",
+    "left"
+  ],
+  "continuousTurnComplete": false,
+  "attackArtComplete": false,
+  "review": {
+    "passed": false,
+    "status": "measured-calibration-awaiting-independent-native-review",
+    "nativeSizes": [
+      100,
+      220
+    ],
+    "source": "Original approved game monster + NEW independently drawn modular sheets"
+  },
+  "provenance": {
+    "method": "built-in-imagegen",
+    "newJointOverlapsPainted": true,
+    "bodyWarp": false,
+    "fullBodyCrossfade": false,
+    "componentPacking": "Alpha connected-component separation and unchanged-pixel dense atlas packing.",
+    "originalAssetsChanged": false,
+    "sourceFiles": [
+      {
+        "name": "parts-four-view-original-v1.png",
+        "bytes": 2715947,
+        "sha256": "5adc0d7474535d271806b4a141023bd594eeac407bcb3bb2be0bae7d6ae0b079",
+        "size": [
+          1254,
+          1254
+        ]
+      }
+    ],
+    "sourceWholeBodySlicing": false,
+    "authoringPixelMethod": "Existing NEW-painted connected components packed without resampling; measured source pivots/outsole endpoints and physical rig dimensions. Only detached alpha noise and hidden NEW neck overlap excluded."
+  },
+  "archetype": "biped",
+  "calibrationStatus": "Measured per-part source pivots, outsole contacts, garment lengths and prop grips; actual canonical owner rig checked at 100/220px.",
+  "measuredNeutralBounds": {
+    "down": {
+      "x": 310,
+      "y": 405,
+      "w": 235,
+      "h": 248
+    },
+    "right": {
+      "x": 333,
+      "y": 405,
+      "w": 204,
+      "h": 260
+    },
+    "up": {
+      "x": 320,
+      "y": 405,
+      "w": 160,
+      "h": 246
+    },
+    "left": {
+      "x": 322,
+      "y": 405,
+      "w": 159,
+      "h": 258
+    }
+  }
+}

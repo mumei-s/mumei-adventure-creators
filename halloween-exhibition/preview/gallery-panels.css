@@ -32,13 +32,15 @@ body[data-layout-page=gallery] .gallery-panel[open] .gallery-panel-art{animation
 body[data-layout-page=gallery] :is(.visitor-settings-dialog,.pwa-guide).gallery-panel[open]{animation:panel-dialog-arrive .32s cubic-bezier(.2,.7,.2,1) both}
 body[data-layout-page=gallery] .gallery-panel :is(.dialog-intro,.privacy,.detail-copy,.detail-creator){color:var(--panel-muted)}
 body[data-layout-page=gallery] .gallery-panel :is(h2,.eyebrow){color:var(--panel-ink)}
+body[data-layout-page=gallery] #roster.gallery-panel #results{color:var(--panel-ink)}
 body[data-layout-page=gallery] #roster.gallery-panel .roster-card{
+ position:relative;
  background:radial-gradient(ellipse at 0 0,var(--panel-wash),transparent 70%),linear-gradient(135deg,var(--panel-card),var(--panel-base));
  border-color:var(--panel-edge);box-shadow:inset 0 0 0 4px #d6aa7509,0 5px 16px #100b231a;
  animation:panel-card-arrive .48s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--card-order,0)*45ms);
 }
 body[data-layout-page=gallery] #roster.gallery-panel .roster-thumb{border-color:var(--panel-edge);box-shadow:0 0 0 3px var(--panel-wash),0 5px 14px #120c231f}
-body[data-layout-page=gallery] #roster.gallery-panel .roster-card::before{content:'';inset:auto 10px 8px auto;width:30px;height:1px;background:linear-gradient(90deg,transparent,var(--panel-edge));pointer-events:none}
+body[data-layout-page=gallery] #roster.gallery-panel .roster-card::before{content:'';position:absolute;inset:auto 10px 8px auto;width:30px;height:1px;background:linear-gradient(90deg,transparent,var(--panel-edge));pointer-events:none}
 body[data-layout-page=gallery] #roster.gallery-panel .roster-card::after{border-color:var(--panel-edge);opacity:.24}
 body[data-layout-page=gallery] #detail.gallery-panel :is(.detail-art,.profile-fallback){border-color:var(--panel-edge);box-shadow:0 8px 25px #100b2324}
 body[data-layout-page=gallery] #detail.gallery-panel .work-link{border-color:var(--panel-edge);background:linear-gradient(110deg,var(--panel-wash),transparent 65%);border-radius:12px}

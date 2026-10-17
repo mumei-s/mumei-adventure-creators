@@ -64,7 +64,7 @@ test('both themes use original local illustrations and reserve an untouchable he
  assert.match(css,/\.gallery-panel-art \*\{pointer-events:none\}/);
  assert.doesNotMatch(css,/object-fit|object-position|text-size-adjust|zoom:|font-size:[1-9]/);
  for(const name of ['book','ghost','lantern','butterfly','branch']){const url=new URL(`../assets/panel-magic/${name}.svg`,import.meta.url);assert.ok((await stat(url)).size<2500);const svg=await readFile(url,'utf8');assert.match(svg,/viewBox=/);assert.doesNotMatch(svg,/<(?:script|image|text)|https?:\/\/(?!www\.w3\.org)/);}
- for(const name of ['gallery-panels.js','gallery-panels.css'])assert.ok(html.includes(name+'?v=20261017-panels1'));
+ for(const name of ['gallery-panels.js','gallery-panels.css'])assert.ok(html.includes(name+'?v='+(name.endsWith('.css')?'20261017-panels2':'20261017-panels1')));
  assert.ok(GALLERY_PANEL_SELECTOR.includes('dialog#detail'));
 });
 
@@ -77,4 +77,28 @@ test('motion is optional and genuine loading/exit lifecycle is never delayed or 
  assert.match(css,/detail-image-loading\[data-state=error\]/);
  for(const rule of css.matchAll(/([^{}]*app-ended-screen[^{}]*)\{([^}]+)\}/g))assert.doesNotMatch(rule[2],/animation|transition/);
  assert.doesNotMatch(js,/setTimeout|setInterval|requestAnimationFrame|fetch\(|showModal|\.close\(|\.focus\(|innerHTML|localStorage|sessionStorage/);
+});
+
+
+test('roster ornaments stay out of both theme grids and result counts keep readable contrast',async()=>{
+ const css=await readFile(new URL('../gallery-panels.css',import.meta.url),'utf8');
+ const rule=selector=>{const start=css.indexOf(selector+'{');assert.ok(start>=0,selector);return css.slice(start+selector.length+1,css.indexOf('}',start));};
+ const card='body[data-layout-page=gallery] #roster.gallery-panel .roster-card';
+ // Neither declaration may depend on Halloween-only rules: otherwise ::before
+ // becomes normal mode's first grid item and moves the copy into the portrait column.
+ assert.match(rule(card),/(?:^|;)\s*position:relative;/);
+ assert.match(rule(card+'::before'),/(?:^|;)\s*position:absolute;/);
+ assert.match(rule(card+'::before'),/pointer-events:none/);
+ assert.match(rule('body[data-layout-page=gallery] #roster.gallery-panel #results'),/color:var\(--panel-ink\)/);
+ const rgb=hex=>hex.match(/../g).map(value=>parseInt(value,16));
+ const luminance=values=>values.map(value=>value/255).map(value=>value<=.04045?value/12.92:((value+.055)/1.055)**2.4).reduce((sum,value,index)=>sum+value*[.2126,.7152,.0722][index],0);
+ for(const selector of ['body[data-layout-page=gallery]','body[data-layout-page=gallery][data-mode=normal]']){
+  const variables=rule(selector),color=name=>rgb(variables.match(new RegExp('--panel-'+name+':#([a-f0-9]+)'))[1]);
+  const ink=luminance(color('ink')),wash=color('wash'),alpha=wash[3]/255;
+  for(const base of [color('top'),color('base')])for(const strength of [0,alpha]){
+   const background=luminance(base.map((channel,index)=>channel*(1-strength)+wash[index]*strength));
+   const ratio=(Math.max(ink,background)+.05)/(Math.min(ink,background)+.05);
+   assert.ok(ratio>=4.5,`${selector} result count contrast ${ratio.toFixed(2)}:1`);
+  }
+ }
 });

@@ -34,3 +34,19 @@ test('visual companions have no independent talk buttons or application dialogue
  }finally{globalThis.document=prior;}
  assert(app.includes("find(npc=>npc.id===id&&npc.interactive!==false)"));
 });
+
+test('CNA guest dialogue links only to its verified profile and explicitly keeps the article pending',async()=>{
+ const {renderCreatorConversation}=await import('../creator-ui.js');const {compileCharacterRoster}=await import('../creator-runtime.js');const previous=globalThis.document;
+ const archive=JSON.parse(fs.readFileSync(new URL('../../data/archive.json',import.meta.url))),manifest=JSON.parse(fs.readFileSync(new URL('../data/creator-characters.json',import.meta.url)));
+ const guests=compileCharacterRoster(archive,manifest,2026).npcs.filter(c=>c.participationRole==='profile-guest');assert.equal(guests.length,3);
+ const flatten=node=>[node,...node.children.flatMap(flatten)];
+ try{globalThis.document={createElement:tag=>fakeElement(tag)};
+  for(const guest of guests){const container=fakeElement('main');renderCreatorConversation(container,guest);const nodes=flatten(container),links=nodes.filter(n=>n.tag==='a');
+   assert.equal(links.length,1);assert.equal(links[0].href,'https://note.com/grand_daisy8632');assert.equal(links[0].textContent,'公式プロフィールを見る ↗');assert.equal(links[0].rel,'noopener noreferrer');
+   assert(nodes.some(n=>n.textContent?.includes('参加作品は投稿待ちです')));assert(!nodes.some(n=>n.textContent?.includes('作者の参加記事を読む')));
+  }
+  for(const guest of [{...guests[0],profileURL:'https://note.com/other'},{...guests[0],articleURL:'https://note.com/grand_daisy8632/n/n123'},{...guests[0],creatorId:'other'}]){
+   const container=fakeElement('main');renderCreatorConversation(container,guest);assert.equal(flatten(container).filter(n=>n.tag==='a').length,0);
+  }
+ }finally{globalThis.document=previous;}
+});

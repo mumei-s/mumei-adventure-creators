@@ -1,0 +1,280 @@
+{
+  "schemaVersion": 1,
+  "file": "residents-atlas.webp",
+  "width": 1280,
+  "height": 640,
+  "columns": 5,
+  "rows": 2,
+  "cellWidth": 256,
+  "cellHeight": 320,
+  "animationReady": false,
+  "animationLimitations": [
+    "One authored still pose per resident; no walk, turn, attack or intermediate body frames"
+  ],
+  "sprites": {
+    "keeper": {
+      "frame": [
+        0,
+        0,
+        256,
+        320
+      ],
+      "anchorX": 0.5,
+      "anchorY": 0.95,
+      "contentHeight": 280,
+      "bounds": [
+        43,
+        24,
+        170,
+        280
+      ],
+      "sourceFrame": [
+        62,
+        5,
+        265,
+        438
+      ],
+      "heightRatio": 1,
+      "pose": "static-front-three-quarter",
+      "walkingFrames": 0
+    },
+    "baker": {
+      "frame": [
+        256,
+        0,
+        256,
+        320
+      ],
+      "anchorX": 0.5,
+      "anchorY": 0.95,
+      "contentHeight": 275,
+      "bounds": [
+        286,
+        29,
+        196,
+        275
+      ],
+      "sourceFrame": [
+        388,
+        12,
+        307,
+        429
+      ],
+      "heightRatio": 1,
+      "pose": "static-front-three-quarter",
+      "walkingFrames": 0
+    },
+    "sailor": {
+      "frame": [
+        512,
+        0,
+        256,
+        320
+      ],
+      "anchorX": 0.5,
+      "anchorY": 0.95,
+      "contentHeight": 285,
+      "bounds": [
+        552,
+        19,
+        176,
+        285
+      ],
+      "sourceFrame": [
+        757,
+        0,
+        275,
+        445
+      ],
+      "heightRatio": 1,
+      "pose": "static-front-three-quarter",
+      "walkingFrames": 0
+    },
+    "gardener": {
+      "frame": [
+        768,
+        0,
+        256,
+        320
+      ],
+      "anchorX": 0.5,
+      "anchorY": 0.95,
+      "contentHeight": 276,
+      "bounds": [
+        801,
+        28,
+        191,
+        276
+      ],
+      "sourceFrame": [
+        1139,
+        11,
+        299,
+        432
+      ],
+      "heightRatio": 1,
+      "pose": "static-front-three-quarter",
+      "walkingFrames": 0
+    },
+    "cat": {
+      "frame": [
+        1024,
+        0,
+        256,
+        320
+      ],
+      "anchorX": 0.5,
+      "anchorY": 0.95,
+      "contentHeight": 174,
+      "bounds": [
+        1086,
+        130,
+        132,
+        174
+      ],
+      "sourceFrame": [
+        1504,
+        165,
+        207,
+        272
+      ],
+      "heightRatio": 0.62,
+      "pose": "static-front-three-quarter",
+      "walkingFrames": 0
+    },
+    "maskmaker": {
+      "frame": [
+        0,
+        320,
+        256,
+        320
+      ],
+      "anchorX": 0.5,
+      "anchorY": 0.95,
+      "contentHeight": 279,
+      "bounds": [
+        27,
+        345,
+        202,
+        279
+      ],
+      "sourceFrame": [
+        30,
+        450,
+        315,
+        436
+      ],
+      "heightRatio": 1,
+      "pose": "static-front-three-quarter",
+      "walkingFrames": 0
+    },
+    "merchant": {
+      "frame": [
+        256,
+        320,
+        256,
+        320
+      ],
+      "anchorX": 0.5,
+      "anchorY": 0.95,
+      "contentHeight": 282,
+      "bounds": [
+        289,
+        342,
+        190,
+        282
+      ],
+      "sourceFrame": [
+        400,
+        447,
+        297,
+        440
+      ],
+      "heightRatio": 1,
+      "pose": "static-front-three-quarter",
+      "walkingFrames": 0
+    },
+    "clocksmith": {
+      "frame": [
+        512,
+        320,
+        256,
+        320
+      ],
+      "anchorX": 0.5,
+      "anchorY": 0.95,
+      "contentHeight": 282,
+      "bounds": [
+        546,
+        342,
+        188,
+        282
+      ],
+      "sourceFrame": [
+        749,
+        446,
+        294,
+        441
+      ],
+      "heightRatio": 1,
+      "pose": "static-front-three-quarter",
+      "walkingFrames": 0
+    },
+    "archivist": {
+      "frame": [
+        768,
+        320,
+        256,
+        320
+      ],
+      "anchorX": 0.5,
+      "anchorY": 0.95,
+      "contentHeight": 282,
+      "bounds": [
+        820,
+        342,
+        152,
+        282
+      ],
+      "sourceFrame": [
+        1141,
+        445,
+        237,
+        440
+      ],
+      "heightRatio": 1,
+      "pose": "static-front-three-quarter",
+      "walkingFrames": 0
+    },
+    "innkeeper": {
+      "frame": [
+        1024,
+        320,
+        256,
+        320
+      ],
+      "anchorX": 0.5,
+      "anchorY": 0.95,
+      "contentHeight": 279,
+      "bounds": [
+        1054,
+        345,
+        196,
+        279
+      ],
+      "sourceFrame": [
+        1447,
+        449,
+        307,
+        436
+      ],
+      "heightRatio": 1,
+      "pose": "static-front-three-quarter",
+      "walkingFrames": 0
+    }
+  },
+  "bytes": 297456,
+  "decodedBytes": 3276800,
+  "sha256": "d451bb82168db305de58dab2c1cc79ae9708c9badca385f77c81e3b1a46f8006",
+  "pipeline": "Measured10separate alpha-connected figures; common proportional0.64scale preserves relativecatheight; cellbaseline304. No painted details added or deformed."
+}

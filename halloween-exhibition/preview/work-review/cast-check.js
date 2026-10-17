@@ -1,0 +1,23 @@
+const root=document.getElementById('roster'),status=document.getElementById('load-status'),retry=document.getElementById('retry');
+const el=(tag,text,cls)=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=text;if(cls)node.className=cls;return node;};
+function image(src,alt){const node=document.createElement('img');node.src=src;node.alt=alt;node.loading='lazy';node.decoding='async';return node;}
+function link(href,text,cls){const node=el('a',text,cls);node.href=href;if(href.startsWith('https://')){node.target='_blank';node.rel='noopener noreferrer';}return node;}
+function date(value){if(!value)return '登録済み資料';return new Intl.DateTimeFormat('ja-JP',{timeZone:'Asia/Tokyo',year:'numeric',month:'long',day:'numeric'}).format(new Date(value));}
+function renderCreator(c){
+ const card=el('article',undefined,'creator'+(c.marimo?' marimo':''));if(c.marimo)card.id='marimo';
+ const heading=el('div',undefined,'creator-heading');heading.append(el('h2',c.name),el('span',c.submitted?'提出済み':'投稿待ち','status-badge'+(c.submitted?'':' pending')));card.append(heading);
+ const row=el('div',undefined,'compare-row'),official=el('div',undefined,'official'),adopted=el('div',undefined,'adopted');
+ official.append(el('p','公式アイコン','column-heading'));const avatar=el('div',undefined,'avatar-frame');avatar.append(image(c.avatar,c.name+'の記録済み公式アイコン'));official.append(avatar,el('p',`記録：${date(c.referenceRecordedDateUTC)}\n取得：${date(c.fetchDateUTC)}`,'reference-note'),link(c.profileURL,'プロフィール ↗'));
+ adopted.append(el('p','採用中のゲーム画像','column-heading'));const gallery=el('div',undefined,'adopted-gallery');
+ for(const role of c.characters){const fig=el('figure',undefined,'role'),frame=el('div',undefined,'game-frame');frame.append(image(role.preview,c.name+'：'+role.description));fig.append(frame,el('figcaption',role.description));const details=el('details'),summary=el('summary','全方向・歩行の元画像');details.append(summary);const sheet=el('div',undefined,'frame-sheet'),open=link(role.contact,'');open.append(image(role.contact,c.name+'：'+role.description+'の全方向と歩行姿勢'));sheet.append(open,el('p','画像を押すと拡大できます。'));details.append(sheet);fig.append(details);gallery.append(fig);}
+ if(!c.characters.length)gallery.append(el('p',c.pendingVisuals?'アイコンの三人を追加する準備中です。記事は未提出のままです。':'採用画像の確認中です。','empty-character'));
+ adopted.append(gallery);row.append(official,adopted);card.append(row);
+ if(c.note)card.append(el('p',c.note,'creator-note'));
+ const links=el('nav',undefined,'creator-links');links.setAttribute('aria-label',c.name+'のリンク');for(const article of c.articles)links.append(link(article.url,article.introduction?'企画紹介を読む ↗':'登録記事を読む ↗'));links.append(link(c.profileURL,'公式プロフィール ↗'));card.append(links);
+ if(c.userReference){const reference=el('section',undefined,'article-comparison');reference.append(el('h3','今回ご指定いただいた三人'));const fig=el('figure');fig.append(image(c.userReference,'CNA運営の黒髪・星のツインテール・橙髪と眼鏡の三人'),el('figcaption','今回採用した添付参照の人物部分です。記事は未提出のまま、プロフィールへ案内するゲストとして扱います。'));reference.append(fig,link(c.userReferenceProvenance,'添付参照と制作元の記録'));card.append(reference);}
+ if(c.marimo&&c.articleCover){const compare=el('section',undefined,'article-comparison');compare.append(el('h3','添付で示された登録記事の表紙'));const fig=el('figure');fig.append(image(c.articleCover,'まりもさんの登録記事の表紙。仮面と緑・金のドレス、頭上の猫'),el('figcaption','登録記事の表紙。上のゲーム画像と同じクリエイターですが、衣装の表現が異なります。'));compare.append(fig);if(c.articleSource){const inner=el('figure',undefined,'article-source');inner.append(image(c.articleSource,'採用画像の出典となった、同じ記事内の帽子姿と頭上の猫のイラスト'),el('figcaption','こちらは既存manifestが採用元として記録している、同じ記事内の別イラストです。'));compare.append(inner);}compare.append(el('p','登録・提出の欠落ではありません。ゲームで実際に見つからない場所や条件の確認とは分けて扱い、採用画像は自動で置き換えていません。'));card.append(compare);}
+ return card;
+}
+let request=0;
+async function load(){const token=++request;retry.hidden=true;status.hidden=false;status.textContent='比較画像を準備しています…';const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),10000);try{const response=await fetch('./evidence/cast-comparison/gallery.json',{cache:'no-store',signal:controller.signal});if(!response.ok)throw Error('fetch');const data=await response.json();if(token!==request)return;if(!Array.isArray(data.creators)||data.creators.length!==15)throw Error('invalid roster');const fragment=document.createDocumentFragment();for(const c of data.creators)fragment.append(renderCreator(c));root.replaceChildren(fragment);status.textContent='全登録クリエイターを表示しました。';if(location.hash==='#marimo')document.getElementById('marimo')?.scrollIntoView();}catch{if(token===request){status.textContent='比較一覧を読み込めませんでした。ページを開き直すか、もう一度お試しください。';retry.hidden=false;}}finally{clearTimeout(timer);}}
+retry.addEventListener('click',load);load();

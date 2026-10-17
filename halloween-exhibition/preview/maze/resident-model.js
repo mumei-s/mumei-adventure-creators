@@ -1,4 +1,4 @@
-import {layoutProblem} from './creator-runtime.js?v=20261017-review1';
+import {layoutProblem} from './creator-runtime.js?v=20261017-cna1';
 export const RESIDENT_FICTION='宮殿の住人は、このゲームのために作られた架空の人物です。参加者とは別の登場人物です。';
 export const RESIDENT_STORIES=Object.freeze({
  'resident-archivist':Object.freeze({label:'司書エルマ',role:'宮殿の司書',greeting:'おかえりなさい、無名S note。書庫の物語は、今夜もあなたの灯りを待っています。',topics:Object.freeze([

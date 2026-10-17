@@ -14,7 +14,8 @@ const title = '無名S note / 🎃Halloween Atelier / 魔法の入口🚪';
 // Independent release contract. Unknown files have no fallback version: adding
 // an asset requires reviewing its exact URL and cache scope here as well.
 const PUBLIC_RELEASES = Object.freeze({
- 'theater.js':'20261017-review1',
+ 'theater.js':'20261017-town1',
+ 'town-entry.css':'20261017-town1',
  'gallery-controls.css':'20261017-review1',
  'gallery-gesture.js':'20261017-review1',
  'magical-loading.js':'20261017-review1',
@@ -63,6 +64,7 @@ const ADMIN_RELEASES = Object.freeze({
  'admin/display-settings.js':'20261014-layout1',
 });
 const REVIEW_FILES = Object.keys(PUBLIC_RELEASES).filter(path=>PUBLIC_RELEASES[path]==='20261017-review1');
+const TOWN_ENTRY_FILES = ['theater.js','town-entry.css'];
 const publicPath = (reference,from) => new URL(reference,base+from).pathname.slice(new URL(base).pathname.length);
 
 test('manifest identity and start URL are confined to the preview subtree', async()=>{
@@ -118,7 +120,7 @@ test('worker precaches only its explicit public shell allowlist',async()=>{
  assert.ok(h.precached.length>10);
  for(const request of h.precached){
   assert.ok(request.url.startsWith(base));assert.equal(request.credentials,'omit');
-  assert.doesNotMatch(request.url,/\/admin\/|\/maze\/|\/data\/|draft|supabase|INSIGHT/i);
+  assert.doesNotMatch(request.url,/\/admin\/|\/maze\/|\/town\/|\/data\/|draft|supabase|INSIGHT/i);
   await access(new URL('../'+request.url.slice(base.length),import.meta.url));
  }
 });
@@ -127,7 +129,7 @@ test('worker bypasses root, INSIGHT, admin, maze, public archive, external resou
  const h=workerHarness();
  for(const url of [
   'https://mumei-s.github.io/','https://mumei-s.github.io/INSIGHT/app.js',
-  base+'admin/index.html',base+'admin/private-draft.json',base+'maze/index.html',
+  base+'admin/index.html',base+'admin/private-draft.json',base+'maze/index.html',base+'town/index.html',base+'town/app.js',
   base+'data/archive.json',base+'index.html?token=private',base+'unknown.js',
   'https://note.com/ss_yr','https://assets.st-note.com/private.png'
  ])assert.equal((await h.dispatch('fetch',url)).intercepted,false,url);
@@ -271,22 +273,26 @@ test('worker caches each public script/style only unversioned or at its exact cu
   for(const query of ['?v=old','?v='+release+'&token=private','?token=private','?v='+release+'&v=other','?v='+release+'-extra'])
    assert.equal((await h.dispatch('fetch',base+path+query)).intercepted,false,path+query);
  }
- for(const path of ['admin/app.js','admin/index.html','admin/model.js','admin/draft-io.js','maze/app.js','data/archive.json','unknown.js'])
-  for(const query of ['', '?v=20261017-review1','?v=20261014-layout1'])assert.equal((await h.dispatch('fetch',base+path+query)).intercepted,false,path+query);
+ for(const path of ['admin/app.js','admin/index.html','admin/model.js','admin/draft-io.js','maze/app.js','town/index.html','town/app.js','town/model.js','data/archive.json','unknown.js'])
+  for(const query of ['', '?v=20261017-review1','?v=20261017-town1','?v=20261014-layout1'])assert.equal((await h.dispatch('fetch',base+path+query)).intercepted,false,path+query);
  assert.doesNotMatch(workerSource,/localStorage|sessionStorage|\.clear\(/);
 });
 
-test('review release invalidates prior changed-asset URLs and offline lookup uses only the new cache epoch',async()=>{
+test('release invalidation rejects prior changed-asset URLs and offline lookup uses only the new cache epoch',async()=>{
  const h=workerHarness();
  const stale=['20261014-layout1','20261014-portrait1','20261015-controls1','20261015-journey1','20261015-glamour1','20261016-living1'];
+ for(const path of TOWN_ENTRY_FILES){
+  assert.equal((await h.dispatch('fetch',base+path+'?v=20261017-town1')).intercepted,true,path);
+  for(const version of [...stale,'20261017-review1'])assert.equal((await h.dispatch('fetch',base+path+'?v='+version)).intercepted,false,path+version);
+ }
  for(const path of REVIEW_FILES){
   assert.equal((await h.dispatch('fetch',base+path+'?v=20261017-review1')).intercepted,true,path);
   for(const version of stale)assert.equal((await h.dispatch('fetch',base+path+'?v='+version)).intercepted,false,path+version);
  }
- const offline=workerHarness({offline:true});await offline.dispatch('fetch',base+'theater.js?v=20261017-review1');
- assert.equal(offline.matches.length,1);assert.equal(offline.matches[0].cacheName,'mumei-atelier-shell-v31-20261017-review1:'+new URL(base).pathname);
+ const offline=workerHarness({offline:true});await offline.dispatch('fetch',base+'theater.js?v=20261017-town1');
+ assert.equal(offline.matches.length,1);assert.equal(offline.matches[0].cacheName,'mumei-atelier-shell-v32-20261017-town1:'+new URL(base).pathname);
  assert.ok(offline.matches[0].cacheName.endsWith(':'+new URL(base).pathname));
- assert.equal(offline.matches[0].url,base+'theater.js?v=20261017-review1');
+ assert.equal(offline.matches[0].url,base+'theater.js?v=20261017-town1');
 });
 
 test('review portrait stylesheet has an exact new URL and rejects its old hotfix query',async()=>{
@@ -323,7 +329,7 @@ test('palace releases remain exact and confined to public preview assets',async(
   assert.equal((await h.dispatch('fetch',base+path+'?v=20261014-doors1')).intercepted,false);
  }
  for(const name of ['palace-desktop','palace-phone','gate-desktop','gate-phone'])assert.equal((await h.dispatch('fetch',base+'assets/palace/'+name+'.webp')).intercepted,true);
- for(const path of ['admin/app.js','maze/app.js','data/archive.json','unknown.js'])assert.equal((await h.dispatch('fetch',base+path+'?v=20261017-review1')).intercepted,false);
+ for(const path of ['admin/app.js','maze/app.js','town/index.html','town/app.js','town/model.js','data/archive.json','unknown.js'])assert.equal((await h.dispatch('fetch',base+path+'?v=20261017-review1')).intercepted,false);
  assert.equal((await h.dispatch('fetch',base+'palace-entrance.js?v=20261014-palace2&token=private')).intercepted,false);
 });
 

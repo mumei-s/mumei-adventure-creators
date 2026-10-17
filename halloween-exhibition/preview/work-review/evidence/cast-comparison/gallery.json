@@ -1,0 +1,757 @@
+{
+  "generatedAtUTC": "2026-10-17T00:05:03.042Z",
+  "referencePurpose": "Recorded official icons compared with currently adopted character atlas crops; not a claim that every artwork is approved or natural animation is complete.",
+  "normalization": {
+    "sourceImagesEdited": false,
+    "sourceCrop": "Actual manifest frame rectangles followed by alpha bounds for equal-height visual comparison",
+    "portraitHeight": 160,
+    "gameFigureHeight": 160,
+    "canvas": 180,
+    "warning": "Equal height is for visual identity comparison, not game-world relative heights."
+  },
+  "sourceHashes": [
+    {
+      "path": "data/archive.json",
+      "sha256": "75d4a63418426310c81ebb288218ee5e17c3318e21fc5e7df5db2fb92d7d706e"
+    },
+    {
+      "path": "maze/data/creator-characters.json",
+      "sha256": "7ae48e506d624835d39722c35fe5b16f1ade98197bd4eee1b9beb5a7de8b6cca"
+    }
+  ],
+  "creatorCount": 15,
+  "submittedCreators": 14,
+  "pendingArticleCreators": [
+    "grand_daisy8632"
+  ],
+  "adoptedRenderRoles": 21,
+  "creators": [
+    {
+      "creatorId": "ss_yr",
+      "name": "【無名 S note】18日でフォロワー1000名🚨連続収益中！48マガ・13共マガ運営 参加72🙆",
+      "profileURL": "https://note.com/ss_yr",
+      "avatar": "evidence/cast-comparison/ss_yr-official.png",
+      "originalAvatar": "evidence/cast-comparison/avatars/ss_yr.jpg",
+      "referenceRecordedDateUTC": "2026-10-16T12:44:49.490627+00:00",
+      "fetchDateUTC": "2026-10-16T23:45:25.300145+00:00",
+      "submitted": true,
+      "characters": [
+        {
+          "renderRoleId": "owner-lantern-hero",
+          "description": "主人公",
+          "entityCount": 1,
+          "interactive": true,
+          "preview": "evidence/cast-comparison/owner-lantern-hero-adopted.png",
+          "contact": "evidence/cast-comparison/owner-lantern-hero-directions.png",
+          "assetPath": "../maze/assets/creator-npcs/owner-lantern-walk.webp",
+          "assetSHA256": "bfa859d95117dcc7233283cdb14b0e06892152f99883ca71e42ea085481296eb",
+          "source": {
+            "kind": "user-upload",
+            "referenceId": "owner-lantern-reference-20261016",
+            "referenceSHA256": "04b38f44043704243740cb7bcc1b7dbb58603162001bf1bc611a47687240eabd",
+            "verified": true
+          }
+        },
+        {
+          "renderRoleId": "owner-black-cat",
+          "description": "黒猫の同行者",
+          "entityCount": 1,
+          "interactive": true,
+          "preview": "evidence/cast-comparison/owner-black-cat-adopted.png",
+          "contact": "evidence/cast-comparison/owner-black-cat-directions.png",
+          "assetPath": "../maze/assets/creator-npcs/owner-black-cat-walk.webp",
+          "assetSHA256": "58daf1ef16de6e78f54e79599b55ee16728974999fa57a36f47743e7be7cde0c",
+          "source": {
+            "kind": "user-upload",
+            "referenceId": "owner-lantern-reference-20261016",
+            "referenceSHA256": "04b38f44043704243740cb7bcc1b7dbb58603162001bf1bc611a47687240eabd",
+            "verified": true
+          }
+        }
+      ],
+      "articles": [
+        {
+          "url": "https://note.com/ss_yr/n/n52be511ec082",
+          "introduction": true
+        },
+        {
+          "url": "https://note.com/ss_yr/n/n15700f2773c6",
+          "introduction": false
+        }
+      ],
+      "note": "主人公は明示採用済みのランタン参照、黒猫は同行者です。",
+      "marimo": false,
+      "pendingVisuals": false,
+      "comparison": "evidence/cast-comparison/ss_yr-comparison.png"
+    },
+    {
+      "creatorId": "koakumako",
+      "name": "こあく まこ",
+      "profileURL": "https://note.com/koakumako",
+      "avatar": "evidence/cast-comparison/koakumako-official.png",
+      "originalAvatar": "evidence/cast-comparison/avatars/koakumako.png",
+      "referenceRecordedDateUTC": "2026-10-16T12:44:49.708382+00:00",
+      "fetchDateUTC": "2026-10-16T23:45:25.300145+00:00",
+      "submitted": true,
+      "characters": [
+        {
+          "renderRoleId": "koakumako-base-devil",
+          "description": "公式キャラクター",
+          "entityCount": 1,
+          "interactive": true,
+          "preview": "evidence/cast-comparison/koakumako-base-devil-adopted.png",
+          "contact": "evidence/cast-comparison/koakumako-base-devil-directions.png",
+          "assetPath": "../maze/assets/creator-npcs/koakumako-base-devil-walk.webp",
+          "assetSHA256": "a1f5d2957fc62042845aa2bf66ac87dff15518b702a8c6517b35a15b257a08e7",
+          "source": {
+            "kind": "article-art",
+            "articleURL": "https://note.com/koakumako/n/n8c03103e9874",
+            "imageURL": "https://assets.st-note.com/img/1788184948-95czaCOhItNB8j1uVG2gQdZn.png?width=4000&height=4000&fit=bounds&format=jpg&quality=90",
+            "verified": true
+          }
+        }
+      ],
+      "articles": [
+        {
+          "url": "https://note.com/koakumako/n/na9731433238f",
+          "introduction": false
+        }
+      ],
+      "note": "公式キャラクター設定資料を優先した採用です。",
+      "marimo": false,
+      "pendingVisuals": false,
+      "comparison": "evidence/cast-comparison/koakumako-comparison.png"
+    },
+    {
+      "creatorId": "n_kazumai55633",
+      "name": "ミナト汐　＠光と構図のアトリエ",
+      "profileURL": "https://note.com/n_kazumai55633",
+      "avatar": "evidence/cast-comparison/n_kazumai55633-official.png",
+      "originalAvatar": "evidence/cast-comparison/avatars/n_kazumai55633.png",
+      "referenceRecordedDateUTC": "2026-10-16T12:44:49.693719+00:00",
+      "fetchDateUTC": "2026-10-16T23:45:25.300145+00:00",
+      "submitted": true,
+      "characters": [
+        {
+          "renderRoleId": "minato-shio-witch",
+          "description": "人物",
+          "entityCount": 1,
+          "interactive": true,
+          "preview": "evidence/cast-comparison/minato-shio-witch-adopted.png",
+          "contact": "evidence/cast-comparison/minato-shio-witch-directions.png",
+          "assetPath": "../maze/assets/creator-npcs/minato-shio-witch-walk.webp",
+          "assetSHA256": "d4e9022fab44a2e2c05c121b5af39d54fa41ba2218d0a50632679a081c1eb757",
+          "source": {
+            "kind": "article-art",
+            "articleURL": "https://note.com/n_kazumai55633/n/n4cc7e57a4182",
+            "imageURL": "https://assets.st-note.com/img/1792062512-umEQVOijcgFlZf1bMJCnexkq.png?width=1200",
+            "verified": true
+          }
+        }
+      ],
+      "articles": [
+        {
+          "url": "https://note.com/n_kazumai55633/n/n4cc7e57a4182",
+          "introduction": false
+        }
+      ],
+      "note": "",
+      "marimo": false,
+      "pendingVisuals": false,
+      "comparison": "evidence/cast-comparison/n_kazumai55633-comparison.png"
+    },
+    {
+      "creatorId": "mama_ca",
+      "name": "Pajama de mama*4歳娘ママ",
+      "profileURL": "https://note.com/mama_ca",
+      "avatar": "evidence/cast-comparison/mama_ca-official.png",
+      "originalAvatar": "evidence/cast-comparison/avatars/mama_ca.jpg",
+      "referenceRecordedDateUTC": "2026-10-16T12:44:49.618901+00:00",
+      "fetchDateUTC": "2026-10-16T23:45:25.300145+00:00",
+      "submitted": true,
+      "characters": [
+        {
+          "renderRoleId": "mama-avatar-pair",
+          "description": "人物とクリーム色の同行者",
+          "entityCount": 2,
+          "interactive": true,
+          "preview": "evidence/cast-comparison/mama-avatar-pair-adopted.png",
+          "contact": "evidence/cast-comparison/mama-avatar-pair-directions.png",
+          "assetPath": "../maze/assets/creator-npcs/mama-avatar-pair-walk.webp",
+          "assetSHA256": "a6b053423048e44a26103982be7566719bd6524db134b218c1bef3b29713a8f1",
+          "source": {
+            "kind": "profile-avatar",
+            "profileURL": "https://note.com/mama_ca",
+            "imageURL": "https://assets.st-note.com/production/uploads/images/302879278/profile_680f428bdf06a11c197bae98b43534d2.jpeg",
+            "referenceSHA256": "0e3b141cb452a6c29b7c486dbe51ddebddc0530c3ce55fae4098f929fe834eef",
+            "verified": true,
+            "userSelected": true,
+            "verifiedAtUTC": "2026-10-16T12:44:49.618901+00:00",
+            "dimensions": [
+              3762,
+              3762
+            ]
+          }
+        }
+      ],
+      "articles": [
+        {
+          "url": "https://note.com/mama_ca/n/n8e74b9e2b535",
+          "introduction": false
+        }
+      ],
+      "note": "",
+      "marimo": false,
+      "pendingVisuals": false,
+      "comparison": "evidence/cast-comparison/mama_ca-comparison.png"
+    },
+    {
+      "creatorId": "naemotion",
+      "name": "なえも｜Kindle作家・支援と当事者の視点",
+      "profileURL": "https://note.com/naemotion",
+      "avatar": "evidence/cast-comparison/naemotion-official.png",
+      "originalAvatar": "evidence/cast-comparison/avatars/naemotion.png",
+      "referenceRecordedDateUTC": "2026-10-16T12:44:49.524940+00:00",
+      "fetchDateUTC": "2026-10-16T23:45:25.300145+00:00",
+      "submitted": true,
+      "characters": [
+        {
+          "renderRoleId": "naemo-masquerade",
+          "description": "人物",
+          "entityCount": 1,
+          "interactive": true,
+          "preview": "evidence/cast-comparison/naemo-masquerade-adopted.png",
+          "contact": "evidence/cast-comparison/naemo-masquerade-directions.png",
+          "assetPath": "../maze/assets/creator-npcs/naemo-masquerade-walk.webp",
+          "assetSHA256": "2390e9b16df4ab8f6ff9b3998160295482c8067ff807c3c360ca3bc99652b768",
+          "source": {
+            "kind": "article-art",
+            "articleURL": "https://note.com/naemotion/n/n26b717b6c247",
+            "imageURL": "https://assets.st-note.com/img/1792044760-17UcFrMmuyXg59BLD8ewbVKC.png?width=1200",
+            "verified": true
+          }
+        }
+      ],
+      "articles": [
+        {
+          "url": "https://note.com/naemotion/n/n26b717b6c247",
+          "introduction": false
+        }
+      ],
+      "note": "",
+      "marimo": false,
+      "pendingVisuals": false,
+      "comparison": "evidence/cast-comparison/naemotion-comparison.png"
+    },
+    {
+      "creatorId": "imota14",
+      "name": "たけち",
+      "profileURL": "https://note.com/imota14",
+      "avatar": "evidence/cast-comparison/imota14-official.png",
+      "originalAvatar": "evidence/cast-comparison/avatars/imota14.png",
+      "referenceRecordedDateUTC": "2026-10-16T12:44:49.609353+00:00",
+      "fetchDateUTC": "2026-10-16T23:45:25.300145+00:00",
+      "submitted": true,
+      "characters": [
+        {
+          "renderRoleId": "takechi-bread-avatar",
+          "description": "パンの姿のキャラクター",
+          "entityCount": 1,
+          "interactive": true,
+          "preview": "evidence/cast-comparison/takechi-bread-avatar-adopted.png",
+          "contact": "evidence/cast-comparison/takechi-bread-avatar-directions.png",
+          "assetPath": "../maze/assets/creator-npcs/takechi-bread-avatar-walk.webp",
+          "assetSHA256": "d5f86460b1c955f5512f6bc967ba416c8e43ef1cda0d31da04338392cca38ecd",
+          "source": {
+            "kind": "profile-avatar",
+            "profileURL": "https://note.com/imota14",
+            "dimensions": [
+              330,
+              330
+            ],
+            "userSelected": true,
+            "imageURL": "https://assets.st-note.com/production/uploads/images/259177693/profile_b5ff6284738bbb28852546a5c0804f69.png?fit=bounds&format=jpeg&quality=85&width=330",
+            "referenceSHA256": "e2a63eb97102fac30d6025a9e7c2a523277441600b6dcb926762c41f06dc9ca8",
+            "verified": true
+          }
+        }
+      ],
+      "articles": [
+        {
+          "url": "https://note.com/imota14/n/n618813fb0e89",
+          "introduction": false
+        }
+      ],
+      "note": "",
+      "marimo": false,
+      "pendingVisuals": false,
+      "comparison": "evidence/cast-comparison/imota14-comparison.png"
+    },
+    {
+      "creatorId": "fond_holly3483",
+      "name": "やまこん/自信なし会社やめたい状態からのゆっくり成長記録！",
+      "profileURL": "https://note.com/fond_holly3483",
+      "avatar": "evidence/cast-comparison/fond_holly3483-official.png",
+      "originalAvatar": "evidence/cast-comparison/avatars/fond_holly3483.png",
+      "referenceRecordedDateUTC": "2026-10-16T12:44:09.708203+00:00",
+      "fetchDateUTC": "2026-10-16T23:45:25.300145+00:00",
+      "submitted": true,
+      "characters": [
+        {
+          "renderRoleId": "yamakon-navy-figure",
+          "description": "紺色の服の人物",
+          "entityCount": 1,
+          "interactive": true,
+          "preview": "evidence/cast-comparison/yamakon-navy-figure-adopted.png",
+          "contact": "evidence/cast-comparison/yamakon-navy-figure-directions.png",
+          "assetPath": "../maze/assets/creator-npcs/yamakon-navy-figure-walk.webp",
+          "assetSHA256": "feb8fed1b976c6041b92ba58967f053cdac166101f8f9d3a97b80feb37a8b6d9",
+          "source": {
+            "kind": "article-art",
+            "articleURL": "https://note.com/fond_holly3483/n/ne5a25ae27a20",
+            "imageURL": "https://assets.st-note.com/img/1792032751-bWFZXTUwro7cE2C41jas5KNL.png?width=1200",
+            "verified": true
+          }
+        },
+        {
+          "renderRoleId": "yamakon-pink-figure",
+          "description": "桃色の服の人物",
+          "entityCount": 1,
+          "interactive": true,
+          "preview": "evidence/cast-comparison/yamakon-pink-figure-adopted.png",
+          "contact": "evidence/cast-comparison/yamakon-pink-figure-directions.png",
+          "assetPath": "../maze/assets/creator-npcs/yamakon-pink-figure-walk.webp",
+          "assetSHA256": "d01c917af4438b9fd6e019f0059cc855f85ac3eb5f1b8f4c80910df41e90afe9",
+          "source": {
+            "kind": "article-art",
+            "articleURL": "https://note.com/fond_holly3483/n/ne5a25ae27a20",
+            "imageURL": "https://assets.st-note.com/img/1792032751-bWFZXTUwro7cE2C41jas5KNL.png?width=1200",
+            "verified": true
+          }
+        }
+      ],
+      "articles": [
+        {
+          "url": "https://note.com/fond_holly3483/n/ne5a25ae27a20",
+          "introduction": false
+        }
+      ],
+      "note": "",
+      "marimo": false,
+      "pendingVisuals": false,
+      "comparison": "evidence/cast-comparison/fond_holly3483-comparison.png"
+    },
+    {
+      "creatorId": "tenkai_notes",
+      "name": "天界記録",
+      "profileURL": "https://note.com/tenkai_notes",
+      "avatar": "evidence/cast-comparison/tenkai_notes-official.png",
+      "originalAvatar": "evidence/cast-comparison/avatars/tenkai_notes.png",
+      "referenceRecordedDateUTC": "2026-10-16T12:44:13.723356+00:00",
+      "fetchDateUTC": "2026-10-16T23:45:25.300145+00:00",
+      "submitted": true,
+      "characters": [
+        {
+          "renderRoleId": "tenkai-moon-robed-avatar",
+          "description": "ローブ姿の人物",
+          "entityCount": 1,
+          "interactive": true,
+          "preview": "evidence/cast-comparison/tenkai-moon-robed-avatar-adopted.png",
+          "contact": "evidence/cast-comparison/tenkai-moon-robed-avatar-directions.png",
+          "assetPath": "../maze/assets/creator-npcs/tenkai-moon-robed-avatar-walk.webp",
+          "assetSHA256": "6ff6af2f0365a64e3885c2e1f1ffb1cb4d60d1d87518bceb056a94e81f71c724",
+          "source": {
+            "kind": "profile-avatar",
+            "profileURL": "https://note.com/tenkai_notes",
+            "imageURL": "https://assets.st-note.com/production/uploads/images/253576749/profile_70a01c50c971bc4c57351b9f5cc8a299.png",
+            "profileRenderedAvatarURL": "https://assets.st-note.com/production/uploads/images/253576749/profile_70a01c50c971bc4c57351b9f5cc8a299.png?fit=bounds&format=jpeg&quality=85&width=330",
+            "referenceSHA256": "d8e547b87bc6c03cc8241a28d7db7190c1c3fa4365882c4311f65fd75554f634",
+            "verifiedAtUTC": "2026-10-16T12:44:13.723356+00:00",
+            "verified": true,
+            "userSelected": true
+          }
+        }
+      ],
+      "articles": [
+        {
+          "url": "https://note.com/tenkai_notes/n/n72ea89e9a32e",
+          "introduction": false
+        }
+      ],
+      "note": "",
+      "marimo": false,
+      "pendingVisuals": false,
+      "comparison": "evidence/cast-comparison/tenkai_notes-comparison.png"
+    },
+    {
+      "creatorId": "soh_style_work",
+      "name": "まりも🌱｜猫とちゅ〜ると異世界掃除婦",
+      "profileURL": "https://note.com/soh_style_work",
+      "avatar": "evidence/cast-comparison/soh_style_work-official.png",
+      "originalAvatar": "evidence/cast-comparison/avatars/soh_style_work.jpg",
+      "referenceRecordedDateUTC": "2026-10-16T12:44:13.143619+00:00",
+      "fetchDateUTC": "2026-10-16T23:45:25.300145+00:00",
+      "submitted": true,
+      "characters": [
+        {
+          "renderRoleId": "marimo-headcat",
+          "description": "人物と頭上の猫",
+          "entityCount": 2,
+          "interactive": true,
+          "preview": "evidence/cast-comparison/marimo-headcat-adopted.png",
+          "contact": "evidence/cast-comparison/marimo-headcat-directions.png",
+          "assetPath": "../maze/assets/creator-npcs/marimo-walk.webp",
+          "assetSHA256": "11ac7a9cae9115db26713613a4ae031d7fef0c7b9ac9d0fb1f3eae05cac8cb00",
+          "source": {
+            "kind": "article-art",
+            "articleURL": "https://note.com/soh_style_work/n/nc02977b1ebf9",
+            "imageURL": "https://assets.st-note.com/img/1791977927-fIVwqAQa0RK3tkyHc7dizJxX.png?width=1200",
+            "verified": true
+          }
+        }
+      ],
+      "articles": [
+        {
+          "url": "https://note.com/soh_style_work/n/nc02977b1ebf9",
+          "introduction": false
+        }
+      ],
+      "note": "登録記事内の別イラストを基にした、人物と頭上の猫の一組です。記事表紙の仮面・緑と金のドレスとは衣装が異なります。",
+      "marimo": true,
+      "pendingVisuals": false,
+      "articleCover": "evidence/cast-comparison/marimo-article-cover.png",
+      "articleSource": "evidence/cast-comparison/marimo-article-source.png",
+      "comparison": "evidence/cast-comparison/soh_style_work-comparison.png"
+    },
+    {
+      "creatorId": "clever_hare2654",
+      "name": "カモミール",
+      "profileURL": "https://note.com/clever_hare2654",
+      "avatar": "evidence/cast-comparison/clever_hare2654-official.png",
+      "originalAvatar": "evidence/cast-comparison/avatars/clever_hare2654.png",
+      "referenceRecordedDateUTC": "2026-10-16T12:44:13.269655+00:00",
+      "fetchDateUTC": "2026-10-16T23:45:25.300145+00:00",
+      "submitted": true,
+      "characters": [
+        {
+          "renderRoleId": "chamomile-flower-avatar",
+          "description": "花の姿のキャラクター",
+          "entityCount": 1,
+          "interactive": true,
+          "preview": "evidence/cast-comparison/chamomile-flower-avatar-adopted.png",
+          "contact": "evidence/cast-comparison/chamomile-flower-avatar-directions.png",
+          "assetPath": "../maze/assets/creator-npcs/chamomile-flower-avatar-walk.webp",
+          "assetSHA256": "7ff851e933b9d9bebdddf151908aff77ae18162dbe0a4be310810de99cb74373",
+          "source": {
+            "kind": "profile-avatar",
+            "profileURL": "https://note.com/clever_hare2654",
+            "imageURL": "https://assets.st-note.com/production/uploads/images/292743934/profile_f29fb47a7423a0ddcbd3f4bd4b498a35.png",
+            "profileRenderedAvatarURL": "https://assets.st-note.com/production/uploads/images/292743934/profile_f29fb47a7423a0ddcbd3f4bd4b498a35.png?fit=bounds&format=jpeg&quality=85&width=330",
+            "referenceSHA256": "cf52f4579307cd3fe9ffc575b92cca01bf1bd1982edcaa4897478e42f1945d47",
+            "verifiedAtUTC": "2026-10-16T12:44:13.269655+00:00",
+            "verified": true,
+            "userSelected": true
+          }
+        }
+      ],
+      "articles": [
+        {
+          "url": "https://note.com/clever_hare2654/n/nf731501cfb0e",
+          "introduction": false
+        }
+      ],
+      "note": "",
+      "marimo": false,
+      "pendingVisuals": false,
+      "comparison": "evidence/cast-comparison/clever_hare2654-comparison.png"
+    },
+    {
+      "creatorId": "glossy_guppy6230",
+      "name": "🍞たんたん🐼",
+      "profileURL": "https://note.com/glossy_guppy6230",
+      "avatar": "evidence/cast-comparison/glossy_guppy6230-official.png",
+      "originalAvatar": "evidence/cast-comparison/avatars/glossy_guppy6230.jpg",
+      "referenceRecordedDateUTC": "2026-10-16T12:44:13.159639+00:00",
+      "fetchDateUTC": "2026-10-16T23:45:25.300145+00:00",
+      "submitted": true,
+      "characters": [
+        {
+          "renderRoleId": "tantan-streetwalker",
+          "description": "人物",
+          "entityCount": 1,
+          "interactive": true,
+          "preview": "evidence/cast-comparison/tantan-streetwalker-adopted.png",
+          "contact": "evidence/cast-comparison/tantan-streetwalker-directions.png",
+          "assetPath": "../maze/assets/creator-npcs/tantan-streetwalker-walk.webp",
+          "assetSHA256": "de07a915b6ac976c70428fc814aaafff5b6bc1e651cb5ac62618391292b66d2b",
+          "source": {
+            "kind": "article-art",
+            "articleURL": "https://note.com/glossy_guppy6230/n/n4b2ef2311c28",
+            "imageURL": "https://assets.st-note.com/img/1792070385-rtPaK2kZm5Dqi8hQzOfYSMVd.png?width=1200",
+            "verified": true
+          }
+        },
+        {
+          "renderRoleId": "tantan-avatar-hedgehogs",
+          "description": "名のないハリネズミの同行者",
+          "entityCount": 3,
+          "interactive": false,
+          "preview": "evidence/cast-comparison/tantan-avatar-hedgehogs-adopted.png",
+          "contact": "evidence/cast-comparison/tantan-avatar-hedgehogs-directions.png",
+          "assetPath": "../maze/assets/creator-npcs/tantan-avatar-hedgehogs-walk.webp",
+          "assetSHA256": "e604cb62a63c2340c43ee746726e8e78d4c0340644220623214b237e2deec340",
+          "source": {
+            "kind": "profile-avatar",
+            "profileURL": "https://note.com/glossy_guppy6230",
+            "imageURL": "https://assets.st-note.com/production/uploads/images/318256859/profile_d2fbdcbda06d06e5d51adea51865b4a6.jpeg",
+            "referenceSHA256": "8979bb2ff73bc25905191761a6a36e77d76c95e1bec01ec169e624e07d09a056",
+            "verified": true,
+            "userSelected": true,
+            "verifiedAtUTC": "2026-10-16T12:44:13.159639+00:00",
+            "dimensions": [
+              3759,
+              3759
+            ]
+          }
+        }
+      ],
+      "articles": [
+        {
+          "url": "https://note.com/glossy_guppy6230/n/n4b2ef2311c28",
+          "introduction": false
+        }
+      ],
+      "note": "人物とは別の画像で、名のないハリネズミの同行者を保持しています。",
+      "marimo": false,
+      "pendingVisuals": false,
+      "comparison": "evidence/cast-comparison/glossy_guppy6230-comparison.png"
+    },
+    {
+      "creatorId": "aihan_days",
+      "name": "あいはん｜これからの働き方を考える",
+      "profileURL": "https://note.com/aihan_days",
+      "avatar": "evidence/cast-comparison/aihan_days-official.png",
+      "originalAvatar": "evidence/cast-comparison/avatars/aihan_days.png",
+      "referenceRecordedDateUTC": "2026-10-16T12:46:00Z",
+      "fetchDateUTC": "2026-10-16T23:45:25.300145+00:00",
+      "submitted": true,
+      "characters": [
+        {
+          "renderRoleId": "aihan-avatar-woman",
+          "description": "人物",
+          "entityCount": 1,
+          "interactive": true,
+          "preview": "evidence/cast-comparison/aihan-avatar-woman-adopted.png",
+          "contact": "evidence/cast-comparison/aihan-avatar-woman-directions.png",
+          "assetPath": "../maze/assets/creator-npcs/aihan-avatar-woman-walk.webp",
+          "assetSHA256": "ea4bd3473244b292f7b3a6e8de3094359e80386fd187b3ac96b2364dc44bcb3f",
+          "source": {
+            "profileURL": "https://note.com/aihan_days",
+            "imageURL": "https://assets.st-note.com/production/uploads/images/318226325/profile_f65224485bea2e310e8667b5c1ff9f46.png",
+            "referenceSHA256": "a87c4375eb420ed8ffd07f5a66d722b14b92eea5c3c4da016a6f58fbe87d6911",
+            "dimensions": [
+              1048,
+              1048
+            ],
+            "verifiedAtUTC": "2026-10-16T12:46:00Z",
+            "verified": true,
+            "userSelected": true,
+            "kind": "profile-avatar",
+            "profileRenderedAvatarURL": "https://assets.st-note.com/production/uploads/images/318226325/profile_f65224485bea2e310e8667b5c1ff9f46.png?fit=bounds&format=jpeg&quality=85&width=330",
+            "profileRenderedAvatarSHA256": "f76b09e1057923a561f399b884e0e8c8c45861c1aaf1e1b623a375305e5736f1",
+            "mimeType": "image/jpeg"
+          }
+        },
+        {
+          "renderRoleId": "aihan-avatar-shiba",
+          "description": "柴犬の相棒",
+          "entityCount": 1,
+          "interactive": true,
+          "preview": "evidence/cast-comparison/aihan-avatar-shiba-adopted.png",
+          "contact": "evidence/cast-comparison/aihan-avatar-shiba-directions.png",
+          "assetPath": "../maze/assets/creator-npcs/aihan-avatar-shiba-walk.webp",
+          "assetSHA256": "50a5fda8381ccf471b3360bd89d60e136dd961618e67ef8a44d72e1b60d8bc88",
+          "source": {
+            "profileURL": "https://note.com/aihan_days",
+            "imageURL": "https://assets.st-note.com/production/uploads/images/318226325/profile_f65224485bea2e310e8667b5c1ff9f46.png",
+            "referenceSHA256": "a87c4375eb420ed8ffd07f5a66d722b14b92eea5c3c4da016a6f58fbe87d6911",
+            "dimensions": [
+              1048,
+              1048
+            ],
+            "verifiedAtUTC": "2026-10-16T12:46:00Z",
+            "verified": true,
+            "userSelected": true,
+            "kind": "profile-avatar",
+            "profileRenderedAvatarURL": "https://assets.st-note.com/production/uploads/images/318226325/profile_f65224485bea2e310e8667b5c1ff9f46.png?fit=bounds&format=jpeg&quality=85&width=330",
+            "profileRenderedAvatarSHA256": "f76b09e1057923a561f399b884e0e8c8c45861c1aaf1e1b623a375305e5736f1",
+            "mimeType": "image/jpeg"
+          }
+        }
+      ],
+      "articles": [
+        {
+          "url": "https://note.com/aihan_days/n/nfa274d6fe464",
+          "introduction": false
+        }
+      ],
+      "note": "",
+      "marimo": false,
+      "pendingVisuals": false,
+      "comparison": "evidence/cast-comparison/aihan_days-comparison.png"
+    },
+    {
+      "creatorId": "cheeky_rhino7031",
+      "name": "ロキろん",
+      "profileURL": "https://note.com/cheeky_rhino7031",
+      "avatar": "evidence/cast-comparison/cheeky_rhino7031-official.png",
+      "originalAvatar": "evidence/cast-comparison/avatars/cheeky_rhino7031.png",
+      "referenceRecordedDateUTC": "2026-10-16T12:44:13.447383+00:00",
+      "fetchDateUTC": "2026-10-16T23:45:25.300145+00:00",
+      "submitted": true,
+      "characters": [
+        {
+          "renderRoleId": "lokiron-avatar",
+          "description": "人物",
+          "entityCount": 1,
+          "interactive": true,
+          "preview": "evidence/cast-comparison/lokiron-avatar-adopted.png",
+          "contact": "evidence/cast-comparison/lokiron-avatar-directions.png",
+          "assetPath": "../maze/assets/creator-npcs/lokiron-avatar-walk.webp",
+          "assetSHA256": "a85a219f89bd2eb38e96a3ed2f067b2e7de3eb753abe9561a8e673dc659c5d6c",
+          "source": {
+            "kind": "profile-avatar",
+            "profileURL": "https://note.com/cheeky_rhino7031",
+            "imageURL": "https://assets.st-note.com/production/uploads/images/281429856/profile_394e2eb8124ebdada2bc028db6563ed2.png",
+            "referenceSHA256": "9ae223a8478a42a849e541d4f821b50204ae4b69b9290543c2460763021fd0b5",
+            "verified": true,
+            "userSelected": true,
+            "verifiedAtUTC": "2026-10-16T12:44:13.447383+00:00",
+            "dimensions": [
+              1302,
+              1302
+            ]
+          }
+        }
+      ],
+      "articles": [
+        {
+          "url": "https://note.com/cheeky_rhino7031/n/nd58ac4b4c53d",
+          "introduction": false
+        }
+      ],
+      "note": "",
+      "marimo": false,
+      "pendingVisuals": false,
+      "comparison": "evidence/cast-comparison/cheeky_rhino7031-comparison.png"
+    },
+    {
+      "creatorId": "grand_daisy8632",
+      "name": "CNA運営",
+      "profileURL": "https://note.com/grand_daisy8632",
+      "avatar": "evidence/cast-comparison/grand_daisy8632-official.png",
+      "originalAvatar": "evidence/cast-comparison/avatars/grand_daisy8632.png",
+      "referenceRecordedDateUTC": null,
+      "fetchDateUTC": "2026-10-16T23:45:25.300145+00:00",
+      "submitted": false,
+      "characters": [
+        {
+          "renderRoleId": "cna-black-bob",
+          "description": "黒髪の人物",
+          "entityCount": 1,
+          "interactive": true,
+          "preview": "evidence/cast-comparison/cna-black-bob-adopted.png",
+          "contact": "evidence/cast-comparison/cna-black-bob-directions.png",
+          "assetPath": "../maze/assets/creator-npcs/cna-black-bob-walk.webp",
+          "assetSHA256": "162b3af364f51806d97aa482e896189be33ad528de36d529eb2c3b9a92343335",
+          "source": {
+            "kind": "user-upload",
+            "referenceId": "cna-three-character-reference-20261017",
+            "referenceSHA256": "a57e9b0109b670f224cbbeca4fe9221543dbe3b3beabb1bc244bff545081d4be",
+            "croppedReferenceSHA256": "55d78eb195c199db23f8ec1b9bcf584345c4f45d1421a63c3fea80d230d26ce9",
+            "verified": true
+          }
+        },
+        {
+          "renderRoleId": "cna-star-twintails",
+          "description": "星のツインテールの人物",
+          "entityCount": 1,
+          "interactive": true,
+          "preview": "evidence/cast-comparison/cna-star-twintails-adopted.png",
+          "contact": "evidence/cast-comparison/cna-star-twintails-directions.png",
+          "assetPath": "../maze/assets/creator-npcs/cna-star-twintails-walk.webp",
+          "assetSHA256": "a74a6d5a998d8991318d938fdb215339220bf7dcaabb6fdfd5651e0cbbe1d4fb",
+          "source": {
+            "kind": "user-upload",
+            "referenceId": "cna-three-character-reference-20261017",
+            "referenceSHA256": "a57e9b0109b670f224cbbeca4fe9221543dbe3b3beabb1bc244bff545081d4be",
+            "croppedReferenceSHA256": "55d78eb195c199db23f8ec1b9bcf584345c4f45d1421a63c3fea80d230d26ce9",
+            "verified": true
+          }
+        },
+        {
+          "renderRoleId": "cna-orange-glasses",
+          "description": "橙髪と眼鏡の人物",
+          "entityCount": 1,
+          "interactive": true,
+          "preview": "evidence/cast-comparison/cna-orange-glasses-adopted.png",
+          "contact": "evidence/cast-comparison/cna-orange-glasses-directions.png",
+          "assetPath": "../maze/assets/creator-npcs/cna-orange-glasses-walk.webp",
+          "assetSHA256": "0ed06f8b543bf4a35711b89003b593cca84589414c5d0d6ac7f4b59f1327ebd2",
+          "source": {
+            "kind": "user-upload",
+            "referenceId": "cna-three-character-reference-20261017",
+            "referenceSHA256": "a57e9b0109b670f224cbbeca4fe9221543dbe3b3beabb1bc244bff545081d4be",
+            "croppedReferenceSHA256": "55d78eb195c199db23f8ec1b9bcf584345c4f45d1421a63c3fea80d230d26ce9",
+            "verified": true
+          }
+        }
+      ],
+      "articles": [],
+      "note": "アイコンの三人をゲストとして追加。記事は未提出のままです。",
+      "marimo": false,
+      "pendingVisuals": false,
+      "userReference": "assets/cna-originals/reference-characters.png",
+      "userReferenceProvenance": "assets/cna-originals/provenance.json",
+      "comparison": "evidence/cast-comparison/grand_daisy8632-comparison.png"
+    },
+    {
+      "creatorId": "real_hyena9474",
+      "name": "アイリス｜AIで眠る物語を形にする",
+      "profileURL": "https://note.com/real_hyena9474",
+      "avatar": "evidence/cast-comparison/real_hyena9474-official.png",
+      "originalAvatar": "evidence/cast-comparison/avatars/real_hyena9474.png",
+      "referenceRecordedDateUTC": "2026-10-16T12:44:49.604592+00:00",
+      "fetchDateUTC": "2026-10-16T23:45:25.300145+00:00",
+      "submitted": true,
+      "characters": [
+        {
+          "renderRoleId": "iris",
+          "description": "人物",
+          "entityCount": 1,
+          "interactive": true,
+          "preview": "evidence/cast-comparison/iris-adopted.png",
+          "contact": "evidence/cast-comparison/iris-directions.png",
+          "assetPath": "../maze/assets/creator-npcs/iris-walk.webp",
+          "assetSHA256": "a465b6431b3f1aec64fc321599413adc58378627a848d619bfd219d5f3bb8844",
+          "source": {
+            "kind": "article-art",
+            "articleURL": "https://note.com/real_hyena9474/n/nde7d4a19044d",
+            "imageURL": "https://assets.st-note.com/img/1792064668-qfgFtDjbzWmQ8hOHPCad1xvk.png?width=1200",
+            "verified": true
+          }
+        }
+      ],
+      "articles": [
+        {
+          "url": "https://note.com/real_hyena9474/n/nde7d4a19044d",
+          "introduction": false
+        }
+      ],
+      "note": "",
+      "marimo": false,
+      "pendingVisuals": false,
+      "comparison": "evidence/cast-comparison/real_hyena9474-comparison.png"
+    }
+  ]
+}

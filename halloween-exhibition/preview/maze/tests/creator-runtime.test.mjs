@@ -14,12 +14,15 @@ function dimensions(bytes){if(bytes.subarray(1,4).toString()==='PNG')return [byt
 const tick=()=>new Promise(resolve=>setImmediate(resolve));
 const fakeAsset=(name)=>({...structuredClone(manifest.characters[0].asset),src:`assets/creator-npcs/test-${name}.png`});
 
-test('full-upgrade readiness requires every submitted creator, preserves pending CNA, and never silently counts omissions',()=>{
+test('all submitted creators plus the user-approved CNA visual guests are ready while its article stays pending',()=>{
   const r=roster(),expected=[...new Set(archive.years.find(y=>y.year===2026).entries.filter(e=>e.visible!==false&&e.submissionStatus==='submitted').map(e=>e.creatorId))].sort();
   assert.equal(expected.length,14);assert.equal(r.hero?.creatorId,'ss_yr');
   const actual=[...new Set([r.hero,...r.npcs].filter(Boolean).map(e=>e.creatorId))].sort();
-  assert.deepEqual(actual,expected,'Every submitted creator must be ready before the all-participant upgrade is called complete');
-  assert.deepEqual(r.omitted,[]);assert(!actual.includes('grand_daisy8632'));
+  // The later explicit user approval adds three profile guests; it never turns
+  // the prior pending article into a submission. All other pending profiles stay excluded.
+  assert.deepEqual(actual,[...expected,'grand_daisy8632'].sort());
+  assert.deepEqual(r.omitted,[]);assert.equal(r.readyCreatorCount,15);assert.equal(r.submittedCreatorCount,14);assert.deepEqual(r.missingCreators,[]);
+  assert.equal(r.npcs.filter(n=>n.participationRole==='profile-guest').length,3);
   assert.equal(archive.years.find(y=>y.year===2026).entries.find(e=>e.creatorId==='grand_daisy8632').submissionStatus,'pending');
 });
 test('every declared ready atlas exists with exact integrity, real encoded dimensions and measured in-bounds crops',()=>{
@@ -40,7 +43,7 @@ test('unready, invalid, hidden, pending, or incomplete references cannot imperso
   const m=structuredClone(manifest);m.groups.push({id:first.groupId,requiredEntityIds:['missing-companion']});assert(!compileCharacterRoster(archive,m,2026).npcs.some(c=>c.id===first.id));
 });
 test('canonical submission links are preserved independently of verified alternate reference articles',()=>{
-  const r=roster();for(const c of [r.hero,...r.npcs]){const entries=archive.years.find(y=>y.year===2026).entries.filter(e=>e.creatorId===c.creatorId&&e.submissionStatus==='submitted');assert(entries.some(e=>[...(e.works||[]),...(e.links||[])].some(l=>l.url===c.articleURL)),c.id);assert.equal(c.source.verified,true);}
+  const r=roster();for(const c of [r.hero,...r.npcs]){if(c.participationRole==='profile-guest'){assert.equal(c.articleURL,null);assert.equal(c.profileURL,'https://note.com/grand_daisy8632');assert.equal(c.submissionStatus,'pending');continue;}const entries=archive.years.find(y=>y.year===2026).entries.filter(e=>e.creatorId===c.creatorId&&e.submissionStatus==='submitted');assert(entries.some(e=>[...(e.works||[]),...(e.links||[])].some(l=>l.url===c.articleURL)),c.id);assert.equal(c.source.verified,true);}
   const mako=r.npcs.find(c=>c.creatorId==='koakumako');if(mako){assert.equal(new URL(mako.source.articleURL).pathname.split('/')[1],'koakumako');assert.equal(new URL(mako.articleURL).pathname.split('/')[1],'koakumako');}
 });
 test('resized owner and NPC frames preserve anchors and all sixteen crops fit the decoded texture',async()=>{
@@ -96,7 +99,7 @@ test('default decoder falls back to bounded canvas when image bitmap resizing fa
  }finally{for(const[k,v]of Object.entries(old))if(v===undefined)delete globalThis[k];else globalThis[k]=v;}
 });
 test('current avatar entities and explicit owner/Mako exceptions define the complete cast',()=>{
- const expected=['ss-yr-lantern-hero','ss-yr-black-cat','koakumako-base-devil','minato-shio-witch','mama-avatar-woman','mama-avatar-creature','naemo-masquerade','takechi-bread-avatar','yamakon-navy-figure','yamakon-pink-figure','tenkai-moon-robed-avatar','marimo','marimo-cat','chamomile-flower-avatar','tantan-streetwalker','tantan-avatar-hedgehog-pink-bow','tantan-avatar-hedgehog-green-cap','tantan-avatar-hedgehog-pacifier','aihan-avatar-woman','aihan-avatar-shiba','lokiron-avatar','iris'].sort();
+ const expected=['ss-yr-lantern-hero','ss-yr-black-cat','koakumako-base-devil','minato-shio-witch','mama-avatar-woman','mama-avatar-creature','naemo-masquerade','takechi-bread-avatar','yamakon-navy-figure','yamakon-pink-figure','tenkai-moon-robed-avatar','marimo','marimo-cat','chamomile-flower-avatar','tantan-streetwalker','tantan-avatar-hedgehog-pink-bow','tantan-avatar-hedgehog-green-cap','tantan-avatar-hedgehog-pacifier','aihan-avatar-woman','aihan-avatar-shiba','lokiron-avatar','iris','cna-black-bob','cna-star-twintails','cna-orange-glasses'].sort();
  const actual=allDefinitions().filter(e=>e.ready).flatMap(e=>e.entityIds);assert.equal(new Set(actual).size,actual.length);assert.deepEqual(actual.sort(),expected);assert(!actual.includes('ss-yr-white-lavender-character'));
 });
 test('nearby actions use two rows of44px controls within120px portrait dock',()=>{
@@ -107,7 +110,7 @@ test('nearby actions use two rows of44px controls within120px portrait dock',()=
 
 test('avatar-first policy requires a verified current profile review and rejects superseded casts',()=>{
  assert.equal(manifest.referencePolicy.preference,'creator-avatar');assert.equal(manifest.referencePolicy.requireReviewed,true);
- assert.equal(Object.keys(manifest.referenceReviews).length,14);for(const review of Object.values(manifest.referenceReviews)){assert.equal(review.avatarVisuallyInspected,true);assert(Number.isFinite(Date.parse(review.avatarReference.verifiedAtUTC)));}
+ assert.equal(Object.keys(manifest.referenceReviews).length,15);for(const review of Object.values(manifest.referenceReviews)){assert.equal(review.avatarVisuallyInspected,true);assert(Number.isFinite(Date.parse(review.avatarReference.verifiedAtUTC)));}
  const replacements=['mama_ca','imota14','clever_hare2654','tenkai_notes','cheeky_rhino7031','aihan_days'];
  for(const cid of replacements){const review=manifest.referenceReviews[cid];assert.equal(review.decision,'profile-avatar-replacement');assert.equal(review.reviewed,true);for(const c of manifest.characters.filter(c=>c.creatorId===cid))assert.equal(c.source.kind,'profile-avatar');}
  const retired=['mama-yorimichuu-suit','takechi-ao','takechi-paper-face','takechi-shu','chamomile-apprentice','tenkai-kurose-jin','tenkai-sakaki-mafuyu','lokiron-inukichi-held','aihan-narrator','aihan-shiba'];
@@ -136,4 +139,51 @@ test('Aihan crop metadata remains in the same address space as its runtime textu
  assert(Math.abs(woman.asset.layout.frames[0][0].frame[3]-313*1024/1254)<.001);
  assert(Math.abs(dog.asset.layout.frames[0][0].frame[3]-321*1024/1254)<.001);
  for(const c of[woman,dog]){assert.equal(c.asset.width,1024);assert.equal(c.asset.height,1024);assert(c.asset.layout.frames[3][0].frame[1]>700);assert(c.asset.layout.frames[0][3].frame[0]>700);}
+});
+
+test('CNA profile approval is exact, SHA-bound and atomic even when global review policy is disabled',()=>{
+ const guestIds=['cna-black-bob','cna-star-twintails','cna-orange-glasses'];
+ const mutations=[
+  m=>delete m.profileGuests,m=>m.profileGuests[0].approved=false,m=>m.profileGuests[0].approvalId='different-approval',
+  m=>m.profileGuests[0].referenceSHA256='0'.repeat(64),m=>m.profileGuests[0].profileURL='https://note.com/other',
+  m=>m.profileGuests[0].submissionStatus='submitted',m=>m.profileGuests[0].entityIds.pop(),m=>m.profileGuests[0].entityIds.push('invented-pet'),
+  m=>m.profileGuests.push({...m.profileGuests[0]}),m=>delete m.referenceReviews.grand_daisy8632,
+  m=>m.referenceReviews.grand_daisy8632.reviewed=false,m=>m.referenceReviews.grand_daisy8632.decision='profile-avatar-match',
+  m=>m.referenceReviews.grand_daisy8632.avatarReference.imageURL=manifest.referenceReviews.ss_yr.avatarReference.imageURL,
+  m=>m.referenceReviews.grand_daisy8632.entityIds.pop(),m=>m.groups.find(g=>g.id==='cna-profile-guests').requiredEntityIds.pop(),
+  m=>m.characters.find(c=>c.id===guestIds[0]).ready=false,
+  m=>m.characters.find(c=>c.id===guestIds[0]).articleURL='https://note.com/grand_daisy8632/n/n123',
+  m=>m.characters.find(c=>c.id===guestIds[0]).profileURL='https://note.com/other',
+  m=>m.characters.find(c=>c.id===guestIds[0]).source.referenceSHA256='0'.repeat(64),
+  m=>m.characters.find(c=>c.id===guestIds[0]).source.verified=false,
+  m=>m.characters.find(c=>c.id===guestIds[0]).source.referenceId='owner-lantern-reference-20261016',
+  m=>m.characters.find(c=>c.id===guestIds[0]).asset.src='https://example.com/guest.webp',
+  m=>m.characters.find(c=>c.id===guestIds[0]).asset.src=m.characters.find(c=>c.id===guestIds[1]).asset.src,
+  m=>delete m.characters.find(c=>c.id===guestIds[0]).participationRole,
+ ];
+ for(const mutate of mutations)for(const requireReviewed of [true,false]){
+  const m=structuredClone(manifest);m.referencePolicy.requireReviewed=requireReviewed;mutate(m);
+  const r=compileCharacterRoster(archive,m,2026);assert.equal(r.npcs.some(n=>n.creatorId==='grand_daisy8632'),false,mutate.toString());
+  assert.equal(r.submittedCreatorCount,14);assert.deepEqual(r.missingCreators,[]);assert.equal(r.readyCreatorCount,14);
+ }
+});
+test('the CNA grant does not authorize another pending creator or hidden pending entries',()=>{
+ const copy=structuredClone(archive),m=structuredClone(manifest);
+ const creator=copy.creators.find(c=>c.id==='grand_daisy8632');creator.id='unapproved_pending';creator.profileURL='https://note.com/unapproved_pending';
+ for(const e of copy.years[0].entries)if(e.creatorId==='grand_daisy8632')e.creatorId='unapproved_pending';
+ m.profileGuests[0].creatorId='unapproved_pending';m.profileGuests[0].profileURL=creator.profileURL;
+ for(const c of m.characters)if(c.creatorId==='grand_daisy8632'){c.creatorId=creator.id;c.profileURL=creator.profileURL;}
+ const r=compileCharacterRoster(copy,m,2026);assert.equal(r.npcs.some(c=>c.creatorId===creator.id),false);
+ const hidden=structuredClone(archive);for(const e of hidden.years[0].entries)if(e.creatorId==='grand_daisy8632')e.visible=false;
+ assert.equal(compileCharacterRoster(hidden,manifest,2026).npcs.some(c=>c.creatorId==='grand_daisy8632'),false);
+});
+test('approved CNA appearances have independent source atlases, grouped loading and no submitted record',()=>{
+ const before=JSON.stringify(archive),r=roster(),guests=r.npcs.filter(c=>c.participationRole==='profile-guest');assert.equal(guests.length,3);
+ assert.equal(new Set(guests.map(c=>c.asset.src)).size,3);assert(guests.every(c=>c.continuousAnimationReviewed===false));
+ for(const c of guests){assert.equal(c.articleURL,null);assert.equal(c.submissionStatus,'pending');assert.equal(c.source.referenceSHA256,manifest.profileGuests[0].referenceSHA256);}
+ const images=new Map(guests.slice(0,2).map(c=>[c.asset.src,{width:c.asset.width,height:c.asset.height}]));
+ assert.deepEqual(buildCreatorActors(guests,images,{state:{},motion:false}),[]);
+ const last=guests[2];images.set(last.asset.src,{width:last.asset.width,height:last.asset.height});assert.equal(buildCreatorActors(guests,images,{state:{},motion:false}).length,3);
+ assert.equal(chooseCreatorAssets(guests,{x:0,z:0},{},2).length,0);assert.equal(chooseCreatorAssets(guests,{x:0,z:0},{},3).length,3);
+ assert.equal(JSON.stringify(archive),before);
 });

@@ -7,6 +7,10 @@ export const CHARACTER_DIRECTIONS = Object.freeze(['down','left','right','up']);
 export const CREATOR_FICTION_NOTICE = 'この会話はゲーム内の創作です。作者本人の発言ではありません。';
 export const CHARACTER_BUDGET = Object.freeze({ concurrent:2, resident:8, decodedBytes:32*1024*1024, active:5 });
 const array = value => Array.isArray(value) ? value : [];
+const CNA_ID='grand_daisy8632',CNA_PROFILE='https://note.com/grand_daisy8632',CNA_APPROVAL='cna-three-character-reference-20261017',CNA_GROUP='cna-profile-guests';
+const CNA_ENTITIES=Object.freeze(['cna-black-bob','cna-star-twintails','cna-orange-glasses']);
+const exactEntities=(actual,expected)=>Array.isArray(actual)&&actual.length===expected.length&&new Set(actual).size===expected.length&&actual.every(id=>expected.includes(id));
+const referenceHash=value=>typeof value==='string'&&/^[a-f0-9]{64}$/.test(value);
 const finite = (value,min,max) => Number.isFinite(value) && value>=min && value<=max;
 const idOkay = value => typeof value==='string' && /^[a-zA-Z0-9][a-zA-Z0-9_-]{0,119}$/.test(value);
 export function noteArticleURL(value) {
@@ -31,9 +35,9 @@ export function layoutProblem(asset) {
   }
   return null;
 }
-function verifiedSource(source,creatorId) {
+function verifiedSource(source,creatorId,{profileGuest=false}={}) {
   if (!source || source.verified!==true) return false;
-  if (source.kind==='user-upload') return creatorId==='ss_yr' && source.referenceId==='owner-lantern-reference-20261016' && typeof source.referenceSHA256==='string' && /^[a-f0-9]{64}$/.test(source.referenceSHA256);
+  if (source.kind==='user-upload') return referenceHash(source.referenceSHA256)&&((creatorId==='ss_yr'&&source.referenceId==='owner-lantern-reference-20261016')||(profileGuest&&creatorId===CNA_ID&&source.referenceId===CNA_APPROVAL));
   if(source.kind==='profile-avatar'){
     try{const profile=new URL(source.profileURL),image=new URL(source.imageURL);
       return source.userSelected===true&&profile.protocol==='https:'&&profile.hostname==='note.com'&&!profile.port&&!profile.username&&!profile.password&&profile.pathname.replace(/\/$/,'')==='/'+creatorId&&
@@ -44,18 +48,33 @@ function verifiedSource(source,creatorId) {
   try { const image=new URL(source.imageURL); return image.protocol==='https:' && !image.username && !image.password; } catch { return false; }
 }
 
+/** A named user approval permits exactly these three CNA profile characters.
+ * It is a visual guest exception, never proof that a pending article exists. */
+function profileGuestApproval(manifest,creators,pendingCreators){
+ const grants=array(manifest.profileGuests).filter(item=>item?.creatorId===CNA_ID),grant=grants[0],creator=creators.get(CNA_ID),review=manifest.referenceReviews?.[CNA_ID];
+ const groups=array(manifest.groups).filter(item=>item?.id===CNA_GROUP);
+ if(grants.length!==1||!creator||!pendingCreators.has(CNA_ID)||creator.profileURL!==CNA_PROFILE||grant.approved!==true||grant.approvalId!==CNA_APPROVAL||
+   grant.profileURL!==CNA_PROFILE||grant.submissionStatus!=='pending'||!referenceHash(grant.referenceSHA256)||!exactEntities(grant.entityIds,CNA_ENTITIES)||
+   groups.length!==1||!exactEntities(groups[0].requiredEntityIds,CNA_ENTITIES)||
+   review?.reviewed!==true||review.avatarVisuallyInspected!==true||review.decision!=='user-confirmed-profile-guest'||!exactEntities(review.entityIds,CNA_ENTITIES)||
+   review.avatarReference?.kind!=='profile-avatar'||review.avatarReference.profileURL!==CNA_PROFILE||review.avatarReference.imageURL!==creator.avatar||!verifiedSource(review.avatarReference,CNA_ID))return null;
+ return grant;
+}
+
 export function compileCharacterRoster(archive, manifest, selectedYear) {
   const years=array(archive?.years), selected=years.find(y=>y.year===selectedYear)||[...years].sort((a,b)=>b.year-a.year)[0];
-  const creators=new Map(array(archive?.creators).map(c=>[c.id,c])), submissions=new Set(), visibleCreators=new Set();
+  const creators=new Map(array(archive?.creators).map(c=>[c.id,c])), submissions=new Set(), visibleCreators=new Set(), pendingCreators=new Set();
   for (const entry of array(selected?.entries)) {
     if (entry.visible===false) continue;
     visibleCreators.add(entry.creatorId);
+    if(entry.submissionStatus==='pending')pendingCreators.add(entry.creatorId);
     if (entry.submissionStatus!=='submitted') continue;
     for (const link of [...array(entry.works),...array(entry.links)]) {
       const url=noteArticleURL(link?.url); if (link.visible!==false && url) submissions.add(entry.creatorId+'|'+url);
     }
   }
   const ready=[], omitted=[], usedIds=new Set(), entityOwners=new Map();
+  const guestApproval=profileGuestApproval(manifest||{},creators,pendingCreators);
   if (manifest?.schemaVersion!==1) return {hero:null,npcs:[],omitted:[{id:null,reason:'invalid-schema'}],year:selected?.year,visibleCreatorCount:visibleCreators.size};
   for (const entry of array(manifest.characters)) {
     const skip=reason=>omitted.push({id:entry?.id||null,creatorId:entry?.creatorId||null,reason});
@@ -63,7 +82,11 @@ export function compileCharacterRoster(archive, manifest, selectedYear) {
     if (usedIds.has(entry.id)) {skip('duplicate-id');continue;} usedIds.add(entry.id);
     if (entry.ready!==true) {skip('not-ready');continue;}
     if (entry.blockedReason || manifest.blockedCreators?.[entry.creatorId]) {skip('blocked-reference');continue;}
-    if(manifest.referencePolicy?.requireReviewed){
+    const profileGuest=entry.participationRole==='profile-guest';
+    if(profileGuest&&(!guestApproval||entry.creatorId!==CNA_ID||entry.role!=='npc'||entry.groupId!==CNA_GROUP||entry.articleURL!==null||entry.profileURL!==CNA_PROFILE||
+      (entry.submissionStatus!==undefined&&entry.submissionStatus!=='pending')||array(entry.entityIds).length!==1||!CNA_ENTITIES.includes(entry.entityIds[0])||
+      entry.source?.kind!=='user-upload'||entry.source.referenceId!==CNA_APPROVAL||entry.source.referenceSHA256!==guestApproval.referenceSHA256)){skip('unapproved-profile-guest');continue;}
+    if(!profileGuest&&manifest.referencePolicy?.requireReviewed){
       const review=manifest.referenceReviews?.[entry.creatorId];
       if(review?.reviewed!==true||review.avatarVisuallyInspected!==true||!['profile-avatar-replacement','profile-avatar-match','article-fallback','owner-user-reference','official-character-sheet'].includes(review.decision)||
         !array(entry.entityIds).every(id=>array(review.entityIds).includes(id))||!verifiedSource(review.avatarReference,entry.creatorId)){skip('avatar-review-pending');continue;}
@@ -72,17 +95,17 @@ export function compileCharacterRoster(archive, manifest, selectedYear) {
         (review.decision==='profile-avatar-replacement'&&entry.source?.kind!=='profile-avatar')){skip('reference-policy-mismatch');continue;}
     }
     const articleURL=noteArticleURL(entry.articleURL);
-    if (!submissions.has(entry.creatorId+'|'+articleURL)) {skip('not-a-visible-submission');continue;}
+    if (!profileGuest&&!submissions.has(entry.creatorId+'|'+articleURL)) {skip('not-a-visible-submission');continue;}
     const entityIds=array(entry.entityIds);
     if (!entityIds.length || entityIds.some(id=>!idOkay(id)||entityOwners.has(id))) {skip('invalid-or-duplicate-entities');continue;}
-    if (!verifiedSource(entry.source,entry.creatorId) || entry.identityReviewed!==true || entry.animationReviewed!==true) {skip('unreviewed-source-or-animation');continue;}
+    if (!verifiedSource(entry.source,entry.creatorId,{profileGuest}) || entry.identityReviewed!==true || entry.animationReviewed!==true) {skip('unreviewed-source-or-animation');continue;}
     const issue=layoutProblem(entry.asset);if(issue){skip(issue);continue;}
     if (!['hero','npc'].includes(entry.role) || (entry.role==='hero'&&entry.creatorId!=='ss_yr') ||
         (entry.role==='npc'&&entry.creatorId==='ss_yr')) {skip('invalid-owner-role');continue;}
     if (entry.role==='npc' && entry.interactive!==false && (typeof entry.greeting!=='string'||!entry.greeting.trim()||entry.greeting.length>180||entry.greetingKind!=='fictional-game-dialogue')) {skip('missing-fictional-dialogue');continue;}
     const creator=creators.get(entry.creatorId);
     for(const id of entityIds)entityOwners.set(id,entry.id);
-    ready.push({...entry,articleURL,name:creator.name,label:entry.label||creator.name,groupId:entry.groupId||entry.creatorId,
+    ready.push({...entry,...(profileGuest?{submissionStatus:'pending',profileURL:CNA_PROFILE}:{}),articleURL,name:creator.name,label:entry.label||creator.name,groupId:entry.groupId||entry.creatorId,
       asset:structuredClone(entry.asset),entityIds:[...entityIds],heightPx:finite(entry.heightPx,24,120)?entry.heightPx:86,
       heightWorld:finite(entry.heightWorld,.5,3.5)?entry.heightWorld:2.35});
   }
@@ -92,7 +115,9 @@ export function compileCharacterRoster(archive, manifest, selectedYear) {
     if(!group.requiredEntityIds?.length)continue;
     if(group.requiredEntityIds.some(id=>!entityOwners.has(id)))incomplete.add(group.id);
   }
-  const accepted=ready.filter(entry=>{if(!incomplete.has(entry.groupId))return true;omitted.push({id:entry.id,creatorId:entry.creatorId,reason:'incomplete-group'});return false;});
+  const guests=ready.filter(entry=>entry.participationRole==='profile-guest');
+  const guestsComplete=guests.length===3&&exactEntities(guests.flatMap(entry=>entry.entityIds),CNA_ENTITIES)&&new Set(guests.map(entry=>entry.asset.src)).size===3;
+  const accepted=ready.filter(entry=>{if(entry.participationRole==='profile-guest'&&!guestsComplete){omitted.push({id:entry.id,creatorId:entry.creatorId,reason:'incomplete-profile-guest-group'});return false;}if(!incomplete.has(entry.groupId))return true;omitted.push({id:entry.id,creatorId:entry.creatorId,reason:'incomplete-group'});return false;});
   const heroes=accepted.filter(entry=>entry.role==='hero'),readyCreators=new Set(accepted.map(entry=>entry.creatorId)),missingCreators=[...new Set([...submissions].map(key=>key.split('|')[0]))].filter(id=>!readyCreators.has(id));
   return {missingCreators,readyCreatorCount:readyCreators.size,hero:heroes.length===1?heroes[0]:null,npcs:accepted.filter(entry=>entry.role==='npc'),omitted,year:selected?.year,
     visibleCreatorCount:visibleCreators.size,submittedCreatorCount:new Set([...submissions].map(key=>key.split('|')[0])).size};

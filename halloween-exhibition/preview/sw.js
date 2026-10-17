@@ -1,7 +1,7 @@
 /* Public exhibition shell only. No admin, maze, archive data, remote portraits,
  * API requests, unknown query strings, authentication or background activity. */
 const SCOPE = new URL('./', self.location.href);
-const CACHE = 'mumei-atelier-shell-v31-20261017-review1:' + SCOPE.pathname;
+const CACHE = 'mumei-atelier-shell-v32-20261017-town1:' + SCOPE.pathname;
 const PUBLIC_RELEASES = Object.freeze({
   "transition-effects.js": "20261017-review1",
   "transition-effects.css": "20261016-living1",
@@ -27,7 +27,8 @@ const PUBLIC_RELEASES = Object.freeze({
   "door-palette.js": "20261015-festival1",
   "palace-entrance.js": "20261014-palace2",
   "palace-entrance.css": "20261016-living1",
-  "theater.js": "20261017-review1",
+  "theater.js": "20261017-town1",
+  "town-entry.css": "20261017-town1",
   "theater.css": "20261014-layout1",
   "data-model.js": "20261014-doors1",
   "roster-pagination.js": "20261017-review1",
@@ -55,7 +56,7 @@ const SHELL = [
   'gallery-refinement.css', 'gallery-gesture.js', 'door-palette.js',
   'assets/palace/palace-franken.webp', 'assets/palace/palace-zombie.webp', 'assets/palace/palace-bat.webp',
   'palace-entrance.js', 'palace-entrance.css', 'assets/palace/palace-desktop.webp', 'assets/palace/palace-phone.webp', 'assets/palace/gate-desktop.webp', 'assets/palace/gate-phone.webp',
-  'index.html', 'theater.js', 'theater.css', 'data-model.js', 'roster-pagination.js',
+  'index.html', 'theater.js', 'theater.css', 'town-entry.css', 'data-model.js', 'roster-pagination.js',
   'scene-motion.js', 'scene-motion.css', 'gallery-depth.css',
   'visitor-preferences.js', 'visitor-preferences.css', 'display-mode.js', 'display-mode.css',
   'magical-entrance.css', 'article-doors.css', 'gallery-controls.css', 'slideshow.js', 'pwa.js', 'manifest.webmanifest',

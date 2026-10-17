@@ -1,0 +1,92 @@
+{
+  "date": "2026-10-17",
+  "tool": "built-in image_gen.imagegen",
+  "referenceImages": [],
+  "adoption": "Town environmental props and floor textures. No existing participant character or submitted artwork replaced.",
+  "prompts": [
+    {
+      "key": "props",
+      "transparent_background": true,
+      "prompt": "Use case: stylized-concept. Asset type: production game sprite atlas, square image, EXACTLY FOUR ROWS AND FOUR COLUMNS, sixteen separate architectural prop illustrations, equal 256 by256 grid cells on a1024 by1024 square transparent canvas. No visible grid. Camera: original classic2D RPG topdown three-quarter front perspective, orthographic, all show front facade and roof, consistent south-facing fronts. Ornate hand-painted storybook fantasy palace-town at twilight; rich intricate materials, accurate readable silhouettes, warm gold windows against restrained blue-violet shadows, polished luxurious illustration. These are map objects, not a scene. Each object fully contained inside its own equal cell with clear transparent gutters and no overlaps. Every object's lowest ground-contact point is on the same baseline within its cell, at92% cellheight, centered horizontally, roofs cannot cross cell boundary. No ground tiles or bases except integral tiny prop bases. Large buildings take80% cellwidth, tall objects80% cellheight. EXACT CELL CONTENTS in reading order: row1col1 small stone house with purple slate roof; row1col2 timber bakery orange tiled roof and tiny nonverbal bread emblem, no writing; row1col3 ornate narrow clocktower with readable clock face but no numerals; row1col4 rounded green garden tree. Row2col1 magic shop teal tiled roof and small gold celestial ornaments; row2col2 welcoming inn burgundy tiled roof; row2col3 freestanding ornate single lamppost with gold glass lantern; row2col4 circular stone fountain with delicate blue water. Row3col1 compact market stall with ochre-and-cream striped awning; row3col2 horizontal stone canal bridge with a short left-to-right walkway and low railings, no river underneath; row3col3 freestanding carved stone arched gate, no castle walls; row3col4 golden orange autumn tree. Row4col1 small dense colorful flowerbed; row4col2 carved stone statue of an abstract lantern bearer on pedestal, not a live character; row4col3 pumpkin planter; row4col4 ornate wooden bench with iron legs. Sixteen objects total; no duplicates, no characters, no letters, no text, no logos, no watermark. TRUE TRANSPARENT BACKGROUND. Do not put a scenic landscape or checkerboard behind objects. Do not arrange in five rows or three columns."
+    },
+    {
+      "key": "cobblestone",
+      "transparent_background": false,
+      "prompt": "Use case: stylized-concept. Asset type: seamless repeating square texture for original2D RPG town,512 by512 target. A full-frame overhead orthographic hand-painted dark wet cobblestone pavement, small irregular rounded rectangular stones in blue, indigo and muted purple with fine near-black grout, subtle warm gold reflected lantern light distributed evenly and unobtrusively across surface. Restrained beautiful painterly material detail, readable at game-tile scale, consistent local diffuse lighting. Tileable in both X and Y, left and right edges match perfectly, top and bottom edges match perfectly. Uniform scale and brightness across the whole image. No perspective convergence, no border, no vignette, no focal spotlight, no puddles with a different scene reflected, no objects, no buildings, no plants, no characters, no symbols, no text. Texture covers every pixel."
+    },
+    {
+      "key": "stonepath",
+      "transparent_background": false,
+      "prompt": "Use case: stylized-concept. Asset type: seamless repeating square texture for original2D RPG town,512 by512 target. A full-frame overhead orthographic hand-painted warm taupe limestone path paving, small irregular fitted pale beige and dusty rose-grey stone slabs with fine restrained grout and very subtle weathered speckles, elegant maintained palace-town material, no grass. Diffuse even twilight ambient light compatible with dark blue-purple cobblestone surroundings, gentle warm stone color without bright directional highlights. Restrained polished painterly material detail, readable at game-tile scale. Tileable in both X and Y, left and right edges match perfectly, top and bottom edges match perfectly. Uniform scale and brightness across the whole image. No perspective convergence, no border, no vignette, no focal spotlight, no objects, no buildings, no plants, no characters, no symbols, no text. Texture covers every pixel."
+    }
+  ],
+  "sources": {
+    "props": "exec-36fabcd9-96c8-4d18-90cc-4cd1acc1edc9.png",
+    "cobblestone": "exec-dec479b8-64a0-4394-bb63-1fb66b479d81.png",
+    "stonepath": "exec-243ae0b4-73bc-44d2-b0d1-f57491292838.png"
+  },
+  "visualReview": {
+    "props": "Confirmed exactly4rows and4columns with16 requested complete separated props, actual alpha present. Native1254square spacing was not exact; measured source crops repacked into1024square256cells with shared groundbaseline238.",
+    "textures": "Both cover full image with stable overhead scale and no unwanted objects/text. Asked seamless in prompt; numerical edge and repeat inspection follows."
+  },
+  "validation": {
+    "props": {
+      "sourceDimensions": [
+        1254,
+        1254
+      ],
+      "sourceAlpha": true,
+      "sourceFullyTransparentPixels": 703472,
+      "sourceTotalPixels": 1572516,
+      "measuredMainComponents": 16,
+      "deliveryDimensions": [
+        1024,
+        1024
+      ],
+      "deliveryAlpha": true,
+      "layout": "4columns x4rows;256cells;16pxmargin;baseline238",
+      "note": "Native alpha edges include very faint warm color antialiasing; inspect in real town lighting."
+    },
+    "textures": {
+      "deliveryDimensions": [
+        512,
+        512
+      ],
+      "repeatQA": "Viewed2x2 repeats at768square; no large value/brightness seam observed. Generated boundaries are not pixel-identical.",
+      "edgeMeanRGBDifference": {
+        "cobblestone": {
+          "x": 11.4069,
+          "y": 12.9941,
+          "interiorX": 9.4824,
+          "interiorY": 12.3327
+        },
+        "stonepath": {
+          "x": 9.2396,
+          "y": 10.4336,
+          "interiorX": 8.4479,
+          "interiorY": 7.7103
+        }
+      }
+    }
+  },
+  "files": [
+    {
+      "name": "props-atlas.webp",
+      "bytes": 430908,
+      "sha256": "af18952216e48ec3e4af0c45a623af5081877c279c66e253192e5919c009e063",
+      "decodedBytes": 4194304
+    },
+    {
+      "name": "cobblestone-dark.webp",
+      "bytes": 116818,
+      "sha256": "bf608b212000acb703c35712dc72d8ea81eed521355ef11544c88cd8928730e3",
+      "decodedBytes": 1048576
+    },
+    {
+      "name": "stonepath-warm.webp",
+      "bytes": 95116,
+      "sha256": "0a7e1b87e02c1f82a2e3e9dfcbb8df2d8228c3929b0e019e1dcd6221a9977f24",
+      "decodedBytes": 1048576
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "creators": 15,
+  "submittedCreators": 14,
+  "pendingArticleCreators": 1,
+  "characterAtlases": 21,
+  "characterEntities": 25,
+  "localImageReferencesChecked": 90,
+  "allImagesDecode": true,
+  "all15RecordedOfficialIconHashesMatchCurrentManifest": true,
+  "marimoRegistered": true,
+  "marimoHasOwnSubmittedArticle": true,
+  "marimoEntities": [
+    "person",
+    "head-riding-cat"
+  ],
+  "cnaArticlePending": true,
+  "cnaAdoptedGuests": 3,
+  "sourceRuntimeChangedByThisGenerator": false,
+  "browserLayoutOrRealDeviceVerified": false
+}

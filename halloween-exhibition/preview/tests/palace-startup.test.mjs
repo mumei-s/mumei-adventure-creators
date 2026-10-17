@@ -13,3 +13,16 @@ test('archive paint awaits visual readiness, worker precaching is deferred, sett
 test('walkers attach to visible scene and stay outside caption side lanes at short widths',async()=>{const html=await read('index.html'),css=await read('palace-entrance.css');assert.match(html,/<div class="palace-path-walkers"/);assert.match(css,/palace-entrance>\.palace-path-walkers/);for(const width of [333,360,390]){const side=width*.19,walker=width*.17;assert.ok(walker+3<side);assert.ok(width*.04+width*.10+3<side);}});
 
 test('usable fallback never leaves technical text over the castle',async()=>{const source=await read('palace-startup.js');assert.doesNotMatch(source,/軽量表示で開けます/);assert.match(source,/status\.textContent='';status\.hidden=true/);});
+
+test('castle format follows visible scene aspect, not a phone-width cutoff',async()=>{
+ const {palaceSceneFormat}=await import('../palace-startup.js');
+ for(const [w,h,want] of [[320,420,'portrait'],[390,550,'portrait'],[430,620,'portrait'],[980,1740,'portrait'],[1180,531,'landscape'],[844,230,'landscape'],[600,600,'portrait']])assert.equal(palaceSceneFormat(w,h),want);
+ for(const [w,h] of [[0,0],[NaN,500],[300,Infinity]])assert.equal(palaceSceneFormat(w,h),'landscape');
+ const css=await read('presentation-profiles.css'),js=await read('palace-startup.js');
+ assert.match(css,/data-palace-format=portrait[^}]+100cqh \* \.75[^}]+--gate-texture:url\('\.\/assets\/palace\/gate-phone.webp'\)/);
+ assert.match(css,/data-palace-format=landscape[^}]+100cqh \* 1\.777[^}]+--gate-texture:url\('\.\/assets\/palace\/gate-desktop.webp'\)/);
+ assert.match(js,/format==='portrait'\?'all':'not all'/);assert.match(js,/observer.observe\(palace\)/);
+ // At the reported tall geometry, portrait avoids the desktop painting's extreme crop.
+ const w=980,h=1740;const oldGate=Math.max(w,h*1.777)*.23744019,newGate=Math.max(w,h*.75)*.32872928;
+ assert.ok(oldGate>700);assert.ok(newGate<450);assert.ok(newGate>w*.4);
+});

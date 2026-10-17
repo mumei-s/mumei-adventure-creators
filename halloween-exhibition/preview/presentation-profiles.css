@@ -1,0 +1,42 @@
+/* Display profiles change readable UI dimensions, not browser zoom or artwork. */
+body[data-layout-page]{--ui-font:16px;--ui-meta:14px;--ui-target:48px;--ui-icon:40px;--ui-header-height:56px}
+body[data-layout-page][data-layout=tablet]{--ui-font:18px;--ui-meta:16px;--ui-target:52px;--ui-icon:48px;--ui-header-height:60px}
+body[data-layout-page][data-layout=desktop]{--ui-font:14px;--ui-meta:12px;--ui-target:44px;--ui-icon:32px;--ui-header-height:52px}
+/* Keep a matched painting, gate texture and hit region at every scene aspect. */
+.theater[data-palace-format=portrait] .palace-composition{width:max(100cqw,calc(100cqh * .75));height:max(100cqh,calc(100cqw / .75));--gate-x:33.609576%;--gate-y:38.812155%;--gate-w:32.872928%;--gate-h:33.218232%;--gate-texture:url('./assets/palace/gate-phone.webp')}
+.theater[data-palace-format=landscape] .palace-composition{width:max(100cqw,calc(100cqh * 1.777));height:max(100cqh,calc(100cqw / 1.777));--gate-x:38.157895%;--gate-y:30.393199%;--gate-w:23.744019%;--gate-h:43.889479%;--gate-texture:url('./assets/palace/gate-desktop.webp')}
+body[data-layout-page=gallery][data-layout] .theater .palace-toolbar{flex-wrap:wrap;gap:8px}
+body[data-layout-page=gallery][data-layout] .theater .header-actions{flex-wrap:wrap;gap:8px}
+body[data-layout-page=gallery][data-layout] .theater .palace-toolbar button,
+body[data-layout-page=gallery][data-layout] .theater .palace-return-row>:is(button,a){font-size:var(--ui-font);min-height:var(--ui-target);height:auto;white-space:normal;overflow-wrap:anywhere;line-height:1.4;padding:8px}
+body[data-layout-page=gallery][data-layout] .theater .header-actions #year-open{width:var(--ui-target);min-width:var(--ui-target);min-height:var(--ui-target);font-size:var(--ui-font);padding:4px}
+body[data-layout-page=gallery][data-layout] .theater .header-actions .visitor-settings-trigger{min-width:var(--ui-target)}
+body[data-layout-page=gallery][data-layout] .theater .room-dot.face-dot{width:var(--ui-target);min-width:var(--ui-target);height:var(--ui-target);min-height:var(--ui-target)}
+body[data-layout-page=gallery][data-layout] .theater .room-dot.face-dot img,
+body[data-layout-page=gallery][data-layout] .theater .face-dot .face-initial{width:var(--ui-icon);height:var(--ui-icon);left:calc((var(--ui-target) - var(--ui-icon))/2);top:calc((var(--ui-target) - var(--ui-icon))/2)}
+body[data-layout-page=gallery][data-layout] .theater .palace-caption-stack{width:min(90%,36rem)}
+body[data-layout-page=gallery][data-layout] .theater .palace-caption-stack>p{font-size:var(--ui-meta);line-height:1.4}
+body[data-layout-page=gallery][data-layout] .theater .palace-caption-stack>.palace-gate-invitation{font-size:var(--ui-font)}
+/* Shared settings preserve heading hierarchy and native input zoom behavior. */
+body[data-layout-page][data-layout] :is(.visitor-preferences,.display-preferences){font-size:var(--ui-font)}
+body[data-layout-page][data-layout] :is(.visitor-preferences,.display-preferences) :is(label,button){font-size:var(--ui-font)}
+body[data-layout-page][data-layout] :is(.visitor-settings-note,.visitor-settings-status,.display-mode-help,.display-mode-status){font-size:var(--ui-meta);line-height:1.6}
+body[data-layout-page=maze][data-layout]{--game-hud-font:var(--ui-font);--game-title-font:var(--ui-font);--game-panel-font:var(--ui-font)}
+body[data-layout-page=maze][data-layout] #game header{min-height:var(--ui-header-height);flex-wrap:wrap}
+body[data-layout-page=maze][data-layout] #game header :is(button,.brand){font-size:var(--ui-font);min-height:var(--ui-target);min-width:var(--ui-target);height:auto;white-space:normal;line-height:1.3}
+body[data-layout-page=maze][data-layout] #game #view-controls button{min-height:var(--ui-target);width:var(--ui-target);padding:4px}
+body[data-layout-page=maze][data-layout] #game :is(#minimap-size,#menu-open){width:auto;flex-basis:auto;padding:6px}
+body[data-layout-page=maze][data-layout] #game :is(.nearby button,.lantern-dock #lantern){font-size:var(--ui-font);min-height:var(--ui-target)!important;white-space:normal;overflow-wrap:anywhere}
+body[data-layout-page=maze][data-layout] #panel .explore-menu>:is(button,a){font-size:var(--ui-font);min-height:var(--ui-target);line-height:1.5;white-space:normal;overflow-wrap:anywhere}
+body[data-layout-page=maze][data-layout] #panel :is(.display-preferences label,.game-volume-label,.game-audio-status){font-size:var(--ui-font)}
+
+@media(max-height:580px) and (orientation:landscape){
+ :root body[data-layout-page=maze][data-layout] #game{grid-template-rows:minmax(var(--ui-header-height),auto) 0 auto minmax(0,1fr) 20px}
+}
+:root[data-viewport-landscape=true] body[data-layout-page=maze][data-layout] #game{grid-template-rows:minmax(var(--ui-header-height),auto) 0 auto minmax(0,1fr) 20px}
+:root[data-viewport-compact=true] body[data-layout-page=maze][data-layout] #game{grid-template-rows:minmax(var(--ui-header-height),auto) 0 0 minmax(0,1fr) 0}
+body[data-layout-page=gallery][data-layout] .castle-visit-counter,
+body[data-layout-page=gallery][data-layout] .castle-visit-counter small{font-size:var(--ui-meta);line-height:1.4}
+body[data-layout-page=gallery][data-layout] .castle-visit-counter strong{font-size:var(--ui-font)}
+body[data-layout-page=gallery][data-layout] .theater :is(.castle-exit-label,.app-exit-trigger){font-size:var(--ui-font)}
+body[data-layout-page=maze][data-layout] #game .minimap span{font-size:var(--ui-meta);white-space:normal;text-align:center}

@@ -184,18 +184,18 @@ test('release-versioned JS/CSS are coherent and only the exact public release qu
  for(const path of ['index.html','admin/index.html']){
   const text=await readFile(new URL('../'+path,import.meta.url),'utf8');
   for(const match of text.matchAll(/(?:href|src)="(\.\.?\/[^"?]+\.(?:js|css))(\?[^" ]*)?"/g)){
-   assert.equal(match[2],'?v='+(match[1]==='./phone-layout.css'?'20261017-phone1':match[1]==='./castle-visit-counter.css'?'20261017-compact1':['./transition-effects.js','./transition-effects.css','./palace-living-scene.js','./palace-living-scene.css','./palace-startup.js','./palace-entrance.css','./safe-navigation.css','./theater.js'].includes(match[1])?'20261016-living1':['./theater.js','./viewport.js','./ios-viewport.css'].includes(match[1])?'20261016-ios1':['./theater.js','./fate-roulette.css','./gallery-refinement.css','./safe-navigation.css'].includes(match[1])?'20261016-fate1':['./castle-counter-bootstrap.js','./castle-visit-counter.css'].includes(match[1])?'20261016-visits1':['./theater.js','./gallery-refinement.css','./door-reveal.css','./safe-navigation.css'].includes(match[1])?'20261015-glamour1':match[1]==='./app.js'?'20261015-clear1':['./theater.js','./gallery-refinement.css','./safe-navigation.css','../safe-navigation.css','./app.js'].includes(match[1])?'20261015-return1':['./theater.js','./gallery-refinement.css','./scene-motion.css'].includes(match[1])?'20261015-music-garden1':['./magical-loading.css','./theater.js','./palace-startup.js'].includes(match[1])?'20261015-interior1':match[1]==='./palace-entrance.css'?'20261015-startup2':['./palace-startup.js','./theater.js','./pwa.js'].includes(match[1])?'20261015-startup1':match[1]==='./host-celebration.css'?'20261015-host3':match[1]==='./gallery-refinement.css'?'20261015-finale1':['./theater.js','./door-reveal.css'].includes(match[1])?'20261015-reveal1':match[1]==='./visitor-preferences.css'?'20261015-settings2':match[1]==='./palace-entrance.css'?'20261014-corner2':['./theater.js','./gallery-refinement.css','./scene-motion.css'].includes(match[1])?'20261015-festival1':match[1]==='./app.js'?'20261015-roster4':match[1]==='./article-doors.css'?'20261014-doors1':match[1]==='./gallery-controls.css'?'20261014-portrait1':release),match[1]);await access(new URL('../'+(path.startsWith('admin/')?'admin/':'')+match[1],import.meta.url));
+   assert.equal(match[2],'?v='+(['./presentation-profiles.css','./palace-startup.js','./theater.js'].includes(match[1])?'20261017-readable1':match[1]==='./phone-layout.css'?'20261017-phone1':match[1]==='./castle-visit-counter.css'?'20261017-compact1':['./transition-effects.js','./transition-effects.css','./palace-living-scene.js','./palace-living-scene.css','./palace-startup.js','./palace-entrance.css','./safe-navigation.css','./theater.js'].includes(match[1])?'20261016-living1':['./theater.js','./viewport.js','./ios-viewport.css'].includes(match[1])?'20261016-ios1':['./theater.js','./fate-roulette.css','./gallery-refinement.css','./safe-navigation.css'].includes(match[1])?'20261016-fate1':['./castle-counter-bootstrap.js','./castle-visit-counter.css'].includes(match[1])?'20261016-visits1':['./theater.js','./gallery-refinement.css','./door-reveal.css','./safe-navigation.css'].includes(match[1])?'20261015-glamour1':match[1]==='./app.js'?'20261015-clear1':['./theater.js','./gallery-refinement.css','./safe-navigation.css','../safe-navigation.css','./app.js'].includes(match[1])?'20261015-return1':['./theater.js','./gallery-refinement.css','./scene-motion.css'].includes(match[1])?'20261015-music-garden1':['./magical-loading.css','./theater.js','./palace-startup.js'].includes(match[1])?'20261015-interior1':match[1]==='./palace-entrance.css'?'20261015-startup2':['./palace-startup.js','./theater.js','./pwa.js'].includes(match[1])?'20261015-startup1':match[1]==='./host-celebration.css'?'20261015-host3':match[1]==='./gallery-refinement.css'?'20261015-finale1':['./theater.js','./door-reveal.css'].includes(match[1])?'20261015-reveal1':match[1]==='./visitor-preferences.css'?'20261015-settings2':match[1]==='./palace-entrance.css'?'20261014-corner2':['./theater.js','./gallery-refinement.css','./scene-motion.css'].includes(match[1])?'20261015-festival1':match[1]==='./app.js'?'20261015-roster4':match[1]==='./article-doors.css'?'20261014-doors1':match[1]==='./gallery-controls.css'?'20261014-portrait1':release),match[1]);await access(new URL('../'+(path.startsWith('admin/')?'admin/':'')+match[1],import.meta.url));
   }
  }
  for(const path of ['theater.js','admin/app.js','admin/display-settings.js']){
   const text=await readFile(new URL('../'+path,import.meta.url),'utf8');
-  for(const match of text.matchAll(/from '(\.\.?\/[^'?]+\.js)(\?[^']*)?'/g))assert.equal(match[2],'?v='+(['./transition-effects.js','./palace-startup.js'].includes(match[1])?'20261016-living1':['./viewport.js','./gallery-gesture.js','./visitor-preferences.js'].includes(match[1])?'20261016-ios1':match[1]==='./app-exit.js'?'20261016-fate1':['./scene-motion.js'].includes(match[1])?'20261015-glamour1':match[1]==='./festival-scene.js'?'20261015-glamour1':match[1]==='./door-reveal-clock.js'?'20261015-playful1':match[1]==='./visitor-preferences.js'?'20261015-return1':['./visitor-preferences.js','./festival-scene.js','./scene-motion.js'].includes(match[1])?'20261015-music-garden1':match[1]==='./magical-loading.js'?'20261015-journey1':match[1]==='./palace-startup.js'?'20261015-interior1':match[1]==='./visitor-preferences.js'?'20261015-settings2':['./door-palette.js','./slideshow.js'].includes(match[1])?'20261015-festival1':match[1]==='./gallery-gesture.js'?'20261015-controls1':match[1]==='./palace-entrance.js'?'20261014-palace2':match[1]==='./model.js'?'20261015-iris1':['./data-model.js','../data-model.js'].includes(match[1])?'20261014-doors1':release),match[1]);
+  for(const match of text.matchAll(/from '(\.\.?\/[^'?]+\.js)(\?[^']*)?'/g))assert.equal(match[2],'?v='+(match[1]==='./palace-startup.js'?'20261017-readable1':['./transition-effects.js','./palace-startup.js'].includes(match[1])?'20261016-living1':['./viewport.js','./gallery-gesture.js','./visitor-preferences.js'].includes(match[1])?'20261016-ios1':match[1]==='./app-exit.js'?'20261016-fate1':['./scene-motion.js'].includes(match[1])?'20261015-glamour1':match[1]==='./festival-scene.js'?'20261015-glamour1':match[1]==='./door-reveal-clock.js'?'20261015-playful1':match[1]==='./visitor-preferences.js'?'20261015-return1':['./visitor-preferences.js','./festival-scene.js','./scene-motion.js'].includes(match[1])?'20261015-music-garden1':match[1]==='./magical-loading.js'?'20261015-journey1':match[1]==='./palace-startup.js'?'20261015-interior1':match[1]==='./visitor-preferences.js'?'20261015-settings2':['./door-palette.js','./slideshow.js'].includes(match[1])?'20261015-festival1':match[1]==='./gallery-gesture.js'?'20261015-controls1':match[1]==='./palace-entrance.js'?'20261014-palace2':match[1]==='./model.js'?'20261015-iris1':['./data-model.js','../data-model.js'].includes(match[1])?'20261014-doors1':release),match[1]);
  }
  const h=workerHarness();
  for(const path of ['slideshow.js','display-mode.js','display-mode.css'])assert.equal((await h.dispatch('fetch',base+path+'?v='+(path==='slideshow.js'?'20261015-festival1':release))).intercepted,true);
  for(const path of ['admin/app.js','admin/index.html','maze/app.js','data/archive.json','unknown.js'])assert.equal((await h.dispatch('fetch',base+path+'?v='+release)).intercepted,false);
  for(const query of ['?v=old','?v='+release+'&token=private','?token=private','?v='+release+'&v=other'])assert.equal((await h.dispatch('fetch',base+'theater.js'+query)).intercepted,false);
- assert.match(workerSource,/mumei-atelier-shell-v32-phone1-/);assert.match(workerSource,/cacheName: CACHE/);
+ assert.match(workerSource,/mumei-atelier-shell-v33-readable1-/);assert.match(workerSource,/cacheName: CACHE/);
  assert.doesNotMatch(workerSource,/localStorage|sessionStorage|\.clear\(/);
 });
 
@@ -225,19 +225,19 @@ test('door release assets and dependency are coherently versioned while private 
   assert.equal((await h.dispatch('fetch',base+path+'?v=20261014-layout1')).intercepted,false);
  }
  for(const path of ['slideshow.js','admin/model.js','maze/app.js','data/archive.json','index.html'])assert.equal((await h.dispatch('fetch',base+path+'?v=20261014-doors1')).intercepted,false,path);
- assert.match(workerSource,/mumei-atelier-shell-v32-phone1-/);assert.match(workerSource,/const DOOR_RELEASE = '20261014-doors1'/);
+ assert.match(workerSource,/mumei-atelier-shell-v33-readable1-/);assert.match(workerSource,/const DOOR_RELEASE = '20261014-doors1'/);
 });
 
 test('palace release is exact, independently cache-busted and confined to public preview assets',async()=>{
  const h=workerHarness();await h.dispatch('install');
  for(const path of ['theater.js','palace-entrance.js','palace-entrance.css']){
-  assert.equal((await h.dispatch('fetch',base+path+'?v='+(path==='palace-entrance.css'?'20261016-living1':path==='theater.js'?'20261016-living1':'20261014-palace2'))).intercepted,true);
+  assert.equal((await h.dispatch('fetch',base+path+'?v='+(path==='palace-entrance.css'?'20261016-living1':path==='theater.js'?'20261017-readable1':'20261014-palace2'))).intercepted,true);
   assert.equal((await h.dispatch('fetch',base+path+'?v=20261014-doors1')).intercepted,false);
  }
  for(const name of ['palace-desktop','palace-phone','gate-desktop','gate-phone'])assert.equal((await h.dispatch('fetch',base+'assets/palace/'+name+'.webp')).intercepted,true);
- for(const path of ['admin/app.js','maze/app.js','data/archive.json','unknown.js'])assert.equal((await h.dispatch('fetch',base+path+'?v='+(path==='palace-entrance.css'?'20261016-living1':path==='theater.js'?'20261016-living1':'20261014-palace2'))).intercepted,false);
+ for(const path of ['admin/app.js','maze/app.js','data/archive.json','unknown.js'])assert.equal((await h.dispatch('fetch',base+path+'?v='+(path==='palace-entrance.css'?'20261016-living1':path==='theater.js'?'20261017-readable1':'20261014-palace2'))).intercepted,false);
  assert.equal((await h.dispatch('fetch',base+'palace-entrance.js?v=20261014-palace2&token=private')).intercepted,false);
- assert.match(workerSource,/mumei-atelier-shell-v32-phone1-/);
+ assert.match(workerSource,/mumei-atelier-shell-v33-readable1-/);
 });
 
 test('optional castle counter boot and cache never couple to gallery startup or API responses',async()=>{
@@ -261,4 +261,22 @@ test('phone layout patch is exact-release cached without widening the shell allo
  for(const suffix of ['', '?v=20261017-phone1'])assert.equal((await h.dispatch('fetch',base+'phone-layout.css'+suffix)).intercepted,true);
  for(const suffix of ['?v=old','?v=20261017-phone1&token=private'])assert.equal((await h.dispatch('fetch',base+'phone-layout.css'+suffix)).intercepted,false);
  assert.equal((await h.dispatch('fetch',base+'admin/index.html?v=20261017-phone1')).intercepted,false);
+});
+
+test('new touch-pad stylesheet follows the existing network-only maze cache boundary',async()=>{
+ const h=workerHarness();
+ const maze=await readFile(new URL('../maze/index.html',import.meta.url),'utf8');
+ assert.match(maze,/touch-pad\.css\?v=20261017-touch1/);
+ await access(new URL('../maze/touch-pad.css',import.meta.url));
+ for(const path of ['maze/index.html','maze/app.js','maze/adventure-controls.css','maze/touch-pad.css']){
+  for(const suffix of ['', '?v=20261017-touch1', '?v=old'])assert.equal((await h.dispatch('fetch',base+path+suffix)).intercepted,false,path+suffix);
+ }
+});
+
+test('readability release caches only its exact public scene and profile dependencies',async()=>{
+ const h=workerHarness();
+ for(const name of ['presentation-profiles.css','palace-startup.js','theater.js']){
+  assert.equal((await h.dispatch('fetch',base+name+'?v=20261017-readable1')).intercepted,true);
+  for(const q of ['?v=old','?v=20261017-readable1&token=private'])assert.equal((await h.dispatch('fetch',base+name+q)).intercepted,false);
+ }
 });

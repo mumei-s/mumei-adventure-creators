@@ -12,12 +12,23 @@ export function settlePalaceImage(image, {timeout=8000, timers=globalThis}={}) {
   if(image.complete)image.naturalWidth?loaded():failed();
  });
 }
+/** Choose the painting by the visible scene, including a tall, wide viewport. */
+export function palaceSceneFormat(width,height) {
+ return Number.isFinite(width)&&Number.isFinite(height)&&width>0&&height>0&&width/height<=1.1?'portrait':'landscape';
+}
 export function initPalaceStartup(root) {
  const doc=root.ownerDocument, image=doc.getElementById('palace-image'), header=root.querySelector('.masthead');
- const syncHeight=()=>{const phone=root.getBoundingClientRect().width<=760;const source=image?.parentElement?.querySelector('source');if(source)source.media=phone?'all':'not all';if(header)root.style.setProperty('--palace-header-height',`${Math.ceil(header.getBoundingClientRect().height)}px`);};
+ const palace=doc.getElementById('palace-entrance');
+ const syncHeight=()=>{
+  if(header)root.style.setProperty('--palace-header-height',`${Math.ceil(header.getBoundingClientRect().height)}px`);
+  const rect=palace?.getBoundingClientRect();if(!rect?.width||!rect?.height)return;
+  const format=palaceSceneFormat(rect.width,rect.height);root.dataset.palaceFormat=format;
+  const source=image?.parentElement?.querySelector('source'),media=format==='portrait'?'all':'not all';
+  if(source&&source.media!==media)source.media=media;
+ };
  syncHeight();
- if(typeof ResizeObserver!=='undefined'){const observer=new ResizeObserver(syncHeight);if(header)observer.observe(header);observer.observe(root);}
- const gateTexture=new Image();gateTexture.src=root.getBoundingClientRect().width<=760?'./assets/palace/gate-phone.webp':'./assets/palace/gate-desktop.webp';
+ if(typeof ResizeObserver!=='undefined'){const observer=new ResizeObserver(syncHeight);if(header)observer.observe(header);observer.observe(root);if(palace)observer.observe(palace);}
+ const gateTexture=new Image();gateTexture.src=root.dataset.palaceFormat==='portrait'?'./assets/palace/gate-phone.webp':'./assets/palace/gate-desktop.webp';
  return Promise.all([settlePalaceImage(image),settlePalaceImage(gateTexture)]).then(results=>{
   const fallback=results.includes('fallback');root.dataset.palaceReady=fallback?'fallback':'ready';
   const status=doc.getElementById('palace-load-status');

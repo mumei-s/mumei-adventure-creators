@@ -1,0 +1,30 @@
+/* Authored scene ornaments only: no gameplay geometry, timers or blocking layers. */
+#town-loading,#loading{display:flex;flex-direction:column;align-items:center;justify-content:safe center;gap:12px;overflow:auto;padding:20px 18px;background:radial-gradient(ellipse at 50% 38%,#38404b 0,#1a2c38 36%,#101b29 78%);isolation:isolate;text-align:center}
+.story-vignette{position:relative;flex:0 0 auto;width:min(420px,88vw);max-width:100%;aspect-ratio:64/30;pointer-events:none;user-select:none}
+.story-vignette img{display:block;width:100%;height:100%;object-fit:contain}
+.story-vignette::before{content:"";position:absolute;inset:16% 29% 12%;border-radius:50%;background:radial-gradient(ellipse,#efbc6c22,transparent 67%);animation:story-lantern-breathe 5s ease-in-out infinite;pointer-events:none}
+.story-vignette::after{content:"";position:absolute;left:44%;top:56%;width:3px;height:3px;border-radius:50%;background:#ffe5a4;box-shadow:35px -39px #e6c382aa,-49px -24px #edc77a88,62px 10px #d4bed788,-13px 33px #eac58599;animation:story-embers 7s ease-in-out infinite;pointer-events:none}
+#town-loading>p,#loading>p{align-self:auto;max-width:36ch;margin:0;padding:6px 12px;border:0;border-radius:0;background:none;box-shadow:none;font:500 clamp(14px,3.8vw,19px)/1.8 "Yu Mincho",serif;letter-spacing:.08em;color:#f7e5bd;text-shadow:0 2px 8px #07111c}
+#town-loading>a,#loading>a{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;min-height:44px;padding:8px 18px;border:1px solid #bb996a80;border-radius:30px;background:#162633;color:#f2d39b;font-size:13px;letter-spacing:.04em;text-decoration:none}
+#town-loading>button,#loading>button{flex-shrink:0;min-height:44px;max-width:100%}
+#town-panel,#panel{border-color:#cfac73;border-radius:20px;background:radial-gradient(ellipse at 100% 0,#4b34564a,transparent 48%),linear-gradient(150deg,#243840,#172330 70%);box-shadow:0 24px 80px #040912b3,inset 0 0 0 4px #d9b77c0d,inset 0 0 0 5px #cba77833}
+#town-panel[open],#panel[open]{animation:story-page-enter .26s cubic-bezier(.2,.7,.2,1) both}
+#town-panel-content::before,#panel-content::before{content:"";display:block;clear:both;height:106px;margin:0 0 14px;background:url('./assets/lantern-story-vignette.svg') center 55%/280px auto no-repeat;border-bottom:1px solid #d2ad6b55;pointer-events:none}
+#town-panel-content>h2,#panel-content>h2{color:#fae4b5;text-shadow:0 2px 15px #cf9a3520;letter-spacing:.045em}
+#town-panel-content>.eyebrow,#panel-content>.eyebrow{color:#e4ba80;font-size:10px;letter-spacing:.2em}
+#town-panel .town-card,#panel .article-card,#panel .empty{background:linear-gradient(120deg,#cfb7830b,#6c50711a);border-color:#bda17966;box-shadow:inset 3px 0 #c09a5a44}
+#town-panel .town-menu>button,#town-panel .town-menu>a{background:linear-gradient(110deg,#243d43,#2e3145);border-color:#c4a46a70}
+#town-panel .panel-close,#panel>.close{border-color:#d4b27a99;background:#142833f5;box-shadow:0 4px 15px #07131c66}
+/* Never consume combat viewport height with decorative headers. */
+#town-panel.battle-mode #town-panel-content::before,#panel.battle-mode #panel-content::before,#panel:has(.rpg-battle,.battle-screen,.duel-stats) #panel-content::before{display:none}
+@keyframes story-lantern-breathe{0%,100%{opacity:.5;transform:scale(.97)}50%{opacity:.9;transform:scale(1.04)}}
+@keyframes story-embers{0%,100%{opacity:.45;transform:translateY(3px)}50%{opacity:.85;transform:translateY(-7px)}}
+@keyframes story-page-enter{from{opacity:.86;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+html[data-atmosphere-paused=true] .story-vignette::before,html[data-atmosphere-paused=true] .story-vignette::after,html[data-transition-paused=true] .story-vignette::before,html[data-transition-paused=true] .story-vignette::after,body[data-motion=false] .story-vignette::before,body[data-motion=false] .story-vignette::after,body[data-ambient-paused=true] .story-vignette::before,body[data-ambient-paused=true] .story-vignette::after{animation-play-state:paused!important}
+html[data-atmosphere-paused=true] :is(#town-panel,#panel),html[data-transition-paused=true] :is(#town-panel,#panel),body[data-motion=false] :is(#town-panel,#panel),body[data-ambient-paused=true] :is(#town-panel,#panel){animation:none!important}
+@media(max-width:480px){#town-panel-content::before,#panel-content::before{height:82px;background-size:230px auto;margin-bottom:11px}#town-loading,#loading{gap:9px;padding:16px}.story-vignette{width:min(360px,88vw)}}
+@media(max-height:480px){.story-vignette{width:220px}#town-loading,#loading{gap:3px;padding:10px}#town-panel-content::before,#panel-content::before{height:42px;background-size:180px auto;margin-bottom:8px}}
+@media(prefers-reduced-motion:reduce){.story-vignette::before,.story-vignette::after,#town-panel[open],#panel[open]{animation:none!important}}
+@media(forced-colors:active){.story-vignette::before,.story-vignette::after,#town-panel-content::before,#panel-content::before{display:none}#town-panel,#panel{border:1px solid CanvasText;box-shadow:none}}
+
+#town-loading:has(#loading-retry:not([hidden])) .story-vignette::before,#town-loading:has(#loading-retry:not([hidden])) .story-vignette::after{animation:none}

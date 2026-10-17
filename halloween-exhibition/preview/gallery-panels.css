@@ -1,0 +1,79 @@
+/* Shared illustration language for the gallery's real dialogs and loading states.
+   Art has its own small header row; reading surfaces and native controls stay clear. */
+body[data-layout-page=gallery]{
+ --panel-ink:#fff1d7;--panel-muted:#e1d0de;--panel-edge:#d6aa75;--panel-spark:#ffe2a3;
+ --panel-base:#231d32;--panel-top:#452c4b;--panel-wash:#b96f9350;--panel-card:#4b304b;
+ --panel-familiar:url('./assets/panel-magic/ghost.svg');--panel-talisman:url('./assets/panel-magic/lantern.svg');
+}
+body[data-layout-page=gallery][data-mode=normal]{
+ --panel-ink:#244d44;--panel-muted:#4e6d64;--panel-edge:#8bad94;--panel-spark:#b49c55;
+ --panel-base:#f4f7ed;--panel-top:#e0eee5;--panel-wash:#9ccab942;--panel-card:#e8f1e6;
+ --panel-familiar:url('./assets/panel-magic/butterfly.svg');--panel-talisman:url('./assets/panel-magic/branch.svg');
+}
+body[data-layout-page=gallery] :is(#roster,#detail,#years,.visitor-settings-dialog,.pwa-guide).gallery-panel{
+ isolation:isolate;border-color:var(--panel-edge);border-radius:24px 24px 14px 14px;
+ background:radial-gradient(ellipse at 0 0,var(--panel-wash),transparent 48%),linear-gradient(145deg,var(--panel-top),var(--panel-base) 55%);
+ box-shadow:inset 0 0 0 5px #d6aa750b,0 24px 80px #100b234d;color:var(--panel-ink);
+}
+body[data-layout-page=gallery] .gallery-panel::before{content:none}
+body[data-layout-page=gallery] .gallery-panel-art{
+ display:block;position:relative;width:calc(100% - 104px);max-width:380px;height:64px;
+ margin:0 0 14px;overflow:hidden;contain:layout paint;pointer-events:none;isolation:isolate;
+}
+.gallery-panel-art *{pointer-events:none}
+.gallery-panel-wash{position:absolute;inset:4px 0 0;background:radial-gradient(ellipse,var(--panel-wash),transparent 70%);border-bottom:1px solid var(--panel-edge);border-radius:50%;opacity:.7}
+.gallery-panel-book{position:absolute;inset:0 12%;background:url('./assets/panel-magic/book.svg') center/contain no-repeat;animation:panel-book-float 11s -4s ease-in-out infinite}
+.gallery-panel-familiar{position:absolute;left:0;top:18px;width:28px;height:34px;background:var(--panel-familiar) center/contain no-repeat;animation:panel-familiar-float 8s -3s ease-in-out infinite}
+.gallery-panel-talisman{position:absolute;right:1px;top:5px;width:27px;height:45px;background:var(--panel-talisman) center/contain no-repeat;transform-origin:50% 0;animation:panel-lantern-sway 10s -5s ease-in-out infinite}
+.gallery-panel-dust{position:absolute;inset:0}
+.gallery-panel-spark{position:absolute;left:calc(6% + var(--spark)*14%);top:calc(18px + var(--spark)*3px);width:3px;height:3px;border-radius:50%;background:var(--panel-spark);box-shadow:0 0 7px var(--panel-spark);animation:panel-dust-rise calc(6s + var(--spark)*.6s) calc(var(--spark)*-.9s) ease-in-out infinite}
+.gallery-panel-spark:nth-child(3n){width:5px;height:5px;clip-path:polygon(50% 0,64% 36%,100% 50%,64% 64%,50% 100%,36% 64%,0 50%,36% 36%)}
+body[data-layout-page=gallery] .gallery-panel[open] .gallery-panel-art{animation:panel-art-arrive .5s cubic-bezier(.2,.7,.2,1) both}
+body[data-layout-page=gallery] :is(.visitor-settings-dialog,.pwa-guide).gallery-panel[open]{animation:panel-dialog-arrive .32s cubic-bezier(.2,.7,.2,1) both}
+body[data-layout-page=gallery] .gallery-panel :is(.dialog-intro,.privacy,.detail-copy,.detail-creator){color:var(--panel-muted)}
+body[data-layout-page=gallery] .gallery-panel :is(h2,.eyebrow){color:var(--panel-ink)}
+body[data-layout-page=gallery] #roster.gallery-panel .roster-card{
+ background:radial-gradient(ellipse at 0 0,var(--panel-wash),transparent 70%),linear-gradient(135deg,var(--panel-card),var(--panel-base));
+ border-color:var(--panel-edge);box-shadow:inset 0 0 0 4px #d6aa7509,0 5px 16px #100b231a;
+ animation:panel-card-arrive .48s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--card-order,0)*45ms);
+}
+body[data-layout-page=gallery] #roster.gallery-panel .roster-thumb{border-color:var(--panel-edge);box-shadow:0 0 0 3px var(--panel-wash),0 5px 14px #120c231f}
+body[data-layout-page=gallery] #roster.gallery-panel .roster-card::before{content:'';inset:auto 10px 8px auto;width:30px;height:1px;background:linear-gradient(90deg,transparent,var(--panel-edge));pointer-events:none}
+body[data-layout-page=gallery] #roster.gallery-panel .roster-card::after{border-color:var(--panel-edge);opacity:.24}
+body[data-layout-page=gallery] #detail.gallery-panel :is(.detail-art,.profile-fallback){border-color:var(--panel-edge);box-shadow:0 8px 25px #100b2324}
+body[data-layout-page=gallery] #detail.gallery-panel .work-link{border-color:var(--panel-edge);background:linear-gradient(110deg,var(--panel-wash),transparent 65%);border-radius:12px}
+body[data-layout-page=gallery] #roster.gallery-panel .roster-thumb::before{content:'';position:absolute;inset:5px 7px auto;height:2px;background:linear-gradient(90deg,transparent,var(--panel-spark),transparent);pointer-events:none;animation:panel-edge-glimmer 7s ease-in-out infinite}
+body[data-layout-page=gallery] #detail.gallery-panel #detail-title::after{content:'';display:block;width:84px;height:2px;margin-top:10px;background:linear-gradient(90deg,var(--panel-edge),transparent);pointer-events:none;animation:panel-edge-glimmer 8s ease-in-out infinite}
+body[data-layout-page=gallery] #years.gallery-panel .year-option{border-color:var(--panel-edge);border-radius:16px 16px 8px 8px;background:linear-gradient(110deg,var(--panel-wash),transparent 75%)}
+/* Loading art reflects real pending work. Existing hidden/error/ready logic owns it. */
+body[data-layout-page=gallery] :is(.archive-loading,.artwork-loading,.detail-image-loading){background:radial-gradient(ellipse at 50% 18%,var(--panel-wash),transparent 62%),var(--panel-base);color:var(--panel-ink);border-color:var(--panel-edge)}
+body[data-layout-page=gallery] .loading-medallion{font-size:0;background:url('./assets/panel-magic/book.svg') center/90% auto no-repeat;border-color:var(--panel-edge);box-shadow:0 0 0 4px var(--panel-wash)}
+body[data-layout-page=gallery] .detail-image-loading[data-state=loading]{gap:8px;align-content:center}
+body[data-layout-page=gallery] .detail-image-loading[data-state=loading]::before{content:'';display:block;justify-self:center;width:112px;height:56px;background:url('./assets/panel-magic/book.svg') center/contain no-repeat;pointer-events:none;animation:panel-book-float 9s ease-in-out infinite}
+body[data-layout-page=gallery] .detail-image-loading[data-state=error]{background:var(--panel-base)}
+body[data-layout-page=gallery] .load-error{border-color:var(--panel-edge);background:linear-gradient(135deg,var(--panel-top),var(--panel-base));color:var(--panel-ink);border-radius:18px}
+/* Exit is deliberately still: its promise is that sound and motion have stopped. */
+body[data-layout-page=gallery] .app-ended-screen{background:radial-gradient(ellipse at 50% 10%,var(--panel-top),transparent 65%),var(--panel-base);color:var(--panel-ink)}
+body[data-layout-page=gallery] .app-ended-screen::before{content:'';display:block;width:144px;height:72px;background:url('./assets/panel-magic/book.svg') center/contain no-repeat;pointer-events:none}
+@keyframes panel-edge-glimmer{0%,100%{opacity:.45}50%{opacity:.95}}
+@keyframes panel-art-arrive{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
+@keyframes panel-dialog-arrive{from{opacity:.65;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes panel-card-arrive{from{opacity:.5;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes panel-book-float{0%,100%{transform:translateY(1px)}50%{transform:translateY(-2px)}}
+@keyframes panel-familiar-float{0%,100%{transform:translate(0,2px) rotate(-5deg)}50%{transform:translate(3px,-3px) rotate(5deg)}}
+@keyframes panel-lantern-sway{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+@keyframes panel-dust-rise{0%,100%{opacity:.2;transform:translate(-3px,6px)}50%{opacity:.8;transform:translate(4px,-9px)}}
+body[data-layout-page=gallery][data-ambient-paused=true] .gallery-panel,
+body[data-layout-page=gallery][data-ambient-paused=true] .gallery-panel *,
+body[data-layout-page=gallery][data-ambient-paused=true] .gallery-panel *::before,
+body[data-layout-page=gallery][data-ambient-paused=true] .gallery-panel *::after{animation:none!important;transition:none!important}
+body[data-layout-page=gallery][data-gallery-panels-paused=true] .gallery-panel,
+body[data-layout-page=gallery][data-gallery-panels-paused=true] .gallery-panel *,
+body[data-layout-page=gallery][data-page-hidden=true] .gallery-panel,
+body[data-layout-page=gallery][data-page-hidden=true] .gallery-panel *,
+body[data-layout-page=gallery][data-gallery-panels-paused=true] .gallery-panel *::before,
+body[data-layout-page=gallery][data-gallery-panels-paused=true] .gallery-panel *::after{animation-play-state:paused!important}
+body[data-layout-page=gallery][data-ambient-paused=true] .detail-image-loading::before{animation:none!important}
+body[data-layout-page=gallery][data-gallery-panels-paused=true] .detail-image-loading::before{animation-play-state:paused!important}
+@media(prefers-reduced-motion:reduce){.gallery-panel,.gallery-panel *,.gallery-panel *::before,.gallery-panel *::after,.detail-image-loading::before{animation:none!important;transition:none!important}}
+@media(forced-colors:active){.gallery-panel-art{display:none!important}}

@@ -100,7 +100,7 @@ test('lantern has its own left dock; loading shows actual illustrated scene',()=
  const stack=html.match(/<div class="nearby">([\s\S]*?)<\/div>/)[1];
  assert(!stack.includes('id="lantern"'));assert.match(html,/<aside class="lantern-dock"[^>]*><button id="lantern"/);
  assert.equal((html.match(/id="lantern"/g)||[]).length,1);
- assert(html.includes('assets/rpg/battle-library.webp'));assert(html.includes('maze-loading-ghost'));assert(html.includes('role="status"'));
+ assert(html.includes('../assets/lantern-story-vignette.svg'));assert(html.includes('story-vignette'));assert(html.includes('role="status"'));
  const css=fs.readFileSync(new URL('../adventure-controls.css',import.meta.url),'utf8');
  assert(css.includes('prefers-reduced-motion:reduce'));assert(css.includes('114px 20px'));
 });

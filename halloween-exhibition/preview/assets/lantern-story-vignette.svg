@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 300" fill="none">
+<defs>
+ <linearGradient id="sky" x2="0" y2="1"><stop stop-color="#25243e"/><stop offset="1" stop-color="#122d37"/></linearGradient>
+ <radialGradient id="halo"><stop stop-color="#f5c778" stop-opacity=".6"/><stop offset=".45" stop-color="#dca35c" stop-opacity=".14"/><stop offset="1" stop-color="#dca35c" stop-opacity="0"/></radialGradient>
+ <linearGradient id="gold" x2="1" y2="1"><stop stop-color="#ffe7a6"/><stop offset=".5" stop-color="#d2a66e"/><stop offset="1" stop-color="#a77350"/></linearGradient>
+ <linearGradient id="paper" x2="0" y2="1"><stop stop-color="#eee0b6"/><stop offset="1" stop-color="#aa8b70"/></linearGradient>
+ <linearGradient id="flame" x2="0" y2="1"><stop stop-color="#fff2bf"/><stop offset="1" stop-color="#e9a75a"/></linearGradient>
+</defs>
+<!-- Original miniature: a lantern between a sleeping street and an open storybook. -->
+<path d="M66 252V147a254 132 0 0 1 508 0v105Z" fill="url(#sky)"/>
+<path d="M67 249V148a253 132 0 0 1 506 0v101M80 241V149a240 120 0 0 1 480 0v92" stroke="#ab936b" stroke-opacity=".48"/>
+<circle cx="433" cy="67" r="25" fill="#ded9b1"/><circle cx="444" cy="58" r="25" fill="#242940"/>
+<g fill="#eccf8b"><path d="m188 55 2 6 6 2-6 2-2 6-2-6-6-2 6-2Zm318 59 2 5 5 2-5 2-2 5-2-5-5-2 5-2Z"/><circle cx="241" cy="46" r="1.7"/><circle cx="380" cy="40" r="1.5"/><circle cx="472" cy="105" r="1.5"/><circle cx="138" cy="102" r="1.5"/></g>
+<path d="M83 242v-74l34-31 36 31v74m-21-72v-54l34-28 32 28v126m-14-1v-91l35-30 37 30v92" fill="#263e48" stroke="#78808a" stroke-width="2"/>
+<path d="m78 171 39-39 39 39m-27-52 37-36 37 36m-23 34 39-38 42 38" stroke="#b49677" stroke-width="4" stroke-linejoin="round"/>
+<g fill="#e7ba76" stroke="#59485a" stroke-width="3"><path d="M104 187h25v27h-25zM153 137h24v28h-24zM206 166h25v28h-25zM153 190h24v25h-24z"/></g>
+<path d="M117 187v27m-13-14h25m36-63v28m-12-14h24m42 15v28m-13-14h25" stroke="#624b50" stroke-width="2"/>
+<path d="M412 250V149a47 47 0 0 1 94 0v101" fill="#1a2336" stroke="#846d85" stroke-width="8"/><path d="M425 248V151a34 34 0 0 1 68 0v97" stroke="#c8a477" stroke-opacity=".6"/>
+<path d="M438 170h42m-42 20h42m-42 20h42" stroke="#686176" stroke-width="3"/>
+<path d="M89 252c139-16 301-16 465 0M157 269c99-9 232-9 326 0" stroke="#b5966c" stroke-opacity=".6"/>
+<ellipse cx="321" cy="165" rx="131" ry="124" fill="url(#halo)"/>
+<!-- Brass lantern with real negative space around its handle. -->
+<path d="M300 87V72a20 20 0 0 1 40 0v15" stroke="url(#gold)" stroke-width="5"/>
+<path d="m291 109 10-23h38l10 23-10 75h-38Z" fill="#252a36" stroke="url(#gold)" stroke-width="4"/>
+<path d="M303 112h34l-5 62h-24Z" fill="url(#flame)"/><path d="M320 113v61m-26-63h53m-48 76h42m-38 7h34" stroke="#a67a50" stroke-width="3"/>
+<path d="M314 163c-10-11 4-21 5-30 8 10 16 24 6 30Z" fill="#fff8d1"/>
+<!-- Open book, stitched spine, and a small friendly paper spirit. -->
+<path d="m249 235 10-34c27-5 44 2 61 11 17-9 36-16 61-11l10 34c-27-5-47-1-71 11-25-12-43-16-71-11Z" fill="#47374b" stroke="url(#gold)" stroke-width="2"/>
+<path d="m259 228 5-31c24-4 39 3 56 12 17-9 33-16 55-12l6 31c-24-3-41 3-61 12-21-9-38-15-61-12Z" fill="url(#paper)"/>
+<path d="M320 209v30m-47-33 35 10m-36-1 36 11m25-10 30-10m-30 20 32-11" stroke="#88705e" stroke-width="2" stroke-linecap="round"/>
+<path d="M369 147c0-13 10-24 23-24s23 10 23 24v28l-9-6-8 8-9-7-9 5-11-7Z" fill="#deded3" fill-opacity=".9" stroke="#b6bad0" stroke-width="2"/>
+<ellipse cx="385" cy="147" rx="2.5" ry="3.5" fill="#4a435a"/><ellipse cx="400" cy="147" rx="2.5" ry="3.5" fill="#4a435a"/><path d="M389 157q4 4 8-1" stroke="#82717d" stroke-width="2" stroke-linecap="round"/>
+<g fill="#f4d590"><circle cx="282" cy="163" r="2"/><circle cx="352" cy="194" r="2"/><circle cx="285" cy="211" r="1.7"/><path d="m351 130 2 6 6 2-6 2-2 6-2-6-6-2 6-2Z"/></g>
+</svg>

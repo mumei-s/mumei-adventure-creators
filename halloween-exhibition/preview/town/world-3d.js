@@ -4,6 +4,7 @@ import {getTownMap} from './story-data.js';
 import {playerPose,loadArtImage} from '../maze/rpg-art.js?v=20261017-startup1';
 import {townVisualSeed as seed} from './visual-data.js';
 import {withDeadline} from '../transition-effects.js?v=20261016-living1';
+import {buildTownPalace,animateTownPalace,townPalaceFraming} from './palace-architecture.js?v=20261018-street1';
 
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),TAU=Math.PI*2;
 export const TOWN_3D_CAMERA_ELEVATION=55*Math.PI/180;
@@ -54,11 +55,11 @@ function builder(root,resources,materials){
   }
   function finish(){
     for(const {geometry,material,matrices,bucket}of batches.values()){
-      const batch=new THREE.InstancedMesh(geometry,perBuildingMaterial(material,bucket),matrices.length);matrices.forEach((m,i)=>batch.setMatrixAt(i,m));batch.instanceMatrix.needsUpdate=true;batch.castShadow=true;batch.receiveShadow=true;batch.userData.occluder=true;batch.userData.bucket=bucket;root.add(batch);
+      const batch=new THREE.InstancedMesh(geometry,perBuildingMaterial(material,bucket),matrices.length);batch.name=geometry.name;matrices.forEach((m,i)=>batch.setMatrixAt(i,m));batch.instanceMatrix.needsUpdate=true;batch.castShadow=true;batch.receiveShadow=true;batch.userData.occluder=true;batch.userData.bucket=bucket;root.add(batch);
     }
     return root;
   }
-  return {box,ball,round,peak,mesh,finish};
+  return {box,ball,round,peak,mesh,instance,finish};
 }
 
 function roofGeometry(width,depth,height){
@@ -79,7 +80,7 @@ function groundGeometry(map,tileTypes,y=0){
 
 /** Geometry uses exactly the story map footprints, thresholds and furniture. No gameplay state is stored here. */
 export function createTownSceneGeometry(map=getTownMap(),{materials=null,resources=new Set()}={}){
-  const root=new THREE.Group();root.name='town-world-'+map.id;materials??=palette(resources);const b=builder(root,resources,materials),buildings=[],trees=[],water=[],lamps=[],stars=[];
+  const root=new THREE.Group();root.name='town-world-'+map.id;materials??=palette(resources);const b=builder(root,resources,materials),buildings=[],trees=[],water=[],lamps=[],stars=[],palaceEffects=[];
   const interior=map.id!=='lantern-town';
   for(const [types,material,y]of interior?[['i',materials.parquet,0],['#',materials.dark,-.025]]:[['gfb#',materials.grass,-.025],['.',materials.road,0],['p',materials.plaza,.008],['=',materials.stone,.04],['~',materials.water,-.14]]){
     const geometry=groundGeometry(map,types,y);if(!geometry.attributes.position.count){geometry.dispose();continue;}
@@ -133,54 +134,17 @@ export function createTownSceneGeometry(map=getTownMap(),{materials=null,resourc
     buildings.push({id:building.id,footprint:{x,z,w,h},door:{...building.door},height:high+roofHeight,bucket});
   }
   function castle(building){
-    const {x,z,w,h}=building,cx=x+w/2,cz=z+h/2,south=z+h,bucket=building.id,doorX=building.door.x;
-    // Cool masonry, projecting courses and pilasters break up the broad facade.
-    // These are rendering details only; the story footprint and exit never move.
-    b.box(cx,1.9,cz,w-.8,3.8,h-.35,materials.castleStone,0,bucket);b.box(cx,.2,cz,w+.1,.4,h+.2,materials.stoneDark,0,bucket);
-    for(const yy of[.55,2.03,3.66])b.box(cx,yy,south-.08,w-.45,.12,.28,materials.castleTrim,0,bucket);
-    b.box(cx,3.78,south-.02,w-.35,.055,.32,materials.gold,0,bucket);
-    for(let n=0;n<w;n++){
-      b.box(x+n+.5,4.05,south-.12,.65,.58,.62,materials.castleTrim,0,bucket);
-      if(n%2===0&&Math.abs(x+n+.5-doorX)>1.8&&Math.abs(Math.abs(x+n+.5-doorX)-3.1)>.7)window(x+n+.5,2.7,south-.07,.44,.85,bucket);
-    }
+    const palace=buildTownPalace({building,b,materials,resources,root});buildings.push(palace.building);palaceEffects.push(...palace.effects);
+    // Keep main's entrance lighting and harvest decorations around the unchanged threshold.
+    const south=building.z+building.h,doorX=building.door.x,bucket=building.id;
     for(const side of[-1,1]){
-      const tx=cx+side*(w/2-.65);b.round(tx,2.7,cz,1.08,5.4,materials.castleStone,bucket);b.round(tx,4.9,cz,1.18,.25,materials.castleTrim,bucket);b.peak(tx,6.3,cz,1.5,2.7,materials.roofPlum,bucket);
-      b.round(tx,5.1,cz,1.19,.065,materials.gold,bucket);b.round(tx,7.85,cz,.035,1.1,materials.gold,bucket);b.box(tx+.32,8.08,cz,.6,.34,.04,materials.castlePlum,0,bucket);window(tx,3.5,cz+1.055,.42,.85,bucket);
-      const px=doorX+side*2.05;
-      b.box(px,1.8,south+.03,.32,3.6,.44,materials.castleTrim,0,bucket);b.box(px,3.55,south+.08,.52,.18,.56,materials.gold,0,bucket);
-      b.box(px,.24,south+.06,.55,.45,.58,materials.stoneDark,0,bucket);
-      // Hanging plum pennants have a pointed hem and a small gold star.
-      const banner=new THREE.Shape();banner.moveTo(-.35,0);banner.lineTo(0,-.28);banner.lineTo(.35,0);banner.lineTo(.35,1.5);banner.lineTo(-.35,1.5);banner.closePath();
-      const bx=doorX+side*3.1;b.mesh(new THREE.ExtrudeGeometry(banner,{depth:.035,bevelEnabled:false}),materials.castlePlum,new THREE.Vector3(bx,1.35,south+.09),bucket).name='castle-banner-'+side;
-      b.box(bx,2.88,south+.14,.9,.075,.12,materials.gold,0,bucket);
-      star(bx,2.3,south+.15,.23);
       lantern(doorX+side*1.63,south+.44,true,bucket);
-      // Small harvest clusters sit to either side, leaving the threshold clear.
       for(let n=0;n<2;n++){
         const qx=doorX+side*(2.3+n*.4),qz=south+.42+n*.18,r=n?.18:.25;
         b.ball(qx,r,qz,r,r*.86,r,materials.pumpkin,bucket);b.round(qx,r*1.86,qz,.035,.13,materials.wood,bucket);
         for(const offset of[-.075,.075])b.ball(qx+offset,r*1.05,qz+r*.88,.035,.04,.022,materials.glass,bucket);
       }
     }
-    b.box(cx,4.55,cz-.9,2.25,3.3,1.8,materials.castleStone,0,bucket);b.peak(cx,7.1,cz-.9,1.9,2.5,materials.roofPlum,bucket);window(cx,5.3,cz+.04,.65,1,bucket);
-    function star(sx,sy,sz,r){
-      const shape=new THREE.Shape();for(let n=0;n<10;n++){const a=Math.PI/2+n*Math.PI/5,rr=n%2?r*.43:r,xx=Math.cos(a)*rr,yy=Math.sin(a)*rr;n?shape.lineTo(xx,yy):shape.moveTo(xx,yy);}shape.closePath();
-      b.mesh(new THREE.ExtrudeGeometry(shape,{depth:.04,bevelEnabled:false}),materials.gold,new THREE.Vector3(sx,sy,sz),bucket).name='castle-star';
-    }
-    function arch(radius,spring){
-      const shape=new THREE.Shape();shape.moveTo(-radius,0);shape.lineTo(radius,0);shape.lineTo(radius,spring);shape.absarc(0,spring,radius,0,Math.PI,false);shape.lineTo(-radius,0);return shape;
-    }
-    // Layered arched recess and metalwork face south, toward the original exit.
-    const gate=arch(1.02,1.8);b.mesh(new THREE.ExtrudeGeometry(gate,{depth:.08,bevelEnabled:false}),materials.castlePlum,new THREE.Vector3(doorX,.05,south+.18),bucket).name='castle-arched-gate';
-    const frame=new THREE.Shape();frame.moveTo(-1.23,0);frame.lineTo(-1.23,1.8);frame.absarc(0,1.8,1.23,Math.PI,0,true);frame.lineTo(1.23,0);frame.lineTo(1.04,0);frame.lineTo(1.04,1.8);frame.absarc(0,1.8,1.04,0,Math.PI,false);frame.lineTo(-1.04,0);frame.closePath();
-    b.mesh(new THREE.ExtrudeGeometry(frame,{depth:.22,bevelEnabled:false}),materials.gold,new THREE.Vector3(doorX,.05,south+.24),bucket).name='castle-gate-frame';
-    for(let n=-4;n<=4;n++){
-      const xx=n*.21,high=1.8+Math.sqrt(1.02**2-xx**2)-.1;b.box(doorX+xx,high/2+.05,south+.3,.037,high,.045,materials.gold,0,bucket);
-    }
-    for(const yy of[.55,1.4])b.box(doorX,yy,south+.33,2.04,.055,.055,materials.gold,0,bucket);
-    const crest=b.mesh(new THREE.TorusGeometry(.3,.035,6,24),materials.gold,new THREE.Vector3(doorX,3.47,south+.23),bucket);crest.name='castle-gate-crest';star(doorX,3.47,south+.25,.23);
-    for(let n=0;n<5;n++)b.box(doorX,.02-n*.035,south+.35+n*.23,2.15+n*.22,.13,.3,materials.castleTrim,0,bucket);
-    buildings.push({id:building.id,footprint:{x,z,w,h},door:{...building.door},height:8.6,bucket});
   }
   function tree(x,z,autumn=false,index=0){
     const bucket='tree-'+index,leaf=autumn?materials.leafAutumn:materials.leaf;
@@ -247,7 +211,7 @@ export function createTownSceneGeometry(map=getTownMap(),{materials=null,resourc
     }
   }
   b.finish();root.updateMatrixWorld(true);
-  return {root,materials,resources,buildings,trees,occluders:[...buildings,...trees],water,lamps,stars,dispose(){root.traverse(item=>{if(item.isInstancedMesh)item.dispose();});for(const resource of resources)resource.dispose?.();resources.clear();root.clear();}};
+  return {root,materials,resources,buildings,trees,occluders:[...buildings,...trees],water,lamps,stars,palaceEffects,dispose(){root.traverse(item=>{if(item.isInstancedMesh)item.dispose();});for(const resource of resources)resource.dispose?.();resources.clear();root.clear();}};
 }
 
 function repeatTexture(image,resources){const texture=new THREE.Texture(image);texture.colorSpace=THREE.SRGBColorSpace;texture.wrapS=texture.wrapT=THREE.RepeatWrapping;texture.needsUpdate=true;resources.add(texture);return texture;}
@@ -345,12 +309,14 @@ export function createTownWorld3D({canvas,art={images:{},version:0},onContextLos
   }
   function render({state,time=0,dt=.016,motion=true,pixelRatio=1,walking=false,walkPhase=0,facing=state?.facing||'down',brightness=75,lantern=true,creatorActors=[]}={}){
     if(disposed||lost||!state?.position)return false;frameSerial++;const map=getTownMap(state.mapId);prepareMap(map);const view=resize(pixelRatio),parameters=town3DCameraParameters(view.width,view.height,map.id!=='lantern-town');
+    const palaceFraming=townPalaceFraming(state.position,map,parameters.elevation,view.width,view.height);
+    if(palaceFraming.influence){const pixelsPerTile=parameters.pixelsPerTile+(Math.min(parameters.pixelsPerTile,palaceFraming.pixelsPerTile)-parameters.pixelsPerTile)*palaceFraming.influence;Object.assign(parameters,{left:-view.width/pixelsPerTile/2,right:view.width/pixelsPerTile/2,top:view.height/pixelsPerTile/2,bottom:-view.height/pixelsPerTile/2,pixelsPerTile});}
     const heroSprite=playerPose(art,facing,walking&&motion,walkPhase),signature=JSON.stringify([map.id,view.width,view.height,view.ratio,state.position.x,state.position.z,facing,brightness,lantern,motion,version,art.version,assets.loaded.length,state.flags,heroSprite?.poseVersion,imageId(heroSprite),heroSprite?.frame,(map.npcs||[]).map(npc=>art.rigs?.get?.('resident:'+npc.id)?.poseVersion),creatorActors.map(actor=>[actor.id,actor.x,actor.z,actor.heightPx,actor.interactive,imageId(actor.sprite),actor.sprite?.frame,actor.sprite?.anchorX,actor.sprite?.anchorY,actor.sprite?.contentHeight,actor.sprite?.poseVersion])]);
     if(!motion&&signature===lastFrameSignature)return false;
     Object.assign(camera,{left:parameters.left,right:parameters.right,top:parameters.top,bottom:parameters.bottom});camera.updateProjectionMatrix();
-    const target={x:state.position.x,z:state.position.z-.85},amount=cameraTarget&&motion?1-Math.exp(-clamp(dt,0,.1)/.12):1;
-    cameraTarget={x:(cameraTarget?.x??target.x)+(target.x-(cameraTarget?.x??target.x))*amount,z:(cameraTarget?.z??target.z)+(target.z-(cameraTarget?.z??target.z))*amount};
-    camera.position.set(cameraTarget.x,Math.sin(parameters.elevation)*parameters.distance,cameraTarget.z+Math.cos(parameters.elevation)*parameters.distance);camera.lookAt(cameraTarget.x,0,cameraTarget.z);camera.updateMatrixWorld(true);
+    const influence=palaceFraming.influence||0,target={x:state.position.x+((palaceFraming.targetX??state.position.x)-state.position.x)*influence*.78,z:state.position.z-.85+((palaceFraming.targetZ??state.position.z-.85)-(state.position.z-.85))*influence,y:(palaceFraming.targetY||0)*influence},amount=cameraTarget&&motion?1-Math.exp(-clamp(dt,0,.1)/.12):1;
+    cameraTarget={x:(cameraTarget?.x??target.x)+(target.x-(cameraTarget?.x??target.x))*amount,z:(cameraTarget?.z??target.z)+(target.z-(cameraTarget?.z??target.z))*amount,y:(cameraTarget?.y??target.y)+(target.y-(cameraTarget?.y??target.y))*amount};
+    camera.position.set(cameraTarget.x,cameraTarget.y+Math.sin(parameters.elevation)*parameters.distance,cameraTarget.z+Math.cos(parameters.elevation)*parameters.distance);camera.lookAt(cameraTarget.x,cameraTarget.y,cameraTarget.z);camera.updateMatrixWorld(true);
     sun.position.set(cameraTarget.x-12,24,cameraTarget.z+15);sun.target.position.set(cameraTarget.x,0,cameraTarget.z);sun.target.updateMatrixWorld(true);
     const lighting=townLighting(map.id,map.id==='library'?brightness:clamp(brightness,20,100)),lanternAt=lighting.night?townLanternPosition(state.position,facing):state.position;
     sun.intensity=lighting.sun;ambient.intensity=lighting.ambient;
@@ -368,6 +334,7 @@ export function createTownWorld3D({canvas,art={images:{},version:0},onContextLos
     for(const star of scenery.stars)star.visible=!state.flags?.stamps?.includes(star.userData.starId);
     // A gentle highlight travels across real water geometry; motion preference freezes it.
     scenery.materials.water.color.setHSL(.535,.36,.27+(motion?Math.sin(time*.8)*.012:0));
+    animateTownPalace(scenery.palaceEffects,time,motion);
     lastView={...view,map,state,parameters};scene.updateMatrixWorld(true);renderer.render(scene,camera);lastFrameSignature=signature;return true;
   }
   function setRay(x,y){if(!lastView)return false;const point=typeof x==='object'?x:{x,y};pointer.set(point.x/lastView.width*2-1,1-point.y/lastView.height*2);raycaster.setFromCamera(pointer,camera);return true;}

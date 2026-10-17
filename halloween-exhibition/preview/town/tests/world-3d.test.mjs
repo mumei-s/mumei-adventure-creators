@@ -141,17 +141,19 @@ test('switching live actor canvases or returning to a static atlas disposes the 
  actor.sprite={...actor.sprite,poseVersion:undefined};world.render({state,creatorActors:[actor]});assert.equal(secondDisposals,1);assert.equal(world.status().liveSprites,0);world.destroy();assert.equal(firstDisposals,1);assert.equal(secondDisposals,1);
 });
 
-test('castle has a layered arched gold gate, cool masonry and lit entrance without changing the exit',()=>{
+test('palace keeps a sculpted golden gate, violet masonry details and main entrance lighting without changing the exit',()=>{
  const map=getTownMap(),story=JSON.stringify(map),town=createTownSceneGeometry(map),castle=map.buildings.find(item=>item.kind==='castle');
- const gate=town.root.getObjectByName('castle-arched-gate'),frame=town.root.getObjectByName('castle-gate-frame'),crest=town.root.getObjectByName('castle-gate-crest');
+ const gate=town.root.getObjectByName('palace-golden-gate'),frame=town.root.getObjectByName('palace-gate-frame'),crest=town.root.getObjectByName('palace-crest');
  assert.ok(gate?.geometry.type==='ExtrudeGeometry');assert.ok(frame?.geometry.type==='ExtrudeGeometry');
- assert.equal(gate.position.x,castle.door.x);assert.equal(frame.position.x,castle.door.x);assert.equal(crest.position.x,castle.door.x);
- assert.ok(frame.position.z>gate.position.z,'frame projects beyond the recessed gate');
+ const gateMatrix=new THREE.Matrix4(),frameMatrix=new THREE.Matrix4();gate.getMatrixAt(0,gateMatrix);frame.getMatrixAt(0,frameMatrix);
+ const gatePosition=new THREE.Vector3().setFromMatrixPosition(gateMatrix),framePosition=new THREE.Vector3().setFromMatrixPosition(frameMatrix);
+ assert.equal(gatePosition.x,castle.door.x);assert.equal(framePosition.x,castle.door.x);assert.equal(crest.position.x,castle.door.x);
+ assert.ok(framePosition.z>gatePosition.z,'frame projects beyond the recessed gate');
  gate.geometry.computeBoundingBox();const bounds=gate.geometry.boundingBox;
  assert.ok(bounds.max.y>2.8&&bounds.max.x-bounds.min.x>2,'gate is a substantial arch, not the house doorway');
- assert.equal(frame.material.name,'gold');assert.equal(gate.material.name,'castlePlum');
- assert.ok(town.root.children.some(item=>item.userData.bucket==='castle'&&item.material?.name==='castleStone'));
- for(const side of[-1,1])assert.ok(town.root.getObjectByName('castle-banner-'+side));
+ assert.equal(frame.material.name,'palace-gold');assert.equal(gate.material.name,'palace-door');
+ assert.ok(town.root.children.some(item=>item.userData.bucket==='castle'&&item.material?.name==='palace-stone'));
+ for(let index=0;index<5;index++)assert.ok(town.root.getObjectByName('palace-banner-'+index));
  const lamps=town.lamps.filter(lamp=>Math.abs(lamp.z-(castle.z+castle.h+.44))<1e-9&&Math.abs(lamp.x-castle.door.x)<2);
  assert.equal(lamps.length,2);assert.ok(lamps.every(lamp=>lamp.lit&&!lamp.targetId),'entrance lights do not change quest lantern flags');
  assert.equal(JSON.stringify(map),story);assert.deepEqual(town.buildings.find(item=>item.id===castle.id).door,castle.door);

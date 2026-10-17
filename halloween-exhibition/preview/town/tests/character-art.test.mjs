@@ -7,6 +7,24 @@ import {initialTownState} from '../town-model.js';
 const archive=JSON.parse(fs.readFileSync(new URL('../../data/archive.json',import.meta.url))),manifest=JSON.parse(fs.readFileSync(new URL('../../maze/data/creator-characters.json',import.meta.url)));
 const fetcher=async url=>url.includes('creator-characters')?manifest:archive;
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
+test('entrance participants start loading before the welcome panel closes without blocking the core loader',async()=>{
+ const requested=[],assets=createCharacterAssets({loadImage:async(_url,asset)=>{requested.push(asset.src);return {width:Math.min(1024,asset.width),height:Math.min(1024,asset.height)};}}),characters=createTownCharacterArt({fetcher,assets});await characters.ready;
+ for(let i=0;i<8;i++)await flush();
+ const actors=characters.visitorActors({state:initialTownState(),time:1,clock:1});
+ assert.ok(actors.some(actor=>actor.creatorId==='grand_daisy8632'));
+ for(const visitor of characters.visitors().filter(visitor=>visitor.creatorId==='grand_daisy8632'))assert.ok(requested.includes(visitor.asset.src));
+ assert.equal(characters.status().rejectedRequests,0);characters.destroy();
+});
+test('resuming indoors or far from the entrance preloads only participants around the saved location',async()=>{
+ for(const initialState of [{...initialTownState(),mapId:'inn',position:{x:9.5,z:12.5}},{...initialTownState(),position:{x:56.5,z:43.5}}]){
+  const requested=[],assets=createCharacterAssets({loadImage:async(_url,asset)=>{requested.push(asset.src);return {width:Math.min(1024,asset.width),height:Math.min(1024,asset.height)};}}),characters=createTownCharacterArt({fetcher,assets,initialState});await characters.ready;
+  for(let i=0;i<8;i++)await flush();
+  assert.ok(requested.every(src=>!src.includes('cna-')),initialState.mapId+' queues unrelated entrance guests');
+  if(initialState.mapId==='inn')assert.equal(requested.length,2);
+  else assert.ok(characters.visitorActors({state:initialState,time:0,clock:0}).some(actor=>actor.creatorId==='aihan_days'));
+  characters.destroy();
+ }
+});
 test('town retains every approved creator group and CNA has only real profile links while articles remain pending',async()=>{
  const assets=createCharacterAssets({loadImage:async(_url,asset)=>({width:asset.width,height:asset.height})}),characters=createTownCharacterArt({fetcher,assets});await characters.ready;
  const visitors=characters.visitors(),creators=new Set(visitors.map(visitor=>visitor.creatorId));assert.equal(creators.size+1,15);

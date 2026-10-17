@@ -36,12 +36,17 @@ function segmentSafe(a,b,offsets,occupied=[]){const length=Math.hypot(b.x-a.x,b.
 function makeRoute(center,offsets,groupId,occupied){
   const points=[{...center}];
   const sign=hash(groupId)%2?1:-1;
-  for(const[dx,dz]of [[.65*sign,0],[0,.65],[-.65*sign,0],[0,-.65]]){
-    const next={x:center.x+dx,z:center.z+dz};
-    if(segmentSafe(center,next,offsets,occupied)){points.push(next,{...center});if(points.length>=5)break;}
+  for(const[dx,dz]of [[sign,0],[0,1],[-sign,0],[0,-1]]){
+    // Walk a visible stretch of street, shortening only where a real obstacle
+    // or another group's reserved route would make the full leg unsafe.
+    for(const length of [2.6,2.1,1.6,1.1,.65]){
+      const next={x:center.x+dx*length,z:center.z+dz*length};
+      if(segmentSafe(center,next,offsets,occupied)){points.push(next,{...center});break;}
+    }
+    if(points.length>=5)break;
   }
   // Every group can at least breathe/turn in place when a street is narrow.
-  const speed=.48+(hash(groupId)%9)*.012,wait=1.8+(hash(groupId)%7)*.12,ramp=.42,turnDuration=.65;
+  const speed=.76+(hash(groupId)%9)*.014,wait=.85+(hash(groupId)%7)*.06,ramp=.42,turnDuration=.65;
   const segments=[];let elapsed=0,distance=0;
   for(let i=0;i<points.length;i++){
     const a=points[i],b=points[(i+1)%points.length],length=Math.hypot(b.x-a.x,b.z-a.z),duration=sampleTravel(length,speed,ramp,0).duration;
@@ -49,9 +54,13 @@ function makeRoute(center,offsets,groupId,occupied){
     // Skipping zero-length closure legs keeps the heading continuous at wrap.
     let incoming=null;for(let step=1;step<=points.length;step++){const p=points[mod(i-step,points.length)],q=points[mod(i-step+1,points.length)];if(Math.hypot(q.x-p.x,q.z-p.z)>1e-7){incoming={x:q.x-p.x,z:q.z-p.z};break;}}
     const previousYaw=incoming?yawForVector(incoming.x,incoming.z):0,yaw=length?yawForVector(b.x-a.x,b.z-a.z):previousYaw;
+    // The final point is the first point again; do not add a second idle-only
+    // segment there. It otherwise looks as if everybody has stopped walking.
+    if(length===0)continue;
     segments.push({a,b,start:elapsed,wait,duration,length,distance,yaw,previousYaw,turn:shortestTurn(previousYaw,yaw)});elapsed+=wait+duration;distance+=length;
   }
-  return {points,segments,duration:elapsed,distance,speed,ramp,turnDuration,phaseOffset:(hash(groupId)%97)/10};
+  if(!segments.length)segments.push({a:center,b:center,start:0,wait,duration:0,length:0,distance:0,yaw:0,previousYaw:0,turn:0});
+  return {points,segments,duration:elapsed||wait,distance,speed,ramp,turnDuration,phaseOffset:(hash(groupId)%97)/10};
 }
 
 export function placeTownVisitors(roster){
@@ -70,7 +79,8 @@ export function placeTownVisitors(roster){
     usedSlots.add(chosen.slot.id);const route=makeRoute(chosen.center,positions,groupId,occupied);
     members.forEach((npc,index)=>{
       const x=chosen.center.x+positions[index],z=chosen.center.z;
-      visitors.push({...npc,id:npc.id,creatorId:npc.creatorId,name:npc.name,label:npc.label||npc.name,profileURL:npc.profileURL||`https://note.com/${npc.creatorId}`,articleURL:npc.articleURL||null,groupId,mapId:TOWN_START_MAP,slotId:chosen.slot.id,x,z,center:{...chosen.center},offsetX:positions[index],route,interactive:npc.interactive!==false,walking:false,facing:'down',phase:0});occupied.push({x,z});
+      visitors.push({...npc,id:npc.id,creatorId:npc.creatorId,name:npc.name,label:npc.label||npc.name,profileURL:npc.profileURL||`https://note.com/${npc.creatorId}`,articleURL:npc.articleURL||null,groupId,mapId:TOWN_START_MAP,slotId:chosen.slot.id,x,z,center:{...chosen.center},offsetX:positions[index],route,interactive:npc.interactive!==false,walking:false,facing:'down',phase:0});
+      for(const segment of route.segments){const steps=Math.max(1,Math.ceil(segment.length/.3));for(let n=0;n<=steps;n++){const t=n/steps;occupied.push({x:segment.a.x+(segment.b.x-segment.a.x)*t+positions[index],z:segment.a.z+(segment.b.z-segment.a.z)*t});}}
     });
   }
   return {visitors,omitted};

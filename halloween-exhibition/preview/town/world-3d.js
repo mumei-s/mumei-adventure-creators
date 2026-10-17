@@ -25,6 +25,7 @@ function palette(resources){
     roof:mat(colors.roof),roofWarm:mat('#926154'),roofTeal:mat('#3a7375'),roofPlum:mat('#735c79'),
     glass:mat('#ffe4a4',{emissive:'#ffc665',emissiveIntensity:.4,roughness:.38}),dark:mat('#273d4b'),water:mat(colors.water,{metalness:.25,roughness:.28}),
     leaf:mat(colors.leaf),leafLight:mat('#769468'),leafAutumn:mat('#b68454'),leafRose:mat('#a2655e'),flower:mat('#e2c2b2'),paper:mat('#ece0b9'),
+    castleStone:mat('#535a77'),castleTrim:mat('#8388a2'),castlePlum:mat('#432c55'),pumpkin:mat('#ba632d'),
     parquet:mat('#9e7b58'),carpet:mat('#6f4259'),bookRed:mat('#805364'),bookTeal:mat('#46787b'),bookGold:mat('#b09264'),
   };for(const [name,material]of Object.entries(materials))material.name=name;return materials;
 }
@@ -131,15 +132,53 @@ export function createTownSceneGeometry(map=getTownMap(),{materials=null,resourc
     buildings.push({id:building.id,footprint:{x,z,w,h},door:{...building.door},height:high+roofHeight,bucket});
   }
   function castle(building){
-    const {x,z,w,h}=building,cx=x+w/2,cz=z+h/2,south=z+h,bucket=building.id;
-    b.box(cx,1.9,cz,w-.8,3.8,h-.35,materials.stone,0,bucket);b.box(cx,.2,cz,w+.1,.4,h+.2,materials.stoneDark,0,bucket);
-    for(let n=0;n<w;n++){b.box(x+n+.5,4.05,south-.12,.65,.58,.62,materials.stone,0,bucket);if(n%2===0)window(x+n+.5,2.5,south-.12,.44,.85,bucket);}
-    for(const side of[-1,1]){
-      const tx=cx+side*(w/2-.65);b.round(tx,2.7,cz,1.08,5.4,materials.stone,bucket);b.round(tx,4.9,cz,1.18,.25,materials.stoneDark,bucket);b.peak(tx,6.3,cz,1.5,2.7,materials.roof,bucket);
-      b.round(tx,7.85,cz,.035,1.1,materials.gold,bucket);b.box(tx+.32,8.08,cz,.6,.34,.04,materials.roofWarm,0,bucket);window(tx,3.5,cz+1.055,.42,.85,bucket);
+    const {x,z,w,h}=building,cx=x+w/2,cz=z+h/2,south=z+h,bucket=building.id,doorX=building.door.x;
+    // Cool masonry, projecting courses and pilasters break up the broad facade.
+    // These are rendering details only; the story footprint and exit never move.
+    b.box(cx,1.9,cz,w-.8,3.8,h-.35,materials.castleStone,0,bucket);b.box(cx,.2,cz,w+.1,.4,h+.2,materials.stoneDark,0,bucket);
+    for(const yy of[.55,2.03,3.66])b.box(cx,yy,south-.08,w-.45,.12,.28,materials.castleTrim,0,bucket);
+    b.box(cx,3.78,south-.02,w-.35,.055,.32,materials.gold,0,bucket);
+    for(let n=0;n<w;n++){
+      b.box(x+n+.5,4.05,south-.12,.65,.58,.62,materials.castleTrim,0,bucket);
+      if(n%2===0&&Math.abs(x+n+.5-doorX)>1.8&&Math.abs(Math.abs(x+n+.5-doorX)-3.1)>.7)window(x+n+.5,2.7,south-.07,.44,.85,bucket);
     }
-    b.box(cx,4.55,cz-.9,2.25,3.3,1.8,materials.stone,0,bucket);b.peak(cx,7.1,cz-.9,1.9,2.5,materials.roofPlum,bucket);window(cx,5.3,cz+.04,.65,1,bucket);
-    doorway(building.door.x,south+.04,2.45,1.62,bucket);for(let n=0;n<5;n++)b.box(building.door.x,.02-n*.035,south+.35+n*.23,2.15+n*.22,.13,.3,materials.stone,0,bucket);
+    for(const side of[-1,1]){
+      const tx=cx+side*(w/2-.65);b.round(tx,2.7,cz,1.08,5.4,materials.castleStone,bucket);b.round(tx,4.9,cz,1.18,.25,materials.castleTrim,bucket);b.peak(tx,6.3,cz,1.5,2.7,materials.roofPlum,bucket);
+      b.round(tx,5.1,cz,1.19,.065,materials.gold,bucket);b.round(tx,7.85,cz,.035,1.1,materials.gold,bucket);b.box(tx+.32,8.08,cz,.6,.34,.04,materials.castlePlum,0,bucket);window(tx,3.5,cz+1.055,.42,.85,bucket);
+      const px=doorX+side*2.05;
+      b.box(px,1.8,south+.03,.32,3.6,.44,materials.castleTrim,0,bucket);b.box(px,3.55,south+.08,.52,.18,.56,materials.gold,0,bucket);
+      b.box(px,.24,south+.06,.55,.45,.58,materials.stoneDark,0,bucket);
+      // Hanging plum pennants have a pointed hem and a small gold star.
+      const banner=new THREE.Shape();banner.moveTo(-.35,0);banner.lineTo(0,-.28);banner.lineTo(.35,0);banner.lineTo(.35,1.5);banner.lineTo(-.35,1.5);banner.closePath();
+      const bx=doorX+side*3.1;b.mesh(new THREE.ExtrudeGeometry(banner,{depth:.035,bevelEnabled:false}),materials.castlePlum,new THREE.Vector3(bx,1.35,south+.09),bucket).name='castle-banner-'+side;
+      b.box(bx,2.88,south+.14,.9,.075,.12,materials.gold,0,bucket);
+      star(bx,2.3,south+.15,.23);
+      lantern(doorX+side*1.63,south+.44,true,bucket);
+      // Small harvest clusters sit to either side, leaving the threshold clear.
+      for(let n=0;n<2;n++){
+        const qx=doorX+side*(2.3+n*.4),qz=south+.42+n*.18,r=n?.18:.25;
+        b.ball(qx,r,qz,r,r*.86,r,materials.pumpkin,bucket);b.round(qx,r*1.86,qz,.035,.13,materials.wood,bucket);
+        for(const offset of[-.075,.075])b.ball(qx+offset,r*1.05,qz+r*.88,.035,.04,.022,materials.glass,bucket);
+      }
+    }
+    b.box(cx,4.55,cz-.9,2.25,3.3,1.8,materials.castleStone,0,bucket);b.peak(cx,7.1,cz-.9,1.9,2.5,materials.roofPlum,bucket);window(cx,5.3,cz+.04,.65,1,bucket);
+    function star(sx,sy,sz,r){
+      const shape=new THREE.Shape();for(let n=0;n<10;n++){const a=Math.PI/2+n*Math.PI/5,rr=n%2?r*.43:r,xx=Math.cos(a)*rr,yy=Math.sin(a)*rr;n?shape.lineTo(xx,yy):shape.moveTo(xx,yy);}shape.closePath();
+      b.mesh(new THREE.ExtrudeGeometry(shape,{depth:.04,bevelEnabled:false}),materials.gold,new THREE.Vector3(sx,sy,sz),bucket).name='castle-star';
+    }
+    function arch(radius,spring){
+      const shape=new THREE.Shape();shape.moveTo(-radius,0);shape.lineTo(radius,0);shape.lineTo(radius,spring);shape.absarc(0,spring,radius,0,Math.PI,false);shape.lineTo(-radius,0);return shape;
+    }
+    // Layered arched recess and metalwork face south, toward the original exit.
+    const gate=arch(1.02,1.8);b.mesh(new THREE.ExtrudeGeometry(gate,{depth:.08,bevelEnabled:false}),materials.castlePlum,new THREE.Vector3(doorX,.05,south+.18),bucket).name='castle-arched-gate';
+    const frame=new THREE.Shape();frame.moveTo(-1.23,0);frame.lineTo(-1.23,1.8);frame.absarc(0,1.8,1.23,Math.PI,0,true);frame.lineTo(1.23,0);frame.lineTo(1.04,0);frame.lineTo(1.04,1.8);frame.absarc(0,1.8,1.04,0,Math.PI,false);frame.lineTo(-1.04,0);frame.closePath();
+    b.mesh(new THREE.ExtrudeGeometry(frame,{depth:.22,bevelEnabled:false}),materials.gold,new THREE.Vector3(doorX,.05,south+.24),bucket).name='castle-gate-frame';
+    for(let n=-4;n<=4;n++){
+      const xx=n*.21,high=1.8+Math.sqrt(1.02**2-xx**2)-.1;b.box(doorX+xx,high/2+.05,south+.3,.037,high,.045,materials.gold,0,bucket);
+    }
+    for(const yy of[.55,1.4])b.box(doorX,yy,south+.33,2.04,.055,.055,materials.gold,0,bucket);
+    const crest=b.mesh(new THREE.TorusGeometry(.3,.035,6,24),materials.gold,new THREE.Vector3(doorX,3.47,south+.23),bucket);crest.name='castle-gate-crest';star(doorX,3.47,south+.25,.23);
+    for(let n=0;n<5;n++)b.box(doorX,.02-n*.035,south+.35+n*.23,2.15+n*.22,.13,.3,materials.castleTrim,0,bucket);
     buildings.push({id:building.id,footprint:{x,z,w,h},door:{...building.door},height:8.6,bucket});
   }
   function tree(x,z,autumn=false,index=0){
@@ -279,7 +318,7 @@ export function createTownWorld3D({canvas,art={images:{},version:0},onContextLos
     if(assets.images.cobbles){const texture=repeatTexture(assets.images.cobbles,resources);texture.anisotropy=Math.min(4,renderer.capabilities?.getMaxAnisotropy?.()||1);materials.road.map=texture;materials.plaza.map=texture;materials.road.color.set('#d2ccc0');materials.plaza.color.set('#e1d0b4');materials.road.needsUpdate=materials.plaza.needsUpdate=true;}
     if(assets.images.parquet){materials.parquet.map=repeatTexture(assets.images.parquet,resources);materials.parquet.color.set('#d8c9aa');materials.parquet.needsUpdate=true;}
     const detail={stone:surfaceTexture(makeCanvas,'stone',resources),roof:surfaceTexture(makeCanvas,'roof',resources),wood:surfaceTexture(makeCanvas,'wood',resources),wall:surfaceTexture(makeCanvas,'wall',resources)};
-    for(const resource of resources)if(resource.isMaterial){const name=resource.name,kind=name.startsWith('roof')?'roof':name.startsWith('wood')?'wood':name.startsWith('wall')?'wall':name==='stone'||name==='stoneDark'?'stone':null;if(kind){resource.map=detail[kind];resource.needsUpdate=true;}}
+    for(const resource of resources)if(resource.isMaterial){const name=resource.name,kind=name.startsWith('roof')?'roof':name.startsWith('wood')?'wood':name.startsWith('wall')?'wall':name==='stone'||name==='stoneDark'||name==='castleStone'||name==='castleTrim'?'stone':null;if(kind){resource.map=detail[kind];resource.needsUpdate=true;}}
   }
   function resize(pixelRatio){
     const width=Math.max(1,Math.round(canvas.clientWidth||canvas.width||640)),height=Math.max(1,Math.round(canvas.clientHeight||canvas.height||480));const ratio=clamp(pixelRatio||globalThis.devicePixelRatio||1,1,Math.min(width,height)<650?1.5:1.8);

@@ -140,3 +140,20 @@ test('switching live actor canvases or returning to a static atlas disposes the 
  actor.sprite={...actor.sprite,image:fakeCanvas(256,320)};world.render({state,creatorActors:[actor]});const second=node.material.map;assert.notEqual(first,second);assert.equal(firstDisposals,1);let secondDisposals=0;second.addEventListener('dispose',()=>secondDisposals++);
  actor.sprite={...actor.sprite,poseVersion:undefined};world.render({state,creatorActors:[actor]});assert.equal(secondDisposals,1);assert.equal(world.status().liveSprites,0);world.destroy();assert.equal(firstDisposals,1);assert.equal(secondDisposals,1);
 });
+
+test('castle has a layered arched gold gate, cool masonry and lit entrance without changing the exit',()=>{
+ const map=getTownMap(),story=JSON.stringify(map),town=createTownSceneGeometry(map),castle=map.buildings.find(item=>item.kind==='castle');
+ const gate=town.root.getObjectByName('castle-arched-gate'),frame=town.root.getObjectByName('castle-gate-frame'),crest=town.root.getObjectByName('castle-gate-crest');
+ assert.ok(gate?.geometry.type==='ExtrudeGeometry');assert.ok(frame?.geometry.type==='ExtrudeGeometry');
+ assert.equal(gate.position.x,castle.door.x);assert.equal(frame.position.x,castle.door.x);assert.equal(crest.position.x,castle.door.x);
+ assert.ok(frame.position.z>gate.position.z,'frame projects beyond the recessed gate');
+ gate.geometry.computeBoundingBox();const bounds=gate.geometry.boundingBox;
+ assert.ok(bounds.max.y>2.8&&bounds.max.x-bounds.min.x>2,'gate is a substantial arch, not the house doorway');
+ assert.equal(frame.material.name,'gold');assert.equal(gate.material.name,'castlePlum');
+ assert.ok(town.root.children.some(item=>item.userData.bucket==='castle'&&item.material?.name==='castleStone'));
+ for(const side of[-1,1])assert.ok(town.root.getObjectByName('castle-banner-'+side));
+ const lamps=town.lamps.filter(lamp=>Math.abs(lamp.z-(castle.z+castle.h+.44))<1e-9&&Math.abs(lamp.x-castle.door.x)<2);
+ assert.equal(lamps.length,2);assert.ok(lamps.every(lamp=>lamp.lit&&!lamp.targetId),'entrance lights do not change quest lantern flags');
+ assert.equal(JSON.stringify(map),story);assert.deepEqual(town.buildings.find(item=>item.id===castle.id).door,castle.door);
+ assert.ok(town.root.children.length<320,'ornaments remain within the existing draw batch budget');town.dispose();
+});

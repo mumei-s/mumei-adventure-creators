@@ -1,0 +1,26 @@
+/* Let the street reach the bottom edge; only the thumb controls catch touches. */
+#town-main[data-town-orientation],#town-main[data-town-narrow]{grid-template-rows:minmax(48px,max-content) auto minmax(0,1fr) 0 0}
+#town-main .town-world{grid-area:3/1/6/2}
+#town-main footer{display:none}
+#town-main footer:has(#save-status[data-error=true]){display:block;position:absolute;top:108px;left:8px;right:8px;z-index:3;padding:6px 10px;white-space:normal;font-size:12px}
+#town-main footer:has(#save-status[data-error=true])>span:not(#save-status){display:none}
+#town-main[data-town-orientation] .town-controls,#town-main[data-town-narrow] .town-controls{
+ position:absolute;grid-area:auto;left:var(--safe-left);right:var(--safe-right);bottom:calc(var(--safe-bottom) + 8px);
+ display:grid;grid-template-areas:"move utilities" "move actions";grid-template-columns:var(--pad-size) minmax(44px,1fr);grid-template-rows:auto auto;
+ justify-content:space-between;align-content:end;align-items:end;gap:6px 12px;padding:0 8px;
+ height:auto;min-height:var(--pad-size);max-height:none;overflow:visible;border:0;background:none;pointer-events:none;z-index:2;
+}
+#town-main .town-controls>div{pointer-events:auto}
+#town-main .direction-pad{align-self:end;background:radial-gradient(#45626a1f,#203c461a);border-color:#edd6a466;box-shadow:none}
+#town-main .direction-pad button{background:#16303d2e;color:#fff3d7;text-shadow:0 1px 3px #07121b,0 0 4px #07121b;box-shadow:none}
+#town-main .pad-nub{background:#e9ca8f2e;border-color:#e9ca8f55}
+#town-main .direction-pad button.active,#town-main .direction-pad[data-direction=forward] [data-move=forward],#town-main .direction-pad[data-direction=back] [data-move=back],#town-main .direction-pad[data-direction=left] [data-move=left],#town-main .direction-pad[data-direction=right] [data-move=right]{background:#e4c78d55;color:#fff;text-shadow:0 1px 3px #07121b}
+#town-main .town-controls .town-utilities,#town-main .town-controls .town-actions{display:grid;width:max-content;max-width:min(140px,100%);justify-self:end;align-self:end}
+#town-main .town-controls>:is(.town-utilities,.town-actions)>button{background:#142d3566;border-color:#edd6a499;color:#fff3d7;font-size:12px;text-shadow:0 1px 3px #07121b;box-shadow:none;min-height:max(44px,var(--town-button-size))}
+/* Map and inventory remain available in the header map and existing menu. */
+#town-main #map-open,#town-main #inventory-open{display:none}
+#town-main #interact{font-weight:700}
+#town-main #town-toast{bottom:calc(var(--pad-size) + 24px)}
+body[data-game-controls=right] #town-main[data-town-orientation] .town-controls,body[data-game-controls=right] #town-main[data-town-narrow] .town-controls{grid-template-areas:"utilities move" "actions move";grid-template-columns:minmax(44px,1fr) var(--pad-size)}
+body[data-game-controls=right] #town-main .town-utilities,body[data-game-controls=right] #town-main .town-actions{justify-self:start}
+@media(forced-colors:active){#town-main .direction-pad,#town-main .town-controls button{background:ButtonFace;color:ButtonText;border-color:ButtonText;text-shadow:none}}

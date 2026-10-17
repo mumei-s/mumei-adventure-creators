@@ -1,0 +1,48 @@
+/* A miniature Halloween procession fills the existing arrow row.
+   Absolute placement adds no height and reserves both 44px arrow targets. */
+.gallery-gap-scene{display:none}
+#theater[data-mode=halloween] .gallery-gap-scene{
+ display:block;position:absolute;inset:0 62px;max-width:760px;margin-inline:auto;
+ overflow:hidden;contain:layout paint;isolation:isolate;pointer-events:none;
+}
+.gallery-gap-scene *{pointer-events:none}
+.gallery-gap-ribbons,.gap-stardust{position:absolute;inset:0;width:100%;height:100%}
+.gallery-gap-ribbons{fill:none;stroke-linecap:round}
+.gap-ribbon-back{animation:gap-ribbon-drift 13s -4s ease-in-out infinite alternate}
+.gap-ribbon-front{animation:gap-ribbon-drift 11s -8s ease-in-out infinite alternate-reverse}
+.gap-ribbon-beads{stroke-dasharray:1 31 2 53;animation:gap-beads-flow 18s linear infinite}
+.gap-spirit{position:absolute;top:5px;display:block;width:32px;height:34px}
+.gap-spirit svg{display:block;width:100%;height:100%;overflow:visible}
+.gap-ghost{left:calc(31% - 16px);animation:gap-spirit-glide 9s -3s ease-in-out infinite}
+.gap-pumpkin{left:calc(69% - 15px);top:7px;width:30px;height:31px;animation:gap-pumpkin-glide 11s -6s ease-in-out infinite}
+.gap-bat{width:29px;height:21px;top:9px;animation:gap-bat-drift 12s -5s ease-in-out infinite}
+.gap-bat-left{left:calc(9% - 14px)}
+.gap-bat-right{left:calc(91% - 14px);top:16px;width:25px;height:18px;animation-duration:15s;animation-delay:-10s;animation-direction:reverse}
+.gap-bat-wings{transform-box:fill-box;transform-origin:center;animation:gap-wing-fold 1.8s ease-in-out infinite alternate}
+.gap-bat-right .gap-bat-wings{animation-delay:-.9s;animation-duration:2.1s}
+.gap-stardust i{
+ position:absolute;left:calc(7% + var(--spark)*10.5%);top:calc(13px + var(--spark)*2px);
+ width:3px;height:3px;border-radius:50%;background:#fff0bd;box-shadow:0 0 5px 1px #ffbf7b66;
+ animation:gap-spark-drift calc(6s + var(--spark)*.47s) calc(var(--spark)*-.93s) ease-in-out infinite;
+}
+.gap-stardust i:nth-child(3n){width:5px;height:5px;background:#dfb7ff;box-shadow:0 0 6px 1px #cb99ff55;clip-path:polygon(50% 0,64% 36%,100% 50%,64% 64%,50% 100%,36% 64%,0 50%,36% 36%)}
+/* The surface is translucent; the arrow glyph keeps full contrast. */
+body[data-layout-page=gallery] .theater[data-mode=halloween] .stage-navigation .stage-arrow{
+ background:rgba(19,28,45,.36);border-color:rgba(242,203,147,.55);
+ color:#ffe0ab;box-shadow:0 2px 8px #0002;text-shadow:0 1px 3px #0c1027;
+}
+body[data-layout-page=gallery] .theater[data-mode=halloween] .stage-navigation .stage-arrow:is(:hover,:focus-visible){background:rgba(33,37,59,.56);border-color:#f2cb93}
+body[data-layout-page=gallery] .theater[data-mode=halloween] .stage-navigation .stage-arrow:active{background:rgba(60,42,65,.64)}
+@keyframes gap-ribbon-drift{from{transform:translate(-12px,2px)}to{transform:translate(12px,-3px)}}
+@keyframes gap-beads-flow{to{stroke-dashoffset:-174}}
+@keyframes gap-spirit-glide{0%,100%{transform:translate(-5px,2px) rotate(-6deg)}50%{transform:translate(6px,-3px) rotate(6deg)}}
+@keyframes gap-pumpkin-glide{0%,100%{transform:translate(4px,1px) rotate(5deg)}50%{transform:translate(-5px,-3px) rotate(-5deg)}}
+@keyframes gap-bat-drift{0%,100%{transform:translate(-4px,3px) rotate(-5deg)}50%{transform:translate(5px,-4px) rotate(5deg)}}
+@keyframes gap-wing-fold{from{transform:scaleY(.72)}to{transform:scaleY(1)}}
+@keyframes gap-spark-drift{0%,100%{opacity:.2;transform:translate(-5px,5px) scale(.7)}50%{opacity:.9;transform:translate(6px,-7px) scale(1)}}
+/* Existing scene state includes motion pause, open dialogs and hidden tabs. */
+#theater[data-motion-paused=true] .gallery-gap-scene *,
+body[data-ambient-paused=true] .gallery-gap-scene *,
+body[data-page-hidden=true] .gallery-gap-scene *{animation-play-state:paused!important}
+@media(prefers-reduced-motion:reduce){.gallery-gap-scene *{animation:none!important}}
+@media(forced-colors:active){.gallery-gap-scene{display:none!important}}

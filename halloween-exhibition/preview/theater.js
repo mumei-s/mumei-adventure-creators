@@ -2,7 +2,8 @@ import {initTransitionEffects} from './transition-effects.js?v=20261016-living1'
 import {initViewport} from './viewport.js?v=20261016-ios1';
 import { initAppExit } from './app-exit.js?v=20261017-live-street1';
 import { createDoorRevealClock } from './door-reveal-clock.js?v=20261015-playful1';
-import { initFestivalScene } from './festival-scene.js?v=20261015-glamour1';
+import { initFestivalScene } from './festival-scene.js?v=20261017-cauldron1';
+import { initCreatorCauldron } from './creator-cauldron.js?v=20261017-cauldron1';
 import { loadArtworkImage } from './magical-loading.js?v=20261015-journey1';
 import { initPalaceStartup } from './palace-startup.js?v=20261017-readable1';
 import { createDoorPalettePicker } from './door-palette.js?v=20261015-festival1';
@@ -97,7 +98,7 @@ function record(entry){
  persist();renderProgress();
 }
 function renderProgress(){const valid=validStamps(),seen=viewedDoors(),count=participantCount();root.style.setProperty('--journey-progress',String(count?valid.length/count:0));root.classList.toggle('complete',displayMode==='halloween'&&count>0&&valid.length===count);for(const dot of $('room-dots').children)dot.classList.toggle('visited',seen.includes(dot.dataset.doorId));}
-function renderDots(){const area=$('room-dots');area.replaceChildren();entries().forEach((entry,i)=>{const c=creator(entry),button=node('button',undefined,'room-dot face-dot');button.dataset.creatorId=entry.creatorId;button.dataset.doorId=entry.doorId;button.setAttribute('aria-label',`${i+1}枚目、${c.name} · ${doorCaption(entry)}の扉へ`);button.setAttribute('aria-current',String(i===currentIndex));button.title=`${c.name} · ${doorCaption(entry)}`;button.append(node('span',Array.from(c.name).slice(0,1).join(''),'face-initial'));const url=avatar(entry);if(url){const img=node('img');img.src=url;img.alt='';img.addEventListener('error',()=>img.remove(),{once:true});button.append(img);}button.addEventListener('click',()=>navigateDoor(entry.doorId,{immediate:true}));area.append(button);});renderProgress();}
+function renderDots(){const area=$('room-dots');area.replaceChildren();entries().forEach((entry,i)=>{const c=creator(entry),button=node('button',undefined,'room-dot face-dot');button.dataset.creatorId=entry.creatorId;button.dataset.doorId=entry.doorId;button.dataset.creatorName=c.name;button.dataset.creatorColor=displayProfile(entry).color;if(displayMode==='halloween'){button.setAttribute('aria-keyshortcuts','Shift+Enter');button.setAttribute('aria-description','下の魔法ツボへドラッグ、またはShiftとEnterで魔法をかける');}button.setAttribute('aria-label',`${i+1}枚目、${c.name} · ${doorCaption(entry)}の扉へ`);button.setAttribute('aria-current',String(i===currentIndex));button.title=`${c.name} · ${doorCaption(entry)}`;button.append(node('span',Array.from(c.name).slice(0,1).join(''),'face-initial'));const url=avatar(entry);if(url){const img=node('img');img.src=url;img.alt='';img.addEventListener('error',()=>img.remove(),{once:true});button.append(img);}button.addEventListener('click',()=>navigateDoor(entry.doorId,{immediate:true}));area.append(button);});renderProgress();}
 const pickDoorPalette=createDoorPalettePicker();let paintedPaletteKey='';
 let storyVersion=0,storyOpening=false;
 function cancelStoryOpening(){storyVersion++;storyOpening=false;root.classList.remove('story-opening');slideshow?.setBlocked('story-opening',false);}
@@ -242,4 +243,6 @@ load();
 
 
 // Scene-contained magic with native touch and keyboard controls.
-initFestivalScene({ scene: document.querySelector('.festival-scene'), root });
+const festivalScene = document.querySelector('.festival-scene');
+initFestivalScene({ scene: festivalScene, root });
+initCreatorCauldron({ strip: $('room-dots'), target: $('festival-play'), scene: festivalScene, root, onActivity: active => slideshow?.setBlocked('creator-drag', active) });

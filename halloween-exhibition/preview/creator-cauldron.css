@@ -1,0 +1,29 @@
+/* Portraits have their own dimensions; the site's other controls stay unchanged. */
+#theater .stage-footer .room-dots{justify-content:flex-start;--creator-icon:calc(var(--ui-icon,40px) + 8px);--creator-target:max(52px,calc(var(--creator-icon) + 12px));padding-block:5px;gap:5px;scroll-padding-inline:6px}
+#theater .room-dots .room-dot.face-dot{width:var(--creator-target);min-width:var(--creator-target);height:var(--creator-target);min-height:var(--creator-target);flex:0 0 var(--creator-target);cursor:grab;touch-action:pan-x pinch-zoom;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+#theater .room-dots .face-dot img,#theater .room-dots .face-dot .face-initial{width:var(--creator-icon);height:var(--creator-icon);left:calc((var(--creator-target) - var(--creator-icon))/2);top:calc((var(--creator-target) - var(--creator-icon))/2);pointer-events:none;-webkit-user-drag:none}
+#theater .room-dots .face-initial{font-size:16px}
+#theater .room-dots .face-dot.creator-lifted{opacity:.5;cursor:grabbing}
+#theater .room-dots .face-dot:focus-visible{outline:2px solid #ffe9b7;outline-offset:-2px}
+#theater[data-mode=normal] .room-dots .face-dot{cursor:pointer;touch-action:pan-x pan-y pinch-zoom}
+#theater[data-creator-dragging=true]{cursor:grabbing}
+.creator-drag-ghost{position:fixed;left:0;top:0;z-index:9000;display:grid;place-items:center;width:60px;height:60px;box-sizing:border-box;border:2px solid #fff0c5;border-radius:50%;background:#352342;color:#fff4de;font-size:22px;pointer-events:none;overflow:hidden;box-shadow:0 0 0 5px #f1daff24,0 0 25px var(--creator-color,#c8a8ed),0 10px 24px #130c2566;will-change:transform;-webkit-user-select:none;user-select:none}
+.creator-drag-ghost img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;pointer-events:none}
+.creator-drag-ghost.creator-ghost-near{box-shadow:0 0 0 7px #fff1bd44,0 0 38px var(--creator-color,#c8a8ed),0 5px 20px #130c2544}
+.creator-drag-ghost.creator-ghost-drop{opacity:0;transition:transform .26s cubic-bezier(.3,.1,.35,1),opacity .24s ease-in}
+.festival-scene[data-creator-target=true] .festival-cauldron:before{content:'';position:absolute;left:10%;right:10%;top:0;height:24%;border:2px solid #fff0bd;border-radius:50%;background:radial-gradient(ellipse,var(--creator-color,#c8a8ed),transparent 70%);opacity:.65;box-shadow:0 0 15px var(--creator-color,#c8a8ed),inset 0 0 14px #fff4c688;transition:opacity .16s,box-shadow .16s}
+.festival-scene[data-creator-near=true] .festival-cauldron:before{opacity:1;box-shadow:0 0 28px 5px var(--creator-color,#c8a8ed),inset 0 0 22px #fff8dc}
+.festival-scene[data-magic=creator] .festival-potion-light{background:var(--creator-color,#c8a8ed);opacity:.9;box-shadow:0 0 34px 16px var(--creator-color,#c8a8ed)}
+.creator-brew-ring,.creator-brew-smoke,.creator-brew-spark,.creator-brew-bat{position:absolute;left:50%;top:51%;pointer-events:none;animation-fill-mode:both}
+.creator-brew-ring{width:23%;height:8%;border:2px solid #fff3c9;border-radius:50%;box-shadow:0 0 20px var(--creator-color,#c8a8ed),inset 0 0 14px var(--creator-color,#c8a8ed);animation:creator-brew-ripple 1.2s ease-out both;mix-blend-mode:screen}
+.creator-brew-smoke{width:clamp(58px,11vw,110px);height:clamp(55px,10vw,100px);border-radius:46% 54% 58% 42%;background:radial-gradient(ellipse at 45% 65%,var(--creator-color,#c8a8ed),transparent 65%);filter:blur(5px);mix-blend-mode:screen;transform-origin:50% 90%;animation:creator-brew-plume 1.9s var(--delay) cubic-bezier(.18,.55,.35,1) both}
+.creator-brew-spark{width:var(--size);height:var(--size);background:#fff0bd;filter:drop-shadow(0 0 5px var(--creator-color,#c8a8ed));clip-path:polygon(50% 0,61% 38%,100% 50%,61% 62%,50% 100%,39% 62%,0 50%,39% 38%);animation:creator-brew-glint 1.6s var(--delay) ease-out both}
+.creator-brew-bat{width:clamp(23px,3.6vw,42px);aspect-ratio:70/56;background:url('./assets/palace/palace-bat.webp') center/contain no-repeat;filter:drop-shadow(0 0 5px var(--creator-color,#c8a8ed));animation:creator-brew-flight 1.65s var(--delay) cubic-bezier(.16,.5,.38,1) both}
+@keyframes creator-brew-ripple{0%{opacity:0;transform:translate(-50%,-50%) scale(.35)}18%{opacity:.95}100%{opacity:0;transform:translate(-50%,-50%) scale(1.75)}}
+@keyframes creator-brew-plume{0%{opacity:0;transform:translate(-50%,-80%) scale(.2)}20%{opacity:.7}70%{opacity:.42}100%{opacity:0;transform:translate(calc(-50% + var(--drift)),calc(-80% + var(--rise))) scale(1.5) rotate(var(--turn))}}
+@keyframes creator-brew-glint{0%{opacity:0;transform:translate(-50%,-50%) scale(.2)}18%{opacity:1}100%{opacity:0;transform:translate(calc(-50% + var(--drift)),calc(-50% + var(--rise))) scale(.3) rotate(90deg)}}
+@keyframes creator-brew-flight{0%{opacity:0;transform:translate(-50%,-50%) scale(.15)}14%{opacity:1}42%{transform:translate(calc(-50% + var(--drift)*.55),calc(-50% + var(--rise)*.72)) scale(.8) rotate(var(--turn))}58%{transform:translate(calc(-50% + var(--drift)*.72),calc(-50% + var(--rise)*.82)) scaleX(1.1) scaleY(.65) rotate(var(--turn))}100%{opacity:0;transform:translate(calc(-50% + var(--drift)),calc(-50% + var(--rise))) scale(1) rotate(var(--turn))}}
+.festival-scene[data-still=true] .creator-brew-ring{animation:none;opacity:.65;transform:translate(-50%,-50%)}
+.festival-scene[data-still=true] .creator-brew-smoke{animation:none;opacity:.3;transform:translate(calc(-50% + var(--drift)*.4),calc(-80% + var(--rise)*.25)) scale(.8)}
+.festival-scene[data-still=true] .creator-brew-spark{animation:none;opacity:.85;transform:translate(calc(-50% + var(--drift)*.6),calc(-50% + var(--rise)*.6))}
+@media(prefers-reduced-motion:reduce){.creator-ghost-drop{transition:none}.festival-scene[data-creator-target=true] .festival-cauldron:before{transition:none}}

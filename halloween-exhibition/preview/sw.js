@@ -1,81 +1,205 @@
-/* Public exhibition shell only. No admin, maze, archive data, remote portraits,
- * API requests, unknown query strings, authentication or background activity. */
+/* Public exhibition shell only. Archive, admin, games, APIs, remote images,
+ * credentials and unknown query strings always bypass this worker. */
 const SCOPE = new URL('./', self.location.href);
-const RELEASE = '20261014-layout1';
-const STYLE_RELEASE = '20261014-portrait1';
-const DOOR_RELEASE = '20261014-doors1';
-const PALACE_RELEASE = '20261014-palace2';
-const CONTROL_RELEASE = '20261015-controls1';
-const COLOR_RELEASE = '20261015-festival1';
-const SETTINGS_RELEASE = '20261015-settings2';
-const DOORSTAGE_RELEASE = '20261015-reveal1';
-const MAGAZINE_RELEASE = '20261015-finale1';
-const HOST_RELEASE = '20261015-host3';
-const CACHE = 'mumei-atelier-shell-v42-panels2-' + PALACE_RELEASE + ':' + SCOPE.pathname;
-const HEADER_RELEASE = '20261017-headerstack1';
-const NAV_RELEASE = '20261017-cauldron1';
-const SMOOTH_RELEASE = '20261017-cast-smooth1';
-const STREET_RELEASE = '20261017-live-street1';
-const SHELL = [
-  'gallery-panels.js', 'gallery-panels.css', 'assets/panel-magic/book.svg', 'assets/panel-magic/branch.svg', 'assets/panel-magic/butterfly.svg', 'assets/panel-magic/ghost.svg', 'assets/panel-magic/lantern.svg',
-  'gallery-gap.css', 'creator-cauldron.js', 'creator-cauldron.css',
-  'town-entry.css',
-  'compact-gallery-header.css',
-  'presentation-profiles.css',
-  'phone-layout.css',
-  'transition-effects.js', 'transition-effects.css', 'palace-living-scene.js', 'palace-living-scene.css',
-  'viewport.js', 'ios-viewport.css',
-  'fate-roulette.css',
-  'castle-counter-bootstrap.js', 'castle-visit-counter.js', 'castle-visit-counter.css',
-  'app-exit.js', 'safe-navigation.css',
-  'door-reveal-clock.js', 'festival-scene.js', 'assets/palace/magic-courtyard.webp',
-  'assets/palace/host-invitation.webp', 'assets/palace/palace-interior.webp', 'magical-loading.css', 'magical-loading.js', 'palace-startup.js', 'host-celebration.css', 'door-reveal.css',
-  'gallery-refinement.css', 'gallery-gesture.js', 'door-palette.js',
-  'assets/palace/palace-franken.webp', 'assets/palace/palace-zombie.webp', 'assets/palace/palace-bat.webp',
-  'palace-entrance.js', 'palace-entrance.css', 'assets/palace/palace-desktop.webp', 'assets/palace/palace-phone.webp', 'assets/palace/gate-desktop.webp', 'assets/palace/gate-phone.webp',
-  'index.html', 'theater.js', 'theater.css', 'data-model.js',
-  'scene-motion.js', 'scene-motion.css', 'gallery-depth.css',
-  'visitor-preferences.js', 'visitor-preferences.css', 'display-mode.js', 'display-mode.css',
-  'magical-entrance.css', 'article-doors.css', 'gallery-controls.css', 'slideshow.js', 'pwa.js', 'manifest.webmanifest',
-  'assets/atelier-icon.svg', 'assets/atelier-icon-192.png',
-  'assets/atelier-icon-512.png', 'assets/atelier-maskable-512.png'
+// BEGIN GENERATED SHELL (node halloween-exhibition/scripts/build-preview-cache.mjs)
+const SHELL_REVISION = 'bc993aa2d82b7fb1';
+const PUBLIC_ASSETS = [
+  ["app-exit.js?v=20261017-live-street1",9268],
+  ["assets/atelier-icon-192.png",21629],
+  ["assets/atelier-icon-512.png",56403],
+  ["assets/atelier-icon.svg",6062],
+  ["assets/atelier-maskable-512.png",51002],
+  ["assets/haunted-branches.svg",4667],
+  ["assets/manor-hero.webp",401663],
+  ["assets/palace/gate-desktop.webp",267018],
+  ["assets/palace/gate-phone.webp",282548],
+  ["assets/palace/host-invitation.webp",118886],
+  ["assets/palace/magic-courtyard.webp",590102],
+  ["assets/palace/palace-bat.webp",67146],
+  ["assets/palace/palace-desktop.webp",490143],
+  ["assets/palace/palace-franken.webp",95799],
+  ["assets/palace/palace-interior.webp",209020],
+  ["assets/palace/palace-phone.webp",506183],
+  ["assets/palace/palace-zombie.webp",63164],
+  ["assets/panel-magic/book.svg",6094],
+  ["assets/panel-magic/branch.svg",4788],
+  ["assets/panel-magic/butterfly.svg",4902],
+  ["assets/panel-magic/ghost.svg",5094],
+  ["assets/panel-magic/lantern.svg",5194],
+  ["castle-counter-bootstrap.js?v=20261017-castle2",4868],
+  ["castle-visit-counter.js?v=20261017-castle2",15215],
+  ["creator-cauldron.js?v=20261017-cauldron1",13032],
+  ["data-model.js?v=20261014-doors1",9143],
+  ["display-mode.js?v=20261014-layout1",9664],
+  ["door-palette.js?v=20261015-festival1",5771],
+  ["door-reveal-clock.js?v=20261015-playful1",4640],
+  ["festival-scene.js?v=20261017-cauldron1",11303],
+  ["gallery-gesture.js?v=20261016-ios1",9046],
+  ["gallery-panels.js?v=20261017-panels1",7274],
+  ["gallery-styles.css?v=20261017-startup1",317026],
+  ["magical-loading.js?v=20261015-journey1",4919],
+  ["manifest.webmanifest",4850],
+  ["palace-entrance.js?v=20261014-palace2",14193],
+  ["palace-living-scene.css?v=20261016-living1",6585],
+  ["palace-living-scene.js?v=20261017-cast-smooth1",15980],
+  ["palace-startup.js?v=20261017-startup1",7507],
+  ["pwa.js?v=20261015-startup1",11638],
+  ["safe-page-reload.js?v=20261017-reload1",5891],
+  ["scene-motion.js?v=20261015-glamour1",19561],
+  ["slideshow.js?v=20261015-festival1",10417],
+  ["theater.js?v=20261017-startup1",50567],
+  ["transition-effects.js?v=20261016-living1",7818],
+  ["viewport.js?v=20261016-ios1",7115],
+  ["visitor-preferences.js?v=20261016-ios1",19555]
 ];
-// Only exact public asset release queries are cacheable; tokens/other queries bypass.
-const PUBLIC_URLS = SHELL.flatMap(path => [new URL(path, SCOPE).href, ...(/\.(?:js|css)$/.test(path) ? [new URL(path + '?v=' + (path==='gallery-panels.css'?'20261017-panels2':path==='gallery-panels.js'?'20261017-panels1':['theater.js','palace-startup.js','palace-living-scene.js'].includes(path)?SMOOTH_RELEASE:path==='gallery-gap.css'?'20261017-gap1':['creator-cauldron.js','creator-cauldron.css','festival-scene.js'].includes(path)?'20261017-cauldron1':path==='town-entry.css'?HEADER_RELEASE:path==='theater.js'?NAV_RELEASE:['app-exit.js','safe-navigation.css'].includes(path)?STREET_RELEASE:path==='compact-gallery-header.css'?'20261017-settings1':['castle-counter-bootstrap.js', 'castle-visit-counter.js', 'castle-visit-counter.css', 'presentation-profiles.css', 'compact-gallery-header.css'].includes(path)?'20261017-castle2':['presentation-profiles.css','palace-startup.js','theater.js'].includes(path)?'20261017-readable1':path==='phone-layout.css'?'20261017-phone1':path==='castle-visit-counter.css'?'20261017-compact1':['transition-effects.js','transition-effects.css','palace-living-scene.js','palace-living-scene.css','palace-startup.js','palace-entrance.css','safe-navigation.css','theater.js'].includes(path)?'20261016-living1':['theater.js','viewport.js','ios-viewport.css','gallery-gesture.js','visitor-preferences.js'].includes(path)?'20261016-ios1':['theater.js','fate-roulette.css','gallery-refinement.css','app-exit.js','safe-navigation.css'].includes(path)?'20261016-fate1':['castle-counter-bootstrap.js','castle-visit-counter.js','castle-visit-counter.css'].includes(path)?'20261016-visits1':['theater.js','gallery-refinement.css','door-reveal.css','festival-scene.js','app-exit.js','safe-navigation.css','scene-motion.js'].includes(path)?'20261015-glamour1':path==='door-reveal-clock.js'?'20261015-playful1':['theater.js','visitor-preferences.js','gallery-refinement.css','safe-navigation.css'].includes(path)?'20261015-return1':['theater.js','gallery-refinement.css','visitor-preferences.js','festival-scene.js','scene-motion.js','scene-motion.css'].includes(path)?'20261015-music-garden1':['magical-loading.css','theater.js','palace-startup.js'].includes(path)?'20261015-interior1':path==='magical-loading.js'?'20261015-journey1':path==='palace-entrance.css'?'20261015-startup2':['palace-startup.js','theater.js','pwa.js'].includes(path) ? '20261015-startup1' : path==='host-celebration.css' ? HOST_RELEASE : path==='gallery-refinement.css' ? MAGAZINE_RELEASE : ['theater.js','door-reveal.css'].includes(path) ? DOORSTAGE_RELEASE : ['visitor-preferences.js','visitor-preferences.css'].includes(path) ? SETTINGS_RELEASE : ['gallery-refinement.css','door-palette.js','slideshow.js'].includes(path) ? COLOR_RELEASE : path==='gallery-gesture.js' ? CONTROL_RELEASE : path === 'palace-entrance.css' ? '20261014-corner2' : ['theater.js','assets/palace/palace-franken.webp', 'assets/palace/palace-zombie.webp', 'assets/palace/palace-bat.webp',
-  'palace-entrance.js','palace-entrance.css'].includes(path) ? PALACE_RELEASE : ['data-model.js','article-doors.css'].includes(path) ? DOOR_RELEASE : path === 'gallery-controls.css' ? STYLE_RELEASE : RELEASE), SCOPE).href] : [])]);
-const ALLOWED = new Set(PUBLIC_URLS);
+// END GENERATED SHELL
+const CACHE_PREFIX = 'mumei-atelier-shell-';
+const CACHE = CACHE_PREFIX + 'v43-startup-' + SHELL_REVISION + ':' + SCOPE.pathname;
+const HTML_KEY = new URL('index.html', SCOPE).href;
+const HTML_LIMIT = 192 * 1024;
+const NAVIGATION_WAIT_MS = 450;
+const NETWORK_TIMEOUT_MS = 8000;
+const CACHE_READ_TIMEOUT_MS = 150;
+const ASSETS = new Map(PUBLIC_ASSETS.map(([path, limit]) => [new URL(path, SCOPE).href, limit]));
 const inPreview = SCOPE.pathname.endsWith('/halloween-exhibition/preview/');
+const pending = new Map();
+
+// Only these public gallery routes share HTML. The query remains in the browser
+// address, so return state is still interpreted by theater.js. Never ignore all
+// queries, or match a town/maze/admin document to the gallery shell.
+function isGalleryDocument(url) {
+  if (url.pathname !== SCOPE.pathname && url.pathname !== new URL(HTML_KEY).pathname) return false;
+  const params = [...url.searchParams];
+  return params.length <= 2 && new Set(params.map(([key]) => key)).size === params.length &&
+    params.every(([key, value]) => (key === 'return' && value === 'palace') || (key === 'mode' && value === 'halloween'));
+}
+function usable(response) {
+  return response?.ok && response.type === 'basic' && !response.redirected &&
+    !/(?:no-store|private)/i.test(response.headers.get('cache-control') || '') &&
+    response.headers.get('vary') !== '*';
+}
+async function readCache(key) {
+  let timer;
+  try {
+    return await Promise.race([
+      caches.match(key, { cacheName: CACHE }),
+      new Promise(resolve => { timer = setTimeout(() => resolve(undefined), CACHE_READ_TIMEOUT_MS); })
+    ]);
+  } catch { return undefined; }
+  finally { clearTimeout(timer); }
+}
+async function fitsBudget(response, limit) {
+  if (Number(response.headers.get('content-length')) > limit) return false;
+  const reader = response.body?.getReader();
+  if (!reader) return true;
+  let size = 0;
+  try {
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) return true;
+      size += value.byteLength;
+      if (size > limit) { void reader.cancel().catch(() => {}); return false; }
+    }
+  } catch { return false; }
+}
+async function save(key, response, limit) {
+  if (!usable(response)) return;
+  // Each exact URL has a source-sized byte budget (never > 2 MiB). Together
+  // with one HTML key this is a finite cache, not an image/history collector.
+  try {
+    if (!(await fitsBudget(response.clone(), limit))) return;
+    await (await caches.open(CACHE)).put(key, response);
+  } catch { /* Storage restrictions never discard a good network response. */ }
+}
+function requestPublic(url, consume = async () => {}) {
+  const controller = new AbortController();
+  let timer;
+  // Race as well as abort: even a stalled fetch implementation must settle.
+  const timeout = new Promise((_, reject) => {
+    timer = setTimeout(() => { controller.abort(); reject(new Error('Public shell request timed out')); }, NETWORK_TIMEOUT_MS);
+  });
+  return Promise.race([
+    fetch(new Request(url, { credentials: 'omit', cache: 'no-cache', signal: controller.signal })).then(async response => {
+      await consume(response.clone());
+      return response;
+    }),
+    timeout
+  ]).finally(() => clearTimeout(timer));
+}
+function refresh(key, url, limit) {
+  let task = pending.get(key);
+  if (!task) {
+    let ready, failed;
+    const response = new Promise((resolve, reject) => { ready = resolve; failed = reject; });
+    const done = requestPublic(url, result => {
+      // Let the document/image stream to the page immediately. Cache body
+      // validation and storage run in waitUntil, never on the rendering path.
+      ready(result.clone());
+      return save(key, result, limit);
+    }).then(() => {}, failed).finally(() => pending.delete(key));
+    task = { response, done };
+    pending.set(key, task);
+  }
+  return { response: task.response.then(response => response.clone()), done: task.done };
+}
+
 self.addEventListener('install', event => {
   if (!inPreview) return;
-  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(PUBLIC_URLS.map(url => new Request(url, { cache: 'reload', credentials: 'omit' })))));
-  // No skipWaiting: an open gallery keeps a coherent version until it is closed.
+  // One small revalidated HTML request, rather than 117 force-reload requests
+  // including duplicate script URLs and artwork for both device orientations.
+  event.waitUntil((async () => {
+    await requestPublic(HTML_KEY, async response => {
+      if (!usable(response) || !/text\/html/i.test(response.headers.get('content-type') || '')) throw new Error('Public gallery HTML unavailable');
+      await save(HTML_KEY, response, HTML_LIMIT);
+      if (!(await readCache(HTML_KEY))) throw new Error('Public shell storage unavailable');
+    });
+  })());
+  // No skipWaiting: never force a reload or interrupt a game in progress.
 });
 self.addEventListener('activate', event => {
   if (!inPreview) return;
-  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith('mumei-atelier-shell-') && key.endsWith(':' + SCOPE.pathname) && key !== CACHE).map(key => caches.delete(key)))));
-  // No clients.claim(): never take over a running admin or another app's page.
+  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key =>
+    key.startsWith(CACHE_PREFIX) && key.endsWith(':' + SCOPE.pathname) && key !== CACHE
+  ).map(key => caches.delete(key)))));
+  // No clients.claim(): never seize another page or app's existing session.
 });
 self.addEventListener('fetch', event => {
-  if (!inPreview || event.request.method !== 'GET') return;
+  if (!inPreview || event.request.method !== 'GET' || event.request.headers.has('authorization')) return;
   const url = new URL(event.request.url);
   if (url.origin !== SCOPE.origin || !url.pathname.startsWith(SCOPE.pathname)) return;
-  // The live public archive stays network-only so hidden/reordered work isn't stale.
-  // Every path except the exact shell allowlist (including admin and maze) bypasses.
-  if (!ALLOWED.has(url.href)) return;
-  event.respondWith((async () => {
+  const navigation = event.request.mode === 'navigate' && isGalleryDocument(url);
+  if (!navigation && !ASSETS.has(url.href)) return;
+  if (navigation) {
+    // Always try current HTML, even while a newer worker waits. A normal reload
+    // can see a deployment immediately; a poor connection cannot stall a warm
+    // launch indefinitely. A late successful response warms the next visit.
+    const task = refresh(HTML_KEY, url.href, HTML_LIMIT);
+    const network = task.response;
+    event.waitUntil(task.done);
+    event.respondWith((async () => {
+      const cached = readCache(HTML_KEY);
+      let timer;
+      const answer = network.then(async response => usable(response) ? response : ((await cached) || response)).catch(async () => (await cached) || Response.error());
+      try {
+        const fallback = new Promise(resolve => { timer = setTimeout(resolve, NAVIGATION_WAIT_MS); }).then(async () => (await cached) || answer);
+        return await Promise.race([answer, fallback]);
+      } finally { clearTimeout(timer); }
+    })());
+    return;
+  }
+  // Exact release URLs only. A new version not in this worker bypasses it, so
+  // updated HTML cannot be paired with a different cached query/version.
+  let background;
+  const response = (async () => {
+    const cached = await readCache(url.href);
+    if (cached) return cached;
     try {
-      const response = await fetch(event.request);
-      if (response.ok && response.type === 'basic' && !response.redirected) {
-        try {
-          const cache = await caches.open(CACHE);
-          await cache.put(event.request, response.clone());
-        } catch { /* storage denied/full: keep the successful network response */ }
-      }
-      return response;
-    } catch {
-      const cached = await caches.match(event.request, { cacheName: CACHE });
-      return cached || Response.error();
+      const task = refresh(url.href, url.href, ASSETS.get(url.href));
+      background = task.done;
+      return await task.response;
     }
-  })());
+    catch { return Response.error(); }
+  })();
+  event.respondWith(response);
+  event.waitUntil(response.then(() => background, () => {}));
 });
-

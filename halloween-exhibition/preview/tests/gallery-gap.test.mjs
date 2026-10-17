@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
+const bundledStyles=await readFile(new URL('../gallery-styles.css',import.meta.url),'utf8');
 
 const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
 const css=await readFile(new URL('../gallery-gap.css',import.meta.url),'utf8');
@@ -38,8 +39,8 @@ test('ornament is Halloween-only and its SVGs are decorative with unique definit
  const ids=[...nav.matchAll(/\bid="(gap-[^"]+)"/g)].map(match=>match[1]);
  assert.equal(new Set(ids).size,ids.length);
  for(const reference of nav.matchAll(/url\(#([^)]+)\)/g))assert.ok(ids.includes(reference[1]));
- assert.match(html,/gallery-gap\.css\?v=20261017-gap1/);
- assert.ok(html.indexOf('gallery-gap.css')>html.indexOf('gallery-refinement.css'));
+ assert.match(bundledStyles,/gallery-gap\.css\?v=20261017-gap1/);
+ assert.ok(bundledStyles.indexOf('gallery-gap.css')>bundledStyles.indexOf('gallery-refinement.css'));
 });
 
 test('translucency affects the Halloween surface without dimming the glyph or shrinking targets',()=>{

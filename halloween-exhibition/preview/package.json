@@ -1,1 +1,12 @@
-{"name":"halloween-yearbook","version":"1.0.0","private":true,"type":"module","scripts":{"test":"node --test tests/*.mjs","serve":"python3 -m http.server 4173"}}
+{
+  "name": "halloween-yearbook",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.mjs",
+    "serve": "python3 -m http.server 4173",
+    "build:styles": "node scripts/build-gallery-styles.mjs",
+    "check:styles": "node scripts/build-gallery-styles.mjs --check"
+  }
+}

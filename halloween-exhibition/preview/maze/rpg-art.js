@@ -15,22 +15,30 @@ export const PALACE_ART = Object.freeze({
   chaise:[0,749,465,310],harvest:[455,741,375,337],palaceDoor:[822,705,302,372],palaceColumn:[1215,701,194,382],
 });
 export const PALACE_TEXTURES=Object.freeze({parquet:'parquet.webp',limestone:'limestone.webp',marble:'marble.webp',carpet:'carpet.webp',wallPanel:'wainscot-wall.webp'});
-export function loadArtImage(src,{timeout=8000,timers=globalThis,ImageClass=globalThis.Image}={}){return new Promise((resolve,reject)=>{const image=new ImageClass();let active=true;const finish=(error)=>{if(!active)return;active=false;timers.clearTimeout(timer);image.onload=image.onerror=null;if(error)reject(error);else resolve(image);};const timer=timers.setTimeout(()=>finish(new Error('Art image timed out')),timeout);image.onload=()=>finish();image.onerror=()=>finish(new Error('Art image failed'));image.src=src;});}
-export function createArtLibrary({loadImage=loadArtImage,motionData=MONSTER_MOTION_DATA,loadPlayer=true}={}){
+export function loadArtImage(src,{timeout=8000,timers=globalThis,ImageClass=globalThis.Image,priority='low'}={}){return new Promise((resolve,reject)=>{const image=new ImageClass();let active=true;const finish=(error)=>{if(!active)return;active=false;timers.clearTimeout(timer);image.onload=image.onerror=null;if(error){image.removeAttribute?.('src');reject(error);}else resolve(image);};const timer=timers.setTimeout(()=>finish(new Error('Art image timed out')),timeout);image.onload=()=>finish();image.onerror=()=>finish(new Error('Art image failed'));image.decoding='async';image.fetchPriority=priority;image.src=src;});}
+export function createArtLibrary({loadImage=loadArtImage,motionData=MONSTER_MOTION_DATA,loadPlayer=true,deferOptional=false}={}){
   const images={},failures=[],monsterLayouts={};let version=0,playerLayout=null,playerOverride=false;
   const load=async(key,file,environment=false)=>{try{const image=await loadImage(new URL(`./assets/rpg/${environment?'palace/':''}${file}`,import.meta.url).href);if(key==='playerAtlas'&&playerOverride)return image;images[key]=ART_BOUNDS[key]?{image,frame:ART_BOUNDS[key],width:ART_BOUNDS[key][2],height:ART_BOUNDS[key][3],...ART_ANCHORS[key]}:image;version++;return image;}catch{failures.push(key);return null;}};
   const animatedIds=MONSTER_IDS.filter(id=>validMonsterLayout(motionData[id]));
+  // 3D builds its furniture directly. Its 2D-only illustrated cutouts and battle
+  // backdrop can follow the first playable scene, without delaying any monster.
+  const optionalKeys=new Set(['battle','bookcase','window','column','pumpkins','floor']);
+  const staticEntries=Object.entries(ART_FILES).filter(([key])=>!animatedIds.includes(key)&&(loadPlayer||key!=='playerAtlas'));
+  const deferred=deferOptional?staticEntries.filter(([key])=>optionalKeys.has(key)):[];
+  let remaining=null,finishRemaining;const remainingReady=new Promise(resolve=>finishRemaining=resolve);
+  function loadRemaining(){return remaining??=Promise.all(deferred.map(([key,file])=>load(key,file))).then(()=>finishRemaining());}
+  if(!deferOptional)void loadRemaining();
   const core=Promise.all([
-    ...Object.entries(ART_FILES).filter(([key])=>!animatedIds.includes(key)&&(loadPlayer||key!=='playerAtlas')).map(([key,file])=>load(key,file)),
+    ...staticEntries.filter(([key])=>!deferOptional||!optionalKeys.has(key)).map(([key,file])=>load(key,file)),
     ...animatedIds.map(async id=>{const layout=motionData[id];try{const image=await loadImage(new URL(layout.src,import.meta.url).href);if(image.width!==layout.width||image.height!==layout.height)throw new Error('Monster atlas dimensions mismatch');monsterLayouts[id]=layout;images[id]=motionSprite(image,layout,{motion:false});version++;}catch{failures.push(id+'-motion');if(ART_FILES[id])await load(id,ART_FILES[id]);}}),
   ]);
   const environment=Promise.all([
     load('palaceAtlas','props-atlas.webp',true).then(image=>{if(!image)return;for(const [key,frame] of Object.entries(PALACE_ART))images[key]={image,frame,width:frame[2],height:frame[3],anchorX:.5,anchorY:.97};}),
     ...Object.entries(PALACE_TEXTURES).map(([key,file])=>load(key,file,true)),
   ]);
-  const sceneReady=core.then(()=>undefined);
-  const ready=Promise.all([core,environment]).then(()=>undefined);
-  return {images,monsterLayouts,failures,sceneReady,ready,get version(){return version;},get playerLayout(){return playerLayout;},setPlayerAtlas(image,layout=null){
+  const sceneReady=Promise.all([core,environment]).then(()=>undefined);
+  const ready=Promise.all([sceneReady,remainingReady]).then(()=>undefined);
+  return {images,monsterLayouts,failures,sceneReady,ready,loadRemaining,get version(){return version;},get playerLayout(){return playerLayout;},setPlayerAtlas(image,layout=null){
     if(!image||!Number.isFinite(image.width)||!Number.isFinite(image.height)||image.width<=0||image.height<=0)throw new TypeError('A loaded player atlas image is required');
     playerOverride=true;images.playerAtlas=image;playerLayout=layout?{...layout}:null;version++;return version;
   }};

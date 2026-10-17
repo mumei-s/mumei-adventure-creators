@@ -196,8 +196,8 @@ export function buildCreatorActors(npcs,assets,{state,time=0,motion=true}={}) {
   return result;
 }
 
-export async function browserImage(url,asset) {
-  const image=await new Promise((resolve,reject)=>{const im=new Image();let active=true;const finish=error=>{if(!active)return;active=false;clearTimeout(timer);im.onload=im.onerror=null;error?reject(error):resolve(im);};const timer=setTimeout(()=>finish(Error('Character image timed out')),10000);im.onload=()=>finish();im.onerror=()=>finish(Error('Character image failed'));im.src=url;});
+export async function browserImage(url,asset,{signal,priority='auto'}={}) {
+  const image=await new Promise((resolve,reject)=>{const im=new Image();let active=true,timer;const cancel=()=>finish(Error('Character image cancelled'));const finish=error=>{if(!active)return;active=false;clearTimeout(timer);im.onload=im.onerror=null;signal?.removeEventListener('abort',cancel);if(error){im.removeAttribute?.('src');reject(error);}else resolve(im);};if(signal?.aborted){cancel();return;}signal?.addEventListener('abort',cancel,{once:true});timer=setTimeout(()=>finish(Error('Character image timed out')),10000);im.decoding='async';im.fetchPriority=priority;im.onload=()=>finish();im.onerror=()=>finish(Error('Character image failed'));im.src=url;});
   if(asset&&(image.width!==asset.width||image.height!==asset.height))throw Error('Character source dimensions mismatch');
   // Runtime decoding uses a bounded bitmap; original asset bytes remain intact.
   if(Math.max(image.width,image.height)>1024){
@@ -221,30 +221,33 @@ export function createCharacterAssets({loadImage=browserImage,maxResident=CHARAC
   }
   function pump(){
     while(!disposed&&running<concurrent&&queue.length){const task=queue.shift();running++;active.add(task);
-      Promise.resolve().then(()=>loadImage(new URL('./'+task.asset.src+(task.asset.sha256?'?v='+task.asset.sha256.slice(0,12):''),import.meta.url).href,task.asset)).then(image=>{
-        if(disposed){image.close?.();task.resolve(null);return;}
+      const finish=image=>{if(task.finished)return;task.finished=true;task.signal?.removeEventListener('abort',task.cancel);task.abort.signal.removeEventListener('abort',cancel);running--;active.delete(task);if(pending.get(task.asset.src)===task.promise)pending.delete(task.asset.src);task.resolve(image);pump();};
+      const cancel=()=>finish(null);task.abort.signal.addEventListener('abort',cancel,{once:true});
+      if(task.abort.signal.aborted){cancel();continue;}
+      Promise.resolve().then(()=>loadImage(new URL('./'+task.asset.src+(task.asset.sha256?'?v='+task.asset.sha256.slice(0,12):''),import.meta.url).href,task.asset,{signal:task.abort.signal,priority:task.priority})).then(image=>{
+        if(task.finished||disposed||task.abort.signal.aborted){image?.close?.();finish(null);return;}
         if(!image||!finite(image.width,1,4096)||!finite(image.height,1,4096)||Math.abs(image.width/image.height-task.asset.width/task.asset.height)>.01){image?.close?.();throw Error('Character dimensions mismatch');}
         cache.set(task.asset.src,{src:task.asset.src,image,used:++clock});evict();
         if(!cache.has(task.asset.src))throw Error('Character cache capacity reached');
         if(cache.size>maxResident||total()>maxBytes){cache.delete(task.asset.src);image.close?.();throw Error('Character decode budget exceeded');}
-        changed();task.resolve(image);
-      }).catch(error=>{if(!disposed){failures.set(task.asset.src,String(error.message||error));while(failures.size>maxFailures)failures.delete(failures.keys().next().value);changed();}task.resolve(null);})
-        .finally(()=>{running--;active.delete(task);pending.delete(task.asset.src);pump();});
+        changed();finish(image);
+      }).catch(error=>{if(task.finished)return;if(!disposed&&!task.abort.signal.aborted){failures.set(task.asset.src,String(error.message||error));while(failures.size>maxFailures)failures.delete(failures.keys().next().value);changed();}finish(null);});
     }
   }
+
   return {
     get(src){const item=cache.get(src);if(item){item.used=++clock;return item.image;}return null;},
-    request(asset){
-      if(disposed||layoutProblem(asset)||failures.has(asset.src))return Promise.resolve(null);
+    request(asset,{signal,priority='auto'}={}){
+      if(disposed||signal?.aborted||layoutProblem(asset)||failures.has(asset.src))return Promise.resolve(null);
       if(cache.has(asset.src))return Promise.resolve(cache.get(asset.src).image);
       if(pending.has(asset.src))return pending.get(asset.src);
       if(pending.size>=maxPending){rejectedRequests++;return Promise.resolve(null);}
-      const promise=new Promise(resolve=>queue.push({asset,resolve}));pending.set(asset.src,promise);pump();return promise;
+      const abort=new AbortController(),cancel=()=>abort.abort();signal?.addEventListener('abort',cancel,{once:true});let task;const promise=new Promise(resolve=>{task={asset,resolve,abort,signal,cancel,priority,finished:false};queue.push(task);});task.promise=promise;pending.set(asset.src,promise);pump();return promise;
     },
     setPinned(sources){pinned=new Set(sources);evict();},
-    retry(){failures.clear();},
+    retry(sources){if(sources)for(const src of sources)failures.delete(src);else failures.clear();},
     status(){return{loaded:cache.size,pending:pending.size,failed:failures.size,decodedBytes:total(),rejectedRequests,failures:[...failures.keys()]};},
-    dispose(){disposed=true;for(const task of active)task.resolve(null);for(const task of queue.splice(0))task.resolve(null);for(const item of cache.values())item.image.close?.();cache.clear();pending.clear();},
+    dispose(){disposed=true;for(const task of active){task.abort.abort();task.resolve(null);}for(const task of queue.splice(0)){task.abort.abort();task.signal?.removeEventListener('abort',task.cancel);task.resolve(null);}for(const item of cache.values())item.image.close?.();cache.clear();pending.clear();},
   };
 }
 

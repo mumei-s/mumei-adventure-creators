@@ -1,4 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';
+const bundledStyles=await readFile(new URL('../gallery-styles.css',import.meta.url),'utf8');
 const read=path=>readFile(new URL('../'+path,import.meta.url),'utf8');
 const css=await read('presentation-profiles.css');
 test('explicit presentation modes change typography, icons and native targets together',()=>{
@@ -8,6 +9,6 @@ test('explicit presentation modes change typography, icons and native targets to
  assert.doesNotMatch(css,/zoom:|transform:scale|screen\.width|user-scalable|maximum-scale/);
 });
 test('profile stylesheet follows older gallery and game style layers without reaching editor',async()=>{
- for(const file of ['index.html','maze/index.html']){const html=await read(file);assert.match(html,/presentation-profiles.css\?v=20261017-castle2/);assert.ok(html.indexOf('presentation-profiles.css')>html.indexOf('ios-viewport.css'));}
+ for(const file of ['index.html','maze/index.html']){const html=await read(file),styles=file==='index.html'?bundledStyles:html;assert.match(styles,/presentation-profiles.css\?v=20261017-castle2/);assert.ok(styles.indexOf('presentation-profiles.css')>styles.indexOf('ios-viewport.css'));}
  assert.doesNotMatch(await read('admin/index.html'),/presentation-profiles.css/);
 });

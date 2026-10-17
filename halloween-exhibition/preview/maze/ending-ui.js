@@ -1,7 +1,7 @@
 import {buildCardPrompt} from './clear-reward.js?v=20261015-clear1';
 import {MONSTERS} from './encounter-model.js?v=20261016-living1';
 import {STORY,encounterStory} from './story-model.js?v=20261016-living1';
-import {ART_FILES} from './rpg-art.js?v=20261016-living1';
+import {ART_FILES} from './rpg-art.js?v=20261017-startup1';
 const el=(tag,text,cls)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;if(cls)n.className=cls;return n;};
 export function renderEnding({container,receipt,onNewRun,onBack,motion=true}){
   const scene=el('section',undefined,'clear-celebration');scene.dataset.motion=String(motion);

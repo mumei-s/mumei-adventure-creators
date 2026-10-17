@@ -1,15 +1,17 @@
+import {createReloadControl} from '../safe-page-reload.js?v=20261017-reload1';
+import {fetchStartupJSON,loadRequiredCharacters} from './startup-assets.js?v=20261017-startup1';
 import {initPadPosition} from '../game-display.js?v=20261017-padpos1';
 import {monsterSprite} from './monster-motion.js?v=20261016-living1';
-import {initTransitionEffects,withDeadline,fetchJSON} from '../transition-effects.js?v=20261016-living1';
+import {initTransitionEffects,withDeadline} from '../transition-effects.js?v=20261016-living1';
 import {loadArtworkImage} from '../magical-loading.js?v=20261015-journey1';
 import {initViewport} from '../viewport.js?v=20261016-ios1';
 import {resolveContextAction,actionButtonFor} from './context-action.js?v=20261016-resident1';
-import {compileResidents,RESIDENT_STORIES,RESIDENT_FICTION} from './resident-model.js?v=20261016-living1';
+import {compileResidents,RESIDENT_STORIES,RESIDENT_FICTION} from './resident-model.js?v=20261017-startup1';
 import {initMinimapSize} from './minimap-size.js?v=20261016-battle-visible1';
 import {libraryFromArchive} from './library-catalog.js?v=20261015-clear1';
 import {WALKING_SPEED_KEY,normalizeWalkingSpeed,advanceWithSubsteps} from './walking-speed.js?v=20261015-clear1';
 import {createRewardStore,newRunId,eligibleForEnding} from './clear-reward.js?v=20261015-clear1';
-import {renderEnding} from './ending-ui.js?v=20261016-living1';
+import {renderEnding} from './ending-ui.js?v=20261017-startup1';
 import {createSoundCheck} from './sound-check.js?v=20261016-ios1';
 import {initAdventureAudio} from './adventure-audio.js?v=20261016-ios1';
 import { initDisplayMode } from '../display-mode.js?v=20261016-resident1';
@@ -17,18 +19,19 @@ import { normalizeLighting } from './lighting-model.js?v=20261014-adventure2';
 import { MAP, CELL, FEATURES, toWorld, collectionAt, move, nearby, initialState, visibleArticles } from './maze-model.js?v=20261014-adventure2';
 import { ALL_MONSTERS as MONSTERS, REQUIRED_MONSTER_IDS, nearestMonster, newBattle, battleTurn, intentFor, monsterAvailable, prankFor, commandFor, monsterPose, guidePoint } from './encounter-model.js?v=20261016-living1';
 import { chooseView, movementVector, mapHeading } from './view-model.js?v=20261015-minimap1';
-import { createStageRenderer, EXIT } from './stage-2d.js?v=20261016-living1';
-import {createArtLibrary,drawArtSprite} from './rpg-art.js?v=20261016-living1';
-import {renderBattleScene,battleEffectDuration} from './battle-scene.js?v=20261016-living1';
+import { createStageRenderer, EXIT } from './stage-2d.js?v=20261017-startup1';
+import {createArtLibrary,drawArtSprite} from './rpg-art.js?v=20261017-startup1';
+import {renderBattleScene,battleEffectDuration} from './battle-scene.js?v=20261017-startup1';
 import {directionFromMovement,moveAroundFurniture} from './rpg-model.js?v=20261014-adventure2';
 import {protectGameSurface,bindHeldGameButton,bindDirectionPad} from './game-input.js?v=20261016-ios1';
 import {STORY,encounterStory,chapterFor} from './story-model.js?v=20261016-living1';
-import {compileCharacterRoster,placeCreatorNPCs,createCharacterAssets,chooseCreatorAssets,buildCreatorActors,nearestCreator,creatorGuide,isCharacterTap,scaledCharacterLayout,compileCompanions,companionActor,creatorPose} from './creator-runtime.js?v=20261016-living1';
-import {renderCreatorConversation,renderCreatorDirectory} from './creator-ui.js?v=20261016-living1';
-const rpgArt=createArtLibrary({loadPlayer:false});
+import {compileCharacterRoster,placeCreatorNPCs,createCharacterAssets,chooseCreatorAssets,buildCreatorActors,nearestCreator,creatorGuide,isCharacterTap,scaledCharacterLayout,compileCompanions,companionActor,creatorPose} from './creator-runtime.js?v=20261017-startup1';
+import {renderCreatorConversation,renderCreatorDirectory} from './creator-ui.js?v=20261017-startup1';
+const rpgArt=createArtLibrary({loadPlayer:false,deferOptional:true});
 let creatorRoster={hero:null,npcs:[],omitted:[]},creatorActors=[],activeCreators=[],residents=[],companions=[],creatorPointer=null,creatorAssetCheck=0,creatorTrail=[];
 const characterAssets=createCharacterAssets();
 
+let bootRequest=0,bootAbort=null,worldModule=null;
 let stageRenderer,battleCanvas=null,battleEffect=null,visualTime=0;
 let facing='down',walking=false,walkPhase=0,padDirection=null;
 const $=id=>document.getElementById(id),panel=$('panel'),content=$('panel-content');
@@ -69,7 +72,7 @@ window.addEventListener('pagehide',()=>soundCheck.stop(''));
 document.addEventListener('visibilitychange',()=>{if(document.hidden)soundCheck.stop('');});
 
 function saveLight(){try{localStorage.setItem(lightKey,JSON.stringify({lantern}));}catch{}}
-function save(){progress[year]={runId,reachedVault,cleared:[...cleared],hasKey:state.hasKey,unlocked:state.unlocked,visited:progress[year]?.visited||[],storySeen:progress[year]?.storySeen===true};try{localStorage.setItem(storageKey,JSON.stringify(progress));}catch{storageOK=false;}}
+function save(){progress[year]={runId,reachedVault,cleared:[...cleared],hasKey:state.hasKey,unlocked:state.unlocked,visited:progress[year]?.visited||[],storySeen:progress[year]?.storySeen===true};try{localStorage.setItem(storageKey,JSON.stringify(progress));return true;}catch{storageOK=false;return false;}}
 function notify(text){$('toast').textContent=text;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),3500);}
 function clearInput(){walking=false;keys.clear();for(const control of heldControls)control.reset();held.clear();const captured=creatorPointer;creatorPointer=null;look=null;if(captured)try{captured.canvas?.releasePointerCapture(captured.pointerId);}catch{}for(const b of document.querySelectorAll('.move-pad .active'))b.classList.remove('active');}
 function openPanel(){clearInput();if(!panel.open){returnFocus=document.activeElement;panel.showModal();}}
@@ -165,9 +168,10 @@ function showMap(){title('EXPLORE AT YOUR PACE','迷宮の見取り図');const c
 function resetPosition(){state={...state,...toWorld(FEATURES.spawn),yaw:0,pitch:0};clearInput();updateHUD();notify('入口に戻りました。手に入れた鍵は、そのままです。');}
 function showExit(){title('RETURN TO THE CASTLE','お城に戻りますか。');content.append(element('p','鍵と記事の記録は保存されています。モンスターとの対戦記録も、このブラウザに保存されます。'));const back=element('a','Halloweenの名鑑へ戻る','primary');back.href='../?return=palace';back.textContent='お城に戻る';back.addEventListener('click',()=>{clearInput();soundCheck.stop('');visitorSettings.stopMusic();save();});content.append(back);openPanel();}
 const padPositionPreferences=initPadPosition({onChange:()=>clearInput()});
+const pageReload=createReloadControl({save:()=>!gameReady?{ok:false,notice:'冒険の準備が終わってから再読み込みしてください。'}:battle?{ok:false,notice:'対戦を終えてから再読み込みしてください。'}:save(),beforeReload:()=>{clearInput();soundCheck.stop('');visitorSettings.stopMusic();}});
 function showExploreMenu(){
   title('EXPLORE AT YOUR PACE','宮殿の地下を探索');
-  content.append(padPositionPreferences.element);
+  content.append(padPositionPreferences.element);content.append(pageReload.element);
   if(displaySection){const label=displaySection.querySelector('label');if(label)label.textContent='画面レイアウト';for(const option of displaySection.querySelectorAll('option'))option.textContent=({auto:'自動',phone:'スマホ用',tablet:'タブレット用',desktop:'PC用'})[option.value]||option.textContent;content.append(displaySection);}
   if(rewardStore.read(runId)){const reward=element('button','クリア記念をもう一度見る');reward.onclick=showEnding;content.append(reward);}
   const menu=element('div',undefined,'explore-menu');
@@ -285,11 +289,11 @@ async function setView(next,{persist=true,quiet=false}={}){
   const request=++viewRequest;viewAbort?.abort();viewAbort=new AbortController();const finishLoading=transitions.begin($('view-loading'),next==='3d'?'立体の回廊をひらいています…':'物語の舞台をひらいています…');let failed=false;clearInput();$('view-3d').disabled=next==='3d'&&!world;
   if(next==='3d'&&!world){
     $('view-3d').disabled=true;
-    try{if(worldFailed)throw Error('WebGL unavailable');const {createWorld}=await withDeadline(import('./world.js?v=20261016-living1'),{signal:viewAbort.signal});if(request!==viewRequest)return;world=createWorld({canvas:$('world'),art:rpgArt});restoreExhibits();}
+    try{if(worldFailed)throw Error('WebGL unavailable');const {createWorld}=await withDeadline(worldModule||import('./world.js?v=20261017-startup1'),{signal:viewAbort.signal});if(request!==viewRequest)return;world=createWorld({canvas:$('world'),art:rpgArt});restoreExhibits();}
     catch(e){if(request!==viewRequest)return;failed=true;view='2d';console.warn('3D unavailable; 2D remains fully playable.',e);if(!quiet)notify('3Dを利用できないため、2Dで探索できます。対戦と記事もそのまま使えます。');}
     finally{if(request===viewRequest)$('view-3d').disabled=false;}
   }
-  if(request!==viewRequest)return;if(!failed)view=next;state.pitch=0;updateViewUI();finishLoading();transitions.enter($(view==='2d'?'fallback':'world'),{kind:'scene'});
+  if(request!==viewRequest)return;if(next==='2d'||failed)await rpgArt.loadRemaining();if(request!==viewRequest)return;if(!failed)view=next;state.pitch=0;updateViewUI();finishLoading();transitions.enter($(view==='2d'?'fallback':'world'),{kind:'scene'});
   if(persist)try{localStorage.setItem(viewKey,view);}catch{}
   if(!quiet&&!failed)notify(view==='2d'?'2Dに切り替えました。矢印キーで東西南北へ。':'3Dに切り替えました。位置・鍵・対戦の記録はそのままです。');
 }
@@ -301,10 +305,11 @@ function step(dt){
   if(view==='3d'){if(keys.has('arrowleft')||held.has('turn-left')||down('left'))state.yaw+=dt*2.3;if(keys.has('arrowright')||held.has('turn-right')||down('right'))state.yaw-=dt*2.3;}
   const {dx,dz}=movementVector(view,state.yaw,f,r,6.8*dt*walkingSpeed);const old=state;state=advanceWithSubsteps(state,dx,dz,view==='2d'?moveAroundFurniture:move);const mx=state.x-old.x,mz=state.z-old.z;walking=Math.hypot(mx,mz)>.0001;facing=directionFromMovement(dx,dz,facing);if(walking)walkPhase=(walkPhase+Math.hypot(mx,mz)*2.3)%(Math.PI*2);
 }
+function renderExploration(dt){if(view==='3d')world?.render({...state,time:time*1000,motion:motion&&!reducedMotion.matches,brightness,lantern,encounters,cleared,creatorActors});else {stageRenderer??=createStageRenderer({art:rpgArt});stageRenderer.render({canvas:$('fallback'),state,brightness,lantern,encounters,cleared,pixelRatio:Math.min(devicePixelRatio||1,2),time,dt,motion:motion&&!reducedMotion.matches,facing,walking:walking&&motion&&!reducedMotion.matches,walkPhase,creatorActors});}drawMap($('mini'));updateHUD();}
 function tick(now){
   frame=0;if(document.hidden)return;const dt=Math.min((now-(last||now))/1000,.05);last=now;visualTime+=dt;
   if(panel.open&&battle){settleBattleAnimation();drawBattleVisual();}
-  if(!panel.open){step(dt);if(motion&&!reducedMotion.matches)time+=dt;updateCreatorFrames(now);if(view==='3d')world?.render({...state,time:time*1000,motion:motion&&!reducedMotion.matches,brightness,lantern,encounters,cleared,creatorActors});else {stageRenderer??=createStageRenderer({art:rpgArt});stageRenderer.render({canvas:$('fallback'),state,brightness,lantern,encounters,cleared,pixelRatio:Math.min(devicePixelRatio||1,2),time,dt,motion:motion&&!reducedMotion.matches,facing,walking:walking&&motion&&!reducedMotion.matches,walkPhase,creatorActors});}drawMap($('mini'));updateHUD();}
+  if(!panel.open){step(dt);if(motion&&!reducedMotion.matches)time+=dt;updateCreatorFrames(now);renderExploration(dt);}
   frame=requestAnimationFrame(tick);
 }
 function start(){if(!frame&&gameReady){last=0;frame=requestAnimationFrame(tick);}}
@@ -312,8 +317,8 @@ function resizeGameViewport(){world?.resize();if(view==='2d')resizeFlat();if(bat
 initViewport({onChange:()=>{clearInput();resizeGameViewport();}});
 if(typeof ResizeObserver==='function'){const canvasSizeObserver=new ResizeObserver(()=>requestAnimationFrame(resizeGameViewport));canvasSizeObserver.observe($('world'));canvasSizeObserver.observe($('fallback'));}
 window.addEventListener('orientationchange',clearInput);
-window.addEventListener('pagehide',()=>{cancelAnimationFrame(frame);frame=0;last=0;clearInput();if(gameReady)save();});
-window.addEventListener('pageshow',()=>{clearInput();resizeGameViewport();if(!document.hidden)start();});
+window.addEventListener('pagehide',()=>{if(!gameReady){bootAbort?.abort();viewAbort?.abort();}cancelAnimationFrame(frame);frame=0;last=0;clearInput();if(gameReady)save();});
+window.addEventListener('pageshow',()=>{clearInput();resizeGameViewport();if(!gameReady&&bootAbort?.signal.aborted)void init();else if(!document.hidden)start();});
 document.addEventListener('yearbook:layout-change',()=>requestAnimationFrame(()=>{if(view==='2d')resizeFlat();else world?.resize();if(battle)drawBattleVisual();}));
 protectGameSurface($('game'));
 for(const canvas of[$('world'),$('fallback')]){
@@ -350,13 +355,35 @@ reducedMotion.addEventListener('change',()=>{if(reducedMotion.matches){motion=fa
 panel.querySelector('.close').onclick=()=>panel.close();panel.addEventListener('close',()=>{cancelArticleImage();cancelArticleImage=()=>{};soundCheck.stop('');battle=null;battleCanvas=null;battleEffect=null;panel.classList.remove('battle-mode','library-mode');clearInput();returnFocus?.focus({preventScroll:true});last=0;});
 $('world').addEventListener('webglcontextlost',e=>{e.preventDefault();worldFailed=true;world?.dispose();world=null;setView('2d',{persist:false});notify('3D描画が止まったため、同じ場所から2D表示で続けられます。');});
 async function init(){
-  try{const [archive,supplemental,manifest]=await Promise.all([fetchJSON('../data/archive.json'),fetchJSON('./data/catalog.json'),fetchJSON('./data/creator-characters.json?v=20261016-creator-rpg1')]);catalog=libraryFromArchive(archive,undefined,supplemental);year=catalog.selectedYear;
-    creatorRoster=compileCharacterRoster(archive,manifest,year);const placements=placeCreatorNPCs(creatorRoster.npcs,manifest.slotAssignments);creatorRoster.npcs=placements.placed;creatorRoster.omitted.push(...placements.omitted);companions=compileCompanions(manifest);
-    try{residents=compileResidents(await fetchJSON('./data/residents.json?v=20261016-resident1',{timeout:5000}));}catch(e){console.warn('Palace resident art is unavailable',e);}
-    if(!creatorRoster.hero)throw Error('Owner character is not ready');characterAssets.setPinned([creatorRoster.hero.asset.src]);const [heroImage]=await withDeadline(Promise.all([characterAssets.request(creatorRoster.hero.asset),rpgArt.ready]),{timeout:18000});if(!heroImage)throw Error('Owner character image failed');rpgArt.setPlayerAtlas(heroImage,scaledCharacterLayout(creatorRoster.hero.asset,heroImage));
-    restore();await setView(view,{persist:false,quiet:true});gameReady=true;$('loading').hidden=true;transitions.enter($(view==='2d'?'fallback':'world'),{kind:'scene'});start();if(!progress[year]?.storySeen)showStory();}
-  catch(e){$('loading').textContent='冒険のデータや主人公の画像を読み込めませんでした。再読み込みでお試しください。';const back=element('a','Halloweenの名鑑へ戻る','primary');back.href='../?mode=halloween';const retry=element('button','再読み込み');retry.onclick=()=>location.reload();$('loading').append(back,retry);console.error(e);}
+ const request=++bootRequest;bootAbort?.abort();const abort=new AbortController();bootAbort=abort;
+ const loading=$('loading'),label=loading.querySelector('p');loading.hidden=false;loading.querySelector('[data-boot-retry]')?.remove();if(label)label.textContent='迷宮の扉をひらいています…';
+ // Fetch the selected renderer while data/hero load, rather than adding a second waterfall.
+ if(view==='3d'&&!worldModule)worldModule=import('./world.js?v=20261017-startup1').catch(error=>{worldModule=null;return null;});
+ const current=()=>request===bootRequest&&!abort.signal.aborted;
+ let phase='data';
+ try{
+  const residentRequest=fetchStartupJSON('./data/residents.json?v=20261016-resident1',{signal:abort.signal,timeout:5000}).then(compileResidents).catch(error=>{console.warn('Palace resident art is unavailable',error);return[];});
+  const [archive,supplemental,manifest]=await Promise.all([fetchStartupJSON('../data/archive.json',{signal:abort.signal,cache:'no-cache'}),fetchStartupJSON('./data/catalog.json',{signal:abort.signal}),fetchStartupJSON('./data/creator-characters.json?v=20261017-cna1',{signal:abort.signal})]);if(!current())return;
+  catalog=libraryFromArchive(archive,undefined,supplemental);year=catalog.selectedYear;
+  creatorRoster=compileCharacterRoster(archive,manifest,year);const placements=placeCreatorNPCs(creatorRoster.npcs,manifest.slotAssignments);creatorRoster.npcs=placements.placed;creatorRoster.omitted.push(...placements.omitted);companions=compileCompanions(manifest);
+  if(!creatorRoster.hero)throw Error('Owner character is not ready');
+  phase='hero';if(label)label.textContent='主人公と黒猫、回廊の姿を準備しています…';
+  const required=[creatorRoster.hero,...companions];characterAssets.setPinned(required.map(character=>character.asset.src));
+  const [heroImage]=await loadRequiredCharacters(characterAssets,required.map(character=>character.asset),{signal:abort.signal,onRetry:()=>{if(current()&&label)label.textContent='通信を確かめて、主人公の姿をもう一度準備しています…';}});if(!current())return;
+  rpgArt.setPlayerAtlas(heroImage,scaledCharacterLayout(creatorRoster.hero.asset,heroImage));
+  // Every original monster is ready; 2D-only furniture and the duel backdrop may follow in 3D.
+  phase='scene';await withDeadline(rpgArt.sceneReady,{timeout:18000,signal:abort.signal});if(!current())return;
+  restore();await setView(view,{persist:false,quiet:true});if(!current())return;
+  residents=await residentRequest;if(!current())return;
+  updateCreatorFrames(performance.now());renderExploration(0);gameReady=true;loading.hidden=true;
+  transitions.enter($(view==='2d'?'fallback':'world'),{kind:'scene'});start();void rpgArt.loadRemaining();if(!progress[year]?.storySeen)showStory();
+ }catch(error){
+  if(!current())return;abort.abort();
+  if(label)label.textContent=phase==='hero'?'主人公の画像を準備できませんでした。読み込めたデータは残したまま、もう一度試せます。':phase==='scene'?'回廊の準備を完了できませんでした。記録は消えていません。もう一度試せます。':'冒険のデータを読み込めませんでした。記録は消えていません。もう一度試せます。';
+  const retry=element('button','もう一度準備する');retry.dataset.bootRetry='true';retry.onclick=()=>void init();loading.append(retry);console.error(error);
+ }
 }
+
 rpgArt.ready.then(()=>{document.body.dataset.art=rpgArt.failures.length?'partial':'ready';if(rpgArt.failures.length){console.warn('Some original RPG art could not load:',rpgArt.failures);notify('一部のイラストを読み込めず、簡易表示で続けています。再読み込みでお試しください。');}});
 updateViewUI();init();
 

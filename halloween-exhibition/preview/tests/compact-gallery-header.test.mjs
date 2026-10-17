@@ -1,4 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';
+const bundledStyles=await readFile(new URL('../gallery-styles.css',import.meta.url),'utf8');
 const read=name=>readFile(new URL('../'+name,import.meta.url),'utf8');
 const css=await read('compact-gallery-header.css');
 test('physical narrow screens reserve settings while other controls scroll',()=>{
@@ -24,9 +25,9 @@ test('legacy compact counter rules retain accounting text; header-specific rules
 });
 test('last gallery-only stylesheet and exact version are present in shell cache',async()=>{
  const html=await read('index.html'),sw=await read('sw.js');
- assert.ok(html.indexOf('compact-gallery-header.css')>html.indexOf('presentation-profiles.css'));
- assert.match(html,/compact-gallery-header.css\?v=20261017-settings1/);
- assert.match(sw,/'compact-gallery-header.css'/);assert.match(sw,/v42-panels2/);
- assert.ok(sw.includes(".includes(path)?'20261017-castle2'"));
+ assert.ok(bundledStyles.indexOf('compact-gallery-header.css')>bundledStyles.indexOf('presentation-profiles.css'));
+ assert.match(bundledStyles,/compact-gallery-header.css\?v=20261017-settings1/);
+ assert.match(sw,/gallery-styles\.css\?v=20261017-startup1/);assert.match(sw,/v43-startup-/);
+ assert.doesNotMatch(sw,/\["compact-gallery-header\.css/);
  assert.doesNotMatch(await read('maze/index.html'),/compact-gallery-header/);
 });

@@ -35,10 +35,10 @@ test('context loss and unavailable WebGL release the current view and allow an e
 
 test('actual app checks a cancelled module import before creating another context on the shared canvas',async()=>{
  const source=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8');
- const prepare=source.slice(source.indexOf('function prepareTownView(){'),source.indexOf('function beginPanel(')).replace(/await import\('[^']+'\)/,"await loadModule()");
+ const prepare=source.slice(source.indexOf('function prepareTownView(){'),source.indexOf('function beginPanel(')).replace(/import\('[^']+'\)/,"loadModule()");
  const module=deferred(),timers=clock();let created=0,destroyed=0;
  const context=vm.createContext({Error,settings:{view:'3d'},characterArt:{art:{}},$:()=>({}),loadModule:()=>module.promise,updateViewUI(){},createTownViewController:options=>createTownViewController({...options,timers})});
- vm.runInContext(`let viewController=null;${prepare};globalThis.prepare=prepareTownView;globalThis.get=()=>viewController`,context);
+ vm.runInContext(`let viewController=null,townWorldModule=null;${prepare};globalThis.prepare=prepareTownView;globalThis.get=()=>viewController`,context);
  context.prepare();await settle();timers.expire();await settle();assert.equal(context.get().snapshot().status,'failed');
  const retry=context.get().setMode('3d',{retry:true});await settle();module.resolve({createTownWorld3D(){created++;return{ready:Promise.resolve(),destroy(){destroyed++;}};}});await retry;await settle();
  assert.equal(created,1);assert.equal(destroyed,0);assert.equal(context.get().snapshot().active,'3d');context.get().destroy();assert.equal(destroyed,1);

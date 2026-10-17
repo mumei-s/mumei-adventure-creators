@@ -1,5 +1,5 @@
 import {monsterSprite,spriteTextureUV} from './monster-motion.js?v=20261016-living1';
-import {ART_FILES,ART_BOUNDS,ART_ANCHORS,PALACE_ART} from './rpg-art.js?v=20261016-living1';
+import {ART_FILES,ART_BOUNDS,ART_ANCHORS,PALACE_ART} from './rpg-art.js?v=20261017-startup1';
 import * as THREE from './vendor/three.module.js';
 import { MAP, CELL, FEATURES, toWorld } from './maze-model.js?v=20261014-adventure2';
 import { NIGHT_LIGHTING } from './lighting-model.js?v=20261014-adventure2';
@@ -54,13 +54,14 @@ export function createWorld({ canvas, onReady, art } = {}) {
   // Original painted surfaces, shared with the 2D palace. Materials remain local and deterministic.
   const floorPlaneGeo=new THREE.PlaneGeometry(CELL,CELL);resources.add(floorPlaneGeo);
   const surfaceLoader=new THREE.TextureLoader(),surfaceMaterials={parquet:mat('#b58a60',{roughness:.72}),limestone:mat('#c5c5ae',{roughness:.86}),marble:mat('#72677f',{roughness:.46})};
-  function loadSurface(key,file,material){surfaceLoader.load(new URL(`./assets/rpg/palace/${file}`,import.meta.url).href,t=>{t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());resources.add(t);material.map=t;material.needsUpdate=true;},undefined,()=>{});}
+  function loadSceneTexture(key,file,install){const image=art?.images?.[key];if(image){const texture=new THREE.Texture(image.image||image);texture.needsUpdate=true;install(texture);}else surfaceLoader.load(new URL(`./assets/rpg/palace/${file}`,import.meta.url).href,texture=>{if(disposed){texture.dispose();return;}install(texture);},undefined,()=>{});}
+  function loadSurface(key,file,material){loadSceneTexture(key,file,t=>{t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());resources.add(t);material.map=t;material.needsUpdate=true;});}
   for(const [key,material]of Object.entries(surfaceMaterials))loadSurface(key,`${key}.webp`,material);
   // Tactile plaster, fine stone joints, and walnut wainscoting replace flat box faces.
   function masonryTexture(palette){const cv=document.createElement('canvas');cv.width=512;cv.height=512;const c=cv.getContext('2d');c.fillStyle=palette[0];c.fillRect(0,0,512,512);for(let i=0;i<2200;i++){const n=(i*79)%257,x=(i*137)%512,y=(i*191)%512;c.fillStyle=n%2?'#fff8dd09':'#1520350b';c.fillRect(x,y,1+n%4,1+n%2);}for(let row=0;row<8;row++){c.strokeStyle=palette[1];c.lineWidth=2;c.beginPath();c.moveTo(0,row*64);c.lineTo(512,row*64);c.stroke();for(let col=-1;col<5;col++){const x=col*128+(row%2)*64;c.beginPath();c.moveTo(x,row*64);c.lineTo(x,row*64+64);c.stroke();}}const t=new THREE.CanvasTexture(cv);t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;resources.add(t);return t;}
   wall[0].color.set('#887593');wall[1].color.set('#c2b394');wall[2].color.set('#bdc7bc');
   for(const [i,m]of wall.entries()){m.map=masonryTexture(i===0?['#93839d','#71647b']:i===1?['#c6b89c','#aa9d85']:['#bfcabf','#a3afa7']);m.needsUpdate=true;}
-  const panelMaterials=wall.map(m=>{const material=m.clone();resources.add(material);return material;});surfaceLoader.load(new URL('./assets/rpg/palace/wainscot-wall.webp',import.meta.url).href,t=>{t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());resources.add(t);for(const material of panelMaterials){material.map=t;material.needsUpdate=true;}},undefined,()=>{});
+  const panelMaterials=wall.map(m=>{const material=m.clone();resources.add(material);return material;});loadSceneTexture('wallPanel','wainscot-wall.webp',t=>{t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=Math.min(4,renderer.capabilities.getMaxAnisotropy());resources.add(t);for(const material of panelMaterials){material.map=t;material.needsUpdate=true;}});
   const walnut=mat('#5e3b27',{roughness:.68}),walnutEdge=mat('#936841',{roughness:.65}),velvet=mat('#173e46',{roughness:.97}),plumVelvet=mat('#4f2b48',{roughness:.97});
   const furniturePaper=mat('#e8d5ad'),plantLeaf=mat('#3d6541'),flowerPetal=mat('#e5d8b9'),potBronze=mat('#967242',{metalness:.4,roughness:.52});
   const bookColors=['#5e314b','#284e54','#997248','#39405c','#758063'].map(c=>mat(c,{roughness:.89}));
@@ -82,7 +83,7 @@ export function createWorld({ canvas, onReady, art } = {}) {
   function rug3D(x,z,w,d){const g=mesh(new THREE.PlaneGeometry(w,d),rugMat,x,.021,z);g.rotation.x=-Math.PI/2;for(const sx of[-1,1])box(.035,.016,d,x+sx*w/2,.025,z,gold);for(const sz of[-1,1])box(w,.016,.035,x,.025,z+sz*d/2,gold);return g;}
   rug3D(32,44.6,10.2,20.4);rug3D(32,12,13.8,12.4);rug3D(56,40,6.6,13.5);rug3D(8,40,6.6,13.5);rug3D(32,24,5.5,8.4);
   const windowMat=new THREE.MeshBasicMaterial({color:'#bacdea',transparent:true,alphaTest:.08,side:THREE.DoubleSide});resources.add(windowMat);
-  surfaceLoader.load(new URL('./assets/rpg/palace/props-atlas.webp',import.meta.url).href,texture=>{texture.colorSpace=THREE.SRGBColorSpace;const f=PALACE_ART.moonWindow;texture.repeat.set(f[2]/texture.image.width,f[3]/texture.image.height);texture.offset.set(f[0]/texture.image.width,1-(f[1]+f[3])/texture.image.height);resources.add(texture);windowMat.map=texture;windowMat.needsUpdate=true;},undefined,()=>{});
+  loadSceneTexture('palaceAtlas','props-atlas.webp',texture=>{texture.colorSpace=THREE.SRGBColorSpace;const f=PALACE_ART.moonWindow;texture.repeat.set(f[2]/texture.image.width,f[3]/texture.image.height);texture.offset.set(f[0]/texture.image.width,1-(f[1]+f[3])/texture.image.height);resources.add(texture);windowMat.map=texture;windowMat.needsUpdate=true;});
   for(const [x,z,ry]of[[32,2.17,0],[18.17,36,Math.PI/2],[45.83,36,-Math.PI/2],[56,30.17,0]]){const win=mesh(new THREE.PlaneGeometry(3.1,4.6),windowMat,x,4.45,z);win.rotation.y=ry;lanternSources.push({x:x+Math.sin(ry)*1.5,y:4,z:z+Math.cos(ry)*1.5,color:'#abc9ef',intensity:6,distance:13});}
   // Floor insets, wainscoting and piers define real navigable space, not a panorama.
   const wallHeight=7.3;

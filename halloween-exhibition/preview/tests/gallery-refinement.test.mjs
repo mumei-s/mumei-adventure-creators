@@ -1,10 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
+const bundledStyles=await readFile(new URL('../gallery-styles.css',import.meta.url),'utf8');
 const css=await readFile(new URL('../gallery-refinement.css',import.meta.url),'utf8');
 const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
 test('last stylesheet prevents both header groups wrapping without clipping or shrinking touch targets',()=>{
- assert.ok(html.indexOf('gallery-refinement.css')>html.indexOf('palace-entrance.css'));
+ assert.ok(bundledStyles.indexOf('gallery-refinement.css')>bundledStyles.indexOf('palace-entrance.css'));
  for(const name of ['palace-toolbar','header-navigation','header-actions','mode-switch'])assert.match(css,new RegExp('\\.'+name+' \\{[^}]*flex-wrap:nowrap'));
  assert.match(css,/overflow-x:auto/);assert.match(css,/min-width:44px;min-height:44px/);
  assert.doesNotMatch(css,/text-size-adjust|font-size:[0-9]px|overflow-x:hidden/);

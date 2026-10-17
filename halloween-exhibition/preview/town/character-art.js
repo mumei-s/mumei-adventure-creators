@@ -1,22 +1,22 @@
-import {fetchJSON,withDeadline} from '../transition-effects.js?v=20261016-living1';
-import {createCharacterAssets,scaledCharacterLayout,characterSprite,compileCharacterRoster,compileCompanions,CREATOR_FICTION_NOTICE,noteArticleURL} from '../maze/creator-runtime.js?v=20261017-cna1';
+import {fetchStartupJSON,loadRequiredCharacters} from '../maze/startup-assets.js?v=20261017-startup1';
+import {createCharacterAssets,scaledCharacterLayout,characterSprite,compileCharacterRoster,compileCompanions,CREATOR_FICTION_NOTICE,noteArticleURL} from '../maze/creator-runtime.js?v=20261017-startup1';
 import {createDistanceTrail} from '../maze/movement-runtime.js?v=20261017-review1';
 import {MONSTER_MOTION_DATA} from '../maze/monster-motion-data.js?v=20261016-living1';
 import {motionSprite} from '../maze/monster-motion.js?v=20261017-rig2';
 import {placeTownVisitors,sampleTownVisitors,chooseTownVisitorGroups,nearestTownVisitor} from './visitor-model.js?v=20261017-town2';
-import {loadArtImage} from '../maze/rpg-art.js?v=20261017-rig2';
+import {loadArtImage} from '../maze/rpg-art.js?v=20261017-startup1';
 import {createRigLibrary} from '../maze/rig-animation.js?v=20261017-rig2';
 /** Adopted owner/cat identity is preserved; no new participant identities are inferred. */
-export function createTownCharacterArt({onState=()=>{},fetcher=fetchJSON,loadMonsterImage=loadArtImage,assets=createCharacterAssets()}={}){
+export function createTownCharacterArt({onState=()=>{},fetcher=fetchStartupJSON,signal,loadMonsterImage=loadArtImage,assets=createCharacterAssets()}={}){
  let destroyed=false,hero,cat,lastMap=null,roster=null,placed=[],archive=null,selected=[],selectionAt=-1,visibleVisitors=[],lastOwner=null,lastCat=null;const trail=createDistanceTrail({maxDistance:3,strideLength:1.15,teleportDistance:3});
  const pending=new Map(),art={images:{},monsterLayouts:{},playerLayout:null,version:0};
  art.rigs=createRigLibrary({loadImage:loadMonsterImage,onChange:()=>{art.version++;onState('rig-ready');}});
  const ready=(async()=>{
-  const [manifest,source]=await Promise.all([fetcher('../maze/data/creator-characters.json?v=20261017-cna1'),fetcher('../data/archive.json')]);archive=source;roster=compileCharacterRoster(archive,manifest);const placement=placeTownVisitors(roster);placed=placement.visitors;
+  const [manifest,source]=await Promise.all([fetcher('../maze/data/creator-characters.json?v=20261017-cna1',{signal}),fetcher('../data/archive.json',{signal,cache:'no-cache'})]);archive=source;roster=compileCharacterRoster(archive,manifest);const placement=placeTownVisitors(roster);placed=placement.visitors;
   if(placement.omitted.length||roster.missingCreators?.length)throw Error('街の仲間の配置を完了できませんでした。');
   hero=roster.hero;cat=compileCompanions(manifest).find(character=>character.id==='owner-black-cat');
   if(!hero||!cat)throw Error('採用済みの主人公と黒猫を読み込めませんでした。');
-  assets.setPinned([hero.asset.src,cat.asset.src]);const images=await withDeadline(Promise.all([assets.request(hero.asset),assets.request(cat.asset)]),{timeout:16000});
+  assets.setPinned([hero.asset.src,cat.asset.src]);const images=await loadRequiredCharacters(assets,[hero.asset,cat.asset],{signal,onRetry:()=>onState('retry')});
   if(destroyed)return;if(images.some(image=>!image))throw Error('主人公と黒猫の画像を読み込めませんでした。');
   art.images.playerAtlas=images[0];art.playerLayout=scaledCharacterLayout(hero.asset,images[0]);art.version++;onState('ready');
  })();

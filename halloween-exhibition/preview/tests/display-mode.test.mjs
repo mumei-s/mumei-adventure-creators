@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile,access} from 'node:fs/promises';
 import {DISPLAY_MODE_KEY,DISPLAY_MODES,normalizeDisplayMode,resolveDisplayMode,isPreviewPath,readDisplayMode,createDisplayModeController,initDisplayMode} from '../display-mode.js';
+const bundledStyles=await readFile(new URL('../gallery-styles.css',import.meta.url),'utf8');
 const root=new URL('../',import.meta.url),read=path=>readFile(new URL(path,root),'utf8');
 const css=await read('display-mode.css'),html=await read('index.html'),admin=await read('admin/index.html');
 function memory(value){const values=new Map(value===undefined?[]:[[DISPLAY_MODE_KEY,value]]),writes=[];return {values,writes,getItem:key=>values.get(key)??null,setItem(key,value){writes.push(key);values.set(key,value);}};}
@@ -59,8 +60,8 @@ test('manual modes fit small viewports and keep usable flow, typography and safe
  assert.doesNotMatch(css,/(?:min-width:\s*(?:768|1024|1440)px|zoom:|scale\(\.\d|text-size-adjust:\s*none)/);
 });
 test('new shared display assets are public-shell-only and never cache editor content',async()=>{
- const sw=await read('sw.js');assert.match(sw,/'display-mode.js', 'display-mode.css'/);
- const list=sw.match(/const SHELL = \[([\s\S]*?)\];/)[1];assert.doesNotMatch(list,/admin\/|maze\/|data\/|draft|app.js/);
+ const sw=await read('sw.js');assert.match(sw,/display-mode\.js\?v=20261014-layout1/);assert.match(sw,/gallery-styles\.css\?v=20261017-startup1/);
+ const list=sw.match(/const PUBLIC_ASSETS = \[([\s\S]*?)\];/)[1];assert.doesNotMatch(list,/admin\/|maze\/|town\/|data\/|draft|app\.js/);
 });
 test('Halloween roster has warm orange surfaces while ordinary mode stays separately scoped',async()=>{
  const styles=await read('gallery-controls.css');assert.match(styles,/body\[data-mode=halloween\] \.roster-card/);
@@ -124,7 +125,7 @@ test('phone gallery fills its available width without changing other page contra
  assert.match(responsive,/\.header-actions\{flex:1 1 auto;flex-wrap:wrap;gap:8px\}/);
  assert.match(responsive,/min-width:44px;min-height:44px;height:auto;font-size:14px/);
  assert.match(responsive,/white-space:normal;overflow-wrap:anywhere/);
- assert.ok(html.indexOf('./phone-layout.css?v=20261017-phone1')>html.indexOf('./palace-entrance.css'));
+ assert.ok(bundledStyles.indexOf('./phone-layout.css?v=20261017-phone1')>bundledStyles.indexOf('./palace-entrance.css'));
  assert.doesNotMatch(admin,/phone-layout.css/);
  assert.doesNotMatch(await read('maze/index.html'),/phone-layout.css/);
  // Width contract for portrait, landscape and wide browser layouts. Real browser

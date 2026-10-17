@@ -2,7 +2,7 @@ import {townLighting,townLanternPosition} from './lighting.js?v=20261017-library
 import {getTownMap} from './story-data.js';
 import {TOWN_TILE as TILE,followTownCamera,townCameraTarget,townVisibleBounds,townWorldToScreen,townScreenToWorld} from './motion.js';
 import {TOWN_BUDGET,TOWN_PROP_CELLS,TOWN_BATTLE_ART_IDS,townVisualSeed as seed,buildingArtKind,townPropSprite} from './visual-data.js';
-import {drawArtSprite,playerPose,loadArtImage,PALACE_ART} from '../maze/rpg-art.js?v=20261017-rig2';
+import {drawArtSprite,playerPose,loadArtImage,PALACE_ART} from '../maze/rpg-art.js?v=20261017-startup1';
 import {enemyRigEffect} from '../maze/battle-rig-effects.js?v=20261017-rig2';
 import {monsterSprite} from '../maze/monster-motion.js?v=20261017-rig2';
 import {withDeadline} from '../transition-effects.js?v=20261016-living1';

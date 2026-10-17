@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile,stat} from 'node:fs/promises';
 import {initGalleryPanels,GALLERY_PANEL_SELECTOR} from '../gallery-panels.js';
+const bundledStyles=await readFile(new URL('../gallery-styles.css',import.meta.url),'utf8');
 
 class Node {
  constructor(tag,doc){this.tagName=tag.toUpperCase();this.doc=doc;this.children=[];this.parentNode=null;this.attrs={};this.dataset={};this.style={setProperty(k,v){this[k]=v;}};this.className='';this.id='';this.classList={add:c=>{this.className=[...new Set([...this.className.split(' ').filter(Boolean),c])].join(' ');},remove:c=>{this.className=this.className.split(' ').filter(x=>x!==c).join(' ');},contains:c=>this.className.split(' ').includes(c)};}
@@ -64,7 +65,7 @@ test('both themes use original local illustrations and reserve an untouchable he
  assert.match(css,/\.gallery-panel-art \*\{pointer-events:none\}/);
  assert.doesNotMatch(css,/object-fit|object-position|text-size-adjust|zoom:|font-size:[1-9]/);
  for(const name of ['book','ghost','lantern','butterfly','branch']){const url=new URL(`../assets/panel-magic/${name}.svg`,import.meta.url);assert.ok((await stat(url)).size<2500);const svg=await readFile(url,'utf8');assert.match(svg,/viewBox=/);assert.doesNotMatch(svg,/<(?:script|image|text)|https?:\/\/(?!www\.w3\.org)/);}
- for(const name of ['gallery-panels.js','gallery-panels.css'])assert.ok(html.includes(name+'?v='+(name.endsWith('.css')?'20261017-panels2':'20261017-panels1')));
+ for(const name of ['gallery-panels.js','gallery-panels.css'])assert.ok((name.endsWith('.css')?bundledStyles:html).includes(name+'?v='+(name.endsWith('.css')?'20261017-panels2':'20261017-panels1')));
  assert.ok(GALLERY_PANEL_SELECTOR.includes('dialog#detail'));
 });
 

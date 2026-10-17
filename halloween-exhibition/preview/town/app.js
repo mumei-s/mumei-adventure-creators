@@ -1,8 +1,9 @@
+import {createReloadControl} from '../safe-page-reload.js?v=20261017-reload1';
 import {createTownSession} from './controller.js?v=20261017-town2';
 import {createTownStore,importTownState,exportTownState} from './save-model.js?v=20261017-town2';
 import {initialTownState,townJournal,townInventory,townProgress,getTownMap,isTownWalkable} from './town-model.js?v=20261017-town2';
-import {createTownRenderer,renderTownBattle} from './renderer.js?v=20261017-library1';
-import {createTownCharacterArt} from './character-art.js?v=20261017-rig2';
+import {createTownRenderer,renderTownBattle} from './renderer.js?v=20261017-startup1';
+import {createTownCharacterArt} from './character-art.js?v=20261017-startup1';
 import {TOWN_BATTLE_ART_IDS} from './visual-data.js?v=20261017-town2';
 import {createTownViewController} from './view-mode.js?v=20261017-town2';
 import {createTownAudio} from './audio.js?v=20261017-palace-panel1';
@@ -19,7 +20,7 @@ const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let settings=readTownPreferences().preferences;
 const store=createTownStore();
 let ready=false,renderer=null,characterArt=null,bootRequest=0,bootAbort=null,pageActive=true,returnFocus=null,panelKind='',panelRevision=0,dialogueTarget=null,minimapSignature='',hudSignature='',toastTimer=null,battleCanvas=null,battleRevision=-1,battleArtReady=false,battleArtFailed=false;
-let viewController=null,lastTownFrame=null,battleBackdropId=null;
+let viewController=null,lastTownFrame=null,battleBackdropId=null,townWorldModule=null;
 let direction=null,canvasPointer=null,worldTime=0,displayPreferences=null,resizeFrame=null;const keys=new Set(),held=new Set(),bindings=[];
 const audio=createTownAudio({onChange:updateAudioUI});
 const session=createTownSession({store,onNotice:notify,onChange:snapshot=>{if(snapshot.save)saveStatus(snapshot.save);updateHUD();}});
@@ -44,7 +45,7 @@ function updateViewUI(state){
 function resetTownView(){viewController?.destroy();viewController=null;$('town-webgl').hidden=true;$('town-canvas').hidden=false;const skip=document.querySelector('.skip-link');if(skip)skip.href='#town-canvas';if(returnFocus===$('town-webgl'))returnFocus=$('town-canvas');}
 function prepareTownView(){
  viewController=createTownViewController({load:async({signal,onContextLost})=>{
-  const module=await import('./world-3d.js?v=20261017-library1');
+  const module=await(townWorldModule||import('./world-3d.js?v=20261017-startup1'));if(!module)throw Error('Town renderer unavailable');
   if(signal.aborted)throw Error('Old town view request');
   return module.createTownWorld3D({canvas:$('town-webgl'),art:characterArt.art,onContextLost});
  },onChange:updateViewUI});
@@ -70,8 +71,9 @@ function showDialogue(dialogue,targetId){
  choices.append(button('街を歩く',closePanel));content.append(choices);choices.querySelector('button')?.focus({preventScroll:true});
 }
 function showCastleReturn(){beginPanel('城へ戻りますか。');content.append(el('p','街の記録を保存して、宮殿の入口へ戻ります。城の中の冒険は、街とは別の記録で続けられます。'));const link=el('a','城へ戻る','button-link primary');link.href='../?return=palace';link.onclick=prepareExit;content.append(link,button('街歩きを続ける',closePanel));}
+const pageReload=createReloadControl({save:()=>session.snapshot().battle?{ok:false,notice:'対戦を終えてから再読み込みしてください。'}:session.save(),beforeReload:()=>{clearInput();audio.stop({resetVolume:true});}});
 function showMenu(){
- beginPanel('街歩きのメニュー');const progress=townProgress(session.snapshot().state);content.append(el('p',progress.title,'subtle'));const menu=el('div',undefined,'town-menu');
+ beginPanel('街歩きのメニュー');content.append(pageReload.element);const progress=townProgress(session.snapshot().state);content.append(el('p',progress.title,'subtle'));const menu=el('div',undefined,'town-menu');
  for(const [label,action]of[['街の仲間',showVisitors],['旅の手帳',showJournal],['持ち物',showInventory],['街の地図',showMap],['明るさ・音・表示',showSettings],['記録・バックアップ',showSave],['操作と物語について',showHelp]])menu.append(button(label,action));
  const compare=el('a','キャラ見比べ','button-link');compare.href='../work-review/cast-check.html';compare.target='_blank';compare.rel='noopener noreferrer';menu.append(compare,button('城へ戻る',showCastleReturn));const scenery=renderer?.status?.();if(scenery?.failed?.length)menu.append(button('街の景色を読み込み直す',()=>{closePanel();void boot();}));content.append(menu);
 }
@@ -162,8 +164,8 @@ $('lantern-toggle').onclick=toggleLantern;$('interact').onclick=()=>interact();$
 function prepareExit(){clearInput();audio.stop({resetVolume:true});session.save();}
 $('castle-return').addEventListener('click',prepareExit);
 window.addEventListener('blur',()=>{clearInput();audio.stop({resetVolume:true});});window.addEventListener('orientationchange',scheduleResize);
-window.addEventListener('pagehide',()=>{pageActive=false;loop.stop();clearInput();audio.stop({resetVolume:true});session.save();});
-window.addEventListener('pageshow',()=>{pageActive=true;clearInput();audio.stop({resetVolume:true});resize();if(!document.hidden)loop.start();});
+window.addEventListener('pagehide',()=>{pageActive=false;if(!ready)bootAbort?.abort();loop.stop();clearInput();audio.stop({resetVolume:true});session.save();});
+window.addEventListener('pageshow',()=>{pageActive=true;clearInput();audio.stop({resetVolume:true});resize();if(!ready&&bootAbort?.signal.aborted)void boot();else if(!document.hidden)loop.start();});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){loop.stop();clearInput();audio.stop({resetVolume:true});}else loop.start();});
 window.addEventListener('resize',()=>{clearInput();applySettings();scheduleResize();});reduced.addEventListener('change',()=>{clearInput();applySettings();});initViewport({onChange:scheduleResize});
 if(typeof ResizeObserver==='function'){const displayObserver=new ResizeObserver(scheduleResize);displayObserver.observe($('town-main'));displayObserver.observe(document.querySelector('.town-world'));}
@@ -171,7 +173,8 @@ if(typeof ResizeObserver==='function'){const displayObserver=new ResizeObserver(
 const pageDisplayPreferences=initGameDisplay({page:'town',onChange:scheduleResize});scheduleResize();
 async function boot(){
  const request=++bootRequest,revision=panelRevision;bootAbort?.abort();const abort=new AbortController();bootAbort=abort;ready=false;loop.stop();clearInput();resetTownView();renderer?.destroy?.();characterArt?.destroy();$('town-loading').hidden=false;$('town-loading').querySelector('p').textContent='街の灯りをともしています…';$('loading-retry').hidden=true;
- try{characterArt=createTownCharacterArt();renderer=createTownRenderer({art:characterArt.art});const scenery=renderer;void scenery.ready?.then(()=>{if(request!==bootRequest||abort.signal.aborted)return;scenery.invalidate?.();if(scenery.status?.().failed?.length)notify('一部の景色を準備できませんでした。メニューから読み込み直せます。');});await withDeadline(characterArt.ready,{timeout:18000,signal:abort.signal});if(request!==bootRequest||abort.signal.aborted)return;ready=true;resize();$('town-loading').hidden=true;prepareTownView();updateHUD();loop.start();const snapshot=session.snapshot();if(snapshot.notice)notify(snapshot.notice);if(!snapshot.state.flags.intro&&!panel.open&&panelRevision===revision)showHelp();}
- catch(error){if(request!==bootRequest||abort.signal.aborted)return;$('town-loading').querySelector('p').textContent='街と主人公の支度を完了できませんでした。記録は消えていません。再試行できます。';$('loading-retry').hidden=false;console.warn('Town loading failed',error);}
+ if(settings.view==='3d'&&!townWorldModule)townWorldModule=import('./world-3d.js?v=20261017-startup1').catch(()=>{townWorldModule=null;return null;});
+ try{characterArt=createTownCharacterArt({signal:abort.signal,onState:status=>{if(status==='retry'&&request===bootRequest&&!abort.signal.aborted)$('town-loading').querySelector('p').textContent='通信を確かめて、主人公と黒猫の姿をもう一度準備しています…';}});renderer=createTownRenderer({art:characterArt.art});const scenery=renderer;void scenery.ready?.then(()=>{if(request!==bootRequest||abort.signal.aborted)return;scenery.invalidate?.();if(scenery.status?.().failed?.length)notify('一部の景色を準備できませんでした。メニューから読み込み直せます。');});await withDeadline(characterArt.ready,{timeout:40000,signal:abort.signal});if(request!==bootRequest||abort.signal.aborted)return;resize();tick(0,0);ready=true;$('town-loading').hidden=true;prepareTownView();updateHUD();loop.start();const snapshot=session.snapshot();if(snapshot.notice)notify(snapshot.notice);if(!snapshot.state.flags.intro&&!panel.open&&panelRevision===revision)showHelp();}
+ catch(error){if(request!==bootRequest||abort.signal.aborted)return;abort.abort();ready=false;$('town-loading').querySelector('p').textContent='街と主人公の支度を完了できませんでした。記録は消えていません。再試行できます。';$('loading-retry').hidden=false;console.warn('Town loading failed',error);}
 }
 $('loading-retry').onclick=boot;applySettings();updateHUD();boot();

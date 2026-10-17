@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
+const bundledStyles=await readFile(new URL('../gallery-styles.css',import.meta.url),'utf8');
 const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
 const css=await readFile(new URL('../article-doors.css',import.meta.url),'utf8');
 // Structural and sizing-contract guards, not a substitute for browser rendering.
@@ -18,7 +19,7 @@ test('article and profile images are contained inside bounded frames without hov
  assert.match(css,/artwork-frame:hover \.artwork-mat img \{transform:none\}/);
  assert.match(css,/transform:translateX\(-50%\)!important/);
  assert.match(css,/#detail \.detail-art \{object-fit:contain/);
- assert.ok(html.indexOf('article-doors.css?v=20261014-doors1')>html.indexOf('display-mode.css'));
+ assert.ok(bundledStyles.indexOf('article-doors.css?v=20261014-doors1')>bundledStyles.indexOf('display-mode.css'));
 });
 test('400×606 and 333×619 minimum-room sizing reserves image space above 44px navigation',()=>{
  for(const [width,height] of [[400,606],[333,619],[320,606],[1180,758]]){

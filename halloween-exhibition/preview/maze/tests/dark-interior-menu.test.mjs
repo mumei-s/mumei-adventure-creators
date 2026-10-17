@@ -31,4 +31,4 @@ test('keyboard focus and forced-color fallback remain explicit',()=>{
  assert.match(css,/background:ButtonFace;color:ButtonText/);
 });
 
-test('menu decoration is linked and explicit motion/rotation lifecycle stays wired',()=>{const app=readFileSync(new URL('../app.js',import.meta.url),'utf8'),html=readFileSync(new URL('../index.html',import.meta.url),'utf8');assert.match(html,/dark-interior-menu\.css\?v=20261016-dark-menu1/);assert.match(html,/app\.js\?v=20261017-padpos1/);assert.match(app,/panel\.dataset\.menuMotion=String\(enabled\)/);assert.match(app,/window\.addEventListener\('orientationchange',clearInput\)/);});
+test('menu decoration is linked and explicit motion/rotation lifecycle stays wired',()=>{const app=readFileSync(new URL('../app.js',import.meta.url),'utf8'),html=readFileSync(new URL('../index.html',import.meta.url),'utf8');assert.match(html,/dark-interior-menu\.css\?v=20261016-dark-menu1/);assert.match(html,/app\.js\?v=20261017-startup1/);assert.match(app,/panel\.dataset\.menuMotion=String\(enabled\)/);assert.match(app,/window\.addEventListener\('orientationchange',clearInput\)/);});

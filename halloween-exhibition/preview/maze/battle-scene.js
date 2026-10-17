@@ -1,6 +1,6 @@
 import {monsterSprite} from './monster-motion.js?v=20261016-living1';
-import {drawArtSprite,playerPose} from './rpg-art.js?v=20261016-living1';
-import {drawCreature} from './stage-2d.js?v=20261016-living1';
+import {drawArtSprite,playerPose} from './rpg-art.js?v=20261017-startup1';
+import {drawCreature} from './stage-2d.js?v=20261017-startup1';
 import {prankFor} from './encounter-model.js?v=20261016-living1';
 import {encounterStory} from './story-model.js?v=20261016-living1';
 const clamp=x=>Math.max(0,Math.min(1,x));

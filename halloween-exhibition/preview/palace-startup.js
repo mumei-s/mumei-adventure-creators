@@ -8,7 +8,8 @@ export function settlePalaceImage(image, {timeout=8000, timers=globalThis}={}) {
   const loaded=()=>{if(!image.naturalWidth){finish('fallback');return;}if(typeof image.decode==='function')image.decode().then(()=>finish('ready'),()=>finish('ready'));else finish('ready');};
   const failed=()=>{image.style&&(image.style.visibility='hidden');finish('fallback');};
   image.addEventListener?.('load',loaded);image.addEventListener?.('error',failed);
-  timer=timers.setTimeout(failed,timeout);
+  // A slow image may still finish later. Never permanently hide it on a deadline.
+  timer=timers.setTimeout(()=>finish('fallback'),timeout);
   if(image.complete)image.naturalWidth?loaded():failed();
  });
 }

@@ -1,3 +1,4 @@
+import {createReloadControl} from '../safe-page-reload.js';
 import {initTransitionEffects} from '../transition-effects.js';
 import {initViewport} from '../viewport.js';
 import { initAppExit } from '../app-exit.js';
@@ -79,7 +80,7 @@ class Element {
   querySelector(selector) { return this.querySelectorAll(selector)[0] || null; }
 }
 
-async function harness({ data = archive, reduced = true, storageThrows = false, storageWriteThrows = false, saved = null, savedMode = null, urlSearch = '', returnState = null, autoLoad = true, strictTimerReceiver = false, entrance = false } = {}) {
+async function harness({ data = archive, reduced = true, storageThrows = false, storageWriteThrows = false, saved = null, savedMode = null, urlSearch = '', returnState = null, autoLoad = true, strictTimerReceiver = false, entrance = false, palaceStartup = () => Promise.resolve() } = {}) {
   let now = 0, seq = 0; const timers = new Map(), storage = new Map(saved ? [['halloween-yearbook:night-doors:v1', saved]] : []);
   if (savedMode !== null) storage.set('halloween-yearbook:display-mode:v1', savedMode);
   const queue = (fn, delay = 0) => { const id = ++seq; timers.set(id, { at: now + delay, fn }); return id; };
@@ -103,7 +104,7 @@ async function harness({ data = archive, reduced = true, storageThrows = false, 
     return walk(doc.documentElement);
   };
   const requests = [], storageWrites = [], motionInitializations = [], viewCalls = [];
-  const context = vm.createContext({ AbortController, initTransitionEffects:()=>initTransitionEffects({window:doc.defaultView,document:doc}), initViewport:()=>initViewport({window:doc.defaultView,document:doc}), initAppExit, createDoorRevealClock:args=>createDoorRevealClock({...args,schedule:queue,clear:id=>timers.delete(id)}), initCreatorCauldron:args=>initCreatorCauldron({...args,doc,win:doc.defaultView}), initFestivalScene:args=>initFestivalScene({...args,doc,win:{...doc.defaultView,setTimeout:queue,clearTimeout:id=>timers.delete(id),MutationObserver:class{observe(){}disconnect(){}}}}), loadArtworkImage:(image,source,options)=>loadArtworkImage(image,source,{...options,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}), initPalaceStartup:()=>Promise.resolve(), createDoorPalettePicker, installGalleryGesture, createSlideshowController, initPalaceEntrance:entrance?(args)=>initPalaceEntrance({...args,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}):({root,onViewChange})=>{root.dataset.palaceState='gallery';return {enter(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});},home(){root.dataset.palaceState='palace';onViewChange({view:'palace',opening:false});},setMode(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});}}}, initDisplayMode:()=>({}), document: doc, initVisitorPreferences:options=>{options.onBrightness(75);const section=doc.createElement('section');section.className='visitor-preferences';doc.body.append(section);return {stopMusic(){doc.musicStops=(doc.musicStops||0)+1;}};}, initSceneMotion:root=>{motionInitializations.push(root);const dock=doc.createElement('div');dock.className='scene-controls';root.append(dock);let userPaused=false;return {isUserPaused(){return userPaused;},setPaused(value){userPaused=Boolean(value);},setView(x,y){viewCalls.push([x,y]);}};}, validateArchive, safeURL, normalizeSearch, doorIdFor,
+  const context = vm.createContext({ AbortController, createReloadControl:options=>createReloadControl({...options,document:doc}), initTransitionEffects:()=>initTransitionEffects({window:doc.defaultView,document:doc}), initViewport:()=>initViewport({window:doc.defaultView,document:doc}), initAppExit, createDoorRevealClock:args=>createDoorRevealClock({...args,schedule:queue,clear:id=>timers.delete(id)}), initCreatorCauldron:args=>initCreatorCauldron({...args,doc,win:doc.defaultView}), initFestivalScene:args=>initFestivalScene({...args,doc,win:{...doc.defaultView,setTimeout:queue,clearTimeout:id=>timers.delete(id),MutationObserver:class{observe(){}disconnect(){}}}}), loadArtworkImage:(image,source,options)=>loadArtworkImage(image,source,{...options,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}), initPalaceStartup:palaceStartup, createDoorPalettePicker, installGalleryGesture, createSlideshowController, initPalaceEntrance:entrance?(args)=>initPalaceEntrance({...args,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}):({root,onViewChange})=>{root.dataset.palaceState='gallery';return {enter(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});},home(){root.dataset.palaceState='palace';onViewChange({view:'palace',opening:false});},setMode(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});}}}, initDisplayMode:()=>({}), document: doc, initVisitorPreferences:options=>{options.onBrightness(75);const section=doc.createElement('section');section.className='visitor-preferences';doc.body.append(section);return {stopMusic(){doc.musicStops=(doc.musicStops||0)+1;}};}, initSceneMotion:root=>{motionInitializations.push(root);const dock=doc.createElement('div');dock.className='scene-controls';root.append(dock);let userPaused=false;return {isUserPaused(){return userPaused;},setPaused(value){userPaused=Boolean(value);},setView(x,y){viewCalls.push([x,y]);}};}, validateArchive, safeURL, normalizeSearch, doorIdFor,
     matchMedia: () => ({ matches: reduced }),
     // Native browser timers reject a plain-object receiver (Illegal invocation).
     setTimeout: function(fn, delay) { if (strictTimerReceiver && this != null && this.document !== doc) throw new TypeError('Illegal invocation'); return queue(fn, delay); },
@@ -1247,4 +1248,29 @@ test('choosing ordinary mode during a town-return load prevents Halloween contex
  const data=structuredClone(archive);data.years.push({...structuredClone(data.years[0]),year:2025});
  const h=await harness({data,entrance:true,autoLoad:false,urlSearch:'?return=palace',returnState:JSON.stringify({year:2025,creatorId:'ss_yr',doorId:'owner-work-2026',search:'old-filter',activeTag:'参加者',rosterPage:2})});
  h.api.setMode('normal');await h.succeed(h.requests[0]);assert.equal(h.api.state.displayMode,'normal');assert.equal(h.api.state.currentYear,2026);assert.equal(h.api.state.search,'');assert.equal(h.api.state.activeTag,'');assert.equal(h.$('town-entrance').hidden,true);assert.equal(h.$('artwork-image').src,archive.creators[0].avatar);
+});
+
+
+test('valid archive enables the gate and roster even while full castle images never settle',async()=>{
+ const h=await harness({entrance:true,reduced:false,autoLoad:false,palaceStartup:()=>new Promise(()=>{})});
+ assert.equal(h.$('palace-gate').disabled,true);
+ await h.succeed(h.requests[0]);
+ assert.equal(h.$('theater').dataset.archiveState,'ready');
+ assert.equal(h.$('palace-gate').disabled,false);
+ assert.equal(h.$('palace-load-status').hidden,true,'usable gate no longer announces preparation while optional images load');
+ assert.equal(h.$('list-open').disabled,false);
+ assert.equal(h.$('article-theater').hidden,true);
+ h.$('palace-gate').click();
+ assert.equal(h.$('theater').dataset.palaceState,'opening');
+ await h.tick(600);assert.equal(h.$('theater').dataset.palaceState,'walking');
+ await h.tick(550);assert.equal(h.$('article-theater').hidden,false);
+ assert.equal(h.api.countPeople(),0,'entering the gallery still does not record a profile visit');
+});
+test('failed data still blocks entry and retry recovers independently of visual loading',async()=>{
+ const h=await harness({entrance:true,autoLoad:false,palaceStartup:()=>new Promise(()=>{})});
+ h.requests[0].reject(Error('offline'));await h.flush();
+ assert.equal(h.$('theater').dataset.archiveState,'error');assert.equal(h.$('palace-gate').disabled,true);
+ h.$('retry').click();await h.succeed(h.requests[1]);
+ assert.equal(h.$('load-error').hidden,true);assert.equal(h.$('palace-gate').disabled,false);
+ h.$('palace-gate').click();assert.equal(h.$('article-theater').hidden,false);
 });

@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
+const bundledStyles=await readFile(new URL('../gallery-styles.css',import.meta.url),'utf8');
 const css=await readFile(new URL('../host-celebration.css',import.meta.url),'utf8');
 const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
 const sw=await readFile(new URL('../sw.js',import.meta.url),'utf8');
@@ -20,10 +21,10 @@ test('host motion stops for explicit pause and reduced motion, without rapid fla
  assert.match(css,/host-turn 52s/);
 });
 test('host release is isolated in the preview cache and follows existing styles',()=>{
- assert.ok(html.indexOf('host-celebration.css')>html.indexOf('gallery-refinement.css'));
- assert.match(html,/host-celebration.css\?v=20261015-host3/);
- assert.match(sw,/HOST_RELEASE = '20261015-host3'/);
- assert.match(sw,/path==='host-celebration.css' \? HOST_RELEASE/);
+ assert.ok(bundledStyles.indexOf('host-celebration.css')>bundledStyles.indexOf('gallery-refinement.css'));
+ assert.match(bundledStyles,/host-celebration.css\?v=20261015-host3/);
+ assert.match(sw,/gallery-styles\.css\?v=20261017-startup1/);
+ assert.doesNotMatch(sw,/\["host-celebration\.css/);
  assert.match(html,/id="host-magazine"[^>]*href="https:\/\/note.com\/ss_yr\/m\/m642b82518aeb"/);
 });
 

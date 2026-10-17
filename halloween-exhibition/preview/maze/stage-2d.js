@@ -3,7 +3,7 @@ import { MAP, CELL, FEATURES, blocked, nearby } from './maze-model.js?v=20261014
 import { ALL_MONSTERS as MONSTERS, nearestMonster, monsterAvailable, monsterPose } from './encounter-model.js?v=20261016-living1';
 
 // Canvas illustration authored for this room; no participant art or remote assets.
-import {drawArtSprite,playerPose} from './rpg-art.js?v=20261016-living1';
+import {drawArtSprite,playerPose} from './rpg-art.js?v=20261017-startup1';
 import {followCamera,depthOrder,clampSceneCamera} from './rpg-model.js?v=20261014-adventure2';
 const TILE=72,TAU=Math.PI*2;
 export const EXIT={x:8,z:14};

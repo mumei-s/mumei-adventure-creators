@@ -30,7 +30,7 @@ test('exploration shows a compact top control row, story beside map and a separa
  assert.match(html,/<div class="exploration-hud"><div class="place">[\s\S]*?id="minimap-open"/);
  assert.match(html,/<aside class="lantern-dock"[^>]*><button id="lantern"/);
  assert(!html.match(/<div class="nearby">([\s\S]*?)<\/div>/)[1].includes('id="lantern"'));
- assert(hud.includes('grid-template-rows:48px 0 auto minmax(0,1fr) 120px 20px'));
+ assert(hud.includes('grid-template-rows:48px 0 auto minmax(0,1fr) 114px 20px'));
  assert(hud.includes('grid-template-columns:minmax(0,1fr) auto'));assert(hud.includes('max-width:32ch'));
  assert(hud.includes('--map-side:44px'));assert(hud.includes('--map-side:72px'));assert(hud.includes('--map-side:104px'));
  assert(html.includes('<span>拡大</span>'));assert(html.includes('aria-label="現在位置の地図を拡大"'));

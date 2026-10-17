@@ -96,7 +96,7 @@ body[data-view] .minimap .map-north{align-self:center;font-weight:700}
 .game-audio-settings .game-volume-input,.game-audio-status{grid-column:1/-1;margin:0}
 
 /* Compact exploration HUD: one control row, story beside the raised map. */
-body[data-view] #game,body[data-layout][data-view] #game{grid-template-rows:48px 0 auto minmax(0,1fr) 120px 20px}
+body[data-view] #game,body[data-layout][data-view] #game{grid-template-rows:48px 0 auto minmax(0,1fr) 114px 20px}
 body[data-view] header{display:flex;align-items:center;justify-content:space-between;gap:4px;padding:2px 6px}
 body[data-view] .brand{display:flex;flex:0 0 44px;align-items:center;justify-content:center;min-width:44px;min-height:44px;font:22px/1 sans-serif;text-decoration:none}
 body[data-view] #view-controls{display:flex;gap:4px;flex:0 0 auto}

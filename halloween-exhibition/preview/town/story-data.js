@@ -2,7 +2,7 @@
 // are visitors supplied separately by the exhibition; no submission is invented.
 export const TOWN_VERSION = 1;
 export const TOWN_START_MAP = 'lantern-town';
-export const TOWN_TITLE = '星灯りの城下町';
+export const TOWN_TITLE = '星灯りの街';
 
 export const TOWN_ITEMS = {
   tonic: {id:'tonic',name:'星蜜の小瓶',description:'戦闘中に体力を28回復する。',price:10},

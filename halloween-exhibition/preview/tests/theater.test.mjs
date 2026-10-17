@@ -1271,12 +1271,15 @@ test('ordinary people pages preserve additional separate article doors without s
 test('outdoor town has a direct palace route and gallery route that stay separate from the article gate',async()=>{
  const h=await harness({entrance:true});
  for(const id of ['palace-town-entrance','town-entrance']){
-  assert.equal(h.$(id).tagName,'A');assert.equal(h.$(id).getAttribute('href'),'./town/?return=theatre');assert.equal(h.$(id).getAttribute('aria-label'),'城の外を歩く。城下町の冒険へ');assert.equal(h.$(id).hidden,false);
+  assert.equal(h.$(id).tagName,'A');assert.equal(h.$(id).getAttribute('href'),'./town/?return=theatre');assert.equal(h.$(id).getAttribute('aria-label'),'宮殿から星灯りの街へ進む');assert.equal(h.$(id).hidden,false);
  }
- assert.equal(h.$('palace-town-entrance').parentNode.parentNode,h.$('palace-entrance'));
+ assert.equal(h.$('palace-town-entrance').parentNode,h.$('castle-exit-panel'));
+ assert.equal(h.$('castle-exit-panel').parentNode,h.doc.querySelector('.masthead'));
+ assert.equal(h.$('palace-entrance').querySelector('#palace-town-entrance'),null);
  assert.equal(h.$('town-entrance').parentNode,h.$('horror-entrance').parentNode);
  assert.equal(h.$('article-theater').hidden,true);assert.equal(h.$('palace-entrance').hidden,false);
  h.$('palace-town-entrance').click();assert.equal(h.$('article-theater').hidden,true,'an outdoor route does not auto-open articles');assert.equal(h.api.countPeople(),0);
+ assert.equal(h.doc.closeAttempts||0,0);assert.equal(h.doc.musicStops||0,0);assert.equal(h.$('app-ended-screen').hidden,true);assert.ok(h.getReturn());
  h.api.setMode('normal');for(const id of ['palace-town-entrance','town-entrance','palace-maze-entrance'])assert.equal(h.$(id).hidden,true);
  h.api.setMode('halloween');assert.equal(h.$('palace-town-entrance').hidden,false);assert.equal(h.$('town-entrance').hidden,false);
 });

@@ -14,8 +14,8 @@ const title = '無名S note / 🎃Halloween Atelier / 魔法の入口🚪';
 // Independent release contract. Unknown files have no fallback version: adding
 // an asset requires reviewing its exact URL and cache scope here as well.
 const PUBLIC_RELEASES = Object.freeze({
- 'theater.js':'20261017-rig2',
- 'town-entry.css':'20261017-town2',
+ 'theater.js':'20261017-palace-panel1',
+ 'town-entry.css':'20261017-palace-panel1',
  'gallery-controls.css':'20261017-review1',
  'gallery-gesture.js':'20261017-review1',
  'magical-loading.js':'20261017-review1',
@@ -27,13 +27,13 @@ const PUBLIC_RELEASES = Object.freeze({
  'transition-effects.css':'20261016-living1',
  'palace-living-scene.css':'20261016-living1',
  'palace-entrance.css':'20261016-living1',
- 'safe-navigation.css':'20261016-living1',
+ 'safe-navigation.css':'20261017-palace-panel1',
  'viewport.js':'20261016-ios1',
  'ios-viewport.css':'20261016-ios1',
  'visitor-preferences.js':'20261016-ios1',
  'fate-roulette.css':'20261016-fate1',
  'gallery-refinement.css':'20261016-fate1',
- 'app-exit.js':'20261016-fate1',
+ 'app-exit.js':'20261017-palace-panel1',
  'castle-counter-bootstrap.js':'20261016-visits1',
  'castle-visit-counter.js':'20261016-visits1',
  'castle-visit-counter.css':'20261016-visits1',
@@ -66,8 +66,8 @@ const ADMIN_RELEASES = Object.freeze({
  'admin/display-settings.js':'20261014-layout1',
 });
 const REVIEW_FILES = Object.keys(PUBLIC_RELEASES).filter(path=>PUBLIC_RELEASES[path]==='20261017-review1');
-const TOWN_ENTRY_FILES = ['town-entry.css'];
-const RIG_FILES = ['theater.js','palace-startup.js','palace-living-scene.js'];
+const PANEL_FILES = ['theater.js','app-exit.js','safe-navigation.css','town-entry.css'];
+const RIG_FILES = ['palace-startup.js','palace-living-scene.js'];
 const publicPath = (reference,from) => new URL(reference,base+from).pathname.slice(new URL(base).pathname.length);
 
 test('manifest identity and start URL are confined to the preview subtree', async()=>{
@@ -284,9 +284,9 @@ test('worker caches each public script/style only unversioned or at its exact cu
 test('release invalidation rejects prior changed-asset URLs and offline lookup uses only the new cache epoch',async()=>{
  const h=workerHarness();
  const stale=['20261014-layout1','20261014-portrait1','20261015-controls1','20261015-journey1','20261015-glamour1','20261016-living1'];
- for(const path of TOWN_ENTRY_FILES){
-  assert.equal((await h.dispatch('fetch',base+path+'?v=20261017-town2')).intercepted,true,path);
-  for(const version of [...stale,'20261017-review1'])assert.equal((await h.dispatch('fetch',base+path+'?v='+version)).intercepted,false,path+version);
+ for(const path of PANEL_FILES){
+  assert.equal((await h.dispatch('fetch',base+path+'?v=20261017-palace-panel1')).intercepted,true,path);
+  for(const version of [...stale,'20261017-review1','20261017-town2','20261017-rig2','20261016-fate1'])assert.equal((await h.dispatch('fetch',base+path+'?v='+version)).intercepted,false,path+version);
  }
  for(const[path,release]of Object.entries(NETWORK_ONLY_RELEASES))assert.equal((await h.dispatch('fetch',base+path+'?v='+release)).intercepted,false,path);
  for(const path of RIG_FILES){
@@ -297,10 +297,10 @@ test('release invalidation rejects prior changed-asset URLs and offline lookup u
   assert.equal((await h.dispatch('fetch',base+path+'?v=20261017-review1')).intercepted,true,path);
   for(const version of stale)assert.equal((await h.dispatch('fetch',base+path+'?v='+version)).intercepted,false,path+version);
  }
- const offline=workerHarness({offline:true});await offline.dispatch('fetch',base+'theater.js?v=20261017-rig2');
- assert.equal(offline.matches.length,1);assert.equal(offline.matches[0].cacheName,'mumei-atelier-shell-v34-20261017-rig2:'+new URL(base).pathname);
+ const offline=workerHarness({offline:true});await offline.dispatch('fetch',base+'theater.js?v=20261017-palace-panel1');
+ assert.equal(offline.matches.length,1);assert.equal(offline.matches[0].cacheName,'mumei-atelier-shell-v35-20261017-palace-panel1:'+new URL(base).pathname);
  assert.ok(offline.matches[0].cacheName.endsWith(':'+new URL(base).pathname));
- assert.equal(offline.matches[0].url,base+'theater.js?v=20261017-rig2');
+ assert.equal(offline.matches[0].url,base+'theater.js?v=20261017-palace-panel1');
 });
 
 test('review portrait stylesheet has an exact new URL and rejects its old hotfix query',async()=>{

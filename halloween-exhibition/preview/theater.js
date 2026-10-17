@@ -1,7 +1,7 @@
 import {initTransitionEffects, withDeadline} from './transition-effects.js?v=20261017-review1';
 import { paginateRoster } from './roster-pagination.js?v=20261017-review1';
 import {initViewport} from './viewport.js?v=20261016-ios1';
-import { initAppExit } from './app-exit.js?v=20261016-fate1';
+import { initAppExit } from './app-exit.js?v=20261017-palace-panel1';
 import { createDoorRevealClock } from './door-reveal-clock.js?v=20261015-playful1';
 import { initFestivalScene } from './festival-scene.js?v=20261015-glamour1';
 import { loadArtworkImage } from './magical-loading.js?v=20261017-review1';
@@ -205,7 +205,7 @@ if(displayPreferences){document.querySelector('.visitor-preferences').prepend(di
 void initPalaceStartup(root);
 const sceneMotion=initSceneMotion(root,{controlsParent:document.querySelector('.visitor-preferences')});
 let motionPausedBeforeExit=false;
-const appExit=initAppExit({root,triggerParent:document.querySelector('.header-actions'),onStop(){
+const appExit=initAppExit({root,triggerParent:document.querySelector('.header-actions'),entranceControl:$('palace-town-entrance'),onStop(){
  visitorSettings.stopMusic();slideshow?.setEnabled(false);cancelStoryOpening();cancelRoulette();doorClock.cancel();cancelArtworkLoad();
  turnVersion++;busy=false;root.classList.remove('turning-in','turning-out','door-reveal');
  motionPausedBeforeExit=sceneMotion?.isUserPaused()||false;sceneMotion?.setPaused(true);

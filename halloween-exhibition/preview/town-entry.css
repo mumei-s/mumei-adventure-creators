@@ -1,8 +1,8 @@
-/* Separate indoor and outdoor adventures share a small navigation treatment.
-   The palace keeps its full scene height; these routes occupy its sky margin. */
-#theater .palace-world-links{position:absolute;z-index:16;top:12px;left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;width:auto;max-width:430px;margin-inline:auto}
+/* The street panel occupies the palace header; the indoor route stays by the gate. */
+#theater .palace-world-links{position:absolute;z-index:16;top:12px;left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));display:grid;grid-template-columns:minmax(0,1fr);gap:8px;width:auto;max-width:220px;margin-inline:auto}
 #theater .palace-world-links>a,#theater .town-entrance{box-sizing:border-box;display:flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;max-width:100%;padding:8px 12px;border:1px solid #c9b98f;border-radius:14px;background:#1c2636ed;color:#fff3d4;font:600 12px/1.4 sans-serif;text-align:center;text-decoration:none;white-space:normal;overflow-wrap:anywhere;box-shadow:0 3px 12px #070b1955}
-#theater .palace-world-links>.town-entrance,#theater .palace-return-row>.town-entrance{background:#203e3bed;border-color:#bdd0aa;color:#fff9dd}
+#theater .castle-exit-panel>.town-entrance{flex:1 1 150px;min-width:44px;min-height:44px;padding:10px 14px;border-color:#e6bb79;background:linear-gradient(135deg,#63402f,#382c4d);color:#fff4d9;font-size:14px}
+#theater .palace-return-row>.town-entrance{background:#203e3bed;border-color:#bdd0aa;color:#fff9dd}
 #theater .palace-world-links>a:hover,#theater .town-entrance:hover{background:#36514c}
 #theater .palace-world-links>a:focus-visible,#theater .town-entrance:focus-visible{outline:3px solid #ffe4a2;outline-offset:3px}
 #theater .palace-load-status{top:64px}

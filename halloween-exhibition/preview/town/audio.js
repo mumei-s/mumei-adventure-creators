@@ -11,7 +11,7 @@ export function createTownAudio({playerFactory=createAdventurePlayer,onChange=()
   if(!gesture)return false;
   if(volume===0){message='音量を上げてから「音楽をON」を押してください。';publish();return false;}
   const token=++revision;enabled=true;message='音楽を準備しています…';publish();
-  try{await player.start();if(token!==revision)return false;enabled=player.isPlaying();message=enabled?'城下町の音楽：ON':'音楽を開始できませんでした。もう一度ONを押せます。';publish();return enabled;}
+  try{await player.start();if(token!==revision)return false;enabled=player.isPlaying();message=enabled?'街の音楽：ON':'音楽を開始できませんでした。もう一度ONを押せます。';publish();return enabled;}
   catch{if(token===revision){enabled=false;player.stop();message='音楽を開始できませんでした。もう一度ONを押せます。';publish();}return false;}
  }
  function stop({resetVolume=false}={}){revision++;enabled=false;player.stop();if(resetVolume){volume=0;player.setVolume(0);}message=resetVolume?'音楽はOFF・音量0に戻りました。':'音楽を停止しました。';publish();}

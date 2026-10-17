@@ -5,6 +5,7 @@ import {drawArtSprite,playerPose,loadArtImage,PALACE_ART} from '../maze/rpg-art.
 import {enemyRigEffect} from '../maze/battle-rig-effects.js?v=20261017-rig2';
 import {monsterSprite} from '../maze/monster-motion.js?v=20261017-rig2';
 import {withDeadline} from '../transition-effects.js?v=20261016-living1';
+import {TOWN_PALACE_COLORS,townPalaceFraming} from './palace-architecture.js?v=20261018-street1';
 
 const TAU=Math.PI*2,clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 export const TOWN_DEPTH_SCALE=.78;
@@ -53,31 +54,36 @@ function drawFallbackBuilding(c,b){
   if(kind==='bakery'){poly(c,[[x+16,y-58],[x+w*.39,y-58],[x+w*.42,y-40],[x+8,y-40]],'#bc8155','#403b3a');for(let i=0;i<7;i++)poly(c,[[x+16+i*19,y-58],[x+25+i*19,y-58],[x+23+i*20,y-40],[x+10+i*20,y-40]],i%2?'#dfc894':'#8b5e54');}
   if(kind==='clocktower'){const tx=x+w*.5;box(c,tx-35,roofY-roofH-110,70,130,3,'#868675','#273344');poly(c,[[tx-49,roofY-roofH-103],[tx,roofY-roofH-181],[tx+49,roofY-roofH-103]],'#38505e','#d0b67f');clockFace(c,tx,roofY-roofH-58,26,0);}
 }
-function drawCastle(c,b){
-  const x=b.x*TILE,y=(b.z+b.h)*TILE,w=b.w*TILE,h=225;
+function drawCastle(c,b,time=0,motion=true){
+  const x=b.x*TILE,y=(b.z+b.h)*TILE,w=b.w*TILE,h=225,p=TOWN_PALACE_COLORS,t=motion?time:0;
   poly(c,[[x-24,y],[x+w+12,y],[x+w+57,y+35],[x+4,y+24]],'#07122266');
-  box(c,x+56,y-h,w-112,h,2,'#899494','#26394b');
-  const wall=c.createLinearGradient(0,y-h,0,y);wall.addColorStop(0,'#9baca6');wall.addColorStop(.5,'#76868d');wall.addColorStop(1,'#526478');c.fillStyle=wall;c.fillRect(x+56,y-h,w-112,h);
+  box(c,x+56,y-h,w-112,h,2,p.stone,p.shadow);
+  const wall=c.createLinearGradient(0,y-h,0,y);wall.addColorStop(0,'#d8c5cd');wall.addColorStop(.5,p.stone);wall.addColorStop(1,p.shadow);c.fillStyle=wall;c.fillRect(x+56,y-h,w-112,h);
   for(let row=0;row<13;row++){const yy=y-h+row*18;line(c,x+56,yy,x+w-56,yy,'#263b514b');for(let col=0;col<w/47;col++){const xx=x+56+col*47+(row%2?23:0);line(c,xx,yy,xx,yy+18,'#263b5144');}}
-  for(let i=0;i<Math.floor((w-112)/29);i++){box(c,x+57+i*29,y-h-17,19,25,1,'#a9b3a6','#43566a');box(c,x+59+i*29,y-h-17,15,3,0,'#d6d5b2');}
+  for(const yy of[y-12,y-91,y-h+3])box(c,x+51,yy,w-102,7,1,p.gold,p.shadow);
+  for(let i=0;i<Math.floor((w-112)/29);i++){box(c,x+57+i*29,y-h-17,19,25,1,p.stone,p.shadow);box(c,x+59+i*29,y-h-17,15,3,0,p.gold);}
   const doorX=(b.door?.x||b.x+b.w/2)*TILE;
-  box(c,doorX-57,y-135,114,135,54,'#b1ae8c','#303e52');box(c,doorX-47,y-125,94,125,45,'#17283d','#d1b57c');
-  for(let i=-3;i<=3;i++)line(c,doorX+i*12,y-88,doorX+i*12,y-7,'#8e8066',3);box(c,doorX-50,y-39,100,5,0,'#b2a37d');
+  box(c,doorX-72,y-193,144,193,66,p.shadow,p.gold);box(c,doorX-64,y-184,128,184,60,p.gold,'#ffdc8a');box(c,doorX-53,y-172,106,172,49,p.door,p.gold);
+  for(const side of[-1,1]){box(c,doorX+side*27-17,y-130,34,96,15,side<0?'#278d94':'#a15488',p.gold);poly(c,[[doorX+side*27,y-122],[doorX+side*27+12,y-86],[doorX+side*27,y-48],[doorX+side*27-12,y-86]],side<0?p.glass:p.rose,p.gold);ellipse(c,doorX+side*8,y-54,3,4,p.gold);}
+  line(c,doorX,y-166,doorX,y-2,p.gold,3);box(c,doorX-61,y-24,122,8,0,p.gold);
   box(c,doorX-70,y+1,140,10,1,'#b9b8a2','#455269');box(c,doorX-84,y+12,168,10,1,'#939c98','#455269');
   for(const fraction of[.12,.28,.72,.88]){const xx=x+w*fraction;timberWindow(c,xx,y-112,26,48);timberWindow(c,xx,y-183,21,30);}
-  for(const fraction of[.05,.5,.95]){
-    const tx=x+w*fraction,tw=fraction===.5?108:103,th=fraction===.5?338:275;
-    const towerBottom=fraction===.5?y-157:y,towerHeight=towerBottom-y+th;
-    box(c,tx-tw/2,y-th,tw,towerHeight,5,'#738b91','#293b51');
-    const g=c.createLinearGradient(tx-tw/2,0,tx+tw/2,0);g.addColorStop(0,'#425c70');g.addColorStop(.34,'#a1afa5');g.addColorStop(.63,'#839a9c');g.addColorStop(1,'#40576c');c.fillStyle=g;c.fillRect(tx-tw/2+2,y-th+4,tw-4,towerHeight-6);
+  // Rear spires first, then the broad lower round towers, matching the live 3D palace.
+  for(const fraction of[.5,.255,.745,.065,.935]){
+    const central=fraction===.5,rear=fraction>.2&&fraction<.8,tx=x+w*fraction,tw=central?110:rear?79:118,th=central?498:rear?403:295;
+    const towerBottom=rear?y-174:y,towerHeight=towerBottom-y+th;
+    box(c,tx-tw/2,y-th,tw,towerHeight,8,p.stone,p.shadow);
+    const g=c.createLinearGradient(tx-tw/2,0,tx+tw/2,0);g.addColorStop(0,p.shadow);g.addColorStop(.34,'#dfcdd4');g.addColorStop(.63,p.stone);g.addColorStop(1,p.shadow);c.fillStyle=g;c.fillRect(tx-tw/2+2,y-th+4,tw-4,towerHeight-6);
     for(let row=0;row<towerHeight/22;row++){line(c,tx-tw/2+2,towerBottom-row*22,tx+tw/2-2,towerBottom-row*22,'#2d435b44');}
-    for(const at of[.27,.59,.84])if(y-th*at<towerBottom-24)timberWindow(c,tx,y-th*at,19,37);
-    poly(c,[[tx-tw*.75,y-th+4],[tx,y-th-117],[tx+tw*.75,y-th+4]],'#33495f','#c4ba8f',2);
-    for(let i=1;i<8;i++)line(c,tx-tw*.75*(1-i/8),y-th+4-121*i/8,tx+tw*.75*(1-i/8),y-th+4-121*i/8,'#8ca29f40');
-    line(c,tx,y-th-117,tx,y-th-150,'#d1bc8a',2);poly(c,[[tx+1,y-th-148],[tx+40,y-th-143],[tx+24,y-th-126],[tx+1,y-th-128]],'#ad7a6d','#dec795');
-    box(c,tx-tw/2-6,towerBottom-10,tw+12,12,2,'#b9b9a0','#263c51');
+    for(const at of[.27,.59,.84])if(y-th*at<towerBottom-24){timberWindow(c,tx,y-th*at,19,37);glow(c,tx,y-th*at,22,'#ffc15c2b');}
+    const roofH=central?139:rear?126:117;poly(c,[[tx-tw*.75,y-th+4],[tx,y-th-roofH],[tx+tw*.75,y-th+4]],p.roof,p.gold,2);
+    poly(c,[[tx,y-th-roofH],[tx+tw*.75,y-th+4],[tx+tw*.23,y-th+4]],p.roofLight);
+    for(let i=1;i<8;i++)line(c,tx-tw*.75*(1-i/8),y-th+4-(roofH+4)*i/8,tx+tw*.75*(1-i/8),y-th+4-(roofH+4)*i/8,'#b89bd355');
+    const pole=y-th-roofH;line(c,tx,pole,tx,pole-34,p.gold,2);const flutter=Math.sin(t*2.5+fraction*8)*5;poly(c,[[tx+1,pole-32],[tx+40,pole-27+flutter],[tx+25,pole-10+flutter],[tx+1,pole-12]],'#86518d',p.gold);
+    box(c,tx-tw/2-6,towerBottom-10,tw+12,12,2,p.stone,p.gold);
   }
-  box(c,doorX-42,y-182,84,25,4,'#283d51','#ddc590');text(c,'星灯りの城',doorX,y-169,11,'#f6e5b6');
+  for(const side of[-1,1]){const tx=doorX+side*101;box(c,tx-19,y-229,38,146,5,p.stone,p.gold);poly(c,[[tx-31,y-229],[tx,y-306],[tx+31,y-229]],p.roof,p.gold);}
+  glow(c,doorX,y-224,46,'#ffc66c'+Math.round(35+Math.sin(t*1.45)*9).toString(16));poly(c,[[doorX,y-250],[doorX+14,y-225],[doorX,y-200],[doorX-14,y-225]],'#ffd99c',p.gold,3);
 }
 function clockFace(c,x,y,r,time){ellipse(c,x,y,r+4,r+4,'#384654');ellipse(c,x,y,r,r,'#e0d3aa');c.strokeStyle='#574d48';c.lineWidth=2;for(let i=0;i<12;i++){const a=i*TAU/12;line(c,x+Math.sin(a)*r*.79,y-Math.cos(a)*r*.79,x+Math.sin(a)*r*.92,y-Math.cos(a)*r*.92,'#574d48',1.5);}const a=time*.007;line(c,x,y,x+Math.sin(a)*r*.6,y-Math.cos(a)*r*.6,'#344050',2);line(c,x,y,x-r*.4,y-r*.23,'#344050',3);ellipse(c,x,y,3,3,'#574d48');}
 
@@ -245,20 +251,8 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
       // Tall foreground architecture fades only when it actually covers the player.
       const overlaps=y>player.y&&(y-player.y)*TOWN_DEPTH_SCALE<Math.max(160,height)&&Math.abs(x-player.x)<b.w*TILE*.45;
       c.save();if(overlaps)c.globalAlpha=.18;
-      if(b.kind==='castle'&&prop('gate')){
-        const left=b.x*TILE,base=(b.z+b.h)*TILE,width=b.w*TILE;
-        // One continuous stone rampart joins the painted towers and ornate portal.
-        poly(c,[[left+25,base],[left+width-15,base],[left+width+36,base+27],[left+48,base+27]],'#081a2c66');
-        box(c,left+35,base-162,width-70,164,2,'#5d6972','#c1b483');
-        if(scene.images.cobbles){c.save();c.beginPath();c.rect(left+36,base-158,width-72,158);c.clip();c.globalAlpha=.59;for(let xx=left+35;xx<left+width-35;xx+=128)c.drawImage(scene.images.cobbles,xx,base-162,128,164);c.restore();}
-        box(c,left+29,base-167,width-58,13,2,'#aaa58c','#d4c391');box(c,left+30,base-12,width-60,14,2,'#9d9d88','#d0bd8d');
-        for(let i=0;i<Math.floor((width-70)/31);i++)box(c,left+37+i*31,base-183,20,23,2,'#92998c','#cbbd91');
-        for(const fraction of[.25,.75]){drawProp(c,'inn',left+width*fraction,base-91,248);}
-        for(const fraction of[.085,.915]){drawProp(c,'clocktower',left+width*fraction,base+1,393);}
-        drawProp(c,'gate',(b.door?.x??b.x+b.w/2)*TILE,base+7,252);
-        for(const fraction of[.36,.64]){drawProp(c,'statue',left+width*fraction,base+8,111);glow(c,left+width*fraction,base-42,49,'#f2c97522');}
-        box(c,(b.door?.x??b.x+b.w/2)*TILE-84,base+11,168,9,1,'#b4b09a','#e2cc9b');
-      }else if(!prop(kind))drawFallbackBuilding(c,b);
+      if(b.kind==='castle')drawCastle(c,b,time,motion);
+      else if(!prop(kind))drawFallbackBuilding(c,b);
       else{poly(c,[[x-b.w*TILE*.42,y-8],[x+b.w*TILE*.4,y-8],[x+b.w*TILE*.53,y+20],[x-b.w*TILE*.3,y+28]],'#0a1c2d58');drawProp(c,kind,x,y,Math.max(150,height));}
       c.restore();return;
     }
@@ -283,7 +277,8 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
     if(destroyed||!canvas||!state?.position)return false;
     const ratio=clamp(pixelRatio||1,1,2),w=canvas.width/ratio,h=canvas.height/ratio,map=getTownMap(state.mapId),interior=map.id!=='lantern-town';
     if(interior)ensureInterior();
-    const tile=w<550?52:w<900?61:70,scale=tile/TILE,target=townCameraTarget(state.position,map,w,h/TOWN_DEPTH_SCALE,tile);
+    const baseTile=w<550?52:w<900?61:70,framing=townPalaceFraming(state.position,map,55*Math.PI/180,w,h),tile=baseTile+(Math.min(baseTile,framing.pixelsPerTile??baseTile)-baseTile)*(framing.influence||0),scale=tile/TILE,target=townCameraTarget(state.position,map,w,h/TOWN_DEPTH_SCALE,tile);
+    if(framing.influence){target.x+=(framing.targetX*TILE-target.x)*framing.influence*.78;target.y+=((state.position.z*TILE-310/TOWN_DEPTH_SCALE)-target.y)*framing.influence;}
     const switched=lastMap!==map.id;camera=followTownCamera(switched?null:camera,target,dt,{snap:!motion});lastMap=map.id;
     const cameraMoving=Math.hypot(camera.x-target.x,camera.y-target.y)>.03;
     const signature=[map.id,canvas.width,canvas.height,state.position.x,state.position.z,state.revision||0,JSON.stringify(state.flags||{}),state.battle?.phase,Math.floor(walkPhase*30),walking,facing,scene.version,art.version,art.rigs?.get('owner')?.poseVersion,brightness,lantern,motion?Math.floor(time*30):0,creatorActors.map(a=>[a.x,a.z,a.facing,a.sprite?.frame?.join(','),a.sprite?.poseVersion].join(':')).join(';')].join('|');

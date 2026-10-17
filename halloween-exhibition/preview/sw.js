@@ -1,11 +1,11 @@
 /* Public exhibition shell only. No admin, maze, archive data, remote portraits,
  * API requests, unknown query strings, authentication or background activity. */
 const SCOPE = new URL('./', self.location.href);
-const CACHE = 'mumei-atelier-shell-v35-20261017-palace-panel1:' + SCOPE.pathname;
+const CACHE = 'mumei-atelier-shell-v36-20261018-street1:' + SCOPE.pathname;
 const PUBLIC_RELEASES = Object.freeze({
   "transition-effects.js": "20261017-review1",
   "transition-effects.css": "20261016-living1",
-  "palace-living-scene.js": "20261017-rig2",
+  "palace-living-scene.js": "20261018-street1",
   "palace-living-scene.css": "20261016-living1",
   "viewport.js": "20261016-ios1",
   "ios-viewport.css": "20261016-ios1",
@@ -19,7 +19,7 @@ const PUBLIC_RELEASES = Object.freeze({
   "festival-scene.js": "20261015-glamour1",
   "magical-loading.css": "20261015-interior1",
   "magical-loading.js": "20261017-review1",
-  "palace-startup.js": "20261017-rig2",
+  "palace-startup.js": "20261018-street1",
   "host-celebration.css": "20261015-host3",
   "door-reveal.css": "20261015-glamour1",
   "gallery-refinement.css": "20261016-fate1",
@@ -27,7 +27,7 @@ const PUBLIC_RELEASES = Object.freeze({
   "door-palette.js": "20261015-festival1",
   "palace-entrance.js": "20261014-palace2",
   "palace-entrance.css": "20261016-living1",
-  "theater.js": "20261017-palace-panel1",
+  "theater.js": "20261018-street1",
   "town-entry.css": "20261017-palace-panel1",
   "theater.css": "20261014-layout1",
   "data-model.js": "20261014-doors1",

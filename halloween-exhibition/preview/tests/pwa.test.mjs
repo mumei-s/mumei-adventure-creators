@@ -14,13 +14,13 @@ const title = '無名S note / 🎃Halloween Atelier / 魔法の入口🚪';
 // Independent release contract. Unknown files have no fallback version: adding
 // an asset requires reviewing its exact URL and cache scope here as well.
 const PUBLIC_RELEASES = Object.freeze({
- 'theater.js':'20261017-palace-panel1',
+ 'theater.js':'20261018-street1',
  'town-entry.css':'20261017-palace-panel1',
  'gallery-controls.css':'20261017-review1',
  'gallery-gesture.js':'20261017-review1',
  'magical-loading.js':'20261017-review1',
- 'palace-startup.js':'20261017-rig2',
- 'palace-living-scene.js':'20261017-rig2',
+ 'palace-startup.js':'20261018-street1',
+ 'palace-living-scene.js':'20261018-street1',
  'scene-motion.js':'20261017-review1',
  'roster-pagination.js':'20261017-review1',
  'transition-effects.js':'20261017-review1',
@@ -66,8 +66,8 @@ const ADMIN_RELEASES = Object.freeze({
  'admin/display-settings.js':'20261014-layout1',
 });
 const REVIEW_FILES = Object.keys(PUBLIC_RELEASES).filter(path=>PUBLIC_RELEASES[path]==='20261017-review1');
-const PANEL_FILES = ['theater.js','app-exit.js','safe-navigation.css','town-entry.css'];
-const RIG_FILES = ['palace-startup.js','palace-living-scene.js'];
+const PANEL_FILES = ['app-exit.js','safe-navigation.css','town-entry.css'];
+const RIG_FILES = ['palace-startup.js','palace-living-scene.js','theater.js'];
 const publicPath = (reference,from) => new URL(reference,base+from).pathname.slice(new URL(base).pathname.length);
 
 test('manifest identity and start URL are confined to the preview subtree', async()=>{
@@ -290,17 +290,17 @@ test('release invalidation rejects prior changed-asset URLs and offline lookup u
  }
  for(const[path,release]of Object.entries(NETWORK_ONLY_RELEASES))assert.equal((await h.dispatch('fetch',base+path+'?v='+release)).intercepted,false,path);
  for(const path of RIG_FILES){
-  assert.equal((await h.dispatch('fetch',base+path+'?v=20261017-rig2')).intercepted,true,path);
-  for(const version of [...stale,'20261017-review1','20261017-town2','20261017-rig1'])assert.equal((await h.dispatch('fetch',base+path+'?v='+version)).intercepted,false,path+version);
+  assert.equal((await h.dispatch('fetch',base+path+'?v=20261018-street1')).intercepted,true,path);
+  for(const version of [...stale,'20261017-review1','20261017-town2','20261017-rig1','20261017-rig2','20261017-palace-panel1'])assert.equal((await h.dispatch('fetch',base+path+'?v='+version)).intercepted,false,path+version);
  }
  for(const path of REVIEW_FILES){
   assert.equal((await h.dispatch('fetch',base+path+'?v=20261017-review1')).intercepted,true,path);
   for(const version of stale)assert.equal((await h.dispatch('fetch',base+path+'?v='+version)).intercepted,false,path+version);
  }
- const offline=workerHarness({offline:true});await offline.dispatch('fetch',base+'theater.js?v=20261017-palace-panel1');
- assert.equal(offline.matches.length,1);assert.equal(offline.matches[0].cacheName,'mumei-atelier-shell-v35-20261017-palace-panel1:'+new URL(base).pathname);
+ const offline=workerHarness({offline:true});await offline.dispatch('fetch',base+'theater.js?v=20261018-street1');
+ assert.equal(offline.matches.length,1);assert.equal(offline.matches[0].cacheName,'mumei-atelier-shell-v36-20261018-street1:'+new URL(base).pathname);
  assert.ok(offline.matches[0].cacheName.endsWith(':'+new URL(base).pathname));
- assert.equal(offline.matches[0].url,base+'theater.js?v=20261017-palace-panel1');
+ assert.equal(offline.matches[0].url,base+'theater.js?v=20261018-street1');
 });
 
 test('review portrait stylesheet has an exact new URL and rejects its old hotfix query',async()=>{

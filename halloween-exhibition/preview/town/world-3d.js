@@ -3,6 +3,7 @@ import {getTownMap} from './story-data.js';
 import {playerPose,loadArtImage} from '../maze/rpg-art.js?v=20261017-rig2';
 import {townVisualSeed as seed} from './visual-data.js';
 import {withDeadline} from '../transition-effects.js?v=20261016-living1';
+import {buildTownPalace,animateTownPalace,townPalaceFraming} from './palace-architecture.js?v=20261018-street1';
 
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),TAU=Math.PI*2;
 export const TOWN_3D_CAMERA_ELEVATION=55*Math.PI/180;
@@ -56,7 +57,7 @@ function builder(root,resources,materials){
     }
     return root;
   }
-  return {box,ball,round,peak,mesh,finish};
+  return {box,ball,round,peak,mesh,instance,finish};
 }
 
 function roofGeometry(width,depth,height){
@@ -77,7 +78,7 @@ function groundGeometry(map,tileTypes,y=0){
 
 /** Geometry uses exactly the story map footprints, thresholds and furniture. No gameplay state is stored here. */
 export function createTownSceneGeometry(map=getTownMap(),{materials=null,resources=new Set()}={}){
-  const root=new THREE.Group();root.name='town-world-'+map.id;materials??=palette(resources);const b=builder(root,resources,materials),buildings=[],trees=[],water=[],lamps=[],stars=[];
+  const root=new THREE.Group();root.name='town-world-'+map.id;materials??=palette(resources);const b=builder(root,resources,materials),buildings=[],trees=[],water=[],lamps=[],stars=[],palaceEffects=[];
   const interior=map.id!=='lantern-town';
   for(const [types,material,y]of interior?[['i',materials.parquet,0],['#',materials.dark,-.025]]:[['gfb#',materials.grass,-.025],['.',materials.road,0],['p',materials.plaza,.008],['=',materials.stone,.04],['~',materials.water,-.14]]){
     const geometry=groundGeometry(map,types,y);if(!geometry.attributes.position.count){geometry.dispose();continue;}
@@ -131,16 +132,7 @@ export function createTownSceneGeometry(map=getTownMap(),{materials=null,resourc
     buildings.push({id:building.id,footprint:{x,z,w,h},door:{...building.door},height:high+roofHeight,bucket});
   }
   function castle(building){
-    const {x,z,w,h}=building,cx=x+w/2,cz=z+h/2,south=z+h,bucket=building.id;
-    b.box(cx,1.9,cz,w-.8,3.8,h-.35,materials.stone,0,bucket);b.box(cx,.2,cz,w+.1,.4,h+.2,materials.stoneDark,0,bucket);
-    for(let n=0;n<w;n++){b.box(x+n+.5,4.05,south-.12,.65,.58,.62,materials.stone,0,bucket);if(n%2===0)window(x+n+.5,2.5,south-.12,.44,.85,bucket);}
-    for(const side of[-1,1]){
-      const tx=cx+side*(w/2-.65);b.round(tx,2.7,cz,1.08,5.4,materials.stone,bucket);b.round(tx,4.9,cz,1.18,.25,materials.stoneDark,bucket);b.peak(tx,6.3,cz,1.5,2.7,materials.roof,bucket);
-      b.round(tx,7.85,cz,.035,1.1,materials.gold,bucket);b.box(tx+.32,8.08,cz,.6,.34,.04,materials.roofWarm,0,bucket);window(tx,3.5,cz+1.055,.42,.85,bucket);
-    }
-    b.box(cx,4.55,cz-.9,2.25,3.3,1.8,materials.stone,0,bucket);b.peak(cx,7.1,cz-.9,1.9,2.5,materials.roofPlum,bucket);window(cx,5.3,cz+.04,.65,1,bucket);
-    doorway(building.door.x,south+.04,2.45,1.62,bucket);for(let n=0;n<5;n++)b.box(building.door.x,.02-n*.035,south+.35+n*.23,2.15+n*.22,.13,.3,materials.stone,0,bucket);
-    buildings.push({id:building.id,footprint:{x,z,w,h},door:{...building.door},height:8.6,bucket});
+    const palace=buildTownPalace({building,b,materials,resources,root});buildings.push(palace.building);palaceEffects.push(...palace.effects);
   }
   function tree(x,z,autumn=false,index=0){
     const bucket='tree-'+index,leaf=autumn?materials.leafAutumn:materials.leaf;
@@ -207,7 +199,7 @@ export function createTownSceneGeometry(map=getTownMap(),{materials=null,resourc
     }
   }
   b.finish();root.updateMatrixWorld(true);
-  return {root,materials,resources,buildings,trees,occluders:[...buildings,...trees],water,lamps,stars,dispose(){root.traverse(item=>{if(item.isInstancedMesh)item.dispose();});for(const resource of resources)resource.dispose?.();resources.clear();root.clear();}};
+  return {root,materials,resources,buildings,trees,occluders:[...buildings,...trees],water,lamps,stars,palaceEffects,dispose(){root.traverse(item=>{if(item.isInstancedMesh)item.dispose();});for(const resource of resources)resource.dispose?.();resources.clear();root.clear();}};
 }
 
 function repeatTexture(image,resources){const texture=new THREE.Texture(image);texture.colorSpace=THREE.SRGBColorSpace;texture.wrapS=texture.wrapT=THREE.RepeatWrapping;texture.needsUpdate=true;resources.add(texture);return texture;}
@@ -302,12 +294,14 @@ export function createTownWorld3D({canvas,art={images:{},version:0},onContextLos
   }
   function render({state,time=0,dt=.016,motion=true,pixelRatio=1,walking=false,walkPhase=0,facing=state?.facing||'down',brightness=75,lantern=true,creatorActors=[]}={}){
     if(disposed||lost||!state?.position)return false;frameSerial++;const map=getTownMap(state.mapId);prepareMap(map);const view=resize(pixelRatio),parameters=town3DCameraParameters(view.width,view.height,map.id!=='lantern-town');
+    const palaceFraming=townPalaceFraming(state.position,map,parameters.elevation,view.width,view.height);
+    if(palaceFraming.influence){const pixelsPerTile=parameters.pixelsPerTile+(Math.min(parameters.pixelsPerTile,palaceFraming.pixelsPerTile)-parameters.pixelsPerTile)*palaceFraming.influence;Object.assign(parameters,{left:-view.width/pixelsPerTile/2,right:view.width/pixelsPerTile/2,top:view.height/pixelsPerTile/2,bottom:-view.height/pixelsPerTile/2,pixelsPerTile});}
     const heroSprite=playerPose(art,facing,walking&&motion,walkPhase),signature=JSON.stringify([map.id,view.width,view.height,view.ratio,state.position.x,state.position.z,facing,brightness,lantern,motion,version,art.version,assets.loaded.length,state.flags,heroSprite?.poseVersion,imageId(heroSprite),heroSprite?.frame,(map.npcs||[]).map(npc=>art.rigs?.get?.('resident:'+npc.id)?.poseVersion),creatorActors.map(actor=>[actor.id,actor.x,actor.z,actor.heightPx,actor.interactive,imageId(actor.sprite),actor.sprite?.frame,actor.sprite?.anchorX,actor.sprite?.anchorY,actor.sprite?.contentHeight,actor.sprite?.poseVersion])]);
     if(!motion&&signature===lastFrameSignature)return false;
     Object.assign(camera,{left:parameters.left,right:parameters.right,top:parameters.top,bottom:parameters.bottom});camera.updateProjectionMatrix();
-    const target={x:state.position.x,z:state.position.z-.85},amount=cameraTarget&&motion?1-Math.exp(-clamp(dt,0,.1)/.12):1;
-    cameraTarget={x:(cameraTarget?.x??target.x)+(target.x-(cameraTarget?.x??target.x))*amount,z:(cameraTarget?.z??target.z)+(target.z-(cameraTarget?.z??target.z))*amount};
-    camera.position.set(cameraTarget.x,Math.sin(parameters.elevation)*parameters.distance,cameraTarget.z+Math.cos(parameters.elevation)*parameters.distance);camera.lookAt(cameraTarget.x,0,cameraTarget.z);camera.updateMatrixWorld(true);
+    const influence=palaceFraming.influence||0,target={x:state.position.x+((palaceFraming.targetX??state.position.x)-state.position.x)*influence*.78,z:state.position.z-.85+((palaceFraming.targetZ??state.position.z-.85)-(state.position.z-.85))*influence,y:(palaceFraming.targetY||0)*influence},amount=cameraTarget&&motion?1-Math.exp(-clamp(dt,0,.1)/.12):1;
+    cameraTarget={x:(cameraTarget?.x??target.x)+(target.x-(cameraTarget?.x??target.x))*amount,z:(cameraTarget?.z??target.z)+(target.z-(cameraTarget?.z??target.z))*amount,y:(cameraTarget?.y??target.y)+(target.y-(cameraTarget?.y??target.y))*amount};
+    camera.position.set(cameraTarget.x,cameraTarget.y+Math.sin(parameters.elevation)*parameters.distance,cameraTarget.z+Math.cos(parameters.elevation)*parameters.distance);camera.lookAt(cameraTarget.x,cameraTarget.y,cameraTarget.z);camera.updateMatrixWorld(true);
     sun.position.set(cameraTarget.x-12,24,cameraTarget.z+15);sun.target.position.set(cameraTarget.x,0,cameraTarget.z);sun.target.updateMatrixWorld(true);
     sun.intensity=2.3+clamp(brightness,20,100)/100;ambient.intensity=1.5+clamp(brightness,20,100)*.014;warmLight.visible=lantern;warmLight.position.set(state.position.x,1.1,state.position.z);
     for(const lamp of scenery.lamps)if(lamp.targetId){lamp.lit=!!state.flags?.lamps?.includes(lamp.targetId);for(const item of scenery.root.children)if(item.userData.bucket===lamp.targetId&&item.material?.name==='glass'){item.material.color.set(lamp.lit?'#ffe4a4':'#405263');item.material.emissiveIntensity=lamp.lit?.55:0;}}
@@ -321,6 +315,7 @@ export function createTownWorld3D({canvas,art={images:{},version:0},onContextLos
     for(const star of scenery.stars)star.visible=!state.flags?.stamps?.includes(star.userData.starId);
     // A gentle highlight travels across real water geometry; motion preference freezes it.
     scenery.materials.water.color.setHSL(.535,.36,.27+(motion?Math.sin(time*.8)*.012:0));
+    animateTownPalace(scenery.palaceEffects,time,motion);
     lastView={...view,map,state,parameters};scene.updateMatrixWorld(true);renderer.render(scene,camera);lastFrameSignature=signature;return true;
   }
   function setRay(x,y){if(!lastView)return false;const point=typeof x==='object'?x:{x,y};pointer.set(point.x/lastView.width*2-1,1-point.y/lastView.height*2);raycaster.setFromCamera(pointer,camera);return true;}

@@ -132,7 +132,7 @@ export function initPalaceLivingScene(root,{atlases=null,loadImage,loadRigLibrar
   const media=win.matchMedia('(prefers-reduced-motion: reduce)');
   const images=new Map(),rigSprites=new Map(),replaced=new Map();
   const timers=win.setTimeout?{setTimeout:(fn,delay)=>win.setTimeout(fn,delay),clearTimeout:id=>win.clearTimeout(id)}:globalThis;
-  let frame=0,last=0,time=0,width=1,height=1,disposed=false,suspended=false,generation=0;
+  let frame=0,last=null,time=0,width=1,height=1,disposed=false,suspended=false,generation=0;
   let assetsJob=null,assetsAbort=null,assetsGeneration=0,assetsLoaded=false,rigs=null,rigJob=null,rigAbort=null,rigGeneration=0;
   let resolveReady;const ready=new Promise(resolve=>{resolveReady=resolve;});
   const visible=()=>!disposed&&!suspended&&!doc.hidden&&doc.body.dataset.pageHidden!=='true'&&!root.hidden&&!palace.hidden&&root.dataset.palaceState==='palace'&&!doc.querySelector('dialog[open]');
@@ -154,11 +154,19 @@ export function initPalaceLivingScene(root,{atlases=null,loadImage,loadRigLibrar
    for(const id of rendered)markArtwork(id);statusArtwork();
   }
   function resize(){const rect=palace.getBoundingClientRect();width=Math.max(1,rect.width);height=Math.max(1,rect.height);const dpr=Math.min(win.devicePixelRatio||1,1.5,Math.sqrt(1200000/(width*height)));canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);draw();}
-  function tick(stamp,token){if(token!==generation)return;frame=0;if(!active())return;if(!last)last=stamp;if(stamp-last>=30){const dt=Math.min((stamp-last)/1000,.06);time+=dt;last=stamp;draw(dt);}frame=win.requestAnimationFrame(stamp=>tick(stamp,token));}
-  function stop(){generation++;win.cancelAnimationFrame(frame);frame=0;last=0;}
+  // Follow the display clock: a 30ms gate skipped every other 60Hz frame and
+  // made even continuously articulated monsters appear to move in steps.
+  // Resetting the timestamp on resume keeps hidden time out of their paths.
+  function tick(stamp,token){
+   if(token!==generation)return;frame=0;if(!active())return;
+   const dt=last===null?0:Math.min(Math.max(0,(stamp-last)/1000),.06);last=stamp;
+   if(dt>0){time+=dt;draw(dt);}
+   frame=win.requestAnimationFrame(stamp=>tick(stamp,token));
+  }
+  function stop(){generation++;win.cancelAnimationFrame(frame);frame=0;last=null;}
   function sync(){
    if(visible()){startAssets();startRigs();draw();}
-   if(!active()){stop();}else if(!frame){last=0;const token=generation;frame=win.requestAnimationFrame(stamp=>tick(stamp,token));}
+   if(!active()){stop();}else if(!frame){last=null;const token=generation;frame=win.requestAnimationFrame(stamp=>tick(stamp,token));}
   }
   function startAssets(){
    if(!visible()||assetsLoaded||assetsJob)return;

@@ -1,5 +1,5 @@
 {
-  "status": "articulated-animation-rollout-in-progress",
+  "status": "palace-and-street-update-tested-device-review-pending",
   "baselineCommit": "e989cd523efec7a1eb72685d94ad9912ee53e06e",
   "branch": "work/atelier-rebuild-20261017",
   "completedCommit": null,
@@ -95,6 +95,7 @@
     "halloween-exhibition/preview/town/controller.js",
     "halloween-exhibition/preview/town/index.html",
     "halloween-exhibition/preview/town/motion.js",
+    "halloween-exhibition/preview/town/palace-architecture.js",
     "halloween-exhibition/preview/town/preferences.js",
     "halloween-exhibition/preview/town/renderer.js",
     "halloween-exhibition/preview/town/save-model.js",
@@ -107,6 +108,7 @@
     "halloween-exhibition/preview/town/tests/controller.test.mjs",
     "halloween-exhibition/preview/town/tests/loading.test.mjs",
     "halloween-exhibition/preview/town/tests/model.test.mjs",
+    "halloween-exhibition/preview/town/tests/palace-architecture.test.mjs",
     "halloween-exhibition/preview/town/tests/preferences.test.mjs",
     "halloween-exhibition/preview/town/tests/render-motion.test.mjs",
     "halloween-exhibition/preview/town/tests/save.test.mjs",
@@ -314,25 +316,25 @@
   ],
   "comparisonURL": "https://mumei-atelier-work-review.sabosan0404.chatgpt.site",
   "tests": {
-    "passed": 863,
+    "passed": 888,
     "failed": 0,
     "skipped": 0,
     "suites": [
       {
         "suite": "展示・管理",
-        "passed": 460,
+        "passed": 468,
         "failed": 0,
         "skipped": 0
       },
       {
         "suite": "宮殿",
-        "passed": 330,
+        "passed": 341,
         "failed": 0,
         "skipped": 0
       },
       {
-        "suite": "城下町",
-        "passed": 73,
+        "suite": "星灯りの街",
+        "passed": 79,
         "failed": 0,
         "skipped": 0
       }
@@ -341,12 +343,11 @@
     "verificationLimitations": [
       "Browser and physical-device interaction not tested",
       "WebGL geometry/resource/projection tests use a renderer harness, not actual GPU rendering",
-      "Continuous full-cast authored animation remains incomplete"
+      "Intermediate turn and attack visual refinement remains"
     ]
   },
   "remaining": [
-    "Remaining creator, animal, mascot and monster articulated art calibration and integration",
-    "Full-cast turn and attack visual review",
+    "Full-cast intermediate turn and attack visual refinement",
     "Browser and physical device verification",
     "Actual WebGL/GPU visual quality and performance verification"
   ],
@@ -398,8 +399,8 @@
   ],
   "implementationCommit": "a9c6e07b5170bd8a6da7ff41b0644a9ef97160f4",
   "repositorySynchronization": {
-    "status": "local-changes-awaiting-final-work-branch-sync",
-    "previousRemoteCommit": "74e70d681adfab0eb77c548f2d1de99edd3285bd",
+    "status": "continuation-ready-for-work-branch-sync",
+    "previousRemoteCommit": "60bba3ea54ca44ca09913b2207827e664c9facb4",
     "userAuthorizationAtJST": "2026-10-17T13:39:42+09:00",
     "scope": "Publish this implementation, approved art and review media to work/atelier-rebuild-20261017 only; do not modify main or GitHub Pages.",
     "implementationPublicCommit": "a9c6e07b5170bd8a6da7ff41b0644a9ef97160f4",
@@ -419,5 +420,17 @@
       "Full remaining cast rollout and intermediate turn artwork in progress",
       "Browser, device and actual GPU validation unavailable"
     ]
+  },
+  "continuation20261018": {
+    "sourceBaseCommit": "60bba3ea54ca44ca09913b2207827e664c9facb4",
+    "release": "20261018-street1",
+    "palace": "Seven raised violet spires, sculpted gold portal, stained glass, five continuously waving banners, breathing crest and approach framing; Canvas keeps the whole palace",
+    "visitors": "All fourteen participant groups preserve identity and group membership; expanded collision-safe routes, shorter waits, no duplicate idle closure, nearby saved-location atlas warmup",
+    "palaceMonsters": "Display-rate requestAnimationFrame instead of a fixed 30ms drawing gate; timestamp zero and hidden-page recovery verified",
+    "screenControls": "Existing size, orientation and left/right controls retained; shared state and navigation regression tests pass",
+    "tests": 888,
+    "preservationChecks": 50,
+    "browserGPUVerified": false,
+    "approvedRigDefinitions": 37
   }
 }

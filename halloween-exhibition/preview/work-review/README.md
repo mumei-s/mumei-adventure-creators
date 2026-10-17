@@ -2,14 +2,22 @@
 
 今回の継続分の公開GitHub作業ブランチへの保存は、2026年10月17日にユーザーの明示許可を得ました。mainと既存GitHub Pagesは更新せず、比較用の作業ブランチへ保存します。
 
-制作元はこのGitHubリポジトリの `work/atelier-rebuild-20261017` ブランチ。城・展示・既存の宮殿探索を保ち、新しい「星灯りの城下町」、CNAの三人、全参加者の画像照合、画面サイズと左右操作の設定を追加した作業版です。城下町には実際の3D背景を描く表示も追加しています。mainと既存公開版は変更していません。
+制作元はこのGitHubリポジトリの `work/atelier-rebuild-20261017` ブランチ。城・展示・既存の宮殿探索を保ち、新しい「星灯りの街」、CNAの三人、全参加者の画像照合、画面サイズと左右操作の設定を追加した作業版です。星灯りの街には実際の3D背景を描く表示も追加しています。mainと既存公開版は変更していません。
 
-**全体完成は未達。** 主人公の歩行・停止・向き直り・攻撃をつなぐ連続原画、全キャストへの作画展開、実ブラウザーと実機の品質確認が残ります。追加制作した主人公v3/v4も支持脚の整合を満たさず不採用です。城下町の専用住民絵も静止画で、全員のアニメーション合格とは扱いません。
+**実機の確認は未完了。** 保存済みの関節アニメーションを引き継ぎ、参加者・同行者・住人・モンスターの描画を維持しています。中間方向の向き直りと攻撃の見え方、実ブラウザー・実機・GPUでの品質確認は引き続き残ります。
+
+## 10月18日の継続修正
+
+- 街の宮殿を、入口イラストと共通する金色の扉・紫の尖塔・ステンドグラスを持つ立体建築に変更。旗・宝石の光が動き、宮殿前では画角を調整します。2D表示でも門だけに置き換えず全体を描きます。
+- 参加者14組の巡回を拡大し、短い往復と余分な停止を削減。入口の参加者画像は案内パネルの表示中に先読みします。CNA三人と同行する動物は同じ組を維持します。
+- 宮殿前モンスターの30ms描画制限を解除し、画面の更新に追従。画面サイズ・操作倍率・左右配置と宮殿経由の導線を確認しました。
+
+実ブラウザー・実機・GPUの表示と負荷は未検証です。自動検査は以下の最新ログを参照してください。
 
 ## 開く場所
 
-- [城下町の作業版で遊ぶ](https://mumei-atelier-work-review.sabosan0404.chatgpt.site/current/halloween-exhibition/preview/town/) / [作業版の入口](https://mumei-atelier-work-review.sabosan0404.chatgpt.site/current/halloween-exhibition/preview/) / [基準版](https://mumei-atelier-work-review.sabosan0404.chatgpt.site/baseline/halloween-exhibition/preview/)：今回の[分離したSites作業先](https://mumei-atelier-work-review.sabosan0404.chatgpt.site)です。元のmain・既存公開版とは別です。
-- [城下町の起点](../town/index.html)：宮殿の「城の外を歩く」からも移動できます。
+- [星灯りの街の作業版で遊ぶ](https://mumei-atelier-work-review.sabosan0404.chatgpt.site/current/halloween-exhibition/preview/town/) / [作業版の入口](https://mumei-atelier-work-review.sabosan0404.chatgpt.site/current/halloween-exhibition/preview/) / [基準版](https://mumei-atelier-work-review.sabosan0404.chatgpt.site/baseline/halloween-exhibition/preview/)：今回の[分離したSites作業先](https://mumei-atelier-work-review.sabosan0404.chatgpt.site)です。元のmain・既存公開版とは別です。
+- [星灯りの街の起点](../town/index.html)：宮殿の「星灯りの街へ」からも移動できます。
 - [公式アイコンと採用キャラクターの照合](cast-check.html)：全15名。まりもの表紙と採用元の違い、CNAの今回指定した三人も確認できます。
 - [修正内容・検証・残件](RESULTS_JA.md)
 - [基準版と作業版の起動方法・保存・戻し方](OPERATIONS_JA.md)
@@ -25,7 +33,7 @@ GitHub上のHTMLリンクはソースの閲覧先です。動く作業版は上�
 
 | 対象 | 内容 |
 |---|---|
-| 城下町 | 64×48の屋外、5つの屋内、三幕の本筋、2つの寄り道、2つの戦闘、会話・探索・保存 |
+| 星灯りの街 | 64×48の屋外、5つの屋内、三幕の本筋、2つの寄り道、2つの戦闘、会話・探索・保存 |
 | 町の3D表示 | `town/world-3d.js` の立体的な建物・屋根・地形・室内を、55度の見下ろしカメラで描画。人物は承認済み画像を使うスプライト |
 | 表示の切り替え | 町は保存済みの2D指定がなければ3Dを初期選択。準備中・利用不能時はCanvasで続きを遊べ、設定から2D/3Dと再試行を選択。同じ町の進行を使用 |
 | 画面と操作 | 画面フィット・枠70〜100%・操作100〜125%・左右入れ替え・対応ブラウザーの全画面。宮殿のボタン重なり、縮小横画面、拡大文字の行高を修正 |
@@ -52,4 +60,4 @@ GitHub上のHTMLリンクはソースの閲覧先です。動く作業版は上�
 
 現在の画像対応は[照合ページ](cast-check.html)と[照合結果](evidence/cast-comparison/REPORT_JA.md)を参照してください。自動テストの最新の範囲・件数・合否、既存データ・素材の保持検査は[テストログ](test-results.txt)を正とします。過去の740件は今回の継続改修前の記録で、最新件数として使いません。3Dの数値・構造検査と、実際のブラウザー/GPUの描画検証は別です。
 
-初回基盤コミットは `7924aabf93b3a1a2a61d44cef28e65af81522de9`。最新の成果と配信記録は非公開比較版の `CHANGESET.json` を参照してください。現在のshellキャッシュ定義はv33 town2です。mainへの自動merge、本番カウンター送信、別イラスト制作アプリやINSIGHTの変更は行っていません。管理されたSites環境の制約に従い、実ブラウザー・iPhone/iPad/Android・WebGL/GPU・実音の確認は未実施です。
+初回基盤コミットは `7924aabf93b3a1a2a61d44cef28e65af81522de9`。最新の成果と配信記録は非公開比較版の `CHANGESET.json` を参照してください。現在のshellキャッシュ定義はv36 street1です。mainへの自動merge、本番カウンター送信、別イラスト制作アプリやINSIGHTの変更は行っていません。管理されたSites環境の制約に従い、実ブラウザー・iPhone/iPad/Android・WebGL/GPU・実音の確認は未実施です。

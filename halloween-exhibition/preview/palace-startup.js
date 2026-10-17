@@ -24,7 +24,7 @@ export function initPalaceStartup(root) {
   if(status){status.textContent='';status.hidden=true;} // A ready embedded castle is a valid display, not a persistent warning.
   // Optional illustrated residents start after the actual castle settles.
   // Their network/decoding failure must never hold the entrance button hostage.
-  void import('./palace-living-scene.js?v=20261017-rig2').then(({initPalaceLivingScene})=>initPalaceLivingScene(root)).catch(()=>{});
+  void import('./palace-living-scene.js?v=20261018-street1').then(({initPalaceLivingScene})=>initPalaceLivingScene(root)).catch(()=>{});
   return results;
  });
 }

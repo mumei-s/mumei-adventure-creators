@@ -27,7 +27,7 @@ test('canvas remains decorative and motion lifecycle is bounded',async()=>{
  assert.match(js,/setAttribute\('aria-hidden','true'\)/);
  assert.match(js,/root.dataset.palaceState==='palace'/);
  assert.match(js,/!doc.hidden/);assert.match(js,/!media.matches/);
- assert.match(js,/stamp-last>=30/);assert.match(js,/1200000/);
+ assert.doesNotMatch(js,/stamp-last>=30/);assert.match(js,/1200000/);
  assert.match(css,/pointer-events:none/);assert.match(css,/prefers-reduced-motion:reduce/);
  assert.doesNotMatch(js,/localStorage|location\.|addEventListener\('click'/);
 });
@@ -185,6 +185,33 @@ function livingFixture({visible=true,timers=null}={}){
 }
 const flushLiving=async()=>{for(let i=0;i<12;i++)await Promise.resolve();};
 function fakeRigModule(records){return{createRigLibrary(options){const sprite={image:{width:256,height:320},frame:[0,0,256,320],contentHeight:250,anchorX:.5,anchorY:.94,poseVersion:0},record={options,updates:[],destroyed:0,sprite};records.push(record);return{ready:Promise.resolve(true),update(id,options){record.updates.push({id,...options});if(id!=='monster:franken')return null;sprite.poseVersion++;return sprite;},prune(){},status:()=>({active:1,sourceBytes:4*1024*1024}),destroy(){record.destroyed++;}};}};}
+
+test('entrance draws every 60Hz and 120Hz display frame without losing elapsed time',async()=>{
+ for(const hz of[60,120]){
+  const f=livingFixture(),records=[];
+  const api=initPalaceLivingScene(f.root,{atlases:{},loadRigLibrary:async()=>fakeRigModule(records)});
+  await api.ready;await api.rigsReady;await flushLiving();
+  const record=records[0],before=f.draws.length;
+  f.step(0);for(let frame=1;frame<=hz;frame++)f.step(frame*1000/hz);
+  assert.equal(f.draws.length-before,hz,`${hz}Hz display renders every frame`);
+  assert.ok(Math.abs(api.status().time-1)<1e-9,`${hz}Hz clock advances one real second`);
+  const steps=record.updates.filter(update=>update.id==='monster:franken'&&update.dt>0);
+  assert.equal(steps.length,hz);assert.ok(steps.every(update=>Math.abs(update.dt-1/hz)<1e-9));
+  assert.equal(f.pending.size,1);api.destroy();assert.equal(f.pending.size,0);
+ }
+});
+
+test('resuming the entrance skips hidden elapsed time and bounds a stalled frame',async()=>{
+ const f=livingFixture(),records=[];
+ const api=initPalaceLivingScene(f.root,{atlases:{},loadRigLibrary:async()=>fakeRigModule(records)});
+ await api.ready;await api.rigsReady;await flushLiving();
+ f.step(0);f.step(1000/60);const before=api.status().time;
+ f.doc.hidden=true;f.events.get('visibilitychange')();assert.equal(f.pending.size,0);
+ f.doc.hidden=false;f.events.get('visibilitychange')();f.step(100000);
+ assert.equal(api.status().time,before,'first resumed frame does not jump along the path');
+ f.step(101000);assert.ok(Math.abs(api.status().time-before-.06)<1e-9,'a stalled frame cannot jump more than 60ms');
+ api.destroy();
+});
 
 test('entrance rigs load only while visible and freeze neutral on pause without hidden clocks',async()=>{
  const f=livingFixture({visible:false}),records=[];let imports=0,oldLoads=0;

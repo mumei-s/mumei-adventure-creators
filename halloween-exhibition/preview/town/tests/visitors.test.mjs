@@ -20,6 +20,15 @@ test('authored town patrols remain walkable and clear of entrances, objects and 
   for(let time=0;time<75;time+=.12){const poses=sampleTownVisitors(visitors,{state,time});for(const pose of poses){assert.ok(isTownWalkable(TOWN_START_MAP,pose.x,pose.z,.23),`${pose.id} at ${time}`);assert.ok(mapTargets(TOWN_START_MAP).every(t=>Math.hypot(t.x-pose.x,t.z-pose.z)>=1.24),`${pose.id} overlapping context target`);if(pose.walking)walking++;}for(let i=0;i<poses.length;i++)for(let j=i+1;j<poses.length;j++)if(poses[i].groupId!==poses[j].groupId)assert.ok(Math.hypot(poses[i].x-poses[j].x,poses[i].z-poses[j].z)>1.2);}
   assert.ok(walking>100,'visitors genuinely patrol rather than standing in place');
 });
+test('every participant group visibly walks through its district with no duplicate idle leg at the loop closure',()=>{
+ const {visitors}=placeTownVisitors(roster()),state=initialTownState(),groups=[...new Map(visitors.map(visitor=>[visitor.groupId,visitor])).values()];
+ for(const visitor of groups){
+  assert.ok(visitor.route.segments.every(segment=>segment.length>0),visitor.id+' has an extra idle-only leg');
+  const poses=Array.from({length:600},(_,i)=>sampleTownVisitors([visitor],{state,time:i*visitor.route.duration/600})[0]);
+  assert.ok(Math.max(...poses.map(p=>p.x))-Math.min(...poses.map(p=>p.x))>=1||Math.max(...poses.map(p=>p.z))-Math.min(...poses.map(p=>p.z))>=1,visitor.id+' only shuffles in place');
+  assert.ok(poses.filter(p=>p.walking).length/poses.length>.5,visitor.id+' spends most of the visit stopped');
+ }
+});
 test('every actual town patrol accelerates and brakes to rest while gait follows accepted distance across loops',()=>{
  const {visitors}=placeTownVisitors(roster()),state=initialTownState(),groups=[...new Map(visitors.map(visitor=>[visitor.groupId,visitor])).values()];
  const pose=(visitor,time)=>sampleTownVisitors([visitor],{state,time})[0];

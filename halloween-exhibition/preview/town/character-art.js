@@ -3,11 +3,12 @@ import {createCharacterAssets,scaledCharacterLayout,characterSprite,compileChara
 import {createDistanceTrail} from '../maze/movement-runtime.js?v=20261017-review1';
 import {MONSTER_MOTION_DATA} from '../maze/monster-motion-data.js?v=20261016-living1';
 import {motionSprite} from '../maze/monster-motion.js?v=20261017-rig2';
-import {placeTownVisitors,sampleTownVisitors,chooseTownVisitorGroups,nearestTownVisitor} from './visitor-model.js?v=20261017-town2';
+import {placeTownVisitors,sampleTownVisitors,chooseTownVisitorGroups,nearestTownVisitor} from './visitor-model.js?v=20261018-street1';
 import {loadArtImage} from '../maze/rpg-art.js?v=20261017-rig2';
 import {createRigLibrary} from '../maze/rig-animation.js?v=20261017-rig2';
+import {TOWN_START_MAP,getTownMap} from './story-data.js';
 /** Adopted owner/cat identity is preserved; no new participant identities are inferred. */
-export function createTownCharacterArt({onState=()=>{},fetcher=fetchJSON,loadMonsterImage=loadArtImage,assets=createCharacterAssets()}={}){
+export function createTownCharacterArt({onState=()=>{},fetcher=fetchJSON,loadMonsterImage=loadArtImage,assets=createCharacterAssets(),initialState={mapId:TOWN_START_MAP,position:getTownMap().spawn}}={}){
  let destroyed=false,hero,cat,lastMap=null,roster=null,placed=[],archive=null,selected=[],selectionAt=-1,visibleVisitors=[],lastOwner=null,lastCat=null;const trail=createDistanceTrail({maxDistance:3,strideLength:1.15,teleportDistance:3});
  const pending=new Map(),art={images:{},monsterLayouts:{},playerLayout:null,version:0};
  art.rigs=createRigLibrary({loadImage:loadMonsterImage,onChange:()=>{art.version++;onState('rig-ready');}});
@@ -19,6 +20,9 @@ export function createTownCharacterArt({onState=()=>{},fetcher=fetchJSON,loadMon
   assets.setPinned([hero.asset.src,cat.asset.src]);const images=await withDeadline(Promise.all([assets.request(hero.asset),assets.request(cat.asset)]),{timeout:16000});
   if(destroyed)return;if(images.some(image=>!image))throw Error('主人公と黒猫の画像を読み込めませんでした。');
   art.images.playerAtlas=images[0];art.playerLayout=scaledCharacterLayout(hero.asset,images[0]);art.version++;onState('ready');
+  // Begin decoding the entrance guests while the welcome panel is still open.
+  // The core loader remains independent of optional visitor network failures.
+  visitorActors({state:initialState,time:0,clock:0});
  })();
  function visitorActors({state,time=0,clock=time,motion=true,dt=0,view3D=false}={}){
   if(!roster||!state)return[];const poses=sampleTownVisitors(placed,{state,time,motion:true}).map(visitor=>motion?visitor:{...visitor,walking:false});

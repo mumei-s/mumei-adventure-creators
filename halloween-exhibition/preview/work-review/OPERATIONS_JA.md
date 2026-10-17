@@ -11,19 +11,19 @@
 - 初回基盤コミット: `7924aabf93b3a1a2a61d44cef28e65af81522de9`。町・CNA・照合ページ追加後の最終コミットではない。最新状態は作業ブランチと `CHANGESET.json` を参照する。
 - GitHub上の差分: https://github.com/mumei-s/mumei-adventure-creators/compare/e989cd523efec7a1eb72685d94ad9912ee53e06e...work%2Fatelier-rebuild-20261017
 - 分離したSites作業先: https://mumei-atelier-work-review.sabosan0404.chatgpt.site
-- 最新の城下町: https://mumei-atelier-work-review.sabosan0404.chatgpt.site/current/halloween-exhibition/preview/town/
+- 最新の星灯りの街: https://mumei-atelier-work-review.sabosan0404.chatgpt.site/current/halloween-exhibition/preview/town/
 - 作業版の入口: https://mumei-atelier-work-review.sabosan0404.chatgpt.site/current/halloween-exhibition/preview/
 - 基準版の入口: https://mumei-atelier-work-review.sabosan0404.chatgpt.site/baseline/halloween-exhibition/preview/
 - ブランチURLはソースの閲覧先。上記Sitesへの配信は既存GitHub Pagesへの反映とは別。
 - 既存のGitHub Pages、main、本番RPC、登録記事JSONはこの作業では更新しない。
 
-コード・仕様書・比較動画・原画候補をローカルの作業コミットへまとめ、非公開比較版に保存する。GitHubの作業ブランチへ保存する。作業版の入口は `halloween-exhibition/preview/`。既存の宮殿探索は `maze/`、新しい城下町は `town/index.html`、管理画面は `admin/`。全参加者の公式アイコンと採用画像の照合は `work-review/cast-check.html`。比較動画・全キャストのシート・計測JSONは `work-review/evidence/`。主人公の不採用v1〜v4とpromptは `work-review/assets/`、追加v3/v4の判定は `assets/OWNER_ANIMATION_V3_V4_REVIEW_JA.md`、承認されたCNAの参照と原本は `work-review/assets/cna-originals/`。主人公の不採用候補はruntimeへ採用していない。CNAは承認済み三人の配信WebPとmanifestを使用する。制作ツールと外部note/共同マガジンは既存URLを維持する。
+コード・仕様書・比較動画・原画候補をローカルの作業コミットへまとめ、非公開比較版に保存する。GitHubの作業ブランチへ保存する。作業版の入口は `halloween-exhibition/preview/`。既存の宮殿探索は `maze/`、新しい星灯りの街は `town/index.html`、管理画面は `admin/`。全参加者の公式アイコンと採用画像の照合は `work-review/cast-check.html`。比較動画・全キャストのシート・計測JSONは `work-review/evidence/`。主人公の不採用v1〜v4とpromptは `work-review/assets/`、追加v3/v4の判定は `assets/OWNER_ANIMATION_V3_V4_REVIEW_JA.md`、承認されたCNAの参照と原本は `work-review/assets/cna-originals/`。主人公の不採用候補はruntimeへ採用していない。CNAは承認済み三人の配信WebPとmanifestを使用する。制作ツールと外部note/共同マガジンは既存URLを維持する。
 
 GitHubのソース閲覧と動画再生はアプリの進行を操作しない。作業Siteは既存公開版と別originなので、既存公開版のブラウザー保存を読むことはできない。一方、作業Site内の `/baseline/` と `/current/` は同じoriginであり、既存宮殿・展示の同一保存キーを共有する。URLのパスだけでは保存は分かれない。独立した比較には別ブラウザープロファイルを使うか、以下のローカル起動で別ポートを使う。公開版の進行は自動移行しない。作業Siteとlocalhostは本番訪問カウンターの許可originに一致せず、訪問を送信しない。既存カウンターの仕様や値は変更しない。
 
 ## 作業Siteでの表示
 
-城下町の保存された表示設定がなければ3Dを選択する。`town/world-3d.js` は55度の見下ろしカメラと立体的な建物・屋根・地形・室内を描き、人物は承認済み画像のスプライトを使う。3D準備中もCanvas側で歩ける。3Dを利用できない場合やcontext loss時は2Dへ戻り、町メニューの表示設定で2D/3Dの選択と3Dの再試行を行う。2つの表示は同じsessionと町の保存を使う。
+星灯りの街の保存された表示設定がなければ3Dを選択する。`town/world-3d.js` は55度の見下ろしカメラと立体的な建物・屋根・地形・室内を描き、人物は承認済み画像のスプライトを使う。3D準備中もCanvas側で歩ける。3Dを利用できない場合やcontext loss時は2Dへ戻り、町メニューの表示設定で2D/3Dの選択と3Dの再試行を行う。2つの表示は同じsessionと町の保存を使う。
 
 任意の景色画像の準備を、Canvasで街歩きを開始するための待機対象から外した。3D表示は期限・キャンセル・古い結果の破棄を持つ。これらは実ブラウザー/GPUでの描画や端末性能の確認済みという意味ではない。
 
@@ -39,11 +39,11 @@ cd mumei-adventure-creators
 python3 -m http.server 8000
 ```
 
-作業版の入口は `http://localhost:8000/halloween-exhibition/preview/`。宮殿の「城の外を歩く」から町へ、「宮殿の奥に進む…」から従来の探索へ移動する。直接開く場合は以下を使う。
+作業版の入口は `http://localhost:8000/halloween-exhibition/preview/`。宮殿の「星灯りの街へ」から町へ、「宮殿の奥に進む…」から従来の探索へ移動する。直接開く場合は以下を使う。
 
 | 対象 | ローカルURL |
 |---|---|
-| 城下町 | `http://localhost:8000/halloween-exhibition/preview/town/index.html` |
+| 星灯りの街 | `http://localhost:8000/halloween-exhibition/preview/town/index.html` |
 | 宮殿の奥 | `http://localhost:8000/halloween-exhibition/preview/maze/` |
 | 公式アイコンと採用画像 | `http://localhost:8000/halloween-exhibition/preview/work-review/cast-check.html` |
 | 記事管理 | `http://localhost:8000/halloween-exhibition/preview/admin/` |
@@ -56,7 +56,7 @@ Python 3が必要で、アプリにビルドや新しいAPI設定は不要。基
 
 ## 保存と移行
 
-城下町は `mumei:lantern-town:rpg:v1` の独立した進行、同キー末尾の `:ui` 設定、`:recovery` バックアップを使う。町の2D/3Dを切り替えても同じ記録を使い、別保存への移行や再集計は行わない。宮殿・展示・管理の保存を読替え・移行・消去しない。既存宮殿の必須6体とクリア記録を、町の2戦闘や新しい三幕の進行に置き換えない。
+星灯りの街は `mumei:lantern-town:rpg:v1` の独立した進行、同キー末尾の `:ui` 設定、`:recovery` バックアップを使う。町の2D/3Dを切り替えても同じ記録を使い、別保存への移行や再集計は行わない。宮殿・展示・管理の保存を読替え・移行・消去しない。既存宮殿の必須6体とクリア記録を、町の2戦闘や新しい三幕の進行に置き換えない。
 
 枠サイズ・操作ボタン倍率・左右配置は `halloween-exhibition:preview:game-display:v1` に独立して保存し、宮殿と町で共有する。保存不能時も現在の画面には反映する。町の表示方式は町の`:ui`設定に保存する。音の自動再生設定としては使用しない。
 
@@ -68,7 +68,7 @@ CNAは今回の明示承認により、記事なしの三人のプロフィー�
 
 ## キャッシュ
 
-ブランチの公開shell cache定義は `mumei-atelier-shell-v33-20261017-town2:<scope>`。既存公開版へ適用したという意味ではない。更新対象のJS/CSSのみ新しい厳密なrelease queryを指定する。archive・admin・maze・町のゲーム本体と3D module・外部API・未知queryをshell cacheへ追加しない。町への入口のshellファイルと町本体のオフライン対応を混同しない。既存の `skipWaiting` / `clients.claim` を使わない方針とscopeごとの旧cache削除を維持。INSIGHTや他アプリのService Workerを削除/登録/操作しない。
+ブランチの公開shell cache定義は `mumei-atelier-shell-v36-20261018-street1:<scope>`。既存公開版へ適用したという意味ではない。更新対象のJS/CSSのみ新しい厳密なrelease queryを指定する。archive・admin・maze・町のゲーム本体と3D module・外部API・未知queryをshell cacheへ追加しない。町への入口のshellファイルと町本体のオフライン対応を混同しない。既存の `skipWaiting` / `clients.claim` を使わない方針とscopeごとの旧cache削除を維持。INSIGHTや他アプリのService Workerを削除/登録/操作しない。
 
 ## 公開前の残条件
 

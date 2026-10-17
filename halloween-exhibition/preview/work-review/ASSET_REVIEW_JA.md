@@ -1,6 +1,6 @@
 # 主人公原画の審査
 
-採用済み主人公 `owner-lantern-walk.webp` を参照し、組み込みの画像生成機能で2案を制作した。生成指示全文は `assets/protagonist-prompt.txt` と `assets/protagonist-walk-prompt-v2.txt`。原本PNGと配信比較用WebPは比較用Siteの改修版 `work-review/assets/` に保存する。アプリから読み込ませず、既存manifest・採用フラグ・配信画像は変更していない。
+採用済み主人公 `owner-lantern-walk.webp` を参照し、組み込みの画像生成機能で2案を制作した。生成指示全文は `assets/protagonist-prompt.txt` と `assets/protagonist-walk-prompt-v2.txt`。原本PNGと配信比較用WebPはGitHubの作業ブランチの `work-review/assets/` に保存する。アプリから読み込ませず、既存manifest・採用フラグ・配信画像は変更していない。
 
 | 案 | 制作内容 | 判定 / 理由 |
 |---|---|---|

@@ -47,3 +47,13 @@ test('battle art loads once with a real deadline, failures can retry, and late r
  assert.equal(await characters.ensureMonster('ghost'),false);fail=false;const first=characters.ensureMonster('ghost'),same=characters.ensureMonster('ghost');assert.equal(await first,true);assert.equal(await same,true);assert.equal(loads,2);assert(characters.art.images.ghost);
  const late=characters.ensureMonster('franken');characters.destroy();resolveLate({width:MONSTER_MOTION_DATA.franken.width,height:MONSTER_MOTION_DATA.franken.height});assert.equal(await late,false);assert.equal(characters.art.images.franken,undefined);
 });
+
+test('each visible CNA member can be tapped within reach even when another member is nearest',async()=>{
+ const assets=createCharacterAssets({loadImage:async(_url,asset)=>({width:asset.width,height:asset.height})}),characters=createTownCharacterArt({fetcher,assets});await characters.ready;
+ const state={...initialTownState(),position:{x:36.5,z:8.5}};characters.visitorActors({state,time:0,motion:false});for(let i=0;i<8;i++)await flush();
+ const all=characters.visitorActors({state,time:0,motion:false}),cna=all.filter(actor=>actor.creatorId==='grand_daisy8632');assert.equal(cna.length,3);
+ const center=cna[1],nearState={...state,position:{x:center.x,z:center.z+.65}},nearest=characters.nearbyVisitor(nearState);assert(nearest);
+ for(const actor of cna){const tapped=characters.reachableVisitor(actor.id,nearState);assert(tapped);assert.equal(tapped.id,actor.id);assert.equal(tapped.x,actor.x);assert.equal(tapped.z,actor.z);}
+ assert(cna.some(actor=>actor.id!==nearest.id));assert.equal(characters.reachableVisitor(cna[0].id,{...nearState,position:{x:5,z:40}}),null);
+ characters.destroy();
+});

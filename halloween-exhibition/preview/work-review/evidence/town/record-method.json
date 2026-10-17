@@ -1,0 +1,58 @@
+{
+  "file": "native-town-validation.mp4",
+  "method": "Native Canvas capture of the actual town renderer/controller/character distance loading. The conversation panel is an evidence overlay of actual story text, not a DOM recording.",
+  "font": "NotoSansCJKjp-Regular.otf",
+  "frames": 540,
+  "fps": 30,
+  "seconds": 18,
+  "cssViewport": {
+    "width": 390,
+    "height": 600
+  },
+  "pixelRatio": 2,
+  "encoded": {
+    "programs": [],
+    "streams": [
+      {
+        "width": 780,
+        "height": 1200,
+        "avg_frame_rate": "30/1",
+        "nb_read_frames": "540"
+      }
+    ],
+    "format": {
+      "duration": "18.000000"
+    }
+  },
+  "maxVisitors": 4,
+  "scene": {
+    "loaded": [
+      "cobbles",
+      "soil",
+      "props",
+      "residents"
+    ],
+    "failed": [],
+    "chunks": 15,
+    "artVersion": 4
+  },
+  "characters": {
+    "loaded": 7,
+    "pending": 0,
+    "failed": 0,
+    "decodedBytes": 29360128,
+    "rejectedRequests": 0,
+    "failures": []
+  },
+  "final": {
+    "x": 24.8132997567728,
+    "z": 13.499999524459584
+  },
+  "firstTalk": true,
+  "secondTalk": false,
+  "limitations": [
+    "Not a browser/DOM/input/audio test or a phone frame-rate measurement.",
+    "No new full-body walk/turn frames were generated for the ten fictional residents.",
+    "Adopted character sprite animation limitations remain."
+  ]
+}

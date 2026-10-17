@@ -1,7 +1,7 @@
 /* Public exhibition shell only. No admin, maze, archive data, remote portraits,
  * API requests, unknown query strings, authentication or background activity. */
 const SCOPE = new URL('./', self.location.href);
-const CACHE = 'mumei-atelier-shell-v32-20261017-town1:' + SCOPE.pathname;
+const CACHE = 'mumei-atelier-shell-v33-20261017-town2:' + SCOPE.pathname;
 const PUBLIC_RELEASES = Object.freeze({
   "transition-effects.js": "20261017-review1",
   "transition-effects.css": "20261016-living1",
@@ -27,8 +27,8 @@ const PUBLIC_RELEASES = Object.freeze({
   "door-palette.js": "20261015-festival1",
   "palace-entrance.js": "20261014-palace2",
   "palace-entrance.css": "20261016-living1",
-  "theater.js": "20261017-town1",
-  "town-entry.css": "20261017-town1",
+  "theater.js": "20261017-town2",
+  "town-entry.css": "20261017-town2",
   "theater.css": "20261014-layout1",
   "data-model.js": "20261014-doors1",
   "roster-pagination.js": "20261017-review1",

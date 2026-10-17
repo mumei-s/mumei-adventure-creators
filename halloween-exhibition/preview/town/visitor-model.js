@@ -1,4 +1,6 @@
 import {TOWN_START_MAP,getTownMap,isTownWalkable,mapTargets} from './story-data.js';
+import {sampleTravel} from '../maze/patrol-model.js?v=20261017-review1';
+import {locomotionPhase,yawForVector,shortestTurn,facingForVector} from '../maze/movement-runtime.js?v=20261017-review1';
 
 // These are town streets, not reused palace slots or palace patrol geometry.
 // The protagonist is already present; only the verified roster.npcs are guests.
@@ -22,7 +24,6 @@ export const TOWN_VISITOR_SLOTS=Object.freeze([
   {id:'west-flower-guests',x:6.5,z:39.5},
 ]);
 const hash=value=>{let n=2166136261;for(const c of String(value))n=Math.imul(n^c.charCodeAt(0),16777619);return n>>>0;};
-const direction=(dx,dz,previous='down')=>Math.abs(dx)+Math.abs(dz)<1e-7?previous:Math.abs(dx)>Math.abs(dz)?dx>0?'right':'left':dz>0?'down':'up';
 const mod=(n,d)=>(n%d+d)%d;
 function offsets(count){return Array.from({length:count},(_,i)=>(i-(count-1)/2)*.95);}
 function pointSafe(point,offsets,occupied=[]){
@@ -40,13 +41,17 @@ function makeRoute(center,offsets,groupId,occupied){
     if(segmentSafe(center,next,offsets,occupied)){points.push(next,{...center});if(points.length>=5)break;}
   }
   // Every group can at least breathe/turn in place when a street is narrow.
-  const speed=.48+(hash(groupId)%9)*.012,wait=1.8+(hash(groupId)%7)*.12;
+  const speed=.48+(hash(groupId)%9)*.012,wait=1.8+(hash(groupId)%7)*.12,ramp=.42,turnDuration=.65;
   const segments=[];let elapsed=0,distance=0;
   for(let i=0;i<points.length;i++){
-    const a=points[i],b=points[(i+1)%points.length],length=Math.hypot(b.x-a.x,b.z-a.z),duration=length/speed;
-    segments.push({a,b,start:elapsed,wait,duration,length,distance});elapsed+=wait+duration;distance+=length;
+    const a=points[i],b=points[(i+1)%points.length],length=Math.hypot(b.x-a.x,b.z-a.z),duration=sampleTravel(length,speed,ramp,0).duration;
+    // Turn only while standing, from the actual incoming route into this leg.
+    // Skipping zero-length closure legs keeps the heading continuous at wrap.
+    let incoming=null;for(let step=1;step<=points.length;step++){const p=points[mod(i-step,points.length)],q=points[mod(i-step+1,points.length)];if(Math.hypot(q.x-p.x,q.z-p.z)>1e-7){incoming={x:q.x-p.x,z:q.z-p.z};break;}}
+    const previousYaw=incoming?yawForVector(incoming.x,incoming.z):0,yaw=length?yawForVector(b.x-a.x,b.z-a.z):previousYaw;
+    segments.push({a,b,start:elapsed,wait,duration,length,distance,yaw,previousYaw,turn:shortestTurn(previousYaw,yaw)});elapsed+=wait+duration;distance+=length;
   }
-  return {points,segments,duration:elapsed,distance,speed,phaseOffset:(hash(groupId)%97)/10};
+  return {points,segments,duration:elapsed,distance,speed,ramp,turnDuration,phaseOffset:(hash(groupId)%97)/10};
 }
 
 export function placeTownVisitors(roster){
@@ -72,12 +77,13 @@ export function placeTownVisitors(roster){
 }
 
 function sampleRoute(visitor,time,motion){
-  const route=visitor.route;if(!motion||!route||!Number.isFinite(time))return {x:visitor.x,z:visitor.z,walking:false,facing:'down',phase:0};
-  const clock=mod(time+route.phaseOffset,route.duration);
+  const route=visitor.route;if(!motion||!route||!Number.isFinite(time))return {x:visitor.x,z:visitor.z,walking:false,facing:'down',phase:0,speed:0,distance:0,yaw:0,turning:false,turnProgress:0,animationAssetComplete:false};
+  const absolute=time+route.phaseOffset,cycle=Math.floor(absolute/route.duration),clock=mod(absolute,route.duration);
   const segment=route.segments.find(s=>clock<s.start+s.wait+s.duration)||route.segments.at(-1),local=clock-segment.start;
-  if(local<segment.wait||segment.length===0){const quarter=Math.floor(Math.max(0,local)/segment.wait*3);const previous=direction(segment.a.x-segment.b.x,segment.a.z-segment.b.z);return {x:segment.a.x+visitor.offsetX,z:segment.a.z,walking:false,facing:quarter===2?'down':previous,phase:0};}
-  const t=Math.min(1,Math.max(0,(local-segment.wait)/segment.duration)),walked=segment.distance+segment.length*t;
-  return {x:segment.a.x+(segment.b.x-segment.a.x)*t+visitor.offsetX,z:segment.a.z+(segment.b.z-segment.a.z)*t,walking:true,facing:direction(segment.b.x-segment.a.x,segment.b.z-segment.a.z),phase:walked/1.05*Math.PI*2};
+  const travel=sampleTravel(segment.length,route.speed,route.ramp,local-segment.wait),progress=segment.length?travel.distance/segment.length:0;
+  const turnStart=(segment.wait-route.turnDuration)/2,turnProgress=Math.max(0,Math.min(1,(local-turnStart)/route.turnDuration)),eased=turnProgress*turnProgress*(3-2*turnProgress),yaw=segment.previousYaw+segment.turn*eased;
+  const walked=cycle*route.distance+segment.distance+travel.distance;
+  return {x:segment.a.x+(segment.b.x-segment.a.x)*progress+visitor.offsetX,z:segment.a.z+(segment.b.z-segment.a.z)*progress,walking:travel.speed>1e-6,facing:facingForVector(Math.sin(yaw),Math.cos(yaw)),phase:locomotionPhase(walked,1.05),speed:travel.speed,distance:walked,yaw,turnProgress,turning:Math.abs(segment.turn)>1e-7&&turnProgress>0&&turnProgress<1,animationAssetComplete:false};
 }
 export function sampleTownVisitors(visitors,{state,time=0,motion=true}={}){
   if(state?.mapId&&state.mapId!==TOWN_START_MAP)return[];

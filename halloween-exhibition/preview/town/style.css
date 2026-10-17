@@ -31,11 +31,11 @@ body[data-layout=tablet]{--menu-columns:2;--body-size:15px;--hud-size:12px}body[
 @media(max-height:480px) and (min-width:560px){#town-main{grid-template-rows:48px auto minmax(0,1fr) 18px}.town-hud{grid-area:2/1;grid-template-columns:minmax(0,1fr) 56px}.town-controls{grid-area:2/2/4/3;padding:5px 8px}#town-main footer{grid-row:4}#town-minimap{width:48px;height:36px}.quest-hint #area-name{display:none}}
 
 /* Keep the touch controls usable when the game frame or the phone rotates. */
-#town-main{--pad-size:calc(112px * var(--game-control-scale,1));--town-button-size:calc(44px * var(--game-control-scale,1));position:relative;min-width:0;min-height:0;grid-template-columns:minmax(0,1fr);grid-template-rows:48px auto minmax(0,1fr) calc(var(--pad-size) + 8px) 18px}
+#town-main{--pad-size:calc(112px * var(--game-control-scale,1));--town-button-size:calc(44px * var(--game-control-scale,1));position:relative;min-width:0;min-height:0;grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(48px,max-content) auto minmax(0,1fr) minmax(calc(var(--pad-size) + 8px),max-content) minmax(18px,max-content)}
 #town-main .town-header{grid-area:1/1;min-width:0}
 #town-main .town-hud{grid-area:2/1;min-width:0}
 #town-main .town-world{grid-area:3/1}
-#town-main .town-controls{grid-area:4/1;grid-template-areas:"move utilities actions";grid-template-columns:minmax(var(--pad-size),1fr) minmax(44px,.7fr) minmax(72px,1fr);grid-template-rows:minmax(0,1fr);gap:7px;padding:3px 7px;min-width:0;min-height:0}
+#town-main .town-controls{grid-area:4/1;grid-template-areas:"move utilities actions";grid-template-columns:minmax(var(--pad-size),1fr) minmax(44px,.7fr) minmax(72px,1fr);grid-template-rows:auto;gap:7px;padding:3px 7px;min-width:0;min-height:0}
 #town-main footer{grid-area:5/1;min-width:0;gap:12px;white-space:nowrap;overflow:hidden}
 #town-main .direction-pad{grid-area:move;align-self:center;justify-self:start;width:var(--pad-size);height:var(--pad-size)}
 #town-main .direction-pad button{width:var(--town-button-size);height:var(--town-button-size);min-width:44px;min-height:44px;padding:0;font-size:calc(21px * var(--game-control-scale,1))}
@@ -49,8 +49,8 @@ body[data-layout=tablet]{--menu-columns:2;--body-size:15px;--hud-size:12px}body[
 body[data-game-controls=right] #town-main .town-controls{grid-template-areas:"actions utilities move";grid-template-columns:minmax(72px,1fr) minmax(44px,.7fr) minmax(var(--pad-size),1fr)}
 body[data-game-controls=right] #town-main .direction-pad{justify-self:end}
 body[data-game-controls=right] #town-main .town-actions{justify-self:start}
-#town-main[data-town-narrow=true]{grid-template-rows:48px auto minmax(0,1fr) calc(var(--pad-size) + var(--town-button-size) + 15px) 18px}
-#town-main[data-town-narrow=true] .town-controls{grid-template-areas:"move actions" "utilities utilities";grid-template-columns:var(--pad-size) minmax(44px,1fr);grid-template-rows:var(--pad-size) var(--town-button-size);gap:6px;padding:4px 6px}
+#town-main[data-town-narrow=true]{grid-template-rows:minmax(48px,max-content) auto minmax(0,1fr) minmax(calc(var(--pad-size) + var(--town-button-size) + 15px),max-content) minmax(18px,max-content)}
+#town-main[data-town-narrow=true] .town-controls{grid-template-areas:"move actions" "utilities utilities";grid-template-columns:var(--pad-size) minmax(44px,1fr);grid-template-rows:minmax(var(--pad-size),max-content) minmax(var(--town-button-size),max-content);gap:6px;padding:4px 6px}
 #town-main[data-town-narrow=true] .town-utilities{display:flex;gap:6px;max-width:300px;justify-content:center}
 #town-main[data-town-narrow=true] .town-utilities button{flex:1;max-width:150px}
 body[data-game-controls=right] #town-main[data-town-narrow=true] .town-controls{grid-template-areas:"actions move" "utilities utilities";grid-template-columns:minmax(44px,1fr) var(--pad-size)}
@@ -59,8 +59,8 @@ body[data-game-controls=right] #town-main[data-town-narrow=true] .town-controls{
 #town-main[data-town-narrow=true] .town-header{gap:3px;padding-inline:4px}
 #town-main[data-town-narrow=true] .town-header button,#town-main[data-town-narrow=true] .castle-return{font-size:10px;padding-inline:4px}
 #town-main[data-town-narrow=true] .town-hud{grid-template-columns:minmax(0,1fr) 52px;padding-inline:5px;gap:4px}
-#town-main[data-town-orientation=landscape]{grid-template-rows:48px auto minmax(0,1fr) 0 18px}
-#town-main[data-town-orientation=landscape] .town-controls{position:absolute;grid-area:auto;left:var(--safe-left);right:var(--safe-right);bottom:calc(var(--safe-bottom) + 18px);height:calc(var(--pad-size) + 8px);z-index:2;align-items:end;border:0;background:none;pointer-events:none}
+#town-main[data-town-orientation=landscape]{grid-template-rows:minmax(48px,max-content) auto minmax(0,1fr) 0 minmax(18px,max-content)}
+#town-main[data-town-orientation=landscape] .town-controls{position:absolute;grid-area:auto;left:var(--safe-left);right:var(--safe-right);bottom:calc(var(--safe-bottom) + 18px);height:auto;min-height:calc(var(--pad-size) + 8px);max-height:calc(100% - 100px - var(--safe-top) - var(--safe-bottom));overflow-y:auto;overscroll-behavior:contain;z-index:2;align-items:end;border:0;background:none;pointer-events:none}
 #town-main[data-town-orientation=landscape] .town-controls>div{pointer-events:auto}
 #town-main[data-town-orientation=landscape] .town-utilities,#town-main[data-town-orientation=landscape] .town-actions{align-self:end}
 #town-main[data-town-orientation=landscape] .town-controls button{box-shadow:0 2px 9px #071a26aa}
@@ -68,7 +68,7 @@ body[data-game-controls=right] #town-main[data-town-narrow=true] .town-controls{
 #town-main[data-town-orientation=landscape] #quest-objective{-webkit-line-clamp:1}
 #town-main[data-town-orientation=landscape] #area-name{display:none}
 #town-main[data-town-orientation=landscape] #town-toast{bottom:calc(var(--pad-size) + 14px)}
-#town-main[data-town-orientation=landscape][data-town-short=true]{grid-template-rows:44px 44px minmax(0,1fr) 0 0}
+#town-main[data-town-orientation=landscape][data-town-short=true]{grid-template-rows:minmax(44px,max-content) minmax(44px,max-content) minmax(0,1fr) 0 0}
 #town-main[data-town-orientation=landscape][data-town-short=true] .town-heading>span{display:none}
 #town-main[data-town-orientation=landscape][data-town-short=true] .town-hud{overflow:hidden;padding-block:0}
 #town-main[data-town-orientation=landscape][data-town-short=true] #quest-title{display:none}
@@ -77,3 +77,6 @@ body[data-game-controls=right] #town-main[data-town-narrow=true] .town-controls{
 #town-main[data-town-orientation=landscape][data-town-short=true] #minimap-open>span{display:none}
 #town-main[data-town-orientation=landscape][data-town-short=true] .town-controls{bottom:var(--safe-bottom)}
 #town-main[data-town-orientation=landscape][data-town-short=true] footer{display:none}
+
+/* Separate surfaces allow a real WebGL context while Canvas stays ready as fallback. */
+#town-webgl{position:absolute;inset:0;display:block;width:100%;height:100%;touch-action:none;outline-offset:-4px}

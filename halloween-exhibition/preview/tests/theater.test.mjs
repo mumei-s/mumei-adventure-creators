@@ -84,7 +84,9 @@ async function harness({ data = archive, reduced = true, storageThrows = false, 
   if (savedMode !== null) storage.set('halloween-yearbook:display-mode:v1', savedMode);
   const queue = (fn, delay = 0) => { const id = ++seq; timers.set(id, { at: now + delay, fn }); return id; };
   const doc = { queue, handlers: {}, activeElement: null, createElement(tag) { return new Element(tag, this); }, createTextNode(text) { const el = new Element('#text', this); el.textContent = text; return el; }, addEventListener(type, fn) { (this.handlers[type] ||= []).push(fn); } };
-  doc.defaultView={matchMedia:()=>({matches:reduced,addEventListener(){},removeEventListener(){}}),addEventListener(){},removeEventListener(){},close(){doc.closeAttempts=(doc.closeAttempts||0)+1;},MutationObserver:class{observe(){}disconnect(){}}};
+  const windowHandlers={};
+  doc.defaultView={matchMedia:()=>({matches:reduced,addEventListener(){},removeEventListener(){}}),addEventListener(type,fn){(windowHandlers[type]||=[]).push(fn);},removeEventListener(type,fn){windowHandlers[type]=(windowHandlers[type]||[]).filter(listener=>listener!==fn);},dispatch(type,event={}){for(const fn of windowHandlers[type]||[])fn(event);},close(){doc.closeAttempts=(doc.closeAttempts||0)+1;},MutationObserver:class{observe(){}disconnect(){}}};
+  doc.defaultView.requestAnimationFrame=fn=>queue(()=>fn(now),16);doc.defaultView.cancelAnimationFrame=id=>timers.delete(id);
   doc.documentElement = doc.createElement('html'); doc.activeElement = doc.documentElement;
   const stack = [doc.documentElement]; const voids = new Set(['meta','link','input','img','br','hr']);
   for (const token of html.matchAll(/<\/?([a-z][\w-]*)([^>]*)>/gi)) {
@@ -104,7 +106,7 @@ async function harness({ data = archive, reduced = true, storageThrows = false, 
   };
   const requests = [], storageWrites = [], motionInitializations = [], viewCalls = [];
   const context = vm.createContext({ AbortController, paginateRoster, withDeadline:(promise,options)=>withDeadline(promise,{...options,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}), initTransitionEffects:()=>initTransitionEffects({window:doc.defaultView,document:doc}), initViewport:()=>initViewport({window:doc.defaultView,document:doc}), initAppExit, createDoorRevealClock:args=>createDoorRevealClock({...args,schedule:queue,clear:id=>timers.delete(id)}), initFestivalScene:args=>initFestivalScene({...args,doc,win:{...doc.defaultView,setTimeout:queue,clearTimeout:id=>timers.delete(id),MutationObserver:class{observe(){}disconnect(){}}}}), loadArtworkImage:(image,source,options)=>{if(artworkReady){image.complete=true;image.naturalWidth=800;}return loadArtworkImage(image,source,{...options,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}});}, initPalaceStartup:()=>visualReady, createDoorPalettePicker, installGalleryGesture, createSlideshowController, initPalaceEntrance:entrance?(args)=>initPalaceEntrance({...args,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}):({root,onViewChange})=>{root.dataset.palaceState='gallery';return {enter(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});},home(){root.dataset.palaceState='palace';onViewChange({view:'palace',opening:false});},setMode(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});}}}, initDisplayMode:()=>({}), document: doc, initVisitorPreferences:options=>{options.onBrightness(75);const section=doc.createElement('section');section.className='visitor-preferences';doc.body.append(section);return {stopMusic(){doc.musicStops=(doc.musicStops||0)+1;}};}, initSceneMotion:root=>{motionInitializations.push(root);const dock=doc.createElement('div');dock.className='scene-controls';root.append(dock);let userPaused=false;return {isUserPaused(){return userPaused;},setPaused(value){userPaused=Boolean(value);},setView(x,y){viewCalls.push([x,y]);}};}, validateArchive, safeURL, normalizeSearch, doorIdFor,
-    matchMedia: () => ({ matches: reduced }),
+    window:doc.defaultView,matchMedia: () => ({ matches: reduced }),
     // Native browser timers reject a plain-object receiver (Illegal invocation).
     setTimeout: function(fn, delay) { if (strictTimerReceiver && this != null && this.document !== doc) throw new TypeError('Illegal invocation'); return queue(fn, delay); },
     clearTimeout: function(id) { if (strictTimerReceiver && this != null && this.document !== doc) throw new TypeError('Illegal invocation'); return timers.delete(id); },
@@ -162,6 +164,24 @@ test('initial load renders all real article doors and creators', async () => {
   h.$('artwork-open').click();
   assert.match(h.$('detail-content').textContent, /ハロウィン作品は準備中/);
   assert.doesNotMatch(h.$('detail-content').textContent, /架空の参加者|展示サンプル/);
+});
+
+test('pending and untitled doors use official creator names in captions and accessible labels',async()=>{
+ const data=structuredClone(archive),untitled=data.years[0].entries.find(entry=>entry.submissionStatus==='submitted');untitled.title='';
+ const h=await harness({data});
+ for(const entry of [data.years[0].entries.find(entry=>entry.submissionStatus==='pending'),untitled]){
+  const index=data.years[0].entries.indexOf(entry),name=data.creators.find(person=>person.id===entry.creatorId).name;
+  await h.api.navigate(index);assert.equal(h.$('room-title').textContent,name);
+  assert.ok(h.$('artwork-open').getAttribute('aria-label').includes(name));
+  assert.ok(!h.$('artwork-open').getAttribute('aria-label').includes('@'+entry.creatorId));
+  assert.ok(!h.$('room-dots').children[index].getAttribute('aria-label').includes('@'+entry.creatorId));
+  h.$('artwork-open').click();assert.equal(h.$('detail-content').querySelector('.detail-creator').textContent,name);
+  h.$('detail').close();await h.tick(0);
+  h.$('list-open').click();h.$('search').value=entry.creatorId;h.$('search').dispatch('input');
+  const card=h.$('roster-grid').children.find(card=>card.dataset.creatorId===entry.creatorId);
+  assert.ok(card.textContent.includes(name));assert.ok(!card.textContent.includes('@'+entry.creatorId));
+  h.$('roster').close();await h.tick(0);
+ }
 });
 
 test('expanded roster renders all fourteen confirmed submissions with their own art and links', async () => {
@@ -887,6 +907,20 @@ test('slideshow interval control uses every integer from 1 to 10 seconds and per
  assert.deepEqual(JSON.parse(h.storage.get('halloween-exhibition:preview:slideshow:v1')),{intervalSeconds:5});
  h.$('slideshow-toggle').click();await h.tick(6199);assert.equal(h.api.state.currentIndex,0);await h.tick(1);assert.equal(h.api.state.currentIndex,1);
  h.$('slideshow-speed').value='1';h.$('slideshow-speed').dispatch('change');assert.equal(h.api.state.slideshow.intervalSeconds,1);h.$('slideshow-speed').value='11';h.$('slideshow-speed').dispatch('change');assert.equal(h.api.state.slideshow.intervalSeconds,1);
+});
+
+test('BFCache suspension preserves session slideshow choice and resumes after a full interval',async()=>{
+ const h=await harness({reduced:false});await h.tick(1200);
+ h.$('slideshow-speed').value='1';h.$('slideshow-speed').dispatch('change');h.$('slideshow-toggle').click();await h.tick(400);
+ h.doc.defaultView.dispatch('pagehide',{persisted:true});
+ assert.equal(h.api.state.slideshow.enabled,true);assert.ok(h.api.state.slideshow.blockers.includes('page'));assert.equal(h.api.state.slideshow.scheduled,false);
+ await h.tick(60000);assert.equal(h.api.state.currentIndex,0);
+ h.doc.defaultView.dispatch('pageshow',{persisted:true});await h.tick(999);assert.equal(h.api.state.currentIndex,0);
+ await h.tick(1);assert.equal(h.api.state.currentIndex,1);
+ assert.deepEqual(JSON.parse(h.storage.get('halloween-exhibition:preview:slideshow:v1')),{intervalSeconds:1});
+ h.$('slideshow-toggle').click();h.doc.defaultView.dispatch('pagehide',{persisted:true});h.doc.defaultView.dispatch('pageshow',{persisted:true});await h.tick(60000);
+ assert.equal(h.api.state.slideshow.enabled,false);assert.equal(h.api.state.currentIndex,1);
+ const fresh=await harness({reduced:false});assert.equal(fresh.api.state.slideshow.enabled,false);
 });
 
 test('dialogs hold slideshow and closing starts a complete fresh interval',async()=>{

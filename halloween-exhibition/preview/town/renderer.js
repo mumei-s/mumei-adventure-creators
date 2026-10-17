@@ -3,6 +3,7 @@ import {TOWN_TILE as TILE,followTownCamera,townCameraTarget,townVisibleBounds,to
 import {TOWN_BUDGET,TOWN_PROP_CELLS,TOWN_BATTLE_ART_IDS,townVisualSeed as seed,buildingArtKind,townPropSprite} from './visual-data.js';
 import {drawArtSprite,playerPose,loadArtImage,PALACE_ART} from '../maze/rpg-art.js?v=20261017-review1';
 import {monsterSprite} from '../maze/monster-motion.js?v=20261017-review1';
+import {withDeadline} from '../transition-effects.js?v=20261016-living1';
 
 const TAU=Math.PI*2,clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 export const TOWN_DEPTH_SCALE=.78;
@@ -111,17 +112,19 @@ function drawResident(c,n,time=0){
   if(appearance==='clocksmith'||appearance==='archivist'){for(const dx of[-4,5]){c.strokeStyle='#d2c6a5';c.lineWidth=1;c.beginPath();c.arc(x+dx,y-60,4,0,TAU);c.stroke();}}
 }
 
-export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},version:0},loadImage=loadArtImage,fetcher=globalThis.fetch}={}){
+export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},version:0},loadImage=loadArtImage,fetcher=globalThis.fetch,assetTimeout=14000,manifestTimeout=6000,timers=globalThis}={}){
   const scene={images:{},frames:null,residentFrames:null,version:0,failures:[],loaded:[]},chunks=new Map(),shade=makeCanvas(1,1),sceneSnapshot=makeCanvas(1,1);
   let camera=null,lastMap=null,lastView=null,lastSignature='',destroyed=false,hitItems=[],lastSurface=null,snapshotBattle=null;
+  const loading=new AbortController();
   const alphaMasks=new WeakMap(),alphaCanvas=makeCanvas(1,1);
-  async function image(key,file){try{const im=await loadImage(new URL(file,import.meta.url).href,{timeout:14000});if(!destroyed){scene.images[key]=im;scene.loaded.push(key);scene.version++;chunks.clear();}return im;}catch{if(!destroyed)scene.failures.push(key);return null;}}
+  async function image(key,file){try{const im=await withDeadline(loadImage(new URL(file,import.meta.url).href,{timeout:assetTimeout}),{timeout:assetTimeout,timers,signal:loading.signal});if(!destroyed){scene.images[key]=im;scene.loaded.push(key);scene.version++;chunks.clear();}return im;}catch{if(!destroyed)scene.failures.push(key);return null;}}
+  async function manifest(key,file){try{if(!fetcher)return null;return await withDeadline((async()=>{const response=await fetcher(new URL(file,import.meta.url),{signal:loading.signal});if(!response.ok)throw Error('Scenery manifest could not be loaded');return response.json();})(),{timeout:manifestTimeout,timers,signal:loading.signal});}catch{if(!destroyed)scene.failures.push(key);return null;}}
   const ready=(async()=>{
-    let manifest=null;try{if(fetcher){const response=await fetcher(new URL('./assets/props-manifest.json',import.meta.url));if(response.ok)manifest=await response.json();}}catch{}
-    let residents=null;try{if(fetcher){const response=await fetcher(new URL('./assets/residents-manifest.json',import.meta.url));if(response.ok)residents=await response.json();}}catch{}
-    if(manifest?.sprites)scene.frames=manifest.sprites;
+    const [props,residents]=await Promise.all([manifest('props-manifest','./assets/props-manifest.json'),manifest('residents-manifest','./assets/residents-manifest.json')]);
+    if(destroyed)return {loaded:[],failures:[]};
+    if(props?.sprites)scene.frames=props.sprites;
     if(residents?.sprites)scene.residentFrames=residents.sprites;
-    await Promise.all([image('props','./assets/'+(manifest?.file||'props-atlas.webp')),image('cobbles','./assets/cobblestone-dark.webp'),image('soil','./assets/stonepath-warm.webp'),image('residents','./assets/'+(residents?.file||'residents-atlas.webp'))]);
+    await Promise.all([image('props','./assets/'+(props?.file||'props-atlas.webp')),image('cobbles','./assets/cobblestone-dark.webp'),image('soil','./assets/stonepath-warm.webp'),image('residents','./assets/'+(residents?.file||'residents-atlas.webp'))]);
     return {loaded:[...scene.loaded],failures:[...scene.failures]};
   })();
   let interiorReady=null;
@@ -393,7 +396,7 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
     screenToWorld(x,y){return lastView?townScreenToWorld(typeof x==='object'?x:{x,y},lastView.camera,lastView.width,lastView.height,lastView.scale,TOWN_DEPTH_SCALE):null;},
     pickVisitor(x,y){for(let i=hitItems.length-1;i>=0;i--){const item=hitItems[i];if(!item.sprite||x<item.x||x>item.x+item.w||y<item.y||y>item.y+item.h||!opaqueAt(item,x,y))continue;return item.kind==='visitor'?item.id:null;}return null;},
     pick(x,y){if(!lastView)return null;const p=townScreenToWorld({x,y},lastView.camera,lastView.width,lastView.height,lastView.scale,TOWN_DEPTH_SCALE);return hitItems.filter(n=>Math.hypot((n.worldX??0)-p.x,(n.worldZ??0)-p.z)<.6).sort((a,b)=>Math.hypot(a.worldX-p.x,a.worldZ-p.z)-Math.hypot(b.worldX-p.x,b.worldZ-p.z))[0]?.id||null;},
-    invalidate(){lastSignature='';},destroy(){destroyed=true;chunks.clear();hitItems=[];camera=null;lastView=null;renderersByArt.delete(art);},
+    invalidate(){lastSignature='';},destroy(){destroyed=true;loading.abort();chunks.clear();hitItems=[];camera=null;lastView=null;renderersByArt.delete(art);},
   };
   renderersByArt.set(art,api);return api;
 }

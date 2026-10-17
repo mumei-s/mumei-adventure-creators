@@ -1,0 +1,671 @@
+{
+  "referenceId": "cna-three-character-reference-20261017",
+  "referenceSHA256": "a57e9b0109b670f224cbbeca4fe9221543dbe3b3beabb1bc244bff545081d4be",
+  "croppedReferenceSHA256": "55d78eb195c199db23f8ec1b9bcf584345c4f45d1421a63c3fea80d230d26ce9",
+  "source": "User attached CNA chibi banner and explicit approval; unrelated note account chrome excluded from distributed reference.",
+  "generation": "Built-in image generation, three separate atlases",
+  "adoptedForIdentity": true,
+  "continuousAnimationCertified": false,
+  "assets": [
+    {
+      "src": "assets/creator-npcs/cna-black-bob-walk.webp",
+      "width": 1024,
+      "height": 1024,
+      "sha256": "162b3af364f51806d97aa482e896189be33ad528de36d529eb2c3b9a92343335",
+      "sourceSHA256": "b7dce243ded47989fdfd38d43d6d2b20eb06b6671f8766a25d476cc2877a6340",
+      "originalDimensions": [
+        1254,
+        1254
+      ],
+      "encoding": {
+        "format": "WebP",
+        "quality": 90,
+        "alpha": "preserved",
+        "runtimeMaxDimension": 1024
+      },
+      "layout": {
+        "directions": [
+          "down",
+          "left",
+          "right",
+          "up"
+        ],
+        "columns": 4,
+        "rows": 4,
+        "idleColumn": 0,
+        "walkColumns": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "frames": [
+          [
+            {
+              "frame": [
+                0,
+                0,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 247
+            },
+            {
+              "frame": [
+                256,
+                0,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 247
+            },
+            {
+              "frame": [
+                512,
+                0,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 247
+            },
+            {
+              "frame": [
+                768,
+                0,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 247
+            }
+          ],
+          [
+            {
+              "frame": [
+                0,
+                256,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 256
+            },
+            {
+              "frame": [
+                256,
+                256,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 256
+            },
+            {
+              "frame": [
+                512,
+                256,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 256
+            },
+            {
+              "frame": [
+                768,
+                256,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 256
+            }
+          ],
+          [
+            {
+              "frame": [
+                0,
+                512,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 253
+            },
+            {
+              "frame": [
+                256,
+                512,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 256
+            },
+            {
+              "frame": [
+                512,
+                512,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 256
+            },
+            {
+              "frame": [
+                768,
+                512,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 256
+            }
+          ],
+          [
+            {
+              "frame": [
+                0,
+                768,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 0.9375,
+              "contentHeight": 240
+            },
+            {
+              "frame": [
+                256,
+                768,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 0.94921875,
+              "contentHeight": 243
+            },
+            {
+              "frame": [
+                512,
+                768,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 0.94921875,
+              "contentHeight": 243
+            },
+            {
+              "frame": [
+                768,
+                768,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 0.94921875,
+              "contentHeight": 243
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "src": "assets/creator-npcs/cna-star-twintails-walk.webp",
+      "width": 1024,
+      "height": 1024,
+      "sha256": "a74a6d5a998d8991318d938fdb215339220bf7dcaabb6fdfd5651e0cbbe1d4fb",
+      "sourceSHA256": "0a0271c32e5bc649914a2ed47e61ac3caf0ada636216c17fa3f72205731f5ca2",
+      "originalDimensions": [
+        1254,
+        1254
+      ],
+      "encoding": {
+        "format": "WebP",
+        "quality": 90,
+        "alpha": "preserved",
+        "runtimeMaxDimension": 1024
+      },
+      "layout": {
+        "directions": [
+          "down",
+          "left",
+          "right",
+          "up"
+        ],
+        "columns": 4,
+        "rows": 4,
+        "idleColumn": 0,
+        "walkColumns": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "frames": [
+          [
+            {
+              "frame": [
+                0,
+                0,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 0.96875,
+              "contentHeight": 241
+            },
+            {
+              "frame": [
+                256,
+                0,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 0.97265625,
+              "contentHeight": 242
+            },
+            {
+              "frame": [
+                512,
+                0,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 0.96875,
+              "contentHeight": 241
+            },
+            {
+              "frame": [
+                768,
+                0,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 0.97265625,
+              "contentHeight": 241
+            }
+          ],
+          [
+            {
+              "frame": [
+                0,
+                256,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 254
+            },
+            {
+              "frame": [
+                256,
+                256,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 254
+            },
+            {
+              "frame": [
+                512,
+                256,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 255
+            },
+            {
+              "frame": [
+                768,
+                256,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 254
+            }
+          ],
+          [
+            {
+              "frame": [
+                0,
+                512,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 256
+            },
+            {
+              "frame": [
+                256,
+                512,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 256
+            },
+            {
+              "frame": [
+                512,
+                512,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 256
+            },
+            {
+              "frame": [
+                768,
+                512,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 256
+            }
+          ],
+          [
+            {
+              "frame": [
+                0,
+                768,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 0.90625,
+              "contentHeight": 232
+            },
+            {
+              "frame": [
+                256,
+                768,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 0.90625,
+              "contentHeight": 232
+            },
+            {
+              "frame": [
+                512,
+                768,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 0.90234375,
+              "contentHeight": 231
+            },
+            {
+              "frame": [
+                768,
+                768,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 0.90625,
+              "contentHeight": 232
+            }
+          ]
+        ]
+      }
+    },
+    {
+      "src": "assets/creator-npcs/cna-orange-glasses-walk.webp",
+      "width": 1024,
+      "height": 1024,
+      "sha256": "0ed06f8b543bf4a35711b89003b593cca84589414c5d0d6ac7f4b59f1327ebd2",
+      "sourceSHA256": "8e0be1a7016971e0190d4f860dbc6dad19b607133eafa3d82e1ec4a1677620ed",
+      "originalDimensions": [
+        1254,
+        1254
+      ],
+      "encoding": {
+        "format": "WebP",
+        "quality": 90,
+        "alpha": "preserved",
+        "runtimeMaxDimension": 1024
+      },
+      "layout": {
+        "directions": [
+          "down",
+          "left",
+          "right",
+          "up"
+        ],
+        "columns": 4,
+        "rows": 4,
+        "idleColumn": 0,
+        "walkColumns": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "frames": [
+          [
+            {
+              "frame": [
+                0,
+                0,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 252
+            },
+            {
+              "frame": [
+                256,
+                0,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 252
+            },
+            {
+              "frame": [
+                512,
+                0,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 252
+            },
+            {
+              "frame": [
+                768,
+                0,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 0.984375,
+              "contentHeight": 248
+            }
+          ],
+          [
+            {
+              "frame": [
+                0,
+                256,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 256
+            },
+            {
+              "frame": [
+                256,
+                256,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 256
+            },
+            {
+              "frame": [
+                512,
+                256,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 256
+            },
+            {
+              "frame": [
+                768,
+                256,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 256
+            }
+          ],
+          [
+            {
+              "frame": [
+                0,
+                512,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 256
+            },
+            {
+              "frame": [
+                256,
+                512,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 256
+            },
+            {
+              "frame": [
+                512,
+                512,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 256
+            },
+            {
+              "frame": [
+                768,
+                512,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 1,
+              "contentHeight": 256
+            }
+          ],
+          [
+            {
+              "frame": [
+                0,
+                768,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 0.9140625,
+              "contentHeight": 234
+            },
+            {
+              "frame": [
+                256,
+                768,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 0.9140625,
+              "contentHeight": 234
+            },
+            {
+              "frame": [
+                512,
+                768,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 0.9140625,
+              "contentHeight": 234
+            },
+            {
+              "frame": [
+                768,
+                768,
+                256,
+                256
+              ],
+              "anchorX": 0.5,
+              "anchorY": 0.91796875,
+              "contentHeight": 235
+            }
+          ]
+        ]
+      }
+    }
+  ]
+}

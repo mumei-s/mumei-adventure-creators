@@ -1,5 +1,5 @@
 /** Original artwork only. Every prop has a ground anchor independent from its roof. */
-export const TOWN_ART_VERSION='20261017-town1';
+export const TOWN_ART_VERSION='20261017-town2';
 /** The loader and battle renderer share this table; narrative IDs never double as file IDs. */
 export const TOWN_BATTLE_ART_IDS=Object.freeze({'canal-mist':'ghost','clock-shadow':'franken'});
 export const TOWN_ATLAS_FILE='town-props.webp';

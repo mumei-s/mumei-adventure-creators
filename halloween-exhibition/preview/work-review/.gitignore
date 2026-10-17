@@ -1,7 +1,5 @@
-# Review media is preserved in the private comparison Site source/version.
-# Rebuild native proof with tools/render-evidence.mjs; do not preload it in the app.
-assets/*.png
-assets/*.webp
-evidence/*
-!evidence/README.md
-!evidence/measurements.json
+# Individual 8s clips are reproducible; the complete all-cast movie is tracked.
+evidence/cast-clips/
+
+# Atomic video encoder output is not a finished review artifact.
+evidence/town/.*.tmp.mp4

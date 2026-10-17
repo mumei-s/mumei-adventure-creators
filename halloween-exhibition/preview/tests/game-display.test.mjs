@@ -191,3 +191,25 @@ test('a blocked localStorage getter cannot stop initialization or local updates'
     assert.equal(root.style.getPropertyValue('--game-control-scale'), '1.1');
   });
 });
+
+test('closing and reopening settings on another game retains choices without leaving old controls active', async () => {
+  await withBrowser(async ({ init, parent, root, body, doc }) => {
+    const first = init({ controlsParent: parent, page: 'maze' });
+    first.setPreferences({ size: 70, controlSize: 125, side: 'right' });
+    const oldFrame = bySuffix(parent, '-frame');
+    first.destroy();
+    assert.equal(parent.children.length, 0);
+    assert.equal(doc.listeners.get('fullscreenchange').size, 0);
+    const second = init({ controlsParent: parent, page: 'town' });
+    assert.deepEqual(second.getPreferences(), { size: 70, controlSize: 125, side: 'right' });
+    assert.equal(body.dataset.gameDisplay, 'town');
+    assert.equal(bySuffix(parent, '-frame').value, '70');
+    assert.equal(bySuffix(parent, '-controls').value, '125');
+    assert.equal(byClass(parent, 'game-display-side').value, 'right');
+    assert.equal(doc.listeners.get('fullscreenchange').size, 1);
+    oldFrame.value = '100'; await oldFrame.emit('input');
+    assert.equal(root.style.getPropertyValue('--game-frame-scale'), '0.7');
+    await byClass(parent, 'game-display-fit').emit('click');
+    assert.deepEqual(second.getPreferences(), { size: 100, controlSize: 125, side: 'right' });
+  });
+});

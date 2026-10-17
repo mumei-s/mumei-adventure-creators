@@ -20,6 +20,27 @@ test('authored town patrols remain walkable and clear of entrances, objects and 
   for(let time=0;time<75;time+=.12){const poses=sampleTownVisitors(visitors,{state,time});for(const pose of poses){assert.ok(isTownWalkable(TOWN_START_MAP,pose.x,pose.z,.23),`${pose.id} at ${time}`);assert.ok(mapTargets(TOWN_START_MAP).every(t=>Math.hypot(t.x-pose.x,t.z-pose.z)>=1.24),`${pose.id} overlapping context target`);if(pose.walking)walking++;}for(let i=0;i<poses.length;i++)for(let j=i+1;j<poses.length;j++)if(poses[i].groupId!==poses[j].groupId)assert.ok(Math.hypot(poses[i].x-poses[j].x,poses[i].z-poses[j].z)>1.2);}
   assert.ok(walking>100,'visitors genuinely patrol rather than standing in place');
 });
+test('every actual town patrol accelerates and brakes to rest while gait follows accepted distance across loops',()=>{
+ const {visitors}=placeTownVisitors(roster()),state=initialTownState(),groups=[...new Map(visitors.map(visitor=>[visitor.groupId,visitor])).values()];
+ const pose=(visitor,time)=>sampleTownVisitors([visitor],{state,time})[0];
+ for(const visitor of groups){const route=visitor.route;
+  for(const segment of route.segments.filter(s=>s.length>0)){
+   const start=route.duration+segment.start+segment.wait-route.phaseOffset,end=start+segment.duration;
+   for(const time of[start,end]){const at=pose(visitor,time),before=pose(visitor,time-.001),after=pose(visitor,time+.001);assert.ok(at.speed<1e-9);assert.ok(before.speed<.0001);assert.ok(after.speed<.0001);assert.ok(Math.hypot(after.x-before.x,after.z-before.z)<.000001);}
+   const middle=pose(visitor,start+segment.duration/2);assert.ok(middle.walking);assert.ok(middle.speed<=route.speed+1e-10);assert.ok(middle.distance>segment.distance);assert.ok(Math.abs(middle.phase-((middle.distance/1.05*Math.PI*2)%(Math.PI*2)))<1e-9);
+  }
+  const wrap=route.duration-route.phaseOffset,earlier=pose(visitor,wrap-.001),later=pose(visitor,wrap+.001);assert.ok(Math.abs(later.distance-earlier.distance)<.000001);assert.ok(Math.hypot(later.x-earlier.x,later.z-earlier.z)<.000001);
+ }
+});
+test('town visitors retain their incoming heading, turn only while stopped, and keep heading continuous at segment and loop joins',()=>{
+ const {visitors}=placeTownVisitors(roster()),state=initialTownState(),groups=[...new Map(visitors.map(visitor=>[visitor.groupId,visitor])).values()];
+ const pose=(visitor,time)=>sampleTownVisitors([visitor],{state,time})[0],difference=(a,b)=>Math.atan2(Math.sin(a-b),Math.cos(a-b));let turns=0;
+ for(const visitor of groups){const route=visitor.route;for(const segment of route.segments){
+  const time=route.duration+segment.start-route.phaseOffset,before=pose(visitor,time-.0001),at=pose(visitor,time+.0001);assert.ok(Math.abs(difference(before.yaw,at.yaw))<.0001,`${visitor.id} heading at segment boundary`);
+  if(Math.abs(segment.turn)<.001)continue;const begin=time+(segment.wait-route.turnDuration)/2,mid=pose(visitor,begin+route.turnDuration/2),out=pose(visitor,begin+route.turnDuration);
+  assert.equal(mid.walking,false);assert.equal(mid.speed,0);assert.equal(mid.turning,true);assert.ok(Math.abs(difference(mid.yaw,segment.previousYaw))>.1);assert.ok(Math.abs(difference(out.yaw,segment.yaw))<1e-9);assert.equal(mid.animationAssetComplete,false);turns++;
+ }}assert.ok(turns>10);
+});
 test('distance selection is bounded by whole groups, retains side companions, and excludes offscreen/interior visitors',()=>{
   const {visitors}=placeTownVisitors(roster()),state=initialTownState(),poses=sampleTownVisitors(visitors,{state,time:12}),selected=chooseTownVisitorGroups(poses,state,3),ids=new Set(selected.map(p=>p.groupId));assert.ok(ids.size<=3);
   for(const id of ids)assert.equal(selected.filter(p=>p.groupId===id).length,visitors.filter(p=>p.groupId===id).length);

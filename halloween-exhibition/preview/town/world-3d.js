@@ -1,6 +1,6 @@
 import * as THREE from '../maze/vendor/three.module.js';
 import {getTownMap} from './story-data.js';
-import {playerPose,loadArtImage} from '../maze/rpg-art.js?v=20261017-review1';
+import {playerPose,loadArtImage} from '../maze/rpg-art.js?v=20261017-rig1';
 import {townVisualSeed as seed} from './visual-data.js';
 import {withDeadline} from '../transition-effects.js?v=20261016-living1';
 
@@ -233,7 +233,7 @@ export function createTownWorld3D({canvas,art={images:{},version:0},onContextLos
   scene.add(ambient,sun,sun.target);
   const warmLight=new THREE.PointLight('#ffd78b',1.4,4,2);scene.add(warmLight);
   const lampLights=Array.from({length:4},()=>{const light=new THREE.PointLight('#ffcf87',1.1,5,2);scene.add(light);return light;});
-  const actorRoot=new THREE.Group();scene.add(actorRoot);const textureResources=new Set(),actors=new Map(),imageTextures=new WeakMap(),spriteFrames=new Map(),raycaster=new THREE.Raycaster(),plane=new THREE.Plane(new THREE.Vector3(0,1,0),0),pointer=new THREE.Vector2(),hitPoint=new THREE.Vector3(),projected=new THREE.Vector3(),abort=new AbortController();
+  const actorRoot=new THREE.Group();scene.add(actorRoot);const textureResources=new Set(),actors=new Map(),imageTextures=new WeakMap(),spriteFrames=new Map(),liveFrames=new Map(),raycaster=new THREE.Raycaster(),plane=new THREE.Plane(new THREE.Vector3(0,1,0),0),pointer=new THREE.Vector2(),hitPoint=new THREE.Vector3(),projected=new THREE.Vector3(),abort=new AbortController();
   const assets={images:{},residentFrames:null,loaded:[],failed:[]};let scenery=null,mapId=null,disposed=false,lost=false,prepared=false,cameraTarget=null,lastView=null,version=0,frameSerial=0,lastFrameSignature='';
   const imageIds=new WeakMap();let nextImageId=1;
   function imageId(sprite){const image=sprite?.image||sprite;if(!image||typeof image!=='object')return 0;if(!imageIds.has(image))imageIds.set(image,nextImageId++);return imageIds.get(image);}
@@ -254,12 +254,24 @@ export function createTownWorld3D({canvas,art={images:{},version:0},onContextLos
     const cropScale=Math.min(1,512/Math.max(frame[2],frame[3])),cv=makeCanvas(Math.max(1,Math.ceil(frame[2]*cropScale)),Math.max(1,Math.ceil(frame[3]*cropScale)));const ctx=cv.getContext('2d');ctx.drawImage(image,...frame,0,0,cv.width,cv.height);
     const texture=new THREE.CanvasTexture(cv);texture.colorSpace=THREE.SRGBColorSpace;texture.minFilter=THREE.LinearFilter;texture.magFilter=THREE.LinearFilter;texture.generateMipmaps=false;textureResources.add(texture);frames.set(key,texture);spriteFrames.set(texture,{canvas:cv,data:null,frames,key,used:frameSerial,bytes:cv.width*cv.height*4});return texture;
   }
+  function releaseLiveTexture(entry){
+    if(!entry.liveTexture)return;entry.liveTexture.dispose();textureResources.delete(entry.liveTexture);liveFrames.delete(entry.liveTexture);entry.liveTexture=null;entry.liveImage=null;entry.livePoseVersion=undefined;
+  }
+  function actorTexture(entry,sprite){
+    if(!Number.isFinite(sprite.poseVersion)){releaseLiveTexture(entry);return spriteTexture(sprite);}
+    const image=sprite.image||sprite,frame=sprite.frame||[0,0,image.width,image.height];
+    // Articulated actors repaint one canvas. Its pose revision updates the same GPU allocation.
+    if(entry.liveImage!==image){releaseLiveTexture(entry);const texture=new THREE.CanvasTexture(image);texture.colorSpace=THREE.SRGBColorSpace;texture.minFilter=texture.magFilter=THREE.LinearFilter;texture.generateMipmaps=false;textureResources.add(texture);entry.liveTexture=texture;entry.liveImage=image;liveFrames.set(texture,{canvas:image,data:null,frame,bytes:image.width*image.height*4});}
+    const texture=entry.liveTexture,record=liveFrames.get(texture),frameKey=frame.join(',');
+    if(entry.livePoseVersion!==sprite.poseVersion||record.frameKey!==frameKey||record.bytes!==image.width*image.height*4){texture.needsUpdate=true;record.data=null;record.frame=[...frame];record.frameKey=frameKey;record.bytes=image.width*image.height*4;entry.livePoseVersion=sprite.poseVersion;}
+    texture.repeat.set(frame[2]/image.width,frame[3]/image.height);texture.offset.set(frame[0]/image.width,1-(frame[1]+frame[3])/image.height);return texture;
+  }
   const shadowCanvas=makeCanvas(64,64),shadowContext=shadowCanvas.getContext('2d'),gradient=shadowContext.createRadialGradient(32,32,4,32,32,32);gradient.addColorStop(0,'#091e2c88');gradient.addColorStop(1,'#091e2c00');shadowContext.fillStyle=gradient;shadowContext.fillRect(0,0,64,64);
   const shadowTexture=new THREE.CanvasTexture(shadowCanvas);textureResources.add(shadowTexture);const shadowMaterial=new THREE.MeshBasicMaterial({map:shadowTexture,transparent:true,depthWrite:false,opacity:.8}),shadowGeometry=new THREE.PlaneGeometry(1,1);textureResources.add(shadowMaterial);textureResources.add(shadowGeometry);
   function actor(id,sprite,x,z,height,interactive=false){
     if(!sprite)return;let entry=actors.get(id);if(!entry){const material=new THREE.SpriteMaterial({transparent:true,alphaTest:.075,depthWrite:true,depthTest:true,fog:true});const object=new THREE.Sprite(material);object.userData.actorId=id;const shadow=new THREE.Mesh(shadowGeometry,shadowMaterial);shadow.rotation.x=-Math.PI/2;shadow.position.y=.026;actorRoot.add(shadow,object);entry={object,shadow,material};actors.set(id,entry);}
     const frame=sprite.frame||[0,0,(sprite.image||sprite).width,(sprite.image||sprite).height],fullHeight=height*frame[3]/(sprite.contentHeight||frame[3]);
-    const texture=spriteTexture(sprite);if(entry.object.material.map!==texture){entry.object.material.map=texture;entry.object.material.needsUpdate=true;}entry.object.center.set(sprite.anchorX??.5,1-(sprite.anchorY??1));entry.object.scale.set(fullHeight*frame[2]/frame[3],fullHeight,1);entry.object.position.set(x,.035,z);entry.object.visible=true;entry.shadow.position.set(x,.026,z);entry.shadow.scale.set(height*.58,height*.43,1);entry.shadow.visible=true;entry.sprite=sprite;entry.interactive=interactive;entry.frame=frame;
+    const texture=actorTexture(entry,sprite);if(entry.object.material.map!==texture){entry.object.material.map=texture;entry.object.material.needsUpdate=true;}entry.object.center.set(sprite.anchorX??.5,1-(sprite.anchorY??1));entry.object.scale.set(fullHeight*frame[2]/frame[3],fullHeight,1);entry.object.position.set(x,.035,z);entry.object.visible=true;entry.shadow.position.set(x,.026,z);entry.shadow.scale.set(height*.58,height*.43,1);entry.shadow.visible=true;entry.sprite=sprite;entry.interactive=interactive;entry.frame=frame;
   }
   function prepareMap(map){
     if(map.id===mapId&&scenery)return;scenery?.dispose();if(scenery)scene.remove(scenery.root);scenery=createTownSceneGeometry(map);scene.add(scenery.root);mapId=map.id;cameraTarget=null;
@@ -274,9 +286,9 @@ export function createTownWorld3D({canvas,art={images:{},version:0},onContextLos
     if(lastView?.width!==width||lastView?.height!==height||lastView?.ratio!==ratio){renderer.setPixelRatio(ratio);renderer.setSize(width,height,false);}return {width,height,ratio};
   }
   function releaseUnusedActors(){
-    for(const [id,entry]of actors)if(!entry.object.visible){actorRoot.remove(entry.object,entry.shadow);entry.material.dispose();actors.delete(id);}
+    for(const [id,entry]of actors)if(!entry.object.visible){actorRoot.remove(entry.object,entry.shadow);releaseLiveTexture(entry);entry.material.dispose();actors.delete(id);}
     // The cropped-frame cache includes the original protagonist and only recent visitor groups.
-    const pinned=new Set([...actors.values()].map(entry=>entry.material.map));let bytes=[...spriteFrames.values()].reduce((sum,frame)=>sum+frame.bytes,0);
+    const pinned=new Set([...actors.values()].map(entry=>entry.material.map));let bytes=[...spriteFrames.values(),...liveFrames.values()].reduce((sum,frame)=>sum+frame.bytes,0);
     for(const [texture,frame]of[...spriteFrames].sort((a,b)=>a[1].used-b[1].used)){
       if(bytes<=32*1024*1024&&spriteFrames.size<=80)break;if(pinned.has(texture))continue;
       bytes-=frame.bytes;frame.frames.delete(frame.key);frame.canvas.width=frame.canvas.height=1;texture.dispose();textureResources.delete(texture);spriteFrames.delete(texture);
@@ -290,7 +302,7 @@ export function createTownWorld3D({canvas,art={images:{},version:0},onContextLos
   }
   function render({state,time=0,dt=.016,motion=true,pixelRatio=1,walking=false,walkPhase=0,facing=state?.facing||'down',brightness=75,lantern=true,creatorActors=[]}={}){
     if(disposed||lost||!state?.position)return false;frameSerial++;const map=getTownMap(state.mapId);prepareMap(map);const view=resize(pixelRatio),parameters=town3DCameraParameters(view.width,view.height,map.id!=='lantern-town');
-    const signature=JSON.stringify([map.id,view.width,view.height,view.ratio,state.position.x,state.position.z,facing,brightness,lantern,motion,version,art.version,assets.loaded.length,state.flags,creatorActors.map(actor=>[actor.id,actor.x,actor.z,actor.heightPx,actor.interactive,imageId(actor.sprite),actor.sprite?.frame,actor.sprite?.anchorX,actor.sprite?.anchorY,actor.sprite?.contentHeight])]);
+    const heroSprite=playerPose(art,facing,walking&&motion,walkPhase),signature=JSON.stringify([map.id,view.width,view.height,view.ratio,state.position.x,state.position.z,facing,brightness,lantern,motion,version,art.version,assets.loaded.length,state.flags,heroSprite?.poseVersion,imageId(heroSprite),heroSprite?.frame,(map.npcs||[]).map(npc=>art.rigs?.get?.('resident:'+npc.id)?.poseVersion),creatorActors.map(actor=>[actor.id,actor.x,actor.z,actor.heightPx,actor.interactive,imageId(actor.sprite),actor.sprite?.frame,actor.sprite?.anchorX,actor.sprite?.anchorY,actor.sprite?.contentHeight,actor.sprite?.poseVersion])]);
     if(!motion&&signature===lastFrameSignature)return false;
     Object.assign(camera,{left:parameters.left,right:parameters.right,top:parameters.top,bottom:parameters.bottom});camera.updateProjectionMatrix();
     const target={x:state.position.x,z:state.position.z-.85},amount=cameraTarget&&motion?1-Math.exp(-clamp(dt,0,.1)/.12):1;
@@ -302,9 +314,9 @@ export function createTownWorld3D({canvas,art={images:{},version:0},onContextLos
     const nearLamps=scenery.lamps.filter(lamp=>lamp.lit).sort((a,b)=>Math.hypot(a.x-state.position.x,a.z-state.position.z)-Math.hypot(b.x-state.position.x,b.z-state.position.z)).slice(0,lampLights.length);
     lampLights.forEach((light,index)=>{const lamp=nearLamps[index];light.visible=!!lamp;if(lamp)light.position.set(lamp.x,lamp.y,lamp.z);});revealPlayer(state.position);
     for(const entry of actors.values()){entry.object.visible=false;entry.shadow.visible=false;}
-    actor('hero',playerPose(art,facing,walking&&motion,walkPhase),state.position.x,state.position.z,1.6);
+    actor('hero',heroSprite,state.position.x,state.position.z,1.6);
     for(const item of creatorActors)if(item.sprite)actor(item.id,item.sprite,item.x,item.z,item.heightPx?item.heightPx/48:1.16,item.interactive!==false);
-    for(const npc of map.npcs||[]){const frame=assets.residentFrames?.[npc.appearance];if(frame&&assets.images.residents)actor('resident-'+npc.id,{image:assets.images.residents,...frame},npc.x,npc.z,1.6*(frame.heightRatio||1));}
+    for(const npc of map.npcs||[]){const frame=assets.residentFrames?.[npc.appearance],liveSprite=art.rigs?.get?.('resident:'+npc.id);if(liveSprite?.image)actor('resident-'+npc.id,liveSprite,npc.x,npc.z,1.6*(frame?.heightRatio||1));else if(frame&&assets.images.residents)actor('resident-'+npc.id,{image:assets.images.residents,...frame},npc.x,npc.z,1.6*(frame.heightRatio||1));}
     releaseUnusedActors();
     for(const star of scenery.stars)star.visible=!state.flags?.stamps?.includes(star.userData.starId);
     // A gentle highlight travels across real water geometry; motion preference freezes it.
@@ -314,14 +326,14 @@ export function createTownWorld3D({canvas,art={images:{},version:0},onContextLos
   function setRay(x,y){if(!lastView)return false;const point=typeof x==='object'?x:{x,y};pointer.set(point.x/lastView.width*2-1,1-point.y/lastView.height*2);raycaster.setFromCamera(pointer,camera);return true;}
   function screenToWorld(x,y){if(!setRay(x,y)||!raycaster.ray.intersectPlane(plane,hitPoint))return null;return {x:hitPoint.x,z:hitPoint.z};}
   function worldToScreen(x,z){if(!lastView)return null;const point=typeof x==='object'?x:{x,z};projected.set(point.x,point.y||0,point.z).project(camera);return {x:(projected.x+1)*lastView.width/2,y:(1-projected.y)*lastView.height/2};}
-  function opaque(hit){const texture=hit.object.material.map,frame=spriteFrames.get(texture);if(!frame||!hit.uv)return true;try{frame.data??=frame.canvas.getContext('2d').getImageData(0,0,frame.canvas.width,frame.canvas.height);const x=clamp(Math.floor(hit.uv.x*frame.data.width),0,frame.data.width-1),y=clamp(Math.floor((1-hit.uv.y)*frame.data.height),0,frame.data.height-1);return frame.data.data[(y*frame.data.width+x)*4+3]>55;}catch{return true;}}
+  function opaque(hit){const texture=hit.object.material.map,frame=spriteFrames.get(texture)||liveFrames.get(texture);if(!frame||!hit.uv)return true;try{frame.data??=frame.canvas.getContext('2d').getImageData(0,0,frame.canvas.width,frame.canvas.height);const crop=frame.frame||[0,0,frame.data.width,frame.data.height],x=clamp(Math.floor(crop[0]+hit.uv.x*crop[2]),0,frame.data.width-1),y=clamp(Math.floor(crop[1]+(1-hit.uv.y)*crop[3]),0,frame.data.height-1);return frame.data.data[(y*frame.data.width+x)*4+3]>55;}catch{return true;}}
   function pickVisitor(x,y){
     if(!setRay(x,y))return null;const candidates=[...actors.values()].filter(entry=>entry.object.visible).map(entry=>entry.object),hits=raycaster.intersectObjects(candidates,false);
     const occlusion=scenery?raycaster.intersectObjects(scenery.root.children.filter(item=>item.userData.occluder&&item.visible&&!item.userData.faded),false)[0]?.distance??Infinity:Infinity;
     for(const hit of hits){if(hit.distance>occlusion+.05)return null;if(!opaque(hit))continue;const id=hit.object.userData.actorId,entry=actors.get(id);return entry.interactive?id:null;}return null;
   }
-  return {ready,render,screenToWorld,worldToScreen,pickVisitor,invalidate(){version++;},status:()=>({mode:'3d',ready:prepared&&!disposed&&!lost,loaded:[...assets.loaded],failed:[...assets.failed],mapId,version,actors:actors.size,spriteFrames:spriteFrames.size,spriteBytes:[...spriteFrames.values()].reduce((sum,frame)=>sum+frame.bytes,0),drawCalls:renderer.info?.render?.calls||0}),
-    destroy(){if(disposed)return;disposed=true;abort.abort();canvas.removeEventListener('webglcontextlost',contextLost);scenery?.dispose();sun.shadow.map?.dispose();for(const entry of actors.values())entry.material.dispose();actors.clear();spriteFrames.clear();for(const resource of textureResources)resource.dispose?.();textureResources.clear();actorRoot.clear();renderer.dispose();scene.clear();lastView=null;cameraTarget=null;},
+  return {ready,render,screenToWorld,worldToScreen,pickVisitor,invalidate(){version++;},status:()=>({mode:'3d',ready:prepared&&!disposed&&!lost,loaded:[...assets.loaded],failed:[...assets.failed],mapId,version,actors:actors.size,spriteFrames:spriteFrames.size,liveSprites:liveFrames.size,spriteBytes:[...spriteFrames.values(),...liveFrames.values()].reduce((sum,frame)=>sum+frame.bytes,0),drawCalls:renderer.info?.render?.calls||0}),
+    destroy(){if(disposed)return;disposed=true;abort.abort();canvas.removeEventListener('webglcontextlost',contextLost);scenery?.dispose();sun.shadow.map?.dispose();for(const entry of actors.values()){releaseLiveTexture(entry);entry.material.dispose();}actors.clear();spriteFrames.clear();liveFrames.clear();for(const resource of textureResources)resource.dispose?.();textureResources.clear();actorRoot.clear();renderer.dispose();scene.clear();lastView=null;cameraTarget=null;},
   };
 }
 

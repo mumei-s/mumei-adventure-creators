@@ -1,0 +1,468 @@
+{
+  "version": 1,
+  "id": "takechi-bread-avatar",
+  "label": "たけち",
+  "archetype": "bread",
+  "atlas": "main",
+  "atlases": {
+    "main": "./parts.webp"
+  },
+  "width": 1024,
+  "height": 1024,
+  "contentHeight": 159,
+  "output": {
+    "width": 320,
+    "height": 320,
+    "anchorX": 0.5,
+    "anchorY": 0.94,
+    "scale": 1
+  },
+  "directions": [
+    "down",
+    "right",
+    "up",
+    "left"
+  ],
+  "views": {
+    "down": {
+      "heading": 0,
+      "atlas": "main",
+      "parts": {
+        "body": {
+          "rect": [
+            29.6,
+            33.6,
+            196.8,
+            188
+          ],
+          "pivot": [
+            98.4,
+            94
+          ],
+          "contentHeight": 188,
+          "sourceRect": [
+            29,
+            77,
+            246,
+            235
+          ],
+          "sourceKey": "body_down",
+          "independentlyAuthored": true
+        },
+        "appendageBase": {
+          "rect": [
+            62.400000000000006,
+            344.8,
+            130.4,
+            78.4
+          ],
+          "pivot": [
+            14.4,
+            39.2
+          ],
+          "contentHeight": 78.4,
+          "sourceRect": [
+            85,
+            456,
+            163,
+            98
+          ],
+          "sourceKey": "appendageBase_down",
+          "independentlyAuthored": true,
+          "end": [
+            112,
+            40
+          ],
+          "span": 97.60328
+        },
+        "appendageTip": {
+          "rect": [
+            58.400000000000006,
+            593.6,
+            138.4,
+            92
+          ],
+          "pivot": [
+            16,
+            48.800000000000004
+          ],
+          "contentHeight": 92,
+          "sourceRect": [
+            86,
+            720,
+            173,
+            115
+          ],
+          "sourceKey": "appendageTip_down",
+          "independentlyAuthored": true,
+          "end": [
+            114.4,
+            44
+          ],
+          "span": 98.517
+        }
+      },
+      "rig": {
+        "appendageRoot": [
+          54,
+          -72
+        ],
+        "appendageAngle": 0
+      }
+    },
+    "right": {
+      "heading": 1.5707963267948966,
+      "atlas": "main",
+      "parts": {
+        "body": {
+          "rect": [
+            293.6,
+            36,
+            180,
+            184
+          ],
+          "pivot": [
+            90,
+            92
+          ],
+          "contentHeight": 184,
+          "sourceRect": [
+            359,
+            81,
+            225,
+            230
+          ],
+          "sourceKey": "body_right",
+          "independentlyAuthored": true
+        },
+        "appendageBase": {
+          "rect": [
+            327.20000000000005,
+            352,
+            113.60000000000001,
+            64
+          ],
+          "pivot": [
+            12,
+            32
+          ],
+          "contentHeight": 64,
+          "sourceRect": [
+            406,
+            465,
+            142,
+            80
+          ],
+          "sourceKey": "appendageBase_right",
+          "independentlyAuthored": true,
+          "end": [
+            98.4,
+            35.2
+          ],
+          "span": 86.45924000000001
+        },
+        "appendageTip": {
+          "rect": [
+            312,
+            594.4,
+            143.20000000000002,
+            91.2
+          ],
+          "pivot": [
+            16.8,
+            52.800000000000004
+          ],
+          "contentHeight": 91.2,
+          "sourceRect": [
+            398,
+            716,
+            179,
+            114
+          ],
+          "sourceKey": "appendageTip_right",
+          "independentlyAuthored": true,
+          "end": [
+            120,
+            42.400000000000006
+          ],
+          "span": 103.72270400000001
+        }
+      },
+      "rig": {
+        "appendageRoot": [
+          54,
+          -72
+        ],
+        "appendageAngle": 0
+      }
+    },
+    "up": {
+      "heading": 3.141592653589793,
+      "atlas": "main",
+      "parts": {
+        "body": {
+          "rect": [
+            540,
+            33.6,
+            200,
+            188
+          ],
+          "pivot": [
+            100,
+            94
+          ],
+          "contentHeight": 188,
+          "sourceRect": [
+            658,
+            77,
+            250,
+            235
+          ],
+          "sourceKey": "body_up",
+          "independentlyAuthored": true
+        },
+        "appendageBase": {
+          "rect": [
+            578.4,
+            350.40000000000003,
+            122.4,
+            67.2
+          ],
+          "pivot": [
+            108,
+            33.6
+          ],
+          "contentHeight": 67.2,
+          "sourceRect": [
+            708,
+            464,
+            153,
+            84
+          ],
+          "sourceKey": "appendageBase_up",
+          "independentlyAuthored": true,
+          "end": [
+            14.4,
+            33.6
+          ],
+          "span": 93.60000000000001
+        },
+        "appendageTip": {
+          "rect": [
+            570.4,
+            594.4,
+            139.20000000000002,
+            91.2
+          ],
+          "pivot": [
+            123.2,
+            46.400000000000006
+          ],
+          "contentHeight": 91.2,
+          "sourceRect": [
+            698,
+            720,
+            174,
+            114
+          ],
+          "sourceKey": "appendageTip_up",
+          "independentlyAuthored": true,
+          "end": [
+            20,
+            44.800000000000004
+          ],
+          "span": 103.2124
+        }
+      },
+      "rig": {
+        "appendageRoot": [
+          54,
+          -72
+        ],
+        "appendageAngle": 0
+      }
+    },
+    "left": {
+      "heading": -1.5707963267948966,
+      "atlas": "main",
+      "parts": {
+        "body": {
+          "rect": [
+            809.6,
+            35.2,
+            172.8,
+            184.8
+          ],
+          "pivot": [
+            86.4,
+            92.4
+          ],
+          "contentHeight": 184.8,
+          "sourceRect": [
+            1008,
+            79,
+            216,
+            231
+          ],
+          "sourceKey": "body_left",
+          "independentlyAuthored": true
+        },
+        "appendageBase": {
+          "rect": [
+            838.4000000000001,
+            351.20000000000005,
+            114.4,
+            64.8
+          ],
+          "pivot": [
+            100.80000000000001,
+            33.6
+          ],
+          "contentHeight": 64.8,
+          "sourceRect": [
+            1035,
+            466,
+            143,
+            81
+          ],
+          "sourceKey": "appendageBase_left",
+          "independentlyAuthored": true,
+          "end": [
+            13.600000000000001,
+            34.4
+          ],
+          "span": 87.203672
+        },
+        "appendageTip": {
+          "rect": [
+            828.8000000000001,
+            597.6,
+            134.4,
+            84.80000000000001
+          ],
+          "pivot": [
+            116.80000000000001,
+            44
+          ],
+          "contentHeight": 84.80000000000001,
+          "sourceRect": [
+            1014,
+            731,
+            168,
+            106
+          ],
+          "sourceKey": "appendageTip_left",
+          "independentlyAuthored": true,
+          "end": [
+            17.6,
+            41.6
+          ],
+          "span": 99.229032
+        }
+      },
+      "rig": {
+        "appendageRoot": [
+          -54,
+          -72
+        ],
+        "appendageAngle": 3.141592653589793
+      }
+    }
+  },
+  "rig": {
+    "bodyHeight": 160,
+    "bodyCenter": [
+      0,
+      -80
+    ],
+    "appendageRoot": [
+      57,
+      -72
+    ],
+    "appendageBase": 22,
+    "appendageTip": 43,
+    "appendageAngle": 0,
+    "appendageBend": 0
+  },
+  "continuousTurnComplete": false,
+  "attackArtComplete": false,
+  "artworkComplete": false,
+  "authoredPartCount": 12,
+  "review": {
+    "passed": true,
+    "status": "native35-60-shape-and-motion-reviewed",
+    "scope": "four-cardinal-new-parts-fixed-shape-physical-motion",
+    "reviewer": "town-webgl-independent-source-and-native-review",
+    "continuousTurnComplete": false,
+    "attackArtComplete": false,
+    "checks": [
+      "Exact approved mascot identity compared at actual35/60px",
+      "No full-body squash/bob or added limbs",
+      "Fixed body origin, shape and scale over180 frames",
+      "Contact world drift0 after initial projection",
+      "Pause and reduced-motion clock freeze",
+      "Bread exactly one two-link appendage; flower exactly two tiny feet with original book/die"
+    ]
+  },
+  "provenance": {
+    "method": "built-in-imagegen",
+    "sourceReference": "adopted-reference.png",
+    "sourceReferenceSha256": "e7292753dbc8e5c0e8b63335f0e344127ca3315f2ec3503a0f2880b0242b8ac7",
+    "sourceRaw": "parts-front-v1-original.png",
+    "sourceRawSha256": "010b8b2d82b6fd79b57aa9b94c029fc0a13cc60eee07c20f2209925469859aaf",
+    "sourceRawSize": [
+      1254,
+      1254
+    ],
+    "sourceWholeBodySlicing": false,
+    "packing": "Core alpha>230 connected-component ownership; original RGBA retained with 3px antialias margin. No resizing, redrawing, morphing or reference whole-body slicing.",
+    "sharedLimbParts": false,
+    "correctedSources": [],
+    "limitations": [
+      "Four cardinal body/head or mascot views only; no independently painted intermediate turn surfaces.",
+      "Species-specific mascot rig required; human arms/legs are not substituted."
+    ],
+    "deliveryPacking": "Only atlas packing and Lanczos resampling; rig dimensions, costume pixels and alpha remain authored.",
+    "authoringSources": [
+      {
+        "key": "main",
+        "originalSHA256": "af000d69e538796e6a31500f0aa20fa63f5a7afc445c51abb43bb7302285a29a",
+        "authoringSHA256": "19bfc787d00868026e63964c03e4fc39fc29b7bb97925b54800dfd96c16034be",
+        "sourceWidth": 1280,
+        "sourceHeight": 1280,
+        "transform": {
+          "scale": 0.8,
+          "x": 0,
+          "y": 0
+        }
+      }
+    ]
+  },
+  "referenceComposedBounds": {
+    "down": {
+      "x": 217,
+      "y": 241,
+      "w": 212,
+      "h": 158
+    },
+    "right": {
+      "x": 222,
+      "y": 241,
+      "w": 206,
+      "h": 158
+    },
+    "up": {
+      "x": 216,
+      "y": 241,
+      "w": 211,
+      "h": 158
+    },
+    "left": {
+      "x": 174,
+      "y": 240,
+      "w": 200,
+      "h": 159
+    }
+  },
+  "animationReviewed": true
+}

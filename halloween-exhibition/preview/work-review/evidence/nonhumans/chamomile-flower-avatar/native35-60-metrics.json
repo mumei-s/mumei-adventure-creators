@@ -1,0 +1,185 @@
+{
+  "id": "chamomile-flower-avatar",
+  "archetype": "flower",
+  "contentHeight": 246,
+  "composed": [
+    {
+      "x": 215,
+      "y": 162,
+      "w": 170,
+      "h": 238
+    },
+    {
+      "x": 233,
+      "y": 163,
+      "w": 134,
+      "h": 246
+    },
+    {
+      "x": 212,
+      "y": 163,
+      "w": 177,
+      "h": 237
+    },
+    {
+      "x": 233,
+      "y": 163,
+      "w": 134,
+      "h": 246
+    }
+  ],
+  "views": [
+    {
+      "view": "down",
+      "native35": {
+        "x": 68,
+        "y": 101,
+        "w": 24,
+        "h": 34
+      },
+      "native60": {
+        "x": 59,
+        "y": 77,
+        "w": 42,
+        "h": 58
+      },
+      "bodyShapeDrift": 0,
+      "appendageBoneLengthError": 0,
+      "maxStanceDrift": 0,
+      "minSupport": 1,
+      "allStoppedPlanted": true,
+      "motionFalseClockFrozen": true,
+      "pausedReturnsSameSnapshot": true,
+      "feetCount": 2,
+      "appendages": 0,
+      "animation": [
+        {
+          "frame": 30,
+          "feet": 1
+        },
+        {
+          "frame": 60,
+          "feet": 2
+        },
+        {
+          "frame": 90,
+          "feet": 1
+        }
+      ]
+    },
+    {
+      "view": "right",
+      "native35": {
+        "x": 71,
+        "y": 101,
+        "w": 18,
+        "h": 35
+      },
+      "native60": {
+        "x": 64,
+        "y": 77,
+        "w": 32,
+        "h": 60
+      },
+      "bodyShapeDrift": 0,
+      "appendageBoneLengthError": 0,
+      "maxStanceDrift": 0,
+      "minSupport": 1,
+      "allStoppedPlanted": true,
+      "motionFalseClockFrozen": true,
+      "pausedReturnsSameSnapshot": true,
+      "feetCount": 2,
+      "appendages": 0,
+      "animation": [
+        {
+          "frame": 30,
+          "feet": 1
+        },
+        {
+          "frame": 60,
+          "feet": 2
+        },
+        {
+          "frame": 90,
+          "feet": 1
+        }
+      ]
+    },
+    {
+      "view": "up",
+      "native35": {
+        "x": 67,
+        "y": 101,
+        "w": 26,
+        "h": 34
+      },
+      "native60": {
+        "x": 59,
+        "y": 77,
+        "w": 43,
+        "h": 58
+      },
+      "bodyShapeDrift": 0,
+      "appendageBoneLengthError": 0,
+      "maxStanceDrift": 0,
+      "minSupport": 1,
+      "allStoppedPlanted": true,
+      "motionFalseClockFrozen": true,
+      "pausedReturnsSameSnapshot": true,
+      "feetCount": 2,
+      "appendages": 0,
+      "animation": [
+        {
+          "frame": 30,
+          "feet": 1
+        },
+        {
+          "frame": 60,
+          "feet": 2
+        },
+        {
+          "frame": 90,
+          "feet": 1
+        }
+      ]
+    },
+    {
+      "view": "left",
+      "native35": {
+        "x": 70,
+        "y": 101,
+        "w": 20,
+        "h": 35
+      },
+      "native60": {
+        "x": 64,
+        "y": 77,
+        "w": 32,
+        "h": 60
+      },
+      "bodyShapeDrift": 0,
+      "appendageBoneLengthError": 0,
+      "maxStanceDrift": 0,
+      "minSupport": 1,
+      "allStoppedPlanted": true,
+      "motionFalseClockFrozen": true,
+      "pausedReturnsSameSnapshot": true,
+      "feetCount": 2,
+      "appendages": 0,
+      "animation": [
+        {
+          "frame": 30,
+          "feet": 1
+        },
+        {
+          "frame": 60,
+          "feet": 2
+        },
+        {
+          "frame": 90,
+          "feet": 1
+        }
+      ]
+    }
+  ]
+}

@@ -18,6 +18,8 @@ export function motionSprite(image,layout,{time=0,motion=true,walking=false,faci
   return{image,...frame,contentHeight:layout.referenceHeightPixels||frame.contentHeight,frameIndex:index,flip,animated:true,turning,animationAssetComplete:false,animationLimitations:['four-walk-poses','missing-authored-turn','missing-authored-attack']};
 }
 export function monsterSprite(art,id,options={}){
+  const articulated=options.battle?art.rigs?.battle('monster:'+id+':battle',{...options,effect:options.effect}):art.rigs?.get('monster:'+id);
+  if(articulated)return articulated;
   const sprite=art.images[id],layout=art.monsterLayouts?.[id];
   return layout&&sprite?motionSprite(sprite.image||sprite,layout,options):sprite||null;
 }

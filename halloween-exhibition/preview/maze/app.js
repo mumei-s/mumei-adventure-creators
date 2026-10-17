@@ -1,6 +1,6 @@
 import {createFrameLoop} from './frame-loop.js?v=20261017-review1';
 import {advanceLocomotion,createDistanceTrail} from './movement-runtime.js?v=20261017-review1';
-import {monsterSprite} from './monster-motion.js?v=20261017-review1';
+import {monsterSprite} from './monster-motion.js?v=20261017-rig1';
 import {initTransitionEffects,withDeadline,fetchJSON} from '../transition-effects.js?v=20261016-living1';
 import {loadArtworkImage} from '../magical-loading.js?v=20261015-journey1';
 import {initViewport} from '../viewport.js?v=20261016-ios1';
@@ -11,7 +11,7 @@ import {initMinimapSize} from './minimap-size.js?v=20261016-battle-visible1';
 import {libraryFromArchive} from './library-catalog.js?v=20261015-clear1';
 import {WALKING_SPEED_KEY,normalizeWalkingSpeed,advanceWithSubsteps} from './walking-speed.js?v=20261015-clear1';
 import {createRewardStore,newRunId,eligibleForEnding} from './clear-reward.js?v=20261015-clear1';
-import {renderEnding} from './ending-ui.js?v=20261016-living1';
+import {renderEnding} from './ending-ui.js?v=20261017-rig1';
 import {createSoundCheck} from './sound-check.js?v=20261016-ios1';
 import {initAdventureAudio} from './adventure-audio.js?v=20261016-ios1';
 import { initDisplayMode } from '../display-mode.js?v=20261016-resident1';
@@ -19,15 +19,17 @@ import { normalizeLighting } from './lighting-model.js?v=20261014-adventure2';
 import { MAP, CELL, FEATURES, toWorld, collectionAt, nearby, initialState, visibleArticles } from './maze-model.js?v=20261014-adventure2';
 import { ALL_MONSTERS as MONSTERS, REQUIRED_MONSTER_IDS, nearestMonster, newBattle, battleTurn, intentFor, monsterAvailable, prankFor, commandFor, monsterPose, guidePoint } from './encounter-model.js?v=20261016-living1';
 import { chooseView, movementVector, mapHeading } from './view-model.js?v=20261015-minimap1';
-import { createStageRenderer, EXIT } from './stage-2d.js?v=20261017-review1';
-import {createArtLibrary,drawArtSprite} from './rpg-art.js?v=20261017-review1';
-import {renderBattleScene,battleEffectDuration,battleEffectPending} from './battle-scene.js?v=20261017-review1';
+import { createStageRenderer, EXIT } from './stage-2d.js?v=20261017-rig1';
+import {createArtLibrary,drawArtSprite} from './rpg-art.js?v=20261017-rig1';
+import {renderBattleScene,battleEffectDuration,battleEffectPending} from './battle-scene.js?v=20261017-rig1';
 import {moveAroundFurniture} from './rpg-model.js?v=20261014-adventure2';
 import {protectGameSurface,bindHeldGameButton,bindDirectionPad} from './game-input.js?v=20261016-ios1';
 import {STORY,encounterStory,chapterFor} from './story-model.js?v=20261016-living1';
 import {compileCharacterRoster,placeCreatorNPCs,createCharacterAssets,chooseCreatorAssets,buildCreatorActors,nearestCreator,creatorGuide,isCharacterTap,scaledCharacterLayout,compileCompanions,companionActor,creatorPose} from './creator-runtime.js?v=20261017-cna1';
 import {renderCreatorConversation,renderCreatorDirectory} from './creator-ui.js?v=20261017-cna1';
+import {createRigLibrary} from './rig-animation.js?v=20261017-rig1';
 const rpgArt=createArtLibrary({loadPlayer:false});
+rpgArt.rigs=createRigLibrary({onChange:()=>stageRenderer?.invalidate()});
 let creatorRoster={hero:null,npcs:[],omitted:[]},creatorActors=[],activeCreators=[],residents=[],companions=[],creatorPointer=null,creatorAssetCheck=0,creatorTrail=createDistanceTrail();
 const characterAssets=createCharacterAssets();
 
@@ -153,7 +155,7 @@ function showStory(){
   if(cleared.length){page.append(element('h3','集めた記憶'));for(const id of cleared.filter(id=>REQUIRED_MONSTER_IDS.includes(id))){const story=encounterStory(id);page.append(element('p',`${story.keepsake}：${story.memory}`));}}
   page.append(element('p',STORY.fictionLabel,'subtle'));content.append(page);openPanel();
 }
-function updateCreatorFrames(now){
+function updateCreatorFrames(now,dt=0){
   if(now>=creatorAssetCheck){
     activeCreators=chooseCreatorAssets([...creatorRoster.npcs,...residents],{x:state.x/CELL,z:state.z/CELL},state,5,{time,motion:motion&&!reducedMotion.matches});
     const definitions=[creatorRoster.hero,...companions,...activeCreators].filter(Boolean);
@@ -162,6 +164,15 @@ function updateCreatorFrames(now){
   creatorActors=buildCreatorActors(activeCreators,characterAssets,{state,time,motion:motion&&!reducedMotion.matches});
   creatorTrail.push({x:state.x/CELL,z:state.z/CELL,facing});
   for(const definition of companions){const actor=companionActor(definition,characterAssets.get(definition.asset.src),creatorTrail,state,{facing,walking:walking&&motion&&!reducedMotion.matches,phase:walkPhase});if(actor)creatorActors.push(actor);}
+  const animate=motion&&!reducedMotion.matches;
+  rpgArt.rigs.update('owner',{position:{x:state.x/CELL,z:state.z/CELL},dt,time,facing,heading:walking?Math.atan2(velocity.x,velocity.z):undefined,moving:walking,motion:animate,...rigProjection(86,2.38)});
+  for(const actor of creatorActors){const sprite=rpgArt.rigs.update(actor.id,{position:{x:actor.x,z:actor.z},dt,time,facing:actor.facing,heading:actor.yaw,moving:actor.walking,motion:animate,...rigProjection(actor.heightPx||86,actor.heightWorld||2.38,actor)});if(sprite)actor.sprite=sprite;}
+  if(encounters)for(const monster of MONSTERS){if(cleared.includes(monster.id)||!monsterAvailable(monster,state))continue;const pose=monsterPose(monster,time,animate,state);rpgArt.rigs.update('monster:'+monster.id,{position:pose,dt,time,facing:pose.facing,heading:pose.yaw,moving:pose.walking,motion:animate,...rigProjection(monster.id==='bat'?92:100,monster.id==='franken'?2.35:monster.id==='bat'?1.85:2.15,pose)});}
+}
+function rigProjection(heightPx,heightWorld,position={x:state.x/CELL,z:state.z/CELL}){
+  if(view!=='3d')return{worldPixelsPerUnit:72,displayHeightPx:heightPx,groundDepthScale:1};
+  const distance=Math.max(4,Math.hypot(position.x*CELL-state.x,position.z*CELL-state.z));
+  return{worldPixelsPerUnit:CELL,displayHeightPx:heightWorld,groundDepthScale:Math.max(.02,1.65/distance-Math.sin(state.pitch)),groundYaw:state.yaw};
 }
 
 function interact(){if(Math.hypot(state.x-EXIT.x*CELL,state.z-EXIT.z*CELL)<3.2){showExit();return;}const kind=nearby(state);if(kind==='key'){state.hasKey=true;save();notify('書庫の鍵を手に入れた。中央の奥にある格子扉へ。');}else if(kind==='gate'){if(!state.hasKey)notify('格子扉には鍵が必要です。東の鍵の間を探してください。');else{state.unlocked=true;save();notify('鍵が回り、書庫の扉がひらく。浮かぶ本の奥へ進めます。');}}else if(kind==='article'){const a=articles('horror')[0];if(a&&articles('horror').length===1)articlePanel(a);else{renderCatalog('horror');openPanel();}}else if(kind==='horror')askHorror();else if(kind==='horror-art'){renderCatalog('horror');openPanel();}else if(kind==='vault'){visitVault();}else talkToCreator();updateHUD();}
@@ -293,7 +304,7 @@ async function setView(next,{persist=true,quiet=false}={}){
     let candidate;
     try{
       if(worldFailed)throw Error('WebGL unavailable');
-      const {createWorld}=await withDeadline(import('./world.js?v=20261017-review1'),{signal:abort.signal,timeout:12000});
+      const {createWorld}=await withDeadline(import('./world.js?v=20261017-rig1'),{signal:abort.signal,timeout:12000});
       if(request!==viewRequest||abort.signal.aborted)return;
       candidate=createWorld({canvas:$('world'),art:rpgArt});
       if(request!==viewRequest||abort.signal.aborted){candidate.dispose();return;}
@@ -325,7 +336,7 @@ function step(dt){
 function tick(now,dt){
   visualTime+=dt;
   if(panel.open&&battle){settleBattleAnimation();drawBattleVisual();}
-  if(!panel.open){step(dt);if(motion&&!reducedMotion.matches)time+=dt;updateCreatorFrames(now);if(view==='3d')world?.render({...state,time:time*1000,motion:motion&&!reducedMotion.matches,brightness,lantern,encounters,cleared,creatorActors});else {stageRenderer??=createStageRenderer({art:rpgArt});stageRenderer.render({canvas:$('fallback'),state,brightness,lantern,encounters,cleared,pixelRatio:Math.min(devicePixelRatio||1,2),time,dt,motion:motion&&!reducedMotion.matches,facing,walking:walking&&motion&&!reducedMotion.matches,walkPhase,creatorActors});}drawMap($('mini'));updateHUD();}
+  if(!panel.open){step(dt);if(motion&&!reducedMotion.matches)time+=dt;updateCreatorFrames(now,dt);if(view==='3d')world?.render({...state,time:time*1000,motion:motion&&!reducedMotion.matches,brightness,lantern,encounters,cleared,creatorActors});else {stageRenderer??=createStageRenderer({art:rpgArt});stageRenderer.render({canvas:$('fallback'),state,brightness,lantern,encounters,cleared,pixelRatio:Math.min(devicePixelRatio||1,2),time,dt,motion:motion&&!reducedMotion.matches,facing,walking:walking&&motion&&!reducedMotion.matches,walkPhase,creatorActors});}drawMap($('mini'));updateHUD();}
 }
 let pageActive=true;
 const frameLoop=createFrameLoop({shouldRun:()=>gameReady&&pageActive&&!document.hidden,onFrame:tick});

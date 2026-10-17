@@ -1,0 +1,834 @@
+{
+  "method": "Real rig runtime and authored atlas rendered by native @napi-rs/canvas. Independent 76/86px simulations use worldPixelsPerUnit=64 and groundDepthScale=.78. Deterministic review inputs; not browser gameplay, DOM, GPU, device or audio verification.",
+  "manifest": "owner-lantern-hero",
+  "fps": 30,
+  "frames": 346,
+  "heights": [
+    76,
+    86
+  ],
+  "manifestContentHeight": 256,
+  "authoredDirections": [
+    "down",
+    "down-right",
+    "right",
+    "up-right",
+    "up",
+    "up-left",
+    "left",
+    "down-left"
+  ],
+  "continuousTurnComplete": false,
+  "attackArtComplete": false,
+  "maxContinuousSupportDrift": 0,
+  "maxFootReach": 1.0658141036401503e-14,
+  "noSupportFrames": [],
+  "liveCanvasClippingFrames": [
+    {
+      "time": 0.7,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 0.7333333333333333,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 0.7333333333333333,
+      "height": 86,
+      "view": "down"
+    },
+    {
+      "time": 0.7666666666666667,
+      "height": 86,
+      "view": "down"
+    },
+    {
+      "time": 0.9,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 0.9333333333333333,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 0.9666666666666667,
+      "height": 86,
+      "view": "down"
+    },
+    {
+      "time": 1,
+      "height": 86,
+      "view": "down"
+    },
+    {
+      "time": 1.1,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 1.1333333333333333,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 1.1666666666666667,
+      "height": 86,
+      "view": "down"
+    },
+    {
+      "time": 1.2,
+      "height": 86,
+      "view": "down"
+    },
+    {
+      "time": 1.2333333333333334,
+      "height": 86,
+      "view": "down"
+    },
+    {
+      "time": 1.3,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 1.3333333333333333,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 1.4,
+      "height": 86,
+      "view": "down"
+    },
+    {
+      "time": 1.4333333333333333,
+      "height": 86,
+      "view": "down"
+    },
+    {
+      "time": 1.5,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 1.5333333333333334,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 1.6333333333333333,
+      "height": 86,
+      "view": "down"
+    },
+    {
+      "time": 1.6666666666666667,
+      "height": 86,
+      "view": "down"
+    },
+    {
+      "time": 1.7,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 1.7333333333333334,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 1.8666666666666667,
+      "height": 86,
+      "view": "down"
+    },
+    {
+      "time": 1.9,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 1.9,
+      "height": 86,
+      "view": "down"
+    },
+    {
+      "time": 1.9333333333333333,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 2.1,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 2.1,
+      "height": 86,
+      "view": "down"
+    },
+    {
+      "time": 2.1333333333333333,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 2.1333333333333333,
+      "height": 86,
+      "view": "down"
+    },
+    {
+      "time": 2.3,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 2.3333333333333335,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 2.3333333333333335,
+      "height": 86,
+      "view": "down"
+    },
+    {
+      "time": 2.3666666666666667,
+      "height": 86,
+      "view": "down"
+    },
+    {
+      "time": 2.533333333333333,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 2.533333333333333,
+      "height": 86,
+      "view": "down"
+    },
+    {
+      "time": 2.566666666666667,
+      "height": 86,
+      "view": "down"
+    },
+    {
+      "time": 2.7333333333333334,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 2.7666666666666666,
+      "height": 86,
+      "view": "down"
+    },
+    {
+      "time": 2.8,
+      "height": 86,
+      "view": "down"
+    },
+    {
+      "time": 2.933333333333333,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 3,
+      "height": 86,
+      "view": "down"
+    },
+    {
+      "time": 3.033333333333333,
+      "height": 86,
+      "view": "down"
+    },
+    {
+      "time": 3.1333333333333333,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 3.2333333333333334,
+      "height": 86,
+      "view": "down"
+    },
+    {
+      "time": 3.2666666666666666,
+      "height": 86,
+      "view": "down"
+    },
+    {
+      "time": 3.3333333333333335,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 3.466666666666667,
+      "height": 86,
+      "view": "down"
+    },
+    {
+      "time": 3.5,
+      "height": 86,
+      "view": "down"
+    },
+    {
+      "time": 3.533333333333333,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 3.566666666666667,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 3.6,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 3.6333333333333333,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 3.6666666666666665,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 3.7,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 3.7333333333333334,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 3.7666666666666666,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 3.8,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 3.8333333333333335,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 3.8666666666666667,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 3.9,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 3.933333333333333,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 3.966666666666667,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 4,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 4.033333333333333,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 4.066666666666666,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 4.1,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 4.133333333333334,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 4.166666666666667,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 4.2,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 4.233333333333333,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 4.266666666666667,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 4.3,
+      "height": 76,
+      "view": "down"
+    },
+    {
+      "time": 4.333333333333333,
+      "height": 76,
+      "view": "down-right"
+    },
+    {
+      "time": 4.366666666666666,
+      "height": 76,
+      "view": "down-right"
+    },
+    {
+      "time": 4.4,
+      "height": 76,
+      "view": "down-right"
+    },
+    {
+      "time": 4.433333333333334,
+      "height": 76,
+      "view": "right"
+    },
+    {
+      "time": 4.466666666666667,
+      "height": 76,
+      "view": "right"
+    },
+    {
+      "time": 4.5,
+      "height": 76,
+      "view": "right"
+    },
+    {
+      "time": 4.533333333333333,
+      "height": 76,
+      "view": "right"
+    },
+    {
+      "time": 4.566666666666666,
+      "height": 76,
+      "view": "right"
+    },
+    {
+      "time": 4.6,
+      "height": 76,
+      "view": "right"
+    }
+  ],
+  "alphaBounds": [
+    {
+      "time": 0,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        94,
+        46,
+        76
+      ],
+      "soleOffset": -1
+    },
+    {
+      "time": 0,
+      "targetHeight": 86,
+      "rect": [
+        63,
+        85,
+        52,
+        85
+      ],
+      "soleOffset": -1
+    },
+    {
+      "time": 0.9,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        95,
+        46,
+        81
+      ],
+      "soleOffset": 5
+    },
+    {
+      "time": 0.9,
+      "targetHeight": 86,
+      "rect": [
+        63,
+        85,
+        52,
+        84
+      ],
+      "soleOffset": -2
+    },
+    {
+      "time": 1.2,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        94,
+        46,
+        79
+      ],
+      "soleOffset": 2
+    },
+    {
+      "time": 1.2,
+      "targetHeight": 86,
+      "rect": [
+        63,
+        86,
+        52,
+        93
+      ],
+      "soleOffset": 8
+    },
+    {
+      "time": 1.5,
+      "targetHeight": 76,
+      "rect": [
+        65,
+        95,
+        46,
+        81
+      ],
+      "soleOffset": 5
+    },
+    {
+      "time": 1.5,
+      "targetHeight": 86,
+      "rect": [
+        62,
+        85,
+        52,
+        89
+      ],
+      "soleOffset": 3
+    },
+    {
+      "time": 2,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        94,
+        46,
+        79
+      ],
+      "soleOffset": 2
+    },
+    {
+      "time": 2,
+      "targetHeight": 86,
+      "rect": [
+        62,
+        85,
+        52,
+        86
+      ],
+      "soleOffset": 0
+    },
+    {
+      "time": 2.5,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        94,
+        46,
+        82
+      ],
+      "soleOffset": 5
+    },
+    {
+      "time": 2.5,
+      "targetHeight": 86,
+      "rect": [
+        62,
+        85,
+        52,
+        87
+      ],
+      "soleOffset": 1
+    },
+    {
+      "time": 3.6,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        96,
+        46,
+        80
+      ],
+      "soleOffset": 5
+    },
+    {
+      "time": 3.6,
+      "targetHeight": 86,
+      "rect": [
+        63,
+        85,
+        52,
+        88
+      ],
+      "soleOffset": 2
+    },
+    {
+      "time": 3.7666666666666666,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        96,
+        46,
+        80
+      ],
+      "soleOffset": 5
+    },
+    {
+      "time": 3.7666666666666666,
+      "targetHeight": 86,
+      "rect": [
+        63,
+        85,
+        52,
+        88
+      ],
+      "soleOffset": 2
+    },
+    {
+      "time": 4.6,
+      "targetHeight": 76,
+      "rect": [
+        56,
+        94,
+        51,
+        82
+      ],
+      "soleOffset": 5
+    },
+    {
+      "time": 4.6,
+      "targetHeight": 86,
+      "rect": [
+        52,
+        84,
+        58,
+        89
+      ],
+      "soleOffset": 2
+    },
+    {
+      "time": 5.1,
+      "targetHeight": 76,
+      "rect": [
+        56,
+        94,
+        52,
+        79
+      ],
+      "soleOffset": 2
+    },
+    {
+      "time": 5.1,
+      "targetHeight": 86,
+      "rect": [
+        52,
+        84,
+        58,
+        90
+      ],
+      "soleOffset": 3
+    },
+    {
+      "time": 5.8,
+      "targetHeight": 76,
+      "rect": [
+        56,
+        94,
+        52,
+        80
+      ],
+      "soleOffset": 3
+    },
+    {
+      "time": 5.8,
+      "targetHeight": 86,
+      "rect": [
+        52,
+        85,
+        58,
+        91
+      ],
+      "soleOffset": 5
+    },
+    {
+      "time": 6.8,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        94,
+        46,
+        79
+      ],
+      "soleOffset": 2
+    },
+    {
+      "time": 6.8,
+      "targetHeight": 86,
+      "rect": [
+        62,
+        85,
+        52,
+        86
+      ],
+      "soleOffset": 0
+    },
+    {
+      "time": 7.2,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        94,
+        46,
+        79
+      ],
+      "soleOffset": 2
+    },
+    {
+      "time": 7.2,
+      "targetHeight": 86,
+      "rect": [
+        63,
+        85,
+        52,
+        86
+      ],
+      "soleOffset": 0
+    },
+    {
+      "time": 7.6,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        94,
+        46,
+        79
+      ],
+      "soleOffset": 2
+    },
+    {
+      "time": 7.6,
+      "targetHeight": 86,
+      "rect": [
+        63,
+        85,
+        52,
+        86
+      ],
+      "soleOffset": 0
+    },
+    {
+      "time": 8.1,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        94,
+        46,
+        79
+      ],
+      "soleOffset": 2
+    },
+    {
+      "time": 8.1,
+      "targetHeight": 86,
+      "rect": [
+        63,
+        85,
+        52,
+        86
+      ],
+      "soleOffset": 0
+    },
+    {
+      "time": 8.6,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        94,
+        46,
+        79
+      ],
+      "soleOffset": 2
+    },
+    {
+      "time": 8.6,
+      "targetHeight": 86,
+      "rect": [
+        63,
+        85,
+        52,
+        86
+      ],
+      "soleOffset": 0
+    },
+    {
+      "time": 9.8,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        94,
+        46,
+        76
+      ],
+      "soleOffset": -1
+    },
+    {
+      "time": 9.8,
+      "targetHeight": 86,
+      "rect": [
+        63,
+        85,
+        52,
+        86
+      ],
+      "soleOffset": 0
+    }
+  ],
+  "sources": {
+    "runtime": {
+      "file": "owner-rig.js",
+      "sha256": "7bc05901ff2e7152d8636526a3ed06a6150cc0c9b05b6dc7daf6a354b9413d0f"
+    },
+    "manifest": {
+      "file": "rig.json",
+      "sha256": "53771f32401c47015710b58967aba5109ada24b0d29351dddd5044ee35eca0bc"
+    },
+    "atlas-main": {
+      "file": "parts.webp",
+      "sha256": "1231cb80040a89d5c44ecaa03a10a7b06e7694f8552678cb76293bf609fdc12d"
+    }
+  },
+  "gifFPS": 15
+}

@@ -1,5 +1,5 @@
-import {monsterSprite,spriteTextureUV} from './monster-motion.js?v=20261017-review1';
-import {ART_FILES,ART_BOUNDS,ART_ANCHORS,PALACE_ART} from './rpg-art.js?v=20261017-review1';
+import {monsterSprite,spriteTextureUV} from './monster-motion.js?v=20261017-rig1';
+import {ART_FILES,ART_BOUNDS,ART_ANCHORS,PALACE_ART} from './rpg-art.js?v=20261017-rig1';
 import * as THREE from './vendor/three.module.js';
 import { MAP, CELL, FEATURES, toWorld } from './maze-model.js?v=20261014-adventure2';
 import { NIGHT_LIGHTING } from './lighting-model.js?v=20261014-adventure2';
@@ -274,6 +274,19 @@ export function createWorld({ canvas, onReady, art } = {}) {
     else if(!art&&ART_FILES[definition.id])residentTextures.load(new URL(`./assets/rpg/${ART_FILES[definition.id]}`,import.meta.url).href,texture=>{if(!installMonsterTexture(texture))return;const bounds=ART_BOUNDS[definition.id]||[0,0,512,512],anchor=ART_ANCHORS[definition.id]||{anchorX:.5,anchorY:1};texture.repeat.set(bounds[2]/texture.image.width,bounds[3]/texture.image.height);texture.offset.set(bounds[0]/texture.image.width,1-(bounds[1]+bounds[3])/texture.image.height);sprite.center.set(anchor.anchorX,1-anchor.anchorY);const height=definition.id==='franken'?2.35:definition.id==='bat'?1.85:2.15;sprite.scale.set(height*bounds[2]/bounds[3],height,1);},undefined,()=>console.warn('Original monster art unavailable:',definition.id));
     spirits.push({node:root,model:g,sprite,index,id:definition.id,definition,baseY:0});
   }
+  function updateSpiritSprite(spirit,sampled){
+    if(!sampled)return;
+    const image=sampled.image||sampled,material=spirit.sprite.material;let texture=material.map;
+    if(!texture||texture.image!==image){
+      if(texture){texture.dispose();resources.delete(texture);}
+      texture=new THREE.Texture(image);texture.colorSpace=THREE.SRGBColorSpace;texture.needsUpdate=true;resources.add(texture);material.map=texture;material.needsUpdate=true;
+      spirit.sprite.visible=true;spirit.model.visible=false;spirit.node.userData.originalArt=true;spirit.poseVersion=undefined;
+    }
+    if(Number.isFinite(sampled.poseVersion)&&spirit.poseVersion!==sampled.poseVersion)texture.needsUpdate=true;
+    spirit.poseVersion=sampled.poseVersion;
+    const uv=spriteTextureUV(sampled),height=(spirit.id==='franken'?2.35:spirit.id==='bat'?1.85:2.15)*uv.heightScale;
+    texture.repeat.set(uv.repeatX,uv.repeatY);texture.offset.set(uv.offsetX,uv.offsetY);spirit.sprite.center.set(uv.centerX,uv.centerY);spirit.sprite.scale.set(height*uv.aspect,height,1);
+  }
   // A drifting orbital mobile is sculpture, explicitly environmental decoration.
   const center=point(FEATURES.mobile||FEATURES.spawn||{x:Math.floor(cols/2),z:Math.floor(rows/2)});
   const mobile=new THREE.Group();mobile.position.set(center.x,3.45,center.z);scene.add(mobile);
@@ -349,6 +362,8 @@ export function createWorld({ canvas, onReady, art } = {}) {
     for(const a of actors){if(!a.id||!a.sprite)continue;seen.add(a.id);const sp=a.sprite,image=sp.image||sp,frame=sp.frame||[0,0,image.width,image.height];let entry=creatorNodes.get(a.id);
       if(!entry){const material=new THREE.SpriteMaterial({transparent:true,alphaTest:.08,depthWrite:false,color:'#ffffff'});resources.add(material);const sprite=new THREE.Sprite(material);sprite.userData.creatorId=a.id;sprite.name=`Palace resident: ${a.characterName||a.name||a.id}`;scene.add(sprite);const shadow=contactShadow(a.x*CELL,a.z*CELL,1.35,.8);shadow.userData.ignorePicking=true;entry={sprite,material,shadow,image:null,texture:null};creatorNodes.set(a.id,entry);}
       if(entry.image!==image){if(entry.texture){entry.texture.dispose();resources.delete(entry.texture);}const tex=new THREE.Texture(image);tex.colorSpace=THREE.SRGBColorSpace;tex.needsUpdate=true;resources.add(tex);entry.texture=tex;entry.material.map=tex;entry.material.needsUpdate=true;entry.image=image;}
+      // Articulated actors repaint a stable canvas; upload its new pose without allocating a texture per frame.
+      if(Number.isFinite(sp.poseVersion)&&entry.poseVersion!==sp.poseVersion){entry.texture.needsUpdate=true;creatorAlphaCache.delete(image);}entry.poseVersion=sp.poseVersion;
       entry.texture.repeat.set(frame[2]/image.width,frame[3]/image.height);entry.texture.offset.set(frame[0]/image.width,1-(frame[1]+frame[3])/image.height);
       entry.sprite.center.set(sp.anchorX??.5,1-(sp.anchorY??1));const ch=sp.contentHeight||frame[3],hh=a.heightWorld||2.38;entry.sprite.scale.set(hh*frame[2]/ch,hh*frame[3]/ch,1);
       entry.sprite.position.set(a.x*CELL,.035,a.z*CELL);entry.shadow.position.set(a.x*CELL,.016,a.z*CELL);entry.shadow.scale.setScalar(Math.max(.55,hh/2.38));entry.sprite.visible=true;entry.sprite.userData.interactive=a.interactive!==false;entry.actor=a;entry.source=sp;creatorHitTargets.push(entry.sprite);
@@ -377,7 +392,7 @@ export function createWorld({ canvas, onReady, art } = {}) {
   function resize(){if(disposed)return;lastStaticSignature='';const w=canvas.clientWidth||window.innerWidth,h=canvas.clientHeight||window.innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;heldLantern.position.x=Math.min(.3,.3*camera.aspect);camera.updateProjectionMatrix();}
   function render({x=0,z=0,yaw=0,pitch=0,time=0,motion=true,unlocked=false,horrorAccepted=false,hasKey=false,collection=[],brightness=1,lantern=true,encounters=true,cleared=[],creatorActors=[]}={}){
     if(disposed)return;
-    const staticSignature=motion?'':[sceneryVersion,art?.version,x,z,yaw,pitch,unlocked,horrorAccepted,hasKey,brightness,lantern,encounters,cleared.join(','),creatorActors.map(a=>[a.id,a.x,a.z,a.sprite?.frame?.join(',')].join(':')).join(';')].join('|');
+    const staticSignature=motion?'':[sceneryVersion,art?.version,x,z,yaw,pitch,unlocked,horrorAccepted,hasKey,brightness,lantern,encounters,cleared.join(','),creatorActors.map(a=>[a.id,a.x,a.z,a.sprite?.frame?.join(','),a.sprite?.poseVersion].join(':')).join(';')].join('|');
     if(!motion&&staticSignature===lastStaticSignature)return;lastStaticSignature=staticSignature;
     const seconds=time*.001;const dt=Math.min(.05,Math.max(0,seconds-last));last=seconds;if(motion)ambientTime+=dt;const t=ambientTime;
     updateCreatorActors(creatorActors);
@@ -391,7 +406,7 @@ export function createWorld({ canvas, onReady, art } = {}) {
       spirit.node.visible=encounters&&(!spirit.definition.optional||spirit.node.userData.originalArt)&&!cleared.includes(spirit.id)&&monsterAvailable(spirit.definition,{unlocked,horrorAccepted});
       const pose=monsterPose(spirit.definition,seconds,motion,{unlocked,horrorAccepted});
       const sampled=art&&monsterSprite(art,spirit.id,{time:seconds,motion,walking:pose.walking,facing:pose.facing,phase:pose.phase,turning:pose.turning});
-      if(sampled&&spirit.sprite.material.map){const uv=spriteTextureUV(sampled),texture=spirit.sprite.material.map,height=(spirit.id==='franken'?2.35:spirit.id==='bat'?1.85:2.15)*uv.heightScale;texture.repeat.set(uv.repeatX,uv.repeatY);texture.offset.set(uv.offsetX,uv.offsetY);spirit.sprite.center.set(uv.centerX,uv.centerY);spirit.sprite.scale.set(height*uv.aspect,height,1);}
+      updateSpiritSprite(spirit,sampled);
       spirit.node.position.x=pose.x*CELL;spirit.node.position.z=pose.z*CELL;
       spirit.node.rotation.y=Math.atan2(x-spirit.node.position.x,z-spirit.node.position.z);
       if(!motion)spirit.node.position.y=spirit.baseY;

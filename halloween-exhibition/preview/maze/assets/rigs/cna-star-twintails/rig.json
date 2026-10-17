@@ -1,0 +1,1697 @@
+{
+  "version": 1,
+  "id": "cna-star-twintails",
+  "label": "CNA・星ツインテール",
+  "atlas": "main",
+  "atlases": {
+    "main": "./parts.webp"
+  },
+  "width": 2048,
+  "height": 512,
+  "contentHeight": 256,
+  "directions": [
+    "down",
+    "left",
+    "right",
+    "up"
+  ],
+  "views": {
+    "down": {
+      "atlas": "main",
+      "heading": 0,
+      "parts": {
+        "head": {
+          "rect": [
+            21.5,
+            28,
+            84.5,
+            72
+          ],
+          "pivot": [
+            42.25,
+            69.84
+          ],
+          "contentHeight": 72,
+          "sourceRect": [
+            32,
+            26,
+            169,
+            144
+          ]
+        },
+        "backHair": {
+          "rect": [
+            153,
+            33,
+            78,
+            61.5
+          ],
+          "pivot": [
+            39,
+            57.81
+          ],
+          "contentHeight": 61.5,
+          "sourceRect": [
+            216,
+            30,
+            156,
+            123
+          ],
+          "visible": false
+        },
+        "bodiceTorso": {
+          "rect": [
+            289,
+            33.5,
+            62,
+            60.5
+          ],
+          "pivot": [
+            31,
+            2.1175
+          ],
+          "contentHeight": 60.5,
+          "sourceRect": [
+            388,
+            40,
+            124,
+            121
+          ]
+        },
+        "pelvisFrontSkirt": {
+          "rect": [
+            408.5,
+            37.5,
+            78.5,
+            53
+          ],
+          "pivot": [
+            39.25,
+            9.54
+          ],
+          "contentHeight": 53,
+          "sourceRect": [
+            526,
+            56,
+            157,
+            106
+          ]
+        },
+        "leftUpperArm": {
+          "rect": [
+            44,
+            165.5,
+            39.5,
+            53
+          ],
+          "pivot": [
+            11.85,
+            3.71
+          ],
+          "contentHeight": 53,
+          "sourceRect": [
+            738,
+            41,
+            79,
+            106
+          ],
+          "end": [
+            30.415,
+            46.64
+          ]
+        },
+        "leftForearmHand": {
+          "rect": [
+            171,
+            164.5,
+            41.5,
+            55
+          ],
+          "pivot": [
+            32.37,
+            3.3
+          ],
+          "contentHeight": 55,
+          "sourceRect": [
+            852,
+            43,
+            83,
+            110
+          ],
+          "end": [
+            14.11,
+            33.55
+          ]
+        },
+        "rightUpperArm": {
+          "rect": [
+            299.5,
+            164.5,
+            41,
+            54.5
+          ],
+          "pivot": [
+            28.7,
+            3.815
+          ],
+          "contentHeight": 54.5,
+          "sourceRect": [
+            974,
+            39,
+            82,
+            109
+          ],
+          "end": [
+            10.25,
+            47.96
+          ]
+        },
+        "rightForearmHand": {
+          "rect": [
+            425,
+            163,
+            45.5,
+            57.5
+          ],
+          "pivot": [
+            11.375,
+            3.45
+          ],
+          "contentHeight": 57.5,
+          "sourceRect": [
+            1123,
+            43,
+            91,
+            115
+          ],
+          "end": [
+            31.395,
+            35.075
+          ]
+        },
+        "leftUpperLeg": {
+          "rect": [
+            42,
+            287.5,
+            43.5,
+            64.5
+          ],
+          "pivot": [
+            21.75,
+            3.225
+          ],
+          "contentHeight": 64.5,
+          "sourceRect": [
+            69,
+            192,
+            87,
+            129
+          ],
+          "end": [
+            21.75,
+            59.34
+          ]
+        },
+        "leftLowerLegBoot": {
+          "rect": [
+            176,
+            285,
+            31.5,
+            69.5
+          ],
+          "pivot": [
+            15.75,
+            3.475
+          ],
+          "contentHeight": 69.5,
+          "sourceRect": [
+            238,
+            189,
+            63,
+            139
+          ],
+          "end": [
+            15.75,
+            67.7625
+          ]
+        },
+        "rightUpperLeg": {
+          "rect": [
+            299.5,
+            288,
+            40.5,
+            63.5
+          ],
+          "pivot": [
+            20.25,
+            3.175
+          ],
+          "contentHeight": 63.5,
+          "sourceRect": [
+            383,
+            191,
+            81,
+            127
+          ],
+          "end": [
+            20.25,
+            58.42
+          ]
+        },
+        "rightLowerLegBoot": {
+          "rect": [
+            433,
+            285.5,
+            30,
+            68.5
+          ],
+          "pivot": [
+            15,
+            3.425
+          ],
+          "contentHeight": 68.5,
+          "sourceRect": [
+            532,
+            190,
+            60,
+            137
+          ],
+          "end": [
+            15,
+            66.7875
+          ]
+        },
+        "leftTwinTail": {
+          "rect": [
+            31.5,
+            405,
+            64.5,
+            86
+          ],
+          "pivot": [
+            47.085,
+            12.9
+          ],
+          "contentHeight": 86,
+          "sourceRect": [
+            648,
+            174,
+            129,
+            172
+          ]
+        },
+        "rightTwinTail": {
+          "rect": [
+            157.5,
+            404.5,
+            68.5,
+            87
+          ],
+          "pivot": [
+            17.125,
+            13.05
+          ],
+          "contentHeight": 87,
+          "sourceRect": [
+            837,
+            173,
+            137,
+            174
+          ]
+        },
+        "leftFrontHair": {
+          "rect": [
+            304,
+            411.5,
+            32,
+            72.5
+          ],
+          "pivot": [
+            16,
+            4.35
+          ],
+          "contentHeight": 72.5,
+          "sourceRect": [
+            1015,
+            182,
+            64,
+            145
+          ],
+          "visible": false
+        },
+        "rightFrontHair": {
+          "rect": [
+            431,
+            411.5,
+            33.5,
+            72.5
+          ],
+          "pivot": [
+            16.75,
+            4.35
+          ],
+          "contentHeight": 72.5,
+          "sourceRect": [
+            1132,
+            182,
+            67,
+            145
+          ],
+          "visible": false
+        }
+      },
+      "screenSides": {
+        "left": -1,
+        "right": 1
+      },
+      "legSides": {
+        "left": 1,
+        "right": -1
+      },
+      "appendages": [
+        {
+          "part": "leftTwinTail",
+          "anchor": "neck",
+          "offset": [
+            -40,
+            -52
+          ],
+          "height": 165,
+          "amplitude": 0.035,
+          "frequency": 1.4,
+          "phase": 0,
+          "layer": "backHair"
+        },
+        {
+          "part": "rightTwinTail",
+          "anchor": "neck",
+          "offset": [
+            40,
+            -52
+          ],
+          "height": 165,
+          "amplitude": 0.035,
+          "frequency": 1.4,
+          "phase": 3.141592653589793,
+          "layer": "backHair"
+        }
+      ]
+    },
+    "left": {
+      "atlas": "main",
+      "heading": -1.5707963267948966,
+      "parts": {
+        "head": {
+          "rect": [
+            1559,
+            27,
+            82,
+            74
+          ],
+          "pivot": [
+            36.9,
+            71.78
+          ],
+          "contentHeight": 74,
+          "sourceRect": [
+            35,
+            945,
+            164,
+            148
+          ]
+        },
+        "backHair": {
+          "rect": [
+            1688.5,
+            32,
+            78.5,
+            63.5
+          ],
+          "pivot": [
+            39.25,
+            59.69
+          ],
+          "contentHeight": 63.5,
+          "sourceRect": [
+            216,
+            952,
+            157,
+            127
+          ],
+          "visible": false
+        },
+        "bodiceTorso": {
+          "rect": [
+            1831,
+            31,
+            50,
+            65.5
+          ],
+          "pivot": [
+            22,
+            2.2925
+          ],
+          "contentHeight": 65.5,
+          "sourceRect": [
+            403,
+            952,
+            100,
+            131
+          ]
+        },
+        "pelvisFrontSkirt": {
+          "rect": [
+            1948,
+            38.5,
+            72,
+            50.5
+          ],
+          "pivot": [
+            36,
+            9.09
+          ],
+          "contentHeight": 50.5,
+          "sourceRect": [
+            530,
+            974,
+            144,
+            101
+          ]
+        },
+        "leftUpperArm": {
+          "rect": [
+            1579.5,
+            166.5,
+            40.5,
+            50.5
+          ],
+          "pivot": [
+            12.15,
+            3.535
+          ],
+          "contentHeight": 50.5,
+          "sourceRect": [
+            721,
+            966,
+            81,
+            101
+          ],
+          "end": [
+            31.185,
+            44.44
+          ]
+        },
+        "leftForearmHand": {
+          "rect": [
+            1706.5,
+            166,
+            43,
+            51.5
+          ],
+          "pivot": [
+            33.54,
+            3.09
+          ],
+          "contentHeight": 51.5,
+          "sourceRect": [
+            869,
+            968,
+            86,
+            103
+          ],
+          "end": [
+            14.62,
+            31.415
+          ]
+        },
+        "rightUpperArm": {
+          "rect": [
+            1834.5,
+            166,
+            42.5,
+            51.5
+          ],
+          "pivot": [
+            29.75,
+            3.605
+          ],
+          "contentHeight": 51.5,
+          "sourceRect": [
+            1017,
+            968,
+            85,
+            103
+          ],
+          "end": [
+            10.625,
+            45.32
+          ],
+          "visible": false
+        },
+        "rightForearmHand": {
+          "rect": [
+            1965,
+            168.5,
+            38,
+            46.5
+          ],
+          "pivot": [
+            9.5,
+            2.79
+          ],
+          "contentHeight": 46.5,
+          "sourceRect": [
+            1134,
+            975,
+            76,
+            93
+          ],
+          "end": [
+            26.22,
+            28.365
+          ],
+          "visible": false
+        },
+        "leftUpperLeg": {
+          "rect": [
+            1582,
+            289.5,
+            35.5,
+            61
+          ],
+          "pivot": [
+            17.75,
+            3.05
+          ],
+          "contentHeight": 61,
+          "sourceRect": [
+            78,
+            1100,
+            71,
+            122
+          ],
+          "end": [
+            17.75,
+            56.12
+          ]
+        },
+        "leftLowerLegBoot": {
+          "rect": [
+            1713,
+            287.5,
+            30,
+            65
+          ],
+          "pivot": [
+            15,
+            3.25
+          ],
+          "contentHeight": 65,
+          "sourceRect": [
+            244,
+            1100,
+            60,
+            130
+          ],
+          "end": [
+            15,
+            63.375
+          ]
+        },
+        "rightUpperLeg": {
+          "rect": [
+            1836.5,
+            289,
+            39,
+            61.5
+          ],
+          "pivot": [
+            19.5,
+            3.075
+          ],
+          "contentHeight": 61.5,
+          "sourceRect": [
+            396,
+            1098,
+            78,
+            123
+          ],
+          "end": [
+            19.5,
+            56.58
+          ]
+        },
+        "rightLowerLegBoot": {
+          "rect": [
+            1969,
+            287,
+            29.5,
+            65.5
+          ],
+          "pivot": [
+            14.75,
+            3.275
+          ],
+          "contentHeight": 65.5,
+          "sourceRect": [
+            532,
+            1099,
+            59,
+            131
+          ],
+          "end": [
+            14.75,
+            63.8625
+          ]
+        },
+        "leftTwinTail": {
+          "rect": [
+            1568,
+            404.5,
+            64,
+            87
+          ],
+          "pivot": [
+            46.72,
+            13.05
+          ],
+          "contentHeight": 87,
+          "sourceRect": [
+            653,
+            1068,
+            128,
+            174
+          ]
+        },
+        "rightTwinTail": {
+          "rect": [
+            1692,
+            404,
+            71.5,
+            88
+          ],
+          "pivot": [
+            17.875,
+            13.2
+          ],
+          "contentHeight": 88,
+          "sourceRect": [
+            819,
+            1068,
+            143,
+            176
+          ]
+        },
+        "leftFrontHair": {
+          "rect": [
+            1839.5,
+            412,
+            33,
+            72
+          ],
+          "pivot": [
+            16.5,
+            4.32
+          ],
+          "contentHeight": 72,
+          "sourceRect": [
+            1021,
+            1085,
+            66,
+            144
+          ],
+          "visible": false
+        },
+        "rightFrontHair": {
+          "rect": [
+            1967,
+            413,
+            34,
+            70
+          ],
+          "pivot": [
+            17,
+            4.2
+          ],
+          "contentHeight": 70,
+          "sourceRect": [
+            1131,
+            1089,
+            68,
+            140
+          ],
+          "visible": false
+        }
+      },
+      "screenSides": {
+        "left": -1,
+        "right": 1
+      },
+      "legSides": {
+        "left": 1,
+        "right": -1
+      },
+      "appendages": [
+        {
+          "part": "leftTwinTail",
+          "anchor": "neck",
+          "offset": [
+            -40,
+            -52
+          ],
+          "height": 165,
+          "amplitude": 0.035,
+          "frequency": 1.4,
+          "phase": 0,
+          "layer": "backHair",
+          "visible": false
+        },
+        {
+          "part": "rightTwinTail",
+          "anchor": "neck",
+          "offset": [
+            30,
+            -52
+          ],
+          "height": 165,
+          "amplitude": 0.035,
+          "frequency": 1.4,
+          "phase": 3.141592653589793,
+          "layer": "backHair"
+        }
+      ],
+      "rig": {
+        "shoulderHalfWidth": 4,
+        "hipHalfWidth": 4,
+        "torsoHeight": 62
+      },
+      "restHands": {
+        "left": [
+          -14,
+          -8
+        ],
+        "right": [
+          5,
+          -8
+        ]
+      }
+    },
+    "up": {
+      "atlas": "main",
+      "heading": 3.141592653589793,
+      "parts": {
+        "head": {
+          "rect": [
+            1044.5,
+            29.5,
+            86.5,
+            68.5
+          ],
+          "pivot": [
+            43.25,
+            66.445
+          ],
+          "contentHeight": 68.5,
+          "sourceRect": [
+            33,
+            646,
+            173,
+            137
+          ]
+        },
+        "backHair": {
+          "rect": [
+            1177,
+            33,
+            78,
+            61.5
+          ],
+          "pivot": [
+            39,
+            57.81
+          ],
+          "contentHeight": 61.5,
+          "sourceRect": [
+            217,
+            651,
+            156,
+            123
+          ],
+          "visible": false
+        },
+        "bodiceTorso": {
+          "rect": [
+            1312.5,
+            33,
+            62.5,
+            61.5
+          ],
+          "pivot": [
+            31.25,
+            2.1525
+          ],
+          "contentHeight": 61.5,
+          "sourceRect": [
+            392,
+            657,
+            125,
+            123
+          ]
+        },
+        "pelvisFrontSkirt": {
+          "rect": [
+            1433,
+            37.5,
+            78,
+            52.5
+          ],
+          "pivot": [
+            39,
+            9.45
+          ],
+          "contentHeight": 52.5,
+          "sourceRect": [
+            533,
+            674,
+            156,
+            105
+          ]
+        },
+        "leftUpperArm": {
+          "rect": [
+            1069,
+            163,
+            38,
+            57.5
+          ],
+          "pivot": [
+            11.4,
+            4.025
+          ],
+          "contentHeight": 57.5,
+          "sourceRect": [
+            730,
+            664,
+            76,
+            115
+          ],
+          "end": [
+            29.26,
+            50.6
+          ]
+        },
+        "leftForearmHand": {
+          "rect": [
+            1194,
+            164.5,
+            43.5,
+            55
+          ],
+          "pivot": [
+            33.93,
+            3.3
+          ],
+          "contentHeight": 55,
+          "sourceRect": [
+            866,
+            667,
+            87,
+            110
+          ],
+          "end": [
+            14.79,
+            33.55
+          ]
+        },
+        "rightUpperArm": {
+          "rect": [
+            1326,
+            165,
+            35.5,
+            54
+          ],
+          "pivot": [
+            24.85,
+            3.78
+          ],
+          "contentHeight": 54,
+          "sourceRect": [
+            995,
+            666,
+            71,
+            108
+          ],
+          "end": [
+            8.875,
+            47.52
+          ]
+        },
+        "rightForearmHand": {
+          "rect": [
+            1451.5,
+            165.5,
+            40.5,
+            53
+          ],
+          "pivot": [
+            10.125,
+            3.18
+          ],
+          "contentHeight": 53,
+          "sourceRect": [
+            1148,
+            666,
+            81,
+            106
+          ],
+          "end": [
+            27.945,
+            32.33
+          ]
+        },
+        "leftUpperLeg": {
+          "rect": [
+            1067.5,
+            290,
+            40.5,
+            60
+          ],
+          "pivot": [
+            20.25,
+            3
+          ],
+          "contentHeight": 60,
+          "sourceRect": [
+            74,
+            804,
+            81,
+            120
+          ],
+          "end": [
+            20.25,
+            55.2
+          ]
+        },
+        "leftLowerLegBoot": {
+          "rect": [
+            1201.5,
+            286.5,
+            29,
+            66.5
+          ],
+          "pivot": [
+            14.5,
+            3.325
+          ],
+          "contentHeight": 66.5,
+          "sourceRect": [
+            247,
+            797,
+            58,
+            133
+          ],
+          "end": [
+            14.5,
+            64.8375
+          ]
+        },
+        "rightUpperLeg": {
+          "rect": [
+            1323,
+            290,
+            41.5,
+            59.5
+          ],
+          "pivot": [
+            20.75,
+            2.975
+          ],
+          "contentHeight": 59.5,
+          "sourceRect": [
+            383,
+            803,
+            83,
+            119
+          ],
+          "end": [
+            20.75,
+            54.74
+          ]
+        },
+        "rightLowerLegBoot": {
+          "rect": [
+            1457,
+            288,
+            30,
+            63.5
+          ],
+          "pivot": [
+            15,
+            3.175
+          ],
+          "contentHeight": 63.5,
+          "sourceRect": [
+            538,
+            805,
+            60,
+            127
+          ],
+          "end": [
+            15,
+            61.9125
+          ]
+        },
+        "leftTwinTail": {
+          "rect": [
+            1052.5,
+            405.5,
+            70.5,
+            84.5
+          ],
+          "pivot": [
+            51.465,
+            12.675
+          ],
+          "contentHeight": 84.5,
+          "sourceRect": [
+            635,
+            794,
+            141,
+            169
+          ]
+        },
+        "rightTwinTail": {
+          "rect": [
+            1181.5,
+            405.5,
+            69,
+            84.5
+          ],
+          "pivot": [
+            17.25,
+            12.675
+          ],
+          "contentHeight": 84.5,
+          "sourceRect": [
+            840,
+            794,
+            138,
+            169
+          ]
+        },
+        "leftFrontHair": {
+          "rect": [
+            1329.5,
+            413,
+            29,
+            69.5
+          ],
+          "pivot": [
+            14.5,
+            4.17
+          ],
+          "contentHeight": 69.5,
+          "sourceRect": [
+            1014,
+            802,
+            58,
+            139
+          ],
+          "visible": false
+        },
+        "rightFrontHair": {
+          "rect": [
+            1457.5,
+            413.5,
+            29,
+            68.5
+          ],
+          "pivot": [
+            14.5,
+            4.11
+          ],
+          "contentHeight": 68.5,
+          "sourceRect": [
+            1139,
+            807,
+            58,
+            137
+          ],
+          "visible": false
+        }
+      },
+      "screenSides": {
+        "left": 1,
+        "right": -1
+      },
+      "legSides": {
+        "left": -1,
+        "right": 1
+      },
+      "appendages": [
+        {
+          "part": "leftTwinTail",
+          "anchor": "neck",
+          "offset": [
+            -40,
+            -52
+          ],
+          "height": 165,
+          "amplitude": 0.035,
+          "frequency": 1.4,
+          "phase": 0,
+          "layer": "backHair"
+        },
+        {
+          "part": "rightTwinTail",
+          "anchor": "neck",
+          "offset": [
+            40,
+            -52
+          ],
+          "height": 165,
+          "amplitude": 0.035,
+          "frequency": 1.4,
+          "phase": 3.141592653589793,
+          "layer": "backHair"
+        }
+      ],
+      "restHands": {
+        "left": [
+          32,
+          -8
+        ],
+        "right": [
+          -32,
+          -8
+        ]
+      }
+    },
+    "right": {
+      "atlas": "main",
+      "heading": 1.5707963267948966,
+      "parts": {
+        "head": {
+          "rect": [
+            541,
+            29.5,
+            70,
+            69
+          ],
+          "pivot": [
+            49.25,
+            67.25
+          ],
+          "contentHeight": 69,
+          "sourceRect": [
+            36,
+            17,
+            281,
+            277
+          ]
+        },
+        "backHair": {
+          "rect": [
+            672.5,
+            33.5,
+            63,
+            61
+          ],
+          "pivot": [
+            31.5,
+            57.34
+          ],
+          "contentHeight": 61,
+          "sourceRect": [
+            368,
+            50,
+            252,
+            244
+          ],
+          "visible": false
+        },
+        "bodiceTorso": {
+          "rect": [
+            812.5,
+            39,
+            39,
+            49.5
+          ],
+          "pivot": [
+            15.75,
+            2
+          ],
+          "contentHeight": 49.5,
+          "sourceRect": [
+            723,
+            81,
+            156,
+            198
+          ]
+        },
+        "pelvisFrontSkirt": {
+          "rect": [
+            928,
+            41,
+            63.5,
+            46
+          ],
+          "pivot": [
+            29.75,
+            11.5
+          ],
+          "contentHeight": 46,
+          "sourceRect": [
+            971,
+            114,
+            254,
+            185
+          ]
+        },
+        "leftUpperArm": {
+          "rect": [
+            563,
+            161.5,
+            26,
+            61
+          ],
+          "pivot": [
+            12.75,
+            3.25
+          ],
+          "contentHeight": 61,
+          "sourceRect": [
+            115,
+            359,
+            105,
+            244
+          ],
+          "end": [
+            12.75,
+            55.75
+          ],
+          "visible": false
+        },
+        "leftForearmHand": {
+          "rect": [
+            688.5,
+            161.5,
+            31,
+            60.5
+          ],
+          "pivot": [
+            22.5,
+            3.5
+          ],
+          "contentHeight": 60.5,
+          "sourceRect": [
+            407,
+            360,
+            125,
+            242
+          ],
+          "end": [
+            13.75,
+            37
+          ],
+          "visible": false
+        },
+        "rightUpperArm": {
+          "rect": [
+            816.5,
+            160.5,
+            30.5,
+            63
+          ],
+          "pivot": [
+            10.25,
+            3.25
+          ],
+          "contentHeight": 63,
+          "sourceRect": [
+            745,
+            351,
+            122,
+            252
+          ],
+          "end": [
+            21.25,
+            57.5
+          ]
+        },
+        "rightForearmHand": {
+          "rect": [
+            943,
+            163.5,
+            34,
+            57
+          ],
+          "pivot": [
+            7,
+            3.25
+          ],
+          "contentHeight": 57,
+          "sourceRect": [
+            1055,
+            369,
+            136,
+            228
+          ],
+          "end": [
+            19.5,
+            36
+          ]
+        },
+        "leftUpperLeg": {
+          "rect": [
+            559.5,
+            289.5,
+            33,
+            61
+          ],
+          "pivot": [
+            16.25,
+            3.25
+          ],
+          "contentHeight": 61,
+          "sourceRect": [
+            95,
+            638,
+            132,
+            243
+          ],
+          "end": [
+            13.75,
+            57.5
+          ]
+        },
+        "leftLowerLegBoot": {
+          "rect": [
+            683.5,
+            288.5,
+            41,
+            63
+          ],
+          "pivot": [
+            13.75,
+            2.75
+          ],
+          "contentHeight": 63,
+          "sourceRect": [
+            416,
+            641,
+            165,
+            251
+          ],
+          "end": [
+            19,
+            61
+          ]
+        },
+        "rightUpperLeg": {
+          "rect": [
+            815.5,
+            290,
+            33,
+            60
+          ],
+          "pivot": [
+            16.25,
+            2.75
+          ],
+          "contentHeight": 60,
+          "sourceRect": [
+            720,
+            638,
+            132,
+            239
+          ],
+          "end": [
+            14.75,
+            57.25
+          ]
+        },
+        "rightLowerLegBoot": {
+          "rect": [
+            939,
+            289,
+            41.5,
+            62
+          ],
+          "pivot": [
+            13.75,
+            2.75
+          ],
+          "contentHeight": 62,
+          "sourceRect": [
+            1045,
+            641,
+            166,
+            247
+          ],
+          "end": [
+            18,
+            60.25
+          ]
+        },
+        "leftTwinTail": {
+          "rect": [
+            549.5,
+            404.5,
+            53,
+            87
+          ],
+          "pivot": [
+            43.5,
+            10.75
+          ],
+          "contentHeight": 87,
+          "sourceRect": [
+            31,
+            898,
+            212,
+            348
+          ]
+        },
+        "rightTwinTail": {
+          "rect": [
+            673,
+            405.5,
+            61.5,
+            85
+          ],
+          "pivot": [
+            10.5,
+            11.25
+          ],
+          "contentHeight": 85,
+          "sourceRect": [
+            438,
+            898,
+            246,
+            339
+          ]
+        },
+        "leftFrontHair": {
+          "rect": [
+            815,
+            417,
+            34,
+            62
+          ],
+          "pivot": [
+            16.875,
+            3.705
+          ],
+          "contentHeight": 62,
+          "sourceRect": [
+            758,
+            946,
+            135,
+            247
+          ],
+          "visible": false
+        },
+        "rightFrontHair": {
+          "rect": [
+            945,
+            417,
+            30,
+            62
+          ],
+          "pivot": [
+            15.125,
+            3.705
+          ],
+          "contentHeight": 62,
+          "sourceRect": [
+            1025,
+            947,
+            121,
+            247
+          ],
+          "visible": false
+        }
+      },
+      "screenSides": {
+        "left": -1,
+        "right": 1
+      },
+      "legSides": {
+        "left": 1,
+        "right": -1
+      },
+      "appendages": [
+        {
+          "part": "leftTwinTail",
+          "anchor": "neck",
+          "offset": [
+            -30,
+            -52
+          ],
+          "height": 165,
+          "amplitude": 0.035,
+          "frequency": 1.4,
+          "phase": 0,
+          "layer": "backHair"
+        },
+        {
+          "part": "rightTwinTail",
+          "anchor": "neck",
+          "offset": [
+            40,
+            -52
+          ],
+          "height": 165,
+          "amplitude": 0.035,
+          "frequency": 1.4,
+          "phase": 3.141592653589793,
+          "layer": "backHair",
+          "visible": false
+        }
+      ],
+      "rig": {
+        "shoulderHalfWidth": 4,
+        "hipHalfWidth": 4,
+        "torsoHeight": 48
+      },
+      "restHands": {
+        "left": [
+          -5,
+          -8
+        ],
+        "right": [
+          14,
+          -8
+        ]
+      }
+    }
+  },
+  "continuousTurnComplete": false,
+  "attackArtComplete": false,
+  "animationReviewed": false,
+  "output": {
+    "width": 256,
+    "height": 256,
+    "anchorX": 0.5,
+    "anchorY": 0.86,
+    "scale": 0.76
+  },
+  "restHands": {
+    "left": [
+      -32,
+      -8
+    ],
+    "right": [
+      32,
+      -8
+    ]
+  },
+  "rig": {
+    "hipHeight": 64,
+    "hipHalfWidth": 8,
+    "neckHeight": 59,
+    "shoulderHeight": 46,
+    "shoulderHalfWidth": 22,
+    "thigh": 32,
+    "shin": 34,
+    "upperArm": 25,
+    "forearm": 27,
+    "headHeight": 134,
+    "hairHeight": 130,
+    "frontHairHeight": 61,
+    "torsoHeight": 72,
+    "skirtHeight": 55,
+    "tailsHeight": 50,
+    "lanternHeight": 45,
+    "waistOffset": 16
+  },
+  "provenance": {
+    "method": "built-in-imagegen",
+    "reference": "cna-star-twintails-walk.webp",
+    "newlyAuthoredHiddenSurfaces": true,
+    "packing": "Measured alpha-connected components of newly authored modular sheets. No whole-body slicing, horizontal mirroring, silhouette narrowing or repainting. Corrected right sheet is uniformly downsampled by 0.5 for 1024px delivery; original source rectangles retained.",
+    "limitations": [
+      "Only four authored cardinal views; no diagonal transition drawings.",
+      "Unreviewed pilot; do not enable in game until morphology, seams, support feet and view switches pass native review.",
+      "Redundant head hair-cap and front-hair pieces are preserved but hidden to avoid duplicate hair/stars."
+    ],
+    "deliveryPacking": "Only atlas packing and Lanczos resampling; rig dimensions, costume pixels and alpha remain authored.",
+    "authoringSources": [
+      {
+        "key": "down",
+        "originalSHA256": "a0aabf563b61659180d1692efca51bf02b9a8eb40f6b152aa533bbad88e9561c",
+        "authoringSHA256": "0800d75db5ca781e4dc19fda17016b03ef4c0d8ef713647b670468d8ae8f6b87",
+        "sourceWidth": 1024,
+        "sourceHeight": 1024,
+        "transform": {
+          "scale": 0.5,
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "key": "right",
+        "originalSHA256": "6211d01829e2606245e30672fce863f2365d3961a0c98580a47deafd3776fcf0",
+        "authoringSHA256": "94a0b9c074804cb49b0bd7710a5a9e2348a7c9010281ffc8d6423d5c0c9ee773",
+        "sourceWidth": 1024,
+        "sourceHeight": 1024,
+        "transform": {
+          "scale": 0.5,
+          "x": 512,
+          "y": 0
+        }
+      },
+      {
+        "key": "up",
+        "originalSHA256": "29a9213b39edf76aaec4e23fcee2a65b9409accfb57c150a42e2a2234eea82e8",
+        "authoringSHA256": "9db1cc11487f92ea8c647482846244cfc6c492ca6a9cd23e9586574837496888",
+        "sourceWidth": 1024,
+        "sourceHeight": 1024,
+        "transform": {
+          "scale": 0.5,
+          "x": 1024,
+          "y": 0
+        }
+      },
+      {
+        "key": "left",
+        "originalSHA256": "fe405e8a4b192957541c196368fcdb93ae7748ede271941b8fe463463dc71074",
+        "authoringSHA256": "35306ecc4a2b1f26a7ad907f79aee49ff7e3a6072ef16cb4c8602184bba5f945",
+        "sourceWidth": 1024,
+        "sourceHeight": 1024,
+        "transform": {
+          "scale": 0.5,
+          "x": 1536,
+          "y": 0
+        }
+      }
+    ]
+  },
+  "review": {
+    "passed": true,
+    "scope": "four-cardinal-anatomy-and-native76-86px-motion",
+    "reviewer": "independent-audit-display",
+    "continuousTurnComplete": false
+  }
+}

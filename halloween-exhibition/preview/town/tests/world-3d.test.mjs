@@ -120,3 +120,23 @@ test('only the foreground tree canopy fades and a reused surface is not forced i
  state.position={x:32,z:28};world.render({state,motion:false});assert(canopy.every(item=>item.material.opacity===1));
  world.destroy();assert.equal(record.losses,0,'reusable canvas contexts must not be forcibly lost');assert.equal(record.disposed,1);
 });
+
+test('mutable actor poses upload one live texture and refresh alpha picking without growing the static cache',async()=>{
+ const {world,record}=harness();await world.ready;const state=initialTownState();state.position={x:28,z:28};
+ const image=fakeCanvas(256,320),context=image.getContext('2d');image.alpha=255;context.getImageData=()=>({width:image.width,height:image.height,data:new Uint8ClampedArray(image.width*image.height*4).fill(image.alpha)});
+ const sprite={image,frame:[0,0,256,320],anchorX:.5,anchorY:.94,contentHeight:280,poseVersion:0},actor={id:'live-owner',x:29.8,z:28,heightPx:76,sprite};
+ world.render({state,motion:false,creatorActors:[actor]});const node=record.scene.getObjectsByProperty('isSprite',true).find(item=>item.userData.actorId===actor.id),texture=node.material.map,initialVersion=texture.version,staticFrames=world.status().spriteFrames;let disposals=0;texture.addEventListener('dispose',()=>disposals++);
+ assert.equal(texture.image,image);assert.equal(world.status().liveSprites,1);
+ const foot=world.worldToScreen(actor),at={x:foot.x,y:foot.y-node.scale.y*.45*record.camera.projectionMatrix.elements[5]*600/2};assert.equal(world.pickVisitor(at.x,at.y),actor.id);
+ for(let poseVersion=1;poseVersion<=100;poseVersion++){image.alpha=poseVersion===100?0:255;actor.sprite={...sprite,poseVersion};assert.equal(world.render({state,motion:false,creatorActors:[actor]}),true);assert.equal(node.material.map,texture);assert.equal(world.status().spriteFrames,staticFrames);assert.equal(world.status().liveSprites,1);}
+ assert.equal(texture.version,initialVersion+100);assert.equal(world.pickVisitor(at.x,at.y),null,'old opaque pixels cannot intercept a transparent new pose');
+ assert.equal(world.render({state,motion:false,creatorActors:[actor]}),false);assert.equal(texture.version,initialVersion+100);assert.equal(disposals,0);
+ world.render({state,motion:false,creatorActors:[]});assert.equal(world.status().liveSprites,0);assert.equal(disposals,1);world.destroy();assert.equal(disposals,1);
+});
+
+test('switching live actor canvases or returning to a static atlas disposes the previous live texture once',async()=>{
+ const {world,record}=harness();await world.ready;const state=initialTownState(),actor={id:'mutable',x:30,z:28,sprite:{image:fakeCanvas(256,320),frame:[0,0,256,320],contentHeight:280,poseVersion:0}};state.position={x:28,z:28};
+ world.render({state,creatorActors:[actor]});const node=record.scene.getObjectsByProperty('isSprite',true).find(item=>item.userData.actorId===actor.id),first=node.material.map;let firstDisposals=0;first.addEventListener('dispose',()=>firstDisposals++);
+ actor.sprite={...actor.sprite,image:fakeCanvas(256,320)};world.render({state,creatorActors:[actor]});const second=node.material.map;assert.notEqual(first,second);assert.equal(firstDisposals,1);let secondDisposals=0;second.addEventListener('dispose',()=>secondDisposals++);
+ actor.sprite={...actor.sprite,poseVersion:undefined};world.render({state,creatorActors:[actor]});assert.equal(secondDisposals,1);assert.equal(world.status().liveSprites,0);world.destroy();assert.equal(firstDisposals,1);assert.equal(secondDisposals,1);
+});

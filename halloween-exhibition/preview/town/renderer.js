@@ -1,8 +1,8 @@
 import {getTownMap} from './story-data.js';
 import {TOWN_TILE as TILE,followTownCamera,townCameraTarget,townVisibleBounds,townWorldToScreen,townScreenToWorld} from './motion.js';
 import {TOWN_BUDGET,TOWN_PROP_CELLS,TOWN_BATTLE_ART_IDS,townVisualSeed as seed,buildingArtKind,townPropSprite} from './visual-data.js';
-import {drawArtSprite,playerPose,loadArtImage,PALACE_ART} from '../maze/rpg-art.js?v=20261017-review1';
-import {monsterSprite} from '../maze/monster-motion.js?v=20261017-review1';
+import {drawArtSprite,playerPose,loadArtImage,PALACE_ART} from '../maze/rpg-art.js?v=20261017-rig1';
+import {monsterSprite} from '../maze/monster-motion.js?v=20261017-rig1';
 import {withDeadline} from '../transition-effects.js?v=20261016-living1';
 
 const TAU=Math.PI*2,clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
@@ -285,7 +285,7 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
     const tile=w<550?52:w<900?61:70,scale=tile/TILE,target=townCameraTarget(state.position,map,w,h/TOWN_DEPTH_SCALE,tile);
     const switched=lastMap!==map.id;camera=followTownCamera(switched?null:camera,target,dt,{snap:!motion});lastMap=map.id;
     const cameraMoving=Math.hypot(camera.x-target.x,camera.y-target.y)>.03;
-    const signature=[map.id,canvas.width,canvas.height,state.position.x,state.position.z,state.revision||0,JSON.stringify(state.flags||{}),state.battle?.phase,Math.floor(walkPhase*30),walking,facing,scene.version,art.version,brightness,lantern,motion?Math.floor(time*30):0,creatorActors.map(a=>[a.x,a.z,a.facing,a.sprite?.frame?.join(',')].join(':')).join(';')].join('|');
+    const signature=[map.id,canvas.width,canvas.height,state.position.x,state.position.z,state.revision||0,JSON.stringify(state.flags||{}),state.battle?.phase,Math.floor(walkPhase*30),walking,facing,scene.version,art.version,art.rigs?.get('owner')?.poseVersion,brightness,lantern,motion?Math.floor(time*30):0,creatorActors.map(a=>[a.x,a.z,a.facing,a.sprite?.frame?.join(','),a.sprite?.poseVersion].join(':')).join(';')].join('|');
     if(!cameraMoving&&!switched&&lastSignature===signature)return false;lastSignature=signature;
     const c=canvas.getContext('2d');if(!c)return false;
     lastView={camera:{...camera},width:w,height:h,scale,map,pixelRatio:ratio,depthScale:TOWN_DEPTH_SCALE};hitItems=[];
@@ -314,7 +314,8 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
         }else addSpriteHit(a.sprite,o.x,o.y,a.heightPx||54);
       }else if(o.kind==='resident'){
         const frame=scene.residentFrames?.[o.data.appearance];
-        if(frame&&scene.images.residents){ellipse(c,o.x+2,o.y+2,13,4,'#09172477');const sprite={image:scene.images.residents,...frame};drawArtSprite(c,sprite,o.x,o.y,76*(frame.heightRatio||1));addSpriteHit(sprite,o.x,o.y,76*(frame.heightRatio||1));}
+        const rigSprite=art.rigs?.get('resident:'+o.data.id);
+        if(rigSprite||frame&&scene.images.residents){ellipse(c,o.x+2,o.y+2,13,4,'#09172477');const sprite=rigSprite||{image:scene.images.residents,...frame};drawArtSprite(c,sprite,o.x,o.y,76*(frame?.heightRatio||1));addSpriteHit(sprite,o.x,o.y,76*(frame?.heightRatio||1));}
         else drawResident(c,o.data,time);
         hitItems.push({id:o.data.id,worldX:o.data.x,worldZ:o.data.z,kind:'resident'});
       }else{
@@ -375,7 +376,7 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
     // The arena is a stone terrace with converging joints, retaining the town's height cues.
     poly(c,[[0,h*.65],[w,h*.65],[w,h],[0,h]],'#59616a44');for(let i=-4;i<8;i++)line(c,w*.5+i*w*.11,h*.65,w*.5+i*w*.25,h,'#a9b6a32c',1);for(let i=0;i<4;i++)line(c,0,h*.68+i*i*h*.025,w,h*.68+i*i*h*.025,'#a9b6a32c',1);
     ellipse(c,heroX,floorY+5,size*.22,11,'#071827b0');ellipse(c,enemyX,floorY+5,enemySize*.26,14,'#071827b0');
-    const hero=playerPose(art,'right',motion&&lunge>0,age*14);if(hero)drawArtSprite(c,hero,heroX+lunge,floorY,size);
+    const hero=playerPose(art,'right',motion&&lunge>0,age*14,{battle:true,effect,time,motion});if(hero)drawArtSprite(c,hero,heroX+(hero.poseVersion===undefined?lunge:0),floorY,size);
     const sprite=monsterSprite(art,enemyId,{time,motion,battle:true,facing:'left'});const victory=battle.phase==='victory';
     if(sprite)drawArtSprite(c,sprite,enemyX,floorY,enemySize,{alpha:victory?.55:1,flip:sprite.flip});
     else{
@@ -384,7 +385,14 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
     }
     if(effect&&age<1.3){
       if(action==='guard'){c.strokeStyle='#a8dfd0a0';c.lineWidth=2;c.beginPath();c.ellipse(heroX,floorY-size*.48,size*.33,size*.49,0,0,TAU);c.stroke();}
-      if(attack){const progress=clamp((age-.2)/.45,0,1),x=heroX+size*.2+(enemyX-heroX-size*.2)*progress,y=floorY-size*.5-Math.sin(progress*Math.PI)*h*.12;glow(c,x,y,34,'#f4d88d88');ellipse(c,x,y,5,5,'#fff3c5');if(progress===1&&age<1.2){const a=clamp((age-.65)/.55,0,1);c.save();c.globalAlpha=1-a;for(let i=0;i<9;i++){const angle=i*TAU/9,r=20+a*65;line(c,enemyX+Math.cos(angle)*r*.4,floorY-enemySize*.5+Math.sin(angle)*r*.4,enemyX+Math.cos(angle)*r,floorY-enemySize*.5+Math.sin(angle)*r,'#f9dd9e',2);}c.restore();}}
+      if(attack){
+        const actionPose=hero?.rigPose?.action,grip=hero?.rigPose?.lantern?.grip,stage=actionPose?.stage;
+        const progress=stage?(stage==='release'?actionPose.progress:['impact','recovery'].includes(stage)?1:0):clamp((age-.2)/.45,0,1);
+        const sx=grip?heroX+grip.x*size/hero.rigContentHeight:heroX+size*.2,sy=grip?floorY+grip.y*size/hero.rigContentHeight:floorY-size*.5;
+        const x=sx+(enemyX-sx)*progress,y=sy+(floorY-enemySize*.5-sy)*progress-Math.sin(progress*Math.PI)*h*.12;
+        if(!stage||['release','impact','recovery'].includes(stage)){glow(c,x,y,34,'#f4d88d88');ellipse(c,x,y,5,5,'#fff3c5');}
+        if(progress===1&&age<1.2){const a=stage==='impact'?actionPose.progress:stage==='recovery'?1:clamp((age-.65)/.55,0,1);c.save();c.globalAlpha=1-a;for(let i=0;i<9;i++){const angle=i*TAU/9,r=20+a*65;line(c,enemyX+Math.cos(angle)*r*.4,floorY-enemySize*.5+Math.sin(angle)*r*.4,enemyX+Math.cos(angle)*r,floorY-enemySize*.5+Math.sin(angle)*r,'#f9dd9e',2);}c.restore();}
+      }
     }
     text(c,battle.enemy?.name||'水鏡の影',w/2,25,w<500?13:18,'#f4dfb5');
     text(c,victory?'祭りの灯りが戻った':`TURN ${battle.turn||1}`,w/2,h-18,13,victory?'#f3d28e':'#c7d6d5');

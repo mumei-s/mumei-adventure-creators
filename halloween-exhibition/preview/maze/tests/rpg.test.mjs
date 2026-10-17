@@ -58,7 +58,7 @@ test('maze participates in shared layout preference and coherent cache release',
   const app=read('app.js'),html=read('index.html');const version='20261014-adventure2';
   assert(app.includes("initDisplayMode({controlsParent:visitorSection,page:'maze'})"));assert(app.includes("document.addEventListener('yearbook:layout-change'"));
   assert(app.includes('../display-mode.js?v=20261016-resident1'));for(const name of ['visitor-preferences','display-mode'])assert(html.includes(`../${name}.css?v=${version}`));assert(app.includes('./adventure-audio.js?v=20261016-ios1'));
-  for(const file of ['style','stage-2d'])assert(html.includes(`./${file}.css?v=${version}`));assert(html.includes('./rpg-ui.css?v=20261014-adventure2'));assert(html.includes('./app.js?v=20261017-fit2'));
+  for(const file of ['style','stage-2d'])assert(html.includes(`./${file}.css?v=${version}`));assert(html.includes('./rpg-ui.css?v=20261014-adventure2'));assert(html.includes('./app.js?v=20261017-rig1'));
   const expected={'game-display':'20261017-fit2','viewport':'20261016-ios1','clear-reward':'20261015-clear1','walking-speed':'20261015-clear1','library-catalog':'20261015-clear1','view-model':'20261015-minimap1','game-input':'20261016-ios1','adventure-audio':'20261016-ios1','sound-check':'20261016-ios1'};
   for(const module of ['ending-ui','stage-2d','world','battle-scene','story-model','encounter-model','rpg-art','creator-runtime','creator-ui'])expected[module]='20261016-creator-rpg1';
   for(const module of ['minimap-size','ending-ui','stage-2d','world','battle-scene','story-model','encounter-model','creator-ui'])expected[module]='20261016-battle-visible1';
@@ -66,6 +66,7 @@ test('maze participates in shared layout preference and coherent cache release',
   expected['magical-loading']='20261015-journey1';for(const name of ['transition-effects','monster-motion','monster-motion-data','rpg-art','stage-2d','world','battle-scene','encounter-model','optional-encounters','patrol-model','creator-runtime','story-model','ending-ui','resident-model','creator-ui'])expected[name]='20261016-living1';
   for(const name of ['rpg-art','frame-loop','movement-runtime','world','stage-2d','battle-scene','creator-runtime','monster-motion','patrol-model'])expected[name]='20261017-review1';
   for(const name of ['creator-runtime','creator-ui','resident-model'])expected[name]='20261017-cna1';
+  for(const name of ['rpg-art','world','stage-2d','battle-scene','monster-motion','rig-animation','owner-rig','creature-rig','composite-rig','mascot-rig','ending-ui'])expected[name]='20261017-rig1';
   for(const name of ['app.js','stage-2d.js','rpg-model.js','battle-scene.js','world.js','creator-ui.js','creator-runtime.js','encounter-model.js','ending-ui.js'])for(const match of read(name).matchAll(/(?:from\s+|import\()'((?:\.\/|\.\.\/)[^']+\.js[^']*)'/g)){const module=match[1].match(/([^/]+)\.js/)[1];if(match[1].startsWith('./vendor/'))continue;assert(match[1].endsWith('?v='+(expected[module]||version)),`${name}: ${match[1]}`);}
   assert(html.includes('viewport-fit=cover'));assert(html.includes('apple-touch-icon'));assert(html.includes('apple-mobile-web-app-capable'));assert(!app.includes('serviceWorker.register'));
 });

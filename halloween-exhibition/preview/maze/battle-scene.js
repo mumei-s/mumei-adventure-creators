@@ -1,6 +1,6 @@
-import {monsterSprite} from './monster-motion.js?v=20261017-review1';
-import {drawArtSprite,playerPose} from './rpg-art.js?v=20261017-review1';
-import {drawCreature} from './stage-2d.js?v=20261017-review1';
+import {monsterSprite} from './monster-motion.js?v=20261017-rig1';
+import {drawArtSprite,playerPose} from './rpg-art.js?v=20261017-rig1';
+import {drawCreature} from './stage-2d.js?v=20261017-rig1';
 import {prankFor} from './encounter-model.js?v=20261016-living1';
 import {encounterStory} from './story-model.js?v=20261016-living1';
 const clamp=x=>Math.max(0,Math.min(1,x));
@@ -31,8 +31,8 @@ function magicCircle(c,x,y,r,progress,time,motion){
   c.beginPath();for(let n=0;n<=6;n++){const a=n*Math.PI*2/6;c[n?'lineTo':'moveTo'](Math.cos(a)*r*.88,Math.sin(a)*r*.88);}c.stroke();
   for(let n=0;n<8;n++){const a=n*Math.PI/4;c.beginPath();c.moveTo(Math.cos(a)*r*.95,Math.sin(a)*r*.95);c.lineTo(Math.cos(a)*r*1.12,Math.sin(a)*r*1.12);c.stroke();}c.restore();
 }
-function shineEffect(c,{px,py,ex,ey,heroSize,enemySize,w,h,age,motion,seq}){
-  const sx=px+heroSize*.2,sy=py-heroSize*.52,tx=ex,ty=ey-enemySize*.48;
+function shineEffect(c,{px,py,ex,ey,heroSize,enemySize,w,h,age,motion,seq,origin}){
+  const sx=origin?.x??px+heroSize*.2,sy=origin?.y??py-heroSize*.52,tx=ex,ty=ey-enemySize*.48;
   if(!motion){glow(c,tx,ty,Math.min(70,h*.24),'#ffd68545');ring(c,tx,ty,Math.min(38,w*.1),Math.min(38,w*.1),'#ffe4aa');label(c,'灯の必殺技',w/2,Math.max(49,h*.16),'#ffe3a2',w<500?14:20,'center',w-16);return;}
   const fade=age>1.86?1-clamp((age-1.86)/.54):1;
   magicCircle(c,px,py-3,Math.min(w*.19,heroSize*.58),seq.charge*fade,age,motion);
@@ -82,14 +82,14 @@ export function renderBattleScene({canvas,art,battle,effect=null,time=0,motion=t
     const radius=Math.min(w*.17,110);ring(c,ex,ey+5,radius,14,'#bda2d858');
     if(motion)for(let i=0;i<3;i++){const a=drift*.55+i*Math.PI*2/3;ellipse(c,ex+Math.cos(a)*radius,ey+Math.sin(a)*13,2,2,'#d4b9ef88');}
   }
-  const hero=playerPose(art,'right',motion&&((shine&&seq.lunge>0)||(attack&&phase<.38)),phase*12);
-  const casting=shine&&motion&&age<.86;
-  if(!drawArtSprite(c,hero,px+lunge,py,heroSize,{rotation:casting?-.035*seq.charge:0,scaleY:casting?1-.025*seq.charge:1}))heroFallback(c,px+lunge,py,heroSize);
+  const hero=playerPose(art,'right',motion&&((shine&&seq.lunge>0)||(attack&&phase<.38)),phase*12,{battle:true,effect,time,motion});
+  if(!drawArtSprite(c,hero,px+(hero?.poseVersion===undefined?lunge:0),py,heroSize))heroFallback(c,px+lunge,py,heroSize);
   // Keep painted anatomy intact; animated atlas poses own body movement.
   const rotation=motion?(battle.id==='bat'?Math.sin(drift*1.9)*.018:battle.id==='ghost'?Math.sin(drift*.8)*.01:0):0;
   if(!drawArtSprite(c,enemy,ex+recoil,ey+hover,enemySize,{alpha:won?.92:1,flip:enemy?.flip,rotation}))drawCreature(c,battle.id,ex+recoil,ey-enemySize*.45+hover,enemySize/75);
   if(effect&&age<battleEffectDuration(effect.type,motion)){
-    if(shine)shineEffect(c,{px,py,ex,ey,heroSize,enemySize,w,h,age,motion,seq});
+    const grip=hero?.rigPose?.lantern?.grip,origin=grip?{x:px+grip.x*heroSize/hero.rigContentHeight,y:py+grip.y*heroSize/hero.rigContentHeight}:null;
+    if(shine)shineEffect(c,{px,py,ex,ey,heroSize,enemySize,w,h,age,motion,seq,origin});
     const sx=px+heroSize*.18,sy=py-heroSize*.48,tx=ex,ty=ey-enemySize*.48;
     if(motion&&attack&&age<.6){
       const t=clamp(age/.45);c.save();c.translate(sx+(tx-sx)*t,sy+(ty-sy)*t);c.rotate(-.8+t*1.6);c.strokeStyle='#f4d3a5aa';c.lineWidth=4;c.beginPath();c.arc(0,0,Math.min(34,h*.1),-.9,.9);c.stroke();c.restore();

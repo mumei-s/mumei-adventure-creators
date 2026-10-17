@@ -1,0 +1,599 @@
+{
+  "version": 1,
+  "id": "resident:innkeeper",
+  "label": "宿屋 アンネ",
+  "archetype": "biped",
+  "atlas": "main",
+  "atlases": {
+    "main": "./parts.webp"
+  },
+  "width": 1024,
+  "height": 1024,
+  "contentHeight": 253,
+  "output": {
+    "width": 256,
+    "height": 320,
+    "anchorX": 0.5,
+    "anchorY": 0.94,
+    "scale": 1
+  },
+  "directions": [
+    "down-threequarter"
+  ],
+  "views": {
+    "down-threequarter": {
+      "heading": 0,
+      "atlas": "main",
+      "parts": {
+        "head": {
+          "rect": [
+            32,
+            44,
+            192,
+            167.33333333333331
+          ],
+          "pivot": [
+            96,
+            160.64
+          ],
+          "contentHeight": 167.33333333333331,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            16,
+            41,
+            288,
+            251
+          ]
+        },
+        "backHair": {
+          "rect": [
+            295.3333333333333,
+            49.33333333333333,
+            177.33333333333331,
+            156.66666666666666
+          ],
+          "pivot": [
+            88.66666666666666,
+            150.39999999999998
+          ],
+          "contentHeight": 156.66666666666666,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            344,
+            43,
+            266,
+            235
+          ]
+        },
+        "bodiceTorso": {
+          "rect": [
+            563.3333333333333,
+            46,
+            152.66666666666666,
+            163.33333333333331
+          ],
+          "pivot": [
+            76.33333333333333,
+            9.799999999999999
+          ],
+          "contentHeight": 163.33333333333331,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            679,
+            54,
+            229,
+            245
+          ]
+        },
+        "pelvisFrontSkirt": {
+          "rect": [
+            790,
+            28,
+            212,
+            200
+          ],
+          "pivot": [
+            106,
+            12
+          ],
+          "contentHeight": 200,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            922,
+            30,
+            318,
+            300
+          ]
+        },
+        "leftUpperArm": {
+          "rect": [
+            53.33333333333333,
+            305.3333333333333,
+            149.33333333333331,
+            157.33333333333331
+          ],
+          "pivot": [
+            120.37266666666666,
+            27.727999999999998
+          ],
+          "contentHeight": 157.33333333333331,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            59,
+            342,
+            224,
+            236
+          ],
+          "end": [
+            44.80933333333333,
+            126.556
+          ],
+          "span": 124.40553333333334
+        },
+        "leftForearmHand": {
+          "rect": [
+            301.3333333333333,
+            326.66666666666663,
+            165.33333333333331,
+            114.66666666666666
+          ],
+          "pivot": [
+            25.07333333333333,
+            37.156666666666666
+          ],
+          "contentHeight": 114.66666666666666,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            362,
+            400,
+            248,
+            172
+          ],
+          "end": [
+            134.67,
+            93.14733333333334
+          ],
+          "span": 123.07046666666668
+        },
+        "rightUpperArm": {
+          "rect": [
+            569.3333333333333,
+            306,
+            140.66666666666666,
+            156
+          ],
+          "pivot": [
+            32.28133333333333,
+            23.375999999999998
+          ],
+          "contentHeight": 156,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            673,
+            343,
+            211,
+            234
+          ],
+          "end": [
+            93.53933333333333,
+            122.50399999999999
+          ],
+          "span": 116.52826666666665
+        },
+        "rightForearmHand": {
+          "rect": [
+            812.6666666666666,
+            324.66666666666663,
+            166.66666666666666,
+            118.66666666666666
+          ],
+          "pivot": [
+            24.686666666666667,
+            37.965999999999994
+          ],
+          "contentHeight": 118.66666666666666,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            956,
+            379,
+            250,
+            178
+          ],
+          "end": [
+            132.88466666666665,
+            100.38266666666667
+          ],
+          "span": 124.91053333333333
+        },
+        "leftUpperLeg": {
+          "rect": [
+            67.33333333333333,
+            553.3333333333333,
+            121.33333333333333,
+            172.66666666666666
+          ],
+          "pivot": [
+            60.666666666666664,
+            8.633333333333333
+          ],
+          "contentHeight": 172.66666666666666,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            84,
+            622,
+            182,
+            259
+          ],
+          "end": [
+            60.666666666666664,
+            164.03333333333333
+          ],
+          "span": 155.39999999999998
+        },
+        "leftLowerLegBoot": {
+          "rect": [
+            336.66666666666663,
+            545.3333333333333,
+            94,
+            189.33333333333331
+          ],
+          "pivot": [
+            46,
+            16.2
+          ],
+          "contentHeight": 189.33333333333331,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            393,
+            614,
+            141,
+            284
+          ],
+          "end": [
+            46,
+            186.66666666666666
+          ],
+          "span": 170.46666666666664
+        },
+        "rightUpperLeg": {
+          "rect": [
+            578.6666666666666,
+            555.3333333333333,
+            122.66666666666666,
+            168.66666666666666
+          ],
+          "pivot": [
+            61.33333333333333,
+            8.433333333333334
+          ],
+          "contentHeight": 168.66666666666666,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            675,
+            622,
+            184,
+            253
+          ],
+          "end": [
+            61.33333333333333,
+            160.23333333333332
+          ],
+          "span": 151.79999999999998
+        },
+        "rightLowerLegBoot": {
+          "rect": [
+            845.3333333333333,
+            544,
+            101.33333333333333,
+            191.33333333333331
+          ],
+          "pivot": [
+            46.666666666666664,
+            16.349999999999998
+          ],
+          "contentHeight": 191.33333333333331,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            1030,
+            612,
+            152,
+            287
+          ],
+          "end": [
+            46.666666666666664,
+            188.66666666666666
+          ],
+          "span": 172.31666666666666
+        },
+        "lantern": {
+          "visible": false,
+          "rect": [
+            0,
+            0,
+            0.6666666666666666,
+            0.6666666666666666
+          ],
+          "pivot": [
+            0,
+            0
+          ],
+          "contentHeight": 0.6666666666666666,
+          "optionalEmpty": true
+        },
+        "backSkirtTails": {
+          "rect": [
+            277.3333333333333,
+            795.3333333333333,
+            213.33333333333331,
+            200.66666666666666
+          ],
+          "pivot": [
+            106.66666666666666,
+            16.05333333333333
+          ],
+          "contentHeight": 200.66666666666666,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            319,
+            921,
+            320,
+            301
+          ]
+        },
+        "leftFrontHair": {
+          "visible": false,
+          "rect": [
+            0,
+            0,
+            0.6666666666666666,
+            0.6666666666666666
+          ],
+          "pivot": [
+            0,
+            0
+          ],
+          "contentHeight": 0.6666666666666666,
+          "optionalEmpty": true
+        },
+        "rightFrontHair": {
+          "visible": false,
+          "rect": [
+            0,
+            0,
+            0.6666666666666666,
+            0.6666666666666666
+          ],
+          "pivot": [
+            0,
+            0
+          ],
+          "contentHeight": 0.6666666666666666,
+          "optionalEmpty": true
+        },
+        "heldProp": {
+          "rect": [
+            29.333333333333332,
+            856,
+            196.66666666666666,
+            80
+          ],
+          "pivot": [
+            98.33333333333333,
+            69.6
+          ],
+          "contentHeight": 80,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            14,
+            1009,
+            295,
+            120
+          ]
+        }
+      },
+      "screenSides": {
+        "left": 1,
+        "right": -1
+      },
+      "legSides": {
+        "left": 1,
+        "right": -1
+      },
+      "rig": {
+        "upperArm": 42,
+        "forearm": 45,
+        "hipHalfWidth": 17,
+        "frontHairHeight": 1,
+        "lanternHeight": 1,
+        "waistOffset": 36,
+        "thigh": 41,
+        "shin": 36,
+        "hipHeight": 76,
+        "neckHeight": 106,
+        "shoulderHeight": 88,
+        "shoulderHalfWidth": 36,
+        "headHeight": 74,
+        "hairHeight": 73,
+        "torsoHeight": 105,
+        "skirtHeight": 96,
+        "tailsHeight": 96
+      },
+      "restHands": {
+        "left": [
+          45,
+          -36
+        ],
+        "right": [
+          9,
+          -28
+        ]
+      },
+      "appendages": [
+        {
+          "part": "heldProp",
+          "anchor": "leftWrist",
+          "offset": [
+            -8,
+            6
+          ],
+          "height": 54,
+          "layer": "front",
+          "amplitude": 0,
+          "frequency": 1
+        }
+      ],
+      "idleHands": {
+        "left": {
+          "amplitude": [
+            1.2,
+            2.8
+          ],
+          "frequency": 0.9,
+          "phase": 0
+        },
+        "right": {
+          "amplitude": [
+            1.2,
+            2.8
+          ],
+          "frequency": 0.9,
+          "phase": 0
+        }
+      }
+    }
+  },
+  "screenSides": {
+    "left": 1,
+    "right": -1
+  },
+  "legSides": {
+    "left": 1,
+    "right": -1
+  },
+  "anatomicalSides": {
+    "left": 1,
+    "right": -1
+  },
+  "restHands": {
+    "left": [
+      45,
+      -36
+    ],
+    "right": [
+      9,
+      -28
+    ]
+  },
+  "rig": {
+    "upperArm": 42,
+    "forearm": 45,
+    "hipHalfWidth": 17,
+    "frontHairHeight": 1,
+    "lanternHeight": 1,
+    "waistOffset": 36,
+    "thigh": 41,
+    "shin": 36,
+    "hipHeight": 76,
+    "neckHeight": 106,
+    "shoulderHeight": 88,
+    "shoulderHalfWidth": 36,
+    "headHeight": 74,
+    "hairHeight": 73,
+    "torsoHeight": 105,
+    "skirtHeight": 96,
+    "tailsHeight": 96
+  },
+  "idleHands": {
+    "left": {
+      "amplitude": [
+        1.2,
+        2.8
+      ],
+      "frequency": 0.9,
+      "phase": 0
+    },
+    "right": {
+      "amplitude": [
+        1.2,
+        2.8
+      ],
+      "frequency": 0.9,
+      "phase": 0
+    }
+  },
+  "activity": {
+    "kind": "balance-shared-tray-grip",
+    "stationaryBody": true,
+    "plantedFeet": true,
+    "runtimeHookRequired": "idleHands-before-arm-IK",
+    "runtimeHookStatus": "verified-active-in-clean-owner-rig",
+    "twoHandedGrip": true,
+    "notes": "Hand targets move before IK; held objects use measured wrist pivots. Two-hand book/tray movements share identical offsets and keep grip vector constant. No root/body sliding, scaling, squash or sprite crossfade."
+  },
+  "continuousTurnComplete": false,
+  "attackArtComplete": false,
+  "artworkComplete": false,
+  "stationaryQuestNpc": true,
+  "authoredPartCount": 14,
+  "review": {
+    "passed": true,
+    "status": "native76-front-idle-reviewed",
+    "scope": "Stationary quest resident. Newly authored front-three-quarter parts; independent hand/prop idle, fixed feet/pelvis/neck. Cardinal locomotion not used for this stationary role.",
+    "method": "Native Canvas visual review and 180 frame attachment/contact checks; browser/GPU not verified."
+  },
+  "provenance": {
+    "method": "built-in-imagegen",
+    "sourceReference": "adopted-identity-reference.png",
+    "sourceReferenceSha256": "97c88263089aaa212275261f9831e3e15a41350e74fb943b06fd5efc334500ee",
+    "sourceWholeBodySlicing": false,
+    "newlyAuthoredHiddenSurfaces": true,
+    "packing": "NEW independently drawn slot components. Original RGBA retained within 3px of alpha>230 components; no scaling, reshaping, redrawing, or whole-body slicing.",
+    "sourceRaw": "parts-front-v1-original.png",
+    "sourceRawSha256": "150c9a91f5a8b3f6520e3ed3b39a1db6b68d41c63b3eb27fc6f2595b2a0cbdfd",
+    "sourceRawSize": [
+      1254,
+      1254
+    ],
+    "correctedSourceFiles": [
+      {
+        "file": "parts-front-torso-corrected.png",
+        "sha256": "22c92c65ecf0cb1907b04892e612f38645b99eb604092edd7cf5d18b2491b130",
+        "size": [
+          1254,
+          1254
+        ]
+      }
+    ],
+    "limitations": [
+      "One authored front three-quarter pose only.",
+      "No profile, back or intermediate turn drawings.",
+      "Native 76px anatomy/held-prop proof required before adoption."
+    ],
+    "generationPrompt": "parts-front-v1.prompt.txt",
+    "preservedOriginalPropCount": 1,
+    "stationaryFrontViewReason": "Story NPC keeps its original fixed station and front-facing identity. No side/back fallback is claimed.",
+    "deliveryPacking": "Only atlas packing and Lanczos resampling; rig dimensions, costume pixels and alpha remain authored.",
+    "authoringSources": [
+      {
+        "key": "main",
+        "originalSHA256": "57c4c3923145d522c0371fc170e269be83fd79b76997f0a8943c5ed906dd8f9d",
+        "authoringSHA256": "3a32b04d4bedbbda297bdb6476e229d4ec8cb2492bc1eb560e3c822685ab36fd",
+        "sourceWidth": 1536,
+        "sourceHeight": 1536,
+        "transform": {
+          "scale": 0.6666666666666666,
+          "x": 0,
+          "y": 0
+        }
+      }
+    ]
+  },
+  "referenceComposedBounds": {
+    "x": 147,
+    "y": 137,
+    "w": 156,
+    "h": 253,
+    "pixels": 21764
+  },
+  "animationReviewed": true
+}

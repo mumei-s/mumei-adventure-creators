@@ -1,0 +1,410 @@
+{
+  "method": "Real owner rig runtime and authored atlas rendered by native @napi-rs/canvas. Deterministic review inputs; not browser gameplay, DOM, GPU, device or audio verification.",
+  "manifest": "owner-authored-rig-pilot-v1",
+  "fps": 30,
+  "frames": 346,
+  "heights": [
+    76,
+    86
+  ],
+  "manifestContentHeight": 256,
+  "authoredDirections": [
+    "down-threequarter"
+  ],
+  "continuousTurnComplete": false,
+  "attackArtComplete": false,
+  "maxContinuousSupportDrift": 0,
+  "maxFootReach": 7.588599744428075e-15,
+  "noSupportFrames": [],
+  "alphaBounds": [
+    {
+      "time": 0,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        95,
+        46,
+        75
+      ],
+      "soleOffset": -1
+    },
+    {
+      "time": 0,
+      "targetHeight": 86,
+      "rect": [
+        63,
+        85,
+        51,
+        85
+      ],
+      "soleOffset": -1
+    },
+    {
+      "time": 0.9,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        96,
+        46,
+        74
+      ],
+      "soleOffset": -1
+    },
+    {
+      "time": 0.9,
+      "targetHeight": 86,
+      "rect": [
+        63,
+        86,
+        52,
+        84
+      ],
+      "soleOffset": -1
+    },
+    {
+      "time": 1.2,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        98,
+        45,
+        75
+      ],
+      "soleOffset": 2
+    },
+    {
+      "time": 1.2,
+      "targetHeight": 86,
+      "rect": [
+        62,
+        88,
+        52,
+        85
+      ],
+      "soleOffset": 2
+    },
+    {
+      "time": 1.5,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        95,
+        45,
+        80
+      ],
+      "soleOffset": 4
+    },
+    {
+      "time": 1.5,
+      "targetHeight": 86,
+      "rect": [
+        62,
+        85,
+        52,
+        91
+      ],
+      "soleOffset": 5
+    },
+    {
+      "time": 2,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        95,
+        46,
+        81
+      ],
+      "soleOffset": 5
+    },
+    {
+      "time": 2,
+      "targetHeight": 86,
+      "rect": [
+        63,
+        86,
+        52,
+        90
+      ],
+      "soleOffset": 5
+    },
+    {
+      "time": 2.5,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        95,
+        46,
+        80
+      ],
+      "soleOffset": 4
+    },
+    {
+      "time": 2.5,
+      "targetHeight": 86,
+      "rect": [
+        63,
+        85,
+        51,
+        91
+      ],
+      "soleOffset": 5
+    },
+    {
+      "time": 3.6,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        95,
+        46,
+        78
+      ],
+      "soleOffset": 2
+    },
+    {
+      "time": 3.6,
+      "targetHeight": 86,
+      "rect": [
+        63,
+        85,
+        52,
+        89
+      ],
+      "soleOffset": 3
+    },
+    {
+      "time": 3.7666666666666666,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        95,
+        46,
+        78
+      ],
+      "soleOffset": 2
+    },
+    {
+      "time": 3.7666666666666666,
+      "targetHeight": 86,
+      "rect": [
+        63,
+        85,
+        52,
+        89
+      ],
+      "soleOffset": 3
+    },
+    {
+      "time": 4.6,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        94,
+        46,
+        77
+      ],
+      "soleOffset": 0
+    },
+    {
+      "time": 4.6,
+      "targetHeight": 86,
+      "rect": [
+        63,
+        85,
+        51,
+        86
+      ],
+      "soleOffset": 0
+    },
+    {
+      "time": 5.1,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        95,
+        46,
+        78
+      ],
+      "soleOffset": 2
+    },
+    {
+      "time": 5.1,
+      "targetHeight": 86,
+      "rect": [
+        63,
+        85,
+        51,
+        88
+      ],
+      "soleOffset": 2
+    },
+    {
+      "time": 5.8,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        98,
+        46,
+        75
+      ],
+      "soleOffset": 2
+    },
+    {
+      "time": 5.8,
+      "targetHeight": 86,
+      "rect": [
+        63,
+        89,
+        51,
+        85
+      ],
+      "soleOffset": 3
+    },
+    {
+      "time": 6.8,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        95,
+        45,
+        76
+      ],
+      "soleOffset": 0
+    },
+    {
+      "time": 6.8,
+      "targetHeight": 86,
+      "rect": [
+        62,
+        85,
+        52,
+        86
+      ],
+      "soleOffset": 0
+    },
+    {
+      "time": 7.2,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        95,
+        46,
+        76
+      ],
+      "soleOffset": 0
+    },
+    {
+      "time": 7.2,
+      "targetHeight": 86,
+      "rect": [
+        63,
+        85,
+        51,
+        86
+      ],
+      "soleOffset": 0
+    },
+    {
+      "time": 7.6,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        95,
+        46,
+        76
+      ],
+      "soleOffset": 0
+    },
+    {
+      "time": 7.6,
+      "targetHeight": 86,
+      "rect": [
+        63,
+        85,
+        51,
+        86
+      ],
+      "soleOffset": 0
+    },
+    {
+      "time": 8.1,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        95,
+        46,
+        76
+      ],
+      "soleOffset": 0
+    },
+    {
+      "time": 8.1,
+      "targetHeight": 86,
+      "rect": [
+        63,
+        85,
+        51,
+        86
+      ],
+      "soleOffset": 0
+    },
+    {
+      "time": 8.6,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        95,
+        46,
+        76
+      ],
+      "soleOffset": 0
+    },
+    {
+      "time": 8.6,
+      "targetHeight": 86,
+      "rect": [
+        63,
+        85,
+        51,
+        86
+      ],
+      "soleOffset": 0
+    },
+    {
+      "time": 9.8,
+      "targetHeight": 76,
+      "rect": [
+        66,
+        95,
+        46,
+        76
+      ],
+      "soleOffset": 0
+    },
+    {
+      "time": 9.8,
+      "targetHeight": 86,
+      "rect": [
+        63,
+        85,
+        51,
+        86
+      ],
+      "soleOffset": 0
+    }
+  ],
+  "sources": {
+    "runtime": {
+      "file": "owner-rig.mjs",
+      "sha256": "6e7baa70e8b609c16f5ce3b0b735383eb528e8a03949cb93656e0b29578bbd00"
+    },
+    "manifest": {
+      "file": "owner-rig-manifest.json",
+      "sha256": "fd55a71f89571ca975530e9e4e02f269688f6d0af33b9c64c20dec40fd0307ec"
+    },
+    "atlas": {
+      "file": "owner-parts-down-v1.png",
+      "sha256": "caf7c3a126c20f6089b9b23f144512151006e6717da59086586c1a84cd6207e8"
+    }
+  },
+  "gifFPS": 15
+}

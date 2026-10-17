@@ -24,7 +24,7 @@ test('touch controls occupy a separate dock, including compact settings and exit
   assert(css.includes('grid-area:5/1'));assert(css.includes('justify-self:center'));
   assert(css.includes('width:112px;height:112px')); assert(css.includes('min-height:44px!important'));
   assert(html.includes('id="menu-open" aria-haspopup="dialog"'));assert(app.includes('function showExploreMenu()'));
-  for(const label of ['記事一覧','迷宮全体の地図','明るさ・音楽','モンスターと遊ぶ','迷宮の入口へ','Halloweenの名鑑へ戻る'])assert(app.includes(label));
+  for(const label of ['記事一覧','迷宮全体の地図','明るさ・音楽','モンスターと遊ぶ','地下の入口へ','Halloweenの名鑑へ戻る'])assert(app.includes(label));
   assert(!blocked(EXIT.x*CELL,EXIT.z*CELL,{}));assert(app.includes('function showExit()'));assert(app.includes("back.href='../?mode=halloween'"));
 });
 test('renderer is separate from overview map and invalidates on resize/mode change',()=>{

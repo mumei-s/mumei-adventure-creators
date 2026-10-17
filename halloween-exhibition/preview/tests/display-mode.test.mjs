@@ -88,7 +88,7 @@ test('real initializer renders all four options, updates on selection/resize/sto
 });
 
 test('adventure library wording accepts genuine articles of every genre without changing IDs',async()=>{
- const app=await read('admin/app.js');assert.match(html,/宮殿の奥に進む…/);assert.match(admin,/冒険室の書庫/);
+ const app=await read('admin/app.js');assert.match(html,/宮殿の地下に進む/);assert.match(admin,/冒険室の書庫/);
  assert.match(app,/horror:'冒険室の書庫'/);assert.match(app,/ジャンルを問わず、実際の記事/);
  assert.doesNotMatch(app,/ホラーの記事は/);assert.match(admin,/data-collection="horror"/);
 });

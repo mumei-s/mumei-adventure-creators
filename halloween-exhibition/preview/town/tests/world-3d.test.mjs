@@ -157,3 +157,37 @@ test('castle has a layered arched gold gate, cool masonry and lit entrance witho
  assert.equal(JSON.stringify(map),story);assert.deepEqual(town.buildings.find(item=>item.id===castle.id).door,castle.door);
  assert.ok(town.root.children.length<320,'ornaments remain within the existing draw batch budget');town.dispose();
 });
+
+test('night library is dim with lantern off and uses a local facing light when on; town daylight restores',async()=>{
+ const {world,record}=harness();await world.ready;const state=initialTownState();state.mapId='library';state.position={...getTownMap('library').spawn};
+ world.render({state,motion:false,lantern:false,brightness:75});
+ const sun=record.scene.children.find(item=>item.isDirectionalLight),ambient=record.scene.children.find(item=>item.isHemisphereLight),lamp=record.scene.getObjectByName('player-lantern');
+ assert.equal(lamp.visible,false);assert.equal(sun.intensity,.12);assert.equal(ambient.intensity,.2);assert.ok(ambient.intensity>0,'room remains navigable without the lantern');
+ for(const facing of['up','right','down','left']){
+  world.render({state,motion:false,lantern:true,brightness:75,facing});assert.equal(lamp.visible,true);assert.equal(lamp.intensity,7.5);assert.equal(lamp.distance,4.8);assert.equal(ambient.intensity,.2);
+  const delta={x:lamp.position.x-state.position.x,z:lamp.position.z-state.position.z};assert.ok(Math.abs(Math.hypot(delta.x,delta.z)-.55)<1e-9);assert.ok(facing==='up'?delta.z<0:facing==='down'?delta.z>0:facing==='left'?delta.x<0:delta.x>0);
+ }
+ world.render({state,motion:false,brightness:0,lantern:false});const low=ambient.intensity;assert.ok(low>0&&low<.2);
+ world.render({state,motion:false,brightness:100,lantern:false});assert.ok(ambient.intensity>.2&&ambient.intensity<.3);
+ state.mapId='lantern-town';world.render({state,motion:false,brightness:75});assert.equal(sun.intensity,3.05);assert.equal(ambient.intensity,2.55);assert.equal(lamp.intensity,1.4);assert.equal(lamp.distance,4);
+ state.mapId='inn';world.render({state,motion:false,brightness:75});assert.equal(ambient.intensity,2.55);world.destroy();
+});
+
+
+test('non-library 3D preserves its original minimum brightness and window profile is applied only at map load',async()=>{
+ const {world,record}=harness();await world.ready;const state=initialTownState();
+ for(const mapId of ['lantern-town','inn']){
+  state.mapId=mapId;
+  for(const brightness of [0,10,19,20]){
+   world.render({state,motion:false,brightness});
+   assert.equal(record.scene.children.find(item=>item.isDirectionalLight).intensity,2.5);
+   assert.equal(record.scene.children.find(item=>item.isHemisphereLight).intensity,1.78);
+  }
+ }
+ state.mapId='library';world.render({state,motion:false,brightness:75});
+ const glass=record.scene.getObjectsByProperty('isMesh',true).find(item=>item.material?.name==='glass').material;
+ assert.equal(glass.emissiveIntensity,.07);let writes=0,value=.07;
+ Object.defineProperty(glass,'emissiveIntensity',{configurable:true,get:()=>value,set:next=>{writes++;value=next;}});
+ for(const facing of ['up','right','down','left'])world.render({state,motion:false,facing,brightness:75});
+ assert.equal(writes,0,'unchanged library frames do not rewrite window materials');world.destroy();
+});

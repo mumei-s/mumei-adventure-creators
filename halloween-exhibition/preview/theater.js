@@ -200,7 +200,7 @@ if(displayPreferences){document.querySelector('.visitor-preferences').prepend(di
 palaceVisualReady=initPalaceStartup(root);
 const sceneMotion=initSceneMotion(root,{controlsParent:document.querySelector('.visitor-preferences')});
 let motionPausedBeforeExit=false;
-const appExit=initAppExit({root,triggerParent:document.querySelector('.header-actions'),entranceControl:$('palace-town-entrance'),onStop(){
+const appExit=initAppExit({root,triggerParent:document.querySelector('.header-actions'),entranceControl:$('palace-world-links'),onStop(){
  visitorSettings.stopMusic();slideshow?.setEnabled(false);cancelStoryOpening();cancelRoulette();doorClock.cancel();cancelArtworkLoad();
  turnVersion++;busy=false;root.classList.remove('turning-in','turning-out','door-reveal');
  motionPausedBeforeExit=sceneMotion?.isUserPaused()||false;sceneMotion?.setPaused(true);

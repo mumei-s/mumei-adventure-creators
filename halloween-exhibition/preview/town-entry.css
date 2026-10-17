@@ -1,14 +1,15 @@
-/* The street panel occupies the palace header; the indoor route stays by the gate. */
-#theater .palace-world-links{position:absolute;z-index:16;top:12px;left:max(12px,env(safe-area-inset-left));right:max(12px,env(safe-area-inset-right));display:grid;grid-template-columns:minmax(0,1fr);gap:8px;width:auto;max-width:220px;margin-inline:auto}
-#theater .palace-world-links>a,#theater .town-entrance{box-sizing:border-box;display:flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;max-width:100%;padding:8px 12px;border:1px solid #c9b98f;border-radius:14px;background:#1c2636ed;color:#fff3d4;font:600 12px/1.4 sans-serif;text-align:center;text-decoration:none;white-space:normal;overflow-wrap:anywhere;box-shadow:0 3px 12px #070b1955}
-#theater .castle-exit-panel>.town-entrance{flex:1 1 150px;min-width:44px;min-height:44px;padding:10px 14px;border-color:#e6bb79;background:linear-gradient(135deg,#63402f,#382c4d);color:#fff4d9;font-size:14px}
+/* Two compact destinations share the header, outside the castle artwork. */
+#theater .palace-world-links{position:static;display:flex;justify-content:center;gap:6px;width:fit-content;max-width:100%;margin:0 auto;grid-column:1/-1;grid-row:2}
+#theater .palace-world-links>a,#theater .town-entrance{box-sizing:border-box;display:flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;max-width:100%;padding:3px 8px;border:1px solid #c9b98f;border-radius:10px;background:#1c2636ed;color:#fff3d4;font:600 12px/1.4 sans-serif;text-align:center;text-decoration:none;white-space:normal;overflow-wrap:anywhere;box-shadow:none}
+#theater .castle-exit-panel>.palace-world-links>a{flex:0 1 auto;min-width:44px;min-height:44px;padding:3px 8px;background:#27273be8;font-size:12px}
 #theater .palace-return-row>.town-entrance{background:#203e3bed;border-color:#bdd0aa;color:#fff9dd}
 #theater .palace-world-links>a:hover,#theater .town-entrance:hover{background:#36514c}
 #theater .palace-world-links>a:focus-visible,#theater .town-entrance:focus-visible{outline:3px solid #ffe4a2;outline-offset:3px}
-#theater .palace-load-status{top:64px}
+#theater .palace-load-status{top:12px}
 #theater .palace-return-row{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 #theater .palace-return-row>.town-entrance{border-radius:99px;padding:8px 6px;font-size:clamp(10px,2.6vw,13px)}
 #theater[data-mode=normal] .town-entrance,#theater[data-mode=normal] .palace-world-links{display:none!important}
 @media(max-width:680px){#theater .palace-return-row{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:360px){#theater .palace-world-links{gap:6px}#theater .palace-world-links>a{padding-inline:6px;font-size:11px}}
 @media(forced-colors:active){#theater .palace-world-links>a,#theater .town-entrance{border:1px solid LinkText;color:LinkText;background:Canvas}}
+#theater .masthead>#castle-exit-panel{row-gap:2px;padding-block:2px}

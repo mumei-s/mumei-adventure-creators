@@ -1195,7 +1195,9 @@ test('outdoor town has a direct palace route and gallery route that stay separat
  for(const id of ['palace-town-entrance','town-entrance']){
   assert.equal(h.$(id).tagName,'A');assert.equal(h.$(id).getAttribute('href'),'./town/?return=theatre');assert.equal(h.$(id).getAttribute('aria-label'),'宮殿から星灯りの街へ進む');assert.equal(h.$(id).hidden,false);
  }
- assert.equal(h.$('palace-town-entrance').parentNode,h.$('castle-exit-panel'));
+ assert.equal(h.$('palace-town-entrance').parentNode,h.$('palace-world-links'));
+ assert.equal(h.$('palace-world-links').parentNode,h.$('castle-exit-panel'));
+ assert.equal(h.$('palace-maze-entrance').parentNode,h.$('palace-world-links'));
  assert.equal(h.$('castle-exit-panel').parentNode,h.doc.querySelector('.masthead'));
  assert.equal(h.$('palace-entrance').querySelector('#palace-town-entrance'),null);
  assert.equal(h.$('town-entrance').parentNode,h.$('horror-entrance').parentNode);

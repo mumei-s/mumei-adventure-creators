@@ -1,7 +1,7 @@
 import {createTownSession} from './controller.js?v=20261017-town2';
 import {createTownStore,importTownState,exportTownState} from './save-model.js?v=20261017-town2';
 import {initialTownState,townJournal,townInventory,townProgress,getTownMap,isTownWalkable} from './town-model.js?v=20261017-town2';
-import {createTownRenderer,renderTownBattle} from './renderer.js?v=20261017-rig2';
+import {createTownRenderer,renderTownBattle} from './renderer.js?v=20261017-library1';
 import {createTownCharacterArt} from './character-art.js?v=20261017-rig2';
 import {TOWN_BATTLE_ART_IDS} from './visual-data.js?v=20261017-town2';
 import {createTownViewController} from './view-mode.js?v=20261017-town2';
@@ -44,7 +44,7 @@ function updateViewUI(state){
 function resetTownView(){viewController?.destroy();viewController=null;$('town-webgl').hidden=true;$('town-canvas').hidden=false;const skip=document.querySelector('.skip-link');if(skip)skip.href='#town-canvas';if(returnFocus===$('town-webgl'))returnFocus=$('town-canvas');}
 function prepareTownView(){
  viewController=createTownViewController({load:async({signal,onContextLost})=>{
-  const module=await import('./world-3d.js?v=20261017-gate1');
+  const module=await import('./world-3d.js?v=20261017-library1');
   if(signal.aborted)throw Error('Old town view request');
   return module.createTownWorld3D({canvas:$('town-webgl'),art:characterArt.art,onContextLost});
  },onChange:updateViewUI});

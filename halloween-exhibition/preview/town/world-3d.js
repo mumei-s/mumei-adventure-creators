@@ -1,3 +1,4 @@
+import {townLighting,townLanternPosition} from './lighting.js?v=20261017-library1';
 import * as THREE from '../maze/vendor/three.module.js';
 import {getTownMap} from './story-data.js';
 import {playerPose,loadArtImage} from '../maze/rpg-art.js?v=20261017-rig2';
@@ -270,7 +271,7 @@ export function createTownWorld3D({canvas,art={images:{},version:0},onContextLos
   const camera=new THREE.OrthographicCamera(-8,8,6,-6,.1,100),ambient=new THREE.HemisphereLight('#e5efff','#546340',2.45),sun=new THREE.DirectionalLight('#ffe8bd',3.2);
   sun.position.set(-12,24,15);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-17;sun.shadow.camera.right=17;sun.shadow.camera.top=17;sun.shadow.camera.bottom=-17;sun.shadow.camera.near=.5;sun.shadow.camera.far=70;sun.shadow.normalBias=.035;sun.shadow.bias=-.00035;
   scene.add(ambient,sun,sun.target);
-  const warmLight=new THREE.PointLight('#ffd78b',1.4,4,2);scene.add(warmLight);
+  const warmLight=new THREE.PointLight('#ffd78b',1.4,4,2);warmLight.name='player-lantern';scene.add(warmLight);
   const lampLights=Array.from({length:4},()=>{const light=new THREE.PointLight('#ffcf87',1.1,5,2);scene.add(light);return light;});
   const actorRoot=new THREE.Group();scene.add(actorRoot);const textureResources=new Set(),actors=new Map(),imageTextures=new WeakMap(),spriteFrames=new Map(),liveFrames=new Map(),raycaster=new THREE.Raycaster(),plane=new THREE.Plane(new THREE.Vector3(0,1,0),0),pointer=new THREE.Vector2(),hitPoint=new THREE.Vector3(),projected=new THREE.Vector3(),abort=new AbortController();
   const assets={images:{},residentFrames:null,loaded:[],failed:[]};let scenery=null,mapId=null,disposed=false,lost=false,prepared=false,cameraTarget=null,lastView=null,version=0,frameSerial=0,lastFrameSignature='';
@@ -315,6 +316,9 @@ export function createTownWorld3D({canvas,art={images:{},version:0},onContextLos
   function prepareMap(map){
     if(map.id===mapId&&scenery)return;scenery?.dispose();if(scenery)scene.remove(scenery.root);scenery=createTownSceneGeometry(map);scene.add(scenery.root);mapId=map.id;cameraTarget=null;
     const {materials,resources}=scenery;
+    // The window profile changes only when the map changes, not every frame.
+    const windowGlow=townLighting(map.id).windowGlow;
+    for(const resource of resources)if(resource.isMaterial&&resource.name==='glass')resource.emissiveIntensity=windowGlow;
     if(assets.images.cobbles){const texture=repeatTexture(assets.images.cobbles,resources);texture.anisotropy=Math.min(4,renderer.capabilities?.getMaxAnisotropy?.()||1);materials.road.map=texture;materials.plaza.map=texture;materials.road.color.set('#d2ccc0');materials.plaza.color.set('#e1d0b4');materials.road.needsUpdate=materials.plaza.needsUpdate=true;}
     if(assets.images.parquet){materials.parquet.map=repeatTexture(assets.images.parquet,resources);materials.parquet.color.set('#d8c9aa');materials.parquet.needsUpdate=true;}
     const detail={stone:surfaceTexture(makeCanvas,'stone',resources),roof:surfaceTexture(makeCanvas,'roof',resources),wood:surfaceTexture(makeCanvas,'wood',resources),wall:surfaceTexture(makeCanvas,'wall',resources)};
@@ -348,7 +352,11 @@ export function createTownWorld3D({canvas,art={images:{},version:0},onContextLos
     cameraTarget={x:(cameraTarget?.x??target.x)+(target.x-(cameraTarget?.x??target.x))*amount,z:(cameraTarget?.z??target.z)+(target.z-(cameraTarget?.z??target.z))*amount};
     camera.position.set(cameraTarget.x,Math.sin(parameters.elevation)*parameters.distance,cameraTarget.z+Math.cos(parameters.elevation)*parameters.distance);camera.lookAt(cameraTarget.x,0,cameraTarget.z);camera.updateMatrixWorld(true);
     sun.position.set(cameraTarget.x-12,24,cameraTarget.z+15);sun.target.position.set(cameraTarget.x,0,cameraTarget.z);sun.target.updateMatrixWorld(true);
-    sun.intensity=2.3+clamp(brightness,20,100)/100;ambient.intensity=1.5+clamp(brightness,20,100)*.014;warmLight.visible=lantern;warmLight.position.set(state.position.x,1.1,state.position.z);
+    const lighting=townLighting(map.id,map.id==='library'?brightness:clamp(brightness,20,100)),lanternAt=lighting.night?townLanternPosition(state.position,facing):state.position;
+    sun.intensity=lighting.sun;ambient.intensity=lighting.ambient;
+    sun.color.set(lighting.night?'#a8b5df':'#ffe8bd');ambient.color.set(lighting.night?'#a5b5d7':'#e5efff');ambient.groundColor.set(lighting.night?'#34374c':'#546340');
+    scene.background.set(lighting.night?'#101724':'#243e4e');scene.fog.color.copy(scene.background);
+    warmLight.visible=lantern;warmLight.intensity=lighting.lanternPower;warmLight.distance=lighting.lanternRange;warmLight.position.set(lanternAt.x,1.1,lanternAt.z);
     for(const lamp of scenery.lamps)if(lamp.targetId){lamp.lit=!!state.flags?.lamps?.includes(lamp.targetId);for(const item of scenery.root.children)if(item.userData.bucket===lamp.targetId&&item.material?.name==='glass'){item.material.color.set(lamp.lit?'#ffe4a4':'#405263');item.material.emissiveIntensity=lamp.lit?.55:0;}}
     const nearLamps=scenery.lamps.filter(lamp=>lamp.lit).sort((a,b)=>Math.hypot(a.x-state.position.x,a.z-state.position.z)-Math.hypot(b.x-state.position.x,b.z-state.position.z)).slice(0,lampLights.length);
     lampLights.forEach((light,index)=>{const lamp=nearLamps[index];light.visible=!!lamp;if(lamp)light.position.set(lamp.x,lamp.y,lamp.z);});revealPlayer(state.position);

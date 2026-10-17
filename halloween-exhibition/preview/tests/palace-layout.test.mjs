@@ -15,7 +15,7 @@ test('viewing history controls and counter are removed without clearing user sto
  assert.match(js,/progress\.doorStamps/);assert.match(js,/legacyDoorIndex/);
 });
 test('title, capsule controls, round year and far-right settings stay in responsive flow',()=>{
- assert.match(html,/宮殿の奥に進む…/);assert.match(html,/href="\.\/maze\/\?return=theatre"/);
+ assert.match(html,/宮殿の地下に進む/);assert.match(html,/href="\.\/maze\/\?return=theatre"/);
  assert.match(css,/visitor-settings-trigger\{order:100;margin-left:auto/);assert.match(css,/#year-open\{[^}]*border-radius:50%/);
  assert.match(css,/\.list-open\{border-radius:99px/);assert.match(css,/\.horror-entrance\{[^}]*position:static[^}]*border-radius:99px/);
  assert.match(css,/@container gallery-shell \(max-width:760px\)/);assert.match(css,/container-name:gallery-shell/);

@@ -45,12 +45,12 @@ function dom({ standalone = false, ios = false } = {}) {
   doc.defaultView = { navigator: { standalone: ios }, matchMedia: () => ({ matches: standalone }), close: () => calls.push('close'), MutationObserver: class { constructor(callback) { this.callback = callback; observers.push(this); } observe() {} disconnect() {} } };
   doc.body = doc.createElement('body'); const root = doc.createElement('main'), header = doc.createElement('header'), toolbar = doc.createElement('nav'), gate = doc.createElement('button'); header.className = 'masthead'; toolbar.className = 'header-actions'; gate.id = 'palace-gate';
   root.dataset.palaceState = 'palace'; header.append(toolbar); root.append(header, gate); doc.body.append(root);
-  const entrance = doc.createElement('a'); entrance.id = 'palace-town-entrance'; entrance.textContent = '星灯りの街へ'; entrance.setAttribute('href', './town/?return=theatre'); gate.append(entrance);
+  const entrance = doc.createElement('a'); entrance.id = 'palace-town-entrance'; entrance.textContent = '星灯りの街へ'; entrance.setAttribute('href', './town/?return=theatre'); const destinations=doc.createElement('nav'); destinations.id='palace-world-links'; destinations.append(entrance); header.append(destinations);
   entrance.addEventListener('click', () => calls.push('remember-return'));
   const dialog = { close() { calls.push('dialog-close'); } }; doc.querySelectorAll = () => [dialog];
-  const api = initAppExit({ root, triggerParent: toolbar, entranceControl: entrance, onStop: () => calls.push('stop'), onResume: () => calls.push('resume') });
+  const api = initAppExit({ root, triggerParent: toolbar, entranceControl: destinations, onStop: () => calls.push('stop'), onResume: () => calls.push('resume') });
   const trigger = root.querySelector('#app-exit'), screen = doc.body.querySelector('#app-ended-screen');
-  return { doc, root, header, toolbar, gate, entrance, trigger, panel: root.querySelector('#castle-exit-panel'), screen, api, calls, observers };
+  return { doc, root, header, toolbar, gate, entrance, destinations, trigger, panel: root.querySelector('#castle-exit-panel'), screen, api, calls, observers };
 }
 test('DOM exit hides and inerts the app, focuses the end heading, and resumes the castle', () => {
   const h = dom(); assert.equal(h.trigger.hidden, false); h.trigger.click();
@@ -89,7 +89,7 @@ test('castle exit has its own header row outside the scrolling action strip', ()
   assert.equal(h.panel.parentElement, h.header); assert.equal(h.trigger.parentElement, h.panel);
   assert.equal(h.toolbar.querySelector('#app-exit'), null);
   assert.equal(h.panel.hidden, false); assert.equal(h.panel.inert, false);
-  assert.equal(h.panel.children[0], h.entrance); assert.equal(h.entrance.textContent, '星灯りの街へ'); assert.equal(h.trigger.textContent, 'アプリ終了');
+  assert.equal(h.panel.children[0], h.destinations); assert.equal(h.entrance.textContent, '星灯りの街へ'); assert.equal(h.trigger.textContent, 'アプリ終了');
   h.trigger.click(); assert.equal(h.panel.hidden, true); assert.equal(h.panel.inert, true);
   h.api.resume(); assert.equal(h.panel.hidden, false); assert.equal(h.panel.inert, false);
   h.api.destroy(); assert.equal(h.root.querySelector('#castle-exit-panel'), null);
@@ -104,7 +104,8 @@ test('castle exit panel uses wrapping normal flow and a readable touch target', 
 
 test('street panel retains navigation and return tracking without ending the app', () => {
   const h = dom();
-  assert.equal(h.entrance.parentElement, h.panel);
+  assert.equal(h.destinations.parentElement, h.panel);
+  assert.equal(h.entrance.parentElement, h.destinations);
   assert.equal(h.gate.querySelector('#palace-town-entrance'), null);
   assert.equal(h.entrance.tagName, 'a');
   assert.equal(h.entrance.attributes.get('href'), './town/?return=theatre');

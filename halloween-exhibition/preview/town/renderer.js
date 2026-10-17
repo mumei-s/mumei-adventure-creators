@@ -1,3 +1,4 @@
+import {townLighting,townLanternPosition} from './lighting.js?v=20261017-library1';
 import {getTownMap} from './story-data.js';
 import {TOWN_TILE as TILE,followTownCamera,townCameraTarget,townVisibleBounds,townWorldToScreen,townScreenToWorld} from './motion.js';
 import {TOWN_BUDGET,TOWN_PROP_CELLS,TOWN_BATTLE_ART_IDS,townVisualSeed as seed,buildingArtKind,townPropSprite} from './visual-data.js';
@@ -335,17 +336,17 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
     }
     c.restore();
     // The lighting pass lifts windows and lamps without flattening the facade art.
-    const normalized=clamp(Number.isFinite(brightness)?brightness/100:.75,0,1),dark=clamp(.23-(normalized-.75)*.3,.035,.38);
+    const lighting=townLighting(map.id,brightness),dark=lighting.shade;
     if(shade.width!==Math.ceil(w)||shade.height!==Math.ceil(h)){shade.width=Math.ceil(w);shade.height=Math.ceil(h);}
     const sc=shade.getContext('2d');sc.setTransform(1,0,0,1,0,0);sc.clearRect(0,0,w,h);sc.fillStyle=`rgba(9,18,39,${dark})`;sc.fillRect(0,0,w,h);
     const lights=[];for(const o of objects)if(o.kind==='lamp'||o.kind==='target'&&o.data.kind==='lantern'&&state.flags?.lamps?.includes(o.data.id))lights.push({x:o.x/TILE,z:o.y/TILE,height:67,r:110});
     for(const b of map.buildings||[])if(b.kind!=='castle')lights.push({x:b.door?.x??b.x+b.w/2,z:b.z+b.h,height:27,r:103});
-    if(lantern)lights.push({x:state.position.x+.2,z:state.position.z-.42,height:0,r:155});
+    if(lantern){const at=lighting.night?townLanternPosition(state.position,facing):{x:state.position.x+.2,z:state.position.z-.42};lights.push({...at,height:0,r:lighting.lanternRadius});}
     for(const light of lights){const at=townWorldToScreen(light,camera,w,h,scale,TOWN_DEPTH_SCALE),yy=at.y-light.height*scale,r=light.r*scale;if(at.x+r<0||at.x-r>w||yy+r<0||yy-r>h)continue;
-      sc.save();sc.globalCompositeOperation='destination-out';const g=sc.createRadialGradient(at.x,yy,0,at.x,yy,r);g.addColorStop(0,'rgba(0,0,0,.75)');g.addColorStop(1,'rgba(0,0,0,0)');sc.fillStyle=g;sc.fillRect(at.x-r,yy-r,r*2,r*2);sc.restore();
+      sc.save();sc.globalCompositeOperation='destination-out';const g=sc.createRadialGradient(at.x,yy,0,at.x,yy,r);g.addColorStop(0,lighting.night?'rgba(0,0,0,.9)':'rgba(0,0,0,.75)');g.addColorStop(1,'rgba(0,0,0,0)');sc.fillStyle=g;sc.fillRect(at.x-r,yy-r,r*2,r*2);sc.restore();
     }
     c.drawImage(shade,0,0,w,h);
-    for(const light of lights){const at=townWorldToScreen(light,camera,w,h,scale,TOWN_DEPTH_SCALE);glow(c,at.x,at.y-light.height*scale,light.r*scale*.55,'#eabe6822');}
+    for(const light of lights){const at=townWorldToScreen(light,camera,w,h,scale,TOWN_DEPTH_SCALE);glow(c,at.x,at.y-light.height*scale,light.r*scale*.55,lighting.night?'#eabe6838':'#eabe6822');}
     const vignette=c.createRadialGradient(w*.5,h*.48,Math.min(w,h)*.27,w*.5,h*.48,Math.max(w,h)*.76);vignette.addColorStop(0,'#10203200');vignette.addColorStop(1,'#09192c55');c.fillStyle=vignette;c.fillRect(0,0,w,h);
     for(const tag of nameTags){const at=townWorldToScreen({x:tag.x/TILE,z:tag.y/TILE},camera,w,h,scale,TOWN_DEPTH_SCALE);if(at.x<15||at.x>w-15||at.y<8||at.y>h-15)continue;c.font='600 10px "Yu Gothic",sans-serif';const ww=Math.min(126,c.measureText(tag.label).width+14);box(c,clamp(at.x-ww/2,5,w-ww-5),at.y-8,ww,17,6,'#152b38eb','#c8b17b88');text(c,tag.label,clamp(at.x,ww/2+5,w-ww/2-5),at.y,10,'#f2e0b4','center',ww-10);}
     if(motion&&!interior){

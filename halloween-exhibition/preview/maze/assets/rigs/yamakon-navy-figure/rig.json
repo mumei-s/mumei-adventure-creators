@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "id": "yamakon-navy-figure-authored-rig-v1",
+  "id": "yamakon-navy-figure",
   "label": "やまこん・ネイビー服",
   "archetype": "biped",
   "atlas": "main",
@@ -1559,5 +1559,6 @@
         }
       }
     ]
-  }
+  },
+  "authoringId": "yamakon-navy-figure-authored-rig-v1"
 }

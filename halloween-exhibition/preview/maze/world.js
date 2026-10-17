@@ -1,5 +1,5 @@
-import {monsterSprite,spriteTextureUV} from './monster-motion.js?v=20261017-rig1';
-import {ART_FILES,ART_BOUNDS,ART_ANCHORS,PALACE_ART} from './rpg-art.js?v=20261017-rig1';
+import {monsterSprite,spriteTextureUV} from './monster-motion.js?v=20261017-rig2';
+import {ART_FILES,ART_BOUNDS,ART_ANCHORS,PALACE_ART} from './rpg-art.js?v=20261017-rig2';
 import * as THREE from './vendor/three.module.js';
 import { MAP, CELL, FEATURES, toWorld } from './maze-model.js?v=20261014-adventure2';
 import { NIGHT_LIGHTING } from './lighting-model.js?v=20261014-adventure2';

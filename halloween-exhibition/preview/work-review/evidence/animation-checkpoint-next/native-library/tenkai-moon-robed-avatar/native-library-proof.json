@@ -1,0 +1,58 @@
+{
+  "method": "Real game rig-animation.js and its rig runtime, injected in-memory candidate sidecar, authored images decoded and rendered with native @napi-rs/canvas. No source registry change. Not browser, HTTP, WebGL, GPU, device or gameplay validation.",
+  "id": "native-rig-candidate",
+  "manifest": "tenkai-moon-robed-avatar",
+  "sourceManifestSHA256": "16fc0298ed41278ab18ae29a4d13a7ec69c6ea5c2618abf48c4373b9a641d6ab",
+  "runtimeSHA256": "364b641db247a0994f2f73967a2d8ac77588e1dda774509d5f3fd331eb4e00ee",
+  "cardinalViews": [
+    "down",
+    "right",
+    "up",
+    "left"
+  ],
+  "samples": 240,
+  "maxFootReach": 1.0048591735576161e-14,
+  "unsupportedFrames": 0,
+  "canvasStable": true,
+  "statuses": {
+    "loaded": {
+      "metadataReady": true,
+      "definitions": 1,
+      "loaded": 1,
+      "pending": 0,
+      "failures": [],
+      "active": 0,
+      "sourceBytes": 4194304,
+      "maxActive": 16,
+      "maxSourceBytes": 67108864,
+      "revision": 2,
+      "destroyed": false
+    },
+    "active": {
+      "metadataReady": true,
+      "definitions": 1,
+      "loaded": 1,
+      "pending": 0,
+      "failures": [],
+      "active": 2,
+      "sourceBytes": 4194304,
+      "maxActive": 16,
+      "maxSourceBytes": 67108864,
+      "revision": 2,
+      "destroyed": false
+    },
+    "destroyed": {
+      "metadataReady": true,
+      "definitions": 0,
+      "loaded": 0,
+      "pending": 0,
+      "failures": [],
+      "active": 0,
+      "sourceBytes": 0,
+      "maxActive": 16,
+      "maxSourceBytes": 67108864,
+      "revision": 2,
+      "destroyed": true
+    }
+  }
+}

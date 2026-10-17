@@ -1,6 +1,7 @@
-import {monsterSprite} from './monster-motion.js?v=20261017-rig1';
-import {drawArtSprite,playerPose} from './rpg-art.js?v=20261017-rig1';
-import {drawCreature} from './stage-2d.js?v=20261017-rig1';
+import {enemyRigEffect} from './battle-rig-effects.js?v=20261017-rig2';
+import {monsterSprite} from './monster-motion.js?v=20261017-rig2';
+import {drawArtSprite,playerPose} from './rpg-art.js?v=20261017-rig2';
+import {drawCreature} from './stage-2d.js?v=20261017-rig2';
 import {prankFor} from './encounter-model.js?v=20261016-living1';
 import {encounterStory} from './story-model.js?v=20261016-living1';
 const clamp=x=>Math.max(0,Math.min(1,x));
@@ -65,7 +66,7 @@ export function renderBattleScene({canvas,art,battle,effect=null,time=0,motion=t
   if(bg){const scale=Math.max(w/bg.width,h/bg.height);c.drawImage(bg,(w-bg.width*scale)/2,(h-bg.height*scale)*.42,bg.width*scale,bg.height*scale);}else{const g=c.createLinearGradient(0,0,0,h);g.addColorStop(0,'#102838');g.addColorStop(1,'#342437');c.fillStyle=g;c.fillRect(0,0,w,h);}
   const shade=c.createLinearGradient(0,0,0,h);shade.addColorStop(0,'#070b19c9');shade.addColorStop(.26,'#080f1b2b');shade.addColorStop(.7,'#090d1c11');shade.addColorStop(1,'#080b17d9');c.fillStyle=shade;c.fillRect(0,0,w,h);
   const effectAge=effect?Math.max(0,time-effect.started):99;
-  const won=battle.status==='won'&&!(effect?.type==='shine'&&motion&&effectAge<1.28),enemy=monsterSprite(art,battle.id,{time,motion,battle:true,facing:'left'}),story=encounterStory(battle.id),intent=prankFor(battle);
+  const won=battle.status==='won'&&!(effect?.type==='shine'&&motion&&effectAge<1.28),enemy=monsterSprite(art,battle.id,{time,motion,battle:true,facing:'left',effect:enemyRigEffect(effect,time,{won:battle.status==='won'})}),story=encounterStory(battle.id),intent=prankFor(battle);
   const {px,py,ex,ey,heroSize,enemySize}=battleLayout(w,h,{enemyAspect:spriteAspect(enemy)});
   const age=effect?Math.max(0,time-effect.started):99,phase=motion?age:99;
   const shine=effect?.type==='shine',attack=effect?.type==='attack',guard=effect?.type==='guard';
@@ -86,7 +87,7 @@ export function renderBattleScene({canvas,art,battle,effect=null,time=0,motion=t
   if(!drawArtSprite(c,hero,px+(hero?.poseVersion===undefined?lunge:0),py,heroSize))heroFallback(c,px+lunge,py,heroSize);
   // Keep painted anatomy intact; animated atlas poses own body movement.
   const rotation=motion?(battle.id==='bat'?Math.sin(drift*1.9)*.018:battle.id==='ghost'?Math.sin(drift*.8)*.01:0):0;
-  if(!drawArtSprite(c,enemy,ex+recoil,ey+hover,enemySize,{alpha:won?.92:1,flip:enemy?.flip,rotation}))drawCreature(c,battle.id,ex+recoil,ey-enemySize*.45+hover,enemySize/75);
+  if(!drawArtSprite(c,enemy,ex+(enemy?.liveRig?0:recoil),ey+(enemy?.liveRig?0:hover),enemySize,{alpha:won?.92:1,flip:enemy?.flip,rotation:enemy?.liveRig?0:rotation}))drawCreature(c,battle.id,ex+recoil,ey-enemySize*.45+hover,enemySize/75);
   if(effect&&age<battleEffectDuration(effect.type,motion)){
     const grip=hero?.rigPose?.lantern?.grip,origin=grip?{x:px+grip.x*heroSize/hero.rigContentHeight,y:py+grip.y*heroSize/hero.rigContentHeight}:null;
     if(shine)shineEffect(c,{px,py,ex,ey,heroSize,enemySize,w,h,age,motion,seq,origin});

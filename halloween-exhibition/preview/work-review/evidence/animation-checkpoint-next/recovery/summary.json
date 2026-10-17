@@ -1,0 +1,26 @@
+[
+  {
+    "suite": "maze",
+    "exit": 0,
+    "seconds": 4.09,
+    "result": "\u2714 palace monsters switch from the original atlas to one stable live pose texture and release replaced sources (2.015559ms)\n\u2139 tests 341\n\u2139 suites 0\n\u2139 pass 341\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 4010.548644"
+  },
+  {
+    "suite": "town",
+    "exit": 0,
+    "seconds": 2.2,
+    "result": "\u2714 switching live actor canvases or returning to a static atlas disposes the previous live texture once (16.236178ms)\n\u2139 tests 73\n\u2139 suites 0\n\u2139 pass 73\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 2108.81009"
+  },
+  {
+    "suite": "gallery",
+    "exit": 0,
+    "seconds": 5.79,
+    "result": "\u2714 stalled resume is bounded and cancellation closes the pending context (0.371488ms)\n\u2139 tests 427\n\u2139 suites 0\n\u2139 pass 427\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 5714.687964"
+  },
+  {
+    "suite": "admin",
+    "exit": 0,
+    "seconds": 0.93,
+    "result": "\u2714 archive import cannot leave an article referencing a participant missing from its creator data (1.1201ms)\n\u2139 tests 38\n\u2139 suites 0\n\u2139 pass 38\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 822.998526"
+  }
+]

@@ -2,7 +2,7 @@
  * Bread has one white two-joint appendage. Flower has two tiny feet,
  * its original book and die. No human limb artwork is introduced.
  */
-import {createOwnerRig,OWNER_ATTACK_DURATION} from './owner-rig.js?v=20261017-rig1';
+import {createOwnerRig,OWNER_ATTACK_DURATION} from './owner-rig.js?v=20261017-rig2';
 const finite=(n,f)=>Number.isFinite(n)?n:f;
 const point=(v,f)=>Array.isArray(v)&&v.length===2&&v.every(Number.isFinite)?{x:v[0],y:v[1]}:{...f};
 const tip=(a,length,angle)=>({x:a.x+Math.cos(angle)*length,y:a.y+Math.sin(angle)*length});

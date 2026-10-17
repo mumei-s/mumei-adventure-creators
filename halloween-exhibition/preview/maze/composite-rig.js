@@ -1,5 +1,5 @@
-import {createOwnerRig} from './owner-rig.js?v=20261017-rig1';
-import {createCreatureRig} from './creature-rig.js?v=20261017-rig1';
+import {createOwnerRig} from './owner-rig.js?v=20261017-rig2';
+import {createCreatureRig} from './creature-rig.js?v=20261017-rig2';
 
 /** One registered avatar may contain several separately articulated entities.
  * The main entity uses the biped rig. Children use their own limb/contact

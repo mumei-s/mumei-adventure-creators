@@ -1,5 +1,5 @@
 import {withDeadline} from './transition-effects.js?v=20261017-review1';
-/** Original illustrated residents, with independent pose frames and continuous paths.
+/** Original illustrated residents, with optional articulated parts and continuous paths.
  * This decorative canvas never receives input, changes navigation or reads storage. */
 export const CASTLE_CAST = Object.freeze([
   {id:'franken',side:-1,lane:0,phase:.2,period:18,size:1},
@@ -19,9 +19,11 @@ export function castleActorPose(actor,time,width,height,frameCount=4,fps=7){
   const center=actor.side<0?.115:.885;
   const x=width*(center+actor.side*Math.sin(angle)*.052);
   const y=height*(flying?(actor.id==='bat'?.28:.59)+Math.sin(angle*.8)*.038:.94-actor.lane*.105-progress*.055);
+  const angularSpeed=Math.PI*2/actor.period;
+  const velocity={x:width*actor.side*Math.cos(angle)*.052*angularSpeed,y:height*(flying?Math.cos(angle*.8)*.8*.038:-Math.cos(angle)*.055/2)*angularSpeed};
   const size=Math.min(115,height*.25,Math.max(38,width*.19))*actor.size*depth;
   const moving=Math.abs(Math.cos(angle))>.12;
-  return {x,y,size,flip:Math.cos(angle)*actor.side<0,frame:moving?Math.floor(time*fps+actor.phase)%frameCount:0,depth,progress};
+  return {x,y,size,velocity,heading:Math.atan2(velocity.x,velocity.y/.78),moving:Math.hypot(velocity.x,velocity.y/.78)>1e-6,flip:Math.cos(angle)*actor.side<0,frame:moving?Math.floor(time*fps+actor.phase)%frameCount:0,depth,progress};
 }
 
 /** A species keeps one stable path envelope across its entire pose cycle.
@@ -38,17 +40,32 @@ export function castleSafeActorPose(actor,time,width,height,layout){
  const originalCenter=width*(actor.side<0?.115:.885);
  const center=Math.max(extent+4+amplitude,Math.min(width-extent-4-amplitude,originalCenter));
  const wave=(pose.x-originalCenter)/(width*.052);
- return {...pose,x:center+wave*amplitude};
+ const velocity={x:pose.velocity.x*amplitude/(width*.052),y:pose.velocity.y};
+ return {...pose,x:center+wave*amplitude,velocity,heading:Math.atan2(velocity.x,velocity.y/.78),moving:Math.hypot(velocity.x,velocity.y/.78)>1e-6};
 }
 
-export function drawCastleCast(ctx,images,time,width,height){
+export function drawCastleCast(ctx,images,time,width,height,{rigs=null,rigSprites=new Map(),dt=0,motion=true}={}){
     ctx.clearRect(0,0,width,height);
-    const cast=CASTLE_CAST.map(actor=>({actor,pose:castleSafeActorPose(actor,time,width,height,images.get(actor.id)?.layout)})).sort((a,b)=>a.pose.y-b.pose.y);
-    for(const {actor,pose} of cast){
-      const record=images.get(actor.id);if(!record)continue;
-      const {image,layout}=record;
-      const frameIndex=(layout.walkFrames||[0,1,2,3])[pose.frame]??layout.idleFrame??0;
-      const source=layout.frames[frameIndex]||layout.frames[0];
+    const liveLayout=sprite=>sprite?{frames:[sprite]}:null;
+    const cast=CASTLE_CAST.map(actor=>({actor,pose:castleSafeActorPose(actor,time,width,height,liveLayout(rigSprites.get(actor.id))||images.get(actor.id)?.layout)})).sort((a,b)=>a.pose.y-b.pose.y);
+    const rendered=new Set();
+    for(const entry of cast){
+      const {actor}=entry;let {pose}=entry,live=null;
+      const update=(step=dt)=>rigs?.update?.('monster:'+actor.id,{position:{x:pose.x,z:pose.y/.78},heading:pose.heading,moving:motion&&pose.moving,motion,dt:motion?step:0,time,mapId:'palace-entrance',worldPixelsPerUnit:1,displayHeightPx:pose.size,groundDepthScale:.78});
+      try{
+       live=update();
+       if(live?.image&&live.frame){
+        const previous=rigSprites.get(actor.id);rigSprites.set(actor.id,live);
+        if(!previous||previous.image!==live.image||previous.contentHeight!==live.contentHeight){
+         const fitted=castleSafeActorPose(actor,time,width,height,liveLayout(live));
+         if(fitted.x!==pose.x){pose=fitted;live=update(0)||live;}
+        }
+       }else live=null;
+      }catch{live=null;}
+      const record=images.get(actor.id);if(!live&&!record)continue;
+      const layout=record?.layout;
+      const frameIndex=(layout?.walkFrames||[0,1,2,3])[motion?pose.frame:0]??layout?.idleFrame??0;
+      const source=live||layout.frames[frameIndex]||layout.frames[0],image=live?.image||record.image;
       const [sourceX,sourceY,sourceW,sourceH]=source.frame;
       const drawHeight=pose.size*sourceH/(source.contentHeight||sourceH*.88);
       const drawWidth=drawHeight*sourceW/sourceH;
@@ -56,10 +73,14 @@ export function drawCastleCast(ctx,images,time,width,height){
       if(actor.id!=='ghost'&&actor.id!=='bat'){
         ctx.fillStyle='rgba(14,9,24,.35)';ctx.beginPath();ctx.ellipse(0,0,pose.size*.23,pose.size*.045,0,0,Math.PI*2);ctx.fill();
       }
-      ctx.scale(pose.flip!==(layout.faces==='left')?-1:1,1);
+      // Real views retain their authored handedness; only legacy art reflects.
+      if(!live)ctx.scale(pose.flip!==(layout.faces==='left')?-1:1,1);
       ctx.drawImage(image,sourceX,sourceY,sourceW,sourceH,-drawWidth*(source.anchorX??.5),-drawHeight*(source.anchorY??.94),drawWidth,drawHeight);
       ctx.restore();
+      rendered.add(actor.id);
     }
+    rigs?.prune?.({activeIds:CASTLE_CAST.map(({id})=>'monster:'+id),mapId:'palace-entrance',time});
+    return rendered;
   }
 
 // Kept local so the entrance does not initialize or download the game runtime.
@@ -96,7 +117,7 @@ export function loadPalaceActorImage(src,{ImageClass=globalThis.Image,signal,tim
   image.src=src;
  });
 }
-export function initPalaceLivingScene(root,{atlases=null,loadImage}={}){
+export function initPalaceLivingScene(root,{atlases=null,loadImage,loadRigLibrary=()=>import('./maze/rig-animation.js?v=20261017-rig2')}={}){
   const palace=root?.querySelector?.('#palace-entrance');
   if(!palace||palace.dataset.livingScene)return null;
   const doc=root.ownerDocument,win=doc.defaultView;
@@ -109,29 +130,81 @@ export function initPalaceLivingScene(root,{atlases=null,loadImage}={}){
   const atmosphere=doc.createElement('div');atmosphere.className='palace-living-air';atmosphere.setAttribute('aria-hidden','true');
   for(const className of ['palace-light-shaft','palace-ground-mist','palace-threshold-light']){const layer=doc.createElement('i');layer.className=className;atmosphere.append(layer);}palace.append(atmosphere);
   const media=win.matchMedia('(prefers-reduced-motion: reduce)');
-  const images=new Map(),replaced=[],abort=new AbortController();
+  const images=new Map(),rigSprites=new Map(),replaced=new Map();
   const timers=win.setTimeout?{setTimeout:(fn,delay)=>win.setTimeout(fn,delay),clearTimeout:id=>win.clearTimeout(id)}:globalThis;
   let frame=0,last=0,time=0,width=1,height=1,disposed=false,suspended=false,generation=0;
-  const active=()=>images.size>0&&!disposed&&!suspended&&!doc.hidden&&doc.body.dataset.pageHidden!=='true'&&!root.hidden&&!palace.hidden&&root.dataset.motionPaused!=='true'&&doc.body.dataset.ambientPaused!=='true'&&!media.matches&&root.dataset.palaceState==='palace'&&!doc.querySelector('dialog[open]');
-  function draw(){drawCastleCast(ctx,images,time,width,height);}
+  let assetsJob=null,assetsAbort=null,assetsGeneration=0,assetsLoaded=false,rigs=null,rigJob=null,rigAbort=null,rigGeneration=0;
+  let resolveReady;const ready=new Promise(resolve=>{resolveReady=resolve;});
+  const visible=()=>!disposed&&!suspended&&!doc.hidden&&doc.body.dataset.pageHidden!=='true'&&!root.hidden&&!palace.hidden&&root.dataset.palaceState==='palace'&&!doc.querySelector('dialog[open]');
+  const moving=()=>visible()&&root.dataset.motionPaused!=='true'&&doc.body.dataset.ambientPaused!=='true'&&!media.matches;
+  const active=()=>moving()&&(images.size>0||rigSprites.size>0);
+  function markArtwork(id){
+   const old=palace.querySelector(`.palace-path-walkers .path-${id}`);
+   if(old){if(!replaced.has(old))replaced.set(old,{hidden:old.hidden,id});old.hidden=true;}
+  }
+  function statusArtwork(){
+   const count=CASTLE_CAST.filter(({id})=>images.has(id)||rigSprites.has(id)).length;
+   palace.dataset.livingScene=count===CASTLE_CAST.length?'ready':count?'partial':assetsLoaded?'fallback':'loading';
+   for(const id of ['ghost','bat']){const key=id==='ghost'?'livingGhost':'livingBat';if(images.has(id)||rigSprites.has(id))palace.dataset[key]='ready';else delete palace.dataset[key];}
+  }
+  function draw(dt=0){
+   if(!visible()){ctx.clearRect(0,0,width,height);return;}
+   const rendered=drawCastleCast(ctx,images,time,width,height,{rigs,rigSprites,dt,motion:moving()});
+   for(const [element,record]of replaced)if(!rendered.has(record.id))element.hidden=record.hidden;
+   for(const id of rendered)markArtwork(id);statusArtwork();
+  }
   function resize(){const rect=palace.getBoundingClientRect();width=Math.max(1,rect.width);height=Math.max(1,rect.height);const dpr=Math.min(win.devicePixelRatio||1,1.5,Math.sqrt(1200000/(width*height)));canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);draw();}
-  function tick(stamp,token){if(token!==generation)return;frame=0;if(!active())return;if(!last)last=stamp;if(stamp-last>=30){time+=Math.min((stamp-last)/1000,.06);last=stamp;draw();}frame=win.requestAnimationFrame(stamp=>tick(stamp,token));}
+  function tick(stamp,token){if(token!==generation)return;frame=0;if(!active())return;if(!last)last=stamp;if(stamp-last>=30){const dt=Math.min((stamp-last)/1000,.06);time+=dt;last=stamp;draw(dt);}frame=win.requestAnimationFrame(stamp=>tick(stamp,token));}
   function stop(){generation++;win.cancelAnimationFrame(frame);frame=0;last=0;}
-  function sync(){if(!active()){stop();draw();}else if(!frame){last=0;const token=generation;frame=win.requestAnimationFrame(stamp=>tick(stamp,token));}}
-  const load=loadImage||((src)=>loadPalaceActorImage(src,{ImageClass:win.Image,signal:abort.signal,timers}));
-  const manifest=atlases?Promise.resolve(atlases):loadCastleMotionManifest(win.fetch.bind(win),{signal:abort.signal,timers}).catch(()=>({}));
-  const ready=manifest.then(atlases=>Promise.all(CASTLE_CAST.map(async actor=>{
-    const layout=atlases[actor.id];if(!layout)return false;
-    try{const image=await withDeadline(load(new URL(layout.src,import.meta.url).href),{signal:abort.signal,timers,timeout:10000});if(disposed)return false;images.set(actor.id,{image,layout});
-      // Remove the old polygon wolf/static rocking cutouts only after real artwork arrives.
-      palace.dataset.livingScene='partial';const old=palace.querySelector(`.palace-path-walkers .path-${actor.id}`);if(old){replaced.push([old,old.hidden]);old.hidden=true;}
-      if(actor.id==='ghost')palace.dataset.livingGhost='ready';if(actor.id==='bat')palace.dataset.livingBat='ready';draw();sync();return true;
-    }catch{return false;}
-  }))).then(results=>{if(!disposed)palace.dataset.livingScene=results.every(Boolean)?'ready':results.some(Boolean)?'partial':'fallback';return results;});
+  function sync(){
+   if(visible()){startAssets();startRigs();draw();}
+   if(!active()){stop();}else if(!frame){last=0;const token=generation;frame=win.requestAnimationFrame(stamp=>tick(stamp,token));}
+  }
+  function startAssets(){
+   if(!visible()||assetsLoaded||assetsJob)return;
+   const request=new AbortController(),token=++assetsGeneration;assetsAbort=request;
+   assetsJob=(async()=>{
+    let layouts;
+    try{layouts=atlases||await loadCastleMotionManifest(win.fetch.bind(win),{signal:request.signal,timers});}catch{layouts={};}
+    if(disposed||request.signal.aborted||token!==assetsGeneration)return [];
+    const results=await Promise.all(CASTLE_CAST.map(async actor=>{
+     if(images.has(actor.id))return true;const layout=layouts[actor.id];if(!layout)return false;
+     try{
+      const src=new URL(layout.src,import.meta.url).href;
+      const operation=Promise.resolve(loadImage?loadImage(src,{signal:request.signal}):loadPalaceActorImage(src,{ImageClass:win.Image,signal:request.signal,timers})).then(image=>{
+       if(disposed||request.signal.aborted||token!==assetsGeneration){image?.close?.();return null;}return image;
+      });
+      const image=await withDeadline(operation,{signal:request.signal,timers,timeout:10000});
+      if(!image)return false;
+      if(disposed||request.signal.aborted||token!==assetsGeneration){image?.close?.();return false;}
+      images.set(actor.id,{image,layout});if(visible()){draw();sync();}return true;
+     }catch{return false;}
+    }));
+    if(disposed||request.signal.aborted||token!==assetsGeneration)return results;
+    assetsLoaded=true;statusArtwork();resolveReady(results);return results;
+   })().finally(()=>{if(token===assetsGeneration){assetsJob=null;assetsAbort=null;}});
+  }
+  function startRigs(){
+   if(!visible()||!loadRigLibrary||rigs||rigJob)return;
+   const token=++rigGeneration,request=new AbortController();rigAbort=request;
+   rigJob=withDeadline(Promise.resolve().then(loadRigLibrary),{signal:request.signal,timers,timeout:8000}).then(module=>{
+    if(disposed||token!==rigGeneration||!visible()||!module?.createRigLibrary)return null;
+    const instance=module.createRigLibrary({maxActive:16,maxSourceBytes:64*1024*1024,timers,
+     fetcher:typeof win.fetch==='function'?win.fetch.bind(win):globalThis.fetch,
+     loadImage:(src,{signal}={})=>loadPalaceActorImage(src,{ImageClass:win.Image,signal,timers}),
+     makeCanvas:(w,h)=>{const c=doc.createElement('canvas');c.width=w;c.height=h;return c;},
+     onChange:()=>{if(token===rigGeneration&&visible())sync();},
+    });
+    if(disposed||token!==rigGeneration){instance.destroy();return null;}
+    rigs=instance;
+    return Promise.resolve(instance.ready).then(()=>{if(token===rigGeneration&&visible())sync();return instance;});
+   }).catch(()=>{if(token===rigGeneration){rigs?.destroy();rigs=null;rigSprites.clear();}return null;}).finally(()=>{if(token===rigGeneration){rigJob=null;rigAbort=null;}});
+  }
+  function cancelLoads(){assetsGeneration++;assetsAbort?.abort();assetsAbort=null;assetsJob=null;rigGeneration++;rigAbort?.abort();rigAbort=null;rigs?.destroy();rigs=null;rigJob=null;rigSprites.clear();}
   const observer=new win.MutationObserver(sync);observer.observe(root,{attributes:true,attributeFilter:['data-motion-paused','data-palace-state','hidden']});observer.observe(doc.body,{attributes:true,attributeFilter:['data-ambient-paused','data-page-hidden']});doc.querySelectorAll('dialog').forEach(dialog=>observer.observe(dialog,{attributes:true,attributeFilter:['open']}));
   const resizeObserver=new win.ResizeObserver(resize);resizeObserver.observe(palace);
-  const hide=()=>{suspended=true;stop();},show=()=>{suspended=false;resize();sync();};
+  const hide=()=>{suspended=true;stop();cancelLoads();},show=()=>{suspended=false;resize();sync();};
   doc.addEventListener('visibilitychange',sync);media.addEventListener?.('change',sync);win.addEventListener('pagehide',hide);win.addEventListener('pageshow',show);
   resize();sync();
-  return {ready,draw,destroy(){disposed=true;abort.abort();stop();observer.disconnect();resizeObserver.disconnect();doc.removeEventListener('visibilitychange',sync);media.removeEventListener?.('change',sync);win.removeEventListener('pagehide',hide);win.removeEventListener('pageshow',show);canvas.remove();atmosphere.remove();stylesheet.remove();for(const [element,hidden]of replaced)element.hidden=hidden;delete palace.dataset.livingScene;delete palace.dataset.livingGhost;delete palace.dataset.livingBat;}};
+  return {ready,draw,get rigsReady(){return rigJob||Promise.resolve(rigs);},status:()=>({disposed,suspended,time,running:Boolean(frame),images:images.size,liveActors:rigSprites.size,rigs:rigs?.status?.()||null}),destroy(){if(disposed)return;disposed=true;cancelLoads();resolveReady([]);stop();observer.disconnect();resizeObserver.disconnect();doc.removeEventListener('visibilitychange',sync);media.removeEventListener?.('change',sync);win.removeEventListener('pagehide',hide);win.removeEventListener('pageshow',show);canvas.remove();atmosphere.remove();stylesheet.remove();for(const [element,record]of replaced)element.hidden=record.hidden;for(const record of images.values())record.image?.close?.();images.clear();delete palace.dataset.livingScene;delete palace.dataset.livingGhost;delete palace.dataset.livingBat;}};
 }

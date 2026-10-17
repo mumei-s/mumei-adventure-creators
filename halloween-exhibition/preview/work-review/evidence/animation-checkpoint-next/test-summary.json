@@ -1,0 +1,53 @@
+{
+  "method": "Node regression tests; native Canvas / mock DOM / mock GPU where applicable. No browser, device or real GPU verification.",
+  "release": "20261017-rig2",
+  "activeRigs": 30,
+  "suites": [
+    {
+      "suite": "maze",
+      "exitCode": 0,
+      "durationSeconds": 2.546,
+      "tests": 341,
+      "pass": 341,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "suite": "town",
+      "exitCode": 0,
+      "durationSeconds": 0.568,
+      "tests": 73,
+      "pass": 73,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "suite": "gallery",
+      "exitCode": 0,
+      "durationSeconds": 3.484,
+      "tests": 427,
+      "pass": 427,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    {
+      "suite": "admin",
+      "exitCode": 0,
+      "durationSeconds": 0.215,
+      "tests": 38,
+      "pass": 38,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    }
+  ],
+  "totalTests": 879,
+  "allPassed": true
+}

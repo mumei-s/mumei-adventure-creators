@@ -1,0 +1,46 @@
+✔ page exit requests a warning for unsaved input and for a storage failure (29.036219ms)
+✔ reload locks editing and ignores a duplicate request; a failure retains the exact draft (30.667576ms)
+✔ a delayed file import locks editing and invalid JSON leaves its old draft intact (26.562964ms)
+✔ corrupt draft recovery preserves the original raw storage if fetching or writing replacement fails (22.126815ms)
+✔ a corrupt trash record enters the protected raw-draft recovery path before any write (18.643624ms)
+✔ successful corrupt recovery replaces only the editor key after validated data is ready (26.015353ms)
+✔ a failed ordinary persistence keeps the in-memory draft and requests exit protection (2.031102ms)
+✔ public draft fetch reads the current independent JSONs without a cache or source mutation (23.544163ms)
+✔ a stalled response body times out and aborts both requests (24.94077ms)
+✔ HTTP failure or invalid JSON cannot return a replacement state (1.421474ms)
+✔ a late timed out request never becomes a successful replacement and a retry stays independent (34.350542ms)
+✔ current fifteen-creator archive and legacy nine-creator catalog validate (11.753945ms)
+✔ archive + catalog export-import roundtrip preserves all source data (23.125276ms)
+✔ three independent collections save without mutating source (46.612434ms)
+✔ multiple links and works preserve independent visibility and order (2.139451ms)
+✔ edit preserves unrelated metadata and secondary links (13.785807ms)
+✔ delete and restore recover exact data; duplicate restore fails safely (17.994317ms)
+✔ bad imports and duplicate door IDs do not mutate drafts (14.111187ms)
+✔ unsafe URL and nonfinite order rejected (9.127887ms)
+✔ incomplete or wrong schema and unknown creator IDs rejected (1.985285ms)
+✔ storage is exhibition-scoped; source never clears unrelated state or uses secrets (0.662065ms)
+✔ library validation messages are genre-neutral and compatibility IDs stay unchanged (4.672122ms)
+✔ main/editor UI, aria/help source and README contain no genre-only article wording (29.370346ms)
+✔ same creator may have independent article doors in the same collection and year (16.883721ms)
+✔ pending doors accept unknown main URL without fabricating a profile destination (28.02945ms)
+✔ empty secondary links, unsafe pending main and missing submitted main are rejected (6.569498ms)
+✔ legacy profile-only pending entries retain their profile as an extra when explicitly edited (1.341577ms)
+✔ legacy v1 drafts roundtrip unchanged and identity migrates only on explicit edit (18.512971ms)
+✔ explicit door IDs reject invalid and colliding identities, including legacy collisions (2.25431ms)
+✔ restore rejects a door ID collision and retains both active draft and trash (35.325509ms)
+✔ editing the host preserves its role while a new owner door has no host role (9.506384ms)
+✔ editor presents fixed door identity and status-sensitive main URL guidance (0.580686ms)
+✔ new creator is editable without changing legacy adventure roster (3.450853ms)
+✔ three added participant IDs edit independently and preserve the adventure catalog (17.509183ms)
+✔ corrupt recovery records are rejected before import or export can replace a valid draft (17.645003ms)
+✔ deleted article restores its exact year metadata after a different archive is imported (3.342304ms)
+✔ legacy deleted article is never discarded when its destination year is missing (3.310566ms)
+✔ archive import cannot leave an article referencing a participant missing from its creator data (1.1201ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 38
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 822.998526

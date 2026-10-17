@@ -14,13 +14,13 @@ const title = '無名S note / 🎃Halloween Atelier / 魔法の入口🚪';
 // Independent release contract. Unknown files have no fallback version: adding
 // an asset requires reviewing its exact URL and cache scope here as well.
 const PUBLIC_RELEASES = Object.freeze({
- 'theater.js':'20261017-town2',
+ 'theater.js':'20261017-rig2',
  'town-entry.css':'20261017-town2',
  'gallery-controls.css':'20261017-review1',
  'gallery-gesture.js':'20261017-review1',
  'magical-loading.js':'20261017-review1',
- 'palace-startup.js':'20261017-review1',
- 'palace-living-scene.js':'20261017-review1',
+ 'palace-startup.js':'20261017-rig2',
+ 'palace-living-scene.js':'20261017-rig2',
  'scene-motion.js':'20261017-review1',
  'roster-pagination.js':'20261017-review1',
  'transition-effects.js':'20261017-review1',
@@ -56,6 +56,8 @@ const PUBLIC_RELEASES = Object.freeze({
  'display-mode.css':'20261014-layout1',
  'magical-entrance.css':'20261014-layout1',
 });
+// Animation is loaded lazily and remains outside the public shell cache.
+const NETWORK_ONLY_RELEASES = Object.freeze({'maze/rig-animation.js':'20261017-rig2'});
 const ADMIN_RELEASES = Object.freeze({
  'admin/app.js':'20261017-draft-guard1',
  'admin/model.js':'20261017-draft-guard1',
@@ -64,7 +66,8 @@ const ADMIN_RELEASES = Object.freeze({
  'admin/display-settings.js':'20261014-layout1',
 });
 const REVIEW_FILES = Object.keys(PUBLIC_RELEASES).filter(path=>PUBLIC_RELEASES[path]==='20261017-review1');
-const TOWN_ENTRY_FILES = ['theater.js','town-entry.css'];
+const TOWN_ENTRY_FILES = ['town-entry.css'];
+const RIG_FILES = ['theater.js','palace-startup.js','palace-living-scene.js'];
 const publicPath = (reference,from) => new URL(reference,base+from).pathname.slice(new URL(base).pathname.length);
 
 test('manifest identity and start URL are confined to the preview subtree', async()=>{
@@ -249,7 +252,7 @@ test('HTML and module references use the independently reviewed exact release re
   }
  }
  for(const from of ['theater.js','palace-startup.js','palace-living-scene.js','castle-counter-bootstrap.js','admin/app.js','admin/model.js','admin/draft-io.js','admin/display-settings.js']){
-  const text=await readFile(new URL('../'+from,import.meta.url),'utf8'),releases={...PUBLIC_RELEASES,...ADMIN_RELEASES};
+  const text=await readFile(new URL('../'+from,import.meta.url),'utf8'),releases={...PUBLIC_RELEASES,...ADMIN_RELEASES,...NETWORK_ONLY_RELEASES};
   for(const match of text.matchAll(/(?:from\s+|import\()['"](\.\.?\/[^'"?]+\.js)(\?[^'"]*)?['"]/g)){
    const path=publicPath(match[1],from);assert.ok(Object.hasOwn(releases,path),`unreviewed dependency ${from}: ${path}`);
    assert.equal(match[2],'?v='+releases[path],`${from}: ${path}`);
@@ -285,14 +288,19 @@ test('release invalidation rejects prior changed-asset URLs and offline lookup u
   assert.equal((await h.dispatch('fetch',base+path+'?v=20261017-town2')).intercepted,true,path);
   for(const version of [...stale,'20261017-review1'])assert.equal((await h.dispatch('fetch',base+path+'?v='+version)).intercepted,false,path+version);
  }
+ for(const[path,release]of Object.entries(NETWORK_ONLY_RELEASES))assert.equal((await h.dispatch('fetch',base+path+'?v='+release)).intercepted,false,path);
+ for(const path of RIG_FILES){
+  assert.equal((await h.dispatch('fetch',base+path+'?v=20261017-rig2')).intercepted,true,path);
+  for(const version of [...stale,'20261017-review1','20261017-town2','20261017-rig1'])assert.equal((await h.dispatch('fetch',base+path+'?v='+version)).intercepted,false,path+version);
+ }
  for(const path of REVIEW_FILES){
   assert.equal((await h.dispatch('fetch',base+path+'?v=20261017-review1')).intercepted,true,path);
   for(const version of stale)assert.equal((await h.dispatch('fetch',base+path+'?v='+version)).intercepted,false,path+version);
  }
- const offline=workerHarness({offline:true});await offline.dispatch('fetch',base+'theater.js?v=20261017-town2');
- assert.equal(offline.matches.length,1);assert.equal(offline.matches[0].cacheName,'mumei-atelier-shell-v33-20261017-town2:'+new URL(base).pathname);
+ const offline=workerHarness({offline:true});await offline.dispatch('fetch',base+'theater.js?v=20261017-rig2');
+ assert.equal(offline.matches.length,1);assert.equal(offline.matches[0].cacheName,'mumei-atelier-shell-v34-20261017-rig2:'+new URL(base).pathname);
  assert.ok(offline.matches[0].cacheName.endsWith(':'+new URL(base).pathname));
- assert.equal(offline.matches[0].url,base+'theater.js?v=20261017-town2');
+ assert.equal(offline.matches[0].url,base+'theater.js?v=20261017-rig2');
 });
 
 test('review portrait stylesheet has an exact new URL and rejects its old hotfix query',async()=>{

@@ -1,8 +1,9 @@
 import {getTownMap} from './story-data.js';
 import {TOWN_TILE as TILE,followTownCamera,townCameraTarget,townVisibleBounds,townWorldToScreen,townScreenToWorld} from './motion.js';
 import {TOWN_BUDGET,TOWN_PROP_CELLS,TOWN_BATTLE_ART_IDS,townVisualSeed as seed,buildingArtKind,townPropSprite} from './visual-data.js';
-import {drawArtSprite,playerPose,loadArtImage,PALACE_ART} from '../maze/rpg-art.js?v=20261017-rig1';
-import {monsterSprite} from '../maze/monster-motion.js?v=20261017-rig1';
+import {drawArtSprite,playerPose,loadArtImage,PALACE_ART} from '../maze/rpg-art.js?v=20261017-rig2';
+import {enemyRigEffect} from '../maze/battle-rig-effects.js?v=20261017-rig2';
+import {monsterSprite} from '../maze/monster-motion.js?v=20261017-rig2';
 import {withDeadline} from '../transition-effects.js?v=20261016-living1';
 
 const TAU=Math.PI*2,clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
@@ -377,7 +378,7 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
     poly(c,[[0,h*.65],[w,h*.65],[w,h],[0,h]],'#59616a44');for(let i=-4;i<8;i++)line(c,w*.5+i*w*.11,h*.65,w*.5+i*w*.25,h,'#a9b6a32c',1);for(let i=0;i<4;i++)line(c,0,h*.68+i*i*h*.025,w,h*.68+i*i*h*.025,'#a9b6a32c',1);
     ellipse(c,heroX,floorY+5,size*.22,11,'#071827b0');ellipse(c,enemyX,floorY+5,enemySize*.26,14,'#071827b0');
     const hero=playerPose(art,'right',motion&&lunge>0,age*14,{battle:true,effect,time,motion});if(hero)drawArtSprite(c,hero,heroX+(hero.poseVersion===undefined?lunge:0),floorY,size);
-    const sprite=monsterSprite(art,enemyId,{time,motion,battle:true,facing:'left'});const victory=battle.phase==='victory';
+    const sprite=monsterSprite(art,enemyId,{time,motion,battle:true,facing:'left',effect:enemyRigEffect(effect,time,{won:battle.phase==='victory'})});const victory=battle.phase==='victory';
     if(sprite)drawArtSprite(c,sprite,enemyX,floorY,enemySize,{alpha:victory?.55:1,flip:sprite.flip});
     else{
       // Readable mist silhouette remains while its original atlas decodes.

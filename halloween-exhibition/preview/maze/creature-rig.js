@@ -3,7 +3,7 @@
  * a local pivot and (for segments) a local endpoint, as drawOwnerPose expects.
  * Existing whole-character pictures are not split, mirrored, scaled or blended.
  */
-import {solveTwoBone3D} from './owner-rig.js?v=20261017-rig1';
+import {solveTwoBone3D} from './owner-rig.js?v=20261017-rig2';
 const TAU=Math.PI*2,clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),mod=(v,n)=>(v%n+n)%n;
 const finite=(v,fallback=0)=>Number.isFinite(v)?v:fallback,copy=p=>({...p}),mix=(a,b,t)=>a+(b-a)*t,smooth=t=>t*t*(3-2*t);
 const angleDelta=(a,b)=>mod(b-a+Math.PI,TAU)-Math.PI,worldDistance=(a,b)=>Math.hypot(a.x-b.x,a.z-b.z),distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
@@ -44,24 +44,26 @@ function selectView(manifest,heading){
 export function createCreatureRig({archetype='quadruped',manifest=null,strideLength=.8,unitsToPixels=64,depthScale=.78,stepLift=.11,teleportDistance=3,canPlant=()=>true,rig:overrides={}}={}){
  const kind=ALIASES[archetype];if(!kind)throw new TypeError('Unsupported creature archetype');
  if(![strideLength,unitsToPixels,depthScale,stepLift,teleportDistance].every(value=>Number.isFinite(value)&&value>0)||typeof canPlant!=='function')throw new TypeError('Invalid creature travel dimensions');
- const dimensions={...CREATURE_RIG_DEFAULTS[kind],...manifest?.rig,...overrides};for(const value of Object.values(dimensions))if(!Number.isFinite(value)||value<=0)throw new TypeError('Creature skeleton dimensions must be positive');
- let disposed=false,initialized=false,root={x:0,z:0},lastRoot=copy(root),heading=0,time=0,travelDistance=0,gaitCoordinate=0,version=0,lastPose=null,action=null,turnFoot=null,groundYaw=0,projectionFitted=false,wasMoving=false;const feet={};
+ const dimensions={...CREATURE_RIG_DEFAULTS[kind],...manifest?.rig,...overrides};for(const [key,value]of Object.entries(dimensions)){if(key==='tailTipLayer'){if(!['back','front'].includes(value))throw new TypeError('Unknown tail layer');}else if(key==='tailRootOffset'){if(!Array.isArray(value)||value.length!==2||!value.every(Number.isFinite))throw new TypeError('Finite tail attachment offset is required');}else if(key==='tailAngle'){if(!Number.isFinite(value))throw new TypeError('Finite tail angle is required');}else if(!Number.isFinite(value)||value<=0)throw new TypeError('Creature skeleton dimensions must be positive');}
+ let disposed=false,initialized=false,root={x:0,z:0},lastRoot=copy(root),heading=0,time=0,travelDistance=0,gaitCoordinate=0,phaseBias=0,version=0,lastPose=null,action=null,turnFoot=null,groundYaw=0,projectionFitted=false,wasMoving=false;const feet={};
  const bodyHalfPixels=dimensions.bodyHalfLength*unitsToPixels,footSpacingPixels=dimensions.footSpacing*unitsToPixels;
  const localWorld=(side=0,forward=0,at=root,yaw=heading)=>({x:at.x+Math.cos(yaw)*side+Math.sin(yaw)*forward,z:at.z-Math.sin(yaw)*side+Math.cos(yaw)*forward});
  const nominal=(foot,at=root,yaw=heading,lead=0)=>localWorld(foot.side*dimensions.footSpacing,foot.fore*dimensions.bodyHalfLength+lead,at,yaw);
  const plant=(target,foot,at=root,yaw=heading)=>{for(const p of[target,nominal(foot,at,yaw),at])if(canPlant(p))return copy(p);return copy(at);};
  const spatial=(point,lift=0)=>{const dx=point.x-root.x,dz=point.z-root.z;return{x:(dx*Math.cos(groundYaw)-dz*Math.sin(groundYaw))*unitsToPixels,y:lift*unitsToPixels,z:(dx*Math.sin(groundYaw)+dz*Math.cos(groundYaw))*unitsToPixels};};
  const project=point=>({x:point.x,y:-point.y+point.z*depthScale}),pixel=(point,lift=0)=>project(spatial(point,lift));
- function initialize(position,yaw){root=copy(position);lastRoot=copy(root);heading=yaw;turnFoot=null;for(const key of Object.keys(feet))delete feet[key];if(kind==='quadruped')for(const [name,spec]of Object.entries(FOOT_SPEC))feet[name]={...spec,world:plant(nominal(spec),spec),lift:0,contact:true,mode:'stance',swing:null,settle:null};initialized=true;}
- function swing(foot,at,yaw,coordinate){if(!foot.contact||Object.values(feet).filter(value=>value.contact).length<=2)return;foot.swing={start:copy(foot.world),target:plant(nominal(foot,at,yaw,strideLength*.62),foot,at,yaw),startCoordinate:coordinate,endCoordinate:Math.floor(coordinate)+1};foot.settle=null;foot.contact=false;foot.mode='swing';}
- function sampleSwing(foot,coordinate){if(!foot.swing)return;const s=foot.swing,t=clamp((coordinate-s.startCoordinate)/(s.endCoordinate-s.startCoordinate),0,1);foot.world=lerp(s.start,s.target,smooth(t));foot.lift=Math.sin(t*Math.PI)*stepLift;if(t>=1-1e-9){foot.world=copy(s.target);foot.lift=0;foot.contact=true;foot.mode='stance';foot.swing=null;}}
+ function initialize(position,yaw){root=copy(position);lastRoot=copy(root);heading=yaw;wasMoving=false;turnFoot=null;for(const key of Object.keys(feet))delete feet[key];if(kind==='quadruped')for(const [name,spec]of Object.entries(FOOT_SPEC))feet[name]={...spec,world:plant(nominal(spec),spec),lift:0,contact:true,mode:'stance',swing:null,settle:null};initialized=true;}
+ const stanceFraction=.55;
+ function swing(foot,at,yaw,coordinate){if(!foot.contact||Object.values(feet).filter(value=>value.contact).length<=2)return;foot.swing={start:copy(foot.world),startLift:foot.lift,target:plant(nominal(foot,at,yaw,strideLength*(1-stanceFraction+stanceFraction/2)),foot,at,yaw),startCoordinate:coordinate,endCoordinate:coordinate+1-stanceFraction};foot.settle=null;foot.contact=false;foot.mode='swing';}
+ function sampleSwing(foot,coordinate,at,yaw,speed,travelHeading){if(!foot.swing)return;const s=foot.swing;if(at&&speed>0){const remaining=Math.max(0,s.endCoordinate-coordinate)*strideLength,futureYaw=yaw+angleDelta(yaw,travelHeading)*(1-Math.exp(-remaining/speed/.12)),goal=nominal(foot,at,futureYaw),lead=remaining+strideLength*stanceFraction/2;goal.x+=Math.sin(travelHeading)*lead;goal.z+=Math.cos(travelHeading)*lead;s.target=plant(goal,foot,at,futureYaw);}const t=clamp((coordinate-s.startCoordinate)/(s.endCoordinate-s.startCoordinate),0,1);foot.world=lerp(s.start,s.target,smooth(t));foot.lift=(s.startLift||0)*(1-smooth(t))+Math.sin(t*Math.PI)*stepLift;if(t>=1-1e-9){foot.world=copy(s.target);foot.lift=0;foot.contact=true;foot.mode='stance';foot.swing=null;}}
  function settle(foot,dt){if(!foot.settle){foot.settle={start:copy(foot.world),target:plant(nominal(foot),foot),lift:foot.lift,elapsed:0};foot.swing=null;}const s=foot.settle;s.elapsed+=dt;const t=clamp(s.elapsed/.2,0,1);foot.world=lerp(s.start,s.target,smooth(t));foot.lift=s.lift*(1-smooth(t));foot.contact=false;foot.mode='settle';if(t>=1){foot.world=copy(s.target);foot.lift=0;foot.contact=true;foot.mode='stance';foot.settle=null;}}
  function advanceFeet(previousGait,yawBefore,dt,moving){
   if(moving){
-   const events=[];for(const [name,foot]of Object.entries(feet)){const before=previousGait+foot.offset,after=gaitCoordinate+foot.offset;for(let cycle=Math.floor(before)-1;cycle<=Math.floor(after)+1;cycle++)for(const [coordinate,event]of[[cycle+.62,'off'],[cycle+1,'on']])if(coordinate>before+1e-10&&coordinate<=after+1e-10)events.push({name,event,coordinate,travel:coordinate-foot.offset});}
-   events.sort((a,b)=>a.travel-b.travel||a.event.localeCompare(b.event));
-   for(const event of events){const foot=feet[event.name],fraction=(event.travel-previousGait)/Math.max(1e-12,gaitCoordinate-previousGait),at=lerp(lastRoot,root,clamp(fraction,0,1)),yaw=yawBefore+angleDelta(yawBefore,heading)*fraction;if(event.event==='off')swing(foot,at,yaw,event.coordinate);else sampleSwing(foot,event.coordinate);}
-   for(const foot of Object.values(feet)){if(foot.swing)sampleSwing(foot,gaitCoordinate+foot.offset);else if(foot.settle)settle(foot,dt);}
+   const travel=worldDistance(lastRoot,root),speed=dt?travel/dt:0,travelHeading=Math.atan2(root.x-lastRoot.x,root.z-lastRoot.z);
+   const events=[];for(const [name,foot]of Object.entries(feet)){const before=previousGait+phaseBias+foot.offset,after=gaitCoordinate+phaseBias+foot.offset;for(let cycle=Math.floor(before)-1;cycle<=Math.floor(after)+1;cycle++)for(const [coordinate,event]of[[cycle+stanceFraction,'off'],[cycle+1,'on']])if(coordinate>before+1e-10&&coordinate<=after+1e-10)events.push({name,event,coordinate,travel:coordinate-foot.offset-phaseBias});}
+   events.sort((a,b)=>a.travel-b.travel||(a.event==='on'?-1:1));
+   for(const event of events){const foot=feet[event.name],fraction=(event.travel-previousGait)/Math.max(1e-12,gaitCoordinate-previousGait),at=lerp(lastRoot,root,clamp(fraction,0,1)),yaw=yawBefore+angleDelta(yawBefore,heading)*fraction;if(event.event==='off')swing(foot,at,yaw,event.coordinate);else sampleSwing(foot,event.coordinate,at,yaw,speed,travelHeading);}
+   for(const foot of Object.values(feet)){if(foot.swing)sampleSwing(foot,gaitCoordinate+phaseBias+foot.offset,root,heading,speed,travelHeading);else if(foot.settle)settle(foot,dt);}
   }else for(const foot of Object.values(feet))if(foot.swing||foot.settle)settle(foot,dt);
  }
  function standingTurn(dt,moving){
@@ -74,23 +76,29 @@ export function createCreatureRig({archetype='quadruped',manifest=null,strideLen
  function actionPose(){if(!action)return{kind:'locomotion',stage:'idle',progress:0};let age=action.elapsed;for(const [stage,duration]of ACTION){if(age<=duration)return{kind:'attack',stage,progress:clamp(age/duration,0,1),elapsed:action.elapsed,duration:CREATURE_ACTION_DURATION};age-=duration;}return{kind:'locomotion',stage:'idle',progress:0};}
  function buildPose(speed,moving){
   const layers=[],joints={},chains={},attachments={},phaseValue=mod(kind==='quadruped'?gaitCoordinate*TAU:time/dimensions.period*TAU,TAU),phase=phaseValue<1e-10||TAU-phaseValue<1e-10?0:phaseValue,act=actionPose();
+  const view=selectView(manifest,heading-groundYaw);
   const gesture=act.kind==='attack'?Math.sin(clamp(act.elapsed/CREATURE_ACTION_DURATION,0,1)*Math.PI):0;
   const part=(name,origin,height,rotation=0)=>{layers.push({part:name,origin:copy(origin),height,rotation,scaleX:1,scaleY:1});return layers.at(-1);};
   const bone=(name,a,b)=>{const layer=part(name,a,distance(a,b),Math.atan2(b.y-a.y,b.x-a.x)-Math.PI/2);layer.boneEnd=copy(b);};
   if(kind==='quadruped'){
-   let hipHeight=dimensions.hipHeight;const targets={};
-   for(const[name,foot]of Object.entries(feet)){const ground=spatial(nominal(foot)),target=spatial(foot.world,foot.lift),reach=dimensions.upperLeg+dimensions.lowerLeg-.25;targets[name]={ground,target};hipHeight=Math.min(hipHeight,target.y+Math.sqrt(Math.max(1,reach*reach-(target.x-ground.x)**2-(target.z-ground.z)**2)));}
-   hipHeight=Math.max(1,hipHeight);const base={x:0,y:-dimensions.bodyHeight+dimensions.hipHeight-hipHeight},hips={};
+   let hipHeight=dimensions.hipHeight;const targets={},reach=dimensions.upperLeg+dimensions.lowerLeg-.25,minHip=Math.min(reach*.8,stepLift*unitsToPixels+Math.abs(dimensions.upperLeg-dimensions.lowerLeg)+.5),horizontalReach=Math.sqrt(reach*reach-minHip*minHip),bodyShift={x:0,z:0};
+   for(const[name,foot]of Object.entries(feet))targets[name]={ground:spatial(nominal(foot)),target:spatial(foot.world,foot.lift)};
+   // A planted paw constrains the pelvis during a sharp turn. Find the small
+   // shared translation which keeps all four fixed-length chains reachable;
+   // apply it to the spine and every body attachment, never to stance paws.
+   for(let iteration=0;iteration<40;iteration++)for(const{ground,target}of Object.values(targets)){const ex=target.x-ground.x,ez=target.z-ground.z,dx=bodyShift.x-ex,dz=bodyShift.z-ez,span=Math.hypot(dx,dz);if(span>horizontalReach){bodyShift.x=ex+dx*horizontalReach/span;bodyShift.z=ez+dz*horizontalReach/span;}}
+   for(const{ground,target}of Object.values(targets)){ground.x+=bodyShift.x;ground.z+=bodyShift.z;hipHeight=Math.min(hipHeight,target.y+Math.sqrt(Math.max(1,reach*reach-(target.x-ground.x)**2-(target.z-ground.z)**2)));}
+   hipHeight=Math.max(1,hipHeight);const bodyOffset=project({x:bodyShift.x,y:0,z:bodyShift.z}),base={x:bodyOffset.x,y:bodyOffset.y-dimensions.bodyHeight+dimensions.hipHeight-hipHeight},hips={};joints.bodyRoot={x:bodyOffset.x,y:bodyOffset.y-hipHeight};
    for(const[name,foot]of Object.entries(feet)){const{ground,target}=targets[name],hip={...ground,y:hipHeight},yaw=heading-groundYaw,physical=solveTwoBone3D(hip,target,dimensions.upperLeg,dimensions.lowerLeg,{pole:{x:-foot.fore*Math.sin(yaw),y:0,z:-foot.fore*Math.cos(yaw)}}),chain={root:project(physical.root),joint:project(physical.joint),end:project(physical.end),requestedTarget:project(target),physical};hips[name]=chain.root;chains[name]=chain;joints['hip_'+name]=chain.root;joints['knee_'+name]=chain.joint;joints['paw_'+name]=chain.end;}
-   const tailBase=pixel(localWorld(0,-dimensions.bodyHalfLength));tailBase.y-=hipHeight+8;const tailAngle=-Math.PI*.64+Math.sin(phase)*.15+Math.sin(time*1.2)*.045,tailMid=tip(tailBase,dimensions.tailBase,tailAngle),tailTip=tip(tailMid,dimensions.tailTip,tailAngle+.23+Math.sin(phase-.4)*.17);
-   joints.tail_base=tailBase;joints.tail_mid=tailMid;joints.tail_tip=tailTip;bone('tail_back',tailBase,tailMid);
+   const tailBase=pixel(localWorld(0,-dimensions.bodyHalfLength));tailBase.x+=bodyOffset.x;tailBase.y+=bodyOffset.y-hipHeight-8;const tailRig={...dimensions,...manifest?.views?.[view.key]?.rig},tailOffset=tailRig.tailRootOffset||[0,0];if(!Array.isArray(tailOffset)||tailOffset.length!==2||!tailOffset.every(Number.isFinite))throw new TypeError('Finite tail offset is required');tailBase.x+=tailOffset[0];tailBase.y+=tailOffset[1];const tailAngle=finite(tailRig.tailAngle,-Math.PI*.64)+Math.sin(phase)*.15+Math.sin(time*1.2)*.045,tailMid=tip(tailBase,dimensions.tailBase,tailAngle),tailTip=tip(tailMid,dimensions.tailTip,tailAngle+.23+Math.sin(phase-.4)*.17);
+   joints.tail_base=tailBase;joints.tail_mid=tailMid;joints.tail_tip=tailTip;const tailBehind=tailRig.tailTipLayer==='back';bone('tail_back',tailBase,tailMid);if(tailBehind)bone('tail_tip',tailMid,tailTip);
    for(const suffix of['far','near']){
     if(suffix==='near'){
-     part('body',base,dimensions.bodyHeight);const neck=pixel(localWorld(0,dimensions.bodyHalfLength));neck.y-=hipHeight+12;joints.neck=neck;joints.head={x:neck.x,y:neck.y-15};part('neck',neck,dimensions.neckHeight);part('head',joints.head,dimensions.headHeight,Math.sin(time*1.35)*.025);part('ears',joints.head,dimensions.earsHeight,Math.sin(time*1.7)*.04+gesture*.1);
+     part('body',base,dimensions.bodyHeight);const neck=pixel(localWorld(0,dimensions.bodyHalfLength));neck.x+=bodyOffset.x;neck.y+=bodyOffset.y-hipHeight-12;joints.neck=neck;joints.head={x:neck.x,y:neck.y-15};part('neck',neck,dimensions.neckHeight);part('head',joints.head,dimensions.headHeight,Math.sin(time*1.35)*.025);part('ears',joints.head,dimensions.earsHeight,Math.sin(time*1.7)*.04+gesture*.1);
     }
     for(const limb of['hind','fore']){const chain=chains[limb+'_'+suffix];bone(limb+'_upper_'+suffix,chain.root,chain.joint);bone(limb+'_lower_'+suffix,chain.joint,chain.end);part(limb+'_paw_'+suffix,chain.end,dimensions.pawHeight);}
    }
-   bone('tail_tip',tailMid,tailTip);part('collar_accessory',joints.neck,dimensions.collarHeight);joints.grip=copy(joints.head);
+   if(!tailBehind)bone('tail_tip',tailMid,tailTip);part('collar_accessory',joints.neck,dimensions.collarHeight);joints.grip=copy(joints.head);
   }else if(kind==='wing'){
    const chest={x:0,y:-dimensions.chestHeight};joints.chest=chest;joints.root={x:0,y:0};
    for(const [side,sign]of[['left',-1],['right',1]]){
@@ -103,15 +111,20 @@ export function createCreatureRig({archetype='quadruped',manifest=null,strideLen
    const torso={x:0,y:-dimensions.torsoHeight},neck={x:0,y:-dimensions.neckHeight},head={x:0,y:neck.y-12};joints.torso=torso;joints.neck=neck;joints.head=head;
    const trailBase={x:0,y:torso.y+34},a=Math.PI/2+Math.sin(phase)*.14,b=Math.PI/2+Math.sin(phase-.45)*.22,c=Math.PI/2+Math.sin(phase-.9)*.3,mid=tip(trailBase,dimensions.trailBack,a),end=tip(mid,dimensions.trailMid,b),tipEnd=tip(end,dimensions.trailTip,c);
    joints.trail_base=trailBase;joints.trail_mid=mid;joints.trail_end=end;joints.trail_tip=tipEnd;bone('trail_back',trailBase,mid);
+   const yaw=heading-groundYaw,local=(side,height,forward=0)=>({x:Math.cos(yaw)*side+Math.sin(yaw)*forward,y:height,z:-Math.sin(yaw)*side+Math.cos(yaw)*forward});
+   const arms=[];
    for(const [side,sign]of[['far',-1],['near',1]]){
-    if(side==='near'){part('hood_back',neck,dimensions.headHeight*1.25);part('torso_cloth',torso,dimensions.bodyHeight);part('head',head,dimensions.headHeight);}
-    const shoulder={x:sign*dimensions.shoulderHalfWidth,y:torso.y-9},hand={x:sign*(53+Math.sin(phase+sign*.5)*5+gesture*12),y:torso.y+21+Math.sin(phase+sign*.6)*6-gesture*20},chain=solveCreatureChain(shoulder,hand,dimensions.upperArm,dimensions.forearm,{bend:-sign});
-    chains[side]=chain;joints['shoulder_'+side]=shoulder;joints['elbow_'+side]=chain.joint;joints['wrist_'+side]=chain.end;bone('sleeve_'+side,shoulder,chain.joint);bone('forearm_'+side,chain.joint,chain.end);part('hand_'+side,chain.end,dimensions.handHeight,Math.sin(phase+sign)*.06);
+    const shoulder=local(sign*dimensions.shoulderHalfWidth,dimensions.torsoHeight+9),hand=local(sign*(53+Math.sin(phase+sign*.5)*5+gesture*12),dimensions.torsoHeight-21-Math.sin(phase+sign*.6)*6+gesture*20,side==='near'?38:26);
+    const physical=solveTwoBone3D(shoulder,hand,dimensions.upperArm,dimensions.forearm,{pole:{x:sign*Math.cos(yaw),y:0,z:-sign*Math.sin(yaw)}}),chain={root:project(physical.root),joint:project(physical.joint),end:project(physical.end),requestedTarget:project(hand),physical};
+    chains[side]=chain;joints['shoulder_'+side]=chain.root;joints['elbow_'+side]=chain.joint;joints['wrist_'+side]=chain.end;arms.push({side,sign,chain,depth:physical.end.z});
    }
+   arms.sort((a,b)=>a.depth-b.depth);
+   const drawArm=({side,sign,chain})=>{bone('sleeve_'+side,chain.root,chain.joint);bone('forearm_'+side,chain.joint,chain.end);part('hand_'+side,chain.end,dimensions.handHeight,Math.sin(phase+sign)*.06);};
+   part('hood_back',neck,dimensions.headHeight*1.25);drawArm(arms[0]);part('torso_cloth',torso,dimensions.bodyHeight);part('head',head,dimensions.headHeight);drawArm(arms[1]);
    bone('trail_mid',mid,end);bone('trail_tip',end,tipEnd);joints.grip=copy(joints.wrist_near);
   }
-  for(const attachment of manifest?.attachments||[]){const parent=joints[attachment.parent||'grip'];if(!parent||!attachment.part)continue;const offset=attachment.offset||[0,0],rotation=finite(attachment.rotation),origin={x:parent.x+finite(offset[0]),y:parent.y+finite(offset[1])};part(attachment.part,origin,finite(attachment.height,24),rotation);attachments[attachment.part]={parent:attachment.parent||'grip',grip:copy(parent),origin:copy(origin),rotation};}
-  const view=selectView(manifest,heading-groundYaw),parts=manifest?.views?.[view.key]?.parts||manifest?.parts||{},missingParts=CREATURE_PART_KEYS[kind].filter(key=>!parts[key]);
+  for(const attachment of manifest?.views?.[view.key]?.attachments||manifest?.attachments||[]){const parent=joints[attachment.parent||'grip'];if(!parent||!attachment.part||attachment.visible===false)continue;const offset=attachment.offset||[0,0],rotation=finite(attachment.rotation),origin={x:parent.x+finite(offset[0]),y:parent.y+finite(offset[1])};const layer=part(attachment.part,origin,finite(attachment.height,24),rotation);if(attachment.layer==='back'){layers.pop();layers.unshift(layer);}attachments[attachment.part]={parent:attachment.parent||'grip',grip:copy(parent),origin:copy(origin),rotation};}
+  const parts=manifest?.views?.[view.key]?.parts||manifest?.parts||{},missingParts=CREATURE_PART_KEYS[kind].filter(key=>!parts[key]);
   return {version:++version,archetype:kind,root:copy(root),heading,time,distance:travelDistance,gaitPhase:phase,speed,moving,view:view.key,layers,joints,chains,projection:{unitsToPixels,depthScale,groundYaw,strideLength},limbLengths:copy(dimensions),feet:Object.fromEntries(Object.entries(feet).map(([name,foot])=>[name,{world:copy(foot.world),lift:foot.lift,contact:foot.contact,mode:foot.mode,pair:foot.offset===0?'diagonalA':'diagonalB'}])),attachments,action:act,
    artwork:{requestedView:view.requested,usingFallbackView:view.fallback,directions:Object.keys(manifest?.views||{}),missingParts,partsReady:missingParts.length===0,artworkComplete:manifest?.artworkComplete===true&&missingParts.length===0,continuousTurnComplete:manifest?.continuousTurnComplete===true,attackArtComplete:manifest?.attackArtComplete===true},
    diagnostics:{supportedFeet:Object.values(feet).filter(foot=>foot.contact).length,footReach:Object.fromEntries(Object.entries(chains).filter(([,chain])=>chain.requestedTarget).map(([name,chain])=>[name,distance(chain.end,chain.requestedTarget)]))}};
@@ -123,26 +136,27 @@ export function createCreatureRig({archetype='quadruped',manifest=null,strideLen
    if(worldPixelsPerUnit!==undefined||displayHeightPx!==undefined){
     if(!Number.isFinite(worldPixelsPerUnit)||worldPixelsPerUnit<=0||!Number.isFinite(displayHeightPx)||displayHeightPx<=0)throw Error('Both positive world scale and displayed height are required');
     unitsToPixels=worldPixelsPerUnit*(manifest?.contentHeight||256)/displayHeightPx;
-    if(kind==='quadruped'){strideLength=Number.isFinite(worldStrideLength)&&worldStrideLength>0?worldStrideLength:(dimensions.upperLeg+dimensions.lowerLeg)*1.3/unitsToPixels;dimensions.bodyHalfLength=bodyHalfPixels/unitsToPixels;dimensions.footSpacing=footSpacingPixels/unitsToPixels;stepLift=(dimensions.upperLeg+dimensions.lowerLeg)*.14/unitsToPixels;}
-    if(!projectionFitted&&initialized)initialize(position,finite(desiredHeading,heading));projectionFitted=true;
+    if(kind==='quadruped'){strideLength=Number.isFinite(worldStrideLength)&&worldStrideLength>0?worldStrideLength:(dimensions.upperLeg+dimensions.lowerLeg)*1.65/unitsToPixels;dimensions.bodyHalfLength=bodyHalfPixels/unitsToPixels;dimensions.footSpacing=footSpacingPixels/unitsToPixels;stepLift=(dimensions.upperLeg+dimensions.lowerLeg)*.14/unitsToPixels;}
+    if(!projectionFitted&&initialized&&travelDistance===0&&gaitCoordinate===0)initialize(position,finite(desiredHeading,heading));projectionFitted=true;
    }
    if(groundDepthScale!==undefined){if(!Number.isFinite(groundDepthScale)||groundDepthScale<=0)throw Error('Positive ground depth is required');depthScale=groundDepthScale;}
    if(cameraYaw!==undefined){if(!Number.isFinite(cameraYaw))throw Error('Finite ground yaw is required');groundYaw=cameraYaw;}
    const step=Math.min(dt,.1);if(!initialized)initialize(position,finite(desiredHeading));let previousGait=gaitCoordinate;const yawBefore=heading;lastRoot=copy(root);const travel=worldDistance(position,root);root=copy(position);
-   if(travel>teleportDistance){initialize(position,finite(desiredHeading,heading));lastPose=buildPose(0,false);return lastPose;}
+   if(travel>teleportDistance*64/unitsToPixels){initialize(position,finite(desiredHeading,heading));lastPose=buildPose(0,false);return lastPose;}
    travelDistance+=travel;if(motion)time+=step;const isMoving=moving!==false&&travel>1e-9,speed=step?travel/step:0,targetHeading=finite(desiredHeading,travel>1e-9?Math.atan2(root.x-lastRoot.x,root.z-lastRoot.z):heading);heading+=angleDelta(heading,targetHeading)*(1-Math.exp(-step/.12));
-   if(isMoving&&!wasMoving){gaitCoordinate=0;previousGait=0;}gaitCoordinate+=travel/strideLength;
+   gaitCoordinate+=travel/strideLength;
    if(attack)api.requestAttack();if(action&&motion){action.elapsed+=step;if(action.elapsed>=CREATURE_ACTION_DURATION)action=null;}
    if(kind==='quadruped'){
     if(isMoving&&turnFoot){const foot=feet[turnFoot];foot.swing=null;foot.settle={start:copy(foot.world),target:plant(nominal(foot),foot),lift:foot.lift,elapsed:0};delete foot.turn;turnFoot=null;}
+    if(isMoving&&!wasMoving){const groups=[0,.5].map(offset=>({offset,feet:Object.values(feet).filter(foot=>foot.offset===offset)})),direction={x:(root.x-lastRoot.x)/travel,z:(root.z-lastRoot.z)/travel},selected=groups.find(group=>group.feet.some(foot=>!foot.contact))||groups.map(group=>({...group,behind:group.feet.reduce((sum,foot)=>sum+(foot.world.x-lastRoot.x)*direction.x+(foot.world.z-lastRoot.z)*direction.z,0)})).sort((a,b)=>a.behind-b.behind)[0];phaseBias=Math.floor(previousGait+phaseBias)+stanceFraction-selected.offset-previousGait;for(const foot of selected.feet){foot.swing=null;foot.settle=null;delete foot.turn;foot.contact=true;foot.mode='stance';}for(const foot of selected.feet)swing(foot,lastRoot,Math.atan2(direction.x,direction.z),previousGait+phaseBias+foot.offset);}
     advanceFeet(previousGait,yawBefore,step,isMoving);standingTurn(step,isMoving);
    }
    wasMoving=isMoving;lastPose=buildPose(speed,isMoving);return lastPose;
   },
-  reset(position={x:0,z:0},yaw=0){if(disposed)throw Error('Creature rig is disposed');if(![position?.x,position?.z,yaw].every(Number.isFinite))throw new TypeError('Finite reset position and heading are required');time=0;travelDistance=0;gaitCoordinate=0;wasMoving=false;action=null;initialize(position,yaw);lastPose=buildPose(0,false);return lastPose;},
+  reset(position={x:0,z:0},yaw=0){if(disposed)throw Error('Creature rig is disposed');if(![position?.x,position?.z,yaw].every(Number.isFinite))throw new TypeError('Finite reset position and heading are required');time=0;travelDistance=0;gaitCoordinate=0;phaseBias=0;wasMoving=false;action=null;initialize(position,yaw);lastPose=buildPose(0,false);return lastPose;},
   snapshot:()=>lastPose,
   requestAttack(){if(disposed||action)return false;action={elapsed:0};return true;},
-  seekAction(elapsed,{position=root,heading:yaw=heading,motion=true}={}){if(disposed)throw Error('Creature rig is disposed');if(![elapsed,position?.x,position?.z,yaw].every(Number.isFinite)||elapsed<0)throw new TypeError('Finite non-negative action age is required');time=motion?elapsed:0;travelDistance=0;gaitCoordinate=0;wasMoving=false;initialize(position,yaw);action=elapsed<CREATURE_ACTION_DURATION?{elapsed:motion?elapsed:.53}:null;lastPose=buildPose(0,false);return lastPose;},
+  seekAction(elapsed,{position=root,heading:yaw=heading,motion=true}={}){if(disposed)throw Error('Creature rig is disposed');if(![elapsed,position?.x,position?.z,yaw].every(Number.isFinite)||elapsed<0)throw new TypeError('Finite non-negative action age is required');time=motion?elapsed:0;travelDistance=0;gaitCoordinate=0;phaseBias=0;wasMoving=false;initialize(position,yaw);action=elapsed<CREATURE_ACTION_DURATION?{elapsed:motion?elapsed:.53}:null;lastPose=buildPose(0,false);return lastPose;},
   destroy(){if(disposed)return;disposed=true;lastPose=null;action=null;for(const name of Object.keys(feet))delete feet[name];},
  };
  return api;

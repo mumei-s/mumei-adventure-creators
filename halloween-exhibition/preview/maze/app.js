@@ -1,6 +1,6 @@
 import {createFrameLoop} from './frame-loop.js?v=20261017-review1';
 import {advanceLocomotion,createDistanceTrail} from './movement-runtime.js?v=20261017-review1';
-import {monsterSprite} from './monster-motion.js?v=20261017-rig1';
+import {monsterSprite} from './monster-motion.js?v=20261017-rig2';
 import {initTransitionEffects,withDeadline,fetchJSON} from '../transition-effects.js?v=20261016-living1';
 import {loadArtworkImage} from '../magical-loading.js?v=20261015-journey1';
 import {initViewport} from '../viewport.js?v=20261016-ios1';
@@ -11,7 +11,7 @@ import {initMinimapSize} from './minimap-size.js?v=20261016-battle-visible1';
 import {libraryFromArchive} from './library-catalog.js?v=20261015-clear1';
 import {WALKING_SPEED_KEY,normalizeWalkingSpeed,advanceWithSubsteps} from './walking-speed.js?v=20261015-clear1';
 import {createRewardStore,newRunId,eligibleForEnding} from './clear-reward.js?v=20261015-clear1';
-import {renderEnding} from './ending-ui.js?v=20261017-rig1';
+import {renderEnding} from './ending-ui.js?v=20261017-rig2';
 import {createSoundCheck} from './sound-check.js?v=20261016-ios1';
 import {initAdventureAudio} from './adventure-audio.js?v=20261016-ios1';
 import { initDisplayMode } from '../display-mode.js?v=20261016-resident1';
@@ -19,15 +19,15 @@ import { normalizeLighting } from './lighting-model.js?v=20261014-adventure2';
 import { MAP, CELL, FEATURES, toWorld, collectionAt, nearby, initialState, visibleArticles } from './maze-model.js?v=20261014-adventure2';
 import { ALL_MONSTERS as MONSTERS, REQUIRED_MONSTER_IDS, nearestMonster, newBattle, battleTurn, intentFor, monsterAvailable, prankFor, commandFor, monsterPose, guidePoint } from './encounter-model.js?v=20261016-living1';
 import { chooseView, movementVector, mapHeading } from './view-model.js?v=20261015-minimap1';
-import { createStageRenderer, EXIT } from './stage-2d.js?v=20261017-rig1';
-import {createArtLibrary,drawArtSprite} from './rpg-art.js?v=20261017-rig1';
-import {renderBattleScene,battleEffectDuration,battleEffectPending} from './battle-scene.js?v=20261017-rig1';
+import { createStageRenderer, EXIT } from './stage-2d.js?v=20261017-rig2';
+import {createArtLibrary,drawArtSprite} from './rpg-art.js?v=20261017-rig2';
+import {renderBattleScene,battleEffectDuration,battleEffectPending} from './battle-scene.js?v=20261017-rig2';
 import {moveAroundFurniture} from './rpg-model.js?v=20261014-adventure2';
 import {protectGameSurface,bindHeldGameButton,bindDirectionPad} from './game-input.js?v=20261016-ios1';
 import {STORY,encounterStory,chapterFor} from './story-model.js?v=20261016-living1';
 import {compileCharacterRoster,placeCreatorNPCs,createCharacterAssets,chooseCreatorAssets,buildCreatorActors,nearestCreator,creatorGuide,isCharacterTap,scaledCharacterLayout,compileCompanions,companionActor,creatorPose} from './creator-runtime.js?v=20261017-cna1';
 import {renderCreatorConversation,renderCreatorDirectory} from './creator-ui.js?v=20261017-cna1';
-import {createRigLibrary} from './rig-animation.js?v=20261017-rig1';
+import {createRigLibrary} from './rig-animation.js?v=20261017-rig2';
 const rpgArt=createArtLibrary({loadPlayer:false});
 rpgArt.rigs=createRigLibrary({onChange:()=>stageRenderer?.invalidate()});
 let creatorRoster={hero:null,npcs:[],omitted:[]},creatorActors=[],activeCreators=[],residents=[],companions=[],creatorPointer=null,creatorAssetCheck=0,creatorTrail=createDistanceTrail();
@@ -304,7 +304,7 @@ async function setView(next,{persist=true,quiet=false}={}){
     let candidate;
     try{
       if(worldFailed)throw Error('WebGL unavailable');
-      const {createWorld}=await withDeadline(import('./world.js?v=20261017-rig1'),{signal:abort.signal,timeout:12000});
+      const {createWorld}=await withDeadline(import('./world.js?v=20261017-rig2'),{signal:abort.signal,timeout:12000});
       if(request!==viewRequest||abort.signal.aborted)return;
       candidate=createWorld({canvas:$('world'),art:rpgArt});
       if(request!==viewRequest||abort.signal.aborted){candidate.dispose();return;}

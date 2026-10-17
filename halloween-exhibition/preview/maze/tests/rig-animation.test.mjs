@@ -15,6 +15,13 @@ function fixture({rows=[row()],...options}={}){
 const move=(library,id='owner',x=0,time=0,options={})=>library.update(id,{position:{x,z:0},dt:1/60,time,moving:x!==0,...options});
 async function loadOwner(h){await h.library.ready;assert.equal(move(h.library),null);await flush();return move(h.library);}
 test('headings follow shared x/z controls',()=>{assert.equal(headingForFacing('down'),0);assert.equal(headingForFacing('right'),Math.PI/2);assert.equal(headingForFacing('up'),Math.PI);assert.equal(headingForFacing('left'),-Math.PI/2);});
+test('fictional town cat uses its own art and stays distinct from the owner companion',async()=>{
+ const h=fixture({rows:[row('town-cat'),row('owner-black-cat')]});await h.library.ready;
+ await h.library.retry('resident:cat');await h.library.retry('owner-black-cat');
+ const town=move(h.library,'resident:cat'),companion=move(h.library,'owner-black-cat');
+ assert.equal(town.rigId,'town-cat');assert.equal(companion.rigId,'owner-black-cat');assert.notEqual(town.image,companion.image);
+ assert.equal(h.library.get('resident:cat'),town);h.library.destroy();
+});
 test('arena effect clocks reach release, impact and recovery together with the articulated hand',async()=>{
  const h=fixture();await loadOwner(h);
  const effect={type:'shine',started:10,duration:2.4};
@@ -23,6 +30,18 @@ test('arena effect clocks reach release, impact and recovery together with the a
   const action={type,started:20,duration};assert.equal(h.library.battle('owner:battle',{effect:action,time:20+duration+.00001}).rigPose.action.kind,'locomotion');
  }
  assert.ok(Math.abs(rigBattleActionAge('shine',99,2.4)-1.85)<1e-12);h.library.destroy();
+});
+test('battle idle wings keep articulating after an attack and freeze with reduced motion',async()=>{
+ const actor=row('monster:bat');actor.archetype='wing';const h=fixture({rows:[actor]});await h.library.ready;await h.library.retry('monster:bat');
+ const first=h.library.battle('monster:bat',{time:0,facing:'left'}),image=first.image;
+ const a=first.rigPose.joints.wing_left_tip;
+ const next=h.library.battle('monster:bat',{time:.1,facing:'left'});
+ assert.notDeepEqual(next.rigPose.joints.wing_left_tip,a);assert.equal(next.image,image);
+ const effect={type:'attack',started:1,duration:.55};h.library.battle('monster:bat',{effect,time:1.3});
+ const ended=h.library.battle('monster:bat',{effect,time:2}),tip=ended.rigPose.joints.wing_left_tip;
+ const later=h.library.battle('monster:bat',{effect,time:2.1});assert.notDeepEqual(later.rigPose.joints.wing_left_tip,tip);assert.equal(later.rigPose.action.kind,'locomotion');
+ const frozen=h.library.battle('monster:bat',{time:3,motion:false}).rigPose.joints.wing_left_tip;
+ assert.deepEqual(h.library.battle('monster:bat',{time:4,motion:false}).rigPose.joints.wing_left_tip,frozen);h.library.destroy();
 });
 test('registry preserves the actual scene projection through movement and reduced motion',async()=>{
  const h=fixture();await loadOwner(h);const projection={worldPixelsPerUnit:64,displayHeightPx:76,groundDepthScale:.78};

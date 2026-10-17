@@ -82,3 +82,28 @@ test('supplied directional views are selected without mirrored scales or fabrica
 test('teleporting reseeds all four contacts rather than stretching them across the map',()=>{
  const rig=fixture('quadruped');rig.reset();const pose=rig.update({position:{x:30,z:40},dt:1/60});assert.equal(pose.diagnostics.supportedFeet,4);for(const foot of Object.values(pose.feet))assert.ok(worldDistance(foot.world,pose.root)<.5);lengths(pose);rig.destroy();
 });
+
+test('actual small quadruped anatomy retains planted contacts and reaches all paws through fast stop, restart and a right-angle turn',()=>{
+ const manifest={contentHeight:178,rig:{upperLeg:24,lowerLeg:26,hipHeight:34,bodyHalfLength:.38,footSpacing:.12}};
+ for(const hz of[30,60,120])for(const displayHeightPx of[35,60,76,86]){
+  const rig=fixture('quadruped',{manifest}),scale=displayHeightPx/manifest.contentHeight;let position={x:0,z:0},previous=null;
+  for(let frame=0;frame<hz*8;frame++){
+   const age=frame/hz,moving=age<2||age>=3&&age<6,heading=age<4?Math.PI/2:0;
+   if(moving)position={x:position.x+Math.sin(heading)*3.05/hz,z:position.z+Math.cos(heading)*3.05/hz};
+   const pose=rig.update({position,heading,moving,dt:1/hz,worldPixelsPerUnit:64,displayHeightPx,groundDepthScale:.78});lengths(pose);assert.deepEqual(pose.root,position);assert.ok(pose.diagnostics.supportedFeet>=2,`${hz}Hz/${displayHeightPx}px support at ${age}`);
+   for(const[name,foot]of Object.entries(pose.feet)){
+    assert.ok(pose.diagnostics.footReach[name]<1e-8,`${hz}Hz/${displayHeightPx}px ${name} reach at ${age}`);
+    const paw=pose.joints['paw_'+name];near(position.x*64+paw.x*scale,foot.world.x*64);near(position.z*64*.78+paw.y*scale,foot.world.z*64*.78-foot.lift*64);
+    if(previous?.feet[name].contact&&foot.contact)near(worldDistance(previous.feet[name].world,foot.world),0);
+   }
+   previous=pose;
+  }
+  rig.destroy();
+ }
+});
+
+test('real display projection keeps continuous quadruped travel from being mistaken for a teleport in CSS-world galleries',()=>{
+ const rig=fixture('quadruped',{manifest:{contentHeight:178,rig:{upperLeg:24,lowerLeg:26,hipHeight:34}}}),projection={worldPixelsPerUnit:1,displayHeightPx:100,groundDepthScale:.78};rig.update({position:{x:0,z:0},heading:Math.PI/2,...projection});let pose;
+ for(let frame=1;frame<=30;frame++)pose=rig.update({position:{x:frame*5,z:0},heading:Math.PI/2,dt:1/60,moving:true,...projection});near(pose.distance,150);assert.ok(pose.gaitPhase>0);assert.ok(pose.diagnostics.supportedFeet>=2);lengths(pose);
+ const teleported=rig.update({position:{x:1000,z:0},heading:Math.PI/2,dt:1/60,...projection});assert.equal(teleported.diagnostics.supportedFeet,4);for(const foot of Object.values(teleported.feet))assert.ok(worldDistance(foot.world,teleported.root)<50);
+});

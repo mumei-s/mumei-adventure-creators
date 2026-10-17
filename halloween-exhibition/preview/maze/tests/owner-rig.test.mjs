@@ -677,3 +677,41 @@ test('a painted appendage tip remains attached to its rotating parent segment th
   const pose=rig.update({position:{x:0,z:0},dt:1/60}),base=pose.layers.find(layer=>layer.part==='tailBase'),tip=pose.layers.find(layer=>layer.part==='tailTip'),endpoint={x:base.origin.x-Math.sin(base.rotation)*base.height,y:base.origin.y+Math.cos(base.rotation)*base.height};near(distance2D(endpoint,tip.origin),0);near(distance2D(base.origin,tip.origin),50);near(distance2D(pose.joints.devilTailTip,tip.origin),0);
  }
 });
+
+test('separately painted gloves inherit the real forearm angle through attack phases',()=>{
+ const manifest={appendages:[{part:'rightGlove',anchor:'rightWrist',height:15,rotation:.13,amplitude:0,inheritRotation:'rightForearmHand',layer:'front'}]},rig=createOwnerRig({manifest});
+ for(let frame=0;frame<=120;frame++){const pose=rig.seekAction(frame/60),hand=pose.layers.find(layer=>layer.part==='rightGlove'),arm=pose.layers.find(layer=>layer.part==='rightForearmHand');near(hand.rotation,arm.rotation+.13);near(distance2D(hand.origin,pose.joints.rightWrist),0);}
+});
+
+test('raised ankles keep independent paw soles on actual world contacts at both display sizes',()=>{
+ const footSoleOffset=18;
+ for(const displayHeightPx of[76,86]){
+  const rig=createOwnerRig({manifest:{footSoleOffset,appendages:['left','right'].map(side=>({part:side+'Paw',anchor:side+'Ankle',offset:[0,footSoleOffset],height:22,amplitude:0,layer:'front'}))}}),scale=displayHeightPx/256;
+  for(let frame=0;frame<360;frame++){
+   const moving=frame>30&&frame<180||frame>250,position={x:frame<180?Math.max(0,frame-30)/60*.8:2,z:frame>250?(frame-250)/60*.7:0},heading=frame>210?0:Math.PI/2,pose=rig.update({position,heading,moving,dt:1/60,worldPixelsPerUnit:64,displayHeightPx,groundDepthScale:.78});assert.ok(pose.feet.left.contact||pose.feet.right.contact);
+   for(const side of['left','right']){const foot=pose.feet[side],ankle=pose.joints[side+'Ankle'],paw=pose.layers.find(layer=>layer.part===side+'Paw');near(paw.origin.x,ankle.x);near(paw.origin.y,ankle.y+footSoleOffset);near(position.x*64+paw.origin.x*scale,foot.world.x*64);near(position.z*64*.78+paw.origin.y*scale,foot.world.z*64*.78-foot.lift*64);}
+  }
+ }
+ assert.throws(()=>createOwnerRig({manifest:{footSoleOffset:-1}}),/sole/);assert.throws(()=>createOwnerRig({manifest:{footSoleOffset:Infinity}}),/sole/);
+ const a=createOwnerRig().reset(),b=createOwnerRig({manifest:{footSoleOffset:0}}).reset();assert.deepEqual(a.joints,b.joints);assert.deepEqual(a.feet,b.feet);
+});
+
+test('projection-fitted teleport detection accepts ordinary CSS-world gallery movement',()=>{
+ const rig=createOwnerRig(),projection={worldPixelsPerUnit:1,displayHeightPx:100,groundDepthScale:.78};rig.update({position:{x:0,z:0},heading:Math.PI/2,...projection});let pose;
+ for(let frame=1;frame<=20;frame++)pose=rig.update({position:{x:frame*5,z:0},heading:Math.PI/2,dt:1/60,moving:true,...projection});near(pose.distance,100);assert.ok(pose.gaitPhase>0);assert.ok(pose.feet.left.contact||pose.feet.right.contact);
+ const teleported=rig.update({position:{x:1000,z:0},heading:Math.PI/2,dt:1/60,...projection});assert.ok(Object.values(teleported.feet).every(foot=>foot.contact&&foot.mode==='stance'));
+});
+
+test('actual owner, CNA and raised-paw werewolf rigs keep floor contact through fast sharp turns in both camera orientations',()=>{
+ for(const id of['owner-eight','cna-black-bob','cna-orange-glasses','cna-star-twintails','werewolf'])for(const hz of[30,60,120])for(const displayHeightPx of[76,86,100,220])for(const groundYaw of[0,.7]){
+  const manifest=actualRigFixture(id),rig=createOwnerRig({manifest}),scale=displayHeightPx/(manifest.contentHeight||256),project=point=>({x:(point.x*Math.cos(groundYaw)-point.z*Math.sin(groundYaw))*64,y:(point.x*Math.sin(groundYaw)+point.z*Math.cos(groundYaw))*64*.78});let position={x:0,z:0},previous=null;
+  for(let frame=0;frame<hz*8;frame++){
+   const age=frame/hz,moving=age<2||age>=3&&age<6,heading=age<4?Math.PI/2:0;
+   if(moving)position={x:position.x+Math.sin(heading)*3.05/hz,z:position.z+Math.cos(heading)*3.05/hz};
+   const pose=rig.update({position,heading,moving,dt:1/hz,worldPixelsPerUnit:64,displayHeightPx,groundDepthScale:.78,groundYaw});assert.deepEqual(pose.root,position);assertRigBones(pose);assert.ok(pose.feet.left.contact||pose.feet.right.contact,`${id} lost support at ${age}`);const root=project(position);
+   for(const side of['left','right']){const foot=pose.feet[side],ankle=pose.joints[side+'Ankle'],floor=project(foot.world);assert.ok(pose.diagnostics[side+'FootReach']<1e-8,`${id} ${hz}Hz/${displayHeightPx}px reach at ${age}`);near(root.x+ankle.x*scale,floor.x,1e-8);near(root.y+(ankle.y+(manifest.footSoleOffset||0))*scale,floor.y-foot.lift*64,1e-8);if(previous?.feet[side].contact&&foot.contact)near(distanceWorld(previous.feet[side].world,foot.world),0,1e-8);}
+   previous=pose;
+  }
+  rig.destroy();
+ }
+});

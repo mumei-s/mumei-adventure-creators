@@ -1,6 +1,6 @@
 import * as THREE from '../maze/vendor/three.module.js';
 import {getTownMap} from './story-data.js';
-import {playerPose,loadArtImage} from '../maze/rpg-art.js?v=20261017-rig1';
+import {playerPose,loadArtImage} from '../maze/rpg-art.js?v=20261017-rig2';
 import {townVisualSeed as seed} from './visual-data.js';
 import {withDeadline} from '../transition-effects.js?v=20261016-living1';
 

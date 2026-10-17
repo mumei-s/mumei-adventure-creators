@@ -2,10 +2,10 @@ import {fetchJSON,withDeadline} from '../transition-effects.js?v=20261016-living
 import {createCharacterAssets,scaledCharacterLayout,characterSprite,compileCharacterRoster,compileCompanions,CREATOR_FICTION_NOTICE,noteArticleURL} from '../maze/creator-runtime.js?v=20261017-cna1';
 import {createDistanceTrail} from '../maze/movement-runtime.js?v=20261017-review1';
 import {MONSTER_MOTION_DATA} from '../maze/monster-motion-data.js?v=20261016-living1';
-import {motionSprite} from '../maze/monster-motion.js?v=20261017-rig1';
+import {motionSprite} from '../maze/monster-motion.js?v=20261017-rig2';
 import {placeTownVisitors,sampleTownVisitors,chooseTownVisitorGroups,nearestTownVisitor} from './visitor-model.js?v=20261017-town2';
-import {loadArtImage} from '../maze/rpg-art.js?v=20261017-rig1';
-import {createRigLibrary} from '../maze/rig-animation.js?v=20261017-rig1';
+import {loadArtImage} from '../maze/rpg-art.js?v=20261017-rig2';
+import {createRigLibrary} from '../maze/rig-animation.js?v=20261017-rig2';
 /** Adopted owner/cat identity is preserved; no new participant identities are inferred. */
 export function createTownCharacterArt({onState=()=>{},fetcher=fetchJSON,loadMonsterImage=loadArtImage,assets=createCharacterAssets()}={}){
  let destroyed=false,hero,cat,lastMap=null,roster=null,placed=[],archive=null,selected=[],selectionAt=-1,visibleVisitors=[],lastOwner=null,lastCat=null;const trail=createDistanceTrail({maxDistance:3,strideLength:1.15,teleportDistance:3});

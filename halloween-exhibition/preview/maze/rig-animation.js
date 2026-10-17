@@ -1,7 +1,7 @@
-import {createOwnerRig,createLiveComposer,OWNER_ATTACK_DURATION} from './owner-rig.js?v=20261017-rig1';
-import {createCreatureRig,CREATURE_ACTION_DURATION} from './creature-rig.js?v=20261017-rig1';
-import {createCompositeRig} from './composite-rig.js?v=20261017-rig1';
-import {createMascotRig} from './mascot-rig.js?v=20261017-rig1';
+import {createOwnerRig,createLiveComposer,OWNER_ATTACK_DURATION} from './owner-rig.js?v=20261017-rig2';
+import {createCreatureRig,CREATURE_ACTION_DURATION} from './creature-rig.js?v=20261017-rig2';
+import {createCompositeRig} from './composite-rig.js?v=20261017-rig2';
+import {createMascotRig} from './mascot-rig.js?v=20261017-rig2';
 import {withDeadline} from '../transition-effects.js';
 
 const TAU=Math.PI*2,clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
@@ -12,7 +12,7 @@ function defaultLoadImage(url,{signal}={}){return new Promise((resolve,reject)=>
 const safeId=id=>typeof id==='string'&&/^[a-zA-Z0-9][a-zA-Z0-9_:-]{0,100}$/.test(id);
 const parseRows=data=>Array.isArray(data?.rigs)?data.rigs:Object.entries(data?.rigs||data?.characters||{}).map(([id,row])=>({...row,id:row.id||id}));
 const cleanHeading=(value,facing)=>Number.isFinite(value)?value:headingForFacing(facing);
-const instanceDefinition=id=>id==='owner'||id==='owner:battle'?DEFAULT_SIDE:id.endsWith(':battle')?id.slice(0,-7):id;
+const instanceDefinition=id=>{const base=id==='owner'||id==='owner:battle'?DEFAULT_SIDE:id.endsWith(':battle')?id.slice(0,-7):id;return base==='resident:cat'?'town-cat':base;};
 const isOwner=id=>instanceDefinition(id)===DEFAULT_SIDE;
 function supportsHeading(manifest,heading){
  const x=Math.sin(heading),z=Math.cos(heading),direction=Math.abs(x)>Math.abs(z)?x>0?'right':'left':z>=0?'down':'up';
@@ -112,7 +112,7 @@ export function createRigLibrary({loadImage=defaultLoadImage,fetcher=globalThis.
  }
  function renderInstance(instance,pose){
   instance.composer.render(pose);
-  const sprite=instance.composer.sprite();sprite.liveRig=true;sprite.rigId=instance.definitionId;sprite.rigContentHeight=instance.manifest.contentHeight||256;sprite.animationAssetComplete=instance.manifest?.animationReviewed===true;
+  const sprite=instance.composer.sprite();sprite.liveRig=true;sprite.rigId=instance.definitionId;sprite.rigContentHeight=instance.manifest.contentHeight||256;sprite.animationAssetComplete=instance.manifest?.animationReviewed===true&&instance.manifest?.continuousTurnComplete===true&&instance.manifest?.attackArtComplete===true;
   sprite.rigPose=pose;instance.sprite=sprite;return sprite;
  }
  function update(id,options={}){
@@ -133,8 +133,15 @@ export function createRigLibrary({loadImage=defaultLoadImage,fetcher=globalThis.
   if(destroyed||!safeId(id))return null;const key=id.endsWith(':battle')?id:id+':battle',instance=getInstance(key);if(!instance)return null;
   instance.seenTime=logicalTime;const yaw=cleanHeading(heading,facing),kind=effect?.type||effect?.action||'idle',started=effect?.started??effect?.at??time,age=Math.max(0,(Number.isFinite(time)?time:0)-(Number.isFinite(started)?started:0)),duration=Number.isFinite(effect?.duration)&&effect.duration>0?effect.duration:['shine','spark','light'].includes(kind)?2.4:1.2;
   instance.eligible=supportsHeading(instance.manifest,yaw);if(!instance.eligible)return null;
-  const attacking=['attack','shine','spark','light'].includes(kind),elapsed=attacking?rigBattleActionAge(kind,age,duration,instance.actionDuration):instance.actionDuration;
-  const pose=typeof instance.rig.seekAction==='function'?instance.rig.seekAction(elapsed,{position:{x:0,z:0},heading:yaw,motion}):instance.rig.reset({x:0,z:0},yaw);
+  const attacking=['attack','shine','spark','light'].includes(kind)&&age<duration,elapsed=attacking?rigBattleActionAge(kind,age,duration,instance.actionDuration):instance.actionDuration;
+  let pose;
+  if(attacking)pose=typeof instance.rig.seekAction==='function'?instance.rig.seekAction(elapsed,{position:{x:0,z:0},heading:yaw,motion}):instance.rig.reset({x:0,z:0},yaw);
+  else{
+   if(instance.battleClock===undefined||instance.battleAttacking||time<instance.battleClock||instance.battleYaw!==yaw)instance.rig.seekAction?.(instance.actionDuration,{position:{x:0,z:0},heading:yaw,motion});
+   const dt=motion&&Number.isFinite(instance.battleClock)?clamp(time-instance.battleClock,0,.1):0;
+   pose=instance.rig.update({position:{x:0,z:0},heading:yaw,dt,moving:false,motion});
+  }
+  instance.battleClock=time;instance.battleAttacking=attacking;instance.battleYaw=yaw;
   return renderInstance(instance,pose);
  }
  function status(){return{metadataReady,definitions:definitions.size,loaded:loaded.size,pending:pending.size,failures:[...failures.keys()],active:instances.size,sourceBytes:sourceBytes(),maxActive,maxSourceBytes,revision,destroyed};}

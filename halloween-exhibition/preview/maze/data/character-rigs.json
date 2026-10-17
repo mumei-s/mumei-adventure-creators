@@ -92,6 +92,66 @@
       "id": "resident-gardener",
       "approved": true,
       "manifestURL": "./assets/rigs/resident-gardener/rig.json"
+    },
+    {
+      "id": "iris",
+      "approved": true,
+      "manifestURL": "./assets/rigs/iris/rig.json"
+    },
+    {
+      "id": "koakumako-base-devil",
+      "approved": true,
+      "manifestURL": "./assets/rigs/koakumako-base-devil/rig.json"
+    },
+    {
+      "id": "tantan-streetwalker",
+      "approved": true,
+      "manifestURL": "./assets/rigs/tantan-streetwalker/rig.json"
+    },
+    {
+      "id": "tenkai-moon-robed-avatar",
+      "approved": true,
+      "manifestURL": "./assets/rigs/tenkai-moon-robed-avatar/rig.json"
+    },
+    {
+      "id": "aihan-avatar-woman",
+      "approved": true,
+      "manifestURL": "./assets/rigs/aihan-avatar-woman/rig.json"
+    },
+    {
+      "id": "lokiron-avatar",
+      "approved": true,
+      "manifestURL": "./assets/rigs/lokiron-avatar/rig.json"
+    },
+    {
+      "id": "owner-black-cat",
+      "approved": true,
+      "manifestURL": "./assets/rigs/owner-black-cat/rig.json"
+    },
+    {
+      "id": "aihan-avatar-shiba",
+      "approved": true,
+      "manifestURL": "./assets/rigs/aihan-avatar-shiba/rig.json"
+    },
+    {
+      "id": "town-cat",
+      "approved": true,
+      "manifestURL": "./assets/rigs/town-cat/rig.json"
+    },
+    {
+      "id": "monster:ghost",
+      "approved": true,
+      "manifestURL": "./assets/rigs/monster-ghost/rig.json"
+    },
+    {
+      "id": "marimo-headcat",
+      "approved": true,
+      "manifestURL": "./assets/rigs/marimo-headcat/rig.json"
+    },
+    {
+      "id": "mama-avatar-pair",
+      "approved": true,
+      "manifestURL": "./assets/rigs/mama-avatar-pair/rig.json"
     }
   ]
 }

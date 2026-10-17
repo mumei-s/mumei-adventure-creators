@@ -10,7 +10,8 @@ export function normalizeGameDisplayPreferences(value) {
   return {
     size: stepped(input.size, 70, 100, 100),
     controlSize: stepped(input.controlSize, 100, 125, 100),
-    side: input.side === 'right' ? 'right' : 'left',
+    side: ['left','center','right'].includes(input.side) ? input.side : 'center',
+    utilitySide: input.side === 'right' || (input.side === 'center' && input.utilitySide === 'right') ? 'right' : 'left',
   };
 }
 
@@ -29,18 +30,44 @@ export function writeGameDisplayPreferences(storage, value) {
   } catch { return false; }
 }
 
-export function createGameDisplayController({ storage, onChange = () => {}, onPersistence = () => {} } = {}) {
-  let preferences = readGameDisplayPreferences(storage);
+export function createGameDisplayController({ storage, eventTarget = globalThis.window, onChange = () => {}, onPersistence = () => {} } = {}) {
+  let preferences = readGameDisplayPreferences(storage), pending = {}, destroyed = false;
   const getPreferences = () => ({ ...preferences });
-  const setPreferences = value => {
-    preferences = normalizeGameDisplayPreferences({ ...preferences, ...objectValue(value) });
-    // Apply choices even when persistence is denied or full.
+  const freshPreferences = () => {
+    try {
+      if (!storage) return preferences;
+      return normalizeGameDisplayPreferences(JSON.parse(storage.getItem(GAME_DISPLAY_KEY) || 'null'));
+    } catch { return preferences; }
+  };
+  const reload = () => {
+    if (destroyed) return getPreferences();
+    preferences = normalizeGameDisplayPreferences({ ...freshPreferences(), ...pending });
     onChange(getPreferences());
-    onPersistence(writeGameDisplayPreferences(storage, preferences));
     return getPreferences();
   };
+  const setPreferences = value => {
+    if (destroyed) return getPreferences();
+    const change = objectValue(value);
+    preferences = normalizeGameDisplayPreferences({ ...freshPreferences(), ...pending, ...change });
+    // Apply choices even when persistence is denied or full.
+    onChange(getPreferences());
+    const saved = writeGameDisplayPreferences(storage, preferences);
+    pending = saved ? {} : { ...pending, ...change, utilitySide: preferences.utilitySide };
+    onPersistence(saved);
+    return getPreferences();
+  };
+  const onStorage = event => {
+    if ((event.key === GAME_DISPLAY_KEY || event.key === null) && (!event.storageArea || event.storageArea === storage)) reload();
+  };
+  eventTarget?.addEventListener('pageshow', reload);
+  eventTarget?.addEventListener('storage', onStorage);
   onChange(getPreferences());
-  return { getPreferences, setPreferences, fitToScreen: () => setPreferences({ size: 100 }) };
+  return { getPreferences, setPreferences, reload, fitToScreen: () => setPreferences({ size: 100 }), destroy() {
+    if (destroyed) return;
+    destroyed = true;
+    eventTarget?.removeEventListener('pageshow', reload);
+    eventTarget?.removeEventListener('storage', onStorage);
+  } };
 }
 
 let instance = 0;
@@ -125,9 +152,9 @@ export function initGameDisplay({ controlsParent, page = 'maze', onChange = () =
     const fit = make('button', 'game-display-fit', '画面に合わせる'); fit.type = 'button';
     controls.append(fit);
     controlSize = range('操作ボタンの大きさ', 'controls', 100, 125);
-    const sideRow = make('div', 'game-display-row'), sideLabel = make('label', '', '移動操作の位置');
+    const sideRow = make('div', 'game-display-row'), sideLabel = make('label', '', '十字キーの位置');
     side = make('select', 'game-display-side'); side.id = `${id}-side`; sideLabel.htmlFor = side.id;
-    for (const [value, text] of [['left', '左側'], ['right', '右側']]) {
+    for (const [value, text] of [['left', '左'], ['center', '中央'], ['right', '右']]) {
       const option = make('option', '', text); option.value = value; side.append(option);
     }
     sideRow.append(sideLabel, side); controls.append(sideRow);
@@ -148,7 +175,8 @@ export function initGameDisplay({ controlsParent, page = 'maze', onChange = () =
     onChange(preferences) {
       root.style.setProperty('--game-frame-scale', String(preferences.size / 100));
       root.style.setProperty('--game-control-scale', String(preferences.controlSize / 100));
-      doc.body.dataset.gameControls = preferences.side;
+      doc.body.dataset.gameControls = preferences.side === 'center' ? preferences.utilitySide : preferences.side;
+      doc.body.dataset.padPosition = preferences.side;
       doc.body.dataset.gameDisplay = String(page);
       if (frame) {
         frame.input.value = String(preferences.size); frame.output.textContent = `${preferences.size}%`;
@@ -172,8 +200,27 @@ export function initGameDisplay({ controlsParent, page = 'maze', onChange = () =
     destroy() {
       if (destroyed) return;
       destroyed = true;
+      controller.destroy();
       for (const removeListener of listeners) removeListener();
       controls?.remove();
     },
   };
+}
+
+/** Position-only settings for the basement; never changes its frame or pad size. */
+export function initPadPosition({controlsParent, storage, onChange = () => {}} = {}) {
+  if (storage === undefined) { try { storage = globalThis.localStorage; } catch {} }
+  const label = document.createElement('label'), select = document.createElement('select');
+  label.className = 'pad-position-setting'; label.textContent = '十字キーの位置';
+  for (const [value, text] of [['left','左'],['center','中央'],['right','右']]) {
+    const option = document.createElement('option'); option.value=value; option.textContent=text; select.append(option);
+  }
+  label.append(select);
+  const controller = createGameDisplayController({storage,onChange(preferences){
+    document.body.dataset.padPosition=preferences.side; select.value=preferences.side; onChange(preferences.side);
+  }});
+  const change = () => controller.setPreferences({side:select.value});
+  select.addEventListener('change',change);
+  controlsParent?.append(label);
+  return {...controller, element:label, destroy() { controller.destroy(); select.removeEventListener('change',change); label.remove(); }};
 }

@@ -270,7 +270,7 @@ test('phone layout patch is exact-release cached without widening the shell allo
 test('new touch-pad stylesheet follows the existing network-only maze cache boundary',async()=>{
  const h=workerHarness();
  const maze=await readFile(new URL('../maze/index.html',import.meta.url),'utf8');
- assert.match(maze,/touch-pad\.css\?v=20261017-space1/);
+ assert.match(maze,/touch-pad\.css\?v=20261017-padpos1/);
  await access(new URL('../maze/touch-pad.css',import.meta.url));
  for(const path of ['maze/index.html','maze/app.js','maze/adventure-controls.css','maze/touch-pad.css']){
   for(const suffix of ['', '?v=20261017-space1', '?v=old'])assert.equal((await h.dispatch('fetch',base+path+suffix)).intercepted,false,path+suffix);
@@ -329,5 +329,5 @@ test('basement navigation releases reject prior cached shell URLs',async()=>{
  const h=workerHarness();
  for(const path of ['theater.js','town-entry.css'])assert.equal((await h.dispatch('fetch',base+path+'?v='+STREET_RELEASE)).intercepted,false);
  const maze=await readFile(new URL('../maze/index.html',import.meta.url),'utf8');
- assert.match(maze,/app\.js\?v=20261017-basement1/);
+ assert.match(maze,/app\.js\?v=20261017-padpos1/);
 });

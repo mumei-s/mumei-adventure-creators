@@ -47,3 +47,14 @@
 @media(forced-colors:active){
  :root body[data-view] #game #direction-pad,:root body[data-view] #game #direction-pad button{background:Canvas;color:CanvasText;border-color:ButtonText;text-shadow:none}
 }
+/* Position preference keeps the existing circle, targets, opacity and center mode. */
+:root body[data-view][data-pad-position=left] #game #direction-pad{justify-self:start;margin-left:8px!important}
+:root body[data-view][data-pad-position=right] #game #direction-pad{justify-self:end;margin-right:8px!important}
+:root body[data-view]:is([data-pad-position=left],[data-pad-position=right]) #game :is(.nearby,.lantern-dock),
+:root body[data-view]:is([data-pad-position=left],[data-pad-position=right]) #game:has(#creator-open:not([hidden])) :is(.nearby,.lantern-dock){width:calc((100% - var(--touch-pad-size) - 32px)/2)!important;max-width:200px;padding:0}
+:root body[data-view][data-pad-position=left] #game .lantern-dock{justify-self:start;margin-left:calc(var(--touch-pad-size) + 16px);margin-right:0}
+:root body[data-view][data-pad-position=left] #game .nearby{justify-self:end;margin-left:0;margin-right:8px}
+:root body[data-view][data-pad-position=right] #game .lantern-dock{justify-self:end;margin-right:calc(var(--touch-pad-size) + 16px);margin-left:0}
+:root body[data-view][data-pad-position=right] #game .nearby{justify-self:start;margin-right:0;margin-left:8px}
+.pad-position-setting{display:grid;gap:6px;font-size:14px;margin:12px 0}
+.pad-position-setting select{min-height:44px;min-width:44px;width:100%;padding:8px;font:inherit;font-size:16px;color:inherit;background:#172639;border:1px solid #e5c78d;border-radius:8px}

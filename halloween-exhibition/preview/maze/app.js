@@ -1,3 +1,4 @@
+import {initPadPosition} from '../game-display.js?v=20261017-padpos1';
 import {monsterSprite} from './monster-motion.js?v=20261016-living1';
 import {initTransitionEffects,withDeadline,fetchJSON} from '../transition-effects.js?v=20261016-living1';
 import {loadArtworkImage} from '../magical-loading.js?v=20261015-journey1';
@@ -163,8 +164,10 @@ function interact(){if(Math.hypot(state.x-EXIT.x*CELL,state.z-EXIT.z*CELL)<3.2){
 function showMap(){title('EXPLORE AT YOUR PACE','迷宮の見取り図');const cv=element('canvas',undefined,'bigmap');cv.width=510;cv.height=510;drawMap(cv,true);content.append(cv,element('p','上が北。三角が現在位置と向きです。右の鍵の間で鍵を見つけ、北の格子扉に使います。青い点は記事の額縁。歩かずに記事一覧から直接読むこともできます。'));const hints=element('ul',undefined,'resident-hint-list');for(const m of readyMonsters())hints.append(element('li',`${m.icon} ${m.name}：${m.hint}${monsterAvailable(m,state)?'':' · 扉をひらくと会えます'}`));content.append(hints);const tabs=element('div',undefined,'tabs');for(const [label,point,yaw]of[['入口へ',FEATURES.spawn,0],['鍵の間へ',{x:13,z:10},Math.PI/2],['肖像の扉へ',{x:5,z:10},Math.PI/2]]){const b=element('button',label);b.onclick=()=>{state={...state,...toWorld(point),yaw,pitch:0};panel.close();updateHUD();};tabs.append(b);}content.append(tabs);openPanel();}
 function resetPosition(){state={...state,...toWorld(FEATURES.spawn),yaw:0,pitch:0};clearInput();updateHUD();notify('入口に戻りました。手に入れた鍵は、そのままです。');}
 function showExit(){title('RETURN TO THE CASTLE','お城に戻りますか。');content.append(element('p','鍵と記事の記録は保存されています。モンスターとの対戦記録も、このブラウザに保存されます。'));const back=element('a','Halloweenの名鑑へ戻る','primary');back.href='../?return=palace';back.textContent='お城に戻る';back.addEventListener('click',()=>{clearInput();soundCheck.stop('');visitorSettings.stopMusic();save();});content.append(back);openPanel();}
+const padPositionPreferences=initPadPosition({onChange:()=>clearInput()});
 function showExploreMenu(){
   title('EXPLORE AT YOUR PACE','宮殿の地下を探索');
+  content.append(padPositionPreferences.element);
   if(displaySection){const label=displaySection.querySelector('label');if(label)label.textContent='画面レイアウト';for(const option of displaySection.querySelectorAll('option'))option.textContent=({auto:'自動',phone:'スマホ用',tablet:'タブレット用',desktop:'PC用'})[option.value]||option.textContent;content.append(displaySection);}
   if(rewardStore.read(runId)){const reward=element('button','クリア記念をもう一度見る');reward.onclick=showEnding;content.append(reward);}
   const menu=element('div',undefined,'explore-menu');

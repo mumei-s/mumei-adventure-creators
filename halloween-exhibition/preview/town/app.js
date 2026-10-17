@@ -10,7 +10,7 @@ import {readTownPreferences,saveTownPreferences,resolveTownLayout} from './prefe
 import {bindDirectionPad,bindHeldGameButton,protectGameSurface} from '../maze/game-input.js?v=20261016-ios1';
 import {createFrameLoop} from '../maze/frame-loop.js?v=20261017-review1';
 import {initViewport} from '../viewport.js?v=20261016-ios1';
-import {initGameDisplay} from '../game-display.js?v=20261017-fit2';
+import {initGameDisplay} from '../game-display.js?v=20261017-padpos1';
 import {withDeadline} from '../transition-effects.js?v=20261016-living1';
 const $=id=>document.getElementById(id),panel=$('town-panel'),content=$('town-panel-content');
 const el=(tag,text,cls)=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=text;if(cls)node.className=cls;return node;};

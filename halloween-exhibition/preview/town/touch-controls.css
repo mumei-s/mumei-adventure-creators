@@ -24,3 +24,7 @@
 body[data-game-controls=right] #town-main[data-town-orientation] .town-controls,body[data-game-controls=right] #town-main[data-town-narrow] .town-controls{grid-template-areas:"utilities move" "actions move";grid-template-columns:minmax(44px,1fr) var(--pad-size)}
 body[data-game-controls=right] #town-main .town-utilities,body[data-game-controls=right] #town-main .town-actions{justify-self:start}
 @media(forced-colors:active){#town-main .direction-pad,#town-main .town-controls button{background:ButtonFace;color:ButtonText;border-color:ButtonText;text-shadow:none}}
+/* Center is a shared option; saved left/right layouts keep their geometry. */
+body[data-pad-position=center] #town-main .direction-pad{position:absolute;grid-area:auto;left:50%;bottom:20px;transform:translateX(-50%)}
+body[data-pad-position=center] #town-main[data-town-orientation] .town-controls,body[data-pad-position=center] #town-main[data-town-narrow] .town-controls{grid-template-areas:". . utilities" ". . actions";grid-template-columns:minmax(44px,1fr) var(--pad-size) minmax(44px,1fr);column-gap:8px}
+body[data-pad-position=center][data-game-controls=right] #town-main[data-town-orientation] .town-controls,body[data-pad-position=center][data-game-controls=right] #town-main[data-town-narrow] .town-controls{grid-template-areas:"utilities . ." "actions . .";grid-template-columns:minmax(44px,1fr) var(--pad-size) minmax(44px,1fr)}

@@ -5,7 +5,7 @@ import {directionAtPoint} from '../game-input.js';
 const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
 test('larger translucent controls load after all legacy layout rules',()=>{
  const html=read('index.html'),css=read('touch-pad.css');
- assert.ok(html.indexOf('touch-pad.css?v=20261017-space1')>html.indexOf('transition-effects.css'));
+ assert.ok(html.indexOf('touch-pad.css?v=20261017-padpos1')>html.indexOf('transition-effects.css'));
  assert.match(css,/--touch-pad-size:144px;--touch-button-size:56px/);
  assert.match(css,/transform:translateY\(-8px\)/);
  assert.match(css,/grid-template-rows:minmax\(var\(--ui-header-height,48px\),auto\) 0 auto minmax\(0,1fr\) 120px 20px/);

@@ -1,0 +1,10 @@
+/* Phone is a responsive layout, not a fixed-width device preview.
+   Keep the editor and the adventure room's independent layout contracts intact. */
+body[data-layout-page=gallery][data-layout=phone]{--display-content-max:100%}
+/* Readable controls may wrap; never shrink the page or the touch targets. */
+body[data-layout-page=gallery][data-layout=phone] .theater .palace-toolbar{flex-wrap:wrap;gap:8px}
+body[data-layout-page=gallery][data-layout=phone] .theater .header-actions{flex:1 1 auto;flex-wrap:wrap;gap:8px}
+body[data-layout-page=gallery][data-layout=phone] .theater .palace-toolbar button{min-width:44px;min-height:44px;height:auto;font-size:14px;line-height:1.4;padding:8px;white-space:normal;overflow-wrap:anywhere}
+body[data-layout-page=gallery][data-layout=phone] .theater .header-actions #year-open{width:44px;min-width:44px;min-height:44px;padding:4px;font-size:14px}
+body[data-layout-page=gallery][data-layout=phone] .theater .header-actions .visitor-settings-trigger{min-width:52px}
+body[data-layout-page=gallery][data-layout=phone] .theater .header-actions .list-open>span{display:none}

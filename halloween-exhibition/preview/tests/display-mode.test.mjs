@@ -115,3 +115,25 @@ test('Halloween title is prominent in its own compact flow row with static motio
  assert.doesNotMatch(css,/min-height:800px|@keyframes[^}]*flash/i);
  assert.match(html,/<span>無名S note<\/span><strong>🎃Halloween Atelier<\/strong><small>魔法の入口🚪<\/small>/);
 });
+
+test('phone gallery fills its available width without changing other page contracts',async()=>{
+ const responsive=await read('phone-layout.css');
+ assert.match(responsive,/body\[data-layout-page=gallery\]\[data-layout=phone\]\{--display-content-max:100%\}/);
+ assert.doesNotMatch(responsive,/zoom:|scale\(|min-width:(?:520|768|980)px|!important/);
+ assert.match(responsive,/\.palace-toolbar\{flex-wrap:wrap;gap:8px\}/);
+ assert.match(responsive,/\.header-actions\{flex:1 1 auto;flex-wrap:wrap;gap:8px\}/);
+ assert.match(responsive,/min-width:44px;min-height:44px;height:auto;font-size:14px/);
+ assert.match(responsive,/white-space:normal;overflow-wrap:anywhere/);
+ assert.ok(html.indexOf('./phone-layout.css?v=20261017-phone1')>html.indexOf('./palace-entrance.css'));
+ assert.doesNotMatch(admin,/phone-layout.css/);
+ assert.doesNotMatch(await read('maze/index.html'),/phone-layout.css/);
+ // Width contract for portrait, landscape and wide browser layouts. Real browser
+ // geometry still needs separate visual QA; this guards the CSS sizing contract.
+ const fill=responsive.match(/--display-content-max:([^;}]+)/)[1];
+ for(const width of [320,390,430,568,844,932,980,1180]){
+  assert.equal(fill,'100%');
+  assert.equal(resolveDisplayMode('phone',width),'phone');
+  if(width<=680)assert.equal(resolveDisplayMode('auto',width),'phone');
+ }
+ assert.match(css,/padding-right:var\(--safe-right\)/);assert.match(css,/padding-left:var\(--safe-left\)/);
+});

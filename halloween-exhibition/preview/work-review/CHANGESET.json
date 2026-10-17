@@ -3,7 +3,7 @@
   "baselineCommit": "e989cd523efec7a1eb72685d94ad9912ee53e06e",
   "branch": "work/atelier-rebuild-20261017",
   "completedCommit": null,
-  "reviewCommit": "114b1e579d3707f88761e88925b46b643fe30c2e",
+  "reviewCommit": "a9c6e07b5170bd8a6da7ff41b0644a9ef97160f4",
   "changedFiles": [
     "halloween-exhibition/preview/admin/README.md",
     "halloween-exhibition/preview/admin/app.js",
@@ -357,8 +357,8 @@
   ],
   "repositoryURL": "https://github.com/mumei-s/mumei-adventure-creators",
   "branchURL": "https://github.com/mumei-s/mumei-adventure-creators/tree/work/atelier-rebuild-20261017",
-  "reviewCommitURL": "https://github.com/mumei-s/mumei-adventure-creators/commit/114b1e579d3707f88761e88925b46b643fe30c2e",
-  "reviewCommitMeaning": "Implementation and review media restored byte-for-byte from the saved private comparison. Metadata-only approval follows on this branch. Artwork and browser/device/GPU limits remain.",
+  "reviewCommitURL": "https://github.com/mumei-s/mumei-adventure-creators/commit/a9c6e07b5170bd8a6da7ff41b0644a9ef97160f4",
+  "reviewCommitMeaning": "Public implementation and review media, restored byte-for-byte from the verified private comparison. Final storage metadata follows on this branch. Artwork and browser/device/GPU limitations remain.",
   "comparison": {
     "canonicalSource": "GitHub work branch, with owner-private comparison Site",
     "applicationPath": "halloween-exhibition/preview/",
@@ -401,12 +401,14 @@
     "CNA individually reachable taps",
     "Building and tree foreground cutaway, story lantern lighting, bounded actor frame textures and resource disposal"
   ],
-  "implementationCommit": "114b1e579d3707f88761e88925b46b643fe30c2e",
+  "implementationCommit": "a9c6e07b5170bd8a6da7ff41b0644a9ef97160f4",
   "repositorySynchronization": {
-    "status": "user-approved-work-branch-save",
+    "status": "saved",
     "previousRemoteCommit": "74e70d681adfab0eb77c548f2d1de99edd3285bd",
     "userAuthorizationAtJST": "2026-10-17T13:39:42+09:00",
-    "scope": "Publish this implementation, approved art and review media to work/atelier-rebuild-20261017 only; do not modify main or GitHub Pages."
+    "scope": "Publish this implementation, approved art and review media to work/atelier-rebuild-20261017 only; do not modify main or GitHub Pages.",
+    "implementationPublicCommit": "a9c6e07b5170bd8a6da7ff41b0644a9ef97160f4",
+    "verifiedImplementationTree": "d9e6b4da726681df30952fedb4d7ea4a3e5b09dc"
   },
   "recoveredFromReviewCommit": "efcfdbc83b1f5bfd7a3a7bfdc07e375a3e941c77"
 }

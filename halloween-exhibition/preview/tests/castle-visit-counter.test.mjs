@@ -110,6 +110,7 @@ test('server day mismatch and daily limit retain real count without marking a vi
 class Element {
   constructor(doc) { Object.assign(this, { ownerDocument: doc, children: [], dataset: {}, hidden: false, inert: false, handlers: new Map(), attributes: new Map() }); }
   append(...children) { for (const child of children) { this.children.push(child); child.parentElement = this; } }
+  insertBefore(child, before) { const i = this.children.indexOf(before); if (i < 0) this.append(child); else { this.children.splice(i, 0, child); child.parentElement = this; } }
   setAttribute(name, value) { this.attributes.set(name, value); }
   addEventListener(name, fn) { this.handlers.set(name, fn); }
   removeEventListener(name) { this.handlers.delete(name); }
@@ -122,22 +123,52 @@ function dom({ observer = true, embedded = false } = {}) {
   const win = new Element(doc); Object.assign(win, { location: { href: PUBLIC }, navigator: { locks: env.locks }, crypto: env.crypto, localStorage: env.storage, AbortController, setTimeout, clearTimeout,
     fetch: async (...args) => { calls.push(args); return response(1234); }, MutationObserver: observer ? class { constructor(cb) { this.cb = cb; observers.push(this); } observe() {} disconnect() { this.disconnected = true; } } : undefined });
   win.self = win; win.top = embedded ? {} : win; doc.defaultView = win;
-  const root = doc.createElement(), mount = doc.createElement(); mount.id = 'palace-entrance'; root.append(mount);
+  const root = doc.createElement(), mount = doc.createElement(); mount.id = 'castle-exit-panel'; const artwork = doc.createElement(); artwork.id = 'palace-entrance'; root.append(mount, artwork); const exit = doc.createElement(); exit.id = 'app-exit'; mount.append(exit);
   Object.assign(root.dataset, { mode: 'halloween', palaceState: 'opening', palaceReady: 'ready', archiveState: 'ready' });
   const api = initCastleVisitCounter({ root }); return { doc, win, root, mount, api, calls, observers, panel: root.querySelector('#castle-visit-counter') };
 }
 test('DOM panel waits for stable ready castle, hides through transitions, and mounts once', async () => {
   const h = dom(); assert.equal(h.panel.hidden, true); assert.equal(h.calls.length, 0); assert.equal(initCastleVisitCounter({ root: h.root }), h.api);
-  h.root.dataset.palaceState = 'palace'; h.observers[0].cb(); await flush(); assert.equal(h.panel.hidden, false); assert.equal(h.calls.length, 1); assert.equal(h.panel.children[1].textContent, '1,234');
-  assert.equal(h.panel.children[3].textContent, '実人数ではありません'); assert.equal(h.panel.attributes.get('aria-live'), 'polite');
+  h.root.dataset.palaceState = 'palace'; h.observers[0].cb(); await flush(); assert.equal(h.panel.hidden, false); assert.equal(h.calls.length, 1); assert.equal(h.panel.children[0].children[1].textContent, '1,234');
+  assert.equal(h.panel.children[1].children[1].textContent, '実人数ではありません'); assert.equal(h.panel.children[0].children[1].attributes.get('aria-live'), 'polite');
   for (const [key, value] of [['palaceState', 'gallery'], ['palaceReady', 'loading'], ['archiveState', 'loading'], ['mode', 'normal']]) {
     const original = h.root.dataset[key]; h.root.dataset[key] = value; h.api.refresh(); assert.equal(h.panel.hidden, true); h.root.dataset[key] = original;
   }
   h.doc.hidden = true; h.doc.handlers.get('visibilitychange')(); assert.equal(h.panel.hidden, true); h.doc.hidden = false;
   h.root.inert = true; h.api.refresh(); assert.equal(h.panel.hidden, true); h.root.inert = false;
-  h.api.refresh(); await flush(); assert.equal(h.calls.length, 1); h.api.destroy(); assert.equal(h.mount.children.length, 0); assert.equal(h.observers[0].disconnected, true);
+  h.api.refresh(); await flush(); assert.equal(h.calls.length, 1); h.api.destroy(); assert.equal(h.mount.children.length, 1); assert.equal(h.observers[0].disconnected, true);
 });
 test('unsupported observer mounts nothing and embedded previews never contact counter', async () => {
-  const h = dom({ observer: false }); assert.equal(h.api, null); assert.equal(h.mount.children.length, 0); assert.equal(h.calls.length, 0);
+  const h = dom({ observer: false }); assert.equal(h.api, null); assert.equal(h.mount.children.length, 1); assert.equal(h.calls.length, 0);
   const embedded = dom({ embedded: true }); embedded.root.dataset.palaceState = 'palace'; embedded.api.refresh(); await flush(); assert.equal(embedded.calls.length, 0); assert.equal(embedded.panel.dataset.status, 'disabled'); embedded.api.destroy();
+});
+test('counter lives in the existing header before exit, with a short summary and accessible explanation',async()=>{
+ const h=dom();h.root.dataset.palaceState='palace';h.api.refresh();await flush();
+ assert.equal(h.panel.parentElement,h.mount);
+ assert.equal(h.root.querySelector('#palace-entrance').children.length,0);
+ assert.equal(h.mount.children[0],h.panel);assert.equal(h.mount.children[1].id,'app-exit');
+ const [summary,explanation]=h.panel.children;
+ assert.equal(summary.children[0].textContent,'累計訪問');
+ assert.match(summary.attributes.get('aria-label'),/累計訪問回数 1,234/);
+ assert.match(h.panel.attributes.get('aria-label'),/実人数ではありません.*日本時間で1日1回/);
+ assert.match(explanation.children[2].textContent,/保存できない端末では閲覧のみ/);
+ h.panel.open=true;h.root.dataset.palaceState='gallery';h.api.refresh();assert.equal(h.panel.open,false);
+ h.api.destroy();
+});
+test('no header never falls back to mounting a counter over the artwork',()=>{
+ const h=dom();h.api.destroy();h.mount.remove();
+ assert.equal(initCastleVisitCounter({root:h.root}),null);
+ assert.equal(h.root.querySelector('#palace-entrance').children.length,0);
+});
+test('optional bootstrap waits for asynchronously created header, then disconnects',async()=>{
+ const {readFile}=await import('node:fs/promises'),{runInNewContext}=await import('node:vm');
+ const source=await readFile(new URL('../castle-counter-bootstrap.js',import.meta.url),'utf8');
+ let header=null,callback=null,disconnected=false;const calls=[];
+ const root={querySelector:selector=>selector==='#castle-exit-panel'?header:null};
+ runInNewContext(source.replace(/import\('\.\/castle-visit-counter\.js\?v=[^']+'\)/,'Promise.resolve(counterModule)'),{
+  document:{getElementById:()=>root},counterModule:{initCastleVisitCounter:options=>calls.push(options)},
+  MutationObserver:class{constructor(cb){callback=cb}observe(){}disconnect(){disconnected=true}},
+ });
+ await flush();assert.equal(calls.length,0);assert.equal(typeof callback,'function');
+ header={id:'castle-exit-panel'};callback();assert.equal(calls.length,1);assert.equal(calls[0].mount,header);assert.equal(disconnected,true);
 });

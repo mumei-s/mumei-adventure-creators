@@ -14,9 +14,6 @@ body[data-layout-page=gallery][data-layout] .theater .header-actions .visitor-se
 body[data-layout-page=gallery][data-layout] .theater .room-dot.face-dot{width:var(--ui-target);min-width:var(--ui-target);height:var(--ui-target);min-height:var(--ui-target)}
 body[data-layout-page=gallery][data-layout] .theater .room-dot.face-dot img,
 body[data-layout-page=gallery][data-layout] .theater .face-dot .face-initial{width:var(--ui-icon);height:var(--ui-icon);left:calc((var(--ui-target) - var(--ui-icon))/2);top:calc((var(--ui-target) - var(--ui-icon))/2)}
-body[data-layout-page=gallery][data-layout] .theater .palace-caption-stack{width:min(90%,36rem)}
-body[data-layout-page=gallery][data-layout] .theater .palace-caption-stack>p{font-size:var(--ui-meta);line-height:1.4}
-body[data-layout-page=gallery][data-layout] .theater .palace-caption-stack>.palace-gate-invitation{font-size:var(--ui-font)}
 /* Shared settings preserve heading hierarchy and native input zoom behavior. */
 body[data-layout-page][data-layout] :is(.visitor-preferences,.display-preferences){font-size:var(--ui-font)}
 body[data-layout-page][data-layout] :is(.visitor-preferences,.display-preferences) :is(label,button){font-size:var(--ui-font)}

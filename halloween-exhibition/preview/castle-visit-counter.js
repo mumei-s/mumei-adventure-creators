@@ -125,19 +125,24 @@ export function createCastleVisitCounter({
 }
 
 const mounted = new WeakMap();
-export function initCastleVisitCounter({ root, mount = root?.querySelector?.('#palace-entrance') } = {}) {
+export function initCastleVisitCounter({ root, mount = root?.querySelector?.('#castle-exit-panel') } = {}) {
   if (!root || !mount) return null;
   if (mounted.has(root)) return mounted.get(root);
   const doc = root.ownerDocument, win = doc.defaultView;
   if (typeof win?.MutationObserver !== 'function') return null;
-  const panel = doc.createElement('aside');
+  const panel = doc.createElement('details');
   panel.className = 'castle-visit-counter'; panel.id = 'castle-visit-counter'; panel.hidden = true;
-  panel.setAttribute('role', 'status'); panel.setAttribute('aria-live', 'polite');
-  const label = doc.createElement('span'); label.textContent = '累計訪問回数';
+  const summary = doc.createElement('summary');
+  const label = doc.createElement('span'); label.textContent = '累計訪問';
   const number = doc.createElement('strong'); number.textContent = '—';
+  number.setAttribute('aria-live', 'polite');
+  const explanation = doc.createElement('div'); explanation.className = 'castle-visit-explanation';
+  const meaning = doc.createElement('p');
+  meaning.textContent = '設置後の累計訪問回数です。実人数ではありません。同じブラウザは日本時間で1日1回。保存できない端末では閲覧のみです。';
   const note = doc.createElement('small'); note.textContent = '同じブラウザは1日1回';
   const scope = doc.createElement('small'); scope.textContent = '実人数ではありません';
-  panel.append(label, number, note, scope); mount.append(panel);
+  summary.append(label, number); explanation.append(note, scope, meaning); panel.append(summary, explanation);
+  mount.insertBefore(panel, mount.querySelector('#app-exit'));
   const visible = () => !doc.hidden && !doc.prerendering && !root.hidden && !root.inert
     && root.dataset.mode === 'halloween' && root.dataset.palaceState === 'palace'
     && ['ready', 'fallback'].includes(root.dataset.palaceReady) && root.dataset.archiveState === 'ready';
@@ -149,14 +154,15 @@ export function initCastleVisitCounter({ root, mount = root?.querySelector?.('#p
     onState(state) {
       panel.dataset.status = state.status;
       number.textContent = state.total === null ? '—' : state.total.toLocaleString('ja-JP');
+      summary.setAttribute('aria-label', `累計訪問回数 ${number.textContent}。集計の説明を開く`);
       note.textContent = state.status === 'unavailable' ? '集計を取得できません'
         : state.status === 'disabled' ? '公開ページで集計します'
         : state.status === 'loading' ? '集計を確認しています'
         : state.limited ? '一部の訪問は集計できません' : '同じブラウザは1日1回';
-      panel.title = '設置後の累計訪問回数です。実人数ではありません。同じブラウザは日本時間で1日1回。保存できない端末では閲覧のみです。';
+      panel.setAttribute('aria-label', meaning.textContent);
     },
   });
-  function refresh() { panel.hidden = !visible(); void counter.refresh(); }
+  function refresh() { panel.hidden = !visible(); if (panel.hidden) panel.open = false; void counter.refresh(); }
   const observer = new win.MutationObserver(refresh);
   observer.observe(root, { attributes: true, attributeFilter: ['data-mode', 'data-palace-state', 'data-palace-ready', 'data-archive-state', 'hidden', 'inert'] });
   doc.addEventListener('visibilitychange', refresh);

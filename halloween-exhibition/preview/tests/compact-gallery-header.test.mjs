@@ -17,7 +17,7 @@ test('294/320/360/390/430 portrait CSS budgets bound title and header without re
  assert.ok(css.includes('font-size:clamp(20px,5.6vw,26px)'));
  assert.ok(css.includes('.masthead{gap:4px;padding:6px max(8px,env(safe-area-inset-right))'));
 });
-test('counter keeps both visible accounting notes at11px',async()=>{
+test('legacy compact counter rules retain accounting text; header-specific rules take precedence',async()=>{
  for(const rule of ['.castle-visit-counter{top:6px;font-size:12px','.castle-visit-counter strong{font-size:14px','.castle-visit-counter small{font-size:11px'])assert.ok(css.includes(rule));
  assert.doesNotMatch(css,/\.castle-visit-counter[^}]*display:none/);
  const counter=await read('castle-visit-counter.js');assert.ok(counter.includes('同じブラウザは1日1回'));assert.ok(counter.includes('実人数ではありません'));
@@ -25,8 +25,8 @@ test('counter keeps both visible accounting notes at11px',async()=>{
 test('last gallery-only stylesheet and exact version are present in shell cache',async()=>{
  const html=await read('index.html'),sw=await read('sw.js');
  assert.ok(html.indexOf('compact-gallery-header.css')>html.indexOf('presentation-profiles.css'));
- assert.match(html,/compact-gallery-header.css\?v=20261017-header1/);
- assert.match(sw,/'compact-gallery-header.css'/);assert.match(sw,/v34-header1/);
- assert.ok(sw.includes("path==='compact-gallery-header.css'?'20261017-header1'"));
+ assert.match(html,/compact-gallery-header.css\?v=20261017-castle2/);
+ assert.match(sw,/'compact-gallery-header.css'/);assert.match(sw,/v35-castle2/);
+ assert.ok(sw.includes(".includes(path)?'20261017-castle2'"));
  assert.doesNotMatch(await read('maze/index.html'),/compact-gallery-header/);
 });

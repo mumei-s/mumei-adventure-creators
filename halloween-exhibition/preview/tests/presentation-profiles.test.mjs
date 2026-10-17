@@ -8,6 +8,6 @@ test('explicit presentation modes change typography, icons and native targets to
  assert.doesNotMatch(css,/zoom:|transform:scale|screen\.width|user-scalable|maximum-scale/);
 });
 test('profile stylesheet follows older gallery and game style layers without reaching editor',async()=>{
- for(const file of ['index.html','maze/index.html']){const html=await read(file);assert.match(html,/presentation-profiles.css\?v=20261017-readable1/);assert.ok(html.indexOf('presentation-profiles.css')>html.indexOf('ios-viewport.css'));}
+ for(const file of ['index.html','maze/index.html']){const html=await read(file);assert.match(html,/presentation-profiles.css\?v=20261017-castle2/);assert.ok(html.indexOf('presentation-profiles.css')>html.indexOf('ios-viewport.css'));}
  assert.doesNotMatch(await read('admin/index.html'),/presentation-profiles.css/);
 });

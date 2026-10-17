@@ -1,5 +1,6 @@
 /* Physical narrow screens need a bounded header, regardless of selected profile.
-   Keep the controls on one row; only that row may scroll at enlarged text sizes. */
+   Keep settings in a reserved column; only the other controls may scroll. */
+body[data-layout-page=gallery] .theater .toolbar-primary{display:contents}
 @media(max-width:480px){
  body[data-layout-page=gallery][data-layout] .theater .masthead{gap:4px;padding:6px max(8px,env(safe-area-inset-right)) 4px max(8px,env(safe-area-inset-left))}
  body[data-layout-page=gallery][data-layout] .theater #site-title{gap:2px;min-width:0}
@@ -8,13 +9,14 @@
  body[data-layout-page=gallery][data-layout] .theater[data-mode=halloween] #site-title>small{font-size:12px;line-height:1.2;letter-spacing:.08em}
  body[data-layout-page=gallery][data-layout] .theater #site-title:before,
  body[data-layout-page=gallery][data-layout] .theater #site-title:after{display:none}
- body[data-layout-page=gallery][data-layout] .theater .palace-toolbar{flex-flow:row nowrap;justify-content:space-between;gap:4px;min-width:0;max-width:100%;overflow-x:auto;overflow-y:hidden;scroll-padding-inline:4px}
+ body[data-layout-page=gallery][data-layout] .theater .palace-toolbar{display:grid;grid-template-columns:minmax(0,1fr) 44px;align-items:center;gap:4px;min-width:0;max-width:100%;padding:3px 0 6px;overflow:visible}
  body[data-layout-page=gallery][data-layout] .theater .header-navigation,
  body[data-layout-page=gallery][data-layout] .theater .header-actions{display:contents}
+ body[data-layout-page=gallery][data-layout] .theater .toolbar-primary{grid-column:1;grid-row:1;display:flex;align-items:center;flex-wrap:nowrap;gap:2px;min-width:0;overflow-x:auto;overflow-y:hidden;scroll-padding-inline:2px;scrollbar-width:thin}
  body[data-layout-page=gallery][data-layout] .theater .mode-switch{flex:0 0 auto;flex-wrap:nowrap;gap:0;padding:0;min-width:0}
- body[data-layout-page=gallery][data-layout] .theater .palace-toolbar button{flex:0 0 auto;font-size:14px;line-height:1.2;letter-spacing:0;min-height:44px;height:44px;min-width:44px;padding:4px;white-space:nowrap;overflow-wrap:normal}
+ body[data-layout-page=gallery][data-layout] .theater .palace-toolbar button{flex:0 0 auto;font-size:14px;line-height:1.2;letter-spacing:0;min-height:44px;height:44px;min-width:44px;padding:4px 2px;white-space:nowrap;overflow-wrap:normal}
  body[data-layout-page=gallery][data-layout] .theater .header-actions #year-open{width:44px;min-width:44px;height:44px;min-height:44px;font-size:14px;padding:0}
- body[data-layout-page=gallery][data-layout] .theater .header-actions .visitor-settings-trigger{min-width:44px;margin-left:0}
+ body[data-layout-page=gallery][data-layout] .theater .header-actions .visitor-settings-trigger{grid-column:2;grid-row:1;width:44px;min-width:44px;max-width:44px;margin-left:0;padding-inline:2px}
  body[data-layout-page=gallery][data-layout] .theater .list-open>span{display:none}
  body[data-layout-page=gallery][data-layout] .theater .castle-exit-panel{gap:4px;flex-wrap:nowrap}
  body[data-layout-page=gallery][data-layout] .theater .castle-exit-label{font-size:12px;line-height:1.3}

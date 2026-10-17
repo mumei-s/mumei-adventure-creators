@@ -5,14 +5,14 @@ import {readFile} from 'node:fs/promises';
 const css=await readFile(new URL('../gallery-controls.css',import.meta.url),'utf8');
 const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
 // Static guards only. Browser QA must still check 320px and enlarged text.
-test('flow-based header gives navigation and actions separate grid areas',()=>{
+test('flow-based header preserves navigation and actions inside the primary toolbar group',()=>{
  assert.match(css,/\.theater \.masthead\s*\{[^}]*position:relative;inset:auto;height:auto[^}]*display:grid/s);
  assert.match(css,/grid-template-areas:"brand actions" "navigation actions"/);
  assert.match(css,/grid-template-areas:"brand navigation" "actions actions"/);
  assert.match(css,/\.theater \.mode-switch,\.theater \.horror-entrance\s*\{[^}]*position:static;inset:auto;transform:none/s);
  assert.match(css,/\.theater \.header-actions\s*\{[^}]*flex-wrap:wrap/s);
  assert.match(html,/<div class="header-navigation"><div class="mode-switch"/);
- assert.match(html,/id="mode-normal"[^>]*>通常<\/button><\/div><\/div><div class="header-actions">/);
+ assert.match(html,/class="header-actions"><div class="toolbar-primary"><div class="header-navigation">/);
 });
 
 test('text enlargement grows reading and control rows instead of an 800px clipped canvas',()=>{

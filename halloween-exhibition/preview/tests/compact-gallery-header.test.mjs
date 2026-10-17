@@ -1,8 +1,8 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';
 const read=name=>readFile(new URL('../'+name,import.meta.url),'utf8');
 const css=await read('compact-gallery-header.css');
-test('physical narrow screens retain one scrollable toolbar and44px targets',()=>{
- for(const rule of ['@media(max-width:480px)','.palace-toolbar{flex-flow:row nowrap','overflow-x:auto;overflow-y:hidden','.header-actions{display:contents}','font-size:14px;line-height:1.2;letter-spacing:0;min-height:44px','.visitor-settings-trigger{min-width:44px;margin-left:0}'])assert.ok(css.includes(rule),rule);
+test('physical narrow screens reserve settings while other controls scroll',()=>{
+ for(const rule of ['@media(max-width:480px)','.palace-toolbar{display:grid;grid-template-columns:minmax(0,1fr) 44px','overflow-x:auto;overflow-y:hidden','.header-actions{display:contents}','font-size:14px;line-height:1.2;letter-spacing:0;min-height:44px','.visitor-settings-trigger{grid-column:2;grid-row:1;width:44px;min-width:44px;max-width:44px;margin-left:0;padding-inline:2px}'])assert.ok(css.includes(rule),rule);
  assert.doesNotMatch(css,/zoom:|transform:scale|text-size-adjust|user-scalable|data-layout-page=maze/);
 });
 test('294/320/360/390/430 portrait CSS budgets bound title and header without reducing targets',()=>{
@@ -25,8 +25,8 @@ test('legacy compact counter rules retain accounting text; header-specific rules
 test('last gallery-only stylesheet and exact version are present in shell cache',async()=>{
  const html=await read('index.html'),sw=await read('sw.js');
  assert.ok(html.indexOf('compact-gallery-header.css')>html.indexOf('presentation-profiles.css'));
- assert.match(html,/compact-gallery-header.css\?v=20261017-castle2/);
- assert.match(sw,/'compact-gallery-header.css'/);assert.match(sw,/v35-castle2/);
+ assert.match(html,/compact-gallery-header.css\?v=20261017-settings1/);
+ assert.match(sw,/'compact-gallery-header.css'/);assert.match(sw,/v36-settings1/);
  assert.ok(sw.includes(".includes(path)?'20261017-castle2'"));
  assert.doesNotMatch(await read('maze/index.html'),/compact-gallery-header/);
 });

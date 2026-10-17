@@ -26,7 +26,7 @@ test('last gallery-only stylesheet and exact version are present in shell cache'
  const html=await read('index.html'),sw=await read('sw.js');
  assert.ok(html.indexOf('compact-gallery-header.css')>html.indexOf('presentation-profiles.css'));
  assert.match(html,/compact-gallery-header.css\?v=20261017-settings1/);
- assert.match(sw,/'compact-gallery-header.css'/);assert.match(sw,/v39-gallery1/);
+ assert.match(sw,/'compact-gallery-header.css'/);assert.match(sw,/v40-smooth1/);
  assert.ok(sw.includes(".includes(path)?'20261017-castle2'"));
  assert.doesNotMatch(await read('maze/index.html'),/compact-gallery-header/);
 });

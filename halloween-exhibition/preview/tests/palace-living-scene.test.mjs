@@ -27,7 +27,7 @@ test('canvas remains decorative and motion lifecycle is bounded',async()=>{
  assert.match(js,/setAttribute\('aria-hidden','true'\)/);
  assert.match(js,/root.dataset.palaceState==='palace'/);
  assert.match(js,/!doc.hidden/);assert.match(js,/!media.matches/);
- assert.match(js,/stamp-last>=30/);assert.match(js,/1200000/);
+ assert.doesNotMatch(js,/stamp-last>=30/);assert.match(js,/1200000/);
  assert.match(css,/pointer-events:none/);assert.match(css,/prefers-reduced-motion:reduce/);
  assert.doesNotMatch(js,/localStorage|location\.|addEventListener\('click'/);
 });
@@ -40,13 +40,14 @@ test('frame sampler uses different atlas source cells, stable foot anchors and s
  for(const time of [0,.16,.32,.48])drawCastleCast(ctx,images,time,390,520);
  assert.equal(new Set(crops.map(c=>`${c[0]},${c[1]}`)).size,4);
  for(const crop of crops){assert.equal(crop[2],256);assert.equal(crop[3],256);assert.ok(crop[4]<0&&crop[5]<0);assert.equal(crop[6],crop[7]);}
- assert.equal(positions.length,4);assert.equal(scales.length,4);
+ assert.equal(positions.length,8);assert.equal(scales.length,4);
 });
 
 test('loading, paused, hidden and destroyed lifecycles do not leave a running animation',async()=>{
  const {initPalaceLivingScene}=await import('../palace-living-scene.js');
  const ctx={clearRect(){},save(){},restore(){},translate(){},scale(){},beginPath(){},ellipse(){},fill(){},drawImage(){},setTransform(){}};
- const observers=[],events=new Map(),mediaEvents=new Map(),pending=new Map();let next=1;
+ const observers=[],events=new Map(),mediaEvents=new Map(),pending=new Map();let next=1,draws=0;
+ ctx.clearRect=()=>{draws++;};
  const el=()=>({dataset:{},style:{},children:[],append(...a){this.children.push(...a);},setAttribute(){},remove(){},getContext:()=>ctx});
  const palace=el(),old=el();palace.getBoundingClientRect=()=>({width:390,height:520});palace.querySelector=()=>old;
  const media={matches:false,addEventListener:(n,f)=>mediaEvents.set(n,f),removeEventListener:n=>mediaEvents.delete(n)};
@@ -54,13 +55,18 @@ test('loading, paused, hidden and destroyed lifecycles do not leave a running an
  const doc={defaultView:win,body:el(),head:el(),createElement:el,hidden:false,querySelector:()=>null,querySelectorAll:()=>[],addEventListener:(n,f)=>events.set(n,f),removeEventListener:n=>events.delete(n)};
  const root={ownerDocument:doc,dataset:{palaceState:'palace'},querySelector:()=>palace};
  const api=initPalaceLivingScene(root,{atlases:{franken:{src:'./fake.webp',frames:[0,1,2,3].map(i=>({frame:[i%2*256,Math.floor(i/2)*256,256,256],anchorX:.5,anchorY:.94,contentHeight:220}))}},loadImage:async()=>({width:512,height:512})});
- await api.ready;assert.equal(palace.dataset.livingScene,'partial');assert.equal(old.hidden,true);assert.equal(pending.size,1);
+ await api.ready;
+ const advance=stamp=>{const [id,tick]=pending.entries().next().value;pending.delete(id);tick(stamp);};
+ for(const hz of [60,120]){const before=draws;for(let i=0;i<12;i++)advance(1000+i*1000/hz);assert.equal(draws-before,12,`${hz}Hz draws on every presented frame`);}
+ assert.equal(palace.dataset.livingScene,'partial');assert.equal(old.hidden,true);assert.equal(pending.size,1);
  root.dataset.motionPaused='true';observers[0]();assert.equal(pending.size,0);
  root.dataset.motionPaused='false';observers[0]();assert.equal(pending.size,1);
  media.matches=true;mediaEvents.get('change')();assert.equal(pending.size,0);
  media.matches=false;mediaEvents.get('change')();assert.equal(pending.size,1);
  doc.hidden=true;events.get('visibilitychange')();assert.equal(pending.size,0);
  doc.hidden=false;events.get('visibilitychange')();assert.equal(pending.size,1);
+ advance(60000);assert.equal(pending.size,1,'resuming has one loop and no catch-up work');
+ events.get('pagehide')();assert.equal(pending.size,0);observers[0]();assert.equal(pending.size,0,'late asset refresh cannot restart a hidden page');events.get('pageshow')();assert.equal(pending.size,1);
  api.destroy();assert.equal(pending.size,0);assert.equal(palace.dataset.livingScene,undefined);
  // A lone flying resident must never erase the three ground-character fallbacks.
  const atlasFrames=[0,1,2,3].map(i=>({frame:[i%2*128,Math.floor(i/2)*128,128,128],anchorX:.5,anchorY:.94,contentHeight:115}));

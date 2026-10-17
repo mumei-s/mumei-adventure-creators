@@ -58,3 +58,18 @@ test('failed writes retain local choices through pageshow and later side changes
  const events=new EventTarget();const store={getItem:()=>null,setItem(){throw Error('full')}};
  const controller=createGameDisplayController({storage:store,eventTarget:events});controller.setPreferences({size:80,side:'right'});events.dispatchEvent(new Event('pageshow'));assert.equal(controller.getPreferences().side,'right');controller.setPreferences({side:'center'});assert.equal(controller.getPreferences().size,80);controller.destroy();
 });
+
+
+test('town panel teardown cannot destroy the page-lifetime shared settings observer',async()=>{
+ const app=await readFile(new URL('../town/app.js',import.meta.url),'utf8');
+ assert.match(app,/const pageDisplayPreferences=initGameDisplay\(\{page:'town',onChange:scheduleResize\}\)/);
+ assert.doesNotMatch(app,/displayPreferences=initGameDisplay\(\{page:'town'/);
+ assert.doesNotMatch(app,/pageDisplayPreferences\??\.destroy/);
+ const listeners=new Map(),eventTarget={addEventListener(type,fn){if(!listeners.has(type))listeners.set(type,new Set());listeners.get(type).add(fn);},removeEventListener(type,fn){listeners.get(type)?.delete(fn);}};
+ const store=storage({[GAME_DISPLAY_KEY]:JSON.stringify({side:'right'})});let applied;
+ const page=createGameDisplayController({storage:store,eventTarget,onChange:p=>applied=p.side});
+ const panel=createGameDisplayController({storage:store,eventTarget});panel.destroy();
+ createGameDisplayController({storage:store}).setPreferences({side:'center'});
+ for(const fn of listeners.get('pageshow'))fn({persisted:true});
+ assert.equal(applied,'center');page.destroy();assert.equal(listeners.get('pageshow').size,0);
+});

@@ -167,7 +167,8 @@ window.addEventListener('pageshow',()=>{pageActive=true;clearInput();audio.stop(
 document.addEventListener('visibilitychange',()=>{if(document.hidden){loop.stop();clearInput();audio.stop({resetVolume:true});}else loop.start();});
 window.addEventListener('resize',()=>{clearInput();applySettings();scheduleResize();});reduced.addEventListener('change',()=>{clearInput();applySettings();});initViewport({onChange:scheduleResize});
 if(typeof ResizeObserver==='function'){const displayObserver=new ResizeObserver(scheduleResize);displayObserver.observe($('town-main'));displayObserver.observe(document.querySelector('.town-world'));}
-displayPreferences=initGameDisplay({page:'town',onChange:scheduleResize});scheduleResize();
+// Keep the page-lifetime observer independent of temporary settings panels.
+const pageDisplayPreferences=initGameDisplay({page:'town',onChange:scheduleResize});scheduleResize();
 async function boot(){
  const request=++bootRequest,revision=panelRevision;bootAbort?.abort();const abort=new AbortController();bootAbort=abort;ready=false;loop.stop();clearInput();resetTownView();renderer?.destroy?.();characterArt?.destroy();$('town-loading').hidden=false;$('town-loading').querySelector('p').textContent='街の灯りをともしています…';$('loading-retry').hidden=true;
  try{characterArt=createTownCharacterArt();renderer=createTownRenderer({art:characterArt.art});const scenery=renderer;void scenery.ready?.then(()=>{if(request!==bootRequest||abort.signal.aborted)return;scenery.invalidate?.();if(scenery.status?.().failed?.length)notify('一部の景色を準備できませんでした。メニューから読み込み直せます。');});await withDeadline(characterArt.ready,{timeout:18000,signal:abort.signal});if(request!==bootRequest||abort.signal.aborted)return;ready=true;resize();$('town-loading').hidden=true;prepareTownView();updateHUD();loop.start();const snapshot=session.snapshot();if(snapshot.notice)notify(snapshot.notice);if(!snapshot.state.flags.intro&&!panel.open&&panelRevision===revision)showHelp();}

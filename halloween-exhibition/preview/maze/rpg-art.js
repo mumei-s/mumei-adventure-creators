@@ -1,5 +1,5 @@
 import {MONSTER_MOTION_DATA} from './monster-motion-data.js?v=20261016-living1';
-import {MONSTER_IDS,validMonsterLayout,motionSprite} from './monster-motion.js?v=20261016-living1';
+import {MONSTER_IDS,validMonsterLayout,motionSprite} from './monster-motion.js?v=20261017-rig2';
 // Original, locally bundled Halloween RPG art. No external/franchise art requests.
 export const ART_FILES = {
   playerAtlas:'lantern-keeper-atlas.webp',witch:'witch-story-v3.webp',masked_wanderer:'masked_wanderer-story-v3.webp',pumpkin:'pumpkin-story-v2.webp',ghost:'ghost-story-v2.webp',bat:'bat-story-v2.webp',zombie:'zombie-story-v2.webp',vampire:'vampire-story-v2.webp',franken:'franken-story-v2.webp',battle:'battle-library.webp',
@@ -28,8 +28,9 @@ export function createArtLibrary({loadImage=loadArtImage,motionData=MONSTER_MOTI
     load('palaceAtlas','props-atlas.webp',true).then(image=>{if(!image)return;for(const [key,frame] of Object.entries(PALACE_ART))images[key]={image,frame,width:frame[2],height:frame[3],anchorX:.5,anchorY:.97};}),
     ...Object.entries(PALACE_TEXTURES).map(([key,file])=>load(key,file,true)),
   ]);
+  const sceneReady=core.then(()=>undefined);
   const ready=Promise.all([core,environment]).then(()=>undefined);
-  return {images,monsterLayouts,failures,ready,get version(){return version;},get playerLayout(){return playerLayout;},setPlayerAtlas(image,layout=null){
+  return {images,monsterLayouts,failures,sceneReady,ready,get version(){return version;},get playerLayout(){return playerLayout;},setPlayerAtlas(image,layout=null){
     if(!image||!Number.isFinite(image.width)||!Number.isFinite(image.height)||image.width<=0||image.height<=0)throw new TypeError('A loaded player atlas image is required');
     playerOverride=true;images.playerAtlas=image;playerLayout=layout?{...layout}:null;version++;return version;
   }};
@@ -41,7 +42,9 @@ export function drawArtSprite(c,sprite,x,y,height,{alpha=1,flip=false,scaleX=1,s
   c.save();c.globalAlpha=alpha;c.translate(x,y);c.rotate(rotation);c.scale((flip?-1:1)*scaleX,scaleY);c.drawImage(image,...frame,-width*ax,-drawHeight*ay,width,drawHeight);c.restore();return true;
 }
 export function playerFrame(facing,walking,phase){const row=Math.max(0,PLAYER_ATLAS.directions.indexOf(facing)),column=walking?Math.floor(((phase%(Math.PI*2)+Math.PI*2)%(Math.PI*2))/(Math.PI*2)*4):0;return {row,column,frame:[column*256,row*256,256,256]};}
-export function playerPose(art,facing,walking,phase){
+export function playerPose(art,facing,walking,phase,{battle=false,effect=null,time=0,motion=true}={}){
+  const articulated=battle?art.rigs?.battle('owner:battle',{effect,time,motion,facing}):art.rigs?.get('owner');
+  if(articulated)return articulated;
   if(!art.images.playerAtlas)return null;
   const image=art.images.playerAtlas,layout=art.playerLayout;
   if(!layout)return {image,...playerFrame(facing,walking,phase),contentHeight:PLAYER_ATLAS.contentHeight,anchorX:.5,anchorY:238/256};

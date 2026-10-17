@@ -1189,3 +1189,59 @@ test('escape during chosen fate cancels the pending destination and restores but
  for(const fn of h.doc.handlers.keydown||[])fn({key:'Escape',target:h.$('roulette-open')});await h.tick(4000);
  assert.equal(h.api.state.currentIndex,0);assert.equal(h.$('roulette-reel').hidden,true);assert.equal(h.$('fate-gates').children.length,0);assert.equal(h.doc.activeElement.id,'roulette-open');
 });
+
+test('outdoor town has a direct palace route and gallery route that stay separate from the article gate',async()=>{
+ const h=await harness({entrance:true});
+ for(const id of ['palace-town-entrance','town-entrance']){
+  assert.equal(h.$(id).tagName,'A');assert.equal(h.$(id).getAttribute('href'),'./town/?return=theatre');assert.equal(h.$(id).getAttribute('aria-label'),'宮殿から星灯りの街へ進む');assert.equal(h.$(id).hidden,false);
+ }
+ assert.equal(h.$('palace-town-entrance').parentNode,h.$('castle-exit-panel'));
+ assert.equal(h.$('castle-exit-panel').parentNode,h.doc.querySelector('.masthead'));
+ assert.equal(h.$('palace-entrance').querySelector('#palace-town-entrance'),null);
+ assert.equal(h.$('town-entrance').parentNode,h.$('horror-entrance').parentNode);
+ assert.equal(h.$('article-theater').hidden,true);assert.equal(h.$('palace-entrance').hidden,false);
+ h.$('palace-town-entrance').click();assert.equal(h.$('article-theater').hidden,true,'an outdoor route does not auto-open articles');assert.equal(h.api.countPeople(),0);
+ assert.equal(h.doc.closeAttempts||0,0);assert.equal(h.doc.musicStops||0,0);assert.equal(h.$('app-ended-screen').hidden,true);assert.ok(h.getReturn());
+ h.api.setMode('normal');for(const id of ['palace-town-entrance','town-entrance','palace-maze-entrance'])assert.equal(h.$(id).hidden,true);
+ h.api.setMode('halloween');assert.equal(h.$('palace-town-entrance').hidden,false);assert.equal(h.$('town-entrance').hidden,false);
+});
+test('town departure preserves exact existing gallery return context and does not write progression',async()=>{
+ const h=await harness();await h.api.navigate(ownerWorkIndex);h.$('list-open').click();h.$('roster-next').click();h.$('roster').close();await h.tick(0);
+ const writes=h.storageWrites.length;h.$('town-entrance').click();const returned=h.getReturn();
+ assert.equal(returned.key,'halloween-yearbook:theatre-return:v1');const state=JSON.parse(returned.value);assert.equal(state.doorId,'owner-work-2026');assert.equal(state.creatorId,'ss_yr');assert.equal(state.year,2026);assert.equal(state.rosterPage,1);assert.equal(h.storageWrites.length,writes);assert.equal(h.api.countPeople(),0);
+});
+test('outdoor route remains available while archive loading without inventing a selected article',async()=>{
+ const h=await harness({entrance:true,autoLoad:false});assert.equal(h.$('palace-town-entrance').hidden,false);h.$('palace-town-entrance').click();
+ const state=JSON.parse(h.getReturn().value);assert.equal(state.doorId,undefined);assert.equal(state.creatorId,undefined);assert.equal(h.$('palace-gate').disabled,true);
+});
+
+test('town return restores exact year, door, search, tag and page behind the closed palace gate',async()=>{
+ const data=structuredClone(archive);data.years.push({...structuredClone(data.years[0]),year:2025});
+ const departure=await harness({data});departure.api.setYear(2025);await departure.api.navigate(ownerWorkIndex);departure.$('list-open').click();
+ departure.$('tags').children.find(tag=>tag.textContent==='参加者').click();departure.$('search').value='参加者';departure.$('search').dispatch('input');departure.$('roster-next').click();departure.$('roster').close();await departure.tick(0);
+ departure.$('town-entrance').click();const snapshot=departure.getReturn().value;
+ const returned=await harness({data,entrance:true,savedMode:'normal',urlSearch:'?return=palace',returnState:snapshot});
+ assert.equal(returned.api.state.displayMode,'halloween');assert.equal(returned.api.state.currentYear,2025);assert.equal(returned.$('theater').dataset.doorId,'owner-work-2026');
+ assert.equal(returned.api.state.search,'参加者');assert.equal(returned.api.state.activeTag,'参加者');assert.equal(returned.$('search').value,'参加者');assert.equal(returned.$('roster-page-status').textContent,'2 / 3 ページ');
+ assert.equal(returned.$('palace-entrance').hidden,false);assert.equal(returned.$('article-theater').hidden,true);assert.equal(returned.$('theater').dataset.palaceState,'palace');assert.equal(returned.api.countPeople(),0);
+ assert.equal(returned.storage.get('halloween-yearbook:display-mode:v1'),'normal','explicit castle return must preserve the saved ordinary-mode preference');
+ returned.$('palace-gate').click();assert.equal(returned.$('article-theater').hidden,false);assert.equal(returned.$('theater').dataset.doorId,'owner-work-2026');
+});
+test('town return ignores malformed, obsolete and creator-door-mismatched snapshots',async()=>{
+ const valid={year:2026,creatorId:'ss_yr',doorId:'owner-work-2026',search:'old-filter',activeTag:'参加者',rosterPage:2};
+ for(const snapshot of ['broken','[]','null',JSON.stringify({...valid,year:1999}),JSON.stringify({...valid,doorId:'removed-door'}),JSON.stringify({...valid,creatorId:'imota14'})]){
+  const h=await harness({entrance:true,urlSearch:'?return=palace',returnState:snapshot});assert.equal(h.api.state.currentYear,2026);assert.equal(h.api.state.currentIndex,0);assert.equal(h.api.state.search,'');assert.equal(h.api.state.activeTag,'');assert.equal(h.$('roster-page-status').textContent,'1 / 3 ページ');assert.equal(h.$('article-theater').hidden,true);
+ }
+});
+test('ordinary and fresh gallery visits do not consume an old town return snapshot',async()=>{
+ const snapshot=JSON.stringify({year:2026,creatorId:'ss_yr',doorId:'owner-work-2026',search:'old-filter',activeTag:'参加者',rosterPage:2});
+ for(const savedMode of ['normal','halloween']){
+  const h=await harness({entrance:true,savedMode,returnState:snapshot});assert.equal(h.api.state.displayMode,savedMode);assert.equal(h.api.state.currentIndex,0);assert.equal(h.api.state.search,'');assert.equal(h.api.state.activeTag,'');assert.equal(h.$('roster-page-status').textContent,'1 / 3 ページ');
+  if(savedMode==='normal'){assert.equal(h.$('town-entrance').hidden,true);assert.equal(h.$('artwork-image').src,archive.creators[0].avatar);}
+ }
+});
+test('choosing ordinary mode during a town-return load prevents Halloween context restoration',async()=>{
+ const data=structuredClone(archive);data.years.push({...structuredClone(data.years[0]),year:2025});
+ const h=await harness({data,entrance:true,autoLoad:false,urlSearch:'?return=palace',returnState:JSON.stringify({year:2025,creatorId:'ss_yr',doorId:'owner-work-2026',search:'old-filter',activeTag:'参加者',rosterPage:2})});
+ h.api.setMode('normal');await h.succeed(h.requests[0]);assert.equal(h.api.state.displayMode,'normal');assert.equal(h.api.state.currentYear,2026);assert.equal(h.api.state.search,'');assert.equal(h.api.state.activeTag,'');assert.equal(h.$('town-entrance').hidden,true);assert.equal(h.$('artwork-image').src,archive.creators[0].avatar);
+});

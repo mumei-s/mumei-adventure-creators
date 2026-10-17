@@ -1,0 +1,799 @@
+{
+  "version": 1,
+  "id": "chamomile-flower-avatar",
+  "label": "カモミール",
+  "archetype": "flower",
+  "atlas": "main",
+  "atlases": {
+    "main": "./parts.webp"
+  },
+  "width": 1024,
+  "height": 1024,
+  "contentHeight": 246,
+  "output": {
+    "width": 320,
+    "height": 320,
+    "anchorX": 0.5,
+    "anchorY": 0.94,
+    "scale": 1
+  },
+  "directions": [
+    "down",
+    "right",
+    "up",
+    "left"
+  ],
+  "views": {
+    "down": {
+      "heading": 0,
+      "atlas": "main",
+      "parts": {
+        "body": {
+          "rect": [
+            34.4,
+            48.800000000000004,
+            187.20000000000002,
+            158.4
+          ],
+          "pivot": [
+            93.60000000000001,
+            79.2
+          ],
+          "contentHeight": 158.4,
+          "sourceRect": [
+            54,
+            84,
+            234,
+            198
+          ],
+          "sourceKey": "body_down",
+          "independentlyAuthored": true
+        },
+        "face": {
+          "rect": [
+            36.800000000000004,
+            300.8,
+            181.60000000000002,
+            165.60000000000002
+          ],
+          "pivot": [
+            90.80000000000001,
+            82.80000000000001
+          ],
+          "contentHeight": 165.60000000000002,
+          "sourceRect": [
+            56,
+            391,
+            227,
+            207
+          ],
+          "sourceKey": "face_down",
+          "independentlyAuthored": true
+        },
+        "petalRing": {
+          "rect": [
+            14.4,
+            520.8000000000001,
+            226.4,
+            237.60000000000002
+          ],
+          "pivot": [
+            113.2,
+            118.80000000000001
+          ],
+          "contentHeight": 237.60000000000002,
+          "sourceRect": [
+            25,
+            666,
+            283,
+            297
+          ],
+          "sourceKey": "petalRing_down",
+          "independentlyAuthored": true
+        },
+        "leftFoot": {
+          "rect": [
+            80.80000000000001,
+            857.6,
+            93.60000000000001,
+            76
+          ],
+          "pivot": [
+            46.800000000000004,
+            72.8
+          ],
+          "contentHeight": 76,
+          "sourceRect": [
+            107,
+            1077,
+            117,
+            95
+          ],
+          "sourceKey": "leftFoot",
+          "independentlyAuthored": true
+        },
+        "rightFoot": {
+          "rect": [
+            336.8,
+            857.6,
+            94.4,
+            76
+          ],
+          "pivot": [
+            47.2,
+            72.8
+          ],
+          "contentHeight": 76,
+          "sourceRect": [
+            409,
+            1077,
+            118,
+            95
+          ],
+          "sourceKey": "rightFoot",
+          "independentlyAuthored": true
+        },
+        "book": {
+          "rect": [
+            569.6,
+            833.6,
+            140.8,
+            124
+          ],
+          "pivot": [
+            70.4,
+            62
+          ],
+          "contentHeight": 124,
+          "sourceRect": [
+            693,
+            1032,
+            176,
+            155
+          ],
+          "sourceKey": "book",
+          "independentlyAuthored": true
+        },
+        "die": {
+          "rect": [
+            834.4000000000001,
+            836,
+            122.4,
+            119.2
+          ],
+          "pivot": [
+            61.2,
+            59.6
+          ],
+          "contentHeight": 119.2,
+          "sourceRect": [
+            1012,
+            1041,
+            153,
+            149
+          ],
+          "sourceKey": "die",
+          "independentlyAuthored": true
+        }
+      },
+      "rig": {}
+    },
+    "right": {
+      "heading": 1.5707963267948966,
+      "atlas": "main",
+      "parts": {
+        "body": {
+          "rect": [
+            305.6,
+            48.800000000000004,
+            156.8,
+            158.4
+          ],
+          "pivot": [
+            78.4,
+            79.2
+          ],
+          "contentHeight": 158.4,
+          "sourceRect": [
+            382,
+            84,
+            196,
+            198
+          ],
+          "sourceKey": "body_right",
+          "independentlyAuthored": true
+        },
+        "face": {
+          "rect": [
+            812.8000000000001,
+            300,
+            165.60000000000002,
+            167.20000000000002
+          ],
+          "pivot": [
+            82.80000000000001,
+            83.60000000000001
+          ],
+          "contentHeight": 167.20000000000002,
+          "sourceRect": [
+            978,
+            389,
+            207,
+            209
+          ],
+          "sourceKey": "face_right",
+          "independentlyAuthored": true
+        },
+        "petalRing": {
+          "rect": [
+            297.6,
+            524,
+            172.8,
+            231.20000000000002
+          ],
+          "pivot": [
+            86.4,
+            115.60000000000001
+          ],
+          "contentHeight": 231.20000000000002,
+          "sourceRect": [
+            359,
+            671,
+            216,
+            289
+          ],
+          "sourceKey": "petalRing_right",
+          "independentlyAuthored": true
+        },
+        "leftFoot": {
+          "rect": [
+            80.80000000000001,
+            857.6,
+            93.60000000000001,
+            76
+          ],
+          "pivot": [
+            46.800000000000004,
+            72.8
+          ],
+          "contentHeight": 76,
+          "sourceRect": [
+            107,
+            1077,
+            117,
+            95
+          ],
+          "sourceKey": "leftFoot",
+          "independentlyAuthored": true
+        },
+        "rightFoot": {
+          "rect": [
+            336.8,
+            857.6,
+            94.4,
+            76
+          ],
+          "pivot": [
+            47.2,
+            72.8
+          ],
+          "contentHeight": 76,
+          "sourceRect": [
+            409,
+            1077,
+            118,
+            95
+          ],
+          "sourceKey": "rightFoot",
+          "independentlyAuthored": true
+        },
+        "book": {
+          "rect": [
+            569.6,
+            833.6,
+            140.8,
+            124
+          ],
+          "pivot": [
+            70.4,
+            62
+          ],
+          "contentHeight": 124,
+          "sourceRect": [
+            693,
+            1032,
+            176,
+            155
+          ],
+          "sourceKey": "book",
+          "independentlyAuthored": true
+        },
+        "die": {
+          "rect": [
+            834.4000000000001,
+            836,
+            122.4,
+            119.2
+          ],
+          "pivot": [
+            61.2,
+            59.6
+          ],
+          "contentHeight": 119.2,
+          "sourceRect": [
+            1012,
+            1041,
+            153,
+            149
+          ],
+          "sourceKey": "die",
+          "independentlyAuthored": true
+        }
+      },
+      "rig": {
+        "faceOffset": [
+          7,
+          -148
+        ],
+        "petalOffset": [
+          0,
+          -148
+        ],
+        "bookOffset": [
+          28,
+          -61
+        ],
+        "dieOffset": [
+          -25,
+          -61
+        ]
+      }
+    },
+    "up": {
+      "heading": 3.141592653589793,
+      "atlas": "main",
+      "parts": {
+        "body": {
+          "rect": [
+            546.4,
+            48,
+            187.20000000000002,
+            159.20000000000002
+          ],
+          "pivot": [
+            93.60000000000001,
+            79.60000000000001
+          ],
+          "contentHeight": 159.20000000000002,
+          "sourceRect": [
+            658,
+            84,
+            234,
+            199
+          ],
+          "sourceKey": "body_up",
+          "independentlyAuthored": true
+        },
+        "face": {
+          "rect": [
+            548.8000000000001,
+            301.6,
+            181.60000000000002,
+            164
+          ],
+          "pivot": [
+            90.80000000000001,
+            82
+          ],
+          "contentHeight": 164,
+          "sourceRect": [
+            671,
+            390,
+            227,
+            205
+          ],
+          "sourceKey": "face_up",
+          "independentlyAuthored": true
+        },
+        "petalRing": {
+          "rect": [
+            522.4,
+            520.8000000000001,
+            235.20000000000002,
+            237.60000000000002
+          ],
+          "pivot": [
+            117.60000000000001,
+            118.80000000000001
+          ],
+          "contentHeight": 237.60000000000002,
+          "sourceRect": [
+            637,
+            669,
+            294,
+            297
+          ],
+          "sourceKey": "petalRing_up",
+          "independentlyAuthored": true
+        },
+        "leftFoot": {
+          "rect": [
+            80.80000000000001,
+            857.6,
+            93.60000000000001,
+            76
+          ],
+          "pivot": [
+            46.800000000000004,
+            72.8
+          ],
+          "contentHeight": 76,
+          "sourceRect": [
+            107,
+            1077,
+            117,
+            95
+          ],
+          "sourceKey": "leftFoot",
+          "independentlyAuthored": true
+        },
+        "rightFoot": {
+          "rect": [
+            336.8,
+            857.6,
+            94.4,
+            76
+          ],
+          "pivot": [
+            47.2,
+            72.8
+          ],
+          "contentHeight": 76,
+          "sourceRect": [
+            409,
+            1077,
+            118,
+            95
+          ],
+          "sourceKey": "rightFoot",
+          "independentlyAuthored": true
+        },
+        "book": {
+          "rect": [
+            569.6,
+            833.6,
+            140.8,
+            124
+          ],
+          "pivot": [
+            70.4,
+            62
+          ],
+          "contentHeight": 124,
+          "sourceRect": [
+            693,
+            1032,
+            176,
+            155
+          ],
+          "sourceKey": "book",
+          "independentlyAuthored": true
+        },
+        "die": {
+          "rect": [
+            834.4000000000001,
+            836,
+            122.4,
+            119.2
+          ],
+          "pivot": [
+            61.2,
+            59.6
+          ],
+          "contentHeight": 119.2,
+          "sourceRect": [
+            1012,
+            1041,
+            153,
+            149
+          ],
+          "sourceKey": "die",
+          "independentlyAuthored": true
+        }
+      },
+      "rig": {
+        "bookOffset": [
+          45,
+          -62
+        ],
+        "dieOffset": [
+          -45,
+          -62
+        ]
+      }
+    },
+    "left": {
+      "heading": -1.5707963267948966,
+      "atlas": "main",
+      "parts": {
+        "body": {
+          "rect": [
+            817.6,
+            48,
+            156.8,
+            160
+          ],
+          "pivot": [
+            78.4,
+            80
+          ],
+          "contentHeight": 160,
+          "sourceRect": [
+            992,
+            82,
+            196,
+            200
+          ],
+          "sourceKey": "body_left",
+          "independentlyAuthored": true
+        },
+        "face": {
+          "rect": [
+            298.40000000000003,
+            299.2,
+            171.20000000000002,
+            168.8
+          ],
+          "pivot": [
+            85.60000000000001,
+            84.4
+          ],
+          "contentHeight": 168.8,
+          "sourceRect": [
+            380,
+            388,
+            214,
+            211
+          ],
+          "sourceKey": "face_left",
+          "independentlyAuthored": true
+        },
+        "petalRing": {
+          "rect": [
+            808.8000000000001,
+            524.8000000000001,
+            173.60000000000002,
+            229.60000000000002
+          ],
+          "pivot": [
+            86.80000000000001,
+            114.80000000000001
+          ],
+          "contentHeight": 229.60000000000002,
+          "sourceRect": [
+            994,
+            675,
+            217,
+            287
+          ],
+          "sourceKey": "petalRing_left",
+          "independentlyAuthored": true
+        },
+        "leftFoot": {
+          "rect": [
+            80.80000000000001,
+            857.6,
+            93.60000000000001,
+            76
+          ],
+          "pivot": [
+            46.800000000000004,
+            72.8
+          ],
+          "contentHeight": 76,
+          "sourceRect": [
+            107,
+            1077,
+            117,
+            95
+          ],
+          "sourceKey": "leftFoot",
+          "independentlyAuthored": true
+        },
+        "rightFoot": {
+          "rect": [
+            336.8,
+            857.6,
+            94.4,
+            76
+          ],
+          "pivot": [
+            47.2,
+            72.8
+          ],
+          "contentHeight": 76,
+          "sourceRect": [
+            409,
+            1077,
+            118,
+            95
+          ],
+          "sourceKey": "rightFoot",
+          "independentlyAuthored": true
+        },
+        "book": {
+          "rect": [
+            569.6,
+            833.6,
+            140.8,
+            124
+          ],
+          "pivot": [
+            70.4,
+            62
+          ],
+          "contentHeight": 124,
+          "sourceRect": [
+            693,
+            1032,
+            176,
+            155
+          ],
+          "sourceKey": "book",
+          "independentlyAuthored": true
+        },
+        "die": {
+          "rect": [
+            834.4000000000001,
+            836,
+            122.4,
+            119.2
+          ],
+          "pivot": [
+            61.2,
+            59.6
+          ],
+          "contentHeight": 119.2,
+          "sourceRect": [
+            1012,
+            1041,
+            153,
+            149
+          ],
+          "sourceKey": "die",
+          "independentlyAuthored": true
+        }
+      },
+      "rig": {
+        "faceOffset": [
+          -7,
+          -148
+        ],
+        "petalOffset": [
+          0,
+          -148
+        ],
+        "bookOffset": [
+          -28,
+          -61
+        ],
+        "dieOffset": [
+          25,
+          -61
+        ]
+      }
+    }
+  },
+  "rig": {
+    "bodyHeight": 100,
+    "bodyCenter": [
+      0,
+      -60
+    ],
+    "headHeight": 108,
+    "petalHeight": 180,
+    "footHeight": 14,
+    "footSpacing": 19,
+    "legLength": 80,
+    "strideLength": 0.45,
+    "faceOffset": [
+      0,
+      -148
+    ],
+    "petalOffset": [
+      0,
+      -148
+    ],
+    "bookOffset": [
+      -45,
+      -62
+    ],
+    "dieOffset": [
+      45,
+      -62
+    ],
+    "bookHeight": 30,
+    "dieHeight": 25
+  },
+  "continuousTurnComplete": false,
+  "attackArtComplete": false,
+  "artworkComplete": false,
+  "authoredPartCount": 16,
+  "review": {
+    "passed": true,
+    "status": "native35-60-shape-and-motion-reviewed",
+    "scope": "four-cardinal-new-parts-fixed-shape-physical-motion",
+    "reviewer": "town-webgl-independent-source-and-native-review",
+    "continuousTurnComplete": false,
+    "attackArtComplete": false,
+    "checks": [
+      "Exact approved mascot identity compared at actual35/60px",
+      "No full-body squash/bob or added limbs",
+      "Fixed body origin, shape and scale over180 frames",
+      "Contact world drift0 after initial projection",
+      "Pause and reduced-motion clock freeze",
+      "Bread exactly one two-link appendage; flower exactly two tiny feet with original book/die"
+    ]
+  },
+  "provenance": {
+    "method": "built-in-imagegen",
+    "sourceReference": "adopted-reference.png",
+    "sourceReferenceSha256": "1ef9e3d61cecc20dae6312bdee859acca71e70c1e7a20bcf7d3b7f141eb89766",
+    "sourceRaw": "parts-front-v1-original.png",
+    "sourceRawSha256": "b32e01771fa65b1c1de9ffe5a39eff2b17ade69b4307e102242ab90cdc974e54",
+    "sourceRawSize": [
+      1254,
+      1254
+    ],
+    "sourceWholeBodySlicing": false,
+    "packing": "Core alpha>230 connected-component ownership; original RGBA retained with 3px antialias margin. No resizing, redrawing, morphing or reference whole-body slicing.",
+    "sharedLimbParts": false,
+    "correctedSources": [],
+    "limitations": [
+      "Four cardinal body/head or mascot views only; no independently painted intermediate turn surfaces.",
+      "Species-specific mascot rig required; human arms/legs are not substituted."
+    ],
+    "deliveryPacking": "Only atlas packing and Lanczos resampling; rig dimensions, costume pixels and alpha remain authored.",
+    "authoringSources": [
+      {
+        "key": "main",
+        "originalSHA256": "49ecc7663822704acef9e2e2fa9ed4791c02695575b6b2e0c732e0276bafd737",
+        "authoringSHA256": "13da4ab1509380a9ce057975e14e1a77276f5998075ebcd2a98b523858ee0a7e",
+        "sourceWidth": 1280,
+        "sourceHeight": 1280,
+        "transform": {
+          "scale": 0.8,
+          "x": 0,
+          "y": 0
+        }
+      }
+    ]
+  },
+  "referenceComposedBounds": {
+    "down": {
+      "x": 215,
+      "y": 162,
+      "w": 170,
+      "h": 238
+    },
+    "right": {
+      "x": 233,
+      "y": 163,
+      "w": 134,
+      "h": 246
+    },
+    "up": {
+      "x": 212,
+      "y": 163,
+      "w": 177,
+      "h": 237
+    },
+    "left": {
+      "x": 233,
+      "y": 163,
+      "w": 134,
+      "h": 246
+    }
+  },
+  "animationReviewed": true
+}

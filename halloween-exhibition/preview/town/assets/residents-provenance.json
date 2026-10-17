@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-17",
+  "tool": "built-in image_gen.imagegen",
+  "prompt": "Use case: stylized-concept. Asset type: original game resident character sprite atlas, transparent background, EXACTLY FIVE COLUMNS AND TWO ROWS, TEN separate fullbody figures, equally spaced cells, wide landscape canvas about2to1. Camera: front three-quarter orthographic, standing on shared groundbaseline inside eachcell, entirehead/hair/hat/feet contained, cleartransparentgutter between allfigures. Highquality painted2.5D fantasychibi, about3headstall, rich intricate fabric/leather/metal details and lively gentlefaces, originalstorybooks art with dimensional volume, warm golden twilightkeylight, bluevioletambientshadows. Compatiblewith ornate illustrated violet-roofstonehouses, timberbakery and goldlamps in welcoming palace-town. Distinct believable inhabitants, no copying any existingcharacters. These are STATIC STILL CHARACTER ILLUSTRATIONS, onepose each, NOT animationframes, not repetitions of onecharacter. Exact character order lefttoright: TOP ROW1 keeper: young adult man shortwavy darkbluehair, midnightnavy lamplighteruniform, brassbuttons, holding warmgold lantern at waist; ROW1 baker: smiling adultwoman copperorangebraid, creamsleeves, oatmealapron overwarmochreskirt, breadbasket; ROW1 sailor: adultman darkbrownskin, shortseabluehair, cobaltblue sailorsjacket withwhitecollar, rolledtrousers, ropebelt; ROW1 gardener: adultwoman mintgreen bobhair, forestgreen gardeningoveralls overcreamshirt, smallwateringcan andgloves; ROW1 CAT: onlyone amberorangecat, warmcopperfur, whitechin, naturalfourlegcat anatomy, sittingalert withcurledtail, greeneyes, smalltealbandana, visiblysmallerthan humanfigures. BOTTOM ROW2 maskmaker: adultwoman longviolethair tiedback, lavenderanddeepplumcraftsmansdress, holding an originalsmalldecorativehalfmask (herownfacefullyvisible); ROW2 merchant: cheerful adultman warmtan skin, sweptwhitehair, tealandbrown shopkeepercoat, smalltoolpouch androlledcloth; ROW2 clocksmith: older adultman silvergreyhair andneatlytrimmedbeard, roundgoldmonocle, brownleatherwaistcoat overivoryshirt, holding a smallroundpocketwatch andbrasswrench; ROW2 archivist: adultwoman ashblondehair inbun, roundglasses, mutedindigorobeswithgoldtrim, holding two closedbooks againstchest; ROW2 innkeeper: warmmiddleaged adultwoman shortchestnuthair, burgundydresswithcreamapron androse-goldbrooch, holdingwoodentray withoneceramiccup. No words, noletters, no labels, no logos, nowatermark. No backgrounds, no scenery, no pedestals, no gridlines, TRUE transparent alpha between allfigures. Exactly10completefigures,5columns2rows, eachcellcontainsONLYthelistedcharacter; no duplicates or extrapeople.",
+  "source": "exec-85ad2b37-75d2-489a-9538-a9da43bd3130.png",
+  "original": "originals/residents-generated.png",
+  "alignedOriginal": "originals/residents-aligned.png",
+  "delivery": "residents-atlas.webp",
+  "manifest": "residents-manifest.json",
+  "referenceImages": [],
+  "sourceDimensions": [
+    1774,
+    887
+  ],
+  "sourceAlpha": true,
+  "sourceMainConnectedComponents": 10,
+  "identity": "Ten distinct original fictional town residents; separate from submitted participants, protagonist and black-cat companion.",
+  "review": "Confirmed5columns2rows,10 completefullbody illustratedfigures with distinctcolors/hair/costumes andtheoneambercat. No figureduplicated. Common0.64scale andsharedbaseline304in256x320cells. Allsourcecutoutsseparated; preservationcopieskept.",
+  "animation": {
+    "ready": false,
+    "clips": [
+      "static-front-three-quarter"
+    ],
+    "missing": [
+      "walking",
+      "stopping",
+      "turning",
+      "attacking",
+      "frame-intermediates"
+    ],
+    "warning": "These are still illustrations. Never label as completed character movement animation."
+  }
+}

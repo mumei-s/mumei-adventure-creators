@@ -1,3 +1,4 @@
+import {locomotionPhase,yawForVector,shortestTurn,facingForVector} from './movement-runtime.js?v=20261017-review1';
 import {blocked, CELL} from './maze-model.js?v=20261014-adventure2';
 import {inFurniture} from './rpg-model.js?v=20261014-adventure2';
 
@@ -77,13 +78,34 @@ function hash(value){let n=2166136261;for(const c of String(value))n=Math.imul(n
 const openState={unlocked:true,horrorAccepted:true};
 const accessStates=[{}, {unlocked:true}, {horrorAccepted:true}, openState];
 const accessIndex=state=>(state.unlocked?1:0)+(state.horrorAccepted?2:0);
-export function createPatrolRoute({id='patrol',waypoints=[],speed=.22,pause=1.8,radius=.13}={}){
-  if(!Number.isFinite(speed)||speed<=0||!Number.isFinite(pause)||pause<0||!Number.isFinite(radius)||radius<0)throw new TypeError('Invalid patrol timing or radius');
+/** Cosine velocity ramps preserve the authored maximum speed, with zero velocity
+ * and zero acceleration where the actor stops. The path itself stays authored
+ * and collision checked; smoothing never rounds a corner through furniture.
+ */
+export function sampleTravel(distance,speed,ramp,elapsed){
+  if(!distance)return{distance:0,speed:0,duration:0};
+  const rise=Math.min(ramp,distance/speed),duration=distance/speed+rise,t=Math.max(0,Math.min(elapsed,duration));
+  if(!rise)return{distance:Math.min(distance,t*speed),speed:t<duration?speed:0,duration};
+  const start=d=>speed*(d/2-rise*Math.sin(Math.PI*d/rise)/(2*Math.PI));
+  const velocity=d=>speed*(.5-.5*Math.cos(Math.PI*d/rise));
+  if(t<rise)return{distance:start(t),speed:velocity(t),duration};
+  if(t>duration-rise){const left=duration-t;return{distance:distance-start(left),speed:velocity(left),duration};}
+  return{distance:speed*(t-rise/2),speed,duration};
+}
+export function createPatrolRoute({id='patrol',waypoints=[],speed=.22,pause=1.8,radius=.13,ramp=.42,turnDuration=.65,strideLength=.42}={}){
+  if(!Number.isFinite(speed)||speed<=0||!Number.isFinite(pause)||pause<0||!Number.isFinite(radius)||radius<0||!Number.isFinite(ramp)||ramp<0||!Number.isFinite(turnDuration)||turnDuration<0||!Number.isFinite(strideLength)||strideLength<=0)throw new TypeError('Invalid patrol timing or radius');
   const points=waypoints.map(p=>({x:p.x,z:p.z}));
   if(!points.length||points.some(p=>!patrolPointSafe(p,openState,radius)))throw new Error(`Unsafe patrol point: ${id}`);
   for(let i=0;i<points.length;i++)if(!patrolSegmentSafe(points[i],points[(i+1)%points.length],openState,radius))throw new Error(`Unsafe patrol segment: ${id}`);
-  let duration=0;const segments=points.map((a,i)=>{const b=points[(i+1)%points.length],distance=Math.hypot(b.x-a.x,b.z-a.z),travel=distance/speed;const segment=Object.freeze({a:Object.freeze(a),b:Object.freeze(b),start:duration,travel,distance,safe:Object.freeze(accessStates.map(state=>patrolSegmentSafe(a,b,state,radius)))});duration+=travel+pause;return segment;});
-  return Object.freeze({id,points:Object.freeze(points),segments:Object.freeze(segments),speed,pause,radius,duration,offset:hash(id)*duration});
+  // Even callers requesting no idle pause need time to turn after stopping.
+  const hold=Math.max(pause,turnDuration);let duration=0,totalDistance=0;
+  const segments=points.map((a,i)=>{
+    const b=points[(i+1)%points.length],next=points[(i+2)%points.length],distance=Math.hypot(b.x-a.x,b.z-a.z),travel=sampleTravel(distance,speed,ramp,0).duration;
+    const yaw=yawForVector(b.x-a.x,b.z-a.z),nextYaw=yawForVector(next.x-b.x,next.z-b.z,yaw);
+    const segment=Object.freeze({a:Object.freeze(a),b:Object.freeze(b),start:duration,distanceStart:totalDistance,travel,distance,yaw,nextYaw,turn:shortestTurn(yaw,nextYaw),safe:Object.freeze(accessStates.map(state=>patrolSegmentSafe(a,b,state,radius)))});
+    duration+=travel+hold;totalDistance+=distance;return segment;
+  });
+  return Object.freeze({id,points:Object.freeze(points),segments:Object.freeze(segments),speed,pause:hold,radius,ramp,turnDuration,strideLength,totalDistance,duration,offset:hash(id)*duration});
 }
 export function createActorPatrol(actor,{role='creator'}={}){
   const key=role==='creator'?actor.slotId:actor.id,source=PATROL_ROUTES[role]?.[key];
@@ -92,13 +114,21 @@ export function createActorPatrol(actor,{role='creator'}={}){
   return createPatrolRoute({id:`${role}:${key}`,waypoints:source.map(p=>({x:p.x+dx,z:p.z})),speed:role==='monster'?.2:.24});
 }
 export function samplePatrolPosition(route,timeSeconds=0,{motion=true,state={}}={}){
-  const home=route.points[0],still={...home,facing:'down',walking:false,phase:0};
+  const home=route.points[0],still={...home,facing:'down',walking:false,turning:false,phase:0,speed:0,distance:0,yaw:0,turnProgress:0,animationAssetComplete:false};
   if(!motion||route.points.length===1||!Number.isFinite(timeSeconds))return still;
   // A closed door cannot produce teleporting or walking through a blocked room.
   if(!route.segments[0].safe[accessIndex(state)])return still;
-  const t=((timeSeconds+route.offset)%route.duration+route.duration)%route.duration;
+  const clock=timeSeconds+route.offset,cycle=Math.floor(clock/route.duration),t=((clock%route.duration)+route.duration)%route.duration;
   const s=route.segments.find(s=>t<s.start+s.travel+route.pause)||route.segments.at(-1);
   if(!s.safe[accessIndex(state)])return still;
-  const elapsed=t-s.start,progress=s.travel?Math.min(1,elapsed/s.travel):0,dx=s.b.x-s.a.x,dz=s.b.z-s.a.z;
-  return {x:s.a.x+dx*progress,z:s.a.z+dz*progress,facing:Math.abs(dx)>Math.abs(dz)?dx>0?'right':'left':dz>0?'down':'up',walking:elapsed<s.travel&&s.distance>0,phase:timeSeconds*7};
+  const elapsed=t-s.start,travel=sampleTravel(s.distance,route.speed,route.ramp,elapsed),progress=s.distance?travel.distance/s.distance:0;
+  const pauseElapsed=elapsed-s.travel,turnStart=(route.pause-route.turnDuration)/2;
+  const turnProgress=route.turnDuration?Math.max(0,Math.min(1,(pauseElapsed-turnStart)/route.turnDuration)):Number(pauseElapsed>=0);
+  const eased=turnProgress*turnProgress*(3-2*turnProgress),yaw=s.yaw+s.turn*eased;
+  const distance=cycle*route.totalDistance+s.distanceStart+travel.distance;
+  return {x:s.a.x+(s.b.x-s.a.x)*progress,z:s.a.z+(s.b.z-s.a.z)*progress,
+    facing:facingForVector(Math.sin(yaw),Math.cos(yaw)),walking:travel.speed>1e-6,turning:Math.abs(s.turn)>1e-7&&turnProgress>0&&turnProgress<1,
+    phase:locomotionPhase(distance,route.strideLength),speed:travel.speed,distance,yaw,turnProgress,
+    // Directional walking sheets have no authored continuous turn or attack clips.
+    animationAssetComplete:false};
 }

@@ -1,0 +1,154 @@
+{
+  "id": "cna-black-bob",
+  "contentHeight": 256,
+  "directions": [
+    "down",
+    "right",
+    "up",
+    "left"
+  ],
+  "rig": {
+    "hipHeight": 75,
+    "hipHalfWidth": 12.5,
+    "neckHeight": 70,
+    "shoulderHeight": 55,
+    "shoulderHalfWidth": 24,
+    "thigh": 37,
+    "shin": 39,
+    "upperArm": 31,
+    "forearm": 36,
+    "headHeight": 106,
+    "hairHeight": 108,
+    "frontHairHeight": 1,
+    "torsoHeight": 60,
+    "skirtHeight": 36,
+    "tailsHeight": 1,
+    "lanternHeight": 1,
+    "waistOffset": 14
+  },
+  "screenSides": {
+    "left": 1,
+    "right": -1
+  },
+  "legSides": {
+    "left": 1,
+    "right": -1
+  },
+  "anatomicalSides": {
+    "left": 1,
+    "right": -1
+  },
+  "restHands": {
+    "left": [
+      32,
+      9
+    ],
+    "right": [
+      -32,
+      9
+    ]
+  },
+  "sourceSHA256": "4c7ffe785acf4ea48ac044536cd91a253dade736b66ccbdc8fa781bf3ecdf3ff",
+  "views": {
+    "down": {
+      "heading": 0,
+      "rig": {
+        "shoulderHalfWidth": 24,
+        "hipHalfWidth": 12.5
+      },
+      "screenSides": {
+        "left": 1,
+        "right": -1
+      },
+      "legSides": {
+        "left": 1,
+        "right": -1
+      },
+      "restHands": {
+        "left": [
+          32,
+          9
+        ],
+        "right": [
+          -32,
+          9
+        ]
+      }
+    },
+    "right": {
+      "heading": 1.5707963267948966,
+      "rig": {
+        "shoulderHalfWidth": 8,
+        "hipHalfWidth": 7
+      },
+      "screenSides": {
+        "left": -1,
+        "right": 1
+      },
+      "legSides": {
+        "left": -1,
+        "right": 1
+      },
+      "restHands": {
+        "left": [
+          -11,
+          9
+        ],
+        "right": [
+          11,
+          9
+        ]
+      }
+    },
+    "up": {
+      "heading": 3.141592653589793,
+      "rig": {
+        "shoulderHalfWidth": 24,
+        "hipHalfWidth": 12.5
+      },
+      "screenSides": {
+        "left": -1,
+        "right": 1
+      },
+      "legSides": {
+        "left": -1,
+        "right": 1
+      },
+      "restHands": {
+        "left": [
+          -32,
+          9
+        ],
+        "right": [
+          32,
+          9
+        ]
+      }
+    },
+    "left": {
+      "heading": -1.5707963267948966,
+      "rig": {
+        "shoulderHalfWidth": 8,
+        "hipHalfWidth": 7
+      },
+      "screenSides": {
+        "left": 1,
+        "right": -1
+      },
+      "legSides": {
+        "left": 1,
+        "right": -1
+      },
+      "restHands": {
+        "left": [
+          11,
+          9
+        ],
+        "right": [
+          -11,
+          9
+        ]
+      }
+    }
+  }
+}

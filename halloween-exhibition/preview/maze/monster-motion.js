@@ -1,3 +1,4 @@
+import {locomotionPhase} from './movement-runtime.js?v=20261017-review1';
 /** Shared atlas sampling: identical actual body-pose frames in 2D, 3D and battle. */
 export const MONSTER_IDS=Object.freeze(['pumpkin','ghost','bat','zombie','vampire','franken','witch','masked_wanderer','werewolf','mummy']);
 export function validMonsterLayout(value){
@@ -6,14 +7,19 @@ export function validMonsterLayout(value){
   if(typeof value.src!=='string'||!/^\.\/assets\/rpg\/animated\/[a-z_]+-walk\.webp$/.test(value.src))return false;
   return value.frames.every(f=>Array.isArray(f.frame)&&f.frame.length===4&&f.frame.every(Number.isFinite)&&f.frame[0]>=0&&f.frame[1]>=0&&f.frame[2]>0&&f.frame[3]>0&&f.frame[0]+f.frame[2]<=value.width&&f.frame[1]+f.frame[3]<=value.height&&Number.isFinite(f.anchorX)&&f.anchorX>=0&&f.anchorX<=1&&Number.isFinite(f.anchorY)&&f.anchorY>=0&&f.anchorY<=1&&Number.isFinite(f.contentHeight)&&f.contentHeight>0&&f.contentHeight<=value.height);
 }
-export function motionSprite(image,layout,{time=0,motion=true,walking=false,facing='right',battle=false}={}){
+export function motionSprite(image,layout,{time=0,motion=true,walking=false,facing='right',battle=false,phase,distance,strideLength=.42,turning=false}={}){
   if(!image||!layout)return null;
   const moving=motion&&(walking||battle||layout.idleAnimated===true),frames=layout.walkFrames||[0,1,2,3];
-  const speed=battle?Math.min(layout.fps||5,3):layout.fps||5,index=moving?frames[Math.floor(Math.max(0,Number.isFinite(time)?time:0)*speed)%frames.length]:layout.idleFrame||0;
+  const speed=battle?Math.min(layout.fps||5,3):layout.fps||5;
+  const gait=Number.isFinite(distance)?locomotionPhase(distance,strideLength):Number.isFinite(phase)?((phase%(Math.PI*2))+Math.PI*2)%(Math.PI*2):null;
+  const cursor=walking&&!battle&&gait!==null?Math.floor(gait/(Math.PI*2)*frames.length):Math.floor(Math.max(0,Number.isFinite(time)?time:0)*speed)%frames.length;
+  const index=moving?frames[cursor]:layout.idleFrame||0;
   const frame=layout.frames[index]||layout.frames[0],flip=(facing==='left')!==(layout.faces==='left');
-  return{image,...frame,contentHeight:layout.referenceHeightPixels||frame.contentHeight,frameIndex:index,flip,animated:true};
+  return{image,...frame,contentHeight:layout.referenceHeightPixels||frame.contentHeight,frameIndex:index,flip,animated:true,turning,animationAssetComplete:false,animationLimitations:['four-walk-poses','missing-authored-turn','missing-authored-attack']};
 }
 export function monsterSprite(art,id,options={}){
+  const articulated=options.battle?art.rigs?.battle('monster:'+id+':battle',{...options,effect:options.effect}):art.rigs?.get('monster:'+id);
+  if(articulated)return articulated;
   const sprite=art.images[id],layout=art.monsterLayouts?.[id];
   return layout&&sprite?motionSprite(sprite.image||sprite,layout,options):sprite||null;
 }

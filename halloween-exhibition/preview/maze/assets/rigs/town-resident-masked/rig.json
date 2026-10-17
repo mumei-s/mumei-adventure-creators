@@ -1,0 +1,626 @@
+{
+  "version": 1,
+  "id": "resident:masked",
+  "label": "仮面職人 セラ",
+  "archetype": "biped",
+  "atlas": "main",
+  "atlases": {
+    "main": "./parts.webp"
+  },
+  "width": 1024,
+  "height": 1024,
+  "contentHeight": 258,
+  "output": {
+    "width": 256,
+    "height": 320,
+    "anchorX": 0.5,
+    "anchorY": 0.94,
+    "scale": 1
+  },
+  "directions": [
+    "down-threequarter"
+  ],
+  "views": {
+    "down-threequarter": {
+      "heading": 0,
+      "atlas": "main",
+      "parts": {
+        "head": {
+          "rect": [
+            39.42857142857142,
+            50.857142857142854,
+            177.14285714285714,
+            153.7142857142857
+          ],
+          "pivot": [
+            88.57142857142857,
+            147.56571428571428
+          ],
+          "contentHeight": 153.7142857142857,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            5,
+            39,
+            310,
+            269
+          ]
+        },
+        "backHair": {
+          "rect": [
+            300.57142857142856,
+            37.14285714285714,
+            166.85714285714286,
+            181.14285714285714
+          ],
+          "pivot": [
+            85.71428571428571,
+            85.71428571428571
+          ],
+          "contentHeight": 181.14285714285714,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            336,
+            2,
+            292,
+            317
+          ]
+        },
+        "bodiceTorso": {
+          "rect": [
+            565.1428571428571,
+            49.71428571428571,
+            149.14285714285714,
+            156
+          ],
+          "pivot": [
+            74.57142857142857,
+            9.36
+          ],
+          "contentHeight": 156,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            648,
+            35,
+            261,
+            273
+          ]
+        },
+        "pelvisFrontSkirt": {
+          "rect": [
+            805.1428571428571,
+            41.14285714285714,
+            181.7142857142857,
+            173.7142857142857
+          ],
+          "pivot": [
+            90.85714285714285,
+            10.422857142857142
+          ],
+          "contentHeight": 173.7142857142857,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            930,
+            9,
+            318,
+            304
+          ]
+        },
+        "leftUpperArm": {
+          "rect": [
+            78.85714285714285,
+            305.7142857142857,
+            97.71428571428571,
+            156
+          ],
+          "pivot": [
+            35.40685714285714,
+            23.30457142857143
+          ],
+          "contentHeight": 156,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            103,
+            330,
+            171,
+            273
+          ],
+          "end": [
+            58.41485714285714,
+            129.48114285714286
+          ],
+          "span": 108.64051428571429
+        },
+        "leftForearmHand": {
+          "rect": [
+            335.4285714285714,
+            313.7142857142857,
+            97.14285714285714,
+            140.57142857142856
+          ],
+          "pivot": [
+            74.42114285714285,
+            25.153714285714283
+          ],
+          "contentHeight": 140.57142857142856,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            380,
+            333,
+            170,
+            246
+          ],
+          "end": [
+            24.524571428571427,
+            118.8862857142857
+          ],
+          "span": 106.1858857142857
+        },
+        "rightUpperArm": {
+          "rect": [
+            597.7142857142857,
+            305.1428571428571,
+            84.57142857142857,
+            157.14285714285714
+          ],
+          "pivot": [
+            43.61257142857143,
+            23.906285714285712
+          ],
+          "contentHeight": 157.14285714285714,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            708,
+            336,
+            148,
+            275
+          ],
+          "end": [
+            38.43885714285714,
+            131.76285714285714
+          ],
+          "span": 107.98034285714284
+        },
+        "rightForearmHand": {
+          "rect": [
+            842.2857142857142,
+            317.7142857142857,
+            107.42857142857142,
+            132.57142857142856
+          ],
+          "pivot": [
+            25.88285714285714,
+            27.835428571428572
+          ],
+          "contentHeight": 132.57142857142856,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            1014,
+            333,
+            188,
+            232
+          ],
+          "end": [
+            74.69314285714285,
+            116.31828571428571
+          ],
+          "span": 101.05279999999999
+        },
+        "leftUpperLeg": {
+          "rect": [
+            76.57142857142857,
+            558.2857142857142,
+            102.28571428571428,
+            162.85714285714286
+          ],
+          "pivot": [
+            56.55142857142857,
+            23.07028571428571
+          ],
+          "contentHeight": 162.85714285714286,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            54,
+            630,
+            179,
+            285
+          ],
+          "end": [
+            47.362857142857145,
+            137.18057142857143
+          ],
+          "span": 114.47925714285714
+        },
+        "leftLowerLegBoot": {
+          "rect": [
+            339.4285714285714,
+            554.2857142857142,
+            89.14285714285714,
+            170.85714285714286
+          ],
+          "pivot": [
+            56.57142857142857,
+            14.528571428571428
+          ],
+          "contentHeight": 170.85714285714286,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            371,
+            617,
+            156,
+            299
+          ],
+          "end": [
+            56.57142857142857,
+            168.57142857142856
+          ],
+          "span": 154.04285714285712
+        },
+        "rightUpperLeg": {
+          "rect": [
+            590.8571428571428,
+            560.5714285714286,
+            98.28571428571428,
+            158.28571428571428
+          ],
+          "pivot": [
+            38.87714285714285,
+            23.869714285714284
+          ],
+          "contentHeight": 158.28571428571428,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            708,
+            631,
+            172,
+            277
+          ],
+          "end": [
+            68.45085714285715,
+            133.37542857142856
+          ],
+          "span": 113.4286857142857
+        },
+        "rightLowerLegBoot": {
+          "rect": [
+            852.5714285714286,
+            554.2857142857142,
+            86.28571428571428,
+            171.42857142857142
+          ],
+          "pivot": [
+            35.42857142857142,
+            14.571428571428571
+          ],
+          "contentHeight": 171.42857142857142,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            1047,
+            617,
+            151,
+            300
+          ],
+          "end": [
+            35.42857142857142,
+            169.14285714285714
+          ],
+          "span": 154.57142857142856
+        },
+        "lantern": {
+          "visible": false,
+          "rect": [
+            0,
+            0,
+            0.5714285714285714,
+            0.5714285714285714
+          ],
+          "pivot": [
+            0,
+            0
+          ],
+          "contentHeight": 0.5714285714285714,
+          "optionalEmpty": true
+        },
+        "backSkirtTails": {
+          "rect": [
+            275.4285714285714,
+            806.8571428571428,
+            216.57142857142856,
+            177.7142857142857
+          ],
+          "pivot": [
+            108.28571428571428,
+            14.217142857142855
+          ],
+          "contentHeight": 177.7142857142857,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            317,
+            937,
+            379,
+            311
+          ]
+        },
+        "leftFrontHair": {
+          "visible": false,
+          "rect": [
+            0,
+            0,
+            0.5714285714285714,
+            0.5714285714285714
+          ],
+          "pivot": [
+            0,
+            0
+          ],
+          "contentHeight": 0.5714285714285714,
+          "optionalEmpty": true
+        },
+        "rightFrontHair": {
+          "visible": false,
+          "rect": [
+            0,
+            0,
+            0.5714285714285714,
+            0.5714285714285714
+          ],
+          "pivot": [
+            0,
+            0
+          ],
+          "contentHeight": 0.5714285714285714,
+          "optionalEmpty": true
+        },
+        "heldProp": {
+          "rect": [
+            47.42857142857142,
+            813.7142857142857,
+            161.14285714285714,
+            164
+          ],
+          "pivot": [
+            56,
+            91.42857142857142
+          ],
+          "contentHeight": 164,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            27,
+            947,
+            282,
+            287
+          ]
+        },
+        "frontLockLeft": {
+          "rect": [
+            600,
+            816.5714285714286,
+            79.42857142857143,
+            158.28571428571428
+          ],
+          "pivot": [
+            39.714285714285715,
+            12.662857142857142
+          ],
+          "contentHeight": 158.28571428571428,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            729,
+            945,
+            139,
+            277
+          ]
+        },
+        "frontLockRight": {
+          "rect": [
+            856,
+            814.2857142857142,
+            79.42857142857143,
+            163.42857142857142
+          ],
+          "pivot": [
+            39.714285714285715,
+            13.074285714285713
+          ],
+          "contentHeight": 163.42857142857142,
+          "independentlyAuthored": true,
+          "sourceRect": [
+            1031,
+            947,
+            139,
+            286
+          ]
+        }
+      },
+      "screenSides": {
+        "left": 1,
+        "right": -1
+      },
+      "legSides": {
+        "left": 1,
+        "right": -1
+      },
+      "rig": {
+        "thigh": 58,
+        "shin": 50,
+        "upperArm": 34,
+        "forearm": 34,
+        "hipHeight": 107,
+        "hipHalfWidth": 15,
+        "shoulderHeight": 60,
+        "shoulderHalfWidth": 28,
+        "neckHeight": 78,
+        "headHeight": 73,
+        "hairHeight": 155,
+        "frontHairHeight": 60,
+        "torsoHeight": 77,
+        "skirtHeight": 118,
+        "tailsHeight": 118,
+        "lanternHeight": 1,
+        "waistOffset": 24
+      },
+      "restHands": {
+        "left": [
+          21,
+          -23
+        ],
+        "right": [
+          -53,
+          -60
+        ]
+      },
+      "appendages": [
+        {
+          "part": "heldProp",
+          "anchor": "rightWrist",
+          "offset": [
+            0,
+            0
+          ],
+          "height": 62,
+          "layer": "front",
+          "amplitude": 0.045,
+          "frequency": 1.2
+        }
+      ],
+      "idleHands": {
+        "left": {
+          "amplitude": [
+            0.4,
+            0.7
+          ],
+          "frequency": 1.2,
+          "phase": 0.2
+        },
+        "right": {
+          "amplitude": [
+            0.5,
+            1.2
+          ],
+          "frequency": 1.2,
+          "phase": 0
+        }
+      }
+    }
+  },
+  "screenSides": {
+    "left": 1,
+    "right": -1
+  },
+  "legSides": {
+    "left": 1,
+    "right": -1
+  },
+  "anatomicalSides": {
+    "left": 1,
+    "right": -1
+  },
+  "restHands": {
+    "left": [
+      21,
+      -23
+    ],
+    "right": [
+      -53,
+      -60
+    ]
+  },
+  "rig": {
+    "thigh": 58,
+    "shin": 50,
+    "upperArm": 34,
+    "forearm": 34,
+    "hipHeight": 107,
+    "hipHalfWidth": 15,
+    "shoulderHeight": 60,
+    "shoulderHalfWidth": 28,
+    "neckHeight": 78,
+    "headHeight": 73,
+    "hairHeight": 155,
+    "frontHairHeight": 60,
+    "torsoHeight": 77,
+    "skirtHeight": 118,
+    "tailsHeight": 118,
+    "lanternHeight": 1,
+    "waistOffset": 24
+  },
+  "idleHands": {
+    "left": {
+      "amplitude": [
+        0.4,
+        0.7
+      ],
+      "frequency": 1.2,
+      "phase": 0.2
+    },
+    "right": {
+      "amplitude": [
+        0.5,
+        1.2
+      ],
+      "frequency": 1.2,
+      "phase": 0
+    }
+  },
+  "activity": {
+    "kind": "held-half-mask-grip-sway",
+    "stationaryBody": true,
+    "plantedFeet": true,
+    "runtimeHookRequired": "idleHands-before-arm-IK",
+    "runtimeHookStatus": "verified-active-in-clean-owner-rig",
+    "notes": "Front three-quarter NPC gesture only; not locomotion, turning or attack artwork."
+  },
+  "continuousTurnComplete": false,
+  "attackArtComplete": false,
+  "artworkComplete": false,
+  "stationaryQuestNpc": true,
+  "authoredPartCount": 16,
+  "review": {
+    "passed": true,
+    "status": "native76-front-idle-reviewed",
+    "scope": "Stationary quest resident. Newly authored front-three-quarter parts; independent hand/prop idle, fixed feet/pelvis/neck. Cardinal locomotion not used for this stationary role.",
+    "method": "Native Canvas visual review and 180 frame attachment/contact checks; browser/GPU not verified."
+  },
+  "provenance": {
+    "method": "built-in-imagegen",
+    "sourceReference": "adopted-identity-reference.png",
+    "sourceReferenceSha256": "3fa84acde0b933d39e1d2c88bc6c6e93c8cb69d1809587e474eacd4cd6c30ad5",
+    "sourceWholeBodySlicing": false,
+    "newlyAuthoredHiddenSurfaces": true,
+    "packing": "NEW independently drawn slot components. Original RGBA retained within 3px of alpha>230 components; no scaling, reshaping, redrawing, or whole-body slicing.",
+    "sourceRaw": "parts-front-v1-original.png",
+    "sourceRawSha256": "1c29cdef60f8a29dc66cdc26c4a338e22755b3bec871e2077aaeeac1ce4d8f77",
+    "sourceRawSize": [
+      1254,
+      1254
+    ],
+    "correctedSourceFiles": [],
+    "limitations": [
+      "One authored front three-quarter pose only.",
+      "No profile, back or intermediate turn drawings.",
+      "Native 76px anatomy/held-prop proof required before adoption."
+    ],
+    "deliveryPacking": "Only atlas packing and Lanczos resampling; rig dimensions, costume pixels and alpha remain authored.",
+    "authoringSources": [
+      {
+        "key": "main",
+        "originalSHA256": "df9fe7adf16e15abea1f0cbea4ebf4e2fb258701e5f25b8374f80a0f2b684b60",
+        "authoringSHA256": "47aa140762e3f173b4f49d7a0795c0a632dd2a9229fd2b13688bd45e7dcfe991",
+        "sourceWidth": 1792,
+        "sourceHeight": 1792,
+        "transform": {
+          "scale": 0.5714285714285714,
+          "x": 0,
+          "y": 0
+        }
+      }
+    ]
+  },
+  "referenceComposedBounds": {
+    "x": 126,
+    "y": 132,
+    "w": 145,
+    "h": 258,
+    "pixels": 27237
+  },
+  "animationReviewed": true
+}

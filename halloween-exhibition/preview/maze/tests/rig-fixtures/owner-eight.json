@@ -1,0 +1,171 @@
+{
+  "id": "owner-authored-rig-pilot-v1",
+  "contentHeight": 256,
+  "direction": "down-threequarter",
+  "directions": [
+    "down",
+    "down-right",
+    "right",
+    "up-right",
+    "up",
+    "up-left",
+    "left",
+    "down-left"
+  ],
+  "rig": {
+    "hipHeight": 75,
+    "hipHalfWidth": 9,
+    "neckHeight": 51,
+    "shoulderHeight": 45,
+    "shoulderHalfWidth": 19,
+    "thigh": 37,
+    "shin": 40,
+    "upperArm": 30,
+    "forearm": 31,
+    "headHeight": 140,
+    "hairHeight": 154,
+    "frontHairHeight": 61,
+    "torsoHeight": 52,
+    "skirtHeight": 55,
+    "tailsHeight": 86,
+    "lanternHeight": 54,
+    "waistOffset": 14
+  },
+  "screenSides": {
+    "left": -1,
+    "right": 1
+  },
+  "legSides": {
+    "left": 1,
+    "right": -1
+  },
+  "anatomicalSides": {
+    "left": 1,
+    "right": -1
+  },
+  "sourceSHA256": "edfbf00494a094dd4b375c61c2e74bebda9c09e8bac4c46ddfcd862acf1687b2",
+  "views": {
+    "down": {
+      "heading": 0,
+      "rig": {},
+      "screenSides": {
+        "left": -1,
+        "right": 1
+      },
+      "legSides": {
+        "left": 1,
+        "right": -1
+      }
+    },
+    "right": {
+      "heading": 1.5707963267948966,
+      "rig": {
+        "headHeight": 150,
+        "shoulderHalfWidth": 4,
+        "hipHalfWidth": 4
+      },
+      "screenSides": {
+        "left": -1,
+        "right": 1
+      },
+      "legSides": {
+        "left": 1,
+        "right": -1
+      }
+    },
+    "up": {
+      "heading": 3.141592653589793,
+      "rig": {
+        "headHeight": 150
+      },
+      "screenSides": {
+        "left": 1,
+        "right": -1
+      },
+      "legSides": {
+        "left": -1,
+        "right": 1
+      }
+    },
+    "left": {
+      "heading": -1.5707963267948966,
+      "rig": {
+        "headHeight": 159,
+        "shoulderHalfWidth": 4,
+        "hipHalfWidth": 4
+      },
+      "screenSides": {
+        "left": 1,
+        "right": -1
+      },
+      "legSides": {
+        "left": -1,
+        "right": 1
+      }
+    },
+    "down-right": {
+      "heading": 0.7853981633974483,
+      "rig": {
+        "headHeight": 153.94736842105263,
+        "shoulderHalfWidth": 13.5,
+        "hipHalfWidth": 6.5
+      },
+      "screenSides": {
+        "left": -1,
+        "right": 1
+      },
+      "legSides": {
+        "left": 1,
+        "right": -1
+      }
+    },
+    "up-right": {
+      "heading": 2.356194490192345,
+      "rig": {
+        "headHeight": 150.90032154340835,
+        "shoulderHalfWidth": 13.5,
+        "hipHalfWidth": 6.5
+      },
+      "screenSides": {
+        "left": 1,
+        "right": -1
+      },
+      "legSides": {
+        "left": -1,
+        "right": 1
+      }
+    },
+    "up-left": {
+      "heading": -2.356194490192345,
+      "rig": {
+        "headHeight": 157.06484641638227,
+        "shoulderHalfWidth": 13.5,
+        "hipHalfWidth": 6.5
+      },
+      "screenSides": {
+        "left": 1,
+        "right": -1
+      },
+      "legSides": {
+        "left": -1,
+        "right": 1
+      }
+    },
+    "down-left": {
+      "heading": -0.7853981633974483,
+      "rig": {
+        "headHeight": 161.27147766323023,
+        "shoulderHalfWidth": 13.5,
+        "hipHalfWidth": 6.5
+      },
+      "screenSides": {
+        "left": -1,
+        "right": 1
+      },
+      "legSides": {
+        "left": 1,
+        "right": -1
+      }
+    }
+  }
+}

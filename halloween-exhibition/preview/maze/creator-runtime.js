@@ -1,4 +1,5 @@
-import {createActorPatrol,samplePatrolPosition} from './patrol-model.js?v=20261016-living1';
+import {locomotionPhase} from './movement-runtime.js?v=20261017-review1';
+import {createActorPatrol,samplePatrolPosition,patrolSegmentSafe} from './patrol-model.js?v=20261017-review1';
 import { blocked, CELL } from './maze-model.js?v=20261014-adventure2';
 import { inFurniture } from './rpg-model.js?v=20261014-adventure2';
 
@@ -6,6 +7,10 @@ export const CHARACTER_DIRECTIONS = Object.freeze(['down','left','right','up']);
 export const CREATOR_FICTION_NOTICE = 'この会話はゲーム内の創作です。作者本人の発言ではありません。';
 export const CHARACTER_BUDGET = Object.freeze({ concurrent:2, resident:8, decodedBytes:32*1024*1024, active:5 });
 const array = value => Array.isArray(value) ? value : [];
+const CNA_ID='grand_daisy8632',CNA_PROFILE='https://note.com/grand_daisy8632',CNA_APPROVAL='cna-three-character-reference-20261017',CNA_GROUP='cna-profile-guests';
+const CNA_ENTITIES=Object.freeze(['cna-black-bob','cna-star-twintails','cna-orange-glasses']);
+const exactEntities=(actual,expected)=>Array.isArray(actual)&&actual.length===expected.length&&new Set(actual).size===expected.length&&actual.every(id=>expected.includes(id));
+const referenceHash=value=>typeof value==='string'&&/^[a-f0-9]{64}$/.test(value);
 const finite = (value,min,max) => Number.isFinite(value) && value>=min && value<=max;
 const idOkay = value => typeof value==='string' && /^[a-zA-Z0-9][a-zA-Z0-9_-]{0,119}$/.test(value);
 export function noteArticleURL(value) {
@@ -30,9 +35,9 @@ export function layoutProblem(asset) {
   }
   return null;
 }
-function verifiedSource(source,creatorId) {
+function verifiedSource(source,creatorId,{profileGuest=false}={}) {
   if (!source || source.verified!==true) return false;
-  if (source.kind==='user-upload') return creatorId==='ss_yr' && source.referenceId==='owner-lantern-reference-20261016' && typeof source.referenceSHA256==='string' && /^[a-f0-9]{64}$/.test(source.referenceSHA256);
+  if (source.kind==='user-upload') return referenceHash(source.referenceSHA256)&&((creatorId==='ss_yr'&&source.referenceId==='owner-lantern-reference-20261016')||(profileGuest&&creatorId===CNA_ID&&source.referenceId===CNA_APPROVAL));
   if(source.kind==='profile-avatar'){
     try{const profile=new URL(source.profileURL),image=new URL(source.imageURL);
       return source.userSelected===true&&profile.protocol==='https:'&&profile.hostname==='note.com'&&!profile.port&&!profile.username&&!profile.password&&profile.pathname.replace(/\/$/,'')==='/'+creatorId&&
@@ -43,18 +48,33 @@ function verifiedSource(source,creatorId) {
   try { const image=new URL(source.imageURL); return image.protocol==='https:' && !image.username && !image.password; } catch { return false; }
 }
 
+/** A named user approval permits exactly these three CNA profile characters.
+ * It is a visual guest exception, never proof that a pending article exists. */
+function profileGuestApproval(manifest,creators,pendingCreators){
+ const grants=array(manifest.profileGuests).filter(item=>item?.creatorId===CNA_ID),grant=grants[0],creator=creators.get(CNA_ID),review=manifest.referenceReviews?.[CNA_ID];
+ const groups=array(manifest.groups).filter(item=>item?.id===CNA_GROUP);
+ if(grants.length!==1||!creator||!pendingCreators.has(CNA_ID)||creator.profileURL!==CNA_PROFILE||grant.approved!==true||grant.approvalId!==CNA_APPROVAL||
+   grant.profileURL!==CNA_PROFILE||grant.submissionStatus!=='pending'||!referenceHash(grant.referenceSHA256)||!exactEntities(grant.entityIds,CNA_ENTITIES)||
+   groups.length!==1||!exactEntities(groups[0].requiredEntityIds,CNA_ENTITIES)||
+   review?.reviewed!==true||review.avatarVisuallyInspected!==true||review.decision!=='user-confirmed-profile-guest'||!exactEntities(review.entityIds,CNA_ENTITIES)||
+   review.avatarReference?.kind!=='profile-avatar'||review.avatarReference.profileURL!==CNA_PROFILE||review.avatarReference.imageURL!==creator.avatar||!verifiedSource(review.avatarReference,CNA_ID))return null;
+ return grant;
+}
+
 export function compileCharacterRoster(archive, manifest, selectedYear) {
   const years=array(archive?.years), selected=years.find(y=>y.year===selectedYear)||[...years].sort((a,b)=>b.year-a.year)[0];
-  const creators=new Map(array(archive?.creators).map(c=>[c.id,c])), submissions=new Set(), visibleCreators=new Set();
+  const creators=new Map(array(archive?.creators).map(c=>[c.id,c])), submissions=new Set(), visibleCreators=new Set(), pendingCreators=new Set();
   for (const entry of array(selected?.entries)) {
     if (entry.visible===false) continue;
     visibleCreators.add(entry.creatorId);
+    if(entry.submissionStatus==='pending')pendingCreators.add(entry.creatorId);
     if (entry.submissionStatus!=='submitted') continue;
     for (const link of [...array(entry.works),...array(entry.links)]) {
       const url=noteArticleURL(link?.url); if (link.visible!==false && url) submissions.add(entry.creatorId+'|'+url);
     }
   }
   const ready=[], omitted=[], usedIds=new Set(), entityOwners=new Map();
+  const guestApproval=profileGuestApproval(manifest||{},creators,pendingCreators);
   if (manifest?.schemaVersion!==1) return {hero:null,npcs:[],omitted:[{id:null,reason:'invalid-schema'}],year:selected?.year,visibleCreatorCount:visibleCreators.size};
   for (const entry of array(manifest.characters)) {
     const skip=reason=>omitted.push({id:entry?.id||null,creatorId:entry?.creatorId||null,reason});
@@ -62,7 +82,11 @@ export function compileCharacterRoster(archive, manifest, selectedYear) {
     if (usedIds.has(entry.id)) {skip('duplicate-id');continue;} usedIds.add(entry.id);
     if (entry.ready!==true) {skip('not-ready');continue;}
     if (entry.blockedReason || manifest.blockedCreators?.[entry.creatorId]) {skip('blocked-reference');continue;}
-    if(manifest.referencePolicy?.requireReviewed){
+    const profileGuest=entry.participationRole==='profile-guest';
+    if(profileGuest&&(!guestApproval||entry.creatorId!==CNA_ID||entry.role!=='npc'||entry.groupId!==CNA_GROUP||entry.articleURL!==null||entry.profileURL!==CNA_PROFILE||
+      (entry.submissionStatus!==undefined&&entry.submissionStatus!=='pending')||array(entry.entityIds).length!==1||!CNA_ENTITIES.includes(entry.entityIds[0])||
+      entry.source?.kind!=='user-upload'||entry.source.referenceId!==CNA_APPROVAL||entry.source.referenceSHA256!==guestApproval.referenceSHA256)){skip('unapproved-profile-guest');continue;}
+    if(!profileGuest&&manifest.referencePolicy?.requireReviewed){
       const review=manifest.referenceReviews?.[entry.creatorId];
       if(review?.reviewed!==true||review.avatarVisuallyInspected!==true||!['profile-avatar-replacement','profile-avatar-match','article-fallback','owner-user-reference','official-character-sheet'].includes(review.decision)||
         !array(entry.entityIds).every(id=>array(review.entityIds).includes(id))||!verifiedSource(review.avatarReference,entry.creatorId)){skip('avatar-review-pending');continue;}
@@ -71,17 +95,17 @@ export function compileCharacterRoster(archive, manifest, selectedYear) {
         (review.decision==='profile-avatar-replacement'&&entry.source?.kind!=='profile-avatar')){skip('reference-policy-mismatch');continue;}
     }
     const articleURL=noteArticleURL(entry.articleURL);
-    if (!submissions.has(entry.creatorId+'|'+articleURL)) {skip('not-a-visible-submission');continue;}
+    if (!profileGuest&&!submissions.has(entry.creatorId+'|'+articleURL)) {skip('not-a-visible-submission');continue;}
     const entityIds=array(entry.entityIds);
     if (!entityIds.length || entityIds.some(id=>!idOkay(id)||entityOwners.has(id))) {skip('invalid-or-duplicate-entities');continue;}
-    if (!verifiedSource(entry.source,entry.creatorId) || entry.identityReviewed!==true || entry.animationReviewed!==true) {skip('unreviewed-source-or-animation');continue;}
+    if (!verifiedSource(entry.source,entry.creatorId,{profileGuest}) || entry.identityReviewed!==true || entry.animationReviewed!==true) {skip('unreviewed-source-or-animation');continue;}
     const issue=layoutProblem(entry.asset);if(issue){skip(issue);continue;}
     if (!['hero','npc'].includes(entry.role) || (entry.role==='hero'&&entry.creatorId!=='ss_yr') ||
         (entry.role==='npc'&&entry.creatorId==='ss_yr')) {skip('invalid-owner-role');continue;}
     if (entry.role==='npc' && entry.interactive!==false && (typeof entry.greeting!=='string'||!entry.greeting.trim()||entry.greeting.length>180||entry.greetingKind!=='fictional-game-dialogue')) {skip('missing-fictional-dialogue');continue;}
     const creator=creators.get(entry.creatorId);
     for(const id of entityIds)entityOwners.set(id,entry.id);
-    ready.push({...entry,articleURL,name:creator.name,label:entry.label||creator.name,groupId:entry.groupId||entry.creatorId,
+    ready.push({...entry,...(profileGuest?{submissionStatus:'pending',profileURL:CNA_PROFILE}:{}),articleURL,name:creator.name,label:entry.label||creator.name,groupId:entry.groupId||entry.creatorId,
       asset:structuredClone(entry.asset),entityIds:[...entityIds],heightPx:finite(entry.heightPx,24,120)?entry.heightPx:86,
       heightWorld:finite(entry.heightWorld,.5,3.5)?entry.heightWorld:2.35});
   }
@@ -91,7 +115,9 @@ export function compileCharacterRoster(archive, manifest, selectedYear) {
     if(!group.requiredEntityIds?.length)continue;
     if(group.requiredEntityIds.some(id=>!entityOwners.has(id)))incomplete.add(group.id);
   }
-  const accepted=ready.filter(entry=>{if(!incomplete.has(entry.groupId))return true;omitted.push({id:entry.id,creatorId:entry.creatorId,reason:'incomplete-group'});return false;});
+  const guests=ready.filter(entry=>entry.participationRole==='profile-guest');
+  const guestsComplete=guests.length===3&&exactEntities(guests.flatMap(entry=>entry.entityIds),CNA_ENTITIES)&&new Set(guests.map(entry=>entry.asset.src)).size===3;
+  const accepted=ready.filter(entry=>{if(entry.participationRole==='profile-guest'&&!guestsComplete){omitted.push({id:entry.id,creatorId:entry.creatorId,reason:'incomplete-profile-guest-group'});return false;}if(!incomplete.has(entry.groupId))return true;omitted.push({id:entry.id,creatorId:entry.creatorId,reason:'incomplete-group'});return false;});
   const heroes=accepted.filter(entry=>entry.role==='hero'),readyCreators=new Set(accepted.map(entry=>entry.creatorId)),missingCreators=[...new Set([...submissions].map(key=>key.split('|')[0]))].filter(id=>!readyCreators.has(id));
   return {missingCreators,readyCreatorCount:readyCreators.size,hero:heroes.length===1?heroes[0]:null,npcs:accepted.filter(entry=>entry.role==='npc'),omitted,year:selected?.year,
     visibleCreatorCount:visibleCreators.size,submittedCreatorCount:new Set([...submissions].map(key=>key.split('|')[0])).size};
@@ -135,7 +161,7 @@ export function characterSprite(asset,image,facing='down',walking=false,phase=0)
   const index=walking?Math.floor(((phase%(Math.PI*2)+Math.PI*2)%(Math.PI*2))/(Math.PI*2)*4):0;
   const column=walking?layout.walkColumns[index]:layout.idleColumn,cell=layout.frames[row][column];
   const sx=image.width/asset.width,sy=image.height/asset.height;
-  return {image,frame:[cell.frame[0]*sx,cell.frame[1]*sy,cell.frame[2]*sx,cell.frame[3]*sy],
+  return {image,frameIndex:column,animationAssetComplete:false,frame:[cell.frame[0]*sx,cell.frame[1]*sy,cell.frame[2]*sx,cell.frame[3]*sy],
     anchorX:cell.anchorX,anchorY:cell.anchorY,contentHeight:cell.contentHeight*sy};
 }
 export function lineOfSight(player,target,state={}) {
@@ -184,38 +210,41 @@ export async function browserImage(url,asset) {
   return image;
 }
 export function createCharacterAssets({loadImage=browserImage,maxResident=CHARACTER_BUDGET.resident,maxBytes=CHARACTER_BUDGET.decodedBytes,
-  concurrent=CHARACTER_BUDGET.concurrent,onChange=()=>{}}={}) {
-  const cache=new Map(),pending=new Map(),failures=new Map(),queue=[];let running=0,disposed=false,clock=0,pinned=new Set();
+  concurrent=CHARACTER_BUDGET.concurrent,maxPending=64,maxFailures=64,onChange=()=>{}}={}) {
+  if(!Number.isInteger(maxResident)||maxResident<1||!Number.isFinite(maxBytes)||maxBytes<1||!Number.isInteger(concurrent)||concurrent<1||!Number.isInteger(maxPending)||maxPending<concurrent||!Number.isInteger(maxFailures)||maxFailures<1)throw new TypeError('Invalid character cache budget');
+  const cache=new Map(),pending=new Map(),failures=new Map(),queue=[],active=new Set();let running=0,disposed=false,clock=0,pinned=new Set(),rejectedRequests=0;
+  const changed=()=>{try{onChange();}catch{/* View observers cannot turn successful decoding into a failed asset. */}};
   const bytes=image=>image.width*image.height*4;
   const total=()=>[...cache.values()].reduce((sum,item)=>sum+bytes(item.image),0);
   function evict(){
     while(cache.size>maxResident||total()>maxBytes){const item=[...cache.values()].filter(item=>!pinned.has(item.src)).sort((a,b)=>a.used-b.used)[0];if(!item)break;cache.delete(item.src);item.image.close?.();}
   }
   function pump(){
-    while(!disposed&&running<concurrent&&queue.length){const task=queue.shift();running++;
+    while(!disposed&&running<concurrent&&queue.length){const task=queue.shift();running++;active.add(task);
       Promise.resolve().then(()=>loadImage(new URL('./'+task.asset.src+(task.asset.sha256?'?v='+task.asset.sha256.slice(0,12):''),import.meta.url).href,task.asset)).then(image=>{
         if(disposed){image.close?.();task.resolve(null);return;}
         if(!image||!finite(image.width,1,4096)||!finite(image.height,1,4096)||Math.abs(image.width/image.height-task.asset.width/task.asset.height)>.01){image?.close?.();throw Error('Character dimensions mismatch');}
         cache.set(task.asset.src,{src:task.asset.src,image,used:++clock});evict();
         if(!cache.has(task.asset.src))throw Error('Character cache capacity reached');
         if(cache.size>maxResident||total()>maxBytes){cache.delete(task.asset.src);image.close?.();throw Error('Character decode budget exceeded');}
-        onChange();task.resolve(image);
-      }).catch(error=>{if(!disposed){failures.set(task.asset.src,String(error.message||error));onChange();}task.resolve(null);})
-        .finally(()=>{running--;pending.delete(task.asset.src);pump();});
+        changed();task.resolve(image);
+      }).catch(error=>{if(!disposed){failures.set(task.asset.src,String(error.message||error));while(failures.size>maxFailures)failures.delete(failures.keys().next().value);changed();}task.resolve(null);})
+        .finally(()=>{running--;active.delete(task);pending.delete(task.asset.src);pump();});
     }
   }
   return {
     get(src){const item=cache.get(src);if(item){item.used=++clock;return item.image;}return null;},
     request(asset){
-      if(disposed||failures.has(asset.src)||layoutProblem(asset))return Promise.resolve(null);
+      if(disposed||layoutProblem(asset)||failures.has(asset.src))return Promise.resolve(null);
       if(cache.has(asset.src))return Promise.resolve(cache.get(asset.src).image);
       if(pending.has(asset.src))return pending.get(asset.src);
+      if(pending.size>=maxPending){rejectedRequests++;return Promise.resolve(null);}
       const promise=new Promise(resolve=>queue.push({asset,resolve}));pending.set(asset.src,promise);pump();return promise;
     },
     setPinned(sources){pinned=new Set(sources);evict();},
     retry(){failures.clear();},
-    status(){return{loaded:cache.size,pending:pending.size,failed:failures.size,decodedBytes:total(),failures:[...failures.keys()]};},
-    dispose(){disposed=true;for(const task of queue.splice(0))task.resolve(null);for(const item of cache.values())item.image.close?.();cache.clear();pending.clear();},
+    status(){return{loaded:cache.size,pending:pending.size,failed:failures.size,decodedBytes:total(),rejectedRequests,failures:[...failures.keys()]};},
+    dispose(){disposed=true;for(const task of active)task.resolve(null);for(const task of queue.splice(0))task.resolve(null);for(const item of cache.values())item.image.close?.();cache.clear();pending.clear();},
   };
 }
 
@@ -230,11 +259,34 @@ export function scaledCharacterLayout(asset,image){
   return {...asset.layout,frames:asset.layout.frames.map(row=>row.map(cell=>({...cell,frame:[cell.frame[0]*sx,cell.frame[1]*sy,cell.frame[2]*sx,cell.frame[3]*sy],contentHeight:cell.contentHeight*sy})))};
 }
 export function compileCompanions(manifest){return array(manifest?.companions).filter(c=>c.ready===true&&c.identityReviewed===true&&c.animationReviewed===true&&verifiedSource(c.source,'ss_yr')&&!layoutProblem(c.asset));}
+const companionStarts=new WeakMap();
 export function companionActor(definition,image,trail,state,{facing='down',walking=false,phase=0}={}){
-  if(!image||!trail.length)return null;const past=trail[Math.max(0,trail.length-10)],direction=past.facing||facing;
-  const lateral=({down:[.34,0],up:[-.34,0],left:[0,.34],right:[0,-.34]})[direction]||[.34,0];
-  const goal={...past,x:past.x+lateral[0],z:past.z+lateral[1]+(trail.length<10?.22:0)};
-  if(blocked(goal.x*CELL,goal.z*CELL,state)||inFurniture(goal.x*CELL,goal.z*CELL))return null;
-  return {...definition,creatorId:'ss_yr',groupId:'owner-companion',label:'',name:'',x:goal.x,z:goal.z,facing:goal.facing||facing,walking,phase,
-    sprite:characterSprite(definition.asset,image,goal.facing||facing,walking,phase),heightPx:definition.heightPx||40,heightWorld:definition.heightWorld||1,interactive:false};
+  if(!image)return null;
+  let goal;
+  if(typeof trail?.sample==='function'){
+    goal=trail.sample(.42);
+    if(goal?.origin){
+      let start=companionStarts.get(trail);
+      if(start?.origin!==goal.origin){
+        const vector=({down:[0,1],up:[0,-1],left:[-1,0],right:[1,0]})[goal.origin.facing]||[0,1];
+        const behind=[.42,.32,.22,.12,0].find(length=>patrolSegmentSafe(goal.origin,{x:goal.origin.x-vector[0]*length,z:goal.origin.z-vector[1]*length},state,.07))??0;
+        start={origin:goal.origin,vector,behind};companionStarts.set(trail,start);
+      }
+      const startup=Math.min(start.behind,Math.max(0,.42-goal.headDistance));
+      if(startup>0)goal={...goal,x:goal.origin.x-start.vector[0]*startup,z:goal.origin.z-start.vector[1]*startup,facing:goal.origin.facing};
+      const travelled=Math.max(0,goal.headDistance-(.42-start.behind));
+      goal={...goal,phase:locomotionPhase(travelled,.68)};
+      walking=walking&&travelled>1e-7;
+    }
+  }
+  else if(Array.isArray(trail)&&trail.length){
+    // Legacy callers also use distance interpolation rather than ten frame samples.
+    let remaining=.42;goal={...trail[0]};
+    for(let i=trail.length-1;i>0;i--){const a=trail[i-1],b=trail[i],length=Math.hypot(b.x-a.x,b.z-a.z);
+      if(length>=remaining&&length>0){const f=1-remaining/length;goal={x:a.x+(b.x-a.x)*f,z:a.z+(b.z-a.z)*f,facing:b.facing||facing,phase:locomotionPhase(Math.max(0,(Number.isFinite(b.distance)?b.distance:0)-remaining),.68)};break;}remaining-=length;}
+  }
+  if(!goal||blocked(goal.x*CELL,goal.z*CELL,state)||inFurniture(goal.x*CELL,goal.z*CELL))return null;
+  const direction=goal.facing||facing,gait=Number.isFinite(goal.phase)?goal.phase:phase;
+  return {...definition,creatorId:'ss_yr',groupId:'owner-companion',label:'',name:'',x:goal.x,z:goal.z,facing:direction,walking,phase:gait,
+    sprite:characterSprite(definition.asset,image,direction,walking,gait),heightPx:definition.heightPx||40,heightWorld:definition.heightWorld||1,interactive:false};
 }

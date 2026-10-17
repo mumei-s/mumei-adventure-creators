@@ -1,0 +1,126 @@
+{
+  "id": "cna-star-twintails",
+  "contentHeight": 256,
+  "directions": [
+    "down",
+    "left",
+    "right",
+    "up"
+  ],
+  "rig": {
+    "hipHeight": 64,
+    "hipHalfWidth": 8,
+    "neckHeight": 59,
+    "shoulderHeight": 46,
+    "shoulderHalfWidth": 22,
+    "thigh": 32,
+    "shin": 34,
+    "upperArm": 25,
+    "forearm": 27,
+    "headHeight": 134,
+    "hairHeight": 130,
+    "frontHairHeight": 61,
+    "torsoHeight": 72,
+    "skirtHeight": 55,
+    "tailsHeight": 50,
+    "lanternHeight": 45,
+    "waistOffset": 16
+  },
+  "restHands": {
+    "left": [
+      -32,
+      -8
+    ],
+    "right": [
+      32,
+      -8
+    ]
+  },
+  "sourceSHA256": "70456ffe35feb04396b19d288a0bf214fb1eb361085322155acf80d0a351d5f8",
+  "views": {
+    "down": {
+      "heading": 0,
+      "screenSides": {
+        "left": -1,
+        "right": 1
+      },
+      "legSides": {
+        "left": 1,
+        "right": -1
+      }
+    },
+    "left": {
+      "heading": -1.5707963267948966,
+      "rig": {
+        "shoulderHalfWidth": 4,
+        "hipHalfWidth": 4,
+        "torsoHeight": 62
+      },
+      "screenSides": {
+        "left": -1,
+        "right": 1
+      },
+      "legSides": {
+        "left": 1,
+        "right": -1
+      },
+      "restHands": {
+        "left": [
+          -14,
+          -8
+        ],
+        "right": [
+          5,
+          -8
+        ]
+      }
+    },
+    "up": {
+      "heading": 3.141592653589793,
+      "screenSides": {
+        "left": 1,
+        "right": -1
+      },
+      "legSides": {
+        "left": -1,
+        "right": 1
+      },
+      "restHands": {
+        "left": [
+          32,
+          -8
+        ],
+        "right": [
+          -32,
+          -8
+        ]
+      }
+    },
+    "right": {
+      "heading": 1.5707963267948966,
+      "rig": {
+        "shoulderHalfWidth": 4,
+        "hipHalfWidth": 4,
+        "torsoHeight": 48
+      },
+      "screenSides": {
+        "left": -1,
+        "right": 1
+      },
+      "legSides": {
+        "left": 1,
+        "right": -1
+      },
+      "restHands": {
+        "left": [
+          -5,
+          -8
+        ],
+        "right": [
+          14,
+          -8
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,1913 @@
+{
+  "version": 1,
+  "id": "monster:masked_wanderer",
+  "label": "masked_wanderer",
+  "atlas": "main",
+  "atlases": {
+    "main": "./parts.webp"
+  },
+  "width": 1024,
+  "height": 1024,
+  "contentHeight": 256,
+  "locomotion": "biped",
+  "rig": {
+    "thigh": 62,
+    "shin": 68,
+    "hipHeight": 127,
+    "hipHalfWidth": 13,
+    "neckHeight": 85,
+    "shoulderHeight": 73,
+    "shoulderHalfWidth": 31,
+    "upperArm": 48,
+    "forearm": 48,
+    "headHeight": 55,
+    "hairHeight": 46,
+    "frontHairHeight": 40,
+    "torsoHeight": 110,
+    "skirtHeight": 39,
+    "tailsHeight": 31,
+    "lanternHeight": 64,
+    "waistOffset": 17
+  },
+  "anatomicalSides": {
+    "left": -1,
+    "right": 1
+  },
+  "screenSides": {
+    "left": 1,
+    "right": -1
+  },
+  "legSides": {
+    "left": -1,
+    "right": 1
+  },
+  "restHands": {
+    "left": [
+      43,
+      3
+    ],
+    "right": [
+      -43,
+      6
+    ]
+  },
+  "appendages": [
+    {
+      "part": "leftHand",
+      "anchor": "leftWrist",
+      "height": 23,
+      "layer": "front",
+      "inheritRotation": "leftForearmHand",
+      "amplitude": 0.01
+    },
+    {
+      "part": "rightHand",
+      "anchor": "rightWrist",
+      "height": 23,
+      "layer": "front",
+      "inheritRotation": "rightForearmHand",
+      "amplitude": 0.01
+    }
+  ],
+  "views": {
+    "down": {
+      "heading": 0,
+      "atlas": "main",
+      "parts": {
+        "head": {
+          "pivot": [
+            28.25,
+            66.88
+          ],
+          "contentHeight": 76,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              38,
+              11,
+              113,
+              152
+            ],
+            "component": 3
+          },
+          "rect": [
+            642,
+            3,
+            56.5,
+            76
+          ]
+        },
+        "backHair": {
+          "pivot": [
+            28,
+            64.68
+          ],
+          "contentHeight": 73.5,
+          "visible": false,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              185,
+              13,
+              112,
+              147
+            ],
+            "component": 4
+          },
+          "rect": [
+            3,
+            96,
+            56,
+            73.5
+          ]
+        },
+        "bodiceTorso": {
+          "pivot": [
+            43.5,
+            6.1125
+          ],
+          "contentHeight": 81.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              302,
+              7,
+              174,
+              163
+            ],
+            "component": 1
+          },
+          "rect": [
+            137,
+            3,
+            87,
+            81.5
+          ]
+        },
+        "pelvisFrontSkirt": {
+          "pivot": [
+            31.75,
+            6.65
+          ],
+          "contentHeight": 66.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              480,
+              23,
+              127,
+              133
+            ],
+            "component": 8
+          },
+          "rect": [
+            518.5,
+            175.5,
+            63.5,
+            66.5
+          ]
+        },
+        "leftUpperArm": {
+          "pivot": [
+            27.4424854468219,
+            9.5
+          ],
+          "contentHeight": 68.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              42,
+              169,
+              93,
+              137
+            ],
+            "component": 12
+          },
+          "end": [
+            17.46982924356823,
+            56
+          ],
+          "span": 47.55737452539084,
+          "rect": [
+            165,
+            175.5,
+            46.5,
+            68.5
+          ]
+        },
+        "leftForearmHand": {
+          "pivot": [
+            20.05005196267348,
+            9
+          ],
+          "contentHeight": 62.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              209,
+              174,
+              70,
+              125
+            ],
+            "component": 14
+          },
+          "end": [
+            14.344351028194946,
+            48
+          ],
+          "span": 39.4151623509749,
+          "rect": [
+            973,
+            175.5,
+            35,
+            62.5
+          ]
+        },
+        "rightUpperArm": {
+          "pivot": [
+            25.49987530215248,
+            9.5
+          ],
+          "contentHeight": 70,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              346,
+              168,
+              91,
+              140
+            ],
+            "component": 10
+          },
+          "end": [
+            16.541985402808574,
+            57.5
+          ],
+          "span": 48.8287189208233,
+          "rect": [
+            699,
+            96,
+            45.5,
+            70
+          ]
+        },
+        "rightForearmHand": {
+          "pivot": [
+            14.74733101722299,
+            9.5
+          ],
+          "contentHeight": 64,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              509,
+              173,
+              79,
+              128
+            ],
+            "component": 13
+          },
+          "end": [
+            22.870089593383874,
+            49.5
+          ],
+          "span": 40.81640854958451,
+          "rect": [
+            836.5,
+            175.5,
+            39.5,
+            64
+          ]
+        },
+        "leftUpperLeg": {
+          "pivot": [
+            23.976998890690332,
+            7.5
+          ],
+          "contentHeight": 66.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              45,
+              311,
+              87,
+              133
+            ],
+            "component": 23
+          },
+          "end": [
+            18.47836406627887,
+            56.5
+          ],
+          "span": 49.30755504922375,
+          "rect": [
+            588,
+            175.5,
+            43.5,
+            66.5
+          ]
+        },
+        "leftLowerLegBoot": {
+          "pivot": [
+            19.00514578122315,
+            6
+          ],
+          "contentHeight": 78.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              201,
+              309,
+              72,
+              157
+            ],
+            "component": 19
+          },
+          "end": [
+            17.11234431114847,
+            76
+          ],
+          "span": 70.02558601971937,
+          "rect": [
+            348.5,
+            3,
+            36,
+            78.5
+          ]
+        },
+        "rightUpperLeg": {
+          "pivot": [
+            20.511696568615115,
+            7.5
+          ],
+          "contentHeight": 67,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              352,
+              310,
+              93,
+              134
+            ],
+            "component": 21
+          },
+          "end": [
+            26.062714797671816,
+            57
+          ],
+          "span": 49.81027808976095,
+          "rect": [
+            466,
+            175.5,
+            46.5,
+            67
+          ]
+        },
+        "rightLowerLegBoot": {
+          "pivot": [
+            15.888553380868068,
+            6
+          ],
+          "contentHeight": 79.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              519,
+              309,
+              81,
+              159
+            ],
+            "component": 20
+          },
+          "end": [
+            22.157312780677266,
+            77
+          ],
+          "span": 71.27620461565483,
+          "rect": [
+            230,
+            3,
+            40.5,
+            79.5
+          ]
+        },
+        "lantern": {
+          "pivot": [
+            11.34,
+            8.219999999999999
+          ],
+          "contentHeight": 68.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              19,
+              467,
+              189,
+              137
+            ],
+            "component": 25
+          },
+          "rect": [
+            217.5,
+            175.5,
+            94.5,
+            68.5
+          ]
+        },
+        "backSkirtTails": {
+          "pivot": [
+            41.25,
+            4.44
+          ],
+          "contentHeight": 55.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              192,
+              475,
+              165,
+              111
+            ],
+            "component": 28
+          },
+          "rect": [
+            631,
+            250.5,
+            82.5,
+            55.5
+          ]
+        },
+        "leftHand": {
+          "pivot": [
+            21.5,
+            33.655
+          ],
+          "contentHeight": 63.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              382,
+              474,
+              86,
+              127
+            ],
+            "component": 27
+          },
+          "rect": [
+            882,
+            175.5,
+            43,
+            63.5
+          ]
+        },
+        "rightHand": {
+          "pivot": [
+            23.5,
+            29.68
+          ],
+          "contentHeight": 56,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              507,
+              482,
+              94,
+              112
+            ],
+            "component": 32
+          },
+          "rect": [
+            578,
+            250.5,
+            47,
+            56
+          ]
+        }
+      },
+      "screenSides": {
+        "left": 1,
+        "right": -1
+      },
+      "legSides": {
+        "left": -1,
+        "right": 1
+      },
+      "rig": {},
+      "restHands": {
+        "left": [
+          43,
+          3
+        ],
+        "right": [
+          -43,
+          6
+        ]
+      }
+    },
+    "right": {
+      "heading": 1.5707963267948966,
+      "atlas": "main",
+      "parts": {
+        "head": {
+          "pivot": [
+            37.199999999999996,
+            66
+          ],
+          "contentHeight": 75,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              644,
+              14,
+              124,
+              150
+            ],
+            "component": 6
+          },
+          "rect": [
+            704.5,
+            3,
+            62,
+            75
+          ]
+        },
+        "backHair": {
+          "pivot": [
+            30.75,
+            63.8
+          ],
+          "contentHeight": 72.5,
+          "visible": false,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              797,
+              13,
+              123,
+              145
+            ],
+            "component": 5
+          },
+          "rect": [
+            131.5,
+            96,
+            61.5,
+            72.5
+          ]
+        },
+        "bodiceTorso": {
+          "pivot": [
+            30,
+            6.225
+          ],
+          "contentHeight": 83,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              959,
+              9,
+              120,
+              166
+            ],
+            "component": 2
+          },
+          "rect": [
+            71,
+            3,
+            60,
+            83
+          ]
+        },
+        "pelvisFrontSkirt": {
+          "pivot": [
+            24.75,
+            7.25
+          ],
+          "contentHeight": 72.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              1123,
+              21,
+              99,
+              145
+            ],
+            "component": 7
+          },
+          "rect": [
+            199,
+            96,
+            49.5,
+            72.5
+          ]
+        },
+        "leftUpperArm": {
+          "pivot": [
+            26.035278466404513,
+            9.5
+          ],
+          "contentHeight": 68.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              669,
+              168,
+              89,
+              137
+            ],
+            "component": 11
+          },
+          "end": [
+            15.7009886170801,
+            56
+          ],
+          "span": 47.634520535950074,
+          "rect": [
+            318,
+            175.5,
+            44.5,
+            68.5
+          ]
+        },
+        "leftForearmHand": {
+          "pivot": [
+            23.783400019002777,
+            9
+          ],
+          "contentHeight": 62.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              826,
+              179,
+              78,
+              125
+            ],
+            "component": 16
+          },
+          "end": [
+            15.896587011837592,
+            48
+          ],
+          "span": 39.78946869977017,
+          "rect": [
+            3,
+            250.5,
+            39,
+            62.5
+          ]
+        },
+        "rightUpperArm": {
+          "pivot": [
+            21.468242075558376,
+            9.5
+          ],
+          "contentHeight": 68.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              975,
+              167,
+              89,
+              137
+            ],
+            "component": 9
+          },
+          "end": [
+            25.79048101589388,
+            56
+          ],
+          "span": 46.70044699419217,
+          "rect": [
+            368.5,
+            175.5,
+            44.5,
+            68.5
+          ]
+        },
+        "rightForearmHand": {
+          "pivot": [
+            14.732927526291723,
+            9
+          ],
+          "contentHeight": 62.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              1145,
+              174,
+              75,
+              125
+            ],
+            "component": 15
+          },
+          "end": [
+            22.18732956702834,
+            48
+          ],
+          "span": 39.70602107722377,
+          "rect": [
+            48,
+            250.5,
+            37.5,
+            62.5
+          ]
+        },
+        "leftUpperLeg": {
+          "pivot": [
+            21.005447504438127,
+            8
+          ],
+          "contentHeight": 68,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              670,
+              313,
+              82,
+              136
+            ],
+            "component": 24
+          },
+          "end": [
+            21.095501893029425,
+            58
+          ],
+          "span": 50.00008109786328,
+          "rect": [
+            419,
+            175.5,
+            41,
+            68
+          ]
+        },
+        "leftLowerLegBoot": {
+          "pivot": [
+            20.327326871645074,
+            6
+          ],
+          "contentHeight": 76.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              814,
+              310,
+              128,
+              153
+            ],
+            "component": 22
+          },
+          "end": [
+            30.194735999145802,
+            74
+          ],
+          "span": 68.71219515405897,
+          "rect": [
+            572,
+            3,
+            64,
+            76.5
+          ]
+        },
+        "rightUpperLeg": {
+          "pivot": [
+            27.556518481312835,
+            8
+          ],
+          "contentHeight": 69,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              972,
+              307,
+              97,
+              138
+            ],
+            "component": 17
+          },
+          "end": [
+            18.706504778622975,
+            58.5
+          ],
+          "span": 51.269608371215384,
+          "rect": [
+            869,
+            96,
+            48.5,
+            69
+          ]
+        },
+        "rightLowerLegBoot": {
+          "pivot": [
+            43.461008305256584,
+            6
+          ],
+          "contentHeight": 78,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              1093,
+              308,
+              118,
+              156
+            ],
+            "component": 18
+          },
+          "end": [
+            31.470129047125244,
+            75.5
+          ],
+          "span": 70.52681181921585,
+          "rect": [
+            390.5,
+            3,
+            59,
+            78
+          ]
+        },
+        "lantern": {
+          "pivot": [
+            12.6,
+            7.14
+          ],
+          "contentHeight": 59.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              638,
+              480,
+              210,
+              119
+            ],
+            "component": 30
+          },
+          "rect": [
+            354,
+            250.5,
+            105,
+            59.5
+          ]
+        },
+        "backSkirtTails": {
+          "pivot": [
+            34.5,
+            4.8
+          ],
+          "contentHeight": 60,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              833,
+              476,
+              138,
+              120
+            ],
+            "component": 29
+          },
+          "rect": [
+            279,
+            250.5,
+            69,
+            60
+          ]
+        },
+        "leftHand": {
+          "pivot": [
+            24.5,
+            35.245000000000005
+          ],
+          "contentHeight": 66.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              998,
+              469,
+              98,
+              133
+            ],
+            "component": 26
+          },
+          "rect": [
+            637.5,
+            175.5,
+            49,
+            66.5
+          ]
+        },
+        "rightHand": {
+          "pivot": [
+            22.5,
+            28.885
+          ],
+          "contentHeight": 54.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              1140,
+              480,
+              90,
+              109
+            ],
+            "component": 31
+          },
+          "rect": [
+            719.5,
+            250.5,
+            45,
+            54.5
+          ]
+        }
+      },
+      "screenSides": {
+        "left": -1,
+        "right": 1
+      },
+      "legSides": {
+        "left": -1,
+        "right": 1
+      },
+      "rig": {
+        "shoulderHalfWidth": 4,
+        "hipHalfWidth": 4
+      },
+      "restHands": {
+        "left": [
+          20.000000000000004,
+          7
+        ],
+        "right": [
+          19.999999999999996,
+          2
+        ]
+      }
+    },
+    "up": {
+      "heading": 3.141592653589793,
+      "atlas": "main",
+      "parts": {
+        "head": {
+          "pivot": [
+            28.75,
+            61.6
+          ],
+          "contentHeight": 70,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              33,
+              626,
+              115,
+              140
+            ],
+            "component": 35
+          },
+          "rect": [
+            750.5,
+            96,
+            57.5,
+            70
+          ]
+        },
+        "backHair": {
+          "pivot": [
+            28.75,
+            63.36
+          ],
+          "contentHeight": 72,
+          "visible": false,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              177,
+              628,
+              115,
+              144
+            ],
+            "component": 37
+          },
+          "rect": [
+            254.5,
+            96,
+            57.5,
+            72
+          ]
+        },
+        "bodiceTorso": {
+          "pivot": [
+            47.75,
+            5.625
+          ],
+          "contentHeight": 75,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              294,
+              629,
+              191,
+              150
+            ],
+            "component": 38
+          },
+          "rect": [
+            772.5,
+            3,
+            95.5,
+            75
+          ]
+        },
+        "pelvisFrontSkirt": {
+          "pivot": [
+            34.5,
+            6.15
+          ],
+          "contentHeight": 61.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              482,
+              647,
+              138,
+              123
+            ],
+            "component": 40
+          },
+          "rect": [
+            137,
+            250.5,
+            69,
+            61.5
+          ]
+        },
+        "leftUpperArm": {
+          "pivot": [
+            23.961101403286843,
+            10
+          ],
+          "contentHeight": 73.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              47,
+              776,
+              87,
+              147
+            ],
+            "component": 41
+          },
+          "end": [
+            19.142408326738135,
+            60.5
+          ],
+          "span": 50.729378105452646,
+          "rect": [
+            972.5,
+            3,
+            43.5,
+            73.5
+          ]
+        },
+        "leftForearmHand": {
+          "pivot": [
+            15.481571964112716,
+            9.5
+          ],
+          "contentHeight": 64.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              204,
+              792,
+              79,
+              129
+            ],
+            "component": 47
+          },
+          "end": [
+            22.75330131435506,
+            49.5
+          ],
+          "span": 40.65560290714154,
+          "rect": [
+            791,
+            175.5,
+            39.5,
+            64.5
+          ]
+        },
+        "rightUpperArm": {
+          "pivot": [
+            22.672222052953902,
+            9.5
+          ],
+          "contentHeight": 70,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              347,
+              778,
+              98,
+              140
+            ],
+            "component": 42
+          },
+          "end": [
+            29.1026661040356,
+            57.5
+          ],
+          "span": 48.42882004234764,
+          "rect": [
+            814,
+            96,
+            49,
+            70
+          ]
+        },
+        "rightForearmHand": {
+          "pivot": [
+            18.63468139884145,
+            9
+          ],
+          "contentHeight": 63,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              516,
+              787,
+              72,
+              126
+            ],
+            "component": 45
+          },
+          "end": [
+            17.303043783425764,
+            48.5
+          ],
+          "span": 39.52243993908764,
+          "rect": [
+            931,
+            175.5,
+            36,
+            63
+          ]
+        },
+        "leftUpperLeg": {
+          "pivot": [
+            27.77629033829198,
+            8
+          ],
+          "contentHeight": 69,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              40,
+              930,
+              105,
+              138
+            ],
+            "component": 56
+          },
+          "end": [
+            23.593141787917755,
+            58.5
+          ],
+          "span": 50.67295858536876,
+          "rect": [
+            923.5,
+            96,
+            52.5,
+            69
+          ]
+        },
+        "leftLowerLegBoot": {
+          "pivot": [
+            19.785469133051038,
+            5.5
+          ],
+          "contentHeight": 75,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              216,
+              927,
+              75,
+              150
+            ],
+            "component": 53
+          },
+          "end": [
+            17.207853419815077,
+            72.5
+          ],
+          "span": 67.0495645233071,
+          "rect": [
+            874,
+            3,
+            37.5,
+            75
+          ]
+        },
+        "rightUpperLeg": {
+          "pivot": [
+            24.989453478996154,
+            8
+          ],
+          "contentHeight": 71,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              354,
+              924,
+              98,
+              142
+            ],
+            "component": 52
+          },
+          "end": [
+            24.309841660646626,
+            60.5
+          ],
+          "span": 52.50439859881875,
+          "rect": [
+            491,
+            96,
+            49,
+            71
+          ]
+        },
+        "rightLowerLegBoot": {
+          "pivot": [
+            17.74616611352959,
+            6
+          ],
+          "contentHeight": 78,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              524,
+              920,
+              78,
+              156
+            ],
+            "component": 49
+          },
+          "end": [
+            20.426655973887108,
+            75.5
+          ],
+          "span": 69.55167162542881,
+          "rect": [
+            455.5,
+            3,
+            39,
+            78
+          ]
+        },
+        "lantern": {
+          "pivot": [
+            11.1,
+            7.92
+          ],
+          "contentHeight": 66,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              16,
+              1095,
+              185,
+              132
+            ],
+            "component": 63
+          },
+          "rect": [
+            692.5,
+            175.5,
+            92.5,
+            66
+          ]
+        },
+        "backSkirtTails": {
+          "pivot": [
+            39.25,
+            4.28
+          ],
+          "contentHeight": 53.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              194,
+              1090,
+              157,
+              107
+            ],
+            "component": 61
+          },
+          "rect": [
+            770.5,
+            250.5,
+            78.5,
+            53.5
+          ]
+        },
+        "leftHand": {
+          "pivot": [
+            24,
+            36.57
+          ],
+          "contentHeight": 69,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              368,
+              1085,
+              96,
+              138
+            ],
+            "component": 58
+          },
+          "rect": [
+            3,
+            175.5,
+            48,
+            69
+          ]
+        },
+        "rightHand": {
+          "pivot": [
+            26,
+            31.270000000000003
+          ],
+          "contentHeight": 59,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              505,
+              1092,
+              104,
+              118
+            ],
+            "component": 62
+          },
+          "rect": [
+            465,
+            250.5,
+            52,
+            59
+          ]
+        }
+      },
+      "screenSides": {
+        "left": -1,
+        "right": 1
+      },
+      "legSides": {
+        "left": 1,
+        "right": -1
+      },
+      "rig": {},
+      "restHands": {
+        "left": [
+          -43,
+          3.0000000000000004
+        ],
+        "right": [
+          43,
+          5.999999999999999
+        ]
+      }
+    },
+    "left": {
+      "heading": -1.5707963267948966,
+      "atlas": "main",
+      "parts": {
+        "head": {
+          "pivot": [
+            23.6,
+            63.36
+          ],
+          "contentHeight": 72,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              658,
+              622,
+              118,
+              144
+            ],
+            "component": 34
+          },
+          "rect": [
+            318,
+            96,
+            59,
+            72
+          ]
+        },
+        "backHair": {
+          "pivot": [
+            30.25,
+            64.24
+          ],
+          "contentHeight": 73,
+          "visible": false,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              800,
+              626,
+              121,
+              146
+            ],
+            "component": 36
+          },
+          "rect": [
+            65,
+            96,
+            60.5,
+            73
+          ]
+        },
+        "bodiceTorso": {
+          "pivot": [
+            31,
+            6.5249999999999995
+          ],
+          "contentHeight": 87,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              950,
+              620,
+              124,
+              174
+            ],
+            "component": 33
+          },
+          "rect": [
+            3,
+            3,
+            62,
+            87
+          ]
+        },
+        "pelvisFrontSkirt": {
+          "pivot": [
+            25.5,
+            7.15
+          ],
+          "contentHeight": 71.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              1116,
+              638,
+              102,
+              143
+            ],
+            "component": 39
+          },
+          "rect": [
+            383,
+            96,
+            51,
+            71.5
+          ]
+        },
+        "leftUpperArm": {
+          "pivot": [
+            19.572442977314328,
+            9.5
+          ],
+          "contentHeight": 71,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              672,
+              779,
+              89,
+              142
+            ],
+            "component": 44
+          },
+          "end": [
+            26.978832864550103,
+            58.5
+          ],
+          "span": 49.55657989774666,
+          "rect": [
+            546,
+            96,
+            44.5,
+            71
+          ]
+        },
+        "leftForearmHand": {
+          "pivot": [
+            14.643052286028983,
+            9
+          ],
+          "contentHeight": 62.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              822,
+              793,
+              79,
+              125
+            ],
+            "component": 48
+          },
+          "end": [
+            23.34939752566691,
+            48
+          ],
+          "span": 39.959985578472946,
+          "rect": [
+            91.5,
+            250.5,
+            39.5,
+            62.5
+          ]
+        },
+        "rightUpperArm": {
+          "pivot": [
+            22.345463052563296,
+            9.5
+          ],
+          "contentHeight": 71.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              977,
+              778,
+              90,
+              143
+            ],
+            "component": 43
+          },
+          "end": [
+            19.225744572605734,
+            58.5
+          ],
+          "span": 49.09921224820403,
+          "rect": [
+            440,
+            96,
+            45,
+            71.5
+          ]
+        },
+        "rightForearmHand": {
+          "pivot": [
+            20.39896117275869,
+            9.5
+          ],
+          "contentHeight": 64,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              1128,
+              791,
+              71,
+              128
+            ],
+            "component": 46
+          },
+          "end": [
+            14.150579409953535,
+            49.5
+          ],
+          "span": 40.4850870649151,
+          "rect": [
+            982,
+            96,
+            35.5,
+            64
+          ]
+        },
+        "leftUpperLeg": {
+          "pivot": [
+            20.564538563725872,
+            8
+          ],
+          "contentHeight": 70.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              672,
+              927,
+              85,
+              141
+            ],
+            "component": 54
+          },
+          "end": [
+            18.695145540857872,
+            60
+          ],
+          "span": 52.03359136436719,
+          "rect": [
+            596.5,
+            96,
+            42.5,
+            70.5
+          ]
+        },
+        "leftLowerLegBoot": {
+          "pivot": [
+            44.63938089121271,
+            6
+          ],
+          "contentHeight": 79,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              788,
+              920,
+              132,
+              158
+            ],
+            "component": 50
+          },
+          "end": [
+            33.556435584529154,
+            76.5
+          ],
+          "span": 71.36582989548246,
+          "rect": [
+            276.5,
+            3,
+            66,
+            79
+          ]
+        },
+        "rightUpperLeg": {
+          "pivot": [
+            22.34842341861739,
+            8
+          ],
+          "contentHeight": 70.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              973,
+              922,
+              96,
+              141
+            ],
+            "component": 51
+          },
+          "end": [
+            25.96369497840086,
+            60
+          ],
+          "span": 52.12552338778939,
+          "rect": [
+            645,
+            96,
+            48,
+            70.5
+          ]
+        },
+        "rightLowerLegBoot": {
+          "pivot": [
+            40.68041610817464,
+            6
+          ],
+          "contentHeight": 77,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              1096,
+              927,
+              131,
+              154
+            ],
+            "component": 55
+          },
+          "end": [
+            33.66324239141141,
+            74.5
+          ],
+          "span": 68.85848333336448,
+          "rect": [
+            500.5,
+            3,
+            65.5,
+            77
+          ]
+        },
+        "lantern": {
+          "pivot": [
+            12.24,
+            8.28
+          ],
+          "contentHeight": 69,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              644,
+              1089,
+              204,
+              138
+            ],
+            "component": 59
+          },
+          "rect": [
+            57,
+            175.5,
+            102,
+            69
+          ]
+        },
+        "backSkirtTails": {
+          "pivot": [
+            30.5,
+            4.88
+          ],
+          "contentHeight": 61,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              831,
+              1089,
+              122,
+              122
+            ],
+            "component": 60
+          },
+          "rect": [
+            212,
+            250.5,
+            61,
+            61
+          ]
+        },
+        "leftHand": {
+          "pivot": [
+            24.5,
+            39.22
+          ],
+          "contentHeight": 74,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              998,
+              1078,
+              98,
+              148
+            ],
+            "component": 57
+          },
+          "rect": [
+            917.5,
+            3,
+            49,
+            74
+          ]
+        },
+        "rightHand": {
+          "pivot": [
+            24.5,
+            29.945
+          ],
+          "contentHeight": 56.5,
+          "visible": true,
+          "source": {
+            "source": "parts-four-view-original-v1.png",
+            "sourceRect": [
+              1131,
+              1102,
+              98,
+              113
+            ],
+            "component": 64
+          },
+          "rect": [
+            523,
+            250.5,
+            49,
+            56.5
+          ]
+        }
+      },
+      "screenSides": {
+        "left": 1,
+        "right": -1
+      },
+      "legSides": {
+        "left": 1,
+        "right": -1
+      },
+      "rig": {
+        "shoulderHalfWidth": 4,
+        "hipHalfWidth": 4
+      },
+      "restHands": {
+        "left": [
+          -19.999999999999996,
+          -1
+        ],
+        "right": [
+          -20.000000000000004,
+          10
+        ]
+      }
+    }
+  },
+  "directions": [
+    "down",
+    "right",
+    "up",
+    "left"
+  ],
+  "continuousTurnComplete": false,
+  "attackArtComplete": false,
+  "review": {
+    "passed": true,
+    "scope": "Four authored cardinal surfaces and articulated walk, neutral and battle native Canvas rendering. Eight-direction art and device/GPU checks pending.",
+    "evidence": "work-review/recovery/monsters/masked_wanderer/native-library-proof.json",
+    "reviewedAt": "2026-10-17"
+  },
+  "provenance": {
+    "method": "built-in-imagegen",
+    "newJointOverlapsPainted": true,
+    "bodyWarp": false,
+    "fullBodyCrossfade": false,
+    "componentPacking": "Alpha connected-component separation and unchanged-pixel dense atlas packing.",
+    "originalAssetsChanged": false,
+    "deliveryPacking": "Only atlas packing and Lanczos resampling; rig dimensions, costume pixels and alpha remain authored.",
+    "authoringSources": [
+      {
+        "key": "main",
+        "originalSHA256": "ad5b90bcc65a48915df6f839e4f63aad8321f9d77092cd80758605addeb6cb0e",
+        "authoringSHA256": "1937453c04f140146486326ceeaba0f7f4ffb1f69335aed153412fb706871ca9",
+        "sourceWidth": 2048,
+        "sourceHeight": 640,
+        "transform": {
+          "scale": 0.5,
+          "x": 0,
+          "y": 0
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,192 @@
+{
+  "schemaVersion": 1,
+  "referenceManifest": "creator-characters.json",
+  "identityPolicy": "Animation parts only; no creator, article, profile or save records are added or replaced.",
+  "rigs": [
+    {
+      "id": "owner-lantern-hero",
+      "approved": true,
+      "manifestURL": "./assets/rigs/owner/rig.json"
+    },
+    {
+      "id": "cna-black-bob",
+      "approved": true,
+      "manifestURL": "./assets/rigs/cna-black-bob/rig.json"
+    },
+    {
+      "id": "cna-star-twintails",
+      "approved": true,
+      "manifestURL": "./assets/rigs/cna-star-twintails/rig.json"
+    },
+    {
+      "id": "cna-orange-glasses",
+      "approved": true,
+      "manifestURL": "./assets/rigs/cna-orange-glasses/rig.json"
+    },
+    {
+      "id": "resident:keeper",
+      "approved": true,
+      "manifestURL": "./assets/rigs/town-resident-keeper/rig.json"
+    },
+    {
+      "id": "resident:baker",
+      "approved": true,
+      "manifestURL": "./assets/rigs/town-resident-baker/rig.json"
+    },
+    {
+      "id": "resident:boatwarden",
+      "approved": true,
+      "manifestURL": "./assets/rigs/town-resident-boatwarden/rig.json"
+    },
+    {
+      "id": "resident:gardener",
+      "approved": true,
+      "manifestURL": "./assets/rigs/town-resident-gardener/rig.json"
+    },
+    {
+      "id": "resident:masked",
+      "approved": true,
+      "manifestURL": "./assets/rigs/town-resident-masked/rig.json"
+    },
+    {
+      "id": "resident:waxkeeper",
+      "approved": true,
+      "manifestURL": "./assets/rigs/town-resident-waxkeeper/rig.json"
+    },
+    {
+      "id": "resident:clocksmith",
+      "approved": true,
+      "manifestURL": "./assets/rigs/town-resident-clocksmith/rig.json"
+    },
+    {
+      "id": "resident:archivist",
+      "approved": true,
+      "manifestURL": "./assets/rigs/town-resident-archivist/rig.json"
+    },
+    {
+      "id": "resident:innkeeper",
+      "approved": true,
+      "manifestURL": "./assets/rigs/town-resident-innkeeper/rig.json"
+    },
+    {
+      "id": "yamakon-navy-figure",
+      "approved": true,
+      "manifestURL": "./assets/rigs/yamakon-navy-figure/rig.json"
+    },
+    {
+      "id": "takechi-bread-avatar",
+      "approved": true,
+      "manifestURL": "./assets/rigs/takechi-bread-avatar/rig.json"
+    },
+    {
+      "id": "chamomile-flower-avatar",
+      "approved": true,
+      "manifestURL": "./assets/rigs/chamomile-flower-avatar/rig.json"
+    },
+    {
+      "id": "resident-archivist",
+      "approved": true,
+      "manifestURL": "./assets/rigs/resident-archivist/rig.json"
+    },
+    {
+      "id": "resident-gardener",
+      "approved": true,
+      "manifestURL": "./assets/rigs/resident-gardener/rig.json"
+    },
+    {
+      "id": "iris",
+      "approved": true,
+      "manifestURL": "./assets/rigs/iris/rig.json"
+    },
+    {
+      "id": "koakumako-base-devil",
+      "approved": true,
+      "manifestURL": "./assets/rigs/koakumako-base-devil/rig.json"
+    },
+    {
+      "id": "tantan-streetwalker",
+      "approved": true,
+      "manifestURL": "./assets/rigs/tantan-streetwalker/rig.json"
+    },
+    {
+      "id": "tenkai-moon-robed-avatar",
+      "approved": true,
+      "manifestURL": "./assets/rigs/tenkai-moon-robed-avatar/rig.json"
+    },
+    {
+      "id": "aihan-avatar-woman",
+      "approved": true,
+      "manifestURL": "./assets/rigs/aihan-avatar-woman/rig.json"
+    },
+    {
+      "id": "lokiron-avatar",
+      "approved": true,
+      "manifestURL": "./assets/rigs/lokiron-avatar/rig.json"
+    },
+    {
+      "id": "owner-black-cat",
+      "approved": true,
+      "manifestURL": "./assets/rigs/owner-black-cat/rig.json"
+    },
+    {
+      "id": "aihan-avatar-shiba",
+      "approved": true,
+      "manifestURL": "./assets/rigs/aihan-avatar-shiba/rig.json"
+    },
+    {
+      "id": "town-cat",
+      "approved": true,
+      "manifestURL": "./assets/rigs/town-cat/rig.json"
+    },
+    {
+      "id": "monster:ghost",
+      "approved": true,
+      "manifestURL": "./assets/rigs/monster-ghost/rig.json"
+    },
+    {
+      "id": "marimo-headcat",
+      "approved": true,
+      "manifestURL": "./assets/rigs/marimo-headcat/rig.json"
+    },
+    {
+      "id": "mama-avatar-pair",
+      "approved": true,
+      "manifestURL": "./assets/rigs/mama-avatar-pair/rig.json"
+    },
+    {
+      "id": "monster:pumpkin",
+      "approved": true,
+      "manifestURL": "./assets/rigs/monster-pumpkin/rig.json"
+    },
+    {
+      "id": "monster:zombie",
+      "approved": true,
+      "manifestURL": "./assets/rigs/monster-zombie/rig.json"
+    },
+    {
+      "id": "monster:franken",
+      "approved": true,
+      "manifestURL": "./assets/rigs/monster-franken/rig.json"
+    },
+    {
+      "id": "monster:witch",
+      "approved": true,
+      "manifestURL": "./assets/rigs/monster-witch/rig.json"
+    },
+    {
+      "id": "monster:masked_wanderer",
+      "approved": true,
+      "manifestURL": "./assets/rigs/monster-masked_wanderer/rig.json"
+    },
+    {
+      "id": "monster:werewolf",
+      "approved": true,
+      "manifestURL": "./assets/rigs/monster-werewolf/rig.json"
+    },
+    {
+      "id": "monster:mummy",
+      "approved": true,
+      "manifestURL": "./assets/rigs/monster-mummy/rig.json"
+    }
+  ]
+}

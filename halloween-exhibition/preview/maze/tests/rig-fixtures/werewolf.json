@@ -1,0 +1,174 @@
+{
+  "id": "monster:werewolf",
+  "contentHeight": 256,
+  "rig": {
+    "thigh": 62,
+    "shin": 68,
+    "hipHeight": 127,
+    "hipHalfWidth": 13,
+    "neckHeight": 85,
+    "shoulderHeight": 73,
+    "shoulderHalfWidth": 38,
+    "upperArm": 48,
+    "forearm": 48,
+    "headHeight": 56,
+    "hairHeight": 45,
+    "frontHairHeight": 40,
+    "torsoHeight": 110,
+    "skirtHeight": 39,
+    "tailsHeight": 90,
+    "lanternHeight": 64,
+    "waistOffset": 17
+  },
+  "footSoleOffset": 12,
+  "screenSides": {
+    "left": -1,
+    "right": 1
+  },
+  "legSides": {
+    "left": -1,
+    "right": 1
+  },
+  "anatomicalSides": {
+    "left": -1,
+    "right": 1
+  },
+  "restHands": {
+    "left": [
+      -48,
+      6
+    ],
+    "right": [
+      48,
+      6
+    ]
+  },
+  "appendages": [
+    {
+      "part": "leftPaw",
+      "anchor": "leftAnkle",
+      "offset": [
+        0,
+        12
+      ],
+      "height": 24,
+      "layer": "front",
+      "amplitude": 0
+    },
+    {
+      "part": "rightPaw",
+      "anchor": "rightAnkle",
+      "offset": [
+        0,
+        12
+      ],
+      "height": 24,
+      "layer": "front",
+      "amplitude": 0
+    },
+    {
+      "part": "chestTuft",
+      "anchor": "neck",
+      "height": 27,
+      "layer": "front",
+      "amplitude": 0.015
+    }
+  ],
+  "views": {
+    "down": {
+      "heading": 0,
+      "rig": {},
+      "screenSides": {
+        "left": -1,
+        "right": 1
+      },
+      "legSides": {
+        "left": -1,
+        "right": 1
+      },
+      "restHands": {
+        "left": [
+          -48.0,
+          6.0
+        ],
+        "right": [
+          48.0,
+          6.0
+        ]
+      }
+    },
+    "right": {
+      "heading": 1.5707963267948966,
+      "rig": {
+        "shoulderHalfWidth": 4,
+        "hipHalfWidth": 4
+      },
+      "screenSides": {
+        "left": -1,
+        "right": 1
+      },
+      "legSides": {
+        "left": -1,
+        "right": 1
+      },
+      "restHands": {
+        "left": [
+          19.999999999999996,
+          2.0
+        ],
+        "right": [
+          20.000000000000004,
+          10.0
+        ]
+      }
+    },
+    "up": {
+      "heading": 3.141592653589793,
+      "rig": {},
+      "screenSides": {
+        "left": 1,
+        "right": -1
+      },
+      "legSides": {
+        "left": 1,
+        "right": -1
+      },
+      "restHands": {
+        "left": [
+          48.0,
+          5.999999999999999
+        ],
+        "right": [
+          -48.0,
+          6.000000000000001
+        ]
+      }
+    },
+    "left": {
+      "heading": -1.5707963267948966,
+      "rig": {
+        "shoulderHalfWidth": 4,
+        "hipHalfWidth": 4
+      },
+      "screenSides": {
+        "left": 1,
+        "right": -1
+      },
+      "legSides": {
+        "left": 1,
+        "right": -1
+      },
+      "restHands": {
+        "left": [
+          -20.000000000000004,
+          10.0
+        ],
+        "right": [
+          -19.999999999999996,
+          2.0
+        ]
+      }
+    }
+  },
+  "sourceSHA256": "362b7fec58158df51d5c8a067e2f9ced47529dd4bbaf89ddf0042432dc26fbfe"
+}

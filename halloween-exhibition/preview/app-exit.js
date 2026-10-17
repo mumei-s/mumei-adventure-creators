@@ -23,7 +23,7 @@ export function createAppExitController({ canExit, stop = () => {}, resume = () 
   };
 }
 
-export function initAppExit({ root, triggerParent, onStop, onResume } = {}) {
+export function initAppExit({ root, triggerParent, entranceControl, onStop, onResume } = {}) {
   if (!root || !triggerParent) return null;
   const doc = root.ownerDocument, win = doc.defaultView;
   const make = (tag, text, className) => {
@@ -36,11 +36,13 @@ export function initAppExit({ root, triggerParent, onStop, onResume } = {}) {
   // on narrow screens. The header's existing ResizeObserver reserves this row.
   const panel = make('div', undefined, 'castle-exit-panel');
   panel.id = 'castle-exit-panel'; panel.hidden = true; panel.inert = true;
-  panel.setAttribute('role', 'group'); panel.setAttribute('aria-label', 'お城の入口の操作');
-  const label = make('span', 'お城の入口', 'castle-exit-label');
+  panel.setAttribute('role', 'group'); panel.setAttribute('aria-label', '宮殿からの移動とアプリ終了');
   const trigger = make('button', 'アプリ終了', 'app-exit-trigger');
   trigger.id = 'app-exit'; trigger.type = 'button'; trigger.hidden = true;
-  panel.append(label, trigger);
+  // Move the existing route with its return-state listener into the header.
+  // Navigating to the street must not invoke the app-exit lifecycle.
+  if (entranceControl) panel.append(entranceControl);
+  panel.append(trigger);
   (root.querySelector('.masthead') || triggerParent).append(panel);
   const screen = make('section', undefined, 'app-ended-screen');
   screen.id = 'app-ended-screen'; screen.hidden = true;
@@ -51,7 +53,7 @@ export function initAppExit({ root, triggerParent, onStop, onResume } = {}) {
   const guidance = make('p'); guidance.className = 'app-ended-guidance';
   const back = make('button', 'お城に戻る', 'app-ended-return'); back.type = 'button';
   screen.append(title, status, guidance, back); doc.body.append(screen);
-  const atCastle = () => root.dataset.palaceState === 'palace' && !doc.hidden;
+  const atCastle = () => root.dataset.palaceState === 'palace' && root.dataset.mode !== 'normal' && !doc.hidden;
   let priorHidden = false, priorInert = false;
   const controller = createAppExitController({
     canExit: atCastle,
@@ -90,7 +92,7 @@ export function initAppExit({ root, triggerParent, onStop, onResume } = {}) {
   back.addEventListener('click', () => controller.resume());
   doc.addEventListener('visibilitychange', refresh);
   const observer = new win.MutationObserver(refresh);
-  observer.observe(root, { attributes: true, attributeFilter: ['data-palace-state'] });
+  observer.observe(root, { attributes: true, attributeFilter: ['data-palace-state', 'data-mode'] });
   refresh();
   return { ...controller, refresh, destroy() { observer.disconnect(); doc.removeEventListener('visibilitychange', refresh); panel.remove(); screen.remove(); } };
 }

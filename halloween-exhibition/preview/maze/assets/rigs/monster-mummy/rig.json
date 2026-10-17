@@ -1887,16 +1887,10 @@
   "continuousTurnComplete": false,
   "attackArtComplete": false,
   "review": {
-    "status": "cardinal-pilot-native-canvas-reviewed",
-    "identityReference": "Original game monster and adopted walk atlas",
-    "nativeSizes": [
-      100,
-      220
-    ],
-    "identityReviewed": true,
-    "continuousTurnReviewed": false,
-    "physicalDeviceReviewed": false,
-    "newOverlapParts": true
+    "passed": true,
+    "scope": "Four authored cardinal surfaces and articulated walk, neutral and battle native Canvas rendering. Eight-direction art and device/GPU checks pending.",
+    "evidence": "work-review/recovery/monsters/mummy/native-library-proof.json",
+    "reviewedAt": "2026-10-17"
   },
   "provenance": {
     "method": "built-in-imagegen",

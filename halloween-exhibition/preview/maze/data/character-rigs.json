@@ -152,6 +152,41 @@
       "id": "mama-avatar-pair",
       "approved": true,
       "manifestURL": "./assets/rigs/mama-avatar-pair/rig.json"
+    },
+    {
+      "id": "monster:pumpkin",
+      "approved": true,
+      "manifestURL": "./assets/rigs/monster-pumpkin/rig.json"
+    },
+    {
+      "id": "monster:zombie",
+      "approved": true,
+      "manifestURL": "./assets/rigs/monster-zombie/rig.json"
+    },
+    {
+      "id": "monster:franken",
+      "approved": true,
+      "manifestURL": "./assets/rigs/monster-franken/rig.json"
+    },
+    {
+      "id": "monster:witch",
+      "approved": true,
+      "manifestURL": "./assets/rigs/monster-witch/rig.json"
+    },
+    {
+      "id": "monster:masked_wanderer",
+      "approved": true,
+      "manifestURL": "./assets/rigs/monster-masked_wanderer/rig.json"
+    },
+    {
+      "id": "monster:werewolf",
+      "approved": true,
+      "manifestURL": "./assets/rigs/monster-werewolf/rig.json"
+    },
+    {
+      "id": "monster:mummy",
+      "approved": true,
+      "manifestURL": "./assets/rigs/monster-mummy/rig.json"
     }
   ]
 }

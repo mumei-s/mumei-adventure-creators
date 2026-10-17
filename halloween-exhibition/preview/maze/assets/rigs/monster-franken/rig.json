@@ -1598,17 +1598,10 @@
   "continuousTurnComplete": false,
   "attackArtComplete": false,
   "review": {
-    "passed": false,
-    "status": "cardinal-pilot-native-canvas-reviewed",
-    "nativeSizes": [
-      100,
-      220
-    ],
-    "source": "Original approved game monster + NEW independently drawn modular sheets",
-    "identityReviewed": true,
-    "newOverlapParts": true,
-    "continuousTurnReviewed": false,
-    "physicalDeviceReviewed": false
+    "passed": true,
+    "scope": "Four authored cardinal surfaces and articulated walk, neutral and battle native Canvas rendering. Eight-direction art and device/GPU checks pending.",
+    "evidence": "work-review/recovery/monsters/franken/native-library-proof.json",
+    "reviewedAt": "2026-10-17"
   },
   "provenance": {
     "method": "built-in-imagegen",

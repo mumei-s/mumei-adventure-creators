@@ -19,7 +19,11 @@ function basic(body = '<!doctype html>current gallery', options = {}) {
   return tag(response);
 }
 const settle = async () => { for (let i = 0; i < 12; i++) await new Promise(resolve => setImmediate(resolve)); };
-function harness({ scope = base, network = async () => basic(), storageDenied = false, storageBlocked = false, readBlocked = false, sourceText = source } = {}) {
+function publicResponse(request) {
+  return new URL(request.url).pathname.endsWith('.css') ?
+    basic('body { color: ivory; }', { headers: { 'content-type': 'text/css; charset=utf-8' } }) : basic();
+}
+function harness({ scope = base, network = async request => publicResponse(request), storageDenied = false, storageBlocked = false, readBlocked = false, sourceText = source } = {}) {
   const handlers = {}, stores = new Map(), fetched = [], deleted = [], timers = new Map();
   let clock = 0, timerId = 0;
   const keyOf = value => typeof value === 'string' ? value : value.url;
@@ -60,9 +64,9 @@ function harness({ scope = base, network = async () => basic(), storageDenied = 
     for (const [id, timer] of [...timers]) if (timer.at <= clock) { timers.delete(id); timer.fn(); }
     await settle();
   }
-  function seed(key, value, cacheName = config.CACHE) {
+  function seed(key, value, cacheName = config.CACHE, options = {}) {
     if (!stores.has(cacheName)) stores.set(cacheName, new Map());
-    stores.get(cacheName).set(key, basic(value));
+    stores.get(cacheName).set(key, basic(value, options));
   }
   return { config, dispatch, advance, seed, stores, fetched, deleted, timers };
 }
@@ -103,6 +107,63 @@ test('each exact version fills once on demand, then serves without a network rou
     const second = h.dispatch('fetch', base + path); await second.response; await second.done;
     assert.equal(h.fetched.length, before + 1, path);
     assert.equal(h.dispatch('fetch', base + path + '&token=private').intercepted, false);
+  }
+});
+
+test('wrong CSS MIME responses reach the browser but never become persistent stylesheets', async () => {
+  const [path] = harness().config.PUBLIC_ASSETS.find(([path]) => path.startsWith('gallery-styles.css?'));
+  for (const mime of ['text/html', 'text/plain', 'text/css-error', '']) {
+    const h = harness({ network: async () => {
+      const response = basic('<!doctype html>temporary upstream error', { headers: {} });
+      if (mime) response.headers.set('content-type', mime);
+      else response.headers.delete('content-type');
+      return response;
+    } });
+    for (let attempt = 0; attempt < 2; attempt++) {
+      const request = h.dispatch('fetch', base + path);
+      assert.equal((await request.response).ok, true, 'the original network response is preserved');
+      await request.done;
+    }
+    assert.equal(h.fetched.length, 2, `${mime || 'missing MIME'} must retry the network`);
+    assert.equal(h.stores.get(h.config.CACHE)?.has(base + path) || false, false);
+  }
+});
+
+test('a poisoned cached CSS response is bypassed and replaced by a valid stylesheet', async () => {
+  const h = harness();
+  const [path] = h.config.PUBLIC_ASSETS.find(([path]) => path.startsWith('gallery-styles.css?'));
+  const url = base + path;
+  h.seed(url, '<!doctype html>cached upstream error');
+  const request = h.dispatch('fetch', url);
+  assert.equal((await request.response).headers.get('content-type'), 'text/css; charset=utf-8');
+  await request.done;
+  assert.equal(h.fetched.length, 1);
+  assert.match(await h.stores.get(h.config.CACHE).get(url).clone().text(), /color: ivory/);
+  const warm = h.dispatch('fetch', url);
+  assert.match(await (await warm.response).text(), /color: ivory/);
+  await warm.done;
+  assert.equal(h.fetched.length, 1, 'a valid replacement is reused');
+});
+
+test('invalid cached CSS is never replayed when the network is unavailable', async () => {
+  const h = harness({ network: async () => { throw Error('offline'); } });
+  const [path] = h.config.PUBLIC_ASSETS.find(([path]) => path.startsWith('gallery-styles.css?'));
+  h.seed(base + path, '<!doctype html>cached upstream error');
+  const request = h.dispatch('fetch', base + path);
+  assert.equal((await request.response).type, 'error');
+  await request.done;
+  assert.equal(h.fetched.length, 1);
+});
+
+test('valid cached CSS MIME parameters and case are accepted without a network transfer', async () => {
+  for (const mime of ['text/css', 'text/css; charset=UTF-8', 'Text/CSS ; charset=utf-8']) {
+    const h = harness({ network: async () => { throw Error('offline'); } });
+    const [path] = h.config.PUBLIC_ASSETS.find(([path]) => path.startsWith('gallery-styles.css?'));
+    h.seed(base + path, 'body { background: navy; }', h.config.CACHE, { headers: { 'content-type': mime } });
+    const request = h.dispatch('fetch', base + path);
+    assert.match(await (await request.response).text(), /background: navy/);
+    await request.done;
+    assert.equal(h.fetched.length, 0, mime);
   }
 });
 

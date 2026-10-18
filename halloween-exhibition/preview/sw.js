@@ -2,7 +2,7 @@
  * credentials and unknown query strings always bypass this worker. */
 const SCOPE = new URL('./', self.location.href);
 // BEGIN GENERATED SHELL (node halloween-exhibition/scripts/build-preview-cache.mjs)
-const SHELL_REVISION = '6727094f7634d142';
+const SHELL_REVISION = 'dda99b7f79ff231e';
 const PUBLIC_ASSETS = [
   ["app-exit.js?v=20261017-live-street1",9268],
   ["assets/atelier-door-180.png",56294],
@@ -36,7 +36,7 @@ const PUBLIC_ASSETS = [
   ["festival-scene.js?v=20261017-cauldron1",11303],
   ["gallery-gesture.js?v=20261016-ios1",9046],
   ["gallery-panels.js?v=20261017-panels1",7274],
-  ["gallery-styles.css?v=20261019-home1",323440],
+  ["gallery-styles.css?v=20261019-style-recovery1",323440],
   ["magical-loading.js?v=20261015-journey1",4919],
   ["manifest.webmanifest",4955],
   ["palace-entrance.js?v=20261014-palace2",14193],
@@ -78,13 +78,20 @@ function usable(response) {
     !/(?:no-store|private)/i.test(response.headers.get('cache-control') || '') &&
     response.headers.get('vary') !== '*';
 }
+function matchesAssetType(key, response) {
+  // A server's HTML error page can carry a 200 status. Never persist or replay
+  // it as CSS: browsers reject that MIME type, leaving the entire gallery bare.
+  return !new URL(key).pathname.endsWith('.css') ||
+    /^\s*text\/css\s*(?:;|$)/i.test(response?.headers.get('content-type') || '');
+}
 async function readCache(key) {
   let timer;
   try {
-    return await Promise.race([
+    const response = await Promise.race([
       caches.match(key, { cacheName: CACHE }),
       new Promise(resolve => { timer = setTimeout(() => resolve(undefined), CACHE_READ_TIMEOUT_MS); })
     ]);
+    return matchesAssetType(key, response) ? response : undefined;
   } catch { return undefined; }
   finally { clearTimeout(timer); }
 }
@@ -103,7 +110,7 @@ async function fitsBudget(response, limit) {
   } catch { return false; }
 }
 async function save(key, response, limit) {
-  if (!usable(response)) return;
+  if (!usable(response) || !matchesAssetType(key, response)) return;
   // Each exact URL has a source-sized byte budget (never > 2 MiB). Together
   // with one HTML key this is a finite cache, not an image/history collector.
   try {

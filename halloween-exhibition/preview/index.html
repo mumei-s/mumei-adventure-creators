@@ -1,11 +1,87 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#09131f"><meta name="description" content="金色のとびらをひらくと、作り手と作品に出会う。無名S noteのHalloween Atelier、魔法の入口へようこそ。"><title>無名S note / 🎃Halloween Atelier / 魔法の入口🚪</title>
-<link rel="preload" as="image" href="./assets/palace/palace-phone.webp" media="(max-aspect-ratio:11/10)" fetchpriority="high"><link rel="preload" as="image" href="./assets/palace/palace-desktop.webp" media="(min-aspect-ratio:1101/1000)" fetchpriority="high"><link rel="stylesheet" href="./gallery-styles.css?v=20261019-home1"><link rel="modulepreload" href="./palace-startup.js?v=20261019-unified1"><link rel="canonical" href="https://mumei-s.github.io/mumei-adventure-creators/halloween-exhibition/preview/"><meta property="og:type" content="website"><meta property="og:locale" content="ja_JP"><meta property="og:title" content="魔法の入口｜Halloween Atelier"><meta property="og:description" content="とびらの向こうに、あなたの好きな物語が待っている。作り手と出会う、小さな魔法のアトリエ。"><meta property="og:url" content="https://mumei-s.github.io/mumei-adventure-creators/halloween-exhibition/preview/"><meta property="og:image" content="https://mumei-s.github.io/mumei-adventure-creators/halloween-exhibition/preview/assets/atelier-magic-gate-share-wide-20261015.jpg"><meta property="og:image:type" content="image/jpeg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="628"><meta property="og:image:alt" content="無名S note Halloween Atelier 魔法の入口。金色の門と紫の宮殿、おばけとかぼちゃ。"><meta name="twitter:card" content="summary_large_image"><meta name="note:card" content="summary_large_image"><meta name="twitter:title" content="魔法の入口｜Halloween Atelier"><meta name="twitter:image" content="https://mumei-s.github.io/mumei-adventure-creators/halloween-exhibition/preview/assets/atelier-magic-gate-share-wide-20261015.jpg"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" type="image/png" sizes="192x192" href="./assets/atelier-door-192.png"><link rel="apple-touch-icon" href="./assets/atelier-door-180.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="魔法の入口"><script type="module" src="./pwa.js?v=20261019-home1"></script><script type="module" src="./theater.js?v=20261019-unified1"></script><script type="module" src="./castle-counter-bootstrap.js?v=20261017-castle2"></script><script type="module" src="./gallery-panels.js?v=20261017-panels1"></script><style>
+<!doctype html><html lang="ja" class="gallery-style-pending"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#09131f"><meta name="description" content="金色のとびらをひらくと、作り手と作品に出会う。無名S noteのHalloween Atelier、魔法の入口へようこそ。"><title>無名S note / 🎃Halloween Atelier / 魔法の入口🚪</title>
+<style id="gallery-style-critical">
+#gallery-style-status{display:none!important}
+html.gallery-style-pending,html.gallery-style-pending body{margin:0!important;background:#100f24!important;color:#fff0cc!important;overflow:hidden!important}
+html.gallery-style-pending body>:not(#gallery-style-status):not(noscript){visibility:hidden!important}
+html.gallery-style-pending #gallery-style-status{display:grid!important;visibility:visible!important;position:fixed;inset:0;z-index:2147483647;place-content:center;justify-items:center;gap:16px;padding:24px;box-sizing:border-box;background:radial-gradient(ellipse at 50% 30%,#41305a,#100f24 75%);color:#fff0cc;text-align:center;font-family:system-ui,sans-serif;line-height:1.7}
+#gallery-style-status strong{font-size:clamp(22px,6vw,32px)}
+#gallery-style-status .style-lantern{font-size:44px}
+#gallery-style-status p{max-width:28em;margin:0}
+#gallery-style-status button,#gallery-style-status a{font:inherit;color:#fff0cc;background:#3c2d55;border:1px solid #e7c485;border-radius:12px;padding:10px 18px;text-decoration:none;cursor:pointer}
+#gallery-style-status button:focus-visible,#gallery-style-status a:focus-visible{outline:3px solid #fff;outline-offset:4px}
+</style>
+<script id="gallery-style-bootstrap">/* Keep raw exhibition markup out of view until its stylesheet is usable. */
+(function () {
+  var root = document.documentElement, timer, active, recovered = false, ready = false, failed = false;
+  function message(text) {
+    var node = document.getElementById('gallery-style-message');
+    if (node) node.textContent = text;
+  }
+  function valid(link) {
+    try { return !!(link && link.sheet && link.sheet.cssRules.length); }
+    catch (_) { return false; }
+  }
+  function loaded(link) {
+    if (ready) return;
+    if (!valid(link)) { failure(link); return; }
+    ready = true; clearTimeout(timer);
+    root.classList.remove('gallery-style-pending');
+    var panel = document.getElementById('gallery-style-status');
+    if (panel) panel.hidden = true;
+  }
+  function watch(link) {
+    active = link; clearTimeout(timer);
+    timer = setTimeout(function () {
+      if (valid(link)) loaded(link); else failure(link);
+    }, 10000);
+  }
+  function recovery() {
+    if (ready) return;
+    failed = false;
+    message('宮殿の灯りを、もう一度整えています…');
+    var old = document.querySelector('link[data-style-recovery]');
+    if (old) old.remove();
+    var primary = document.getElementById('gallery-stylesheet');
+    var link = document.createElement('link');
+    link.rel = 'stylesheet'; link.dataset.styleRecovery = 'true';
+    var url = new URL(primary.href, location.href);
+    url.searchParams.set('style-retry', String(Date.now()));
+    link.href = url.href;
+    link.onload = function () { loaded(link); };
+    link.onerror = function () { failure(link); };
+    watch(link); primary.after(link);
+  }
+  function failure(link) {
+    if (ready || (active && link !== active)) return;
+    clearTimeout(timer);
+    if (!recovered) { recovered = true; recovery(); return; }
+    failed = true;
+    message('入口を読み込めませんでした。「もう一度開く」を押してください。');
+  }
+  window.atelierStyleLoaded = loaded;
+  window.atelierStyleFailed = failure;
+  window.atelierStyleRetry = function () { if (!ready) recovery(); };
+  document.addEventListener('DOMContentLoaded', function () {
+    if (ready) return;
+    var link = document.getElementById('gallery-stylesheet');
+    if (valid(link)) { loaded(link); return; }
+    if (!active && !failed) watch(link);
+    if (failed) message('入口を読み込めませんでした。「もう一度開く」を押してください。');
+  });
+  // A timeout is necessary even when the browser emits neither load nor error.
+  timer = setTimeout(function () {
+    var link = document.getElementById('gallery-stylesheet');
+    if (valid(link)) loaded(link); else failure(link);
+  }, 10000);
+}());</script>
+<link rel="preload" as="image" href="./assets/palace/palace-phone.webp" media="(max-aspect-ratio:11/10)" fetchpriority="high"><link rel="preload" as="image" href="./assets/palace/palace-desktop.webp" media="(min-aspect-ratio:1101/1000)" fetchpriority="high"><link id="gallery-stylesheet" rel="stylesheet" href="./gallery-styles.css?v=20261019-style-recovery1" onload="window.atelierStyleLoaded(this)" onerror="window.atelierStyleFailed(this)"><link rel="modulepreload" href="./palace-startup.js?v=20261019-unified1"><link rel="canonical" href="https://mumei-s.github.io/mumei-adventure-creators/halloween-exhibition/preview/"><meta property="og:type" content="website"><meta property="og:locale" content="ja_JP"><meta property="og:title" content="魔法の入口｜Halloween Atelier"><meta property="og:description" content="とびらの向こうに、あなたの好きな物語が待っている。作り手と出会う、小さな魔法のアトリエ。"><meta property="og:url" content="https://mumei-s.github.io/mumei-adventure-creators/halloween-exhibition/preview/"><meta property="og:image" content="https://mumei-s.github.io/mumei-adventure-creators/halloween-exhibition/preview/assets/atelier-magic-gate-share-wide-20261015.jpg"><meta property="og:image:type" content="image/jpeg"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="628"><meta property="og:image:alt" content="無名S note Halloween Atelier 魔法の入口。金色の門と紫の宮殿、おばけとかぼちゃ。"><meta name="twitter:card" content="summary_large_image"><meta name="note:card" content="summary_large_image"><meta name="twitter:title" content="魔法の入口｜Halloween Atelier"><meta name="twitter:image" content="https://mumei-s.github.io/mumei-adventure-creators/halloween-exhibition/preview/assets/atelier-magic-gate-share-wide-20261015.jpg"><link rel="manifest" href="./manifest.webmanifest"><link rel="icon" type="image/png" sizes="192x192" href="./assets/atelier-door-192.png"><link rel="apple-touch-icon" href="./assets/atelier-door-180.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="魔法の入口"><script type="module" src="./pwa.js?v=20261019-home1"></script><script type="module" src="./theater.js?v=20261019-unified1"></script><script type="module" src="./castle-counter-bootstrap.js?v=20261017-castle2"></script><script type="module" src="./gallery-panels.js?v=20261017-panels1"></script><style>
 .creative-world-links{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;width:100%;max-width:1100px;margin:6px auto;box-sizing:border-box}
 .creative-world-links a{display:flex!important;align-items:center;gap:7px;min-width:0;min-height:46px;padding:7px 10px;box-sizing:border-box;border:1px solid #d6b57288;border-radius:10px;background:#242039;color:#fff0cc;text-decoration:none;line-height:1.35;text-align:left}
 .creative-world-links a>span:last-child{min-width:0}.creative-world-links strong{display:block;font-size:clamp(10px,2.6vw,14px);overflow-wrap:anywhere}.creative-world-links small{display:block;font-size:11px;color:inherit;opacity:.85}.creative-world-links a:focus-visible{outline:3px solid #bd8cf5;outline-offset:2px}
 [data-mode=normal] .creative-world-links a,body[data-collection=everyday] .creative-world-links a{background:#f2f8ee;color:#244638;border-color:#729b7d}
 body>.creative-world-links{width:calc(100% - 24px)}
 </style></head><body>
+<section id="gallery-style-status" role="status" aria-live="polite" aria-label="魔法の入口の準備"><span class="style-lantern" aria-hidden="true">✦</span><strong>無名S note<br>魔法の入口</strong><p id="gallery-style-message">宮殿の灯りを整えています…</p><button type="button" onclick="window.atelierStyleRetry()">もう一度開く</button><a href="https://note.com/ss_yr/m/m642b82518aeb" target="_blank" rel="noopener noreferrer">共同マガジンを読む ↗</a></section><noscript><style>html.gallery-style-pending #gallery-style-status{display:none!important}html.gallery-style-pending body>noscript{visibility:visible!important;display:block;padding:24px}</style><p>魔法の入口を開くにはJavaScriptを有効にしてください。<a href="https://note.com/ss_yr/m/m642b82518aeb">共同マガジンを読む</a></p></noscript>
 <a class="skip" href="#list-open">参加者一覧をひらく</a>
 <main id="theater" class="theater" data-theme="host" data-palace-state="palace" data-palace-ready="loading" data-archive-state="loading" data-mode="halloween" aria-labelledby="site-title">
 <div class="night-sky" aria-hidden="true"><div class="moon"></div><div class="starfield"></div></div>

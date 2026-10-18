@@ -46,3 +46,17 @@ export function townPropSprite(image,kind,frames=null){
   return {image,frame,anchorX:measured?.anchorX??.5,anchorY:measured?.anchorY??.97,
     contentHeight:measured?.contentHeight??frame[3],contentWidth:measured?.bounds?.[2]??frame[2]};
 }
+
+/** Measured frames from the bundled resident atlas; walking never waits for a JSON request. */
+export const TOWN_RESIDENT_SPRITES=Object.freeze({
+  "keeper":Object.freeze({"frame":[0,0,256,320],"anchorX":0.5,"anchorY":0.95,"contentHeight":280,"heightRatio":1}),
+  "baker":Object.freeze({"frame":[256,0,256,320],"anchorX":0.5,"anchorY":0.95,"contentHeight":275,"heightRatio":1}),
+  "sailor":Object.freeze({"frame":[512,0,256,320],"anchorX":0.5,"anchorY":0.95,"contentHeight":285,"heightRatio":1}),
+  "gardener":Object.freeze({"frame":[768,0,256,320],"anchorX":0.5,"anchorY":0.95,"contentHeight":276,"heightRatio":1}),
+  "cat":Object.freeze({"frame":[1024,0,256,320],"anchorX":0.5,"anchorY":0.95,"contentHeight":174,"heightRatio":0.62}),
+  "maskmaker":Object.freeze({"frame":[0,320,256,320],"anchorX":0.5,"anchorY":0.95,"contentHeight":279,"heightRatio":1}),
+  "merchant":Object.freeze({"frame":[256,320,256,320],"anchorX":0.5,"anchorY":0.95,"contentHeight":282,"heightRatio":1}),
+  "clocksmith":Object.freeze({"frame":[512,320,256,320],"anchorX":0.5,"anchorY":0.95,"contentHeight":282,"heightRatio":1}),
+  "archivist":Object.freeze({"frame":[768,320,256,320],"anchorX":0.5,"anchorY":0.95,"contentHeight":282,"heightRatio":1}),
+  "innkeeper":Object.freeze({"frame":[1024,320,256,320],"anchorX":0.5,"anchorY":0.95,"contentHeight":279,"heightRatio":1}),
+});

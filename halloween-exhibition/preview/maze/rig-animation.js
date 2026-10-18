@@ -57,7 +57,7 @@ export function createRigLibrary({loadImage=defaultLoadImage,fetcher=globalThis.
   return url.href;
  }
  async function json(url,signal,limit=timeout,onTimeout=()=>{}){
-  return withDeadline((async()=>{const response=await fetcher(url,{signal,cache:'no-store'});if(!response?.ok)throw Error('Rig data unavailable');return response.json();})(),{timeout:limit,signal,timers,onTimeout});
+  return withDeadline((async()=>{const response=await fetcher(url,{signal,cache:'default'});if(!response?.ok)throw Error('Rig data unavailable');return response.json();})(),{timeout:limit,signal,timers,onTimeout});
  }
  const abort=new AbortController();jobs.add(abort);
  const ready=(async()=>{try{

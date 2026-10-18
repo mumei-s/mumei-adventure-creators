@@ -5,7 +5,7 @@ import {MONSTER_MOTION_DATA} from '../maze/monster-motion-data.js?v=20261016-liv
 import {motionSprite} from '../maze/monster-motion.js?v=20261017-rig2';
 import {placeTownVisitors,sampleTownVisitors,chooseTownVisitorGroups,nearestTownVisitor} from './visitor-model.js?v=20261018-live-street2';
 import {loadArtImage} from '../maze/rpg-art.js?v=20261017-startup1';
-import {createRigLibrary} from '../maze/rig-animation.js?v=20261017-rig2';
+import {createRigLibrary} from '../maze/rig-animation.js?v=20261019-scene1';
 import {TOWN_START_MAP,getTownMap} from './story-data.js';
 /** Adopted owner/cat identity is preserved; no new participant identities are inferred. */
 export function createTownCharacterArt({onState=()=>{},fetcher=fetchStartupJSON,signal,loadMonsterImage=loadArtImage,assets=createCharacterAssets(),initialState={mapId:TOWN_START_MAP,position:getTownMap().spawn}}={}){

@@ -35,3 +35,17 @@ test('palace approach framing keeps its highest tower, both facades and the play
   }
   assert.equal(townPalaceFraming({x:32,z:30},map,elevation,390,600).influence,0);assert.equal(townPalaceFraming(position,getTownMap('library'),elevation,390,600).influence,0);
 });
+
+test('palace masonry and slate arrive with the geometry and ornament stays inside the mobile draw budget',()=>{
+  const town=createTownSceneGeometry(),castle=town.root.children.filter(item=>item.userData.bucket==='castle'),textures=[...town.resources].filter(item=>item.isTexture);
+  assert.ok(castle.length<45,'stone courses and ornament share instanced batches');
+  const materials=castle.map(item=>item.material),stone=materials.find(item=>item.name==='palace-stone'),roof=materials.find(item=>item.name==='palace-roof');
+  for(const material of[stone,roof]){
+    assert.ok(material.map?.isDataTexture,'local material detail does not wait for an image download');
+    assert.ok(material.bumpMap?.isTexture&&material.bumpScale>0,'stone and slate have a physical surface');
+    assert.ok(material.map.image.width<=128&&material.map.image.height<=128);
+  }
+  assert.equal(textures.length,2,'only two small shared texture allocations');
+  assert.ok(castle.some(item=>item.name==='palace-sculpted-stone-arch'),'the threshold has a separate sculpted stone depth');
+  let released=0;for(const texture of textures)texture.addEventListener('dispose',()=>released++);town.dispose();assert.equal(released,textures.length);
+});

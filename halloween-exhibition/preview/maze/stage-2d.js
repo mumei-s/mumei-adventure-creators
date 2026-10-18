@@ -1,3 +1,4 @@
+import {cameraDistanceScale} from '../camera-distance.js?v=20261019-scene1';
 import {monsterSprite} from './monster-motion.js?v=20261016-living1';
 import { MAP, CELL, FEATURES, blocked, nearby } from './maze-model.js?v=20261014-adventure2';
 import { ALL_MONSTERS as MONSTERS, nearestMonster, monsterAvailable, monsterPose } from './encounter-model.js?v=20261016-living1';
@@ -7,9 +8,9 @@ import {drawArtSprite,playerPose} from './rpg-art.js?v=20261017-startup1';
 import {followCamera,depthOrder,clampSceneCamera} from './rpg-model.js?v=20261014-adventure2';
 const TILE=72,TAU=Math.PI*2;
 export const EXIT={x:8,z:14};
-export function stageCamera(state,width,height){
+export function stageCamera(state,width,height,cameraDistance='normal'){
   // A close, player-led view, not a scaled-down overview of the entire maze.
-  const tile=Math.max(52,Math.min(86,width/6.2));
+  const tile=Math.max(52,Math.min(86,width/6.2))*cameraDistanceScale(cameraDistance);
   const scale=tile/TILE,originY=height*.55,target=clampSceneCamera({x:state.x/CELL*TILE,y:state.z/CELL*TILE},width,height,scale,originY);
   return {scale,...target,originX:width*.5,originY,tile};
 }
@@ -186,10 +187,10 @@ export function createStageRenderer({makeCanvas=(w,h)=>{const c=document.createE
    const xx=Math.max(0,Math.min(data.width-1,Math.floor((x-item.x)/item.w*data.width))),yy=Math.max(0,Math.min(data.height-1,Math.floor((y-item.y)/item.h*data.height)));return data.data[(yy*data.width+xx)*4+3]>45;
   }
   function pickCreator(x,y){for(let i=hitItems.length-1;i>=0;i--){const o=hitItems[i];if(x<o.x||y<o.y||x>o.x+o.w||y>o.y+o.h||!opaqueAt(o,x,y))continue;if(o.id){const steps=Math.max(2,Math.ceil(Math.hypot(o.worldX-lastState.x,o.worldZ-lastState.z)*2));for(let n=1;n<steps;n++){const a=n/steps;if(blocked(lastState.x+(o.worldX-lastState.x)*a,lastState.z+(o.worldZ-lastState.z)*a,lastState))return null;}return o.id;}return null;}return null;}
-  return {pickCreator,invalidate(){lastSignature='';camera=null;hitItems=[];},render({canvas,state,brightness=1,lantern=true,encounters=false,cleared=[],pixelRatio=1,time=0,dt=.016,motion=true,facing='down',walking=false,walkPhase=0,creatorActors=[]}){
+  return {pickCreator,invalidate(){lastSignature='';camera=null;hitItems=[];},render({canvas,state,brightness=1,lantern=true,encounters=false,cleared=[],pixelRatio=1,time=0,dt=.016,motion=true,facing='down',walking=false,walkPhase=0,cameraDistance='normal',creatorActors=[]}){
     if(artVersion!==art.version){artVersion=art.version;architecture=createArchitecture(makeCanvas,art);lastSignature='';}
-    const signature=[canvas.width,canvas.height,pixelRatio,state.x,state.z,state.hasKey,state.unlocked,state.horrorAccepted,brightness,lantern,encounters,cleared.join(','),facing,artVersion,motion?Math.floor(time*24):0,walking?Math.floor(walkPhase*10):0,creatorActors.map(a=>[a.id,a.x,a.z,a.facing,a.walking,Math.floor((a.phase||0)*20),a.sprite?.frame?.join(',')].join(':')).join(';')].join('|');if(canvas===lastCanvas&&signature===lastSignature)return false;lastCanvas=canvas;lastSignature=signature;
-    const c=canvas.getContext('2d'),w=canvas.width/pixelRatio,h=canvas.height/pixelRatio,cam=stageCamera(state,w,h);
+    const signature=[cameraDistance,canvas.width,canvas.height,pixelRatio,state.x,state.z,state.hasKey,state.unlocked,state.horrorAccepted,brightness,lantern,encounters,cleared.join(','),facing,artVersion,motion?Math.floor(time*24):0,walking?Math.floor(walkPhase*10):0,creatorActors.map(a=>[a.id,a.x,a.z,a.facing,a.walking,Math.floor((a.phase||0)*20),a.sprite?.frame?.join(',')].join(':')).join(';')].join('|');if(canvas===lastCanvas&&signature===lastSignature)return false;lastCanvas=canvas;lastSignature=signature;
+    const c=canvas.getContext('2d'),w=canvas.width/pixelRatio,h=canvas.height/pixelRatio,cam=stageCamera(state,w,h,cameraDistance);
     camera=followCamera(camera,{x:cam.x,y:cam.y},dt,!motion);cam.x=camera.x;cam.y=camera.y;
     const player={x:state.x/CELL*TILE,y:state.z/CELL*TILE};hitItems=[];lastState={...state};
     const addHit=(box,id=null,worldX=0,worldZ=0)=>hitItems.push({...box,x:cam.originX+(box.x-cam.x)*cam.scale,y:cam.originY+(box.y-cam.y)*cam.scale,w:box.w*cam.scale,h:box.h*cam.scale,id,worldX,worldZ});

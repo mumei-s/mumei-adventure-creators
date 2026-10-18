@@ -131,3 +131,8 @@ body[data-view] #toast{bottom:140px}
  body[data-view] .lantern-dock{grid-area:4/2;justify-self:start;margin-left:0;width:62px;padding-left:4px}
  body[data-view] #game:has(#creator-open:not([hidden])) .nearby button{font-size:9px}
 }
+
+/* Always available camera control fits beside 2D/3D on narrow phones. */
+body[data-view] #camera-distance{position:static;flex:0 0 62px;width:62px;min-height:44px;padding:0 3px;font-size:11px;white-space:nowrap}
+body[data-view] #camera-distance[aria-pressed=true]{background:#edbc78;color:#21152b}
+@media(max-width:380px){body[data-view] header{gap:3px;padding:2px 3px}body[data-view] #view-controls{gap:2px}body[data-view] #view-controls button{width:44px}body[data-view] #minimap-size{flex-basis:44px;width:44px;font-size:10px}body[data-view] #menu-open{width:48px;font-size:11px}}

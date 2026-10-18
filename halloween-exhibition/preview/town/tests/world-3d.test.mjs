@@ -2,7 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 import * as THREE from '../../maze/vendor/three.module.js';
-import {createTownWorld3D,createTownSceneGeometry,town3DCameraParameters,TOWN_3D_CAMERA_ELEVATION} from '../world-3d.js';
+import {createTownWorld3D,createTownSceneGeometry,createTownWebGLRenderer,town3DCameraParameters,TOWN_3D_CAMERA_ELEVATION} from '../world-3d.js';
+import {TOWN_RESIDENT_SPRITES} from '../visual-data.js';
 import {getTownMap,TOWN_MAPS} from '../story-data.js';
 import {initialTownState} from '../town-model.js';
 
@@ -17,6 +18,39 @@ function harness({width=420,height=600,onContextLost=()=>{},loadImage=async src=
   const world=createTownWorld3D({canvas,art,onContextLost,makeCanvas:fakeCanvas,loadImage,fetcher,rendererFactory:()=>({shadowMap:{},capabilities:{getMaxAnisotropy:()=>4},info:{render:{calls:10}},setPixelRatio(value){record.ratio=value;},setSize(w,h){record.size=[w,h];},render(scene,camera){record.frames++;record.scene=scene;record.camera=camera;},dispose(){record.disposed++;},forceContextLoss(){record.losses++;}})});
   return {world,canvas,record,art};
 }
+
+test('resident coordinates are bundled exactly as measured, so no manifest request blocks 3D',()=>{
+  assert.deepEqual(Object.keys(TOWN_RESIDENT_SPRITES),Object.keys(manifest.sprites));
+  for(const [id,sprite]of Object.entries(TOWN_RESIDENT_SPRITES))for(const [key,value]of Object.entries(sprite))assert.deepEqual(value,manifest.sprites[id][key],`${id}.${key}`);
+});
+
+test('3D becomes playable before slow optional textures and applies them to the existing map later',async()=>{
+  const delayed=[];let manifestRequests=0;
+  const {world,record}=harness({fetcher:()=>{manifestRequests++;throw Error('JSON not required');},loadImage:async src=>src.includes('residents')?{width:1280,height:640}:new Promise(resolve=>delayed.push(resolve))});
+  await world.ready;assert.equal(world.status().ready,true);assert.equal(manifestRequests,0);assert.deepEqual(world.status().loaded,['residents']);
+  const state=initialTownState();world.render({state,motion:false});const map=record.scene.getObjectByName('town-world-lantern-town'),road=map.children.find(item=>item.name==='ground-.');assert.equal(road.material.map,null);
+  for(const resolve of delayed)resolve({width:512,height:512});await world.sceneryReady;
+  assert.equal(world.render({state,motion:false}),true);assert.equal(record.scene.getObjectByName('town-world-lantern-town'),map);assert.ok(road.material.map?.isTexture);assert.deepEqual(world.status().failed,[]);world.destroy();
+});
+
+test('required residents retry an interrupted download without failing the complete 3D world',async()=>{
+  const requested=[];let attempts=0;
+  const {world}=harness({loadImage:async(src,options)=>{requested.push({src,options});if(src.includes('residents')){if(++attempts===1)throw Error('connection interrupted');return {width:1280,height:640};}return {width:512,height:512};}});
+  await world.ready;assert.equal(attempts,2);assert.ok(requested.some(item=>item.src.includes('residents-atlas.webp?retry=1')));assert.ok(requested.filter(item=>item.src.includes('residents')).every(item=>item.options.priority==='high'));assert.deepEqual(world.status().failed,[]);world.destroy();
+});
+
+test('mobile WebGL allocation uses a lighter context and retries a failed GPU allocation once',()=>{
+  const attempts=[],canvas=fakeCanvas(420,600),expected={};const result=createTownWebGLRenderer(canvas,options=>{attempts.push(options);if(attempts.length===1)throw Error('GPU allocation');return expected;});
+  assert.equal(result.renderer,expected);assert.equal(result.compact,true);assert.equal(attempts.length,2);assert.equal(attempts[0].antialias,false);assert.equal(attempts[0].powerPreference,'default');assert.equal(attempts[1].powerPreference,'low-power');assert.ok(attempts.every(item=>item.canvas===canvas));
+});
+
+test('the explicit wide camera works anywhere and preserves map picking in a room',async()=>{
+  const normal=town3DCameraParameters(420,600,false),wide=town3DCameraParameters(420,600,false,'wide');assert.ok(wide.right>normal.right*1.4);assert.equal(wide.elevation,normal.elevation);
+  const {world,record}=harness();await world.ready;const state=initialTownState();state.mapId='inn';state.position={...getTownMap('inn').spawn};
+  world.render({state,motion:false,cameraDistance:'normal'});const originalRight=record.camera.right;
+  assert.equal(world.render({state,motion:false,cameraDistance:'wide'}),true);assert.ok(record.camera.right>originalRight*1.4);
+  const point={x:state.position.x+.5,z:state.position.z-.6},screen=world.worldToScreen(point),roundtrip=world.screenToWorld(screen);assert.ok(Math.abs(point.x-roundtrip.x)<1e-8);assert.ok(Math.abs(point.z-roundtrip.z)<1e-8);assert.equal(world.render({state,motion:false,cameraDistance:'wide'}),false);world.destroy();
+});
 
 test('town is volumetric batched geometry with the exact story footprints and door coordinates',()=>{
   const map=getTownMap(),town=createTownSceneGeometry(map);

@@ -166,9 +166,10 @@ test('initial load renders all real article doors and creators', async () => {
 });
 
 test('expanded roster renders all fourteen confirmed submissions with their own art and links', async () => {
-  assert.equal(creatorCount, 15);
-  assert.equal(doorCount, 16);
-  assert.equal(pendingCount, 1);
+  assert.equal(creatorCount, 16);
+  assert.equal(doorCount, 17);
+  assert.equal(pendingCount, 2);
+  assert.deepEqual(annualEntries.filter(entry=>entry.submissionStatus==='pending').map(entry=>entry.creatorId),['grand_daisy8632','airoumu_rin']);
   assert.equal(annualEntries.filter(entry => entry.submissionStatus === 'introduction').length, 1);
   const submitted = annualEntries.filter(entry => entry.submissionStatus === 'submitted');
   assert.deepEqual(new Set(submitted.map(entry => entry.creatorId)), new Set(['ss_yr', 'koakumako', 'imota14', 'clever_hare2654', 'fond_holly3483', 'aihan_days', 'mama_ca', 'naemotion', 'soh_style_work', 'real_hyena9474', 'tenkai_notes', 'n_kazumai55633', 'cheeky_rhino7031', 'glossy_guppy6230']));
@@ -1226,7 +1227,7 @@ test('town return restores exact year, door, search, tag and page behind the clo
  departure.$('town-entrance').click();const snapshot=departure.getReturn().value;
  const returned=await harness({data,entrance:true,savedMode:'normal',urlSearch:'?return=palace',returnState:snapshot});
  assert.equal(returned.api.state.displayMode,'halloween');assert.equal(returned.api.state.currentYear,2025);assert.equal(returned.$('theater').dataset.doorId,'owner-work-2026');
- assert.equal(returned.api.state.search,'参加者');assert.equal(returned.api.state.activeTag,'参加者');assert.equal(returned.$('search').value,'参加者');assert.equal(returned.$('roster-page-status').textContent,'2 / 3 ページ');
+ assert.equal(returned.api.state.search,'参加者');assert.equal(returned.api.state.activeTag,'参加者');assert.equal(returned.$('search').value,'参加者');assert.equal(returned.$('roster-page-status').textContent,'2 / 4 ページ');
  assert.equal(returned.$('palace-entrance').hidden,false);assert.equal(returned.$('article-theater').hidden,true);assert.equal(returned.$('theater').dataset.palaceState,'palace');assert.equal(returned.api.countPeople(),0);
  assert.equal(returned.storage.get('halloween-yearbook:display-mode:v1'),'normal','explicit castle return must preserve the saved ordinary-mode preference');
  returned.$('palace-gate').click();assert.equal(returned.$('article-theater').hidden,false);assert.equal(returned.$('theater').dataset.doorId,'owner-work-2026');
@@ -1234,13 +1235,13 @@ test('town return restores exact year, door, search, tag and page behind the clo
 test('town return ignores malformed, obsolete and creator-door-mismatched snapshots',async()=>{
  const valid={year:2026,creatorId:'ss_yr',doorId:'owner-work-2026',search:'old-filter',activeTag:'参加者',rosterPage:2};
  for(const snapshot of ['broken','[]','null',JSON.stringify({...valid,year:1999}),JSON.stringify({...valid,doorId:'removed-door'}),JSON.stringify({...valid,creatorId:'imota14'})]){
-  const h=await harness({entrance:true,urlSearch:'?return=palace',returnState:snapshot});assert.equal(h.api.state.currentYear,2026);assert.equal(h.api.state.currentIndex,0);assert.equal(h.api.state.search,'');assert.equal(h.api.state.activeTag,'');assert.equal(h.$('roster-page-status').textContent,'1 / 3 ページ');assert.equal(h.$('article-theater').hidden,true);
+  const h=await harness({entrance:true,urlSearch:'?return=palace',returnState:snapshot});assert.equal(h.api.state.currentYear,2026);assert.equal(h.api.state.currentIndex,0);assert.equal(h.api.state.search,'');assert.equal(h.api.state.activeTag,'');assert.equal(h.$('roster-page-status').textContent,'1 / 4 ページ');assert.equal(h.$('article-theater').hidden,true);
  }
 });
 test('ordinary and fresh gallery visits do not consume an old town return snapshot',async()=>{
  const snapshot=JSON.stringify({year:2026,creatorId:'ss_yr',doorId:'owner-work-2026',search:'old-filter',activeTag:'参加者',rosterPage:2});
  for(const savedMode of ['normal','halloween']){
-  const h=await harness({entrance:true,savedMode,returnState:snapshot});assert.equal(h.api.state.displayMode,savedMode);assert.equal(h.api.state.currentIndex,0);assert.equal(h.api.state.search,'');assert.equal(h.api.state.activeTag,'');assert.equal(h.$('roster-page-status').textContent,'1 / 3 ページ');
+  const h=await harness({entrance:true,savedMode,returnState:snapshot});assert.equal(h.api.state.displayMode,savedMode);assert.equal(h.api.state.currentIndex,0);assert.equal(h.api.state.search,'');assert.equal(h.api.state.activeTag,'');assert.equal(h.$('roster-page-status').textContent,'1 / 4 ページ');
   if(savedMode==='normal'){assert.equal(h.$('town-entrance').hidden,true);assert.equal(h.$('artwork-image').src,archive.creators[0].avatar);}
  }
 });

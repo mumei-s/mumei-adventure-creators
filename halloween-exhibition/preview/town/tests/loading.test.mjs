@@ -10,22 +10,16 @@ const settle=async()=>{for(let i=0;i<12;i++)await Promise.resolve();};
 const makeCanvas=(width,height)=>({width,height,getContext:()=>({})});
 function clock(){const queued=new Set();return{setTimeout(fn){queued.add(fn);return fn;},clearTimeout:fn=>queued.delete(fn),expire(){for(const fn of [...queued])fn();},size:()=>queued.size};}
 
-test('optional scenery manifests start together and response-body deadlines retain usable fallbacks',async()=>{
- const timers=clock(),pending=deferred(),requests=[],images=[];
- const renderer=createTownRenderer({makeCanvas,timers,fetcher:async input=>{requests.push(String(input));return{ok:true,json:()=>pending.promise};},loadImage:async input=>{images.push(input);return{width:2048,height:2048};}});
- await settle();assert.equal(requests.length,2);assert.equal(images.length,0);timers.expire();await renderer.ready;
- assert.deepEqual(renderer.status().failed,['props-manifest','residents-manifest']);assert.equal(images.length,4);assert.equal(renderer.status().loaded.length,4);
- const version=renderer.status().artVersion;pending.resolve({sprites:{invalid:'late'}});await settle();assert.equal(renderer.status().artVersion,version);renderer.destroy();assert.equal(timers.size(),0);
+test('bundled scenery metadata starts all four images without any manifest request',async()=>{
+ const requests=[],images=[];
+ const renderer=createTownRenderer({makeCanvas,fetcher:async input=>{requests.push(String(input));throw Error('No metadata request expected');},loadImage:async input=>{images.push(input);return{width:1024,height:1024};}});
+ await renderer.ready;assert.equal(requests.length,0);assert.equal(images.length,4);assert.equal(renderer.status().loaded.length,4);assert.deepEqual(renderer.status().failed,[]);renderer.destroy();
 });
 
-test('a stuck scenery image reaches a retryable failure and disposal prevents old loads starting',async()=>{
- const timers=clock(),image=deferred();let loads=0;
- const renderer=createTownRenderer({makeCanvas,timers,fetcher:async()=>({ok:true,json:async()=>({sprites:{}})}),loadImage:()=>{loads++;return image.promise;}});
- await settle();assert.equal(loads,4);timers.expire();await renderer.ready;assert.equal(renderer.status().failed.length,4);assert.equal(renderer.status().loaded.length,0);
- image.resolve({width:2048,height:2048});await settle();assert.equal(renderer.status().loaded.length,0);renderer.destroy();
- const request=deferred(),disposalClock=clock();let lateLoads=0;
- const disposed=createTownRenderer({makeCanvas,timers:disposalClock,fetcher:()=>request.promise,loadImage:async()=>{lateLoads++;return{width:2048,height:2048};}});disposed.destroy();await disposed.ready;
- request.resolve({ok:true,json:async()=>({sprites:{}})});await settle();assert.equal(lateLoads,0);assert.equal(disposalClock.size(),0);
+test('failed scenery retries only the same asset and manual retry preserves successful images',async()=>{
+ const calls=new Map();let allow=false;
+ const renderer=createTownRenderer({makeCanvas,loadImage:async input=>{const file=new URL(input).pathname.split('/').pop();calls.set(file,(calls.get(file)||0)+1);if(file==='stonepath-warm.webp'&&!allow)throw Error('temporary network failure');return{width:1024,height:1024};}});
+ await renderer.ready;assert.deepEqual(renderer.status().failed,['soil']);assert.equal(calls.get('stonepath-warm.webp'),2);allow=true;await renderer.retry();assert.deepEqual(renderer.status().failed,[]);assert.equal(calls.get('props-atlas.webp'),1);assert.equal(calls.get('stonepath-warm.webp'),3);renderer.destroy();
 });
 
 test('the actual startup unlocks town after hero/cat readiness while scenery continues independently',async()=>{
@@ -36,4 +30,9 @@ test('the actual startup unlocks town after hero/cat readiness while scenery con
  const boot=context.start();await settle();assert.equal(context.isReady(),false);core.resolve();await boot;
  assert.equal(context.isReady(),true);assert.equal(nodes['town-loading'].hidden,true);assert.equal(messages.length,0);
  scenery.resolve();await settle();assert.equal(messages.length,1);assert.match(messages[0],/読み込み直せます/);
+});
+
+
+test('bundled scenery frames exactly match the approved source atlas manifests',async()=>{
+ const {TOWN_SCENERY_FRAMES}=await import('../scenery-data.js');for(const name of['props','residents']){const manifest=JSON.parse(fs.readFileSync(new URL('../assets/'+name+'-manifest.json',import.meta.url),'utf8'));assert.deepEqual(TOWN_SCENERY_FRAMES[name],manifest.sprites);}
 });

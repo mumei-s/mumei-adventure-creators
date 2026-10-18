@@ -1,7 +1,8 @@
+import {mazeWideCamera} from '../camera-distance.js?v=20261019-scene1';
 import {monsterSprite,spriteTextureUV} from './monster-motion.js?v=20261016-living1';
-import {ART_FILES,ART_BOUNDS,ART_ANCHORS,PALACE_ART} from './rpg-art.js?v=20261017-startup1';
+import {ART_FILES,ART_BOUNDS,ART_ANCHORS,PALACE_ART,playerPose} from './rpg-art.js?v=20261017-startup1';
 import * as THREE from './vendor/three.module.js';
-import { MAP, CELL, FEATURES, toWorld } from './maze-model.js?v=20261014-adventure2';
+import { MAP, CELL, FEATURES, toWorld, blocked } from './maze-model.js?v=20261014-adventure2';
 import { NIGHT_LIGHTING } from './lighting-model.js?v=20261014-adventure2';
 import { ALL_MONSTERS as MONSTERS, monsterAvailable, monsterPose } from './encounter-model.js?v=20261016-living1';
 
@@ -344,6 +345,7 @@ export function createWorld({ canvas, onReady, art } = {}) {
     for(const a of actors){if(!a.id||!a.sprite)continue;seen.add(a.id);const sp=a.sprite,image=sp.image||sp,frame=sp.frame||[0,0,image.width,image.height];let entry=creatorNodes.get(a.id);
       if(!entry){const material=new THREE.SpriteMaterial({transparent:true,alphaTest:.08,depthWrite:false,color:'#ffffff'});resources.add(material);const sprite=new THREE.Sprite(material);sprite.userData.creatorId=a.id;sprite.name=`Palace resident: ${a.characterName||a.name||a.id}`;scene.add(sprite);const shadow=contactShadow(a.x*CELL,a.z*CELL,1.35,.8);shadow.userData.ignorePicking=true;entry={sprite,material,shadow,image:null,texture:null};creatorNodes.set(a.id,entry);}
       if(entry.image!==image){if(entry.texture){entry.texture.dispose();resources.delete(entry.texture);}const tex=new THREE.Texture(image);tex.colorSpace=THREE.SRGBColorSpace;tex.needsUpdate=true;resources.add(tex);entry.texture=tex;entry.material.map=tex;entry.material.needsUpdate=true;entry.image=image;}
+      if(entry.poseVersion!==sp.poseVersion){entry.texture.needsUpdate=true;creatorAlphaCache.delete(image);entry.poseVersion=sp.poseVersion;}
       entry.texture.repeat.set(frame[2]/image.width,frame[3]/image.height);entry.texture.offset.set(frame[0]/image.width,1-(frame[1]+frame[3])/image.height);
       entry.sprite.center.set(sp.anchorX??.5,1-(sp.anchorY??1));const ch=sp.contentHeight||frame[3],hh=a.heightWorld||2.38;entry.sprite.scale.set(hh*frame[2]/ch,hh*frame[3]/ch,1);
       entry.sprite.position.set(a.x*CELL,.035,a.z*CELL);entry.shadow.position.set(a.x*CELL,.016,a.z*CELL);entry.shadow.scale.setScalar(Math.max(.55,hh/2.38));entry.sprite.visible=true;entry.sprite.userData.interactive=a.interactive!==false;entry.actor=a;entry.source=sp;creatorHitTargets.push(entry.sprite);
@@ -370,15 +372,15 @@ export function createWorld({ canvas, onReady, art } = {}) {
   for(const [x,z,w]of[[32,51,17],[32,16,13],[8,43,8]]){const sheet=mesh(new THREE.PlaneGeometry(w,3),mistMat,x,.3,z);sheet.rotation.x=-Math.PI/2;sheet.userData.ignorePicking=true;mistSheets.push({node:sheet,x,z});}
   let last=0,gateY=0,ambientTime=0;
   function resize(){const w=canvas.clientWidth||window.innerWidth,h=canvas.clientHeight||window.innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;heldLantern.position.x=Math.min(.3,.3*camera.aspect);camera.updateProjectionMatrix();}
-  function render({x=0,z=0,yaw=0,pitch=0,time=0,motion=true,unlocked=false,horrorAccepted=false,hasKey=false,collection=[],brightness=1,lantern=true,encounters=true,cleared=[],creatorActors=[]}={}){
+  function render({x=0,z=0,yaw=0,pitch=0,time=0,motion=true,unlocked=false,horrorAccepted=false,hasKey=false,collection=[],brightness=1,lantern=true,encounters=true,cleared=[],cameraDistance='normal',facing='down',walking=false,walkPhase=0,creatorActors=[]}={}){
     const seconds=time*.001;const dt=Math.min(.05,Math.max(0,seconds-last));last=seconds;if(motion)ambientTime+=dt;const t=ambientTime;
-    updateCreatorActors(creatorActors);
+    const wide=cameraDistance==='wide',hero=wide?playerPose(art,facing,walking,walkPhase):null;updateCreatorActors(hero?[...creatorActors,{id:'wide-view-owner',x:x/CELL,z:z/CELL,sprite:hero,heightWorld:2.38,interactive:false}]:creatorActors);
     folios.visible=Math.hypot(x-vaultPoint.x,z-vaultPoint.z)<(compactViewport?26:42);
     for(const [i,m]of mistSheets.entries()){m.node.position.x=m.x+(motion?Math.sin(t*.12+i)*.8:0);m.node.position.z=m.z+(motion?Math.cos(t*.09+i)*.5:0);}
     const level=Math.max(.75,Math.min(1.75,Number.isFinite(Number(brightness))?Number(brightness):1));
     renderer.toneMappingExposure=NIGHT_LIGHTING.exposure*level;
-    camera.position.set(x,1.65,z);camera.rotation.set(pitch,yaw,0,'YXZ');
-    heldLantern.visible=!!lantern;headlamp.visible=!!lantern;nearLamp.visible=!!lantern;
+    if(wide){const pose=mazeWideCamera({x,z,yaw,unlocked,horrorAccepted},blocked);camera.position.set(pose.x,pose.y,pose.z);camera.lookAt(x-Math.sin(yaw)*1.2,1.1,z-Math.cos(yaw)*1.2);}else{camera.position.set(x,1.65,z);camera.rotation.set(pitch,yaw,0,'YXZ');}
+    heldLantern.visible=!!lantern&&!wide;headlamp.visible=!!lantern;nearLamp.visible=!!lantern;
     for(const spirit of spirits){
       spirit.node.visible=encounters&&(!spirit.definition.optional||spirit.node.userData.originalArt)&&!cleared.includes(spirit.id)&&monsterAvailable(spirit.definition,{unlocked,horrorAccepted});
       const pose=monsterPose(spirit.definition,seconds,motion,{unlocked,horrorAccepted});

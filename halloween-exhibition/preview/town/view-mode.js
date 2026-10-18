@@ -1,7 +1,7 @@
 import {withDeadline} from '../transition-effects.js?v=20261016-living1';
 
 /** Keep the playable Canvas scene until a current WebGL request is ready. */
-export function createTownViewController({load,onChange=()=>{},timeout=12000,timers=globalThis}={}){
+export function createTownViewController({load,onChange=()=>{},timeout=20000,timers=globalThis}={}){
  let desired='2d',active='2d',status='idle',view=null,pending=null,generation=0,disposed=false;
  const snapshot=()=>({desired,active,status,view});
  const emit=()=>{if(!disposed)onChange(snapshot());};

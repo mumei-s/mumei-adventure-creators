@@ -58,6 +58,6 @@ body[data-layout-page=maze][data-layout] #game .minimap span{font-size:var(--ui-
 :root body[data-layout-page=gallery][data-layout] #theater .palace-return-row>:is(button,a){
  min-width:var(--ui-target);min-height:var(--ui-target);height:auto;font-size:var(--ui-font);line-height:1.4;
 }
-:root body[data-layout-page=gallery][data-layout] #theater .header-actions :is(#year-open,.visitor-settings-trigger){width:var(--ui-target);max-width:none;min-width:var(--ui-target);min-height:var(--ui-target);height:auto;font-size:var(--ui-font)}
+:root body[data-layout-page=gallery][data-layout] #theater .header-actions :is(#year-open,.visitor-settings-trigger){width:var(--ui-target);max-width:none;min-width:var(--ui-target);min-height:var(--ui-target);height:auto;padding:4px 2px;font-size:var(--ui-font);white-space:nowrap}
 :root body[data-layout-page=gallery][data-layout] #theater .stage-caption h1{font-size:var(--profile-title,26px)}
 :root body[data-layout-page=gallery][data-layout] #theater .room-world{height:clamp(128px,calc(var(--app-viewport-height,100svh) - var(--profile-gallery-chrome,440px)),580px)}

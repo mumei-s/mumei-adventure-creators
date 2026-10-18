@@ -27,7 +27,7 @@ test('last gallery-only stylesheet and exact version are present in shell cache'
  const html=await read('index.html'),sw=await read('sw.js');
  assert.ok(bundledStyles.indexOf('compact-gallery-header.css')>bundledStyles.indexOf('presentation-profiles.css'));
  assert.match(bundledStyles,/compact-gallery-header.css\?v=20261019-unified1/);
- assert.match(sw,/gallery-styles\.css\?v=20261019-unified1/);assert.match(sw,/v43-startup-/);
+ assert.match(sw,/gallery-styles\.css\?v=20261019-compact1/);assert.match(sw,/v43-startup-/);
  assert.doesNotMatch(sw,/\["compact-gallery-header\.css/);
  assert.doesNotMatch(await read('maze/index.html'),/compact-gallery-header/);
 });

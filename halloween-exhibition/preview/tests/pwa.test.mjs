@@ -132,8 +132,10 @@ test('top installation panel returns focus, hides in standalone, and hides after
  assert.equal(h.elements.find(e=>e.id==='atelier-install-open').focused,true);
  const standalone=await installerHarness({isStandalone:true});assert.equal(standalone.panel.hidden,true);
 });
-test('top invitation is in the measured header and Apple icon has a dedicated 180px source',async()=>{
- assert.match(html,/<header class="masthead"><button id="atelier-install-panel"/);
+test('title precedes compact toolbar invitation and Apple icon has a dedicated 180px source',async()=>{
+ assert.match(html,/<header class="masthead"><a class="brand"/);
+ assert.ok(html.indexOf('class="palace-toolbar"')<html.indexOf('id="atelier-install-panel"'));
+ assert.ok(html.indexOf('id="atelier-install-panel"')<html.indexOf('id="palace-world-links"'));
  assert.match(html,/ホーム画面に追加/);
  assert.match(html,/rel="apple-touch-icon" href=".\/assets\/atelier-door-180.png"/);
  const bytes=await readFile(new URL('../assets/atelier-door-180.png',import.meta.url));

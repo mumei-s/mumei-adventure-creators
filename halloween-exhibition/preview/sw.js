@@ -2,7 +2,7 @@
  * credentials and unknown query strings always bypass this worker. */
 const SCOPE = new URL('./', self.location.href);
 // BEGIN GENERATED SHELL (node halloween-exhibition/scripts/build-preview-cache.mjs)
-const SHELL_REVISION = 'dda99b7f79ff231e';
+const SHELL_REVISION = 'fe7b18b675cd9ad0';
 const PUBLIC_ASSETS = [
   ["app-exit.js?v=20261017-live-street1",9268],
   ["assets/atelier-door-180.png",56294],
@@ -36,7 +36,7 @@ const PUBLIC_ASSETS = [
   ["festival-scene.js?v=20261017-cauldron1",11303],
   ["gallery-gesture.js?v=20261016-ios1",9046],
   ["gallery-panels.js?v=20261017-panels1",7274],
-  ["gallery-styles.css?v=20261019-style-recovery1",323440],
+  ["gallery-styles.css?v=20261019-compact-home2",323657],
   ["magical-loading.js?v=20261015-journey1",4919],
   ["manifest.webmanifest",4955],
   ["palace-entrance.js?v=20261014-palace2",14193],

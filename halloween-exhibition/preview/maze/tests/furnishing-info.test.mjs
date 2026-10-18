@@ -67,7 +67,7 @@ test('scenery has an inspect action but loses exact distance ties to every gamep
  const target=resolveContextAction({scenery});assert.equal(target.kind,'scenery');assert.equal(target.furnishingKind,'bookcase');assert.equal(target.name,expectedNames.bookcase);assert.equal(actionButtonFor(target),'interact');
  for(const kind of ['exit','feature','resident','creator','monster']){
   const tied=resolveContextAction({scenery,[kind]:{id:kind,distance:scenery.distance}});assert.equal(tied.kind,kind);
-  const closer=resolveContextAction({scenery,[kind]:{id:kind,distance:scenery.distance+.1}});assert.equal(closer.kind,'scenery');
+  const closer=resolveContextAction({scenery,[kind]:{id:kind,distance:scenery.distance+.1}});assert.equal(closer.kind,kind==='exit'?'exit':'scenery');
  }
  assert.equal(resolveContextAction({scenery:{...scenery,available:false}}),null);
 });

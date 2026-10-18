@@ -8,7 +8,7 @@ import {createTownCharacterArt} from './character-art.js?v=20261018-live-street2
 import {TOWN_BATTLE_ART_IDS} from './visual-data.js?v=20261019-scene1';
 import {createTownViewController} from './view-mode.js?v=20261019-scene1';
 import {createTownAudio} from './audio.js?v=20261017-palace-panel1';
-import {readTownPreferences,saveTownPreferences,resolveTownLayout} from './preferences.js?v=20261017-town2';
+import {TOWN_SPEEDS,readTownPreferences,saveTownPreferences,resolveTownLayout} from './preferences.js?v=20261019-speed1';
 import {bindDirectionPad,bindHeldGameButton,protectGameSurface} from '../maze/game-input.js?v=20261016-ios1';
 import {createFrameLoop} from '../maze/frame-loop.js?v=20261017-review1';
 import {initViewport} from '../viewport.js?v=20261016-ios1';
@@ -76,7 +76,7 @@ function showCastleReturn(){beginPanel('城へ戻りますか。');content.appen
 const pageReload=createReloadControl({save:()=>session.snapshot().battle?{ok:false,notice:'対戦を終えてから再読み込みしてください。'}:session.save(),beforeReload:()=>{clearInput();audio.stop({resetVolume:true});}});
 function showMenu(){
  beginPanel('街歩きのメニュー');content.append(pageReload.element);const progress=townProgress(session.snapshot().state);content.append(el('p',progress.title,'subtle'));const menu=el('div',undefined,'town-menu');
- for(const [label,action]of[['街の仲間',showVisitors],['旅の手帳',showJournal],['持ち物',showInventory],['街の地図',showMap],['明るさ・音・表示',showSettings],['記録・バックアップ',showSave],['操作と物語について',showHelp]])menu.append(button(label,action));
+ for(const [label,action]of[['街の仲間',showVisitors],['旅の手帳',showJournal],['持ち物',showInventory],['街の地図',showMap],['歩く速さ',showWalkingSpeed],['明るさ・音・表示',showSettings],['記録・バックアップ',showSave],['操作と物語について',showHelp]])menu.append(button(label,action));
  const compare=el('a','キャラ見比べ','button-link');compare.href='../characters/';compare.target='_blank';compare.rel='noopener noreferrer';menu.append(compare,button('城へ戻る',showCastleReturn));const scenery=renderer?.status?.();if(scenery?.failed?.length)menu.append(button('街の景色を読み込み直す',()=>{closePanel();void renderer?.retry?.().then(()=>{renderer?.invalidate?.();notify(renderer?.status?.().failed?.length?'読み込めない景色があります。もう一度お試しください。':'街の景色を読み込み直しました。');});}));content.append(menu);
 }
 function showVisitor(id){
@@ -103,6 +103,12 @@ function showInventory(){
 function showMap(){
  const state=session.snapshot().state,map=getTownMap(state.mapId);beginPanel(map.name||'街の地図');const canvas=el('canvas',undefined,'town-map-large');canvas.width=960;canvas.height=720;canvas.setAttribute('aria-label',`${map.name}の地図。三角が現在位置です。`);content.append(canvas);renderer?.drawMap(canvas,state);content.append(el('p',state.mapId==='lantern-town'?'城門は北。西に市場、中央に噴水の広場、東に書庫、南東に月映し庭園。建物の扉に近づき「入る」を選ぶと室内へ進めます。':'現在いる建物の見取り図です。出口の扉へ近づき、調べると通りへ戻れます。','subtle'),button('旅の手帳を開く',showJournal),button('街を歩く',closePanel));
 }
+function showWalkingSpeed(){
+ beginPanel('歩く速さ',{kind:'speed'});const label=el('label','歩く速さを選ぶ');label.htmlFor='town-walking-speed';const range=el('input');Object.assign(range,{id:'town-walking-speed',type:'range',min:'.5',max:'2',step:'.25',value:String(settings.speed)});const output=el('output',`${settings.speed}倍`);output.htmlFor=range.id;
+ const update=value=>{settings.speed=Number(value);persistSettings();range.value=String(settings.speed);output.textContent=`${settings.speed}倍`;range.setAttribute('aria-valuetext',`${settings.speed}倍`);};range.oninput=()=>update(range.value);range.setAttribute('aria-valuetext',`${settings.speed}倍`);
+ const presets=el('div',undefined,'button-row');for(const [value,name]of[[.5,'ゆっくり'],[1,'標準'],[1.5,'速い'],[2,'最速']])presets.append(button(`${name} ${value}倍`,()=>update(value)));
+ const section=el('section',undefined,'settings-grid');range.className='full';label.className='full';section.append(label,range,output);content.append(section,presets,el('p','0.5〜2倍を0.25刻みで選べます。この端末に保存し、次回も同じ速さで歩きます。','subtle'),button('標準の1倍に戻す',()=>update(1)),button('メニューに戻る',showMenu));
+}
 function showSettings(){
  beginPanel('街の明るさ・音・画面',{kind:'settings'});const displayControls=el('section');content.append(displayControls);displayPreferences=initGameDisplay({controlsParent:displayControls,page:'town',onChange:scheduleResize});const grid=el('div',undefined,'settings-grid');
  const viewLabel=el('label','街の見え方','full');viewLabel.htmlFor='town-view-mode';const viewSelect=el('select');viewSelect.id='town-view-mode';
@@ -116,7 +122,7 @@ function showSettings(){
  const music=button('音楽をON',()=>{if(audio.snapshot().enabled)audio.stop();else void audio.start({gesture:true});},'full');music.id='town-music';music.setAttribute('aria-pressed','false');const volumeLabel=el('label','音量');volumeLabel.htmlFor='town-volume';const volumeOutput=el('output','0');volumeOutput.id='town-volume-value';const volume=el('input');Object.assign(volume,{id:'town-volume',type:'range',min:'0',max:'100',step:'1',value:String(audio.snapshot().volume)});volume.oninput=()=>audio.setVolume(volume.value);volume.onpointerup=()=>audio.resumeFromGesture();volume.onchange=()=>audio.resumeFromGesture();const status=el('p',undefined,'subtle full');status.id='town-audio-status';status.setAttribute('role','status');grid.append(music,volumeLabel,volumeOutput,volume,status);
  const movement=button(motion()?'動き：ON → 減らす':'動き：減らす → ON',()=>{if(reduced.matches){notify('端末の「動きを減らす」を優先しています。');return;}settings.motion=!settings.motion;persistSettings();showSettings();},'full');movement.setAttribute('aria-pressed',String(motion()));if(reduced.matches){movement.disabled=true;movement.textContent='端末の設定で動きを減らしています';}grid.append(movement);
  const layoutLabel=el('label','画面レイアウト','full');layoutLabel.htmlFor='town-layout';const select=el('select');select.id='town-layout';for(const [value,name]of[['auto','自動'],['phone','スマホ用'],['tablet','タブレット用'],['desktop','PC用']]){const option=el('option',name);option.value=value;select.append(option);}select.value=settings.layout;select.onchange=()=>{settings.layout=select.value;persistSettings();};grid.append(layoutLabel,select);
- const speedLabel=el('label','歩く速さ','full');speedLabel.htmlFor='town-speed';const speed=el('select');speed.id='town-speed';for(const value of[.75,1,1.25,1.5]){const option=el('option',`${value}倍`);option.value=String(value);speed.append(option);}speed.value=String(settings.speed);speed.onchange=()=>{settings.speed=Number(speed.value);persistSettings();};grid.append(speedLabel,speed);content.append(grid,el('p','音は起動時とページに戻った時にOFF・音量0です。再生は自分でONにした時だけ始まります。','subtle'),button('メニューに戻る',showMenu));updateAudioUI(audio.snapshot());
+ const speedLabel=el('label','歩く速さ','full');speedLabel.htmlFor='town-speed';const speed=el('select');speed.id='town-speed';for(const value of TOWN_SPEEDS){const option=el('option',`${value}倍`);option.value=String(value);speed.append(option);}speed.value=String(settings.speed);speed.onchange=()=>{settings.speed=Number(speed.value);persistSettings();};grid.append(speedLabel,speed);content.append(grid,el('p','音は起動時とページに戻った時にOFF・音量0です。再生は自分でONにした時だけ始まります。','subtle'),button('メニューに戻る',showMenu));updateAudioUI(audio.snapshot());
 }
 function updateAudioUI(state){const toggle=$('town-music');if(toggle){toggle.textContent=state.enabled?'音楽をOFF':'音楽をON';toggle.setAttribute('aria-pressed',String(state.enabled));}const volume=$('town-volume');if(volume)volume.value=String(state.volume);if($('town-volume-value'))$('town-volume-value').textContent=String(state.volume);if($('town-audio-status'))$('town-audio-status').textContent=state.message;}
 function showSave(){

@@ -17,3 +17,9 @@ test('3D/2D view choice persists separately from the unchanged town journey',()=
  saveTownPreferences({...readTownPreferences(storage).preferences,view:'2d'},storage);
  assert.equal(readTownPreferences(storage).preferences.view,'2d');assert.deepEqual([...values.keys()],[TOWN_UI_KEY]);
 });
+
+test('every walking speed from half to double survives save and reload',()=>{
+ const values=new Map(),storage={getItem:key=>values.get(key)??null,setItem:(key,value)=>values.set(key,value)};
+ for(const speed of[.5,.75,1,1.25,1.5,1.75,2]){const result=saveTownPreferences({speed},storage);assert.equal(result.preferences.speed,speed);assert.equal(readTownPreferences(storage).preferences.speed,speed);}
+ saveTownPreferences({speed:1},storage);assert.equal(readTownPreferences(storage).preferences.speed,1);
+});

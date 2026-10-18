@@ -1,7 +1,7 @@
 import {normalizeCameraZoom} from '../camera-distance.js?v=20261019-journey1';
 import {mazeWideCamera} from '../camera-distance.js?v=20261019-journey1';
-import {monsterSprite,spriteTextureUV} from './monster-motion.js?v=20261016-living1';
-import {ART_FILES,ART_BOUNDS,ART_ANCHORS,PALACE_ART,playerPose} from './rpg-art.js?v=20261017-startup1';
+import {monsterSprite,spriteTextureUV} from './monster-motion.js?v=20261019-unified1';
+import {ART_FILES,ART_BOUNDS,ART_ANCHORS,PALACE_ART,playerPose} from './rpg-art.js?v=20261019-unified1';
 import * as THREE from './vendor/three.module.js';
 import { MAP, CELL, FEATURES, toWorld, blocked } from './maze-model.js?v=20261014-adventure2';
 import { NIGHT_LIGHTING } from './lighting-model.js?v=20261019-interior1';
@@ -386,7 +386,7 @@ export function createWorld({ canvas, onReady, art } = {}) {
     for(const spirit of spirits){
       spirit.node.visible=encounters&&(!spirit.definition.optional||spirit.node.userData.originalArt)&&!cleared.includes(spirit.id)&&monsterAvailable(spirit.definition,{unlocked,horrorAccepted});
       const pose=monsterPose(spirit.definition,seconds,motion,{unlocked,horrorAccepted});
-      const sampled=art&&monsterSprite(art,spirit.id,{time:seconds,motion,walking:pose.walking,facing:pose.facing});
+      const sampled=art&&monsterSprite(art,spirit.id,{time:seconds,motion,patrol:pose});
       if(sampled&&spirit.sprite.material.map){const uv=spriteTextureUV(sampled),texture=spirit.sprite.material.map,height=(spirit.id==='franken'?2.35:spirit.id==='bat'?1.85:2.15)*uv.heightScale;texture.repeat.set(uv.repeatX,uv.repeatY);texture.offset.set(uv.offsetX,uv.offsetY);spirit.sprite.center.set(uv.centerX,uv.centerY);spirit.sprite.scale.set(height*uv.aspect,height,1);}
       spirit.node.position.x=pose.x*CELL;spirit.node.position.z=pose.z*CELL;
       spirit.node.rotation.y=Math.atan2(x-spirit.node.position.x,z-spirit.node.position.z);

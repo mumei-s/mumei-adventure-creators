@@ -42,7 +42,7 @@ test('UI initializer is inert outside the preview subtree or without a settings 
 });
 test('main and admin presentation hooks and all local references resolve',async()=>{
  assert.match(await read('theater.js'),/initDisplayMode\(\{controlsParent:document\.querySelector\('\.visitor-preferences'\),page:'gallery'\}/);
- assert.match(admin,/id="editor-display-settings"/);assert.match(admin,/src="\.\/display-settings\.js\?v=20261014-layout1"/);
+ assert.match(admin,/id="editor-display-settings"/);assert.match(admin,/src="\.\/display-settings\.js\?v=20261019-unified1"/);
  assert.match(await read('admin/display-settings.js'),/page:'admin'/);
  assert.doesNotMatch(await read('admin/display-settings.js'),/localStorage|fetch\(|serviceWorker|STORAGE_KEY|draft\s*=/);
  for(const [text,base] of [[html,root],[admin,new URL('admin/',root)]]){
@@ -60,7 +60,7 @@ test('manual modes fit small viewports and keep usable flow, typography and safe
  assert.doesNotMatch(css,/(?:min-width:\s*(?:768|1024|1440)px|zoom:|scale\(\.\d|text-size-adjust:\s*none)/);
 });
 test('new shared display assets are public-shell-only and never cache editor content',async()=>{
- const sw=await read('sw.js');assert.match(sw,/display-mode\.js\?v=20261014-layout1/);assert.match(sw,/gallery-styles\.css\?v=20261017-startup1/);
+ const sw=await read('sw.js');assert.match(sw,/display-mode\.js\?v=20261019-unified1/);assert.match(sw,/gallery-styles\.css\?v=20261019-unified1/);
  const list=sw.match(/const PUBLIC_ASSETS = \[([\s\S]*?)\];/)[1];assert.doesNotMatch(list,/admin\/|maze\/|town\/|data\/|draft|app\.js/);
 });
 test('Halloween roster has warm orange surfaces while ordinary mode stays separately scoped',async()=>{

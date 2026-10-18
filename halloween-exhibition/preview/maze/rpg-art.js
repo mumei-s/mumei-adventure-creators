@@ -1,5 +1,5 @@
 import {MONSTER_MOTION_DATA} from './monster-motion-data.js?v=20261016-living1';
-import {MONSTER_IDS,validMonsterLayout,motionSprite} from './monster-motion.js?v=20261017-rig2';
+import {MONSTER_IDS,validMonsterLayout,motionSprite} from './monster-motion.js?v=20261019-unified1';
 // Original, locally bundled Halloween RPG art. No external/franchise art requests.
 export const ART_FILES = {
   playerAtlas:'lantern-keeper-atlas.webp',witch:'witch-story-v3.webp',masked_wanderer:'masked_wanderer-story-v3.webp',pumpkin:'pumpkin-story-v2.webp',ghost:'ghost-story-v2.webp',bat:'bat-story-v2.webp',zombie:'zombie-story-v2.webp',vampire:'vampire-story-v2.webp',franken:'franken-story-v2.webp',battle:'battle-library.webp',

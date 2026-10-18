@@ -31,7 +31,7 @@ export function createPalaceCastRigs({fetcher,loadImage,onChange=()=>{},timers=g
    const floating=manifest.archetype==='float'||manifest.archetype==='floating';
    const rig=floating?createCreatureRig({manifest,archetype:'floating',...manifest.motion}):createOwnerRig({manifest,...manifest.motion});
    records.set(id,{manifest,image,rig,time:null,lastPose:null,width:0,height:0});sourceBytes+=bytes;image=null;
-   onChange();return true;
+   onChange(id);return true;
   }catch{return false;}finally{image?.close?.();}
  }
  let next=0;
@@ -50,7 +50,7 @@ export function createPalaceCastRigs({fetcher,loadImage,onChange=()=>{},timers=g
   const result=rig.update({position,heading,dt,moving:travel>1e-6,motion:true,worldPixelsPerUnit:1,displayHeightPx:pose.size,groundDepthScale:.38,worldStrideLength:Math.max(6,pose.size*.18)});
   record.time=time;record.position=position;record.heading=heading;record.width=width;record.height=height;record.lastPose=result;return result;
  }
- return {ready,
+ return {ready,has:id=>!disposed&&records.has(id),
   draw(ctx,id,pose,time,width,height){
    const record=records.get(id),art=poseFor(id,pose,time,width,height);if(!art)return false;
    return drawOwnerPose(ctx,{main:record.image},record.manifest,art,{x:pose.x,y:pose.y,scale:pose.size/(record.manifest.contentHeight||256)});

@@ -3,9 +3,9 @@ import {fetchStartupJSON,loadRequiredCharacters} from '../maze/startup-assets.js
 import {createCharacterAssets,scaledCharacterLayout,characterSprite,compileCharacterRoster,compileCompanions,CREATOR_FICTION_NOTICE,noteArticleURL} from '../maze/creator-runtime.js?v=20261017-startup1';
 import {createDistanceTrail} from '../maze/movement-runtime.js?v=20261017-review1';
 import {MONSTER_MOTION_DATA} from '../maze/monster-motion-data.js?v=20261016-living1';
-import {motionSprite} from '../maze/monster-motion.js?v=20261017-rig2';
+import {motionSprite} from '../maze/monster-motion.js?v=20261019-unified1';
 import {placeTownVisitors,sampleTownVisitors,chooseTownVisitorGroups,nearestTownVisitor} from './visitor-model.js?v=20261019-journey1';
-import {loadArtImage} from '../maze/rpg-art.js?v=20261017-startup1';
+import {loadArtImage} from '../maze/rpg-art.js?v=20261019-unified1';
 import {createRigLibrary} from '../maze/rig-animation.js?v=20261019-scene1';
 import {TOWN_START_MAP,getTownMap} from './story-data.js?v=20261019-journey1';
 /** Adopted owner/cat identity is preserved; no new participant identities are inferred. */

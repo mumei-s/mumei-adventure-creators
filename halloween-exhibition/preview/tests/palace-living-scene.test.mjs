@@ -7,12 +7,13 @@ test('castle population has eight distinct illustrated species',()=>{
  assert.ok(CASTLE_CAST.some(actor=>actor.id==='mummy'));
  assert.ok(CASTLE_CAST.some(actor=>actor.id==='werewolf'));
 });
-test('walking advances through four real poses independently of continuous travel',()=>{
+test('resident paths advance continuously without quantizing the whole-body artwork',()=>{
  for(const actor of CASTLE_CAST){
-  const frames=new Set();for(let i=0;i<600;i++)frames.add(castleActorPose(actor,i/30,390,520).frame);
-  assert.equal(frames.size,4,actor.id);
-  const a=castleActorPose(actor,5,390,520),b=castleActorPose(actor,5+1/30,390,520);
-  assert.ok(Math.abs(a.x-b.x)<1);assert.ok(Math.abs(a.y-b.y)<1);
+  for(let frame=0;frame<600;frame++){
+   const a=castleActorPose(actor,frame/60,390,520),b=castleActorPose(actor,(frame+1)/60,390,520);
+   assert.ok(Math.abs(a.x-b.x)<1,actor.id);assert.ok(Math.abs(a.y-b.y)<1,actor.id);
+   assert.ok(Number.isFinite(a.heading),actor.id);
+  }
  }
 });
 test('residents stay at courtyard sides and out of the gate/caption touch region',()=>{
@@ -32,15 +33,56 @@ test('canvas remains decorative and motion lifecycle is bounded',async()=>{
  assert.doesNotMatch(js,/localStorage|location\.|addEventListener\('click'/);
 });
 
-test('frame sampler uses different atlas source cells, stable foot anchors and side mirroring',async()=>{
+test('waiting artwork keeps one authored silhouette and moves on every display frame',async()=>{
  const {drawCastleCast}=await import('../palace-living-scene.js');
  const crops=[],positions=[],scales=[];
  const ctx={clearRect(){},save(){},restore(){},translate(x,y){positions.push([x,y]);},scale(x,y){scales.push([x,y]);},beginPath(){},ellipse(){},fill(){},drawImage(...args){crops.push(args.slice(1));}};
  const images=new Map([['franken',{image:{},layout:{frames:[0,1,2,3].map(i=>({frame:[i%2*256,Math.floor(i/2)*256,256,256],contentHeight:220,anchorX:.5,anchorY:.9375}))}}]]);
- for(const time of [0,.16,.32,.48])drawCastleCast(ctx,images,time,390,520);
- assert.equal(new Set(crops.map(c=>`${c[0]},${c[1]}`)).size,4);
+ for(const time of [0,1/60,2/60,.16,.32,.48])drawCastleCast(ctx,images,time,390,520);
+ assert.equal(new Set(crops.map(c=>`${c[0]},${c[1]}`)).size,1,'never swaps full-body cells at the legacy atlas rate');
  for(const crop of crops){assert.equal(crop[2],256);assert.equal(crop[3],256);assert.ok(crop[4]<0&&crop[5]<0);assert.equal(crop[6],crop[7]);}
- assert.equal(positions.length,8);assert.equal(scales.length,4);
+ assert.equal(positions.length,12);assert.equal(scales.length,6);
+ for(let index=2;index<positions.length;index+=2)assert.notDeepEqual(positions[index],positions[index-2]);
+});
+
+test('ready articulated residents render even when their legacy atlas is unavailable',async()=>{
+ const {drawCastleCast}=await import('../palace-living-scene.js');
+ const drawn=[];const ctx={clearRect(){},save(){},restore(){},translate(){},beginPath(){},ellipse(){},fill(){}};
+ const rigs={has:id=>id==='franken',draw(_ctx,id,pose,time){drawn.push({id,pose,time});return true;}};
+ for(const time of [0,1/60,2/60])drawCastleCast(ctx,new Map(),time,390,520,rigs);
+ assert.equal(drawn.length,3);assert.ok(drawn.every(({id})=>id==='franken'));
+ assert.notEqual(drawn[0].pose.x,drawn[1].pose.x);assert.notEqual(drawn[1].pose.x,drawn[2].pose.x);
+});
+
+test('articulated loading and its animation lifecycle do not wait for the legacy manifest',async()=>{
+ const {initPalaceLivingScene}=await import('../palace-living-scene.js');
+ const ctx={globalAlpha:1,clearRect(){},save(){},restore(){},translate(){},scale(){},rotate(){},beginPath(){},ellipse(){},fill(){},drawImage(){},setTransform(){}};
+ const observers=[],events=new Map(),pending=new Map();let next=1,parts=0;
+ const el=()=>({dataset:{},children:[],append(...items){this.children.push(...items);},setAttribute(){},remove(){},getContext:()=>ctx});
+ const palace=el(),old=el();palace.getBoundingClientRect=()=>({width:390,height:520});palace.querySelector=selector=>selector.endsWith('.path-franken')?old:null;
+ const media={matches:false,addEventListener:(name,fn)=>events.set(name,fn),removeEventListener:name=>events.delete(name)};
+ const win={devicePixelRatio:1,requestAnimationFrame:fn=>{const id=next++;pending.set(id,fn);return id;},cancelAnimationFrame:id=>pending.delete(id),matchMedia:()=>media,
+  MutationObserver:class{constructor(fn){observers.push(fn)}observe(){}disconnect(){}},ResizeObserver:class{observe(){}disconnect(){}},addEventListener:(name,fn)=>events.set(name,fn),removeEventListener:name=>events.delete(name),
+  async fetch(url){
+   if(String(url).includes('monster-motion.json'))return new Promise(()=>{});
+   return {ok:true,json:async()=>JSON.parse(await readFile(new URL(url),'utf8'))};
+  }};
+ const doc={defaultView:win,body:el(),head:el(),createElement:el,hidden:false,querySelector:()=>null,querySelectorAll:()=>[],addEventListener:(name,fn)=>events.set(name,fn),removeEventListener:name=>events.delete(name)};
+ const root={ownerDocument:doc,dataset:{palaceState:'palace'},querySelector:()=>palace};
+ const api=initPalaceLivingScene(root,{loadImage:async()=>{parts++;return {width:1024,height:1024};}});
+ try{
+  await api.continuousReady;
+  assert.equal(parts,6,'all six articulated residents load while thumbnail metadata remains stalled');
+  assert.equal(old.hidden,true);assert.equal(palace.dataset.livingScene,'partial');assert.equal(pending.size,1);
+  for(const [state,event] of [['hidden','visibilitychange'],['paused',null],['pagehide','pagehide']]){
+   if(state==='hidden')doc.hidden=true;else if(state==='paused')root.dataset.motionPaused='true';
+   if(event)events.get(event)();else observers[0]();assert.equal(pending.size,0,state);
+   if(state==='hidden'){doc.hidden=false;events.get(event)();}else if(state==='paused'){root.dataset.motionPaused='false';observers[0]();}else events.get('pageshow')();
+   assert.equal(pending.size,1,`${state} resumes one loop`);
+  }
+  media.matches=true;events.get('change')();assert.equal(pending.size,0);
+ }finally{api.destroy();}
+ assert.equal(pending.size,0);assert.equal(old.hidden,undefined);
 });
 
 test('loading, paused, hidden and destroyed lifecycles do not leave a running animation',async()=>{

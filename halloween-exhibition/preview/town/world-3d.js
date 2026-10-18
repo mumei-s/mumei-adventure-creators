@@ -2,7 +2,7 @@ import {normalizeCameraZoom} from '../camera-distance.js?v=20261019-journey1';
 import {townLighting,townLanternPosition} from './lighting.js?v=20261019-interior1';
 import * as THREE from '../maze/vendor/three.module.js';
 import {getTownMap} from './story-data.js?v=20261019-journey1';
-import {playerPose,loadArtImage} from '../maze/rpg-art.js?v=20261017-startup1';
+import {playerPose,loadArtImage} from '../maze/rpg-art.js?v=20261019-unified1';
 import {townVisualSeed as seed,TOWN_RESIDENT_SPRITES} from './visual-data.js?v=20261019-scene1';
 import {withDeadline} from '../transition-effects.js?v=20261016-living1';
 import {buildTownPalace,animateTownPalace,townPalaceFraming} from './palace-architecture.js?v=20261019-journey1';

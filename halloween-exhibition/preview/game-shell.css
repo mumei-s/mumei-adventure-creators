@@ -1,0 +1,243 @@
+/* Both walks share a frame and control locations. Each pad keeps its own size,
+   saved multiplier and transparent paint in its original stylesheet. */
+body:is([data-layout-page=town],[data-layout-page=maze]){
+ --shell-header:#152b37;
+ --shell-hud:#20343d;
+ --shell-line:#c7ac745c;
+ --shell-dock-bottom:calc(var(--safe-bottom,0px) + 24px);
+ --shell-profile-max:var(--app-viewport-width,100vw);
+ --shell-profile-width:min(var(--app-viewport-width,100vw),var(--shell-profile-max));
+ --shell-frame-width:min(var(--shell-profile-width),max(320px,calc(var(--shell-profile-width) * var(--game-frame-scale,1))));
+ --shell-frame-height:min(var(--app-viewport-height,100dvh),max(300px,calc(var(--app-viewport-height,100dvh) * var(--game-frame-scale,1))));
+}
+:root body:is([data-layout-page=town],[data-layout-page=maze])[data-layout=phone]{--shell-profile-max:520px}
+:root body:is([data-layout-page=town],[data-layout-page=maze])[data-layout=tablet]{--shell-profile-max:1000px}
+/* A device preset changes the usable game frame, inside the real visible
+   viewport. Saved frame scaling then applies within that preset's bounds. */
+:root body:is([data-layout-page=town],[data-layout-page=maze])[data-layout]{
+ position:fixed;
+ inset:auto;
+ width:var(--shell-frame-width);
+ height:var(--shell-frame-height);
+ min-width:0;
+ min-height:0;
+ max-width:none;
+ margin:0;
+ left:calc(var(--app-viewport-left,0px) + (var(--app-viewport-width,100vw) - var(--shell-frame-width))/2);
+ top:calc(var(--app-viewport-top,0px) + (var(--app-viewport-height,100dvh) - var(--shell-frame-height))/2);
+ container-type:size;
+ container-name:game-frame;
+}
+:root body:is([data-layout-page=town],[data-layout-page=maze])[data-layout] :is(#town-main,#game){
+ width:100%;
+ height:100%;
+ min-width:0;
+ min-height:0;
+ /* Local narrow-HUD rules must inherit the user's selected device profile. */
+ --ui-font:inherit;
+ --ui-meta:inherit;
+ --ui-target:inherit;
+ --ui-header-height:inherit;
+}
+:root body:is([data-layout-page=town],[data-layout-page=maze])[data-layout] :is(#town-panel,#panel):not(.battle-mode){
+ max-width:min(calc(var(--shell-frame-width) - 16px),calc(var(--app-viewport-width,100vw) - var(--safe-left,0px) - var(--safe-right,0px) - 16px));
+}
+:root body[data-layout-page=town] #town-main .town-header,
+:root body[data-layout-page=maze][data-view] #game>header{
+ min-height:var(--ui-header-height,48px);
+ padding:2px 6px;
+ gap:6px;
+ background:var(--shell-header);
+ border-bottom:1px solid var(--shell-line);
+}
+:root body[data-layout-page=town] #town-main .town-header :is(button,.castle-return),
+:root body[data-layout-page=maze][data-view] #game>header :is(button,.brand){
+ min-height:var(--ui-target,44px);
+ min-width:var(--ui-target,44px);
+ font-size:var(--ui-meta,13px);
+ line-height:1.3;
+}
+:root body[data-layout-page=town] #town-main .town-header-tools,
+:root body[data-layout-page=town] #town-main .town-mode-switch,
+:root body[data-layout-page=maze][data-view] #game #view-controls{gap:4px}
+:root body[data-layout-page=town] #town-main .town-mode-switch button,
+:root body[data-layout-page=maze][data-view] #game #view-controls button{
+ width:var(--ui-target,44px);
+ min-width:var(--ui-target,44px)!important;
+ padding:4px;
+}
+:root body[data-layout-page=town] #town-main .town-mode-switch button[aria-pressed=true],
+:root body[data-layout-page=maze][data-view] #game #view-controls button[aria-pressed=true]{
+ background:#ddc18a;
+ color:#142933;
+ border-color:#ffdc9c;
+}
+:root body[data-layout-page=town] #town-main .town-hud,
+:root body[data-layout-page=maze][data-view] #game .exploration-hud{
+ gap:6px;
+ padding:3px 6px;
+ align-items:start;
+ background:var(--shell-hud);
+ border-block:0;
+ border-bottom:1px solid var(--shell-line);
+}
+:root body[data-layout-page=town] #town-main #quest-title,
+:root body[data-layout-page=maze][data-view] #game .exploration-hud .place h1{
+ margin:0 0 2px;
+ color:#ffe4b4;
+ font-size:var(--ui-font,14px);
+ line-height:1.3;
+ letter-spacing:0;
+}
+:root body[data-layout-page=town] #town-main #quest-objective,
+:root body[data-layout-page=maze][data-view] #game .exploration-hud .place p{
+ margin:0;
+ max-width:none;
+ color:#e0e1ce;
+ font-size:var(--ui-font,14px);
+ line-height:1.4;
+ overflow-wrap:anywhere;
+}
+:root body[data-layout-page=town] #town-main #minimap-open,
+:root body[data-layout-page=maze][data-view] #game .exploration-hud #minimap-open{
+ border:1px solid #e9c58b80;
+ border-radius:9px;
+ background:#132b32d9;
+ box-shadow:none;
+}
+
+/* Street: left pad / middle utilities / right action, mirrored for a right pad.
+   A centered pad puts utilities on its left and the action on its right. */
+:root body[data-layout-page=town] #town-main:is([data-town-orientation],[data-town-narrow]) .town-controls{
+ bottom:var(--shell-dock-bottom);
+ grid-template-areas:"move utilities actions";
+ grid-template-columns:var(--pad-size) minmax(44px,1fr) minmax(44px,1fr);
+ grid-template-rows:auto;
+ column-gap:8px;
+ padding:0 8px;
+ align-items:end;
+}
+:root body[data-layout-page=town][data-pad-position=right] #town-main:is([data-town-orientation],[data-town-narrow]) .town-controls{
+ grid-template-areas:"actions utilities move";
+ grid-template-columns:minmax(44px,1fr) minmax(44px,1fr) var(--pad-size);
+}
+:root body[data-layout-page=town][data-pad-position=center] #town-main:is([data-town-orientation],[data-town-narrow]) .town-controls{
+ grid-template-areas:"utilities . actions";
+ grid-template-columns:minmax(44px,1fr) var(--pad-size) minmax(44px,1fr);
+}
+:root body[data-layout-page=town][data-pad-position=center] #town-main .direction-pad{bottom:0}
+:root body[data-layout-page=town] #town-main .town-controls :is(.town-utilities,.town-actions){
+ width:100%;
+ max-width:200px;
+ justify-self:stretch;
+ align-self:end;
+ gap:6px;
+}
+:root body[data-layout-page=town] #town-main .town-controls .town-utilities{justify-self:start}
+:root body[data-layout-page=town] #town-main .town-controls .town-actions{justify-self:end}
+:root body[data-layout-page=town][data-pad-position=right] #town-main .town-controls .town-utilities{justify-self:end}
+:root body[data-layout-page=town][data-pad-position=right] #town-main .town-controls .town-actions{justify-self:start}
+
+/* Basement uses the same bottom anchors in portrait and landscape. Absolute
+   docks do not change the existing HUD/grid rows or the map's pointer surface. */
+:root body[data-layout-page=maze][data-view] #game #direction-pad,
+:root body[data-layout-page=maze][data-view] #game :is(.lantern-dock,.nearby){
+ position:absolute!important;
+ inset:auto!important;
+ grid-area:auto!important;
+ bottom:var(--shell-dock-bottom)!important;
+ margin:0!important;
+}
+:root body[data-layout-page=maze][data-view] #game #direction-pad{
+ left:8px!important;
+ transform:none!important;
+}
+:root body[data-layout-page=maze][data-view][data-pad-position=center] #game #direction-pad{
+ left:50%!important;
+ transform:translateX(-50%)!important;
+}
+:root body[data-layout-page=maze][data-view][data-pad-position=right] #game #direction-pad{
+ left:auto!important;
+ right:8px!important;
+}
+:root body[data-layout-page=maze][data-view] #game .lantern-dock,
+:root body[data-layout-page=maze][data-view] #game .nearby{
+ width:calc((100% - var(--touch-pad-size) - 32px)/2)!important;
+ min-width:44px;
+ max-width:200px;
+ padding:0;
+ gap:6px;
+}
+:root body[data-layout-page=maze][data-view] #game .lantern-dock{
+ display:grid;
+ left:calc(var(--touch-pad-size) + 16px)!important;
+}
+:root body[data-layout-page=maze][data-view] #game .nearby{right:8px!important}
+:root body[data-layout-page=maze][data-view][data-pad-position=center] #game .lantern-dock{left:8px!important}
+:root body[data-layout-page=maze][data-view][data-pad-position=right] #game .lantern-dock{
+ left:auto!important;
+ right:calc(var(--touch-pad-size) + 16px)!important;
+}
+:root body[data-layout-page=maze][data-view][data-pad-position=right] #game .nearby{
+ left:8px!important;
+ right:auto!important;
+}
+
+/* Utility buttons share their paint and targets; arrows keep their own paint. */
+:root body[data-layout-page=town] #town-main .town-controls .town-utilities>button,
+:root body[data-layout-page=maze][data-view] #game .lantern-dock>button{
+ width:100%;
+ min-width:44px;
+ min-height:max(var(--ui-target,44px),calc(44px * var(--game-control-scale,1)));
+ height:auto;
+ margin:0;
+ padding:4px 5px;
+ border-color:#edd6a499;
+ background:#142d3566;
+ color:#fff3d7;
+ font-size:var(--ui-font,13px);
+ line-height:1.35;
+ white-space:normal;
+ overflow-wrap:anywhere;
+ text-shadow:0 1px 3px #07121b;
+ box-shadow:none;
+}
+:root body[data-layout-page=maze][data-view] #game .lantern-dock #camera-distance{flex:none}
+:root body[data-layout-page=town] #town-main #lantern-toggle[aria-pressed=false],
+:root body[data-layout-page=maze][data-view] #game .lantern-dock #lantern[aria-pressed=false]{
+ background:#14232b99;
+ color:#becbc9;
+}
+:root body[data-layout-page=town] #town-main #interact,
+:root body[data-layout-page=maze][data-view] #game #interact{
+ min-height:var(--ui-target,44px)!important;
+ padding:4px 5px;
+ font-size:var(--ui-font,13px);
+ line-height:1.35;
+ font-weight:700;
+}
+/* The key indicator remains readable without a separate opaque control strip. */
+:root body[data-layout-page=maze][data-view] #game footer{
+ position:absolute!important;
+ inset:auto!important;
+ grid-area:auto!important;
+ left:8px!important;
+ right:8px!important;
+ bottom:var(--safe-bottom,0px)!important;
+ min-height:20px;
+ border:0;
+ background:transparent;
+ color:#f3d9a9;
+ text-shadow:0 1px 3px #07121b;
+ pointer-events:none;
+}
+
+/* Only extend the drawing surface across the former landscape control rail. */
+@media(max-height:580px) and (orientation:landscape){
+ :root body[data-layout-page=maze][data-view] #game :is(#world,#fallback){grid-area:4/1/5/-1}
+}
+:root[data-viewport-landscape=true] body[data-layout-page=maze][data-view] #game :is(#world,#fallback){grid-area:4/1/5/-1}
+@media(forced-colors:active){
+ :root body[data-layout-page=town] #town-main .town-controls .town-utilities>button,
+ :root body[data-layout-page=maze][data-view] #game .lantern-dock>button{background:ButtonFace;color:ButtonText;border-color:ButtonText;text-shadow:none}
+}

@@ -99,9 +99,9 @@ test('brightness keeps existing namespace/range; failed storage is safe; no audi
 test('game audio is menu-only and safe around dialogs/exits/check tone',()=>{
  const app=read('app.js'),html=read('index.html'),css=read('adventure-controls.css'),source=read('adventure-audio.js');
  assert(!app.includes('initVisitorPreferences'));assert(!source.includes('fetch('));assert(!source.includes('https://'));assert(!html.includes('game-audio-controls'));assert(!source.includes('game-audio-bar'));assert(!source.includes('compactControls'));
- assert(app.includes("initAdventureAudio({settingsContainer:visitorSection"));assert(app.includes("['明るさ・音楽',()=>{showLighting();"));assert(app.includes("onAudioInput:()=>soundCheck.stop('')"));assert(app.includes('visitorSettings.stopMusic();soundCheck.play'));
+ assert(app.includes("initAdventureAudio({settingsContainer:visitorSection"));assert(app.includes("add('明るさ・音・表示',()=>{showLighting();"));assert(app.includes("onAudioInput:()=>soundCheck.stop('')"));assert(app.includes('visitorSettings.stopMusic();soundCheck.play'));
  assert(app.includes("clearInput();soundCheck.stop('');visitorSettings.stopMusic();save()"));assert.match(app,/panel\.addEventListener\('close',[^\n]+soundCheck\.stop\(''\)/);
  assert(!css.includes('game-audio-controls'));assert(!css.includes('52px 88px'));assert(!css.includes('44px 88px'));assert(css.includes('.game-audio-settings .game-music-toggle{grid-column:1/-1;min-height:44px}'));assert(css.includes('.game-volume-input{display:block;min-width:0;width:100%;height:44px'));
- assert(app.includes('メニューの「明るさ・音楽」でBGMと音量を調整できます。'));
- assert(html.includes('./app.js?v=20261019-journey1'));assert(html.includes('./adventure-controls.css?v=20261019-scene1'));assert(html.includes('../safe-navigation.css?v=20261016-living1'));
+ assert(app.includes('メニューの「明るさ・音・表示」でBGMと音量を調整できます。'));
+ assert(html.includes('./app.js?v=20261019-unified1'));assert(html.includes('./adventure-controls.css?v=20261019-scene1'));assert(html.includes('../safe-navigation.css?v=20261016-living1'));
 });

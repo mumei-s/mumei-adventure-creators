@@ -1,0 +1,56 @@
+/* Shared exploration menus only. Article pages, settings and battles keep their
+   own flow; both games use the same two-column touch menu at every screen size. */
+:root body[data-layout-page] :is(#town-panel,#panel):has([data-game-menu=true]){
+ width:min(720px,calc(100% - 16px));padding:12px;
+ background:#172832;color:#fff0d5;border:1px solid #c2a36d;border-radius:12px;
+ box-shadow:inset 0 0 0 2px #14212c,0 20px 70px #0009;
+}
+:root body[data-layout-page] :is(#town-panel,#panel):has([data-game-menu=true])>:is(.panel-close,.close){
+ min-height:44px;margin:0 0 4px auto;padding:8px 12px;font-size:14px;line-height:1.35;
+ background:#192f3a;color:#fff0d5;border:1px solid #b99e6f;box-shadow:none;
+}
+:root body[data-layout-page] :is(#town-panel,#panel):has([data-game-menu=true]) :is(#town-panel-content,#panel-content)>.eyebrow{
+ max-width:100%;margin:0 0 3px;padding:0;font-size:11px;line-height:1.4;letter-spacing:.08em;color:#e4c78e;
+}
+:root body[data-layout-page] :is(#town-panel,#panel):has([data-game-menu=true]) :is(#town-panel-content,#panel-content)>h2{
+ margin:0 0 6px;padding:0;border:0;font-size:22px;line-height:1.4;letter-spacing:.03em;text-shadow:none;
+}
+:root body[data-layout-page] :is(#town-panel,#panel):has([data-game-menu=true]) .game-menu-progress{
+ margin:0 0 6px;font-size:13px;line-height:1.5;color:#d7d7c8;
+}
+:root body[data-layout-page] :is(#town-panel,#panel) [data-game-menu=true]{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-flow:row;
+ align-items:stretch;gap:6px;margin:6px 0 0;padding:0;
+}
+:root body[data-layout-page] :is(#town-panel,#panel) [data-game-menu=true]>*{
+ grid-column:auto;grid-row:auto;min-width:0;max-width:100%;margin:0;box-sizing:border-box;
+}
+:root body[data-layout-page] :is(#town-panel,#panel) [data-game-menu=true]>:is(button,a),
+:root body[data-layout-page] :is(#town-panel,#panel) [data-game-menu=true]>.page-reload-control>button,
+:root body[data-layout-page] :is(#town-panel,#panel) [data-game-menu=true]>.game-menu-detail>summary{
+ display:flex;align-items:center;justify-content:center;width:100%;min-width:0;min-height:44px;height:auto;
+ padding:8px 9px;margin:0;border:1px solid #a18d6b;border-radius:8px;
+ background:linear-gradient(145deg,#263b45,#192c38);color:#fff0d5;
+ font:inherit;font-size:14px;line-height:1.4;letter-spacing:0;white-space:normal;overflow-wrap:anywhere;
+ text-align:center;text-decoration:none;box-shadow:inset 0 1px #f3dab01a;cursor:pointer;
+}
+:root body[data-layout-page] :is(#town-panel,#panel) [data-game-menu=true]>:is(button,a)::before,
+:root body[data-layout-page] :is(#town-panel,#panel) [data-game-menu=true]>:is(button,a)::after{content:none;animation:none}
+:root body[data-layout-page] :is(#town-panel,#panel) [data-game-menu=true]>.page-reload-control{
+ display:grid;align-content:start;gap:4px;padding:0;background:none;border:0;box-shadow:none;
+}
+:root body[data-layout-page] :is(#town-panel,#panel) [data-game-menu=true]>.page-reload-control>p,
+:root body[data-layout-page] :is(#town-panel,#panel) [data-game-menu=true]>.game-menu-detail>p{
+ margin:0;padding:5px 7px;min-height:0;font-size:12px;line-height:1.5;white-space:normal;text-align:left;color:#e0d6c4;
+}
+:root body[data-layout-page] :is(#town-panel,#panel) [data-game-menu=true]>.game-menu-detail{display:block;padding:0;border:0;background:none}
+:root body[data-layout-page] :is(#town-panel,#panel) [data-game-menu=true]>.game-menu-detail>summary{list-style:none}
+:root body[data-layout-page] :is(#town-panel,#panel) [data-game-menu=true]>.game-menu-detail>summary::-webkit-details-marker{display:none}
+:root body[data-layout-page] :is(#town-panel,#panel) [data-game-menu=true]>.game-menu-detail[open]>summary{border-color:#e2c98f;background:#334954}
+:root body[data-layout-page] :is(#town-panel,#panel) [data-game-menu=true]>:is(button,a):last-child{border-color:#d6b97c;background:#30444b;font-weight:700}
+:root body[data-layout-page] :is(#town-panel,#panel) [data-game-menu=true] :is(button,a,summary):focus-visible{outline:3px solid #ffe2a1;outline-offset:2px}
+@media(hover:hover){:root body[data-layout-page] :is(#town-panel,#panel) [data-game-menu=true] :is(button,a,summary):hover{border-color:#efd39d;background:#364b54}}
+@media(forced-colors:active){
+ :root body[data-layout-page] :is(#town-panel,#panel):has([data-game-menu=true]){background:Canvas;color:CanvasText;border-color:CanvasText;box-shadow:none}
+ :root body[data-layout-page] :is(#town-panel,#panel) [data-game-menu=true] :is(button,a,summary){background:ButtonFace;color:ButtonText;border-color:ButtonText;box-shadow:none}
+}

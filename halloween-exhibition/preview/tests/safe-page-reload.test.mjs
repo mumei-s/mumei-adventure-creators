@@ -16,7 +16,7 @@ test('refresh failure is visible without a retry loop',async()=>{
 test('three settings menus use persistent reload controls and existing save APIs',async()=>{
  const read=name=>readFile(new URL('../'+name,import.meta.url),'utf8');const [gallery,town,maze,module]=await Promise.all(['theater.js','town/app.js','maze/app.js','safe-page-reload.js'].map(read));
  assert.match(gallery,/createReloadControl\(\{save:persist\}\)/);assert.match(gallery,/visitor-preferences'\)\?\.append\(pageReload.element\)/);
- assert.match(town,/session.save\(\),beforeReload/);assert.match(town,/content.append\(pageReload.element\)/);
- assert.match(maze,/content.append\(padPositionPreferences.element\);content.append\(pageReload.element\)/);assert.match(maze,/:save\(\),beforeReload/);
+ assert.match(town,/session.save\(\),beforeReload/);assert.match(town,/menu.append\([^;]*pageReload.element/);
+ assert.match(maze,/menu.append\([^;]*pageReload.element/);assert.match(maze,/:save\(\),beforeReload/);
  assert.doesNotMatch(module,/localStorage|\.clear\(|removeItem|caches\.|setTimeout|setInterval/);assert.match(module,/globalThis.location.reload\(\)/);
 });

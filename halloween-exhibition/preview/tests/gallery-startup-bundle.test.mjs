@@ -12,7 +12,7 @@ const bundle=await read('gallery-styles.css'),html=await read('index.html');
 
 test('one blocking stylesheet replaces the original 25 without changing cascade bytes or order',async()=>{
  const links=[...html.matchAll(/<link rel="stylesheet" href="([^"]+)"/g)].map(match=>match[1]);
- assert.deepEqual(links,['./gallery-styles.css?v=20261017-startup1']);
+ assert.deepEqual(links,['./gallery-styles.css?v=20261019-unified1']);
  assert.equal(sources.length,26);
  assert.equal(bundle,await buildGalleryStyles(),'edit source styles, then run npm run build:styles');
  let previous=-1;

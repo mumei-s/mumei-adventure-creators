@@ -6,9 +6,9 @@ import {townLighting,townLanternPosition} from './lighting.js?v=20261019-interio
 import {getTownMap} from './story-data.js?v=20261019-journey1';
 import {TOWN_TILE as TILE,followTownCamera,townCameraTarget,townVisibleBounds,townWorldToScreen,townScreenToWorld} from './motion.js';
 import {TOWN_BUDGET,TOWN_PROP_CELLS,TOWN_BATTLE_ART_IDS,townVisualSeed as seed,buildingArtKind,townPropSprite} from './visual-data.js';
-import {drawArtSprite,playerPose,loadArtImage,PALACE_ART} from '../maze/rpg-art.js?v=20261017-startup1';
+import {drawArtSprite,playerPose,loadArtImage,PALACE_ART} from '../maze/rpg-art.js?v=20261019-unified1';
 import {enemyRigEffect} from '../maze/battle-rig-effects.js?v=20261017-rig2';
-import {monsterSprite} from '../maze/monster-motion.js?v=20261017-rig2';
+import {monsterSprite} from '../maze/monster-motion.js?v=20261019-unified1';
 import {withDeadline} from '../transition-effects.js?v=20261016-living1';
 import {townPalaceFraming} from './palace-architecture.js?v=20261019-journey1';
 import {drawTownPalace2D} from './palace-painter.js?v=20261019-journey1';

@@ -18,9 +18,14 @@ export function motionSprite(image,layout,{time=0,motion=true,walking=false,faci
   return{image,...frame,contentHeight:layout.referenceHeightPixels||frame.contentHeight,frameIndex:index,flip,animated:true,turning,animationAssetComplete:false,animationLimitations:['four-walk-poses','missing-authored-turn','missing-authored-attack']};
 }
 export function monsterSprite(art,id,options={}){
+  const layout=art.monsterLayouts?.[id],patrol=options.patrol;
+  // Authored patrols cruise at .2 tile/second. Keep the existing 5–6 pose/sec
+  // cadence at that speed, but advance the gait only by actual path distance.
+  // Time spent slowing down, stopped or turning cannot add walking steps.
+  if(patrol)options={...options,walking:patrol.walking,facing:patrol.facing,turning:patrol.turning,phase:patrol.phase,distance:patrol.distance,strideLength:.2*(layout?.walkFrames?.length||4)/(layout?.fps||5)};
   const articulated=options.battle?art.rigs?.battle('monster:'+id+':battle',{...options,effect:options.effect}):art.rigs?.get('monster:'+id);
   if(articulated)return articulated;
-  const sprite=art.images[id],layout=art.monsterLayouts?.[id];
+  const sprite=art.images[id];
   return layout&&sprite?motionSprite(sprite.image||sprite,layout,options):sprite||null;
 }
 /** Texture transform uses native atlas dimensions and preserves mirrored anchors. */

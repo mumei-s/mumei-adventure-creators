@@ -33,7 +33,7 @@ test('failed storage and corrupt saves remain playable and preserve the original
 });
 test('UI exposes actual settings, isolated save review, visible exits and a focus-safe battle layout',()=>{
  const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8'),html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8'),css=fs.readFileSync(new URL('../style.css',import.meta.url),'utf8');
- for(const label of ['旅の手帳','持ち物','街の地図','明るさ・音・表示','記録・バックアップ','キャラ見比べ'])assert(app.includes(label));for(const key of ['auto','phone','tablet','desktop'])assert(app.includes("'"+key+"'"));
+ for(const label of ['旅の手帳','持ち物','街の地図','明るさ・音・表示','記録・バックアップ','キャラ見比べ'])assert(app.includes(label));assert(app.includes("initDisplayMode({page:'town'"));assert(app.includes('migrateDisplayMode(settings.layout,layoutStorage)'));
  assert(html.includes('href="../?return=palace"'));assert(html.includes('width=device-width,initial-scale=1,viewport-fit=cover'));assert(!html.includes('user-scalable=no'));assert(html.includes('id="loading-retry"'));assert(app.includes('store.replace(next)'));assert(app.includes('確認した記録を復元する'));assert(app.includes('focus({preventScroll:true})'));
  assert(css.includes('.town-battle-log{min-height:0;overflow:auto'));assert(css.includes('.town-battle-controls{display:grid'));assert(css.includes('min-height:44px'));assert(css.includes('repeat(var(--menu-columns),minmax(0,1fr))'));assert(!app.includes('serviceWorker.register'));
  for(const id of ['town-view-2d','town-view-3d','town-mode-banner','town-mode-message','town-mode-retry'])assert(html.includes(`id="${id}"`));

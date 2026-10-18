@@ -33,7 +33,7 @@ test('both basement labels are outside the painting and header moves the complet
  assert.match(css,/grid-column:1;grid-row:1/);
  const maze=await readFile(new URL('../maze/index.html',import.meta.url),'utf8');
  const app=await readFile(new URL('../maze/app.js',import.meta.url),'utf8');
- assert.match(maze,/— 宮殿の地下<\/title>/);assert.match(app,/'宮殿の地下を探索'/);
+ assert.match(maze,/— 宮殿の地下<\/title>/);assert.match(app,/title\('宮殿の地下','メニュー'\)/);
 });
 
 test('stacked destinations recover header height and leave symmetric count columns',()=>{

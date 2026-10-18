@@ -1,5 +1,5 @@
 /* A modestly larger street pad keeps the saved size multiplier. Utility buttons retain their size. */
-#town-main{--pad-size:calc(126px * var(--game-control-scale,1));--town-pad-button-size:max(44px,calc(50px * var(--game-control-scale,1)))}
+#town-main{--pad-size:calc(136px * var(--game-control-scale,1));--town-pad-button-size:max(44px,calc(50px * var(--game-control-scale,1)))}
 /* Let the street reach the bottom edge; only the thumb controls catch touches. */
 #town-main[data-town-orientation],#town-main[data-town-narrow]{grid-template-rows:minmax(48px,max-content) auto minmax(0,1fr) 0 0}
 #town-main .town-world{grid-area:3/1/6/2}

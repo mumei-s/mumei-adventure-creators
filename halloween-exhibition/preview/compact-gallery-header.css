@@ -25,3 +25,45 @@ body[data-layout-page=gallery] .theater .toolbar-primary{display:contents}
  body[data-layout-page=gallery][data-layout] .castle-visit-counter strong{font-size:14px;line-height:1.25}
  body[data-layout-page=gallery][data-layout] .castle-visit-counter small{font-size:11px;line-height:1.25}
 }
+
+/* The entrance keeps its title and controls in two compact bands, giving the
+   remaining measured viewport back to the painted castle. */
+body[data-layout-page=gallery][data-layout] #theater:not([data-palace-state=gallery]) .masthead{
+ gap:3px;padding-block:4px 3px;
+}
+body[data-layout-page=gallery][data-layout] #theater:not([data-palace-state=gallery]) #site-title{
+ display:grid;grid-template-columns:auto auto;align-items:center;justify-content:center;
+ column-gap:12px;row-gap:1px;
+}
+body[data-layout-page=gallery][data-layout] #theater:not([data-palace-state=gallery]) #site-title>strong{
+ grid-column:1/-1;grid-row:1;
+}
+body[data-layout-page=gallery][data-layout] #theater:not([data-palace-state=gallery]) #site-title>span{
+ grid-column:1;grid-row:2;justify-self:end;
+}
+body[data-layout-page=gallery][data-layout] #theater:not([data-palace-state=gallery]) #site-title>small{
+ grid-column:2;grid-row:2;justify-self:start;
+}
+body[data-layout-page=gallery][data-layout] #theater:not([data-palace-state=gallery]) .brand{
+ padding-block:0;border-bottom:0;
+}
+body[data-layout-page=gallery][data-layout] #theater:not([data-palace-state=gallery]) .palace-toolbar{
+ padding-block:0;row-gap:3px;
+}
+body[data-layout-page=gallery][data-layout] #theater:not([data-palace-state=gallery]) .masthead>#castle-exit-panel{
+ padding-block:0;row-gap:0;
+}
+body[data-layout-page=gallery][data-layout] #theater:not([data-palace-state=gallery]) #castle-exit-panel>.palace-world-links{
+ grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;max-width:256px;
+}
+body[data-layout-page=gallery][data-layout] #theater:not([data-palace-state=gallery]) #castle-exit-panel>.palace-world-links>a{
+ min-height:44px;padding:2px 4px;line-height:1.2;
+}
+@media(max-width:480px){
+ body[data-layout-page=gallery][data-layout] #theater:not([data-palace-state=gallery]) #site-title{
+  column-gap:10px;row-gap:1px;
+ }
+ body[data-layout-page=gallery][data-layout] #theater:not([data-palace-state=gallery]) #castle-exit-panel>.palace-world-links{
+  max-width:128px;
+ }
+}

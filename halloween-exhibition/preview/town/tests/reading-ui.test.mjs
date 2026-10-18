@@ -25,12 +25,12 @@ const flatten=node=>[node,...node.children.flatMap(flatten)];
 function harness(){
  const content=element('div'),nodes=new Map(),stored=new Map(),record={panels:[],notices:[],closed:0};
  const state=initialTownState(),context=vm.createContext({URL,Math,Set,CREATOR_HOMES,getCreatorHome,createReadingJourney,townProgress,townJournal,getTownMap,
-  characterArt:{creatorPage:id=>creatorHomeProfile(archive,id)},session:{snapshot:()=>({state})},contextTarget:()=>null,ready:true,renderer:null,
+  characterArt:{creatorPage:id=>creatorHomeProfile(archive,id)},session:{snapshot:()=>({state})},contextTarget:()=>null,ready:true,renderer:null,settings:{lantern:true},cameraDistance:'normal',toggleLantern(){},
   localStorage:{getItem:key=>stored.get(key)??null,setItem:(key,value)=>stored.set(key,value)},content,
   el:element,button:(text,onclick,className)=>({...element('button',text,className),onclick}),
   $:id=>{if(!nodes.has(id))nodes.set(id,element('div'));return nodes.get(id);},
   beginPanel:(title,options)=>{content.replaceChildren();record.panels.push({title,options});},notify:text=>record.notices.push(text),closePanel:()=>record.closed++,pageReload:{element:element('section')},
-  showVisitors(){},showInventory(){},showMap(){},showWalkingSpeed(){},showControlSettings(){},showSettings(){},showSave(){},showHelp(){},showCastleReturn(){},
+  showVisitors(){},showInventory(){},showMap(){},showWalkingSpeed(){},showControlSettings(){},showSettings(){},showMenuLayoutSettings(){},showSave(){},showHelp(){},showCastleReturn(){},
  });
  const functions=['prepareReadingJourney','readingProgress','appendReadingMark','showJournal','showMenu','showCreatorHome','showCreatorHomes','showTownJournal','updateHUD'];
  vm.runInContext(`let readingJourney=null,hudSignature='';${functions.map(functionSource).join('\n')};globalThis.run={${functions.join(',')},journey:()=>readingJourney};`,context);

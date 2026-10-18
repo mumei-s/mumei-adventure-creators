@@ -37,3 +37,27 @@ body[data-layout-page=gallery][data-layout] .castle-visit-counter small{font-siz
 body[data-layout-page=gallery][data-layout] .castle-visit-counter strong{font-size:var(--ui-font)}
 body[data-layout-page=gallery][data-layout] .theater :is(.castle-exit-label,.app-exit-trigger){font-size:var(--ui-font)}
 body[data-layout-page=maze][data-layout] #game .minimap span{font-size:var(--ui-meta);white-space:normal;text-align:center}
+
+/* One resolved preset drives every public page. Higher specificity keeps a
+   physical narrow-screen fallback from erasing an explicit tablet/PC choice. */
+:root body[data-layout-page][data-layout]{
+ --ui-font:var(--profile-font,16px);--ui-meta:var(--profile-meta,14px);--ui-target:var(--profile-target,48px);
+ --ui-icon:var(--profile-icon,40px);--ui-header-height:var(--profile-header-height,56px);
+ --display-content-max:var(--profile-content-max,1440px);
+}
+:root body[data-layout-page=gallery][data-layout] #theater{
+ box-sizing:border-box;width:100%;max-width:min(100%,var(--profile-content-max,1440px));margin-inline:auto;
+}
+:root body[data-layout-page=gallery][data-layout] #theater[data-mode] #site-title>strong{
+ font-size:var(--profile-title,26px);line-height:1.15;max-width:100%;white-space:normal;
+}
+:root body[data-layout-page=gallery][data-layout] #theater[data-mode] #site-title>span{font-size:var(--ui-meta);line-height:1.3}
+:root body[data-layout-page=gallery][data-layout] #theater[data-mode] #site-title>small{font-size:var(--ui-meta);line-height:1.3}
+:root body[data-layout-page=gallery][data-layout] #theater .palace-toolbar{grid-template-columns:minmax(0,1fr) var(--ui-target)}
+:root body[data-layout-page=gallery][data-layout] #theater .palace-toolbar :is(button,a),
+:root body[data-layout-page=gallery][data-layout] #theater .palace-return-row>:is(button,a){
+ min-width:var(--ui-target);min-height:var(--ui-target);height:auto;font-size:var(--ui-font);line-height:1.4;
+}
+:root body[data-layout-page=gallery][data-layout] #theater .header-actions :is(#year-open,.visitor-settings-trigger){width:var(--ui-target);max-width:none;min-width:var(--ui-target);min-height:var(--ui-target);height:auto;font-size:var(--ui-font)}
+:root body[data-layout-page=gallery][data-layout] #theater .stage-caption h1{font-size:var(--profile-title,26px)}
+:root body[data-layout-page=gallery][data-layout] #theater .room-world{height:clamp(128px,calc(var(--app-viewport-height,100svh) - var(--profile-gallery-chrome,440px)),580px)}

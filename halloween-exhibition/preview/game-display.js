@@ -217,7 +217,7 @@ export function initPadPosition({controlsParent, storage, onChange = () => {}} =
   }
   label.append(select);
   const controller = createGameDisplayController({storage,onChange(preferences){
-    document.body.dataset.padPosition=preferences.side; select.value=preferences.side; onChange(preferences.side);
+    document.body.dataset.padPosition=preferences.side;document.documentElement?.style?.setProperty('--game-control-scale',String(preferences.controlSize/100)); select.value=preferences.side; onChange(preferences.side);
   }});
   const change = () => controller.setPreferences({side:select.value});
   select.addEventListener('change',change);

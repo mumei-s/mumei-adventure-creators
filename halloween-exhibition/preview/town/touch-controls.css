@@ -1,3 +1,5 @@
+/* A modestly larger street pad keeps the saved size multiplier. Utility buttons retain their size. */
+#town-main{--pad-size:calc(126px * var(--game-control-scale,1));--town-pad-button-size:max(44px,calc(50px * var(--game-control-scale,1)))}
 /* Let the street reach the bottom edge; only the thumb controls catch touches. */
 #town-main[data-town-orientation],#town-main[data-town-narrow]{grid-template-rows:minmax(48px,max-content) auto minmax(0,1fr) 0 0}
 #town-main .town-world{grid-area:3/1/6/2}
@@ -11,10 +13,12 @@
  height:auto;min-height:var(--pad-size);max-height:none;overflow:visible;border:0;background:none;pointer-events:none;z-index:2;
 }
 #town-main .town-controls>div{pointer-events:auto}
-#town-main .direction-pad{align-self:end;background:radial-gradient(#45626a1f,#203c461a);border-color:#edd6a466;box-shadow:none}
-#town-main .direction-pad button{background:#16303d2e;color:#fff3d7;text-shadow:0 1px 3px #07121b,0 0 4px #07121b;box-shadow:none}
+#town-main .direction-pad{align-self:end;background:radial-gradient(circle at 50% 43%,#3d52621f,#17263919);border-color:#f1d39466;box-shadow:none}
+#town-main .direction-pad button{width:var(--town-pad-button-size);height:var(--town-pad-button-size);min-width:44px;min-height:44px;padding:0;font-size:calc(26px * var(--game-control-scale,1));background:#2033482e;color:#fff5dc;border-color:#fff0c577;text-shadow:0 1px 3px #000;box-shadow:none;opacity:1}
+#town-main .direction-pad :is([data-move=forward],[data-move=back]){left:calc((100% - var(--town-pad-button-size))/2)}
+#town-main .direction-pad :is([data-move=left],[data-move=right]){top:calc((100% - var(--town-pad-button-size))/2)}
 #town-main .pad-nub{background:#e9ca8f2e;border-color:#e9ca8f55}
-#town-main .direction-pad button.active,#town-main .direction-pad[data-direction=forward] [data-move=forward],#town-main .direction-pad[data-direction=back] [data-move=back],#town-main .direction-pad[data-direction=left] [data-move=left],#town-main .direction-pad[data-direction=right] [data-move=right]{background:#e4c78d55;color:#fff;text-shadow:0 1px 3px #07121b}
+#town-main .direction-pad button.active,#town-main .direction-pad[data-direction=forward] [data-move=forward],#town-main .direction-pad[data-direction=back] [data-move=back],#town-main .direction-pad[data-direction=left] [data-move=left],#town-main .direction-pad[data-direction=right] [data-move=right]{background:#e2c58f55;color:#fff5dc;border-color:#ffe0a1;text-shadow:0 1px 3px #000}
 #town-main .town-controls .town-utilities,#town-main .town-controls .town-actions{display:grid;width:max-content;max-width:min(140px,100%);justify-self:end;align-self:end}
 #town-main .town-controls>:is(.town-utilities,.town-actions)>button{background:#142d3566;border-color:#edd6a499;color:#fff3d7;font-size:12px;text-shadow:0 1px 3px #07121b;box-shadow:none;min-height:max(44px,var(--town-button-size))}
 /* Map and inventory remain available in the header map and existing menu. */

@@ -19,21 +19,21 @@ test('blocked storage still applies the chosen position',()=>{
 });
 test('basement position-only selector has three labeled choices and applies changes',()=>{
  const previous=globalThis.document;const make=tag=>({tag,children:[],handlers:{},append(...children){this.children.push(...children)},addEventListener(event,fn){this.handlers[event]=fn}});
- globalThis.document={body:{dataset:{}},createElement:make};
- try{const ui=initPadPosition({storage:storage()}),label=ui.element,select=label.children[0];assert.equal(label.textContent,'十字キーの位置');assert.deepEqual(select.children.map(option=>option.value),['left','center','right']);assert.equal(document.body.dataset.padPosition,'center');select.value='right';select.handlers.change();assert.equal(document.body.dataset.padPosition,'right');}finally{globalThis.document=previous}
+ const sizes=[];globalThis.document={body:{dataset:{}},documentElement:{style:{setProperty:(key,value)=>sizes.push([key,value])}},createElement:make};
+ try{const ui=initPadPosition({storage:storage({[GAME_DISPLAY_KEY]:JSON.stringify({controlSize:125})})}),label=ui.element,select=label.children[0];assert.equal(label.textContent,'十字キーの位置');assert.deepEqual(select.children.map(option=>option.value),['left','center','right']);assert.equal(document.body.dataset.padPosition,'center');assert.deepEqual(sizes.at(-1),['--game-control-scale','1.25']);select.value='right';select.handlers.change();assert.equal(document.body.dataset.padPosition,'right');}finally{globalThis.document=previous}
 });
 test('town center raises only the pad, retains 44px targets and clears both side lanes',async()=>{
  const css=await readFile(new URL('../town/touch-controls.css',import.meta.url),'utf8');
  assert.match(css,/data-pad-position=center\] #town-main \.direction-pad\{position:absolute;grid-area:auto;left:50%;bottom:20px;transform:translateX\(-50%\)/);
  for(const width of [300,320,340,390,560,844])for(const scale of [1,1.05,1.1,1.15,1.2,1.25]){
-  const lane=(width-16-16-112*scale)/2;assert.ok(lane>=44*scale,`${width}px / ${scale}`);
+  const lane=(width-16-16-126*scale)/2;assert.ok(lane>=44*scale,`${width}px / ${scale}`);
  }
 });
-test('basement selector does not load frame CSS or resize its existing pad',async()=>{
+test('basement selector keeps position-only frame behavior with the compact scaled pad',async()=>{
  const read=path=>readFile(new URL('../maze/'+path,import.meta.url),'utf8');const [app,css,html]=await Promise.all([read('app.js'),read('touch-pad.css'),read('index.html')]);
  assert.match(app,/initPadPosition\(\{onChange:\(\)=>clearInput\(\)\}\)/);assert.match(app,/content.append\(padPositionPreferences.element\)/);
- assert.doesNotMatch(html,/game-display.css/);assert.match(css,/--touch-pad-size:144px;--touch-button-size:56px/);assert.match(css,/--touch-pad-size:136px;--touch-button-size:52px/);
- for(const width of [272,300,320,390])assert.ok((width-(width===272?136:144)-32)/2>=44);
+ assert.doesNotMatch(html,/game-display.css/);assert.match(css,/--touch-pad-size:calc\(128px \* var\(--game-control-scale,1\)\)/);assert.match(css,/--touch-pad-size:calc\(120px \* var\(--game-control-scale,1\)\)/);
+ for(const width of [320,360,390])for(const scale of [1,1.25])assert.ok((width-128*scale-32)/2>=44);
 });
 
 test('nearby creator controls keep the side-lane width override',async()=>{

@@ -1,4 +1,4 @@
-import {townLighting,townLanternPosition} from './lighting.js?v=20261017-library1';
+import {townLighting,townLanternPosition} from './lighting.js?v=20261019-interior1';
 import * as THREE from '../maze/vendor/three.module.js';
 import {getTownMap} from './story-data.js';
 import {playerPose,loadArtImage} from '../maze/rpg-art.js?v=20261017-startup1';

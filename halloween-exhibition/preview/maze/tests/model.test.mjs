@@ -17,10 +17,17 @@ test('Three.js is vendored with its license; no runtime CDN',()=>{assert(fs.exis
 
 test('adventure exit restores Halloween mode in the independent exhibition',()=>{const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');assert(html.includes('href="../?mode=halloween"'));assert(html.includes('id="lantern"'));assert(html.includes('id="tools-open"'));assert(!html.includes('n52be511ec082'));});
 
-import {normalizeLighting} from '../lighting-model.js';
+import {normalizeLighting,palace2DLighting} from '../lighting-model.js';
 test('lighting defaults visibly on and invalid values are rejected',()=>{assert.deepEqual(normalizeLighting(null),{brightness:1.2,lantern:true});for(const p of [[],{brightness:'2'},{brightness:NaN},{brightness:Infinity}])assert.equal(normalizeLighting(p).brightness,1.2);});
 test('brightness cannot black out the room or exceed bounded exposure',()=>{assert.equal(normalizeLighting({brightness:-100}).brightness,.75);assert.equal(normalizeLighting({brightness:100}).brightness,1.75);assert.equal(normalizeLighting({brightness:1.35}).brightness,1.35);assert.equal(normalizeLighting({lantern:false}).lantern,false);});
 test('lighting persistence never restores creature opt-in',()=>{assert.deepEqual(normalizeLighting({brightness:1,lantern:false,encounters:true}),{brightness:1,lantern:false});});
 
 test('article editor visibility and numeric order affect list and exhibit selection',()=>{const a=[{id:'later',collection:'horror',order:20},{id:'first',collection:'horror',order:1},{id:'hidden',collection:'horror',visible:false,order:0},{id:'ordinary',collection:'normal',order:0},{id:'tie',collection:'horror',order:1}];assert.deepEqual(visibleArticles(a).map(a=>a.id),['first','tie','later']);assert.equal(a[0].id,'later');});
 test('multiple articles from one creator remain distinct and visible',()=>{const a=[{id:'a',creatorId:'ss_yr',collection:'horror'},{id:'b',creatorId:'ss_yr',collection:'horror'}];assert.equal(visibleArticles(a).length,2);assert.deepEqual(visibleArticles(a).map(a=>a.id),['a','b']);});
+
+
+test('palace 2D ambient light stays dark while comfort brightness remains adjustable',()=>{
+ const low=palace2DLighting(.75),normal=palace2DLighting(1.2),high=palace2DLighting(1.75);
+ assert.ok(low.darkness>normal.darkness&&normal.darkness>high.darkness);assert.ok(high.darkness>=.6);assert.ok(normal.candlePower<.25);assert.ok(normal.moonPower<normal.candlePower);
+ assert.deepEqual(palace2DLighting(NaN),normal);assert.deepEqual(palace2DLighting(-1),low);assert.deepEqual(palace2DLighting(10),high);
+});

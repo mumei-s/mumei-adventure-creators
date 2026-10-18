@@ -1,3 +1,5 @@
+import {palace2DLighting} from './lighting-model.js?v=20261019-interior1';
+import {drawFurnishingFallback} from './palace-furnishing-art.js?v=20261019-interior1';
 import {cameraDistanceScale} from '../camera-distance.js?v=20261019-scene1';
 import {monsterSprite} from './monster-motion.js?v=20261016-living1';
 import { MAP, CELL, FEATURES, blocked, nearby } from './maze-model.js?v=20261014-adventure2';
@@ -236,10 +238,7 @@ export function createStageRenderer({makeCanvas=(w,h)=>{const c=document.createE
         const foregroundAlpha=o.y>player.y&&o.y-player.y<o.size*.85&&Math.abs(o.x-player.x)<o.size*.45?.35:1;
         if(art.images[o.kind]&&foregroundAlpha>.5)addHit(spriteBox(art.images[o.kind],o.x,o.y,o.size));
         if(!drawArtSprite(c,art.images[o.kind],o.x,o.y,o.size,{alpha:foregroundAlpha})){
-          if(o.kind==='pumpkins')drawPumpkin(c,o.x,o.y-20,.9);
-          else if(o.kind==='bookcase')shelf(c,o.x,o.y-20,110);
-          else if(o.kind==='column'){rounded(c,o.x-14,o.y-100,28,100,4,'#4b4c5f','#a1a0a0');candle(c,o.x,o.y-90,.9);}
-          else{rounded(c,o.x-27,o.y-125,54,105,22,'#26384d','#8b93a2');glow(c,o.x,o.y-65,65,'#88a6c343');}
+          c.save();c.globalAlpha=foregroundAlpha;drawFurnishingFallback(c,o);c.restore();
         }
       }
     }
@@ -252,9 +251,9 @@ export function createStageRenderer({makeCanvas=(w,h)=>{const c=document.createE
     c.restore();
     // Ray-clipped handheld light: walls and locked gates cast real 2D occlusion.
     if(shade.width!==Math.ceil(w)||shade.height!==Math.ceil(h)){shade.width=Math.ceil(w);shade.height=Math.ceil(h);}
-    const sc=shade.getContext('2d');sc.clearRect(0,0,w,h);const darkness=Math.max(.10,Math.min(.42,.29-(brightness-1)*.24));sc.fillStyle=`rgba(4,9,23,${darkness})`;sc.fillRect(0,0,w,h);
+    const sc=shade.getContext('2d');sc.clearRect(0,0,w,h);const lightProfile=palace2DLighting(brightness),darkness=lightProfile.darkness;sc.fillStyle=`rgba(4,9,23,${darkness})`;sc.fillRect(0,0,w,h);
     const px=cam.originX+(player.x-cam.x)*cam.scale,py=cam.originY+(player.y-cam.y)*cam.scale;
-    for(const light of architecture.lights){const lx=cam.originX+(light.x-cam.x)*cam.scale,ly=cam.originY+(light.y-cam.y)*cam.scale,rr=light.r*cam.scale;if(lx+rr<0||ly+rr<0||lx-rr>w||ly-rr>h)continue;const strength=light.power*(motion&&light.kind==='candle'?1+Math.sin(time*2.4+(light.seed||0))*.045:1);sc.save();sc.globalCompositeOperation='destination-out';const pool=sc.createRadialGradient(lx,ly,3,lx,ly,rr);pool.addColorStop(0,`rgba(0,0,0,${strength})`);pool.addColorStop(1,'rgba(0,0,0,0)');sc.fillStyle=pool;sc.fillRect(lx-rr,ly-rr,rr*2,rr*2);sc.restore();}
+    for(const light of architecture.lights){const lx=cam.originX+(light.x-cam.x)*cam.scale,ly=cam.originY+(light.y-cam.y)*cam.scale,rr=light.r*cam.scale;if(lx+rr<0||ly+rr<0||lx-rr>w||ly-rr>h)continue;const strength=(light.kind==='candle'?lightProfile.candlePower:lightProfile.moonPower)*(motion&&light.kind==='candle'?1+Math.sin(time*2.4+(light.seed||0))*.045:1);sc.save();sc.globalCompositeOperation='destination-out';const pool=sc.createRadialGradient(lx,ly,3,lx,ly,rr);pool.addColorStop(0,`rgba(0,0,0,${strength})`);pool.addColorStop(1,'rgba(0,0,0,0)');sc.fillStyle=pool;sc.fillRect(lx-rr,ly-rr,rr*2,rr*2);sc.restore();}
     if(lantern){sc.save();sc.beginPath();for(let i=0;i<=128;i++){const a=i*TAU/128;let r=0;for(;r<270;r+=7){const xx=player.x+Math.cos(a)*r,yy=player.y+Math.sin(a)*r;if(blocked(xx/TILE*CELL,yy/TILE*CELL,state))break;}const xx=px+Math.cos(a)*r*cam.scale,yy=py+Math.sin(a)*r*cam.scale;if(i===0)sc.moveTo(xx,yy);else sc.lineTo(xx,yy);}sc.closePath();sc.clip();sc.globalCompositeOperation='destination-out';const light=sc.createRadialGradient(px,py-12,12,px,py-12,230*cam.scale);light.addColorStop(0,'rgba(0,0,0,.94)');light.addColorStop(.4,'rgba(0,0,0,.72)');light.addColorStop(1,'rgba(0,0,0,0)');sc.fillStyle=light;sc.fillRect(0,0,w,h);sc.restore();}
     c.drawImage(shade,0,0,w,h);
     for(const light of architecture.lights){const lx=cam.originX+(light.x-cam.x)*cam.scale,ly=cam.originY+(light.y-cam.y)*cam.scale;if(light.kind==='candle')glow(c,lx,ly,58*cam.scale,'#ffc4720f');}

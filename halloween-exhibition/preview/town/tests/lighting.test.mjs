@@ -28,3 +28,11 @@ test('2D fallback shades only its scene and reveals a bounded warm pool when lan
  const pools=shade.calls.filter(call=>call[0]==='gradient');assert.equal(pools.length,1);assert.ok(pools[0][6]>0&&pools[0][6]<150,'pool covers nearby floor, not the entire viewport');
  assert.equal(canvas.width,420);assert.equal(canvas.height,600);renderer.destroy();
 });
+
+
+test('all 2D rooms keep a dark ambient level and a nearby handheld light',()=>{
+ for(const map of ['inn','workshop','clocktower','candle-shop','library']){
+  for(const brightness of [0,75,100]){const light=townLighting(map,brightness,{interior2D:true});assert.equal(light.night,true);assert.ok(light.shade>=.74);assert.ok(light.lanternRadius<150);}
+ }
+ assert.deepEqual(townLighting('lantern-town',75,{interior2D:false}),townLighting('lantern-town',75));
+});

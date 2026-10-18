@@ -1,12 +1,13 @@
+import {nearestFurnishing,FURNISHING_INFO} from './furnishing-info.js?v=20261019-interior1';
 import {readCameraDistance,saveCameraDistance} from '../camera-distance.js?v=20261019-scene1';
 import {createReloadControl} from '../safe-page-reload.js?v=20261017-reload1';
 import {fetchStartupJSON,loadRequiredCharacters} from './startup-assets.js?v=20261017-startup1';
-import {initPadPosition} from '../game-display.js?v=20261017-padpos1';
+import {initPadPosition} from '../game-display.js?v=20261019-interior1';
 import {monsterSprite} from './monster-motion.js?v=20261016-living1';
 import {initTransitionEffects,withDeadline} from '../transition-effects.js?v=20261016-living1';
 import {loadArtworkImage} from '../magical-loading.js?v=20261015-journey1';
 import {initViewport} from '../viewport.js?v=20261016-ios1';
-import {resolveContextAction,actionButtonFor} from './context-action.js?v=20261016-resident1';
+import {resolveContextAction,actionButtonFor} from './context-action.js?v=20261019-interior1';
 import {compileResidents,RESIDENT_STORIES,RESIDENT_FICTION} from './resident-model.js?v=20261017-startup1';
 import {initMinimapSize} from './minimap-size.js?v=20261016-battle-visible1';
 import {libraryFromArchive} from './library-catalog.js?v=20261015-clear1';
@@ -16,13 +17,13 @@ import {renderEnding} from './ending-ui.js?v=20261017-startup1';
 import {createSoundCheck} from './sound-check.js?v=20261016-ios1';
 import {initAdventureAudio} from './adventure-audio.js?v=20261016-ios1';
 import { initDisplayMode } from '../display-mode.js?v=20261016-resident1';
-import { normalizeLighting } from './lighting-model.js?v=20261014-adventure2';
+import { normalizeLighting } from './lighting-model.js?v=20261019-interior1';
 import { MAP, CELL, FEATURES, toWorld, collectionAt, move, nearby, initialState, visibleArticles } from './maze-model.js?v=20261014-adventure2';
 import { ALL_MONSTERS as MONSTERS, REQUIRED_MONSTER_IDS, nearestMonster, newBattle, battleTurn, intentFor, monsterAvailable, prankFor, commandFor, monsterPose, guidePoint } from './encounter-model.js?v=20261016-living1';
 import { chooseView, movementVector, mapHeading } from './view-model.js?v=20261015-minimap1';
-import { createStageRenderer, EXIT } from './stage-2d.js?v=20261019-scene1';
+import { createStageRenderer, EXIT, PALACE_FURNISHINGS } from './stage-2d.js?v=20261019-interior1';
 import {createArtLibrary,drawArtSprite} from './rpg-art.js?v=20261017-startup1';
-import {renderBattleScene,battleEffectDuration} from './battle-scene.js?v=20261017-startup1';
+import {renderBattleScene,battleEffectDuration} from './battle-scene.js?v=20261019-interior1';
 import {directionFromMovement,moveAroundFurniture} from './rpg-model.js?v=20261014-adventure2';
 import {protectGameSurface,bindHeldGameButton,bindDirectionPad} from './game-input.js?v=20261016-ios1';
 import {STORY,encounterStory,chapterFor} from './story-model.js?v=20261016-living1';
@@ -148,10 +149,13 @@ function contextTarget(){
  const creator=nearbyCreator(),resident=nearbyResident(),monster=encounters?nearestReadyMonster():null,monsterPoint=monster?monsterPose(monster,time,motion&&!reducedMotion.matches,state):null;
  const measured=(target,position=target)=>target?{...target,distance:Math.hypot(point.x-position.x,point.z-position.z)}:null;
  const exitDistance=Math.hypot(point.x-EXIT.x,point.z-EXIT.z);
- return resolveContextAction({exit:exitDistance<.8?{id:'exit',distance:exitDistance}:null,feature:feature?{id:n,distance:Math.hypot(point.x-feature.x,point.z-feature.z)}:null,creator:measured(creator),resident:measured(resident),monster:monster?.optional&&!rpgArt.images[monster.id]?null:measured(monster,monsterPoint)});
+ return resolveContextAction({scenery:nearestFurnishing(state,PALACE_FURNISHINGS),exit:exitDistance<.8?{id:'exit',distance:exitDistance}:null,feature:feature?{id:n,distance:Math.hypot(point.x-feature.x,point.z-feature.z)}:null,creator:measured(creator),resident:measured(resident),monster:monster?.optional&&!rpgArt.images[monster.id]?null:measured(monster,monsterPoint)});
 }
-function performContextAction(){const target=contextTarget();if(!target)return;if(target.kind==='creator')showCreator(target.id);else if(target.kind==='resident')showResident(target.id);else if(target.kind==='monster')startBattle();else interact();}
+function performContextAction(){const target=contextTarget();if(!target)return;if(target.kind==='scenery')showFurnishing(target);else if(target.kind==='creator')showCreator(target.id);else if(target.kind==='resident')showResident(target.id);else if(target.kind==='monster')startBattle();else interact();}
 
+function showFurnishing(target){
+ const info=FURNISHING_INFO[target.furnishingKind]||target;title('PALACE FURNISHINGS',info.name);content.append(element('p',info.text,'dialogue-text'));if(target.furnishingKind==='bookcase'){const shelf=element('button','物語の書庫をひらく');shelf.onclick=()=>{renderCatalog('horror');openPanel();};content.append(shelf);}const back=element('button','探索へ戻る');back.onclick=()=>panel.close();content.append(back);openPanel();
+}
 function showCreators(){title('FRIENDS OF THE ATELIER','宮殿に集まった仲間');renderCreatorDirectory(content,{roster:creatorRoster,state,status:characterAssets.status(),onTalk:showCreator,onGuide:guideCreator,onRetry:()=>{characterAssets.retry();creatorAssetCheck=0;panel.close();notify('仲間の画像を再読み込みします。');}});openPanel();}
 function showStory(){
   progress[year]={...progress[year],storySeen:true};save();const chapter=chapterFor({...state,cleared,reachedVault});title(chapter.kicker,STORY.title);const page=element('section',undefined,'story-journal');
@@ -202,7 +206,7 @@ function updateHUD(){
   $('object-label').textContent=copy?.[0]||'ランタンを持って、夜の回廊を歩こう。';
   const target=contextTarget(),buttonId=actionButtonFor(target);
   for(const id of ['interact','creator-open','battle-open']){$(id).hidden=id!==buttonId;$(id).disabled=id!==buttonId;}
-  if(target){const button=$(buttonId);button.textContent=target.kind==='creator'?'仲間と話す':target.kind==='resident'?'住人と話す':target.kind==='monster'?'モンスターと話す':target.kind==='exit'?'出口をひらく':copy?.[1]||'調べる';button.setAttribute('aria-label',target.label||target.name?`${target.label||target.name}と話す`:button.textContent);button.title=target.label||target.name||'';}
+  if(target){if(target.kind==='scenery')$('object-label').textContent=target.name;const button=$(buttonId);button.textContent=target.kind==='scenery'?target.name+'を調べる':target.kind==='creator'?'仲間と話す':target.kind==='resident'?'住人と話す':target.kind==='monster'?'モンスターと話す':target.kind==='exit'?'出口をひらく':copy?.[1]||'調べる';button.setAttribute('aria-label',target.kind==='scenery'?button.textContent:target.label||target.name?`${target.label||target.name}と話す`:button.textContent);button.title=target.label||target.name||'';}
 
 }
 function showEncounters(){
@@ -300,7 +304,7 @@ async function setView(next,{persist=true,quiet=false}={}){
   const request=++viewRequest;viewAbort?.abort();viewAbort=new AbortController();const finishLoading=transitions.begin($('view-loading'),next==='3d'?'立体の回廊をひらいています…':'物語の舞台をひらいています…');let failed=false;clearInput();$('view-3d').disabled=next==='3d'&&!world;
   if(next==='3d'&&!world){
     $('view-3d').disabled=true;
-    try{if(worldFailed)throw Error('WebGL unavailable');const {createWorld}=await withDeadline(worldModule||import('./world.js?v=20261019-scene1'),{signal:viewAbort.signal});if(request!==viewRequest)return;world=createWorld({canvas:$('world'),art:rpgArt});restoreExhibits();}
+    try{if(worldFailed)throw Error('WebGL unavailable');const {createWorld}=await withDeadline(worldModule||import('./world.js?v=20261019-interior1'),{signal:viewAbort.signal});if(request!==viewRequest)return;world=createWorld({canvas:$('world'),art:rpgArt});restoreExhibits();}
     catch(e){if(request!==viewRequest)return;failed=true;view='2d';console.warn('3D unavailable; 2D remains fully playable.',e);if(!quiet)notify('3Dを利用できないため、2Dで探索できます。対戦と記事もそのまま使えます。');}
     finally{if(request===viewRequest)$('view-3d').disabled=false;}
   }
@@ -369,7 +373,7 @@ async function init(){
  const request=++bootRequest;bootAbort?.abort();const abort=new AbortController();bootAbort=abort;
  const loading=$('loading'),label=loading.querySelector('p');loading.hidden=false;loading.querySelector('[data-boot-retry]')?.remove();if(label)label.textContent='迷宮の扉をひらいています…';
  // Fetch the selected renderer while data/hero load, rather than adding a second waterfall.
- if(view==='3d'&&!worldModule)worldModule=import('./world.js?v=20261019-scene1').catch(error=>{worldModule=null;return null;});
+ if(view==='3d'&&!worldModule)worldModule=import('./world.js?v=20261019-interior1').catch(error=>{worldModule=null;return null;});
  const current=()=>request===bootRequest&&!abort.signal.aborted;
  let phase='data';
  try{

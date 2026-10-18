@@ -1,6 +1,6 @@
 import {TOWN_SCENERY_FRAMES} from './scenery-data.js?v=20261019-scene1';
 import {cameraDistanceScale} from '../camera-distance.js?v=20261019-scene1';
-import {townLighting,townLanternPosition} from './lighting.js?v=20261017-library1';
+import {townLighting,townLanternPosition} from './lighting.js?v=20261019-interior1';
 import {getTownMap} from './story-data.js';
 import {TOWN_TILE as TILE,followTownCamera,townCameraTarget,townVisibleBounds,townWorldToScreen,townScreenToWorld} from './motion.js';
 import {TOWN_BUDGET,TOWN_PROP_CELLS,TOWN_BATTLE_ART_IDS,townVisualSeed as seed,buildingArtKind,townPropSprite} from './visual-data.js';
@@ -305,7 +305,7 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
     }
     c.restore();
     // The lighting pass lifts windows and lamps without flattening the facade art.
-    const lighting=townLighting(map.id,brightness),dark=lighting.shade;
+    const lighting=townLighting(map.id,brightness,{interior2D:interior}),dark=lighting.shade;
     if(shade.width!==Math.ceil(w)||shade.height!==Math.ceil(h)){shade.width=Math.ceil(w);shade.height=Math.ceil(h);}
     const sc=shade.getContext('2d');sc.setTransform(1,0,0,1,0,0);sc.clearRect(0,0,w,h);sc.fillStyle=`rgba(9,18,39,${dark})`;sc.fillRect(0,0,w,h);
     const lights=[];for(const o of objects)if(o.kind==='lamp'||o.kind==='target'&&o.data.kind==='lantern'&&state.flags?.lamps?.includes(o.data.id))lights.push({x:o.x/TILE,z:o.y/TILE,height:67,r:110});

@@ -228,12 +228,12 @@ test('non-library 3D preserves its original minimum brightness and window profil
  assert.equal(writes,0,'unchanged library frames do not rewrite window materials');world.destroy();
 });
 
-test('normal and wide 3D zoom change the frustum, redraw on change, and preserve ground picking',async()=>{
+test('all three 3D camera distances change the frustum, redraw on change, and preserve ground picking',async()=>{
  const {world,record}=harness();await Promise.all([world.ready,world.sceneryReady]);const state=initialTownState();
  try{
   for(const [mapId,position]of[['lantern-town',{x:28.5,z:30.5}],['inn',{...getTownMap('inn').spawn}]]){
    state.mapId=mapId;state.position=position;const spansByDistance={};
-   for(const cameraDistance of['normal','wide']){
+   for(const cameraDistance of['normal','wide','far']){
     const spans=[];
     for(const cameraZoom of[.65,1,1.4]){
      const frames=record.frames;assert.equal(world.render({state,motion:false,cameraDistance,cameraZoom}),true,'a zoom or distance change redraws the existing renderer');assert.equal(record.frames,frames+1);
@@ -246,7 +246,10 @@ test('normal and wide 3D zoom change the frustum, redraw on change, and preserve
     }
     assert.ok(spans[0]>spans[1]&&spans[1]>spans[2],'zooming in narrows the actual camera frustum');assert.ok(Math.abs(spans[0]/spans[2]-1.4/.65)<1e-9);spansByDistance[cameraDistance]=spans;
    }
-   for(let index=0;index<3;index++)assert.ok(spansByDistance.wide[index]>spansByDistance.normal[index]*1.4,'wide mode keeps a wider ground view at every zoom');
+   for(let index=0;index<3;index++){
+    assert.ok(spansByDistance.wide[index]>spansByDistance.normal[index]*1.4,'wide mode keeps its existing ground view at every zoom');
+    assert.ok(Math.abs(spansByDistance.far[index]/spansByDistance.wide[index]-.68/.48)<1e-9,'far mode shows another 41.7 percent across without changing the manual zoom');
+   }
   }
  }finally{world.destroy();}
 });

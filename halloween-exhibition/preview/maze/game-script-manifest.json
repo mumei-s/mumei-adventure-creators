@@ -1,0 +1,636 @@
+{
+  "schemaVersion": 1,
+  "builder": "esbuild@0.25.12",
+  "game": "maze",
+  "entrySources": [
+    "maze/app.js",
+    "adventure-atmosphere.js"
+  ],
+  "inputs": [
+    {
+      "path": "adventure-atmosphere.css",
+      "bytes": 5183,
+      "sha256": "655c154d53fb63203c2cb8983895c4356cce0cda39509c44f81f10c041866c24"
+    },
+    {
+      "path": "adventure-atmosphere.js",
+      "bytes": 818,
+      "sha256": "8825afde8e819cad782b2dcaac6ba9595ebe3c65b07db475b7694bd7c40ca4b5"
+    },
+    {
+      "path": "camera-distance.js",
+      "bytes": 2342,
+      "sha256": "04bf05701dd7b098dc48a6db872a97e8290ae17399dadb509ada46105c92529a"
+    },
+    {
+      "path": "control-input.css",
+      "bytes": 916,
+      "sha256": "5ea0a11cdfbc3121ea58877318e71b037404c9c5c624931d09c101fcd7139ca4"
+    },
+    {
+      "path": "control-preferences.js",
+      "bytes": 762,
+      "sha256": "56d056b9fbe2a31d1a4de3aeb465b6005d25c331174a28429444911c12bb3a75"
+    },
+    {
+      "path": "control-settings.js",
+      "bytes": 1578,
+      "sha256": "6ae1a7dd962a5f952a35089970cdbe4f26623c232262b44cad97cfb10ecc0a66"
+    },
+    {
+      "path": "data-model.js",
+      "bytes": 4588,
+      "sha256": "f029338a55ebdc63456ffc3254ede76bd57db713482c9220a1f7bde2ff8f72cc"
+    },
+    {
+      "path": "data/archive.json",
+      "bytes": 24100,
+      "sha256": "d2dac59e4a8d30c956db5722d5f8b2f90718ce227ff5f85310974e93fe445393"
+    },
+    {
+      "path": "dialog-layout.css",
+      "bytes": 3404,
+      "sha256": "f1ab8d5604806c8d6638a1d206c352d234375767097fd1b3e29f4b1969252c3c"
+    },
+    {
+      "path": "display-mode.css",
+      "bytes": 13717,
+      "sha256": "c1bc3be1f0ef4cf341fa895cad7c5873090f463f4e0cbf70b4169b0816e03d53"
+    },
+    {
+      "path": "display-mode.js",
+      "bytes": 6926,
+      "sha256": "a6b288f8d05a6bd3871ed0f61505c436aa93ad3d204dd8e57f504e3ecd4a3ae1"
+    },
+    {
+      "path": "game-display.js",
+      "bytes": 11972,
+      "sha256": "fb1a1edabc5eea575975deaceb9a7729cd2adbc571b46da34b74cf17420bdcf1"
+    },
+    {
+      "path": "game-menu.css",
+      "bytes": 4782,
+      "sha256": "eacc86051812fd868555538800a1b7afb6931479ea18586fad29dfda59c440b6"
+    },
+    {
+      "path": "game-shell.css",
+      "bytes": 10134,
+      "sha256": "37567c9119c87172fd89108b4d7e2579a4851f112fada4a95708f3ad0aa7f14d"
+    },
+    {
+      "path": "game-ui-update.css",
+      "bytes": 2963,
+      "sha256": "10708a1cc196656ee0233d290fbd84b67c8d9409a84fb10eb6d8825d372e0d3c"
+    },
+    {
+      "path": "ios-viewport.css",
+      "bytes": 6388,
+      "sha256": "87a8bdb3660813f65c3a4112e61b195d469363004c810e5d2b19cc1105261a35"
+    },
+    {
+      "path": "magical-loading.js",
+      "bytes": 748,
+      "sha256": "830d20e115d0056429e9d242e5efc311ef1596031c1e7202539f5a23db11e4bc"
+    },
+    {
+      "path": "maze/adventure-audio.js",
+      "bytes": 13406,
+      "sha256": "62c7182a028b34e3b52069130b52f56aeb43d377be02d77292e347ed4f17279a"
+    },
+    {
+      "path": "maze/adventure-controls.css",
+      "bytes": 16814,
+      "sha256": "bc218fd30bc85976c9c4d516a12a437ec4b77bbca813c899812a339674dc791d"
+    },
+    {
+      "path": "maze/app.js",
+      "bytes": 67186,
+      "sha256": "a5fe6b230dd20ec359bf7dfef84dee7be2cf2f8cabb989c7e50ff8c31b27886d"
+    },
+    {
+      "path": "maze/battle-scene.js",
+      "bytes": 11126,
+      "sha256": "444aec0f58f00c5c3529961dc390e0be1be012e99fd92a127c47e6026f482b83"
+    },
+    {
+      "path": "maze/battle-story.css",
+      "bytes": 10370,
+      "sha256": "5368cbd6b7a9a641b0bd7821ecc06af71675d02d153267a2c5f25eab41e1a187"
+    },
+    {
+      "path": "maze/clear-reward.js",
+      "bytes": 6267,
+      "sha256": "38bcacf6f2a8070a8509c72f284b87c715f38cfdb035a3a5c7fbed64c6c5d995"
+    },
+    {
+      "path": "maze/context-action.js",
+      "bytes": 1188,
+      "sha256": "520cad460924d953eb341cac699402221d5f7589b465c773cbf388add3d7bb49"
+    },
+    {
+      "path": "maze/creator-runtime.js",
+      "bytes": 27152,
+      "sha256": "7e6975c3c75220c6e44cc8179560f4fc24a26789bb570ae7141bfb6490fc4ee3"
+    },
+    {
+      "path": "maze/creator-story.js",
+      "bytes": 5688,
+      "sha256": "6eb3a63521ce07f32d02d5fd49aa57d324512afdac123e30696ba7a8f9551eba"
+    },
+    {
+      "path": "maze/creator-ui.css",
+      "bytes": 2263,
+      "sha256": "c079e350fcc2c7c7b687f5f26fa99605f1f24e9622c78da429ce594a4a8d2df4"
+    },
+    {
+      "path": "maze/creator-ui.js",
+      "bytes": 2471,
+      "sha256": "1b391bc9af087ddcec64bf107e6f6d6f3785e6db87c4c1d1a48480ae6ca27aee"
+    },
+    {
+      "path": "maze/dark-interior-menu.css",
+      "bytes": 4721,
+      "sha256": "98cec3867d2a94b0cf3ed4a960629287a11651e67b48e58dd00c3f18955cef21"
+    },
+    {
+      "path": "maze/data/catalog.json",
+      "bytes": 6670,
+      "sha256": "5ab4358fb92225f5eb27108975abf46ad3a78c7b2d56cb71b383ee4b6636b9b5"
+    },
+    {
+      "path": "maze/data/creator-characters.json",
+      "bytes": 227026,
+      "sha256": "d6a9e96331f9c05ddd24824bc214e04bbc3fac8b4cd576bc8d2203b747f720db"
+    },
+    {
+      "path": "maze/encounter-model.js",
+      "bytes": 11820,
+      "sha256": "d6a16aa9ffe8a81df19675984ab039fe2d926151381cbb04dafc102419a862b8"
+    },
+    {
+      "path": "maze/ending-ui.js",
+      "bytes": 5340,
+      "sha256": "6a1b2e752333f0f0ef9c154734f5dc132ab330b8bf310d5d9358fe98d821af12"
+    },
+    {
+      "path": "maze/ending.css",
+      "bytes": 2329,
+      "sha256": "b8e06e4d64069444375b62880044bdbce33cf43b60eb02ebfca322fe255904e7"
+    },
+    {
+      "path": "maze/furnishing-info.js",
+      "bytes": 3307,
+      "sha256": "c68e74bcbe00de38a177df3ed5bc326ea57dd672ce7c2c7cd59cd524629f2e15"
+    },
+    {
+      "path": "maze/game-input.js",
+      "bytes": 7785,
+      "sha256": "546b6a3b730b1712c11ce6adccdff2150d139d687f4ff42d17c0479ad6688a6a"
+    },
+    {
+      "path": "maze/game-style-sources.json",
+      "bytes": 1014,
+      "sha256": "f837ff15ce68a2d6a150d4731ede1e70e83e645a5c18e71660dbb7a65e4f78d2"
+    },
+    {
+      "path": "maze/library-catalog.js",
+      "bytes": 2536,
+      "sha256": "425b5155323c5c927e721b5f5209738b91ab772375d59b190c9772e8f9919eff"
+    },
+    {
+      "path": "maze/lighting-model.js",
+      "bytes": 792,
+      "sha256": "e8dba124c7a36e3f0d766dcd777bd7a5ee1b88b144e0bffc727401270c1a4b61"
+    },
+    {
+      "path": "maze/maze-model.js",
+      "bytes": 2127,
+      "sha256": "03d2856c3208ba11fd42845d7323c00d84c8458a1a223d568cb85468b9444974"
+    },
+    {
+      "path": "maze/minimap-size.js",
+      "bytes": 997,
+      "sha256": "a892ef90260707ea7ccc5a4b24f67e5d59b8f22c8c8ac58763b346851fa56265"
+    },
+    {
+      "path": "maze/monster-motion-data.js",
+      "bytes": 5259,
+      "sha256": "293f6fcea4814db31274aa6281c459b2f399d6d8ea580e24c801b7b0637c3d51"
+    },
+    {
+      "path": "maze/monster-motion.js",
+      "bytes": 3913,
+      "sha256": "a514eccfaddfffb7362e89414e4241fdae14f20c7a50a2bf5a29cab33b23bf51"
+    },
+    {
+      "path": "maze/movement-runtime.js",
+      "bytes": 5156,
+      "sha256": "77eae4d2fc866a82710573d5ddc13f69e224588a24b2b79443523b3b1ebdb07b"
+    },
+    {
+      "path": "maze/optional-encounters.js",
+      "bytes": 5416,
+      "sha256": "88631159ee420f1edc851a2a3c69df0e858294b99284aede42707e5155fc7341"
+    },
+    {
+      "path": "maze/palace-furnishing-art.js",
+      "bytes": 8962,
+      "sha256": "522ea5c4618bce4f5600396251d98acd7ad4ac422838b4c1c0ae04a3d13d5ce9"
+    },
+    {
+      "path": "maze/patrol-model.js",
+      "bytes": 9232,
+      "sha256": "2b69068e1d78762f5fc0613eb8ef0ddb454942d828f5cb804e15075b9e32d04a"
+    },
+    {
+      "path": "maze/resident-model.js",
+      "bytes": 2140,
+      "sha256": "74fb7e112fee81e433903b5024cecea4c38113280915ed5e994a1a1787ff22a6"
+    },
+    {
+      "path": "maze/resident-ui.css",
+      "bytes": 3553,
+      "sha256": "57f1f982b789ffe37e4d879b92e8911f94ca21c5be28cc295a5b28fe94bfc780"
+    },
+    {
+      "path": "maze/rpg-art.js",
+      "bytes": 7701,
+      "sha256": "d35d5de82a4c5ddd861c5190ffa05994a42145cec1ed8971280f288f17e1d9bb"
+    },
+    {
+      "path": "maze/rpg-model.js",
+      "bytes": 1797,
+      "sha256": "420f9c864f198ef24a27d4ad9d684478865bd57c7cda15b5967733b56f744484"
+    },
+    {
+      "path": "maze/rpg-ui.css",
+      "bytes": 9622,
+      "sha256": "e7be807299e5a5bd32b8cb75305fd73bd4e9d485a8b2948cd1bbea574b5b1155"
+    },
+    {
+      "path": "maze/sound-check.js",
+      "bytes": 2789,
+      "sha256": "ac585294afbeb6332c89cb841277ae225760b9f3abea997e4df4c312cb4d353b"
+    },
+    {
+      "path": "maze/stage-2d.css",
+      "bytes": 7262,
+      "sha256": "086062773054b05ee8e055eb71ee62ec3a1f5d19b47cecd60d6318fec82663c9"
+    },
+    {
+      "path": "maze/stage-2d.js",
+      "bytes": 33523,
+      "sha256": "9f3d65104717c5f31626c667a9dc03272c6a5d7dedd1a55ace0461adba23f13f"
+    },
+    {
+      "path": "maze/startup-assets.js",
+      "bytes": 3029,
+      "sha256": "1ccf711ac922f5558eed1f0fe77cf3cb537382eaf5667c2e99c1e9f157b0e06b"
+    },
+    {
+      "path": "maze/story-model.js",
+      "bytes": 11857,
+      "sha256": "9a071dc54573781ddaf69a32da210f7abee51cb88275eb4432e62949e5fc9f38"
+    },
+    {
+      "path": "maze/style.css",
+      "bytes": 16099,
+      "sha256": "5b05c74b1f2f77203a808633e80df295df5e806a63824afdefb5e9c33c13de01"
+    },
+    {
+      "path": "maze/touch-pad.css",
+      "bytes": 5921,
+      "sha256": "851cb2969508bb01938807d10fc2c5afcbffefd8f0b4611d63e26fb377f318d0"
+    },
+    {
+      "path": "maze/view-model.js",
+      "bytes": 769,
+      "sha256": "33b3ca2cfbc748bfe3afa0feb901121a12806cfa8846d719ce884f53b6aaeb41"
+    },
+    {
+      "path": "maze/walking-speed.js",
+      "bytes": 424,
+      "sha256": "ce9119c838e06a35224cf94982cc370c09c94ead41c68dddcd7d9e3214faf46a"
+    },
+    {
+      "path": "maze/world.js",
+      "bytes": 47165,
+      "sha256": "9aa3f1f7afc3c31bb81aa2ee6e77c389bc976380693a698412620c6edac191e8"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 14562,
+      "sha256": "9ca56b94d242a13e10ae4c713624df0832fec686613a7f1bf730334e1aa24bf1"
+    },
+    {
+      "path": "package.json",
+      "bytes": 635,
+      "sha256": "3a10c170d17784f92fb5f09337606d030de82b6a3f292cd9b53a1d728fce65f1"
+    },
+    {
+      "path": "presentation-profiles.css",
+      "bytes": 7176,
+      "sha256": "b8a02c9b0848fd18b6e8c32224ffb303c99ba37b9674e8331f4f7258c8cd336d"
+    },
+    {
+      "path": "safe-navigation.css",
+      "bytes": 2988,
+      "sha256": "ad76f868e4aa325611cc51e4aa5641a08d9192f7982edb1c96fc4bea66a6bb96"
+    },
+    {
+      "path": "safe-page-reload.js",
+      "bytes": 1631,
+      "sha256": "96c0f85a74d86ce625fbc8793be69305e4566ac8086652c830ff1dd5d6b6d049"
+    },
+    {
+      "path": "scripts/build-game-scripts.mjs",
+      "bytes": 14469,
+      "sha256": "d72b4c94b0268e64f990eabb04659e972db66b0fc7d4303e49a069019f288f0e"
+    },
+    {
+      "path": "touch-camera.js",
+      "bytes": 5542,
+      "sha256": "bed68e58982374a1c0017072fe15fe9a1e589d6df23fe7f8e89c26a59491eff5"
+    },
+    {
+      "path": "town/view-mode.js",
+      "bytes": 4587,
+      "sha256": "ad1b2b28f49f865dd3b73f95ee6e082bc1fb00ac4e687492252107ca240f9f5e"
+    },
+    {
+      "path": "transition-effects.css",
+      "bytes": 2276,
+      "sha256": "96398cd9cbebff306dc61d9b927324ce0caf0cb65627476e1f1768330e9a39e4"
+    },
+    {
+      "path": "transition-effects.js",
+      "bytes": 3383,
+      "sha256": "1d491b421230854ef2bc9c79200be0ca40ab74553e893955b080514a44bb3f0b"
+    },
+    {
+      "path": "viewport.js",
+      "bytes": 2744,
+      "sha256": "c79f55dfdd9baeeecf1a3a6b766ad15c1a01a8eb5777f75dce836ba64ad23b84"
+    },
+    {
+      "path": "visitor-preferences.css",
+      "bytes": 4688,
+      "sha256": "c016c6ac2b2607bc3b118d15f09ac35d0bb3d58c828c641f7ba24e0831db4e54"
+    }
+  ],
+  "moduleURLs": [
+    {
+      "path": "maze/creator-runtime.js",
+      "relative": "./creator-runtime.js"
+    },
+    {
+      "path": "maze/rpg-art.js",
+      "relative": "./rpg-art.js"
+    }
+  ],
+  "imports": [
+    {
+      "path": "./game-world.js?v=20261019-game-fast1-aee6f7b1e2a9",
+      "kind": "dynamic-import",
+      "external": true
+    }
+  ],
+  "contributions": [
+    {
+      "path": "<define:globalThis.__HALLOWEEN_MAZE_BOOT__>",
+      "bytes": 119134
+    },
+    {
+      "path": "maze/app.js",
+      "bytes": 44487
+    },
+    {
+      "path": "maze/stage-2d.js",
+      "bytes": 24859
+    },
+    {
+      "path": "maze/creator-runtime.js",
+      "bytes": 17936
+    },
+    {
+      "path": "maze/patrol-model.js",
+      "bytes": 11730
+    },
+    {
+      "path": "maze/story-model.js",
+      "bytes": 10958
+    },
+    {
+      "path": "maze/encounter-model.js",
+      "bytes": 9019
+    },
+    {
+      "path": "maze/battle-scene.js",
+      "bytes": 8239
+    },
+    {
+      "path": "maze/adventure-audio.js",
+      "bytes": 7775
+    },
+    {
+      "path": "maze/palace-furnishing-art.js",
+      "bytes": 7279
+    },
+    {
+      "path": "maze/optional-encounters.js",
+      "bytes": 5242
+    },
+    {
+      "path": "maze/rpg-art.js",
+      "bytes": 5011
+    },
+    {
+      "path": "maze/clear-reward.js",
+      "bytes": 4812
+    },
+    {
+      "path": "maze/monster-motion-data.js",
+      "bytes": 4485
+    },
+    {
+      "path": "display-mode.js",
+      "bytes": 4315
+    },
+    {
+      "path": "maze/game-input.js",
+      "bytes": 4262
+    },
+    {
+      "path": "maze/creator-story.js",
+      "bytes": 4160
+    },
+    {
+      "path": "maze/ending-ui.js",
+      "bytes": 3974
+    },
+    {
+      "path": "data-model.js",
+      "bytes": 3332
+    },
+    {
+      "path": "maze/furnishing-info.js",
+      "bytes": 2775
+    },
+    {
+      "path": "touch-camera.js",
+      "bytes": 2710
+    },
+    {
+      "path": "maze/monster-motion.js",
+      "bytes": 2274
+    },
+    {
+      "path": "game-display.js",
+      "bytes": 2163
+    },
+    {
+      "path": "transition-effects.js",
+      "bytes": 1843
+    },
+    {
+      "path": "maze/library-catalog.js",
+      "bytes": 1790
+    },
+    {
+      "path": "maze/sound-check.js",
+      "bytes": 1787
+    },
+    {
+      "path": "maze/creator-ui.js",
+      "bytes": 1786
+    },
+    {
+      "path": "maze/resident-model.js",
+      "bytes": 1784
+    },
+    {
+      "path": "maze/startup-assets.js",
+      "bytes": 1781
+    },
+    {
+      "path": "viewport.js",
+      "bytes": 1747
+    },
+    {
+      "path": "town/view-mode.js",
+      "bytes": 1688
+    },
+    {
+      "path": "maze/maze-model.js",
+      "bytes": 1413
+    },
+    {
+      "path": "control-settings.js",
+      "bytes": 1169
+    },
+    {
+      "path": "safe-page-reload.js",
+      "bytes": 1149
+    },
+    {
+      "path": "maze/rpg-model.js",
+      "bytes": 834
+    },
+    {
+      "path": "camera-distance.js",
+      "bytes": 769
+    },
+    {
+      "path": "maze/context-action.js",
+      "bytes": 754
+    },
+    {
+      "path": "maze/minimap-size.js",
+      "bytes": 595
+    },
+    {
+      "path": "adventure-atmosphere.js",
+      "bytes": 533
+    },
+    {
+      "path": "maze/lighting-model.js",
+      "bytes": 518
+    },
+    {
+      "path": "maze/movement-runtime.js",
+      "bytes": 415
+    },
+    {
+      "path": "control-preferences.js",
+      "bytes": 404
+    },
+    {
+      "path": "magical-loading.js",
+      "bytes": 396
+    },
+    {
+      "path": "maze/view-model.js",
+      "bytes": 327
+    },
+    {
+      "path": "maze/walking-speed.js",
+      "bytes": 281
+    }
+  ],
+  "output": {
+    "path": "maze/game-entry.js",
+    "bytes": 334773,
+    "sha256": "cfd3e4350340d179e4188488671dc1a8129e72a27bc7751c5cdcef89fb0664b3"
+  },
+  "styleSources": [
+    "./style.css?v=20261014-adventure2",
+    "../visitor-preferences.css?v=20261014-adventure2",
+    "../display-mode.css?v=20261014-adventure2",
+    "./stage-2d.css?v=20261014-adventure2",
+    "./rpg-ui.css?v=20261014-adventure2",
+    "./adventure-controls.css?v=20261019-scene1",
+    "../safe-navigation.css?v=20261016-living1",
+    "./ending.css?v=20261015-clear1",
+    "./creator-ui.css?v=20261016-battle-visible1",
+    "./battle-story.css?v=20261016-battle-visible1",
+    "./resident-ui.css?v=20261016-resident1",
+    "../ios-viewport.css?v=20261016-ios1",
+    "./dark-interior-menu.css?v=20261016-dark-menu1",
+    "../transition-effects.css?v=20261016-living1",
+    "../presentation-profiles.css?v=20261019-compact1",
+    "./touch-pad.css?v=20261019-interior1",
+    "../adventure-atmosphere.css?v=20261017-story1",
+    "../control-input.css?v=20261019-journey1",
+    "../game-ui-update.css?v=20261019-journey1",
+    "../dialog-layout.css?v=20261019-journey1",
+    "../game-menu.css?v=20261019-compact1",
+    "../game-shell.css?v=20261019-unified1"
+  ],
+  "styles": {
+    "path": "maze/game-styles.css",
+    "bytes": 135777,
+    "sha256": "2b81dffad141c2da00b2d18192550127069534d4513b7bbc82e6d7580fba4af2"
+  },
+  "world": {
+    "path": "maze/game-world.js",
+    "bytes": 67425,
+    "sha256": "aee6f7b1e2a97711a789d7d0ccb3e04249e58ebea63d8adc959bfe4aec2c7a0d",
+    "imports": [
+      {
+        "path": "./vendor/three.module.js",
+        "kind": "import-statement",
+        "external": true
+      }
+    ],
+    "moduleURLs": [
+      {
+        "path": "maze/rpg-art.js",
+        "relative": "./rpg-art.js"
+      },
+      {
+        "path": "maze/world.js",
+        "relative": "./world.js"
+      }
+    ]
+  }
+}

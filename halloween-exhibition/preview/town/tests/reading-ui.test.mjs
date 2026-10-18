@@ -6,6 +6,7 @@ import {createReadingJourney} from '../reading-journey.js';
 import {CREATOR_HOMES,getCreatorHome} from '../creator-homes.js';
 import {creatorHomeProfile} from '../creator-home-profile.js';
 import {initialTownState,townProgress,townJournal,getTownMap} from '../town-model.js';
+import {cameraDistanceLabel} from '../../camera-distance.js';
 
 const source=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8');
 const archive=JSON.parse(fs.readFileSync(new URL('../../data/archive.json',import.meta.url),'utf8'));
@@ -24,7 +25,7 @@ function element(tag,text='',className=''){
 const flatten=node=>[node,...node.children.flatMap(flatten)];
 function harness(){
  const content=element('div'),nodes=new Map(),stored=new Map(),record={panels:[],notices:[],closed:0};
- const state=initialTownState(),context=vm.createContext({URL,Math,Set,CREATOR_HOMES,getCreatorHome,createReadingJourney,townProgress,townJournal,getTownMap,
+ const state=initialTownState(),context=vm.createContext({URL,Math,Set,CREATOR_HOMES,getCreatorHome,createReadingJourney,townProgress,townJournal,getTownMap,cameraDistanceLabel,
   characterArt:{creatorPage:id=>creatorHomeProfile(archive,id)},session:{snapshot:()=>({state})},contextTarget:()=>null,ready:true,renderer:null,settings:{lantern:true},cameraDistance:'normal',toggleLantern(){},
   localStorage:{getItem:key=>stored.get(key)??null,setItem:(key,value)=>stored.set(key,value)},content,
   el:element,button:(text,onclick,className)=>({...element('button',text,className),onclick}),

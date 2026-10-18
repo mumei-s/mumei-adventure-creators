@@ -3,8 +3,9 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 const read=name=>readFile(new URL('../town/'+name,import.meta.url),'utf8');
 test('town thumb controls grow modestly over the full scene and keep saved scaling',async()=>{
- const css=await read('touch-controls.css'),html=await read('index.html'),base=await read('style.css');
- assert.ok(html.indexOf('touch-controls.css')>html.indexOf('game-display.css'));
+ const css=await read('touch-controls.css'),base=await read('style.css'),styles=JSON.parse(await read('game-style-sources.json'));
+ const touch=styles.findIndex(source=>source.split('?')[0]==='./touch-controls.css'),display=styles.findIndex(source=>source.split('?')[0]==='../game-display.css');
+ assert.ok(display>=0&&touch>display,'town touch controls override shared game-frame styles');
  assert.match(css,/\.town-world\{grid-area:3\/1\/6\/2\}/);
  assert.match(css,/footer\{display:none\}/);
  assert.match(css,/background:none;pointer-events:none;z-index:2/);
@@ -33,10 +34,12 @@ test('two corner controls fit narrow phones at every supported control size',()=
  }
 });
 
-test('town release requests the updated renderer through a versioned app entry',async()=>{
- assert.match(await read('index.html'),/app\.js\?v=20261019-homes2/);
- assert.match(await read('app.js'),/renderer\.js\?v=20261019-homes2/);
- assert.match(await read('app.js'),/world-3d\.js\?v=20261019-homes2/);
+test('town release loads current renderer sources through hashed startup and optional 3D bundles',async()=>{
+ const manifest=JSON.parse(await read('game-script-manifest.json')),html=await read('index.html');
+ for(const source of ['town/app.js','town/renderer.js','town/world-3d.js','town/touch-controls.css'])assert.ok(manifest.inputs.some(input=>input.path===source),`town bundle includes ${source}`);
+ assert.ok(html.includes(`src="./game-entry.js?v=20261019-game-fast1-${manifest.output.sha256.slice(0,12)}"`));
+ assert.ok(html.includes(`href="./game-styles.css?v=20261019-game-fast1-${manifest.styles.sha256.slice(0,12)}"`));
+ assert.ok(manifest.imports.some(item=>item.kind==='dynamic-import'&&item.path===`./game-world.js?v=20261019-game-fast1-${manifest.world.sha256.slice(0,12)}`));
 });
 
 

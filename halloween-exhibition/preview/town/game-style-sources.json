@@ -1,0 +1,14 @@
+[
+  "../display-mode.css?v=20261014-layout1",
+  "../ios-viewport.css?v=20261017-review1",
+  "./style.css?v=20261019-homes1",
+  "../game-display.css?v=20261017-fit2",
+  "./touch-controls.css?v=20261019-unified1",
+  "../adventure-atmosphere.css?v=20261017-story1",
+  "../control-input.css?v=20261019-journey1",
+  "../game-ui-update.css?v=20261019-homes2",
+  "../dialog-layout.css?v=20261019-journey1",
+  "../game-menu.css?v=20261019-compact1",
+  "../game-shell.css?v=20261019-unified1",
+  "../presentation-profiles.css?v=20261019-compact1"
+]

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {createTownRenderer} from '../renderer.js';
 import {initialTownState} from '../town-model.js';
 import {TOWN_DEPTH_SCALE} from '../renderer.js';
+import {cameraDistanceScale} from '../../camera-distance.js';
 
 function harness(width=420,height=700){
  const canvases=[];
@@ -22,10 +23,10 @@ test('street framing brings the existing wide view one step closer and keeps fac
  const {canvas,renderer}=harness();await renderer.ready;
  const state={...initialTownState(),mapId:'creator-quarter',position:{x:23.5,z:20.5}};
  try{
-  for(const cameraDistance of ['normal','wide'])for(const cameraZoom of [.65,1,1.4]){
+  for(const cameraDistance of ['normal','wide','far'])for(const cameraZoom of [.65,1,1.4]){
    renderer.render({canvas,state,motion:false,cameraDistance,cameraZoom});
    const foot=renderer.worldToScreen(state.position),east=renderer.worldToScreen({...state.position,x:state.position.x+1}),raised=renderer.worldToScreen({...state.position,y:2.2});
-   const span=east.x-foot.x,previousSpan=52*(cameraDistance==='wide'?.68:1)*cameraZoom;
+   const span=east.x-foot.x,previousSpan=52*cameraDistanceScale(cameraDistance)*cameraZoom;
    assert.ok(span>previousSpan*1.1&&span<previousSpan*1.15,'the view is one small step closer in both camera modes');
    assert.equal(raised.x,foot.x);assert.ok(Math.abs((foot.y-raised.y)-2.2*span*TOWN_DEPTH_SCALE)<1e-9,'facade names follow physical building height at every zoom');
   }
@@ -55,19 +56,19 @@ test('wide 2D zoom preserves screen picking at the palace, in town, and in the c
  }
 });
 
-test('wide 2D frames retain their whole visible floor at every zoom instead of evicting it while drawing',async()=>{
+test('wide and far 2D frames retain their whole visible floor at every zoom instead of evicting it while drawing',async()=>{
  // The palace pullback plus manual wide mode used to need 25+ floor canvases;
  // the old 20-entry LRU regenerated the same floor on every following frame.
  for(const [width,height]of[[420,700],[1280,720]]){
   const {canvas,renderer,floorAllocations}=harness(width,height);await renderer.ready;
   const state={...initialTownState(),position:{x:32.5,z:8.5}};
   try{
-   for(const cameraZoom of[.65,1,1.4]){
-    renderer.invalidate();assert.equal(renderer.render({canvas,state,motion:false,cameraDistance:'wide',cameraZoom}),true);
+   for(const cameraDistance of['wide','far'])for(const cameraZoom of[.65,1,1.4]){
+    renderer.invalidate();assert.equal(renderer.render({canvas,state,motion:false,cameraDistance,cameraZoom}),true);
     const allocations=floorAllocations(),visible=new Set(canvas.drawnFloors);assert.ok(visible.size>0,'the test rendered actual cached ground canvases');
     const status=renderer.status();assert.ok(status.chunkLimit<=48&&status.chunkLimit>=visible.size);assert.ok(status.chunks<=48);
     for(let frame=0;frame<2;frame++){
-     canvas.drawnFloors.length=0;renderer.invalidate();assert.equal(renderer.render({canvas,state,motion:false,cameraDistance:'wide',cameraZoom}),true,'force the warm frame through the real draw path');
+     canvas.drawnFloors.length=0;renderer.invalidate();assert.equal(renderer.render({canvas,state,motion:false,cameraDistance,cameraZoom}),true,'force the warm frame through the real draw path');
      assert.equal(floorAllocations(),allocations,`zoom ${cameraZoom}: a warm frame allocates no replacement ground`);
      assert.deepEqual(new Set(canvas.drawnFloors),visible,'the same visible floor surfaces are reused');
      assert.ok(renderer.status().chunkLimit<=48&&renderer.status().chunks<=48);

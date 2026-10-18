@@ -8,6 +8,6 @@ test('camera magnification is bounded and persists independently for street and 
 });
 test('underground 2D pinch magnifies both camera modes without moving the player or misaligning its projection',()=>{
  const state=Object.freeze({x:32,z:40}),normal=stageCamera(state,420,600,'normal',1);
- for(const distance of ['normal','wide'])for(const zoom of [.65,1,1.4]){const camera=stageCamera(state,420,600,distance,zoom),base=stageCamera(state,420,600,distance,1);assert.ok(Math.abs(camera.scale/base.scale-zoom)<1e-10);const point={x:state.x/4*72+23,y:state.z/4*72-41},screen={x:camera.originX+(point.x-camera.x)*camera.scale,y:camera.originY+(point.y-camera.y)*camera.scale};assert.ok(Math.abs((screen.x-camera.originX)/camera.scale+camera.x-point.x)<1e-9);assert.ok(Math.abs((screen.y-camera.originY)/camera.scale+camera.y-point.y)<1e-9);}
+ for(const distance of ['normal','wide','far'])for(const zoom of [.65,1,1.4]){const camera=stageCamera(state,420,600,distance,zoom),base=stageCamera(state,420,600,distance,1);assert.ok(Math.abs(camera.scale/base.scale-zoom)<1e-10);const point={x:state.x/4*72+23,y:state.z/4*72-41},screen={x:camera.originX+(point.x-camera.x)*camera.scale,y:camera.originY+(point.y-camera.y)*camera.scale};assert.ok(Math.abs((screen.x-camera.originX)/camera.scale+camera.x-point.x)<1e-9);assert.ok(Math.abs((screen.y-camera.originY)/camera.scale+camera.y-point.y)<1e-9);}
  assert.ok(normal.scale>stageCamera(state,420,600,'wide',1).scale);assert.deepEqual(state,{x:32,z:40});
 });

@@ -1,5 +1,12 @@
 import {withDeadline} from '../transition-effects.js?v=20261016-living1';
 
+// The published entry bundle carries the matching catalog and character manifest.
+// Source/module development still works, and only a missing snapshot needs HTTP.
+export async function loadMazeStartupData({snapshot=globalThis.__HALLOWEEN_MAZE_BOOT__,signal,fetcher=globalThis.fetch}={}){
+ const read=(key,url)=>snapshot?.[key]&&typeof snapshot[key]==='object'&&!Array.isArray(snapshot[key])?Promise.resolve(snapshot[key]):fetchStartupJSON(url,{signal,fetcher});
+ return Promise.all([read('archive','../data/archive.json'),read('catalog','./data/catalog.json'),read('characters','./data/creator-characters.json?v=20261017-cna1')]);
+}
+
 // Static game data may use the HTTP cache. Retry only the failed request, with
 // a fresh network request on the second attempt; never cache an incomplete roster ourselves.
 export async function fetchStartupJSON(url,{fetcher=globalThis.fetch,timeout=8000,attempts=2,timers=globalThis,signal,cache='default',onRetry=()=>{}}={}){

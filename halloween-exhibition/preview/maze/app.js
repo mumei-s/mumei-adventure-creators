@@ -3,9 +3,9 @@ import {readPadMode,savePadMode} from '../control-preferences.js?v=20261019-jour
 import {createControlSettings} from '../control-settings.js?v=20261019-journey1';
 import {classifyTown3DFailure} from '../town/view-mode.js?v=20261019-journey1';
 import {nearestFurnishing,FURNISHING_INFO} from './furnishing-info.js?v=20261019-interior1';
-import {readCameraDistance,saveCameraDistance,readCameraZoom,saveCameraZoom,normalizeCameraZoom} from '../camera-distance.js?v=20261019-journey1';
+import {readCameraDistance,saveCameraDistance,readCameraZoom,saveCameraZoom,normalizeCameraZoom,nextCameraDistance,cameraDistanceLabel} from '../camera-distance.js?v=20261019-journey1';
 import {createReloadControl} from '../safe-page-reload.js?v=20261017-reload1';
-import {fetchStartupJSON,loadRequiredCharacters} from './startup-assets.js?v=20261017-startup1';
+import {fetchStartupJSON,loadMazeStartupData,loadRequiredCharacters} from './startup-assets.js?v=20261017-startup1';
 import {initPadPosition} from '../game-display.js?v=20261019-interior1';
 import {monsterSprite} from './monster-motion.js?v=20261019-unified1';
 import {initTransitionEffects,withDeadline} from '../transition-effects.js?v=20261016-living1';
@@ -207,7 +207,7 @@ function showExploreMenu(){
   title('宮殿の地下','メニュー');const menu=element('div',undefined,'explore-menu');menu.dataset.gameMenu='true';menu.setAttribute('aria-label','探索メニュー');
   const add=(label,action)=>{const button=element('button',label);button.onclick=action;return button;};
   const lanternButton=add(lantern?'ランタン ON':'ランタン OFF',()=>{toggleLantern();lanternButton.textContent=lantern?'ランタン ON':'ランタン OFF';lanternButton.setAttribute('aria-pressed',String(lantern));});lanternButton.setAttribute('aria-pressed',String(lantern));
-  const cameraToggle=add(cameraDistance==='wide'?'視点：引き':'視点：標準',()=>{$('camera-distance').click();cameraToggle.textContent=cameraDistance==='wide'?'視点：引き':'視点：標準';});
+  const cameraToggle=add('視点：'+cameraDistanceLabel(cameraDistance),()=>{$('camera-distance').click();cameraToggle.textContent='視点：'+cameraDistanceLabel(cameraDistance);});
   menu.append(add('地図',()=>{showMap();panel.querySelector('.close').focus();}),lanternButton,add('歩く速さ',showWalkingSpeed),cameraToggle,add('パッド・拡大縮小',showControlSettings),add('明るさ・音・表示',()=>{showLighting();panel.querySelector('.close').focus();}));
   for(const [label,action]of[['記事一覧',()=>{showCatalog();panel.querySelector('.close').focus();}],['冒険の物語',showStory],['物語の仲間',showCreators],['宮殿の住人',showResidents],['モンスターと遊ぶ',()=>{showEncounters();panel.querySelector('.close').focus();}],['地下の入口へ',()=>{panel.close();resetPosition();}]])menu.append(add(label,action));
   const compare=element('a','キャラ見比べ');compare.href='../characters/';const clearGallery=element('a','クリア名鑑');clearGallery.href='./clear-gallery/';menu.append(compare,clearGallery);
@@ -327,7 +327,7 @@ function updateViewUI(){
   $('pad-mode-hint').textContent=view==='2d'?'2D：↑↓←→で東西南北へ':'3D：↑前進 ↓後退 · ←→方向転換';for(const b of document.querySelectorAll('[data-move]')){const labels=view==='2d'?{forward:'北へ移動',back:'南へ移動',left:'西へ移動',right:'東へ移動'}:{forward:'前へ進む',back:'後ろへ下がる',left:'左を向く',right:'右を向く'};b.setAttribute('aria-label',labels[b.dataset.move]);}
   if(view==='2d')resizeFlat();else world?.resize();
 }
-async function setView(next,{persist=true,quiet=false}={}){
+async function setView(next,{persist=true,quiet=false,deferArt=false}={}){
   const request=++viewRequest;viewAbort?.abort();viewAbort=new AbortController();const finishLoading=transitions.begin($('view-loading'),next==='3d'?'立体の回廊をひらいています…':'物語の舞台をひらいています…');let failed=false;clearInput();$('view-3d').disabled=next==='3d'&&!world;
   if(next==='3d'&&!world){
     $('view-3d').disabled=true;
@@ -335,7 +335,7 @@ async function setView(next,{persist=true,quiet=false}={}){
     catch(e){if(request!==viewRequest)return;failed=true;view='2d';viewFailure=classifyTown3DFailure(e).message;console.warn('3D unavailable; 2D remains fully playable.',e);if(!quiet)notify(viewFailure);}
     finally{if(request===viewRequest)$('view-3d').disabled=false;}
   }
-  if(request!==viewRequest)return;if(next==='2d'||failed)void rpgArt.loadRemaining();if(request!==viewRequest)return;if(!failed){view=next;viewFailure='';}state.pitch=0;updateViewUI();const reason=$('maze-view-status');if(reason){reason.hidden=!viewFailure;reason.textContent=viewFailure;}const retry=$('maze-view-retry');if(retry)retry.hidden=!viewFailure;finishLoading();transitions.enter($(view==='2d'?'fallback':'world'),{kind:'scene'});
+  if(request!==viewRequest)return;if(!deferArt&&(next==='2d'||failed))void rpgArt.loadRemaining();if(request!==viewRequest)return;if(!failed){view=next;viewFailure='';}state.pitch=0;updateViewUI();const reason=$('maze-view-status');if(reason){reason.hidden=!viewFailure;reason.textContent=viewFailure;}const retry=$('maze-view-retry');if(retry)retry.hidden=!viewFailure;finishLoading();transitions.enter($(view==='2d'?'fallback':'world'),{kind:'scene'});
   if(persist)try{localStorage.setItem(viewKey,next);}catch{}
   if(!quiet&&!failed)notify(view==='2d'?'2Dに切り替えました。矢印キーで東西南北へ。':'3Dに切り替えました。位置・鍵・対戦の記録はそのままです。');
 }
@@ -400,13 +400,10 @@ $('world').addEventListener('webglcontextlost',e=>{e.preventDefault();worldFaile
 async function init(){
  const request=++bootRequest;bootAbort?.abort();const abort=new AbortController();bootAbort=abort;
  const loading=$('loading'),label=loading.querySelector('p');loading.hidden=false;loading.querySelector('[data-boot-retry]')?.remove();if(label)label.textContent='迷宮の扉をひらいています…';
- // Fetch the selected renderer while data/hero load, rather than adding a second waterfall.
- if(view==='3d'&&!worldModule)worldModule=import('./world.js?v=20261019-unified1').catch(error=>{worldModule=null;return null;});
  const current=()=>request===bootRequest&&!abort.signal.aborted;
  let phase='data';
  try{
-  const residentRequest=fetchStartupJSON('./data/residents.json?v=20261016-resident1',{signal:abort.signal,timeout:5000}).then(compileResidents).catch(error=>{console.warn('Palace resident art is unavailable',error);return[];});
-  const [archive,supplemental,manifest]=await Promise.all([fetchStartupJSON('../data/archive.json',{signal:abort.signal,cache:'no-cache'}),fetchStartupJSON('./data/catalog.json',{signal:abort.signal}),fetchStartupJSON('./data/creator-characters.json?v=20261017-cna1',{signal:abort.signal})]);if(!current())return;
+  const [archive,supplemental,manifest]=await loadMazeStartupData({signal:abort.signal});if(!current())return;
   catalog=libraryFromArchive(archive,undefined,supplemental);year=catalog.selectedYear;
   creatorRoster=compileCharacterRoster(archive,manifest,year);const placements=placeCreatorNPCs(creatorRoster.npcs,manifest.slotAssignments);creatorRoster.npcs=placements.placed;creatorRoster.omitted.push(...placements.omitted);companions=compileCompanions(manifest);
   if(!creatorRoster.hero)throw Error('Owner character is not ready');
@@ -414,12 +411,25 @@ async function init(){
   const required=[creatorRoster.hero,...companions];characterAssets.setPinned(required.map(character=>character.asset.src));
   const [heroImage]=await loadRequiredCharacters(characterAssets,required.map(character=>character.asset),{signal:abort.signal,onRetry:()=>{if(current()&&label)label.textContent='通信を確かめて、主人公の姿をもう一度準備しています…';}});if(!current())return;
   rpgArt.setPlayerAtlas(heroImage,scaledCharacterLayout(creatorRoster.hero.asset,heroImage));
-  // Every original monster is ready; 2D-only furniture and the duel backdrop may follow in 3D.
-  phase='scene';await withDeadline(rpgArt.sceneReady,{timeout:18000,signal:abort.signal});if(!current())return;
-  restore();await setView(view,{persist:false,quiet:true});if(!current())return;
-  void residentRequest.then(next=>{if(!current())return;residents=next;stageRenderer?.invalidate();});
+  // The real owner/cat are required. Scenery and enemy textures upgrade the same
+  // walkable scene as they arrive; they must not hold the entrance for 18 seconds.
+  // Preserve the saved view, while its optional WebGL module prepares in parallel.
+  const preferredView=view;
+  phase='scene';restore();await setView('2d',{persist:false,quiet:true,deferArt:true});if(!current())return;
   updateCreatorFrames(performance.now());renderExploration(0);gameReady=true;loading.hidden=true;
-  transitions.enter($(view==='2d'?'fallback':'world'),{kind:'scene'});start();void rpgArt.loadRemaining();if(!progress[year]?.storySeen)showStory();
+  transitions.enter($('fallback'),{kind:'scene'});start();if(!progress[year]?.storySeen)showStory();
+  const firstViewRequest=viewRequest;
+  // Two frames allow an actual browser paint before a cached WebGL constructor
+  // can occupy the main thread. The renderer fetch also stays behind real heroes.
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+   if(!current())return;
+   // A user who chooses a view during boot always wins over the saved preference.
+   if(preferredView==='3d'&&viewRequest===firstViewRequest)void setView('3d',{persist:false,quiet:true});
+   void rpgArt.loadRemaining();
+   const snapshot=globalThis.__HALLOWEEN_MAZE_BOOT__?.residents;
+   const residentRequest=snapshot?Promise.resolve(snapshot):fetchStartupJSON('./data/residents.json?v=20261016-resident1',{signal:abort.signal,timeout:5000});
+   void residentRequest.then(compileResidents).then(next=>{if(!current())return;residents=next;stageRenderer?.invalidate();}).catch(error=>console.warn('Palace resident art is unavailable',error));
+  }));
  }catch(error){
   if(!current())return;abort.abort();
   if(label)label.textContent=phase==='hero'?'主人公の画像を準備できませんでした。読み込めたデータは残したまま、もう一度試せます。':phase==='scene'?'回廊の準備を完了できませんでした。記録は消えていません。もう一度試せます。':'冒険のデータを読み込めませんでした。記録は消えていません。もう一度試せます。';
@@ -428,7 +438,7 @@ async function init(){
 }
 
 rpgArt.ready.then(()=>{document.body.dataset.art=rpgArt.failures.length?'partial':'ready';if(rpgArt.failures.length){console.warn('Some original RPG art could not load:',rpgArt.failures);notify('一部のイラストを読み込めず、簡易表示で続けています。再読み込みでお試しください。');}});
-const cameraButton=$('camera-distance');function updateCameraButton(){cameraButton.textContent=(cameraDistance==='wide'?'視点：引き':'視点：標準')+(cameraZoom!==1?` ${Math.round(cameraZoom*100)}%`:'');cameraButton.setAttribute('aria-pressed',String(cameraDistance==='wide'));}cameraButton.onclick=()=>{clearInput();cameraDistance=cameraDistance==='wide'?'normal':'wide';saveCameraDistance('maze',cameraDistance);cameraZoom=1;saveCameraZoom('maze',1);updateCameraButton();stageRenderer?.invalidate();if(gameReady)renderExploration(0);};updateCameraButton();
+const cameraButton=$('camera-distance');function updateCameraButton(){cameraButton.textContent='視点：'+cameraDistanceLabel(cameraDistance)+(cameraZoom!==1?` ${Math.round(cameraZoom*100)}%`:'');cameraButton.setAttribute('aria-pressed',String(cameraDistance!=='normal'));cameraButton.setAttribute('aria-description','標準、引き、遠景の3段階。指で調整した拡大率は保ちます。');}cameraButton.onclick=()=>{clearInput();cameraDistance=nextCameraDistance(cameraDistance);saveCameraDistance('maze',cameraDistance);updateCameraButton();stageRenderer?.invalidate();if(gameReady)renderExploration(0);};updateCameraButton();
 updateViewUI();init();
 
 

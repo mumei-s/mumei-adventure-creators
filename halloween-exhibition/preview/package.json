@@ -9,7 +9,9 @@
     "build:styles": "node scripts/build-gallery-styles.mjs",
     "check:styles": "node scripts/build-gallery-styles.mjs --check",
     "build:script": "node scripts/build-gallery-script.mjs",
-    "check:script": "node scripts/build-gallery-script.mjs --check"
+    "check:script": "node scripts/build-gallery-script.mjs --check",
+    "build:games": "node scripts/build-game-scripts.mjs",
+    "check:games": "node scripts/build-game-scripts.mjs --check"
   },
   "devDependencies": {
     "esbuild": "0.25.12"

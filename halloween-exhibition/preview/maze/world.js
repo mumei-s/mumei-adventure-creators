@@ -1,4 +1,4 @@
-import {normalizeCameraZoom} from '../camera-distance.js?v=20261019-journey1';
+import {normalizeCameraDistance,mazeCameraZoom} from '../camera-distance.js?v=20261019-journey1';
 import {mazeWideCamera} from '../camera-distance.js?v=20261019-journey1';
 import {monsterSprite,spriteTextureUV} from './monster-motion.js?v=20261019-unified1';
 import {ART_FILES,ART_BOUNDS,ART_ANCHORS,PALACE_ART,playerPose} from './rpg-art.js?v=20261019-unified1';
@@ -274,7 +274,7 @@ export function createWorld({ canvas, onReady, art } = {}) {
     const source=art?.images?.[definition.id];
     if(source){const texture=new THREE.Texture(source.image||source);texture.needsUpdate=true;installMonsterTexture(texture);}
     else if(!art&&ART_FILES[definition.id])residentTextures.load(new URL(`./assets/rpg/${ART_FILES[definition.id]}`,import.meta.url).href,texture=>{if(!installMonsterTexture(texture))return;const bounds=ART_BOUNDS[definition.id]||[0,0,512,512],anchor=ART_ANCHORS[definition.id]||{anchorX:.5,anchorY:1};texture.repeat.set(bounds[2]/texture.image.width,bounds[3]/texture.image.height);texture.offset.set(bounds[0]/texture.image.width,1-(bounds[1]+bounds[3])/texture.image.height);sprite.center.set(anchor.anchorX,1-anchor.anchorY);const height=definition.id==='franken'?2.35:definition.id==='bat'?1.85:2.15;sprite.scale.set(height*bounds[2]/bounds[3],height,1);},undefined,()=>console.warn('Original monster art unavailable:',definition.id));
-    spirits.push({node:root,model:g,sprite,index,id:definition.id,definition,baseY:0});
+    spirits.push({node:root,model:g,sprite,index,id:definition.id,definition,baseY:0,installMonsterTexture,sourceImage:source?.image||source});
   }
   // A drifting orbital mobile is sculpture, explicitly environmental decoration.
   const center=point(FEATURES.mobile||FEATURES.spawn||{x:Math.floor(cols/2),z:Math.floor(rows/2)});
@@ -375,15 +375,19 @@ export function createWorld({ canvas, onReady, art } = {}) {
   function resize(){const w=canvas.clientWidth||window.innerWidth,h=canvas.clientHeight||window.innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;heldLantern.position.x=Math.min(.3,.3*camera.aspect);camera.updateProjectionMatrix();}
   function render({x=0,z=0,yaw=0,pitch=0,time=0,motion=true,unlocked=false,horrorAccepted=false,hasKey=false,collection=[],brightness=1,lantern=true,encounters=true,cleared=[],cameraDistance='normal',cameraZoom=1,facing='down',walking=false,walkPhase=0,creatorActors=[]}={}){
     const seconds=time*.001;const dt=Math.min(.05,Math.max(0,seconds-last));last=seconds;if(motion)ambientTime+=dt;const t=ambientTime;
-    const zoom=normalizeCameraZoom(cameraZoom);if(camera.zoom!==zoom){camera.zoom=zoom;camera.updateProjectionMatrix();}
-    const wide=cameraDistance==='wide',hero=wide?playerPose(art,facing,walking,walkPhase):null;updateCreatorActors(hero?[...creatorActors,{id:'wide-view-owner',x:x/CELL,z:z/CELL,sprite:hero,heightWorld:2.38,interactive:false}]:creatorActors);
+    const distance=normalizeCameraDistance(cameraDistance),zoom=mazeCameraZoom(distance,cameraZoom);if(camera.zoom!==zoom){camera.zoom=zoom;camera.updateProjectionMatrix();}
+    const wide=distance!=='normal',hero=wide?playerPose(art,facing,walking,walkPhase):null;updateCreatorActors(hero?[...creatorActors,{id:'wide-view-owner',x:x/CELL,z:z/CELL,sprite:hero,heightWorld:2.38,interactive:false}]:creatorActors);
     folios.visible=Math.hypot(x-vaultPoint.x,z-vaultPoint.z)<(compactViewport?26:42);
     for(const [i,m]of mistSheets.entries()){m.node.position.x=m.x+(motion?Math.sin(t*.12+i)*.8:0);m.node.position.z=m.z+(motion?Math.cos(t*.09+i)*.5:0);}
     const level=Math.max(.75,Math.min(1.75,Number.isFinite(Number(brightness))?Number(brightness):1));
     renderer.toneMappingExposure=NIGHT_LIGHTING.exposure*level;
-    if(wide){const pose=mazeWideCamera({x,z,yaw,unlocked,horrorAccepted},blocked);camera.position.set(pose.x,pose.y,pose.z);camera.lookAt(x-Math.sin(yaw)*1.2,1.1,z-Math.cos(yaw)*1.2);}else{camera.position.set(x,1.65,z);camera.rotation.set(pitch,yaw,0,'YXZ');}
+    if(wide){const pose=mazeWideCamera({x,z,yaw,unlocked,horrorAccepted},blocked,distance);camera.position.set(pose.x,pose.y,pose.z);camera.lookAt(x-Math.sin(yaw)*1.2,1.1,z-Math.cos(yaw)*1.2);}else{camera.position.set(x,1.65,z);camera.rotation.set(pitch,yaw,0,'YXZ');}
     heldLantern.visible=!!lantern&&!wide;headlamp.visible=!!lantern;nearLamp.visible=!!lantern;
     for(const spirit of spirits){
+      // Opening the scene does not wait for every enemy atlas. Install the same
+      // original art as it arrives, retaining the existing model until then.
+      const source=art?.images?.[spirit.id],image=source?.image||source;
+      if(image&&image!==spirit.sourceImage){const texture=new THREE.Texture(image);texture.needsUpdate=true;const previous=spirit.sprite.material.map;if(spirit.installMonsterTexture(texture)){spirit.sourceImage=image;if(previous){previous.dispose();resources.delete(previous);}}}
       spirit.node.visible=encounters&&(!spirit.definition.optional||spirit.node.userData.originalArt)&&!cleared.includes(spirit.id)&&monsterAvailable(spirit.definition,{unlocked,horrorAccepted});
       const pose=monsterPose(spirit.definition,seconds,motion,{unlocked,horrorAccepted});
       const sampled=art&&monsterSprite(art,spirit.id,{time:seconds,motion,patrol:pose});

@@ -103,5 +103,8 @@ test('game audio is menu-only and safe around dialogs/exits/check tone',()=>{
  assert(app.includes("clearInput();soundCheck.stop('');visitorSettings.stopMusic();save()"));assert.match(app,/panel\.addEventListener\('close',[^\n]+soundCheck\.stop\(''\)/);
  assert(!css.includes('game-audio-controls'));assert(!css.includes('52px 88px'));assert(!css.includes('44px 88px'));assert(css.includes('.game-audio-settings .game-music-toggle{grid-column:1/-1;min-height:44px}'));assert(css.includes('.game-volume-input{display:block;min-width:0;width:100%;height:44px'));
  assert(app.includes('メニューの「明るさ・音・表示」でBGMと音量を調整できます。'));
- assert(html.includes('./app.js?v=20261019-unified1'));assert(html.includes('./adventure-controls.css?v=20261019-scene1'));assert(html.includes('../safe-navigation.css?v=20261016-living1'));
+ const styles=JSON.parse(read('game-style-sources.json')),bundle=JSON.parse(read('game-script-manifest.json'));
+ assert(styles.includes('./adventure-controls.css?v=20261019-scene1'));assert(styles.includes('../safe-navigation.css?v=20261016-living1'));
+ assert(bundle.entrySources.includes('maze/app.js'));assert(bundle.inputs.some(input=>input.path==='maze/adventure-audio.js'));
+ assert(html.includes(`./game-entry.js?v=20261019-game-fast1-${bundle.output.sha256.slice(0,12)}`));assert(html.includes(`./game-styles.css?v=20261019-game-fast1-${bundle.styles.sha256.slice(0,12)}`));
 });

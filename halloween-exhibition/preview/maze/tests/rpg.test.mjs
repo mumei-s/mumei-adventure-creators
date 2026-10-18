@@ -46,7 +46,7 @@ test('library accepts every genre with legacy collection ID and no invented subm
   const app=read('app.js'),html=read('index.html');assert(html.includes('無名S note / Halloween Atelier'));assert(!html.includes('Halloween冒険室'));assert(app.includes('物語の書庫'));assert(app.includes('ジャンルを問わず'));assert(app.includes('記事の掲載状況とは別の一覧'));
   assert(!app.includes('ホラーイラストの記事を、ここに。'));assert(!app.includes('ホラー別室'));
   const a=['イラスト','詩','エッセイ','旅の記録'].map((kind,i)=>({id:String(i),kind,collection:'horror'}));assert.equal(visibleArticles(a).length,4);
-  assert.match(read('app.js'),/libraryFromArchive/);assert.match(read('app.js'),/\.\.\/data\/archive\.json/);
+  assert.match(read('app.js'),/libraryFromArchive/);assert.match(read('app.js'),/loadMazeStartupData/);assert.match(read('startup-assets.js'),/\.\.\/data\/archive\.json/);
 });
 test('battle uses original scene, meaningful meters and motion-safe local action effects',()=>{
   const app=read('app.js'),scene=read('battle-scene.js'),css=read('rpg-ui.css');
@@ -55,10 +55,12 @@ test('battle uses original scene, meaningful meters and motion-safe local action
   assert(css.includes('min-height:44px'));assert(css.includes('@media(prefers-reduced-motion:reduce)'));assert(css.includes('animation:none!important'));
 });
 test('maze participates in shared layout preference and coherent cache release',()=>{
-  const app=read('app.js'),html=read('index.html');const version='20261014-adventure2';
+  const app=read('app.js'),html=read('index.html'),styles=JSON.parse(read('game-style-sources.json')),bundle=JSON.parse(read('game-script-manifest.json'));const version='20261014-adventure2';
   assert(app.includes("initDisplayMode({controlsParent:visitorSection,page:'maze'})"));assert(app.includes("document.addEventListener('yearbook:layout-change'"));
-  assert(app.includes('../display-mode.js?v=20261019-unified1'));assert(html.includes(`../visitor-preferences.css?v=${version}`));assert(html.includes('../display-mode.css?v=20261014-adventure2'));assert(app.includes('./adventure-audio.js?v=20261016-ios1'));
-  for(const file of ['style','stage-2d'])assert(html.includes(`./${file}.css?v=${version}`));assert(html.includes('./rpg-ui.css?v=20261014-adventure2'));assert(html.includes('./app.js?v=20261019-unified1'));
+  assert(app.includes('../display-mode.js?v=20261019-unified1'));assert(styles.includes(`../visitor-preferences.css?v=${version}`));assert(styles.includes('../display-mode.css?v=20261014-adventure2'));assert(app.includes('./adventure-audio.js?v=20261016-ios1'));
+  for(const file of ['style','stage-2d'])assert(styles.includes(`./${file}.css?v=${version}`));assert(styles.includes('./rpg-ui.css?v=20261014-adventure2'));
+  assert.deepEqual(bundle.styleSources,styles);assert(bundle.entrySources.includes('maze/app.js'));assert(bundle.inputs.some(input=>input.path==='display-mode.js'));assert(bundle.inputs.some(input=>input.path==='maze/stage-2d.js'));
+  assert(html.includes(`./game-entry.js?v=20261019-game-fast1-${bundle.output.sha256.slice(0,12)}`));assert(html.includes(`./game-styles.css?v=20261019-game-fast1-${bundle.styles.sha256.slice(0,12)}`));
   const expected={'safe-page-reload':'20261017-reload1','startup-assets':'20261017-startup1','game-display':'20261017-padpos1','viewport':'20261016-ios1','clear-reward':'20261015-clear1','walking-speed':'20261015-clear1','library-catalog':'20261015-clear1','view-model':'20261015-minimap1','game-input':'20261016-ios1','adventure-audio':'20261016-ios1','sound-check':'20261016-ios1'};
   for(const module of ['ending-ui','stage-2d','world','battle-scene','story-model','encounter-model','rpg-art','creator-runtime','creator-ui'])expected[module]='20261016-creator-rpg1';
   for(const module of ['minimap-size','ending-ui','stage-2d','world','battle-scene','story-model','encounter-model','creator-ui'])expected[module]='20261016-battle-visible1';

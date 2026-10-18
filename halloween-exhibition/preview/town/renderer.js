@@ -11,7 +11,7 @@ import {drawArtSprite,playerPose,loadArtImage,PALACE_ART} from '../maze/rpg-art.
 import {enemyRigEffect} from '../maze/battle-rig-effects.js?v=20261017-rig2';
 import {monsterSprite} from '../maze/monster-motion.js?v=20261019-unified1';
 import {withDeadline} from '../transition-effects.js?v=20261016-living1';
-import {townPalaceFraming} from './palace-architecture.js?v=20261019-homes2';
+import {townPalaceFraming} from './palace-framing.js?v=20261019-startupfast1';
 import {drawTownPalace2D} from './palace-painter.js?v=20261019-homes2';
 
 const TAU=Math.PI*2,clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
@@ -96,7 +96,7 @@ function drawResident(c,n,time=0){
   if(appearance==='clocksmith'||appearance==='archivist'){for(const dx of[-4,5]){c.strokeStyle='#d2c6a5';c.lineWidth=1;c.beginPath();c.arc(x+dx,y-60,4,0,TAU);c.stroke();}}
 }
 
-export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},version:0},loadImage=loadArtImage,fetcher=globalThis.fetch,assetTimeout=14000,manifestTimeout=6000,timers=globalThis}={}){
+export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},version:0},loadImage=loadArtImage,fetcher=globalThis.fetch,assetTimeout=14000,manifestTimeout=6000,timers=globalThis,deferAssets=false}={}){
   const scene={images:{},frames:TOWN_SCENERY_FRAMES.props,residentFrames:TOWN_SCENERY_FRAMES.residents,version:0,failures:[],loaded:[]},chunks=new Map(),shade=makeCanvas(1,1),sceneSnapshot=makeCanvas(1,1);
   let chunkLimit=TOWN_BUDGET.residentChunks;
   let camera=null,lastMap=null,lastView=null,lastSignature='',destroyed=false,hitItems=[],lastSurface=null,snapshotBattle=null;
@@ -111,7 +111,9 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
     }
     if(!destroyed&&!scene.failures.includes(key))scene.failures.push(key);return null;
   }
-  const ready=Promise.all([image('props','./assets/props-atlas.webp'),image('cobbles','./assets/cobblestone-dark.webp'),image('soil','./assets/stonepath-warm.webp'),image('residents','./assets/residents-atlas.webp')]).then(()=>({loaded:[...scene.loaded],failures:[...scene.failures]}));
+  let sceneryStarted=false,finishScenery;const ready=new Promise(resolve=>finishScenery=resolve);
+  function start(){if(sceneryStarted||destroyed)return ready;sceneryStarted=true;void Promise.all([image('props','./assets/props-atlas.webp'),image('cobbles','./assets/cobblestone-dark.webp'),image('soil','./assets/stonepath-warm.webp'),image('residents','./assets/residents-atlas.webp')]).then(()=>finishScenery({loaded:[...scene.loaded],failures:[...scene.failures]}));return ready;}
+  if(!deferAssets)void start();
   async function retry(){await Promise.all([...failedFiles].filter(([key])=>scene.failures.includes(key)).map(([key,file])=>image(key,file)));return {loaded:[...scene.loaded],failures:[...scene.failures]};}
   let interiorReady=null;
   function ensureInterior(){return interiorReady??=Promise.all([image('palace','../maze/assets/rpg/palace/props-atlas.webp'),image('parquet','../maze/assets/rpg/palace/parquet.webp'),image('wall','../maze/assets/rpg/palace/wainscot-wall.webp'),image('carpet','../maze/assets/rpg/palace/carpet.webp')]);}
@@ -378,13 +380,13 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
     text(c,victory?'祭りの灯りが戻った':`TURN ${battle.turn||1}`,w/2,h-18,13,victory?'#f3d28e':'#c7d6d5');
   }
 
-  const api={ready,retry,render,drawMap,renderTownBattle,
+  const api={ready,start,retry,render,drawMap,renderTownBattle,
     status:()=>({loaded:[...scene.loaded],failed:[...scene.failures],chunks:chunks.size,artVersion:scene.version,chunkLimit}),
     worldToScreen(x,z){if(!lastView)return null;const point=typeof x==='object'?x:{x,z},screen=townWorldToScreen(point,lastView.camera,lastView.width,lastView.height,lastView.scale,TOWN_DEPTH_SCALE);if(Number.isFinite(point.y))screen.y-=point.y*TILE*lastView.scale*TOWN_DEPTH_SCALE;return screen;},
     screenToWorld(x,y){return lastView?townScreenToWorld(typeof x==='object'?x:{x,y},lastView.camera,lastView.width,lastView.height,lastView.scale,TOWN_DEPTH_SCALE):null;},
     pickVisitor(x,y){for(let i=hitItems.length-1;i>=0;i--){const item=hitItems[i];if(!item.sprite||x<item.x||x>item.x+item.w||y<item.y||y>item.y+item.h||!opaqueAt(item,x,y))continue;return item.kind==='visitor'?item.id:null;}return null;},
     pick(x,y){if(!lastView)return null;const p=townScreenToWorld({x,y},lastView.camera,lastView.width,lastView.height,lastView.scale,TOWN_DEPTH_SCALE);return hitItems.filter(n=>Math.hypot((n.worldX??0)-p.x,(n.worldZ??0)-p.z)<.6).sort((a,b)=>Math.hypot(a.worldX-p.x,a.worldZ-p.z)-Math.hypot(b.worldX-p.x,b.worldZ-p.z))[0]?.id||null;},
-    invalidate(){lastSignature='';},destroy(){destroyed=true;loading.abort();chunks.clear();hitItems=[];camera=null;lastView=null;renderersByArt.delete(art);},
+    invalidate(){lastSignature='';},destroy(){destroyed=true;loading.abort();finishScenery({loaded:[...scene.loaded],failures:[...scene.failures]});chunks.clear();hitItems=[];camera=null;lastView=null;renderersByArt.delete(art);},
   };
   renderersByArt.set(art,api);return api;
 }

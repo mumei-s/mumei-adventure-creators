@@ -75,8 +75,8 @@
     },
     {
       "path": "package.json",
-      "bytes": 511,
-      "sha256": "ec46adaba8b93dacd5b7e4fb345b0732d0b85dbf03bb988df185c25a8ab5a1d7"
+      "bytes": 635,
+      "sha256": "3a10c170d17784f92fb5f09337606d030de82b6a3f292cd9b53a1d728fce65f1"
     },
     {
       "path": "palace-entrance.js",

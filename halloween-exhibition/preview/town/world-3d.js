@@ -1,4 +1,5 @@
 import {townViewZoom} from './camera-framing.js?v=20261019-homes2';
+import {cameraDistanceScale} from '../camera-distance.js?v=20261019-journey1';
 import {townLighting,townLanternPosition} from './lighting.js?v=20261019-interior1';
 import * as THREE from '../maze/vendor/three.module.js';
 import {getTownMap} from './story-data.js?v=20261019-homes2';
@@ -14,7 +15,7 @@ export const TOWN_3D_CAMERA_ELEVATION=55*Math.PI/180;
 /** The camera stays aligned with the controls: east is right and south is down. */
 export function town3DCameraParameters(width,height,interior=false,cameraDistance='normal'){
   width=Math.max(1,width);height=Math.max(1,height);
-  const pixelsPerTile=clamp(Math.min(width/(interior?9.8:10.8),height/(interior?7.5:8.2)),22,66)*(cameraDistance==='wide'?.68:1);
+  const pixelsPerTile=clamp(Math.min(width/(interior?9.8:10.8),height/(interior?7.5:8.2)),22,66)*cameraDistanceScale(cameraDistance);
   return {left:-width/pixelsPerTile/2,right:width/pixelsPerTile/2,top:height/pixelsPerTile/2,bottom:-height/pixelsPerTile/2,
     elevation:TOWN_3D_CAMERA_ELEVATION,distance:34,pixelsPerTile};
 }

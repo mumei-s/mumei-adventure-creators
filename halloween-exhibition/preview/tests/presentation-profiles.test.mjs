@@ -9,6 +9,13 @@ test('explicit presentation modes change typography, icons and native targets to
  assert.doesNotMatch(css,/zoom:|transform:scale|screen\.width|user-scalable|maximum-scale/);
 });
 test('profile stylesheet follows older gallery and game style layers without reaching editor',async()=>{
- for(const file of ['index.html','maze/index.html']){const html=await read(file),styles=file==='index.html'?bundledStyles:html;assert.match(styles,/presentation-profiles.css\?v=20261019-compact1/);assert.ok(styles.indexOf('presentation-profiles.css')>styles.indexOf('ios-viewport.css'));}
+ assert.match(bundledStyles,/presentation-profiles.css\?v=20261019-compact1/);assert.ok(bundledStyles.indexOf('presentation-profiles.css')>bundledStyles.indexOf('ios-viewport.css'));
+ for(const game of ['town','maze']){
+  const styles=JSON.parse(await read(`${game}/game-style-sources.json`)),manifest=JSON.parse(await read(`${game}/game-script-manifest.json`)),html=await read(`${game}/index.html`);
+  const profile=styles.indexOf('../presentation-profiles.css?v=20261019-compact1'),viewport=styles.findIndex(source=>source.split('?')[0]==='../ios-viewport.css');
+  assert.ok(viewport>=0&&profile>viewport,`${game} profile overrides viewport styles`);
+  assert.deepEqual(manifest.styleSources,styles);assert.ok(manifest.inputs.some(input=>input.path==='presentation-profiles.css'));
+  assert.ok(html.includes(`href="./game-styles.css?v=20261019-game-fast1-${manifest.styles.sha256.slice(0,12)}"`));
+ }
  assert.doesNotMatch(await read('admin/index.html'),/presentation-profiles.css/);
 });

@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import {fileURLToPath} from 'node:url';
-import {fetchStartupJSON,loadRequiredCharacters} from '../startup-assets.js';
+import {fetchStartupJSON,loadMazeStartupData,loadRequiredCharacters} from '../startup-assets.js';
 import {createCharacterAssets,browserImage} from '../creator-runtime.js';
 import {createArtLibrary} from '../rpg-art.js';
 import {MONSTER_IDS} from '../monster-motion.js';
@@ -19,6 +19,14 @@ test('game metadata retries one failed request with cache reload and cancels bot
  let count=0;await assert.rejects(fetchStartupJSON('gone',{fetcher:async()=>{count++;return{ok:false,status:404};}}));assert.equal(count,1);
  const abort=new AbortController();let requestSignal;
  const blocked=fetchStartupJSON('slow',{signal:abort.signal,fetcher:async(_url,{signal})=>{requestSignal=signal;return{ok:true,json:()=>new Promise(()=>{})};}});await turn();abort.abort();await assert.rejects(blocked,/cancelled/);assert.equal(requestSignal.aborted,true);
+});
+
+test('published matching startup snapshots remove all three blocking JSON requests',async()=>{
+ const snapshot={archive:{years:[]},catalog:{creators:[]},characters:manifest};let calls=0;
+ const data=await loadMazeStartupData({snapshot,fetcher:async()=>{calls++;throw Error('unexpected network');}});
+ assert.equal(calls,0);assert.equal(data[0],snapshot.archive);assert.equal(data[1],snapshot.catalog);assert.equal(data[2],manifest);
+ const urls=[];const fallback=await loadMazeStartupData({snapshot:{archive:snapshot.archive,characters:manifest},fetcher:async url=>{urls.push(url);return{ok:true,json:async()=>snapshot.catalog};}});
+ assert.deepEqual(urls,['./data/catalog.json']);assert.equal(fallback[1],snapshot.catalog);
 });
 
 test('required hero retry preserves the loaded cat, exact identity, and high priority',async()=>{
@@ -59,13 +67,41 @@ test('3D texture installation reuses decoded scene art and only falls back to a 
  vm.runInContext(fn.replace('import.meta.url',JSON.stringify('https://example.test/maze/world.js'))+';globalThis.load=loadSceneTexture',context);let texture;context.load('parquet','parquet.webp',value=>texture=value);assert.equal(texture.image,image);assert.equal(texture.needsUpdate,true);assert.equal(requests,0);context.load('missing','missing.webp',()=>{});assert.equal(requests,1);
 });
 
-test('maze actual boot starts hero before resident metadata and paints before dismissing real loading',async()=>{
+test('a monster atlas arriving after the 3D scene installs once and replaces a fallback safely',()=>{
+ const source=fs.readFileSync(new URL('../world.js',import.meta.url),'utf8'),start=source.indexOf('      const source=art?.images?.[spirit.id]'),code=source.slice(start,source.indexOf('      spirit.node.visible=',start));
+ const art={images:{}},resources=new Set();let installed=0,disposed=0;const fallback={dispose(){disposed++;}};resources.add(fallback);
+ const spirit={id:'witch',sprite:{material:{map:fallback}},installMonsterTexture(texture){installed++;resources.add(texture);this.sprite.material.map=texture;return true;}};
+ const context=vm.createContext({art,spirit,resources,THREE:{Texture:class{constructor(image){this.image=image;}dispose(){disposed++;}}}});vm.runInContext(`globalThis.refresh=()=>{${code}}`,context);
+ context.refresh();assert.equal(installed,0);const image={width:1024,height:1024};art.images.witch={image};context.refresh();assert.equal(installed,1);assert.equal(spirit.sprite.material.map.image,image);assert.equal(spirit.sprite.material.map.needsUpdate,true);assert.equal(disposed,1);assert.equal(resources.has(fallback),false);
+ context.refresh();assert.equal(installed,1,'an unchanged atlas does not allocate another GPU texture');
+});
+
+function bootHarness({preferred='3d',residentFails=false,heroFails=false}={}){
  const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8'),source=app.slice(app.indexOf('async function init(){'),app.indexOf('\nrpgArt.ready.then'));
- const scene=deferred(),resident=deferred(),label={textContent:''},loading={hidden:true,querySelector:selector=>selector==='p'?label:null,append(){}};let requested=0,painted=0,remaining=0;
- const assets={setPinned(){},request:async asset=>{requested++;return{width:asset.width,height:asset.height};},retry(){}};
- const context=vm.createContext({AbortController,console,performance:{now:()=>0},$:id=>id==='loading'?loading:{},fetchStartupJSON:async url=>url.includes('residents')?resident.promise:url.includes('creator-characters')?manifest:{},compileResidents:()=>[],libraryFromArchive:()=>({selectedYear:2026}),compileCharacterRoster:()=>({hero:{asset:hero},npcs:[],omitted:[]}),placeCreatorNPCs:()=>({placed:[],omitted:[]}),compileCompanions:()=>[{asset:cat}],characterAssets:assets,loadRequiredCharacters,scaledCharacterLayout:()=>({}),withDeadline:promise=>promise,rpgArt:{sceneReady:scene.promise,setPlayerAtlas(){},loadRemaining(){remaining++;}},restore(){},setView:async()=>{},updateCreatorFrames(){},renderExploration(){assert.equal(loading.hidden,false);painted++;},transitions:{enter(){}},start(){},showStory(){},element:()=>({dataset:{}})});
- vm.runInContext(`let stageRenderer=null,bootRequest=0,bootAbort=null,worldModule=null,view='2d',catalog,year,creatorRoster,companions,residents,gameReady=false;const progress={2026:{storySeen:true}};${source};globalThis.init=init;globalThis.ready=()=>gameReady;`,context);
- const boot=context.init();await turn();assert.equal(requested,2);assert.equal(context.ready(),false);assert.equal(loading.hidden,false);scene.resolve();await boot;assert.equal(context.ready(),true);resident.resolve({});await turn();assert.equal(painted,1);assert.equal(context.ready(),true);assert.equal(loading.hidden,true);assert.equal(remaining,1);
+ const scene=deferred(),optionalWorld=deferred(),frames=[],views=[],label={textContent:''},loading={hidden:true,children:[],querySelector:selector=>selector==='p'?label:null,append(node){this.children.push(node);}};const record={requested:0,painted:0,remaining:0,residentRequests:0};
+ const assets={setPinned(){},request:async asset=>{record.requested++;return heroFails&&asset===hero?null:{width:asset.width,height:asset.height};},retry(){}};
+ const context=vm.createContext({AbortController,console:{error(){},warn(){}},performance:{now:()=>0},preferred,optionalWorld:optionalWorld.promise,frames,views,requestAnimationFrame:callback=>frames.push(callback),$:id=>id==='loading'?loading:{},loadMazeStartupData:async()=>[{},{},manifest],fetchStartupJSON:async()=>{record.residentRequests++;if(residentFails)throw Error('optional resident offline');return{};},compileResidents:()=>[],libraryFromArchive:()=>({selectedYear:2026}),compileCharacterRoster:()=>({hero:{asset:hero},npcs:[],omitted:[]}),placeCreatorNPCs:()=>({placed:[],omitted:[]}),compileCompanions:()=>[{asset:cat}],characterAssets:assets,loadRequiredCharacters,scaledCharacterLayout:()=>({}),rpgArt:{sceneReady:scene.promise,setPlayerAtlas(){},loadRemaining(){record.remaining++;}},restore(){},updateCreatorFrames(){},renderExploration(){assert.equal(loading.hidden,false);record.painted++;},transitions:{enter(){}},start(){},showStory(){},element:()=>({dataset:{}})});
+ vm.runInContext(`let stageRenderer=null,bootRequest=0,bootAbort=null,worldModule=Promise.resolve({}),view=preferred,viewRequest=0,catalog,year,creatorRoster,companions,residents,gameReady=false;const progress={2026:{storySeen:true}};async function setView(next,options){viewRequest++;views.push({next,options});if(next==='3d')await optionalWorld;view=next;}${source};globalThis.init=init;globalThis.ready=()=>gameReady;globalThis.currentView=()=>view;globalThis.choose2D=()=>setView('2d',{persist:true});`,context);
+ return{context,record,loading,label,frames,views,scene,optionalWorld};
+}
+
+test('actual maze boot paints real hero before optional scenery, resident metadata and 3D finish',async()=>{
+ const h=bootHarness();await h.context.init();assert.equal(h.record.requested,2);assert.equal(h.record.painted,1);assert.equal(h.context.ready(),true);assert.equal(h.loading.hidden,true);assert.equal(h.context.currentView(),'2d');assert.equal(h.record.residentRequests,0);assert.equal(h.record.remaining,0);
+ h.frames.shift()();await turn();assert.equal(h.record.residentRequests,0);assert.equal(h.record.remaining,0,'one RAF is still before the first browser paint');assert.equal(h.views.filter(value=>value.next==='3d').length,0);
+ h.frames.shift()();await turn();assert.equal(h.record.residentRequests,1);assert.equal(h.record.remaining,1);assert.equal(h.context.ready(),true);assert.equal(h.context.currentView(),'2d');
+ h.optionalWorld.resolve();await turn();assert.equal(h.context.currentView(),'3d');assert.equal(h.views.at(-1).options.persist,false,'temporary 2D never overwrites saved 3D');
+});
+
+test('optional resident failure cannot restore loading or disable the playable maze',async()=>{
+ const h=bootHarness({preferred:'2d',residentFails:true});await h.context.init();h.frames.shift()();h.frames.shift()();await turn();assert.equal(h.context.ready(),true);assert.equal(h.loading.hidden,true);assert.equal(h.record.painted,1);assert.equal(h.loading.children.length,0);
+});
+
+test('an explicit 2D choice during startup prevents the saved 3D preference overriding it',async()=>{
+ const h=bootHarness();await h.context.init();await h.context.choose2D();h.frames.shift()();h.frames.shift()();await turn();assert.equal(h.views.filter(value=>value.next==='3d').length,0);assert.equal(h.context.currentView(),'2d');
+});
+
+test('failed real hero keeps loading visible with retry before any first frame',async()=>{
+ const h=bootHarness({heroFails:true});await h.context.init();assert.equal(h.context.ready(),false);assert.equal(h.record.painted,0);assert.equal(h.loading.hidden,false);assert.equal(h.loading.children.length,1);assert.equal(h.record.residentRequests,0);assert.match(h.label.textContent,/主人公/);
 });
 
 test('a timed-out essential request settles its cache entry before the second attempt',async()=>{

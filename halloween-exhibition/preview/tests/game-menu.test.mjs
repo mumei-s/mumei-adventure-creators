@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
+import {cameraDistanceLabel,nextCameraDistance} from '../camera-distance.js';
 
 const sources={town:fs.readFileSync(new URL('../town/app.js',import.meta.url),'utf8'),maze:fs.readFileSync(new URL('../maze/app.js',import.meta.url),'utf8')};
 function functionSource(source,name){
@@ -28,7 +29,7 @@ function harness(kind,{reward=false,lantern=true,cameraDistance='normal',failedS
  display.append(element('label','旧画面設定'));for(const value of ['auto','phone','tablet','desktop']){const option=element('option','旧表示');option.value=value;display.append(option);}
  const state={position:{x:12,z:34},mapId:'creator-quarter',completed:['invitation'],hasKey:true},before=JSON.stringify(state);
  const recordCall=name=>()=>record.calls.push(name),context=vm.createContext({content,element,el:element,button:(text,onclick,className)=>Object.assign(element('button',text,className),{onclick}),
-  settings:{lantern},lantern,cameraDistance,motion:true,state,session:{snapshot:()=>({state})},readingProgress:()=>({title:'記事巡り 2/14'}),pageReload:{element:reload},
+  settings:{lantern},lantern,cameraDistance,cameraDistanceLabel,motion:true,state,session:{snapshot:()=>({state})},readingProgress:()=>({title:'記事巡り 2/14'}),pageReload:{element:reload},
   beginPanel:(title,options)=>{context.displayPreferences?.destroy();context.displayPreferences=null;content.replaceChildren();record.panels.push({title,options});},title:(eyebrow,title)=>{content.replaceChildren();record.panels.push({title,eyebrow});},
   panel:{querySelector:selector=>selector==='.close'?close:null,close:recordCall('closePanel')},closePanel:recordCall('closePanel'),openPanel:recordCall('openPanel'),
   padPositionPreferences:{element:padPosition},displaySection:display,displayPreferences:null,scheduleResize:recordCall('resize'),
@@ -38,7 +39,7 @@ function harness(kind,{reward=false,lantern=true,cameraDistance='normal',failedS
  });
  const callbacks=['showMap','showWalkingSpeed','showControlSettings','showSettings','showCreatorHomes','showVisitors','showJournal','showTownJournal','showInventory','showSave','showHelp','showCastleReturn','showLighting','showCatalog','showStory','showCreators','showResidents','showEncounters','resetPosition','showEnding'];
  for(const name of callbacks)context[name]=recordCall(name);
- const camera=element('button'),pause=element('button');camera.onclick=()=>{context.cameraDistance=context.cameraDistance==='wide'?'normal':'wide';record.calls.push('camera');};pause.onclick=()=>{context.motion=!context.motion;context.updateMotion();};
+ const camera=element('button'),pause=element('button');camera.onclick=()=>{context.cameraDistance=nextCameraDistance(context.cameraDistance);record.calls.push('camera');};pause.onclick=()=>{context.motion=!context.motion;context.updateMotion();};
  context.$=id=>id==='camera-distance'?camera:id==='pause'?pause:flatten(content).find(node=>node.id===id);
  context.toggleLantern=()=>{context.settings.lantern=!context.settings.lantern;context.lantern=!context.lantern;record.calls.push('toggleLantern');};
  context.updateMotion=()=>{const button=context.$('menu-motion-toggle'),status=context.$('menu-motion-status');if(button)button.textContent=context.motion?'演出を止める':'演出を再生';if(status)status.textContent=context.motion?'キャラクターの歩行・光の揺らぎ：再生中':'キャラクターの歩行・光の揺らぎ：停止中';};
@@ -60,7 +61,8 @@ for(const kind of ['town','maze'])test(`${kind}: actual menu keeps the same six 
 for(const kind of ['town','maze'])test(`${kind}: primary controls invoke their existing actions and update toggle labels`,()=>{
  const h=harness(kind);h.run.menu();for(const [label,action] of [['地図','showMap'],['歩く速さ','showWalkingSpeed'],['パッド・拡大縮小','showControlSettings'],['明るさ・音・表示',kind==='town'?'showSettings':'showLighting']]){h.find(label).click();assert.equal(h.record.calls.at(-1),action);}
  const lantern=h.find('ランタン ON');assert.equal(lantern.getAttribute('aria-pressed'),'true');lantern.click();assert.equal(lantern.textContent,'ランタン OFF');assert.equal(lantern.getAttribute('aria-pressed'),'false');lantern.click();assert.equal(lantern.textContent,'ランタン ON');
- const camera=h.find('視点：標準');camera.click();assert.equal(h.context.cameraDistance,'wide');assert.equal(camera.textContent,'視点：引き');camera.click();assert.equal(camera.textContent,'視点：標準');
+ const camera=h.find('視点：標準');
+ for(const [distance,label] of [['wide','引き'],['far','遠景'],['normal','標準']]){camera.click();assert.equal(h.context.cameraDistance,distance);assert.equal(camera.textContent,'視点：'+label);}
  assert.equal(JSON.stringify(h.state),h.before);if(kind==='maze')assert.equal(h.close.focused,true,'subpanels retain close-button focus');
 });
 
@@ -88,5 +90,5 @@ test('maze: motion status and existing layout controls remain accessible and reu
 });
 
 test('saved lamp and camera preferences are reflected before toggling either menu',()=>{
- for(const kind of ['town','maze']){const h=harness(kind,{lantern:false,cameraDistance:'wide'});h.run.menu();assert.equal(h.menu().children[1].textContent,'ランタン OFF');assert.equal(h.menu().children[1].getAttribute('aria-pressed'),'false');assert.equal(h.menu().children[3].textContent,'視点：引き');}
+ for(const kind of ['town','maze'])for(const [cameraDistance,label] of [['wide','引き'],['far','遠景']]){const h=harness(kind,{lantern:false,cameraDistance});h.run.menu();assert.equal(h.menu().children[1].textContent,'ランタン OFF');assert.equal(h.menu().children[1].getAttribute('aria-pressed'),'false');assert.equal(h.menu().children[3].textContent,'視点：'+label);if(cameraDistance==='far'){h.menu().children[3].click();assert.equal(h.context.cameraDistance,'normal');assert.equal(h.menu().children[3].textContent,'視点：標準');}}
 });

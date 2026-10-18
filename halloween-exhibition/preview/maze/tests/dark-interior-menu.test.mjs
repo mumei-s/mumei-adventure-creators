@@ -31,4 +31,9 @@ test('keyboard focus and forced-color fallback remain explicit',()=>{
  assert.match(css,/background:ButtonFace;color:ButtonText/);
 });
 
-test('menu decoration is linked and explicit motion/rotation lifecycle stays wired',()=>{const app=readFileSync(new URL('../app.js',import.meta.url),'utf8'),html=readFileSync(new URL('../index.html',import.meta.url),'utf8');assert.match(html,/dark-interior-menu\.css\?v=20261016-dark-menu1/);assert.match(html,/app\.js\?v=20261019-unified1/);assert.match(app,/panel\.dataset\.menuMotion=String\(enabled\)/);assert.match(app,/window\.addEventListener\('orientationchange',clearInput\)/);});
+test('menu decoration is bundled and explicit motion/rotation lifecycle stays wired',()=>{
+ const read=name=>readFileSync(new URL('../'+name,import.meta.url),'utf8'),app=read('app.js'),html=read('index.html'),styles=JSON.parse(read('game-style-sources.json')),bundle=JSON.parse(read('game-script-manifest.json'));
+ assert(styles.includes('./dark-interior-menu.css?v=20261016-dark-menu1'));assert(bundle.inputs.some(input=>input.path==='maze/dark-interior-menu.css'));assert(bundle.entrySources.includes('maze/app.js'));
+ assert(html.includes(`./game-entry.js?v=20261019-game-fast1-${bundle.output.sha256.slice(0,12)}`));assert(html.includes(`./game-styles.css?v=20261019-game-fast1-${bundle.styles.sha256.slice(0,12)}`));
+ assert.match(app,/panel\.dataset\.menuMotion=String\(enabled\)/);assert.match(app,/window\.addEventListener\('orientationchange',clearInput\)/);
+});

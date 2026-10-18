@@ -8,6 +8,23 @@ const archive=JSON.parse(fs.readFileSync(new URL('../../data/archive.json',impor
 const fetcher=async url=>url.includes('creator-characters')?manifest:archive;
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 const nearCNA=characters=>({...initialTownState(),position:{...characters.visitors().find(visitor=>visitor.creatorId==='grand_daisy8632').center}});
+test('the bundled canonical roster starts the real owner and cat without metadata requests or optional rigs',async()=>{
+ const oldArchive=globalThis.__ATELIER_ARCHIVE__,oldManifest=globalThis.__ATELIER_CHARACTER_MANIFEST__,oldFetch=globalThis.fetch;
+ const requests=[],optional=[],gates=[];let characters;
+ try{
+  globalThis.__ATELIER_ARCHIVE__=archive;globalThis.__ATELIER_CHARACTER_MANIFEST__=manifest;globalThis.fetch=async()=>{throw Error('Bundled metadata must not fetch');};
+  const assets=createCharacterAssets({loadImage:(_url,asset,options)=>{requests.push({src:asset.src,priority:options.priority});return new Promise(resolve=>gates.push(()=>resolve({width:asset.width,height:asset.height})));}});
+  characters=createTownCharacterArt({assets,deferEnhancements:true,makeRigs:()=>{optional.push('rigs');return{update:()=>null,get:()=>null,battle:()=>null,destroy(){optional.push('destroy');}};}});
+  await flush();assert.equal(requests.length,2);assert(requests.every(request=>request.priority==='high'));assert(requests.some(request=>request.src.includes('owner-lantern')));assert(requests.some(request=>request.src.includes('owner-black-cat')));assert.deepEqual(optional,[]);
+  assert.equal(characters.art.images.playerAtlas,undefined);for(const complete of gates)complete();await characters.ready;
+  assert(characters.art.images.playerAtlas);assert.equal(new Set(characters.visitors().map(visitor=>visitor.creatorId)).size,14);assert.equal(characters.companionActors({state:initialTownState()}).length,1);assert.deepEqual(optional,[]);
+  characters.startEnhancements();characters.startEnhancements();assert.deepEqual(optional,['rigs']);characters.destroy();characters.startEnhancements();assert.deepEqual(optional,['rigs','destroy']);characters=null;
+ }finally{characters?.destroy();globalThis.fetch=oldFetch;if(oldArchive===undefined)delete globalThis.__ATELIER_ARCHIVE__;else globalThis.__ATELIER_ARCHIVE__=oldArchive;if(oldManifest===undefined)delete globalThis.__ATELIER_CHARACTER_MANIFEST__;else globalThis.__ATELIER_CHARACTER_MANIFEST__=oldManifest;}
+});
+test('source-mode metadata uses the HTTP cache and a missing required owner never becomes playable',async()=>{
+ const calls=[],assets={setPinned(){},retry(){},request:async()=>null,dispose(){},status:()=>({})},characters=createTownCharacterArt({assets,deferEnhancements:true,fetcher:async(url,options)=>{calls.push({url,options});return fetcher(url);}});
+ await assert.rejects(characters.ready,/Required character/);assert.equal(calls.length,2);assert(calls.every(call=>call.options.cache===undefined));assert.equal(characters.art.images.playerAtlas,undefined);characters.destroy();
+});
 test('the clear castle forecourt queues no distant guests, and approaching CNA loads the complete group',async()=>{
  const requested=[],assets=createCharacterAssets({loadImage:async(_url,asset)=>{requested.push(asset.src);return {width:Math.min(1024,asset.width),height:Math.min(1024,asset.height)};}}),characters=createTownCharacterArt({fetcher,assets});await characters.ready;
  for(let i=0;i<8;i++)await flush();

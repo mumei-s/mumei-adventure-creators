@@ -4,8 +4,9 @@ import {readFileSync} from 'node:fs';
 import {directionAtPoint} from '../game-input.js';
 const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
 test('compact translucent controls load after all legacy layout rules',()=>{
- const html=read('index.html'),css=read('touch-pad.css');
- assert.ok(html.indexOf('touch-pad.css')>html.indexOf('transition-effects.css'));
+ const html=read('index.html'),css=read('touch-pad.css'),styles=JSON.parse(read('game-style-sources.json')),bundle=JSON.parse(read('game-script-manifest.json'));
+ assert.ok(styles.indexOf('./touch-pad.css?v=20261019-interior1')>styles.indexOf('../transition-effects.css?v=20261016-living1'));
+ assert.deepEqual(bundle.styleSources,styles);assert(bundle.inputs.some(input=>input.path==='maze/touch-pad.css'));assert(html.includes(`./game-styles.css?v=20261019-game-fast1-${bundle.styles.sha256.slice(0,12)}`));
  assert.match(css,/--touch-pad-size:calc\(128px \* var\(--game-control-scale,1\)\);--touch-button-size:max\(44px,calc\(50px \* var\(--game-control-scale,1\)\)\)/);
  assert.match(css,/transform:translateY\(-8px\)/);
  assert.match(css,/grid-template-rows:minmax\(var\(--ui-header-height,48px\),auto\) 0 auto minmax\(0,1fr\) 120px 20px/);

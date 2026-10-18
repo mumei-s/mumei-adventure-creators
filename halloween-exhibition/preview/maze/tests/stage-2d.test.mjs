@@ -30,5 +30,6 @@ test('touch controls occupy a separate dock, including compact settings and exit
 test('renderer is separate from overview map and invalidates on resize/mode change',()=>{
   assert(app.includes("stageRenderer.render({canvas:$('fallback')"));assert(app.includes("drawMap($('mini'))"));
   assert(app.includes('stageRenderer?.invalidate()'));assert(app.includes('motion:motion&&!reducedMotion.matches'));
-  assert(html.includes('href="./stage-2d.css?v=20261014-adventure2"'));assert(css.includes(':is(.vignette,#crosshair)'));
+  const styles=JSON.parse(fs.readFileSync(new URL('../game-style-sources.json',import.meta.url),'utf8')),bundle=JSON.parse(fs.readFileSync(new URL('../game-script-manifest.json',import.meta.url),'utf8'));
+  assert(styles.includes('./stage-2d.css?v=20261014-adventure2'));assert(bundle.inputs.some(input=>input.path==='maze/stage-2d.js'));assert(bundle.inputs.some(input=>input.path==='maze/stage-2d.css'));assert(html.includes(`./game-styles.css?v=20261019-game-fast1-${bundle.styles.sha256.slice(0,12)}`));assert(css.includes(':is(.vignette,#crosshair)'));
 });

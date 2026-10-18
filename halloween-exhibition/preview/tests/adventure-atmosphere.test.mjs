@@ -13,7 +13,12 @@ test('ornaments pause on hidden/pagehide and resume correctly after pageshow; li
 });
 test('town and basement have lightweight static art before boot and keep a real return link',async()=>{
  for(const file of['town/index.html','maze/index.html']){
-  const html=await read(file);assert.match(html,/adventure-atmosphere\.css/);assert.match(html,/adventure-atmosphere\.js/);assert.match(html,/<div class="story-vignette" aria-hidden="true">/);assert.match(html,/lantern-story-vignette\.svg" width="640" height="300" alt=""/);
+  const game=file.split('/')[0],html=await read(file),manifest=JSON.parse(await read(`${game}/game-script-manifest.json`)),styles=JSON.parse(await read(`${game}/game-style-sources.json`));
+  assert.ok(styles.some(source=>source.split('?')[0]==='../adventure-atmosphere.css'));
+  for(const source of ['adventure-atmosphere.css','adventure-atmosphere.js'])assert.ok(manifest.inputs.some(input=>input.path===source),`${game} bundles ${source}`);
+  assert.ok(html.includes(`href="./game-styles.css?v=20261019-game-fast1-${manifest.styles.sha256.slice(0,12)}"`));
+  assert.ok(html.includes(`src="./game-entry.js?v=20261019-game-fast1-${manifest.output.sha256.slice(0,12)}"`));
+  assert.match(html,/<div class="story-vignette" aria-hidden="true">/);assert.match(html,/lantern-story-vignette\.svg" width="640" height="300" alt=""/);
   const loading=html.slice(html.indexOf(file.startsWith('town')?'<div id="town-loading"':'<div id="loading"'));assert.match(loading,/href="\.\.\/\?return=palace"/);assert.match(loading,/role="status" aria-live="polite"/);
  }
  const town=await read('town/index.html');assert.match(town,/<button id="loading-retry" hidden>/);assert.doesNotMatch(town,/class="loading-ring"/);

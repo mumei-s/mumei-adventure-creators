@@ -131,3 +131,16 @@ for(const [key,value] of [['costume','カボチャの王族'],['pose','横向き
  assert.notEqual(f.selections[key],value);assert.equal(f.$('picker-category').value,'すべて');verify('item random');
 }
 console.log(`PASS preview loading: eager/listeners before src, cached and retried success, one same-asset retry, permanent failure, query/fragment preservation, unchanged blob/data URLs; ${renderingChecks} real picker rendering paths across costume and pose.`);
+
+let pending,cleared=0;
+const stalled=createSampleImage(el,'./small.webp',{fallbackSrc:'./original.png',setTimer:fn=>{pending=fn;return 1;},clearTimer:()=>cleared++});
+pending();assert.match(stalled.src,/small.webp.*preview-retry=1/);
+pending();assert.match(stalled.src,/original.png.*preview-retry=1/);
+stalled.emit('load');assert.equal(stalled.dataset.previewState,'ready');assert.ok(cleared>=3);
+let lazyTimer=false;
+createSampleImage(el,'./offscreen.jpg',{loading:'lazy',setTimer:()=>{lazyTimer=true;}});
+assert.equal(lazyTimer,false);
+let detachedTimer;
+const detached=createSampleImage(el,'./detached.jpg',{setTimer:fn=>{detachedTimer=fn;return 1;},clearTimer(){}});detached.isConnected=false;detachedTimer();
+assert.equal(detached.operations.filter(([op])=>op==='src').length,1);
+console.log('PASS stalled visible preview recovery, cancelled watchdog on success, no background fallback for offscreen or removed cards.');

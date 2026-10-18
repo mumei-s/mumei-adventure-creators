@@ -8,8 +8,8 @@
       "bytes": 25788
     },
     "app.js": {
-      "sha256": "e86b617760408ca98e5352d1988e17454ee1b19b8d2d26c9a2daa0a1b70b4915",
-      "bytes": 91855
+      "sha256": "c4fc74c64404779e640c4bf7b7cbacb2bb77eca8c73b1ea5ea71b603015d94b7",
+      "bytes": 92003
     },
     "art-direction.js?v=28.4.6": {
       "sha256": "d543d1d928d0d6281e94c83317c897e8861a38d6b18f3f40f271fd235db73bab",
@@ -332,8 +332,8 @@
       "bytes": 41214
     },
     "sample-image.js?v=28.4.16": {
-      "sha256": "f3cbe9ca4ddcdb923b3d49f55f37a5ecaa2f47f1121f51ee0b30260e749ac858",
-      "bytes": 1297
+      "sha256": "bb6b6372b6cbcf68b4de9054e1d407df0bf60539f82d58ca02a67a50791a03dd",
+      "bytes": 1846
     },
     "scene-composition.js?v=28.4.6": {
       "sha256": "8d018594b0d0781d3d604bb1ffbace01efa6834d3749937cdc0b9d176b766db1",
@@ -426,7 +426,7 @@
   },
   "output": {
     "file": "app.bundle.js",
-    "sha256": "15b197b1e32706e276839828f98d5e494257e385ce1e52401a986a7355afcec4",
-    "bytes": 1645632
+    "sha256": "846f4d45c6aa268e47d60d35159d48ea93473490a06538841e3e1f16206bd95b",
+    "bytes": 1646022
   }
 }

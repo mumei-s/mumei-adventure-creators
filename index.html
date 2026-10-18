@@ -11,9 +11,16 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="note:card" content="summary_large_image">
 <link rel="stylesheet" href="styles.css">
-</head>
+<style>
+.creative-world-links{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;width:100%;max-width:1100px;margin:6px auto;box-sizing:border-box}
+.creative-world-links a{display:flex!important;align-items:center;gap:7px;min-width:0;min-height:46px;padding:7px 10px;box-sizing:border-box;border:1px solid #d6b57288;border-radius:10px;background:#242039;color:#fff0cc;text-decoration:none;line-height:1.35;text-align:left}
+.creative-world-links a>span:last-child{min-width:0}.creative-world-links strong{display:block;font-size:clamp(10px,2.6vw,14px);overflow-wrap:anywhere}.creative-world-links small{display:block;font-size:11px;color:inherit;opacity:.85}.creative-world-links a:focus-visible{outline:3px solid #bd8cf5;outline-offset:2px}
+[data-mode=normal] .creative-world-links a,body[data-collection=everyday] .creative-world-links a{background:#f2f8ee;color:#244638;border-color:#729b7d}
+body>.creative-world-links{width:calc(100% - 24px)}
+</style></head>
 <body>
 <header class="top"><div class="shell topin"><button class="logo" data-route="home"><span class="mark">✦</span><span><b>無名S note</b><small>冒険クリエイター名鑑</small></span></button><nav class="nav"><button data-route="directory">名鑑</button><button data-route="battle">対戦</button><a href="https://note.com/ss_yr/m/mf8a55ef40b9d" target="_blank" rel="noopener">専用マガジン</a><button data-route="owner">管理 <span class="badge" id="badge">2</span></button><button class="join" data-route="apply">名鑑に参加</button><button class="mobile" data-route="directory">☰</button></nav></div></header>
+<nav class="creative-world-links" aria-label="無名S noteの作品と仲間"><a href="https://mumei-s.github.io/ai-creative-works-select/" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">🎨</span><span><strong>AI CREATIVE WORKS SELECT</strong><small>作品に出会う ↗</small></span></a><a href="https://note.com/ss_yr/m/mf8a55ef40b9d" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">📖</span><span><strong>冒険クリエイター名鑑</strong><small>仲間の物語を読む ↗</small></span></a></nav>
 <main class="shell" id="app"></main>
 <footer class="footer"><div class="shell">無名S note 冒険クリエイター名鑑　｜　<a href="https://note.com/ss_yr/n/nf34d092b4032" target="_blank" rel="noopener">募集記事</a>　｜　<a href="https://note.com/ss_yr/m/mf8a55ef40b9d" target="_blank" rel="noopener">専用マガジン</a><br><br>この公開版は操作確認用の見本です。見本イラストは後から正式カードへ差し替えます。</div></footer>
 <div class="modal" id="modal"><div class="modalbox" id="modalbox"></div></div><div class="toast" id="toast"></div>

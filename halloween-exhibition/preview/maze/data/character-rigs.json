@@ -187,6 +187,11 @@
       "id": "monster:mummy",
       "approved": true,
       "manifestURL": "./assets/rigs/monster-mummy/rig.json"
+    },
+    {
+      "id": "rin-rai-lion",
+      "approved": true,
+      "manifestURL": "./assets/rigs/rin-rai-lion/rig.json"
     }
   ]
 }

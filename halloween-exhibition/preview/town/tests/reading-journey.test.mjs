@@ -5,7 +5,7 @@ import {createReadingJourney,READING_JOURNEY_KEY} from '../reading-journey.js';
 import {creatorHomeProfile} from '../creator-home-profile.js';
 
 const archive=JSON.parse(fs.readFileSync(new URL('../../data/archive.json',import.meta.url),'utf8'));
-const submittedIDs=['ss_yr','koakumako','n_kazumai55633','mama_ca','naemotion','imota14','fond_holly3483','tenkai_notes','soh_style_work','clever_hare2654','glossy_guppy6230','aihan_days','cheeky_rhino7031','real_hyena9474'];
+const submittedIDs=['ss_yr','koakumako','n_kazumai55633','mama_ca','naemotion','imota14','fond_holly3483','tenkai_notes','soh_style_work','clever_hare2654','glossy_guppy6230','aihan_days','cheeky_rhino7031','real_hyena9474','airoumu_rin'];
 const actualPeople=()=>archive.creators.map(person=>creatorHomeProfile(archive,person.id));
 const person=(id,works=[`https://note.com/${id}/n/n${id.replace(/_/g,'')}`])=>({id,name:`Name ${id}`,works:works.map((url,index)=>({url,title:`Article ${index+1}`}))});
 function memoryStorage(initial={}){
@@ -14,14 +14,14 @@ function memoryStorage(initial={}){
 }
 function read(journey,id,url){assert.equal(journey.openArticle(id,url),true);assert.equal(journey.markRead(id,url),true);}
 
-test('the real journey has all fourteen submitted creators and excludes introductions and both pending participants',()=>{
+test('the real journey has all fifteen submitted creators and excludes introductions and the pending participant',()=>{
  const journey=createReadingJourney({storage:memoryStorage(),people:actualPeople()}),state=journey.snapshot();
  assert.deepEqual(state.people.map(person=>person.id),submittedIDs);
- assert.equal(state.total,14);assert.equal(state.remaining,14);assert.equal(state.readCount,0);assert.equal(state.complete,false);
- assert.equal(state.people.reduce((total,person)=>total+person.works.length,0),14);
+ assert.equal(state.total,15);assert.equal(state.remaining,15);assert.equal(state.readCount,0);assert.equal(state.complete,false);
+ assert.equal(state.people.reduce((total,person)=>total+person.works.length,0),15);
  assert.deepEqual(state.people.find(person=>person.id==='ss_yr').works.map(work=>work.url),['https://note.com/ss_yr/n/n15700f2773c6']);
  assert.equal(journey.openArticle('ss_yr','https://note.com/ss_yr/n/n52be511ec082'),false);
- for(const id of ['grand_daisy8632','airoumu_rin']){assert.equal(journey.select(id),false);assert.equal(journey.visit(id),false);}
+ for(const id of ['grand_daisy8632']){assert.equal(journey.select(id),false);assert.equal(journey.visit(id),false);}
 });
 
 test('selecting, visiting and opening an article never infer reading; the explicit mark requires a prior open',()=>{
@@ -35,12 +35,12 @@ test('selecting, visiting and opening an article never infer reading; the explic
  assert.equal(journey.snapshot().readCount,1);assert.equal(journey.snapshot().selected.visited,true);
 });
 
-test('all fourteen real creators can be read in a free order and opening every article alone leaves all unread',()=>{
+test('all fifteen real creators can be read in a free order and opening every article alone leaves all unread',()=>{
  const journey=createReadingJourney({storage:memoryStorage(),people:actualPeople()}),pages=journey.snapshot().people;
  for(const page of pages)assert.equal(journey.openArticle(page.id,page.works[0].url),true);
- assert.equal(journey.snapshot().openedCount,14);assert.equal(journey.snapshot().visitedCount,14);assert.equal(journey.snapshot().readCount,0);
+ assert.equal(journey.snapshot().openedCount,15);assert.equal(journey.snapshot().visitedCount,15);assert.equal(journey.snapshot().readCount,0);
  for(const page of [...pages].reverse())assert.equal(journey.markRead(page.id,page.works[0].url),true);
- const state=journey.snapshot();assert.equal(state.readCount,14);assert.equal(state.remaining,0);assert.equal(state.complete,true);assert.equal(state.nextId,null);assert.equal(journey.next(),null);
+ const state=journey.snapshot();assert.equal(state.readCount,15);assert.equal(state.remaining,0);assert.equal(state.complete,true);assert.equal(state.nextId,null);assert.equal(journey.next(),null);
 });
 
 test('only a known submitted article on the same creator account can be opened or marked',()=>{

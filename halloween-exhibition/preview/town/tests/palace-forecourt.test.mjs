@@ -56,8 +56,8 @@ test('the central approach is walkable while the southern canal, bridges and wat
  assert.equal(state.position.z,20.5);
 });
 
-test('all 19 approved visitor actors and paired CNA guests patrol outside the full forecourt without omissions',()=>{
- const roster=compileCharacterRoster(archive,manifest),{visitors,omitted}=placeTownVisitors(roster);assert.deepEqual(omitted,[]);assert.equal(visitors.length,19);assert.equal(visitors.length,roster.npcs.length);assert.equal(visitors.filter(v=>v.creatorId==='grand_daisy8632').length,3);
+test('all 20 approved visitor actors and paired CNA guests patrol outside the full forecourt without omissions',()=>{
+ const roster=compileCharacterRoster(archive,manifest),{visitors,omitted}=placeTownVisitors(roster);assert.deepEqual(omitted,[]);assert.equal(visitors.length,20);assert.equal(visitors.length,roster.npcs.length);assert.equal(visitors.filter(v=>v.creatorId==='grand_daisy8632').length,3);
  assert.deepEqual(visitors.map(v=>v.id).sort(),roster.npcs.map(v=>v.id).sort());
  for(const visitor of visitors){assert(!isInPalaceForecourt(visitor,.4));for(const segment of visitor.route.segments){const steps=Math.max(1,Math.ceil(segment.length/.06));for(let n=0;n<=steps;n++){const f=n/steps,point={x:segment.a.x+(segment.b.x-segment.a.x)*f+visitor.offsetX,z:segment.a.z+(segment.b.z-segment.a.z)*f};assert(!isInPalaceForecourt(point,.4),visitor.id+' patrol crosses the pullback envelope');}}}
  const state=initialTownState();for(let time=0;time<75;time+=.12)for(const actor of sampleTownVisitors(visitors,{state,time})){assert(!isInPalaceForecourt(actor,.4));assert(isTownWalkable(TOWN_START_MAP,actor.x,actor.z,.23));}

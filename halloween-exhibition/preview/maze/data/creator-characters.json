@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": "20261017-cna-profile-guests1",
+  "revision": "20261019-rin-rai-lion1",
   "characters": [
     {
       "id": "owner-lantern-hero",
@@ -7074,6 +7074,349 @@
         "User explicitly approved the three attached CNA characters on 2026-10-17. Article remains pending; link is profile only.",
         "Four-direction atlas identity and layout reviewed. Continuous turn/attack artwork is not certified."
       ]
+    },
+    {
+      "id": "rin-rai-lion",
+      "creatorId": "airoumu_rin",
+      "groupId": "airoumu_rin-2026",
+      "role": "npc",
+      "label": "ライちゃん",
+      "entityIds": [
+        "rin-rai-lion"
+      ],
+      "articleURL": "https://note.com/airoumu_rin/n/n7179d2f821e8",
+      "ready": true,
+      "identityReviewed": true,
+      "animationReviewed": true,
+      "continuousAnimationReviewed": false,
+      "source": {
+        "kind": "article-art",
+        "articleURL": "https://note.com/airoumu_rin/n/n7179d2f821e8",
+        "imageURL": "https://assets.st-note.com/production/uploads/images/325928572/rectangle_large_type_2_7e9c7955a290c6f636244671c5e26aaa.png?width=1200",
+        "referenceSHA256": "32ee080ac73d4bd39f419e020946e7986e7cb364e39f39490917bfcf0d935a11",
+        "verified": true
+      },
+      "asset": {
+        "src": "assets/creator-npcs/rin-rai-lion-walk.webp",
+        "width": 1024,
+        "height": 1024,
+        "sha256": "67a79c05752f71ea1e84fa7ce24fecb4e4451f8b0577b54ea4b867a5447db570",
+        "sourceSHA256": "7d98ba7cafc43c21708ff9b4dad6333b2bbb9adb1828917770540674e05c7e72",
+        "encoding": {
+          "format": "WebP",
+          "quality": 90,
+          "alpha": "preserved-alpha-quality-100",
+          "runtimeMaxDimension": 1024
+        },
+        "layout": {
+          "columns": 4,
+          "rows": 4,
+          "directions": [
+            "down",
+            "left",
+            "right",
+            "up"
+          ],
+          "idleColumn": 0,
+          "walkColumns": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "frames": [
+            [
+              {
+                "frame": [
+                  0,
+                  0,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.9296875,
+                "contentHeight": 219.95,
+                "runtimeAlphaBounds": [
+                  65,
+                  19,
+                  200,
+                  237
+                ]
+              },
+              {
+                "frame": [
+                  256,
+                  0,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.9296875,
+                "contentHeight": 219.95,
+                "runtimeAlphaBounds": [
+                  320,
+                  19,
+                  455,
+                  239
+                ]
+              },
+              {
+                "frame": [
+                  512,
+                  0,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.9296875,
+                "contentHeight": 219.95,
+                "runtimeAlphaBounds": [
+                  578,
+                  20,
+                  714,
+                  243
+                ]
+              },
+              {
+                "frame": [
+                  768,
+                  0,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.9296875,
+                "contentHeight": 219.95,
+                "runtimeAlphaBounds": [
+                  834,
+                  19,
+                  970,
+                  235
+                ]
+              }
+            ],
+            [
+              {
+                "frame": [
+                  0,
+                  256,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.9296875,
+                "contentHeight": 219.95,
+                "runtimeAlphaBounds": [
+                  56,
+                  276,
+                  201,
+                  503
+                ]
+              },
+              {
+                "frame": [
+                  256,
+                  256,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.9296875,
+                "contentHeight": 219.95,
+                "runtimeAlphaBounds": [
+                  313,
+                  276,
+                  458,
+                  497
+                ]
+              },
+              {
+                "frame": [
+                  512,
+                  256,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.9296875,
+                "contentHeight": 219.95,
+                "runtimeAlphaBounds": [
+                  567,
+                  279,
+                  712,
+                  503
+                ]
+              },
+              {
+                "frame": [
+                  768,
+                  256,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.9296875,
+                "contentHeight": 219.95,
+                "runtimeAlphaBounds": [
+                  824,
+                  276,
+                  969,
+                  503
+                ]
+              }
+            ],
+            [
+              {
+                "frame": [
+                  0,
+                  512,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.9296875,
+                "contentHeight": 219.95,
+                "runtimeAlphaBounds": [
+                  57,
+                  532,
+                  199,
+                  758
+                ]
+              },
+              {
+                "frame": [
+                  256,
+                  512,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.9296875,
+                "contentHeight": 219.95,
+                "runtimeAlphaBounds": [
+                  312,
+                  532,
+                  454,
+                  759
+                ]
+              },
+              {
+                "frame": [
+                  512,
+                  512,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.9296875,
+                "contentHeight": 219.95,
+                "runtimeAlphaBounds": [
+                  570,
+                  532,
+                  712,
+                  759
+                ]
+              },
+              {
+                "frame": [
+                  768,
+                  512,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.9296875,
+                "contentHeight": 219.95,
+                "runtimeAlphaBounds": [
+                  825,
+                  532,
+                  966,
+                  753
+                ]
+              }
+            ],
+            [
+              {
+                "frame": [
+                  0,
+                  768,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.9296875,
+                "contentHeight": 219.95,
+                "runtimeAlphaBounds": [
+                  55,
+                  787,
+                  193,
+                  1006
+                ]
+              },
+              {
+                "frame": [
+                  256,
+                  768,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.9296875,
+                "contentHeight": 219.95,
+                "runtimeAlphaBounds": [
+                  313,
+                  787,
+                  450,
+                  1014
+                ]
+              },
+              {
+                "frame": [
+                  512,
+                  768,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.9296875,
+                "contentHeight": 219.95,
+                "runtimeAlphaBounds": [
+                  567,
+                  788,
+                  703,
+                  1021
+                ]
+              },
+              {
+                "frame": [
+                  768,
+                  768,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.9296875,
+                "contentHeight": 219.95,
+                "runtimeAlphaBounds": [
+                  823,
+                  787,
+                  959,
+                  1008
+                ]
+              }
+            ]
+          ]
+        }
+      },
+      "heightPx": 78,
+      "heightWorld": 2.05,
+      "greeting": "トリック・オア・トリート！ ぼく、ライちゃん。かぼちゃの灯りをたどって、一緒にハロウィンの街を歩こう！",
+      "greetingKind": "fictional-game-dialogue",
+      "technicalNotes": [
+        "Rai is the boy lion cub shown in the creator profile and submitted Halloween header. The article also includes an unintended female Inori variation; it is not used.",
+        "Four authored cardinal part sets animate with planted-foot walking, elbow/knee articulation, cape and tail motion. The 16-frame fallback atlas is baked from the same rig.",
+        "Reviewed native-Canvas rendering only; no browser/device gameplay review or authored diagonal/attack illustration certification."
+      ]
     }
   ],
   "groups": [
@@ -7170,6 +7513,12 @@
         "cna-orange-glasses"
       ],
       "actorCapacity": 3
+    },
+    {
+      "id": "airoumu_rin-2026",
+      "requiredEntityIds": [
+        "rin-rai-lion"
+      ]
     }
   ],
   "slotAssignments": {
@@ -7186,7 +7535,8 @@
     "aihan_days-2026": "west-east",
     "cheeky_rhino7031-2026": "archive-east",
     "naemotion-2026": "hall-west-mid",
-    "cna-profile-guests": "archive-mid-west"
+    "cna-profile-guests": "archive-mid-west",
+    "airoumu_rin-2026": "east-south"
   },
   "companions": [
     {
@@ -7537,27 +7887,28 @@
     "glossy_guppy6230",
     "aihan_days",
     "cheeky_rhino7031",
-    "real_hyena9474"
+    "real_hyena9474",
+    "airoumu_rin"
   ],
   "runtimeSummary": {
-    "submittedCreators": 14,
+    "submittedCreators": 15,
     "pendingCreators": 1,
-    "creatorCharacters": 20,
+    "creatorCharacters": 21,
     "companionSprites": 1,
-    "preservedEntities": 25,
-    "atlasFrames": 336,
+    "preservedEntities": 26,
+    "atlasFrames": 352,
     "initialHeroAndCatBytes": 886498,
-    "allCharacterTransferBytes": 8397364,
+    "allCharacterTransferBytes": 8645934,
     "playerAtlases": 1,
-    "npcAtlases": 19,
+    "npcAtlases": 20,
     "companionAtlases": 1,
     "reconciliationStatus": "complete",
-    "interactiveNPCs": 18,
+    "interactiveNPCs": 19,
     "visualCompanionGroups": 1,
     "profileGuestAtlases": 3,
     "profileGuestEntities": 3,
-    "totalCastAtlases": 21,
-    "totalCastEntities": 25
+    "totalCastAtlases": 22,
+    "totalCastEntities": 26
   },
   "referencePolicy": {
     "preference": "creator-avatar",
@@ -7845,6 +8196,31 @@
         "referenceSHA256": "a57e9b0109b670f224cbbeca4fe9221543dbe3b3beabb1bc244bff545081d4be",
         "scope": "Three visual game guests only. Submission status and article links unchanged."
       }
+    },
+    "airoumu_rin": {
+      "decision": "profile-avatar-match",
+      "reviewed": true,
+      "avatarVisuallyInspected": true,
+      "entityIds": [
+        "rin-rai-lion"
+      ],
+      "avatarReference": {
+        "kind": "profile-avatar",
+        "profileURL": "https://note.com/airoumu_rin",
+        "imageURL": "https://assets.st-note.com/production/uploads/images/322562422/profile_5bf07964888d6ac2e16137980acf0a0a.png?fit=bounds&format=jpeg&quality=85&width=330",
+        "referenceSHA256": "315deddc4a9af0d9f818a89bea72e51fffdd265153f1eca712615d2fdf0e560f",
+        "verified": true,
+        "userSelected": true,
+        "verifiedAtUTC": "2026-10-18T23:05:55Z"
+      },
+      "costumeReference": {
+        "kind": "article-art",
+        "articleURL": "https://note.com/airoumu_rin/n/n7179d2f821e8",
+        "imageURL": "https://assets.st-note.com/production/uploads/images/325928572/rectangle_large_type_2_7e9c7955a290c6f636244671c5e26aaa.png?width=1200",
+        "referenceSHA256": "32ee080ac73d4bd39f419e020946e7986e7cb364e39f39490917bfcf0d935a11",
+        "verified": true
+      },
+      "reviewNotes": "The current profile avatar and article header depict the same golden boy lion cub. Preserve the header Halloween outfit and shorts; exclude the unintended female variation."
     }
   },
   "profileGuests": [

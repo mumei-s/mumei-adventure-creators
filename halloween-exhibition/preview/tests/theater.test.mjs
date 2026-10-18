@@ -165,14 +165,14 @@ test('initial load renders all real article doors and creators', async () => {
   assert.doesNotMatch(h.$('detail-content').textContent, /架空の参加者|展示サンプル/);
 });
 
-test('expanded roster renders all fourteen confirmed submissions with their own art and links', async () => {
+test('expanded roster renders all fifteen confirmed submissions with their own art and links', async () => {
   assert.equal(creatorCount, 16);
   assert.equal(doorCount, 17);
-  assert.equal(pendingCount, 2);
-  assert.deepEqual(annualEntries.filter(entry=>entry.submissionStatus==='pending').map(entry=>entry.creatorId),['grand_daisy8632','airoumu_rin']);
+  assert.equal(pendingCount, 1);
+  assert.deepEqual(annualEntries.filter(entry=>entry.submissionStatus==='pending').map(entry=>entry.creatorId),['grand_daisy8632']);
   assert.equal(annualEntries.filter(entry => entry.submissionStatus === 'introduction').length, 1);
   const submitted = annualEntries.filter(entry => entry.submissionStatus === 'submitted');
-  assert.deepEqual(new Set(submitted.map(entry => entry.creatorId)), new Set(['ss_yr', 'koakumako', 'imota14', 'clever_hare2654', 'fond_holly3483', 'aihan_days', 'mama_ca', 'naemotion', 'soh_style_work', 'real_hyena9474', 'tenkai_notes', 'n_kazumai55633', 'cheeky_rhino7031', 'glossy_guppy6230']));
+  assert.deepEqual(new Set(submitted.map(entry => entry.creatorId)), new Set(['ss_yr', 'koakumako', 'imota14', 'clever_hare2654', 'fond_holly3483', 'aihan_days', 'mama_ca', 'naemotion', 'soh_style_work', 'real_hyena9474', 'tenkai_notes', 'n_kazumai55633', 'cheeky_rhino7031', 'glossy_guppy6230', 'airoumu_rin']));
   const h = await harness();
   for (const entry of submitted) {
     await h.api.navigate(annualEntries.indexOf(entry));

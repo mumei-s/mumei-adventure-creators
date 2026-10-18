@@ -39,8 +39,8 @@
     },
     {
       "path": "data/archive.json",
-      "bytes": 24100,
-      "sha256": "d2dac59e4a8d30c956db5722d5f8b2f90718ce227ff5f85310974e93fe445393"
+      "bytes": 24834,
+      "sha256": "8541ccfbd26e5a99cd2e204516578b186be5d15e137e3217752b0e46263bee6d"
     },
     {
       "path": "dialog-layout.css",
@@ -114,8 +114,8 @@
     },
     {
       "path": "maze/data/creator-characters.json",
-      "bytes": 227026,
-      "sha256": "d6a9e96331f9c05ddd24824bc214e04bbc3fac8b4cd576bc8d2203b747f720db"
+      "bytes": 237911,
+      "sha256": "a1dd625c15fa86fa32aacf8c5a9215f1d6ae62861a2dc2643f259d3db9da5214"
     },
     {
       "path": "maze/frame-loop.js",
@@ -414,7 +414,7 @@
   "contributions": [
     {
       "path": "<define:globalThis.__ATELIER_CHARACTER_MANIFEST__>",
-      "bytes": 95366
+      "bytes": 100031
     },
     {
       "path": "town/app.js",
@@ -438,7 +438,7 @@
     },
     {
       "path": "<define:globalThis.__ATELIER_ARCHIVE__>",
-      "bytes": 18062
+      "bytes": 18706
     },
     {
       "path": "maze/creature-rig.js",
@@ -631,8 +631,8 @@
   ],
   "output": {
     "path": "town/game-entry.js",
-    "bytes": 419536,
-    "sha256": "1984f486526017e962e1c29594278ee40b6f52e2eefd984f8522536869175d16"
+    "bytes": 424845,
+    "sha256": "bffbe149879675b7aa7da3c116d247dbc4cc25cced2b6c526ed5d548c804fff3"
   },
   "styleSources": [
     "../display-mode.css?v=20261014-layout1",

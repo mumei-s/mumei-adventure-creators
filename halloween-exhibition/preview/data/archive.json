@@ -471,19 +471,25 @@
         },
         {
           "creatorId": "airoumu_rin",
-          "title": "作品準備中",
+          "title": "【AIイラスト】ライちゃんが4つのハロウィン世界へ！「Halloween Atelier」で遊んでみた🎃",
           "theme": "pumpkin",
-          "submissionStatus": "pending",
+          "submissionStatus": "submitted",
           "tags": [
             "参加者",
-            "作品準備中"
+            "ハロウィン"
           ],
           "links": [
+            {
+              "title": "【AIイラスト】ライちゃんが4つのハロウィン世界へ！「Halloween Atelier」で遊んでみた🎃（note記事）",
+              "url": "https://note.com/airoumu_rin/n/n7179d2f821e8"
+            },
             {
               "title": "noteプロフィールを見る",
               "url": "https://note.com/airoumu_rin"
             }
-          ]
+          ],
+          "image": "https://assets.st-note.com/production/uploads/images/325928572/rectangle_large_type_2_7e9c7955a290c6f636244671c5e26aaa.png?fit=bounds&quality=85&width=1280",
+          "imageAlt": "凛さんの記事「ライちゃんが4つのハロウィン世界へ！」の見出し画像。魔女帽子とマントを着た金色のライオンのライちゃん"
         }
       ]
     }

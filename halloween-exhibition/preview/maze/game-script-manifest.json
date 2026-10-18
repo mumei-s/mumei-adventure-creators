@@ -44,8 +44,8 @@
     },
     {
       "path": "data/archive.json",
-      "bytes": 24100,
-      "sha256": "d2dac59e4a8d30c956db5722d5f8b2f90718ce227ff5f85310974e93fe445393"
+      "bytes": 24834,
+      "sha256": "8541ccfbd26e5a99cd2e204516578b186be5d15e137e3217752b0e46263bee6d"
     },
     {
       "path": "dialog-layout.css",
@@ -164,8 +164,8 @@
     },
     {
       "path": "maze/data/creator-characters.json",
-      "bytes": 227026,
-      "sha256": "d6a9e96331f9c05ddd24824bc214e04bbc3fac8b4cd576bc8d2203b747f720db"
+      "bytes": 237911,
+      "sha256": "a1dd625c15fa86fa32aacf8c5a9215f1d6ae62861a2dc2643f259d3db9da5214"
     },
     {
       "path": "maze/encounter-model.js",
@@ -408,7 +408,7 @@
   "contributions": [
     {
       "path": "<define:globalThis.__HALLOWEEN_MAZE_BOOT__>",
-      "bytes": 119134
+      "bytes": 124443
     },
     {
       "path": "maze/app.js",
@@ -593,8 +593,8 @@
   ],
   "output": {
     "path": "maze/game-entry.js",
-    "bytes": 335369,
-    "sha256": "138b58e4f956821c57a7b9c5ec1847b6845cfa644669c08703756912ba964e26"
+    "bytes": 340678,
+    "sha256": "8bb9ab6fde2868061ac9c48db8ed77a747d00a735041466d8ebe1bd2fcf6b84e"
   },
   "styleSources": [
     "./style.css?v=20261014-adventure2",

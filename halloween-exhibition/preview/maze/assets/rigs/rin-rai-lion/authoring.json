@@ -1,0 +1,874 @@
+{
+  "sourceSHA256": "7d98ba7cafc43c21708ff9b4dad6333b2bbb9adb1828917770540674e05c7e72",
+  "parts": [
+    {
+      "view": "down",
+      "part": "head",
+      "sourceComponent": 1,
+      "sourceRect": [
+        10,
+        19,
+        318,
+        324
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "down",
+      "part": "backHair",
+      "sourceComponent": 2,
+      "sourceRect": [
+        309,
+        91,
+        193,
+        176
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "down",
+      "part": "bodiceTorso",
+      "sourceComponent": 3,
+      "sourceRect": [
+        507,
+        148,
+        150,
+        178
+      ],
+      "packingScale": 0.53,
+      "clipping": {
+        "kind": "remove redundant torso sleeve/cuff pixels",
+        "polygonNormalized": [
+          [
+            0.24,
+            0
+          ],
+          [
+            0.76,
+            0
+          ],
+          [
+            0.75,
+            0.52
+          ],
+          [
+            0.71,
+            0.62
+          ],
+          [
+            0.91,
+            0.69
+          ],
+          [
+            0.95,
+            1
+          ],
+          [
+            0.05,
+            1
+          ],
+          [
+            0.09,
+            0.69
+          ],
+          [
+            0.29,
+            0.62
+          ],
+          [
+            0.25,
+            0.52
+          ]
+        ]
+      }
+    },
+    {
+      "view": "down",
+      "part": "pelvisFrontSkirt",
+      "sourceComponent": 11,
+      "sourceRect": [
+        648,
+        197,
+        132,
+        115
+      ],
+      "packingScale": 0.53,
+      "clipping": {
+        "kind": "waistband only; articulated thighs provide both shorts legs",
+        "heightFraction": 0.48
+      }
+    },
+    {
+      "view": "down",
+      "part": "leftUpperArm",
+      "sourceComponent": 4,
+      "sourceRect": [
+        777,
+        156,
+        62,
+        95
+      ],
+      "packingScale": 0.53,
+      "clipping": {
+        "kind": "sleeve only; separate forearm supplies cuff/paw",
+        "heightFraction": 0.64
+      }
+    },
+    {
+      "view": "down",
+      "part": "rightUpperArm",
+      "sourceComponent": 5,
+      "sourceRect": [
+        970,
+        156,
+        65,
+        103
+      ],
+      "packingScale": 0.53,
+      "clipping": {
+        "kind": "sleeve only; separate forearm supplies cuff/paw",
+        "heightFraction": 0.64
+      }
+    },
+    {
+      "view": "down",
+      "part": "leftForearmHand",
+      "sourceComponent": 13,
+      "sourceRect": [
+        825,
+        235,
+        62,
+        90
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "down",
+      "part": "rightForearmHand",
+      "sourceComponent": 14,
+      "sourceRect": [
+        1026,
+        235,
+        67,
+        90
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "down",
+      "part": "leftUpperLeg",
+      "sourceComponent": 9,
+      "sourceRect": [
+        896,
+        161,
+        65,
+        78
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "down",
+      "part": "rightUpperLeg",
+      "sourceComponent": 7,
+      "sourceRect": [
+        1102,
+        160,
+        68,
+        80
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "down",
+      "part": "leftLowerLegBoot",
+      "sourceComponent": 15,
+      "sourceRect": [
+        884,
+        238,
+        79,
+        111
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "down",
+      "part": "rightLowerLegBoot",
+      "sourceComponent": 16,
+      "sourceRect": [
+        1105,
+        239,
+        61,
+        110
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "down",
+      "part": "lionTail",
+      "sourceComponent": 12,
+      "sourceRect": [
+        323,
+        231,
+        179,
+        100
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "right",
+      "part": "head",
+      "sourceComponent": 17,
+      "sourceRect": [
+        13,
+        356,
+        302,
+        273
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "right",
+      "part": "backHair",
+      "sourceComponent": 18,
+      "sourceRect": [
+        301,
+        366,
+        212,
+        181
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "right",
+      "part": "bodiceTorso",
+      "sourceComponent": 19,
+      "sourceRect": [
+        506,
+        435,
+        142,
+        185
+      ],
+      "packingScale": 0.53,
+      "clipping": {
+        "kind": "remove redundant torso sleeve/cuff pixels",
+        "polygonNormalized": [
+          [
+            0.27,
+            0
+          ],
+          [
+            0.95,
+            0
+          ],
+          [
+            0.98,
+            1
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0.04,
+            0.67
+          ],
+          [
+            0.38,
+            0.58
+          ],
+          [
+            0.39,
+            0.36
+          ]
+        ]
+      }
+    },
+    {
+      "view": "right",
+      "part": "pelvisFrontSkirt",
+      "sourceComponent": 27,
+      "sourceRect": [
+        650,
+        481,
+        120,
+        121
+      ],
+      "packingScale": 0.53,
+      "clipping": {
+        "kind": "waistband only; articulated thighs provide both shorts legs",
+        "heightFraction": 0.48
+      }
+    },
+    {
+      "view": "right",
+      "part": "leftUpperArm",
+      "sourceComponent": 20,
+      "sourceRect": [
+        769,
+        435,
+        66,
+        103
+      ],
+      "packingScale": 0.53,
+      "clipping": {
+        "kind": "sleeve only; separate forearm supplies cuff/paw",
+        "heightFraction": 0.64
+      }
+    },
+    {
+      "view": "right",
+      "part": "rightUpperArm",
+      "sourceComponent": 21,
+      "sourceRect": [
+        973,
+        436,
+        66,
+        108
+      ],
+      "packingScale": 0.53,
+      "clipping": {
+        "kind": "sleeve only; separate forearm supplies cuff/paw",
+        "heightFraction": 0.64
+      }
+    },
+    {
+      "view": "right",
+      "part": "leftForearmHand",
+      "sourceComponent": 30,
+      "sourceRect": [
+        826,
+        520,
+        62,
+        97
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "right",
+      "part": "rightForearmHand",
+      "sourceComponent": 31,
+      "sourceRect": [
+        1041,
+        524,
+        66,
+        93
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "right",
+      "part": "leftUpperLeg",
+      "sourceComponent": 23,
+      "sourceRect": [
+        897,
+        439,
+        68,
+        84
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "right",
+      "part": "rightUpperLeg",
+      "sourceComponent": 24,
+      "sourceRect": [
+        1107,
+        439,
+        71,
+        89
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "right",
+      "part": "leftLowerLegBoot",
+      "sourceComponent": 29,
+      "sourceRect": [
+        888,
+        519,
+        91,
+        120
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "right",
+      "part": "rightLowerLegBoot",
+      "sourceComponent": 32,
+      "sourceRect": [
+        1116,
+        529,
+        56,
+        111
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "right",
+      "part": "lionTail",
+      "sourceComponent": 33,
+      "sourceRect": [
+        330,
+        534,
+        172,
+        101
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "up",
+      "part": "head",
+      "sourceComponent": 34,
+      "sourceRect": [
+        14,
+        632,
+        286,
+        284
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "up",
+      "part": "backHair",
+      "sourceComponent": 35,
+      "sourceRect": [
+        285,
+        694,
+        217,
+        155
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "up",
+      "part": "bodiceTorso",
+      "sourceComponent": 38,
+      "sourceRect": [
+        500,
+        749,
+        143,
+        161
+      ],
+      "packingScale": 0.53,
+      "clipping": {
+        "kind": "remove redundant torso sleeve/cuff pixels",
+        "polygonNormalized": [
+          [
+            0.22,
+            0
+          ],
+          [
+            0.77,
+            0
+          ],
+          [
+            0.75,
+            0.46
+          ],
+          [
+            0.73,
+            0.59
+          ],
+          [
+            0.96,
+            0.68
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            0.05,
+            0.68
+          ],
+          [
+            0.29,
+            0.59
+          ],
+          [
+            0.25,
+            0.46
+          ]
+        ]
+      }
+    },
+    {
+      "view": "up",
+      "part": "pelvisFrontSkirt",
+      "sourceComponent": 44,
+      "sourceRect": [
+        641,
+        791,
+        130,
+        110
+      ],
+      "packingScale": 0.53,
+      "clipping": {
+        "kind": "waistband only; articulated thighs provide both shorts legs",
+        "heightFraction": 0.48
+      }
+    },
+    {
+      "view": "up",
+      "part": "leftUpperArm",
+      "sourceComponent": 36,
+      "sourceRect": [
+        766,
+        748,
+        66,
+        104
+      ],
+      "packingScale": 0.53,
+      "clipping": {
+        "kind": "sleeve only; separate forearm supplies cuff/paw",
+        "heightFraction": 0.64
+      }
+    },
+    {
+      "view": "up",
+      "part": "rightUpperArm",
+      "sourceComponent": 37,
+      "sourceRect": [
+        966,
+        748,
+        66,
+        101
+      ],
+      "packingScale": 0.53,
+      "clipping": {
+        "kind": "sleeve only; separate forearm supplies cuff/paw",
+        "heightFraction": 0.64
+      }
+    },
+    {
+      "view": "up",
+      "part": "leftForearmHand",
+      "sourceComponent": 46,
+      "sourceRect": [
+        824,
+        830,
+        62,
+        96
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "up",
+      "part": "rightForearmHand",
+      "sourceComponent": 47,
+      "sourceRect": [
+        1045,
+        832,
+        57,
+        94
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "up",
+      "part": "leftUpperLeg",
+      "sourceComponent": 41,
+      "sourceRect": [
+        898,
+        752,
+        67,
+        82
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "up",
+      "part": "rightUpperLeg",
+      "sourceComponent": 42,
+      "sourceRect": [
+        1104,
+        752,
+        69,
+        86
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "up",
+      "part": "leftLowerLegBoot",
+      "sourceComponent": 48,
+      "sourceRect": [
+        898,
+        833,
+        69,
+        112
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "up",
+      "part": "rightLowerLegBoot",
+      "sourceComponent": 49,
+      "sourceRect": [
+        1109,
+        836,
+        60,
+        109
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "up",
+      "part": "lionTail",
+      "sourceComponent": 50,
+      "sourceRect": [
+        328,
+        840,
+        159,
+        86
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "left",
+      "part": "head",
+      "sourceComponent": 51,
+      "sourceRect": [
+        17,
+        928,
+        311,
+        276
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "left",
+      "part": "backHair",
+      "sourceComponent": 52,
+      "sourceRect": [
+        303,
+        945,
+        212,
+        183
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "left",
+      "part": "bodiceTorso",
+      "sourceComponent": 53,
+      "sourceRect": [
+        513,
+        1019,
+        133,
+        175
+      ],
+      "packingScale": 0.53,
+      "clipping": {
+        "kind": "remove redundant torso sleeve/cuff pixels",
+        "polygonNormalized": [
+          [
+            0.05,
+            0
+          ],
+          [
+            0.73,
+            0
+          ],
+          [
+            0.61,
+            0.36
+          ],
+          [
+            0.62,
+            0.58
+          ],
+          [
+            0.96,
+            0.67
+          ],
+          [
+            1,
+            1
+          ],
+          [
+            0.02,
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "view": "left",
+      "part": "pelvisFrontSkirt",
+      "sourceComponent": 61,
+      "sourceRect": [
+        648,
+        1054,
+        125,
+        116
+      ],
+      "packingScale": 0.53,
+      "clipping": {
+        "kind": "waistband only; articulated thighs provide both shorts legs",
+        "heightFraction": 0.48
+      }
+    },
+    {
+      "view": "left",
+      "part": "leftUpperArm",
+      "sourceComponent": 54,
+      "sourceRect": [
+        772,
+        1021,
+        66,
+        101
+      ],
+      "packingScale": 0.53,
+      "clipping": {
+        "kind": "sleeve only; separate forearm supplies cuff/paw",
+        "heightFraction": 0.64
+      }
+    },
+    {
+      "view": "left",
+      "part": "rightUpperArm",
+      "sourceComponent": 55,
+      "sourceRect": [
+        977,
+        1021,
+        64,
+        108
+      ],
+      "packingScale": 0.53,
+      "clipping": {
+        "kind": "sleeve only; separate forearm supplies cuff/paw",
+        "heightFraction": 0.64
+      }
+    },
+    {
+      "view": "left",
+      "part": "leftForearmHand",
+      "sourceComponent": 64,
+      "sourceRect": [
+        811,
+        1101,
+        74,
+        91
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "left",
+      "part": "rightForearmHand",
+      "sourceComponent": 65,
+      "sourceRect": [
+        1046,
+        1101,
+        58,
+        92
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "left",
+      "part": "leftUpperLeg",
+      "sourceComponent": 56,
+      "sourceRect": [
+        903,
+        1022,
+        67,
+        82
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "left",
+      "part": "rightUpperLeg",
+      "sourceComponent": 57,
+      "sourceRect": [
+        1104,
+        1022,
+        70,
+        87
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "left",
+      "part": "leftLowerLegBoot",
+      "sourceComponent": 66,
+      "sourceRect": [
+        877,
+        1103,
+        87,
+        111
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "left",
+      "part": "rightLowerLegBoot",
+      "sourceComponent": 67,
+      "sourceRect": [
+        1112,
+        1107,
+        60,
+        107
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    },
+    {
+      "view": "left",
+      "part": "lionTail",
+      "sourceComponent": 62,
+      "sourceRect": [
+        308,
+        1098,
+        186,
+        96
+      ],
+      "packingScale": 0.53,
+      "clipping": null
+    }
+  ],
+  "referenceSHA256": {
+    "articleHeader": "32ee080ac73d4bd39f419e020946e7986e7cb364e39f39490917bfcf0d935a11",
+    "profileAvatar": "315deddc4a9af0d9f818a89bea72e51fffdd265153f1eca712615d2fdf0e560f"
+  },
+  "partsSHA256": "74dffcfb404a068091fc868eb57fa1333f38e37a17ac7611bcfb0f29f6ac8016"
+}

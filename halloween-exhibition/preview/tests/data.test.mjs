@@ -34,7 +34,7 @@ test('creator identities use only names, handles, public profile links and profi
   }
 });
 
-test('host introduction and fourteen confirmed participant articles are present; two doors await submissions',()=>{
+test('host introduction and fifteen confirmed participant articles are present; one door awaits submission',()=>{
   const [host,owner,mako]=source.years[0].entries;
   assert.equal(owner.doorId,'owner-work-2026');
   assert.equal(owner.submissionStatus,'submitted');
@@ -57,8 +57,8 @@ test('host introduction and fourteen confirmed participant articles are present;
   assert.equal(mako.message,undefined);
   assert.equal(mako.works,undefined);
   assert.equal(source.years[0].entries.filter(e=>e.submissionStatus==='introduction').length,1);
-  assert.equal(source.years[0].entries.filter(e=>e.submissionStatus==='submitted').length,14);
-  assert.equal(participants.length,2);
+  assert.equal(source.years[0].entries.filter(e=>e.submissionStatus==='submitted').length,15);
+  assert.equal(participants.length,1);
   for(const entry of participants){
     const profile=verified.find(c=>c.id===entry.creatorId);
     assert.equal(entry.submissionStatus,'pending');
@@ -120,8 +120,8 @@ test('door IDs survive reordered and retitled legacy entries, and distinguish sa
 
 test("verified Takechi work is submitted alongside newly available Marimo while owner work uses its separate door",()=>{const e=source.years[0].entries.find(e=>e.creatorId==="imota14");assert.equal(e.title,"死神と貴公子と、顔に張り紙を貼った私。");assert.equal(e.submissionStatus,"submitted");assert.equal(e.links[0].url,"https://note.com/imota14/n/n618813fb0e89");assert.match(e.image,/324418285/);assert.equal(source.years[0].entries.find(e=>e.creatorId==="soh_style_work").submissionStatus,"submitted");assert.equal(source.years[0].entries.find(e=>e.doorId==="owner-work-2026").links[0].url,"https://note.com/ss_yr/n/n15700f2773c6");});
 
-test('CNA and Rin remain pending; unrelated Tantan article is excluded',()=>{
- assert.deepEqual(source.years[0].entries.filter(e=>e.submissionStatus==='pending').map(e=>e.creatorId),['grand_daisy8632','airoumu_rin']);
+test('CNA remains pending; unrelated Tantan article is excluded',()=>{
+ assert.deepEqual(source.years[0].entries.filter(e=>e.submissionStatus==='pending').map(e=>e.creatorId),['grand_daisy8632']);
  assert.doesNotMatch(JSON.stringify(source),/ne1d31629fa6e|キャラクターを変身させたら物語が生まれた/);
 });
 
@@ -157,7 +157,7 @@ test("four explicit Halloween submissions replace only their existing pending do
 test("Naemo profile uses the current official avatar without replacing submitted article art",()=>{const c=source.creators.find(c=>c.id==="naemotion");assert.equal(c.name,"なえも｜Kindle作家・支援と当事者の視点");assert.equal(c.avatar,"https://assets.st-note.com/production/uploads/images/324956810/profile_38e6c7db64b5f16f7f09c53de58785df.png?fit=bounds&format=jpeg&quality=85&width=330");assert.equal(c.avatarSource,c.avatar);const e=source.years[0].entries.find(e=>e.creatorId===c.id);assert.match(e.image,/324617440/);assert.notEqual(e.image,c.avatar);assert.equal(e.links[0].url,"https://note.com/naemotion/n/n26b717b6c247");});
 
 
-test('Rin joins once with the supplied profile identity and no invented participation article',()=>{
- const creator=source.creators.find(c=>c.id==='airoumu_rin');assert.equal(creator.name,'凛🦁｜転職活動中｜ワーママ｜AI活用');assert.equal(creator.profileURL,'https://note.com/airoumu_rin');assert.equal(creator.avatarSource,verified.find(c=>c.id==='airoumu_rin').avatarURL);
- const entries=source.years[0].entries.filter(entry=>entry.creatorId==='airoumu_rin');assert.equal(entries.length,1);const entry=entries[0];assert.equal(entry.submissionStatus,'pending');assert.equal(entry.title,'作品準備中');assert.equal(entry.image,undefined);assert.equal(entry.works,undefined);assert.deepEqual(entry.links,[{title:'noteプロフィールを見る',url:'https://note.com/airoumu_rin'}]);
+test('Rin supplied article replaces the existing pending door without changing identity',()=>{
+ const creator=source.creators.find(c=>c.id==='airoumu_rin');assert.equal(creator.name,'凛🦁｜転職活動中｜ワーママ｜AI活用');assert.equal(creator.avatarSource,verified.find(c=>c.id==='airoumu_rin').avatarURL);
+ const entries=source.years[0].entries.filter(entry=>entry.creatorId==='airoumu_rin');assert.equal(entries.length,1);const entry=entries[0];assert.equal(entry.submissionStatus,'submitted');assert.match(entry.title,/ライちゃんが4つのハロウィン世界へ/);assert.match(entry.image,/325928572/);assert.notEqual(entry.image,creator.avatar);assert.equal(entry.links[0].url,'https://note.com/airoumu_rin/n/n7179d2f821e8');assert.equal(entry.links[1].url,creator.profileURL);assert.equal(doorIdFor(entry,'archive:2026'),'legacy-archive-2026-airoumu_rin');
 });

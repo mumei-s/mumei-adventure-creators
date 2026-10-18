@@ -123,7 +123,7 @@ test('missing quest resident art rejects 3D readiness so the controller can keep
 
 test('foreground cutaway changes only the covering building and resets after leaving',async()=>{
   const {world,record}=harness();await world.ready;const state=initialTownState(),building=getTownMap().buildings.find(b=>b.id==='bakery');state.position={x:building.x+building.w/2,z:building.z-.5};world.render({state,motion:false});
-  const cover=record.scene.getObjectByName('roof-bakery'),other=record.scene.getObjectByName('roof-home-east');assert.equal(cover.material.opacity,.24);assert.equal(cover.castShadow,false);assert.equal(other.material.opacity,1);assert.notEqual(cover.material,other.material);
+  const cover=record.scene.getObjectByName('roof-bakery'),other=record.scene.getObjectByName('roof-inn');assert.equal(cover.material.opacity,.24);assert.equal(cover.castShadow,false);assert.equal(other.material.opacity,1);assert.notEqual(cover.material,other.material);
   state.position={x:32,z:28};world.render({state,motion:false});assert.equal(cover.material.opacity,1);assert.equal(cover.castShadow,true);world.destroy();
 });
 

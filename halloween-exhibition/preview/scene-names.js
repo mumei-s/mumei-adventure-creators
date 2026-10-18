@@ -36,13 +36,15 @@ function nameCandidates({map,state,actors=[],homes=[]}){
  for(const building of map.buildings||[]){
   if(building.kind!=='creator-home'||!finitePoint(building.door))continue;
   const home=registryHome(homes,building.creatorId)||building,name=labelText(home.creatorName||building.creatorName);
-  if(name){const point={x:building.door.x,z:building.door.z+.2};result.push({id:'home:'+(building.creatorId||building.id),kind:'home',text:name+'の家',...point,distance:distance(point)});}
+  // Anchor to the front wall at eye level, rather than painting a name on the
+  // road. Both town renderers project this world height at the current zoom.
+  if(name){const south=Number.isFinite(building.z)&&Number.isFinite(building.h)?building.z+building.h:building.door.z-.5,point={x:building.door.x,y:2.2,z:south+.2};result.push({id:'home:'+(building.creatorId||building.id),kind:'home',text:name+'の家',...point,distance:distance(point)});}
  }
  return result.sort((a,b)=>a.distance-b.distance||a.id.localeCompare(b.id));
 }
-function layoutName(point,text,width,height,placed){
+function layoutName(point,text,width,height,placed,offsetY=10){
  const maxWidth=Math.max(1,Math.min(176,width-EDGE*2)),labelWidth=Math.min(maxWidth,approximateWidth(text));
- const x=Math.max(EDGE+labelWidth/2,Math.min(width-EDGE-labelWidth/2,point.x)),baseY=point.y+10;
+ const x=Math.max(EDGE+labelWidth/2,Math.min(width-EDGE-labelWidth/2,point.x)),baseY=point.y+offsetY;
  let best=null,bestScore=Infinity;
  for(const offset of [0,-20,20,-40,40]){
   const y=Math.max(EDGE,Math.min(height-EDGE-LABEL_HEIGHT,baseY+offset)),box={left:x-labelWidth/2,right:x+labelWidth/2,top:y,bottom:y+LABEL_HEIGHT};
@@ -62,9 +64,9 @@ export function createSceneNameOverlay(container){
   const shown=new Set(),placed=[];
   for(const candidate of nameCandidates({map,state,actors,homes})){
    if(shown.size>=MAX_NAMES)break;
-   const point=project({x:candidate.x,z:candidate.z});
+   const point=project({x:candidate.x,...(candidate.kind==='home'?{y:candidate.y}:{}),z:candidate.z});
    if(!point||!Number.isFinite(point.x)||!Number.isFinite(point.y)||point.visible===false||point.x<0||point.x>width||point.y<0||point.y>height)continue;
-   const position=layoutName(point,candidate.text,width,height,placed);if(!position)continue;
+   const position=layoutName(point,candidate.text,width,height,placed,candidate.kind==='home'?-LABEL_HEIGHT/2:10);if(!position)continue;
    let entry=labels.get(candidate.id);
    if(!entry){
     if(labels.size>=MAX_NAMES){const unused=[...labels].find(([id])=>!shown.has(id));if(unused){unused[1].node.remove();labels.delete(unused[0]);}}

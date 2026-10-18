@@ -9,6 +9,12 @@ import {compileCharacterRoster} from '../../maze/creator-runtime.js';
 import {placeTownVisitors,sampleTownVisitors} from '../visitor-model.js';
 const archive=JSON.parse(await readFile(new URL('../../data/archive.json',import.meta.url),'utf8'));
 const manifest=JSON.parse(await readFile(new URL('../../maze/data/creator-characters.json',import.meta.url),'utf8'));
+test('every participant house has its own public creator ID evidence and an explicit fictional design interpretation',async()=>{
+ const sources=JSON.parse(await readFile(new URL('../data/creator-home-sources.json',import.meta.url),'utf8'));
+ assert.equal(new Set(sources.creators.map(person=>person.creatorId)).size,CREATOR_HOMES.length);
+ assert.deepEqual(sources.creators.map(person=>person.creatorId).sort(),CREATOR_HOMES.map(home=>home.creatorId).sort());
+ for(const person of sources.creators){const url=new URL(person.publicProfileURL);assert.equal(url.origin,'https://note.com');assert.equal(url.pathname,'/'+person.creatorId);assert.ok(person.verifiedActivityCues.length);assert.equal(person.interpretationIsInference,true);assert.ok(person.fictionalDesignInterpretation);}
+});
 function reachable(map){
  const first={x:Math.floor(map.spawn.x),z:Math.floor(map.spawn.z)},queue=[first],seen=new Set([`${first.x},${first.z}`]);
  for(let i=0;i<queue.length;i++)for(const[dx,dz]of[[1,0],[-1,0],[0,1],[0,-1]]){

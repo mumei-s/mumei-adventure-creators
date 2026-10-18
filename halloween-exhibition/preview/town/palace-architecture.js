@@ -1,18 +1,46 @@
 import * as THREE from '../maze/vendor/three.module.js';
 
 const TAU=Math.PI*2,clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),smooth=v=>{v=clamp(v,0,1);return v*v*(3-2*v);};
-export const TOWN_PALACE_COLORS={stone:'#a99aa2',shadow:'#51495f',roof:'#462c70',roofLight:'#6a438d',gold:'#e0b967',door:'#654638',glass:'#68d7da',rose:'#ec91bb'};
+export const TOWN_PALACE_COLORS={stone:'#b2aaa3',shadow:'#5c5663',roof:'#462c70',roofLight:'#6a438d',gold:'#c8a567',door:'#503a30',glass:'#68b9c0',rose:'#c78ea7'};
 
 /** Small deterministic material maps are ready with the geometry; no texture request blocks entry. */
 function palaceSurface(resources,kind){
-  const size=128,data=new Uint8Array(size*size*4),brick=kind==='stone',course=brick?16:12;
+  const size=128,data=new Uint8Array(size*size*4),brick=kind==='stone',course=brick?8:10;
+  // Low contrast mineral grain survives close views; darker, irregular joints remain
+  // narrow enough to read as cut limestone and overlapping slate rather than bricks.
   for(let y=0;y<size;y++)for(let x=0;x<size;x++){
-    const row=Math.floor(y/course),stagger=row%2?course:0,seam=(y%course===0)||(x+stagger)%(course*2)===0;
-    const grain=((x*17+y*37+(x*y)%73)%19)-9,block=((Math.floor((x+stagger)/(course*2))*13+row*7)%11)-5;
-    const value=seam?(brick?123:112):Math.max(0,Math.min(255,(brick?224:209)+grain+block)),i=(y*size+x)*4;
-    data[i]=value;data[i+1]=value;data[i+2]=value;data[i+3]=255;
+    const row=Math.floor(y/course),stagger=row%2?course:0,xx=(x+stagger)%(course*2),yy=y%course;
+    const noise=((x*17+y*37+(x*y)%73)%23)/23,block=((Math.floor((x+stagger)/(course*2))*13+row*7)%11)-5;
+    const seam=yy===0||xx===0,edge=yy===1||xx===1,weather=Math.max(0,Math.sin(x*.11+y*.04)*Math.sin(y*.13))*(brick?7:3);
+    const value=seam?(brick?157:123):Math.round((brick?226:211)+block+(noise-.5)*(brick?10:16)-weather+(edge?6:0));
+    const i=(y*size+x)*4;data[i]=value;data[i+1]=Math.min(255,value+(brick?-2:0));data[i+2]=Math.min(255,value+(brick?-5:4));data[i+3]=255;
   }
   const texture=new THREE.DataTexture(data,size,size,THREE.RGBAFormat);texture.name='palace-'+kind+'-detail';texture.wrapS=texture.wrapT=THREE.RepeatWrapping;texture.colorSpace=THREE.SRGBColorSpace;texture.magFilter=THREE.LinearFilter;texture.minFilter=THREE.LinearMipmapLinearFilter;texture.generateMipmaps=true;texture.needsUpdate=true;resources.add(texture);return texture;
+}
+
+/** A slate spire is a coursed, slightly concave roof with a flared eave.
+ * One smooth lathed shell replaces ten floating rings around a low-poly cone. */
+function slateSpireGeometry(){
+  const profile=[new THREE.Vector2(1.015,0),new THREE.Vector2(1.015,.018),new THREE.Vector2(.96,.04)];
+  for(let row=1;row<12;row++){
+    const y=row/12,r=Math.pow(1-y,1.16);profile.push(new THREE.Vector2(r+.005,y-.006),new THREE.Vector2(r+.015,y+.002));
+  }
+  profile.push(new THREE.Vector2(.012,.99),new THREE.Vector2(0,1));
+  const geometry=new THREE.LatheGeometry(profile,24);geometry.name='palace-coursed-slate-spire';
+  const uv=geometry.attributes.uv;for(let i=0;i<uv.count;i++){uv.setX(i,uv.getX(i)*3);uv.setY(i,uv.getY(i)*2);}return geometry;
+}
+
+function cutStoneVaultGeometry(width,height,thickness,depth){
+  const outer=gothicShape(width,height).getPoints(10),inner=gothicShape(width-thickness*2,height-thickness*1.6).getPoints(10),positions=[],normals=[],uvs=[];
+  for(let n=1;n<outer.length;n++){
+    // Separate every dressed voussoir by a hairline mortar joint. The curved
+    // opening remains genuinely hollow, including its visible underside.
+    const a=outer[n-1].clone().lerp(outer[n],.025),b=outer[n-1].clone().lerp(outer[n],.975),d=inner[n-1].clone().lerp(inner[n],.025),e=inner[n-1].clone().lerp(inner[n],.975);
+    d.y+=thickness;e.y+=thickness;const shape=new THREE.Shape();shape.moveTo(a.x,a.y);shape.lineTo(b.x,b.y);shape.lineTo(e.x,e.y);shape.lineTo(d.x,d.y);shape.closePath();
+    const block=new THREE.ExtrudeGeometry(shape,{depth,steps:1,bevelEnabled:true,bevelSegments:1,bevelSize:.007,bevelThickness:.008,curveSegments:1});
+    positions.push(...block.attributes.position.array);normals.push(...block.attributes.normal.array);uvs.push(...block.attributes.uv.array);block.dispose();
+  }
+  const geometry=new THREE.BufferGeometry();geometry.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geometry.setAttribute('normal',new THREE.Float32BufferAttribute(normals,3));geometry.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2));geometry.name='palace-cut-stone-vault';return geometry;
 }
 
 function gothicShape(width,height){
@@ -44,21 +72,27 @@ export function buildTownPalace({building,b,materials,resources,root}){
   const {x,z,w,h}=building,cx=x+w/2,cz=z+h/2,south=z+h,bucket=building.id,colors=TOWN_PALACE_COLORS;
   const material=(name,color,extra={})=>{const m=new THREE.MeshStandardMaterial({color,roughness:.88,...extra});m.name=name;resources.add(m);return m;};
   const stoneMap=palaceSurface(resources,'stone'),roofMap=palaceSurface(resources,'slate');
-  const stone=material('palace-stone',colors.stone,{map:stoneMap,bumpMap:stoneMap,bumpScale:.055}),shadow=material('palace-shadow',colors.shadow,{map:stoneMap}),roof=material('palace-roof',colors.roof,{map:roofMap,bumpMap:roofMap,bumpScale:.07}),roofLight=material('palace-roof-light',colors.roofLight,{map:roofMap}),gold=material('palace-gold',colors.gold,{metalness:.62,roughness:.34,emissive:'#6d4517',emissiveIntensity:.09}),door=material('palace-door',colors.door,{metalness:.14,roughness:.68}),glass=material('palace-glass','#f2c785',{emissive:'#ffb43f',emissiveIntensity:.68,roughness:.3}),teal=material('palace-glass-teal',colors.glass,{emissive:'#39babb',emissiveIntensity:.4,roughness:.3}),rose=material('palace-glass-rose',colors.rose,{emissive:'#e35696',emissiveIntensity:.32,roughness:.3}),flagMaterial=material('palace-banner','#86518d',{side:THREE.DoubleSide,roughness:.86});
+  const stone=material('palace-stone',colors.stone,{map:stoneMap,bumpMap:stoneMap,bumpScale:.025,roughness:.91}),shadow=material('palace-shadow',colors.shadow,{map:stoneMap}),roof=material('palace-roof',colors.roof,{map:roofMap,bumpMap:roofMap,bumpScale:.035,roughness:.73,metalness:.035}),gold=material('palace-gold',colors.gold,{metalness:.68,roughness:.33,emissive:'#2d1b0e',emissiveIntensity:.025}),door=material('palace-door',colors.door,{metalness:.025,roughness:.79}),glass=material('palace-glass','#f2c785',{emissive:'#ffb43f',emissiveIntensity:.32,roughness:.23,metalness:.12}),teal=material('palace-glass-teal',colors.glass,{emissive:'#39babb',emissiveIntensity:.16,roughness:.24,metalness:.1}),rose=material('palace-glass-rose',colors.rose,{emissive:'#e35696',emissiveIntensity:.14,roughness:.24,metalness:.1}),flagMaterial=material('palace-banner','#86518d',{side:THREE.DoubleSide,roughness:.86});
   const addGeo=geometry=>{resources.add(geometry);return geometry;},windowGeometry=addGeo(gothicGeometry(.58,1.45,.065)),windowFrame=addGeo(archGeometry(.77,1.64,.085,.12)),gateFrame=addGeo(archGeometry(3.1,3.8,.2,.2)),gateGeometry=addGeo(gothicGeometry(2.65,3.45,.09));
-  gateFrame.name='palace-gate-frame';gateGeometry.name='palace-golden-gate';
+  windowGeometry.name='palace-recessed-glass';windowFrame.name='palace-window-surround';gateFrame.name='palace-gate-frame';gateGeometry.name='palace-golden-gate';
+  const towerGeometry=addGeo(new THREE.CylinderGeometry(1,1,1,24));towerGeometry.name='palace-smooth-limestone-tower';
+  const towerUV=towerGeometry.attributes.uv;for(let i=0;i<towerUV.count;i++){towerUV.setX(i,towerUV.getX(i)*2);towerUV.setY(i,towerUV.getY(i)*3);}
+  const spireGeometry=addGeo(slateSpireGeometry());
   const model=(geometry,mat,px,py,pz,sx=1,sy=1,sz=1,turn=0)=>b.instance(geometry,mat,px,py,pz,sx,sy,sz,turn,bucket);
   const archWindow=(px,py,pz,scale=1,mat=glass,turn=0)=>{
     const fx=Math.sin(turn),fz=Math.cos(turn);
-    model(windowFrame,shadow,px,py-.07,pz,scale*1.13,scale*1.07,scale,turn);model(windowFrame,gold,px+fx*.07,py-.035,pz+fz*.07,scale,scale,scale,turn);model(windowGeometry,mat,px+fx*.13,py,pz+fz*.13,scale,scale,scale,turn);
-    b.box(px+fx*.22,py+.58*scale,pz+fz*.22,.045*scale,1.1*scale,.045,gold,turn,bucket);
-    b.box(px+fx*.22,py+.48*scale,pz+fz*.22,.5*scale,.045*scale,.045,gold,turn,bucket);
+    model(windowFrame,shadow,px,py-.07,pz,scale*1.13,scale*1.07,scale,turn);
+    // Glass sits behind the proud stone jambs. Gold belongs to its fine tracery,
+    // leaving heavy, pale masonry to carry the building's visual weight.
+    model(windowFrame,stone,px+fx*.12,py-.035,pz+fz*.12,scale,scale,scale*1.35,turn);model(windowGeometry,mat,px+fx*.045,py,pz+fz*.045,scale*.96,scale*.98,scale*.4,turn);
+    b.box(px+fx*.115,py+.58*scale,pz+fz*.115,.036*scale,1.1*scale,.035,gold,turn,bucket);
+    b.box(px+fx*.115,py+.48*scale,pz+fz*.115,.5*scale,.036*scale,.035,gold,turn,bucket);
     b.box(px,py-.12,pz,.92*scale,.12,.26,stone,turn,bucket);
   };
   function buttress(px,pz,height,turn=0){
     b.box(px,height*.5,pz,.25,height,.45,shadow,turn,bucket);b.box(px-.05,height*.5,pz+.09,.18,height,.3,stone,turn,bucket);
-    for(const at of[.08,.48,.82]){b.box(px,height*at,pz,.42,.13,.56,stone,turn,bucket);b.box(px,height*at+.055,pz+.04,.44,.04,.6,gold,turn,bucket);}
-    b.peak(px,height+.18,pz,.23,.48,roof,bucket);
+    for(const at of[.08,.48,.82]){b.box(px,height*at,pz,.42,.13,.56,stone,turn,bucket);b.box(px,height*at+.055,pz+.04,.44,.04,.6,stone,turn,bucket);}
+    b.box(px,height+.12,pz,.38,.22,.53,stone,turn,bucket);
   }
   const arcadeGeometry=addGeo(archGeometry(1.44,2.86,.095,.13));arcadeGeometry.name='palace-royal-arcade';
   const rosetteGeometry=addGeo(new THREE.TorusGeometry(.68,.045,6,36));rosetteGeometry.name='palace-rose-tracery';
@@ -84,22 +118,21 @@ export function buildTownPalace({building,b,materials,resources,root}){
     b.ball(px,py+.54,pz,.045,.07,.045,gold,bucket);
   }
   function tower(px,pz,r,height,roofHeight,index,small=false){
-    b.round(px,.19,pz,r*1.12,.38,shadow,bucket);b.round(px,height*.5+.22,pz,r,height,stone,bucket);
-    for(const yy of[.48,height*.48,height-.12]){b.round(px,yy,pz,r*1.08,.13,stone,bucket);b.round(px,yy+.07,pz,r*1.09,.045,gold,bucket);b.round(px,yy-.12,pz,r*1.1,.13,shadow,bucket);}
+    b.round(px,.19,pz,r*1.12,.38,shadow,bucket);model(towerGeometry,stone,px,height*.5+.22,pz,r,height,r);
+    for(const yy of[.48,height*.48,height-.12]){model(towerGeometry,stone,px,yy,pz,r*1.08,.13,r*1.08);model(towerGeometry,stone,px,yy+.075,pz,r*1.095,.045,r*1.095);b.round(px,yy-.12,pz,r*1.1,.065,shadow,bucket);}
     // Dressed-stone courses and attached ribs give the towers a faceted, sculpted body.
-    for(let yy=.7;yy<height-.2;yy+=.58)b.round(px,yy,pz,r*1.006,.018,shadow,bucket);
+    for(let yy=.7;yy<height-.2;yy+=.58)model(towerGeometry,stone,px,yy,pz,r*1.008,.025,r*1.008);
     for(let n=0;n<6;n++){const angle=n*TAU/6;b.round(px+Math.sin(angle)*r*.96,height*.5+.22,pz+Math.cos(angle)*r*.96,.035,height-.18,stone,bucket);}
-    const roofBase=height+.36;b.round(px,roofBase-.05,pz,r*1.24,.2,shadow,bucket);b.round(px,roofBase+.08,pz,r*1.27,.08,gold,bucket);
-    b.peak(px,roofBase+roofHeight*.5,pz,r*1.3,roofHeight,roof,bucket);
-    // Raised courses catch light on all roof faces rather than painting a flat triangle.
-    for(let row=1;row<11;row++){const f=row/11;b.round(px,roofBase+roofHeight*f,pz,r*1.3*(1-f)+.025,.055,roofLight,bucket);}
-    // Six gilded ribs and restrained fleurons articulate the violet slate.
-    for(let n=0;n<6;n++){const a=n*TAU/6;for(const f of[.2,.43,.66,.86]){const rr=r*1.3*(1-f)+.028;b.ball(px+Math.sin(a)*rr,roofBase+roofHeight*f,pz+Math.cos(a)*rr,.036,.075,.036,gold,bucket);}}
+    const roofBase=height+.36;b.round(px,roofBase-.05,pz,r*1.24,.13,shadow,bucket);model(towerGeometry,stone,px,roofBase+.015,pz,r*1.27,.09,r*1.27);
+    model(spireGeometry,roof,px,roofBase,pz,r*1.3,roofHeight,r*1.3);
+    // A handful of old bronze clips accent the roof; its slate courses carry the
+    // detail. Replacing hundreds of gold studs funds the smoother roof geometry.
+    for(let n=0;n<3;n++){const a=n*TAU/3;for(const f of[.27,.69]){const rr=r*1.3*Math.pow(1-f,1.16)+.025;b.ball(px+Math.sin(a)*rr,roofBase+roofHeight*f,pz+Math.cos(a)*rr,.027,.045,.027,gold,bucket);}}
     b.round(px,roofBase+roofHeight+.28,pz,.035,.6,gold,bucket);b.peak(px,roofBase+roofHeight+.63,pz,.11,.25,gold,bucket);
     if(!small){archWindow(px,height*.36,pz+r*.97,.74,index%2?teal:glass);archWindow(px,height*.7,pz+r*.97,.67,glass);for(const side of[-1,1])archWindow(px+side*r*.97,height*.52,pz,.55,glass,side*Math.PI/2);banner(px,roofBase+roofHeight+.85,pz,index);}
     else archWindow(px,height*.52,pz+r*.97,.64,glass);
     // A shallow terrace and balustrade give the lower round towers visible depth.
-    if(index<2){b.round(px,height*.53,pz,r*1.24,.17,stone,bucket);for(let n=0;n<11;n++){const a=n*Math.PI/10;b.round(px+Math.cos(a)*r*1.14,height*.53+.29,pz+Math.sin(a)*r*1.14,.028,.52,gold,bucket);}b.round(px,height*.53+.58,pz,r*1.25,.06,shadow,bucket);}
+    if(index<2){model(towerGeometry,stone,px,height*.53,pz,r*1.24,.17,r*1.24);for(let n=0;n<11;n++){const a=n*Math.PI/10;b.round(px+Math.cos(a)*r*1.14,height*.53+.29,pz+Math.sin(a)*r*1.14,.028,.52,gold,bucket);}b.round(px,height*.53+.58,pz,r*1.25,.06,shadow,bucket);}
   }
   // The palace rises in three layers: the broad entrance, rear keep, then five spires.
   b.box(cx,.15,cz,w,.3,h,shadow,0,bucket);
@@ -142,6 +175,7 @@ export function buildTownPalace({building,b,materials,resources,root}){
   // A separate sculpted arch surrounds golden double leaves, rather than a timber house door.
   const gateX=building.door.x;
   const outerGate=addGeo(archGeometry(3.92,4.65,.25,.35));outerGate.name='palace-sculpted-stone-arch';model(outerGate,shadow,gateX,-.02,south+.02,1.015,1.015,1);model(outerGate,stone,gateX,0,south+.19);
+  const cutVault=addGeo(cutStoneVaultGeometry(3.92,4.65,.25,.045));model(cutVault,stone,gateX,0,south+.535);
   // Side buttresses and a proud arch make the threshold a gatehouse in its own right.
   for(const side of[-1,1])buttress(gateX+side*1.97,south-.04,4.05);
   model(gateGeometry,door,gateX,.1,south+.29);model(gateFrame,gold,gateX,0,south+.43);

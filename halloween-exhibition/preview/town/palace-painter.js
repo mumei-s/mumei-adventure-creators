@@ -1,6 +1,6 @@
 /** A layered Gothic palace, painted once per canvas. Animated details stay separate. */
 const TAU=Math.PI*2, caches=new WeakMap();
-const palette={stone:'#8b8494',light:'#b8a5a7',dark:'#4c485f',mortar:'#39374d',roof:'#352442',roofLight:'#6b497d',gold:'#c8a25c',goldLight:'#f4db9c',glass:'#efb969'};
+const palette={stone:'#9a918e',light:'#c5b7a9',dark:'#56505c',mortar:'#45404a',roof:'#392b4b',roofLight:'#655274',gold:'#b99a61',goldLight:'#e5c98e',glass:'#deb579'};
 const hash=(a,b=0)=>{const s=Math.sin(a*127.1+b*311.7)*43758.5453;return s-Math.floor(s);};
 function path(c,points,fill,stroke=null,width=1){c.beginPath();points.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.closePath();if(fill){c.fillStyle=fill;c.fill();}if(stroke){c.strokeStyle=stroke;c.lineWidth=width;c.stroke();}}
 function line(c,x1,y1,x2,y2,color,width=1){c.strokeStyle=color;c.lineWidth=width;c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();}
@@ -18,9 +18,18 @@ function masonry(c,x,y,w,h,row=17,curved=false){
     for(let i=-1;i<w/(row*2)+1;i++){
       let xx=x+i*row*2+offset;if(curved){const f=(xx-x)/w;xx=x+w*(.5+Math.sin((f-.5)*Math.PI)*.5);}
       line(c,xx,yy,xx,yy+row,'#2e2c3e66',1);
-      if(hash(r,i)>.7)rect(c,xx+2,yy+3,row*1.2,2,'#e9c9b010');
+      // Uneven mineral colour is trapped inside individual cut blocks, while
+      // pitting and rain streaks remain far subtler than the mortar joints.
+      const grain=hash(r+19,i+7);rect(c,xx+1,yy+2,row*2-3,row-3,grain>.6?'#e6d3b911':grain<.25?'#28232b0c':'#a99a8410');
+      if(grain>.7)rect(c,xx+2,yy+3,row*1.2,2,'#ede0cb1b');
+      for(let n=0;n<3;n++)rect(c,xx+3+hash(i*4+n,r)*row*1.6,yy+3+hash(r*3+n,i)*Math.max(1,row-5),.7,.6,n%2?'#efe4d01c':'#201b2b16');
     }
-  }c.restore();
+  }
+  // Rain gathers under cornices and along the shaded base, with no repeated
+  // opaque dirt decals and no work added to the animated frame.
+  c.fillStyle=gradient(c,0,y,0,h,[[0,'#201d2d28'],[.12,'transparent'],[.78,'transparent'],[1,'#191a2738']]);c.fillRect(x,y,w,h);
+  for(let n=0;n<w/19;n++){const xx=x+hash(n,7)*w,hh=7+hash(n,13)*h*.23;c.fillStyle=gradient(c,0,y,0,hh,[[0,'#28212b12'],[1,'transparent']]);c.fillRect(xx,y,1+hash(n,4)*2,hh);}
+  c.restore();
 }
 function cornice(c,x,y,w,depth=8){
   path(c,[[x-3,y],[x+w+3,y],[x+w+8,y+depth*.5],[x+w+3,y+depth],[x-3,y+depth]],'#494555','#c9ad7b',1);
@@ -28,12 +37,12 @@ function cornice(c,x,y,w,depth=8){
   for(let i=8;i<w;i+=15)rect(c,x+i,y+depth,5,5,'#92808c');
 }
 function window(c,x,y,w=25,h=52,glass='#efb969',ornate=true){
-  halo(c,x,y-h*.45,w*1.2,'#ffaf511c');archFill(c,x+2,y+3,w+12,h+10,'#262435');
-  archFill(c,x,y,w+8,h+8,'#a48b78','#d1b384',1.2);archFill(c,x,y-3,w,h,gradient(c,0,y-h,0,h,[[0,'#995b3f'],[.58,glass],[1,'#8d5e48']]),'#413544',2);
+  halo(c,x,y-h*.45,w*.9,'#ffaf510d');archFill(c,x+2,y+3,w+12,h+10,'#262435');
+  archFill(c,x,y,w+8,h+8,gradient(c,x-w/2,0,w,0,[[0,'#c4b3a1'],[.3,'#b2a090'],[1,'#716771']]),'#b6a38d',1.2);archFill(c,x+1,y-3,w,h,gradient(c,0,y-h,0,h,[[0,'#995b3f'],[.58,glass],[1,'#8d5e48']]),'#413544',2);
   c.save();arch(c,x,y-3,w-2,h-2);c.clip();for(let n=0;n<3;n++){const yy=y-h+8+n*h*.28;path(c,[[x,yy-10],[x+w*.44,yy+5],[x,yy+20],[x-w*.44,yy+5]],['#649da57d','#bd84a978','#e5bf7080'][n], '#c9a86b88',.7);}c.restore();
   line(c,x,y-h+9,x,y-3,'#685145',1.8);line(c,x-w*.48,y-h*.37,x+w*.48,y-h*.37,'#685145',1.5);
   if(ornate){const yy=y-h*.66;line(c,x-w*.42,yy+10,x,yy-2,'#f0cb8311',1);line(c,x-w*.4,yy+10,x,yy-6,'#705544',1);line(c,x+w*.4,yy+10,x,yy-6,'#705544',1);ellipse(c,x,y-h*.37,w*.13,w*.13,null,'#806045',1);}
-  rect(c,x-w/2-7,y+1,w+14,4,'#cfaf7a');rect(c,x-w/2-7,y+5,w+14,4,'#403749');
+  rect(c,x-w/2-7,y+1,w+14,3,'#c4b19a');rect(c,x-w/2-7,y+4,w+14,5,'#36313f');line(c,x-w/2-4,y-h+6,x-w/2-4,y,'#e2ceae66',1);
 }
 function gildedScroll(c,x,y,size=1,flip=1){
   c.save();c.translate(x,y);c.scale(size*flip,size);c.beginPath();c.moveTo(-22,9);c.bezierCurveTo(-7,-4,2,0,15,-15);c.bezierCurveTo(26,-33,43,-11,28,-7);c.bezierCurveTo(16,-3,20,-19,29,-15);c.strokeStyle='#64503b';c.lineWidth=6;c.stroke();c.strokeStyle='#e0bc73';c.lineWidth=3;c.stroke();
@@ -65,23 +74,24 @@ function wallFountain(c,x,y){
 }
 function roof(c,x,y,r,h){
   const left=x-r,right=x+r,top=y-h;
-  path(c,[[left-3,y+3],[x,top],[right+3,y+3]],gradient(c,left,0,r*2,0,[[0,'#241e35'],[.2,'#554064'],[.48,'#765482'],[.67,'#45304f'],[1,'#231c32']]),'#b29264',1.6);
+  const silhouette=[[left-3,y+3]];for(let row=11;row>=1;row--){const f=row/12;silhouette.push([x-r*Math.pow(f,1.16),top+h*f]);}silhouette.push([x,top]);for(let row=1;row<12;row++){const f=row/12;silhouette.push([x+r*Math.pow(f,1.16),top+h*f]);}silhouette.push([right+3,y+3]);
+  path(c,silhouette,gradient(c,left,0,r*2,0,[[0,'#241e35'],[.2,'#554064'],[.48,'#765482'],[.67,'#45304f'],[1,'#231c32']]),'#65546e',1.3);
   path(c,[[x,top],[x+r*.18,y],[right,y]],'#17162b44');
   for(let row=1;row<12;row++){
-    const f=row/12,yy=top+h*f,rr=r*f;
+    const f=row/12,yy=top+h*f,rr=r*Math.pow(f,1.16);
     line(c,x-rr,yy,x+rr,yy,'#151426aa',1.5);line(c,x-rr+1,yy+1,x+rr-1,yy+1,'#bb8ebf33',1);
     for(let tile=-5;tile<=5;tile++){
       const tx=x+(tile+(row%2?.5:0))*rr/5;if(Math.abs(tx-x)>rr)continue;
       line(c,tx,yy,tx+(tx-x)*.09,yy+h/12,'#241a3288',1);
     }
   }
-  for(const side of[-1,1]){line(c,x+side*2,top+5,x+side*r*.7,y-1,'#d8b87566',1.6);for(const f of[.24,.48,.72]){const xx=x+side*r*.7*f,yy=top+h*f;path(c,[[xx,yy-4],[xx+3,yy],[xx,yy+4],[xx-3,yy]],'#ddc38e','#5d4851',.6);}}
+  for(const side of[-1,1]){line(c,x+side*2,top+5,x+side*r*.7,y-1,'#beb0b944',1);for(const f of[.24,.48,.72]){const xx=x+side*r*.7*f,yy=top+h*f;path(c,[[xx,yy-4],[xx+3,yy],[xx,yy+4],[xx-3,yy]],'#99836b','#5d4851',.6);}}
   cornice(c,left-2,y+1,r*2+4,7);
   line(c,x,top-2,x,top-25,palette.gold,2);path(c,[[x,top-35],[x+4,top-26],[x,top-18],[x-4,top-26]],'#d7b575','#342c3c',1);
 }
 function tower(c,x,base,r,height,roofHeight,{balcony=false,rear=false}={}){
   const top=base-height,p=palette;
-  path(c,[[x-r+7,base+1],[x+r-6,base+1],[x+r-2,top+4],[x+r-12,top-5],[x-r+10,top-5],[x-r-2,top+4]],gradient(c,x-r,0,r*2,0,[[0,'#454153'],[.12,'#736d7d'],[.33,rear?'#ad989c':'#bea8a6'],[.56,'#9c8993'],[.83,'#6c6276'],[1,'#433e53']]),'#292739',2);
+  path(c,[[x-r+7,base+1],[x+r-6,base+1],[x+r-2,top+4],[x+r-12,top-5],[x-r+10,top-5],[x-r-2,top+4]],gradient(c,x-r,0,r*2,0,[[0,'#454153'],[.12,'#736d7d'],[.33,rear?'#ada297':'#c5b7aa'],[.56,'#a39791'],[.83,'#726a74'],[1,'#433e53']]),'#292739',2);
   masonry(c,x-r+1,top,r*2-2,height,19,true);
   // Narrow vertical ribs distinguish dressed stone from a smooth cylinder.
   for(const side of[-1,1]){const xx=x+side*r*.7;rect(c,xx-2,top+7,3,height-13,side<0?'#c6b2aa55':'#3b344c66');}
@@ -102,6 +112,17 @@ function foliage(c,x,y,mirror=1){
   for(let i=0;i<26;i++){const yy=-i*4.7,xx=Math.sin(i*.8)*11+(hash(i,3)-.5)*15;path(c,[[xx-4,yy-3],[xx,yy-9],[xx+6,yy-4],[xx+3,yy+4],[xx-3,yy+5]],['#a9683e','#b17c48','#73533b','#d1904a','#6e514b'][i%5]);}
   c.restore();
 }
+function cutStoneArch(c,x,y){
+  const cubic=(a,b,cc,d,t)=>(1-t)**3*a+3*(1-t)**2*t*b+3*(1-t)*t*t*cc+t**3*d;
+  const point=(width,height,t,side)=>[x+side*cubic(width*.5,width*.5,width*.16,0,t),y+cubic(-height+width*.65,-height+width*.3,-height+width*.09,-height,t)];
+  for(const side of[-1,1]){
+    for(let n=0;n<10;n++){
+      const a=(n+.035)/10,b=(n+.965)/10,outerA=point(148,225,a,side),outerB=point(148,225,b,side),innerA=point(126,211,a,side),innerB=point(126,211,b,side);
+      path(c,[outerA,outerB,innerB,innerA],gradient(c,outerA[0],outerA[1],side*13,10,[[0,'#c1aa92'],[.3,'#b4a08e'],[1,'#7d6d71']]),'#655864',.7);line(c,...outerA,...outerB,'#ebd4b145',.7);
+    }
+    for(let n=0;n<7;n++){const yy=y-2-n*18;path(c,[[x+side*63,yy],[x+side*74,yy],[x+side*74,yy-17],[x+side*63,yy-17]],side<0?'#c0aa93':'#968384','#655864',.7);}
+  }
+}
 function gate(c,x,y){
   const p=palette;buttress(c,x-86,y-2,235);buttress(c,x+86,y-2,235);
   archFill(c,x+5,y,152,226,'#2b253b','#4b3d4f',5);
@@ -113,7 +134,7 @@ function gate(c,x,y){
     line(c,xx,y-149,xx,y-40,'#d8b475',1);ellipse(c,x+side*8,y-67,3,4,'#efcf8d','#624737',1);
     rect(c,x+side*26-22,y-26,44,16,'#856046');rect(c,x+side*26-21,y-25,42,2,'#c9a369');
   }
-  line(c,x,y-200,x,y-4,'#cfab6a',2);
+  line(c,x,y-200,x,y-4,'#cfab6a',2);cutStoneArch(c,x,y-1);
   // Wedge-shaped voussoirs follow the pointed arch, including a proud keystone.
   for(let side of[-1,1])for(let i=0;i<6;i++){const f=i/6,xx=x+side*(70*(1-f*f)),yy=y-149-72*f;line(c,xx,yy,xx+side*(9-4*f),yy-5,'#5a4a5e',1.4);}
   path(c,[[x-9,y-229],[x,y-242],[x+9,y-229],[x+6,y-211],[x-6,y-211]],'#e2bf7d','#846647',1);
@@ -131,7 +152,7 @@ function facade(c){
   path(c,[[126,-188],[753,-188],[785,-224],[157,-224]],'#554b62','#aa9474',1);
   rect(c,126,-188,627,170,gradient(c,0,-188,0,170,[[0,'#736b80'],[1,'#4e4a60']]));
   // A pitched upper gallery, edged with small lantern dormers, gives real overlap.
-  rect(c,304,-345,288,171,gradient(c,304,0,288,0,[[0,'#6a6277'],[.3,'#a08d98'],[1,'#554e68']]));masonry(c,304,-345,288,171,18);
+  rect(c,304,-345,288,171,gradient(c,304,0,288,0,[[0,'#6a6277'],[.3,'#ada198'],[1,'#5d5667']]));masonry(c,304,-345,288,171,18);
   path(c,[[287,-339],[343,-418],[553,-418],[610,-339]],gradient(c,0,-418,0,79,[[0,'#664778'],[.45,'#47314f'],[1,'#241f36']]),'#b69767',1.5);
   for(let yy=-404;yy<-340;yy+=12)line(c,296+(yy+340)*-.6,yy,601-(yy+340)*-.6,yy,'#9c779d44');
   for(const xx of[351,398,498,545]){path(c,[[xx-16,-352],[xx,-385],[xx+16,-352]],'#493547','#b99b6b',1);window(c,xx,-319,15,43,'#e8bd79');}
@@ -140,7 +161,7 @@ function facade(c){
   for(const side of[-1,1]){
     const left=side<0?101:523,right=side<0?373:795;
     path(c,[[right,-219],[right+21,-239],[right+21,-15],[right,0]],'#403d53','#8e7a77',1);
-    rect(c,left,-215,right-left,211,gradient(c,left,0,right-left,0,[[0,'#81778a'],[.32,'#a2919a'],[.8,'#766d82'],[1,'#514a62']]));masonry(c,left,-215,right-left,211,17);
+    rect(c,left,-215,right-left,211,gradient(c,left,0,right-left,0,[[0,'#81778a'],[.32,'#afa194'],[.8,'#817780'],[1,'#514a62']]));masonry(c,left,-215,right-left,211,17);
     cornice(c,left-5,-219,right-left+9,10);cornice(c,left-3,-14,right-left+6,9);
     for(let xx=left+22;xx<right-5;xx+=40){rect(c,xx-8,-240,17,22,'#9b8891');rect(c,xx-9,-241,19,3,'#c3aa85');rect(c,xx-6,-235,13,3,'#38364c66');}
     for(let xx=left+44;xx<right-18;xx+=73){archFill(c,xx,-34,53,150,null,'#4d4357',3);archFill(c,xx,-32,59,157,null,'#b59c8d55',1);window(c,xx,-64,26,87,'#f4c382');}
@@ -149,7 +170,7 @@ function facade(c){
   // The outer towers stand forward of both wings and the high central keep.
   for(const side of[-1,1])tower(c,448+side*353,4,49,285,139,{balcony:true});
   // A deep central gatehouse breaks the otherwise broad horizontal wall.
-  path(c,[[343,-228],[548,-228],[566,-249],[359,-249]],'#5a4e65','#b99d79',1);rect(c,343,-228,205,225,gradient(c,343,0,205,0,[[0,'#9c8991'],[.24,'#baa099'],[.7,'#8f7c89'],[1,'#5a4f68']]));masonry(c,343,-228,205,225,19);cornice(c,338,-231,215,8);
+  path(c,[[343,-228],[548,-228],[566,-249],[359,-249]],'#5a4e65','#b99d79',1);rect(c,343,-228,205,225,gradient(c,343,0,205,0,[[0,'#9c8991'],[.24,'#c4b09d'],[.7,'#998d89'],[1,'#5a4f68']]));masonry(c,343,-228,205,225,19);cornice(c,338,-231,215,8);
   for(const side of[-1,1])tower(c,448+side*116,-24,19,221,80);
   // A broad royal portal, an illuminated rose and carved acanthus read at a glance.
   roseWindow(c,448,-305,33);for(const side of[-1,1])royalBanner(c,448+side*121,-315);

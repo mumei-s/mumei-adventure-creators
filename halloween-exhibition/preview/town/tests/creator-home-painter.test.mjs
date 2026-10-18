@@ -6,11 +6,11 @@ import {drawCreatorHome2D,drawCreatorQuarterGate2D,CREATOR_HOME_MOTIFS} from '..
 function harness({cache=true}={}){
  const records=[];
  function createCanvas(){
-  const calls=[],canvas={width:0,height:0};if(cache)canvas.ownerDocument={createElement:()=>createCanvas()};
+  const calls=[],gradients=[],canvas={width:0,height:0};if(cache)canvas.ownerDocument={createElement:()=>createCanvas()};
   let depth=0;
-  const context=new Proxy({canvas,save(){depth++;calls.push(['save']);},restore(){depth--;calls.push(['restore']);},createLinearGradient:()=>({addColorStop(){}})}, {
+  const context=new Proxy({canvas,save(){depth++;calls.push(['save']);},restore(){depth--;calls.push(['restore']);},createLinearGradient(...coordinates){const value={coordinates,stops:[],addColorStop(at,color){this.stops.push([at,color]);}};gradients.push(value);return value;}}, {
    get:(target,key)=>key in target?target[key]:(...args)=>calls.push([key,...args]),set:(target,key,value)=>{target[key]=value;return true;}
-  });canvas.getContext=()=>context;records.push({canvas,context,calls,depth:()=>depth});return canvas;
+  });canvas.getContext=()=>context;records.push({canvas,context,calls,gradients,depth:()=>depth});return canvas;
  }
  const canvas=createCanvas();return {canvas,context:canvas.getContext('2d'),records};
 }
@@ -59,6 +59,51 @@ test('static home art paints once and the cache bounds repeated palette/name edi
  assert.equal(records.length,2);assert.equal(records[1].calls.length,first,'a rendered frame only composites the cached house');
  for(let n=0;n<30;n++)drawCreatorHome2D(context,{...home,creatorName:'Test '+n});const count=records.length;drawCreatorHome2D(context,home);assert.equal(records.length,count+1,'the original is evicted instead of keeping an unbounded edit history');
  const direct=harness({cache:false});assert.equal(drawCreatorHome2D(direct.context,home),true);assert.equal(direct.records.length,1);assert.ok(direct.records[0].calls.some(call=>call[0]==='fillText'));
+});
+
+test('every home bakes directional material light, window reflections, and contact shadows into the bounded cache',()=>{
+ for(const home of CREATOR_HOMES){
+  const {context,records}=harness();drawCreatorHome2D(context,home);const art=records[1];
+  assert.equal(art.canvas.width,384);assert.equal(art.canvas.height,368,'material detail cannot expand mobile texture memory');
+  assert.ok(art.gradients.some(g=>g.stops.length>=4&&g.coordinates[2]!==g.coordinates[0]),'the wall and wood have directional surface light');
+  assert.ok(art.gradients.some(g=>g.stops.some(([,color])=>/^#[a-f0-9]{8}$/i.test(color)&&color.endsWith('00'))),'occlusion fades to transparent instead of making a hard black band');
+  assert.ok(art.calls.filter(call=>call[0]==='clip').length>=5,'surface marks and reflected sky remain within their architecture');
+  assert.equal(art.calls.filter(call=>call[0]==='drawImage').length,0,'realistic materials are local drawing, without external profile or artwork images');
+  assert.ok(art.gradients.every(g=>g.coordinates.every(Number.isFinite)&&g.stops.every(([at])=>at>=0&&at<=1)));
+ }
+});
+
+test('creator-specific material marks are stable across sessions and do not depend on the animation clock',()=>{
+ const home=CREATOR_HOMES[0],paint=id=>{const {context,records}=harness();drawCreatorHome2D(context,{...home,creatorId:id});return records[1].calls;};
+ assert.deepEqual(paint('same-creator'),paint('same-creator'));
+ assert.notDeepEqual(paint('same-creator'),paint('another-creator'),'different public identities give the same construction its own stable plaster and wood grain');
+});
+
+test('public creative uses add distinct frontage without moving the door, and invalidate the static cache',()=>{
+ const {context,records}=harness(),home=CREATOR_HOMES[2];
+ drawCreatorHome2D(context,{...home,homeUse:'home-office'});const original=records[1].calls;
+ for(const use of['illustration-studio','writing-garden','shop-atelier','recording-studio']){
+  const count=records.length;drawCreatorHome2D(context,{...home,homeUse:use});assert.equal(records.length,count+1);
+  const art=records.at(-1),door=art.calls.find(call=>call[0]==='roundRect'&&call[2]===-80&&call[3]===50);
+  assert.equal((door[1]+25)*home.w/320+home.x,home.door.x);assert.ok(art.calls.length<5000);
+  assert.notDeepEqual(art.calls,original,'the public creative use changes actual bay or shop construction');
+  drawCreatorHome2D(context,{...home,homeUse:use});assert.equal(records.length,count+1,'the frontage is baked once');
+ }
+ const constructionSignatures=new Set();
+ for(const homeConstruction of['brick','stone','plaster']){
+  drawCreatorHome2D(context,{...home,homeUse:'material-study',homeConstruction});
+  const art=records.at(-1);constructionSignatures.add(JSON.stringify(art.calls));const count=records.length;
+  drawCreatorHome2D(context,{...home,homeUse:'material-study',homeConstruction});assert.equal(records.length,count,'each construction material has its own stable cache entry');
+ }
+ assert.equal(constructionSignatures.size,3,'brick joints, dressed blocks, and lime plaster are different physical surfaces');
+});
+
+test('a long creator name keeps whole characters and stays inside its facade sign',()=>{
+ const {context,records}=harness(),home={...CREATOR_HOMES[0],creatorName:'あ'.repeat(16)+'🦁🦁🦁'};
+ drawCreatorHome2D(context,home);
+ const text=records[1].calls.find(call=>call[0]==='fillText');
+ assert.equal(text[1],'あ'.repeat(16)+'🦁…');
+ assert.equal(text[4],158,'the name is fitted to the original sign without expanding the house');
 });
 
 test('quarter travel gates name both destinations while keeping the center passage open',()=>{

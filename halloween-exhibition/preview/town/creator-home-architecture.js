@@ -2,6 +2,33 @@ import * as THREE from '../maze/vendor/three.module.js';
 
 const TAU=Math.PI*2;
 const vegetationByResources=new WeakMap();
+const surfacesByResources=new WeakMap();
+const surfaceNoise=(x,y,seed)=>{const value=Math.sin(x*127.1+y*311.7+seed*74.7)*43758.5453;return value-Math.floor(value);};
+function surfaceTexture(kind){
+  const size=kind==='slate'?128:64,color=new Uint8Array(size*size*4),relief=new Uint8Array(size*size*4);
+  for(let y=0;y<size;y++)for(let x=0;x<size;x++){
+    const grain=surfaceNoise(x,y,kind.length),fine=surfaceNoise(x*.37,y*.19,3);let light=242+(grain-.5)*10,height=125+(grain-.5)*24;
+    if(kind==='wood'){
+      const fibre=Math.sin(x*.63+Math.sin(y*.06)*1.2+Math.sin(x*.13)*2),pore=grain>.94?12:0;
+      light=222+fibre*10+(fine-.5)*12-pore;height=125+fibre*28-pore;
+    }else if(kind==='stone'||kind==='brick'){
+      const course=kind==='brick'?8:16,row=Math.floor(y/course),column=Math.floor((x+(row%2)*8)/16),joint=y%course<1||(x+(row%2)*8)%16<1,block=surfaceNoise(column,row,21);
+      light=joint?169:218+(block-.5)*18+(grain-.5)*14;height=joint?35:142+(grain-.5)*35;
+    }else if(kind==='slate'){
+      const row=Math.floor(y/16),column=Math.floor((x+(row%2)*8)/16),edge=y%16<2,seam=(x+(row%2)*8)%16<1,tile=surfaceNoise(column,row,12);
+      light=edge?161:seam?176:219+(tile-.5)*24+(grain-.5)*10;height=edge?36:seam?72:116+(y%16)*4+(grain-.5)*15;
+    }
+    const offset=(y*size+x)*4;for(let channel=0;channel<3;channel++){color[offset+channel]=Math.max(0,Math.min(255,light));relief[offset+channel]=Math.max(0,Math.min(255,height));}color[offset+3]=relief[offset+3]=255;
+  }
+  const make=(bytes,role)=>{const texture=new THREE.DataTexture(bytes,size,size,THREE.RGBAFormat);texture.name='creator-home-'+kind+'-'+role;texture.wrapS=texture.wrapT=THREE.RepeatWrapping;texture.magFilter=THREE.LinearFilter;texture.minFilter=THREE.LinearMipmapLinearFilter;texture.generateMipmaps=true;texture.needsUpdate=true;return texture;};
+  const map=make(color,'color');map.colorSpace=THREE.SRGBColorSpace;return{map,bumpMap:make(relief,'relief')};
+}
+function homeSurfaces(resources){
+  let surfaces=surfacesByResources.get(resources);if(surfaces&&resources.has(surfaces.plaster.map))return surfaces;
+  surfaces=Object.fromEntries(['plaster','wood','stone','brick','slate'].map(kind=>[kind,surfaceTexture(kind)]));
+  for(const maps of Object.values(surfaces))for(const texture of Object.values(maps))resources.add(texture);
+  surfacesByResources.set(resources,surfaces);return surfaces;
+}
 function homeFoliage(b,resources,x,y,z,w,h,d,material,bucket){
   let geometry=vegetationByResources.get(resources);if(!geometry||!resources.has(geometry)){geometry=new THREE.IcosahedronGeometry(1,0);resources.add(geometry);vegetationByResources.set(resources,geometry);}
   b.instance(geometry,material,x,y,z,w,h,d,0,bucket);
@@ -62,9 +89,14 @@ function windowShape(kind){
 }
 
 function shapedWindow({b,resources,materials,trim,bucket,kind,x,y,z,width=1,height=1,mullions=true,geometryCache}){
-  if(!geometryCache.has(kind)){const geometry=new THREE.ExtrudeGeometry(windowShape(kind),{depth:.07,bevelEnabled:false,curveSegments:10});resources.add(geometry);geometryCache.set(kind,geometry);}
-  const geometry=geometryCache.get(kind);b.instance(geometry,trim,x,y,z,width,height,1,0,bucket);b.instance(geometry,materials.glass,x,y,z+.075,width*.8,height*.8,.6,0,bucket);
-  if(mullions){b.box(x,y,z+.15,.05,height*.72,.04,trim,0,bucket);b.box(x,y-.02,z+.15,width*.72,.045,.04,trim,0,bucket);}
+  if(!geometryCache.has(kind)){
+    const frame=windowShape(kind),opening=new THREE.Path(),points=windowShape(kind).getPoints(6);
+    points.forEach((point,index)=>index?opening.lineTo(point.x*.8,point.y*.8):opening.moveTo(point.x*.8,point.y*.8));opening.closePath();frame.holes.push(opening);
+    const geometry=new THREE.ExtrudeGeometry(frame,{depth:.13,bevelEnabled:false,curveSegments:6}),glass=new THREE.ShapeGeometry(windowShape(kind),6);
+    geometry.name='creator-home-recessed-frame-'+kind;glass.name='creator-home-inset-glass-'+kind;for(const item of[geometry,glass])resources.add(item);geometryCache.set(kind,{frame:geometry,glass});
+  }
+  const geometry=geometryCache.get(kind);b.instance(geometry.frame,trim,x,y,z,width,height,1,0,bucket);b.instance(geometry.glass,materials.dark,x,y,z+.015,width*.86,height*.86,1,0,bucket);b.instance(geometry.glass,materials.glass,x,y,z+.045,width*.8,height*.8,1,0,bucket);
+  if(mullions){b.box(x,y,z+.14,.045,height*.78,.04,trim,0,bucket);b.box(x,y-.02,z+.14,width*.78,.045,.04,trim,0,bucket);}
 }
 
 /** A raised, recognizable doorway emblem. Each creator's motif has its own silhouette. */
@@ -102,19 +134,31 @@ export function creatorHomeEmblemGeometry(motif='lantern'){
 }
 
 function homeMaterials(building,materials,resources){
-  const source=building.homePalette||{},bucket=building.id;
-  return Object.fromEntries([['wall',materials.wall,source.wall||'#d0c1a3'],['roof',materials.roof,source.roof||'#53667a'],['trim',materials.woodLight,source.trim||'#a18058']].map(([role,base,color])=>{
-    const material=base.clone();material.color.set(color);material.name=(role==='trim'?'wood':role)+'-creator-home-'+building.creatorId;material.userData.fadeBucket=bucket;resources.add(material);return[role,material];
+  const source=building.homePalette||{},bucket=building.id,surfaces=homeSurfaces(resources);
+  const result=Object.fromEntries([
+    ['wall',materials.wall,source.wall||'#d0c1a3',['stone','brick'].includes(building.homeConstruction)?building.homeConstruction:'plaster',.94,.025],['roof',materials.roof,source.roof||'#53667a','slate',.87,.055],['trim',materials.woodLight,source.trim||'#a18058','wood',.78,.018],
+    ['wood',materials.wood,null,'wood',.8,.02],['stone',materials.stone,null,'stone',.96,.035],['foundation',materials.stoneDark,null,'stone',.98,.04],
+  ].map(([role,base,color,surface,roughness,bumpScale])=>{
+    const material=base.clone();if(color)material.color.set(color);Object.assign(material,surfaces[surface],{roughness,bumpScale,metalness:0});material.name=(role==='trim'?'wood':role)+'-creator-home-'+building.creatorId;material.userData.fadeBucket=bucket;material.userData.surface=surface;resources.add(material);return[role,material];
   }));
+  const glass=materials.glass.clone();glass.name='glass-creator-home-'+building.creatorId;glass.color.set('#c7d5cf');glass.emissive.set('#e2b780');glass.emissiveIntensity=.12;glass.roughness=.21;glass.metalness=.12;glass.userData.fadeBucket=bucket;resources.add(glass);result.glass=glass;return result;
+}
+function roofSurfaceUV(geometry){
+  const position=geometry.attributes.position,normal=geometry.attributes.normal,uv=[];
+  for(let index=0;index<position.count;index++){
+    const vertical=Math.abs(normal.getZ(index))>.7;
+    uv.push(position.getX(index)/1.1,(vertical?position.getY(index):position.getZ(index))/.9);
+  }
+  geometry.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));return geometry;
 }
 
 function nameplate(building,b,materials,resources,makeCanvas,x,y,z,bucket){
-  b.box(x,y,z,2.22,.57,.12,materials.wood,0,bucket);b.box(x,y,z+.075,2.1,.46,.045,materials.paper,0,bucket);
-  if(!makeCanvas)return;
-  const canvas=makeCanvas(256,64),c=canvas?.getContext?.('2d');if(typeof c?.fillText!=='function')return;
+  b.box(x,y,z,2.22,.57,.12,materials.wood,0,bucket);
+  const canvas=makeCanvas?.(256,64),c=canvas?.getContext?.('2d');
+  if(typeof c?.fillText!=='function'){b.box(x,y,z+.075,2.1,.46,.045,materials.paper,0,bucket);return;}
   c.fillStyle='#efe2bd';c.fillRect(0,0,256,64);c.fillStyle='#43372e';c.textAlign='center';c.textBaseline='middle';
   const fit=(text,base,max)=>{c.font=`600 ${base}px system-ui,sans-serif`;if(c.measureText){const length=c.measureText(text).width;if(length>max)c.font=`600 ${Math.max(10,base*max/length)}px system-ui,sans-serif`;}return text;};
-  c.fillText(fit(building.creatorName||building.creatorId||'',23,242),128,21);c.fillText(fit(building.homeLabel||building.label||'',16,242),128,47);
+  c.fillText(fit(building.creatorName||building.creatorId||'',26,242),128,21,242);c.fillText(fit(building.homeLabel||building.label||'',16,242),128,47,242);
   const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;texture.minFilter=THREE.LinearFilter;texture.generateMipmaps=false;resources.add(texture);
   const material=new THREE.MeshBasicMaterial({map:texture});material.name='creator-home-nameplate';material.userData.fadeBucket=bucket;resources.add(material);
   const sign=b.mesh(new THREE.PlaneGeometry(2.06,.44),material,new THREE.Vector3(x,y,z+.103),bucket);sign.name='creator-home-nameplate-'+building.creatorId;sign.userData.creatorId=building.creatorId;
@@ -134,6 +178,16 @@ function themeDetails({building,b,m,materials,resources,geometryCache,high,roofH
   const round=(px,py,pz,r,hh,mat=m.trim)=>b.round(px,py,pz,r,hh,mat,bucket),peak=(px,py,pz,r,hh,mat=m.roof)=>b.peak(px,py,pz,r,hh,mat,bucket);
   const win=(kind,px,py,pz,width,height,mullions=true)=>shapedWindow({b,resources,materials,trim:m.trim,bucket,kind,x:px,y:py,z:pz,width,height,mullions,geometryCache});
   const awning=(px,py,pz,width,depth=1)=>{box(px,py,pz,width,.16,depth,m.roof);for(let n=0;n<7;n++)box(px-width*.45+n*width*.15,py+.09,pz,width*.07,.035,depth+.02,materials.paper);for(const side of[-1,1])box(px+side*width*.43,py-.45,pz+depth*.38,.06,.9,.06);};
+  // Public creative activity influences usable frontage, alongside the retained
+  // character motifs. These are imagined studios, never real-house replicas.
+  if(building.homeUse==='shop-atelier'){
+    const xx=x+w*.18;awning(xx,2.02,south+.2,1.78,.66);box(xx,.61,south+.29,1.35,.12,.42,m.wood);
+    for(let n=0;n<3;n++)box(xx-.38+n*.38,.77,south+.34,.24,.19,.16,materials.paper);
+  }
+  if(building.homeUse==='writing-garden'){
+    const xx=x+w*.83;box(xx,.42,south+.14,1.27,.12,.39,m.wood);for(const side of[-1,1])box(xx+side*.49,.21,south+.14,.08,.4,.3,m.wood);
+    box(xx,.52,south+.15,.42,.045,.26,materials.paper);
+  }
   switch(kind){
     case'lantern':
       box(cx,top+1.08,cz+h*.41,1.45,.96,.85,m.wall);win('cat',cx,top+1.14,south+.36,.86,.8);
@@ -207,6 +261,9 @@ function themeDetails({building,b,m,materials,resources,geometryCache,high,roofH
 /** Individual homes share primitive buffers and keep the authored threshold clear. */
 export function buildCreatorHome({building,b,materials,resources,roofGeometry,makeCanvas}){
   const {x,z,w,h}=building,cx=x+w/2,cz=z+h/2,south=z+h,bucket=building.id,m=homeMaterials(building,materials,resources),motif=building.motif||'lantern';
+  // Local copies retain the same batch count and disposal ownership as the
+  // palette's per-building materials, while making every visible surface real.
+  materials={...materials,wood:m.wood,stone:m.stone,stoneDark:m.foundation,glass:m.glass};
   const profile=HOME_BUILDINGS[motif]||HOME_BUILDINGS.lantern,{high,roof:roofHeight}=profile,garden=['cat-leaf','flower','hedgehog','shiba','iris-flower'].includes(motif),doorX=building.door?.x??cx,geometryCache=new Map();
   b.box(cx,.13,cz,w,.26,h,materials.stoneDark,0,bucket);b.box(cx,high/2+.26,cz,w-.14,high,h-.14,m.wall,0,bucket);
   for(const side of[-1,1]){
@@ -219,14 +276,28 @@ export function buildCreatorHome({building,b,materials,resources,roofGeometry,ma
   b.box(cx,.4,south+.04,w+.13,.21,.22,materials.stone,0,bucket);b.box(cx,high+.22,south+.03,w+.25,.18,.24,m.trim,0,bucket);
   // Side-facing structural beams and divided windows also read from the elevated camera.
   for(const fraction of[.23,.77])b.box(x+w*fraction,high*.54,south+.055,.12,high-.25,.17,m.trim,0,bucket);
-  const roof=b.mesh(creatorHomeRoofGeometry(motif,w+.64,h+.62,roofHeight),m.roof,new THREE.Vector3(cx,high+.27,cz),bucket);roof.name='roof-'+building.id;
+  const roof=b.mesh(roofSurfaceUV(creatorHomeRoofGeometry(motif,w+.64,h+.62,roofHeight)),m.roof,new THREE.Vector3(cx,high+.27,cz),bucket);roof.name='roof-'+building.id;
+  // Thin fascia and gutter volumes produce an overhanging eave rather than a
+  // roof glued straight onto a box. They remain above the walking threshold.
+  for(const side of[-1,1]){
+    b.box(cx,high+.22,cz+side*(h/2+.25),w+.55,.12,.12,m.wood,0,bucket);
+    b.box(cx,high+.18,cz+side*(h/2+.31),w+.55,.065,.11,materials.dark,0,bucket);
+  }
   if(['lantern','cat-leaf','shiba','iris-flower','hedgehog','candy'].includes(motif))b.box(cx,high+roofHeight+.31,cz,.14,.08,h+.7,m.trim,0,bucket);
   b.box(doorX,.78,south+.13,1.22,1.56,.22,m.trim,0,bucket);b.box(doorX,.75,south+.26,.98,1.5,.07,materials.wood,0,bucket);b.box(doorX+.3,.69,south+.31,.055,.075,.04,materials.gold,0,bucket);b.box(doorX,.055,south+.27,1.5,.11,.54,materials.stone,0,bucket);
+  for(const yy of[.42,1.1]){
+    b.box(doorX,yy,south+.297,.73,.53,.012,materials.dark,0,bucket);
+    b.box(doorX,yy,south+.301,.65,.45,.012,m.wood,0,bucket);
+  }
   // The emblem is actual extruded geometry; it stays recognizable before any images load.
   b.box(doorX,high-.37,south+.17,1.26,.9,.12,m.trim,0,bucket);b.box(doorX,high-.37,south+.24,1.13,.77,.045,materials.dark,0,bucket);
   const emblem=b.mesh(creatorHomeEmblemGeometry(motif),materials.gold,new THREE.Vector3(doorX,high-.38,south+.28),bucket);emblem.name='creator-home-emblem-'+building.creatorId;emblem.userData.creatorId=building.creatorId;emblem.userData.motif=motif;
+  const studio=['illustration-studio','media-studio','design-studio'].includes(building.homeUse),recording=building.homeUse==='recording-studio';
   for(const wx of[x+w*.18,x+w*.82]){
-    shapedWindow({b,resources,materials,trim:m.trim,bucket,kind:profile.window,x:wx,y:1.43,z:south+.13,width:1.06,height:motif==='iris-flower'?1.26:.96,geometryCache});b.box(wx,.9,south+.24,1.18,.12,.4,m.trim,0,bucket);
+    if(recording){
+      for(const offset of[-.38,0,.38])shapedWindow({b,resources,materials,trim:m.trim,bucket,kind:'recording',x:wx+offset,y:1.43,z:south+.13,width:.32,height:1.08,mullions:false,geometryCache});
+    }else shapedWindow({b,resources,materials,trim:m.trim,bucket,kind:studio?'studio':profile.window,x:wx,y:1.43,z:south+.13,width:studio?1.36:1.06,height:studio?1.27:motif==='iris-flower'?1.42:.96,geometryCache});
+    b.box(wx,.9,south+.24,studio?1.48:1.18,.12,.4,m.trim,0,bucket);
     // Window boxes keep greenery beside the door rather than across the walking line.
     b.box(wx,.75,south+.21,1.07,.23,.48,m.trim,0,bucket);
     for(let n=0;n<3;n++)homeFoliage(b,resources,wx-.31+n*.31,.97,south+.25,.2,.17,.17,garden?materials.leafLight:materials.leaf,bucket);
@@ -236,7 +307,7 @@ export function buildCreatorHome({building,b,materials,resources,roofGeometry,ma
   const chimneyX=x+w*.79,chimneyZ=z+h*.3;b.box(chimneyX,high+roofHeight*.55,chimneyZ,.43,1.34,.49,materials.stone,0,bucket);b.box(chimneyX,high+roofHeight*.55+.7,chimneyZ,.58,.12,.62,m.trim,0,bucket);
   themeDetails({building,b,m,materials,resources,geometryCache,high,roofHeight});
   roof.geometry.computeBoundingBox();const roofTop=roof.geometry.boundingBox.max.y+high+.27,detailTop=motif==='moon-cat'?high+.27+roofHeight*1.86+.8:motif==='wave-star'?high+2.1:high+2.13;
-  return {id:building.id,creatorId:building.creatorId,motif,architecture:building.homeTheme,window:profile.window,footprint:{x,z,w,h},door:{...building.door},height:Math.max(roofTop,detailTop)+.2,bucket};
+  return {id:building.id,creatorId:building.creatorId,motif,architecture:building.homeTheme,homeUse:building.homeUse,construction:building.homeConstruction,window:recording?'triple-recording':studio?'studio-bay':profile.window,footprint:{x,z,w,h},door:{...building.door},height:Math.max(roofTop,detailTop)+.2,bucket};
 }
 
 /** A clear opening and a named sign make both ends of the new lane discoverable. */

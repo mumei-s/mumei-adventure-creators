@@ -41,6 +41,54 @@ test('each doorway motif has a unique finite three-dimensional silhouette',()=>{
   assert.equal(signatures.size,CREATOR_HOMES.length);
 });
 
+test('facade nameplates use the matching creator and fit long names inside the existing sign',()=>{
+ const map=createCreatorQuarter();map.buildings[0].creatorName='長い名前🦁'.repeat(30);
+ const makeCanvas=(width,height)=>{
+  const calls=[],context={font:'',fillRect(){},fillText(...args){calls.push({font:this.font,args});},measureText:text=>({width:Array.from(text).length*13})};
+  return{width,height,calls,getContext:()=>context};
+ };
+ const scene=createTownSceneGeometry(map,{makeCanvas});
+ for(const home of map.buildings){
+  const sign=scene.root.getObjectByName('creator-home-nameplate-'+home.creatorId),canvas=sign.material.map.image;
+  assert.deepEqual(canvas.calls.map(call=>call.args[0]),[home.creatorName,home.homeLabel]);
+  assert.equal(canvas.width,256);assert.equal(canvas.height,64,'readability does not multiply the texture budget');
+  assert.ok(canvas.calls.every(call=>call.args[3]===242),'Canvas fits both rows even at the minimum font size');
+ }
+ scene.dispose();
+});
+
+test('real building surfaces share bounded offline relief textures and keep their own creator colors',()=>{
+ const scene=createTownSceneGeometry(createCreatorQuarter());
+ const textures=[...scene.resources].filter(item=>item.isDataTexture);
+ assert.equal(textures.length,10,'five color/relief pairs are shared by all sixteen homes');
+ assert.ok(textures.reduce((bytes,texture)=>bytes+texture.image.data.byteLength,0)<=256*1024);
+ for(const texture of textures){assert.ok(new Set(texture.image.data).size>8,'texture carries material variation');assert.equal(texture.wrapS,THREE.RepeatWrapping);}
+ for(const home of CREATOR_HOMES){
+  const wall=[...scene.resources].find(item=>item.name==='wall-creator-home-'+home.creatorId),roof=scene.root.getObjectByName('roof-'+home.id),glass=[...scene.resources].find(item=>item.name==='glass-creator-home-'+home.creatorId);
+  assert.equal(wall.userData.surface,home.homeConstruction);assert.ok(wall.map.isDataTexture&&wall.bumpMap.isDataTexture);assert.ok(wall.roughness>.9&&wall.bumpScale>0);
+  assert.equal(roof.material.userData.surface,'slate');assert.ok(roof.material.bumpMap);assert.ok(glass.roughness<.3&&glass.emissiveIntensity<.2,'windows reflect light instead of glowing like lamps');
+ }
+ scene.dispose();
+});
+
+test('window openings have an inset glass plane behind their actual solid frame',()=>{
+ const home=CREATOR_HOMES[0],scene=createTownSceneGeometry(createCreatorQuarter()),south=home.z+home.h,wx=home.x+home.w*.18,ray=new THREE.Raycaster(new THREE.Vector3(wx+.16,1.57,south+.8),new THREE.Vector3(0,0,-1),0,1.2);
+ const glass=ray.intersectObjects(scene.root.children,false)[0];assert.equal(glass.object.material.name,'glass-creator-home-'+home.creatorId);
+ ray.set(new THREE.Vector3(wx+.43,1.43,south+.8),new THREE.Vector3(0,0,-1));
+ const frame=ray.intersectObjects(scene.root.children,false)[0];assert.match(frame.object.geometry.name,/recessed-frame/);
+ assert.ok(frame.point.z-glass.point.z>.07,'the glass sits inside the frame, beyond a flat color swap');scene.dispose();
+});
+
+test('public creative activities receive physical studio bays while their character roof motifs remain',()=>{
+ const scene=createTownSceneGeometry(createCreatorQuarter()),recording=scene.root.children.find(item=>item.geometry?.name==='creator-home-recessed-frame-recording'&&item.userData.bucket==='home-grand_daisy8632');
+ assert.equal(recording.count,6,'CNA has two groups of three recording panes');
+ for(const id of['n_kazumai55633','glossy_guppy6230','airoumu_rin']){
+  const bay=scene.root.children.find(item=>item.geometry?.name==='creator-home-recessed-frame-studio'&&item.userData.bucket==='home-'+id);assert.equal(bay.count,2);
+  const home=CREATOR_HOMES.find(item=>item.creatorId===id);assert.equal(scene.root.getObjectByName('roof-'+home.id).geometry.userData.motif,home.motif);
+ }
+ scene.dispose();
+});
+
 test('the sixteen architectural silhouettes stay different without colors, names or doorway emblems',()=>{
   const shapes=new Set();
   for(const home of CREATOR_HOMES){

@@ -34,10 +34,20 @@ test('a river is transparent to names, and diagonal wall corners remain opaque',
  const f=fixture(),scene=map(['........','........','..~.....','........']);scene.npcs=[{id:'other-bank',name:'向こう岸の人',x:3.5,z:2.5}];f.update({map:scene,state:{position:{x:1.5,z:2.5}},project});assert.equal(visible(f)[0].textContent,'向こう岸の人');
  const corner=map(['.....','..#..','.....','.....']);corner.npcs=[{id:'corner',name:'石の向こう',x:3.5,z:3.5}];f.update({map:corner,state,project});assert.equal(visible(f).length,0);
 });
-test('home labels use the short creator name at the south door threshold',()=>{
+test('home labels use the short creator name on the front wall above the doorstep',()=>{
  for(const homes of [[{creatorId:'owner',creatorName:'無名S note｜主催'}],new Map([['owner',{creatorName:'無名S note｜主催'}]]),{owner:{creatorName:'無名S note｜主催'}}]){
   const f=fixture(),points=[],scene=map();scene.buildings=[{id:'home',kind:'creator-home',creatorId:'owner',creatorName:'Fallback',door:{x:4.5,z:4.5}},{id:'shop',kind:'shop',name:'Shop',door:{x:2,z:2}}];
-  f.update({map:scene,state,homes,project:point=>{points.push(point);return project(point);}});assert.deepEqual(visible(f).map(node=>node.textContent),['無名S noteの家']);assert.deepEqual(points,[{x:4.5,z:4.7}]);assert.match(visible(f)[0].className,/scene-name-home/);
+  f.update({map:scene,state,homes,project:point=>{points.push(point);return project(point);}});assert.deepEqual(visible(f).map(node=>node.textContent),['無名S noteの家']);assert.deepEqual(points,[{x:4.5,y:2.2,z:4.2}]);assert.match(visible(f)[0].className,/scene-name-home/);
+ }
+});
+test('home labels project a stable facade height and stay centered on the house at either renderer zoom',()=>{
+ const scene=map();scene.buildings=[{id:'home',kind:'creator-home',creatorName:'カモミール',x:3,z:3,w:7,h:5,door:{x:6.5,z:8.5}}];
+ for(const scale of [.6,1,1.7]){
+  const f=fixture(),points=[];
+  f.update({map:scene,state,project:point=>{points.push(point);return{x:200,y:210-point.y*40*scale};}});
+  assert.deepEqual(points,[{x:6.5,y:2.2,z:8.2}]);
+  assert.equal(visible(f)[0].style.top,Math.round(210-2.2*40*scale-9)+'px');
+  assert.equal(visible(f)[0].textContent,'カモミールの家');
  }
 });
 test('offscreen points are omitted, edge names stay inside the viewport and nearby labels separate',()=>{

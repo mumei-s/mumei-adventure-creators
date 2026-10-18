@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createTownRenderer} from '../renderer.js';
 import {initialTownState} from '../town-model.js';
+import {TOWN_DEPTH_SCALE} from '../renderer.js';
 
 function harness(width=420,height=700){
  const canvases=[];
@@ -16,6 +17,20 @@ function harness(width=420,height=700){
  const canvas=makeCanvas(width,height),renderer=createTownRenderer({makeCanvas,loadImage:async()=>({width:2048,height:2048})});
  return {canvas,renderer,floorAllocations:()=>canvases.filter(item=>item.originalWidth===512&&item.originalHeight===512).length};
 }
+
+test('street framing brings the existing wide view one step closer and keeps facade names above their doors',async()=>{
+ const {canvas,renderer}=harness();await renderer.ready;
+ const state={...initialTownState(),mapId:'creator-quarter',position:{x:23.5,z:20.5}};
+ try{
+  for(const cameraDistance of ['normal','wide'])for(const cameraZoom of [.65,1,1.4]){
+   renderer.render({canvas,state,motion:false,cameraDistance,cameraZoom});
+   const foot=renderer.worldToScreen(state.position),east=renderer.worldToScreen({...state.position,x:state.position.x+1}),raised=renderer.worldToScreen({...state.position,y:2.2});
+   const span=east.x-foot.x,previousSpan=52*(cameraDistance==='wide'?.68:1)*cameraZoom;
+   assert.ok(span>previousSpan*1.1&&span<previousSpan*1.15,'the view is one small step closer in both camera modes');
+   assert.equal(raised.x,foot.x);assert.ok(Math.abs((foot.y-raised.y)-2.2*span*TOWN_DEPTH_SCALE)<1e-9,'facade names follow physical building height at every zoom');
+  }
+ }finally{renderer.destroy();}
+});
 
 test('wide 2D zoom preserves screen picking at the palace, in town, and in the creator quarter',async()=>{
  for(const scenario of[

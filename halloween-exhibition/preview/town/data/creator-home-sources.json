@@ -1,0 +1,191 @@
+{
+  "schemaVersion": 1,
+  "reviewedAt": "2026-10-19",
+  "reviewTimezone": "Asia/Tokyo",
+  "purpose": "Public creative activity and approved character references for fictional game atelier architecture.",
+  "designPolicy": "Architectural interpretations are creative inferences. They do not describe or locate real residences. No real address information is collected.",
+  "visualReferenceManifest": "../../maze/data/creator-characters.json",
+  "creators": [
+    {
+      "creatorId": "ss_yr",
+      "publicProfileURL": "https://note.com/ss_yr",
+      "reviewedAt": "2026-10-19",
+      "verifiedActivityCues": ["共同創作企画とクリエイター交流を運営", "Halloween Atelierの主催者"],
+      "approvedVisualCues": ["既存の確認済み参照はランタンの主役と黒猫"],
+      "visualEvidence": {"kind": "existing-reviewed-manifest", "reviewKey": "ss_yr", "reviewedAt": "2026-10-16"},
+      "fictionalDesignInterpretation": "主催者の創作アトリエとして、石造の玄関、ランタン、猫の飾り、作品を展示できる窓を組み合わせる。",
+      "interpretationIsInference": true,
+      "verification": {"profile": "verified-public-page", "failures": []}
+    },
+    {
+      "creatorId": "koakumako",
+      "publicProfileURL": "https://note.com/koakumako",
+      "reviewedAt": "2026-10-19",
+      "verifiedActivityCues": ["小悪魔という自己表現", "noteの実験とハロウィーン仮装企画を公開"],
+      "approvedVisualCues": ["既存の確認済み参照は小悪魔キャラクター"],
+      "visualEvidence": {"kind": "existing-reviewed-manifest", "reviewKey": "koakumako", "reviewedAt": "2026-10-16"},
+      "fictionalDesignInterpretation": "深紅の煉瓦、ゴシック窓、翼を思わせる鉄細工を持つ小悪魔の実験アトリエ。",
+      "interpretationIsInference": true,
+      "verification": {"profile": "verified-public-page", "failures": []}
+    },
+    {
+      "creatorId": "n_kazumai55633",
+      "publicProfileURL": "https://note.com/n_kazumai55633",
+      "reviewedAt": "2026-10-19",
+      "verifiedActivityCues": ["AIイラスト制作とプロンプト設計", "光と構図の研究を活動として明記"],
+      "approvedVisualCues": ["既存の確認済み参照は汐ちゃんの魔女姿"],
+      "visualEvidence": {"kind": "existing-reviewed-manifest", "reviewKey": "n_kazumai55633", "reviewedAt": "2026-10-16"},
+      "fictionalDesignInterpretation": "採光の大きな制作窓と天窓を備えた画家のアトリエ。青系の波模様は名前からの創作的な連想。",
+      "interpretationIsInference": true,
+      "verification": {"profile": "verified-public-page", "failures": []}
+    },
+    {
+      "creatorId": "mama_ca",
+      "publicProfileURL": "https://note.com/mama_ca",
+      "publicWorkURLs": ["https://note.com/mama_ca/n/n8e74b9e2b535"],
+      "reviewedAt": "2026-10-19",
+      "verifiedActivityCues": ["元CAの視点で日常やnoteの楽しみ方を発信", "参加記事にお菓子とハロウィンの遊びを記述"],
+      "approvedVisualCues": ["既存の確認済み参照はプロフィールの人物と相棒"],
+      "visualEvidence": {"kind": "existing-reviewed-manifest", "reviewKey": "mama_ca", "reviewedAt": "2026-10-16"},
+      "fictionalDesignInterpretation": "丸窓と明るいサンルームを持つ家族的なアトリエに、お菓子色の庇や小さな旅の装飾を添える。",
+      "interpretationIsInference": true,
+      "verification": {"profile": "verified-public-page", "work": "verified-public-page", "failures": []}
+    },
+    {
+      "creatorId": "naemotion",
+      "publicProfileURL": "https://note.com/naemotion",
+      "publicWorkURLs": ["https://note.com/naemotion/n/n26b717b6c247"],
+      "reviewedAt": "2026-10-19",
+      "verifiedActivityCues": ["エッセイと小説を執筆", "公開メンバーシップに余白の庭という表現", "参加物語にかぼちゃ畑とピンクの月が登場"],
+      "approvedVisualCues": ["既存の確認済み参照は仮面舞踏会のキャラクター"],
+      "visualEvidence": {"kind": "existing-reviewed-manifest", "reviewKey": "naemotion", "reviewedAt": "2026-10-16"},
+      "fictionalDesignInterpretation": "本棚の見える出窓と静かな庭を備えた執筆の家。小さなかぼちゃ畑と淡い桃色の窓灯りを加える。",
+      "interpretationIsInference": true,
+      "verification": {"profile": "verified-public-page", "work": "verified-public-page", "failures": []}
+    },
+    {
+      "creatorId": "imota14",
+      "publicProfileURL": "https://note.com/imota14",
+      "reviewedAt": "2026-10-19",
+      "verifiedActivityCues": ["日々の出来事や内面の対話を文章で記録", "画像やプロンプトの創作遊びを公開", "公開記事一覧にメロンパンの話題"],
+      "approvedVisualCues": ["既存の確認済みプロフィール参照はパンのキャラクター"],
+      "visualEvidence": {"kind": "existing-reviewed-manifest", "reviewKey": "imota14", "reviewedAt": "2026-10-16"},
+      "fictionalDesignInterpretation": "パンのキャラクターをもとに、焼き窯風の丸い煉瓦玄関と木製の執筆窓を備える。実際の製パン業という意味ではない。",
+      "interpretationIsInference": true,
+      "verification": {"profile": "verified-public-page-after-retry", "failures": ["最初のプロフィール取得はタイムアウト。再取得で成功。"]}
+    },
+    {
+      "creatorId": "fond_holly3483",
+      "publicProfileURL": "https://note.com/fond_holly3483",
+      "publicWorkURLs": ["https://note.com/fond_holly3483/n/ne5a25ae27a20"],
+      "reviewedAt": "2026-10-19",
+      "verifiedActivityCues": ["学びと成長の記録や人とのつながりについて発信", "公開記事一覧でHalloween Atelier参加を確認"],
+      "approvedVisualCues": ["既存の確認済み参照は紺色と桃色の二人のキャラクター"],
+      "visualEvidence": {"kind": "existing-reviewed-manifest", "reviewKey": "fond_holly3483", "reviewedAt": "2026-10-16"},
+      "fictionalDesignInterpretation": "紺と桃の二つの切妻屋根を一つの玄関でつなぐアトリエ。キャラクター同士の連帯を表す造形。",
+      "interpretationIsInference": true,
+      "verification": {"profile": "verified-public-page", "work": "existing-reviewed-manifest-only", "failures": ["参加記事本文の今回の直接取得は失敗。二人の色と姿は既存の確認済み参照データに基づく。"]}
+    },
+    {
+      "creatorId": "tenkai_notes",
+      "publicProfileURL": "https://note.com/tenkai_notes",
+      "publicWorkURLs": ["https://note.com/tenkai_notes/n/n72ea89e9a32e"],
+      "reviewedAt": "2026-10-19",
+      "verifiedActivityCues": ["創作小説とエッセイを公開", "連作の午前零時の解決屋を執筆", "参加物語に吸血鬼と黒猫姿の登場人物"],
+      "approvedVisualCues": ["既存の確認済みプロフィール参照は月を思わせるローブ姿"],
+      "visualEvidence": {"kind": "existing-reviewed-manifest", "reviewKey": "tenkai_notes", "reviewedAt": "2026-10-16"},
+      "fictionalDesignInterpretation": "午前零時の時計を持つ書斎館。月窓、黒猫の鉄飾り、古い木扉で夜の物語を表す。",
+      "interpretationIsInference": true,
+      "verification": {"profile": "verified-public-page", "work": "verified-public-page", "failures": []}
+    },
+    {
+      "creatorId": "soh_style_work",
+      "publicProfileURL": "https://note.com/soh_style_work",
+      "reviewedAt": "2026-10-19",
+      "verifiedActivityCues": ["猫との日常と創作を発信", "異世界の掃除婦という創作モチーフ", "成長を若葉に重ねた表現"],
+      "approvedVisualCues": ["既存の確認済み参照はまりもと猫ののん"],
+      "visualEvidence": {"kind": "existing-reviewed-manifest", "reviewKey": "soh_style_work", "reviewedAt": "2026-10-16"},
+      "fictionalDesignInterpretation": "若葉の庭、猫用の小さな出入口、ほうきを置く庇のある庭付きアトリエ。",
+      "interpretationIsInference": true,
+      "verification": {"profile": "verified-public-page", "failures": []}
+    },
+    {
+      "creatorId": "clever_hare2654",
+      "publicProfileURL": "https://note.com/clever_hare2654",
+      "reviewedAt": "2026-10-19",
+      "verifiedActivityCues": ["読書、調べ物、文章に向き合う活動", "創作とAIを題材にした文章を公開"],
+      "approvedVisualCues": ["既存の確認済みプロフィール参照はカモミールの花のキャラクター"],
+      "visualEvidence": {"kind": "existing-reviewed-manifest", "reviewKey": "clever_hare2654", "reviewedAt": "2026-10-16"},
+      "fictionalDesignInterpretation": "白い花の窓辺とガラス温室、読書の出窓を組み合わせた静かなアトリエ。",
+      "interpretationIsInference": true,
+      "verification": {"profile": "verified-public-page", "failures": []}
+    },
+    {
+      "creatorId": "glossy_guppy6230",
+      "publicProfileURL": "https://note.com/glossy_guppy6230",
+      "publicWorkURLs": ["https://note.com/glossy_guppy6230/n/n4b2ef2311c28"],
+      "reviewedAt": "2026-10-19",
+      "verifiedActivityCues": ["Webデザインの学びと日常を発信", "ゆるキャラクターやハロウィンの創作を公開"],
+      "approvedVisualCues": ["既存の確認済みプロフィール参照には三匹のはりねずみ", "記事参照の街歩きキャラクター"],
+      "visualEvidence": {"kind": "existing-reviewed-manifest", "reviewKey": "glossy_guppy6230", "reviewedAt": "2026-10-16"},
+      "fictionalDesignInterpretation": "三つの小さなドーマー窓と作業用の大窓を備えた石と木のアトリエ。はりねずみは表札の飾りに用いる。",
+      "interpretationIsInference": true,
+      "verification": {"profile": "verified-public-page", "work": "verified-public-page", "failures": []}
+    },
+    {
+      "creatorId": "aihan_days",
+      "publicProfileURL": "https://note.com/aihan_days",
+      "reviewedAt": "2026-10-19",
+      "verifiedActivityCues": ["働き方と新しい仕事の気づきを発信", "業務整理や採用広報の経験を文章にする"],
+      "approvedVisualCues": ["既存の確認済みプロフィール参照は女性と柴犬の相棒"],
+      "visualEvidence": {"kind": "existing-reviewed-manifest", "reviewKey": "aihan_days", "reviewedAt": "2026-10-16"},
+      "fictionalDesignInterpretation": "落ち着いた仕事部屋の窓と木のベランダを持つ家。柴犬の飾りと相棒用の小さな入口を加える。",
+      "interpretationIsInference": true,
+      "verification": {"profile": "verified-public-page", "failures": []}
+    },
+    {
+      "creatorId": "cheeky_rhino7031",
+      "publicProfileURL": "https://note.com/cheeky_rhino7031",
+      "publicWorkURLs": ["https://note.com/cheeky_rhino7031/n/nd58ac4b4c53d"],
+      "reviewedAt": "2026-10-19",
+      "verifiedActivityCues": ["店長とマネージャーの経験を発信", "接客と店舗の現場知識を公開", "参加記事に犬吉との会話"],
+      "approvedVisualCues": ["既存の確認済みプロフィール参照はロキろんのキャラクター"],
+      "visualEvidence": {"kind": "existing-reviewed-manifest", "reviewKey": "cheeky_rhino7031", "reviewedAt": "2026-10-16"},
+      "fictionalDesignInterpretation": "接客の発信に着想を得た、客を迎える庇と大きな店舗風窓のある家。紫色の格子模様は装飾上の解釈で、編物の職業を示さない。",
+      "interpretationIsInference": true,
+      "verification": {"profile": "verified-public-page", "work": "verified-public-page", "failures": []}
+    },
+    {
+      "creatorId": "grand_daisy8632",
+      "publicProfileURL": "https://note.com/grand_daisy8632",
+      "reviewedAt": "2026-10-19",
+      "verifiedActivityCues": ["CNAはバーチャル音楽ユニット", "音楽、MV、ストーリー、四コマ漫画を展開"],
+      "approvedVisualCues": ["ユーザー確認済みのCNA三人のキャラクター", "黒髪、星のツインテール、眼鏡の三人"],
+      "visualEvidence": {"kind": "existing-reviewed-manifest", "reviewKey": "grand_daisy8632", "reviewedAt": "2026-10-17", "approvalId": "cna-three-character-reference-20261017"},
+      "fictionalDesignInterpretation": "三連の窓、音符の鉄飾り、舞台風の玄関を持つ音楽スタジオ。三人の造形は三つの屋根や窓に反映する。",
+      "interpretationIsInference": true,
+      "verification": {"profile": "verified-public-page", "failures": []}
+    },
+    {
+      "creatorId": "real_hyena9474",
+      "publicProfileURL": "https://note.com/real_hyena9474",
+      "reviewedAt": "2026-10-19",
+      "verifiedActivityCues": ["AIでオリジナルキャラクターを描く試行錯誤を公開", "キャラクターに添える物語も執筆"],
+      "approvedVisualCues": ["既存の確認済み参照はアイリスのキャラクター"],
+      "visualEvidence": {"kind": "existing-reviewed-manifest", "reviewKey": "real_hyena9474", "reviewedAt": "2026-10-16"},
+      "fictionalDesignInterpretation": "縦長の制作窓と物語の装飾を持つイラスト工房。アイリスの花は名前からの創作的な連想。",
+      "interpretationIsInference": true,
+      "verification": {"profile": "verified-public-page", "failures": []}
+    },
+    {
+      "creatorId": "airoumu_rin",
+      "publicProfileURL": "https://note.com/airoumu_rin",
+      "reviewedAt": "2026-10-19",
+      "verifiedActivityCues": ["AI動画制作とAI活用を発信", "公開記事一覧に黒金の獅子と幼獅子を題材にした作品"],
+      "approvedVisualCues": ["公開名に獅子の絵文字", "獅子の作品モチーフを公開記事名で確認"],
+      "fictionalDesignInterpretation": "青い大窓を持つ映像制作の家に、黒金の獅子のレリーフと陽だまり色の玄関を設ける。",
+      "interpretationIsInference": true,
+      "verification": {"profile": "verified-public-page", "visual": "public-profile-name-and-article-titles-only", "failures": []}
+    }
+  ]
+}

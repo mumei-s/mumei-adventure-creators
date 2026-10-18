@@ -1,17 +1,18 @@
 import {isInPalaceForecourt} from './palace-forecourt.js?v=20261019-journey1';
-import {drawCreatorHome2D,drawCreatorQuarterGate2D} from './creator-home-painter.js?v=20261019-journey1';
+import {drawCreatorHome2D,drawCreatorQuarterGate2D} from './creator-home-painter.js?v=20261019-homes2';
 import {TOWN_SCENERY_FRAMES} from './scenery-data.js?v=20261019-scene1';
-import {cameraDistanceScale,normalizeCameraZoom} from '../camera-distance.js?v=20261019-journey1';
+import {cameraDistanceScale} from '../camera-distance.js?v=20261019-journey1';
+import {townViewZoom} from './camera-framing.js?v=20261019-homes2';
 import {townLighting,townLanternPosition} from './lighting.js?v=20261019-interior1';
-import {getTownMap} from './story-data.js?v=20261019-journey1';
+import {getTownMap} from './story-data.js?v=20261019-homes2';
 import {TOWN_TILE as TILE,followTownCamera,townCameraTarget,townVisibleBounds,townWorldToScreen,townScreenToWorld} from './motion.js';
 import {TOWN_BUDGET,TOWN_PROP_CELLS,TOWN_BATTLE_ART_IDS,townVisualSeed as seed,buildingArtKind,townPropSprite} from './visual-data.js';
 import {drawArtSprite,playerPose,loadArtImage,PALACE_ART} from '../maze/rpg-art.js?v=20261019-unified1';
 import {enemyRigEffect} from '../maze/battle-rig-effects.js?v=20261017-rig2';
 import {monsterSprite} from '../maze/monster-motion.js?v=20261019-unified1';
 import {withDeadline} from '../transition-effects.js?v=20261016-living1';
-import {townPalaceFraming} from './palace-architecture.js?v=20261019-journey1';
-import {drawTownPalace2D} from './palace-painter.js?v=20261019-journey1';
+import {townPalaceFraming} from './palace-architecture.js?v=20261019-homes2';
+import {drawTownPalace2D} from './palace-painter.js?v=20261019-homes2';
 
 const TAU=Math.PI*2,clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 export const TOWN_DEPTH_SCALE=.78;
@@ -258,7 +259,7 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
     if(destroyed||!canvas||!state?.position)return false;
     const ratio=clamp(pixelRatio||1,1,2),w=canvas.width/ratio,h=canvas.height/ratio,map=getTownMap(state.mapId),interior=map.outdoor!==true;
     if(interior)ensureInterior();
-    const baseTile=w<550?52:w<900?61:70,framing=townPalaceFraming(state.position,map,55*Math.PI/180,w,h),tile=baseTile+(Math.min(baseTile,framing.pixelsPerTile??baseTile)-baseTile)*(framing.influence||0),scale=tile/TILE*cameraDistanceScale(cameraDistance)*normalizeCameraZoom(cameraZoom),target=townCameraTarget(state.position,map,w,h/TOWN_DEPTH_SCALE,tile*cameraDistanceScale(cameraDistance)*normalizeCameraZoom(cameraZoom));
+    const baseTile=w<550?52:w<900?61:70,framing=townPalaceFraming(state.position,map,55*Math.PI/180,w,h),tile=baseTile+(Math.min(baseTile,framing.pixelsPerTile??baseTile)-baseTile)*(framing.influence||0),scale=tile/TILE*cameraDistanceScale(cameraDistance)*townViewZoom(cameraZoom),target=townCameraTarget(state.position,map,w,h/TOWN_DEPTH_SCALE,tile*cameraDistanceScale(cameraDistance)*townViewZoom(cameraZoom));
     if(framing.influence){target.x+=(framing.targetX*TILE-target.x)*framing.influence*.78;target.y+=((state.position.z*TILE-310/TOWN_DEPTH_SCALE)-target.y)*framing.influence;}
     const switched=lastMap!==map.id;camera=followTownCamera(switched?null:camera,target,dt,{snap:!motion});lastMap=map.id;
     const cameraMoving=Math.hypot(camera.x-target.x,camera.y-target.y)>.03;
@@ -379,7 +380,7 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
 
   const api={ready,retry,render,drawMap,renderTownBattle,
     status:()=>({loaded:[...scene.loaded],failed:[...scene.failures],chunks:chunks.size,artVersion:scene.version,chunkLimit}),
-    worldToScreen(x,z){return lastView?townWorldToScreen(typeof x==='object'?x:{x,z},lastView.camera,lastView.width,lastView.height,lastView.scale,TOWN_DEPTH_SCALE):null;},
+    worldToScreen(x,z){if(!lastView)return null;const point=typeof x==='object'?x:{x,z},screen=townWorldToScreen(point,lastView.camera,lastView.width,lastView.height,lastView.scale,TOWN_DEPTH_SCALE);if(Number.isFinite(point.y))screen.y-=point.y*TILE*lastView.scale*TOWN_DEPTH_SCALE;return screen;},
     screenToWorld(x,y){return lastView?townScreenToWorld(typeof x==='object'?x:{x,y},lastView.camera,lastView.width,lastView.height,lastView.scale,TOWN_DEPTH_SCALE):null;},
     pickVisitor(x,y){for(let i=hitItems.length-1;i>=0;i--){const item=hitItems[i];if(!item.sprite||x<item.x||x>item.x+item.w||y<item.y||y>item.y+item.h||!opaqueAt(item,x,y))continue;return item.kind==='visitor'?item.id:null;}return null;},
     pick(x,y){if(!lastView)return null;const p=townScreenToWorld({x,y},lastView.camera,lastView.width,lastView.height,lastView.scale,TOWN_DEPTH_SCALE);return hitItems.filter(n=>Math.hypot((n.worldX??0)-p.x,(n.worldZ??0)-p.z)<.6).sort((a,b)=>Math.hypot(a.worldX-p.x,a.worldZ-p.z)-Math.hypot(b.worldX-p.x,b.worldZ-p.z))[0]?.id||null;},

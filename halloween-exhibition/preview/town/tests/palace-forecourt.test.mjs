@@ -11,6 +11,16 @@ import {placeTownVisitors,sampleTownVisitors} from '../visitor-model.js';
 const archive=JSON.parse(await readFile(new URL('../../data/archive.json',import.meta.url),'utf8'));
 const manifest=JSON.parse(await readFile(new URL('../../maze/data/creator-characters.json',import.meta.url),'utf8'));
 
+test('only working story buildings and participant homes occupy the town maps',()=>{
+ const town=getTownMap(),allowed=new Set(['castle','bakery',...town.portals.map(portal=>portal.to)]);
+ for(const building of town.buildings)assert.ok(allowed.has(building.id),building.id+' has no participant or story function');
+ for(const old of [{id:'home-west',x:7.5,z:5.5},{id:'home-east',x:57.5,z:20.5},{id:'boathouse',x:37.5,z:34.5},{id:'market-copper',x:7.5,z:24.5},{id:'market-ribbons',x:20.5,z:35.5},{id:'market-tailor',x:13.5,z:23.5},{id:'canal-guesthouse',x:38.5,z:39.5},{id:'gate-east-house',x:56.5,z:12.5}]){
+  assert.ok(!town.buildings.some(building=>building.id===old.id));assert.ok(isTownWalkable(town,old.x,old.z),old.id+' leaves no invisible wall');
+ }
+ const quarter=getTownMap('creator-quarter');assert.equal(quarter.buildings.length,CREATOR_HOMES.length);
+ for(const home of quarter.buildings)assert.ok(quarter.targets.some(target=>target.creatorId===home.creatorId),'each participant house opens its own creator page');
+});
+
 function reachable(map){
  const first={x:Math.floor(map.spawn.x),z:Math.floor(map.spawn.z)},queue=[first],seen=new Set([`${first.x},${first.z}`]);
  for(let i=0;i<queue.length;i++)for(const[dx,dz]of[[1,0],[-1,0],[0,1],[0,-1]]){const p={x:queue[i].x+dx,z:queue[i].z+dz},key=`${p.x},${p.z}`;if(!seen.has(key)&&isTownWalkable(map,p.x+.5,p.z+.5)){seen.add(key);queue.push(p);}}

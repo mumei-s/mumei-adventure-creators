@@ -1,5 +1,5 @@
 import {isInPalaceForecourt} from './palace-forecourt.js?v=20261019-journey1';
-import {createCreatorQuarter,CREATOR_QUARTER_ID,CREATOR_QUARTER_CONNECTION} from './creator-homes.js?v=20261019-homes1';
+import {createCreatorQuarter,CREATOR_QUARTER_ID,CREATOR_QUARTER_CONNECTION} from './creator-homes.js?v=20261019-homes2';
 // The lantern town, its residents and story are original fiction. Real exhibitors
 // are visitors supplied separately by the exhibition; no submission is invented.
 export const TOWN_VERSION = 1;
@@ -54,14 +54,6 @@ function outdoor() {
     {id:'library',kind:'library',label:'夜の書庫',x:44,z:23,w:9,h:6,door:{x:48.5,z:29.5}},
     {id:'inn',kind:'inn',label:'三日月亭',x:5,z:30,w:8,h:5,door:{x:8.5,z:35.5}},
     {id:'clocktower',kind:'clocktower',label:'十二時の時計塔',x:51,z:3,w:8,h:5,door:{x:54.5,z:8.5}},
-    {id:'home-west',kind:'house',label:'花窓の家',x:5,z:3,w:5,h:4,door:{x:7.5,z:7.5}},
-    {id:'home-east',kind:'house',label:'青い屋根の家',x:55,z:18,w:5,h:6,door:{x:57.5,z:24.5}},
-    {id:'boathouse',kind:'boathouse',label:'船番小屋',x:35,z:32,w:5,h:5,door:{x:37.5,z:37.5}},
-    {id:'market-copper',kind:'shop',label:'銅細工の窓',x:5,z:23,w:5,h:3,door:{x:7.5,z:26.5}},
-    {id:'market-ribbons',kind:'house',label:'リボン飾りの家',x:18,z:34,w:5,h:3,door:{x:20.5,z:37.5}},
-    {id:'market-tailor',kind:'shop',label:'星くずの仕立て屋',x:11,z:22,w:5,h:3,door:{x:13.5,z:25.5}},
-    {id:'canal-guesthouse',kind:'inn',label:'運河の花窓亭',x:35,z:38,w:6,h:3,door:{x:38.5,z:41.5}},
-    {id:'gate-east-house',kind:'house',label:'城門の青い窓',x:54,z:11,w:4,h:4,door:{x:56.5,z:15.5}},
   ];
   buildings.forEach(b=>{fill(b.x,b.z,b.w,b.h,'b');cells[Math.floor(b.door.z)][Math.floor(b.door.x)]='.';});
   // Deliberate paths join every south-facing threshold to the public road network.

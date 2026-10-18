@@ -9,6 +9,58 @@ function poly(c,points,color,stroke=null,width=1){c.beginPath();points.forEach((
 function ellipse(c,x,y,rx,ry,color,stroke=null,width=1){c.beginPath();c.ellipse(x,y,rx,ry,0,0,TAU);if(color){c.fillStyle=color;c.fill();}if(stroke){c.strokeStyle=stroke;c.lineWidth=width;c.stroke();}}
 function box(c,x,y,w,h,color,stroke=null,r=0){c.beginPath();c.roundRect(x,y,w,h,r);if(color){c.fillStyle=color;c.fill();}if(stroke){c.strokeStyle=stroke;c.lineWidth=1;c.stroke();}}
 function gradient(c,x,y,w,h,stops){const g=c.createLinearGradient(x,y,x+w,y+h);for(const[at,color]of stops)g.addColorStop(at,color);return g;}
+// All material marks are deterministic and baked into the existing small cache.
+// Directional light comes from the upper left; dark joints stay below the lit lip.
+const surfaceSeed=value=>Array.from(String(value)).reduce((seed,char)=>Math.imul(seed^char.codePointAt(0),16777619)>>>0,2166136261);
+const grain=(seed,x,y)=>{let value=Math.imul(seed^(x+31),374761393)^Math.imul(y+17,668265263);value=Math.imul(value^(value>>>13),1274126177);return((value^(value>>>16))>>>0)/4294967295;};
+function timber(c,x,y,w,h,color,seed=0){
+  rect(c,x,y,w,h,gradient(c,x,y,w,0,[[0,shade(color,-.17)],[.16,shade(color,.13)],[.4,shade(color,.03)],[1,shade(color,-.17)]]));
+  const vertical=h>w;
+  for(let i=1;i<=3;i++){
+    const offset=(vertical?w:h)*(i/4),bend=(grain(seed,i,3)-.5)*2.4;
+    c.beginPath();c.moveTo(x+(vertical?offset:2),y+(vertical?2:offset));
+    c.bezierCurveTo(x+(vertical?offset+bend:w*.3),y+(vertical?h*.33:offset+bend),x+(vertical?offset-bend:w*.66),y+(vertical?h*.66:offset-bend),x+(vertical?offset:w-2),y+(vertical?h-2:offset));
+    c.strokeStyle=i===2?shade(color,.15):shade(color,-.15);c.lineWidth=.55;c.stroke();
+  }
+  if(w>5&&h>15)for(const end of[5,h-5])ellipse(c,x+w*.5,y+end,.8,.8,'#332d29');
+}
+function masonry(c,x,y,w,h,color,seed=0,{side=false,construction='plaster'}={}){
+  c.save();c.beginPath();c.rect(x,y,w,h);c.clip();
+  rect(c,x,y,w,h,gradient(c,x,y,w,h*.2,[[0,shade(color,.08)],[.38,color],[1,shade(color,side?-.24:-.12)]]));
+  // Fine lime plaster, dressed stone, or fired brick share the same fixed facade.
+  for(let i=0;i<74;i++){const xx=x+grain(seed,i,0)*w,yy=y+grain(seed,i,1)*h;rect(c,xx,yy,.5+grain(seed,i,2)*1.2,.45,grain(seed,i,4)>.5?'#f7edd31a':'#352d2716');}
+  const brick=construction==='brick',stone=construction==='stone',blockW=side?23:brick?29:stone?41:34,blockH=brick?12:stone?22:14,start=brick||stone?y:y+h-38,rows=Math.ceil((y+h-start)/blockH);
+  for(let row=0;row<rows;row++){
+   const yy=start+row*blockH;
+   for(let col=-1;col<Math.ceil(w/blockW)+1;col++){
+    const xx=x+col*blockW+(row%2)*blockW/2,variation=(grain(seed,col+9,row+12)-.5)*.1,block=shade(color,variation-(brick?.09:.12));
+    rect(c,xx+1,yy+1,blockW-2,blockH-2,block);
+    if(!brick){line(c,xx+2,yy+2,xx+blockW-2,yy+2,shade(block,.12),.8);line(c,xx+1,yy+blockH-1,xx+blockW-1,yy+blockH-1,shade(block,-.16),1.1);}
+    line(c,xx+blockW-1,yy+2,xx+blockW-1,yy+blockH-1,shade(block,-.11),.8);
+   }
+   if(brick){line(c,x,yy,w+x,yy,shade(color,-.18),.9);line(c,x,yy+1,w+x,yy+1,shade(color,.12),.6);}
+  }
+  rect(c,x,y,w,20,gradient(c,x,y,0,20,[[0,'#17191f69'],[1,'#17191f00']]));
+  rect(c,x,y+h-9,w,9,gradient(c,x,y+h-9,0,9,[[0,'#19212900'],[1,'#19212940']]));
+  c.restore();
+}
+function stoneSill(c,x,y,w,color){
+  rect(c,x-w/2-7,y+9,w+14,5,gradient(c,0,y+9,0,5,[[0,'#1c1c2540'],[1,'#1c1c2500']]));
+  poly(c,[[x-w/2-7,y+3],[x+w/2+5,y+3],[x+w/2+9,y+7],[x-w/2-9,y+7]],shade(color,.17),shade(color,-.12),.7);
+  rect(c,x-w/2-9,y+7,w+18,4,gradient(c,0,y+7,0,4,[[0,shade(color,-.04)],[1,shade(color,-.23)]]));
+  line(c,x-w/2-8,y+7,x+w/2+8,y+7,shade(color,.27),.65);
+}
+function glazing(c,path,x,y,w,h,trim,tint){
+  c.save();path();c.clip();
+  rect(c,x-w/2,y-h,w,h,gradient(c,x-w/2,y-h,w*.35,h,[[0,shade(tint,-.39)],[.3,shade(tint,-.19)],[.73,shade(tint,.04)],[1,shade(tint,-.14)]]));
+  // Broad sky reflection and narrow secondary streak stay inside each real opening.
+  poly(c,[[x-w*.6,y-h],[x-w*.16,y-h],[x+w*.5,y-h*.2],[x+w*.5,y+h*.1],[x+w*.28,y]],'#e1effb40');
+  poly(c,[[x-w*.2,y-h],[x-w*.1,y-h],[x+w*.52,y-h*.26],[x+w*.52,y-h*.1]],'#f5f5e72c');
+  rect(c,x-w/2,y-h,w,8,gradient(c,0,y-h,0,8,[[0,'#181c286e'],[1,'#181c2800']]));
+  rect(c,x-w/2,y-h,5,h,gradient(c,x-w/2,0,5,0,[[0,'#13172267'],[1,'#13172200']]));
+  c.restore();path();c.strokeStyle=shade(trim,-.27);c.lineWidth=6;c.stroke();
+  path();c.strokeStyle=gradient(c,x-w/2,y-h,w,h,[[0,shade(trim,.19)],[.45,trim],[1,shade(trim,-.14)]]);c.lineWidth=3;c.stroke();
+}
 function star(c,x,y,r,color,stroke=null){poly(c,Array.from({length:10},(_,i)=>{const a=i*Math.PI/5-Math.PI/2,rr=i%2?r*.44:r;return[x+Math.cos(a)*rr,y+Math.sin(a)*rr];}),color,stroke);}
 function crescent(c,x,y,r,color){c.beginPath();c.moveTo(x+r*.6,y-r*.8);c.bezierCurveTo(x-r*.9,y-r*1.35,x-r*1.2,y+r*.9,x+r*.75,y+r*.7);c.bezierCurveTo(x-r*.1,y+r*.6,x-r*.25,y-r*.55,x+r*.6,y-r*.8);c.closePath();c.fillStyle=color;c.fill();}
 function cat(c,x,y,r,color,outline){poly(c,[[x-r,y+r*.1],[x-r*.9,y-r],[x-r*.27,y-r*.45],[x+r*.29,y-r*.45],[x+r*.94,y-r],[x+r,y+r*.1]],color,outline);ellipse(c,x,y+r*.09,r,r*.73,color,outline);for(const side of[-1,1]){ellipse(c,x+side*r*.33,y+r*.04,r*.075,r*.11,'#2b313a');line(c,x+side*r*.7,y+r*.35,x+side*r*1.1,y+r*.27,outline,.7);}poly(c,[[x-r*.1,y+r*.3],[x+r*.1,y+r*.3],[x,y+r*.42]],outline);}
@@ -37,39 +89,58 @@ function motif(c,kind,x,y,size,trim){
 }
 function window(c,x,y,w=41,h=51,trim='#795b43',open=false){
   box(c,x-w/2-5,y-h-5,w+10,h+11,shade(trim,-.2),shade(trim,.2),2);
-  box(c,x-w/2,y-h,w,h,gradient(c,0,y-h,0,h,[[0,'#92734f'],[.55,'#e1ba75'],[1,'#bb915f']]),'#564a3d',2);
+  const path=()=>{c.beginPath();c.roundRect(x-w/2,y-h,w,h,2);};glazing(c,path,x,y,w,h,trim,'#d4be91');
   line(c,x,y-h,x,y,trim,2);line(c,x-w/2,y-h*.48,x+w/2,y-h*.48,trim,2);
-  for(const side of[-1,1]){const xx=x+side*(w/2+9);box(c,xx-5,y-h-1,10,h+3,open?shade(trim,.08):shade(trim,-.08),shade(trim,.22));for(let i=0;i<4;i++)line(c,xx-3,y-h+7+i*10,xx+3,y-h+7+i*10,shade(trim,-.22));}
-  box(c,x-w/2-8,y+3,w+16,5,shade(trim,.1),shade(trim,.3));
+  for(const side of[-1,1]){const xx=x+side*(w/2+9);timber(c,xx-5,y-h-1,10,h+3,open?shade(trim,.08):shade(trim,-.08));for(let i=0;i<4;i++)line(c,xx-3,y-h+7+i*10,xx+3,y-h+7+i*10,shade(trim,-.22));}
+  stoneSill(c,x,y,w,'#a79e89');
 }
 function planter(c,x,y,palette,motifKind){
   box(c,x-20,y-3,40,12,shade(palette.trim,-.22),palette.trim,2);line(c,x-19,y+4,x+19,y+4,shade(palette.trim,.16));
   for(let i=0;i<5;i++){const xx=x+(i-2)*8,yy=y-7-(i%2)*4;line(c,xx,y,xx+1,yy-8,'#6f8059',1.3);ellipse(c,xx,yy,7,3,'#738961');flower(c,xx,yy-5,4,motifKind==='flower'?'#ebdbb0':motifKind==='iris-flower'?'#b0a0c4':'#c99b91','#c7a86e');}
 }
 function roofTiles(c,points,left,right,top,bottom,color){
-  c.save();poly(c,points,gradient(c,left,top,right-left,bottom-top,[[0,shade(color,.1)],[.3,color],[1,shade(color,-.18)]]),shade(color,-.26),2);c.clip();
-  let n=0;for(let y=top+9;y<bottom+12;y+=11){line(c,left,y,right,y,shade(color,-.22),1.5);line(c,left,y+1,right,y+1,shade(color,.13),.7);for(let x=left+(n%2?9:0);x<right;x+=19)line(c,x,y,x-2,y+11,shade(color,-.25));n++;}
+  c.save();poly(c,points,gradient(c,left,top,right-left,bottom-top,[[0,shade(color,.16)],[.3,color],[1,shade(color,-.21)]]),shade(color,-.26),2);c.clip();
+  let n=0;for(let y=top+9;y<bottom+12;y+=11){
+    for(let x=left-19+(n%2?9:0);x<right;x+=19){const tone=shade(color,(grain(13,Math.round(x),n)-.5)*.1);rect(c,x+1,y+2,17,8,tone);line(c,x,y,x-2,y+11,shade(color,-.23),.7);}
+    line(c,left,y,right,y,shade(color,-.27),1.8);line(c,left,y+1.5,right,y+1.5,shade(color,.17),.7);n++;
+  }
+  rect(c,left,bottom-12,right-left,12,gradient(c,0,bottom-12,0,12,[[0,'#10182400'],[1,'#10182470']]));
+  c.restore();
+}
+function curvedRoofMaterial(c,left,right,top,bottom,color){
+  // The caller's original roof path clips the material, preserving its silhouette.
+  c.save();c.clip();
+  rect(c,left,top,right-left,bottom-top,gradient(c,left,top,(right-left)*.5,bottom-top,[[0,shade(color,.22)],[.4,shade(color,.06)],[.72,color],[1,shade(color,-.25)]]));
+  for(let row=0,y=top+8;y<bottom;row++,y+=14){
+    c.beginPath();c.moveTo(left,y);c.bezierCurveTo(left+(right-left)*.28,y-11,left+(right-left)*.73,y-11,right,y);c.strokeStyle=shade(color,-.2);c.lineWidth=1.7;c.stroke();
+    for(let x=left+(row%2?15:0);x<right;x+=31)line(c,x,y,x+2,y+13,shade(color,-.13),.7);
+  }
   c.restore();
 }
 function nameplate(c,b,x,y,trim){
   const creator=String(b.creatorName||'クリエイター').trim(),label=String(b.homeLabel||'創作の家').trim();
-  box(c,x-87,y-15,174,34,shade(trim,-.25),shade(trim,.25),3);line(c,x-80,y-11,x+80,y-11,shade(trim,.33));
-  c.fillStyle='#eadfc4';c.textAlign='center';c.textBaseline='middle';c.font='600 11px "Yu Gothic","Hiragino Kaku Gothic ProN",sans-serif';c.fillText(creator.length>18?creator.slice(0,17)+'…':creator,x,y-4,158);
+  box(c,x-86,y-12,174,34,'#10182142',null,3);
+  box(c,x-87,y-15,174,34,gradient(c,x,y-15,0,34,[[0,shade(trim,-.06)],[1,shade(trim,-.3)]]),shade(trim,.25),3);line(c,x-80,y-11,x+80,y-11,shade(trim,.33));
+  for(const dx of[-81,81])ellipse(c,x+dx,y+2,1,1,'#d1b981');
+  c.fillStyle='#f0e6cd';c.textAlign='center';c.textBaseline='middle';c.font='600 13px "Yu Gothic","Hiragino Kaku Gothic ProN",sans-serif';c.fillText(Array.from(creator).length>18?Array.from(creator).slice(0,17).join('')+'…':creator,x,y-4,158);
   c.fillStyle='#cbb68b';c.font='10px "Yu Gothic","Hiragino Kaku Gothic ProN",sans-serif';c.fillText(label,x,y+10,158);
 }
 // These are architectural stage designs, rather than claims about a creator's real home.
 const themeByMotif=Object.freeze({'lantern':'lantern-cat','bat-wing':'devil','wave-star':'tide','candy':'candy','open-book':'story','bread-loaf':'bread','twin-stars':'companions','moon-cat':'moon','cat-leaf':'cat-garden','flower':'chamomile','hedgehog':'hedgehog','shiba':'shiba','woven-diamond':'violet-knit','three-stars':'trio','iris-flower':'iris','lion':'lion'});
 function archedWindow(c,x,y,w,h,trim,glass='#d8bb7d'){
-  c.beginPath();c.moveTo(x-w/2,y);c.lineTo(x-w/2,y-h+w/2);c.bezierCurveTo(x-w/2,y-h-6,x+w/2,y-h-6,x+w/2,y-h+w/2);c.lineTo(x+w/2,y);c.closePath();c.fillStyle=glass;c.fill();c.strokeStyle=trim;c.lineWidth=5;c.stroke();
-  line(c,x,y-h+3,x,y,trim,2);line(c,x-w/2+2,y-h*.4,x+w/2-2,y-h*.4,trim,2);box(c,x-w/2-6,y+3,w+12,5,shade(trim,.13),shade(trim,.3));
+  const path=()=>{c.beginPath();c.moveTo(x-w/2,y);c.lineTo(x-w/2,y-h+w/2);c.bezierCurveTo(x-w/2,y-h-6,x+w/2,y-h-6,x+w/2,y-h+w/2);c.lineTo(x+w/2,y);c.closePath();};
+  glazing(c,path,x,y,w,h,trim,glass);
+  line(c,x+1,y-h+3,x+1,y,shade(trim,-.2),3);line(c,x,y-h+3,x,y,shade(trim,.13),1.2);line(c,x-w/2+2,y-h*.4,x+w/2-2,y-h*.4,trim,2);stoneSill(c,x,y,w,'#a89e89');
 }
 function roundWindow(c,x,y,r,trim,glass='#e4c387',spokes=4){
-  ellipse(c,x,y,r+4,r+4,shade(trim,-.19),shade(trim,.28),2);ellipse(c,x,y,r,r,glass,trim,2);
+  ellipse(c,x,y,r+4,r+4,shade(trim,-.19),shade(trim,.28),2);
+  const path=()=>{c.beginPath();c.ellipse(x,y,r,r,0,0,TAU);};glazing(c,path,x,y+r,r*2,r*2,trim,glass);
   for(let i=0;i<spokes;i++){const a=i*TAU/spokes;line(c,x,y,x+Math.cos(a)*r,y+Math.sin(a)*r,trim,1.8);}ellipse(c,x,y,3,3,shade(trim,.3));
 }
 function catWindow(c,x,y,trim,glass){
-  poly(c,[[x-26,y+18],[x-26,y-15],[x-22,y-31],[x-9,y-22],[x+9,y-22],[x+22,y-31],[x+26,y-15],[x+26,y+18]],glass,trim,5);
-  line(c,x,y-22,x,y+17,trim,2);line(c,x-23,y-1,x+23,y-1,trim,2);box(c,x-32,y+20,64,5,shade(trim,.15),trim);
+  const path=()=>poly(c,[[x-26,y+18],[x-26,y-15],[x-22,y-31],[x-9,y-22],[x+9,y-22],[x+22,y-31],[x+26,y-15],[x+26,y+18]],null);
+  glazing(c,path,x,y+18,52,49,trim,glass);
+  line(c,x,y-22,x,y+17,trim,2);line(c,x-23,y-1,x+23,y-1,trim,2);stoneSill(c,x,y+18,52,'#a79d88');
 }
 function awning(c,x,y,w,p,{stripes=7,scallop=true}={}){
   poly(c,[[x-w/2,y],[x+w/2,y],[x+w/2+9,y+23],[x-w/2-9,y+23]],shade(p.trim,-.05),shade(p.roof,-.25),1.5);
@@ -79,9 +150,11 @@ function awning(c,x,y,w,p,{stripes=7,scallop=true}={}){
 }
 function gable(c,cx,width,peak,p,trim,base=-150){
   poly(c,[[cx-width/2,base],[cx,peak],[cx+width/2,base]],shade(p.wall,.04),trim,2);
+  c.save();c.clip();rect(c,cx-width/2,peak,width,base-peak,gradient(c,cx-width/2,peak,width,base-peak,[[0,shade(p.wall,-.13)],[.4,shade(p.wall,.07)],[1,shade(p.wall,-.08)]]));
+  for(let i=0;i<23;i++)rect(c,cx-width/2+grain(7,i,0)*width,peak+grain(7,i,1)*(base-peak),1,.6,'#ece1bd24');c.restore();
   roofTiles(c,[[cx,peak-8],[cx+24,peak-23],[cx+width/2+23,base-17],[cx+width/2,base]],cx,cx+width/2+25,peak-25,base,p.roof);
   poly(c,[[cx-width/2-6,base-2],[cx,peak-9],[cx+7,peak-3],[cx-width/2,base+5]],shade(p.roof,-.05),shade(p.trim,.14),2);
-  line(c,cx,peak+7,cx,base,trim,4);
+  timber(c,cx-2,peak+7,4,base-peak-7,trim);line(c,cx-width/2+8,base-2,cx+width/2-6,base-2,shade(trim,-.2),3);
 }
 function homeRoof(c,theme,p,trim){
   const roof=(points,top=-280,bottom=-146)=>roofTiles(c,points,-12,336,top,bottom,p.roof);
@@ -98,6 +171,7 @@ function homeRoof(c,theme,p,trim){
       for(const y of[-244,-181])line(c,119,y,176,y,shade(p.roof,.19),4);break;
     case 'candy':
       c.beginPath();c.moveTo(-6,-148);c.bezierCurveTo(15,-219,58,-271,135,-270);c.bezierCurveTo(225,-287,294,-239,329,-172);c.lineTo(286,-148);c.closePath();c.fillStyle=gradient(c,0,-270,0,125,[[0,shade(p.roof,.2)],[1,p.roof]]);c.fill();c.strokeStyle=trim;c.lineWidth=3;c.stroke();
+      curvedRoofMaterial(c,-6,330,-278,-148,p.roof);
       for(let i=0;i<9;i++){const x=12+i*34;ellipse(c,x,-150,18,11,i%2?'#e8d2a6':shade(p.roof,.2),trim);}
       for(const [x,y]of[[63,-220],[116,-244],[170,-246],[226,-225],[273,-192]]){ellipse(c,x,y,7,7,'#f1dcc1',shade(p.trim,-.12));line(c,x-3,y-4,x+3,y+4,p.roof,3);}break;
     case 'story':
@@ -107,6 +181,7 @@ function homeRoof(c,theme,p,trim){
       line(c,146,-243,146,-151,trim,6);poly(c,[[145,-239],[164,-247],[164,-174],[154,-181],[145,-171]],'#9f7753',p.trim);break;
     case 'bread':
       c.beginPath();c.moveTo(-8,-148);c.bezierCurveTo(-2,-278,284,-282,329,-173);c.lineTo(287,-147);c.closePath();c.fillStyle=p.roof;c.fill();c.strokeStyle=trim;c.lineWidth=4;c.stroke();
+      curvedRoofMaterial(c,-8,330,-280,-147,p.roof);
       for(let x=25;x<296;x+=37){c.beginPath();c.moveTo(x,-151);c.bezierCurveTo(x-12,-183,x+2,-228,x+25,-249);c.strokeStyle=shade(p.roof,.2);c.lineWidth=4;c.stroke();}
       ellipse(c,149,-206,36,19,'#d7a75e',shade(p.trim,-.15),3);for(const x of[131,149,167])line(c,x-5,-216,x+4,-199,'#f6d495',3);break;
     case 'companions':
@@ -126,6 +201,7 @@ function homeRoof(c,theme,p,trim){
       box(c,134,-267,26,8,trim,p.trim);flower(c,147,-278,12,'#eee3b8','#bb954c');break;
     case 'hedgehog':
       c.beginPath();c.moveTo(-9,-147);c.bezierCurveTo(-7,-253,300,-257,332,-170);c.lineTo(286,-146);c.closePath();c.fillStyle=p.roof;c.fill();c.strokeStyle=trim;c.lineWidth=4;c.stroke();
+      curvedRoofMaterial(c,-9,333,-258,-146,p.roof);
       for(let i=0;i<14;i++){const x=4+i*23,y=-148-Math.sin((i+.5)*Math.PI/14)*83;poly(c,[[x-12,y+10],[x,y-14],[x+12,y+8]],shade(p.roof,.1),shade(p.roof,-.2));}
       roundWindow(c,147,-190,22,trim,'#d1b58d',6);break;
     case 'shiba':
@@ -138,7 +214,7 @@ function homeRoof(c,theme,p,trim){
       for(const [x,peak]of[[52,-230],[148,-268],[244,-238]]){gable(c,x,111,peak,p,trim);roundWindow(c,x,-181,13,trim,['#c5cadd','#e5c394','#c6d9cb'][Math.floor(x/95)]);}
       line(c,-4,-146,302,-146,shade(p.trim,.12),4);break;
     case 'iris':
-      for(const [x,peak]of[[72,-249],[147,-290],[225,-259]]){c.beginPath();c.moveTo(x-74,-149);c.bezierCurveTo(x-67,-211,x-19,peak-4,x,peak);c.bezierCurveTo(x+24,peak+9,x+62,-215,x+76,-149);c.closePath();c.fillStyle=x===147?shade(p.roof,.12):p.roof;c.fill();c.strokeStyle=shade(p.trim,.13);c.lineWidth=3;c.stroke();line(c,x,peak+8,x,-153,shade(p.trim,.12),2);}
+      for(const [x,peak]of[[72,-249],[147,-290],[225,-259]]){c.beginPath();c.moveTo(x-74,-149);c.bezierCurveTo(x-67,-211,x-19,peak-4,x,peak);c.bezierCurveTo(x+24,peak+9,x+62,-215,x+76,-149);c.closePath();c.fillStyle=x===147?shade(p.roof,.12):p.roof;c.fill();c.strokeStyle=shade(p.trim,.13);c.lineWidth=3;c.stroke();curvedRoofMaterial(c,x-74,x+76,peak,-149,x===147?shade(p.roof,.12):p.roof);line(c,x,peak+8,x,-153,shade(p.trim,.12),2);}
       break;
     case 'lion':
       roof([[-11,-148],[55,-244],[255,-259],[332,-174],[288,-146]],-260);poly(c,[[55,-244],[89,-268],[255,-283],[255,-259]],shade(p.roof,.18),trim,2);
@@ -176,6 +252,32 @@ function homeWindows(c,theme,p,trim,door){
     }
   }
 }
+function atelierFrontage(c,b,p,trim,door){
+  const use=b.homeUse,sides=[57,241].filter(x=>Math.abs(x-door)>48);
+  if(!['illustration-studio','writing-garden','shop-atelier','recording-studio'].includes(use))return;
+  for(const x of sides){
+    const w=use==='illustration-studio'?71:67;
+    // Added bays live on the wall, behind the existing motif-shaped opening.
+    const path=()=>{c.beginPath();c.roundRect(x-w/2,-96,w,68,2);};
+    glazing(c,path,x,-28,w,68,trim,use==='recording-studio'?'#7d8d9d':use==='shop-atelier'?'#c1b5c6':'#acc0c5');
+    stoneSill(c,x,-28,w,shade(p.wall,-.1));
+    for(const side of[-1,1])timber(c,x+side*(w/2+1)-2,-99,4,75,trim);
+    if(use==='writing-garden'){
+      for(const side of[-1,1])for(let i=0;i<3;i++){const xx=x+side*39,yy=-42-i*13;line(c,xx,-23,xx,yy-9,'#637956',1);ellipse(c,xx+side*4,yy,6,2.5,'#7e956c');}
+    }
+    if(use==='shop-atelier')awning(c,x,-104,78,p,{stripes:5,scallop:false});
+    if(use==='recording-studio'){
+      // Deep timber jambs and three absorptive strips suggest a listening booth.
+      for(const side of[-1,1])for(let i=0;i<3;i++)line(c,x+side*(w/2-5+i*2),-88,x+side*(w/2-5+i*2),-36,'#45494c',1);
+    }
+  }
+  if(use==='recording-studio'){
+    const x=door>160?36:273;
+    box(c,x-10,-124,20,29,gradient(c,x-10,-124,20,29,[[0,'#a58a58'],[1,'#594b39']]),'#ceba87',2);
+    line(c,x-3,-104,x-3,-118,'#e9dbb0',1.6);line(c,x+5,-107,x+5,-121,'#e9dbb0',1.6);line(c,x-3,-118,x+5,-121,'#e9dbb0',2);
+    ellipse(c,x-5,-104,3,2,'#e9dbb0');ellipse(c,x+3,-107,3,2,'#e9dbb0');
+  }
+}
 function homeGarden(c,theme,p,trim,door){
   // Every garden stays beside the doorstep; none covers the walkable entrance.
   switch(theme){
@@ -201,27 +303,41 @@ function homeGarden(c,theme,p,trim,door){
   }
 }
 function architecture(c,b,door,entry){
-  const p={wall:'#bcb3a0',roof:'#576a75',trim:'#806342',...b.homePalette},trim=woodTone(p.trim),kind=b.motif||'lantern',theme=b.homeTheme||themeByMotif[kind]||'lantern-cat';
+  const p={wall:'#bcb3a0',roof:'#576a75',trim:'#806342',...b.homePalette},trim=woodTone(p.trim),kind=b.motif||'lantern',theme=b.homeTheme||themeByMotif[kind]||'lantern-cat',seed=surfaceSeed(b.creatorId||theme);
+  for(let i=0;i<4;i++)ellipse(c,164,8,166-i*4,21-i*3,'#0813220c');
   poly(c,[[0,0],[307,-7],[343,17],[25,27]],'#0a172b42');
   poly(c,[[284,-151],[318,-174],[318,-22],[284,0]],gradient(c,284,0,34,0,[[0,shade(p.wall,-.22)],[1,shade(p.wall,-.32)]]),shade(trim,-.18),2);
-  box(c,12,-150,272,150,gradient(c,12,0,272,0,[[0,shade(p.wall,-.04)],[.4,p.wall],[1,shade(p.wall,-.13)]]),shade(trim,-.2),1);
-  for(let row=0;row<10;row++){const yy=-143+row*14;line(c,15,yy,283,yy,shade(p.wall,-.08),.6);for(let col=0;col<9;col++){const xx=18+col*31+(row%2?15:0);if(xx<281)line(c,xx,yy,xx,yy+14,shade(p.wall,-.06),.5);}}
-  for(let i=0;i<8;i++){const yy=-144+i*19;line(c,288,yy,316,yy-18,shade(p.wall,-.35));}
+  c.save();c.clip();masonry(c,284,-174,34,174,shade(p.wall,-.17),seed,{side:true,construction:b.homeConstruction});
+  for(let i=0;i<8;i++){const yy=-144+i*19;line(c,288,yy,316,yy-18,shade(p.wall,-.35),.7);}c.restore();
+  masonry(c,12,-150,272,150,p.wall,seed,{construction:b.homeConstruction});
+  // Raised corner stones have beveled edges and irregular, shallow mortar joints.
+  for(const xx of[16,270])for(let i=0;i<7;i++){const yy=-136+i*18,ww=i%2?12:16;rect(c,xx,yy,ww,16,shade(p.wall,-.07+(i%3)*.025));line(c,xx,yy,xx+ww,yy,shade(p.wall,.16),.7);line(c,xx+ww,yy+1,xx+ww,yy+16,shade(p.wall,-.22),.8);}
   box(c,9,-11,279,11,shade(p.trim,-.2),shade(p.trim,.03));poly(c,[[288,-11],[321,-31],[321,-20],[288,1]],shade(p.trim,-.3),shade(p.trim,-.1));
-  for(const xx of[16,280])box(c,xx-3,-149,6,138,trim,shade(p.trim,.12));
-  box(c,10,-150,280,7,trim,shade(p.trim,-.1));
-  if(['story','bread','companions','shiba','violet-knit'].includes(theme)){for(const xx of[83,213])box(c,xx-3,-148,6,137,trim,shade(p.trim,.12));line(c,22,-144,77,-91,trim,4);line(c,220,-92,276,-144,trim,4);}
-  homeRoof(c,theme,p,trim);homeWindows(c,theme,p,trim,door);
+  timber(c,9,-11,279,11,shade(trim,-.03),seed);
+  for(const xx of[16,280]){rect(c,xx+2,-146,7,135,'#22202b22');timber(c,xx-3,-149,6,138,trim,seed+xx);}
+  timber(c,10,-150,280,7,trim,seed);
+  if(['story','bread','companions','shiba','violet-knit'].includes(theme)){for(const xx of[83,213]){rect(c,xx+2,-146,6,135,'#241d2522');timber(c,xx-3,-148,6,137,trim,seed+xx);}line(c,23,-141,78,-88,'#26202c33',6);line(c,22,-144,77,-91,trim,4);line(c,221,-89,277,-141,'#26202c33',6);line(c,220,-92,276,-144,trim,4);}
+  homeRoof(c,theme,p,trim);
+  rect(c,20,-143,258,15,gradient(c,0,-143,0,15,[[0,'#11152561'],[1,'#11152500']]));
+  atelierFrontage(c,b,p,trim,door);
+  homeWindows(c,theme,p,trim,door);
   // The actual game coordinate controls the doorway and its clear path endpoint.
   if(theme==='lion'){archedWindow(c,door,-1,66,92,shade(p.trim,-.17),shade(p.wall,.05));motif(c,'lion',door,-88,12,p.trim);}
   if(theme==='shiba')poly(c,[[door-35,-73],[door,-104],[door+35,-73]],p.roof,p.trim,3);
-  box(c,door-25,-80,50,80,shade(trim,-.17),shade(p.trim,.13),11);box(c,door-19,-74,38,73,trim,shade(p.trim,-.05),8);
-  for(const dx of[-9,0,9])line(c,door+dx,-60,door+dx,-5,shade(p.trim,-.23));box(c,door-11,-65,22,22,'#bac2ad',shade(p.trim,.2),6);line(c,door,-64,door,-43,trim,1.5);line(c,door-10,-54,door+10,-54,trim,1.5);ellipse(c,door+12,-29,2.2,2.2,'#e0bc72');
+  box(c,door-27,-77,54,79,'#131a244d',null,11);
+  box(c,door-25,-80,50,80,gradient(c,door-25,-80,50,80,[[0,shade(trim,.14)],[.2,shade(trim,-.22)],[1,shade(trim,-.34)]]),shade(p.trim,.13),11);
+  box(c,door-19,-74,38,73,trim,shade(p.trim,-.05),8);
+  c.save();c.clip();for(let i=0;i<4;i++)timber(c,door-19+i*9.5,-74,9.5,73,shade(trim,(i%2)*.025),seed+i);c.restore();
+  for(const dx of[-9,0,9])line(c,door+dx,-60,door+dx,-5,shade(p.trim,-.23),.7);
+  for(const yy of[-34,-12]){line(c,door-15,yy,door-4,yy,shade(trim,-.32),2.8);for(const dx of[-15,-5])ellipse(c,door+dx,yy,.9,.9,shade(p.trim,.03));}
+  const doorGlass=()=>{c.beginPath();c.roundRect(door-11,-65,22,22,6);};glazing(c,doorGlass,door,-43,22,22,trim,'#bac2ad');
+  line(c,door,-64,door,-43,trim,1.5);line(c,door-10,-54,door+10,-54,trim,1.5);ellipse(c,door+12,-28,3.1,3.1,'#161c295c');ellipse(c,door+12,-29,2.2,2.2,gradient(c,door+10,-31,4,4,[[0,'#f6d68c'],[1,'#856534']]));
   nameplate(c,b,Math.max(105,Math.min(215,door)),-109,trim);
   const signX=door>160?door-43:door+43;ellipse(c,signX,-54,15,17,shade(trim,-.15),shade(p.trim,.12),1.2);motif(c,kind,signX,-54,11,p.trim);
   homeGarden(c,theme,p,trim,door);
-  poly(c,[[door-25,1],[door+25,1],[door+29,entry+8],[door-29,entry+8]],'#8d8d81','#606c6c');
-  for(let yy=4;yy<entry+8;yy+=10)line(c,door-25,yy,door+25,yy,'#b4ad8e',1);box(c,door-29,-1,58,6,'#b8ac91','#736d68');
+  poly(c,[[door-25,1],[door+25,1],[door+29,entry+8],[door-29,entry+8]],gradient(c,door-25,1,58,entry+7,[[0,'#77766b'],[.3,'#a29b84'],[1,'#8c8e7b']]),'#606c6c');
+  for(let row=0,yy=4;yy<entry+8;row++,yy+=10){line(c,door-25,yy,door+25,yy,'#c2b99d',.8);line(c,door-25,yy+1,door+25,yy+1,'#5b625a',.8);line(c,door+(row%2?-9:9),yy,door+(row%2?-9:9),yy+9,'#61675c',.7);}
+  box(c,door-29,-1,58,6,gradient(c,0,-1,0,6,[[0,'#d4c8aa'],[.3,'#aaa086'],[1,'#79766b']]),'#736d68');
 }
 function cached(c,key,paint){
   let cache=cacheByContext.get(c);if(!cache){cache=new Map();cacheByContext.set(c,cache);}if(cache.has(key))return cache.get(key);
@@ -231,7 +347,7 @@ function cached(c,key,paint){
 export function drawCreatorHome2D(c,b,{tile=64}={}){
   if(!c||!Number.isFinite(tile)||tile<=0||!b||!Number.isFinite(b.x)||!Number.isFinite(b.z)||!Number.isFinite(b.w)||b.w<=0||!Number.isFinite(b.h))return false;
   const scale=b.w*tile/320,x=b.x*tile,y=(b.z+b.h)*tile,door=((b.door?.x??b.x+b.w/2)-b.x)*320/b.w,entry=((b.door?.z??b.z+b.h)-(b.z+b.h))*320/b.w;
-  const key=JSON.stringify([b.creatorId,b.creatorName,b.homeLabel,b.homeTheme,b.motif,b.homePalette,door,entry]);
+  const key=JSON.stringify([b.creatorId,b.creatorName,b.homeLabel,b.homeTheme,b.homeUse,b.homeConstruction,b.motif,b.homePalette,door,entry]);
   c.save();c.translate(x,y);c.scale(scale,scale);const image=cached(c,key,ctx=>architecture(ctx,b,door,entry));if(image)c.drawImage(image,-24,-304);else architecture(c,b,door,entry);c.restore();return true;
 }
 

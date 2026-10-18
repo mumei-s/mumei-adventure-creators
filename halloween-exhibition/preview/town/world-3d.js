@@ -1,12 +1,12 @@
-import {normalizeCameraZoom} from '../camera-distance.js?v=20261019-journey1';
+import {townViewZoom} from './camera-framing.js?v=20261019-homes2';
 import {townLighting,townLanternPosition} from './lighting.js?v=20261019-interior1';
 import * as THREE from '../maze/vendor/three.module.js';
-import {getTownMap} from './story-data.js?v=20261019-journey1';
+import {getTownMap} from './story-data.js?v=20261019-homes2';
 import {playerPose,loadArtImage} from '../maze/rpg-art.js?v=20261019-unified1';
 import {townVisualSeed as seed,TOWN_RESIDENT_SPRITES} from './visual-data.js?v=20261019-scene1';
 import {withDeadline} from '../transition-effects.js?v=20261016-living1';
-import {buildTownPalace,animateTownPalace,townPalaceFraming} from './palace-architecture.js?v=20261019-journey1';
-import {buildCreatorHome,buildCreatorQuarterGate} from './creator-home-architecture.js?v=20261019-journey1';
+import {buildTownPalace,animateTownPalace,townPalaceFraming} from './palace-architecture.js?v=20261019-homes2';
+import {buildCreatorHome,buildCreatorQuarterGate} from './creator-home-architecture.js?v=20261019-homes2';
 
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),TAU=Math.PI*2;
 export const TOWN_3D_CAMERA_ELEVATION=55*Math.PI/180;
@@ -345,7 +345,7 @@ export function createTownWorld3D({canvas,art={images:{},version:0},onContextLos
     if(disposed||lost||!state?.position)return false;frameSerial++;const map=getTownMap(state.mapId);prepareMap(map);const view=resize(pixelRatio),parameters=town3DCameraParameters(view.width,view.height,map.outdoor!==true&&map.id!=='lantern-town',cameraDistance);
     const palaceFraming=townPalaceFraming(state.position,map,parameters.elevation,view.width,view.height);
     if(palaceFraming.influence){const pixelsPerTile=parameters.pixelsPerTile+(Math.min(parameters.pixelsPerTile,palaceFraming.pixelsPerTile)-parameters.pixelsPerTile)*palaceFraming.influence;Object.assign(parameters,{left:-view.width/pixelsPerTile/2,right:view.width/pixelsPerTile/2,top:view.height/pixelsPerTile/2,bottom:-view.height/pixelsPerTile/2,pixelsPerTile});}
-    const zoom=normalizeCameraZoom(cameraZoom);for(const edge of ['left','right','top','bottom'])parameters[edge]/=zoom;parameters.pixelsPerTile*=zoom;
+    const zoom=townViewZoom(cameraZoom);for(const edge of ['left','right','top','bottom'])parameters[edge]/=zoom;parameters.pixelsPerTile*=zoom;
     const heroSprite=playerPose(art,facing,walking&&motion,walkPhase),signature=JSON.stringify([map.id,view.width,view.height,view.ratio,state.position.x,state.position.z,facing,brightness,lantern,motion,cameraDistance,cameraZoom,version,art.version,assets.loaded.length,state.flags,heroSprite?.poseVersion,imageId(heroSprite),heroSprite?.frame,(map.npcs||[]).map(npc=>art.rigs?.get?.('resident:'+npc.id)?.poseVersion),creatorActors.map(actor=>[actor.id,actor.x,actor.z,actor.heightPx,actor.interactive,imageId(actor.sprite),actor.sprite?.frame,actor.sprite?.anchorX,actor.sprite?.anchorY,actor.sprite?.contentHeight,actor.sprite?.poseVersion])]);
     if(!motion&&signature===lastFrameSignature)return false;
     Object.assign(camera,{left:parameters.left,right:parameters.right,top:parameters.top,bottom:parameters.bottom});camera.updateProjectionMatrix();

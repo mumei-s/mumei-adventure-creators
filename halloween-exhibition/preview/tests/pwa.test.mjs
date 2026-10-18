@@ -39,7 +39,7 @@ test('new static script, stylesheet, manifest, and icon references resolve local
  for(const match of html.matchAll(/(?:href|src)="\.\/([^"]+\.(?:css|js|webmanifest|svg|png))"/g))await access(new URL('../'+match[1],import.meta.url));
 });
 
-async function installerHarness({registrations=[], secure=true, script=base+'pwa.js', prompt=null,userAgent='Test browser',platform='Linux',maxTouchPoints=0,isStandalone=false}={}){
+async function installerHarness({registrations=[], secure=true, script=base+'pwa.js', prompt=null,userAgent='Test browser',platform='Linux',maxTouchPoints=0,isStandalone=false,settingsReady=true}={}){
  const calls=[],events={},elements=[];
  class El {
   constructor(tag){this.tagName=tag;this.handlers={};this.children=[];this.open=false;this.hidden=false;this.disabled=false;elements.push(this);}
@@ -51,17 +51,17 @@ async function installerHarness({registrations=[], secure=true, script=base+'pwa
   close(){this.open=false;this.handlers.close?.();}
   getBoundingClientRect(){return {left:0,top:0,right:100,bottom:100};}
  }
- const header=new El('div'),body=new El('body'),panel=new El('button');panel.id='atelier-install-panel';
+ const header=new El('div'),settings=new El('div'),body=new El('body'),panel=new El('button');panel.id='atelier-install-panel';
  const context=vm.createContext({
   URL, isSecureContext:secure, matchMedia:()=>({matches:isStandalone}),
-  setTimeout:fn=>fn(), document:{readyState:'complete',createElement:tag=>new El(tag),querySelector:selector=>selector==='#atelier-install-panel'?panel:header,body},
+  setTimeout:fn=>fn(), document:{readyState:'complete',createElement:tag=>new El(tag),querySelector:selector=>selector==='#atelier-install-panel'?panel:selector==='.visitor-preferences'?(settingsReady?settings:null):header,body},
   navigator:{userAgent,platform,maxTouchPoints,standalone:isStandalone,serviceWorker:{getRegistrations:async()=>registrations,register:async(...args)=>calls.push(args)}},
   window:{addEventListener:(type,fn)=>events[type]=fn}
  });
  vm.runInContext(installSource.replaceAll('import.meta.url',JSON.stringify(script)),context);
  for(let i=0;i<20;i++)await Promise.resolve();
  if(prompt)events.beforeinstallprompt({...prompt,preventDefault(){}});
- return {calls,events,elements,header,panel};
+ return {calls,events,elements,header,panel,settings};
 }
 
 test('registration uses only the preview scope and never takes over existing workers',async()=>{
@@ -140,4 +140,14 @@ test('title precedes compact toolbar invitation and Apple icon has a dedicated 1
  assert.match(html,/rel="apple-touch-icon" href=".\/assets\/atelier-door-180.png"/);
  const bytes=await readFile(new URL('../assets/atelier-door-180.png',import.meta.url));
  assert.equal(bytes.readUInt32BE(16),180);assert.equal(bytes.readUInt32BE(20),180);
+});
+
+test('the secondary install control never appears in the header during startup',async()=>{
+ for(const settingsReady of [true,false]){
+  const h=await installerHarness({settingsReady});
+  const trigger=h.elements.find(e=>e.id==='atelier-install-open');
+  assert.equal(h.header.children.includes(trigger),false);
+  assert.equal(trigger.hidden,!settingsReady);
+  if(settingsReady)assert.ok(h.settings.children.includes(trigger));
+ }
 });

@@ -10,7 +10,7 @@ const rule=selector=>rules.filter(match=>match[1].trim().split(',').map(value=>v
 
 test('the first HTML frame has the gallery layout without waiting for the theater module graph',()=>{
  assert.match(html,/<body data-layout-page="gallery">/);
- const base=':root body[data-layout-page=gallery] #theater>.masthead';
+ const base=':root body #theater.theater>.masthead';
  const header=rule(base);assert.match(header,/display:flex/);assert.match(header,/flex-direction:column/);
  const nav=rule(base+' .palace-world-links');assert.match(nav,/position:static/);assert.match(nav,/grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);assert.match(nav,/max-width:none/);
  for(const child of ['.brand','.palace-toolbar','.creative-world-links','#castle-exit-panel'])assert.match(rule(base+'>'+child),/width:100%/);

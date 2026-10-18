@@ -16,13 +16,20 @@ export async function buildGalleryStyles(){
   if(/@(import|charset|namespace)\b/i.test(css))throw Error(`Unsupported position-sensitive directive in ${source}`);
   chunks.push(`\n/* Source: ${source} */\n${css}\n`);
  }
+ chunks.push('\n/* Full-sheet readiness marker: never put this in critical/partial CSS. */\n:root{--atelier-styles-ready:20261019-header2}\n');
  return chunks.join('');
 }
 const invoked=process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url);
 if(invoked){
  const expected=await buildGalleryStyles(),target=new URL('gallery-styles.css',root);
+ const index=new URL('index.html',root),html=await readFile(index,'utf8');
+ const critical=(await readFile(new URL('compact-gallery-header.css',root),'utf8')).trim();
+ const block=`<style id="gallery-header-critical">\n${critical}\n</style>`;
+ const updated=html.replace(/<style id="gallery-header-critical">[\s\S]*?<\/style>/,block);
+ if(updated===html&&!html.includes(block))throw Error('Missing generated critical header style slot');
  if(process.argv.includes('--check')){
   if(await readFile(target,'utf8')!==expected)throw Error('gallery-styles.css is stale. Run npm run build:styles.');
-  console.log('Gallery stylesheet bundle is current.');
- }else{await writeFile(target,expected);console.log(`Wrote gallery-styles.css (${Buffer.byteLength(expected)} bytes).`);}
+  if(updated!==html)throw Error('Critical header CSS is stale. Run npm run build:styles.');
+  console.log('Gallery stylesheet bundle and critical header are current.');
+ }else{await writeFile(index,updated);await writeFile(target,expected);console.log(`Wrote gallery-styles.css (${Buffer.byteLength(expected)} bytes).`);}
 }

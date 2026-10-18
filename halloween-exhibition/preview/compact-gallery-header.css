@@ -1,144 +1,144 @@
 /* The same compact frame is painted before JavaScript and at every display
    preset. Physical width bounds this header; the selected preset still controls
    the exhibition, settings and artwork below it. */
-:root body[data-layout-page=gallery] #theater>.masthead{
+:root body #theater.theater>.masthead{
  box-sizing:border-box;position:relative;inset:auto;display:flex;flex-direction:column;align-items:stretch;
  gap:3px;width:100%;min-width:0;max-width:100%;height:auto;min-height:0;
  padding:3px max(8px,env(safe-area-inset-right)) 3px max(8px,env(safe-area-inset-left));isolation:isolate;
  --header-control-font:clamp(12px,3.4vw,14px);
 }
-:root body[data-layout-page=gallery] #theater>.masthead>.brand,
-:root body[data-layout-page=gallery] #theater>.masthead>.palace-toolbar,
-:root body[data-layout-page=gallery] #theater>.masthead>.creative-world-links,
-:root body[data-layout-page=gallery] #theater>.masthead>#castle-exit-panel{
+:root body #theater.theater>.masthead>.brand,
+:root body #theater.theater>.masthead>.palace-toolbar,
+:root body #theater.theater>.masthead>.creative-world-links,
+:root body #theater.theater>.masthead>#castle-exit-panel{
  box-sizing:border-box;position:relative;inset:auto;flex:none;grid-column:1/-1;grid-row:auto;
  width:100%;min-width:0;max-width:100%;margin:0;
 }
-:root body[data-layout-page=gallery] #theater>.masthead>.brand{order:-1;padding:0;justify-content:center;border:0}
-:root body[data-layout-page=gallery] #theater>.masthead .brand-mark{display:none}
-:root body[data-layout-page=gallery] #theater>.masthead #site-title{
+:root body #theater.theater>.masthead>.brand{order:-1;padding:0;justify-content:center;border:0}
+:root body #theater.theater>.masthead .brand-mark{display:none}
+:root body #theater.theater>.masthead #site-title{
  display:grid;grid-template-columns:auto auto;justify-content:center;align-items:center;
  column-gap:10px;row-gap:1px;min-width:0;max-width:100%;margin:0;text-align:center;overflow-wrap:normal;word-break:normal;
 }
 /* Explicitly constrain the title's own font. The inherited serif size and the
    later preset-title selector must never create a giant first painted frame. */
-:root body[data-layout-page=gallery] #theater>.masthead #site-title>strong{
+:root body #theater.theater>.masthead #site-title>strong{
  grid-column:1/-1;grid-row:1;font:600 clamp(20px,5.3vw,30px)/1.08 Georgia,'Times New Roman',serif!important;
- max-width:100%;letter-spacing:0;white-space:nowrap;overflow-wrap:normal;word-break:normal;
+ max-width:100%;letter-spacing:0;white-space:nowrap!important;overflow-wrap:normal;word-break:normal;
 }
-:root body[data-layout-page=gallery] #theater>.masthead #site-title>span{
+:root body #theater.theater>.masthead #site-title>span{
  grid-column:1;grid-row:2;justify-self:end;font:500 11px/1.2 system-ui,sans-serif!important;letter-spacing:.06em;
 }
-:root body[data-layout-page=gallery] #theater>.masthead #site-title>small{
+:root body #theater.theater>.masthead #site-title>small{
  grid-column:2;grid-row:2;justify-self:start;font:500 11px/1.2 system-ui,sans-serif!important;letter-spacing:.04em;
 }
-:root body[data-layout-page=gallery] #theater>.masthead #site-title:before,
-:root body[data-layout-page=gallery] #theater>.masthead #site-title:after{display:none}
+:root body #theater.theater>.masthead #site-title:before,
+:root body #theater.theater>.masthead #site-title:after{display:none}
 
 /* Six visible slots. Settings and installation have their own reserved cells;
    none of the toolbar or its ancestors is a horizontal scrolling container. */
-:root body[data-layout-page=gallery] #theater>.masthead .palace-toolbar{
+:root body #theater.theater>.masthead .palace-toolbar{
  display:grid;grid-template-columns:minmax(62px,1.2fr) minmax(28px,.65fr) minmax(34px,.7fr) minmax(56px,1.4fr) 44px 40px;
  align-items:stretch;gap:2px;padding:0;overflow:visible;
 }
-:root body[data-layout-page=gallery] #theater>.masthead .header-actions,
-:root body[data-layout-page=gallery] #theater>.masthead .toolbar-primary,
-:root body[data-layout-page=gallery] #theater>.masthead .header-navigation,
-:root body[data-layout-page=gallery] #theater>.masthead .mode-switch{display:contents}
-:root body[data-layout-page=gallery] #theater>.masthead #atelier-install-open{display:none!important}
-:root body[data-layout-page=gallery] #theater>.masthead .palace-toolbar button{
+:root body #theater.theater>.masthead .header-actions,
+:root body #theater.theater>.masthead .toolbar-primary,
+:root body #theater.theater>.masthead .header-navigation,
+:root body #theater.theater>.masthead .mode-switch{display:contents}
+:root body #theater.theater>.masthead #atelier-install-open{display:none!important}
+:root body #theater.theater>.masthead .palace-toolbar button{
  box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:2px;
  width:100%;min-width:0;max-width:100%;min-height:44px;height:auto;margin:0;padding:3px 2px;
  font-family:system-ui,sans-serif;font-size:var(--header-control-font);font-weight:500;line-height:1.2;letter-spacing:0;
  white-space:normal;word-break:normal;overflow-wrap:normal;
 }
-:root body[data-layout-page=gallery] #theater>.masthead #mode-halloween{grid-column:1;grid-row:1}
-:root body[data-layout-page=gallery] #theater>.masthead #mode-normal{grid-column:2;grid-row:1}
-:root body[data-layout-page=gallery] #theater>.masthead #list-open{grid-column:4;grid-row:1;padding-inline:1px;font-size:var(--header-control-font)}
-:root body[data-layout-page=gallery] #theater>.masthead .palace-toolbar .header-actions :is(#year-open,.visitor-settings-trigger){
+:root body #theater.theater>.masthead #mode-halloween{grid-column:1;grid-row:1}
+:root body #theater.theater>.masthead #mode-normal{grid-column:2;grid-row:1}
+:root body #theater.theater>.masthead #list-open{grid-column:4;grid-row:1;padding-inline:1px;font-size:var(--header-control-font)}
+:root body #theater.theater>.masthead .palace-toolbar .header-actions :is(#year-open,.visitor-settings-trigger){
  width:100%;min-width:0;max-width:100%;min-height:44px;height:auto;margin:0;padding:3px 2px;
  font:500 var(--header-control-font)/1.2 system-ui,sans-serif;letter-spacing:0;white-space:normal;
 }
-:root body[data-layout-page=gallery] #theater>.masthead #year-open{grid-column:3;grid-row:1}
-:root body[data-layout-page=gallery] #theater>.masthead .palace-toolbar .visitor-settings-trigger{grid-column:6;grid-row:1;order:0;border-radius:8px}
-:root body[data-layout-page=gallery] #theater>.masthead #year-open>span[aria-hidden],
-:root body[data-layout-page=gallery] #theater>.masthead .list-open>span{display:none}
-:root body[data-layout-page=gallery] #theater>.masthead .header-actions>#atelier-install-panel{
+:root body #theater.theater>.masthead #year-open{grid-column:3;grid-row:1}
+:root body #theater.theater>.masthead .palace-toolbar .visitor-settings-trigger{grid-column:6;grid-row:1;order:0;border-radius:8px}
+:root body #theater.theater>.masthead #year-open>span[aria-hidden],
+:root body #theater.theater>.masthead .list-open>span{display:none}
+:root body #theater.theater>.masthead .header-actions>#atelier-install-panel{
  grid-column:5;grid-row:1;display:flex;flex-direction:column;gap:0;width:44px;min-width:0;min-height:44px;height:auto;margin:0;padding:2px;
  border:1px solid #c4a47380;border-radius:8px;background:#262037;color:#fff2d7;text-align:center;cursor:pointer;
 }
-:root body[data-layout-page=gallery] #theater>.masthead #atelier-install-panel img{display:none}
-:root body[data-layout-page=gallery] #theater>.masthead #atelier-install-panel span{font:500 11px/1.15 system-ui,sans-serif}
-:root body[data-layout-page=gallery] #theater>.masthead [hidden]{display:none!important}
-:root body[data-layout-page=gallery] #theater>.masthead :is(button,a):focus-visible{outline:2px solid #ffe3a2;outline-offset:1px}
+:root body #theater.theater>.masthead #atelier-install-panel img{display:none}
+:root body #theater.theater>.masthead #atelier-install-panel span{font:500 11px/1.15 system-ui,sans-serif}
+:root body #theater.theater>.masthead [hidden]{display:none!important}
+:root body #theater.theater>.masthead :is(button,a):focus-visible{outline:2px solid #ffe3a2;outline-offset:1px}
 
 /* Both navigation bands use the whole available row. A long label wraps by
    words (or normal Japanese wrapping), never into a narrow vertical ribbon. */
-:root body[data-layout-page=gallery] #theater>.masthead .palace-world-links{
+:root body #theater.theater>.masthead .palace-world-links{
  position:static;inset:auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
  grid-column:1;grid-row:1;gap:4px;width:100%;min-width:0;max-width:none;margin:0;justify-self:stretch;
 }
-:root body[data-layout-page=gallery] #theater>.masthead .palace-world-links>a{
+:root body #theater.theater>.masthead .palace-world-links>a{
  box-sizing:border-box;display:flex;align-items:center;justify-content:center;min-width:0;min-height:34px;
  width:100%;max-width:100%;padding:2px 4px;font:600 11px/1.2 system-ui,sans-serif;letter-spacing:0;
  text-align:center;white-space:normal;overflow-wrap:normal;word-break:normal;
 }
-:root body[data-layout-page=gallery] #theater>.masthead>.creative-world-links{
+:root body #theater.theater>.masthead>.creative-world-links{
  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;order:3;margin:0;
 }
-:root body[data-layout-page=gallery] #theater>.masthead>.creative-world-links>a{
+:root body #theater.theater>.masthead>.creative-world-links>a{
  box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:4px;min-width:0;
  min-height:34px;max-width:100%;padding:2px 5px;text-align:center;line-height:1.2;
 }
-:root body[data-layout-page=gallery] #theater>.masthead>.creative-world-links>a>span:first-child{flex:none;font-size:12px}
-:root body[data-layout-page=gallery] #theater>.masthead>.creative-world-links>a>span:last-child{flex:0 1 auto;min-width:0}
-:root body[data-layout-page=gallery] #theater>.masthead>.creative-world-links strong{
+:root body #theater.theater>.masthead>.creative-world-links>a>span:first-child{flex:none;font-size:12px}
+:root body #theater.theater>.masthead>.creative-world-links>a>span:last-child{flex:0 1 auto;min-width:0}
+:root body #theater.theater>.masthead>.creative-world-links strong{
  display:block;font:600 clamp(10px,2.9vw,13px)/1.2 system-ui,sans-serif;letter-spacing:0;
  white-space:normal;overflow-wrap:normal;word-break:normal;
 }
-:root body[data-layout-page=gallery] #theater>.masthead>.creative-world-links small{display:none}
+:root body #theater.theater>.masthead>.creative-world-links small{display:none}
 
 /* Once JS adds the count/exit row, the same two route cards stay side by side.
    The count and exit get compact fixed cells instead of squeezing the routes
    into the old 128px maximum. Their explanation remains a normal popover. */
-:root body[data-layout-page=gallery] #theater>.masthead>#castle-exit-panel{
+:root body #theater.theater>.masthead>#castle-exit-panel{
  display:grid;grid-template-columns:minmax(0,1fr) 48px 68px;gap:4px;align-items:center;order:2;padding:0;
 }
-:root body[data-layout-page=gallery] #theater>.masthead #castle-exit-panel>.palace-world-links{grid-column:1;grid-row:1}
-:root body[data-layout-page=gallery] #theater>.masthead #castle-exit-panel>.castle-visit-counter{
+:root body #theater.theater>.masthead #castle-exit-panel>.palace-world-links{grid-column:1;grid-row:1}
+:root body #theater.theater>.masthead #castle-exit-panel>.castle-visit-counter{
  grid-column:2;grid-row:1;position:relative;inset:auto;width:48px;min-width:0;max-width:48px;margin:0;padding:0;
  font:11px/1.2 system-ui,sans-serif;
 }
-:root body[data-layout-page=gallery] #theater>.masthead #castle-exit-panel .castle-visit-counter>summary{
+:root body #theater.theater>.masthead #castle-exit-panel .castle-visit-counter>summary{
  display:grid;grid-template-columns:minmax(0,1fr);gap:0;min-width:0;min-height:34px;padding:1px;text-align:center;
 }
-:root body[data-layout-page=gallery] #theater>.masthead #castle-exit-panel .castle-visit-counter strong{font:600 12px/1.15 Georgia,serif}
-:root body[data-layout-page=gallery] #theater>.masthead #castle-exit-panel>.app-exit-trigger{
+:root body #theater.theater>.masthead #castle-exit-panel .castle-visit-counter strong{font:600 12px/1.15 Georgia,serif}
+:root body #theater.theater>.masthead #castle-exit-panel>.app-exit-trigger{
  grid-column:3;grid-row:1;justify-self:stretch;width:68px;min-width:0;max-width:68px;min-height:34px;height:auto;
  margin:0;padding:2px;font:500 11px/1.2 system-ui,sans-serif;letter-spacing:0;white-space:normal;overflow-wrap:normal;
 }
-:root body[data-layout-page=gallery] #theater>.masthead .castle-exit-label{font-size:11px;line-height:1.2}
+:root body #theater.theater>.masthead .castle-exit-label{font-size:11px;line-height:1.2}
 
 @media(max-width:289px){
- :root body[data-layout-page=gallery] #theater>.masthead .palace-toolbar{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 44px;row-gap:2px}
- :root body[data-layout-page=gallery] #theater>.masthead #mode-halloween{grid-column:1;grid-row:1}
- :root body[data-layout-page=gallery] #theater>.masthead #mode-normal{grid-column:2;grid-row:1}
- :root body[data-layout-page=gallery] #theater>.masthead .palace-toolbar .visitor-settings-trigger{grid-column:3;grid-row:1}
- :root body[data-layout-page=gallery] #theater>.masthead #year-open{grid-column:1;grid-row:2}
- :root body[data-layout-page=gallery] #theater>.masthead #list-open{grid-column:2;grid-row:2}
- :root body[data-layout-page=gallery] #theater>.masthead .header-actions>#atelier-install-panel{grid-column:3;grid-row:2}
+ :root body #theater.theater>.masthead .palace-toolbar{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 44px;row-gap:2px}
+ :root body #theater.theater>.masthead #mode-halloween{grid-column:1;grid-row:1}
+ :root body #theater.theater>.masthead #mode-normal{grid-column:2;grid-row:1}
+ :root body #theater.theater>.masthead .palace-toolbar .visitor-settings-trigger{grid-column:3;grid-row:1}
+ :root body #theater.theater>.masthead #year-open{grid-column:1;grid-row:2}
+ :root body #theater.theater>.masthead #list-open{grid-column:2;grid-row:2}
+ :root body #theater.theater>.masthead .header-actions>#atelier-install-panel{grid-column:3;grid-row:2}
 }
 @media(max-width:329px){
- :root body[data-layout-page=gallery] #theater>.masthead{--header-control-font:11px}
+ :root body #theater.theater>.masthead{--header-control-font:11px}
 }
 @media(max-width:480px){
- :root body[data-layout-page=gallery] #theater>.masthead #site-title>strong{font-size:clamp(20px,5.3vw,26px)!important}
+ :root body #theater.theater>.masthead #site-title>strong{font-size:clamp(20px,5.3vw,26px)!important}
 }
 @media(min-width:600px){
- :root body[data-layout-page=gallery] #theater>.masthead .palace-toolbar{grid-template-columns:minmax(90px,1.2fr) minmax(54px,.65fr) 52px minmax(100px,1.4fr) 64px 52px;gap:4px}
- :root body[data-layout-page=gallery] #theater>.masthead .header-actions>#atelier-install-panel{width:64px;flex-direction:row;gap:3px}
- :root body[data-layout-page=gallery] #theater>.masthead #atelier-install-panel img{display:block;width:18px;height:18px;object-fit:cover;border-radius:4px}
- :root body[data-layout-page=gallery] #theater>.masthead .palace-world-links>a{font-size:12px}
+ :root body #theater.theater>.masthead .palace-toolbar{grid-template-columns:minmax(90px,1.2fr) minmax(54px,.65fr) 52px minmax(100px,1.4fr) 64px 52px;gap:4px}
+ :root body #theater.theater>.masthead .header-actions>#atelier-install-panel{width:64px;flex-direction:row;gap:3px}
+ :root body #theater.theater>.masthead #atelier-install-panel img{display:block;width:18px;height:18px;object-fit:cover;border-radius:4px}
+ :root body #theater.theater>.masthead .palace-world-links>a{font-size:12px}
 }
 body[data-mode=normal] #theater .atelier-install-panel{background:#eff5ed;color:#294b3b;border-color:#9aaf99}
 @media(display-mode:standalone){#theater .atelier-install-panel{display:none!important}}
@@ -148,8 +148,8 @@ body[data-mode=normal] #theater .atelier-install-panel{background:#eff5ed;color:
 #entrance-runtime-retry{position:relative;inset:auto;transform:none;box-sizing:border-box;width:calc(100% - 16px);max-width:100%;margin:4px 8px;display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:4px;padding:5px 6px;border:1px solid #e7c48580;border-radius:8px;background:#171329e8;color:#fff0cc;font:11px/1.3 system-ui,sans-serif;text-align:left;box-shadow:none;z-index:30}
 #entrance-runtime-retry p{min-width:0;margin:0}
 #entrance-runtime-retry button,#entrance-runtime-retry a{box-sizing:border-box;display:flex;align-items:center;justify-content:center;min-width:0;min-height:32px;padding:3px 5px;border:1px solid #e7c48580;border-radius:6px;background:#3c2d55;color:#fff0cc;font:inherit;line-height:1.2;text-align:center;text-decoration:none;cursor:pointer}
-:root body[data-layout-page=gallery] #theater .archive-loading{display:none}
-:root body[data-layout-page=gallery] #theater[data-palace-state=gallery][data-archive-state=loading] .archive-loading{display:grid}
-:root body[data-layout-page=gallery] #theater[data-runtime-recovery=true] .archive-loading{display:none!important}
+:root body #theater.theater .archive-loading{display:none}
+:root body #theater.theater[data-palace-state=gallery][data-archive-state=loading] .archive-loading{display:grid}
+:root body #theater.theater[data-runtime-recovery=true] .archive-loading{display:none!important}
 .theater:not([data-palace-state=gallery])>.world-backdrop{display:none}
 #article-theater[hidden]{display:none!important}

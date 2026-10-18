@@ -11,7 +11,10 @@ trigger.id = 'atelier-install-open';
 trigger.className = 'pwa-open';
 trigger.textContent = 'ホーム追加';
 trigger.setAttribute('aria-label', 'ホーム画面への追加方法をひらく');
-document.querySelector('.header-actions')?.append(trigger);
+// The header already owns its install button. Never flash a second one there.
+const settings = document.querySelector('.visitor-preferences');
+trigger.hidden = !settings;
+settings?.append(trigger);
 const dialog = document.createElement('dialog');
 dialog.className = 'pwa-guide';
 dialog.setAttribute('aria-labelledby', 'pwa-title');

@@ -6,7 +6,7 @@ const css=await read('compact-gallery-header.css');
 const clean=css.replace(/\/\*[\s\S]*?\*\//g,'');
 const rules=[...clean.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map(([,selector,body])=>({selector:selector.trim(),body}));
 const rule=selector=>rules.find(item=>item.selector===selector)?.body||'';
-const base=':root body[data-layout-page=gallery] #theater>.masthead';
+const base=':root body #theater.theater>.masthead';
 
 test('the first painted header works without layout, mode, or :has initialization',()=>{
  assert.doesNotMatch(clean,/\[data-layout(?:=|\])|:has\(/);
@@ -57,9 +57,9 @@ test('counting information is retained while recovery and loading remain in thei
  const counter=await read('castle-visit-counter.js');assert.ok(counter.includes('同じブラウザは1日1回'));assert.ok(counter.includes('実人数ではありません'));
  assert.match(rule('#entrance-runtime-retry'),/position:relative;inset:auto;transform:none/);
  assert.doesNotMatch(rule('#entrance-runtime-retry'),/position:fixed|top:50%/);
- assert.match(rule(':root body[data-layout-page=gallery] #theater .archive-loading'),/display:none/);
- assert.match(rule(':root body[data-layout-page=gallery] #theater[data-palace-state=gallery][data-archive-state=loading] .archive-loading'),/display:grid/);
- assert.match(rule(':root body[data-layout-page=gallery] #theater[data-runtime-recovery=true] .archive-loading'),/display:none/);
+ assert.match(rule(':root body #theater.theater .archive-loading'),/display:none/);
+ assert.match(rule(':root body #theater.theater[data-palace-state=gallery][data-archive-state=loading] .archive-loading'),/display:grid/);
+ assert.match(rule(':root body #theater.theater[data-runtime-recovery=true] .archive-loading'),/display:none/);
  assert.match(rule('.theater:not([data-palace-state=gallery])>.world-backdrop'),/display:none/);
  assert.match(rule('#article-theater[hidden]'),/display:none!important/);
 });

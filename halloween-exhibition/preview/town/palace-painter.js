@@ -1,6 +1,6 @@
 /** A layered Gothic palace, painted once per canvas. Animated details stay separate. */
 const TAU=Math.PI*2, caches=new WeakMap();
-const palette={stone:'#8b8494',light:'#b8a5a7',dark:'#4c485f',mortar:'#39374d',roof:'#352442',roofLight:'#6b497d',gold:'#b9945b',goldLight:'#e3c386',glass:'#efb969'};
+const palette={stone:'#8b8494',light:'#b8a5a7',dark:'#4c485f',mortar:'#39374d',roof:'#352442',roofLight:'#6b497d',gold:'#c8a25c',goldLight:'#f4db9c',glass:'#efb969'};
 const hash=(a,b=0)=>{const s=Math.sin(a*127.1+b*311.7)*43758.5453;return s-Math.floor(s);};
 function path(c,points,fill,stroke=null,width=1){c.beginPath();points.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.closePath();if(fill){c.fillStyle=fill;c.fill();}if(stroke){c.strokeStyle=stroke;c.lineWidth=width;c.stroke();}}
 function line(c,x1,y1,x2,y2,color,width=1){c.strokeStyle=color;c.lineWidth=width;c.beginPath();c.moveTo(x1,y1);c.lineTo(x2,y2);c.stroke();}
@@ -30,9 +30,38 @@ function cornice(c,x,y,w,depth=8){
 function window(c,x,y,w=25,h=52,glass='#efb969',ornate=true){
   halo(c,x,y-h*.45,w*1.2,'#ffaf511c');archFill(c,x+2,y+3,w+12,h+10,'#262435');
   archFill(c,x,y,w+8,h+8,'#a48b78','#d1b384',1.2);archFill(c,x,y-3,w,h,gradient(c,0,y-h,0,h,[[0,'#995b3f'],[.58,glass],[1,'#8d5e48']]),'#413544',2);
+  c.save();arch(c,x,y-3,w-2,h-2);c.clip();for(let n=0;n<3;n++){const yy=y-h+8+n*h*.28;path(c,[[x,yy-10],[x+w*.44,yy+5],[x,yy+20],[x-w*.44,yy+5]],['#649da57d','#bd84a978','#e5bf7080'][n], '#c9a86b88',.7);}c.restore();
   line(c,x,y-h+9,x,y-3,'#685145',1.8);line(c,x-w*.48,y-h*.37,x+w*.48,y-h*.37,'#685145',1.5);
   if(ornate){const yy=y-h*.66;line(c,x-w*.42,yy+10,x,yy-2,'#f0cb8311',1);line(c,x-w*.4,yy+10,x,yy-6,'#705544',1);line(c,x+w*.4,yy+10,x,yy-6,'#705544',1);ellipse(c,x,y-h*.37,w*.13,w*.13,null,'#806045',1);}
   rect(c,x-w/2-7,y+1,w+14,4,'#cfaf7a');rect(c,x-w/2-7,y+5,w+14,4,'#403749');
+}
+function gildedScroll(c,x,y,size=1,flip=1){
+  c.save();c.translate(x,y);c.scale(size*flip,size);c.beginPath();c.moveTo(-22,9);c.bezierCurveTo(-7,-4,2,0,15,-15);c.bezierCurveTo(26,-33,43,-11,28,-7);c.bezierCurveTo(16,-3,20,-19,29,-15);c.strokeStyle='#64503b';c.lineWidth=6;c.stroke();c.strokeStyle='#e0bc73';c.lineWidth=3;c.stroke();
+  for(const[xx,yy,turn]of[[-8,2,-1],[7,-7,1],[17,-18,-1]]){c.save();c.translate(xx,yy);c.rotate(turn*.6);path(c,[[0,0],[-7,-14],[4,-10],[7,-3]],'#ceaa65','#f0d493',.8);c.restore();}c.restore();
+}
+function roseWindow(c,x,y,r){
+  ellipse(c,x+3,y+4,r+9,r+9,'#302a40');ellipse(c,x,y,r+8,r+8,'#b69b7b','#ead093',2);ellipse(c,x,y,r+2,r+2,'#292b44','#755d49',2);
+  for(let i=0;i<12;i++){
+    const a=i*TAU/12,b=(i+1)*TAU/12;c.beginPath();c.moveTo(x,y);c.arc(x,y,r,a,b);c.closePath();c.fillStyle=['#7ab7bd','#b692bd','#e4b775','#bd859e'][i%4];c.fill();
+    line(c,x+Math.cos(a)*r*.22,y+Math.sin(a)*r*.22,x+Math.cos(a)*r,y+Math.sin(a)*r,'#d0b06d',1.4);
+    const xx=x+Math.cos(a+TAU/24)*r*.63,yy=y+Math.sin(a+TAU/24)*r*.63;ellipse(c,xx,yy,r*.14,r*.14,null,'#efcf8a',1.2);
+  }
+  for(const rr of[r*.2,r*.43,r*.9])ellipse(c,x,y,rr,rr,null,'#e8c67b',1.6);
+  ellipse(c,x,y,r*.19,r*.19,'#f3d69c','#9d784d',1.5);
+}
+function royalBanner(c,x,y,flip=1){
+  line(c,x-20,y,x+20,y,'#d1ac6f',3);path(c,[[x-16,y+2],[x+16,y+2],[x+14,y+62],[x,y+73],[x-14,y+62]],gradient(c,x-16,0,32,0,[[0,'#342439'],[.4,'#784966'],[.7,'#59324b'],[1,'#302338']]),'#d0ab68',1.5);
+  path(c,[[x,y+15],[x+8,y+33],[x,y+51],[x-8,y+33]],'#c4a16b','#efd39a',1.2);line(c,x,y+19,x,y+47,'#714f45');
+  for(const side of[-1,1])line(c,x+side*12,y+6,x+side*10,y+59,'#cfae683f');
+}
+function wallFountain(c,x,y){
+  // Shallow lion masks and bowls are attached to the wall, clear of the walking path.
+  archFill(c,x,y-11,58,102,'#544659','#d5b77a',2);archFill(c,x,y-16,46,91,'#807081','#ac956f',1);
+  ellipse(c,x,y-77,18,20,'#b99460','#ebca89',1.5);
+  for(let i=0;i<10;i++){const a=i*TAU/10;path(c,[[x+Math.cos(a)*12,y-77+Math.sin(a)*15],[x+Math.cos(a+.15)*22,y-77+Math.sin(a+.15)*22],[x+Math.cos(a+.35)*14,y-77+Math.sin(a+.35)*16]],'#b59465','#d8b574',.6);}
+  ellipse(c,x,y-75,11,13,'#d3b982','#7f6449',1);for(const side of[-1,1])ellipse(c,x+side*4,y-79,1.3,1.4,'#534339');ellipse(c,x,y-69,6,4,'#8b6d4d');
+  for(const dx of[-2,0,2])line(c,x+dx,y-65,x+dx*.6,y-30,'#8dc2cb'+(dx?'88':'dd'),1.1);
+  path(c,[[x-30,y-29],[x+30,y-29],[x+21,y-12],[x-21,y-12]],'#887f91','#d2b67b',1.2);ellipse(c,x,y-29,30,9,'#c0ac9e','#e6c98e',1.2);ellipse(c,x,y-30,24,5,'#466975','#a7c8c5',1);ellipse(c,x,y-30,13,2.4,null,'#c5dbd0',.8);
 }
 function roof(c,x,y,r,h){
   const left=x-r,right=x+r,top=y-h;
@@ -46,6 +75,7 @@ function roof(c,x,y,r,h){
       line(c,tx,yy,tx+(tx-x)*.09,yy+h/12,'#241a3288',1);
     }
   }
+  for(const side of[-1,1]){line(c,x+side*2,top+5,x+side*r*.7,y-1,'#d8b87566',1.6);for(const f of[.24,.48,.72]){const xx=x+side*r*.7*f,yy=top+h*f;path(c,[[xx,yy-4],[xx+3,yy],[xx,yy+4],[xx-3,yy]],'#ddc38e','#5d4851',.6);}}
   cornice(c,left-2,y+1,r*2+4,7);
   line(c,x,top-2,x,top-25,palette.gold,2);path(c,[[x,top-35],[x+4,top-26],[x,top-18],[x-4,top-26]],'#d7b575','#342c3c',1);
 }
@@ -121,7 +151,14 @@ function facade(c){
   // A deep central gatehouse breaks the otherwise broad horizontal wall.
   path(c,[[343,-228],[548,-228],[566,-249],[359,-249]],'#5a4e65','#b99d79',1);rect(c,343,-228,205,225,gradient(c,343,0,205,0,[[0,'#9c8991'],[.24,'#baa099'],[.7,'#8f7c89'],[1,'#5a4f68']]));masonry(c,343,-228,205,225,19);cornice(c,338,-231,215,8);
   for(const side of[-1,1])tower(c,448+side*116,-24,19,221,80);
-  gate(c,448,0);
+  // A broad royal portal, an illuminated rose and carved acanthus read at a glance.
+  roseWindow(c,448,-305,33);for(const side of[-1,1])royalBanner(c,448+side*121,-315);
+  c.save();c.translate(448,0);c.scale(1.17,1.07);gate(c,0,0);c.restore();
+  for(const side of[-1,1]){gildedScroll(c,448+side*104,-244,.9,side);gildedScroll(c,448+side*80,-329,.68,side);wallFountain(c,448+side*163,-2);}
+  // Gilded pierced balustrades and repeating arches join the towers as a palace.
+  for(const side of[-1,1]){const start=side<0?143:605;for(let n=0;n<5;n++){const xx=start+n*35;archFill(c,xx,-210,26,33,'#3d334c','#d5b478',1.8);ellipse(c,xx,-235,2,2,'#ecd091');}line(c,start-20,-248,start+160,-248,'#f0cf8b',3);line(c,start-20,-206,start+160,-206,'#b8935d',3);}
+  for(const side of[-1,1]){const tx=448+side*353;gildedScroll(c,tx-13,-148,.42,1);gildedScroll(c,tx+13,-148,.42,-1);}
+
   for(const side of[-1,1]){foliage(c,448+side*337,-23,-side);foliage(c,448+side*151,-25,side);}
   // Low threshold lanterns illuminate stone, not the whole facade.
   for(const xx of[315,581]){
@@ -133,7 +170,7 @@ function flags(c,time){
     line(c,x,y,x,y-29,'#c3a66c',1.8);const wave=Math.sin(time*2.4+phase)*3;
     path(c,[[x+1,y-28],[x+28,y-24+wave],[x+22,y-13+wave],[x+1,y-12]],gradient(c,x,0,27,0,[[0,'#623d63'],[.5,'#936182'],[1,'#50334f']]),'#d1af78',.8);
   }
-  halo(c,448,-272,28,'#ffcd77'+Math.round(34+Math.sin(time*1.4)*6).toString(16));ellipse(c,448,-271,3,7,'#ffe6ad88');
+  halo(c,448,-291,28,'#ffcd77'+Math.round(34+Math.sin(time*1.4)*6).toString(16));ellipse(c,448,-290,3,7,'#ffe6ad88');
 }
 function cachedFacade(c){
   if(caches.has(c))return caches.get(c);

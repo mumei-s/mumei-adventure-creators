@@ -227,3 +227,26 @@ test('non-library 3D preserves its original minimum brightness and window profil
  for(const facing of ['up','right','down','left'])world.render({state,motion:false,facing,brightness:75});
  assert.equal(writes,0,'unchanged library frames do not rewrite window materials');world.destroy();
 });
+
+test('normal and wide 3D zoom change the frustum, redraw on change, and preserve ground picking',async()=>{
+ const {world,record}=harness();await Promise.all([world.ready,world.sceneryReady]);const state=initialTownState();
+ try{
+  for(const [mapId,position]of[['lantern-town',{x:28.5,z:30.5}],['inn',{...getTownMap('inn').spawn}]]){
+   state.mapId=mapId;state.position=position;const spansByDistance={};
+   for(const cameraDistance of['normal','wide']){
+    const spans=[];
+    for(const cameraZoom of[.65,1,1.4]){
+     const frames=record.frames;assert.equal(world.render({state,motion:false,cameraDistance,cameraZoom}),true,'a zoom or distance change redraws the existing renderer');assert.equal(record.frames,frames+1);
+     spans.push(record.camera.right-record.camera.left);
+     for(const offset of[{x:0,z:0},{x:1.3,z:-.8},{x:-1.5,z:.7}]){
+      const point={x:position.x+offset.x,z:position.z+offset.z},screen=world.worldToScreen(point),back=world.screenToWorld(screen);
+      assert.ok(back&&Math.abs(back.x-point.x)<1e-8&&Math.abs(back.z-point.z)<1e-8,`${mapId}/${cameraDistance}/${cameraZoom} screen pick stays on its world point`);
+     }
+     assert.equal(world.render({state,motion:false,cameraDistance,cameraZoom}),false,'the same paused zoom skips a redundant frame');assert.equal(record.frames,frames+1);
+    }
+    assert.ok(spans[0]>spans[1]&&spans[1]>spans[2],'zooming in narrows the actual camera frustum');assert.ok(Math.abs(spans[0]/spans[2]-1.4/.65)<1e-9);spansByDistance[cameraDistance]=spans;
+   }
+   for(let index=0;index<3;index++)assert.ok(spansByDistance.wide[index]>spansByDistance.normal[index]*1.4,'wide mode keeps a wider ground view at every zoom');
+  }
+ }finally{world.destroy();}
+});

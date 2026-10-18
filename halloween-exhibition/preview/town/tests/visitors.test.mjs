@@ -12,7 +12,7 @@ test('all verified creator groups retain every paired member and profile-only CN
   const source=roster(),before=structuredClone(source),placed=placeTownVisitors(source);
   assert.deepEqual(source,before);assert.deepEqual(placed.omitted,[]);assert.equal(placed.visitors.length,source.npcs.length);
   assert.equal(new Set([source.hero.creatorId,...placed.visitors.map(p=>p.creatorId)]).size,15);
-  const cna=placed.visitors.filter(p=>p.creatorId==='grand_daisy8632');assert.equal(cna.length,3);assert.ok(cna.every(p=>p.articleURL===null&&p.profileURL==='https://note.com/grand_daisy8632'));assert.equal(new Set(cna.map(p=>p.groupId)).size,1);assert.ok(cna.every(p=>p.x>34&&p.x<39&&p.z<11));
+  const cna=placed.visitors.filter(p=>p.creatorId==='grand_daisy8632');assert.equal(cna.length,3);assert.ok(cna.every(p=>p.articleURL===null&&p.profileURL==='https://note.com/grand_daisy8632'));assert.equal(new Set(cna.map(p=>p.groupId)).size,1);assert.ok(cna.every(p=>p.x>48&&p.x<53&&p.z>=9&&p.z<13));
   const noninteractive=source.npcs.filter(p=>p.interactive===false);assert.ok(noninteractive.length);for(const p of noninteractive)assert.equal(placed.visitors.find(v=>v.id===p.id)?.interactive,false);
 });
 test('authored town patrols remain walkable and clear of entrances, objects and other groups over their full cycles',()=>{
@@ -60,6 +60,6 @@ test('distance selection is bounded by whole groups, retains side companions, an
 test('visitor conversation respects noninteractive companions and town wall/water line of sight',()=>{
   const {visitors}=placeTownVisitors(roster()),state=initialTownState(),poses=sampleTownVisitors(visitors,{state,time:0,motion:false}),guest=poses.find(p=>p.interactive!==false);
   const near={...state,position:{x:guest.x,z:guest.z+.5}};assert.equal(nearestTownVisitor([guest],near)?.id,guest.id);assert.equal(nearestTownVisitor([{...guest,interactive:false}],near),null);
-  assert.equal(townVisitorLineOfSight({...state,position:{x:30.5,z:20.5}},{mapId:TOWN_START_MAP,x:33.5,z:20.5}),false);
+  assert.equal(townVisitorLineOfSight({...state,position:{x:30.5,z:22.5}},{mapId:TOWN_START_MAP,x:33.5,z:22.5}),false);
   assert.equal(townVisitorLineOfSight({...state,mapId:'inn'},guest),false);
 });

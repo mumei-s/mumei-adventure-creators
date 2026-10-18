@@ -31,6 +31,28 @@ test('all sixteen approved home themes have distinct native art, signs, and matc
  assert.equal(signatures.size,16);
 });
 
+test('creator identities change the architecture even when palette, sign, and emblem are identical',()=>{
+ const signatures=new Set();
+ for(const home of CREATOR_HOMES){
+  const {context,records}=harness();
+  drawCreatorHome2D(context,{...home,creatorId:'same',creatorName:'Same',homeLabel:'Same',motif:'lantern',homePalette:{wall:'#bcc4b7',roof:'#566875',trim:'#b79b6d'}});
+  // Comparing drawing commands, rather than source strings, catches a return to
+  // palette swaps and emblem-only differences on otherwise identical buildings.
+  signatures.add(JSON.stringify(records[1].calls));
+ }
+ assert.equal(signatures.size,16,'each house has its own roof, windows, or facade construction');
+});
+
+test('the rendered entrance follows an off-center doorstep for every architecture',()=>{
+ for(const home of CREATOR_HOMES){
+  const b={...home,door:{x:home.x+2.25,z:home.z+home.h+.6}}, {context,records}=harness();
+  drawCreatorHome2D(context,b);const calls=records[1].calls,door=calls.find(call=>call[0]==='roundRect'&&call[2]===-80&&call[3]===50);
+  assert.equal((door[1]+25)*b.w/320+b.x,b.door.x);
+  const step=calls.findLast(call=>call[0]==='roundRect'&&call[2]===-1&&call[3]===58);
+  assert.equal((step[1]+29)*b.w/320+b.x,b.door.x,'front ornaments cannot move the playable entrance');
+ }
+});
+
 test('static home art paints once and the cache bounds repeated palette/name edits',()=>{
  const {context,records}=harness(),home=CREATOR_HOMES[0];drawCreatorHome2D(context,home);const first=records[1].calls.length;
  for(let n=0;n<100;n++)drawCreatorHome2D(context,home);

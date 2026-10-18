@@ -1,0 +1,130 @@
+/* Conversation and creator pages own their vertical flow. Battle grids and
+   nested menus/settings retain their existing layout. */
+:is(#town-panel,#panel):not(.battle-mode)[open]{
+ display:flex;
+ flex-direction:column;
+ overflow:hidden;
+}
+:is(#town-panel,#panel):not(.battle-mode)>:is(.panel-close,.close){
+ position:sticky;
+ top:0;
+ float:none;
+ display:block;
+ flex:0 0 auto;
+ width:fit-content;
+ max-width:100%;
+ min-height:44px;
+ margin:0 0 12px auto;
+ padding:10px 14px;
+ font-size:14px;
+ line-height:1.5;
+ white-space:normal;
+ overflow-wrap:anywhere;
+ background:#142732;
+ z-index:5;
+}
+#town-panel:not(.battle-mode) #town-panel-content,
+#panel:not(.battle-mode) #panel-content{
+ flex:1 1 auto;
+ min-width:0;
+ min-height:0;
+ max-width:100%;
+ overflow-x:hidden;
+ overflow-y:auto;
+ overscroll-behavior:contain;
+ scrollbar-gutter:stable;
+ padding:0 3px 4px;
+ box-sizing:border-box;
+}
+#town-panel:not(.battle-mode) #town-panel-content>:is(a.button-link,a.primary,button),
+#panel:not(.battle-mode) #panel-content>:is(a.button-link,a.primary,button){
+ display:block;
+ width:100%;
+ max-width:100%;
+ min-width:0;
+ min-height:48px;
+ height:auto;
+ padding:12px 14px;
+ margin-block:10px;
+ margin-inline:0;
+ box-sizing:border-box;
+ white-space:normal;
+ overflow-wrap:anywhere;
+ word-break:normal;
+ font-size:16px;
+ line-height:1.6;
+ text-align:left;
+ text-decoration:none;
+}
+#town-panel:not(.battle-mode) #town-panel-content>p,
+#panel:not(.battle-mode) #panel-content>p{
+ max-width:100%;
+ font-size:16px;
+ line-height:1.8;
+ overflow-wrap:anywhere;
+}
+#town-panel:not(.battle-mode) #town-panel-content>:is(h2,h3),
+#panel:not(.battle-mode) #panel-content>:is(h2,h3){
+ min-width:0;
+ max-width:100%;
+ white-space:normal;
+ overflow-wrap:anywhere;
+ line-height:1.5;
+}
+#town-panel:not(.battle-mode) #town-panel-content>h2,
+#panel:not(.battle-mode) #panel-content>h2{
+ font-size:clamp(24px,4.9vw,30px);
+ margin:8px 0 18px;
+}
+#town-panel:not(.battle-mode) #town-panel-content>p.eyebrow,
+#panel:not(.battle-mode) #panel-content>p.eyebrow{
+ font-size:11px;
+ line-height:1.6;
+ letter-spacing:1.5px;
+ margin:0 0 6px;
+}
+#town-panel:not(.battle-mode) .creator-home-work{
+ display:grid;
+ grid-template-columns:minmax(0,1fr);
+ gap:12px;
+ width:100%;
+ min-width:0;
+ max-width:100%;
+ margin:12px 0;
+ box-sizing:border-box;
+}
+#town-panel:not(.battle-mode) .creator-home-work>:is(strong,span),
+#town-panel:not(.battle-mode) .creator-home-identity h3{
+ display:block;
+ min-width:0;
+ max-width:100%;
+ height:auto;
+ max-height:none;
+ white-space:normal;
+ overflow:visible;
+ overflow-wrap:anywhere;
+ text-overflow:clip;
+ -webkit-line-clamp:unset;
+ line-height:1.65;
+}
+#town-panel:not(.battle-mode) .creator-home-work strong{font-size:18px}
+#town-panel:not(.battle-mode) .creator-home-work span{font-size:16px}
+#town-panel:not(.battle-mode) .creator-home-identity{
+ display:grid;
+ grid-template-columns:auto minmax(0,1fr);
+ gap:14px;
+ align-items:center;
+ min-width:0;
+ max-width:100%;
+}
+#town-panel:not(.battle-mode) .creator-home-identity img{
+ width:clamp(64px,20vw,96px);
+ height:auto;
+ aspect-ratio:1;
+}
+#town-panel:not(.battle-mode) .creator-home-identity h3{font-size:20px;margin:0}
+#town-panel:not(.battle-mode) .creator-home-identity h3:only-child{grid-column:1/-1}
+@media(max-width:680px){
+ #town-panel:not(.battle-mode) #town-panel-content>h2,
+ #panel:not(.battle-mode) #panel-content>h2{font-size:clamp(22px,5.6vw,26px)}
+}

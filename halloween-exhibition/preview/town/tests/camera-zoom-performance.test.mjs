@@ -1,0 +1,64 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createTownRenderer} from '../renderer.js';
+import {initialTownState} from '../town-model.js';
+
+function harness(width=420,height=700){
+ const canvases=[];
+ function makeCanvas(w,h){
+  const canvas={width:w,height:h,originalWidth:w,originalHeight:h,drawnFloors:[]};
+  const context=new Proxy({canvas,globalAlpha:1,measureText:value=>({width:String(value).length*9}),createPattern:()=>null,
+   createLinearGradient:()=>({addColorStop(){}}),createRadialGradient:()=>({addColorStop(){}}),
+   drawImage(image){if(image?.originalWidth===512&&image?.originalHeight===512)canvas.drawnFloors.push(image);}},
+   {get:(target,key)=>key in target?target[key]:(()=>{}),set:(target,key,value)=>{target[key]=value;return true;}});
+  canvas.getContext=()=>context;canvases.push(canvas);return canvas;
+ }
+ const canvas=makeCanvas(width,height),renderer=createTownRenderer({makeCanvas,loadImage:async()=>({width:2048,height:2048})});
+ return {canvas,renderer,floorAllocations:()=>canvases.filter(item=>item.originalWidth===512&&item.originalHeight===512).length};
+}
+
+test('wide 2D zoom preserves screen picking at the palace, in town, and in the creator quarter',async()=>{
+ for(const scenario of[
+  {mapId:'lantern-town',position:{x:32.5,z:8.5},width:420,height:700},
+  {mapId:'lantern-town',position:{x:28.5,z:30.5},width:1280,height:720},
+  {mapId:'creator-quarter',position:{x:23.5,z:20.5},width:420,height:700},
+ ]){
+  const {canvas,renderer}=harness(scenario.width,scenario.height);await renderer.ready;
+  const state={...initialTownState(),mapId:scenario.mapId,position:scenario.position},spans=[];
+  try{
+   for(const cameraZoom of[.65,1,1.4]){
+    assert.equal(renderer.render({canvas,state,motion:false,cameraDistance:'wide',cameraZoom}),true,'changing zoom redraws the scene');
+    for(const offset of[{x:0,z:0},{x:1.2,z:-.8},{x:-2.1,z:1.4}]){
+     const point={x:state.position.x+offset.x,z:state.position.z+offset.z},screen=renderer.worldToScreen(point),back=renderer.screenToWorld(screen);
+     assert.ok(Number.isFinite(screen.x)&&Number.isFinite(screen.y));assert.ok(Math.abs(back.x-point.x)<1e-9&&Math.abs(back.z-point.z)<1e-9,`${scenario.mapId} at zoom ${cameraZoom} keeps the selected world point`);
+    }
+    const center=renderer.worldToScreen(state.position),east=renderer.worldToScreen({x:state.position.x+1,z:state.position.z});spans.push(east.x-center.x);
+    assert.equal(renderer.render({canvas,state,motion:false,cameraDistance:'wide',cameraZoom}),false,'an identical stopped view does not redraw');
+   }
+   assert.ok(spans[0]<spans[1]&&spans[1]<spans[2],'zoom changes actual scene scale');assert.ok(Math.abs(spans[2]/spans[0]-1.4/.65)<1e-9);
+  }finally{renderer.destroy();}
+ }
+});
+
+test('wide 2D frames retain their whole visible floor at every zoom instead of evicting it while drawing',async()=>{
+ // The palace pullback plus manual wide mode used to need 25+ floor canvases;
+ // the old 20-entry LRU regenerated the same floor on every following frame.
+ for(const [width,height]of[[420,700],[1280,720]]){
+  const {canvas,renderer,floorAllocations}=harness(width,height);await renderer.ready;
+  const state={...initialTownState(),position:{x:32.5,z:8.5}};
+  try{
+   for(const cameraZoom of[.65,1,1.4]){
+    renderer.invalidate();assert.equal(renderer.render({canvas,state,motion:false,cameraDistance:'wide',cameraZoom}),true);
+    const allocations=floorAllocations(),visible=new Set(canvas.drawnFloors);assert.ok(visible.size>0,'the test rendered actual cached ground canvases');
+    const status=renderer.status();assert.ok(status.chunkLimit<=48&&status.chunkLimit>=visible.size);assert.ok(status.chunks<=48);
+    for(let frame=0;frame<2;frame++){
+     canvas.drawnFloors.length=0;renderer.invalidate();assert.equal(renderer.render({canvas,state,motion:false,cameraDistance:'wide',cameraZoom}),true,'force the warm frame through the real draw path');
+     assert.equal(floorAllocations(),allocations,`zoom ${cameraZoom}: a warm frame allocates no replacement ground`);
+     assert.deepEqual(new Set(canvas.drawnFloors),visible,'the same visible floor surfaces are reused');
+     assert.ok(renderer.status().chunkLimit<=48&&renderer.status().chunks<=48);
+    }
+    canvas.drawnFloors.length=0;
+   }
+  }finally{renderer.destroy();}
+ }
+});

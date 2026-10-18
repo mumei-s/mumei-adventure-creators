@@ -1,4 +1,4 @@
-import {TOWN_ENEMIES} from './story-data.js?v=20261019-homes1';
+import {TOWN_ENEMIES} from './story-data.js?v=20261019-journey1';
 
 let battleSequence=0;
 const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));

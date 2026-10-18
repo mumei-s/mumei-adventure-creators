@@ -1,16 +1,17 @@
-import {drawCreatorHome2D,drawCreatorQuarterGate2D} from './creator-home-painter.js?v=20261019-homes1';
+import {isInPalaceForecourt} from './palace-forecourt.js?v=20261019-journey1';
+import {drawCreatorHome2D,drawCreatorQuarterGate2D} from './creator-home-painter.js?v=20261019-journey1';
 import {TOWN_SCENERY_FRAMES} from './scenery-data.js?v=20261019-scene1';
-import {cameraDistanceScale} from '../camera-distance.js?v=20261019-scene1';
+import {cameraDistanceScale,normalizeCameraZoom} from '../camera-distance.js?v=20261019-journey1';
 import {townLighting,townLanternPosition} from './lighting.js?v=20261019-interior1';
-import {getTownMap} from './story-data.js?v=20261019-homes1';
+import {getTownMap} from './story-data.js?v=20261019-journey1';
 import {TOWN_TILE as TILE,followTownCamera,townCameraTarget,townVisibleBounds,townWorldToScreen,townScreenToWorld} from './motion.js';
 import {TOWN_BUDGET,TOWN_PROP_CELLS,TOWN_BATTLE_ART_IDS,townVisualSeed as seed,buildingArtKind,townPropSprite} from './visual-data.js';
 import {drawArtSprite,playerPose,loadArtImage,PALACE_ART} from '../maze/rpg-art.js?v=20261017-startup1';
 import {enemyRigEffect} from '../maze/battle-rig-effects.js?v=20261017-rig2';
 import {monsterSprite} from '../maze/monster-motion.js?v=20261017-rig2';
 import {withDeadline} from '../transition-effects.js?v=20261016-living1';
-import {townPalaceFraming} from './palace-architecture.js?v=20261019-scene1';
-import {drawTownPalace2D} from './palace-painter.js?v=20261019-scene1';
+import {townPalaceFraming} from './palace-architecture.js?v=20261019-journey1';
+import {drawTownPalace2D} from './palace-painter.js?v=20261019-journey1';
 
 const TAU=Math.PI*2,clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 export const TOWN_DEPTH_SCALE=.78;
@@ -96,6 +97,7 @@ function drawResident(c,n,time=0){
 
 export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},version:0},loadImage=loadArtImage,fetcher=globalThis.fetch,assetTimeout=14000,manifestTimeout=6000,timers=globalThis}={}){
   const scene={images:{},frames:TOWN_SCENERY_FRAMES.props,residentFrames:TOWN_SCENERY_FRAMES.residents,version:0,failures:[],loaded:[]},chunks=new Map(),shade=makeCanvas(1,1),sceneSnapshot=makeCanvas(1,1);
+  let chunkLimit=TOWN_BUDGET.residentChunks;
   let camera=null,lastMap=null,lastView=null,lastSignature='',destroyed=false,hitItems=[],lastSurface=null,snapshotBattle=null;
   const loading=new AbortController();
   const alphaMasks=new WeakMap(),alphaCanvas=makeCanvas(1,1);
@@ -133,7 +135,7 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
       if(tile!=='#'){for(let i=0;i<4;i++)line(c,px,py+i*16,px+TILE,py+i*16,'#281f273b');line(c,px+((z%2)*22+15),py,px+((z%2)*22+15),py+TILE,'#2c263236');}
       return;
     }
-    const road='.=p'.includes(tile),grass='gf#'.includes(tile),bridgeCell=(xx,zz)=>map.id==='lantern-town'&&xx>=30&&xx<=33&&zz>=6&&zz<47&&'.=p'.includes(map.tiles[zz]?.[xx]||'?'),bridge=tile==='='||bridgeCell(x,z);
+    const road='.=p'.includes(tile),grass='gf#'.includes(tile),bridgeCell=(xx,zz)=>map.id==='lantern-town'&&!isInPalaceForecourt({x:xx+.5,z:zz+.5})&&xx>=30&&xx<=33&&zz>=6&&zz<47&&'.=p'.includes(map.tiles[zz]?.[xx]||'?'),bridge=tile==='='||bridgeCell(x,z);
     c.fillStyle=road?'#65646b':tile==='b'?'#465052':'#425c45';c.fillRect(px,py,TILE,TILE);
     if(road&&scene.images.cobbles){const im=scene.images.cobbles,ss=im.width/4;c.drawImage(im,(x%4)*ss,(z%4)*ss,ss,ss,px,py,TILE,TILE);c.fillStyle=tile==='p'?'#caa87514':'#242d3a14';c.fillRect(px,py,TILE,TILE);}
     else if(road){for(let row=0;row<5;row++){for(let col=-1;col<5;col++){const xx=px+col*18+(row%2)*9,yy=py+row*13;box(c,xx+1,yy+1,16,11,2,['#5b6069','#6c6c72','#78767a','#626772'][Math.floor(seed(x*5+col,z*5+row)*4)],'#3f46533d');line(c,xx+3,yy+2,xx+14,yy+2,'#cac7b02b');}}}
@@ -159,7 +161,7 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
     const key=`${map.id}:${cx}:${cz}:${scene.version}`;if(chunks.has(key)){const cv=chunks.get(key);chunks.delete(key);chunks.set(key,cv);return cv;}
     const count=TOWN_BUDGET.chunkTiles,cv=makeCanvas(count*TILE,count*TILE),c=cv.getContext('2d');
     for(let z=0;z<count;z++)for(let x=0;x<count;x++){const tx=cx*count+x,tz=cz*count+z;if(tx>=map.width||tz>=map.height)continue;c.save();c.translate(-cx*count*TILE,-cz*count*TILE);groundTile(c,map,tx,tz);c.restore();}
-    chunks.set(key,cv);while(chunks.size>TOWN_BUDGET.residentChunks)chunks.delete(chunks.keys().next().value);return cv;
+    chunks.set(key,cv);while(chunks.size>chunkLimit)chunks.delete(chunks.keys().next().value);return cv;
   }
   function water(c,map,bounds,time,motion){
     const clock=motion?time:0;
@@ -252,20 +254,22 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
     if(TOWN_PROP_CELLS[o.kind]!==undefined)drawProp(c,o.kind,x,y,o.data.size||90);
   }
 
-  function render({canvas,state,time=0,dt=.016,motion=true,pixelRatio=1,walking=false,walkPhase=0,facing=state?.facing||'down',brightness=75,lantern=true,cameraDistance='normal',creatorActors=[]}={}){
+  function render({canvas,state,time=0,dt=.016,motion=true,pixelRatio=1,walking=false,walkPhase=0,facing=state?.facing||'down',brightness=75,lantern=true,cameraDistance='normal',cameraZoom=1,creatorActors=[]}={}){
     if(destroyed||!canvas||!state?.position)return false;
     const ratio=clamp(pixelRatio||1,1,2),w=canvas.width/ratio,h=canvas.height/ratio,map=getTownMap(state.mapId),interior=map.outdoor!==true;
     if(interior)ensureInterior();
-    const baseTile=w<550?52:w<900?61:70,framing=townPalaceFraming(state.position,map,55*Math.PI/180,w,h),tile=baseTile+(Math.min(baseTile,framing.pixelsPerTile??baseTile)-baseTile)*(framing.influence||0),scale=tile/TILE*cameraDistanceScale(cameraDistance),target=townCameraTarget(state.position,map,w,h/TOWN_DEPTH_SCALE,tile*cameraDistanceScale(cameraDistance));
+    const baseTile=w<550?52:w<900?61:70,framing=townPalaceFraming(state.position,map,55*Math.PI/180,w,h),tile=baseTile+(Math.min(baseTile,framing.pixelsPerTile??baseTile)-baseTile)*(framing.influence||0),scale=tile/TILE*cameraDistanceScale(cameraDistance)*normalizeCameraZoom(cameraZoom),target=townCameraTarget(state.position,map,w,h/TOWN_DEPTH_SCALE,tile*cameraDistanceScale(cameraDistance)*normalizeCameraZoom(cameraZoom));
     if(framing.influence){target.x+=(framing.targetX*TILE-target.x)*framing.influence*.78;target.y+=((state.position.z*TILE-310/TOWN_DEPTH_SCALE)-target.y)*framing.influence;}
     const switched=lastMap!==map.id;camera=followTownCamera(switched?null:camera,target,dt,{snap:!motion});lastMap=map.id;
     const cameraMoving=Math.hypot(camera.x-target.x,camera.y-target.y)>.03;
-    const signature=[cameraDistance,map.id,canvas.width,canvas.height,state.position.x,state.position.z,state.revision||0,JSON.stringify(state.flags||{}),state.battle?.phase,Math.floor(walkPhase*30),walking,facing,scene.version,art.version,art.rigs?.get('owner')?.poseVersion,brightness,lantern,motion?Math.floor(time*30):0,creatorActors.map(a=>[a.x,a.z,a.facing,a.sprite?.frame?.join(','),a.sprite?.poseVersion].join(':')).join(';')].join('|');
+    const signature=[cameraDistance,cameraZoom,map.id,canvas.width,canvas.height,state.position.x,state.position.z,state.revision||0,JSON.stringify(state.flags||{}),state.battle?.phase,Math.floor(walkPhase*30),walking,facing,scene.version,art.version,art.rigs?.get('owner')?.poseVersion,brightness,lantern,motion?Math.floor(time*30):0,creatorActors.map(a=>[a.x,a.z,a.facing,a.sprite?.frame?.join(','),a.sprite?.poseVersion].join(':')).join(';')].join('|');
     if(!cameraMoving&&!switched&&lastSignature===signature)return false;lastSignature=signature;
     const c=canvas.getContext('2d');if(!c)return false;
     lastView={camera:{...camera},width:w,height:h,scale,map,pixelRatio:ratio,depthScale:TOWN_DEPTH_SCALE};hitItems=[];
     c.setTransform(ratio,0,0,ratio,0,0);c.clearRect(0,0,w,h);c.fillStyle='#162536';c.fillRect(0,0,w,h);c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';
     const bounds=townVisibleBounds(camera,w,h,scale,map,3,TOWN_DEPTH_SCALE),count=TOWN_BUDGET.chunkTiles;
+    // Retain a whole visible frame: a wide camera must not evict its own floor tiles.
+    const neededChunks=(Math.floor(bounds.right/count)-Math.floor(bounds.left/count)+1)*(Math.floor(bounds.bottom/count)-Math.floor(bounds.top/count)+1);chunkLimit=Math.max(TOWN_BUDGET.residentChunks,Math.min(48,neededChunks));
     c.save();c.translate(w/2,h/2);c.scale(scale,scale*TOWN_DEPTH_SCALE);c.translate(-camera.x,-camera.y);
     for(let cz=Math.floor(bounds.top/count);cz<=Math.floor(bounds.bottom/count);cz++)for(let cx=Math.floor(bounds.left/count);cx<=Math.floor(bounds.right/count);cx++)c.drawImage(chunk(map,cx,cz),cx*count*TILE,cz*count*TILE);
     water(c,map,bounds,time,motion);floorDetails(c,map,bounds);
@@ -321,7 +325,7 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
     c.drawImage(shade,0,0,w,h);
     for(const light of lights){const at=townWorldToScreen(light,camera,w,h,scale,TOWN_DEPTH_SCALE);glow(c,at.x,at.y-light.height*scale,light.r*scale*.55,lighting.night?'#eabe6838':'#eabe6822');}
     const vignette=c.createRadialGradient(w*.5,h*.48,Math.min(w,h)*.27,w*.5,h*.48,Math.max(w,h)*.76);vignette.addColorStop(0,'#10203200');vignette.addColorStop(1,'#09192c55');c.fillStyle=vignette;c.fillRect(0,0,w,h);
-    for(const tag of nameTags){const at=townWorldToScreen({x:tag.x/TILE,z:tag.y/TILE},camera,w,h,scale,TOWN_DEPTH_SCALE);if(at.x<15||at.x>w-15||at.y<8||at.y>h-15)continue;c.font='600 10px "Yu Gothic",sans-serif';const ww=Math.min(126,c.measureText(tag.label).width+14);box(c,clamp(at.x-ww/2,5,w-ww-5),at.y-8,ww,17,6,'#152b38eb','#c8b17b88');text(c,tag.label,clamp(at.x,ww/2+5,w-ww/2-5),at.y,10,'#f2e0b4','center',ww-10);}
+
     if(motion&&!interior){
       // Nearby drifting seed heads move through world space; the camera never bobs.
       c.save();for(let i=0;i<12;i++){const wx=(Math.sin(time*.018+i*9)*.5+.5)*w,wy=((i*67+time*(2+i%3))%(h+30))-15;c.globalAlpha=.12+(i%3)*.08;ellipse(c,wx,wy,1.4,.8,i%2?'#d5c49c':'#b9c6b1');}c.restore();
@@ -374,7 +378,7 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
   }
 
   const api={ready,retry,render,drawMap,renderTownBattle,
-    status:()=>({loaded:[...scene.loaded],failed:[...scene.failures],chunks:chunks.size,artVersion:scene.version}),
+    status:()=>({loaded:[...scene.loaded],failed:[...scene.failures],chunks:chunks.size,artVersion:scene.version,chunkLimit}),
     worldToScreen(x,z){return lastView?townWorldToScreen(typeof x==='object'?x:{x,z},lastView.camera,lastView.width,lastView.height,lastView.scale,TOWN_DEPTH_SCALE):null;},
     screenToWorld(x,y){return lastView?townScreenToWorld(typeof x==='object'?x:{x,y},lastView.camera,lastView.width,lastView.height,lastView.scale,TOWN_DEPTH_SCALE):null;},
     pickVisitor(x,y){for(let i=hitItems.length-1;i>=0;i--){const item=hitItems[i];if(!item.sprite||x<item.x||x>item.x+item.w||y<item.y||y>item.y+item.h||!opaqueAt(item,x,y))continue;return item.kind==='visitor'?item.id:null;}return null;},

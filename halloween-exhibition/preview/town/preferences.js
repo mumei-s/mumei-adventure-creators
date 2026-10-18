@@ -1,4 +1,4 @@
-import {TOWN_SAVE_KEY} from './save-model.js?v=20261019-homes1';
+import {TOWN_SAVE_KEY} from './save-model.js?v=20261019-journey1';
 export const TOWN_UI_KEY=TOWN_SAVE_KEY+':ui';
 export const TOWN_LAYOUTS=Object.freeze(['auto','phone','tablet','desktop']);
 export const TOWN_SPEEDS=Object.freeze([.5,.75,1,1.25,1.5,1.75,2]);

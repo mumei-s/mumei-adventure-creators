@@ -23,17 +23,17 @@ test('all seven authored maps are rectangular; every target has a reachable inte
   }
 });
 test('collision blocks water/buildings/props, sliding is continuous, and large movement cannot tunnel',()=>{
-  const s={...initialTownState(),position:{x:30.5,z:20.5}};const before=structuredClone(s);
+  const s={...initialTownState(),position:{x:30.5,z:22.5}};const before=structuredClone(s);
   let moved=moveTown(s,10,0);assert.ok(moved.position.x<31);assert.deepEqual(s,before);
   const tree=getTownMap().decorations.find(p=>p.kind==='tree');assert.ok(!isTownWalkable('lantern-town',tree.x,tree.z));
-  const along=moveTown({...s,position:{x:30.5,z:19.5}},.2,.4);assert.ok(along.position.z>19.5);assert.ok(along.position.x<31);
+  const along=moveTown({...s,position:{x:30.5,z:23.5}},.2,.4);assert.ok(along.position.z>23.5);assert.ok(along.position.x<31);
   assert.equal(moveTown(s,NaN,0),s);
 });
 test('interaction requires proximity and the actual map; portal and exit results are explicit',()=>{
   const s=initialTownState();assert.match(interactTown(s,'baker','bread').notice,/近づいて/);assert.equal(s.flags.breadTaken,undefined);
   assert.ok(visit(s,'enter-candle-shop').transition);assert.equal(visit(s,'enter-candle-shop').state.mapId,'candle-shop');
   assert.equal(visit(s,'castle-exit').exit,true);assert.equal(visit(s,'enter-clocktower').state.mapId,'lantern-town');
-  assert.ok(nearestTownTarget({...s,position:{x:29.5,z:8.5}}));
+  const keeper=mapTargets(s.mapId).find(target=>target.id==='keeper');assert.equal(nearestTownTarget({...s,position:{x:keeper.x,z:keeper.z}}).id,'keeper');
 });
 test('three-act story is playable with finite rewards and a real route and ending choice',()=>{
   let s=actOne();assert.equal(s.flags.act1Complete,true);assert.equal(s.flags.lamps.length,3);assert.equal(s.coins,50);assert.equal(s.inventory.bronzeKey,1);

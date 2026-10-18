@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from '../../maze/vendor/three.module.js';
 import {CREATOR_HOMES,createCreatorQuarter} from '../creator-homes.js';
-import {creatorHomeEmblemGeometry} from '../creator-home-architecture.js';
+import {creatorHomeEmblemGeometry,creatorHomeRoofGeometry} from '../creator-home-architecture.js';
 import {createTownSceneGeometry} from '../world-3d.js';
 import {getTownMap} from '../story-data.js';
 
@@ -39,6 +39,20 @@ test('each doorway motif has a unique finite three-dimensional silhouette',()=>{
     assert.ok([...geometry.attributes.position.array].every(Number.isFinite));signatures.add(Array.from(geometry.attributes.position.array).join(','));geometry.dispose();
   }
   assert.equal(signatures.size,CREATOR_HOMES.length);
+});
+
+test('the sixteen architectural silhouettes stay different without colors, names or doorway emblems',()=>{
+  const shapes=new Set();
+  for(const home of CREATOR_HOMES){
+    const roof=creatorHomeRoofGeometry(home.motif,7.64,5.62,1.6);roof.computeBoundingBox();
+    assert.ok(roof.boundingBox.max.y>1&&roof.boundingBox.max.y<3.1);assert.ok([...roof.attributes.position.array].every(Number.isFinite));
+    shapes.add(JSON.stringify([Array.from(roof.attributes.position.array),roof.index?Array.from(roof.index.array):null]));roof.dispose();
+  }
+  assert.equal(shapes.size,16,'changing a crest or color is not the only distinction between these houses');
+  // The hipped roof slopes face the sky, so a one-sided GPU material shows a solid roof.
+  const roof=creatorHomeRoofGeometry('bread-loaf',7.64,5.62,1.6),flat=roof.toNonIndexed(),p=flat.attributes.position,a=new THREE.Vector3(),b=new THREE.Vector3(),c=new THREE.Vector3(),normal=new THREE.Vector3();
+  for(let i=0;i<p.count;i+=3){a.fromBufferAttribute(p,i);b.fromBufferAttribute(p,i+1);c.fromBufferAttribute(p,i+2);const averageY=(a.y+b.y+c.y)/3;normal.crossVectors(b.sub(a),c.sub(a));assert.ok(averageY>.001?normal.y>=0:normal.y<=0);}
+  flat.dispose();roof.dispose();
 });
 
 test('both outdoor ends have a named gate with an unobstructed portal',()=>{

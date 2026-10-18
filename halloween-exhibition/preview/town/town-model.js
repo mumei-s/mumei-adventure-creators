@@ -1,5 +1,5 @@
-import {TOWN_VERSION,TOWN_START_MAP,TOWN_ITEMS,TOWN_QUESTS,TOWN_LAMPS,TOWN_STAMPS,getTownMap,isTownWalkable,mapTargets} from './story-data.js?v=20261019-homes1';
-export {getTownMap,isTownWalkable,TOWN_MAPS,TOWN_NPCS,TOWN_TITLE} from './story-data.js?v=20261019-homes1';
+import {TOWN_VERSION,TOWN_START_MAP,TOWN_ITEMS,TOWN_QUESTS,TOWN_LAMPS,TOWN_STAMPS,getTownMap,isTownWalkable,mapTargets} from './story-data.js?v=20261019-journey1';
+export {getTownMap,isTownWalkable,TOWN_MAPS,TOWN_NPCS,TOWN_TITLE} from './story-data.js?v=20261019-journey1';
 
 export function initialTownState(){return {version:TOWN_VERSION,mapId:TOWN_START_MAP,position:{...getTownMap().spawn},facing:'down',hp:60,maxHp:60,energy:1,coins:24,inventory:{tonic:2},flags:{lamps:[],stamps:[],gearNotes:[]},visited:[TOWN_START_MAP],battleReceipts:[],checkpoint:{mapId:TOWN_START_MAP,position:{...getTownMap().spawn}},steps:0,updatedAt:Date.now()};}
 const knownFlags=['intro','breadTaken','breadDelivered','wickTaken','act1Complete','gardenVictory','moonwaterTaken','riverClue','gearTaken','sluiceRepaired','clockVictory','clockRestored','maskStarted','ribbonTaken','maskComplete','starComplete','ending'];
@@ -58,14 +58,14 @@ function notice(state,text){return {state,notice:text};}
 function objective(state){
   const f=state.flags;
   if(f.ending)return '祭りの灯りを楽しもう。まだ見ていない路地や寄り道へ。';
-  if(f.clockRestored)return '城門の灯守リュカに、時計が動きだしたことを伝えよう。';
+  if(f.clockRestored)return '城の西の道にいる灯守リュカに、時計が動きだしたことを伝えよう。';
   if(f.clockVictory)return '時計塔の大時計をもう一度調べよう。';
   if(f.sluiceRepaired)return '時計塔へ入り、止まった大時計を調べよう。';
   if(f.act1Complete){if(!f.riverClue)return '夜の書庫で、水門と三色の歯車の記録を読もう。';if(!f.gearTaken)return '星歯車工房で、記録の順番どおりに調律盤を鳴らそう。';if(!f.moonwaterTaken)return '月映し庭園の泉を調べ、月映しの水を分けてもらおう。';return '運河南の水門へ。歯車と月映しの水で流れを直そう。';}
-  if(f.lamps?.length===3)return '三つの灯籠が灯った。城門のリュカに報告しよう。';
-  if(!f.intro)return '城門の灯守リュカに話を聞こう。';
+  if(f.lamps?.length===3)return '三つの灯籠が灯った。城の西の道のリュカに報告しよう。';
+  if(!f.intro)return '城の前から西（左）へ進み、西の道にいる灯守リュカに話そう。';
   if(!f.breadTaken)return '月麦市場のパン屋ミレットから、リュカへの包みを預かろう。';
-  if(!f.breadDelivered)return '焼きたてパンを、城門のリュカに届けよう。';
+  if(!f.breadDelivered)return '焼きたてパンを、城の西の道のリュカに届けよう。';
   if(!f.wickTaken)return '市場の「月糸の店」に入り、灯芯屋トワと話そう。';
   return `市場・広場・庭園の灯籠をともそう。あと${3-(f.lamps?.length||0)}つ。`;
 }
@@ -73,7 +73,7 @@ export function townProgress(state){const f=state.flags;return {title:f.ending?'
 export function townInventory(state){return Object.entries(state.inventory).filter(([id,n])=>TOWN_ITEMS[id]&&n>0).map(([id,count])=>({...TOWN_ITEMS[id],count}));}
 export function townJournal(state){
   const f=state.flags;
-  return TOWN_QUESTS.map(q=>({...q,status:q.id==='lights'?f.act1Complete?'complete':f.intro?'active':'available':q.id==='river'?f.sluiceRepaired?'complete':f.act1Complete?'active':'locked':q.id==='clock'?f.ending?'complete':f.sluiceRepaired?'active':'locked':q.id==='mask'?f.maskComplete?'complete':f.maskStarted?'active':'available':f.starComplete?'complete':f.stamps.length?'active':'available',objective:q.id==='lights'?f.act1Complete?'三つの灯籠をともして、水門の鍵を受け取った。':!f.intro?'城門の灯守リュカと話そう。':!f.breadDelivered?'市場のパンをリュカへ届けよう。':!f.wickTaken?'月糸の店で灯芯を受け取ろう。':`市場・広場・庭園の灯籠をともす（${f.lamps.length}/3）。`:q.id==='river'?f.sluiceRepaired?`水門を修復した。${f.route==='quiet'?'静かな流れ':'きらめく流れ'}が街を巡る。`:'夜の書庫の記録 → 工房の三色調律 → 庭園の月映しの水 → 運河南の水門。':q.id==='clock'?f.ending?'時計に時間が戻り、次の夜を約束した。':'水門の修復後、時計塔の大時計を調べる。影を鎮め、最後に城門のリュカへ。':q.id==='mask'?f.maskComplete?'セラにリボンを届けた。':f.ribbonTaken?'仮面職人セラにリボンを届けよう。':'市場のセラと話し、宿屋近くの猫コハクを探そう。':f.starComplete?'司書から三ツ星の護符を受け取った。':`市場・運河・庭園の星印を集め、夜の書庫の司書へ（${f.stamps.length}/3）。`}));
+  return TOWN_QUESTS.map(q=>({...q,status:q.id==='lights'?f.act1Complete?'complete':f.intro?'active':'available':q.id==='river'?f.sluiceRepaired?'complete':f.act1Complete?'active':'locked':q.id==='clock'?f.ending?'complete':f.sluiceRepaired?'active':'locked':q.id==='mask'?f.maskComplete?'complete':f.maskStarted?'active':'available':f.starComplete?'complete':f.stamps.length?'active':'available',objective:q.id==='lights'?f.act1Complete?'三つの灯籠をともして、水門の鍵を受け取った。':!f.intro?'城の西の道にいる灯守リュカと話そう。':!f.breadDelivered?'市場のパンをリュカへ届けよう。':!f.wickTaken?'月糸の店で灯芯を受け取ろう。':`市場・広場・庭園の灯籠をともす（${f.lamps.length}/3）。`:q.id==='river'?f.sluiceRepaired?`水門を修復した。${f.route==='quiet'?'静かな流れ':'きらめく流れ'}が街を巡る。`:'夜の書庫の記録 → 工房の三色調律 → 庭園の月映しの水 → 運河南の水門。':q.id==='clock'?f.ending?'時計に時間が戻り、次の夜を約束した。':'水門の修復後、時計塔の大時計を調べる。影を鎮め、最後に城の西の道のリュカへ。':q.id==='mask'?f.maskComplete?'セラにリボンを届けた。':f.ribbonTaken?'仮面職人セラにリボンを届けよう。':'市場のセラと話し、宿屋近くの猫コハクを探そう。':f.starComplete?'司書から三ツ星の護符を受け取った。':`市場・運河・庭園の星印を集め、夜の書庫の司書へ（${f.stamps.length}/3）。`}));
 }
 
 export function interactTown(previous,targetId,choiceId){
@@ -96,8 +96,8 @@ export function interactTown(previous,targetId,choiceId){
     return say(previous,target.name,f.ending?'おかえり。祭りの夜は、何度だって歩いていいんだよ。':objective(s));
   }
   if(targetId==='baker'){
-    if(f.intro&&!f.breadTaken){if(choiceId==='bread'){f.breadTaken=true;s.inventory.festivalBread=1;return say(s,target.name,'リュカへの包み、お願いね。城門で待っているよ。橋は三つ、どれを渡っても東の街へ行けるよ。');}return say(previous,target.name,'リュカに頼まれた旅人さんね。門の見張りを交代できないあの子に、焼きたての月麦パンを届けて。',[choice('bread','パンの包みを預かる')]);}
-    return say(previous,target.name,f.breadDelivered?'包みを届けてくれてありがとう。今夜はシナモンとお星さまの香り！':'ようこそ月麦市場へ。お城の門にいるリュカが、何か困っているみたい。');
+    if(f.intro&&!f.breadTaken){if(choiceId==='bread'){f.breadTaken=true;s.inventory.festivalBread=1;return say(s,target.name,'リュカへの包み、お願いね。城の西の道で待っているよ。橋は三つ、どれを渡っても東の街へ行けるよ。');}return say(previous,target.name,'リュカに頼まれた旅人さんね。門の見張りを交代できないあの子に、焼きたての月麦パンを届けて。',[choice('bread','パンの包みを預かる')]);}
+    return say(previous,target.name,f.breadDelivered?'包みを届けてくれてありがとう。今夜はシナモンとお星さまの香り！':'ようこそ月麦市場へ。城の西の道にいるリュカが、何か困っているみたい。');
   }
   if(targetId==='waxkeeper'){
     if(f.breadDelivered&&!f.wickTaken){if(choiceId==='wick'){f.wickTaken=true;s.inventory.wick=1;return say(s,target.name,'この月糸なら三つとも、ともせるよ。市場の灯籠、噴水の西の灯籠、橋を渡った庭園の灯籠。灯りの糸はなくならないから、安心して。');}return say(previous,target.name,'パンの約束を届けた人には、この月糸の灯芯を。',[choice('wick','月糸の灯芯を受け取る')]);}
@@ -106,7 +106,7 @@ export function interactTown(previous,targetId,choiceId){
   }
   if(TOWN_LAMPS.includes(targetId)){
     if(f.lamps.includes(targetId))return say(previous,target.name,'灯籠は静かにまたたき、通りをあたたかく照らしている。');
-    if(!f.wickTaken)return say(previous,target.name,'灯芯がすっかり傷んでいる。城門の灯守に話し、市場の月糸の店を訪ねよう。');
+    if(!f.wickTaken)return say(previous,target.name,'灯芯がすっかり傷んでいる。城の西の道の灯守に話し、市場の月糸の店を訪ねよう。');
     f.lamps.push(targetId);return say(s,target.name,`月糸を結ぶと、小さな星のように灯りがふくらんだ。${f.lamps.length===3?'三つの灯籠がともった。リュカに知らせよう。':`あと${3-f.lamps.length}つの灯籠に、光を届けよう。`}`,[],{notice:`街の灯り ${f.lamps.length}/3`});
   }
   if(targetId==='archivist'){
@@ -142,7 +142,7 @@ export function interactTown(previous,targetId,choiceId){
   }
   if(targetId==='clock-heart'){
     if(!f.clockVictory){if(choiceId==='clock-battle')return {state:previous,battle:'clock-shadow'};return say(previous,target.name,'影がささやく。「夜が終わったら、誰も戻ってこない？」 時計の中で、最後の音が迷子になっている。',[choice('clock-battle','また会いに来ると約束する')]);}
-    if(!f.clockRestored){f.clockRestored=true;s.hp=s.maxHp;return say(s,target.name,'時計の針がひとつ進む。窓の外に、灯籠・庭園・運河の光がつながった。「また来るよ」。その言葉が、十二時の最後の音になった。城門のリュカへ戻ろう。');}
+    if(!f.clockRestored){f.clockRestored=true;s.hp=s.maxHp;return say(s,target.name,'時計の針がひとつ進む。窓の外に、灯籠・庭園・運河の光がつながった。「また来るよ」。その言葉が、十二時の最後の音になった。城の西の道のリュカへ戻ろう。');}
     return say(previous,target.name,'大時計は、街と同じ速さで時を刻んでいる。');
   }
   if(targetId==='masked'){

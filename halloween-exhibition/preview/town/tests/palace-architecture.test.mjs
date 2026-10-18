@@ -49,3 +49,14 @@ test('palace masonry and slate arrive with the geometry and ornament stays insid
   assert.ok(castle.some(item=>item.name==='palace-sculpted-stone-arch'),'the threshold has a separate sculpted stone depth');
   let released=0;for(const texture of textures)texture.addEventListener('dispose',()=>released++);town.dispose();assert.equal(released,textures.length);
 });
+
+test('royal additions have physical arcades and multicolour glass without raising the castle silhouette or downloading textures',()=>{
+  const town=createTownSceneGeometry(),meshes=town.root.children.filter(item=>item.userData.bucket==='castle'),bounds=new THREE.Box3();for(const mesh of meshes)bounds.expandByObject(mesh);
+  assert.ok(bounds.max.y<=14.2,'new ornament fits under the authored tallest spire');
+  const mosaic=meshes.find(item=>item.name==='palace-royal-rose-glass');assert.ok(mosaic?.isInstancedMesh&&mosaic.material.vertexColors);
+  const colors=mosaic.geometry.attributes.color,unique=new Set();for(let i=0;i<colors.count;i++)unique.add([colors.getX(i),colors.getY(i),colors.getZ(i)].join(':'));assert.ok(unique.size>=4,'the window is coloured glass instead of a flat gold disk');
+  const arcade=meshes.find(item=>item.name==='palace-royal-arcade');assert.equal(arcade.count,4);arcade.geometry.computeBoundingBox();assert.ok(arcade.geometry.boundingBox.max.z-arcade.geometry.boundingBox.min.z>=.12,'sculpted arches have real depth');
+  const gold=meshes.find(item=>item.material.name==='palace-gold').material;assert.ok(gold.metalness>.5&&gold.roughness<.4,'raised gold contrasts with matte masonry');
+  let triangles=0;for(const mesh of meshes)triangles+=(mesh.geometry.index?.count??mesh.geometry.attributes.position.count)/3*(mesh.isInstancedMesh?mesh.count:1);assert.ok(triangles<80000,'the richer palace stays inside a modest geometry budget');
+  assert.equal([...town.resources].filter(item=>item.isTexture).length,2);town.dispose();
+});

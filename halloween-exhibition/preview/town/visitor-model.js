@@ -1,4 +1,5 @@
-import {TOWN_START_MAP,getTownMap,isTownWalkable,mapTargets} from './story-data.js?v=20261019-homes1';
+import {isInPalaceForecourt} from './palace-forecourt.js?v=20261019-journey1';
+import {TOWN_START_MAP,getTownMap,isTownWalkable,mapTargets} from './story-data.js?v=20261019-journey1';
 import {sampleTravel} from '../maze/patrol-model.js?v=20261017-review1';
 import {locomotionPhase,yawForVector,shortestTurn,facingForVector} from '../maze/movement-runtime.js?v=20261017-review1';
 
@@ -6,22 +7,26 @@ import {locomotionPhase,yawForVector,shortestTurn,facingForVector} from '../maze
 // The protagonist is already present; only the verified roster.npcs are guests.
 export const TOWN_VISITOR_RANGE=10;
 export const TOWN_VISITOR_SLOTS=Object.freeze([
-  {id:'gate-east-guests',x:36.5,z:8.5,cna:true},
+  {id:'gate-east-guests',x:50.5,z:10.5,cna:true},
   {id:'gate-west-guests',x:12.5,z:8.5},
-  {id:'north-plaza-guests',x:23.5,z:8.5},
-  {id:'market-bridge-guests',x:16.5,z:13.5},
-  {id:'workshop-street-guests',x:15.5,z:26.5},
+  {id:'north-plaza-guests',x:12.5,z:13.5},
+  {id:'market-bridge-guests',x:13.5,z:20.5},
+  {id:'workshop-street-guests',x:15.5,z:28.5},
   {id:'south-plaza-guests',x:26.5,z:32.5},
   {id:'canal-plaza-guests',x:38.5,z:26.5},
-  {id:'clock-street-guests',x:43.5,z:13.5},
-  {id:'east-market-guests',x:57.5,z:13.5},
-  {id:'east-quay-guests',x:57.5,z:27.5},
-  {id:'library-garden-guests',x:45.5,z:29.5},
+  {id:'clock-street-guests',x:49.5,z:16.5},
+  {id:'east-market-guests',x:59.5,z:13.5},
+  {id:'east-quay-guests',x:58.5,z:27.5},
+  {id:'library-garden-guests',x:45.5,z:31.5},
   {id:'south-garden-guests',x:56.5,z:43.5},
   {id:'south-market-guests',x:23.5,z:43.5},
   {id:'inn-street-guests',x:13.5,z:39.5},
   {id:'south-quay-guests',x:40.5,z:43.5},
   {id:'west-flower-guests',x:6.5,z:39.5},
+  {id:'west-lane-guests',x:3.5,z:27.5},
+  {id:'far-quay-guests',x:60.5,z:32.5},
+  {id:'south-east-guests',x:50.5,z:44.5},
+  {id:'middle-lane-guests',x:19.5,z:31.5},
 ]);
 const hash=value=>{let n=2166136261;for(const c of String(value))n=Math.imul(n^c.charCodeAt(0),16777619);return n>>>0;};
 const mod=(n,d)=>(n%d+d)%d;
@@ -29,7 +34,7 @@ function offsets(count){return Array.from({length:count},(_,i)=>(i-(count-1)/2)*
 function pointSafe(point,offsets,occupied=[]){
   return offsets.every(dx=>{
     const p={x:point.x+dx,z:point.z};
-    return isTownWalkable(TOWN_START_MAP,p.x,p.z,.23)&&!mapTargets(TOWN_START_MAP).some(t=>Math.hypot(t.x-p.x,t.z-p.z)<1.25)&&!occupied.some(t=>Math.hypot(t.x-p.x,t.z-p.z)<2.7);
+    return !isInPalaceForecourt(p,.4)&&isTownWalkable(TOWN_START_MAP,p.x,p.z,.23)&&!mapTargets(TOWN_START_MAP).some(t=>Math.hypot(t.x-p.x,t.z-p.z)<1.25)&&!occupied.some(t=>Math.hypot(t.x-p.x,t.z-p.z)<2.7);
   });
 }
 function segmentSafe(a,b,offsets,occupied=[]){const length=Math.hypot(b.x-a.x,b.z-a.z),steps=Math.max(1,Math.ceil(length/.08));for(let n=0;n<=steps;n++){const t=n/steps;if(!pointSafe({x:a.x+(b.x-a.x)*t,z:a.z+(b.z-a.z)*t},offsets,occupied))return false;}return true;}

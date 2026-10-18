@@ -1,0 +1,6 @@
+/* Only the two game pads and explicitly bound scene surfaces use these rules. */
+:is(#direction-pad,#town-pad)[data-pad-mode=slide]::after{content:"";position:absolute;left:calc(50% - 13px);top:calc(50% - 13px);width:26px;height:26px;border:1px solid #ffe2a188;border-radius:50%;transform:translate(var(--pad-anchor-x,0px),var(--pad-anchor-y,0px));pointer-events:none;opacity:0;z-index:1}
+:is(#direction-pad,#town-pad)[data-pad-mode=slide][data-pad-active=true]::after{opacity:.8}
+:is(#direction-pad,#town-pad)[data-pad-mode=slide][data-pad-active=true] .pad-nub{background:#ffe1a47a;border-color:#fff0c9;box-shadow:0 0 8px #ffc77644}
+canvas[data-game-camera=true]{touch-action:none}
+@media(forced-colors:active){:is(#direction-pad,#town-pad)[data-pad-mode=slide]::after{border-color:Highlight}:is(#direction-pad,#town-pad)[data-pad-mode=slide][data-pad-active=true] .pad-nub{background:Highlight;box-shadow:none}}

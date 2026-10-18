@@ -7,12 +7,13 @@ import {initialTownState} from '../town-model.js';
 const archive=JSON.parse(fs.readFileSync(new URL('../../data/archive.json',import.meta.url))),manifest=JSON.parse(fs.readFileSync(new URL('../../maze/data/creator-characters.json',import.meta.url)));
 const fetcher=async url=>url.includes('creator-characters')?manifest:archive;
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
-test('entrance participants start loading before the welcome panel closes without blocking the core loader',async()=>{
+const nearCNA=characters=>({...initialTownState(),position:{...characters.visitors().find(visitor=>visitor.creatorId==='grand_daisy8632').center}});
+test('the clear castle forecourt queues no distant guests, and approaching CNA loads the complete group',async()=>{
  const requested=[],assets=createCharacterAssets({loadImage:async(_url,asset)=>{requested.push(asset.src);return {width:Math.min(1024,asset.width),height:Math.min(1024,asset.height)};}}),characters=createTownCharacterArt({fetcher,assets});await characters.ready;
  for(let i=0;i<8;i++)await flush();
- const actors=characters.visitorActors({state:initialTownState(),time:1,clock:1});
- assert.ok(actors.some(actor=>actor.creatorId==='grand_daisy8632'));
- for(const visitor of characters.visitors().filter(visitor=>visitor.creatorId==='grand_daisy8632'))assert.ok(requested.includes(visitor.asset.src));
+ assert.deepEqual(characters.visitorActors({state:initialTownState(),time:0,clock:0}),[]);assert.equal(requested.length,2,'only the protagonist and companion are required in the empty forecourt');
+ const state=nearCNA(characters);characters.visitorActors({state,time:1,clock:1});for(let i=0;i<8;i++)await flush();const actors=characters.visitorActors({state,time:1,clock:1});
+ assert.equal(actors.filter(actor=>actor.creatorId==='grand_daisy8632').length,3);for(const visitor of characters.visitors().filter(visitor=>visitor.creatorId==='grand_daisy8632'))assert.ok(requested.includes(visitor.asset.src));
  assert.equal(characters.status().rejectedRequests,0);characters.destroy();
 });
 test('resuming indoors or far from the entrance preloads only participants around the saved location',async()=>{
@@ -41,7 +42,7 @@ test('walking all visitor districts loads only whole nearby groups with hero/cat
 });
 test('CNA visitors do not appear as a partial group during independent atlas decodes',async()=>{
  const cache=new Map(),pending=new Map(),assets={setPinned(){},status:()=>({}),dispose(){},get:src=>cache.get(src),request(asset){if(asset.src.includes('owner-')){const image={width:asset.width,height:asset.height};cache.set(asset.src,image);return Promise.resolve(image);}if(!pending.has(asset.src)){let resolve;const promise=new Promise(done=>resolve=done);pending.set(asset.src,{asset,resolve,promise});}return pending.get(asset.src).promise;}};
- const characters=createTownCharacterArt({fetcher,assets});await characters.ready;const cna=characters.visitors().filter(visitor=>visitor.creatorId==='grand_daisy8632'),state={...initialTownState(),position:{x:36.5,z:8.5}};
+ const characters=createTownCharacterArt({fetcher,assets});await characters.ready;const cna=characters.visitors().filter(visitor=>visitor.creatorId==='grand_daisy8632'),state=nearCNA(characters);
  assert.equal(characters.visitorActors({state,time:0,motion:false}).filter(actor=>actor.creatorId==='grand_daisy8632').length,0);
  const first=cna[0].asset;cache.set(first.src,{width:first.width,height:first.height});assert.equal(characters.visitorActors({state,time:.1,motion:false}).filter(actor=>actor.creatorId==='grand_daisy8632').length,0);
  for(const visitor of cna){cache.set(visitor.asset.src,{width:visitor.asset.width,height:visitor.asset.height});pending.get(visitor.asset.src)?.resolve(cache.get(visitor.asset.src));}
@@ -49,7 +50,7 @@ test('CNA visitors do not appear as a partial group during independent atlas dec
 });
 
 test('pausing the world clock freezes actual visitor positions instead of returning everybody home',async()=>{
- const assets=createCharacterAssets({loadImage:async(_url,asset)=>({width:asset.width,height:asset.height})}),characters=createTownCharacterArt({fetcher,assets});await characters.ready;const state={...initialTownState(),position:{x:36.5,z:8.5}};
+ const assets=createCharacterAssets({loadImage:async(_url,asset)=>({width:asset.width,height:asset.height})}),characters=createTownCharacterArt({fetcher,assets});await characters.ready;const state=nearCNA(characters);
  characters.visitorActors({state,time:0,clock:0,motion:true});for(let i=0;i<8;i++)await flush();let before;
  for(let time=.1;time<20;time+=.1){const actors=characters.visitorActors({state,time,clock:time,motion:true});if(actors.some(actor=>actor.walking)){before={time,actors};break;}}
  assert(before);const paused=characters.visitorActors({state,time:before.time,clock:100,motion:false});for(const actor of paused){const previous=before.actors.find(item=>item.id===actor.id);assert(previous);assert.equal(actor.x,previous.x);assert.equal(actor.z,previous.z);assert.equal(actor.walking,false);assert.equal(actor.sprite.frameIndex,actor.asset.layout.idleColumn);}characters.destroy();
@@ -68,7 +69,7 @@ test('battle art loads once with a real deadline, failures can retry, and late r
 
 test('each visible CNA member can be tapped within reach even when another member is nearest',async()=>{
  const assets=createCharacterAssets({loadImage:async(_url,asset)=>({width:asset.width,height:asset.height})}),characters=createTownCharacterArt({fetcher,assets});await characters.ready;
- const state={...initialTownState(),position:{x:36.5,z:8.5}};characters.visitorActors({state,time:0,motion:false});for(let i=0;i<8;i++)await flush();
+ const state=nearCNA(characters);characters.visitorActors({state,time:0,motion:false});for(let i=0;i<8;i++)await flush();
  const all=characters.visitorActors({state,time:0,motion:false}),cna=all.filter(actor=>actor.creatorId==='grand_daisy8632');assert.equal(cna.length,3);
  const center=cna[1],nearState={...state,position:{x:center.x,z:center.z+.65}},nearest=characters.nearbyVisitor(nearState);assert(nearest);
  for(const actor of cna){const tapped=characters.reachableVisitor(actor.id,nearState);assert(tapped);assert.equal(tapped.id,actor.id);assert.equal(tapped.x,actor.x);assert.equal(tapped.z,actor.z);}

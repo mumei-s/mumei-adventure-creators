@@ -54,18 +54,53 @@ export function directionAtPoint(x,y,width,height,previous=null){
   if(previous==='back'&&dy>0&&Math.abs(dy)*1.22>=Math.abs(dx))return previous;
   return Math.abs(dx)>Math.abs(dy)?dx>0?'right':'left':dy>0?'back':'forward';
 }
-export function bindDirectionPad(pad,{blocked=()=>false,onChange}){
-  let pointerId=null,direction=null;
-  const update=event=>{const rect=pad.getBoundingClientRect(),x=event.clientX-rect.left,y=event.clientY-rect.top;
-    const next=directionAtPoint(x,y,rect.width,rect.height,direction);if(next!==direction){direction=next;onChange(direction);}
-    const dx=x-rect.width/2,dy=y-rect.height/2,length=Math.hypot(dx,dy)||1,scale=Math.min(1,rect.width*.24/length);
-    pad.style.setProperty('--pad-x',`${dx*scale}px`);pad.style.setProperty('--pad-y',`${dy*scale}px`);pad.dataset.direction=direction||'';
+export function bindDirectionPad(pad,{blocked=()=>false,onChange,mode='fixed'}){
+  let pointerId=null,direction=null,anchor=null,dragged=false,pressMode='fixed';
+  const listeners=[];
+  const listen=(target,type,handler)=>{if(!target?.addEventListener)return;target.addEventListener(type,handler);listeners.push(()=>target.removeEventListener?.(type,handler));};
+  const selectedMode=()=>{try{return (typeof mode==='function'?mode():mode)==='slide'?'slide':'fixed';}catch{return 'fixed';}};
+  const setDirection=next=>{if(next===direction)return;direction=next;onChange(direction);};
+  const visual=(event,rect)=>{
+    const dx=event.clientX-rect.left-rect.width/2,dy=event.clientY-rect.top-rect.height/2,length=Math.hypot(dx,dy)||1,scale=Math.min(1,Math.min(rect.width,rect.height)*.3/length);
+    pad.style.setProperty('--pad-x',`${dx*scale}px`);pad.style.setProperty('--pad-y',`${dy*scale}px`);
+    const ax=(anchor?.x??event.clientX)-rect.left-rect.width/2,ay=(anchor?.y??event.clientY)-rect.top-rect.height/2,al=Math.hypot(ax,ay)||1,as=Math.min(1,Math.min(rect.width,rect.height)*.3/al);
+    pad.style.setProperty('--pad-anchor-x',`${ax*as}px`);pad.style.setProperty('--pad-anchor-y',`${ay*as}px`);pad.dataset.direction=direction||'';
   };
-  const reset=()=>{const captured=pointerId;pointerId=null;direction=null;onChange(null);pad.style.setProperty('--pad-x','0px');pad.style.setProperty('--pad-y','0px');pad.dataset.direction='';if(captured!==null)releaseCapture(pad,captured);};
-  pad.addEventListener('pointerdown',event=>{if(blocked()||event.button>0||pointerId!==null)return;if(event.cancelable)event.preventDefault();
-    event.target.closest?.('button')?.focus({preventScroll:true});try{pad.setPointerCapture(event.pointerId);}catch{return;}pointerId=event.pointerId;update(event);
+  const update=event=>{
+    const rect=pad.getBoundingClientRect();
+    if(pressMode==='slide'){
+      let dx=event.clientX-anchor.x,dy=event.clientY-anchor.y;const length=Math.hypot(dx,dy),radius=Math.max(20,Math.min(36,Math.min(rect.width,rect.height)*.24)),deadZone=Math.max(5,Math.min(9,Math.min(rect.width,rect.height)*.055));
+      // Follow an overextended thumb. Reversing direction then needs only a short
+      // slide, even after the captured finger has drifted outside the pad.
+      if(length>radius){anchor.x=event.clientX-dx/length*radius;anchor.y=event.clientY-dy/length*radius;dx=event.clientX-anchor.x;dy=event.clientY-anchor.y;}
+      if(length>=deadZone)dragged=true;
+      if(dragged)setDirection(Math.hypot(dx,dy)<deadZone?null:directionAtPoint(dx+radius,dy+radius,radius*2,radius*2,direction));
+    }else setDirection(directionAtPoint(event.clientX-rect.left,event.clientY-rect.top,rect.width,rect.height,direction));
+    visual(event,rect);
+  };
+  const refresh=()=>{pad.dataset.padMode=selectedMode();};
+  const reset=()=>{
+    const captured=pointerId;pointerId=null;anchor=null;dragged=false;direction=null;onChange(null);pad.dataset.padActive='false';
+    for(const name of ['--pad-x','--pad-y','--pad-anchor-x','--pad-anchor-y'])pad.style.setProperty(name,'0px');
+    pad.dataset.direction='';refresh();if(captured!==null)releaseCapture(pad,captured);
+  };
+  listen(pad,'pointerdown',event=>{
+    if(blocked()||event.button>0||pointerId!==null)return;if(event.cancelable)event.preventDefault();
+    const button=event.target.closest?.('button');if(button?.disabled)return;button?.focus({preventScroll:true});
+    try{pad.setPointerCapture(event.pointerId);}catch{return;}
+    pointerId=event.pointerId;pressMode=selectedMode();pad.dataset.padMode=pressMode;pad.dataset.padActive='true';
+    anchor={x:event.clientX,y:event.clientY};dragged=false;
+    if(pressMode==='slide'){
+      const rect=pad.getBoundingClientRect(),requested=button?.dataset?.move;
+      setDirection(['forward','back','left','right'].includes(requested)?requested:directionAtPoint(event.clientX-rect.left,event.clientY-rect.top,rect.width,rect.height));
+      visual(event,rect);
+    }else update(event);
   });
-  pad.addEventListener('pointermove',event=>{if(event.pointerId!==pointerId)return;if(event.cancelable)event.preventDefault();if(blocked()){reset();return;}update(event);});
-  for(const type of ['pointerup','pointercancel','lostpointercapture'])pad.addEventListener(type,event=>{if(event.pointerId===pointerId)reset();});
-  return {reset};
+  listen(pad,'pointermove',event=>{if(event.pointerId!==pointerId)return;if(event.cancelable)event.preventDefault();if(blocked()){reset();return;}update(event);});
+  for(const type of ['pointerup','pointercancel','lostpointercapture'])listen(pad,type,event=>{if(event.pointerId===pointerId)reset();});
+  const lifecycleWindow=pad.ownerDocument?.defaultView||globalThis.window,lifecycleDocument=pad.ownerDocument||lifecycleWindow?.document;
+  for(const type of ['blur','pagehide','orientationchange'])listen(lifecycleWindow,type,reset);
+  listen(lifecycleDocument,'visibilitychange',()=>{if(lifecycleDocument.hidden)reset();});
+  refresh();
+  return {reset,refresh,isActive:()=>pointerId!==null,destroy(){reset();for(const remove of listeners)remove();}};
 }

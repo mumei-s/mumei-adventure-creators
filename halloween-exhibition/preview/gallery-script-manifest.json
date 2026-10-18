@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "builder": "esbuild@0.25.12",
+  "entrySources": [
+    "./theater.js",
+    "./pwa.js",
+    "./castle-counter-bootstrap.js",
+    "./gallery-panels.js"
+  ],
+  "inputs": [
+    {
+      "path": "app-exit.js",
+      "bytes": 4701,
+      "sha256": "b187614847488c401a41ffbe4ebd1884f7233a03cee3d551ad398868af56132b"
+    },
+    {
+      "path": "castle-counter-bootstrap.js",
+      "bytes": 701,
+      "sha256": "36e52df436c39ed03a244c138a880f08fd1b94f74173c2ee121b041ade5cfe16"
+    },
+    {
+      "path": "creator-cauldron.js",
+      "bytes": 8123,
+      "sha256": "1f728b2d7b0793ff7116c440ce0b0b5f75e781c1e6dd4e388f053e64a7f9edec"
+    },
+    {
+      "path": "data-model.js",
+      "bytes": 4588,
+      "sha256": "f029338a55ebdc63456ffc3254ede76bd57db713482c9220a1f7bde2ff8f72cc"
+    },
+    {
+      "path": "data/archive.json",
+      "bytes": 24100,
+      "sha256": "d2dac59e4a8d30c956db5722d5f8b2f90718ce227ff5f85310974e93fe445393"
+    },
+    {
+      "path": "display-mode.js",
+      "bytes": 6926,
+      "sha256": "a6b288f8d05a6bd3871ed0f61505c436aa93ad3d204dd8e57f504e3ecd4a3ae1"
+    },
+    {
+      "path": "door-palette.js",
+      "bytes": 1522,
+      "sha256": "afbb3564eea24776602cedb6a361aa44d4419ef6b68bca4e37b279d2aaedb7c4"
+    },
+    {
+      "path": "door-reveal-clock.js",
+      "bytes": 494,
+      "sha256": "094762486c5ab458c9548d97de51db4343c89a52fdaf277ae06442ed59aeec56"
+    },
+    {
+      "path": "festival-scene.js",
+      "bytes": 6551,
+      "sha256": "064ad9c50d6327692a6a1cb16d038acc784d9b471c5745e1cfbdcda54a3b3f7e"
+    },
+    {
+      "path": "gallery-gesture.js",
+      "bytes": 4500,
+      "sha256": "a57ff6418821cf68db8874cca974c1f73ce0ad425c1d82fe55886854a005ec01"
+    },
+    {
+      "path": "gallery-panels.js",
+      "bytes": 2889,
+      "sha256": "b30566102de890e83dc312fece09749f514ce31c0dee5537a0fd7795177e514c"
+    },
+    {
+      "path": "magical-loading.js",
+      "bytes": 748,
+      "sha256": "830d20e115d0056429e9d242e5efc311ef1596031c1e7202539f5a23db11e4bc"
+    },
+    {
+      "path": "package-lock.json",
+      "bytes": 14562,
+      "sha256": "9ca56b94d242a13e10ae4c713624df0832fec686613a7f1bf730334e1aa24bf1"
+    },
+    {
+      "path": "package.json",
+      "bytes": 511,
+      "sha256": "ec46adaba8b93dacd5b7e4fb345b0732d0b85dbf03bb988df185c25a8ab5a1d7"
+    },
+    {
+      "path": "palace-entrance.js",
+      "bytes": 9179,
+      "sha256": "3e946d5df596c3aa60d241270fb711efc503983e2f789066eb9f8b0ac610547b"
+    },
+    {
+      "path": "palace-startup.js",
+      "bytes": 7032,
+      "sha256": "56333af680440289ff635c8b9679ed1336e500ba25f3201fe1bd859248fe648a"
+    },
+    {
+      "path": "pwa.js",
+      "bytes": 7300,
+      "sha256": "8670b30297a56250be010ad7e628d750a8fb85ebb1486d542d87380584027dc9"
+    },
+    {
+      "path": "safe-page-reload.js",
+      "bytes": 1631,
+      "sha256": "96c0f85a74d86ce625fbc8793be69305e4566ac8086652c830ff1dd5d6b6d049"
+    },
+    {
+      "path": "scene-motion.js",
+      "bytes": 14059,
+      "sha256": "bb8c1e60a2dc803ce1326d0d1d50c19e0ee6ffd191a7e3dc3510c6d88560afea"
+    },
+    {
+      "path": "scripts/build-gallery-script.mjs",
+      "bytes": 6492,
+      "sha256": "8b3037cb1d66b666cd6df8dffa59fd864ed5378d061dd9ea6888d2d4cf62bf61"
+    },
+    {
+      "path": "slideshow.js",
+      "bytes": 5746,
+      "sha256": "18c39ba735c9eac0e5c791fcce7834cf0289fa5f8ff732396aac1009976d0f99"
+    },
+    {
+      "path": "theater.js",
+      "bytes": 43695,
+      "sha256": "3242b23ee1d4f15e5a236a39597337529e765e584241c4fb279be417a2b05caf"
+    },
+    {
+      "path": "transition-effects.js",
+      "bytes": 3383,
+      "sha256": "1d491b421230854ef2bc9c79200be0ca40ab74553e893955b080514a44bb3f0b"
+    },
+    {
+      "path": "viewport.js",
+      "bytes": 2744,
+      "sha256": "c79f55dfdd9baeeecf1a3a6b766ad15c1a01a8eb5777f75dce836ba64ad23b84"
+    },
+    {
+      "path": "visitor-preferences.js",
+      "bytes": 14053,
+      "sha256": "3fbf78de0a421535f089961613795f4a4c7a9ff96c4c78d52eba0fd58cf33355"
+    }
+  ],
+  "output": {
+    "path": "gallery-entry.js",
+    "bytes": 110701,
+    "sha256": "150c1fa3779af298256d0ce86cf56948f1aa07fd7ffb78349b111afaa50b5154"
+  },
+  "styles": {
+    "path": "gallery-styles.css",
+    "bytes": 295549,
+    "sha256": "9d829351eeb546f0bbd93e4717263cc3e4aad6f5b4b04cbfae718a4d877c816a"
+  },
+  "imports": [
+    {
+      "path": "./palace-living-scene.js?v=20261019-unified1",
+      "kind": "dynamic-import",
+      "external": true
+    },
+    {
+      "path": "./castle-visit-counter.js?v=20261017-castle2",
+      "kind": "dynamic-import",
+      "external": true
+    }
+  ]
+}

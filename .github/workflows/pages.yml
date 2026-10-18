@@ -43,6 +43,16 @@ jobs:
           node --check preview-v3/db-loader.js
           cat preview-v3/chunks/app-*.txt > /tmp/mumei-app-combined.js
           node --check /tmp/mumei-app-combined.js
+      - name: 宮殿の起動ファイルを生成
+        run: |
+          npm --prefix halloween-exhibition/preview ci --no-audit --no-fund
+          node halloween-exhibition/preview/scripts/build-gallery-styles.mjs
+          node halloween-exhibition/preview/scripts/build-gallery-script.mjs
+          node halloween-exhibition/scripts/build-preview-cache.mjs
+          node halloween-exhibition/preview/scripts/build-gallery-styles.mjs --check
+          node halloween-exhibition/preview/scripts/build-gallery-script.mjs --check
+          node halloween-exhibition/scripts/build-preview-cache.mjs --check
+          rm -rf halloween-exhibition/preview/node_modules
       - name: GitHub Pagesを設定
         uses: actions/configure-pages@v5
         with:

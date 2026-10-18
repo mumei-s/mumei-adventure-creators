@@ -1,5 +1,5 @@
 import {createReloadControl} from './safe-page-reload.js?v=20261017-reload1';
-import {initTransitionEffects} from './transition-effects.js?v=20261016-living1';
+import {initTransitionEffects, withDeadline} from './transition-effects.js?v=20261016-living1';
 import {initViewport} from './viewport.js?v=20261016-ios1';
 import { initAppExit } from './app-exit.js?v=20261017-live-street1';
 import { createDoorRevealClock } from './door-reveal-clock.js?v=20261015-playful1';
@@ -20,7 +20,8 @@ const $=id=>document.getElementById(id), root=$('theater');
 void initPalaceStartup(root);
 initViewport();
 
-let cancelArtworkLoad=()=>{};
+let cancelArtworkLoad=()=>{},pendingArtworkLoad=null;
+function startGalleryArtwork(){const start=pendingArtworkLoad;pendingArtworkLoad=null;start?.();}
 const profiles={
  host:{kicker:'THE FIRST INVITATION',color:'#b88551',tint:'#6b4a2f',image:'./assets/manor-hero.webp',position:'center'},
  moon:{kicker:'THE MOONLIT ATELIER',color:'#b0a2d8',tint:'#594b79',atlas:2},
@@ -49,7 +50,7 @@ const returnStateKey='halloween-yearbook:theatre-return:v1';
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 const transitions=initTransitionEffects({motion:()=>document.body.dataset.ambientPaused!=='true'});
 function node(tag,text,cls){const el=document.createElement(tag);if(text!==undefined)el.textContent=text;if(cls)el.className=cls;return el;}
-function optionalImage(img,source){img.alt='';img.decoding='async';img.referrerPolicy='no-referrer';img.style.visibility='hidden';img.addEventListener('load',()=>{img.style.visibility=img.naturalWidth?'visible':'hidden';},{once:true});img.addEventListener('error',()=>img.remove(),{once:true});img.src=source;if(img.complete&&img.naturalWidth)img.style.visibility='visible';return img;}
+function optionalImage(img,source){img.alt='';img.decoding='async';img.loading='lazy';img.fetchPriority='low';img.referrerPolicy='no-referrer';img.style.visibility='hidden';img.addEventListener('load',()=>{img.style.visibility=img.naturalWidth?'visible':'hidden';},{once:true});img.addEventListener('error',()=>img.remove(),{once:true});img.src=source;if(img.complete&&img.naturalWidth)img.style.visibility='visible';return img;}
 function year(){return archive?.years.find(y=>y.year===currentYear);}
 function ordered(list){return list.map((value,index)=>({value,index})).sort((a,b)=>(Number.isFinite(a.value.order)?a.value.order:a.index)-(Number.isFinite(b.value.order)?b.value.order:b.index)||a.index-b.index).map(item=>item.value);}
 function publicEntry(entry){
@@ -110,10 +111,10 @@ const doorClock=createDoorRevealClock({setBlocked:value=>slideshow?.setBlocked('
 function revealDoor(){doorClock.cancel();root.classList.remove('door-reveal');void $('artwork-open').offsetWidth;if(displayMode==='halloween'&&!reduced.matches&&root.dataset.motionPaused!=='true'){root.classList.add('door-reveal');doorClock.start();}}
 
 function paint({redisplay=false}={}){transitions.enter($('stage'),{kind:'scene'});cancelStoryOpening();const entry=current();if(!entry)return;const paletteKey=`${displayMode}:${currentYear}:${entry.doorId}`;if(redisplay||paintedPaletteKey!==paletteKey){const colors=pickDoorPalette(paletteKey);['--door-color','--door-edge','--door-shadow'].forEach((name,i)=>root.style.setProperty(name,colors[i]));paintedPaletteKey=paletteKey;}const c=creator(entry),p=displayProfile(entry),scene=palette(entry),real=safeURL(entry.image,{image:true}),portrait=avatar(entry);root.dataset.entryKind=entry.role==='host'&&entry.submissionStatus==='introduction'?'introduction':'article';$('host-magazine').hidden=!(root.dataset.entryKind==='introduction'&&displayMode==='halloween'&&currentYear===2026);$('host-illustration-tool').hidden=$('host-magazine').hidden;root.dataset.theme=theme(entry);root.dataset.creatorId=entry.creatorId;root.dataset.doorId=entry.doorId;root.dataset.roomIndex=String(currentIndex);root.dataset.roomCount=String(entries().length);root.dataset.portrait=String(!real);root.style.setProperty('--glow',p.color);root.style.setProperty('--tint',p.tint);root.style.setProperty('--room-image',`url("${scene.image}")`);const architecture=entry.role==='host'?'./assets/manor-hero.webp':`./assets/stage-rooms/${theme(entry)}.svg`;for(const el of[$('world-backdrop'),...document.querySelectorAll('.wall-wing,.back-wall')]){el.style.backgroundImage=`url("${architecture}")`;el.style.backgroundPosition='center';el.style.backgroundSize='cover';}
- const image=$('artwork-image'),mat=document.querySelector('.artwork-mat');cancelArtworkLoad();image.onerror=null;image.hidden=true;$('artwork-fallback').hidden=true;$('artwork-loading').hidden=true;mat.style.backgroundImage='none';mat.style.backgroundColor='#25162e';mat.removeAttribute('role');mat.removeAttribute('aria-label');const source=real||portrait;
+ const image=$('artwork-image'),mat=document.querySelector('.artwork-mat');cancelArtworkLoad();pendingArtworkLoad=null;image.onerror=null;image.hidden=true;$('artwork-fallback').hidden=true;$('artwork-loading').hidden=true;mat.style.backgroundImage='none';mat.style.backgroundColor='#25162e';mat.removeAttribute('role');mat.removeAttribute('aria-label');const source=real||portrait;
  $('artwork-fallback').replaceChildren(node('span',Array.from(c.name).slice(0,2).join('')),node('small',real?'画像を表示できません · タップで記事へ':'プロフィール画像 · 読み込めませんでした'));
- if(source){image.alt=real?(entry.imageAlt||entry.title||c.name):`${c.name}のnoteプロフィール画像`;image.referrerPolicy='no-referrer';cancelArtworkLoad=loadArtworkImage(image,source,{onState:state=>{root.dataset.artworkState=state;image.hidden=state!=='ready';$('artwork-loading').hidden=state!=='loading';$('artwork-fallback').hidden=state!=='error';mat.setAttribute('aria-busy',String(state==='loading'));}});}else{image.removeAttribute('src');image.alt='';root.dataset.artworkState='error';mat.setAttribute('aria-busy','false');$('artwork-fallback').hidden=false;}
- const hostAvatar=$('host-avatar');hostAvatar.hidden=entry.role!=='host'||!portrait;if(!hostAvatar.hidden){hostAvatar.style.visibility='hidden';hostAvatar.onload=()=>{hostAvatar.style.visibility=hostAvatar.naturalWidth?'visible':'hidden';};hostAvatar.onerror=()=>hostAvatar.hidden=true;hostAvatar.src=portrait;hostAvatar.alt=`${c.name}のnoteプロフィール画像`;hostAvatar.onerror=()=>hostAvatar.hidden=true;}else hostAvatar.removeAttribute('src');
+ if(source){image.alt=real?(entry.imageAlt||entry.title||c.name):`${c.name}のnoteプロフィール画像`;image.referrerPolicy='no-referrer';pendingArtworkLoad=()=>{cancelArtworkLoad=loadArtworkImage(image,source,{onState:state=>{root.dataset.artworkState=state;image.hidden=state!=='ready';$('artwork-loading').hidden=state!=='loading';$('artwork-fallback').hidden=state!=='error';mat.setAttribute('aria-busy',String(state==='loading'));}});};if(root.dataset.palaceState==='gallery')startGalleryArtwork();}else{image.removeAttribute('src');image.alt='';root.dataset.artworkState='error';mat.setAttribute('aria-busy','false');$('artwork-fallback').hidden=false;}
+ const hostAvatar=$('host-avatar');hostAvatar.hidden=entry.role!=='host'||!portrait;if(!hostAvatar.hidden){hostAvatar.style.visibility='hidden';hostAvatar.loading='lazy';hostAvatar.fetchPriority='low';hostAvatar.onload=()=>{hostAvatar.style.visibility=hostAvatar.naturalWidth?'visible':'hidden';};hostAvatar.onerror=()=>hostAvatar.hidden=true;hostAvatar.src=portrait;hostAvatar.alt=`${c.name}のnoteプロフィール画像`;hostAvatar.onerror=()=>hostAvatar.hidden=true;}else hostAvatar.removeAttribute('src');
  $('room-title').textContent=c.name;$('room-title').classList.toggle('long-creator-name',Array.from(c.name).length>32);$('room-kicker').textContent=entry.role==='host'?'主催者からの招待状':'';$('creator-name').replaceChildren(node('span',entry.submissionStatus==='pending'?'作品準備中':entryHeading(entry)),node('small',label(entry)));$('current-index').textContent=String(currentIndex+1).padStart(2,'0');$('total-index').textContent=String(entries().length).padStart(2,'0');$('invitation-year').textContent=`HALLOWEEN ${currentYear}`;$('invitation-number').textContent='WELCOME TO THE ATELIER';$('artwork-open').setAttribute('aria-label',`${c.name} · ${doorCaption(entry)}の扉をひらく`);$('stage-status').textContent=`${currentIndex+1} / ${entries().length}、${c.name}、${label(entry)}`;renderDots();refreshModeCopy();revealDoor();}
 async function navigate(index,{immediate=false,fromRoulette=false,automatic=false,isCurrent=()=>true}={}){cancelStoryOpening();if(!automatic)palace?.enter({immediate:true,focus:false});if(!automatic)slideshow?.manualNavigation();if(!fromRoulette)cancelRoulette();if(!entries().length||!isCurrent())return;const next=(index+entries().length)%entries().length;if(next===currentIndex&&!immediate)return;turnVersion++;busy=false;root.classList.remove('turning-in','turning-out');currentIndex=next;paint({redisplay:true});}
 function showDialog(dialog){cancelStoryOpening();cancelRoulette();slideshow?.setBlocked('dialog',true);returnTarget=document.activeElement;dialog.showModal();transitions.enter(dialog);}
@@ -152,7 +153,52 @@ $('roster-previous').addEventListener('click',()=>changeRosterPage(-1));
 $('roster-next').addEventListener('click',()=>changeRosterPage(1));
 function renderTags(){const area=$('tags');area.replaceChildren();for(const tag of['',...new Set(entries().flatMap(e=>e.tags||[]))]){const button=node('button',tag||'すべて','tag');button.setAttribute('aria-pressed',String(tag===activeTag));button.addEventListener('click',()=>{activeTag=tag;rosterPage=0;for(const item of area.children)item.setAttribute('aria-pressed',String(item===button));renderRoster();});area.append(button);}}
 function setYear(value){cancelStoryOpening();cancelRoulette();slideshow?.manualNavigation();turnVersion++;currentYear=value;root.dataset.sealRooms=JSON.stringify(entries().length?[0,1,2].map(i=>entries()[Math.floor(i*entries().length/3)].creatorId):[]);refreshSeals();currentIndex=0;busy=false;root.classList.remove('turning-out','turning-in');$('year-label').textContent=String(value);$('edition-text').textContent=`${value} · HALLOWEEN YEARBOOK`;const fictional=entries().filter(e=>creator(e).provisional).length;$('sample-notice').textContent=fictional?`仮展示 · 紹介${entries().length-fictional}件 + 架空の${fictional}人`:`参加者${participantCount()}人 · 扉${entries().length}枚`;if(stamps().includes('ss-yr')&&entries().some(e=>e.creatorId==='ss_yr')&&!stamps().includes('ss_yr')){progress.stamps[key()]=[...stamps(),'ss_yr'];persist();}activeTag='';search='';rosterPage=0;$('search').value='';if(entries().length){paint();$('stage').hidden=false;}else{root.dataset.creatorId='';root.dataset.roomCount='0';$('stage').hidden=true;$('current-index').textContent='00';$('total-index').textContent='00';$('stage-status').textContent='この年度の参加者はまだ登録されていません。';$('sample-notice').textContent='この年度の参加者はまだ登録されていません。';renderDots();}for(const id of['previous','next','artwork-open'])$(id).disabled=!entries().length;renderTags();renderRoster();refreshModeCopy();$('roulette-open').disabled=!rouletteCandidates().length;slideshow?.setBlocked('empty',entries().length<2);}
-async function load(){root.dataset.archiveState='loading';const abort=new AbortController();const loadDeadline=setTimeout(()=>abort.abort(),12000);cancelStoryOpening();cancelRoulette();slideshow?.setBlocked('loading',true);$('palace-gate').disabled=true;const attempt=++loadVersion;$('load-error').hidden=true;for(const id of['previous','next','artwork-open','year-open','list-open','roulette-open'])$(id).disabled=true;try{const response=await fetch('./data/archive.json',{cache:'no-store',signal:abort.signal});if(!response.ok)throw Error('fetch');const data=validateArchive(await response.json());if(attempt!==loadVersion)return;archive=data;root.dataset.archiveState='ready';let restored=null,returnToPalace=false;try{const params=new URLSearchParams(location.search);returnToPalace=params.get('return')==='palace';if(params.get('mode')==='halloween'||returnToPalace)restored=JSON.parse(sessionStorage.getItem(returnStateKey)||'null');}catch{}if(displayMode!=='halloween'||!restored||typeof restored!=='object'||Array.isArray(restored))restored=null;if(returnToPalace&&restored&&!archive.years.some(y=>y.year===restored.year&&y.entries.some(e=>e.creatorId===restored.creatorId&&doorIdFor(e,`archive:${y.year}`)===restored.doorId)))restored=null;setYear(archive.years.some(y=>y.year===restored?.year)?restored.year:Math.max(...archive.years.map(y=>y.year)));if(restored&&typeof restored==='object'){let index=entries().findIndex(e=>e.doorId===restored.doorId);if(index<0)index=legacyDoorIndex(restored.creatorId);if(index>=0){currentIndex=index;paint();if(!returnToPalace)palace?.enter({immediate:true,focus:false});}search=typeof restored.search==='string'?normalizeSearch(restored.search):'';activeTag=typeof restored.activeTag==='string'?restored.activeTag:'';$('search').value=search;rosterPage=Number.isInteger(restored.rosterPage)?Math.max(0,restored.rosterPage):0;renderTags();renderRoster();}try{const returnURL=new URL(location.href);if(returnURL.searchParams.get('mode')==='halloween'){returnURL.searchParams.delete('mode');history.replaceState(null,'',returnURL.pathname+returnURL.search+returnURL.hash);}}catch{}for(const id of['previous','next','artwork-open','year-open','list-open'])$(id).disabled=false;if(!entries().length)for(const id of['artwork-open','previous','next'])$(id).disabled=true;$('roulette-open').disabled=!rouletteCandidates().length;slideshow?.setBlocked('empty',entries().length<2);slideshow?.setBlocked('loading',false);$('palace-gate').disabled=false;$('palace-load-status').hidden=true;$('palace-load-status').textContent='';if(root.dataset.palaceState==='gallery'&&!reduced.matches&&root.dataset.motionPaused!=='true')root.classList.add('turning-in');const entranceToken=turnVersion;setTimeout(()=>{if(entranceToken===turnVersion&&attempt===loadVersion)root.classList.remove('turning-in');},900);}catch{if(attempt===loadVersion){root.dataset.archiveState='error';$('load-error').hidden=false;}}finally{clearTimeout(loadDeadline);}}
+// Published builds carry the validated collection in the same small script as
+// the entrance. Opening a gate never waits for a separate JSON request.
+async function load(){
+ const attempt=++loadVersion;
+ root.dataset.archiveState='loading';
+ const abort=new AbortController();
+ cancelStoryOpening();cancelRoulette();slideshow?.setBlocked('loading',true);
+ $('load-error').hidden=true;
+ for(const id of['previous','next','artwork-open','year-open','list-open','roulette-open'])$(id).disabled=true;
+ try{
+  const bundledArchive=typeof __ATELIER_ARCHIVE__==='undefined'?null:__ATELIER_ARCHIVE__;
+  const data=bundledArchive?validateArchive(bundledArchive):validateArchive(await withDeadline((async()=>{
+   const response=await fetch('./data/archive.json',{cache:'default',signal:abort.signal});
+   if(!response.ok)throw Error('fetch');
+   return response.json();
+  })(),{timeout:8000,timers:{setTimeout:(fn,delay)=>setTimeout(fn,delay),clearTimeout:id=>clearTimeout(id)},onTimeout:()=>abort.abort()}));
+  if(attempt!==loadVersion)return;
+  archive=data;root.dataset.archiveState='ready';
+  let restored=null,returnToPalace=false;
+  try{const params=new URLSearchParams(location.search);returnToPalace=params.get('return')==='palace';if(params.get('mode')==='halloween'||returnToPalace)restored=JSON.parse(sessionStorage.getItem(returnStateKey)||'null');}catch{}
+  if(displayMode!=='halloween'||!restored||typeof restored!=='object'||Array.isArray(restored))restored=null;
+  if(returnToPalace&&restored&&!archive.years.some(y=>y.year===restored.year&&y.entries.some(e=>e.creatorId===restored.creatorId&&doorIdFor(e,`archive:${y.year}`)===restored.doorId)))restored=null;
+  setYear(archive.years.some(y=>y.year===restored?.year)?restored.year:Math.max(...archive.years.map(y=>y.year)));
+  if(restored&&typeof restored==='object'){
+   let index=entries().findIndex(e=>e.doorId===restored.doorId);
+   if(index<0)index=legacyDoorIndex(restored.creatorId);
+   if(index>=0){currentIndex=index;paint();if(!returnToPalace)palace?.enter({immediate:true,focus:false});}
+   search=typeof restored.search==='string'?normalizeSearch(restored.search):'';
+   activeTag=typeof restored.activeTag==='string'?restored.activeTag:'';
+   $('search').value=search;
+   rosterPage=Number.isInteger(restored.rosterPage)?Math.max(0,restored.rosterPage):0;
+   renderTags();renderRoster();
+  }
+  try{const returnURL=new URL(location.href);if(returnURL.searchParams.get('mode')==='halloween'){returnURL.searchParams.delete('mode');history.replaceState(null,'',returnURL.pathname+returnURL.search+returnURL.hash);}}catch{}
+  for(const id of['previous','next','artwork-open','year-open','list-open'])$(id).disabled=false;
+  if(!entries().length)for(const id of['artwork-open','previous','next'])$(id).disabled=true;
+  $('roulette-open').disabled=!rouletteCandidates().length;
+  slideshow?.setBlocked('empty',entries().length<2);slideshow?.setBlocked('loading',false);
+  $('palace-load-status').hidden=true;$('palace-load-status').textContent='';
+  if(root.dataset.palaceState==='gallery'&&!reduced.matches&&root.dataset.motionPaused!=='true')root.classList.add('turning-in');
+  const entranceToken=turnVersion;
+  setTimeout(()=>{if(entranceToken===turnVersion&&attempt===loadVersion)root.classList.remove('turning-in');},900);
+ }catch{
+  if(attempt===loadVersion){root.dataset.archiveState='error';$('load-error').hidden=false;slideshow?.setBlocked('loading',false);}
+ }
+}
 // Roulette lands only on verified creator rooms in the active public collection.
 // It never invents an article and never opens an external tab on a timer.
 function rouletteCandidates(){return entries().filter(entry=>{const c=creator(entry);return c&&!c.provisional&&(safeURL(c.profileURL)||[...(entry.works||[]),...(entry.links||[])].some(item=>safeURL(item.url)));});}
@@ -204,7 +250,7 @@ const pageReload=createReloadControl({save:persist});document.querySelector('.vi
 const displayPreferences=document.querySelector('.display-preferences');
 if(displayPreferences){document.querySelector('.visitor-preferences').prepend(displayPreferences);const displayLabel=displayPreferences.querySelector('label');if(displayLabel)displayLabel.textContent='表示サイズ（この端末）';}
 // Embedded castle and gate artwork are already usable. Full-resolution art and
-// decorative residents upgrade independently; only valid archive data gates entry.
+// decorative residents upgrade independently; collection status belongs inside the gallery.
 const sceneMotion=initSceneMotion(root,{controlsParent:document.querySelector('.visitor-preferences')});
 let motionPausedBeforeExit=false;
 const appExit=initAppExit({root,triggerParent:document.querySelector('.header-actions'),entranceControl:$('palace-world-links'),onStop(){
@@ -222,7 +268,7 @@ function updateSlideshowState(state){
  const status=state.error?'自動送りを停止しました。手動の左右ボタンでご覧ください。':!state.enabled?'自動送りはOFFです。':reason.includes('reduced-motion')?'端末の「動きを減らす」設定中は、自動送りも停止します。':reason.includes('dialog')?'詳細や設定を見ている間は、自動送りを一時停止します。':reason.includes('motion')?'演出を止めている間は、自動送りも一時停止します。':reason.length?'自動送りは一時停止中です。再開時は設定した間隔から始めます。':`扉が開いてから${state.intervalSeconds}秒間展示します。手動で移動すると数え直します。`;
  if($('slideshow-status').textContent!==status)$('slideshow-status').textContent=status;
 }
-palace=initPalaceEntrance({root,initialMode:displayMode,onViewChange:state=>{returnPanel.hidden=state.view!=='gallery';appExit?.refresh();slideshow?.setBlocked('palace',state.view!=='gallery'||state.opening);if(state.view==='gallery'&&!state.opening)revealDoor();if(state.view!=='gallery'){cancelStoryOpening();cancelRoulette();turnVersion++;busy=false;root.classList.remove('turning-in','turning-out');}}});
+palace=initPalaceEntrance({root,initialMode:displayMode,onViewChange:state=>{returnPanel.hidden=state.view!=='gallery';appExit?.refresh();slideshow?.setBlocked('palace',state.view!=='gallery'||state.opening);if(state.view==='gallery'&&!state.opening){startGalleryArtwork();if(archive)revealDoor();}if(state.view!=='gallery'){cancelStoryOpening();cancelRoulette();turnVersion++;busy=false;root.classList.remove('turning-in','turning-out');}}});
 let slideshowStorage=null;try{slideshowStorage=localStorage;}catch{}
 slideshow=createSlideshowController({timers:{setTimeout:(fn,delay)=>setTimeout(fn,delay),clearTimeout:id=>clearTimeout(id)},storage:slideshowStorage,onState:updateSlideshowState,onAdvance:async control=>{
  if(!archive||document.hidden||reduced.matches||root.dataset.motionPaused==='true'||document.querySelector('dialog[open]')||rouletteRunning)return;
@@ -244,6 +290,7 @@ if(typeof MutationObserver!=='undefined'){
 if(typeof window!=='undefined')window.addEventListener('pagehide',()=>{cancelRoulette();doorClock.cancel();slideshow.setEnabled(false);});
 
 slideshow.setBlocked('palace',root.dataset.palaceState!=='gallery');
+$('palace-gate').disabled=false;
 load();
 root.dataset.theaterReady='ready';
 

@@ -253,6 +253,7 @@ test('slow cache writes never hold a successful network response on the renderin
   const request = h.dispatch('fetch', base + h.config.PUBLIC_ASSETS[0][0]);
   assert.equal((await request.response).ok, true);
   await h.advance(h.config.NETWORK_TIMEOUT_MS); await request.done;
+  assert.equal(h.fetched[0].signal.aborted, false, 'cache work must not abort an image or script already streaming to the page');
   assert.equal(h.timers.size, 0);
 });
 
@@ -302,7 +303,9 @@ test('copied worker outside preview is inert', async () => {
 test('optional counter remains independent and all API/data traffic stays network-only', async () => {
   const boot = await readFile(new URL('../castle-counter-bootstrap.js', import.meta.url), 'utf8');
   const theater = await readFile(new URL('../theater.js', import.meta.url), 'utf8');
-  assert.match(html, /type="module" src="\.\/castle-counter-bootstrap\.js\?v=20261017-castle2"/);
+  const {galleryEntrySources} = await import('../scripts/build-gallery-script.mjs');
+  assert.ok(galleryEntrySources.includes('./castle-counter-bootstrap.js'));
+  assert.match(html, /type="module" src="\.\/gallery-entry\.js\?v=20261019-fast2-[a-f0-9]{12}"/);
   assert.match(boot, /import\('\.\/castle-visit-counter\.js\?v=20261017-castle2'\)/);
   assert.match(boot, /\.catch\(\(\) => \{\}\)/);
   assert.doesNotMatch(theater, /castle-visit-counter|initCastleVisitCounter/);

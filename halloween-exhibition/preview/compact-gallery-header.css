@@ -1,107 +1,155 @@
-/* Physical narrow screens need a bounded header, regardless of selected profile.
-   Keep settings in a reserved column; only the other controls may scroll. */
-body[data-layout-page=gallery] .theater .toolbar-primary{display:contents}
-@media(max-width:480px){
- body[data-layout-page=gallery][data-layout] .theater .masthead{gap:4px;padding:6px max(8px,env(safe-area-inset-right)) 4px max(8px,env(safe-area-inset-left))}
- body[data-layout-page=gallery][data-layout] .theater #site-title{gap:2px;min-width:0}
- body[data-layout-page=gallery][data-layout] .theater[data-mode=halloween] #site-title>span{font-size:10px;line-height:1.2;letter-spacing:.14em}
- body[data-layout-page=gallery][data-layout] .theater[data-mode=halloween] #site-title>strong{font-size:clamp(20px,5.6vw,26px);line-height:1.1;letter-spacing:0;white-space:normal;max-width:100%;overflow-wrap:normal}
- body[data-layout-page=gallery][data-layout] .theater[data-mode=halloween] #site-title>small{font-size:12px;line-height:1.2;letter-spacing:.08em}
- body[data-layout-page=gallery][data-layout] .theater #site-title:before,
- body[data-layout-page=gallery][data-layout] .theater #site-title:after{display:none}
- body[data-layout-page=gallery][data-layout] .theater .palace-toolbar{display:grid;grid-template-columns:minmax(0,1fr) 44px;align-items:center;gap:4px;min-width:0;max-width:100%;padding:3px 0 6px;overflow:visible}
- body[data-layout-page=gallery][data-layout] .theater .header-navigation,
- body[data-layout-page=gallery][data-layout] .theater .header-actions{display:contents}
- body[data-layout-page=gallery][data-layout] .theater .toolbar-primary{grid-column:1;grid-row:1;display:flex;align-items:center;flex-wrap:nowrap;gap:2px;min-width:0;overflow-x:auto;overflow-y:hidden;scroll-padding-inline:2px;scrollbar-width:thin}
- body[data-layout-page=gallery][data-layout] .theater .mode-switch{flex:0 0 auto;flex-wrap:nowrap;gap:0;padding:0;min-width:0}
- body[data-layout-page=gallery][data-layout] .theater .palace-toolbar button{flex:0 0 auto;font-size:14px;line-height:1.2;letter-spacing:0;min-height:44px;height:44px;min-width:44px;padding:4px 2px;white-space:nowrap;overflow-wrap:normal}
- body[data-layout-page=gallery][data-layout] .theater .header-actions #year-open{width:44px;min-width:44px;height:44px;min-height:44px;font-size:14px;padding:0}
- body[data-layout-page=gallery][data-layout] .theater .header-actions .visitor-settings-trigger{grid-column:2;grid-row:1;width:44px;min-width:44px;max-width:44px;margin-left:0;padding-inline:2px}
- body[data-layout-page=gallery][data-layout] .theater .list-open>span{display:none}
- body[data-layout-page=gallery][data-layout] .theater .castle-exit-panel{gap:4px;flex-wrap:nowrap}
- body[data-layout-page=gallery][data-layout] .theater .castle-exit-label{font-size:12px;line-height:1.3}
- body[data-layout-page=gallery][data-layout] .theater .castle-exit-panel>.app-exit-trigger{font-size:13px;min-height:44px;min-width:88px;padding:4px 8px;line-height:1.2}
- body[data-layout-page=gallery][data-layout] .castle-visit-counter{top:6px;font-size:12px;line-height:1.25;padding:4px 7px;gap:1px 6px}
- body[data-layout-page=gallery][data-layout] .castle-visit-counter strong{font-size:14px;line-height:1.25}
- body[data-layout-page=gallery][data-layout] .castle-visit-counter small{font-size:11px;line-height:1.25}
+/* The same compact frame is painted before JavaScript and at every display
+   preset. Physical width bounds this header; the selected preset still controls
+   the exhibition, settings and artwork below it. */
+:root body[data-layout-page=gallery] #theater>.masthead{
+ box-sizing:border-box;position:relative;inset:auto;display:flex;flex-direction:column;align-items:stretch;
+ gap:3px;width:100%;min-width:0;max-width:100%;height:auto;min-height:0;
+ padding:3px max(8px,env(safe-area-inset-right)) 3px max(8px,env(safe-area-inset-left));isolation:isolate;
+ --header-control-font:clamp(12px,3.4vw,14px);
 }
+:root body[data-layout-page=gallery] #theater>.masthead>.brand,
+:root body[data-layout-page=gallery] #theater>.masthead>.palace-toolbar,
+:root body[data-layout-page=gallery] #theater>.masthead>.creative-world-links,
+:root body[data-layout-page=gallery] #theater>.masthead>#castle-exit-panel{
+ box-sizing:border-box;position:relative;inset:auto;flex:none;grid-column:1/-1;grid-row:auto;
+ width:100%;min-width:0;max-width:100%;margin:0;
+}
+:root body[data-layout-page=gallery] #theater>.masthead>.brand{order:-1;padding:0;justify-content:center;border:0}
+:root body[data-layout-page=gallery] #theater>.masthead .brand-mark{display:none}
+:root body[data-layout-page=gallery] #theater>.masthead #site-title{
+ display:grid;grid-template-columns:auto auto;justify-content:center;align-items:center;
+ column-gap:10px;row-gap:1px;min-width:0;max-width:100%;margin:0;text-align:center;overflow-wrap:normal;word-break:normal;
+}
+/* Explicitly constrain the title's own font. The inherited serif size and the
+   later preset-title selector must never create a giant first painted frame. */
+:root body[data-layout-page=gallery] #theater>.masthead #site-title>strong{
+ grid-column:1/-1;grid-row:1;font:600 clamp(20px,5.3vw,30px)/1.08 Georgia,'Times New Roman',serif!important;
+ max-width:100%;letter-spacing:0;white-space:nowrap;overflow-wrap:normal;word-break:normal;
+}
+:root body[data-layout-page=gallery] #theater>.masthead #site-title>span{
+ grid-column:1;grid-row:2;justify-self:end;font:500 11px/1.2 system-ui,sans-serif!important;letter-spacing:.06em;
+}
+:root body[data-layout-page=gallery] #theater>.masthead #site-title>small{
+ grid-column:2;grid-row:2;justify-self:start;font:500 11px/1.2 system-ui,sans-serif!important;letter-spacing:.04em;
+}
+:root body[data-layout-page=gallery] #theater>.masthead #site-title:before,
+:root body[data-layout-page=gallery] #theater>.masthead #site-title:after{display:none}
 
-/* The entrance keeps its title and controls in two compact bands, giving the
-   remaining measured viewport back to the painted castle. */
-body[data-layout-page=gallery][data-layout] #theater:not([data-palace-state=gallery]) .masthead{
- gap:3px;padding-block:4px 3px;
+/* Six visible slots. Settings and installation have their own reserved cells;
+   none of the toolbar or its ancestors is a horizontal scrolling container. */
+:root body[data-layout-page=gallery] #theater>.masthead .palace-toolbar{
+ display:grid;grid-template-columns:minmax(62px,1.2fr) minmax(28px,.65fr) minmax(34px,.7fr) minmax(56px,1.4fr) 44px 40px;
+ align-items:stretch;gap:2px;padding:0;overflow:visible;
 }
-body[data-layout-page=gallery][data-layout] #theater:not([data-palace-state=gallery]) #site-title{
- display:grid;grid-template-columns:auto auto;align-items:center;justify-content:center;
- column-gap:12px;row-gap:1px;
+:root body[data-layout-page=gallery] #theater>.masthead .header-actions,
+:root body[data-layout-page=gallery] #theater>.masthead .toolbar-primary,
+:root body[data-layout-page=gallery] #theater>.masthead .header-navigation,
+:root body[data-layout-page=gallery] #theater>.masthead .mode-switch{display:contents}
+:root body[data-layout-page=gallery] #theater>.masthead #atelier-install-open{display:none!important}
+:root body[data-layout-page=gallery] #theater>.masthead .palace-toolbar button{
+ box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:2px;
+ width:100%;min-width:0;max-width:100%;min-height:44px;height:auto;margin:0;padding:3px 2px;
+ font-family:system-ui,sans-serif;font-size:var(--header-control-font);font-weight:500;line-height:1.2;letter-spacing:0;
+ white-space:normal;word-break:normal;overflow-wrap:normal;
 }
-body[data-layout-page=gallery][data-layout] #theater:not([data-palace-state=gallery]) #site-title>strong{
- grid-column:1/-1;grid-row:1;
+:root body[data-layout-page=gallery] #theater>.masthead #mode-halloween{grid-column:1;grid-row:1}
+:root body[data-layout-page=gallery] #theater>.masthead #mode-normal{grid-column:2;grid-row:1}
+:root body[data-layout-page=gallery] #theater>.masthead #list-open{grid-column:4;grid-row:1;padding-inline:1px;font-size:var(--header-control-font)}
+:root body[data-layout-page=gallery] #theater>.masthead .palace-toolbar .header-actions :is(#year-open,.visitor-settings-trigger){
+ width:100%;min-width:0;max-width:100%;min-height:44px;height:auto;margin:0;padding:3px 2px;
+ font:500 var(--header-control-font)/1.2 system-ui,sans-serif;letter-spacing:0;white-space:normal;
 }
-body[data-layout-page=gallery][data-layout] #theater:not([data-palace-state=gallery]) #site-title>span{
- grid-column:1;grid-row:2;justify-self:end;
+:root body[data-layout-page=gallery] #theater>.masthead #year-open{grid-column:3;grid-row:1}
+:root body[data-layout-page=gallery] #theater>.masthead .palace-toolbar .visitor-settings-trigger{grid-column:6;grid-row:1;order:0;border-radius:8px}
+:root body[data-layout-page=gallery] #theater>.masthead #year-open>span[aria-hidden],
+:root body[data-layout-page=gallery] #theater>.masthead .list-open>span{display:none}
+:root body[data-layout-page=gallery] #theater>.masthead .header-actions>#atelier-install-panel{
+ grid-column:5;grid-row:1;display:flex;flex-direction:column;gap:0;width:44px;min-width:0;min-height:44px;height:auto;margin:0;padding:2px;
+ border:1px solid #c4a47380;border-radius:8px;background:#262037;color:#fff2d7;text-align:center;cursor:pointer;
 }
-body[data-layout-page=gallery][data-layout] #theater:not([data-palace-state=gallery]) #site-title>small{
- grid-column:2;grid-row:2;justify-self:start;
+:root body[data-layout-page=gallery] #theater>.masthead #atelier-install-panel img{display:none}
+:root body[data-layout-page=gallery] #theater>.masthead #atelier-install-panel span{font:500 11px/1.15 system-ui,sans-serif}
+:root body[data-layout-page=gallery] #theater>.masthead [hidden]{display:none!important}
+:root body[data-layout-page=gallery] #theater>.masthead :is(button,a):focus-visible{outline:2px solid #ffe3a2;outline-offset:1px}
+
+/* Both navigation bands use the whole available row. A long label wraps by
+   words (or normal Japanese wrapping), never into a narrow vertical ribbon. */
+:root body[data-layout-page=gallery] #theater>.masthead .palace-world-links{
+ position:static;inset:auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ grid-column:1;grid-row:1;gap:4px;width:100%;min-width:0;max-width:none;margin:0;justify-self:stretch;
 }
-body[data-layout-page=gallery][data-layout] #theater:not([data-palace-state=gallery]) .brand{
- padding-block:0;border-bottom:0;
+:root body[data-layout-page=gallery] #theater>.masthead .palace-world-links>a{
+ box-sizing:border-box;display:flex;align-items:center;justify-content:center;min-width:0;min-height:34px;
+ width:100%;max-width:100%;padding:2px 4px;font:600 11px/1.2 system-ui,sans-serif;letter-spacing:0;
+ text-align:center;white-space:normal;overflow-wrap:normal;word-break:normal;
 }
-body[data-layout-page=gallery][data-layout] #theater:not([data-palace-state=gallery]) .palace-toolbar{
- padding-block:0;row-gap:3px;
+:root body[data-layout-page=gallery] #theater>.masthead>.creative-world-links{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;order:3;margin:0;
 }
-body[data-layout-page=gallery][data-layout] #theater:not([data-palace-state=gallery]) .masthead>#castle-exit-panel{
- padding-block:0;row-gap:0;
+:root body[data-layout-page=gallery] #theater>.masthead>.creative-world-links>a{
+ box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:4px;min-width:0;
+ min-height:34px;max-width:100%;padding:2px 5px;text-align:center;line-height:1.2;
 }
-body[data-layout-page=gallery][data-layout] #theater:not([data-palace-state=gallery]) #castle-exit-panel>.palace-world-links{
- grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;max-width:256px;
+:root body[data-layout-page=gallery] #theater>.masthead>.creative-world-links>a>span:first-child{flex:none;font-size:12px}
+:root body[data-layout-page=gallery] #theater>.masthead>.creative-world-links>a>span:last-child{flex:0 1 auto;min-width:0}
+:root body[data-layout-page=gallery] #theater>.masthead>.creative-world-links strong{
+ display:block;font:600 clamp(10px,2.9vw,13px)/1.2 system-ui,sans-serif;letter-spacing:0;
+ white-space:normal;overflow-wrap:normal;word-break:normal;
 }
-body[data-layout-page=gallery][data-layout] #theater:not([data-palace-state=gallery]) #castle-exit-panel>.palace-world-links>a{
- min-height:44px;padding:2px 4px;line-height:1.2;
+:root body[data-layout-page=gallery] #theater>.masthead>.creative-world-links small{display:none}
+
+/* Once JS adds the count/exit row, the same two route cards stay side by side.
+   The count and exit get compact fixed cells instead of squeezing the routes
+   into the old 128px maximum. Their explanation remains a normal popover. */
+:root body[data-layout-page=gallery] #theater>.masthead>#castle-exit-panel{
+ display:grid;grid-template-columns:minmax(0,1fr) 48px 68px;gap:4px;align-items:center;order:2;padding:0;
+}
+:root body[data-layout-page=gallery] #theater>.masthead #castle-exit-panel>.palace-world-links{grid-column:1;grid-row:1}
+:root body[data-layout-page=gallery] #theater>.masthead #castle-exit-panel>.castle-visit-counter{
+ grid-column:2;grid-row:1;position:relative;inset:auto;width:48px;min-width:0;max-width:48px;margin:0;padding:0;
+ font:11px/1.2 system-ui,sans-serif;
+}
+:root body[data-layout-page=gallery] #theater>.masthead #castle-exit-panel .castle-visit-counter>summary{
+ display:grid;grid-template-columns:minmax(0,1fr);gap:0;min-width:0;min-height:34px;padding:1px;text-align:center;
+}
+:root body[data-layout-page=gallery] #theater>.masthead #castle-exit-panel .castle-visit-counter strong{font:600 12px/1.15 Georgia,serif}
+:root body[data-layout-page=gallery] #theater>.masthead #castle-exit-panel>.app-exit-trigger{
+ grid-column:3;grid-row:1;justify-self:stretch;width:68px;min-width:0;max-width:68px;min-height:34px;height:auto;
+ margin:0;padding:2px;font:500 11px/1.2 system-ui,sans-serif;letter-spacing:0;white-space:normal;overflow-wrap:normal;
+}
+:root body[data-layout-page=gallery] #theater>.masthead .castle-exit-label{font-size:11px;line-height:1.2}
+
+@media(max-width:289px){
+ :root body[data-layout-page=gallery] #theater>.masthead .palace-toolbar{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 44px;row-gap:2px}
+ :root body[data-layout-page=gallery] #theater>.masthead #mode-halloween{grid-column:1;grid-row:1}
+ :root body[data-layout-page=gallery] #theater>.masthead #mode-normal{grid-column:2;grid-row:1}
+ :root body[data-layout-page=gallery] #theater>.masthead .palace-toolbar .visitor-settings-trigger{grid-column:3;grid-row:1}
+ :root body[data-layout-page=gallery] #theater>.masthead #year-open{grid-column:1;grid-row:2}
+ :root body[data-layout-page=gallery] #theater>.masthead #list-open{grid-column:2;grid-row:2}
+ :root body[data-layout-page=gallery] #theater>.masthead .header-actions>#atelier-install-panel{grid-column:3;grid-row:2}
+}
+@media(max-width:329px){
+ :root body[data-layout-page=gallery] #theater>.masthead{--header-control-font:11px}
 }
 @media(max-width:480px){
- body[data-layout-page=gallery][data-layout] #theater:not([data-palace-state=gallery]) #site-title{
-  column-gap:10px;row-gap:1px;
- }
- body[data-layout-page=gallery][data-layout] #theater:not([data-palace-state=gallery]) #castle-exit-panel>.palace-world-links{
-  max-width:128px;
- }
+ :root body[data-layout-page=gallery] #theater>.masthead #site-title>strong{font-size:clamp(20px,5.3vw,26px)!important}
 }
-
-/* Title stays first; installation shares the existing controls band. */
-#theater .masthead>.brand{order:-1;position:relative;top:auto;z-index:2}
-#theater .header-actions>.atelier-install-panel{box-sizing:border-box;display:flex;align-items:center;justify-content:center;gap:4px;flex:0 0 64px;width:64px;min-width:64px;min-height:44px;height:44px;margin:0;padding:3px;border:1px solid #c4a47380;border-radius:9px;background:#262037;color:#fff2d7;font-family:inherit;font-size:12px;line-height:1.25;text-align:center;cursor:pointer}
-#theater .atelier-install-panel[hidden]{display:none!important}
-#theater .atelier-install-panel img{width:20px;height:20px;flex:none;object-fit:cover;border-radius:4px}
-#theater .atelier-install-panel span{font-size:12px;line-height:1.25}
-#theater .atelier-install-panel:focus-visible{outline:3px solid #ffe3a2;outline-offset:2px}
-#theater .masthead>.creative-world-links{gap:4px;margin:0 auto}
-#theater .masthead>.creative-world-links a{min-height:44px;padding:4px 7px;gap:5px}
-#theater .masthead>.creative-world-links small{display:none}
+@media(min-width:600px){
+ :root body[data-layout-page=gallery] #theater>.masthead .palace-toolbar{grid-template-columns:minmax(90px,1.2fr) minmax(54px,.65fr) 52px minmax(100px,1.4fr) 64px 52px;gap:4px}
+ :root body[data-layout-page=gallery] #theater>.masthead .header-actions>#atelier-install-panel{width:64px;flex-direction:row;gap:3px}
+ :root body[data-layout-page=gallery] #theater>.masthead #atelier-install-panel img{display:block;width:18px;height:18px;object-fit:cover;border-radius:4px}
+ :root body[data-layout-page=gallery] #theater>.masthead .palace-world-links>a{font-size:12px}
+}
 body[data-mode=normal] #theater .atelier-install-panel{background:#eff5ed;color:#294b3b;border-color:#9aaf99}
-@media(max-width:480px){
- body[data-layout-page=gallery][data-layout] #theater .palace-toolbar:has(.atelier-install-panel:not([hidden])){grid-template-columns:minmax(0,1fr) 64px 44px;gap:3px}
- body[data-layout-page=gallery][data-layout] #theater .header-actions>.atelier-install-panel{grid-column:2;grid-row:1;width:64px;min-width:64px;min-height:44px;padding:3px}
- body[data-layout-page=gallery][data-layout] #theater .palace-toolbar:has(.atelier-install-panel:not([hidden])) .visitor-settings-trigger{grid-column:3}
-}
 @media(display-mode:standalone){#theater .atelier-install-panel{display:none!important}}
 @media(forced-colors:active){#theater .header-actions>.atelier-install-panel{background:Canvas;color:ButtonText;border-color:ButtonText}}
 
-/* The first painted frame must work before any module sets layout attributes.
-   In particular, a destination nav must never share the title's old grid cell. */
-#theater>.masthead{box-sizing:border-box;position:relative;inset:auto;display:flex;flex-direction:column;align-items:stretch;gap:5px;width:100%;min-width:0;height:auto;min-height:0;padding:6px 10px;isolation:isolate}
-#theater>.masthead>.brand,#theater>.masthead>.palace-toolbar,#theater>.masthead>.creative-world-links,#theater>.masthead>#castle-exit-panel{box-sizing:border-box;flex:none;grid-column:1/-1;grid-row:auto;width:100%;min-width:0;max-width:100%;margin-inline:0}
-#theater>.masthead>.brand{order:-1;position:relative;top:auto;padding:0;justify-content:center}
-#theater>.masthead #site-title{min-width:0;max-width:100%;overflow-wrap:normal;word-break:normal}
-#theater>.masthead>.palace-world-links{position:static;inset:auto;grid-column:1/-1;grid-row:auto;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;width:100%;max-width:none;margin:0}
-#theater>.masthead>.palace-world-links>a{min-width:0;overflow-wrap:normal;word-break:normal}
-#theater>.masthead>.creative-world-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin:0}
-#theater>.masthead>.creative-world-links>a{display:flex;align-items:center;justify-content:center;gap:6px;min-width:0;min-height:44px;padding:5px 7px;text-align:center}
-#theater>.masthead>.creative-world-links>a>span:first-child{flex:none}
-#theater>.masthead>.creative-world-links>a>span:last-child{flex:0 1 auto;min-width:0}
-#theater>.masthead>.creative-world-links strong{font-family:system-ui,sans-serif;font-size:clamp(10px,2.8vw,13px);line-height:1.35;letter-spacing:0;white-space:normal;overflow-wrap:normal;word-break:normal}
-
 #entrance-runtime-retry[hidden]{display:none!important}
-#entrance-runtime-retry{position:fixed;z-index:1000;left:50%;top:50%;transform:translate(-50%,-50%);box-sizing:border-box;width:min(340px,calc(100% - 32px));display:grid;gap:12px;padding:20px;border:1px solid #e7c485;border-radius:18px;background:#171329f5;color:#fff0cc;font:14px/1.6 system-ui,sans-serif;text-align:center;box-shadow:0 10px 60px #0009}
-#entrance-runtime-retry p{margin:0}
-#entrance-runtime-retry button,#entrance-runtime-retry a{box-sizing:border-box;min-height:44px;padding:10px 12px;border:1px solid #e7c485;border-radius:10px;background:#3c2d55;color:#fff0cc;font:inherit;text-decoration:none;cursor:pointer}
+#entrance-runtime-retry{position:relative;inset:auto;transform:none;box-sizing:border-box;width:calc(100% - 16px);max-width:100%;margin:4px 8px;display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:4px;padding:5px 6px;border:1px solid #e7c48580;border-radius:8px;background:#171329e8;color:#fff0cc;font:11px/1.3 system-ui,sans-serif;text-align:left;box-shadow:none;z-index:30}
+#entrance-runtime-retry p{min-width:0;margin:0}
+#entrance-runtime-retry button,#entrance-runtime-retry a{box-sizing:border-box;display:flex;align-items:center;justify-content:center;min-width:0;min-height:32px;padding:3px 5px;border:1px solid #e7c48580;border-radius:6px;background:#3c2d55;color:#fff0cc;font:inherit;line-height:1.2;text-align:center;text-decoration:none;cursor:pointer}
+:root body[data-layout-page=gallery] #theater .archive-loading{display:none}
+:root body[data-layout-page=gallery] #theater[data-palace-state=gallery][data-archive-state=loading] .archive-loading{display:grid}
+:root body[data-layout-page=gallery] #theater[data-runtime-recovery=true] .archive-loading{display:none!important}
+.theater:not([data-palace-state=gallery])>.world-backdrop{display:none}
+#article-theater[hidden]{display:none!important}

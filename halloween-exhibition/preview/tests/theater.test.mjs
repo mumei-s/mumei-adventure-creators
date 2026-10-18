@@ -1,5 +1,5 @@
 import {createReloadControl} from '../safe-page-reload.js';
-import {initTransitionEffects} from '../transition-effects.js';
+import {initTransitionEffects, withDeadline} from '../transition-effects.js';
 import {initViewport} from '../viewport.js';
 import { initAppExit } from '../app-exit.js';
 import { createDoorRevealClock } from '../door-reveal-clock.js';
@@ -80,7 +80,7 @@ class Element {
   querySelector(selector) { return this.querySelectorAll(selector)[0] || null; }
 }
 
-async function harness({ data = archive, reduced = true, storageThrows = false, storageWriteThrows = false, saved = null, savedMode = null, urlSearch = '', returnState = null, autoLoad = true, strictTimerReceiver = false, entrance = false, palaceStartup = () => Promise.resolve() } = {}) {
+async function harness({ data = archive, reduced = true, storageThrows = false, storageWriteThrows = false, saved = null, savedMode = null, urlSearch = '', returnState = null, autoLoad = true, strictTimerReceiver = false, entrance = false, bundledArchive, palaceStartup = () => Promise.resolve() } = {}) {
   let now = 0, seq = 0; const timers = new Map(), storage = new Map(saved ? [['halloween-yearbook:night-doors:v1', saved]] : []);
   if (savedMode !== null) storage.set('halloween-yearbook:display-mode:v1', savedMode);
   const queue = (fn, delay = 0) => { const id = ++seq; timers.set(id, { at: now + delay, fn }); return id; };
@@ -104,7 +104,7 @@ async function harness({ data = archive, reduced = true, storageThrows = false, 
     return walk(doc.documentElement);
   };
   const requests = [], storageWrites = [], motionInitializations = [], viewCalls = [];
-  const context = vm.createContext({ AbortController, createReloadControl:options=>createReloadControl({...options,document:doc}), initTransitionEffects:()=>initTransitionEffects({window:doc.defaultView,document:doc}), initViewport:()=>initViewport({window:doc.defaultView,document:doc}), initAppExit, createDoorRevealClock:args=>createDoorRevealClock({...args,schedule:queue,clear:id=>timers.delete(id)}), initCreatorCauldron:args=>initCreatorCauldron({...args,doc,win:doc.defaultView}), initFestivalScene:args=>initFestivalScene({...args,doc,win:{...doc.defaultView,setTimeout:queue,clearTimeout:id=>timers.delete(id),MutationObserver:class{observe(){}disconnect(){}}}}), loadArtworkImage:(image,source,options)=>loadArtworkImage(image,source,{...options,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}), initPalaceStartup:palaceStartup, createDoorPalettePicker, installGalleryGesture, createSlideshowController, initPalaceEntrance:entrance?(args)=>initPalaceEntrance({...args,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}):({root,onViewChange})=>{root.dataset.palaceState='gallery';return {enter(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});},home(){root.dataset.palaceState='palace';onViewChange({view:'palace',opening:false});},setMode(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});}}}, initDisplayMode:()=>({}), document: doc, initVisitorPreferences:options=>{options.onBrightness(75);const section=doc.createElement('section');section.className='visitor-preferences';doc.body.append(section);return {stopMusic(){doc.musicStops=(doc.musicStops||0)+1;}};}, initSceneMotion:root=>{motionInitializations.push(root);const dock=doc.createElement('div');dock.className='scene-controls';root.append(dock);let userPaused=false;return {isUserPaused(){return userPaused;},setPaused(value){userPaused=Boolean(value);},setView(x,y){viewCalls.push([x,y]);}};}, validateArchive, safeURL, normalizeSearch, doorIdFor,
+  const context = vm.createContext({ AbortController, withDeadline, __ATELIER_ARCHIVE__:bundledArchive, createReloadControl:options=>createReloadControl({...options,document:doc}), initTransitionEffects:()=>initTransitionEffects({window:doc.defaultView,document:doc}), initViewport:()=>initViewport({window:doc.defaultView,document:doc}), initAppExit, createDoorRevealClock:args=>createDoorRevealClock({...args,schedule:queue,clear:id=>timers.delete(id)}), initCreatorCauldron:args=>initCreatorCauldron({...args,doc,win:doc.defaultView}), initFestivalScene:args=>initFestivalScene({...args,doc,win:{...doc.defaultView,setTimeout:queue,clearTimeout:id=>timers.delete(id),MutationObserver:class{observe(){}disconnect(){}}}}), loadArtworkImage:(image,source,options)=>loadArtworkImage(image,source,{...options,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}), initPalaceStartup:palaceStartup, createDoorPalettePicker, installGalleryGesture, createSlideshowController, initPalaceEntrance:entrance?(args)=>initPalaceEntrance({...args,timers:{setTimeout:queue,clearTimeout:id=>timers.delete(id)}}):({root,onViewChange})=>{root.dataset.palaceState='gallery';return {enter(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});},home(){root.dataset.palaceState='palace';onViewChange({view:'palace',opening:false});},setMode(){root.dataset.palaceState='gallery';onViewChange({view:'gallery',opening:false});}}}, initDisplayMode:()=>({}), document: doc, initVisitorPreferences:options=>{options.onBrightness(75);const section=doc.createElement('section');section.className='visitor-preferences';doc.body.append(section);return {stopMusic(){doc.musicStops=(doc.musicStops||0)+1;}};}, initSceneMotion:root=>{motionInitializations.push(root);const dock=doc.createElement('div');dock.className='scene-controls';root.append(dock);let userPaused=false;return {isUserPaused(){return userPaused;},setPaused(value){userPaused=Boolean(value);},setView(x,y){viewCalls.push([x,y]);}};}, validateArchive, safeURL, normalizeSearch, doorIdFor,
     matchMedia: () => ({ matches: reduced }),
     // Native browser timers reject a plain-object receiver (Illegal invocation).
     setTimeout: function(fn, delay) { if (strictTimerReceiver && this != null && this.document !== doc) throw new TypeError('Illegal invocation'); return queue(fn, delay); },
@@ -112,7 +112,7 @@ async function harness({ data = archive, reduced = true, storageThrows = false, 
     URLSearchParams, location:{search:urlSearch},sessionStorage:{getItem(){return returnState},setItem(k,v){context.savedReturn={key:k,value:v};}},
     Date: class extends Date { static now() { return now; } },
     localStorage: { getItem(k) { if (storageThrows) throw Error('blocked'); return storage.get(k) || null; }, setItem(k, v) { storageWrites.push({key:k,value:v}); if (storageThrows || storageWriteThrows) throw Error('blocked'); storage.set(k, v); } },
-    fetch: () => new Promise((resolve, reject) => requests.push({ resolve, reject }))
+    fetch: (url,options) => new Promise((resolve, reject) => requests.push({ url,options,resolve,reject }))
   });
   vm.runInContext(source.replace(/^import[^\n]+\n/gm, '') + '\nglobalThis.testAPI={countPeople:()=>validStamps().length,seenDoors:viewedDoors,navigate,setYear,load,openStory,renderProgress,setMode, get state(){return {currentYear,currentIndex,busy,storageOK,progress,displayMode,search,activeTag,slideshow:slideshow?.getState()};}};', context);
   async function flush() { for (let i = 0; i < 10; i++) await Promise.resolve(); }
@@ -1217,7 +1217,7 @@ test('town departure preserves exact existing gallery return context and does no
 });
 test('outdoor route remains available while archive loading without inventing a selected article',async()=>{
  const h=await harness({entrance:true,autoLoad:false});assert.equal(h.$('palace-town-entrance').hidden,false);h.$('palace-town-entrance').click();
- const state=JSON.parse(h.getReturn().value);assert.equal(state.doorId,undefined);assert.equal(state.creatorId,undefined);assert.equal(h.$('palace-gate').disabled,true);
+ const state=JSON.parse(h.getReturn().value);assert.equal(state.doorId,undefined);assert.equal(state.creatorId,undefined);assert.equal(h.$('palace-gate').disabled,false);
 });
 
 test('town return restores exact year, door, search, tag and page behind the closed palace gate',async()=>{
@@ -1254,7 +1254,7 @@ test('choosing ordinary mode during a town-return load prevents Halloween contex
 
 test('valid archive enables the gate and roster even while full castle images never settle',async()=>{
  const h=await harness({entrance:true,reduced:false,autoLoad:false,palaceStartup:()=>new Promise(()=>{})});
- assert.equal(h.$('palace-gate').disabled,true);
+ assert.equal(h.$('palace-gate').disabled,false);
  await h.succeed(h.requests[0]);
  assert.equal(h.$('theater').dataset.archiveState,'ready');
  assert.equal(h.$('palace-gate').disabled,false);
@@ -1267,11 +1267,46 @@ test('valid archive enables the gate and roster even while full castle images ne
  await h.tick(550);assert.equal(h.$('article-theater').hidden,false);
  assert.equal(h.api.countPeople(),0,'entering the gallery still does not record a profile visit');
 });
-test('failed data still blocks entry and retry recovers independently of visual loading',async()=>{
+test('failed data leaves the gate and outdoor routes usable while gallery retry recovers',async()=>{
  const h=await harness({entrance:true,autoLoad:false,palaceStartup:()=>new Promise(()=>{})});
  h.requests[0].reject(Error('offline'));await h.flush();
- assert.equal(h.$('theater').dataset.archiveState,'error');assert.equal(h.$('palace-gate').disabled,true);
+ assert.equal(h.$('theater').dataset.archiveState,'error');assert.equal(h.$('palace-gate').disabled,false);
  h.$('retry').click();await h.succeed(h.requests[1]);
  assert.equal(h.$('load-error').hidden,true);assert.equal(h.$('palace-gate').disabled,false);
  h.$('palace-gate').click();assert.equal(h.$('article-theater').hidden,false);
+});
+
+
+test('bundled collection is ready without a separate JSON request',async()=>{
+ const h=await harness({entrance:true,autoLoad:false,bundledArchive:archive});
+ assert.equal(h.requests.length,0);
+ assert.equal(h.$('theater').dataset.archiveState,'ready');
+ assert.equal(h.$('palace-gate').disabled,false);
+ assert.equal(h.$('list-open').disabled,false);
+ h.$('palace-gate').click();
+ assert.equal(h.$('article-theater').hidden,false);
+ assert.equal(h.$('artwork-image').src,archive.years[0].entries[0].image);
+});
+test('unbundled fallback has a real deadline even when fetch ignores abort',async()=>{
+ const h=await harness({entrance:true,autoLoad:false});
+ assert.equal(h.requests[0].options.cache,'default');
+ h.$('palace-gate').click();
+ assert.equal(h.$('article-theater').hidden,false,'gate remains usable before collection finishes');
+ await h.tick(8000);
+ assert.equal(h.requests[0].options.signal.aborted,true);
+ assert.equal(h.$('theater').dataset.archiveState,'error');
+ assert.equal(h.$('load-error').hidden,false);
+ assert.equal(h.$('palace-gate').disabled,false);
+ h.$('retry').click();await h.succeed(h.requests[1]);
+ assert.equal(h.$('theater').dataset.archiveState,'ready');
+ assert.equal(h.$('load-error').hidden,true);
+});
+test('closed castle does not load hidden article artwork and roster portraits use low priority',async()=>{
+ const h=await harness({entrance:true});
+ assert.equal(h.$('artwork-image').src,undefined);
+ for(const image of h.$('roster').querySelectorAll('img')){
+  assert.equal(image.loading,'lazy');assert.equal(image.fetchPriority,'low');
+ }
+ h.$('palace-gate').click();
+ assert.equal(h.$('artwork-image').src,archive.years[0].entries[0].image);
 });

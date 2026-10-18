@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';
-import {settlePalaceImage,initPalaceStartup,guardPalaceDecorations} from '../palace-startup.js';
+import {settlePalaceImage,initPalaceStartup,guardPalaceDecorations,schedulePalaceResidents} from '../palace-startup.js';
 function fixture({complete=false,naturalWidth=0,decode}={}){const events={},pending=new Map();let n=0;return {image:{complete,naturalWidth,decode,style:{},addEventListener:(k,f)=>events[k]=f,removeEventListener:k=>delete events[k]},events,pending,timers:{setTimeout:f=>{pending.set(++n,f);return n},clearTimeout:id=>pending.delete(id)}};}
 test('castle guard waits for decode, not just load or archive completion',async()=>{let decodeDone;const f=fixture({complete:true,naturalWidth:800,decode:()=>new Promise(r=>decodeDone=r)});let result;const ready=settlePalaceImage(f.image,f).then(x=>result=x);await Promise.resolve();assert.equal(result,undefined);decodeDone();await ready;assert.equal(result,'ready');assert.equal(f.pending.size,0);});
 test('image error keeps embedded castle preview and resolves fallback',async()=>{const f=fixture();const ready=settlePalaceImage(f.image,f);f.events.error();assert.equal(await ready,'fallback');assert.equal(f.image.style.visibility,'hidden');assert.equal(f.pending.size,0);});
@@ -64,4 +64,21 @@ test('independent bootstrap has a bounded fallback and allows a late full castle
 
 test('theater installs image protection before unrelated setup and exposes a readiness marker',async()=>{
  const source=await read('theater.js');assert.ok(source.indexOf('void initPalaceStartup(root)')<source.indexOf('initViewport();'));assert.match(source,/load\(\);\s*root\.dataset\.theaterReady='ready'/);
+});
+
+test('optional resident downloads wait for working entrance, painted images and idle dwell, and cancel on entry',async()=>{
+ let notify,idle,loads=0;const tasks=new Map();let id=0,painted;
+ const root={dataset:{palaceState:'palace'},ownerDocument:{defaultView:{MutationObserver:class{constructor(fn){notify=fn;}observe(){}disconnect(){}},requestIdleCallback(fn){idle=fn;}}}};
+ const timers={setTimeout(fn,delay){assert.equal(delay,6000);tasks.set(++id,fn);return id;},clearTimeout(key){tasks.delete(key);}};
+ schedulePalaceResidents(root,{ready:new Promise(resolve=>{painted=resolve;}),timers,loadResidents:async()=>{loads++;return {initPalaceLivingScene(){}};}});
+ root.dataset.theaterReady=root.dataset.archiveState='ready';notify();assert.equal(tasks.size,0);
+ painted();await Promise.resolve();assert.equal(tasks.size,1);assert.equal(loads,0);
+ root.dataset.palaceState='gallery';notify();assert.equal(tasks.size,0);
+ root.dataset.palaceState='palace';notify();assert.equal(tasks.size,1);
+ [...tasks.values()][0]();assert.equal(loads,0);assert.equal(typeof idle,'function');idle();await Promise.resolve();assert.equal(loads,1);
+});
+test('data saving connections retain the lightweight residents without downloading animation atlases',async()=>{
+ let scheduled=false;const root={dataset:{},ownerDocument:{defaultView:{navigator:{connection:{saveData:true}}}}};
+ schedulePalaceResidents(root,{ready:Promise.resolve(),timers:{setTimeout(){scheduled=true;}},loadResidents(){throw Error('unnecessary download');}});
+ await Promise.resolve();assert.equal(scheduled,false);
 });

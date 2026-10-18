@@ -7,6 +7,11 @@
     "test": "node --test tests/*.mjs",
     "serve": "python3 -m http.server 4173",
     "build:styles": "node scripts/build-gallery-styles.mjs",
-    "check:styles": "node scripts/build-gallery-styles.mjs --check"
+    "check:styles": "node scripts/build-gallery-styles.mjs --check",
+    "build:script": "node scripts/build-gallery-script.mjs",
+    "check:script": "node scripts/build-gallery-script.mjs --check"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.12"
   }
 }

@@ -35,6 +35,27 @@ export function guardPalaceDecorations(root){
 export function palaceSceneFormat(width,height) {
  return Number.isFinite(width)&&Number.isFinite(height)&&width>0&&height>0&&width/height<=1.1?'portrait':'landscape';
 }
+/** Large animated residents are an enhancement after the whole entrance works. */
+export function schedulePalaceResidents(root,{ready,timers=globalThis,loadResidents}={}){
+ const win=root.ownerDocument?.defaultView||globalThis,connection=win.navigator?.connection;
+ if(connection?.saveData||['slow-2g','2g'].includes(connection?.effectiveType))return;
+ let settled=false,timer=null,observer,started=false;
+ const usable=()=>settled&&root.dataset.theaterReady==='ready'&&root.dataset.archiveState==='ready'&&(!root.dataset.palaceState||root.dataset.palaceState==='palace');
+ const check=()=>{
+  if(!usable()){if(timer!==null){timers.clearTimeout(timer);timer=null;}return;}
+  if(started||timer!==null)return;
+  timer=timers.setTimeout(()=>{
+   timer=null;
+   const begin=()=>{if(started||!usable()||root.ownerDocument?.hidden)return;started=true;observer?.disconnect();
+    void Promise.resolve().then(()=>loadResidents?loadResidents():import('./palace-living-scene.js?v=20261019-unified1')).then(({initPalaceLivingScene})=>initPalaceLivingScene(root)).catch(()=>{});
+   };
+   if(typeof win.requestIdleCallback==='function')win.requestIdleCallback(begin,{timeout:2000});else begin();
+  },6000);
+ };
+ const Observer=win.MutationObserver;
+ if(typeof Observer==='function'){observer=new Observer(check);observer.observe(root,{attributes:true,attributeFilter:['data-theater-ready','data-archive-state','data-palace-state']});}
+ void Promise.resolve(ready).then(()=>{settled=true;check();});
+}
 export function initPalaceStartup(root,{timers=globalThis,ImageClass,loadResidents}={}) {
  if(!root)return Promise.resolve(['fallback','fallback']);
  if(startups.has(root))return startups.get(root);
@@ -60,12 +81,9 @@ export function initPalaceStartup(root,{timers=globalThis,ImageClass,loadResiden
  const painted={castle:false,gate:false},markReady=kind=>{painted[kind]=true;root.dataset.palaceReady=painted.castle&&painted.gate?'ready':'fallback';};
  const castleReady=settlePalaceImage(image,{timers,onReady:()=>markReady('castle')}),gateReady=settlePalaceImage(gateTexture,{timers,onReady:()=>markReady('gate')});
  if(gateTexture)gateTexture.src=new URL(root.dataset.palaceFormat==='portrait'?'./assets/palace/gate-phone.webp':'./assets/palace/gate-desktop.webp',import.meta.url).href;
- void castleReady.then(()=>{
-  // Optional illustrated residents start after the actual castle settles.
-  // Their network/decoding failure must never hold the entrance button hostage.
-  return (loadResidents?loadResidents():import('./palace-living-scene.js?v=20261019-unified1')).then(({initPalaceLivingScene})=>initPalaceLivingScene(root));
- }).catch(()=>{});
- const ready=Promise.all([castleReady,gateReady]);startups.set(root,ready);return ready;
+ const ready=Promise.all([castleReady,gateReady]);
+ schedulePalaceResidents(root,{ready,timers,loadResidents});
+ startups.set(root,ready);return ready;
 }
 // This module can boot independently of theater.js's larger dependency graph.
 // A second call by the theater reuses the same guards and pending readiness.

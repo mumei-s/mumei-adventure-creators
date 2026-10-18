@@ -2,9 +2,8 @@
  * credentials and unknown query strings always bypass this worker. */
 const SCOPE = new URL('./', self.location.href);
 // BEGIN GENERATED SHELL (node halloween-exhibition/scripts/build-preview-cache.mjs)
-const SHELL_REVISION = 'fa376f6c8aee0f7f';
+const SHELL_REVISION = '64c85fdfd9df8173';
 const PUBLIC_ASSETS = [
-  ["app-exit.js?v=20261017-live-street1",9268],
   ["assets/atelier-door-180.png",56294],
   ["assets/atelier-door-192.png",62766],
   ["assets/atelier-door-512.png",374122],
@@ -26,31 +25,12 @@ const PUBLIC_ASSETS = [
   ["assets/panel-magic/butterfly.svg",4902],
   ["assets/panel-magic/ghost.svg",5094],
   ["assets/panel-magic/lantern.svg",5194],
-  ["castle-counter-bootstrap.js?v=20261017-castle2",4868],
   ["castle-visit-counter.js?v=20261017-castle2",15215],
-  ["creator-cauldron.js?v=20261017-cauldron1",13032],
-  ["data-model.js?v=20261014-doors1",9143],
-  ["display-mode.js?v=20261019-unified1",11715],
-  ["door-palette.js?v=20261015-festival1",5771],
-  ["door-reveal-clock.js?v=20261015-playful1",4640],
-  ["festival-scene.js?v=20261017-cauldron1",11303],
-  ["gallery-gesture.js?v=20261016-ios1",9046],
-  ["gallery-panels.js?v=20261017-panels1",7274],
-  ["gallery-styles.css?v=20261019-entrance-safe1",326372],
-  ["magical-loading.js?v=20261015-journey1",4919],
+  ["gallery-entry.js?v=20261019-fast2-150c1fa3779a",125868],
+  ["gallery-styles.css?v=20261019-fast2-9d829351eeb5",329200],
   ["manifest.webmanifest",4955],
-  ["palace-entrance.js?v=20261014-palace2",14193],
   ["palace-living-scene.css?v=20261016-living1",6585],
-  ["palace-living-scene.js?v=20261019-unified1",16060],
-  ["palace-startup.js?v=20261019-entrance-safe1",10523],
-  ["pwa.js?v=20261019-home1",12127],
-  ["safe-page-reload.js?v=20261017-reload1",5891],
-  ["scene-motion.js?v=20261015-glamour1",19561],
-  ["slideshow.js?v=20261015-festival1",10417],
-  ["theater.js?v=20261019-entrance-safe1",51181],
-  ["transition-effects.js?v=20261016-living1",7818],
-  ["viewport.js?v=20261016-ios1",7115],
-  ["visitor-preferences.js?v=20261016-ios1",19555]
+  ["palace-living-scene.js?v=20261019-unified1",16060]
 ];
 // END GENERATED SHELL
 const CACHE_PREFIX = 'mumei-atelier-shell-';
@@ -127,7 +107,16 @@ function requestPublic(url, consume = async () => {}) {
   });
   return Promise.race([
     fetch(new Request(url, { credentials: 'omit', cache: 'no-cache', signal: controller.signal })).then(async response => {
-      await consume(response.clone());
+      // Once headers arrive, a slow body/cache write must not abort the stream
+      // already being painted by the page. Bound only the background cache work.
+      clearTimeout(timer);
+      let cacheTimer;
+      try {
+        await Promise.race([
+          Promise.resolve(consume(response.clone())),
+          new Promise(resolve => { cacheTimer = setTimeout(resolve, NETWORK_TIMEOUT_MS); })
+        ]);
+      } finally { clearTimeout(cacheTimer); }
       return response;
     }),
     timeout

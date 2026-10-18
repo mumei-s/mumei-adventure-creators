@@ -27,7 +27,7 @@ test('last gallery-only stylesheet and exact version are present in shell cache'
  const html=await read('index.html'),sw=await read('sw.js');
  assert.ok(bundledStyles.indexOf('compact-gallery-header.css')>bundledStyles.indexOf('presentation-profiles.css'));
  assert.match(bundledStyles,/compact-gallery-header.css\?v=20261019-unified1/);
- assert.match(sw,/gallery-styles\.css\?v=20261019-compact-home2/);assert.match(sw,/v43-startup-/);
+ assert.match(sw,/gallery-styles\.css\?v=20261019-entrance-safe1/);assert.match(sw,/v43-startup-/);
  assert.doesNotMatch(sw,/\["compact-gallery-header\.css/);
  assert.doesNotMatch(await read('maze/index.html'),/compact-gallery-header/);
 });
@@ -36,7 +36,7 @@ test('last gallery-only stylesheet and exact version are present in shell cache'
 test('install invitation shares the control band without shrinking global UI or covering the gate',async()=>{
  const css=await read('compact-gallery-header.css'),html=await read('index.html');
  assert.match(html,/<header class="masthead"><a class="brand"/);
- assert.match(css,/masthead>\.brand\{order:-1;position:sticky;top:0/);
+ assert.match(css,/masthead>\.brand\{order:-1;position:relative;top:auto/);
  assert.match(css,/grid-template-columns:minmax\(0,1fr\) 64px 44px/);
  assert.match(css,/header-actions>\.atelier-install-panel[^}]*min-height:44px/);
  assert.doesNotMatch(css,/masthead>\.atelier-install-panel/);

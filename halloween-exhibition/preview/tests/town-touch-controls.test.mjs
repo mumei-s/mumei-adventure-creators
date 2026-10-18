@@ -34,9 +34,9 @@ test('two corner controls fit narrow phones at every supported control size',()=
 });
 
 test('town release requests the updated renderer through a versioned app entry',async()=>{
- assert.match(await read('index.html'),/app\.js\?v=20261019-unified1/);
- assert.match(await read('app.js'),/renderer\.js\?v=20261019-unified1/);
- assert.match(await read('app.js'),/world-3d\.js\?v=20261019-unified1/);
+ assert.match(await read('index.html'),/app\.js\?v=20261019-homes2/);
+ assert.match(await read('app.js'),/renderer\.js\?v=20261019-homes2/);
+ assert.match(await read('app.js'),/world-3d\.js\?v=20261019-homes2/);
 });
 
 

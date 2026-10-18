@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';
-import {settlePalaceImage} from '../palace-startup.js';
+import {settlePalaceImage,initPalaceStartup,guardPalaceDecorations} from '../palace-startup.js';
 function fixture({complete=false,naturalWidth=0,decode}={}){const events={},pending=new Map();let n=0;return {image:{complete,naturalWidth,decode,style:{},addEventListener:(k,f)=>events[k]=f,removeEventListener:k=>delete events[k]},events,pending,timers:{setTimeout:f=>{pending.set(++n,f);return n},clearTimeout:id=>pending.delete(id)}};}
 test('castle guard waits for decode, not just load or archive completion',async()=>{let decodeDone;const f=fixture({complete:true,naturalWidth:800,decode:()=>new Promise(r=>decodeDone=r)});let result;const ready=settlePalaceImage(f.image,f).then(x=>result=x);await Promise.resolve();assert.equal(result,undefined);decodeDone();await ready;assert.equal(result,'ready');assert.equal(f.pending.size,0);});
 test('image error keeps embedded castle preview and resolves fallback',async()=>{const f=fixture();const ready=settlePalaceImage(f.image,f);f.events.error();assert.equal(await ready,'fallback');assert.equal(f.image.style.visibility,'hidden');assert.equal(f.pending.size,0);});
@@ -27,4 +27,41 @@ test('castle format follows visible scene aspect, not a phone-width cutoff',asyn
  assert.ok(oldGate>700);assert.ok(newGate<450);assert.ok(newGate>w*.4);
 });
 
-test('deadline fallback never hides a late successful castle image',async()=>{const f=fixture();const ready=settlePalaceImage(f.image,f);[...f.pending.values()][0]();assert.equal(await ready,'fallback');assert.equal(f.image.style.visibility,undefined);assert.equal(f.pending.size,0);assert.deepEqual(Object.keys(f.events),[]);});
+test('deadline fallback hides broken placeholders and still upgrades a late successful castle image',async()=>{const f=fixture();let upgrades=0;const ready=settlePalaceImage(f.image,{...f,onReady:()=>upgrades++});[...f.pending.values()][0]();assert.equal(await ready,'fallback');assert.equal(f.image.style.visibility,'hidden');assert.equal(f.pending.size,0);f.image.naturalWidth=900;f.events.load();assert.equal(f.image.style.visibility,'visible');assert.equal(upgrades,1);assert.deepEqual(Object.keys(f.events),[]);});
+
+test('a synchronously throwing decoder cannot reject or trap a painted castle',async()=>{
+ const f=fixture({complete:true,naturalWidth:800,decode:()=>{throw Error('decoder unavailable');}});
+ assert.equal(await settlePalaceImage(f.image,f),'ready');assert.equal(f.image.style.visibility,'visible');assert.equal(f.pending.size,0);
+});
+
+test('decorative failures stay invisible and a later real image restores visibility',()=>{
+ const optional=fixture(),managed=fixture();managed.image.id='artwork-image';const events={};
+ const root={querySelectorAll:()=>[optional.image,managed.image],addEventListener:(type,handler)=>events[type]=handler,removeEventListener:type=>delete events[type]};
+ const destroy=guardPalaceDecorations(root);assert.equal(optional.image.style.visibility,'hidden');assert.equal(managed.image.style.visibility,undefined);
+ events.error({target:optional.image});assert.equal(optional.image.style.visibility,'hidden');optional.image.naturalWidth=128;events.load({target:optional.image});assert.equal(optional.image.style.visibility,'visible');
+ destroy();assert.deepEqual(Object.keys(events),[]);
+});
+
+function startupFixture(){
+ const castle=fixture(),gate=fixture(),events={},status={textContent:'宮殿を準備しています…',hidden:false},palace={getBoundingClientRect:()=>({width:390,height:600})};
+ const doc={getElementById:id=>({'palace-image':castle.image,'palace-load-status':status,'palace-entrance':palace}[id])};
+ const root={ownerDocument:doc,dataset:{palaceReady:'loading'},style:{setProperty(){}},querySelector:()=>null,querySelectorAll:()=>[castle.image],addEventListener:(type,handler)=>events[type]=handler};
+ const ImageClass=class{constructor(){return gate.image;}};
+ return{castle,gate,root,status,options:{timers:castle.timers,ImageClass,loadResidents:()=>new Promise(()=>{})}};
+}
+
+test('independent bootstrap immediately uses embedded pixels and never waits for optional residents',async()=>{
+ const f=startupFixture(),ready=initPalaceStartup(f.root,f.options);assert.equal(initPalaceStartup(f.root,f.options),ready,'theater must reuse independent bootstrap');
+ assert.equal(f.status.hidden,true);assert.equal(f.status.textContent,'');assert.equal(f.root.dataset.palaceReady,'fallback');
+ f.castle.image.naturalWidth=900;f.castle.events.load();assert.equal(f.root.dataset.palaceReady,'fallback','gate still uses its own preview');
+ f.gate.image.naturalWidth=600;f.gate.events.load();assert.deepEqual(await ready,['ready','ready']);assert.equal(f.root.dataset.palaceReady,'ready');assert.equal(f.castle.pending.size,0);
+});
+
+test('independent bootstrap has a bounded fallback and allows a late full castle and gate upgrade',async()=>{
+ const f=startupFixture(),ready=initPalaceStartup(f.root,f.options);for(const timer of[...f.castle.pending.values()])timer();assert.deepEqual(await ready,['fallback','fallback']);
+ assert.equal(f.status.hidden,true);assert.equal(f.root.dataset.palaceReady,'fallback');f.castle.image.naturalWidth=900;f.castle.events.load();f.gate.image.naturalWidth=700;f.gate.events.load();assert.equal(f.root.dataset.palaceReady,'ready');
+});
+
+test('theater installs image protection before unrelated setup and exposes a readiness marker',async()=>{
+ const source=await read('theater.js');assert.ok(source.indexOf('void initPalaceStartup(root)')<source.indexOf('initViewport();'));assert.match(source,/load\(\);\s*root\.dataset\.theaterReady='ready'/);
+});

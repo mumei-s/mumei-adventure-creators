@@ -6,7 +6,7 @@ import { createDoorRevealClock } from './door-reveal-clock.js?v=20261015-playful
 import { initFestivalScene } from './festival-scene.js?v=20261017-cauldron1';
 import { initCreatorCauldron } from './creator-cauldron.js?v=20261017-cauldron1';
 import { loadArtworkImage } from './magical-loading.js?v=20261015-journey1';
-import { initPalaceStartup } from './palace-startup.js?v=20261019-unified1';
+import { initPalaceStartup } from './palace-startup.js?v=20261019-entrance-safe1';
 import { createDoorPalettePicker } from './door-palette.js?v=20261015-festival1';
 import { installGalleryGesture } from './gallery-gesture.js?v=20261016-ios1';
 import { initPalaceEntrance } from './palace-entrance.js?v=20261014-palace2';
@@ -16,6 +16,8 @@ import { initVisitorPreferences } from './visitor-preferences.js?v=20261016-ios1
 import { initSceneMotion } from './scene-motion.js?v=20261015-glamour1';
 import { validateArchive, safeURL, normalizeSearch, doorIdFor } from './data-model.js?v=20261014-doors1';
 const $=id=>document.getElementById(id), root=$('theater');
+// Install the image fallback before unrelated settings and scene initializers.
+void initPalaceStartup(root);
 initViewport();
 
 let cancelArtworkLoad=()=>{};
@@ -47,6 +49,7 @@ const returnStateKey='halloween-yearbook:theatre-return:v1';
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 const transitions=initTransitionEffects({motion:()=>document.body.dataset.ambientPaused!=='true'});
 function node(tag,text,cls){const el=document.createElement(tag);if(text!==undefined)el.textContent=text;if(cls)el.className=cls;return el;}
+function optionalImage(img,source){img.alt='';img.decoding='async';img.referrerPolicy='no-referrer';img.style.visibility='hidden';img.addEventListener('load',()=>{img.style.visibility=img.naturalWidth?'visible':'hidden';},{once:true});img.addEventListener('error',()=>img.remove(),{once:true});img.src=source;if(img.complete&&img.naturalWidth)img.style.visibility='visible';return img;}
 function year(){return archive?.years.find(y=>y.year===currentYear);}
 function ordered(list){return list.map((value,index)=>({value,index})).sort((a,b)=>(Number.isFinite(a.value.order)?a.value.order:a.index)-(Number.isFinite(b.value.order)?b.value.order:b.index)||a.index-b.index).map(item=>item.value);}
 function publicEntry(entry){
@@ -99,7 +102,7 @@ function record(entry){
  persist();renderProgress();
 }
 function renderProgress(){const valid=validStamps(),seen=viewedDoors(),count=participantCount();root.style.setProperty('--journey-progress',String(count?valid.length/count:0));root.classList.toggle('complete',displayMode==='halloween'&&count>0&&valid.length===count);for(const dot of $('room-dots').children)dot.classList.toggle('visited',seen.includes(dot.dataset.doorId));}
-function renderDots(){const area=$('room-dots');area.replaceChildren();entries().forEach((entry,i)=>{const c=creator(entry),button=node('button',undefined,'room-dot face-dot');button.dataset.creatorId=entry.creatorId;button.dataset.doorId=entry.doorId;button.dataset.creatorName=c.name;button.dataset.creatorColor=displayProfile(entry).color;if(displayMode==='halloween'){button.setAttribute('aria-keyshortcuts','Shift+Enter');button.setAttribute('aria-description','下の魔法ツボへドラッグ、またはShiftとEnterで魔法をかける');}button.setAttribute('aria-label',`${i+1}枚目、${c.name} · ${doorCaption(entry)}の扉へ`);button.setAttribute('aria-current',String(i===currentIndex));button.title=`${c.name} · ${doorCaption(entry)}`;button.append(node('span',Array.from(c.name).slice(0,1).join(''),'face-initial'));const url=avatar(entry);if(url){const img=node('img');img.src=url;img.alt='';img.addEventListener('error',()=>img.remove(),{once:true});button.append(img);}button.addEventListener('click',()=>navigateDoor(entry.doorId,{immediate:true}));area.append(button);});renderProgress();}
+function renderDots(){const area=$('room-dots');area.replaceChildren();entries().forEach((entry,i)=>{const c=creator(entry),button=node('button',undefined,'room-dot face-dot');button.dataset.creatorId=entry.creatorId;button.dataset.doorId=entry.doorId;button.dataset.creatorName=c.name;button.dataset.creatorColor=displayProfile(entry).color;if(displayMode==='halloween'){button.setAttribute('aria-keyshortcuts','Shift+Enter');button.setAttribute('aria-description','下の魔法ツボへドラッグ、またはShiftとEnterで魔法をかける');}button.setAttribute('aria-label',`${i+1}枚目、${c.name} · ${doorCaption(entry)}の扉へ`);button.setAttribute('aria-current',String(i===currentIndex));button.title=`${c.name} · ${doorCaption(entry)}`;button.append(node('span',Array.from(c.name).slice(0,1).join(''),'face-initial'));const url=avatar(entry);if(url){const img=optionalImage(node('img'),url);button.append(img);}button.addEventListener('click',()=>navigateDoor(entry.doorId,{immediate:true}));area.append(button);});renderProgress();}
 const pickDoorPalette=createDoorPalettePicker();let paintedPaletteKey='';
 let storyVersion=0,storyOpening=false;
 function cancelStoryOpening(){storyVersion++;storyOpening=false;root.classList.remove('story-opening');slideshow?.setBlocked('story-opening',false);}
@@ -110,7 +113,7 @@ function paint({redisplay=false}={}){transitions.enter($('stage'),{kind:'scene'}
  const image=$('artwork-image'),mat=document.querySelector('.artwork-mat');cancelArtworkLoad();image.onerror=null;image.hidden=true;$('artwork-fallback').hidden=true;$('artwork-loading').hidden=true;mat.style.backgroundImage='none';mat.style.backgroundColor='#25162e';mat.removeAttribute('role');mat.removeAttribute('aria-label');const source=real||portrait;
  $('artwork-fallback').replaceChildren(node('span',Array.from(c.name).slice(0,2).join('')),node('small',real?'画像を表示できません · タップで記事へ':'プロフィール画像 · 読み込めませんでした'));
  if(source){image.alt=real?(entry.imageAlt||entry.title||c.name):`${c.name}のnoteプロフィール画像`;image.referrerPolicy='no-referrer';cancelArtworkLoad=loadArtworkImage(image,source,{onState:state=>{root.dataset.artworkState=state;image.hidden=state!=='ready';$('artwork-loading').hidden=state!=='loading';$('artwork-fallback').hidden=state!=='error';mat.setAttribute('aria-busy',String(state==='loading'));}});}else{image.removeAttribute('src');image.alt='';root.dataset.artworkState='error';mat.setAttribute('aria-busy','false');$('artwork-fallback').hidden=false;}
- const hostAvatar=$('host-avatar');hostAvatar.hidden=entry.role!=='host'||!portrait;if(!hostAvatar.hidden){hostAvatar.src=portrait;hostAvatar.alt=`${c.name}のnoteプロフィール画像`;hostAvatar.onerror=()=>hostAvatar.hidden=true;}else hostAvatar.removeAttribute('src');
+ const hostAvatar=$('host-avatar');hostAvatar.hidden=entry.role!=='host'||!portrait;if(!hostAvatar.hidden){hostAvatar.style.visibility='hidden';hostAvatar.onload=()=>{hostAvatar.style.visibility=hostAvatar.naturalWidth?'visible':'hidden';};hostAvatar.onerror=()=>hostAvatar.hidden=true;hostAvatar.src=portrait;hostAvatar.alt=`${c.name}のnoteプロフィール画像`;hostAvatar.onerror=()=>hostAvatar.hidden=true;}else hostAvatar.removeAttribute('src');
  $('room-title').textContent=c.name;$('room-title').classList.toggle('long-creator-name',Array.from(c.name).length>32);$('room-kicker').textContent=entry.role==='host'?'主催者からの招待状':'';$('creator-name').replaceChildren(node('span',entry.submissionStatus==='pending'?'作品準備中':entryHeading(entry)),node('small',label(entry)));$('current-index').textContent=String(currentIndex+1).padStart(2,'0');$('total-index').textContent=String(entries().length).padStart(2,'0');$('invitation-year').textContent=`HALLOWEEN ${currentYear}`;$('invitation-number').textContent='WELCOME TO THE ATELIER';$('artwork-open').setAttribute('aria-label',`${c.name} · ${doorCaption(entry)}の扉をひらく`);$('stage-status').textContent=`${currentIndex+1} / ${entries().length}、${c.name}、${label(entry)}`;renderDots();refreshModeCopy();revealDoor();}
 async function navigate(index,{immediate=false,fromRoulette=false,automatic=false,isCurrent=()=>true}={}){cancelStoryOpening();if(!automatic)palace?.enter({immediate:true,focus:false});if(!automatic)slideshow?.manualNavigation();if(!fromRoulette)cancelRoulette();if(!entries().length||!isCurrent())return;const next=(index+entries().length)%entries().length;if(next===currentIndex&&!immediate)return;turnVersion++;busy=false;root.classList.remove('turning-in','turning-out');currentIndex=next;paint({redisplay:true});}
 function showDialog(dialog){cancelStoryOpening();cancelRoulette();slideshow?.setBlocked('dialog',true);returnTarget=document.activeElement;dialog.showModal();transitions.enter(dialog);}
@@ -124,7 +127,7 @@ function filterEntries(){return entries().filter(e=>(!activeTag||(e.tags||[]).in
 function renderRoster(){
  const host=displayMode==='halloween'?entries().find(e=>e.role==='host'&&e.submissionStatus==='introduction'):null;
  const fixed=$('roster-host-fixed');fixed.replaceChildren();fixed.hidden=!host;
- if(host){const card=node('button',undefined,'roster-host-project');card.dataset.doorId=host.doorId;card.setAttribute('aria-label','主催者の企画記事をひらく');const image=safeURL(host.image,{image:true});if(image){const img=node('img');img.src=image;img.alt='';card.append(img);}const title=node('span');title.append(node('small','固定 · 企画記事'),node('strong',host.title||'Halloween Atelier'),node('span','企画記事へ →'));card.append(title);card.addEventListener('click',()=>{returnTarget=$('artwork-open');$('roster').close();navigateDoor(host.doorId,{immediate:true});$('artwork-open').focus();});fixed.append(card);}
+ if(host){const card=node('button',undefined,'roster-host-project');card.dataset.doorId=host.doorId;card.setAttribute('aria-label','主催者の企画記事をひらく');const image=safeURL(host.image,{image:true});if(image){const img=optionalImage(node('img'),image);card.append(img);}const title=node('span');title.append(node('small','固定 · 企画記事'),node('strong',host.title||'Halloween Atelier'),node('span','企画記事へ →'));card.append(title);card.addEventListener('click',()=>{returnTarget=$('artwork-open');$('roster').close();navigateDoor(host.doorId,{immediate:true});$('artwork-open').focus();});fixed.append(card);}
  const rosterEntries=entries().filter(e=>!host||e.doorId!==host.doorId);
  const area=$('roster-grid'),list=filterEntries().filter(e=>!host||e.doorId!==host.doorId),pages=Math.ceil(list.length/ROSTER_PAGE_SIZE);
  rosterPage=Math.max(0,Math.min(rosterPage,Math.max(0,pages-1)));
@@ -137,7 +140,7 @@ function renderRoster(){
  for(const [index,entry]of visible.entries()){
   const c=creator(entry),button=node('button',undefined,'roster-card');button.dataset.creatorId=entry.creatorId;button.dataset.doorId=entry.doorId;
   const thumb=node('span',Array.from(c.name).slice(0,1).join(''),'roster-thumb'),portrait=avatar(entry);
-  if(portrait){const img=node('img');img.src=portrait;img.alt='';img.addEventListener('error',()=>img.remove(),{once:true});thumb.append(img);}
+  if(portrait){const img=optionalImage(node('img'),portrait);thumb.append(img);}
   const text=node('div');text.append(node('span',label(entry),'sample-label'),node('strong',c.name),node('small',doorCaption(entry)),node('span',displayMode==='halloween'?'このとびらへ →':'この扉へ →','roster-invitation'));
   button.style.setProperty('--card-order',String(index));button.append(thumb,text);
   button.addEventListener('click',()=>{returnTarget=$('artwork-open');$('roster').close();navigateDoor(entry.doorId,{immediate:true});$('artwork-open').focus();});area.append(button);
@@ -202,7 +205,6 @@ const displayPreferences=document.querySelector('.display-preferences');
 if(displayPreferences){document.querySelector('.visitor-preferences').prepend(displayPreferences);const displayLabel=displayPreferences.querySelector('label');if(displayLabel)displayLabel.textContent='表示サイズ（この端末）';}
 // Embedded castle and gate artwork are already usable. Full-resolution art and
 // decorative residents upgrade independently; only valid archive data gates entry.
-void initPalaceStartup(root);
 const sceneMotion=initSceneMotion(root,{controlsParent:document.querySelector('.visitor-preferences')});
 let motionPausedBeforeExit=false;
 const appExit=initAppExit({root,triggerParent:document.querySelector('.header-actions'),entranceControl:$('palace-world-links'),onStop(){
@@ -243,6 +245,7 @@ if(typeof window!=='undefined')window.addEventListener('pagehide',()=>{cancelRou
 
 slideshow.setBlocked('palace',root.dataset.palaceState!=='gallery');
 load();
+root.dataset.theaterReady='ready';
 
 
 

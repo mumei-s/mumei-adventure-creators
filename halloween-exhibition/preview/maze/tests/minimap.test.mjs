@@ -15,7 +15,12 @@ test('persistent minimap is a keyboard button that opens the existing map dialog
  assert.ok(css.includes('display:flex!important;flex-direction:column;pointer-events:auto'));
  assert.ok(!css.includes(':is(.vignette,.minimap,#crosshair)'));
  assert.ok(app.includes('c.rotate(mapHeading(view,state.yaw,facing))'));
- assert.ok(app.includes("drawMap($('mini'));updateHUD()"));
+ assert.ok(app.includes("updateMinimap();updateHUD()"));
+ const minimap=app.slice(app.indexOf('function updateMinimap(){'),app.indexOf('function drawMap('));
+ assert.ok(minimap.includes("const canvas=$('mini'),markers=mapMarkers()"));
+ assert.ok(minimap.includes('minimapChanges.changed('));
+ assert.ok(minimap.includes('mapHeading(view,state.yaw,facing),markers]'));
+ assert.ok(minimap.includes('drawMap(canvas,false,false,markers)'));
  assert.match(html,/← 探索に戻る/);
 });
 test('gate labels distinguish locked, available key, and unlocked; archive action is explicit',()=>{

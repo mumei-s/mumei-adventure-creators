@@ -1,3 +1,4 @@
+import {createBlobCache} from './blob-cache.js';
 import {drawingReferenceFor,drawingReferenceInstructions,loadDrawingReferences} from './drawing-references.js?v=28.4.6';
 import {fetchAssetBlob} from './asset-network.js?v=28.4.6';
 
@@ -162,22 +163,18 @@ export function stylePresetInstructions(medium,{noPerson=false,values={}}={}){
 }
 export async function loadStylePresets(references,{fetchImpl=globalThis.fetch,FileClass=globalThis.File,timeoutMs=15000}={}){
  if(typeof fetchImpl!=='function'||typeof FileClass!=='function')throw new Error('見本画像を準備できませんでした。');
- let cache=caches.get(fetchImpl);if(!cache){cache=new Map();caches.set(fetchImpl,cache);}
+ let cache=caches.get(fetchImpl);if(!cache){cache=createBlobCache();caches.set(fetchImpl,cache);}
  return Promise.all(references.map(async reference=>{
   const preset=matchingPreset(reference);if(!preset)throw new Error('画風プリセットの指定を確認できませんでした。');
   if(preset.role==='drawing')return {...preset,...(await loadDrawingReferences([preset],{fetchImpl,FileClass,timeoutMs}))[0]};
-  if(!cache.has(preset.file)){
-   const pending=(async()=>{
+  const blob=await cache.get(preset.file,async()=>{
     const blob=await fetchAssetBlob(new URL(preset.file,import.meta.url),{fetchImpl,timeoutMs,unavailableMessage:'画風プリセットを読み込めませんでした。通信を確認して再度制作してください。',timeoutMessage:'画風プリセットの通信が時間内に終わりませんでした。通信を確認して再度制作してください。'}),expected=preset.file.endsWith('.png')?'image/png':'image/jpeg';
     if(!blob.size||blob.type.split(';')[0]!==expected)throw new Error('画風プリセットの画像形式を確認できませんでした。');
     const bytes=new Uint8Array(await blob.slice(0,8).arrayBuffer());
     const valid=expected==='image/png'?[137,80,78,71,13,10,26,10].every((value,index)=>bytes[index]===value):bytes[0]===255&&bytes[1]===216&&bytes[2]===255;
     if(!valid)throw new Error('画風プリセットの画像内容を確認できませんでした。');
     return blob;
-   })();
-   cache.set(preset.file,pending);pending.catch(()=>{if(cache.get(preset.file)===pending)cache.delete(preset.file);});
-  }
-  const blob=await cache.get(preset.file);
+  });
   return {...preset,name:reference.name,file:new FileClass([blob],reference.name,{type:blob.type})};
  }));
 }

@@ -16,7 +16,7 @@ export const PALACE_ART = Object.freeze({
 });
 export const PALACE_TEXTURES=Object.freeze({parquet:'parquet.webp',limestone:'limestone.webp',marble:'marble.webp',carpet:'carpet.webp',wallPanel:'wainscot-wall.webp'});
 export function loadArtImage(src,{timeout=8000,timers=globalThis,ImageClass=globalThis.Image,priority='low'}={}){return new Promise((resolve,reject)=>{const image=new ImageClass();let active=true;const finish=(error)=>{if(!active)return;active=false;timers.clearTimeout(timer);image.onload=image.onerror=null;if(error){image.removeAttribute?.('src');reject(error);}else resolve(image);};const timer=timers.setTimeout(()=>finish(new Error('Art image timed out')),timeout);image.onload=()=>finish();image.onerror=()=>finish(new Error('Art image failed'));image.decoding='async';image.fetchPriority=priority;image.src=src;});}
-export function createArtLibrary({loadImage=loadArtImage,motionData=MONSTER_MOTION_DATA,loadPlayer=true,deferOptional=false}={}){
+export function createArtLibrary({loadImage=loadArtImage,motionData=MONSTER_MOTION_DATA,loadPlayer=true,deferOptional=false,deferScene=false}={}){
   const images={},failures=[],monsterLayouts={};let version=0,playerLayout=null,playerOverride=false;
   const load=async(key,file,environment=false)=>{try{const image=await loadImage(new URL(`./assets/rpg/${environment?'palace/':''}${file}`,import.meta.url).href);if(key==='playerAtlas'&&playerOverride)return image;images[key]=ART_BOUNDS[key]?{image,frame:ART_BOUNDS[key],width:ART_BOUNDS[key][2],height:ART_BOUNDS[key][3],...ART_ANCHORS[key]}:image;version++;return image;}catch{failures.push(key);return null;}};
   const animatedIds=MONSTER_IDS.filter(id=>validMonsterLayout(motionData[id]));
@@ -28,6 +28,8 @@ export function createArtLibrary({loadImage=loadArtImage,motionData=MONSTER_MOTI
   let remaining=null,finishRemaining;const remainingReady=new Promise(resolve=>finishRemaining=resolve);
   function loadRemaining(){return remaining??=Promise.all(deferred.map(([key,file])=>load(key,file))).then(()=>finishRemaining());}
   if(!deferOptional)void loadRemaining();
+  let sceneTask,finishScene;const sceneReady=new Promise(resolve=>finishScene=resolve);
+  function startScene(){return sceneTask??=(async()=>{
   const core=Promise.all([
     ...staticEntries.filter(([key])=>!deferOptional||!optionalKeys.has(key)).map(([key,file])=>load(key,file)),
     ...animatedIds.map(async id=>{const layout=motionData[id];try{const image=await loadImage(new URL(layout.src,import.meta.url).href);if(image.width!==layout.width||image.height!==layout.height)throw new Error('Monster atlas dimensions mismatch');monsterLayouts[id]=layout;images[id]=motionSprite(image,layout,{motion:false});version++;}catch{failures.push(id+'-motion');if(ART_FILES[id])await load(id,ART_FILES[id]);}}),
@@ -36,9 +38,11 @@ export function createArtLibrary({loadImage=loadArtImage,motionData=MONSTER_MOTI
     load('palaceAtlas','props-atlas.webp',true).then(image=>{if(!image)return;for(const [key,frame] of Object.entries(PALACE_ART))images[key]={image,frame,width:frame[2],height:frame[3],anchorX:.5,anchorY:.97};}),
     ...Object.entries(PALACE_TEXTURES).map(([key,file])=>load(key,file,true)),
   ]);
-  const sceneReady=Promise.all([core,environment]).then(()=>undefined);
+  await Promise.all([core,environment]);finishScene();
+  })();}
+  if(!deferScene)void startScene();
   const ready=Promise.all([sceneReady,remainingReady]).then(()=>undefined);
-  return {images,monsterLayouts,failures,sceneReady,ready,loadRemaining,get version(){return version;},get playerLayout(){return playerLayout;},setPlayerAtlas(image,layout=null){
+  return {images,monsterLayouts,failures,sceneReady,ready,loadRemaining,startScene,get version(){return version;},get playerLayout(){return playerLayout;},setPlayerAtlas(image,layout=null){
     if(!image||!Number.isFinite(image.width)||!Number.isFinite(image.height)||image.width<=0||image.height<=0)throw new TypeError('A loaded player atlas image is required');
     playerOverride=true;images.playerAtlas=image;playerLayout=layout?{...layout}:null;version++;return version;
   }};

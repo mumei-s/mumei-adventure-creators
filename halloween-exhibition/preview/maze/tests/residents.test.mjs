@@ -4,6 +4,7 @@ import {ALL_MONSTERS,MONSTERS,REQUIRED_MONSTER_IDS,OPTIONAL_MONSTERS,newBattle,b
 import {eligibleForEnding} from '../clear-reward.js';
 import {creatorPose,buildCreatorActors,layoutProblem,CHARACTER_BUDGET} from '../creator-runtime.js';
 import {initialState,blocked} from '../maze-model.js';
+import {setChangedProperty} from '../change-only-ui.js';
 import {createActorPatrol,samplePatrolPosition,patrolPointSafe} from '../patrol-model.js';
 const read=name=>fs.readFileSync(new URL('../'+name,import.meta.url),'utf8');
 const manifest=JSON.parse(read('data/residents.json')),residents=compileResidents(manifest),flags={unlocked:true,horrorAccepted:true};
@@ -28,6 +29,10 @@ test('both optional encounters have tactical wins and safe available guide locat
  const guide=guidePoint(monster,flags,15,true);assert(!blocked(guide.x*4,guide.z*4,flags));const pose=monsterPose(monster,15,true,flags);assert(Math.hypot(guide.x-pose.x,guide.z-pose.z)<=.71);assert.notEqual(nearestMonster({...flags,x:pose.x*4,z:pose.z*4},[monster.id],{time:15,motion:true})?.id,monster.id);}
 });
 test('context actions, direct resident picking and 2D/3D monster clocks share actual positions',()=>{
- const app=read('app.js'),world=read('world.js');assert(app.includes("for(const id of ['interact','creator-open','battle-open']){$(id).hidden=id!==buttonId;$(id).disabled=id!==buttonId;}"));assert(app.includes("if(k==='e')performContextAction()"));assert(app.includes('if(residents.some(npc=>npc.id===id))showResident(id)'));assert(world.includes('monsterPose(spirit.definition,seconds,motion'));assert(!read('stage-2d.js').includes('E · 書庫を調べる'));assert(!read('stage-2d.js').includes('B · 話しかける'));
+ const app=read('app.js'),world=read('world.js');const actionLoop=app.match(/for\(const id of \['interact','creator-open','battle-open'\]\)\{[^}]+\}/)?.[0];assert(actionLoop);
+ const nodes=Object.fromEntries(['interact','creator-open','battle-open'].map(id=>[id,{hidden:false,disabled:false}]));
+ const update=Function('$','buttonId','setChangedProperty',actionLoop);
+ for(const selected of ['interact','creator-open','battle-open',null]){update(id=>nodes[id],selected,setChangedProperty);for(const [id,node]of Object.entries(nodes)){assert.equal(node.hidden,id!==selected);assert.equal(node.disabled,id!==selected);}}
+ assert(app.includes("if(k==='e')performContextAction()"));assert(app.includes('if(residents.some(npc=>npc.id===id))showResident(id)'));assert(world.includes('monsterPose(spirit.definition,seconds,motion'));assert(!read('stage-2d.js').includes('E · 書庫を調べる'));assert(!read('stage-2d.js').includes('B · 話しかける'));
  assert(!app.includes('6体すべての住人'));assert(!app.includes('Bで住人と対戦'));assert(app.includes("['宮殿の住人',showResidents]"));assert(app.includes("['モンスターと遊ぶ'"));
 });

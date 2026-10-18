@@ -55,6 +55,10 @@
       "sha256": "70c919e6327f3f4b6890724f42ca712a26ffb51c46cfb875c708782a7dc56599",
       "bytes": 5860
     },
+    "blob-cache.js": {
+      "sha256": "f98683099d3c911b20f4b48dcfaca2b7b4ce2f8f800371be0b6735ee348afccd",
+      "bytes": 1065
+    },
     "catalog.js?v=28.4.6": {
       "sha256": "749f9a5c410c4e731f65ae56e93fa9cf59e0b3a4a7866372e3b4b33c2a7a4cce",
       "bytes": 16922
@@ -116,8 +120,8 @@
       "bytes": 31045
     },
     "drawing-references.js?v=28.4.6": {
-      "sha256": "4f177a9b577201d6d4ac75371ccc356c069b89fc36dd14ef1f481e93d43d478a",
-      "bytes": 7248
+      "sha256": "2b5a5ef046274c8399856ee2ecf45d471ff97ac361dcebf6311e6add8d222e5a",
+      "bytes": 7143
     },
     "editorial-layout.js?v=28.4.6": {
       "sha256": "e339c14a56936bdf5d137176608f10f48fec02132929190bb2924fb5c61c40d3",
@@ -284,8 +288,8 @@
       "bytes": 3305
     },
     "picker.js?v=28.4.16": {
-      "sha256": "f884f010e341f2773222e275ad27932ab9fd395f21ea562be5d67bc333a1e191",
-      "bytes": 26739
+      "sha256": "80d92cce3d63de27ec3100ae034294f1094daece1db3fe28f9c993ddd46b7e9b",
+      "bytes": 27005
     },
     "pose-anatomy.js?v=28.4.6": {
       "sha256": "3e7fabea76087db21b94d4e596408cfac4793da9e7361864ee00386166dc391b",
@@ -332,8 +336,8 @@
       "bytes": 41214
     },
     "sample-image.js?v=28.4.16": {
-      "sha256": "bb6b6372b6cbcf68b4de9054e1d407df0bf60539f82d58ca02a67a50791a03dd",
-      "bytes": 1846
+      "sha256": "55302325187ee9154f55c5e0f5cc691cf0ae5ee4dd6a94701211507b407b8096",
+      "bytes": 2431
     },
     "scene-composition.js?v=28.4.6": {
       "sha256": "8d018594b0d0781d3d604bb1ffbace01efa6834d3749937cdc0b9d176b766db1",
@@ -352,8 +356,8 @@
       "bytes": 2619
     },
     "selection-references.js?v=28.4.6": {
-      "sha256": "0de6f188564583c8f7974475cda20d0c2790070bedfc2ba59f7986a5e426b3b4",
-      "bytes": 16085
+      "sha256": "364dcfd60a9d9f59315e2884f587cd43c9547bc6f559c2ea85e7aeefbb095793",
+      "bytes": 16550
     },
     "solid-glow-style-definitions.js?v=28.4.6": {
       "sha256": "56784be964b4dcfee6be111efa9c0bcbab7fd6dd29409d2957ff771991157c1a",
@@ -376,8 +380,8 @@
       "bytes": 4336
     },
     "style-presets.js?v=28.4.6": {
-      "sha256": "228df7359c1697be105cc27585abd1e3297235dfae983480926ed36c213d8d0e",
-      "bytes": 34825
+      "sha256": "02e16d83fa4b456c238025f7751331da637f175543b7dbb17ae94d7c337a5029",
+      "bytes": 34705
     },
     "subject-recipes.js?v=28.4.6": {
       "sha256": "e9005931bf0cb41b7ac8b7727407efb67d530fc9a2fde078ddd077a0ab4ec633",
@@ -426,7 +430,7 @@
   },
   "output": {
     "file": "app.bundle.js",
-    "sha256": "846f4d45c6aa268e47d60d35159d48ea93473490a06538841e3e1f16206bd95b",
-    "bytes": 1646022
+    "sha256": "6e4a710a4c909341dc59c447c69f1a3a013f436d96bf824c2e3b5182fe2dc94e",
+    "bytes": 1647199
   }
 }

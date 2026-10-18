@@ -104,8 +104,8 @@
     },
     {
       "path": "maze/app.js",
-      "bytes": 67186,
-      "sha256": "a5fe6b230dd20ec359bf7dfef84dee7be2cf2f8cabb989c7e50ff8c31b27886d"
+      "bytes": 67955,
+      "sha256": "ebb7e6e49e6557dabbba322f1186babf4f7cfa5226510a3ce2d52c1cbcefeed6"
     },
     {
       "path": "maze/battle-scene.js",
@@ -116,6 +116,11 @@
       "path": "maze/battle-story.css",
       "bytes": 10370,
       "sha256": "5368cbd6b7a9a641b0bd7821ecc06af71675d02d153267a2c5f25eab41e1a187"
+    },
+    {
+      "path": "maze/change-only-ui.js",
+      "bytes": 522,
+      "sha256": "fc6c5cff406ce9dc4d688f4f488442ee9796828818520d3d06f0f805c43ca6a9"
     },
     {
       "path": "maze/clear-reward.js",
@@ -176,6 +181,11 @@
       "path": "maze/ending.css",
       "bytes": 2329,
       "sha256": "b8e06e4d64069444375b62880044bdbce33cf43b60eb02ebfca322fe255904e7"
+    },
+    {
+      "path": "maze/exhibit-resources.js",
+      "bytes": 740,
+      "sha256": "6526f501ed36f3dfa32d2bba95b60841533bd537c9e924e82a6b5b23f4571582"
     },
     {
       "path": "maze/furnishing-info.js",
@@ -254,8 +264,8 @@
     },
     {
       "path": "maze/rpg-art.js",
-      "bytes": 7701,
-      "sha256": "d35d5de82a4c5ddd861c5190ffa05994a42145cec1ed8971280f288f17e1d9bb"
+      "bytes": 7900,
+      "sha256": "303ee65d4bfba430ac191de384a8b5ea35aade18670235deedb4d3320cb5cbbf"
     },
     {
       "path": "maze/rpg-model.js",
@@ -314,8 +324,8 @@
     },
     {
       "path": "maze/world.js",
-      "bytes": 47165,
-      "sha256": "9aa3f1f7afc3c31bb81aa2ee6e77c389bc976380693a698412620c6edac191e8"
+      "bytes": 47644,
+      "sha256": "15e4f33f9c7fc92064f3bd857a5c9f5ca6155c45e814c5b68d9bab2da8900933"
     },
     {
       "path": "package-lock.json",
@@ -390,7 +400,7 @@
   ],
   "imports": [
     {
-      "path": "./game-world.js?v=20261019-game-fast1-aee6f7b1e2a9",
+      "path": "./game-world.js?v=20261019-game-fast1-712393eff1fc",
       "kind": "dynamic-import",
       "external": true
     }
@@ -402,7 +412,7 @@
     },
     {
       "path": "maze/app.js",
-      "bytes": 44487
+      "bytes": 44748
     },
     {
       "path": "maze/stage-2d.js",
@@ -442,7 +452,7 @@
     },
     {
       "path": "maze/rpg-art.js",
-      "bytes": 5011
+      "bytes": 5118
     },
     {
       "path": "maze/clear-reward.js",
@@ -575,12 +585,16 @@
     {
       "path": "maze/walking-speed.js",
       "bytes": 281
+    },
+    {
+      "path": "maze/change-only-ui.js",
+      "bytes": 228
     }
   ],
   "output": {
     "path": "maze/game-entry.js",
-    "bytes": 334773,
-    "sha256": "cfd3e4350340d179e4188488671dc1a8129e72a27bc7751c5cdcef89fb0664b3"
+    "bytes": 335369,
+    "sha256": "138b58e4f956821c57a7b9c5ec1847b6845cfa644669c08703756912ba964e26"
   },
   "styleSources": [
     "./style.css?v=20261014-adventure2",
@@ -613,8 +627,8 @@
   },
   "world": {
     "path": "maze/game-world.js",
-    "bytes": 67425,
-    "sha256": "aee6f7b1e2a97711a789d7d0ccb3e04249e58ebea63d8adc959bfe4aec2c7a0d",
+    "bytes": 67898,
+    "sha256": "712393eff1fcd9f43d8ebcfff62ac0f889aa2e62196dc6c77aeca57da4a0d8a4",
     "imports": [
       {
         "path": "./vendor/three.module.js",

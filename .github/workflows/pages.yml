@@ -54,15 +54,22 @@ jobs:
           node halloween-exhibition/preview/scripts/build-game-scripts.mjs --check
           node halloween-exhibition/preview/scripts/build-gallery-script.mjs --check
           node halloween-exhibition/scripts/build-preview-cache.mjs --check
+          npm --prefix halloween-exhibition/preview test
+          npm --prefix halloween-exhibition/preview/maze test
+          node --test halloween-exhibition/preview/town/tests/*.test.mjs
           rm -rf halloween-exhibition/preview/node_modules
       - name: GitHub Pagesを設定
         uses: actions/configure-pages@v5
         with:
           enablement: true
+      - name: 公開対象だけを準備・依存確認
+        run: |
+          node --test scripts/stage-pages.test.mjs
+          node scripts/stage-pages.mjs . _site > /tmp/pages-staging-report.json
       - name: 公開ファイルを準備
         uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: _site
       - name: 公開
         id: deployment
         uses: actions/deploy-pages@v4

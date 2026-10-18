@@ -1,3 +1,4 @@
+import {createBlobCache} from './blob-cache.js';
 // These original, transparent completed artworks are production inputs.
 // General picker thumbnails and the nine scene examples remain UI-only.
 import {focusedReferenceMedia} from './attachment-policy.js?v=28.4.6';
@@ -24,19 +25,16 @@ export function drawingReferenceInstructions(medium,{noPerson=false,values={}}={
 }
 export async function loadDrawingReferences(references,{fetchImpl=globalThis.fetch,FileClass=globalThis.File,timeoutMs=15000}={}){
  if(typeof fetchImpl!=='function'||typeof FileClass!=='function')throw new Error('画風原画を準備できませんでした。');
- let loaded=caches.get(fetchImpl);if(!loaded){loaded=new Map();caches.set(fetchImpl,loaded);}
+ let loaded=caches.get(fetchImpl);if(!loaded){loaded=createBlobCache();caches.set(fetchImpl,loaded);}
  return Promise.all(references.map(async reference=>{
   const master=masters.find(ref=>ref.file===reference.file&&ref.name===reference.name&&ref.medium===reference.medium);
   if(!master)throw new Error('画風原画の指定を確認できませんでした。');
-  if(!loaded.has(master.file)){
-   const pending=(async()=>{
+  const blob=await loaded.get(master.file,async()=>{
     const blob=await fetchAssetBlob(new URL(master.file,import.meta.url),{fetchImpl,timeoutMs,unavailableMessage:'画風原画を読み込めませんでした。通信を確認して再度制作してください。',timeoutMessage:'画風原画の通信が時間内に終わりませんでした。通信を確認して再度制作してください。'});
     if(!blob.size||blob.type.split(';')[0]!=='image/png')throw new Error('画風原画の画像を確認できませんでした。');
     return blob;
-   })();
-   loaded.set(master.file,pending);pending.catch(()=>{if(loaded.get(master.file)===pending)loaded.delete(master.file);});
-  }
-  return {...master,file:new FileClass([await loaded.get(master.file)],master.name,{type:'image/png'})};
+  });
+  return {...master,file:new FileClass([blob],master.name,{type:'image/png'})};
  }));
 }
 export function deliveryImageFiles(result,{FileClass=globalThis.File}={}){

@@ -169,8 +169,8 @@
     },
     {
       "path": "maze/rpg-art.js",
-      "bytes": 7701,
-      "sha256": "d35d5de82a4c5ddd861c5190ffa05994a42145cec1ed8971280f288f17e1d9bb"
+      "bytes": 7900,
+      "sha256": "303ee65d4bfba430ac191de384a8b5ea35aade18670235deedb4d3320cb5cbbf"
     },
     {
       "path": "maze/rpg-model.js",
@@ -632,7 +632,7 @@
   "output": {
     "path": "town/game-entry.js",
     "bytes": 419536,
-    "sha256": "fa28499dc027dca2625f60d32dcc370ecdc0cc79939f4bd21a473687dd49e9e0"
+    "sha256": "1984f486526017e962e1c29594278ee40b6f52e2eefd984f8522536869175d16"
   },
   "styleSources": [
     "../display-mode.css?v=20261014-layout1",

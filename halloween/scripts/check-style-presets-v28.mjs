@@ -42,7 +42,8 @@ for(let index=0;index<stylePresets.length;index++){
  else{assert.equal(preset.role,'style-preset');assert.equal(drawingReferenceFor(preset.medium),null);assert.doesNotMatch(stylePresetInstructions(preset.medium).join(' '),/画像編集の土台|背景透過の完成基画|宝石光彩の画風原画/);}
 }
 assert.equal(hashes.size,media.length,'Distinct preset files must not contain duplicate images');
-assert.equal(fetches,media.length);await loadStylePresets(stylePresets,{fetchImpl});assert.equal(fetches,media.length,'Repeated preparation must reuse cached images');
+assert.equal(fetches,media.length);await loadStylePresets(stylePresets,{fetchImpl});assert.ok(fetches>media.length,'A catalog larger than the bounded cache must evict older originals');
+await loadStylePresets([stylePresets[0]],{fetchImpl});const recentFetches=fetches;await loadStylePresets([stylePresets[0]],{fetchImpl});assert.equal(fetches,recentFetches,'Repeated preparation of a recent original must reuse the bounded cache');
 const ordinary=stylePresetFor('発光幻想アニメ');
 await assert.rejects(loadStylePresets([{...ordinary,file:'https://example.test/image.png'}],{fetchImpl}),/指定/);
 await assert.rejects(loadStylePresets([{...ordinary,name:'forged.png'}],{fetchImpl}),/指定/);

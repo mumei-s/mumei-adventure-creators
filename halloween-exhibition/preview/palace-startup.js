@@ -37,24 +37,36 @@ export function palaceSceneFormat(width,height) {
 }
 /** Large animated residents are an enhancement after the whole entrance works. */
 export function schedulePalaceResidents(root,{ready,timers=globalThis,loadResidents}={}){
- const win=root.ownerDocument?.defaultView||globalThis,connection=win.navigator?.connection;
+ const doc=root.ownerDocument,win=doc?.defaultView||globalThis,connection=win.navigator?.connection;
  if(connection?.saveData||['slow-2g','2g'].includes(connection?.effectiveType))return;
- let settled=false,timer=null,observer,started=false;
- const usable=()=>settled&&root.dataset.theaterReady==='ready'&&root.dataset.archiveState==='ready'&&(!root.dataset.palaceState||root.dataset.palaceState==='palace');
+ let settled=false,timer=null,idle=null,observer,started=false,finished=false,attempts=0,pageHidden=false;
+ const usable=()=>settled&&!pageHidden&&!doc?.hidden&&root.dataset.theaterReady==='ready'&&root.dataset.archiveState==='ready'&&(!root.dataset.palaceState||root.dataset.palaceState==='palace');
+ const cancel=()=>{if(timer!==null)timers.clearTimeout(timer);timer=null;if(idle!==null)win.cancelIdleCallback?.(idle);idle=null;};
+ const cleanup=()=>{cancel();observer?.disconnect();doc?.removeEventListener?.('visibilitychange',resume);win.removeEventListener?.('pageshow',resume);win.removeEventListener?.('pagehide',hide);};
  const check=()=>{
-  if(!usable()){if(timer!==null){timers.clearTimeout(timer);timer=null;}return;}
-  if(started||timer!==null)return;
+  if(finished)return;
+  if(!usable()){cancel();return;}
+  if(started||timer!==null||idle!==null||attempts>=2)return;
   timer=timers.setTimeout(()=>{
    timer=null;
-   const begin=()=>{if(started||!usable()||root.ownerDocument?.hidden)return;started=true;observer?.disconnect();
-    void Promise.resolve().then(()=>loadResidents?loadResidents():import('./palace-living-scene.js?v=20261019-unified1')).then(({initPalaceLivingScene})=>initPalaceLivingScene(root)).catch(()=>{});
+   const begin=()=>{idle=null;if(started||finished||!usable())return;started=true;attempts++;
+    void Promise.resolve().then(()=>loadResidents?loadResidents():import('./palace-living-scene.js?v=20261019-unified1'))
+     .then(({initPalaceLivingScene})=>initPalaceLivingScene(root))
+     .then(()=>{finished=true;cleanup();})
+     .catch(()=>{started=false;check();});
    };
-   if(typeof win.requestIdleCallback==='function')win.requestIdleCallback(begin,{timeout:2000});else begin();
+   if(typeof win.requestIdleCallback==='function')idle=win.requestIdleCallback(begin,{timeout:2000});else begin();
   },6000);
  };
+ // A hidden deadline is deferred, and returning gives a failed optional import
+ // one bounded retry cycle. Never spin on a broken connection in the background.
+ function resume(){pageHidden=false;if(!doc?.hidden)attempts=0;check();}
+ function hide(){pageHidden=true;cancel();}
  const Observer=win.MutationObserver;
  if(typeof Observer==='function'){observer=new Observer(check);observer.observe(root,{attributes:true,attributeFilter:['data-theater-ready','data-archive-state','data-palace-state']});}
+ doc?.addEventListener?.('visibilitychange',resume);win.addEventListener?.('pageshow',resume);win.addEventListener?.('pagehide',hide);
  void Promise.resolve(ready).then(()=>{settled=true;check();});
+ return()=>{finished=true;cleanup();};
 }
 export function initPalaceStartup(root,{timers=globalThis,ImageClass,loadResidents}={}) {
  if(!root)return Promise.resolve(['fallback','fallback']);

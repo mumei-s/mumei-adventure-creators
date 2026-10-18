@@ -1,3 +1,4 @@
+import {createExhibitResources} from './exhibit-resources.js?v=20261019-audit1';
 import {normalizeCameraDistance,mazeCameraZoom} from '../camera-distance.js?v=20261019-journey1';
 import {mazeWideCamera} from '../camera-distance.js?v=20261019-journey1';
 import {monsterSprite,spriteTextureUV} from './monster-motion.js?v=20261019-unified1';
@@ -326,17 +327,19 @@ export function createWorld({ canvas, onReady, art } = {}) {
   const featureSigns=[['entrance','THE HAUNTED ARCHIVE','A maze of stories, still becoming'],['normal','THE LANTERN CHAMBER','The old collection awaits'],['halloween','THE ECHO HALL','Follow the warm light'],['horror','BEYOND THE VEIL','An open room for future work']];
   for(const [name,title,sub] of featureSigns){if(FEATURES[name]){const p=point(FEATURES[name]);sign(title,sub,p.x,2.55,p.z-CELL/2+.2,0,2.8);}}
   // Exhibits are only populated from parent-provided real collection records.
-  const textureLoader=new THREE.TextureLoader();
+  const textureLoader=new THREE.TextureLoader(),exhibitResources=createExhibitResources(resources);
   function setExhibits(items=[]){
+    if(disposed)return;const generation=exhibitResources.reset();
     while(exhibitGroup.children.length)exhibitGroup.remove(exhibitGroup.children[0]);
     items.forEach((item,i)=>{
       const f=item.position||FEATURES[item.feature]||(i===0?FEATURES.article:null);if(!f)return;
       const p=point(f),g=new THREE.Group();g.position.set(p.x,f.y||2.1,p.z);g.rotation.y=f.yaw||item.yaw||0;exhibitGroup.add(g);
       box(3.58,1.94,.12,0,0,-.09,gold,g);
-      const m=new THREE.MeshBasicMaterial({map:textTexture(item.title||'Archive in progress',item.subtitle||'A place for a real memory')});resources.add(m);
-      mesh(new THREE.PlaneGeometry(3.42,1.79),m,0,0,0,g);
+      const placeholder=textTexture(item.title||'Archive in progress',item.subtitle||'A place for a real memory');exhibitResources.track(placeholder,generation);
+      const m=new THREE.MeshBasicMaterial({map:placeholder});exhibitResources.track(m,generation);
+      const geometry=new THREE.PlaneGeometry(3.42,1.79);exhibitResources.track(geometry,generation);mesh(geometry,m,0,0,0,g);
       const src=item.image||item.imageUrl||item.src;
-      if(src)textureLoader.load(src,t=>{t.colorSpace=THREE.SRGBColorSpace;resources.add(t);m.map=t;m.needsUpdate=true;},undefined,()=>{});
+      if(src)textureLoader.load(src,t=>{if(!exhibitResources.track(t,generation))return;t.colorSpace=THREE.SRGBColorSpace;exhibitResources.release(m.map);m.map=t;m.needsUpdate=true;},undefined,()=>{});
     });
   }
   function creatorNameTexture(value){const cv=document.createElement('canvas');cv.width=512;cv.height=96;const c=cv.getContext('2d');c.fillStyle='#152032ed';c.fillRect(5,8,502,78);c.strokeStyle='#c6ac75';c.lineWidth=2;c.strokeRect(6,9,500,76);c.font='500 34px "Yu Gothic", sans-serif';c.textAlign='center';c.textBaseline='middle';c.fillStyle='#f5e4bc';c.fillText(value,256,49,470);const texture=new THREE.CanvasTexture(cv);texture.colorSpace=THREE.SRGBColorSpace;resources.add(texture);return texture;}
@@ -410,7 +413,7 @@ export function createWorld({ canvas, onReady, art } = {}) {
     }
     renderer.render(scene,camera);
   }
-  function dispose(){disposed=true;for(const r of resources)r.dispose?.();renderer.dispose();}
+  function dispose(){if(disposed)return;disposed=true;exhibitResources.dispose();for(const r of resources)r.dispose?.();renderer.dispose();}
   // Instance static masonry by material. Thousands of architectural details
   // become a handful of GPU draw calls while movable objects remain separate.
   // Batch repeated pieces inside moving parents, retaining their local transforms.

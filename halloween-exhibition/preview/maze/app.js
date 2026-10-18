@@ -1,3 +1,4 @@
+import {createChangeTracker,setChangedProperty,setChangedAttribute} from './change-only-ui.js?v=20261019-audit1';
 import {bindPinchZoom} from '../touch-camera.js?v=20261019-journey1';
 import {readPadMode,savePadMode} from '../control-preferences.js?v=20261019-journey1';
 import {createControlSettings} from '../control-settings.js?v=20261019-journey1';
@@ -34,7 +35,7 @@ import {STORY,encounterStory,chapterFor} from './story-model.js?v=20261016-livin
 import {compileCharacterRoster,placeCreatorNPCs,createCharacterAssets,chooseCreatorAssets,buildCreatorActors,nearestCreator,creatorGuide,isCharacterTap,scaledCharacterLayout,compileCompanions,companionActor,creatorPose} from './creator-runtime.js?v=20261017-startup1';
 import {renderCreatorConversation,renderCreatorDirectory} from './creator-ui.js?v=20261017-startup1';
 import {normalizeCreatorStory,recordCreatorMeeting,creatorStoryChapter,renderCreatorStoryJournal} from './creator-story.js?v=20261019-unified1';
-const rpgArt=createArtLibrary({loadPlayer:false,deferOptional:true});
+const rpgArt=createArtLibrary({loadPlayer:false,deferOptional:true,deferScene:true});
 let creatorRoster={hero:null,npcs:[],omitted:[]},creatorActors=[],activeCreators=[],residents=[],companions=[],creatorPointer=null,creatorAssetCheck=0,creatorTrail=[];
 const characterAssets=createCharacterAssets();
 
@@ -224,16 +225,16 @@ function showMenuLayoutSettings(){
 }
 
 function updateHUD(){
-  $('wing').textContent='HALLOWEEN ADVENTURE · 名鑑とは別のゲーム';
-  $('place-title').textContent=state.x<18?'肖像の回廊':state.x>50?'鍵の間':state.z<24?'浮遊書庫':'灯りの交差廊';
+  setChangedProperty($('wing'),'textContent','HALLOWEEN ADVENTURE · 名鑑とは別のゲーム');
+  setChangedProperty($('place-title'),'textContent',state.x<18?'肖像の回廊':state.x>50?'鍵の間':state.z<24?'浮遊書庫':'灯りの交差廊');
   const journey=creatorJourney(),encounterGoal=journey.active?(journey.complete?`寄り道の出会い ${journey.met.length}/${journey.total}組。`:`寄り道：${journey.next?.label||'仲間'}に挨拶（${journey.met.length}/${journey.goal}）。`):'';
-  $('objective').textContent=chapterFor({...state,cleared,reachedVault}).objective+(encounterGoal?' '+encounterGoal:'');
-  $('key-state').textContent=state.unlocked?'✦ 書庫の扉を解錠':state.hasKey?'⚿ 書庫の鍵を入手':'◇ 鍵を探す';
+  setChangedProperty($('objective'),'textContent',chapterFor({...state,cleared,reachedVault}).objective+(encounterGoal?' '+encounterGoal:''));
+  setChangedProperty($('key-state'),'textContent',state.unlocked?'✦ 書庫の扉を解錠':state.hasKey?'⚿ 書庫の鍵を入手':'◇ 鍵を探す');
   const n=nearby(state),copy={key:['台座に、金色の鍵が浮かんでいる。','鍵を手に取る'],gate:['奥へ続く、書庫の格子扉。',state.hasKey?'解錠する':'鍵が必要'],article:['物語の書庫につながる展示場所。','展示記事を見る'],horror:['奥の肖像の回廊へ続く扉。','肖像の回廊へ'],'horror-art':['肖像の回廊の展示場所。','物語の書庫を見る'],vault:['本が漂う、封印の書庫。','書庫に入る']}[n];
-  $('object-label').textContent=copy?.[0]||'ランタンを持って、夜の回廊を歩こう。';
   const target=contextTarget(),buttonId=actionButtonFor(target);
-  for(const id of ['interact','creator-open','battle-open']){$(id).hidden=id!==buttonId;$(id).disabled=id!==buttonId;}
-  if(target){if(target.kind==='scenery')$('object-label').textContent=target.name;const button=$(buttonId);button.textContent=target.kind==='scenery'?target.name+'を調べる':target.kind==='creator'?'仲間と話す':target.kind==='resident'?'住人と話す':target.kind==='monster'?'モンスターと話す':target.kind==='exit'?'出口をひらく':copy?.[1]||'調べる';button.setAttribute('aria-label',target.kind==='scenery'?button.textContent:target.label||target.name?`${target.label||target.name}と話す`:button.textContent);button.title=target.label||target.name||'';}
+  setChangedProperty($('object-label'),'textContent',target?.kind==='scenery'?target.name:copy?.[0]||'ランタンを持って、夜の回廊を歩こう。');
+  for(const id of ['interact','creator-open','battle-open']){setChangedProperty($(id),'hidden',id!==buttonId);setChangedProperty($(id),'disabled',id!==buttonId);}
+  if(target){const button=$(buttonId);setChangedProperty(button,'textContent',target.kind==='scenery'?target.name+'を調べる':target.kind==='creator'?'仲間と話す':target.kind==='resident'?'住人と話す':target.kind==='monster'?'モンスターと話す':target.kind==='exit'?'出口をひらく':copy?.[1]||'調べる');setChangedAttribute(button,'aria-label',target.kind==='scenery'?button.textContent:target.label||target.name?`${target.label||target.name}と話す`:button.textContent);setChangedProperty(button,'title',target.label||target.name||'');}
 
 }
 function showEncounters(){
@@ -295,7 +296,13 @@ function actBattle(action){
 }
 
 
-function drawMap(canvas,large=false,night=false){
+const minimapChanges=createChangeTracker();
+function mapMarkers(){return encounters?readyMonsters().map(m=>{const pose=monsterPose(m,time,motion&&!reducedMotion.matches,state);return {x:pose.x,z:pose.z,icon:cleared.includes(m.id)?'🍬':m.icon,alpha:!monsterAvailable(m,state)?.4:cleared.includes(m.id)?.5:1};}):[];}
+function updateMinimap(){
+ const canvas=$('mini'),markers=mapMarkers();
+ if(minimapChanges.changed([canvas.width,canvas.height,state.x,state.z,state.unlocked,state.horrorAccepted,state.hasKey,mapHeading(view,state.yaw,facing),markers]))drawMap(canvas,false,false,markers);
+}
+function drawMap(canvas,large=false,night=false,markers=mapMarkers()){
   const c=canvas.getContext('2d'),w=canvas.width,h=canvas.height;
   const s=Math.min(w,h)/17,ox=(w-17*s)/2,oz=(h-17*s)/2;
   c.clearRect(0,0,w,h);c.fillStyle='#090a15';c.fillRect(0,0,w,h);c.save();c.translate(ox,oz);
@@ -313,7 +320,7 @@ function drawMap(canvas,large=false,night=false){
   c.fillStyle=state.unlocked?'#80c9ad':'#dfa34d';c.fillRect(7*s,6*s,3*s,s*.22);
   if(!state.horrorAccepted){c.fillStyle='#b695ce';c.fillRect(4*s,10*s,s*.22,s);}
   for(const [f,color]of[[FEATURES.article,'#9be0f2'],[FEATURES.key,state.hasKey?'#66574b':'#ffdc77'],[FEATURES.horrorArt,'#d498dc'],[FEATURES.vault,'#80c9ad']]){c.fillStyle=color;c.beginPath();c.arc((f.x+.5)*s,(f.z+.5)*s,s*.18,0,Math.PI*2);c.fill();}
-  if(encounters){c.textAlign='center';c.textBaseline='middle';c.font=`${Math.max(11,s*.75)}px sans-serif`;for(const m of readyMonsters()){c.globalAlpha=!monsterAvailable(m,state)?.4:cleared.includes(m.id)?.5:1;c.fillText(cleared.includes(m.id)?'🍬':m.icon,(monsterPose(m,time,motion&&!reducedMotion.matches,state).x+.5)*s,(monsterPose(m,time,motion&&!reducedMotion.matches,state).z+.5)*s);}c.globalAlpha=1;}
+  if(encounters){c.textAlign='center';c.textBaseline='middle';c.font=`${Math.max(11,s*.75)}px sans-serif`;for(const marker of markers){c.globalAlpha=marker.alpha;c.fillText(marker.icon,(marker.x+.5)*s,(marker.z+.5)*s);}c.globalAlpha=1;}
   c.save();c.translate(px,pz);c.rotate(mapHeading(view,state.yaw,facing));c.fillStyle='#fff2cb';c.strokeStyle='#1b1025';c.lineWidth=2;c.beginPath();c.moveTo(0,-s*.36);c.lineTo(-s*.27,s*.28);c.lineTo(s*.27,s*.28);c.closePath();c.fill();c.stroke();c.restore();
   if(large){c.font=`${Math.max(11,s*.33)}px sans-serif`;c.textAlign='center';c.fillStyle='#e8d7c2';c.fillText('西：肖像の回廊　 北：書庫　 東：鍵の間',s*8.5,s*16.4);}
   c.restore();
@@ -347,7 +354,7 @@ function step(dt){
   if(view==='3d'){if(keys.has('arrowleft')||held.has('turn-left')||down('left'))state.yaw+=dt*2.3;if(keys.has('arrowright')||held.has('turn-right')||down('right'))state.yaw-=dt*2.3;}
   const {dx,dz}=movementVector(view,state.yaw,f,r,6.8*dt*walkingSpeed);const old=state;state=advanceWithSubsteps(state,dx,dz,view==='2d'?moveAroundFurniture:move);const mx=state.x-old.x,mz=state.z-old.z;walking=Math.hypot(mx,mz)>.0001;facing=directionFromMovement(dx,dz,facing);if(walking)walkPhase=(walkPhase+Math.hypot(mx,mz)*2.3)%(Math.PI*2);
 }
-function renderExploration(dt){if(view==='3d'){try{world?.render({...state,cameraDistance,cameraZoom,facing,walking,walkPhase,time:time*1000,motion:motion&&!reducedMotion.matches,brightness,lantern,encounters,cleared,creatorActors});}catch(error){const reason=classifyTown3DFailure(error,{phase:'render'}).message;world?.dispose();world=null;void setView('2d',{persist:false,quiet:true}).then(()=>{viewFailure=reason;$('maze-view-status').textContent=reason;$('maze-view-status').hidden=false;$('maze-view-retry').hidden=false;});}}else {stageRenderer??=createStageRenderer({art:rpgArt});stageRenderer.render({canvas:$('fallback'),state,cameraDistance,cameraZoom,brightness,lantern,encounters,cleared,pixelRatio:Math.min(devicePixelRatio||1,2),time,dt,motion:motion&&!reducedMotion.matches,facing,walking:walking&&motion&&!reducedMotion.matches,walkPhase,creatorActors});}drawMap($('mini'));updateHUD();}
+function renderExploration(dt){if(view==='3d'){try{world?.render({...state,cameraDistance,cameraZoom,facing,walking,walkPhase,time:time*1000,motion:motion&&!reducedMotion.matches,brightness,lantern,encounters,cleared,creatorActors});}catch(error){const reason=classifyTown3DFailure(error,{phase:'render'}).message;world?.dispose();world=null;void setView('2d',{persist:false,quiet:true}).then(()=>{viewFailure=reason;$('maze-view-status').textContent=reason;$('maze-view-status').hidden=false;$('maze-view-retry').hidden=false;});}}else {stageRenderer??=createStageRenderer({art:rpgArt});stageRenderer.render({canvas:$('fallback'),state,cameraDistance,cameraZoom,brightness,lantern,encounters,cleared,pixelRatio:Math.min(devicePixelRatio||1,2),time,dt,motion:motion&&!reducedMotion.matches,facing,walking:walking&&motion&&!reducedMotion.matches,walkPhase,creatorActors});}updateMinimap();updateHUD();}
 function tick(now){
   frame=0;if(document.hidden)return;const dt=Math.min((now-(last||now))/1000,.05);last=now;visualTime+=dt;
   if(panel.open&&battle){settleBattleAnimation();drawBattleVisual();}
@@ -425,6 +432,7 @@ async function init(){
    if(!current())return;
    // A user who chooses a view during boot always wins over the saved preference.
    if(preferredView==='3d'&&viewRequest===firstViewRequest)void setView('3d',{persist:false,quiet:true});
+   void rpgArt.startScene();
    void rpgArt.loadRemaining();
    const snapshot=globalThis.__HALLOWEEN_MAZE_BOOT__?.residents;
    const residentRequest=snapshot?Promise.resolve(snapshot):fetchStartupJSON('./data/residents.json?v=20261016-resident1',{signal:abort.signal,timeout:5000});

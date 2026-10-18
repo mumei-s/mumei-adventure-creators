@@ -7,7 +7,7 @@ for(const [file,row] of Object.entries(manifest.inputs))assert.equal(hash(file.s
 assert.equal(hash(manifest.output.file),manifest.output.sha256,'The runtime must match the checked sources');
 assert(manifest.output.bytes<Object.values(manifest.inputs).reduce((sum,row)=>sum+row.bytes,0),'Bundling reduces transferred JavaScript');
 const html=fs.readFileSync(new URL('index.html',root),'utf8');
-assert.match(html,/<script type="module" src="\.\/app\.bundle\.js\?v=28\.4\.18"><\/script>/);
+assert.match(html,/<script type="module" src="\.\/app\.bundle\.js\?v=28\.4\.19-resource1"><\/script>/);
 assert.doesNotMatch(html,/<script type="module" src="\.\/app\.js/);
-assert.match(html,/rel="modulepreload" href="\.\/app\.bundle\.js\?v=28\.4\.18"/);
+assert.match(html,/rel="modulepreload" href="\.\/app\.bundle\.js\?v=28\.4\.19-resource1"/);
 console.log('PASS runtime bundle: source and output hashes match; one preloaded module entry replaces the application module waterfall.');

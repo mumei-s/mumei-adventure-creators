@@ -27,7 +27,17 @@ export function selectionReferenceRules(manifest){
 function wrap(ctx,text,x,y,maxWidth,lineHeight,maxLines=3){
  let line='',row=0;for(const character of String(text)){if(ctx.measureText(line+character).width>maxWidth&&line){ctx.fillText(line,x,y+row*lineHeight);line='';if(++row>=maxLines)return;}line+=character;}if(line)ctx.fillText(line,x,y+row*lineHeight);
 }
-function loadImage(src,ImageClass,timeoutMs){return new Promise((resolve,reject)=>{const im=new ImageClass();let timer;const finish=(error)=>{clearTimeout(timer);im.onload=im.onerror=null;error?reject(error):resolve(im);};im.onload=()=>finish();im.onerror=()=>finish(new Error('選択見本を読み込めませんでした：'+src));timer=setTimeout(()=>finish(new Error('選択見本の読み込みが時間内に終わりませんでした。再度制作してください。')),timeoutMs);try{im.src=new URL(src,import.meta.url).href;}catch(error){finish(error);}});}
+export function loadSelectionImage(src,ImageClass,timeoutMs,signal){return new Promise((resolve,reject)=>{
+ const im=new ImageClass();let timer,settled=false;
+ const abort=()=>finish(new DOMException('見本画像の準備を中断しました。','AbortError'));
+ const finish=error=>{if(settled)return;settled=true;clearTimeout(timer);signal?.removeEventListener('abort',abort);im.onload=im.onerror=null;if(error){im.removeAttribute?.('src');reject(error);}else resolve(im);};
+ if(signal?.aborted){abort();return;}
+ im.onload=()=>finish();im.onerror=()=>finish(new Error('選択見本を読み込めませんでした：'+src));
+ signal?.addEventListener('abort',abort,{once:true});
+ timer=setTimeout(()=>finish(new Error('選択見本の読み込みが時間内に終わりませんでした。再度制作してください。')),timeoutMs);
+ try{im.src=new URL(src,import.meta.url).href;}catch(error){finish(error);}
+});}
+
 function paintConditionCell(ctx,item,x,y,cellWidth=1024,cellHeight=670){
  const sample=item.sample;
  ctx.fillStyle='#172536';ctx.font='bold 25px sans-serif';wrap(ctx,String(item.selectionIndex).padStart(2,'0')+' '+item.label+' / '+item.value,x+26,y+38,cellWidth-52,31,2);
@@ -46,7 +56,7 @@ function paintConditionCell(ctx,item,x,y,cellWidth=1024,cellHeight=670){
  ctx.fillStyle='#233a52';ctx.font='22px sans-serif';wrap(ctx,'読む役割：'+item.scope,x+26,y+563,cellWidth-52,30,3);ctx.strokeStyle='#a9b4c0';ctx.lineWidth=1;ctx.strokeRect(x+8,y+8,cellWidth-16,cellHeight-16);
 }
 async function canvasFile(canvas,name,type,FileClass,quality){const blob=await new Promise(resolve=>canvas.toBlob(resolve,type,quality));if(!blob?.size)throw new Error('選択見本の画像を保存できませんでした。');return new FileClass([blob],name,{type});}
-export async function buildSelectionReferenceSheet(manifest,{documentImpl=globalThis.document,ImageClass=globalThis.Image,FileClass=globalThis.File,imageTimeoutMs=15000}={}){
+export async function buildSelectionReferenceSheet(manifest,{documentImpl=globalThis.document,ImageClass=globalThis.Image,FileClass=globalThis.File,imageTimeoutMs=15000,signal}={}){
  const items=selectionSheetItems(manifest);if(!items.length)return null;
  const canvas=documentImpl.createElement('canvas'),columns=3,cellWidth=1024,cellHeight=670;canvas.width=columns*cellWidth;canvas.height=Math.ceil(items.length/columns)*cellHeight;
  try{
@@ -57,8 +67,8 @@ export async function buildSelectionReferenceSheet(manifest,{documentImpl=global
   for(let i=0;i<items.length;i++){
    const item=items[i],x=(i%columns)*cellWidth,y=Math.floor(i/columns)*cellHeight,sample=item.sample;paintConditionCell(ctx,item,x,y,cellWidth,cellHeight);
    if(sample.kind==='image'){
-    const image=await loadImage(sample.src,ImageClass,imageTimeoutMs);const width=image.naturalWidth||image.width,height=image.naturalHeight||image.height;if(!width||!height)throw new Error(item.value+'の見本画像を確認できませんでした。');
-    const ratio=Math.min((cellWidth-68)/width,410/height);ctx.drawImage(image,x+(cellWidth-width*ratio)/2,y+110+(410-height*ratio)/2,width*ratio,height*ratio);image.onload=image.onerror=null;
+    const image=await loadSelectionImage(sample.src,ImageClass,imageTimeoutMs,signal);
+    try{const width=image.naturalWidth||image.width,height=image.naturalHeight||image.height;if(!width||!height)throw new Error(item.value+'の見本画像を確認できませんでした。');const ratio=Math.min((cellWidth-68)/width,410/height);ctx.drawImage(image,x+(cellWidth-width*ratio)/2,y+110+(410-height*ratio)/2,width*ratio,height*ratio);}finally{image.onload=image.onerror=null;image.removeAttribute?.('src');}
    }
   }
   return await canvasFile(canvas,manifest.name,'image/jpeg',FileClass,.91);
@@ -83,17 +93,17 @@ export async function buildIndividualSelectionReferences(manifest,{documentImpl=
    const type={png:'image/png',jpeg:'image/jpeg',webp:'image/webp',gif:'image/gif',bmp:'image/bmp',avif:'image/avif'}[dimensions.format];if(!type)throw new Error('選択見本の画像形式を確認できませんでした。');
    ready.push({...reference,width:dimensions.width,height:dimensions.height,file:new FileClass([blob],reference.name,{type})});continue;
   }
-  const canvas=documentImpl.createElement('canvas');
+  const canvas=documentImpl.createElement('canvas');let image;
   try{
-   let image;if(reference.sourceKind==='native-svg-view'){
+   if(reference.sourceKind==='native-svg-view'){
     // Retain #viewBox fragments. Decoding the base SVG would merge multiple
     // unrelated examples into this one condition.
-    image=await loadImage(reference.source,ImageClass,imageTimeoutMs);canvas.width=image.naturalWidth||image.width;canvas.height=image.naturalHeight||image.height;validateRasterDimensions({width:canvas.width,height:canvas.height});
+    image=await loadSelectionImage(reference.source,ImageClass,imageTimeoutMs);canvas.width=image.naturalWidth||image.width;canvas.height=image.naturalHeight||image.height;validateRasterDimensions({width:canvas.width,height:canvas.height});
    }else{canvas.width=1024;canvas.height=670;}
    const ctx=canvas.getContext('2d');if(!ctx)throw new Error('選択見本をまとめられませんでした。');ctx.fillStyle='#ffffff';ctx.fillRect(0,0,canvas.width,canvas.height);
    if(image)ctx.drawImage(image,0,0,canvas.width,canvas.height);else paintConditionCell(ctx,item,0,0);
    const file=await canvasFile(canvas,reference.name,'image/png',FileClass);ready.push({...reference,width:canvas.width,height:canvas.height,file});
-  }finally{releaseCanvas(canvas);}
+  }finally{image?.removeAttribute?.('src');releaseCanvas(canvas);}
  }
  return ready;
 }

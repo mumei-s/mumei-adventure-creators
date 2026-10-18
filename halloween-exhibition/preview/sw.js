@@ -2,13 +2,13 @@
  * credentials and unknown query strings always bypass this worker. */
 const SCOPE = new URL('./', self.location.href);
 // BEGIN GENERATED SHELL (node halloween-exhibition/scripts/build-preview-cache.mjs)
-const SHELL_REVISION = '59cf3ad29f404e89';
+const SHELL_REVISION = '6727094f7634d142';
 const PUBLIC_ASSETS = [
   ["app-exit.js?v=20261017-live-street1",9268],
-  ["assets/atelier-icon-192.png",21629],
-  ["assets/atelier-icon-512.png",56403],
-  ["assets/atelier-icon.svg",6062],
-  ["assets/atelier-maskable-512.png",51002],
+  ["assets/atelier-door-180.png",56294],
+  ["assets/atelier-door-192.png",62766],
+  ["assets/atelier-door-512.png",374122],
+  ["assets/atelier-door-maskable-512.png",195117],
   ["assets/haunted-branches.svg",4667],
   ["assets/manor-hero.webp",401663],
   ["assets/palace/gate-desktop.webp",267018],
@@ -36,14 +36,14 @@ const PUBLIC_ASSETS = [
   ["festival-scene.js?v=20261017-cauldron1",11303],
   ["gallery-gesture.js?v=20261016-ios1",9046],
   ["gallery-panels.js?v=20261017-panels1",7274],
-  ["gallery-styles.css?v=20261019-compact1",321540],
+  ["gallery-styles.css?v=20261019-home1",323440],
   ["magical-loading.js?v=20261015-journey1",4919],
-  ["manifest.webmanifest",4850],
+  ["manifest.webmanifest",4955],
   ["palace-entrance.js?v=20261014-palace2",14193],
   ["palace-living-scene.css?v=20261016-living1",6585],
   ["palace-living-scene.js?v=20261019-unified1",16060],
   ["palace-startup.js?v=20261019-unified1",7502],
-  ["pwa.js?v=20261015-startup1",11638],
+  ["pwa.js?v=20261019-home1",12127],
   ["safe-page-reload.js?v=20261017-reload1",5891],
   ["scene-motion.js?v=20261015-glamour1",19561],
   ["slideshow.js?v=20261015-festival1",10417],

@@ -1643,6 +1643,21 @@ body[data-layout-page=gallery][data-layout] #theater:not([data-palace-state=gall
  }
 }
 
+/* A compact, in-flow invitation: never covers the painted castle or its gate. */
+#theater .masthead>.atelier-install-panel{box-sizing:border-box;display:flex;align-items:center;gap:10px;grid-column:1/-1;justify-self:center;width:min(100%,340px);min-width:0;min-height:48px;margin:2px auto 3px;padding:5px 12px 5px 7px;border:1px solid #c4a47380;border-radius:13px;background:linear-gradient(115deg,#262037f5,#182532f5);color:#fff2d7;text-align:left;font-family:inherit;cursor:pointer;box-shadow:inset 0 1px #ffe3ab12}
+#theater .atelier-install-panel[hidden]{display:none!important}
+#theater .atelier-install-panel img{width:36px;height:36px;flex:none;object-fit:cover;border-radius:8px}
+#theater .atelier-install-panel>span:not(.install-panel-arrow){min-width:0;display:grid;gap:1px}
+#theater .atelier-install-panel strong{font-size:14px;line-height:1.35;letter-spacing:.03em}
+#theater .atelier-install-panel small{font-size:10px;line-height:1.4;color:#d6cbbd}
+#theater .atelier-install-panel .install-panel-arrow{margin-left:auto;font-size:22px;color:#f0d49f}
+#theater .atelier-install-panel:hover{border-color:#f0d49f;background:#322b45}
+#theater .atelier-install-panel:focus-visible{outline:3px solid #ffe3a2;outline-offset:3px}
+body[data-mode=normal] #theater .atelier-install-panel{background:#eff5ed;color:#294b3b;border-color:#9aaf99}
+body[data-mode=normal] #theater .atelier-install-panel small,body[data-mode=normal] #theater .atelier-install-panel .install-panel-arrow{color:#486650}
+@media(display-mode:standalone){#theater .masthead>.atelier-install-panel{display:none!important}}
+@media(forced-colors:active){#theater .masthead>.atelier-install-panel{background:Canvas;color:ButtonText;border-color:ButtonText}}
+
 
 /* Source: ./town-entry.css?v=20261017-headerstack1 */
 /* Stack destinations left of the centered count, keeping the castle in view. */

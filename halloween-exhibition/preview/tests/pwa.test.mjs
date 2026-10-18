@@ -51,17 +51,17 @@ async function installerHarness({registrations=[], secure=true, script=base+'pwa
   close(){this.open=false;this.handlers.close?.();}
   getBoundingClientRect(){return {left:0,top:0,right:100,bottom:100};}
  }
- const header=new El('div'),body=new El('body');
+ const header=new El('div'),body=new El('body'),panel=new El('button');panel.id='atelier-install-panel';
  const context=vm.createContext({
   URL, isSecureContext:secure, matchMedia:()=>({matches:isStandalone}),
-  setTimeout:fn=>fn(), document:{readyState:'complete',createElement:tag=>new El(tag),querySelector:()=>header,body},
+  setTimeout:fn=>fn(), document:{readyState:'complete',createElement:tag=>new El(tag),querySelector:selector=>selector==='#atelier-install-panel'?panel:header,body},
   navigator:{userAgent,platform,maxTouchPoints,standalone:isStandalone,serviceWorker:{getRegistrations:async()=>registrations,register:async(...args)=>calls.push(args)}},
   window:{addEventListener:(type,fn)=>events[type]=fn}
  });
  vm.runInContext(installSource.replaceAll('import.meta.url',JSON.stringify(script)),context);
  for(let i=0;i<20;i++)await Promise.resolve();
  if(prompt)events.beforeinstallprompt({...prompt,preventDefault(){}});
- return {calls,events,elements,header};
+ return {calls,events,elements,header,panel};
 }
 
 test('registration uses only the preview scope and never takes over existing workers',async()=>{
@@ -120,4 +120,22 @@ test('gallery and editor include Apple icon, standalone metadata and zoom-safe v
   assert.match(text,/name="apple-mobile-web-app-status-bar-style" content="default"/);assert.match(text,/viewport-fit=cover/);
   assert.doesNotMatch(text,/maximum-scale=1|user-scalable=no/);
  }
+});
+
+
+test('top installation panel returns focus, hides in standalone, and hides after installation',async()=>{
+ const h=await installerHarness();assert.equal(h.panel.hidden,false);
+ h.panel.handlers.click();const dialog=h.elements.find(e=>e.className==='pwa-guide');assert.equal(dialog.open,true);
+ dialog.close();assert.equal(h.panel.focused,true);
+ h.panel.handlers.click();assert.equal(dialog.open,true);
+ h.events.appinstalled();assert.equal(h.panel.hidden,true);dialog.close();
+ assert.equal(h.elements.find(e=>e.id==='atelier-install-open').focused,true);
+ const standalone=await installerHarness({isStandalone:true});assert.equal(standalone.panel.hidden,true);
+});
+test('top invitation is in the measured header and Apple icon has a dedicated 180px source',async()=>{
+ assert.match(html,/<header class="masthead"><button id="atelier-install-panel"/);
+ assert.match(html,/ホーム画面に追加/);
+ assert.match(html,/rel="apple-touch-icon" href=".\/assets\/atelier-door-180.png"/);
+ const bytes=await readFile(new URL('../assets/atelier-door-180.png',import.meta.url));
+ assert.equal(bytes.readUInt32BE(16),180);assert.equal(bytes.readUInt32BE(20),180);
 });

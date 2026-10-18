@@ -2,6 +2,9 @@
 const scope = new URL('./', import.meta.url);
 const worker = new URL('./sw.js', import.meta.url);
 let installEvent = null;
+let installed = false;
+const panel = document.querySelector('#atelier-install-panel');
+let opener = null;
 const standalone = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
 const trigger = document.createElement('button');
 trigger.id = 'atelier-install-open';
@@ -46,6 +49,7 @@ install.hidden = true;
 dialog.append(close, title, guide, steps, appleLinks, install, status, note);
 document.body.append(dialog);
 function refreshGuide() {
+  if (panel) panel.hidden = standalone() || installed;
   const appleDevice = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
   steps.hidden = appleLinks.hidden = !appleDevice || standalone();
   install.hidden = !installEvent || standalone();
@@ -55,16 +59,20 @@ function refreshGuide() {
       'iPhone・iPadでは、Safariの共有メニューから追加できます。OSや表示設定でメニュー名や場所が少し異なります。' :
       '対応ブラウザのメニューに「アプリをインストール」「ホーム画面に追加」などが表示されていれば、そこから追加できます。';
 }
-trigger.addEventListener('click', () => { refreshGuide(); if (!dialog.open) dialog.showModal(); });
+function openGuide(source) { opener = source; refreshGuide(); if (!dialog.open) dialog.showModal(); }
+trigger.addEventListener('click', () => openGuide(trigger));
+panel?.addEventListener('click', () => openGuide(panel));
+refreshGuide();
+matchMedia('(display-mode: standalone)').addEventListener?.('change', refreshGuide);
 close.addEventListener('click', () => dialog.close());
-dialog.addEventListener('close', () => trigger.focus());
+dialog.addEventListener('close', () => { (opener && !opener.hidden ? opener : trigger).focus(); });
 dialog.addEventListener('click', event => {
   if (event.target !== dialog) return;
   const r = dialog.getBoundingClientRect();
   if (event.clientX < r.left || event.clientX > r.right || event.clientY < r.top || event.clientY > r.bottom) dialog.close();
 });
 window.addEventListener('beforeinstallprompt', event => { event.preventDefault(); installEvent = event; refreshGuide(); });
-window.addEventListener('appinstalled', () => { installEvent = null; status.textContent = 'ホーム画面への追加が完了しました。'; refreshGuide(); });
+window.addEventListener('appinstalled', () => { installEvent = null; installed = true; status.textContent = 'ホーム画面への追加が完了しました。'; refreshGuide(); });
 install.addEventListener('click', async () => {
   if (!installEvent) return;
   const event = installEvent;

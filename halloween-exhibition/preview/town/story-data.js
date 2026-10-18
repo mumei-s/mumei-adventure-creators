@@ -1,3 +1,4 @@
+import {createCreatorQuarter,CREATOR_QUARTER_ID,CREATOR_QUARTER_CONNECTION} from './creator-homes.js?v=20261019-homes1';
 // The lantern town, its residents and story are original fiction. Real exhibitors
 // are visitors supplied separately by the exhibition; no submission is invented.
 export const TOWN_VERSION = 1;
@@ -76,22 +77,23 @@ function outdoor() {
     {id:'bench',name:'運河のベンチ',label:'少し休む',type:'object',kind:'bench',x:42.5,z:15.5},
   ];
   const portals=buildings.filter(b=>['candle-shop','workshop','library','inn','clocktower'].includes(b.id)).map(b=>({id:`enter-${b.id}`,name:`${b.label}に入る`,label:`${b.label}に入る`,type:'portal',kind:'door',x:b.door.x,z:b.door.z,to:b.id,spawn:{x:9.5,z:12.5}}));
+  portals.push({id:'enter-creator-quarter',name:'創り手の街区へ',label:'創り手の街区へ',type:'portal',kind:'door',...CREATOR_QUARTER_CONNECTION.street,to:CREATOR_QUARTER_ID,spawn:{...CREATOR_QUARTER_CONNECTION.quarterArrival}});
   const occupied=[...targets,...portals,...TOWN_NPCS.filter(n=>n.mapId===TOWN_START_MAP)],decorations=[];
   for(let z=3;z<46;z+=4)for(const x of [2,25,41,61])if(cells[z][x]==='g'&&!occupied.some(p=>Math.hypot(p.x-x-.5,p.z-z-.5)<2))decorations.push({id:`tree-${x}-${z}`,kind:(x+z)%3?'tree':'autumnTree',x:x+.5,z:z+.5,radius:.34});
   for(const [x,z]of [[11,15],[23,17],[17,21],[24,18],[10,24],[5,24]])if(cells[z][x]!=='b')decorations.push({id:`stall-${x}-${z}`,kind:'market',x:x+.5,z:z+.5,radius:.42});
   for(const [x,z]of [[26,20],[39,30]])decorations.push({id:`statue-${x}-${z}`,kind:'statue',x:x+.5,z:z+.5,radius:.36});
   for(const [x,z]of [[28.5,8.5],[35.5,8.5],[16.5,13.5],[24.5,13.5],[13.5,26.5],[35.5,26.5],[48.5,15.5],[46.5,38.5],[58.5,38.5]])decorations.push({id:`lamp-${x}-${z}`,kind:'lamp',x,z,radius:.12});
-  return {id:TOWN_START_MAP,name:TOWN_TITLE,width,height,tiles:cells.map(r=>r.join('')),spawn:{x:32.5,z:7.5},buildings,targets,portals,decorations,npcs:TOWN_NPCS.filter(n=>n.mapId===TOWN_START_MAP),districts:[{name:'城門の坂',x:32,z:8},{name:'月麦市場',x:15,z:15},{name:'星灯り広場',x:27,z:22},{name:'硝子の運河',x:34,z:30},{name:'月映し庭園',x:50,z:38},{name:'時計塔通り',x:49,z:11}]};
+  return {id:TOWN_START_MAP,name:TOWN_TITLE,outdoor:true,width,height,tiles:cells.map(r=>r.join('')),spawn:{x:32.5,z:7.5},buildings,targets,portals,decorations,npcs:TOWN_NPCS.filter(n=>n.mapId===TOWN_START_MAP),districts:[{name:'城門の坂',x:32,z:8},{name:'月麦市場',x:15,z:15},{name:'星灯り広場',x:27,z:22},{name:'硝子の運河',x:34,z:30},{name:'月映し庭園',x:50,z:38},{name:'時計塔通り',x:49,z:11},{name:'創り手の街区への小径',x:18.5,z:43.5}]};
 }
 function interior(id,name,door,kind) {
   const width=20,height=16,cells=Array.from({length:height},(_,z)=>Array.from({length:width},(_,x)=>x===0||x===width-1||z===0||z===height-1?'#':'i'));
   const furniture=[];
   for(const x of [2,14]){for(let z=2;z<7;z++)for(let i=x;i<x+3;i++)cells[z][i]='#';furniture.push({kind:kind==='library'?'bookshelf':kind==='inn'?'bed':'counter',x,z:2,w:3,h:5});}
   const targets=id==='workshop'?[{id:'gear-console',name:'三色の調律盤',label:'調律盤を調べる',type:'object',kind:'console',x:9.5,z:3.5}]:id==='library'?[{id:'river-book',name:'水門と三つの星',label:'水門の記録を読む',type:'object',kind:'book',x:9.5,z:3.5}]:id==='clocktower'?[{id:'clock-heart',name:'止まった大時計',label:'大時計を調べる',type:'object',kind:'clock',x:9.5,z:4.5}]:[];
-  return {id,name,width,height,tiles:cells.map(r=>r.join('')),spawn:{x:9.5,z:12.5},buildings:[],decorations:[],furniture,targets,npcs:TOWN_NPCS.filter(n=>n.mapId===id),portals:[{id:`leave-${id}`,name:'街へ戻る',label:'街へ戻る',type:'portal',kind:'door',x:9.5,z:14.5,to:TOWN_START_MAP,spawn:{x:door.x,z:door.z+.8}}],districts:[]};
+  return {id,name,outdoor:false,width,height,tiles:cells.map(r=>r.join('')),spawn:{x:9.5,z:12.5},buildings:[],decorations:[],furniture,targets,npcs:TOWN_NPCS.filter(n=>n.mapId===id),portals:[{id:`leave-${id}`,name:'街へ戻る',label:'街へ戻る',type:'portal',kind:'door',x:9.5,z:14.5,to:TOWN_START_MAP,spawn:{x:door.x,z:door.z+.8}}],districts:[]};
 }
 const town=outdoor();
-export const TOWN_MAPS=Object.fromEntries([town,...town.buildings.filter(b=>['candle-shop','workshop','library','inn','clocktower'].includes(b.id)).map(b=>interior(b.id,b.label,b.door,b.kind))].map(m=>[m.id,m]));
+export const TOWN_MAPS=Object.fromEntries([town,createCreatorQuarter(),...town.buildings.filter(b=>['candle-shop','workshop','library','inn','clocktower'].includes(b.id)).map(b=>interior(b.id,b.label,b.door,b.kind))].map(m=>[m.id,m]));
 export const TOWN_BUILDINGS=town.buildings;
 export const TOWN_LAMPS=['lamp-market','lamp-plaza','lamp-garden'];
 export const TOWN_STAMPS=['stamp-market','stamp-canal','stamp-garden'];

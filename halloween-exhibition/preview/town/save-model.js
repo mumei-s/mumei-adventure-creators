@@ -1,4 +1,4 @@
-import {initialTownState,restoreTownState} from './town-model.js';
+import {initialTownState,restoreTownState} from './town-model.js?v=20261019-homes1';
 
 // This namespace belongs only to the outside-town game. It never reads,
 // rewrites or clears palace, exhibition, editor or adventure saves.

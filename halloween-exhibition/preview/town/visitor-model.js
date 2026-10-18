@@ -1,4 +1,4 @@
-import {TOWN_START_MAP,getTownMap,isTownWalkable,mapTargets} from './story-data.js';
+import {TOWN_START_MAP,getTownMap,isTownWalkable,mapTargets} from './story-data.js?v=20261019-homes1';
 import {sampleTravel} from '../maze/patrol-model.js?v=20261017-review1';
 import {locomotionPhase,yawForVector,shortestTurn,facingForVector} from '../maze/movement-runtime.js?v=20261017-review1';
 

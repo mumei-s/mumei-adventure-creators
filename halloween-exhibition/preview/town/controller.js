@@ -1,5 +1,5 @@
-import {initialTownState,moveTown,nearestTownTarget,interactTown} from './town-model.js?v=20261017-town2';
-import {startTownBattle,townBattleCommand,townBattleTurn,finishTownBattle} from './battle-model.js?v=20261017-town2';
+import {initialTownState,moveTown,nearestTownTarget,interactTown} from './town-model.js?v=20261019-homes1';
+import {startTownBattle,townBattleCommand,townBattleTurn,finishTownBattle} from './battle-model.js?v=20261019-homes1';
 import {integrateVelocity,locomotionPhase} from '../maze/movement-runtime.js?v=20261017-review1';
 const terminal=phase=>['victory','defeat','escaped'].includes(phase);
 /** The town owns its state and receipts. It never reads labyrinth progress. */

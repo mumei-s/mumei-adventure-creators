@@ -68,7 +68,7 @@ test('town is volumetric batched geometry with the exact story footprints and do
 });
 
 test('every enterable story room has raised furniture and keeps the original exit',()=>{
-  for(const map of Object.values(TOWN_MAPS).filter(item=>item.id!=='lantern-town')){
+  for(const map of Object.values(TOWN_MAPS).filter(item=>item.outdoor!==true&&item.id!=='lantern-town')){
     const room=createTownSceneGeometry(map),bounds=new THREE.Box3().setFromObject(room.root);assert.ok(bounds.max.y>=2.5);assert.ok(room.root.children.some(item=>item.isInstancedMesh));
     assert.deepEqual(map.portals[0].spawn,getTownMap().buildings.find(building=>building.id===map.id)?{x:getTownMap().buildings.find(building=>building.id===map.id).door.x,z:getTownMap().buildings.find(building=>building.id===map.id).door.z+.8}:null);room.dispose();
   }

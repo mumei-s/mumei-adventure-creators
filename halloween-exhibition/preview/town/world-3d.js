@@ -1,10 +1,11 @@
 import {townLighting,townLanternPosition} from './lighting.js?v=20261019-interior1';
 import * as THREE from '../maze/vendor/three.module.js';
-import {getTownMap} from './story-data.js';
+import {getTownMap} from './story-data.js?v=20261019-homes1';
 import {playerPose,loadArtImage} from '../maze/rpg-art.js?v=20261017-startup1';
 import {townVisualSeed as seed,TOWN_RESIDENT_SPRITES} from './visual-data.js?v=20261019-scene1';
 import {withDeadline} from '../transition-effects.js?v=20261016-living1';
 import {buildTownPalace,animateTownPalace,townPalaceFraming} from './palace-architecture.js?v=20261019-scene1';
+import {buildCreatorHome,buildCreatorQuarterGate} from './creator-home-architecture.js?v=20261019-homes1';
 
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),TAU=Math.PI*2;
 export const TOWN_3D_CAMERA_ELEVATION=55*Math.PI/180;
@@ -45,7 +46,7 @@ function palette(resources){
 function builder(root,resources,materials){
   const unitBox=new THREE.BoxGeometry(1,1,1),sphere=new THREE.IcosahedronGeometry(1,1),cylinder=new THREE.CylinderGeometry(1,1,1,10),cone=new THREE.ConeGeometry(1,1,10);
   for(const geometry of[unitBox,sphere,cylinder,cone])resources.add(geometry);
-  const batches=new Map(),matrix=new THREE.Matrix4(),rotation=new THREE.Quaternion(),axis=new THREE.Vector3(0,1,0);
+  const batches=new Map(),buildingMaterials=new Map(),matrix=new THREE.Matrix4(),rotation=new THREE.Quaternion(),axis=new THREE.Vector3(0,1,0);
   function instance(geometry,material,x,y,z,w,h,d,turn=0,bucket='town'){
     const key=bucket+'|'+geometry.uuid+'|'+material.uuid;
     if(!batches.has(key))batches.set(key,{geometry,material,matrices:[],bucket});
@@ -57,7 +58,9 @@ function builder(root,resources,materials){
   const peak=(x,y,z,r,h,material=materials.roof,bucket)=>instance(cone,material,x,y,z,r,h,r,0,bucket);
   function perBuildingMaterial(material,bucket){
     if(!bucket||['town','trees','lamps','interior-windows'].includes(bucket))return material;
-    const clone=material.clone();resources.add(clone);return clone;
+    if(material.userData.fadeBucket===bucket)return material;
+    const key=bucket+'|'+material.uuid;if(buildingMaterials.has(key))return buildingMaterials.get(key);
+    const clone=material.clone();resources.add(clone);buildingMaterials.set(key,clone);return clone;
   }
   function mesh(geometry,material,position,bucket){
     resources.add(geometry);const item=new THREE.Mesh(geometry,perBuildingMaterial(material,bucket));item.position.copy(position);item.castShadow=true;item.receiveShadow=true;item.userData.occluder=true;item.userData.bucket=bucket;root.add(item);return item;
@@ -88,9 +91,9 @@ function groundGeometry(map,tileTypes,y=0){
 }
 
 /** Geometry uses exactly the story map footprints, thresholds and furniture. No gameplay state is stored here. */
-export function createTownSceneGeometry(map=getTownMap(),{materials=null,resources=new Set()}={}){
+export function createTownSceneGeometry(map=getTownMap(),{materials=null,resources=new Set(),makeCanvas=null}={}){
   const root=new THREE.Group();root.name='town-world-'+map.id;materials??=palette(resources);const b=builder(root,resources,materials),buildings=[],trees=[],water=[],lamps=[],stars=[],palaceEffects=[];
-  const interior=map.id!=='lantern-town';
+  const interior=map.outdoor!==true&&map.id!=='lantern-town';
   for(const [types,material,y]of interior?[['i',materials.parquet,0],['#',materials.dark,-.025]]:[['gfb#',materials.grass,-.025],['.',materials.road,0],['p',materials.plaza,.008],['=',materials.stone,.04],['~',materials.water,-.14]]){
     const geometry=groundGeometry(map,types,y);if(!geometry.attributes.position.count){geometry.dispose();continue;}
     resources.add(geometry);const mesh=new THREE.Mesh(geometry,material);mesh.receiveShadow=true;mesh.name='ground-'+types;root.add(mesh);if(types==='~')water.push(mesh);
@@ -168,7 +171,12 @@ export function createTownSceneGeometry(map=getTownMap(),{materials=null,resourc
   }
   function bench(x,z){b.box(x,.47,z,1.65,.13,.52,materials.woodLight);b.box(x,.81,z-.22,1.65,.5,.1,materials.wood);for(const side of[-1,1]){b.box(x+side*.66,.23,z,.11,.43,.43,materials.dark);b.box(x+side*.77,.68,z,.08,.14,.62,materials.gold);}}
   if(!interior){
-    for(const building of map.buildings)building.kind==='castle'?castle(building):house(building);
+    for(const building of map.buildings){
+      if(building.kind==='castle')castle(building);
+      else if(building.kind==='creator-home')buildings.push(buildCreatorHome({building,b,materials,resources,roofGeometry,makeCanvas}));
+      else house(building);
+    }
+    root.userData.creatorGates=(map.portals||[]).filter(portal=>portal.to==='creator-quarter'||map.id==='creator-quarter'&&portal.to==='lantern-town').map(portal=>buildCreatorQuarterGate({portal,b,materials,resources,makeCanvas}));
     // Stone banks and bridge rails have height and cast shadows on the water below.
     for(let z=6;z<47;z++)for(const x of[30.84,33.16])if(map.tiles[z]?.[31]==='~')b.box(x,.02,z+.5,.22,.33,1.02,materials.stone);
     for(let z=6;z<47;z++)if(map.tiles[z]?.[31]==='='&&map.tiles[z-1]?.[31]!=='='){
@@ -297,7 +305,7 @@ export function createTownWorld3D({canvas,art={images:{},version:0},onContextLos
     const texture=actorTexture(entry,sprite);if(entry.object.material.map!==texture){entry.object.material.map=texture;entry.object.material.needsUpdate=true;}entry.object.center.set(sprite.anchorX??.5,1-(sprite.anchorY??1));entry.object.scale.set(fullHeight*frame[2]/frame[3],fullHeight,1);entry.object.position.set(x,.035,z);entry.object.visible=true;entry.shadow.position.set(x,.026,z);entry.shadow.scale.set(height*.58,height*.43,1);entry.shadow.visible=true;entry.sprite=sprite;entry.interactive=interactive;entry.frame=frame;
   }
   function prepareMap(map){
-    if(map.id===mapId&&scenery){applyFloorTextures();return;}scenery?.dispose();if(scenery)scene.remove(scenery.root);scenery=createTownSceneGeometry(map);scene.add(scenery.root);mapId=map.id;cameraTarget=null;appliedSurfaceVersion=-1;
+    if(map.id===mapId&&scenery){applyFloorTextures();return;}scenery?.dispose();if(scenery)scene.remove(scenery.root);scenery=createTownSceneGeometry(map,{makeCanvas});scene.add(scenery.root);mapId=map.id;cameraTarget=null;appliedSurfaceVersion=-1;
     const {materials,resources}=scenery;
     // The window profile changes only when the map changes, not every frame.
     const windowGlow=townLighting(map.id).windowGlow;
@@ -333,7 +341,7 @@ export function createTownWorld3D({canvas,art={images:{},version:0},onContextLos
     }
   }
   function render({state,time=0,dt=.016,motion=true,pixelRatio=1,walking=false,walkPhase=0,facing=state?.facing||'down',brightness=75,lantern=true,creatorActors=[],cameraDistance='normal'}={}){
-    if(disposed||lost||!state?.position)return false;frameSerial++;const map=getTownMap(state.mapId);prepareMap(map);const view=resize(pixelRatio),parameters=town3DCameraParameters(view.width,view.height,map.id!=='lantern-town',cameraDistance);
+    if(disposed||lost||!state?.position)return false;frameSerial++;const map=getTownMap(state.mapId);prepareMap(map);const view=resize(pixelRatio),parameters=town3DCameraParameters(view.width,view.height,map.outdoor!==true&&map.id!=='lantern-town',cameraDistance);
     const palaceFraming=townPalaceFraming(state.position,map,parameters.elevation,view.width,view.height);
     if(palaceFraming.influence){const pixelsPerTile=parameters.pixelsPerTile+(Math.min(parameters.pixelsPerTile,palaceFraming.pixelsPerTile)-parameters.pixelsPerTile)*palaceFraming.influence;Object.assign(parameters,{left:-view.width/pixelsPerTile/2,right:view.width/pixelsPerTile/2,top:view.height/pixelsPerTile/2,bottom:-view.height/pixelsPerTile/2,pixelsPerTile});}
     const heroSprite=playerPose(art,facing,walking&&motion,walkPhase),signature=JSON.stringify([map.id,view.width,view.height,view.ratio,state.position.x,state.position.z,facing,brightness,lantern,motion,cameraDistance,version,art.version,assets.loaded.length,state.flags,heroSprite?.poseVersion,imageId(heroSprite),heroSprite?.frame,(map.npcs||[]).map(npc=>art.rigs?.get?.('resident:'+npc.id)?.poseVersion),creatorActors.map(actor=>[actor.id,actor.x,actor.z,actor.heightPx,actor.interactive,imageId(actor.sprite),actor.sprite?.frame,actor.sprite?.anchorX,actor.sprite?.anchorY,actor.sprite?.contentHeight,actor.sprite?.poseVersion])]);

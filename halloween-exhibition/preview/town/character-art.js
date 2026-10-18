@@ -1,12 +1,13 @@
+import {creatorHomeProfile} from './creator-home-profile.js?v=20261019-homes1';
 import {fetchStartupJSON,loadRequiredCharacters} from '../maze/startup-assets.js?v=20261017-startup1';
 import {createCharacterAssets,scaledCharacterLayout,characterSprite,compileCharacterRoster,compileCompanions,CREATOR_FICTION_NOTICE,noteArticleURL} from '../maze/creator-runtime.js?v=20261017-startup1';
 import {createDistanceTrail} from '../maze/movement-runtime.js?v=20261017-review1';
 import {MONSTER_MOTION_DATA} from '../maze/monster-motion-data.js?v=20261016-living1';
 import {motionSprite} from '../maze/monster-motion.js?v=20261017-rig2';
-import {placeTownVisitors,sampleTownVisitors,chooseTownVisitorGroups,nearestTownVisitor} from './visitor-model.js?v=20261018-live-street2';
+import {placeTownVisitors,sampleTownVisitors,chooseTownVisitorGroups,nearestTownVisitor} from './visitor-model.js?v=20261019-homes1';
 import {loadArtImage} from '../maze/rpg-art.js?v=20261017-startup1';
 import {createRigLibrary} from '../maze/rig-animation.js?v=20261019-scene1';
-import {TOWN_START_MAP,getTownMap} from './story-data.js';
+import {TOWN_START_MAP,getTownMap} from './story-data.js?v=20261019-homes1';
 /** Adopted owner/cat identity is preserved; no new participant identities are inferred. */
 export function createTownCharacterArt({onState=()=>{},fetcher=fetchStartupJSON,signal,loadMonsterImage=loadArtImage,assets=createCharacterAssets(),initialState={mapId:TOWN_START_MAP,position:getTownMap().spawn}}={}){
  let destroyed=false,hero,cat,lastMap=null,roster=null,placed=[],archive=null,selected=[],selectionAt=-1,visibleVisitors=[],lastOwner=null,lastCat=null;const trail=createDistanceTrail({maxDistance:3,strideLength:1.15,teleportDistance:3});
@@ -48,5 +49,5 @@ export function createTownCharacterArt({onState=()=>{},fetcher=fetchStartupJSON,
   const layout=MONSTER_MOTION_DATA[id];if(!layout)return false;if(art.images[id])return true;if(pending.has(id))return pending.get(id);
   const promise=(async()=>{try{const image=await loadMonsterImage(new URL(layout.src,new URL('../maze/',import.meta.url)).href,{timeout:10000});if(destroyed)return false;if(image.width!==layout.width||image.height!==layout.height)throw Error('Monster image dimensions do not match the approved layout');art.monsterLayouts[id]=layout;art.images[id]=motionSprite(image,layout,{motion:false});art.version++;onState('monster-ready');return true;}catch{return false;}finally{pending.delete(id);}})();pending.set(id,promise);return promise;
  }
- return {art,ready,companionActors,visitorActors,visitors,visitor,nearbyVisitor,reachableVisitor,fictionNotice:CREATOR_FICTION_NOTICE,retryVisitors(){assets.retry();selectionAt=-1;},ensureMonster,destroy(){destroyed=true;assets.dispose();art.rigs.destroy();pending.clear();trail.reset();},status:()=>assets.status()};
+ return {art,ready,creatorPage:creatorId=>creatorHomeProfile(archive,creatorId,roster?.year),companionActors,visitorActors,visitors,visitor,nearbyVisitor,reachableVisitor,fictionNotice:CREATOR_FICTION_NOTICE,retryVisitors(){assets.retry();selectionAt=-1;},ensureMonster,destroy(){destroyed=true;assets.dispose();art.rigs.destroy();pending.clear();trail.reset();},status:()=>assets.status()};
 }

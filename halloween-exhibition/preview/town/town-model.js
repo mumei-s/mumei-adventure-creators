@@ -1,5 +1,5 @@
-import {TOWN_VERSION,TOWN_START_MAP,TOWN_ITEMS,TOWN_QUESTS,TOWN_LAMPS,TOWN_STAMPS,getTownMap,isTownWalkable,mapTargets} from './story-data.js';
-export {getTownMap,isTownWalkable,TOWN_MAPS,TOWN_NPCS,TOWN_TITLE} from './story-data.js';
+import {TOWN_VERSION,TOWN_START_MAP,TOWN_ITEMS,TOWN_QUESTS,TOWN_LAMPS,TOWN_STAMPS,getTownMap,isTownWalkable,mapTargets} from './story-data.js?v=20261019-homes1';
+export {getTownMap,isTownWalkable,TOWN_MAPS,TOWN_NPCS,TOWN_TITLE} from './story-data.js?v=20261019-homes1';
 
 export function initialTownState(){return {version:TOWN_VERSION,mapId:TOWN_START_MAP,position:{...getTownMap().spawn},facing:'down',hp:60,maxHp:60,energy:1,coins:24,inventory:{tonic:2},flags:{lamps:[],stamps:[],gearNotes:[]},visited:[TOWN_START_MAP],battleReceipts:[],checkpoint:{mapId:TOWN_START_MAP,position:{...getTownMap().spawn}},steps:0,updatedAt:Date.now()};}
 const knownFlags=['intro','breadTaken','breadDelivered','wickTaken','act1Complete','gardenVictory','moonwaterTaken','riverClue','gearTaken','sluiceRepaired','clockVictory','clockRestored','maskStarted','ribbonTaken','maskComplete','starComplete','ending'];

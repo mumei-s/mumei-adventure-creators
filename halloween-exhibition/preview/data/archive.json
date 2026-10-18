@@ -105,6 +105,13 @@
       "avatar": "https://assets.st-note.com/production/uploads/images/274163002/profile_53ed201190910b3e84f2f77c5074f084.png?fit=bounds&format=jpeg&quality=85&width=330",
       "avatarSource": "https://assets.st-note.com/production/uploads/images/274163002/profile_53ed201190910b3e84f2f77c5074f084.png?fit=bounds&format=jpeg&quality=85&width=330",
       "profileURL": "https://note.com/real_hyena9474"
+    },
+    {
+      "id": "airoumu_rin",
+      "name": "凛🦁｜転職活動中｜ワーママ｜AI活用",
+      "avatar": "https://assets.st-note.com/production/uploads/images/322562422/profile_5bf07964888d6ac2e16137980acf0a0a.png?fit=bounds&format=jpeg&quality=85&width=330",
+      "avatarSource": "https://assets.st-note.com/production/uploads/images/322562422/profile_5bf07964888d6ac2e16137980acf0a0a.png?fit=bounds&format=jpeg&quality=85&width=330",
+      "profileURL": "https://note.com/airoumu_rin"
     }
   ],
   "years": [
@@ -461,6 +468,22 @@
           ],
           "image": "https://assets.st-note.com/production/uploads/images/324726369/rectangle_large_type_2_b178b2a36b7ca097bf1ac87a6049a965.png?fit=bounds&quality=85&width=1280",
           "imageAlt": "アイリスの記事「かぼちゃの灯りがともる、アイリスのハロウィン」の見出し画像"
+        },
+        {
+          "creatorId": "airoumu_rin",
+          "title": "作品準備中",
+          "theme": "pumpkin",
+          "submissionStatus": "pending",
+          "tags": [
+            "参加者",
+            "作品準備中"
+          ],
+          "links": [
+            {
+              "title": "noteプロフィールを見る",
+              "url": "https://note.com/airoumu_rin"
+            }
+          ]
         }
       ]
     }

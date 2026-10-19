@@ -1658,6 +1658,11 @@ body[data-layout-page=maze][data-layout] #game .minimap span{font-size:var(--ui-
  width:100%;max-width:100%;padding:2px 4px;font:600 11px/1.2 system-ui,sans-serif;letter-spacing:0;
  text-align:center;white-space:normal;overflow-wrap:normal;word-break:normal;
 }
+/* Keep the town route in its existing cell, with a full-size touch target. */
+:root body #theater.theater>.masthead .palace-world-links>#palace-town-entrance{
+ gap:4px;min-height:44px;max-width:128px;justify-self:center;padding:4px;font-size:12px;
+ border-radius:10px;background:#203e3bed;border-color:#bdd0aa;color:#fff9dd;touch-action:manipulation;
+}
 :root body #theater.theater>.masthead>.creative-world-links{
  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;order:3;margin:0;
 }
@@ -1729,6 +1734,8 @@ body[data-mode=normal] #theater .atelier-install-panel{background:#eff5ed;color:
 .theater:not([data-palace-state=gallery])>.world-backdrop{display:none}
 #article-theater[hidden]{display:none!important}
 
+@media(forced-colors:active){:root body #theater.theater>.masthead .palace-world-links>#palace-town-entrance{background:Canvas;color:LinkText;border-color:LinkText}}
+
 
 /* Source: ./town-entry.css?v=20261017-headerstack1 */
 /* Stack destinations left of the centered count, keeping the castle in view. */
@@ -1747,6 +1754,11 @@ body[data-mode=normal] #theater .atelier-install-panel{background:#eff5ed;color:
 #theater .masthead>#castle-exit-panel{row-gap:2px;padding-block:2px}
 /* Allow the exit label to wrap inside its symmetric column on narrow phones. */
 #theater #castle-exit-panel>.app-exit-trigger{min-width:44px;width:100%;max-width:104px;padding-inline:4px}
+
+/* Reuse both existing destinations as small, finger-friendly town panels. */
+#theater .palace-return-row>#town-entrance{gap:4px;width:100%;max-width:128px;min-height:44px;justify-self:center;border-radius:10px;padding:4px 8px;font:600 12px/1.2 system-ui,sans-serif;touch-action:manipulation}
+#theater .town-entrance>span[aria-hidden]{flex:none;font:700 18px/1 system-ui,sans-serif}
+@media(forced-colors:active){#theater .palace-return-row>#town-entrance{background:Canvas;color:LinkText;border-color:LinkText}}
 
 
 /* Source: ./gallery-gap.css?v=20261017-gap1 */

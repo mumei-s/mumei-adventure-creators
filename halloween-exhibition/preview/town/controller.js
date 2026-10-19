@@ -1,5 +1,5 @@
-import {initialTownState,moveTown,nearestTownTarget,interactTown,isTownWalkable} from './town-model.js?v=20261019-homes2';
-import {getCreatorHome,CREATOR_QUARTER_ID} from './creator-homes.js?v=20261019-homes2';
+import {initialTownState,moveTown,nearestTownTarget,interactTown,isTownWalkable,getTownMap} from './town-model.js?v=20261019-homes2';
+import {getCreatorHome,CREATOR_QUARTER_ID,CREATOR_QUARTER_CONNECTION} from './creator-homes.js?v=20261019-homes2';
 import {startTownBattle,townBattleCommand,townBattleTurn,finishTownBattle} from './battle-model.js?v=20261019-homes2';
 import {integrateVelocity,locomotionPhase} from '../maze/movement-runtime.js?v=20261017-review1';
 const terminal=phase=>['victory','defeat','escaped'].includes(phase);
@@ -20,6 +20,13 @@ export function createTownSession({store,state:provided,onChange=()=>{},onNotice
   if(!isTownWalkable(CREATOR_QUARTER_ID,position.x,position.z))return null;
   const next={...state,mapId:CREATOR_QUARTER_ID,position,facing:'up',visited:[...new Set([...state.visited,CREATOR_QUARTER_ID])],updatedAt:Date.now()};
   replace(next);return {transition:true,state,notice:home.creatorName+'の家に着きました。玄関で「家の中へ入る」を選べます。'};
+ }
+ function returnToTown(){
+  if(battle||(state.mapId!==CREATOR_QUARTER_ID&&!getTownMap(state.mapId).creatorHome))return null;
+  const position={...CREATOR_QUARTER_CONNECTION.streetArrival};
+  if(!isTownWalkable('lantern-town',position.x,position.z))return null;
+  replace({...state,mapId:'lantern-town',position,facing:'down',visited:[...new Set([...state.visited,'lantern-town'])],updatedAt:Date.now()});
+  return {transition:true,state,notice:'星灯りの町へ戻りました。家と作品の記録はそのままです。'};
  }
  function interact(targetId,choiceId){
   if(battle)return null;const target=targetId||nearestTownTarget(state)?.id;if(!target)return null;
@@ -56,5 +63,5 @@ export function createTownSession({store,state:provided,onChange=()=>{},onNotice
   const travelled=Math.hypot(dx,dz);walking=travelled>.00001;distance+=travelled;saveAge+=step;
   if(walking&&saveAge>=3){saveAge=0;save();}return snapshot();
  }
- return {snapshot,save,stop,replace,visitCreatorHome,interact,beginBattle,actBattle,battleBusy,leaveBattle,tick,target:()=>nearestTownTarget(state)};
+ return {snapshot,save,stop,replace,visitCreatorHome,returnToTown,interact,beginBattle,actBattle,battleBusy,leaveBattle,tick,target:()=>nearestTownTarget(state)};
 }

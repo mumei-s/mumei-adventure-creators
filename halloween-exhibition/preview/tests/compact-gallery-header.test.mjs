@@ -33,8 +33,8 @@ test('294 through 480px widths have bounded tracks, complete link labels and a c
   const content=width-16,minimum=[62,28,34,56,44,40].reduce((sum,n)=>sum+n,0)+5*2;
   assert.ok(minimum<=content,`${width}: all six controls fit without a scrolling ancestor`);
   const titleFont=Math.max(20,Math.min(26,width*.053)),title=titleFont*1.08+13.2+1;
-  const header=6+title+44+34+34+3*3;
-  if(width<=360)assert.ok(header<165,`${width}: header budget ${header}`);
+  const header=6+title+44+44+34+3*3;
+  if(width<=360)assert.ok(header<175,`${width}: header budget ${header}`);
   const card=(content-4)/2,creativeText=card-12-4-10-2;
   assert.ok(creativeText>=8*10*.65,'longest English word stays horizontal');
   const routeCard=(content-48-68-8-4)/2,routeInner=routeCard-10;
@@ -49,7 +49,7 @@ test('both destination bands stay horizontal slim cards and selected large profi
  assert.match(rule(base+' .palace-world-links>a'),/min-height:34px/);
  assert.match(rule(base+'>.creative-world-links>a'),/min-height:34px/);
  assert.match(rule(base+'>.creative-world-links strong'),/overflow-wrap:normal;word-break:normal/);
- assert.doesNotMatch(clean,/max-width:128px|overflow-wrap:anywhere/);
+ assert.doesNotMatch(rule(base+' .palace-world-links'),/max-width:128px|overflow-wrap:anywhere/);
  assert.match(clean,/header-actions :is\(#year-open,\.visitor-settings-trigger\)\{[\s\S]*?width:100%;min-width:0;max-width:100%/);
 });
 
@@ -69,4 +69,16 @@ test('compact overrides follow preset styles and current bundled CSS has a relea
  assert.ok(sources.findIndex(path=>path.includes('compact-gallery-header.css'))>sources.findIndex(path=>path.includes('presentation-profiles.css')));
  assert.match(await read('index.html'),/gallery-styles\.css\?v=20261019-fast2(?:-[a-f0-9]{12})?(?:["'\s]|$)/);
  assert.doesNotMatch(await read('maze/index.html'),/compact-gallery-header/);
+});
+
+
+test('town links reuse the existing routes with compact labels and touch-friendly panels',async()=>{
+ const html=await read('index.html'),townCSS=await read('town-entry.css');
+ for(const id of ['palace-town-entrance','town-entrance']){
+  assert.equal([...html.matchAll(new RegExp('id="'+id+'"','g'))].length,1);
+  assert.match(html,new RegExp('id="'+id+'"[^>]*href="\\./town/\\?return=theatre"[^>]*aria-label="宮殿から星灯りの街へ進む"><span aria-hidden="true">⌂</span><span>町へ行く</span></a>'));
+ }
+ assert.match(rule(base+' .palace-world-links>#palace-town-entrance'),/min-height:44px;max-width:128px/);
+ assert.match(townCSS,/#theater \.palace-return-row>#town-entrance\{[^}]*max-width:128px;min-height:44px/);
+ assert.match(townCSS,/touch-action:manipulation/);
 });

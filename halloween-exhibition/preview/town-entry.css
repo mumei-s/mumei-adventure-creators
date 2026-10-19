@@ -14,3 +14,8 @@
 #theater .masthead>#castle-exit-panel{row-gap:2px;padding-block:2px}
 /* Allow the exit label to wrap inside its symmetric column on narrow phones. */
 #theater #castle-exit-panel>.app-exit-trigger{min-width:44px;width:100%;max-width:104px;padding-inline:4px}
+
+/* Reuse both existing destinations as small, finger-friendly town panels. */
+#theater .palace-return-row>#town-entrance{gap:4px;width:100%;max-width:128px;min-height:44px;justify-self:center;border-radius:10px;padding:4px 8px;font:600 12px/1.2 system-ui,sans-serif;touch-action:manipulation}
+#theater .town-entrance>span[aria-hidden]{flex:none;font:700 18px/1 system-ui,sans-serif}
+@media(forced-colors:active){#theater .palace-return-row>#town-entrance{background:Canvas;color:LinkText;border-color:LinkText}}

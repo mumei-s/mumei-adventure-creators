@@ -95,7 +95,7 @@ function readingProgress(state){
  if(journey.complete)return {title:'終章　物語の灯りがつながった',objective:`${journey.readCount}人の作品を巡りました。好きな家を、また訪ねてみよう。`,completed:true};
  const person=journey.selected,home=getCreatorHome(person?.id),row=home?Math.floor((home.z-3)/11)+1:1,col=home?Math.floor((home.x-3)/11)+1:1;
  const room=getTownMap(state.mapId).creatorHome;
- const objective=room?`${room.creatorName}のアトリエです。本人や作品机を調べて記事へ。南の扉から家の前に戻れます。`:state.mapId==='creator-quarter'?`北から${row}列目・西から${col}軒目の「${person.name}の家」へ。玄関で「家の中へ入る」を選ぼう。`:state.mapId==='lantern-town'?`金色の道案内「参加者の家 →」をたどって住宅街へ。「${person.name}の家」に招待状が届いています。`:'街の金色の道案内から、参加者の家へ向かおう。';
+ const objective=room?`${room.creatorName}のアトリエです。本人や作品机を調べて記事へ。南の扉から家の前へ。小パネル「町へ戻る」で広場へ戻れます。`:state.mapId==='creator-quarter'?`北から${row}列目・西から${col}軒目の「${person.name}の家」へ。玄関で「家の中へ入る」を選ぼう。`:state.mapId==='lantern-town'?`金色の道案内「参加者の家 →」をたどって住宅街へ。「${person.name}の家」に招待状が届いています。`:'街の金色の道案内から、参加者の家へ向かおう。';
  return {title:`記事巡り　${journey.readCount}/${journey.total}人の物語`,objective,completed:false};
 }
 function appendReadingMark(creatorId,url,link){
@@ -229,8 +229,21 @@ function renderBattle(){
 }
 function actBattle(action){if(!battleArtReady)return;if(session.actBattle(action,{motion:motion()}))renderBattle();}
 function drawBattle(){if(!battleCanvas?.isConnected)return;const snapshot=session.snapshot();if(!snapshot.battle)return;fitCanvas(battleCanvas);renderTownBattle({renderer,canvas:battleCanvas,art:characterArt?.art,battle:snapshot.battle,effect:snapshot.effect,time:snapshot.time,motion:motion(),pixelRatio:Math.min(devicePixelRatio||1,2)});}
+function returnToTown(){
+ if(!ready||session.snapshot().battle)return;
+ const result=session.returnToTown();if(!result)return;
+ applyInteraction(result);updateHomeRoute(result.state);updateHUD();
+ ($('town-webgl').hidden?$('town-canvas'):$('town-webgl')).focus({preventScroll:true});
+}
 function updateHomeRoute(state){
  const route=$('home-route');if(!route)return;const map=getTownMap(state.mapId),selected=readingJourney?.snapshot().selected?.id,home=getCreatorHome(selected)||CREATOR_HOMES[0];
+ const canReturn=state.mapId==='creator-quarter'||!!map.creatorHome;
+ route.dataset.returnToTown=String(canReturn);
+ if(canReturn){
+  route.hidden=!ready;route.removeAttribute('aria-haspopup');route.setAttribute('aria-label','町へ戻る。星灯りの町の広場へ移動');
+  $('home-route-title').textContent='町へ戻る';$('home-route-detail').textContent='星灯りの町の広場へ';$('home-route-arrow').textContent='↩';$('home-route-arrow').style.transform='';homeRouteSignature='';return;
+ }
+ route.setAttribute('aria-haspopup','dialog');$('home-route-arrow').textContent='↓';
  const point=state.mapId==='lantern-town'?map.portals.find(portal=>portal.to==='creator-quarter'):state.mapId==='creator-quarter'?home?.door:null;
  route.hidden=!ready||!point;if(!point)return;
  const dx=point.x-state.position.x,dz=point.z-state.position.z,steps=Math.round(Math.hypot(dx,dz));
@@ -260,7 +273,7 @@ for(const type of['pointercancel','lostpointercapture'])surface.addEventListener
 }
 function toggleLantern(){settings.lantern=!settings.lantern;persistSettings();}
 $('town-view-2d').onclick=()=>chooseTownView('2d');$('town-view-3d').onclick=()=>chooseTownView('3d');$('town-mode-retry').onclick=()=>chooseTownView('3d',{retry:true});
-$('lantern-toggle').onclick=toggleLantern;$('interact').onclick=()=>interact();$('menu-open').onclick=showMenu;$('journal-open').onclick=showJournal;$('inventory-open').onclick=showInventory;$('map-open').onclick=showMap;$('minimap-open').onclick=showMap;$('home-route').onclick=showMap;
+$('lantern-toggle').onclick=toggleLantern;$('interact').onclick=()=>interact();$('menu-open').onclick=showMenu;$('journal-open').onclick=showJournal;$('inventory-open').onclick=showInventory;$('map-open').onclick=showMap;$('minimap-open').onclick=showMap;$('home-route').onclick=()=>{const map=getTownMap(session.snapshot().state.mapId);if(map.id==='creator-quarter'||map.creatorHome)returnToTown();else showMap();};
 function prepareExit(){clearInput();audio.stop({resetVolume:true});session.save();}
 $('castle-return').addEventListener('click',prepareExit);
 window.addEventListener('blur',()=>{clearInput();audio.stop({resetVolume:true});});window.addEventListener('orientationchange',scheduleResize);

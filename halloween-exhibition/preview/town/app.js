@@ -142,7 +142,7 @@ function showCreatorHome(creatorId){
  readingJourney?.visit(creatorId);beginPanel(`${home.creatorName}のクリエイターページ`,{kind:'creator-home',eyebrow:home.homeLabel});
  const identity=el('section',undefined,'creator-home-identity');
  if(person.avatar){const image=el('img');image.src=new URL(person.avatar,new URL('../',import.meta.url)).href;image.alt=`${person.name}のプロフィール画像`;image.width=96;image.height=96;image.decoding='async';image.onerror=()=>image.remove();identity.append(image);}
- identity.append(el('h3',person.name));content.append(identity,el('p',home.description||home.homeLabel,'dialogue-text'));
+ identity.append(el('h3',person.name));content.append(identity,el('p',home.description||home.homeLabel,'dialogue-text'),button('この家へ行く',()=>visitCreatorHome(creatorId)));
  if(person.profileURL){const link=el('a','公式noteのクリエイターページを開く ↗','button-link primary');link.href=person.profileURL;link.target='_blank';link.rel='noopener noreferrer';content.append(link);}
  content.append(el('h3','参加作品'));
  if(person.pending)content.append(el('p','参加作品は準備中です。公式noteから、その人の発信をご覧いただけます。','subtle'));
@@ -153,8 +153,12 @@ function showCreatorHome(creatorId){
  content.append(el('p','家の名前や飾りは、この街のために作った演出です。','subtle'),button('ほかの参加者の家を見る',showCreatorHomes),button('街歩きに戻る',closePanel));
 }
 function showCreatorHomes(){
- beginPanel('参加者の家',{kind:'homes',eyebrow:'CREATORS’ QUARTER'});content.append(el('p',`${CREATOR_HOMES.length}人それぞれの家を訪ねる住宅街。玄関で「ページを開く」を選ぶと、本人の紹介と参加作品が開きます。`,'dialogue-text'));
- const list=el('div',undefined,'inventory-list');for(const home of CREATOR_HOMES){const card=el('section',undefined,'town-card');card.style.setProperty('--home-color',home.homePalette?.roof||'#bca56b');card.append(el('h3',home.creatorName),el('p',home.homeLabel));const available=!!characterArt?.creatorPage(home.creatorId);const page=button('クリエイターページを見る',()=>showCreatorHome(home.creatorId));page.disabled=!available;card.append(page);list.append(card);}content.append(list,el('p','街の南側にある「参加者の住宅街」の入口から歩いて訪ねられます。','subtle'),button('現在地の地図を見る',showMap),button('街歩きに戻る',closePanel));
+ beginPanel('参加者の家',{kind:'homes',eyebrow:'CREATORS’ QUARTER'});content.append(el('p',`${CREATOR_HOMES.length}人それぞれの家が並ぶ住宅街。「この家へ行く」で玄関前へ移動できます。外観を眺めたり、玄関から紹介と参加作品を開いたりしてみよう。`,'dialogue-text'),button('住宅街へ行く',()=>visitCreatorHome(), 'primary'));
+ const list=el('div',undefined,'inventory-list');for(const home of CREATOR_HOMES){const card=el('section',undefined,'town-card');card.style.setProperty('--home-color',home.homePalette?.roof||'#bca56b');card.append(el('h3',home.creatorName),el('p',home.homeLabel),button('この家へ行く',()=>visitCreatorHome(home.creatorId),'primary'));const available=!!characterArt?.creatorPage(home.creatorId);const page=button('クリエイターページを見る',()=>showCreatorHome(home.creatorId));page.disabled=!available;card.append(page);list.append(card);}content.append(list,el('p','街の南西にある案内門から歩いて住宅街へ入ることもできます。','subtle'),button('現在地の地図を見る',showMap),button('街歩きに戻る',closePanel));
+}
+function visitCreatorHome(creatorId=readingJourney?.snapshot().selected?.id||CREATOR_HOMES[0]?.creatorId){
+ if(!ready)return;const result=session.visitCreatorHome(creatorId);if(!result)return;
+ readingJourney?.select(creatorId);applyInteraction(result);
 }
 function showVisitors(){
  beginPanel('街に集まった仲間');content.append(el('p','無名S noteは、あなたが動かす主人公です。街の通りでは、企画に集まった仲間たちに会えます。','subtle'));const groups=new Map();for(const visitor of characterArt?.visitors()||[]){if(!groups.has(visitor.creatorId))groups.set(visitor.creatorId,[]);groups.get(visitor.creatorId).push(visitor);}
@@ -206,7 +210,7 @@ function showSave(){
  const review=el('div');row.append(button('貼り付けた本文を確認',()=>{review.replaceChildren();const parsed=importTownState(text.value);if(!parsed.ok){message.textContent=parsed.notice||'この街のバックアップ形式ではありません。今の記録は変更していません。';return;}const next=parsed.state,progress=townProgress(next);review.append(el('p',`${progress.title}／体力${next.hp}/${next.maxHp}／${next.coins}ルーメン。この記録で街歩きの続きを置き換えます。`),button('確認した記録を復元する',()=>{const result=store.replace?store.replace(next):store.save(next);if(!result.ok){message.textContent=result.notice;return;}session.replace(next);message.textContent='街の記録を復元しました。';review.replaceChildren();renderer?.invalidate?.();},'primary'));message.textContent='内容を確認し、復元するボタンを押してください。';}));
  box.append(label,text,row,review,el('p','復元は街の記録だけを変更します。宮殿・展示・城の中の進行は対象外です。','subtle'));content.append(box,button('最初から歩く…',()=>{review.replaceChildren(el('p','街の物語と持ち物を最初からにします。今の続きを残す場合は、先にバックアップを保存してください。'),button('街を最初から始める',()=>{const next=initialTownState(),result=store.replace?store.replace(next):store.save(next);if(!result.ok){message.textContent=result.notice;return;}session.replace(next);renderer?.invalidate?.();closePanel();notify('街で新しい旅を始めました。');}));}),button('メニューに戻る',showMenu));
 }
-function showHelp(){beginPanel('星灯りの街へ');content.append(el('p','無名S noteと黒猫のもとに、物語への招待状が届きました。街の南西の案内門から住宅街へ進み、参加者の家を訪ねて作品を読みに行こう。次の行き先は、画面上の物語の手帳に載っています。街の住人の依頼やバトルも、寄り道で楽しめます。','dialogue-text'));const keys=el('dl',undefined,'help-keys');for(const [key,text]of[['矢印 / WASD','東西南北へ歩く'],['E / Enter','目の前の人と話す・扉や物を調べる'],['M','街の地図'],['J / I','旅の手帳 / 持ち物'],['L','ランタンのON / OFF'],['Esc','メニューを開く・街へ戻る'],['戦闘 1〜5','攻撃・守る・灯り・星蜜・退く']])keys.append(el('dt',key),el('dd',text));content.append(keys,el('p','街の住人と物語はゲーム内のフィクションです。展示の参加者本人の発言や経歴を表すものではありません。音・点滅・時間制限で驚かす演出はありません。','subtle'),button('街を歩く',closePanel,'primary'));}
+function showHelp(){beginPanel('星灯りの街へ');content.append(button('参加者の家を見に行く',()=>visitCreatorHome(),'primary'),el('p','無名S noteと黒猫のもとに、物語への招待状が届きました。街の南西の案内門から住宅街へ進み、参加者の家を訪ねて作品を読みに行こう。次の行き先は、画面上の物語の手帳に載っています。街の住人の依頼やバトルも、寄り道で楽しめます。','dialogue-text'));const keys=el('dl',undefined,'help-keys');for(const [key,text]of[['矢印 / WASD','東西南北へ歩く'],['E / Enter','目の前の人と話す・扉や物を調べる'],['M','街の地図'],['J / I','旅の手帳 / 持ち物'],['L','ランタンのON / OFF'],['Esc','メニューを開く・街へ戻る'],['戦闘 1〜5','攻撃・守る・灯り・星蜜・退く']])keys.append(el('dt',key),el('dd',text));content.append(keys,el('p','街の住人と物語はゲーム内のフィクションです。展示の参加者本人の発言や経歴を表すものではありません。音・点滅・時間制限で驚かす演出はありません。','subtle'),button('街を歩く',closePanel,'primary'));}
 const battleCommands=[['attack','灯杖で攻撃','灯り +1'],['guard','守る','次の攻撃を軽減・灯り +1'],['spark','星灯り','灯り 2・強い光'],['tonic','星蜜','体力 +28'],['escape','退く','街へ戻る']];
 async function prepareBattleArt(){
  const current=session.snapshot().battle;if(!current)return;const id=current.id;battleArtReady=false;battleArtFailed=false;

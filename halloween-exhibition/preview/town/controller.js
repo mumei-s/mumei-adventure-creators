@@ -1,4 +1,5 @@
-import {initialTownState,moveTown,nearestTownTarget,interactTown} from './town-model.js?v=20261019-homes2';
+import {initialTownState,moveTown,nearestTownTarget,interactTown,isTownWalkable} from './town-model.js?v=20261019-homes2';
+import {getCreatorHome,CREATOR_QUARTER_ID} from './creator-homes.js?v=20261019-homes2';
 import {startTownBattle,townBattleCommand,townBattleTurn,finishTownBattle} from './battle-model.js?v=20261019-homes2';
 import {integrateVelocity,locomotionPhase} from '../maze/movement-runtime.js?v=20261017-review1';
 const terminal=phase=>['victory','defeat','escaped'].includes(phase);
@@ -11,6 +12,15 @@ export function createTownSession({store,state:provided,onChange=()=>{},onNotice
  function save(){const result=store?.save?.(state)||{ok:false,notice:'この画面の記録は保存できません。'};onChange({...snapshot(),save:result});return result;}
  function stop(){velocity={x:0,z:0};walking=false;}
  function replace(next){state=next;stop();battle=null;effect=null;lastOutcome=null;distance=0;save();publish();}
+ function visitCreatorHome(creatorId){
+  if(battle)return null;const home=getCreatorHome(creatorId);if(!home)return null;
+  // South-facing doors remain within interaction distance, with enough room
+  // to see the facade and to walk away without crossing a building footprint.
+  const position={x:home.door.x,z:home.door.z+.85};
+  if(!isTownWalkable(CREATOR_QUARTER_ID,position.x,position.z))return null;
+  const next={...state,mapId:CREATOR_QUARTER_ID,position,facing:'up',visited:[...new Set([...state.visited,CREATOR_QUARTER_ID])],updatedAt:Date.now()};
+  replace(next);return {transition:true,state,notice:home.creatorName+'の家に着きました。玄関から作品を開けます。'};
+ }
  function interact(targetId,choiceId){
   if(battle)return null;const target=targetId||nearestTownTarget(state)?.id;if(!target)return null;
   const result=interactTown(state,target,choiceId);if(result.state)state=result.state;stop();if(result.state){save();}if(result.notice)onNotice(result.notice);publish();return result;
@@ -46,5 +56,5 @@ export function createTownSession({store,state:provided,onChange=()=>{},onNotice
   const travelled=Math.hypot(dx,dz);walking=travelled>.00001;distance+=travelled;saveAge+=step;
   if(walking&&saveAge>=3){saveAge=0;save();}return snapshot();
  }
- return {snapshot,save,stop,replace,interact,beginBattle,actBattle,battleBusy,leaveBattle,tick,target:()=>nearestTownTarget(state)};
+ return {snapshot,save,stop,replace,visitCreatorHome,interact,beginBattle,actBattle,battleBusy,leaveBattle,tick,target:()=>nearestTownTarget(state)};
 }

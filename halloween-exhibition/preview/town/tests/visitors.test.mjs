@@ -3,8 +3,9 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {compileCharacterRoster} from '../../maze/creator-runtime.js';
 import {initialTownState} from '../town-model.js';
-import {TOWN_START_MAP,isTownWalkable,mapTargets} from '../story-data.js';
-import {placeTownVisitors,sampleTownVisitors,chooseTownVisitorGroups,nearestTownVisitor,townVisitorLineOfSight} from '../visitor-model.js';
+import {TOWN_START_MAP,getTownMap,isTownWalkable,mapTargets} from '../story-data.js';
+import {placeTownVisitors,placeCreatorHomeVisitors,sampleTownVisitors,chooseTownVisitorGroups,nearestTownVisitor,townVisitorLineOfSight} from '../visitor-model.js';
+import {CREATOR_HOMES,CREATOR_QUARTER_ID} from '../creator-homes.js';
 const read=url=>JSON.parse(fs.readFileSync(new URL(url,import.meta.url)));
 const roster=()=>compileCharacterRoster(read('../../data/archive.json'),read('../../maze/data/creator-characters.json'),2026);
 
@@ -62,4 +63,36 @@ test('visitor conversation respects noninteractive companions and town wall/wate
   const near={...state,position:{x:guest.x,z:guest.z+.5}};assert.equal(nearestTownVisitor([guest],near)?.id,guest.id);assert.equal(nearestTownVisitor([{...guest,interactive:false}],near),null);
   assert.equal(townVisitorLineOfSight({...state,position:{x:30.5,z:22.5}},{mapId:TOWN_START_MAP,x:33.5,z:22.5}),false);
   assert.equal(townVisitorLineOfSight({...state,mapId:'inn'},guest),false);
+});
+
+test('every approved character and companion appears beside its own home and in its own room with an independent identity',()=>{
+ const source=roster(),before=structuredClone(source),approved=[source.hero,...source.npcs],{visitors,omitted}=placeCreatorHomeVisitors(source);
+ assert.deepEqual(source,before);assert.deepEqual(omitted,[]);assert.equal(visitors.length,approved.length*2);assert.equal(new Set(visitors.map(visitor=>visitor.id)).size,visitors.length);
+ for(const home of CREATOR_HOMES){
+  const expected=approved.filter(character=>character.creatorId===home.creatorId),outside=visitors.filter(visitor=>visitor.mapId===CREATOR_QUARTER_ID&&visitor.creatorId===home.creatorId),inside=visitors.filter(visitor=>visitor.mapId===home.interiorId);
+  for(const actual of[outside,inside]){
+   assert.deepEqual(actual.map(visitor=>visitor.sourceCharacterId).sort(),expected.map(character=>character.id).sort(),home.creatorId);
+   assert.equal(new Set(actual.map(visitor=>visitor.groupId)).size,1);
+   for(const visitor of actual){const character=expected.find(character=>character.id===visitor.sourceCharacterId);assert.equal(visitor.asset,character.asset);assert.notEqual(visitor.id,character.id);assert.equal(visitor.interactive,character.interactive!==false);assert(visitor.greeting);assert.equal(visitor.creatorHome,true);}
+  }
+ }
+ const owner=visitors.filter(visitor=>visitor.creatorId===source.hero.creatorId);assert.equal(owner.length,2);assert(owner.every(visitor=>visitor.role==='npc'&&visitor.asset===source.hero.asset));
+ const cna=visitors.filter(visitor=>visitor.creatorId==='grand_daisy8632');assert.equal(cna.length,6);assert(cna.every(visitor=>visitor.articleURL===null&&visitor.participationRole==='profile-guest'));
+});
+
+test('home strolls stay on walkable floor clear of doors and furniture while map changes select only complete local groups',()=>{
+ const {visitors,omitted}=placeCreatorHomeVisitors(roster());assert.deepEqual(omitted,[]);
+ for(const mapId of new Set(visitors.map(visitor=>visitor.mapId))){
+  const map=getTownMap(mapId),state={...initialTownState(),mapId,position:map.spawn},local=visitors.filter(visitor=>visitor.mapId===mapId);let walking=0;
+  for(let time=0;time<35;time+=.17){
+   const poses=sampleTownVisitors(visitors,{state,time});assert.equal(poses.length,local.length);
+   for(const pose of poses){assert.ok(isTownWalkable(map,pose.x,pose.z,.23),pose.id+' crossed furniture');if(pose.walking)walking++;
+    for(const target of mapTargets(mapId).filter(target=>target.type!=='npc'))assert.ok(Math.hypot(target.x-pose.x,target.z-pose.z)>=1.249,pose.id+' blocks '+target.id);
+   }
+   for(let i=0;i<poses.length;i++)for(let j=i+1;j<poses.length;j++)if(poses[i].groupId!==poses[j].groupId)assert.ok(Math.hypot(poses[i].x-poses[j].x,poses[i].z-poses[j].z)>1.2);
+  }
+  assert(walking>0,mapId+' residents never walk');
+  for(const visitor of local){const near={...state,position:visitor.center},poses=sampleTownVisitors(visitors,{state:near,time:0,motion:false}),selected=chooseTownVisitorGroups(poses,near,1);assert.equal(new Set(selected.map(visitor=>visitor.groupId)).size,1);assert.equal(selected.length,local.filter(peer=>peer.groupId===visitor.groupId).length);}
+  if(!map.outdoor){const resident=sampleTownVisitors(visitors,{state,time:0,motion:false}).find(visitor=>visitor.interactive),near={...state,position:{x:resident.x,z:resident.z+.6}};assert.equal(nearestTownVisitor([resident],near)?.id,resident.id);assert.equal(nearestTownVisitor([resident],{...near,mapId:TOWN_START_MAP}),null);}
+ }
 });

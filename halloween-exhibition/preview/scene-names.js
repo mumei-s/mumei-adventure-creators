@@ -30,6 +30,7 @@ function nameCandidates({map,state,actors=[],homes=[]}){
   result.push({id:'actor:'+(creatorId||groupId||actor.id),kind:'person',text,x:actor.x,z:actor.z,distance:distance(actor)});
  }
  for(const npc of map.npcs||[]){
+  if(npc.creatorHome&&actors.some(actor=>actor.creatorHome&&actor.creatorId===npc.creatorId&&(!actor.mapId||actor.mapId===map.id)))continue;
   if(!finitePoint(npc)||npc.interactive===false||npc.appearance==='cat'||npc.name==='黒猫'||!visiblePerson(map,from,npc))continue;
   const text=labelText(npc.name);if(text)result.push({id:'npc:'+npc.id,kind:'person',text,x:npc.x,z:npc.z,distance:distance(npc)});
  }

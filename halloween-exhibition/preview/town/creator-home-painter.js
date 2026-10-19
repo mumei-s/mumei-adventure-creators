@@ -87,6 +87,7 @@ function motif(c,kind,x,y,size,trim){
     default:star(c,0,0,18,gold,ink);
   }c.restore();
 }
+export function drawCreatorHomeMotif2D(c,kind,x,y,size,trim='#cfb77c'){motif(c,kind,x,y,size,trim);}
 function window(c,x,y,w=41,h=51,trim='#795b43',open=false){
   box(c,x-w/2-5,y-h-5,w+10,h+11,shade(trim,-.2),shade(trim,.2),2);
   const path=()=>{c.beginPath();c.roundRect(x-w/2,y-h,w,h,2);};glazing(c,path,x,y,w,h,trim,'#d4be91');

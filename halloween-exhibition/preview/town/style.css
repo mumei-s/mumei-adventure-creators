@@ -82,3 +82,8 @@ body[data-game-controls=right] #town-main[data-town-narrow=true] .town-controls{
 #town-webgl{position:absolute;inset:0;display:block;width:100%;height:100%;touch-action:none;outline-offset:-4px}
 
 .creator-home-identity{display:flex;align-items:center;gap:16px;margin:16px 0}.creator-home-identity img{width:96px;height:96px;border-radius:50%;object-fit:cover;border:2px solid #c8ac75}.creator-home-identity h3{font-size:17px;overflow-wrap:anywhere}.creator-home-work{display:grid;gap:10px;color:inherit;text-decoration:none}.creator-home-work img{width:100%;max-height:250px;object-fit:contain;border-radius:6px}.creator-home-work span{font-size:13px;color:#e5c487}.town-card[style*="--home-color"]{border-top:3px solid var(--home-color)}
+
+/* Small route pointer stays inside the game surface on every display size. */
+.home-route{position:absolute;z-index:6;top:9px;left:9px;display:flex;align-items:center;gap:8px;max-width:calc(100% - 18px);min-height:44px;padding:7px 11px;border:1px solid #e7bd6e99;border-radius:12px;background:#17232dcc;color:#fff0cd;box-shadow:0 2px 14px #0004;text-align:left;backdrop-filter:blur(4px)}
+.home-route[hidden]{display:none}.home-route>span:last-child{min-width:0}.home-route strong,.home-route small{display:block;overflow-wrap:anywhere}.home-route strong{font-size:12px;line-height:1.35}.home-route small{font-size:10px;color:#e7d8ba;line-height:1.4}#home-route-arrow{font-size:24px;color:#ffda83;line-height:1;flex:none}
+@media(max-height:480px){.home-route{top:5px;left:5px;padding:5px 8px}.home-route strong{font-size:11px}.home-route small{font-size:9px}}

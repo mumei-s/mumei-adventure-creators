@@ -70,3 +70,10 @@ test('long creator descriptions stay short, and invalid projections never create
  const f=fixture();f.update({map:map(),state,actors:[{id:'a',name:'あ'.repeat(40),x:2,z:2},{id:'b',name:'Invalid',x:3,z:2}],project:point=>point.x===3?{x:NaN,y:10}:project(point)});assert.equal(visible(f).length,1);assert.equal(Array.from(visible(f)[0].textContent).length,22);assert(visible(f)[0].textContent.endsWith('…'));
  f.update({map:map(),state,actors:[],project});assert.equal(visible(f).length,0);
 });
+
+test('a moving approved home character replaces its static fallback name at the correct position',()=>{
+ const f=fixture(),scene=map();scene.npcs=[{id:'neighbor-c',creatorHome:true,creatorId:'c',name:'Creator',x:2,z:2}];
+ const actor={id:'home:town:c',creatorId:'c',creatorHome:true,name:'Creator',mapId:'town',x:5,z:3};
+ f.update({map:scene,state,actors:[actor],project});assert.equal(visible(f).length,1);assert.equal(visible(f)[0].textContent,'Creator');assert.equal(visible(f)[0].style.left,Math.round(project(actor).x)+'px');
+ f.update({map:scene,state,actors:[],project});assert.equal(visible(f).length,1);assert.equal(visible(f)[0].style.left,Math.round(project(scene.npcs[0]).x)+'px');
+});

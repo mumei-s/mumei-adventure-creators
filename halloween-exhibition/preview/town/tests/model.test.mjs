@@ -10,8 +10,8 @@ function win(state,id){let battle=startTownBattle(state,id);for(let i=0;i<100&&!
 function actOne(){let s=initialTownState();for(const [id,choice]of [['keeper','accept'],['baker','bread'],['keeper','deliver'],['waxkeeper','wick'],...TOWN_LAMPS.map(id=>[id]),['keeper']])s=action(s,id,choice);return s;}
 function actTwo(route='route-quiet'){let s=actOne();s=action(s,'archivist');for(const color of ['amber','blue','silver'])s=action(s,'gear-console',color);s=win(s,'canal-mist');s=action(s,'moon-pool');s=action(s,'sluice',route);return s;}
 
-test('all seven authored maps are rectangular; every target has a reachable interaction position',()=>{
-  assert.equal(Object.keys(TOWN_MAPS).length,7);
+test('all story, housing and creator interior maps are rectangular; every target has a reachable interaction position',()=>{
+  assert.equal(Object.keys(TOWN_MAPS).length,23);
   for(const map of Object.values(TOWN_MAPS)){
     assert.equal(map.tiles.length,map.height);assert.ok(map.tiles.every(row=>row.length===map.width));
     assert.ok(isTownWalkable(map,map.spawn.x,map.spawn.z),`spawn ${map.id}`);

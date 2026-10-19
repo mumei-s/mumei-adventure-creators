@@ -70,7 +70,7 @@ test('town is volumetric batched geometry with the exact story footprints and do
 test('every enterable story room has raised furniture and keeps the original exit',()=>{
   for(const map of Object.values(TOWN_MAPS).filter(item=>item.outdoor!==true&&item.id!=='lantern-town')){
     const room=createTownSceneGeometry(map),bounds=new THREE.Box3().setFromObject(room.root);assert.ok(bounds.max.y>=2.5);assert.ok(room.root.children.some(item=>item.isInstancedMesh));
-    assert.deepEqual(map.portals[0].spawn,getTownMap().buildings.find(building=>building.id===map.id)?{x:getTownMap().buildings.find(building=>building.id===map.id).door.x,z:getTownMap().buildings.find(building=>building.id===map.id).door.z+.8}:null);room.dispose();
+    assert.deepEqual(map.portals[0].spawn,map.creatorHome?map.creatorHome.door:getTownMap().buildings.find(building=>building.id===map.id)?{x:getTownMap().buildings.find(building=>building.id===map.id).door.x,z:getTownMap().buildings.find(building=>building.id===map.id).door.z+.8}:null);room.dispose();
   }
 });
 
@@ -103,7 +103,7 @@ test('visitor frame textures and removed actor materials stay bounded across cha
   const {world}=harness();await world.ready;const state=initialTownState();state.position={x:28,z:28};
   for(let group=0;group<30;group++){
     const visitors=Array.from({length:6},(_,n)=>({id:`visitor-${group}-${n}`,x:27+n*.25,z:28,sprite:{image:{width:768,height:768},frame:[0,0,768,768],anchorY:.95,contentHeight:700},heightPx:60}));world.render({state,creatorActors:visitors,motion:false});
-    const status=world.status();assert.ok(status.actors<=13);assert.ok(status.spriteFrames<=80);assert.ok(status.spriteBytes<=32*1024*1024);
+    const status=world.status();assert.ok(status.actors<=getTownMap(state.mapId).npcs.length+visitors.length+1);assert.ok(status.spriteFrames<=80);assert.ok(status.spriteBytes<=32*1024*1024);
   }
   world.destroy();assert.equal(world.status().actors,0);assert.equal(world.status().spriteBytes,0);
 });

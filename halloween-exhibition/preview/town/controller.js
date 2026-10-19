@@ -19,7 +19,7 @@ export function createTownSession({store,state:provided,onChange=()=>{},onNotice
   const position={x:home.door.x,z:home.door.z+.85};
   if(!isTownWalkable(CREATOR_QUARTER_ID,position.x,position.z))return null;
   const next={...state,mapId:CREATOR_QUARTER_ID,position,facing:'up',visited:[...new Set([...state.visited,CREATOR_QUARTER_ID])],updatedAt:Date.now()};
-  replace(next);return {transition:true,state,notice:home.creatorName+'の家に着きました。玄関から作品を開けます。'};
+  replace(next);return {transition:true,state,notice:home.creatorName+'の家に着きました。玄関で「家の中へ入る」を選べます。'};
  }
  function interact(targetId,choiceId){
   if(battle)return null;const target=targetId||nearestTownTarget(state)?.id;if(!target)return null;

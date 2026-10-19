@@ -2,15 +2,16 @@ import test from 'node:test';import assert from 'node:assert/strict';import fs f
 import {CREATOR_HOMES,getCreatorHome} from '../creator-homes.js';
 import {creatorHomeProfile} from '../creator-home-profile.js';
 import {createTownSession} from '../controller.js';
+import {getTownMap,initialTownState} from '../town-model.js';
 import {createReadingJourney} from '../reading-journey.js';
 const source=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8'),archive=JSON.parse(fs.readFileSync(new URL('../../data/archive.json',import.meta.url),'utf8'));
 function interactHarness(home,{mapId='creator-quarter',position=home.door}={}){
- const calls=[],state={mapId,position};const context={ready:true,CREATOR_HOMES,Math,session:{snapshot:()=>({state}),interact:(...args)=>calls.push(['story',...args])},contextTarget:()=>({id:home.id}),characterArt:{visitor:()=>null},showCreatorHome:id=>calls.push(['home',id]),showVisitor:()=>{},applyInteraction:()=>{}};
- vm.runInNewContext(source.match(/^function interact\(targetId,choiceId\).*$/m)[0]+';this.run=interact;',context);return {calls,run:context.run};
+ const calls=[],state={...initialTownState(),mapId,position},session=createTownSession({state});const context={ready:true,CREATOR_HOMES,Math,getTownMap,session,contextTarget:()=>({id:home.id}),characterArt:{visitor:()=>null},showCreatorHome:id=>calls.push(['home',id]),showVisitor:()=>{},applyInteraction:result=>calls.push(['result',result])};
+ vm.runInNewContext(source.match(/^function interact\(targetId,choiceId\).*$/m)[0]+';this.run=interact;',context);return {calls,session,run:context.run};
 }
-test('each real front door opens its own creator page while remote or other-map interaction cannot',()=>{
- for(const home of CREATOR_HOMES){const valid=interactHarness(home);valid.run();assert.deepEqual(valid.calls,[['home',home.creatorId]]);assert.ok(creatorHomeProfile(archive,home.creatorId));
- for(const opts of[{mapId:'lantern-town'},{position:{x:home.door.x+3,z:home.door.z}}]){const far=interactHarness(home,opts);far.run(home.id);assert.deepEqual(far.calls,[]);}}
+test('each front door enters its own walkable interior and remote interactions cannot teleport inside',()=>{
+ for(const home of CREATOR_HOMES){const valid=interactHarness(home);valid.run();assert.equal(valid.session.snapshot().state.mapId,home.interiorId);assert.equal(valid.calls[0][0],'result');assert.equal(valid.calls[0][1].transition,true);assert.ok(creatorHomeProfile(archive,home.creatorId));
+ for(const opts of[{mapId:'lantern-town'},{position:{x:home.door.x+3,z:home.door.z}}]){const far=interactHarness(home,opts);far.run(home.id);assert.equal(far.session.snapshot().state.mapId,opts.mapId||'creator-quarter');assert.ok(!far.calls.some(call=>call[1]?.transition));}}
 });
 function node(tag,text,cls){return {tag,textContent:text,className:cls,children:[],append(...items){this.children.push(...items)},remove(){},style:{setProperty(){}},setAttribute(){}};}
 test('home page includes the correct official note and real works, and pending homes keep their profile',()=>{

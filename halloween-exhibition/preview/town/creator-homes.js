@@ -2,7 +2,8 @@
  * article/profile motifs. These are game scenery, never anyone's real address. */
 export const CREATOR_QUARTER_ID='creator-quarter';
 export const CREATOR_QUARTER_CONNECTION=Object.freeze({
- street:Object.freeze({x:18.5,z:43.5}),streetArrival:Object.freeze({x:18.5,z:44.8}),
+ street:Object.freeze({x:24.5,z:30.5}),streetArrival:Object.freeze({x:24.5,z:32}),
+ southStreet:Object.freeze({x:18.5,z:43.5}),
  quarterArrival:Object.freeze({x:23.5,z:44.5}),quarterExit:Object.freeze({x:23.5,z:46.5}),
 });
 export const CREATOR_HOMES_NOTICE='作者のキャラクターや作品をイメージした、ゲーム内の架空の家です。実在する住まいではありません。';
@@ -37,7 +38,7 @@ const designUses=Object.freeze({
 export const CREATOR_HOMES=Object.freeze(designs.map(([creatorId,creatorName,homeTheme,homeLabel,wall,roof,trim,motif],index)=>{
  const x=3+(index%4)*11,z=3+Math.floor(index/4)*11,[homeUse,homeConstruction]=designUses[creatorId];
  return Object.freeze({id:'home-'+creatorId,kind:'creator-home',creatorId,creatorName,label:creatorName+'の家',homeLabel,homeTheme,
-  homePalette:Object.freeze({wall,roof,trim}),motif,homeUse,homeConstruction,publicProfileURL:'https://note.com/'+creatorId,designSource:'./data/creator-home-sources.json',fictional:true,x,z,w:7,h:5,door:Object.freeze({x:x+3.5,z:z+5.5})});
+  homePalette:Object.freeze({wall,roof,trim}),motif,homeUse,homeConstruction,interiorId:'creator-home-'+creatorId,interiorSpawn:Object.freeze({x:9.5,z:12.5}),publicProfileURL:'https://note.com/'+creatorId,designSource:'./data/creator-home-sources.json',fictional:true,x,z,w:7,h:5,door:Object.freeze({x:x+3.5,z:z+5.5})});
 }));
 export function getCreatorHome(creatorId){return CREATOR_HOMES.find(home=>home.creatorId===creatorId)||null;}
 export function createCreatorQuarter(){
@@ -49,13 +50,15 @@ export function createCreatorQuarter(){
  const buildings=CREATOR_HOMES.map(home=>({...home,homePalette:{...home.homePalette},door:{...home.door}}));
  for(const home of buildings){fill(home.x,home.z,home.w,home.h,'b');cells[Math.floor(home.door.z)][Math.floor(home.door.x)]='.';}
  const targets=buildings.map(home=>({id:home.id,type:'creator-home',kind:'creator-home',creatorId:home.creatorId,
-  name:home.creatorName+'の家',label:home.creatorName+'の家を訪ねる',x:home.door.x,z:home.door.z}));
+  name:home.creatorName+'の家',label:home.creatorName+'の家に入る',portal:true,to:home.interiorId,spawn:{...home.interiorSpawn},arrivalFacing:'up',x:home.door.x,z:home.door.z}));
  const decorations=buildings.flatMap(home=>[
   {id:'lamp-'+home.creatorId,kind:'lamp',x:home.x+1,z:home.z+6.35,radius:.12},
   {id:'tree-'+home.creatorId,kind:home.homeTheme==='cat-garden'||home.homeTheme==='chamomile'?'tree':'autumnTree',x:home.x+8.6,z:home.z+2.5,radius:.32},
  ]);
  return {id:CREATOR_QUARTER_ID,name:'創り手の街区',outdoor:true,width,height,tiles:cells.map(row=>row.join('')),
-  spawn:{...CREATOR_QUARTER_CONNECTION.quarterArrival},buildings,targets,decorations,npcs:[],furniture:[],
+  spawn:{...CREATOR_QUARTER_CONNECTION.quarterArrival},buildings,targets,decorations,
+  npcs:[...buildings.map(home=>({id:'neighbor-'+home.creatorId,name:home.creatorName,role:home.homeLabel,creatorId:home.creatorId,creatorHome:true,mapId:CREATOR_QUARTER_ID,appearance:home.homeTheme,x:home.door.x+2.25,z:home.door.z+1.4,dialogue:'ここは'+home.creatorName+'の'+home.homeLabel+'。玄関から中に入ると、制作の部屋と作品を訪ねられます。'})),
+   {id:'quarter-guide',name:'街区の案内人 ルーチェ',role:'参加者の家の案内',fictional:true,mapId:CREATOR_QUARTER_ID,appearance:'keeper',x:20.5,z:44.5,dialogue:'この先の四本の通りに、16人のクリエイターの家があります。家の前にもクリエイターがいます。名前のある玄関から入ると、その人だけの制作部屋と作品を訪ねられます。帰りは南の案内門から、星灯りの街の広場へ。'}],furniture:[],
   portals:[{id:'leave-creator-quarter',name:'星灯りの街へ戻る',label:'星灯りの街へ戻る',type:'portal',kind:'door',
    ...CREATOR_QUARTER_CONNECTION.quarterExit,to:'lantern-town',spawn:{...CREATOR_QUARTER_CONNECTION.streetArrival}}],
   districts:[{name:'光とお菓子の並木',x:23.5,z:9.5},{name:'物語と月の小径',x:23.5,z:20.5},{name:'花と相棒の通り',x:23.5,z:31.5},{name:'三つ星と陽だまりの路地',x:23.5,z:42.5}],notice:CREATOR_HOMES_NOTICE};

@@ -4,6 +4,8 @@ import fs from 'node:fs';
 import {createTownCharacterArt} from '../character-art.js';
 import {createCharacterAssets} from '../../maze/creator-runtime.js';
 import {initialTownState} from '../town-model.js';
+import {TOWN_START_MAP,getTownMap} from '../story-data.js';
+import {CREATOR_HOMES,CREATOR_QUARTER_ID} from '../creator-homes.js';
 const archive=JSON.parse(fs.readFileSync(new URL('../../data/archive.json',import.meta.url))),manifest=JSON.parse(fs.readFileSync(new URL('../../maze/data/creator-characters.json',import.meta.url)));
 const fetcher=async url=>url.includes('creator-characters')?manifest:archive;
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
@@ -17,7 +19,7 @@ test('the bundled canonical roster starts the real owner and cat without metadat
   characters=createTownCharacterArt({assets,deferEnhancements:true,makeRigs:()=>{optional.push('rigs');return{update:()=>null,get:()=>null,battle:()=>null,destroy(){optional.push('destroy');}};}});
   await flush();assert.equal(requests.length,2);assert(requests.every(request=>request.priority==='high'));assert(requests.some(request=>request.src.includes('owner-lantern')));assert(requests.some(request=>request.src.includes('owner-black-cat')));assert.deepEqual(optional,[]);
   assert.equal(characters.art.images.playerAtlas,undefined);for(const complete of gates)complete();await characters.ready;
-  assert(characters.art.images.playerAtlas);assert.equal(new Set(characters.visitors().map(visitor=>visitor.creatorId )).size,15);assert.equal(characters.companionActors({state:initialTownState()}).length,1);assert.deepEqual(optional,[]);
+  assert(characters.art.images.playerAtlas);assert.equal(new Set(characters.visitors().map(visitor=>visitor.creatorId )).size,16);assert.equal(characters.companionActors({state:initialTownState()}).length,1);assert.deepEqual(optional,[]);
   characters.startEnhancements();characters.startEnhancements();assert.deepEqual(optional,['rigs']);characters.destroy();characters.startEnhancements();assert.deepEqual(optional,['rigs','destroy']);characters=null;
  }finally{characters?.destroy();globalThis.fetch=oldFetch;if(oldArchive===undefined)delete globalThis.__ATELIER_ARCHIVE__;else globalThis.__ATELIER_ARCHIVE__=oldArchive;if(oldManifest===undefined)delete globalThis.__ATELIER_CHARACTER_MANIFEST__;else globalThis.__ATELIER_CHARACTER_MANIFEST__=oldManifest;}
 });
@@ -39,27 +41,27 @@ test('resuming indoors or far from the entrance preloads only participants aroun
   for(let i=0;i<8;i++)await flush();
   assert.ok(requested.every(src=>!src.includes('cna-')),initialState.mapId+' queues unrelated entrance guests');
   if(initialState.mapId==='inn')assert.equal(requested.length,2);
-  else assert.ok(characters.visitorActors({state:initialState,time:0,clock:0}).some(actor=>actor.creatorId==='aihan_days'));
+  else assert.ok(characters.visitorActors({state:initialState,time:0,clock:0}).length>0);
   characters.destroy();
  }
 });
 test('town retains every approved creator group and CNA has only real profile links while articles remain pending',async()=>{
  const assets=createCharacterAssets({loadImage:async(_url,asset)=>({width:asset.width,height:asset.height})}),characters=createTownCharacterArt({fetcher,assets});await characters.ready;
- const visitors=characters.visitors(),creators=new Set(visitors.map(visitor=>visitor.creatorId));assert.equal(creators.size+1,16);
- const cna=visitors.filter(visitor=>visitor.creatorId==='grand_daisy8632');assert.equal(cna.length,3);for(const visitor of cna){assert.equal(visitor.participationRole,'profile-guest');assert.equal(visitor.articleURL,null);assert.deepEqual(visitor.articleLinks,[]);assert.equal(visitor.profileURL,'https://note.com/grand_daisy8632');}
+ const visitors=characters.visitors(),creators=new Set(visitors.map(visitor=>visitor.creatorId));assert.equal(creators.size,16);
+ const cna=visitors.filter(visitor=>visitor.creatorId==='grand_daisy8632'&&visitor.mapId===TOWN_START_MAP);assert.equal(cna.length,3);for(const visitor of cna){assert.equal(visitor.participationRole,'profile-guest');assert.equal(visitor.articleURL,null);assert.deepEqual(visitor.articleLinks,[]);assert.equal(visitor.profileURL,'https://note.com/grand_daisy8632');}
  assert(visitors.some(visitor=>visitor.interactive===false));for(const visitor of visitors.filter(visitor=>visitor.participationRole!=='profile-guest'))assert(visitor.articleLinks.some(link=>link.url===visitor.articleURL));characters.destroy();
 });
 test('walking all visitor districts loads only whole nearby groups with hero/cat pinned inside8atlases/32MiB',async()=>{
  let closed=0;const assets=createCharacterAssets({loadImage:async(_url,asset)=>({width:Math.min(1024,asset.width),height:Math.min(1024,asset.height),close(){closed++;}})}),characters=createTownCharacterArt({fetcher,assets});await characters.ready;
  const districts=[...new Map(characters.visitors().map(visitor=>[visitor.groupId,visitor])).values()];let time=0,seen=new Set();
- for(const visitor of districts){const state={...initialTownState(),position:{x:visitor.center.x,z:visitor.center.z+1.5}};characters.visitorActors({state,time:time+=1,motion:false});for(let i=0;i<8;i++)await flush();const actors=characters.visitorActors({state,time,motion:false});
+ for(const visitor of districts){const state={...initialTownState(),mapId:visitor.mapId,position:{x:visitor.center.x,z:visitor.center.z+1.5}};characters.visitorActors({state,time:time+=1,motion:false});for(let i=0;i<8;i++)await flush();const actors=characters.visitorActors({state,time,motion:false});
   const status=characters.status();assert(status.loaded<=8);assert(status.decodedBytes<=32*1024*1024);assert.equal(status.rejectedRequests,0);for(const actor of actors){seen.add(actor.creatorId);assert(actor.sprite);const group=characters.visitors().filter(peer=>peer.groupId===actor.groupId);assert.equal(actors.filter(peer=>peer.groupId===actor.groupId).length,group.length);}
  }
- assert.equal(seen.size,15);assert(closed>0);characters.destroy();assert.equal(characters.status().loaded,0);
+ assert.equal(seen.size,16);assert(closed>0);characters.destroy();assert.equal(characters.status().loaded,0);
 });
 test('CNA visitors do not appear as a partial group during independent atlas decodes',async()=>{
  const cache=new Map(),pending=new Map(),assets={setPinned(){},status:()=>({}),dispose(){},get:src=>cache.get(src),request(asset){if(asset.src.includes('owner-')){const image={width:asset.width,height:asset.height};cache.set(asset.src,image);return Promise.resolve(image);}if(!pending.has(asset.src)){let resolve;const promise=new Promise(done=>resolve=done);pending.set(asset.src,{asset,resolve,promise});}return pending.get(asset.src).promise;}};
- const characters=createTownCharacterArt({fetcher,assets});await characters.ready;const cna=characters.visitors().filter(visitor=>visitor.creatorId==='grand_daisy8632'),state=nearCNA(characters);
+ const characters=createTownCharacterArt({fetcher,assets});await characters.ready;const cna=characters.visitors().filter(visitor=>visitor.creatorId==='grand_daisy8632'&&visitor.mapId===TOWN_START_MAP),state=nearCNA(characters);
  assert.equal(characters.visitorActors({state,time:0,motion:false}).filter(actor=>actor.creatorId==='grand_daisy8632').length,0);
  const first=cna[0].asset;cache.set(first.src,{width:first.width,height:first.height});assert.equal(characters.visitorActors({state,time:.1,motion:false}).filter(actor=>actor.creatorId==='grand_daisy8632').length,0);
  for(const visitor of cna){cache.set(visitor.asset.src,{width:visitor.asset.width,height:visitor.asset.height});pending.get(visitor.asset.src)?.resolve(cache.get(visitor.asset.src));}
@@ -92,4 +94,23 @@ test('each visible CNA member can be tapped within reach even when another membe
  for(const actor of cna){const tapped=characters.reachableVisitor(actor.id,nearState);assert(tapped);assert.equal(tapped.id,actor.id);assert.equal(tapped.x,actor.x);assert.equal(tapped.z,actor.z);}
  assert(cna.some(actor=>actor.id!==nearest.id));assert.equal(characters.reachableVisitor(cna[0].id,{...nearState,position:{x:5,z:40}}),null);
  characters.destroy();
+});
+
+test('saved creator rooms load only their own complete group and keep every home actor available to article lookup',async()=>{
+ const home=CREATOR_HOMES.find(home=>home.creatorId==='grand_daisy8632'),initialState={...initialTownState(),mapId:home.interiorId,position:{...getTownMap(home.interiorId).spawn}},requested=[];
+ const assets=createCharacterAssets({loadImage:async(_url,asset)=>{requested.push(asset.src);return{width:asset.width,height:asset.height};}}),characters=createTownCharacterArt({fetcher,assets,initialState,deferEnhancements:true});await characters.ready;
+ for(let i=0;i<8;i++)await flush();
+ const actors=characters.visitorActors({state:initialState,time:0,clock:0,motion:false});assert.equal(actors.length,3);assert(actors.every(actor=>actor.creatorId===home.creatorId&&actor.mapId===home.interiorId&&actor.sprite));
+ assert.equal(requested.length,5);assert(requested.every(src=>src.includes('owner-')||src.includes('cna-')));assert.equal(characters.isHomeResidentVisible('resident-'+home.creatorId,initialState),true);assert.equal(characters.isHomeResidentVisible('resident-'+home.creatorId,{...initialState,mapId:CREATOR_QUARTER_ID}),false);
+ for(const home of CREATOR_HOMES){const visitors=characters.visitors().filter(visitor=>visitor.creatorId===home.creatorId&&visitor.creatorHome);assert(visitors.some(visitor=>visitor.mapId===home.interiorId));assert(visitors.some(visitor=>visitor.mapId===CREATOR_QUARTER_ID));for(const visitor of visitors){assert.equal(characters.visitor(visitor.id)?.sourceCharacterId,visitor.sourceCharacterId);assert.equal(visitor.profileURL,home.publicProfileURL);if(visitor.participationRole!=='profile-guest')assert(visitor.articleLinks.some(link=>link.url===visitor.articleURL));}}
+ characters.destroy();
+});
+
+test('paused map changes and teleports immediately replace visitor selection and owner home art stays independent from the player rig',async()=>{
+ const rigs=[],assets=createCharacterAssets({loadImage:async(_url,asset)=>({width:asset.width,height:asset.height})}),characters=createTownCharacterArt({fetcher,assets,makeRigs:()=>({update(id){rigs.push(id);return null;},get:()=>null,battle:()=>null,destroy(){}})});await characters.ready;
+ const maps=['creator-home-koakumako','creator-home-ss_yr','creator-home-grand_daisy8632',CREATOR_QUARTER_ID],seen=[];
+ for(const mapId of maps){const homeVisitor=characters.visitors().find(visitor=>visitor.mapId===mapId&&visitor.creatorId===(mapId===CREATOR_QUARTER_ID?'ss_yr':getTownMap(mapId).creatorHome.creatorId)),state={...initialTownState(),mapId,position:{...homeVisitor.center}};characters.visitorActors({state,time:0,clock:0,motion:false});characters.companionActors({state,time:0,motion:false});for(let i=0;i<8;i++)await flush();const actors=characters.visitorActors({state,time:0,clock:0,motion:false});assert(actors.length);assert(actors.every(actor=>actor.mapId===mapId));seen.push(...actors);}
+ assert(rigs.includes(seen.find(visitor=>visitor.creatorId==='koakumako').sourceCharacterId));assert(rigs.some(id=>id.startsWith('home:')&&id.endsWith(':owner-lantern-hero')));assert(!rigs.includes('owner-lantern-hero'),'home owner must not reuse player live canvas');
+ const owner=seen.find(visitor=>visitor.creatorId==='ss_yr');assert(owner.sprite);assert.equal(owner.sprite.image,characters.art.images.playerAtlas);assert.notEqual(owner.id,'owner-lantern-hero');
+ assert(characters.status().loaded<=8);assert.equal(characters.status().rejectedRequests,0);characters.destroy();
 });

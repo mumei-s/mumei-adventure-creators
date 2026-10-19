@@ -81,12 +81,15 @@ export function interactTown(previous,targetId,choiceId){
   if(!target)return notice(previous,'近くに調べられるものは見つからない。');
   if(Math.hypot(target.x-previous.position.x,target.z-previous.position.z)>2.05)return notice(previous,'もう少し近づいてみよう。');
   const s=copy(previous),f=s.flags;
-  if(target.type==='portal'){
+  if(target.type==='portal'||target.type==='creator-home'&&target.portal===true){
     if(target.to==='clocktower'&&!f.sluiceRepaired)return say(previous,'時計塔の扉','時計の扉はびくともしない。運河の水門を直して、水の力を戻そう。');
+    if(getTownMap(target.to).id!==target.to||!isTownWalkable(target.to,target.spawn?.x,target.spawn?.z))return notice(previous,'入口の先を確認できませんでした。少し待って、もう一度訪ねてください。');
     s.mapId=target.to;s.position={...target.spawn};
-    s.facing=target.to===TOWN_START_MAP?'down':'up';if(!s.visited.includes(s.mapId))s.visited.push(s.mapId);
+    s.facing=target.arrivalFacing||(target.to===TOWN_START_MAP?'down':'up');if(!s.visited.includes(s.mapId))s.visited.push(s.mapId);
     return {state:s,notice:getTownMap(s.mapId).name,transition:true};
   }
+  if(target.type==='creator-works')return {state:previous,creatorWorks:target.creatorId};
+  if(target.dialogue)return say(previous,target.name,target.dialogue);
   if(targetId==='castle-exit')return {state:previous,exit:true};
   if(targetId==='keeper'){
     if(!f.intro){if(choiceId==='accept'){f.intro=true;return say(s,target.name,'ありがとう。まず市場のミレットへ。灯りの作業を始める前に、約束していたパンを取りに行ってほしい。店は城門から西、道を下ったところだ。');}return say(previous,target.name,'祭りの夜なのに、市場・広場・庭園の灯籠が眠ったままなんだ。いっしょに、街の灯りを起こしてくれない？',[choice('accept','街の灯りを取り戻す')]);}

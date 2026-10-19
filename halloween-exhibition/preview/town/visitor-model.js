@@ -1,5 +1,6 @@
 import {isInPalaceForecourt} from './palace-forecourt.js?v=20261019-journey1';
 import {TOWN_START_MAP,getTownMap,isTownWalkable,mapTargets} from './story-data.js?v=20261019-homes2';
+import {CREATOR_HOMES,CREATOR_QUARTER_ID} from './creator-homes.js?v=20261019-homes2';
 import {sampleTravel} from '../maze/patrol-model.js?v=20261017-review1';
 import {locomotionPhase,yawForVector,shortestTurn,facingForVector} from '../maze/movement-runtime.js?v=20261017-review1';
 
@@ -31,27 +32,27 @@ export const TOWN_VISITOR_SLOTS=Object.freeze([
 const hash=value=>{let n=2166136261;for(const c of String(value))n=Math.imul(n^c.charCodeAt(0),16777619);return n>>>0;};
 const mod=(n,d)=>(n%d+d)%d;
 function offsets(count){return Array.from({length:count},(_,i)=>(i-(count-1)/2)*.95);}
-function pointSafe(point,offsets,occupied=[]){
+function pointSafe(point,offsets,occupied=[],{mapId=TOWN_START_MAP,creatorId=null,map=mapId,targets=mapTargets(mapId)}={}){
   return offsets.every(dx=>{
     const p={x:point.x+dx,z:point.z};
-    return !isInPalaceForecourt(p,.4)&&isTownWalkable(TOWN_START_MAP,p.x,p.z,.23)&&!mapTargets(TOWN_START_MAP).some(t=>Math.hypot(t.x-p.x,t.z-p.z)<1.25)&&!occupied.some(t=>Math.hypot(t.x-p.x,t.z-p.z)<2.7);
+    return (mapId!==TOWN_START_MAP||!isInPalaceForecourt(p,.4))&&isTownWalkable(map,p.x,p.z,.23)&&!targets.some(t=>!(t.type==='npc'&&t.creatorHome&&t.creatorId===creatorId)&&Math.hypot(t.x-p.x,t.z-p.z)<(mapId===TOWN_START_MAP&&t.id==='enter-creator-quarter'?4.1:1.25))&&!occupied.some(t=>Math.hypot(t.x-p.x,t.z-p.z)<2.7);
   });
 }
-function segmentSafe(a,b,offsets,occupied=[]){const length=Math.hypot(b.x-a.x,b.z-a.z),steps=Math.max(1,Math.ceil(length/.08));for(let n=0;n<=steps;n++){const t=n/steps;if(!pointSafe({x:a.x+(b.x-a.x)*t,z:a.z+(b.z-a.z)*t},offsets,occupied))return false;}return true;}
-function makeRoute(center,offsets,groupId,occupied){
+function segmentSafe(a,b,offsets,occupied=[],options={}){const length=Math.hypot(b.x-a.x,b.z-a.z),steps=Math.max(1,Math.ceil(length/.08));for(let n=0;n<=steps;n++){const t=n/steps;if(!pointSafe({x:a.x+(b.x-a.x)*t,z:a.z+(b.z-a.z)*t},offsets,occupied,options))return false;}return true;}
+function makeRoute(center,offsets,groupId,occupied,options={}){
   const points=[{...center}];
   const sign=hash(groupId)%2?1:-1;
   for(const[dx,dz]of [[sign,0],[0,1],[-sign,0],[0,-1]]){
     // Walk a visible stretch of street, shortening only where a real obstacle
     // or another group's reserved route would make the full leg unsafe.
-    for(const length of [2.6,2.1,1.6,1.1,.65]){
+    for(const length of options.lengths||[2.6,2.1,1.6,1.1,.65]){
       const next={x:center.x+dx*length,z:center.z+dz*length};
-      if(segmentSafe(center,next,offsets,occupied)){points.push(next,{...center});break;}
+      if(segmentSafe(center,next,offsets,occupied,options)){points.push(next,{...center});break;}
     }
     if(points.length>=5)break;
   }
   // Every group can at least breathe/turn in place when a street is narrow.
-  const speed=.76+(hash(groupId)%9)*.014,wait=.85+(hash(groupId)%7)*.06,ramp=.42,turnDuration=.65;
+  const speed=options.speed??(.76+(hash(groupId)%9)*.014),wait=options.wait??(.85+(hash(groupId)%7)*.06),ramp=.42,turnDuration=.65;
   const segments=[];let elapsed=0,distance=0;
   for(let i=0;i<points.length;i++){
     const a=points[i],b=points[(i+1)%points.length],length=Math.hypot(b.x-a.x,b.z-a.z),duration=sampleTravel(length,speed,ramp,0).duration;
@@ -91,6 +92,34 @@ export function placeTownVisitors(roster){
   return {visitors,omitted};
 }
 
+
+/** Reuse each approved character, including paired companions, at their own
+ * imaginary atelier. Housing instances keep distinct IDs from the player and
+ * street guests; their atlas data and verified identity stay untouched. */
+export function placeCreatorHomeVisitors(roster){
+  const source=Array.isArray(roster)?roster:[roster?.hero,...(roster?.npcs||[])].filter(Boolean),byCreator=new Map(),visitors=[],omitted=[];
+  for(const npc of source){if(!npc?.id||!npc.creatorId||!npc.asset?.src)continue;if(!byCreator.has(npc.creatorId))byCreator.set(npc.creatorId,[]);byCreator.get(npc.creatorId).push(npc);}
+  const mapIds=[CREATOR_QUARTER_ID,...CREATOR_HOMES.map(home=>home.interiorId||`creator-home-${home.creatorId}`)];
+  for(const mapId of mapIds){
+    const map=getTownMap(mapId);if(map.id!==mapId)continue;const occupied=[];
+    for(const resident of (map.npcs||[]).filter(npc=>npc.creatorHome&&npc.creatorId)){
+      const members=[...(byCreator.get(resident.creatorId)||[])].sort((a,b)=>(a.groupOrder??0)-(b.groupOrder??0)||a.id.localeCompare(b.id));
+      if(!members.length){omitted.push({creatorId:resident.creatorId,mapId,reason:'missing-approved-home-character'});continue;}
+      if(members.length>3){omitted.push({creatorId:resident.creatorId,mapId,reason:'home-group-too-large'});continue;}
+      const groupId=`${members[0].groupId||resident.creatorId}:${mapId}`,positions=offsets(members.length),options={mapId,map,targets:mapTargets(mapId),creatorId:resident.creatorId,lengths:map.outdoor?[1.6,1.1,.75,.4]:[1.2,.9,.6,.35],speed:map.outdoor?.62:.48,wait:map.outdoor?1.1:1.6};
+      let center=null;
+      for(const[dx,dz]of [[0,0],[0,.6],[0,1.2],[-.6,0],[.6,0],[0,-.6],[-1,1],[1,1]]){const candidate={x:resident.x+dx,z:resident.z+dz};if(pointSafe(candidate,positions,occupied,options)){center=candidate;break;}}
+      if(!center){omitted.push({creatorId:resident.creatorId,mapId,reason:'no-safe-home-capacity'});continue;}
+      const route=makeRoute(center,positions,groupId,occupied,options);
+      members.forEach((npc,index)=>{
+        visitors.push({...npc,id:`home:${mapId}:${npc.id}`,sourceCharacterId:npc.id,sourceGroupId:npc.groupId||npc.creatorId,role:'npc',creatorHome:true,creatorHomeRole:map.outdoor?'neighbor':'resident',fallbackTargetId:resident.id,creatorId:npc.creatorId,name:npc.name,label:npc.label||npc.name,greeting:npc.greeting||resident.dialogue,greetingKind:'fictional-game-dialogue',profileURL:npc.profileURL||`https://note.com/${npc.creatorId}`,articleURL:npc.articleURL||null,groupId,mapId,slotId:resident.id,x:center.x+positions[index],z:center.z,center:{...center},offsetX:positions[index],route,interactive:npc.interactive!==false,walking:false,facing:'down',phase:0});
+        for(const segment of route.segments){const steps=Math.max(1,Math.ceil(segment.length/.3));for(let n=0;n<=steps;n++){const t=n/steps;occupied.push({x:segment.a.x+(segment.b.x-segment.a.x)*t+positions[index],z:segment.a.z+(segment.b.z-segment.a.z)*t});}}
+      });
+    }
+  }
+  return {visitors,omitted};
+}
+
 function sampleRoute(visitor,time,motion){
   const route=visitor.route;if(!motion||!route||!Number.isFinite(time))return {x:visitor.x,z:visitor.z,walking:false,facing:'down',phase:0,speed:0,distance:0,yaw:0,turning:false,turnProgress:0,animationAssetComplete:false};
   const absolute=time+route.phaseOffset,cycle=Math.floor(absolute/route.duration),clock=mod(absolute,route.duration);
@@ -101,11 +130,10 @@ function sampleRoute(visitor,time,motion){
   return {x:segment.a.x+(segment.b.x-segment.a.x)*progress+visitor.offsetX,z:segment.a.z+(segment.b.z-segment.a.z)*progress,walking:travel.speed>1e-6,facing:facingForVector(Math.sin(yaw),Math.cos(yaw)),phase:locomotionPhase(walked,1.05),speed:travel.speed,distance:walked,yaw,turnProgress,turning:Math.abs(segment.turn)>1e-7&&turnProgress>0&&turnProgress<1,animationAssetComplete:false};
 }
 export function sampleTownVisitors(visitors,{state,time=0,motion=true}={}){
-  if(state?.mapId&&state.mapId!==TOWN_START_MAP)return[];
-  return visitors.map(visitor=>({...visitor,...sampleRoute(visitor,time,motion)}));
+  return visitors.filter(visitor=>!state?.mapId||visitor.mapId===state.mapId).map(visitor=>({...visitor,...sampleRoute(visitor,time,motion)}));
 }
 export function chooseTownVisitorGroups(poses,state,maxGroups=3){
-  if(!state?.position||state.mapId!==TOWN_START_MAP)return[];
+  if(!state?.position)return[];
   const groups=new Map();for(const pose of poses){if(pose.mapId!==state.mapId)continue;if(!groups.has(pose.groupId))groups.set(pose.groupId,[]);groups.get(pose.groupId).push(pose);}
   const distance=group=>Math.min(...group.map(p=>Math.hypot(p.x-state.position.x,p.z-state.position.z)));
   return [...groups.values()].filter(group=>distance(group)<=TOWN_VISITOR_RANGE).sort((a,b)=>distance(a)-distance(b)||a[0].groupId.localeCompare(b[0].groupId)).slice(0,Math.max(0,Math.min(8,Math.floor(Number(maxGroups)||0)))).flat();

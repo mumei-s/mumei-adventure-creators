@@ -50,11 +50,11 @@ test('actual preparation uses short home names, puts the owner last, and keeps t
 
 test('the actual HUD progresses from the street to a home, then to its article and the next creator',()=>{
  const h=harness(),journey=h.run.journey(),first=journey.snapshot().selected;
- h.run.updateHUD();assert.match(h.node('quest-title').textContent,/記事巡り\s+0\/15/);assert.match(h.node('quest-objective').textContent,/街の南西の案内門から住宅街へ/);assert.ok(h.node('quest-objective').textContent.includes(first.name));
- h.state.mapId='creator-quarter';h.run.updateHUD();assert.match(h.node('quest-objective').textContent,/北から\d列目・西から\d軒目/);assert.match(h.node('quest-objective').textContent,/玄関から作品をひらこう/);
- journey.visit(first.id);assert.match(h.node('quest-objective').textContent,/参加記事を読みに行こう/);assert.match(h.node('quest-objective').textContent,/読んだしるし/);
+ h.run.updateHUD();assert.match(h.node('quest-title').textContent,/記事巡り\s+0\/15/);assert.match(h.node('quest-objective').textContent,/金色の道案内/);assert.ok(h.node('quest-objective').textContent.includes(first.name));
+ h.state.mapId='creator-quarter';h.run.updateHUD();assert.match(h.node('quest-objective').textContent,/北から\d列目・西から\d軒目/);assert.match(h.node('quest-objective').textContent,/玄関で「家の中へ入る」/);
+ h.state.mapId=getCreatorHome(first.id).interiorId;h.run.updateHUD();journey.visit(first.id);assert.match(h.node('quest-objective').textContent,/本人や作品机/);assert.match(h.node('quest-objective').textContent,/南の扉/);
  h.run.showCreatorHome(first.id);const link=h.content.children.find(node=>node.className==='town-card creator-home-work'),mark=h.content.children.find(node=>node.className==='reading-mark');link.click();mark.click();
- assert.equal(journey.snapshot().readCount,1);assert.notEqual(journey.snapshot().selectedId,first.id);assert.match(h.node('quest-title').textContent,/記事巡り\s+1\/15/);assert.ok(h.node('quest-objective').textContent.includes(journey.snapshot().selected.name));
+ h.state.mapId='creator-quarter';h.run.updateHUD();assert.equal(journey.snapshot().readCount,1);assert.notEqual(journey.snapshot().selectedId,first.id);assert.match(h.node('quest-title').textContent,/記事巡り\s+1\/15/);assert.ok(h.node('quest-objective').textContent.includes(journey.snapshot().selected.name));
 });
 
 test('opening an article only enables its explicit reading mark; the mark advances the journey',()=>{

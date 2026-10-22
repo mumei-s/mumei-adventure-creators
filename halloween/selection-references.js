@@ -3,7 +3,7 @@ import {sampleFor} from './examples.js?v=28.4.6';
 import {releaseCanvas,readRasterDimensions,validateRasterDimensions} from './image-resources.js?v=28.4.6';
 import {stylePresetFor} from './style-presets.js?v=28.4.6';
 import {makeZip} from './zip.js?v=28.4.6';
-import {attachmentConditionPolicy,selectionAttachmentPolicy,focusedReferenceMedia} from './attachment-policy.js?v=28.4.6';
+import {attachmentConditionPolicy,selectionAttachmentPolicy} from './attachment-policy.js?v=28.4.6';
 import {fetchAssetBlob} from './asset-network.js?v=28.4.6';
 
 export const SELECTION_SHEET_NAME='selection-references.jpg';
@@ -107,21 +107,24 @@ export async function buildIndividualSelectionReferences(manifest,{documentImpl=
  }
  return ready;
 }
-export async function buildIndividualSelectionReferenceZip({manifest,identityReferences=[],styleReferences=[],composeIndividualPrompt,conditionsText=''},dependencies={}){
+export async function buildIndividualSelectionReferenceZip({manifest,identityReferences=[],styleReferences=[],pendingReferences=[],composeIndividualPrompt,conditionsText=''},dependencies={}){
  if(typeof composeIndividualPrompt!=='function')throw new Error('個別添付用の制作原稿を用意してください。');
  const localSelectionReferences=await buildIndividualSelectionReferences(manifest,dependencies);
- const conditions=selectionReferenceConditions(manifest),styleFirst=focusedReferenceMedia.includes(conditions.find(condition=>condition.key==='medium')?.value);
- const supplied=[...(styleFirst?[...styleReferences,...identityReferences]:[...identityReferences,...styleReferences]),...localSelectionReferences];
+ const conditions=selectionReferenceConditions(manifest);
+ const supplied=[...identityReferences.filter(ref=>ref.role==='identity'),...identityReferences.filter(ref=>ref.role!=='identity'),...styleReferences,...localSelectionReferences];
+ if(pendingReferences.some(ref=>!ref.name||!['identity','support','avoid'].includes(ref.role)||ref.file))throw new Error('後から添付する参照画像の役割を確認できませんでした。');
  if(supplied.some(ref=>!ref.file?.arrayBuffer||!ref.name||/[\/\\]/.test(ref.name)))throw new Error('個別見本と主参照のファイルを確認できませんでした。');
  if(new Set(supplied.map(ref=>ref.name)).size!==supplied.length)throw new Error('個別見本のファイル名が重複しています。');
  const FileClass=dependencies.FileClass||globalThis.File,attached=supplied.map(ref=>ref.file.name===ref.name?ref:{...ref,file:new FileClass([ref.file],ref.name,{type:ref.file.type})});
- const references=attached.map(({file,...reference})=>reference),counts={selected:conditions.length,individual:localSelectionReferences.length,attached:attached.length,identity:identityReferences.length,separateStyle:styleReferences.length};
+ const pending=pendingReferences.map(ref=>({...ref,attached:false}));
+ if(new Set([...attached,...pending].map(ref=>ref.name)).size!==attached.length+pending.length)throw new Error('参照画像のファイル名が重複しています。');
+ const references=[...attached.filter(ref=>ref.role==='identity').map(({file,...reference})=>reference),...pending,...attached.filter(ref=>ref.role!=='identity').map(({file,...reference})=>reference)],counts={selected:conditions.length,individual:localSelectionReferences.length,attached:attached.length,identity:attached.filter(ref=>ref.role==='identity').length,support:attached.filter(ref=>ref.role==='support').length,avoid:attached.filter(ref=>ref.role==='avoid').length,pendingIdentity:pending.filter(ref=>ref.role==='identity').length,separateStyle:styleReferences.length};
  const kitManifest={schemaVersion:2,kind:'individual-reference-comparison',conditions,references,counts,attachmentPolicy:selectionAttachmentPolicy(conditions,{mode:'individual'}),
-  execution:{status:'not-executed',observedTool:'image_gen',observedMaxReferenceImages:5,canUseObservedSingleCall:counts.attached<=5,qualityStatus:'not-accepted',reason:counts.attached>5?'この構成は今回の検証に使った image_gen の参照5枚上限を超える。個別全画像の一括生成は未実行。利用先が異なる場合はその実際の上限を確認する。':'実際に同じ条件を生成して照合するまでは未実行。'},
+  execution:{status:'not-executed',observedTool:'image_gen',observedMaxReferenceImages:5,requiredAttachmentCount:counts.attached+pending.length,canUseObservedSingleCall:counts.attached+pending.length<=5,qualityStatus:'not-accepted',reason:counts.attached+pending.length>5?'この構成は今回の検証に使った image_gen の参照5枚上限を超える。個別全画像の一括生成は未実行。利用先が異なる場合はその実際の上限を確認する。':'実際に同じ条件を生成して照合するまでは未実行。'},
   acceptance:'全有効見本を個別画像で渡す選択肢。今回の検証に使った image_gen は参照5枚が上限で、これを超える全画像一括添付は実行できなかった。他の利用先へ一律の上限として当てはめず、実際に受け付ける枚数を確認する。全画像を渡せない場合は、主参照＋原寸画風＋役割別シートの通常経路を使い、条件を無言で減らさない。枚数だけで精度が高いと判定せず、同じ選択の完成画像で照合する。'};
  const productionPrompt=await composeIndividualPrompt(kitManifest);
  if(typeof productionPrompt!=='string'||!productionPrompt.trim()||productionPrompt.includes(manifest.name)||conditions.some(condition=>!productionPrompt.includes(condition.value)))throw new Error('個別添付用の原稿と実際の添付ファイルが一致していません。');
- const prompt=['【全有効見本を個別画像で渡す場合】','この資料に含まれる画像は合計'+counts.attached+'枚（主参照'+counts.identity+'枚・原寸画風'+counts.separateStyle+'枚・条件見本'+counts.individual+'枚）。役割別シートは含まれない。全'+counts.selected+'選択の条件は下の制作本文に保持している。',kitManifest.acceptance,...references.map(ref=>ref.name+'：'+(ref.role==='identity'?'人物の識別資料。':ref.role==='selection-condition'?ref.key+'「'+ref.value+'」／'+ref.scope:'選択作風の原寸原画。')),'以下の本文と各資料の担当条件を一つの完成場面へ統合する。見本の別人・別の画風・複数のパネル・見本文字をそのまま作品へ描かない。',productionPrompt].join('\n');
+ const prompt=['【全有効見本を個別画像で渡す場合】','この資料に含まれる画像は合計'+counts.attached+'枚（主参照'+counts.identity+'枚・補助参照'+counts.support+'枚・似せない前作'+counts.avoid+'枚・原寸画風'+counts.separateStyle+'枚・条件見本'+counts.individual+'枚）。役割別シートは含まれない。全'+counts.selected+'選択の条件は下の制作本文に保持している。',kitManifest.acceptance,...(pending.length?['このZIPに含まれず、同じメッセージへ追加する参照：'+pending.map(ref=>ref.name).join('・')+'。必要な主参照が未添付なら生成を止めて添付を求める。画風見本・補助資料・前作で主参照を代用しない。']:[]),...references.map(ref=>ref.name+'：'+(ref.role==='identity'?'主役の識別特徴の主参照。':ref.role==='support'?'補助資料。選択に必要な要素だけを読み、主参照の人物や画風を置き換えない。':ref.role==='avoid'?'似せない前作。差異の比較だけに使い、人物・画風・衣装・構図の採用元にしない。':ref.role==='selection-condition'?ref.key+'「'+ref.value+'」／'+ref.scope:['drawing','style-preset'].includes(ref.role)?'選択作風の原寸原画。描法だけを読み、顔・髪・年齢・体格を借りない。':'未対応の資料。人物や画風の参照に使わない。')+(ref.attached===false?'（ZIPには未収録・別途添付）':'')),'以下の本文と各資料の担当条件を一つの完成場面へ統合する。見本の別人・別の画風・複数のパネル・見本文字をそのまま作品へ描かない。',productionPrompt].join('\n');
  const encode=text=>new TextEncoder().encode(text),files=[{name:'prompt.txt',data:encode(prompt)},{name:'references.json',data:encode(JSON.stringify(kitManifest,null,2))},{name:'selected-conditions.txt',data:encode(conditionsText||conditions.map(item=>item.label+'：'+item.value+'\n読む役割：'+item.scope).join('\n\n'))}];
  for(const ref of attached)files.push({name:ref.name,data:new Uint8Array(await ref.file.arrayBuffer())});
  return {blob:makeZip(files),prompt,manifest:kitManifest,localSelectionReferences,files:attached.map(ref=>ref.file)};

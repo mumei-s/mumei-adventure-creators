@@ -1,3 +1,4 @@
+import {referenceAuthorityInstructions} from './reference-authority.js';
 import {styleFidelity} from './style-fidelity.js?v=28.4.6';
 import {modeFoundation} from './japan-direction.js?v=28.4.6';
 import {compactImageOutputContract} from './output-contract.js?v=28.4.6';
@@ -200,14 +201,14 @@ export function compileProduction(plan,originalLines=[],refs=plan.referenceManif
  // appended after its generation command.
  const compact=renderCompactChatInput(plan,refs||[]);
  if((plan.issues||[]).some(issue=>issue.severity==='error'))return compact;
- if(usesWorldTransferProduction(plan))return [...compactImageOutputContract,...(plan.creatorLookup||[]),originalLines[0],renderWorldTransferMaster(plan,refs||[])].filter(Boolean).join('\n');
+ if(usesWorldTransferProduction(plan))return [...compactImageOutputContract.slice(0,2),...referenceAuthorityInstructions(plan.values,refs),...compactImageOutputContract.slice(2),...(plan.creatorLookup||[]),originalLines[0],renderWorldTransferMaster(plan,refs||[])].filter(Boolean).join('\n');
  // App delivery supplies a typed manifest, including the consolidated sheet.
  // Older direct callers still supply their named references in these lines.
  // Use one owner for reference roles; never repeat the manifest as raw prose.
  const referenceRules=refs?[]:between(originalLines,'【作成者が添付する参照画像】','【10の選択】');
  const legacyRoles=refs?[]:between(originalLines,'【今回の画像の役割】','【最初に確定する作画と画面】').filter(line=>!line.startsWith('頭身：')&&!line.startsWith('【')&&!/^[^：]+：(主役の識別|選択した画風|似せない前作|補助資料)/.test(line));
  return [
-  ...compactImageOutputContract,
+  ...compactImageOutputContract.slice(0,2),...referenceAuthorityInstructions(plan.values,refs),...compactImageOutputContract.slice(2),
   ...(!usesFocusedProduction(plan)?luminousPriority(plan):[]),
   ...(!usesFocusedProduction(plan)&&plan.values.design==='新聞の一面'&&limitedNewspaperLayout(plan.values)?[limitedNewspaperLayout(plan.values).priority]:[]),
   ...(plan.creatorLookup||[]),

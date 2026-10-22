@@ -1,3 +1,4 @@
+import {deliveryReferenceNotice} from '../reference-authority.js';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
@@ -60,7 +61,7 @@ let shareCases=0;
 for(const imageCount of [0,1,4]){
  const images=Array.from({length:imageCount},(_,index)=>new File(['REFERENCE-'+index],'reference-'+index+'.png',{type:'image/png'}));
  const payloads=[],status={textContent:''};let fallback=0;
- const context=vm.createContext({File,imageGenerationRequest,currentResult:{prompt:longPrompt},deliveryImageFiles:()=>images,$:()=>status,showShareFallback:()=>{fallback++;},navigator:{canShare:()=>true,share:async payload=>{payloads.push(payload);}}});
+ const context=vm.createContext({File,deliveryReferenceNotice,imageGenerationRequest,currentResult:{prompt:longPrompt},deliveryImageFiles:()=>images,$:()=>status,showShareFallback:()=>{fallback++;},navigator:{canShare:()=>true,share:async payload=>{payloads.push(payload);}}});
  vm.runInContext(shareHandler,context);await context.shareAll();
  assert.equal(payloads.length,1);assert.equal(fallback,0);
  const payload=payloads[0];assert.equal(payload.text,imageGenerationRequest(imageCount>0,true));assert(!payload.text.includes(longPrompt));

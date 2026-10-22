@@ -40,7 +40,7 @@ export function recomposeHistoryDelivery(record,{version,selectionManifest=selec
  const production=productionPlan(record.profile||{},values,variant,record.collection||saved.collection||'halloween',()=>.5);
  production.copy=structuredClone(saved.copy);
  const drawing=stylePreset(values.medium),drawingReferences=drawing?[drawing]:[],selectionReference=selectionManifest(values),references=structuredClone(record.references);
- production.values=values;production.variant=variant;production.referenceManifest=[...drawingReferences,...(selectionReferenceCounts(selectionReference).sheet?[selectionReference]:[]),...references];
+ production.values=values;production.variant=variant;production.referenceManifest=[...references,...drawingReferences,...(selectionReferenceCounts(selectionReference).sheet?[selectionReference]:[])];
  const prompt=compose({collection:record.collection||saved.collection||'halloween',creator:record.creator||'',profile:record.profile||{},values,variant,references:production.referenceManifest,edition:record.edition,referenceBundle:record.referenceBundle||null,preparedPlan:production});
  if(typeof prompt!=='string'||!prompt.trim())throw mismatch();
  const compiledStages=stages(production);

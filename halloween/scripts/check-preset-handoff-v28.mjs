@@ -1,3 +1,4 @@
+import {deliveryReferenceNotice} from '../reference-authority.js';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
@@ -19,7 +20,7 @@ class Node {
  scrollIntoView(){}
 }
 const nodes=new Map(),$=id=>{if(!nodes.has(id))nodes.set(id,new Node(id==='style-preset-select'?'select':'div'));return nodes.get(id);};
-let shared,zipBlob;const context={imageGenerationRequest,imageDeliveryRepairPrompt,$,questions,AUTO,collection:'halloween',stylePreviewKey:'',activeQuestion:null,selections:{medium:AUTO},stylePresetFor,el:(tag,cls,text)=>new Node(tag,text),sampleNode:(key,value)=>new Node('sample',value),deliveryImageFiles,File,Uint8Array,TextEncoder,makeZip,download:b=>{zipBlob=b;},creatorDisplayLabel:()=>'',needsReference:()=>true,tell:s=>{$('toast').textContent=s;},canShareFiles:()=>true,navigator:{share:async data=>{shared=data;},clipboard:{writeText:async()=>{}}},shareFiles:r=>[...deliveryImageFiles(r),new File([r.prompt],'prompt.txt',{type:'text/plain'})]};
+let shared,zipBlob;const context={deliveryReferenceNotice,imageGenerationRequest,imageDeliveryRepairPrompt,$,questions,AUTO,collection:'halloween',stylePreviewKey:'',activeQuestion:null,selections:{medium:AUTO},stylePresetFor,el:(tag,cls,text)=>new Node(tag,text),sampleNode:(key,value)=>new Node('sample',value),deliveryImageFiles,File,Uint8Array,TextEncoder,makeZip,download:b=>{zipBlob=b;},creatorDisplayLabel:()=>'',needsReference:()=>true,tell:s=>{$('toast').textContent=s;},canShareFiles:()=>true,navigator:{share:async data=>{shared=data;},clipboard:{writeText:async()=>{}}},shareFiles:r=>[...deliveryImageFiles(r),new File([r.prompt],'prompt.txt',{type:'text/plain'})]};
 vm.createContext(context);
 vm.runInContext(app.slice(app.indexOf('function renderStylePreset('),app.indexOf("$('style-preset-select').addEventListener")),context);
 context.renderStylePreset({medium:AUTO});assert.equal($('style-preset-select').options.length,stylePresets.length+1);
@@ -31,7 +32,7 @@ const fetchImpl=async url=>new Response(fs.readFileSync(url),{headers:{'Content-
 const originals=await loadStylePresets([preset],{fetchImpl}),character=new File(['UNCHANGED ORIGINAL CHARACTER'],'character.png',{type:'image/png'});
 context.currentResult={values:{medium:preset.medium},prompt:'FULL DRAWING INSTRUCTION WITH DISTINCT CHARACTER AND PRESET',drawingReferences:[preset],localDrawingRefs:originals,localRefs:[{file:character,role:'identity'}],references:[{name:'reference-01-character.png',role:'identity'}]};
 vm.runInContext(app.slice(app.indexOf('async function shareAll()'),app.indexOf('async function imagePNG')),context);
-await context.shareAll();assert.equal(shared.files.length,3);assert.ok(shared.text.length<180);assert.match(shared.text,/prompt\.txt/);assert.match(shared.text,/画像作成機能/);assert.ok(!shared.text.includes(context.currentResult.prompt));const sharedPrompt=shared.files[2];assert.equal(sharedPrompt.name,'prompt.txt');assert.equal(sharedPrompt.type,'text/plain');assert.equal(await sharedPrompt.text(),context.currentResult.prompt);assert.equal(shared.files[0].name,preset.name);assert.deepEqual(Buffer.from(await shared.files[0].arrayBuffer()),fs.readFileSync(new URL(preset.file,root)));assert.equal(shared.files[1].name,'reference-01-character.png');assert.equal(await shared.files[1].text(),await character.text());
+await context.shareAll();assert.equal(shared.files.length,3);assert.ok(shared.text.length<180);assert.match(shared.text,/prompt\.txt/);assert.match(shared.text,/画像作成機能/);assert.ok(!shared.text.includes(context.currentResult.prompt));const sharedPrompt=shared.files[2];assert.equal(sharedPrompt.name,'prompt.txt');assert.equal(sharedPrompt.type,'text/plain');assert.equal(await sharedPrompt.text(),context.currentResult.prompt);assert.equal(shared.files[1].name,preset.name);assert.deepEqual(Buffer.from(await shared.files[1].arrayBuffer()),fs.readFileSync(new URL(preset.file,root)));assert.equal(shared.files[0].name,'reference-01-character.png');assert.equal(await shared.files[0].text(),await character.text());
 vm.runInContext(app.slice(app.indexOf('async function copyPrompt()'),app.indexOf('async function copyStage(')),context);
 assert.equal(await context.copyPrompt(),true);assert.match($('toast').textContent,/主参照.*画風見本/);
 vm.runInContext(app.slice(app.indexOf('async function downloadKit()'),app.indexOf('function renderHistory()')),context);

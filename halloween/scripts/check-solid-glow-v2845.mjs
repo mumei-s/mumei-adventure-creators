@@ -67,7 +67,7 @@ let cases=0;
 function checkInputBranch(plan,text){
  assert.doesNotMatch(text,/undefined|NaN|prepared-identity\.png|人物翻訳用入力/);
  for(const condition of plan.conditions)assert.ok(text.includes(condition.name+'＝'+condition.value),'A fixed selection disappeared: '+condition.key);
- assert.match(text,/制作の土台・編集の基準/);assert.ok(text.includes(stylePresetFor(plan.values.medium).name));
+ assert.match(text,/制作の土台・編集の基準|選択された主題と条件を制作の基準/);assert.ok(text.includes(stylePresetFor(plan.values.medium).name));
  assert.match(text,/画像生成|画像作成/);assert.match(text,/完成画像そのものを1枚.*通常の生成画像.*表示/);
  assert.match(text,/画像表示前に.*実測.*自動再編集を挟まず.*通常の画像表示まで進む/);
  if(plan.noPerson){
@@ -147,21 +147,21 @@ const dependencies={FileClass:File,fetchImpl,ImageClass:TestImage,documentImpl:{
 for(let index=0;index<newStyles.length;index++){
  const item=newStyles[index],{plan,manifest}=make({medium:item.medium}),style=loaded[index],identity={name:'creator-reference.jpg',role:'identity',file:new File(['EXACT ORIGINAL IDENTITY '+index],'original-person.jpg',{type:'image/jpeg'})},sheet=new File(['CONTROLLED CONDITION SHEET'],manifest.name,{type:'image/jpeg'});
  const normal=deliveryImageFiles({values:plan.values,localDrawingRefs:[style],localRefs:[identity],references:[{name:identity.name,role:'identity'}],localSelectionReference:{file:sheet}});
- assert.deepEqual(normal.map(file=>file.name),[item.name,identity.name,manifest.name],'Normal production sends original style, original identity and one scoped sheet');
- assert.deepEqual(Buffer.from(await normal[0].arrayBuffer()),fs.readFileSync(new URL(item.file,root)));assert.equal(await normal[1].text(),await identity.file.text());assert.equal(await normal[2].text(),await sheet.text());
+ assert.deepEqual(normal.map(file=>file.name),[identity.name,item.name,manifest.name],'Normal production sends original identity, style-only original and one scoped sheet');
+ assert.deepEqual(Buffer.from(await normal[1].arrayBuffer()),fs.readFileSync(new URL(item.file,root)));assert.equal(await normal[0].text(),await identity.file.text());assert.equal(await normal[2].text(),await sheet.text());
  assert.deepEqual(selectionReferenceCounts(manifest),{selected:10,sheet:7,separateStyle:1});assert.ok(!manifest.items.some(item=>['medium','size','type'].includes(item.key)));
  const ordinary=checkSolid(plan);assert.ok(ordinary.includes(manifest.name));assert.match(ordinary,/各セルの担当条件だけ/);
  const kit=await buildIndividualSelectionReferenceZip({manifest,identityReferences:[identity],styleReferences:[style],composeIndividualPrompt:kit=>compileProduction({...plan,referenceManifest:kit.references})},dependencies);
  const individuals=individualSelectionReferenceManifest(manifest);
- assert.deepEqual(kit.files.map(file=>file.name),[item.name,identity.name,...individuals.map(ref=>ref.name)],'All applicable individual examples keep the same original-style-first order');
- assert.deepEqual(kit.manifest.references.map(ref=>ref.role),['style-preset','identity',...individuals.map(()=> 'selection-condition')]);
+ assert.deepEqual(kit.files.map(file=>file.name),[identity.name,item.name,...individuals.map(ref=>ref.name)],'All applicable individual examples keep the same original-identity-first order');
+ assert.deepEqual(kit.manifest.references.map(ref=>ref.role),['identity','style-preset',...individuals.map(()=> 'selection-condition')]);
  assert.equal(kit.manifest.counts.selected,10);assert.equal(kit.manifest.counts.individual,7);assert.equal(kit.manifest.counts.attached,9);
  assert.equal(kit.manifest.execution.status,'not-executed');assert.equal(kit.manifest.execution.qualityStatus,'not-accepted');assert.equal(kit.manifest.execution.canUseObservedSingleCall,false);
  assert.doesNotMatch(kit.prompt,/selection-references\.jpg/);assert.match(kit.prompt,/合計9枚/);assert.match(kit.prompt,/役割別シートは含まれない/);assert.match(kit.prompt,/全10選択/);
  for(const ref of kit.manifest.references){assert.ok(kit.prompt.includes(ref.name));if(ref.role==='selection-condition'){assert.ok(kit.prompt.includes(ref.scope));assert.ok(kit.prompt.includes(ref.value));}}
- assert.deepEqual(Buffer.from(await kit.files[0].arrayBuffer()),fs.readFileSync(new URL(item.file,root)));assert.equal(await kit.files[1].text(),await identity.file.text());
+ assert.deepEqual(Buffer.from(await kit.files[1].arrayBuffer()),fs.readFileSync(new URL(item.file,root)));assert.equal(await kit.files[0].text(),await identity.file.text());
  assert.match(kit.prompt,/他の利用先.*一律の上限.*当てはめず/);assert.match(kit.prompt,/同じ選択の完成画像で照合/);
 }
 assert.ok(canvasImages.length,'Individual SVG condition views must actually be dispatched to the controlled renderer');
 applyCollection('halloween');
-console.log('PASS solid glow: immutable original 118 preset mappings/images; two distinct new original PNGs, '+cases+' real resolved person/no-person/non-person/palette cases, natural real versus toon-3D rendering, closed-eye/hairless/chibi identity, '+repairCases+' independent two-image repairs preserving all conditions and allowed copy, original-style-first three-file and actual individual-ZIP handoffs with exact bytes and scopes. Canvas is controlled; generated appearance remains unaccepted.');
+console.log('PASS solid glow: immutable original 118 preset mappings/images; two distinct new original PNGs, '+cases+' real resolved person/no-person/non-person/palette cases, natural real versus toon-3D rendering, closed-eye/hairless/chibi identity, '+repairCases+' independent two-image repairs preserving all conditions and allowed copy, original-identity-first three-file and actual individual-ZIP handoffs with exact bytes and scopes. Canvas is controlled; generated appearance remains unaccepted.');

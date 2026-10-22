@@ -8,8 +8,8 @@
       "bytes": 25788
     },
     "app.js": {
-      "sha256": "c4fc74c64404779e640c4bf7b7cbacb2bb77eca8c73b1ea5ea71b603015d94b7",
-      "bytes": 92003
+      "sha256": "fcce54e9c09c897c8eae5e81d2da6b85811dd64035a8cbb440b1600f88fe4370",
+      "bytes": 92248
     },
     "art-direction.js?v=28.4.6": {
       "sha256": "d543d1d928d0d6281e94c83317c897e8861a38d6b18f3f40f271fd235db73bab",
@@ -44,8 +44,8 @@
       "bytes": 7871
     },
     "artwork-stage.js?v=28.4.6": {
-      "sha256": "694efec9b82d1645900b6b82355edf4e1bf2431ce08332683cb7acc1b384e890",
-      "bytes": 15611
+      "sha256": "67713a5f53eb59173f4bfff15bd2edb39fcaea4d48fa57905fa0bd2b9db60232",
+      "bytes": 15910
     },
     "asset-network.js?v=28.4.6": {
       "sha256": "b77b311a86b55a208e827903f5909e368ca1720a599b6dc9b5ca83ee2e10f34d",
@@ -80,8 +80,8 @@
       "bytes": 8980
     },
     "compiled-production.js?v=28.4.6": {
-      "sha256": "3c0a7c0f938bc980df34ea8dc7f5edd5710a304d498cc11c092660791ec3b519",
-      "bytes": 27392
+      "sha256": "3318ed4fdc10c1751d46eea69653a66d6ff32c71773e47bd25986e43be142aef",
+      "bytes": 27669
     },
     "copy-scope.js?v=28.4.6": {
       "sha256": "f9802f63b5cfba4b39c144580c1850b94989a24704f4e20ced333bdd2c26db3f",
@@ -112,7 +112,7 @@
       "bytes": 920
     },
     "delivery-history-migration.js?v=28.4.6": {
-      "sha256": "98a46b56c7374a69c3855fa6cfb7a34a470efe0f3f6eac4e0ec52ce1cfcc069e",
+      "sha256": "3d112bfb0ef0abe85bf91a2b3d52d100d930e847110ba3218dd86393b72abda7",
       "bytes": 4716
     },
     "direction.js?v=28.4.6": {
@@ -120,8 +120,8 @@
       "bytes": 31045
     },
     "drawing-references.js?v=28.4.6": {
-      "sha256": "2b5a5ef046274c8399856ee2ecf45d471ff97ac361dcebf6311e6add8d222e5a",
-      "bytes": 7143
+      "sha256": "a2ab350b40fa9e7131f85a6d0d755ca294683dde028f46ccfc85f6614876c162",
+      "bytes": 7033
     },
     "editorial-layout.js?v=28.4.6": {
       "sha256": "e339c14a56936bdf5d137176608f10f48fec02132929190bb2924fb5c61c40d3",
@@ -160,8 +160,8 @@
       "bytes": 893
     },
     "focused-production.js?v=28.4.6": {
-      "sha256": "637723aecf7efc77e73631d33d17a5434f3246562260af1f0bc03e2fa0b1f7c0",
-      "bytes": 47525
+      "sha256": "d03430c8524092b19e71ec4c58f10313b7c24c8b3d3a7d782b03dc96ab7d626d",
+      "bytes": 48637
     },
     "format-execution.js?v=28.4.6": {
       "sha256": "fcea463b3c6848d1686d1e9f24631842d08b611bbd42b681bbc97874cb0944e5",
@@ -304,8 +304,8 @@
       "bytes": 8733
     },
     "production-plan.js?v=28.4.6": {
-      "sha256": "40408c4fa59eaed09239863ddbb5f187ac0f2c58820833534c9a8bf7ed70b7ec",
-      "bytes": 17324
+      "sha256": "7af13a740305b2362ab58282ebce87bc8d9cf953f333bea95f936ca9397db034",
+      "bytes": 17428
     },
     "production-workflow.js?v=28.4.6": {
       "sha256": "278c3df579cd2854ea4e2faedbfc7845bfaac61877cbd37ecc429fcc5bb78ec7",
@@ -326,6 +326,10 @@
     "recipes.js?v=28.4.6": {
       "sha256": "ccc2721e554bc64426300b4521f93f3cd755bf349e9b768a229ed6a44f664548",
       "bytes": 1561
+    },
+    "reference-authority.js": {
+      "sha256": "63f981e26bbefd6bfb7c66435781112e30931a07c317dfb12cf9abdb23c7a4b6",
+      "bytes": 4284
     },
     "ring-motion.js?v=28.4.6": {
       "sha256": "22087907bdb0af7726dccf139506baad6095e280c6789140a06bab9f23db6409",
@@ -356,8 +360,8 @@
       "bytes": 2619
     },
     "selection-references.js?v=28.4.6": {
-      "sha256": "364dcfd60a9d9f59315e2884f587cd43c9547bc6f559c2ea85e7aeefbb095793",
-      "bytes": 16550
+      "sha256": "f57c0494ef4c8f0e73f7b60735a13b762f0ffc65f1585c99b07a31e86562052b",
+      "bytes": 18242
     },
     "solid-glow-style-definitions.js?v=28.4.6": {
       "sha256": "56784be964b4dcfee6be111efa9c0bcbab7fd6dd29409d2957ff771991157c1a",
@@ -416,8 +420,8 @@
       "bytes": 13488
     },
     "world-transfer-production.js?v=28.4.6": {
-      "sha256": "d527a533cac812b1f6dd61df548ac4b3f8c0ae9e9ee516910aa3340bffd5c2e0",
-      "bytes": 21271
+      "sha256": "7570964577693bf2d37b60d62f691281e5c2fe23dc873621ac3393789c5f88e4",
+      "bytes": 21742
     },
     "worlds.js?v=28.4.6": {
       "sha256": "ebb2df9d5c7225713d762b6ba4c1e20cc5a4e8ede46b5b4cafcf9c9b043adcf5",
@@ -430,7 +434,7 @@
   },
   "output": {
     "file": "app.bundle.js",
-    "sha256": "6e4a710a4c909341dc59c447c69f1a3a013f436d96bf824c2e3b5182fe2dc94e",
-    "bytes": 1647199
+    "sha256": "70272ae33ee58922fe7dcf242ff8d750558bc5cb9063e1ce5ee6618ec9192fb1",
+    "bytes": 1653907
   }
 }

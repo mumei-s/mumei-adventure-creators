@@ -34,13 +34,13 @@ export function assertWorldTransferHandoff(plan,text,label='world transfer',refs
   if(stage.key!=='world')assert.ok(!stage.references.some(ref=>ref.role==='identity'),label+' reattaches original identity at '+stage.key);
  }
  const world=workflow.stages.find(stage=>stage.key==='world'),surface=workflow.stages.find(stage=>stage.key==='surface'),scenes=workflow.stages.filter(stage=>stage.kind==='scene-edit'),layout=workflow.stages.find(stage=>stage.kind==='layout');
- assert.deepEqual(world.references.map(ref=>ref.role),refs.some(ref=>ref.role==='identity')?['style-preset','identity']:['style-preset']);
+ assert.deepEqual(world.references.map(ref=>ref.role),refs.some(ref=>ref.role==='identity')?['identity','style-preset']:['style-preset']);
  assert.equal(surface.optional,true);assert.match(surface.appliesWhen,/実画像/);assert.deepEqual(surface.references.map(ref=>ref.role),['world-base','style-preset']);
- assert.match(world.prompt,/衣服・背景・姿勢・構図を維持/);assert.match(world.prompt,/中間画像.*完成作品ではない/);assert.match(surface.prompt,/未達の造形と可視面の光・影だけを修正/);
+ assert.match(world.prompt,/原画の人物・顔・髪・体格・衣服・小道具・背景・姿勢・構図を採用しない/);assert.match(world.prompt,/中間画像.*完成作品ではない/);assert.match(surface.prompt,/未達の造形と可視面の光・影だけを修正/);
  const sceneText=scenes.map(stage=>stage.prompt).join('\n'),person=!plan.noPerson&&!isNonHumanSource(plan.values);
  if(plan.noPerson){for(const stage of [world,surface,...scenes]){assert.match(stage.prompt,/人物.*顔.*人体.*手足.*人型.*追加しない/);assert.doesNotMatch(stage.prompt,/本人へ差し替|本人の輪郭|本人の識別特徴|自然な頭蓋・眼球|トゥーンの顔と身体/);}assert.doesNotMatch(sceneText,/顔の向き：|表情：|身体配置・支持・動作：/);}
  else if(!person){assert.match(world.prompt,/独自の主役/);assert.match(world.prompt,/本人の顔・髪・年齢・性別を復元したと主張しない/);assert.doesNotMatch([world.prompt,surface.prompt,sceneText].join('\n'),/本人へ差し替|本人の輪郭|本人の識別特徴/);}
- else {assert.match(world.prompt,/識別特徴だけを2枚目の本人へ差し替/);for(const value of ['輪郭','眉と目鼻口','実際の髪型','年齢感・性別表現・体格・基本頭身'])includes(world.prompt,value,label+' identity');assert.match(world.prompt,/ちび.*通常頭身へ伸ばさない/);assert.match(world.prompt,/閉眼・髪なし・元々ある髭・被覆・遮蔽/);}
+ else {assert.match(world.prompt,/主参照の本人だけを描く/);for(const value of ['輪郭','眉と目鼻口','実際の髪型','年齢感・性別表現・体格・基本頭身'])includes(world.prompt,value,label+' identity');assert.match(world.prompt,/ちび.*通常頭身へ伸ばさない/);assert.match(world.prompt,/閉眼・髪なし・元々ある髭・被覆・遮蔽/);}
  assert.doesNotMatch([world.prompt,surface.prompt,sceneText].join('\n'),/同じ2Dの形と色面へ|2～3つの明確なセル影|写真顔・プラスチックCG/);
  assert.match(sceneText,/全可視面の局所反射と深暗部/);assert.match(sceneText,/不合格を完成扱いしない/);
  const camera=cameraContract(plan.values,{noPerson:plan.noPerson});

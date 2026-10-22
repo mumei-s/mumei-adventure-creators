@@ -22,6 +22,17 @@ function make(overrides={},collection='halloween',route='sheet'){
  applyCollection(collection);const values={...base,medium:media[0],...overrides},variant=applyPose(buildDirection([],values.mood,random,collection,values),values.pose),plan=productionPlan(profile,values,variant,collection,random),manifest=selectionReferenceManifest(plan.values);
  plan.referenceManifest=[stylePresetFor(plan.values.medium),{role:'identity',name:'original-source.jpg',sourceKind:values.sourceKind},...(route==='sheet'?[{role:'selection-sheet',name:manifest.name,items:manifest.items}]:individualSelectionReferenceManifest(manifest))];return plan;
 }
+// Missing/direct originals must not promote a style sample to subject authority.
+for(const medium of media){
+ const person=make({medium}),style=stylePresetFor(medium);
+ const pending=worldTransferWorldStage(person,[style,{role:'identity',name:'ChatGPTへ直接添付する主参照',attached:false}]);
+ assert.deepEqual(pending.references.map(ref=>ref.role),['identity','style-preset']);
+ assert.match(pending.prompt,/主参照を確認できない場合は生成せず/);
+ assert.doesNotMatch(pending.prompt,/1枚目の選択画風原画を編集の土台|2枚目の本人|衣服・背景・姿勢・構図を維持/);
+ const missing=worldTransferWorldStage(person,[style]);assert.match(missing.prompt,/主参照を確認できない場合は生成せず/);
+ const noPerson=make({medium,sourceKind:'',costume:'風景を主役にする',pose:'おまかせ',mood:'おまかせ'});
+ const scenery=worldTransferWorldStage(noPerson,[style]);assert.ok(scenery);assert.match(scenery.prompt,/元画像を必要としない選択景物・物体/);assert.match(scenery.prompt,/この選択では元画像なし/);
+}
 let routes=0,blocked=0,layouts=0;
 function check(plan){
  const before=JSON.stringify(plan),workflow=worldTransferPrompts(plan),master=compileProduction(plan),errors=plan.issues.filter(issue=>issue.severity==='error');

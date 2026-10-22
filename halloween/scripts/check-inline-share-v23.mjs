@@ -1,3 +1,4 @@
+import {deliveryReferenceNotice} from '../reference-authority.js';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
@@ -13,7 +14,7 @@ async function exercise({images=3,collection='halloween',supports=true,failure=n
  const files=['identity.png','style-preset-119.png','selection-references.jpg'].slice(0,images).map((name,index)=>new File([new Uint8Array([index+1,4,7])],name,{type:name.endsWith('.jpg')?'image/jpeg':'image/png'}));
  const nodes=new Map(),$=id=>{if(!nodes.has(id))nodes.set(id,{textContent:'',hidden:true,dataset:{},scrollIntoView(){}});return nodes.get(id);};
  let payload=null,clipboard=null;
- const context={File,imageGenerationRequest,currentResult:{prompt,collection,values:{costume:'ミイラ'},drawingReferences:[],localRefs:[]},deliveryImageFiles:()=>files,$,needsReference:()=>false,tell(){},navigator:{canShare:({files:provided})=>supports||provided.every(file=>file.type.startsWith('image/')),share:async value=>{if(failure)throw Object.assign(new Error('Native share failure'),{name:failure});payload=value;},clipboard:{writeText:async value=>{clipboard=value;}}}};
+ const context={File,deliveryReferenceNotice,imageGenerationRequest,currentResult:{prompt,collection,values:{costume:'ミイラ'},drawingReferences:[],localRefs:[]},deliveryImageFiles:()=>files,$,needsReference:()=>false,tell(){},navigator:{canShare:({files:provided})=>supports||provided.every(file=>file.type.startsWith('image/')),share:async value=>{if(failure)throw Object.assign(new Error('Native share failure'),{name:failure});payload=value;},clipboard:{writeText:async value=>{clipboard=value;}}}};
  vm.createContext(context);vm.runInContext(functions,context);await context.shareAll();
  if(!supports||failure==='TypeError'){
   assert.equal(payload,null,'An unsupported image/text-file bundle must never downgrade to image-only or inline-long-text sharing');

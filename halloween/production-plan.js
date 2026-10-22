@@ -1,3 +1,4 @@
+import {identityRepairInstructions} from './reference-authority.js';
 import {renderFocusedRepairPrompt} from './focused-production.js?v=28.4.6';
 import {creatorLookupInstructions,creatorCopyRequirements} from './creator-handoff.js?v=28.4.6';
 import {imageOutputContract} from './output-contract.js?v=28.4.6';
@@ -121,7 +122,7 @@ export function repairPrompt(result){
  const checks=result.production?.conditions?.map(c=>'照合 / '+c.name+'：'+c.checks.join(' / '))||['元の制作仕様の各項目と、実際に見える完成画像を照合する。'];
  return [
  ...imageOutputContract,
- '【選択した仕様へ仕上げ直す】',
+ '【選択した仕様へ仕上げ直す】',identityRepairInstructions(values),
  ...[characterProportionInstruction(values,{noPerson})].filter(Boolean),
  ...(camera?['【修正時も固定するカメラ】',...camera.instructions,...camera.checks]:[]),
  drawingReference?'このチャットで直前に生成した完成画像、または今回添付した修正対象の完成画像を実際に見て、下記の制作仕様と照合する。完成画像は修正対象。画風・主題・舞台・形式は項目タイトルと具体的な制作仕様を使い、ツールが用意した選択作風のプリセット見本だけを描画技法の資料として併用する。選択画面のUI見本や画面一覧は不要であり、再添付を要求しない。原画の名前だけで画像を確認したと扱わず、主参照・修正対象・専用原画は実際に確認できるものだけを使う。必要な主参照や修正対象を確認できない場合のみ、その画像を求める。':'このチャットで直前に生成した完成画像、または今回添付した修正対象の完成画像を実際に見て、下記の制作仕様と照合する。完成画像は修正対象。画風・主題・舞台・形式は項目タイトルと具体的な制作仕様を使う。項目の見本画像は不要であり、見本や画面一覧の再添付を要求しない。必要な主参照や修正対象を確認できない場合のみ、その画像を求める。',

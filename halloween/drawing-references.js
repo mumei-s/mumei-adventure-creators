@@ -1,7 +1,6 @@
 import {createBlobCache} from './blob-cache.js';
 // These original, transparent completed artworks are production inputs.
 // General picker thumbnails and the nine scene examples remain UI-only.
-import {focusedReferenceMedia} from './attachment-policy.js?v=28.4.6';
 import {fetchAssetBlob} from './asset-network.js?v=28.4.6';
 const masters=[
  {medium:'宝石光彩アニメ',file:'assets/drawing-jewel-anime-v28.png',name:'drawing-jewel-anime.png',role:'drawing',label:'宝石光彩アニメの画風原画'},
@@ -15,7 +14,7 @@ export function drawingReferenceInstructions(medium,{noPerson=false,values={}}={
  const hairRule=nonHumanSource?'設計済み主役が髪なしなら修正で髪を足さない。':'髪がない主参照へ髪を足さない。';
  return [
   '【専用の画風原画：人物の主参照とは別】',
-  ref.name+' は背景透過の完成基画。実画像を見て、原画で見える透明な光層の厚み・深暗部の面積比・最明部との輝度差・素材ごとの鋭い反射密度を保つ。'+(noPerson?'原画の人体を完全に除外し、選択した景物・物体へこの光と描画を移す。':'画像編集の土台にして、人物と今回の選択項目を差し替える。')+'名称や説明文だけで原画を見たと扱わない。添付がない場合は原画未確認と短く伝え、今回の作画仕様で生成する。',
+  ref.name+' は背景透過の完成基画。実画像を見て、原画で見える透明な光層の厚み・深暗部の面積比・最明部との輝度差・素材ごとの鋭い反射密度を保つ。'+(noPerson?'原画の人体を完全に除外し、選択した景物・物体へこの光と描画を移す。':'原画は描法だけの資料とし、利用者の主参照を人物・主題の基準にして今回の選択項目を描く。')+'名称や説明文だけで原画を見たと扱わない。添付がない場合は原画未確認と短く伝え、今回の作画仕様で生成する。',
   noPerson?'原画の人物・顔・髪・手足・衣装・ポーズは一切採用せず、選択した風景や物体の材質へ描線・光彩・陰影の描き方だけを移す。人物や人型を追加しない。':nonHumanSource?'入力の景色・図案には人物の識別基準がない。明示された人物制作のために固有形・色・構造を翻案した独自の主役へ、瞳の透明な光層・肌の局所光彩・深い影を移す。顔・髪・目の色・年齢感・性別表現・体格は画風原画の人物から借りず、今回の明示条件で設計する。修正では生成済み主役を保持する。':'人物の顔立ち・髪型・瞳の識別色・年齢感・性別表現・体格は作成者の主参照を使う。原画の人物へ入れ替えず、原画の髪・顔・目の色・衣装・装身具・ポーズ・構図を複写しない。瞳の透明な光層と鋭い反射、肌の局所光彩と深い影の描き方を同じキャラクターへ移す。',
   noPerson?'景物・物体・カメラ・背景・配色は今回の選択で描き直す。原画の人物を貼らず、景物・物体・背景を一つの光で描く。':'衣装・表情・ポーズ・カメラ・背景・配色は今回の選択で描き直す。原画の人物自体は保存せず、'+(nonHumanSource?'入力の固有形を翻案した独自の主役':'主参照の同じキャラクター')+'へ差し替える。人物・衣装・背景を一つの光で描く。',
   '配色変更は光層の色相を選択色へ翻訳し、明暗差と反射密度を保つ。光の位置は新しい形・材質・遮蔽と舞台へ描き直す。街角や昼の自然光でも、舞台は光の方向と落ち影を決め、基画の光彩を普通の薄い艶へ弱めない。場面仕様の「弱い反射」「自然光」は光彩の密度や陰影を減らす指示にはしない。',
@@ -41,7 +40,7 @@ export function deliveryImageFiles(result,{FileClass=globalThis.File}={}){
  const identity=(result.localRefs||[]).map((ref,i)=>new FileClass([ref.file],result.references[i].name,{type:ref.file.type}));
  const style=(result.localDrawingRefs||[]).map(ref=>ref.file);
  return [
-  ...(focusedReferenceMedia.includes(result.values?.medium)?[...style,...identity]:[...identity,...style]),
+  ...identity,...style,
   ...(result.localSelectionReference?.file?[result.localSelectionReference.file]:[])
  ];
 }

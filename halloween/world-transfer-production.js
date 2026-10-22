@@ -1,3 +1,4 @@
+import {referenceAuthorityInstructions,requiresPrimaryReference} from './reference-authority.js';
 import {volumetricReferenceMedia} from './attachment-policy.js?v=28.4.6';
 import {stylePresetFor} from './style-presets.js?v=28.4.6';
 import {isNonHumanSource} from './source-kind.js?v=28.4.6';
@@ -38,18 +39,19 @@ export function worldTransferWorldStage(plan,refs=plan?.referenceManifest||[]){
  if(!usesWorldTransferProduction(plan)||(plan.issues||[]).some(issue=>issue.severity==='error'))return null;
  const style=styleFor(plan,refs),source=entries(refs).find(ref=>ref.role==='identity'),real=plan.values.medium==='立体光彩リアル';
  const shape=plan.noPerson?(real?'自然な景物・物体の外形・厚み・微細構造と実物の材質':'整理したアニメの景物・物体の外形と面構造、連続した立体陰影と素材別の艶'):real?'自然な頭蓋・眼球・鼻・唇・身体の立体と、皮膚・髪・布の実物の材質':'アニメ／トゥーンの顔と身体の形、髪の束、連続した立体陰影と素材別の艶';
- const action=plan.noPerson?'原画の人物を除き、主参照がある場合は選択された景物・物体・構造だけをその同じ視覚世界へ翻案する。人物・顔・人体・手足・人型を追加しない。':isNonHumanSource(plan.values)?'原画の人物の顔を借りず、2枚目の景色・マーク・物体の固有形・色・紋様・構造を衣装や小道具へ翻案した独自の主役を作る。元入力から本人の顔・髪・年齢・性別を復元したと主張しない。':'その人物の識別特徴だけを2枚目の本人へ差し替える。本人の輪郭・眉と目鼻口の特徴的な組合せ、実際の髪型と髪瞳の基礎色、年齢感・性別表現・体格・基本頭身、自然に生える角・耳や固有の印を保つ。ちびの頭・短い胴体と四肢を通常頭身へ伸ばさない。本人画像の衣装・着脱可能な仮装の角・動物耳のカチューシャ・装身具・飾り・撮影姿勢・撮影光・背景は移さない。';
- const prompt=['1枚目の選択画風原画を編集の土台にする。原画の描かれた視覚世界、全可視面の局所反射色層と広い深暗部、小さく鋭い強光、造形と材質、衣服・背景・姿勢・構図を維持し、'+action,
+ const action=plan.noPerson?'選択された景物・物体・構造を作る。主参照がある場合はその固有形と構造を使う。人物・顔・人体・手足・人型を追加しない。':isNonHumanSource(plan.values)?'主参照の景色・マーク・物体の固有形・色・紋様・構造を衣装や小道具へ翻案した独自の主役を作る。元入力から本人の顔・髪・年齢・性別を復元したと主張しない。':'主参照の本人だけを描く。本人の輪郭・眉と目鼻口の特徴的な組合せ、実際の髪型と髪瞳の基礎色、年齢感・性別表現・体格・基本頭身、自然に生える角・耳や固有の印を保つ。ちびの頭・短い胴体と四肢を通常頭身へ伸ばさない。着脱可能な仮装の角・動物耳のカチューシャ・装身具は本人の生来の特徴と区別し、今回の選択が指定する場合だけ使う。本人画像の撮影光・撮影背景を写す必要はなく、衣装・姿勢などの完成条件は後の場面工程で適用する。';
+ const prompt=[...referenceAuthorityInstructions(plan.values,refs),
+  (source||requiresPrimaryReference(plan.values)?'利用者の主参照を人物・主題の識別の土台にする。':'元画像を必要としない選択景物・物体を制作の土台にする。')+'選択画風原画は描法だけの資料。全可視面の局所反射色層と広い深暗部、小さく鋭い強光、造形と材質を同じ密度で再構築する。原画の人物・顔・髪・体格・衣服・小道具・背景・姿勢・構図を採用しない。'+action,
   '描法は「'+plan.values.medium+'」。'+shape+'で'+identitySubject(plan)+'を構築し、原画と同じ密度の色反射と深い陰影を維持する。'+(!real&&!plan.noPerson?'元写真の顔や肌の表面を貼り戻さず、識別特徴を原画の造形へ翻訳する。':''),
   (plan.noPerson?'物体の支持と遮蔽を保つ。':'閉眼・髪なし・元々ある髭・被覆・遮蔽は保ち、光のために隠れた目や肌を露出させない。')+(Object.keys(explicit(plan)).length?'明示条件：'+JSON.stringify(explicit(plan))+'。':''),
   '文字や新しい図版を追加せず、編集した画像1枚を通常表示する。これは原画の世界を保つ中間画像で、選択衣装や版面を実行済みの完成作品ではない。'].join('\n');
- return {key:'world',kind:'world-swap',prompt,references:[style,source].filter(Boolean),conditionKeys:['medium'],outputRole:'world-base',requiresVisualVerification:true,acceptance:[identitySubject(plan)+'を保つ','原画の視覚世界と造形・材質','全可視面の反射と深い影']};
+ return {key:'world',kind:'world-swap',prompt,references:[source,style].filter(Boolean),conditionKeys:['medium'],outputRole:'world-base',requiresVisualVerification:true,acceptance:[identitySubject(plan)+'を保つ','原画の視覚世界と造形・材質','全可視面の反射と深い影']};
 }
 
 export function worldTransferSurfaceStage(plan,refs=plan?.referenceManifest||[]){
  if(!usesWorldTransferProduction(plan)||(plan.issues||[]).some(issue=>issue.severity==='error'))return null;
  const style=styleFor(plan,refs),real=plan.values.medium==='立体光彩リアル';
- const shape=plan.noPerson?(real?'自然な景物・物体の厚みと微細構造・実物の材質を、連続階調で構築する。':'整理したアニメの外形と面構造を、連続した立体曲面・陰影・素材別の艶で構築する。'):real?'自然な頭蓋・眼球・鼻・唇・人体の厚み、皮膚の散乱・毛流・実物の材質を、連続階調で構築する。':'原画と同じアニメ／トゥーンの眼形、整理した頬と顎、簡潔な鼻唇、髪の束を、連続した立体曲面と陰影で構築する。写真の微細寸法や鼻唇の表面を固定せず、主役の識別特徴の組合せを原画の造形へ翻訳する。';
+ const shape=plan.noPerson?(real?'自然な景物・物体の厚みと微細構造・実物の材質を、連続階調で構築する。':'整理したアニメの外形と面構造を、連続した立体曲面・陰影・素材別の艶で構築する。'):real?'自然な頭蓋・眼球・鼻・唇・人体の厚み、皮膚の散乱・毛流・実物の材質を、連続階調で構築する。':'本人の目鼻口と輪郭の特徴を保つアニメ／トゥーンの形、整理した頬と顎、簡潔な鼻唇、髪の束を、連続した立体曲面と陰影で構築する。写真の微細寸法や鼻唇の表面を固定せず、主役の識別特徴の組合せを原画の造形へ翻訳する。';
  const visible=plan.noPerson?'主景・物体・支持面・可視背景': '開いて見える瞳・額・頬・鼻・唇・耳・首・手指・脚・足・存在する髪・衣装';
  const prompt=['1枚目の直前の世界差替画像を編集する。'+identitySubject(plan)+'、衣服、背景の世界、姿勢、構図を保ち、未達の造形と可視面の光・影だけを修正する。'+shape,
   '2枚目の選択原画と同密度の薄い反射色層、小さく鋭い強光、広く深い有彩色の暗部を、'+visible+'の各曲面へ連続させる。'+(plan.noPerson?'人物・顔・人体・手足・人型を追加しない。':'特に顔肌へ環境の色の照り返しと立体影を面として返し、瞳へ暗い芯・層の奥行き・小さな環境反射を描く。普通の顔肌へ光点を足すだけにしない。'),

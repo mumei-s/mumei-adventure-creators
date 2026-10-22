@@ -67,12 +67,12 @@ for(const collection of ['halloween','everyday'])for(const preset of stylePreset
  const focused=usesFocusedProduction(plan),recipe=focused?renderRecipeChatInput(plan,plan.referenceManifest):null;
  if(focused){
   assertFocusedHandoff(plan,prompt,collection+' / '+preset.medium+' actual preset');
-  assert.match(prompt,/原寸の選択画風見本.*(?:制作の土台・編集の基準|描法だけの資料)/,'The actual focused preset must supply full-resolution drawing method');
+  assert.match(prompt,/原寸の選択画風見本.*(?:描画方法だけの資料|描法だけの資料)/,'The actual focused preset must supply full-resolution drawing method');
   if(volumetricReferenceMedia.includes(preset.medium)){
    const world=worldTransferPrompts(plan).stages.find(stage=>stage.key==='world');
    assert.equal(world.references.find(ref=>ref.role==='style-preset')?.name,preset.name,'The optional world edit must use the exact selected original');
    assert.equal(world.references.find(ref=>ref.role==='identity')?.name,'character.png');
-   assert.match(world.prompt,/1枚目の選択画風原画を編集の土台にする/,'The original must own a deliberately chosen world-editing step');
+   assert.match(world.prompt,/選択画風原画は描法だけの資料/,'The selected original supplies technique, not the person');assert.match(world.prompt,/利用者の主参照を人物・主題の識別の土台にする/);assert.doesNotMatch(world.prompt,/1枚目の選択画風原画を編集の土台/);
    assert(!prompt.includes(world.prompt),'Standard delivery must not require the optional intermediate world image');
    assert.match(prompt,/完成画像1枚を1回で生成.*通常の生成画像として表示/);
   }

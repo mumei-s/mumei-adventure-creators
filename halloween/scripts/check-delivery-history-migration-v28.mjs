@@ -18,7 +18,7 @@ const packed=await compactHistoryRecord(source),packedBefore=JSON.stringify(pack
 const migrated=recomposeHistoryDelivery(restored,{version:'28.4.5'}),style=stylePresetFor(values.medium),manifest=selectionReferenceManifest(values);
 assert.deepEqual(migrated.values,values);assert.deepEqual(migrated.variant,source.variant);assert.deepEqual(migrated.production.copy,source.production.copy);
 assert.equal(migrated.values.sourceKind,'photo-person');assert.equal(migrated.count,7);assert.equal(migrated.edition,source.edition);assert.equal(migrated.date,source.date);
-assert.deepEqual(migrated.drawingReferences,[style]);assert.deepEqual(migrated.selectionReference,manifest);assert.deepEqual(migrated.production.referenceManifest,[style,...(selectionReferenceCounts(manifest).sheet?[manifest]:[]),...source.references]);
+assert.deepEqual(migrated.drawingReferences,[style]);assert.deepEqual(migrated.selectionReference,manifest);assert.deepEqual(migrated.production.referenceManifest,[...source.references,style,...(selectionReferenceCounts(manifest).sheet?[manifest]:[])]);
 assert.equal(selectionReferenceCounts(manifest).sheet,8,'Current delivery restores applicable examples while retaining every selection');
 assert.equal(migrated.selectionReference.conditions.length,10);
 assert.equal(migrated.stages,null,'Opening ordinary saved work must not introduce mandatory identity stages');assert.ok(migrated.prompt.includes(source.references[0].name),'Default one-call production keeps its actual identity attachment');assert.ok(migrated.prompt.includes(manifest.name),'Default one-call production keeps its actual condition sheet');assert.doesNotMatch(migrated.prompt,/prepared-identity\.png|人物翻訳用入力|2段階で実行/);

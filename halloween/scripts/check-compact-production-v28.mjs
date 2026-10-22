@@ -193,7 +193,7 @@ for(const plan of integrationPlans){
    assert.doesNotMatch(text,/prepared-identity\.png|人物翻訳用入力|2段階で実行/,'Normal production must use its actual delivered identity reference without hidden preparation');
   }else includes(text,compact,route+' actual compact payload');
   assert.equal(occurrences(text,'【短い統合制作指示】'),1,route+' repeated the compact payload');
-  if(!focused)for(const reference of plan.referenceManifest)assert.equal(occurrences(text,reference.name),1,route+' repeated/lost reference '+reference.role);
+  if(!focused)for(const reference of plan.referenceManifest)assert.equal(occurrences(text,reference.name),reference.role==='identity'?2:1,route+' reference name occurs once in role payload plus identity authority gate '+reference.role);
   const sheet=plan.referenceManifest.find(reference=>reference.role==='selection-sheet');
   assert.equal(sheet.conditions.length,10,'All ten selected conditions must remain in the manifest');
   assert.equal(sheet.items.length,sheet.conditions.filter(condition=>condition.deliverVisual).length,'The role sheet contains only selected visuals that add needed reference information');

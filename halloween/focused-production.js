@@ -1,3 +1,4 @@
+import {identityRepairInstructions,requiresPrimaryReference} from './reference-authority.js';
 import {cameraContract} from './angles.js?v=28.4.6';
 import {colorPolicy} from './color-policy.js?v=28.4.6';
 import {characterProportionInstruction,isNonHumanSource} from './source-kind.js?v=28.4.6';
@@ -60,7 +61,7 @@ function referenceLines(plan,refs){
    '完成作品の主役は、実画像で照合した人物識別参照「'+identity.map(ref=>ref.name||ref.file).join('・')+'」の同じ人物。この2D人物を顔と造形の土台・編集の基準にして、輪郭・目鼻口・髪型・年齢感・性別表現・体格・頭身を保つ。準備画像の無地服・中立姿勢・撮影角度は今回の選択へ描き直す。',
    '原寸の選択画風見本'+(style.length?'「'+style.map(ref=>ref.name||ref.file).join('・')+'」':'')+'は描法だけの資料。線・色面・陰影・光の強さと密度だけを同じ主役へ適用する。画風原画の人物の顔・性別・髪型・衣服・小道具・背景・構図を完全に除外し、男性・女性の別人へ置換しない。'
   ]:[
-   '原寸の選択画風見本'+(style.length?'「'+style.map(ref=>ref.name||ref.file).join('・')+'」':'')+'を制作の土台・編集の基準にする。'+world+'を維持し、'+action+'原画の実際の衣装・小道具・背景の配置や構図を複写する意味ではない。',
+   (requiresPrimaryReference(plan.values)?'人物・主題の制作の土台・編集の基準は利用者の主参照。':'元画像不要の風景・モチーフは、選択された主題と条件を制作の基準にする。')+'原寸の選択画風見本'+(style.length?'「'+style.map(ref=>ref.name||ref.file).join('・')+'」':'')+'は描画方法だけの資料とする。'+world+'を維持し、'+action+'原画の実際の衣装・小道具・背景の配置や構図を複写する意味ではない。',
    ...(identity.length?['主参照「'+identity.map(ref=>ref.name||ref.file).join('・')+'」：'+sourceRole]:[]),
    '変更するのは今回選んだ主題・衣装・場面・ポーズ・カメラ投影・配色・版面・許可文字。原画の視覚世界をそれぞれの選択へ移す。'+(!solid&&!plan.noPerson?'背景だけ光らせて人物を写真やCGに戻さない。':'')
   ]),
@@ -181,9 +182,9 @@ export function renderFocusedRepairPrompt(plan,refs=plan?.referenceManifest||[],
  const drawing=focusedDrawingInstructions(plan);
  const copy=c.mode==='none'?['文字・数字・署名・疑似文字なし。']:[...c.slots.map(slot=>slot.role+'：'+JSON.stringify(slot.text)),...(c.generatedSlots?.length?['自動原稿の許可役割と上限：'+c.generatedSlots.map(slot=>slot.role+' '+slot.maxCharacters+'字以内').join('／')]:[]),'既に印字された許可原稿はその文字列を保つ。誤記や未許可原稿が実画像で確認された場合だけ、この許可範囲へ修正し、別の記事や文字を増やさない。'];
  return [
-  '【立体光彩の完成画像：不足箇所だけを編集】',
-  '画像作成機能へ添付するのは「'+artworkName+'」と選択画風の原寸原画'+(style?'「'+(style.name||style.file)+'」':'')+'の2画像だけ。完成画像を編集の土台とし、原画は光彩・造形・材質の描法だけに使う。元の人物写真・元イラスト・見本シート・個別条件見本は再添付しない。',
-  '元の主参照は会話側で本人や主題を照合する資料だけとする。実画像から未達の項目と領域を特定し、合格している'+subject+'、原画の視覚世界、光と影、姿勢・投影・版面を保ったまま不足部分だけを修正する。初回の人物差替や場面全体の作り直しを繰り返さない。',
+  '【立体光彩の完成画像：不足箇所だけを編集】',identityRepairInstructions(v),
+  '本人が一致していて画風だけを修正する場合、画像作成機能へ添付するのは「'+artworkName+'」と選択画風の原寸原画'+(style?'「'+(style.name||style.file)+'」':'')+'の2画像だけ。完成画像を編集の土台とし、原画は光彩・造形・材質の描法だけに使う。元の人物写真・元イラスト・見本シート・個別条件見本は再添付しない。',
+  '画風だけを修正する場合、元の主参照は会話側で本人や主題を照合する資料だけとする。実画像から未達の項目と領域を特定し、合格している'+subject+'、原画の視覚世界、光と影、姿勢・投影・版面を保ったまま不足部分だけを修正する。初回の人物差替や場面全体の作り直しを繰り返さない。',
   '保持する選択：'+plan.conditions.map(condition=>condition.name+'＝'+condition.value).join('／'),
   '保持する描法「'+v.medium+'」：'+drawing,
   ...(plan.noPerson?['人物・顔・人体・手足・人型や擬人化を追加しない。']:['閉眼・髪なし・元々ある髭・衣装の被覆・遮蔽を保つ。光のために隠れた目や肌を露出させない。頭身変更が明示されていなければ、ちびの大きな頭・短い胴体と四肢を通常頭身へ伸ばさない。',
@@ -233,8 +234,12 @@ export function identityPreparationStage(plan,refs=plan?.referenceManifest||[]){
  const preparedReference={name:'prepared-identity.png',role:'identity',sourceKind:'illustration-person',preparedMedium:plan.values.medium,label:'実画像照合済みの選択画風の人物識別参照'};
  const finalReferences=[preparedReference,style].filter(Boolean),finalPlan={...plan,values:{...plan.values,sourceKind:'illustration-person'},referenceManifest:finalReferences};
  return {kind:'identity-translation',required:false,optional:true,status:'requires-visual-verification',outputName:preparedReference.name,prompt,
-  references:[style,identity].filter(Boolean),finalReferences,finalSourceKind:'illustration-person',
+  references:[identity,style].filter(Boolean),finalReferences,finalSourceKind:'illustration-person',
   repairPrompt:renderIdentityRepairPrompt(plan,refs),repairReferences:[preparedReference,style].filter(Boolean),
+  repairReferencesAppliesWhen:'identity-verified-style-only',
+  identityMismatchRepairReferences:[identity,{...preparedReference,role:'repair-target',label:'本人不一致の修正対象'},style].filter(Boolean),
+  identityMismatchRequiresOriginal:true,
+  repairRouting:'本人不一致は identityMismatchRepairReferences の元の主参照と修正対象を使う。元の主参照が実際に添付されていなければ停止して求める。repairReferences は本人一致を確認した画風のみの修正に限る。',
   finalPrompt:renderFocusedChatInput(finalPlan,finalReferences)+'\n最終段階は、実画像で照合したprepared-identity.pngと選択画風の原寸原画だけを添付する。元の人物写真・元イラストを再添付しない。',
   instructions:'準備画像を同じ人物と選択作風について実画像で確認した後だけ最終制作へ進む。元写真を再添付して混ぜず、元の全選択・確定原稿・カメラを保持する。未達の準備画像や最終画像を合格としない。'};
 }
@@ -243,11 +248,11 @@ export function renderIdentityRepairPrompt(plan,refs=plan?.referenceManifest||[]
  if(!flatFocusedReferenceMedia.includes(plan?.values?.medium)||plan.noPerson||isNonHumanSource(plan.values))return null;
  const entries=referenceEntries(refs),styles=entries.filter(ref=>['style-preset','drawing'].includes(ref.role)&&(!ref.medium||ref.medium===plan.values.medium)),sources=entries.filter(ref=>ref.role==='identity'&&ref.name!==failedName),palette=colorPolicy(plan.values);
  return [
-  '【人物翻訳の不合格を修正する入力】',
-  'Edit the failed character-reference portrait "'+failedName+'" into a completely drawn Japanese 2D anime identity reference. Preserve this same person, recognizable face-feature combination, age impression, gender expression, actual hair/beard, build and original head/body proportions. No large identity deformation, younger sample face, gender swap, new hair or new beard. Preserve closed eyes, absent hair and chibi proportions.',
+  '【人物翻訳の不合格を修正する入力】',identityRepairInstructions(plan.values),
+  'For a style-only repair after identity is verified, edit the failed character-reference portrait "'+failedName+'" into a completely drawn Japanese 2D anime identity reference. Preserve this same person, recognizable face-feature combination, age impression, gender expression, actual hair/beard, build and original head/body proportions. No large identity deformation, younger sample face, gender swap, new hair or new beard. Preserve closed eyes, absent hair and chibi proportions.',
   'The selected original style "'+plan.values.medium+'"'+(styles.length?' ('+styles.map(ref=>ref.name||ref.file).join(', ')+')':'')+' supplies DRAWING METHOD ONLY. Exclude its person, face, gender, hair, clothes, objects and composition. '+preparationDrawing[plan.values.medium],
   'REPLACE THE FACE SURFACE: broad opaque cheek, forehead, jaw, neck and visible-skin color planes; two or three clean designed shadow planes; simple single nose and lip anime marks; coherent fine contour/eyelid lines. Draw iris color layers and small crisp highlights inside the visible eyes. Draw hair in connected strand groups and large designed light/shadow shapes. No photographic micro-shading, wet lips, pores, glossy 3D gradients, glass anatomy or realistic individual hairs. For the painterly anime selection, use painted transitions between deliberately drawn anime planes while preserving the simple drawn nose/lip marks.',
-  ...(sources.length?['Original source '+sources.map(ref=>ref.name||ref.file).join(', ')+' is conversation-side identity comparison only, do not attach to repair image generation. The repair tool receives ONLY the failed portrait and the selected style original. Do not repaint the source skin surface, photographic lighting, angle, costume or jewelry.']:[]),
+  ...(sources.length?['For verified-identity style-only repair, original source '+sources.map(ref=>ref.name||ref.file).join(', ')+' is conversation-side identity comparison only, do not attach to repair image generation. The repair tool receives ONLY the failed portrait and the selected style original. Do not repaint the source skin surface, photographic lighting, angle, costume or jewelry.']:[]),
   (plan.values.costume==='参照画像の衣装を生かす'?'Keep the explicitly selected reference garment structure and coverage, translated into the same drawn method, and the plain background. ':'Keep the simple opaque covered top and plain background. Remove removable costume horns, animal-ear headbands, heart necklaces, jewelry and decorative ornaments. ')+'Preserve original biological identity, including naturally growing horns/ears and any existing beard. Add no Halloween scene, armor, setting, text, signature, labels or panels. '+(palette.restricted?'Use only '+palette.allowed+' and their value variations, including identity colors, highlights, shadows and background.':'Keep natural identifying hair, iris and mark colors.'),
   '修正した実画像を表示し、同じ人物と純粋な2D描線・設計した顔色面を拡大して照合する。写真顔・CG・別人・失われた特徴が残る場合は不合格として示し、最終制作へ進めない。合格した修正参照だけを次の工程へ渡し、元写真を最終に再添付しない。'
  ].join('\n');

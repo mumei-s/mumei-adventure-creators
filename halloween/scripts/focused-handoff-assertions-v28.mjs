@@ -25,7 +25,7 @@ export function assertFocusedHandoff(plan,text,label='focused actual'){
  assert.equal((text.match(/【短い統合制作指示】/g)||[]).length,1,label+' must contain one final production payload');
  for(const condition of plan.conditions)includes(text,condition.name+'＝'+condition.value,label+' choice '+condition.key);
  const final=text.includes('【統合するための制作仕様：開始】')?text.split('【統合するための制作仕様：開始】')[1].split('【統合するための制作仕様：終了】')[0]:text;
- assert.match(final,/制作の土台・編集の基準|顔と造形の土台・編集の基準/,label+' selected visual base is missing');
+ assert.match(final,/制作の土台・編集の基準|顔と造形の土台・編集の基準|選択された主題と条件を制作の基準/,label+' selected visual base is missing');
  const solid=volumetricReferenceMedia.includes(plan.values.medium),person=!plan.noPerson&&!isNonHumanSource(plan.values);
  if(final.includes('描法だけの資料')){assert.match(final,/顔・性別・髪型・衣服・小道具・背景・構図を完全に除外/,label+' prepared identity can be replaced by a sample person or scene');}
  else{

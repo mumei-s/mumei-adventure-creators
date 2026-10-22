@@ -1,3 +1,4 @@
+import {identityRepairInstructions,referenceAuthorityInstructions} from './reference-authority.js';
 import {opticalColors,opticalSignature} from './optical-effects.js?v=28.4.6';
 import {colorPolicy} from './palette-recipes.js?v=28.4.6';
 import {formatFor} from './formats.js?v=28.4.6';
@@ -31,6 +32,7 @@ export function composeArtworkStage(plan,{embedded=false}={}){
  const crystal=values.medium==='クリスタル透光アニメ';
  return [
   embedded?'【完成誌面の主画像を描く条件】':'【第1段階：選択画風の主画像を制作】',
+  ...referenceAuthorityInstructions(values,plan.referenceManifest),
   embedded?'完成画像の主画像領域を以下の画風で描く。人物・衣装・背景を同じ描画方法で統一し、文字組みと一緒に完成画像1枚へ仕上げる。':
    '以下の制作仕様を一つの場面へ統合した画像生成用プロンプトにまとめ、主画像を1枚生成して実際の画像を返す。文字・数字・署名・枠・複数画面を描かず、単独の一場面にする。',
   ...selectionIntegrationInstructions,
@@ -97,7 +99,8 @@ export function composeArtworkRepair(plan,{compact=false}={}){
   ...(photo?['【写真化の基準】',...photo.sections.map(s=>s.label+'：'+s.text)]:[]),
   ...(anatomy?.applicable?['【修正時も保つ体格と選択動作】',...anatomy.sections.map(s=>s.label+'：'+s.text)]:[]),
   '添付した制作途中の主画像を、選択画風「'+medium.value+'」の描画方法へ全面的に描き直してください。'+(geometry?'主画像の人物・物と指定どおり成立している配置を保ち、誤ったカメラの角度は指定へ修正する。':'主画像の人物・物・構図を保ち、')+'描画そのものを変換する画像編集を実行してください。',
-  drawingReference?'修正対象は直前の主画像1枚。ツールが用意した選択作風のプリセット見本だけを描画技法の補助として別画像で添付する。元の人物写真や画面一覧は再入力せず、見本の人物・衣装・ポーズ・小道具・構図・背景・配色へ置き換えない。実際に確認できる見本だけを使う。':'入力する画像は直前の主画像1枚だけ。元の人物写真や項目の見本は再入力しない。',
+  identityRepairInstructions(values),
+  drawingReference?'本人が一致している画風のみの修正対象は直前の主画像1枚。ツールが用意した選択作風のプリセット見本だけを描画技法の補助として別画像で添付する。元の人物写真や画面一覧は再入力せず、見本の人物・衣装・ポーズ・小道具・構図・背景・配色へ置き換えない。実際に確認できる見本だけを使う。':'本人が一致している画風のみの修正で入力する画像は直前の主画像1枚だけ。元の人物写真や項目の見本は再入力しない。',
   ...stylePresetInstructions(values.medium,{noPerson:plan.noPerson,values}),
   ...sourceKindInstructions(values,{noPerson:plan.noPerson}),
   ...[characterProportionInstruction(values,{noPerson:plan.noPerson})].filter(Boolean),

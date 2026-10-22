@@ -66,7 +66,7 @@ async function consistent(result){
   for(const key of ['role','width','height'])assert.equal(meta[key],ref[key],'Prompt metadata and actual file snapshot agree: '+key);
   assert.ok(result.prompt.includes(meta.name),'Prompt names the exact transferred reference');
  }
- const sent=deliveryImageFiles(result),focused=['発光幻想アニメ','薄膜光彩アニメ','白域幾何・宇宙彩アニメ','艶彩幻想アニメ'].includes(result.values.medium),offset=focused?result.localDrawingRefs.length:0,sheetCount=selectionReferenceCounts(result.selectionReference).sheet;
+ const sent=deliveryImageFiles(result),focused=['発光幻想アニメ','薄膜光彩アニメ','白域幾何・宇宙彩アニメ','艶彩幻想アニメ'].includes(result.values.medium),offset=0,sheetCount=selectionReferenceCounts(result.selectionReference).sheet;
  assert.equal(sent.length,result.localDrawingRefs.length+result.localRefs.length+(sheetCount?1:0));
  if(sheetCount){assert.equal(sent.at(-1).name,'selection-references.jpg');assert.equal(await sent.at(-1).text(),await result.localSelectionReference.file.text());}
  else{assert.equal(result.localSelectionReference,null,'A focused delivery must not create an empty reference sheet');assert.ok(!sent.some(file=>file.name==='selection-references.jpg'),'An empty selection sheet is not attached');assert.equal(selectionReferenceCounts(result.selectionReference).selected,10,'Omitting a duplicate image must retain all ten selected conditions');}
@@ -78,7 +78,7 @@ async function consistent(result){
 
 const cases=[
  ['late image attachment',async ({context})=>{await context.addFiles([new File(['LATE FILE'],'late.png',{type:'image/png'})]);}],
- ['remove main reference',async ({context,$})=>{$('references').children[0].children[1].listeners.click();assert.equal(context.refs[0].role,'identity');}],
+ ['remove main reference',async ({context,$})=>{$('references').children[0].children[1].listeners.click();assert.equal(context.refs[0].role,'support','Removing primary preserves explicit support role');}],
  ['swap main and supporting roles',async ({context,$})=>{const selector=$('references').children[1].children.find(child=>child.tag==='select');selector.value='identity';selector.listeners.change();assert.equal(context.refs[1].role,'identity');}],
  ['crop main reference',async ({context})=>{await context.applyCrop(context.refs[0],{file:new File(['CROPPED BYTES'],'character-0-crop.png',{type:'image/png'}),crop:{zoom:2}});assert.equal(context.refs[0].width,30);}],
  ['change selected medium',async ({context})=>{context.choose('透明水彩');assert.equal(context.selections.medium,'透明水彩');}],
@@ -94,6 +94,12 @@ for(const [label,mutate]of cases){
  assert.equal(f.context.saved.used.length,0,'Cancelled preparations do not consume variation history: '+label);
  assert.equal(f.context.saved.count,0,'Cancelled preparations do not increment the issue count: '+label);
  assert.equal(f.stats.celebrations,0);assert.equal(f.context.creating,false);assert.equal(f.$('generate').disabled,false);
+}
+
+for(const role of ['support','avoid']){
+ const f=fixture();f.context.refs[1].role=role;f.$('references').children[0].children[1].listeners.click();
+ assert.equal(f.context.refs[0].role,role);await assert.rejects(f.context.generate(),/主参照画像がありません/);
+ assert.match(f.$('form-error').textContent,/主参照を添付/);assert.equal(f.stats.shown.length,0);
 }
 
 // Deliberately bypass the normal edit notification to verify the second line

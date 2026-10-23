@@ -294,7 +294,7 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
       if(o.x+radius<bounds.left*TILE||o.x-radius>(bounds.right+1)*TILE||o.y+radius<bounds.top*TILE||o.y-radius>(bounds.bottom+1)*TILE)continue;
       c.save();c.translate(o.x,o.y);c.scale(1,1/TOWN_DEPTH_SCALE);c.translate(-o.x,-o.y);
       if(o.kind==='hero'){
-        ellipse(c,o.x,o.y+2,20,8,'#182532aa');ellipse(c,o.x,o.y+2,17,6,'#ffe5a08a');ellipse(c,o.x,o.y+2,12,4,'#344653');const sprite=playerPose(art,facing,walking&&motion,walkPhase);
+        const ringX=Math.max(17,9/scale),ringY=Math.max(6,3/(scale*TOWN_DEPTH_SCALE));ellipse(c,o.x,o.y+2,ringX+3,ringY+2,'#182532aa');ellipse(c,o.x,o.y+2,ringX,ringY,'#ffe5a0bb');ellipse(c,o.x,o.y+2,ringX*.7,ringY*.65,'#344653');const sprite=playerPose(art,facing,walking&&motion,walkPhase);
         if(sprite){drawArtSprite(c,sprite,o.x,o.y,76);addSpriteHit(sprite,o.x,o.y,76);}
       }else if(o.kind==='creator'){
         ellipse(c,o.x+1,o.y+2,10,3.5,'#07152d80');drawArtSprite(c,o.actor.sprite,o.x,o.y,o.actor.heightPx||54);

@@ -334,8 +334,8 @@
     },
     {
       "path": "town/renderer.js",
-      "bytes": 45914,
-      "sha256": "5402098c2ed324493d20311004bb8660c1e637f7f88ef6ccb2b9b94b6861f328"
+      "bytes": 46024,
+      "sha256": "d08e03d8a4a68f173d1ad1b9df7a13e0cdd975d65acfa26f42b0b34a2512d492"
     },
     {
       "path": "town/save-model.js",
@@ -446,7 +446,7 @@
     },
     {
       "path": "town/renderer.js",
-      "bytes": 32396
+      "bytes": 32460
     },
     {
       "path": "town/town-model.js",
@@ -663,8 +663,8 @@
   ],
   "output": {
     "path": "town/game-entry.js",
-    "bytes": 461185,
-    "sha256": "1aab4145ec659cb2e5b73f7016c5be8906d8d3bda13af5588abf8fd3197b2c4c"
+    "bytes": 461249,
+    "sha256": "8c74edec8fdcd7cdd93e25ba136eecac772c64cd777145358b6c6c00b37d3be4"
   },
   "styleSources": [
     "../display-mode.css?v=20261014-layout1",

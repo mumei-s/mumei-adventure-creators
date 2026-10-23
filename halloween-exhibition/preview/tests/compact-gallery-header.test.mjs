@@ -76,7 +76,7 @@ test('town links reuse the existing routes with compact labels and touch-friendl
  const html=await read('index.html'),townCSS=await read('town-entry.css');
  for(const id of ['palace-town-entrance','town-entrance']){
   assert.equal([...html.matchAll(new RegExp('id="'+id+'"','g'))].length,1);
-  assert.match(html,new RegExp('id="'+id+'"[^>]*href="\\./town/\\?return=theatre"[^>]*aria-label="宮殿から星灯りの街へ進む"><span aria-hidden="true">⌂</span><span>町へ行く</span></a>'));
+  assert.match(html,new RegExp('id="'+id+'"[^>]*href="\\./town/\\?return=theatre"[^>]*aria-label="宮殿から星灯りの街へ進む"><span aria-hidden="true">⌂</span><span>街へ行く</span></a>'));
  }
  assert.match(rule(base+' .palace-world-links>#palace-town-entrance'),/min-height:44px;max-width:128px/);
  assert.match(townCSS,/#theater \.palace-return-row>#town-entrance\{[^}]*max-width:128px;min-height:44px/);

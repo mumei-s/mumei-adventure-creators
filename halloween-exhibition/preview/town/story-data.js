@@ -1,5 +1,5 @@
 import {isInPalaceForecourt} from './palace-forecourt.js?v=20261019-journey1';
-import {createCreatorQuarter,CREATOR_HOMES,CREATOR_QUARTER_ID,CREATOR_QUARTER_CONNECTION} from './creator-homes.js?v=20261019-homes2';
+import {creatorAreaPortals,creatorAreaSigns,createCreatorQuarter,CREATOR_HOMES,CREATOR_QUARTER_ID,CREATOR_QUARTER_CONNECTION} from './creator-homes.js?v=20261019-homes2';
 import {createCreatorHomeInteriors} from './creator-home-interiors.js?v=20261019-interiors1';
 // The lantern town, its residents and story are original fiction. Real exhibitors
 // are visitors supplied separately by the exhibition; no submission is invented.
@@ -34,7 +34,7 @@ export const TOWN_NPCS = [
   {id:'clocksmith',name:'時計師 オル',role:'星歯車工房',x:6.5,z:5.5,mapId:'workshop',appearance:'clocksmith',fictional:true},
   {id:'archivist',name:'司書 フィオ',role:'夜の書庫',x:12.5,z:5.5,mapId:'library',appearance:'archivist',fictional:true},
   {id:'innkeeper',name:'宿屋 アンネ',role:'三日月亭',x:9.5,z:5.5,mapId:'inn',appearance:'innkeeper',fictional:true},
-  {id:'creator-street-guide',name:'作品巡りの案内人 ミラ',role:'参加者の家への道案内',x:21.5,z:34.5,mapId:'lantern-town',appearance:'gardener',fictional:true,dialogue:'参加者の家とアトリエは、すぐ北東の光る案内門から！ 広場の床の矢印と「参加者の家・アトリエ」の看板をたどってね。門をくぐると、クリエイターたちの通りへ続いています。家の玄関から制作部屋に入り、本人の作品を読めます。'},
+  {id:'creator-street-guide',name:'作品巡りの案内人 ミラ',role:'参加者の家への道案内',x:21.5,z:34.5,mapId:'lantern-town',appearance:'gardener',fictional:true,dialogue:'クリエイターエリアへは、東・西・南の並木道をそのまま歩いて進めます。画面の「クリエイターエリアへ」でも広場へ移動できます。昔からの案内門も使えます。家の玄関から制作部屋に入り、本人の作品を読めます。'},
 ];
 
 function outdoor() {
@@ -76,6 +76,7 @@ function outdoor() {
   const portals=buildings.filter(b=>['candle-shop','workshop','library','inn','clocktower'].includes(b.id)).map(b=>({id:`enter-${b.id}`,name:`${b.label}に入る`,label:`${b.label}に入る`,type:'portal',kind:'door',x:b.door.x,z:b.door.z,to:b.id,spawn:{x:9.5,z:12.5}}));
   portals.push({id:'enter-creator-quarter',name:'参加者の家・アトリエへ',label:'参加者の家・アトリエへ入る',type:'portal',kind:'door',...CREATOR_QUARTER_CONNECTION.street,to:CREATOR_QUARTER_ID,spawn:{...CREATOR_QUARTER_CONNECTION.quarterArrival}});
   portals.push({id:'enter-creator-quarter-south',name:'参加者の家・南の小径',label:'南の小径から参加者の家へ',type:'portal',kind:'door',...CREATOR_QUARTER_CONNECTION.southStreet,to:CREATOR_QUARTER_ID,spawn:{...CREATOR_QUARTER_CONNECTION.quarterArrival}});
+  portals.push(...creatorAreaPortals());
   const occupied=[...targets,...portals,...TOWN_NPCS.filter(n=>n.mapId===TOWN_START_MAP)],decorations=[];
   for(let z=3;z<46;z+=4)for(const x of [2,12,50,61])if(cells[z][x]==='g'&&!occupied.some(p=>Math.hypot(p.x-x-.5,p.z-z-.5)<2))decorations.push({id:`tree-${x}-${z}`,kind:(x+z)%3?'tree':'autumnTree',x:x+.5,z:z+.5,radius:.34});
   for(const [x,z]of [[11,15],[12,28],[17,21],[24,34],[10,24],[5,27]])if(cells[z][x]!=='b')decorations.push({id:`stall-${x}-${z}`,kind:'market',x:x+.5,z:z+.5,radius:.42});
@@ -83,7 +84,7 @@ function outdoor() {
   for(const [x,z]of [[16.5,6.5],[48.5,10.5],[16.5,13.5],[24.5,23.5],[11.5,27.5],[35.5,26.5],[48.5,15.5],[46.5,38.5],[58.5,38.5]])decorations.push({id:`lamp-${x}-${z}`,kind:'lamp',x,z,radius:.12});
   return {id:TOWN_START_MAP,name:TOWN_TITLE,outdoor:true,width,height,tiles:cells.map(r=>r.join('')),spawn:{x:32.5,z:7.5},buildings,targets,portals,decorations:decorations.filter(p=>!isInPalaceForecourt(p,p.radius||0)),npcs:TOWN_NPCS.filter(n=>n.mapId===TOWN_START_MAP),
    routePath:[{x:29.5,z:16.5},{x:27.5,z:20.5},{x:27.5,z:24.5},{x:24.5,z:27.5},{...CREATOR_QUARTER_CONNECTION.street}],
-   routeSigns:[{id:'creator-route-plaza',x:27.5,z:24.5,label:'参加者の家・アトリエ',sublabel:'光る矢印をたどって、この先の門へ ↓',angle:Math.PI},{id:'creator-route-gate',x:24.5,z:28.5,label:'クリエイターたちが待っています',sublabel:'この門から16人の家へ ↓',angle:Math.PI}],
+   routeSigns:[...creatorAreaSigns(),{id:'creator-route-plaza',x:27.5,z:24.5,label:'参加者の家・アトリエ',sublabel:'光る矢印をたどって、この先の門へ ↓',angle:Math.PI},{id:'creator-route-gate',x:24.5,z:28.5,label:'クリエイターたちが待っています',sublabel:'この門から16人の家へ ↓',angle:Math.PI}],
    districts:[{name:'城門の坂',x:32,z:8},{name:'月麦市場',x:12,z:18},{name:'星灯り広場',x:27,z:22},{name:'硝子の運河',x:34,z:30},{name:'月映し庭園',x:50,z:38},{name:'時計塔通り',x:54,z:10},{name:'参加者の家・アトリエ入口',...CREATOR_QUARTER_CONNECTION.street}]};
 }
 function interior(id,name,door,kind) {

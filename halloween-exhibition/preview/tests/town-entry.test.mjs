@@ -9,7 +9,7 @@ test('outdoor adventure keeps accessible same-tab routes for the palace panel an
  assert.match(top,/id="palace-town-entrance"[^>]*href="\.\/town\/\?return=theatre"[^>]*aria-label="宮殿から星灯りの街へ進む"/);
  assert.ok(html.indexOf(top)<html.indexOf('class="palace-composition"'));
  const row=html.match(/<div class="palace-return-row">[\s\S]*?<\/div>/)?.[0];assert.ok(row.indexOf('id="horror-entrance"')<row.indexOf('id="town-entrance"'));assert.match(row,/href="\.\/town\/\?return=theatre"/);
- assert.match(top,/<span>町へ行く<\/span><\/a>/);assert.doesNotMatch(top,/target=|onclick=|work-review|admin/);await access(new URL('../town/index.html',import.meta.url));
+ assert.match(top,/<span>街へ行く<\/span><\/a>/);assert.doesNotMatch(top,/target=|onclick=|work-review|admin/);await access(new URL('../town/index.html',import.meta.url));
 });
 test('routes keep 36px compact palace targets and 44px gallery targets with readable focus',()=>{
  assert.match(css,/min-width:44px;min-height:44px/);assert.match(css,/:focus-visible\{outline:3px solid/);assert.match(css,/overflow-wrap:anywhere/);

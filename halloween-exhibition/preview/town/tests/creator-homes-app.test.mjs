@@ -26,7 +26,7 @@ function homesHarness({ready=true,reading=true}={}){
  const items=[],panels=[],travelIds=[],transitions=[],saved=[],session=createTownSession({store:{save(state){saved.push(structuredClone(state));return {ok:true};}}});
  const actualVisit=session.visitCreatorHome;session.visitCreatorHome=id=>{travelIds.push(id);return actualVisit(id);};
  const people=CREATOR_HOMES.map(home=>creatorHomeProfile(archive,home.creatorId)),readingJourney=reading?createReadingJourney({people,storage:null}):null;
- const context={ready,session,readingJourney,CREATOR_HOMES,getCreatorHome,URL,
+ const context={$:()=>({hidden:true,focus(){}}),ready,session,readingJourney,CREATOR_HOMES,getCreatorHome,URL,
   characterArt:{creatorPage:id=>creatorHomeProfile(archive,id)},appendReadingMark(){},
   beginPanel:title=>{items.length=0;panels.push(title);},el:node,button:(text,onclick,cls)=>({...node('button',text,cls),onclick}),
   content:{append:(...nodes)=>items.push(...nodes)},showMap(){},closePanel(){},applyInteraction:result=>transitions.push(result)};
@@ -42,18 +42,26 @@ test('each listed physical visit reaches its own real house while its separate p
   assert.equal(go.className,'primary');assert.equal(profile.disabled,false);go.onclick();
   assert.deepEqual(harness.travelIds,[home.creatorId]);assert.equal(harness.transitions.length,1);assert.equal(harness.transitions[0].transition,true);
   const state=harness.session.snapshot().state;assert.equal(state.mapId,'creator-quarter');assert.equal(state.position.x,home.door.x);assert.ok(state.position.z>home.door.z);assert.ok(state.position.z-home.door.z<1.65);assert.equal(state.facing,'up');assert.equal(harness.session.target().creatorId,home.creatorId);assert.equal(harness.saved.length,1);
-  assert.deepEqual(harness.panels,['参加者の家'],'travel closes into the world instead of replacing it with a creator page');
+  assert.deepEqual(harness.panels,['クリエイター宅へ'],'travel closes into the world instead of replacing it with a creator page');
   const journey=harness.readingJourney.snapshot();assert.equal(journey.readCount,0);assert.equal(journey.openedCount,0);if(journey.people.some(person=>person.id===home.creatorId))assert.equal(journey.selectedId,home.creatorId);
   profile.onclick();assert.equal(harness.panels.at(-1),home.creatorName+'のクリエイターページ');
   const official=harness.items.find(item=>item.tag==='a'&&item.className==='button-link primary');assert.equal(official.href,creatorHomeProfile(archive,home.creatorId).profileURL);assert.equal(harness.readingJourney.snapshot().readCount,0,'visiting a page never silently records reading');
  }
 });
-test('the housing-street action reaches the selected house and can fall back before a reading journey exists',()=>{
- const selected=homesHarness(),person=selected.readingJourney.snapshot().people.at(-1);selected.readingJourney.select(person.id);selected.list();
- selected.items.find(item=>item.tag==='button'&&item.textContent==='住宅街へ行く').onclick();assert.deepEqual(selected.travelIds,[person.id]);assert.equal(selected.session.target().creatorId,person.id);
- const fallback=homesHarness({reading:false});fallback.list();fallback.items.find(item=>item.tag==='button'&&item.textContent==='住宅街へ行く').onclick();assert.deepEqual(fallback.travelIds,[CREATOR_HOMES[0].creatorId]);assert.equal(fallback.session.target().creatorId,CREATOR_HOMES[0].creatorId);
+test('area action goes to the promenade, not the currently selected or first house',()=>{
+ for(const reading of [true,false]){const h=homesHarness({reading});h.list();h.items.find(item=>item.tag==='button'&&item.textContent==='クリエイターエリアへ行く').onclick();
+ assert.equal(h.travelIds.length,0);assert.equal(h.session.snapshot().state.mapId,'creator-quarter');assert.deepEqual(h.session.snapshot().state.position,getTownMap('creator-quarter').spawn);assert.equal(h.saved.length,1);}
 });
 test('travel UI cannot bypass readiness or an active battle',()=>{
- const unready=homesHarness({ready:false});unready.list();unready.items.find(item=>item.tag==='button'&&item.textContent==='住宅街へ行く').onclick();assert.equal(unready.travelIds.length,0);assert.equal(unready.saved.length,0);assert.equal(unready.transitions.length,0);
+ const unready=homesHarness({ready:false});unready.list();unready.items.find(item=>item.tag==='button'&&item.textContent==='クリエイターエリアへ行く').onclick();assert.equal(unready.travelIds.length,0);assert.equal(unready.saved.length,0);assert.equal(unready.transitions.length,0);
  const fighting=homesHarness(),selected=fighting.readingJourney.snapshot().selectedId;fighting.session.beginBattle('canal-mist');fighting.travel(CREATOR_HOMES[3].creatorId);assert.equal(fighting.transitions.length,0);assert.equal(fighting.saved.length,0);assert.equal(fighting.readingJourney.snapshot().selectedId,selected);assert.equal(fighting.session.snapshot().state.mapId,'lantern-town');
+});
+
+
+test('creator search filters actual registered homes without changing the journey and recovers after no results',()=>{
+ const h=homesHarness();h.list();const search=h.items.find(item=>item.tag==='input'),list=h.items.find(item=>item.className==='inventory-list');
+ for(const home of CREATOR_HOMES){search.value=home.creatorName;search.oninput();assert.ok(list.children[CREATOR_HOMES.indexOf(home)].hidden===false);}
+ search.value='不存在の家987654';search.oninput();assert.equal(list.children.filter(card=>!card.hidden).length,0);
+ search.value='';search.oninput();assert.equal(list.children.filter(card=>!card.hidden).length,CREATOR_HOMES.length);
+ assert.equal(h.saved.length,0);assert.equal(h.travelIds.length,0);
 });

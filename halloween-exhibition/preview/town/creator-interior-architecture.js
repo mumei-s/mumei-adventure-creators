@@ -95,6 +95,11 @@ export function buildCreatorRoute({map,b,materials,resources,makeCanvas}){
   for(let d=.4;d<length;d+=1.05){const f=d/length,x=a.x+dx*f,z=a.z+dz*f;for(const side of[-1,1])b.box(x+Math.sin(angle)*side*.075,.034,z-Math.cos(angle)*side*.075,.27,.025,.075,m.gold,side*.65-angle);}
  }
  for(const sign of signs){
+  if(sign.openPath){
+   b.box(sign.x,.65,sign.z,.1,1.3,.1,m.wood);
+   plaque({b,materials:m,resources,makeCanvas,label:sign.label,sublabel:sign.sublabel,x:sign.x,y:1.35,z:sign.z,width:2.8,height:.65,name:'creator-route-sign-'+sign.id});
+   continue;
+  }
   for(const side of[-1,1]){b.box(sign.x+side*1.35,.94,sign.z,.11,1.88,.14,m.wood);b.box(sign.x+side*1.35,.06,sign.z,.37,.12,.4,m.stone);b.ball(sign.x+side*1.35,2.43,sign.z,.11,.11,.11,m.glass);}
   plaque({b,materials:m,resources,makeCanvas,label:sign.label||'参加者の家・アトリエ',sublabel:sign.sublabel||'光る道から、作者の家へ →',x:sign.x,y:2.03,z:sign.z,width:4.1,height:1.02,name:'creator-route-sign-'+sign.id});
  }

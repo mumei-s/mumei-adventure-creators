@@ -6,6 +6,24 @@ export const CREATOR_QUARTER_CONNECTION=Object.freeze({
  southStreet:Object.freeze({x:18.5,z:43.5}),
  quarterArrival:Object.freeze({x:23.5,z:44.5}),quarterExit:Object.freeze({x:23.5,z:46.5}),
 });
+
+// Open avenues are paired, not extra houses or narrow archways. Arrivals sit
+// three tiles inside each street so walking onward cannot bounce between maps.
+export const CREATOR_AREA_ROUTES=Object.freeze([
+ {id:'east',label:'東の並木道',street:{x:60.5,z:39.5},streetArrival:{x:57.5,z:39.5},quarter:{x:45.5,z:30.5},quarterArrival:{x:42.5,z:30.5},toQuarterFacing:'left',toStreetFacing:'left',angle:Math.PI/2},
+ {id:'west',label:'西の並木道',street:{x:2.5,z:26.5},streetArrival:{x:5.5,z:26.5},quarter:{x:2.5,z:19.5},quarterArrival:{x:5.5,z:19.5},toQuarterFacing:'right',toStreetFacing:'right',angle:-Math.PI/2},
+ {id:'south',label:'南の並木道',street:{x:48.5,z:45.5},streetArrival:{x:48.5,z:42.5},quarter:{x:34.5,z:45.5},quarterArrival:{x:34.5,z:42.5},toQuarterFacing:'up',toStreetFacing:'up',angle:Math.PI},
+].map(route=>Object.freeze(route)));
+export const creatorAreaPortals=(fromQuarter=false)=>CREATOR_AREA_ROUTES.map(route=>({
+ id:(fromQuarter?'leave':'enter')+'-creator-area-'+route.id,name:fromQuarter?'星灯りの街へ・'+route.label:'クリエイターエリアへ・'+route.label,
+ label:fromQuarter?'星灯りの街へ歩く':'クリエイターエリアへ歩く',type:'portal',kind:'open-path',openPassage:true,
+ ...(fromQuarter?route.quarter:route.street),to:fromQuarter?'lantern-town':CREATOR_QUARTER_ID,
+ spawn:{...(fromQuarter?route.streetArrival:route.quarterArrival)},arrivalFacing:fromQuarter?route.toStreetFacing:route.toQuarterFacing,
+}));
+export const creatorAreaSigns=(fromQuarter=false)=>CREATOR_AREA_ROUTES.map(route=>({
+ id:'area-sign-'+route.id,openPath:true,x:(fromQuarter?route.quarter:route.street).x+(route.id==='south'?2:0),z:(fromQuarter?route.quarter:route.street).z+(fromQuarter&&route.id==='west'?2:route.id==='south'?0:-2),label:fromQuarter?'星灯りの街へ':'クリエイターエリアへ',sublabel:route.label+' · 道を進むと移動',angle:route.angle,
+}));
+
 export const CREATOR_HOMES_NOTICE='作者のキャラクターや作品をイメージした、ゲーム内の架空の家です。実在する住まいではありません。';
 // Order follows the current exhibition roster, including the two pending authors.
 const designs=[
@@ -58,8 +76,9 @@ export function createCreatorQuarter(){
  return {id:CREATOR_QUARTER_ID,name:'創り手の街区',outdoor:true,width,height,tiles:cells.map(row=>row.join('')),
   spawn:{...CREATOR_QUARTER_CONNECTION.quarterArrival},buildings,targets,decorations,
   npcs:[...buildings.map(home=>({id:'neighbor-'+home.creatorId,name:home.creatorName,role:home.homeLabel,creatorId:home.creatorId,creatorHome:true,mapId:CREATOR_QUARTER_ID,appearance:home.homeTheme,x:home.door.x+2.25,z:home.door.z+1.4,dialogue:'ここは'+home.creatorName+'の'+home.homeLabel+'。玄関から中に入ると、制作の部屋と作品を訪ねられます。'})),
-   {id:'quarter-guide',name:'街区の案内人 ルーチェ',role:'参加者の家の案内',fictional:true,mapId:CREATOR_QUARTER_ID,appearance:'keeper',x:20.5,z:44.5,dialogue:'この先の四本の通りに、16人のクリエイターの家があります。家の前にもクリエイターがいます。名前のある玄関から入ると、その人だけの制作部屋と作品を訪ねられます。帰りは南の案内門から、星灯りの街の広場へ。'}],furniture:[],
+   {id:'quarter-guide',name:'街区の案内人 ルーチェ',role:'参加者の家の案内',fictional:true,mapId:CREATOR_QUARTER_ID,appearance:'keeper',x:20.5,z:44.5,dialogue:'この先の四本の通りに、16人のクリエイターの家があります。家の前にもクリエイターがいます。名前のある玄関から入ると、その人だけの制作部屋と作品を訪ねられます。東・西・南の並木道から歩いて街へ戻れます。画面の「街へ戻る」でも広場へ戻れます。'}],furniture:[],
   portals:[{id:'leave-creator-quarter',name:'星灯りの街へ戻る',label:'星灯りの街へ戻る',type:'portal',kind:'door',
-   ...CREATOR_QUARTER_CONNECTION.quarterExit,to:'lantern-town',spawn:{...CREATOR_QUARTER_CONNECTION.streetArrival}}],
+   ...CREATOR_QUARTER_CONNECTION.quarterExit,to:'lantern-town',spawn:{...CREATOR_QUARTER_CONNECTION.streetArrival}},...creatorAreaPortals(true)],
+  routeSigns:creatorAreaSigns(true),
   districts:[{name:'光とお菓子の並木',x:23.5,z:9.5},{name:'物語と月の小径',x:23.5,z:20.5},{name:'花と相棒の通り',x:23.5,z:31.5},{name:'三つ星と陽だまりの路地',x:23.5,z:42.5}],notice:CREATOR_HOMES_NOTICE};
 }

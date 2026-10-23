@@ -142,7 +142,7 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
     }
     const road='.=p'.includes(tile),grass='gf#'.includes(tile),bridgeCell=(xx,zz)=>map.id==='lantern-town'&&!isInPalaceForecourt({x:xx+.5,z:zz+.5})&&xx>=30&&xx<=33&&zz>=6&&zz<47&&'.=p'.includes(map.tiles[zz]?.[xx]||'?'),bridge=tile==='='||bridgeCell(x,z);
     c.fillStyle=road?'#65646b':tile==='b'?'#465052':'#425c45';c.fillRect(px,py,TILE,TILE);
-    if(road&&scene.images.cobbles){const im=scene.images.cobbles,ss=im.width/4;c.drawImage(im,(x%4)*ss,(z%4)*ss,ss,ss,px,py,TILE,TILE);c.fillStyle=tile==='p'?'#caa87514':'#242d3a14';c.fillRect(px,py,TILE,TILE);}
+    if(road&&scene.images.cobbles){const im=scene.images.cobbles,ss=im.width/4;c.drawImage(im,(x%4)*ss,(z%4)*ss,ss,ss,px,py,TILE,TILE);c.fillStyle=tile==='p'?'#e8c58c36':'#d9c6a32b';c.fillRect(px,py,TILE,TILE);}
     else if(road){for(let row=0;row<5;row++){for(let col=-1;col<5;col++){const xx=px+col*18+(row%2)*9,yy=py+row*13;box(c,xx+1,yy+1,16,11,2,['#5b6069','#6c6c72','#78767a','#626772'][Math.floor(seed(x*5+col,z*5+row)*4)],'#3f46533d');line(c,xx+3,yy+2,xx+14,yy+2,'#cac7b02b');}}}
     if(bridge){
       c.fillStyle='#88918b88';c.fillRect(px,py,TILE,TILE);for(let i=0;i<4;i++)line(c,px,py+i*16,px+TILE,py+i*16,'#37495899');
@@ -195,7 +195,7 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
       objects.push({kind:'building',x:(b.x+b.w/2)*TILE,y:(b.z+b.h)*TILE,depth:(b.z+b.h)*TILE,data:b});
       if(b.kind!=='castle')for(const side of[.08,.91])objects.push({kind:'flowerbed',x:(b.x+b.w*side)*TILE,y:(b.z+b.h-.04)*TILE,depth:(b.z+b.h)*TILE+1,data:{size:Math.min(64,b.w*12)}});
     }
-    for(const portal of map.portals||[])if(portal.to==='creator-quarter'||map.id==='creator-quarter'&&portal.to==='lantern-town')objects.push({kind:'quarter-gate',x:portal.x*TILE,y:portal.z*TILE,depth:portal.z*TILE,data:portal});
+    for(const portal of map.portals||[])if(!portal.openPassage&&(portal.to==='creator-quarter'||map.id==='creator-quarter'&&portal.to==='lantern-town'))objects.push({kind:'quarter-gate',x:portal.x*TILE,y:portal.z*TILE,depth:portal.z*TILE,data:portal});
     for(const sign of map.routeSigns||[])objects.push({kind:'route-sign',x:sign.x*TILE,y:sign.z*TILE,depth:sign.z*TILE,data:sign});
     for(const d of map.decorations||[])objects.push({kind:d.kind,x:d.x*TILE,y:d.z*TILE,depth:d.z*TILE,data:d});
     if(map.id==='lantern-town'&&!map.decorations?.length){
@@ -263,16 +263,17 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
     if(TOWN_PROP_CELLS[o.kind]!==undefined)drawProp(c,o.kind,x,y,o.data.size||90);
   }
 
-  function render({canvas,state,time=0,dt=.016,motion=true,pixelRatio=1,walking=false,walkPhase=0,facing=state?.facing||'down',brightness=75,lantern=true,cameraDistance='normal',cameraZoom=1,creatorActors=[]}={}){
+  function render({canvas,state,time=0,dt=.016,motion=true,pixelRatio=1,walking=false,walkPhase=0,facing=state?.facing||'down',brightness=75,lantern=true,cameraDistance='normal',cameraZoom=1,cameraOffsetY=0,creatorActors=[]}={}){
     if(destroyed||!canvas||!state?.position)return false;
     const ratio=clamp(pixelRatio||1,1,2),w=canvas.width/ratio,h=canvas.height/ratio,map=getTownMap(state.mapId),interior=map.outdoor!==true;
     if(interior&&!map.creatorHome)ensureInterior();
     const baseTile=w<550?52:w<900?61:70,viewZoom=map.creatorHome?townViewZoom(cameraZoom)/townViewZoom(1):townViewZoom(cameraZoom),framing=townPalaceFraming(state.position,map,55*Math.PI/180,w,h),tile=map.creatorHome?Math.min(w/(map.width+1),h/((map.height+2)*TOWN_DEPTH_SCALE)):baseTile+(Math.min(baseTile,framing.pixelsPerTile??baseTile)-baseTile)*(framing.influence||0),distanceScale=map.creatorHome?creatorRoomCameraScale(cameraDistance):cameraDistanceScale(cameraDistance),scale=tile/TILE*distanceScale*viewZoom,target=townCameraTarget(state.position,map,w,h/TOWN_DEPTH_SCALE,tile*distanceScale*viewZoom);
     if(map.creatorHome){const follow=creatorRoomCameraFollow(distanceScale*viewZoom),cx=map.width*TILE/2,cy=(map.height/2-.5)*TILE;target.x=cx+(target.x-cx)*follow;target.y=cy+(target.y-cy)*follow;}
     if(framing.influence){target.x+=(framing.targetX*TILE-target.x)*framing.influence*.78;target.y+=((state.position.z*TILE-310/TOWN_DEPTH_SCALE)-target.y)*framing.influence;}
+    if(map.outdoor===true)target.y+=Math.max(0,cameraOffsetY)/(scale*TOWN_DEPTH_SCALE);
     const switched=lastMap!==map.id;camera=followTownCamera(switched?null:camera,target,dt,{snap:!motion});lastMap=map.id;
     const cameraMoving=Math.hypot(camera.x-target.x,camera.y-target.y)>.03;
-    const signature=[cameraDistance,cameraZoom,map.id,canvas.width,canvas.height,state.position.x,state.position.z,state.revision||0,JSON.stringify(state.flags||{}),state.battle?.phase,Math.floor(walkPhase*30),walking,facing,scene.version,art.version,art.rigs?.get('owner')?.poseVersion,brightness,lantern,motion?Math.floor(time*30):0,creatorActors.map(a=>[a.x,a.z,a.facing,a.sprite?.frame?.join(','),a.sprite?.poseVersion].join(':')).join(';')].join('|');
+    const signature=[cameraDistance,cameraZoom,cameraOffsetY,map.id,canvas.width,canvas.height,state.position.x,state.position.z,state.revision||0,JSON.stringify(state.flags||{}),state.battle?.phase,Math.floor(walkPhase*30),walking,facing,scene.version,art.version,art.rigs?.get('owner')?.poseVersion,brightness,lantern,motion?Math.floor(time*30):0,creatorActors.map(a=>[a.x,a.z,a.facing,a.sprite?.frame?.join(','),a.sprite?.poseVersion].join(':')).join(';')].join('|');
     if(!cameraMoving&&!switched&&lastSignature===signature)return false;lastSignature=signature;
     const c=canvas.getContext('2d');if(!c)return false;
     lastView={camera:{...camera},width:w,height:h,scale,map,pixelRatio:ratio,depthScale:TOWN_DEPTH_SCALE};hitItems=[];
@@ -293,7 +294,7 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
       if(o.x+radius<bounds.left*TILE||o.x-radius>(bounds.right+1)*TILE||o.y+radius<bounds.top*TILE||o.y-radius>(bounds.bottom+1)*TILE)continue;
       c.save();c.translate(o.x,o.y);c.scale(1,1/TOWN_DEPTH_SCALE);c.translate(-o.x,-o.y);
       if(o.kind==='hero'){
-        ellipse(c,o.x+2,o.y+2,15,5,'#07152d80');const sprite=playerPose(art,facing,walking&&motion,walkPhase);
+        const ringX=Math.max(17,9/scale),ringY=Math.max(6,3/(scale*TOWN_DEPTH_SCALE));ellipse(c,o.x,o.y+2,ringX+3,ringY+2,'#182532aa');ellipse(c,o.x,o.y+2,ringX,ringY,'#ffe5a0bb');ellipse(c,o.x,o.y+2,ringX*.7,ringY*.65,'#344653');const sprite=playerPose(art,facing,walking&&motion,walkPhase);
         if(sprite){drawArtSprite(c,sprite,o.x,o.y,76);addSpriteHit(sprite,o.x,o.y,76);}
       }else if(o.kind==='creator'){
         ellipse(c,o.x+1,o.y+2,10,3.5,'#07152d80');drawArtSprite(c,o.actor.sprite,o.x,o.y,o.actor.heightPx||54);
@@ -350,6 +351,7 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
     const colors={'#':'#34464b','g':'#46594f','f':'#7e8167','.':'#9a9584','p':'#afa18b','=':'#c5b88e','~':'#3a7081','b':'#697185','i':'#8e785f'};
     for(let z=0;z<map.height;z++)for(let x=0;x<map.width;x++){c.fillStyle=colors[map.tiles[z][x]]||'#303d4a';c.fillRect(ox+x*scale,oy+z*scale,scale+.3,scale+.3);}
     for(const b of map.buildings||[]){c.strokeStyle=b.homePalette?.roof||'#b5ae8b';c.lineWidth=.7;c.strokeRect(ox+b.x*scale,oy+b.z*scale,b.w*scale,b.h*scale);}
+    if(w>300)for(const portal of map.portals||[])if(portal.openPassage){const x=ox+portal.x*scale,y=oy+portal.z*scale;ellipse(c,x,y,6,6,'#ffe09b');text(c,portal.to==='creator-quarter'?'エリアへ':'街へ',x,y-14,13,'#fff4d2');}
     for(const n of map.npcs||[])ellipse(c,ox+n.x*scale,oy+n.z*scale,1.5,1.5,'#e9c793');
     ellipse(c,ox+state.position.x*scale,oy+state.position.z*scale,4.3,4.3,'#122f3d');ellipse(c,ox+state.position.x*scale,oy+state.position.z*scale,2.8,2.8,'#fff0c4');
   }

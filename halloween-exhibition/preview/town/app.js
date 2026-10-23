@@ -162,12 +162,12 @@ function showCreatorHomes(){
  const list=el('div',undefined,'inventory-list');for(const home of CREATOR_HOMES){const card=el('section',undefined,'town-card');card.style.setProperty('--home-color',home.homePalette?.roof||'#bca56b');card.append(el('h3',home.creatorName),el('p',home.homeLabel),button('この家へ行く',()=>visitCreatorHome(home.creatorId),'primary'));const available=!!characterArt?.creatorPage(home.creatorId);const page=button('クリエイターページを見る',()=>showCreatorHome(home.creatorId));page.disabled=!available;card.append(page);list.append(card);}search.oninput=()=>{const query=search.value.trim().normalize('NFKC').toLocaleLowerCase('ja');let matches=0;for(const [index,card]of Array.from(list.children).entries()){const home=CREATOR_HOMES[index];card.hidden=!`${home.creatorName} ${home.homeLabel}`.normalize('NFKC').toLocaleLowerCase('ja').includes(query);if(!card.hidden)matches++;}count.textContent=matches?`${matches}件の家`:'見つかりません。別の名前で検索してください。';};content.append(list,el('p','街中の「参加者の家 →」の門から、歩いて住宅街へ入ることもできます。','subtle'),button('現在地の地図を見る',showMap),button('街歩きに戻る',closePanel));
 }
 function visitCreatorQuarter(){
- if(!ready)return;const result=session.visitCreatorQuarter();if(!result)return;applyInteraction(result);
+ if(!ready)return;const result=session.visitCreatorQuarter();if(!result)return;returnFocus=$('town-webgl').hidden?$('town-canvas'):$('town-webgl');applyInteraction(result);
  ($('town-webgl').hidden?$('town-canvas'):$('town-webgl')).focus({preventScroll:true});
 }
 function visitCreatorHome(creatorId=readingJourney?.snapshot().selected?.id||CREATOR_HOMES[0]?.creatorId){
  if(!ready)return;const result=session.visitCreatorHome(creatorId);if(!result)return;
- readingJourney?.select(creatorId);applyInteraction(result);
+ readingJourney?.select(creatorId);returnFocus=$('town-webgl').hidden?$('town-canvas'):$('town-webgl');applyInteraction(result);
  ($('town-webgl').hidden?$('town-canvas'):$('town-webgl')).focus({preventScroll:true});
 }
 function showVisitors(){

@@ -6,6 +6,7 @@ const terminal=phase=>['victory','defeat','escaped'].includes(phase);
 /** The town owns its state and receipts. It never reads labyrinth progress. */
 export function createTownSession({store,state:provided,onChange=()=>{},onNotice=()=>{}}={}){
  const loaded=provided?{state:provided}:store?.load?.()||{state:initialTownState()};
+ let passageNeedsRelease=false;
  let state=loaded.state||initialTownState(),battle=null,effect=null,lastOutcome=null,velocity={x:0,z:0},distance=0,time=0,saveAge=0,revision=0,walking=false;
  const publish=()=>{revision++;onChange(snapshot());};
  function snapshot(){return {state,battle,effect,time,walking,walkPhase:locomotionPhase(distance,1.15),revision,notice:loaded.notice||''};}
@@ -21,12 +22,18 @@ export function createTownSession({store,state:provided,onChange=()=>{},onNotice
   const next={...state,mapId:CREATOR_QUARTER_ID,position,facing:'up',visited:[...new Set([...state.visited,CREATOR_QUARTER_ID])],updatedAt:Date.now()};
   replace(next);return {transition:true,state,notice:home.creatorName+'の家に着きました。玄関で「家の中へ入る」を選べます。'};
  }
+ function visitCreatorQuarter(){
+  if(battle)return null;const position={...CREATOR_QUARTER_CONNECTION.quarterArrival};
+  if(!isTownWalkable(CREATOR_QUARTER_ID,position.x,position.z))return null;
+  replace({...state,mapId:CREATOR_QUARTER_ID,position,facing:'up',visited:[...new Set([...state.visited,CREATOR_QUARTER_ID])],updatedAt:Date.now()});
+  return {transition:true,state,notice:'クリエイターエリアに着きました。通りを自由に歩いて家を訪ねられます。'};
+ }
  function returnToTown(){
   if(battle||(state.mapId!==CREATOR_QUARTER_ID&&!getTownMap(state.mapId).creatorHome))return null;
   const position={...CREATOR_QUARTER_CONNECTION.streetArrival};
   if(!isTownWalkable('lantern-town',position.x,position.z))return null;
   replace({...state,mapId:'lantern-town',position,facing:'down',visited:[...new Set([...state.visited,'lantern-town'])],updatedAt:Date.now()});
-  return {transition:true,state,notice:'星灯りの町へ戻りました。家と作品の記録はそのままです。'};
+  return {transition:true,state,notice:'星灯りの街へ戻りました。家と作品の記録はそのままです。'};
  }
  function interact(targetId,choiceId){
   if(battle)return null;const target=targetId||nearestTownTarget(state)?.id;if(!target)return null;
@@ -56,12 +63,14 @@ export function createTownSession({store,state:provided,onChange=()=>{},onNotice
   const step=Math.max(0,Math.min(.05,Number.isFinite(dt)?dt:0));time+=step;
   if(battle){advanceBattle(motion);walking=false;return snapshot();}
   if(paused){stop();return snapshot();}
+  if(passageNeedsRelease){stop();if(Math.hypot(x,z)>.00001)return snapshot();passageNeedsRelease=false;}
   const magnitude=Math.hypot(x,z),scale=magnitude>1?1/magnitude:1;
   const integrated=integrateVelocity(velocity,{x:x*scale*speed,z:z*scale*speed},step);
   const previous=state;state=moveTown(state,integrated.dx,integrated.dz);const dx=state.position.x-previous.position.x,dz=state.position.z-previous.position.z;
   velocity={x:Math.abs(dx-integrated.dx)>.000001?0:integrated.x,z:Math.abs(dz-integrated.dz)>.000001?0:integrated.z};
   const travelled=Math.hypot(dx,dz);walking=travelled>.00001;distance+=travelled;saveAge+=step;
+  if(walking){const passage=getTownMap(state.mapId).portals.find(portal=>portal.openPassage&&Math.hypot(portal.x-state.position.x,portal.z-state.position.z)<.9);if(passage){const result=interactTown(state,passage.id);if(result.transition){replace(result.state);passageNeedsRelease=true;onNotice(result.notice);return snapshot();}}}
   if(walking&&saveAge>=3){saveAge=0;save();}return snapshot();
  }
- return {snapshot,save,stop,replace,visitCreatorHome,returnToTown,interact,beginBattle,actBattle,battleBusy,leaveBattle,tick,target:()=>nearestTownTarget(state)};
+ return {snapshot,save,stop,replace,visitCreatorHome,visitCreatorQuarter,returnToTown,interact,beginBattle,actBattle,battleBusy,leaveBattle,tick,target:()=>nearestTownTarget(state)};
 }

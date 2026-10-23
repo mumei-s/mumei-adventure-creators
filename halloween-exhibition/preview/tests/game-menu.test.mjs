@@ -68,7 +68,7 @@ for(const kind of ['town','maze'])test(`${kind}: primary controls invoke their e
 
 test('town: creator, story, backup, help and castle actions remain reachable after reordering',()=>{
  const h=harness('town');h.run.menu();
- for(const [label,action] of [['参加者の家','showCreatorHomes'],['街の仲間','showVisitors'],['物語の手帳','showJournal'],['街の依頼（寄り道）','showTownJournal'],['持ち物','showInventory'],['記録・バックアップ','showSave'],['操作と物語について','showHelp'],['城へ戻る','showCastleReturn']]){h.find(label).click();assert.equal(h.record.calls.at(-1),action);}
+ for(const [label,action] of [['クリエイター宅を選ぶ','showCreatorHomes'],['街の仲間','showVisitors'],['物語の手帳','showJournal'],['街の依頼（寄り道）','showTownJournal'],['持ち物','showInventory'],['記録・バックアップ','showSave'],['操作と物語について','showHelp'],['城へ戻る','showCastleReturn']]){h.find(label).click();assert.equal(h.record.calls.at(-1),action);}
  const compare=h.find('キャラ見比べ');assert.equal(compare.href,'../characters/');assert.equal(compare.target,'_blank');assert.equal(compare.rel,'noopener noreferrer');assert.equal(h.menu().children.at(-2).textContent,'城へ戻る');
  h.find('画面レイアウト・パッド位置').click();assert.equal(h.record.panels.at(-1).title,'画面レイアウト・パッド位置');assert.equal(h.record.display.at(-1).page,'town');assert.equal(h.record.display.at(-1).controlsParent,h.content.children[0]);h.record.display.at(-1).onChange();assert.equal(h.record.calls.at(-1),'resize');
  const layout=h.record.layouts.at(-1);assert.equal(layout.options.page,'town');assert.equal(layout.options.controlsParent,h.content.children[0]);assert.ok(h.content.querySelector('.display-preferences'));assert.deepEqual(layout.section.querySelectorAll('option').map(node=>node.value),['auto','phone','tablet','desktop']);

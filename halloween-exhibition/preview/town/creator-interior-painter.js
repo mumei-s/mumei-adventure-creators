@@ -98,6 +98,7 @@ export function drawCreatorRoute2D(c,map,{tile=64}={}){
 }
 export function drawCreatorRouteSign2D(c,sign,{tile=64}={}){
  const x=sign.x*tile,y=sign.z*tile,scale=tile/64;c.save();c.translate(x,y);c.scale(scale,scale);
+ if(sign.openPath){box(c,-3,-80,6,83,'#493a36','#d4b578',1);box(c,-87,-102,174,44,'#1a3e46','#edcf87',5);text(c,sign.label,0,-86,14,'#fff1c3',164);text(c,sign.sublabel,0,-69,9,'#cfdfd5',164);c.restore();return true;}
  for(const xx of[-70,70]){box(c,xx-4,-99,8,102,'#493a36','#d4b578',1);box(c,xx-9,-4,18,7,'#9e9982','#d6c18c',1);}
  box(c,-119,-117,238,66,'#1a3e46','#edcf87',7);box(c,-114,-112,228,56,null,'#b9d0b2',5);
  text(c,sign.label||'参加者の家・アトリエ',0,-93,18,'#fff1c3',217);text(c,sign.sublabel||'光る道をたどって、作者に会いに',0,-69,12,'#cfdfd5',217);

@@ -31,7 +31,7 @@ function harness(){
   el:element,button:(text,onclick,className)=>({...element('button',text,className),onclick}),
   $:id=>{if(!nodes.has(id))nodes.set(id,element('div'));return nodes.get(id);},
   beginPanel:(title,options)=>{content.replaceChildren();record.panels.push({title,options});},notify:text=>record.notices.push(text),closePanel:()=>record.closed++,pageReload:{element:element('section')},
-  showVisitors(){},showInventory(){},showMap(){},showWalkingSpeed(){},showControlSettings(){},showSettings(){},showMenuLayoutSettings(){},showSave(){},showHelp(){},showCastleReturn(){},
+  visitCreatorQuarter(){},showVisitors(){},showInventory(){},showMap(){},showWalkingSpeed(){},showControlSettings(){},showSettings(){},showMenuLayoutSettings(){},showSave(){},showHelp(){},showCastleReturn(){},
  });
  const functions=['prepareReadingJourney','readingProgress','appendReadingMark','showJournal','showMenu','showCreatorHome','showCreatorHomes','showTownJournal','updateHUD'];
  vm.runInContext(`let readingJourney=null,hudSignature='';${functions.map(functionSource).join('\n')};globalThis.run={${functions.join(',')},journey:()=>readingJourney};`,context);

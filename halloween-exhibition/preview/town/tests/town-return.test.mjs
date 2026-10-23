@@ -41,9 +41,9 @@ test('compact route panel exposes actual town return in every interior and quart
  const context=vm.createContext({$:node,getTownMap,CREATOR_HOMES,getCreatorHome:()=>CREATOR_HOMES[0],ready:true,readingJourney:null,homeRouteSignature:'',activeTownRenderer:()=>null,Math});
  vm.runInContext(source.slice(start,end)+';globalThis.run=updateHomeRoute;',context);
  for(const mapId of ['creator-quarter',...CREATOR_HOMES.map(h=>h.interiorId)]){
-  context.run({...initialTownState(),mapId});assert.equal(node('home-route').hidden,false);assert.equal(node('home-route-title').textContent,'町へ戻る');assert.equal(node('home-route')['aria-haspopup'],undefined);
+  context.run({...initialTownState(),mapId});assert.equal(node('home-route').hidden,false);assert.equal(node('home-route-title').textContent,'街へ戻る');assert.equal(node('home-route')['aria-haspopup'],undefined);
  }
- context.run(initialTownState());assert.equal(node('home-route-title').textContent,'参加者の家・アトリエ');assert.equal(node('home-route')['aria-haspopup'],'dialog');
+ context.run(initialTownState());assert.equal(node('home-route-title').textContent,'クリエイターエリアへ');assert.equal(node('home-route')['aria-haspopup'],undefined);
 });
 
 

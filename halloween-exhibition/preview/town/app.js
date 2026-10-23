@@ -1,3 +1,4 @@
+import {townControlOffset} from './camera-framing.js';
 import {initDisplayMode,migrateDisplayMode} from '../display-mode.js?v=20261019-unified1';
 import {createReadingJourney} from './reading-journey.js?v=20261019-journey1';
 import {bindPinchZoom} from '../touch-camera.js?v=20261019-journey1';
@@ -32,6 +33,7 @@ const store=createTownStore();
 let readingJourney=null;
 let ready=false,renderer=null,characterArt=null,bootRequest=0,bootAbort=null,pageActive=true,returnFocus=null,panelKind='',panelRevision=0,dialogueTarget=null,minimapSignature='',hudSignature='',toastTimer=null,battleCanvas=null,battleRevision=-1,battleArtReady=false,battleArtFailed=false;
 let viewController=null,lastTownFrame=null,battleBackdropId=null,townWorldModule=null,homeRouteAt=0,homeRouteSignature='';
+let cameraOffsetY=0;
 let direction=null,canvasPointer=null,worldTime=0,displayPreferences=null,layoutPreferences=null,resizeFrame=null;const keys=new Set(),held=new Set(),bindings=[];
 const audio=createTownAudio({onChange:updateAudioUI});
 const session=createTownSession({store,onNotice:notify,onChange:snapshot=>{if(snapshot.save)saveStatus(snapshot.save);updateHUD();}});
@@ -82,7 +84,7 @@ function showDialogue(dialogue,targetId){
  dialogueTarget=targetId;beginPanel(dialogue.title||dialogue.speaker||'街の物語',{kind:'dialogue',eyebrow:dialogue.speaker||'街の物語'});
  content.append(el('p',dialogue.text||'','dialogue-text'));const choices=el('div',undefined,'dialogue-choices');
  for(const choice of dialogue.choices||[])choices.append(button(choice.label,()=>interact(targetId,choice.id),choice.primary?'primary':''));
- choices.append(button('街を歩く',closePanel));content.append(choices);choices.querySelector('button')?.focus({preventScroll:true});
+ choices.append(button('クリエイターエリアへ',visitCreatorQuarter),button('クリエイター宅を選ぶ',showCreatorHomes),button('街を歩く',closePanel));content.append(choices);choices.querySelector('button')?.focus({preventScroll:true});
 }
 function showCastleReturn(){beginPanel('城へ戻りますか。');content.append(el('p','街の記録を保存して、宮殿の入口へ戻ります。城の中の冒険は、街とは別の記録で続けられます。'));const link=el('a','城へ戻る','button-link primary');link.href='../?return=palace';link.onclick=prepareExit;content.append(link,button('街歩きを続ける',closePanel));}
 const pageReload=createReloadControl({save:()=>session.snapshot().battle?{ok:false,notice:'対戦を終えてから再読み込みしてください。'}:session.save(),beforeReload:()=>{clearInput();audio.stop({resetVolume:true});}});
@@ -95,7 +97,7 @@ function readingProgress(state){
  if(journey.complete)return {title:'終章　物語の灯りがつながった',objective:`${journey.readCount}人の作品を巡りました。好きな家を、また訪ねてみよう。`,completed:true};
  const person=journey.selected,home=getCreatorHome(person?.id),row=home?Math.floor((home.z-3)/11)+1:1,col=home?Math.floor((home.x-3)/11)+1:1;
  const room=getTownMap(state.mapId).creatorHome;
- const objective=room?`${room.creatorName}のアトリエです。本人や作品机を調べて記事へ。南の扉から家の前へ。小パネル「町へ戻る」で広場へ戻れます。`:state.mapId==='creator-quarter'?`北から${row}列目・西から${col}軒目の「${person.name}の家」へ。玄関で「家の中へ入る」を選ぼう。`:state.mapId==='lantern-town'?`金色の道案内「参加者の家 →」をたどって住宅街へ。「${person.name}の家」に招待状が届いています。`:'街の金色の道案内から、参加者の家へ向かおう。';
+ const objective=room?`${room.creatorName}のアトリエです。本人や作品机を調べて記事へ。南の扉から家の前へ。小パネル「街へ戻る」で広場へ戻れます。`:state.mapId==='creator-quarter'?`北から${row}列目・西から${col}軒目の「${person.name}の家」へ。玄関で「家の中へ入る」を選ぼう。`:state.mapId==='lantern-town'?`金色の道案内「参加者の家 →」をたどって住宅街へ。「${person.name}の家」に招待状が届いています。`:'街の金色の道案内から、参加者の家へ向かおう。';
  return {title:`記事巡り　${journey.readCount}/${journey.total}人の物語`,objective,completed:false};
 }
 function appendReadingMark(creatorId,url,link){
@@ -122,7 +124,7 @@ function showMenu(){
  const lanternButton=button(settings.lantern?'ランタン ON':'ランタン OFF',()=>{toggleLantern();lanternButton.textContent=settings.lantern?'ランタン ON':'ランタン OFF';lanternButton.setAttribute('aria-pressed',String(settings.lantern));});lanternButton.setAttribute('aria-pressed',String(settings.lantern));
  const cameraToggle=button('視点：'+cameraDistanceLabel(cameraDistance),()=>{$('camera-distance').click();cameraToggle.textContent='視点：'+cameraDistanceLabel(cameraDistance);});
  menu.append(button('地図',showMap),lanternButton,button('歩く速さ',showWalkingSpeed),cameraToggle,button('パッド・拡大縮小',showControlSettings),button('明るさ・音・表示',showSettings));
- for(const [label,action]of[['参加者の家',showCreatorHomes],['街の仲間',showVisitors],['物語の手帳',showJournal],['街の依頼（寄り道）',showTownJournal],['持ち物',showInventory],['記録・バックアップ',showSave]])menu.append(button(label,action));
+ for(const [label,action]of[['クリエイター宅を選ぶ',showCreatorHomes],['街の仲間',showVisitors],['物語の手帳',showJournal],['街の依頼（寄り道）',showTownJournal],['持ち物',showInventory],['記録・バックアップ',showSave]])menu.append(button(label,action));
  const compare=el('a','キャラ見比べ','button-link');compare.href='../characters/';compare.target='_blank';compare.rel='noopener noreferrer';menu.append(compare,button('操作と物語について',showHelp));
  const scenery=renderer?.status?.();if(scenery?.failed?.length)menu.append(button('街の景色を読み込み直す',()=>{closePanel();void renderer?.retry?.().then(()=>{renderer?.invalidate?.();notify(renderer?.status?.().failed?.length?'読み込めない景色があります。もう一度お試しください。':'街の景色を読み込み直しました。');});}));
  menu.append(button('画面レイアウト・パッド位置',showMenuLayoutSettings),pageReload.element,button('城へ戻る',showCastleReturn),button('探索に戻る',closePanel));content.append(menu);
@@ -137,7 +139,7 @@ function showVisitor(id){
  const links=guest?[]:visitor.articleLinks||[];const unique=new Set();for(const item of links){if(unique.has(item.url))continue;unique.add(item.url);const link=el('a',item.title||'参加記事を読む ↗','button-link');link.href=item.url;link.target='_blank';link.rel='noopener noreferrer';content.append(link);appendReadingMark(visitor.creatorId,item.url,link);}
  if(visitor.profileURL){try{const url=new URL(visitor.profileURL);if(url.protocol==='https:'&&url.hostname==='note.com'&&!url.port&&!url.username&&!url.password){const link=el('a','公式プロフィールを見る ↗','button-link');link.href=url.href;link.target='_blank';link.rel='noopener noreferrer';content.append(link);}}catch{}}
  if(getCreatorHome(visitor.creatorId))content.append(button('この人の家・参加作品を見る',()=>showCreatorHome(visitor.creatorId)));
- content.append(button('街の仲間を見る',showVisitors),button('街を歩く',closePanel));
+ content.append(button('街の仲間を見る',showVisitors),button('クリエイターエリアへ',visitCreatorQuarter),button('クリエイター宅を選ぶ',showCreatorHomes),button('街を歩く',closePanel));
 }
 function showCreatorHome(creatorId){
  const home=getCreatorHome(creatorId),person=characterArt?.creatorPage(creatorId);if(!home||!person)return;
@@ -155,12 +157,18 @@ function showCreatorHome(creatorId){
  content.append(el('p','家の名前や飾りは、この街のために作った演出です。','subtle'),button('ほかの参加者の家を見る',showCreatorHomes),button('街歩きに戻る',closePanel));
 }
 function showCreatorHomes(){
- beginPanel('参加者の家',{kind:'homes',eyebrow:'CREATORS’ QUARTER'});content.append(el('p',`${CREATOR_HOMES.length}人それぞれの家とアトリエが並ぶ住宅街。「この家へ行く」で玄関前へ。扉から室内へ入って、本人や作品机を調べてみよう。`,'dialogue-text'),button('住宅街へ行く',()=>visitCreatorHome(), 'primary'));
- const list=el('div',undefined,'inventory-list');for(const home of CREATOR_HOMES){const card=el('section',undefined,'town-card');card.style.setProperty('--home-color',home.homePalette?.roof||'#bca56b');card.append(el('h3',home.creatorName),el('p',home.homeLabel),button('この家へ行く',()=>visitCreatorHome(home.creatorId),'primary'));const available=!!characterArt?.creatorPage(home.creatorId);const page=button('クリエイターページを見る',()=>showCreatorHome(home.creatorId));page.disabled=!available;card.append(page);list.append(card);}content.append(list,el('p','街中の「参加者の家 →」の門から、歩いて住宅街へ入ることもできます。','subtle'),button('現在地の地図を見る',showMap),button('街歩きに戻る',closePanel));
+ beginPanel('クリエイター宅へ',{kind:'homes',eyebrow:'CREATORS’ QUARTER'});content.append(el('p',`${CREATOR_HOMES.length}人それぞれの家とアトリエが並ぶ住宅街。「この家へ行く」で玄関前へ。扉から室内へ入って、本人や作品机を調べてみよう。`,'dialogue-text'),button('クリエイターエリアへ行く',visitCreatorQuarter, 'primary'));
+ const search=el('input');search.type='search';search.placeholder='クリエイター名・家の名前で検索';search.setAttribute('aria-label','クリエイター宅を検索');const count=el('p',`${CREATOR_HOMES.length}件の家`,'subtle');count.setAttribute('role','status');content.append(search,count);
+ const list=el('div',undefined,'inventory-list');for(const home of CREATOR_HOMES){const card=el('section',undefined,'town-card');card.style.setProperty('--home-color',home.homePalette?.roof||'#bca56b');card.append(el('h3',home.creatorName),el('p',home.homeLabel),button('この家へ行く',()=>visitCreatorHome(home.creatorId),'primary'));const available=!!characterArt?.creatorPage(home.creatorId);const page=button('クリエイターページを見る',()=>showCreatorHome(home.creatorId));page.disabled=!available;card.append(page);list.append(card);}search.oninput=()=>{const query=search.value.trim().normalize('NFKC').toLocaleLowerCase('ja');let matches=0;for(const [index,card]of Array.from(list.children).entries()){const home=CREATOR_HOMES[index];card.hidden=!`${home.creatorName} ${home.homeLabel}`.normalize('NFKC').toLocaleLowerCase('ja').includes(query);if(!card.hidden)matches++;}count.textContent=matches?`${matches}件の家`:'見つかりません。別の名前で検索してください。';};content.append(list,el('p','街中の「参加者の家 →」の門から、歩いて住宅街へ入ることもできます。','subtle'),button('現在地の地図を見る',showMap),button('街歩きに戻る',closePanel));
+}
+function visitCreatorQuarter(){
+ if(!ready)return;const result=session.visitCreatorQuarter();if(!result)return;applyInteraction(result);
+ ($('town-webgl').hidden?$('town-canvas'):$('town-webgl')).focus({preventScroll:true});
 }
 function visitCreatorHome(creatorId=readingJourney?.snapshot().selected?.id||CREATOR_HOMES[0]?.creatorId){
  if(!ready)return;const result=session.visitCreatorHome(creatorId);if(!result)return;
  readingJourney?.select(creatorId);applyInteraction(result);
+ ($('town-webgl').hidden?$('town-canvas'):$('town-webgl')).focus({preventScroll:true});
 }
 function showVisitors(){
  beginPanel('街に集まった仲間');content.append(el('p','無名S noteは、あなたが動かす主人公です。街の通りでは、企画に集まった仲間たちに会えます。','subtle'));const groups=new Map();for(const visitor of characterArt?.visitors()||[]){if(!groups.has(visitor.creatorId))groups.set(visitor.creatorId,[]);const members=groups.get(visitor.creatorId),sourceId=visitor.sourceCharacterId||visitor.id;if(!members.some(member=>(member.sourceCharacterId||member.id)===sourceId))members.push(visitor);}
@@ -177,7 +185,7 @@ function showInventory(){
  const list=el('div',undefined,'inventory-list');for(const item of townInventory(state)){const card=el('section',undefined,'town-card');card.append(el('h3',item.name),el('strong',`× ${item.count}`,'inventory-count'),el('p',item.description));list.append(card);}if(!list.children.length)list.append(el('p','今は、身軽な旅支度です。'));content.append(list,el('p','星蜜の小瓶は戦闘中に使えます。街の宿屋やベンチでは、休んで体力を戻せます。','subtle'),button('メニューに戻る',showMenu));
 }
 function showMap(){
- const state=session.snapshot().state,map=getTownMap(state.mapId);beginPanel(map.name||'街の地図');const canvas=el('canvas',undefined,'town-map-large');canvas.width=960;canvas.height=720;canvas.setAttribute('aria-label',`${map.name}の地図。三角が現在位置です。`);content.append(canvas);renderer?.drawMap(canvas,state);drawReadingWaypoint(canvas,state);content.append(el('p',state.mapId==='creator-quarter'?'参加者の家が並ぶ住宅街です。各玄関から室内へ入り、本人や作品机から作品を開けます。南の入口から星灯りの街へ戻れます。':state.mapId==='lantern-town'?'金色の門と道案内が「参加者の家」への入口です。城門は北、住宅街の案内門は広場の西側。建物の扉に近づき「入る」を選ぶと室内へ進めます。':'現在いる建物の見取り図です。出口の扉へ近づき、調べると通りへ戻れます。','subtle'),el('p','金色の輪は、次に訪ねる場所です。','subtle'),button('物語の手帳を開く',showJournal),button('街を歩く',closePanel));
+ const state=session.snapshot().state,map=getTownMap(state.mapId);beginPanel(map.name||'街の地図');const canvas=el('canvas',undefined,'town-map-large');canvas.width=960;canvas.height=720;canvas.setAttribute('aria-label',`${map.name}の地図。三角が現在位置です。`);content.append(canvas);renderer?.drawMap(canvas,state);drawReadingWaypoint(canvas,state);content.append(el('p',state.mapId==='creator-quarter'?'参加者の家が並ぶ住宅街です。各玄関から室内へ入り、本人や作品机から作品を開けます。東・西・南の並木道から、歩いて星灯りの街へ戻れます。':state.mapId==='lantern-town'?'クリエイターエリアへは東・西・南の並木道を歩いて進めます。画面の「クリエイターエリアへ」でも広場へ移動できます。城門は北、従来の案内門は広場の西側です。建物の扉に近づき「入る」を選ぶと室内へ進めます。':'現在いる建物の見取り図です。出口の扉へ近づき、調べると通りへ戻れます。','subtle'),el('p','金色の輪は、次に訪ねる場所です。','subtle'),button('物語の手帳を開く',showJournal),button('クリエイターエリアへ',visitCreatorQuarter),button('クリエイター宅を選ぶ',showCreatorHomes),button('街を歩く',closePanel));
 }
 function setSceneZoom(value,{persist=true}={}){cameraZoom=normalizeCameraZoom(value);if(persist)saveCameraZoom('town',cameraZoom);updateCameraButton();renderer?.invalidate?.();viewController?.snapshot().view?.invalidate?.();}
 function showControlSettings(){beginPanel('パッド・拡大縮小');content.append(createControlSettings({getMode:()=>padMode,setMode:value=>{clearInput();padMode=savePadMode(value).mode;padBinding?.refresh();},getZoom:()=>cameraZoom,setZoom:setSceneZoom}),button('街歩きに戻る',closePanel));}
@@ -240,25 +248,21 @@ function updateHomeRoute(state){
  const canReturn=state.mapId==='creator-quarter'||!!map.creatorHome;
  route.dataset.returnToTown=String(canReturn);
  if(canReturn){
-  route.hidden=!ready;route.removeAttribute('aria-haspopup');route.setAttribute('aria-label','町へ戻る。星灯りの町の広場へ移動');
-  $('home-route-title').textContent='町へ戻る';$('home-route-detail').textContent='星灯りの町の広場へ';$('home-route-arrow').textContent='↩';$('home-route-arrow').style.transform='';homeRouteSignature='';return;
+  route.hidden=!ready;route.removeAttribute('aria-haspopup');route.setAttribute('aria-label','街へ戻る。星灯りの街の広場へ移動');
+  $('home-route-title').textContent='街へ戻る';$('home-route-detail').textContent='星灯りの街の広場へ';$('home-route-arrow').textContent='↩';$('home-route-arrow').style.transform='';homeRouteSignature='';return;
  }
- route.setAttribute('aria-haspopup','dialog');$('home-route-arrow').textContent='↓';
- const point=state.mapId==='lantern-town'?map.portals.find(portal=>portal.to==='creator-quarter'):state.mapId==='creator-quarter'?home?.door:null;
- route.hidden=!ready||!point;if(!point)return;
- const dx=point.x-state.position.x,dz=point.z-state.position.z,steps=Math.round(Math.hypot(dx,dz));
- const view=activeTownRenderer(),p=view?.worldToScreen?.(point),me=view?.worldToScreen?.(state.position),screenX=p&&me?p.x-me.x:dx,screenY=p&&me?p.y-me.y:dz,angle=Math.round((Math.atan2(screenY,screenX)-Math.PI/2)*100)/100,signature=[state.mapId,home.creatorId,steps,angle].join('|');if(signature===homeRouteSignature)return;homeRouteSignature=signature;
- $('home-route-title').textContent=state.mapId==='creator-quarter'?home.creatorName+'の家へ':'参加者の家・アトリエ';
- $('home-route-detail').textContent=steps<=2?'すぐそこ · 「入る」で先へ':`約${steps}歩先 · 地図で道を確認`;
- $('home-route-arrow').style.transform=`rotate(${angle}rad)`;
- route.setAttribute('aria-label',`${$('home-route-title').textContent}、${steps}歩先。地図を開いて道を確認`);
+ route.hidden=!ready;route.removeAttribute('aria-haspopup');
+ $('home-route-arrow').textContent='⌂';$('home-route-arrow').style.transform='';
+ $('home-route-title').textContent='クリエイターエリアへ';
+ $('home-route-detail').textContent='広場へ移動 · 家を自由に巡る';
+ route.setAttribute('aria-label','クリエイターエリアの広場へ移動');
 }
 function updateHUD(){const snapshot=session.snapshot(),state=snapshot.state,progress=readingProgress(state),map=getTownMap(state.mapId),target=contextTarget(),signature=[map.id,progress.title,progress.objective,target?.id,ready].join('|');if(signature===hudSignature)return;hudSignature=signature;$('panel-close').textContent=map.creatorHome?'← 室内に戻る':'← 街へ戻る';$('area-name').textContent=map.name;$('quest-title').textContent=progress.title;$('journal-open').title=progress.title+'：'+progress.objective;$('quest-objective').textContent=progress.objective;$('interact').disabled=!ready||!target;$('interact').textContent=target?(target.type==='creator-home'?`${getCreatorHome(target.creatorId)?.creatorName||'参加者'}の家の中へ入る`:target.type==='portal'?`${target.name||target.label||'扉'}へ`:target.name||target.label||'調べる'):'周りを歩く';$('interact').setAttribute('aria-label',target?`${target.name||target.label||'近くの対象'}を調べる`:'近くに調べる対象はありません');}
 function fitCanvas(canvas){const ratio=Math.min(devicePixelRatio||1,2),width=Math.max(1,Math.round(canvas.clientWidth*ratio)),height=Math.max(1,Math.round(canvas.clientHeight*ratio));if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;}}
-function resize(){if(!$('town-canvas').hidden)fitCanvas($('town-canvas'));renderer?.invalidate?.();viewController?.snapshot().view?.invalidate?.();if(battleCanvas)drawBattle();}
+function resize(){cameraOffsetY=townControlOffset(document.querySelector('.town-world').getBoundingClientRect(),$('town-pad').getBoundingClientRect());if(!$('town-canvas').hidden)fitCanvas($('town-canvas'));renderer?.invalidate?.();viewController?.snapshot().view?.invalidate?.();if(battleCanvas)drawBattle();}
 function scheduleResize(){clearInput();if(resizeFrame!==null)return;resizeFrame=requestAnimationFrame(()=>{resizeFrame=null;const main=$('town-main'),{width,height}=main.getBoundingClientRect();main.dataset.townOrientation=width>=350&&width>height?'landscape':'portrait';main.dataset.townNarrow=String(width<340);main.dataset.townShort=String(height<300);resize();});}
 function inputVector(){const has=name=>held.has(name)||direction===name;return {x:(keys.has('d')||keys.has('arrowright')||has('right')?1:0)-(keys.has('a')||keys.has('arrowleft')||has('left')?1:0),z:(keys.has('s')||keys.has('arrowdown')||has('back')?1:0)-(keys.has('w')||keys.has('arrowup')||has('forward')?1:0)};}
-function tick(_now,dt){const snapshot=session.tick(dt,{...inputVector(),paused:panel.open,motion:motion(),speed:3.05*settings.speed});if(panel.open){if(snapshot.battle){if(snapshot.revision!==battleRevision)renderBattle();drawBattle();}return;}if(motion())worldTime+=dt;if(snapshot.time>=homeRouteAt){homeRouteAt=snapshot.time+.16;updateHomeRoute(snapshot.state);}const view3D=viewController?.snapshot().active==='3d',projection={worldPixelsPerUnit:view3D?1:64,groundDepthScale:view3D?Math.sin(55*Math.PI/180):.78};const visitors=characterArt?.visitorActors({state:snapshot.state,time:worldTime,clock:snapshot.time,motion:motion(),dt,view3D})||[];const actors=characterArt?.companionActors({state:snapshot.state,walking:snapshot.walking&&motion(),dt,time:worldTime,motion:motion(),view3D,canStand:point=>isTownWalkable(snapshot.state.mapId,point.x,point.z)})||[];characterArt?.art.rigs.update('owner',{position:snapshot.state.position,dt,time:worldTime,facing:snapshot.state.facing,moving:snapshot.walking,motion:motion(),mapId:snapshot.state.mapId,...projection,displayHeightPx:view3D?1.6:76});for(const resident of getTownMap(snapshot.state.mapId).npcs||[])characterArt?.art.rigs.update('resident:'+resident.id,{position:resident,dt,time:worldTime,facing:'down',moving:false,motion:motion(),mapId:snapshot.state.mapId,...projection,displayHeightPx:(view3D?1.6:76)*(resident.appearance==='cat'?.62:1)});const frame={canvas:$('town-canvas'),state:snapshot.state,time:worldTime,dt,motion:motion(),pixelRatio:Math.min(devicePixelRatio||1,2),walking:snapshot.walking,walkPhase:snapshot.walkPhase,facing:snapshot.state.facing,brightness:settings.brightness,lantern:settings.lantern,cameraDistance,cameraZoom,creatorActors:[...visitors,...actors]};lastTownFrame=frame;try{activeTownRenderer()?.render(frame);}catch(error){if(viewController?.snapshot().active!=='3d')throw error;viewController.reportFailure(error);renderer?.render(frame);}sceneNames.update({map:getTownMap(snapshot.state.mapId),state:snapshot.state,actors:visitors,homes:CREATOR_HOMES,project:point=>activeTownRenderer()?.worldToScreen(point)});const mapSignature=[readingJourney?.snapshot().selectedId,readingJourney?.snapshot().readCount,snapshot.state.mapId,Math.floor(snapshot.state.position.x*4),Math.floor(snapshot.state.position.z*4),snapshot.state.facing,JSON.stringify(snapshot.state.flags)].join('|');if(mapSignature!==minimapSignature){renderer?.drawMap($('town-minimap'),snapshot.state);drawReadingWaypoint($('town-minimap'),snapshot.state);minimapSignature=mapSignature;}updateHUD();}
+function tick(_now,dt){const snapshot=session.tick(dt,{...inputVector(),paused:panel.open,motion:motion(),speed:3.05*settings.speed});if(panel.open){if(snapshot.battle){if(snapshot.revision!==battleRevision)renderBattle();drawBattle();}return;}if(motion())worldTime+=dt;if(snapshot.time>=homeRouteAt){homeRouteAt=snapshot.time+.16;updateHomeRoute(snapshot.state);}const view3D=viewController?.snapshot().active==='3d',projection={worldPixelsPerUnit:view3D?1:64,groundDepthScale:view3D?Math.sin(55*Math.PI/180):.78};const visitors=characterArt?.visitorActors({state:snapshot.state,time:worldTime,clock:snapshot.time,motion:motion(),dt,view3D})||[];const actors=characterArt?.companionActors({state:snapshot.state,walking:snapshot.walking&&motion(),dt,time:worldTime,motion:motion(),view3D,canStand:point=>isTownWalkable(snapshot.state.mapId,point.x,point.z)})||[];characterArt?.art.rigs.update('owner',{position:snapshot.state.position,dt,time:worldTime,facing:snapshot.state.facing,moving:snapshot.walking,motion:motion(),mapId:snapshot.state.mapId,...projection,displayHeightPx:view3D?1.6:76});for(const resident of getTownMap(snapshot.state.mapId).npcs||[])characterArt?.art.rigs.update('resident:'+resident.id,{position:resident,dt,time:worldTime,facing:'down',moving:false,motion:motion(),mapId:snapshot.state.mapId,...projection,displayHeightPx:(view3D?1.6:76)*(resident.appearance==='cat'?.62:1)});const frame={canvas:$('town-canvas'),state:snapshot.state,time:worldTime,dt,motion:motion(),pixelRatio:Math.min(devicePixelRatio||1,2),walking:snapshot.walking,walkPhase:snapshot.walkPhase,facing:snapshot.state.facing,brightness:settings.brightness,lantern:settings.lantern,cameraDistance,cameraZoom,cameraOffsetY,creatorActors:[...visitors,...actors]};lastTownFrame=frame;try{activeTownRenderer()?.render(frame);}catch(error){if(viewController?.snapshot().active!=='3d')throw error;viewController.reportFailure(error);renderer?.render(frame);}sceneNames.update({map:getTownMap(snapshot.state.mapId),state:snapshot.state,actors:visitors,homes:CREATOR_HOMES,project:point=>activeTownRenderer()?.worldToScreen(point)});const mapSignature=[readingJourney?.snapshot().selectedId,readingJourney?.snapshot().readCount,snapshot.state.mapId,Math.floor(snapshot.state.position.x*4),Math.floor(snapshot.state.position.z*4),snapshot.state.facing,JSON.stringify(snapshot.state.flags)].join('|');if(mapSignature!==minimapSignature){renderer?.drawMap($('town-minimap'),snapshot.state);drawReadingWaypoint($('town-minimap'),snapshot.state);minimapSignature=mapSignature;}updateHUD();}
 const loop=createFrameLoop({shouldRun:()=>ready&&pageActive&&!document.hidden&&(!panel.open||!!session.snapshot().battle),onFrame:tick});
 protectGameSurface($('town-main'));
 for(const node of document.querySelectorAll('[data-move]')){const name=node.dataset.move;bindings.push(bindHeldGameButton(node,{pointer:false,blocked:()=>!ready||panel.open,onChange:active=>{if(active)held.add(name);else held.delete(name);}}));}
@@ -273,7 +277,7 @@ for(const type of['pointercancel','lostpointercapture'])surface.addEventListener
 }
 function toggleLantern(){settings.lantern=!settings.lantern;persistSettings();}
 $('town-view-2d').onclick=()=>chooseTownView('2d');$('town-view-3d').onclick=()=>chooseTownView('3d');$('town-mode-retry').onclick=()=>chooseTownView('3d',{retry:true});
-$('lantern-toggle').onclick=toggleLantern;$('interact').onclick=()=>interact();$('menu-open').onclick=showMenu;$('journal-open').onclick=showJournal;$('inventory-open').onclick=showInventory;$('map-open').onclick=showMap;$('minimap-open').onclick=showMap;$('home-route').onclick=()=>{const map=getTownMap(session.snapshot().state.mapId);if(map.id==='creator-quarter'||map.creatorHome)returnToTown();else showMap();};
+$('lantern-toggle').onclick=toggleLantern;$('interact').onclick=()=>interact();$('menu-open').onclick=showMenu;$('journal-open').onclick=showJournal;$('inventory-open').onclick=showInventory;$('map-open').onclick=showMap;$('minimap-open').onclick=showMap;$('home-route').onclick=()=>{const map=getTownMap(session.snapshot().state.mapId);if(map.id==='creator-quarter'||map.creatorHome)returnToTown();else visitCreatorQuarter();};
 function prepareExit(){clearInput();audio.stop({resetVolume:true});session.save();}
 $('castle-return').addEventListener('click',prepareExit);
 window.addEventListener('blur',()=>{clearInput();audio.stop({resetVolume:true});});window.addEventListener('orientationchange',scheduleResize);

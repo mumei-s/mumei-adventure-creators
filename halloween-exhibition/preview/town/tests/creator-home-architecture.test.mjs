@@ -24,7 +24,7 @@ test('sixteen homes have distinct raised motifs, authentic nameplates and their 
       assert.equal(ray.intersectObjects(town.root.children,false).length,0,home.id+' threshold is clear');
     }
   }
-  assert.equal(JSON.stringify(map),before);assert.ok(town.root.children.length<340,'per-house primitive batches keep the complete district bounded');
+  assert.equal(JSON.stringify(map),before);assert.ok(town.root.children.length<352,'per-house primitive batches plus three roadside signs keep the district bounded');
   let triangles=0;for(const item of town.root.children)if(item.geometry)triangles+=(item.geometry.index?.count||item.geometry.attributes.position.count)/3*(item.isInstancedMesh?item.count:1);assert.ok(triangles<45000);
   const resources=[...town.resources],instances=town.root.children.filter(item=>item.isInstancedMesh);let resourceDisposals=0,instanceDisposals=0;
   for(const item of resources)item.addEventListener('dispose',()=>resourceDisposals++);for(const item of instances)item.addEventListener('dispose',()=>instanceDisposals++);

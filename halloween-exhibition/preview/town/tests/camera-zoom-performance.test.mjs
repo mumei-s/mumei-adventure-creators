@@ -1,3 +1,4 @@
+import {townControlOffset} from '../camera-framing.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createTownRenderer} from '../renderer.js';
@@ -19,7 +20,7 @@ function harness(width=420,height=700){
  return {canvas,renderer,floorAllocations:()=>canvases.filter(item=>item.originalWidth===512&&item.originalHeight===512).length};
 }
 
-test('street framing brings the existing wide view one step closer and keeps facade names above their doors',async()=>{
+test('street framing gives the existing view more street context and keeps facade names above their doors',async()=>{
  const {canvas,renderer}=harness();await renderer.ready;
  const state={...initialTownState(),mapId:'creator-quarter',position:{x:23.5,z:20.5}};
  try{
@@ -27,7 +28,7 @@ test('street framing brings the existing wide view one step closer and keeps fac
    renderer.render({canvas,state,motion:false,cameraDistance,cameraZoom});
    const foot=renderer.worldToScreen(state.position),east=renderer.worldToScreen({...state.position,x:state.position.x+1}),raised=renderer.worldToScreen({...state.position,y:2.2});
    const span=east.x-foot.x,previousSpan=52*cameraDistanceScale(cameraDistance)*cameraZoom;
-   assert.ok(span>previousSpan*1.1&&span<previousSpan*1.15,'the view is one small step closer in both camera modes');
+   assert.ok(span>previousSpan*.94&&span<previousSpan*.98,'the view is a modest step wider in both camera modes');
    assert.equal(raised.x,foot.x);assert.ok(Math.abs((foot.y-raised.y)-2.2*span*TOWN_DEPTH_SCALE)<1e-9,'facade names follow physical building height at every zoom');
   }
  }finally{renderer.destroy();}
@@ -76,5 +77,21 @@ test('wide and far 2D frames retain their whole visible floor at every zoom inst
     canvas.drawnFloors.length=0;
    }
   }finally{renderer.destroy();}
+ }
+});
+
+
+test('control safe area works for portrait, landscape, tablet and desktop without altering picking',async()=>{
+ for(const [width,height,padHeight] of [[390,650,160],[844,320,118],[768,900,180],[1280,650,180]]){
+  const world={top:70,bottom:70+height,height},pad={top:70+height-padHeight,bottom:70+height,height:padHeight};
+  const offset=townControlOffset(world,pad);assert.ok(offset>0&&offset<=height*.22);
+  const {canvas,renderer}=harness(width,height);await renderer.ready;
+  const state={...initialTownState(),mapId:'creator-quarter',position:{x:23.5,z:20.5}};
+  renderer.render({canvas,state,motion:false});const before=renderer.worldToScreen(state.position);
+  renderer.render({canvas,state,motion:false,cameraOffsetY:offset});const after=renderer.worldToScreen(state.position);
+  assert.ok(Math.abs(before.y-after.y-offset)<1e-8);assert.equal(before.x,after.x);
+  const back=renderer.screenToWorld(after);assert.ok(Math.abs(back.x-state.position.x)<1e-8&&Math.abs(back.z-state.position.z)<1e-8);
+  assert.equal(townControlOffset(world,{top:world.bottom,bottom:world.bottom+100,height:100}),0);
+  renderer.destroy();
  }
 });

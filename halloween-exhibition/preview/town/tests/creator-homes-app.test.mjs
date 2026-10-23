@@ -65,3 +65,12 @@ test('creator search filters actual registered homes without changing the journe
  search.value='';search.oninput();assert.equal(list.children.filter(card=>!card.hidden).length,CREATOR_HOMES.length);
  assert.equal(h.saved.length,0);assert.equal(h.travelIds.length,0);
 });
+
+
+test('physical area and home travel set the close-event focus destination before closing the dialog',()=>{
+ for(const name of ['visitCreatorQuarter','visitCreatorHome']){
+  const start=source.indexOf('function '+name+'('),end=source.indexOf('\nfunction ',start+1),body=source.slice(start,end);
+  assert.ok(body.indexOf('returnFocus=')>0);assert.ok(body.indexOf('returnFocus=')<body.indexOf('applyInteraction(result)'));
+  assert.match(body,/returnFocus=\$\('town-webgl'\)\.hidden\?\$\('town-canvas'\):\$\('town-webgl'\)/);
+ }
+});

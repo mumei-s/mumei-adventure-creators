@@ -219,8 +219,8 @@
     },
     {
       "path": "town/app.js",
-      "bytes": 60562,
-      "sha256": "ad154aeb640f52855e3b46acbe53e1e601c2776d1a93adbd65e27d2dd4a3ad9a"
+      "bytes": 60698,
+      "sha256": "50fca825c82501296b13962342b7d23cf07dd02d34274cf703a7b69fd883893a"
     },
     {
       "path": "town/audio.js",
@@ -438,7 +438,7 @@
     },
     {
       "path": "town/app.js",
-      "bytes": 42719
+      "bytes": 42837
     },
     {
       "path": "town/creator-home-painter.js",
@@ -663,8 +663,8 @@
   ],
   "output": {
     "path": "town/game-entry.js",
-    "bytes": 461249,
-    "sha256": "8c74edec8fdcd7cdd93e25ba136eecac772c64cd777145358b6c6c00b37d3be4"
+    "bytes": 461367,
+    "sha256": "6fc35357369a2b0d3cb9ad2f45eae8cc3367170d471d6f1235d087e33ec87119"
   },
   "styleSources": [
     "../display-mode.css?v=20261014-layout1",

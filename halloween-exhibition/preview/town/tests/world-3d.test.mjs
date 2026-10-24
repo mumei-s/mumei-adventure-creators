@@ -78,7 +78,7 @@ test('elevated camera and screen picking roundtrip after portrait, landscape, re
   const {world,canvas,record}=harness();await world.ready;const state=initialTownState();
   assert.equal(TOWN_3D_CAMERA_ELEVATION,55*Math.PI/180);
   for(const [width,height,mapId]of[[320,580,'lantern-town'],[920,320,'lantern-town'],[1280,720,'library']]){
-    canvas.clientWidth=width;canvas.clientHeight=height;state.mapId=mapId;state.position={...getTownMap(mapId).spawn};world.render({state,pixelRatio:2,motion:false});assert.deepEqual(record.size,[width,height]);assert.ok(record.ratio<=1.8);
+    canvas.clientWidth=width;canvas.clientHeight=height;state.mapId=mapId;state.position={...getTownMap(mapId).spawn};world.render({state,cameraDistance:'wide',pixelRatio:2,motion:false});assert.deepEqual(record.size,[width,height]);assert.ok(record.ratio<=1.8);
     for(const offset of[{x:0,z:0},{x:1.3,z:-1.8},{x:-.8,z:.6}]){
       const point={x:state.position.x+offset.x,z:state.position.z+offset.z},screen=world.worldToScreen(point),back=world.screenToWorld(screen);assert.ok(Math.abs(point.x-back.x)<1e-9);assert.ok(Math.abs(point.z-back.z)<1e-9);
     }
@@ -91,7 +91,7 @@ test('elevated camera and screen picking roundtrip after portrait, landscape, re
 test('authored feet remain planted and visitors are selected through their visible sprite pixels',async()=>{
   const {world,record}=harness();await world.ready;const state=initialTownState();state.position={x:28,z:28};
   const actor={id:'approved-visitor',x:29.8,z:28,sprite:{image:{width:256,height:320},frame:[0,0,256,320],anchorX:.55,anchorY:.94,contentHeight:280},heightPx:76,interactive:true};
-  world.render({state,creatorActors:[actor],motion:false});const sprite=record.scene.getObjectsByProperty('isSprite',true).find(item=>item.userData.actorId===actor.id);
+  world.render({state,cameraDistance:'wide',creatorActors:[actor],motion:false});const sprite=record.scene.getObjectsByProperty('isSprite',true).find(item=>item.userData.actorId===actor.id);
   assert.ok(sprite);assert.equal(sprite.center.x,.55);assert.ok(Math.abs(sprite.center.y-.06)<1e-10);
   // The authored foot anchor lies at the 3D object's ground position, rather than putting its top at ground level.
   assert.ok(Math.abs(((1-actor.sprite.anchorY)-sprite.center.y)*sprite.scale.y)<1e-10);
@@ -122,9 +122,9 @@ test('missing quest resident art rejects 3D readiness so the controller can keep
 });
 
 test('foreground cutaway changes only the covering building and resets after leaving',async()=>{
-  const {world,record}=harness();await world.ready;const state=initialTownState(),building=getTownMap().buildings.find(b=>b.id==='bakery');state.position={x:building.x+building.w/2,z:building.z-.5};world.render({state,motion:false});
+  const {world,record}=harness();await world.ready;const state=initialTownState(),building=getTownMap().buildings.find(b=>b.id==='bakery');state.position={x:building.x+building.w/2,z:building.z-.5};world.render({state,cameraDistance:'wide',motion:false});
   const cover=record.scene.getObjectByName('roof-bakery'),other=record.scene.getObjectByName('roof-inn');assert.equal(cover.material.opacity,.24);assert.equal(cover.castShadow,false);assert.equal(other.material.opacity,1);assert.notEqual(cover.material,other.material);
-  state.position={x:32,z:28};world.render({state,motion:false});assert.equal(cover.material.opacity,1);assert.equal(cover.castShadow,true);world.destroy();
+  state.position={x:32,z:28};world.render({state,cameraDistance:'wide',motion:false});assert.equal(cover.material.opacity,1);assert.equal(cover.castShadow,true);world.destroy();
 });
 
 test('quest lantern glow and local lights follow imported and updated lamp flags',async()=>{
@@ -148,10 +148,10 @@ test('changing maps disposes every instance buffer from the previous map once',a
 
 test('only the foreground tree canopy fades and a reused surface is not forced into a lost context',async()=>{
  const {world,record}=harness();await world.ready;const state=initialTownState(),tree=getTownMap().decorations.find(item=>item.kind==='tree'||item.kind==='autumnTree');assert(tree);
- state.position={x:tree.x,z:tree.z-.8};world.render({state,motion:false});const root=record.scene.getObjectByName('town-world-lantern-town');
+ state.position={x:tree.x,z:tree.z-.8};world.render({state,cameraDistance:'wide',motion:false});const root=record.scene.getObjectByName('town-world-lantern-town');
  const index=getTownMap().decorations.indexOf(tree),canopy=root.children.filter(item=>item.userData.bucket==='tree-'+index);assert(canopy.length);assert(canopy.every(item=>item.material.opacity===.24));
  const other=root.children.filter(item=>item.userData.bucket?.startsWith('tree-')&&item.userData.bucket!=='tree-'+index);assert(other.some(item=>item.material.opacity===1));
- state.position={x:32,z:28};world.render({state,motion:false});assert(canopy.every(item=>item.material.opacity===1));
+ state.position={x:32,z:28};world.render({state,cameraDistance:'wide',motion:false});assert(canopy.every(item=>item.material.opacity===1));
  world.destroy();assert.equal(record.losses,0,'reusable canvas contexts must not be forcibly lost');assert.equal(record.disposed,1);
 });
 
@@ -159,13 +159,13 @@ test('mutable actor poses upload one live texture and refresh alpha picking with
  const {world,record}=harness();await world.ready;const state=initialTownState();state.position={x:28,z:28};
  const image=fakeCanvas(256,320),context=image.getContext('2d');image.alpha=255;context.getImageData=()=>({width:image.width,height:image.height,data:new Uint8ClampedArray(image.width*image.height*4).fill(image.alpha)});
  const sprite={image,frame:[0,0,256,320],anchorX:.5,anchorY:.94,contentHeight:280,poseVersion:0},actor={id:'live-owner',x:29.8,z:28,heightPx:76,sprite};
- world.render({state,motion:false,creatorActors:[actor]});const node=record.scene.getObjectsByProperty('isSprite',true).find(item=>item.userData.actorId===actor.id),texture=node.material.map,initialVersion=texture.version,staticFrames=world.status().spriteFrames;let disposals=0;texture.addEventListener('dispose',()=>disposals++);
+ world.render({state,cameraDistance:'wide',motion:false,creatorActors:[actor]});const node=record.scene.getObjectsByProperty('isSprite',true).find(item=>item.userData.actorId===actor.id),texture=node.material.map,initialVersion=texture.version,staticFrames=world.status().spriteFrames;let disposals=0;texture.addEventListener('dispose',()=>disposals++);
  assert.equal(texture.image,image);assert.equal(world.status().liveSprites,1);
  const foot=world.worldToScreen(actor),at={x:foot.x,y:foot.y-node.scale.y*.45*record.camera.projectionMatrix.elements[5]*600/2};assert.equal(world.pickVisitor(at.x,at.y),actor.id);
- for(let poseVersion=1;poseVersion<=100;poseVersion++){image.alpha=poseVersion===100?0:255;actor.sprite={...sprite,poseVersion};assert.equal(world.render({state,motion:false,creatorActors:[actor]}),true);assert.equal(node.material.map,texture);assert.equal(world.status().spriteFrames,staticFrames);assert.equal(world.status().liveSprites,1);}
+ for(let poseVersion=1;poseVersion<=100;poseVersion++){image.alpha=poseVersion===100?0:255;actor.sprite={...sprite,poseVersion};assert.equal(world.render({state,cameraDistance:'wide',motion:false,creatorActors:[actor]}),true);assert.equal(node.material.map,texture);assert.equal(world.status().spriteFrames,staticFrames);assert.equal(world.status().liveSprites,1);}
  assert.equal(texture.version,initialVersion+100);assert.equal(world.pickVisitor(at.x,at.y),null,'old opaque pixels cannot intercept a transparent new pose');
- assert.equal(world.render({state,motion:false,creatorActors:[actor]}),false);assert.equal(texture.version,initialVersion+100);assert.equal(disposals,0);
- world.render({state,motion:false,creatorActors:[]});assert.equal(world.status().liveSprites,0);assert.equal(disposals,1);world.destroy();assert.equal(disposals,1);
+ assert.equal(world.render({state,cameraDistance:'wide',motion:false,creatorActors:[actor]}),false);assert.equal(texture.version,initialVersion+100);assert.equal(disposals,0);
+ world.render({state,cameraDistance:'wide',motion:false,creatorActors:[]});assert.equal(world.status().liveSprites,0);assert.equal(disposals,1);world.destroy();assert.equal(disposals,1);
 });
 
 test('switching live actor canvases or returning to a static atlas disposes the previous live texture once',async()=>{
@@ -233,7 +233,7 @@ test('all three 3D camera distances change the frustum, redraw on change, and pr
  try{
   for(const [mapId,position]of[['lantern-town',{x:28.5,z:30.5}],['inn',{...getTownMap('inn').spawn}]]){
    state.mapId=mapId;state.position=position;const spansByDistance={};
-   for(const cameraDistance of['normal','wide','far']){
+   for(const cameraDistance of(mapId==='lantern-town'?['wide','far']:['normal','wide','far'])){
     const spans=[];
     for(const cameraZoom of[.65,1,1.4]){
      const frames=record.frames;assert.equal(world.render({state,motion:false,cameraDistance,cameraZoom}),true,'a zoom or distance change redraws the existing renderer');assert.equal(record.frames,frames+1);
@@ -247,9 +247,31 @@ test('all three 3D camera distances change the frustum, redraw on change, and pr
     assert.ok(spans[0]>spans[1]&&spans[1]>spans[2],'zooming in narrows the actual camera frustum');assert.ok(Math.abs(spans[0]/spans[2]-1.4/.65)<1e-9);spansByDistance[cameraDistance]=spans;
    }
    for(let index=0;index<3;index++){
-    assert.ok(spansByDistance.wide[index]>spansByDistance.normal[index]*1.4,'wide mode keeps its existing ground view at every zoom');
+    if(spansByDistance.normal)assert.ok(spansByDistance.wide[index]>spansByDistance.normal[index]*1.4,'wide mode keeps its existing ground view at every zoom');
     assert.ok(Math.abs(spansByDistance.far[index]/spansByDistance.wide[index]-.68/.48)<1e-9,'far mode shows another 41.7 percent across without changing the manual zoom');
    }
   }
  }finally{world.destroy();}
+});
+
+
+test('outdoor standard is eye-level perspective; wide, far and interiors remain overhead',async()=>{
+ const {world,record,canvas}=harness();await world.ready;const state=initialTownState();state.position={x:28.5,z:30.5};state.facing='up';
+ for(const [width,height]of [[360,740],[900,400],[1024,768]]){
+  canvas.clientWidth=width;canvas.clientHeight=height;
+  world.render({state,motion:false,cameraYaw:0,cameraPitch:0});assert.ok(record.camera.isPerspectiveCamera);assert.equal(record.camera.fov,69);assert.equal(record.camera.position.y,1.65);assert.equal(record.camera.aspect,width/height);
+  assert.ok(!record.scene.getObjectsByProperty('isSprite',true).some(n=>n.visible&&n.userData.actorId==='hero'));
+  const front={x:state.position.x,y:0,z:state.position.z-4},screen=world.worldToScreen(front),back=world.screenToWorld(screen);assert.ok(screen);assert.ok(Math.abs(back.x-front.x)<1e-8&&Math.abs(back.z-front.z)<1e-8);
+  assert.equal(world.worldToScreen({x:state.position.x,y:1.65,z:state.position.z+4}),null);
+  for(const cameraDistance of ['wide','far']){world.render({state,motion:false,cameraDistance});assert.ok(record.camera.isOrthographicCamera);assert.ok(record.scene.getObjectsByProperty('isSprite',true).some(n=>n.visible&&n.userData.actorId==='hero'));}
+ }
+ state.mapId='creator-home-koakumako';const room=Object.values(TOWN_MAPS).find(m=>m.creatorHome);state.mapId=room.id;state.position={...room.spawn};world.render({state,motion:false});assert.ok(record.camera.isOrthographicCamera);
+ state.mapId='lantern-town';state.position={x:28.5,z:30.5};world.render({state,motion:false,cameraYaw:Math.PI/2,cameraPitch:.2});assert.ok(record.camera.isPerspectiveCamera);assert.equal(record.camera.rotation.y,Math.PI/2);assert.equal(record.camera.rotation.x,.2);world.destroy();
+});
+
+test('eye-level restores opaque roofs and looking redraws even with reduced motion',async()=>{
+ const {world,record}=harness();await world.ready;const state=initialTownState(),building=getTownMap().buildings.find(b=>b.id==='bakery');state.position={x:building.x+building.w/2,z:building.z-.5};
+ world.render({state,motion:false,cameraDistance:'wide'});const roof=record.scene.getObjectByName('roof-bakery');assert.equal(roof.material.opacity,.24);
+ world.render({state,motion:false,cameraDistance:'normal',cameraYaw:0});assert.equal(roof.material.opacity,1);assert.equal(roof.material.depthWrite,true);
+ assert.equal(world.render({state,motion:false,cameraYaw:0}),false);assert.equal(world.render({state,motion:false,cameraYaw:.2}),true);assert.equal(world.render({state,motion:false,cameraYaw:.2,cameraPitch:.1}),true);world.destroy();
 });

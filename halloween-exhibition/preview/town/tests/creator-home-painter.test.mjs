@@ -15,8 +15,8 @@ function harness({cache=true}={}){
  const canvas=createCanvas();return {canvas,context:canvas.getContext('2d'),records};
 }
 
-test('all sixteen approved home themes have distinct native art, signs, and matching entry coordinates',()=>{
- assert.equal(CREATOR_HOMES.length,16);assert.deepEqual(new Set(CREATOR_HOMES.map(b=>b.motif)),new Set(CREATOR_HOME_MOTIFS));
+test('all seventeen approved home themes have distinct native art, signs, and matching entry coordinates',()=>{
+ assert.equal(CREATOR_HOMES.length,17);assert.deepEqual(new Set(CREATOR_HOMES.map(b=>b.motif)),new Set(CREATOR_HOME_MOTIFS));
  const signatures=new Set();
  for(const home of CREATOR_HOMES){
   const {context,records}=harness();assert.equal(drawCreatorHome2D(context,home),true);assert.equal(records.length,2);
@@ -28,7 +28,7 @@ test('all sixteen approved home themes have distinct native art, signs, and matc
   for(const call of paint)for(const value of call.slice(1))if(typeof value==='number')assert.ok(Number.isFinite(value));
   assert.ok(paint.length<5000,'ornament is bounded');signatures.add(JSON.stringify(paint));
  }
- assert.equal(signatures.size,16);
+ assert.equal(signatures.size,17);
 });
 
 test('creator identities change the architecture even when palette, sign, and emblem are identical',()=>{
@@ -40,7 +40,7 @@ test('creator identities change the architecture even when palette, sign, and em
   // palette swaps and emblem-only differences on otherwise identical buildings.
   signatures.add(JSON.stringify(records[1].calls));
  }
- assert.equal(signatures.size,16,'each house has its own roof, windows, or facade construction');
+ assert.equal(signatures.size,17,'each house has its own roof, windows, or facade construction');
 });
 
 test('the rendered entrance follows an off-center doorstep for every architecture',()=>{
@@ -113,4 +113,18 @@ test('quarter travel gates name both destinations while keeping the center passa
   let depth=0;const boxes=calls.filter(call=>{if(call[0]==='save')depth++;if(call[0]==='restore')depth--;return call[0]==='roundRect'&&depth===1;});assert.ok(boxes.every(call=>call[2]+call[4]<-20||call[1]>30||call[1]+call[3]<-30),'no solid sign or base blocks the travel point');assert.equal(records[0].depth(),0);
  }
  assert.equal(drawCreatorHome2D(harness().context,{x:0,z:0,w:0,h:5}),false);assert.equal(drawCreatorQuarterGate2D(harness().context,{x:NaN,z:0}),false);
+});
+
+
+test('Doyle retains a distinct pumpkin-library fallback without textures, cached canvas or an explicit theme',()=>{
+ const home=CREATOR_HOMES.find(item=>item.creatorId==='dandy_snake880');assert.ok(home);
+ const direct=harness({cache:false}),fallback=harness({cache:false});
+ assert.equal(drawCreatorHome2D(direct.context,home),true);
+ assert.equal(drawCreatorHome2D(fallback.context,{...home,homeTheme:undefined}),true);
+ assert.deepEqual(fallback.records[0].calls,direct.records[0].calls,'the pumpkin-book motif resolves to its dedicated architecture');
+ assert.equal(direct.records[0].calls.filter(call=>call[0]==='drawImage').length,0,'the fallback needs no portrait or artwork texture');
+ assert.deepEqual(direct.records[0].calls.filter(call=>call[0]==='fillText').map(call=>call[1]),['ドイル',home.homeLabel]);
+ const plain=harness({cache:false});drawCreatorHome2D(plain.context,{...home,homeTheme:'story'});
+ assert.notDeepEqual(direct.records[0].calls,plain.records[0].calls,'the hood, cape roof, book bays and black cat are not the existing story house');
+ assert.equal(direct.records[0].depth(),0);
 });

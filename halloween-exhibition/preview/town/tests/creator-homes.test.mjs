@@ -24,22 +24,22 @@ function reachable(map){
  return {queue,seen};
 }
 
-test('exactly the current 16 creators receive one distinct fictional home, including both pending profiles',()=>{
- assert.equal(CREATOR_HOMES.length,16);assert.deepEqual(CREATOR_HOMES.map(home=>home.creatorId),archive.creators.map(creator=>creator.id));
- assert.equal(new Set(CREATOR_HOMES.map(home=>home.id)).size,16);assert.equal(new Set(CREATOR_HOMES.map(home=>home.homeTheme)).size,16);assert.equal(new Set(CREATOR_HOMES.map(home=>home.motif)).size,16);assert.equal(new Set(CREATOR_HOMES.map(home=>JSON.stringify(home.homePalette))).size,16);
+test('exactly the current 17 creators receive one distinct fictional home, including both pending profiles',()=>{
+ assert.equal(CREATOR_HOMES.length,17);assert.deepEqual(CREATOR_HOMES.map(home=>home.creatorId),archive.creators.map(creator=>creator.id));
+ assert.equal(new Set(CREATOR_HOMES.map(home=>home.id)).size,17);assert.equal(new Set(CREATOR_HOMES.map(home=>home.homeTheme)).size,17);assert.equal(new Set(CREATOR_HOMES.map(home=>home.motif)).size,17);assert.equal(new Set(CREATOR_HOMES.map(home=>JSON.stringify(home.homePalette))).size,17);
  for(const home of CREATOR_HOMES){assert.equal(home.kind,'creator-home');assert.equal(home.id,'home-'+home.creatorId);assert.equal(home.fictional,true);assert.ok(home.creatorName.trim());assert.ok(home.homeLabel.trim());assert.equal(getCreatorHome(home.creatorId),home);for(const color of Object.values(home.homePalette))assert.match(color,/^#[0-9a-f]{6}$/i);assert.equal(home.articleURL,undefined);}
  assert.equal(getCreatorHome('not-a-creator'),null);assert.equal(getCreatorHome('grand_daisy8632').motif,'three-stars');assert.equal(getCreatorHome('airoumu_rin').motif,'lion');assert.match(CREATOR_HOMES_NOTICE,/架空の家/);assert.match(CREATOR_HOMES_NOTICE,/実在する住まいではありません/);
 });
 
 test('the connected outdoor quarter has nonoverlapping homes and a reachable south-facing door for every creator',()=>{
- const map=getTownMap(CREATOR_QUARTER_ID);assert.equal(map.id,CREATOR_QUARTER_ID);assert.equal(map.outdoor,true);assert.equal(map.width,48);assert.equal(map.height,48);assert.equal(map.buildings.length,16);assert.equal(map.tiles.length,map.height);assert(map.tiles.every(row=>row.length===map.width));
+ const map=getTownMap(CREATOR_QUARTER_ID);assert.equal(map.id,CREATOR_QUARTER_ID);assert.equal(map.outdoor,true);assert.equal(map.width,80);assert.equal(map.height,88);assert.equal(map.buildings.length,17);assert.equal(map.tiles.length,map.height);assert(map.tiles.every(row=>row.length===map.width));
  const {seen,queue}=reachable(map);assert(queue.length>1000);
  for(const home of map.buildings){
   assert.equal(home.door.z,home.z+home.h+.5);assert(home.door.x>home.x&&home.door.x<home.x+home.w);assert(isTownWalkable(map,home.door.x,home.door.z));assert(seen.has(`${Math.floor(home.door.x)},${Math.floor(home.door.z)}`),home.id+' doorstep unreachable');assert(!isTownWalkable(map,home.x+home.w/2,home.z+home.h/2));
   const target=mapTargets(map.id).find(item=>item.id===home.id);assert(target);assert.equal(target.type,'creator-home');assert.equal(target.kind,'creator-home');assert.equal(target.creatorId,home.creatorId);assert.equal(target.name,home.creatorName+'の家');assert.deepEqual({x:target.x,z:target.z},home.door);assert.equal(nearestTownTarget({...initialTownState(),mapId:map.id,position:{...home.door}}).id,home.id);
  }
  for(let i=0;i<map.buildings.length;i++)for(let j=i+1;j<map.buildings.length;j++){const a=map.buildings[i],b=map.buildings[j];assert(a.x+a.w<=b.x||b.x+b.w<=a.x||a.z+a.h<=b.z||b.z+b.h<=a.z,'Home footprints overlap');}
- assert.equal(new Set(map.buildings.map(home=>home.x)).size,4);assert.equal(new Set(map.buildings.map(home=>home.z)).size,4);
+ assert.equal(new Set(map.buildings.map(home=>home.x)).size,4);assert.equal(new Set(map.buildings.map(home=>home.z)).size,5);
  for(const portal of map.portals)assert(seen.has(`${Math.floor(portal.x)},${Math.floor(portal.z)}`));
 });
 

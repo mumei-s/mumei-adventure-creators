@@ -101,7 +101,7 @@ function drawResident(c,n,time=0){
 export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},version:0},loadImage=loadArtImage,fetcher=globalThis.fetch,assetTimeout=14000,manifestTimeout=6000,timers=globalThis,deferAssets=false}={}){
   const scene={images:{},frames:TOWN_SCENERY_FRAMES.props,residentFrames:TOWN_SCENERY_FRAMES.residents,version:0,failures:[],loaded:[]},chunks=new Map(),shade=makeCanvas(1,1),sceneSnapshot=makeCanvas(1,1);
   let chunkLimit=TOWN_BUDGET.residentChunks;
-  let camera=null,lastMap=null,lastView=null,lastSignature='',destroyed=false,hitItems=[],lastSurface=null,snapshotBattle=null;
+  let camera=null,lastMap=null,lastView=null,lastSignature='',destroyed=false,hitItems=[],lastSurface=null,snapshotBattle=null,mapBase=null;
   const loading=new AbortController();
   const alphaMasks=new WeakMap(),alphaCanvas=makeCanvas(1,1);
   const failedFiles=new Map();
@@ -286,7 +286,13 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
     water(c,map,bounds,time,motion);floorDetails(c,map,bounds);
     const player={x:state.position.x*TILE,y:state.position.z*TILE};
     const addSpriteHit=(sprite,x,y,height,extra={})=>{if(!sprite)return;const bounds=spriteBox(sprite,x,y,height),foot=townWorldToScreen({x:x/TILE,z:y/TILE},camera,w,h,scale,TOWN_DEPTH_SCALE);hitItems.push({...bounds,x:foot.x+(bounds.x-x)*scale,y:foot.y+(bounds.y-y)*scale,w:bounds.w*scale,h:bounds.h*scale,kind:'occluder',...extra});};
-    const objects=scenery(map),nameTags=[],namedGroups=new Set();for(const n of map.npcs||[])if(!n.creatorHome||!creatorActors.some(a=>a.creatorHome&&a.creatorId===n.creatorId&&a.sprite))objects.push({kind:'resident',x:n.x*TILE,y:n.z*TILE,depth:n.z*TILE,data:n});
+    const objects=scenery(map),nameTags=[],namedGroups=new Set();
+    for(const n of map.npcs||[]){
+      // Doyle uses only the explicitly selected article boy. While his atlas
+      // loads, leave his spot empty instead of drawing an unrelated human.
+      if(n.creatorHome&&n.creatorId==='dandy_snake880')continue;
+      if(!n.creatorHome||!creatorActors.some(a=>a.creatorHome&&a.creatorId===n.creatorId&&a.sprite))objects.push({kind:'resident',x:n.x*TILE,y:n.z*TILE,depth:n.z*TILE,data:n});
+    }
     for(const actor of creatorActors)if(actor.sprite)objects.push({kind:'creator',x:actor.x*TILE,y:actor.z*TILE,depth:actor.z*TILE,actor});
     objects.push({kind:'hero',x:player.x,y:player.y,depth:player.y});objects.sort((a,b)=>a.depth-b.depth||a.x-b.x);
     for(const o of objects){
@@ -346,13 +352,20 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
   }
 
   function drawMap(canvas,state){
-    if(!canvas||!state?.position)return;const c=canvas.getContext('2d'),map=getTownMap(state.mapId),w=canvas.width,h=canvas.height,pad=10,scale=Math.min((w-pad*2)/map.width,(h-pad*2)/map.height),ox=(w-map.width*scale)/2,oy=(h-map.height*scale)/2;
-    c.clearRect(0,0,w,h);box(c,0,0,w,h,12,'#142332','#9e916c77');
-    const colors={'#':'#34464b','g':'#46594f','f':'#7e8167','.':'#9a9584','p':'#afa18b','=':'#c5b88e','~':'#3a7081','b':'#697185','i':'#8e785f'};
-    for(let z=0;z<map.height;z++)for(let x=0;x<map.width;x++){c.fillStyle=colors[map.tiles[z][x]]||'#303d4a';c.fillRect(ox+x*scale,oy+z*scale,scale+.3,scale+.3);}
-    for(const b of map.buildings||[]){c.strokeStyle=b.homePalette?.roof||'#b5ae8b';c.lineWidth=.7;c.strokeRect(ox+b.x*scale,oy+b.z*scale,b.w*scale,b.h*scale);}
-    if(w>300)for(const portal of map.portals||[])if(portal.openPassage){const x=ox+portal.x*scale,y=oy+portal.z*scale;ellipse(c,x,y,6,6,'#ffe09b');text(c,portal.to==='creator-quarter'?'エリアへ':'街へ',x,y-14,13,'#fff4d2');}
-    for(const n of map.npcs||[])ellipse(c,ox+n.x*scale,oy+n.z*scale,1.5,1.5,'#e9c793');
+    if(destroyed||!canvas||!state?.position)return;const c=canvas.getContext('2d'),map=getTownMap(state.mapId),w=canvas.width,h=canvas.height,pad=10,scale=Math.min((w-pad*2)/map.width,(h-pad*2)/map.height),ox=(w-map.width*scale)/2,oy=(h-map.height*scale)/2;
+    // The larger neighborhood still redraws only its moving marker during a
+    // walk. One reusable surface bounds memory across maps and map-panel sizes.
+    if(!mapBase||mapBase.map!==map||mapBase.width!==w||mapBase.height!==h){
+      const surface=mapBase?.surface||makeCanvas(w,h);surface.width=w;surface.height=h;const base=surface.getContext('2d');
+      base.clearRect(0,0,w,h);box(base,0,0,w,h,12,'#142332','#9e916c77');
+      const colors={'#':'#34464b','g':'#46594f','f':'#7e8167','.':'#9a9584','p':'#afa18b','=':'#c5b88e','~':'#3a7081','b':'#697185','i':'#8e785f'};
+      for(let z=0;z<map.height;z++)for(let x=0;x<map.width;x++){base.fillStyle=colors[map.tiles[z][x]]||'#303d4a';base.fillRect(ox+x*scale,oy+z*scale,scale+.3,scale+.3);}
+      for(const b of map.buildings||[]){base.strokeStyle=b.homePalette?.roof||'#b5ae8b';base.lineWidth=.7;base.strokeRect(ox+b.x*scale,oy+b.z*scale,b.w*scale,b.h*scale);}
+      if(w>300)for(const portal of map.portals||[])if(portal.openPassage){const x=ox+portal.x*scale,y=oy+portal.z*scale;ellipse(base,x,y,6,6,'#ffe09b');text(base,portal.to==='creator-quarter'?'エリアへ':'街へ',x,y-14,13,'#fff4d2');}
+      for(const n of map.npcs||[])ellipse(base,ox+n.x*scale,oy+n.z*scale,1.5,1.5,'#e9c793');
+      mapBase={map,width:w,height:h,surface};
+    }
+    c.clearRect(0,0,w,h);c.drawImage(mapBase.surface,0,0);
     ellipse(c,ox+state.position.x*scale,oy+state.position.z*scale,4.3,4.3,'#122f3d');ellipse(c,ox+state.position.x*scale,oy+state.position.z*scale,2.8,2.8,'#fff0c4');
   }
 
@@ -395,7 +408,7 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
     screenToWorld(x,y){return lastView?townScreenToWorld(typeof x==='object'?x:{x,y},lastView.camera,lastView.width,lastView.height,lastView.scale,TOWN_DEPTH_SCALE):null;},
     pickVisitor(x,y){for(let i=hitItems.length-1;i>=0;i--){const item=hitItems[i];if(!item.sprite||x<item.x||x>item.x+item.w||y<item.y||y>item.y+item.h||!opaqueAt(item,x,y))continue;return item.kind==='visitor'?item.id:null;}return null;},
     pick(x,y){if(!lastView)return null;const p=townScreenToWorld({x,y},lastView.camera,lastView.width,lastView.height,lastView.scale,TOWN_DEPTH_SCALE);return hitItems.filter(n=>Math.hypot((n.worldX??0)-p.x,(n.worldZ??0)-p.z)<.6).sort((a,b)=>Math.hypot(a.worldX-p.x,a.worldZ-p.z)-Math.hypot(b.worldX-p.x,b.worldZ-p.z))[0]?.id||null;},
-    invalidate(){lastSignature='';},destroy(){destroyed=true;loading.abort();finishScenery({loaded:[...scene.loaded],failures:[...scene.failures]});chunks.clear();hitItems=[];camera=null;lastView=null;renderersByArt.delete(art);},
+    invalidate(){lastSignature='';},destroy(){destroyed=true;loading.abort();finishScenery({loaded:[...scene.loaded],failures:[...scene.failures]});chunks.clear();if(mapBase){mapBase.surface.width=1;mapBase.surface.height=1;mapBase=null;}hitItems=[];camera=null;lastView=null;renderersByArt.delete(art);},
   };
   renderersByArt.set(art,api);return api;
 }

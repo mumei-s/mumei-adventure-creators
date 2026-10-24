@@ -12,7 +12,7 @@ const roster=()=>compileCharacterRoster(read('../../data/archive.json'),read('..
 test('all verified creator groups retain every paired member and profile-only CNA guests without inventing articles',()=>{
   const source=roster(),before=structuredClone(source),placed=placeTownVisitors(source);
   assert.deepEqual(source,before);assert.deepEqual(placed.omitted,[]);assert.equal(placed.visitors.length,source.npcs.length);
-  assert.equal(new Set([source.hero.creatorId,...placed.visitors.map(p=>p.creatorId)]).size,16);
+  assert.equal(new Set([source.hero.creatorId,...placed.visitors.map(p=>p.creatorId)]).size,17);
   const cna=placed.visitors.filter(p=>p.creatorId==='grand_daisy8632');assert.equal(cna.length,3);assert.ok(cna.every(p=>p.articleURL===null&&p.profileURL==='https://note.com/grand_daisy8632'));assert.equal(new Set(cna.map(p=>p.groupId)).size,1);assert.ok(cna.every(p=>p.x>48&&p.x<53&&p.z>=9&&p.z<13));
   const noninteractive=source.npcs.filter(p=>p.interactive===false);assert.ok(noninteractive.length);for(const p of noninteractive)assert.equal(placed.visitors.find(v=>v.id===p.id)?.interactive,false);
 });

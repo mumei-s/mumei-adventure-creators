@@ -186,6 +186,35 @@
       "fictionalDesignInterpretation": "青い大窓を持つ映像制作の家に、黒金の獅子のレリーフと陽だまり色の玄関を設ける。",
       "interpretationIsInference": true,
       "verification": {"profile": "verified-public-page", "visual": "public-profile-name-and-article-titles-only", "failures": []}
+    },
+    {
+      "creatorId": "dandy_snake880",
+      "publicProfileURL": "https://note.com/dandy_snake880",
+      "publicWorkURLs": [
+        "https://note.com/dandy_snake880/n/n084c0d58f567"
+      ],
+      "reviewedAt": "2026-10-24",
+      "verifiedActivityCues": [
+        "Halloween Atelierへの参加作品を公開"
+      ],
+      "approvedVisualCues": [
+        "参加作品のかぼちゃフードをかぶった少年と紫のマント",
+        "作品背景の書庫、ランタン、黒猫"
+      ],
+      "visualEvidence": {
+        "kind": "owner-selected-submitted-artwork",
+        "reviewKey": "dandy_snake880",
+        "reviewedAt": "2026-10-24",
+        "articleURL": "https://note.com/dandy_snake880/n/n084c0d58f567",
+        "imageURL": "https://assets.st-note.com/img/1792671223-PoY0EeLCd5lIjyWQcr7JMNZm.png?width=1200"
+      },
+      "fictionalDesignInterpretation": "参加作品に描かれた書庫とランタンを、かぼちゃの紋章、紫の屋根、黒猫の飾りがある架空の書庫の家として解釈する。作者本人の趣味や実際の住居を示すものではない。",
+      "interpretationIsInference": true,
+      "verification": {
+        "work": "verified-public-page",
+        "visual": "owner-selected-submitted-artwork",
+        "failures": []
+      }
     }
   ]
 }

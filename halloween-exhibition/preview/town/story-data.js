@@ -84,7 +84,7 @@ function outdoor() {
   for(const [x,z]of [[16.5,6.5],[48.5,10.5],[16.5,13.5],[24.5,23.5],[11.5,27.5],[35.5,26.5],[48.5,15.5],[46.5,38.5],[58.5,38.5]])decorations.push({id:`lamp-${x}-${z}`,kind:'lamp',x,z,radius:.12});
   return {id:TOWN_START_MAP,name:TOWN_TITLE,outdoor:true,width,height,tiles:cells.map(r=>r.join('')),spawn:{x:32.5,z:7.5},buildings,targets,portals,decorations:decorations.filter(p=>!isInPalaceForecourt(p,p.radius||0)),npcs:TOWN_NPCS.filter(n=>n.mapId===TOWN_START_MAP),
    routePath:[{x:29.5,z:16.5},{x:27.5,z:20.5},{x:27.5,z:24.5},{x:24.5,z:27.5},{...CREATOR_QUARTER_CONNECTION.street}],
-   routeSigns:[...creatorAreaSigns(),{id:'creator-route-plaza',x:27.5,z:24.5,label:'参加者の家・アトリエ',sublabel:'光る矢印をたどって、この先の門へ ↓',angle:Math.PI},{id:'creator-route-gate',x:24.5,z:28.5,label:'クリエイターたちが待っています',sublabel:'この門から16人の家へ ↓',angle:Math.PI}],
+   routeSigns:[...creatorAreaSigns(),{id:'creator-route-plaza',x:27.5,z:24.5,label:'参加者の家・アトリエ',sublabel:'光る矢印をたどって、この先の門へ ↓',angle:Math.PI},{id:'creator-route-gate',x:24.5,z:28.5,label:'クリエイターたちが待っています',sublabel:'この門から'+CREATOR_HOMES.length+'人の家へ ↓',angle:Math.PI}],
    districts:[{name:'城門の坂',x:32,z:8},{name:'月麦市場',x:12,z:18},{name:'星灯り広場',x:27,z:22},{name:'硝子の運河',x:34,z:30},{name:'月映し庭園',x:50,z:38},{name:'時計塔通り',x:54,z:10},{name:'参加者の家・アトリエ入口',...CREATOR_QUARTER_CONNECTION.street}]};
 }
 function interior(id,name,door,kind) {

@@ -13,7 +13,7 @@ test('both the old missing menu destination and the public comparison page exist
 test('comparison uses approved runtime characters and keeps pending participants visible',async()=>{
  const entries=comparisonEntries(archive,manifest),ready=entries.filter(entry=>entry.ready),pending=entries.filter(entry=>!entry.ready);
  assert(ready.length>=20);assert.equal(new Set(entries.map(entry=>entry.id)).size,entries.length);assert(ready.some(entry=>entry.id==='owner-lantern-hero'));assert(ready.some(entry=>entry.id==='owner-black-cat'));
- assert.equal(ready.filter(entry=>entry.creatorId==='grand_daisy8632').length,3);assert(ready.some(entry=>entry.id==='rin-rai-lion'&&entry.creatorId==='airoumu_rin'));assert(!pending.some(entry=>entry.creatorId==='airoumu_rin'));
+ assert.equal(ready.filter(entry=>entry.creatorId==='grand_daisy8632').length,3);assert(ready.some(entry=>entry.id==='rin-rai-lion'&&entry.creatorId==='airoumu_rin'));assert(!pending.some(entry=>entry.creatorId==='airoumu_rin'));assert(ready.some(entry=>entry.id==='doyle-halloween-boy'&&entry.creatorId==='dandy_snake880'&&entry.label==='ドイル'));assert(!pending.some(entry=>entry.creatorId==='dandy_snake880'));
  for(const entry of ready){const url=spriteURL(entry.asset,base);assert(url.startsWith('https://example.test/mumei-adventure-creators/halloween-exhibition/preview/maze/assets/'));await access(new URL('../'+entry.asset.src,import.meta.url));}
  for(const entry of pending)assert.equal(entry.asset,undefined);
 });

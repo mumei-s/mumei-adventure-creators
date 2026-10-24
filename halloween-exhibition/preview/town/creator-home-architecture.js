@@ -74,6 +74,13 @@ export function creatorHomeRoofGeometry(motif,width,depth,height){
     case'three-stars':geometry=joinedRoof(Array.from({length:3},(_,n)=>[gable(width*.35,depth,height),width*(n-1)/3,0,0]));break;
     case'iris-flower':geometry=crossRoof([[-a,0],[-a*.88,height*.43],[-a*.62,height*.63],[-a*.3,height*.36],[0,height],[a*.3,height*.36],[a*.62,height*.63],[a*.88,height*.43],[a,0]],depth);break;
     case'lion':geometry=joinedRoof([[hip(width,depth,height,.18)],[barrel(width*.25,depth*.23,height*.38,8),0,height*.82,-depth*.1]]);break;
+    // A broad, folded cape roof carries a hood-shaped lantern dormer and stem.
+    // Its geometry, not a recolored crest, distinguishes the seventeenth home.
+    case'pumpkin-book':geometry=joinedRoof([
+      [crossRoof([[-a,0],[-a*.91,height*.38],[-a*.69,height*.64],[-a*.34,height*.48],[0,height*.72],[a*.34,height*.48],[a*.69,height*.64],[a*.91,height*.38],[a,0]],depth)],
+      [barrel(width*.28,depth*.36,height*.55,10),0,height*.72,depth*.26],
+      [hip(width*.065,depth*.12,height*.26,.65),0,height*1.24,depth*.26],
+    ]);break;
     default:geometry=gable(width,depth,height);
   }
   geometry.name='creator-home-roof-'+motif;geometry.userData.motif=motif;return geometry;
@@ -107,6 +114,13 @@ export function creatorHomeEmblemGeometry(motif='lantern'){
     case 'wave-star':shapes=[star(.24,.2,.22),...Array.from({length:3},(_,i)=>stroke(-.5+i*.29,-.12+(i%2)*.12,-.21+i*.29,-.12+((i+1)%2)*.12,.09)),stroke(-.44,-.31,.38,-.31,.06)];break;
     case 'candy':shapes=[ellipse(0,0,.24,.3),polygon([[-.21,0],[-.5,.24],[-.5,-.24]]),polygon([[.21,0],[.5,-.24],[.5,.24]])];break;
     case 'open-book':shapes=[polygon([[-.48,.26],[-.08,.18],[-.03,.1],[-.03,-.32],[-.12,-.24],[-.48,-.16]]),polygon([[.48,.26],[.08,.18],[.03,.1],[.03,-.32],[.12,-.24],[.48,-.16]])];break;
+    case 'pumpkin-book':{
+      const pumpkin=polygon([[-.33,.04],[-.32,.24],[-.19,.35],[-.06,.31],[.06,.31],[.19,.35],[.32,.24],[.33,.04],[.23,-.1],[.1,-.14],[0,-.11],[-.1,-.14],[-.23,-.1]]);
+      hole(pumpkin,-.12,.14,.035,.05);hole(pumpkin,.12,.14,.035,.05);hole(pumpkin,0,-.015,.1,.025);
+      shapes=[pumpkin,polygon([[-.045,.31],[-.025,.49],[.085,.52],[.04,.31]]),
+        polygon([[-.5,-.14],[-.08,-.2],[-.025,-.25],[-.025,-.48],[-.12,-.41],[-.5,-.35]]),
+        polygon([[.5,-.14],[.08,-.2],[.025,-.25],[.025,-.48],[.12,-.41],[.5,-.35]])];break;
+    }
     case 'bread-loaf':{
       const loaf=ellipse(0,0,.51,.29);for(const x of[-.2,0,.2])hole(loaf,x,.035,.024,.14);shapes=[loaf];break;
     }
@@ -169,6 +183,7 @@ const HOME_BUILDINGS={
   candy:{high:2.6,roof:1.55,window:'round'},'open-book':{high:2.86,roof:1.5,window:'book'},'bread-loaf':{high:2.52,roof:1.35,window:'arch'},
   'twin-stars':{high:2.9,roof:1.55,window:'arch'},'moon-cat':{high:3.12,roof:1.6,window:'round'},'cat-leaf':{high:2.55,roof:1.35,window:'cat'},
   flower:{high:2.46,roof:1.2,window:'arch'},hedgehog:{high:2.36,roof:1.32,window:'round'},shiba:{high:2.64,roof:1.85,window:'arch'},
+  'pumpkin-book':{high:2.94,roof:1.68,window:'book'},
   'woven-diamond':{high:2.82,roof:1.45,window:'diamond'},'three-stars':{high:3.08,roof:1.55,window:'arch'},'iris-flower':{high:2.94,roof:1.88,window:'arch'},lion:{high:3.02,roof:1.7,window:'round'},
 };
 
@@ -209,6 +224,31 @@ function themeDetails({building,b,m,materials,resources,geometryCache,high,roofH
       for(const xx of[x+w*.18,x+w*.82]){box(xx,1.4,south+.22,1.3,1.22,.26,materials.wood);for(let shelf=0;shelf<3;shelf++){box(xx,.97+shelf*.34,south+.37,1.22,.06,.32,m.trim);for(let n=0;n<5;n++)box(xx-.45+n*.22,1.14+shelf*.34,south+.4,.14,.25+(n%2)*.04,.15,[materials.bookRed,materials.bookTeal,materials.bookGold][n%3]);}}
       for(let n=0;n<4;n++)box(cx,top+.06+n*.09,south+.37,w-.35,.045,.13,materials.paper);
       break;
+    case'pumpkin-book':{
+      // Scenery follows the submitted pumpkin-hood boy, cape, library and cat;
+      // it does not describe the author's personal tastes or actual residence.
+      const hoodY=top+roofHeight*.99,hoodZ=south-.72;
+      for(const dx of[-.38,0,.38])ball(cx+dx,hoodY,hoodZ,.48,.52,.57,materials.pumpkin);
+      box(cx,hoodY+.61,hoodZ,.13,.28,.14,materials.leaf);
+      win('arch',cx,hoodY-.06,south-.12,.57,.59,false);
+      for(const side of[-1,1]){
+        const xx=x+(side<0?.18:.82)*w;
+        box(xx,1.22,south+.23,1.32,1.04,.26,m.wood);
+        for(let shelf=0;shelf<2;shelf++){
+          box(xx,.91+shelf*.37,south+.39,1.34,.07,.37,m.trim);
+          for(let n=0;n<5;n++)box(xx-.46+n*.22,1.07+shelf*.37,south+.41,.14,.25+(n%2)*.04,.17,[materials.bookGold,materials.bookTeal,materials.bookRed][(n+shelf)%3]);
+        }
+      }
+      // The lantern hangs beside the threshold, never across the walking line.
+      const lx=door+1.3;box(lx,1.95,south+.25,.07,.61,.08,materials.gold);box(lx,1.68,south+.3,.36,.49,.3,materials.gold);
+      box(lx,1.69,south+.47,.23,.33,.055,materials.glass);peak(lx,1.99,south+.3,.27,.19,m.roof);
+      const catX=x+w*.84,catZ=south+.62;
+      ball(catX,.36,catZ,.21,.33,.17,materials.dark);ball(catX,.67,catZ+.015,.22,.2,.17,materials.dark);
+      for(const side of[-1,1]){peak(catX+side*.145,.85,catZ+.015,.09,.2,materials.dark);ball(catX+side*.07,.69,catZ+.17,.025,.035,.018,materials.gold);}
+      // A curled tail sits against the plinth, clear of the door and path.
+      ball(catX+.25,.25,catZ,.22,.075,.075,materials.dark);ball(catX+.42,.33,catZ,.07,.14,.075,materials.dark);
+      break;
+    }
     case'bread-loaf':
       awning(x+w*.18,1.96,south+.16,1.75,.76);ball(x+w*.83,.69,south-.06,.66,.75,.58,materials.stone);win('arch',x+w*.83,.65,south+.47,.78,.76,false);
       box(x+w*.83,.53,south+.57,.53,.15,.08,materials.wood);for(let n=0;n<3;n++)ball(x+w*.83-.19+n*.19,.61,south+.6,.1,.07,.06,materials.bookGold);

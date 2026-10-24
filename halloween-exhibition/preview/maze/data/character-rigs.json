@@ -192,6 +192,11 @@
       "id": "rin-rai-lion",
       "approved": true,
       "manifestURL": "./assets/rigs/rin-rai-lion/rig.json?v=16e405cc40cd"
+    },
+    {
+      "id": "doyle-halloween-boy",
+      "approved": true,
+      "manifestURL": "./assets/rigs/doyle-halloween-boy/rig.json?v=084d238e6ecc"
     }
   ]
 }

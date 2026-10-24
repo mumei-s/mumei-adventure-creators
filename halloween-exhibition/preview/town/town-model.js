@@ -1,10 +1,25 @@
+import {CREATOR_QUARTER_ID,CREATOR_QUARTER_LAYOUT_VERSION,migrateCreatorQuarterPosition} from './creator-homes.js?v=20261019-homes2';
 import {TOWN_VERSION,TOWN_START_MAP,TOWN_ITEMS,TOWN_QUESTS,TOWN_LAMPS,TOWN_STAMPS,getTownMap,isTownWalkable,mapTargets} from './story-data.js?v=20261019-homes2';
 export {getTownMap,isTownWalkable,TOWN_MAPS,TOWN_NPCS,TOWN_TITLE} from './story-data.js?v=20261019-homes2';
 
-export function initialTownState(){return {version:TOWN_VERSION,mapId:TOWN_START_MAP,position:{...getTownMap().spawn},facing:'down',hp:60,maxHp:60,energy:1,coins:24,inventory:{tonic:2},flags:{lamps:[],stamps:[],gearNotes:[]},visited:[TOWN_START_MAP],battleReceipts:[],checkpoint:{mapId:TOWN_START_MAP,position:{...getTownMap().spawn}},steps:0,updatedAt:Date.now()};}
+export function initialTownState(){return {version:TOWN_VERSION,layoutVersion:CREATOR_QUARTER_LAYOUT_VERSION,mapId:TOWN_START_MAP,position:{...getTownMap().spawn},facing:'down',hp:60,maxHp:60,energy:1,coins:24,inventory:{tonic:2},flags:{lamps:[],stamps:[],gearNotes:[]},visited:[TOWN_START_MAP],battleReceipts:[],checkpoint:{mapId:TOWN_START_MAP,position:{...getTownMap().spawn}},steps:0,updatedAt:Date.now()};}
 const knownFlags=['intro','breadTaken','breadDelivered','wickTaken','act1Complete','gardenVictory','moonwaterTaken','riverClue','gearTaken','sluiceRepaired','clockVictory','clockRestored','maskStarted','ribbonTaken','maskComplete','starComplete','ending'];
+// Recover at the nearest clear tile, never inside a moved house or a tree.
+// Invalid coordinates use the map's known safe entrance, not a random home.
+export function recoverTownPosition(mapOrId,position,{avoidPassages=false}={}){
+ const map=typeof mapOrId==='string'?getTownMap(mapOrId):mapOrId;
+ if(position&&isTownWalkable(map,position.x,position.z)&&(!avoidPassages||!map.portals.some(p=>p.openPassage&&Math.hypot(p.x-position.x,p.z-position.z)<1.2)))return {x:position.x,z:position.z};
+ if(!position||!Number.isFinite(position.x)||!Number.isFinite(position.z)||position.x<0||position.z<0||position.x>map.width||position.z>map.height)return {...map.spawn};
+ let nearest=null,best=Infinity;
+ for(let z=1;z<map.height-1;z++)for(let x=1;x<map.width-1;x++){
+  const point={x:x+.5,z:z+.5},distance=(point.x-position.x)**2+(point.z-position.z)**2;
+  if(distance<best&&isTownWalkable(map,point.x,point.z)&&!map.portals.some(p=>p.openPassage&&Math.hypot(p.x-point.x,p.z-point.z)<1.2)){nearest=point;best=distance;}
+ }
+ return nearest||{...map.spawn};
+}
 export function restoreTownState(raw){
   const defaults=initialTownState();if(!raw||typeof raw!=='object'||raw.version!==TOWN_VERSION)return defaults;
+  const legacyLayout=!Number.isFinite(raw.layoutVersion)||raw.layoutVersion<CREATOR_QUARTER_LAYOUT_VERSION;
   const finite=(n,f,min=0,max=999999)=>typeof n==='number'&&Number.isFinite(n)?Math.min(max,Math.max(min,n)):f;
   const flags={lamps:[],stamps:[],gearNotes:[]};
   for(const key of knownFlags)flags[key]=raw.flags?.[key]===true;
@@ -30,11 +45,14 @@ export function restoreTownState(raw){
   const inventory={};for(const id of Object.keys(TOWN_ITEMS)){const count=Math.floor(finite(raw.inventory?.[id],0,0,id==='tonic'?99:1));if(count)inventory[id]=count;}
   const questItems={festivalBread:flags.breadTaken&&!flags.breadDelivered,wick:flags.wickTaken,bronzeKey:flags.act1Complete,gear:flags.gearTaken&&!flags.sluiceRepaired,moonwater:flags.moonwaterTaken&&!flags.sluiceRepaired,ribbon:flags.ribbonTaken&&!flags.maskComplete,starCharm:flags.starComplete};
   for(const [id,present] of Object.entries(questItems)){if(present)inventory[id]=1;else delete inventory[id];}
-  const map=getTownMap(raw.mapId==='clocktower'&&!flags.sluiceRepaired?TOWN_START_MAP:raw.mapId),pos=raw.position;
+  const map=getTownMap(raw.mapId==='clocktower'&&!flags.sluiceRepaired?TOWN_START_MAP:raw.mapId),pos=map.id===CREATOR_QUARTER_ID?migrateCreatorQuarterPosition(raw.position,raw.layoutVersion):raw.position;
   const maxHp=flags.starComplete?72:60;
-  const state={...defaults,mapId:map.id,position:pos&&isTownWalkable(map,pos.x,pos.z)?{x:pos.x,z:pos.z}:{...map.spawn},facing:['up','down','left','right'].includes(raw.facing)?raw.facing:'down',hp:finite(raw.hp,maxHp,1,maxHp),maxHp,energy:Math.floor(finite(raw.energy,1,0,3)),coins:Math.floor(finite(raw.coins,24,0,9999)),inventory,flags,visited:[...new Set([TOWN_START_MAP,...(Array.isArray(raw.visited)?raw.visited.filter(id=>getTownMap(id).id===id):[])])],battleReceipts:Array.isArray(raw.battleReceipts)?raw.battleReceipts.filter(id=>typeof id==='string'&&/^town-battle-[\w-]{1,80}$/.test(id)).slice(-64):[],steps:finite(raw.steps,0),updatedAt:finite(raw.updatedAt,Date.now())};
+  const state={...defaults,mapId:map.id,position:map.id===CREATOR_QUARTER_ID?recoverTownPosition(map,pos,{avoidPassages:legacyLayout}):pos&&isTownWalkable(map,pos.x,pos.z)?{x:pos.x,z:pos.z}:{...map.spawn},facing:['up','down','left','right'].includes(raw.facing)?raw.facing:'down',hp:finite(raw.hp,maxHp,1,maxHp),maxHp,energy:Math.floor(finite(raw.energy,1,0,3)),coins:Math.floor(finite(raw.coins,24,0,9999)),inventory,flags,visited:[...new Set([TOWN_START_MAP,...(Array.isArray(raw.visited)?raw.visited.filter(id=>getTownMap(id).id===id):[])])],battleReceipts:Array.isArray(raw.battleReceipts)?raw.battleReceipts.filter(id=>typeof id==='string'&&/^town-battle-[\w-]{1,80}$/.test(id)).slice(-64):[],steps:finite(raw.steps,0),updatedAt:finite(raw.updatedAt,Date.now())};
   const cp=raw.checkpoint;
-  if(cp&&getTownMap(cp.mapId).id===cp.mapId&&(cp.mapId!=='clocktower'||flags.sluiceRepaired)&&isTownWalkable(cp.mapId,cp.position?.x,cp.position?.z))state.checkpoint={mapId:cp.mapId,position:{x:cp.position.x,z:cp.position.z}};
+  if(cp&&getTownMap(cp.mapId).id===cp.mapId&&(cp.mapId!=='clocktower'||flags.sluiceRepaired)){
+  const position=cp.mapId===CREATOR_QUARTER_ID?migrateCreatorQuarterPosition(cp.position,raw.layoutVersion):cp.position;
+  if(position&&Number.isFinite(position.x)&&Number.isFinite(position.z)&&(cp.mapId===CREATOR_QUARTER_ID||isTownWalkable(cp.mapId,position.x,position.z)))state.checkpoint={mapId:cp.mapId,position:recoverTownPosition(cp.mapId,position,{avoidPassages:cp.mapId===CREATOR_QUARTER_ID&&legacyLayout})};
+ }
   // Inconsistent edited saves cannot mark the ending while skipping its route.
   if(!flags.clockVictory){flags.clockRestored=false;flags.ending=false;delete flags.endingChoice;}
   return state;

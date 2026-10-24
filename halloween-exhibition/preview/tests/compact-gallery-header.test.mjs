@@ -33,9 +33,9 @@ test('294 through 480px widths have bounded tracks, complete link labels and a c
   const content=width-16,minimum=[62,28,34,56,44,40].reduce((sum,n)=>sum+n,0)+5*2;
   assert.ok(minimum<=content,`${width}: all six controls fit without a scrolling ancestor`);
   const titleFont=Math.max(20,Math.min(26,width*.053)),title=titleFont*1.08+13.2+1;
-  const header=6+title+44+44+34+3*3;
-  if(width<=360)assert.ok(header<175,`${width}: header budget ${header}`);
-  const card=(content-4)/2,creativeText=card-12-4-10-2;
+  const header=6+title+44+44+44+3*3;
+  if(width<=360)assert.ok(header<185,`${width}: header budget ${header}`);
+  const card=(content-8)/3,creativeText=card-12-4-10-2;
   assert.ok(creativeText>=8*10*.65,'longest English word stays horizontal');
   const routeCard=(content-48-68-8-4)/2,routeInner=routeCard-10;
   assert.ok(Math.ceil(8*11/routeInner)*11*1.2+6<=34,'complete underground route fits within two short lines');
@@ -47,7 +47,7 @@ test('294 through 480px widths have bounded tracks, complete link labels and a c
 test('both destination bands stay horizontal slim cards and selected large profiles cannot force overflow',()=>{
  assert.match(rule(base+' .palace-world-links'),/grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
  assert.match(rule(base+' .palace-world-links>a'),/min-height:34px/);
- assert.match(rule(base+'>.creative-world-links>a'),/min-height:34px/);
+ assert.match(rule(base+'>.creative-world-links>a'),/min-height:44px/);
  assert.match(rule(base+'>.creative-world-links strong'),/overflow-wrap:normal;word-break:normal/);
  assert.doesNotMatch(rule(base+' .palace-world-links'),/max-width:128px|overflow-wrap:anywhere/);
  assert.match(clean,/header-actions :is\(#year-open,\.visitor-settings-trigger\)\{[\s\S]*?width:100%;min-width:0;max-width:100%/);
@@ -81,4 +81,23 @@ test('town links reuse the existing routes with compact labels and touch-friendl
  assert.match(rule(base+' .palace-world-links>#palace-town-entrance'),/min-height:44px;max-width:128px/);
  assert.match(townCSS,/#theater \.palace-return-row>#town-entrance\{[^}]*max-width:128px;min-height:44px/);
  assert.match(townCSS,/touch-action:manipulation/);
+});
+
+
+test('the tool card follows existing creative links without replacing or hiding them',async()=>{
+ const html=await read('index.html');
+ const nav=html.match(/<nav class="creative-world-links"[^>]*>([\s\S]*?)<\/nav>/)?.[1];
+ assert.ok(nav);
+ const links=[...nav.matchAll(/<a\b([^>]+)>/g)].map(match=>match[1]);
+ assert.equal(links.length,3);
+ assert.match(links[0],/ai-creative-works-select/);
+ assert.match(links[1],/mf8a55ef40b9d/);
+ assert.match(links[2],/id="header-illustration-tool"/);
+ assert.match(links[2],/href="https:\/\/mumei-s.github.io\/mumei-adventure-creators\/halloween\/"/);
+ assert.match(links[2],/target="_blank"/);
+ assert.match(links[2],/rel="noopener noreferrer"/);
+ assert.match(links[2],/aria-label="イラスト作成ツール、新しいタブで開く"/);
+ assert.doesNotMatch(links[2],/hidden|tabindex="-1"|onclick=/);
+ assert.match(rule(base+'>.creative-world-links'),/repeat\(3,minmax\(0,1fr\)\)/);
+ assert.match(rule(base+' :is(button,a):focus-visible'),/outline:2px solid/);
 });

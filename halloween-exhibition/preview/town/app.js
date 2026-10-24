@@ -112,7 +112,7 @@ function prepareReadingJourney(){
 function readingProgress(state){
  const journey=readingJourney?.snapshot();if(!journey?.total)return townProgress(state);
  if(journey.complete)return {title:'終章　物語の灯りがつながった',objective:`${journey.readCount}人の作品を巡りました。好きな家を、また訪ねてみよう。`,completed:true};
- const person=journey.selected,home=getCreatorHome(person?.id),row=home?Math.floor((home.z-3)/11)+1:1,col=home?Math.floor((home.x-3)/11)+1:1;
+ const person=journey.selected,home=getCreatorHome(person?.id),row=home?.gridRow||1,col=home?.gridColumn||1;
  const room=getTownMap(state.mapId).creatorHome;
  const objective=room?`${room.creatorName}のアトリエです。本人や作品机を調べて記事へ。南の扉から家の前へ。小パネル「街へ戻る」で広場へ戻れます。`:state.mapId==='creator-quarter'?`北から${row}列目・西から${col}軒目の「${person.name}の家」へ。玄関で「家の中へ入る」を選ぼう。`:state.mapId==='lantern-town'?`金色の道案内「参加者の家 →」をたどって住宅街へ。「${person.name}の家」に招待状が届いています。`:'街の金色の道案内から、参加者の家へ向かおう。';
  return {title:`記事巡り　${journey.readCount}/${journey.total}人の物語`,objective,completed:false};

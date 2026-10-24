@@ -13,7 +13,7 @@ function reachable(map){
  return seen;
 }
 
-test('all 16 creator homes contain a distinct walkable atelier, furniture, resident and work desk',()=>{
+test('all 17 creator homes contain a distinct walkable atelier, furniture, resident and work desk',()=>{
  const palettes=new Set(),layouts=new Set(),labels=new Set();
  for(const home of CREATOR_HOMES){
   const map=getTownMap(home.interiorId),seen=reachable(map);assert.equal(TOWN_MAPS[home.interiorId],map);assert.equal(map.outdoor,false);assert.equal(map.creatorHome.creatorId,home.creatorId);assert.equal(map.homeTheme,home.homeTheme);assert.equal(map.tiles.length,map.height);assert(map.tiles.every(row=>row.length===map.width));assert(seen.size>100);
@@ -22,7 +22,7 @@ test('all 16 creator homes contain a distinct walkable atelier, furniture, resid
   const resident=map.npcs.find(npc=>npc.creatorId===home.creatorId),works=map.targets.find(target=>target.type==='creator-works');assert(resident);assert.equal(resident.creatorHome,true);assert(works);assert.equal(works.creatorId,home.creatorId);
   for(const target of mapTargets(map.id)){assert(seen.has(`${Math.floor(target.x)},${Math.floor(target.z)}`),target.id+' reachable');assert(isTownWalkable(map,target.x,target.z),target.id+' floor clear');assert.equal(nearestTownTarget({...initialTownState(),mapId:map.id,position:{x:target.x,z:target.z}}).id,target.id);}
  }
- assert.equal(palettes.size,16);assert.equal(layouts.size,16);assert.equal(labels.size,16);
+ assert.equal(palettes.size,17);assert.equal(layouts.size,17);assert.equal(labels.size,17);
 });
 
 test('house thresholds enter actual rooms and every exit returns to that exact doorstep',()=>{
@@ -53,6 +53,6 @@ test('the plaza has a clear street connection, visible route metadata and guides
  for(const point of town.routePath)assert(isTownWalkable(town,point.x,point.z));
  for(const sign of town.routeSigns){assert(!isInPalaceForecourt(sign,.5));assert.match(sign.label+sign.sublabel,/家|クリエイター/);}
  const streetGuide=town.npcs.find(npc=>npc.id==='creator-street-guide'),quarterGuide=quarter.npcs.find(npc=>npc.id==='quarter-guide');assert(streetGuide?.dialogue);assert(quarterGuide?.dialogue);assert(!isInPalaceForecourt(streetGuide,.5));
- assert.equal(new Set(quarter.npcs.filter(npc=>npc.creatorHome).map(npc=>npc.creatorId)).size,16);
+ assert.equal(new Set(quarter.npcs.filter(npc=>npc.creatorHome).map(npc=>npc.creatorId)).size,17);
  for(const npc of quarter.npcs)assert(isTownWalkable(quarter,npc.x,npc.z),npc.id+' stands on clear floor');
 });

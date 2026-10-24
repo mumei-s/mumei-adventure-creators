@@ -42,7 +42,7 @@ test('only the castle and its exit occupy the forecourt; buildings and full obst
  for(const target of mapTargets(TOWN_START_MAP).filter(t=>t.id!=='castle-exit'))assert(!isInPalaceForecourt(target,.25),target.id+' occupies the clear approach');
  for(const d of map.decorations)assert(!isInPalaceForecourt(d,d.radius||0),d.id+' obstacle overlaps the clear approach');
  for(let i=0;i<map.buildings.length;i++)for(let j=i+1;j<map.buildings.length;j++){const a=map.buildings[i],b=map.buildings[j];assert(a.x+a.w<=b.x||b.x+b.w<=a.x||a.z+a.h<=b.z||b.z+b.h<=a.z,`${a.id}/${b.id} relocated footprints overlap`);}
- const quarter=getTownMap('creator-quarter');assert.equal(quarter.buildings.length,16);assert.deepEqual(quarter.buildings.map(b=>({id:b.id,x:b.x,z:b.z,w:b.w,h:b.h,door:b.door})),CREATOR_HOMES.map(b=>({id:b.id,x:b.x,z:b.z,w:b.w,h:b.h,door:b.door})));
+ const quarter=getTownMap('creator-quarter');assert.equal(quarter.buildings.length,17);assert.deepEqual(quarter.buildings.map(b=>({id:b.id,x:b.x,z:b.z,w:b.w,h:b.h,door:b.door})),CREATOR_HOMES.map(b=>({id:b.id,x:b.x,z:b.z,w:b.w,h:b.h,door:b.door})));
 });
 
 test('the central approach is walkable while the southern canal, bridges and water quests remain intact',()=>{
@@ -56,8 +56,8 @@ test('the central approach is walkable while the southern canal, bridges and wat
  assert.equal(state.position.z,20.5);
 });
 
-test('all 20 approved visitor actors and paired CNA guests patrol outside the full forecourt without omissions',()=>{
- const roster=compileCharacterRoster(archive,manifest),{visitors,omitted}=placeTownVisitors(roster);assert.deepEqual(omitted,[]);assert.equal(visitors.length,20);assert.equal(visitors.length,roster.npcs.length);assert.equal(visitors.filter(v=>v.creatorId==='grand_daisy8632').length,3);
+test('all 21 approved visitor actors and paired CNA guests patrol outside the full forecourt without omissions',()=>{
+ const roster=compileCharacterRoster(archive,manifest),{visitors,omitted}=placeTownVisitors(roster);assert.deepEqual(omitted,[]);assert.equal(visitors.length,21);assert.equal(visitors.length,roster.npcs.length);assert.equal(visitors.filter(v=>v.creatorId==='grand_daisy8632').length,3);
  assert.deepEqual(visitors.map(v=>v.id).sort(),roster.npcs.map(v=>v.id).sort());
  for(const visitor of visitors){assert(!isInPalaceForecourt(visitor,.4));for(const segment of visitor.route.segments){const steps=Math.max(1,Math.ceil(segment.length/.06));for(let n=0;n<=steps;n++){const f=n/steps,point={x:segment.a.x+(segment.b.x-segment.a.x)*f+visitor.offsetX,z:segment.a.z+(segment.b.z-segment.a.z)*f};assert(!isInPalaceForecourt(point,.4),visitor.id+' patrol crosses the pullback envelope');}}}
  const state=initialTownState();for(let time=0;time<75;time+=.12)for(const actor of sampleTownVisitors(visitors,{state,time})){assert(!isInPalaceForecourt(actor,.4));assert(isTownWalkable(TOWN_START_MAP,actor.x,actor.z,.23));}

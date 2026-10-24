@@ -1,0 +1,798 @@
+{
+  "sources": [
+    {
+      "name": "parts-original.png",
+      "sha256": "5c518144085a0db19f17a09e86b735ef20b9f4df7148ed78de97a8addb7cb27f",
+      "dimensions": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "name": "torso-hips-revision.png",
+      "sha256": "ed49be4546a286df0182fe14761a884956ab2df1e03084b92e8ad5f2ffb46e3e",
+      "dimensions": [
+        1455,
+        1081
+      ]
+    },
+    {
+      "name": "lower-legs.png",
+      "sha256": "e58eba3a8d4fb98905d02ea360dcd49f33ac2e9b1a9626e6f7cadd040ebf8fa8",
+      "dimensions": [
+        1024,
+        1536
+      ]
+    }
+  ],
+  "parts": [
+    {
+      "view": "down",
+      "part": "head",
+      "source": "parts-original.png",
+      "sourceSHA256": "5c518144085a0db19f17a09e86b735ef20b9f4df7148ed78de97a8addb7cb27f",
+      "sourceComponent": 1,
+      "sourceRect": [
+        3,
+        39,
+        216,
+        232
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "down",
+      "part": "backHair",
+      "source": "parts-original.png",
+      "sourceSHA256": "5c518144085a0db19f17a09e86b735ef20b9f4df7148ed78de97a8addb7cb27f",
+      "sourceComponent": 2,
+      "sourceRect": [
+        187,
+        50,
+        238,
+        242
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "down",
+      "part": "bodiceTorso",
+      "source": "torso-hips-revision.png",
+      "sourceSHA256": "ed49be4546a286df0182fe14761a884956ab2df1e03084b92e8ad5f2ffb46e3e",
+      "sourceComponent": 3,
+      "sourceRect": [
+        458,
+        78,
+        135,
+        208
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "down",
+      "part": "pelvisFrontSkirt",
+      "source": "torso-hips-revision.png",
+      "sourceSHA256": "ed49be4546a286df0182fe14761a884956ab2df1e03084b92e8ad5f2ffb46e3e",
+      "sourceComponent": 12,
+      "sourceRect": [
+        594,
+        182,
+        139,
+        73
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "down",
+      "part": "leftUpperArm",
+      "source": "torso-hips-revision.png",
+      "sourceSHA256": "ed49be4546a286df0182fe14761a884956ab2df1e03084b92e8ad5f2ffb46e3e",
+      "sourceComponent": 6,
+      "sourceRect": [
+        732,
+        86,
+        93,
+        195
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "down",
+      "part": "leftForearmHand",
+      "source": "torso-hips-revision.png",
+      "sourceSHA256": "ed49be4546a286df0182fe14761a884956ab2df1e03084b92e8ad5f2ffb46e3e",
+      "sourceComponent": 10,
+      "sourceRect": [
+        927,
+        152,
+        49,
+        150
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "down",
+      "part": "leftUpperLeg",
+      "source": "parts-original.png",
+      "sourceSHA256": "5c518144085a0db19f17a09e86b735ef20b9f4df7148ed78de97a8addb7cb27f",
+      "sourceComponent": 7,
+      "sourceRect": [
+        774,
+        78,
+        82,
+        142
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "down",
+      "part": "leftLowerLegBoot",
+      "source": "lower-legs.png",
+      "sourceSHA256": "e58eba3a8d4fb98905d02ea360dcd49f33ac2e9b1a9626e6f7cadd040ebf8fa8",
+      "sourceComponent": 1,
+      "sourceRect": [
+        326,
+        24,
+        125,
+        356
+      ],
+      "packingScale": 0.31,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "down",
+      "part": "rightUpperArm",
+      "source": "torso-hips-revision.png",
+      "sourceSHA256": "ed49be4546a286df0182fe14761a884956ab2df1e03084b92e8ad5f2ffb46e3e",
+      "sourceComponent": 7,
+      "sourceRect": [
+        841,
+        90,
+        85,
+        191
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "down",
+      "part": "rightForearmHand",
+      "source": "torso-hips-revision.png",
+      "sourceSHA256": "ed49be4546a286df0182fe14761a884956ab2df1e03084b92e8ad5f2ffb46e3e",
+      "sourceComponent": 11,
+      "sourceRect": [
+        988,
+        152,
+        56,
+        154
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "down",
+      "part": "rightUpperLeg",
+      "source": "parts-original.png",
+      "sourceSHA256": "5c518144085a0db19f17a09e86b735ef20b9f4df7148ed78de97a8addb7cb27f",
+      "sourceComponent": 8,
+      "sourceRect": [
+        1076,
+        78,
+        79,
+        142
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "down",
+      "part": "rightLowerLegBoot",
+      "source": "lower-legs.png",
+      "sourceSHA256": "e58eba3a8d4fb98905d02ea360dcd49f33ac2e9b1a9626e6f7cadd040ebf8fa8",
+      "sourceComponent": 2,
+      "sourceRect": [
+        575,
+        24,
+        125,
+        355
+      ],
+      "packingScale": 0.31,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "right",
+      "part": "head",
+      "source": "parts-original.png",
+      "sourceSHA256": "5c518144085a0db19f17a09e86b735ef20b9f4df7148ed78de97a8addb7cb27f",
+      "sourceComponent": 13,
+      "sourceRect": [
+        3,
+        324,
+        238,
+        251
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "right",
+      "part": "backHair",
+      "source": "parts-original.png",
+      "sourceSHA256": "5c518144085a0db19f17a09e86b735ef20b9f4df7148ed78de97a8addb7cb27f",
+      "sourceComponent": 14,
+      "sourceRect": [
+        208,
+        337,
+        226,
+        268
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "right",
+      "part": "bodiceTorso",
+      "source": "torso-hips-revision.png",
+      "sourceSHA256": "ed49be4546a286df0182fe14761a884956ab2df1e03084b92e8ad5f2ffb46e3e",
+      "sourceComponent": 15,
+      "sourceRect": [
+        473,
+        341,
+        134,
+        203
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "right",
+      "part": "pelvisFrontSkirt",
+      "source": "torso-hips-revision.png",
+      "sourceSHA256": "ed49be4546a286df0182fe14761a884956ab2df1e03084b92e8ad5f2ffb46e3e",
+      "sourceComponent": 24,
+      "sourceRect": [
+        610,
+        461,
+        133,
+        74
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "right",
+      "part": "leftUpperArm",
+      "source": "torso-hips-revision.png",
+      "sourceSHA256": "ed49be4546a286df0182fe14761a884956ab2df1e03084b92e8ad5f2ffb46e3e",
+      "sourceComponent": 18,
+      "sourceRect": [
+        755,
+        352,
+        91,
+        188
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "right",
+      "part": "leftForearmHand",
+      "source": "torso-hips-revision.png",
+      "sourceSHA256": "ed49be4546a286df0182fe14761a884956ab2df1e03084b92e8ad5f2ffb46e3e",
+      "sourceComponent": 22,
+      "sourceRect": [
+        930,
+        418,
+        53,
+        149
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "right",
+      "part": "leftUpperLeg",
+      "source": "parts-original.png",
+      "sourceSHA256": "5c518144085a0db19f17a09e86b735ef20b9f4df7148ed78de97a8addb7cb27f",
+      "sourceComponent": 20,
+      "sourceRect": [
+        798,
+        369,
+        83,
+        143
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "right",
+      "part": "leftLowerLegBoot",
+      "source": "lower-legs.png",
+      "sourceSHA256": "e58eba3a8d4fb98905d02ea360dcd49f33ac2e9b1a9626e6f7cadd040ebf8fa8",
+      "sourceComponent": 3,
+      "sourceRect": [
+        316,
+        400,
+        189,
+        352
+      ],
+      "packingScale": 0.31,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "right",
+      "part": "rightUpperArm",
+      "source": "torso-hips-revision.png",
+      "sourceSHA256": "ed49be4546a286df0182fe14761a884956ab2df1e03084b92e8ad5f2ffb46e3e",
+      "sourceComponent": 19,
+      "sourceRect": [
+        850,
+        375,
+        67,
+        166
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "right",
+      "part": "rightForearmHand",
+      "source": "torso-hips-revision.png",
+      "sourceSHA256": "ed49be4546a286df0182fe14761a884956ab2df1e03084b92e8ad5f2ffb46e3e",
+      "sourceComponent": 23,
+      "sourceRect": [
+        993,
+        418,
+        51,
+        158
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "right",
+      "part": "rightUpperLeg",
+      "source": "parts-original.png",
+      "sourceSHA256": "5c518144085a0db19f17a09e86b735ef20b9f4df7148ed78de97a8addb7cb27f",
+      "sourceComponent": 21,
+      "sourceRect": [
+        1094,
+        369,
+        83,
+        142
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "right",
+      "part": "rightLowerLegBoot",
+      "source": "lower-legs.png",
+      "sourceSHA256": "e58eba3a8d4fb98905d02ea360dcd49f33ac2e9b1a9626e6f7cadd040ebf8fa8",
+      "sourceComponent": 4,
+      "sourceRect": [
+        591,
+        401,
+        201,
+        350
+      ],
+      "packingScale": 0.31,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "up",
+      "part": "head",
+      "source": "parts-original.png",
+      "sourceSHA256": "5c518144085a0db19f17a09e86b735ef20b9f4df7148ed78de97a8addb7cb27f",
+      "sourceComponent": 25,
+      "sourceRect": [
+        7,
+        634,
+        230,
+        240
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "up",
+      "part": "backHair",
+      "source": "parts-original.png",
+      "sourceSHA256": "5c518144085a0db19f17a09e86b735ef20b9f4df7148ed78de97a8addb7cb27f",
+      "sourceComponent": 26,
+      "sourceRect": [
+        208,
+        655,
+        226,
+        246
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "up",
+      "part": "bodiceTorso",
+      "source": "torso-hips-revision.png",
+      "sourceSHA256": "ed49be4546a286df0182fe14761a884956ab2df1e03084b92e8ad5f2ffb46e3e",
+      "sourceComponent": 29,
+      "sourceRect": [
+        486,
+        603,
+        134,
+        195
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "up",
+      "part": "pelvisFrontSkirt",
+      "source": "torso-hips-revision.png",
+      "sourceSHA256": "ed49be4546a286df0182fe14761a884956ab2df1e03084b92e8ad5f2ffb46e3e",
+      "sourceComponent": 36,
+      "sourceRect": [
+        623,
+        697,
+        145,
+        70
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "up",
+      "part": "leftUpperArm",
+      "source": "torso-hips-revision.png",
+      "sourceSHA256": "ed49be4546a286df0182fe14761a884956ab2df1e03084b92e8ad5f2ffb46e3e",
+      "sourceComponent": 30,
+      "sourceRect": [
+        770,
+        603,
+        89,
+        184
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "up",
+      "part": "leftForearmHand",
+      "source": "torso-hips-revision.png",
+      "sourceSHA256": "ed49be4546a286df0182fe14761a884956ab2df1e03084b92e8ad5f2ffb46e3e",
+      "sourceComponent": 35,
+      "sourceRect": [
+        942,
+        662,
+        57,
+        150
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "up",
+      "part": "leftUpperLeg",
+      "source": "parts-original.png",
+      "sourceSHA256": "5c518144085a0db19f17a09e86b735ef20b9f4df7148ed78de97a8addb7cb27f",
+      "sourceComponent": 32,
+      "sourceRect": [
+        817,
+        672,
+        74,
+        135
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "up",
+      "part": "leftLowerLegBoot",
+      "source": "lower-legs.png",
+      "sourceSHA256": "e58eba3a8d4fb98905d02ea360dcd49f33ac2e9b1a9626e6f7cadd040ebf8fa8",
+      "sourceComponent": 6,
+      "sourceRect": [
+        326,
+        774,
+        126,
+        347
+      ],
+      "packingScale": 0.31,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "up",
+      "part": "rightUpperArm",
+      "source": "torso-hips-revision.png",
+      "sourceSHA256": "ed49be4546a286df0182fe14761a884956ab2df1e03084b92e8ad5f2ffb46e3e",
+      "sourceComponent": 31,
+      "sourceRect": [
+        867,
+        603,
+        83,
+        184
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "up",
+      "part": "rightForearmHand",
+      "source": "torso-hips-revision.png",
+      "sourceSHA256": "ed49be4546a286df0182fe14761a884956ab2df1e03084b92e8ad5f2ffb46e3e",
+      "sourceComponent": 34,
+      "sourceRect": [
+        1005,
+        660,
+        55,
+        166
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "up",
+      "part": "rightUpperLeg",
+      "source": "parts-original.png",
+      "sourceSHA256": "5c518144085a0db19f17a09e86b735ef20b9f4df7148ed78de97a8addb7cb27f",
+      "sourceComponent": 31,
+      "sourceRect": [
+        1094,
+        671,
+        76,
+        137
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "up",
+      "part": "rightLowerLegBoot",
+      "source": "lower-legs.png",
+      "sourceSHA256": "e58eba3a8d4fb98905d02ea360dcd49f33ac2e9b1a9626e6f7cadd040ebf8fa8",
+      "sourceComponent": 5,
+      "sourceRect": [
+        574,
+        771,
+        124,
+        350
+      ],
+      "packingScale": 0.31,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "left",
+      "part": "head",
+      "source": "parts-original.png",
+      "sourceSHA256": "5c518144085a0db19f17a09e86b735ef20b9f4df7148ed78de97a8addb7cb27f",
+      "sourceComponent": 37,
+      "sourceRect": [
+        7,
+        906,
+        229,
+        235
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "left",
+      "part": "backHair",
+      "source": "parts-original.png",
+      "sourceSHA256": "5c518144085a0db19f17a09e86b735ef20b9f4df7148ed78de97a8addb7cb27f",
+      "sourceComponent": 38,
+      "sourceRect": [
+        201,
+        916,
+        231,
+        276
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "left",
+      "part": "bodiceTorso",
+      "source": "torso-hips-revision.png",
+      "sourceSHA256": "ed49be4546a286df0182fe14761a884956ab2df1e03084b92e8ad5f2ffb46e3e",
+      "sourceComponent": 40,
+      "sourceRect": [
+        485,
+        822,
+        131,
+        215
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "left",
+      "part": "pelvisFrontSkirt",
+      "source": "torso-hips-revision.png",
+      "sourceSHA256": "ed49be4546a286df0182fe14761a884956ab2df1e03084b92e8ad5f2ffb46e3e",
+      "sourceComponent": 47,
+      "sourceRect": [
+        629,
+        928,
+        138,
+        72
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "left",
+      "part": "leftUpperArm",
+      "source": "torso-hips-revision.png",
+      "sourceSHA256": "ed49be4546a286df0182fe14761a884956ab2df1e03084b92e8ad5f2ffb46e3e",
+      "sourceComponent": 42,
+      "sourceRect": [
+        773,
+        841,
+        90,
+        182
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "left",
+      "part": "leftForearmHand",
+      "source": "torso-hips-revision.png",
+      "sourceSHA256": "ed49be4546a286df0182fe14761a884956ab2df1e03084b92e8ad5f2ffb46e3e",
+      "sourceComponent": 44,
+      "sourceRect": [
+        947,
+        894,
+        56,
+        150
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "left",
+      "part": "leftUpperLeg",
+      "source": "parts-original.png",
+      "sourceSHA256": "5c518144085a0db19f17a09e86b735ef20b9f4df7148ed78de97a8addb7cb27f",
+      "sourceComponent": 45,
+      "sourceRect": [
+        782,
+        957,
+        87,
+        143
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "left",
+      "part": "leftLowerLegBoot",
+      "source": "lower-legs.png",
+      "sourceSHA256": "e58eba3a8d4fb98905d02ea360dcd49f33ac2e9b1a9626e6f7cadd040ebf8fa8",
+      "sourceComponent": 7,
+      "sourceRect": [
+        259,
+        1136,
+        195,
+        355
+      ],
+      "packingScale": 0.31,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "left",
+      "part": "rightUpperArm",
+      "source": "torso-hips-revision.png",
+      "sourceSHA256": "ed49be4546a286df0182fe14761a884956ab2df1e03084b92e8ad5f2ffb46e3e",
+      "sourceComponent": 43,
+      "sourceRect": [
+        866,
+        847,
+        79,
+        193
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "left",
+      "part": "rightForearmHand",
+      "source": "torso-hips-revision.png",
+      "sourceSHA256": "ed49be4546a286df0182fe14761a884956ab2df1e03084b92e8ad5f2ffb46e3e",
+      "sourceComponent": 45,
+      "sourceRect": [
+        1019,
+        896,
+        63,
+        161
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "left",
+      "part": "rightUpperLeg",
+      "source": "parts-original.png",
+      "sourceSHA256": "5c518144085a0db19f17a09e86b735ef20b9f4df7148ed78de97a8addb7cb27f",
+      "sourceComponent": 44,
+      "sourceRect": [
+        1079,
+        955,
+        95,
+        145
+      ],
+      "packingScale": 0.52,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    },
+    {
+      "view": "left",
+      "part": "rightLowerLegBoot",
+      "source": "lower-legs.png",
+      "sourceSHA256": "e58eba3a8d4fb98905d02ea360dcd49f33ac2e9b1a9626e6f7cadd040ebf8fa8",
+      "sourceComponent": 8,
+      "sourceRect": [
+        545,
+        1136,
+        193,
+        359
+      ],
+      "packingScale": 0.31,
+      "alphaSelection": "Original alpha within four pixels of the alpha > 16 component island.",
+      "clipping": null
+    }
+  ]
+}

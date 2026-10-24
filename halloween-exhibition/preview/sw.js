@@ -2,7 +2,7 @@
  * credentials and unknown query strings always bypass this worker. */
 const SCOPE = new URL('./', self.location.href);
 // BEGIN GENERATED SHELL (node halloween-exhibition/scripts/build-preview-cache.mjs)
-const SHELL_REVISION = '1c1a482a39ef1a7e';
+const SHELL_REVISION = '51ca45ed146c1ec6';
 const PUBLIC_ASSETS = [
   ["assets/atelier-door-180.png",56294],
   ["assets/atelier-door-192.png",62766],
@@ -19,18 +19,17 @@ const PUBLIC_ASSETS = [
   ["assets/palace/palace-franken.webp",95799],
   ["assets/palace/palace-interior.webp",209020],
   ["assets/palace/palace-phone.webp",506183],
-  ["assets/palace/palace-zombie.webp",63164],
   ["assets/panel-magic/book.svg",6094],
   ["assets/panel-magic/branch.svg",4788],
   ["assets/panel-magic/butterfly.svg",4902],
   ["assets/panel-magic/ghost.svg",5094],
   ["assets/panel-magic/lantern.svg",5194],
   ["castle-visit-counter.js?v=20261017-castle2",15215],
-  ["gallery-entry.js?v=20261019-fast2-6039ffa18228",127133],
-  ["gallery-styles.css?v=20261019-fast2-b45f18a157e4",329217],
+  ["gallery-entry.js?v=20261019-fast2-4afeae157b8b",127158],
+  ["gallery-styles.css?v=20261019-fast2-ed2cce760a93",330219],
   ["manifest.webmanifest",4955],
-  ["palace-living-scene.css?v=20261016-living1",6585],
-  ["palace-living-scene.js?v=20261019-unified1",16060]
+  ["palace-living-scene.css?v=20261024-ready1",6521],
+  ["palace-living-scene.js?v=20261024-ready1",19609]
 ];
 // END GENERATED SHELL
 const CACHE_PREFIX = 'mumei-atelier-shell-';

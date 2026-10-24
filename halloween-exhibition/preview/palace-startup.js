@@ -35,7 +35,7 @@ export function guardPalaceDecorations(root){
 export function palaceSceneFormat(width,height) {
  return Number.isFinite(width)&&Number.isFinite(height)&&width>0&&height>0&&width/height<=1.1?'portrait':'landscape';
 }
-/** Large animated residents are an enhancement after the whole entrance works. */
+/** Prepare optional residents at the first idle opportunity after the entrance works. */
 export function schedulePalaceResidents(root,{ready,timers=globalThis,loadResidents}={}){
  const doc=root.ownerDocument,win=doc?.defaultView||globalThis,connection=win.navigator?.connection;
  if(connection?.saveData||['slow-2g','2g'].includes(connection?.effectiveType))return;
@@ -50,15 +50,18 @@ export function schedulePalaceResidents(root,{ready,timers=globalThis,loadReside
   timer=timers.setTimeout(()=>{
    timer=null;
    const begin=()=>{idle=null;if(started||finished||!usable())return;started=true;attempts++;
-    void Promise.resolve().then(()=>loadResidents?loadResidents():import('./palace-living-scene.js?v=20261019-unified1'))
-     .then(({initPalaceLivingScene})=>initPalaceLivingScene(root))
-     .then(()=>{finished=true;cleanup();})
+    void Promise.resolve().then(()=>loadResidents?loadResidents():import('./palace-living-scene.js?v=20261024-ready1'))
+     .then(({initPalaceLivingScene})=>{
+      if(!usable()){started=false;attempts--;return false;}
+      initPalaceLivingScene(root);return true;
+     })
+     .then(initialized=>{if(initialized){finished=true;cleanup();}})
      .catch(()=>{started=false;check();});
    };
-   if(typeof win.requestIdleCallback==='function')idle=win.requestIdleCallback(begin,{timeout:2000});else begin();
-  },6000);
+   if(typeof win.requestIdleCallback==='function')idle=win.requestIdleCallback(begin,{timeout:1000});else begin();
+  },0);
  };
- // A hidden deadline is deferred, and returning gives a failed optional import
+ // Hidden idle work is deferred, and returning gives a failed optional import
  // one bounded retry cycle. Never spin on a broken connection in the background.
  function resume(){pageHidden=false;if(!doc?.hidden)attempts=0;check();}
  function hide(){pageHidden=true;cancel();}

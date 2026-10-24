@@ -41,17 +41,22 @@ export function castleSafeActorPose(actor,time,width,height,layout){
  return {...pose,x:center+wave*amplitude};
 }
 
-export function drawCastleCast(ctx,images,time,width,height,rigs=null){
+export function drawCastleCast(ctx,images,time,width,height,rigs=null,{staticIds=new Set(),layouts=new Map(),startedAt=new Map()}={}){
     ctx.clearRect(0,0,width,height);
-    const cast=CASTLE_CAST.map(actor=>({actor,pose:castleSafeActorPose(actor,time,width,height,images.get(actor.id)?.layout)})).sort((a,b)=>a.pose.y-b.pose.y);
-    for(const {actor,pose} of cast){
+    const painted=new Set();
+    const cast=CASTLE_CAST.map(actor=>{const actorTime=staticIds.has(actor.id)?Math.max(0,time-(startedAt.get(actor.id)??time)):time;return{actor,actorTime,pose:castleSafeActorPose(actor,actorTime,width,height,images.get(actor.id)?.layout||layouts.get(actor.id))};}).sort((a,b)=>a.pose.y-b.pose.y);
+    for(const {actor,actorTime,pose} of cast){
       const record=images.get(actor.id);if(!record&&!rigs?.has?.(actor.id))continue;
+      // The first-paint still stays in the DOM until this species has real
+      // articulated pixels. In particular, bat/vampire never wait for a rig.
+      if(staticIds.has(actor.id)&&!rigs?.has?.(actor.id))continue;
       ctx.save();ctx.translate(pose.x,pose.y);
       if(actor.id!=='ghost'&&actor.id!=='bat'){
         ctx.fillStyle='rgba(14,9,24,.35)';ctx.beginPath();ctx.ellipse(0,0,pose.size*.23,pose.size*.045,0,0,Math.PI*2);ctx.fill();
       }
       ctx.restore();
-      if(rigs?.draw(ctx,actor.id,pose,time,width,height))continue;
+      if(rigs?.draw(ctx,actor.id,pose,actorTime,width,height)){painted.add(actor.id);if(!startedAt.has(actor.id))startedAt.set(actor.id,time);continue;}
+      if(staticIds.has(actor.id))continue;
       if(!record)continue;
       // Keep one authored silhouette while its articulated parts load. Swapping
       // whole-body atlas cells at 5–7 fps caused the visible stop-motion effect.
@@ -63,7 +68,9 @@ export function drawCastleCast(ctx,images,time,width,height,rigs=null){
       ctx.scale(pose.flip!==(layout.faces==='left')?-1:1,1);
       ctx.drawImage(image,sourceX,sourceY,sourceW,sourceH,-drawWidth*(source.anchorX??.5),-drawHeight*(source.anchorY??.94),drawWidth,drawHeight);
       ctx.restore();
+      painted.add(actor.id);
     }
+    return painted;
   }
 
 // The small original atlases remain the immediate and failure-safe display.
@@ -77,56 +84,73 @@ export async function loadCastleMotionManifest(fetcher=globalThis.fetch){
   return [[id,{...entry,src:new URL(entry.castleSrc||entry.src,url).href,frames:entry.castleFrames||entry.frames}]];
  }));
 }
-export function initPalaceLivingScene(root,{atlases=null,loadImage}={}){
+export function initPalaceLivingScene(root,{atlases=null,loadImage,makeRigs}={}){
   const palace=root?.querySelector?.('#palace-entrance');
   if(!palace||palace.dataset.livingScene)return null;
   const doc=root.ownerDocument,win=doc.defaultView;
   if(!win?.requestAnimationFrame)return null;
   palace.dataset.livingScene='loading';
-  const stylesheet=doc.createElement('link');stylesheet.rel='stylesheet';stylesheet.href=new URL('./palace-living-scene.css?v=20261016-living1',import.meta.url).href;doc.head.append(stylesheet);
-  const canvas=doc.createElement('canvas');canvas.className='palace-living-cast';canvas.setAttribute('aria-hidden','true');palace.append(canvas);
+  const stylesheet=doc.createElement('link');stylesheet.rel='stylesheet';stylesheet.href=new URL('./palace-living-scene.css?v=20261024-ready1',import.meta.url).href;doc.head.append(stylesheet);
+  const canvas=doc.createElement('canvas');canvas.className='palace-living-cast';canvas.setAttribute('aria-hidden','true');
+  // Essential alignment must not depend on a second decorative stylesheet.
+  if(canvas.style)Object.assign(canvas.style,{position:'absolute',inset:'0',width:'100%',height:'100%',zIndex:'9',pointerEvents:'none',filter:'brightness(var(--visitor-brightness,1))'});
+  palace.append(canvas);
   const ctx=canvas.getContext('2d',{alpha:true});
   if(!ctx){canvas.remove();stylesheet.remove();delete palace.dataset.livingScene;return null;}
   const atmosphere=doc.createElement('div');atmosphere.className='palace-living-air';atmosphere.setAttribute('aria-hidden','true');
   for(const className of ['palace-light-shaft','palace-ground-mist','palace-threshold-light']){const layer=doc.createElement('i');layer.className=className;atmosphere.append(layer);}palace.append(atmosphere);
   const media=win.matchMedia('(prefers-reduced-motion: reduce)');
-  const images=new Map(),replaced=new Map();let frame=0,last=null,time=0,width=1,height=1,disposed=false,rigs=null,pageHidden=false;
-  const active=()=>(images.size>0||rigs?.status().loaded>0)&&!disposed&&!pageHidden&&!doc.hidden&&!root.hidden&&!palace.hidden&&root.dataset.motionPaused!=='true'&&doc.body.dataset.ambientPaused!=='true'&&!media.matches&&root.dataset.palaceState==='palace'&&!doc.querySelector('dialog[open]');
+  const stills=new Map([...(palace.querySelectorAll?.('[data-castle-resident]')||[])].map(element=>[element.dataset.castleResident,element]));
+  const staticIds=new Set(stills.keys()),layouts=new Map(),embeddedImages=new Map();
+  for(const [id,element]of stills){const image=element.querySelector?.('[data-castle-atlas]');if(!image)continue;
+    const contentHeight=Number(image.dataset.contentHeight);if(!Number.isFinite(contentHeight)||contentHeight<=0)continue;
+    embeddedImages.set(id,image);layouts.set(id,{src:image.src,faces:image.dataset.faces,idleFrame:0,frames:[{frame:[0,0,128,128],anchorX:.5,anchorY:.953125,contentHeight}]});
+  }
+  const images=new Map(),replaced=new Map(),imageJobs=new Set(),startedAt=new Map();let frame=0,last=null,time=0,width=1,height=1,disposed=false,rigs=null,pageHidden=false;
+  const active=()=>([...images.keys()].some(id=>!staticIds.has(id))||rigs?.status().loaded>0)&&!disposed&&!pageHidden&&!doc.hidden&&!root.hidden&&!palace.hidden&&root.dataset.motionPaused!=='true'&&doc.body.dataset.ambientPaused!=='true'&&!media.matches&&root.dataset.palaceState==='palace'&&!doc.querySelector('dialog[open]');
   function residentReady(id){
-    const old=palace.querySelector(`.palace-path-walkers .path-${id}`);if(old){if(!replaced.has(old))replaced.set(old,old.hidden);old.hidden=true;}
-    if(id==='ghost')palace.dataset.livingGhost='ready';if(id==='bat')palace.dataset.livingBat='ready';
     const count=CASTLE_CAST.filter(actor=>images.has(actor.id)||rigs?.has?.(actor.id)).length;
     palace.dataset.livingScene=count===CASTLE_CAST.length?'ready':'partial';draw();sync();
   }
-  function draw(){drawCastleCast(ctx,images,time,width,height,rigs);}
-  function resize(){const rect=palace.getBoundingClientRect();width=Math.max(1,rect.width);height=Math.max(1,rect.height);const dpr=Math.min(win.devicePixelRatio||1,1.5,Math.sqrt(1200000/(width*height)));canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);draw();}
+  function draw(){
+    const painted=drawCastleCast(ctx,images,time,width,height,rigs,{staticIds,layouts,startedAt});
+    for(const id of painted){const old=stills.get(id)||palace.querySelector(`.palace-path-walkers .path-${id}`);if(old){if(!replaced.has(old))replaced.set(old,old.hidden);old.hidden=true;}}
+    // Restore a still if a renderer cannot paint it. Switching is synchronous
+    // with the canvas paint, so loading/error states never erase the character.
+    for(const [id,element]of stills)if(!painted.has(id)&&replaced.has(element))element.hidden=replaced.get(element);
+  }
+  function placeStills(){for(const actor of CASTLE_CAST){const element=stills.get(actor.id),layout=layouts.get(actor.id);if(!element?.style||!layout)continue;const pose=castleSafeActorPose(actor,0,width,height,layout),source=layout.frames[0],size=pose.size*128/source.contentHeight;Object.assign(element.style,{left:`${pose.x}px`,top:`${pose.y}px`,width:`${size}px`,height:`${size}px`});}}
+  function resize(){const rect=palace.getBoundingClientRect();width=Math.max(1,rect.width);height=Math.max(1,rect.height);const dpr=Math.min(win.devicePixelRatio||1,1.5,Math.sqrt(1200000/(width*height)));canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);placeStills();draw();}
   function tick(stamp){frame=0;if(!active())return;const dt=last===null?0:Math.max(0,Math.min((stamp-last)/1000,.06));last=stamp;time+=dt;draw();frame=win.requestAnimationFrame(tick);}
   function stop(){win.cancelAnimationFrame(frame);frame=0;last=null;}
   function pageHide(){pageHidden=true;stop();}
   function pageShow(){pageHidden=false;sync();}
   function sync(){if(!active()){stop();draw();}else if(!frame){last=null;frame=win.requestAnimationFrame(tick);}}
   const load=loadImage||((src,{signal}={})=>new Promise((resolve,reject)=>{const image=new win.Image();const cancel=()=>finish(Error('Courtyard image cancelled'));const finish=error=>{image.onload=image.onerror=null;signal?.removeEventListener('abort',cancel);if(error){image.removeAttribute?.('src');reject(error);}else resolve(image);};image.onload=()=>finish();image.onerror=()=>finish(Error('Courtyard image unavailable'));image.decoding='async';image.fetchPriority='low';if(signal?.aborted){cancel();return;}signal?.addEventListener('abort',cancel,{once:true});image.src=src;}));
-  const manifest=atlases?Promise.resolve(atlases):loadCastleMotionManifest(win.fetch.bind(win)).catch(()=>({}));
+  // Reuse the exact initial HTML images, including in-flight requests. No second
+  // Image/src assignment or thumbnail manifest request is needed in production.
+  function waitForEmbeddedImage(image){return new Promise((resolve,reject)=>{let done=false;const finish=error=>{if(done)return;done=true;image.removeEventListener?.('load',loaded);image.removeEventListener?.('error',failed);imageJobs.delete(cancel);error?reject(error):resolve(image);};const loaded=()=>image.naturalWidth?finish():failed(),failed=()=>finish(Error('Courtyard still unavailable')),cancel=()=>finish(Error('Courtyard still cancelled'));imageJobs.add(cancel);image.addEventListener?.('load',loaded);image.addEventListener?.('error',failed);if(image.complete)loaded();});}
+  const manifest=atlases?Promise.resolve(atlases):layouts.size?Promise.resolve(Object.fromEntries(layouts)):loadCastleMotionManifest(win.fetch.bind(win)).catch(()=>({}));
   const ready=manifest.then(atlases=>Promise.all(CASTLE_CAST.map(async actor=>{
+    if(disposed)return false;
     const layout=atlases[actor.id];if(!layout)return false;
-    try{const image=await load(new URL(layout.src,import.meta.url).href);if(disposed)return false;images.set(actor.id,{image,layout});
-      // Remove the old polygon wolf/static rocking cutouts only after real artwork arrives.
+    try{const image=embeddedImages.has(actor.id)?await waitForEmbeddedImage(embeddedImages.get(actor.id)):await load(new URL(layout.src,import.meta.url).href);if(disposed)return false;images.set(actor.id,{image,layout});
       residentReady(actor.id);return true;
     }catch{return false;}
   }))).then(results=>{if(!disposed){const count=CASTLE_CAST.filter(actor=>images.has(actor.id)||rigs?.has?.(actor.id)).length;palace.dataset.livingScene=count===CASTLE_CAST.length?'ready':count?'partial':'fallback';}return results;});
   // Reuse only the articulated drawing helpers and already approved body parts.
   // Keep game initialization and the registry for other characters out of TOP.
   const continuousReady=(async()=>{
-   if(disposed||typeof win.fetch!=='function')return;
+   if(disposed||!makeRigs&&typeof win.fetch!=='function')return;
    // Start in parallel with legacy thumbnails; neither their manifest nor a
    // stalled thumbnail may hold back a ready articulated resident.
-   try{const {createPalaceCastRigs}=await import('./palace-cast-rig.js?v=20261019-unified1');if(disposed)return;
-    rigs=createPalaceCastRigs({fetcher:win.fetch.bind(win),loadImage:load,onChange(id){if(!disposed)residentReady(id);}});await rigs.ready;
+   try{const createRigs=makeRigs||(await import('./palace-cast-rig.js?v=20261019-unified1')).createPalaceCastRigs;if(disposed)return;
+    rigs=createRigs({fetcher:win.fetch?.bind(win),loadImage:load,onChange(id){if(!disposed)residentReady(id);}});await rigs.ready;if(!disposed){draw();sync();}
    }catch{ /* The original local atlases remain available. */ }
   })();
   const observer=new win.MutationObserver(sync);observer.observe(root,{attributes:true,attributeFilter:['data-motion-paused','data-palace-state','hidden']});observer.observe(doc.body,{attributes:true,attributeFilter:['data-ambient-paused']});doc.querySelectorAll('dialog').forEach(dialog=>observer.observe(dialog,{attributes:true,attributeFilter:['open']}));
   const resizeObserver=new win.ResizeObserver(resize);resizeObserver.observe(palace);
   doc.addEventListener('visibilitychange',sync);media.addEventListener?.('change',sync);win.addEventListener('pagehide',pageHide);win.addEventListener('pageshow',pageShow);
   resize();sync();
-  return {ready,continuousReady,draw,destroy(){disposed=true;win.cancelAnimationFrame(frame);rigs?.destroy();observer.disconnect();resizeObserver.disconnect();doc.removeEventListener('visibilitychange',sync);media.removeEventListener?.('change',sync);win.removeEventListener('pagehide',pageHide);win.removeEventListener('pageshow',pageShow);canvas.remove();atmosphere.remove();stylesheet.remove();for(const [element,hidden]of replaced)element.hidden=hidden;delete palace.dataset.livingScene;delete palace.dataset.livingGhost;delete palace.dataset.livingBat;}};
+  return {ready,continuousReady,draw,destroy(){disposed=true;win.cancelAnimationFrame(frame);for(const cancel of imageJobs)cancel();rigs?.destroy();observer.disconnect();resizeObserver.disconnect();doc.removeEventListener('visibilitychange',sync);media.removeEventListener?.('change',sync);win.removeEventListener('pagehide',pageHide);win.removeEventListener('pageshow',pageShow);canvas.remove();atmosphere.remove();stylesheet.remove();for(const [element,hidden]of replaced)element.hidden=hidden;delete palace.dataset.livingScene;delete palace.dataset.livingGhost;delete palace.dataset.livingBat;}};
 }

@@ -66,10 +66,10 @@ test('theater installs image protection before unrelated setup and exposes a rea
  const source=await read('theater.js');assert.ok(source.indexOf('void initPalaceStartup(root)')<source.indexOf('initViewport();'));assert.match(source,/load\(\);\s*root\.dataset\.theaterReady='ready'/);
 });
 
-test('optional resident downloads wait for working entrance, painted images and idle dwell, and cancel on entry',async()=>{
+test('optional resident downloads wait for working entrance, painted images and first idle opportunity, and cancel on entry',async()=>{
  let notify,idle,loads=0;const tasks=new Map();let id=0,painted;
  const root={dataset:{palaceState:'palace'},ownerDocument:{defaultView:{MutationObserver:class{constructor(fn){notify=fn;}observe(){}disconnect(){}},requestIdleCallback(fn){idle=fn;}}}};
- const timers={setTimeout(fn,delay){assert.equal(delay,6000);tasks.set(++id,fn);return id;},clearTimeout(key){tasks.delete(key);}};
+ const timers={setTimeout(fn,delay){assert.equal(delay,0);tasks.set(++id,fn);return id;},clearTimeout(key){tasks.delete(key);}};
  schedulePalaceResidents(root,{ready:new Promise(resolve=>{painted=resolve;}),timers,loadResidents:async()=>{loads++;return {initPalaceLivingScene(){}};}});
  root.dataset.theaterReady=root.dataset.archiveState='ready';notify();assert.equal(tasks.size,0);
  painted();await Promise.resolve();assert.equal(tasks.size,1);assert.equal(loads,0);
@@ -81,4 +81,42 @@ test('data saving connections retain the lightweight residents without downloadi
  let scheduled=false;const root={dataset:{},ownerDocument:{defaultView:{navigator:{connection:{saveData:true}}}}};
  schedulePalaceResidents(root,{ready:Promise.resolve(),timers:{setTimeout(){scheduled=true;}},loadResidents(){throw Error('unnecessary download');}});
  await Promise.resolve();assert.equal(scheduled,false);
+});
+
+test('late optional import cannot initialize after leaving TOP and resumes without parallel imports',async()=>{
+ let notify,loaded,starts=0,imports=0;const tasks=new Map();let id=0;
+ const root={dataset:{palaceState:'palace',theaterReady:'ready',archiveState:'ready'},ownerDocument:{defaultView:{MutationObserver:class{constructor(fn){notify=fn;}observe(){}disconnect(){}}}}};
+ const timers={setTimeout(fn,delay){assert.equal(delay,0);tasks.set(++id,fn);return id;},clearTimeout(key){tasks.delete(key);}};
+ const flush=async()=>{for(let n=0;n<8;n++)await Promise.resolve();};
+ const run=()=>{const [key,fn]=tasks.entries().next().value;tasks.delete(key);fn();};
+ schedulePalaceResidents(root,{ready:Promise.resolve(),timers,loadResidents:()=>{imports++;return new Promise(resolve=>loaded=resolve);}});
+ await flush();run();await flush();notify();assert.equal(imports,1);assert.equal(tasks.size,0);
+ root.dataset.palaceState='gallery';notify();loaded({initPalaceLivingScene(){starts++;}});await flush();assert.equal(starts,0);
+ root.dataset.palaceState='palace';notify();run();await flush();loaded({initPalaceLivingScene(){starts++;}});await flush();assert.equal(starts,1);assert.equal(imports,2);
+});
+
+test('optional module failure has only one bounded retry and never blocks entrance',async()=>{
+ let loads=0,id=0;const tasks=new Map();const root={dataset:{theaterReady:'ready',archiveState:'ready'},ownerDocument:{defaultView:{}}};
+ const timers={setTimeout(fn){tasks.set(++id,fn);return id;},clearTimeout(key){tasks.delete(key);}};
+ schedulePalaceResidents(root,{ready:Promise.resolve(),timers,loadResidents:async()=>{loads++;throw Error('offline');}});
+ for(let n=0;n<30;n++){await Promise.resolve();if(tasks.size){const [key,fn]=tasks.entries().next().value;tasks.delete(key);fn();}}
+ assert.equal(loads,2);assert.equal(tasks.size,0);assert.equal(root.dataset.theaterReady,'ready');
+});
+
+test('repeated successful imports deferred outside TOP never exhaust the failure retry budget',async()=>{
+ let notify,loaded,starts=0,imports=0,id=0;const tasks=new Map();
+ const root={dataset:{palaceState:'palace',theaterReady:'ready',archiveState:'ready'},ownerDocument:{defaultView:{MutationObserver:class{constructor(fn){notify=fn;}observe(){}disconnect(){}}}}};
+ const timers={setTimeout(fn){tasks.set(++id,fn);return id;},clearTimeout(key){tasks.delete(key);}};
+ const flush=async()=>{for(let n=0;n<8;n++)await Promise.resolve();};
+ const run=()=>{assert.equal(tasks.size,1);const [key,fn]=tasks.entries().next().value;tasks.delete(key);fn();};
+ schedulePalaceResidents(root,{ready:Promise.resolve(),timers,loadResidents:()=>{imports++;return new Promise(resolve=>loaded=resolve);}});
+ await flush();
+ for(let visit=0;visit<3;visit++){
+  run();await flush();notify();assert.equal(tasks.size,0,'pending import must remain single-flight');
+  root.dataset.palaceState='gallery';notify();loaded({initPalaceLivingScene(){starts++;}});await flush();
+  assert.equal(starts,0);assert.equal(tasks.size,0);
+  root.dataset.palaceState='palace';notify();await flush();assert.equal(tasks.size,1,'successful deferred imports do not count as failures');
+ }
+ run();await flush();loaded({initPalaceLivingScene(){starts++;}});await flush();
+ assert.equal(starts,1);assert.equal(imports,4);assert.equal(tasks.size,0);
 });

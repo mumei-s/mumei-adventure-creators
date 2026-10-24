@@ -948,6 +948,12 @@ body[data-layout-page=gallery] .theater:not([data-palace-state=gallery]) .palace
 /* On short portrait screens, spend only existing crop slack to expose the path. */
 @media(max-height:560px) and (orientation:portrait){.palace-composition{top:calc(50% - clamp(0px,calc((100cqw / .75 - 100cqh) / 2),24px))}}
 
+/* Initial residents are approved atlas stills, never retired polygon stand-ins.
+   One 128px cell is clipped from each existing 256px atlas. No step animation. */
+.palace-entrance>.palace-path-walkers .palace-still{position:absolute;--still-edge:calc(min(115px,25cqh,max(38px,19cqw)) * var(--still-size));left:clamp(calc(var(--still-edge) / 2 + 4px),var(--still-x),calc(100% - var(--still-edge) / 2 - 4px));top:var(--still-y);right:auto;bottom:auto;width:var(--still-edge);height:var(--still-edge);transform:translate(-50%,-95.3125%);animation:none;pointer-events:none;filter:brightness(var(--visitor-brightness,1))}
+.palace-still-crop{display:block;position:relative;width:100%;height:100%;overflow:hidden;transform:scaleX(var(--still-flip,1))}
+.palace-still-crop img{position:absolute;display:block;left:0;top:0;width:200%;height:200%;max-width:none;object-fit:fill;animation:none!important;transform:none}
+
 
 /* Source: ./gallery-refinement.css?v=20261016-fate1 */
 /* A single control strip survives text scaling; unusually large text scrolls locally. */

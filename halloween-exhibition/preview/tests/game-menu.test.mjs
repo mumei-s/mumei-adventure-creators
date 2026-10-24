@@ -48,11 +48,11 @@ function harness(kind,{reward=false,lantern=true,cameraDistance='normal',failedS
  const menu=()=>content.children.find(node=>node.dataset.gameMenu==='true'),find=text=>flatten(content).find(node=>node.textContent===text);
  return {context,content,record,reload,padPosition,display,state,before,close,run:context.run,menu,find};
 }
-const firstSix=['地図','ランタン ON','歩く速さ','視点：標準','パッド・拡大縮小','明るさ・音・表示'];
+const firstSix=['地図','ランタン ON','歩く速さ','パッド・拡大縮小','明るさ・音・表示'];
 
 for(const kind of ['town','maze'])test(`${kind}: actual menu keeps the same six primary controls and one reload cell`,()=>{
  const h=harness(kind);h.run.menu();const menu=h.menu();assert.ok(menu);assert.equal(menu.className,kind==='town'?'town-menu':'explore-menu');assert.equal(menu.getAttribute('aria-label'),'探索メニュー');
- assert.deepEqual(menu.children.slice(0,6).map(node=>node.textContent),firstSix);assert.equal(h.record.panels.at(-1).title,'メニュー');
+ assert.deepEqual(menu.children.slice(0,5).map(node=>node.textContent),firstSix);assert.equal(h.record.panels.at(-1).title,'メニュー');
  assert.equal(menu.children.filter(node=>node===h.reload).length,1);assert.equal(h.reload.children.length,2,'reload button and its status remain together');
  assert.equal(flatten(menu).includes(h.padPosition),false);assert.equal(flatten(menu).includes(h.display),false,'advanced layout controls do not crowd the initial menu');
  assert.equal(menu.children.at(-1).textContent,'探索に戻る');h.find('探索に戻る').click();assert.equal(h.record.calls.at(-1),'closePanel');assert.equal(JSON.stringify(h.state),h.before,'opening and dismissing a menu retains exploration progress and location');
@@ -61,8 +61,7 @@ for(const kind of ['town','maze'])test(`${kind}: actual menu keeps the same six 
 for(const kind of ['town','maze'])test(`${kind}: primary controls invoke their existing actions and update toggle labels`,()=>{
  const h=harness(kind);h.run.menu();for(const [label,action] of [['地図','showMap'],['歩く速さ','showWalkingSpeed'],['パッド・拡大縮小','showControlSettings'],['明るさ・音・表示',kind==='town'?'showSettings':'showLighting']]){h.find(label).click();assert.equal(h.record.calls.at(-1),action);}
  const lantern=h.find('ランタン ON');assert.equal(lantern.getAttribute('aria-pressed'),'true');lantern.click();assert.equal(lantern.textContent,'ランタン OFF');assert.equal(lantern.getAttribute('aria-pressed'),'false');lantern.click();assert.equal(lantern.textContent,'ランタン ON');
- const camera=h.find('視点：標準');
- for(const [distance,label] of [['wide','引き'],['far','遠景'],['normal','標準']]){camera.click();assert.equal(h.context.cameraDistance,distance);assert.equal(camera.textContent,'視点：'+label);}
+ assert.equal(flatten(h.menu()).filter(node=>node.textContent.startsWith('視点：')).length,0,'viewpoint has a single dedicated exploration control');
  assert.equal(JSON.stringify(h.state),h.before);if(kind==='maze')assert.equal(h.close.focused,true,'subpanels retain close-button focus');
 });
 
@@ -72,7 +71,7 @@ test('town: creator, story, backup, help and castle actions remain reachable aft
  const compare=h.find('キャラ見比べ');assert.equal(compare.href,'../characters/');assert.equal(compare.target,'_blank');assert.equal(compare.rel,'noopener noreferrer');assert.equal(h.menu().children.at(-2).textContent,'城へ戻る');
  h.find('画面レイアウト・パッド位置').click();assert.equal(h.record.panels.at(-1).title,'画面レイアウト・パッド位置');assert.equal(h.record.display.at(-1).page,'town');assert.equal(h.record.display.at(-1).controlsParent,h.content.children[0]);h.record.display.at(-1).onChange();assert.equal(h.record.calls.at(-1),'resize');
  const layout=h.record.layouts.at(-1);assert.equal(layout.options.page,'town');assert.equal(layout.options.controlsParent,h.content.children[0]);assert.ok(h.content.querySelector('.display-preferences'));assert.deepEqual(layout.section.querySelectorAll('option').map(node=>node.value),['auto','phone','tablet','desktop']);
- h.find('メニューに戻る').click();assert.deepEqual(h.record.destroyed,{frame:1,layout:1});assert.equal(layout.section.parent,null,'both controllers are cleaned up when leaving layout settings');assert.deepEqual(h.menu().children.slice(0,6).map(node=>node.textContent),firstSix);assert.equal(JSON.stringify(h.state),h.before);
+ h.find('メニューに戻る').click();assert.deepEqual(h.record.destroyed,{frame:1,layout:1});assert.equal(layout.section.parent,null,'both controllers are cleaned up when leaving layout settings');assert.deepEqual(h.menu().children.slice(0,5).map(node=>node.textContent),firstSix);assert.equal(JSON.stringify(h.state),h.before);
 });
 
 test('maze: catalog, story, resident, battle, reward and exit routes survive the compact menu',()=>{
@@ -89,6 +88,6 @@ test('maze: motion status and existing layout controls remain accessible and reu
  h.find('メニューに戻る').click();h.find('画面レイアウト・パッド位置').click();assert.equal(h.content.children.filter(node=>node===h.display).length,1);assert.equal(h.content.children.filter(node=>node===h.padPosition).length,1);assert.equal(JSON.stringify(h.state),h.before);
 });
 
-test('saved lamp and camera preferences are reflected before toggling either menu',()=>{
- for(const kind of ['town','maze'])for(const [cameraDistance,label] of [['wide','引き'],['far','遠景']]){const h=harness(kind,{lantern:false,cameraDistance});h.run.menu();assert.equal(h.menu().children[1].textContent,'ランタン OFF');assert.equal(h.menu().children[1].getAttribute('aria-pressed'),'false');assert.equal(h.menu().children[3].textContent,'視点：'+label);if(cameraDistance==='far'){h.menu().children[3].click();assert.equal(h.context.cameraDistance,'normal');assert.equal(h.menu().children[3].textContent,'視点：標準');}}
+test('saved lamp preferences remain reflected without a second viewpoint selector',()=>{
+ for(const kind of ['town','maze']){const h=harness(kind,{lantern:false});h.run.menu();assert.equal(h.menu().children[1].textContent,'ランタン OFF');assert.equal(h.menu().children[1].getAttribute('aria-pressed'),'false');assert.equal(flatten(h.menu()).some(node=>node.textContent.startsWith('視点：')),false);}
 });

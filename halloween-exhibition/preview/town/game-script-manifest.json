@@ -214,8 +214,8 @@
     },
     {
       "path": "scripts/build-game-scripts.mjs",
-      "bytes": 14469,
-      "sha256": "d72b4c94b0268e64f990eabb04659e972db66b0fc7d4303e49a069019f288f0e"
+      "bytes": 14563,
+      "sha256": "478b58ce824f621d8c794f408d5108370be061affd7187933a0b026c0f385e76"
     },
     {
       "path": "touch-camera.js",
@@ -224,8 +224,8 @@
     },
     {
       "path": "town/app.js",
-      "bytes": 63189,
-      "sha256": "aac6b5f9aa913b72e4882010a0230a7d09b5cf5c0add5407cf99e113756f6c45"
+      "bytes": 62648,
+      "sha256": "5fcc974fb59eef0a604691f1509d95605e9cfde7b97a180e8698a1636cd7f865"
     },
     {
       "path": "town/audio.js",
@@ -384,8 +384,8 @@
     },
     {
       "path": "town/view-mode.js",
-      "bytes": 4816,
-      "sha256": "79ca299684bfc818b3632921d520031376b7d3664c2e1fd292c358f269432116"
+      "bytes": 4917,
+      "sha256": "6088f0a807e4175c9c82e7383969087ab7f41f0470e6971c5ac22e05582b365d"
     },
     {
       "path": "town/visitor-model.js",
@@ -406,6 +406,16 @@
       "path": "transition-effects.js",
       "bytes": 3383,
       "sha256": "1d491b421230854ef2bc9c79200be0ca40ab74553e893955b080514a44bb3f0b"
+    },
+    {
+      "path": "view-preload.js",
+      "bytes": 2413,
+      "sha256": "45662085fc03e6ed0e65a7ec232aad879cd5c199d22e5cb4882f08af98b0cddf"
+    },
+    {
+      "path": "viewpoint-presets.js",
+      "bytes": 1777,
+      "sha256": "b9df4cb083de699f187e9d36b645ee3915fa6e781d8fbca62abaf2d4372a4194"
     },
     {
       "path": "viewport.js",
@@ -437,6 +447,10 @@
     {
       "path": "town/renderer.js",
       "relative": "./renderer.js"
+    },
+    {
+      "path": "view-preload.js",
+      "relative": "../view-preload.js"
     }
   ],
   "imports": [
@@ -453,7 +467,7 @@
     },
     {
       "path": "town/app.js",
-      "bytes": 44549
+      "bytes": 43851
     },
     {
       "path": "town/creator-home-painter.js",
@@ -505,7 +519,7 @@
     },
     {
       "path": "town/visitor-model.js",
-      "bytes": 7850
+      "bytes": 7852
     },
     {
       "path": "maze/composite-rig.js",
@@ -565,7 +579,7 @@
     },
     {
       "path": "town/view-mode.js",
-      "bytes": 3204
+      "bytes": 3305
     },
     {
       "path": "town/save-model.js",
@@ -608,6 +622,14 @@
       "bytes": 1288
     },
     {
+      "path": "view-preload.js",
+      "bytes": 1258
+    },
+    {
+      "path": "viewpoint-presets.js",
+      "bytes": 1210
+    },
+    {
       "path": "control-settings.js",
       "bytes": 1169
     },
@@ -632,16 +654,16 @@
       "bytes": 844
     },
     {
-      "path": "camera-distance.js",
-      "bytes": 769
-    },
-    {
       "path": "town/motion.js",
       "bytes": 768
     },
     {
       "path": "town/scene-images.js",
       "bytes": 725
+    },
+    {
+      "path": "camera-distance.js",
+      "bytes": 667
     },
     {
       "path": "town/lighting.js",
@@ -690,8 +712,8 @@
   ],
   "output": {
     "path": "town/game-entry.js",
-    "bytes": 465082,
-    "sha256": "dc54f8ad0f2e8876920e428ce9fe92844107cbf059c3a2611b64712403672417"
+    "bytes": 466853,
+    "sha256": "ae61ee462d3ab509240e07df1eb1da032c078c5ba96bacdd6537d6824a11fcbc"
   },
   "styleSources": [
     "../display-mode.css?v=20261014-layout1",

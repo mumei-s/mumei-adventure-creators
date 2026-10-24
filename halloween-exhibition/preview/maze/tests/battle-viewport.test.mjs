@@ -25,8 +25,9 @@ test('battle commits earned marks immediately but keeps canvas and commands lock
 });
 test('exploration shows a compact top control row, story beside map and a separate lantern dock',()=>{
  assert(!html.includes('Halloween冒険室'));assert(!html.includes('class="encounter-help"'));
+ assert(!html.includes('id="view-2d"'));assert(!html.includes('id="view-3d"'));assert(html.includes('id="camera-distance"'));
  const header=html.match(/<header>([\s\S]*?)<\/header>/)[1];
- for(const id of ['view-2d','view-3d','minimap-size','menu-open'])assert(header.includes(`id="${id}"`));
+ for(const id of ['minimap-size','menu-open'])assert(header.includes(`id="${id}"`));
  assert.match(html,/<div class="exploration-hud"><div class="place">[\s\S]*?id="minimap-open"/);
  assert.match(html,/<aside class="lantern-dock"[^>]*><button id="lantern"/);
  assert(!html.match(/<div class="nearby">([\s\S]*?)<\/div>/)[1].includes('id="lantern"'));

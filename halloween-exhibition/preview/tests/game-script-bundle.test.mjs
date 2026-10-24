@@ -35,6 +35,9 @@ test('committed game bundles are current, inline their data and preserve emitted
   assert.ok(manifest.world.imports.every(item=>item.kind==='dynamic-import'||item.path.includes('/vendor/')));
   assert.ok(manifest.world.imports.some(item=>item.path.includes('/vendor/')));
   assert.ok(script.includes(`import("./game-world.js?v=20261019-game-fast1-${manifest.world.sha256.slice(0,12)}")`));
+  const worldURL=`./game-world.js?v=20261019-game-fast1-${manifest.world.sha256.slice(0,12)}`;
+  assert.ok(script.split(JSON.stringify(worldURL)).length>=3,'preload and dynamic import use the same exact versioned world URL');
+  assert.doesNotMatch(script,/globalThis\.__ATELIER_GAME_WORLD_URL__/,'world URL is resolved at build time');
   assert.doesNotMatch(worldScript,/from["'][^"']*camera-distance/);
   assert.doesNotMatch(script,/^import\s/m);
   assert.match(script,/schemaVersion:1/);

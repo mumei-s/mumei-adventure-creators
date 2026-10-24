@@ -3,7 +3,9 @@ import {withDeadline} from '../transition-effects.js?v=20261016-living1';
 const FAILURE_MESSAGES=Object.freeze({
  'webgl-unavailable':'この端末またはブラウザーで3D描画を開始できませんでした。ほかのタブを閉じてから、3Dを再試行してください。',
  'context-lost':'端末の3D描画が中断されました。3Dを再試行すると、同じ場所から再開できます。',
- 'assets-unavailable':'3Dの画像を読み込めませんでした。通信を確認して、3Dを再試行してください。',
+ 'assets-unavailable':'3Dの住民画像を準備できませんでした。2Dで続けるか、再試行できます。',
+ 'assets-timeout':'3Dの画像準備が時間切れになりました。2Dで続けるか、再試行できます。',
+ 'assets-invalid':'3Dの住民画像を確認できませんでした。2Dで続けるか、再試行できます。',
  'module-unavailable':'3Dの表示データを読み込めませんでした。ページを読み込み直してから、もう一度お試しください。',
  timeout:'3Dの準備が時間内に終わりませんでした。通信を確認して、3Dを再試行してください。',
  'render-failed':'3Dの表示を続けられませんでした。3Dを再試行してください。',
@@ -24,7 +26,7 @@ export function classifyTown3DFailure(error,{phase='load'}={}){
 }
 
 /** Keep the playable Canvas scene until a current WebGL request is ready. */
-export function createTownViewController({load,onChange=()=>{},timeout=20000,timers=globalThis}={}){
+export function createTownViewController({load,onChange=()=>{},timeout=35000,timers=globalThis}={}){
  let desired='2d',active='2d',status='idle',view=null,pending=null,generation=0,disposed=false,failure=null;
  const snapshot=()=>({desired,active,status,view,failure,failureReason:failure?.message||''});
  const emit=()=>{if(!disposed)onChange(snapshot());};

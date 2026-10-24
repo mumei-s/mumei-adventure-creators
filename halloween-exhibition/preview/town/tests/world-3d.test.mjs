@@ -275,3 +275,20 @@ test('eye-level restores opaque roofs and looking redraws even with reduced moti
  world.render({state,motion:false,cameraDistance:'normal',cameraYaw:0});assert.equal(roof.material.opacity,1);assert.equal(roof.material.depthWrite,true);
  assert.equal(world.render({state,motion:false,cameraYaw:0}),false);assert.equal(world.render({state,motion:false,cameraYaw:.2}),true);assert.equal(world.render({state,motion:false,cameraYaw:.2,cameraPitch:.1}),true);world.destroy();
 });
+
+test('required atlas uses the shared 14s budget and retains failure cause or invalid dimensions',async()=>{
+ const calls=[];const {world}=harness({loadImage:async(src,options)=>{calls.push(options);if(src.includes('residents'))throw Error('Art image timed out');return {width:512,height:512};}});
+ await assert.rejects(world.ready,error=>error.code==='assets-timeout'&&error.cause.message==='Art image timed out');assert.ok(calls.every(options=>options.timeout===14000));world.destroy();
+ const bad=harness({loadImage:async()=>({width:128,height:64})});await assert.rejects(bad.world.ready,error=>error.code==='assets-invalid');bad.world.destroy();
+});
+
+test('real 2D and 3D loaders survive an actual six-second shared resident request',{timeout:12000},async()=>{
+ const {createTownSceneImages}=await import('../scene-images.js'),{createTownRenderer}=await import('../renderer.js');const requests=[];
+ const cache=createTownSceneImages({loadImage:(src,options)=>{requests.push({src,options});return new Promise(resolve=>setTimeout(()=>resolve({width:1280,height:640}),src.includes('residents-atlas.webp')?6000:0));}});
+ const two=createTownRenderer({makeCanvas:fakeCanvas,loadImage:cache.load}),three=harness({loadImage:cache.load});
+ try{
+  await Promise.all([two.ready,three.world.ready]);assert.ok(two.status().loaded.includes('residents'));assert.equal(three.world.status().ready,true);
+  assert.equal(requests.filter(r=>r.src.includes('residents-atlas.webp')).length,1);assert.equal(requests.find(r=>r.src.includes('residents-atlas.webp')).options.priority,'high');
+  const before=requests.length;await cache.load(new URL('../assets/residents-atlas.webp',import.meta.url).href+'?retry=1');assert.equal(requests.length,before);
+ }finally{two.destroy();three.world.destroy();cache.clear();}
+});

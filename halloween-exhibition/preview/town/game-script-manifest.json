@@ -224,8 +224,8 @@
     },
     {
       "path": "town/app.js",
-      "bytes": 62917,
-      "sha256": "c0f5e1f2c1ccc7d8c4d81f67fa9244be4153c6b874bb105037ffd600e6746971"
+      "bytes": 63189,
+      "sha256": "aac6b5f9aa913b72e4882010a0230a7d09b5cf5c0add5407cf99e113756f6c45"
     },
     {
       "path": "town/audio.js",
@@ -353,6 +353,11 @@
       "sha256": "966437aa09524c84f8bcdb5b5127e4ab3270226675a3350b41bbaa994368e251"
     },
     {
+      "path": "town/scene-images.js",
+      "bytes": 1399,
+      "sha256": "0d4178266cc5fcdea6c2fc37012ecdfb347ff1a06215649b9059399306a4f9dd"
+    },
+    {
       "path": "town/scenery-data.js",
       "bytes": 4664,
       "sha256": "513c2a12af6680e568932a006b0e847a7c7017bce3d8605d21611ce8dabe661a"
@@ -379,8 +384,8 @@
     },
     {
       "path": "town/view-mode.js",
-      "bytes": 4587,
-      "sha256": "ad1b2b28f49f865dd3b73f95ee6e082bc1fb00ac4e687492252107ca240f9f5e"
+      "bytes": 4816,
+      "sha256": "79ca299684bfc818b3632921d520031376b7d3664c2e1fd292c358f269432116"
     },
     {
       "path": "town/visitor-model.js",
@@ -394,8 +399,8 @@
     },
     {
       "path": "town/world-3d.js",
-      "bytes": 45359,
-      "sha256": "f3642597ff9d6653587871b10e495bb777bc7b66e2b93cb48da5da336119434e"
+      "bytes": 45781,
+      "sha256": "1a1ce9a69b54092ff1c9800776467375c2f49863b07922d2549af9e135630d51"
     },
     {
       "path": "transition-effects.js",
@@ -436,7 +441,7 @@
   ],
   "imports": [
     {
-      "path": "./game-world.js?v=20261019-game-fast1-c7cceba09026",
+      "path": "./game-world.js?v=20261019-game-fast1-1456a00343b4",
       "kind": "dynamic-import",
       "external": true
     }
@@ -448,7 +453,7 @@
     },
     {
       "path": "town/app.js",
-      "bytes": 44513
+      "bytes": 44549
     },
     {
       "path": "town/creator-home-painter.js",
@@ -559,12 +564,12 @@
       "bytes": 3593
     },
     {
-      "path": "town/save-model.js",
-      "bytes": 3111
+      "path": "town/view-mode.js",
+      "bytes": 3204
     },
     {
-      "path": "town/view-mode.js",
-      "bytes": 2978
+      "path": "town/save-model.js",
+      "bytes": 3111
     },
     {
       "path": "touch-camera.js",
@@ -635,6 +640,10 @@
       "bytes": 768
     },
     {
+      "path": "town/scene-images.js",
+      "bytes": 725
+    },
+    {
       "path": "town/lighting.js",
       "bytes": 574
     },
@@ -681,8 +690,8 @@
   ],
   "output": {
     "path": "town/game-entry.js",
-    "bytes": 464095,
-    "sha256": "5e01b766a3c849e1e7495affc6ab9ca25d502d92e8a92d2cff299cf01bbef531"
+    "bytes": 465082,
+    "sha256": "dc54f8ad0f2e8876920e428ce9fe92844107cbf059c3a2611b64712403672417"
   },
   "styleSources": [
     "../display-mode.css?v=20261014-layout1",
@@ -705,8 +714,8 @@
   },
   "world": {
     "path": "town/game-world.js",
-    "bytes": 111024,
-    "sha256": "c7cceba09026e8359bb37f87de94aebc7f683b824f77875515fada4465cea323",
+    "bytes": 111360,
+    "sha256": "1456a00343b4932f2ffa0b7b63217fd19486285ec5697dcdb5034a2ace0c59f7",
     "imports": [
       {
         "path": "../maze/vendor/three.module.js",

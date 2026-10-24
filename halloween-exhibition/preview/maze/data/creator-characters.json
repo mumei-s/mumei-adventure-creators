@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": "20261019-rin-rai-lion1",
+  "revision": "20261024-rin-rai-neck1",
   "characters": [
     {
       "id": "owner-lantern-hero",
@@ -7100,7 +7100,7 @@
         "src": "assets/creator-npcs/rin-rai-lion-walk.webp",
         "width": 1024,
         "height": 1024,
-        "sha256": "67a79c05752f71ea1e84fa7ce24fecb4e4451f8b0577b54ea4b867a5447db570",
+        "sha256": "cb8f3fa14f0a0a472a3de376f079ec18d4bcf07cfedc3091dc3ca63deacf0645",
         "sourceSHA256": "7d98ba7cafc43c21708ff9b4dad6333b2bbb9adb1828917770540674e05c7e72",
         "encoding": {
           "format": "WebP",
@@ -7137,9 +7137,9 @@
                 "anchorY": 0.9296875,
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
-                  65,
-                  19,
-                  200,
+                  64,
+                  25,
+                  201,
                   237
                 ]
               },
@@ -7154,10 +7154,10 @@
                 "anchorY": 0.9296875,
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
-                  320,
-                  19,
-                  455,
-                  239
+                  319,
+                  25,
+                  456,
+                  240
                 ]
               },
               {
@@ -7171,10 +7171,10 @@
                 "anchorY": 0.9296875,
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
-                  578,
-                  20,
-                  714,
-                  243
+                  577,
+                  25,
+                  715,
+                  244
                 ]
               },
               {
@@ -7188,10 +7188,10 @@
                 "anchorY": 0.9296875,
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
-                  834,
-                  19,
-                  970,
-                  235
+                  833,
+                  25,
+                  971,
+                  236
                 ]
               }
             ],
@@ -7207,86 +7207,16 @@
                 "anchorY": 0.9296875,
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
-                  56,
-                  276,
+                  54,
+                  280,
                   201,
-                  503
+                  504
                 ]
               },
               {
                 "frame": [
                   256,
                   256,
-                  256,
-                  256
-                ],
-                "anchorX": 0.5,
-                "anchorY": 0.9296875,
-                "contentHeight": 219.95,
-                "runtimeAlphaBounds": [
-                  313,
-                  276,
-                  458,
-                  497
-                ]
-              },
-              {
-                "frame": [
-                  512,
-                  256,
-                  256,
-                  256
-                ],
-                "anchorX": 0.5,
-                "anchorY": 0.9296875,
-                "contentHeight": 219.95,
-                "runtimeAlphaBounds": [
-                  567,
-                  279,
-                  712,
-                  503
-                ]
-              },
-              {
-                "frame": [
-                  768,
-                  256,
-                  256,
-                  256
-                ],
-                "anchorX": 0.5,
-                "anchorY": 0.9296875,
-                "contentHeight": 219.95,
-                "runtimeAlphaBounds": [
-                  824,
-                  276,
-                  969,
-                  503
-                ]
-              }
-            ],
-            [
-              {
-                "frame": [
-                  0,
-                  512,
-                  256,
-                  256
-                ],
-                "anchorX": 0.5,
-                "anchorY": 0.9296875,
-                "contentHeight": 219.95,
-                "runtimeAlphaBounds": [
-                  57,
-                  532,
-                  199,
-                  758
-                ]
-              },
-              {
-                "frame": [
-                  256,
-                  512,
                   256,
                   256
                 ],
@@ -7295,9 +7225,79 @@
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
                   312,
-                  532,
-                  454,
+                  280,
+                  459,
+                  498
+                ]
+              },
+              {
+                "frame": [
+                  512,
+                  256,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.9296875,
+                "contentHeight": 219.95,
+                "runtimeAlphaBounds": [
+                  566,
+                  284,
+                  712,
+                  504
+                ]
+              },
+              {
+                "frame": [
+                  768,
+                  256,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.9296875,
+                "contentHeight": 219.95,
+                "runtimeAlphaBounds": [
+                  823,
+                  280,
+                  970,
+                  504
+                ]
+              }
+            ],
+            [
+              {
+                "frame": [
+                  0,
+                  512,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.9296875,
+                "contentHeight": 219.95,
+                "runtimeAlphaBounds": [
+                  56,
+                  536,
+                  200,
                   759
+                ]
+              },
+              {
+                "frame": [
+                  256,
+                  512,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.9296875,
+                "contentHeight": 219.95,
+                "runtimeAlphaBounds": [
+                  311,
+                  536,
+                  455,
+                  760
                 ]
               },
               {
@@ -7311,10 +7311,10 @@
                 "anchorY": 0.9296875,
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
-                  570,
-                  532,
-                  712,
-                  759
+                  569,
+                  536,
+                  713,
+                  760
                 ]
               },
               {
@@ -7328,10 +7328,10 @@
                 "anchorY": 0.9296875,
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
-                  825,
-                  532,
-                  966,
-                  753
+                  824,
+                  536,
+                  967,
+                  755
                 ]
               }
             ],
@@ -7347,10 +7347,10 @@
                 "anchorY": 0.9296875,
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
-                  55,
-                  787,
-                  193,
-                  1006
+                  54,
+                  792,
+                  194,
+                  1007
                 ]
               },
               {
@@ -7364,9 +7364,9 @@
                 "anchorY": 0.9296875,
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
-                  313,
-                  787,
-                  450,
+                  312,
+                  792,
+                  451,
                   1014
                 ]
               },
@@ -7381,10 +7381,10 @@
                 "anchorY": 0.9296875,
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
-                  567,
-                  788,
-                  703,
-                  1021
+                  565,
+                  793,
+                  704,
+                  1022
                 ]
               },
               {
@@ -7398,10 +7398,10 @@
                 "anchorY": 0.9296875,
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
-                  823,
-                  787,
-                  959,
-                  1008
+                  822,
+                  792,
+                  960,
+                  1009
                 ]
               }
             ]

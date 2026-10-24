@@ -165,7 +165,7 @@
     {
       "path": "maze/data/creator-characters.json",
       "bytes": 237911,
-      "sha256": "a1dd625c15fa86fa32aacf8c5a9215f1d6ae62861a2dc2643f259d3db9da5214"
+      "sha256": "cdde75a7d1a33d1578029a99154d2ffb0bab1468a35767236cb8f9db0b38b522"
     },
     {
       "path": "maze/encounter-model.js",
@@ -620,7 +620,7 @@
   "output": {
     "path": "maze/game-entry.js",
     "bytes": 345319,
-    "sha256": "c261335923a934d512b1ebfb708009fe96080e56c4d0ad42c13d89feff09d29d"
+    "sha256": "b1ad9df5e54bfd8bf2dc8ad7323aeb18a665bc690a3cb120660197a27fba570e"
   },
   "styleSources": [
     "./style.css?v=20261014-adventure2",

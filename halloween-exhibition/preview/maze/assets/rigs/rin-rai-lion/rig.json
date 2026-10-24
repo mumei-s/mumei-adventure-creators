@@ -37,7 +37,7 @@
           ],
           "pivot": [
             84.5,
-            168.56
+            160.848104575163
           ],
           "contentHeight": 168.56,
           "sourceComponent": 1,
@@ -372,7 +372,7 @@
           ],
           "pivot": [
             80.0,
-            142.1
+            135.598692810458
           ],
           "contentHeight": 142.1,
           "sourceComponent": 17,
@@ -707,7 +707,7 @@
           ],
           "pivot": [
             76.0,
-            147.98
+            141.209673202614
           ],
           "contentHeight": 147.98,
           "sourceComponent": 34,
@@ -1042,7 +1042,7 @@
           ],
           "pivot": [
             82.5,
-            143.07999999999998
+            136.53385620915
           ],
           "contentHeight": 143.07999999999998,
           "sourceComponent": 51,
@@ -1423,7 +1423,13 @@
     "limitations": [
       "No browser, physical-device or WebGL gameplay review.",
       "Four cardinal drawings; continuous diagonal turns and bespoke attack artwork are not certified."
-    ]
+    ],
+    "headAttachmentCorrection": {
+      "date": "2026-10-24",
+      "offsetRigPixels": 7,
+      "method": "Lower only the four head pivots; preserve part scale, torso, limbs, skeleton, animation and output normalization.",
+      "fallbackBuilder": "scripts/build-rin-rai-atlas.mjs"
+    }
   },
   "provenance": {
     "method": "built-in-imagegen",

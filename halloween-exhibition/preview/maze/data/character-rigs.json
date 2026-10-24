@@ -191,7 +191,7 @@
     {
       "id": "rin-rai-lion",
       "approved": true,
-      "manifestURL": "./assets/rigs/rin-rai-lion/rig.json"
+      "manifestURL": "./assets/rigs/rin-rai-lion/rig.json?v=20261024-neck1"
     }
   ]
 }

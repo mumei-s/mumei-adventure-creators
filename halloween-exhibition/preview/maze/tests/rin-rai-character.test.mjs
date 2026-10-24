@@ -6,6 +6,7 @@ import {compileCharacterRoster,placeCreatorNPCs,creatorPose,layoutProblem} from 
 import {createOwnerRig} from '../owner-rig.js';
 import {placeTownVisitors,sampleTownVisitors} from '../../town/visitor-model.js';
 import {isTownWalkable} from '../../town/story-data.js';
+import {raiFallbackPoses,RAI_FALLBACK} from '../../scripts/build-rin-rai-atlas.mjs';
 const read=path=>JSON.parse(fs.readFileSync(new URL(path,import.meta.url)));
 const archive=read('../../data/archive.json'),manifest=read('../data/creator-characters.json');
 const rig=read('../assets/rigs/rin-rai-lion/rig.json');
@@ -76,5 +77,31 @@ test('Rai limb animation has independent knees and elbows and never loses both s
    previous=pose;
   }
   assert(changedKnee);assert(changedElbow);instance.destroy();
+ }
+});
+
+test('Rai mane overlaps the collar by lowering only the head attachment seven rig pixels',()=>{
+ assert.equal(rig.review.headAttachmentCorrection.offsetRigPixels,7);
+ for(const [direction,view]of Object.entries(rig.views)){
+  const head=view.parts.head;
+  assert(Math.abs((head.contentHeight-head.pivot[1])*rig.rig.headHeight/head.contentHeight-7)<1e-9,direction+' head attachment');
+  assert.equal(head.pivot[0],head.rect[2]/2,direction+' horizontal alignment');
+ }
+ assert.equal(rig.contentHeight,265);assert.equal(rig.rig.headHeight,153);
+ assert.deepEqual(rig.output,{width:320,height:384,anchorX:.5,anchorY:.84,scale:1});
+ const geometry=({width,height,contentHeight,output,rig,footSoleOffset,motion,restHands,views})=>({width,height,contentHeight,output,rig,footSoleOffset,motion,restHands,views:Object.fromEntries(Object.entries(views).map(([key,view])=>[key,{...view,parts:Object.fromEntries(Object.entries(view.parts).map(([name,part])=>[name,name==='head'?{...part,pivot:[part.pivot[0],0]}:part]))}]))});
+ assert.equal(crypto.createHash('sha256').update(JSON.stringify(geometry(rig))).digest('hex'),'ae523045a7f366cc39adf6fe7541d2b1723b8ab1ae4aa2aae92cecaf7a3f3cc5','all non-head attachment geometry and painted source cells remain unchanged');
+ const registry=read('../data/character-rigs.json');assert.equal(registry.rigs.find(row=>row.id===id).manifestURL,'./assets/rigs/rin-rai-lion/rig.json?v=20261024-neck1');
+});
+
+test('Rai fallback retains its original frame poses, body size and ground anchors',()=>{
+ const before=structuredClone(rig);for(const view of Object.values(before.views))view.parts.head.pivot[1]=view.parts.head.contentHeight;
+ for(const direction of RAI_FALLBACK.directions){
+  const poses=raiFallbackPoses(rig,direction);assert.equal(poses.length,4);assert.deepEqual(poses,raiFallbackPoses(before,direction));
+ }
+ for(const cell of character.asset.layout.frames.flat()){
+  assert.equal(cell.contentHeight,219.95);assert.equal(cell.anchorX,.5);assert.equal(cell.anchorY,238/256);
+  const [x,y,w,h]=cell.frame,[left,top,right,bottom]=cell.runtimeAlphaBounds;
+  assert(left>x&&top>y&&right<x+w&&bottom<y+h,'every rebaked frame has unclipped alpha margins');
  }
 });

@@ -115,7 +115,7 @@
     {
       "path": "maze/data/creator-characters.json",
       "bytes": 237911,
-      "sha256": "a1dd625c15fa86fa32aacf8c5a9215f1d6ae62861a2dc2643f259d3db9da5214"
+      "sha256": "cdde75a7d1a33d1578029a99154d2ffb0bab1468a35767236cb8f9db0b38b522"
     },
     {
       "path": "maze/frame-loop.js",
@@ -713,7 +713,7 @@
   "output": {
     "path": "town/game-entry.js",
     "bytes": 466853,
-    "sha256": "ae61ee462d3ab509240e07df1eb1da032c078c5ba96bacdd6537d6824a11fcbc"
+    "sha256": "d3bc2b3c2e5083b0666810850c4eb0d0b82803b96bf09ab400c94cf8f498da96"
   },
   "styleSources": [
     "../display-mode.css?v=20261014-layout1",

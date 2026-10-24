@@ -364,8 +364,8 @@
     },
     {
       "path": "town/view-mode.js",
-      "bytes": 4587,
-      "sha256": "ad1b2b28f49f865dd3b73f95ee6e082bc1fb00ac4e687492252107ca240f9f5e"
+      "bytes": 4816,
+      "sha256": "79ca299684bfc818b3632921d520031376b7d3664c2e1fd292c358f269432116"
     },
     {
       "path": "transition-effects.css",
@@ -499,6 +499,10 @@
       "bytes": 2163
     },
     {
+      "path": "town/view-mode.js",
+      "bytes": 1913
+    },
+    {
       "path": "transition-effects.js",
       "bytes": 1843
     },
@@ -525,10 +529,6 @@
     {
       "path": "viewport.js",
       "bytes": 1747
-    },
-    {
-      "path": "town/view-mode.js",
-      "bytes": 1688
     },
     {
       "path": "maze/maze-model.js",
@@ -593,8 +593,8 @@
   ],
   "output": {
     "path": "maze/game-entry.js",
-    "bytes": 340678,
-    "sha256": "8bb9ab6fde2868061ac9c48db8ed77a747d00a735041466d8ebe1bd2fcf6b84e"
+    "bytes": 340903,
+    "sha256": "23d284df551205913f44c6dfdba857861f90fc329531144c7e729a3fa5e7bdfe"
   },
   "styleSources": [
     "./style.css?v=20261014-adventure2",

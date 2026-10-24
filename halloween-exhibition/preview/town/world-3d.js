@@ -255,7 +255,7 @@ function surfaceTexture(makeCanvas,kind,resources){
 }
 
 /** A real, elevated 3D scene. Approved character sheets remain unmodified camera-facing sprites. */
-export function createTownWorld3D({canvas,art={images:{},version:0},onContextLost=()=>{},makeCanvas=(w,h)=>{const cv=document.createElement('canvas');cv.width=w;cv.height=h;return cv;},loadImage=loadArtImage,fetcher=globalThis.fetch,assetTimeout=4500,rendererFactory=options=>new THREE.WebGLRenderer(options)}={}){
+export function createTownWorld3D({canvas,art={images:{},version:0},onContextLost=()=>{},makeCanvas=(w,h)=>{const cv=document.createElement('canvas');cv.width=w;cv.height=h;return cv;},loadImage=loadArtImage,fetcher=globalThis.fetch,assetTimeout=14000,rendererFactory=options=>new THREE.WebGLRenderer(options)}={}){
   if(!canvas)throw new TypeError('A dedicated WebGL town canvas is required');
   const {renderer,compact}=createTownWebGLRenderer(canvas,rendererFactory);
   renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.36;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
@@ -266,7 +266,7 @@ export function createTownWorld3D({canvas,art={images:{},version:0},onContextLos
   const warmLight=new THREE.PointLight('#ffd78b',1.4,4,2);warmLight.name='player-lantern';scene.add(warmLight);
   const lampLights=Array.from({length:4},()=>{const light=new THREE.PointLight('#ffcf87',1.1,5,2);scene.add(light);return light;});
   const actorRoot=new THREE.Group();scene.add(actorRoot);const textureResources=new Set(),actors=new Map(),imageTextures=new WeakMap(),spriteFrames=new Map(),liveFrames=new Map(),raycaster=new THREE.Raycaster(),plane=new THREE.Plane(new THREE.Vector3(0,1,0),0),pointer=new THREE.Vector2(),hitPoint=new THREE.Vector3(),projected=new THREE.Vector3(),abort=new AbortController();
-  const assets={images:{},residentFrames:TOWN_RESIDENT_SPRITES,loaded:[],failed:[]};let scenery=null,mapId=null,disposed=false,lost=false,prepared=false,cameraTarget=null,lastView=null,version=0,frameSerial=0,lastFrameSignature='',surfaceVersion=0,appliedSurfaceVersion=-1;
+  const assetErrors=new Map();const assets={images:{},residentFrames:TOWN_RESIDENT_SPRITES,loaded:[],failed:[]};let scenery=null,mapId=null,disposed=false,lost=false,prepared=false,cameraTarget=null,lastView=null,version=0,frameSerial=0,lastFrameSignature='',surfaceVersion=0,appliedSurfaceVersion=-1;
   const imageIds=new WeakMap();let nextImageId=1;
   function imageId(sprite){const image=sprite?.image||sprite;if(!image||typeof image!=='object')return 0;if(!imageIds.has(image))imageIds.set(image,nextImageId++);return imageIds.get(image);}
   const contextLost=event=>{event.preventDefault?.();if(disposed)return;lost=true;onContextLost(event);};canvas.addEventListener('webglcontextlost',contextLost);
@@ -275,7 +275,7 @@ export function createTownWorld3D({canvas,art={images:{},version:0},onContextLos
       const url=new URL(file,import.meta.url);if(attempt)url.searchParams.set('retry','1');
       const image=await withDeadline(loadImage(url.href,{timeout:assetTimeout,priority:required?'high':'low'}),{timeout:assetTimeout,signal:abort.signal});
       if(disposed)return null;assets.images[key]=image;assets.loaded.push(key);version++;if(!required)surfaceVersion++;return image;
-    }catch{if(disposed||abort.signal.aborted)return null;}
+    }catch(error){assetErrors.set(key,error);if(disposed||abort.signal.aborted)return null;}
     if(!disposed)assets.failed.push(key);return null;
   };
   // Geometry is bundled in this module. Optional floor textures must not hold up the
@@ -286,7 +286,8 @@ export function createTownWorld3D({canvas,art={images:{},version:0},onContextLos
     await residentsReady;
     if(disposed||lost)throw Error('Town 3D renderer was released before readiness');
     const residentImage=assets.images.residents;
-    if(!residentImage||!assets.residentFrames||['keeper','baker','sailor','gardener','cat','maskmaker','merchant','clocksmith','archivist','innkeeper'].some(key=>{const f=assets.residentFrames[key]?.frame;return !f||f[2]<=0||f[3]<=0||f[0]<0||f[1]<0||f[0]+f[2]>residentImage.width||f[1]+f[3]>residentImage.height;}))throw Error('Town 3D resident art is unavailable');
+    if(!residentImage){const cause=assetErrors.get('residents'),timedOut=/timed? out|timeout|deadline/i.test(String(cause?.message||cause||''));throw Object.assign(new Error('Town 3D resident art is unavailable'),{code:cause?.code==='assets-invalid'?'assets-invalid':timedOut?'assets-timeout':'assets-unavailable',cause});}
+    if(!assets.residentFrames||['keeper','baker','sailor','gardener','cat','maskmaker','merchant','clocksmith','archivist','innkeeper'].some(key=>{const f=assets.residentFrames[key]?.frame;return !f||f[2]<=0||f[3]<=0||f[0]<0||f[1]<0||f[0]+f[2]>residentImage.width||f[1]+f[3]>residentImage.height;}))throw Object.assign(new Error('Town 3D resident art dimensions are invalid'),{code:'assets-invalid'});
     prepared=true;return {loaded:[...assets.loaded],failed:[...assets.failed]};
   })();
   function spriteTexture(sprite){

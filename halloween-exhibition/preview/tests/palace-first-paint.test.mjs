@@ -20,7 +20,7 @@ function fixture({loaded=true,reduced=false}={}){
  const root={ownerDocument:doc,dataset:{palaceState:'palace'},querySelector:()=>palace};
  const available=new Set(),paintable=new Set();const library={ready:new Promise(resolve=>rigReady=resolve),status:()=>({loaded:available.size}),has:id=>available.has(id),draw(_ctx,id,_pose,time){draws.push({id,time,stillHidden:stills.get(id).hidden});return paintable.has(id);},destroy(){available.clear();}};
  const api=initPalaceLivingScene(root,{makeRigs(options){onChange=options.onChange;return library;}});
- return{api,root,doc,stills,images,draws,pending,events,media,mediaEvents,observers,available,paintable,finishRigs(){rigReady();},reveal(id,{paint=true}={}){available.add(id);if(paint)paintable.add(id);onChange(id);},counts:()=>({createdImages,fetches}),advance(stamp){const [id,fn]=pending.entries().next().value;pending.delete(id);fn(stamp);}};
+ return{api,root,doc,palace,stills,images,draws,pending,events,media,mediaEvents,observers,available,paintable,finishRigs(){rigReady();},reveal(id,{paint=true}={}){available.add(id);if(paint)paintable.add(id);onChange(id);},counts:()=>({createdImages,fetches}),advance(stamp){const [id,fn]=pending.entries().next().value;pending.delete(id);fn(stamp);}};
 }
 
 test('first HTML uses only approved static atlas crops, protected before external CSS',async()=>{
@@ -33,7 +33,7 @@ test('first HTML uses only approved static atlas crops, protected before externa
 });
 
 test('approved DOM stills stay still until a successful per-species articulated paint',async()=>{
- const h=fixture();await h.api.ready;assert.deepEqual(h.counts(),{createdImages:0,fetches:0});assert.equal(h.pending.size,0);assert.ok([...h.stills.values()].every(still=>!still.hidden));assert.ok(!h.draws.includes('atlas'));
+ const h=fixture();await h.api.ready;const canvas=h.palace.children.find(element=>element.className==='palace-living-cast');assert.equal(canvas.style.position,'absolute');assert.equal(canvas.style.width,'100%');assert.equal(canvas.style.height,'100%');assert.equal(canvas.style.pointerEvents,'none');assert.deepEqual(h.counts(),{createdImages:0,fetches:0});assert.equal(h.pending.size,0);assert.ok([...h.stills.values()].every(still=>!still.hidden));assert.ok(!h.draws.includes('atlas'));
  h.reveal('franken',{paint:false});assert.equal(h.stills.get('franken').hidden,false,'metadata/availability alone cannot erase the still');
  h.paintable.add('franken');h.api.draw();assert.equal(h.stills.get('franken').hidden,true);const first=h.draws.find(row=>row.id==='franken'&&row.stillHidden===false);assert.ok(first,'the replacement is painted before the still is hidden');
  assert.equal(h.stills.get('zombie').hidden,false);assert.equal(h.stills.get('bat').hidden,false);assert.equal(h.stills.get('vampire').hidden,false);

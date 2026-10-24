@@ -29,7 +29,13 @@ test('exploration shows a compact top control row, story beside map and a separa
  const header=html.match(/<header>([\s\S]*?)<\/header>/)[1];
  for(const id of ['minimap-size','menu-open'])assert(header.includes(`id="${id}"`));
  assert.match(html,/<div class="exploration-hud"><div class="place">[\s\S]*?id="minimap-open"/);
- assert.match(html,/<aside class="lantern-dock"[^>]*><button id="lantern"/);
+ const dock=html.match(/<aside class="lantern-dock"[^>]*>([\s\S]*?)<\/aside>/)[1];
+ assert.match(dock,/^<div class="viewpoint-control" role="group" aria-label="視点の切り替え">/);
+ const dockIds=['viewpoint-prev','camera-distance','viewpoint-next','lantern'];let previous=-1;
+ for(const id of dockIds){assert.equal((dock.match(new RegExp(`id="${id}"`,'g'))||[]).length,1);const index=dock.indexOf(`id="${id}"`);assert.ok(index>previous);previous=index;}
+ assert.match(dock,/<\/div><button id="lantern" aria-pressed="true">ランタン ON<\/button>$/);
+ const menuApp=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8'),menuSource=menuApp.slice(menuApp.indexOf('function showExploreMenu(){'),menuApp.indexOf('function showMenuLayoutSettings(){'));
+ assert.ok(menuSource.includes("const lanternButton=add(lantern?'ランタン ON':'ランタン OFF',()=>{toggleLantern();"));assert.ok(menuSource.includes("}),lanternButton,add('歩く速さ'"));
  assert(!html.match(/<div class="nearby">([\s\S]*?)<\/div>/)[1].includes('id="lantern"'));
  assert(hud.includes('grid-template-rows:48px 0 auto minmax(0,1fr) 114px 20px'));
  assert(hud.includes('grid-template-columns:minmax(0,1fr) auto'));assert(hud.includes('max-width:32ch'));

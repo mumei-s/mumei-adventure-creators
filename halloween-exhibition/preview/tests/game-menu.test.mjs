@@ -91,3 +91,15 @@ test('maze: motion status and existing layout controls remain accessible and reu
 test('saved lamp preferences remain reflected without a second viewpoint selector',()=>{
  for(const kind of ['town','maze']){const h=harness(kind,{lantern:false});h.run.menu();assert.equal(h.menu().children[1].textContent,'ランタン OFF');assert.equal(h.menu().children[1].getAttribute('aria-pressed'),'false');assert.equal(flatten(h.menu()).some(node=>node.textContent.startsWith('視点：')),false);}
 });
+
+for(const kind of ['town','maze'])test(`${kind}: on-scene lantern is hidden only in compact mode while the menu toggle still works`,()=>{
+ const css=fs.readFileSync(new URL('../game-shell.css',import.meta.url),'utf8');
+ const selector=kind==='town'?'#town-main[data-compact-viewpoint=true] #lantern-toggle':'#game[data-compact-viewpoint=true] #lantern';
+ assert.ok(css.includes(selector),'only the exact on-scene lantern is targeted in compact mode');
+ const compactRule=css.slice(css.lastIndexOf('/* All frames keep only the selector'));
+ assert.match(compactRule,/\{display:none\}/);assert.doesNotMatch(compactRule,/data-game-menu|#menu-lantern/);
+ const h=harness(kind);h.run.menu();const toggle=h.find('ランタン ON');assert.ok(toggle);
+ toggle.click();assert.equal(toggle.textContent,'ランタン OFF');assert.equal(toggle.getAttribute('aria-pressed'),'false');
+ toggle.click();assert.equal(toggle.textContent,'ランタン ON');assert.equal(toggle.getAttribute('aria-pressed'),'true');
+ assert.equal(h.record.calls.filter(name=>name==='toggleLantern').length,2);assert.equal(JSON.stringify(h.state),h.before);
+});

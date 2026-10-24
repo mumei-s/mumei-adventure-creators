@@ -241,3 +241,66 @@ body:is([data-layout-page=town],[data-layout-page=maze]){
  :root body[data-layout-page=town] #town-main .town-controls .town-utilities>button,
  :root body[data-layout-page=maze][data-view] #game .lantern-dock>button{background:ButtonFace;color:ButtonText;border-color:ButtonText;text-shadow:none}
 }
+
+/* View controls stay in the existing bottom utility slot, never above the pad. */
+:root body:is([data-layout-page=town],[data-layout-page=maze]) .viewpoint-control #camera-distance{
+ position:static;width:auto;min-width:0;min-height:0;padding:0;flex:none;font-size:var(--ui-meta,13px);line-height:1.35;text-align:center;white-space:normal;overflow-wrap:anywhere;
+}
+:root body:is([data-layout-page=town],[data-layout-page=maze]) .viewpoint-control>button{
+ min-width:44px;min-height:44px;width:44px;margin:0;padding:4px;font-size:20px;line-height:1;border:1px solid #edd6a466;border-radius:8px;background:#28404b;color:inherit;touch-action:manipulation;
+}
+:root body:is([data-layout-page=town],[data-layout-page=maze]) .viewpoint-control>button:focus-visible{outline:3px solid #ffe2a1;outline-offset:2px}
+.town-mode-banner,.maze-view-notice{flex-wrap:wrap}
+.town-mode-banner p,.maze-view-notice p{flex-basis:180px}
+@media(forced-colors:active){
+ :root body:is([data-layout-page=town],[data-layout-page=maze]) .viewpoint-control{background:Canvas;color:CanvasText;border-color:CanvasText}
+ :root body:is([data-layout-page=town],[data-layout-page=maze]) .viewpoint-control>button{background:ButtonFace;color:ButtonText;border-color:ButtonText}
+}
+
+
+:root body:is([data-layout-page=town],[data-layout-page=maze]) .viewpoint-current{display:grid;align-content:center;min-width:0;gap:2px;text-align:center}
+:root body:is([data-layout-page=town],[data-layout-page=maze]) #viewpoint-result{font-size:10px;line-height:1.2;color:#e6d5ad}
+
+/* At every frame size, use the utility column: a label row, then two full-size
+   arrow buttons. The minimap/menu still provide the duplicate town map action. */
+:root body[data-layout-page=town] #town-main[data-compact-viewpoint=true] #map-open{display:none}
+:root body:is([data-layout-page=town],[data-layout-page=maze]) :is(#town-main,#game)[data-compact-viewpoint=true] .viewpoint-control{
+ position:static;inset:auto;transform:none;width:100%;min-width:96px;display:grid;grid-template-columns:repeat(2,minmax(44px,1fr));grid-template-rows:auto 44px;gap:2px;padding:2px;border:1px solid #edd6a499;border-radius:10px;background:#142d3566;color:#fff3d7;box-sizing:border-box;
+}
+:root body:is([data-layout-page=town],[data-layout-page=maze]) [data-compact-viewpoint=true] .viewpoint-current{grid-column:1/-1;grid-row:1}
+:root body:is([data-layout-page=town],[data-layout-page=maze]) [data-compact-viewpoint=true] .viewpoint-control>button{grid-row:2;justify-self:stretch;width:100%}
+:root body:is([data-layout-page=town],[data-layout-page=maze]) [data-compact-viewpoint=true] .viewpoint-control #camera-distance{font-size:11px;line-height:1.2}
+:root body:is([data-layout-page=town],[data-layout-page=maze]) [data-compact-viewpoint=true] #viewpoint-result{font-size:9px;line-height:1.1}
+
+/* Saved phone frames can be only 320px wide even in a short window. Reuse the
+   same three controls with narrow gaps: 170px pad + 96px utilities + 44px action
+   + 8px padding/gaps fits at the largest supported 125% button setting. */
+:root body[data-layout-page=town] #town-main[data-compact-viewpoint=true] .town-controls{
+ grid-template-areas:"move utilities actions";grid-template-columns:var(--pad-size) minmax(96px,1fr) minmax(44px,1fr);column-gap:2px;padding-inline:2px;
+}
+:root body[data-layout-page=town][data-pad-position=right] #town-main[data-compact-viewpoint=true] .town-controls{
+ grid-template-areas:"actions utilities move";grid-template-columns:minmax(44px,1fr) minmax(96px,1fr) var(--pad-size);
+}
+:root body[data-layout-page=town][data-pad-position=center] #town-main[data-compact-viewpoint=true] .town-controls{
+ grid-template-areas:"utilities move actions";grid-template-columns:minmax(96px,1fr) var(--pad-size) minmax(44px,1fr);
+}
+:root body[data-layout-page=town] #town-main[data-compact-viewpoint=true] .direction-pad{
+ position:relative;grid-area:move;left:auto;right:auto;bottom:auto;transform:none;
+}
+:root body[data-layout-page=maze][data-view] #game[data-compact-viewpoint=true]{
+ --compact-utility-width:max(96px,calc((100% - var(--touch-pad-size) - 8px)/2));
+ --compact-action-width:calc(100% - var(--touch-pad-size) - var(--compact-utility-width) - 8px);
+}
+:root body[data-layout-page=maze][data-view] #game[data-compact-viewpoint=true] #direction-pad{left:2px!important;right:auto!important;transform:none!important}
+:root body[data-layout-page=maze][data-view] #game[data-compact-viewpoint=true] .lantern-dock{left:calc(var(--touch-pad-size) + 4px)!important;right:auto!important;width:var(--compact-utility-width)!important}
+:root body[data-layout-page=maze][data-view] #game[data-compact-viewpoint=true] .nearby{left:auto!important;right:2px!important;width:var(--compact-action-width)!important}
+:root body[data-layout-page=maze][data-view][data-pad-position=right] #game[data-compact-viewpoint=true] #direction-pad{left:auto!important;right:2px!important}
+:root body[data-layout-page=maze][data-view][data-pad-position=right] #game[data-compact-viewpoint=true] .lantern-dock{left:auto!important;right:calc(var(--touch-pad-size) + 4px)!important}
+:root body[data-layout-page=maze][data-view][data-pad-position=right] #game[data-compact-viewpoint=true] .nearby{left:2px!important;right:auto!important}
+:root body[data-layout-page=maze][data-view][data-pad-position=center] #game[data-compact-viewpoint=true] .lantern-dock{left:2px!important;right:auto!important}
+:root body[data-layout-page=maze][data-view][data-pad-position=center] #game[data-compact-viewpoint=true] #direction-pad{left:calc(var(--compact-utility-width) + 4px)!important;right:auto!important;transform:none!important}
+
+/* All frames keep only the selector in the utility column. The same lantern
+   toggle remains in each exploration menu, without another raised scene panel. */
+:root body[data-layout-page=town] #town-main[data-compact-viewpoint=true] #lantern-toggle,
+:root body[data-layout-page=maze][data-view] #game[data-compact-viewpoint=true] #lantern{display:none}

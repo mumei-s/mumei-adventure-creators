@@ -28,7 +28,7 @@ test('legacy stages retain their meanings while both games use a viewpoint picke
  assert.deepEqual(CAMERA_DISTANCE_STAGES,['normal','wide','far']);assert.deepEqual(CAMERA_DISTANCE_STAGES.map(cameraDistanceLabel),['標準','引き','遠景']);assert.equal(nextCameraDistance('normal'),'wide');assert.equal(nextCameraDistance('wide'),'far');assert.equal(nextCameraDistance('far'),'normal');
  for(const page of['town','maze']){
   const source=fs.readFileSync(new URL(`../../${page}/app.js`,import.meta.url),'utf8');
-  assert.match(source,/viewpointOptions/);assert.match(source,/readViewpoint/);assert.match(source,/saveViewpoint/);
+  assert.match(source,/cycleViewpoint/);assert.match(source,/readViewpoint/);assert.match(source,/saveViewpoint/);
   assert.doesNotMatch(source,/cameraDistance=nextCameraDistance/);
   assert.match(source,/bindPinchZoom/);assert.match(source,/saveCameraZoom/);
  }

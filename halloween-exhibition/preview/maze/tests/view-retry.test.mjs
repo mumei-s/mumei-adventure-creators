@@ -4,23 +4,24 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 import {withDeadline} from '../../transition-effects.js';
 import {classifyTown3DFailure} from '../../town/view-mode.js';
-import {viewpointOptions,resolveViewpoint,migrateViewpoint,saveViewpoint} from '../../viewpoint-presets.js';
+import {afterViewPaint} from '../../view-paint.js';
+import {viewpointOptions,cycleViewpoint,resolveViewpoint,migrateViewpoint,saveViewpoint} from '../../viewpoint-presets.js';
 import {movementVector} from '../view-model.js';
 
 const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8');
-const setViewSource=app.slice(app.indexOf('async function setView('),app.indexOf('function restoreExhibits('));
-const statusSource=app.slice(app.indexOf('function viewpointStatus(){'),app.indexOf('function showViewpoints(){'));
+const setViewSource=app.slice(app.indexOf('function updateViewFeedback('),app.indexOf('function restoreExhibits('));
+const statusSource=app.slice(app.indexOf('function viewpointStatus(){'),app.indexOf("$('viewpoint-prev').onclick"));
 const deferred=()=>{let resolve,reject;const promise=new Promise((a,b)=>{resolve=a;reject=b;});return {promise,resolve,reject};};
-function harness({failedBefore=true,createWorld=()=>({resize(){},dispose(){}})}={}){
+function harness({failedBefore=true,beforePaint=afterViewPaint,createWorld=()=>({resize(){},dispose(){}})}={}){
  const nodes=new Map(),storage=new Map(),notices=[],record={created:0,loadedRemaining:0,finished:0,restored:0,updated:0};
  const state={x:32,z:43.5,yaw:.7,pitch:.15,hasKey:true,unlocked:true,horrorAccepted:true,collection:['key'],progress:{chapter:3}};
  const node=id=>{if(!nodes.has(id))nodes.set(id,{id,hidden:true,disabled:false,textContent:'',attributes:{},setAttribute(key,value){this.attributes[key]=value;}});return nodes.get(id);};
  const module={createWorld:options=>{record.created++;return createWorld(options,record.created);}},localStorage={getItem:key=>storage.get(key),setItem:(key,value)=>storage.set(key,value)};
  const context=vm.createContext({AbortController,withDeadline,classifyTown3DFailure,Error,initialFailed:failedBefore,mockModule:module,initialState:state,
-  prepareViewpointAssets(){},releaseViewPreload(){},resolveViewpoint,migrateViewpoint,saveViewpoint:(page,id)=>saveViewpoint(page,id,localStorage),saveCameraDistance:(page,value)=>storage.set('halloween-exhibition:camera:'+page,value),
+  afterViewPaint:beforePaint,cycleViewpoint,prepareViewpointAssets(){},releaseViewPreload(){},resolveViewpoint,migrateViewpoint,saveViewpoint:(page,id)=>saveViewpoint(page,id,localStorage),saveCameraDistance:(page,value)=>storage.set('halloween-exhibition:camera:'+page,value),
   document:{hidden:false},content:{querySelectorAll:()=>[]},console:{warn(){}},$:node,rpgArt:{loadRemaining(){record.loadedRemaining++;return Promise.resolve();}},
   transitions:{begin(){return()=>{record.finished++;};},enter(){}},clearInput(){},updateViewUI(){record.updated++;context.refresh();},restoreExhibits(){record.restored++;},notify:text=>notices.push(text),localStorage});
- vm.runInContext(`let viewRequest=0,viewAbort=null,world=null,worldModule=mockModule,worldFailed=initialFailed,view='2d',viewFailure='',state=initialState,cameraDistance='normal',cameraZoom=.82,desiredViewpoint=resolveViewpoint('maze','overhead'),viewPending=false,resumeViewpoint=false,gameReady=true;const viewKey='halloween-exhibition:horror-view:v1',cameraButton=$('camera-distance');${setViewSource};${statusSource};globalThis.setView=setView;globalThis.setViewpoint=setViewpoint;globalThis.fallback=fallbackView;globalThis.suspend=suspendViewpoint;globalThis.resume=resumePendingViewpoint;globalThis.refresh=updateCameraButton;globalThis.snapshot=()=>({view,viewFailure,worldFailed,world,state,cameraDistance,cameraZoom,desiredViewpoint,viewPending,resumeViewpoint});globalThis.setModule=value=>{worldModule=value;};globalThis.setReady=value=>{gameReady=value;};`,context);
+ vm.runInContext(`let viewRequest=0,viewAbort=null,world=null,worldModule=mockModule,worldFailed=initialFailed,view='2d',viewFailure='',viewFailureCode='',viewFeedback='',viewAttempt=0,state=initialState,cameraDistance='normal',cameraZoom=.82,desiredViewpoint=resolveViewpoint('maze','overhead'),viewPending=false,resumeViewpoint=false,gameReady=true;const viewKey='halloween-exhibition:horror-view:v1',cameraButton=$('camera-distance');${setViewSource};${statusSource};globalThis.cycle=cycleMazeViewpoint;globalThis.setView=setView;globalThis.setViewpoint=setViewpoint;globalThis.fallback=fallbackView;globalThis.suspend=suspendViewpoint;globalThis.resume=resumePendingViewpoint;globalThis.refresh=updateCameraButton;globalThis.snapshot=()=>({view,viewFailure,viewFailureCode,viewFeedback,viewAttempt,worldFailed,world,state,cameraDistance,cameraZoom,desiredViewpoint,viewPending,resumeViewpoint});globalThis.setModule=value=>{worldModule=value;};globalThis.setReady=value=>{gameReady=value;};`,context);
  return {context,setView:context.setView,setViewpoint:context.setViewpoint,snapshot:context.snapshot,setModule:context.setModule,node,storage,notices,record,state};
 }
 
@@ -41,13 +42,13 @@ test('a quiet GPU failure exposes actual overhead while retaining the requested 
 test('a module communication failure remains visible on quiet startup without overwriting saved preference',async()=>{
  const h=harness(),request=deferred();h.setModule(request.promise);h.storage.set('halloween-exhibition:horror-view:v1','3d');
  const operation=h.setViewpoint('eye',{quiet:true,persist:false});request.reject(Error('Failed to fetch dynamically imported module'));await operation;
- assert.equal(h.snapshot().view,'2d');assert.equal(h.storage.get('halloween-exhibition:horror-view:v1'),'3d');assert.match(h.node('maze-view-status').textContent,/表示データ/);assert.equal(h.node('maze-view-status').hidden,false);assert.equal(h.node('maze-view-retry').hidden,false);assert.equal(h.record.created,0);
+ assert.equal(h.snapshot().view,'2d');assert.equal(h.storage.get('halloween-exhibition:horror-view:v1'),'3d');assert.match(h.node('maze-view-status').textContent,/表示データ/);assert.equal(h.node('maze-view-status').hidden,false);assert.equal(h.node('maze-view-retry').hidden,true);assert.equal(h.node('maze-view-reload').hidden,false);assert.equal(h.record.created,0);
 });
 
 test('a successful second attempt clears the failure and preserves position, inventory and progress',async()=>{
  const world={resize(){}},h=harness({createWorld:(_options,attempt)=>{if(attempt===1)throw Error('Error creating WebGL context.');return world;}});
  const original=JSON.parse(JSON.stringify(h.state));await h.setViewpoint('behind',{quiet:true});assert.equal(h.snapshot().view,'2d');await h.setViewpoint(h.snapshot().desiredViewpoint.id,{quiet:true});
- assert.equal(h.record.created,2);assert.equal(h.snapshot().view,'3d');assert.equal(h.snapshot().cameraDistance,'wide');assert.equal(h.snapshot().world,world);assert.equal(h.snapshot().viewFailure,'');assert.equal(h.node('maze-view-status').hidden,true);assert.equal(h.node('maze-view-retry').hidden,true);
+ assert.equal(h.record.created,2);assert.equal(h.snapshot().view,'3d');assert.equal(h.snapshot().cameraDistance,'wide');assert.equal(h.snapshot().world,world);assert.equal(h.snapshot().viewFailure,'');assert.equal(h.node('maze-view-status').hidden,true);assert.equal(h.node('viewpoint-result').hidden,false);assert.match(h.node('viewpoint-result').textContent,/準備 2回目 完了/);assert.equal(h.node('maze-view-retry').hidden,true);
  assert.equal(h.snapshot().state,h.state);assert.deepEqual({...h.state,pitch:original.pitch},original);assert.equal(h.record.restored,1);assert.equal(h.snapshot().cameraZoom,.82);
 });
 
@@ -86,12 +87,35 @@ test('background or history interruption cancels pending construction and resume
  assert.equal(creates,1);assert.equal(h.snapshot().view,'3d');assert.equal(h.snapshot().cameraDistance,'far');assert.equal(h.snapshot().resumeViewpoint,false);
 });
 
-test('viewpoint UI replaces renderer buttons and duplicate menu controls while retaining detail choices and retry',()=>{
- const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');assert.doesNotMatch(html,/id="view-[23]d"|>2D<|>3D<|3Dを再試行/);assert.match(html,/id="camera-distance"[^>]+aria-haspopup="dialog"/);assert.match(html,/>視点を再試行</);
- assert.match(app,/cameraButton\.onclick=showViewpoints/);assert.match(app,/option\.detail\?more:main/);assert.doesNotMatch(app,/cameraToggle|cameraDistance=nextCameraDistance/);
- assert.match(app,/pagehide'.*suspendViewpoint/);assert.match(app,/pageshow'.*resumePendingViewpoint/);assert.match(app,/visibilitychange'.*suspendViewpoint/);
+test('direct arrows replace modal selectors and preserve movement key handling',()=>{
+ const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');assert.doesNotMatch(html,/id="view-[23]d"|>2D<|>3D<|3Dを再試行|id="camera-distance"[^>]+aria-haspopup/);
+ assert.match(html,/<span id="camera-distance"[^>]+role="status"/);assert.match(html,/>視点を再試行</);assert.match(html,/>記録を保存して再読み込み</);
+ assert.match(app,/\$\('viewpoint-prev'\)\.onclick=\(\)=>void cycleMazeViewpoint\(-1\)/);assert.match(app,/\$\('viewpoint-next'\)\.onclick=\(\)=>void cycleMazeViewpoint\(1\)/);
+ assert.doesNotMatch(app,/showViewpoints|cameraToggle|cameraDistance=nextCameraDistance/);
+ assert.match(app,/keys.has\('arrowleft'\).*state.yaw/);assert.match(app,/pagehide'.*suspendViewpoint/);assert.match(app,/pageshow'.*resumePendingViewpoint/);assert.match(app,/visibilitychange'.*suspendViewpoint/);
 });
 
 test('a viewpoint chosen before the hero gate saves the latest intent without constructing WebGL',async()=>{
  const h=harness();h.context.setReady(false);await h.setViewpoint('eye');await h.setViewpoint('behind-far');assert.equal(h.record.created,0);assert.equal(h.snapshot().desiredViewpoint.id,'behind-far');assert.equal(h.storage.get('halloween-exhibition:viewpoint:maze:v1'),'behind-far');assert.equal(h.storage.get('halloween-exhibition:camera:maze'),'far');
+});
+
+test('maze arrows wrap all six presets in either direction without changing saved progress or zoom',async()=>{
+ const h=harness(),original=JSON.parse(JSON.stringify(h.state));
+ for(const direction of [1,-1])for(let i=0;i<6;i++){
+  const expected=cycleViewpoint('maze',h.snapshot().desiredViewpoint.id,direction);await h.context.cycle(direction);
+  assert.equal(h.snapshot().desiredViewpoint.id,expected.id);assert.equal(h.snapshot().view,expected.view);assert.equal(h.snapshot().cameraDistance,expected.distance);
+ }
+ assert.equal(h.snapshot().cameraZoom,.82);assert.deepEqual({...h.state,pitch:original.pitch},original);assert.equal(h.record.created,1,'a good 3D world is reused');
+});
+
+test('instant WebGL failure is preceded by paintable attempt feedback and leaves a persistent result',async()=>{
+ const paint=deferred(),h=harness({beforePaint:()=>paint.promise,createWorld:()=>{throw Error('Error creating WebGL context.');}});
+ const request=h.setViewpoint('eye',{quiet:true});
+ assert.equal(h.record.created,0);assert.equal(h.node('maze-view-status').hidden,false);assert.match(h.node('maze-view-status').textContent,/準備 1回目.*準備中/);assert.equal(h.node('maze-view-retry').hidden,true);
+ paint.resolve();await request;assert.equal(h.record.created,1);assert.match(h.node('maze-view-status').textContent,/準備 1回目.*端末またはブラウザー/);assert.equal(h.node('maze-view-status').hidden,false);
+});
+
+test('a newer overhead choice cancels the pre-construction paint boundary',async()=>{
+ const paint=deferred(),h=harness({beforePaint:()=>paint.promise});const request=h.setViewpoint('eye',{quiet:true});await h.setViewpoint('far',{quiet:true});paint.resolve();await request;
+ assert.equal(h.record.created,0);assert.equal(h.snapshot().view,'2d');assert.equal(h.snapshot().cameraDistance,'far');assert.equal(h.snapshot().viewFeedback,'');assert.equal(h.node('maze-view-status').hidden,true);
 });

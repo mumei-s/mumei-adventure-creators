@@ -1,3 +1,5 @@
+import {createViewpointControlLayout} from '../viewpoint-controls.js?v=20261024-viewpoints1';
+import {afterViewPaint} from '../view-paint.js?v=20261024-viewpoints1';
 import {createChangeTracker,setChangedProperty,setChangedAttribute} from './change-only-ui.js?v=20261019-audit1';
 import {bindPinchZoom} from '../touch-camera.js?v=20261019-journey1';
 import {readPadMode,savePadMode} from '../control-preferences.js?v=20261019-journey1';
@@ -6,7 +8,7 @@ import {classifyTown3DFailure} from '../town/view-mode.js?v=20261019-journey1';
 import {nearestFurnishing,FURNISHING_INFO} from './furnishing-info.js?v=20261019-interior1';
 import {readCameraDistance,saveCameraDistance,readCameraZoom,saveCameraZoom,normalizeCameraZoom} from '../camera-distance.js?v=20261019-journey1';
 import {preloadSelectedView} from '../view-preload.js?v=20261024-viewpoints1';
-import {viewpointOptions,resolveViewpoint,migrateViewpoint,readViewpoint,saveViewpoint} from '../viewpoint-presets.js?v=20261024-viewpoints1';
+import {cycleViewpoint,resolveViewpoint,migrateViewpoint,readViewpoint,saveViewpoint} from '../viewpoint-presets.js?v=20261024-viewpoints1';
 import {createReloadControl} from '../safe-page-reload.js?v=20261017-reload1';
 import {fetchStartupJSON,loadMazeStartupData,loadRequiredCharacters} from './startup-assets.js?v=20261017-startup1';
 import {initPadPosition} from '../game-display.js?v=20261019-interior1';
@@ -43,10 +45,11 @@ const characterAssets=createCharacterAssets();
 
 let bootRequest=0,bootAbort=null,worldModule=null,releaseViewPreload=()=>{};
 function prepareViewpointAssets(requires3D,signal){releaseViewPreload();releaseViewPreload=preloadSelectedView({requires3D,worldURL:new URL('./world.js?v=20261019-unified1',import.meta.url),signal});}
-let cameraDistance=readCameraDistance('maze'),cameraZoom=readCameraZoom('maze'),padMode=readPadMode(),padBinding=null,viewFailure='';
+let cameraDistance=readCameraDistance('maze'),cameraZoom=readCameraZoom('maze'),padMode=readPadMode(),padBinding=null,viewFailure='',viewFailureCode='',viewFeedback='',viewAttempt=0;
 let stageRenderer,battleCanvas=null,battleEffect=null,visualTime=0;
 let facing='down',walking=false,walkPhase=0,padDirection=null;
 const $=id=>document.getElementById(id),panel=$('panel'),content=$('panel-content');
+const viewpointLayout=createViewpointControlLayout({root:$('game'),utilities:document.querySelector('.lantern-dock'),control:document.querySelector('.viewpoint-control')});
 const names={horror:'物語の書庫'},keys=new Set(),held=new Set(),heldControls=[];
 const reducedMotion=matchMedia('(prefers-reduced-motion: reduce)');
 const element=(tag,text,cls)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e;};
@@ -208,7 +211,7 @@ function showMap(){title('EXPLORE AT YOUR PACE','迷宮の見取り図');const c
 function resetPosition(){state={...state,...toWorld(FEATURES.spawn),yaw:0,pitch:0};clearInput();updateHUD();notify('入口に戻りました。手に入れた鍵は、そのままです。');}
 function showExit(){title('RETURN TO THE CASTLE','お城に戻りますか。');content.append(element('p','鍵と記事の記録は保存されています。モンスターとの対戦記録も、このブラウザに保存されます。'));const back=element('a','Halloweenの名鑑へ戻る','primary');back.href='../?return=palace';back.textContent='お城に戻る';back.addEventListener('click',()=>{clearInput();soundCheck.stop('');visitorSettings.stopMusic();save();});content.append(back);openPanel();}
 const padPositionPreferences=initPadPosition({onChange:()=>clearInput()});
-const pageReload=createReloadControl({save:()=>!gameReady?{ok:false,notice:'冒険の準備が終わってから再読み込みしてください。'}:battle?{ok:false,notice:'対戦を終えてから再読み込みしてください。'}:save(),beforeReload:()=>{clearInput();soundCheck.stop('');visitorSettings.stopMusic();}});
+const pageReload=createReloadControl({save:()=>!gameReady?{ok:false,notice:'冒険の準備が終わってから再読み込みしてください。'}:battle?{ok:false,notice:'対戦を終えてから再読み込みしてください。'}:save(),beforeReload:()=>{clearInput();soundCheck.stop('');visitorSettings.stopMusic();},onState:state=>{$('maze-view-reload').disabled=state.busy;$('maze-view-status').hidden=false;$('maze-view-status').textContent=state.message;}});
 function showExploreMenu(){
   title('宮殿の地下','メニュー');const menu=element('div',undefined,'explore-menu');menu.dataset.gameMenu='true';menu.setAttribute('aria-label','探索メニュー');
   const add=(label,action)=>{const button=element('button',label);button.onclick=action;return button;};
@@ -337,19 +340,42 @@ function updateViewUI(){
   $('pad-mode-hint').textContent=view==='2d'?'見下ろし：↑↓←→で東西南北へ':'目線・背後：↑前進 ↓後退 · ←→方向転換';for(const b of document.querySelectorAll('[data-move]')){const labels=view==='2d'?{forward:'北へ移動',back:'南へ移動',left:'西へ移動',right:'東へ移動'}:{forward:'前へ進む',back:'後ろへ下がる',left:'左を向く',right:'右を向く'};b.setAttribute('aria-label',labels[b.dataset.move]);}
   if(view==='2d')resizeFlat();else world?.resize();updateCameraButton();
 }
-async function setView(next,{persist=true,quiet=false,deferArt=false,distance=cameraDistance,failure=''}={}){
+function updateViewFeedback(){
+ const success=!!viewFeedback&&!viewPending&&!viewFailure;
+ const reason=$('maze-view-status');reason.hidden=!viewFeedback||success;reason.textContent=viewFeedback;
+ const result=$('viewpoint-result');result.hidden=!success;result.textContent=`準備 ${viewAttempt}回目 完了`;
+ reason.setAttribute('aria-busy',String(viewPending));
+ $('maze-view-retry').hidden=viewPending||!viewFailure||desiredViewpoint.view!=='3d'||viewFailureCode==='module-unavailable';
+ $('maze-view-reload').hidden=viewPending||viewFailureCode!=='module-unavailable';
+}
+async function setView(next,{persist=true,quiet=false,deferArt=false,distance=cameraDistance,failure='',failureCode=''}={}){
   const request=++viewRequest;viewAbort?.abort();const abort=new AbortController();viewAbort=abort;viewPending=true;resumeViewpoint=false;
   if(!deferArt)prepareViewpointAssets(next==='3d'&&!world,abort.signal);
   if(persist){desiredViewpoint=migrateViewpoint('maze',{view:next,distance});saveViewpoint('maze',desiredViewpoint.id);saveCameraDistance('maze',desiredViewpoint.distance);try{localStorage.setItem(viewKey,desiredViewpoint.view);}catch{}}
-  const finishLoading=transitions.begin($('view-loading'),next==='3d'?'選んだ視点を準備しています…':'見下ろしの舞台をひらいています…');let failed=false;clearInput();$('maze-view-status').hidden=true;$('maze-view-retry').hidden=true;updateCameraButton();
-  if(next==='3d'&&!world){
-    try{worldFailed=false;const module=await withDeadline(worldModule||import('./world.js?v=20261019-unified1'),{signal:abort.signal});if(!module)throw Error('Dynamic import unavailable');const {createWorld}=module;if(request!==viewRequest||abort.signal.aborted)return;world=createWorld({canvas:$('world'),art:rpgArt});restoreExhibits();}
-    catch(error){if(request!==viewRequest||abort.signal.aborted)return;failed=true;worldFailed=true;world?.dispose();world=null;view='2d';cameraDistance='normal';viewFailure=classifyTown3DFailure(error).message;console.warn('Requested viewpoint unavailable; overhead remains fully playable.',error);if(!quiet)notify(viewFailure);}
+  const preparing=next==='3d'&&!world;if(preparing)viewAttempt++;
+  const attempt=`準備 ${viewAttempt}回目：`;
+  viewFailure='';viewFailureCode='';viewFeedback=preparing?attempt+desiredViewpoint.label+'を準備中です。見下ろしで続けられます。':'';
+  const finishLoading=transitions.begin($('view-loading'),next==='3d'?'選んだ視点を準備しています…':'見下ろしの舞台をひらいています…');let failed=false;clearInput();updateViewFeedback();updateCameraButton();
+  if(preparing){
+    try{
+      await afterViewPaint(abort.signal);
+      if(request!==viewRequest||abort.signal.aborted)return;
+      worldFailed=false;const module=await withDeadline(worldModule||import('./world.js?v=20261019-unified1'),{signal:abort.signal});
+      if(!module)throw Error('Dynamic import unavailable');
+      if(request!==viewRequest||abort.signal.aborted)return;
+      world=module.createWorld({canvas:$('world'),art:rpgArt});restoreExhibits();
+    }catch(error){
+      if(request!==viewRequest||abort.signal.aborted)return;
+      failed=true;worldFailed=true;world?.dispose();world=null;view='2d';cameraDistance='normal';
+      const reason=classifyTown3DFailure(error);viewFailure=reason.message;viewFailureCode=reason.code;
+      viewFeedback=attempt+viewFailure+' 見下ろしで続けられます。';
+      console.warn('Requested viewpoint unavailable; overhead remains fully playable.',error);if(!quiet)notify(viewFailure);
+    }
   }
   if(request!==viewRequest||abort.signal.aborted)return;
   if(!deferArt&&(next==='2d'||failed))void rpgArt.loadRemaining();
-  if(!failed){view=next;cameraDistance=distance;viewFailure=failure;}viewPending=false;state.pitch=0;updateViewUI();
-  const reason=$('maze-view-status');if(reason){reason.hidden=!viewFailure;reason.textContent=viewFailure;}const retry=$('maze-view-retry');if(retry)retry.hidden=!viewFailure||desiredViewpoint.view!=='3d';finishLoading();transitions.enter($(view==='2d'?'fallback':'world'),{kind:'scene'});
+  if(!failed){view=next;cameraDistance=distance;viewFailure=failure;viewFailureCode=failureCode;viewFeedback=failure?attempt+failure+' 見下ろしで続けられます。':preparing?attempt+desiredViewpoint.label+'の準備ができました。':'';}
+  viewPending=false;state.pitch=0;updateViewUI();updateViewFeedback();finishLoading();transitions.enter($(view==='2d'?'fallback':'world'),{kind:'scene'});
   if(!quiet&&!failed)notify(migrateViewpoint('maze',{view,distance:cameraDistance}).label+'に切り替えました。位置・鍵・対戦の記録はそのままです。');
 }
 function setViewpoint(id,options={}){
@@ -363,14 +389,14 @@ function setViewpoint(id,options={}){
 }
 function fallbackView(error,phase){
   worldFailed=true;world?.dispose();world=null;
-  const reason=classifyTown3DFailure(error,{phase}).message;
+  const reason=classifyTown3DFailure(error,{phase});
   // Apply the fallback in this request, not in a late promise callback that could
   // overwrite a newer choice. The desired viewpoint and saved zoom stay intact.
-  void setView('2d',{persist:false,quiet:true,distance:'normal',failure:reason});notify(reason);
+  void setView('2d',{persist:false,quiet:true,distance:'normal',failure:reason.message,failureCode:reason.code});notify(reason.message);
 }
 function suspendViewpoint(){
   resumeViewpoint=resumeViewpoint||viewPending||(!viewFailure&&(view!==desiredViewpoint.view||cameraDistance!==desiredViewpoint.distance));
-  ++viewRequest;viewAbort?.abort();releaseViewPreload();viewPending=false;$('view-loading').hidden=true;updateCameraButton();
+  ++viewRequest;viewAbort?.abort();releaseViewPreload();viewPending=false;viewFeedback=viewFailure?viewFeedback:'';$('view-loading').hidden=true;updateCameraButton();updateViewFeedback();
 }
 function resumePendingViewpoint(){if(gameReady&&resumeViewpoint&&!document.hidden){resumeViewpoint=false;void setViewpoint(desiredViewpoint.id,{persist:false,quiet:true});}}
 function restoreExhibits(){if(!catalog||!world)return;world.setExhibits(articles('horror').length?articles('horror').slice(0,1).map(a=>({title:a.title,subtitle:catalog.creators.find(c=>c.id===a.creatorId)?.name,image:a.image,position:FEATURES.article})):[{title:'展示記事を待つ額縁',subtitle:'記事未登録 · 舞台装飾',position:FEATURES.article}]);}
@@ -389,7 +415,7 @@ function tick(now){
   frame=requestAnimationFrame(tick);
 }
 function start(){if(!frame&&gameReady){last=0;frame=requestAnimationFrame(tick);}}
-function resizeGameViewport(){world?.resize();if(view==='2d')resizeFlat();if(battle)drawBattleVisual();}
+function resizeGameViewport(){viewpointLayout.refresh();world?.resize();if(view==='2d')resizeFlat();if(battle)drawBattleVisual();}
 initViewport({onChange:()=>{clearInput();resizeGameViewport();}});
 if(typeof ResizeObserver==='function'){const canvasSizeObserver=new ResizeObserver(()=>requestAnimationFrame(resizeGameViewport));canvasSizeObserver.observe($('world'));canvasSizeObserver.observe($('fallback'));}
 window.addEventListener('orientationchange',clearInput);
@@ -422,6 +448,7 @@ $('tools-open').onclick=showLighting;$('lantern').onclick=toggleLantern;$('lante
 $('interact').onclick=performContextAction;$('list-open').onclick=()=>{if(catalog)showCatalog();};$('map-open').onclick=()=>{if(catalog)showMap();};$('minimap-open').onclick=()=>{if(catalog)showMap();};$('home').onclick=resetPosition;
 $('menu-open').onclick=showExploreMenu;$('battle-open').onclick=startBattle;$('creator-open').onclick=talkToCreator;
 $('maze-view-retry').onclick=()=>setViewpoint(desiredViewpoint.id);
+$('maze-view-reload').onclick=()=>void pageReload.controller.run();
 function updateMotion(){transitions.sync();const enabled=motion&&!reducedMotion.matches;panel.dataset.menuMotion=String(enabled);
   $('pause').textContent=enabled?'演出を停止':reducedMotion.matches?'端末設定で演出停止中':'演出を再開';$('pause').setAttribute('aria-pressed',String(!enabled));
   const toggle=$('menu-motion-toggle');if(toggle){toggle.textContent=reducedMotion.matches?'端末設定で演出停止中':enabled?'演出：ON → 停止する':'演出：OFF → 再開する';toggle.setAttribute('aria-pressed',String(enabled));toggle.disabled=reducedMotion.matches;}
@@ -477,22 +504,20 @@ rpgArt.ready.then(()=>{document.body.dataset.art=rpgArt.failures.length?'partial
 const cameraButton=$('camera-distance');
 function viewpointStatus(){
  const actual=migrateViewpoint('maze',{view,distance:cameraDistance});
- return viewPending||resumeViewpoint?`現在：${actual.label}。選んだ「${desiredViewpoint.label}」を準備しています。`:viewFailure?`現在は${actual.label}で表示中です。選んだ「${desiredViewpoint.label}」は再試行できます。`:actual.id!==desiredViewpoint.id?`現在：${actual.label}。選んだ「${desiredViewpoint.label}」を準備しています。`:`現在の視点：${actual.label}`;
+ return viewPending||resumeViewpoint?`現在：${actual.label}。選んだ「${desiredViewpoint.label}」を準備しています。`:viewFailure?`現在は${actual.label}で表示中です。選んだ「${desiredViewpoint.label}」は${viewFailureCode==='module-unavailable'?'記録を保存して再読み込みできます':'再試行できます'}。`:actual.id!==desiredViewpoint.id?`現在：${actual.label}。選んだ「${desiredViewpoint.label}」を準備しています。`:`現在の視点：${actual.label}`;
 }
 function updateCameraButton(){
- const actual=migrateViewpoint('maze',{view,distance:cameraDistance});cameraButton.textContent='視点：'+actual.label+(viewPending||resumeViewpoint?'（準備中）':viewFailure?'（代替）':'');
+ const actual=migrateViewpoint('maze',{view,distance:cameraDistance});cameraButton.textContent=actual.label+(viewPending||resumeViewpoint?'（準備中）':viewFailure?'（代替）':'');
+ cameraButton.setAttribute('aria-label','現在の視点：'+cameraButton.textContent);
  cameraButton.setAttribute('aria-description',viewpointStatus()+' 指で調整した拡大率は保ちます。');
- const status=$('viewpoint-status');if(status)status.textContent=viewpointStatus();
- for(const button of content.querySelectorAll('[data-viewpoint]'))button.setAttribute('aria-pressed',String(button.dataset.viewpoint===desiredViewpoint.id));
+ for(const [id,direction]of [['viewpoint-prev',-1],['viewpoint-next',1]]){
+  const next=cycleViewpoint('maze',desiredViewpoint.id,direction),control=$(id);
+  control.setAttribute('aria-label',`${direction<0?'前':'次'}の視点：${next.label}`);control.title=next.label;
+ }
 }
-function showViewpoints(){
- title('VIEWPOINT','視点を選ぶ');const status=element('p',viewpointStatus());status.id='viewpoint-status';status.setAttribute('role','status');
- const main=element('div',undefined,'tabs');main.setAttribute('role','group');main.setAttribute('aria-label','基本の視点');
- const details=element('details'),more=element('div',undefined,'tabs');details.append(element('summary','ほかの視点'),more);more.setAttribute('role','group');more.setAttribute('aria-label','ほかの視点');
- for(const option of viewpointOptions('maze')){const button=element('button',option.label);button.type='button';button.dataset.viewpoint=option.id;button.setAttribute('aria-pressed',String(option.id===desiredViewpoint.id));button.onclick=()=>void setViewpoint(option.id);(option.detail?more:main).append(button);if(option.detail&&option.id===desiredViewpoint.id)details.open=true;}
- content.append(status,main,details,element('p','目線・背後では左右で方向転換、見下ろし・遠景では東西南北へ移動します。ピンチ操作や「パッド・拡大縮小」の拡大率は、視点を変えても保ちます。','subtle'));openPanel();
-}
-cameraButton.onclick=showViewpoints;updateCameraButton();
+function cycleMazeViewpoint(direction){return setViewpoint(cycleViewpoint('maze',desiredViewpoint.id,direction).id);}
+$('viewpoint-prev').onclick=()=>void cycleMazeViewpoint(-1);
+$('viewpoint-next').onclick=()=>void cycleMazeViewpoint(1);updateCameraButton();
 updateViewUI();init();
 
 

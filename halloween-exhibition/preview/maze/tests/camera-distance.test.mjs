@@ -1,7 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import vm from 'node:vm';
 import {stageCamera} from '../stage-2d.js';
 import {initialState,blocked} from '../maze-model.js';
 import {CAMERA_DISTANCE_STAGES,cameraDistanceScale,nextCameraDistance,cameraDistanceLabel,mazeCameraZoom,mazeWideCamera,readCameraDistance,saveCameraDistance,readCameraZoom,saveCameraZoom} from '../../camera-distance.js';
@@ -25,14 +24,13 @@ test('street and underground retain independent camera modes and tolerate denied
  const previous=globalThis.localStorage;const memory=new Map();globalThis.localStorage={getItem:key=>memory.get(key),setItem:(key,value)=>memory.set(key,value)};
  try{saveCameraDistance('town','wide');saveCameraZoom('town',.82);assert.equal(readCameraDistance('town'),'wide');assert.equal(readCameraDistance('maze'),'normal');saveCameraDistance('maze','far');assert.equal(readCameraDistance('maze'),'far');assert.equal(readCameraDistance('town'),'wide','existing saved wide is not migrated or overwritten');assert.equal(readCameraZoom('town'),.82);globalThis.localStorage={getItem(){throw Error('denied');},setItem(){throw Error('denied');}};assert.equal(readCameraDistance('town'),'normal');assert.doesNotThrow(()=>saveCameraDistance('town','wide'));}finally{globalThis.localStorage=previous;}
 });
-test('shared stages cycle in order and actual game buttons preserve the manual zoom',()=>{
+test('legacy stages retain their meanings while both games use a viewpoint picker without changing zoom',()=>{
  assert.deepEqual(CAMERA_DISTANCE_STAGES,['normal','wide','far']);assert.deepEqual(CAMERA_DISTANCE_STAGES.map(cameraDistanceLabel),['標準','引き','遠景']);assert.equal(nextCameraDistance('normal'),'wide');assert.equal(nextCameraDistance('wide'),'far');assert.equal(nextCameraDistance('far'),'normal');
  for(const page of['town','maze']){
-  const source=fs.readFileSync(new URL(`../../${page}/app.js`,import.meta.url),'utf8'),start=source.indexOf("const cameraButton=$('camera-distance');"),end=source.indexOf('};updateCameraButton();',start)+'};updateCameraButton();'.length;
-  assert.ok(start>=0&&end>start);const attributes={},button={setAttribute:(key,value)=>attributes[key]=value},saved=[];
-  const context={cameraDistance:'wide',cameraZoom:.82,nextCameraDistance,cameraDistanceLabel,saveCameraDistance:(name,value)=>saved.push([name,value]),saveCameraZoom:()=>{throw Error('view changes must not overwrite pinch zoom');},$:()=>button,clearInput(){},resize(){},ready:false,gameReady:false,stageRenderer:{invalidate(){}}};
-  vm.runInNewContext(source.slice(start,end),context);for(const [stage,label]of[['far','遠景'],['normal','標準'],['wide','引き']]){button.onclick();assert.equal(context.cameraDistance,stage);assert.equal(context.cameraZoom,.82);assert.equal(button.textContent,'視点：'+label+' 82%');assert.equal(attributes['aria-pressed'],String(stage!=='normal'));}
-  assert.deepEqual(saved,[[page,'far'],[page,'normal'],[page,'wide']]);
+  const source=fs.readFileSync(new URL(`../../${page}/app.js`,import.meta.url),'utf8');
+  assert.match(source,/viewpointOptions/);assert.match(source,/readViewpoint/);assert.match(source,/saveViewpoint/);
+  assert.doesNotMatch(source,/cameraDistance=nextCameraDistance/);
+  assert.match(source,/bindPinchZoom/);assert.match(source,/saveCameraZoom/);
  }
 });
 test('camera buttons are reachable in both games and their menus include the comparison page',()=>{

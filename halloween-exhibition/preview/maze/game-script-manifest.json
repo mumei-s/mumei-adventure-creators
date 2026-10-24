@@ -104,8 +104,8 @@
     },
     {
       "path": "maze/app.js",
-      "bytes": 67955,
-      "sha256": "ebb7e6e49e6557dabbba322f1186babf4f7cfa5226510a3ce2d52c1cbcefeed6"
+      "bytes": 71756,
+      "sha256": "f7aaec52ba711a9caf736a6cd2b68cdaa8ca302ac7fddc9a898a01ea5cfad2a2"
     },
     {
       "path": "maze/battle-scene.js",
@@ -354,8 +354,8 @@
     },
     {
       "path": "scripts/build-game-scripts.mjs",
-      "bytes": 14469,
-      "sha256": "d72b4c94b0268e64f990eabb04659e972db66b0fc7d4303e49a069019f288f0e"
+      "bytes": 14563,
+      "sha256": "478b58ce824f621d8c794f408d5108370be061affd7187933a0b026c0f385e76"
     },
     {
       "path": "touch-camera.js",
@@ -364,8 +364,8 @@
     },
     {
       "path": "town/view-mode.js",
-      "bytes": 4816,
-      "sha256": "79ca299684bfc818b3632921d520031376b7d3664c2e1fd292c358f269432116"
+      "bytes": 4917,
+      "sha256": "6088f0a807e4175c9c82e7383969087ab7f41f0470e6971c5ac22e05582b365d"
     },
     {
       "path": "transition-effects.css",
@@ -376,6 +376,16 @@
       "path": "transition-effects.js",
       "bytes": 3383,
       "sha256": "1d491b421230854ef2bc9c79200be0ca40ab74553e893955b080514a44bb3f0b"
+    },
+    {
+      "path": "view-preload.js",
+      "bytes": 2413,
+      "sha256": "45662085fc03e6ed0e65a7ec232aad879cd5c199d22e5cb4882f08af98b0cddf"
+    },
+    {
+      "path": "viewpoint-presets.js",
+      "bytes": 1777,
+      "sha256": "b9df4cb083de699f187e9d36b645ee3915fa6e781d8fbca62abaf2d4372a4194"
     },
     {
       "path": "viewport.js",
@@ -390,12 +400,20 @@
   ],
   "moduleURLs": [
     {
+      "path": "maze/app.js",
+      "relative": "./app.js"
+    },
+    {
       "path": "maze/creator-runtime.js",
       "relative": "./creator-runtime.js"
     },
     {
       "path": "maze/rpg-art.js",
       "relative": "./rpg-art.js"
+    },
+    {
+      "path": "view-preload.js",
+      "relative": "../view-preload.js"
     }
   ],
   "imports": [
@@ -412,7 +430,7 @@
     },
     {
       "path": "maze/app.js",
-      "bytes": 44748
+      "bytes": 46697
     },
     {
       "path": "maze/stage-2d.js",
@@ -500,7 +518,7 @@
     },
     {
       "path": "town/view-mode.js",
-      "bytes": 1913
+      "bytes": 2014
     },
     {
       "path": "transition-effects.js",
@@ -535,6 +553,14 @@
       "bytes": 1413
     },
     {
+      "path": "view-preload.js",
+      "bytes": 1258
+    },
+    {
+      "path": "viewpoint-presets.js",
+      "bytes": 1210
+    },
+    {
       "path": "control-settings.js",
       "bytes": 1169
     },
@@ -547,12 +573,12 @@
       "bytes": 834
     },
     {
-      "path": "camera-distance.js",
-      "bytes": 769
-    },
-    {
       "path": "maze/context-action.js",
       "bytes": 754
+    },
+    {
+      "path": "camera-distance.js",
+      "bytes": 667
     },
     {
       "path": "maze/minimap-size.js",
@@ -593,8 +619,8 @@
   ],
   "output": {
     "path": "maze/game-entry.js",
-    "bytes": 340903,
-    "sha256": "23d284df551205913f44c6dfdba857861f90fc329531144c7e729a3fa5e7bdfe"
+    "bytes": 345319,
+    "sha256": "c261335923a934d512b1ebfb708009fe96080e56c4d0ad42c13d89feff09d29d"
   },
   "styleSources": [
     "./style.css?v=20261014-adventure2",

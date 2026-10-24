@@ -1,15 +1,15 @@
 import {withDeadline} from '../transition-effects.js?v=20261016-living1';
 
 const FAILURE_MESSAGES=Object.freeze({
- 'webgl-unavailable':'この端末またはブラウザーで3D描画を開始できませんでした。ほかのタブを閉じてから、3Dを再試行してください。',
- 'context-lost':'端末の3D描画が中断されました。3Dを再試行すると、同じ場所から再開できます。',
- 'assets-unavailable':'3Dの住民画像を準備できませんでした。2Dで続けるか、再試行できます。',
- 'assets-timeout':'3Dの画像準備が時間切れになりました。2Dで続けるか、再試行できます。',
- 'assets-invalid':'3Dの住民画像を確認できませんでした。2Dで続けるか、再試行できます。',
- 'module-unavailable':'3Dの表示データを読み込めませんでした。ページを読み込み直してから、もう一度お試しください。',
- timeout:'3Dの準備が時間内に終わりませんでした。通信を確認して、3Dを再試行してください。',
- 'render-failed':'3Dの表示を続けられませんでした。3Dを再試行してください。',
- 'load-failed':'3Dを開始できませんでした。3Dを再試行してください。',
+ 'webgl-unavailable':'この端末またはブラウザーで選んだ視点の描画を開始できませんでした。視点を再試行できます。',
+ 'context-lost':'選んだ視点の描画が中断されました。再試行すると同じ場所から再開できます。',
+ 'assets-unavailable':'選んだ視点の住民画像を準備できませんでした。見下ろしで続けるか、再試行できます。',
+ 'assets-timeout':'選んだ視点の画像準備が時間切れになりました。見下ろしで続けるか、再試行できます。',
+ 'assets-invalid':'選んだ視点の住民画像を確認できませんでした。見下ろしで続けるか、再試行できます。',
+ 'module-unavailable':'選んだ視点の表示データを読み込めませんでした。ページを読み込み直してから、もう一度お試しください。',
+ timeout:'選んだ視点の準備が時間内に終わりませんでした。通信を確認して、視点を再試行してください。',
+ 'render-failed':'選んだ視点の表示を続けられませんでした。視点を再試行してください。',
+ 'load-failed':'視点を開始できませんでした。視点を再試行してください。',
 });
 
 /** Report a useful reason without exposing stack traces or mistaking a failed load for missing 3D support. */

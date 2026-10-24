@@ -1,3 +1,5 @@
+import {preloadSelectedView} from '../view-preload.js';
+import {viewpointOptions,readViewpoint,saveViewpoint} from '../viewpoint-presets.js';
 import {createTownSceneImages} from './scene-images.js';
 import {createTownEyeCamera,townEyeLevel} from './eye-camera.js';
 import {townControlOffset} from './camera-framing.js';
@@ -8,7 +10,7 @@ import {readPadMode,savePadMode} from '../control-preferences.js?v=20261019-jour
 import {createControlSettings} from '../control-settings.js?v=20261019-journey1';
 import {createSceneNameOverlay} from '../scene-names.js?v=20261019-homes2';
 import {CREATOR_HOMES,getCreatorHome} from './creator-homes.js?v=20261019-homes2';
-import {readCameraDistance,saveCameraDistance,readCameraZoom,saveCameraZoom,normalizeCameraZoom,nextCameraDistance,cameraDistanceLabel} from '../camera-distance.js?v=20261019-journey1';
+import {readCameraDistance,saveCameraDistance,readCameraZoom,saveCameraZoom,normalizeCameraZoom} from '../camera-distance.js?v=20261019-journey1';
 import {createReloadControl} from '../safe-page-reload.js?v=20261017-reload1';
 import {createTownSession} from './controller.js?v=20261019-homes2';
 import {createTownStore,importTownState,exportTownState} from './save-model.js?v=20261019-homes2';
@@ -30,11 +32,13 @@ const button=(text,action,cls)=>{const node=el('button',text,cls);node.type='but
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let settings=readTownPreferences().preferences;
 let cameraDistance=readCameraDistance('town'),cameraZoom=readCameraZoom('town'),padMode=readPadMode(),padBinding=null;
+let selectedViewpoint=readViewpoint('town',{view:settings.view,distance:cameraDistance});settings.view=selectedViewpoint.view;cameraDistance=selectedViewpoint.distance;
 const sceneNames=createSceneNameOverlay(document.querySelector('.town-world'));
 const store=createTownStore();
 let readingJourney=null;
 let ready=false,renderer=null,characterArt=null,bootRequest=0,bootAbort=null,pageActive=true,returnFocus=null,panelKind='',panelRevision=0,dialogueTarget=null,minimapSignature='',hudSignature='',toastTimer=null,battleCanvas=null,battleRevision=-1,battleArtReady=false,battleArtFailed=false;
-let sceneImages=createTownSceneImages();
+let sceneImages=createTownSceneImages(),releaseViewPreload=()=>{};
+function prepareSelectedView(){releaseViewPreload();releaseViewPreload=preloadSelectedView({requires3D:selectedViewpoint.view==='3d',worldURL:new URL('./world-3d.js?v=20261019-homes2',import.meta.url),signal:bootAbort?.signal});}
 let viewController=null,lastTownFrame=null,battleBackdropId=null,townWorldModule=null,homeRouteAt=0,homeRouteSignature='';
 let eyeControlSignature=null;let cameraOffsetY=0;const eyeCamera=createTownEyeCamera();
 let direction=null,canvasPointer=null,worldTime=0,displayPreferences=null,layoutPreferences=null,resizeFrame=null;const keys=new Set(),held=new Set(),bindings=[];
@@ -53,17 +57,14 @@ function updateViewUI(state){
  $('town-webgl').hidden=!active;$('town-canvas').hidden=active;
  const skip=document.querySelector('.skip-link');if(skip)skip.href=active?'#town-webgl':'#town-canvas';
  if(old===$('town-canvas')||old===$('town-webgl'))(active?$('town-webgl'):$('town-canvas')).focus({preventScroll:true});
- const status=$('town-view-status');if(status)status.textContent=state.status==='loading'?'3Dの街を準備中です。2Dで歩き続けられます。':state.status==='failed'?'3Dを使えませんでした。2Dで続きを遊べます。':active?(eyeView()?'目線の高さの3Dです。ドラッグで見回せます。':'3Dの見下ろし表示です。屋外の標準視点で目線の高さに戻ります。'):'2Dの見下ろし表示です。';
- const retry=$('town-view-retry');if(retry)retry.hidden=state.status!=='failed';
- const detail=state.failureReason||'3Dを使えませんでした。もう一度お試しください。';if(status&&state.status==='failed')status.textContent=detail;
- for(const mode of ['2d','3d']){const b=$('town-view-'+mode);if(b){b.setAttribute('aria-pressed',String(state.active===mode));b.disabled=mode==='3d'&&state.status==='loading';}}
- const banner=$('town-mode-banner'),message=$('town-mode-message'),again=$('town-mode-retry');if(banner){banner.hidden=!['loading','failed'].includes(state.status);message.textContent=state.status==='failed'?detail:'3Dを準備中です。2Dで歩き続けられます。';again.hidden=state.status!=='failed';}
- // The persistent retry banner already announces failures; do not cover the street with a duplicate toast.
+ const detail=state.failureReason||'選んだ視点を準備できませんでした。もう一度お試しください。';
+ const banner=$('town-mode-banner'),message=$('town-mode-message'),again=$('town-mode-retry');if(banner){banner.hidden=!['loading','failed'].includes(state.status);message.textContent=state.status==='failed'?detail+' 見下ろしで続けられます。':selectedViewpoint.label+'を準備中です。見下ろしで歩き続けられます。';again.hidden=state.status!=='failed';}
+ updateCameraButton();
  updateEyeControls();scheduleResize();
 }
-function updateEyeControls(){const eye=eyeView();if(eyeControlSignature===eye)return;eyeControlSignature=eye;const status=$('town-view-status');if(status&&viewController?.snapshot().status==='ready')status.textContent=eye?'目線の高さの3Dです。ドラッグで見回せます。':'3Dの見下ろし表示です。屋外の標準視点で目線の高さに戻ります。';const labels=eye?['前へ歩く','左を向く','右を向く','後ろへ歩く']:['北へ歩く','西へ歩く','東へ歩く','南へ歩く'];for(const [index,b]of [...$('town-pad').querySelectorAll('button')].entries())if(labels[index])b.setAttribute('aria-label',labels[index]);$('town-webgl').setAttribute('aria-label',eye?'目線の高さで街を探索。ドラッグで見回し、上下で前後、左右で向きを変えます。':'街の見下ろし探索。矢印キーかWASDで歩きます。');}
+function updateEyeControls(){const eye=eyeView();if(eyeControlSignature===eye)return;eyeControlSignature=eye;updateCameraButton();const labels=eye?['前へ歩く','左を向く','右を向く','後ろへ歩く']:['北へ歩く','西へ歩く','東へ歩く','南へ歩く'];for(const [index,b]of [...$('town-pad').querySelectorAll('button')].entries())if(labels[index])b.setAttribute('aria-label',labels[index]);$('town-webgl').setAttribute('aria-label',eye?'目線の高さで街を探索。ドラッグで見回し、上下で前後、左右で向きを変えます。':'街の見下ろし探索。矢印キーかWASDで歩きます。');}
 function resetTownView(){viewController?.destroy();viewController=null;$('town-webgl').hidden=true;$('town-canvas').hidden=false;const skip=document.querySelector('.skip-link');if(skip)skip.href='#town-canvas';if(returnFocus===$('town-webgl'))returnFocus=$('town-canvas');}
-function prepareTownView(){
+function prepareTownView(){ if(viewController){void viewController.setMode(settings.view);return;}
  viewController=createTownViewController({load:async({signal,onContextLost})=>{
   const module=await(townWorldModule||import('./world-3d.js?v=20261019-homes2'));if(!module)throw Error('Town renderer unavailable');
   if(signal.aborted)throw Error('Old town view request');
@@ -71,6 +72,7 @@ function prepareTownView(){
  },onChange:updateViewUI});
  void viewController.setMode(settings.view);
 }
+function resumeTownView(){if(!pageActive||document.hidden||!ready)return;prepareSelectedView();prepareTownView();characterArt?.startEnhancements?.();void renderer?.start?.();}
 function beginPanel(title,{kind='page',eyebrow='THE LANTERN TOWN'}={}){displayPreferences?.destroy();displayPreferences=null;panelRevision++;clearInput();panelKind=kind;if(kind==='battle')loop.start();else loop.stop();panel.classList.toggle('battle-mode',kind==='battle');battleCanvas=null;content.replaceChildren();const heading=el('h2',title);heading.id='town-panel-title';content.append(el('p',eyebrow,'eyebrow'),heading);if(!panel.open){returnFocus=document.activeElement;panel.showModal();}panel.scrollTop=0;content.scrollTop=0;}
 function closePanel(){if(session.snapshot().battle){const result=session.leaveBattle();if(result?.notice)notify(result.notice);}panel.close();}
 panel.addEventListener('close',()=>{displayPreferences?.destroy();displayPreferences=null;panelRevision++;clearInput();panelKind='';dialogueTarget=null;battleCanvas=null;battleRevision=-1;panel.classList.remove('battle-mode');returnFocus?.focus?.({preventScroll:true});loop.start();});
@@ -126,8 +128,7 @@ function showMenu(){
  beginPanel('メニュー',{kind:'menu',eyebrow:'星灯りの街'});const progress=readingProgress(session.snapshot().state);content.append(el('p',progress.title,'game-menu-progress'));
  const menu=el('div',undefined,'town-menu');menu.dataset.gameMenu='true';menu.setAttribute('aria-label','探索メニュー');
  const lanternButton=button(settings.lantern?'ランタン ON':'ランタン OFF',()=>{toggleLantern();lanternButton.textContent=settings.lantern?'ランタン ON':'ランタン OFF';lanternButton.setAttribute('aria-pressed',String(settings.lantern));});lanternButton.setAttribute('aria-pressed',String(settings.lantern));
- const cameraToggle=button('視点：'+cameraDistanceLabel(cameraDistance),()=>{$('camera-distance').click();cameraToggle.textContent='視点：'+cameraDistanceLabel(cameraDistance);});
- menu.append(button('地図',showMap),lanternButton,button('歩く速さ',showWalkingSpeed),cameraToggle,button('パッド・拡大縮小',showControlSettings),button('明るさ・音・表示',showSettings));
+ menu.append(button('地図',showMap),lanternButton,button('歩く速さ',showWalkingSpeed),button('パッド・拡大縮小',showControlSettings),button('明るさ・音・表示',showSettings));
  for(const [label,action]of[['クリエイター宅を選ぶ',showCreatorHomes],['街の仲間',showVisitors],['物語の手帳',showJournal],['街の依頼（寄り道）',showTownJournal],['持ち物',showInventory],['記録・バックアップ',showSave]])menu.append(button(label,action));
  const compare=el('a','キャラ見比べ','button-link');compare.href='../characters/';compare.target='_blank';compare.rel='noopener noreferrer';menu.append(compare,button('操作と物語について',showHelp));
  const scenery=renderer?.status?.();if(scenery?.failed?.length)menu.append(button('街の景色を読み込み直す',()=>{closePanel();void renderer?.retry?.().then(()=>{renderer?.invalidate?.();notify(renderer?.status?.().failed?.length?'読み込めない景色があります。もう一度お試しください。':'街の景色を読み込み直しました。');});}));
@@ -193,7 +194,16 @@ function showMap(){
 }
 function setSceneZoom(value,{persist=true}={}){cameraZoom=normalizeCameraZoom(value);if(persist)saveCameraZoom('town',cameraZoom);updateCameraButton();renderer?.invalidate?.();viewController?.snapshot().view?.invalidate?.();}
 function showControlSettings(){beginPanel('パッド・拡大縮小');content.append(createControlSettings({getMode:()=>padMode,setMode:value=>{clearInput();padMode=savePadMode(value).mode;padBinding?.refresh();},getZoom:()=>cameraZoom,setZoom:setSceneZoom}),button('街歩きに戻る',closePanel));}
-function chooseTownView(mode,{retry=false}={}){clearInput();settings.view=mode;persistSettings();void viewController?.setMode(mode,{retry:retry||mode==='3d'&&viewController?.snapshot().status==='failed'});}
+function chooseTownViewpoint(id,{retry=false}={}){
+ clearInput();selectedViewpoint=saveViewpoint('town',id);settings.view=selectedViewpoint.view;cameraDistance=selectedViewpoint.distance;saveCameraDistance('town',cameraDistance);persistSettings();updateCameraButton();renderer?.invalidate?.();if(ready)prepareSelectedView();
+ void viewController?.setMode(settings.view,{retry:retry||settings.view==='3d'&&viewController?.snapshot().status==='failed'});if(ready)tick(0,0);
+}
+function showViewpoints(){
+ beginPanel('視点を選ぶ',{kind:'viewpoint'});const label=el('label','見え方');label.htmlFor='town-viewpoint';const select=el('select');select.id='town-viewpoint';const more=el('optgroup');more.label='ほかの視点';
+ for(const preset of viewpointOptions('town')){const option=el('option',preset.label);option.value=preset.id;(preset.detail?more:select).append(option);}select.append(more);select.value=selectedViewpoint.id;
+ select.onchange=()=>chooseTownViewpoint(select.value);
+ content.append(label,select,el('p','目線は画面をドラッグして見回します。見下ろしと遠景は北が上です。屋内は家の全体が見える見下ろしに切り替わります。拡大縮小は指の操作やパッド設定で調整できます。','subtle'),button('街歩きに戻る',closePanel));
+}
 function showWalkingSpeed(){
  beginPanel('歩く速さ',{kind:'speed'});const label=el('label','歩く速さを選ぶ');label.htmlFor='town-walking-speed';const range=el('input');Object.assign(range,{id:'town-walking-speed',type:'range',min:'.5',max:'2',step:'.25',value:String(settings.speed)});const output=el('output',`${settings.speed}倍`);output.htmlFor=range.id;
  const update=value=>{settings.speed=Number(value);persistSettings();range.value=String(settings.speed);output.textContent=`${settings.speed}倍`;range.setAttribute('aria-valuetext',`${settings.speed}倍`);};range.oninput=()=>update(range.value);range.setAttribute('aria-valuetext',`${settings.speed}倍`);
@@ -202,13 +212,6 @@ function showWalkingSpeed(){
 }
 function showSettings(){
  beginPanel('街の明るさ・音・画面',{kind:'settings'});const displayControls=el('section');content.append(displayControls);const frame=initGameDisplay({controlsParent:displayControls,page:'town',onChange:scheduleResize}),layout=initDisplayMode({controlsParent:displayControls,page:'town'});displayPreferences={destroy(){frame?.destroy();layout?.destroy();}};const grid=el('div',undefined,'settings-grid');
- const viewLabel=el('label','街の見え方','full');viewLabel.htmlFor='town-view-mode';const viewSelect=el('select');viewSelect.id='town-view-mode';
- for(const [value,label]of[['3d','3D・立体の街'],['2d','2D・軽い表示']]){const option=el('option',label);option.value=value;viewSelect.append(option);}viewSelect.value=settings.view;
- viewSelect.onchange=()=>{clearInput();settings.view=viewSelect.value;persistSettings();void viewController?.setMode(settings.view);};
- const viewStatus=el('p',undefined,'subtle full');viewStatus.id='town-view-status';viewStatus.setAttribute('role','status');
- const retryView=button('3Dをもう一度準備する',()=>{settings.view='3d';viewSelect.value='3d';persistSettings();void viewController?.setMode('3d',{retry:true});},'full');retryView.id='town-view-retry';retryView.hidden=true;
- grid.append(viewLabel,viewSelect,viewStatus,retryView);
- const currentView=viewController?.snapshot();if(currentView){viewStatus.textContent=currentView.status==='loading'?'3Dを準備中です。2Dで歩き続けられます。':currentView.status==='failed'?currentView.failureReason||'3Dを使えませんでした。もう一度お試しください。':currentView.active==='3d'?(eyeView()?'目線の高さの3Dです。ドラッグで見回せます。':'3Dの見下ろし表示です。屋外の標準視点で目線の高さに戻ります。'):'2Dの見下ろし表示です。';retryView.hidden=currentView.status!=='failed';}
  const label=el('label','明るさ');label.htmlFor='town-brightness';const output=el('output',`${settings.brightness}`);output.id='town-brightness-value';const range=el('input');Object.assign(range,{id:'town-brightness',type:'range',min:'0',max:'100',step:'1',value:String(settings.brightness)});range.oninput=()=>{settings.brightness=Number(range.value);output.textContent=range.value;persistSettings();};grid.append(label,output,range,el('p','75で本来の色。文章と操作の明るさは変わりません。','subtle full'));
  const music=button('音楽をON',()=>{if(audio.snapshot().enabled)audio.stop();else void audio.start({gesture:true});},'full');music.id='town-music';music.setAttribute('aria-pressed','false');const volumeLabel=el('label','音量');volumeLabel.htmlFor='town-volume';const volumeOutput=el('output','0');volumeOutput.id='town-volume-value';const volume=el('input');Object.assign(volume,{id:'town-volume',type:'range',min:'0',max:'100',step:'1',value:String(audio.snapshot().volume)});volume.oninput=()=>audio.setVolume(volume.value);volume.onpointerup=()=>audio.resumeFromGesture();volume.onchange=()=>audio.resumeFromGesture();const status=el('p',undefined,'subtle full');status.id='town-audio-status';status.setAttribute('role','status');grid.append(music,volumeLabel,volumeOutput,volume,status);
  const movement=button(motion()?'動き：ON → 減らす':'動き：減らす → ON',()=>{if(reduced.matches){notify('端末の「動きを減らす」を優先しています。');return;}settings.motion=!settings.motion;persistSettings();showSettings();},'full');movement.setAttribute('aria-pressed',String(motion()));if(reduced.matches){movement.disabled=true;movement.textContent='端末の設定で動きを減らしています';}grid.append(movement);
@@ -224,7 +227,7 @@ function showSave(){
  const review=el('div');row.append(button('貼り付けた本文を確認',()=>{review.replaceChildren();const parsed=importTownState(text.value);if(!parsed.ok){message.textContent=parsed.notice||'この街のバックアップ形式ではありません。今の記録は変更していません。';return;}const next=parsed.state,progress=townProgress(next);review.append(el('p',`${progress.title}／体力${next.hp}/${next.maxHp}／${next.coins}ルーメン。この記録で街歩きの続きを置き換えます。`),button('確認した記録を復元する',()=>{const result=store.replace?store.replace(next):store.save(next);if(!result.ok){message.textContent=result.notice;return;}session.replace(next);eyeCamera.sync(next,{reset:true});message.textContent='街の記録を復元しました。';review.replaceChildren();renderer?.invalidate?.();},'primary'));message.textContent='内容を確認し、復元するボタンを押してください。';}));
  box.append(label,text,row,review,el('p','復元は街の記録だけを変更します。宮殿・展示・城の中の進行は対象外です。','subtle'));content.append(box,button('最初から歩く…',()=>{review.replaceChildren(el('p','街の物語と持ち物を最初からにします。今の続きを残す場合は、先にバックアップを保存してください。'),button('街を最初から始める',()=>{const next=initialTownState(),result=store.replace?store.replace(next):store.save(next);if(!result.ok){message.textContent=result.notice;return;}session.replace(next);eyeCamera.sync(next,{reset:true});renderer?.invalidate?.();closePanel();notify('街で新しい旅を始めました。');}));}),button('メニューに戻る',showMenu));
 }
-function showHelp(){beginPanel('星灯りの街へ');content.append(button('参加者の家を見に行く',()=>visitCreatorHome(),'primary'),el('p','無名S noteと黒猫のもとに、物語への招待状が届きました。街中の金色の道案内から住宅街へ進み、参加者の家の中へ。キャラと話したり、各アトリエの作品机から記事を読みに行こう。次の行き先は、画面上の物語の手帳に載っています。街の住人の依頼やバトルも、寄り道で楽しめます。','dialogue-text'));const keys=el('dl',undefined,'help-keys');for(const [key,text]of[['屋外3Dの標準視点','目線の高さで歩きます。画面をドラッグして見回し、↑↓で前後、←→で旋回。W/Sで前後、A/Dで横移動。'],['2D・引き視点・屋内','矢印 / WASDで東西南北へ歩きます。屋内は家の全体が見える俯瞰です。'],['E / Enter','目の前の人と話す・扉や物を調べる'],['M','街の地図'],['J / I','旅の手帳 / 持ち物'],['L','ランタンのON / OFF'],['Esc','メニューを開く・街へ戻る'],['戦闘 1〜5','攻撃・守る・灯り・星蜜・退く']])keys.append(el('dt',key),el('dd',text));content.append(keys,el('p','街の住人と物語はゲーム内のフィクションです。展示の参加者本人の発言や経歴を表すものではありません。音・点滅・時間制限で驚かす演出はありません。','subtle'),button('街を歩く',closePanel,'primary'));}
+function showHelp(){beginPanel('星灯りの街へ');content.append(button('参加者の家を見に行く',()=>visitCreatorHome(),'primary'),el('p','無名S noteと黒猫のもとに、物語への招待状が届きました。街中の金色の道案内から住宅街へ進み、参加者の家の中へ。キャラと話したり、各アトリエの作品机から記事を読みに行こう。次の行き先は、画面上の物語の手帳に載っています。街の住人の依頼やバトルも、寄り道で楽しめます。','dialogue-text'));const keys=el('dl',undefined,'help-keys');for(const [key,text]of[['屋外目線視点','目線の高さで歩きます。画面をドラッグして見回し、↑↓で前後、←→で旋回。W/Sで前後、A/Dで横移動。'],['見下ろし・遠景・屋内','矢印 / WASDで東西南北へ歩きます。屋内は家の全体が見える俯瞰です。'],['E / Enter','目の前の人と話す・扉や物を調べる'],['M','街の地図'],['J / I','旅の手帳 / 持ち物'],['L','ランタンのON / OFF'],['Esc','メニューを開く・街へ戻る'],['戦闘 1〜5','攻撃・守る・灯り・星蜜・退く']])keys.append(el('dt',key),el('dd',text));content.append(keys,el('p','街の住人と物語はゲーム内のフィクションです。展示の参加者本人の発言や経歴を表すものではありません。音・点滅・時間制限で驚かす演出はありません。','subtle'),button('街を歩く',closePanel,'primary'));}
 const battleCommands=[['attack','灯杖で攻撃','灯り +1'],['guard','守る','次の攻撃を軽減・灯り +1'],['spark','星灯り','灯り 2・強い光'],['tonic','星蜜','体力 +28'],['escape','退く','街へ戻る']];
 async function prepareBattleArt(){
  const current=session.snapshot().battle;if(!current)return;const id=current.id;battleArtReady=false;battleArtFailed=false;
@@ -282,14 +285,14 @@ surface.addEventListener('pointerup',event=>{if(canvasPointer?.id!==event.pointe
 for(const type of['pointercancel','lostpointercapture'])surface.addEventListener(type,event=>{if(canvasPointer?.id===event.pointerId)canvasPointer=null;});
 }
 function toggleLantern(){settings.lantern=!settings.lantern;persistSettings();}
-$('town-view-2d').onclick=()=>chooseTownView('2d');$('town-view-3d').onclick=()=>chooseTownView('3d');$('town-mode-retry').onclick=()=>chooseTownView('3d',{retry:true});
+$('town-mode-retry').onclick=()=>chooseTownViewpoint(selectedViewpoint.id,{retry:true});
 $('lantern-toggle').onclick=toggleLantern;$('interact').onclick=()=>interact();$('menu-open').onclick=showMenu;$('journal-open').onclick=showJournal;$('inventory-open').onclick=showInventory;$('map-open').onclick=showMap;$('minimap-open').onclick=showMap;$('home-route').onclick=()=>{const map=getTownMap(session.snapshot().state.mapId);if(map.id==='creator-quarter'||map.creatorHome)returnToTown();else visitCreatorQuarter();};
 function prepareExit(){clearInput();audio.stop({resetVolume:true});session.save();}
 $('castle-return').addEventListener('click',prepareExit);
 window.addEventListener('blur',()=>{clearInput();audio.stop({resetVolume:true});});window.addEventListener('orientationchange',scheduleResize);
-window.addEventListener('pagehide',()=>{pageActive=false;if(!ready)bootAbort?.abort();loop.stop();clearInput();audio.stop({resetVolume:true});session.save();});
-window.addEventListener('pageshow',()=>{pageActive=true;clearInput();padMode=readPadMode();padBinding?.refresh();audio.stop({resetVolume:true});resize();if(!ready&&bootAbort?.signal.aborted)void boot();else if(!document.hidden)loop.start();});
-document.addEventListener('visibilitychange',()=>{if(document.hidden){loop.stop();clearInput();audio.stop({resetVolume:true});}else loop.start();});
+window.addEventListener('pagehide',()=>{pageActive=false;releaseViewPreload();void viewController?.setMode('2d');if(!ready)bootAbort?.abort();loop.stop();clearInput();audio.stop({resetVolume:true});session.save();});
+window.addEventListener('pageshow',()=>{pageActive=true;clearInput();padMode=readPadMode();padBinding?.refresh();audio.stop({resetVolume:true});resize();if(!ready&&bootAbort?.signal.aborted)void boot();else if(!document.hidden){loop.start();resumeTownView();}});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){loop.stop();clearInput();audio.stop({resetVolume:true});}else{loop.start();resumeTownView();}});
 window.addEventListener('resize',()=>{clearInput();applySettings();scheduleResize();});reduced.addEventListener('change',()=>{clearInput();applySettings();});initViewport({onChange:scheduleResize});
 if(typeof ResizeObserver==='function'){const displayObserver=new ResizeObserver(scheduleResize);displayObserver.observe($('town-main'));displayObserver.observe(document.querySelector('.town-world'));}
 // Keep the page-lifetime observer independent of temporary settings panels.
@@ -297,10 +300,11 @@ let layoutStorage;try{layoutStorage=globalThis.localStorage;}catch{}migrateDispl
 layoutPreferences=initDisplayMode({page:'town',onChange:state=>{settings.layout=state.mode;scheduleResize();}});
 const pageDisplayPreferences=initGameDisplay({page:'town',onChange:scheduleResize});scheduleResize();
 async function boot(){
- const request=++bootRequest,revision=panelRevision;bootAbort?.abort();const abort=new AbortController();bootAbort=abort;ready=false;loop.stop();clearInput();resetTownView();renderer?.destroy?.();characterArt?.destroy();sceneImages.clear();sceneImages=createTownSceneImages();$('town-loading').hidden=false;$('town-loading').querySelector('p').textContent='街の灯りをともしています…';$('loading-retry').hidden=true;
- try{characterArt=createTownCharacterArt({deferEnhancements:true,initialState:session.snapshot().state,signal:abort.signal,onState:status=>{if(status==='retry'&&request===bootRequest&&!abort.signal.aborted)$('town-loading').querySelector('p').textContent='通信を確かめて、主人公と黒猫の姿をもう一度準備しています…';}});renderer=createTownRenderer({art:characterArt.art,deferAssets:true,loadImage:sceneImages.load});const scenery=renderer;void scenery.ready?.then(()=>{if(request!==bootRequest||abort.signal.aborted)return;scenery.invalidate?.();if(scenery.status?.().failed?.length)notify('一部の景色を準備できませんでした。メニューから読み込み直せます。');});await withDeadline(characterArt.ready,{timeout:40000,signal:abort.signal});if(request!==bootRequest||abort.signal.aborted)return;if(typeof characterArt.creatorPage==='function')prepareReadingJourney();resize();tick(0,0);ready=true;$('town-loading').hidden=true;updateHUD();loop.start();requestAnimationFrame(()=>requestAnimationFrame(()=>{if(request!==bootRequest||abort.signal.aborted)return;prepareTownView();characterArt.startEnhancements?.();void scenery.start?.();}));const snapshot=session.snapshot();if(snapshot.notice)notify(snapshot.notice);if(!snapshot.state.flags.intro&&!panel.open&&panelRevision===revision)showHelp();}
+ const request=++bootRequest,revision=panelRevision;releaseViewPreload();bootAbort?.abort();const abort=new AbortController();bootAbort=abort;ready=false;loop.stop();clearInput();resetTownView();renderer?.destroy?.();characterArt?.destroy();sceneImages.clear();sceneImages=createTownSceneImages();$('town-loading').hidden=false;$('town-loading').querySelector('p').textContent='街の灯りをともしています…';$('loading-retry').hidden=true;
+ try{characterArt=createTownCharacterArt({deferEnhancements:true,initialState:session.snapshot().state,signal:abort.signal,onState:status=>{if(status==='retry'&&request===bootRequest&&!abort.signal.aborted)$('town-loading').querySelector('p').textContent='通信を確かめて、主人公と黒猫の姿をもう一度準備しています…';}});renderer=createTownRenderer({art:characterArt.art,deferAssets:true,loadImage:sceneImages.load});const scenery=renderer;void scenery.ready?.then(()=>{if(request!==bootRequest||abort.signal.aborted)return;scenery.invalidate?.();if(scenery.status?.().failed?.length)notify('一部の景色を準備できませんでした。メニューから読み込み直せます。');});await withDeadline(characterArt.ready,{timeout:40000,signal:abort.signal});if(request!==bootRequest||abort.signal.aborted)return;if(typeof characterArt.creatorPage==='function')prepareReadingJourney();resize();tick(0,0);ready=true;$('town-loading').hidden=true;updateHUD();loop.start();prepareSelectedView();requestAnimationFrame(()=>requestAnimationFrame(()=>{if(request!==bootRequest||abort.signal.aborted||!pageActive||document.hidden)return;prepareTownView();characterArt.startEnhancements?.();void scenery.start?.();}));const snapshot=session.snapshot();if(snapshot.notice)notify(snapshot.notice);if(!snapshot.state.flags.intro&&!panel.open&&panelRevision===revision)showHelp();}
  catch(error){if(request!==bootRequest||abort.signal.aborted)return;abort.abort();ready=false;$('town-loading').querySelector('p').textContent='街と主人公の支度を完了できませんでした。記録は消えていません。再試行できます。';$('loading-retry').hidden=false;console.warn('Town loading failed',error);}
 }
 $('loading-retry').onclick=boot;applySettings();updateHUD();boot();
 
-const cameraButton=$('camera-distance');function updateCameraButton(){cameraButton.textContent='視点：'+cameraDistanceLabel(cameraDistance)+(cameraZoom!==1?` ${Math.round(cameraZoom*100)}%`:'');cameraButton.setAttribute('aria-pressed',String(cameraDistance!=='normal'));cameraButton.setAttribute('aria-description','標準、引き、遠景の3段階。指で調整した拡大率は保ちます。');}cameraButton.onclick=()=>{clearInput();cameraDistance=nextCameraDistance(cameraDistance);saveCameraDistance('town',cameraDistance);updateCameraButton();resize();if(ready)tick(0,0);};updateCameraButton();
+function updateCameraButton(){const cameraButton=$('camera-distance');if(!cameraButton)return;const state=viewController?.snapshot(),fallback=selectedViewpoint.view==='3d'&&state?.active!=='3d';const indoors=selectedViewpoint.id==='eye'&&getTownMap(session.snapshot().state.mapId).outdoor!==true;const label=fallback?'見下ろし（'+(!state||state.status==='loading'?'準備中':'代替')+'）':indoors?'見下ろし（屋内）':selectedViewpoint.label;cameraButton.textContent='視点：'+label;cameraButton.setAttribute('aria-haspopup','dialog');cameraButton.removeAttribute('aria-pressed');cameraButton.setAttribute('aria-description','視点を選びます。拡大縮小は現在の倍率を保ちます。');}
+$('camera-distance').onclick=showViewpoints;updateCameraButton();

@@ -8,7 +8,7 @@ const settle=async()=>{for(let i=0;i<16;i++)await Promise.resolve();};
 function clock(){const jobs=new Set();return{setTimeout(fn){jobs.add(fn);return fn;},clearTimeout:fn=>jobs.delete(fn),expire(){for(const fn of [...jobs])fn();},size:()=>jobs.size};}
 test('3D failures distinguish GPU, interrupted context, image transfer, module transfer and timeout',()=>{
  const cases=[['Error creating WebGL context.','webgl-unavailable'],['No GPU','webgl-unavailable'],['Town 3D resident art is unavailable','assets-unavailable'],['Art image timed out','assets-unavailable'],['Failed to fetch dynamically imported module','module-unavailable'],['Town renderer unavailable','module-unavailable'],['Loading deadline exceeded','timeout']];
- for(const [message,code]of cases){const reason=classifyTown3DFailure(Error(message));assert.equal(reason.code,code);assert.equal(reason.retryable,true);assert.ok(reason.message.includes('3D'));assert.ok(!reason.message.includes(message),'internal diagnostic is not shown as user text');}
+ for(const [message,code]of cases){const reason=classifyTown3DFailure(Error(message));assert.equal(reason.code,code);assert.equal(reason.retryable,true);assert.ok(reason.message.includes('視点'));assert.ok(!reason.message.includes(message),'internal diagnostic is not shown as user text');}
  assert.equal(classifyTown3DFailure({type:'webglcontextlost'},{phase:'context'}).code,'context-lost');assert.equal(classifyTown3DFailure(Error('draw fault'),{phase:'render'}).code,'render-failed');assert.equal(classifyTown3DFailure(Object.assign(Error('not for display'),{code:'ASSETS_UNAVAILABLE'})).code,'assets-unavailable');
 });
 test('the controller exposes an image failure and keeps 3D desired until the visitor chooses 2D',async()=>{
@@ -66,6 +66,6 @@ test('actual app checks a cancelled module import before creating another contex
 });
 
 test('asset timeouts and invalid images stay distinct from GPU failures without blaming connectivity',()=>{
- for(const code of ['assets-timeout','assets-invalid','assets-unavailable']){const failure=classifyTown3DFailure(Object.assign(Error('internal details'),{code}));assert.equal(failure.code,code);assert.ok(!failure.message.includes('通信を確認'));assert.ok(failure.message.includes('2D'));}
+ for(const code of ['assets-timeout','assets-invalid','assets-unavailable']){const failure=classifyTown3DFailure(Object.assign(Error('internal details'),{code}));assert.equal(failure.code,code);assert.ok(!failure.message.includes('通信を確認'));assert.ok(failure.message.includes('見下ろし'));}
  assert.equal(classifyTown3DFailure(Error('Error creating WebGL context')).code,'webgl-unavailable');
 });

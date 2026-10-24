@@ -4,7 +4,9 @@ import {readPadMode,savePadMode} from '../control-preferences.js?v=20261019-jour
 import {createControlSettings} from '../control-settings.js?v=20261019-journey1';
 import {classifyTown3DFailure} from '../town/view-mode.js?v=20261019-journey1';
 import {nearestFurnishing,FURNISHING_INFO} from './furnishing-info.js?v=20261019-interior1';
-import {readCameraDistance,saveCameraDistance,readCameraZoom,saveCameraZoom,normalizeCameraZoom,nextCameraDistance,cameraDistanceLabel} from '../camera-distance.js?v=20261019-journey1';
+import {readCameraDistance,saveCameraDistance,readCameraZoom,saveCameraZoom,normalizeCameraZoom} from '../camera-distance.js?v=20261019-journey1';
+import {preloadSelectedView} from '../view-preload.js?v=20261024-viewpoints1';
+import {viewpointOptions,resolveViewpoint,migrateViewpoint,readViewpoint,saveViewpoint} from '../viewpoint-presets.js?v=20261024-viewpoints1';
 import {createReloadControl} from '../safe-page-reload.js?v=20261017-reload1';
 import {fetchStartupJSON,loadMazeStartupData,loadRequiredCharacters} from './startup-assets.js?v=20261017-startup1';
 import {initPadPosition} from '../game-display.js?v=20261019-interior1';
@@ -39,7 +41,8 @@ const rpgArt=createArtLibrary({loadPlayer:false,deferOptional:true,deferScene:tr
 let creatorRoster={hero:null,npcs:[],omitted:[]},creatorActors=[],activeCreators=[],residents=[],companions=[],creatorPointer=null,creatorAssetCheck=0,creatorTrail=[];
 const characterAssets=createCharacterAssets();
 
-let bootRequest=0,bootAbort=null,worldModule=null;
+let bootRequest=0,bootAbort=null,worldModule=null,releaseViewPreload=()=>{};
+function prepareViewpointAssets(requires3D,signal){releaseViewPreload();releaseViewPreload=preloadSelectedView({requires3D,worldURL:new URL('./world.js?v=20261019-unified1',import.meta.url),signal});}
 let cameraDistance=readCameraDistance('maze'),cameraZoom=readCameraZoom('maze'),padMode=readPadMode(),padBinding=null,viewFailure='';
 let stageRenderer,battleCanvas=null,battleEffect=null,visualTime=0;
 let facing='down',walking=false,walkPhase=0,padDirection=null;
@@ -54,13 +57,15 @@ const rewardStore=createRewardStore({storage:rewardStorage});
 initMinimapSize({button:$('minimap-size'),root:document.body,storage:rewardStorage,onChange:()=>requestAnimationFrame(()=>{if(view==='2d')resizeFlat();else world?.resize();})});
 let cancelArticleImage=()=>{};
 const transitions=initTransitionEffects({motion:()=>motion&&!reducedMotion.matches});
-let encounters=true,cleared=[],battle=null,look=null,view='3d',viewRequest=0,worldFailed=false,viewAbort=null;
+let encounters=true,cleared=[],battle=null,look=null,view='3d',viewRequest=0,worldFailed=false,viewAbort=null,viewPending=false,resumeViewpoint=false;
 let {brightness,lantern}=normalizeLighting(null),legacyBrightness;
 const lightKey='halloween-exhibition:horror-light:v1',viewKey='halloween-exhibition:horror-view:v1',storageKey='halloween-exhibition:labyrinth:v1';
 let progress={};
 try{const saved=JSON.parse(localStorage.getItem(lightKey)||'{}');({brightness,lantern}=normalizeLighting(saved));if(Number.isFinite(saved?.brightness))legacyBrightness=brightness*100;}catch{}
 try{view=chooseView(localStorage.getItem(viewKey),reducedMotion.matches);const p=JSON.parse(localStorage.getItem(storageKey)||'{}');if(p&&typeof p==='object'&&!Array.isArray(p))progress=p;}catch{storageOK=false;view=chooseView(null,reducedMotion.matches);}
 const queryView=new URLSearchParams(location.search).get('view');if(['2d','3d'].includes(queryView))view=queryView;
+let desiredViewpoint=['2d','3d'].includes(queryView)?migrateViewpoint('maze',{view,distance:cameraDistance}):readViewpoint('maze',{view,distance:cameraDistance});
+view=desiredViewpoint.view;cameraDistance=desiredViewpoint.distance;
 let walkingSpeed=1;try{walkingSpeed=normalizeWalkingSpeed(localStorage.getItem(WALKING_SPEED_KEY));}catch{}
 const visitorSection=element('section');
 const visitorSettings=initAdventureAudio({settingsContainer:visitorSection,legacyBrightness,onBrightness:percent=>{brightness=percent/100;},onAudioInput:()=>soundCheck.stop('')});
@@ -97,7 +102,7 @@ function showWalkingSpeed(){
  title('WALK AT YOUR PACE','歩く速さ');const section=element('section',undefined,'walking-speed-setting'),label=element('label','歩く速さを選ぶ'),range=element('input'),output=element('output',`${walkingSpeed}倍`);label.htmlFor='walking-speed-menu';Object.assign(range,{id:'walking-speed-menu',type:'range',min:'.5',max:'2',step:'.25',value:String(walkingSpeed)});range.setAttribute('aria-valuetext',`${walkingSpeed}倍`);range.oninput=()=>setWalkingSpeed(range.value);output.id='walking-speed-menu-value';output.htmlFor=range.id;section.append(label,range,output);
  const presets=element('div',undefined,'tabs');for(const [value,name]of[[.5,'ゆっくり'],[1,'標準'],[1.5,'速い'],[2,'最速']]){const b=element('button',`${name} ${value}倍`);b.onclick=()=>setWalkingSpeed(value);presets.append(b);}const reset=element('button','標準の1倍に戻す');reset.onclick=()=>setWalkingSpeed(1);const back=element('button','メニューに戻る');back.onclick=showExploreMenu;content.append(section,presets,element('p','0.5〜2倍を0.25刻みで選べます。この端末に保存し、次回も同じ速さで歩きます。','subtle'),reset,back);openPanel();
 }
-function showLighting(){title('明るさと音','明るさ・音・表示');content.append(visitorSection,element('p','夜の回廊は暗く、ランタンを点けると足元と前方が暖かく照らされます。暗すぎるときは明るさを上げるか、2D表示へ。文字・操作・地図の明るさは変わりません。'),element('p','メニューの「明るさ・音・表示」でBGMと音量を調整できます。音量を上げると、冒険室専用の音楽が流れます。毎回OFF・音量0で始まります。対戦の効果音・点滅・時間制限はありません。'));openPanel();}
+function showLighting(){title('明るさと音','明るさ・音・表示');content.append(visitorSection,element('p','夜の回廊は暗く、ランタンを点けると足元と前方が暖かく照らされます。暗すぎるときは明るさを上げるか、視点を「見下ろし」へ。文字・操作・地図の明るさは変わりません。'),element('p','メニューの「明るさ・音・表示」でBGMと音量を調整できます。音量を上げると、冒険室専用の音楽が流れます。毎回OFF・音量0で始まります。対戦の効果音・点滅・時間制限はありません。'));openPanel();}
 function safeURL(v){try{const u=new URL(v);return u.protocol==='https:'&&!u.username&&!u.password?u.href:null;}catch{return null;}}
 function displayArticleKind(kind){return ({'ホラー記事':'記事','ホラーイラスト':'イラスト','ホラー作品':'作品'})[kind]||kind||'作品';}
 function articles(collection=activeCollection){return visibleArticles(catalog.articles,collection);}
@@ -208,8 +213,7 @@ function showExploreMenu(){
   title('宮殿の地下','メニュー');const menu=element('div',undefined,'explore-menu');menu.dataset.gameMenu='true';menu.setAttribute('aria-label','探索メニュー');
   const add=(label,action)=>{const button=element('button',label);button.onclick=action;return button;};
   const lanternButton=add(lantern?'ランタン ON':'ランタン OFF',()=>{toggleLantern();lanternButton.textContent=lantern?'ランタン ON':'ランタン OFF';lanternButton.setAttribute('aria-pressed',String(lantern));});lanternButton.setAttribute('aria-pressed',String(lantern));
-  const cameraToggle=add('視点：'+cameraDistanceLabel(cameraDistance),()=>{$('camera-distance').click();cameraToggle.textContent='視点：'+cameraDistanceLabel(cameraDistance);});
-  menu.append(add('地図',()=>{showMap();panel.querySelector('.close').focus();}),lanternButton,add('歩く速さ',showWalkingSpeed),cameraToggle,add('パッド・拡大縮小',showControlSettings),add('明るさ・音・表示',()=>{showLighting();panel.querySelector('.close').focus();}));
+  menu.append(add('地図',()=>{showMap();panel.querySelector('.close').focus();}),lanternButton,add('歩く速さ',showWalkingSpeed),add('パッド・拡大縮小',showControlSettings),add('明るさ・音・表示',()=>{showLighting();panel.querySelector('.close').focus();}));
   for(const [label,action]of[['記事一覧',()=>{showCatalog();panel.querySelector('.close').focus();}],['冒険の物語',showStory],['物語の仲間',showCreators],['宮殿の住人',showResidents],['モンスターと遊ぶ',()=>{showEncounters();panel.querySelector('.close').focus();}],['地下の入口へ',()=>{panel.close();resetPosition();}]])menu.append(add(label,action));
   const compare=element('a','キャラ見比べ');compare.href='../characters/';const clearGallery=element('a','クリア名鑑');clearGallery.href='./clear-gallery/';menu.append(compare,clearGallery);
   if(rewardStore.read(runId))menu.append(add('クリア記念をもう一度見る',showEnding));
@@ -328,24 +332,47 @@ function drawMap(canvas,large=false,night=false,markers=mapMarkers()){
 function resizeFlat(){stageRenderer?.invalidate();const c=$('fallback'),ratio=Math.min(devicePixelRatio||1,2);c.width=Math.max(1,Math.round(c.clientWidth*ratio));c.height=Math.max(1,Math.round(c.clientHeight*ratio));}
 function updateViewUI(){
   document.body.dataset.view=view;$('world').hidden=view!=='3d';$('fallback').hidden=view!=='2d';
-  $('view-2d').setAttribute('aria-pressed',String(view==='2d'));$('view-3d').setAttribute('aria-pressed',String(view==='3d'));
   $('look-hint').textContent=view==='2d'?'↑ 北へ · ← 西へ · → 東へ':'LOOK · 画面をドラッグ';
   $('controls-hint').textContent=view==='2d'?'WASD・矢印で移動 · Eで調べる · Bで話しかける':'WASDで移動 · ドラッグで視点 · Eで調べる';
-  $('pad-mode-hint').textContent=view==='2d'?'2D：↑↓←→で東西南北へ':'3D：↑前進 ↓後退 · ←→方向転換';for(const b of document.querySelectorAll('[data-move]')){const labels=view==='2d'?{forward:'北へ移動',back:'南へ移動',left:'西へ移動',right:'東へ移動'}:{forward:'前へ進む',back:'後ろへ下がる',left:'左を向く',right:'右を向く'};b.setAttribute('aria-label',labels[b.dataset.move]);}
-  if(view==='2d')resizeFlat();else world?.resize();
+  $('pad-mode-hint').textContent=view==='2d'?'見下ろし：↑↓←→で東西南北へ':'目線・背後：↑前進 ↓後退 · ←→方向転換';for(const b of document.querySelectorAll('[data-move]')){const labels=view==='2d'?{forward:'北へ移動',back:'南へ移動',left:'西へ移動',right:'東へ移動'}:{forward:'前へ進む',back:'後ろへ下がる',left:'左を向く',right:'右を向く'};b.setAttribute('aria-label',labels[b.dataset.move]);}
+  if(view==='2d')resizeFlat();else world?.resize();updateCameraButton();
 }
-async function setView(next,{persist=true,quiet=false,deferArt=false}={}){
-  const request=++viewRequest;viewAbort?.abort();viewAbort=new AbortController();const finishLoading=transitions.begin($('view-loading'),next==='3d'?'立体の回廊をひらいています…':'物語の舞台をひらいています…');let failed=false;clearInput();$('view-3d').disabled=next==='3d'&&!world;
+async function setView(next,{persist=true,quiet=false,deferArt=false,distance=cameraDistance,failure=''}={}){
+  const request=++viewRequest;viewAbort?.abort();const abort=new AbortController();viewAbort=abort;viewPending=true;resumeViewpoint=false;
+  if(!deferArt)prepareViewpointAssets(next==='3d'&&!world,abort.signal);
+  if(persist){desiredViewpoint=migrateViewpoint('maze',{view:next,distance});saveViewpoint('maze',desiredViewpoint.id);saveCameraDistance('maze',desiredViewpoint.distance);try{localStorage.setItem(viewKey,desiredViewpoint.view);}catch{}}
+  const finishLoading=transitions.begin($('view-loading'),next==='3d'?'選んだ視点を準備しています…':'見下ろしの舞台をひらいています…');let failed=false;clearInput();$('maze-view-status').hidden=true;$('maze-view-retry').hidden=true;updateCameraButton();
   if(next==='3d'&&!world){
-    $('view-3d').disabled=true;
-    try{worldFailed=false;const module=await withDeadline(worldModule||import('./world.js?v=20261019-unified1'),{signal:viewAbort.signal});if(!module)throw Error('Dynamic import unavailable');const {createWorld}=module;if(request!==viewRequest)return;world=createWorld({canvas:$('world'),art:rpgArt});restoreExhibits();}
-    catch(e){if(request!==viewRequest)return;failed=true;view='2d';viewFailure=classifyTown3DFailure(e).message;console.warn('3D unavailable; 2D remains fully playable.',e);if(!quiet)notify(viewFailure);}
-    finally{if(request===viewRequest)$('view-3d').disabled=false;}
+    try{worldFailed=false;const module=await withDeadline(worldModule||import('./world.js?v=20261019-unified1'),{signal:abort.signal});if(!module)throw Error('Dynamic import unavailable');const {createWorld}=module;if(request!==viewRequest||abort.signal.aborted)return;world=createWorld({canvas:$('world'),art:rpgArt});restoreExhibits();}
+    catch(error){if(request!==viewRequest||abort.signal.aborted)return;failed=true;worldFailed=true;world?.dispose();world=null;view='2d';cameraDistance='normal';viewFailure=classifyTown3DFailure(error).message;console.warn('Requested viewpoint unavailable; overhead remains fully playable.',error);if(!quiet)notify(viewFailure);}
   }
-  if(request!==viewRequest)return;if(!deferArt&&(next==='2d'||failed))void rpgArt.loadRemaining();if(request!==viewRequest)return;if(!failed){view=next;viewFailure='';}state.pitch=0;updateViewUI();const reason=$('maze-view-status');if(reason){reason.hidden=!viewFailure;reason.textContent=viewFailure;}const retry=$('maze-view-retry');if(retry)retry.hidden=!viewFailure;finishLoading();transitions.enter($(view==='2d'?'fallback':'world'),{kind:'scene'});
-  if(persist)try{localStorage.setItem(viewKey,next);}catch{}
-  if(!quiet&&!failed)notify(view==='2d'?'2Dに切り替えました。矢印キーで東西南北へ。':'3Dに切り替えました。位置・鍵・対戦の記録はそのままです。');
+  if(request!==viewRequest||abort.signal.aborted)return;
+  if(!deferArt&&(next==='2d'||failed))void rpgArt.loadRemaining();
+  if(!failed){view=next;cameraDistance=distance;viewFailure=failure;}viewPending=false;state.pitch=0;updateViewUI();
+  const reason=$('maze-view-status');if(reason){reason.hidden=!viewFailure;reason.textContent=viewFailure;}const retry=$('maze-view-retry');if(retry)retry.hidden=!viewFailure||desiredViewpoint.view!=='3d';finishLoading();transitions.enter($(view==='2d'?'fallback':'world'),{kind:'scene'});
+  if(!quiet&&!failed)notify(migrateViewpoint('maze',{view,distance:cameraDistance}).label+'に切り替えました。位置・鍵・対戦の記録はそのままです。');
 }
+function setViewpoint(id,options={}){
+  const next=resolveViewpoint('maze',id);desiredViewpoint=next;
+  if(!gameReady){
+    ++viewRequest;viewAbort?.abort();releaseViewPreload();
+    if(options.persist!==false){saveViewpoint('maze',next.id);saveCameraDistance('maze',next.distance);try{localStorage.setItem(viewKey,next.view);}catch{}}
+    updateCameraButton();return Promise.resolve();
+  }
+  return setView(next.view,{...options,distance:next.distance});
+}
+function fallbackView(error,phase){
+  worldFailed=true;world?.dispose();world=null;
+  const reason=classifyTown3DFailure(error,{phase}).message;
+  // Apply the fallback in this request, not in a late promise callback that could
+  // overwrite a newer choice. The desired viewpoint and saved zoom stay intact.
+  void setView('2d',{persist:false,quiet:true,distance:'normal',failure:reason});notify(reason);
+}
+function suspendViewpoint(){
+  resumeViewpoint=resumeViewpoint||viewPending||(!viewFailure&&(view!==desiredViewpoint.view||cameraDistance!==desiredViewpoint.distance));
+  ++viewRequest;viewAbort?.abort();releaseViewPreload();viewPending=false;$('view-loading').hidden=true;updateCameraButton();
+}
+function resumePendingViewpoint(){if(gameReady&&resumeViewpoint&&!document.hidden){resumeViewpoint=false;void setViewpoint(desiredViewpoint.id,{persist:false,quiet:true});}}
 function restoreExhibits(){if(!catalog||!world)return;world.setExhibits(articles('horror').length?articles('horror').slice(0,1).map(a=>({title:a.title,subtitle:catalog.creators.find(c=>c.id===a.creatorId)?.name,image:a.image,position:FEATURES.article})):[{title:'展示記事を待つ額縁',subtitle:'記事未登録 · 舞台装飾',position:FEATURES.article}]);}
 function step(dt){
   const down=name=>held.has(name)||padDirection===name;
@@ -354,7 +381,7 @@ function step(dt){
   if(view==='3d'){if(keys.has('arrowleft')||held.has('turn-left')||down('left'))state.yaw+=dt*2.3;if(keys.has('arrowright')||held.has('turn-right')||down('right'))state.yaw-=dt*2.3;}
   const {dx,dz}=movementVector(view,state.yaw,f,r,6.8*dt*walkingSpeed);const old=state;state=advanceWithSubsteps(state,dx,dz,view==='2d'?moveAroundFurniture:move);const mx=state.x-old.x,mz=state.z-old.z;walking=Math.hypot(mx,mz)>.0001;facing=directionFromMovement(dx,dz,facing);if(walking)walkPhase=(walkPhase+Math.hypot(mx,mz)*2.3)%(Math.PI*2);
 }
-function renderExploration(dt){if(view==='3d'){try{world?.render({...state,cameraDistance,cameraZoom,facing,walking,walkPhase,time:time*1000,motion:motion&&!reducedMotion.matches,brightness,lantern,encounters,cleared,creatorActors});}catch(error){const reason=classifyTown3DFailure(error,{phase:'render'}).message;world?.dispose();world=null;void setView('2d',{persist:false,quiet:true}).then(()=>{viewFailure=reason;$('maze-view-status').textContent=reason;$('maze-view-status').hidden=false;$('maze-view-retry').hidden=false;});}}else {stageRenderer??=createStageRenderer({art:rpgArt});stageRenderer.render({canvas:$('fallback'),state,cameraDistance,cameraZoom,brightness,lantern,encounters,cleared,pixelRatio:Math.min(devicePixelRatio||1,2),time,dt,motion:motion&&!reducedMotion.matches,facing,walking:walking&&motion&&!reducedMotion.matches,walkPhase,creatorActors});}updateMinimap();updateHUD();}
+function renderExploration(dt){if(view==='3d'){try{world?.render({...state,cameraDistance,cameraZoom,facing,walking,walkPhase,time:time*1000,motion:motion&&!reducedMotion.matches,brightness,lantern,encounters,cleared,creatorActors});}catch(error){fallbackView(error,'render');}}else {stageRenderer??=createStageRenderer({art:rpgArt});stageRenderer.render({canvas:$('fallback'),state,cameraDistance,cameraZoom,brightness,lantern,encounters,cleared,pixelRatio:Math.min(devicePixelRatio||1,2),time,dt,motion:motion&&!reducedMotion.matches,facing,walking:walking&&motion&&!reducedMotion.matches,walkPhase,creatorActors});}updateMinimap();updateHUD();}
 function tick(now){
   frame=0;if(document.hidden)return;const dt=Math.min((now-(last||now))/1000,.05);last=now;visualTime+=dt;
   if(panel.open&&battle){settleBattleAnimation();drawBattleVisual();}
@@ -366,8 +393,8 @@ function resizeGameViewport(){world?.resize();if(view==='2d')resizeFlat();if(bat
 initViewport({onChange:()=>{clearInput();resizeGameViewport();}});
 if(typeof ResizeObserver==='function'){const canvasSizeObserver=new ResizeObserver(()=>requestAnimationFrame(resizeGameViewport));canvasSizeObserver.observe($('world'));canvasSizeObserver.observe($('fallback'));}
 window.addEventListener('orientationchange',clearInput);
-window.addEventListener('pagehide',()=>{if(!gameReady){bootAbort?.abort();viewAbort?.abort();}cancelAnimationFrame(frame);frame=0;last=0;clearInput();if(gameReady)save();});
-window.addEventListener('pageshow',()=>{clearInput();padMode=readPadMode();padBinding?.refresh();resizeGameViewport();if(!gameReady&&bootAbort?.signal.aborted)void init();else if(!document.hidden)start();});
+window.addEventListener('pagehide',()=>{suspendViewpoint();if(!gameReady){bootAbort?.abort();}cancelAnimationFrame(frame);frame=0;last=0;clearInput();if(gameReady)save();});
+window.addEventListener('pageshow',()=>{clearInput();padMode=readPadMode();padBinding?.refresh();resizeGameViewport();if(!gameReady&&bootAbort?.signal.aborted)void init();else if(!document.hidden){resumePendingViewpoint();start();}});
 document.addEventListener('yearbook:layout-change',()=>requestAnimationFrame(()=>{if(view==='2d')resizeFlat();else world?.resize();if(battle)drawBattleVisual();}));
 protectGameSurface($('game'));
 for(const canvas of[$('world'),$('fallback')]){
@@ -390,20 +417,20 @@ document.addEventListener('keydown',e=>{
   if(e.repeat)return;if(k==='e')performContextAction();if(k==='b')startBattle();if(k==='c')talkToCreator();if(k==='l')toggleLantern();if(k==='escape')resetPosition();
 });
 document.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));window.addEventListener('blur',()=>{clearInput();soundCheck.stop('');});
-document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(frame);frame=0;clearInput();}else start();});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){suspendViewpoint();cancelAnimationFrame(frame);frame=0;clearInput();}else{resumePendingViewpoint();start();}});
 $('tools-open').onclick=showLighting;$('lantern').onclick=toggleLantern;$('lantern').textContent=lantern?'ランタン ON':'ランタン OFF';$('lantern').setAttribute('aria-pressed',String(lantern));
 $('interact').onclick=performContextAction;$('list-open').onclick=()=>{if(catalog)showCatalog();};$('map-open').onclick=()=>{if(catalog)showMap();};$('minimap-open').onclick=()=>{if(catalog)showMap();};$('home').onclick=resetPosition;
 $('menu-open').onclick=showExploreMenu;$('battle-open').onclick=startBattle;$('creator-open').onclick=talkToCreator;
-$('maze-view-retry').onclick=()=>setView('3d');$('view-2d').onclick=()=>setView('2d');$('view-3d').onclick=()=>setView('3d');
+$('maze-view-retry').onclick=()=>setViewpoint(desiredViewpoint.id);
 function updateMotion(){transitions.sync();const enabled=motion&&!reducedMotion.matches;panel.dataset.menuMotion=String(enabled);
   $('pause').textContent=enabled?'演出を停止':reducedMotion.matches?'端末設定で演出停止中':'演出を再開';$('pause').setAttribute('aria-pressed',String(!enabled));
   const toggle=$('menu-motion-toggle');if(toggle){toggle.textContent=reducedMotion.matches?'端末設定で演出停止中':enabled?'演出：ON → 停止する':'演出：OFF → 再開する';toggle.setAttribute('aria-pressed',String(enabled));toggle.disabled=reducedMotion.matches;}
   const status=$('menu-motion-status');if(status)status.textContent=reducedMotion.matches?'端末の「動きを減らす」設定を優先しています。自分の移動操作は使えます。':enabled?'キャラクターの歩行・光の揺らぎ：再生中。メニューを閉じると確認できます。':'キャラクターの歩行・光の揺らぎ：停止中。自分の移動操作は使えます。';
 }
-$('pause').onclick=()=>{if(reducedMotion.matches){notify('端末の「動きを減らす」設定を優先しています。2D表示も選べます。');return;}motion=!motion;updateMotion();};
-reducedMotion.addEventListener('change',()=>{if(reducedMotion.matches){motion=false;setView('2d',{persist:false});}updateMotion();});updateMotion();
+$('pause').onclick=()=>{if(reducedMotion.matches){notify('端末の「動きを減らす」設定を優先しています。「視点」から見下ろしも選べます。');return;}motion=!motion;updateMotion();};
+reducedMotion.addEventListener('change',()=>{if(reducedMotion.matches){motion=false;setViewpoint('overhead',{persist:false});}updateMotion();});updateMotion();
 panel.querySelector('.close').onclick=()=>panel.close();panel.addEventListener('close',()=>{cancelArticleImage();cancelArticleImage=()=>{};soundCheck.stop('');battle=null;battleCanvas=null;battleEffect=null;panel.classList.remove('battle-mode','library-mode');clearInput();returnFocus?.focus({preventScroll:true});last=0;});
-$('world').addEventListener('webglcontextlost',e=>{e.preventDefault();worldFailed=true;world?.dispose();world=null;const reason=classifyTown3DFailure(Error('context lost'),{phase:'context'}).message;void setView('2d',{persist:false,quiet:true}).then(()=>{viewFailure=reason;$('maze-view-status').textContent=reason;$('maze-view-status').hidden=false;$('maze-view-retry').hidden=false;});notify(reason);});
+$('world').addEventListener('webglcontextlost',e=>{e.preventDefault();if(view==='3d'||viewPending)fallbackView(Error('context lost'),'context');else{world?.dispose();world=null;worldFailed=true;}});
 async function init(){
  const request=++bootRequest;bootAbort?.abort();const abort=new AbortController();bootAbort=abort;
  const loading=$('loading'),label=loading.querySelector('p');loading.hidden=false;loading.querySelector('[data-boot-retry]')?.remove();if(label)label.textContent='迷宮の扉をひらいています…';
@@ -421,8 +448,9 @@ async function init(){
   // The real owner/cat are required. Scenery and enemy textures upgrade the same
   // walkable scene as they arrive; they must not hold the entrance for 18 seconds.
   // Preserve the saved view, while its optional WebGL module prepares in parallel.
-  const preferredView=view;
-  phase='scene';restore();await setView('2d',{persist:false,quiet:true,deferArt:true});if(!current())return;
+  const preferredViewpoint=desiredViewpoint;
+  phase='scene';restore();await setView('2d',{persist:false,quiet:true,deferArt:true,distance:preferredViewpoint.view==='2d'?preferredViewpoint.distance:'normal'});if(!current())return;
+  prepareViewpointAssets(preferredViewpoint.view==='3d',abort.signal);
   updateCreatorFrames(performance.now());renderExploration(0);gameReady=true;loading.hidden=true;
   transitions.enter($('fallback'),{kind:'scene'});start();if(!progress[year]?.storySeen)showStory();
   const firstViewRequest=viewRequest;
@@ -431,7 +459,7 @@ async function init(){
   requestAnimationFrame(()=>requestAnimationFrame(()=>{
    if(!current())return;
    // A user who chooses a view during boot always wins over the saved preference.
-   if(preferredView==='3d'&&viewRequest===firstViewRequest)void setView('3d',{persist:false,quiet:true});
+   if(preferredViewpoint.view==='3d'&&viewRequest===firstViewRequest)void setViewpoint(preferredViewpoint.id,{persist:false,quiet:true});
    void rpgArt.startScene();
    void rpgArt.loadRemaining();
    const snapshot=globalThis.__HALLOWEEN_MAZE_BOOT__?.residents;
@@ -446,7 +474,25 @@ async function init(){
 }
 
 rpgArt.ready.then(()=>{document.body.dataset.art=rpgArt.failures.length?'partial':'ready';if(rpgArt.failures.length){console.warn('Some original RPG art could not load:',rpgArt.failures);notify('一部のイラストを読み込めず、簡易表示で続けています。再読み込みでお試しください。');}});
-const cameraButton=$('camera-distance');function updateCameraButton(){cameraButton.textContent='視点：'+cameraDistanceLabel(cameraDistance)+(cameraZoom!==1?` ${Math.round(cameraZoom*100)}%`:'');cameraButton.setAttribute('aria-pressed',String(cameraDistance!=='normal'));cameraButton.setAttribute('aria-description','標準、引き、遠景の3段階。指で調整した拡大率は保ちます。');}cameraButton.onclick=()=>{clearInput();cameraDistance=nextCameraDistance(cameraDistance);saveCameraDistance('maze',cameraDistance);updateCameraButton();stageRenderer?.invalidate();if(gameReady)renderExploration(0);};updateCameraButton();
+const cameraButton=$('camera-distance');
+function viewpointStatus(){
+ const actual=migrateViewpoint('maze',{view,distance:cameraDistance});
+ return viewPending||resumeViewpoint?`現在：${actual.label}。選んだ「${desiredViewpoint.label}」を準備しています。`:viewFailure?`現在は${actual.label}で表示中です。選んだ「${desiredViewpoint.label}」は再試行できます。`:actual.id!==desiredViewpoint.id?`現在：${actual.label}。選んだ「${desiredViewpoint.label}」を準備しています。`:`現在の視点：${actual.label}`;
+}
+function updateCameraButton(){
+ const actual=migrateViewpoint('maze',{view,distance:cameraDistance});cameraButton.textContent='視点：'+actual.label+(viewPending||resumeViewpoint?'（準備中）':viewFailure?'（代替）':'');
+ cameraButton.setAttribute('aria-description',viewpointStatus()+' 指で調整した拡大率は保ちます。');
+ const status=$('viewpoint-status');if(status)status.textContent=viewpointStatus();
+ for(const button of content.querySelectorAll('[data-viewpoint]'))button.setAttribute('aria-pressed',String(button.dataset.viewpoint===desiredViewpoint.id));
+}
+function showViewpoints(){
+ title('VIEWPOINT','視点を選ぶ');const status=element('p',viewpointStatus());status.id='viewpoint-status';status.setAttribute('role','status');
+ const main=element('div',undefined,'tabs');main.setAttribute('role','group');main.setAttribute('aria-label','基本の視点');
+ const details=element('details'),more=element('div',undefined,'tabs');details.append(element('summary','ほかの視点'),more);more.setAttribute('role','group');more.setAttribute('aria-label','ほかの視点');
+ for(const option of viewpointOptions('maze')){const button=element('button',option.label);button.type='button';button.dataset.viewpoint=option.id;button.setAttribute('aria-pressed',String(option.id===desiredViewpoint.id));button.onclick=()=>void setViewpoint(option.id);(option.detail?more:main).append(button);if(option.detail&&option.id===desiredViewpoint.id)details.open=true;}
+ content.append(status,main,details,element('p','目線・背後では左右で方向転換、見下ろし・遠景では東西南北へ移動します。ピンチ操作や「パッド・拡大縮小」の拡大率は、視点を変えても保ちます。','subtle'));openPanel();
+}
+cameraButton.onclick=showViewpoints;updateCameraButton();
 updateViewUI();init();
 
 

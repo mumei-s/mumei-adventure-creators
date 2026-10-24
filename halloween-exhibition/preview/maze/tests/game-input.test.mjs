@@ -100,7 +100,13 @@ test('pad reduces neutral travel and stabilizes near-diagonal turning',()=>{
 test('lantern has its own left dock; loading shows actual illustrated scene',()=>{
  const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
  const stack=html.match(/<div class="nearby">([\s\S]*?)<\/div>/)[1];
- assert(!stack.includes('id="lantern"'));assert.match(html,/<aside class="lantern-dock"[^>]*><button id="lantern"/);
+ assert(!stack.includes('id="lantern"'));const dock=html.match(/<aside class="lantern-dock"[^>]*>([\s\S]*?)<\/aside>/)[1];
+ assert.match(dock,/^<div class="viewpoint-control" role="group" aria-label="視点の切り替え">/);
+ const dockIds=['viewpoint-prev','camera-distance','viewpoint-next','lantern'];let previous=-1;
+ for(const id of dockIds){assert.equal((dock.match(new RegExp(`id="${id}"`,'g'))||[]).length,1);const index=dock.indexOf(`id="${id}"`);assert.ok(index>previous);previous=index;}
+ assert.match(dock,/<\/div><button id="lantern" aria-pressed="true">ランタン ON<\/button>$/);
+ const menuApp=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8'),menuSource=menuApp.slice(menuApp.indexOf('function showExploreMenu(){'),menuApp.indexOf('function showMenuLayoutSettings(){'));
+ assert.ok(menuSource.includes("const lanternButton=add(lantern?'ランタン ON':'ランタン OFF',()=>{toggleLantern();"));assert.ok(menuSource.includes("}),lanternButton,add('歩く速さ'"));
  assert.equal((html.match(/id="lantern"/g)||[]).length,1);
  assert(html.includes('../assets/lantern-story-vignette.svg'));assert(html.includes('story-vignette'));assert(html.includes('role="status"'));
  const css=fs.readFileSync(new URL('../adventure-controls.css',import.meta.url),'utf8');

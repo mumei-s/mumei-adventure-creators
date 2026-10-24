@@ -45,11 +45,16 @@ async function main(){
  const before=canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data,after=check.getContext('2d').getImageData(0,0,canvas.width,canvas.height).data;
  for(let index=3;index<before.length;index+=4)if(before[index]!==after[index])throw Error('WebP encoding changed fallback alpha');
  const sha256=crypto.createHash('sha256').update(bytes).digest('hex');
+ const registryURL=new URL('maze/data/character-rigs.json',root),registry=JSON.parse(fs.readFileSync(registryURL)),record=registry.rigs.find(item=>item.id===manifest.id);
+ if(!record)throw Error('Rai rig registry entry is missing');
+ const rigHash=crypto.createHash('sha256').update(fs.readFileSync(rigURL)).digest('hex'),manifestURL='./assets/rigs/rin-rai-lion/rig.json?v='+rigHash.slice(0,12);
  if(process.argv.includes('--check')){
+  if(record.manifestURL!==manifestURL)throw Error('Rai rig metadata reference is stale');
   if(!fs.readFileSync(imageURL).equals(bytes)||character.asset.sha256!==sha256||JSON.stringify(character.asset.layout.frames)!==JSON.stringify(frames))throw Error('Rai fallback or measured metadata is stale');
  }else{
+  record.manifestURL=manifestURL;fs.writeFileSync(registryURL,JSON.stringify(registry,null,2)+'\n');
   character.asset.layout.frames=frames;character.asset.sha256=sha256;fs.writeFileSync(imageURL,bytes);fs.writeFileSync(dataURL,JSON.stringify(data,null,2)+'\n');
  }
- console.log(JSON.stringify({id:manifest.id,sha256,frames:frames.flat().length,bytes:bytes.length,alphaPreserved:true,check:process.argv.includes('--check')}));
+ console.log(JSON.stringify({id:manifest.id,sha256,rigHash,manifestURL,frames:frames.flat().length,bytes:bytes.length,alphaPreserved:true,check:process.argv.includes('--check')}));
 }
 if(process.argv[1]&&fileURLToPath(import.meta.url)===process.argv[1])await main();

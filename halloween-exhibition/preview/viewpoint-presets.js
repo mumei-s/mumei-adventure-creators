@@ -10,6 +10,10 @@ const details={
  maze:[{id:'behind',label:'背後',view:'3d',distance:'wide',detail:true},{id:'behind-far',label:'背後（遠景）',view:'3d',distance:'far',detail:true}],
 };
 export function viewpointOptions(page){return [...common,...(details[page]||[])].map(value=>({...value}));}
+export function cycleViewpoint(page,id,direction=1){
+ const options=viewpointOptions(page),index=Math.max(0,options.findIndex(value=>value.id===id));
+ return options[(index+(direction<0?-1:1)+options.length)%options.length];
+}
 export function resolveViewpoint(page,id){return viewpointOptions(page).find(value=>value.id===id)||{...common[0]};}
 export function migrateViewpoint(page,{view='3d',distance='normal'}={}){
  return viewpointOptions(page).find(value=>value.view===(view==='2d'?'2d':'3d')&&value.distance===distance)||resolveViewpoint(page,view==='2d'?'overhead':'eye');

@@ -95,3 +95,10 @@ test('control safe area works for portrait, landscape, tablet and desktop withou
   renderer.destroy();
  }
 });
+
+test('viewpoint controls contribute to the existing measured street safe zone',()=>{
+ const world={top:100,bottom:700,height:600},pad={top:550,bottom:686,height:136},control={top:490,bottom:542,height:52};
+ assert.ok(townControlOffset(world,pad,control)>townControlOffset(world,pad));
+ assert.ok(townControlOffset(world,pad,control)<=world.height*.22,'the established camera clamp is unchanged');
+ assert.equal(townControlOffset(world,pad,{top:10,bottom:60,height:50}),townControlOffset(world,pad),'controls outside the scene do not affect framing');
+});

@@ -1,3 +1,4 @@
+import {afterViewPaint} from '../view-paint.js?v=20261024-viewpoints1';
 import {withDeadline} from '../transition-effects.js?v=20261016-living1';
 
 const FAILURE_MESSAGES=Object.freeze({
@@ -22,13 +23,13 @@ export function classifyTown3DFailure(error,{phase='load'}={}){
  else if(/dynamically imported module|dynamic import|module script|loading module|town renderer unavailable|failed to fetch/i.test(message))code='module-unavailable';
  else if(/deadline|timed? out|timeout/i.test(message))code='timeout';
  else code=phase==='render'?'render-failed':'load-failed';
- return Object.freeze({code,message:FAILURE_MESSAGES[code],retryable:true});
+ return Object.freeze({code,message:FAILURE_MESSAGES[code],retryable:code!=='module-unavailable',requiresReload:code==='module-unavailable'});
 }
 
 /** Keep the playable Canvas scene until a current WebGL request is ready. */
-export function createTownViewController({load,onChange=()=>{},timeout=35000,timers=globalThis}={}){
- let desired='2d',active='2d',status='idle',view=null,pending=null,generation=0,disposed=false,failure=null;
- const snapshot=()=>({desired,active,status,view,failure,failureReason:failure?.message||''});
+export function createTownViewController({load,onChange=()=>{},timeout=35000,timers=globalThis,beforeLoad=afterViewPaint}={}){
+ let desired='2d',active='2d',status='idle',view=null,pending=null,generation=0,disposed=false,failure=null,attempt=0;
+ const snapshot=()=>({desired,active,status,view,failure,attempt,failureReason:failure?.message||''});
  const emit=()=>{if(!disposed)onChange(snapshot());};
  function clearView(){const old=view;view=null;old?.destroy?.();}
  function cancel(){generation++;pending?.abort();pending=null;}
@@ -37,11 +38,14 @@ export function createTownViewController({load,onChange=()=>{},timeout=35000,tim
   if(disposed)return snapshot();desired=mode==='3d'?'3d':'2d';
   if(desired==='2d'){cancel();active='2d';status='idle';failure=null;emit();return snapshot();}
   if(view&&!retry){active='3d';status='ready';failure=null;emit();return snapshot();}
-  if(pending&&!retry)return snapshot();
+  if(pending&&!retry){emit();return snapshot();}
   cancel();clearView();const request=generation,abort=new AbortController();pending=abort;
-  active='2d';status='loading';failure=null;emit();let candidate=null,released=false;
+  active='2d';status='loading';failure=null;attempt++;emit();let candidate=null,released=false;
   const release=()=>{if(candidate&&!released){released=true;candidate.destroy?.();}};
-  const operation=Promise.resolve().then(()=>load({signal:abort.signal,onContextLost:error=>fail(candidate&&view===candidate?generation:request,error,'context')})).then(async next=>{
+  const operation=Promise.resolve().then(()=>beforeLoad(abort.signal)).then(()=>{
+   if(disposed||request!==generation||abort.signal.aborted)throw Error('Old town view request');
+   return load({signal:abort.signal,onContextLost:error=>fail(candidate&&view===candidate?generation:request,error,'context')});
+  }).then(async next=>{
    candidate=next;
    if(disposed||request!==generation||abort.signal.aborted){release();throw Error('Old town view request');}
    await next.ready;

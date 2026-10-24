@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import crypto from 'node:crypto';
 import vm from 'node:vm';
 import {fileURLToPath} from 'node:url';
 import {fetchStartupJSON,loadMazeStartupData,loadRequiredCharacters} from '../startup-assets.js';
@@ -113,4 +114,11 @@ test('a timed-out essential request settles its cache entry before the second at
 test('late completion from an aborted attempt cannot replace or clear the successful retry',async()=>{
  const timers={queue:new Set(),setTimeout(fn){this.queue.add(fn);return fn;},clearTimeout(fn){this.queue.delete(fn);},expire(){for(const fn of [...this.queue])fn();}},old=deferred();let calls=0,closed=0;const current={width:1024,height:1024};
  const assets=createCharacterAssets({loadImage:async()=>++calls===1?old.promise:current});const boot=loadRequiredCharacters(assets,[hero],{timers});await turn();timers.expire();await boot;assert.equal(calls,2);assert.equal(assets.get(hero.src),current);old.resolve({width:1024,height:1024,close(){closed++;}});await turn();assert.equal(assets.get(hero.src),current);assert.equal(assets.status().pending,0);assert.equal(closed,1);assets.dispose();
+});
+
+
+test('source startup uses the content-versioned character parent without disabling normal cache',async()=>{
+ const calls=[],hash=crypto.createHash('sha256').update(fs.readFileSync(new URL('../data/creator-characters.json',import.meta.url))).digest('hex').slice(0,12);
+ await loadMazeStartupData({snapshot:null,fetcher:async(url,options)=>{calls.push({url,cache:options.cache});return{ok:true,json:async()=>({})};}});
+ assert.equal(calls.length,3);assert(calls.some(call=>call.url==='./data/creator-characters.json?v='+hash));assert(calls.every(call=>call.cache==='default'));
 });

@@ -163,9 +163,14 @@
       "sha256": "5ab4358fb92225f5eb27108975abf46ad3a78c7b2d56cb71b383ee4b6636b9b5"
     },
     {
+      "path": "maze/data/character-rigs.json",
+      "bytes": 5293,
+      "sha256": "f663ba448899df1148898d2c0dc7ee5c2abe20f9da397bc4f4f0217f8977437a"
+    },
+    {
       "path": "maze/data/creator-characters.json",
       "bytes": 237911,
-      "sha256": "cdde75a7d1a33d1578029a99154d2ffb0bab1468a35767236cb8f9db0b38b522"
+      "sha256": "182ab7a3ff046ec54e1ccfe2af1574e05aa8b6a63c7ce0b09a72b090a6dcc559"
     },
     {
       "path": "maze/encounter-model.js",
@@ -294,8 +299,8 @@
     },
     {
       "path": "maze/startup-assets.js",
-      "bytes": 3029,
-      "sha256": "1ccf711ac922f5558eed1f0fe77cf3cb537382eaf5667c2e99c1e9f157b0e06b"
+      "bytes": 3028,
+      "sha256": "d9f0de39588616bba3fa9a5645b17406da7515f7ee58f709dc399b8ae0ecd227"
     },
     {
       "path": "maze/story-model.js",
@@ -354,8 +359,8 @@
     },
     {
       "path": "scripts/build-game-scripts.mjs",
-      "bytes": 14563,
-      "sha256": "478b58ce824f621d8c794f408d5108370be061affd7187933a0b026c0f385e76"
+      "bytes": 16564,
+      "sha256": "c3a3a5b9402df55f9112d391c0809b80484fa6d6ee1340bc7609f0e05f8a80dd"
     },
     {
       "path": "touch-camera.js",
@@ -542,7 +547,7 @@
     },
     {
       "path": "maze/startup-assets.js",
-      "bytes": 1781
+      "bytes": 1780
     },
     {
       "path": "viewport.js",
@@ -619,8 +624,8 @@
   ],
   "output": {
     "path": "maze/game-entry.js",
-    "bytes": 345319,
-    "sha256": "b1ad9df5e54bfd8bf2dc8ad7323aeb18a665bc690a3cb120660197a27fba570e"
+    "bytes": 345318,
+    "sha256": "0c087d59c7de00875dab305038b7de59be819c84004bd7ee6ee92d41a51aaed0"
   },
   "styleSources": [
     "./style.css?v=20261014-adventure2",

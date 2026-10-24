@@ -80,18 +80,18 @@ test('Rai limb animation has independent knees and elbows and never loses both s
  }
 });
 
-test('Rai mane overlaps the collar by lowering only the head attachment seven rig pixels',()=>{
- assert.equal(rig.review.headAttachmentCorrection.offsetRigPixels,7);
+test('Rai mane overlaps the collar by lowering only the head attachment eleven rig pixels',()=>{
+ assert.equal(rig.review.headAttachmentCorrection.offsetRigPixels,11);
  for(const [direction,view]of Object.entries(rig.views)){
   const head=view.parts.head;
-  assert(Math.abs((head.contentHeight-head.pivot[1])*rig.rig.headHeight/head.contentHeight-7)<1e-9,direction+' head attachment');
+  assert(Math.abs((head.contentHeight-head.pivot[1])*rig.rig.headHeight/head.contentHeight-11)<1e-9,direction+' head attachment');
   assert.equal(head.pivot[0],head.rect[2]/2,direction+' horizontal alignment');
  }
  assert.equal(rig.contentHeight,265);assert.equal(rig.rig.headHeight,153);
  assert.deepEqual(rig.output,{width:320,height:384,anchorX:.5,anchorY:.84,scale:1});
  const geometry=({width,height,contentHeight,output,rig,footSoleOffset,motion,restHands,views})=>({width,height,contentHeight,output,rig,footSoleOffset,motion,restHands,views:Object.fromEntries(Object.entries(views).map(([key,view])=>[key,{...view,parts:Object.fromEntries(Object.entries(view.parts).map(([name,part])=>[name,name==='head'?{...part,pivot:[part.pivot[0],0]}:part]))}]))});
  assert.equal(crypto.createHash('sha256').update(JSON.stringify(geometry(rig))).digest('hex'),'ae523045a7f366cc39adf6fe7541d2b1723b8ab1ae4aa2aae92cecaf7a3f3cc5','all non-head attachment geometry and painted source cells remain unchanged');
- const registry=read('../data/character-rigs.json');assert.equal(registry.rigs.find(row=>row.id===id).manifestURL,'./assets/rigs/rin-rai-lion/rig.json?v=20261024-neck1');
+ const registry=read('../data/character-rigs.json');const rigHash=crypto.createHash('sha256').update(fs.readFileSync(new URL('../assets/rigs/rin-rai-lion/rig.json',import.meta.url))).digest('hex');assert.equal(registry.rigs.find(row=>row.id===id).manifestURL,'./assets/rigs/rin-rai-lion/rig.json?v='+rigHash.slice(0,12));
 });
 
 test('Rai fallback retains its original frame poses, body size and ground anchors',()=>{

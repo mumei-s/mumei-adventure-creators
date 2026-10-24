@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import crypto from 'node:crypto';
 import {readFile,access} from 'node:fs/promises';
 import {comparisonEntries,portraitURL,spriteURL,noteProfileURL} from '../../characters/model.js';
 const archive=JSON.parse(await readFile(new URL('../../data/archive.json',import.meta.url),'utf8'));
@@ -24,4 +25,15 @@ test('comparison links stay under the published project and reject unsafe paths'
 test('comparison defers individual sprites until selection instead of loading the whole roster',async()=>{
  const app=await readFile(new URL('../../characters/app.js',import.meta.url),'utf8');
  assert.match(app,/function loadSprite\(entry,token\)/);assert.match(app,/im\.fetchPriority='high'/);assert.match(app,/if\(document\.hidden\)return/);assert.doesNotMatch(app,/Promise\.all\(entries\.map/);
+});
+
+
+test('comparison and source-mode manifests use matching content versions, with a versioned comparison app',async()=>{
+ const data=await readFile(new URL('../data/creator-characters.json',import.meta.url)),hash=crypto.createHash('sha256').update(data).digest('hex').slice(0,12);
+ for(const file of ['../../characters/app.js','../startup-assets.js','../../town/character-art.js']){
+  const source=await readFile(new URL(file,import.meta.url),'utf8');assert(source.includes('creator-characters.json?v='+hash),file);assert.doesNotMatch(source,/creator-characters\.json['"]/);
+ }
+ const app=await readFile(new URL('../../characters/app.js',import.meta.url)),appHash=crypto.createHash('sha256').update(app).digest('hex').slice(0,12),html=await readFile(new URL('../../characters/index.html',import.meta.url),'utf8');
+ assert(html.includes('src="./app.js?v='+appHash+'"'));
+ const rai=manifest.characters.find(character=>character.id==='rin-rai-lion');assert.equal(new URL(spriteURL(rai.asset,base)).searchParams.get('v'),rai.asset.sha256.slice(0,12));
 });

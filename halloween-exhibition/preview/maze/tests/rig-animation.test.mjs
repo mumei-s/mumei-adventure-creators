@@ -1,5 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import crypto from 'node:crypto';
 import {createRigLibrary,headingForFacing,rigBattleActionAge} from '../rig-animation.js';
 const flush=async()=>{for(let i=0;i<32;i++)await Promise.resolve();};
 const deferred=()=>{let resolve,reject;const promise=new Promise((a,b)=>{resolve=a;reject=b;});return{promise,resolve,reject};};
@@ -96,7 +98,7 @@ test('battle seeks deterministic action age and uses a separate live owner insta
  const pausedA=h.library.battle('owner',{effect,time:.3,motion:false}),pausedB=h.library.battle('owner',{effect,time:1.1,motion:false});assert.deepEqual(pausedA.rigPose.joints,pausedB.rigPose.joints);h.library.destroy();
 });
 test('manifest-relative atlas URLs resolve beneath the game and metadata can use external manifest records',async()=>{
- const urls=[],h=fixture({fetcher:async url=>({ok:true,json:async()=>url.endsWith('character-rigs.json')?{schemaVersion:1,rigs:[{id:'owner-lantern-hero',approved:true,manifestURL:'./assets/rigs/owner/manifest.json'}]}:{...manifest(),atlases:{main:'parts.webp'},atlas:'main'}}),loadImage:async url=>{urls.push(url);return{width:64,height:64};}});await loadOwner(h);assert(urls[0].endsWith('/assets/rigs/owner/parts.webp'));h.library.destroy();
+ const urls=[],h=fixture({fetcher:async url=>({ok:true,json:async()=>new URL(url).pathname.endsWith('/character-rigs.json')?{schemaVersion:1,rigs:[{id:'owner-lantern-hero',approved:true,manifestURL:'./assets/rigs/owner/manifest.json'}]}:{...manifest(),atlases:{main:'parts.webp'},atlas:'main'}}),loadImage:async url=>{urls.push(url);return{width:64,height:64};}});await loadOwner(h);assert(urls[0].endsWith('/assets/rigs/owner/parts.webp'));h.library.destroy();
 });
 
 test('unreviewed artwork stays gated unless explicit owner-only pilot preview is requested',async()=>{
@@ -116,4 +118,12 @@ test('owner and separate battle instance survive nonowner LRU pressure',async()=
 test('creature action duration maps to the same external battle effect interval',async()=>{
  const h=fixture({rows:[{...row('black-cat'),archetype:'quadruped'}]});await h.library.ready;move(h.library,'black-cat');await flush();assert(move(h.library,'black-cat'));
  const effect={type:'attack',started:0};assert.equal(h.library.battle('black-cat',{effect,time:.9}).rigPose.action.kind,'attack');assert.equal(h.library.battle('black-cat',{effect,time:1.21}).rigPose.action.kind,'locomotion');h.library.destroy();
+});
+
+
+test('rig parent metadata is content-addressed and fetched only once with ordinary caching',async()=>{
+ const expected=crypto.createHash('sha256').update(fs.readFileSync(new URL('../data/character-rigs.json',import.meta.url))).digest('hex').slice(0,12),calls=[];
+ const h=fixture({fetcher:async(url,options)=>{calls.push({url,cache:options.cache});return{ok:true,json:async()=>({schemaVersion:1,rigs:[row()]})};}});
+ await loadOwner(h);for(let frame=0;frame<50;frame++)move(h.library,'owner',frame*.01,frame/60);
+ await h.library.retry('owner');assert.equal(calls.length,1);assert.equal(new URL(calls[0].url).searchParams.get('v'),expected);assert.equal(calls[0].cache,'default');assert.equal(h.loads().images,1);h.library.destroy();
 });

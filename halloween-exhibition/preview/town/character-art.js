@@ -21,7 +21,7 @@ export function createTownCharacterArt({onState=()=>{},fetcher,signal,loadMonste
   // mode and injected loaders retain bounded requests and the normal HTTP cache.
   const bundled=!fetcher&&globalThis.__ATELIER_CHARACTER_MANIFEST__&&globalThis.__ATELIER_ARCHIVE__;
   const data=fetcher||fetchStartupJSON;
-  const [manifest,source]=bundled?[globalThis.__ATELIER_CHARACTER_MANIFEST__,globalThis.__ATELIER_ARCHIVE__]:await Promise.all([data('../maze/data/creator-characters.json?v=20261017-cna1',{signal}),data('../data/archive.json',{signal})]);archive=source;roster=compileCharacterRoster(archive,manifest);const placement=placeTownVisitors(roster),homePlacement=placeCreatorHomeVisitors(roster);placed=[...placement.visitors,...homePlacement.visitors];
+  const [manifest,source]=bundled?[globalThis.__ATELIER_CHARACTER_MANIFEST__,globalThis.__ATELIER_ARCHIVE__]:await Promise.all([data('../maze/data/creator-characters.json?v=182ab7a3ff04',{signal}),data('../data/archive.json',{signal})]);archive=source;roster=compileCharacterRoster(archive,manifest);const placement=placeTownVisitors(roster),homePlacement=placeCreatorHomeVisitors(roster);placed=[...placement.visitors,...homePlacement.visitors];
   if(placement.omitted.length||homePlacement.omitted.length||roster.missingCreators?.length)throw Error('街の仲間の配置を完了できませんでした。');
   hero=roster.hero;cat=compileCompanions(manifest).find(character=>character.id==='owner-black-cat');
   if(!hero||!cat)throw Error('採用済みの主人公と黒猫を読み込めませんでした。');

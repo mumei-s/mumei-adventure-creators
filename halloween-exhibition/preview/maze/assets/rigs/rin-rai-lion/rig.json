@@ -37,7 +37,7 @@
           ],
           "pivot": [
             84.5,
-            160.848104575163
+            156.4413071895425
           ],
           "contentHeight": 168.56,
           "sourceComponent": 1,
@@ -372,7 +372,7 @@
           ],
           "pivot": [
             80.0,
-            135.598692810458
+            131.88366013071894
           ],
           "contentHeight": 142.1,
           "sourceComponent": 17,
@@ -707,7 +707,7 @@
           ],
           "pivot": [
             76.0,
-            141.209673202614
+            137.34091503267973
           ],
           "contentHeight": 147.98,
           "sourceComponent": 34,
@@ -1042,7 +1042,7 @@
           ],
           "pivot": [
             82.5,
-            136.53385620915
+            132.79320261437908
           ],
           "contentHeight": 143.07999999999998,
           "sourceComponent": 51,
@@ -1426,9 +1426,10 @@
     ],
     "headAttachmentCorrection": {
       "date": "2026-10-24",
-      "offsetRigPixels": 7,
+      "offsetRigPixels": 11,
       "method": "Lower only the four head pivots; preserve part scale, torso, limbs, skeleton, animation and output normalization.",
-      "fallbackBuilder": "scripts/build-rin-rai-atlas.mjs"
+      "fallbackBuilder": "scripts/build-rin-rai-atlas.mjs",
+      "articleReview": "Rechecked against the submitted article header and wizard illustrations at approximately equal cheek width; an eleven-pixel total attachment correction overlaps the mane and collar without changing face, body or limbs."
     }
   },
   "provenance": {

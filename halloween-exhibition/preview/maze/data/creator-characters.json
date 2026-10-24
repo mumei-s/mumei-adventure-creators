@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": "20261024-rin-rai-neck1",
+  "revision": "20261024-rin-rai-neck2",
   "characters": [
     {
       "id": "owner-lantern-hero",
@@ -7100,7 +7100,7 @@
         "src": "assets/creator-npcs/rin-rai-lion-walk.webp",
         "width": 1024,
         "height": 1024,
-        "sha256": "cb8f3fa14f0a0a472a3de376f079ec18d4bcf07cfedc3091dc3ca63deacf0645",
+        "sha256": "9bb4ed50557009813a5c0fe47a211ee86aa2214af49f3c4b158f1221a9430592",
         "sourceSHA256": "7d98ba7cafc43c21708ff9b4dad6333b2bbb9adb1828917770540674e05c7e72",
         "encoding": {
           "format": "WebP",
@@ -7138,7 +7138,7 @@
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
                   64,
-                  25,
+                  28,
                   201,
                   237
                 ]
@@ -7155,7 +7155,7 @@
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
                   319,
-                  25,
+                  28,
                   456,
                   240
                 ]
@@ -7172,7 +7172,7 @@
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
                   577,
-                  25,
+                  28,
                   715,
                   244
                 ]
@@ -7189,7 +7189,7 @@
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
                   833,
-                  25,
+                  28,
                   971,
                   236
                 ]
@@ -7208,7 +7208,7 @@
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
                   54,
-                  280,
+                  284,
                   201,
                   504
                 ]
@@ -7225,7 +7225,7 @@
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
                   312,
-                  280,
+                  284,
                   459,
                   498
                 ]
@@ -7242,8 +7242,8 @@
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
                   566,
-                  284,
-                  712,
+                  287,
+                  713,
                   504
                 ]
               },
@@ -7259,7 +7259,7 @@
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
                   823,
-                  280,
+                  284,
                   970,
                   504
                 ]
@@ -7278,7 +7278,7 @@
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
                   56,
-                  536,
+                  540,
                   200,
                   759
                 ]
@@ -7295,7 +7295,7 @@
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
                   311,
-                  536,
+                  540,
                   455,
                   760
                 ]
@@ -7312,7 +7312,7 @@
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
                   569,
-                  536,
+                  540,
                   713,
                   760
                 ]
@@ -7329,7 +7329,7 @@
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
                   824,
-                  536,
+                  540,
                   967,
                   755
                 ]
@@ -7348,8 +7348,8 @@
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
                   54,
-                  792,
-                  194,
+                  796,
+                  193,
                   1007
                 ]
               },
@@ -7365,7 +7365,7 @@
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
                   312,
-                  792,
+                  796,
                   451,
                   1014
                 ]
@@ -7382,7 +7382,7 @@
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
                   565,
-                  793,
+                  796,
                   704,
                   1022
                 ]
@@ -7399,7 +7399,7 @@
                 "contentHeight": 219.95,
                 "runtimeAlphaBounds": [
                   822,
-                  792,
+                  796,
                   960,
                   1009
                 ]

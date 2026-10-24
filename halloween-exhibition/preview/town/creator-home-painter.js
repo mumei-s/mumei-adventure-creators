@@ -1,6 +1,6 @@
 /** Offline, cached houses for the creator quarter. Profile and artwork pixels are never textures. */
 const TAU=Math.PI*2,cacheByContext=new WeakMap();
-export const CREATOR_HOME_MOTIFS=Object.freeze(['lantern','bat-wing','wave-star','candy','open-book','bread-loaf','twin-stars','moon-cat','cat-leaf','flower','hedgehog','shiba','woven-diamond','three-stars','iris-flower','lion']);
+export const CREATOR_HOME_MOTIFS=Object.freeze(['lantern','bat-wing','wave-star','candy','open-book','bread-loaf','twin-stars','moon-cat','cat-leaf','flower','hedgehog','shiba','woven-diamond','three-stars','iris-flower','lion','pumpkin-book']);
 const woodTone=color=>{const hex=/^#[a-f\d]{6}$/i.test(color)?color.slice(1):'886850',base=[78,59,50];return '#'+[0,2,4].map((offset,i)=>Math.round(parseInt(hex.slice(offset,offset+2),16)*.3+base[i]*.7).toString(16).padStart(2,'0')).join('');};
 const shade=(color,amount)=>{const hex=/^#[a-f\d]{6}$/i.test(color)?color.slice(1):'886850';return '#'+[0,2,4].map(i=>Math.max(0,Math.min(255,Math.round(parseInt(hex.slice(i,i+2),16)+amount*255))).toString(16).padStart(2,'0')).join('');};
 const rect=(c,x,y,w,h,color)=>{c.fillStyle=color;c.fillRect(x,y,w,h);};
@@ -73,6 +73,12 @@ function motif(c,kind,x,y,size,trim){
     case'wave-star':for(let row=0;row<3;row++){c.beginPath();c.moveTo(-21,3+row*5);c.bezierCurveTo(-7,-9+row*5,4,15+row*5,21,1+row*5);c.strokeStyle=row===1?'#9bd8d3':gold;c.lineWidth=2;c.stroke();}star(c,6,-10,7,gold);break;
     case'candy':poly(c,[[-11,-5],[-22,-10],[-19,1],[-23,10],[-11,6]],'#d2a1aa',gold);poly(c,[[11,-5],[22,-10],[19,1],[23,10],[11,6]],'#d2a1aa',gold);box(c,-12,-9,24,18,'#f2d3c2',gold,7);for(const x of[-7,2,11])line(c,x-4,-6,x+3,6,'#b7637b',3);break;
     case'open-book':poly(c,[[-21,-12],[-3,-9],[0,-4],[3,-9],[21,-12],[20,12],[3,14],[0,17],[-3,14],[-20,12]],'#d6c39b',gold);line(c,0,-4,0,15,ink);for(let n=0;n<4;n++){line(c,-17,-5+n*4,-5,-3+n*4,'#856c4e');line(c,5,-3+n*4,17,-5+n*4,'#856c4e');}break;
+    case'pumpkin-book':
+      poly(c,[[-23,3],[-3,6],[0,10],[3,6],[23,3],[22,17],[3,20],[0,23],[-3,20],[-22,17]],'#e0cda1',gold);line(c,0,10,0,21,ink);
+      for(const side of[-1,1])for(let n=0;n<2;n++)line(c,side*5,11+n*4,side*18,9+n*4,'#8e724e');
+      for(const dx of[-8,0,8])ellipse(c,dx,-7,10,12,dx?'#c47637':'#df9446',gold,.65);
+      poly(c,[[-2,-18],[-1,-25],[5,-27],[3,-17]],'#788558',gold);for(const side of[-1,1])poly(c,[[side*6-3,-10],[side*6,-14],[side*6+3,-10]],ink);
+      poly(c,[[-8,-4],[0,-1],[8,-4],[5,1],[-5,1]],ink);break;
     case'bread-loaf':c.beginPath();c.moveTo(-22,9);c.lineTo(-22,-1);c.bezierCurveTo(-22,-19,22,-19,22,-1);c.lineTo(22,9);c.closePath();c.fillStyle='#c6914e';c.fill();c.strokeStyle=gold;c.lineWidth=1.5;c.stroke();for(const x of[-12,0,12])line(c,x-4,-7,x+2,2,'#efd397',3);line(c,-18,6,18,6,'#9f6a3d');break;
     case'twin-stars':star(c,-10,-4,12,'#dfd7ad',ink);star(c,11,5,10,'#bfc5df',ink);break;
     case'moon-cat':crescent(c,-5,-2,20,gold);cat(c,8,6,8,'#7e849a','#dccb9c');break;
@@ -127,7 +133,7 @@ function nameplate(c,b,x,y,trim){
   c.fillStyle='#cbb68b';c.font='10px "Yu Gothic","Hiragino Kaku Gothic ProN",sans-serif';c.fillText(label,x,y+10,158);
 }
 // These are architectural stage designs, rather than claims about a creator's real home.
-const themeByMotif=Object.freeze({'lantern':'lantern-cat','bat-wing':'devil','wave-star':'tide','candy':'candy','open-book':'story','bread-loaf':'bread','twin-stars':'companions','moon-cat':'moon','cat-leaf':'cat-garden','flower':'chamomile','hedgehog':'hedgehog','shiba':'shiba','woven-diamond':'violet-knit','three-stars':'trio','iris-flower':'iris','lion':'lion'});
+const themeByMotif=Object.freeze({'lantern':'lantern-cat','bat-wing':'devil','wave-star':'tide','candy':'candy','open-book':'story','bread-loaf':'bread','twin-stars':'companions','moon-cat':'moon','cat-leaf':'cat-garden','flower':'chamomile','hedgehog':'hedgehog','shiba':'shiba','woven-diamond':'violet-knit','three-stars':'trio','iris-flower':'iris','lion':'lion','pumpkin-book':'pumpkin-library'});
 function archedWindow(c,x,y,w,h,trim,glass='#d8bb7d'){
   const path=()=>{c.beginPath();c.moveTo(x-w/2,y);c.lineTo(x-w/2,y-h+w/2);c.bezierCurveTo(x-w/2,y-h-6,x+w/2,y-h-6,x+w/2,y-h+w/2);c.lineTo(x+w/2,y);c.closePath();};
   glazing(c,path,x,y,w,h,trim,glass);
@@ -180,6 +186,15 @@ function homeRoof(c,theme,p,trim){
       poly(c,[[54,-270],[146,-247],[238,-284],[239,-274],[147,-236],[55,-260]],'#d9cfae',trim,2);
       for(let i=0;i<4;i++)poly(c,[[58,-265+i*5],[146,-242+i*5],[234,-279+i*5]],null,shade(p.trim,.1),1);
       line(c,146,-243,146,-151,trim,6);poly(c,[[145,-239],[164,-247],[164,-174],[154,-181],[145,-171]],'#9f7753',p.trim);break;
+    case 'pumpkin-library':
+      // Folded purple cape eaves, rather than another book or gabled roof.
+      roof([[-10,-150],[21,-211],[61,-235],[103,-215],[147,-244],[191,-215],[235,-235],[278,-211],[330,-173],[287,-147]],-245);
+      for(const [x,y]of[[21,-211],[61,-235],[103,-215],[191,-215],[235,-235],[278,-211]])line(c,x,y,x<147?x-11:x+11,-152,shade(p.trim,.12),1.5);
+      box(c,113,-229,68,82,shade(p.wall,-.08),trim,3);
+      for(const dx of[-17,0,17])ellipse(c,147+dx,-243,25,32,dx?'#b96b34':'#d78b42',shade(trim,.13),2);
+      line(c,147,-274,151,-287,'#728052',7);poly(c,[[151,-282],[157,-287],[164,-282],[157,-279]],'#849266',trim);
+      archedWindow(c,147,-215,30,36,trim,'#a6d5dd');
+      for(const yy of[-166,-161,-156])line(c,119,yy,176,yy,'#d4c79d',1.5);break;
     case 'bread':
       c.beginPath();c.moveTo(-8,-148);c.bezierCurveTo(-2,-278,284,-282,329,-173);c.lineTo(287,-147);c.closePath();c.fillStyle=p.roof;c.fill();c.strokeStyle=trim;c.lineWidth=4;c.stroke();
       curvedRoofMaterial(c,-8,330,-280,-147,p.roof);
@@ -234,6 +249,13 @@ function homeWindows(c,theme,p,trim,door){
       case 'candy':archedWindow(c,x,-31,45,54,trim,'#e8bdc1');awning(c,x,-90,61,p,{stripes:5});break;
       case 'story':
         box(c,x-30,-87,60,59,shade(trim,-.08),p.trim,2);for(let row=0;row<2;row++){for(let i=0;i<7;i++){const xx=x-24+i*7;box(c,xx,-79+row*24,5,17+(i%3),['#91856e','#65796b','#956b66','#756c85'][i%4],shade(p.trim,-.12));}line(c,x-28,-55+row*25,x+28,-55+row*25,p.trim,3);}break;
+      case 'pumpkin-library':
+        archedWindow(c,x,-30,55,63,trim,x<147?'#a6d5dd':'#e6c482');
+        box(c,x-29,-61,58,34,shade(trim,-.17),p.trim,2);
+        for(let row=0;row<2;row++){
+          for(let n=0;n<6;n++){const xx=x-24+n*8;box(c,xx,-57+row*15,6,11+(n%2),['#a37b44','#72638b','#5f8580'][n%3],shade(p.trim,-.17));}
+          line(c,x-28,-43+row*15,x+28,-43+row*15,p.trim,2.5);
+        }break;
       case 'bread':archedWindow(c,x,-34,42,47,trim,'#e6be79');awning(c,x,-91,68,p,{stripes:7,scallop:false});break;
       case 'companions':archedWindow(c,x,-35,37,49,trim,x<100?'#c1c9df':'#e4b9cb');star(c,x,-65,11,x<100?'#e0e2ed':'#f0d5c9',trim);break;
       case 'moon':archedWindow(c,x,-31,32,57,trim,'#bac4da');crescent(c,x,-62,15,'#dfcf99');break;
@@ -287,6 +309,14 @@ function homeGarden(c,theme,p,trim,door){
     case 'tide':for(const x of[29,281]){box(c,x-22,1,44,13,'#809e9d',trim,3);line(c,x-23,-10,x+23,-10,trim,3);for(const dx of[-18,0,18])line(c,x+dx,-10,x+dx,8,trim,2);ellipse(c,x,11,10,3,'#b8c4b4');}break;
     case 'candy':for(const x of[25,282]){line(c,x,11,x,-17,trim,3);ellipse(c,x,-23,15,15,'#d8a5ae',p.trim,2);c.beginPath();c.arc(x,-23,8,0,Math.PI*1.5);c.strokeStyle='#f2d8bd';c.lineWidth=4;c.stroke();}break;
     case 'story':for(const x of[28,283]){box(c,x-20,-4,40,18,trim,p.trim,2);for(const dx of[-11,4]){ellipse(c,x+dx,0,9,10,'#bb824e',p.trim);line(c,x+dx,-9,x+dx+2,-15,'#70865b',2);}}break;
+    case 'pumpkin-library':{
+      const lampX=door-44;line(c,lampX,-86,lampX,-47,trim,2.5);line(c,lampX-10,-84,lampX+2,-84,trim,2);motif(c,'lantern',lampX,-42,18,p.trim);
+      for(const dx of[-8,0,8])ellipse(c,31+dx,3,10,11,dx?'#b96932':'#d58c42',p.trim);line(c,31,-8,33,-16,'#75815b',3);
+      box(c,255,4,35,8,'#7b668b',p.trim,2);box(c,258,-2,29,6,'#d7c79e',trim,1);
+      ellipse(c,274,-14,10,15,'#292c36',p.trim);cat(c,274,-30,9,'#292c36',p.trim);
+      c.beginPath();c.moveTo(281,-3);c.bezierCurveTo(302,0,302,-18,293,-17);c.strokeStyle='#292c36';c.lineWidth=5;c.stroke();
+      for(const side of[-1,1])ellipse(c,274+side*3,-30,1.1,1.6,'#e8c778');break;
+    }
     case 'bread':
       poly(c,[[245,12],[296,12],[296,-16],[287,-35],[259,-35],[245,-16]],'#a78060',trim,2);archedWindow(c,271,7,25,29,trim,'#9d6943');ellipse(c,271,1,9,4,'#d3a85f');
       box(c,15,-4,42,20,trim,p.trim,3);for(const x of[24,37,48]){ellipse(c,x,-4,6,11,'#c59a5e',p.trim);line(c,x-2,-8,x+2,-2,'#e8c78b',1.5);}break;

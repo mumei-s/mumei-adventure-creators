@@ -30,8 +30,8 @@
     },
     {
       "path": "data/archive.json",
-      "bytes": 24834,
-      "sha256": "8541ccfbd26e5a99cd2e204516578b186be5d15e137e3217752b0e46263bee6d"
+      "bytes": 26222,
+      "sha256": "0786a3e0c02e67fa092cc9c69d06f55cf984b8c700c679c2f13610e5f5ca06ab"
     },
     {
       "path": "display-mode.js",
@@ -136,13 +136,13 @@
   ],
   "output": {
     "path": "gallery-entry.js",
-    "bytes": 111874,
-    "sha256": "4afeae157b8b7c5c4b91816e3a563123932dee02c88a80cbba0625430c63280e"
+    "bytes": 112886,
+    "sha256": "ce04bea7dee2a21b7dace7003b30dd31cdf5469ead2a508d1c53585e5dd80c5c"
   },
   "styles": {
     "path": "gallery-styles.css",
     "bytes": 296475,
-    "sha256": "ed2cce760a934caaa345f6ae89f91641d8aaf6005731f2b76beaaa44cd7e9cc2"
+    "sha256": "058ff9fab18a725b18f772eb85c11c1000c5157264716fd836df484612e79e31"
   },
   "imports": [
     {

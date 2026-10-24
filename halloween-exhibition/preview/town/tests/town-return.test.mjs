@@ -8,7 +8,7 @@ import {initialTownState,getTownMap,isTownWalkable} from '../town-model.js';
 import {createTownStore} from '../save-model.js';
 import {createReadingJourney,READING_JOURNEY_KEY} from '../reading-journey.js';
 
-test('all 16 homes return repeatedly from direct travel and walked entry without erasing progress',()=>{
+test('all 17 homes return repeatedly from direct travel and walked entry without erasing progress',()=>{
  for(const home of CREATOR_HOMES){
   const original={...initialTownState(),coins:63,steps:82},saved=[];
   const session=createTownSession({state:original,store:{save(state){saved.push(state);return {ok:true};}}});

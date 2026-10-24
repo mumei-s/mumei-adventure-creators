@@ -44,8 +44,8 @@
     },
     {
       "path": "data/archive.json",
-      "bytes": 24834,
-      "sha256": "8541ccfbd26e5a99cd2e204516578b186be5d15e137e3217752b0e46263bee6d"
+      "bytes": 26222,
+      "sha256": "0786a3e0c02e67fa092cc9c69d06f55cf984b8c700c679c2f13610e5f5ca06ab"
     },
     {
       "path": "dialog-layout.css",
@@ -134,8 +134,8 @@
     },
     {
       "path": "maze/creator-runtime.js",
-      "bytes": 27152,
-      "sha256": "7e6975c3c75220c6e44cc8179560f4fc24a26789bb570ae7141bfb6490fc4ee3"
+      "bytes": 29716,
+      "sha256": "9046966696e059e88fd530cc896d0bd24094b18ef00c33672fe600256109428d"
     },
     {
       "path": "maze/creator-story.js",
@@ -164,13 +164,13 @@
     },
     {
       "path": "maze/data/character-rigs.json",
-      "bytes": 5293,
-      "sha256": "f663ba448899df1148898d2c0dc7ee5c2abe20f9da397bc4f4f0217f8977437a"
+      "bytes": 5446,
+      "sha256": "a66bc36f3ef5b7a37c8c00d300fdb12148e5568a95fea0cf8c3edeadaa0cdd2b"
     },
     {
       "path": "maze/data/creator-characters.json",
-      "bytes": 237911,
-      "sha256": "182ab7a3ff046ec54e1ccfe2af1574e05aa8b6a63c7ce0b09a72b090a6dcc559"
+      "bytes": 249067,
+      "sha256": "f80bc02199db8c85896c5401487d4ee6c50d993422d212eae2ea8f1466d9c6d4"
     },
     {
       "path": "maze/encounter-model.js",
@@ -300,7 +300,7 @@
     {
       "path": "maze/startup-assets.js",
       "bytes": 3028,
-      "sha256": "d9f0de39588616bba3fa9a5645b17406da7515f7ee58f709dc399b8ae0ecd227"
+      "sha256": "b7cc0bbd03c3a2d0fc308770547fa41e98bcf6de98a718f7162f45b2cdf52d82"
     },
     {
       "path": "maze/story-model.js",
@@ -441,7 +441,7 @@
   "contributions": [
     {
       "path": "<define:globalThis.__HALLOWEEN_MAZE_BOOT__>",
-      "bytes": 124443
+      "bytes": 130380
     },
     {
       "path": "maze/app.js",
@@ -453,7 +453,7 @@
     },
     {
       "path": "maze/creator-runtime.js",
-      "bytes": 17936
+      "bytes": 19425
     },
     {
       "path": "maze/patrol-model.js",
@@ -642,8 +642,8 @@
   ],
   "output": {
     "path": "maze/game-entry.js",
-    "bytes": 346473,
-    "sha256": "eb18126b6a699a7728cc8fcbd480da636444686f5d81d8593a0f74b2a159eaba"
+    "bytes": 353899,
+    "sha256": "bdc2edebfb65d68ab515ce556ee2196bb024f4d0bb9882c93b01e451a45850dc"
   },
   "styleSources": [
     "./style.css?v=20261014-adventure2",

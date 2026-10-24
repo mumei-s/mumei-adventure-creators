@@ -38,9 +38,9 @@ function harness(){
  const run=context.run;run.prepareReadingJourney();return {run,state,content,record,node:id=>nodes.get(id),all:()=>flatten(content)};
 }
 
-test('actual preparation uses short home names, puts the owner last, and keeps the fifteen submitted creators',()=>{
+test('actual preparation uses short home names, puts the owner last, and keeps the sixteen submitted creators',()=>{
  const h=harness(),journey=h.run.journey(),snapshot=journey.snapshot();
- assert.equal(snapshot.total,15);assert.equal(snapshot.people[0].id,'koakumako');assert.equal(snapshot.people.at(-1).id,'ss_yr');
+ assert.equal(snapshot.total,16);assert.equal(snapshot.people[0].id,'koakumako');assert.equal(snapshot.people.at(-1).id,'ss_yr');
  for(const person of snapshot.people){assert.equal(person.name,getCreatorHome(person.id).creatorName);assert.ok(person.works.every(work=>!work.introduction));}
  assert.equal(snapshot.people.find(person=>person.id==='n_kazumai55633').name,'ミナト汐');
  for(const id of ['grand_daisy8632'])assert.equal(snapshot.people.some(person=>person.id===id),false);
@@ -50,11 +50,11 @@ test('actual preparation uses short home names, puts the owner last, and keeps t
 
 test('the actual HUD progresses from the street to a home, then to its article and the next creator',()=>{
  const h=harness(),journey=h.run.journey(),first=journey.snapshot().selected;
- h.run.updateHUD();assert.match(h.node('quest-title').textContent,/記事巡り\s+0\/15/);assert.match(h.node('quest-objective').textContent,/金色の道案内/);assert.ok(h.node('quest-objective').textContent.includes(first.name));
+ h.run.updateHUD();assert.match(h.node('quest-title').textContent,/記事巡り\s+0\/16/);assert.match(h.node('quest-objective').textContent,/金色の道案内/);assert.ok(h.node('quest-objective').textContent.includes(first.name));
  h.state.mapId='creator-quarter';h.run.updateHUD();assert.match(h.node('quest-objective').textContent,/北から\d列目・西から\d軒目/);assert.match(h.node('quest-objective').textContent,/玄関で「家の中へ入る」/);
  h.state.mapId=getCreatorHome(first.id).interiorId;h.run.updateHUD();journey.visit(first.id);assert.match(h.node('quest-objective').textContent,/本人や作品机/);assert.match(h.node('quest-objective').textContent,/南の扉/);
  h.run.showCreatorHome(first.id);const link=h.content.children.find(node=>node.className==='town-card creator-home-work'),mark=h.content.children.find(node=>node.className==='reading-mark');link.click();mark.click();
- h.state.mapId='creator-quarter';h.run.updateHUD();assert.equal(journey.snapshot().readCount,1);assert.notEqual(journey.snapshot().selectedId,first.id);assert.match(h.node('quest-title').textContent,/記事巡り\s+1\/15/);assert.ok(h.node('quest-objective').textContent.includes(journey.snapshot().selected.name));
+ h.state.mapId='creator-quarter';h.run.updateHUD();assert.equal(journey.snapshot().readCount,1);assert.notEqual(journey.snapshot().selectedId,first.id);assert.match(h.node('quest-title').textContent,/記事巡り\s+1\/16/);assert.ok(h.node('quest-objective').textContent.includes(journey.snapshot().selected.name));
 });
 
 test('opening an article only enables its explicit reading mark; the mark advances the journey',()=>{
@@ -75,11 +75,11 @@ test('owner introduction links receive no reading mark while the submitted work 
 });
 
 test('the pending creator retain their home and profile while the reading notebook excludes them',()=>{
- const h=harness();h.run.showCreatorHomes();const list=h.content.children.find(node=>node.className==='inventory-list');assert.equal(list.children.length,16);assert.equal(CREATOR_HOMES.length,16);
+ const h=harness();h.run.showCreatorHomes();const list=h.content.children.find(node=>node.className==='inventory-list');assert.equal(list.children.length,17);assert.equal(CREATOR_HOMES.length,17);
  for(const id of ['grand_daisy8632']){const home=getCreatorHome(id),card=list.children.find(item=>item.children.some(node=>node.tag==='h3'&&node.textContent===home.creatorName));assert.ok(card);assert.equal(card.children.find(node=>node.tag==='button').disabled,false);
   h.run.showCreatorHome(id);assert.ok(h.content.children.some(node=>node.tag==='a'&&node.href===creatorHomeProfile(archive,id).profileURL));assert.ok(h.content.children.some(node=>node.textContent.includes('参加作品は準備中')));assert.equal(h.content.children.some(node=>node.className==='reading-mark'),false);
  }
- h.run.showJournal();const notebook=h.content.children.find(node=>node.className==='reading-list');assert.equal(notebook.children.length,15);assert.equal(h.content.children.find(node=>node.tag==='progress').max,15);
+ h.run.showJournal();const notebook=h.content.children.find(node=>node.className==='reading-list');assert.equal(notebook.children.length,16);assert.equal(h.content.children.find(node=>node.tag==='progress').max,16);
  for(const id of ['grand_daisy8632'])assert.equal(notebook.children.some(card=>card.children.some(node=>node.tag==='h3'&&node.textContent===getCreatorHome(id).creatorName)),false);
 });
 

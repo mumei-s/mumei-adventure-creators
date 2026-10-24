@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "revision": "20261024-rin-rai-neck2",
+  "revision": "20261024-doyle-owner-selected-boy",
   "characters": [
     {
       "id": "owner-lantern-hero",
@@ -7417,6 +7417,346 @@
         "Four authored cardinal part sets animate with planted-foot walking, elbow/knee articulation, cape and tail motion. The 16-frame fallback atlas is baked from the same rig.",
         "Reviewed native-Canvas rendering only; no browser/device gameplay review or authored diagonal/attack illustration certification."
       ]
+    },
+    {
+      "id": "doyle-halloween-boy",
+      "creatorId": "dandy_snake880",
+      "groupId": "dandy_snake880-2026",
+      "role": "npc",
+      "label": "ドイル",
+      "entityIds": [
+        "doyle-halloween-boy"
+      ],
+      "articleURL": "https://note.com/dandy_snake880/n/n084c0d58f567",
+      "referenceSelectionId": "doyle-article-boy-owner-selection-20261024",
+      "ready": true,
+      "identityReviewed": true,
+      "animationReviewed": true,
+      "continuousAnimationReviewed": false,
+      "source": {
+        "kind": "article-art",
+        "articleURL": "https://note.com/dandy_snake880/n/n084c0d58f567",
+        "imageURL": "https://assets.st-note.com/img/1792671223-PoY0EeLCd5lIjyWQcr7JMNZm.png?width=1200",
+        "referenceSHA256": "b5010ec0c4613ace1797ec8b38adc38370acc022200d3c02908b705b2aa0cca2",
+        "verified": true,
+        "verifiedAtUTC": "2026-10-24T09:24:00Z"
+      },
+      "asset": {
+        "src": "assets/creator-npcs/doyle-halloween-boy-walk.webp",
+        "sha256": "5dbd84f7ae22a40a3a7039d1d3fdf01041f667e3e374085b77f3990371828b0c",
+        "width": 1024,
+        "height": 1024,
+        "bytes": 157556,
+        "layout": {
+          "directions": [
+            "down",
+            "left",
+            "right",
+            "up"
+          ],
+          "columns": 4,
+          "rows": 4,
+          "idleColumn": 0,
+          "walkColumns": [
+            0,
+            1,
+            2,
+            3
+          ],
+          "frames": [
+            [
+              {
+                "frame": [
+                  0,
+                  0,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.8671875,
+                "contentHeight": 205.2,
+                "runtimeAlphaBounds": [
+                  73,
+                  21,
+                  183,
+                  221
+                ]
+              },
+              {
+                "frame": [
+                  256,
+                  0,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.8671875,
+                "contentHeight": 205.2,
+                "runtimeAlphaBounds": [
+                  328,
+                  21,
+                  437,
+                  225
+                ]
+              },
+              {
+                "frame": [
+                  512,
+                  0,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.8671875,
+                "contentHeight": 205.2,
+                "runtimeAlphaBounds": [
+                  586,
+                  21,
+                  695,
+                  228
+                ]
+              },
+              {
+                "frame": [
+                  768,
+                  0,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.8671875,
+                "contentHeight": 205.2,
+                "runtimeAlphaBounds": [
+                  842,
+                  21,
+                  951,
+                  220
+                ]
+              }
+            ],
+            [
+              {
+                "frame": [
+                  0,
+                  256,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.8671875,
+                "contentHeight": 205.2,
+                "runtimeAlphaBounds": [
+                  87,
+                  277,
+                  193,
+                  488
+                ]
+              },
+              {
+                "frame": [
+                  256,
+                  256,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.8671875,
+                "contentHeight": 205.2,
+                "runtimeAlphaBounds": [
+                  344,
+                  277,
+                  450,
+                  482
+                ]
+              },
+              {
+                "frame": [
+                  512,
+                  256,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.8671875,
+                "contentHeight": 205.2,
+                "runtimeAlphaBounds": [
+                  598,
+                  279,
+                  703,
+                  487
+                ]
+              },
+              {
+                "frame": [
+                  768,
+                  256,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.8671875,
+                "contentHeight": 205.2,
+                "runtimeAlphaBounds": [
+                  855,
+                  277,
+                  960,
+                  489
+                ]
+              }
+            ],
+            [
+              {
+                "frame": [
+                  0,
+                  512,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.8671875,
+                "contentHeight": 205.2,
+                "runtimeAlphaBounds": [
+                  62,
+                  533,
+                  168,
+                  744
+                ]
+              },
+              {
+                "frame": [
+                  256,
+                  512,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.8671875,
+                "contentHeight": 205.2,
+                "runtimeAlphaBounds": [
+                  316,
+                  533,
+                  422,
+                  746
+                ]
+              },
+              {
+                "frame": [
+                  512,
+                  512,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.8671875,
+                "contentHeight": 205.2,
+                "runtimeAlphaBounds": [
+                  575,
+                  533,
+                  681,
+                  747
+                ]
+              },
+              {
+                "frame": [
+                  768,
+                  512,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.8671875,
+                "contentHeight": 205.2,
+                "runtimeAlphaBounds": [
+                  829,
+                  533,
+                  935,
+                  740
+                ]
+              }
+            ],
+            [
+              {
+                "frame": [
+                  0,
+                  768,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.8671875,
+                "contentHeight": 205.2,
+                "runtimeAlphaBounds": [
+                  77,
+                  789,
+                  179,
+                  990
+                ]
+              },
+              {
+                "frame": [
+                  256,
+                  768,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.8671875,
+                "contentHeight": 205.2,
+                "runtimeAlphaBounds": [
+                  334,
+                  789,
+                  436,
+                  999
+                ]
+              },
+              {
+                "frame": [
+                  512,
+                  768,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.8671875,
+                "contentHeight": 205.2,
+                "runtimeAlphaBounds": [
+                  587,
+                  789,
+                  689,
+                  1007
+                ]
+              },
+              {
+                "frame": [
+                  768,
+                  768,
+                  256,
+                  256
+                ],
+                "anchorX": 0.5,
+                "anchorY": 0.8671875,
+                "contentHeight": 205.2,
+                "runtimeAlphaBounds": [
+                  843,
+                  789,
+                  945,
+                  992
+                ]
+              }
+            ]
+          ]
+        }
+      },
+      "heightPx": 78,
+      "heightWorld": 2.05,
+      "greeting": "かぼちゃの灯りのそばで、物語をひらいてみよう。",
+      "greetingKind": "fictional-game-dialogue",
+      "technicalNotes": [
+        "Dedicated artwork preserves only the selected article boy, his pumpkin hood and purple clothing. The author profile portrait is not a character source.",
+        "Four authored cardinal component sets provide articulated movement. The 16-frame fallback is baked from the same rig, with measured alpha bounds and at least 17 pixels of clear gutter.",
+        "Native Canvas views, walking frames, game-scale poses and motion extremes were visually reviewed. 4,320 numeric motion samples retained planted-foot contact with no composer clipping.",
+        "No claim of independently authored diagonal or attack drawings, physical-device review, or real WebGL gameplay review."
+      ]
     }
   ],
   "groups": [
@@ -7519,6 +7859,12 @@
       "requiredEntityIds": [
         "rin-rai-lion"
       ]
+    },
+    {
+      "id": "dandy_snake880-2026",
+      "requiredEntityIds": [
+        "doyle-halloween-boy"
+      ]
     }
   ],
   "slotAssignments": {
@@ -7536,7 +7882,8 @@
     "cheeky_rhino7031-2026": "archive-east",
     "naemotion-2026": "hall-west-mid",
     "cna-profile-guests": "archive-mid-west",
-    "airoumu_rin-2026": "east-south"
+    "airoumu_rin-2026": "east-south",
+    "dandy_snake880-2026": "west-south"
   },
   "companions": [
     {
@@ -7888,27 +8235,28 @@
     "aihan_days",
     "cheeky_rhino7031",
     "real_hyena9474",
-    "airoumu_rin"
+    "airoumu_rin",
+    "dandy_snake880"
   ],
   "runtimeSummary": {
-    "submittedCreators": 15,
+    "submittedCreators": 16,
     "pendingCreators": 1,
-    "creatorCharacters": 21,
+    "creatorCharacters": 22,
     "companionSprites": 1,
-    "preservedEntities": 26,
-    "atlasFrames": 352,
+    "preservedEntities": 27,
+    "atlasFrames": 368,
     "initialHeroAndCatBytes": 886498,
-    "allCharacterTransferBytes": 8645934,
+    "allCharacterTransferBytes": 8814568,
     "playerAtlases": 1,
-    "npcAtlases": 20,
+    "npcAtlases": 21,
     "companionAtlases": 1,
     "reconciliationStatus": "complete",
-    "interactiveNPCs": 19,
+    "interactiveNPCs": 20,
     "visualCompanionGroups": 1,
     "profileGuestAtlases": 3,
     "profileGuestEntities": 3,
-    "totalCastAtlases": 22,
-    "totalCastEntities": 26
+    "totalCastAtlases": 23,
+    "totalCastEntities": 27
   },
   "referencePolicy": {
     "preference": "creator-avatar",
@@ -8221,6 +8569,25 @@
         "verified": true
       },
       "reviewNotes": "The current profile avatar and article header depict the same golden boy lion cub. Preserve the header Halloween outfit and shorts; exclude the unintended female variation."
+    },
+    "dandy_snake880": {
+      "decision": "owner-selected-article",
+      "reviewed": true,
+      "articleVisuallyInspected": true,
+      "profileIdentityMixed": false,
+      "selectionApprovalId": "doyle-article-boy-owner-selection-20261024",
+      "entityIds": [
+        "doyle-halloween-boy"
+      ],
+      "articleReference": {
+        "kind": "article-art",
+        "articleURL": "https://note.com/dandy_snake880/n/n084c0d58f567",
+        "imageURL": "https://assets.st-note.com/img/1792671223-PoY0EeLCd5lIjyWQcr7JMNZm.png?width=1200",
+        "referenceSHA256": "b5010ec0c4613ace1797ec8b38adc38370acc022200d3c02908b705b2aa0cca2",
+        "verified": true,
+        "verifiedAtUTC": "2026-10-24T09:24:00Z"
+      },
+      "reviewNotes": "The site owner explicitly selected the boy in the Halloween Atelier section of this article. Use only this character reference; do not blend the author profile portrait or use the unrelated article header. This records the site owner selection, not author consent."
     }
   },
   "profileGuests": [
@@ -8236,6 +8603,21 @@
       ],
       "profileURL": "https://note.com/grand_daisy8632",
       "submissionStatus": "pending"
+    }
+  ],
+  "ownerArticleSelections": [
+    {
+      "creatorId": "dandy_snake880",
+      "approved": true,
+      "approvalId": "doyle-article-boy-owner-selection-20261024",
+      "approvalKind": "owner-selection",
+      "selectedBy": "site-owner",
+      "articleURL": "https://note.com/dandy_snake880/n/n084c0d58f567",
+      "imageURL": "https://assets.st-note.com/img/1792671223-PoY0EeLCd5lIjyWQcr7JMNZm.png?width=1200",
+      "referenceSHA256": "b5010ec0c4613ace1797ec8b38adc38370acc022200d3c02908b705b2aa0cca2",
+      "entityIds": [
+        "doyle-halloween-boy"
+      ]
     }
   ]
 }

@@ -16,12 +16,12 @@ const fakeAsset=(name)=>({...structuredClone(manifest.characters[0].asset),src:`
 
 test('all submitted creators plus the user-approved CNA visual guests are ready while its article stays pending',()=>{
   const r=roster(),expected=[...new Set(archive.years.find(y=>y.year===2026).entries.filter(e=>e.visible!==false&&e.submissionStatus==='submitted').map(e=>e.creatorId))].sort();
-  assert.equal(expected.length,15);assert.equal(r.hero?.creatorId,'ss_yr');
+  assert.equal(expected.length,16);assert.equal(r.hero?.creatorId,'ss_yr');
   const actual=[...new Set([r.hero,...r.npcs].filter(Boolean).map(e=>e.creatorId))].sort();
   // The later explicit user approval adds three profile guests; it never turns
   // the prior pending article into a submission. All other pending profiles stay excluded.
   assert.deepEqual(actual,[...expected,'grand_daisy8632'].sort());
-  assert.deepEqual(r.omitted,[]);assert.equal(r.readyCreatorCount,16);assert.equal(r.submittedCreatorCount,15);assert.deepEqual(r.missingCreators,[]);
+  assert.deepEqual(r.omitted,[]);assert.equal(r.readyCreatorCount,17);assert.equal(r.submittedCreatorCount,16);assert.deepEqual(r.missingCreators,[]);
   assert.equal(r.npcs.filter(n=>n.participationRole==='profile-guest').length,3);
   assert.equal(archive.years.find(y=>y.year===2026).entries.find(e=>e.creatorId==='grand_daisy8632').submissionStatus,'pending');
 });
@@ -99,7 +99,7 @@ test('default decoder falls back to bounded canvas when image bitmap resizing fa
  }finally{for(const[k,v]of Object.entries(old))if(v===undefined)delete globalThis[k];else globalThis[k]=v;}
 });
 test('current avatar entities and explicit owner/Mako exceptions define the complete cast',()=>{
- const expected=['ss-yr-lantern-hero','ss-yr-black-cat','koakumako-base-devil','minato-shio-witch','mama-avatar-woman','mama-avatar-creature','naemo-masquerade','takechi-bread-avatar','yamakon-navy-figure','yamakon-pink-figure','tenkai-moon-robed-avatar','marimo','marimo-cat','chamomile-flower-avatar','tantan-streetwalker','tantan-avatar-hedgehog-pink-bow','tantan-avatar-hedgehog-green-cap','tantan-avatar-hedgehog-pacifier','aihan-avatar-woman','aihan-avatar-shiba','lokiron-avatar','iris','cna-black-bob','cna-star-twintails','cna-orange-glasses','rin-rai-lion'].sort();
+ const expected=['ss-yr-lantern-hero','ss-yr-black-cat','koakumako-base-devil','minato-shio-witch','mama-avatar-woman','mama-avatar-creature','naemo-masquerade','takechi-bread-avatar','yamakon-navy-figure','yamakon-pink-figure','tenkai-moon-robed-avatar','marimo','marimo-cat','chamomile-flower-avatar','tantan-streetwalker','tantan-avatar-hedgehog-pink-bow','tantan-avatar-hedgehog-green-cap','tantan-avatar-hedgehog-pacifier','aihan-avatar-woman','aihan-avatar-shiba','lokiron-avatar','iris','cna-black-bob','cna-star-twintails','cna-orange-glasses','rin-rai-lion','doyle-halloween-boy'].sort();
  const actual=allDefinitions().filter(e=>e.ready).flatMap(e=>e.entityIds);assert.equal(new Set(actual).size,actual.length);assert.deepEqual(actual.sort(),expected);assert(!actual.includes('ss-yr-white-lavender-character'));
 });
 test('nearby actions use two rows of44px controls within120px portrait dock',()=>{
@@ -110,7 +110,7 @@ test('nearby actions use two rows of44px controls within120px portrait dock',()=
 
 test('avatar-first policy requires a verified current profile review and rejects superseded casts',()=>{
  assert.equal(manifest.referencePolicy.preference,'creator-avatar');assert.equal(manifest.referencePolicy.requireReviewed,true);
- assert.equal(Object.keys(manifest.referenceReviews).length,16);for(const review of Object.values(manifest.referenceReviews)){assert.equal(review.avatarVisuallyInspected,true);assert(Number.isFinite(Date.parse(review.avatarReference.verifiedAtUTC)));}
+ assert.equal(Object.keys(manifest.referenceReviews).length,17);for(const [creatorId,review] of Object.entries(manifest.referenceReviews)){if(creatorId==='dandy_snake880'){assert.equal(review.decision,'owner-selected-article');assert.equal(review.articleVisuallyInspected,true);assert.equal(review.avatarReference,undefined);assert(Number.isFinite(Date.parse(review.articleReference.verifiedAtUTC)));continue;}assert.equal(review.avatarVisuallyInspected,true);assert(Number.isFinite(Date.parse(review.avatarReference.verifiedAtUTC)));}
  const replacements=['mama_ca','imota14','clever_hare2654','tenkai_notes','cheeky_rhino7031','aihan_days'];
  for(const cid of replacements){const review=manifest.referenceReviews[cid];assert.equal(review.decision,'profile-avatar-replacement');assert.equal(review.reviewed,true);for(const c of manifest.characters.filter(c=>c.creatorId===cid))assert.equal(c.source.kind,'profile-avatar');}
  const retired=['mama-yorimichuu-suit','takechi-ao','takechi-paper-face','takechi-shu','chamomile-apprentice','tenkai-kurose-jin','tenkai-sakaki-mafuyu','lokiron-inukichi-held','aihan-narrator','aihan-shiba'];
@@ -164,7 +164,7 @@ test('CNA profile approval is exact, SHA-bound and atomic even when global revie
  for(const mutate of mutations)for(const requireReviewed of [true,false]){
   const m=structuredClone(manifest);m.referencePolicy.requireReviewed=requireReviewed;mutate(m);
   const r=compileCharacterRoster(archive,m,2026);assert.equal(r.npcs.some(n=>n.creatorId==='grand_daisy8632'),false,mutate.toString());
-  assert.equal(r.submittedCreatorCount,15);assert.deepEqual(r.missingCreators,[]);assert.equal(r.readyCreatorCount,15);
+  assert.equal(r.submittedCreatorCount,16);assert.deepEqual(r.missingCreators,[]);assert.equal(r.readyCreatorCount,16);
  }
 });
 test('the CNA grant does not authorize another pending creator or hidden pending entries',()=>{

@@ -8,9 +8,9 @@ import {getTownMap} from '../story-data.js';
 
 const nameCanvas=(width,height)=>({width,height,getContext:()=>({fillRect(){},fillText(){},measureText:text=>({width:text.length*13})})});
 
-test('sixteen homes have distinct raised motifs, authentic nameplates and their original entrances',()=>{
+test('seventeen homes have distinct raised motifs, authentic nameplates and their original entrances',()=>{
   const map=createCreatorQuarter(),before=JSON.stringify(map),town=createTownSceneGeometry(map,{makeCanvas:nameCanvas}),ray=new THREE.Raycaster();
-  assert.equal(town.buildings.length,CREATOR_HOMES.length);assert.equal(town.buildings.length,16);
+  assert.equal(town.buildings.length,CREATOR_HOMES.length);assert.equal(town.buildings.length,17);
   for(const home of CREATOR_HOMES){
     const model=town.buildings.find(item=>item.creatorId===home.creatorId),emblem=town.root.getObjectByName('creator-home-emblem-'+home.creatorId),sign=town.root.getObjectByName('creator-home-nameplate-'+home.creatorId);
     assert.deepEqual(model.footprint,{x:home.x,z:home.z,w:home.w,h:home.h});assert.deepEqual(model.door,home.door);
@@ -24,8 +24,8 @@ test('sixteen homes have distinct raised motifs, authentic nameplates and their 
       assert.equal(ray.intersectObjects(town.root.children,false).length,0,home.id+' threshold is clear');
     }
   }
-  assert.equal(JSON.stringify(map),before);assert.ok(town.root.children.length<352,'per-house primitive batches plus three roadside signs keep the district bounded');
-  let triangles=0;for(const item of town.root.children)if(item.geometry)triangles+=(item.geometry.index?.count||item.geometry.attributes.position.count)/3*(item.isInstancedMesh?item.count:1);assert.ok(triangles<45000);
+  assert.equal(JSON.stringify(map),before);assert.ok(town.root.children.length<380,'the seventeenth home adds no more than 28 primitive batches to the original 352-batch budget');
+  let triangles=0;for(const item of town.root.children)if(item.geometry&&!item.name.startsWith('ground-'))triangles+=(item.geometry.index?.count||item.geometry.attributes.position.count)/3*(item.isInstancedMesh?item.count:1);assert.ok(triangles<45000,'non-ground architecture stays bounded independently of the wider walking map');
   const resources=[...town.resources],instances=town.root.children.filter(item=>item.isInstancedMesh);let resourceDisposals=0,instanceDisposals=0;
   for(const item of resources)item.addEventListener('dispose',()=>resourceDisposals++);for(const item of instances)item.addEventListener('dispose',()=>instanceDisposals++);
   town.dispose();assert.equal(resourceDisposals,resources.length);assert.equal(instanceDisposals,instances.length);assert.equal(town.resources.size,0);assert.equal(town.root.children.length,0);
@@ -60,7 +60,7 @@ test('facade nameplates use the matching creator and fit long names inside the e
 test('real building surfaces share bounded offline relief textures and keep their own creator colors',()=>{
  const scene=createTownSceneGeometry(createCreatorQuarter());
  const textures=[...scene.resources].filter(item=>item.isDataTexture);
- assert.equal(textures.length,10,'five color/relief pairs are shared by all sixteen homes');
+ assert.equal(textures.length,10,'five color/relief pairs are shared by all seventeen homes');
  assert.ok(textures.reduce((bytes,texture)=>bytes+texture.image.data.byteLength,0)<=256*1024);
  for(const texture of textures){assert.ok(new Set(texture.image.data).size>8,'texture carries material variation');assert.equal(texture.wrapS,THREE.RepeatWrapping);}
  for(const home of CREATOR_HOMES){
@@ -89,14 +89,14 @@ test('public creative activities receive physical studio bays while their charac
  scene.dispose();
 });
 
-test('the sixteen architectural silhouettes stay different without colors, names or doorway emblems',()=>{
+test('the seventeen architectural silhouettes stay different without colors, names or doorway emblems',()=>{
   const shapes=new Set();
   for(const home of CREATOR_HOMES){
     const roof=creatorHomeRoofGeometry(home.motif,7.64,5.62,1.6);roof.computeBoundingBox();
     assert.ok(roof.boundingBox.max.y>1&&roof.boundingBox.max.y<3.1);assert.ok([...roof.attributes.position.array].every(Number.isFinite));
     shapes.add(JSON.stringify([Array.from(roof.attributes.position.array),roof.index?Array.from(roof.index.array):null]));roof.dispose();
   }
-  assert.equal(shapes.size,16,'changing a crest or color is not the only distinction between these houses');
+  assert.equal(shapes.size,17,'changing a crest or color is not the only distinction between these houses');
   // The hipped roof slopes face the sky, so a one-sided GPU material shows a solid roof.
   const roof=creatorHomeRoofGeometry('bread-loaf',7.64,5.62,1.6),flat=roof.toNonIndexed(),p=flat.attributes.position,a=new THREE.Vector3(),b=new THREE.Vector3(),c=new THREE.Vector3(),normal=new THREE.Vector3();
   for(let i=0;i<p.count;i+=3){a.fromBufferAttribute(p,i);b.fromBufferAttribute(p,i+1);c.fromBufferAttribute(p,i+2);const averageY=(a.y+b.y+c.y)/3;normal.crossVectors(b.sub(a),c.sub(a));assert.ok(averageY>.001?normal.y>=0:normal.y<=0);}
@@ -110,4 +110,20 @@ test('both outdoor ends have a named gate with an unobstructed portal',()=>{
     const ray=new THREE.Raycaster(new THREE.Vector3(gate.x,1,gate.z+.4),new THREE.Vector3(0,0,-1),0,.8);assert.equal(ray.intersectObjects(scene.root.children,false).length,0);
     assert.ok(scene.root.getObjectByName('creator-home-nameplate-'+gate.id));scene.dispose();
   }
+});
+
+
+test('Doyle has a pumpkin-hood dormer, library book bays, lantern and black-cat sculpture',()=>{
+ const home=CREATOR_HOMES.find(item=>item.creatorId==='dandy_snake880');assert.ok(home);
+ const scene=createTownSceneGeometry(createCreatorQuarter()),model=scene.buildings.find(item=>item.creatorId===home.creatorId),parts=scene.root.children.filter(item=>item.userData.bucket===home.id);
+ assert.equal(model.architecture,'pumpkin-library');assert.equal(model.homeUse,'lantern-library');assert.equal(model.window,'book');
+ assert.equal(parts.find(item=>item.material?.name==='pumpkin').count,3,'three solid lobes form the pumpkin hood');
+ assert.equal(parts.find(item=>item.geometry?.name==='creator-home-recessed-frame-book').count,2);
+ assert.equal(parts.find(item=>item.geometry?.name==='creator-home-recessed-frame-arch').count,1,'the hood has its own recessed window');
+ for(const name of['bookGold','bookTeal','bookRed'])assert.ok(parts.some(item=>item.material?.name===name&&item.count>=6),'both library bays contain actual book volumes');
+ assert.ok(parts.some(item=>item.geometry?.type==='IcosahedronGeometry'&&item.material?.name==='dark'&&item.count===4),'cat body, head and curled tail use shared solid primitives');
+ assert.ok(parts.some(item=>item.geometry?.type==='ConeGeometry'&&item.material?.name==='dark'&&item.count===2),'cat ears are actual silhouette geometry');
+ const catRay=new THREE.Raycaster(new THREE.Vector3(home.x+home.w*.84,.7,home.z+home.h+1.6),new THREE.Vector3(0,0,-1),0,1.4);
+ assert.equal(catRay.intersectObjects(parts,false)[0]?.object.material.name,'dark','the cat sits in front of, not hidden inside, the window planter');
+ assert.deepEqual(model.door,home.door);assert.deepEqual(model.footprint,{x:home.x,z:home.z,w:7,h:5});scene.dispose();
 });

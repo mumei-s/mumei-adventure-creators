@@ -112,6 +112,13 @@
       "avatar": "https://assets.st-note.com/production/uploads/images/322562422/profile_5bf07964888d6ac2e16137980acf0a0a.png?fit=bounds&format=jpeg&quality=85&width=330",
       "avatarSource": "https://assets.st-note.com/production/uploads/images/322562422/profile_5bf07964888d6ac2e16137980acf0a0a.png?fit=bounds&format=jpeg&quality=85&width=330",
       "profileURL": "https://note.com/airoumu_rin"
+    },
+    {
+      "id": "dandy_snake880",
+      "name": "ドイル",
+      "avatar": "https://assets.st-note.com/production/uploads/images/287992172/profile_648c2d58423ef9edbe0669d0ee22f1f1.png?width=80&height=80&dpr=2",
+      "avatarSource": "https://assets.st-note.com/production/uploads/images/287992172/profile_648c2d58423ef9edbe0669d0ee22f1f1.png?width=80&height=80&dpr=2",
+      "profileURL": "https://note.com/dandy_snake880"
     }
   ],
   "years": [
@@ -490,6 +497,29 @@
           ],
           "image": "https://assets.st-note.com/production/uploads/images/325928572/rectangle_large_type_2_7e9c7955a290c6f636244671c5e26aaa.png?fit=bounds&quality=85&width=1280",
           "imageAlt": "凛さんの記事「ライちゃんが4つのハロウィン世界へ！」の見出し画像。魔女帽子とマントを着た金色のライオンのライちゃん"
+        },
+        {
+          "doorId": "doyle-halloween-2026",
+          "creatorId": "dandy_snake880",
+          "title": "ぴこぴこハンマー。",
+          "theme": "letter",
+          "submissionStatus": "submitted",
+          "tags": [
+            "参加者",
+            "ハロウィン"
+          ],
+          "links": [
+            {
+              "title": "ぴこぴこハンマー。（note記事）",
+              "url": "https://note.com/dandy_snake880/n/n084c0d58f567"
+            },
+            {
+              "title": "noteプロフィールを見る",
+              "url": "https://note.com/dandy_snake880"
+            }
+          ],
+          "image": "https://assets.st-note.com/img/1792671223-PoY0EeLCd5lIjyWQcr7JMNZm.png?width=1200",
+          "imageAlt": "ドイルの記事「ぴこぴこハンマー。」のHalloween Atelier参加作品。かぼちゃ帽子と紫のマントの少年、黒猫、本棚とランタン"
         }
       ]
     }

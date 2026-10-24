@@ -19,7 +19,7 @@ test('the bundled canonical roster starts the real owner and cat without metadat
   characters=createTownCharacterArt({assets,deferEnhancements:true,makeRigs:()=>{optional.push('rigs');return{update:()=>null,get:()=>null,battle:()=>null,destroy(){optional.push('destroy');}};}});
   await flush();assert.equal(requests.length,2);assert(requests.every(request=>request.priority==='high'));assert(requests.some(request=>request.src.includes('owner-lantern')));assert(requests.some(request=>request.src.includes('owner-black-cat')));assert.deepEqual(optional,[]);
   assert.equal(characters.art.images.playerAtlas,undefined);for(const complete of gates)complete();await characters.ready;
-  assert(characters.art.images.playerAtlas);assert.equal(new Set(characters.visitors().map(visitor=>visitor.creatorId )).size,16);assert.equal(characters.companionActors({state:initialTownState()}).length,1);assert.deepEqual(optional,[]);
+  assert(characters.art.images.playerAtlas);assert.equal(new Set(characters.visitors().map(visitor=>visitor.creatorId )).size,17);assert.equal(characters.companionActors({state:initialTownState()}).length,1);assert.deepEqual(optional,[]);
   characters.startEnhancements();characters.startEnhancements();assert.deepEqual(optional,['rigs']);characters.destroy();characters.startEnhancements();assert.deepEqual(optional,['rigs','destroy']);characters=null;
  }finally{characters?.destroy();globalThis.fetch=oldFetch;if(oldArchive===undefined)delete globalThis.__ATELIER_ARCHIVE__;else globalThis.__ATELIER_ARCHIVE__=oldArchive;if(oldManifest===undefined)delete globalThis.__ATELIER_CHARACTER_MANIFEST__;else globalThis.__ATELIER_CHARACTER_MANIFEST__=oldManifest;}
 });
@@ -47,7 +47,7 @@ test('resuming indoors or far from the entrance preloads only participants aroun
 });
 test('town retains every approved creator group and CNA has only real profile links while articles remain pending',async()=>{
  const assets=createCharacterAssets({loadImage:async(_url,asset)=>({width:asset.width,height:asset.height})}),characters=createTownCharacterArt({fetcher,assets});await characters.ready;
- const visitors=characters.visitors(),creators=new Set(visitors.map(visitor=>visitor.creatorId));assert.equal(creators.size,16);
+ const visitors=characters.visitors(),creators=new Set(visitors.map(visitor=>visitor.creatorId));assert.equal(creators.size,17);
  const cna=visitors.filter(visitor=>visitor.creatorId==='grand_daisy8632'&&visitor.mapId===TOWN_START_MAP);assert.equal(cna.length,3);for(const visitor of cna){assert.equal(visitor.participationRole,'profile-guest');assert.equal(visitor.articleURL,null);assert.deepEqual(visitor.articleLinks,[]);assert.equal(visitor.profileURL,'https://note.com/grand_daisy8632');}
  assert(visitors.some(visitor=>visitor.interactive===false));for(const visitor of visitors.filter(visitor=>visitor.participationRole!=='profile-guest'))assert(visitor.articleLinks.some(link=>link.url===visitor.articleURL));characters.destroy();
 });
@@ -57,7 +57,7 @@ test('walking all visitor districts loads only whole nearby groups with hero/cat
  for(const visitor of districts){const state={...initialTownState(),mapId:visitor.mapId,position:{x:visitor.center.x,z:visitor.center.z+1.5}};characters.visitorActors({state,time:time+=1,motion:false});for(let i=0;i<8;i++)await flush();const actors=characters.visitorActors({state,time,motion:false});
   const status=characters.status();assert(status.loaded<=8);assert(status.decodedBytes<=32*1024*1024);assert.equal(status.rejectedRequests,0);for(const actor of actors){seen.add(actor.creatorId);assert(actor.sprite);const group=characters.visitors().filter(peer=>peer.groupId===actor.groupId);assert.equal(actors.filter(peer=>peer.groupId===actor.groupId).length,group.length);}
  }
- assert.equal(seen.size,16);assert(closed>0);characters.destroy();assert.equal(characters.status().loaded,0);
+ assert.equal(seen.size,17);assert(closed>0);characters.destroy();assert.equal(characters.status().loaded,0);
 });
 test('CNA visitors do not appear as a partial group during independent atlas decodes',async()=>{
  const cache=new Map(),pending=new Map(),assets={setPinned(){},status:()=>({}),dispose(){},get:src=>cache.get(src),request(asset){if(asset.src.includes('owner-')){const image={width:asset.width,height:asset.height};cache.set(asset.src,image);return Promise.resolve(image);}if(!pending.has(asset.src)){let resolve;const promise=new Promise(done=>resolve=done);pending.set(asset.src,{asset,resolve,promise});}return pending.get(asset.src).promise;}};

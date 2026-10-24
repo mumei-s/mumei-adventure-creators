@@ -25,7 +25,7 @@ test('every creator room paints its own wall name, themed floor and complete fur
   for(const call of calls)for(const value of call.slice(1))if(typeof value==='number')assert.ok(Number.isFinite(value));
   assert.equal(saved(),0);signatures.add(JSON.stringify(calls.filter(call=>call[0]!=='fillText')));
  }
- assert.equal(signatures.size,16,'room drawings differ beyond the creator names');
+ assert.equal(signatures.size,17,'room drawings differ beyond the creator names');
 });
 
 test('all creator interiors have finite volumetric furniture at the exact authored footprints and dispose their materials',()=>{

@@ -31,7 +31,7 @@ export function rigBattleActionAge(kind,age,duration,actionDuration=OWNER_ATTACK
  * existing loader; this sidecar cannot add creators, articles, progress or NPCs.
  * update/get/battle return a stable live Canvas sprite, or null while absent.
  */
-export function createRigLibrary({loadImage=defaultLoadImage,fetcher=globalThis.fetch,makeCanvas=defaultCanvas,onChange=()=>{},sidecar='./data/character-rigs.json?v=f663ba448899',timeout=8000,metadataTimeout=5000,timers=globalThis,maxActive=16,maxSourceBytes=64*1024*1024,staleSeconds=12,allowUnreviewedPilot=false}={}){
+export function createRigLibrary({loadImage=defaultLoadImage,fetcher=globalThis.fetch,makeCanvas=defaultCanvas,onChange=()=>{},sidecar='./data/character-rigs.json?v=a66bc36f3ef5',timeout=8000,metadataTimeout=5000,timers=globalThis,maxActive=16,maxSourceBytes=64*1024*1024,staleSeconds=12,allowUnreviewedPilot=false}={}){
  if(!Number.isInteger(maxActive)||maxActive<1||maxActive>16||!Number.isFinite(maxSourceBytes)||maxSourceBytes<1||maxSourceBytes>64*1024*1024)throw new TypeError('Invalid rig cache budget');
  const definitions=new Map(),loaded=new Map(),pending=new Map(),failures=new Map(),instances=new Map(),jobs=new Set();let destroyed=false,metadataReady=false,serial=0,logicalTime=0,revision=0;
  const notify=()=>{if(!destroyed){revision++;try{onChange(status());}catch{}}};

@@ -9,6 +9,11 @@ export const CHARACTER_BUDGET = Object.freeze({ concurrent:2, resident:8, decode
 const array = value => Array.isArray(value) ? value : [];
 const CNA_ID='grand_daisy8632',CNA_PROFILE='https://note.com/grand_daisy8632',CNA_APPROVAL='cna-three-character-reference-20261017',CNA_GROUP='cna-profile-guests';
 const CNA_ENTITIES=Object.freeze(['cna-black-bob','cna-star-twintails','cna-orange-glasses']);
+const DOYLE_ID='dandy_snake880',DOYLE_CHARACTER='doyle-halloween-boy',DOYLE_GROUP='dandy_snake880-2026';
+const DOYLE_APPROVAL='doyle-article-boy-owner-selection-20261024';
+const DOYLE_ARTICLE='https://note.com/dandy_snake880/n/n084c0d58f567';
+const DOYLE_ARTWORK='https://assets.st-note.com/img/1792671223-PoY0EeLCd5lIjyWQcr7JMNZm.png?width=1200';
+const DOYLE_REFERENCE_SHA256='b5010ec0c4613ace1797ec8b38adc38370acc022200d3c02908b705b2aa0cca2';
 const exactEntities=(actual,expected)=>Array.isArray(actual)&&actual.length===expected.length&&new Set(actual).size===expected.length&&actual.every(id=>expected.includes(id));
 const referenceHash=value=>typeof value==='string'&&/^[a-f0-9]{64}$/.test(value);
 const finite = (value,min,max) => Number.isFinite(value) && value>=min && value<=max;
@@ -61,6 +66,18 @@ function profileGuestApproval(manifest,creators,pendingCreators){
  return grant;
 }
 
+/** The site owner's explicit choice of this article boy is not creator consent,
+ * a profile-avatar match, or a general exception to the avatar-first policy. */
+function ownerSelectedArticleApproval(manifest,entry){
+  const grants=array(manifest.ownerArticleSelections).filter(item=>item?.creatorId===DOYLE_ID),grant=grants[0];
+  const review=manifest.referenceReviews?.[entry.creatorId],groups=array(manifest.groups).filter(group=>group?.id===DOYLE_GROUP);
+  const selectedSource=source=>source?.kind==='article-art'&&source.verified===true&&source.articleURL===DOYLE_ARTICLE&&source.imageURL===DOYLE_ARTWORK&&source.referenceSHA256===DOYLE_REFERENCE_SHA256&&referenceHash(source.referenceSHA256)&&source.userSelected===undefined;
+  return entry.creatorId===DOYLE_ID&&entry.id===DOYLE_CHARACTER&&entry.role==='npc'&&entry.groupId===DOYLE_GROUP&&entry.referenceSelectionId===DOYLE_APPROVAL&&entry.articleURL===DOYLE_ARTICLE&&exactEntities(entry.entityIds,[DOYLE_CHARACTER])&&
+    grants.length===1&&grant.approved===true&&grant.approvalId===DOYLE_APPROVAL&&grant.approvalKind==='owner-selection'&&grant.selectedBy==='site-owner'&&grant.articleURL===DOYLE_ARTICLE&&grant.imageURL===DOYLE_ARTWORK&&grant.referenceSHA256===DOYLE_REFERENCE_SHA256&&exactEntities(grant.entityIds,[DOYLE_CHARACTER])&&
+    review?.decision==='owner-selected-article'&&review.reviewed===true&&review.articleVisuallyInspected===true&&review.profileIdentityMixed===false&&review.selectionApprovalId===DOYLE_APPROVAL&&review.avatarReference===undefined&&review.avatarVisuallyInspected===undefined&&exactEntities(review.entityIds,[DOYLE_CHARACTER])&&selectedSource(review.articleReference)&&selectedSource(entry.source)&&
+    groups.length===1&&exactEntities(groups[0].requiredEntityIds,[DOYLE_CHARACTER]);
+}
+
 export function compileCharacterRoster(archive, manifest, selectedYear) {
   const years=array(archive?.years), selected=years.find(y=>y.year===selectedYear)||[...years].sort((a,b)=>b.year-a.year)[0];
   const creators=new Map(array(archive?.creators).map(c=>[c.id,c])), submissions=new Set(), visibleCreators=new Set(), pendingCreators=new Set();
@@ -86,7 +103,9 @@ export function compileCharacterRoster(archive, manifest, selectedYear) {
     if(profileGuest&&(!guestApproval||entry.creatorId!==CNA_ID||entry.role!=='npc'||entry.groupId!==CNA_GROUP||entry.articleURL!==null||entry.profileURL!==CNA_PROFILE||
       (entry.submissionStatus!==undefined&&entry.submissionStatus!=='pending')||array(entry.entityIds).length!==1||!CNA_ENTITIES.includes(entry.entityIds[0])||
       entry.source?.kind!=='user-upload'||entry.source.referenceId!==CNA_APPROVAL||entry.source.referenceSHA256!==guestApproval.referenceSHA256)){skip('unapproved-profile-guest');continue;}
-    if(!profileGuest&&manifest.referencePolicy?.requireReviewed){
+    const ownerArticleSelection=entry.creatorId===DOYLE_ID||entry.referenceSelectionId!==undefined||manifest.referenceReviews?.[entry.creatorId]?.decision==='owner-selected-article';
+    if(ownerArticleSelection&&!ownerSelectedArticleApproval(manifest,entry)){skip('unapproved-owner-selected-article');continue;}
+    if(!profileGuest&&!ownerArticleSelection&&manifest.referencePolicy?.requireReviewed){
       const review=manifest.referenceReviews?.[entry.creatorId];
       if(review?.reviewed!==true||review.avatarVisuallyInspected!==true||!['profile-avatar-replacement','profile-avatar-match','article-fallback','owner-user-reference','official-character-sheet'].includes(review.decision)||
         !array(entry.entityIds).every(id=>array(review.entityIds).includes(id))||!verifiedSource(review.avatarReference,entry.creatorId)){skip('avatar-review-pending');continue;}

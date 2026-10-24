@@ -7,12 +7,12 @@ const source=JSON.parse(await readFile(new URL('../data/archive.json',import.met
 // Kept local so the shipped preview tests remain independently runnable.
 const verified=JSON.parse(await readFile(new URL('./fixtures/verified-profiles.json',import.meta.url)));
 
-test('sixteen verified profiles and seventeen article doors without invented creators',()=>{
+test('seventeen verified profiles and eighteen article doors without invented creators',()=>{
   validateArchive(source);
-  assert.equal(source.creators.length,16);
+  assert.equal(source.creators.length,17);
   assert.deepEqual(source.creators.map(c=>c.id),verified.map(c=>c.id));
   assert.equal(source.creators.filter(c=>c.provisional).length,0);
-  assert.equal(source.years[0].entries.length,17);
+  assert.equal(source.years[0].entries.length,18);
   assert.equal(source.years[0].plannedSlots,undefined);
   assert.deepEqual(source.evergreenEntries,[]);
   assert.deepEqual([...new Set(source.years[0].entries.map(e=>e.creatorId))],verified.map(c=>c.id));
@@ -34,7 +34,7 @@ test('creator identities use only names, handles, public profile links and profi
   }
 });
 
-test('host introduction and fifteen confirmed participant articles are present; one door awaits submission',()=>{
+test('host introduction and sixteen confirmed participant articles are present; one door awaits submission',()=>{
   const [host,owner,mako]=source.years[0].entries;
   assert.equal(owner.doorId,'owner-work-2026');
   assert.equal(owner.submissionStatus,'submitted');
@@ -57,7 +57,7 @@ test('host introduction and fifteen confirmed participant articles are present; 
   assert.equal(mako.message,undefined);
   assert.equal(mako.works,undefined);
   assert.equal(source.years[0].entries.filter(e=>e.submissionStatus==='introduction').length,1);
-  assert.equal(source.years[0].entries.filter(e=>e.submissionStatus==='submitted').length,15);
+  assert.equal(source.years[0].entries.filter(e=>e.submissionStatus==='submitted').length,16);
   assert.equal(participants.length,1);
   for(const entry of participants){
     const profile=verified.find(c=>c.id===entry.creatorId);
@@ -95,7 +95,7 @@ test('empty year and roster are valid',()=>{assert.doesNotThrow(()=>validateArch
 test('duplicate creators, duplicate annual entries, unknown IDs, duplicate years reject',()=>{for(const change of [d=>d.creators.push(d.creators[0]),d=>d.years[0].entries.push(d.years[0].entries[0]),d=>d.years[0].entries[0].creatorId='missing',d=>d.years.push(d.years[0])]){const d=structuredClone(source);change(d);assert.throws(()=>validateArchive(d));}});
 test('planned slots are optional nonnegative integers and do not create entries',()=>{
   for(const value of [-1,1.5,101,'2',null]){const data=structuredClone(source);data.years[0].plannedSlots=value;assert.throws(()=>validateArchive(data));}
-  for(const value of [0,2,100]){const data=structuredClone(source);data.years[0].plannedSlots=value;assert.equal(validateArchive(data).years[0].entries.length,17);}
+  for(const value of [0,2,100]){const data=structuredClone(source);data.years[0].plannedSlots=value;assert.equal(validateArchive(data).years[0].entries.length,18);}
   const data=structuredClone(source);delete data.years[0].plannedSlots;assert.doesNotThrow(()=>validateArchive(data));
 });
 test('malformed profile field types reject',()=>{for(const key of ['avatar','avatarSource','profileURL']){const data=structuredClone(source);data.creators[0][key]={url:'bad'};assert.throws(()=>validateArchive(data));}});
@@ -106,7 +106,7 @@ test('the published owner work retains its separate door and the fixed project i
  const extra=source.years[0].entries.find(e=>e.doorId==='owner-work-2026');
  assert.equal(extra.submissionStatus,'submitted');assert.equal(extra.links[0].url,'https://note.com/ss_yr/n/n15700f2773c6');assert.equal(extra.title,"【🎃本格スタート】 無名S note 𝑯𝒂𝒍𝒍𝒐𝒘𝒆𝒆𝒏 𝑨𝒕𝒆𝒍𝒊𝒆𝒓‼️あなたの作品を『魔法の入口🚪』へ🎃");assert.equal(extra.image,"https://assets.st-note.com/production/uploads/images/324657828/rectangle_large_type_2_459273410eb989ab713248ac628c65c9.png?fit=bounds&quality=85&width=1280");assert.equal(source.years[0].entries[0].links[0].url,'https://note.com/ss_yr/n/n52be511ec082');
  assert.equal(source.years[0].entries.filter(e=>e.role==='host').length,1);
- assert.equal(new Set(source.years[0].entries.map(e=>e.creatorId)).size,16);
+ assert.equal(new Set(source.years[0].entries.map(e=>e.creatorId)).size,17);
 });
 test('door IDs survive reordered and retitled legacy entries, and distinguish same-creator articles',()=>{
  const entry=source.years[0].entries[0],scope='archive:2026';
@@ -132,7 +132,7 @@ test('explicit Yamacon and Aihan articles replace existing pending doors without
   const entries=source.years[0].entries.filter(e=>e.creatorId===id);assert.equal(entries.length,1);const e=entries[0];
   assert.equal(e.submissionStatus,'submitted');assert.equal(e.title,title);assert.equal(e.links[0].url,`https://note.com/${id}/n/${note}`);assert.ok(e.image.includes(image));assert.deepEqual(e.tags,['参加者','ハロウィン']);
  }
- assert.equal(source.creators.length,16);assert.equal(source.years[0].entries.length,17);assert.equal(source.years[0].entries[0].submissionStatus,'introduction');assert.equal(source.years[0].entries[1].doorId,'owner-work-2026');assert.equal(source.years[0].entries[1].submissionStatus,'submitted');
+ assert.equal(source.creators.length,17);assert.equal(source.years[0].entries.length,18);assert.equal(source.years[0].entries[0].submissionStatus,'introduction');assert.equal(source.years[0].entries[1].doorId,'owner-work-2026');assert.equal(source.years[0].entries[1].submissionStatus,'submitted');
 });
 
 test("CNA is a new pending participant with no invented article",()=>{const c=source.creators.find(c=>c.id==="grand_daisy8632");assert.equal(c.name,"CNA運営");assert.equal(c.profileURL,"https://note.com/grand_daisy8632");const e=source.years[0].entries.find(e=>e.creatorId===c.id);assert.equal(e.submissionStatus,"pending");assert.equal(e.image,undefined);assert.equal(e.links.length,1);assert.equal(e.links[0].url,c.profileURL);});
@@ -160,4 +160,10 @@ test("Naemo profile uses the current official avatar without replacing submitted
 test('Rin supplied article replaces the existing pending door without changing identity',()=>{
  const creator=source.creators.find(c=>c.id==='airoumu_rin');assert.equal(creator.name,'凛🦁｜転職活動中｜ワーママ｜AI活用');assert.equal(creator.avatarSource,verified.find(c=>c.id==='airoumu_rin').avatarURL);
  const entries=source.years[0].entries.filter(entry=>entry.creatorId==='airoumu_rin');assert.equal(entries.length,1);const entry=entries[0];assert.equal(entry.submissionStatus,'submitted');assert.match(entry.title,/ライちゃんが4つのハロウィン世界へ/);assert.match(entry.image,/325928572/);assert.notEqual(entry.image,creator.avatar);assert.equal(entry.links[0].url,'https://note.com/airoumu_rin/n/n7179d2f821e8');assert.equal(entry.links[1].url,creator.profileURL);assert.equal(doorIdFor(entry,'archive:2026'),'legacy-archive-2026-airoumu_rin');
+});
+
+test('Doyle appears once with the selected Halloween artwork, not the profile portrait or unrelated article header',()=>{
+ const creators=source.creators.filter(person=>person.id==='dandy_snake880');assert.equal(creators.length,1);const creator=creators[0];assert.equal(creator.name,'ドイル');assert.equal(creator.profileURL,'https://note.com/dandy_snake880');
+ const entries=source.years[0].entries.filter(entry=>entry.creatorId===creator.id);assert.equal(entries.length,1);const entry=entries[0];assert.equal(entry.title,'ぴこぴこハンマー。');assert.equal(entry.submissionStatus,'submitted');assert.equal(doorIdFor(entry,'archive:2026'),'doyle-halloween-2026');
+ assert.equal(entry.links[0].url,'https://note.com/dandy_snake880/n/n084c0d58f567');assert.equal(entry.links[1].url,creator.profileURL);assert.equal(entry.image,'https://assets.st-note.com/img/1792671223-PoY0EeLCd5lIjyWQcr7JMNZm.png?width=1200');assert.notEqual(entry.image,creator.avatar);assert.doesNotMatch(entry.image,/326281220|287992172/);assert.match(entry.imageAlt,/Halloween Atelier/);assert.equal(entry.message,undefined);
 });

@@ -37,7 +37,17 @@ export function createRigLibrary({loadImage=defaultLoadImage,fetcher=globalThis.
  const notify=()=>{if(!destroyed){revision++;try{onChange(status());}catch{}}};
  const sourceBytes=()=>[...loaded.values()].reduce((n,a)=>n+a.bytes,0);
  const releaseImage=image=>{try{image?.close?.();}catch{}};
- function disposeInstance(key){const value=instances.get(key);if(!value)return;value.rig.destroy();value.composer.destroy();instances.delete(key);}
+ function disposeInstance(key){const value=instances.get(key);if(!value)return;instances.delete(key);try{value.rig.destroy();}catch{}try{value.composer.destroy();}catch{}}
+ function quarantine(id,error){
+  const definitionId=instanceDefinition(id);if(failures.has(definitionId))return null;
+  failures.set(definitionId,String(error?.message||error));
+  // Articulation is optional. Release only this failed definition and let the
+  // caller keep using its already-approved walking atlas until explicit retry.
+  for(const [key,value]of instances)if(value.definitionId===definitionId)disposeInstance(key);
+  const source=loaded.get(definitionId);loaded.delete(definitionId);
+  if(source)for(const image of new Set(Object.values(source.images)))releaseImage(image);
+  notify();return null;
+ }
  function trimDefinitions(){
   const pinned=new Set([...instances.values()].map(i=>i.definitionId));
   for(const [id,record]of[...loaded].sort((a,b)=>a[1].used-b[1].used)){
@@ -97,7 +107,7 @@ export function createRigLibrary({loadImage=defaultLoadImage,fetcher=globalThis.
   });pending.set(id,task);return task;
  }
  function getInstance(id){
-  const key=id==='owner'?DEFAULT_SIDE:id,definitionId=instanceDefinition(id),source=loaded.get(definitionId);
+  const key=id==='owner'?DEFAULT_SIDE:id,definitionId=instanceDefinition(id);if(failures.has(definitionId))return null;const source=loaded.get(definitionId);
   if(!source){void ensure(definitionId);return null;}
   let instance=instances.get(key);
   if(!instance){
@@ -105,7 +115,7 @@ export function createRigLibrary({loadImage=defaultLoadImage,fetcher=globalThis.
    const manifest=source.manifest,arch=source.entry.archetype||manifest.archetype||'biped',options={manifest,...manifest.motion};
    const creature=['quadruped','flying','floating','wing','float'].includes(arch),rig=manifest.children?.length?createCompositeRig(options):['bread','flower'].includes(arch)?createMascotRig({...options,archetype:arch}):creature?createCreatureRig({...options,archetype:arch==='wing'?'flying':arch==='float'?'floating':arch}):createOwnerRig(options);
    const size=manifest.output||{},width=Math.min(512,Math.max(64,size.width||256)),height=Math.min(512,Math.max(64,size.height||320));
-   const composer=createLiveComposer({makeCanvas,atlas:source.images,manifest,width,height,scale:size.scale||1,anchorX:size.anchorX??.5,anchorY:size.anchorY??.94,contentHeight:manifest.contentHeight||256});
+   let composer;try{composer=createLiveComposer({makeCanvas,atlas:source.images,manifest,width,height,scale:size.scale||1,anchorX:size.anchorX??.5,anchorY:size.anchorY??.94,contentHeight:manifest.contentHeight||256});}catch(error){try{rig.destroy();}catch{}throw error;}
    instance={definitionId,manifest,rig,composer,actionDuration:creature?CREATURE_ACTION_DURATION:OWNER_ATTACK_DURATION,used:++serial,seenTime:logicalTime,lastSignature:null,sprite:null,eligible:false};instances.set(key,instance);
   }
   instance.used=++serial;source.used=serial;return instance;
@@ -118,6 +128,7 @@ export function createRigLibrary({loadImage=defaultLoadImage,fetcher=globalThis.
  function update(id,options={}){
   if(destroyed||!safeId(id))return null;const position=options.position||{x:0,z:0};
   if(!Number.isFinite(position.x)||!Number.isFinite(position.z))return null;
+  try{
   if(Number.isFinite(options.time))logicalTime=Math.max(logicalTime,options.time);
   prune();const instance=getInstance(id);if(!instance)return null;instance.seenTime=logicalTime;if(options.mapId!==undefined)instance.mapId=options.mapId;
   const heading=cleanHeading(options.heading,options.facing),motion=options.motion!==false;
@@ -127,10 +138,11 @@ export function createRigLibrary({loadImage=defaultLoadImage,fetcher=globalThis.
   if(!motion){if(signature===instance.lastSignature&&instance.sprite)return instance.sprite;instance.rig.update({position,heading,dt:0,moving:false,...projection});pose=instance.rig.reset(position,heading);}
   else pose=instance.rig.update({position,heading,dt:clamp(Number.isFinite(options.dt)?options.dt:0,0,.1),moving:options.moving===true,motion:true,...projection});
   instance.lastSignature=signature;return renderInstance(instance,pose);
+  }catch(error){return quarantine(id,error);}
  }
  function get(id){if(destroyed||!safeId(id))return null;const key=id==='owner'?DEFAULT_SIDE:id,value=instances.get(key);return value?.eligible?value.sprite:null;}
  function battle(id,{effect=null,time=0,motion=true,facing='right',heading}={}){
-  if(destroyed||!safeId(id))return null;const key=id.endsWith(':battle')?id:id+':battle',instance=getInstance(key);if(!instance)return null;
+  if(destroyed||!safeId(id))return null;const key=id.endsWith(':battle')?id:id+':battle';try{const instance=getInstance(key);if(!instance)return null;
   instance.seenTime=logicalTime;const yaw=cleanHeading(heading,facing),kind=effect?.type||effect?.action||'idle',started=effect?.started??effect?.at??time,age=Math.max(0,(Number.isFinite(time)?time:0)-(Number.isFinite(started)?started:0)),duration=Number.isFinite(effect?.duration)&&effect.duration>0?effect.duration:['shine','spark','light'].includes(kind)?2.4:1.2;
   instance.eligible=supportsHeading(instance.manifest,yaw);if(!instance.eligible)return null;
   const attacking=['attack','shine','spark','light'].includes(kind)&&age<duration,elapsed=attacking?rigBattleActionAge(kind,age,duration,instance.actionDuration):instance.actionDuration;
@@ -143,6 +155,7 @@ export function createRigLibrary({loadImage=defaultLoadImage,fetcher=globalThis.
   }
   instance.battleClock=time;instance.battleAttacking=attacking;instance.battleYaw=yaw;
   return renderInstance(instance,pose);
+  }catch(error){return quarantine(key,error);}
  }
  function status(){return{metadataReady,definitions:definitions.size,loaded:loaded.size,pending:pending.size,failures:[...failures.keys()],active:instances.size,sourceBytes:sourceBytes(),maxActive,maxSourceBytes,revision,destroyed};}
  return{ready,update,get,battle,prune,status,retry(id){const key=instanceDefinition(id);failures.delete(key);return ensure(key);},

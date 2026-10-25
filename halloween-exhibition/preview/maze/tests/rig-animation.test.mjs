@@ -69,6 +69,29 @@ test('image failure is bounded and explicit retry can recover without stale pend
  assert.deepEqual(h.library.status().failures,['owner-lantern-hero']);assert.equal(h.library.status().pending,0);for(let i=0;i<5;i++)move(h.library);await flush();assert.equal(loads,1);
  failing=false;await h.library.retry('owner');assert(move(h.library));assert.equal(loads,2);h.library.destroy();
 });
+test('optional null contexts and draw failures quarantine one rig until explicit retry, preserving atlas fallback',async()=>{
+ for(const fault of ['context','draw']){
+  const canvases=[];let broken=true,changes=0;
+  const h=fixture({rows:[row(),row('koakumako-base-devil')],onChange(){changes++;throw Error('observer unavailable');},makeCanvas:(width,height)=>{
+   const index=canvases.length,canvas={width,height,getContext(){if(index===1&&broken&&fault==='context')return null;return{globalAlpha:1,clearRect(){},save(){},restore(){},translate(){},scale(){},rotate(){},drawImage(){if(index===1&&broken&&fault==='draw')throw Error('optional draw failed');}};}};canvases.push(canvas);return canvas;
+  }});
+  await loadOwner(h);await h.library.retry('koakumako-base-devil');
+  assert.equal(move(h.library,'koakumako-base-devil',1,1),null,'the caller can use its approved walking atlas');
+  assert.deepEqual(h.library.status().failures,['koakumako-base-devil']);assert.equal(h.library.status().active,1);assert.equal(h.library.status().loaded,1);assert.equal(canvases[1].width,0);assert.equal(h.images[1].closed,1);
+  const loads=h.loads().images,notifications=changes;
+  for(let n=0;n<120;n++){assert.equal(move(h.library,'koakumako-base-devil',n/60,n/60),null);assert.equal(h.library.battle('koakumako-base-devil',{time:n/60}),null);}
+  await flush();assert.equal(h.loads().images,loads);assert.equal(canvases.length,2);assert.equal(changes,notifications,'quarantine does not report or retry every frame');
+  assert.equal(h.library.get('koakumako-base-devil'),null);assert.ok(move(h.library,'owner',1,3),'another identity keeps animating');
+  broken=false;await h.library.retry('koakumako-base-devil');assert.ok(move(h.library,'koakumako-base-devil',1,4));assert.deepEqual(h.library.status().failures,[]);assert.equal(h.loads().images,loads+1);h.library.destroy();
+ }
+});
+test('optional construction and battle failures release all instances of only their failed definition',async()=>{
+ const invalid=row('invalid');invalid.manifest.rig={thigh:0};const h=fixture({rows:[row(),invalid]});await loadOwner(h);await h.library.retry('invalid');
+ assert.equal(move(h.library,'invalid'),null);assert.deepEqual(h.library.status().failures,['invalid']);assert.ok(move(h.library));assert.equal(h.images[1].closed,1);h.library.destroy();
+ const canvases=[];let bad=false;const battle=fixture({makeCanvas:(width,height)=>{const index=canvases.length,canvas={width,height,getContext:()=>index===1&&bad?null:{globalAlpha:1,clearRect(){},save(){},restore(){},translate(){},scale(){},rotate(){},drawImage(){}}};canvases.push(canvas);return canvas;}});
+ await loadOwner(battle);assert.ok(battle.library.battle('owner',{time:1}));bad=true;assert.equal(battle.library.battle('owner',{time:2}),null);
+ assert.deepEqual(battle.library.status().failures,['owner-lantern-hero']);assert.equal(battle.library.status().active,0);assert.equal(battle.library.status().loaded,0);assert.ok(canvases.every(canvas=>canvas.width===0));assert.equal(battle.library.get('owner'),null);assert.equal(move(battle.library),null);battle.library.destroy();
+});
 test('stalled decode times out and its late success is closed instead of revived',async()=>{
  const timers=clock(),wait=deferred();let closed=0;const h=fixture({timers,loadImage:()=>wait.promise});await h.library.ready;move(h.library);await flush();timers.expire();await flush();
  assert.equal(h.library.status().pending,0);assert.deepEqual(h.library.status().failures,['owner-lantern-hero']);wait.resolve({width:64,height:64,close(){closed++;}});await flush();assert.equal(closed,1);assert.equal(h.library.status().loaded,0);h.library.destroy();

@@ -11,7 +11,9 @@ export function createTownSession({store,state:provided,onChange=()=>{},onNotice
  const publish=()=>{revision++;onChange(snapshot());};
  function snapshot(){return {state,battle,effect,time,walking,walkPhase:locomotionPhase(distance,1.15),revision,notice:loaded.notice||''};}
  function save(){const result=store?.save?.(state)||{ok:false,notice:'この画面の記録は保存できません。'};onChange({...snapshot(),save:result});return result;}
- function stop(){velocity={x:0,z:0};walking=false;}
+ // Explicit input cleanup ends the held gesture, even while the frame loop
+ // is suspended. A passage lock must not follow a new gesture or teleport.
+ function stop(){velocity={x:0,z:0};walking=false;passageNeedsRelease=false;}
  function replace(next){state=next;stop();battle=null;effect=null;lastOutcome=null;distance=0;save();publish();}
  function visitCreatorHome(creatorId){
   if(battle)return null;const home=getCreatorHome(creatorId);if(!home)return null;
@@ -63,7 +65,9 @@ export function createTownSession({store,state:provided,onChange=()=>{},onNotice
   const step=Math.max(0,Math.min(.05,Number.isFinite(dt)?dt:0));time+=step;
   if(battle){advanceBattle(motion);walking=false;return snapshot();}
   if(paused){stop();return snapshot();}
-  if(passageNeedsRelease){stop();if(Math.hypot(x,z)>.00001)return snapshot();passageNeedsRelease=false;}
+  // Auto passages already stop velocity in replace() before setting this lock.
+  // Keep the lock until input is released, unless explicit cleanup ended it.
+  if(passageNeedsRelease){if(Math.hypot(x,z)>.00001)return snapshot();passageNeedsRelease=false;}
   const magnitude=Math.hypot(x,z),scale=magnitude>1?1/magnitude:1;
   const integrated=integrateVelocity(velocity,{x:x*scale*speed,z:z*scale*speed},step);
   const previous=state;state=moveTown(state,integrated.dx,integrated.dz);const dx=state.position.x-previous.position.x,dz=state.position.z-previous.position.z;

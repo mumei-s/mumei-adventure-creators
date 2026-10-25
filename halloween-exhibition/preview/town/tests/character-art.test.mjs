@@ -10,6 +10,12 @@ const archive=JSON.parse(fs.readFileSync(new URL('../../data/archive.json',impor
 const fetcher=async url=>url.includes('creator-characters')?manifest:archive;
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 const nearCNA=characters=>({...initialTownState(),position:{...characters.visitors().find(visitor=>visitor.creatorId==='grand_daisy8632').center}});
+test('optional rig degradation is announced once while approved owner and cat art remain intact',async()=>{
+ const states=[];let changed;const assets=createCharacterAssets({loadImage:async(_url,asset)=>({width:asset.width,height:asset.height})});
+ const characters=createTownCharacterArt({assets,fetcher,onState:value=>states.push(value),makeRigs:options=>{changed=options.onChange;return{update:()=>null,get:()=>null,battle:()=>null,destroy(){}};}});await characters.ready;
+ const owner=characters.art.images.playerAtlas;changed({failures:['koakumako-base-devil']});changed({failures:['koakumako-base-devil']});changed({failures:[]});changed({failures:['owner-lantern-hero']});
+ assert.equal(states.filter(value=>value==='rig-failed').length,1);assert.equal(characters.art.images.playerAtlas,owner);assert.equal(characters.companionActors({state:initialTownState()}).length,1);characters.destroy();
+});
 test('the bundled canonical roster starts the real owner and cat without metadata requests or optional rigs',async()=>{
  const oldArchive=globalThis.__ATELIER_ARCHIVE__,oldManifest=globalThis.__ATELIER_CHARACTER_MANIFEST__,oldFetch=globalThis.fetch;
  const requests=[],optional=[],gates=[];let characters;

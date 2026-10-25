@@ -5,13 +5,16 @@ import {createTownSession} from '../controller.js';
 import {getTownMap,initialTownState} from '../town-model.js';
 import {createReadingJourney} from '../reading-journey.js';
 const source=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8'),archive=JSON.parse(fs.readFileSync(new URL('../../data/archive.json',import.meta.url),'utf8'));
-function interactHarness(home,{mapId='creator-quarter',position=home.door}={}){
- const calls=[],state={...initialTownState(),mapId,position},session=createTownSession({state});const context={ready:true,CREATOR_HOMES,Math,getTownMap,session,contextTarget:()=>({id:home.id}),characterArt:{visitor:()=>null},showCreatorHome:id=>calls.push(['home',id]),showVisitor:()=>{},applyInteraction:result=>calls.push(['result',result])};
+function interactHarness(home,{mapId='creator-quarter',position=home.door,blocked=false}={}){
+ const calls=[],state={...initialTownState(),mapId,position},session=createTownSession({state});const context={ready:true,sceneRecovery:{blocked},CREATOR_HOMES,Math,getTownMap,session,contextTarget:()=>({id:home.id}),characterArt:{visitor:()=>null},showCreatorHome:id=>calls.push(['home',id]),showVisitor:()=>{},applyInteraction:result=>calls.push(['result',result])};
  vm.runInNewContext(source.match(/^function interact\(targetId,choiceId\).*$/m)[0]+';this.run=interact;',context);return {calls,session,run:context.run};
 }
 test('each front door enters its own walkable interior and remote interactions cannot teleport inside',()=>{
  for(const home of CREATOR_HOMES){const valid=interactHarness(home);valid.run();assert.equal(valid.session.snapshot().state.mapId,home.interiorId);assert.equal(valid.calls[0][0],'result');assert.equal(valid.calls[0][1].transition,true);assert.ok(creatorHomeProfile(archive,home.creatorId));
  for(const opts of[{mapId:'lantern-town'},{position:{x:home.door.x+3,z:home.door.z}}]){const far=interactHarness(home,opts);far.run(home.id);assert.equal(far.session.snapshot().state.mapId,opts.mapId||'creator-quarter');assert.ok(!far.calls.some(call=>call[1]?.transition));}}
+});
+test('a scene fault blocks front-door interactions without teleporting or changing the saved state',()=>{
+ for(const home of CREATOR_HOMES){const h=interactHarness(home,{blocked:true}),before=JSON.stringify(h.session.snapshot().state);h.run();h.run(home.id);assert.equal(JSON.stringify(h.session.snapshot().state),before);assert.deepEqual(h.calls,[]);}
 });
 function node(tag,text,cls){return {tag,textContent:text,className:cls,children:[],append(...items){this.children.push(...items)},remove(){},style:{setProperty(){}},setAttribute(){}};}
 test('home page includes the correct official note and real works, and pending homes keep their profile',()=>{

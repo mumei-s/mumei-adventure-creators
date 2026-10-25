@@ -14,8 +14,8 @@ export function createTownCharacterArt({onState=()=>{},fetcher,signal,loadMonste
  const pending=new Map(),art={images:{},monsterLayouts:{},playerLayout:null,version:0};
  // The approved walking atlas already contains the full protagonist. Optional
  // articulated poses must not compete with those two required atlas requests.
- let rigs=null;art.rigs={update:(...args)=>rigs?.update(...args)||null,get:(...args)=>rigs?.get(...args)||null,battle:(...args)=>rigs?.battle(...args)||null,destroy:()=>rigs?.destroy()};
- function startEnhancements(){if(destroyed||rigs)return;rigs=makeRigs({loadImage:loadMonsterImage,onChange:()=>{art.version++;onState('rig-ready');}});}
+ let rigs=null,rigFailureNotified=false;art.rigs={update:(...args)=>rigs?.update(...args)||null,get:(...args)=>rigs?.get(...args)||null,battle:(...args)=>rigs?.battle(...args)||null,destroy:()=>rigs?.destroy()};
+ function startEnhancements(){if(destroyed||rigs)return;rigs=makeRigs({loadImage:loadMonsterImage,onChange:status=>{art.version++;if(status?.failures?.length&&!rigFailureNotified){rigFailureNotified=true;onState('rig-failed');}else onState('rig-ready');}});}
  const ready=(async()=>{
   // Production embeds the current canonical data in the entry bundle. Source
   // mode and injected loaders retain bounded requests and the normal HTTP cache.

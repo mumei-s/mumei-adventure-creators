@@ -1,3 +1,4 @@
+import {renderPixelRatio} from '../render-quality.js?v=20261030-quality1';
 import {createViewpointControlLayout} from '../viewpoint-controls.js?v=20261024-viewpoints1';
 import {afterViewPaint} from '../view-paint.js?v=20261024-viewpoints1';
 import {createChangeTracker,setChangedProperty,setChangedAttribute} from './change-only-ui.js?v=20261019-audit1';
@@ -33,7 +34,7 @@ import { chooseView, movementVector, mapHeading } from './view-model.js?v=202610
 import { createStageRenderer, EXIT, PALACE_FURNISHINGS } from './stage-2d.js?v=20261019-unified1';
 import {createArtLibrary,drawArtSprite} from './rpg-art.js?v=20261019-unified1';
 import {renderBattleScene,battleEffectDuration} from './battle-scene.js?v=20261019-unified1';
-import {renderOverlordBattle2D} from './overlord-battle-2d.js?v=20261030-art1';
+import {renderOverlordBattle2D} from './overlord-battle-2d.js?v=20261030-quality1';
 import {overlordActionDuration,overlordBattleDirector} from './overlord-battle-director.js?v=20261030-art1';
 import {directionFromMovement,moveAroundFurniture} from './rpg-model.js?v=20261014-adventure2';
 import {protectGameSurface,bindHeldGameButton,bindDirectionPad} from './game-input.js?v=20261019-journey1';
@@ -331,14 +332,14 @@ function drawBattleVisual(){
   if(!battle||!battleCanvas)return;
   updateOverlordBattleHUD();
   if(battle.id==='nameless_overlord'){drawOverlordBattle();return;}
-  const ratio=Math.min(devicePixelRatio||1,2),width=battleCanvas.clientWidth||360,height=battleCanvas.clientHeight||210;
+  const width=battleCanvas.clientWidth||360,height=battleCanvas.clientHeight||210,ratio=renderPixelRatio(width,height,devicePixelRatio||1);
   if(battleCanvas.width!==Math.round(width*ratio)||battleCanvas.height!==Math.round(height*ratio)){battleCanvas.width=Math.round(width*ratio);battleCanvas.height=Math.round(height*ratio);}
   renderBattleScene({canvas:battleCanvas,art:rpgArt,battle,effect:battleEffect,time:visualTime,motion:motion&&!reducedMotion.matches,pixelRatio:ratio});
 }
 function drawOverlordBattle(){
  if(nativeBattle){try{nativeBattle.render({battle,effect:battleEffect,time:visualTime,motion:motion&&!reducedMotion.matches});}catch{failNativeBattle();}return;}
  if(!nativeBattleFailed&&!nativeBattleLoading){nativeBattleLoading=true;const token=++nativeBattleToken,target=battleCanvas;
-  import('./overlord-battle-scene.js?v=20261030-art1').then(async({createOverlordBattleScene})=>{
+  import('./overlord-battle-scene.js?v=20261030-quality1').then(async({createOverlordBattleScene})=>{
    if(token!==nativeBattleToken||!battle||battle.id!=='nameless_overlord'||battleCanvas!==target)return;
    const candidate=createOverlordBattleScene({canvas:target,art:rpgArt,onLost:failNativeBattle});
    try{
@@ -397,7 +398,7 @@ function drawMap(canvas,large=false,night=false,markers=mapMarkers()){
   if(large){c.font=`${Math.max(11,s*.33)}px sans-serif`;c.textAlign='center';c.fillStyle='#e8d7c2';c.fillText('西：肖像の回廊　 北：書庫　 東：鍵の間',s*8.5,s*16.4);}
   c.restore();
 }
-function resizeFlat(){stageRenderer?.invalidate();const c=$('fallback'),ratio=Math.min(devicePixelRatio||1,2);c.width=Math.max(1,Math.round(c.clientWidth*ratio));c.height=Math.max(1,Math.round(c.clientHeight*ratio));}
+function resizeFlat(){stageRenderer?.invalidate();const c=$('fallback'),ratio=renderPixelRatio(c.clientWidth||1,c.clientHeight||1,devicePixelRatio||1);c.width=Math.max(1,Math.round(c.clientWidth*ratio));c.height=Math.max(1,Math.round(c.clientHeight*ratio));}
 function updateViewUI(){
   document.body.dataset.view=view;$('world').hidden=view!=='3d';$('fallback').hidden=view!=='2d';
   $('look-hint').textContent=view==='2d'?'↑ 北へ · ← 西へ · → 東へ':'LOOK · 画面をドラッグ';
@@ -483,7 +484,7 @@ function step(dt){
   if(view==='3d'){const previousYaw=state.yaw;if(keys.has('arrowleft')||held.has('turn-left')||down('left'))state.yaw+=dt*2.3;if(keys.has('arrowright')||held.has('turn-right')||down('right'))state.yaw-=dt*2.3;if(state.yaw!==previousYaw){state.heading=state.yaw+Math.PI;facing=directionFromMovement(-Math.sin(state.yaw),-Math.cos(state.yaw),facing);}}
   const {dx,dz}=movementVector(view,state.yaw,f,r,6.8*dt*walkingSpeed);const old=state;state=advanceWithSubsteps(state,dx,dz,view==='2d'?moveAroundFurniture:move);const mx=state.x-old.x,mz=state.z-old.z;walking=Math.hypot(mx,mz)>.0001;const hx=walking?mx:dx,hz=walking?mz:dz;facing=directionFromMovement(hx,hz,facing);if(Math.hypot(hx,hz)>.0001)state.heading=Math.atan2(hx,hz);if(walking){walkPhase=(walkPhase+Math.hypot(mx,mz)*2.3)%(Math.PI*2);if(viewPending&&viewAbort?.automatic)viewAbort.userMoved=true;}
 }
-function renderExploration(dt){if(view==='3d'){try{world?.render({...state,cameraDistance,cameraZoom,facing,walking,walkPhase,time:time*1000,motion:motion&&!reducedMotion.matches,brightness,lantern,encounters,cleared,creatorActors});}catch(error){fallbackView(error,'render');}}else {stageRenderer??=createStageRenderer({art:rpgArt});stageRenderer.render({canvas:$('fallback'),state,cameraDistance,cameraZoom,brightness,lantern,encounters,cleared,pixelRatio:Math.min(devicePixelRatio||1,2),time,dt,motion:motion&&!reducedMotion.matches,facing,walking:walking&&motion&&!reducedMotion.matches,walkPhase,creatorActors});}updateMinimap();updateHUD();}
+function renderExploration(dt){if(view==='3d'){try{world?.render({...state,cameraDistance,cameraZoom,facing,walking,walkPhase,time:time*1000,motion:motion&&!reducedMotion.matches,brightness,lantern,encounters,cleared,creatorActors});}catch(error){fallbackView(error,'render');}}else {stageRenderer??=createStageRenderer({art:rpgArt});stageRenderer.render({canvas:$('fallback'),state,cameraDistance,cameraZoom,brightness,lantern,encounters,cleared,pixelRatio:renderPixelRatio($('fallback').clientWidth||1,$('fallback').clientHeight||1,devicePixelRatio||1),time,dt,motion:motion&&!reducedMotion.matches,facing,walking:walking&&motion&&!reducedMotion.matches,walkPhase,creatorActors});}updateMinimap();updateHUD();}
 function tick(now){
   // Collision steps stay short, while a slow renderer must not stretch a
   // three-second battle into a long command lock. start() resets last after

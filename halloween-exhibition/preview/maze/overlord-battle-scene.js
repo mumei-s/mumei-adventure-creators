@@ -1,7 +1,8 @@
+import {renderPixelRatio} from '../render-quality.js?v=20261030-quality1';
 import * as THREE from './vendor/three.module.js';
 import {overlordBattleDirector} from './overlord-battle-director.js?v=20261030-art1';
 import {createOverlordStageEffects} from './overlord-stage-fx.js?v=20261030-art1';
-import {createOverlordCharacter} from './overlord-character.js?v=20261030-art1';
+import {createOverlordCharacter} from './overlord-character.js?v=20261030-quality1';
 import {createOverlordThrone,createOverlordHall} from './overlord-room.js?v=20261030-art1';
 import {playerPose} from './rpg-art.js?v=20261019-unified1';
 
@@ -113,8 +114,7 @@ function shadowTexture(resources){
 
 /** Small screens retain face detail; large buffers stay within a mobile pixel budget. */
 export function overlordBattlePixelRatio(width,height,deviceRatio=1){
- const w=Number.isFinite(width)?Math.max(1,width):360,h=Number.isFinite(height)?Math.max(1,height):260,dpr=Number.isFinite(deviceRatio)?Math.max(.1,deviceRatio):1;
- return Math.min(dpr,w<=640?2:1.5,Math.sqrt(1200000/(w*h)));
+ return renderPixelRatio(width,height,deviceRatio);
 }
 
 /** Five small physical weapons exist only for their summon/strike interval.

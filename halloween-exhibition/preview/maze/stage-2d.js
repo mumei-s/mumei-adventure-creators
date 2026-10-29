@@ -202,7 +202,7 @@ export function createStageRenderer({makeCanvas=(w,h)=>{const c=document.createE
     camera=followCamera(camera,{x:cam.x,y:cam.y},dt,!motion);cam.x=camera.x;cam.y=camera.y;
     const player={x:state.x/CELL*TILE,y:state.z/CELL*TILE};hitItems=[];lastState={...state};
     const addHit=(box,id=null,worldX=0,worldZ=0)=>hitItems.push({...box,x:cam.originX+(box.x-cam.x)*cam.scale,y:cam.originY+(box.y-cam.y)*cam.scale,w:box.w*cam.scale,h:box.h*cam.scale,id,worldX,worldZ});
-    c.setTransform(pixelRatio,0,0,pixelRatio,0,0);c.clearRect(0,0,w,h);c.fillStyle='#101927';c.fillRect(0,0,w,h);
+    c.setTransform(pixelRatio,0,0,pixelRatio,0,0);c.clearRect(0,0,w,h);c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';c.fillStyle='#101927';c.fillRect(0,0,w,h);
     c.save();c.translate(cam.originX,cam.originY);c.scale(cam.scale,cam.scale);c.translate(-cam.x,-cam.y);c.drawImage(architecture.ground,0,0);
     const nameTags=[];
     const objects=[...architecture.objects,{kind:'gate',x:FEATURES.gate.x*TILE,y:FEATURES.gate.z*TILE,depth:FEATURES.gate.z*TILE},

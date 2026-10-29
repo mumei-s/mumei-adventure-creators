@@ -1,4 +1,5 @@
 import {townEyeLevel,townFacingYaw,TOWN_EYE_HEIGHT,TOWN_EYE_FOV} from './eye-camera.js';
+import {renderPixelRatio} from '../render-quality.js?v=20261030-quality1';
 import {creatorRoomCameraScale,creatorRoomCameraFollow} from './creator-interior-view.js?v=20261019-rooms1';
 import {townViewZoom} from './camera-framing.js?v=20261019-homes2';
 import {cameraDistanceScale} from '../camera-distance.js?v=20261019-journey1';
@@ -23,10 +24,11 @@ export function town3DCameraParameters(width,height,interior=false,cameraDistanc
     elevation:TOWN_3D_CAMERA_ELEVATION,distance:34,pixelsPerTile};
 }
 
-/** A lighter first context also works on phones whose multisampled GPU allocation fails. */
+/** Keep edges antialiased on phones too; retry without multisampling only when
+ * that context allocation actually fails on the device. */
 export function createTownWebGLRenderer(canvas,rendererFactory=options=>new THREE.WebGLRenderer(options)){
   const compact=Math.min(canvas.clientWidth||globalThis.innerWidth||canvas.width||640,canvas.clientHeight||globalThis.innerHeight||canvas.height||480)<700;
-  const attempts=[{canvas,antialias:!compact,alpha:false,powerPreference:'default'},{canvas,antialias:false,alpha:false,powerPreference:'low-power'}];
+  const attempts=[{canvas,antialias:true,alpha:false,powerPreference:'default'},{canvas,antialias:false,alpha:false,powerPreference:'low-power'}];
   let error;
   for(const options of attempts){try{return {renderer:rendererFactory(options),compact};}catch(failure){error=failure;}}
   throw error;
@@ -294,7 +296,7 @@ export function createTownWorld3D({canvas,art={images:{},version:0},onContextLos
     const image=sprite.image||sprite,frame=sprite.frame||[0,0,image.width,image.height];let frames=imageTextures.get(image);
     if(!frames){frames=new Map();imageTextures.set(image,frames);}const key=frame.join(',');if(frames.has(key)){const texture=frames.get(key);spriteFrames.get(texture).used=frameSerial;return texture;}
     // Crop pixels without redrawing or altering the character: no border from adjacent atlas cells.
-    const cropScale=Math.min(1,512/Math.max(frame[2],frame[3])),cv=makeCanvas(Math.max(1,Math.ceil(frame[2]*cropScale)),Math.max(1,Math.ceil(frame[3]*cropScale)));const ctx=cv.getContext('2d');ctx.drawImage(image,...frame,0,0,cv.width,cv.height);
+    const cropScale=Math.min(1,512/Math.max(frame[2],frame[3])),cv=makeCanvas(Math.max(1,Math.ceil(frame[2]*cropScale)),Math.max(1,Math.ceil(frame[3]*cropScale)));const ctx=cv.getContext('2d');ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.drawImage(image,...frame,0,0,cv.width,cv.height);
     const texture=new THREE.CanvasTexture(cv);texture.colorSpace=THREE.SRGBColorSpace;texture.minFilter=THREE.LinearFilter;texture.magFilter=THREE.LinearFilter;texture.generateMipmaps=false;textureResources.add(texture);frames.set(key,texture);spriteFrames.set(texture,{canvas:cv,data:null,frames,key,used:frameSerial,bytes:cv.width*cv.height*4});return texture;
   }
   function releaseLiveTexture(entry){
@@ -329,12 +331,12 @@ export function createTownWorld3D({canvas,art={images:{},version:0},onContextLos
   function applyFloorTextures(){
     if(!scenery||appliedSurfaceVersion===surfaceVersion)return;
     const {materials,resources}=scenery;
-    if(assets.images.cobbles&&!materials.road.map){const texture=repeatTexture(assets.images.cobbles,resources);texture.anisotropy=Math.min(compact?2:4,renderer.capabilities?.getMaxAnisotropy?.()||1);materials.road.map=texture;materials.plaza.map=texture;materials.road.color.set('#d2ccc0');materials.plaza.color.set('#e1d0b4');materials.road.needsUpdate=materials.plaza.needsUpdate=true;}
-    if(!scenery.root.userData.creatorInterior&&assets.images.parquet&&!materials.parquet.map){materials.parquet.map=repeatTexture(assets.images.parquet,resources);materials.parquet.color.set('#d8c9aa');materials.parquet.needsUpdate=true;}
+    if(assets.images.cobbles&&!materials.road.map){const texture=repeatTexture(assets.images.cobbles,resources);texture.anisotropy=Math.min(4,renderer.capabilities?.getMaxAnisotropy?.()||1);materials.road.map=texture;materials.plaza.map=texture;materials.road.color.set('#d2ccc0');materials.plaza.color.set('#e1d0b4');materials.road.needsUpdate=materials.plaza.needsUpdate=true;}
+    if(!scenery.root.userData.creatorInterior&&assets.images.parquet&&!materials.parquet.map){materials.parquet.map=repeatTexture(assets.images.parquet,resources);materials.parquet.map.anisotropy=Math.min(4,renderer.capabilities?.getMaxAnisotropy?.()||1);materials.parquet.color.set('#d8c9aa');materials.parquet.needsUpdate=true;}
     appliedSurfaceVersion=surfaceVersion;
   }
   function resize(pixelRatio){
-    const width=Math.max(1,Math.round(canvas.clientWidth||canvas.width||640)),height=Math.max(1,Math.round(canvas.clientHeight||canvas.height||480));const ratio=clamp(pixelRatio||globalThis.devicePixelRatio||1,1,compact?1.25:1.8);
+    const width=Math.max(1,Math.round(canvas.clientWidth||canvas.width||640)),height=Math.max(1,Math.round(canvas.clientHeight||canvas.height||480));const ratio=renderPixelRatio(width,height,pixelRatio||globalThis.devicePixelRatio||1);
     if(lastView?.width!==width||lastView?.height!==height||lastView?.ratio!==ratio){renderer.setPixelRatio(ratio);renderer.setSize(width,height,false);}return {width,height,ratio};
   }
   function releaseUnusedActors(){

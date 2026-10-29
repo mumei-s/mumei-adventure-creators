@@ -101,8 +101,8 @@ test('skinned actor framing samples the current bone pose rather than its wide m
 
 test('small battle canvases retain real facial pixels without exceeding the drawing-buffer budget',async()=>{
  const {overlordBattlePixelRatio}=await import('../overlord-battle-scene.js');
- assert.equal(overlordBattlePixelRatio(350,300,3),2);assert.equal(overlordBattlePixelRatio(1100,440,3),1.5);
- for(const [w,h]of[[350,300],[600,1100],[1100,740],[2400,1400]])for(const dpr of[1,1.5,2,3]){const ratio=overlordBattlePixelRatio(w,h,dpr);assert(ratio<=dpr);assert(w*h*ratio*ratio<=1200000.0001);}
+ assert.equal(overlordBattlePixelRatio(350,300,3),3);assert(overlordBattlePixelRatio(1100,440,3)>2.7);
+ for(const [w,h]of[[350,300],[600,1100],[1100,740],[2400,1400]])for(const dpr of[1,1.5,2,3]){const ratio=overlordBattlePixelRatio(w,h,dpr);assert(ratio<=dpr);const budget=w<=640?2400000:w<=1100?3600000:6000000;assert(w*h*ratio*ratio<=Math.max(budget,w*h)+.0001);}
 });
 
 test('queen rises off the actual cushion and walks through the carved foot space without crossing the floor',async()=>{

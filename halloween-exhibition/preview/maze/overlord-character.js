@@ -1,5 +1,5 @@
 import {createOverlordMaterialSource,loadOverlordImage,getOverlordIdentityImage} from './overlord-materials.js?v=20261030-art1';
-import {composeOverlordIdentityArt} from './overlord-battle-2d.js?v=20261030-art1';
+import {composeOverlordIdentityArt} from './overlord-battle-2d.js?v=20261030-quality1';
 import {OVERLORD_CHARACTER_PREVIEW} from './overlord-character-preview.js';
 
 export const OVERLORD_CHARACTER_URL=new URL('./assets/overlord/queen-original-art-v1.webp',import.meta.url).href;
@@ -22,7 +22,7 @@ export function createOverlordCharacter(THREE,{scale=1,height=3.05,image,
   if(dead||!next||!(next.width||next.naturalWidth)||!(next.height||next.naturalHeight)||(preview&&fullInstalled))return false;
   if(next===currentImage)return true;
   if(!preview)fullInstalled=true;
-  const previous=texture;texture=new THREE.Texture(next);texture.colorSpace=THREE.SRGBColorSpace;texture.minFilter=THREE.LinearFilter;texture.magFilter=THREE.LinearFilter;texture.generateMipmaps=false;texture.needsUpdate=true;
+  const previous=texture;texture=new THREE.Texture(next);texture.colorSpace=THREE.SRGBColorSpace;texture.minFilter=THREE.LinearMipmapLinearFilter;texture.magFilter=THREE.LinearFilter;texture.generateMipmaps=true;texture.needsUpdate=true;
   currentImage=next;material.map=texture;material.needsUpdate=true;sprite.visible=true;
   sprite.scale.set(height*(next.width||next.naturalWidth)/(next.height||next.naturalHeight),height,1);previous?.dispose();finishReady(true);return true;
  }

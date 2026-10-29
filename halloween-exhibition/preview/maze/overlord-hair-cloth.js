@@ -35,7 +35,7 @@ export function createOverlordHairCloth(THREE,{head,torso,materials}){
   const cols=48,rows=20,p=[],uv=[],idx=[],stride=cols+1,layer=(rows+1)*stride;
   for(let inside=0;inside<2;inside++)for(let j=0;j<=rows;j++)for(let i=0;i<=cols;i++){
    const theta=i/cols*Math.PI*2,front=(1+Math.cos(theta))/2;
-   const maxPolar=2.13-1.12*Math.pow(front,3),phi=j/rows*maxPolar;
+   const maxPolar=2.13-.85*Math.pow(front,3),phi=j/rows*maxPolar;
    const r=inside?.955:1;
    const part=.0025*Math.cos(theta*2)*Math.sin(phi);
    p.push(Math.sin(theta)*Math.sin(phi)*.126*r,
@@ -57,14 +57,14 @@ export function createOverlordHairCloth(THREE,{head,torso,materials}){
   const frames=curve.computeFrenetFrames(steps,false),p=[],uv=[],idx=[];
   // Each lock samples only a slender part of the existing hair map. Mapping
   // the full sheet around every lock produced repeated broad white stripes.
-  const mapU=.12+(.5+.5*Math.sin(phase*2.17))*.60,mapWidth=.105;
+  const mapU=.19+(.5+.5*Math.sin(phase*2.17))*.50,mapWidth=.016;
   for(let i=0;i<=steps;i++){
    const t=i/steps,center=curve.getPointAt(t),taper=(.78+.28*Math.sin(t*Math.PI))*Math.pow(1-t,.48)+.035;
    for(let j=0;j<=sides;j++){
     const angle=j/sides*Math.PI*2,q=center.clone()
      .addScaledVector(frames.normals[i],Math.cos(angle)*width*taper)
      .addScaledVector(frames.binormals[i],Math.sin(angle)*depth*taper);
-    p.push(q.x,q.y,q.z);uv.push(mapU+(j/sides-.5)*mapWidth,1-t);
+    p.push(q.x,q.y,q.z);uv.push(mapU+(j/sides-.5)*mapWidth,.07+.88*(1-t));
     if(i<steps&&j<sides){const a=i*(sides+1)+j,b=a+1,c=a+sides+1,d=c+1;idx.push(a,b,c,b,d,c);}
    }
   }
@@ -75,38 +75,38 @@ export function createOverlordHairCloth(THREE,{head,torso,materials}){
   if(highlight){
    const line=[];for(let i=0;i<=30;i++){const t=i/30,k=Math.round(t*steps),q=curve.getPointAt(t),taper=(.78+.28*Math.sin(t*Math.PI))*Math.pow(1-t,.48)+.035;
     q.addScaledVector(frames.normals[k],width*taper*.58).addScaledVector(frames.binormals[k],depth*taper*.84);line.push(q.toArray());}
-   tube(g,line,.0011,materials.hairLight,30,4);
+   tube(g,line,.00045,materials.hairLight,30,4);
   }
   masses.push({group:g,phase});return g;
  }
- // Six different long S-curves per side. Wider lower curls blow sideways and
- // backwards, leaving the eyes, cheeks, jaw and breastplate unobstructed.
- for(const side of[-1,1])for(let i=0;i<6;i++){
-  const front=i<2,rootY=2.218-i*.018,rootX=side*(.052+i*.014),rootZ=front?.127-i*.018:.054-(i-2)*.033;
-  const length=.91+(i%3)*.105+(side>0?.060:0),spread=.165+i*.021;
+ // Ten finer closed curls per side replace the former few thick ropes.
+ // The front layer follows the outer jaw; the back layers keep real volume.
+ for(const side of[-1,1])for(let i=0;i<10;i++){
+  const front=i<3,rootY=2.230-i*.010,rootX=side*(.025+i*.009),rootZ=front?.145-i*.012:.065-(i-3)*.020;
+  const length=.91+(i%4)*.075+(side>0?.035:0),spread=.145+i*.014;
   const points=[
    [rootX,rootY,rootZ],
-   [side*(.137+i*.012),rootY-.095,rootZ+(front?.019:-.010)],
-   [side*(.171+i*.022),rootY-.255,front?.105:-.035-i*.015],
-   [side*(spread+.072+(i%2)*.018),rootY-.43,-.055-i*.025],
-   [side*(spread+.022),rootY-.61,-.092-i*.029],
-   [side*(spread+.119-(i%3)*.014),rootY-.80,-.060-i*.027],
-   [side*(spread+.061),rootY-length,-.085-i*.028],
+   [side*(front?.095+i*.010:.123+i*.009),rootY-.095,front?.185:rootZ-.010],
+   [side*(front?.112+i*.012:.158+i*.014),rootY-.245,front?.195:-.025-i*.012],
+   [side*(spread+.040+(i%2)*.012),rootY-.43,front?.130:-.045-i*.017],
+   [side*(spread+.012),rootY-.61,front?.055:-.072-i*.020],
+   [side*(spread+.078-(i%3)*.009),rootY-.80,front?.010:-.050-i*.018],
+   [side*(spread+.039),rootY-length,-.052-i*.018],
   ];
-  curl('flowing-S-curl-'+side+'-'+i,points,.026+(i%3)*.0045,.020+(i%2)*.004,i===0,.7*i+side*.4);
+  curl('flowing-S-curl-'+side+'-'+i,points,.0075+(i%4)*.0010,.0045+(i%3)*.0008,false,.7*i+side*.4,{steps:32,sides:6});
  }
  // Swept shorter locks start at the part, clear the brow, then curl beside
  // the cheek. Their upper arc follows the skull rather than crossing the eye.
- for(const side of[-1,1])for(let i=0;i<2;i++){
+ for(const side of[-1,1])for(let i=0;i<4;i++){
   curl('swept-face-curl-'+side+'-'+i,[
-   [side*.008,2.250-i*.012,.090+i*.020],
-   [side*.063,2.231-i*.011,.157+i*.006],
-   [side*.119,2.184-i*.019,.180],
-   [side*(.151+i*.020),2.090-i*.038,.176-i*.006],
-   [side*(.143+i*.028),1.998-i*.053,.190],
-   [side*(.204+i*.026),1.910-i*.074,.174],
-   [side*(.187+i*.020),1.840-i*.070,.131],
-  ],.022-i*.004,.016-i*.002,i===0,2.4+i+side*.7);
+   [side*(.008+i*.005),2.246-i*.008,.110+i*.010],
+   [side*(.051+i*.008),2.221-i*.008,.165+i*.004],
+   [side*(.088+i*.009),2.167-i*.009,.193],
+   [side*(.105+i*.009),2.077-i*.020,.205-i*.003],
+   [side*(.111+i*.012),1.996-i*.033,.203-i*.004],
+   [side*(.145+i*.014),1.910-i*.044,.169],
+   [side*(.132+i*.015),1.825-i*.041,.118],
+  ],.0065+(i%2)*.0012,.0040+(i%2)*.0008,false,2.4+i+side*.7,{steps:32,sides:6});
  }
  // Fine independent outer curls break up the smooth tube silhouette and
  // end at different lengths. Their roots follow the major locks, not the face.
@@ -120,14 +120,14 @@ export function createOverlordHairCloth(THREE,{head,torso,materials}){
    [side*(.199+i*.027),rootY-.48,z-.055],
    [side*(.278+i*.023),rootY-.64,z-.063],
    [side*(.252+i*.021),rootY-length,z-.080],
-  ],.0105+i*.0015,.0085,false,phase,{steps:30,sides:6});
+  ],.0035+i*.0006,.0025,false,phase,{steps:30,sides:6});
  }
  // Selected small scalp highlights describe the side part without dense wires.
  for(const side of[-1,1])for(let i=0;i<3;i++){
   const points=[[side*.006,2.252-i*.003,.089+i*.012],
    [side*(.054+i*.006),2.230,.145+i*.005],[side*(.102+i*.005),2.191,.174-i*.002],
    [side*(.130+i*.006),2.127,.143-i*.007]].map(p=>local(p,HEAD));
-  tube(headGroup,points,.0017,materials.hairLight,18,4);
+  tube(headGroup,points,.00065,materials.hairLight,18,4);
  }
  // A pierced circlet carries pointed leaf loops, ruby bezels and tiny
  // finials. The gaps between the gold curves keep it a light diadem rather
@@ -182,21 +182,25 @@ export function createOverlordHairCloth(THREE,{head,torso,materials}){
   const clasp=mesh(torsoGroup,new THREE.SphereGeometry(.022,12,8),materials.gold);clasp.position.set(...local([side*.212,1.818,-.050],TORSO));clasp.scale.set(1,.78,.45);clasps.push(clasp);
   const ruby=mesh(torsoGroup,new THREE.OctahedronGeometry(.013,0),materials.gem);ruby.position.set(...local([side*.212,1.818,-.040],TORSO));ruby.scale.set(.75,1,.48);
  }
- function update({time=0,motion=true,strike=0,wind=0,defeat=0}={}){
+ function update({time=0,motion=true,strike=0,wind=0,defeat=0,groundLift=0}={}){
   if(dead)return;
-  const t=motion?finite(time):0,s=motion?clamp(finite(strike),0,1):0,w=motion?clamp(finite(wind),-1,1):0,d=clamp(finite(defeat),0,1);
+  const t=motion?finite(time):0,s=motion?clamp(finite(strike),0,1):0,w=motion?clamp(finite(wind),-1,1):0,d=clamp(finite(defeat),0,1),lift=clamp(finite(groundLift),0,1);
   for(const {group,phase}of masses){
    group.rotation.x=Math.sin(t*1.28+phase)*.014+(s*.07+w*.025)*(1-d*.7);
    group.rotation.y=Math.sin(t*.93+phase)*.012+w*.016;
    group.rotation.z=Math.sin(t*1.05+phase)*.016+w*.024+s*Math.sin(phase)*.025;
   }
-  const key=[t,s,w,d].join(',');if(key===lastCloth)return;lastCloth=key;
+  const key=[t,s,w,d,lift].join(',');if(key===lastCloth)return;lastCloth=key;
   for(let side=0;side<2;side++)for(let j=0;j<=rows;j++)for(let i=0;i<=cols;i++){
    const u=i/cols*2-1,v=j/rows,edge=Math.abs(u),bell=.246+.37*v+.085*Math.sin(v*Math.PI),asym=.052*Math.max(0,u)*v;
    const fold=Math.cos(u*Math.PI*5.1+v*.68)*(.020+.029*v)*Math.sin(v*Math.PI*.86);
    const flutter=motion?Math.sin(t*1.65+v*5.4+u*2.0)*.030*v*v:0;
    const x=u*(bell+asym)+(.075*w+.065*s)*v*v+Math.sin(t*.85+v*3)*.014*v*v;
-   const y=1.842-v*1.778+.042*Math.cos(u*Math.PI*3+.4)*Math.pow(v,5)+.028*edge*edge*(1-v)-.05*d*v*(1-v);
+   // A seated torso lowers the collar. Shorten the hanging cloth towards its
+   // hem instead of translating the whole cape away from that collar. The
+   // first 15% stays anchored; the hem receives the complete floor correction.
+   const lower=clamp((v-.15)/.85,0,1),grounding=lift*lower*lower*(3-2*lower);
+   const y=1.842-v*1.778+.042*Math.cos(u*Math.PI*3+.4)*Math.pow(v,5)+.028*edge*edge*(1-v)-.05*d*v*(1-v)+grounding;
    const z=-.086-.167*v-.090*Math.sin(v*Math.PI)+.227*Math.pow(edge,2.2)*Math.pow(v,.8)+fold-flutter-s*.095*v+w*.035*u*v-side*.006;
    const index=side*layer+j*stride+i;capePositions.setXYZ(index,x-TORSO[0],y-TORSO[1],z-TORSO[2]);
   }

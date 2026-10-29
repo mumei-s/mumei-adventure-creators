@@ -1,9 +1,9 @@
 import * as THREE from './vendor/three.module.js';
-import {overlordBattleDirector} from './overlord-battle-director.js?v=20261029-overlord4';
-import {createOverlordStageEffects} from './overlord-stage-fx.js?v=20261029-overlord4';
-import {createOverlordBoss} from './overlord-boss.js?v=20261029-overlord4';
-import {attachOverlordMaterials} from './overlord-materials.js?v=20261029-overlord4';
-import {createOverlordThrone,createOverlordHall} from './overlord-room.js?v=20261029-overlord4';
+import {overlordBattleDirector} from './overlord-battle-director.js?v=20261029-overlord5';
+import {createOverlordStageEffects} from './overlord-stage-fx.js?v=20261029-overlord5';
+import {createOverlordBoss} from './overlord-boss.js?v=20261029-overlord5';
+import {attachOverlordMaterials} from './overlord-materials.js?v=20261029-overlord5';
+import {createOverlordThrone,createOverlordHall} from './overlord-room.js?v=20261029-overlord5';
 import {playerPose} from './rpg-art.js?v=20261019-unified1';
 
 /** Resolved turn timing drives the performance; a peaceful bow cannot attack. */
@@ -64,6 +64,14 @@ export function overlordBattleActorPoints(geometry,layout,rootScale){
  const points=new Float32Array(geometry.positions.length+36),point=new THREE.Vector3();let offset=0;
  for(let i=0;i<geometry.positions.length;i+=3){point.fromArray(geometry.positions,i).applyMatrix4(rootMatrix);points[offset++]=point.x;points[offset++]=point.y;points[offset++]=point.z;}
  return {points,offset};
+}
+/** Move clear of the physical seat before straightening the knees. */
+export function overlordRisePlacement({state,stateElapsed=0,walkProgress=1,standDuration=1.1}={}){
+ const walk=THREE.MathUtils.clamp(Number.isFinite(walkProgress)?walkProgress:1,0,1);
+ const duration=Number.isFinite(standDuration)&&standDuration>0?standDuration:1.1;
+ const progress=THREE.MathUtils.clamp(Number.isFinite(stateElapsed)?stateElapsed/duration:0,0,1);
+ const rise=state==='seated'?0:state==='stand'?THREE.MathUtils.smoothstep(progress,0,.55):1;
+ return {advance:.60*rise*(1-walk),lift:state==='stand'?.04*Math.sin(Math.PI*progress):0};
 }
 /** Five staggered cuts follow the same source-to-target line as the real blades. */
 export function overlordSpecialArc({index,progress,source,target,counter,motion=true}){
@@ -155,7 +163,8 @@ export function createOverlordBattleScene({canvas,art,onLost=()=>{}}){
   const w=Math.max(1,canvas.clientWidth||360),h=Math.max(1,canvas.clientHeight||260),ratio=overlordBattlePixelRatio(w,h,globalThis.devicePixelRatio||1);if(w!==viewWidth||h!==viewHeight||Math.abs(ratio-viewRatio)>.001){renderer.setPixelRatio(ratio);renderer.setSize(w,h,false);viewWidth=w;viewHeight=h;viewRatio=ratio;}
   if(start===null)start=time;const dt=Math.max(0,Math.min(.05,time-last));last=time;
   const beat=overlordBattleDirector({battle,effect,time,motion,start}),{environment,actors,player,counter}=beat,layout=overlordBattleLayout(w/h);
-  boss.group.position.set(layout.boss.x,layout.boss.y,throneAnchor.z+(layout.boss.z-throneAnchor.z)*beat.walkProgress);
+  const rise=overlordRisePlacement({state:beat.state,stateElapsed:beat.stateElapsed,walkProgress:beat.walkProgress,standDuration:boss.metadata.standDuration});
+  boss.group.position.set(layout.boss.x,layout.boss.y+rise.lift,throneAnchor.z+(layout.boss.z-throneAnchor.z)*beat.walkProgress+rise.advance);
   towardBoss.set(layout.boss.x-layout.hero.x,0,layout.boss.z-layout.hero.z).normalize();
   hero.position.set(layout.hero.x,layout.hero.y+actors.heroLift,layout.hero.z).addScaledVector(towardBoss,actors.heroAdvance-actors.heroRecoil);
   boss.group.position.addScaledVector(towardBoss,actors.bossRecoil);boss.group.rotation.set(-actors.bossLean*.12,overlordAimYaw(boss.group.position,hero.position),0);
@@ -180,5 +189,5 @@ export function createOverlordBattleScene({canvas,art,onLost=()=>{}}){
   atmosphere.update({time,motion,environment,boss:boss.group.position});hall.update?.({time,motion,phase:beat.phase,environment});renderer.render(scene,camera);
  }
  function dispose(){if(dead)return;dead=true;canvas.removeEventListener('webglcontextlost',lost);materials.dispose();atmosphere.dispose();boss.dispose();throne.dispose?.();hall.dispose?.();heroTexture?.dispose();for(const resource of resources)resource.dispose?.();renderer.dispose();}
- return {render,dispose,scene,camera,boss};
+ return {render,dispose,scene,camera,boss,ready:materials.ready};
 }

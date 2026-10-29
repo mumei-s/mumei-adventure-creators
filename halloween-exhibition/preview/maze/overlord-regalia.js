@@ -1,11 +1,13 @@
 /** Fitted, sculpted regalia for the continuous anatomical actor.
  * Meshes are made in the body's neutral world coordinates, then converted to
- * the exact bone rest frame. Materials remain owned by the actor. */
-export function createOverlordRegalia(THREE,{joints,materials,positions}){
+ * the exact bone rest frame. Materials remain owned by the actor.
+ * includeArmor=false keeps the five swords without duplicating a generated
+ * body's cuirass and limb armour; joints and positions are then unnecessary. */
+export function createOverlordRegalia(THREE,{joints,materials,positions,includeArmor=true}){
  const group=new THREE.Group();group.name='five-native-gilded-blades';
  const resources=new Set(),attachments=[],swords=[],inverse=new Map();let disposed=false;
  const V=(x,y,z)=>new THREE.Vector3(x,y,z),clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
- const bodyPoints=[];for(let i=0;i<positions.length;i+=3)if(positions[i+1]>.70&&positions[i+1]<1.93&&Math.abs(positions[i])<.29&&positions[i+2]>0)bodyPoints.push([positions[i],positions[i+1],positions[i+2]]);
+ const bodyPoints=[];if(includeArmor)for(let i=0;i<positions.length;i+=3)if(positions[i+1]>.70&&positions[i+1]<1.93&&Math.abs(positions[i])<.29&&positions[i+2]>0)bodyPoints.push([positions[i],positions[i+1],positions[i+2]]);
  function front(x,y){
   const close=[];for(const point of bodyPoints){const d=(point[0]-x)**2+(point[1]-y)**2;if(close.length===8&&d>=close[7][0])continue;let index=close.length;while(index>0&&d<close[index-1][0])index--;close.splice(index,0,[d,point[2]]);if(close.length>8)close.pop();}const near=close[0]?.[0]||0;
   let value=0,weight=0;for(const [distance,z]of close){const w=1/(.00002+distance-near*.65);value+=z*w;weight+=w;}
@@ -30,6 +32,7 @@ export function createOverlordRegalia(THREE,{joints,materials,positions}){
  function scroll(parent,centerX,centerY,scale=1){
   const curve=[];for(let i=0;i<=22;i++){const p=i/22,angle=p*Math.PI*1.5,r=(1-p*.68)*.032*scale;curve.push(onSurface(centerX+Math.cos(angle)*r,centerY+Math.sin(angle)*r,.003));}tube(parent,curve,.0032*scale,'gold',22);
  }
+ if(includeArmor){
  // The continuous black armour remains fully covered. Raised, fitted borders
  // describe a corseted cuirass and curved metal leaves over the engraved body.
  const torso=joints.torso,pelvis=joints.pelvis;
@@ -161,6 +164,7 @@ export function createOverlordRegalia(THREE,{joints,materials,positions}){
   const heel=new THREE.BoxGeometry(.046,.066,.048);heel.translate(footOrigin.x,footOrigin.y-.063,footOrigin.z-.031);geometry(ankle,heel,'armor');
   const arch=[];for(let i=0;i<=20;i++){const a=i/20*Math.PI;arch.push([front.x+Math.cos(a)*.058,front.y+Math.sin(a)*.052,front.z+.054]);}tube(ankle,arch,.0045,'gold',22);
   tube(ankle,[[front.x-.060,front.y-.016,front.z+.080],[front.x-.045,front.y-.005,front.z+.172],[front.x,front.y,front.z+.202],[front.x+.045,front.y-.005,front.z+.172],[front.x+.060,front.y-.016,front.z+.080]],.0045,'gold',22);
+ }
  }
  // Five distinct closed blades. Dark blade faces and a ruby channel leave the
  // gold silhouette readable at mobile size without ornamental wallpaper.

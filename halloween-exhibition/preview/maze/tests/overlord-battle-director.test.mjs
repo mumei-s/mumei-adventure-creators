@@ -50,10 +50,10 @@ test('the palace changes after the hit lands and victory closes its portal into 
 test('a dropped frame still completes the native victory pose on the encounter clock',async()=>{
  const THREE=await import('../vendor/three.module.js'),{createOverlordBoss}=await import('../overlord-boss.js');
  const actor=createOverlordBoss(THREE),effect={...shine,finished:true,damage:30,retaliation:0},won={...battle,status:'won',spirit:0};
- const early=at(.9,effect,{battle:won}),late=at(2.4,effect,{battle:won});
+ const restTorso=actor.joints.torso.quaternion.clone(),early=at(.9,effect,{battle:won}),late=at(2.4,effect,{battle:won});
  actor.update(.01,{time:10.9,state:early.state,stateElapsed:early.stateElapsed,motion:true});
  actor.update(.01,{time:12.4,state:late.state,stateElapsed:late.stateElapsed,motion:true});
- assert.equal(late.state,'defeat');assert.ok(Math.abs(actor.joints.torso.rotation.x-.25)<1e-10);
+ assert.equal(late.state,'defeat');assert.ok(Math.abs(restTorso.angleTo(actor.joints.torso.quaternion)-.25)<1e-10);
  actor.dispose();
 });
 test('the last opposing strike completes before the resting result replaces its phase label',()=>{

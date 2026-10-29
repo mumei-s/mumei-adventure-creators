@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict';
 import * as THREE from '../halloween-exhibition/preview/maze/vendor/three.module.js';
 import {createOverlordBoss,overlordFaceUV} from '../halloween-exhibition/preview/maze/overlord-boss.js';
-const model=createOverlordBoss(THREE);
+// Keep the original CC0 anatomical asset audit separate from the new default
+// reconstructed queen, which has its own mesh, pose and ownership regressions.
+const model=createOverlordBoss(THREE,{legacy:true});
 assert.equal(model.swords.length,5);
 assert(model.human.isSkinnedMesh,'body must be continuous anatomical skin, not assembled spheres');
 assert.equal(model.metadata.source.license,'CC0-1.0');assert.equal(model.human.geometry.index.count/3,26756);

@@ -1,6 +1,6 @@
 import {drawArtSprite,playerPose} from './rpg-art.js?v=20261019-unified1';
-import {overlordBattleDirector} from './overlord-battle-director.js?v=20261029-overlord4';
-import {getOverlordIdentityImage} from './overlord-materials.js?v=20261029-overlord4';
+import {overlordBattleDirector} from './overlord-battle-director.js?v=20261029-overlord5';
+import {getOverlordIdentityImage} from './overlord-materials.js?v=20261029-overlord5';
 
 const clamp=value=>Math.max(0,Math.min(1,value));
 const smooth=value=>{const t=clamp(value);return t*t*(3-2*t);};

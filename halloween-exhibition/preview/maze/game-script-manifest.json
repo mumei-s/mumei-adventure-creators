@@ -104,8 +104,8 @@
     },
     {
       "path": "maze/app.js",
-      "bytes": 83925,
-      "sha256": "def8063b30a7b019def2159e56bafc2d3498f86a00264d9ce502c7301d4f723f"
+      "bytes": 84311,
+      "sha256": "db52fa5ac1348970ac24a2588a48fe534cba082e0e7a905fc363dd53e4ce0f23"
     },
     {
       "path": "maze/battle-scene.js",
@@ -250,7 +250,7 @@
     {
       "path": "maze/overlord-battle-2d.js",
       "bytes": 17794,
-      "sha256": "c89ebcfe4e523ac6824d393b1d319e8d185135e8140d1e89b7dbb351f91d02f7"
+      "sha256": "b81f4cbd3e4c02835d03aca20ead3d6acae4c8a13c440838be90677ef62d9bb7"
     },
     {
       "path": "maze/overlord-battle-director.js",
@@ -259,13 +259,13 @@
     },
     {
       "path": "maze/overlord-boss.js",
-      "bytes": 14695,
-      "sha256": "78b1d99ea504a66e55a30dad09b5a26d8032644d8c0e326ee5f3e7b9dd338422"
+      "bytes": 17556,
+      "sha256": "98a33852a4dc81c5c042ce56d0705a85a730260c95abb0e133994079960a0f20"
     },
     {
       "path": "maze/overlord-hair-cloth.js",
-      "bytes": 13817,
-      "sha256": "2293fef17609321748c1a5c6cf06ac91fedcd4c13ae03243f3aecdb1efe62e4e"
+      "bytes": 14352,
+      "sha256": "ff2e8ad4ac2535940ca6f66bf83e9a38c8e1e6e53da5fb33fe0d4ac2e3da90ef"
     },
     {
       "path": "maze/overlord-human-data.js",
@@ -274,18 +274,23 @@
     },
     {
       "path": "maze/overlord-materials.js",
-      "bytes": 4465,
-      "sha256": "0675b1272c86909424541ceb389bbb926a9fa1b54f2bf51554829585a95ec725"
+      "bytes": 7014,
+      "sha256": "4d7f2287785d2e4974fad85a0587ed9eeb22423cdb401da783cdbb65f66ccc0b"
+    },
+    {
+      "path": "maze/overlord-queen-data.js",
+      "bytes": 412235,
+      "sha256": "f160ecef84ae0e42c1edf19a88bd2494da0bbb9d6e35cead372ad205453068e9"
     },
     {
       "path": "maze/overlord-regalia.js",
-      "bytes": 21210,
-      "sha256": "670c86d80912c28823f5a3f9e1a634b8196f7a33eec7957cbe950468e99b332d"
+      "bytes": 21420,
+      "sha256": "27f940669390f13db78b5a337c951a34fe668962e97f1a3375e1d844a1b6eec0"
     },
     {
       "path": "maze/overlord-room.js",
-      "bytes": 15831,
-      "sha256": "244e83f201e3197d00e9cf3f7ec0b956b1a6f8ccd305aa99371e165016d9b369"
+      "bytes": 16587,
+      "sha256": "75bda1f4e886014d44f06966c027d055ac81126b5c2a50983ae18bb13c170d36"
     },
     {
       "path": "maze/palace-furnishing-art.js",
@@ -370,7 +375,7 @@
     {
       "path": "maze/world.js",
       "bytes": 49923,
-      "sha256": "c37b87fa5d263ce964009f29dde0478749cdffe9f0db5da5d478f00f421ad383"
+      "sha256": "b095a496fd20d825e437977c2fcac955d92456bb54e047b2ecf5ae143a42275d"
     },
     {
       "path": "package-lock.json",
@@ -477,12 +482,12 @@
   ],
   "imports": [
     {
-      "path": "./overlord-battle-scene.js?v=20261029-overlord4",
+      "path": "./overlord-battle-scene.js?v=20261029-overlord5",
       "kind": "dynamic-import",
       "external": true
     },
     {
-      "path": "./game-world.js?v=20261019-game-fast1-94ac9fe6d13f",
+      "path": "./game-world.js?v=20261019-game-fast1-590c996616dc",
       "kind": "dynamic-import",
       "external": true
     }
@@ -494,7 +499,7 @@
     },
     {
       "path": "maze/app.js",
-      "bytes": 53859
+      "bytes": 54040
     },
     {
       "path": "maze/stage-2d.js",
@@ -625,6 +630,10 @@
       "bytes": 1747
     },
     {
+      "path": "maze/overlord-materials.js",
+      "bytes": 1585
+    },
+    {
       "path": "viewpoint-presets.js",
       "bytes": 1325
     },
@@ -639,10 +648,6 @@
     {
       "path": "safe-page-reload.js",
       "bytes": 1149
-    },
-    {
-      "path": "maze/overlord-materials.js",
-      "bytes": 1073
     },
     {
       "path": "maze/rpg-model.js",
@@ -703,8 +708,8 @@
   ],
   "output": {
     "path": "maze/game-entry.js",
-    "bytes": 387246,
-    "sha256": "35a032fb629d4ab6a880d7576139d4c2aa634be1d21043b9976aa112fe44d97f"
+    "bytes": 387939,
+    "sha256": "47c3581afb0a9f9397d0d9c4409776bae077fb5a1d05d2c22ad8ff194784772d"
   },
   "styleSources": [
     "./style.css?v=20261014-adventure2",
@@ -737,8 +742,8 @@
   },
   "world": {
     "path": "maze/game-world.js",
-    "bytes": 656841,
-    "sha256": "94ac9fe6d13f69a40066fa3689feb609dc7d7ae2d7e05f7ca83cd65f9e97868e",
+    "bytes": 1072264,
+    "sha256": "590c996616dce0612d6175f52c5096242a28ae1e180afe4043a4721ead7cf9dc",
     "imports": [
       {
         "path": "./vendor/three.module.js",

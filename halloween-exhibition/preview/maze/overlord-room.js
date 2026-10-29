@@ -57,10 +57,21 @@ function banner(THREE,k,parent,x,y,z,width=1,height=3,rotation=0){
 
 export function createOverlordThrone(THREE){
  const k=kit(THREE),{group,box,mesh,tube,shape,black,gold,red,ruby}=k;group.name='overlord-volumetric-throne';
- // The .75 seat and floor footprint preserve the authored sitting rig/collision.
- box(black,0,.13,0,3.5,.26,2.65);box(gold,0,.277,0,3.34,.035,2.49);
- box(black,0,.42,-.08,2.6,.26,1.98);box(gold,0,.565,-.08,2.48,.025,1.85);
- box(black,0,.64,-.1,1.9,.16,1.46);box(red,0,.75,-.04,1.44,.12,1.19);
+ // Carved side piers keep the broad stepped silhouette, with actual open space
+ // for the fitted seated legs. The gilded ledges follow the same recess.
+ const recessHalfWidth=.48,recessBack=.16;
+ function splitPlinth(mat,y,z,width,height,depth){
+  const back=z-depth/2,front=z+depth/2,rearDepth=recessBack-back;
+  box(mat,0,y,(back+recessBack)/2,width,height,rearDepth);
+  const wingWidth=width/2-recessHalfWidth;
+  for(const side of[-1,1])box(mat,side*(recessHalfWidth+wingWidth/2),y,(recessBack+front)/2,wingWidth,height,front-recessBack);
+ }
+ splitPlinth(black,.13,0,3.5,.26,2.65);splitPlinth(gold,.277,0,3.34,.035,2.49);
+ splitPlinth(black,.42,-.08,2.6,.26,1.98);splitPlinth(gold,.565,-.08,2.48,.025,1.85);
+ splitPlinth(black,.64,-.1,1.9,.16,1.46);
+ // The rear cushion supports the pelvis; its front ends behind the calves.
+ const cushionTop=.855;
+ box(red,0,cushionTop-.0825,-.2275,1.44,.165,.815);
  const back=shape([[-.91,.62],[.91,.62],[.91,2.58],[.56,3.05],[0,3.62],[-.56,3.05],[-.91,2.58]],black,.22);back.position.z=-.64;
  const cushion=shape([[-.67,.84],[.67,.84],[.67,2.45],[0,3.1],[-.67,2.45]],red,.08);cushion.position.z=-.385;
  for(const s of[-1,1]){
@@ -79,7 +90,7 @@ export function createOverlordThrone(THREE){
  }
  for(const x of[-.44,0,.44])for(const y of[1.2,1.65,2.1])mesh('gem',gold,x,y,-.271,.025,.025,.014);
  const crest=shape([[0,3.58],[-.15,3.24],[-.1,3.04],[0,3.13],[.1,3.04],[.15,3.24]],gold,.06);crest.position.z=-.47;
- group.userData.seatHeight=.75;group.userData.embeddedRuby=true;k.batch();group.traverse(o=>{if(o.isMesh)o.castShadow=true;});return {...k,seatHeight:.75};
+ group.userData.seatHeight=.75;group.userData.seatSurfaceHeight=cushionTop;group.userData.footRecess={halfWidth:recessHalfWidth,back:recessBack};group.userData.embeddedRuby=true;k.batch();group.traverse(o=>{if(o.isMesh)o.castShadow=true;});return {...k,seatHeight:.75,seatSurfaceHeight:cushionTop};
 }
 
 /** Local-origin hall: throne anchor at 0, back wall behind it and open foreground.

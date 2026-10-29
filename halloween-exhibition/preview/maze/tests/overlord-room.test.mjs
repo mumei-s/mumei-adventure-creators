@@ -14,6 +14,7 @@ test('gothic hall shares native arches and an open foreground with the battle st
  const hall=createOverlordHall(THREE,{compact:true,lights:false});let meshes=0,triangles=0,lights=0,arches=0,cloth=0;
  hall.group.traverse(o=>{if(o.name==='pointed-gothic-arch')arches++;if(o.name==='folded-crimson-banner')cloth++;if(o.isLight)lights++;if(o.isMesh){meshes++;triangles+=(o.geometry.index?.count??o.geometry.attributes.position.count)/3;assert.ok(!o.isSprite);for(const value of o.geometry.attributes.position.array)assert.ok(Number.isFinite(value));}});
  assert(arches>=3);assert(cloth>=2);assert.equal(lights,0);assert(meshes<60);assert(triangles<10000);
+ assert.equal(hall.metadata.floor,'charcoal-marble');assert.equal(hall.metadata.pumpkins,false,'the battle altar has no loose sphere-like pumpkin props');
  const piers=hall.group.getObjectsByProperty('name','clustered-marble-pier');assert.equal(piers.length,2);assert(piers.every(p=>p.position.z< -2&&Math.abs(p.position.x)>4));
  const rose=hall.group.getObjectByName('garnet-rose-tracery');assert(rose.position.y>4&&rose.position.z< -3,'the moon window stays above and behind the actor');
  hall.update({time:5,motion:false});hall.dispose();hall.dispose();
@@ -23,4 +24,12 @@ test('throne ruby is an embedded faceted detail outside the character head silho
  const throne=createOverlordThrone(THREE);let rubyVertices=0;
  throne.group.traverse(o=>{if(!o.isMesh||o.material.name!=='faceted ruby inlay')return;const p=o.geometry.attributes.position;for(let i=0;i<p.count;i++){rubyVertices++;assert(!(p.getY(i)>2.45&&p.getY(i)<3&&Math.abs(p.getX(i))<.3),'no large central pink head-like gem');}});
  assert(rubyVertices>0);assert.equal(throne.seatHeight,.75);throne.dispose();
+});
+
+
+test('full hall has an opaque native vault below the generic ceiling grid',()=>{
+ const hall=createOverlordHall(THREE),vault=hall.group.getObjectByName('native-dark-pointed-vault');assert(vault);
+ const bounds=new THREE.Box3().setFromObject(vault);assert(bounds.min.x< -18&&bounds.max.x>18);assert(bounds.min.z< -7.4&&bounds.max.z>36.4);assert(bounds.max.y<7.1&&bounds.min.y>6);
+ vault.traverse(object=>{if(!object.isMesh)return;assert.equal(object.material.transparent,false);const normal=object.geometry.attributes.normal;for(let i=0;i<normal.count;i++)assert(normal.getY(i)<-.2,'the vault underside must face the room');});
+ assert.equal(hall.metadata.pumpkins,false);const lights=[];hall.group.traverse(object=>{if(object.isPointLight)lights.push(object);});assert(lights.every(light=>light.intensity<40));hall.dispose();
 });

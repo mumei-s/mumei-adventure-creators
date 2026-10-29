@@ -48,7 +48,7 @@ test('a module communication failure remains visible on quiet startup without ov
 test('a successful second attempt clears the failure and preserves position, inventory and progress',async()=>{
  const world={resize(){}},h=harness({createWorld:(_options,attempt)=>{if(attempt===1)throw Error('Error creating WebGL context.');return world;}});
  const original=JSON.parse(JSON.stringify(h.state));await h.setViewpoint('behind',{quiet:true});assert.equal(h.snapshot().view,'2d');await h.setViewpoint(h.snapshot().desiredViewpoint.id,{quiet:true});
- assert.equal(h.record.created,2);assert.equal(h.snapshot().view,'3d');assert.equal(h.snapshot().cameraDistance,'wide');assert.equal(h.snapshot().world,world);assert.equal(h.snapshot().viewFailure,'');assert.equal(h.node('maze-view-status').hidden,true);assert.equal(h.node('viewpoint-result').hidden,false);assert.match(h.node('viewpoint-result').textContent,/準備 2回目 完了/);assert.equal(h.node('maze-view-retry').hidden,true);
+ assert.equal(h.record.created,2);assert.equal(h.snapshot().view,'3d');assert.equal(h.snapshot().cameraDistance,'wide');assert.equal(h.snapshot().world,world);assert.equal(h.snapshot().viewFailure,'');assert.equal(h.node('maze-view-status').hidden,true);assert.equal(h.node('viewpoint-result').hidden,true);assert.equal(h.node('viewpoint-result').textContent,'');assert.equal(h.node('maze-view-retry').hidden,true);
  assert.equal(h.snapshot().state,h.state);assert.deepEqual({...h.state,pitch:original.pitch},original);assert.equal(h.record.restored,1);assert.equal(h.snapshot().cameraZoom,.82);
 });
 

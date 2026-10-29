@@ -1,6 +1,6 @@
-import {createOverlordRoom} from './overlord-room.js?v=20261029-overlord2';
-import {createOverlordBoss} from './overlord-boss.js?v=20261029-overlord2';
-import {attachOverlordMaterials,createOverlordReflectionEnvironment} from './overlord-materials.js?v=20261029-overlord2';
+import {createOverlordRoom} from './overlord-room.js?v=20261029-overlord3';
+import {createOverlordBoss} from './overlord-boss.js?v=20261029-overlord3';
+import {attachOverlordMaterials,createOverlordReflectionEnvironment} from './overlord-materials.js?v=20261029-overlord3';
 import {createExhibitResources} from './exhibit-resources.js?v=20261019-audit1';
 import {normalizeCameraDistance,mazeCameraZoom} from '../camera-distance.js?v=20261019-journey1';
 import {mazeWideCamera} from '../camera-distance.js?v=20261019-journey1';
@@ -237,7 +237,7 @@ export function createWorld({ canvas, onReady, art } = {}) {
   const spirits=[],residentTextures=new THREE.TextureLoader();let disposed=false,overlordReflection=null;
   for(const [index,definition]of MONSTERS.entries()){
     const root=new THREE.Group();root.position.set(definition.x*CELL,0,definition.z*CELL);root.name=definition.name;scene.add(root);const g=new THREE.Group();root.add(g);
-    if(definition.nativeModel){const boss=createOverlordBoss(THREE);root.add(boss.group);spirits.push({node:root,boss,index,id:definition.id,definition,baseY:0,materials:null});continue;}
+    if(definition.nativeModel){const boss=createOverlordBoss(THREE,{scale:1.25});root.add(boss.group);const shadow=contactShadow(0,0,1.35,.85,root);shadow.position.y=-.004;spirits.push({node:root,boss,index,id:definition.id,definition,baseY:.065,materials:null});continue;}
     const body=mat(definition.color,{emissive:definition.color,emissiveIntensity:.28,roughness:.8});
     const eye=mat('#28192c',{roughness:1});
     const glint=mat('#fff0b6',{emissive:'#ffeaa0',emissiveIntensity:.7});
@@ -399,7 +399,7 @@ export function createWorld({ canvas, onReady, art } = {}) {
     updateCreatorActors(hero?[...visibleActors,{id:'wide-view-owner',x:x/CELL,z:z/CELL,sprite:hero,heightWorld:2.38,interactive:false}]:visibleActors);
     heldLantern.visible=!!lantern&&!wide;headlamp.visible=!!lantern;nearLamp.visible=!!lantern;
     for(const spirit of spirits){
-      if(spirit.boss){const pose=monsterPose(spirit.definition,seconds,motion,{unlocked,horrorAccepted,overlordUnlocked});spirit.node.visible=encounters&&monsterAvailable(spirit.definition,{unlocked,horrorAccepted,overlordUnlocked});if(spirit.node.visible&&!spirit.materials){spirit.materials=attachOverlordMaterials(THREE,spirit.boss);if(!overlordReflection){try{overlordReflection=createOverlordReflectionEnvironment(THREE,renderer);scene.environment=overlordReflection.texture;}catch{/* Chamber lights remain available on older drivers. */}}}spirit.node.position.set(pose.x*CELL,0,pose.z*CELL);spirit.node.rotation.y=pose.yaw;spirit.boss.update(dt,{time:seconds,state:cleared.includes(spirit.id)?'idle':pose.walking?'walk':'idle',speed:pose.speed*CELL,motion});continue;}
+      if(spirit.boss){const pose=monsterPose(spirit.definition,seconds,motion,{unlocked,horrorAccepted,overlordUnlocked});spirit.node.visible=encounters&&monsterAvailable(spirit.definition,{unlocked,horrorAccepted,overlordUnlocked});if(spirit.node.visible&&!spirit.materials){spirit.materials=attachOverlordMaterials(THREE,spirit.boss);if(!overlordReflection){try{overlordReflection=createOverlordReflectionEnvironment(THREE,renderer);scene.environment=overlordReflection.texture;}catch{/* Chamber lights remain available on older drivers. */}}}spirit.node.position.set(pose.x*CELL,spirit.baseY,pose.z*CELL);spirit.node.rotation.y=pose.yaw;spirit.boss.update(dt,{time:seconds,state:cleared.includes(spirit.id)?'idle':pose.walking?'walk':'idle',speed:pose.speed*CELL,motion});continue;}
       // Opening the scene does not wait for every enemy atlas. Install the same
       // original art as it arrives, retaining the existing model until then.
       const source=art?.images?.[spirit.id],image=source?.image||source;

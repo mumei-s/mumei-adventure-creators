@@ -1,4 +1,4 @@
-import {CELL,OVERLORD_ROOM} from './maze-model.js?v=20261029-overlord2';
+import {CELL,OVERLORD_ROOM} from './maze-model.js?v=20261029-overlord3';
 
 // Authored, native geometry. No image cards or network requests are used here.
 // Reused primitives and rigid-material batching keep the gothic detail inexpensive.
@@ -6,14 +6,14 @@ function kit(THREE){
  const group=new THREE.Group(),resources=new Set();
  const track=resource=>{resources.add(resource);return resource;};
  const material=(name,color,extra={})=>{const m=new THREE.MeshStandardMaterial({color,roughness:.55,...extra});m.name=name;resources.add(m);return m;};
- const stone=material('blue-black carved marble','#303548',{metalness:.24,roughness:.4});
- const black=material('polished obsidian','#171c2a',{metalness:.5,roughness:.28});
- const gold=material('antique gilded relief','#dbb367',{metalness:.78,roughness:.26});
- const pale=material('worn marble veins','#687083',{metalness:.3,roughness:.38});
- const red=material('crimson velvet','#801a3b',{roughness:.8,side:THREE.DoubleSide});
- const ruby=material('faceted ruby inlay','#a90939',{metalness:.2,roughness:.17,emissive:'#4e071c',emissiveIntensity:.35});
+ const stone=material('blue-black carved marble','#17151c',{metalness:.15,roughness:.47});
+ const black=material('polished obsidian','#0c0c12',{metalness:.35,roughness:.34});
+ const gold=material('antique gilded relief','#9f7b42',{metalness:.72,roughness:.32});
+ const pale=material('worn marble veins','#292630',{metalness:.12,roughness:.53});
+ const red=material('crimson velvet','#2c0812',{roughness:.92,side:THREE.DoubleSide});
+ const ruby=material('faceted ruby inlay','#510b20',{metalness:.12,roughness:.27,emissive:'#25040a',emissiveIntensity:.2});
  const glow=material('amber candle flame','#ffc77b',{emissive:'#ff7c28',emissiveIntensity:2.5,roughness:.4});
- const glass=material('garnet stained glass','#56112c',{emissive:'#b71943',emissiveIntensity:.6,metalness:.12,roughness:.25});
+ const glass=material('garnet stained glass','#210811',{emissive:'#5b0c23',emissiveIntensity:.2,metalness:.08,roughness:.53});
  const geos={box:new THREE.BoxGeometry(1,1,1),sphere:new THREE.SphereGeometry(1,12,8),cylinder:new THREE.CylinderGeometry(1,1,1,10),cone:new THREE.ConeGeometry(1,1,8),gem:new THREE.OctahedronGeometry(1,0)};
  Object.values(geos).forEach(g=>resources.add(g));
  function mesh(type,mat,x,y,z,sx,sy,sz,parent=group){const o=new THREE.Mesh(geos[type],mat);o.position.set(x,y,z);o.scale.set(sx,sy,sz);o.castShadow=false;o.receiveShadow=true;parent.add(o);return o;}
@@ -71,15 +71,15 @@ export function createOverlordThrone(THREE){
   tube([[s*.88,1,-.42],[s*.89,1.19,-.1],[s*.88,1.21,.42],[s*.88,1.02,.77]],.024,gold,group,12);
   mesh('gem',gold,s*.88,1.02,.81,.12,.16,.15);mesh('gem',ruby,s*.88,1.1,.86,.043,.07,.04);
   box(black,s*.85,.53,.6,.15,.74,.15);box(gold,s*.85,.26,.6,.22,.04,.22);
-  // Raised curling relief, visible in three-quarter and close views.
-  for(let j=0;j<3;j++){const y=1.18+j*.46;tube([[s*.77,y,-.27],[s*.47,y+.12,-.235],[s*.42,y+.31,-.235],[s*.62,y+.35,-.24],[s*.69,y+.22,-.25]],.019,gold,group,12);}
+  // A restrained pair of carved scrolls leaves the actor silhouette clear.
+  for(let j=0;j<2;j++){const y=1.33+j*.64;tube([[s*.77,y,-.27],[s*.55,y+.1,-.235],[s*.49,y+.24,-.235],[s*.64,y+.27,-.24],[s*.69,y+.17,-.25]],.010,gold,group,12);}
   for(let j=0;j<3;j++){const x=s*(.29+j*.18),y=3.08-j*.12;const fin=shape([[x-.07,y-.17],[x+.07,y-.17],[x+.055,y+.22],[x,y+.52],[x-.055,y+.22]],gold,.055);fin.position.z=-.6;}
   // Small, faceted, offset inlays. No red sphere over the character's head.
   mesh('gem',ruby,s*.48,2.72,-.245,.075,.13,.032);
  }
  for(const x of[-.44,0,.44])for(const y of[1.2,1.65,2.1])mesh('gem',gold,x,y,-.271,.025,.025,.014);
  const crest=shape([[0,3.58],[-.15,3.24],[-.1,3.04],[0,3.13],[.1,3.04],[.15,3.24]],gold,.06);crest.position.z=-.47;
- group.userData.seatHeight=.75;group.userData.embeddedRuby=true;k.batch();return {...k,seatHeight:.75};
+ group.userData.seatHeight=.75;group.userData.embeddedRuby=true;k.batch();group.traverse(o=>{if(o.isMesh)o.castShadow=true;});return {...k,seatHeight:.75};
 }
 
 /** Local-origin hall: throne anchor at 0, back wall behind it and open foreground.
@@ -90,14 +90,14 @@ export function createOverlordHall(THREE,{compact=false,lights=!compact}={}){
  box(black,0,-.055,(frontZ+backZ)/2,half*2,.1,depth);
  const columns=compact?5:9,rows=compact?6:11,tileW=half*2/columns,tileD=depth/rows;
  for(let r=0;r<rows;r++)for(let c=0;c<columns;c++){
-  const x=-half+(c+.5)*tileW,z=backZ+(r+.5)*tileD;box((c+r)%2?stone:black,x,.008,z,tileW-.035,.022,tileD-.035);
-  if((c+r)%3===0){const vein=box(pale,x+.13,.023,z,tileW*.75,.008,.012);vein.rotation.y=.31+(r%2)*.28;const fork=box(pale,x-.07,.023,z+.08,tileW*.32,.008,.008);fork.rotation.y=-.55;}
+  const x=-half+(c+.5)*tileW,z=backZ+(r+.5)*tileD;box(stone,x,.008,z,tileW-.022,.022,tileD-.022);
+  if((c+r)%4===0){const vein=box(pale,x+.13,.023,z,tileW*.75,.004,.006);vein.rotation.y=.31+(r%2)*.28;const fork=box(pale,x-.07,.023,z+.08,tileW*.32,.004,.004);fork.rotation.y=-.55;}
  }
  const carpetW=compact?2.8:5.1,carpetLength=compact?9.5:33.4,carpetZ=compact?2.6:17.2;
  box(gold,0,.028,carpetZ,carpetW+.17,.025,carpetLength+.16);box(red,0,.045,carpetZ,carpetW,.023,carpetLength);
  for(const s of[-1,1])box(gold,s*(carpetW/2-.12),.061,carpetZ,.018,.012,carpetLength-.15);
  for(let i=0;i<(compact?6:12);i++){const z=carpetZ-carpetLength/2+.45+i*(carpetLength-.9)/(compact?5:11);for(const s of[-1,1]){const diamond=mesh('gem',gold,s*(carpetW/2-.32),.062,z,.075,.008,.12);diamond.rotation.y=Math.PI/4;}}
- box(stone,0,height/2,backZ-.12,half*2,height,.24);box(black,0,.33,backZ+.11,half*2,.66,.26);box(gold,0,.7,backZ+.28,half*2,.045,.1);
+ const wallTop=compact?height:7.08;box(stone,0,wallTop/2,backZ-.12,half*2,wallTop,.24);box(black,0,.33,backZ+.11,half*2,.66,.26);box(gold,0,.7,backZ+.28,half*2,.045,.1);
  const centerArch=arch(THREE,k,group,{y:1.1,z:backZ+.31,width:compact?4.6:5.8,height:height-1.4});centerArch.userData.centralWindow=true;
  // Blood-moon rose tracery is high in the wall, far behind the actor.
  const rose=new THREE.Group();rose.name='garnet-rose-tracery';rose.position.set(0,compact?5.25:4.75,backZ+.48);group.add(rose);
@@ -112,23 +112,30 @@ export function createOverlordHall(THREE,{compact=false,lights=!compact}={}){
   for(let j=0;j<5;j++){const a=j/5*Math.PI*2;mesh('cylinder',stone,Math.cos(a)*.22,(height-.6)/2+.3,Math.sin(a)*.22,.19,height-.6,.19,column);}
   for(const y of[.39,height-.42,height-.18]){box(black,0,y,0,1.07,.13,1.07,column);box(gold,0,y+.08,0,1.1,.025,1.1,column);}
   mesh('cone',black,0,height+.18,0,.5,.65,.5,column);
-  // Warm altar flames and guarded pumpkin faces, not large glowing spheres.
+  // Candle flames keep the aisles readable without loose glowing ball props.
   box(black,0,.8,.63,.52,1.1,.33,column);box(gold,0,1.37,.63,.66,.045,.44,column);
   for(const x of[-.17,.17]){mesh('cylinder',gold,x,1.56,.65,.045,.4,.045,column);mesh('cone',glow,x,1.84,.65,.055,.18,.055,column);}
-  const pumpkin=mesh('sphere',red,0,.61,.84,.3,.27,.25,column);pumpkin.name='pumpkin-altar';for(const x of[-.1,.1]){const eye=mesh('cone',glow,x,.65,1.062,.048,.06,.025,column);eye.rotation.z=Math.PI;}box(glow,0,.53,1.068,.13,.025,.02,column);
  }
  if(!compact){
+  // Opaque native walls and a continuous pointed vault cover the host hall's
+  // cream panels and ceiling grid. The vault stays below its lowest gold beam.
+  for(const side of[-1,1]){box(stone,side*(half+.025),wallTop/2,(frontZ+backZ)/2,.24,wallTop,depth+.3);box(black,side*(half-.13),.38,(frontZ+backZ)/2,.14,.76,depth);box(gold,side*(half-.23),.78,(frontZ+backZ)/2,.05,.025,depth);}
+  const vault=new THREE.Group();vault.name='native-dark-pointed-vault';group.add(vault);
+  const vaultPositions=[],vaultIndices=[],vaultColumns=32;
+  for(const z of[backZ-.25,frontZ+.25])for(let i=0;i<=vaultColumns;i++){const x=(i/vaultColumns-.5)*(half*2+.3),y=6.10+.88*(1-Math.pow(Math.abs(x)/(half+.15),.68));vaultPositions.push(x,y,z);}
+  for(let i=0;i<vaultColumns;i++){const a=i,b=i+vaultColumns+1;vaultIndices.push(a,a+1,b,a+1,b+1,b);}
+  const vaultGeometry=k.track(new THREE.BufferGeometry());vaultGeometry.setAttribute('position',new THREE.Float32BufferAttribute(vaultPositions,3));vaultGeometry.setIndex(vaultIndices);vaultGeometry.computeVertexNormals();const vaultMesh=new THREE.Mesh(vaultGeometry,black);vaultMesh.receiveShadow=true;vault.add(vaultMesh);
   // Native vault ribs sit below the host room ceiling and away from the aisle.
   for(const z of pillarZs){for(const s of[-1,1]){const ps=[[s*pillarX,height-.47,z],[s*pillarX*.7,height-.1,z],[s*pillarX*.35,height+.04,z],[0,height+.12,z]];tube(ps,.12,black);tube(ps.map(([x,y,z])=>[x,y-.08,z+.06]),.035,gold);}}
   for(const s of[-1,1])for(const z of[2,12.5,24.5]){const side=arch(THREE,k,group,{x:s*(half-.4),y:.95,z,width:4.8,height:height-1.25,rotation:s<0?Math.PI/2:-Math.PI/2});side.userData.sideWindow=true;}
   for(const z of[11.5,23.5])for(const s of[-1,1])tube([[s*pillarX,height-.45,z-5],[s*7,height-.1,z-2],[0,height+.1,z],[s*-7,height-.1,z+2],[s*-pillarX,height-.45,z+5]],.055,gold,group,24);
  }
  const lightNodes=[];
- if(lights){const warm=new THREE.PointLight('#ffd6a3',135,66,1.25);warm.position.set(0,4.8,12);group.add(warm);const rim=new THREE.PointLight('#ec3162',74,45,1.3);rim.position.set(0,5,backZ+3.7);group.add(rim);lightNodes.push(warm,rim);}
- group.userData.architecture={compact,pointedArches:1+backXs.length+(compact?0:6),clusteredPiers:pillarZs.length*2,roseWindow:true,openForeground:true};
+ if(lights){const warm=new THREE.PointLight('#ffd6a3',38,60,1.4);warm.position.set(0,4.8,12);group.add(warm);const rim=new THREE.PointLight('#c32645',18,42,1.45);rim.position.set(0,5,backZ+3.7);group.add(rim);lightNodes.push(warm,rim);}
+ group.userData.architecture={compact,pointedArches:1+backXs.length+(compact?0:6),clusteredPiers:pillarZs.length*2,roseWindow:true,openForeground:true,floor:'charcoal-marble',pumpkins:false,vaultedCeiling:!compact,palette:'oxblood-and-antique-gold'};
  k.batch();
  let dead=false;
- return {group,metadata:group.userData.architecture,update({time=0,motion=true}={}){if(lightNodes[1])lightNodes[1].intensity=74+(motion?Math.sin(time*.7)*2.5:0);},dispose(){if(dead)return;dead=true;k.dispose();}};
+ return {group,metadata:group.userData.architecture,update({time=0,motion=true}={}){if(lightNodes[1])lightNodes[1].intensity=18+(motion?Math.sin(time*.7)*1.2:0);},dispose(){if(dead)return;dead=true;k.dispose();}};
 }
 
 export function createOverlordRoom(THREE){

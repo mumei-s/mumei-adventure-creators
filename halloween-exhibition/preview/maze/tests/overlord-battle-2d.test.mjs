@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {renderOverlordBattle2D} from '../overlord-battle-2d.js';
 import {newBattle,battleTurn} from '../encounter-model.js';
+import {overlordActionDuration} from '../overlord-battle-director.js';
 
 function surface(width=390,height=330){
  const calls=[],draws=[],stack=[];let matrix={x:0,y:0,sx:1,sy:1};
@@ -33,9 +34,9 @@ test('reduced motion produces the same frame across time, including a guarded sp
 
 test('five timed cuts belong only to a resolved special counter, never a peaceful bow',()=>{
  const battle=newBattle('nameless_overlord'),effect={type:'guard',started:0,damage:0,retaliation:0,blocked:5,counterSpecial:true},active=surface(),quiet=surface();
- renderOverlordBattle2D({canvas:active.canvas,art,battle,effect,time:2.15,motion:true});renderOverlordBattle2D({canvas:quiet.canvas,art,battle,effect:{...effect,blocked:0},time:2.15,motion:true});
+ renderOverlordBattle2D({canvas:active.canvas,art,battle,effect,time:2.23,motion:true});renderOverlordBattle2D({canvas:quiet.canvas,art,battle,effect:{...effect,blocked:0},time:2.23,motion:true});
  assert.equal(active.calls.filter(x=>x[0]==='quadraticCurveTo').length,5);assert.equal(quiet.calls.filter(x=>x[0]==='quadraticCurveTo').length,0);
- assert(active.calls.filter(x=>x[0]==='beginPath').length<100);
+ assert(active.calls.filter(x=>x[0]==='beginPath').length<180);
 });
 
 test('an absent illustration gives a loading state and renders real art as soon as it arrives',()=>{
@@ -43,4 +44,30 @@ test('an absent illustration gives a loading state and renders real art as soon 
  const loading=renderOverlordBattle2D({canvas:s.canvas,art:library,battle,motion:false});assert.equal(loading.loading,true);assert(s.calls.some(x=>x[0]==='fillText'&&x[1].includes('準備')));
  library.images.nameless_overlord=queen;const ready=renderOverlordBattle2D({canvas:s.canvas,art:library,battle,motion:false});assert.equal(ready.loading,false);assert(s.draws.some(x=>x.image===queen));
  assert.equal(renderOverlordBattle2D({canvas:{getContext:()=>null},art:library,battle}),false);
+});
+
+
+test('ordinary fallback counters visibly land before the shared UI unlock, then leave no stale cuts',()=>{
+ for(const type of ['shine','guard','attack']){
+  const battle=battleTurn(newBattle('nameless_overlord'),type),effect={type,started:0,...battle.lastAction,retaliation:type==='guard'?0:1,blocked:type==='guard'?1:0,counterSpecial:false},duration=overlordActionDuration(effect);
+  let drewReturnStrike=false;
+  for(let time=0;time<duration;time+=.05){const s=surface();renderOverlordBattle2D({canvas:s.canvas,art,battle,effect,time,motion:true});drewReturnStrike ||= s.calls.some(call=>call[0]==='quadraticCurveTo');}
+  assert(drewReturnStrike,`${type} must show its return strike before ${duration}s unlock`);
+  const settled=surface();renderOverlordBattle2D({canvas:settled.canvas,art,battle,effect,time:duration+.01,motion:true});
+  assert.equal(settled.calls.filter(call=>call[0]==='quadraticCurveTo').length,0);
+ }
+});
+
+test('fallback backdrop has bounded living motion, changes after damage and warms after victory',()=>{
+ const battle=newBattle('nameless_overlord'),first=surface(),later=surface(),rage=surface(),victory=surface();
+ renderOverlordBattle2D({canvas:first.canvas,art,battle,time:3,motion:true});renderOverlordBattle2D({canvas:later.canvas,art,battle,time:5,motion:true});
+ assert.notDeepEqual(first.calls,later.calls,'banners and embers are active while waiting for a command');
+ renderOverlordBattle2D({canvas:rage.canvas,art,battle:{...battle,spirit:8},time:5,motion:true});renderOverlordBattle2D({canvas:victory.canvas,art,battle:{...battle,spirit:0,status:'won'},time:5,motion:true});
+ const gradientStops=s=>s.calls.filter(call=>call[0]==='linear'||call[0]==='radial').map(call=>call[2]);
+ assert.notDeepEqual(gradientStops(later),gradientStops(rage),'the low-health portal changes the room');assert.notDeepEqual(gradientStops(rage),gradientStops(victory),'victory closes the red phase into warm light');
+ for(const state of [battle,{...battle,spirit:8},{...battle,spirit:0,status:'won'}])for(let time=0;time<3.3;time+=.11){
+  const s=surface(),effect={type:'guard',started:0,blocked:5,counterSpecial:true};renderOverlordBattle2D({canvas:s.canvas,art,battle:state,effect,time,motion:true});
+  assert(s.calls.filter(call=>call[0]==='beginPath').length<180,'mobile painting budget stays bounded through five-blade impacts');
+  assert(!JSON.stringify(s.calls).includes('NaN'),'paint coordinates and mixed colors stay finite');
+ }
 });

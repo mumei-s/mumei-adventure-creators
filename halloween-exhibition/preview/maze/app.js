@@ -2,9 +2,9 @@ import {renderPixelRatio} from '../render-quality.js?v=20261030-quality1';
 import {createViewpointControlLayout} from '../viewpoint-controls.js?v=20261024-viewpoints1';
 import {afterViewPaint} from '../view-paint.js?v=20261024-viewpoints1';
 import {createChangeTracker,setChangedProperty,setChangedAttribute} from './change-only-ui.js?v=20261019-audit1';
-import {bindPinchZoom} from '../touch-camera.js?v=20261019-journey1';
+import {bindPinchZoom} from '../touch-camera.js?v=20261030-body1';
 import {readPadMode,savePadMode} from '../control-preferences.js?v=20261019-journey1';
-import {createControlSettings} from '../control-settings.js?v=20261019-journey1';
+import {createControlSettings} from '../control-settings.js?v=20261030-body1';
 import {classifyTown3DFailure} from '../town/view-mode.js?v=20261019-journey1';
 import {nearestFurnishing,FURNISHING_INFO} from './furnishing-info.js?v=20261019-interior1';
 import {readCameraDistance,saveCameraDistance,readCameraZoom,saveCameraZoom,normalizeCameraZoom} from '../camera-distance.js?v=20261019-journey1';
@@ -16,7 +16,7 @@ import {initPadPosition} from '../game-display.js?v=20261019-interior1';
 import {monsterSprite} from './monster-motion.js?v=20261019-unified1';
 import {initTransitionEffects,withDeadline} from '../transition-effects.js?v=20261016-living1';
 import {loadArtworkImage} from '../magical-loading.js?v=20261015-journey1';
-import {initViewport} from '../viewport.js?v=20261016-ios1';
+import {initViewport} from '../viewport.js?v=20261030-body1';
 import {resolveContextAction,actionButtonFor} from './context-action.js?v=20261019-interior2';
 import {compileResidents,RESIDENT_STORIES,RESIDENT_FICTION} from './resident-model.js?v=20261017-startup1';
 import {initMinimapSize} from './minimap-size.js?v=20261016-battle-visible1';
@@ -31,11 +31,11 @@ import { normalizeLighting } from './lighting-model.js?v=20261019-interior1';
 import { MAP, CELL, FEATURES, toWorld, collectionAt, move, nearby, initialState, visibleArticles } from './maze-model.js?v=20261014-adventure2';
 import { ALL_MONSTERS as MONSTERS, OVERLORD_BOSS, REQUIRED_MONSTER_IDS, nearestMonster, newBattle, battleTurn, intentFor, monsterAvailable, prankFor, commandFor, monsterPose, guidePoint } from './encounter-model.js?v=20261016-living1';
 import { chooseView, movementVector, mapHeading } from './view-model.js?v=20261015-minimap1';
-import { createStageRenderer, EXIT, PALACE_FURNISHINGS } from './stage-2d.js?v=20261019-unified1';
+import { createStageRenderer, EXIT, PALACE_FURNISHINGS } from './stage-2d.js?v=20261030-body1';
 import {createArtLibrary,drawArtSprite} from './rpg-art.js?v=20261019-unified1';
-import {renderBattleScene,battleEffectDuration} from './battle-scene.js?v=20261019-unified1';
-import {renderOverlordBattle2D} from './overlord-battle-2d.js?v=20261030-quality1';
-import {overlordActionDuration,overlordBattleDirector} from './overlord-battle-director.js?v=20261030-art1';
+import {renderBattleScene,battleEffectDuration} from './battle-scene.js?v=20261030-body1';
+import {renderOverlordBattle2D} from './overlord-battle-2d.js?v=20261030-body1';
+import {overlordActionDuration,overlordBattleDirector} from './overlord-battle-director.js?v=20261030-body1';
 import {directionFromMovement,moveAroundFurniture} from './rpg-model.js?v=20261014-adventure2';
 import {protectGameSurface,bindHeldGameButton,bindDirectionPad} from './game-input.js?v=20261019-journey1';
 import {STORY,encounterStory,chapterFor} from './story-model.js?v=20261016-living1';
@@ -339,7 +339,7 @@ function drawBattleVisual(){
 function drawOverlordBattle(){
  if(nativeBattle){try{nativeBattle.render({battle,effect:battleEffect,time:visualTime,motion:motion&&!reducedMotion.matches});}catch{failNativeBattle();}return;}
  if(!nativeBattleFailed&&!nativeBattleLoading){nativeBattleLoading=true;const token=++nativeBattleToken,target=battleCanvas;
-  import('./overlord-battle-scene.js?v=20261030-quality1').then(async({createOverlordBattleScene})=>{
+  import('./overlord-battle-scene.js?v=20261030-body1').then(async({createOverlordBattleScene})=>{
    if(token!==nativeBattleToken||!battle||battle.id!=='nameless_overlord'||battleCanvas!==target)return;
    const candidate=createOverlordBattleScene({canvas:target,art:rpgArt,onLost:failNativeBattle});
    try{
@@ -496,7 +496,7 @@ function tick(now){
 }
 function start(){if(!frame&&gameReady){last=0;frame=requestAnimationFrame(tick);}}
 function resizeGameViewport(){viewpointLayout.refresh();world?.resize();if(view==='2d')resizeFlat();if(battle)drawBattleVisual();}
-initViewport({onChange:resizeGameViewport});
+initViewport({onChange:resizeGameViewport,onNativeZoom:clearInput});
 if(typeof ResizeObserver==='function'){const canvasSizeObserver=new ResizeObserver(()=>requestAnimationFrame(resizeGameViewport));canvasSizeObserver.observe($('world'));canvasSizeObserver.observe($('fallback'));}
 window.addEventListener('orientationchange',clearInput);
 window.addEventListener('pagehide',()=>{suspendViewpoint();if(!gameReady){bootAbort?.abort();}cancelAnimationFrame(frame);frame=0;last=0;clearInput();if(gameReady)save();});

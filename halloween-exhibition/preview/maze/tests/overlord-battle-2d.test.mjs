@@ -3,22 +3,38 @@ import assert from 'node:assert/strict';
 import {renderOverlordBattle2D,overlordBattleSwordShape,overlordBattleSwordFlightShape} from '../overlord-battle-2d.js';
 import {newBattle,battleTurn} from '../encounter-model.js';
 import {overlordActionDuration} from '../overlord-battle-director.js';
+import {OVERLORD_ART_PARTS} from '../overlord-art-rig.js';
 
 function surface(width=390,height=330){
- const calls=[],draws=[],stack=[];let matrix={x:0,y:0,sx:1,sy:1};
- const target={globalAlpha:1,save(){stack.push({...matrix,alpha:this.globalAlpha});calls.push(['save']);},restore(){const next=stack.pop();matrix=next||matrix;this.globalAlpha=next?.alpha??1;calls.push(['restore']);},setTransform(sx,b,c,sy,x,y){matrix={x,y,sx,sy};calls.push(['setTransform',sx,b,c,sy,x,y]);},translate(x,y){matrix.x+=x*matrix.sx;matrix.y+=y*matrix.sy;calls.push(['translate',x,y]);},scale(x,y){matrix.sx*=x;matrix.sy*=y;calls.push(['scale',x,y]);},rotate(a){assert.equal(a,0,'actors remain upright');calls.push(['rotate',a]);},drawImage(image,...args){const [x,y,w,h]=args.length===8?args.slice(4):args;draws.push({image,args,left:matrix.x+x*matrix.sx,top:matrix.y+y*matrix.sy,width:w*matrix.sx,height:h*matrix.sy});calls.push(['drawImage',image.id,...args]);},createLinearGradient(...args){const g={args,stops:[],addColorStop(p,c){this.stops.push([p,c]);}};calls.push(['linear',args,g.stops]);return g;},createRadialGradient(...args){const g={args,stops:[],addColorStop(p,c){this.stops.push([p,c]);}};calls.push(['radial',args,g.stops]);return g;}};
+ const calls=[],draws=[],stack=[];let matrix=[1,0,0,1,0,0];
+ const multiply=([a,b,c,d,e,f])=>{const [ma,mb,mc,md,me,mf]=matrix;matrix=[ma*a+mc*b,mb*a+md*b,ma*c+mc*d,mb*c+md*d,ma*e+mc*f+me,mb*e+md*f+mf];};
+ const target={globalAlpha:1,
+  save(){stack.push({matrix:[...matrix],alpha:this.globalAlpha});calls.push(['save']);},
+  restore(){const next=stack.pop();if(next){matrix=next.matrix;this.globalAlpha=next.alpha;}calls.push(['restore']);},
+  setTransform(...values){assert(values.every(Number.isFinite));matrix=[...values];calls.push(['setTransform',...values]);},
+  translate(x,y){multiply([1,0,0,1,x,y]);calls.push(['translate',x,y]);},
+  scale(x,y){multiply([x,0,0,y,0,0]);calls.push(['scale',x,y]);},
+  rotate(a){assert(Number.isFinite(a));multiply([Math.cos(a),Math.sin(a),-Math.sin(a),Math.cos(a),0,0]);calls.push(['rotate',a]);},
+  drawImage(image,...args){const [x,y,w,h]=args.length===8?args.slice(4):args,[a,b,c,d,e,f]=matrix;
+   const corners=[[x,y],[x+w,y],[x+w,y+h],[x,y+h]].map(([u,v])=>[a*u+c*v+e,b*u+d*v+f]),xs=corners.map(p=>p[0]),ys=corners.map(p=>p[1]);
+   draws.push({image,args,matrix:[...matrix],corners,left:Math.min(...xs),top:Math.min(...ys),width:Math.max(...xs)-Math.min(...xs),height:Math.max(...ys)-Math.min(...ys)});calls.push(['drawImage',image.id,...args]);},
+  createLinearGradient(...args){const g={args,stops:[],addColorStop(p,c){this.stops.push([p,c]);}};calls.push(['linear',args,g.stops]);return g;},createRadialGradient(...args){const g={args,stops:[],addColorStop(p,c){this.stops.push([p,c]);}};calls.push(['radial',args,g.stops]);return g;}};
  for(const name of ['beginPath','moveTo','lineTo','closePath','fill','stroke','ellipse','arc','bezierCurveTo','quadraticCurveTo','fillRect','clearRect','strokeRect','fillText'])target[name]=(...args)=>calls.push([name,...args]);
  const c=new Proxy(target,{set(obj,key,value){obj[key]=value;if(['globalAlpha','fillStyle','strokeStyle','lineWidth','shadowBlur','shadowColor'].includes(key))calls.push(['property',key,value]);return true;}});
  return {canvas:{clientWidth:width,clientHeight:height,width,height,getContext:()=>c},calls,draws};
 }
-const queen={id:'approved-queen-art',width:1024,height:1536},player={id:'existing-owner-atlas',width:1024,height:1024};
-const art={images:{nameless_overlord:queen,playerAtlas:player}};
+const queen={id:'articulated-queen-atlas',width:1254,height:1254},portrait={id:'roster-portrait-only',width:1024,height:1536},player={id:'existing-owner-atlas',width:1024,height:1024};
+const art={images:{overlordArtAtlas:queen,nameless_overlord:portrait,playerAtlas:player}};
+const queenDraws=s=>s.draws.filter(draw=>draw.image===queen);
+function partDraw(s,name){const expected=OVERLORD_ART_PARTS[name].source.map(v=>v*queen.width);return queenDraws(s).find(draw=>draw.args.slice(0,4).every((v,i)=>Math.abs(v-expected[i])<.001));}
+const rotation=draw=>Math.atan2(draw.matrix[1],draw.matrix[0]);
+function bounds(draws){const left=Math.min(...draws.map(d=>d.left)),top=Math.min(...draws.map(d=>d.top)),right=Math.max(...draws.map(d=>d.left+d.width)),bottom=Math.max(...draws.map(d=>d.top+d.height));return {left,top,width:right-left,height:bottom-top};}
 
-test('fallback uses the approved queen and existing player art with fully bounded responsive frames',()=>{
+test('fallback draws an articulated queen and existing player art inside responsive frames',()=>{
  for(const [w,h] of[[390,330],[844,220],[280,420],[180,130]]){
   const s=surface(w,h),layout=renderOverlordBattle2D({canvas:s.canvas,art,battle:newBattle('nameless_overlord'),motion:false});
-  assert.equal(layout.loading,false);const q=s.draws.find(x=>x.image===queen),hero=s.draws.find(x=>x.image===player);assert(q&&hero);
-  assert(q.height>=h*.6&&q.height<=h*.9);assert(hero.height<=h*.36);assert(q.height>hero.height*2);
+  assert.equal(layout.loading,false);const parts=queenDraws(s),q=bounds(parts),hero=s.draws.find(x=>x.image===player);assert.equal(parts.length,16);assert(hero);assert(!s.draws.some(draw=>draw.image===portrait),'the roster portrait cannot replace the body atlas');
+  assert(q.height>=h*.5&&q.height<=h*.9);assert(hero.height<=h*.36);assert(q.height>hero.height*1.5);
   for(const draw of [q,hero]){assert(draw.left>=0);assert(draw.top>=0);assert(draw.left+draw.width<=w+.001);assert(draw.top+draw.height<=h+.001);}
   assert(s.calls.filter(x=>x[0]==='beginPath').length<100,'background and effects have a bounded drawing budget');
   assert(!s.calls.some(x=>x[0]==='fillText'&&String(x[1]).includes('♛')));
@@ -29,7 +45,7 @@ test('reduced motion produces the same frame across time, including a guarded sp
  const battle=battleTurn({...newBattle('nameless_overlord'),turn:1},'guard'),effect={type:'guard',started:0,damage:0,retaliation:0,blocked:5,counterSpecial:true};
  const first=surface(),last=surface();
  renderOverlordBattle2D({canvas:first.canvas,art,battle,effect,time:.2,motion:false});renderOverlordBattle2D({canvas:last.canvas,art,battle,effect,time:200,motion:false});
- assert.deepEqual(JSON.parse(JSON.stringify(first.calls)),JSON.parse(JSON.stringify(last.calls)));assert.equal(first.draws.filter(d=>d.image===queen).length,1);
+ assert.deepEqual(JSON.parse(JSON.stringify(first.calls)),JSON.parse(JSON.stringify(last.calls)));assert.equal(queenDraws(first).length,16);
 });
 
 test('five timed cuts belong only to a resolved special counter, never a peaceful bow',()=>{
@@ -39,10 +55,11 @@ test('five timed cuts belong only to a resolved special counter, never a peacefu
  assert(active.calls.filter(x=>x[0]==='beginPath').length<180);
 });
 
-test('an absent illustration gives a loading state and renders real art as soon as it arrives',()=>{
- const s=surface(),library={images:{playerAtlas:player}},battle=newBattle('nameless_overlord');
+test('an absent joint atlas gives a loading state and renders the character as soon as it arrives',()=>{
+ const s=surface(),library={images:{playerAtlas:player,nameless_overlord:portrait}},battle=newBattle('nameless_overlord');
  const loading=renderOverlordBattle2D({canvas:s.canvas,art:library,battle,motion:false});assert.equal(loading.loading,true);assert(s.calls.some(x=>x[0]==='fillText'&&x[1].includes('準備')));
- library.images.nameless_overlord=queen;const ready=renderOverlordBattle2D({canvas:s.canvas,art:library,battle,motion:false});assert.equal(ready.loading,false);assert(s.draws.some(x=>x.image===queen));
+ assert(!s.draws.some(draw=>draw.image===portrait),'a complete portrait is not a valid joint atlas');library.images.overlordArtAtlas=queen;
+ const ready=renderOverlordBattle2D({canvas:s.canvas,art:library,battle,motion:false});assert.equal(ready.loading,false);assert.equal(queenDraws(s).length,16);
  assert.equal(renderOverlordBattle2D({canvas:{getContext:()=>null},art:library,battle}),false);
 });
 
@@ -90,7 +107,30 @@ test('a full-health special opens a flowing astral corridor and returns to the h
  assert.notDeepEqual(streakPath(charge),streakPath(flow),'the light streams actually travel through the corridor');
  assert.equal(streakPath(settled).length,0,'the corridor and speed streaks end with the shared encounter clock');
  assert(charge.calls.some(call=>call[0]==='radial'&&call[2].some(stop=>stop[1]==='#05071200')),'the full-health charge changes the backdrop itself');
- for(const s of [idle,charge,flow,settled])assert.equal(s.draws.filter(draw=>draw.image===queen).length,1,'the original queen remains one upright, unwarped painting');
+ for(const s of [idle,charge,flow,settled])assert.equal(queenDraws(s).length,16,'the same articulated body remains present through every background phase');
+});
+
+test('casting and taking a hit move separate body joints in actual fallback drawing commands',()=>{
+ const battle=newBattle('nameless_overlord'),idle=surface(),strike=surface(),special=surface(),hit=surface();
+ renderOverlordBattle2D({canvas:idle.canvas,art,battle,time:4,motion:true});
+ renderOverlordBattle2D({canvas:strike.canvas,art,battle,effect:{type:'guard',started:10,blocked:1},time:10.88,motion:true});
+ renderOverlordBattle2D({canvas:special.canvas,art,battle,effect:{type:'guard',started:10,blocked:5,counterSpecial:true},time:11.94,motion:true});
+ renderOverlordBattle2D({canvas:hit.canvas,art,battle,effect:{type:'shine',started:10,damage:4,retaliation:1},time:10.67,motion:true});
+ const jointAngle=(s,child,parent)=>rotation(partDraw(s,child))-rotation(partDraw(s,parent));
+ assert(Math.abs(jointAngle(strike,'forearmR','upperArmR')-jointAngle(idle,'forearmR','upperArmR'))>.4,'an ordinary cast bends the elbow independently of shoulder and camera');
+ for(const side of ['L','R'])assert(Math.abs(jointAngle(special,'upperArm'+side,'torso')-jointAngle(idle,'upperArm'+side,'torso'))>1,'a special raises both arms rather than sliding the complete character');
+ assert(Math.abs(jointAngle(hit,'head','torso')-jointAngle(idle,'head','torso'))>.04,'a hit recoils the torso while the head counterbalances');
+ assert(Math.abs(jointAngle(strike,'shinR','thighR')-jointAngle(idle,'shinR','thighR'))>.1,'a casting step changes the supporting knee');
+ for(const s of [idle,strike,special,hit]){assert.equal(queenDraws(s).length,16);assert(s.draws.every(draw=>draw.corners.flat().every(Number.isFinite)));}
+});
+
+test('the complete articulated body stays inside phone and landscape viewports through its actions',()=>{
+ const battle=newBattle('nameless_overlord'),ordinary={type:'guard',started:10,blocked:1},special={type:'guard',started:10,blocked:5,counterSpecial:true},hit={type:'shine',started:10,damage:4,retaliation:1};
+ const frames=[{label:'idle',time:4},...[.5,.7,.9,1.1,1.3].map(age=>({label:'attack '+age,effect:ordinary,time:10+age})),...[1.4,1.6,1.8,2,2.2,2.4,2.6,2.8].map(age=>({label:'special '+age,effect:special,time:10+age})),...[.54,.6,.67,.74,.8].map(age=>({label:'hit '+age,effect:hit,time:10+age}))];
+ for(const [w,h]of[[390,518],[844,220],[280,420]])for(const frame of frames){
+  const s=surface(w,h);renderOverlordBattle2D({canvas:s.canvas,art,battle,...frame,motion:true});const parts=queenDraws(s);assert.equal(parts.length,16);
+  for(const draw of parts)for(const [x,y]of draw.corners){assert(x>=-.001&&x<=w+.001,`${frame.label} body clipped horizontally at ${w}×${h}: ${x}`);assert(y>=-.001&&y<=h+.001,`${frame.label} body clipped vertically at ${w}×${h}: ${y}`);}
+ }
 });
 
 test('impact painting expands rings at the target and reduced motion omits the astral spectacle',()=>{

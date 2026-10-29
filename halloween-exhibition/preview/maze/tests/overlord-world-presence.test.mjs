@@ -16,28 +16,35 @@ test('queen waits at the same approachable stage instead of walking behind the e
  }
 });
 
-test('actual exploration factory lazily displays original queen artwork in eye and both raised views',async()=>{
+test('actual exploration factory lazily frames the articulated queen in eye and both raised views',async()=>{
  await withMazeWorld(async({world,THREE,requests,settle})=>{
   world.render({...open,x:32,z:48,yaw:0,time:0,motion:false,cameraDistance:'normal'});
-  let initialQueenSprites=0;world.scene.getObjectByName(OVERLORD_BOSS.name).traverse(node=>{if(node.isSprite)initialQueenSprites++;});
-  assert.equal(initialQueenSprites,0,'a distant queen does not construct an off-screen actor');
+  let initialQueenParts=0;world.scene.getObjectByName(OVERLORD_BOSS.name).traverse(node=>{if(node.isMesh&&node.material?.map)initialQueenParts++;});
+  assert.equal(initialQueenParts,0,'a distant queen does not construct an off-screen actor');
   assert(!requests.some(url=>/overlord|queen-/.test(url)),'a distant queen must not request images on scene startup');
   for(const cameraDistance of ['normal','wide','far']){
    const guide=guidePoint(OVERLORD_BOSS,open),state={...open,x:guide.x*4,z:guide.z*4,yaw:guide.yaw,time:0,motion:false,cameraDistance};
    world.render(state);await settle();world.render(state);
-   const root=world.scene.getObjectByName(OVERLORD_BOSS.name);let sprite;
-   root.traverse(node=>{if(node.isSprite)sprite=node;assert(!node.isSkinnedMesh,'exploration must not construct the rejected polygon body');});
-   assert(root.visible&&sprite?.visible&&sprite.material.map,'original image is present after its one-image load');
-   const position=sprite.getWorldPosition(new THREE.Vector3()),scale=sprite.getWorldScale(new THREE.Vector3());
-   const target=position.clone().addScaledVector(new THREE.Vector3().setFromMatrixColumn(world.camera.matrixWorld,1),scale.y*.52);
-   const projected=target.clone().project(world.camera);
-   assert(Math.abs(projected.x)<1&&Math.abs(projected.y)<1&&projected.z>-1&&projected.z<1,cameraDistance+' must frame the queen');
-   const ray=new THREE.Raycaster(world.camera.position,target.clone().sub(world.camera.position).normalize());ray.camera=world.camera;
-   const hits=ray.intersectObjects(world.scene.children,true).filter(hit=>{
-    for(let node=hit.object;node;node=node.parent)if(!node.visible)return false;
-    return hit.object===sprite||!hit.object.material?.transparent;
-   });
-   assert.equal(hits[0]?.object,sprite,cameraDistance+' cannot hide the queen behind architecture');
+   const root=world.scene.getObjectByName(OVERLORD_BOSS.name),parts=[];
+   root.traverse(node=>{if(node.isMesh&&node.name.startsWith('queen-')&&node.material?.map&&node.geometry?.type==='PlaneGeometry')parts.push(node);assert(!node.isSkinnedMesh,'exploration must not reconstruct the rejected polygon body');});
+   assert(root.visible,'the queen encounter is visible');
+   assert.equal(parts.length,16,'the real world contains sixteen separate textured body parts');
+   assert(parts.every(part=>part.visible&&part.material.map),'all body art is installed after image decode');
+   const partSet=new Set(parts),body=parts.find(part=>/torso/i.test(part.name)),head=parts.find(part=>/head/i.test(part.name));
+   assert(body&&head,'the scene exposes actual torso and head surfaces');
+   for(const surface of [body,head]){
+    surface.geometry.computeBoundingBox();const target=surface.localToWorld(surface.geometry.boundingBox.getCenter(new THREE.Vector3()));
+    const projected=target.clone().project(world.camera);
+    assert(Math.abs(projected.x)<1&&Math.abs(projected.y)<1&&projected.z>-1&&projected.z<1,cameraDistance+' must frame the '+surface.name);
+    const normal=new THREE.Vector3(0,0,1).transformDirection(surface.matrixWorld),toCamera=world.camera.position.clone().sub(target).normalize();
+    assert(normal.dot(toCamera)>.8,cameraDistance+' must face the '+surface.name+' toward its camera');
+    const ray=new THREE.Raycaster(world.camera.position,target.clone().sub(world.camera.position).normalize());ray.camera=world.camera;
+    const hits=ray.intersectObjects(world.scene.children,true).filter(hit=>{
+     for(let node=hit.object;node;node=node.parent)if(!node.visible)return false;
+     return partSet.has(hit.object)||!hit.object.material?.transparent;
+    });
+    assert(partSet.has(hits[0]?.object),cameraDistance+' cannot hide the '+surface.name+' behind architecture');
+   }
    assert.equal(world.scene.getObjectByName('cutaway-overhead-architecture').visible,cameraDistance==='normal');
    assert.equal(world.scene.getObjectByName('native-dark-pointed-vault').visible,cameraDistance==='normal');
   }

@@ -75,6 +75,9 @@ test('maze participates in shared layout preference and coherent cache release',
   expected['render-quality']='20261030-quality1';
   for(const name of ['overlord-character','overlord-boss','overlord-room','overlord-materials','overlord-battle-scene','overlord-battle-2d','overlord-battle-director'])expected[name]='20261030-art1';
   for(const name of ['overlord-character','overlord-battle-scene','overlord-battle-2d'])expected[name]='20261030-quality1';
+  for(const name of ['overlord-art-source','overlord-art-rig','overlord-character','overlord-battle-scene','overlord-battle-2d','overlord-battle-director','stage-2d'])expected[name]='20261030-body1';
+  expected['overlord-character-preview']='20261030-art1';
+  expected['battle-scene']='20261030-body1';for(const name of ['touch-camera','viewport','control-settings'])expected[name]='20261030-body1';
   for(const name of ['app.js','stage-2d.js','rpg-model.js','battle-scene.js','world.js','creator-ui.js','creator-runtime.js','encounter-model.js','ending-ui.js'])for(const match of read(name).matchAll(/(?:from\s+|import\()'((?:\.\/|\.\.\/)[^']+\.js[^']*)'/g)){const module=match[1].match(/([^/]+)\.js/)[1];if(match[1].startsWith('./vendor/'))continue;const release=name==='creator-runtime.js'&&['movement-runtime','patrol-model'].includes(module)?'20261017-review1':expected[module]||version;assert(match[1].endsWith('?v='+release),`${name}: ${match[1]}`);}
   assert(html.includes('viewport-fit=cover'));assert(html.includes('apple-touch-icon'));assert(html.includes('apple-mobile-web-app-capable'));assert(!app.includes('serviceWorker.register'));
 });

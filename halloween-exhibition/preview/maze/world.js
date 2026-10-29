@@ -1,6 +1,6 @@
 import {renderPixelRatio} from '../render-quality.js?v=20261030-quality1';
 import {createOverlordRoom} from './overlord-room.js?v=20261030-art1';
-import {createOverlordCharacter} from './overlord-character.js?v=20261030-quality1';
+import {createOverlordCharacter} from './overlord-character.js?v=20261030-body1';
 import {createExhibitResources} from './exhibit-resources.js?v=20261019-audit1';
 import {normalizeCameraDistance,mazeCameraZoom} from '../camera-distance.js?v=20261019-journey1';
 import {mazeWideCamera} from '../camera-distance.js?v=20261019-journey1';
@@ -422,7 +422,7 @@ export function createWorld({ canvas, onReady, art } = {}) {
         spirit.node.visible=encounters&&monsterAvailable(spirit.definition,{unlocked,horrorAccepted,overlordUnlocked})&&Math.hypot(x-px,z-pz)<=36;
         if(spirit.node.visible&&!spirit.boss){const source=art?.images?.[spirit.id];spirit.boss=createOverlordCharacter(THREE,{height:3.05,image:source?.image||source});spirit.node.add(spirit.boss.group);const shadow=contactShadow(0,0,1.65,1.15,spirit.node);shadow.position.y=-.004;}
         spirit.node.position.set(px,spirit.baseY,pz);spirit.node.rotation.y=0;
-        if(spirit.boss){const source=art?.images?.[spirit.id],image=source?.image||source;if(image&&image!==spirit.sourceImage){spirit.boss.setImage(image);spirit.sourceImage=image;}spirit.boss.update(dt,{time:seconds,state:'idle',motion});}
+        if(spirit.boss){const source=art?.images?.[spirit.id],image=source?.image||source;if(image&&image!==spirit.sourceImage){spirit.boss.setImage(image);spirit.sourceImage=image;}spirit.boss.update(dt,{time:seconds,state:'idle',motion,camera});}
         continue;
       }
       // Opening the scene does not wait for every enemy atlas. Install the same

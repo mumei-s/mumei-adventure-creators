@@ -11,7 +11,7 @@ export async function withMazeWorld(run,{width=390,height=700,devicePixelRatio=1
  globalThis.document={createElement(){return {width:512,height:512,getContext(){return context;}}}};
  globalThis.window={innerWidth:width,innerHeight:height,devicePixelRatio};
  globalThis.Image=class{
-  set src(value){requests.push(value);this.width=this.naturalWidth=1024;this.height=this.naturalHeight=1536;queueMicrotask(()=>this.onload?.());}
+  set src(value){requests.push(value);const size=/queen-articulated/.test(value)?[1254,1254]:value.startsWith('data:image/')?[256,256]:[1024,1536];this.width=this.naturalWidth=size[0];this.height=this.naturalHeight=size[1];queueMicrotask(()=>this.onload?.());}
   removeAttribute(){}
  };
  let source=await readFile(url,'utf8');

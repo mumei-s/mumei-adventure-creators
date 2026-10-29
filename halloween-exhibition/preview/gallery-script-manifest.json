@@ -125,8 +125,8 @@
     },
     {
       "path": "viewport.js",
-      "bytes": 2744,
-      "sha256": "c79f55dfdd9baeeecf1a3a6b766ad15c1a01a8eb5777f75dce836ba64ad23b84"
+      "bytes": 5997,
+      "sha256": "22f3c42d5183cec3c5167563a47379b43edfa2017a83cac226f7c74c5a5472c9"
     },
     {
       "path": "visitor-preferences.js",
@@ -136,8 +136,8 @@
   ],
   "output": {
     "path": "gallery-entry.js",
-    "bytes": 113084,
-    "sha256": "aa6e8c1386c0c4dedd483a3a6bf39b96f4f1e52a426971256475425278af493f"
+    "bytes": 114983,
+    "sha256": "b6a698537d0f706d473cf071fd50491ba700fb56f153fd332568b4fe38be6339"
   },
   "styles": {
     "path": "gallery-styles.css",

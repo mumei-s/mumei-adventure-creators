@@ -104,8 +104,8 @@
     },
     {
       "path": "maze/app.js",
-      "bytes": 77738,
-      "sha256": "9c9fbbffa5e157ec564f03fd2a6a7d823add0e0ad2d6a03c2547912626b27fc9"
+      "bytes": 78870,
+      "sha256": "998c8d677e1e7567a17f5c4aeadceaa61820a99254343b9e9be49f9c197a3a99"
     },
     {
       "path": "maze/battle-scene.js",
@@ -460,7 +460,7 @@
     },
     {
       "path": "maze/app.js",
-      "bytes": 50481
+      "bytes": 51232
     },
     {
       "path": "maze/stage-2d.js",
@@ -657,8 +657,8 @@
   ],
   "output": {
     "path": "maze/game-entry.js",
-    "bytes": 364886,
-    "sha256": "5e6ae6dbc52fab971ebf0163f7124c130253d48d6b30c9e5dcf6dc7e8f28a337"
+    "bytes": 365637,
+    "sha256": "34a747d7395c6229753e2313082a2a6327994466765adab67075e08c22154300"
   },
   "styleSources": [
     "./style.css?v=20261014-adventure2",

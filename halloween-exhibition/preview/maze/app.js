@@ -28,7 +28,7 @@ import {initAdventureAudio} from './adventure-audio.js?v=20261016-ios1';
 import { initDisplayMode } from '../display-mode.js?v=20261019-unified1';
 import { normalizeLighting } from './lighting-model.js?v=20261019-interior1';
 import { MAP, CELL, FEATURES, toWorld, collectionAt, move, nearby, initialState, visibleArticles } from './maze-model.js?v=20261014-adventure2';
-import { ALL_MONSTERS as MONSTERS, REQUIRED_MONSTER_IDS, nearestMonster, newBattle, battleTurn, intentFor, monsterAvailable, prankFor, commandFor, monsterPose, guidePoint } from './encounter-model.js?v=20261016-living1';
+import { ALL_MONSTERS as MONSTERS, OVERLORD_BOSS, REQUIRED_MONSTER_IDS, nearestMonster, newBattle, battleTurn, intentFor, monsterAvailable, prankFor, commandFor, monsterPose, guidePoint } from './encounter-model.js?v=20261016-living1';
 import { chooseView, movementVector, mapHeading } from './view-model.js?v=20261015-minimap1';
 import { createStageRenderer, EXIT, PALACE_FURNISHINGS } from './stage-2d.js?v=20261019-unified1';
 import {createArtLibrary,drawArtSprite} from './rpg-art.js?v=20261019-unified1';
@@ -224,6 +224,7 @@ function showExploreMenu(){
   const add=(label,action)=>{const button=element('button',label);button.onclick=action;return button;};
   const lanternButton=add(lantern?'ランタン ON':'ランタン OFF',()=>{toggleLantern();lanternButton.textContent=lantern?'ランタン ON':'ランタン OFF';lanternButton.setAttribute('aria-pressed',String(lantern));});lanternButton.setAttribute('aria-pressed',String(lantern));
   menu.append(add('地図',()=>{showMap();panel.querySelector('.close').focus();}),lanternButton,add('歩く速さ',showWalkingSpeed),add('パッド・拡大縮小',showControlSettings),add('明るさ・音・表示',()=>{showLighting();panel.querySelector('.close').focus();}));
+  const overlord=add('覇王Sに会う・対戦',meetOverlord);overlord.id='overlord-direct-open';overlord.className='primary';menu.append(overlord);
   for(const [label,action]of[['記事一覧',()=>{showCatalog();panel.querySelector('.close').focus();}],['冒険の物語',showStory],['物語の仲間',showCreators],['宮殿の住人',showResidents],['モンスターと遊ぶ',()=>{showEncounters();panel.querySelector('.close').focus();}],['地下の入口へ',()=>{panel.close();resetPosition();}]])menu.append(add(label,action));
   const compare=element('a','キャラ見比べ');compare.href='../characters/';const clearGallery=element('a','クリア名鑑');clearGallery.href='./clear-gallery/';menu.append(compare,clearGallery);
   if(rewardStore.read(runId))menu.append(add('クリア記念をもう一度見る',showEnding));
@@ -253,9 +254,9 @@ function updateHUD(){
 }
 function showEncounters(){
   title('MEET THE MONSTERS','モンスターに出会ったら。');
-  content.append(element('p','8種の架空のモンスターが、それぞれの通りを巡回しています。近づいて話しかけ、対戦するか立ち去るかを選べます。突然戦闘にはなりません。参加者や投稿作品とは無関係です。'));
+  content.append(element('p','架空のモンスターたちが、それぞれの通りを巡回しています。近づいて話しかけ、対戦するか立ち去るかを選べます。覇王Sには「今すぐ会う・対戦」から、物語を進めずに会えます。突然戦闘にはなりません。参加者や投稿作品とは無関係です。'));
   const roster=element('div',undefined,'monster-roster');
-  for(const m of readyMonsters()){const card=element('div',undefined,'monster-card');const portrait=monsterPortrait(m.id,'monster-portrait');card.append(portrait,element('strong',m.name),element('small',`${m.hint}${cleared.includes(m.id)?' · クリア済み':''}`));const guide=element('button','近くへ案内','monster-guide-button');guide.onclick=()=>{const p=guidePoint(m,state,time,motion&&!reducedMotion.matches);encounters=true;state={...state,...toWorld(p),yaw:p.yaw,pitch:0};panel.close();clearInput();updateHUD();notify(p.hint);};card.append(guide);roster.append(card);}
+  for(const m of readyMonsters()){const card=element('div',undefined,'monster-card');const portrait=monsterPortrait(m.id,'monster-portrait');card.append(portrait,element('strong',m.name),element('small',`${m.hint}${cleared.includes(m.id)?' · クリア済み':''}`));const guide=element('button','近くへ案内','monster-guide-button');guide.onclick=()=>{const p=guidePoint(m,state,time,motion&&!reducedMotion.matches);encounters=true;state={...state,...toWorld(p),yaw:p.yaw,pitch:0};panel.close();clearInput();updateHUD();notify(p.hint);};if(m.id===OVERLORD_BOSS.id){const direct=element('button','今すぐ会う・対戦','primary');direct.id='overlord-roster-direct';direct.onclick=meetOverlord;card.append(direct);}card.append(guide);roster.append(card);}
   content.append(roster,element('p','「話しかける」のあと「対戦する」を選ぶとスタート。光を放つ／守る／杖で挑むの3つを選びます。相手の予告と弱点を読み、集中をためて光を放ちましょう。いつでも逃げて探索に戻れます。'));
   const actions=element('div',undefined,'tabs');
   const enable=element('button',encounters?'モンスターを一時的に隠す':'モンスターを表示する','primary');
@@ -266,8 +267,17 @@ function showEncounters(){
 }
 function startBattle(){
   if(!encounters||contextTarget()?.kind!=='monster')return;const monster=nearestReadyMonster();if(!monster)return;
-  title('A FRIENDLY ENCOUNTER',monster.name);const portrait=monsterPortrait(monster.id,'encounter-portrait');const story=encounterStory(monster.id);content.append(portrait,element('p',story.intro),element('p',story.dialogue,'story-dialogue'),element('p',story.advice),...(monster.nativeModel?[element('p',story.throne)]:[]),element('p','対戦は自分で選ぶまで始まりません。音や時間制限はありません。'));
-  const actions=element('div',undefined,'tabs'),fight=element('button','対戦する','primary'),leave=element('button','立ち去る');fight.id='encounter-confirm';fight.onclick=()=>{disposeNativeBattle();battleCanvas=null;battle=newBattle(monster.id);battleEffect=null;renderBattle();$('battle-shine')?.focus({preventScroll:true});};leave.id='encounter-leave';leave.onclick=()=>panel.close();actions.append(fight,leave);content.append(actions);openPanel();
+  showEncounter(monster);
+}
+function meetOverlord(){showEncounter(OVERLORD_BOSS,{direct:true});}
+function showEncounter(monster,{direct=false}={}){
+  title(direct?'THRONE CHALLENGE':'A FRIENDLY ENCOUNTER',monster.name);const portrait=monsterPortrait(monster.id,'encounter-portrait');const story=encounterStory(monster.id);
+  let storyDetails;
+  if(direct){
+    content.append(portrait,element('p','物語・鍵・封印の進行は不要です。ここから覇王 S と対戦し、終わったら同じ場所から探索を続けられます。'));
+    storyDetails=element('details',undefined,'encounter-story');storyDetails.append(element('summary','物語を読む'),element('p',story.intro),element('p',story.dialogue,'story-dialogue'),element('p',story.advice),element('p',story.throne));
+  }else content.append(portrait,element('p',story.intro),element('p',story.dialogue,'story-dialogue'),element('p',story.advice),...(monster.nativeModel?[element('p',story.throne)]:[]),element('p','対戦は自分で選ぶまで始まりません。音や時間制限はありません。'));
+  const actions=element('div',undefined,'tabs'),fight=element('button','対戦する','primary'),leave=element('button','立ち去る');fight.id='encounter-confirm';fight.onclick=()=>{disposeNativeBattle();battleCanvas=null;battle=newBattle(monster.id);battleEffect=null;renderBattle();$('battle-shine')?.focus({preventScroll:true});};leave.id='encounter-leave';leave.onclick=()=>panel.close();actions.append(fight,leave);content.append(actions);if(storyDetails)content.append(storyDetails);openPanel();
 }
 function renderBattle(){
   const m=MONSTERS.find(m=>m.id===battle.id);title('LANTERN DUEL · 時間制限なし',m.name);panel.classList.add('battle-mode');

@@ -42,6 +42,6 @@ test('town retry feedback survives immediate results and module failure exposes 
  vm.runInContext(app.slice(start,end)+';globalThis.update=updateViewUI;',context);
  context.update({active:'2d',status:'loading',attempt:2});assert.equal(node('town-mode-banner').hidden,false);assert.match(node('town-mode-message').textContent,/準備 2回目.*準備中/);
  context.update({active:'2d',status:'failed',attempt:2,failureReason:'読み込み失敗',failure:{requiresReload:true}});assert.equal(node('town-mode-retry').hidden,true);assert.equal(node('town-mode-reload').hidden,false);
- context.update({active:'3d',status:'ready',attempt:3});assert.equal(node('town-mode-banner').hidden,true);assert.equal(node('viewpoint-result').hidden,false);assert.match(node('viewpoint-result').textContent,/準備 3回目 完了/);assert.equal(node('town-mode-reload').hidden,true);
+ context.update({active:'3d',status:'ready',attempt:3});assert.equal(node('town-mode-banner').hidden,true);assert.equal(node('viewpoint-result').hidden,true);assert.equal(node('viewpoint-result').textContent,'');assert.equal(node('town-mode-reload').hidden,true);
  assert.match(app,/\$\('town-mode-reload'\)\.onclick=\(\)=>void pageReload.controller.run\(\)/);
 });

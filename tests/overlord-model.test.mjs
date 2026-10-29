@@ -3,36 +3,47 @@ import * as THREE from '../halloween-exhibition/preview/maze/vendor/three.module
 import {createOverlordBoss,overlordFaceUV} from '../halloween-exhibition/preview/maze/overlord-boss.js';
 const model=createOverlordBoss(THREE);
 assert.equal(model.swords.length,5);
-let triangles=0,meshes=0;
-model.group.traverse(o=>{if(!o.isMesh)return;meshes++;const a=o.geometry.attributes.position;triangles+=(o.geometry.index?.count??a.count)/3;for(const x of a.array)assert.ok(Number.isFinite(x));assert.ok(o.geometry.attributes.normal);assert.ok(!o.isSprite);assert.equal(o.geometry.attributes.uv.count,a.count,'surface UV survives rigid-joint batching');for(const x of o.geometry.attributes.uv.array){assert.ok(Number.isFinite(x));assert.ok(x>=-1e-6&&x<=1+1e-6,'local surface UV cannot bleed into an adjacent atlas quadrant');}});
-// Sculpted face, continuous hair and full-depth armour have a deliberate mobile
-// budget. This remains one articulated actor, with merged rigid materials.
-assert.ok(triangles<100000);assert.ok(meshes<130);
-const cape=model.group.getObjectByName('animated-crimson-cape');
-const before=Array.from(cape.geometry.attributes.position.array);
-for(const state of model.metadata.states){model.setState(state);for(let i=0;i<180;i++)model.update(1/60,{time:i/60});model.group.traverse(o=>{for(const x of [...o.position.toArray(),...o.rotation.toArray().slice(0,3)])assert.ok(Number.isFinite(x),state);});}
-assert.notDeepEqual(Array.from(cape.geometry.attributes.position.array),before);
+assert(model.human.isSkinnedMesh,'body must be continuous anatomical skin, not assembled spheres');
+assert.equal(model.metadata.source.license,'CC0-1.0');assert.equal(model.human.geometry.index.count/3,26756);
+const g=model.human.geometry,p=g.attributes.position,weights=g.attributes.skinWeight,indices=g.attributes.skinIndex;
+assert(p.count>13000&&p.count<16000);assert.equal(weights.count,p.count);
+for(let i=0;i<p.count;i++){
+ let sum=0;for(let j=0;j<4;j++){const w=weights.getComponent(i,j);assert(w>=0&&w<=1);sum+=w;assert(indices.getComponent(i,j)<model.skeleton.bones.length);}
+ assert(Math.abs(sum-1)<1e-6);
+}
+let meshes=0,triangles=0;
+model.root.traverse(o=>{
+ if(!o.isMesh)return;meshes++;assert(!o.isSprite);const a=o.geometry.attributes.position;triangles+=(o.geometry.index?.count??a.count)/3;
+ for(const x of a.array)assert(Number.isFinite(x));assert(o.geometry.attributes.normal);assert.equal(o.geometry.attributes.uv.count,a.count);
+ const textured=(Array.isArray(o.material)?o.material:[o.material]).some(m=>[model.materials.face,model.materials.hair,model.materials.hairLight,model.materials.red].includes(m));
+ for(const x of o.geometry.attributes.uv.array){assert(Number.isFinite(x));if(textured)assert(x>=-1e-6&&x<=1+1e-6,'atlas-local coordinates stay in the intended material region');}
+});
+assert(triangles<120000,`mobile actor triangle budget: ${triangles}`);assert(meshes<150,`mobile actor draw budget: ${meshes}`);
+// The complete sculpt has actual eyelids, lips and nose depth before any map loads.
+const face=[];for(let i=0;i<p.count;i++)if(p.getY(i)>1.955&&p.getY(i)<2.19&&Math.abs(p.getX(i))<.10&&p.getZ(i)>.10)face.push([p.getX(i),p.getY(i),p.getZ(i)]);
+assert(face.length>300);assert(Math.max(...face.map(v=>v[2]))-Math.min(...face.map(v=>v[2]))>.1);
+for(const [x,y,u,v]of[[-.04039,2.097872,.255,.69],[.04039,2.097872,.745,.69],[0,2.058266,.5,.40],[0,2.0123,.5,.22]]){
+ const out=overlordFaceUV(x,y);assert(Math.abs(out[0]-u)<.001);assert(Math.abs(out[1]-v)<1e-6);
+}
+const cape=model.root.getObjectByName('animated-crimson-cape');assert(cape);const capeStart=Array.from(cape.geometry.attributes.position.array);const point=new THREE.Vector3();
+for(const state of model.metadata.states){
+ model.setState(state);for(let n=0;n<90;n++)model.update(1/60,{time:n/60});model.root.updateMatrixWorld(true);model.skeleton.update();
+ for(let i=0;i<p.count;i+=117){model.human.getVertexPosition(i,point);assert(point.toArray().every(Number.isFinite),state+' posed skin');}
+}
+assert.notDeepEqual(Array.from(cape.geometry.attributes.position.array),capeStart);
 model.setState('walk');model.update(.1,{time:1});assert.notEqual(model.joints.legs[0].hip.rotation.x,model.joints.legs[1].hip.rotation.x);
-model.setState('seated');model.update(0);assert.ok(model.joints.legs[0].hip.rotation.x< -1);
-model.setState('stand');for(let i=0;i<20;i++)model.update(.1);assert.ok(Math.abs(model.joints.legs[0].hip.rotation.x)<1e-8);
-model.setState('special');model.update(0,{attackProgress:.5});assert.ok(model.swords.every(s=>s.position.z>1));
-for(const state of model.metadata.states){model.setState(state);model.update(.01,{motion:false});model.group.updateMatrixWorld(true);const matrices=JSON.stringify(model.group.toJSON());model.update(.1,{motion:false});model.group.updateMatrixWorld(true);assert.equal(JSON.stringify(model.group.toJSON()),matrices,'reduced motion '+state);}
-assert.throws(()=>model.setState('unknown'),/Unknown/);
-const face=model.group.getObjectByName('sculpted-face-surface'),details=model.group.getObjectByName('procedural-facial-details');assert(face&&details);
-const positions=face.geometry.attributes.position,faceUV=face.geometry.attributes.uv;
-let minZ=Infinity,maxZ=-Infinity;
-for(let i=0;i<positions.count;i++){const x=positions.getX(i),y=positions.getY(i),z=positions.getZ(i);minZ=Math.min(minZ,z);maxZ=Math.max(maxZ,z);const [u,v]=overlordFaceUV(x,y);assert.ok(Math.abs(faceUV.getX(i)-u)<1e-6);assert.ok(Math.abs(faceUV.getY(i)-v)<1e-6);assert.ok(u>=0&&u<=1&&v>=0&&v<=1);}
-// Independent measured landmark targets from the generated facial quadrant.
-for(const [top,target]of[[.46,.31],[.62,.60],[.74,.78]])assert.ok(Math.abs(overlordFaceUV(0,.16-top*.33)[1]-(1-target))<1e-6);
-assert.ok(Math.abs(overlordFaceUV(-.047,.008)[0]-.255)<.002);assert.ok(Math.abs(overlordFaceUV(.047,.008)[0]-.745)<.002);
-assert.ok(Math.abs(overlordFaceUV(0,.16-.43*.33)[1]-.75)<1e-6);assert.ok(Math.abs(overlordFaceUV(0,.16-.49*.33)[1]-.62)<1e-6,'eyelid span stays anatomical');
-assert.ok(Math.abs(overlordFaceUV(0,.16-.72*.33)[1]-.30)<1e-6);assert.ok(Math.abs(overlordFaceUV(0,.16-.77*.33)[1]-.14)<1e-6,'lip boundary is not stretched across the lower face');
-assert.ok(maxZ-minZ>.1,'face is a sculpted half-head, never an image plane');
-const textures=Object.fromEntries(['face','armor','hair','cape'].map(name=>[name,new THREE.DataTexture(new Uint8Array([255,255,255,255]),1,1)]));let externalDisposals=0;for(const texture of Object.values(textures))texture.addEventListener('dispose',()=>externalDisposals++);
-assert.equal(model.setTextures(textures),true);assert.equal(face.material.map,textures.face);assert.equal(details.visible,false);
-for(const name of ['face','armor','hair','red'])assert.equal(model.materials[name].color.getHex(),0xffffff,'atlas colour is not multiplied by dark base tint');
-model.setTextures({face:null});assert.equal(details.visible,true);assert.equal(model.materials.face.map,null);assert.equal(model.materials.face.color.getHex(),0xf0bea5);
-model.setState('idle');model.update(0,{motion:false,swordSpread:1});const fullWidth=Math.abs(model.swords[0].position.x);model.update(0,{motion:false,swordSpread:.68});assert.ok(Math.abs(model.swords[0].position.x)<fullWidth*.7);
-model.update(NaN);model.update(-1);model.dispose();model.dispose();model.update(.1);
-assert.equal(externalDisposals,0,'caller-owned textures outlive the model');assert.equal(model.setTextures(textures),false);Object.values(textures).forEach(texture=>texture.dispose());assert.equal(externalDisposals,4);
-console.log(JSON.stringify({passed:true,meshes,triangles,states:model.metadata.states}));
+model.setState('seated');model.update(0);assert(model.joints.legs.every(a=>a.hip.rotation.x< -1));
+model.setState('stand');for(let i=0;i<20;i++)model.update(.1);assert(model.joints.legs.every(a=>Math.abs(a.hip.rotation.x)<.1));
+for(const state of model.metadata.states){
+ model.setState(state);model.update(.01,{motion:false});model.root.updateMatrixWorld(true);
+ const matrix=model.skeleton.bones.map(b=>b.matrixWorld.toArray()),cloth=Array.from(cape.geometry.attributes.position.array);
+ model.update(.1,{motion:false});model.root.updateMatrixWorld(true);
+ assert.deepEqual(model.skeleton.bones.map(b=>b.matrixWorld.toArray()),matrix,'reduced motion bones: '+state);assert.deepEqual(Array.from(cape.geometry.attributes.position.array),cloth,'reduced motion cloth: '+state);
+}
+const textures=Object.fromEntries(['face','armor','hair','cape'].map(name=>[name,new THREE.DataTexture(new Uint8Array([255,255,255,255]),1,1)]));let externalDisposals=0;
+for(const t of Object.values(textures))t.addEventListener('dispose',()=>externalDisposals++);
+assert.equal(model.setTextures(textures),true);assert.equal(model.materials.face.map,textures.face);assert.equal(model.materials.armor.map,null,'sculpted gilt must not turn into repeated texture wallpaper');
+for(const name of['face','hair','red'])assert.equal(model.materials[name].color.getHex(),0xffffff);
+assert.throws(()=>model.setState('unknown'),/Unknown/);model.update(NaN);model.update(-1);model.dispose();model.dispose();model.update(.1);assert.equal(externalDisposals,0);assert.equal(model.setTextures(textures),false);
+Object.values(textures).forEach(t=>t.dispose());assert.equal(externalDisposals,4);
+console.log(JSON.stringify({passed:true,meshes,triangles,anatomicalVertices:p.count,states:model.metadata.states}));

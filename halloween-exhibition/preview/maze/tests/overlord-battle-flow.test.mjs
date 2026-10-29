@@ -4,23 +4,26 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 import {ALL_MONSTERS,newBattle,battleTurn,commandFor,intentFor,prankFor} from '../encounter-model.js';
 import {encounterStory,STORY} from '../story-model.js';
+import {overlordActionDuration,overlordBattleDirector} from '../overlord-battle-director.js';
+import {setChangedProperty,setChangedAttribute} from '../change-only-ui.js';
 const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8');
 function harness(){
   const nodes=new Map(),record={saves:0,closed:0,draws:0};
   const element=(tag,textContent,cls)=>{
-    const n={tag,textContent,cls,children:[],clientWidth:360,clientHeight:210,classList:{add(){},remove(){},toggle(){}},style:{},dataset:{},setAttribute(){},append(...items){this.children.push(...items);},replaceChildren(...items){this.children=items;},focus(){}};
+    const n={tag,textContent,cls,children:[],clientWidth:360,clientHeight:210,classList:{add(){},remove(){},toggle(){}},style:{},dataset:{},attributes:{},setAttribute(name,value){this.attributes[name]=value;},getAttribute(name){return this.attributes[name]??null;},append(...items){this.children.push(...items);},replaceChildren(...items){this.children=items;},focus(options){record.focus={id:this.id,options};}};
     Object.defineProperty(n,'id',{get(){return this._id;},set(id){this._id=id;nodes.set(id,n);}});return n;
   };
-  const content=element('main'),panel={open:true,classList:{add(){},remove(){}},close(){record.closed++;this.open=false;}};
-  const context=vm.createContext({element,content,panel,MONSTERS:ALL_MONSTERS,STORY,encounterStory,newBattle,battleTurn,commandFor,intentFor,prankFor,
+  const content=element('main'),panel={open:true,classList:{add(){},remove(){},toggle(){}},close(){record.closed++;this.open=false;}};
+  const context=vm.createContext({element,content,panel,overlordActionDuration,overlordBattleDirector,setChangedProperty,setChangedAttribute,MONSTERS:ALL_MONSTERS,STORY,encounterStory,newBattle,battleTurn,commandFor,intentFor,prankFor,
     battle:newBattle('nameless_overlord'),battleEffect:null,battleCanvas:null,cleared:['pumpkin'],visualTime:0,motion:true,reducedMotion:{matches:false},
-    title(k,n){content.replaceChildren(element('h2',n));},save(){record.saves++;},requiredClearCount(){return 1;},
+    title(k,n,options){record.heading={kicker:k,name:n,options};content.replaceChildren(element('h2',n));},save(){record.saves++;},requiredClearCount(){return 1;},
     $:id=>nodes.get(id),drawBattleVisual(){record.draws++;},battleAnimationBusy(){return false;},battleEffectDuration(){return 1;},
     updateHUD(){},renderOverlordBattle(){},disposeOverlordBattle(){},overlordBattle:null,nativeBattle:null,nativeBattleLoading:false,nativeBattleFailed:false,disposeNativeBattle(){record.disposed=(record.disposed||0)+1;},
   });
   const render=app.slice(app.indexOf('function renderBattle(){'),app.indexOf('\nfunction battleAnimationBusy'));
   const act=app.slice(app.indexOf('function actBattle(action){'),app.indexOf('\n\n\nconst minimapChanges'));
-  vm.runInContext(render+'\n'+act,context);return{context,nodes,record};
+  const controls=app.slice(app.indexOf('function battleAnimationBusy(){'),app.indexOf('function drawBattleVisual(){'));
+  vm.runInContext(render+'\n'+controls+'\n'+act,context);return{context,nodes,record,content};
 }
 test('boss win saves once, retry resets only this duel, and exit closes the panel',()=>{
   const {context,nodes,record}=harness();
@@ -38,12 +41,54 @@ test('disabled or terminal boss input cannot advance turn or duplicate rewards',
   vm.runInContext("battle={...battle,focus:0};actBattle('shine')",context);assert.equal(context.battle.turn,0);
   vm.runInContext("battle={...battle,status:'rest'};actBattle('attack')",context);assert.equal(context.battle.turn,0);assert.equal(record.saves,0);
 });
+
+const flatten=node=>[node,...(node.children||[]).flatMap(flatten)];
+test('native duel keeps the next attack readable while its full explanation stays optional',()=>{
+  const {context,nodes,record,content}=harness();vm.runInContext('renderBattle()',context);
+  assert.equal(record.heading.name,'無名の覇王 S');assert.match(record.heading.kicker,/666/);assert.equal(record.heading.options.accessibleName,ALL_MONSTERS.find(m=>m.id==='nameless_overlord').name);
+  const tree=flatten(content),details=tree.find(n=>n.cls==='battle-details');
+  assert.equal(details.open,undefined);assert(details.children.some(n=>n.cls==='battle-intent-detail'&&n.textContent===intentFor(context.battle)));
+  assert.match(tree.find(n=>n.cls==='battle-intent').textContent,/次：五振りの紅剣を展開.*勇気 −1/);
+  assert.equal(nodes.get('battle-phase').textContent,'TURN 1 · コマンドを選ぶ');assert.equal(nodes.get('battle-skip').hidden,true);
+  vm.runInContext("battle=newBattle('pumpkin');renderBattle()",context);
+  assert.equal(record.heading.name,'カボチャの番人');assert.equal(record.heading.kicker,'LANTERN DUEL · 時間制限なし');
+  assert.equal(flatten(content).some(n=>n.id==='battle-skip'),false);
+  assert.equal(flatten(content).find(n=>n.cls==='battle-intent').textContent,intentFor(context.battle));
+});
+test('skip completes only the animation and returns a usable next decision without a second turn',()=>{
+  const {context,nodes,record}=harness();vm.runInContext("renderBattle();actBattle('guard');updateOverlordBattleHUD()",context);
+  const turn=context.battle.turn,message=context.battle.message,energy=context.battle.energy,focus=context.battle.focus;
+  assert.equal(context.battleEffect.duration,1.65);assert.equal(context.battleEffect.pendingUI,true);
+  assert.equal(nodes.get('battle-skip').hidden,false);assert.equal(nodes.get('battle-shine').disabled,true);
+  nodes.get('battle-skip').onclick();
+  assert.equal(context.battle.turn,turn);assert.equal(context.battle.message,message);assert.equal(context.battle.energy,energy);assert.equal(context.battle.focus,focus);
+  assert.equal(context.battleEffect.pendingUI,false);assert.equal(nodes.get('battle-skip').hidden,true);assert.equal(nodes.get('battle-shine').disabled,false);assert.equal(record.heading.options.animate,false);
+  assert.equal(record.saves,0);assert.equal(record.focus.id,'battle-guard');assert.equal(record.focus.options.preventScroll,true);
+  nodes.get('battle-skip').onclick();assert.equal(context.battle.turn,turn);assert.equal(record.saves,0);
+});
+test('skipping a finishing blow preserves the one earned reward and exposes retry or exit',()=>{
+  const {context,nodes,record}=harness();vm.runInContext("battle={...battle,spirit:1};renderBattle();actBattle('attack');updateOverlordBattleHUD()",context);
+  assert.equal(context.battle.status,'won');assert.equal(context.battleEffect.duration,1.4);assert.equal(record.saves,1);
+  nodes.get('battle-skip').onclick();
+  assert.equal(context.battle.turn,1);assert.equal(record.saves,1);assert.equal(record.focus.id,'battle-exit');
+  assert.equal(nodes.get('battle-phase').textContent,'VICTORY · 影をほどいた');assert(nodes.get('battle-retry'));assert(nodes.get('battle-exit'));
+});
+test('reduced motion resolves the native action promptly and phase refresh avoids same-value DOM writes',()=>{
+  const {context,nodes}=harness();let writes=0;
+  context.setChangedProperty=(node,name,value)=>{if(node[name]!==value)writes++;return setChangedProperty(node,name,value);};
+  context.setChangedAttribute=(node,name,value)=>{if(node.getAttribute(name)!==value)writes++;return setChangedAttribute(node,name,value);};
+  vm.runInContext('renderBattle()',context);const first=writes;vm.runInContext('updateOverlordBattleHUD();updateOverlordBattleHUD()',context);assert.equal(writes,first);
+  vm.runInContext("motion=false;actBattle('guard');updateOverlordBattleHUD()",context);assert.equal(context.battleEffect.duration,.12);
+  vm.runInContext('visualTime=.121;settleBattleAnimation()',context);
+  assert.equal(context.battleEffect.pendingUI,false);assert.equal(nodes.get('battle-shine').disabled,false);assert.equal(nodes.get('battle-skip').hidden,true);
+});
+
 function nativeHarness(){
   let resolve;const loading=new Promise(r=>resolve=r),record={created:0,disposed:0,draws:0,status:{textContent:'玉座の間の立体表示を準備しています…'}};
   const canvas=()=>({clientWidth:360,clientHeight:210,setAttribute(){},replaceWith(next){record.replacement=next;},getContext:()=>({fillRect(){},fillText(){}})});
   const context=vm.createContext({battle:newBattle('nameless_overlord'),battleCanvas:canvas(),battleEffect:null,nativeBattle:null,nativeBattleLoading:false,nativeBattleFailed:false,nativeBattleToken:0,rpgArt:{},renderOverlordBattle2D(){record.fallback=(record.fallback||0)+1;},visualTime:0,motion:true,reducedMotion:{matches:false},$:id=>id==='overlord-render-status'?record.status:null,element:()=>canvas(),drawBattleVisual(){record.draws++;},loadOverlordModule:()=>loading});
   const dispose=app.slice(app.indexOf('function disposeNativeBattle(){'),app.indexOf('\n',app.indexOf('function disposeNativeBattle(){')));
-  const native=app.slice(app.indexOf('function drawOverlordBattle(){'),app.indexOf('function actBattle(action){')).replace("import('./overlord-battle-scene.js?v=20261029-overlord2')",'loadOverlordModule()');
+  const native=app.slice(app.indexOf('function drawOverlordBattle(){'),app.indexOf('function actBattle(action){')).replace("import('./overlord-battle-scene.js?v=20261029-overlord3')",'loadOverlordModule()');
   vm.runInContext(dispose+'\n'+native,context);
   const finish=()=>resolve({createOverlordBattleScene(){record.created++;return {render(){},dispose(){record.disposed++;}};}});
   return{context,record,finish};

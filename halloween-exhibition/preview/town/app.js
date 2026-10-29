@@ -65,7 +65,7 @@ function updateViewUI(state){
  const banner=$('town-mode-banner'),message=$('town-mode-message'),again=$('town-mode-retry'),reload=$('town-mode-reload');
  if(banner){
   banner.hidden=!['loading','failed'].includes(state.status)||!state.attempt;
-  const result=$('viewpoint-result');result.hidden=state.status!=='ready'||!state.attempt;result.textContent=`準備 ${state.attempt}回目 完了`;
+  const result=$('viewpoint-result');result.hidden=true;result.textContent='';
   const attempt=`準備 ${state.attempt}回目：`;
   message.textContent=attempt+(state.status==='failed'?detail+' 見下ろしで続けられます。':state.status==='ready'?selectedViewpoint.label+'の準備ができました。':selectedViewpoint.label+'を準備中です。見下ろしで歩き続けられます。');
   banner.setAttribute('aria-busy',String(state.status==='loading'));

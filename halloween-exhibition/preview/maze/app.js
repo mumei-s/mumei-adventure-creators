@@ -33,7 +33,8 @@ import { chooseView, movementVector, mapHeading } from './view-model.js?v=202610
 import { createStageRenderer, EXIT, PALACE_FURNISHINGS } from './stage-2d.js?v=20261019-unified1';
 import {createArtLibrary,drawArtSprite} from './rpg-art.js?v=20261019-unified1';
 import {renderBattleScene,battleEffectDuration} from './battle-scene.js?v=20261019-unified1';
-import {renderOverlordBattle2D} from './overlord-battle-2d.js?v=20261029-overlord2';
+import {renderOverlordBattle2D} from './overlord-battle-2d.js?v=20261029-overlord3';
+import {overlordActionDuration,overlordBattleDirector} from './overlord-battle-director.js?v=20261029-overlord3';
 import {directionFromMovement,moveAroundFurniture} from './rpg-model.js?v=20261014-adventure2';
 import {protectGameSurface,bindHeldGameButton,bindDirectionPad} from './game-input.js?v=20261019-journey1';
 import {STORY,encounterStory,chapterFor} from './story-model.js?v=20261016-living1';
@@ -96,7 +97,7 @@ function save(){progress[year]={runId,reachedVault,cleared:[...cleared],hasKey:s
 function notify(text){$('toast').textContent=text;$('toast').classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').classList.remove('show'),3500);}
 function clearInput(){walking=false;keys.clear();for(const control of heldControls)control.reset();held.clear();const captured=creatorPointer;creatorPointer=null;look=null;if(captured)try{captured.canvas?.releasePointerCapture(captured.pointerId);}catch{}for(const b of document.querySelectorAll('.move-pad .active'))b.classList.remove('active');}
 function openPanel(){clearInput();if(!panel.open){returnFocus=document.activeElement;panel.showModal();}}
-function title(kicker,name){cancelArticleImage();cancelArticleImage=()=>{};transitions.enter(content);panel.scrollTop=0;content.scrollTop=0;panel.classList.remove('battle-mode','library-mode');const heading=element('h2',name);heading.id='panel-title';content.replaceChildren(element('p',kicker,'eyebrow'),heading);}
+function title(kicker,name,{animate=true,accessibleName=name}={}){cancelArticleImage();cancelArticleImage=()=>{};if(animate)transitions.enter(content);panel.scrollTop=0;content.scrollTop=0;panel.classList.remove('battle-mode','battle-native','library-mode');const heading=element('h2',name);heading.id='panel-title';if(accessibleName!==name)heading.setAttribute('aria-label',accessibleName);content.replaceChildren(element('p',kicker,'eyebrow'),heading);}
 function toggleLantern(){lantern=!lantern;$('lantern').textContent=lantern?'ランタン ON':'ランタン OFF';$('lantern').setAttribute('aria-pressed',String(lantern));saveLight();}
 function setWalkingSpeed(value){
  clearInput();walkingSpeed=normalizeWalkingSpeed(value);speedInput.value=String(walkingSpeed);speedValue.textContent=`${walkingSpeed}倍`;speedInput.setAttribute('aria-valuetext',`${walkingSpeed}倍`);
@@ -288,18 +289,18 @@ function showEncounter(monster,{direct=false}={}){
   const actions=element('div',undefined,'tabs'),fight=element('button','対戦する','primary'),leave=element('button','立ち去る');fight.id='encounter-confirm';fight.onclick=()=>{disposeNativeBattle();battleCanvas=null;battle=newBattle(monster.id);battleEffect=null;renderBattle();$('battle-shine')?.focus({preventScroll:true});};leave.id='encounter-leave';leave.onclick=()=>panel.close();actions.append(fight,leave);content.append(actions);if(storyDetails)content.append(storyDetails);openPanel();
 }
 function renderBattle(){
-  const m=MONSTERS.find(m=>m.id===battle.id);title('LANTERN DUEL · 時間制限なし',m.name);panel.classList.add('battle-mode');
-  const heading=element('div',undefined,'battle-heading');heading.append(...content.children);content.replaceChildren(heading);
+  const m=MONSTERS.find(m=>m.id===battle.id);title(m.nativeModel?'第666階層 · 時間制限なし':'LANTERN DUEL · 時間制限なし',m.nativeModel?'無名の覇王 S':m.name,{animate:!m.nativeModel||!battleCanvas,accessibleName:m.name});panel.classList.add('battle-mode');panel.classList.toggle('battle-native',!!m.nativeModel);
+  const heading=element('div',undefined,'battle-heading');heading.setAttribute('aria-label',m.name);heading.append(...content.children);content.replaceChildren(heading);
   const viewPane=element('section',undefined,'battle-view'),controls=element('section',undefined,'battle-controls'),log=element('div',undefined,'battle-log');log.setAttribute('aria-label','対戦の状況と説明');log.tabIndex=0;
   const previousCanvas=battleCanvas;
-  battleCanvas=m.nativeModel&&previousCanvas&&(nativeBattle||nativeBattleLoading||nativeBattleFailed)?previousCanvas:element('canvas',undefined,'battle-scene');battleCanvas.id='battle-scene';battleCanvas.setAttribute('aria-label',`${m.name}とのランタン対戦。操作は別枠のコマンドから。`);viewPane.append(battleCanvas);if(m.nativeModel){viewPane.classList.add('battle-view-native');const notice=element('p',nativeBattleFailed?'簡易表示で対戦中':nativeBattle?'':'玉座の間を開いています…','subtle');notice.id='overlord-render-status';notice.hidden=!!nativeBattle&&!nativeBattleFailed;notice.setAttribute('role','status');viewPane.append(notice);}
+  battleCanvas=m.nativeModel&&previousCanvas&&(nativeBattle||nativeBattleLoading||nativeBattleFailed)?previousCanvas:element('canvas',undefined,'battle-scene');battleCanvas.id='battle-scene';battleCanvas.setAttribute('aria-label',`${m.name}とのランタン対戦。操作は別枠のコマンドから。`);viewPane.append(battleCanvas);if(m.nativeModel){viewPane.classList.add('battle-view-native');const notice=element('p',nativeBattleFailed?'簡易表示で対戦中':nativeBattle?'':'玉座の間を開いています…','subtle');notice.id='overlord-render-status';notice.hidden=!!nativeBattle&&!nativeBattleFailed;notice.setAttribute('role','status');viewPane.append(notice);const phase=element('p',undefined,'battle-phase');phase.id='battle-phase';phase.setAttribute('aria-label','対戦の進行');viewPane.append(phase);const skip=element('button','演出スキップ','battle-skip');skip.id='battle-skip';skip.type='button';skip.hidden=true;skip.disabled=true;skip.setAttribute('aria-label','演出をスキップして次の選択へ。対戦結果は変わりません。');skip.onclick=skipBattleAnimation;viewPane.append(skip);}
   const stats=element('div',undefined,'duel-stats');
   for(const [name,value,max,kind]of[['勇気',battle.energy,battle.maxEnergy,'courage'],['影',battle.spirit,battle.maxSpirit,'mischief'],['灯り',battle.focus,battle.maxFocus,'focus']]){const item=element('div',undefined,'duel-stat');item.append(element('span',`${name} ${value}/${max}`));const bar=element('meter',undefined,kind);bar.min=0;bar.max=max;bar.value=value;bar.setAttribute('aria-label',name==='灯り'?'ランタンの灯り':name==='影'?'モンスターの影':name);item.append(bar);stats.append(item);}viewPane.append(stats);
-  const status=element('p',battle.message,'duel-status');status.id='battle-live-status';status.setAttribute('role','status');status.setAttribute('aria-live','polite');log.append(status);
+  const status=element('p',m.nativeModel&&battle.turn===0?'予告を見て、コマンドを選ぼう。':battle.message,'duel-status');status.id='battle-live-status';status.setAttribute('role','status');status.setAttribute('aria-live','polite');log.append(status);
   const actions=element('div',undefined,'tabs battle-commands');actions.setAttribute('aria-label','対戦コマンド');
   if(battle.status==='playing'){
-    log.append(element('p',intentFor(battle),'battle-intent'));
-    const details=element('details',undefined,'battle-details'),summary=element('summary','会話・技の説明');details.append(summary,element('p',battle.dialogue,'battle-dialogue'),element('p',STORY.fictionLabel,'subtle'));
+    const intent=prankFor(battle);log.append(element('p',m.nativeModel?`次：${intent.name} · 勇気 −${intent.damage}`:intentFor(battle),'battle-intent'));
+    const details=element('details',undefined,'battle-details'),summary=element('summary',m.nativeModel?'予告・技の説明':'会話・技の説明');details.append(summary);if(m.nativeModel)details.append(element('p',intentFor(battle),'battle-intent-detail'));details.append(element('p',battle.dialogue,'battle-dialogue'),element('p',STORY.fictionLabel,'subtle'));
     for(const [action,key,label]of[['shine','1','光を放つ'],['guard','2','守る'],['attack','3','杖を振る']]){const command=commandFor(battle,action),button=element('button',`${label} [${key}]`,action==='shine'?'primary':'');button.id='battle-'+action;button.disabled=command.disabled;button.classList.toggle('battle-command-recommended',command.recommended);button.dataset.recommended=String(command.recommended);button.setAttribute('aria-label',command.label+'。'+command.description);button.append(element('small',action==='guard'?`灯り +${command.focusAfter-battle.focus}・防御`:`影 −${command.damage} / 勇気 −${command.retaliation}`,'battle-command-preview'));button.onclick=()=>actBattle(action);actions.append(button);details.append(element('p',command.label+'：'+command.description));}log.append(details);
   }else{
     if(battle.status==='rest')log.append(element('p',battle.dialogue,'battle-dialogue'));
@@ -308,15 +309,27 @@ function renderBattle(){
     const exit=element('button','探索を続ける','battle-exit');exit.id='battle-exit';exit.onclick=()=>panel.close();actions.append(exit);
   }
   controls.append(log,actions);content.append(viewPane,controls);panel.scrollTop=0;content.scrollTop=0;
-  drawBattleVisual();
+  updateOverlordBattleHUD();drawBattleVisual();
 }
-function battleAnimationBusy(){const duration=motion&&!reducedMotion.matches?battleEffect?.duration:Math.min(battleEffect?.duration||0,battleEffectDuration(battleEffect?.type,false));return !!(battleEffect?.pendingUI&&visualTime-battleEffect.started<duration);}
+function battleAnimationBusy(){const duration=motion&&!reducedMotion.matches?battleEffect?.duration:battle?.id==='nameless_overlord'?overlordActionDuration({...battleEffect,motion:false}):Math.min(battleEffect?.duration||0,battleEffectDuration(battleEffect?.type,false));return !!(battleEffect?.pendingUI&&visualTime-battleEffect.started<duration);}
 function settleBattleAnimation(){
   if(!battleEffect?.pendingUI||battleAnimationBusy()||!panel.open||!battle)return;
   const action=battleEffect.type;battleEffect.pendingUI=false;renderBattle();const nextFocus=battle.status==='playing'?(!commandFor(battle,action).disabled?'battle-'+action:'battle-guard'):'battle-exit';$(nextFocus)?.focus({preventScroll:true});updateHUD();
 }
+function updateOverlordBattleHUD(){
+  if(battle?.id!=='nameless_overlord')return;
+  const busy=battleAnimationBusy(),phase=$('battle-phase'),skip=$('battle-skip');
+  if(phase){const cue=overlordBattleDirector({battle,effect:battleEffect,time:visualTime,motion:motion&&!reducedMotion.matches}),label=busy?cue.phaseLabel:battle.status==='won'?'影をほどいた':battle.status==='rest'?'ひと休み':'コマンドを選ぶ',turn=busy?Math.max(1,battle.turn):battle.turn+1;setChangedProperty(phase,'textContent',battle.status==='won'&&!busy?`VICTORY · ${label}`:battle.status==='rest'&&!busy?label:`TURN ${turn} · ${label}`);setChangedAttribute(phase,'data-phase',busy?cue.phase:battle.status);}
+  if(skip){setChangedProperty(skip,'hidden',!busy);setChangedProperty(skip,'disabled',!busy);}
+}
+function skipBattleAnimation(){
+  if(battle?.id!=='nameless_overlord'||!battleAnimationBusy())return;
+  battleEffect.started=visualTime-Math.max(0,battleEffect.duration||0)-.001;
+  settleBattleAnimation();drawBattleVisual();
+}
 function drawBattleVisual(){
   if(!battle||!battleCanvas)return;
+  updateOverlordBattleHUD();
   if(battle.id==='nameless_overlord'){drawOverlordBattle();return;}
   const ratio=Math.min(devicePixelRatio||1,2),width=battleCanvas.clientWidth||360,height=battleCanvas.clientHeight||210;
   if(battleCanvas.width!==Math.round(width*ratio)||battleCanvas.height!==Math.round(height*ratio)){battleCanvas.width=Math.round(width*ratio);battleCanvas.height=Math.round(height*ratio);}
@@ -325,7 +338,7 @@ function drawBattleVisual(){
 function drawOverlordBattle(){
  if(nativeBattle){try{nativeBattle.render({battle,effect:battleEffect,time:visualTime,motion:motion&&!reducedMotion.matches});}catch{failNativeBattle();}return;}
  if(!nativeBattleFailed&&!nativeBattleLoading){nativeBattleLoading=true;const token=++nativeBattleToken,target=battleCanvas;
-  import('./overlord-battle-scene.js?v=20261029-overlord2').then(({createOverlordBattleScene})=>{if(token!==nativeBattleToken||!battle||battle.id!=='nameless_overlord'||battleCanvas!==target)return;nativeBattle=createOverlordBattleScene({canvas:target,art:rpgArt,onLost:failNativeBattle});nativeBattleLoading=false;const status=$('overlord-render-status');if(status){status.textContent='';status.hidden=true;}drawBattleVisual();}).catch(()=>{if(token===nativeBattleToken)failNativeBattle();});
+  import('./overlord-battle-scene.js?v=20261029-overlord3').then(({createOverlordBattleScene})=>{if(token!==nativeBattleToken||!battle||battle.id!=='nameless_overlord'||battleCanvas!==target)return;nativeBattle=createOverlordBattleScene({canvas:target,art:rpgArt,onLost:failNativeBattle});nativeBattleLoading=false;const status=$('overlord-render-status');if(status){status.textContent='';status.hidden=true;}drawBattleVisual();}).catch(()=>{if(token===nativeBattleToken)failNativeBattle();});
  }
  if(nativeBattleLoading){const status=$('overlord-render-status');if(status){status.textContent='玉座の間を開いています…';status.hidden=false;}return;}
  if(nativeBattleFailed)renderOverlordBattle2D({canvas:battleCanvas,art:rpgArt,battle,effect:battleEffect,time:visualTime,motion:motion&&!reducedMotion.matches});
@@ -338,7 +351,7 @@ function failNativeBattle(){
 function actBattle(action){
   if(!battle||battle.status!=='playing'||battleAnimationBusy()||commandFor(battle,action).disabled)return;
   const counterSpecial=battle.id==='nameless_overlord'&&prankFor(battle).damage>=5;
-  battle=battleTurn(battle,action);if(battle.status==='won'&&!cleared.includes(battle.id)){cleared.push(battle.id);save();}battleEffect={type:action,counterSpecial,...battle.lastAction,started:visualTime,duration:battle.id==='nameless_overlord'?3.2:battleEffectDuration(action,motion&&!reducedMotion.matches),pendingUI:true};
+  battle=battleTurn(battle,action);if(battle.status==='won'&&!cleared.includes(battle.id)){cleared.push(battle.id);save();}battleEffect={type:action,counterSpecial,...battle.lastAction,started:visualTime,duration:battle.id==='nameless_overlord'?overlordActionDuration({type:action,counterSpecial,...battle.lastAction,motion:motion&&!reducedMotion.matches}):battleEffectDuration(action,motion&&!reducedMotion.matches),pendingUI:true};
   for(const id of['battle-shine','battle-guard','battle-attack'])if($(id))$(id).disabled=true;
   const status=$('battle-live-status');if(status)status.textContent=action==='shine'?'無名S note が光を集めている…':action==='guard'?'ランタンの守りを広げている…':'杖を振って、影を払っている…';if(status&&counterSpecial)status.textContent+=' 覇王の五振りが集う──無名神話・覇天絶滅斬。';
   drawBattleVisual();
@@ -386,7 +399,7 @@ function updateViewUI(){
 function updateViewFeedback(){
  const success=!!viewFeedback&&!viewPending&&!viewFailure;
  const reason=$('maze-view-status');reason.hidden=!viewFeedback||success;reason.textContent=viewFeedback;
- const result=$('viewpoint-result');result.hidden=!success;result.textContent=`準備 ${viewAttempt}回目 完了`;
+ const result=$('viewpoint-result');result.hidden=true;result.textContent='';
  reason.setAttribute('aria-busy',String(viewPending));
  $('maze-view-retry').hidden=viewPending||!viewFailure||desiredViewpoint.view!=='3d'||viewFailureCode==='module-unavailable';
  $('maze-view-reload').hidden=viewPending||viewFailureCode!=='module-unavailable';
@@ -510,7 +523,7 @@ function updateMotion(){transitions.sync();const enabled=motion&&!reducedMotion.
 }
 $('pause').onclick=()=>{if(reducedMotion.matches){notify('端末の「動きを減らす」設定を優先しています。「視点」から見下ろしも選べます。');return;}motion=!motion;updateMotion();};
 reducedMotion.addEventListener('change',()=>{if(reducedMotion.matches)motion=false;updateMotion();});updateMotion();
-panel.querySelector('.close').onclick=()=>panel.close();panel.addEventListener('close',()=>{cancelArticleImage();cancelArticleImage=()=>{};soundCheck.stop('');disposeNativeBattle();battle=null;battleCanvas=null;battleEffect=null;panel.classList.remove('battle-mode','library-mode');clearInput();returnFocus?.focus({preventScroll:true});last=0;});
+panel.querySelector('.close').onclick=()=>panel.close();panel.addEventListener('close',()=>{cancelArticleImage();cancelArticleImage=()=>{};soundCheck.stop('');disposeNativeBattle();battle=null;battleCanvas=null;battleEffect=null;panel.classList.remove('battle-mode','battle-native','library-mode');clearInput();returnFocus?.focus({preventScroll:true});last=0;});
 $('world').addEventListener('webglcontextlost',e=>{e.preventDefault();if(view==='3d'||viewPending)fallbackView(Error('context lost'),'context');else{world?.dispose();world=null;worldFailed=true;}});
 async function init(){
  const request=++bootRequest;bootAbort?.abort();const abort=new AbortController();bootAbort=abort;

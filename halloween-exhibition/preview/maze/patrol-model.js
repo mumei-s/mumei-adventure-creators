@@ -37,6 +37,7 @@ export const PATROL_ROUTES=Object.freeze({
     masked_wanderer:lane(2.65,8,3.3,8),
     werewolf:lane(14.4,12.2,15.15,12.2),
     mummy:lane(9.9,5.2,10.7,5.2),
+    nameless_overlord:lane(23,4,23,6),
   }),
   resident:Object.freeze({
     'resident-archivist':lane(7.6,1.05,8.65,1.05),
@@ -75,7 +76,7 @@ export function patrolSegmentSafe(a,b,state={},radius=.13){
   return true;
 }
 function hash(value){let n=2166136261;for(const c of String(value))n=Math.imul(n^c.charCodeAt(0),16777619)>>>0;return n/4294967296;}
-const openState={unlocked:true,horrorAccepted:true};
+const openState={unlocked:true,horrorAccepted:true,overlordUnlocked:true};
 const accessStates=[{}, {unlocked:true}, {horrorAccepted:true}, openState];
 const accessIndex=state=>(state.unlocked?1:0)+(state.horrorAccepted?2:0);
 /** Cosine velocity ramps preserve the authored maximum speed, with zero velocity

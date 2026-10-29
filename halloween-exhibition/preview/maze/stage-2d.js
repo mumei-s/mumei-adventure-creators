@@ -2,7 +2,7 @@ import {palace2DLighting} from './lighting-model.js?v=20261019-interior1';
 import {drawFurnishingFallback} from './palace-furnishing-art.js?v=20261019-interior1';
 import {cameraDistanceScale,normalizeCameraZoom} from '../camera-distance.js?v=20261019-journey1';
 import {monsterSprite} from './monster-motion.js?v=20261019-unified1';
-import { MAP, CELL, FEATURES, blocked, nearby } from './maze-model.js?v=20261014-adventure2';
+import { MAP, CELL, FEATURES, OVERLORD_ROOM, blocked, nearby } from './maze-model.js?v=20261014-adventure2';
 import { ALL_MONSTERS as MONSTERS, nearestMonster, monsterAvailable, monsterPose } from './encounter-model.js?v=20261016-living1';
 
 // Canvas illustration authored for this room; no participant art or remote assets.
@@ -36,7 +36,7 @@ function book(c,x,y,angle=0,color='#6b4165'){c.save();c.translate(x,y);c.rotate(
 function shelf(c,x,y,width=100){rounded(c,x-width/2,y-19,width,38,4,'#281c2b','#986649');for(let i=0;i<Math.floor(width/11)-1;i++){const xx=x-width/2+9+i*11,h=19+(i*7%10);rounded(c,xx,y+12-h,8,h,1,['#72525e','#49676d','#8b684b','#5a527a'][i%4]);c.fillStyle='#c1a16a';c.fillRect(xx,y+6,8,2);}c.fillStyle='#ad7952';c.fillRect(x-width/2,y+14,width,4);}
 function web(c,x,y,flip=1){c.save();c.translate(x,y);c.scale(flip,1);c.strokeStyle='#b2a5ce55';c.lineWidth=1;for(let i=0;i<=4;i++){const a=i*Math.PI/8;c.beginPath();c.moveTo(0,0);c.lineTo(Math.cos(a)*60,Math.sin(a)*60);c.stroke();}for(const r of[18,37,57]){c.beginPath();c.arc(0,0,r,0,Math.PI/2);c.stroke();}c.restore();}
 function floorTile(c,x,z){const px=x*TILE,py=z*TILE,zone=x<5?0:x>11?2:z<6?3:1;const colors=[['#49384e','#352b42'],['#454154','#343243'],['#4b464c','#353b47'],['#383c50','#2b3045']][zone];c.fillStyle=colors[(x+z)%2];c.fillRect(px-36,py-36,72,72);c.strokeStyle='#b09b8460';c.lineWidth=1;c.strokeRect(px-33,py-33,66,66);c.strokeStyle='#aca1ad13';for(let i=0;i<5;i++){c.beginPath();c.moveTo(px-27,py-24+i*12);c.lineTo(px+26,py-22+i*12);c.stroke();}path(c,p=>{p.moveTo(px,py-23);p.lineTo(px+23,py);p.lineTo(px,py+23);p.lineTo(px-23,py);p.closePath();},null,'#c7b38b19');for(const s of[-1,1])ellipse(c,px+s*28,py-28,1.6,1.6,'#bba17855');}
-export function palaceRoom(x,z){return x<4.5?'veil':x>11.5?'lantern':z<6.5?'archive':'gallery';}
+export function palaceRoom(x,z){return x>18?'overlord':x<4.5?'veil':x>11.5?'lantern':z<6.5?'archive':'gallery';}
 // Furniture lives on perimeter plinths. The two existing solid shelves keep their original feet.
 export const PALACE_FURNISHINGS=Object.freeze([
  ['bookcase',6.2,11.2,149],['bookcase',9.8,11.2,149],
@@ -82,14 +82,14 @@ function medallion(c,x,y,r,color='#dfbb74'){
  c.restore();
 }
 function createArchitecture(makeCanvas,art){
- const cv=makeCanvas(17*TILE,17*TILE),c=cv.getContext('2d'),objects=[],lights=[];cv.width=17*TILE;cv.height=17*TILE;
+ const cols=Math.max(...MAP.map(r=>r.length)),rows=MAP.length,cv=makeCanvas(cols*TILE,rows*TILE),c=cv.getContext('2d'),objects=[],lights=[];cv.width=cols*TILE;cv.height=rows*TILE;
  const walk=(x,z)=>MAP[z]?.[x]==='.';
  const exterior=c.createLinearGradient(0,0,cv.width,cv.height);exterior.addColorStop(0,'#202538');exterior.addColorStop(1,'#2c2532');c.fillStyle=exterior;c.fillRect(0,0,cv.width,cv.height);
  // The silhouette is a genuine palace plan; opaque wall mass makes routes legible.
- for(let z=0;z<17;z++)for(let x=0;x<17;x++)if(walk(x,z)){
+ for(let z=0;z<rows;z++)for(let x=0;x<cols;x++)if(walk(x,z)){
    const px=x*TILE,py=z*TILE,room=palaceRoom(x,z),surface=room==='veil'?'marble':room==='lantern'||z>13?'limestone':'parquet';
    c.save();c.beginPath();c.rect(px-36,py-36,72,72);c.clip();
-   if(art?.images[surface])c.drawImage(art.images[surface],(x%3)*170,(z%3)*170,170,170,px-36,py-36,72,72);else floorTile(c,x,z);
+   if(room==='overlord'){c.fillStyle=(x+z)%2?'#211b2a':'#14111c';c.fillRect(px-36,py-36,72,72);c.strokeStyle='#b68d4530';c.strokeRect(px-35,py-35,70,70);}else if(art?.images[surface])c.drawImage(art.images[surface],(x%3)*170,(z%3)*170,170,170,px-36,py-36,72,72);else floorTile(c,x,z);
    c.fillStyle=room==='archive'?'#40305512':room==='gallery'?'#26374f12':'#26374f08';c.fillRect(px-36,py-36,72,72);
    c.restore();
    for(const [dx,dz,kind]of[[0,-1,'north'],[0,1,'south'],[-1,0,'side'],[1,0,'side']])if(!walk(x+dx,z+dz)){
@@ -104,6 +104,9 @@ function createArchitecture(makeCanvas,art){
  carpet(c,art,14*TILE,10*TILE,119,247,'#82501e33');
  carpet(c,art,2*TILE,10*TILE,119,242,'#632d5a66');
  carpet(c,art,8*TILE,6*TILE,100,164);c.restore();
+ carpet(c,art,23*TILE,6.7*TILE,96,590,'#9b003c99');
+ objects.push({kind:'overlord-throne',x:23*TILE,y:2.4*TILE,depth:2.4*TILE});
+ for(const z of[4,7,10])for(const x of[19.6,26.4]){objects.push({kind:'overlord-column',x:x*TILE,y:z*TILE,depth:z*TILE});lights.push({x:x*TILE,y:z*TILE-25,r:135,color:'#ff824c',power:.5,kind:'candle'});}
  for(const o of PALACE_FURNISHINGS)objects.push({...o});
  // Four architectural windows supply cool light, independently from the hand lantern.
  for(const [x,z]of[[5,9],[11,9],[8,.8],[14,7.7]]){
@@ -124,6 +127,7 @@ function drawWall(c,o,player,art){
  const {x,y,orientation,room}=o,cool=room==='veil',warm=room==='gallery'||room==='archive';c.save();
  if(orientation==='south'&&Math.abs(player.x-x)<55&&player.y<y&&y-player.y<58)c.globalAlpha=.34;
  const body=warm?'#a79a81':cool?'#685d78':'#9baca5',wood=warm?'#493022':cool?'#38293e':'#365054',trim=warm?'#b38a55':'#a9a083';
+ if(room==='overlord'){rounded(c,x-37,y-94,74,101,2,'#21192a','#b78b47');c.fillStyle='#640f2b';c.fillRect(x-27,y-88,54,65);c.restore();return;}
  if(art.images.wallPanel){
    const im=art.images.wallPanel,side=orientation==='side',height=side?114:orientation==='north'?85:29,xx=x-(side?13:37),yy=y-(side?76:height),ww=side?26:74;
    if(side)c.drawImage(im,0,0,im.width*.24,im.height,xx,yy,ww,height);
@@ -209,10 +213,14 @@ export function createStageRenderer({makeCanvas=(w,h)=>{const c=document.createE
       {kind:'player',x:player.x,y:player.y,depth:player.y}];
     for(const actor of creatorActors)if(actor.sprite)objects.push({kind:'creator',x:actor.x*TILE,y:actor.z*TILE,depth:actor.z*TILE,actor});
     if(!state.horrorAccepted)objects.push({kind:'door',x:FEATURES.horrorDoor.x*TILE,y:FEATURES.horrorDoor.z*TILE,depth:FEATURES.horrorDoor.z*TILE});
-    if(encounters)for(const m of MONSTERS)if(monsterAvailable(m,state)&&(!m.optional||art.images[m.id])){const p=monsterPose(m,time,motion,state);objects.push({kind:'enemy',id:m.id,pose:p,x:p.x*TILE,y:p.z*TILE,depth:p.z*TILE,cleared:cleared.includes(m.id)});}
+    if(encounters)for(const m of MONSTERS)if(monsterAvailable(m,state)&&(!m.optional||m.nativeModel||art.images[m.id])){const p=monsterPose(m,time,motion,state);objects.push({kind:'enemy',id:m.id,pose:p,x:p.x*TILE,y:p.z*TILE,depth:p.z*TILE,cleared:cleared.includes(m.id)});}
+    objects.push({kind:'overlord-door',x:18*TILE,y:3*TILE,depth:3*TILE});
     for(const o of depthOrder(objects)){
       if(Math.abs((o.x-cam.x)*cam.scale)>w*.7+150||Math.abs((o.y-cam.y)*cam.scale)>h*.7+180)continue;
-      if(o.kind==='wall'){drawWall(c,o,player,art);const side=o.orientation==='side',hh=side?115:o.orientation==='north'?92:40;addHit({x:o.x-(side?13:37),y:o.y-(side?76:o.orientation==='north'?89:33),w:side?26:74,h:hh});}
+      if(o.kind==='overlord-throne')drawOverlordThrone(c,o.x,o.y);
+      else if(o.kind==='overlord-column'){rounded(c,o.x-15,o.y-123,30,127,3,'#292334','#b88c48');for(const yy of[-120,-105,-8])rounded(c,o.x-22,o.y+yy,44,6,1,'#c09650');drawPumpkin(c,o.x,o.y-12,.6);}
+      else if(o.kind==='overlord-door'){if(!state.overlordUnlocked){rounded(c,o.x-12,o.y-85,24,105,4,'#330d25','#dfb05c');glow(c,o.x,o.y-35,70,'#f12e5540');}plaque(c,'第666階層への封印扉',o.x,o.y-105,165);}
+      else if(o.kind==='wall'){drawWall(c,o,player,art);const side=o.orientation==='side',hh=side?115:o.orientation==='north'?92:40;addHit({x:o.x-(side?13:37),y:o.y-(side?76:o.orientation==='north'?89:33),w:side?26:74,h:hh});}
       else if(o.kind==='web')web(c,o.x,o.y,o.flip);
       else if(o.kind==='sconce'){const flicker=motion?Math.sin(time*3.4+o.x)*.025+Math.sin(time*5.3+o.y)*.012:0;ellipse(c,o.x,o.y-2,15,5,'#19111f99');rounded(c,o.x-9,o.y-31,18,28,3,'#654a36','#c9a363');candle(c,o.x,o.y-12,.73+flicker);}
       else if(o.kind==='creator'){const a=o.actor,step=motion&&a.walking?Math.sin(a.phase||0):0,idle=motion&&!a.walking?Math.sin(time*1.2+o.x)*.45:0,hh=a.heightPx||86,yy=o.y-Math.abs(step)*1.2+idle;ellipse(c,o.x,o.y+3,Math.min(24,hh*.23),7,'#10101a77');drawArtSprite(c,a.sprite,o.x,yy,hh);addHit(spriteBox(a.sprite,o.x,yy,hh),a.interactive===false?null:a.id,a.x*CELL,a.z*CELL);
@@ -233,6 +241,7 @@ export function createStageRenderer({makeCanvas=(w,h)=>{const c=document.createE
       }else if(o.kind==='enemy'){
         if(o.cleared){ellipse(c,o.x,o.y,15,8,'#d2ac65');text(c,'✓',o.x,o.y,16,'#362b35');continue;}
         const idle=motion?(o.id==='franken'?Math.abs(Math.sin(time*.65))*1.1:o.id==='zombie'?Math.abs(Math.sin(time*.8))*.8:o.id==='vampire'?Math.sin(time*.9)*1.3:Math.sin(time*1.9+o.x)*2.2):0;ellipse(c,o.x,o.y+3,25,8,'#07091488');
+        if(o.id==='nameless_overlord'){drawOverlordFallback(c,o.x,o.y,time,motion);continue;}
         const monster=monsterSprite(art,o.id,{time,motion,patrol:o.pose});
         if(!drawArtSprite(c,monster,o.x,o.y+(monster?.animated?0:idle),o.id==='bat'?92:100,{flip:monster?.flip,rotation:motion&&['zombie','franken'].includes(o.id)?Math.sin(time*(o.id==='franken'?.65:.8))*.018:0,scaleX:1+(motion?Math.sin(time*1.4)*.018:0),scaleY:1+(motion?Math.cos(time*1.4)*.012:0)}))drawCreature(c,o.id,o.x,o.y-25,1.1);
       }else{
@@ -263,7 +272,25 @@ export function createStageRenderer({makeCanvas=(w,h)=>{const c=document.createE
     if(lantern)glow(c,px+18*cam.scale,py-36*cam.scale,85*cam.scale,'#e8ad5933');
     if(motion&&lantern)for(let i=0;i<7;i++){const angle=i*2.39996+time*.035,rad=30+(i*31%130),x=px+Math.cos(angle)*rad*cam.scale,y=py-20+Math.sin(angle*.8)*rad*cam.scale+Math.sin(time*.4+i)*4;ellipse(c,x,y,.8+(i%2)*.5,.8+(i%2)*.5,'#d8cb9e45');}
     // The DOM context action is the single interaction prompt in both modes.
-    if(!state.hasKey)drawWayfinder(c,FEATURES.key,'鍵の間','#efd09b',cam,w,h);else if(!state.unlocked)drawWayfinder(c,FEATURES.gate,'書庫の扉','#efd09b',cam,w,h);else drawWayfinder(c,FEATURES.vault,'浮遊書庫','#a9d1b3',cam,w,h);
+    if(!state.hasKey)drawWayfinder(c,FEATURES.key,'鍵の間','#efd09b',cam,w,h);else if(!state.unlocked)drawWayfinder(c,FEATURES.gate,'書庫の扉','#efd09b',cam,w,h);else drawWayfinder(c,FEATURES.overlordDoor,'第666階層','#a9d1b3',cam,w,h);
     c.strokeStyle='#c6a77255';c.lineWidth=1;c.strokeRect(5.5,5.5,w-11,h-11);return true;
   }};
+}
+
+// Explicitly illustrated Canvas fallback, not presented as a 3D model.
+function drawOverlordThrone(c,x,y){
+ c.save();c.translate(x,y);glow(c,0,-155,100,'#e92b5550');ellipse(c,0,-155,39,39,'#c22d49');
+ rounded(c,-66,-7,132,29,3,'#18121e','#ad8547');rounded(c,-48,-106,96,117,3,'#18111d','#d2aa58');rounded(c,-34,-91,68,80,3,'#760f2d','#c79c50');
+ for(const sx of[-1,1]){rounded(c,sx*48-7,-132,14,152,2,'#211821','#cca351');path(c,p=>{p.moveTo(sx*48-11,-132);p.lineTo(sx*48,-153);p.lineTo(sx*48+11,-132);},'#d5ad5a');rounded(c,sx*43-10,-23,20,34,2,'#2a2026','#d3a250');}
+ rounded(c,-36,-24,72,19,3,'#a32140','#d4aa58');plaque(c,'第666階層 · 無名の覇王城',0,-210,235);c.restore();
+}
+function drawOverlordFallback(c,x,y,time,motion){
+ c.save();c.translate(x,y);const sway=motion?Math.sin(time*1.4)*2:0;
+ path(c,p=>{p.moveTo(-18,-68);p.lineTo(-38+sway,0);p.lineTo(34+sway,0);p.lineTo(18,-68);},'#8c1535','#d1a453',2);
+ for(const side of[-1,1]){rounded(c,side*10-6,-29,12,29,3,'#161722','#b9924c');}
+ rounded(c,-17,-63,34,40,8,'#15151f','#d6ac53');ellipse(c,0,-77,19,23,'#dcb567');ellipse(c,0,-78,12,16,'#f3c4a1');
+ path(c,p=>{p.moveTo(-19,-77);p.lineTo(-22,-43);p.lineTo(-12,-54);p.lineTo(-10,-87);p.quadraticCurveTo(8,-101,18,-68);p.lineTo(24,-44);p.lineTo(20,-85);p.quadraticCurveTo(0,-113,-19,-77);},'#e4bf77','#a67f42');
+ path(c,p=>{p.moveTo(-18,-98);p.lineTo(-20,-113);p.lineTo(-9,-106);p.lineTo(0,-119);p.lineTo(9,-106);p.lineTo(20,-113);p.lineTo(18,-98);p.closePath();},'#d7aa50','#f8db8e');
+ for(let i=0;i<5;i++){const a=-Math.PI+i*Math.PI/4,xx=Math.cos(a)*49,yy=-45+Math.sin(a)*48+(motion?Math.sin(time+i)*3:0);c.save();c.translate(xx,yy);c.rotate(a+Math.PI/2);glow(c,0,0,24,'#ff244c35');path(c,p=>{p.moveTo(-3,-20);p.lineTo(0,-32);p.lineTo(3,-20);p.lineTo(3,14);p.lineTo(-3,14);p.closePath();},'#ed6687','#ffb2a4');rounded(c,-10,11,20,4,1,'#d4a349');rounded(c,-2,15,4,12,1,'#d4a349');c.restore();}
+ plaque(c,'無名の覇王 S · 2D代替表示',0,27,205);c.restore();
 }

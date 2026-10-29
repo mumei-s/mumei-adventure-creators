@@ -1,3 +1,5 @@
+import {createOverlordRoom} from './overlord-room.js?v=20261028-overlord1';
+import {createOverlordBoss} from './overlord-boss.js?v=20261028-overlord1';
 import {createExhibitResources} from './exhibit-resources.js?v=20261019-audit1';
 import {normalizeCameraDistance,mazeCameraZoom} from '../camera-distance.js?v=20261019-journey1';
 import {mazeWideCamera} from '../camera-distance.js?v=20261019-journey1';
@@ -228,9 +230,11 @@ export function createWorld({ canvas, onReady, art } = {}) {
     for(let i=0;i<=5;i++){const a=i*Math.PI/10;const geo=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(xx,6.8,zz),new THREE.Vector3(xx+Math.cos(a)*2.2,6.8-Math.sin(a)*2.2,zz)]);resources.add(geo);scene.add(new THREE.Line(geo,webMaterial));}
     for(const r of [.7,1.4,2.1]){const pts=[];for(let i=0;i<=10;i++){const a=i*Math.PI/20;pts.push(new THREE.Vector3(xx+Math.cos(a)*r,6.8-Math.sin(a)*r,zz));}const geo=new THREE.BufferGeometry().setFromPoints(pts);resources.add(geo);scene.add(new THREE.Line(geo,webMaterial));}
   }
+  const overlordRoom=createOverlordRoom(THREE);scene.add(overlordRoom.group);sign('666','ハロウィーンの封印扉',71.8,2.7,12,-Math.PI/2,2.6);sign('無名の覇王城','第666階層 · HALLOWEEN',92,4.4,4,0,5);
   const spirits=[],residentTextures=new THREE.TextureLoader();let disposed=false;
   for(const [index,definition]of MONSTERS.entries()){
     const root=new THREE.Group();root.position.set(definition.x*CELL,0,definition.z*CELL);root.name=definition.name;scene.add(root);const g=new THREE.Group();root.add(g);
+    if(definition.nativeModel){const boss=createOverlordBoss(THREE);root.add(boss.group);sign('無名の覇王 S','第666階層 · 無名の覇王城',0,3.05,0,0,2.6,root);spirits.push({node:root,boss,index,id:definition.id,definition,baseY:0});continue;}
     const body=mat(definition.color,{emissive:definition.color,emissiveIntensity:.28,roughness:.8});
     const eye=mat('#28192c',{roughness:1});
     const glint=mat('#fff0b6',{emissive:'#ffeaa0',emissiveIntensity:.7});
@@ -376,7 +380,8 @@ export function createWorld({ canvas, onReady, art } = {}) {
   for(const [x,z,w]of[[32,51,17],[32,16,13],[8,43,8]]){const sheet=mesh(new THREE.PlaneGeometry(w,3),mistMat,x,.3,z);sheet.rotation.x=-Math.PI/2;sheet.userData.ignorePicking=true;mistSheets.push({node:sheet,x,z});}
   let last=0,gateY=0,ambientTime=0;
   function resize(){const w=canvas.clientWidth||window.innerWidth,h=canvas.clientHeight||window.innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;heldLantern.position.x=Math.min(.3,.3*camera.aspect);camera.updateProjectionMatrix();}
-  function render({x=0,z=0,yaw=0,pitch=0,time=0,motion=true,unlocked=false,horrorAccepted=false,hasKey=false,collection=[],brightness=1,lantern=true,encounters=true,cleared=[],cameraDistance='normal',cameraZoom=1,facing='down',walking=false,walkPhase=0,creatorActors=[]}={}){
+  function render({x=0,z=0,yaw=0,pitch=0,time=0,motion=true,unlocked=false,horrorAccepted=false,overlordUnlocked=false,hasKey=false,collection=[],brightness=1,lantern=true,encounters=true,cleared=[],cameraDistance='normal',cameraZoom=1,facing='down',walking=false,walkPhase=0,creatorActors=[]}={}){
+    overlordRoom.update({unlocked:overlordUnlocked,time:time*.001,motion});
     const seconds=time*.001;const dt=Math.min(.05,Math.max(0,seconds-last));last=seconds;if(motion)ambientTime+=dt;const t=ambientTime;
     const distance=normalizeCameraDistance(cameraDistance),zoom=mazeCameraZoom(distance,cameraZoom);if(camera.zoom!==zoom){camera.zoom=zoom;camera.updateProjectionMatrix();}
     const wide=distance!=='normal',hero=wide?playerPose(art,facing,walking,walkPhase):null;updateCreatorActors(hero?[...creatorActors,{id:'wide-view-owner',x:x/CELL,z:z/CELL,sprite:hero,heightWorld:2.38,interactive:false}]:creatorActors);
@@ -384,15 +389,16 @@ export function createWorld({ canvas, onReady, art } = {}) {
     for(const [i,m]of mistSheets.entries()){m.node.position.x=m.x+(motion?Math.sin(t*.12+i)*.8:0);m.node.position.z=m.z+(motion?Math.cos(t*.09+i)*.5:0);}
     const level=Math.max(.75,Math.min(1.75,Number.isFinite(Number(brightness))?Number(brightness):1));
     renderer.toneMappingExposure=NIGHT_LIGHTING.exposure*level;
-    if(wide){const pose=mazeWideCamera({x,z,yaw,unlocked,horrorAccepted},blocked,distance);camera.position.set(pose.x,pose.y,pose.z);camera.lookAt(x-Math.sin(yaw)*1.2,1.1,z-Math.cos(yaw)*1.2);}else{camera.position.set(x,1.65,z);camera.rotation.set(pitch,yaw,0,'YXZ');}
+    if(wide){const pose=mazeWideCamera({x,z,yaw,unlocked,horrorAccepted,overlordUnlocked},blocked,distance);camera.position.set(pose.x,pose.y,pose.z);camera.lookAt(x-Math.sin(yaw)*1.2,1.1,z-Math.cos(yaw)*1.2);}else{camera.position.set(x,1.65,z);camera.rotation.set(pitch,yaw,0,'YXZ');}
     heldLantern.visible=!!lantern&&!wide;headlamp.visible=!!lantern;nearLamp.visible=!!lantern;
     for(const spirit of spirits){
+      if(spirit.boss){const pose=monsterPose(spirit.definition,seconds,motion,{unlocked,horrorAccepted,overlordUnlocked});spirit.node.visible=encounters&&monsterAvailable(spirit.definition,{unlocked,horrorAccepted,overlordUnlocked});spirit.node.position.set(pose.x*CELL,0,pose.z*CELL);spirit.node.rotation.y=pose.yaw;spirit.boss.update(dt,{time:seconds,state:cleared.includes(spirit.id)?'idle':pose.walking?'walk':'idle',speed:pose.speed*CELL,motion});continue;}
       // Opening the scene does not wait for every enemy atlas. Install the same
       // original art as it arrives, retaining the existing model until then.
       const source=art?.images?.[spirit.id],image=source?.image||source;
       if(image&&image!==spirit.sourceImage){const texture=new THREE.Texture(image);texture.needsUpdate=true;const previous=spirit.sprite.material.map;if(spirit.installMonsterTexture(texture)){spirit.sourceImage=image;if(previous){previous.dispose();resources.delete(previous);}}}
-      spirit.node.visible=encounters&&(!spirit.definition.optional||spirit.node.userData.originalArt)&&!cleared.includes(spirit.id)&&monsterAvailable(spirit.definition,{unlocked,horrorAccepted});
-      const pose=monsterPose(spirit.definition,seconds,motion,{unlocked,horrorAccepted});
+      spirit.node.visible=encounters&&(!spirit.definition.optional||spirit.node.userData.originalArt)&&!cleared.includes(spirit.id)&&monsterAvailable(spirit.definition,{unlocked,horrorAccepted,overlordUnlocked});
+      const pose=monsterPose(spirit.definition,seconds,motion,{unlocked,horrorAccepted,overlordUnlocked});
       const sampled=art&&monsterSprite(art,spirit.id,{time:seconds,motion,patrol:pose});
       if(sampled&&spirit.sprite.material.map){const uv=spriteTextureUV(sampled),texture=spirit.sprite.material.map,height=(spirit.id==='franken'?2.35:spirit.id==='bat'?1.85:2.15)*uv.heightScale;texture.repeat.set(uv.repeatX,uv.repeatY);texture.offset.set(uv.offsetX,uv.offsetY);spirit.sprite.center.set(uv.centerX,uv.centerY);spirit.sprite.scale.set(height*uv.aspect,height,1);}
       spirit.node.position.x=pose.x*CELL;spirit.node.position.z=pose.z*CELL;
@@ -405,7 +411,7 @@ export function createWorld({ canvas, onReady, art } = {}) {
     const collected=Array.isArray(collection)?collection.some(v=>typeof v==='string'?v.includes('key'):v?.id?.includes('key')):!!collection?.key;
     key.visible=!collected&&!hasKey&&!unlocked;horrorDoor.position.y=horrorAccepted?5.5:0;keyLight.visible=key.visible;
     if(motion){heldLantern.rotation.z=Math.sin(t*.8)*.015;
-      for(const spirit of spirits){spirit.node.position.y=spirit.baseY+(['zombie','franken'].includes(spirit.id)?Math.abs(Math.sin(t*.4))*.025:Math.sin(t*(spirit.id==='vampire'?.35:.55)+spirit.index)*.055);}
+      for(const spirit of spirits){if(spirit.boss)continue;spirit.node.position.y=spirit.baseY+(['zombie','franken'].includes(spirit.id)?Math.abs(Math.sin(t*.4))*.025:Math.sin(t*(spirit.id==='vampire'?.35:.55)+spirit.index)*.055);}
       key.rotation.y=t*.8;key.position.y=1.57+Math.sin(t*1.4)*.09;mobile.rotation.y=t*.085;mobile.rotation.z=Math.sin(t*.28)*.1;dust.rotation.y=Math.sin(t*.025)*.006;
       folios.rotation.y=Math.sin(t*.085)*.085;
       for(const f of folioMotion){f.node.position.y=f.baseY+Math.sin(t*.65+f.phase)*.12;f.node.rotation.x=f.baseX+Math.sin(t*.48+f.phase)*.035;f.node.rotation.z=f.baseZ+Math.cos(t*.4+f.phase)*.04;}
@@ -413,7 +419,7 @@ export function createWorld({ canvas, onReady, art } = {}) {
     }
     renderer.render(scene,camera);
   }
-  function dispose(){if(disposed)return;disposed=true;exhibitResources.dispose();for(const r of resources)r.dispose?.();renderer.dispose();}
+  function dispose(){if(disposed)return;disposed=true;exhibitResources.dispose();overlordRoom.dispose();for(const spirit of spirits)spirit.boss?.dispose();for(const r of resources)r.dispose?.();renderer.dispose();}
   // Instance static masonry by material. Thousands of architectural details
   // become a handful of GPU draw calls while movable objects remain separate.
   // Batch repeated pieces inside moving parents, retaining their local transforms.

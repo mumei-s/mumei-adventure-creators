@@ -19,6 +19,6 @@ export function moveAroundFurniture(state,dx,dz){let next=move(state,dx,0);if(in
 // In tall viewports this shows adjoining architecture rather than unbounded void.
 export function clampSceneCamera(target,width,height,scale,originY){
   const fit=(value,low,high)=>low>high?(low+high)/2:Math.max(low,Math.min(high,value));
-  const margin=90,left=.5*72,right=15.5*72,top=.5*72,bottom=14.5*72;
+  const margin=90,left=.5*72,right=(target.x>16*72?27.5:15.5)*72,top=.5*72,bottom=14.5*72;
   return {x:fit(target.x,left-margin+width/(2*scale),right+margin-width/(2*scale)),y:fit(target.y,top-margin+originY/scale,bottom+margin-(height-originY)/scale)};
 }

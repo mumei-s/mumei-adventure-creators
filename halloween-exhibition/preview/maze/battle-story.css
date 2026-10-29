@@ -84,3 +84,8 @@
  #panel.battle-mode .battle-commands button small{margin-top:2px;font-size:9px}
  #panel.battle-mode .battle-commands:has(#battle-retry){grid-template-columns:1fr;grid-template-rows:repeat(2,44px)}
 }
+
+
+/* Native rendering status overlays the scene, preserving the two-row stat layout. */
+#panel.battle-mode .battle-view-native{position:relative}
+#panel.battle-mode #overlord-render-status{position:absolute;top:8px;left:8px;right:8px;z-index:1;width:fit-content;max-width:calc(100% - 16px);box-sizing:border-box;margin:0;padding:4px 8px;border-radius:6px;background:#100b19d9;color:#eadbbb;font-size:10px;line-height:1.4;pointer-events:none}

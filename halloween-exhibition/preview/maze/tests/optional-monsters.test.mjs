@@ -28,9 +28,9 @@ test('two new encounters extend the optional roster without replacing any existi
   assert.deepEqual(MONSTERS.map(monster=>monster.id),originalSix);
   assert.deepEqual(REQUIRED_MONSTER_IDS,originalSix);
   assert.deepEqual(STORY_MONSTER_IDS,originalSix);
-  assert.deepEqual(ALL_MONSTERS.map(monster=>monster.id),[...originalEight,...addedIds]);
+  assert.deepEqual(ALL_MONSTERS.map(monster=>monster.id),[...originalEight,...addedIds,'nameless_overlord']);
   assert.deepEqual(OPTIONAL_MONSTERS.map(monster=>monster.id),['witch','masked_wanderer',...addedIds]);
-  assert.equal(ALL_MONSTERS.length,10);assert.equal(OPTIONAL_MONSTERS.length,4);
+  assert.equal(ALL_MONSTERS.length,11);assert.equal(OPTIONAL_MONSTERS.length,4);
   for(const monster of added){assert.equal(monster.optional,true);assert(Object.isFrozen(monster));assert(!monster.creatorId);}
   // Snapshot only the original eight definitions, stories, rules and lanes. New
   // content cannot silently change those previously approved encounters.

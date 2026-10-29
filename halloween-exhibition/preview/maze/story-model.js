@@ -74,7 +74,22 @@ const residents = {
 };
 for(const value of Object.values(residents)){Object.freeze(value.reactions);Object.freeze(value);}
 export const RESIDENT_STORIES = Object.freeze(residents);
-export function encounterStory(id){return RESIDENT_STORIES[id]||OPTIONAL_STORIES[id]||null;}
+// An optional fictional trial, separate from the six-lantern story and creator biographies.
+export const OVERLORD_STORY=Object.freeze({
+  title:'無名から頂点へ至る覇王 S',role:'無名の覇王城の主',location:'第666階層「無名の覇王城」',
+  temperament:'名もなき一歩を忘れず、挑む者に敬意を払う。',
+  intro:'ハロウィーンの夜、北の書庫の封印扉に、消えないカボチャの灯がともる。その先は第666階層「無名の覇王城」。長い金髪に王冠、黒と金の鎧、赤いマントをまとった覇王 S が、五振りの紅い魔剣とともに玉座で待っていた。',
+  gate:'今宵は物語の境がほどけるハロウィーン。地下の奥に現れた「666」の封印扉は、通常の階層を飛び越え、隠された異界・第666階層「無名の覇王城」へつながる。書庫に集まった物語の影が、王冠を包んでしまった。ランタンを掲げ、封印扉の先へ。',
+  throne:'「トリック・オア・トリート。奪うのは菓子ではなく、迷いの影だけだ。」覇王 S は玉座から立ち上がる。紅剣がゆっくりと浮かび、挑戦者のための道をあけた。',
+  departure:'封印扉は帰り道を閉ざさない。挑戦はいつでもやめられます。書庫へ戻って、作者に挨拶したり、展示された物語を読んだりできます。',
+  epilogue:'王冠の影がほどけ、玉座の間にカボチャの灯が戻った。「今度は、書庫に集まった者たちの物語を訪ねよう。」覇王は剣を下げ、帰りの扉を示す。今夜のごほうびは、新しい物語に出会うこと。',
+  dialogue:'無名であった日々も、頂点へ至る道の一部。あなたの灯で、私の影を越えてみせよ。',
+  advice:'任意のボス戦です。称号の Lv.999・HP999999 は設定上の表記で、この試練は影30・勇気8で遊べます。「無名神話・覇天絶滅斬」の予告は必ず「守る」。一礼の隙には「杖」。六つのしるしや作者との出会いの達成には不要です。',
+  keepsake:'無名の王冠のしるし',memory:'頂点への一歩は、名もない灯から始まる。',
+  victory:'見事だ。その灯は、誰かの名を奪わずとも輝ける。無名の王冠のしるしを、あなたに託そう。',
+  reactions:Object.freeze({guard:'大技を見切ったか。守る意志もまた、王の力。',shine:'その灯は、かつての私が手放さなかった光だ。',attack:'よい一歩だ。影だけを払い、前へ進め。',weakness:'紅剣の間を抜いたか。見事な眼だ。',rest:'膝をついても、歩みは終わらぬ。休んで再び挑むがよい。鍵もしるしも、そのままだ。'}),
+});
+export function encounterStory(id){return id==='nameless_overlord'?OVERLORD_STORY:RESIDENT_STORIES[id]||OPTIONAL_STORIES[id]||null;}
 export function chapterFor({cleared=[],unlocked=false,hasKey=false,reachedVault=false}={}){
   const recovered=STORY_MONSTER_IDS.filter(id=>cleared.includes(id));const count=recovered.length;
   const common={recovered,total:6,count,progress:`六つの灯 ${count}/6`,fictionLabel:STORY.fictionLabel};

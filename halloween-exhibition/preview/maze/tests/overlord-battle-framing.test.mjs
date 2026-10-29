@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as THREE from '../vendor/three.module.js';
-import {overlordAimYaw,overlordSpecialArc,fitOverlordBattleCamera} from '../overlord-battle-scene.js';
+import {overlordAimYaw,overlordSpecialArc,fitOverlordBattleCamera,overlordRisePlacement} from '../overlord-battle-scene.js';
 const source={x:1.3,y:0,z:-.5},target={x:-1.7,y:.02,z:1.5};
 
 test('the boss local forward axis and launched swords aim at the actual hero in both approach positions',()=>{
@@ -103,4 +103,41 @@ test('small battle canvases retain real facial pixels without exceeding the draw
  const {overlordBattlePixelRatio}=await import('../overlord-battle-scene.js');
  assert.equal(overlordBattlePixelRatio(350,300,3),2);assert.equal(overlordBattlePixelRatio(1100,440,3),1.5);
  for(const [w,h]of[[350,300],[600,1100],[1100,740],[2400,1400]])for(const dpr of[1,1.5,2,3]){const ratio=overlordBattlePixelRatio(w,h,dpr);assert(ratio<=dpr);assert(w*h*ratio*ratio<=1200000.0001);}
+});
+
+test('queen rises off the actual cushion and walks through the carved foot space without crossing the floor',async()=>{
+ const {createOverlordBoss}=await import('../overlord-boss.js');
+ const {createOverlordThrone}=await import('../overlord-room.js');
+ const {overlordBattleDirector}=await import('../overlord-battle-director.js');
+ const {overlordBattleLayout}=await import('../overlord-battle-scene.js');
+ const actor=createOverlordBoss(THREE),throne=createOverlordThrone(THREE),anchor=new THREE.Vector3(.45,0,-1.55);
+ try{
+  // State boundaries share a placement; dropped frames cannot teleport the
+  // actor back into the chair when the controller changes stand to walk.
+  assert.deepEqual(overlordRisePlacement({state:'seated',walkProgress:0}),overlordRisePlacement({state:'stand',stateElapsed:0,walkProgress:0}));
+  const standing=overlordRisePlacement({state:'stand',stateElapsed:actor.metadata.standDuration,walkProgress:0}),walking=overlordRisePlacement({state:'walk',walkProgress:0});
+  assert(Math.abs(standing.advance-walking.advance)<1e-12);assert(Math.abs(standing.lift-walking.lift)<1e-12);
+  assert.equal(overlordRisePlacement({state:'idle',walkProgress:1}).advance,0);
+  throne.group.position.copy(anchor);throne.group.updateMatrixWorld(true);
+  const throneTriangles=[];
+  throne.group.traverse(object=>{if(!object.isMesh)return;const p=object.geometry.attributes.position,index=object.geometry.index,count=index?.count??p.count;
+   for(let i=0;i<count;i+=3){const points=[0,1,2].map(j=>new THREE.Vector3().fromBufferAttribute(p,index?index.getX(i+j):i+j).applyMatrix4(object.matrixWorld));throneTriangles.push(new THREE.Triangle(...points));}
+  });
+  const geometry=actor.human.geometry,skin=geometry.attributes.skinIndex,weights=geometry.attributes.skinWeight;
+  const legs=Array.from({length:geometry.attributes.position.count},(_,i)=>{let slot=0;for(let j=1;j<4;j++)if(weights.getComponent(i,j)>weights.getComponent(i,slot))slot=j;return /(knee|ankle)$/.test(actor.skeleton.bones[skin.getComponent(i,slot)].name);});
+  const point=new THREE.Vector3(),footBounds=new THREE.Box3();
+  for(const aspect of[.6,1.2])for(let step=0;step<=52;step++){
+   const time=step*.05,beat=overlordBattleDirector({battle:{status:'active',spirit:30,maxSpirit:30},time,motion:true,start:0}),layout=overlordBattleLayout(aspect);
+   const rise=overlordRisePlacement({state:beat.state,stateElapsed:beat.stateElapsed,walkProgress:beat.walkProgress,standDuration:actor.metadata.standDuration});
+   actor.group.position.set(layout.boss.x,layout.boss.y+rise.lift,anchor.z+(layout.boss.z-anchor.z)*beat.walkProgress+rise.advance);
+   actor.group.rotation.set(0,overlordAimYaw(actor.group.position,layout.hero),0);
+   actor.update(0,{time,motion:true,state:beat.state,stateElapsed:beat.stateElapsed,attackProgress:beat.attackProgress,speed:.85});
+   actor.group.updateMatrixWorld(true);actor.skeleton.update();footBounds.makeEmpty();
+   for(let i=0;i<geometry.attributes.position.count;i++){
+    actor.human.getVertexPosition(i,point).applyMatrix4(actor.human.matrixWorld);assert(point.y>=0,`body crossed floor at ${time.toFixed(2)}s / aspect ${aspect}`);
+    if(legs[i]&&point.y<throne.seatSurfaceHeight)footBounds.expandByPoint(point);
+   }
+   for(const triangle of throneTriangles)assert.equal(footBounds.intersectsTriangle(triangle),false,`actual throne crossed lower-leg space at ${time.toFixed(2)}s / aspect ${aspect}`);
+  }
+ }finally{actor.dispose();throne.dispose();}
 });

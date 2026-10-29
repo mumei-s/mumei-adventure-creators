@@ -83,14 +83,29 @@ test('reduced motion resolves the native action promptly and phase refresh avoid
   assert.equal(context.battleEffect.pendingUI,false);assert.equal(nodes.get('battle-shine').disabled,false);assert.equal(nodes.get('battle-skip').hidden,true);
 });
 
+test('slow frames finish a battle on elapsed time while movement stays bounded and hidden time pauses',()=>{
+  const {context,nodes}=harness(),steps=[];
+  Object.assign(context,{frame:0,last:1000,time:0,gameReady:true,document:{hidden:false},requestAnimationFrame(){return 1;},step(dt){steps.push(dt);},updateCreatorFrames(){},renderExploration(){}});
+  const tick=app.slice(app.indexOf('function tick(now){'),app.indexOf('function resizeGameViewport(){'));
+  vm.runInContext(tick+"\nrenderBattle();actBattle('guard')",context);
+  // Even a two-frame-per-second device must unlock this 1.65-second action.
+  for(const now of[1500,2000,2500,3000])vm.runInContext(`tick(${now})`,context);
+  assert.equal(context.visualTime,2);assert.equal(context.battle.turn,1);
+  assert.equal(context.battleEffect.pendingUI,false);assert.equal(nodes.get('battle-shine').disabled,false);
+  context.document.hidden=true;vm.runInContext('tick(10000)',context);assert.equal(context.visualTime,2);
+  context.document.hidden=false;vm.runInContext('frame=0;start();tick(20000)',context);assert.equal(context.visualTime,2);
+  context.panel.open=false;vm.runInContext('tick(20500)',context);
+  assert.deepEqual(steps,[.05]);assert.equal(context.visualTime,2.5);
+});
+
 function nativeHarness(){
   let resolve;const loading=new Promise(r=>resolve=r),record={created:0,disposed:0,draws:0,status:{textContent:'玉座の間の立体表示を準備しています…'}};
   const canvas=()=>({clientWidth:360,clientHeight:210,setAttribute(){},replaceWith(next){record.replacement=next;},getContext:()=>({fillRect(){},fillText(){}})});
   const context=vm.createContext({battle:newBattle('nameless_overlord'),battleCanvas:canvas(),battleEffect:null,nativeBattle:null,nativeBattleLoading:false,nativeBattleFailed:false,nativeBattleToken:0,rpgArt:{},renderOverlordBattle2D(){record.fallback=(record.fallback||0)+1;},visualTime:0,motion:true,reducedMotion:{matches:false},$:id=>id==='overlord-render-status'?record.status:null,element:()=>canvas(),drawBattleVisual(){record.draws++;},loadOverlordModule:()=>loading});
   const dispose=app.slice(app.indexOf('function disposeNativeBattle(){'),app.indexOf('\n',app.indexOf('function disposeNativeBattle(){')));
-  const native=app.slice(app.indexOf('function drawOverlordBattle(){'),app.indexOf('function actBattle(action){')).replace("import('./overlord-battle-scene.js?v=20261029-overlord3')",'loadOverlordModule()');
+  const native=app.slice(app.indexOf('function drawOverlordBattle(){'),app.indexOf('function actBattle(action){')).replace(/import\('\.\/overlord-battle-scene\.js\?v=[^']+'\)/,'loadOverlordModule()');
   vm.runInContext(dispose+'\n'+native,context);
-  const finish=()=>resolve({createOverlordBattleScene(){record.created++;return {render(){},dispose(){record.disposed++;}};}});
+  const finish=ready=>resolve({createOverlordBattleScene(){record.created++;return {ready,render(){},dispose(){record.disposed++;}};}});
   return{context,record,finish};
 }
 test('late native viewport load cannot reopen a canceled duel or overwrite a newer canvas',async()=>{
@@ -122,4 +137,20 @@ test('actual context target discovers native boss without an atlas and resolves 
   context.cleared=[OVERLORD_BOSS.id];assert.equal(vm.runInContext('contextTarget()',context),null);
   context.state={...open,overlordUnlocked:false,...toWorld({x:17,z:3})};
   const seal=vm.runInContext('contextTarget()',context);assert.equal(seal.kind,'feature');assert.equal(seal.id,'overlord-door');
+});
+
+
+test('required queen maps delay activation and a canceled loading scene is disposed after decode',async()=>{
+ let release;const maps=new Promise(resolve=>release=resolve),{context,record,finish}=nativeHarness();
+ vm.runInContext('drawOverlordBattle()',context);finish(maps);await new Promise(r=>setImmediate(r));
+ assert.equal(record.created,1);assert.equal(context.nativeBattle,null);assert.equal(context.nativeBattleLoading,true);
+ vm.runInContext('disposeNativeBattle();battle=null',context);release(true);await new Promise(r=>setImmediate(r));
+ assert.equal(record.disposed,1);assert.equal(context.nativeBattle,null);assert.equal(record.draws,0);
+});
+
+test('failed required queen maps dispose the candidate and retain a playable fallback',async()=>{
+ const {context,record,finish}=nativeHarness();vm.runInContext('drawOverlordBattle()',context);finish(Promise.resolve(false));
+ await new Promise(r=>setImmediate(r));
+ assert.equal(record.created,1);assert.equal(record.disposed,1);assert.equal(context.nativeBattle,null);assert.equal(context.nativeBattleFailed,true);
+ assert.equal(context.battle.status,'playing');assert.equal(context.battle.turn,0);
 });

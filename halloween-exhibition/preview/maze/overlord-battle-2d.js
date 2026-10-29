@@ -1,5 +1,6 @@
 import {drawArtSprite,playerPose} from './rpg-art.js?v=20261019-unified1';
-import {overlordBattleDirector} from './overlord-battle-director.js?v=20261029-overlord3';
+import {overlordBattleDirector} from './overlord-battle-director.js?v=20261029-overlord5';
+import {getOverlordIdentityImage} from './overlord-materials.js?v=20261029-overlord5';
 
 const clamp=value=>Math.max(0,Math.min(1,value));
 const smooth=value=>{const t=clamp(value);return t*t*(3-2*t);};
@@ -11,6 +12,52 @@ function radial(c,x,y,r,inner,outer='#120b1900'){const g=c.createRadialGradient(
 function pointedArch(c,x,y,width,height,fill,stroke,lineWidth=1){const left=x-width/2,right=x+width/2,top=y-height;c.beginPath();c.moveTo(left,y);c.lineTo(left,top+height*.39);c.bezierCurveTo(left,top+height*.2,x-width*.18,top+height*.05,x,top);c.bezierCurveTo(x+width*.18,top+height*.05,right,top+height*.2,right,top+height*.39);c.lineTo(right,y);c.closePath();if(fill){c.fillStyle=fill;c.fill();}if(stroke){c.strokeStyle=stroke;c.lineWidth=lineWidth;c.stroke();}}
 function diamond(c,x,y,rx,ry,color){polygon(c,[[x,y-ry],[x+rx,y],[x,y+ry],[x-rx,y]],color);}
 
+
+// Registration uses the original reference pixels. A single similarity
+// transform aligns the two eyes and preserves the source face proportions;
+// only the curved outer boundary is feathered into the existing costume art.
+export const OVERLORD_2D_FACE_REGISTRATION=Object.freeze({
+ sourceEyes:Object.freeze([[584,501],[664,467]].map(Object.freeze)),
+ targetEyes:Object.freeze([[562,314],[607,297]].map(Object.freeze)),
+ sourceNose:Object.freeze([655,530]),sourceMouth:Object.freeze([657,562]),sourceChin:Object.freeze([660,605]),
+});
+function identityCanvas(width,height){
+ if(typeof globalThis.OffscreenCanvas==='function')return new globalThis.OffscreenCanvas(width,height);
+ const canvas=globalThis.document?.createElement?.('canvas');if(canvas){canvas.width=width;canvas.height=height;}return canvas||null;
+}
+/** Compose once, retaining the original queen's size, alpha, hair and outfit. */
+export function composeOverlordIdentityArt(image,reference,{createCanvas=identityCanvas}={}){
+ const width=image?.naturalWidth||image?.width,height=image?.naturalHeight||image?.height;
+ if(!width||!height||!reference)return image;
+ const output=createCanvas(width,height),c=output?.getContext?.('2d');if(!c)return image;
+ const sx=width/1024,sy=height/1536,patchWidth=112,patchHeight=130,left=529,top=252;
+ const patch=createCanvas(patchWidth,patchHeight),mask=createCanvas(patchWidth,patchHeight),pc=patch?.getContext?.('2d'),mc=mask?.getContext?.('2d');if(!pc||!mc)return image;
+ const [[x0,y0],[x1,y1]]=OVERLORD_2D_FACE_REGISTRATION.sourceEyes,[[u0,v0],[u1,v1]]=OVERLORD_2D_FACE_REGISTRATION.targetEyes;
+ const dx=x1-x0,dy=y1-y0,du=u1-u0,dv=v1-v0,den=dx*dx+dy*dy,a=(du*dx+dv*dy)/den,b=(dv*dx-du*dy)/den;
+ pc.imageSmoothingEnabled=true;pc.imageSmoothingQuality='high';
+ pc.setTransform(a,b,-b,a,u0-a*x0+b*y0-left,v0-b*x0-a*y0-top);pc.drawImage(reference,0,0);pc.setTransform(1,0,0,1,0,0);
+ // Keep the forehead inside the existing parting and exclude the source hand.
+ // The lower curve follows the registered original jaw, down into the neck.
+ mc.translate(-left,-top);mc.beginPath();mc.moveTo(553,276);
+ mc.bezierCurveTo(562,264,578,259,591,261);mc.bezierCurveTo(608,266,620,285,624,302);
+ mc.bezierCurveTo(631,321,627,342,617,358);mc.bezierCurveTo(612,366,608,372,601,373);
+ mc.bezierCurveTo(581,372,557,356,546,341);mc.bezierCurveTo(536,326,538,300,553,276);mc.closePath();mc.fillStyle='#fff';mc.fill();
+ pc.globalCompositeOperation='destination-in';pc.filter='blur(1.25px)';pc.drawImage(mask,0,0);pc.filter='none';pc.globalCompositeOperation='source-over';
+ c.drawImage(image,0,0);c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';c.globalCompositeOperation='source-atop';c.drawImage(patch,left*sx,top*sy,patchWidth*sx,patchHeight*sy);c.globalCompositeOperation='source-over';
+ return output;
+}
+const identityQueens=new WeakMap();let identityReference=null,identityPending=false,identityRetryAt=0;
+function identityQueenSprite(sprite){
+ const image=sprite?.image||sprite;
+ if(!image||!image.width||!image.height||!(typeof globalThis.OffscreenCanvas==='function'||globalThis.document?.createElement))return sprite;
+ let registered=identityQueens.get(image);
+ if(!registered&&identityReference){registered=composeOverlordIdentityArt(image,identityReference);identityQueens.set(image,registered);}
+ if(!identityReference&&!identityPending&&Date.now()>=identityRetryAt){
+  identityPending=true;void getOverlordIdentityImage().then(reference=>{identityReference=reference;}).catch(()=>{identityRetryAt=Date.now()+30000;}).finally(()=>{identityPending=false;});
+ }
+ if(!registered)return null;
+ return sprite?.image?{...sprite,image:registered}:registered;
+}
 
 function mix(a,b,t){
  const parse=value=>value.startsWith('#')?[...[1,3,5].map(i=>parseInt(value.slice(i,i+2),16)),value.length>7?parseInt(value.slice(7,9),16)/255:1]:(value.match(/[\d.]+/g)||[]).map(Number),aa=parse(a),bb=parse(b),p=clamp(t);
@@ -112,7 +159,7 @@ export function renderOverlordBattle2D({canvas,art,battle,effect,time=0,motion=t
  const c=canvas?.getContext?.('2d');if(!c)return false;
  const w=Math.max(1,canvas.clientWidth||canvas.width||360),h=Math.max(1,canvas.clientHeight||canvas.height||220),ratio=Math.min(1.5,Math.max(1,Number(globalThis.devicePixelRatio)||1));
  if(canvas.width!==Math.round(w*ratio)||canvas.height!==Math.round(h*ratio)){canvas.width=Math.round(w*ratio);canvas.height=Math.round(h*ratio);}c.setTransform(ratio,0,0,ratio,0,0);c.clearRect(0,0,w,h);
- const queen=art?.images?.nameless_overlord,layout=overlordBattle2DLayout(w,h,queen),q=layout.queen,p=layout.hero;
+ const queen=identityQueenSprite(art?.images?.nameless_overlord),layout=overlordBattle2DLayout(w,h,queen),q=layout.queen,p=layout.hero;
  const cue=overlordBattleDirector({battle,effect,time,motion}),clock=motion&&Number.isFinite(time)?Math.max(0,time):0,env=cue.environment;
  c.save();c.translate(cue.camera.shakeX*w,cue.camera.shakeY*h);hall(c,layout,env,clock);atmosphere(c,layout,cue,clock,motion);
  ellipse(c,q.x,q.y+h*.005,q.width*.3,Math.max(2,h*.014),'#050510a6');ellipse(c,q.x,q.y+h*.002,q.width*.45,Math.max(3,h*.022),null,mix('#d8af6e66','#f5d99c88',env.gold),.8);

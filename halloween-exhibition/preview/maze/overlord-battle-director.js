@@ -80,13 +80,16 @@ export function overlordBattleDirector({battle={},effect=null,time=0,motion=true
  let phase=intro<1?'entrance':battle.status==='rest'&&(!live||age>=counterEnd)?'rest':finished&&(!motion||age>=.85)?'victory':!live?'idle':
   counterActive?(age<chargeEnd?'charge':impact>.01?'impact':'cast'):age<line.chargeEnd?'player-charge':age<hit+.23?'player-impact':'settle';
  let state=intro<1?(entrance<.28?'seated':entrance<1.55?'stand':'walk'):phase==='victory'?'defeat':counterActive?(special?'special':'attack'):playerImpact>0&&(effect.damage||0)>0?'hit':'idle';
+ // Pose transitions use the same clock as the visible effects and commands.
+ // A low frame rate may drop intermediate poses, but cannot stretch them out.
+ const stateElapsed=state==='stand'?Math.max(0,entrance-.28):state==='walk'?Math.max(0,entrance-1.55):state==='defeat'?(!motion||!effect?1.4:Math.max(0,age-.85)):state==='hit'?Math.max(0,age-hit+.05):counterActive?Math.max(0,age-counterStart):0;
  const hitRecoil=live&&kind!=='guard'?bell(age,hit-.02,hit+.30):0;
  const heroAdvance=live&&kind==='attack'?bell(age,.10,.72)*.46:0;
  const heroRecoil=impact*(kind==='guard'?.035:.11);
  const ambience=motion&&intro===1&&!finished;
  const shake=motion&&impact>0?impact*(special?.018:.009)*(kind==='guard'?.65:1):0;
  return {
-  duration:effect?duration:0,intro,age,walkProgress,state,phase,phaseLabel:phaseName(phase,kind,special),
+  duration:effect?duration:0,intro,age,walkProgress,state,stateElapsed,phase,phaseLabel:phaseName(phase,kind,special),
   attackProgress:counterActive?counterProgress:progress(age,line.chargeEnd,hit+.23),
   environment:{rage,gold,portal,emberSpeed:motion?.16+rage*.55+counterCharge*.25:0,wind:motion?.14+rage*.46+counterCharge*.35:0,floorGlow:clamp(rage*.6+counterCharge*.6+impact*.22)*(1-gold),pulse},
   camera:{push:motion?playerCharge*.025+counterCharge*(special?.065:.025)+(ambience?Math.sin(clock*.23)*.004:0):0,

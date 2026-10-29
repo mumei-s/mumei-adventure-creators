@@ -1,6 +1,7 @@
 import {decodeOverlordHuman,HUMAN_JOINTS,HUMAN_BODY_SOURCE} from './overlord-human-data.js';
-import {createOverlordHairCloth} from './overlord-hair-cloth.js';
-import {createOverlordRegalia} from './overlord-regalia.js';
+import {decodeOverlordQueen} from './overlord-queen-data.js';
+import {createOverlordHairCloth} from './overlord-hair-cloth.js?v=20261029-overlord5';
+import {createOverlordRegalia} from './overlord-regalia.js?v=20261029-overlord5';
 
 /** Facial projection on an anatomical surface, in world-rest coordinates.
  * The landmarks are the actual eyelids, nose tip, lips and chin of the mesh. */
@@ -12,10 +13,10 @@ export function overlordFaceUV(x,y){
  return [clamp(.5+x/.1648),clamp(1-top)];
 }
 
-/** One continuous anatomical, skinned character. +Z forward, feet at Y=0.
- * Native mesh assets are CC0; caller-owned surface textures are never disposed. */
+/** One continuous reconstructed, skinned character. +Z forward, feet at Y=0.
+ * Each source carries its own provenance; caller-owned maps are never disposed. */
 export function createOverlordBoss(THREE,options={}){
- const root=new THREE.Group();root.name='Overlord S — anatomical skinned queen';
+ const root=new THREE.Group();root.name='Overlord S — reconstructed skinned queen';
  const body=new THREE.Group();root.add(body);
  const mats={
   armor:new THREE.MeshStandardMaterial({color:0x15121a,metalness:.72,roughness:.31}),
@@ -26,6 +27,7 @@ export function createOverlordBoss(THREE,options={}){
   face:new THREE.MeshStandardMaterial({color:0xe6bba5,roughness:.63}),
   hair:new THREE.MeshStandardMaterial({color:0xb78a44,metalness:.08,roughness:.38}),
   hairLight:new THREE.MeshStandardMaterial({color:0xe1bc70,metalness:.08,roughness:.35}),
+  hairFiber:new THREE.MeshStandardMaterial({color:0xffffff,metalness:.04,roughness:.42,vertexColors:true}),
   red:new THREE.MeshStandardMaterial({color:0x520d20,roughness:.77,side:THREE.DoubleSide}),
   gem:new THREE.MeshStandardMaterial({color:0x9b0322,metalness:.28,roughness:.2,emissive:0x51000b,emissiveIntensity:.35}),
   glow:new THREE.MeshStandardMaterial({color:0xff5571,emissive:0xff173f,emissiveIntensity:1.6,roughness:.3}),
@@ -35,23 +37,23 @@ export function createOverlordBoss(THREE,options={}){
   dark:new THREE.MeshStandardMaterial({color:0x160f14,roughness:.36}),
   glint:new THREE.MeshBasicMaterial({color:0xffffff})
  };
- const data=decodeOverlordHuman(),owned=new Set(),bones=[],boneIndex=new Map(),rest=new Map();
+ const generated=options.legacy!==true||!!options.modelData,data=options.modelData||(generated?decodeOverlordQueen():decodeOverlordHuman()),J=generated?data.joints:HUMAN_JOINTS,owned=new Set(),bones=[],boneIndex=new Map(),rest=new Map();
  function bone(parent,name,position){
   const b=new THREE.Bone();b.name=name;const p=new THREE.Vector3(...position);
   b.position.copy(p);if(parent?.isBone)b.position.sub(rest.get(parent));
   parent.add(b);rest.set(b,p);boneIndex.set(b,bones.length);bones.push(b);return b;
  }
- const pelvis=bone(body,'pelvis',HUMAN_JOINTS.pelvis),torso=bone(pelvis,'spine',HUMAN_JOINTS.spine1),neck=bone(torso,'neck',HUMAN_JOINTS.neck),head=bone(neck,'head',HUMAN_JOINTS.head);
+ const pelvis=bone(body,'pelvis',J.pelvis),torso=bone(pelvis,'spine',J.spine1),neck=bone(torso,'neck',J.neck),head=bone(neck,'head',J.head);
  const arms=[],legs=[];
  for(const side of[-1,1]){
   const word=side===1?'left':'right';
-  const shoulder=bone(torso,word+'-shoulder',HUMAN_JOINTS[word+'Shoulder']);
-  const elbow=bone(shoulder,word+'-elbow',HUMAN_JOINTS[word+'Elbow']);
-  const hand=bone(elbow,word+'-hand',HUMAN_JOINTS[word+'Hand']);
+  const shoulder=bone(torso,word+'-shoulder',J[word+'Shoulder']);
+  const elbow=bone(shoulder,word+'-elbow',J[word+'Elbow']);
+  const hand=bone(elbow,word+'-hand',J[word+'Hand']);
   arms.push({shoulder,elbow,hand,side});
-  const hip=bone(pelvis,word+'-hip',HUMAN_JOINTS[word+'Hip']);
-  const knee=bone(hip,word+'-knee',HUMAN_JOINTS[word+'Knee']);
-  const ankle=bone(knee,word+'-ankle',HUMAN_JOINTS[word+'Ankle']);
+  const hip=bone(pelvis,word+'-hip',J[word+'Hip']);
+  const knee=bone(hip,word+'-knee',J[word+'Knee']);
+  const ankle=bone(knee,word+'-ankle',J[word+'Ankle']);
   legs.push({hip,knee,ankle,side});
  }
  const V=(x,y,z)=>new THREE.Vector3(x,y,z),point=new THREE.Vector3(),edge=new THREE.Vector3(),delta=new THREE.Vector3();
@@ -73,11 +75,11 @@ export function createOverlordBoss(THREE,options={}){
   if(y>1.94){const t=THREE.MathUtils.smoothstep(y,1.94,1.99);return [[neck,1-t],[head,t]];}
   if(y>1.18&&Math.abs(x)>.235){
    const a=arms.find(a=>a.side===Math.sign(x)),word=a.side>0?'left':'right';
-   return chainWeights(point,[a.shoulder,a.elbow,a.hand],V(...HUMAN_JOINTS[word+'HandTip']).add(V(a.side*.008,-.10,.025)));
+   return chainWeights(point,[a.shoulder,a.elbow,a.hand],V(...J[word+'HandTip']).add(V(a.side*.008,-.10,.025)));
   }
   if(y<1.115){
    const a=legs.find(a=>a.side===(x>=0?1:-1)),word=a.side>0?'left':'right';
-   const w=chainWeights(point,[a.hip,a.knee,a.ankle],V(...HUMAN_JOINTS[word+'Toe']));
+   const w=chainWeights(point,[a.hip,a.knee,a.ankle],V(...J[word+'Toe']));
    if(y>1.03){const t=THREE.MathUtils.smoothstep(y,1.03,1.115);return w.map(([b,w])=>[b,w*(1-t)]).concat([[pelvis,t]]);}return w;
   }
   if(y>1.83){const t=THREE.MathUtils.smoothstep(y,1.83,1.94);return [[torso,1-t],[neck,t]];}
@@ -86,6 +88,25 @@ export function createOverlordBoss(THREE,options={}){
  function makeGeometry(source){
   const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(source.positions,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(source.normals,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(source.uvs,2));g.setIndex(new THREE.Uint16BufferAttribute(source.indices,1));owned.add(g);return g;
  }
+ let human;const skeleton=new THREE.Skeleton(bones);
+ if(generated){
+  const geometry=makeGeometry(data);
+  geometry.setAttribute('uv1',new THREE.Float32BufferAttribute(data.sourceUVs,2));
+  const remap=data.boneNames.map(name=>bones.findIndex(b=>b.name===name));
+  if(remap.some(i=>i<0))throw new Error('Generated queen uses an unknown bone');
+  const indices=Uint16Array.from(data.skinIndices,i=>remap[i]);
+  geometry.setAttribute('skinIndex',new THREE.Uint16BufferAttribute(indices,4));
+  geometry.setAttribute('skinWeight',new THREE.Float32BufferAttribute(data.skinWeights,4));
+  geometry.clearGroups();for(const group of data.groups)geometry.addGroup(group.start,group.count,group.material);
+  geometry.computeBoundingBox();geometry.computeBoundingSphere();
+  mats.generatedBase=new THREE.MeshStandardMaterial({color:0xffffff,metalness:.32,roughness:.55});
+  mats.generatedFront=new THREE.MeshStandardMaterial({color:0xffffff,metalness:.32,roughness:.55});
+  mats.generatedFace=new THREE.MeshStandardMaterial({color:0xffffff,metalness:0,roughness:.63});
+  mats.generatedRearHead=new THREE.MeshStandardMaterial({color:0xffffff,metalness:.04,roughness:.52});
+  human=new THREE.SkinnedMesh(geometry,[mats.generatedBase,mats.generatedFront,mats.generatedFace,mats.generatedRearHead]);
+  human.name='reconstructed-queen-skinned-body';human.castShadow=true;human.receiveShadow=true;human.frustumCulled=false;body.add(human);
+  root.updateMatrixWorld(true);human.bind(skeleton);human.normalizeSkinWeights();
+ }else{
  const geometry=makeGeometry(data),pos=geometry.attributes.position,normal=geometry.attributes.normal,uv=geometry.attributes.uv;
  const skinIndex=new Uint16Array(pos.count*4),skinWeight=new Float32Array(pos.count*4),colors=new Float32Array(pos.count*3).fill(1);
  for(let i=0;i<pos.count;i++){
@@ -108,12 +129,12 @@ export function createOverlordBoss(THREE,options={}){
   const material=y>1.95&&z>.09&&x<.112?2:y>1.89?1:y>1.37&&y<1.83&&z>.035&&x<.205?3:0;buckets[material].push(a,b,c);
  }
  const indices=[];geometry.clearGroups();buckets.forEach((list,i)=>{geometry.addGroup(indices.length,list.length,i);indices.push(...list);});geometry.setIndex(indices);geometry.computeBoundingBox();geometry.computeBoundingSphere();
- const human=new THREE.SkinnedMesh(geometry,[mats.armor,mats.skin,mats.face,mats.engraved]);human.name='continuous-anatomical-body';human.castShadow=true;human.receiveShadow=true;human.frustumCulled=false;body.add(human);
- root.updateMatrixWorld(true);const skeleton=new THREE.Skeleton(bones);human.bind(skeleton);human.normalizeSkinWeights();
+ human=new THREE.SkinnedMesh(geometry,[mats.armor,mats.skin,mats.face,mats.engraved]);human.name='continuous-anatomical-body';human.castShadow=true;human.receiveShadow=true;human.frustumCulled=false;body.add(human);
+ root.updateMatrixWorld(true);human.bind(skeleton);human.normalizeSkinWeights();
  const details=new THREE.Group();details.name='anatomical-eyes';head.add(details);details.position.copy(rest.get(head)).multiplyScalar(-1);
  function regularMesh(parent,g,m,p,s){owned.add(g);const o=new THREE.Mesh(g,mats[m]);if(p)o.position.set(...p);if(s)o.scale.set(...s);o.castShadow=true;parent.add(o);return o;}
  for(const word of['left','right']){
-  const e=HUMAN_JOINTS[word+'Eye'],surface=Math.max(...Array.from(data.eyes[word].positions).filter((_,i)=>i%3===2));
+  const e=J[word+'Eye'],surface=Math.max(...Array.from(data.eyes[word].positions).filter((_,i)=>i%3===2));
   // Eye controls sit in front of the face; the actual cornea belongs inside
   // the anatomical eyelids at the original eye surface, not at those controls.
   const z=surface+.0007;
@@ -132,11 +153,15 @@ export function createOverlordBoss(THREE,options={}){
  // A fitted solid gorget covers the skin/metal seam around the moving neck.
  regularMesh(neck,new THREE.LatheGeometry([new THREE.Vector2(.079,-.043),new THREE.Vector2(.084,-.026),new THREE.Vector2(.081,.064),new THREE.Vector2(.077,.080)],36),'armor',[0,0,.023],[1,1,1.6]);
  for(const [r,y]of[[.079,-.037],[.079,.078]]){const rim=regularMesh(neck,new THREE.TorusGeometry(r,.0028,6,40),'gold',[0,y,.023]);rim.rotation.x=Math.PI/2;rim.scale.y=1.6;}
+ }
  const joints={body,pelvis,torso,neck,head,arms,legs,rest};
- const cloth=createOverlordHairCloth(THREE,{head,torso,materials:mats});
- const regalia=createOverlordRegalia(THREE,{joints,materials:mats,positions:data.positions});
+ const cloth=createOverlordHairCloth(THREE,{head,torso,materials:mats,fineHair:generated});
+ if(generated){cloth.headGroup.position.set(.004,-.086,.030);cloth.headGroup.scale.set(.85,.90,.85);}
+ const regalia=createOverlordRegalia(THREE,{joints,materials:mats,positions:data.positions,includeArmor:!generated});
  if(regalia.group)root.add(regalia.group);
  const swords=regalia.swords;
+ const poseOffsets=new Map();
+ for(const b of bones){const old=data.calibration?.controllerIdleLocalQuaternions?.[b.name],target=data.calibration?.targetIdleLocalQuaternions?.[b.name];if(old&&target)poseOffsets.set(b,new THREE.Quaternion(...target).multiply(new THREE.Quaternion(...old).invert()));}
  root.scale.setScalar(options.scale??1);
  let state='idle',elapsed=0,time=0,disposed=false;
  const valid=new Set(['idle','seated','stand','walk','attack','special','hit','defeat']);
@@ -144,7 +169,7 @@ export function createOverlordBoss(THREE,options={}){
  function update(dt,input={}){
   if(disposed)return;dt=Number.isFinite(dt)?Math.max(0,Math.min(.1,dt)):0;
   if(input.state&&input.state!==state)setState(input.state);
-  const motion=input.motion!==false;time=motion?(Number.isFinite(input.time)?input.time:time+dt):0;elapsed+=dt;
+  const motion=input.motion!==false;time=motion?(Number.isFinite(input.time)?input.time:time+dt):0;elapsed=Number.isFinite(input.stateElapsed)?Math.max(0,input.stateElapsed):elapsed+dt;
   const seated=state==='seated'?1:state==='stand'&&motion?1-Math.min(1,elapsed/1.1):0;
   const walk=state==='walk',special=state==='special',attack=state==='attack',hit=state==='hit',dead=state==='defeat';
   const p=THREE.MathUtils.clamp(Number.isFinite(input.attackProgress)?input.attackProgress:elapsed/(special?2.4:1),0,1),strike=motion&&(attack||special)?Math.sin(p*Math.PI):0;
@@ -152,6 +177,7 @@ export function createOverlordBoss(THREE,options={}){
   const recoil=motion&&hit?Math.sin(Math.min(1,elapsed/.55)*Math.PI):0;
   body.position.set(recoil*.025,motion?Math.sin(time*1.8)*.004+(walk?Math.abs(Math.sin(cycle))*.012:0)-seated*.36:-seated*.36,-recoil*.035);
   body.rotation.set(-recoil*.10,special?-strike*.15:0,0);
+  if(generated){body.position.multiplyScalar(data.calibration?.controllerBodyTranslationScale??1);body.position.y-=seated*(data.calibration?.seatedRootOffset||0);}
   pelvis.rotation.set(0,0,seated?0:walk?Math.sin(cycle)*.018:-.055);
   torso.rotation.set(-strike*.08+fall*.25,walk?Math.sin(cycle)*.045:-.055-strike*.14,seated?0:.045);
   neck.rotation.set(.012+fall*.08,0,0);head.rotation.set(-.018-strike*.055+fall*.24,.045+(motion?Math.sin(time*.5)*.025:0),0);
@@ -167,7 +193,8 @@ export function createOverlordBoss(THREE,options={}){
    ankle.rotation.set(walk?-Math.max(0,Math.sin(cycle)*s)*.15:0,0,0);
   });
   if(input.bossLean&&motion)torso.rotation.x+=input.bossLean;
-  cloth.update({time,motion,strike,wind:input.wind??(special?1+strike:1),defeat:fall});
+  for(const [b,offset]of poseOffsets)b.quaternion.premultiply(offset);
+  cloth.update({time,motion,strike,wind:input.wind??(special?1+strike:1),defeat:fall,groundLift:generated?Math.max(0,-body.position.y):0});
   regalia.update({time,motion,state,attackProgress:p,swordSpread:input.swordSpread??1,blades:input.blades});
   mats.glow.emissiveIntensity=dead?.15:1.45+strike*1.8;
   mats.energy.opacity=dead?.03:.22+strike*.36;
@@ -176,16 +203,23 @@ export function createOverlordBoss(THREE,options={}){
  function setTextures(textures={}){
   if(disposed)return false;
   const install=(names,texture,tint)=>names.forEach(name=>{const m=mats[name];m.map=texture||null;m.color.set(texture?0xffffff:tint);m.needsUpdate=true;});
-  if('face'in textures)install(['face'],textures.face,0xe6bba5);
+  if(!generated&&'face'in textures)install(['face'],textures.face,0xe6bba5);
   // One continuous cuirass receives a single engraving layout. Limbs and the
   // raised gilt retain their native metal, avoiding repeated full-sheet motifs.
-  if('armor'in textures)install(['engraved'],textures.armor,0x24202a);
+  if(!generated&&'armor'in textures)install(['engraved'],textures.armor,0x24202a);
   if('hair'in textures){install(['hair','hairLight'],textures.hair,0xb78a44);if(textures.hair)mats.hairLight.color.set(0xffe8bd);}
   if('cape'in textures)install(['red'],textures.cape,0x520d20);
+  if(generated){
+   if('generatedBase'in textures)mats.generatedBase.map=mats.generatedRearHead.map=textures.generatedBase;
+   if('generatedFront'in textures)mats.generatedFront.map=mats.generatedFace.map=textures.generatedFront;
+   if('generatedNormal'in textures){for(const name of ['generatedBase','generatedFront','generatedFace','generatedRearHead'])mats[name].normalMap=textures.generatedNormal;mats.generatedFace.normalScale.set(.45,.45);}
+   for(const name of ['generatedBase','generatedFront','generatedFace','generatedRearHead'])mats[name].needsUpdate=true;
+  }
   return true;
  }
+ function setSurfaceReady(ready){if(disposed)return;body.visible=!!ready;if(regalia.group)regalia.group.visible=!!ready;}
  if(options.textures)setTextures(options.textures);update(0);
  function dispose(){if(disposed)return;disposed=true;root.removeFromParent();cloth.dispose();regalia.dispose();skeleton.dispose();for(const g of owned)g.dispose();for(const m of Object.values(mats))m.dispose();}
- return {group:root,root,update,setState,setTextures,dispose,materials:mats,joints,swords,skeleton,human,
-  metadata:{name:'無名から頂点へ至る覇王 S',special:'無名神話・覇天絶滅斬',height:2.45,bodyHeight:2.2476,seatHeight:.75,standDuration:1.1,swordCount:5,forward:'+Z',states:[...valid],style:'continuous anatomical skinned queen with fitted sculpted regalia',source:HUMAN_BODY_SOURCE}};
+ return {group:root,root,update,setState,setTextures,setSurfaceReady,dispose,materials:mats,joints,swords,skeleton,human,
+  metadata:{name:'無名から頂点へ至る覇王 S',special:'無名神話・覇天絶滅斬',height:2.45,bodyHeight:2.2476,seatHeight:.75,standDuration:1.1,swordCount:5,forward:'+Z',states:[...valid],style:generated?'image-reconstructed skinned queen with separate animated hair, cape and five swords':'continuous anatomical skinned queen with fitted sculpted regalia',surfaceSource:generated?'queen-rigbase-v1':undefined,source:generated?data.source:HUMAN_BODY_SOURCE}};
 }

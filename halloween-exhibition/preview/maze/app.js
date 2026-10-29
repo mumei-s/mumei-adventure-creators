@@ -33,8 +33,8 @@ import { chooseView, movementVector, mapHeading } from './view-model.js?v=202610
 import { createStageRenderer, EXIT, PALACE_FURNISHINGS } from './stage-2d.js?v=20261019-unified1';
 import {createArtLibrary,drawArtSprite} from './rpg-art.js?v=20261019-unified1';
 import {renderBattleScene,battleEffectDuration} from './battle-scene.js?v=20261019-unified1';
-import {renderOverlordBattle2D} from './overlord-battle-2d.js?v=20261029-overlord3';
-import {overlordActionDuration,overlordBattleDirector} from './overlord-battle-director.js?v=20261029-overlord3';
+import {renderOverlordBattle2D} from './overlord-battle-2d.js?v=20261029-overlord5';
+import {overlordActionDuration,overlordBattleDirector} from './overlord-battle-director.js?v=20261029-overlord5';
 import {directionFromMovement,moveAroundFurniture} from './rpg-model.js?v=20261014-adventure2';
 import {protectGameSurface,bindHeldGameButton,bindDirectionPad} from './game-input.js?v=20261019-journey1';
 import {STORY,encounterStory,chapterFor} from './story-model.js?v=20261016-living1';
@@ -338,7 +338,16 @@ function drawBattleVisual(){
 function drawOverlordBattle(){
  if(nativeBattle){try{nativeBattle.render({battle,effect:battleEffect,time:visualTime,motion:motion&&!reducedMotion.matches});}catch{failNativeBattle();}return;}
  if(!nativeBattleFailed&&!nativeBattleLoading){nativeBattleLoading=true;const token=++nativeBattleToken,target=battleCanvas;
-  import('./overlord-battle-scene.js?v=20261029-overlord3').then(({createOverlordBattleScene})=>{if(token!==nativeBattleToken||!battle||battle.id!=='nameless_overlord'||battleCanvas!==target)return;nativeBattle=createOverlordBattleScene({canvas:target,art:rpgArt,onLost:failNativeBattle});nativeBattleLoading=false;const status=$('overlord-render-status');if(status){status.textContent='';status.hidden=true;}drawBattleVisual();}).catch(()=>{if(token===nativeBattleToken)failNativeBattle();});
+  import('./overlord-battle-scene.js?v=20261029-overlord5').then(async({createOverlordBattleScene})=>{
+   if(token!==nativeBattleToken||!battle||battle.id!=='nameless_overlord'||battleCanvas!==target)return;
+   const candidate=createOverlordBattleScene({canvas:target,art:rpgArt,onLost:failNativeBattle});
+   try{
+    const ready=candidate.ready?await candidate.ready:true;
+    if(token!==nativeBattleToken||!battle||battle.id!=='nameless_overlord'||battleCanvas!==target){candidate.dispose();return;}
+    if(!ready){candidate.dispose();failNativeBattle();return;}
+    nativeBattle=candidate;nativeBattleLoading=false;const status=$('overlord-render-status');if(status){status.textContent='';status.hidden=true;}drawBattleVisual();
+   }catch{candidate.dispose();if(token===nativeBattleToken)failNativeBattle();}
+  }).catch(()=>{if(token===nativeBattleToken)failNativeBattle();});
  }
  if(nativeBattleLoading){const status=$('overlord-render-status');if(status){status.textContent='玉座の間を開いています…';status.hidden=false;}return;}
  if(nativeBattleFailed)renderOverlordBattle2D({canvas:battleCanvas,art:rpgArt,battle,effect:battleEffect,time:visualTime,motion:motion&&!reducedMotion.matches});
@@ -476,7 +485,10 @@ function step(dt){
 }
 function renderExploration(dt){if(view==='3d'){try{world?.render({...state,cameraDistance,cameraZoom,facing,walking,walkPhase,time:time*1000,motion:motion&&!reducedMotion.matches,brightness,lantern,encounters,cleared,creatorActors});}catch(error){fallbackView(error,'render');}}else {stageRenderer??=createStageRenderer({art:rpgArt});stageRenderer.render({canvas:$('fallback'),state,cameraDistance,cameraZoom,brightness,lantern,encounters,cleared,pixelRatio:Math.min(devicePixelRatio||1,2),time,dt,motion:motion&&!reducedMotion.matches,facing,walking:walking&&motion&&!reducedMotion.matches,walkPhase,creatorActors});}updateMinimap();updateHUD();}
 function tick(now){
-  frame=0;if(document.hidden)return;const dt=Math.min((now-(last||now))/1000,.05);last=now;visualTime+=dt;
+  // Collision steps stay short, while a slow renderer must not stretch a
+  // three-second battle into a long command lock. start() resets last after
+  // a hidden page, so time spent away does not advance the encounter.
+  frame=0;if(document.hidden)return;const elapsed=Math.max(0,(now-(last||now))/1000),dt=Math.min(elapsed,.05);last=now;visualTime+=elapsed;
   if(panel.open&&battle){settleBattleAnimation();drawBattleVisual();}
   if(!panel.open){step(dt);if(motion&&!reducedMotion.matches)time+=dt;updateCreatorFrames(now);renderExploration(dt);}
   frame=requestAnimationFrame(tick);

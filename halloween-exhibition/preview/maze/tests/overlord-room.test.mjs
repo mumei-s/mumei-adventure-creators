@@ -26,6 +26,24 @@ test('throne ruby is an embedded faceted detail outside the character head silho
  assert(rubyVertices>0);assert.equal(throne.seatHeight,.75);throne.dispose();
 });
 
+test('throne cushion supports the fitted hips while the carved front leaves the calves and boots clear',()=>{
+ const throne=createOverlordThrone(THREE);throne.group.updateMatrixWorld(true);
+ // This volume includes the measured seated lower-leg/boot envelope, with
+ // clearance around it. Test the rendered triangles after material batching.
+ const footSpace=new THREE.Box3(new THREE.Vector3(-.42,.01,.20),new THREE.Vector3(.22,.82,.72));
+ const triangle=new THREE.Triangle(),a=new THREE.Vector3(),b=new THREE.Vector3(),c=new THREE.Vector3();
+ let triangles=0;
+ throne.group.traverse(object=>{if(!object.isMesh)return;const geometry=object.geometry,p=geometry.attributes.position,index=geometry.index,count=index?.count??p.count;
+  for(let i=0;i<count;i+=3){a.fromBufferAttribute(p,index?index.getX(i):i).applyMatrix4(object.matrixWorld);b.fromBufferAttribute(p,index?index.getX(i+1):i+1).applyMatrix4(object.matrixWorld);c.fromBufferAttribute(p,index?index.getX(i+2):i+2).applyMatrix4(object.matrixWorld);triangle.set(a,b,c);assert.equal(footSpace.intersectsTriangle(triangle),false,'solid throne detail crosses the fitted leg space');triangles++;}
+ });
+ const ray=new THREE.Raycaster(new THREE.Vector3(0,1.1,0),new THREE.Vector3(0,-1,0));
+ const support=ray.intersectObject(throne.group,true)[0];assert(support);assert(Math.abs(support.point.y-.855)<1e-6,'the rear cushion closes the previous hip support gap');
+ assert.equal(throne.seatHeight,.75,'the authored seat anchor remains stable');assert.equal(throne.seatSurfaceHeight,.855);
+ assert(triangles<12000,'carving the foot recess keeps the throne geometry bounded');
+ const bounds=new THREE.Box3().setFromObject(throne.group);assert(bounds.min.x< -1.7&&bounds.max.x>1.7);assert(bounds.max.y>3.6,'the regal side and back silhouette remains');
+ throne.dispose();
+});
+
 
 test('full hall has an opaque native vault below the generic ceiling grid',()=>{
  const hall=createOverlordHall(THREE),vault=hall.group.getObjectByName('native-dark-pointed-vault');assert(vault);

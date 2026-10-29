@@ -69,3 +69,12 @@ test('foreground notifications do not cross the real hero gate',async t=>{
  assert.equal(h.context.ready,false);assert.equal(h.record.preloads,0);assert.equal(h.record.controllers,0);assert.equal(h.record.worlds,0);
  hero.resolve();await boot;h.nextFrame();h.nextFrame();await settle();assert.equal(h.record.worlds,1);
 });
+
+test('the actual page lifecycle preserves a failed view until the visitor explicitly retries',async t=>{
+ let loads=0;
+ const h=harness(t,{module:{createTownWorld3D(){if(++loads===1)return {ready:Promise.reject(Error('No GPU')),destroy(){}};return {ready:Promise.resolve(),destroy(){}};}}});
+ await h.boot();h.nextFrame();h.nextFrame();await settle();assert.equal(h.snapshot().status,'failed');
+ h.visibility(true);h.visibility(false);await settle();assert.equal(loads,1);assert.equal(h.snapshot().active,'2d');
+ h.hide();h.show();await settle();assert.equal(loads,1);assert.equal(h.snapshot().status,'failed');
+ await h.context.viewController.setMode('3d',{retry:true});assert.equal(loads,2);assert.equal(h.snapshot().active,'3d');
+});

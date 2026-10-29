@@ -2,6 +2,7 @@ import {locomotionPhase} from './movement-runtime.js?v=20261017-review1';
 import {createActorPatrol,samplePatrolPosition,patrolSegmentSafe} from './patrol-model.js?v=20261017-review1';
 import { blocked, CELL } from './maze-model.js?v=20261014-adventure2';
 import { inFurniture } from './rpg-model.js?v=20261014-adventure2';
+import {facingForCamera} from './view-model.js?v=20261015-minimap1';
 
 export const CHARACTER_DIRECTIONS = Object.freeze(['down','left','right','up']);
 export const CREATOR_FICTION_NOTICE = 'この会話はゲーム内の創作です。作者本人の発言ではありません。';
@@ -182,6 +183,13 @@ export function characterSprite(asset,image,facing='down',walking=false,phase=0)
   const sx=image.width/asset.width,sy=image.height/asset.height;
   return {image,frameIndex:column,animationAssetComplete:false,frame:[cell.frame[0]*sx,cell.frame[1]*sy,cell.frame[2]*sx,cell.frame[3]*sy],
     anchorX:cell.anchorX,anchorY:cell.anchorY,contentHeight:cell.contentHeight*sy};
+}
+// Re-select a directional atlas frame at draw time; never rotate world movement.
+export function characterSpriteForCamera(actor,cameraYaw){
+  const source=actor?.sprite;
+  if(!source?.image||!actor.asset?.layout||Number.isFinite(source.poseVersion))return source;
+  const facing=facingForCamera(actor.facing,cameraYaw,actor.yaw);
+  return facing===actor.facing?source:characterSprite(actor.asset,source.image,facing,actor.walking,actor.phase);
 }
 export function lineOfSight(player,target,state={}) {
   const steps=Math.max(1,Math.ceil(Math.hypot(target.x-player.x,target.z-player.z)*10));

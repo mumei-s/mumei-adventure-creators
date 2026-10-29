@@ -13,14 +13,14 @@ const setViewSource=app.slice(app.indexOf('function updateViewFeedback('),app.in
 const statusSource=app.slice(app.indexOf('function viewpointStatus(){'),app.indexOf("$('viewpoint-prev').onclick"));
 const deferred=()=>{let resolve,reject;const promise=new Promise((a,b)=>{resolve=a;reject=b;});return {promise,resolve,reject};};
 function harness({failedBefore=true,beforePaint=afterViewPaint,createWorld=()=>({resize(){},dispose(){}})}={}){
- const nodes=new Map(),storage=new Map(),notices=[],record={created:0,loadedRemaining:0,finished:0,restored:0,updated:0};
+ const nodes=new Map(),storage=new Map(),notices=[],record={created:0,loadedRemaining:0,finished:0,restored:0,updated:0,clearedInputs:0};
  const state={x:32,z:43.5,yaw:.7,pitch:.15,hasKey:true,unlocked:true,horrorAccepted:true,collection:['key'],progress:{chapter:3}};
  const node=id=>{if(!nodes.has(id))nodes.set(id,{id,hidden:true,disabled:false,textContent:'',attributes:{},setAttribute(key,value){this.attributes[key]=value;}});return nodes.get(id);};
  const module={createWorld:options=>{record.created++;return createWorld(options,record.created);}},localStorage={getItem:key=>storage.get(key),setItem:(key,value)=>storage.set(key,value)};
  const context=vm.createContext({AbortController,withDeadline,classifyTown3DFailure,Error,initialFailed:failedBefore,mockModule:module,initialState:state,
   afterViewPaint:beforePaint,cycleViewpoint,prepareViewpointAssets(){},releaseViewPreload(){},resolveViewpoint,migrateViewpoint,saveViewpoint:(page,id)=>saveViewpoint(page,id,localStorage),saveCameraDistance:(page,value)=>storage.set('halloween-exhibition:camera:'+page,value),
   document:{hidden:false},content:{querySelectorAll:()=>[]},console:{warn(){}},$:node,rpgArt:{loadRemaining(){record.loadedRemaining++;return Promise.resolve();}},
-  transitions:{begin(){return()=>{record.finished++;};},enter(){}},clearInput(){},updateViewUI(){record.updated++;context.refresh();},restoreExhibits(){record.restored++;},notify:text=>notices.push(text),localStorage});
+  transitions:{begin(){return()=>{record.finished++;};},enter(){}},clearInput(){record.clearedInputs++;},updateViewUI(){record.updated++;context.refresh();},restoreExhibits(){record.restored++;},notify:text=>notices.push(text),localStorage});
  vm.runInContext(`let viewRequest=0,viewAbort=null,world=null,worldModule=mockModule,worldFailed=initialFailed,view='2d',viewFailure='',viewFailureCode='',viewFeedback='',viewAttempt=0,state=initialState,cameraDistance='normal',cameraZoom=.82,desiredViewpoint=resolveViewpoint('maze','overhead'),viewPending=false,resumeViewpoint=false,gameReady=true;const viewKey='halloween-exhibition:horror-view:v1',cameraButton=$('camera-distance');${setViewSource};${statusSource};globalThis.cycle=cycleMazeViewpoint;globalThis.setView=setView;globalThis.setViewpoint=setViewpoint;globalThis.fallback=fallbackView;globalThis.suspend=suspendViewpoint;globalThis.resume=resumePendingViewpoint;globalThis.refresh=updateCameraButton;globalThis.snapshot=()=>({view,viewFailure,viewFailureCode,viewFeedback,viewAttempt,worldFailed,world,state,cameraDistance,cameraZoom,desiredViewpoint,viewPending,resumeViewpoint});globalThis.setModule=value=>{worldModule=value;};globalThis.setReady=value=>{gameReady=value;};`,context);
  return {context,setView:context.setView,setViewpoint:context.setViewpoint,snapshot:context.snapshot,setModule:context.setModule,node,storage,notices,record,state};
 }
@@ -118,4 +118,23 @@ test('instant WebGL failure is preceded by paintable attempt feedback and leaves
 test('a newer overhead choice cancels the pre-construction paint boundary',async()=>{
  const paint=deferred(),h=harness({beforePaint:()=>paint.promise});const request=h.setViewpoint('eye',{quiet:true});await h.setViewpoint('far',{quiet:true});paint.resolve();await request;
  assert.equal(h.record.created,0);assert.equal(h.snapshot().view,'2d');assert.equal(h.snapshot().cameraDistance,'far');assert.equal(h.snapshot().viewFeedback,'');assert.equal(h.node('maze-view-status').hidden,true);
+});
+
+test('a late automatic startup viewpoint does not replace the camera once the player has begun walking',async()=>{
+ const h=harness(),request=deferred();h.setModule(request.promise);
+ h.storage.set('halloween-exhibition:viewpoint:maze:v1','behind-far');
+ const operation=h.setViewpoint('behind-far',{quiet:true,persist:false,automatic:true});
+ assert.equal(h.record.clearedInputs,0,'a startup upgrade does not release a thumb or key already held for exploration');
+ await Promise.resolve();vm.runInContext('viewAbort.userMoved=true',h.context);
+ request.resolve({createWorld(){throw Error('automatic camera must not replace active exploration');}});await operation;
+ assert.equal(h.record.created,0);assert.equal(h.snapshot().view,'2d');assert.equal(h.snapshot().viewPending,false);
+ assert.equal(h.snapshot().desiredViewpoint.id,'overhead');assert.equal(h.storage.get('halloween-exhibition:viewpoint:maze:v1'),'behind-far','session intent does not rewrite the saved preference');
+ h.context.suspend();h.context.resume();await Promise.resolve();assert.equal(h.record.created,0,'foregrounding cannot revive the canceled startup switch');
+});
+
+test('an explicit viewpoint selection still completes while exploration moves during loading',async()=>{
+ const h=harness(),request=deferred();h.setModule(request.promise);
+ const operation=h.setViewpoint('behind',{quiet:true});await Promise.resolve();vm.runInContext('viewAbort.userMoved=true',h.context);
+ let creates=0;request.resolve({createWorld(){creates++;return{resize(){},dispose(){}};}});await operation;
+ assert.equal(creates,1);assert.equal(h.snapshot().view,'3d');assert.equal(h.snapshot().desiredViewpoint.id,'behind');
 });

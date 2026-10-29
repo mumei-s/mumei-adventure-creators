@@ -65,7 +65,10 @@ export function moveTown(previous,dx,dz){
   const multiplier=Math.min(1,1.5/length);dx*=multiplier;dz*=multiplier;
   const count=Math.max(1,Math.ceil(Math.hypot(dx,dz)/.12)),position={...previous.position};
   for(let i=0;i<count;i++){if(isTownWalkable(previous.mapId,position.x+dx/count,position.z))position.x+=dx/count;if(isTownWalkable(previous.mapId,position.x,position.z+dz/count))position.z+=dz/count;}
-  const moved=Math.hypot(position.x-previous.position.x,position.z-previous.position.z),facing=face(dx,dz,previous.facing);
+  const acceptedX=position.x-previous.position.x,acceptedZ=position.z-previous.position.z,moved=Math.hypot(acceptedX,acceptedZ);
+  // A wall may reject one axis. Face the path actually travelled while sliding,
+  // while retaining deliberate turn-in-place input when both axes are blocked.
+  const facing=moved>.00001?face(acceptedX,acceptedZ,previous.facing):face(dx,dz,previous.facing);
   return moved===0&&facing===previous.facing?previous:{...previous,position,facing,steps:(previous.steps||0)+moved};
 }
 export function nearestTownTarget(state,maxDistance=1.65){return mapTargets(state.mapId).map(t=>({...t,distance:Math.hypot(t.x-state.position.x,t.z-state.position.z)})).filter(t=>t.distance<=maxDistance).sort((a,b)=>a.distance-b.distance)[0]||null;}

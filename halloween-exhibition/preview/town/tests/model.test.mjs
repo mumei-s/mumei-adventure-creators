@@ -2,6 +2,17 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {TOWN_MAPS,TOWN_LAMPS,TOWN_STAMPS,getTownMap,isTownWalkable,mapTargets} from '../story-data.js';
 import {initialTownState,restoreTownState,moveTown,nearestTownTarget,interactTown,townJournal,townProgress,townInventory} from '../town-model.js';
+
+test('a walking actor faces accepted travel when a wall rejects the dominant input axis',()=>{
+ for(const dz of[-.2,.2]){
+  const state={...initialTownState(),position:{x:30.7,z:23.5},facing:'left'},before=structuredClone(state);
+  const moved=moveTown(state,.8,dz);
+  assert.equal(moved.position.x,state.position.x,'the wall rejects eastward movement');
+  assert.ok(Math.abs(moved.position.z-state.position.z)>.19,'the free north/south axis still moves');
+  assert.equal(moved.facing,dz<0?'up':'down','the visible walk follows its actual path rather than the blocked axis');
+  assert.deepEqual(state,before);
+ }
+});
 import {startTownBattle,townBattleCommand,townBattleTurn,finishTownBattle} from '../battle-model.js';
 
 function visit(state,id,choice){const entry=Object.values(TOWN_MAPS).flatMap(map=>mapTargets(map.id).map(target=>({map,target}))).find(e=>e.target.id===id);assert.ok(entry,`target ${id}`);const near={...state,mapId:entry.map.id,position:{x:entry.target.x,z:entry.target.z}};return interactTown(near,id,choice);}

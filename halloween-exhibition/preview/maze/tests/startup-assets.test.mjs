@@ -51,11 +51,12 @@ test('browser cancellation detaches the pending source and its handlers',async()
 
 test('3D first scene keeps every animated monster but postpones six unused images, with exact byte evidence',async()=>{
  const loaded=[];const art=createArtLibrary({loadPlayer:false,deferOptional:true,loadImage:async url=>{loaded.push(url);return{width:512,height:512};}});await art.sceneReady;
- assert.equal(loaded.length,16);for(const id of MONSTER_IDS)assert(art.images[id],id);assert.equal(art.images.battle,undefined);
+ assert.equal(loaded.length,17);for(const id of MONSTER_IDS)assert(art.images[id],id);assert(art.images.nameless_overlord);assert.equal(art.images.battle,undefined);
  const initialBytes=loaded.reduce((sum,url)=>sum+fs.statSync(fileURLToPath(url)).size,0),version=art.version;
- await art.loadRemaining();await art.ready;assert.equal(loaded.length,22);assert(art.images.battle);assert(art.version>version);
- const totalBytes=loaded.reduce((sum,url)=>sum+fs.statSync(fileURLToPath(url)).size,0);assert.equal(totalBytes-initialBytes,881930);assert.equal(initialBytes,1798664);assert.equal(totalBytes,2680594);
- await art.loadRemaining();assert.equal(loaded.length,22);
+ await art.loadRemaining();await art.ready;assert.equal(loaded.length,23);assert(art.images.battle);assert(art.version>version);
+ const bossBytes=fs.statSync(new URL('../assets/overlord/overlord-2d-v2.webp',import.meta.url)).size;assert(bossBytes<700000);
+ const totalBytes=loaded.reduce((sum,url)=>sum+fs.statSync(fileURLToPath(url)).size,0);assert.equal(totalBytes-initialBytes,881930);assert.equal(initialBytes,1798664+bossBytes);assert.equal(totalBytes,2680594+bossBytes);
+ await art.loadRemaining();assert.equal(loaded.length,23);
 });
 
 test('preloads use the exact approved character hashes and no duplicate image URL',()=>{
@@ -82,7 +83,7 @@ function bootHarness({preferred='3d',residentFails=false,heroFails=false}={}){
  const scene=deferred(),optionalWorld=deferred(),frames=[],views=[],label={textContent:''},loading={hidden:true,children:[],querySelector:selector=>selector==='p'?label:null,append(node){this.children.push(node);}};const record={requested:0,painted:0,remaining:0,sceneStarts:0,residentRequests:0,preloads:[]};
  const assets={setPinned(){},request:async asset=>{record.requested++;return heroFails&&asset===hero?null:{width:asset.width,height:asset.height};},retry(){}};
  const context=vm.createContext({AbortController,console:{error(){},warn(){}},performance:{now:()=>0},preferred,optionalWorld:optionalWorld.promise,frames,views,requestAnimationFrame:callback=>frames.push(callback),$:id=>id==='loading'?loading:{},prepareViewpointAssets:requires3D=>record.preloads.push({requires3D,requested:record.requested}),loadMazeStartupData:async()=>[{},{},manifest],fetchStartupJSON:async()=>{record.residentRequests++;if(residentFails)throw Error('optional resident offline');return{};},compileResidents:()=>[],libraryFromArchive:()=>({selectedYear:2026}),compileCharacterRoster:()=>({hero:{asset:hero},npcs:[],omitted:[]}),placeCreatorNPCs:()=>({placed:[],omitted:[]}),compileCompanions:()=>[{asset:cat}],characterAssets:assets,loadRequiredCharacters,scaledCharacterLayout:()=>({}),rpgArt:{sceneReady:scene.promise,startScene(){record.sceneStarts++;},setPlayerAtlas(){},loadRemaining(){record.remaining++;}},restore(){},updateCreatorFrames(){},renderExploration(){assert.equal(loading.hidden,false);record.painted++;},transitions:{enter(){}},start(){},showStory(){},element:()=>({dataset:{}})});
- vm.runInContext(`let stageRenderer=null,bootRequest=0,bootAbort=null,worldModule=Promise.resolve({}),view=preferred,desiredViewpoint={id:preferred==='3d'?'eye':'overhead',view:preferred,distance:'normal'},viewRequest=0,catalog,year,creatorRoster,companions,residents,gameReady=false;const progress={2026:{storySeen:true}};async function setView(next,options){viewRequest++;views.push({next,options});if(next==='3d')await optionalWorld;view=next;}function setViewpoint(id,options){return setView(id==='eye'?'3d':'2d',options);}${source};globalThis.init=init;globalThis.ready=()=>gameReady;globalThis.currentView=()=>view;globalThis.choose2D=()=>setView('2d',{persist:true});`,context);
+ vm.runInContext(`let stageRenderer=null,bootRequest=0,bootAbort=null,worldModule=Promise.resolve({}),view=preferred,desiredViewpoint={id:preferred==='3d'?'eye':'overhead',view:preferred,distance:'normal'},viewRequest=0,state={x:32,z:48},catalog,year,creatorRoster,companions,residents,gameReady=false;const progress={2026:{storySeen:true}};async function setView(next,options){viewRequest++;views.push({next,options});if(next==='3d')await optionalWorld;view=next;}function setViewpoint(id,options){return setView(id==='eye'?'3d':'2d',options);}${source};globalThis.init=init;globalThis.ready=()=>gameReady;globalThis.currentView=()=>view;globalThis.choose2D=()=>setView('2d',{persist:true});globalThis.walk=()=>{state.x+=.5;};`,context);
  return{context,record,loading,label,frames,views,scene,optionalWorld};
 }
 
@@ -99,6 +100,12 @@ test('optional resident failure cannot restore loading or disable the playable m
 
 test('an explicit 2D choice during startup prevents the saved 3D preference overriding it',async()=>{
  const h=bootHarness();await h.context.init();await h.context.choose2D();h.frames.shift()();h.frames.shift()();await turn();assert.equal(h.views.filter(value=>value.next==='3d').length,0);assert.equal(h.context.currentView(),'2d');
+});
+
+test('walking after first paint keeps the active view when the delayed startup restore runs',async()=>{
+ const h=bootHarness();await h.context.init();h.context.walk();h.frames.shift()();h.frames.shift()();await turn();
+ assert.equal(h.context.ready(),true);assert.equal(h.context.currentView(),'2d');assert.equal(h.views.filter(value=>value.next==='3d').length,0);
+ h.optionalWorld.resolve();await turn();assert.equal(h.context.currentView(),'2d');
 });
 
 test('failed real hero keeps loading visible with retry before any first frame',async()=>{

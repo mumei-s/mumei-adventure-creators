@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {createTownCharacterArt} from '../character-art.js';
-import {createCharacterAssets} from '../../maze/creator-runtime.js';
+import {createCharacterAssets,characterSprite,compileCompanions} from '../../maze/creator-runtime.js';
 import {initialTownState} from '../town-model.js';
 import {TOWN_START_MAP,getTownMap} from '../story-data.js';
 import {CREATOR_HOMES,CREATOR_QUARTER_ID} from '../creator-homes.js';
@@ -10,6 +10,39 @@ const archive=JSON.parse(fs.readFileSync(new URL('../../data/archive.json',impor
 const fetcher=async url=>url.includes('creator-characters')?manifest:archive;
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 const nearCNA=characters=>({...initialTownState(),position:{...characters.visitors().find(visitor=>visitor.creatorId==='grand_daisy8632').center}});
+const oppositeFacing={up:'down',down:'up',left:'right',right:'left'};
+
+test('turning the eye camera reverses the viewed NPC atlas side without changing its world travel or heading',async()=>{
+ const updates=[],assets=createCharacterAssets({loadImage:async(_url,asset)=>({width:asset.width,height:asset.height})});
+ const characters=createTownCharacterArt({assets,fetcher,makeRigs:()=>({update(id,options){updates.push({id,options});return null;},get:()=>null,battle:()=>null,destroy(){}})});await characters.ready;
+ const state=nearCNA(characters);characters.visitorActors({state,time:0,clock:0,motion:false});for(let i=0;i<8;i++)await flush();
+ const north=characters.visitorActors({state,time:0,clock:0,motion:false,view3D:true,cameraYaw:0});assert(north.length);
+ const south=characters.visitorActors({state,time:0,clock:0,motion:false,view3D:true,cameraYaw:Math.PI});
+ for(const actor of south){
+  const previous=north.find(other=>other.id===actor.id);assert(previous);
+  assert.deepEqual([actor.x,actor.z,actor.yaw,actor.facing],[previous.x,previous.z,previous.yaw,previous.facing]);
+  const expected=characterSprite(actor.asset,actor.sprite.image,oppositeFacing[actor.facing],false,actor.phase);
+  assert.deepEqual(actor.sprite.frame,expected.frame,'180-degree camera turn shows the other authored atlas side');
+  const update=updates.findLast(row=>row.options.position.id===actor.id);assert(update);assert.equal(update.options.groundYaw,Math.PI);assert.equal(update.options.heading,actor.yaw);
+ }
+ const overhead=characters.visitorActors({state,time:0,clock:0,motion:false,view3D:false,cameraYaw:Math.PI});
+ for(const actor of overhead)assert.deepEqual(actor.sprite.frame,north.find(other=>other.id===actor.id).sprite.frame,'north-up views ignore a stale eye-camera yaw');
+ characters.destroy();
+});
+
+test('eye-camera projection selects the companion side and forwards ground yaw to live rigs without recropping them',async()=>{
+ const updates=[],assets=createCharacterAssets({loadImage:async(_url,asset)=>({width:asset.width,height:asset.height})});let live=null;
+ const characters=createTownCharacterArt({assets,fetcher,makeRigs:()=>({update(id,options){updates.push({id,options});return live;},get:()=>null,battle:()=>null,destroy(){}})});await characters.ready;
+ const state=initialTownState(),north=characters.companionActors({state,motion:false,view3D:true,cameraYaw:0})[0],south=characters.companionActors({state,motion:false,view3D:true,cameraYaw:Math.PI})[0];
+ assert.deepEqual([south.x,south.z,south.facing],[north.x,north.z,north.facing]);
+ const cat=compileCompanions(manifest).find(character=>character.id==='owner-black-cat'),expected=characterSprite(cat.asset,south.sprite.image,oppositeFacing[south.facing],false,south.phase);
+ assert.deepEqual(south.sprite.frame,expected.frame);
+ assert.equal(updates.at(-1).options.groundYaw,Math.PI);assert.equal(updates.at(-1).options.facing,south.facing);
+ live={image:{width:256,height:512},frame:[0,0,256,512],poseVersion:7};
+ const posed=characters.companionActors({state,motion:false,view3D:true,cameraYaw:-Math.PI/2})[0];
+ assert.equal(posed.sprite,live,'an articulated result is already projected and is never treated as an atlas');
+ characters.destroy();
+});
 test('optional rig degradation is announced once while approved owner and cat art remain intact',async()=>{
  const states=[];let changed;const assets=createCharacterAssets({loadImage:async(_url,asset)=>({width:asset.width,height:asset.height})});
  const characters=createTownCharacterArt({assets,fetcher,onState:value=>states.push(value),makeRigs:options=>{changed=options.onChange;return{update:()=>null,get:()=>null,battle:()=>null,destroy(){}};}});await characters.ready;

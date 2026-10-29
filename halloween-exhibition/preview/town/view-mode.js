@@ -34,8 +34,14 @@ export function createTownViewController({load,onChange=()=>{},timeout=35000,tim
  function clearView(){const old=view;view=null;old?.destroy?.();}
  function cancel(){generation++;pending?.abort();pending=null;}
  function fail(request,error,phase='render'){if(disposed||request!==generation)return;cancel();clearView();active='2d';status=desired==='2d'?'idle':'failed';failure=status==='failed'?classifyTown3DFailure(error,{phase}):null;emit();}
- async function setMode(mode,{retry=false}={}){
-  if(disposed)return snapshot();desired=mode==='3d'?'3d':'2d';
+ async function setMode(mode,{retry=false,suspend=false}={}){
+  if(disposed)return snapshot();
+  // History suspension hides the renderer without changing the user's choice
+  // or erasing a failure that requires an explicit retry on return.
+  if(suspend){cancel();active='2d';if(status!=='failed')status='idle';emit();return snapshot();}
+  const next=mode==='3d'?'3d':'2d';
+  if(next==='3d'&&desired==='3d'&&status==='failed'&&!retry)return snapshot();
+  desired=next;
   if(desired==='2d'){cancel();active='2d';status='idle';failure=null;emit();return snapshot();}
   if(view&&!retry){active='3d';status='ready';failure=null;emit();return snapshot();}
   if(pending&&!retry){emit();return snapshot();}

@@ -89,7 +89,7 @@ function createArchitecture(makeCanvas,art){
  for(let z=0;z<rows;z++)for(let x=0;x<cols;x++)if(walk(x,z)){
    const px=x*TILE,py=z*TILE,room=palaceRoom(x,z),surface=room==='veil'?'marble':room==='lantern'||z>13?'limestone':'parquet';
    c.save();c.beginPath();c.rect(px-36,py-36,72,72);c.clip();
-   if(room==='overlord'){c.fillStyle=(x+z)%2?'#211b2a':'#14111c';c.fillRect(px-36,py-36,72,72);c.strokeStyle='#b68d4530';c.strokeRect(px-35,py-35,70,70);}else if(art?.images[surface])c.drawImage(art.images[surface],(x%3)*170,(z%3)*170,170,170,px-36,py-36,72,72);else floorTile(c,x,z);
+   if(room==='overlord'){if(art?.images.marble)c.drawImage(art.images.marble,(x%3)*170,(z%3)*170,170,170,px-36,py-36,72,72);else floorTile(c,x,z);c.fillStyle=(x+z)%2?'#25172588':'#17121e99';c.fillRect(px-36,py-36,72,72);c.strokeStyle='#c59d5755';c.strokeRect(px-35,py-35,70,70);if((x+z)%3===0)medallion(c,px,py,19,'#c4a46666');}else if(art?.images[surface])c.drawImage(art.images[surface],(x%3)*170,(z%3)*170,170,170,px-36,py-36,72,72);else floorTile(c,x,z);
    c.fillStyle=room==='archive'?'#40305512':room==='gallery'?'#26374f12':'#26374f08';c.fillRect(px-36,py-36,72,72);
    c.restore();
    for(const [dx,dz,kind]of[[0,-1,'north'],[0,1,'south'],[-1,0,'side'],[1,0,'side']])if(!walk(x+dx,z+dz)){
@@ -241,7 +241,7 @@ export function createStageRenderer({makeCanvas=(w,h)=>{const c=document.createE
       }else if(o.kind==='enemy'){
         if(o.cleared){ellipse(c,o.x,o.y,15,8,'#d2ac65');text(c,'✓',o.x,o.y,16,'#362b35');continue;}
         const idle=motion?(o.id==='franken'?Math.abs(Math.sin(time*.65))*1.1:o.id==='zombie'?Math.abs(Math.sin(time*.8))*.8:o.id==='vampire'?Math.sin(time*.9)*1.3:Math.sin(time*1.9+o.x)*2.2):0;ellipse(c,o.x,o.y+3,25,8,'#07091488');
-        if(o.id==='nameless_overlord'){drawOverlordFallback(c,o.x,o.y,time,motion);continue;}
+        if(o.id==='nameless_overlord'){drawOverlordFallback(c,o.x,o.y,time,motion,art);continue;}
         const monster=monsterSprite(art,o.id,{time,motion,patrol:o.pose});
         if(!drawArtSprite(c,monster,o.x,o.y+(monster?.animated?0:idle),o.id==='bat'?92:100,{flip:monster?.flip,rotation:motion&&['zombie','franken'].includes(o.id)?Math.sin(time*(o.id==='franken'?.65:.8))*.018:0,scaleX:1+(motion?Math.sin(time*1.4)*.018:0),scaleY:1+(motion?Math.cos(time*1.4)*.012:0)}))drawCreature(c,o.id,o.x,o.y-25,1.1);
       }else{
@@ -279,18 +279,21 @@ export function createStageRenderer({makeCanvas=(w,h)=>{const c=document.createE
 
 // Explicitly illustrated Canvas fallback, not presented as a 3D model.
 function drawOverlordThrone(c,x,y){
- c.save();c.translate(x,y);glow(c,0,-155,100,'#e92b5550');ellipse(c,0,-155,39,39,'#c22d49');
- rounded(c,-66,-7,132,29,3,'#18121e','#ad8547');rounded(c,-48,-106,96,117,3,'#18111d','#d2aa58');rounded(c,-34,-91,68,80,3,'#760f2d','#c79c50');
- for(const sx of[-1,1]){rounded(c,sx*48-7,-132,14,152,2,'#211821','#cca351');path(c,p=>{p.moveTo(sx*48-11,-132);p.lineTo(sx*48,-153);p.lineTo(sx*48+11,-132);},'#d5ad5a');rounded(c,sx*43-10,-23,20,34,2,'#2a2026','#d3a250');}
- rounded(c,-36,-24,72,19,3,'#a32140','#d4aa58');plaque(c,'第666階層 · 無名の覇王城',0,-210,235);c.restore();
+ c.save();c.translate(x,y);glow(c,0,-116,118,'#e4b27e28');
+ for(const [w,yy,h]of[[164,2,24],[144,-9,22],[121,-22,18]])rounded(c,-w/2,yy,w,h,2,'#221b29','#b68b48');
+ path(c,p=>{p.moveTo(-61,0);p.lineTo(-61,-134);p.quadraticCurveTo(-61,-165,0,-204);p.quadraticCurveTo(61,-165,61,-134);p.lineTo(61,0);p.closePath();},'#241929','#cfa75c',3);
+ path(c,p=>{p.moveTo(-44,-17);p.lineTo(-44,-128);p.quadraticCurveTo(-44,-153,0,-181);p.quadraticCurveTo(44,-153,44,-128);p.lineTo(44,-17);p.closePath();},'#6b1835','#e0bb72',2);
+ for(let i=-2;i<=2;i++){const xx=i*19,yy=-176+Math.abs(i)*15;path(c,p=>{p.moveTo(xx-6,yy);p.lineTo(xx,yy-23);p.lineTo(xx+6,yy);},'#d7b26d','#ffdb94',1);}
+ for(const sign of[-1,1]){for(let i=0;i<3;i++)rounded(c,sign*(49+i*6)-3,-143+i*12,6,134-i*12,2,'#342438','#c7a15e');rounded(c,sign*50-10,-47,20,43,4,'#2c2030','#d6ad65');ellipse(c,sign*50,-46,11,7,'#d8b56a');}
+ for(let i=0;i<7;i++){const yy=-145+i*17;c.strokeStyle='#cfa66188';c.lineWidth=1;c.beginPath();c.moveTo(-28,yy);c.quadraticCurveTo(0,yy+11,28,yy);c.stroke();}
+ medallion(c,0,-128,24,'#dab873');path(c,p=>{p.moveTo(0,-143);p.lineTo(8,-128);p.lineTo(0,-113);p.lineTo(-8,-128);p.closePath();},'#9f2643','#edbc86',1);
+ rounded(c,-42,-25,84,20,4,'#a42c4c','#edc77d');c.restore();
 }
-function drawOverlordFallback(c,x,y,time,motion){
- c.save();c.translate(x,y);const sway=motion?Math.sin(time*1.4)*2:0;
- path(c,p=>{p.moveTo(-18,-68);p.lineTo(-38+sway,0);p.lineTo(34+sway,0);p.lineTo(18,-68);},'#8c1535','#d1a453',2);
- for(const side of[-1,1]){rounded(c,side*10-6,-29,12,29,3,'#161722','#b9924c');}
- rounded(c,-17,-63,34,40,8,'#15151f','#d6ac53');ellipse(c,0,-77,19,23,'#dcb567');ellipse(c,0,-78,12,16,'#f3c4a1');
- path(c,p=>{p.moveTo(-19,-77);p.lineTo(-22,-43);p.lineTo(-12,-54);p.lineTo(-10,-87);p.quadraticCurveTo(8,-101,18,-68);p.lineTo(24,-44);p.lineTo(20,-85);p.quadraticCurveTo(0,-113,-19,-77);},'#e4bf77','#a67f42');
- path(c,p=>{p.moveTo(-18,-98);p.lineTo(-20,-113);p.lineTo(-9,-106);p.lineTo(0,-119);p.lineTo(9,-106);p.lineTo(20,-113);p.lineTo(18,-98);p.closePath();},'#d7aa50','#f8db8e');
- for(let i=0;i<5;i++){const a=-Math.PI+i*Math.PI/4,xx=Math.cos(a)*49,yy=-45+Math.sin(a)*48+(motion?Math.sin(time+i)*3:0);c.save();c.translate(xx,yy);c.rotate(a+Math.PI/2);glow(c,0,0,24,'#ff244c35');path(c,p=>{p.moveTo(-3,-20);p.lineTo(0,-32);p.lineTo(3,-20);p.lineTo(3,14);p.lineTo(-3,14);p.closePath();},'#ed6687','#ffb2a4');rounded(c,-10,11,20,4,1,'#d4a349');rounded(c,-2,15,4,12,1,'#d4a349');c.restore();}
- plaque(c,'無名の覇王 S · 2D代替表示',0,27,205);c.restore();
+
+function drawOverlordFallback(c,x,y,time,motion,art){
+ const sprite=art?.images?.nameless_overlord,breathe=motion?Math.sin(time*1.4)*.8:0;
+ c.save();ellipse(c,x,y+3,35,10,'#09091488');glow(c,x,y-62,75,'#b1263b18');
+ if(sprite)drawArtSprite(c,sprite,x,y+breathe,154);
+ else {c.fillStyle='#d5b37a';c.textAlign='center';c.font='12px serif';c.fillText('覇王Sを迎えています…',x,y-54);}
+ c.restore();
 }

@@ -5,14 +5,17 @@ import {createArtLibrary} from '../maze/rpg-art.js';
 import {createChangeTracker,setChangedProperty,setChangedAttribute} from '../maze/change-only-ui.js';
 import {createExhibitResources} from '../maze/exhibit-resources.js';
 import {schedulePalaceResidents} from '../palace-startup.js';
+import {CELL} from '../maze/maze-model.js';
 const app=readFileSync(new URL('../maze/app.js',import.meta.url),'utf8');
 const world=readFileSync(new URL('../maze/world.js',import.meta.url),'utf8');
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 
-test('maze does not request any optional scene images before explicit start',()=>{
- const calls=[],art=createArtLibrary({loadPlayer:false,deferOptional:true,deferScene:true,loadImage:url=>{calls.push(url);return new Promise(()=>{});}});
- assert.equal(calls.length,0);art.startScene();assert.equal(calls.length,16);art.startScene();assert.equal(calls.length,16);
- art.loadRemaining();assert.equal(calls.length,22);art.loadRemaining();assert.equal(calls.length,22);
+test('maze does not request any optional scene images before explicit start',async()=>{
+ const calls=[],art=createArtLibrary({loadPlayer:false,deferOptional:true,deferScene:true,loadImage:async url=>{calls.push(url);return{width:512,height:512};}});
+ assert.equal(calls.length,0);await flush();assert.equal(calls.length,0,'deferral survives the queued loader microtask');
+ const scene=art.startScene();assert.equal(art.startScene(),scene,'explicit scene startup is idempotent');await scene;assert.equal(calls.length,17);
+ for(const file of ['battle-library.webp','bookcase.webp','window.webp','column.webp','pumpkins.webp','floor.webp'])assert(!calls.some(url=>new URL(url).pathname.endsWith('/'+file)),file+' remains deferred');
+ const remaining=art.loadRemaining();assert.equal(art.loadRemaining(),remaining);await art.ready;assert.equal(calls.length,23);assert.equal(new Set(calls).size,23,'scene, boss cutout and optional art are decoded only once');
  assert.match(app,/createArtLibrary\(\{loadPlayer:false,deferOptional:true,deferScene:true\}\)/);
  assert.ok(app.indexOf('void rpgArt.startScene()')>app.indexOf('gameReady=true;loading.hidden=true'));
 });
@@ -36,8 +39,11 @@ test('actual minimap update skips identical frames but keeps moving markers and 
 test('actual HUD performs zero same-value property writes including scenery label',()=>{
  let writes=0;const nodes=new Map();const node=id=>{if(!nodes.has(id)){const values={};const attrs=new Map();nodes.set(id,new Proxy({getAttribute:k=>attrs.get(k)??null,setAttribute(k,v){writes++;attrs.set(k,v)}},{get:(o,k)=>k in o?o[k]:values[k],set:(o,k,v)=>(writes++,values[k]=v,true)}));}return nodes.get(id);};
  const source=app.slice(app.indexOf('function updateHUD(){'),app.indexOf('\nfunction showEncounters()'));
- const update=Function('$','setChangedProperty','setChangedAttribute','state','creatorJourney','chapterFor','cleared','reachedVault','nearby','contextTarget','actionButtonFor',source+';return updateHUD;')(node,setChangedProperty,setChangedAttribute,{x:1,z:1},()=>({active:false}),()=>({objective:'Walk'}),[],false,()=>null,()=>({kind:'scenery',name:'Bookcase'}),()=> 'interact');
+ const state={x:1,z:1};
+ const update=Function('$','setChangedProperty','setChangedAttribute','state','creatorJourney','chapterFor','cleared','reachedVault','nearby','contextTarget','actionButtonFor','CELL',source+';return updateHUD;')(node,setChangedProperty,setChangedAttribute,state,()=>({active:false}),()=>({objective:'Walk'}),[],false,()=>null,()=>({kind:'scenery',name:'Bookcase'}),()=> 'interact',CELL);
  update();assert.ok(writes>0);writes=0;for(let i=0;i<60;i++)update();assert.equal(writes,0);
+ state.x=20*CELL;update();assert.ok(writes>0);assert.equal(node('place-title').textContent,'無名の覇王城');assert.match(node('objective').textContent,/玉座の間/);
+ writes=0;for(let i=0;i<60;i++)update();assert.equal(writes,0);
 });
 
 function scheduler(loadResidents){

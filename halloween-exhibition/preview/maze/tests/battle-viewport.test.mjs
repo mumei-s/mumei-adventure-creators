@@ -18,7 +18,7 @@ test('battle commits earned marks immediately but keeps canvas and commands lock
  assert(act.includes('battleAnimationBusy()'));assert(act.includes("duration:battle.id==='nameless_overlord'?overlordActionDuration("));assert(act.includes('pendingUI:true'));
  assert(act.includes("if(battle.status==='won'&&!cleared.includes(battle.id)){cleared.push(battle.id);save();}"));
  assert(!act.includes('renderBattle()'));assert(act.includes('.disabled=true'));
- assert(app.includes('visualTime+=dt'));assert(!app.includes('if(motion&&!reducedMotion.matches)visualTime+=dt'));
+ assert(app.includes('visualTime+=elapsed'));assert(!app.includes('if(motion&&!reducedMotion.matches)visualTime+='));
  assert(app.includes('Math.min(battleEffect?.duration||0,battleEffectDuration(battleEffect?.type,false))'));
  assert.equal((app.match(/\$\('battle-shine'\)\?\.focus\(\{preventScroll:true\}\)/g)||[]).length,2);
  assert(app.includes('$(nextFocus)?.focus({preventScroll:true})'));

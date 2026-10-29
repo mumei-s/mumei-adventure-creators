@@ -1,4 +1,4 @@
-/** Sculpted native hair, a restrained crown, and a fully curved closed cloak.
+/** Layered native curls, a pierced ruby diadem, and a fully curved closed cloak.
  * All geometry belongs to this attachment; supplied materials stay caller-owned.
  * Points below use the anatomical body's bind coordinates (+Z front, +Y up).
  */
@@ -51,17 +51,20 @@ export function createOverlordHairCloth(THREE,{head,torso,materials}){
  }
  // Closed elliptical strands have a readable curved silhouette from any yaw.
  // Their sections taper to points; none is a camera-facing ribbon or card.
- function curl(name,worldPoints,width,depth,highlight,phase){
+ function curl(name,worldPoints,width,depth,highlight,phase,{steps=40,sides=8}={}){
   const anchor=worldPoints[0],g=new THREE.Group();g.name=name;g.position.set(...local(anchor,HEAD));headGroup.add(g);
   const points=worldPoints.map(p=>V(local(p,anchor))),curve=new THREE.CatmullRomCurve3(points);
-  const steps=40,sides=8,frames=curve.computeFrenetFrames(steps,false),p=[],uv=[],idx=[];
+  const frames=curve.computeFrenetFrames(steps,false),p=[],uv=[],idx=[];
+  // Each lock samples only a slender part of the existing hair map. Mapping
+  // the full sheet around every lock produced repeated broad white stripes.
+  const mapU=.12+(.5+.5*Math.sin(phase*2.17))*.60,mapWidth=.105;
   for(let i=0;i<=steps;i++){
    const t=i/steps,center=curve.getPointAt(t),taper=(.78+.28*Math.sin(t*Math.PI))*Math.pow(1-t,.48)+.035;
    for(let j=0;j<=sides;j++){
     const angle=j/sides*Math.PI*2,q=center.clone()
      .addScaledVector(frames.normals[i],Math.cos(angle)*width*taper)
      .addScaledVector(frames.binormals[i],Math.sin(angle)*depth*taper);
-    p.push(q.x,q.y,q.z);uv.push(j/sides,1-t);
+    p.push(q.x,q.y,q.z);uv.push(mapU+(j/sides-.5)*mapWidth,1-t);
     if(i<steps&&j<sides){const a=i*(sides+1)+j,b=a+1,c=a+sides+1,d=c+1;idx.push(a,b,c,b,d,c);}
    }
   }
@@ -72,7 +75,7 @@ export function createOverlordHairCloth(THREE,{head,torso,materials}){
   if(highlight){
    const line=[];for(let i=0;i<=30;i++){const t=i/30,k=Math.round(t*steps),q=curve.getPointAt(t),taper=(.78+.28*Math.sin(t*Math.PI))*Math.pow(1-t,.48)+.035;
     q.addScaledVector(frames.normals[k],width*taper*.58).addScaledVector(frames.binormals[k],depth*taper*.84);line.push(q.toArray());}
-   tube(g,line,.0023,materials.hairLight,30,4);
+   tube(g,line,.0011,materials.hairLight,30,4);
   }
   masses.push({group:g,phase});return g;
  }
@@ -80,17 +83,17 @@ export function createOverlordHairCloth(THREE,{head,torso,materials}){
  // backwards, leaving the eyes, cheeks, jaw and breastplate unobstructed.
  for(const side of[-1,1])for(let i=0;i<6;i++){
   const front=i<2,rootY=2.218-i*.018,rootX=side*(.052+i*.014),rootZ=front?.127-i*.018:.054-(i-2)*.033;
-  const length=.86+(i%3)*.12+(side>0?.075:0),spread=.18+i*.025;
+  const length=.91+(i%3)*.105+(side>0?.060:0),spread=.165+i*.021;
   const points=[
    [rootX,rootY,rootZ],
    [side*(.137+i*.012),rootY-.095,rootZ+(front?.019:-.010)],
    [side*(.171+i*.022),rootY-.255,front?.105:-.035-i*.015],
-   [side*(spread+.095),rootY-.43,-.055-i*.025],
-   [side*(spread+.045),rootY-.60,-.092-i*.029],
-   [side*(spread+.159),rootY-.77,-.060-i*.027],
-   [side*(spread+.115),rootY-length,-.085-i*.028],
+   [side*(spread+.072+(i%2)*.018),rootY-.43,-.055-i*.025],
+   [side*(spread+.022),rootY-.61,-.092-i*.029],
+   [side*(spread+.119-(i%3)*.014),rootY-.80,-.060-i*.027],
+   [side*(spread+.061),rootY-length,-.085-i*.028],
   ];
-  curl('flowing-S-curl-'+side+'-'+i,points,.032+(i%3)*.006,.024+(i%2)*.006,i===0||i===3,.7*i+side*.4);
+  curl('flowing-S-curl-'+side+'-'+i,points,.026+(i%3)*.0045,.020+(i%2)*.004,i===0,.7*i+side*.4);
  }
  // Swept shorter locks start at the part, clear the brow, then curl beside
  // the cheek. Their upper arc follows the skull rather than crossing the eye.
@@ -103,7 +106,21 @@ export function createOverlordHairCloth(THREE,{head,torso,materials}){
    [side*(.143+i*.028),1.998-i*.053,.190],
    [side*(.204+i*.026),1.910-i*.074,.174],
    [side*(.187+i*.020),1.840-i*.070,.131],
-  ],.025-i*.004,.019-i*.002,true,2.4+i+side*.7);
+  ],.022-i*.004,.016-i*.002,i===0,2.4+i+side*.7);
+ }
+ // Fine independent outer curls break up the smooth tube silhouette and
+ // end at different lengths. Their roots follow the major locks, not the face.
+ for(const side of[-1,1])for(let i=0;i<4;i++){
+  const phase=i*1.31+side*.42,rootX=side*(.086+i*.019),rootY=2.196-i*.025;
+  const z=.068-i*.028,length=.73+i*.105;
+  curl('tapered-flyaway-'+side+'-'+i,[
+   [rootX,rootY,z],
+   [side*(.153+i*.022),rootY-.16,z-.015],
+   [side*(.227+i*.022),rootY-.34,z-.043],
+   [side*(.199+i*.027),rootY-.48,z-.055],
+   [side*(.278+i*.023),rootY-.64,z-.063],
+   [side*(.252+i*.021),rootY-length,z-.080],
+  ],.0105+i*.0015,.0085,false,phase,{steps:30,sides:6});
  }
  // Selected small scalp highlights describe the side part without dense wires.
  for(const side of[-1,1])for(let i=0;i<3;i++){
@@ -112,31 +129,31 @@ export function createOverlordHairCloth(THREE,{head,torso,materials}){
    [side*(.130+i*.006),2.127,.143-i*.007]].map(p=>local(p,HEAD));
   tube(headGroup,points,.0017,materials.hairLight,18,4);
  }
- // One connected crown silhouette, with short pointed leaves rather than
- // disconnected antennae. Its highest point stays below world y=2.42.
+ // A pierced circlet carries pointed leaf loops, ruby bezels and tiny
+ // finials. The gaps between the gold curves keep it a light diadem rather
+ // than a broad solid helmet. Every motif joins the two continuous rails.
  {
-  const n=112,p=[],uv=[],idx=[];
-  for(let ring=0;ring<4;ring++)for(let i=0;i<=n;i++){
-   const a=i/n*Math.PI*2,outer=ring<2,top=ring%2===1,rx=outer?.127:.118,rz=outer?.116:.107;
-   const front=Math.max(0,Math.cos(a)),leaf=Math.pow(Math.max(0,Math.cos(a*7)),9);
-   const y=top?2.245+leaf*(.077+.036*front):2.213;
-   p.push(Math.sin(a)*rx,y-HEAD[1],.068+Math.cos(a)*rz-HEAD[2]);uv.push(i/n,top?1:0);
+  const at=(a,y,rx=.129,rz=.119)=>[Math.sin(a)*rx,y,.068+Math.cos(a)*rz];
+  const rail=(y,rx,rz,radius)=>{
+   const points=[];for(let i=0;i<=80;i++)points.push(local(at(i/80*Math.PI*2,y,rx,rz),HEAD));
+   tube(headGroup,points,radius,materials.gold,80,6);
+  };
+  rail(2.228,.128,.118,.0032);rail(2.246,.130,.120,.0026);
+  for(let i=0;i<13;i++){
+   const a=i/13*Math.PI*2,front=Math.max(0,Math.cos(a)),height=.065+.075*front;
+   const half=Math.PI/13*.84,base=2.236,tip=base+height;
+   const leaf=[at(a-half,base),at(a-half*.62,base+height*.39),at(a,tip),at(a+half*.62,base+height*.39),at(a+half,base)].map(p=>local(p,HEAD));
+   tube(headGroup,leaf,.0025,materials.goldLight,24,5);
+   // An inner pointed arch leaves the central ruby surrounded by open gold.
+   const inner=[at(a-half*.58,base+.012,.131,.121),at(a,base+height*.70,.135,.125),at(a+half*.58,base+.012,.131,.121)].map(p=>local(p,HEAD));
+   tube(headGroup,inner,.0017,materials.gold,16,5);
+   const jewel=mesh(headGroup,new THREE.OctahedronGeometry(.0095+front*.002,0),materials.gem);
+   jewel.position.set(...local(at(a,base+height*.35,.135,.125),HEAD));
+   jewel.scale.set(.65,1.35,.53);jewel.rotation.y=a;
+   const bezel=[at(a-half*.31,base+height*.35,.136,.126),at(a,base+height*.35+.018,.136,.126),at(a+half*.31,base+height*.35,.136,.126),at(a,base+height*.35-.018,.136,.126),at(a-half*.31,base+height*.35,.136,.126)].map(p=>local(p,HEAD));
+   tube(headGroup,bezel,.0017,materials.goldLight,20,5);
+   pearl(headGroup,at(a,tip+.002,.129,.119),.0034,materials.goldLight);
   }
-  const stride=n+1;
-  for(let i=0;i<n;i++){
-   const a=i,b=i+1,c=stride+i,d=c+1,e=2*stride+i,f=e+1,g=3*stride+i,h=g+1;
-   idx.push(a,b,c,b,d,c,e,g,f,f,g,h,c,d,g,d,h,g,a,e,b,b,e,f);
-  }
-  mesh(headGroup,geometry(p,uv,idx),materials.gold,'connected-ruby-crown');
-  for(let i=0;i<7;i++){
-   const a=i/7*Math.PI*2,world=[Math.sin(a)*.129,2.238,.068+Math.cos(a)*.118];
-   const jewel=mesh(headGroup,new THREE.OctahedronGeometry(.0105,0),materials.gem);jewel.position.set(...local(world,HEAD));jewel.scale.set(.72,1.25,.6);jewel.rotation.y=a;
-  }
-  for(const side of[-1,1]){
-   const points=[[0,2.252,.192],[side*.039,2.282,.184],[side*.071,2.256,.171],[side*.095,2.239,.148]].map(p=>local(p,HEAD));
-   tube(headGroup,points,.0037,materials.goldLight,18,5);
-  }
-  pearl(headGroup,[0,2.258,.189],.009,materials.gem,[.75,1.3,.60]);
  }
  // The cape is a closed curved cloth volume. Its flared, scalloped hem and
  // asymmetric folds retain depth in frontal, oblique and side-on views.
@@ -202,5 +219,5 @@ export function createOverlordHairCloth(THREE,{head,torso,materials}){
  }
  batchStatic(headGroup);batchStatic(torsoGroup);
  function dispose(){if(dead)return;dead=true;headGroup.removeFromParent();torsoGroup.removeFromParent();for(const g of geometries)g.dispose();geometries.clear();}
- return {headGroup,torsoGroup,cape,update,dispose,metadata:{curlMasses:masses.length,crownMaxY:2.358,capeFloorY:.02,geometryOwned:true,materialsOwned:false}};
+ return {headGroup,torsoGroup,cape,update,dispose,metadata:{curlMasses:masses.length,crownMaxY:2.382,capeFloorY:.02,geometryOwned:true,materialsOwned:false}};
 }

@@ -1,6 +1,6 @@
 import {decodeOverlordHuman,HUMAN_JOINTS,HUMAN_BODY_SOURCE} from './overlord-human-data.js';
-import {createOverlordHairCloth} from './overlord-hair-cloth.js';
-import {createOverlordRegalia} from './overlord-regalia.js';
+import {createOverlordHairCloth} from './overlord-hair-cloth.js?v=20261029-overlord4';
+import {createOverlordRegalia} from './overlord-regalia.js?v=20261029-overlord4';
 
 /** Facial projection on an anatomical surface, in world-rest coordinates.
  * The landmarks are the actual eyelids, nose tip, lips and chin of the mesh. */
@@ -144,7 +144,7 @@ export function createOverlordBoss(THREE,options={}){
  function update(dt,input={}){
   if(disposed)return;dt=Number.isFinite(dt)?Math.max(0,Math.min(.1,dt)):0;
   if(input.state&&input.state!==state)setState(input.state);
-  const motion=input.motion!==false;time=motion?(Number.isFinite(input.time)?input.time:time+dt):0;elapsed+=dt;
+  const motion=input.motion!==false;time=motion?(Number.isFinite(input.time)?input.time:time+dt):0;elapsed=Number.isFinite(input.stateElapsed)?Math.max(0,input.stateElapsed):elapsed+dt;
   const seated=state==='seated'?1:state==='stand'&&motion?1-Math.min(1,elapsed/1.1):0;
   const walk=state==='walk',special=state==='special',attack=state==='attack',hit=state==='hit',dead=state==='defeat';
   const p=THREE.MathUtils.clamp(Number.isFinite(input.attackProgress)?input.attackProgress:elapsed/(special?2.4:1),0,1),strike=motion&&(attack||special)?Math.sin(p*Math.PI):0;

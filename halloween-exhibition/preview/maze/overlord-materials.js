@@ -1,5 +1,6 @@
 // A single shared albedo sheet supplies four independently transformed native
-// mesh textures. Source screenshots are reference-only and are never loaded.
+// mesh textures. The separate original portrait is used only by the 2D
+// identity composition; an incompatible 3D face projection is not enabled.
 export const OVERLORD_ATLAS_URL=new URL('./assets/overlord/material-atlas-v2.webp',import.meta.url).href;
 export const OVERLORD_TEXTURE_REGIONS=Object.freeze({face:[0,.5],armor:[.5,.5],hair:[0,0],cape:[.5,0]});
 
@@ -21,6 +22,9 @@ export function createOverlordMaterialSource({loadImage=loadOverlordImage,url=OV
  }};
 }
 const sharedSource=createOverlordMaterialSource();
+export const OVERLORD_IDENTITY_URL=new URL('./assets/overlord/queen-face-reference.jpg',import.meta.url).href;
+const sharedIdentitySource=createOverlordMaterialSource({url:OVERLORD_IDENTITY_URL});
+export function getOverlordIdentityImage(){return sharedIdentitySource.load();}
 
 /** Small generated light cards provide metallic reflections without another file. */
 export function createOverlordReflectionEnvironment(THREE,renderer){

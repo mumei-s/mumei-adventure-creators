@@ -1,9 +1,9 @@
 import * as THREE from './vendor/three.module.js';
-import {overlordBattleDirector} from './overlord-battle-director.js?v=20261029-overlord3';
-import {createOverlordStageEffects} from './overlord-stage-fx.js?v=20261029-overlord3';
-import {createOverlordBoss} from './overlord-boss.js?v=20261029-overlord3';
-import {attachOverlordMaterials} from './overlord-materials.js?v=20261029-overlord3';
-import {createOverlordThrone,createOverlordHall} from './overlord-room.js?v=20261029-overlord3';
+import {overlordBattleDirector} from './overlord-battle-director.js?v=20261029-overlord4';
+import {createOverlordStageEffects} from './overlord-stage-fx.js?v=20261029-overlord4';
+import {createOverlordBoss} from './overlord-boss.js?v=20261029-overlord4';
+import {attachOverlordMaterials} from './overlord-materials.js?v=20261029-overlord4';
+import {createOverlordThrone,createOverlordHall} from './overlord-room.js?v=20261029-overlord4';
 import {playerPose} from './rpg-art.js?v=20261019-unified1';
 
 /** Resolved turn timing drives the performance; a peaceful bow cannot attack. */
@@ -159,7 +159,7 @@ export function createOverlordBattleScene({canvas,art,onLost=()=>{}}){
   towardBoss.set(layout.boss.x-layout.hero.x,0,layout.boss.z-layout.hero.z).normalize();
   hero.position.set(layout.hero.x,layout.hero.y+actors.heroLift,layout.hero.z).addScaledVector(towardBoss,actors.heroAdvance-actors.heroRecoil);
   boss.group.position.addScaledVector(towardBoss,actors.bossRecoil);boss.group.rotation.set(-actors.bossLean*.12,overlordAimYaw(boss.group.position,hero.position),0);
-  boss.update(dt,{time,motion,state:beat.state,attackProgress:beat.attackProgress,speed:.85,swordSpread:layout.swordSpread,portrait:w/h<.9,
+  boss.update(dt,{time,motion,state:beat.state,stateElapsed:beat.stateElapsed,attackProgress:beat.attackProgress,speed:.85,swordSpread:layout.swordSpread,portrait:w/h<.9,
    blades:beat.blades,wind:environment.wind,bossLean:actors.bossLean,swordFlare:actors.swordFlare});
   const sprite=playerPose(art,'right',false,0);
   if(sprite){const image=sprite.image||sprite;if(image!==heroImage){heroTexture?.dispose();heroTexture=new THREE.Texture(image);heroTexture.colorSpace=THREE.SRGBColorSpace;heroTexture.needsUpdate=true;hero.material.map=heroTexture;hero.material.needsUpdate=true;heroImage=image;}const [x,y,sw,sh]=sprite.frame||[0,0,image.width,image.height];heroTexture.repeat.set(sw/image.width,sh/image.height);heroTexture.offset.set(x/image.width,1-(y+sh)/image.height);hero.scale.set(layout.heroHeight*sw/(sprite.contentHeight||sh),layout.heroHeight*sh/(sprite.contentHeight||sh),1);hero.center.set(sprite.anchorX??.5,1-(sprite.anchorY??1));}

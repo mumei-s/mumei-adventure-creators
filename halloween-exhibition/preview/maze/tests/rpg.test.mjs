@@ -50,7 +50,7 @@ test('library accepts every genre with legacy collection ID and no invented subm
 });
 test('battle uses original scene, meaningful meters and motion-safe local action effects',()=>{
   const app=read('app.js'),scene=read('battle-scene.js'),css=read('rpg-ui.css');
-  assert(app.includes("battleCanvas=element('canvas'"));assert(app.includes("element('meter'"));assert(app.includes('battleEffect={type:action,...battle.lastAction,started:visualTime,'));assert(app.includes('battle.maxEnergy'));assert(app.includes('battle.maxSpirit'));assert(app.includes('battle.maxFocus'));assert(app.includes('commandFor(battle,action).disabled'));  
+  assert(app.includes("previousCanvas:element('canvas'"));assert(app.includes("element('meter'"));assert(app.includes('battleEffect={type:action,counterSpecial,...battle.lastAction,started:visualTime,'));assert(app.includes('battle.maxEnergy'));assert(app.includes('battle.maxSpirit'));assert(app.includes('battle.maxFocus'));assert(app.includes('commandFor(battle,action).disabled'));
   assert(scene.includes("if(effect&&age<battleEffectDuration(effect.type,motion))"));assert(scene.includes("effect?.type==='guard'"));assert(scene.includes('monsterSprite(art,battle.id'));assert(!scene.includes('AudioContext'));
   assert(css.includes('min-height:44px'));assert(css.includes('@media(prefers-reduced-motion:reduce)'));assert(css.includes('animation:none!important'));
 });
@@ -72,6 +72,7 @@ test('maze participates in shared layout preference and coherent cache release',
   for(const name of ['change-only-ui','exhibit-resources'])expected[name]='20261019-audit1';
   for(const name of ["app", "battle-model", "battle-scene", "camera-distance", "character-art", "control-preferences", "control-settings", "controller", "creator-home-architecture", "creator-home-painter", "game-input", "palace-architecture", "palace-forecourt", "palace-painter", "preferences", "reading-journey", "renderer", "save-model", "scene-names", "stage-2d", "story-data", "touch-camera", "town-model", "view-mode", "visitor-model", "world", "world-3d"])expected[name]='20261019-journey1';
   for(const name of ["app", "battle-scene", "character-art", "creator-story", "display-mode", "display-settings", "ending-ui", "monster-motion", "palace-cast-rig", "palace-living-scene", "palace-startup", "renderer", "rpg-art", "stage-2d", "sw", "theater", "world", "world-3d"])expected[name]='20261019-unified1';
+  for(const name of ['overlord-boss','overlord-room','overlord-battle-scene'])expected[name]='20261028-overlord1';
   for(const name of ['app.js','stage-2d.js','rpg-model.js','battle-scene.js','world.js','creator-ui.js','creator-runtime.js','encounter-model.js','ending-ui.js'])for(const match of read(name).matchAll(/(?:from\s+|import\()'((?:\.\/|\.\.\/)[^']+\.js[^']*)'/g)){const module=match[1].match(/([^/]+)\.js/)[1];if(match[1].startsWith('./vendor/'))continue;const release=name==='creator-runtime.js'&&['movement-runtime','patrol-model'].includes(module)?'20261017-review1':expected[module]||version;assert(match[1].endsWith('?v='+release),`${name}: ${match[1]}`);}
   assert(html.includes('viewport-fit=cover'));assert(html.includes('apple-touch-icon'));assert(html.includes('apple-mobile-web-app-capable'));assert(!app.includes('serviceWorker.register'));
 });

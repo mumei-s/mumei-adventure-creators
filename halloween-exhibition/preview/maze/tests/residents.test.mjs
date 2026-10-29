@@ -19,7 +19,7 @@ test('residents render moving frames without increasing the shared character cac
  assert(new Set(poses).size>20);assert.deepEqual(creatorPose(npc,10,false,flags),creatorPose(npc,40,false,flags));}
 });
 test('witch and masked wanderer are optional and cannot add requirements to existing completion',()=>{
- assert.equal(MONSTERS.length,6);assert.equal(ALL_MONSTERS.length,10);assert.equal(OPTIONAL_MONSTERS.length,4);assert.deepEqual(REQUIRED_MONSTER_IDS,MONSTERS.map(m=>m.id));
+ assert.equal(MONSTERS.length,6);assert.equal(ALL_MONSTERS.length,11);assert.equal(OPTIONAL_MONSTERS.length,4);assert.deepEqual(REQUIRED_MONSTER_IDS,MONSTERS.map(m=>m.id));
  assert.equal(eligibleForEnding({unlocked:true,reachedVault:true,cleared:[...REQUIRED_MONSTER_IDS]},REQUIRED_MONSTER_IDS),true);
  assert.equal(eligibleForEnding({unlocked:true,reachedVault:true,cleared:['witch','masked_wanderer']},REQUIRED_MONSTER_IDS),false);
  assert(read('app.js').includes('eligibleForEnding({unlocked:state.unlocked,cleared,reachedVault},REQUIRED_MONSTER_IDS)'));

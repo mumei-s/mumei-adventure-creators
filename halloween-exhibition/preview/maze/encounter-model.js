@@ -13,12 +13,28 @@ export const MONSTERS = Object.freeze([
 ]);
 export {OPTIONAL_MONSTERS};
 export const REQUIRED_MONSTER_IDS=Object.freeze(MONSTERS.map(m=>m.id));
-export const ALL_MONSTERS=Object.freeze([...MONSTERS,...OPTIONAL_MONSTERS]);
-export function monsterAvailable(monster,state){return (!monster.needsKey||state.unlocked)&&(!monster.needsCorridor||state.horrorAccepted);}
+// An optional authored character: never adds a seventh required clear or migrates saves.
+export const OVERLORD_BOSS=Object.freeze({
+  id:'nameless_overlord',name:'無名から頂点へ至る覇王 S',icon:'♛',color:'#c9a348',
+  x:23,z:4,hint:'北の書庫・第666階層「無名の覇王城」への試練（解錠後）',
+  optional:true,nativeModel:true,needsKey:true,needsOverlordDoor:true,
+  arena:'第666階層「無名の覇王城」',titleLevel:999,titleHP:999999,
+  signatureSkill:'無名神話・覇天絶滅斬',
+});
+export const ALL_MONSTERS=Object.freeze([...MONSTERS,...OPTIONAL_MONSTERS,OVERLORD_BOSS]);
+export function monsterAvailable(monster,state){return (!monster.needsKey||state.unlocked)&&(!monster.needsCorridor||state.horrorAccepted)&&(!monster.needsOverlordDoor||state.overlordUnlocked);}
 export const BATTLE_ACTIONS = Object.freeze(['shine','guard','attack']);
 // A telegraph is shown before every decision. There are no hidden rolls or timers.
 const turn=(name,damage,stance,hint,weakness=null,armor=0)=>Object.freeze({name,damage,stance,hint,weakness,armor});
 export const ENCOUNTER_RULES = Object.freeze({
+  // Level/HP on the character card are lore. This lantern trial remains winnable
+  // with the existing eight courage points and fully telegraphed commands.
+  nameless_overlord:Object.freeze({spirit:30,turns:Object.freeze([
+    turn('五振りの紅剣を展開',1,'五振りの魔剣が玉座の周囲へ広がる','光で剣の間を照らし、影をほどこう。','shine',1),
+    turn('無名神話・覇天絶滅斬',5,'王冠が輝き、五振りの紅剣が頭上に集まる','大技の予告。守れば勇気を失わず完全に防げる。',null,2),
+    turn('覇王の一礼',0,'剣を下げ、挑戦者に一礼した','杖で足元の影を払う好機。反撃はない。','attack'),
+    turn('紅のマントを翻す',3,'赤いマントに影が集まる','守って次の光をためよう。'),
+  ])}),
   werewolf:Object.freeze({spirit:21,turns:Object.freeze([
     turn('星の音に耳を澄ます',0,'耳を立て、足元の影を見失った','杖で星に絡まる影を払う好機。','attack'),
     turn('星を数える遠吠え',4,'銀の鈴を持ち、息を大きく吸った','守って、遠吠えの合図を聞こう。'),
@@ -86,6 +102,7 @@ export function monsterPose(monster,time=0,motion=true,state={}){
 export function guidePoint(monster,state={},time=0,motion=true){
   if(monster.needsKey&&!state.unlocked)return {x:8,z:7.4,yaw:0,hint:'北の格子扉です。東の鍵の間で鍵を見つけ、ここで使います。'};
   if(monster.needsCorridor&&!state.horrorAccepted)return {x:5,z:10,yaw:Math.PI/2,hint:'西の扉です。「調べる」から回廊へ入れます。'};
+  if(monster.needsOverlordDoor&&!state.overlordUnlocked)return {x:17,z:3,yaw:-Math.PI/2,hint:'「666」の封印扉です。調べると、ハロウィーンの魔法が隠された覇王城への道をひらきます。'};
   const position=monsterPose(monster,time,motion,state);
   for(const [dx,dz]of[[0,.7],[.7,0],[-.7,0],[0,-.7]]){const p={x:position.x+dx,z:position.z+dz};if(patrolPointSafe(p,state)&&patrolSegmentSafe(position,p,state))return{...p,yaw:Math.atan2(dx,dz),hint:`${monster.name}の近くです。`};}
   return{x:8,z:12,yaw:0,hint:'入口から、地図でモンスターの位置を確認できます。'};

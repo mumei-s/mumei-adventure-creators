@@ -37,7 +37,7 @@ function harness(kind,{reward=false,lantern=true,cameraDistance='normal',failedS
   initDisplayMode:options=>{const section=element('section',undefined,'display-preferences'),select=element('select');section.setAttribute('aria-label','表示サイズ');for(const [value,label] of [['auto','自動'],['phone','スマホ用'],['tablet','タブレット用'],['desktop','PC用']]){const option=element('option',label);option.value=value;select.append(option);}section.append(element('label','表示サイズ'),select);options.controlsParent.append(section);record.layouts.push({options,section});return {destroy(){record.destroyed.layout++;section.remove();}};},
   rewardStore:{read:()=>reward},runId:'saved-run',renderer:failedScenery?{status:()=>({failed:['floor']}),retry:async()=>record.calls.push('retryScenery'),invalidate:recordCall('invalidate')}:null,notify:recordCall('notify'),
  });
- const callbacks=['showMap','showWalkingSpeed','showControlSettings','showSettings','showCreatorHomes','showVisitors','showJournal','showTownJournal','showInventory','showSave','showHelp','showCastleReturn','showLighting','showCatalog','showStory','showCreators','showResidents','showEncounters','resetPosition','showEnding'];
+ const callbacks=['showMap','showWalkingSpeed','showControlSettings','showSettings','showCreatorHomes','showVisitors','showJournal','showTownJournal','showInventory','showSave','showHelp','showCastleReturn','showLighting','showCatalog','showStory','showCreators','showResidents','showEncounters','meetOverlord','resetPosition','showEnding'];
  for(const name of callbacks)context[name]=recordCall(name);
  const camera=element('button'),pause=element('button');camera.onclick=()=>{context.cameraDistance=nextCameraDistance(context.cameraDistance);record.calls.push('camera');};pause.onclick=()=>{context.motion=!context.motion;context.updateMotion();};
  context.$=id=>id==='camera-distance'?camera:id==='pause'?pause:flatten(content).find(node=>node.id===id);
@@ -76,7 +76,8 @@ test('town: creator, story, backup, help and castle actions remain reachable aft
 
 test('maze: catalog, story, resident, battle, reward and exit routes survive the compact menu',()=>{
  const h=harness('maze',{reward:true});h.run.menu();
- for(const [label,action] of [['記事一覧','showCatalog'],['冒険の物語','showStory'],['物語の仲間','showCreators'],['宮殿の住人','showResidents'],['モンスターと遊ぶ','showEncounters'],['クリア記念をもう一度見る','showEnding']]){h.find(label).click();assert.equal(h.record.calls.at(-1),action);}
+ assert.equal(h.menu().children[5].id,'overlord-direct-open');assert.equal(h.menu().children[5].className,'primary');
+ for(const [label,action] of [['覇王Sに会う・対戦','meetOverlord'],['記事一覧','showCatalog'],['冒険の物語','showStory'],['物語の仲間','showCreators'],['宮殿の住人','showResidents'],['モンスターと遊ぶ','showEncounters'],['クリア記念をもう一度見る','showEnding']]){h.find(label).click();assert.equal(h.record.calls.at(-1),action);}
  for(const [label,url] of [['キャラ見比べ','../characters/'],['クリア名鑑','./clear-gallery/'],['名鑑へ戻る','../?mode=halloween']])assert.equal(h.find(label).href,url);
  assert.equal(h.menu().children.at(-2).textContent,'名鑑へ戻る');h.find('地下の入口へ').click();assert.deepEqual(h.record.calls.slice(-2),['closePanel','resetPosition']);
  const fresh=harness('maze');fresh.run.menu();assert.equal(fresh.find('クリア記念をもう一度見る'),undefined,'reward replay remains conditional on a saved reward');

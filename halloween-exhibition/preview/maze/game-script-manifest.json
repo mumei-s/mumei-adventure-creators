@@ -104,8 +104,8 @@
     },
     {
       "path": "maze/app.js",
-      "bytes": 72774,
-      "sha256": "169f22dcdfdf36a6d4b65c917d394ceb9b16d4ad615930326626cc0738cf2190"
+      "bytes": 78870,
+      "sha256": "998c8d677e1e7567a17f5c4aeadceaa61820a99254343b9e9be49f9c197a3a99"
     },
     {
       "path": "maze/battle-scene.js",
@@ -114,8 +114,8 @@
     },
     {
       "path": "maze/battle-story.css",
-      "bytes": 10370,
-      "sha256": "5368cbd6b7a9a641b0bd7821ecc06af71675d02d153267a2c5f25eab41e1a187"
+      "bytes": 10812,
+      "sha256": "b468b35024b586faff73f17b489f70aaa3b5451fcadce01ceaa25bbf1df3bc9b"
     },
     {
       "path": "maze/change-only-ui.js",
@@ -174,8 +174,8 @@
     },
     {
       "path": "maze/encounter-model.js",
-      "bytes": 11820,
-      "sha256": "d6a16aa9ffe8a81df19675984ab039fe2d926151381cbb04dafc102419a862b8"
+      "bytes": 13470,
+      "sha256": "d3a05d2d06f80e1a66ed27f730c87c967036ddeab090de6cc4c5a3ba7f8a56b6"
     },
     {
       "path": "maze/ending-ui.js",
@@ -219,8 +219,8 @@
     },
     {
       "path": "maze/maze-model.js",
-      "bytes": 2127,
-      "sha256": "03d2856c3208ba11fd42845d7323c00d84c8458a1a223d568cb85468b9444974"
+      "bytes": 2911,
+      "sha256": "806b9884a297354397806f22064c198c1c461ac70dfdda83df4585d660564691"
     },
     {
       "path": "maze/minimap-size.js",
@@ -248,14 +248,24 @@
       "sha256": "88631159ee420f1edc851a2a3c69df0e858294b99284aede42707e5155fc7341"
     },
     {
+      "path": "maze/overlord-boss.js",
+      "bytes": 21216,
+      "sha256": "47e67e53adc8c5659886cf1a801104bdd67c9428cf6e17edb3b3e3289d0ec07f"
+    },
+    {
+      "path": "maze/overlord-room.js",
+      "bytes": 5639,
+      "sha256": "b3a2bde6e3bef5bdd3c6191e4b79adee031387f67c6839916e7a67668ebb2ce5"
+    },
+    {
       "path": "maze/palace-furnishing-art.js",
       "bytes": 8962,
       "sha256": "522ea5c4618bce4f5600396251d98acd7ad4ac422838b4c1c0ae04a3d13d5ce9"
     },
     {
       "path": "maze/patrol-model.js",
-      "bytes": 9232,
-      "sha256": "2b69068e1d78762f5fc0613eb8ef0ddb454942d828f5cb804e15075b9e32d04a"
+      "bytes": 9293,
+      "sha256": "020ea198fc10db9f9df57ebd411cc29e51053a00936b34623ef589de7dc0fe4c"
     },
     {
       "path": "maze/resident-model.js",
@@ -274,8 +284,8 @@
     },
     {
       "path": "maze/rpg-model.js",
-      "bytes": 1797,
-      "sha256": "420f9c864f198ef24a27d4ad9d684478865bd57c7cda15b5967733b56f744484"
+      "bytes": 1819,
+      "sha256": "e23483ec83bf2a554799e8a4253f33678daf10660ee4bacf610fa09185c7ccca"
     },
     {
       "path": "maze/rpg-ui.css",
@@ -294,8 +304,8 @@
     },
     {
       "path": "maze/stage-2d.js",
-      "bytes": 33523,
-      "sha256": "9f3d65104717c5f31626c667a9dc03272c6a5d7dedd1a55ace0461adba23f13f"
+      "bytes": 36919,
+      "sha256": "5712f43006268cce989489850a222d72d78ff2502160bd16a688dcda22a9a5cc"
     },
     {
       "path": "maze/startup-assets.js",
@@ -304,8 +314,8 @@
     },
     {
       "path": "maze/story-model.js",
-      "bytes": 11857,
-      "sha256": "9a071dc54573781ddaf69a32da210f7abee51cb88275eb4432e62949e5fc9f38"
+      "bytes": 14727,
+      "sha256": "dabf60382d6792f718db9d913b64499ad6a861084550740ff306b8efa4168306"
     },
     {
       "path": "maze/style.css",
@@ -329,8 +339,8 @@
     },
     {
       "path": "maze/world.js",
-      "bytes": 47644,
-      "sha256": "15e4f33f9c7fc92064f3bd857a5c9f5ca6155c45e814c5b68d9bab2da8900933"
+      "bytes": 48981,
+      "sha256": "7e32b5e1a72cbe764e3f453f9a6dfb4dd375cf4c96b57c46a647f65a3e96653b"
     },
     {
       "path": "package-lock.json",
@@ -433,7 +443,12 @@
   ],
   "imports": [
     {
-      "path": "./game-world.js?v=20261019-game-fast1-712393eff1fc",
+      "path": "./overlord-battle-scene.js?v=20261028-overlord1",
+      "kind": "dynamic-import",
+      "external": true
+    },
+    {
+      "path": "./game-world.js?v=20261019-game-fast1-caffa51b1bf4",
       "kind": "dynamic-import",
       "external": true
     }
@@ -445,27 +460,27 @@
     },
     {
       "path": "maze/app.js",
-      "bytes": 47012
+      "bytes": 51232
     },
     {
       "path": "maze/stage-2d.js",
-      "bytes": 24859
+      "bytes": 27693
     },
     {
       "path": "maze/creator-runtime.js",
       "bytes": 19425
     },
     {
-      "path": "maze/patrol-model.js",
-      "bytes": 11730
+      "path": "maze/story-model.js",
+      "bytes": 13658
     },
     {
-      "path": "maze/story-model.js",
-      "bytes": 10958
+      "path": "maze/patrol-model.js",
+      "bytes": 11834
     },
     {
       "path": "maze/encounter-model.js",
-      "bytes": 9019
+      "bytes": 10297
     },
     {
       "path": "maze/battle-scene.js",
@@ -536,6 +551,10 @@
       "bytes": 2076
     },
     {
+      "path": "maze/maze-model.js",
+      "bytes": 1970
+    },
+    {
       "path": "transition-effects.js",
       "bytes": 1843
     },
@@ -564,10 +583,6 @@
       "bytes": 1747
     },
     {
-      "path": "maze/maze-model.js",
-      "bytes": 1413
-    },
-    {
       "path": "viewpoint-presets.js",
       "bytes": 1325
     },
@@ -585,7 +600,7 @@
     },
     {
       "path": "maze/rpg-model.js",
-      "bytes": 834
+      "bytes": 879
     },
     {
       "path": "maze/context-action.js",
@@ -642,8 +657,8 @@
   ],
   "output": {
     "path": "maze/game-entry.js",
-    "bytes": 353899,
-    "sha256": "bdc2edebfb65d68ab515ce556ee2196bb024f4d0bb9882c93b01e451a45850dc"
+    "bytes": 365637,
+    "sha256": "34a747d7395c6229753e2313082a2a6327994466765adab67075e08c22154300"
   },
   "styleSources": [
     "./style.css?v=20261014-adventure2",
@@ -671,13 +686,13 @@
   ],
   "styles": {
     "path": "maze/game-styles.css",
-    "bytes": 141059,
-    "sha256": "8b8d0a2b66fc685fb5f70a803055af020e9b248a029a71f6e2de8031b6d744a6"
+    "bytes": 141411,
+    "sha256": "d67f31fe1b4a1d2c4dece138299fa96c6ef7e57d73691450a23f0e6d57841062"
   },
   "world": {
     "path": "maze/game-world.js",
-    "bytes": 67898,
-    "sha256": "712393eff1fcd9f43d8ebcfff62ac0f889aa2e62196dc6c77aeca57da4a0d8a4",
+    "bytes": 93239,
+    "sha256": "caffa51b1bf415d26274dc5000527a0500887f8409a435e3acfb848617b85ce8",
     "imports": [
       {
         "path": "./vendor/three.module.js",

@@ -139,8 +139,8 @@
     },
     {
       "path": "maze/maze-model.js",
-      "bytes": 2127,
-      "sha256": "03d2856c3208ba11fd42845d7323c00d84c8458a1a223d568cb85468b9444974"
+      "bytes": 2911,
+      "sha256": "806b9884a297354397806f22064c198c1c461ac70dfdda83df4585d660564691"
     },
     {
       "path": "maze/monster-motion-data.js",
@@ -164,8 +164,8 @@
     },
     {
       "path": "maze/patrol-model.js",
-      "bytes": 9232,
-      "sha256": "2b69068e1d78762f5fc0613eb8ef0ddb454942d828f5cb804e15075b9e32d04a"
+      "bytes": 9293,
+      "sha256": "020ea198fc10db9f9df57ebd411cc29e51053a00936b34623ef589de7dc0fe4c"
     },
     {
       "path": "maze/rig-animation.js",
@@ -179,8 +179,8 @@
     },
     {
       "path": "maze/rpg-model.js",
-      "bytes": 1797,
-      "sha256": "420f9c864f198ef24a27d4ad9d684478865bd57c7cda15b5967733b56f744484"
+      "bytes": 1819,
+      "sha256": "e23483ec83bf2a554799e8a4253f33678daf10660ee4bacf610fa09185c7ccca"
     },
     {
       "path": "maze/startup-assets.js",
@@ -619,7 +619,7 @@
     },
     {
       "path": "maze/patrol-model.js",
-      "bytes": 2439
+      "bytes": 2471
     },
     {
       "path": "maze/movement-runtime.js",
@@ -690,6 +690,10 @@
       "bytes": 667
     },
     {
+      "path": "maze/maze-model.js",
+      "bytes": 627
+    },
+    {
       "path": "town/lighting.js",
       "bytes": 574
     },
@@ -722,10 +726,6 @@
       "bytes": 307
     },
     {
-      "path": "maze/maze-model.js",
-      "bytes": 257
-    },
-    {
       "path": "viewpoint-controls.js",
       "bytes": 223
     },
@@ -744,8 +744,8 @@
   ],
   "output": {
     "path": "town/game-entry.js",
-    "bytes": 483373,
-    "sha256": "bb31272a78d2b1e8b4113cab06fa96f967c7c2581dc99122f012ed07fca5c54e"
+    "bytes": 483775,
+    "sha256": "42c9bdcea8e6fb4f20dc50f7740f666112ba114254198f1104071f838ab3112e"
   },
   "styleSources": [
     "../display-mode.css?v=20261014-layout1",

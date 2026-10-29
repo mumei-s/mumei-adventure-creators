@@ -2,7 +2,7 @@
  * credentials and unknown query strings always bypass this worker. */
 const SCOPE = new URL('./', self.location.href);
 // BEGIN GENERATED SHELL (node halloween-exhibition/scripts/build-preview-cache.mjs)
-const SHELL_REVISION = '343c328cdbd8bce9';
+const SHELL_REVISION = '6d3576c314ddaaf0';
 const PUBLIC_ASSETS = [
   ["assets/atelier-door-180.png",56294],
   ["assets/atelier-door-192.png",62766],
@@ -25,7 +25,7 @@ const PUBLIC_ASSETS = [
   ["assets/panel-magic/ghost.svg",5094],
   ["assets/panel-magic/lantern.svg",5194],
   ["castle-visit-counter.js?v=20261017-castle2",15215],
-  ["gallery-entry.js?v=20261019-fast2-ce04bea7dee2",128271],
+  ["gallery-entry.js?v=20261019-fast2-aa6e8c1386c0",128489],
   ["gallery-styles.css?v=20261019-fast2-058ff9fab18a",330219],
   ["manifest.webmanifest",4955],
   ["palace-living-scene.css?v=20261024-ready1",6521],
@@ -33,7 +33,7 @@ const PUBLIC_ASSETS = [
 ];
 // END GENERATED SHELL
 const CACHE_PREFIX = 'mumei-atelier-shell-';
-const CACHE = CACHE_PREFIX + 'v43-startup-' + SHELL_REVISION + ':' + SCOPE.pathname;
+const CACHE = CACHE_PREFIX + 'v44-fresh-' + SHELL_REVISION + ':' + SCOPE.pathname;
 const HTML_KEY = new URL('index.html', SCOPE).href;
 const HTML_LIMIT = 192 * 1024;
 const NAVIGATION_WAIT_MS = 450;
@@ -148,8 +148,11 @@ self.addEventListener('install', event => {
       await save(HTML_KEY, response, HTML_LIMIT);
       if (!(await readCache(HTML_KEY))) throw new Error('Public shell storage unavailable');
     });
+    // An open gallery/game tab must not leave the next release waiting forever.
+    // Activate only after the current public shell is safely stored. This does
+    // not reload any page, claim an uncontrolled tab or touch saved progress.
+    await self.skipWaiting();
   })());
-  // No skipWaiting: never force a reload or interrupt a game in progress.
 });
 self.addEventListener('activate', event => {
   if (!inPreview) return;

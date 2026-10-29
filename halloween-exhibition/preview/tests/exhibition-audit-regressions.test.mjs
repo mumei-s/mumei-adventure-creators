@@ -13,9 +13,10 @@ const flush=()=>new Promise(resolve=>setImmediate(resolve));
 test('maze does not request any optional scene images before explicit start',async()=>{
  const calls=[],art=createArtLibrary({loadPlayer:false,deferOptional:true,deferScene:true,loadImage:async url=>{calls.push(url);return{width:512,height:512};}});
  assert.equal(calls.length,0);await flush();assert.equal(calls.length,0,'deferral survives the queued loader microtask');
- const scene=art.startScene();assert.equal(art.startScene(),scene,'explicit scene startup is idempotent');await scene;assert.equal(calls.length,17);
+ const scene=art.startScene();assert.equal(art.startScene(),scene,'explicit scene startup is idempotent');await scene;assert.equal(calls.length,16);
  for(const file of ['battle-library.webp','bookcase.webp','window.webp','column.webp','pumpkins.webp','floor.webp'])assert(!calls.some(url=>new URL(url).pathname.endsWith('/'+file)),file+' remains deferred');
- const remaining=art.loadRemaining();assert.equal(art.loadRemaining(),remaining);await art.ready;assert.equal(calls.length,23);assert.equal(new Set(calls).size,23,'scene, boss cutout and optional art are decoded only once');
+ const remaining=art.loadRemaining();assert.equal(art.loadRemaining(),remaining);await art.ready;assert.equal(calls.length,22);assert(!calls.some(url=>url.includes('queen-original-art')),'the optional queen does not compete with corridor startup');
+ await art.ensure('nameless_overlord');assert.equal(calls.length,23);assert.equal(new Set(calls).size,23,'explicitly requested art is decoded only once');
  assert.match(app,/createArtLibrary\(\{loadPlayer:false,deferOptional:true,deferScene:true\}\)/);
  assert.ok(app.indexOf('void rpgArt.startScene()')>app.indexOf('gameReady=true;loading.hidden=true'));
 });

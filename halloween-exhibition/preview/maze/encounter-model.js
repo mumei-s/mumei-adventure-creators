@@ -95,6 +95,10 @@ export function prankFor(battle){
 }
 const monsterPatrols=new Map();
 export function monsterPose(monster,time=0,motion=true,state={}){
+ // The throne character waits on its stage. A patrol crossing through the
+ // traveller could put it behind the first-person camera while the interaction
+ // control still reported it nearby. Both rendering and guidance use this pose.
+ if(monster.id==='nameless_overlord')return {x:monster.x,z:monster.z,yaw:0,facing:'down',walking:false,turning:false,phase:0,speed:0,distance:0,turnProgress:0,animationAssetComplete:false};
  let route=monsterPatrols.get(monster.id);if(!route){route=createActorPatrol(monster,{role:'monster'});monsterPatrols.set(monster.id,route);}
  return samplePatrolPosition(route,time,{motion,state});
 }

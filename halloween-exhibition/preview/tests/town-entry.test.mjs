@@ -27,7 +27,8 @@ test('routes keep 36px compact palace targets and 44px gallery targets with read
 test('both basement labels are outside the painting and header moves the complete destination group',async()=>{
  const theater=await readFile(new URL('../theater.js',import.meta.url),'utf8');
  assert.ok(html.indexOf('id="palace-world-links"')<html.indexOf('</header>'));
- assert.equal((html.match(/>宮殿の地下に進む</g)||[]).length,2);
+ const readyPage=html.replace(/<section id="gallery-style-status"[\s\S]*?<\/section>/,'');
+ assert.equal((readyPage.match(/>宮殿の地下に進む</g)||[]).length,2,'the first-paint shell is replaced, not added to the ready header');
  assert.doesNotMatch(html,/宮殿の奥に進む/);
  assert.match(theater,/entranceControl:\$\('palace-world-links'\)/);
  assert.match(css,/grid-column:1;grid-row:1/);

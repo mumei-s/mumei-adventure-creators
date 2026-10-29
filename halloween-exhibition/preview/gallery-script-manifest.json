@@ -85,8 +85,8 @@
     },
     {
       "path": "palace-startup.js",
-      "bytes": 8080,
-      "sha256": "d6134d0654a5d97b0fe2b4961e4224ef0ec88f4ae89c58a8bfe371573d4d372f"
+      "bytes": 8317,
+      "sha256": "3488054d0d07292797733bc0b657a7f0a598e83eaeeeb9bf9adfcf786dc71fd9"
     },
     {
       "path": "pwa.js",
@@ -136,8 +136,8 @@
   ],
   "output": {
     "path": "gallery-entry.js",
-    "bytes": 112886,
-    "sha256": "ce04bea7dee2a21b7dace7003b30dd31cdf5469ead2a508d1c53585e5dd80c5c"
+    "bytes": 113084,
+    "sha256": "aa6e8c1386c0c4dedd483a3a6bf39b96f4f1e52a426971256475425278af493f"
   },
   "styles": {
     "path": "gallery-styles.css",

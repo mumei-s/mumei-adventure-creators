@@ -71,8 +71,7 @@ test('pulled-back exploration uses a traveller light instead of shining the came
     const off=sample({wide,lantern:false});
     for(const name of ['headlamp','nearLamp','heldLantern','wideLantern'])assert.equal(off[name].visible,false,'OFF turns off '+name);
   }
-  assert(source.includes('material.envMap=overlordReflection.texture;material.envMapIntensity=.58'));
-  assert(!source.includes('scene.environment=overlordReflection.texture'),'queen reflections do not flood the rest of the palace');
+  assert(!source.includes('overlordReflection'),'the original-art character needs no reflection environment');
 });
 test('2D, encounters, exit, and game-only audio remain first-class controls',()=>{
   const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');

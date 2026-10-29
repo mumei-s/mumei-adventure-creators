@@ -40,7 +40,7 @@ export function schedulePalaceResidents(root,{ready,timers=globalThis,loadReside
  const doc=root.ownerDocument,win=doc?.defaultView||globalThis,connection=win.navigator?.connection;
  if(connection?.saveData||['slow-2g','2g'].includes(connection?.effectiveType))return;
  let settled=false,timer=null,idle=null,observer,started=false,finished=false,attempts=0,pageHidden=false;
- const usable=()=>settled&&!pageHidden&&!doc?.hidden&&root.dataset.theaterReady==='ready'&&root.dataset.archiveState==='ready'&&(!root.dataset.palaceState||root.dataset.palaceState==='palace');
+ const usable=()=>settled&&!pageHidden&&!doc?.hidden&&!doc?.documentElement?.classList?.contains('gallery-style-pending')&&root.dataset.theaterReady==='ready'&&root.dataset.archiveState==='ready'&&(!root.dataset.palaceState||root.dataset.palaceState==='palace');
  const cancel=()=>{if(timer!==null)timers.clearTimeout(timer);timer=null;if(idle!==null)win.cancelIdleCallback?.(idle);idle=null;};
  const cleanup=()=>{cancel();observer?.disconnect();doc?.removeEventListener?.('visibilitychange',resume);win.removeEventListener?.('pageshow',resume);win.removeEventListener?.('pagehide',hide);};
  const check=()=>{
@@ -66,7 +66,7 @@ export function schedulePalaceResidents(root,{ready,timers=globalThis,loadReside
  function resume(){pageHidden=false;if(!doc?.hidden)attempts=0;check();}
  function hide(){pageHidden=true;cancel();}
  const Observer=win.MutationObserver;
- if(typeof Observer==='function'){observer=new Observer(check);observer.observe(root,{attributes:true,attributeFilter:['data-theater-ready','data-archive-state','data-palace-state']});}
+ if(typeof Observer==='function'){observer=new Observer(check);observer.observe(root,{attributes:true,attributeFilter:['data-theater-ready','data-archive-state','data-palace-state']});if(doc.documentElement)observer.observe(doc.documentElement,{attributes:true,attributeFilter:['class']});}
  doc?.addEventListener?.('visibilitychange',resume);win.addEventListener?.('pageshow',resume);win.addEventListener?.('pagehide',hide);
  void Promise.resolve(ready).then(()=>{settled=true;check();});
  return()=>{finished=true;cleanup();};
@@ -95,7 +95,7 @@ export function initPalaceStartup(root,{timers=globalThis,ImageClass,loadResiden
  try{const Picture=ImageClass||doc.defaultView?.Image||globalThis.Image;gateTexture=new Picture();}catch{}
  const painted={castle:false,gate:false},markReady=kind=>{painted[kind]=true;root.dataset.palaceReady=painted.castle&&painted.gate?'ready':'fallback';};
  const castleReady=settlePalaceImage(image,{timers,onReady:()=>markReady('castle')}),gateReady=settlePalaceImage(gateTexture,{timers,onReady:()=>markReady('gate')});
- if(gateTexture)gateTexture.src=new URL(root.dataset.palaceFormat==='portrait'?'./assets/palace/gate-phone.webp':'./assets/palace/gate-desktop.webp',import.meta.url).href;
+ if(gateTexture){gateTexture.decoding='async';gateTexture.fetchPriority='low';gateTexture.src=new URL(root.dataset.palaceFormat==='portrait'?'./assets/palace/gate-phone.webp':'./assets/palace/gate-desktop.webp',import.meta.url).href;}
  const ready=Promise.all([castleReady,gateReady]);
  schedulePalaceResidents(root,{ready,timers,loadResidents});
  startups.set(root,ready);return ready;

@@ -59,6 +59,7 @@ export function bindDirectionPad(pad,{blocked=()=>false,onChange,mode='fixed'}){
   const listeners=[];
   const listen=(target,type,handler)=>{if(!target?.addEventListener)return;target.addEventListener(type,handler);listeners.push(()=>target.removeEventListener?.(type,handler));};
   const selectedMode=()=>{try{return (typeof mode==='function'?mode():mode)==='slide'?'slide':'fixed';}catch{return 'fixed';}};
+  const slideRadius=rect=>Math.max(20,Math.min(36,Math.min(rect.width,rect.height)*.24));
   const setDirection=next=>{if(next===direction)return;direction=next;onChange(direction);};
   const visual=(event,rect)=>{
     const dx=event.clientX-rect.left-rect.width/2,dy=event.clientY-rect.top-rect.height/2,length=Math.hypot(dx,dy)||1,scale=Math.min(1,Math.min(rect.width,rect.height)*.3/length);
@@ -69,7 +70,7 @@ export function bindDirectionPad(pad,{blocked=()=>false,onChange,mode='fixed'}){
   const update=event=>{
     const rect=pad.getBoundingClientRect();
     if(pressMode==='slide'){
-      let dx=event.clientX-anchor.x,dy=event.clientY-anchor.y;const length=Math.hypot(dx,dy),radius=Math.max(20,Math.min(36,Math.min(rect.width,rect.height)*.24)),deadZone=Math.max(5,Math.min(9,Math.min(rect.width,rect.height)*.055));
+      let dx=event.clientX-anchor.x,dy=event.clientY-anchor.y;const length=Math.hypot(dx,dy),radius=slideRadius(rect),deadZone=Math.max(5,Math.min(9,Math.min(rect.width,rect.height)*.055));
       // Follow an overextended thumb. Reversing direction then needs only a short
       // slide, even after the captured finger has drifted outside the pad.
       if(length>radius){anchor.x=event.clientX-dx/length*radius;anchor.y=event.clientY-dy/length*radius;dx=event.clientX-anchor.x;dy=event.clientY-anchor.y;}
@@ -92,7 +93,12 @@ export function bindDirectionPad(pad,{blocked=()=>false,onChange,mode='fixed'}){
     anchor={x:event.clientX,y:event.clientY};dragged=false;
     if(pressMode==='slide'){
       const rect=pad.getBoundingClientRect(),requested=button?.dataset?.move;
-      setDirection(['forward','back','left','right'].includes(requested)?requested:directionAtPoint(event.clientX-rect.left,event.clientY-rect.top,rect.width,rect.height));
+      const initial=['forward','back','left','right'].includes(requested)?requested:directionAtPoint(event.clientX-rect.left,event.clientY-rect.top,rect.width,rect.height);
+      setDirection(initial);
+      // An arrow starts already held in its labelled direction. Preload that
+      // vector so normal sideways thumb drift cannot immediately turn the
+      // camera. A neutral centre touch keeps the original free-slide origin.
+      if(initial){const [dx,dy]={forward:[0,-1],back:[0,1],left:[-1,0],right:[1,0]}[initial],radius=slideRadius(rect);anchor.x-=dx*radius;anchor.y-=dy*radius;}
       visual(event,rect);
     }else update(event);
   });

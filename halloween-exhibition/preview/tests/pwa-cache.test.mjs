@@ -25,13 +25,13 @@ function publicResponse(request) {
 }
 function harness({ scope = base, network = async request => publicResponse(request), storageDenied = false, storageBlocked = false, readBlocked = false, sourceText = source } = {}) {
   const handlers = {}, stores = new Map(), fetched = [], deleted = [], timers = new Map();
-  let clock = 0, timerId = 0;
+  let clock = 0, timerId = 0, activationRequests = 0;
   const keyOf = value => typeof value === 'string' ? value : value.url;
   const context = vm.createContext({
     URL, Request, Response, AbortController, Set, Map,
     setTimeout(fn, ms) { const id = ++timerId; timers.set(id, { fn, at: clock + ms }); return id; },
     clearTimeout(id) { timers.delete(id); },
-    self: { location: { href: scope + 'sw.js' }, addEventListener(type, handler) { handlers[type] = handler; } },
+    self: { location: { href: scope + 'sw.js' }, addEventListener(type, handler) { handlers[type] = handler; }, async skipWaiting() { activationRequests++; } },
     caches: {
       async open(name) {
         if (storageDenied) throw Error('storage denied');
@@ -68,7 +68,7 @@ function harness({ scope = base, network = async request => publicResponse(reque
     if (!stores.has(cacheName)) stores.set(cacheName, new Map());
     stores.get(cacheName).set(key, basic(value, options));
   }
-  return { config, dispatch, advance, seed, stores, fetched, deleted, timers };
+  return { config, dispatch, advance, seed, stores, fetched, deleted, timers, get activationRequests() { return activationRequests; } };
 }
 
 test('generated exact dependency map is current and has hard count/byte bounds', async () => {
@@ -95,7 +95,32 @@ test('installation performs exactly one bounded credential-free HTML request', a
   assert.equal(h.fetched[0].credentials, 'omit');
   assert.equal(h.fetched[0].cache, 'no-cache');
   assert.deepEqual([...h.stores.get(h.config.CACHE).keys()], [h.config.HTML_KEY]);
+  assert.equal(h.activationRequests, 1, 'a validated new shell need not wait for every old tab to close');
   assert.equal(h.timers.size, 0);
+});
+
+test('a replacement worker activates only after its new shell is stored, without reloading pages or changing progress', async () => {
+  let finish;
+  const h = harness({ network: () => new Promise(resolve => { finish = resolve; }) });
+  const install = h.dispatch('install');
+  await settle();
+  assert.equal(h.activationRequests, 0, 'a pending download cannot take over the next navigation');
+  finish(basic('<!doctype html>new deployment'));
+  await install.done;
+  assert.match(await h.stores.get(h.config.CACHE).get(h.config.HTML_KEY).text(), /new deployment/);
+  assert.equal(h.activationRequests, 1);
+  for (const mode of ['navigate', 'cors']) for (const path of ['maze/', 'maze/game-entry.js?v=next', 'maze/game-world.js?v=next', 'maze/assets/overlord/queen-body-front.webp', 'town/']) {
+    assert.equal(h.dispatch('fetch', base + path, {mode}).intercepted, false, path);
+  }
+  assert.doesNotMatch(source.replace(/\/\/[^\n]*/g, ''), /clients\.claim\s*\(|location\.reload|\.navigate\s*\(|localStorage|sessionStorage|\.clear\(/);
+});
+
+test('an unavailable replacement shell never requests activation', async () => {
+  for (const settings of [{storageDenied:true}, {network:async()=>basic('unavailable',{status:503})}]) {
+    const h=harness(settings);
+    await assert.rejects(h.dispatch('install').done);
+    assert.equal(h.activationRequests,0);
+  }
 });
 
 test('each exact version fills once on demand, then serves without a network roundtrip', async () => {
@@ -197,7 +222,7 @@ test('ordinary reload uses new network HTML even when an older shell is cached',
   assert.match(await (await request.response).text(), /new release/); await request.done;
   assert.match(await h.stores.get(h.config.CACHE).get(h.config.HTML_KEY).text(), /new release/);
   assert.equal(h.dispatch('fetch', base + 'theater.js?v=next').intercepted, false);
-  assert.doesNotMatch(source.replace(/\/\/[^\n]*/g, ''), /skipWaiting\s*\(|clients\.claim\s*\(|location\.reload|localStorage|sessionStorage|\.clear\(/);
+  assert.doesNotMatch(source.replace(/\/\/[^\n]*/g, ''), /clients\.claim\s*\(|location\.reload|localStorage|sessionStorage|\.clear\(/);
 });
 
 test('slow warm navigation falls back at 450 ms, then refreshes the next visit', async () => {

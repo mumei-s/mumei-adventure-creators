@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {renderOverlordBattle2D} from '../overlord-battle-2d.js';
+import {renderOverlordBattle2D,overlordBattleSwordShape,overlordBattleSwordFlightShape} from '../overlord-battle-2d.js';
 import {newBattle,battleTurn} from '../encounter-model.js';
 import {overlordActionDuration} from '../overlord-battle-director.js';
 
@@ -69,5 +69,67 @@ test('fallback backdrop has bounded living motion, changes after damage and warm
   const s=surface(),effect={type:'guard',started:0,blocked:5,counterSpecial:true};renderOverlordBattle2D({canvas:s.canvas,art,battle:state,effect,time,motion:true});
   assert(s.calls.filter(call=>call[0]==='beginPath').length<180,'mobile painting budget stays bounded through five-blade impacts');
   assert(!JSON.stringify(s.calls).includes('NaN'),'paint coordinates and mixed colors stay finite');
+ }
+});
+
+test('a full-health special opens a flowing astral corridor and returns to the hall after the resolved action',()=>{
+ const battle={...newBattle('nameless_overlord'),spirit:26},effect={type:'shine',started:10,damage:4,retaliation:5,counterSpecial:true};
+ const idle=surface(),charge=surface(),flow=surface(),settled=surface();
+ renderOverlordBattle2D({canvas:idle.canvas,art,battle,time:9,motion:true});
+ renderOverlordBattle2D({canvas:charge.canvas,art,battle,effect,time:11.50,motion:true});
+ renderOverlordBattle2D({canvas:flow.canvas,art,battle,effect,time:11.56,motion:true});
+ renderOverlordBattle2D({canvas:settled.canvas,art,battle,effect,time:13.3,motion:true});
+ const streakPath=s=>{
+  const end=s.calls.findIndex(call=>call[0]==='property'&&call[1]==='strokeStyle'&&String(call[2]).startsWith('rgba(210,218,255,'));
+  if(end<0)return[];
+  let begin=end;while(begin>0&&s.calls[begin][0]!=='beginPath')begin--;
+  return s.calls.slice(begin,end).filter(call=>call[0]==='moveTo'||call[0]==='lineTo');
+ };
+ assert.equal(streakPath(idle).length,0,'the corridor does not replace a command-selection room');
+ assert.equal(streakPath(charge).length,48,'twenty-four streaks are painted as one bounded path');
+ assert.notDeepEqual(streakPath(charge),streakPath(flow),'the light streams actually travel through the corridor');
+ assert.equal(streakPath(settled).length,0,'the corridor and speed streaks end with the shared encounter clock');
+ assert(charge.calls.some(call=>call[0]==='radial'&&call[2].some(stop=>stop[1]==='#05071200')),'the full-health charge changes the backdrop itself');
+ for(const s of [idle,charge,flow,settled])assert.equal(s.draws.filter(draw=>draw.image===queen).length,1,'the original queen remains one upright, unwarped painting');
+});
+
+test('impact painting expands rings at the target and reduced motion omits the astral spectacle',()=>{
+ const battle={...newBattle('nameless_overlord'),spirit:26},effect={type:'shine',started:10,damage:4,retaliation:5,counterSpecial:true};
+ const impact=surface(),quiet=surface();
+ renderOverlordBattle2D({canvas:impact.canvas,art,battle,effect,time:12.28,motion:true});
+ renderOverlordBattle2D({canvas:quiet.canvas,art,battle,effect,time:12.28,motion:false});
+ assert(impact.calls.some(call=>call[0]==='property'&&call[1]==='strokeStyle'&&String(call[2]).startsWith('rgba(255,221,191,')),'the impact has broad shock rings in addition to the travelling cut');
+ assert(impact.calls.some(call=>call[0]==='property'&&call[1]==='fillStyle'&&String(call[2]).startsWith('rgba(255,239,221,')),'an impact receives one bounded warm pulse');
+ assert(!quiet.calls.some(call=>call[0]==='property'&&['rgba(210,218,255,','rgba(255,221,191,','rgba(255,239,221,'].some(prefix=>String(call[2]).startsWith(prefix))),'reduced motion removes streams, shock movement and impact flashes');
+ assert(impact.calls.filter(call=>call[0]==='beginPath').length<180,'the spectacle still fits the existing mobile draw-path budget');
+});
+
+test('recognizable swords point their blades at the target while their guards cross the flight axis',()=>{
+ for(const target of [[180,90],[30,210],[220,200]]){
+  const origin=[110,100],shape=overlordBattleSwordShape(...origin,...target,55),dx=target[0]-origin[0],dy=target[1]-origin[1],length=Math.hypot(dx,dy),axis=[dx/length,dy/length];
+  const forward=p=>(p[0]-origin[0])*axis[0]+(p[1]-origin[1])*axis[1];
+  assert(forward(shape.tip)>35,'a long pointed blade extends toward the target');
+  assert(forward(shape.hilt)<-15,'the dark grip and pommel sit behind the blade');
+  const cross=[shape.guard[1][0]-shape.guard[5][0],shape.guard[1][1]-shape.guard[5][1]];
+  assert(Math.abs(cross[0]*axis[0]+cross[1]*axis[1])<.0001,'the crossguard is visibly transverse to the flight');
+  assert(Math.hypot(...cross)>20,'the gilded guard is readable at phone size');
+ }
+});
+
+test('five gilded sword grips appear for the special summon and disappear after the attack',()=>{
+ const battle={...newBattle('nameless_overlord'),spirit:26},effect={type:'shine',started:10,damage:4,retaliation:5,counterSpecial:true};
+ const guards=time=>{const s=surface();renderOverlordBattle2D({canvas:s.canvas,art,battle,effect,time,motion:true});return s.calls.filter(call=>call[0]==='property'&&call[1]==='fillStyle'&&call[2]==='#e6b865').length;};
+ assert.equal(guards(11.65),5,'the charge briefly forms five actual guarded swords');
+ assert.equal(guards(13.3),0,'no swords hang in the idle scene after the attack');
+ const quiet=surface();renderOverlordBattle2D({canvas:quiet.canvas,art,battle,effect,time:11.65,motion:false});
+ assert(!quiet.calls.some(call=>call[0]==='property'&&call[1]==='fillStyle'&&call[2]==='#e6b865'));
+});
+
+test('the actual sword point follows the timed flight and reaches the hero instead of overshooting',()=>{
+ const source=[270,180],target=[74,340];
+ for(const progress of [0,.2,.5,.9,1]){
+  const shape=overlordBattleSwordFlightShape(...source,...target,progress,55);
+  const expected=source.map((v,i)=>v+(target[i]-v)*progress);
+  assert(Math.hypot(shape.tip[0]-expected[0],shape.tip[1]-expected[1])<.00001);
  }
 });

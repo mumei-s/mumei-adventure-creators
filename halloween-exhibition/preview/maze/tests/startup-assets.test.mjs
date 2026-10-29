@@ -49,14 +49,14 @@ test('browser cancellation detaches the pending source and its handlers',async()
  try{const abort=new AbortController(),pending=browserImage('/same-approved-hero.webp',hero,{signal:abort.signal,priority:'high'});assert.equal(images[0].fetchPriority,'high');abort.abort();await assert.rejects(pending,/cancelled/);assert.equal(images[0].removed,true);assert.equal(images[0].onload,null);assert.equal(images[0].onerror,null);}finally{globalThis.Image=before;}
 });
 
-test('3D first scene keeps every animated monster but postpones six unused images, with exact byte evidence',async()=>{
+test('3D first scene keeps animated monsters while postponing optional queen art and six unused images',async()=>{
  const loaded=[];const art=createArtLibrary({loadPlayer:false,deferOptional:true,loadImage:async url=>{loaded.push(url);return{width:512,height:512};}});await art.sceneReady;
- assert.equal(loaded.length,17);for(const id of MONSTER_IDS)assert(art.images[id],id);assert(art.images.nameless_overlord);assert.equal(art.images.battle,undefined);
+ assert.equal(loaded.length,16);for(const id of MONSTER_IDS)assert(art.images[id],id);assert.equal(art.images.nameless_overlord,undefined);assert.equal(art.images.battle,undefined);
  const initialBytes=loaded.reduce((sum,url)=>sum+fs.statSync(fileURLToPath(url)).size,0),version=art.version;
- await art.loadRemaining();await art.ready;assert.equal(loaded.length,23);assert(art.images.battle);assert(art.version>version);
- const bossBytes=fs.statSync(new URL('../assets/overlord/overlord-2d-v2.webp',import.meta.url)).size;assert(bossBytes<700000);
- const totalBytes=loaded.reduce((sum,url)=>sum+fs.statSync(fileURLToPath(url)).size,0);assert.equal(totalBytes-initialBytes,881930);assert.equal(initialBytes,1798664+bossBytes);assert.equal(totalBytes,2680594+bossBytes);
- await art.loadRemaining();assert.equal(loaded.length,23);
+ await art.loadRemaining();await art.ready;assert.equal(loaded.length,22);assert(art.images.battle);assert(art.version>version);
+ const bossBytes=fs.statSync(new URL('../assets/overlord/queen-original-art-v1.webp',import.meta.url)).size;assert(bossBytes<700000);
+ const totalBytes=loaded.reduce((sum,url)=>sum+fs.statSync(fileURLToPath(url)).size,0);assert.equal(totalBytes-initialBytes,881930);assert.equal(initialBytes,1798664);assert.equal(totalBytes,2680594);
+ await art.loadRemaining();assert.equal(loaded.length,22);
 });
 
 test('preloads use the exact approved character hashes and no duplicate image URL',()=>{

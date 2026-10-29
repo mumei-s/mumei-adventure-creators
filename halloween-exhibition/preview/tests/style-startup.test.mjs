@@ -9,7 +9,7 @@ function harness(){
  const timers=new Map(), events={}, added=[], classes=new Set(['gallery-style-pending']);
  const message={textContent:''}, panel={hidden:false};let nextTimer=0, sentinel='';
  const primary={href:'https://example.test/preview/gallery-styles.css?v=current',sheet:null,after(link){added.push(link);}};
- const document={documentElement:{classList:{remove(value){classes.delete(value);}}},
+ const document={documentElement:{classList:{add(value){classes.add(value);},remove(value){classes.delete(value);}}},
   getElementById(id){return {'gallery-stylesheet':primary,'gallery-style-message':message,'gallery-style-status':panel}[id];},
   querySelector(){return added.find(link=>!link.removed);},
   createElement(){return {dataset:{},sheet:null,remove(){this.removed=true;}};},
@@ -66,4 +66,19 @@ test('initial header has generated protection without a layout marker or script'
  assert.doesNotMatch(css,/body\[data-layout-page=gallery\]/);
  assert.match(css,/:root body #theater\.theater>\.masthead/);
  assert.doesNotMatch(css,/--atelier-styles-ready/);
+});
+
+
+test('approved entrance and real game routes paint without an external stylesheet',()=>{
+ const stylesheet=html.match(/<link[^>]*id="gallery-stylesheet"[^>]*>/)[0];
+ assert.match(stylesheet,/media="print"/);
+ assert(html.indexOf('rel="preload" as="style"')<html.indexOf('rel="preload" as="image"'),'interactive styles start before optional full paintings');
+ assert.match(stylesheet,/onload="this.media='all';window.atelierStyleLoaded\(this\)"/);
+ assert.match(html,/<html[^>]*--palace-first-preview-portrait:url\(data:image\/webp;base64,/);
+ assert.match(html,/<html[^>]*--palace-first-preview-landscape:url\(data:image\/webp;base64,/);
+ const shell=html.match(/<section id="gallery-style-status"[\s\S]*?<\/section>/)[0];
+ assert.match(shell,/href="\.\/maze\/\?return=theatre"/);
+ assert.match(shell,/href="\.\/town\/\?return=theatre"/);
+ assert.doesNotMatch(shell,/src=|宮殿の灯りを整えています/);
+ assert.match(html,/.style-shell-art\{[^}]*background:var\(--palace-first-preview-landscape\)/);
 });

@@ -23,13 +23,13 @@ function element(tag,text='',className=''){
  };
 }
 function flatten(node){return [node,...node.children.flatMap(flatten)];}
-function harness(kind,{reward=false,lantern=true,cameraDistance='normal',failedScenery=false}={}){
+function harness(kind,{reward=false,lantern=true,cameraDistance='normal',failedScenery=false,failedArt=0}={}){
  const content=element('div'),close=element('button','閉じる','close'),reload=element('section'),padPosition=element('section'),display=element('section'),record={calls:[],panels:[],display:[],layouts:[],destroyed:{frame:0,layout:0}};
  reload.append(element('button','再読み込み'),element('p','変更を保存してから読み込み直します。'));
  display.append(element('label','旧画面設定'));for(const value of ['auto','phone','tablet','desktop']){const option=element('option','旧表示');option.value=value;display.append(option);}
  const state={position:{x:12,z:34},mapId:'creator-quarter',completed:['invitation'],hasKey:true},before=JSON.stringify(state);
  const recordCall=name=>()=>record.calls.push(name),context=vm.createContext({content,element,el:element,button:(text,onclick,className)=>Object.assign(element('button',text,className),{onclick}),
-  settings:{lantern},lantern,cameraDistance,cameraDistanceLabel,motion:true,state,session:{snapshot:()=>({state})},readingProgress:()=>({title:'記事巡り 2/14'}),pageReload:{element:reload},
+  settings:{lantern},lantern,cameraDistance,cameraDistanceLabel,motion:true,state,session:{snapshot:()=>({state})},readingProgress:()=>({title:'記事巡り 2/14'}),pageReload:{element:reload},rpgArt:{status:()=>({failed:failedArt})},
   beginPanel:(title,options)=>{context.displayPreferences?.destroy();context.displayPreferences=null;content.replaceChildren();record.panels.push({title,options});},title:(eyebrow,title)=>{content.replaceChildren();record.panels.push({title,eyebrow});},
   panel:{querySelector:selector=>selector==='.close'?close:null,close:recordCall('closePanel')},closePanel:recordCall('closePanel'),openPanel:recordCall('openPanel'),
   padPositionPreferences:{element:padPosition},displaySection:display,displayPreferences:null,scheduleResize:recordCall('resize'),
@@ -37,7 +37,7 @@ function harness(kind,{reward=false,lantern=true,cameraDistance='normal',failedS
   initDisplayMode:options=>{const section=element('section',undefined,'display-preferences'),select=element('select');section.setAttribute('aria-label','表示サイズ');for(const [value,label] of [['auto','自動'],['phone','スマホ用'],['tablet','タブレット用'],['desktop','PC用']]){const option=element('option',label);option.value=value;select.append(option);}section.append(element('label','表示サイズ'),select);options.controlsParent.append(section);record.layouts.push({options,section});return {destroy(){record.destroyed.layout++;section.remove();}};},
   rewardStore:{read:()=>reward},runId:'saved-run',renderer:failedScenery?{status:()=>({failed:['floor']}),retry:async()=>record.calls.push('retryScenery'),invalidate:recordCall('invalidate')}:null,notify:recordCall('notify'),
  });
- const callbacks=['showMap','showWalkingSpeed','showControlSettings','showSettings','showCreatorHomes','showVisitors','showJournal','showTownJournal','showInventory','showSave','showHelp','showCastleReturn','showLighting','showCatalog','showStory','showCreators','showResidents','showEncounters','meetOverlord','resetPosition','showEnding'];
+ const callbacks=['showMap','showWalkingSpeed','showControlSettings','showSettings','showCreatorHomes','showVisitors','showJournal','showTownJournal','showInventory','showSave','showHelp','showCastleReturn','showLighting','showCatalog','showStory','showCreators','showResidents','showEncounters','meetOverlord','resetPosition','showEnding','retryRPGArt'];
  for(const name of callbacks)context[name]=recordCall(name);
  const camera=element('button'),pause=element('button');camera.onclick=()=>{context.cameraDistance=nextCameraDistance(context.cameraDistance);record.calls.push('camera');};pause.onclick=()=>{context.motion=!context.motion;context.updateMotion();};
  context.$=id=>id==='camera-distance'?camera:id==='pause'?pause:flatten(content).find(node=>node.id===id);
@@ -103,4 +103,9 @@ for(const kind of ['town','maze'])test(`${kind}: on-scene lantern is hidden only
  toggle.click();assert.equal(toggle.textContent,'ランタン OFF');assert.equal(toggle.getAttribute('aria-pressed'),'false');
  toggle.click();assert.equal(toggle.textContent,'ランタン ON');assert.equal(toggle.getAttribute('aria-pressed'),'true');
  assert.equal(h.record.calls.filter(name=>name==='toggleLantern').length,2);assert.equal(JSON.stringify(h.state),h.before);
+});
+
+test('maze: only unresolved art adds a counted retry action without changing progress or growing the on-scene HUD',()=>{
+ const healthy=harness('maze');healthy.run.menu();assert.equal(healthy.context.$('art-retry'),undefined);
+ const failed=harness('maze',{failedArt:2});failed.run.menu();const retry=failed.context.$('art-retry');assert(retry);assert.equal(retry.textContent,'イラストを読み込み直す');assert.equal(retry.children[0].textContent,'未読込 2件');retry.click();assert.equal(failed.record.calls.at(-1),'retryRPGArt');assert.equal(JSON.stringify(failed.state),failed.before);
 });

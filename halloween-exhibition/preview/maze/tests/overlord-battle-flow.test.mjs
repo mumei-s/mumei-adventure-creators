@@ -41,9 +41,9 @@ test('disabled or terminal boss input cannot advance turn or duplicate rewards',
 function nativeHarness(){
   let resolve;const loading=new Promise(r=>resolve=r),record={created:0,disposed:0,draws:0,status:{textContent:'玉座の間の立体表示を準備しています…'}};
   const canvas=()=>({clientWidth:360,clientHeight:210,setAttribute(){},replaceWith(next){record.replacement=next;},getContext:()=>({fillRect(){},fillText(){}})});
-  const context=vm.createContext({battle:newBattle('nameless_overlord'),battleCanvas:canvas(),battleEffect:null,nativeBattle:null,nativeBattleLoading:false,nativeBattleFailed:false,nativeBattleToken:0,rpgArt:{},visualTime:0,motion:true,reducedMotion:{matches:false},$:id=>id==='overlord-render-status'?record.status:null,element:()=>canvas(),drawBattleVisual(){record.draws++;},loadOverlordModule:()=>loading});
+  const context=vm.createContext({battle:newBattle('nameless_overlord'),battleCanvas:canvas(),battleEffect:null,nativeBattle:null,nativeBattleLoading:false,nativeBattleFailed:false,nativeBattleToken:0,rpgArt:{},renderOverlordBattle2D(){record.fallback=(record.fallback||0)+1;},visualTime:0,motion:true,reducedMotion:{matches:false},$:id=>id==='overlord-render-status'?record.status:null,element:()=>canvas(),drawBattleVisual(){record.draws++;},loadOverlordModule:()=>loading});
   const dispose=app.slice(app.indexOf('function disposeNativeBattle(){'),app.indexOf('\n',app.indexOf('function disposeNativeBattle(){')));
-  const native=app.slice(app.indexOf('function drawOverlordBattle(){'),app.indexOf('function actBattle(action){')).replace("import('./overlord-battle-scene.js?v=20261028-overlord1')",'loadOverlordModule()');
+  const native=app.slice(app.indexOf('function drawOverlordBattle(){'),app.indexOf('function actBattle(action){')).replace("import('./overlord-battle-scene.js?v=20261029-overlord2')",'loadOverlordModule()');
   vm.runInContext(dispose+'\n'+native,context);
   const finish=()=>resolve({createOverlordBattleScene(){record.created++;return {render(){},dispose(){record.disposed++;}};}});
   return{context,record,finish};
@@ -56,7 +56,7 @@ test('late native viewport load cannot reopen a canceled duel or overwrite a new
 });
 test('native viewport disposal is idempotent and render failure keeps turn state playable',async()=>{
   const {context,record,finish}=nativeHarness();vm.runInContext('drawOverlordBattle()',context);finish();await new Promise(r=>setImmediate(r));
-  assert.equal(record.created,1);assert.equal(context.nativeBattleLoading,false);assert.equal(record.status.textContent,'立体モデルによる玉座の試練');
+  assert.equal(record.created,1);assert.equal(context.nativeBattleLoading,false);assert.equal(record.status.textContent,'');assert.equal(record.status.hidden,true);
   vm.runInContext('nativeBattle.render=()=>{throw new Error("lost")};drawOverlordBattle()',context);
   assert.equal(record.disposed,1);assert.equal(context.nativeBattleFailed,true);assert(record.replacement);
   assert.equal(context.battle.status,'playing');assert.equal(context.battle.turn,0);

@@ -1,16 +1,28 @@
-/** Original, texture-free, articulated interpretation of the supplied Overlord S references.
- * Not a photogrammetry/likeness asset. +Z forward, Y up, feet Y=0, crown ~2.6.
- * No loaders/network/DOM; works with the host's THREE revision. */
+/** Articulated, genuinely volumetric Overlord S. +Z forward; Y up.
+ * Geometry and materials are owned here; supplied surface textures stay caller-owned.
+ * Texture installation needs no loaders, network or DOM and is safe after creation. */
+export function overlordFaceUV(x,y,{atlasWarp=true}={}){
+  const clamp=v=>Math.max(0,Math.min(1,v));let u=clamp(x/.23+.5),top=1-clamp((y+.17)/.33);
+  if(atlasWarp){
+    u=clamp(.5+(u-.5)*1.20);
+    // Match the generated facial albedo's measured eyes, nose and mouth to
+    // the anatomical surface, without stretching its feature spacing globally.
+    const landmarks=[[0,0],[.36,.18],[.43,.25],[.46,.31],[.49,.38],[.62,.60],[.72,.70],[.74,.78],[.77,.86],[1,1]];
+    for(let i=1;i<landmarks.length;i++)if(top<=landmarks[i][0]){const [a,b]=[landmarks[i-1],landmarks[i]],t=(top-a[0])/(b[0]-a[0]);top=a[1]+(b[1]-a[1])*t;break;}
+  }
+  return [u,1-top];
+}
 export function createOverlordBoss(THREE, options = {}) {
   const root = new THREE.Group(); root.name = 'Overlord S — volumetric articulated character';
   const body = new THREE.Group(); root.add(body);
   const mats = {
-    armor: new THREE.MeshStandardMaterial({color:0x161722,metalness:.84,roughness:.26}),
-    gold: new THREE.MeshStandardMaterial({color:0xd9aa48,metalness:.82,roughness:.29}),
-    goldLight: new THREE.MeshStandardMaterial({color:0xf5d98a,metalness:.65,roughness:.32}),
+    armor: new THREE.MeshStandardMaterial({color:0x18131e,metalness:.78,roughness:.28,emissive:0x110c14,emissiveIntensity:.12}),
+    gold: new THREE.MeshStandardMaterial({color:0xd9aa48,metalness:.82,roughness:.24,emissive:0x55390b,emissiveIntensity:.09}),
+    goldLight: new THREE.MeshStandardMaterial({color:0xf5d98a,metalness:.65,roughness:.28}),
     skin: new THREE.MeshStandardMaterial({color:0xf0bea5,roughness:.56}),
-    hair: new THREE.MeshStandardMaterial({color:0xb48034,metalness:.12,roughness:.43}),
-    hairLight: new THREE.MeshStandardMaterial({color:0xf2ce86,metalness:.18,roughness:.36}),
+    face: new THREE.MeshStandardMaterial({color:0xf0bea5,roughness:.65}),
+    hair: new THREE.MeshStandardMaterial({color:0xba8b42,metalness:.08,roughness:.49}),
+    hairLight: new THREE.MeshStandardMaterial({color:0xf2ce86,metalness:.08,roughness:.42}),
     red: new THREE.MeshStandardMaterial({color:0x790c25,roughness:.72,side:THREE.DoubleSide}),
     gem: new THREE.MeshStandardMaterial({color:0xc6002c,metalness:.25,roughness:.18,emissive:0x810015,emissiveIntensity:.6}),
     glow: new THREE.MeshStandardMaterial({color:0xff4563,emissive:0xff0835,emissiveIntensity:2.1,roughness:.3}),
@@ -22,29 +34,44 @@ export function createOverlordBoss(THREE, options = {}) {
   };
   const resources = new Set();
   const V = (x,y,z) => new THREE.Vector3(x,y,z);
-  function mesh(parent, geo, material, p=[0,0,0], s=[1,1,1]) { resources.add(geo); const m=new THREE.Mesh(geo,mats[material]); m.position.set(...p);m.scale.set(...s);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m; }
+  function ensureUV(geo,force=false){
+    if(geo.attributes.uv&&!force){
+      const uv=geo.attributes.uv;
+      // Sphere poles intentionally extend their UV seam by half a segment;
+      // packed atlas regions need those tiny extensions clamped locally too.
+      for(let i=0;i<uv.count;i++)uv.setXY(i,THREE.MathUtils.clamp(uv.getX(i),0,1),THREE.MathUtils.clamp(uv.getY(i),0,1));
+      return geo;
+    }
+    geo.computeBoundingBox();const b=geo.boundingBox,dx=Math.max(.001,b.max.x-b.min.x),dy=Math.max(.001,b.max.y-b.min.y),uv=[];
+    const pos=geo.attributes.position;for(let i=0;i<pos.count;i++)uv.push((pos.getX(i)-b.min.x)/dx,(pos.getY(i)-b.min.y)/dy);
+    geo.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));return geo;
+  }
+  function mesh(parent, geo, material, p=[0,0,0], s=[1,1,1]) { ensureUV(geo);resources.add(geo); const m=new THREE.Mesh(geo,mats[material]); m.position.set(...p);m.scale.set(...s);m.castShadow=true;m.receiveShadow=true;parent.add(m);return m; }
   function joint(parent,name,p) { const g=new THREE.Group();g.name=name;g.position.set(...p);parent.add(g);return g; }
-  const sphereGeo=new THREE.SphereGeometry(1,12,8);
+  const sphereGeo=new THREE.SphereGeometry(1,20,14);
   const ell=(p,m,pos,scale)=>mesh(p,sphereGeo,m,pos,scale);
   function tube(parent,points,radius,material,segments=14,sides=4) { const curve=new THREE.CatmullRomCurve3(points.map(p=>V(...p)));return mesh(parent,new THREE.TubeGeometry(curve,segments,material==='gold'?radius*.57:radius,sides,false),material); }
   function taper(parent,points,width,material) {
-    const curve=new THREE.CatmullRomCurve3(points.map(p=>V(...p))), n=20, sides=5;
-    const frames=curve.computeFrenetFrames(n,false), positions=[],idx=[];
-    for(let i=0;i<=n;i++){const p=curve.getPointAt(i/n),r=width*(1-.92*Math.pow(i/n,1.4));for(let j=0;j<sides;j++){const a=j/sides*Math.PI*2;const v=p.clone().addScaledVector(frames.normals[i],Math.cos(a)*r).addScaledVector(frames.binormals[i],Math.sin(a)*r*.55);positions.push(v.x,v.y,v.z);if(i<n){const k=i*sides+j,l=i*sides+(j+1)%sides;idx.push(k,l,k+sides,l,l+sides,k+sides);}}}
-    const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));g.setIndex(idx);g.computeVertexNormals();return mesh(parent,g,material);
+    const curve=new THREE.CatmullRomCurve3(points.map(p=>V(...p))), n=28, sides=6;
+    const frames=curve.computeFrenetFrames(n,false), positions=[],uv=[],idx=[];
+    for(let i=0;i<=n;i++){const p=curve.getPointAt(i/n),r=width*(1-.96*Math.pow(i/n,2.3));for(let j=0;j<=sides;j++){const a=j/sides*Math.PI*2;const v=p.clone().addScaledVector(frames.normals[i],Math.cos(a)*r).addScaledVector(frames.binormals[i],Math.sin(a)*r*.70);positions.push(v.x,v.y,v.z);uv.push(j/sides,1-i/n);if(i<n&&j<sides){const k=i*(sides+1)+j,l=k+1;idx.push(k,l,k+sides+1,l,l+sides+1,k+sides+1);}}}
+    const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(idx);g.computeVertexNormals();return mesh(parent,g,material);
   }
   function gem(parent,p,s=.04) {const m=mesh(parent,new THREE.OctahedronGeometry(s,0),'gem',p);m.scale.set(.75,1.3,.55);return m;}
   // Closed bevelled armour plates keep the silhouette angular at every view.
   function plate(parent,points,material,p=[0,0,0],depth=.018,bevel=.007) {
     const shape=new THREE.Shape();points.forEach(([x,y],i)=>i?shape.lineTo(x,y):shape.moveTo(x,y));shape.closePath();
     const g=new THREE.ExtrudeGeometry(shape,{depth,bevelEnabled:bevel>0,bevelThickness:bevel,bevelSize:bevel,bevelSegments:1,steps:1});
+    // ExtrudeGeometry's default side/front coordinates may leave 0..1, which
+    // would cross into another quadrant of the shared material atlas.
+    ensureUV(g,true);
     return mesh(parent,g,material,p);
   }
-  function shell(parent,profile,material,p=[0,0,0],segments=20) {
-    const pos=[],idx=[];
-    profile.forEach(([y,rx,rz])=>{for(let i=0;i<segments;i++){const a=i/segments*Math.PI*2;pos.push(Math.sin(a)*rx,y,Math.cos(a)*rz);}});
-    for(let j=0;j<profile.length-1;j++)for(let i=0;i<segments;i++){const a=j*segments+i,b=j*segments+(i+1)%segments;idx.push(a,b,a+segments,b,b+segments,a+segments);}
-    const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setIndex(idx);g.computeVertexNormals();return mesh(parent,g,material,p);
+  function shell(parent,profile,material,p=[0,0,0],segments=28) {
+    const pos=[],uv=[],idx=[],y0=profile[0][0],dy=Math.max(.001,profile.at(-1)[0]-y0);
+    profile.forEach(([y,rx,rz])=>{for(let i=0;i<=segments;i++){const a=i/segments*Math.PI*2;pos.push(Math.sin(a)*rx,y,Math.cos(a)*rz);uv.push(i/segments,(y-y0)/dy);}});
+    for(let j=0;j<profile.length-1;j++)for(let i=0;i<segments;i++){const a=j*(segments+1)+i,b=a+1;idx.push(a,b,a+segments+1,b,b+segments+1,a+segments+1);}
+    const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(idx);g.computeVertexNormals();return mesh(parent,g,material,p);
   }
   function edge(parent,points,z,width=.008){return tube(parent,points.map(([x,y])=>[x,y,z]),width,'gold',Math.max(8,points.length*3));}
   function band(parent,y,rx,rz,material='gold',r=.012) { const ps=[];for(let i=0;i<=32;i++){const a=i/32*Math.PI*2;ps.push([Math.cos(a)*rx,y,Math.sin(a)*rz]);}tube(parent,ps,r,material,32); }
@@ -58,12 +85,21 @@ export function createOverlordBoss(THREE, options = {}) {
   pelvis.scale.x=.90;
   const torso=joint(pelvis,'spine',[0,.18,0]);torso.scale.set(.93,1,.91);
   shell(torso,[[-.07,.18,.135],[.04,.158,.137],[.16,.174,.16],[.29,.225,.18],[.40,.238,.16],[.48,.19,.12],[.51,.105,.095]],'armor');
+  // The covered cuirass has its own rounded depth. Relief follows that depth
+  // instead of decorating a paper-thin front panel.
+  for(const sign of[-1,1])ell(torso,'armor',[sign*.106,.347,.080],[.132,.137,.119]);
+  const cuirassDepth=(x,y)=>Math.max(.163,.080+.119*Math.sqrt(Math.max(.02,1-Math.pow((Math.abs(x)-.106)/.132,2)-Math.pow((y-.347)/.137,2))))+.008;
   for(const sign of [-1,1]) {
     const contour=[[sign*.018,.43],[sign*.15,.47],[sign*.235,.38],[sign*.21,.25],[sign*.12,.20],[sign*.025,.24]];
-    plate(torso,contour,'armor',[0,0,.137],.027,.012);edge(torso,[...contour,contour[0]],.182,.010);
+    plate(torso,contour,'armor',[0,0,.137],.027,.012);tube(torso,[...contour,contour[0]].map(([x,y])=>[x,y,cuirassDepth(x,y)]),.010,'gold',24);
     tube(torso,[[sign*.21,.46,.08],[sign*.24,.32,.14],[sign*.135,.12,.155],[sign*.16,-.04,.14]],.014,'gold');
     for(let i=0;i<4;i++)flourish(torso,sign*(.067+(i%2)*.025),.01+i*.113,.169-i*.003,.71);
     tube(torso,[[sign*.025,.40,.192],[sign*.09,.36,.195],[sign*.14,.29,.192],[sign*.105,.245,.193]],.006,'gold',10);
+    for(let row=0;row<3;row++){
+      const yy=.28+row*.052,xx=sign*(.065+(row%2)*.045),curve=[];
+      for(let j=0;j<=12;j++){const a=j/12*Math.PI*1.65,x=xx+Math.cos(a)*.030,y=yy+Math.sin(a)*.024;curve.push([x,y,cuirassDepth(x,y)+.003]);}
+      tube(torso,curve,.0045,'gold',18);
+    }
     for(let i=0;i<3;i++)ell(torso,'gold',[sign*(.035+i*.022),.12-i*.04,.167],[.008,.018,.006]);
   }
   plate(torso,[[0,.48],[-.026,.36],[-.032,.16],[0,-.06],[.032,.16],[.026,.36]],'gold',[0,0,.166],.014,.003);
@@ -71,39 +107,77 @@ export function createOverlordBoss(THREE, options = {}) {
   ell(torso,'armor',[0,.49,0],[.115,.065,.11]);band(torso,.51,.115,.11);gem(torso,[0,.50,.116],.032);
   const neck=joint(torso,'neck',[0,.53,0]);ell(neck,'skin',[0,.045,0],[.075,.10,.07]);
   const head=joint(neck,'head',[0,.18,.005]);head.scale.setScalar(.94);
-  // Sculpted cheek / jaw profile, shaped almond eyes and recessed lids.
-  shell(head,[[-.17,.024,.037],[-.148,.058,.061],[-.105,.092,.080],[-.050,.112,.090],[.015,.114,.094],[.08,.107,.089],[.13,.083,.074],[.16,.035,.033]],'skin',[0,0,0],28);
+  // Smooth cranial volume with a separate sculpted facial surface. The face is
+  // a curved half-head with nose/cheek relief, never a portrait plane.
+  const cranialProfile=[[-.172,.014,.030],[-.155,.043,.050],[-.130,.070,.069],[-.095,.090,.083],[-.050,.107,.092],[0,.114,.095],[.060,.111,.092],[.115,.095,.083],[.150,.061,.059],[.166,.017,.024]];
+  const cranialCurve=new THREE.CatmullRomCurve3(cranialProfile.map(([y,rx,rz])=>V(rx,y,rz)));
+  const cranialRows=[];for(let i=0;i<=32;i++){const p=cranialCurve.getPoint(i/32);cranialRows.push([p.y,Math.max(.006,p.x),Math.max(.01,p.z)]);}
+  // Only the rear half uses plain skin. A second untextured front would cover
+  // the recessed eye sockets once the facial albedo is installed.
+  {const pos=[],uv=[],idx=[],cols=48;
+    cranialRows.forEach(([y,rx,rz])=>{for(let i=0;i<=cols;i++){const angle=Math.PI/2+i/cols*Math.PI;pos.push(Math.sin(angle)*rx,y,Math.cos(angle)*rz);uv.push(i/cols,(y+.172)/.338);}});
+    for(let j=0;j<cranialRows.length-1;j++)for(let i=0;i<cols;i++){const a=j*(cols+1)+i,b=a+1;idx.push(a,b,a+cols+1,b,b+cols+1,a+cols+1);}
+    const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(idx);g.computeVertexNormals();const rear=mesh(head,g,'skin');rear.name='cranial-rear-volume';
+  }
+  const gauss=(x,c,w)=>Math.exp(-Math.pow((x-c)/w,2));
+  const faceDepth=(x,y,rx,rz)=>{
+    const front=rz*Math.sqrt(Math.max(0,1-Math.pow(x/rx,2)));
+    const bridge=.014*gauss(x,0,.014)*gauss(y,-.015,.047);
+    const tip=.015*gauss(x,0,.021)*gauss(y,-.048,.016);
+    const cheeks=.0045*(gauss(x,-.065,.029)+gauss(x,.065,.029))*gauss(y,-.026,.027);
+    const sockets=.003*(gauss(x,-.047,.023)+gauss(x,.047,.023))*gauss(y,.009,.017);
+    const lips=.003*gauss(x,0,.030)*gauss(y,-.086,.015);
+    return front+bridge+tip+cheeks-sockets+lips+.001;
+  };
+  function facialZ(x,y){
+    let pair=cranialRows.findIndex(p=>p[0]>=y);pair=Math.max(1,pair<0?cranialRows.length-1:pair);
+    const a=cranialRows[pair-1],b=cranialRows[pair],t=THREE.MathUtils.clamp((y-a[0])/(b[0]-a[0]),0,1);
+    return faceDepth(x,y,a[1]+(b[1]-a[1])*t,a[2]+(b[2]-a[2])*t);
+  }
+  {const pos=[],uv=[],idx=[],cols=48;
+    cranialRows.forEach(([y,rx,rz])=>{for(let i=0;i<=cols;i++){const angle=(i/cols-.5)*Math.PI,x=Math.sin(angle)*rx;pos.push(x,y,faceDepth(x,y,rx,rz));const mapped=typeof options.faceUVTransform==='function'?options.faceUVTransform(x,y):overlordFaceUV(x,y,{atlasWarp:options.faceUVTransform!==false});uv.push(...mapped);}});
+    for(let j=0;j<cranialRows.length-1;j++)for(let i=0;i<cols;i++){const a=j*(cols+1)+i,b=a+1;idx.push(a,b,a+cols+1,b,b+cols+1,a+cols+1);}
+    const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uv,2));g.setIndex(idx);g.computeVertexNormals();const face=mesh(head,g,'face');face.name='sculpted-face-surface';
+  }
+  const facialFeatures=joint(head,'procedural-facial-details',[0,0,0]);
   for(const sign of [-1,1]){
-    ell(head,'skin',[sign*.109,-.025,0],[.019,.040,.024]);
-    // The outer corner recedes along the cheek rather than protruding as a bead.
-    const eyePoints=[[sign*.018,.009,.091],[sign*.041,.019,.096],[sign*.061,.018,.092],[sign*.079,.010,.079],[sign*.059,.001,.091],[sign*.040,-.002,.095],[sign*.018,.009,.091]];
-    const ep=[],ei=[];eyePoints.slice(0,-1).forEach(v=>ep.push(...v));ep.push(sign*.047,.008,.098);for(let i=0;i<6;i++)ei.push(6,i,(i+1)%6);
-    if(sign>0)for(let i=0;i<ei.length;i+=3)[ei[i+1],ei[i+2]]=[ei[i+2],ei[i+1]];
-    const eg=new THREE.BufferGeometry();eg.setAttribute('position',new THREE.Float32BufferAttribute(ep,3));eg.setIndex(ei);eg.computeVertexNormals();mesh(head,eg,'eye');
-    ell(head,'iris',[sign*.046,.008,.099],[.010,.010,.0035]);ell(head,'dark',[sign*.046,.008,.102],[.004,.0075,.0018]);ell(head,'eye',[sign*.043,.013,.104],[.0025,.0025,.001]);
-    tube(head,eyePoints.slice(0,4).concat([[sign*.085,.013,.075]]),.0031,'dark',12);
-    tube(head,eyePoints.slice(3),.0018,'lip',10);
-    tube(head,[[sign*.023,.034,.094],[sign*.045,.042,.096],[sign*.071,.036,.084],[sign*.080,.030,.078]],.0039,'hair',10);
-    gem(head,[sign*.115,-.09,.015],.017);tube(head,[[sign*.114,-.03,.01],[sign*.12,-.065,.015]],.003,'gold',4);
-    ell(head,'skin',[sign*.010,-.044,.095],[.006,.004,.005]);
+    ell(head,'skin',[sign*.109,-.025,-.005],[.017,.036,.023]);
+    const pts=[[.018,.008],[.035,.018],[.054,.018],[.073,.010],[.055,-.001],[.036,-.002]];
+    const positions=[],indices=[];for(const [x,y]of pts)positions.push(sign*x,y,facialZ(sign*x,y)+.002);
+    positions.push(sign*.047,.008,facialZ(sign*.047,.008)+.003);
+    for(let i=0;i<pts.length;i++){if(sign<0)indices.push(6,i,(i+1)%pts.length);else indices.push(6,(i+1)%pts.length,i);}
+    const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));geo.setIndex(indices);geo.computeVertexNormals();mesh(facialFeatures,geo,'eye');
+    const iz=facialZ(sign*.047,.008)+.005;
+    ell(facialFeatures,'iris',[sign*.047,.008,iz],[.0085,.009,.002]);ell(facialFeatures,'dark',[sign*.047,.008,iz+.002],[.0032,.006,.001]);ell(facialFeatures,'eye',[sign*.044,.012,iz+.003],[.0018,.0018,.001]);
+    const lid=pts.slice(0,4).map(([x,y])=>[sign*x,y,facialZ(sign*x,y)+.004]);tube(facialFeatures,lid,.0022,'dark',12);
+    const brow=[[.022,.034],[.043,.041],[.063,.036],[.076,.029]].map(([x,y])=>[sign*x,y,facialZ(sign*x,y)+.003]);tube(facialFeatures,brow,.0027,'hair',12);
+    gem(head,[sign*.114,-.083,.005],.013);tube(head,[[sign*.112,-.030,.002],[sign*.116,-.068,.005]],.0025,'gold',6);
   }
-  shell(head,[[-.051,.009,.008],[-.036,.013,.015],[-.019,.009,.011],[.025,.006,.005]],'skin',[0,0,.091],12);
-  tube(head,[[-.025,-.082,.080],[-.009,-.078,.090],[0,-.082,.093],[.010,-.079,.090],[.026,-.081,.079]],.0039,'lip',12);
-  tube(head,[[-.022,-.086,.082],[0,-.092,.091],[.023,-.085,.082]],.004,'lip',12);
-  // Side-parted swept hair, with individually curled volumetric locks.
-  ell(head,'hair',[0,.065,-.040],[.123,.113,.093]);
+  const upper=[[-.025,-.084],[-.010,-.080],[0,-.083],[.011,-.080],[.025,-.084]],lower=[[-.023,-.086],[0,-.091],[.023,-.086]];
+  tube(facialFeatures,upper.map(([x,y])=>[x,y,facialZ(x,y)+.002]),.0024,'lip',14);
+  tube(facialFeatures,lower.map(([x,y])=>[x,y,facialZ(x,y)+.002]),.0025,'lip',14);
+  // A continuous back-hair volume supports the silhouette. Thick flowing
+  // curls sit on that mass, so oblique views never reveal a cage of thin wires.
+  ell(head,'hair',[0,.062,-.038],[.128,.116,.097]);
+  const hairProfile=[[-.94,.005,.010],[-.88,.105,.048],[-.72,.184,.076],[-.52,.226,.082],[-.30,.208,.078],[-.10,.166,.077],[.075,.119,.082],[.145,.025,.022]];
+  const hairCurve=new THREE.CatmullRomCurve3(hairProfile.map(([y,rx,rz])=>V(rx,y,rz))),hairRows=[];
+  for(let i=0;i<=28;i++){const p=hairCurve.getPoint(i/28);hairRows.push([p.y,Math.max(.005,p.x),Math.max(.01,p.z)]);}
+  const backHair=shell(head,hairRows,'hair',[0,0,-.095],36);backHair.name='flowing-hair-volume';
   const hairLocks=[];
-  for(let i=0;i<20;i++){
-    const a=.32*Math.PI+i/19*1.36*Math.PI,x=Math.sin(a)*.105,z=Math.cos(a)*.085-.015;
-    const lock=joint(head,'hair-lock-'+i,[x,.12-(i%3)*.014,z]);
-    const side=x>=0?1:-1,length=.81+(i%5)*.028,points=[];
-    for(let j=0;j<9;j++){const t=j/8,phase=i*.72;points.push([side*(.035*t+.065*Math.sin(t*3.4*Math.PI+phase)*t)+x*.55*t,-length*t,-.025*t+.025*Math.cos(t*3.8*Math.PI+phase)*t]);}
-    taper(lock,points,.018+(i%4)*.002,i%4===0?'hairLight':'hair');hairLocks.push(lock);
+  for(let i=0;i<26;i++){
+    const a=.25*Math.PI+i/25*1.5*Math.PI,x=Math.sin(a)*.107,z=Math.cos(a)*.086-.025;
+    const lock=joint(head,'hair-lock-'+i,[x,.115-(i%3)*.011,z]);
+    const side=x>=0?1:-1,length=.88+(i%5)*.028,points=[];
+    for(let j=0;j<10;j++){
+      const t=j/9,phase=i*.63;
+      points.push([side*(.10*t+.071*Math.sin(t*3.2*Math.PI+phase)*t),-length*t,-.012*t+.042*Math.cos(t*3.3*Math.PI+phase)*t]);
+    }
+    taper(lock,points,.027+(i%4)*.003,i%4===0?'hairLight':'hair');hairLocks.push(lock);
   }
-  for(const side of [-1,1])for(let i=0;i<5;i++){
-    const lock=joint(head,'face-curl-'+side+'-'+i,[-.024+side*i*.005,.145-i*.007,.025+i*.006]);
-    const points=[[0,0,0],[side*(.069+i*.011),-.042,.060],[side*(.145+i*.010),-.15,.035],[side*(.12+i*.013),-.30,.047],[side*(.196+i*.010),-.43,.060],[side*(.153+i*.012),-.59,.070],[side*(.225+i*.008),-.73,.032],[side*(.177+i*.010),-.85,.012]];
-    taper(lock,points,.013+(i%2)*.002,i%2?'hair':'hairLight');hairLocks.push(lock);
+  for(const side of [-1,1])for(let i=0;i<6;i++){
+    const lock=joint(head,'face-curl-'+side+'-'+i,[-.016+side*i*.005,.142-i*.006,.033+i*.004]);
+    const points=[[0,0,0],[side*(.068+i*.010),-.030,.067],[side*(.130+i*.010),-.125,.058],[side*(.125+i*.013),-.275,.069],[side*(.197+i*.012),-.421,.085],[side*(.162+i*.011),-.580,.092],[side*(.231+i*.009),-.728,.040],[side*(.188+i*.010),-.884,.025]];
+    taper(lock,points,.024+(i%3)*.003,i%3===0?'hairLight':'hair');hairLocks.push(lock);
   }
   // A woven circlet and connected pointed arches, rather than isolated spikes.
   band(head,.14,.117,.089,'gold',.016);band(head,.18,.125,.093,'gold',.010);
@@ -115,17 +189,26 @@ export function createOverlordBoss(THREE, options = {}) {
     ell(head,'gold',[x,.189,z],[.022,.023,.014]);gem(head,[x,.192,z+.01],.011);
   }
   gem(head,[0,.205,.106],.027);
+  for(const side of[-1,1]){
+    tube(head,[[side*.015,.174,.098],[side*.034,.230,.100],[side*.069,.260,.081],[side*.091,.216,.071],[side*.067,.188,.087]],.005,'gold',20);
+    tube(head,[[side*.022,.183,.106],[side*.048,.204,.102],[side*.068,.184,.090]],.004,'goldLight',14);
+    gem(head,[side*.067,.237,.088],.010);
+  }
   const arms=[],legs=[];
   for(const s of [-1,1]){
     const shoulder=joint(torso,s<0?'left-shoulder':'right-shoulder',[s*.275,.40,0]);
-    ell(shoulder,'armor',[s*.018,-.025,0],[.12,.075,.10]);
+    ell(shoulder,'armor',[s*.018,-.025,0],[.135,.090,.123]);
     for(let j=0;j<3;j++){
       const points=[[-.095,-.035-j*.028],[-.12,.026-j*.02],[0,.065-j*.022],[.12,.026-j*.02],[.095,-.035-j*.028],[0,-.067-j*.025]];
-      plate(shoulder,points,j===0?'gold':'armor',[s*.025,0,.075-j*.008],.025,.007);edge(shoulder,[...points,points[0]],.108-j*.008,.007);
+      plate(shoulder,points,'armor',[s*.025,0,.075-j*.008],.025,.007);edge(shoulder,[...points,points[0]],.108-j*.008,.007);
     }
     const fin=plate(shoulder,[[0,.055],[s*.14,.12],[s*.095,-.055],[0,-.07]],'armor',[s*.07,0,-.015],.08,.008);fin.rotation.y=s*.22;
     tube(shoulder,[[s*.07,.06,.07],[s*.21,.12,.04],[s*.166,-.03,.06]],.008,'gold',8);
+    for(let spike=0;spike<3;spike++){
+      const prong=mesh(shoulder,new THREE.ConeGeometry(.017,.075+spike*.014,6),'gold',[s*(.10+spike*.036),.050+spike*.009,-.030+spike*.026]);prong.rotation.z=-s*(.36+spike*.10);
+    }
     shell(shoulder,[[-.30,.050,.052],[-.20,.060,.060],[-.07,.062,.061]],'armor');
+    for(const yy of[-.09,-.17,-.25])band(shoulder,yy,.061,.061,'gold',.007);
     const elbow=joint(shoulder,'elbow',[0,-.30,0]);ell(elbow,'gold',[0,0,0],[.063,.045,.067]);shell(elbow,[[-.26,.047,.047],[-.17,.064,.060],[-.015,.066,.063]],'armor');
     plate(elbow,[[0,.015],[-.045,-.09],[0,-.245],[.045,-.09]],'armor',[0,0,.064],.016,.005);
     tube(elbow,[[0,0,.082],[s*.025,-.12,.084],[0,-.23,.07]],.011,'gold');flourish(elbow,0,-.11,.084,.6);
@@ -148,7 +231,9 @@ export function createOverlordBoss(THREE, options = {}) {
     for(let j=0;j<3;j++)flourish(knee,0,-.12-j*.095,.093,.65);
     const ankle=joint(knee,'ankle',[0,-.46,0]);ell(ankle,'armor',[0,-.025,.048],[.065,.052,.145]);
     const toe=plate(ankle,[[-.058,0],[.058,0],[.045,.12],[0,.218],[-.045,.12]],'armor',[0,-.046,.075],.048,.006);toe.rotation.x=Math.PI/2;
-    tube(ankle,[[-.075,-.03,.14],[0,.005,.225],[.075,-.03,.14]],.011,'gold');legs.push({hip,knee,ankle,side:s});
+    tube(ankle,[[-.065,-.03,.14],[0,.005,.225],[.065,-.03,.14]],.011,'gold');
+    mesh(ankle,new THREE.CylinderGeometry(.021,.015,.09,8),'armor',[0,-.067,-.048]);
+    legs.push({hip,knee,ankle,side:s});
   }
   // Deforming cape: a real double-sided 3D cloth surface, inexpensive analytic wind.
   const capeGeo=new THREE.PlaneGeometry(1,1,12,16);resources.add(capeGeo);
@@ -184,12 +269,26 @@ export function createOverlordBoss(THREE, options = {}) {
   function batch(group) {
     [...group.children].filter(c=>c.isGroup).forEach(batch);
     const buckets=new Map();for(const m of [...group.children])if(m.isMesh&&m!==cape){const a=buckets.get(m.material)||[];a.push(m);buckets.set(m.material,a);}
-    for(const [material,items] of buckets){if(items.length<2)continue;const positions=[],normals=[];for(const m of items){m.updateMatrix();const g=m.geometry.index?m.geometry.toNonIndexed():m.geometry.clone();g.applyMatrix4(m.matrix);positions.push(...g.attributes.position.array);normals.push(...g.attributes.normal.array);g.dispose();group.remove(m);}const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(normals,3));resources.add(g);const m=new THREE.Mesh(g,material);m.castShadow=true;m.receiveShadow=true;group.add(m);}
+    for(const [material,items] of buckets){if(items.length<2)continue;const positions=[],normals=[],uvs=[];for(const m of items){m.updateMatrix();const g=m.geometry.index?m.geometry.toNonIndexed():m.geometry.clone();g.applyMatrix4(m.matrix);positions.push(...g.attributes.position.array);normals.push(...g.attributes.normal.array);uvs.push(...g.attributes.uv.array);g.dispose();group.remove(m);}const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(positions,3));g.setAttribute('normal',new THREE.Float32BufferAttribute(normals,3));g.setAttribute('uv',new THREE.Float32BufferAttribute(uvs,2));resources.add(g);const m=new THREE.Mesh(g,material);m.castShadow=true;m.receiveShadow=true;group.add(m);}
   }
   if(options.batch!==false)batch(root);
   root.scale.setScalar(options.scale ?? 1);
   let state='idle',elapsed=0,time=0,disposed=false;
   const valid=new Set(['idle','seated','stand','walk','attack','special','hit','defeat']);
+  function setTextures(textures={}){
+    if(disposed)return false;
+    const install=(names,texture,tint)=>{for(const name of names){const m=mats[name];m.map=texture||null;if(tint!==undefined)m.color.set(texture?0xffffff:tint);m.needsUpdate=true;}};
+    if(Object.prototype.hasOwnProperty.call(textures,'face')){
+      install(['face'],textures.face,0xf0bea5);facialFeatures.visible=!textures.face;
+    }
+    if(Object.prototype.hasOwnProperty.call(textures,'armor'))install(['armor'],textures.armor,0x18131e);
+    if(Object.prototype.hasOwnProperty.call(textures,'hair')){
+      install(['hair'],textures.hair,0xba8b42);install(['hairLight'],textures.hair,0xf2ce86);
+      if(textures.hair)mats.hairLight.color.set(0xffedc3);
+    }
+    if(Object.prototype.hasOwnProperty.call(textures,'cape'))install(['red'],textures.cape,0x790c25);
+    return true;
+  }
   function setState(next,{restart=false}={}){if(!valid.has(next))throw new Error('Unknown Overlord animation: '+next);if(next!==state||restart){state=next;elapsed=0;}}
   function update(dt, input={}) {
     if(disposed)return;dt=Number.isFinite(dt)?Math.max(0,Math.min(dt,.1)):0;
@@ -197,7 +296,8 @@ export function createOverlordBoss(THREE, options = {}) {
     if(input.state&&input.state!==state)setState(input.state);time=reduced?0:Number.isFinite(input.time)?input.time:time+dt;elapsed+=dt;
     const seated=state==='seated'?1:state==='stand'&&!reduced?1-Math.min(1,elapsed/1.25):0;
     const walk=state==='walk',attack=state==='attack',special=state==='special',hit=state==='hit',dead=state==='defeat';
-    const cycle=time*7*(input.speed ?? 1),stride=walk&&!reduced?.48:0,breath=Math.sin(time*2)*.008;
+    const gaitRate=THREE.MathUtils.clamp(Number.isFinite(input.speed)?input.speed:1,.45,1.45);
+    const cycle=time*6.7*gaitRate,stride=walk&&!reduced?.43:0,breath=Math.sin(time*2)*.006;
     const p=Math.max(0,Math.min(1,Number.isFinite(input.attackProgress)?input.attackProgress:elapsed/(special?2.4:.9)));
     const strike=!reduced&&(attack||special)?Math.sin(p*Math.PI):0,fall=dead?(reduced?1:Math.min(1,elapsed/1.5)):0;
     body.position.set(hit&&!reduced?Math.sin(elapsed*55)*.035*Math.max(0,1-elapsed/.5):0,breath+(walk?Math.abs(Math.sin(cycle))*.025:0)-fall*.36-seated*.37,special?-.07*strike:0);
@@ -207,20 +307,22 @@ export function createOverlordBoss(THREE, options = {}) {
     head.rotation.y=.045+Math.sin(time*.55)*.035;head.rotation.x=fall*.3-strike*.08-.018;
     arms.forEach(({shoulder,elbow,hand,side:s})=>{shoulder.rotation.set(-Math.sin(cycle)*stride*s-strike*(special?1.5:1.1)-(walk||seated?0:s<0?.12:-.045),0,s*.10+s*strike*(special?.65:.12));elbow.rotation.x=-(s<0?.25:.12)-strike*.45-seated*.65;hand.rotation.x=-strike*.35;hand.rotation.z=s*(.06+strike*.10);});
     legs.forEach(({hip,knee,ankle,side:s})=>{hip.rotation.x=Math.sin(cycle)*stride*s-fall*.85-seated*Math.PI*.48;knee.rotation.x=walk?Math.max(0,-Math.sin(cycle)*s)*.65:fall*1.5+seated*Math.PI*.48;ankle.rotation.x=walk?-Math.max(0,Math.sin(cycle)*s)*.2:0;});
-    hairLocks.forEach((h,i)=>{h.rotation.x=Math.sin(time*2+i*.6)*.045+strike*.16;h.rotation.z=Math.sin(time*1.5+i*.4)*.035;});
+    hairLocks.forEach((h,i)=>{h.rotation.x=Math.sin(time*1.8+i*.6)*.023+strike*.11;h.rotation.z=Math.sin(time*1.3+i*.4)*.021;});
     for(let i=0;i<capePos.count;i++){const x=capeBase[i*3],y=capeBase[i*3+1],z=capeBase[i*3+2],v=(.43-y)/1.43;capePos.setXYZ(i,x+Math.sin(time*2+v*5)*.035*v,y,z-(Math.sin(time*3+v*7+x*5)*.065+strike*.28)*v);}
     capePos.needsUpdate=true;capeGeo.computeVertexNormals();
-    swords.forEach((s,i)=>{const a=(i-2)*.53;const x=Math.sin(a)*1.13,y=1.65+Math.cos(a)*.46,z=-.34+Math.cos(a)*.05;
+    const swordSpread=THREE.MathUtils.clamp(Number.isFinite(input.swordSpread)?input.swordSpread:1,.55,1.1);
+    swords.forEach((s,i)=>{const a=(i-2)*.53;const x=Math.sin(a)*1.13*swordSpread,y=1.65+Math.cos(a)*.46,z=-.34+Math.cos(a)*.05;
       const launch=reduced?0:attack?(i===Math.floor(p*4.99)?Math.sin((p*5%1)*Math.PI)*1.35:0):special?Math.pow(Math.sin(p*Math.PI),5)*2.0:0;
       s.position.set(x*(1+strike*.13),y+Math.sin(time*2+i)*.045-fall*1.25,z+launch);
-      s.rotation.set(launch?-.9*launch:Math.sin(time+i)*.04,0,-a*.38+(special?strike*a*.35:0));s.scale.set(.65*(1-fall*.25),1.1*(1-fall*.25),1-fall*.25);
+      s.rotation.set(launch?-.9*launch:Math.sin(time+i)*.04,0,(-a*.38+(special?strike*a*.35:0))*swordSpread);s.scale.set(.65*(1-fall*.25),1.1*(1-fall*.25),1-fall*.25);
     });
     mats.glow.emissiveIntensity=dead?.2:1.7+strike*2+Math.sin(time*4)*.25;
     mats.energy.opacity=dead?.05:.24+strike*.50+Math.sin(time*3)*.06;
     return {state,elapsed,attackProgress:p};
   }
+  if(options.textures)setTextures(options.textures);
   update(0);
   function dispose(){if(disposed)return;disposed=true;root.removeFromParent();resources.forEach(g=>g.dispose());Object.values(mats).forEach(m=>m.dispose());}
-  return {group:root,root,update,setState,dispose,joints:{body,pelvis,torso,head,arms,legs},swords,
-    metadata:{name:'無名から頂点へ至る覇王 S',special:'無名神話・覇天絶滅斬',height:2.55,seatHeight:.75,standDuration:1.25,swordCount:5,forward:'+Z',style:'original articulated sculpted plate-and-curl volumetric interpretation',states:[...valid]}};
+  return {group:root,root,update,setState,setTextures,dispose,materials:mats,joints:{body,pelvis,torso,head,arms,legs},swords,
+    metadata:{name:'無名から頂点へ至る覇王 S',special:'無名神話・覇天絶滅斬',height:2.55,bodyHeight:2.45,seatHeight:.75,standDuration:1.25,swordCount:5,forward:'+Z',style:'original articulated volumetric queen with sculpted face and caller-owned surface textures',textureUV:{face:{x:[-.115,.115],y:[-.17,.16],baseU:'x/.23+.5',baseV:'(y+.17)/.33',atlasWarp:options.faceUVTransform!==false,eyeTop:[.46,.31],noseTop:[.62,.60],mouthTop:[.74,.78]},armor:'cylindrical or planar local 0..1',hair:'strand width u; length v',cape:'cloth 0..1'},states:[...valid]}};
 }

@@ -16,6 +16,21 @@ test('the controller exposes an image failure and keeps 3D desired until the vis
  await controller.setMode('3d');const failed=controller.snapshot();assert.equal(failed.desired,'3d');assert.equal(failed.active,'2d');assert.equal(failed.failure.code,'assets-unavailable');assert.equal(failed.failureReason,failed.failure.message);assert.equal(events.at(-1).failureReason,failed.failureReason);
  await controller.setMode('2d');assert.equal(controller.snapshot().failure,null);assert.equal(controller.snapshot().failureReason,'');controller.destroy();
 });
+
+test('returning from history or visibility never retries a failed view without an explicit action',async()=>{
+ let loads=0;
+ const controller=createTownViewController({load:()=>{if(++loads===1)throw Error('No GPU');return {ready:Promise.resolve(),destroy(){}};}});
+ await controller.setMode('3d');const failure=controller.snapshot();
+ assert.equal(failure.status,'failed');assert.equal(loads,1);
+ await controller.setMode('3d');await controller.setMode('3d');
+ assert.equal(loads,1,'ordinary foreground notifications do not change fallback rendering');
+ await controller.setMode('2d',{suspend:true});
+ assert.equal(controller.snapshot().desired,'3d');assert.equal(controller.snapshot().status,'failed');
+ assert.equal(controller.snapshot().failureReason,failure.failureReason);
+ await controller.setMode('3d');assert.equal(loads,1);assert.equal(controller.snapshot().active,'2d');
+ await controller.setMode('3d',{retry:true});assert.equal(loads,2);assert.equal(controller.snapshot().active,'3d');
+ controller.destroy();
+});
 test('a deadline reports slow preparation and a successful retry clears the old reason',async()=>{
  const timers=clock(),pending=deferred();let first=true;
  const controller=createTownViewController({timers,load:()=>first?(first=false,pending.promise):{ready:Promise.resolve(),destroy(){}}});const request=controller.setMode('3d');await settle();timers.expire();await request;

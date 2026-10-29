@@ -2,6 +2,7 @@ import {creatorHomeProfile} from './creator-home-profile.js?v=20261019-homes1';
 import {fetchStartupJSON,loadRequiredCharacters} from '../maze/startup-assets.js?v=20261017-startup1';
 import {createCharacterAssets,scaledCharacterLayout,characterSprite,compileCharacterRoster,compileCompanions,CREATOR_FICTION_NOTICE,noteArticleURL} from '../maze/creator-runtime.js?v=20261017-startup1';
 import {createDistanceTrail} from '../maze/movement-runtime.js?v=20261017-review1';
+import {facingForCamera} from '../maze/view-model.js';
 import {MONSTER_MOTION_DATA} from '../maze/monster-motion-data.js?v=20261016-living1';
 import {motionSprite} from '../maze/monster-motion.js?v=20261019-unified1';
 import {placeTownVisitors,placeCreatorHomeVisitors,sampleTownVisitors,chooseTownVisitorGroups,nearestTownVisitor} from './visitor-model.js?v=20261019-homes2';
@@ -32,8 +33,9 @@ export function createTownCharacterArt({onState=()=>{},fetcher,signal,loadMonste
   visitorActors({state:initialState,time:0,clock:0});
   if(!deferEnhancements)startEnhancements();
  })();
- function visitorActors({state,time=0,clock=time,motion=true,dt=0,view3D=false}={}){
+ function visitorActors({state,time=0,clock=time,motion=true,dt=0,view3D=false,cameraYaw=0}={}){
   if(!roster||!state)return[];const poses=sampleTownVisitors(placed,{state,time,motion:true}).map(visitor=>motion?visitor:{...visitor,walking:false});
+  const groundYaw=view3D&&Number.isFinite(cameraYaw)?cameraYaw:0;
   if(clock>=selectionAt||state.mapId!==selectionMap||selectionPosition&&Math.hypot(state.position.x-selectionPosition.x,state.position.z-selectionPosition.z)>1.5){
    const candidates=chooseTownVisitorGroups(poses,state,3),groups=new Map();for(const visitor of candidates){if(!groups.has(visitor.groupId))groups.set(visitor.groupId,[]);groups.get(visitor.groupId).push(visitor);}
    selected=[];for(const group of groups.values())if(selected.length+group.length<=6)selected.push(...group);
@@ -41,18 +43,19 @@ export function createTownCharacterArt({onState=()=>{},fetcher,signal,loadMonste
   }
   const chosen=new Set(selected.map(visitor=>visitor.id)),chosenPoses=poses.filter(visitor=>chosen.has(visitor.id)),completeGroups=new Set();
   for(const visitor of chosenPoses)if(chosenPoses.filter(peer=>peer.groupId===visitor.groupId).every(peer=>assets.get(peer.asset.src)))completeGroups.add(visitor.groupId);
-  visibleVisitors=chosenPoses.filter(visitor=>completeGroups.has(visitor.groupId)).map(visitor=>({...visitor,sprite:art.rigs.update(visitor.sourceCharacterId===hero.id?visitor.id:visitor.sourceCharacterId||visitor.id,{position:visitor,dt,time,facing:visitor.facing,heading:visitor.yaw,moving:visitor.walking,motion,mapId:state.mapId,worldPixelsPerUnit:view3D?1:64,displayHeightPx:view3D?(visitor.heightPx?visitor.heightPx/48:1.16):(visitor.heightPx||54),groundDepthScale:view3D?Math.sin(55*Math.PI/180):.78})||characterSprite(visitor.asset,assets.get(visitor.asset.src),visitor.facing,visitor.walking&&motion,visitor.phase),interactive:visitor.interactive!==false}));return visibleVisitors;
+  visibleVisitors=chosenPoses.filter(visitor=>completeGroups.has(visitor.groupId)).map(visitor=>({...visitor,sprite:art.rigs.update(visitor.sourceCharacterId===hero.id?visitor.id:visitor.sourceCharacterId||visitor.id,{position:visitor,dt,time,facing:visitor.facing,heading:visitor.yaw,moving:visitor.walking,motion,mapId:state.mapId,worldPixelsPerUnit:view3D?1:64,displayHeightPx:view3D?(visitor.heightPx?visitor.heightPx/48:1.16):(visitor.heightPx||54),groundDepthScale:view3D?Math.sin(55*Math.PI/180):.78,groundYaw})||characterSprite(visitor.asset,assets.get(visitor.asset.src),facingForCamera(visitor.facing,groundYaw,visitor.yaw),visitor.walking&&motion,visitor.phase),interactive:visitor.interactive!==false}));return visibleVisitors;
  }
  function visitors(){return placed.map(visitor=>({...visitor,profileURL:visitor.profileURL||archive?.creators?.find(person=>person.id===visitor.creatorId)?.profileURL,articleLinks:(archive?.years?.find(year=>year.year===roster.year)?.entries||[]).filter(entry=>entry.creatorId===visitor.creatorId&&entry.visible!==false&&entry.submissionStatus==='submitted').flatMap(entry=>[...(entry.works||[]),...(entry.links||[])]).filter(link=>link.visible!==false&&noteArticleURL(link.url))}));}
  function visitor(id){return visitors().find(person=>person.id===id)||null;}
  function nearbyVisitor(state){return nearestTownVisitor(visibleVisitors,state);}
  function reachableVisitor(id,state){return nearestTownVisitor(visibleVisitors.filter(visitor=>visitor.id===id),state);}
  function isHomeResidentVisible(targetId,state){return visibleVisitors.some(visitor=>visitor.fallbackTargetId===targetId&&visitor.mapId===state?.mapId);}
- function companionActors({state,walking=false,canStand=()=>true,dt=0,time=0,motion=true,view3D=false}={}){
+ function companionActors({state,walking=false,canStand=()=>true,dt=0,time=0,motion=true,view3D=false,cameraYaw=0}={}){
   if(!cat||!state?.position)return[];const image=assets.get(cat.asset.src);if(!image)return[];
+  const groundYaw=view3D&&Number.isFinite(cameraYaw)?cameraYaw:0;
   if(lastMap!==state.mapId||lastOwner&&Math.hypot(lastOwner.x-state.position.x,lastOwner.z-state.position.z)>3){lastMap=state.mapId;trail.reset();lastCat=null;const point=state.position;for(const offset of [{x:-.3,z:.28},{x:.3,z:.28},{x:0,z:.4}]){const seed={x:point.x+offset.x,z:point.z+offset.z,facing:state.facing};if(canStand(seed)){trail.push(seed);break;}}}
   trail.push({...state.position,facing:state.facing});lastOwner={...state.position};const pose=trail.sample(.45)||{...state.position,facing:state.facing,phase:0},moving=walking&&lastCat&&Math.hypot(pose.x-lastCat.x,pose.z-lastCat.z)>.00001;lastCat={x:pose.x,z:pose.z};
-  return[{id:cat.id,name:'黒猫',interactive:false,x:pose.x,z:pose.z,facing:pose.facing,heightPx:35,heightWorld:1,walking:!!moving,phase:pose.phase,sprite:art.rigs.update(cat.id,{position:pose,dt,time,facing:pose.facing,moving:!!moving,motion,mapId:state.mapId,worldPixelsPerUnit:view3D?1:64,displayHeightPx:view3D?35/48:35,groundDepthScale:view3D?Math.sin(55*Math.PI/180):.78})||characterSprite(cat.asset,image,pose.facing,!!moving,pose.phase)}];
+  return[{id:cat.id,name:'黒猫',interactive:false,x:pose.x,z:pose.z,facing:pose.facing,heightPx:35,heightWorld:1,walking:!!moving,phase:pose.phase,sprite:art.rigs.update(cat.id,{position:pose,dt,time,facing:pose.facing,moving:!!moving,motion,mapId:state.mapId,worldPixelsPerUnit:view3D?1:64,displayHeightPx:view3D?35/48:35,groundDepthScale:view3D?Math.sin(55*Math.PI/180):.78,groundYaw})||characterSprite(cat.asset,image,facingForCamera(pose.facing,groundYaw),!!moving,pose.phase)}];
  }
  async function ensureMonster(id){
   const layout=MONSTER_MOTION_DATA[id];if(!layout)return false;if(art.images[id])return true;if(pending.has(id))return pending.get(id);

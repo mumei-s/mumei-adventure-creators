@@ -1,6 +1,16 @@
-# Overlord S native assets
+# Overlord S assets
 
-The legacy body and eye meshes in `../../overlord-human-data.js` are derived from the MakeHuman hm08 base mesh and adult female morph, released under **CC0 1.0 Universal**. They remain available for explicit legacy validation; the default queen now uses the reconstructed mesh below. No MakeHuman application code is included.
+## Current original-art character (2026-10-30)
+
+The game now displays the queen with the same original-art sprite method as the other characters, in both exploration and battle. `queen-original-art-v1.webp` is the approved 1024×1536 queen artwork with the five permanently floating swords and their loops removed using imagegen. The pose, costume, hair and face registration are retained. The source PNG SHA-256 is `c1195c29a4ead858545e3ea3ff2619de8e848214f1d262cdeb103248df898063`. The full asset is WebP quality 91; `overlord-character-preview.js` embeds a 128×192 preview of the same image.
+
+The small preview appears independently of network texture requests and stays visible if a full-image transfer fails. Full art and the registered reference face upgrade it in place. Neither exploration nor battle imports the archived skinned body, geometry data, hair meshes or body maps below. The image is camera-facing, grounded at its feet, unlit, and preserves its original proportions. The queen waits at the throne, so it cannot patrol behind the first-person camera.
+
+Shared battle cues drive changing environments, flowing light, transient attack trails and the victory palette. Idle floating blades are not part of the current character.
+
+## Archived 3D experiments and attribution
+
+The legacy body and eye meshes in `../../overlord-human-data.js` are derived from the MakeHuman hm08 base mesh and adult female morph, released under **CC0 1.0 Universal**. They remain available for explicit legacy validation and are not imported by the game runtime. No MakeHuman application code is included.
 
 - Upstream commit: `a8bc2d54ff0ac92e78ff71431b1023eda42bf482`
 - [Base mesh](https://github.com/makehumancommunity/makehuman/blob/a8bc2d54ff0ac92e78ff71431b1023eda42bf482/makehuman/data/3dobjs/base.obj)
@@ -15,9 +25,9 @@ The native rig, fitted regalia, hair, crown, cloth, room, swords, animation dire
 
 `queen-face-reference.jpg` is an exact, unedited copy of the supplied `1000016797.jpg`, the closest character portrait from the three authoritative queen references. The 2D fallback samples registered facial pixels. The reference card is not drawn as a card, plane, or background.
 
-The 2D fallback uses the original facial pixels with a feathered curved mask, cached after its first composition. Body artwork and alpha remain unchanged. While this required image loads, the renderer keeps its loading state instead of displaying a different face. Failed reference loads retry with a bounded delay.
+The 2D fallback uses the original facial pixels with a feathered curved mask, cached after its first composition. Body artwork and alpha remain unchanged. While the registered face loads, the approved artwork stays visible; it is not hidden by an optional image transfer. Failed reference loads retry with a bounded delay.
 
-## Reconstructed, skinned queen body
+## Archived reconstructed, skinned queen body
 
 `../../overlord-queen-data.js` contains a genuine image-to-3D mesh generated with the [official Stable Fast 3D demo](https://huggingface.co/spaces/stabilityai/stable-fast-3d). No model weights or inference code are redistributed. This generated output is separate from the legacy CC0 body attribution above.
 
@@ -35,6 +45,4 @@ The reconstructed geometry is intentionally bounded for mobile rendering. Finger
 
 UV-island duplicates now share area-weighted normals at coincident source positions. This removes lighting seams without changing positions, topology, either UV set or skin weights. The exported normal map remains available, but its faceted relief is disabled on the reconstructed body. The body still casts its silhouette shadow. It does not receive additional real-time shadows, avoiding triangular shadow patches on top of the source image's painted lighting.
 
-Exploration uses this same default body. Behind-player cameras use a weak lantern at the traveller's height instead of carrying the strong first-person camera beam overhead. Reflections are limited to the queen's materials at the same 0.58 strength as the battle scene.
-
-Low-frame-rate battle timing and pose transitions share the encounter clock, while movement collision steps remain capped. Required body maps finish loading before the native battle viewport is activated; failed maps use the existing original-face fallback.
+The archived lighting and body-map attachment code is retained for provenance and legacy validation. The current game uses the original-art character described above.

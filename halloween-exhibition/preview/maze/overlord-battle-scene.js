@@ -1,9 +1,8 @@
 import * as THREE from './vendor/three.module.js';
-import {overlordBattleDirector} from './overlord-battle-director.js?v=20261029-overlord6';
-import {createOverlordStageEffects} from './overlord-stage-fx.js?v=20261029-overlord6';
-import {createOverlordBoss} from './overlord-boss.js?v=20261029-overlord6';
-import {attachOverlordMaterials} from './overlord-materials.js?v=20261029-overlord6';
-import {createOverlordThrone,createOverlordHall} from './overlord-room.js?v=20261029-overlord6';
+import {overlordBattleDirector} from './overlord-battle-director.js?v=20261030-art1';
+import {createOverlordStageEffects} from './overlord-stage-fx.js?v=20261030-art1';
+import {createOverlordCharacter} from './overlord-character.js?v=20261030-art1';
+import {createOverlordThrone,createOverlordHall} from './overlord-room.js?v=20261030-art1';
 import {playerPose} from './rpg-art.js?v=20261019-unified1';
 
 /** Resolved turn timing drives the performance; a peaceful bow cannot attack. */
@@ -48,6 +47,10 @@ export function fitOverlordBattleCamera(camera,bounds,aspect,options){
 }
 /** Snapshot the queen's solid body, ignoring decorative sword tips when framing. */
 export function overlordBattleActorGeometry(actor){
+ if(actor.sprite){
+  const height=actor.metadata.height,width=height*2/3;
+  return {positions:new Float32Array([-width/2,0,0,width/2,0,0,width/2,height,0,-width/2,height,0]),billboard:true};
+ }
  const root=actor.group,swords=actor.swords||[];root.updateMatrixWorld(true);const nodes=[];let count=0;
  root.traverseVisible(node=>{
   if(!node.isMesh)return;for(let parent=node;parent&&parent!==root;parent=parent.parent)if(swords.includes(parent))return;
@@ -62,7 +65,11 @@ export function overlordBattleActorGeometry(actor){
 export function overlordBattleActorPoints(geometry,layout,rootScale){
  const rootMatrix=new THREE.Matrix4().compose(new THREE.Vector3(layout.boss.x,layout.boss.y,layout.boss.z),new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),overlordAimYaw(layout.boss,layout.hero)),rootScale);
  const points=new Float32Array(geometry.positions.length+36),point=new THREE.Vector3();let offset=0;
- for(let i=0;i<geometry.positions.length;i+=3){point.fromArray(geometry.positions,i).applyMatrix4(rootMatrix);points[offset++]=point.x;points[offset++]=point.y;points[offset++]=point.z;}
+ for(let i=0;i<geometry.positions.length;i+=3){
+  if(geometry.billboard){const x=geometry.positions[i]*rootScale.x,y=geometry.positions[i+1]*rootScale.y;point.set(layout.boss.x,layout.boss.y,layout.boss.z).addScaledVector(battleCameraRight,x).addScaledVector(battleCameraUp,y);}
+  else point.fromArray(geometry.positions,i).applyMatrix4(rootMatrix);
+  points[offset++]=point.x;points[offset++]=point.y;points[offset++]=point.z;
+ }
  return {points,offset};
 }
 /** Move clear of the physical seat before straightening the knees. */
@@ -110,7 +117,44 @@ export function overlordBattlePixelRatio(width,height,deviceRatio=1){
  return Math.min(dpr,w<=640?2:1.5,Math.sqrt(1200000/(w*h)));
 }
 
-/** Native actor, gothic hall and timed attacks; no reference card is projected. */
+/** Five small physical weapons exist only for their summon/strike interval.
+ * Shared geometry keeps them cheap; separate materials allow each to dissolve
+ * after its own tip arrives at the target. No queen/body model is imported. */
+export function createOverlordAttackSwords(THREE){
+ const group=new THREE.Group();group.name='transient-five-sword-attack';const resources=new Set(),own=resource=>(resources.add(resource),resource);
+ const shape=width=>{const s=new THREE.Shape();s.moveTo(-width,0);s.lineTo(-width*.82,.70);s.lineTo(0,1);s.lineTo(width*.82,.70);s.lineTo(width,0);s.closePath();return s;};
+ const edgeGeometry=own(new THREE.ExtrudeGeometry(shape(.052),{depth:.036,steps:1,bevelEnabled:false}));
+ const bladeGeometry=own(new THREE.ExtrudeGeometry(shape(.030),{depth:.042,steps:1,bevelEnabled:false}));
+ const guardGeometry=own(new THREE.BoxGeometry(.29,.052,.070)),gripGeometry=own(new THREE.BoxGeometry(.055,.21,.055)),pommelGeometry=own(new THREE.OctahedronGeometry(.048,0));
+ const swords=[],materials=[];
+ for(let i=0;i<5;i++){
+  const sword=new THREE.Group();sword.name='summoned-crimson-sword-'+(i+1);sword.visible=false;group.add(sword);
+  const make=color=>own(new THREE.MeshBasicMaterial({color,transparent:true,opacity:0,depthWrite:false,toneMapped:false}));
+  const gold=make('#e6b865'),red=make('#ff315b'),black=make('#160b20');materials.push({gold,red,black});
+  const edge=new THREE.Mesh(edgeGeometry,gold),blade=new THREE.Mesh(bladeGeometry,red),guard=new THREE.Mesh(guardGeometry,gold),grip=new THREE.Mesh(gripGeometry,black),pommel=new THREE.Mesh(pommelGeometry,gold);
+  edge.name='gilded-blade-edge';blade.name='crimson-sword-blade';blade.position.z=-.003;guard.name='sword-crossguard';guard.position.y=-.012;grip.name='black-sword-grip';grip.position.y=-.125;pommel.name='gilded-sword-pommel';pommel.position.y=-.26;
+  sword.add(edge,blade,guard,grip,pommel);swords.push(sword);
+ }
+ const from=new THREE.Vector3(),to=new THREE.Vector3(),direction=new THREE.Vector3(),tip=new THREE.Vector3(),up=new THREE.Vector3(0,1,0);let dead=false;
+ function update({blades=[],boss={x:.45,y:0,z:.2},hero={x:-.4,y:0,z:1.2},motion=true}={}){
+  if(dead)return;
+  swords.forEach((sword,index)=>{
+   const cue=blades[index]||{},visible=motion&&!!cue.visible&&(cue.opacity||0)>.001;sword.visible=visible;if(!visible)return;
+   const travel=Math.max(0,Math.min(1,cue.travel||0)),scale=.64*(.7+.3*Math.max(0,Math.min(1,cue.summon||0)));
+   // Form around the extended hand/chest, below the portrait's face. A hilt
+   // backs away from its tip, so a head-height tip would cross the eyes.
+   from.set(boss.x+(index-2)*.37,boss.y+1.45+(index%2)*.10,boss.z-.10);
+   to.set(hero.x+(index-2)*.035,hero.y+.46,hero.z);
+   direction.copy(to).sub(from).normalize();tip.copy(from).lerp(to,travel);
+   sword.quaternion.setFromUnitVectors(up,direction);sword.scale.setScalar(scale);sword.position.copy(tip).addScaledVector(direction,-scale);
+   const opacity=Math.max(0,Math.min(1,cue.opacity||0));for(const material of Object.values(materials[index]))material.opacity=opacity;
+  });
+ }
+ function dispose(){if(dead)return;dead=true;group.removeFromParent();for(const resource of resources)resource.dispose();resources.clear();}
+ return {group,swords,update,dispose};
+}
+
+/** Original-art actors inside a gothic hall and a timed astral battle stage. */
 export function createOverlordBattleScene({canvas,art,onLost=()=>{}}){
  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:'low-power'});
  renderer.setPixelRatio(1);renderer.outputColorSpace=THREE.SRGBColorSpace;
@@ -127,13 +171,15 @@ export function createOverlordBattleScene({canvas,art,onLost=()=>{}}){
  key.castShadow=true;key.shadow.mapSize.set(1024,1024);Object.assign(key.shadow.camera,{left:-3.5,right:3.5,top:3.5,bottom:-3.5,near:.5,far:18});key.shadow.camera.updateProjectionMatrix();key.shadow.bias=-.00035;key.shadow.normalBias=.018;key.shadow.radius=2;resources.add(key.shadow);
  const fill=new THREE.DirectionalLight('#c3d1f2',.62);fill.position.set(3,2,4);scene.add(fill);
  const rim=new THREE.PointLight('#b51235',6.5,12,2);rim.position.set(.5,3,-2);scene.add(rim);
- const boss=createOverlordBoss(THREE),standingGeometry=overlordBattleActorGeometry(boss);scene.add(boss.group);const materials=attachOverlordMaterials(THREE,boss);
- const hero=new THREE.Sprite(new THREE.SpriteMaterial({transparent:true,alphaTest:.05,depthWrite:false}));resources.add(hero.material);hero.center.set(.5,0);scene.add(hero);let heroImage=null,heroTexture=null;
+ const boss=createOverlordCharacter(THREE,{image:art?.images?.nameless_overlord}),standingGeometry=overlordBattleActorGeometry(boss);scene.add(boss.group);
+ const hero=new THREE.Sprite(new THREE.SpriteMaterial({transparent:true,alphaTest:.05,depthWrite:false,toneMapped:false,fog:false}));resources.add(hero.material);hero.center.set(.5,0);scene.add(hero);let heroImage=null,heroTexture=null;
  const groundMaterial=new THREE.MeshBasicMaterial({map:shadowTexture(resources),transparent:true,depthWrite:false,toneMapped:false});resources.add(groundMaterial);
  const groundShadow=new THREE.Mesh(new THREE.PlaneGeometry(1.55,.9),groundMaterial);resources.add(groundShadow.geometry);groundShadow.rotation.x=-Math.PI/2;groundShadow.position.set(.45,.073,.2);scene.add(groundShadow);
  const heroShadow=new THREE.Mesh(groundShadow.geometry,groundMaterial);heroShadow.rotation.x=-Math.PI/2;heroShadow.scale.set(.36,.36,1);heroShadow.position.y=.073;scene.add(heroShadow);
  const atmosphere=createOverlordStageEffects(THREE);scene.add(atmosphere.group);
- const idleBackdrop=new THREE.Color('#0a080e'),dangerBackdrop=new THREE.Color('#16050b'),goldBackdrop=new THREE.Color('#15100a'),bloodRim=new THREE.Color('#b51235'),goldRim=new THREE.Color('#f3c477');
+ const attackSwords=createOverlordAttackSwords(THREE);scene.add(attackSwords.group);
+ const idleBackdrop=new THREE.Color('#0a080e'),dangerBackdrop=new THREE.Color('#16050b'),goldBackdrop=new THREE.Color('#15100a'),riftBackdrop=new THREE.Color('#070726'),riftStone=new THREE.Color('#151630'),keyWarm=new THREE.Color('#ffe5c7'),keyAstral=new THREE.Color('#8c91ff'),bloodRim=new THREE.Color('#b51235'),goldRim=new THREE.Color('#f3c477');
+ const sceneryMaterials=new Map();for(const parent of[hall.group,throne.group||throne])parent.traverse(object=>{for(const material of object.material?Array.isArray(object.material)?object.material:[object.material]:[])if(material.color&&!sceneryMaterials.has(material))sceneryMaterials.set(material,{color:material.color.clone(),emissive:material.emissive?.clone()});});
  const makeMaterial=parameters=>{const m=new THREE.MeshBasicMaterial(parameters);resources.add(m);return m;};
  const lightMaterial=makeMaterial({color:'#ffdc95',transparent:true,opacity:.72,blending:THREE.AdditiveBlending,depthWrite:false,toneMapped:false});
  const redMaterial=makeMaterial({color:'#ff234e',transparent:true,opacity:.48,blending:THREE.AdditiveBlending,depthWrite:false,toneMapped:false});
@@ -183,11 +229,17 @@ export function createOverlordBattleScene({canvas,art,onLost=()=>{}}){
   sparks.visible=motion&&(counter.active||player.impact>.001);
   if(sparks.visible){for(let i=0;i<particleCount;i++){const seed=i/particleCount,a=i*2.399+time*(counter.charge>.01?1.4:.4),flight=counter.active?counter.progress:1,radius=.14+seed*.42,x=boss.group.position.x+(hero.position.x-boss.group.position.x)*flight,y=.15+((seed*3.4+time*.2)%1)*1.4,z=boss.group.position.z+(hero.position.z-boss.group.position.z)*flight;particlePositions.set([x+Math.cos(a)*radius,y,z+Math.sin(a)*radius],i*3);}particleGeo.attributes.position.needsUpdate=true;}
   slashes.forEach((object,index)=>{const blade=beat.blades[index],yaw=overlordAimYaw(boss.group.position,hero.position),lateral=(index-2)*.075;object.visible=motion&&blade.active;object.position.set(boss.group.position.x+(hero.position.x-boss.group.position.x)*blade.travel+Math.cos(yaw)*lateral,1.35+(hero.position.y+.34-1.35)*blade.travel,boss.group.position.z+(hero.position.z-boss.group.position.z)*blade.travel-Math.sin(yaw)*lateral);object.rotation.set(.13,yaw,-.55+index*.15);object.scale.setScalar(.30+index*.035+Math.sin(blade.travel*Math.PI)*.14);});
-  rim.intensity=6.5+environment.rage*4+counter.charge*2+counter.impact*5;rim.color.copy(bloodRim).lerp(goldRim,environment.gold);
-  scene.background.copy(idleBackdrop).lerp(dangerBackdrop,environment.rage).lerp(goldBackdrop,environment.gold);scene.fog.color.copy(scene.background);
+  attackSwords.update({blades:beat.blades,boss:boss.group.position,hero:hero.position,motion});
+  rim.intensity=6.5+environment.rage*4+counter.charge*4+counter.impact*8;rim.color.copy(bloodRim).lerp(goldRim,environment.gold);
+  const rift=environment.rift||0,flash=environment.flash||0;
+  key.color.copy(keyWarm).lerp(keyAstral,rift*.72).lerp(goldRim,environment.gold*.25);key.intensity=2.9*(1-rift*.54)+flash*3;
+  fill.intensity=.62+rift*.55+flash*.7;
+  for(const [material,base]of sceneryMaterials){material.color.copy(base.color).lerp(riftStone,rift*.82);if(material.emissive&&base.emissive)material.emissive.copy(base.emissive).multiplyScalar(1-rift*.7);}
+  (throne.group||throne).visible=(environment.hallVisibility??1)>.24;
+  scene.background.copy(idleBackdrop).lerp(dangerBackdrop,environment.rage).lerp(riftBackdrop,rift).lerp(goldBackdrop,environment.gold);scene.fog.color.copy(scene.background);
   groundShadow.position.x=boss.group.position.x;groundShadow.position.z=boss.group.position.z;heroShadow.visible=hero.visible;heroShadow.position.x=hero.position.x;heroShadow.position.z=hero.position.z;
-  atmosphere.update({time,motion,environment,boss:boss.group.position});hall.update?.({time,motion,phase:beat.phase,environment});renderer.render(scene,camera);
+  atmosphere.update({time,motion,environment,boss:boss.group.position,target:hero.position,camera});hall.update?.({time,motion,phase:beat.phase,environment});renderer.render(scene,camera);
  }
- function dispose(){if(dead)return;dead=true;canvas.removeEventListener('webglcontextlost',lost);materials.dispose();atmosphere.dispose();boss.dispose();throne.dispose?.();hall.dispose?.();heroTexture?.dispose();for(const resource of resources)resource.dispose?.();renderer.dispose();}
- return {render,dispose,scene,camera,boss,ready:materials.ready};
+ function dispose(){if(dead)return;dead=true;canvas.removeEventListener('webglcontextlost',lost);attackSwords.dispose();atmosphere.dispose();boss.dispose();throne.dispose?.();hall.dispose?.();heroTexture?.dispose();for(const resource of resources)resource.dispose?.();renderer.dispose();}
+ return {render,dispose,scene,camera,boss,attackSwords,ready:boss.ready};
 }

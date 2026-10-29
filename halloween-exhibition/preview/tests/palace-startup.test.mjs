@@ -6,7 +6,7 @@ test('image error keeps embedded castle preview and resolves fallback',async()=>
 test('stalled image and stalled decode cannot trap the entrance indefinitely',async()=>{for(const decode of [undefined,()=>new Promise(()=>{})]){const f=fixture({complete:!!decode,naturalWidth:decode?800:0,decode});const ready=settlePalaceImage(f.image,f);[...f.pending.values()][0]();assert.equal(await ready,'fallback');assert.equal(f.pending.size,0);}});
 test('loaded image without decode and missing image settle safely',async()=>{const f=fixture({complete:true,naturalWidth:600});assert.equal(await settlePalaceImage(f.image,f),'ready');assert.equal(await settlePalaceImage(null),'fallback');});
 const read=path=>readFile(new URL('../'+path,import.meta.url),'utf8');
-test('first HTML carries castle pixels and prioritizes only the matching castle',async()=>{const html=await read('index.html');assert.match(html,/class="palace-art"[^>]*data:image\/webp;base64,/);assert.match(html,/id="palace-image"[^>]*fetchpriority="high"[^>]*loading="eager"/);assert.equal((html.match(/rel="preload" as="image"/g)||[]).length,2);assert.match(html,/id="palace-gate"[^>]*disabled/);assert.doesNotMatch(html,/eerie-parapet/);});
+test('first HTML carries castle pixels and prioritizes only the matching castle',async()=>{const html=await read('index.html');assert.match(html,/<html[^>]*--palace-first-preview-portrait:url\(data:image\/webp;base64,/);assert.match(html,/id="palace-image"[^>]*fetchpriority="low"[^>]*loading="eager"/);assert.equal((html.match(/rel="preload" as="image"/g)||[]).length,2);assert.match(html,/id="palace-gate"[^>]*disabled/);assert.doesNotMatch(html,/eerie-parapet/);});
 test('three captions stay inside actual remaining viewport and walkers cannot block gate',async()=>{const css=await read('palace-entrance.css');assert.match(css,/100svh - var\(--palace-header-height,180px\)/);assert.match(css,/palace-caption-stack\{[^}]*bottom:8px[^}]*width:min\(62%,330px\)/);assert.match(css,/palace-path-walkers\{[^}]*pointer-events:none/);assert.match(css,/prefers-reduced-motion/);for(const [width,height,header] of [[333,640,180],[360,640,180],[390,740,180],[740,390,150]]){const scene=Math.max(230,height-header);const captionBottom=header+scene-8;assert.ok(captionBottom<=height);assert.ok(Math.min(width*.62,330)<width*.7);}});
 test('archive paint does not wait for optional full images, settings size is first',async()=>{const js=await read('theater.js'),pwa=await read('pwa.js');assert.doesNotMatch(js,/await palaceVisualReady|palaceVisualReady\.then/);assert.match(js,/void initPalaceStartup\(root\)/);assert.match(js,/prepend\(displayPreferences\)/);assert.match(js,/表示サイズ（この端末）/);assert.match(pwa,/window.addEventListener\('load',schedulePreviewWorker/);assert.match(pwa,/requestIdleCallback/);});
 
@@ -119,4 +119,15 @@ test('repeated successful imports deferred outside TOP never exhaust the failure
  }
  run();await flush();loaded({initPalaceLivingScene(){starts++;}});await flush();
  assert.equal(starts,1);assert.equal(imports,4);assert.equal(tasks.size,0);
+});
+
+
+test('optional animation traffic waits until the complete stylesheet has become usable',async()=>{
+ let changed,pending=true,loads=0;const tasks=new Map();let id=0;
+ const doc={documentElement:{classList:{contains:()=>pending}},defaultView:{MutationObserver:class{constructor(fn){changed=fn;}observe(){}disconnect(){}}}};
+ const root={dataset:{theaterReady:'ready',archiveState:'ready',palaceState:'palace'},ownerDocument:doc};
+ schedulePalaceResidents(root,{ready:Promise.resolve(),timers:{setTimeout(fn){tasks.set(++id,fn);return id;},clearTimeout(key){tasks.delete(key);}},loadResidents:async()=>{loads++;return{initPalaceLivingScene(){}};}});
+ await Promise.resolve();assert.equal(tasks.size,0);assert.equal(loads,0);
+ pending=false;changed();assert.equal(tasks.size,1);
+ [...tasks.values()][0]();for(let n=0;n<8;n++)await Promise.resolve();assert.equal(loads,1);
 });

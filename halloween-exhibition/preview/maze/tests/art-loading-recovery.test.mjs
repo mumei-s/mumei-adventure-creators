@@ -44,7 +44,7 @@ test('a direct encounter can request its transparent boss cutout before scene st
  const calls=[];const art=createArtLibrary({loadPlayer:false,deferOptional:true,deferScene:true,loadImage:async src=>{calls.push(src);return image;}});
  const first=await art.ensure('nameless_overlord');assert.equal(first,image);assert.equal(art.images.nameless_overlord,image);assert.equal(art.monsterLayouts.nameless_overlord,undefined);
  await art.startScene();await art.loadRemaining();await art.ready;
- assert.equal(calls.filter(src=>src.includes('/assets/overlord/overlord-2d-v2.webp')).length,1);
+ assert.equal(calls.filter(src=>src.includes('/assets/overlord/queen-original-art-v1.webp')).length,1);
  const {monsterSprite}=await import('../monster-motion.js');assert.equal(monsterSprite(art,'nameless_overlord'),image);
  assert.equal(await art.ensure('not-an-approved-source'),null);assert.equal(Object.keys(art.monsterLayouts).length,10);
 });

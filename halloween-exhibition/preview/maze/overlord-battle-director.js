@@ -62,10 +62,12 @@ export function overlordBattleDirector({battle={},effect=null,time=0,motion=true
  const playerCharge=live?bell(age,0,line.chargeEnd):0;
  const shield=live&&kind==='guard'?smooth(age/.15)*(1-smooth((age-duration+.20)/.20)):0;
  const blades=Array.from({length:5},(_,index)=>{
-  if(!live||!fullCounter||(!special&&index!==2))return {active:false,launch:0,travel:0,impact:0};
+  if(!live||!fullCounter||(!special&&index!==2))return {active:false,visible:false,summon:0,opacity:0,launch:0,travel:0,impact:0};
   const launchAt=chargeEnd+(special?index*.105:0),travelDuration=special?.38:Math.max(.18,(counterEnd-chargeEnd)*.55),arrival=launchAt+travelDuration;
   const active=age>=launchAt&&age<=arrival+.22;
-  return {active,launch:smooth((age-launchAt)/.11),travel:smooth(progress(age,launchAt,arrival)),impact:bell(age,arrival-.025,arrival+.20)};
+  const summonAt=counterStart+(special?index*.035:0),summon=smooth(progress(age,summonAt,Math.min(launchAt,summonAt+.20)));
+  const visible=age>=summonAt&&age<=arrival+.14,opacity=visible?summon*(1-smooth(progress(age,arrival,arrival+.14))):0;
+  return {active,visible,summon,opacity,launch:smooth((age-launchAt)/.11),travel:smooth(progress(age,launchAt,arrival)),impact:bell(age,arrival-.025,arrival+.20),impactProgress:progress(age,arrival-.025,arrival+.20)};
  });
  const impact=blades.reduce((value,blade)=>Math.max(value,blade.impact),0);
  const maxSpirit=Math.max(1,Number.isFinite(battle.maxSpirit)?battle.maxSpirit:30);
@@ -88,11 +90,21 @@ export function overlordBattleDirector({battle={},effect=null,time=0,motion=true
  const heroRecoil=impact*(kind==='guard'?.035:.11);
  const ambience=motion&&intro===1&&!finished;
  const shake=motion&&impact>0?impact*(special?.018:.009)*(kind==='guard'?.65:1):0;
+ // The room is physically present between actions, then opens into a flowing
+ // astral passage for a counter. A quiet full-health room can still perform a
+ // spectacular special; its visual change does not depend on low HP.
+ const rift=motion&&counterActive?smooth((age-counterStart)/.16)*(1-smooth((age-counterEnd+.15)/.15))*(special?1:.58):0;
+ const stream=motion?clamp(rift*.85+playerCharge*.48+impact*.22):0;
+ const flash=motion?clamp(playerImpact*.18+impact*(special?.44:.24),0,.58):0;
+ const shock=motion?clamp(impact+playerImpact*.75):0;
+ const strongestBlade=blades.reduce((best,blade)=>blade.impact>best.impact?blade:best,{impact:0,impactProgress:0});
+ const shockTravel=motion?(impact>playerImpact*.75?strongestBlade.impactProgress:progress(age,hit-.05,hit+.23)):0;
+ const victoryRays=motion?gold:0;
  return {
   duration:effect?duration:0,intro,age,walkProgress,state,stateElapsed,phase,phaseLabel:phaseName(phase,kind,special),
   attackProgress:counterActive?counterProgress:progress(age,line.chargeEnd,hit+.23),
-  environment:{rage,gold,portal,emberSpeed:motion?.16+rage*.55+counterCharge*.25:0,wind:motion?.14+rage*.46+counterCharge*.35:0,floorGlow:clamp(rage*.6+counterCharge*.6+impact*.22)*(1-gold),pulse},
-  camera:{push:motion?playerCharge*.025+counterCharge*(special?.065:.025)+(ambience?Math.sin(clock*.23)*.004:0):0,
+  environment:{rage,gold,portal,rift,stream,flash,shock,shockTravel,victoryRays,hallVisibility:1-rift*.84,emberSpeed:motion?.16+rage*.55+counterCharge*.25+stream*.5:0,wind:motion?.14+rage*.46+counterCharge*.35+rift*.4:0,floorGlow:clamp(rage*.6+counterCharge*.6+impact*.22+rift*.35)*(1-gold),pulse},
+  camera:{push:motion?playerCharge*.055+counterCharge*(special?.105:.05)+(ambience?Math.sin(clock*.23)*.004:0):0,
    orbit:ambience?Math.sin(clock*.14)*.014:0,pullback:motion&&special?bell(age,chargeEnd,counterEnd)*.065:0,
    shakeX:shake*Math.sin(clock*47),shakeY:shake*Math.cos(clock*39)*.6},
   actors:{heroAdvance,heroLift:live&&kind==='attack'?bell(age,.10,.65)*.045:0,heroRecoil,bossRecoil:hitRecoil*.095,bossLean:counterCharge*(special?.14:.06),swordFlare:counterActive&&special?smooth(counterProgress/.26):rage*.12},

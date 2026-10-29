@@ -1,6 +1,6 @@
 import {drawArtSprite,playerPose} from './rpg-art.js?v=20261019-unified1';
-import {overlordBattleDirector} from './overlord-battle-director.js?v=20261029-overlord6';
-import {getOverlordIdentityImage} from './overlord-materials.js?v=20261029-overlord6';
+import {overlordBattleDirector} from './overlord-battle-director.js?v=20261030-art1';
+import {getOverlordIdentityImage} from './overlord-materials.js?v=20261030-art1';
 
 const clamp=value=>Math.max(0,Math.min(1,value));
 const smooth=value=>{const t=clamp(value);return t*t*(3-2*t);};
@@ -55,7 +55,7 @@ function identityQueenSprite(sprite){
  if(!identityReference&&!identityPending&&Date.now()>=identityRetryAt){
   identityPending=true;void getOverlordIdentityImage().then(reference=>{identityReference=reference;}).catch(()=>{identityRetryAt=Date.now()+30000;}).finally(()=>{identityPending=false;});
  }
- if(!registered)return null;
+ if(!registered)return sprite;
  return sprite?.image?{...sprite,image:registered}:registered;
 }
 
@@ -76,6 +76,62 @@ function atmosphere(c,{w,h,queen},cue,clock,motion){
   ellipse(c,x,y,size,size,mix('#e0b77855','#ff526a99',env.rage));
  }
  if(env.portal>.01){for(let i=0;i<8;i++){const a=i*TAU/8+clock*.17,r=queen.height*(.27+env.portal*.08),x=queen.x+Math.cos(a)*r,y=h*.31+Math.sin(a)*r*.65;diamond(c,x,y,1.2+env.portal*1.2,2.3+env.portal*2,mix('#b3485d66','#ed738bbb',env.portal));}}
+}
+
+/** The room gives way to an astral corridor for the attack, then returns.
+ * Ribbons and streaks are batched paths: the background moves substantially
+ * without a full-screen blur, filter pass or hundreds of individual particles. */
+function astralBackdrop(c,{w,h,queen},cue,clock,motion){
+ const env=cue.environment,rift=clamp(env.rift||0),stream=motion?clamp(env.stream||0):0,gold=clamp(env.gold||0);
+ const cx=queen.x,cy=h*.38,span=Math.max(w,h)*.78;
+ if(rift>.001){
+  c.fillStyle=`rgba(5,5,21,${rift*.90})`;c.fillRect(0,0,w,h);
+  const depth=c.createRadialGradient(cx,cy,2,cx,cy,span);
+  depth.addColorStop(0,`rgba(255,87,152,${rift*.50})`);depth.addColorStop(.16,`rgba(131,31,127,${rift*.68})`);depth.addColorStop(.52,`rgba(26,19,73,${rift*.92})`);depth.addColorStop(1,'#05071200');c.fillStyle=depth;c.fillRect(0,0,w,h);
+  c.save();c.globalCompositeOperation='lighter';c.lineCap='round';c.lineJoin='round';c.shadowColor='#d731a9';c.shadowBlur=7*rift;
+  c.beginPath();
+  for(let i=0;i<6;i++){
+   const start=i*TAU/6+(motion?clock*.48:0);
+   for(let j=0;j<80;j++){
+    const p=.07+j/79*1.25,a=start+p*3.9,r=p*span,x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r*.62;
+    if(j)c.lineTo(x,y);else c.moveTo(x,y);
+   }
+  }
+  c.strokeStyle=`rgba(151,57,207,${rift*.12})`;c.lineWidth=6+rift*9;c.stroke();
+  c.strokeStyle=`rgba(231,117,226,${rift*.45})`;c.lineWidth=.8+rift*1.1;c.stroke();
+  c.shadowBlur=0;c.strokeStyle=`rgba(169,196,255,${rift*.34})`;c.lineWidth=.55;c.stroke();
+  for(let i=0;i<3;i++){const pulse=motion?(clock*.36+i/3)%1:i/3,r=span*(.07+pulse*.52);ellipse(c,cx,cy,r,r*.54,null,`rgba(246,154,227,${rift*(1-pulse)*.22})`,.7+rift);}
+  c.restore();
+ }
+ if(stream>.001){
+  c.save();c.globalCompositeOperation='lighter';c.beginPath();
+  for(let i=0;i<24;i++){
+   const a=i*TAU/24+.11,flight=(i*.381966+clock*(.52+stream*.64))%1,r=span*(.14+flight*1.15),tail=span*Math.max(.05,.14+flight*1.15-.12-stream*.16);
+   c.moveTo(cx+Math.cos(a)*tail,cy+Math.sin(a)*tail*.73);c.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r*.73);
+  }
+  c.strokeStyle=`rgba(210,218,255,${stream*.68})`;c.lineWidth=.7+stream*1.3;c.shadowColor='#a347ff';c.shadowBlur=5*stream;c.stroke();c.restore();
+ }
+ if(gold>.001){
+  c.save();c.globalCompositeOperation='lighter';
+  const rays=motion?clamp(env.victoryRays||gold)*.22:gold*.13;
+  c.beginPath();
+  for(let i=0;i<9;i++){
+   const a=i*TAU/9+(motion?clock*.035:0),edge=a+.075,r=span*1.6;
+   c.moveTo(cx,cy);c.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);c.lineTo(cx+Math.cos(edge)*r,cy+Math.sin(edge)*r);c.closePath();
+  }
+  c.fillStyle=`rgba(255,213,126,${rays})`;c.fill();c.restore();
+ }
+}
+
+function impactAtmosphere(c,{w,h},cue,targetX,targetY){
+ const env=cue.environment,shock=clamp(env.shock||0),flash=clamp(env.flash||0);
+ if(shock>.001){
+  const progress=clamp(env.shockTravel||0),radius=Math.min(w,h)*(.08+progress*.60);
+  c.save();c.globalCompositeOperation='lighter';
+  for(let i=0;i<3;i++)ellipse(c,targetX,targetY,radius*(1+i*.31),radius*(.54+i*.12),null,`rgba(255,221,191,${shock*(.66-i*.16)})`,1.2+shock*(3-i));
+  c.restore();
+ }
+ if(flash>.001){c.fillStyle=`rgba(255,239,221,${flash*.20})`;c.fillRect(0,0,w,h);}
 }
 
 /** Coordinates remain in CSS pixels; actors are fitted by their actual atlas frame. */
@@ -150,8 +206,37 @@ function boundedSprite(c,sprite,x,footY,actualHeight,{alpha=1,offsetX=0}={}){
 function cut(c,sx,sy,tx,ty,progress,index=0,special=false){
  const p=clamp(progress),offset=(index-2)*3.8,x=sx+(tx-sx)*p,y=sy+(ty-sy)*p+offset,tail=Math.max(0,p-.36),tailX=sx+(tx-sx)*tail,tailY=sy+(ty-sy)*tail+offset;
  c.save();c.lineCap='round';c.shadowColor='#ff1749';c.shadowBlur=special?11:5;
- c.beginPath();c.moveTo(tailX,tailY);c.quadraticCurveTo((tailX+x)/2,(tailY+y)/2-12-index*2,x,y);c.strokeStyle=special?'#ee254a9c':'#ff73849c';c.lineWidth=special?4.6:2.7;c.stroke();
- c.shadowBlur=0;c.strokeStyle='#ffe0dc';c.lineWidth=1;c.stroke();c.restore();
+ c.beginPath();c.moveTo(tailX,tailY);c.quadraticCurveTo((tailX+x)/2,(tailY+y)/2-12-index*2,x,y);c.strokeStyle=special?'#e5235f66':'#ff738466';c.lineWidth=special?12:7;c.stroke();
+ c.shadowBlur=0;c.strokeStyle=special?'#ff577dbb':'#ffbcabb9';c.lineWidth=special?5.2:3.3;c.stroke();c.strokeStyle='#fff0e8';c.lineWidth=1.3;c.stroke();ellipse(c,x,y,special?3.5:2.5,special?3.5:2.5,'#fff0e9');c.restore();
+}
+
+/** A sword has a blade, transverse guard and dark grip, not just a light trail.
+ * Its point follows the same source-to-target flight as its luminous wake. */
+export function overlordBattleSwordShape(x,y,targetX,targetY,length){
+ const distance=Math.hypot(targetX-x,targetY-y)||1,dx=(targetX-x)/distance,dy=(targetY-y)/distance,px=-dy,py=dx;
+ const point=(along,across=0)=>[x+dx*along*length+px*across*length,y+dy*along*length+py*across*length];
+ return {
+  blade:[point(0,-.058),point(.48,-.043),point(.73),point(.48,.043),point(0,.058),point(-.03)],
+  guard:[point(-.01,-.17),point(.055,-.20),point(.02,-.07),point(.035),point(.02,.07),point(.055,.20),point(-.01,.17),point(-.065)],
+  grip:[point(-.035,-.035),point(-.30,-.029),point(-.30,.029),point(-.035,.035)],
+  pommel:[point(-.29),point(-.34,-.052),point(-.40),point(-.34,.052)],
+  edge:[point(.035),point(.68)],tip:point(.73),hilt:point(-.34)
+ };
+}
+export function overlordBattleSwordFlightShape(sourceX,sourceY,targetX,targetY,progress,length){
+ const distance=Math.hypot(targetX-sourceX,targetY-sourceY)||1,dx=(targetX-sourceX)/distance,dy=(targetY-sourceY)/distance,p=clamp(progress),tipX=sourceX+(targetX-sourceX)*p,tipY=sourceY+(targetY-sourceY)*p;
+ const x=tipX-dx*length*.73,y=tipY-dy*length*.73;
+ return overlordBattleSwordShape(x,y,x+dx,y+dy,length);
+}
+function sword(c,shape,opacity){
+ c.save();c.globalAlpha*=clamp(opacity);c.lineJoin='round';
+ const metal=c.createLinearGradient(...shape.blade[0],...shape.tip);metal.addColorStop(0,'#780c31');metal.addColorStop(.38,'#eb2855');metal.addColorStop(.82,'#ffb4bd');metal.addColorStop(1,'#fff6ed');
+ c.shadowColor='#ff245b';c.shadowBlur=7;
+ polygon(c,shape.blade,metal,'#ffdda6',.85);c.shadowBlur=0;
+ polygon(c,shape.grip,'#1b1425','#e6b865',.85);
+ polygon(c,shape.guard,'#e6b865','#fff0bc',.75);
+ polygon(c,shape.pommel,'#a4123d','#edc276',.75);
+ line(c,shape.edge,'#fff2eb',1.1);c.restore();
 }
 
 /** Explicit 2D art renderer for unsupported WebGL; native combat uses its own 3D scene. */
@@ -161,7 +246,9 @@ export function renderOverlordBattle2D({canvas,art,battle,effect,time=0,motion=t
  if(canvas.width!==Math.round(w*ratio)||canvas.height!==Math.round(h*ratio)){canvas.width=Math.round(w*ratio);canvas.height=Math.round(h*ratio);}c.setTransform(ratio,0,0,ratio,0,0);c.clearRect(0,0,w,h);
  const queen=identityQueenSprite(art?.images?.nameless_overlord),layout=overlordBattle2DLayout(w,h,queen),q=layout.queen,p=layout.hero;
  const cue=overlordBattleDirector({battle,effect,time,motion}),clock=motion&&Number.isFinite(time)?Math.max(0,time):0,env=cue.environment;
- c.save();c.translate(cue.camera.shakeX*w,cue.camera.shakeY*h);hall(c,layout,env,clock);atmosphere(c,layout,cue,clock,motion);
+ c.save();c.translate(cue.camera.shakeX*w,cue.camera.shakeY*h);
+ const zoom=1+(motion?Math.max(0,cue.camera.push||0)*.55:0);c.translate(w*.5,h*.55);c.scale(zoom,zoom);c.translate(-w*.5,-h*.55);
+ hall(c,layout,env,clock);astralBackdrop(c,layout,cue,clock,motion);atmosphere(c,layout,cue,clock,motion);
  ellipse(c,q.x,q.y+h*.005,q.width*.3,Math.max(2,h*.014),'#050510a6');ellipse(c,q.x,q.y+h*.002,q.width*.45,Math.max(3,h*.022),null,mix('#d8af6e66','#f5d99c88',env.gold),.8);
  const hero=playerPose(art?.images?art:{...art,images:{}},'right',false,0,{battle:true,effect,time,motion}),heroMove=(cue.actors.heroAdvance-cue.actors.heroRecoil)*w*.13,heroLift=cue.actors.heroLift*h*.12;
  const queenRecoil=cue.actors.bossRecoil*w*.13,queenBreath=motion?Math.sin(clock*.95)*h*.0014:0;
@@ -181,12 +268,19 @@ export function renderOverlordBattle2D({canvas,art,battle,effect,time=0,motion=t
  burst(c,sourceX,sourceY,Math.min(w*.07,h*.14),cue.player.impact,'#ffdf9cd9');
  if(cue.counter.charge>.001){const radius=q.height*(.22+cue.counter.charge*.07);ellipse(c,q.x,q.y-q.height*.55,radius,radius*.25,null,'#f2436577',1+cue.counter.charge);}
  cue.blades.forEach((blade,i)=>{
-  if(!blade.active)return;
-  cut(c,sourceX+(i-2)*q.width*.11,sourceY-(i%2)*q.height*.16,targetX,targetY,blade.travel,i,cue.counter.special);
-  burst(c,targetX,targetY,Math.min(w*.06,h*.12),blade.impact,cue.player.kind==='guard'?'#bcffe1d9':'#ffb4bed9');
+  const sx=sourceX+(i-2)*q.width*.21,sy=sourceY-q.height*.06-(Math.abs(i-2)%2)*q.height*.04,flight=clamp(blade.travel);
+  if(blade.active){
+   cut(c,sx,sy,targetX,targetY,flight,i,cue.counter.special);
+   burst(c,targetX,targetY,Math.min(w*.06,h*.12),blade.impact,cue.player.kind==='guard'?'#bcffe1d9':'#ffb4bed9');
+  }
+  if(blade.visible??blade.active){
+   const length=Math.min(w*.13,h*.14)*(.72+.28*clamp(blade.summon??1));
+   sword(c,overlordBattleSwordFlightShape(sx,sy,targetX,targetY,flight,length),blade.opacity??1);
+  }
  });
  if(cue.player.shield>.001){const glow=cue.player.shield+cue.counter.impact*.6;ellipse(c,targetX,targetY,p.height*(.28+glow*.025),p.height*(.49+glow*.025),'#8cdcca18',mix('#b6ead688','#f1fff5ee',cue.counter.impact),1.2+cue.counter.impact*1.6);}
  if(env.gold>.001){c.fillStyle=radial(c,q.x,q.y-q.height*.25,q.height*.57,`rgba(255,220,144,${env.gold*.19})`);c.fillRect(q.x-q.width*.8,q.y-q.height*.8,q.width*1.6,q.height*.8);}
+ impactAtmosphere(c,layout,cue,targetX,targetY);
  c.restore();c.strokeStyle='#d1a65f88';c.lineWidth=.8;c.strokeRect(.5,.5,w-1,h-1);
  return {...layout,loading:!painted,phase:cue.phase};
 }

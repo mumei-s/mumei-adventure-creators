@@ -1,6 +1,5 @@
-import {createOverlordRoom} from './overlord-room.js?v=20261029-overlord6';
-import {createOverlordBoss} from './overlord-boss.js?v=20261029-overlord6';
-import {attachOverlordMaterials,createOverlordReflectionEnvironment} from './overlord-materials.js?v=20261029-overlord6';
+import {createOverlordRoom} from './overlord-room.js?v=20261030-art1';
+import {createOverlordCharacter} from './overlord-character.js?v=20261030-art1';
 import {createExhibitResources} from './exhibit-resources.js?v=20261019-audit1';
 import {normalizeCameraDistance,mazeCameraZoom} from '../camera-distance.js?v=20261019-journey1';
 import {mazeWideCamera} from '../camera-distance.js?v=20261019-journey1';
@@ -30,6 +29,7 @@ export function createWorld({ canvas, onReady, art } = {}) {
   camera.rotation.order = 'YXZ';
   const resources = new Set(), animated = [], lamps = [], lanternSources = [], lanternMaterials = new Map(), exhibitGroup = new THREE.Group();
   scene.add(exhibitGroup);
+  const overheadArchitecture=new THREE.Group();overheadArchitecture.name='cutaway-overhead-architecture';scene.add(overheadArchitecture);
   const map = MAP.map(row => typeof row === 'string' ? [...row] : row);
   const cols = Math.max(...map.map(r => r.length)), rows = map.length;
   const walk = (x,z) => z >= 0 && z < rows && x >= 0 && x < (map[z]?.length || 0) && !['#',1].includes(map[z][x]);
@@ -122,8 +122,8 @@ export function createWorld({ canvas, onReady, art } = {}) {
       }
     }
     if(true) {
-      const ceiling=box(CELL-.1,.12,CELL-.1,wx,7.4,wz,dark);ceiling.material=wall[zi];
-      box(.07,.14,CELL,wx,7.22,wz,gold);box(CELL,.14,.07,wx,7.22,wz,gold);
+      const ceiling=box(CELL-.1,.12,CELL-.1,wx,7.4,wz,dark,overheadArchitecture);ceiling.material=wall[zi];
+      box(.07,.14,CELL,wx,7.22,wz,gold,overheadArchitecture);box(CELL,.14,.07,wx,7.22,wz,gold,overheadArchitecture);
     }
     // Framed portals at intervals preserve long sightlines through corridors.
     if(z%3===0 && walk(x,z-1)&&walk(x,z+1)&&!walk(x-1,z)&&!walk(x+1,z)) arch(wx,wz,0,zi);
@@ -237,10 +237,10 @@ export function createWorld({ canvas, onReady, art } = {}) {
     for(const r of [.7,1.4,2.1]){const pts=[];for(let i=0;i<=10;i++){const a=i*Math.PI/20;pts.push(new THREE.Vector3(xx+Math.cos(a)*r,6.8-Math.sin(a)*r,zz));}const geo=new THREE.BufferGeometry().setFromPoints(pts);resources.add(geo);scene.add(new THREE.Line(geo,webMaterial));}
   }
   const overlordRoom=createOverlordRoom(THREE);scene.add(overlordRoom.group);sign('666','ハロウィーンの封印扉',71.8,2.7,12,-Math.PI/2,2.6);
-  const spirits=[],residentTextures=new THREE.TextureLoader();let disposed=false,overlordReflection=null;
+  const spirits=[],residentTextures=new THREE.TextureLoader();let disposed=false;
   for(const [index,definition]of MONSTERS.entries()){
     const root=new THREE.Group();root.position.set(definition.x*CELL,0,definition.z*CELL);root.name=definition.name;scene.add(root);const g=new THREE.Group();root.add(g);
-    if(definition.nativeModel){const boss=createOverlordBoss(THREE,{scale:1.25});root.add(boss.group);const shadow=contactShadow(0,0,1.35,.85,root);shadow.position.y=-.004;spirits.push({node:root,boss,index,id:definition.id,definition,baseY:.065,materials:null});continue;}
+    if(definition.nativeModel){spirits.push({node:root,boss:null,index,id:definition.id,definition,baseY:.065});continue;}
     const body=mat(definition.color,{emissive:definition.color,emissiveIntensity:.28,roughness:.8});
     const eye=mat('#28192c',{roughness:1});
     const glint=mat('#fff0b6',{emissive:'#ffeaa0',emissiveIntensity:.7});
@@ -385,6 +385,8 @@ export function createWorld({ canvas, onReady, art } = {}) {
   const mistCv=document.createElement('canvas');mistCv.width=256;mistCv.height=128;const mistCtx=mistCv.getContext('2d');for(let i=0;i<6;i++){const xx=35+i*39,yy=63+Math.sin(i)*12,g=mistCtx.createRadialGradient(xx,yy,3,xx,yy,61);g.addColorStop(0,'#c2cde21c');g.addColorStop(1,'#c2cde200');mistCtx.fillStyle=g;mistCtx.fillRect(xx-61,yy-61,122,122);}const mistTex=new THREE.CanvasTexture(mistCv);resources.add(mistTex);const mistMat=new THREE.MeshBasicMaterial({map:mistTex,transparent:true,depthWrite:false,side:THREE.DoubleSide,opacity:.42});resources.add(mistMat);const mistSheets=[];
   for(const [x,z,w]of[[32,51,17],[32,16,13],[8,43,8]]){const sheet=mesh(new THREE.PlaneGeometry(w,3),mistMat,x,.3,z);sheet.rotation.x=-Math.PI/2;sheet.userData.ignorePicking=true;mistSheets.push({node:sheet,x,z});}
   let last=0,gateY=0,ambientTime=0;
+  const cameraFollow={stage:null,distance:0,x:0,z:0};
+  const castleVault=overlordRoom.group.getObjectByName('native-dark-pointed-vault');
   function resize(){const w=canvas.clientWidth||window.innerWidth,h=canvas.clientHeight||window.innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;heldLantern.position.x=Math.min(.3,.3*camera.aspect);camera.updateProjectionMatrix();}
   function render({x=0,z=0,yaw=0,pitch=0,time=0,motion=true,unlocked=false,horrorAccepted=false,overlordUnlocked=false,hasKey=false,collection=[],brightness=1,lantern=true,encounters=true,cleared=[],cameraDistance='normal',cameraZoom=1,facing='down',heading,walking=false,walkPhase=0,creatorActors=[]}={}){
     overlordRoom.update({unlocked:overlordUnlocked,time:time*.001,motion});
@@ -395,7 +397,19 @@ export function createWorld({ canvas, onReady, art } = {}) {
     for(const [i,m]of mistSheets.entries()){m.node.position.x=m.x+(motion?Math.sin(t*.12+i)*.8:0);m.node.position.z=m.z+(motion?Math.cos(t*.09+i)*.5:0);}
     const level=Math.max(.75,Math.min(1.75,Number.isFinite(Number(brightness))?Number(brightness):1));
     renderer.toneMappingExposure=NIGHT_LIGHTING.exposure*level;
-    if(wide){const pose=mazeWideCamera({x,z,yaw,unlocked,horrorAccepted,overlordUnlocked},blocked,distance);camera.position.set(pose.x,pose.y,pose.z);camera.lookAt(x-Math.sin(yaw)*1.2,1.1,z-Math.cos(yaw)*1.2);}else{camera.position.set(x,1.65,z);camera.rotation.set(pitch,yaw,0,'YXZ');}
+    if(wide){
+      const pose=mazeWideCamera({x,z,yaw,unlocked,horrorAccepted,overlordUnlocked},blocked,distance);
+      const snap=cameraFollow.stage!==distance||Math.hypot(x-cameraFollow.x,z-cameraFollow.z)>2||dt<=0;
+      // Move inward immediately for collision safety. Ease only the newly
+      // available pullback, never lag the player's sideways position or yaw.
+      cameraFollow.distance=snap||pose.distance<=cameraFollow.distance?pose.distance:cameraFollow.distance+(pose.distance-cameraFollow.distance)*(1-Math.exp(-dt/.18));
+      const pullback=cameraFollow.distance;
+      camera.position.set(x+Math.sin(yaw)*pullback,Math.min(distance==='far'?5.3:4.1,2.1+pullback*.4),z+Math.cos(yaw)*pullback);camera.lookAt(x-Math.sin(yaw)*1.2,1.1,z-Math.cos(yaw)*1.2);
+    }else{cameraFollow.distance=0;camera.position.set(x,1.65,z);camera.rotation.set(pitch,yaw,0,'YXZ');}
+    cameraFollow.stage=distance;cameraFollow.x=x;cameraFollow.z=z;
+    // Raised exploration views use the conventional roof cutaway rather than
+    // filling the upper screen with the inside of the vault.
+    overheadArchitecture.visible=!wide;if(castleVault)castleVault.visible=!wide;
     const heroFacing=facingForCamera(facing,Math.atan2(camera.position.x-x,camera.position.z-z),heading);
     const hero=wide?playerPose(art,heroFacing,walking,walkPhase):null;
     const visibleActors=creatorActors.map(actor=>({...actor,sprite:characterSpriteForCamera(actor,Math.atan2(camera.position.x-actor.x*CELL,camera.position.z-actor.z*CELL))}));
@@ -403,7 +417,14 @@ export function createWorld({ canvas, onReady, art } = {}) {
     heldLantern.visible=!!lantern&&!wide;headlamp.visible=!!lantern&&!wide;nearLamp.visible=!!lantern&&!wide;
     wideLantern.visible=!!lantern&&wide;wideLantern.position.set(x+Math.cos(yaw)*.3,.95,z-Math.sin(yaw)*.3);
     for(const spirit of spirits){
-      if(spirit.boss){const pose=monsterPose(spirit.definition,seconds,motion,{unlocked,horrorAccepted,overlordUnlocked});spirit.node.visible=encounters&&monsterAvailable(spirit.definition,{unlocked,horrorAccepted,overlordUnlocked});if(spirit.node.visible&&!spirit.materials){spirit.materials=attachOverlordMaterials(THREE,spirit.boss);if(!overlordReflection){try{overlordReflection=createOverlordReflectionEnvironment(THREE,renderer);}catch{/* Chamber lights remain available on older drivers. */}}if(overlordReflection)spirit.boss.group.traverse(node=>{for(const material of Array.isArray(node.material)?node.material:[node.material])if(material?.isMeshStandardMaterial){material.envMap=overlordReflection.texture;material.envMapIntensity=.58;material.needsUpdate=true;}});}spirit.node.position.set(pose.x*CELL,spirit.baseY,pose.z*CELL);spirit.node.rotation.y=pose.yaw;spirit.boss.update(dt,{time:seconds,state:cleared.includes(spirit.id)?'idle':pose.walking?'walk':'idle',speed:pose.speed*CELL,motion});continue;}
+      if(spirit.definition.nativeModel){
+        const pose=monsterPose(spirit.definition,seconds,motion,{unlocked,horrorAccepted,overlordUnlocked}),px=pose.x*CELL,pz=pose.z*CELL;
+        spirit.node.visible=encounters&&monsterAvailable(spirit.definition,{unlocked,horrorAccepted,overlordUnlocked})&&Math.hypot(x-px,z-pz)<=36;
+        if(spirit.node.visible&&!spirit.boss){const source=art?.images?.[spirit.id];spirit.boss=createOverlordCharacter(THREE,{height:3.05,image:source?.image||source});spirit.node.add(spirit.boss.group);const shadow=contactShadow(0,0,1.65,1.15,spirit.node);shadow.position.y=-.004;}
+        spirit.node.position.set(px,spirit.baseY,pz);spirit.node.rotation.y=0;
+        if(spirit.boss){const source=art?.images?.[spirit.id],image=source?.image||source;if(image&&image!==spirit.sourceImage){spirit.boss.setImage(image);spirit.sourceImage=image;}spirit.boss.update(dt,{time:seconds,state:'idle',motion});}
+        continue;
+      }
       // Opening the scene does not wait for every enemy atlas. Install the same
       // original art as it arrives, retaining the existing model until then.
       const source=art?.images?.[spirit.id],image=source?.image||source;
@@ -430,13 +451,13 @@ export function createWorld({ canvas, onReady, art } = {}) {
     }
     renderer.render(scene,camera);
   }
-  function dispose(){if(disposed)return;disposed=true;exhibitResources.dispose();overlordRoom.dispose();for(const spirit of spirits){spirit.materials?.dispose();spirit.boss?.dispose();}overlordReflection?.dispose();for(const r of resources)r.dispose?.();renderer.dispose();}
+  function dispose(){if(disposed)return;disposed=true;exhibitResources.dispose();overlordRoom.dispose();for(const spirit of spirits)spirit.boss?.dispose();for(const r of resources)r.dispose?.();renderer.dispose();}
   // Instance static masonry by material. Thousands of architectural details
   // become a handful of GPU draw calls while movable objects remain separate.
   // Batch repeated pieces inside moving parents, retaining their local transforms.
   // In particular the moving iron gate no longer costs one draw per bar and finial.
   function batchLocalParts(group){const local=new Map();for(const node of [...group.children]){if(!node.isMesh||node.isInstancedMesh||!(node.geometry===boxGeo||node.geometry.type==='ConeGeometry'))continue;node.updateMatrix();const key=node.geometry.type+JSON.stringify(node.geometry.parameters)+node.material.uuid;if(!local.has(key))local.set(key,{geometry:node.geometry,material:node.material,nodes:[]});local.get(key).nodes.push(node);}for(const {geometry,material,nodes}of local.values()){if(nodes.length<2)continue;const batch=new THREE.InstancedMesh(geometry,material,nodes.length);nodes.forEach((node,index)=>{batch.setMatrixAt(index,node.matrix);group.remove(node);});batch.computeBoundingSphere();batch.frustumCulled=true;group.add(batch);}}
-  batchLocalParts(gate);batchLocalParts(horrorDoor);batchLocalParts(heldLantern);for(const f of folioMotion)batchLocalParts(f.node);
+  batchLocalParts(gate);batchLocalParts(horrorDoor);batchLocalParts(heldLantern);batchLocalParts(overheadArchitecture);for(const f of folioMotion)batchLocalParts(f.node);
   const batches=new Map(),batchable=[];
   scene.updateMatrixWorld(true);
   scene.traverse(node=>{if(!node.isMesh||node.isInstancedMesh||Array.isArray(node.material))return;let staticNode=node.parent===scene;for(let p=node.parent;p&&p!==scene;p=p.parent)if(p.userData.staticScenery)staticNode=true;if(staticNode)batchable.push(node);});

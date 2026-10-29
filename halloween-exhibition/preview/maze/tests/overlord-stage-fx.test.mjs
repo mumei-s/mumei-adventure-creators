@@ -5,7 +5,7 @@ import {createOverlordStageEffects} from '../overlord-stage-fx.js';
 
 test('stage atmosphere uses bounded native geometry and owns each GPU resource once',()=>{
  const effects=createOverlordStageEffects(THREE),resources=new Set();let triangles=0,meshes=0;
- effects.group.traverse(object=>{assert(!object.isSprite);if(object.geometry)resources.add(object.geometry);if(object.material)resources.add(object.material);if(object.isMesh){meshes++;triangles+=(object.geometry.index?.count??object.geometry.attributes.position.count)/3;}});
+ effects.group.traverse(object=>{assert(!object.isSprite);if(object.geometry)resources.add(object.geometry);if(object.material){resources.add(object.material);if(object.material.map)resources.add(object.material.map);}if(object.isMesh){meshes++;triangles+=(object.geometry.index?.count??object.geometry.attributes.position.count)/3;}});
  assert(meshes<40);assert(triangles<4000);
  let disposals=0;for(const resource of resources)resource.addEventListener('dispose',()=>disposals++);
  effects.dispose();assert.equal(disposals,resources.size);effects.dispose();assert.equal(disposals,resources.size);

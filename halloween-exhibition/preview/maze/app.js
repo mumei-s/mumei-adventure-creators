@@ -33,8 +33,8 @@ import { chooseView, movementVector, mapHeading } from './view-model.js?v=202610
 import { createStageRenderer, EXIT, PALACE_FURNISHINGS } from './stage-2d.js?v=20261019-unified1';
 import {createArtLibrary,drawArtSprite} from './rpg-art.js?v=20261019-unified1';
 import {renderBattleScene,battleEffectDuration} from './battle-scene.js?v=20261019-unified1';
-import {renderOverlordBattle2D} from './overlord-battle-2d.js?v=20261029-overlord5';
-import {overlordActionDuration,overlordBattleDirector} from './overlord-battle-director.js?v=20261029-overlord5';
+import {renderOverlordBattle2D} from './overlord-battle-2d.js?v=20261029-overlord6';
+import {overlordActionDuration,overlordBattleDirector} from './overlord-battle-director.js?v=20261029-overlord6';
 import {directionFromMovement,moveAroundFurniture} from './rpg-model.js?v=20261014-adventure2';
 import {protectGameSurface,bindHeldGameButton,bindDirectionPad} from './game-input.js?v=20261019-journey1';
 import {STORY,encounterStory,chapterFor} from './story-model.js?v=20261016-living1';
@@ -338,7 +338,7 @@ function drawBattleVisual(){
 function drawOverlordBattle(){
  if(nativeBattle){try{nativeBattle.render({battle,effect:battleEffect,time:visualTime,motion:motion&&!reducedMotion.matches});}catch{failNativeBattle();}return;}
  if(!nativeBattleFailed&&!nativeBattleLoading){nativeBattleLoading=true;const token=++nativeBattleToken,target=battleCanvas;
-  import('./overlord-battle-scene.js?v=20261029-overlord5').then(async({createOverlordBattleScene})=>{
+  import('./overlord-battle-scene.js?v=20261029-overlord6').then(async({createOverlordBattleScene})=>{
    if(token!==nativeBattleToken||!battle||battle.id!=='nameless_overlord'||battleCanvas!==target)return;
    const candidate=createOverlordBattleScene({canvas:target,art:rpgArt,onLost:failNativeBattle});
    try{

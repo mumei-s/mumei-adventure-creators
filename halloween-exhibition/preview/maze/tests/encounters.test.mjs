@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import vm from 'node:vm';
 import { MONSTERS, nearestMonster, newBattle, battleTurn, intentFor, monsterPose, guidePoint, commandFor, BATTLE_ACTIONS } from '../encounter-model.js';
 import { chooseView, movementVector } from '../view-model.js';
 import { initialState, blocked, move, FEATURES, toWorld } from '../maze-model.js';
@@ -47,8 +48,31 @@ test('2D arrows move cardinally regardless of camera yaw; 3D remains relative',(
 test('night baseline is substantially below prior flood lights, lantern is a local source',()=>{
   assert(NIGHT_LIGHTING.ambient<.2);assert(NIGHT_LIGHTING.moon<.2);assert(NIGHT_LIGHTING.beam>50);
   const source=fs.readFileSync(new URL('../world.js',import.meta.url),'utf8');
-  assert(source.includes('headlamp.visible=!!lantern;nearLamp.visible=!!lantern'));
+  assert(source.includes('headlamp.visible=!!lantern&&!wide;nearLamp.visible=!!lantern&&!wide'));
   assert(source.includes('camera.position.set(x,1.65,z)'));assert(!source.includes('camera.position.y='));
+});
+test('pulled-back exploration uses a traveller light instead of shining the camera beam into a nearby face',()=>{
+  const source=fs.readFileSync(new URL('../world.js',import.meta.url),'utf8');
+  const lighting=source.slice(source.indexOf('heldLantern.visible='),source.indexOf('for(const spirit of spirits){',source.indexOf('heldLantern.visible=')));
+  function sample({wide,lantern,yaw=0}){
+    const light=()=>({visible:true,position:{set(x,y,z){Object.assign(this,{x,y,z});}}});
+    const context={x:12,z:20,yaw,wide,lantern,heldLantern:light(),headlamp:light(),nearLamp:light(),wideLantern:light()};
+    vm.runInNewContext(lighting,context);return context;
+  }
+  for(const yaw of [0,Math.PI/2,Math.PI,Math.PI*1.5]){
+    const wide=sample({wide:true,lantern:true,yaw});
+    assert.equal(wide.headlamp.visible,false);assert.equal(wide.nearLamp.visible,false);assert.equal(wide.heldLantern.visible,false);
+    assert.equal(wide.wideLantern.visible,true);assert.equal(wide.wideLantern.position.y,.95);
+    assert(Math.abs(Math.hypot(wide.wideLantern.position.x-12,wide.wideLantern.position.z-20)-.3)<1e-12,'light stays with the traveller, independently of the raised camera');
+  }
+  const eye=sample({wide:false,lantern:true});
+  assert.equal(eye.headlamp.visible,true);assert.equal(eye.nearLamp.visible,true);assert.equal(eye.heldLantern.visible,true);assert.equal(eye.wideLantern.visible,false);
+  for(const wide of [false,true]){
+    const off=sample({wide,lantern:false});
+    for(const name of ['headlamp','nearLamp','heldLantern','wideLantern'])assert.equal(off[name].visible,false,'OFF turns off '+name);
+  }
+  assert(source.includes('material.envMap=overlordReflection.texture;material.envMapIntensity=.58'));
+  assert(!source.includes('scene.environment=overlordReflection.texture'),'queen reflections do not flood the rest of the palace');
 });
 test('2D, encounters, exit, and game-only audio remain first-class controls',()=>{
   const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');

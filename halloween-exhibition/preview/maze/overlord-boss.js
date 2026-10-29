@@ -1,7 +1,7 @@
 import {decodeOverlordHuman,HUMAN_JOINTS,HUMAN_BODY_SOURCE} from './overlord-human-data.js';
 import {decodeOverlordQueen} from './overlord-queen-data.js';
-import {createOverlordHairCloth} from './overlord-hair-cloth.js?v=20261029-overlord5';
-import {createOverlordRegalia} from './overlord-regalia.js?v=20261029-overlord5';
+import {createOverlordHairCloth} from './overlord-hair-cloth.js?v=20261029-overlord6';
+import {createOverlordRegalia} from './overlord-regalia.js?v=20261029-overlord6';
 
 /** Facial projection on an anatomical surface, in world-rest coordinates.
  * The landmarks are the actual eyelids, nose tip, lips and chin of the mesh. */
@@ -27,7 +27,7 @@ export function createOverlordBoss(THREE,options={}){
   face:new THREE.MeshStandardMaterial({color:0xe6bba5,roughness:.63}),
   hair:new THREE.MeshStandardMaterial({color:0xb78a44,metalness:.08,roughness:.38}),
   hairLight:new THREE.MeshStandardMaterial({color:0xe1bc70,metalness:.08,roughness:.35}),
-  hairFiber:new THREE.MeshStandardMaterial({color:0xffffff,metalness:.04,roughness:.42,vertexColors:true}),
+  hairFiber:new THREE.MeshStandardMaterial({color:0xffffff,metalness:0,roughness:.65,vertexColors:false}),
   red:new THREE.MeshStandardMaterial({color:0x520d20,roughness:.77,side:THREE.DoubleSide}),
   gem:new THREE.MeshStandardMaterial({color:0x9b0322,metalness:.28,roughness:.2,emissive:0x51000b,emissiveIntensity:.35}),
   glow:new THREE.MeshStandardMaterial({color:0xff5571,emissive:0xff173f,emissiveIntensity:1.6,roughness:.3}),
@@ -104,7 +104,7 @@ export function createOverlordBoss(THREE,options={}){
   mats.generatedFace=new THREE.MeshStandardMaterial({color:0xffffff,metalness:0,roughness:.63});
   mats.generatedRearHead=new THREE.MeshStandardMaterial({color:0xffffff,metalness:.04,roughness:.52});
   human=new THREE.SkinnedMesh(geometry,[mats.generatedBase,mats.generatedFront,mats.generatedFace,mats.generatedRearHead]);
-  human.name='reconstructed-queen-skinned-body';human.castShadow=true;human.receiveShadow=true;human.frustumCulled=false;body.add(human);
+  human.name='reconstructed-queen-skinned-body';human.castShadow=true;human.receiveShadow=false;human.frustumCulled=false;body.add(human);
   root.updateMatrixWorld(true);human.bind(skeleton);human.normalizeSkinWeights();
  }else{
  const geometry=makeGeometry(data),pos=geometry.attributes.position,normal=geometry.attributes.normal,uv=geometry.attributes.uv;
@@ -207,12 +207,12 @@ export function createOverlordBoss(THREE,options={}){
   // One continuous cuirass receives a single engraving layout. Limbs and the
   // raised gilt retain their native metal, avoiding repeated full-sheet motifs.
   if(!generated&&'armor'in textures)install(['engraved'],textures.armor,0x24202a);
-  if('hair'in textures){install(['hair','hairLight'],textures.hair,0xb78a44);if(textures.hair)mats.hairLight.color.set(0xffe8bd);}
+  if('hair'in textures){install(['hair','hairLight'],textures.hair,0xb78a44);if(textures.hair)mats.hairLight.color.set(0xffe8bd);if(generated){mats.hairFiber.map=textures.hair||null;mats.hairFiber.color.set(0xffffff);mats.hairFiber.needsUpdate=true;}}
   if('cape'in textures)install(['red'],textures.cape,0x520d20);
   if(generated){
    if('generatedBase'in textures)mats.generatedBase.map=mats.generatedRearHead.map=textures.generatedBase;
    if('generatedFront'in textures)mats.generatedFront.map=mats.generatedFace.map=textures.generatedFront;
-   if('generatedNormal'in textures){for(const name of ['generatedBase','generatedFront','generatedFace','generatedRearHead'])mats[name].normalMap=textures.generatedNormal;mats.generatedFace.normalScale.set(.45,.45);}
+   if('generatedNormal'in textures){for(const name of ['generatedBase','generatedFront','generatedFace','generatedRearHead'])mats[name].normalMap=textures.generatedNormal;for(const name of ['generatedBase','generatedFront','generatedFace','generatedRearHead'])mats[name].normalScale.set(0,0);}
    for(const name of ['generatedBase','generatedFront','generatedFace','generatedRearHead'])mats[name].needsUpdate=true;
   }
   return true;

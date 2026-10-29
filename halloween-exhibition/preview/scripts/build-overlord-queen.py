@@ -49,7 +49,6 @@ specs = {}
 # The temporary rigging reference uses a compact bun. Seat it under the final
 # long-hair scalp without changing the eyes, nose, lips or facial outline.
 positions = np.asarray(rig['positions'], dtype=np.float64).reshape(-1, 3).copy()
-normals = np.asarray(rig['normals'], dtype=np.float64).reshape(-1, 3).copy()
 bun = positions[:, 1] > 2.10
 delta = positions[bun, 1] - 2.10
 t = np.clip(delta / .04, 0, 1)
@@ -70,14 +69,20 @@ target[:,0] = np.sign(current[:,0]) * np.where(np.abs(current[:,0])>.085,
     .085+(np.abs(current[:,0])-.085)*.25, np.abs(current[:,0]))
 target[:,2] = np.where(current[:,2]<-.06, -.06+(current[:,2]+.06)*.25, current[:,2])
 positions[rear] += (target-current)*strength[:,None]
-edited = bun | rear
-accum = np.zeros_like(positions)
+_, welded = np.unique(np.round(rest, 6), axis=0, return_inverse=True)
+accum = np.zeros((int(welded.max()) + 1, 3), dtype=np.float64)
 face_normals = np.cross(positions[triangles[:,1]]-positions[triangles[:,0]],
                         positions[triangles[:,2]]-positions[triangles[:,0]])
 for corner in range(3):
-    np.add.at(accum, triangles[:,corner], face_normals)
-length = np.linalg.norm(accum[edited], axis=1)
-normals[edited] = accum[edited] / np.maximum(length[:,None], 1e-12)
+    np.add.at(accum, welded[triangles[:,corner]], face_normals)
+# SF3D splits vertices for its UV islands. Averaging each exported index in
+# isolation leaves visible triangular lighting seams on the face and thighs.
+# Share area-weighted normals only at coincident source positions; geometry,
+# UV islands, skin weights and facial features remain unchanged.
+length = np.linalg.norm(accum, axis=1)
+if np.any(length < 1e-12):
+    raise ValueError('Cannot smooth an unreferenced or degenerate vertex')
+normals = (accum / length[:,None])[welded]
 def pack(name, values, dtype, scale=1):
     raw = np.asarray(values, dtype=np.float64)
     if not np.isfinite(raw).all():
@@ -101,6 +106,8 @@ source = dict(kind='image-to-3D', sourceUrl='https://huggingface.co/spaces/stabi
               vertices=count, triangles=len(triangles), forward='+Z', up='+Y',
               reference='user-approved adult queen reference; separately reconstructed animation body',
               frontJawTriangleOverrides=sorted(jaw_patch),
+              surfaceNormals={'method': 'area-weighted coincident-position', 'weldPrecision': 6,
+                              'uniquePositions': int(welded.max()) + 1},
               bunCleanup={'enabled': True, 'aboveY': 2.10, 'originalNormalizationHeight': 2.2476,
                           'rearEnvelope': True, 'preservedCentralFace': True})
 meta = {k: rig[k] for k in ['joints', 'boneNames', 'calibration']}

@@ -7,7 +7,7 @@ const finite=(x,fallback=0)=>Number.isFinite(x)?x:fallback;
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 
 export function createOverlordHairCloth(THREE,{head,torso,materials,fineHair=false}){
- if(fineHair&&!materials.hairFiber)throw new Error('Fine Overlord hair requires its untextured hairFiber material');
+ if(fineHair&&!materials.hairFiber)throw new Error('Fine Overlord hair requires its hairFiber material');
  const geometries=new Set(),masses=[];let dead=false,lastCloth='';
  const headGroup=new THREE.Group(),torsoGroup=new THREE.Group();
  headGroup.name='sculpted-golden-hair-and-crown';torsoGroup.name='floorlength-crimson-cloak';
@@ -55,7 +55,7 @@ export function createOverlordHairCloth(THREE,{head,torso,materials,fineHair=fal
  function curl(name,worldPoints,width,depth,highlight,phase,{steps=40,sides=8}={}){
   const anchor=worldPoints[0],g=new THREE.Group();g.name=name;g.position.set(...local(anchor,HEAD));headGroup.add(g);
   const points=worldPoints.map(p=>V(local(p,anchor))),curve=new THREE.CatmullRomCurve3(points);
-  if(fineHair){
+  if(fineHair&&width<.0045){
    const count=name.startsWith('flowing-S-curl')?12:name.startsWith('swept-face-curl')?8:3;
    const segments=28,radial=3,frames=curve.computeFrenetFrames(segments,false),p=[],uv=[],colors=[],idx=[];
    const palette=[0xf1d296,0xe6bf7c,0xd3a562,0xbe8d49,0xf6dfaf,0xdcb472].map(hex=>new THREE.Color(hex));
@@ -90,6 +90,31 @@ export function createOverlordHairCloth(THREE,{head,torso,materials,fineHair=fal
    const bundle=geometry(p,uv,idx);bundle.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
    mesh(g,bundle,materials.hairFiber,name+'-opaque-fiber-bundle');masses.push({group:g,phase});return g;
   }
+  if(fineHair){
+   // A continuous rounded lock supplies volume; the fine longitudinal map and
+   // varied vertex color supply strands without a sparse cage of wire tubes.
+   // Its rounded cross-section remains readable from both game camera angles.
+   const segments=40,radial=10,frames=curve.computeFrenetFrames(segments,false),p=[],uv=[],colors=[],idx=[];
+   const base=new THREE.Color(0xf4d89f),root=new THREE.Color(0xa8793f);
+   const fine=name.startsWith('tapered-flyaway'),mapU=.11+(.5+.5*Math.sin(phase*2.17))*.68;
+   for(let j=0;j<=segments;j++){
+    const t=j/segments,c=curve.getPointAt(t),tangent=curve.getTangentAt(t),n=new THREE.Vector3(0,0,1).cross(tangent).normalize(),b=tangent.clone().cross(n).normalize();
+    const rootBlend=clamp(t/.085,0,1),taper=(.92+.17*Math.sin(t*Math.PI))*Math.pow(1-t,.52)*(rootBlend*rootBlend*(3-2*rootBlend))+.006;
+    const col=root.clone().lerp(base,.52+.45*Math.sin(Math.min(1,t*1.65)*Math.PI*.5));
+    for(let k=0;k<=radial;k++){
+     const angle=k/radial*Math.PI*2,rib=1+.025*Math.cos(angle*4+phase);
+     const q=c.clone().addScaledVector(n,Math.cos(angle)*width*taper*rib).addScaledVector(b,Math.sin(angle)*depth*taper);
+     p.push(q.x,q.y,q.z);uv.push(mapU+(k/radial-.5)*(fine?.028:.12),1-t);
+     colors.push(col.r,col.g,col.b);
+     if(j<segments&&k<radial){const a=j*(radial+1)+k,b=a+1,c=a+radial+1,d=c+1;idx.push(a,b,c,b,d,c);}
+    }
+   }
+   const start=p.length/3,end=start+1;p.push(...points[0].toArray(),...points.at(-1).toArray());uv.push(mapU,1,mapU,0);
+   colors.push(root.r,root.g,root.b,base.r,base.g,base.b);
+   for(let k=0;k<radial;k++){idx.push(start,k+1,k);const a=segments*(radial+1)+k;idx.push(end,a,a+1);}
+   const bundle=geometry(p,uv,idx);bundle.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
+   mesh(g,bundle,materials.hairFiber,name+'-rounded-strand-lock');masses.push({group:g,phase});return g;
+  }
   const frames=curve.computeFrenetFrames(steps,false),p=[],uv=[],idx=[];
   // Each lock samples only a slender part of the existing hair map. Mapping
   // the full sheet around every lock produced repeated broad white stripes.
@@ -115,6 +140,65 @@ export function createOverlordHairCloth(THREE,{head,torso,materials,fineHair=fal
   }
   masses.push({group:g,phase});return g;
  }
+ // The scalp foundation covers only the side and back of the reconstructed
+ // temporary bun. Its open front edge stays above the brow, while a narrow
+ // central part keeps the original high-resolution hairline visible.
+ if(fineHair){
+  const cols=64,rows=24,p=[],uv=[],colors=[],idx=[],stride=cols+1;
+  const top=new THREE.Color(0xd2a764),lower=new THREE.Color(0xefcf91);
+  for(let j=0;j<=rows;j++)for(let i=0;i<=cols;i++){
+   const theta=.65+i/cols*(Math.PI*2-1.30),front=Math.max(0,Math.cos(theta));
+   const maxPolar=2.25-1.40*Math.sqrt(front),phi=.04+j/rows*(maxPolar-.04);
+   const groove=1+.003*Math.cos(theta*64),sin=Math.sin(phi),part=.002*Math.sin(theta*2)*sin;
+   p.push(Math.sin(theta)*sin*.150*groove,2.103+Math.cos(phi)*.154-HEAD[1],.071+Math.cos(theta)*sin*(Math.cos(theta)>0?.190:.210)+part-HEAD[2]);
+   uv.push(i/cols,1-j/rows);const c=top.clone().lerp(lower,j/rows*.65);colors.push(c.r,c.g,c.b);
+   if(j<rows&&i<cols){const a=j*stride+i,b=a+1,c=a+stride,d=c+1;idx.push(a,c,b,b,c,d);}
+  }
+  const foundation=geometry(p,uv,idx);foundation.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
+  mesh(headGroup,foundation,materials.hairFiber,'open-brow-side-back-hair-foundation');
+  for(const side of[-1,1])for(let i=0;i<14;i++){
+   const front=i<4,k=i-4,theta=side*(1.35+Math.max(0,k)/10*1.65),phase=i*.77+side*.41;
+   const length=1.02+(i%5)*.045;
+   const root=front?[side*(.012+i*.014),2.240-i*.004,.122+i*.005]:[Math.sin(theta)*.13,2.216-Math.max(0,k)*.003,.071+Math.cos(theta)*.182];
+   const points=front?[
+    root,[side*(.068+i*.017),2.212-i*.008,.173-i*.006],
+    [side*(.122+i*.012),2.124-i*.012,.165-i*.020],
+    [side*(.137+i*.014),1.973-i*.015,.098-i*.022],
+    [side*(.180+i*.017),1.800-i*.012,.116-i*.025],
+    [side*(.205+i*.017),1.610-i*.018,.105-i*.025],
+    [side*(.166+i*.018),1.415-i*.015,.061-i*.025],
+    [side*(.203+i*.014),root[1]-length,.027-i*.025]
+   ]:[
+    root,[Math.sin(theta)*.152,2.118,.071+Math.cos(theta)*.208],
+    [side*(.146+k*.008),1.974,-.018-k*.017],
+    [side*(.176+k*.013),1.804,-.018-k*.018],
+    [side*(.211+k*.013),1.614,-.041-k*.015],
+    [side*(.177+k*.012),1.428,-.040-k*.016],
+    [side*(.223+k*.010),root[1]-length,-.025-k*.016],
+   ];
+   curl('flowing-S-curl-'+side+'-'+i,points,front?.0032:.0085+(i%3)*.0010,front?.0018:.0012+(i%4)*.00025,false,phase);
+  }
+  // Wisps follow the outside of the temple and jaw, with varied tips. Their
+  // first bend hugs the skull instead of fanning out from above the crown.
+  for(const side of[-1,1])for(let i=0;i<2;i++){
+   curl('swept-face-curl-'+side+'-'+i,[
+    [side*(.014+i*.014),2.240-i*.005,.129+i*.006],
+    [side*(.068+i*.015),2.208-i*.009,.178+i*.002],
+    [side*(.111+i*.015),2.135-i*.013,.192-i*.005],
+    [side*(.125+i*.015),2.008-i*.017,.194-i*.009],
+    [side*(.147+i*.014),1.885-i*.026,.174-i*.016],
+    [side*(.164+i*.018),1.762-i*.037,.122-i*.018],
+    [side*(.143+i*.017),1.657-i*.041,.081-i*.020],
+   ],.0035+i*.0007,.0009,false,2.4+i+side*.7);
+  }
+  for(const side of[-1,1])for(let i=0;i<3;i++){
+   const x=.145+i*.023,y=2.110-i*.027,z=.025-i*.035;
+   curl('tapered-flyaway-'+side+'-'+i,[
+    [side*x,y,z],[side*(x+.033),y-.16,z-.025],[side*(x+.085),y-.32,z-.038],
+    [side*(x+.070),y-.48,z-.044],[side*(x+.115),y-.67,z-.043],[side*(x+.083),y-.82-i*.055,z-.062],
+   ],.0018+i*.0005,.0012,false,i*1.31+side*.42);
+  }
+ }else{
  // Ten finer closed curls per side replace the former few thick ropes.
  // The front layer follows the outer jaw; the back layers keep real volume.
  for(const side of[-1,1])for(let i=0;i<10;i++){
@@ -157,6 +241,7 @@ export function createOverlordHairCloth(THREE,{head,torso,materials,fineHair=fal
    [side*(.278+i*.023),rootY-.64,z-.063],
    [side*(.252+i*.021),rootY-length,z-.080],
   ],.0035+i*.0006,.0025,false,phase,{steps:30,sides:6});
+ }
  }
  // Selected small scalp highlights describe the side part without dense wires.
  for(const side of[-1,1])for(let i=0;i<3;i++){

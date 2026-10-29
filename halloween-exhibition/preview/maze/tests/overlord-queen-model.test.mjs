@@ -39,8 +39,9 @@ test('decoded queen preserves the recorded GLB topology, finite surfaces and com
  assert.equal(d.skinIndices.length,count*4);assert.equal(d.skinWeights.length,count*4);
  for(const uv of [...d.uvs,...d.sourceUVs])assert(uv>=0&&uv<=1,'both glTF UV sets stay inside their image');
  for(const index of d.indices)assert(index<count);
- let end=0;for(const group of d.groups){assert.equal(group.start,end);assert.equal(group.count%3,0);assert([0,1,2].includes(group.material));end+=group.count;}assert.equal(end,d.indices.length);
- const ys=Array.from(d.positions).filter((_,i)=>i%3===1);assert(Math.abs(Math.min(...ys))<.0002);assert(Math.abs(Math.max(...ys)-2.2476)<.0002);
+ let end=0;for(const group of d.groups){assert.equal(group.start,end);assert.equal(group.count%3,0);assert([0,1,2,3].includes(group.material));end+=group.count;}assert.equal(end,d.indices.length);
+ const ys=Array.from(d.positions).filter((_,i)=>i%3===1);assert(Math.abs(Math.min(...ys))<.0002);
+ assert(d.source.bunCleanup.preservedCentralFace);assert(Math.max(...ys)>2.13&&Math.max(...ys)<2.15,'temporary bun fits beneath the final long-hair scalp');
  for(let i=0;i<count;i++){
   const length=Math.hypot(...d.normals.slice(i*3,i*3+3));assert(Math.abs(length-1)<.0001,'decoded normal');
   let sum=0;for(let k=0;k<4;k++){const w=d.skinWeights[i*4+k];assert(w>=0&&w<=1);assert(d.skinIndices[i*4+k]<names.length);sum+=w;}

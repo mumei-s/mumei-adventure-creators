@@ -23,11 +23,13 @@ The 2D fallback uses the original facial pixels with a feathered curved mask, ca
 
 - Source GLB SHA-256: `e1626717a21f414519ccaf17066e7fd0c2b36d40e64fbf0269e67dc0547baf06`.
 - Approved A-pose image SHA-256: `79bfeb9bb78a43768e839e4ef3903e3e4d2ca36db88cfb8ccbb7efbce95b7849`.
-- Original topology: 7,831 vertices and 9,008 triangles, normalized to 2.2476 game units with feet at Y=0 and +Z forward.
+- Original topology: 7,831 vertices and 9,008 triangles, fitted in a 2.2476-unit coordinate scale with feet at Y=0 and +Z forward. The temporary bun above Y=2.10 is reduced beneath the final scalp; central facial features are unchanged.
 - Sixteen fitted bones and normalized skin weights drive walking, sitting, standing, attacks, hit reactions and defeat. Neutral-pose alignment preserves the controller's full animation deltas.
 - Hair, crown, cape and five swords are separate native geometry. Reconstructed armor replaces the old body armor attachments.
 
 `queen-body-base.webp` is the reconstructed albedo optimized as WebP quality 93. `queen-body-normal.jpg` preserves the original embedded normal-map JPEG bytes. `queen-body-front.webp` preserves every RGBA pixel of the approved source image using lossless WebP. Source-camera UVs apply that higher-resolution image directly to existing visible front triangles; there is no added face surface or poster plane. Original side/back UVs and normal-map UVs remain intact. Both UV sets retain glTF TOPDOWN orientation, with `texture.flipY=false`.
+
+Five original jaw triangles are explicitly assigned to the existing high-resolution face material after native-pose ray checks found that the visibility gate had left them on the old body material. Their UVs and source pixels are unchanged. The build script pins this correction to the recorded source GLB hash.
 
 The reconstructed geometry is intentionally bounded for mobile rendering. Fingers, outer ear/jaw facets and side/back details remain coarser than the source illustration. The earlier fused-cape reconstruction and its failed automatic rig are not the game model.
 

@@ -6,7 +6,8 @@ const HEAD=[0,2.058189,.057015],TORSO=[0,1.699733,.01743];
 const finite=(x,fallback=0)=>Number.isFinite(x)?x:fallback;
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
 
-export function createOverlordHairCloth(THREE,{head,torso,materials}){
+export function createOverlordHairCloth(THREE,{head,torso,materials,fineHair=false}){
+ if(fineHair&&!materials.hairFiber)throw new Error('Fine Overlord hair requires its untextured hairFiber material');
  const geometries=new Set(),masses=[];let dead=false,lastCloth='';
  const headGroup=new THREE.Group(),torsoGroup=new THREE.Group();
  headGroup.name='sculpted-golden-hair-and-crown';torsoGroup.name='floorlength-crimson-cloak';
@@ -31,7 +32,7 @@ export function createOverlordHairCloth(THREE,{head,torso,materials}){
  }
  // A shaped scalp dome leaves an open forehead and temples. Unlike a full
  // sphere it never projects a straight sheet of hair across the facial plane.
- {
+ if(!fineHair){
   const cols=48,rows=20,p=[],uv=[],idx=[],stride=cols+1,layer=(rows+1)*stride;
   for(let inside=0;inside<2;inside++)for(let j=0;j<=rows;j++)for(let i=0;i<=cols;i++){
    const theta=i/cols*Math.PI*2,front=(1+Math.cos(theta))/2;
@@ -54,6 +55,41 @@ export function createOverlordHairCloth(THREE,{head,torso,materials}){
  function curl(name,worldPoints,width,depth,highlight,phase,{steps=40,sides=8}={}){
   const anchor=worldPoints[0],g=new THREE.Group();g.name=name;g.position.set(...local(anchor,HEAD));headGroup.add(g);
   const points=worldPoints.map(p=>V(local(p,anchor))),curve=new THREE.CatmullRomCurve3(points);
+  if(fineHair){
+   const count=name.startsWith('flowing-S-curl')?12:name.startsWith('swept-face-curl')?8:3;
+   const segments=28,radial=3,frames=curve.computeFrenetFrames(segments,false),p=[],uv=[],colors=[],idx=[];
+   const palette=[0xf1d296,0xe6bf7c,0xd3a562,0xbe8d49,0xf6dfaf,0xdcb472].map(hex=>new THREE.Color(hex));
+   for(let fiber=0;fiber<count;fiber++){
+    const angle=fiber*2.3999632297+phase,spread=Math.sqrt((fiber+.35)/count)*.84;
+    const nx=Math.cos(angle)*width*spread,bz=Math.sin(angle)*depth*spread;
+    const radius=.0008+.0004*(.5+.5*Math.sin(fiber*1.73+phase)),color=palette[(fiber+Math.floor(Math.abs(phase)*3))%palette.length];
+    const start=p.length/3;
+    for(let j=0;j<=segments;j++){
+     const t=j/segments,c=curve.getPointAt(t),n=frames.normals[j],b=frames.binormals[j];
+     const taper=(.88+.12*Math.sin(t*Math.PI))*Math.pow(1-t,.40)+.035;
+     const envelope=Math.sin(t*Math.PI),wave=Math.sin(t*Math.PI*4+fiber*.67+phase)*.00075*envelope;
+     const center=c.clone().addScaledVector(n,nx*taper+wave).addScaledVector(b,bz*taper+Math.cos(t*Math.PI*3+angle)*.00045*envelope);
+     const r=radius*(.94*Math.pow(1-t,.35)+.045),shade=.90+.10*Math.sin(t*Math.PI);
+     for(let k=0;k<=radial;k++){
+      const a=k/radial*Math.PI*2,q=center.clone().addScaledVector(n,Math.cos(a)*r).addScaledVector(b,Math.sin(a)*r);
+      p.push(q.x,q.y,q.z);uv.push(k/radial,1-t);colors.push(color.r*shade,color.g*shade,color.b*shade);
+      if(j<segments&&k<radial){const a=start+j*(radial+1)+k,b=a+1,c=a+radial+1,d=c+1;idx.push(a,b,c,b,d,c);}
+     }
+    }
+    const root=p.length/3,tip=root+1;
+    const first=new THREE.Vector3(),last=new THREE.Vector3();
+    for(let k=0;k<radial;k++){
+     first.add(new THREE.Vector3(p[(start+k)*3],p[(start+k)*3+1],p[(start+k)*3+2]));
+     const e=start+segments*(radial+1)+k;last.add(new THREE.Vector3(p[e*3],p[e*3+1],p[e*3+2]));
+    }
+    first.multiplyScalar(1/radial);last.multiplyScalar(1/radial);
+    p.push(...first.toArray(),...last.toArray());uv.push(.5,1,.5,0);
+    colors.push(color.r*.9,color.g*.9,color.b*.9,color.r*.9,color.g*.9,color.b*.9);
+    for(let k=0;k<radial;k++){idx.push(root,start+k+1,start+k);const e=start+segments*(radial+1)+k;idx.push(tip,e,e+1);}
+   }
+   const bundle=geometry(p,uv,idx);bundle.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
+   mesh(g,bundle,materials.hairFiber,name+'-opaque-fiber-bundle');masses.push({group:g,phase});return g;
+  }
   const frames=curve.computeFrenetFrames(steps,false),p=[],uv=[],idx=[];
   // Each lock samples only a slender part of the existing hair map. Mapping
   // the full sheet around every lock produced repeated broad white stripes.

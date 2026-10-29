@@ -27,6 +27,7 @@ export function createOverlordBoss(THREE,options={}){
   face:new THREE.MeshStandardMaterial({color:0xe6bba5,roughness:.63}),
   hair:new THREE.MeshStandardMaterial({color:0xb78a44,metalness:.08,roughness:.38}),
   hairLight:new THREE.MeshStandardMaterial({color:0xe1bc70,metalness:.08,roughness:.35}),
+  hairFiber:new THREE.MeshStandardMaterial({color:0xffffff,metalness:.04,roughness:.42,vertexColors:true}),
   red:new THREE.MeshStandardMaterial({color:0x520d20,roughness:.77,side:THREE.DoubleSide}),
   gem:new THREE.MeshStandardMaterial({color:0x9b0322,metalness:.28,roughness:.2,emissive:0x51000b,emissiveIntensity:.35}),
   glow:new THREE.MeshStandardMaterial({color:0xff5571,emissive:0xff173f,emissiveIntensity:1.6,roughness:.3}),
@@ -101,7 +102,8 @@ export function createOverlordBoss(THREE,options={}){
   mats.generatedBase=new THREE.MeshStandardMaterial({color:0xffffff,metalness:.32,roughness:.55});
   mats.generatedFront=new THREE.MeshStandardMaterial({color:0xffffff,metalness:.32,roughness:.55});
   mats.generatedFace=new THREE.MeshStandardMaterial({color:0xffffff,metalness:0,roughness:.63});
-  human=new THREE.SkinnedMesh(geometry,[mats.generatedBase,mats.generatedFront,mats.generatedFace]);
+  mats.generatedRearHead=new THREE.MeshStandardMaterial({color:0xffffff,metalness:.04,roughness:.52});
+  human=new THREE.SkinnedMesh(geometry,[mats.generatedBase,mats.generatedFront,mats.generatedFace,mats.generatedRearHead]);
   human.name='reconstructed-queen-skinned-body';human.castShadow=true;human.receiveShadow=true;human.frustumCulled=false;body.add(human);
   root.updateMatrixWorld(true);human.bind(skeleton);human.normalizeSkinWeights();
  }else{
@@ -153,7 +155,8 @@ export function createOverlordBoss(THREE,options={}){
  for(const [r,y]of[[.079,-.037],[.079,.078]]){const rim=regularMesh(neck,new THREE.TorusGeometry(r,.0028,6,40),'gold',[0,y,.023]);rim.rotation.x=Math.PI/2;rim.scale.y=1.6;}
  }
  const joints={body,pelvis,torso,neck,head,arms,legs,rest};
- const cloth=createOverlordHairCloth(THREE,{head,torso,materials:mats});
+ const cloth=createOverlordHairCloth(THREE,{head,torso,materials:mats,fineHair:generated});
+ if(generated){cloth.headGroup.position.set(.004,-.086,.030);cloth.headGroup.scale.set(.85,.90,.85);}
  const regalia=createOverlordRegalia(THREE,{joints,materials:mats,positions:data.positions,includeArmor:!generated});
  if(regalia.group)root.add(regalia.group);
  const swords=regalia.swords;
@@ -207,10 +210,10 @@ export function createOverlordBoss(THREE,options={}){
   if('hair'in textures){install(['hair','hairLight'],textures.hair,0xb78a44);if(textures.hair)mats.hairLight.color.set(0xffe8bd);}
   if('cape'in textures)install(['red'],textures.cape,0x520d20);
   if(generated){
-   if('generatedBase'in textures)mats.generatedBase.map=textures.generatedBase;
+   if('generatedBase'in textures)mats.generatedBase.map=mats.generatedRearHead.map=textures.generatedBase;
    if('generatedFront'in textures)mats.generatedFront.map=mats.generatedFace.map=textures.generatedFront;
-   if('generatedNormal'in textures){for(const name of ['generatedBase','generatedFront','generatedFace'])mats[name].normalMap=textures.generatedNormal;mats.generatedFace.normalScale.set(.45,.45);}
-   for(const name of ['generatedBase','generatedFront','generatedFace'])mats[name].needsUpdate=true;
+   if('generatedNormal'in textures){for(const name of ['generatedBase','generatedFront','generatedFace','generatedRearHead'])mats[name].normalMap=textures.generatedNormal;mats.generatedFace.normalScale.set(.45,.45);}
+   for(const name of ['generatedBase','generatedFront','generatedFace','generatedRearHead'])mats[name].needsUpdate=true;
   }
   return true;
  }

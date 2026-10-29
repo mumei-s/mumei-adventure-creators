@@ -259,13 +259,13 @@
     },
     {
       "path": "maze/overlord-boss.js",
-      "bytes": 17556,
-      "sha256": "98a33852a4dc81c5c042ce56d0705a85a730260c95abb0e133994079960a0f20"
+      "bytes": 17978,
+      "sha256": "3ed635f33d524101b29456f620d43a132516a2421d8e492a8502f0a70bf92b2b"
     },
     {
       "path": "maze/overlord-hair-cloth.js",
-      "bytes": 14352,
-      "sha256": "ff2e8ad4ac2535940ca6f66bf83e9a38c8e1e6e53da5fb33fe0d4ac2e3da90ef"
+      "bytes": 16945,
+      "sha256": "f5446b62faf42d8ba270793a56606c733dcdd7f296422b8c6381eedb4010b466"
     },
     {
       "path": "maze/overlord-human-data.js",
@@ -279,8 +279,8 @@
     },
     {
       "path": "maze/overlord-queen-data.js",
-      "bytes": 412235,
-      "sha256": "f160ecef84ae0e42c1edf19a88bd2494da0bbb9d6e35cead372ad205453068e9"
+      "bytes": 412533,
+      "sha256": "d5dfeccf73425dd2085a058c7a7e51684673b1af9752eb82427e5fba49ed7069"
     },
     {
       "path": "maze/overlord-regalia.js",
@@ -487,7 +487,7 @@
       "external": true
     },
     {
-      "path": "./game-world.js?v=20261019-game-fast1-590c996616dc",
+      "path": "./game-world.js?v=20261019-game-fast1-1a4bf3832977",
       "kind": "dynamic-import",
       "external": true
     }
@@ -709,7 +709,7 @@
   "output": {
     "path": "maze/game-entry.js",
     "bytes": 387939,
-    "sha256": "47c3581afb0a9f9397d0d9c4409776bae077fb5a1d05d2c22ad8ff194784772d"
+    "sha256": "ec27783343a6fcfdc451b08dea1be89eea08412a693e7f03502b9c5d7d02e6a6"
   },
   "styleSources": [
     "./style.css?v=20261014-adventure2",
@@ -742,8 +742,8 @@
   },
   "world": {
     "path": "maze/game-world.js",
-    "bytes": 1072264,
-    "sha256": "590c996616dce0612d6175f52c5096242a28ae1e180afe4043a4721ead7cf9dc",
+    "bytes": 1074752,
+    "sha256": "1a4bf38329771f2c2513eb3a86312bd117aa463a80f8119ffbf42df0e0cf44b0",
     "imports": [
       {
         "path": "./vendor/three.module.js",

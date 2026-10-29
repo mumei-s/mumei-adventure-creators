@@ -1,9 +1,9 @@
 import * as THREE from './vendor/three.module.js';
-import {overlordBattleDirector} from './overlord-battle-director.js?v=20261029-overlord5';
-import {createOverlordStageEffects} from './overlord-stage-fx.js?v=20261029-overlord5';
-import {createOverlordBoss} from './overlord-boss.js?v=20261029-overlord5';
-import {attachOverlordMaterials} from './overlord-materials.js?v=20261029-overlord5';
-import {createOverlordThrone,createOverlordHall} from './overlord-room.js?v=20261029-overlord5';
+import {overlordBattleDirector} from './overlord-battle-director.js?v=20261029-overlord6';
+import {createOverlordStageEffects} from './overlord-stage-fx.js?v=20261029-overlord6';
+import {createOverlordBoss} from './overlord-boss.js?v=20261029-overlord6';
+import {attachOverlordMaterials} from './overlord-materials.js?v=20261029-overlord6';
+import {createOverlordThrone,createOverlordHall} from './overlord-room.js?v=20261029-overlord6';
 import {playerPose} from './rpg-art.js?v=20261019-unified1';
 
 /** Resolved turn timing drives the performance; a peaceful bow cannot attack. */

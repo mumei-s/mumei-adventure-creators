@@ -1,6 +1,6 @@
-import {createOverlordRoom} from './overlord-room.js?v=20261029-overlord5';
-import {createOverlordBoss} from './overlord-boss.js?v=20261029-overlord5';
-import {attachOverlordMaterials,createOverlordReflectionEnvironment} from './overlord-materials.js?v=20261029-overlord5';
+import {createOverlordRoom} from './overlord-room.js?v=20261029-overlord6';
+import {createOverlordBoss} from './overlord-boss.js?v=20261029-overlord6';
+import {attachOverlordMaterials,createOverlordReflectionEnvironment} from './overlord-materials.js?v=20261029-overlord6';
 import {createExhibitResources} from './exhibit-resources.js?v=20261019-audit1';
 import {normalizeCameraDistance,mazeCameraZoom} from '../camera-distance.js?v=20261019-journey1';
 import {mazeWideCamera} from '../camera-distance.js?v=20261019-journey1';
@@ -167,6 +167,9 @@ export function createWorld({ canvas, onReady, art } = {}) {
   headlamp.position.set(.3,-.15,-.25);camera.add(headlamp);
   const nearLamp=new THREE.PointLight('#ffc578',NIGHT_LIGHTING.nearLight,8,1.5);nearLamp.position.set(.3,-.1,-.5);camera.add(nearLamp);
   const beamTarget=new THREE.Object3D();beamTarget.position.set(0,-.2,-9);camera.add(beamTarget);headlamp.target=beamTarget;
+  // Pulled-back cameras must not turn the first-person beam into an overhead
+  // floodlight. Their lantern stays with the traveller, below face height.
+  const wideLantern=new THREE.PointLight('#ffc578',1.8,6,2);wideLantern.name='Traveller lantern';wideLantern.visible=false;scene.add(wideLantern);
   // Frosted high windows read as moonlight throughout the haunted chambers.
   const moonGlass=mat('#a8c2d7',{emissive:'#859fb9',emissiveIntensity:.08});
   for(const zz of [34,40,46]){
@@ -397,9 +400,10 @@ export function createWorld({ canvas, onReady, art } = {}) {
     const hero=wide?playerPose(art,heroFacing,walking,walkPhase):null;
     const visibleActors=creatorActors.map(actor=>({...actor,sprite:characterSpriteForCamera(actor,Math.atan2(camera.position.x-actor.x*CELL,camera.position.z-actor.z*CELL))}));
     updateCreatorActors(hero?[...visibleActors,{id:'wide-view-owner',x:x/CELL,z:z/CELL,sprite:hero,heightWorld:2.38,interactive:false}]:visibleActors);
-    heldLantern.visible=!!lantern&&!wide;headlamp.visible=!!lantern;nearLamp.visible=!!lantern;
+    heldLantern.visible=!!lantern&&!wide;headlamp.visible=!!lantern&&!wide;nearLamp.visible=!!lantern&&!wide;
+    wideLantern.visible=!!lantern&&wide;wideLantern.position.set(x+Math.cos(yaw)*.3,.95,z-Math.sin(yaw)*.3);
     for(const spirit of spirits){
-      if(spirit.boss){const pose=monsterPose(spirit.definition,seconds,motion,{unlocked,horrorAccepted,overlordUnlocked});spirit.node.visible=encounters&&monsterAvailable(spirit.definition,{unlocked,horrorAccepted,overlordUnlocked});if(spirit.node.visible&&!spirit.materials){spirit.materials=attachOverlordMaterials(THREE,spirit.boss);if(!overlordReflection){try{overlordReflection=createOverlordReflectionEnvironment(THREE,renderer);scene.environment=overlordReflection.texture;}catch{/* Chamber lights remain available on older drivers. */}}}spirit.node.position.set(pose.x*CELL,spirit.baseY,pose.z*CELL);spirit.node.rotation.y=pose.yaw;spirit.boss.update(dt,{time:seconds,state:cleared.includes(spirit.id)?'idle':pose.walking?'walk':'idle',speed:pose.speed*CELL,motion});continue;}
+      if(spirit.boss){const pose=monsterPose(spirit.definition,seconds,motion,{unlocked,horrorAccepted,overlordUnlocked});spirit.node.visible=encounters&&monsterAvailable(spirit.definition,{unlocked,horrorAccepted,overlordUnlocked});if(spirit.node.visible&&!spirit.materials){spirit.materials=attachOverlordMaterials(THREE,spirit.boss);if(!overlordReflection){try{overlordReflection=createOverlordReflectionEnvironment(THREE,renderer);}catch{/* Chamber lights remain available on older drivers. */}}if(overlordReflection)spirit.boss.group.traverse(node=>{for(const material of Array.isArray(node.material)?node.material:[node.material])if(material?.isMeshStandardMaterial){material.envMap=overlordReflection.texture;material.envMapIntensity=.58;material.needsUpdate=true;}});}spirit.node.position.set(pose.x*CELL,spirit.baseY,pose.z*CELL);spirit.node.rotation.y=pose.yaw;spirit.boss.update(dt,{time:seconds,state:cleared.includes(spirit.id)?'idle':pose.walking?'walk':'idle',speed:pose.speed*CELL,motion});continue;}
       // Opening the scene does not wait for every enemy atlas. Install the same
       // original art as it arrives, retaining the existing model until then.
       const source=art?.images?.[spirit.id],image=source?.image||source;

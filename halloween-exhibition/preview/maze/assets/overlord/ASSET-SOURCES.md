@@ -33,4 +33,8 @@ Five original jaw triangles are explicitly assigned to the existing high-resolut
 
 The reconstructed geometry is intentionally bounded for mobile rendering. Fingers, outer ear/jaw facets and side/back details remain coarser than the source illustration. The earlier fused-cape reconstruction and its failed automatic rig are not the game model.
 
+UV-island duplicates now share area-weighted normals at coincident source positions. This removes lighting seams without changing positions, topology, either UV set or skin weights. The exported normal map remains available, but its faceted relief is disabled on the reconstructed body. The body still casts its silhouette shadow. It does not receive additional real-time shadows, avoiding triangular shadow patches on top of the source image's painted lighting.
+
+Exploration uses this same default body. Behind-player cameras use a weak lantern at the traveller's height instead of carrying the strong first-person camera beam overhead. Reflections are limited to the queen's materials at the same 0.58 strength as the battle scene.
+
 Low-frame-rate battle timing and pose transitions share the encounter clock, while movement collision steps remain capped. Required body maps finish loading before the native battle viewport is activated; failed maps use the existing original-face fallback.

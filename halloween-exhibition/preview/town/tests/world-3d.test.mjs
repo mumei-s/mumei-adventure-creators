@@ -6,6 +6,7 @@ import {createTownWorld3D,createTownSceneGeometry,createTownWebGLRenderer,town3D
 import {TOWN_RESIDENT_SPRITES} from '../visual-data.js';
 import {getTownMap,TOWN_MAPS} from '../story-data.js';
 import {initialTownState} from '../town-model.js';
+import {renderPixelRatio} from '../../render-quality.js';
 
 const manifest=JSON.parse(await fs.readFile(new URL('../assets/residents-manifest.json',import.meta.url),'utf8'));
 function fakeCanvas(width=512,height=512){
@@ -39,9 +40,23 @@ test('required residents retry an interrupted download without failing the compl
   await world.ready;assert.equal(attempts,2);assert.ok(requested.some(item=>item.src.includes('residents-atlas.webp?retry=1')));assert.ok(requested.filter(item=>item.src.includes('residents')).every(item=>item.options.priority==='high'));assert.deepEqual(world.status().failed,[]);world.destroy();
 });
 
-test('mobile WebGL allocation uses a lighter context and retries a failed GPU allocation once',()=>{
+test('mobile WebGL keeps antialiasing and retries without it only after allocation failure',()=>{
   const attempts=[],canvas=fakeCanvas(420,600),expected={};const result=createTownWebGLRenderer(canvas,options=>{attempts.push(options);if(attempts.length===1)throw Error('GPU allocation');return expected;});
-  assert.equal(result.renderer,expected);assert.equal(result.compact,true);assert.equal(attempts.length,2);assert.equal(attempts[0].antialias,false);assert.equal(attempts[0].powerPreference,'default');assert.equal(attempts[1].powerPreference,'low-power');assert.ok(attempts.every(item=>item.canvas===canvas));
+  assert.equal(result.renderer,expected);assert.equal(result.compact,true);assert.equal(attempts.length,2);assert.equal(attempts[0].antialias,true);assert.equal(attempts[0].powerPreference,'default');assert.equal(attempts[1].antialias,false);assert.equal(attempts[1].powerPreference,'low-power');assert.ok(attempts.every(item=>item.canvas===canvas));
+});
+
+test('phone native-resolution rendering sharpens the backing buffer without changing world projection or requesting art again',async()=>{
+ const requests=[],{world,record}=harness({width:390,height:844,loadImage:async url=>{requests.push(url);return url.includes('residents')?{width:1280,height:640}:{width:512,height:512};}});
+ try{
+  await world.ready;await world.sceneryReady;const state=initialTownState(),point={x:state.position.x+.6,z:state.position.z-.3};
+  world.render({state,motion:false,pixelRatio:1});const before=world.worldToScreen(point),count=requests.length;
+  world.render({state,motion:false,pixelRatio:3});const after=world.worldToScreen(point),ratio=record.ratio;
+  assert(ratio>2.5&&ratio<=3,'phone resolution is no longer forcibly reduced to 1.25x');
+  assert(390*844*ratio*ratio<=2400001,'high-density buffer stays within the mobile pixel budget');
+  assert.deepEqual(record.size,[390,844]);assert.deepEqual(after,before,'render quality cannot change camera scale or interaction coordinates');assert.equal(requests.length,count);
+  const road=record.scene.getObjectByName('town-world-lantern-town').children.find(item=>item.name==='ground-.');
+  assert.equal(road.material.map.anisotropy,4,'angled ground uses available filtering instead of the compact-only reduction');
+ }finally{world.destroy();}
 });
 
 test('the explicit wide camera works anywhere and preserves map picking in a room',async()=>{
@@ -78,7 +93,7 @@ test('elevated camera and screen picking roundtrip after portrait, landscape, re
   const {world,canvas,record}=harness();await world.ready;const state=initialTownState();
   assert.equal(TOWN_3D_CAMERA_ELEVATION,55*Math.PI/180);
   for(const [width,height,mapId]of[[320,580,'lantern-town'],[920,320,'lantern-town'],[1280,720,'library']]){
-    canvas.clientWidth=width;canvas.clientHeight=height;state.mapId=mapId;state.position={...getTownMap(mapId).spawn};world.render({state,cameraDistance:'wide',pixelRatio:2,motion:false});assert.deepEqual(record.size,[width,height]);assert.ok(record.ratio<=1.8);
+    canvas.clientWidth=width;canvas.clientHeight=height;state.mapId=mapId;state.position={...getTownMap(mapId).spawn};world.render({state,cameraDistance:'wide',pixelRatio:2,motion:false});assert.deepEqual(record.size,[width,height]);assert.equal(record.ratio,renderPixelRatio(width,height,2));
     for(const offset of[{x:0,z:0},{x:1.3,z:-1.8},{x:-.8,z:.6}]){
       const point={x:state.position.x+offset.x,z:state.position.z+offset.z},screen=world.worldToScreen(point),back=world.screenToWorld(screen);assert.ok(Math.abs(point.x-back.x)<1e-9);assert.ok(Math.abs(point.z-back.z)<1e-9);
     }

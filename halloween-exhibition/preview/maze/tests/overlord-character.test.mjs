@@ -13,6 +13,7 @@ test('original art stays visible from the camera front without a skeleton or lig
  try{
   assert.equal(await actor.ready,true);assert(actor.sprite.isSprite);assert.equal(actor.sprite.material.map.image,image);
   assert.equal(actor.sprite.material.toneMapped,false);assert.equal(actor.sprite.material.depthTest,true);assert.equal(actor.sprite.material.depthWrite,false);
+  assert.equal(actor.sprite.material.map.minFilter,THREE.LinearMipmapLinearFilter);assert.equal(actor.sprite.material.map.generateMipmaps,true,'whole-image mipmaps keep distant fine hair and gold details from shimmering');
   assert.deepEqual(actor.sprite.center.toArray(),[.5,0]);let skins=0;actor.group.traverse(node=>{if(node.isSkinnedMesh)skins++;});assert.equal(skins,0);assert.equal(actor.swords.length,0);
   for(const state of actor.metadata.states){actor.update(.05,{state,time:2,attackProgress:.5});assert(actor.sprite.visible);assert(actor.sprite.position.toArray().every(Number.isFinite));assert.equal(actor.sprite.material.map.image,image);}
   await flush();assert(actor.sprite.visible,'an unavailable portrait must not hide approved art');

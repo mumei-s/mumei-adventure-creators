@@ -265,7 +265,7 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
 
   function render({canvas,state,time=0,dt=.016,motion=true,pixelRatio=1,walking=false,walkPhase=0,facing=state?.facing||'down',brightness=75,lantern=true,cameraDistance='normal',cameraZoom=1,cameraOffsetY=0,creatorActors=[]}={}){
     if(destroyed||!canvas||!state?.position)return false;
-    const ratio=clamp(pixelRatio||1,1,2),w=canvas.width/ratio,h=canvas.height/ratio,map=getTownMap(state.mapId),interior=map.outdoor!==true;
+    const ratio=Number.isFinite(pixelRatio)&&pixelRatio>0?pixelRatio:1,w=canvas.width/ratio,h=canvas.height/ratio,map=getTownMap(state.mapId),interior=map.outdoor!==true;
     if(interior&&!map.creatorHome)ensureInterior();
     const baseTile=w<550?52:w<900?61:70,viewZoom=map.creatorHome?townViewZoom(cameraZoom)/townViewZoom(1):townViewZoom(cameraZoom),framing=townPalaceFraming(state.position,map,55*Math.PI/180,w,h),tile=map.creatorHome?Math.min(w/(map.width+1),h/((map.height+2)*TOWN_DEPTH_SCALE)):baseTile+(Math.min(baseTile,framing.pixelsPerTile??baseTile)-baseTile)*(framing.influence||0),distanceScale=map.creatorHome?creatorRoomCameraScale(cameraDistance):cameraDistanceScale(cameraDistance),scale=tile/TILE*distanceScale*viewZoom,target=townCameraTarget(state.position,map,w,h/TOWN_DEPTH_SCALE,tile*distanceScale*viewZoom);
     if(map.creatorHome){const follow=creatorRoomCameraFollow(distanceScale*viewZoom),cx=map.width*TILE/2,cy=(map.height/2-.5)*TILE;target.x=cx+(target.x-cx)*follow;target.y=cy+(target.y-cy)*follow;}
@@ -370,9 +370,9 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
   }
 
   function renderTownBattle({canvas,battle,time=0,effect=null,motion=true,pixelRatio=1}={}){
-    if(!canvas||!battle)return;const c=canvas.getContext('2d'),ratio=clamp(pixelRatio||1,1,2),w=canvas.width/ratio,h=canvas.height/ratio;
+    if(!canvas||!battle)return;const c=canvas.getContext('2d'),ratio=Number.isFinite(pixelRatio)&&pixelRatio>0?pixelRatio:1,w=canvas.width/ratio,h=canvas.height/ratio;
     if(snapshotBattle!==battle.id&&lastSurface){snapshotBattle=battle.id;sceneSnapshot.width=lastSurface.width;sceneSnapshot.height=lastSurface.height;sceneSnapshot.getContext('2d').drawImage(lastSurface,0,0);}
-    c.setTransform(ratio,0,0,ratio,0,0);c.clearRect(0,0,w,h);
+    c.setTransform(ratio,0,0,ratio,0,0);c.clearRect(0,0,w,h);c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';
     if(sceneSnapshot.width>1)c.drawImage(sceneSnapshot,0,0,w,h);else{c.fillStyle='#253c4c';c.fillRect(0,0,w,h);}
     const veil=c.createLinearGradient(0,0,0,h);veil.addColorStop(0,'#102235e8');veil.addColorStop(.5,'#0b2035a8');veil.addColorStop(1,'#11243ae8');c.fillStyle=veil;c.fillRect(0,0,w,h);
     const floorY=h*.85,heroX=w*.24,enemyX=w*.74,size=Math.min(h*.58,w*.32,255),enemySize=Math.min(h*.65,w*.43,300),enemyId=TOWN_BATTLE_ART_IDS[battle.enemyId]||'ghost';

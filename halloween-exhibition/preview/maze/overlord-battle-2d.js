@@ -1,3 +1,4 @@
+import {renderPixelRatio} from '../render-quality.js?v=20261030-quality1';
 import {drawArtSprite,playerPose} from './rpg-art.js?v=20261019-unified1';
 import {overlordBattleDirector} from './overlord-battle-director.js?v=20261030-art1';
 import {getOverlordIdentityImage} from './overlord-materials.js?v=20261030-art1';
@@ -242,8 +243,8 @@ function sword(c,shape,opacity){
 /** Explicit 2D art renderer for unsupported WebGL; native combat uses its own 3D scene. */
 export function renderOverlordBattle2D({canvas,art,battle,effect,time=0,motion=true}){
  const c=canvas?.getContext?.('2d');if(!c)return false;
- const w=Math.max(1,canvas.clientWidth||canvas.width||360),h=Math.max(1,canvas.clientHeight||canvas.height||220),ratio=Math.min(1.5,Math.max(1,Number(globalThis.devicePixelRatio)||1));
- if(canvas.width!==Math.round(w*ratio)||canvas.height!==Math.round(h*ratio)){canvas.width=Math.round(w*ratio);canvas.height=Math.round(h*ratio);}c.setTransform(ratio,0,0,ratio,0,0);c.clearRect(0,0,w,h);
+ const w=Math.max(1,canvas.clientWidth||canvas.width||360),h=Math.max(1,canvas.clientHeight||canvas.height||220),ratio=renderPixelRatio(w,h,globalThis.devicePixelRatio||1);
+ if(canvas.width!==Math.round(w*ratio)||canvas.height!==Math.round(h*ratio)){canvas.width=Math.round(w*ratio);canvas.height=Math.round(h*ratio);}c.setTransform(ratio,0,0,ratio,0,0);c.clearRect(0,0,w,h);c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';
  const queen=identityQueenSprite(art?.images?.nameless_overlord),layout=overlordBattle2DLayout(w,h,queen),q=layout.queen,p=layout.hero;
  const cue=overlordBattleDirector({battle,effect,time,motion}),clock=motion&&Number.isFinite(time)?Math.max(0,time):0,env=cue.environment;
  c.save();c.translate(cue.camera.shakeX*w,cue.camera.shakeY*h);

@@ -1,5 +1,6 @@
+import {renderPixelRatio} from '../render-quality.js?v=20261030-quality1';
 import {createOverlordRoom} from './overlord-room.js?v=20261030-art1';
-import {createOverlordCharacter} from './overlord-character.js?v=20261030-art1';
+import {createOverlordCharacter} from './overlord-character.js?v=20261030-quality1';
 import {createExhibitResources} from './exhibit-resources.js?v=20261019-audit1';
 import {normalizeCameraDistance,mazeCameraZoom} from '../camera-distance.js?v=20261019-journey1';
 import {mazeWideCamera} from '../camera-distance.js?v=20261019-journey1';
@@ -18,7 +19,6 @@ import { ALL_MONSTERS as MONSTERS, monsterAvailable, monsterPose } from './encou
 export function createWorld({ canvas, onReady, art } = {}) {
   const compactViewport=Math.min(canvas.clientWidth||window.innerWidth,canvas.clientHeight||window.innerHeight)<720;
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, compactViewport?1.35:1.7));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 1.22;
@@ -387,7 +387,7 @@ export function createWorld({ canvas, onReady, art } = {}) {
   let last=0,gateY=0,ambientTime=0;
   const cameraFollow={stage:null,distance:0,x:0,z:0};
   const castleVault=overlordRoom.group.getObjectByName('native-dark-pointed-vault');
-  function resize(){const w=canvas.clientWidth||window.innerWidth,h=canvas.clientHeight||window.innerHeight;renderer.setSize(w,h,false);camera.aspect=w/h;heldLantern.position.x=Math.min(.3,.3*camera.aspect);camera.updateProjectionMatrix();}
+  function resize(){const w=canvas.clientWidth||window.innerWidth,h=canvas.clientHeight||window.innerHeight;renderer.setPixelRatio(renderPixelRatio(w,h,window.devicePixelRatio||1));renderer.setSize(w,h,false);camera.aspect=w/h;heldLantern.position.x=Math.min(.3,.3*camera.aspect);camera.updateProjectionMatrix();}
   function render({x=0,z=0,yaw=0,pitch=0,time=0,motion=true,unlocked=false,horrorAccepted=false,overlordUnlocked=false,hasKey=false,collection=[],brightness=1,lantern=true,encounters=true,cleared=[],cameraDistance='normal',cameraZoom=1,facing='down',heading,walking=false,walkPhase=0,creatorActors=[]}={}){
     overlordRoom.update({unlocked:overlordUnlocked,time:time*.001,motion});
     const seconds=time*.001;const dt=Math.min(.05,Math.max(0,seconds-last));last=seconds;if(motion)ambientTime+=dt;const t=ambientTime;

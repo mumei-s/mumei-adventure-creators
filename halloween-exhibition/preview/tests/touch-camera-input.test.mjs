@@ -19,7 +19,7 @@ class Target{
 }
 function lifecycle(target){const window=new Target(),document=new Target();document.defaultView=window;window.document=document;target.ownerDocument=document;return {window,document};}
 function slide(){const pad=new Target(),life=lifecycle(pad),changes=[];let mode='slide';const binding=bindDirectionPad(pad,{mode:()=>mode,onChange:value=>changes.push(value)});return {pad,changes,...life,...binding,setMode:value=>mode=value};}
-function pinch(options={}){const surface=new Target(),life=lifecycle(surface),changes=[];let zoom=1,starts=0,ends=0;const binding=bindPinchZoom(surface,{getZoom:()=>zoom,onChange:value=>{zoom=value;changes.push(value);},onStart:()=>starts++,onEnd:()=>ends++,...options});return {surface,changes,...life,...binding,get zoom(){return zoom;},get starts(){return starts;},get ends(){return ends;}};}
+function pinch(options={}){const surface=new Target(),life=lifecycle(surface),changes=[];life.window.visualViewport=Object.assign(new Target(),{scale:1});let zoom=1,starts=0,ends=0;const binding=bindPinchZoom(surface,{getZoom:()=>zoom,onChange:value=>{zoom=value;changes.push(value);},onStart:()=>starts++,onEnd:()=>ends++,...options});return {surface,changes,...life,...binding,get zoom(){return zoom;},get starts(){return starts;},get ends(){return ends;}};}
 const down=(surface,pointerId,x,y=50)=>surface.emit('pointerdown',{pointerId,clientX:x,clientY:y});
 const move=(surface,pointerId,x,y=50)=>surface.emit('pointermove',{pointerId,clientX:x,clientY:y});
 const up=(surface,pointerId)=>surface.emit('pointerup',{pointerId});
@@ -102,4 +102,27 @@ test('cancel, focus loss, hidden pages and rotation reset all pinch captures',()
 });
 test('blocked dialogs and failed capture cannot strand a gesture; destroy restores scene-only styling',()=>{
  let blocked=true;const f=pinch({blocked:()=>blocked});assert.equal(f.surface.css.get('touch-action'),'none');down(f.surface,1,0);down(f.surface,2,100);assert(!f.isActive());blocked=false;down(f.surface,1,0);f.surface.captureError=true;down(f.surface,2,100);assert(!f.isActive());f.surface.captureError=false;f.destroy();assert(!f.surface.css.has('touch-action'));assert.equal(f.surface.dataset.gameCamera,undefined);down(f.surface,1,0);down(f.surface,2,100);assert(!f.isActive());
+});
+
+test('browser-page magnification hands canvas pinch back to native zoom without preventing it',()=>{
+ const f=pinch();let gamePointers=0;f.surface.addEventListener('pointerdown',()=>gamePointers++);
+ f.window.visualViewport.scale=2;f.window.visualViewport.emit('resize');
+ assert.equal(f.surface.css.get('touch-action'),'pan-x pan-y pinch-zoom');
+ const first=down(f.surface,1,10),second=down(f.surface,2,110),moving=move(f.surface,2,65);
+ for(const event of[first,second,moving]){assert.equal(event.defaultPrevented,false,'browser keeps the native default');assert(event.stopped,'game camera must not receive native gesture');}
+ assert.equal(gamePointers,0);assert.equal(f.surface.capture.size,0);assert(!f.isActive());assert.deepEqual(f.changes,[],'browser pinch cannot modify saved scene magnification');
+ f.window.visualViewport.scale=1;f.window.visualViewport.emit('resize');
+ assert.equal(f.surface.css.get('touch-action'),'pan-x pan-y pinch-zoom','remaining native fingers must not become scene controls');
+ up(f.surface,1);assert.equal(f.surface.css.get('touch-action'),'pan-x pan-y pinch-zoom');up(f.surface,2);assert.equal(f.surface.css.get('touch-action'),'none');
+ down(f.surface,3,10);down(f.surface,4,110);move(f.surface,4,130);assert.equal(f.zoom,1.2,'normal game pinch resumes after native fingers leave');
+ f.destroy();
+});
+
+test('page magnification cancels an existing game pinch and releases both captures once',()=>{
+ const f=pinch();down(f.surface,1,0);down(f.surface,2,100);assert(f.isActive());
+ f.window.visualViewport.scale=1.8;f.window.visualViewport.emit('resize');
+ assert(!f.isActive());assert.equal(f.surface.capture.size,0);assert.equal(f.ends,1);
+ assert(!down(f.surface,3,50).defaultPrevented);f.window.visualViewport.scale=1;f.window.emit('pagehide');
+ assert.equal(f.surface.css.get('touch-action'),'none','page hiding cannot leave stale native pointers after restore');
+ f.destroy();f.window.visualViewport.scale=2;f.window.visualViewport.emit('resize');assert(!f.surface.css.has('touch-action'),'destroy removes viewport listeners and restores original style');
 });

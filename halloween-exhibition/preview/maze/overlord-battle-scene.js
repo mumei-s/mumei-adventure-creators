@@ -1,8 +1,9 @@
 import {renderPixelRatio} from '../render-quality.js?v=20261030-quality1';
 import * as THREE from './vendor/three.module.js';
-import {overlordBattleDirector} from './overlord-battle-director.js?v=20261030-art1';
+import {overlordBattleDirector} from './overlord-battle-director.js?v=20261030-body1';
 import {createOverlordStageEffects} from './overlord-stage-fx.js?v=20261030-art1';
-import {createOverlordCharacter} from './overlord-character.js?v=20261030-quality1';
+import {createOverlordCharacter} from './overlord-character.js?v=20261030-body1';
+import {sampleOverlordArtPose} from './overlord-art-rig.js?v=20261030-body1';
 import {createOverlordThrone,createOverlordHall} from './overlord-room.js?v=20261030-art1';
 import {playerPose} from './rpg-art.js?v=20261019-unified1';
 
@@ -48,6 +49,15 @@ export function fitOverlordBattleCamera(camera,bounds,aspect,options){
 }
 /** Snapshot the queen's solid body, ignoring decorative sword tips when framing. */
 export function overlordBattleActorGeometry(actor){
+ if(actor.metadata?.billboard){
+  const extent={left:0,right:0,top:0,bottom:1};
+  for(const state of ['idle','attack','special','hit'])for(const attackProgress of [0,.2,.4,.6,1]){
+   const b=sampleOverlordArtPose({state,attackProgress,time:0}).bounds;
+   extent.left=Math.min(extent.left,b.left);extent.right=Math.max(extent.right,b.right);extent.top=Math.min(extent.top,b.top);extent.bottom=Math.max(extent.bottom,b.bottom);
+  }
+  const h=actor.metadata.height;
+  return {positions:new Float32Array([extent.left*h,(1-extent.bottom)*h,0,extent.right*h,(1-extent.bottom)*h,0,extent.right*h,(1-extent.top)*h,0,extent.left*h,(1-extent.top)*h,0]),billboard:true};
+ }
  if(actor.sprite){
   const height=actor.metadata.height,width=height*2/3;
   return {positions:new Float32Array([-width/2,0,0,width/2,0,0,width/2,height,0,-width/2,height,0]),billboard:true};
@@ -222,6 +232,7 @@ export function createOverlordBattleScene({canvas,art,onLost=()=>{}}){
   hero.visible=!!sprite;frameStage(w,h,layout);
   cameraOffset.copy(baseCameraPosition).sub(baseCameraFocus).applyAxisAngle(new THREE.Vector3(0,1,0),beat.camera.orbit).multiplyScalar(1+beat.camera.pullback-beat.camera.push);
   camera.position.copy(baseCameraFocus).add(cameraOffset);camera.lookAt(baseCameraFocus);camera.position.addScaledVector(battleCameraRight,beat.camera.shakeX).addScaledVector(battleCameraUp,beat.camera.shakeY);camera.updateMatrixWorld();
+  boss.setFacing(camera);
   orb.visible=motion&&player.active&&player.kind==='shine';orb.position.copy(hero.position).lerp(boss.group.position,player.travel);orb.position.y=.55+player.travel*.72;orb.scale.setScalar(.7+player.charge*1.8+player.impact*.9);
   shield.visible=player.shield>.001;shield.position.copy(hero.position);shield.position.y+=layout.heroHeight*.48;shield.lookAt(camera.position);shield.scale.setScalar(.78+counter.impact*.10);
   charge.visible=motion&&counter.charge>.001;charge.position.copy(boss.group.position);charge.position.y+=1.1;charge.rotation.z=motion?time*.65:0;charge.scale.setScalar(.72+counter.charge*.48);

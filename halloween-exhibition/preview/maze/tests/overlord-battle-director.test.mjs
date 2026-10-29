@@ -22,6 +22,30 @@ test('a player attack travels and lands before the return strike, then every act
  const launch=at(.4);assert(launch.player.travel>0&&launch.player.travel<1);
  const impact=at(.65);assert(impact.player.impact>0);assert(impact.actors.bossRecoil>0);
 });
+test('a queen hit begins at the start of her recoil rather than at the end of projectile travel',()=>{
+ for(const [type,hit] of [['shine',.58],['attack',.43]]){
+  const effect={...shine,type},early=at(hit-.045,effect),middle=at(hit+.09,effect),late=at(hit+.225,effect);
+  assert.equal(early.state,'hit');assert.equal(early.body.phase,'recoil');
+  assert(early.attackProgress<.03,'the first visible hit frame must retain its wind-up');
+  assert(middle.attackProgress>.45&&middle.attackProgress<.55);
+  assert(late.attackProgress>.97&&late.attackProgress<=1);
+  assert(early.stateElapsed<middle.stateElapsed&&middle.stateElapsed<late.stateElapsed);
+  assert.equal(at(hit+.24,effect).state,'idle');
+ }
+});
+test('the articulated counter has charge, release and recovery phases on the sword clock',()=>{
+ for(const counterSpecial of [false,true]){
+  const effect={...shine,counterSpecial,retaliation:counterSpecial?5:1},frames=[];
+  for(let age=0;age<duration(effect);age+=.005)frames.push(at(age,effect));
+  const posing=frames.filter(frame=>frame.counter.active),phases=new Set(posing.map(frame=>frame.body.phase));
+  assert.deepEqual([...phases],['charge','release','recovery']);
+  assert(posing[0].attackProgress<.01);assert(posing.at(-1).attackProgress>.99);
+  assert(posing.every((frame,i)=>i===0||frame.attackProgress>posing[i-1].attackProgress));
+  assert(posing.some(frame=>frame.body.phase==='release'&&frame.blades.some(blade=>blade.active&&blade.travel>0&&blade.travel<1)));
+  assert(posing.filter(frame=>frame.body.phase==='recovery').every(frame=>frame.blades.filter((_,i)=>counterSpecial||i===2).every(blade=>blade.travel===1)));
+  assert(posing.every(frame=>frame.attackProgress===frame.body.progress));
+ }
+});
 test('five special blades launch in order and land separately on the shared target timeline',()=>{
  const effect={...shine,counterSpecial:true,retaliation:5};const first=Array(5).fill(null),peak=Array(5).fill(0),land=Array(5).fill(null);
  for(let age=0;age<duration(effect);age+=.005){const shot=at(age,effect);shot.blades.forEach((blade,i)=>{if(blade.active&&first[i]===null)first[i]=age;if(blade.impact>peak[i]){peak[i]=blade.impact;land[i]=age;}});}

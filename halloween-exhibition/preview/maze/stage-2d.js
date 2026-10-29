@@ -6,7 +6,10 @@ import { MAP, CELL, FEATURES, OVERLORD_ROOM, blocked, nearby } from './maze-mode
 import { ALL_MONSTERS as MONSTERS, nearestMonster, monsterAvailable, monsterPose } from './encounter-model.js?v=20261016-living1';
 
 // Canvas illustration authored for this room; no participant art or remote assets.
-import {drawArtSprite,playerPose} from './rpg-art.js?v=20261019-unified1';
+import {drawArtSprite,playerPose,loadArtImage} from './rpg-art.js?v=20261019-unified1';
+import {OVERLORD_CHARACTER_PREVIEW} from './overlord-character-preview.js?v=20261030-art1';
+import {getOverlordArtAtlas,overlordArtSource} from './overlord-art-source.js?v=20261030-body1';
+import {drawOverlordArtRig} from './overlord-art-rig.js?v=20261030-body1';
 import {followCamera,depthOrder,clampSceneCamera} from './rpg-model.js?v=20261014-adventure2';
 const TILE=72,TAU=Math.PI*2;
 export const EXIT={x:8,z:14};
@@ -184,9 +187,20 @@ function drawPlayer(c,x,y,lantern=true){c.save();c.translate(x,y);ellipse(c,0,22
   rounded(c,21,2,14,21,3,'#5f453a','#e6b66c');rounded(c,24,6,8,13,2,lantern?'#ffe0a2':'#60515b');c.strokeStyle='#e9bd76';c.beginPath();c.arc(28,2,5,Math.PI,TAU);c.stroke();c.restore();
 }
 function drawWayfinder(c,feature,label,color,cam,w,h){const px=cam.originX+(feature.x*TILE-cam.x)*cam.scale,py=cam.originY+(feature.z*TILE-cam.y)*cam.scale;if(px>27&&px<w-27&&py>30&&py<h-30)return;const dx=px-w/2,dy=py-h/2;const ratio=Math.min((w/2-62)/Math.max(1,Math.abs(dx)),(h/2-30)/Math.max(1,Math.abs(dy)));const x=w/2+dx*ratio,y=h/2+dy*ratio;rounded(c,x-47,y-13,94,26,13,'#171321eD',color);text(c,`${Math.abs(dx)>Math.abs(dy)?dx>0?'→':'←':dy>0?'↓':'↑'} ${label}`,x,y,12,color);}
-export function createStageRenderer({makeCanvas=(w,h)=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c;},art={images:{},version:0}}={}){
+export function createStageRenderer({makeCanvas=(w,h)=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c;},art={images:{},version:0},loadQueenPreview=loadArtImage}={}){
   let architecture=createArchitecture(makeCanvas,art),artVersion=art.version,camera=null;
   const shade=makeCanvas(1,1),alphaCanvas=makeCanvas(1,1);let lastCanvas=null,lastSignature='',hitItems=[],lastState=null;
+  let queenRequested=false,queenPreview=null,queenFull=null;
+  const validImage=value=>{const image=value?.image||value;return (image?.width||image?.naturalWidth)>0&&(image?.height||image?.naturalHeight)>0;};
+  function ensureQueen(){
+    if(queenRequested)return;queenRequested=true;
+    void overlordArtSource.start();
+    // Flat exploration does not construct the WebGL character, so it must start
+    // its own lazy load. The embedded art decodes independently of slow/failed
+    // network requests and remains installed when the full image cannot load.
+    void Promise.resolve().then(()=>loadQueenPreview(OVERLORD_CHARACTER_PREVIEW)).then(image=>{if(validImage(image)){queenPreview=image;lastSignature='';}}).catch(()=>{});
+    void Promise.resolve().then(()=>art.ensure?.('nameless_overlord')).then(image=>{if(validImage(image)){queenFull=image;lastSignature='';}}).catch(()=>{});
+  }
   const alphaCache=new WeakMap();
   const spriteBox=(sprite,x,y,height)=>{const im=sprite.image||sprite,f=sprite.frame||[0,0,im.width,im.height],hh=height*f[3]/(sprite.contentHeight||f[3]),ww=hh*f[2]/f[3];return {x:x-ww*(sprite.anchorX??.5),y:y-hh*(sprite.anchorY??1),w:ww,h:hh,sprite};};
   function opaqueAt(item,x,y){if(!item.sprite)return true;const sp=item.sprite,im=sp.image||sp,f=sp.frame||[0,0,im.width,im.height],key=f.join(',');let cache=alphaCache.get(im);if(!cache){cache=new Map();alphaCache.set(im,cache);}let data=cache.get(key);if(!data){try{alphaCanvas.width=Math.max(1,Math.ceil(f[2]));alphaCanvas.height=Math.max(1,Math.ceil(f[3]));const ac=alphaCanvas.getContext('2d');ac.drawImage(im,...f,0,0,alphaCanvas.width,alphaCanvas.height);data=ac.getImageData(0,0,alphaCanvas.width,alphaCanvas.height);cache.set(key,data);}catch{return true;}}
@@ -197,7 +211,7 @@ export function createStageRenderer({makeCanvas=(w,h)=>{const c=document.createE
     if(artVersion!==art.version){artVersion=art.version;architecture=createArchitecture(makeCanvas,art);lastSignature='';}
     // The RAF clock already paces frames. Rounding it to 24Hz made nearby
     // patrols and camera settling jump in alternating 33/50ms steps at 60Hz.
-    const signature=[cameraDistance,cameraZoom,canvas.width,canvas.height,pixelRatio,state.x,state.z,state.hasKey,state.unlocked,state.horrorAccepted,brightness,lantern,encounters,cleared.join(','),facing,artVersion,motion?time:0,walking?walkPhase:0,creatorActors.map(a=>[a.id,a.x,a.z,a.facing,a.walking,a.phase||0,a.sprite?.poseVersion,a.sprite?.frame?.join(',')].join(':')).join(';')].join('|');if(canvas===lastCanvas&&signature===lastSignature)return false;lastCanvas=canvas;lastSignature=signature;
+    const signature=[cameraDistance,cameraZoom,canvas.width,canvas.height,pixelRatio,state.x,state.z,state.hasKey,state.unlocked,state.horrorAccepted,state.overlordUnlocked,brightness,lantern,encounters,cleared.join(','),facing,artVersion,overlordArtSource.version,motion?time:0,walking?walkPhase:0,creatorActors.map(a=>[a.id,a.x,a.z,a.facing,a.walking,a.phase||0,a.sprite?.poseVersion,a.sprite?.frame?.join(',')].join(':')).join(';')].join('|');if(canvas===lastCanvas&&signature===lastSignature)return false;lastCanvas=canvas;lastSignature=signature;
     const c=canvas.getContext('2d'),w=canvas.width/pixelRatio,h=canvas.height/pixelRatio,cam=stageCamera(state,w,h,cameraDistance,cameraZoom);
     camera=followCamera(camera,{x:cam.x,y:cam.y},dt,!motion);cam.x=camera.x;cam.y=camera.y;
     const player={x:state.x/CELL*TILE,y:state.z/CELL*TILE};hitItems=[];lastState={...state};
@@ -239,9 +253,9 @@ export function createStageRenderer({makeCanvas=(w,h)=>{const c=document.createE
         if(sprite)addHit(spriteBox(sprite,o.x,o.y-Math.abs(step)*1.5+breathe,86));
         if(!drawArtSprite(c,sprite,o.x,o.y-Math.abs(step)*1.5+breathe,86,{scaleX:1+step*.008,scaleY:1-Math.abs(step)*.012}))drawPlayer(c,o.x,o.y-18,lantern);
       }else if(o.kind==='enemy'){
-        if(o.cleared){ellipse(c,o.x,o.y,15,8,'#d2ac65');text(c,'✓',o.x,o.y,16,'#362b35');continue;}
+        if(o.cleared&&o.id!=='nameless_overlord'){ellipse(c,o.x,o.y,15,8,'#d2ac65');text(c,'✓',o.x,o.y,16,'#362b35');continue;}
         const idle=motion?(o.id==='franken'?Math.abs(Math.sin(time*.65))*1.1:o.id==='zombie'?Math.abs(Math.sin(time*.8))*.8:o.id==='vampire'?Math.sin(time*.9)*1.3:Math.sin(time*1.9+o.x)*2.2):0;ellipse(c,o.x,o.y+3,25,8,'#07091488');
-        if(o.id==='nameless_overlord'){drawOverlordFallback(c,o.x,o.y,time,motion,art);continue;}
+        if(o.id==='nameless_overlord'){ensureQueen();drawOverlordFallback(c,o.x,o.y,time,motion,art.images.nameless_overlord||queenFull||queenPreview);continue;}
         const monster=monsterSprite(art,o.id,{time,motion,patrol:o.pose});
         if(!drawArtSprite(c,monster,o.x,o.y+(monster?.animated?0:idle),o.id==='bat'?92:100,{flip:monster?.flip,rotation:motion&&['zombie','franken'].includes(o.id)?Math.sin(time*(o.id==='franken'?.65:.8))*.018:0,scaleX:1+(motion?Math.sin(time*1.4)*.018:0),scaleY:1+(motion?Math.cos(time*1.4)*.012:0)}))drawCreature(c,o.id,o.x,o.y-25,1.1);
       }else{
@@ -290,10 +304,10 @@ function drawOverlordThrone(c,x,y){
  rounded(c,-42,-25,84,20,4,'#a42c4c','#edc77d');c.restore();
 }
 
-function drawOverlordFallback(c,x,y,time,motion,art){
- const sprite=art?.images?.nameless_overlord,breathe=motion?Math.sin(time*1.4)*.8:0;
+function drawOverlordFallback(c,x,y,time,motion,sprite){
  c.save();ellipse(c,x,y+3,35,10,'#09091488');glow(c,x,y-62,75,'#b1263b18');
- if(sprite)drawArtSprite(c,sprite,x,y+breathe,154);
- else {c.fillStyle='#d5b37a';c.textAlign='center';c.font='12px serif';c.fillText('覇王Sを迎えています…',x,y-54);}
+ const atlas=getOverlordArtAtlas();
+ if(atlas)drawOverlordArtRig(c,atlas,{x,y,height:154,time,motion,state:'idle'});
+ else if(sprite)drawArtSprite(c,sprite,x,y,154);
  c.restore();
 }

@@ -1,11 +1,23 @@
 import {renderPixelRatio} from '../render-quality.js?v=20261030-quality1';
 import {drawArtSprite,playerPose} from './rpg-art.js?v=20261019-unified1';
-import {overlordBattleDirector} from './overlord-battle-director.js?v=20261030-art1';
+import {overlordBattleDirector} from './overlord-battle-director.js?v=20261030-body1';
 import {getOverlordIdentityImage} from './overlord-materials.js?v=20261030-art1';
+import {getOverlordArtAtlas} from './overlord-art-source.js?v=20261030-body1';
+import {drawOverlordArtRig,sampleOverlordArtPose} from './overlord-art-rig.js?v=20261030-body1';
 
 const clamp=value=>Math.max(0,Math.min(1,value));
 const smooth=value=>{const t=clamp(value);return t*t*(3-2*t);};
 const TAU=Math.PI*2;
+// Fit the complete authored action reach once. A casting hand must stay on
+// screen without changing the actor's size every time an elbow moves.
+const ART_ACTION_BOUNDS=(()=>{
+ const b={left:0,right:0,top:0,bottom:1};
+ for(const state of ['idle','attack','special','hit'])for(let i=0;i<=40;i++){
+  const n=sampleOverlordArtPose({state,attackProgress:i/40,time:2}).bounds;
+  b.left=Math.min(b.left,n.left);b.right=Math.max(b.right,n.right);b.top=Math.min(b.top,n.top);b.bottom=Math.max(b.bottom,n.bottom);
+ }
+ b.left-=.015;b.right+=.015;b.top-=.015;b.bottom+=.015;return b;
+})();
 function polygon(c,points,fill,stroke=null,lineWidth=1){c.beginPath();points.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.closePath();c.fillStyle=fill;c.fill();if(stroke){c.strokeStyle=stroke;c.lineWidth=lineWidth;c.stroke();}}
 function ellipse(c,x,y,rx,ry,fill,stroke=null,lineWidth=1){c.beginPath();c.ellipse(x,y,rx,ry,0,0,TAU);if(fill){c.fillStyle=fill;c.fill();}if(stroke){c.strokeStyle=stroke;c.lineWidth=lineWidth;c.stroke();}}
 function line(c,points,color,width=1){c.beginPath();points.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.strokeStyle=color;c.lineWidth=width;c.stroke();}
@@ -245,16 +257,19 @@ export function renderOverlordBattle2D({canvas,art,battle,effect,time=0,motion=t
  const c=canvas?.getContext?.('2d');if(!c)return false;
  const w=Math.max(1,canvas.clientWidth||canvas.width||360),h=Math.max(1,canvas.clientHeight||canvas.height||220),ratio=renderPixelRatio(w,h,globalThis.devicePixelRatio||1);
  if(canvas.width!==Math.round(w*ratio)||canvas.height!==Math.round(h*ratio)){canvas.width=Math.round(w*ratio);canvas.height=Math.round(h*ratio);}c.setTransform(ratio,0,0,ratio,0,0);c.clearRect(0,0,w,h);c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';
- const queen=identityQueenSprite(art?.images?.nameless_overlord),layout=overlordBattle2DLayout(w,h,queen),q=layout.queen,p=layout.hero;
+ const queen=art?.images?.overlordArtAtlas||getOverlordArtAtlas(),bounds=ART_ACTION_BOUNDS;
+ const layout=overlordBattle2DLayout(w,h,{width:bounds.right-bounds.left,height:bounds.bottom-bounds.top}),fitted=layout.queen,bodyHeight=fitted.height/(bounds.bottom-bounds.top);
+ const q={...fitted,x:fitted.x-(bounds.left+bounds.right)*.5*bodyHeight,y:fitted.y-(bounds.bottom-1)*bodyHeight,height:bodyHeight},p=layout.hero;layout.queen=q;
  const cue=overlordBattleDirector({battle,effect,time,motion}),clock=motion&&Number.isFinite(time)?Math.max(0,time):0,env=cue.environment;
  c.save();c.translate(cue.camera.shakeX*w,cue.camera.shakeY*h);
  const zoom=1+(motion?Math.max(0,cue.camera.push||0)*.55:0);c.translate(w*.5,h*.55);c.scale(zoom,zoom);c.translate(-w*.5,-h*.55);
  hall(c,layout,env,clock);astralBackdrop(c,layout,cue,clock,motion);atmosphere(c,layout,cue,clock,motion);
  ellipse(c,q.x,q.y+h*.005,q.width*.3,Math.max(2,h*.014),'#050510a6');ellipse(c,q.x,q.y+h*.002,q.width*.45,Math.max(3,h*.022),null,mix('#d8af6e66','#f5d99c88',env.gold),.8);
  const hero=playerPose(art?.images?art:{...art,images:{}},'right',false,0,{battle:true,effect,time,motion}),heroMove=(cue.actors.heroAdvance-cue.actors.heroRecoil)*w*.13,heroLift=cue.actors.heroLift*h*.12;
- const queenRecoil=cue.actors.bossRecoil*w*.13,queenBreath=motion?Math.sin(clock*.95)*h*.0014:0;
+ const queenRecoil=cue.actors.bossRecoil*w*.13;
  c.fillStyle=radial(c,q.x,q.y-q.height*.4,q.height*.58,mix('#b0245030','#e9c68444',env.gold));c.fillRect(q.x-q.width*.7,q.y-q.height,q.width*1.4,q.height);
- const painted=boundedSprite(c,queen,q.x,q.y+queenBreath,q.height,{offsetX:queenRecoil,alpha:1-env.gold*.06});
+ const bodyPose=sampleOverlordArtPose({state:cue.state,stateElapsed:cue.stateElapsed,attackProgress:cue.attackProgress,time:clock,motion});
+ const painted=drawOverlordArtRig(c,queen,{x:q.x+queenRecoil,y:q.y,height:q.height,pose:bodyPose});
  if(!painted){c.fillStyle='#efd7aa';c.textAlign='center';c.font=`${Math.max(11,Math.min(15,w*.04))}px sans-serif`;c.fillText('覇王Sの姿を準備しています…',w*.56,h*.48);}
  ellipse(c,p.x+heroMove,p.y+h*.004,p.height*.23,Math.max(2,h*.011),'#040813aa');boundedSprite(c,hero,p.x,p.y-heroLift,p.height,{offsetX:heroMove});
  const targetX=p.x+heroMove,targetY=p.y-p.height*.52-heroLift,sourceX=q.x-q.width*.12+queenRecoil,sourceY=q.y-q.height*.54;

@@ -85,6 +85,18 @@ export function overlordBattleDirector({battle={},effect=null,time=0,motion=true
  // Pose transitions use the same clock as the visible effects and commands.
  // A low frame rate may drop intermediate poses, but cannot stretch them out.
  const stateElapsed=state==='stand'?Math.max(0,entrance-.28):state==='walk'?Math.max(0,entrance-1.55):state==='defeat'?(!motion||!effect?1.4:Math.max(0,age-.85)):state==='hit'?Math.max(0,age-hit+.05):counterActive?Math.max(0,age-counterStart):0;
+ // A body pose needs its own action clock. Projectile travel is already late
+ // when the queen takes a hit, so reusing that value skipped most of her recoil.
+ // Both art renderers consume this same normalized pose, including after a
+ // dropped frame; only the surrounding effects use their separate clocks.
+ const bodyDuration=state==='seated'?.28:state==='stand'?1.27:state==='walk'?1.05:state==='defeat'?1.4:state==='hit'?.28:counterActive?counterEnd-counterStart:0;
+ const bodyProgress=bodyDuration?clamp(stateElapsed/bodyDuration):0;
+ const lastArrival=chargeEnd+(special?.42:0)+(special?.38:Math.max(.18,(counterEnd-chargeEnd)*.55));
+ const bodyPhase=counterActive?(age<chargeEnd?'charge':age<lastArrival?'release':'recovery'):state==='hit'?'recoil':state;
+ const body={phase:bodyPhase,duration:bodyDuration,progress:bodyProgress,
+  charge:counterActive?smooth(progress(age,counterStart,chargeEnd)):0,
+  release:counterActive?progress(age,chargeEnd,lastArrival):0,
+  recovery:counterActive?progress(age,lastArrival,counterEnd):0};
  const hitRecoil=live&&kind!=='guard'?bell(age,hit-.02,hit+.30):0;
  const heroAdvance=live&&kind==='attack'?bell(age,.10,.72)*.46:0;
  const heroRecoil=impact*(kind==='guard'?.035:.11);
@@ -102,7 +114,7 @@ export function overlordBattleDirector({battle={},effect=null,time=0,motion=true
  const victoryRays=motion?gold:0;
  return {
   duration:effect?duration:0,intro,age,walkProgress,state,stateElapsed,phase,phaseLabel:phaseName(phase,kind,special),
-  attackProgress:counterActive?counterProgress:progress(age,line.chargeEnd,hit+.23),
+  attackProgress:bodyProgress,body,
   environment:{rage,gold,portal,rift,stream,flash,shock,shockTravel,victoryRays,hallVisibility:1-rift*.84,emberSpeed:motion?.16+rage*.55+counterCharge*.25+stream*.5:0,wind:motion?.14+rage*.46+counterCharge*.35+rift*.4:0,floorGlow:clamp(rage*.6+counterCharge*.6+impact*.22+rift*.35)*(1-gold),pulse},
   camera:{push:motion?playerCharge*.055+counterCharge*(special?.105:.05)+(ambience?Math.sin(clock*.23)*.004:0):0,
    orbit:ambience?Math.sin(clock*.14)*.014:0,pullback:motion&&special?bell(age,chargeEnd,counterEnd)*.065:0,

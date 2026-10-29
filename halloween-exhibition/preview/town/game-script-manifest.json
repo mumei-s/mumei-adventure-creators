@@ -34,8 +34,8 @@
     },
     {
       "path": "control-settings.js",
-      "bytes": 1578,
-      "sha256": "6ae1a7dd962a5f952a35089970cdbe4f26623c232262b44cad97cfb10ecc0a66"
+      "bytes": 1716,
+      "sha256": "d78096158742f8849554bc43335dc4d1e21e8888c2b5138c9f4b0be571dd4434"
     },
     {
       "path": "data/archive.json",
@@ -229,13 +229,13 @@
     },
     {
       "path": "touch-camera.js",
-      "bytes": 5542,
-      "sha256": "bed68e58982374a1c0017072fe15fe9a1e589d6df23fe7f8e89c26a59491eff5"
+      "bytes": 7026,
+      "sha256": "2935caf86a1abf7fb835ed94167f95edd43b9d4c3056048fd06837dd6417e72b"
     },
     {
       "path": "town/app.js",
-      "bytes": 64508,
-      "sha256": "7e1a106d238dc2090fcee5ecf464d024e25e4909284fd94f0e5b66edea4eedfc"
+      "bytes": 64527,
+      "sha256": "3cccd10d64d0d78a375ed711f11de9bfb78b10caa46aae5464a00ac98efb85ab"
     },
     {
       "path": "town/audio.js",
@@ -444,8 +444,8 @@
     },
     {
       "path": "viewport.js",
-      "bytes": 2744,
-      "sha256": "c79f55dfdd9baeeecf1a3a6b766ad15c1a01a8eb5777f75dce836ba64ad23b84"
+      "bytes": 5997,
+      "sha256": "22f3c42d5183cec3c5167563a47379b43edfa2017a83cac226f7c74c5a5472c9"
     }
   ],
   "moduleURLs": [
@@ -492,7 +492,7 @@
     },
     {
       "path": "town/app.js",
-      "bytes": 44830
+      "bytes": 44846
     },
     {
       "path": "town/creator-home-painter.js",
@@ -500,7 +500,7 @@
     },
     {
       "path": "town/renderer.js",
-      "bytes": 32823
+      "bytes": 32820
     },
     {
       "path": "town/town-model.js",
@@ -512,15 +512,15 @@
     },
     {
       "path": "maze/owner-rig.js",
-      "bytes": 19122
+      "bytes": 19098
     },
     {
       "path": "maze/creature-rig.js",
-      "bytes": 15778
+      "bytes": 15768
     },
     {
       "path": "maze/creator-runtime.js",
-      "bytes": 15087
+      "bytes": 15112
     },
     {
       "path": "town/palace-painter.js",
@@ -532,7 +532,7 @@
     },
     {
       "path": "maze/rig-animation.js",
-      "bytes": 9887
+      "bytes": 9854
     },
     {
       "path": "town/creator-home-interiors.js",
@@ -552,15 +552,15 @@
     },
     {
       "path": "maze/composite-rig.js",
-      "bytes": 7353
+      "bytes": 7367
     },
     {
       "path": "game-display.js",
-      "bytes": 5535
+      "bytes": 5541
     },
     {
       "path": "town/character-art.js",
-      "bytes": 5381
+      "bytes": 5378
     },
     {
       "path": "town/battle-model.js",
@@ -580,7 +580,7 @@
     },
     {
       "path": "maze/game-input.js",
-      "bytes": 4377
+      "bytes": 4382
     },
     {
       "path": "town/scenery-data.js",
@@ -596,27 +596,31 @@
     },
     {
       "path": "maze/adventure-audio.js",
-      "bytes": 3802
+      "bytes": 3822
     },
     {
       "path": "town/view-mode.js",
-      "bytes": 3644
+      "bytes": 3650
+    },
+    {
+      "path": "viewport.js",
+      "bytes": 3646
     },
     {
       "path": "town/controller.js",
-      "bytes": 3602
+      "bytes": 3589
+    },
+    {
+      "path": "touch-camera.js",
+      "bytes": 3381
     },
     {
       "path": "town/save-model.js",
       "bytes": 3111
     },
     {
-      "path": "touch-camera.js",
-      "bytes": 2721
-    },
-    {
       "path": "maze/mascot-rig.js",
-      "bytes": 2646
+      "bytes": 2668
     },
     {
       "path": "maze/rpg-art.js",
@@ -629,10 +633,6 @@
     {
       "path": "maze/movement-runtime.js",
       "bytes": 2109
-    },
-    {
-      "path": "viewport.js",
-      "bytes": 1747
     },
     {
       "path": "maze/startup-assets.js",
@@ -651,16 +651,16 @@
       "bytes": 1314
     },
     {
+      "path": "control-settings.js",
+      "bytes": 1307
+    },
+    {
       "path": "maze/monster-motion.js",
       "bytes": 1288
     },
     {
       "path": "view-preload.js",
       "bytes": 1258
-    },
-    {
-      "path": "control-settings.js",
-      "bytes": 1169
     },
     {
       "path": "safe-page-reload.js",
@@ -753,8 +753,8 @@
   ],
   "output": {
     "path": "town/game-entry.js",
-    "bytes": 484885,
-    "sha256": "702a705ab8012a0b0344939c655efd6e5b5d10ef59601ad9eee5d4506e76e78a"
+    "bytes": 487610,
+    "sha256": "dc3d463e3419783632651a094e0a5ef5fba144f20bbac25e4e46db233ec0bc8b"
   },
   "styleSources": [
     "../display-mode.css?v=20261014-layout1",

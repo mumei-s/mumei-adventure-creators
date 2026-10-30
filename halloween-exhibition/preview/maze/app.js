@@ -31,11 +31,11 @@ import { normalizeLighting } from './lighting-model.js?v=20261019-interior1';
 import { MAP, CELL, FEATURES, toWorld, collectionAt, move, nearby, initialState, visibleArticles } from './maze-model.js?v=20261014-adventure2';
 import { ALL_MONSTERS as MONSTERS, OVERLORD_BOSS, REQUIRED_MONSTER_IDS, nearestMonster, newBattle, battleTurn, intentFor, monsterAvailable, prankFor, commandFor, monsterPose, guidePoint } from './encounter-model.js?v=20261016-living1';
 import { chooseView, movementVector, mapHeading } from './view-model.js?v=20261015-minimap1';
-import { createStageRenderer, EXIT, PALACE_FURNISHINGS } from './stage-2d.js?v=20261030-body1';
+import { createStageRenderer, EXIT, PALACE_FURNISHINGS } from './stage-2d.js?v=20261030-sprite1';
 import {createArtLibrary,drawArtSprite} from './rpg-art.js?v=20261019-unified1';
-import {renderBattleScene,battleEffectDuration} from './battle-scene.js?v=20261030-body1';
-import {renderOverlordBattle2D} from './overlord-battle-2d.js?v=20261030-body1';
-import {overlordActionDuration,overlordBattleDirector} from './overlord-battle-director.js?v=20261030-body1';
+import {renderBattleScene,battleEffectDuration} from './battle-scene.js?v=20261030-sprite1';
+import {renderOverlordBattle2D} from './overlord-battle-2d.js?v=20261030-sprite1';
+import {overlordActionDuration,overlordBattleDirector} from './overlord-battle-director.js?v=20261030-sprite1';
 import {directionFromMovement,moveAroundFurniture} from './rpg-model.js?v=20261014-adventure2';
 import {protectGameSurface,bindHeldGameButton,bindDirectionPad} from './game-input.js?v=20261019-journey1';
 import {STORY,encounterStory,chapterFor} from './story-model.js?v=20261016-living1';
@@ -290,6 +290,7 @@ function showEncounter(monster,{direct=false}={}){
   const actions=element('div',undefined,'tabs'),fight=element('button','対戦する','primary'),leave=element('button','立ち去る');fight.id='encounter-confirm';fight.onclick=()=>{disposeNativeBattle();battleCanvas=null;battle=newBattle(monster.id);battleEffect=null;renderBattle();$('battle-shine')?.focus({preventScroll:true});};leave.id='encounter-leave';leave.onclick=()=>panel.close();actions.append(fight,leave);content.append(actions);if(storyDetails)content.append(storyDetails);openPanel();
 }
 function renderBattle(){
+  void rpgArt.ensure('battleEclipse');void rpgArt.ensure('battleEnergy');
   const m=MONSTERS.find(m=>m.id===battle.id);title(m.nativeModel?'第666階層 · 時間制限なし':'LANTERN DUEL · 時間制限なし',m.nativeModel?'無名の覇王 S':m.name,{animate:!m.nativeModel||!battleCanvas,accessibleName:m.name});panel.classList.add('battle-mode');panel.classList.toggle('battle-native',!!m.nativeModel);
   const heading=element('div',undefined,'battle-heading');heading.setAttribute('aria-label',m.name);heading.append(...content.children);content.replaceChildren(heading);
   const viewPane=element('section',undefined,'battle-view'),controls=element('section',undefined,'battle-controls'),log=element('div',undefined,'battle-log');log.setAttribute('aria-label','対戦の状況と説明');log.tabIndex=0;
@@ -339,7 +340,7 @@ function drawBattleVisual(){
 function drawOverlordBattle(){
  if(nativeBattle){try{nativeBattle.render({battle,effect:battleEffect,time:visualTime,motion:motion&&!reducedMotion.matches});}catch{failNativeBattle();}return;}
  if(!nativeBattleFailed&&!nativeBattleLoading){nativeBattleLoading=true;const token=++nativeBattleToken,target=battleCanvas;
-  import('./overlord-battle-scene.js?v=20261030-body1').then(async({createOverlordBattleScene})=>{
+  import('./overlord-battle-scene.js?v=20261030-sprite1').then(async({createOverlordBattleScene})=>{
    if(token!==nativeBattleToken||!battle||battle.id!=='nameless_overlord'||battleCanvas!==target)return;
    const candidate=createOverlordBattleScene({canvas:target,art:rpgArt,onLost:failNativeBattle});
    try{

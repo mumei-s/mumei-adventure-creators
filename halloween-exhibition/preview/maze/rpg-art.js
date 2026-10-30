@@ -2,7 +2,7 @@ import {MONSTER_MOTION_DATA} from './monster-motion-data.js?v=20261016-living1';
 import {MONSTER_IDS,validMonsterLayout,motionSprite} from './monster-motion.js?v=20261019-unified1';
 // Original, locally bundled Halloween RPG art. No external/franchise art requests.
 export const ART_FILES = {
-  playerAtlas:'lantern-keeper-atlas.webp',nameless_overlord:'../overlord/queen-original-art-v1.webp',witch:'witch-story-v3.webp',masked_wanderer:'masked_wanderer-story-v3.webp',pumpkin:'pumpkin-story-v2.webp',ghost:'ghost-story-v2.webp',bat:'bat-story-v2.webp',zombie:'zombie-story-v2.webp',vampire:'vampire-story-v2.webp',franken:'franken-story-v2.webp',battle:'battle-library.webp',
+  playerAtlas:'lantern-keeper-atlas.webp',nameless_overlord:'../overlord/queen-original-art-v1.webp',witch:'witch-story-v3.webp',masked_wanderer:'masked_wanderer-story-v3.webp',pumpkin:'pumpkin-story-v2.webp',ghost:'ghost-story-v2.webp',bat:'bat-story-v2.webp',zombie:'zombie-story-v2.webp',vampire:'vampire-story-v2.webp',franken:'franken-story-v2.webp',battle:'battle-library.webp',battleEclipse:'battle-eclipse-palace-v1.webp',battleEnergy:'battle-energy-v1.webp',
   bookcase:'bookcase.webp',window:'window.webp',column:'column.webp',pumpkins:'pumpkins.webp',floor:'floor.webp',
 };
 export const ART_BOUNDS={witch:[144,17,481,731],masked_wanderer:[225,17,323,727],franken:[31,4,710,760],zombie:[49,15,671,736],vampire:[129,10,517,748],pumpkin:[140,7,493,752],ghost:[148,11,532,741],bat:[21,31,734,674],bookcase:[10,14,437,634],window:[19,14,309,623],column:[24,8,285,626],pumpkins:[19,17,619,319]};
@@ -54,10 +54,10 @@ export function createArtLibrary({loadImage=loadArtImage,motionData=MONSTER_MOTI
   const animatedIds=MONSTER_IDS.filter(id=>validMonsterLayout(motionData[id]));
   // Bound active image requests instead of starting all 22 low-priority decodes
   // against one eight-second clock on mobile. Only a failed image is retried.
-  const optionalKeys=new Set(['battle','bookcase','window','column','pumpkins','floor']);
+  const optionalKeys=new Set(['battle','battleEclipse','battleEnergy','bookcase','window','column','pumpkins','floor']);
   // The optional throne character is requested at its encounter, rather than
   // competing with the owner, cat and first corridor on every entrance.
-  const staticEntries=Object.entries(ART_FILES).filter(([key])=>!animatedIds.includes(key)&&(loadPlayer||key!=='playerAtlas')&&!(deferOptional&&key==='nameless_overlord'));
+  const staticEntries=Object.entries(ART_FILES).filter(([key])=>!['battleEclipse','battleEnergy'].includes(key)&&!animatedIds.includes(key)&&(loadPlayer||key!=='playerAtlas')&&!(deferOptional&&key==='nameless_overlord'));
   const deferred=deferOptional?staticEntries.filter(([key])=>optionalKeys.has(key)):[];
   let remaining=null,finishRemaining;const remainingReady=new Promise(resolve=>finishRemaining=resolve);
   function loadRemaining(){return remaining??=Promise.all(deferred.map(([key,file])=>load(key,file))).then(()=>finishRemaining());}

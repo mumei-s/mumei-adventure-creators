@@ -1,6 +1,7 @@
+import {battleCinematicCue,drawBattleCinematicBackground,drawBattleCinematicForeground,drawBattleArenaArtwork} from './battle-cinematic-2d.js?v=20261030-sprite1';
 import {monsterSprite} from './monster-motion.js?v=20261019-unified1';
 import {drawArtSprite,playerPose} from './rpg-art.js?v=20261019-unified1';
-import {drawCreature} from './stage-2d.js?v=20261030-body1';
+import {drawCreature} from './stage-2d.js?v=20261030-sprite1';
 import {prankFor} from './encounter-model.js?v=20261016-living1';
 import {encounterStory} from './story-model.js?v=20261016-living1';
 const clamp=x=>Math.max(0,Math.min(1,x));
@@ -19,32 +20,9 @@ export function shineSequence(age,motion=true){
   if(!motion)return {stage:t<.65?'impact':'done',charge:0,travel:1,impact:clamp(t/.65),lunge:0};
   return {stage:t<.5?'charge':t<.86?'circle':t<1.28?'release':t<1.86?'impact':t<2.4?'settle':'done',charge:clamp(t/.5),travel:clamp((t-.86)/.42),impact:clamp((t-1.28)/.58),lunge:t>.76&&t<1.48?Math.sin((t-.76)/.72*Math.PI):0};
 }
-function magicCircle(c,x,y,r,progress,time,motion){
-  c.save();c.translate(x,y);c.scale(1,.36);c.rotate(motion?time*.55:0);c.globalAlpha=.75*progress;c.lineWidth=2;c.strokeStyle='#f8d995';
-  for(const radius of [r,r*.78]){c.beginPath();c.arc(0,0,radius,0,Math.PI*2);c.stroke();}
-  c.beginPath();for(let n=0;n<=6;n++){const a=n*Math.PI*2/6;c[n?'lineTo':'moveTo'](Math.cos(a)*r*.88,Math.sin(a)*r*.88);}c.stroke();
-  for(let n=0;n<8;n++){const a=n*Math.PI/4;c.beginPath();c.moveTo(Math.cos(a)*r*.95,Math.sin(a)*r*.95);c.lineTo(Math.cos(a)*r*1.12,Math.sin(a)*r*1.12);c.stroke();}c.restore();
-}
-function shineEffect(c,{px,py,ex,ey,heroSize,enemySize,w,h,age,motion,seq}){
-  const sx=px+heroSize*.2,sy=py-heroSize*.52,tx=ex,ty=ey-enemySize*.48;
-  if(!motion){glow(c,tx,ty,Math.min(70,h*.24),'#ffd68545');ring(c,tx,ty,Math.min(38,w*.1),Math.min(38,w*.1),'#ffe4aa');label(c,'灯の必殺技',w/2,Math.max(49,h*.16),'#ffe3a2',w<500?14:20,'center',w-16);return;}
-  const fade=age>1.86?1-clamp((age-1.86)/.54):1;
-  magicCircle(c,px,py-3,Math.min(w*.19,heroSize*.58),seq.charge*fade,age,motion);
-  if(age<1.28){
-    glow(c,sx,sy,heroSize*(.13+.22*seq.charge),'#ffcf7750');
-    for(let n=0;n<9;n++){const a=n*Math.PI*2/9+age*1.7,r=heroSize*(.4-.26*seq.charge);ellipse(c,sx+Math.cos(a)*r,sy+Math.sin(a)*r,2,2,'#ffe3a8');}
-  }
-  if(age>=.5&&age<1.86){c.save();c.globalAlpha=Math.min(1,(age-.5)*5)*fade;label(c,'灯の必殺技',w/2,Math.max(49,h*.16),'#ffe3a2',w<500?15:23,'center',w-16);c.restore();}
-  if(seq.stage==='release'){
-    const t=seq.travel,x=sx+(tx-sx)*t,y=sy+(ty-sy)*t-Math.sin(t*Math.PI)*h*.09;
-    c.lineCap='round';for(const [width,color]of [[15,'#ffbd5230'],[6,'#ffd47aaa'],[2,'#fff2c6']]){c.lineWidth=width;c.strokeStyle=color;c.beginPath();c.moveTo(sx,sy);c.quadraticCurveTo((sx+x)/2,sy-h*.1,x,y);c.stroke();}
-    glow(c,x,y,Math.min(44,h*.16),'#ffd27d99');ellipse(c,x,y,8,8,'#fff1c2');
-  }
-  if(age>=1.28&&age<2.4){
-    const t=clamp((age-1.28)/1.12),r=Math.min(h*.26,w*.16)*( .25+t);c.save();c.globalAlpha=1-t;
-    glow(c,tx,ty,r*1.5,'#fbd48c55');ring(c,tx,ty,r,r,'#ffe6ae');ring(c,tx,ty,r*.7,r*.7,'#ffe6ae88');
-    for(let n=0;n<12;n++){const a=n*Math.PI/6; c.strokeStyle=n%2?'#c0e7dc':'#ffdc8e';c.lineWidth=2;c.beginPath();c.moveTo(tx+Math.cos(a)*r*.65,ty+Math.sin(a)*r*.65);c.lineTo(tx+Math.cos(a)*r*1.25,ty+Math.sin(a)*r*1.25);c.stroke();}c.restore();
-  }
+function shineEffect(c,{w,h,age,motion}){
+ if(!motion){label(c,'灯の必殺技',w/2,Math.max(49,h*.16),'#ffe3a2',w<500?14:20,'center',w-16);return;}
+ if(age>=.5&&age<1.86){c.save();c.globalAlpha=Math.min(1,(age-.5)*5)*(age>1.86?1-clamp((age-1.86)/.54):1);label(c,'灯の必殺技',w/2,Math.max(49,h*.16),'#ffe3a2',w<500?15:23,'center',w-16);c.restore();}
 }
 function heroFallback(c,x,y,size){
   // A human lantern-keeper silhouette stays usable if an image cannot load.
@@ -56,7 +34,7 @@ export function renderBattleScene({canvas,art,battle,effect=null,time=0,motion=t
   const ratio=Number.isFinite(pixelRatio)&&pixelRatio>0?pixelRatio:1,w=canvas.width/ratio,h=canvas.height/ratio;
   c.setTransform(ratio,0,0,ratio,0,0);c.clearRect(0,0,w,h);
   const bg=art.images.battle;
-  if(bg){const scale=Math.max(w/bg.width,h/bg.height);c.drawImage(bg,(w-bg.width*scale)/2,(h-bg.height*scale)*.42,bg.width*scale,bg.height*scale);}else{const g=c.createLinearGradient(0,0,0,h);g.addColorStop(0,'#102838');g.addColorStop(1,'#342437');c.fillStyle=g;c.fillRect(0,0,w,h);}
+  if(bg){drawBattleArenaArtwork(c,bg,{w,h,clock:motion?time:0,depth:.55,anchor:.42});}else{const g=c.createLinearGradient(0,0,0,h);g.addColorStop(0,'#102838');g.addColorStop(1,'#342437');c.fillStyle=g;c.fillRect(0,0,w,h);}
   const shade=c.createLinearGradient(0,0,0,h);shade.addColorStop(0,'#070b19c9');shade.addColorStop(.26,'#080f1b2b');shade.addColorStop(.7,'#090d1c11');shade.addColorStop(1,'#080b17d9');c.fillStyle=shade;c.fillRect(0,0,w,h);
   const effectAge=effect?Math.max(0,time-effect.started):99;
   const won=battle.status==='won'&&!(effect?.type==='shine'&&motion&&effectAge<1.28),enemy=monsterSprite(art,battle.id,{time,motion,battle:true,facing:'left'}),story=encounterStory(battle.id),intent=prankFor(battle);
@@ -65,6 +43,8 @@ export function renderBattleScene({canvas,art,battle,effect=null,time=0,motion=t
   const shine=effect?.type==='shine',attack=effect?.type==='attack',guard=effect?.type==='guard';
   const offensive=shine||attack;
   const seq=shineSequence(age,motion);
+  const cinematic=battleCinematicCue({action:effect?.type,age,duration:battleEffectDuration(effect?.type,true),retaliation:effect?.retaliation||0,victory:won,motion,scope:'maze'}),arena={w,h,heroX:px,enemyX:ex,floorY:py,heroSize,enemySize,images:art.images};
+  drawBattleCinematicBackground(c,arena,cinematic,time);
   const lunge=shine?seq.lunge*Math.min(w*.065,36):offensive&&phase<.38?Math.sin(phase/.38*Math.PI)*(attack?Math.min(w*.05,30):10):0;
   const recoil=shine?(motion&&age>1.28&&age<1.86?Math.sin((age-1.28)/.58*Math.PI)*Math.min(14,w*.025):0):offensive&&phase>.25&&phase<.65?Math.sin((phase-.25)/.4*Math.PI)*7:0;
   const drift=motion?time:0;
@@ -85,19 +65,13 @@ export function renderBattleScene({canvas,art,battle,effect=null,time=0,motion=t
   if(effect&&age<battleEffectDuration(effect.type,motion)){
     if(shine)shineEffect(c,{px,py,ex,ey,heroSize,enemySize,w,h,age,motion,seq});
     const sx=px+heroSize*.18,sy=py-heroSize*.48,tx=ex,ty=ey-enemySize*.48;
-    if(motion&&attack&&age<.6){
-      const t=clamp(age/.45);c.save();c.translate(sx+(tx-sx)*t,sy+(ty-sy)*t);c.rotate(-.8+t*1.6);c.strokeStyle='#f4d3a5aa';c.lineWidth=4;c.beginPath();c.arc(0,0,Math.min(34,h*.1),-.9,.9);c.stroke();c.restore();
-    }
-    if(motion&&attack&&age>.3&&age<.75){
-      const burst=clamp((age-.3)/.45);for(let n=0;n<7;n++){const a=n*Math.PI*2/7;c.strokeStyle=`rgba(241,209,152,${(1-burst)*.7})`;c.lineWidth=2;c.beginPath();c.moveTo(tx+Math.cos(a)*burst*12,ty+Math.sin(a)*burst*12);c.lineTo(tx+Math.cos(a)*(12+burst*24),ty+Math.sin(a)*(12+burst*24));c.stroke();}
-    }
-    if(guard){c.save();c.translate(px,py-heroSize*.45);c.strokeStyle='#b1e9d4aa';c.fillStyle='#5da99727';c.lineWidth=2;c.beginPath();c.ellipse(0,0,heroSize*.33,heroSize*.51,0,0,Math.PI*2);c.fill();c.stroke();c.restore();}
     if(age>(shine&&motion?1.28:.18))label(c,guard?'守り · 灯り＋1':`${effect.weakness?'好機 ':''}影 −${effect.damage||1}`,w<=180?w/2:guard?px:ex,Math.max(w<=180?70:58,(guard?py-heroSize:ey-enemySize)-(motion?Math.min(15,(age-(shine&&motion?1.28:.18))*22):0)),guard?'#c1eedb':'#ffe0a6',w<500?12:16,'center',w<=180?w-16:null);
     const counterStart=shine?1.9:.68;
     if(motion&&offensive&&!won&&effect.retaliation>0&&age>counterStart){
-      const t=clamp((age-counterStart)/.4),x=ex+(px-ex)*t,y=ty+(sy-ty)*t;glow(c,x,y,16,'#b9a2e25c');ellipse(c,x,y,3,3,'#cdb8ea');if(age>counterStart+.27)label(c,`勇気 −${effect.retaliation}`,w<=180?w/2:px,py-heroSize*.57,'#e2c5dc',w<500?12:15,'center',w<=180?w-16:null);
+      if(age>counterStart+.27)label(c,`勇気 −${effect.retaliation}`,w<=180?w/2:px,py-heroSize*.57,'#e2c5dc',w<500?12:15,'center',w<=180?w-16:null);
     }
   }
+  drawBattleCinematicForeground(c,arena,cinematic);
   const small=w<500,tiny=w<=180;
   if(!tiny||won)label(c,won?'灯を取り戻した':story?.location||'宮殿の住人',tiny?w/2:16,26,won?'#f4d897':'#e5d4b6',small?11:14,tiny?'center':'left',tiny?w-16:null);
   if(!tiny||!won)label(c,won?'MEMORY RESTORED':battle.status==='rest'?'ひと休み':`TURN ${battle.turn+1}`,tiny?w/2:w-16,26,'#d0c1d6',small?10:12,tiny?'center':'right',tiny?w-16:null);

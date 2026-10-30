@@ -8,8 +8,9 @@ import { ALL_MONSTERS as MONSTERS, nearestMonster, monsterAvailable, monsterPose
 // Canvas illustration authored for this room; no participant art or remote assets.
 import {drawArtSprite,playerPose,loadArtImage} from './rpg-art.js?v=20261019-unified1';
 import {OVERLORD_CHARACTER_PREVIEW} from './overlord-character-preview.js?v=20261030-art1';
-import {getOverlordArtAtlas,overlordArtSource} from './overlord-art-source.js?v=20261030-body1';
-import {drawOverlordArtRig} from './overlord-art-rig.js?v=20261030-body1';
+import {getOverlordArtAtlas,overlordArtSource} from './overlord-art-source.js?v=20261030-sprite1';
+import {drawOverlordSprite} from './overlord-sprite.js?v=20261030-sprite1';
+import {OVERLORD_SPRITE_LAYOUT} from './overlord-sprite-layout.js?v=20261030-sprite1';
 import {followCamera,depthOrder,clampSceneCamera} from './rpg-model.js?v=20261014-adventure2';
 const TILE=72,TAU=Math.PI*2;
 export const EXIT={x:8,z:14};
@@ -307,7 +308,7 @@ function drawOverlordThrone(c,x,y){
 function drawOverlordFallback(c,x,y,time,motion,sprite){
  c.save();ellipse(c,x,y+3,35,10,'#09091488');glow(c,x,y-62,75,'#b1263b18');
  const atlas=getOverlordArtAtlas();
- if(atlas)drawOverlordArtRig(c,atlas,{x,y,height:154,time,motion,state:'idle'});
+ if(atlas)drawOverlordSprite(c,atlas,OVERLORD_SPRITE_LAYOUT,{x,y,height:154,time,motion,state:'idle'});
  else if(sprite)drawArtSprite(c,sprite,x,y,154);
  c.restore();
 }

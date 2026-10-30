@@ -1,6 +1,6 @@
 import {renderPixelRatio} from '../render-quality.js?v=20261030-quality1';
 import {createOverlordRoom} from './overlord-room.js?v=20261030-art1';
-import {createOverlordCharacter} from './overlord-character.js?v=20261030-body1';
+import {createOverlordCharacter} from './overlord-character.js?v=20261030-sprite1';
 import {createExhibitResources} from './exhibit-resources.js?v=20261019-audit1';
 import {normalizeCameraDistance,mazeCameraZoom} from '../camera-distance.js?v=20261019-journey1';
 import {mazeWideCamera} from '../camera-distance.js?v=20261019-journey1';

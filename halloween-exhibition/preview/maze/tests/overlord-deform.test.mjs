@@ -4,12 +4,12 @@ import * as THREE from '../vendor/three.module.js';
 import {sampleOverlordSprite} from '../overlord-sprite.js';
 import {OVERLORD_SPRITE_LAYOUT} from '../overlord-sprite-layout.js';
 import {sampleOverlordDeformation,createOverlordDeformGeometry,updateOverlordDeformGeometry} from '../overlord-deform.js';
-const atlas={width:1248,height:544};
+const atlas={width:1344,height:1632};
 const pose=(index,state='idle')=>sampleOverlordSprite(atlas,{...OVERLORD_SPRITE_LAYOUT,idleFrame:index},{motion:false,state});
 const area=(points,[a,b,c])=>(points[b].x-points[a].x)*(points[c].y-points[a].y)-(points[b].y-points[a].y)*(points[c].x-points[a].x);
 
 test('continuous pose geometry keeps every painted triangle connected, finite and uninverted',()=>{
- for(let index=0;index<3;index++){
+ for(let index=0;index<7;index++){
   const sprite=pose(index),rest=sampleOverlordDeformation(sprite,{motion:false});
   assert.equal(rest.points.length,42);assert.equal(rest.triangles.length,60);
   for(const state of ['idle','attack','special','hit','walk','defeat'])for(let frame=0;frame<=90;frame++){
@@ -23,7 +23,7 @@ test('continuous pose geometry keeps every painted triangle connected, finite an
 });
 
 test('motion OFF restores the same intact resting drawing at any clock or action',()=>{
- for(let index=0;index<3;index++){
+ for(let index=0;index<7;index++){
   const sprite=pose(index),rest=sampleOverlordDeformation(sprite,{motion:false,time:0});
   for(const state of ['idle','special','hit','walk'])assert.deepEqual(sampleOverlordDeformation(sprite,{motion:false,state,time:999,attackProgress:.8}),rest);
   const a=sampleOverlordDeformation(sprite,{time:1}),b=sampleOverlordDeformation(sprite,{time:2});assert.notDeepEqual(a.points,b.points,'idle hair and cloth actually change across time');
@@ -33,11 +33,12 @@ test('motion OFF restores the same intact resting drawing at any clock or action
 test('native Sprite grid uses the same continuous points as Canvas2D without replacing GPU buffers',()=>{
  const geometry=createOverlordDeformGeometry(THREE),attribute=geometry.attributes.position,indices=geometry.index;
  try{
-  for(let index=0;index<3;index++)for(const state of ['idle','special','hit']){
+  for(let index=0;index<7;index++)for(const state of ['idle','special','hit']){
    const sprite=pose(index),input={state,time:2.3,attackProgress:.6},sampled=updateOverlordDeformGeometry(geometry,sprite,input);
    sampled.points.forEach((point,at)=>{
     const x=(attribute.getX(at)+.5)*sampled.aspect-sprite.anchorX*sampled.aspect;
     const y=(.5-attribute.getY(at))*sampled.vertical-sprite.anchorY*sampled.vertical;
+    assert(Math.abs(geometry.attributes.uv.getX(at)-point.u)<1e-7&&Math.abs(geometry.attributes.uv.getY(at)-(1-point.v))<1e-7,'native UVs must follow each authored head-safe grid');
     assert(Math.abs(x-point.x)<1e-7&&Math.abs(y-point.y)<1e-7,'native and Canvas paint positions must remain identical');
    });
    assert.equal(geometry.attributes.position,attribute);assert.equal(geometry.index,indices);

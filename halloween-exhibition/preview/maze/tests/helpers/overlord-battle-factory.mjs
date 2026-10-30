@@ -7,7 +7,7 @@ export async function withOverlordBattle(run){
  const saved={document:globalThis.document,Image:globalThis.Image},requests=[];
  const context=new Proxy({createRadialGradient:()=>({addColorStop(){}})},{get:(object,key)=>key in object?object[key]:()=>{},set(object,key,value){object[key]=value;return true;}});
  globalThis.document={createElement:()=>({width:64,height:64,getContext:()=>context})};
- globalThis.Image=class{set src(value){requests.push(value);[this.width,this.height]=value.startsWith('data:')?[312,136]:[1248,544];this.naturalWidth=this.width;this.naturalHeight=this.height;queueMicrotask(()=>this.onload?.());}removeAttribute(){}};
+ globalThis.Image=class{set src(value){requests.push(value);[this.width,this.height]=value.startsWith('data:')?[448,544]:[1344,1632];this.naturalWidth=this.width;this.naturalHeight=this.height;queueMicrotask(()=>this.onload?.());}removeAttribute(){}};
  let source=await readFile(url,'utf8');
  source=source.replace(/import \* as THREE from ['"]\.\/vendor\/three\.module\.js['"];?/,`import * as REAL_THREE from ${JSON.stringify(threeURL.href)};
  class TestRenderer{constructor(){this.shadowMap={};}setPixelRatio(){}setSize(){}render(scene,camera){scene.updateMatrixWorld(true);camera.updateMatrixWorld(true);}dispose(){}}

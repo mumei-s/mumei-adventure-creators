@@ -1,9 +1,9 @@
 import {renderPixelRatio} from '../render-quality.js?v=20261030-quality1';
 import * as THREE from './vendor/three.module.js';
-import {overlordBattleDirector} from './overlord-battle-director.js?v=20261030-sprite1';
-import {createOverlordStageEffects,overlordBladeTrajectory} from './overlord-stage-fx.js?v=20261030-sprite1';
-import {createOverlordCharacter} from './overlord-character.js?v=20261030-sprite1';
-import {OVERLORD_SPRITE_BOUNDS} from './overlord-sprite-layout.js?v=20261030-sprite1';
+import {overlordBattleDirector} from './overlord-battle-director.js?v=20261030-actions1';
+import {createOverlordStageEffects,overlordBladeTrajectory} from './overlord-stage-fx.js?v=20261030-actions1';
+import {createOverlordCharacter} from './overlord-character.js?v=20261030-actions1';
+import {OVERLORD_SPRITE_BOUNDS} from './overlord-sprite-layout.js?v=20261030-actions1';
 import {createOverlordThrone,createOverlordHall} from './overlord-room.js?v=20261030-art1';
 import {playerPose} from './rpg-art.js?v=20261019-unified1';
 
@@ -222,7 +222,7 @@ export function createOverlordBattleScene({canvas,art,onLost=()=>{}}){
   // the stage with the camera instead of sliding a standing image off a seat.
   const wholeFrame=boss.metadata.style==='whole-frame-sprite';
   const rise=wholeFrame?{lift:0,advance:0}:overlordRisePlacement({state:beat.state,stateElapsed:beat.stateElapsed,walkProgress:beat.walkProgress,standDuration:boss.metadata.standDuration});
-  const walkProgress=wholeFrame?1:beat.walkProgress;
+  const walkProgress=wholeFrame&&!boss.metadata.frontWalkArt?1:beat.walkProgress;
   boss.group.position.set(layout.boss.x,layout.boss.y+rise.lift,throneAnchor.z+(layout.boss.z-throneAnchor.z)*walkProgress+rise.advance);
   towardBoss.set(layout.boss.x-layout.hero.x,0,layout.boss.z-layout.hero.z).normalize();
   hero.position.set(layout.hero.x,layout.hero.y+actors.heroLift,layout.hero.z).addScaledVector(towardBoss,actors.heroAdvance-actors.heroRecoil);

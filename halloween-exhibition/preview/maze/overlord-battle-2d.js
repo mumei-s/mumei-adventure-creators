@@ -1,11 +1,11 @@
 import {renderPixelRatio} from '../render-quality.js?v=20261030-quality1';
 import {drawArtSprite,playerPose} from './rpg-art.js?v=20261019-unified1';
-import {overlordBattleDirector} from './overlord-battle-director.js?v=20261030-sprite1';
+import {overlordBattleDirector} from './overlord-battle-director.js?v=20261030-actions1';
 import {getOverlordIdentityImage} from './overlord-materials.js?v=20261030-art1';
-import {getOverlordArtAtlas} from './overlord-art-source.js?v=20261030-sprite1';
-import {drawOverlordSprite} from './overlord-sprite.js?v=20261030-sprite1';
-import {OVERLORD_SPRITE_LAYOUT,OVERLORD_SPRITE_BOUNDS} from './overlord-sprite-layout.js?v=20261030-sprite1';
-import {drawCinematicArena,drawCinematicImpact,drawCinematicBladeWake,cinematicBladePoint,drawBattleArenaArtwork,drawBattleEnergy} from './battle-cinematic-2d.js?v=20261030-sprite1';
+import {getOverlordArtAtlas} from './overlord-art-source.js?v=20261030-actions1';
+import {drawOverlordSprite} from './overlord-sprite.js?v=20261030-actions1';
+import {OVERLORD_SPRITE_LAYOUT,OVERLORD_SPRITE_BOUNDS} from './overlord-sprite-layout.js?v=20261030-actions1';
+import {drawCinematicArena,drawCinematicImpact,drawCinematicBladeWake,cinematicBladePoint,drawBattleArenaArtwork,drawBattleEnergy} from './battle-cinematic-2d.js?v=20261030-actions1';
 
 const clamp=value=>Math.max(0,Math.min(1,value));
 const smooth=value=>{const t=clamp(value);return t*t*(3-2*t);};
@@ -201,14 +201,16 @@ function sword(c,shape,opacity){
 }
 
 /** Explicit 2D art renderer for unsupported WebGL; native combat uses its own 3D scene. */
-export function renderOverlordBattle2D({canvas,art,battle,effect,time=0,motion=true}){
+export function renderOverlordBattle2D({canvas,art,battle,effect,time=0,start=0,motion=true}){
  const c=canvas?.getContext?.('2d');if(!c)return false;
  const w=Math.max(1,canvas.clientWidth||canvas.width||360),h=Math.max(1,canvas.clientHeight||canvas.height||220),ratio=renderPixelRatio(w,h,globalThis.devicePixelRatio||1);
  if(canvas.width!==Math.round(w*ratio)||canvas.height!==Math.round(h*ratio)){canvas.width=Math.round(w*ratio);canvas.height=Math.round(h*ratio);}c.setTransform(ratio,0,0,ratio,0,0);c.clearRect(0,0,w,h);c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';
  const queen=art?.images?.overlordArtAtlas||getOverlordArtAtlas(),bounds=ART_ACTION_BOUNDS;
  const layout=overlordBattle2DLayout(w,h,{width:bounds.right-bounds.left,height:bounds.bottom-bounds.top}),fitted=layout.queen,bodyHeight=fitted.height/(bounds.bottom-bounds.top);
  const q={...fitted,x:fitted.x-(bounds.left+bounds.right)*.5*bodyHeight,y:fitted.y-(bounds.bottom-1)*bodyHeight,height:bodyHeight},p=layout.hero;layout.queen=q;
- const cue=overlordBattleDirector({battle,effect,time,motion}),clock=motion&&Number.isFinite(time)?Math.max(0,time):0,env=cue.environment;
+ const cue=overlordBattleDirector({battle,effect,time,motion,start}),clock=motion&&Number.isFinite(time)?Math.max(0,time):0,env=cue.environment;
+ const approach=cue.phase==='entrance'?1-cue.walkProgress:0;
+ q.y-=approach*h*.052;
  c.save();c.translate(cue.camera.shakeX*w,cue.camera.shakeY*h);
  const zoom=1+(motion?Math.max(0,cue.camera.push||0)*.55:0);c.translate(w*.5,h*.55);c.scale(zoom,zoom);c.translate(-w*.5,-h*.55);
  hall(c,layout,env,clock);astralBackdrop(c,layout,cue,clock,motion);drawBattleArenaArtwork(c,art?.images?.battleEclipse,{w,h,amount:.82,clock,depth:.03+(env.rift||0)*.04,anchor:.47});atmosphere(c,layout,cue,clock,motion);

@@ -23,14 +23,24 @@ export function sampleOverlordDeformation(sprite,input={}){
  const motion=input.motion!==false,time=motion?finite(input.time,finite(input.elapsed,finite(input.stateElapsed))):0;
  const progress=motion?clamp(finite(input.attackProgress,finite(input.progress,input.body?.progress??0))):0;
  const state=input.state||sprite.state||'idle',acting=state==='attack'||state==='special';
+ const pose=sprite.pose||{},authored=pose.authored===true;
+ const authoredHit=authored&&['hit','crouch'].includes(pose.kind),authoredKneel=authored&&['kneel','defeat'].includes(pose.kind);
+ const bounds=Array.isArray(pose.headBounds)&&pose.headBounds.length===4&&pose.headBounds.every(Number.isFinite)?pose.headBounds:null;
+ const validBounds=bounds&&bounds[0]>0&&bounds[1]>0&&bounds[2]>bounds[0]&&bounds[2]<1&&bounds[3]>bounds[1]&&bounds[3]<1;
+ const headBounds=validBounds?bounds:null;
+ const gridU=headBounds?[0,headBounds[0]*.55,headBounds[0],headBounds[2],headBounds[2]+(1-headBounds[2])*.45,1]:OVERLORD_DEFORM_U;
+ const gridV=headBounds?[0,headBounds[1],headBounds[3],headBounds[3]+(1-headBounds[3])*.25,headBounds[3]+(1-headBounds[3])*.5,headBounds[3]+(1-headBounds[3])*.75,1]:OVERLORD_DEFORM_V;
+ const headU=headBounds?(headBounds[0]+headBounds[2])/2:null,headV=headBounds?(headBounds[1]+headBounds[3])/2:null;
+ const baseHeadX=headBounds?(headU-ax)*aspect:0,baseHeadQ=headBounds?1+(headV-ay)*vertical:.17;
  const bump=(start,peak,end,t)=>t<peak?ease((t-start)/(peak-start)):1-ease((t-peak)/(end-peak));
  const wind=motion&&acting?bump(0,.17,.39,progress):0;
  const release=motion&&acting?bump(.16,.43,.91,progress):0;
  const recovery=motion&&acting?bump(.52,.76,1,progress):0;
- const recoil=motion&&state==='hit'?Math.sin(progress*Math.PI):0;
- const bow=motion&&state==='defeat'?ease(progress):0;
+ const recoil=motion&&state==='hit'&&!authoredHit?Math.sin(progress*Math.PI):0;
+ const bow=motion&&state==='defeat'&&!authoredKneel?ease(progress):0;
  const drive=Math.max(wind,release,recoil,bow*.65);
- const sway=motion?Math.sin(time*1.13)*.0035:0,breath=motion?Math.sin(time*1.71)*.002:0;
+ const gentle=(authoredHit||authoredKneel) ? .45 : 1;
+ const sway=motion?Math.sin(time*1.13)*.0035*gentle:0,breath=motion?Math.sin(time*1.71)*.002*gentle:0;
  // All three phases return to the same planted rest; a resolved hit has an
  // upper-body/hip dip, while defeat is an honest bow, not a fabricated kneel.
  const lean=motion?Math.sin(time*.83)*.0035+wind*.060-release*.075+recovery*.015+recoil*.080-bow*.085:0;
@@ -38,10 +48,10 @@ export function sampleOverlordDeformation(sprite,input={}){
  const dip=motion?release*.006+recoil*.022+bow*.028:0;
  const headAngle=motion?Math.sin(time*.97)*.0025+wind*.012-release*.020+recoil*.016+bow*.020:0;
  const cs=Math.cos(lean),sn=Math.sin(lean);
- const headX=sway+waistShift-sn*(.17-.63),headQ=.63+cs*(.17-.63)+dip-breath*.55;
+ const headX=sway+waistShift+cs*baseHeadX-sn*(baseHeadQ-.63),headQ=.63+sn*baseHeadX+cs*(baseHeadQ-.63)+dip-breath*.55;
 
  const points=[];
- for(const v of OVERLORD_DEFORM_V)for(const u of OVERLORD_DEFORM_U){
+ for(const v of gridV)for(const u of gridU){
   const x=(u-ax)*aspect,y=(v-ay)*vertical,q=1+y;
   let dx=0,dy=0;
   if(motion){
@@ -71,9 +81,9 @@ export function sampleOverlordDeformation(sprite,input={}){
    }
    // Every vertex inside the head rectangle receives the same rigid transform.
    // The surrounding hair is blended gently into it, with no eye/mouth warp.
-   const head=1-smooth(.28,.37,q),face=1-smooth(.10,.19,Math.abs(x));
+   const head=headBounds?1-smooth(headBounds[3],Math.min(1,headBounds[3]+.09),v):1-smooth(.28,.37,q),face=headBounds?1-smooth((headBounds[2]-headBounds[0])/2,(headBounds[2]-headBounds[0])/2+.10,Math.abs(u-headU)):1-smooth(.10,.19,Math.abs(x));
    const rigid=head*face;
-   const cx=x,cy=q-.17,c=Math.cos(lean+headAngle),s=Math.sin(lean+headAngle);
+   const cx=x-baseHeadX,cy=q-baseHeadQ,c=Math.cos(lean+headAngle),s=Math.sin(lean+headAngle);
    const rdx=headX+c*cx-s*cy-x,rdy=headQ+s*cx+c*cy-q;
    dx=dx*(1-rigid)+rdx*rigid;dy=dy*(1-rigid)+rdy*rigid;
    // The sole is never translated by breathing or cloth motion.
@@ -129,7 +139,7 @@ export function createOverlordDeformGeometry(THREE){
 }
 
 export function updateOverlordDeformGeometry(geometry,sprite,input={}){
- const sampled=sampleOverlordDeformation(sprite,input),attribute=geometry.attributes.position;
- sampled.points.forEach((point,index)=>attribute.setXYZ(index,point.u-.5+point.dx/sampled.aspect,.5-point.v-point.dy/sampled.vertical,0));
- attribute.needsUpdate=true;return sampled;
+const sampled=sampleOverlordDeformation(sprite,input),attribute=geometry.attributes.position,uv=geometry.attributes.uv;
+ sampled.points.forEach((point,index)=>{attribute.setXYZ(index,point.u-.5+point.dx/sampled.aspect,.5-point.v-point.dy/sampled.vertical,0);uv.setXY(index,point.u,1-point.v);});
+ attribute.needsUpdate=true;uv.needsUpdate=true;return sampled;
 }

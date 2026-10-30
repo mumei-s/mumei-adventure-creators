@@ -104,8 +104,8 @@
     },
     {
       "path": "maze/app.js",
-      "bytes": 84596,
-      "sha256": "52575c496349618bf2b0bae192f58b0e6647319bfe9338528f4a608299e5e513"
+      "bytes": 84711,
+      "sha256": "891e6b307402f9dc377370ac1c17bf141aeba3632d9c35c613ad8a32a86a45e1"
     },
     {
       "path": "maze/battle-cinematic-2d.js",
@@ -114,8 +114,8 @@
     },
     {
       "path": "maze/battle-scene.js",
-      "bytes": 8644,
-      "sha256": "a95bdf96e44e5f71a5a9fc32f320d0e6b025565cd8b88aacb046a94d0eddd741"
+      "bytes": 8645,
+      "sha256": "c2883f31005943745f1300a111960328645fa0beef8701c2c1d964193c88d337"
     },
     {
       "path": "maze/battle-story.css",
@@ -254,13 +254,13 @@
     },
     {
       "path": "maze/overlord-art-source.js",
-      "bytes": 1857,
-      "sha256": "d26b78ec639593f4eba407b897ac91eafa36aa08c97d8d850a9beb38d47224e5"
+      "bytes": 1855,
+      "sha256": "02be75667b0747a7f979cf2c81f7e7bbe31e93fadccd79638d414da7294f9bb8"
     },
     {
       "path": "maze/overlord-battle-2d.js",
-      "bytes": 22589,
-      "sha256": "3e6f01c3416817c5de6cfffd5cc05df78e636024a3bc99acfd39f4047ed8767e"
+      "bytes": 22692,
+      "sha256": "4cd6dc83a058f2f587dfab81f82ba7ac4e4c44dfacf70ad0458c4e3750b4629a"
     },
     {
       "path": "maze/overlord-battle-director.js",
@@ -274,13 +274,13 @@
     },
     {
       "path": "maze/overlord-character.js",
-      "bytes": 2540,
-      "sha256": "46ceed17408f88f9ca70bcdc84e8f24684147c7b2d9377bb5e3e51d467fdc141"
+      "bytes": 2609,
+      "sha256": "117da49facbc676ef69e5a4282922f7308ad6dae1d5f421cbf8eec4994e26153"
     },
     {
       "path": "maze/overlord-deform.js",
-      "bytes": 8469,
-      "sha256": "eb207a7f759d9fa2af4ae0f91c0a7e8828ec673ed2b63db26bf6acbd250661d2"
+      "bytes": 9868,
+      "sha256": "468009d157513a77b6046f754ff30da17b9378eb655febd2182ecbfe9e6b8413"
     },
     {
       "path": "maze/overlord-materials.js",
@@ -294,18 +294,18 @@
     },
     {
       "path": "maze/overlord-sprite-layout.js",
-      "bytes": 1791,
-      "sha256": "f7c6cb3dddbd590ff1d355a4b440497d4bc63c51f0860135f8dd0ef244222622"
+      "bytes": 2623,
+      "sha256": "687a483d9b5a646a2a234223e2a8b6ac5cca6f7626d4bc63962c629b63588ca2"
     },
     {
       "path": "maze/overlord-sprite-preview.js",
-      "bytes": 85056,
-      "sha256": "14b6cfc918b60225a34fa828b8bd78e26249a2e26f551dc3f2f9726cf79de48f"
+      "bytes": 96740,
+      "sha256": "3cc405e5b5e45ad4ef75e304ede15fb7a0353c81ff28168131b9dadfe8139e3f"
     },
     {
       "path": "maze/overlord-sprite.js",
-      "bytes": 7173,
-      "sha256": "9ecf0e6a6c5c03bc3bc0ef6391bc0f6a14a52844fba5ec7abcc1f84d3a073256"
+      "bytes": 8448,
+      "sha256": "a6da4035a40482855510557a776f94fe02c599219284fe42409d8dba7aa8ff75"
     },
     {
       "path": "maze/palace-furnishing-art.js",
@@ -354,8 +354,8 @@
     },
     {
       "path": "maze/stage-2d.js",
-      "bytes": 38306,
-      "sha256": "e02406b581de8c82f8cf85e9c30a9ddfc534592184e0edab529469918b37e50a"
+      "bytes": 38309,
+      "sha256": "2d76b6dc1d7b90aceef19239dddcc8ea6ac1a23f324c8c1714b2993e9fb98f71"
     },
     {
       "path": "maze/startup-assets.js",
@@ -389,8 +389,8 @@
     },
     {
       "path": "maze/world.js",
-      "bytes": 51486,
-      "sha256": "9d23d9b4c2949c2a99e70517efc91c687c23347849818694056cd014ede92f14"
+      "bytes": 51487,
+      "sha256": "df2313e320815e05e14cd63898b95b3ac92c469db07372c1668fdb39deb556b4"
     },
     {
       "path": "package-lock.json",
@@ -506,12 +506,12 @@
   ],
   "imports": [
     {
-      "path": "./overlord-battle-scene.js?v=20261030-sprite1",
+      "path": "./overlord-battle-scene.js?v=20261030-actions1",
       "kind": "dynamic-import",
       "external": true
     },
     {
-      "path": "./game-world.js?v=20261019-game-fast1-71481e22c8bb",
+      "path": "./game-world.js?v=20261019-game-fast1-3b60323c305f",
       "kind": "dynamic-import",
       "external": true
     }
@@ -523,19 +523,23 @@
     },
     {
       "path": "maze/overlord-sprite-preview.js",
-      "bytes": 85025
+      "bytes": 96709
     },
     {
       "path": "maze/app.js",
-      "bytes": 54239
+      "bytes": 54253
     },
     {
       "path": "maze/stage-2d.js",
-      "bytes": 28087
+      "bytes": 28068
     },
     {
       "path": "maze/creator-runtime.js",
       "bytes": 19425
+    },
+    {
+      "path": "maze/battle-cinematic-2d.js",
+      "bytes": 14474
     },
     {
       "path": "maze/overlord-character-preview.js",
@@ -546,12 +550,8 @@
       "bytes": 13658
     },
     {
-      "path": "maze/battle-cinematic-2d.js",
-      "bytes": 13314
-    },
-    {
       "path": "maze/overlord-battle-2d.js",
-      "bytes": 12388
+      "bytes": 12467
     },
     {
       "path": "maze/patrol-model.js",
@@ -563,7 +563,7 @@
     },
     {
       "path": "maze/adventure-audio.js",
-      "bytes": 7768
+      "bytes": 7771
     },
     {
       "path": "maze/palace-furnishing-art.js",
@@ -571,11 +571,11 @@
     },
     {
       "path": "maze/rpg-art.js",
-      "bytes": 7233
+      "bytes": 7236
     },
     {
       "path": "maze/battle-scene.js",
-      "bytes": 5913
+      "bytes": 5916
     },
     {
       "path": "maze/optional-encounters.js",
@@ -583,7 +583,7 @@
     },
     {
       "path": "maze/overlord-battle-director.js",
-      "bytes": 5137
+      "bytes": 5145
     },
     {
       "path": "maze/clear-reward.js",
@@ -602,6 +602,10 @@
       "bytes": 4315
     },
     {
+      "path": "maze/overlord-deform.js",
+      "bytes": 4169
+    },
+    {
       "path": "maze/creator-story.js",
       "bytes": 4160
     },
@@ -614,24 +618,20 @@
       "bytes": 3646
     },
     {
-      "path": "maze/overlord-deform.js",
-      "bytes": 3469
-    },
-    {
       "path": "touch-camera.js",
-      "bytes": 3333
+      "bytes": 3338
     },
     {
       "path": "data-model.js",
       "bytes": 3332
     },
     {
-      "path": "maze/furnishing-info.js",
-      "bytes": 2775
+      "path": "maze/overlord-sprite.js",
+      "bytes": 3018
     },
     {
-      "path": "maze/overlord-sprite.js",
-      "bytes": 2287
+      "path": "maze/furnishing-info.js",
+      "bytes": 2775
     },
     {
       "path": "maze/monster-motion.js",
@@ -646,8 +646,12 @@
       "bytes": 2076
     },
     {
+      "path": "maze/overlord-sprite-layout.js",
+      "bytes": 1980
+    },
+    {
       "path": "maze/maze-model.js",
-      "bytes": 1979
+      "bytes": 1970
     },
     {
       "path": "transition-effects.js",
@@ -694,16 +698,12 @@
       "bytes": 1149
     },
     {
-      "path": "maze/overlord-sprite-layout.js",
-      "bytes": 940
-    },
-    {
       "path": "maze/rpg-model.js",
       "bytes": 879
     },
     {
       "path": "maze/overlord-art-source.js",
-      "bytes": 817
+      "bytes": 814
     },
     {
       "path": "maze/context-action.js",
@@ -764,8 +764,8 @@
   ],
   "output": {
     "path": "maze/game-entry.js",
-    "bytes": 511060,
-    "sha256": "9d3b7e35d1b6a9d906b8960c69753cf21d29d6875b16c55bb0a2e74ecf090091"
+    "bytes": 526459,
+    "sha256": "8674a23ac9da3d0b95d9d8f5dd39f0c1c9221c3af3fb570c0f2bc4460d2d7060"
   },
   "styleSources": [
     "./style.css?v=20261014-adventure2",
@@ -798,8 +798,8 @@
   },
   "world": {
     "path": "maze/game-world.js",
-    "bytes": 186845,
-    "sha256": "71481e22c8bbf4b20ef5f647f52666f6e5af6c3276b7f7b500c83c76323211bc",
+    "bytes": 200984,
+    "sha256": "3b60323c305f5530e5f28dc06bb22eec4e6f5ac8f23443aeb983010285ca2c27",
     "imports": [
       {
         "path": "./vendor/three.module.js",

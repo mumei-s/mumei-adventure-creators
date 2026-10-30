@@ -15,7 +15,7 @@ function harness(){
   };
   const content=element('main'),panel={open:true,classList:{add(){},remove(){},toggle(){}},close(){record.closed++;this.open=false;}};
   const context=vm.createContext({element,content,panel,overlordActionDuration,overlordBattleDirector,setChangedProperty,setChangedAttribute,MONSTERS:ALL_MONSTERS,STORY,encounterStory,newBattle,battleTurn,commandFor,intentFor,prankFor,
-    rpgArt:{ensure(key){record.artRequests.push(key);return Promise.resolve(null);}},battle:newBattle('nameless_overlord'),battleEffect:null,battleCanvas:null,cleared:['pumpkin'],visualTime:0,motion:true,reducedMotion:{matches:false},
+    rpgArt:{ensure(key){record.artRequests.push(key);return Promise.resolve(null);}},battle:newBattle('nameless_overlord'),battleEffect:null,battleCanvas:null,cleared:['pumpkin'],visualTime:0,battleVisualStarted:0,motion:true,reducedMotion:{matches:false},
     title(k,n,options){record.heading={kicker:k,name:n,options};content.replaceChildren(element('h2',n));},save(){record.saves++;},requiredClearCount(){return 1;},
     $:id=>nodes.get(id),drawBattleVisual(){record.draws++;},battleAnimationBusy(){return false;},battleEffectDuration(){return 1;},
     updateHUD(){},renderOverlordBattle(){},disposeOverlordBattle(){},overlordBattle:null,nativeBattle:null,nativeBattleLoading:false,nativeBattleFailed:false,disposeNativeBattle(){record.disposed=(record.disposed||0)+1;},
@@ -31,7 +31,7 @@ test('boss win saves once, retry resets only this duel, and exit closes the pane
   assert.equal(context.battle.status,'won');assert.equal(record.saves,1);
   assert.deepEqual([...context.cleared],['pumpkin','nameless_overlord']);
   vm.runInContext('renderBattle()',context);assert.equal(record.saves,1);
-  nodes.get('battle-retry').onclick();assert.equal(context.battle.status,'playing');assert.equal(context.battle.spirit,30);
+  context.visualTime=83;nodes.get('battle-retry').onclick();assert.equal(context.battleVisualStarted,83,'retry starts a fresh entrance clock');assert.equal(context.battle.status,'playing');assert.equal(context.battle.spirit,30);
   assert.equal(context.battleEffect,null);assert.deepEqual([...context.cleared],['pumpkin','nameless_overlord']);
   vm.runInContext("battle={...battle,status:'rest'};renderBattle()",context);
   nodes.get('battle-exit').onclick();assert.equal(record.closed,1);assert.equal(record.saves,1);
@@ -101,7 +101,7 @@ test('slow frames finish a battle on elapsed time while movement stays bounded a
 function nativeHarness(){
   let resolve;const loading=new Promise(r=>resolve=r),record={created:0,disposed:0,draws:0,status:{textContent:'玉座の間の立体表示を準備しています…'}};
   const canvas=()=>({clientWidth:360,clientHeight:210,setAttribute(){},replaceWith(next){record.replacement=next;},getContext:()=>({fillRect(){},fillText(){}})});
-  const context=vm.createContext({rpgArt:{ensure(key){record.artRequests.push(key);return Promise.resolve(null);}},battle:newBattle('nameless_overlord'),battleCanvas:canvas(),battleEffect:null,nativeBattle:null,nativeBattleLoading:false,nativeBattleFailed:false,nativeBattleToken:0,rpgArt:{},renderOverlordBattle2D(){record.fallback=(record.fallback||0)+1;},visualTime:0,motion:true,reducedMotion:{matches:false},$:id=>id==='overlord-render-status'?record.status:null,element:()=>canvas(),drawBattleVisual(){record.draws++;},loadOverlordModule:()=>loading});
+  const context=vm.createContext({battle:newBattle('nameless_overlord'),battleCanvas:canvas(),battleEffect:null,nativeBattle:null,nativeBattleLoading:false,nativeBattleFailed:false,nativeBattleToken:0,rpgArt:{},renderOverlordBattle2D(input){record.fallback=(record.fallback||0)+1;record.fallbackInput=input;},visualTime:0,battleVisualStarted:0,motion:true,reducedMotion:{matches:false},$:id=>id==='overlord-render-status'?record.status:null,element:()=>canvas(),drawBattleVisual(){record.draws++;},loadOverlordModule:()=>loading});
   const dispose=app.slice(app.indexOf('function disposeNativeBattle(){'),app.indexOf('\n',app.indexOf('function disposeNativeBattle(){')));
   const native=app.slice(app.indexOf('function drawOverlordBattle(){'),app.indexOf('function actBattle(action){')).replace(/import\('\.\/overlord-battle-scene\.js\?v=[^']+'\)/,'loadOverlordModule()');
   vm.runInContext(dispose+'\n'+native,context);
@@ -153,4 +153,11 @@ test('failed required queen maps dispose the candidate and retain a playable fal
  await new Promise(r=>setImmediate(r));
  assert.equal(record.created,1);assert.equal(record.disposed,1);assert.equal(context.nativeBattle,null);assert.equal(context.nativeBattleFailed,true);
  assert.equal(context.battle.status,'playing');assert.equal(context.battle.turn,0);
+});
+
+
+test('native failure forwards the original duel start clock to the real fallback call',()=>{
+ const {context,record}=nativeHarness();
+ vm.runInContext('nativeBattleFailed=true;visualTime=83;battleVisualStarted=82;drawOverlordBattle()',context);
+ assert.equal(record.fallbackInput.start,82);assert.equal(record.fallbackInput.time,83);assert.equal(record.fallbackInput.motion,true);
 });

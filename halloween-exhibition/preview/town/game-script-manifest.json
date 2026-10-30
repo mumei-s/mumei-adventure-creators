@@ -93,6 +93,11 @@
       "sha256": "62c7182a028b34e3b52069130b52f56aeb43d377be02d77292e347ed4f17279a"
     },
     {
+      "path": "maze/battle-cinematic-2d.js",
+      "bytes": 20044,
+      "sha256": "18657a62cf9959aa1c4122e8383897a567cbdbba7896e250d4f4573959846e38"
+    },
+    {
       "path": "maze/battle-rig-effects.js",
       "bytes": 735,
       "sha256": "1c5c75a4af064dcd68397ebdbac8bfc96b3ddeee1fa8506b5e2bb02340074043"
@@ -174,8 +179,8 @@
     },
     {
       "path": "maze/rpg-art.js",
-      "bytes": 11261,
-      "sha256": "665d2e0065848b4c95b78e95d12363352f3206a07df3d4f42c6e2b0ffe23f6eb"
+      "bytes": 11424,
+      "sha256": "208fa3e53516a97712177eed43d8d5f21f9f9a36838314d7645b944d63eec631"
     },
     {
       "path": "maze/rpg-model.js",
@@ -234,8 +239,8 @@
     },
     {
       "path": "town/app.js",
-      "bytes": 64527,
-      "sha256": "3cccd10d64d0d78a375ed711f11de9bfb78b10caa46aae5464a00ac98efb85ab"
+      "bytes": 64572,
+      "sha256": "ec2107ed71d18bbc827be2ab564aa8a3e4c89e553643ab9988ddc94fcf5f87b7"
     },
     {
       "path": "town/audio.js",
@@ -254,8 +259,8 @@
     },
     {
       "path": "town/character-art.js",
-      "bytes": 9762,
-      "sha256": "9ce3064d2768dab812b38a48cb7c5b93a07b422f2918ba34c612fec3c42bdea9"
+      "bytes": 10216,
+      "sha256": "b16fea836f7a945e36c807b8b373c41d604a94c5cbf5dc27e9cf816cbe9ae486"
     },
     {
       "path": "town/controller.js",
@@ -354,8 +359,8 @@
     },
     {
       "path": "town/renderer.js",
-      "bytes": 46992,
-      "sha256": "39dbfc35ff4929010f7fce7f7de8f6c005f0769d9d25275c22d01a74cda69128"
+      "bytes": 46543,
+      "sha256": "346da2aeee6dfc59261589321c06a68e501e51f6e52324682d51f9deded23990"
     },
     {
       "path": "town/save-model.js",
@@ -492,7 +497,7 @@
     },
     {
       "path": "town/app.js",
-      "bytes": 44846
+      "bytes": 44873
     },
     {
       "path": "town/creator-home-painter.js",
@@ -500,7 +505,7 @@
     },
     {
       "path": "town/renderer.js",
-      "bytes": 32820
+      "bytes": 32426
     },
     {
       "path": "town/town-model.js",
@@ -512,11 +517,11 @@
     },
     {
       "path": "maze/owner-rig.js",
-      "bytes": 19098
+      "bytes": 19102
     },
     {
       "path": "maze/creature-rig.js",
-      "bytes": 15768
+      "bytes": 15790
     },
     {
       "path": "maze/creator-runtime.js",
@@ -532,7 +537,7 @@
     },
     {
       "path": "maze/rig-animation.js",
-      "bytes": 9854
+      "bytes": 9783
     },
     {
       "path": "town/creator-home-interiors.js",
@@ -555,12 +560,16 @@
       "bytes": 7367
     },
     {
-      "path": "game-display.js",
-      "bytes": 5541
+      "path": "maze/battle-cinematic-2d.js",
+      "bytes": 6583
     },
     {
       "path": "town/character-art.js",
-      "bytes": 5378
+      "bytes": 5681
+    },
+    {
+      "path": "game-display.js",
+      "bytes": 5541
     },
     {
       "path": "town/battle-model.js",
@@ -608,7 +617,7 @@
     },
     {
       "path": "town/controller.js",
-      "bytes": 3589
+      "bytes": 3582
     },
     {
       "path": "touch-camera.js",
@@ -753,8 +762,8 @@
   ],
   "output": {
     "path": "town/game-entry.js",
-    "bytes": 487610,
-    "sha256": "dc3d463e3419783632651a094e0a5ef5fba144f20bbac25e4e46db233ec0bc8b"
+    "bytes": 494077,
+    "sha256": "ef8cac163fd6e0d863955e7d3d8ea3305638a1d6bf8a56e27d16d3215fd5a21b"
   },
   "styleSources": [
     "../display-mode.css?v=20261014-layout1",

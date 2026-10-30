@@ -1,3 +1,4 @@
+import {battleCinematicCue,drawBattleCinematicBackground,drawBattleCinematicForeground,drawBattleArenaArtwork} from '../maze/battle-cinematic-2d.js?v=20261030-sprite1';
 import {creatorRoomCameraScale,creatorRoomCameraFollow} from './creator-interior-view.js?v=20261019-rooms1';
 import {isInPalaceForecourt} from './palace-forecourt.js?v=20261019-journey1';
 import {drawCreatorHome2D,drawCreatorQuarterGate2D} from './creator-home-painter.js?v=20261019-homes2';
@@ -373,31 +374,25 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
     if(!canvas||!battle)return;const c=canvas.getContext('2d'),ratio=Number.isFinite(pixelRatio)&&pixelRatio>0?pixelRatio:1,w=canvas.width/ratio,h=canvas.height/ratio;
     if(snapshotBattle!==battle.id&&lastSurface){snapshotBattle=battle.id;sceneSnapshot.width=lastSurface.width;sceneSnapshot.height=lastSurface.height;sceneSnapshot.getContext('2d').drawImage(lastSurface,0,0);}
     c.setTransform(ratio,0,0,ratio,0,0);c.clearRect(0,0,w,h);c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';
-    if(sceneSnapshot.width>1)c.drawImage(sceneSnapshot,0,0,w,h);else{c.fillStyle='#253c4c';c.fillRect(0,0,w,h);}
+    if(sceneSnapshot.width>1)drawBattleArenaArtwork(c,sceneSnapshot,{w,h,clock:motion?time:0,depth:.45});else{c.fillStyle='#253c4c';c.fillRect(0,0,w,h);}
     const veil=c.createLinearGradient(0,0,0,h);veil.addColorStop(0,'#102235e8');veil.addColorStop(.5,'#0b2035a8');veil.addColorStop(1,'#11243ae8');c.fillStyle=veil;c.fillRect(0,0,w,h);
     const floorY=h*.85,heroX=w*.24,enemyX=w*.74,size=Math.min(h*.58,w*.32,255),enemySize=Math.min(h*.65,w*.43,300),enemyId=TOWN_BATTLE_ART_IDS[battle.enemyId]||'ghost';
     const age=effect?Math.max(0,time-(effect.started??time)):100,action=effect?.type||effect?.action||battle.lastAction,attack=['attack','spark','shine','light'].includes(action),lunge=motion&&attack&&age<.48?Math.sin(age/.48*Math.PI)*Math.min(28,w*.055):0;
     // The arena is a stone terrace with converging joints, retaining the town's height cues.
     poly(c,[[0,h*.65],[w,h*.65],[w,h],[0,h]],'#59616a44');for(let i=-4;i<8;i++)line(c,w*.5+i*w*.11,h*.65,w*.5+i*w*.25,h,'#a9b6a32c',1);for(let i=0;i<4;i++)line(c,0,h*.68+i*i*h*.025,w,h*.68+i*i*h*.025,'#a9b6a32c',1);
+    const victory=battle.phase==='victory',cinematic=battleCinematicCue({action,age,duration:effect?.duration||(action==='spark'?1.6:action==='enemy'?.55:.65),victory,motion,guarded:battle.lastAction==='guard',scope:'town'}),arena={w,h,heroX,enemyX,floorY,heroSize:size,enemySize,images:art.images};
+    drawBattleCinematicBackground(c,arena,cinematic,time);
     ellipse(c,heroX,floorY+5,size*.22,11,'#071827b0');ellipse(c,enemyX,floorY+5,enemySize*.26,14,'#071827b0');
     const hero=playerPose(art,'right',motion&&lunge>0,age*14,{battle:true,effect,time,motion});if(hero)drawArtSprite(c,hero,heroX+(hero.poseVersion===undefined?lunge:0),floorY,size);
-    const sprite=monsterSprite(art,enemyId,{time,motion,battle:true,facing:'left',effect:enemyRigEffect(effect,time,{won:battle.phase==='victory'})});const victory=battle.phase==='victory';
+    const sprite=monsterSprite(art,enemyId,{time,motion,battle:true,facing:'left',effect:enemyRigEffect(effect,time,{won:battle.phase==='victory'})});
     if(sprite)drawArtSprite(c,sprite,enemyX,floorY,enemySize,{alpha:victory?.55:1,flip:sprite.flip});
     else{
       // Readable mist silhouette remains while its original atlas decodes.
       glow(c,enemyX,floorY-enemySize*.48,enemySize*.45,'#b2c8da24');for(let i=0;i<5;i++)ellipse(c,enemyX+(i-2)*enemySize*.11,floorY-enemySize*.4-(i%2)*enemySize*.14,enemySize*.19,enemySize*.28,'#92afbd55');
     }
-    if(effect&&age<1.3){
-      if(action==='guard'){c.strokeStyle='#a8dfd0a0';c.lineWidth=2;c.beginPath();c.ellipse(heroX,floorY-size*.48,size*.33,size*.49,0,0,TAU);c.stroke();}
-      if(attack){
-        const actionPose=hero?.rigPose?.action,grip=hero?.rigPose?.lantern?.grip,stage=actionPose?.stage;
-        const progress=stage?(stage==='release'?actionPose.progress:['impact','recovery'].includes(stage)?1:0):clamp((age-.2)/.45,0,1);
-        const sx=grip?heroX+grip.x*size/hero.rigContentHeight:heroX+size*.2,sy=grip?floorY+grip.y*size/hero.rigContentHeight:floorY-size*.5;
-        const x=sx+(enemyX-sx)*progress,y=sy+(floorY-enemySize*.5-sy)*progress-Math.sin(progress*Math.PI)*h*.12;
-        if(!stage||['release','impact','recovery'].includes(stage)){glow(c,x,y,34,'#f4d88d88');ellipse(c,x,y,5,5,'#fff3c5');}
-        if(progress===1&&age<1.2){const a=stage==='impact'?actionPose.progress:stage==='recovery'?1:clamp((age-.65)/.55,0,1);c.save();c.globalAlpha=1-a;for(let i=0;i<9;i++){const angle=i*TAU/9,r=20+a*65;line(c,enemyX+Math.cos(angle)*r*.4,floorY-enemySize*.5+Math.sin(angle)*r*.4,enemyX+Math.cos(angle)*r,floorY-enemySize*.5+Math.sin(angle)*r,'#f9dd9e',2);}c.restore();}
-      }
-    }
+    const grip=hero?.rigPose?.lantern?.grip;
+    if(grip){arena.sourceX=heroX+grip.x*size/hero.rigContentHeight;arena.sourceY=floorY+grip.y*size/hero.rigContentHeight;}
+    drawBattleCinematicForeground(c,arena,cinematic);
     text(c,battle.enemy?.name||'水鏡の影',w/2,25,w<500?13:18,'#f4dfb5');
     text(c,victory?'祭りの灯りが戻った':`TURN ${battle.turn||1}`,w/2,h-18,13,victory?'#f3d28e':'#c7d6d5');
   }

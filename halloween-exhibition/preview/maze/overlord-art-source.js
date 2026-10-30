@@ -1,12 +1,12 @@
 import {loadOverlordImage} from './overlord-materials.js?v=20261030-art1';
-import {OVERLORD_ARTICULATED_PREVIEW} from './overlord-articulated-preview.js?v=20261030-body1';
+import {OVERLORD_SPRITE_PREVIEW} from './overlord-sprite-preview.js?v=20261030-sprite1';
 
-export const OVERLORD_ART_ATLAS_URL=new URL('./assets/overlord/queen-articulated-atlas-v1.webp',import.meta.url).href;
+export const OVERLORD_ART_ATLAS_URL=new URL('./assets/overlord/queen-cast-poses-v3.webp',import.meta.url).href;
 const valid=image=>(image?.naturalWidth||image?.width)>0&&(image?.naturalHeight||image?.height)>0;
 
-/** One lazy shared atlas. Embedded parts work offline, retaining the newest
+/** One lazy shared atlas. Embedded whole poses work offline, retaining the newest
  * detail even when the preview finishes decoding after the network image. */
-export function createOverlordArtSource({loadImage=loadOverlordImage,url=OVERLORD_ART_ATLAS_URL,preview=OVERLORD_ARTICULATED_PREVIEW}={}){
+export function createOverlordArtSource({loadImage=loadOverlordImage,url=OVERLORD_ART_ATLAS_URL,preview=OVERLORD_SPRITE_PREVIEW}={}){
  let current=null,version=0,started=false,full=false,settled=0,done=false,resolveReady;
  const listeners=new Set(),ready=new Promise(resolve=>{resolveReady=resolve;});
  const finish=value=>{if(!done){done=true;resolveReady(value);}};

@@ -8,14 +8,14 @@ import {overlordActionDuration,overlordBattleDirector} from '../overlord-battle-
 import {setChangedProperty,setChangedAttribute} from '../change-only-ui.js';
 const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8');
 function harness(){
-  const nodes=new Map(),record={saves:0,closed:0,draws:0};
+  const nodes=new Map(),record={saves:0,closed:0,draws:0,artRequests:[]};
   const element=(tag,textContent,cls)=>{
     const n={tag,textContent,cls,children:[],clientWidth:360,clientHeight:210,classList:{add(){},remove(){},toggle(){}},style:{},dataset:{},attributes:{},setAttribute(name,value){this.attributes[name]=value;},getAttribute(name){return this.attributes[name]??null;},append(...items){this.children.push(...items);},replaceChildren(...items){this.children=items;},focus(options){record.focus={id:this.id,options};}};
     Object.defineProperty(n,'id',{get(){return this._id;},set(id){this._id=id;nodes.set(id,n);}});return n;
   };
   const content=element('main'),panel={open:true,classList:{add(){},remove(){},toggle(){}},close(){record.closed++;this.open=false;}};
   const context=vm.createContext({element,content,panel,overlordActionDuration,overlordBattleDirector,setChangedProperty,setChangedAttribute,MONSTERS:ALL_MONSTERS,STORY,encounterStory,newBattle,battleTurn,commandFor,intentFor,prankFor,
-    battle:newBattle('nameless_overlord'),battleEffect:null,battleCanvas:null,cleared:['pumpkin'],visualTime:0,motion:true,reducedMotion:{matches:false},
+    rpgArt:{ensure(key){record.artRequests.push(key);return Promise.resolve(null);}},battle:newBattle('nameless_overlord'),battleEffect:null,battleCanvas:null,cleared:['pumpkin'],visualTime:0,motion:true,reducedMotion:{matches:false},
     title(k,n,options){record.heading={kicker:k,name:n,options};content.replaceChildren(element('h2',n));},save(){record.saves++;},requiredClearCount(){return 1;},
     $:id=>nodes.get(id),drawBattleVisual(){record.draws++;},battleAnimationBusy(){return false;},battleEffectDuration(){return 1;},
     updateHUD(){},renderOverlordBattle(){},disposeOverlordBattle(){},overlordBattle:null,nativeBattle:null,nativeBattleLoading:false,nativeBattleFailed:false,disposeNativeBattle(){record.disposed=(record.disposed||0)+1;},
@@ -101,7 +101,7 @@ test('slow frames finish a battle on elapsed time while movement stays bounded a
 function nativeHarness(){
   let resolve;const loading=new Promise(r=>resolve=r),record={created:0,disposed:0,draws:0,status:{textContent:'玉座の間の立体表示を準備しています…'}};
   const canvas=()=>({clientWidth:360,clientHeight:210,setAttribute(){},replaceWith(next){record.replacement=next;},getContext:()=>({fillRect(){},fillText(){}})});
-  const context=vm.createContext({battle:newBattle('nameless_overlord'),battleCanvas:canvas(),battleEffect:null,nativeBattle:null,nativeBattleLoading:false,nativeBattleFailed:false,nativeBattleToken:0,rpgArt:{},renderOverlordBattle2D(){record.fallback=(record.fallback||0)+1;},visualTime:0,motion:true,reducedMotion:{matches:false},$:id=>id==='overlord-render-status'?record.status:null,element:()=>canvas(),drawBattleVisual(){record.draws++;},loadOverlordModule:()=>loading});
+  const context=vm.createContext({rpgArt:{ensure(key){record.artRequests.push(key);return Promise.resolve(null);}},battle:newBattle('nameless_overlord'),battleCanvas:canvas(),battleEffect:null,nativeBattle:null,nativeBattleLoading:false,nativeBattleFailed:false,nativeBattleToken:0,rpgArt:{},renderOverlordBattle2D(){record.fallback=(record.fallback||0)+1;},visualTime:0,motion:true,reducedMotion:{matches:false},$:id=>id==='overlord-render-status'?record.status:null,element:()=>canvas(),drawBattleVisual(){record.draws++;},loadOverlordModule:()=>loading});
   const dispose=app.slice(app.indexOf('function disposeNativeBattle(){'),app.indexOf('\n',app.indexOf('function disposeNativeBattle(){')));
   const native=app.slice(app.indexOf('function drawOverlordBattle(){'),app.indexOf('function actBattle(action){')).replace(/import\('\.\/overlord-battle-scene\.js\?v=[^']+'\)/,'loadOverlordModule()');
   vm.runInContext(dispose+'\n'+native,context);

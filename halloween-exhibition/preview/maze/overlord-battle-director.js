@@ -112,12 +112,18 @@ export function overlordBattleDirector({battle={},effect=null,time=0,motion=true
  const strongestBlade=blades.reduce((best,blade)=>blade.impact>best.impact?blade:best,{impact:0,impactProgress:0});
  const shockTravel=motion?(impact>playerImpact*.75?strongestBlade.impactProgress:progress(age,hit-.05,hit+.23)):0;
  const victoryRays=motion?gold:0;
+ // Move around a deliberate subject during anticipation, then widen for the
+ // actual five-blade arrival. Both arcs return continuously before input resumes.
+ const commandOrbit=live?bell(age,0,hit+.25)*(kind==='attack'?-.025:kind==='guard'?.016:.025):0;
+ const counterOrbit=counterActive?bell(age,counterStart,counterEnd)*(special?-.045:-.025):0;
+ const settlePullback=counterActive?bell(age,chargeEnd,counterEnd)*(special?.095:.025):0;
+ const impactTarget=playerImpact*.75>=impact?'boss':'hero';
  return {
   duration:effect?duration:0,intro,age,walkProgress,state,stateElapsed,phase,phaseLabel:phaseName(phase,kind,special),
   attackProgress:bodyProgress,body,
-  environment:{rage,gold,portal,rift,stream,flash,shock,shockTravel,victoryRays,hallVisibility:1-rift*.84,emberSpeed:motion?.16+rage*.55+counterCharge*.25+stream*.5:0,wind:motion?.14+rage*.46+counterCharge*.35+rift*.4:0,floorGlow:clamp(rage*.6+counterCharge*.6+impact*.22+rift*.35)*(1-gold),pulse},
-  camera:{push:motion?playerCharge*.055+counterCharge*(special?.105:.05)+(ambience?Math.sin(clock*.23)*.004:0):0,
-   orbit:ambience?Math.sin(clock*.14)*.014:0,pullback:motion&&special?bell(age,chargeEnd,counterEnd)*.065:0,
+  environment:{rage,gold,portal,rift,stream,flash,shock,shockTravel,impactTarget,eclipse:rift*(special?1:.35),victoryRays,hallVisibility:1-rift*.84,emberSpeed:motion?.16+rage*.55+counterCharge*.25+stream*.5:0,wind:motion?.14+rage*.46+counterCharge*.35+rift*.4:0,floorGlow:clamp(rage*.6+counterCharge*.6+impact*.22+rift*.35)*(1-gold),pulse},
+  camera:{push:motion?playerCharge*.04+counterCharge*(special?.075:.045)+(ambience?Math.sin(clock*.23)*.004:0):0,
+   orbit:motion?commandOrbit+counterOrbit+(ambience?Math.sin(clock*.14)*.014:0):0,pullback:motion?settlePullback:0,
    shakeX:shake*Math.sin(clock*47),shakeY:shake*Math.cos(clock*39)*.6},
   actors:{heroAdvance,heroLift:live&&kind==='attack'?bell(age,.10,.65)*.045:0,heroRecoil,bossRecoil:hitRecoil*.095,bossLean:counterCharge*(special?.14:.06),swordFlare:counterActive&&special?smooth(counterProgress/.26):rage*.12},
   player:{kind:effect?kind:null,active:live&&kind!=='guard'&&age<=hit+.23,charge:playerCharge,travel:playerTravel,impact:playerImpact,shield},

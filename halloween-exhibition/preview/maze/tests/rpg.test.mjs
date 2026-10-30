@@ -34,12 +34,16 @@ test('solid shelf feet prevent crossing while keeping interaction routes open',(
   function reachable(target,flags={}){const start={...initialState(),...flags},q=[start],seen=new Set([`${start.x},${start.z}`]);for(let i=0;i<q.length;i++){const s=q[i];if(Math.hypot(s.x-target.x*4,s.z-target.z*4)<.51)return true;for(const [dx,dz]of[[.5,0],[-.5,0],[0,.5],[0,-.5]]){const n=moveAroundFurniture(s,dx,dz),k=`${n.x},${n.z}`;if(!seen.has(k)){seen.add(k);q.push(n);}}}return false;}
   assert(reachable(FEATURES.key));assert(reachable(FEATURES.article));assert(reachable(FEATURES.horrorArt,{horrorAccepted:true}));assert(!reachable(FEATURES.vault));assert(reachable(FEATURES.vault,{unlocked:true}));
 });
-test('all sixteen core and six palace runtime assets exist and loader reports failures explicitly',async()=>{
-  assert.equal(Object.keys(ART_FILES).length,16);let bytes=0;
-  for(const [key,file]of Object.entries(ART_FILES)){assert(file.endsWith('.webp'));const b=fs.readFileSync(new URL('../assets/rpg/'+file,import.meta.url));assert.equal(b.toString('ascii',0,4),'RIFF');assert.equal(b.toString('ascii',8,12),'WEBP');if(key==='nameless_overlord')assert(b.length<700000,'new boss cutout retains its own mobile byte budget');else bytes+=b.length;}
-  assert(bytes<2500000);
+test('sixteen startup assets, six palace assets and two on-demand battle paintings retain separate budgets',async()=>{
+  assert.equal(Object.keys(ART_FILES).length,18);let bytes=0,battleBytes=0;
+  for(const [key,file]of Object.entries(ART_FILES)){assert(file.endsWith('.webp'));const b=fs.readFileSync(new URL('../assets/rpg/'+file,import.meta.url));assert.equal(b.toString('ascii',0,4),'RIFF');assert.equal(b.toString('ascii',8,12),'WEBP');if(key==='nameless_overlord')assert(b.length<700000,'new boss cutout retains its own mobile byte budget');else if(['battleEclipse','battleEnergy'].includes(key))battleBytes+=b.length;else bytes+=b.length;}
+  assert(bytes<2500000);assert(battleBytes<800000,'optional battle paintings stay below 800KB combined');
   for(const file of ['props-atlas.webp',...Object.values(PALACE_TEXTURES)]){const b=fs.readFileSync(new URL('../assets/rpg/palace/'+file,import.meta.url));assert.equal(b.toString('ascii',0,4),'RIFF');bytes+=b.length;}assert(bytes<3500000);
-  const success=createArtLibrary({motionData:{},loadImage:async()=>({width:1024,height:1024})});await success.ready;assert.equal(success.version,22);assert.deepEqual(success.failures,[]);
+  const requests=[],success=createArtLibrary({motionData:{},loadImage:async url=>(requests.push(url),{width:1024,height:1024})});await success.ready;assert.equal(success.version,22);assert.deepEqual(success.failures,[]);
+  assert(!requests.some(url=>/battle-(eclipse-palace|energy)-v1/.test(url)),'startup and loadRemaining must not transfer optional battle paintings');
+  await Promise.all([success.ensure('battleEclipse'),success.ensure('battleEnergy')]);assert.equal(success.version,24);
+  for(const key of ['battleEclipse','battleEnergy'])assert.equal(requests.filter(url=>url.endsWith(ART_FILES[key])).length,1);
+  await Promise.all([success.ensure('battleEclipse'),success.ensure('battleEnergy')]);assert.equal(requests.length,24,'repeated renderBattle calls reuse decoded paintings');
   const failed=createArtLibrary({motionData:{},loadImage:async()=>{throw Error('offline');}});await failed.ready;assert.equal(failed.version,0);assert.equal(failed.failures.length,22);
 });
 test('library accepts every genre with legacy collection ID and no invented submissions',()=>{
@@ -77,7 +81,8 @@ test('maze participates in shared layout preference and coherent cache release',
   for(const name of ['overlord-character','overlord-battle-scene','overlord-battle-2d'])expected[name]='20261030-quality1';
   for(const name of ['overlord-art-source','overlord-art-rig','overlord-character','overlord-battle-scene','overlord-battle-2d','overlord-battle-director','stage-2d'])expected[name]='20261030-body1';
   expected['overlord-character-preview']='20261030-art1';
-  expected['battle-scene']='20261030-body1';for(const name of ['touch-camera','viewport','control-settings'])expected[name]='20261030-body1';
+  for(const name of ['overlord-art-source','overlord-character','overlord-battle-scene','overlord-battle-2d','overlord-battle-director','overlord-sprite','overlord-sprite-layout','battle-cinematic-2d','stage-2d','battle-scene'])expected[name]='20261030-sprite1';
+  expected['battle-scene']='20261030-sprite1';for(const name of ['touch-camera','viewport','control-settings'])expected[name]='20261030-body1';
   for(const name of ['app.js','stage-2d.js','rpg-model.js','battle-scene.js','world.js','creator-ui.js','creator-runtime.js','encounter-model.js','ending-ui.js'])for(const match of read(name).matchAll(/(?:from\s+|import\()'((?:\.\/|\.\.\/)[^']+\.js[^']*)'/g)){const module=match[1].match(/([^/]+)\.js/)[1];if(match[1].startsWith('./vendor/'))continue;const release=name==='creator-runtime.js'&&['movement-runtime','patrol-model'].includes(module)?'20261017-review1':expected[module]||version;assert(match[1].endsWith('?v='+release),`${name}: ${match[1]}`);}
   assert(html.includes('viewport-fit=cover'));assert(html.includes('apple-touch-icon'));assert(html.includes('apple-mobile-web-app-capable'));assert(!app.includes('serviceWorker.register'));
 });

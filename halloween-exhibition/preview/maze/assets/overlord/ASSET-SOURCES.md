@@ -1,6 +1,14 @@
 # Overlord S assets
 
-## Current original-art character (2026-10-30)
+## Current whole-frame character and continuous cloth motion (2026-10-30)
+
+`queen-cast-poses-v3.webp` contains only three independently clean full-body drawings, repacked with 16px transparent gutters from the generated `exec-694b6351-40f2-4312-b1ff-30ccc36b7b0e.png` sheet. The rejected neighbouring and lower-row drawings are not included. This replaces the visibly separated sixteen-part atlas in the live runtime. The three complete drawings retain the black-and-gold armour, red mantle, blonde hair and crown of the user-provided queen reference. A low-resolution copy is embedded in `overlord-sprite-preview.js`; the detailed 1248×544 atlas upgrades it lazily.
+
+The actor uses the same whole-frame sprite contract as the maze cast, plus one 60-triangle continuous mesh. Face landmarks share a rigid transform. Breathing, casting preparation/release, hit recoil, upper-body bow, hair and mantle follow-through are shared between Canvas2D and native Sprite rendering. This is three authored poses with continuous deformation, not a complete set of directional walking, kneeling or authored defeat frames. Those missing animations remain explicit in the actor metadata.
+
+The queen remains present in the distant and flat exploration views. Neither the sixteen-part articulated atlas nor archived human geometry is imported by the current runtime. Attack swords are separate transient weapons and are absent at rest.
+
+## Previous original-art character method
 
 The game now displays the queen with the same original-art sprite method as the other characters, in both exploration and battle. `queen-original-art-v1.webp` is the approved 1024×1536 queen artwork with the five permanently floating swords and their loops removed using imagegen. The pose, costume, hair and face registration are retained. The source PNG SHA-256 is `c1195c29a4ead858545e3ea3ff2619de8e848214f1d262cdeb103248df898063`. The full asset is WebP quality 91; `overlord-character-preview.js` embeds a 128×192 preview of the same image.
 

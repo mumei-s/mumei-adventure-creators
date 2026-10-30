@@ -1,23 +1,18 @@
 import {renderPixelRatio} from '../render-quality.js?v=20261030-quality1';
 import {drawArtSprite,playerPose} from './rpg-art.js?v=20261019-unified1';
-import {overlordBattleDirector} from './overlord-battle-director.js?v=20261030-body1';
+import {overlordBattleDirector} from './overlord-battle-director.js?v=20261030-sprite1';
 import {getOverlordIdentityImage} from './overlord-materials.js?v=20261030-art1';
-import {getOverlordArtAtlas} from './overlord-art-source.js?v=20261030-body1';
-import {drawOverlordArtRig,sampleOverlordArtPose} from './overlord-art-rig.js?v=20261030-body1';
+import {getOverlordArtAtlas} from './overlord-art-source.js?v=20261030-sprite1';
+import {drawOverlordSprite} from './overlord-sprite.js?v=20261030-sprite1';
+import {OVERLORD_SPRITE_LAYOUT,OVERLORD_SPRITE_BOUNDS} from './overlord-sprite-layout.js?v=20261030-sprite1';
+import {drawCinematicArena,drawCinematicImpact,drawCinematicBladeWake,cinematicBladePoint,drawBattleArenaArtwork,drawBattleEnergy} from './battle-cinematic-2d.js?v=20261030-sprite1';
 
 const clamp=value=>Math.max(0,Math.min(1,value));
 const smooth=value=>{const t=clamp(value);return t*t*(3-2*t);};
 const TAU=Math.PI*2;
 // Fit the complete authored action reach once. A casting hand must stay on
 // screen without changing the actor's size every time an elbow moves.
-const ART_ACTION_BOUNDS=(()=>{
- const b={left:0,right:0,top:0,bottom:1};
- for(const state of ['idle','attack','special','hit'])for(let i=0;i<=40;i++){
-  const n=sampleOverlordArtPose({state,attackProgress:i/40,time:2}).bounds;
-  b.left=Math.min(b.left,n.left);b.right=Math.max(b.right,n.right);b.top=Math.min(b.top,n.top);b.bottom=Math.max(b.bottom,n.bottom);
- }
- b.left-=.015;b.right+=.015;b.top-=.015;b.bottom+=.015;return b;
-})();
+const ART_ACTION_BOUNDS=OVERLORD_SPRITE_BOUNDS;
 function polygon(c,points,fill,stroke=null,lineWidth=1){c.beginPath();points.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.closePath();c.fillStyle=fill;c.fill();if(stroke){c.strokeStyle=stroke;c.lineWidth=lineWidth;c.stroke();}}
 function ellipse(c,x,y,rx,ry,fill,stroke=null,lineWidth=1){c.beginPath();c.ellipse(x,y,rx,ry,0,0,TAU);if(fill){c.fillStyle=fill;c.fill();}if(stroke){c.strokeStyle=stroke;c.lineWidth=lineWidth;c.stroke();}}
 function line(c,points,color,width=1){c.beginPath();points.forEach(([x,y],i)=>i?c.lineTo(x,y):c.moveTo(x,y));c.strokeStyle=color;c.lineWidth=width;c.stroke();}
@@ -78,7 +73,7 @@ function mix(a,b,t){
 }
 function burst(c,x,y,size,power,color){
  if(power<=.001)return;
- for(let i=0;i<8;i++){const a=i*TAU/8+.18,r=size*(.30+power*.70);line(c,[[x+Math.cos(a)*r*.2,y+Math.sin(a)*r*.2],[x+Math.cos(a)*r,y+Math.sin(a)*r]],color,1.2+power);}
+ c.beginPath();for(let i=0;i<8;i++){const a=i*TAU/8+.18,r=size*(.30+power*.70);c.moveTo(x+Math.cos(a)*r*.2,y+Math.sin(a)*r*.2);c.lineTo(x+Math.cos(a)*r,y+Math.sin(a)*r);}c.strokeStyle=color;c.lineWidth=1.2+power;c.stroke();
  ellipse(c,x,y,size*.17*power,size*.17*power,color);
 }
 function atmosphere(c,{w,h,queen},cue,clock,motion){
@@ -94,57 +89,12 @@ function atmosphere(c,{w,h,queen},cue,clock,motion){
 /** The room gives way to an astral corridor for the attack, then returns.
  * Ribbons and streaks are batched paths: the background moves substantially
  * without a full-screen blur, filter pass or hundreds of individual particles. */
-function astralBackdrop(c,{w,h,queen},cue,clock,motion){
- const env=cue.environment,rift=clamp(env.rift||0),stream=motion?clamp(env.stream||0):0,gold=clamp(env.gold||0);
- const cx=queen.x,cy=h*.38,span=Math.max(w,h)*.78;
- if(rift>.001){
-  c.fillStyle=`rgba(5,5,21,${rift*.90})`;c.fillRect(0,0,w,h);
-  const depth=c.createRadialGradient(cx,cy,2,cx,cy,span);
-  depth.addColorStop(0,`rgba(255,87,152,${rift*.50})`);depth.addColorStop(.16,`rgba(131,31,127,${rift*.68})`);depth.addColorStop(.52,`rgba(26,19,73,${rift*.92})`);depth.addColorStop(1,'#05071200');c.fillStyle=depth;c.fillRect(0,0,w,h);
-  c.save();c.globalCompositeOperation='lighter';c.lineCap='round';c.lineJoin='round';c.shadowColor='#d731a9';c.shadowBlur=7*rift;
-  c.beginPath();
-  for(let i=0;i<6;i++){
-   const start=i*TAU/6+(motion?clock*.48:0);
-   for(let j=0;j<80;j++){
-    const p=.07+j/79*1.25,a=start+p*3.9,r=p*span,x=cx+Math.cos(a)*r,y=cy+Math.sin(a)*r*.62;
-    if(j)c.lineTo(x,y);else c.moveTo(x,y);
-   }
-  }
-  c.strokeStyle=`rgba(151,57,207,${rift*.12})`;c.lineWidth=6+rift*9;c.stroke();
-  c.strokeStyle=`rgba(231,117,226,${rift*.45})`;c.lineWidth=.8+rift*1.1;c.stroke();
-  c.shadowBlur=0;c.strokeStyle=`rgba(169,196,255,${rift*.34})`;c.lineWidth=.55;c.stroke();
-  for(let i=0;i<3;i++){const pulse=motion?(clock*.36+i/3)%1:i/3,r=span*(.07+pulse*.52);ellipse(c,cx,cy,r,r*.54,null,`rgba(246,154,227,${rift*(1-pulse)*.22})`,.7+rift);}
-  c.restore();
- }
- if(stream>.001){
-  c.save();c.globalCompositeOperation='lighter';c.beginPath();
-  for(let i=0;i<24;i++){
-   const a=i*TAU/24+.11,flight=(i*.381966+clock*(.52+stream*.64))%1,r=span*(.14+flight*1.15),tail=span*Math.max(.05,.14+flight*1.15-.12-stream*.16);
-   c.moveTo(cx+Math.cos(a)*tail,cy+Math.sin(a)*tail*.73);c.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r*.73);
-  }
-  c.strokeStyle=`rgba(210,218,255,${stream*.68})`;c.lineWidth=.7+stream*1.3;c.shadowColor='#a347ff';c.shadowBlur=5*stream;c.stroke();c.restore();
- }
- if(gold>.001){
-  c.save();c.globalCompositeOperation='lighter';
-  const rays=motion?clamp(env.victoryRays||gold)*.22:gold*.13;
-  c.beginPath();
-  for(let i=0;i<9;i++){
-   const a=i*TAU/9+(motion?clock*.035:0),edge=a+.075,r=span*1.6;
-   c.moveTo(cx,cy);c.lineTo(cx+Math.cos(a)*r,cy+Math.sin(a)*r);c.lineTo(cx+Math.cos(edge)*r,cy+Math.sin(edge)*r);c.closePath();
-  }
-  c.fillStyle=`rgba(255,213,126,${rays})`;c.fill();c.restore();
- }
+function astralBackdrop(c,layout,cue,clock,motion){
+ drawCinematicArena(c,layout,cue,clock,motion);
 }
 
-function impactAtmosphere(c,{w,h},cue,targetX,targetY){
- const env=cue.environment,shock=clamp(env.shock||0),flash=clamp(env.flash||0);
- if(shock>.001){
-  const progress=clamp(env.shockTravel||0),radius=Math.min(w,h)*(.08+progress*.60);
-  c.save();c.globalCompositeOperation='lighter';
-  for(let i=0;i<3;i++)ellipse(c,targetX,targetY,radius*(1+i*.31),radius*(.54+i*.12),null,`rgba(255,221,191,${shock*(.66-i*.16)})`,1.2+shock*(3-i));
-  c.restore();
- }
- if(flash>.001){c.fillStyle=`rgba(255,239,221,${flash*.20})`;c.fillRect(0,0,w,h);}
+function impactAtmosphere(c,layout,cue,targetX,targetY){
+ drawCinematicImpact(c,layout,cue,targetX,targetY);
 }
 
 /** Coordinates remain in CSS pixels; actors are fitted by their actual atlas frame. */
@@ -152,7 +102,7 @@ export function overlordBattle2DLayout(width,height,queen){
  const w=Math.max(1,width),h=Math.max(1,height),wide=w/h>2.2;
  const image=queen?.image||queen,frame=queen?.frame||[0,0,image?.width||2,image?.height||3];
  const aspect=frame[2]/Math.max(1,frame[3]);
- const queenHeight=Math.min(h*.88,w*.82/Math.max(.1,aspect)),queenWidth=queenHeight*aspect;
+ const queenHeight=Math.min(h*.88,w*.92/Math.max(.1,aspect)),queenWidth=queenHeight*aspect;
  const qx=Math.max(queenWidth/2+8,Math.min(w-queenWidth/2-8,w*(wide?.59:.61)));
  const heroHeight=Math.min(h*.35,w*.33),heroX=w*(wide?.28:.19);
  return {w,h,queen:{x:qx,y:h*.955,height:queenHeight,width:queenWidth},hero:{x:heroX,y:h*.965,height:heroHeight}};
@@ -217,10 +167,7 @@ function boundedSprite(c,sprite,x,footY,actualHeight,{alpha=1,offsetX=0}={}){
  return drawArtSprite(c,sprite,drawX,drawY,requestedHeight,{alpha,flip:sprite.flip??false});
 }
 function cut(c,sx,sy,tx,ty,progress,index=0,special=false){
- const p=clamp(progress),offset=(index-2)*3.8,x=sx+(tx-sx)*p,y=sy+(ty-sy)*p+offset,tail=Math.max(0,p-.36),tailX=sx+(tx-sx)*tail,tailY=sy+(ty-sy)*tail+offset;
- c.save();c.lineCap='round';c.shadowColor='#ff1749';c.shadowBlur=special?11:5;
- c.beginPath();c.moveTo(tailX,tailY);c.quadraticCurveTo((tailX+x)/2,(tailY+y)/2-12-index*2,x,y);c.strokeStyle=special?'#e5235f66':'#ff738466';c.lineWidth=special?12:7;c.stroke();
- c.shadowBlur=0;c.strokeStyle=special?'#ff577dbb':'#ffbcabb9';c.lineWidth=special?5.2:3.3;c.stroke();c.strokeStyle='#fff0e8';c.lineWidth=1.3;c.stroke();ellipse(c,x,y,special?3.5:2.5,special?3.5:2.5,'#fff0e9');c.restore();
+ return drawCinematicBladeWake(c,sx,sy,tx,ty,progress,index,special);
 }
 
 /** A sword has a blade, transverse guard and dark grip, not just a light trail.
@@ -236,7 +183,8 @@ export function overlordBattleSwordShape(x,y,targetX,targetY,length){
   edge:[point(.035),point(.68)],tip:point(.73),hilt:point(-.34)
  };
 }
-export function overlordBattleSwordFlightShape(sourceX,sourceY,targetX,targetY,progress,length){
+export function overlordBattleSwordFlightShape(sourceX,sourceY,targetX,targetY,progress,length,options=null){
+ if(options){const p=clamp(progress),head=cinematicBladePoint(sourceX,sourceY,targetX,targetY,p,options),next=cinematicBladePoint(sourceX,sourceY,targetX,targetY,Math.min(1,p+.002),options),prior=cinematicBladePoint(sourceX,sourceY,targetX,targetY,Math.max(0,p-.002),options),dx=next.x-prior.x,dy=next.y-prior.y,d=Math.hypot(dx,dy)||1;return overlordBattleSwordShape(head.x-dx/d*length*.73,head.y-dy/d*length*.73,head.x,head.y,length);}
  const distance=Math.hypot(targetX-sourceX,targetY-sourceY)||1,dx=(targetX-sourceX)/distance,dy=(targetY-sourceY)/distance,p=clamp(progress),tipX=sourceX+(targetX-sourceX)*p,tipY=sourceY+(targetY-sourceY)*p;
  const x=tipX-dx*length*.73,y=tipY-dy*length*.73;
  return overlordBattleSwordShape(x,y,x+dx,y+dy,length);
@@ -263,23 +211,23 @@ export function renderOverlordBattle2D({canvas,art,battle,effect,time=0,motion=t
  const cue=overlordBattleDirector({battle,effect,time,motion}),clock=motion&&Number.isFinite(time)?Math.max(0,time):0,env=cue.environment;
  c.save();c.translate(cue.camera.shakeX*w,cue.camera.shakeY*h);
  const zoom=1+(motion?Math.max(0,cue.camera.push||0)*.55:0);c.translate(w*.5,h*.55);c.scale(zoom,zoom);c.translate(-w*.5,-h*.55);
- hall(c,layout,env,clock);astralBackdrop(c,layout,cue,clock,motion);atmosphere(c,layout,cue,clock,motion);
+ hall(c,layout,env,clock);astralBackdrop(c,layout,cue,clock,motion);drawBattleArenaArtwork(c,art?.images?.battleEclipse,{w,h,amount:.82,clock,depth:.03+(env.rift||0)*.04,anchor:.47});atmosphere(c,layout,cue,clock,motion);
  ellipse(c,q.x,q.y+h*.005,q.width*.3,Math.max(2,h*.014),'#050510a6');ellipse(c,q.x,q.y+h*.002,q.width*.45,Math.max(3,h*.022),null,mix('#d8af6e66','#f5d99c88',env.gold),.8);
  const hero=playerPose(art?.images?art:{...art,images:{}},'right',false,0,{battle:true,effect,time,motion}),heroMove=(cue.actors.heroAdvance-cue.actors.heroRecoil)*w*.13,heroLift=cue.actors.heroLift*h*.12;
  const queenRecoil=cue.actors.bossRecoil*w*.13;
  c.fillStyle=radial(c,q.x,q.y-q.height*.4,q.height*.58,mix('#b0245030','#e9c68444',env.gold));c.fillRect(q.x-q.width*.7,q.y-q.height,q.width*1.4,q.height);
- const bodyPose=sampleOverlordArtPose({state:cue.state,stateElapsed:cue.stateElapsed,attackProgress:cue.attackProgress,time:clock,motion});
- const painted=drawOverlordArtRig(c,queen,{x:q.x+queenRecoil,y:q.y,height:q.height,pose:bodyPose});
+ drawBattleEnergy(c,art?.images?.battleEnergy,2,{x:q.x,y:q.y-q.height*.46,width:q.height*1.10,height:q.height*1.10,alpha:cue.counter.charge*.64,rotation:clock*.08});
+ const painted=drawOverlordSprite(c,queen,OVERLORD_SPRITE_LAYOUT,{x:q.x+queenRecoil,y:q.y,height:q.height,state:cue.state,stateElapsed:cue.stateElapsed,attackProgress:cue.attackProgress,time:clock,motion});
  if(!painted){c.fillStyle='#efd7aa';c.textAlign='center';c.font=`${Math.max(11,Math.min(15,w*.04))}px sans-serif`;c.fillText('覇王Sの姿を準備しています…',w*.56,h*.48);}
  ellipse(c,p.x+heroMove,p.y+h*.004,p.height*.23,Math.max(2,h*.011),'#040813aa');boundedSprite(c,hero,p.x,p.y-heroLift,p.height,{offsetX:heroMove});
  const targetX=p.x+heroMove,targetY=p.y-p.height*.52-heroLift,sourceX=q.x-q.width*.12+queenRecoil,sourceY=q.y-q.height*.54;
  if(cue.player.kind==='shine'&&cue.player.active){
   const t=cue.player.travel,x=targetX+(sourceX-targetX)*t,y=targetY+(sourceY-targetY)*t,r=Math.min(h*.10,30)*(1+cue.player.charge*.4);
   c.fillStyle=radial(c,x,y,r,'#ffe8b8bd');c.fillRect(x-r,y-r,r*2,r*2);ellipse(c,x,y,2.3+cue.player.charge*2,2.3+cue.player.charge*2,'#fff1cc');
-  if(t>0&&t<1)line(c,[[x-(sourceX-targetX)*.11,y-(sourceY-targetY)*.11],[x,y]],'#ffe4a688',2.2);
+  drawBattleEnergy(c,art?.images?.battleEnergy,2,{x,y,width:r*2.3,height:r*2.3,alpha:.9,rotation:clock*.7});
  }
  if(cue.player.kind==='attack'&&cue.player.active&&cue.player.travel>0){
-  const t=cue.player.travel,x=targetX+(sourceX-targetX)*t,y=targetY+(sourceY-targetY)*t;line(c,[[x-w*.035,y-h*.04],[x+w*.025,y+h*.045]],'#fff0c9',2.6);
+  const t=cue.player.travel,x=targetX+(sourceX-targetX)*t,y=targetY+(sourceY-targetY)*t;drawBattleEnergy(c,art?.images?.battleEnergy,0,{x,y,width:q.height*.5,height:q.height*.36,alpha:Math.sin(t*Math.PI),rotation:-.6});
  }
  burst(c,sourceX,sourceY,Math.min(w*.07,h*.14),cue.player.impact,'#ffdf9cd9');
  if(cue.counter.charge>.001){const radius=q.height*(.22+cue.counter.charge*.07);ellipse(c,q.x,q.y-q.height*.55,radius,radius*.25,null,'#f2436577',1+cue.counter.charge);}
@@ -291,12 +239,14 @@ export function renderOverlordBattle2D({canvas,art,battle,effect,time=0,motion=t
   }
   if(blade.visible??blade.active){
    const length=Math.min(w*.13,h*.14)*(.72+.28*clamp(blade.summon??1));
-   sword(c,overlordBattleSwordFlightShape(sx,sy,targetX,targetY,flight,length),blade.opacity??1);
+   sword(c,overlordBattleSwordFlightShape(sx,sy,targetX,targetY,flight,length,{index:i,special:cue.counter.special}),blade.opacity??1);
   }
  });
  if(cue.player.shield>.001){const glow=cue.player.shield+cue.counter.impact*.6;ellipse(c,targetX,targetY,p.height*(.28+glow*.025),p.height*(.49+glow*.025),'#8cdcca18',mix('#b6ead688','#f1fff5ee',cue.counter.impact),1.2+cue.counter.impact*1.6);}
  if(env.gold>.001){c.fillStyle=radial(c,q.x,q.y-q.height*.25,q.height*.57,`rgba(255,220,144,${env.gold*.19})`);c.fillRect(q.x-q.width*.8,q.y-q.height*.8,q.width*1.6,q.height*.8);}
- impactAtmosphere(c,layout,cue,targetX,targetY);
+ impactAtmosphere(c,layout,cue,env.impactTarget==='boss'?sourceX:targetX,env.impactTarget==='boss'?sourceY:targetY);
+ drawBattleEnergy(c,art?.images?.battleEnergy,1,{x:targetX,y:targetY,width:p.height*1.4,height:p.height*1.4,alpha:cue.counter.impact*.85});
+ drawBattleEnergy(c,art?.images?.battleEnergy,1,{x:sourceX,y:sourceY,width:q.height*.68,height:q.height*.68,alpha:cue.player.impact*.86});
  c.restore();c.strokeStyle='#d1a65f88';c.lineWidth=.8;c.strokeRect(.5,.5,w-1,h-1);
  return {...layout,loading:!painted,phase:cue.phase};
 }

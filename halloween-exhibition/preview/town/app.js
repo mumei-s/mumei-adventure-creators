@@ -18,7 +18,7 @@ import {createReloadControl} from '../safe-page-reload.js?v=20261017-reload1';
 import {createTownSession} from './controller.js?v=20261019-homes2';
 import {createTownStore,importTownState,exportTownState} from './save-model.js?v=20261019-homes2';
 import {initialTownState,townJournal,townInventory,townProgress,getTownMap,isTownWalkable,getNearbyTargets} from './town-model.js?v=20261019-homes2';
-import {createTownRenderer,renderTownBattle} from './renderer.js?v=20261019-homes2';
+import {createTownRenderer,renderTownBattle} from './renderer.js?v=20261030-sprite1';
 import {createTownCharacterArt} from './character-art.js?v=20261019-homes2';
 import {TOWN_BATTLE_ART_IDS} from './visual-data.js?v=20261019-scene1';
 import {createTownViewController} from './view-mode.js?v=20261019-journey1';
@@ -240,6 +240,7 @@ function showSave(){
 function showHelp(){beginPanel('星灯りの街へ');content.append(button('参加者の家を見に行く',()=>visitCreatorHome(),'primary'),el('p','無名S noteと黒猫のもとに、物語への招待状が届きました。街中の金色の道案内から住宅街へ進み、参加者の家の中へ。キャラと話したり、各アトリエの作品机から記事を読みに行こう。次の行き先は、画面上の物語の手帳に載っています。街の住人の依頼やバトルも、寄り道で楽しめます。','dialogue-text'));const keys=el('dl',undefined,'help-keys');for(const [key,text]of[['屋外目線視点','目線の高さで歩きます。画面をドラッグして見回し、↑↓で前後、←→で旋回。W/Sで前後、A/Dで横移動。'],['見下ろし・遠景・屋内','矢印 / WASDで東西南北へ歩きます。屋内は家の全体が見える俯瞰です。'],['E / Enter','目の前の人と話す・扉や物を調べる'],['M','街の地図'],['J / I','旅の手帳 / 持ち物'],['L','ランタンのON / OFF'],['Esc','メニューを開く・街へ戻る'],['戦闘 1〜5','攻撃・守る・灯り・星蜜・退く']])keys.append(el('dt',key),el('dd',text));content.append(keys,el('p','街の住人と物語はゲーム内のフィクションです。展示の参加者本人の発言や経歴を表すものではありません。音・点滅・時間制限で驚かす演出はありません。','subtle'),button('街を歩く',closePanel,'primary'));}
 const battleCommands=[['attack','灯杖で攻撃','灯り +1'],['guard','守る','次の攻撃を軽減・灯り +1'],['spark','星灯り','灯り 2・強い光'],['tonic','星蜜','体力 +28'],['escape','退く','街へ戻る']];
 async function prepareBattleArt(){
+ void characterArt.ensureBattleScenery?.();
  const current=session.snapshot().battle;if(!current)return;const id=current.id;battleArtReady=false;battleArtFailed=false;
  const ok=await characterArt.ensureMonster(TOWN_BATTLE_ART_IDS[current.enemyId]);if(session.snapshot().battle?.id!==id||!panel.open)return;battleArtReady=ok;battleArtFailed=!ok;renderBattle();
 }

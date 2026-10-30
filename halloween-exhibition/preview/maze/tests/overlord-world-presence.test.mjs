@@ -16,34 +16,44 @@ test('queen waits at the same approachable stage instead of walking behind the e
  }
 });
 
-test('actual exploration factory lazily frames the articulated queen in eye and both raised views',async()=>{
+test('actual exploration factory lazily frames one whole queen sprite in eye and both raised views',async()=>{
  await withMazeWorld(async({world,THREE,requests,settle})=>{
   world.render({...open,x:32,z:48,yaw:0,time:0,motion:false,cameraDistance:'normal'});
-  let initialQueenParts=0;world.scene.getObjectByName(OVERLORD_BOSS.name).traverse(node=>{if(node.isMesh&&node.material?.map)initialQueenParts++;});
-  assert.equal(initialQueenParts,0,'a distant queen does not construct an off-screen actor');
+  let initialQueenSprites=0;world.scene.getObjectByName(OVERLORD_BOSS.name).traverse(node=>{if(node.isSprite&&node.name==='queen-whole-frame')initialQueenSprites++;});
+  assert.equal(initialQueenSprites,0,'a distant queen does not construct an off-screen actor');
   assert(!requests.some(url=>/overlord|queen-/.test(url)),'a distant queen must not request images on scene startup');
   for(const cameraDistance of ['normal','wide','far']){
    const guide=guidePoint(OVERLORD_BOSS,open),state={...open,x:guide.x*4,z:guide.z*4,yaw:guide.yaw,time:0,motion:false,cameraDistance};
    world.render(state);await settle();world.render(state);
-   const root=world.scene.getObjectByName(OVERLORD_BOSS.name),parts=[];
-   root.traverse(node=>{if(node.isMesh&&node.name.startsWith('queen-')&&node.material?.map&&node.geometry?.type==='PlaneGeometry')parts.push(node);assert(!node.isSkinnedMesh,'exploration must not reconstruct the rejected polygon body');});
+   const root=world.scene.getObjectByName(OVERLORD_BOSS.name),sprites=[],bodyParts=[];
+   root.traverse(node=>{if(node.isSprite&&node.name==='queen-whole-frame')sprites.push(node);if(node.isMesh&&node.name.startsWith('queen-'))bodyParts.push(node);assert(!node.isSkinnedMesh,'exploration must not reconstruct the rejected polygon body');});
    assert(root.visible,'the queen encounter is visible');
-   assert.equal(parts.length,16,'the real world contains sixteen separate textured body parts');
-   assert(parts.every(part=>part.visible&&part.material.map),'all body art is installed after image decode');
-   const partSet=new Set(parts),body=parts.find(part=>/torso/i.test(part.name)),head=parts.find(part=>/head/i.test(part.name));
-   assert(body&&head,'the scene exposes actual torso and head surfaces');
-   for(const surface of [body,head]){
-    surface.geometry.computeBoundingBox();const target=surface.localToWorld(surface.geometry.boundingBox.getCenter(new THREE.Vector3()));
+   assert.equal(sprites.length,1,'the queen uses the same single whole-frame sprite representation as other maze actors');
+   assert.equal(bodyParts.length,0,'no detached body-part planes remain in the actual world');
+   const sprite=sprites[0],texture=sprite.material.map;
+   assert(sprite.visible&&texture?.image,'whole-body art is installed after image decode');
+   assert.equal(texture.image.width/texture.image.height,1248/544,'the whole-pose atlas retains its compact padded source aspect');
+   assert.equal(sprite.material.type,'SpriteMaterial','camera-facing orientation comes from the ordinary sprite renderer');
+   assert(Math.abs(texture.repeat.x-384/1248)<1e-12,'idle UVs select one complete source column');
+   assert(Math.abs(texture.repeat.y-507/544)<1e-12,'idle crop excludes the next row of artwork');
+   assert.equal(texture.offset.x,16/1248);assert.equal(texture.offset.y,1-523/544);
+   assert.equal(sprite.geometry.index.count/3,60,'the intact character uses one continuous bounded grid');
+   // THREE.Sprite vertices face the camera in view space. Parent yaw does not
+   // rotate their plane, so localToWorld on geometry vertices would test a
+   // different surface. Project known opaque face/torso points in the selected
+   // 384x507 drawing using its actual world scale, anchor and camera basis.
+   const scale=sprite.getWorldScale(new THREE.Vector3()),origin=sprite.getWorldPosition(new THREE.Vector3()),cameraRotation=world.camera.getWorldQuaternion(new THREE.Quaternion());
+   for(const [name,sourceX,sourceY]of[['face',203,79],['torso',203,200]]){
+    const x=(sourceX/384-sprite.center.x)*scale.x,y=(1-sourceY/507-sprite.center.y)*scale.y,angle=sprite.material.rotation||0;
+    const target=new THREE.Vector3(x*Math.cos(angle)-y*Math.sin(angle),x*Math.sin(angle)+y*Math.cos(angle),0).applyQuaternion(cameraRotation).add(origin);
     const projected=target.clone().project(world.camera);
-    assert(Math.abs(projected.x)<1&&Math.abs(projected.y)<1&&projected.z>-1&&projected.z<1,cameraDistance+' must frame the '+surface.name);
-    const normal=new THREE.Vector3(0,0,1).transformDirection(surface.matrixWorld),toCamera=world.camera.position.clone().sub(target).normalize();
-    assert(normal.dot(toCamera)>.8,cameraDistance+' must face the '+surface.name+' toward its camera');
+    assert(Math.abs(projected.x)<1&&Math.abs(projected.y)<1&&projected.z>-1&&projected.z<1,cameraDistance+' must frame the queen '+name);
     const ray=new THREE.Raycaster(world.camera.position,target.clone().sub(world.camera.position).normalize());ray.camera=world.camera;
     const hits=ray.intersectObjects(world.scene.children,true).filter(hit=>{
      for(let node=hit.object;node;node=node.parent)if(!node.visible)return false;
-     return partSet.has(hit.object)||!hit.object.material?.transparent;
+     return hit.object===sprite||!hit.object.material?.transparent;
     });
-    assert(partSet.has(hits[0]?.object),cameraDistance+' cannot hide the '+surface.name+' behind architecture');
+    assert.equal(hits[0]?.object,sprite,cameraDistance+' cannot hide the queen '+name+' behind architecture');
    }
    assert.equal(world.scene.getObjectByName('cutaway-overhead-architecture').visible,cameraDistance==='normal');
    assert.equal(world.scene.getObjectByName('native-dark-pointed-vault').visible,cameraDistance==='normal');

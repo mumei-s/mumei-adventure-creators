@@ -1,9 +1,9 @@
 import {renderPixelRatio} from '../render-quality.js?v=20261030-quality1';
 import * as THREE from './vendor/three.module.js';
-import {overlordBattleDirector} from './overlord-battle-director.js?v=20261030-body1';
-import {createOverlordStageEffects} from './overlord-stage-fx.js?v=20261030-art1';
-import {createOverlordCharacter} from './overlord-character.js?v=20261030-body1';
-import {sampleOverlordArtPose} from './overlord-art-rig.js?v=20261030-body1';
+import {overlordBattleDirector} from './overlord-battle-director.js?v=20261030-sprite1';
+import {createOverlordStageEffects,overlordBladeTrajectory} from './overlord-stage-fx.js?v=20261030-sprite1';
+import {createOverlordCharacter} from './overlord-character.js?v=20261030-sprite1';
+import {OVERLORD_SPRITE_BOUNDS} from './overlord-sprite-layout.js?v=20261030-sprite1';
 import {createOverlordThrone,createOverlordHall} from './overlord-room.js?v=20261030-art1';
 import {playerPose} from './rpg-art.js?v=20261019-unified1';
 
@@ -50,11 +50,7 @@ export function fitOverlordBattleCamera(camera,bounds,aspect,options){
 /** Snapshot the queen's solid body, ignoring decorative sword tips when framing. */
 export function overlordBattleActorGeometry(actor){
  if(actor.metadata?.billboard){
-  const extent={left:0,right:0,top:0,bottom:1};
-  for(const state of ['idle','attack','special','hit'])for(const attackProgress of [0,.2,.4,.6,1]){
-   const b=sampleOverlordArtPose({state,attackProgress,time:0}).bounds;
-   extent.left=Math.min(extent.left,b.left);extent.right=Math.max(extent.right,b.right);extent.top=Math.min(extent.top,b.top);extent.bottom=Math.max(extent.bottom,b.bottom);
-  }
+  const extent=actor.metadata.bounds||OVERLORD_SPRITE_BOUNDS;
   const h=actor.metadata.height;
   return {positions:new Float32Array([extent.left*h,(1-extent.bottom)*h,0,extent.right*h,(1-extent.bottom)*h,0,extent.right*h,(1-extent.top)*h,0,extent.left*h,(1-extent.top)*h,0]),billboard:true};
  }
@@ -145,8 +141,8 @@ export function createOverlordAttackSwords(THREE){
   edge.name='gilded-blade-edge';blade.name='crimson-sword-blade';blade.position.z=-.003;guard.name='sword-crossguard';guard.position.y=-.012;grip.name='black-sword-grip';grip.position.y=-.125;pommel.name='gilded-sword-pommel';pommel.position.y=-.26;
   sword.add(edge,blade,guard,grip,pommel);swords.push(sword);
  }
- const from=new THREE.Vector3(),to=new THREE.Vector3(),direction=new THREE.Vector3(),tip=new THREE.Vector3(),up=new THREE.Vector3(0,1,0);let dead=false;
- function update({blades=[],boss={x:.45,y:0,z:.2},hero={x:-.4,y:0,z:1.2},motion=true}={}){
+ const from=new THREE.Vector3(),to=new THREE.Vector3(),direction=new THREE.Vector3(),tip=new THREE.Vector3(),up=new THREE.Vector3(0,1,0),flight={};let dead=false;
+ function update({blades=[],boss={x:.45,y:0,z:.2},hero={x:-.4,y:0,z:1.2},motion=true,special=false}={}){
   if(dead)return;
   swords.forEach((sword,index)=>{
    const cue=blades[index]||{},visible=motion&&!!cue.visible&&(cue.opacity||0)>.001;sword.visible=visible;if(!visible)return;
@@ -155,7 +151,8 @@ export function createOverlordAttackSwords(THREE){
    // backs away from its tip, so a head-height tip would cross the eyes.
    from.set(boss.x+(index-2)*.37,boss.y+1.45+(index%2)*.10,boss.z-.10);
    to.set(hero.x+(index-2)*.035,hero.y+.46,hero.z);
-   direction.copy(to).sub(from).normalize();tip.copy(from).lerp(to,travel);
+   overlordBladeTrajectory({source:from,target:to,progress:travel,index,special},flight);
+   direction.set(flight.dx,flight.dy,flight.dz).normalize();tip.set(flight.x,flight.y,flight.z);
    sword.quaternion.setFromUnitVectors(up,direction);sword.scale.setScalar(scale);sword.position.copy(tip).addScaledVector(direction,-scale);
    const opacity=Math.max(0,Math.min(1,cue.opacity||0));for(const material of Object.values(materials[index]))material.opacity=opacity;
   });
@@ -186,8 +183,9 @@ export function createOverlordBattleScene({canvas,art,onLost=()=>{}}){
  const groundMaterial=new THREE.MeshBasicMaterial({map:shadowTexture(resources),transparent:true,depthWrite:false,toneMapped:false});resources.add(groundMaterial);
  const groundShadow=new THREE.Mesh(new THREE.PlaneGeometry(1.55,.9),groundMaterial);resources.add(groundShadow.geometry);groundShadow.rotation.x=-Math.PI/2;groundShadow.position.set(.45,.073,.2);scene.add(groundShadow);
  const heroShadow=new THREE.Mesh(groundShadow.geometry,groundMaterial);heroShadow.rotation.x=-Math.PI/2;heroShadow.scale.set(.36,.36,1);heroShadow.position.y=.073;scene.add(heroShadow);
- const atmosphere=createOverlordStageEffects(THREE);scene.add(atmosphere.group);
+ const atmosphere=createOverlordStageEffects(THREE,{images:art?.images});scene.add(atmosphere.group);
  const attackSwords=createOverlordAttackSwords(THREE);scene.add(attackSwords.group);
+ let backdropImage=null,backdropTexture=null;const backdropColor=new THREE.Color();
  const idleBackdrop=new THREE.Color('#0a080e'),dangerBackdrop=new THREE.Color('#16050b'),goldBackdrop=new THREE.Color('#15100a'),riftBackdrop=new THREE.Color('#070726'),riftStone=new THREE.Color('#151630'),keyWarm=new THREE.Color('#ffe5c7'),keyAstral=new THREE.Color('#8c91ff'),bloodRim=new THREE.Color('#b51235'),goldRim=new THREE.Color('#f3c477');
  const sceneryMaterials=new Map();for(const parent of[hall.group,throne.group||throne])parent.traverse(object=>{for(const material of object.material?Array.isArray(object.material)?object.material:[object.material]:[])if(material.color&&!sceneryMaterials.has(material))sceneryMaterials.set(material,{color:material.color.clone(),emissive:material.emissive?.clone()});});
  const makeMaterial=parameters=>{const m=new THREE.MeshBasicMaterial(parameters);resources.add(m);return m;};
@@ -202,6 +200,7 @@ export function createOverlordBattleScene({canvas,art,onLost=()=>{}}){
  const slashes=[];for(let i=0;i<5;i++){const group=new THREE.Group();group.add(new THREE.Mesh(glowGeo,redMaterial),new THREE.Mesh(coreGeo,coreMaterial));group.visible=false;scene.add(group);slashes.push(group);}
  const particleCount=70,particleGeo=new THREE.BufferGeometry(),particlePositions=new Float32Array(particleCount*3);particleGeo.setAttribute('position',new THREE.BufferAttribute(particlePositions,3));resources.add(particleGeo);
  const particleMaterial=new THREE.PointsMaterial({color:'#ff9a73',size:.027,transparent:true,opacity:.8,blending:THREE.AdditiveBlending,depthWrite:false,toneMapped:false});resources.add(particleMaterial);const sparks=new THREE.Points(particleGeo,particleMaterial);sparks.visible=false;scene.add(sparks);
+ const slashFrom=new THREE.Vector3(),slashTo=new THREE.Vector3(),slashFlight={};
  let framingKey='',dead=false,last=0,start=null,viewWidth=0,viewHeight=0,viewRatio=0;
  const lost=event=>{event.preventDefault();if(!dead)onLost();};canvas.addEventListener('webglcontextlost',lost);
  function frameStage(w,h,layout){
@@ -219,8 +218,12 @@ export function createOverlordBattleScene({canvas,art,onLost=()=>{}}){
   const w=Math.max(1,canvas.clientWidth||360),h=Math.max(1,canvas.clientHeight||260),ratio=overlordBattlePixelRatio(w,h,globalThis.devicePixelRatio||1);if(w!==viewWidth||h!==viewHeight||Math.abs(ratio-viewRatio)>.001){renderer.setPixelRatio(ratio);renderer.setSize(w,h,false);viewWidth=w;viewHeight=h;viewRatio=ratio;}
   if(start===null)start=time;const dt=Math.max(0,Math.min(.05,time-last));last=time;
   const beat=overlordBattleDirector({battle,effect,time,motion,start}),{environment,actors,player,counter}=beat,layout=overlordBattleLayout(w/h);
-  const rise=overlordRisePlacement({state:beat.state,stateElapsed:beat.stateElapsed,walkProgress:beat.walkProgress,standDuration:boss.metadata.standDuration});
-  boss.group.position.set(layout.boss.x,layout.boss.y+rise.lift,throneAnchor.z+(layout.boss.z-throneAnchor.z)*beat.walkProgress+rise.advance);
+  // Whole-frame actors have no authored walk or seated art. Establish them on
+  // the stage with the camera instead of sliding a standing image off a seat.
+  const wholeFrame=boss.metadata.style==='whole-frame-sprite';
+  const rise=wholeFrame?{lift:0,advance:0}:overlordRisePlacement({state:beat.state,stateElapsed:beat.stateElapsed,walkProgress:beat.walkProgress,standDuration:boss.metadata.standDuration});
+  const walkProgress=wholeFrame?1:beat.walkProgress;
+  boss.group.position.set(layout.boss.x,layout.boss.y+rise.lift,throneAnchor.z+(layout.boss.z-throneAnchor.z)*walkProgress+rise.advance);
   towardBoss.set(layout.boss.x-layout.hero.x,0,layout.boss.z-layout.hero.z).normalize();
   hero.position.set(layout.hero.x,layout.hero.y+actors.heroLift,layout.hero.z).addScaledVector(towardBoss,actors.heroAdvance-actors.heroRecoil);
   boss.group.position.addScaledVector(towardBoss,actors.bossRecoil);boss.group.rotation.set(-actors.bossLean*.12,overlordAimYaw(boss.group.position,hero.position),0);
@@ -239,18 +242,21 @@ export function createOverlordBattleScene({canvas,art,onLost=()=>{}}){
   impact.visible=motion&&counter.impact>.001;impact.position.copy(hero.position);impact.position.y=.083;impact.scale.setScalar(.4+counter.impact*1.1);
   sparks.visible=motion&&(counter.active||player.impact>.001);
   if(sparks.visible){for(let i=0;i<particleCount;i++){const seed=i/particleCount,a=i*2.399+time*(counter.charge>.01?1.4:.4),flight=counter.active?counter.progress:1,radius=.14+seed*.42,x=boss.group.position.x+(hero.position.x-boss.group.position.x)*flight,y=.15+((seed*3.4+time*.2)%1)*1.4,z=boss.group.position.z+(hero.position.z-boss.group.position.z)*flight;particlePositions.set([x+Math.cos(a)*radius,y,z+Math.sin(a)*radius],i*3);}particleGeo.attributes.position.needsUpdate=true;}
-  slashes.forEach((object,index)=>{const blade=beat.blades[index],yaw=overlordAimYaw(boss.group.position,hero.position),lateral=(index-2)*.075;object.visible=motion&&blade.active;object.position.set(boss.group.position.x+(hero.position.x-boss.group.position.x)*blade.travel+Math.cos(yaw)*lateral,1.35+(hero.position.y+.34-1.35)*blade.travel,boss.group.position.z+(hero.position.z-boss.group.position.z)*blade.travel-Math.sin(yaw)*lateral);object.rotation.set(.13,yaw,-.55+index*.15);object.scale.setScalar(.30+index*.035+Math.sin(blade.travel*Math.PI)*.14);});
-  attackSwords.update({blades:beat.blades,boss:boss.group.position,hero:hero.position,motion});
+  slashes.forEach((object,index)=>{const blade=beat.blades[index];object.visible=motion&&blade.active;if(!object.visible)return;slashFrom.set(boss.group.position.x+(index-2)*.37,boss.group.position.y+1.45+(index%2)*.10,boss.group.position.z-.10);slashTo.set(hero.position.x+(index-2)*.035,hero.position.y+.46,hero.position.z);overlordBladeTrajectory({source:slashFrom,target:slashTo,progress:blade.travel,index,special:counter.special},slashFlight);object.position.set(slashFlight.x,slashFlight.y,slashFlight.z);object.rotation.set(.13,Math.atan2(slashFlight.dx,slashFlight.dz),-.55+index*.15);object.scale.setScalar(.30+index*.035+Math.sin(blade.travel*Math.PI)*.14);});
+  attackSwords.update({blades:beat.blades,boss:boss.group.position,hero:hero.position,motion,special:counter.special});
   rim.intensity=6.5+environment.rage*4+counter.charge*4+counter.impact*8;rim.color.copy(bloodRim).lerp(goldRim,environment.gold);
   const rift=environment.rift||0,flash=environment.flash||0;
   key.color.copy(keyWarm).lerp(keyAstral,rift*.72).lerp(goldRim,environment.gold*.25);key.intensity=2.9*(1-rift*.54)+flash*3;
   fill.intensity=.62+rift*.55+flash*.7;
   for(const [material,base]of sceneryMaterials){material.color.copy(base.color).lerp(riftStone,rift*.82);if(material.emissive&&base.emissive)material.emissive.copy(base.emissive).multiplyScalar(1-rift*.7);}
   (throne.group||throne).visible=(environment.hallVisibility??1)>.24;
-  scene.background.copy(idleBackdrop).lerp(dangerBackdrop,environment.rage).lerp(riftBackdrop,rift).lerp(goldBackdrop,environment.gold);scene.fog.color.copy(scene.background);
+  backdropColor.copy(idleBackdrop).lerp(dangerBackdrop,environment.rage).lerp(riftBackdrop,rift).lerp(goldBackdrop,environment.gold);scene.fog.color.copy(backdropColor);
+  const paintedBackground=art?.images?.battleEclipse;if(paintedBackground&&paintedBackground!==backdropImage){backdropTexture?.dispose();backdropImage=paintedBackground;backdropTexture=new THREE.Texture(paintedBackground);backdropTexture.colorSpace=THREE.SRGBColorSpace;backdropTexture.needsUpdate=true;}
+  scene.background=backdropTexture||backdropColor;hall.group.visible=!backdropTexture||rift<.32;(throne.group||throne).visible=!backdropTexture&&((environment.hallVisibility??1)>.24);
+  if(backdropTexture){scene.backgroundIntensity=.62+(environment.gold||0)*.24;scene.backgroundBlurriness=0;}
   groundShadow.position.x=boss.group.position.x;groundShadow.position.z=boss.group.position.z;heroShadow.visible=hero.visible;heroShadow.position.x=hero.position.x;heroShadow.position.z=hero.position.z;
   atmosphere.update({time,motion,environment,boss:boss.group.position,target:hero.position,camera});hall.update?.({time,motion,phase:beat.phase,environment});renderer.render(scene,camera);
  }
- function dispose(){if(dead)return;dead=true;canvas.removeEventListener('webglcontextlost',lost);attackSwords.dispose();atmosphere.dispose();boss.dispose();throne.dispose?.();hall.dispose?.();heroTexture?.dispose();for(const resource of resources)resource.dispose?.();renderer.dispose();}
+ function dispose(){if(dead)return;dead=true;canvas.removeEventListener('webglcontextlost',lost);attackSwords.dispose();atmosphere.dispose();boss.dispose();throne.dispose?.();hall.dispose?.();heroTexture?.dispose();backdropTexture?.dispose();for(const resource of resources)resource.dispose?.();renderer.dispose();}
  return {render,dispose,scene,camera,boss,attackSwords,ready:boss.ready};
 }

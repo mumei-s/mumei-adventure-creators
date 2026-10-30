@@ -1,3 +1,4 @@
+import {prepareGenerationDelivery,scopeGenerationStages} from '../generation-quality-delivery.js';
 import {selectionReferenceManifest,selectionReferenceCounts} from '../selection-references.js?v=28.4.6';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -40,11 +41,11 @@ function fixture({count=2}={}){
  const stats={shown:[],persisted:0,celebrations:0,revoked:[]};
  const invalidate=()=>context.clearPreparedResult();
  context=vm.createContext({$,el:node,File,performance,refs,selections,mode:'detail',selectedProposal:null,sourceKind:'illustration-person',collection:'halloween',attachmentMode:'bundle',
-  creating:false,adding:false,resettingReferences:false,referenceGeneration:0,inputRevision:0,draftProfileRevision:0,resultRequest:0,resultObjectURLs:[],disposeLayoutPreview(){},currentResult:null,
+  creating:false,adding:false,resettingReferences:false,referenceGeneration:0,inputRevision:0,draftProfileRevision:0,resultRequest:0,resultObjectURLs:[],disposeLayoutPreview(){},disposeQualityPanel(){},currentResult:null,
   historyReady:Promise.resolve(),draftReady:Promise.resolve(),saved:{history:[],used:[],count:0},requestAnimationFrame:callback=>callback(),
   normalizeCreator,artworkProfile:()=>({displayName:'競合検証',topics:[],activityEnabled:false}),syncSaved:async()=>{},questions,AUTO,effectiveSelections,sourceSubjectFor,resolveSelections,rng:()=>.23,
   selectionConflicts,candidateAvailability,needsReference,buildDirection,applyPose,uid:()=> 'RACE-'+(++edition),stylePresetFor,
-  loadStylePresets:references=>new Promise(resolve=>{styleWait={references,resolve};}),selectionReferenceManifest,buildSelectionReferenceSheet:async manifest=>new File(['TEST SHEET: '+manifest.items.map(item=>item.key+'='+item.value).join(',')],manifest.name,{type:'image/jpeg'}),productionPlan,composePrompt,APP_VERSION:app.match(/const APP_VERSION='([^']+)'/)[1],stagePrompts,compactCreatorProfile,
+  loadStylePresets:references=>new Promise(resolve=>{styleWait={references,resolve};}),selectionReferenceManifest,buildSelectionReferenceSheet:async manifest=>new File(['TEST SHEET: '+manifest.items.map(item=>item.key+'='+item.value).join(',')],manifest.name,{type:'image/jpeg'}),productionPlan,composePrompt,prepareGenerationDelivery,scopeGenerationStages,APP_VERSION:app.match(/const APP_VERSION='([^']+)'/)[1],stagePrompts,compactCreatorProfile,
   persist:async()=>{stats.persisted++;},renderHistory(){},renderBoard:invalidate,renderChoices:invalidate,syncActivity(){},tell(){},effects:{celebrate(){stats.celebrations++;}},
   showResult:async result=>{stats.shown.push(result);context.currentResult=result;},
   URL:{revokeObjectURL:url=>stats.revoked.push(url)},normalizeImageFile:file=>file,

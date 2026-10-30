@@ -1,3 +1,4 @@
+import {qualityContext} from './quality-vm-fixtures.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
@@ -53,7 +54,7 @@ for(const secondRole of ['support','avoid']){
 }
 const share=app.slice(app.indexOf('async function shareAll(){'),app.indexOf('function showShareFallback('));
 let payload;const context={currentResult:direct,shareFiles:()=>[style,new File(['prompt'],'prompt.txt')],deliveryReferenceNotice,imageGenerationRequest,canShareFiles:()=>true,navigator:{share:async value=>{payload=value;}},$:()=>({textContent:''}),showShareFallback(){throw new Error('unexpected fallback');}};
-vm.runInNewContext(share,context);await context.shareAll();assert.match(payload.text,/見本だけなら生成せず/);assert.equal(payload.files[0],style);
+vm.runInContext(share,qualityContext(context));await context.shareAll();assert.match(payload.text,/見本だけなら生成せず/);assert.equal(payload.files[0],style);
 assert.match(app,/pendingReferences:\(r.references\|\|\[\]\)\.filter/);
 assert.match(identityRepairInstructions({sourceKind:'photo-person'}),/修正対象と元の主参照の実画像を画像作成機能へ渡し/);
 console.log('PASS reference authority: '+cases+' all-style/two-mode prompt paths, missing/direct/combined references, shared original bytes/order, actual removal and direct-share handlers, identity-aware repair. Generated image fidelity not executed.');

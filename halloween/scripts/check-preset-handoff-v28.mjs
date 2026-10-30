@@ -1,3 +1,4 @@
+import {qualityContext} from './quality-vm-fixtures.mjs';
 import {deliveryReferenceNotice} from '../reference-authority.js';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -21,7 +22,7 @@ class Node {
 }
 const nodes=new Map(),$=id=>{if(!nodes.has(id))nodes.set(id,new Node(id==='style-preset-select'?'select':'div'));return nodes.get(id);};
 let shared,zipBlob;const context={deliveryReferenceNotice,imageGenerationRequest,imageDeliveryRepairPrompt,$,questions,AUTO,collection:'halloween',stylePreviewKey:'',activeQuestion:null,selections:{medium:AUTO},stylePresetFor,el:(tag,cls,text)=>new Node(tag,text),sampleNode:(key,value)=>new Node('sample',value),deliveryImageFiles,File,Uint8Array,TextEncoder,makeZip,download:b=>{zipBlob=b;},creatorDisplayLabel:()=>'',needsReference:()=>true,tell:s=>{$('toast').textContent=s;},canShareFiles:()=>true,navigator:{share:async data=>{shared=data;},clipboard:{writeText:async()=>{}}},shareFiles:r=>[...deliveryImageFiles(r),new File([r.prompt],'prompt.txt',{type:'text/plain'})]};
-vm.createContext(context);
+qualityContext(context);
 vm.runInContext(app.slice(app.indexOf('function renderStylePreset('),app.indexOf("$('style-preset-select').addEventListener")),context);
 context.renderStylePreset({medium:AUTO});assert.equal($('style-preset-select').options.length,stylePresets.length+1);
 for(const preset of stylePresets){context.renderStylePreset({medium:preset.medium});assert.equal($('style-preset-select').value,preset.medium);assert.equal($('style-preset-trigger').textContent,preset.medium+' ▾');assert.equal($('style-preset-trigger').attributes['aria-expanded'],'false');assert.equal($('style-preset-preview').children[0].textContent,preset.medium);assert.match($('style-preset-status').textContent,/共有・制作セット/);}

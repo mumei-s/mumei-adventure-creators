@@ -1,3 +1,4 @@
+import {qualityContext} from './quality-vm-fixtures.mjs';
 import {createHistoryPersistence} from '../history-persistence.js?v=28.4.6';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -66,14 +67,14 @@ const preserved=await compactHistoryRecord(corrupt,{Compression:null,Decompressi
 // Exercise the actual app save wrapper and lazy-result guard. A delayed older
 // save/click must not overwrite a newer creation or reopen the wrong result.
 const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8'),persistSource=app.slice(app.indexOf('async function persist('),app.indexOf('\nasync function initializeHistory()',app.indexOf('async function persist(')));
-const raceStorage=storageWithLimit(),context=vm.createContext({historyWriteRevision:0,saved:state,migrateHistory:true,localStorage:raceStorage,STORAGE:'history',historyPersistence:createHistoryPersistence({key:'history',storage:raceStorage,database:{async update(){throw new DOMException('denied','SecurityError');}},Compression:globalThis.CompressionStream,Decompression:globalThis.DecompressionStream}),normalizeSavedHistory:x=>x,tell(){}});
+const raceStorage=storageWithLimit(),context=qualityContext({historyWriteRevision:0,saved:state,migrateHistory:true,localStorage:raceStorage,STORAGE:'history',historyPersistence:createHistoryPersistence({key:'history',storage:raceStorage,database:{async update(){throw new DOMException('denied','SecurityError');}},Compression:globalThis.CompressionStream,Decompression:globalThis.DecompressionStream}),normalizeSavedHistory:x=>x,tell(){}});
 vm.runInContext(persistSource,context);
 const first=vm.runInContext('persist()',context);context.saved={history:[{...record,edition:'NEWER',count:13}],used:used.slice(-3),count:13};const second=vm.runInContext('persist()',context);
 await Promise.all([first,second]);assert.equal(JSON.parse(raceStorage.data.get('history')).history[0].edition,'NEWER');assert.equal(context.saved.count,13);
 const resultSource=app.slice(app.indexOf('async function showResult(r){'),app.indexOf(' if(r.localRefs?.length)',app.indexOf('async function showResult(r){')));
 // The race-only records deliberately omit production. Delivery compatibility
 // is exercised with real archived plans in check-delivery-history-migration.
-const pending=new Map();const resultContext=vm.createContext({resultRequest:0,inputRevision:0,shown:'',APP_VERSION:'28.4.5',optionalIdentityPrompts:()=>null,recomposeHistoryDelivery:r=>r,restoreHistoryRecord:r=>new Promise(resolve=>pending.set(r.edition,resolve)),tell(){}});resultContext.clearPreparedResult=()=>{resultContext.resultRequest++;resultContext.inputRevision++;};
+const pending=new Map();const resultContext=qualityContext({resultRequest:0,inputRevision:0,shown:'',APP_VERSION:'28.4.5',optionalIdentityPrompts:()=>null,recomposeHistoryDelivery:r=>r,restoreHistoryRecord:r=>new Promise(resolve=>pending.set(r.edition,resolve)),tell(){}});resultContext.clearPreparedResult=()=>{resultContext.resultRequest++;resultContext.inputRevision++;};
 vm.runInContext(resultSource+'shown=r.edition;\n}',resultContext);
 const older=vm.runInContext("showResult({edition:'A'})",resultContext),newer=vm.runInContext("showResult({edition:'B'})",resultContext);
 pending.get('B')({edition:'B'});await newer;pending.get('A')({edition:'A'});await older;assert.equal(resultContext.shown,'B');

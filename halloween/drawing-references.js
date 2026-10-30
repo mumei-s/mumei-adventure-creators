@@ -37,7 +37,14 @@ export async function loadDrawingReferences(references,{fetchImpl=globalThis.fet
  }));
 }
 export function deliveryImageFiles(result,{FileClass=globalThis.File}={}){
- const identity=(result.localRefs||[]).map((ref,i)=>new FileClass([ref.file],result.references[i].name,{type:ref.file.type}));
+ const descriptors=result.references||[],key=ref=>ref.id||ref.draftId;
+ const hasKeys=descriptors.some(ref=>key(ref));
+ if(hasKeys&&new Set(descriptors.map(key)).size!==descriptors.length)throw new Error('今回の参照画像の識別子が重複しています。元の画像は保持しています。');
+ const identity=(result.localRefs||[]).map((ref,i)=>{
+  const descriptor=hasKeys?descriptors.find(item=>key(item)&&key(item)===key(ref)):descriptors[i];
+  if(!descriptor||!ref.file||(hasKeys&&!descriptor.role)||(descriptor.role&&descriptor.role!==ref.role))throw new Error('今回の参照画像と役割の対応を確認できませんでした。元の画像は保持しています。');
+  return new FileClass([ref.file],descriptor.name,{type:ref.file.type});
+ });
  const style=(result.localDrawingRefs||[]).map(ref=>ref.file);
  return [
   ...identity,...style,

@@ -1,3 +1,4 @@
+import {qualityContext} from './quality-vm-fixtures.mjs';
 import {deliveryReferenceNotice} from '../reference-authority.js';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -46,7 +47,7 @@ for(const clipboardMode of ['success','denied','missing']){
  const nodes=new Map(),events=[],writes=[];
  const $=id=>{if(!nodes.has(id))nodes.set(id,{hidden:true,value:'',focus(){events.push(id+':focus');},select(){events.push(id+':select');},scrollIntoView(){events.push(id+':scroll');}});return nodes.get(id);};
  const navigator=clipboardMode==='missing'?{}:{clipboard:{writeText:async text=>{writes.push(text);if(clipboardMode==='denied')throw new Error('Clipboard unavailable');}}};
- const context=vm.createContext({$,navigator,imageDeliveryRepairPrompt,currentResult:{prompt:longPrompt},tell:message=>events.push(message)});
+ const context=qualityContext({$,navigator,imageDeliveryRepairPrompt,currentResult:{prompt:longPrompt},tell:message=>events.push(message)});
  vm.runInContext(retryHandler,context);await context.copyDeliveryRequest();
  const field=$('delivery-retry-text');assert.equal($('delivery-retry-panel').hidden,false,'The retry text remains reviewable even after automatic copying');
  assertDeliveryRetry(field.value,longPrompt,'UI '+clipboardMode);
@@ -61,7 +62,7 @@ let shareCases=0;
 for(const imageCount of [0,1,4]){
  const images=Array.from({length:imageCount},(_,index)=>new File(['REFERENCE-'+index],'reference-'+index+'.png',{type:'image/png'}));
  const payloads=[],status={textContent:''};let fallback=0;
- const context=vm.createContext({File,deliveryReferenceNotice,imageGenerationRequest,currentResult:{prompt:longPrompt},deliveryImageFiles:()=>images,$:()=>status,showShareFallback:()=>{fallback++;},navigator:{canShare:()=>true,share:async payload=>{payloads.push(payload);}}});
+ const context=qualityContext({File,deliveryReferenceNotice,imageGenerationRequest,currentResult:{prompt:longPrompt},deliveryImageFiles:()=>images,$:()=>status,showShareFallback:()=>{fallback++;},navigator:{canShare:()=>true,share:async payload=>{payloads.push(payload);}}});
  vm.runInContext(shareHandler,context);await context.shareAll();
  assert.equal(payloads.length,1);assert.equal(fallback,0);
  const payload=payloads[0];assert.equal(payload.text,imageGenerationRequest(imageCount>0,true));assert(!payload.text.includes(longPrompt));

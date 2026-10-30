@@ -63,7 +63,7 @@ export async function compactHistoryRecord(record,{Compression=globalThis.Compre
  }
  if(record.detailArchive){compact.detailArchive=record.detailArchive;return compact;}
  if(!record.production&&!record.stages)return compact;
- compact.detailArchive=await archiveJSON({production:record.production||null,stages:record.stages||null},Compression,Decompression);return compact;
+ compact.detailArchive=await archiveJSON({production:record.production||null,stages:record.stages||null,qualityEnabled:record.qualityEnabled,qualityRequest:record.qualityRequest?Object.fromEntries(Object.entries(record.qualityRequest).filter(([key])=>key!=='outputPrompt')):null},Compression,Decompression);return compact;
 }
 
 export async function restoreHistoryCore(record,{Decompression=globalThis.DecompressionStream}={}){
@@ -79,7 +79,7 @@ export async function restoreHistoryRecord(record,{Decompression=globalThis.Deco
  const epoch=restoreEpoch,pending=(async()=>{
   const core=await restoreHistoryCore(record,{Decompression});
   const details=record.detailArchive?await readArchive(record.detailArchive,Decompression):{};
-  const restored={...record,...core,...(record.detailArchive?{production:details.production||null,stages:details.stages||null}:{})};
+  const restored={...record,...core,...(record.detailArchive?{production:details.production||null,stages:details.stages||null,...(details.qualityEnabled!==undefined?{qualityEnabled:details.qualityEnabled}:{}),...(details.qualityRequest?{qualityRequest:{...details.qualityRequest,outputPrompt:core.prompt}}:{})}:{})};
   if(epoch===restoreEpoch){restoredRecords.set(record,restored);while(restoredRecords.size>RESTORED_HISTORY_CACHE_LIMIT)restoredRecords.delete(restoredRecords.keys().next().value);}
   return restored;
  })();

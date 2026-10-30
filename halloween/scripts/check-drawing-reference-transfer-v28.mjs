@@ -1,3 +1,4 @@
+import {qualityContext} from './quality-vm-fixtures.mjs';
 import {deliveryReferenceNotice} from '../reference-authority.js';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -49,7 +50,7 @@ assert.equal(deliveryImageFiles({...result,localRefs:[]}).length,1,'Direct ChatG
 const app=fs.readFileSync(new URL('app.js',root),'utf8'),nodes=new Map();let payload,zipBlob;
 const $=id=>{if(!nodes.has(id))nodes.set(id,{textContent:'',disabled:false,hidden:true,dataset:{},scrollIntoView(){}});return nodes.get(id);};
 const context={deliveryReferenceNotice,imageGenerationRequest,imageDeliveryRepairPrompt,currentResult:result,deliveryImageFiles,shareFiles:r=>[...deliveryImageFiles(r),new File([r.prompt],'prompt.txt',{type:'text/plain'})],canShareFiles:()=>true,navigator:{share:async data=>{payload=data;}},$,makeZip,TextEncoder,Uint8Array,download:blob=>{zipBlob=blob;},tell(){},needsReference:()=>true,creatorDisplayLabel:()=>''};
-vm.createContext(context);
+qualityContext(context);
 vm.runInContext(app.slice(app.indexOf('async function shareAll()'),app.indexOf('async function imagePNG')),context);
 await context.shareAll();assert.equal(payload.files.length,6);assert.ok(payload.text.length<180);assert.match(payload.text,/prompt\.txt/);assert.match(payload.text,/画像作成機能/);assert.ok(!payload.text.includes(result.prompt));assert.equal(payload.files[4].name,anime.name);for(let i=0;i<images.length;i++){assert.equal(payload.files[i].name,images[i].name);assert.deepEqual(Buffer.from(await payload.files[i].arrayBuffer()),Buffer.from(await images[i].arrayBuffer()),'Sharing preserves every reference byte and order');}const sharedPrompt=payload.files[5];assert.equal(sharedPrompt.name,'prompt.txt');assert.equal(sharedPrompt.type,'text/plain');assert.equal(await sharedPrompt.text(),result.prompt);
 vm.runInContext(app.slice(app.indexOf('async function downloadKit()'),app.indexOf('function renderHistory()')),context);

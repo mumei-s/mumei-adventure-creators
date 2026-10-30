@@ -31,11 +31,11 @@ import { normalizeLighting } from './lighting-model.js?v=20261019-interior1';
 import { MAP, CELL, FEATURES, toWorld, collectionAt, move, nearby, initialState, visibleArticles } from './maze-model.js?v=20261014-adventure2';
 import { ALL_MONSTERS as MONSTERS, OVERLORD_BOSS, REQUIRED_MONSTER_IDS, nearestMonster, newBattle, battleTurn, intentFor, monsterAvailable, prankFor, commandFor, monsterPose, guidePoint } from './encounter-model.js?v=20261016-living1';
 import { chooseView, movementVector, mapHeading } from './view-model.js?v=20261015-minimap1';
-import { createStageRenderer, EXIT, PALACE_FURNISHINGS } from './stage-2d.js?v=20261030-sprite1';
+import { createStageRenderer, EXIT, PALACE_FURNISHINGS } from './stage-2d.js?v=20261030-actions1';
 import {createArtLibrary,drawArtSprite} from './rpg-art.js?v=20261019-unified1';
-import {renderBattleScene,battleEffectDuration} from './battle-scene.js?v=20261030-sprite1';
-import {renderOverlordBattle2D} from './overlord-battle-2d.js?v=20261030-sprite1';
-import {overlordActionDuration,overlordBattleDirector} from './overlord-battle-director.js?v=20261030-sprite1';
+import {renderBattleScene,battleEffectDuration} from './battle-scene.js?v=20261030-actions1';
+import {renderOverlordBattle2D} from './overlord-battle-2d.js?v=20261030-actions1';
+import {overlordActionDuration,overlordBattleDirector} from './overlord-battle-director.js?v=20261030-actions1';
 import {directionFromMovement,moveAroundFurniture} from './rpg-model.js?v=20261014-adventure2';
 import {protectGameSurface,bindHeldGameButton,bindDirectionPad} from './game-input.js?v=20261019-journey1';
 import {STORY,encounterStory,chapterFor} from './story-model.js?v=20261016-living1';
@@ -49,7 +49,7 @@ const characterAssets=createCharacterAssets();
 let bootRequest=0,bootAbort=null,worldModule=null,releaseViewPreload=()=>{};
 function prepareViewpointAssets(requires3D,signal){releaseViewPreload();releaseViewPreload=preloadSelectedView({requires3D,worldURL:new URL('./world.js?v=20261019-unified1',import.meta.url),signal});}
 let cameraDistance=readCameraDistance('maze'),cameraZoom=readCameraZoom('maze'),padMode=readPadMode(),padBinding=null,viewFailure='',viewFailureCode='',viewFeedback='',viewAttempt=0;
-let stageRenderer,battleCanvas=null,battleEffect=null,visualTime=0;
+let stageRenderer,battleCanvas=null,battleEffect=null,visualTime=0,battleVisualStarted=0;
 let nativeBattle=null,nativeBattleLoading=false,nativeBattleToken=0,nativeBattleFailed=false;
 function disposeNativeBattle(){nativeBattleToken++;nativeBattle?.dispose();nativeBattle=null;nativeBattleLoading=false;nativeBattleFailed=false;}
 let facing='down',walking=false,walkPhase=0,padDirection=null;
@@ -287,7 +287,7 @@ function showEncounter(monster,{direct=false}={}){
     content.append(portrait,element('p','物語・鍵・封印の進行は不要です。ここから覇王 S と対戦し、終わったら同じ場所から探索を続けられます。'));
     storyDetails=element('details',undefined,'encounter-story');storyDetails.append(element('summary','物語を読む'),element('p',story.intro),element('p',story.dialogue,'story-dialogue'),element('p',story.advice),element('p',story.throne));
   }else content.append(portrait,element('p',story.intro),element('p',story.dialogue,'story-dialogue'),element('p',story.advice),...(monster.nativeModel?[element('p',story.throne)]:[]),element('p','対戦は自分で選ぶまで始まりません。音や時間制限はありません。'));
-  const actions=element('div',undefined,'tabs'),fight=element('button','対戦する','primary'),leave=element('button','立ち去る');fight.id='encounter-confirm';fight.onclick=()=>{disposeNativeBattle();battleCanvas=null;battle=newBattle(monster.id);battleEffect=null;renderBattle();$('battle-shine')?.focus({preventScroll:true});};leave.id='encounter-leave';leave.onclick=()=>panel.close();actions.append(fight,leave);content.append(actions);if(storyDetails)content.append(storyDetails);openPanel();
+  const actions=element('div',undefined,'tabs'),fight=element('button','対戦する','primary'),leave=element('button','立ち去る');fight.id='encounter-confirm';fight.onclick=()=>{disposeNativeBattle();battleCanvas=null;battle=newBattle(monster.id);battleEffect=null;battleVisualStarted=visualTime;renderBattle();$('battle-shine')?.focus({preventScroll:true});};leave.id='encounter-leave';leave.onclick=()=>panel.close();actions.append(fight,leave);content.append(actions);if(storyDetails)content.append(storyDetails);openPanel();
 }
 function renderBattle(){
   void rpgArt.ensure('battleEclipse');void rpgArt.ensure('battleEnergy');
@@ -307,7 +307,7 @@ function renderBattle(){
   }else{
     if(battle.status==='rest')log.append(element('p',battle.dialogue,'battle-dialogue'));
     if(battle.status==='won'){if(!cleared.includes(m.id)){cleared.push(m.id);save();}const story=encounterStory(m.id);log.append(element('p',story.victory+(m.nativeModel?' '+story.epilogue:''),'story-dialogue'),element('p',m.optional?`${story.keepsake}を受け取った。任意の腕試しをクリア。`:`${story.keepsake}を受け取った。キャンディのしるし ${requiredClearCount()}/6。`,'battle-reward'));}
-    const again=element('button','もう一度対戦');again.id='battle-retry';again.onclick=()=>{disposeNativeBattle();battleCanvas=null;battle=newBattle(m.id);battleEffect=null;renderBattle();$('battle-shine')?.focus({preventScroll:true});};actions.append(again);
+    const again=element('button','もう一度対戦');again.id='battle-retry';again.onclick=()=>{disposeNativeBattle();battleCanvas=null;battle=newBattle(m.id);battleEffect=null;battleVisualStarted=visualTime;renderBattle();$('battle-shine')?.focus({preventScroll:true});};actions.append(again);
     const exit=element('button','探索を続ける','battle-exit');exit.id='battle-exit';exit.onclick=()=>panel.close();actions.append(exit);
   }
   controls.append(log,actions);content.append(viewPane,controls);panel.scrollTop=0;content.scrollTop=0;
@@ -340,7 +340,7 @@ function drawBattleVisual(){
 function drawOverlordBattle(){
  if(nativeBattle){try{nativeBattle.render({battle,effect:battleEffect,time:visualTime,motion:motion&&!reducedMotion.matches});}catch{failNativeBattle();}return;}
  if(!nativeBattleFailed&&!nativeBattleLoading){nativeBattleLoading=true;const token=++nativeBattleToken,target=battleCanvas;
-  import('./overlord-battle-scene.js?v=20261030-sprite1').then(async({createOverlordBattleScene})=>{
+  import('./overlord-battle-scene.js?v=20261030-actions1').then(async({createOverlordBattleScene})=>{
    if(token!==nativeBattleToken||!battle||battle.id!=='nameless_overlord'||battleCanvas!==target)return;
    const candidate=createOverlordBattleScene({canvas:target,art:rpgArt,onLost:failNativeBattle});
    try{
@@ -352,7 +352,7 @@ function drawOverlordBattle(){
   }).catch(()=>{if(token===nativeBattleToken)failNativeBattle();});
  }
  if(nativeBattleLoading){const status=$('overlord-render-status');if(status){status.textContent='玉座の間を開いています…';status.hidden=false;}return;}
- if(nativeBattleFailed)renderOverlordBattle2D({canvas:battleCanvas,art:rpgArt,battle,effect:battleEffect,time:visualTime,motion:motion&&!reducedMotion.matches});
+ if(nativeBattleFailed)renderOverlordBattle2D({canvas:battleCanvas,art:rpgArt,battle,effect:battleEffect,time:visualTime,start:battleVisualStarted,motion:motion&&!reducedMotion.matches});
 }
 function failNativeBattle(){
  nativeBattleToken++;nativeBattle?.dispose();nativeBattle=null;nativeBattleLoading=false;nativeBattleFailed=true;if(!battleCanvas||battle?.id!=='nameless_overlord')return;

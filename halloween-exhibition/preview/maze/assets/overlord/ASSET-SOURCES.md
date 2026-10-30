@@ -1,12 +1,14 @@
 # Overlord S assets
 
-## Current whole-frame character and continuous cloth motion (2026-10-30)
+## Current full-body action character (2026-10-30)
 
-`queen-cast-poses-v3.webp` contains only three independently clean full-body drawings, repacked with 16px transparent gutters from the generated `exec-694b6351-40f2-4312-b1ff-30ccc36b7b0e.png` sheet. The rejected neighbouring and lower-row drawings are not included. This replaces the visibly separated sixteen-part atlas in the live runtime. The three complete drawings retain the black-and-gold armour, red mantle, blonde hair and crown of the user-provided queen reference. A low-resolution copy is embedded in `overlord-sprite-preview.js`; the detailed 1248×544 atlas upgrades it lazily.
+`queen-actions-v4.webp` packs seven independent full-body drawings with transparent gutters in a 1344×1632 atlas (608580 bytes). Poses are: resting stance, two casting stances, alternating left/right forward steps, a bent-knee recoil, and a genuine one-knee bow. Their physical scale is registered by head size and floor contact before packing; the crouch and kneel are visibly lower than standing rather than enlarged to fill the frame.
 
-The actor uses the same whole-frame sprite contract as the maze cast, plus one 60-triangle continuous mesh. Face landmarks share a rigid transform. Breathing, casting preparation/release, hit recoil, upper-body bow, hair and mantle follow-through are shared between Canvas2D and native Sprite rendering. This is three authored poses with continuous deformation, not a complete set of directional walking, kneeling or authored defeat frames. Those missing animations remain explicit in the actor metadata.
+The original three cast drawings are the clean top-row figures from `exec-694b6351-40f2-4312-b1ff-30ccc36b7b0e.png`. Added poses were built-in image-generation edits of the same queen: `queen-walk-left-v1.png` (SHA256 `5a24e9b3e25d73ec24613eefb469428a374483c622733e84a9496a7346836d25`), `queen-walk-right-v2.png` (`ee5594b11627022e501008efc6ba67a1aef5e102a4a1484007272eb1d8b32a8d`), `queen-hit-crouch-v1.png` (`c166a8efba190f594ef77883abedb2a8517d4553277ea06412a882f12b99313b`), and `queen-kneel-v1.png` (`0069f781c4457f4b8a4ea872bb9005496b643e1e4bc0e97849371ceaad64dcf7`). Brief: preserve the adult queen's face, crown, blonde curls, black-and-gold armour and red-and-gold mantle; one full-body pose per transparent image; actual leg anatomy, no extra limbs or effects. The first opposite-step candidate was rejected because the leading foot had not changed. Armour micro-patterns vary locally between generated poses.
 
-The queen remains present in the distant and flat exploration views. Neither the sixteen-part articulated atlas nor archived human geometry is imported by the current runtime. Attack swords are separate transient weapons and are absent at rest.
+Entrance, rise, alternating steps, casting, recoil and the final kneel are driven by one seekable battle clock. Canvas2D and native Sprite share the same registered crops and a 60-triangle continuous cloth deformation. Per-pose face rectangles remain rigid. The hand-painted crouch and kneel suppress the previous large procedural body bend so they are not deformed twice. Reduced motion holds the final kneel immediately after victory.
+
+This is a front/three-quarter battle character. It does not advertise a four-direction exploration walk set. In exploration the queen waits at her throne and remains visible in the distant and flat views. The detailed texture loads lazily over an embedded preview; idle floating weapons, separated sixteen-part limbs and archived human geometry are outside the live runtime. Attack swords appear only as transient battle weapons.
 
 ## Previous original-art character method
 

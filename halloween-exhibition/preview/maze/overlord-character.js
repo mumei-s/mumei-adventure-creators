@@ -1,15 +1,15 @@
-import {overlordArtSource,OVERLORD_ART_ATLAS_URL} from './overlord-art-source.js?v=20261030-sprite1';
-import {createOverlordSprite} from './overlord-sprite.js?v=20261030-sprite1';
-import {OVERLORD_SPRITE_LAYOUT,OVERLORD_SPRITE_BOUNDS} from './overlord-sprite-layout.js?v=20261030-sprite1';
+import {overlordArtSource,OVERLORD_ART_ATLAS_URL} from './overlord-art-source.js?v=20261030-actions1';
+import {createOverlordSprite,overlordAnimationInfo} from './overlord-sprite.js?v=20261030-actions1';
+import {OVERLORD_SPRITE_LAYOUT,OVERLORD_SPRITE_BOUNDS} from './overlord-sprite-layout.js?v=20261030-actions1';
 
 export const OVERLORD_CHARACTER_URL=OVERLORD_ART_ATLAS_URL;
 const states=['idle','seated','stand','walk','attack','special','hit','defeat'];
 
 /** The same whole-frame Sprite representation used by the other maze actors.
- * Three authored drawings supply the cast; missing walk/back/death artwork is
- * kept explicit rather than manufactured from detached body parts. */
+ * Measured whole-pose drawings supply only their authored actions; missing
+ * directional views remain explicit rather than implied by a front step. */
 export function createOverlordCharacter(THREE,{scale=1,height=3.05,atlas,atlasSource=overlordArtSource,layout=OVERLORD_SPRITE_LAYOUT}={}){
- const rig=createOverlordSprite(THREE,{height,image:atlas,layout});
+ const rig=createOverlordSprite(THREE,{height,image:atlas,layout}),animationInfo=overlordAnimationInfo(layout);
  const group=rig.group;group.name='Overlord S — whole-frame artwork';group.scale.setScalar(scale);group.visible=false;
  let dead=false,state='idle',elapsed=0,readyDone=false,resolveReady;
  const ready=new Promise(resolve=>{resolveReady=resolve;});
@@ -27,5 +27,5 @@ export function createOverlordCharacter(THREE,{scale=1,height=3.05,atlas,atlasSo
  return {group,root:group,rig,sprite:rig.sprite,parts:new Map(),ready,update,setState,setAtlas,
   // Roster portraits use a different crop layout and cannot replace this sheet.
   setImage:()=>false,setFacing:rig.setFacing,dispose,swords:[],
-  metadata:{...rig.metadata,style:'whole-frame-sprite',height,bounds:OVERLORD_SPRITE_BOUNDS,standDuration:1.27,states:[...states],authoredPoseCount:3,embeddedSwords:0,billboard:true}};
+  metadata:{...rig.metadata,style:'whole-frame-sprite',height,bounds:OVERLORD_SPRITE_BOUNDS,standDuration:1.27,states:[...states],...animationInfo,embeddedSwords:0,billboard:true}};
 }

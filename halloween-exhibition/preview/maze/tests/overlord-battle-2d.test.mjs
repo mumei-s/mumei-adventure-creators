@@ -28,7 +28,7 @@ function surface(width=390,height=330){
  const c=new Proxy(target,{set(obj,key,value){obj[key]=value;if(['globalAlpha','fillStyle','strokeStyle','lineWidth','shadowBlur','shadowColor'].includes(key))calls.push(['property',key,value]);return true;}});
  return {canvas:{clientWidth:width,clientHeight:height,width,height,getContext:()=>c},calls,draws};
 }
-const queen={id:'whole-pose-queen-atlas',width:1248,height:544},portrait={id:'roster-portrait-only',width:1024,height:1536},player={id:'existing-owner-atlas',width:1024,height:1024};
+const queen={id:'whole-pose-queen-atlas',width:1344,height:1632},portrait={id:'roster-portrait-only',width:1024,height:1536},player={id:'existing-owner-atlas',width:1024,height:1024};
 const art={images:{overlordArtAtlas:queen,nameless_overlord:portrait,playerAtlas:player}};
 const queenDraws=s=>{
  const draws=s.draws.filter(draw=>draw.image===queen);
@@ -39,7 +39,7 @@ const queenDraws=s=>{
  const box=bounds(draws);
  return [{...draws[0],...box,corners:draws.flatMap(draw=>draw.corners)}];
 };
-const checkedCrops=[[16,16,384,507],[432,16,384,512],[848,16,384,512]];
+const checkedCrops=[[16,16,416,512],[464,16,416,512],[912,16,416,512],[16,560,416,512],[464,560,416,512],[912,560,416,512],[16,1104,416,512]];
 function cropIndex(draw){const actual=draw?.args.slice(0,4);return checkedCrops.findIndex(crop=>crop.every((value,i)=>Math.abs(value-actual?.[i])<.001));}
 function environmentPaths(s){const clips=s.calls.filter(call=>call[0]==='clip').length;assert(clips===0||clips===60,'the complete-pose grid has a fixed clip budget');return s.calls.filter(call=>call[0]==='beginPath').length-clips;}
 function bounds(draws){const left=Math.min(...draws.map(d=>d.left)),top=Math.min(...draws.map(d=>d.top)),right=Math.max(...draws.map(d=>d.left+d.width)),bottom=Math.max(...draws.map(d=>d.top+d.height));return {left,top,width:right-left,height:bottom-top};}
@@ -129,7 +129,7 @@ test('resolved casts use all three clean full-body poses and hits recoil the com
  const battle=newBattle('nameless_overlord'),idle=surface(),hit=surface();
  renderOverlordBattle2D({canvas:idle.canvas,art,battle,time:4,motion:true});
  renderOverlordBattle2D({canvas:hit.canvas,art,battle,effect:{type:'shine',started:10,damage:4,retaliation:1},time:10.67,motion:true});
- const idleDraw=queenDraws(idle)[0],hitDraw=queenDraws(hit)[0];assert.equal(cropIndex(idleDraw),0);assert.equal(cropIndex(hitDraw),0);
+ const idleDraw=queenDraws(idle)[0],hitDraw=queenDraws(hit)[0];assert.equal(cropIndex(idleDraw),0);assert.equal(cropIndex(hitDraw),5);
  assert(Math.abs(hitDraw.left-idleDraw.left)>.1,'taking a hit moves the complete character instead of splitting it into limb images');
  for(const special of [false,true]){
   const effect={type:'guard',started:10,blocked:special?5:1,counterSpecial:special},duration=overlordActionDuration(effect),seen=new Set();
@@ -192,4 +192,19 @@ test('the actual sword point follows the timed flight and reaches the hero inste
   const expected=source.map((v,i)=>v+(target[i]-v)*progress);
   assert(Math.hypot(shape.tip[0]-expected[0],shape.tip[1]-expected[1])<.00001);
  }
+});
+
+
+test('fallback enters from the current duel clock, uses both step drawings and holds the earned kneel',()=>{
+ const battle=newBattle('nameless_overlord'),steps=[[100,6],[100.9,5],[101.4,0],[101.66,3],[102.1,4],[102.65,0]];
+ for(const [time,expected]of steps)for(const [w,h]of[[390,518],[844,220],[280,420]]){
+  const s=surface(w,h);renderOverlordBattle2D({canvas:s.canvas,art,battle,time,start:100,motion:true});const draw=queenDraws(s)[0];
+  assert.equal(cropIndex(draw),expected,`entrance at ${time} must choose the actual whole pose`);
+  for(const [x,y]of draw.corners){assert(x>=0&&x<=w);assert(y>=0&&y<=h,'every intro pose stays in the current viewport');}
+ }
+ const won={...battle,status:'won',spirit:0},effect={type:'shine',started:110,damage:4,finished:true};
+ for(const [time,expected]of[[110.9,0],[111.2,5],[111.7,6],[112.5,6],[999,6]]){
+  const s=surface();renderOverlordBattle2D({canvas:s.canvas,art,battle:won,effect,time,start:100,motion:true});assert.equal(cropIndex(queenDraws(s)[0]),expected);
+ }
+ for(const time of [110,999]){const s=surface();renderOverlordBattle2D({canvas:s.canvas,art,battle:won,effect,time,start:100,motion:false});assert.equal(cropIndex(queenDraws(s)[0]),6);assert.equal(s.calls.filter(call=>call[0]==='clip').length,0,'reduced motion paints one unwarped kneeling frame');}
 });

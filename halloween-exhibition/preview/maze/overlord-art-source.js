@@ -1,7 +1,7 @@
 import {loadOverlordImage} from './overlord-materials.js?v=20261030-art1';
-import {OVERLORD_SPRITE_PREVIEW} from './overlord-sprite-preview.js?v=20261030-sprite1';
+import {OVERLORD_SPRITE_PREVIEW} from './overlord-sprite-preview.js?v=20261030-actions1';
 
-export const OVERLORD_ART_ATLAS_URL=new URL('./assets/overlord/queen-cast-poses-v3.webp',import.meta.url).href;
+export const OVERLORD_ART_ATLAS_URL=new URL('./assets/overlord/queen-actions-v4.webp',import.meta.url).href;
 const valid=image=>(image?.naturalWidth||image?.width)>0&&(image?.naturalHeight||image?.height)>0;
 
 /** One lazy shared atlas. Embedded whole poses work offline, retaining the newest

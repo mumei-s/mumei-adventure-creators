@@ -16,7 +16,7 @@ function harness({cleared=[],encounters=false}={}){
  };
  const content=element('main'),panel={open:true,close(){record.closed++;this.open=false;}};
  const context=vm.createContext({element,content,panel,OVERLORD_BOSS,encounterStory,newBattle,encounters,cleared:[...cleared],readyMonsters:()=>ALL_MONSTERS,
-  state:initialState(),progress:{2026:{visited:['saved-article'],creatorStory:{met:['existing-friend']}}},reachedVault:false,battle:null,battleCanvas:null,battleEffect:null,
+  state:initialState(),progress:{2026:{visited:['saved-article'],creatorStory:{met:['existing-friend']}}},reachedVault:false,battle:null,battleCanvas:null,battleEffect:null,visualTime:83,battleVisualStarted:0,
   title(kicker,name){content.children=[];content.append(element('h2',name));},monsterPortrait:id=>Object.assign(element('canvas'),{monsterId:id}),
   contextTarget(){record.nearby++;return null;},nearestReadyMonster(){record.nearby++;return null;},
   openPanel(){record.opened++;panel.open=true;},disposeNativeBattle(){record.disposed++;},renderBattle(){record.renders++;},$:id=>nodes.get(id),save(){record.saves++;},
@@ -38,7 +38,7 @@ test('direct meeting and confirmation work from a fresh, locked, monster-hidden 
  assert.equal(details.open,undefined,'story is not expanded initially');assert.equal(details.children[0].textContent,'物語を読む');
  assert(h.content.children.some(n=>/物語・鍵・封印の進行は不要/.test(n.textContent||'')));
  h.nodes.get('encounter-confirm').onclick();
- assert.equal(h.context.battle.id,OVERLORD_BOSS.id);assert.equal(h.context.battle.status,'playing');assert.equal(h.context.battle.spirit,30);
+ assert.equal(h.context.battleVisualStarted,83,'confirmation starts entrance at the current game clock');assert.equal(h.context.battle.id,OVERLORD_BOSS.id);assert.equal(h.context.battle.status,'playing');assert.equal(h.context.battle.spirit,30);
  assert.equal(h.record.renders,1);assert.equal(h.record.disposed,1);assert.equal(h.record.saves,0);assert.equal(h.snapshot(),before);
 });
 
@@ -75,5 +75,5 @@ test('the monster roster offers the same ungated Overlord meeting while retainin
  assert.equal(flatten(h.content).filter(n=>n.id==='overlord-roster-direct').length,1,'only this boss gets its direct challenge action');
  assert.equal(flatten(h.content).some(n=>/8種/.test(n.textContent||'')),false);
  direct.onclick();assert.equal(h.record.nearby,0);assert.equal(h.record.closed,0);assert.equal(h.snapshot(),before);
- h.nodes.get('encounter-confirm').onclick();assert.equal(h.context.battle.id,OVERLORD_BOSS.id);assert.equal(h.context.battle.status,'playing');assert.equal(h.snapshot(),before);
+ h.nodes.get('encounter-confirm').onclick();assert.equal(h.context.battleVisualStarted,83,'confirmation starts entrance at the current game clock');assert.equal(h.context.battle.id,OVERLORD_BOSS.id);assert.equal(h.context.battle.status,'playing');assert.equal(h.snapshot(),before);
 });

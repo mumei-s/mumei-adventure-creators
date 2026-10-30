@@ -8,9 +8,9 @@ import { ALL_MONSTERS as MONSTERS, nearestMonster, monsterAvailable, monsterPose
 // Canvas illustration authored for this room; no participant art or remote assets.
 import {drawArtSprite,playerPose,loadArtImage} from './rpg-art.js?v=20261019-unified1';
 import {OVERLORD_CHARACTER_PREVIEW} from './overlord-character-preview.js?v=20261030-art1';
-import {getOverlordArtAtlas,overlordArtSource} from './overlord-art-source.js?v=20261030-sprite1';
-import {drawOverlordSprite} from './overlord-sprite.js?v=20261030-sprite1';
-import {OVERLORD_SPRITE_LAYOUT} from './overlord-sprite-layout.js?v=20261030-sprite1';
+import {getOverlordArtAtlas,overlordArtSource} from './overlord-art-source.js?v=20261030-actions1';
+import {drawOverlordSprite} from './overlord-sprite.js?v=20261030-actions1';
+import {OVERLORD_SPRITE_LAYOUT} from './overlord-sprite-layout.js?v=20261030-actions1';
 import {followCamera,depthOrder,clampSceneCamera} from './rpg-model.js?v=20261014-adventure2';
 const TILE=72,TAU=Math.PI*2;
 export const EXIT={x:8,z:14};

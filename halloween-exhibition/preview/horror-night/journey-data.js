@@ -1,5 +1,5 @@
 /** Canonical manuscript: article and game own disjoint passages. */
-export const VERSION='20261031-manga-1';
+export const VERSION='20261031-photo-order-1';
 export const NOTE_ARTICLE_PATH='/ss_yr/n/n603c26c01384';
 export const NOTE_RETURNS=Object.freeze({1:'',2:'',3:''});
 export const LINKS=Object.freeze([
@@ -112,8 +112,8 @@ export const ARTICLE=Object.freeze([
 ]);
 export const SCENES=Object.freeze([
  {id:1,roman:'Ⅰ',title:'写真にだけ、近い',button:'自動で広場へ進む',after:'after-1',paragraphs:[
- 'とりあえずシャッタータイマーかけて一枚撮った📷',
- 'あとで本人に聞けばいい。そう思った…',
+ 'みんなで集合写真を撮り終えたあと、今度は自分だけでも一枚撮っておこうと思った📷',
+ '三脚のカメラのタイマーをもう一度かけて、レンズの前に立った。',
  '撮った写真を開いて、指が止まったŐ×Őˋ)',
  '白い仮面が、私の肩に載っていた。',
  '顔だけ、すぐ横にある。',
@@ -124,7 +124,7 @@ export const SCENES=Object.freeze([
  '今度の写真では、仮面の人の手が、私の首をつかんでいた。',
  '首に触った。何もない。痛くもない。',
  'なのに、写真の中の私だけ、ひどく苦しそうな顔をしていた…'
- ],image:{src:'./assets/photo-anomaly-manga.png',after:'なのに、写真の中の私だけ、ひどく苦しそうな顔をしていた…',width:1024,height:1536,alt:'四コマ漫画。写真では白い仮面が私の肩にあるが、振り向くと男は遠くにいる。次の写真では男の手が首にある。現実では何も触れていない。'}},
+ ],image:{src:'./assets/photo-anomaly-manga.png',after:'三脚のカメラのタイマーをもう一度かけて、レンズの前に立った。',width:1024,height:1536,alt:'四コマ漫画。写真では白い仮面が私の肩にあるが、振り向くと男は遠くにいる。次の写真では男の手が首にある。現実では何も触れていない。'}},
  {id:2,roman:'Ⅱ',title:'先に帰る私',button:'自動で書庫へ進む',after:'after-2',paragraphs:[
  '書庫の扉は開いていた。',
  '中には誰もいない。',

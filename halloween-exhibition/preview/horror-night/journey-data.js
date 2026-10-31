@@ -1,5 +1,5 @@
 /** Canonical manuscript: article and game own disjoint passages. */
-export const VERSION='20261031-return-3';
+export const VERSION='20261031-manga-1';
 export const NOTE_ARTICLE_PATH='/ss_yr/n/n603c26c01384';
 export const NOTE_RETURNS=Object.freeze({1:'',2:'',3:''});
 export const LINKS=Object.freeze([
@@ -124,7 +124,7 @@ export const SCENES=Object.freeze([
  '今度の写真では、仮面の人の手が、私の首をつかんでいた。',
  '首に触った。何もない。痛くもない。',
  'なのに、写真の中の私だけ、ひどく苦しそうな顔をしていた…'
- ],insert:'〔マンガ①：肩に載る仮面→遠くにいる男→写真で首をつかまれる私→現実の首には何もない。私と仮面の男のみ〕'},
+ ],image:{src:'./assets/photo-anomaly-manga.png',after:'なのに、写真の中の私だけ、ひどく苦しそうな顔をしていた…',width:1024,height:1536,alt:'四コマ漫画。写真では白い仮面が私の肩にあるが、振り向くと男は遠くにいる。次の写真では男の手が首にある。現実では何も触れていない。'}},
  {id:2,roman:'Ⅱ',title:'先に帰る私',button:'自動で書庫へ進む',after:'after-2',paragraphs:[
  '書庫の扉は開いていた。',
  '中には誰もいない。',

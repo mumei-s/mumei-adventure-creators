@@ -1,6 +1,7 @@
 import {LINKS} from './journey-data.js?v=20261031-return-3';
 // Author IDs come from the manuscript, not proximity to ordinary town residents.
 export const CAST_CREATORS=Object.freeze([...new Set(LINKS.map(([,url])=>new URL(url).pathname.split('/')[1]))]);
+export const CAST_LABELS=Object.freeze(Object.fromEntries(CAST_CREATORS.map(id=>[id,LINKS.find(([,url])=>new URL(url).pathname.split('/')[1]===id)[0]])));
 export function manuscriptCast(visitors){
  const cast=visitors.filter(v=>v.mapId==='lantern-town'&&CAST_CREATORS.includes(v.creatorId));
  const ids=new Set();for(const actor of cast){if(ids.has(actor.id))throw Error('Duplicate manuscript actor');ids.add(actor.id);}

@@ -1,10 +1,10 @@
 import {initialTownState,moveTown,getTownMap,isTownWalkable,recoverTownPosition} from '../town/town-model.js?v=20261019-homes2';
 import {createTownCharacterArt} from '../town/character-art.js?v=20261019-homes2';
-import {createStoryCast} from './cast-art.js?v=20261031-cast-1';
+import {createStoryCast} from './cast-art.js?v=20261031-startup-1';
 import {STAGES,findPath,reached,distance} from './model.js';
 const deadline=(promise,ms)=>new Promise((resolve,reject)=>{const t=setTimeout(()=>reject(Error('The town took too long to load')),ms);Promise.resolve(promise).then(v=>{clearTimeout(t);resolve(v);},e=>{clearTimeout(t);reject(e);});});
 /** Separate controller: no main-game store, preference writes, battle or quests. */
-export async function createStoryTown({canvas3d,canvas2d,root,onNear=()=>{},onProgress=()=>{},onPosition=()=>{},onNotice=()=>{},onView=()=>{},onMarker=()=>{},view='3d',muted=true}){
+export async function createStoryTown({canvas3d,canvas2d,root,onNear=()=>{},onProgress=()=>{},onPosition=()=>{},onNotice=()=>{},onView=()=>{},onMarker=()=>{},onCastStatus=()=>{},view='3d',muted=true}){
  const abort=new AbortController(),reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
  let disposed=false,active=false,frameId=0,lastTime=0,time=0,walkPhase=0,saveTime=0,viewBusy=false;
  let state=initialTownState(),stage=STAGES[0],index=0,draw3d=null,draw2d=null,mode=view,near=false,lastDistance=-1;
@@ -13,7 +13,7 @@ export async function createStoryTown({canvas3d,canvas2d,root,onNear=()=>{},onPr
  const characterArt=createTownCharacterArt({signal:abort.signal,deferEnhancements:true,initialState:{...state,position:STAGES[0].spawn}});
  let audioContext=null,oscillator=null,gain=null,storyCast=null,castRevealed=false;
  const ghost=makeVisitor();
- try{await deadline(characterArt.ready,26000);storyCast=createStoryCast(characterArt.visitors(),{signal:abort.signal});await deadline(storyCast.ready,26000);await selectView(mode);}catch(error){dispose();throw error;}
+ try{await deadline(characterArt.ready,26000);storyCast=createStoryCast(characterArt.visitors(),{signal:abort.signal,onChange:status=>{if(disposed)return;onCastStatus(status);if(draw2d||draw3d)render(0,false);}});void storyCast.ready.catch(()=>{if(!disposed)onNotice('一部の参加者の姿を読み込めませんでした。本文はそのまま読めます。');});await selectView(mode);}catch(error){dispose();throw error;}
  function sound(){
   if(muted||!active){if(gain&&audioContext)gain.gain.setTargetAtTime(0,audioContext.currentTime,.2);return;}
   try{if(!audioContext){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;audioContext=new AC();gain=audioContext.createGain();gain.gain.value=0;gain.connect(audioContext.destination);oscillator=audioContext.createOscillator();oscillator.type='sine';oscillator.frequency.value=58;oscillator.connect(gain);oscillator.start();}void audioContext.resume();oscillator.frequency.setTargetAtTime(index===0?73:index===1?55:49,audioContext.currentTime,.6);gain.gain.setTargetAtTime(.012,audioContext.currentTime,.8);}catch{}

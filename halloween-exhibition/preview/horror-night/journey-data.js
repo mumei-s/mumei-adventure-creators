@@ -1,5 +1,5 @@
 /** Canonical manuscript: article and game own disjoint passages. */
-export const VERSION='20261031-compact-1';
+export const VERSION='20261031-illustration-1';
 export const NOTE_ARTICLE_PATH='/ss_yr/n/n603c26c01384';
 export const NOTE_RETURNS=Object.freeze({1:'',2:'',3:''});
 export const LINKS=Object.freeze([
@@ -124,7 +124,7 @@ export const SCENES=Object.freeze([
  '今度の写真では、仮面の人の手が、私の首をつかんでいた。',
  '首に触った。何もない。痛くもない。',
  'なのに、写真の中の私だけ、ひどく苦しそうな顔をしていた…'
- ],image:{src:'./assets/photo-anomaly-manga.png',after:'三脚のカメラのタイマーをもう一度かけて、レンズの前に立った。',width:1024,height:1536,alt:'四コマ漫画。写真では白い仮面が私の肩にあるが、振り向くと男は遠くにいる。次の写真では男の手が首にある。現実では何も触れていない。'}},
+ ],image:{src:'./assets/photo-anomaly-manga-q94.webp',after:'三脚のカメラのタイマーをもう一度かけて、レンズの前に立った。',width:1024,height:1536,alt:'四コマ漫画。写真では白い仮面が私の肩にあるが、振り向くと男は遠くにいる。次の写真では男の手が首にある。現実では何も触れていない。'}},
  {id:2,roman:'Ⅱ',title:'先に帰る私',button:'自動で書庫へ進む',after:'after-2',paragraphs:[
  '書庫の扉は開いていた。',
  '中には誰もいない。',
@@ -134,7 +134,7 @@ export const SCENES=Object.freeze([
  '私の声だった。',
  '通りの向こうを、参加者のみんなが歩いていた…(ㆁᆺㆁ๑)‼︎ ぇっ…',
  'その先頭に、私がいたΣ(ﾟ艸ﾟ*)ﾊｯ‼'
- ],image:{src:'./assets/empty-library.png',after:'中には誰もいない。',width:1672,height:941,alt:'開いた木の扉の向こうに、誰もいない書庫。ランプが空の椅子と本棚を照らし、奥の窓に青い夜の光が差している。'}},
+ ],image:{src:'./assets/empty-library-q94.webp',after:'中には誰もいない。',width:1672,height:941,alt:'開いた木の扉の向こうに、誰もいない書庫。ランプが空の椅子と本棚を照らし、奥の窓に青い夜の光が差している。'}},
  {id:3,roman:'Ⅲ',title:'門のガラスに、私が映っていた',button:'自動で門へ進む',after:'after-3',paragraphs:[
  '門が閉まる前に、追いついた。',
  '(o´Д`)=з(o´Д`)=з',
@@ -149,7 +149,7 @@ export const SCENES=Object.freeze([
  '顔を触った。頬が硬かった。',
  '爪を立てても、仮面の端が見つからなかった。',
  '私の顔は、もう、あいつの方にあった。'
- ],image:{src:'./assets/window-reflection.jpg',after:'門のガラスに、私が映っていた。',alt:'門のガラスに映る金髪の私。両手で頬に触れると、顔は目の穴のない白い仮面になっている。'}}
+ ],image:{src:'./assets/window-reflection-q94.webp',after:'門のガラスに、私が映っていた。',alt:'門のガラスに映る金髪の私。両手で頬に触れると、顔は目の穴のない白い仮面になっている。'}}
 ]);
 export const EMPHASIS=new Set(['目の穴がない…','白い仮面が、私の肩に載っていた。','私の声だった。','その先頭に、私がいたΣ(ﾟ艸ﾟ*)ﾊｯ‼','あの仮面と、同じ笑い方だった。','私の顔は、もう、あいつの方にあった。','違う！','私を置いていかないで！','写真にだけ、本当の姿が写っている。','仮面の男は、一人だけじゃなかった。']);
 export function sceneNumber(search){const raw=new URLSearchParams(search).get('scene');return /^[123]$/.test(raw||'')?Number(raw):null;}

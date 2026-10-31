@@ -1,12 +1,14 @@
+import {prepareIllustration} from './scene-illustration.js?v=20261031-illustration-1';
 import {canOfferBrowserBack} from './return-navigation.js?v=20261031-back-1';
-import {VERSION,ARTICLE,SCENES,EMPHASIS,LINKS,sceneNumber,returnTarget,escapeHTML,linked,headingCode,emphasisCode} from './journey-data.js?v=20261031-compact-1';
+import {VERSION,ARTICLE,SCENES,EMPHASIS,LINKS,sceneNumber,returnTarget,escapeHTML,linked,headingCode,emphasisCode} from './journey-data.js?v=20261031-illustration-1';
 import {COPY_VERSION,copyForNote,installCopyChecks} from './note-copy.js?v=20261031-copy-3';
 const root=document.getElementById('app');
 const sceneID=sceneNumber(location.search);
+let illustration=null;
 let engine=null,phase='loading',leaving=false,watchdog=0,remaining=0,loadTimer=0,returnTimer=0;
 const browserBackHint=canOfferBrowserBack(typeof history==='undefined'?0:history.length);
 const paragraph=(text,copy=false)=>`<p${text.startsWith('〔')?' class="insert-note"':''}>${EMPHASIS.has(text)?(copy?escapeHTML(emphasisCode(text)):'<strong>'+linked(text)+'</strong>'):linked(text)}</p>`;
-const sceneParagraphs=s=>s.paragraphs.map(p=>paragraph(p)+(s.image&&p===s.image.after?`<figure class="scene-illustration"><div class="illustration-crop"><img src="${escapeHTML(s.image.src)}" alt="${escapeHTML(s.image.alt)}" width="${s.image.width||1080}" height="${s.image.height||1249}" decoding="async"></div><figcaption class="image-fallback" hidden>挿絵を読み込めませんでした。本文はこのまま読めます。</figcaption></figure>`:'')).join('');
+const sceneParagraphs=(s,prepared=false)=>s.paragraphs.map(p=>paragraph(p)+(s.image&&p===s.image.after?`<figure class="scene-illustration"><figcaption class="image-fallback" role="status">挿絵を読み込んでいます。本文は先に読めます。</figcaption><button class="image-retry" type="button" hidden>挿絵を再読み込み</button><div class="illustration-crop"><img ${prepared?'':'src="'+escapeHTML(s.image.src)+'"'} alt="${escapeHTML(s.image.alt)}" width="${s.image.width||1080}" height="${s.image.height||1249}" decoding="async"></div></figure>`:'')).join('');
 const sceneLink=n=>new URL(`./?scene=${n}&v=${VERSION}`,location.href).href;
 function articleHTML(copy=false){
  return ARTICLE.map((section,i)=>{
@@ -64,9 +66,14 @@ function showPassage(message=''){
  if(phase==='reading'||phase==='leaving')return;phase='reading';stopWatch();clearTimeout(loadTimer);engine?.pause();
  const s=SCENES[sceneID-1];document.body.classList.add('passage-open');document.body.classList.remove('game-moving');
  document.getElementById('status').textContent=message||'到着しました。この場面の本文を読み、記事の続きへ戻ってください。';
- const box=document.getElementById('scene-passage');box.hidden=false;box.innerHTML=`<h2 tabindex="-1">${s.title}</h2>${sceneParagraphs(s)}${s.insert?paragraph(s.insert):''}`;
+ const box=document.getElementById('scene-passage');box.hidden=false;box.innerHTML=`<h2 tabindex="-1">${s.title}</h2>${sceneParagraphs(s,!!illustration)}${s.insert?paragraph(s.insert):''}`;
  engine?.resize?.();engine?.revealCast?.();
- box.querySelectorAll('img').forEach(img=>{img.addEventListener('error',()=>{img.closest('figure').querySelector('.image-fallback').hidden=false;});});
+ const placeholder=box.querySelector('img');
+ if(illustration&&placeholder){
+  const figure=placeholder.closest('figure'),caption=figure.querySelector('.image-fallback'),retry=figure.querySelector('.image-retry');
+  illustration.mount(placeholder,state=>{figure.classList.toggle('image-error',state==='error');caption.hidden=state==='loaded';caption.textContent=state==='error'?'挿絵を読み込めませんでした。本文はこのまま読めます。':'挿絵を読み込んでいます。本文は先に読めます。';retry.hidden=state!=='error';});
+  retry.onclick=()=>illustration.retry();
+ }
  updateReturnAction();
  document.getElementById('early-return').hidden=true;document.getElementById('read-now').hidden=true;
  box.scrollIntoView({block:'start',behavior:'instant'});box.querySelector('h2').focus({preventScroll:true});
@@ -86,6 +93,7 @@ async function loadTown(){
 }
 function renderGame(){
  const s=SCENES[sceneID-1],destination=returnTarget(sceneID,location.search);
+ illustration=prepareIllustration(s.image);
  root.innerHTML=`<section class="game"><header class="game-header"><p>ゲーム${s.roman} / 3 · 音なし</p><h1>${s.title}</h1><span id="early-return" hidden></span></header><div id="world" class="world"><canvas id="scene2d" aria-label="通常の見下ろし視点で自動移動する街"></canvas><canvas id="scene3d" hidden aria-hidden="true"></canvas><div class="scene-shade" aria-hidden="true"></div></div><p id="status" class="status" role="status" aria-live="polite">街を開いています…</p><article id="scene-passage" class="reading scene-passage" hidden></article><div class="action-dock"><div class="action-row"><button id="primary-action" type="button" disabled>準備中…</button><button id="read-now" type="button">先にこの場面を読む</button></div><div class="game-options"><details class="return-help"><summary>戻り方</summary><p>${browserBackHint?'読み終えたら「前の画面へ戻る」。ブラウザーの戻ると同じ操作です。前の画面がnote以外の場合もあります。読み位置の復元はブラウザーによります。':destination?'読み終えたら「noteの記事へ戻る」で、続き'+s.roman+'をお読みください。':'読み終えたら「このゲームを閉じる」。閉じられない場合はブラウザーのタブ一覧で閉じ、元のnoteタブの「続き'+s.roman+'」へ進んでください。'}</p>${destination?`<a href="${escapeHTML(destination)}">設定済みのnote記事リンクを開く</a>`:''}</details><details class="cast-details"><summary id="cast-status" role="status">参加者 読込中</summary><p id="cast-pending"></p></details></div></div></section>`;
  document.body.classList.add('game-page');
  document.getElementById('read-now').onclick=()=>showPassage('この場面の本文を表示しています。街の読み込みを待つ必要はありません。');

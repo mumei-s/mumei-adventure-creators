@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>参加者名のリンク付き本文｜Halloween Atelier</title>
+<style>
+*{box-sizing:border-box}body{max-width:760px;margin:0 auto;padding:20px;font-family:system-ui,-apple-system,sans-serif;line-height:1.85;overflow-wrap:anywhere}button{font:inherit;padding:12px 16px;margin:5px 8px 5px 0;min-height:48px;cursor:pointer;border:1px solid #666;border-radius:8px;background:#f3f3f3;color:#111}button:disabled{opacity:.5;cursor:default}a{text-decoration:underline;text-underline-offset:.18em}h1{font-size:24px}h2{font-size:21px}.help{font-size:14px}.frame{border:1px solid #999;padding:18px;margin:16px 0;border-radius:10px}#source{user-select:text;-webkit-user-select:text}#source p{margin:0 0 18px}#source h2{margin:36px 0 20px}#status{min-height:54px;font-weight:600}#paste-check{min-height:90px;border:1px dashed #777;padding:14px;white-space:pre-wrap}summary{cursor:pointer;padding:10px 0}button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid #555;outline-offset:3px}#source:focus{outline:1px solid #aaa}[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header>
+<p class="help">無名S note / Halloween Atelier · 参加者リンク対策版 20261031-native-4</p>
+<h1>参加者名のリンク付き本文</h1>
+<p>下線のある名前に、記事へのリンクを設定した本文です。物語の文章やゲームとの区切りは変更していません。</p>
+<p class="help"><strong>今の下書きは消さず、まず名前１つで確認してください。</strong>コピー後はnote本文の空行を長押しして「貼り付け」。編集画面では名前を選択し、リンクの設定先があるかを確認します。</p>
+</header>
+<section class="frame" aria-labelledby="test-title">
+<h2 id="test-title">① 名前１つで確認</h2>
+<div id="sample" tabindex="-1"><p><a href="https://note.com/koakumako/n/na9731433238f">まこさん</a></p></div>
+<button id="copy-test" type="button">「まこさん」をリンク付きでコピー</button>
+<p class="help">名前を押すと参加記事が開きます。noteに貼り付けた名前にも同じリンクが残るか、先に試せます。</p>
+</section>
+<section class="frame" aria-labelledby="full-title">
+<h2 id="full-title">② 確認できたら本文をコピー</h2>
+<button id="copy-full" type="button" disabled>本文全体をリンク付きでコピー</button>
+<p id="source-count" class="help">本文データを読み込んでいます…</p>
+<p class="help">ブラウザ本来の選択・コピーを使います。コピー時にリンクを文字だけの内容へ置き換える処理は行いません。</p>
+</section>
+<p id="status" role="status" aria-live="polite">名前１つのコピーから試してください。noteでの貼り付け結果は、まだ確認できていません。</p>
+<details id="alternatives">
+<summary>自動コピーでリンクが消えるとき</summary>
+<button id="select-test" type="button">名前を選択して長押しコピー</button>
+<button id="select-full" type="button" disabled>本文を選択して長押しコピー</button>
+<p class="help">選択された部分を長押しし、端末の「コピー」を使います。「リンクをコピー」ではなく、文字を選択した状態の「コピー」です。</p>
+<h2>このページで貼り付けデータを確認</h2>
+<p class="help">下の欄に貼ると、届いたデータに名前のURLが残っているかを表示します。内容は送信・保存しません。note側で残るかどうかは別途確認が必要です。</p>
+<div id="paste-check" contenteditable="true" role="textbox" aria-label="リンクを含む貼り付けデータの確認欄"></div>
+<p id="paste-result" role="status"></p>
+</details>
+<hr>
+<p class="help">ここから下がコピー用本文です。名前はすべて下線付きリンクです。CNA運営さんのみ、参加記事未特定のためプロフィールへ移動します。数式装飾はnote用コードのままコピーします。</p>
+<div id="source" tabindex="-1" aria-label="リンク付き記事本文"></div>
+<p id="load-error" role="alert" hidden></p>
+<script type="module">
+const status=document.getElementById('status');
+const source=document.getElementById('source');
+let expected=null;
+function selectContents(element){
+ element.scrollIntoView({block:'start',behavior:'instant'});
+ element.focus({preventScroll:true});
+ const selection=window.getSelection();
+ if(!selection)return false;
+ const range=document.createRange();range.selectNodeContents(element);
+ selection.removeAllRanges();selection.addRange(range);return true;
+}
+function copyNative(element,manual=false){
+ if(!selectContents(element)){status.textContent='本文を長押しして選択し、端末の「コピー」を使ってください。';return;}
+ expected=[...element.querySelectorAll('a[href]')].map(a=>({text:a.textContent,url:a.href}));
+ if(manual){status.textContent='選択しました。この部分を長押しし、端末の「コピー」を押してください。';return;}
+ let copied=false;
+ try{copied=document.execCommand('copy');}catch{}
+ // Deliberately no copy-event override, clipboard.writeText, selection clearing,
+ // or immediate hiding: preserve the native browser's rich selection.
+ status.textContent=copied
+ ?'ブラウザにコピーを依頼しました。noteに貼り付け、名前のリンクが残るか確認してください。貼り付け完了の判定ではありません。'
+ :'自動コピーは利用できません。選択された部分を長押しして、端末の「コピー」を使ってください。';
+}
+document.getElementById('copy-test').onclick=()=>copyNative(document.getElementById('sample'));
+document.getElementById('select-test').onclick=()=>copyNative(document.getElementById('sample'),true);
+document.getElementById('copy-full').onclick=()=>copyNative(source);
+document.getElementById('select-full').onclick=()=>copyNative(source,true);
+document.getElementById('paste-check').addEventListener('paste',event=>{
+ event.preventDefault();
+ const html=event.clipboardData?.getData('text/html')||'';
+ const plain=event.clipboardData?.getData('text/plain')||'';
+ const doc=new DOMParser().parseFromString(html,'text/html');
+ const links=[...doc.querySelectorAll('a[href]')].map(a=>({text:a.textContent,url:a.href}));
+ const missing=(expected||[]).filter(w=>!links.some(a=>a.text===w.text&&a.url===w.url));
+ event.currentTarget.textContent=plain||doc.body.textContent||'貼り付けデータがありません';
+ const result=document.getElementById('paste-result');
+ result.textContent=expected&&links.length>=expected.length&&!missing.length
+ ?`この欄には、選択したリンク${expected.length}か所の名前・URLが届いています。noteへの貼り付け結果を保証する判定ではありません。`
+ :links.length?`リンク情報は${links.length}か所ありますが、選択した内容と一致するかを確認できていません。`
+ :'この貼り付けデータにはリンク先URLがありません。全文を貼り直さず、「名前を選択して長押しコピー」で確認してください。';
+});
+try{
+ const {VERSION,ARTICLE,SCENES,LINKS,EMPHASIS,escapeHTML,linked,headingCode,emphasisCode}=await import('./journey-data.js?v=20261031-roundtrip-2');
+ source.innerHTML=ARTICLE.map((section,index)=>{
+  const [marker,subtitle]=section.title.split('｜');
+  const heading=(subtitle?'<h2>'+escapeHTML(marker)+'</h2>':'')+'<p>'+escapeHTML(headingCode(subtitle||marker))+'</p>';
+  let html=heading+section.paragraphs.map(text=>'<p>'+(EMPHASIS.has(text)?escapeHTML(emphasisCode(text)):linked(text))+'</p>').join('');
+  if(index<3){const scene=SCENES[index];const url=new URL('./?scene='+scene.id+'&v='+VERSION,location.href);html+='<p><a href="'+escapeHTML(url.href)+'">🚪 ゲーム'+scene.roman+'へ――'+escapeHTML(scene.title)+'</a></p><p>この場面の本文はゲーム内で読みます。終わったら「続き'+scene.roman+'」へ戻ります。</p>';}
+  return html;
+ }).join('');
+ const nodes=[...source.querySelectorAll('a[href]')];
+ const participantNodes=nodes.filter(a=>LINKS.some(([name,url])=>name===a.textContent&&url===a.href));
+ const unique=new Set(participantNodes.map(a=>a.href));
+ document.getElementById('source-count').textContent='元本文に設定済み：参加者名リンク'+participantNodes.length+'か所（'+unique.size+'組）／ゲーム入口3か所。';
+ document.getElementById('copy-full').disabled=false;
+ document.getElementById('select-full').disabled=false;
+}catch(error){
+ console.error('Participant copy source could not load',error);
+ const box=document.getElementById('load-error');box.hidden=false;
+ box.textContent='本文データを読み込めませんでした。リンクのない本文では代用しません。ページを再読み込みしてください。';
+ document.getElementById('source-count').textContent='本文はまだコピーできません。名前１つの確認は使えます。';
+}
+</script>
+</body>
+</html>

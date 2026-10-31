@@ -1,5 +1,6 @@
 import {initialTownState,moveTown,getTownMap,isTownWalkable,recoverTownPosition} from '../town/town-model.js?v=20261019-homes2';
 import {createTownCharacterArt} from '../town/character-art.js?v=20261019-homes2';
+import {createStoryCast} from './cast-art.js?v=20261031-cast-1';
 import {STAGES,findPath,reached,distance} from './model.js';
 const deadline=(promise,ms)=>new Promise((resolve,reject)=>{const t=setTimeout(()=>reject(Error('The town took too long to load')),ms);Promise.resolve(promise).then(v=>{clearTimeout(t);resolve(v);},e=>{clearTimeout(t);reject(e);});});
 /** Separate controller: no main-game store, preference writes, battle or quests. */
@@ -10,9 +11,9 @@ export async function createStoryTown({canvas3d,canvas2d,root,onNear=()=>{},onPr
  let dx=0,dz=0,vx=0,vz=0,path=[],auto=false,lastPosition={...state.position},stuck=0;
  const map=getTownMap('lantern-town'),originalNPCs=map.npcs;
  const characterArt=createTownCharacterArt({signal:abort.signal,deferEnhancements:true,initialState:{...state,position:STAGES[0].spawn}});
- let audioContext=null,oscillator=null,gain=null,party=[];
+ let audioContext=null,oscillator=null,gain=null,storyCast=null,castRevealed=false;
  const ghost=makeVisitor();
- try{await deadline(characterArt.ready,26000);await selectView(mode);}catch(error){dispose();throw error;}
+ try{await deadline(characterArt.ready,26000);storyCast=createStoryCast(characterArt.visitors(),{signal:abort.signal});await deadline(storyCast.ready,26000);await selectView(mode);}catch(error){dispose();throw error;}
  function sound(){
   if(muted||!active){if(gain&&audioContext)gain.gain.setTargetAtTime(0,audioContext.currentTime,.2);return;}
   try{if(!audioContext){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;audioContext=new AC();gain=audioContext.createGain();gain.gain.value=0;gain.connect(audioContext.destination);oscillator=audioContext.createOscillator();oscillator.type='sine';oscillator.frequency.value=58;oscillator.connect(gain);oscillator.start();}void audioContext.resume();oscillator.frequency.setTargetAtTime(index===0?73:index===1?55:49,audioContext.currentTime,.6);gain.gain.setTargetAtTime(.012,audioContext.currentTime,.8);}catch{}
@@ -29,14 +30,12 @@ export async function createStoryTown({canvas3d,canvas2d,root,onNear=()=>{},onPr
  function resize(){if(disposed)return;const ratio=Math.min(2,window.devicePixelRatio||1),r=root.getBoundingClientRect();if(r.width<1||r.height<1)return;if(mode==='2d'){const w=Math.round(r.width*ratio),h=Math.round(r.height*ratio);if(canvas2d.width!==w||canvas2d.height!==h){canvas2d.width=w;canvas2d.height=h;draw2d?.invalidate();}}}
  function actors(dt,walking){
   const info={state,time,motion:!reduce,dt,view3D:mode==='3d',cameraYaw:0,clock:time};
-  let people=[];
-  if(index===0){people=characterArt.visitorActors(info);party=people.filter(p=>p.creatorId!=='ss_yr').slice(0,5);}
-  if(index===2){const sampled=characterArt.visitorActors({...info,state:{...state,position:STAGES[0].goal}}).filter(p=>p.creatorId!=='ss_yr').slice(0,5);if(sampled.length)party=sampled;people=party.map((p,i)=>({...p,id:'night-party-'+i,x:30.9+(i%3)*.7,z:8.2+Math.floor(i/3)*.75,interactive:false}));}
+  let people=index===1&&!castRevealed?[]:storyCast?.actors()||[];
   const companions=index===0?characterArt.companionActors({...info,walking,canStand:p=>isTownWalkable(map,p.x,p.z)}):[];
   if(index===0)people.push({id:'uninvited-guest',x:26.2,z:21.9,heightPx:93,interactive:false,sprite:ghost.sprite(time,reduce)});
   if(index===1&&distance(state.position,stage.goal)>4)people.push({id:'following-guest',x:state.position.x-.65,z:state.position.z+5.2,heightPx:96,interactive:false,sprite:ghost.sprite(time,reduce)});
-  if(index===2){const im=characterArt.art.images.playerAtlas,layout=characterArt.art.playerLayout;if(im&&layout){/* use the exact approved owner atlas, not a replacement face */
-   const sprite=ownerSprite(im,layout,time);if(sprite)people.push({id:'false-host',x:33.9,z:7.9,heightPx:76,interactive:false,sprite});
+  if(index===1&&castRevealed||index===2){const im=characterArt.art.images.playerAtlas,layout=characterArt.art.playerLayout;if(im&&layout){/* use the exact approved owner atlas, not a replacement face */
+   const sprite=ownerSprite(im,layout,time);if(sprite)people.push({id:'false-host',x:stage.goal.x+1.4,z:stage.goal.z-.6,heightPx:76,interactive:false,sprite});
   }}
   return [...people,...companions];
  }
@@ -66,15 +65,15 @@ export async function createStoryTown({canvas3d,canvas2d,root,onNear=()=>{},onPr
   try{render(dt,walking);}catch(error){pause();onNotice('表示を続けられません。「本文へ」または「歩かずに場面を見る」から続けられます。');console.error(error);return;}
   lastPosition={...state.position};frameId=requestAnimationFrame(tick);
  }
- async function enter(chapter,position){pause();index=Math.max(0,Math.min(2,chapter));stage=STAGES[index];map.npcs=index===0?originalNPCs:[];state={...initialTownState(),position:recoverTownPosition(map,position||stage.spawn),facing:'up',flags:{lamps:index===0?['lamp-market','lamp-plaza','lamp-garden']:[],stamps:[],gearNotes:[]}};near=false;lastDistance=-1;time=0;walkPhase=0;saveTime=0;onNear(false);draw2d?.invalidate();draw3d?.invalidate();resize();resume();}
+ async function enter(chapter,position){pause();index=Math.max(0,Math.min(2,chapter));castRevealed=false;stage=STAGES[index];map.npcs=[];storyCast.enter(stage,(x,z)=>isTownWalkable(map,x,z));state={...initialTownState(),position:recoverTownPosition(map,position||stage.spawn),facing:'up',flags:{lamps:index===0?['lamp-market','lamp-plaza','lamp-garden']:[],stamps:[],gearNotes:[]}};near=false;lastDistance=-1;time=0;walkPhase=0;saveTime=0;onNear(false);draw2d?.invalidate();draw3d?.invalidate();resize();resume();}
  function stop(){dx=0;dz=0;vx=0;vz=0;auto=false;path=[];stuck=0;}
  function pause(){active=false;stop();cancelAnimationFrame(frameId);sound();}
  function resume(){if(disposed||document.hidden)return;active=true;lastTime=performance.now();cancelAnimationFrame(frameId);sound();frameId=requestAnimationFrame(tick);}
  function toggleAuto(){if(auto){stop();return false;}path=findPath(state.position,stage.goal,(x,z)=>isTownWalkable(map,x,z),map.width,map.height);if(!path.length){onNotice(near?'到着しています。調べるボタンを押してください。':'道順を見つけられません。方向ボタンか「歩かずに場面を見る」で進めます。');return false;}auto=true;dx=0;dz=0;return true;}
  async function switchView(){if(viewBusy||disposed)return;viewBusy=true;const running=active;pause();try{await selectView(mode==='3d'?'2d':'3d');}finally{viewBusy=false;if(running)resume();}}
  function capture(){try{render(0,false);return (mode==='3d'?canvas3d:canvas2d).toDataURL('image/jpeg',.84);}catch{return null;}}
- function dispose(){disposed=true;active=false;cancelAnimationFrame(frameId);abort.abort();map.npcs=originalNPCs;characterArt.destroy();draw2d?.destroy();draw3d?.destroy();oscillator?.stop();void audioContext?.close();}
- return {enter,pause,resume,resize,stop,direction(x,z){auto=false;path=[];dx=x;dz=z;},toggleAuto,switchView,capture,setMuted(value){muted=!!value;sound();},destroy:dispose};
+ function dispose(){disposed=true;active=false;cancelAnimationFrame(frameId);abort.abort();map.npcs=originalNPCs;characterArt.destroy();storyCast?.destroy();draw2d?.destroy();draw3d?.destroy();oscillator?.stop();void audioContext?.close();}
+ return {enter,pause,resume,resize,stop,revealCast(){castRevealed=true;render(0,false);},direction(x,z){auto=false;path=[];dx=x;dz=z;},toggleAuto,switchView,capture,setMuted(value){muted=!!value;sound();},destroy:dispose};
 }
 /** A purpose-built in-world silhouette; the separate reveal uses the approved illustration. */
 function makeVisitor(){
@@ -88,3 +87,4 @@ function makeVisitor(){
  for(const s of[-1,1]){const sway=Math.sin(t*.5+s)*4;c.strokeStyle='#1b1720';c.lineWidth=15;c.lineCap='round';c.beginPath();c.moveTo(s*34,140);c.quadraticCurveTo(s*(57+sway),190,s*(58+sway),241);c.stroke();c.strokeStyle='#9e9894';c.lineWidth=3;for(let f=0;f<4;f++){c.beginPath();c.moveTo(s*(57+sway)+f*3-5,240);c.quadraticCurveTo(s*(66+sway)+f*3-5,258,s*(59+sway)+f*3-5,274-f*3);c.stroke();}}
  c.restore();sprite.poseVersion=next;return sprite;}};
 }
+

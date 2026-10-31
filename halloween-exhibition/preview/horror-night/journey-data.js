@@ -1,5 +1,6 @@
 /** Canonical manuscript: article and game own disjoint passages. */
-export const VERSION='20261031-roundtrip-2';
+export const VERSION='20261031-return-3';
+export const NOTE_ARTICLE_PATH='/ss_yr/n/n603c26c01384';
 export const NOTE_RETURNS=Object.freeze({1:'',2:'',3:''});
 export const LINKS=Object.freeze([
  ['まこさん','https://note.com/koakumako/n/na9731433238f'],
@@ -148,14 +149,16 @@ export const SCENES=Object.freeze([
  '顔を触った。頬が硬かった。',
  '爪を立てても、仮面の端が見つからなかった。',
  '私の顔は、もう、あいつの方にあった。'
- ],insert:'〔挿絵②：ガラスに映る金髪・黒い上着・白い仮面の私。両手で頬に触れる。リアルなカラー。スマホ・参加者なし〕'}
+ ],image:{src:'./assets/window-reflection.jpg',after:'門のガラスに、私が映っていた。',alt:'門のガラスに映る金髪の私。両手で頬に触れると、顔は目の穴のない白い仮面になっている。'}}
 ]);
 export const EMPHASIS=new Set(['目の穴がない…','白い仮面が、私の肩に載っていた。','私の声だった。','その先頭に、私がいたΣ(ﾟ艸ﾟ*)ﾊｯ‼','あの仮面と、同じ笑い方だった。','私の顔は、もう、あいつの方にあった。','違う！','私を置いていかないで！','写真にだけ、本当の姿が写っている。','仮面の男は、一人だけじゃなかった。']);
 export function sceneNumber(search){const raw=new URLSearchParams(search).get('scene');return /^[123]$/.test(raw||'')?Number(raw):null;}
-export function validNoteReturn(value){try{const u=new URL(value);return u.protocol==='https:'&&u.hostname==='note.com'&&!u.username&&!u.password&&/^\/ss_yr\/n\/n[a-z0-9]+\/?$/i.test(u.pathname)&&/^#(?:[a-zA-Z0-9_-]+|:~:text=.+)$/.test(u.hash)?u.href:null;}catch{return null;}}
-export function returnTarget(scene,search){const p=new URLSearchParams(search);return validNoteReturn(p.get('return'))||validNoteReturn(NOTE_RETURNS[scene])||`./reading.html#after-${scene}`;}
+// Accept a public article URL with an optional verified section, never a preview key.
+export function validNoteReturn(value){try{const u=new URL(value);return u.protocol==='https:'&&u.hostname==='note.com'&&!u.port&&!u.username&&!u.password&&!u.search&&u.pathname.replace(/\/$/,'')===NOTE_ARTICLE_PATH&&(!u.hash||/^#(?:[a-zA-Z0-9_-]+|:~:text=.+)$/.test(u.hash))?u.href:null;}catch{return null;}}
+export function returnTarget(scene,search){const p=new URLSearchParams(search);return validNoteReturn(p.get('return'))||validNoteReturn(NOTE_RETURNS[scene])||null;}
 export function escapeHTML(text){return String(text).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 const names=new RegExp(LINKS.map(([s])=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).sort((a,b)=>b.length-a.length).join('|'),'g');
 export function linked(text){return escapeHTML(text).replace(names,name=>{const url=LINKS.find(([n])=>n===name)[1];return `<a style="text-decoration:underline;text-underline-offset:3px" href="${url}">${name}</a>`;}).replace(/\n/g,'<br>');}
 export function headingCode(title){return '$${\\large\\underline{\\textbf{'+title+'}}}$$';}
 export function emphasisCode(text){if(text==='私の声だった。')return '$${\\begin{array}{c}\\text{私}\\\\[-0.15em]\\text{の}\\\\[-0.15em]\\text{声}\\\\[-0.15em]\\text{だ}\\\\[-0.15em]\\text{っ}\\\\[-0.15em]\\text{た}\\\\[-0.15em]\\text{。}\\end{array}}$$';return '$${\\large\\textbf{'+text+'}}$$';}
+

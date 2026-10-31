@@ -1,9 +1,13 @@
+import {optimizedCastSource} from './cast-image-map.js?v=20261031-performance-1';
 import {createCharacterAssets,characterSprite} from '../maze/creator-runtime.js?v=20261017-startup1';
 import {manuscriptCast,castPositions,CAST_LABELS} from './cast.js?v=20261031-startup-1';
 // Bounded runtime bitmap copies only; original approved atlases remain untouched.
 async function loadCastImage(url,asset,{signal}={}){
+ const optimized=optimizedCastSource(asset);
+ if(optimized)url=new URL(optimized,import.meta.url).href;
  const image=await new Promise((resolve,reject)=>{const im=new Image();let timer;const finish=error=>{clearTimeout(timer);im.onload=im.onerror=null;signal?.removeEventListener('abort',cancel);error?reject(error):resolve(im);};const cancel=()=>{im.src='';finish(Error('Cast loading cancelled'));};if(signal?.aborted)return cancel();signal?.addEventListener('abort',cancel,{once:true});timer=setTimeout(()=>finish(Error('Cast loading timeout')),10000);im.onload=()=>finish();im.onerror=()=>finish(Error('Cast image unavailable'));im.decoding='async';im.src=url;});
- if(image.width!==asset.width||image.height!==asset.height)throw Error('Cast atlas dimensions changed');
+ if(image.width!==(optimized?512:asset.width)||image.height!==(optimized?512:asset.height))throw Error('Cast atlas dimensions changed');
+ if(optimized)return image;
  const scale=Math.min(1,512/Math.max(image.width,image.height)),width=Math.round(image.width*scale),height=Math.round(image.height*scale);
  if(typeof createImageBitmap==='function')try{return await createImageBitmap(image,{resizeWidth:width,resizeHeight:height,resizeQuality:'high'});}catch{}
  const canvas=document.createElement('canvas');canvas.width=width;canvas.height=height;const c=canvas.getContext('2d');if(!c)throw Error('Cast bitmap unavailable');c.drawImage(image,0,0,width,height);return canvas;

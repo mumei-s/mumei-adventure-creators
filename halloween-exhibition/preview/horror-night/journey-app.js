@@ -73,7 +73,7 @@ function showPassage(message=''){
 }
 async function loadTown(){
  loadTimer=setTimeout(()=>{if(phase!=='loading'||leaving)return;phase='fallback';const b=document.getElementById('primary-action');b.disabled=false;b.textContent='この場面の本文を読む';document.getElementById('status').textContent='街の読み込みが完了していません。本文は読めます。';},30000);
- try{const {createStoryTown}=await import('./town.js?v=20261031-startup-1');if(leaving)return;
+ try{const {createStoryTown}=await import('./town.js?v=20261031-performance-1');if(leaving)return;
   engine=await createStoryTown({canvas3d:document.getElementById('scene3d'),canvas2d:document.getElementById('scene2d'),root:document.getElementById('world'),view:'2d',muted:true,
    onCastStatus:info=>{const el=document.getElementById('cast-status'),pending=document.getElementById('cast-pending');if(el)el.textContent=info.ready===info.total?'参加者 '+info.total+'/'+info.total:`参加者 ${info.ready}/${info.total}${info.failed?'・一部失敗':''}`;if(pending)pending.textContent=info.pendingNames?.length?'未表示：'+info.pendingNames.join('、'):'全員の姿を表示できます。';},
    onNear:near=>{if(near&&phase==='moving')queueMicrotask(()=>showPassage());},

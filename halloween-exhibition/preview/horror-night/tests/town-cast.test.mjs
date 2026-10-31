@@ -1,14 +1,22 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';
 import {STAGES,findPath,reached,distance} from '../model.js';
 const source=fs.readFileSync(new URL('../town.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replace('export async function','async function').replace("import('../town/renderer.js?v=20261030-sprite1')",'loadRenderer()').replace("import('../maze/rpg-art.js?v=20261019-unified1')",'loadPose()');
-async function setup({stallCast=false}={}){
+async function setup({stallCast=false,heroReady=Promise.resolve(),onRenderer=()=>{}}={}){
  let last=null;const map={width:64,height:48,npcs:[{id:'generic'}]};const art={images:{playerAtlas:{}},playerLayout:{}};
  const gradient={addColorStop(){}};const context2d=new Proxy({createLinearGradient:()=>gradient,createRadialGradient:()=>gradient},{get:(o,k)=>o[k]||(()=>{})});
  const canvas={hidden:false,width:400,height:300,getContext:()=>context2d,toDataURL:()=>''};
- const ctx=vm.createContext({STAGES,findPath,reached,distance,AbortController,Promise,setTimeout,clearTimeout,console,Math,matchMedia:()=>({matches:true}),window:{devicePixelRatio:1},document:{hidden:false,createElement:()=>({...canvas})},performance:{now:()=>0},requestAnimationFrame:()=>1,cancelAnimationFrame(){},initialTownState:()=>({position:{x:27.5,z:30.5},mapId:'lantern-town'}),moveTown:s=>s,getTownMap:()=>map,isTownWalkable:()=>true,recoverTownPosition:(_m,p)=>p,createTownCharacterArt:()=>({ready:Promise.resolve(),art,visitors:()=>[],companionActors:()=>[{id:'cat'}],destroy(){}}),createStoryCast:()=>({ready:stallCast?new Promise(()=>{}):Promise.resolve(),enter(){},actors:()=>Array.from({length:21},(_,i)=>({id:'cast-'+i})),destroy(){}}),loadRenderer:()=>Promise.resolve({createTownRenderer:()=>({ready:Promise.resolve(),render:p=>last=p,worldToScreen:()=>null,invalidate(){},destroy(){}})}),loadPose:()=>Promise.resolve({playerPose:()=>({})})});
+ const ctx=vm.createContext({STAGES,findPath,reached,distance,AbortController,Promise,setTimeout,clearTimeout,console,Math,matchMedia:()=>({matches:true}),window:{devicePixelRatio:1},document:{hidden:false,createElement:()=>({...canvas})},performance:{now:()=>0},requestAnimationFrame:()=>1,cancelAnimationFrame(){},initialTownState:()=>({position:{x:27.5,z:30.5},mapId:'lantern-town'}),moveTown:s=>s,getTownMap:()=>map,isTownWalkable:()=>true,recoverTownPosition:(_m,p)=>p,createRequiredArtCache:()=>({}),createTownCharacterArt:()=>({ready:heroReady,art,visitors:()=>[],companionActors:()=>[{id:'cat'}],destroy(){}}),createStoryCast:()=>({ready:stallCast?new Promise(()=>{}):Promise.resolve(),enter(){},actors:()=>Array.from({length:21},(_,i)=>({id:'cast-'+i})),destroy(){}}),loadRenderer:()=>{onRenderer();return Promise.resolve({createTownRenderer:()=>({ready:Promise.resolve(),render:p=>last=p,worldToScreen:()=>null,invalidate(){},destroy(){}})})},loadPose:()=>Promise.resolve({playerPose:()=>({})})});
  vm.runInContext(source+';globalThis.create=createStoryTown;',ctx);
  const engine=await ctx.create({canvas3d:{...canvas},canvas2d:{...canvas},root:{getBoundingClientRect:()=>({width:400,height:300})},view:'2d'});return {engine,packet:()=>last,map};
 }
 test('direct scene timing preserves full cast and empty-library reveal boundary',async()=>{const {engine,packet,map}=await setup();await engine.enter(0);engine.capture();assert.equal(packet().creatorActors.filter(p=>p.id.startsWith('cast-')).length,21);assert.ok(!packet().creatorActors.some(p=>p.id==='false-host'));assert.equal(map.npcs.length,0);await engine.enter(1);engine.capture();assert.equal(packet().creatorActors.filter(p=>p.id.startsWith('cast-')).length,0);assert.ok(!packet().creatorActors.some(p=>p.id==='false-host'));engine.revealCast();assert.equal(packet().creatorActors.filter(p=>p.id.startsWith('cast-')).length,21);assert.ok(packet().creatorActors.some(p=>p.id==='false-host'));await engine.enter(2);engine.capture();assert.equal(packet().creatorActors.filter(p=>p.id.startsWith('cast-')).length,21);assert.ok(packet().creatorActors.some(p=>p.id==='false-host'));engine.destroy();assert.equal(map.npcs[0].id,'generic');});
 
 test('stalled participant assets never block town ready and enter',async()=>{const {engine}=await setup({stallCast:true});await engine.enter(0);engine.capture();engine.destroy();});
+
+test('renderer begins while required owner/cat are still loading, without bypassing identity gate',async()=>{
+ let release,started=false,completed=false;
+ const heroReady=new Promise(r=>release=r);
+ const task=setup({heroReady,onRenderer:()=>started=true}).then(value=>{completed=true;return value;});
+ await new Promise(r=>setImmediate(r));assert.equal(started,true);assert.equal(completed,false);
+ release();const {engine}=await task;engine.destroy();
+});

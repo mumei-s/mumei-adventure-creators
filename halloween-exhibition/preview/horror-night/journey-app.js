@@ -6,7 +6,8 @@ const paragraph=(text,copy=false)=>`<p${text.startsWith('〔')?' class="insert-n
 const sceneLink=n=>new URL(`./?scene=${n}&v=${VERSION}`,location.href).href;
 function articleHTML(copy=false){
  return ARTICLE.map((section,i)=>{
-  const heading=copy?`<p>${escapeHTML(headingCode(section.title))}</p>`:`<h2 tabindex="-1">${escapeHTML(section.title)}</h2>`;
+  const [marker,subtitle]=section.title.split("｜");
+  const heading=copy?`${subtitle?"<h2>"+escapeHTML(marker)+"</h2>":""}<p>${escapeHTML(headingCode(subtitle||marker))}</p>`:`<h2 tabindex="-1">${escapeHTML(section.title)}</h2>`;
   let html=`<section id="${section.id}" class="article-section">${heading}${section.paragraphs.map(p=>paragraph(p,copy)).join('')}`;
   if(i<3){const s=SCENES[i];html+=`<div class="portal" id="before-${s.id}"><a class="portal-link" style="text-decoration:underline" href="${sceneLink(s.id)}">🚪 ゲーム${s.roman}へ――${s.title}</a><p class="route-help">この場面の本文はゲーム内で読みます。終わったら「続き${s.roman}」へ戻ります。</p></div>`;
    if(!copy)html+=`<details class="text-alternative"><summary>ゲームを開かず、この場面を読む</summary>${s.paragraphs.map(p=>paragraph(p)).join('')}${s.insert?paragraph(s.insert):''}<a href="#${s.after}">記事の続き${s.roman}へ</a></details>`;

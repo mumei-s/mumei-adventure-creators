@@ -1,4 +1,5 @@
 import {VERSION,ARTICLE,SCENES,EMPHASIS,LINKS,sceneNumber,returnTarget,escapeHTML,linked,headingCode,emphasisCode} from './journey-data.js?v=20261031-roundtrip-2';
+import {COPY_VERSION,copyForNote,installCopyChecks} from './note-copy.js?v=20261031-copy-3';
 const root=document.getElementById('app');
 const sceneID=sceneNumber(location.search);
 let engine=null,phase='loading',leaving=false,watchdog=0,remaining=0,loadTimer=0;
@@ -17,19 +18,14 @@ function articleHTML(copy=false){
 }
 function jumpToFragment(){const raw=location.hash.slice(1);if(!/^(start|after-[123]|before-[123])$/.test(raw))return;const el=document.getElementById(raw);if(!el)return;document.querySelectorAll('details').forEach(d=>d.open=false);requestAnimationFrame(()=>{el.scrollIntoView({block:'start',behavior:'instant'});(el.querySelector('h2')||el).focus?.({preventScroll:true});});}
 async function copyArticle(){
- const button=document.getElementById('copy-article'),html=articleHTML(true),plain=new DOMParser().parseFromString(html,'text/html').body.innerText;
- let ok=false;
- try{if(window.ClipboardItem&&navigator.clipboard?.write){await navigator.clipboard.write([new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([plain],{type:'text/plain'})})]);ok=true;}}
- catch{}
- if(!ok){const box=document.createElement('div');box.contentEditable='true';box.style.cssText='position:fixed;top:0;left:0;width:2px;height:2px;overflow:hidden;';box.innerHTML=html;document.body.append(box);const selection=getSelection(),range=document.createRange();range.selectNodeContents(box);selection.removeAllRanges();selection.addRange(range);try{ok=document.execCommand('copy');}catch{}selection.removeAllRanges();box.remove();}
- button.textContent=ok?'コピーしました（名前リンク＋装飾コード）':'コピーできませんでした';
- document.getElementById('copy-status').textContent=ok?'noteの通常の本文へ貼り付けてください。端末・エディタによる貼り付け結果はプレビューで確認してください。':'下にコピー用本文を表示しました。範囲を選択してコピーしてください。';
- if(!ok){const source=document.getElementById('copy-source');source.hidden=false;source.innerHTML=html;}
+ await copyForNote({sourceHTML:articleHTML(true),button:document.getElementById('copy-article'),status:document.getElementById('copy-status'),source:document.getElementById('copy-source')});
 }
 function renderArticle(){
  document.body.classList.add('reading-page');
- root.innerHTML=`<div class="article-tools"><p>無名S note / Halloween Atelier</p><button id="copy-article" type="button">note用本文をコピー</button><p id="copy-status" class="small" role="status">名前は下線付きリンク。コピーすると見出し・強調はnote用数式コードになります。</p></div><article class="reading">${articleHTML()}</article><div id="copy-source" class="reading" hidden></div><footer class="reading small">CNA運営さんのリンク先はプロフィールです。ほかの名前は登録参加記事へリンクしています。<br>各ゲームは一場面のみ。記事の続きへ戻るまで次のゲームは始まりません。</footer>`;
- document.getElementById('copy-article').onclick=copyArticle;window.addEventListener('hashchange',jumpToFragment);jumpToFragment();
+ root.innerHTML=`<div class="article-tools"><p>無名S note / Halloween Atelier</p><button id="copy-article" type="button">note用本文をコピー（リンク・段落付き）</button><p id="copy-status" class="small" role="status">本文・名前リンク・段落をまとめてコピーします。「続きⅠ〜Ⅲ」は通常の見出し、装飾箇所はnote用数式コードです。コピー修正版 ${COPY_VERSION}</p></div><article class="reading">${articleHTML()}</article><div id="copy-source" class="reading" hidden></div><footer class="reading small">CNA運営さんのリンク先はプロフィールです。ほかの名前は登録参加記事へリンクしています。<br>各ゲームは一場面のみ。記事の続きへ戻るまで次のゲームは始まりません。<br>noteへの戻り先は、公開記事にある「続きⅠ〜Ⅲ」の実際の見出しリンクを確認して設定する必要があります。未設定時はこの専用本文ページへ戻ります。</footer>`;
+ document.getElementById('copy-article').onclick=copyArticle;
+ installCopyChecks({getHTML:()=>articleHTML(true),tools:document.querySelector('.article-tools'),source:document.getElementById('copy-source')});
+ window.addEventListener('hashchange',jumpToFragment);jumpToFragment();
 }
 function stopWatch(){clearTimeout(watchdog);watchdog=0;}
 function startWatch(){stopWatch();watchdog=setTimeout(()=>showPassage('移動表示を続けられないため、この場面の本文を表示します。'),40000);}
@@ -70,5 +66,5 @@ function renderGame(){
  window.addEventListener('pagehide',()=>{stopWatch();engine?.pause();});
  window.addEventListener('pageshow',event=>{if(event.persisted){leaving=false;if(phase==='leaving')phase='reading';if(phase==='ready')engine?.resume();if(phase==='moving'){engine?.resume();if(!engine?.toggleAuto())showPassage();else startWatch();}}});
 }
-window.__HALLOWEEN_READING_NIGHT__={version:VERSION,snapshot:()=>({scene:sceneID,phase,view:'2d',camera:'normal',returnTo:sceneID?returnTarget(sceneID,location.search):null})};
+window.__HALLOWEEN_READING_NIGHT__={version:VERSION,copyVersion:COPY_VERSION,snapshot:()=>({scene:sceneID,phase,view:'2d',camera:'normal',returnTo:sceneID?returnTarget(sceneID,location.search):null})};
 if(sceneID)renderGame();else renderArticle();

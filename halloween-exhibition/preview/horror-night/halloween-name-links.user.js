@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         無名S Halloween 参加者名リンク補修
 // @namespace    https://github.com/mumei-s/mumei-adventure-creators/halloween-name-links
-// @version      1.1.0
-// @description  白い仮面の記事の参加者名とゲーム入口にリンクだけを追加。本文・画像・改行を置換しない。外部送信なし。
+// @version      1.2.0
+// @description  名前リンク補修と、確認後だけ行うゲーム入口文の差し替え。対象段落以外は保持。外部送信なし。
 // @match        https://editor.note.com/notes/n603c26c01384/*
 // @noframes
 // @run-at       document-idle
@@ -104,19 +104,61 @@ function sameStructure(a,b,type){return JSON.stringify(withoutLinks(a.toJSON(),t
 function gameReport(hits,doc,type,attr){
  const rows=GAME_URLS.map((url,index)=>{
   const found=hits.filter(h=>h.url===url);
+  const c=STORY_CTAS[index];
+  doc.descendants((n,pos)=>{if(n.isTextblock&&n.textContent===c.label){found.push({from:pos+1,to:pos+1+c.label.length,url:c.url});return false;}});
   const ok=found.length&&found.every(h=>rangeState(doc,h,type,attr)==='existing');
   return 'ゲーム'+['Ⅰ','Ⅱ','Ⅲ'][index]+'：'+(ok?'リンク設定済み':found.length?'既存リンク等を確認してください':'入口の文字が見つかりません');
  });
  return rows.join('\n');
 }
+
+// Separate, opt-in story action. Never used by the existing link-only action.
+const STORY_CTAS=[
+ {lines:['せっかくだし、一枚だけ。','……あの人も、写るんだろうか。'],label:'広場で写真を撮る → タップ'},
+ {lines:['みんなは、あの奥にいる。','……行かなきゃ。'],label:'暗くなった書庫へ進む → タップ'},
+ {lines:['まだ、追いつける。','門が閉まる前に。'],label:'みんなを追いかける → タップ'}
+].map((c,i)=>({...c,url:GAME_BASE+'?scene='+(i+1)}));
+function storyPlan(doc,schema,type,attr){
+ const entries=[],diagnostics=[],blocks=[];
+ doc.forEach((node,pos,index)=>blocks.push({node,pos,index}));
+ for(let i=0;i<STORY_CTAS.length;i++){
+  const c=STORY_CTAS[i],prefix='ゲーム'+['Ⅰ','Ⅱ','Ⅲ'][i]+'：';
+  const labels=GAME_LABELS.filter(x=>x[1]===i).map(x=>x[0]);
+  // Inspect all textblocks, not just top-level, so nested duplicates also block edits.
+  const candidates=[];let prior=false;
+  doc.descendants((n,pos)=>{if(n.isTextblock){if(labels.includes(n.textContent))candidates.push(pos);if([c.label,...c.lines].some(t=>n.textContent.includes(t)))prior=true;return false;}});
+  if(prior){diagnostics.push(prefix+'新しい入口文またはその一部が存在します。重ねて追加しません。');continue;}
+  if(candidates.length!==1){diagnostics.push(prefix+(candidates.length?'入口が複数あります。変更しません。':'完全一致する入口段落がありません。変更しません。'));continue;}
+  const b=blocks.find(b=>b.pos===candidates[0]);
+  if(!b||b.node.type!==schema.nodes.paragraph||!b.node.isTextblock){diagnostics.push(prefix+'通常の最上位段落ではないため変更しません。');continue;}
+  let safe=true;
+  b.node.forEach(n=>{if(!n.isText||n.marks.some(m=>m.type!==type||![GAME_URLS[i],c.url].includes(m.attrs[attr])))safe=false;});
+  if(!safe||!b.node.type.allowsMarkType(type)){diagnostics.push(prefix+'装飾・別リンク・画像等があるため変更しません。');continue;}
+  const mark=type.create({[attr]:c.url});
+  const nodes=[...c.lines.map(t=>schema.nodes.paragraph.createChecked(null,schema.text(t))),b.node.type.createChecked(b.node.attrs,schema.text(c.label,[mark]),b.node.marks)];
+  entries.push({...b,nodes,scene:i+1});diagnostics.push(prefix+'入口1段落を、導入2段落＋リンク1段落に変更');
+ }
+ return {before:doc,entries,diagnostics};
+}
+function storyTransaction(state,plan){
+ if(state.doc!==plan.before)throw Error('確認後に本文が変わりました。再度「入口文の変更内容を確認」を押してください。');
+ const expected=[],byIndex=new Map(plan.entries.map(e=>[e.index,e]));
+ state.doc.forEach((n,p,i)=>expected.push(...(byIndex.get(i)?.nodes||[n])));
+ const expectedDoc=state.doc.type.createChecked(state.doc.attrs,expected,state.doc.marks);
+ const tr=state.tr;
+ for(const e of [...plan.entries].sort((a,b)=>b.pos-a.pos))tr.replaceWith(e.pos,e.pos+e.node.nodeSize,e.nodes);
+ if(tr.steps.length!==plan.entries.length||tr.steps.some(s=>s.toJSON().stepType!=='replace')||!tr.doc.eq(expectedDoc))throw Error('対象の入口段落以外に変更が及ぶため停止しました。');
+ return tr;
+}
+
 if(typeof document==='undefined'){
- if(typeof module!=='undefined')module.exports={LINKS,GAME_URLS,GAME_LABELS,matches,collect,rangeState,withoutLinks,sameStructure,gameReport};
+ if(typeof module!=='undefined')module.exports={STORY_CTAS,storyPlan,storyTransaction,LINKS,GAME_URLS,GAME_LABELS,matches,collect,rangeState,withoutLinks,sameStructure,gameReport};
  return;
 }
 const page=typeof unsafeWindow!=='undefined'?unsafeWindow:window;
 const target=()=>location.hostname==='editor.note.com'&&location.pathname.split('/').includes(NOTE_ID);
 if(!target()||document.getElementById('halloween-name-links-v1'))return;
-let cached=null,undo=null,busy=false,host=null;
+let cached=null,undo=null,busy=false,host=null,storyPreview=null;
 function isView(v,root){try{return Boolean(v&&v.dom===root&&v.state?.doc&&v.state?.schema&&typeof v.dispatch==='function'&&typeof v.posAtDOM==='function'&&!v.isDestroyed)}catch{return false;}}
 function findView(){
  const root=page.document.querySelector('.ProseMirror[contenteditable="true"]');
@@ -161,10 +203,44 @@ function mount(){
  if(host||!target())return;
  host=document.createElement('div');host.id='halloween-name-links-v1';
  const shadow=host.attachShadow({mode:'open'});
- shadow.innerHTML=`<style>:host{all:initial;position:fixed;right:10px;top:74px;z-index:2147483646;font:14px/1.6 system-ui,sans-serif;color:#18202a}*{box-sizing:border-box}details{width:min(320px,calc(100vw - 20px));background:#fff;color:#18202a;border:2px solid #584172;border-radius:12px;box-shadow:0 3px 15px #0004}summary{cursor:pointer;padding:10px 12px;font-weight:700;list-style:none}section{padding:0 12px 12px}p{margin:4px 0 10px;white-space:pre-wrap;font-size:13px}button{font:inherit;min-height:44px;cursor:pointer;border:1px solid #584172;border-radius:8px;background:#584172;color:#fff;padding:8px 12px;margin:4px 0;width:100%}button:disabled{opacity:.5;cursor:default}.secondary{background:#fff;color:#18202a}small{display:block;font-size:11px}button:focus-visible,summary:focus-visible{outline:3px solid #a27bd1;outline-offset:2px}[hidden]{display:none!important}</style><details open><summary>名前・ゲームリンク補修 1.1.0 ▾</summary><section><p>本文を貼り直さず、参加者名とゲームⅠ〜Ⅲの入口文字にリンクだけを追加します。別のリンクや追加した挿絵は変更しません。</p><button id="apply">名前とゲームのリンクを付ける</button><p id="status" role="status" aria-live="polite">白い仮面の記事専用。本文・画像・改行は置き換えません。</p><button id="undo" class="secondary" hidden>今回追加したリンクを戻す</button><small>自動公開しません。noteの通常の自動保存は働く場合があります。CNA運営さんはプロフィールへリンクします。ゲームの戻り先は現時点では専用本文ページです。noteの続きへの接続完了ではありません。</small><button id="close" class="secondary">パネルを閉じる</button></section></details>`;
+ shadow.innerHTML=`<style>:host{all:initial;position:fixed;right:10px;top:74px;z-index:2147483646;font:14px/1.6 system-ui,sans-serif;color:#18202a}*{box-sizing:border-box}details{width:min(320px,calc(100vw - 20px));background:#fff;color:#18202a;border:2px solid #584172;border-radius:12px;box-shadow:0 3px 15px #0004}summary{cursor:pointer;padding:10px 12px;font-weight:700;list-style:none}section{padding:0 12px 12px}p{margin:4px 0 10px;white-space:pre-wrap;font-size:13px}button{font:inherit;min-height:44px;cursor:pointer;border:1px solid #584172;border-radius:8px;background:#584172;color:#fff;padding:8px 12px;margin:4px 0;width:100%}button:disabled{opacity:.5;cursor:default}.secondary{background:#fff;color:#18202a}small{display:block;font-size:11px}button:focus-visible,summary:focus-visible{outline:3px solid #a27bd1;outline-offset:2px}[hidden]{display:none!important}</style><details open><summary>名前・ゲームリンク補修 1.2.0 ▾</summary><section><p>本文を貼り直さず、参加者名とゲームⅠ〜Ⅲの入口文字にリンクだけを追加します。別のリンクや追加した挿絵は変更しません。</p><button id="apply">名前とゲームのリンクを付ける</button><button id="story-preview" class="secondary">入口文の変更内容を確認</button><p id="story-details"></p><button id="story-apply" hidden>確認した入口文だけを差し替える</button><p id="status" role="status" aria-live="polite">白い仮面の記事専用。本文・画像・改行は置き換えません。</p><button id="undo" class="secondary" hidden>今回の変更を戻す</button><small>自動公開しません。noteの通常の自動保存は働く場合があります。CNA運営さんはプロフィールへリンクします。ゲームの戻り先は現時点では専用本文ページです。noteの続きへの接続完了ではありません。</small><button id="close" class="secondary">パネルを閉じる</button></section></details>`;
  document.body.append(host);
  const button=shadow.getElementById('apply'),status=shadow.getElementById('status'),undoButton=shadow.getElementById('undo');
  const say=text=>status.textContent=text;
+
+ const previewButton=shadow.getElementById('story-preview'),storyButton=shadow.getElementById('story-apply'),storyDetails=shadow.getElementById('story-details');
+ previewButton.onclick=()=>{
+  if(busy)return;storyPreview=null;storyButton.hidden=true;
+  try{
+   const view=currentView(),{type,attr}=linkType(view.state.schema);
+   const plan=storyPlan(view.state.doc,view.state.schema,type,attr);
+   const previews=plan.entries.map(e=>{const c=STORY_CTAS[e.scene-1];return 'ゲーム'+e.scene+'\n'+c.lines.join('\n')+'\n'+c.label+'\n'+c.url;});
+   storyDetails.textContent=plan.diagnostics.join('\n')+'\n\n'+previews.join('\n\n')+'\n\n対象'+plan.entries.length+'段落の文字を差し替え、導入'+(plan.entries.length*2)+'段落を追加。画像・他の段落・見出しは変更しません。漫画の追加・位置確認は別途必要です。noteの自動保存が働く場合があります。';
+   // Build and verify without dispatching; preview itself never edits the document.
+   storyTransaction(view.state,plan);
+   storyPreview={view,plan};storyButton.hidden=!plan.entries.length;
+   say('変更内容とリンク先を確認してから差し替えボタンを押してください。まだ変更していません。');
+  }catch(error){say(error.message);}
+ };
+ storyButton.onclick=()=>{
+  if(busy||!storyPreview)return;busy=true;storyButton.disabled=true;
+  try{
+   const view=currentView();
+   if(view!==storyPreview.view)throw Error('編集画面が変わりました。再確認してください。');
+   const plan=storyPreview.plan,tr=storyTransaction(view.state,plan);
+   if(!plan.entries.length)return;
+   const inverse=tr.steps.map((s,i)=>s.invert(tr.docs[i])).reverse();
+   tr.setMeta('addToHistory',true);
+   // Undo data stays in memory only; never log, upload, or persist draft content.
+   const record={view,before:plan.before,after:tr.doc,inverse};
+   view.dispatch(tr);
+   storyPreview=null;storyButton.hidden=true;
+   if(!view.state.doc.eq(tr.doc))throw Error('編集側の反映を確認できません。完了扱いにしていません。プレビューを確認してください。');
+   undo=record;undoButton.hidden=false;
+   say(plan.entries.length+'か所の入口文とリンクを編集データで確認しました。画像・他の段落は保持しています。保存後の下書きプレビューで確認してください。公開はしていません。');
+  }catch(error){storyPreview=null;storyButton.hidden=true;say(error.message);}
+  finally{busy=false;storyButton.disabled=false;}
+ };
  shadow.getElementById('close').onclick=()=>{shadow.querySelector('details').open=false;};
  button.onclick=async()=>{
   if(busy)return;busy=true;button.disabled=true;
@@ -201,9 +277,10 @@ function mount(){
    if(!tr.doc.eq(undo.before))throw Error('元の状態との一致を確認できません。変更していません。');
    view.dispatch(tr);
    if(!view.state.doc.eq(undo.before))throw Error('取り消しを確認できません。');
-   undo=null;undoButton.hidden=true;say('今回追加したリンクだけを戻しました。');
+   undo=null;undoButton.hidden=true;say('今回の変更だけを戻しました。');
   }catch(error){say(error.message);}
  };
 }
 if(document.body)mount();else document.addEventListener('DOMContentLoaded',mount,{once:true});
 })();
+

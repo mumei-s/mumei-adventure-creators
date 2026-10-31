@@ -1,5 +1,5 @@
 /** Canonical manuscript: article and game own disjoint passages. */
-export const VERSION='20261031-photo-order-1';
+export const VERSION='20261031-compact-1';
 export const NOTE_ARTICLE_PATH='/ss_yr/n/n603c26c01384';
 export const NOTE_RETURNS=Object.freeze({1:'',2:'',3:''});
 export const LINKS=Object.freeze([
@@ -134,7 +134,7 @@ export const SCENES=Object.freeze([
  '私の声だった。',
  '通りの向こうを、参加者のみんなが歩いていた…(ㆁᆺㆁ๑)‼︎ ぇっ…',
  'その先頭に、私がいたΣ(ﾟ艸ﾟ*)ﾊｯ‼'
- ]},
+ ],image:{src:'./assets/empty-library.png',after:'中には誰もいない。',width:1672,height:941,alt:'開いた木の扉の向こうに、誰もいない書庫。ランプが空の椅子と本棚を照らし、奥の窓に青い夜の光が差している。'}},
  {id:3,roman:'Ⅲ',title:'門のガラスに、私が映っていた',button:'自動で門へ進む',after:'after-3',paragraphs:[
  '門が閉まる前に、追いついた。',
  '(o´Д`)=з(o´Д`)=з',

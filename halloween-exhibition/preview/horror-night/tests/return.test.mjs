@@ -11,7 +11,7 @@ test('all scenes have honest null unconfigured return, never local manuscript',(
 const source=fs.readFileSync(new URL('../journey-app.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replace("import('./town.js?v=20261031-startup-1')","loadTownStub()");
 function boot(search,{town,referrer='',historyLength=1,opener=null,backThrows=false,closeThrows=false,assignThrows=false}={}){
  const nodes=new Map(); const events={};const assigned=[],timers=[];let backs=0,closes=0;
- function node(id){if(!nodes.has(id))nodes.set(id,{hidden:false,disabled:false,textContent:'',innerHTML:'',classList:{add(){}},querySelector(){return {focus(){}}},querySelectorAll(){return []},scrollIntoView(){}});return nodes.get(id);}
+ function node(id){if(!nodes.has(id))nodes.set(id,{hidden:false,disabled:false,textContent:'',innerHTML:'',classList:{add(){},remove(){}},querySelector(){return {focus(){}}},querySelectorAll(){return []},scrollIntoView(){}});return nodes.get(id);}
  const document={referrer,body:node('body'),getElementById:node,addEventListener(){},hidden:false};const window={opener,close(){closes++;if(closeThrows)throw Error('blocked');},addEventListener(k,f){events[k]=f}};
  const location={search,href:'https://example.test/?'+search,assign:x=>{if(assignThrows)throw Error("blocked");assigned.push(x)}};
  const context=vm.createContext({...data,...returnNavigation,history:{length:historyLength,back(){backs++;if(backThrows)throw Error('blocked');}},document,window,location,URL,URLSearchParams,console:{error(){}},setTimeout(fn,ms){const timer={fn,ms,cleared:false};timers.push(timer);return timer;},clearTimeout(timer){if(timer)timer.cleared=true;},COPY_VERSION:'test',loadTownStub:()=>town||Promise.reject(Error('offline'))}); vm.runInContext(source,context);return {node,assigned,events,window,backs:()=>backs,closes:()=>closes,fireTimer(ms){const timer=timers.findLast(t=>t.ms===ms&&!t.cleared);assert.ok(timer);timer.fn();}};
@@ -25,7 +25,7 @@ test('reading is immediately available during town preparation, independent of n
 test('reading during unresolved town creation survives late engine completion and repeated clicks',async()=>{let complete,destroyed=0;const town=new Promise(r=>complete=r);const t=boot('?scene=3',{town});t.node('read-now').onclick();const passage=t.node('scene-passage').innerHTML;t.node('read-now').onclick();complete({createStoryTown:()=>Promise.resolve({destroy(){destroyed++},pause(){}})});await settle();assert.equal(destroyed,1);assert.equal(t.node('scene-passage').innerHTML,passage);assert.equal(t.node('primary-action').disabled,false);});
 test('watchdog survives stalled enter and late enter cannot overwrite reading',async()=>{let complete,destroyed=0;const engine={enter:()=>new Promise(r=>complete=r),destroy(){destroyed++},pause(){}};const t=boot('?scene=2',{town:Promise.resolve({createStoryTown:()=>Promise.resolve(engine)})});await settle();t.fireTimer(30000);assert.match(t.node('primary-action').textContent,/本文を読む/);t.node('primary-action').onclick();const passage=t.node('scene-passage').innerHTML;complete();await settle();assert.equal(destroyed,1);assert.equal(t.node('scene-passage').innerHTML,passage);assert.equal(t.node('primary-action').disabled,false);});
 
-test('scene1 explains solo timer photo, then shows manga before anomaly prose; other imagery unchanged',async()=>{const t=boot('?scene=1');await settle();t.node('primary-action').onclick();const html=t.node('scene-passage').innerHTML;assert.match(html,/photo-anomaly-manga.png/);assert.doesNotMatch(html,/〔マンガ①/);assert.ok(html.indexOf('みんなで集合写真を撮り終えたあと')<html.indexOf('三脚のカメラのタイマーをもう一度かけて'));assert.ok(html.indexOf('photo-anomaly-manga.png')>html.indexOf('三脚のカメラのタイマーをもう一度かけて'));assert.ok(html.indexOf('photo-anomaly-manga.png')<html.indexOf('撮った写真を開いて、指が止まった'));assert.doesNotMatch(html,/とりあえずシャッタータイマーかけて/);assert.match(html,/width="1024" height="1536"/);assert.equal(data.SCENES[1].image,undefined);assert.equal(data.SCENES[2].image.src,'./assets/window-reflection.jpg');assert.ok(fs.statSync(new URL('../assets/photo-anomaly-manga.png',import.meta.url)).size>1000000);});
+test('scene1 explains solo timer photo, then shows manga before anomaly prose; other imagery unchanged',async()=>{const t=boot('?scene=1');await settle();t.node('primary-action').onclick();const html=t.node('scene-passage').innerHTML;assert.match(html,/photo-anomaly-manga.png/);assert.doesNotMatch(html,/〔マンガ①/);assert.ok(html.indexOf('みんなで集合写真を撮り終えたあと')<html.indexOf('三脚のカメラのタイマーをもう一度かけて'));assert.ok(html.indexOf('photo-anomaly-manga.png')>html.indexOf('三脚のカメラのタイマーをもう一度かけて'));assert.ok(html.indexOf('photo-anomaly-manga.png')<html.indexOf('撮った写真を開いて、指が止まった'));assert.doesNotMatch(html,/とりあえずシャッタータイマーかけて/);assert.match(html,/width="1024" height="1536"/);assert.equal(data.SCENES[1].image.src,'./assets/empty-library.png');assert.equal(data.SCENES[2].image.src,'./assets/window-reflection.jpg');assert.ok(fs.statSync(new URL('../assets/photo-anomaly-manga.png',import.meta.url)).size>1000000);});
 test('browser Back is explicitly available across note, empty and ChatGPT referrers; never promises note',async()=>{for(const referrer of ['https://note.com/','https://note.com/preview/nabc?prev_access_key=private','','https://chatgpt.com/']){const t=boot('?scene=1',{referrer,historyLength:2});t.node('read-now').onclick();assert.equal(t.node('primary-action').disabled,false);assert.equal(t.node('primary-action').textContent,'前の画面へ戻る');assert.doesNotMatch(t.node('app').innerHTML,/prev_access_key|private/);t.node('primary-action').onclick();t.node('primary-action').onclick();assert.equal(t.backs(),1);assert.deepEqual(t.assigned,[]);}});
 test('new tabs or direct entry without prior history show original-tab guidance, no back call',()=>{const t=boot('?scene=3',{referrer:'https://note.com/',historyLength:1,opener:{}});t.node('read-now').onclick();assert.equal(t.node('primary-action').disabled,false);t.node('primary-action').onclick();assert.equal(t.backs(),0);assert.match(t.node('app').innerHTML,/タブ一覧で閉じ/);assert.equal(t.closes(),1);});
 test('no-op Back recovers and allows deliberate retry without automatic URL redirect',()=>{const t=boot('?scene=2&return='+encodeURIComponent(valid),{historyLength:2});t.node('read-now').onclick();t.node('primary-action').onclick();t.fireTimer(1800);assert.equal(t.node('primary-action').disabled,false);assert.match(t.node('status').textContent,/戻れませんでした/);assert.deepEqual(t.assigned,[]);t.node('primary-action').onclick();assert.equal(t.backs(),2);});
@@ -48,4 +48,30 @@ test('configured destination navigation rejection or no-op unlocks without autom
 test('unconfigured Back no-op never recommends a nonexistent configured link',()=>{
  const t=boot('?scene=1',{historyLength:2});t.node('read-now').onclick();t.node('primary-action').onclick();t.fireTimer(1800);
  assert.doesNotMatch(t.node('status').textContent,/設定済み/);
+});
+
+test('scene2 empty-library image appears before the outside voice and double',()=>{
+ const t=boot('?scene=2');t.node('read-now').onclick();const html=t.node('scene-passage').innerHTML;
+ assert.ok(html.indexOf('中には誰もいない。')<html.indexOf('empty-library.png'));
+ assert.ok(html.indexOf('empty-library.png')<html.indexOf('返事は外から'));
+ assert.equal(data.SCENES[1].image.width,1672);assert.equal(data.SCENES[1].image.height,941);
+ assert.ok(fs.statSync(new URL('../assets/empty-library.png',import.meta.url)).size>100000);
+});
+test('passage geometry and orientation resize redraw the paused scene in order',async()=>{
+ const calls=[];const engine={enter:async()=>{},pause(){calls.push('pause')},resize(){calls.push('resize')},revealCast(){calls.push('render')},destroy(){}};
+ const t=boot('?scene=3',{town:Promise.resolve({createStoryTown:()=>Promise.resolve(engine)})});await settle();
+ t.node('read-now').onclick();assert.deepEqual(calls.slice(-2),['resize','render']);
+ calls.length=0;t.events.resize();assert.deepEqual(calls,['resize','render']);
+});
+test('compact shared controls remain in normal flow with collapsed help and 44px targets',()=>{
+ const css=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
+ assert.match(css,/\.game \.action-dock\{position:static/);
+ assert.match(css,/\.game-moving #primary-action\{display:none\}/);
+ assert.match(css,/min-height:44px/);assert.match(css,/safe-area-inset-left/);
+ for(const n of [1,2,3]){const html=boot('?scene='+n).node('app').innerHTML;
+ assert.match(html,/<details class="return-help"><summary>戻り方/);
+ assert.doesNotMatch(html,/<details[^>]*open/);
+ assert.match(html,/class="action-row"/);
+ assert.equal((html.match(/読み終えたら/g)||[]).length,1);
+ }
 });

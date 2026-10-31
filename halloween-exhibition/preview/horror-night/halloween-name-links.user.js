@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         無名S Halloween 参加者名リンク補修
 // @namespace    https://github.com/mumei-s/mumei-adventure-creators/halloween-name-links
-// @version      1.0.0
-// @description  白い仮面の記事の参加者名にリンクだけを追加。本文・画像・改行を置換しない。外部送信なし。
+// @version      1.1.0
+// @description  白い仮面の記事の参加者名とゲーム入口にリンクだけを追加。本文・画像・改行を置換しない。外部送信なし。
 // @match        https://editor.note.com/notes/n603c26c01384/*
 // @noframes
 // @run-at       document-idle
@@ -13,6 +13,13 @@
 (function () {
 'use strict';
 const NOTE_ID='n603c26c01384';
+const GAME_BASE='https://mumei-s.github.io/mumei-adventure-creators/halloween-exhibition/preview/horror-night/';
+const GAME_URLS=[1,2,3].map(n=>GAME_BASE+'?scene='+n+'&v=20261031-roundtrip-2');
+const GAME_LABELS=[
+ ['ゲームⅠへ――写真にだけ、近い',0],['ゲームⅡへ――先に帰る私',1],['ゲームⅢへ――門のガラスに、私が映っていた',2],
+ ['街へ①――広場で集合写真を撮る',0],['街へ②――暗くなった通りを歩き、書庫へ戻る',1],['街へ③――みんなを追いかけて、出口へ向かう',2],
+ ['ゲームⅠへ',0],['ゲームⅡへ',1],['ゲームⅢへ',2],['ゲーム1へ',0],['ゲーム2へ',1],['ゲーム3へ',2]
+];
 const LINKS=[
  ['まこさん','https://note.com/koakumako/n/na9731433238f'],
  ['たけちさん','https://note.com/imota14/n/n618813fb0e89'],
@@ -32,7 +39,8 @@ const LINKS=[
  ['カモミールさん','https://note.com/clever_hare2654/n/nf731501cfb0e'],
  ['カモミールさ〜ん','https://note.com/clever_hare2654/n/nf731501cfb0e'],
  ['ドイルさん','https://note.com/dandy_snake880/n/n084c0d58f567'],
- ['凛さん','https://note.com/airoumu_rin/n/n7179d2f821e8']
+ ['凛さん','https://note.com/airoumu_rin/n/n7179d2f821e8'],
+ ...GAME_LABELS.map(([label,index])=>[label,GAME_URLS[index]])
 ].sort((a,b)=>b[0].length-a[0].length);
 function matches(text,start=0){
  const hits=[];
@@ -85,8 +93,6 @@ function withoutLinks(json,typeName){
   const content=[];
   for(const raw of out.content){
    const item=withoutLinks(raw,typeName),previous=content[content.length-1];
-   // Adding an inline mark splits text nodes. Compare the canonical text runs,
-   // not the incidental node boundaries, while retaining every other mark.
    if(previous?.type==='text'&&item.type==='text'&&JSON.stringify({...previous,text:''})===JSON.stringify({...item,text:''}))previous.text+=item.text;
    else content.push(item);
   }
@@ -95,9 +101,16 @@ function withoutLinks(json,typeName){
  return out;
 }
 function sameStructure(a,b,type){return JSON.stringify(withoutLinks(a.toJSON(),type))===JSON.stringify(withoutLinks(b.toJSON(),type));}
-// The pure matching checks can run in Node without accessing a browser account.
+function gameReport(hits,doc,type,attr){
+ const rows=GAME_URLS.map((url,index)=>{
+  const found=hits.filter(h=>h.url===url);
+  const ok=found.length&&found.every(h=>rangeState(doc,h,type,attr)==='existing');
+  return 'ゲーム'+['Ⅰ','Ⅱ','Ⅲ'][index]+'：'+(ok?'リンク設定済み':found.length?'既存リンク等を確認してください':'入口の文字が見つかりません');
+ });
+ return rows.join('\n');
+}
 if(typeof document==='undefined'){
- if(typeof module!=='undefined')module.exports={LINKS,matches,collect,rangeState,withoutLinks,sameStructure};
+ if(typeof module!=='undefined')module.exports={LINKS,GAME_URLS,GAME_LABELS,matches,collect,rangeState,withoutLinks,sameStructure,gameReport};
  return;
 }
 const page=typeof unsafeWindow!=='undefined'?unsafeWindow:window;
@@ -109,8 +122,6 @@ function findView(){
  const root=page.document.querySelector('.ProseMirror[contenteditable="true"]');
  if(!root)return null;
  if(isView(cached,root))return cached;
- // Use the editor-view discovery used by the separate thumbnail tool. Do not
- // call internal uploads, APIs, save/publish buttons, or arbitrary factories.
  const queue=[],seen=new Set();
  let e=root;for(let i=0;i<6&&e;i++,e=e.parentElement)queue.push([e,0]);
  const skip=new Set(['window','document','ownerDocument','parentNode','children','childNodes','style','cookie','localStorage','sessionStorage']);
@@ -150,7 +161,7 @@ function mount(){
  if(host||!target())return;
  host=document.createElement('div');host.id='halloween-name-links-v1';
  const shadow=host.attachShadow({mode:'open'});
- shadow.innerHTML=`<style>:host{all:initial;position:fixed;right:10px;top:74px;z-index:2147483646;font:14px/1.6 system-ui,sans-serif;color:#18202a}*{box-sizing:border-box}details{width:min(320px,calc(100vw - 20px));background:#fff;color:#18202a;border:2px solid #584172;border-radius:12px;box-shadow:0 3px 15px #0004}summary{cursor:pointer;padding:10px 12px;font-weight:700;list-style:none}section{padding:0 12px 12px}p{margin:4px 0 10px;white-space:pre-wrap;font-size:13px}button{font:inherit;min-height:44px;cursor:pointer;border:1px solid #584172;border-radius:8px;background:#584172;color:#fff;padding:8px 12px;margin:4px 0;width:100%}button:disabled{opacity:.5;cursor:default}.secondary{background:#fff;color:#18202a}small{display:block;font-size:11px}button:focus-visible,summary:focus-visible{outline:3px solid #a27bd1;outline-offset:2px}[hidden]{display:none!important}</style><details open><summary>参加者リンク補修 ▾</summary><section><p>本文を貼り直さず、名前にリンクだけを追加します。ほかのリンクは上書きしません。</p><button id="apply">参加者名にリンクを付ける</button><p id="status" role="status" aria-live="polite">白い仮面の記事専用。本文・画像・改行は置き換えません。</p><button id="undo" class="secondary" hidden>今回追加したリンクを戻す</button><small>自動公開しません。noteの通常の自動保存は働く場合があります。CNA運営さんはプロフィールへリンクします。</small><button id="close" class="secondary">パネルを閉じる</button></section></details>`;
+ shadow.innerHTML=`<style>:host{all:initial;position:fixed;right:10px;top:74px;z-index:2147483646;font:14px/1.6 system-ui,sans-serif;color:#18202a}*{box-sizing:border-box}details{width:min(320px,calc(100vw - 20px));background:#fff;color:#18202a;border:2px solid #584172;border-radius:12px;box-shadow:0 3px 15px #0004}summary{cursor:pointer;padding:10px 12px;font-weight:700;list-style:none}section{padding:0 12px 12px}p{margin:4px 0 10px;white-space:pre-wrap;font-size:13px}button{font:inherit;min-height:44px;cursor:pointer;border:1px solid #584172;border-radius:8px;background:#584172;color:#fff;padding:8px 12px;margin:4px 0;width:100%}button:disabled{opacity:.5;cursor:default}.secondary{background:#fff;color:#18202a}small{display:block;font-size:11px}button:focus-visible,summary:focus-visible{outline:3px solid #a27bd1;outline-offset:2px}[hidden]{display:none!important}</style><details open><summary>名前・ゲームリンク補修 1.1.0 ▾</summary><section><p>本文を貼り直さず、参加者名とゲームⅠ〜Ⅲの入口文字にリンクだけを追加します。別のリンクや追加した挿絵は変更しません。</p><button id="apply">名前とゲームのリンクを付ける</button><p id="status" role="status" aria-live="polite">白い仮面の記事専用。本文・画像・改行は置き換えません。</p><button id="undo" class="secondary" hidden>今回追加したリンクを戻す</button><small>自動公開しません。noteの通常の自動保存は働く場合があります。CNA運営さんはプロフィールへリンクします。ゲームの戻り先は現時点では専用本文ページです。noteの続きへの接続完了ではありません。</small><button id="close" class="secondary">パネルを閉じる</button></section></details>`;
  document.body.append(host);
  const button=shadow.getElementById('apply'),status=shadow.getElementById('status'),undoButton=shadow.getElementById('undo');
  const say=text=>status.textContent=text;
@@ -161,9 +172,9 @@ function mount(){
    const view=currentView(),before=view.state.doc,{type,attr}=linkType(view.state.schema);
    const hits=collect(before),plan=[],skipped=[];let existing=0;
    for(const hit of hits){const s=rangeState(before,hit,type,attr);if(s==='add')plan.push(hit);else if(s==='existing')existing++;else skipped.push(hit.name);}
-   if(!hits.length){say('本文に対象の名前が見つかりません。変更していません。');return;}
+   if(!hits.length){say('本文に対象の名前・入口文字が見つかりません。変更していません。');return;}
    const suffix=skipped.length?'\n別のリンク等がある'+skipped.length+'か所は変更していません。':'';
-   if(!plan.length){say('編集データに正しいリンクが'+existing+'か所あります。追加は不要です。'+suffix);return;}
+   if(!plan.length){say('編集データに正しいリンクが'+existing+'か所あります。追加は不要です。\n'+gameReport(hits,before,type,attr)+suffix);return;}
    const tr=view.state.tr;
    for(const hit of plan)tr.addMark(hit.from,hit.to,type.create({[attr]:hit.url}));
    if(!tr.steps.length||tr.steps.some(s=>s.toJSON().stepType!=='addMark')||!sameStructure(before,tr.doc,type.name))throw Error('文字や構成が変わる処理を検出したため停止しました。本文は変更していません。');
@@ -177,7 +188,7 @@ function mount(){
    await new Promise(resolve=>setTimeout(resolve,600));
    if(!target()||!view.dom.isConnected||!view.state.doc.eq(undo.after))throw Error('その後に編集データが変わったため、完了確認を停止しました。下書きプレビューを確認してください。');
    if(!plan.every(h=>rangeState(view.state.doc,h,type,attr)==='existing'))throw Error('リンクが保持されたことを確認できません。完了扱いにしていません。');
-   say('編集データで'+plan.length+'か所の追加リンクを確認しました。既存'+existing+'か所は保持。\n下書き保存後、プレビューで名前から記事へ飛べるか確認してください。'+suffix);
+   say('編集データで'+plan.length+'か所の追加リンクを確認しました。既存'+existing+'か所は保持。\n'+gameReport(hits,view.state.doc,type,attr)+'\n下書き保存後、プレビューでリンク先を確認してください。'+suffix);
   }catch(error){say(error.message||'確認できないため停止しました。');}
   finally{busy=false;button.disabled=false;}
  };

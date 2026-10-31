@@ -1,8 +1,10 @@
+import {canOfferBrowserBack} from './return-navigation.js?v=20261031-back-1';
 import {VERSION,ARTICLE,SCENES,EMPHASIS,LINKS,sceneNumber,returnTarget,escapeHTML,linked,headingCode,emphasisCode} from './journey-data.js?v=20261031-photo-order-1';
 import {COPY_VERSION,copyForNote,installCopyChecks} from './note-copy.js?v=20261031-copy-3';
 const root=document.getElementById('app');
 const sceneID=sceneNumber(location.search);
-let engine=null,phase='loading',leaving=false,watchdog=0,remaining=0,loadTimer=0;
+let engine=null,phase='loading',leaving=false,watchdog=0,remaining=0,loadTimer=0,returnTimer=0;
+const browserBackHint=canOfferBrowserBack(typeof history==='undefined'?0:history.length);
 const paragraph=(text,copy=false)=>`<p${text.startsWith('〔')?' class="insert-note"':''}>${EMPHASIS.has(text)?(copy?escapeHTML(emphasisCode(text)):'<strong>'+linked(text)+'</strong>'):linked(text)}</p>`;
 const sceneParagraphs=s=>s.paragraphs.map(p=>paragraph(p)+(s.image&&p===s.image.after?`<figure class="scene-illustration"><div class="illustration-crop"><img src="${escapeHTML(s.image.src)}" alt="${escapeHTML(s.image.alt)}" width="${s.image.width||1080}" height="${s.image.height||1249}" decoding="async"></div><figcaption class="image-fallback" hidden>挿絵を読み込めませんでした。本文はこのまま読めます。</figcaption></figure>`:'')).join('');
 const sceneLink=n=>new URL(`./?scene=${n}&v=${VERSION}`,location.href).href;
@@ -28,6 +30,34 @@ function renderArticle(){
  installCopyChecks({getHTML:()=>articleHTML(true),tools:document.querySelector('.article-tools'),source:document.getElementById('copy-source')});
  window.addEventListener('hashchange',jumpToFragment);jumpToFragment();
 }
+function updateReturnAction(){
+ const action=document.getElementById('primary-action'),destination=returnTarget(sceneID,location.search);
+ const canBack=browserBackHint;
+ action.disabled=false;
+ action.textContent=canBack?'前の画面へ戻る':destination?'noteの記事へ戻る →':'このゲームを閉じる';
+}
+function resetReturnAttempt(message){
+ clearTimeout(returnTimer);returnTimer=0;leaving=false;phase='reading';
+ updateReturnAction();document.getElementById('status').textContent=message;
+}
+function leavePassage(destination){
+ if(leaving)return;
+ if(browserBackHint){
+  phase='leaving';leaving=true;engine?.pause();document.getElementById('primary-action').disabled=true;
+  returnTimer=setTimeout(()=>resetReturnAttempt(destination?'このタブでは戻れませんでした。元のnoteタブを開くか、設定済みの記事リンクを選んでください。':'このタブでは戻れませんでした。タブ一覧から元のnoteタブを開いてください。'),1800);
+  try{history.back();}catch{resetReturnAttempt('ブラウザーの戻るを実行できませんでした。元のnoteタブを開いてください。');}
+  return;
+ }
+ if(destination){
+  phase='leaving';leaving=true;engine?.pause();document.getElementById('primary-action').disabled=true;
+  returnTimer=setTimeout(()=>resetReturnAttempt('記事を開けませんでした。設定済みの記事リンクを選ぶか、元のnoteタブを開いてください。'),1800);
+  try{location.assign(destination);}catch{resetReturnAttempt('記事を開けませんでした。元のnoteタブを開いてください。');}
+  return;
+ }
+ phase='leaving';leaving=true;engine?.pause();document.getElementById('primary-action').disabled=true;
+ returnTimer=setTimeout(()=>resetReturnAttempt('自動では閉じられませんでした。ブラウザーのタブ一覧でこのゲームを閉じ、元の記事タブを選んでください。'),1800);
+ try{window.close();}catch{resetReturnAttempt('このタブを閉じられませんでした。ブラウザーのタブ一覧で元の記事タブを選んでください。');}
+}
 function stopWatch(){clearTimeout(watchdog);watchdog=0;}
 function startWatch(){stopWatch();watchdog=setTimeout(()=>showPassage('移動表示を続けられないため、この場面の本文を表示します。'),40000);}
 function showPassage(message=''){
@@ -37,7 +67,7 @@ function showPassage(message=''){
  const box=document.getElementById('scene-passage');box.hidden=false;box.innerHTML=`<h2 tabindex="-1">${s.title}</h2>${sceneParagraphs(s)}${s.insert?paragraph(s.insert):''}`;
  engine?.revealCast?.();
  box.querySelectorAll('img').forEach(img=>{img.addEventListener('error',()=>{img.closest('figure').querySelector('.image-fallback').hidden=false;});});
- const action=document.getElementById('primary-action');const destination=returnTarget(sceneID,location.search);action.disabled=!destination;action.textContent=destination?'noteの記事へ戻る →':'元のnoteタブで続き'+s.roman+'を読んでください';
+ updateReturnAction();
  document.getElementById('early-return').hidden=true;document.getElementById('read-now').hidden=true;
  box.scrollIntoView({block:'start',behavior:'instant'});box.querySelector('h2').focus({preventScroll:true});
 }
@@ -56,11 +86,11 @@ async function loadTown(){
 }
 function renderGame(){
  const s=SCENES[sceneID-1],destination=returnTarget(sceneID,location.search);
- root.innerHTML=`<section class="game"><header class="game-header"><p>HALLOWEEN ATELIER · ゲーム${s.roman} / 3</p><h1>${s.title}</h1>${destination?`<a id="early-return" href="${escapeHTML(destination)}">← noteの記事へ戻る</a>`:'<span id="early-return" class="small">noteの戻り先は未設定です。元のnoteタブを開いてください。</span>'}</header><div id="world" class="world"><canvas id="scene2d" aria-label="通常の見下ろし視点で自動移動する街"></canvas><canvas id="scene3d" hidden aria-hidden="true"></canvas><div class="scene-shade" aria-hidden="true"></div></div><p id="status" class="status" role="status" aria-live="polite">街を開いています…</p><details class="status"><summary id="cast-status" role="status">参加者の姿を読み込んでいます。</summary><p id="cast-pending"></p></details><article id="scene-passage" class="reading scene-passage" hidden></article><div class="action-dock"><button id="primary-action" type="button" disabled>街を準備中…</button><button id="read-now" type="button">先にこの場面を読む</button><p class="small">${destination?'戻り先：noteの記事（続き'+s.roman+'をお読みください）':'この記事は未公開のため戻り先は未設定です。ゲームを閉じて元のnoteタブの「続き'+s.roman+'」へ進んでください。'} · 音なし</p></div></section>`;
+ root.innerHTML=`<section class="game"><header class="game-header"><p>HALLOWEEN ATELIER · ゲーム${s.roman} / 3</p><h1>${s.title}</h1>${destination?`<a id="early-return" href="${escapeHTML(destination)}">← noteの記事へ戻る</a>`:`<span id="early-return" class="small">${browserBackHint?'読み終えたら「前の画面へ戻る」を使えます。':'読み終えたら「このゲームを閉じる」を使えます。閉じられない場合はタブ一覧で閉じてください。'}</span>`}</header><div id="world" class="world"><canvas id="scene2d" aria-label="通常の見下ろし視点で自動移動する街"></canvas><canvas id="scene3d" hidden aria-hidden="true"></canvas><div class="scene-shade" aria-hidden="true"></div></div><p id="status" class="status" role="status" aria-live="polite">街を開いています…</p><details class="status"><summary id="cast-status" role="status">参加者の姿を読み込んでいます。</summary><p id="cast-pending"></p></details><article id="scene-passage" class="reading scene-passage" hidden></article><div class="action-dock"><button id="primary-action" type="button" disabled>街を準備中…</button><button id="read-now" type="button">先にこの場面を読む</button>${destination?`<a class="small" href="${escapeHTML(destination)}">設定済みのnote記事リンクを開く</a>`:''}<p class="small">${browserBackHint?'ブラウザーの戻ると同じ操作です。前の画面がnote以外の場合もあります。読み位置の復元はブラウザーによります。':destination?'戻り先：noteの記事（続き'+s.roman+'をお読みください）':'「このゲームを閉じる」は、このタブを閉じる操作です。閉じられない場合はタブ一覧で閉じ、元のnoteタブの「続き'+s.roman+'」へ進んでください。'} · 音なし</p></div></section>`;
  document.body.classList.add('game-page');
  document.getElementById('read-now').onclick=()=>showPassage('この場面の本文を表示しています。街の読み込みを待つ必要はありません。');
  document.getElementById('primary-action').onclick=()=>{
-  if(phase==='reading'){if(!destination)return;phase='leaving';leaving=true;engine?.pause();location.assign(destination);return;}
+  if(phase==='reading'){leavePassage(destination);return;}
   if(phase==='fallback'){showPassage('街の代わりに、この場面の本文を表示しています。');return;}
   if(phase!=='ready')return;phase='moving';document.getElementById('primary-action').disabled=true;document.getElementById('primary-action').textContent='自動で移動中…';
   if(!engine?.toggleAuto()){showPassage();return;}startWatch();
@@ -68,8 +98,9 @@ function renderGame(){
  void loadTown();
  window.addEventListener('resize',()=>engine?.resize());
  document.addEventListener('visibilitychange',()=>{if(document.hidden){stopWatch();engine?.pause();}else if(phase==='moving'){engine?.resume();if(!engine?.toggleAuto())showPassage();else startWatch();}else if(phase==='ready')engine?.resume();});
- window.addEventListener('pagehide',()=>{stopWatch();engine?.pause();});
- window.addEventListener('pageshow',event=>{if(event.persisted){leaving=false;if(phase==='leaving')phase='reading';if(phase==='ready')engine?.resume();if(phase==='moving'){engine?.resume();if(!engine?.toggleAuto())showPassage();else startWatch();}}});
+ window.addEventListener('pagehide',()=>{clearTimeout(returnTimer);returnTimer=0;stopWatch();engine?.pause();});
+ window.addEventListener('popstate',()=>{if(leaving&&returnTimer)resetReturnAttempt('このページ内の履歴へ戻りました。元のnoteタブを開くか、記事リンクを選んでください。');});
+ window.addEventListener('pageshow',event=>{if(event.persisted){clearTimeout(returnTimer);returnTimer=0;leaving=false;if(phase==='leaving')phase='reading';if(phase==='reading')updateReturnAction();if(phase==='ready')engine?.resume();if(phase==='moving'){engine?.resume();if(!engine?.toggleAuto())showPassage();else startWatch();}}});
 }
 window.__HALLOWEEN_READING_NIGHT__={version:VERSION,copyVersion:COPY_VERSION,snapshot:()=>({scene:sceneID,phase,view:'2d',camera:'normal',returnTo:sceneID?returnTarget(sceneID,location.search):null})};
 if(sceneID)renderGame();else renderArticle();

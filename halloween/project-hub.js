@@ -64,6 +64,7 @@ function manualEntries(project) {
       image: safeURL(entry.image),
       avatar: safeURL(entry.avatar),
       articleUrl: safeURL(entry.articleUrl),
+      linkKind: entry.linkKind === 'magazine' ? 'magazine' : 'article',
       profileUrl: safeURL(entry.profileUrl)
     })).filter(entry => entry.articleUrl);
 }
@@ -148,7 +149,7 @@ async function initialize() {
     media.href = entry.articleUrl;
     media.rel = 'noopener noreferrer';
     media.target = '_blank';
-    media.setAttribute('aria-label', entry.name + 'の作品画像・記事を開く');
+    media.setAttribute('aria-label', entry.linkKind === 'magazine' ? entry.name + 'の収録マガジンを開く' : entry.name + 'の作品画像・記事を開く');
     const artwork = entry.image || entry.avatar;
     if (artwork) {
       const image = make('img','pp-slide-image');
@@ -181,7 +182,7 @@ async function initialize() {
       });
       actions.append(expand);
     }
-    actions.append(linkTo(entry.articleUrl,'記事を読む ↗','pp-card-link'));
+    actions.append(linkTo(entry.articleUrl,entry.linkKind === 'magazine' ? '収録マガジンで探す ↗' : '記事を読む ↗','pp-card-link'));
     copy.append(name,work,actions);
     card.append(media,copy);
     return card;
@@ -208,7 +209,7 @@ async function initialize() {
         jumpTo(i,true);
         rail?.focus({preventScroll:true});
       });
-      const article = linkTo(entry.articleUrl,'記事 ↗','pp-roster-article');
+      const article = linkTo(entry.articleUrl,entry.linkKind === 'magazine' ? 'マガジン ↗' : '記事 ↗','pp-roster-article');
       li.append(choose);
       if (article) li.append(article);
       li.dataset.search = (entry.name + ' ' + entry.title).normalize('NFKC').toLocaleLowerCase('ja');

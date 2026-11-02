@@ -105,3 +105,52 @@
  .pp-hub .pp-managed-cover{width:68px;height:45px}
 }
 @media(prefers-reduced-motion:reduce){.pp-hub .pp-magazine-spotlight,.pp-hub .pp-managed-open{transition:none}}
+
+/* Prevent touch-through after a collapsing row, including WebKit delayed click. */
+.pp-tap-shield{
+ position:fixed!important;inset:0!important;z-index:2147483500!important;
+ display:block!important;background:transparent!important;pointer-events:auto!important;
+ touch-action:none!important;overscroll-behavior:contain!important;
+}
+.pp-hub .pp-return-bar,.pp-hub .pp-panel-return,.pp-hub .pp-managed-footer{
+ display:flex;align-items:center;justify-content:space-between;gap:8px;
+ padding:6px 0 3px;min-height:41px;
+}
+.pp-hub .pp-return-bar{padding:0 0 6px}
+.pp-hub .pp-panel-return{border-top:1px solid var(--pp-border);margin-top:7px}
+.pp-hub .pp-managed-footer{border-top:1px solid #a6c9b4;padding:6px 8px;justify-content:flex-end}
+.pp-hub :is(.pp-return-bar button,.pp-panel-return button,.pp-managed-footer button){
+ border:1.5px solid #8a9caf;border-radius:9px;min-height:38px;padding:7px 12px;
+ background:#fff;color:#263d56;font:inherit;font-size:12px;font-weight:800;
+ cursor:pointer;touch-action:manipulation;
+}
+.pp-hub :is(.pp-return-bar button,.pp-panel-return button,.pp-managed-footer button):focus-visible{
+ outline:3px solid #236bc2;outline-offset:2px;
+}
+.pp-hub[data-pp-appearance=dark] :is(.pp-return-bar button,.pp-panel-return button,.pp-managed-footer button){
+ background:#27354d;color:#f4f7ff;border-color:#8b9cbd;
+}
+.pp-hub[data-pp-appearance=dark] .pp-managed-footer{border-top-color:#66856d}
+.pp-hub .pp-article-more:disabled{opacity:.65;cursor:default}
+.pp-hub :is(.pp-article-link,.pp-managed-card,.pp-magazine-spotlight){touch-action:manipulation}
+.pp-hub .pp-magazine-spotlight,
+.pp-hub .pp-magazine-spotlight-text,
+.pp-hub .pp-magazine-spotlight-text strong{min-width:0}
+/* Include the portal in Atelier's existing explicit viewport-width switch. */
+body[data-view=phone] .pp-hub{max-width:580px!important}
+body[data-view=tablet] .pp-hub{max-width:940px!important}
+body[data-view=pc] .pp-hub{max-width:1510px!important}
+body[data-view=tablet] .pp-hub .pp-magazine-featured{grid-template-columns:1fr 1fr}
+body[data-view=pc] .pp-hub .pp-magazine-featured{grid-template-columns:1fr 1fr}
+body[data-view=tablet] .pp-hub .pp-managed-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+body[data-view=pc] .pp-hub .pp-managed-list{grid-template-columns:repeat(3,minmax(0,1fr))}
+body[data-view=tablet] .pp-hub .pp-topic-switch,
+body[data-view=pc] .pp-hub .pp-topic-switch{max-width:720px;margin-left:auto;margin-right:auto}
+@media(max-width:700px){
+ body[data-view=tablet] .pp-hub .pp-magazine-featured,
+ body[data-view=pc] .pp-hub .pp-magazine-featured,
+ body[data-view=tablet] .pp-hub .pp-managed-list,
+ body[data-view=pc] .pp-hub .pp-managed-list{grid-template-columns:1fr}
+ .pp-hub .pp-return-bar,.pp-hub .pp-panel-return{gap:6px}
+ .pp-hub :is(.pp-return-bar button,.pp-panel-return button,.pp-managed-footer button){font-size:11px;min-height:40px}
+}

@@ -31,5 +31,15 @@ export function refreshNightStudio(){
 export function installNightStudio({refresh,sync}){
  const b=document.getElementById('light-play'),cast=document.createElement('div');cast.className='night-cast';cast.setAttribute('aria-hidden','true');document.querySelector('.studio-hero').append(cast);
  function update(on){document.body.dataset.lights=on?'night':'day';b.setAttribute('aria-pressed',String(on));document.getElementById('night-state').textContent=on?'ON ／ 昼へ':'OFF ／ 夜へ';b.setAttribute('aria-label',on?'夜モードをOFFにする':'夜モードをONにする');refreshNightStudio();refresh();sync();try{localStorage.setItem('halloween-night',on?'on':'off');}catch{}}
- let initial=false;try{initial=localStorage.getItem('halloween-night')==='on';}catch{}update(initial);b.addEventListener('click',()=>update(document.body.dataset.lights!=='night'));
+ // Keep the first painted theme consistent with the saved appearance mode;
+ // do not paint light then switch to dark after app/module initialization.
+ let initial=document.documentElement.dataset.atelierBootLights==='night';
+ try{
+  const selected=localStorage.getItem('atelier-global-appearance-v1');
+  if(selected==='dark')initial=true;
+  else if(selected==='light')initial=false;
+  else if(selected==='system')initial=typeof matchMedia==='function'&&matchMedia('(prefers-color-scheme: dark)').matches;
+  else initial=localStorage.getItem('halloween-night')==='on';
+ }catch{}
+ update(initial);b.addEventListener('click',()=>update(document.body.dataset.lights!=='night'));
 }

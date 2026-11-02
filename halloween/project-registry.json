@@ -76,13 +76,13 @@
     {
       "id": "omamori-2026",
       "title": "お守りプロンプト",
-      "subtitle": "和モダンの守護精霊",
+      "subtitle": "『お守りつくりませんか？』公開記事／守護精霊",
       "icon": "🍀",
       "theme": "omamori",
       "status": "archived",
-      "description": "キャラクター画像から、守護精霊が宿るお守りを制作するプロンプト。記事を確認できましたが、個別参加者は未登録です。",
+      "description": "過去記事『お守りつくりませんか？』で公開された遊び。画像から、お守りと小さな守護精霊を制作するプロンプトです。",
       "articleUrl": "https://note.com/ss_yr/n/n8ecf05c19570",
-      "galleryUrl": null,
+      "galleryUrl": "https://note.com/ss_yr/m/mc46d0bdd74a9/hashtag/AI",
       "source": {
         "type": "manual",
         "entries": []

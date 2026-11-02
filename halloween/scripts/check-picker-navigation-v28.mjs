@@ -42,6 +42,7 @@ class Node{
  get firstElementChild(){return this.children[0]||null;}
  get clientWidth(){return width;}
  get clientHeight(){return surface.open?height:0;}
+ scrollIntoView(){ /* Browser-native method, simulated for test cards. */ }
  getBoundingClientRect(){return {left:0,top:0,width,height};}
 }
 let width=390,height=360,now=1000,frames=[],observer,chosen=[],selection={},favoriteEvents=[];

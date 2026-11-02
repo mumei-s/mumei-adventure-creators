@@ -9,6 +9,7 @@ import {initialSelections,modeKeys,modeCopy} from '../modes.js?v=28.4.6';
 // First paint must use the primary collection before loading the large module,
 // including Android, iOS and desktop browser storage / appearance choices.
 const page=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');
+const source=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8');
 function inlineBoot(id){
  const found=page.match(new RegExp('<script id="'+id+'">([\\s\\S]*?)<\\/script>'));
  assert.ok(found,'Missing synchronous startup script: '+id);
@@ -19,9 +20,9 @@ const bootBody=inlineBoot('atelier-boot-apply');
 const bootControls=inlineBoot('atelier-boot-controls');
 const bootHero=inlineBoot('atelier-boot-hero');
 assert.match(page,/<body[^>]*data-collection="everyday"/,'HTML must not first paint Halloween by default');
-assert.match(page,/<p class="hero-eyebrow" id="hero-eyebrow">EVERYDAY \\/ ILLUSTRATION STUDIO<\\/p>/,'Everyday hero is authored first');
+assert.ok(page.includes('<p class="hero-eyebrow" id="hero-eyebrow">EVERYDAY / ILLUSTRATION STUDIO</p>'),'Everyday hero is authored first');
 assert.match(source,/let mainCollection='everyday'/,'App and HTML initial collection must agree');
-assert.match(source,/const initialCollection=mainCollection;setCollection\\(initialCollection\\)/);
+assert.ok(source.includes('const initialCollection=mainCollection;setCollection(initialCollection);'));
 for(const test of [
  {main:null,theme:null,legacy:null,os:false,expected:'everyday',lights:'day'},
  {main:'everyday',theme:null,legacy:null,os:true,expected:'everyday',lights:'night'},
@@ -45,7 +46,7 @@ for(const test of [
   querySelectorAll(){return buttons;}
  };
  const scope={document,localStorage:{getItem:key=>store.get(key)||null},matchMedia:()=>({matches:test.os})};
- vm.runInNewContext(bootHead+'\\n'+bootBody+'\\n'+bootControls+'\\n'+bootHero,scope);
+ vm.runInNewContext([bootHead,bootBody,bootControls,bootHero].join(';'),scope);
  assert.equal(body.dataset.collection,test.expected,'First paint must match primary selection');
  assert.equal(body.dataset.lights,test.lights,'Theme must not flash on initial HTML');
  assert.equal(buttons.find(b=>b.dataset.collection===test.expected).attributes['aria-pressed'],'true');
@@ -56,7 +57,7 @@ for(const test of [
 
 // Execute the real switch function. Pool-only tests missed a removed helper
 // that still ran before both initial mode restoration and every button click.
-const source=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8');
+
 const collectionSource=source.slice(source.indexOf('function setCollection('),source.indexOf("\nlet mainCollection=",source.indexOf('function setCollection(')));
 const modeSource=source.slice(source.indexOf('function setMode('),source.indexOf('\nfunction makeProposals(',source.indexOf('function setMode(')));
 assert.ok(collectionSource.startsWith('function setCollection('));

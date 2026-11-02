@@ -182,16 +182,100 @@
     {
       "id": "magic",
       "title": "魔法の入口🚪",
-      "subtitle": "共同マガジン｜作品と出会う扉",
       "url": "https://note.com/ss_yr/m/m642b82518aeb",
-      "kind": "magazine"
+      "cover": "https://assets.st-note.com/production/uploads/images/331223103/7d9603985c061971185b433ed7bd421d.png?dpr=2&width=432",
+      "role": "運営",
+      "subtitle": "ハロウィンから生まれた共同マガジン"
     },
     {
       "id": "creative",
-      "title": "クリエイティブワークス",
-      "subtitle": "AI CREATIVE WORKS SELECT｜共同マガジン",
+      "title": "AI CREATIVE WORKS SELECT",
       "url": "https://note.com/ss_yr/m/m95b78222e9b9",
-      "kind": "magazine"
+      "cover": "https://assets.st-note.com/production/uploads/images/287133766/050c298f569577be905bb4154ad7d594.jpeg?dpr=2&width=432",
+      "role": "運営",
+      "subtitle": "イラスト・動画・音楽の共同マガジン"
+    }
+  ],
+  "operatedMagazines": [
+    {
+      "id": "room",
+      "title": "無名℃S Room｜仲間がみつかる共同マガジン",
+      "url": "https://note.com/ss_yr/m/mca2c344a0f50",
+      "cover": "https://assets.st-note.com/production/uploads/images/257384598/ea1ad8dad65b37db64b3512a3f8a0a0a.jpeg?dpr=2&width=432",
+      "role": "運営",
+      "subtitle": "交流・仲間"
+    },
+    {
+      "id": "life",
+      "title": "LIFE CARE BOOST",
+      "url": "https://note.com/ss_yr/m/mc311c8aba7e2",
+      "cover": "https://assets.st-note.com/production/uploads/images/296150398/45f1a6ff25ab12d80ddc57dc8b39b66f.jpg?dpr=2&width=432",
+      "role": "運営",
+      "subtitle": "暮らし・支援"
+    },
+    {
+      "id": "monetize",
+      "title": "Monetize Crew｜有料記事SELECT",
+      "url": "https://note.com/ss_yr/m/m32528b24bba4",
+      "cover": "https://assets.st-note.com/production/uploads/images/296703985/5b13cc16d56195bdb3cb69acb4fc8240.jpg?dpr=2&width=432",
+      "role": "運営",
+      "subtitle": "有料記事"
+    },
+    {
+      "id": "words",
+      "title": "WORDS BOOST｜あなたの言葉に、加速を。",
+      "url": "https://note.com/ss_yr/m/m7f7032fb7065",
+      "cover": "https://assets.st-note.com/production/uploads/images/295482051/d92a367b9f22d3684e75c62864a1eb2f.jpg?dpr=2&width=432",
+      "role": "運営",
+      "subtitle": "言葉・創作"
+    },
+    {
+      "id": "spotlight",
+      "title": "無名S note Spotlight BOOST",
+      "url": "https://note.com/ss_yr/m/md481a16210b9",
+      "cover": "https://assets.st-note.com/production/uploads/images/289928209/7074f69d648df7f6e16c3442afc5a504.jpg?dpr=2&width=432",
+      "role": "運営",
+      "subtitle": "クリエイター応援"
+    },
+    {
+      "id": "workingmom",
+      "title": "WORKING MOM SHIFT",
+      "url": "https://note.com/ss_yr/m/m8d6e2d4322c8",
+      "cover": "https://assets.st-note.com/production/uploads/images/297563055/79453a9b606ad242dafbf76d55a07241.jpg?dpr=2&width=432",
+      "role": "運営",
+      "subtitle": "働くママ"
+    },
+    {
+      "id": "muddy",
+      "title": "無名S note 泥くさ部",
+      "url": "https://note.com/ss_yr/m/m74b154cd7893",
+      "cover": null,
+      "role": "運営",
+      "subtitle": "仲間・メンバーシップ"
+    },
+    {
+      "id": "zenra",
+      "title": "無名℃S×ゼンラーマン BOOST Room",
+      "url": "https://note.com/ss_yr/m/mf7c9271b4e5e",
+      "cover": "https://assets.st-note.com/production/uploads/images/296152684/610abcd2ad7ef6b72ac95a09f21c7074.jpg?dpr=2&width=432",
+      "role": "運営",
+      "subtitle": "交流"
+    },
+    {
+      "id": "timee",
+      "title": "タ◯ミーしか勝たんのよ…",
+      "url": "https://note.com/ss_yr/m/m16580951510b",
+      "cover": "https://assets.st-note.com/production/uploads/images/271235205/93e4cf748b0c9b0236f0d74def44f05d.jpg?dpr=2&width=432",
+      "role": "運営",
+      "subtitle": "仕事・体験"
+    },
+    {
+      "id": "lantern",
+      "title": "導灯師の灯りを先に置いていこう",
+      "url": "https://note.com/ojieai/m/m3898d79a42c7",
+      "cover": "https://assets.st-note.com/production/uploads/images/315364907/7f344bc54c11977ace49f6be20883c0d.png?dpr=2&width=432",
+      "role": "管理",
+      "subtitle": "オーナー：ランタン親父"
     }
   ]
 }

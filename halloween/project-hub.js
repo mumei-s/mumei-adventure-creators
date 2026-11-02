@@ -102,7 +102,18 @@ async function initialize() {
   }
   const details = $('#pp-directory'), tabs = $('#pp-tabs'), panel = $('#pp-panel');
   if (!details || !tabs || !panel) return;
-  let selectedId = 'halloween-2026';
+  // Use explicit Atelier day/night mode where available; otherwise follow the OS.
+  const osDark = window.matchMedia('(prefers-color-scheme: dark)');
+  const syncAppearance = () => {
+    const lights = document.body.dataset.lights;
+    root.dataset.ppAppearance = lights === 'night' ? 'dark' :
+      lights === 'day' ? 'light' : osDark.matches ? 'dark' : 'light';
+  };
+  syncAppearance();
+  osDark.addEventListener?.('change', syncAppearance);
+  new MutationObserver(syncAppearance).observe(document.body, {attributes:true, attributeFilter:['data-lights']});
+  let selectedId = '';
+  let expandedId = '';
   let currentEntries = [];
   let currentIndex = 0;
   let rail = null;
@@ -115,7 +126,7 @@ async function initialize() {
   let ticking = false;
   let pointerMoved = false;
   const stopAuto = () => { if (carouselAuto !== null) clearInterval(carouselAuto); carouselAuto = null; };
-  const autoAllowed = () => details.open && onScreen && !document.hidden && autoOn &&
+  const autoAllowed = () => details.open && !panel.hidden && onScreen && !document.hidden && autoOn &&
     currentEntries.length > 1 && !(window.matchMedia('(hover: hover)').matches && panel.matches(':hover'));
   const restartAuto = () => {
     stopAuto();
@@ -305,50 +316,90 @@ async function initialize() {
     refreshControls();
     restartAuto();
   }
-  async function selectProject(project) {
-    if(!project) return;
-    selectedId=project.id;
-    const token=++selectVersion;
-    stopAuto();rail=null;counter=null;dots=null;currentIndex=0;currentEntries=[];
-    root.dataset.ppTheme=project.theme||'unwritten';
-    tabs.querySelectorAll('button').forEach(button => {
-      const active=button.dataset.project===project.id;
-      button.setAttribute('aria-selected',String(active));
-      button.tabIndex=active?0:-1;
-    });
-    panel.replaceChildren(make('p','pp-loading','参加作品を読み込み中…'));
-    try {
-      const records=await projectEntries(project);
-      if(token!==selectVersion||!details.open)return;
-      currentEntries=records;
-      if(records.length)renderCarousel(project);else renderEmpty(project);
-    } catch {
-      if(token!==selectVersion) return;
-      panel.replaceChildren(make('p','pp-empty','作品データを読み込めませんでした。元の展示からご覧ください。'),projectLinks(project));
+  function closeCurrent() {
+    stopAuto();
+    ++selectVersion;
+    expandedId = '';
+    currentEntries = [];
+    currentIndex = 0;
+    rail = null;
+    counter = null;
+    dots = null;
+    panel.hidden = true;
+    panel.replaceChildren();
+    for (const button of tabs.querySelectorAll('.pp-tab')) {
+      button.setAttribute('aria-expanded','false');
+      button.setAttribute('aria-pressed','false');
     }
   }
-  projects.forEach(project => {
-    const button=make('button','pp-tab');
-    button.type='button';
-    button.dataset.project=project.id;
-    button.setAttribute('role','tab');
+  async function selectProject(project, allowToggle = true) {
+    if (!project || !details.open) return;
+    if (expandedId === project.id && allowToggle) {
+      closeCurrent();
+      return;
+    }
+    selectedId = project.id;
+    expandedId = project.id;
+    const token = ++selectVersion;
+    stopAuto();rail=null;counter=null;dots=null;currentIndex=0;currentEntries=[];
+    panel.dataset.ppTheme = project.theme || 'unwritten';
+    panel.hidden = false;
+    for (const button of tabs.querySelectorAll('.pp-tab')) {
+      const active = button.dataset.project === project.id;
+      button.setAttribute('aria-expanded',String(active));
+      button.setAttribute('aria-pressed',String(active));
+      if (active) button.after(panel);
+    }
+    panel.replaceChildren(make('p','pp-loading','参加作品を読み込み中…'));
+    try {
+      const records = await projectEntries(project);
+      if (token !== selectVersion || !details.open || expandedId !== project.id) return;
+      currentEntries = records;
+      if (records.length) renderCarousel(project); else renderEmpty(project);
+    } catch {
+      if (token !== selectVersion || expandedId !== project.id) return;
+      panel.replaceChildren(
+        make('p','pp-empty','作品データを読み込めませんでした。元の展示からご覧ください。'),
+        projectLinks(project)
+      );
+    }
+  }
+  // Each archive is a full-width, individually colored row; featured prompts
+  // are already represented above, so they are not duplicated in the directory.
+  const archives = projects.filter(project => project.id !== feature?.id);
+  archives.forEach(project => {
+    const button = make('button','pp-tab');
+    button.type = 'button';
+    button.dataset.project = project.id;
+    button.dataset.ppTheme = project.theme || 'unwritten';
     button.setAttribute('aria-controls','pp-panel');
-    button.setAttribute('aria-selected','false');
-    button.append(make('strong','',project.icon+' '+project.title),make('small','',projectStatus(project)));
-    button.addEventListener('click',()=>selectProject(project));
+    button.setAttribute('aria-expanded','false');
+    button.setAttribute('aria-pressed','false');
+    const icon = make('span','pp-tab-icon',project.icon || '✦');
+    icon.setAttribute('aria-hidden','true');
+    const copy = make('span','pp-tab-copy');
+    copy.append(make('strong','',project.title),make('small','',project.subtitle || projectStatus(project)));
+    const tail = make('span','pp-tab-end','作品');
+    tail.setAttribute('aria-hidden','true');
+    button.append(icon,copy,tail);
+    button.addEventListener('click',() => selectProject(project));
     tabs.append(button);
   });
-  tabs.addEventListener('keydown',e => {
-    if(!['ArrowRight','ArrowLeft'].includes(e.key))return;
-    const buttons=[...tabs.querySelectorAll('button')];
-    const i=buttons.findIndex(button=>button.dataset.project===selectedId);
-    const next=(i + (e.key==='ArrowRight'?1:buttons.length-1)) % buttons.length;
-    e.preventDefault();buttons[next].focus();buttons[next].scrollIntoView({inline:'nearest',block:'nearest'});
-    selectProject(projects.find(p=>p.id===buttons[next].dataset.project));
+  tabs.addEventListener('keydown', event => {
+    if (!['ArrowDown','ArrowUp','Home','End'].includes(event.key)) return;
+    if (!event.target.classList?.contains('pp-tab')) return;
+    const buttons = [...tabs.querySelectorAll('.pp-tab')];
+    const index = buttons.indexOf(event.target);
+    if (index < 0) return;
+    event.preventDefault();
+    const nextIndex = event.key === 'Home' ? 0 :
+      event.key === 'End' ? buttons.length-1 :
+      (index + (event.key === 'ArrowDown' ? 1 : buttons.length-1)) % buttons.length;
+    buttons[nextIndex]?.focus({preventScroll:true});
+    buttons[nextIndex]?.scrollIntoView({block:'nearest',inline:'nearest'});
   });
-  details.addEventListener('toggle',() => {
-    if(!details.open){stopAuto();selectVersion++;return;}
-    selectProject(projects.find(p=>p.id===selectedId)||projects[0]);
+  details.addEventListener('toggle', () => {
+    if (!details.open) closeCurrent();
   });
   if('IntersectionObserver' in window){
     const observer=new IntersectionObserver(changes=>{
@@ -363,5 +414,5 @@ async function initialize() {
     if(prefersReducedMotion.matches)autoOn=false;
     restartAuto();
   });
-  if(details.open)selectProject(projects.find(p=>p.id===selectedId)||projects[0]);
+  panel.hidden = true; // Load no participant images until a category is opened.
 }

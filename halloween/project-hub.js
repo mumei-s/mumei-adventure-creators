@@ -129,7 +129,7 @@ async function initialize() {
     currentIndex = (next + currentEntries.length) % currentEntries.length;
     refreshControls();
     const step = rail.clientWidth;
-    rail.scrollTo({left: currentIndex * step, behavior: smooth && !prefersReducedMotion.matches ? 'smooth' : 'instant'});
+    rail.scrollTo({left: currentIndex * step, behavior: smooth && !prefersReducedMotion.matches ? 'smooth' : 'auto'});
   }
   function refreshControls() {
     if (counter) counter.textContent = (currentIndex + 1) + ' / ' + currentEntries.length;
@@ -250,10 +250,7 @@ async function initialize() {
     view.setAttribute('aria-roledescription','カルーセル');
     view.setAttribute('aria-label',project.title + 'の参加作品。左右にスワイプしてください。');
     view.tabIndex = 0;
-    const track = make('div','pp-swipe-rail');
-    track.tabIndex = -1;
-    currentEntries.forEach(entry => track.append(buildCard(entry,project)));
-    view.append(track);
+    currentEntries.forEach(entry => view.append(buildCard(entry,project)));
     rail = view;
     rail.addEventListener('scroll',() => {
       if(ticking) return;

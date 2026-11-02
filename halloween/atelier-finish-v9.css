@@ -1,0 +1,133 @@
+/* Atelier v9: contrast-first themes, accessible compact article rows, and controllable effects.
+   Loaded last to override earlier light-only gradients without touching generated images. */
+body[data-lights=night]{
+  color-scheme:dark;
+  --ink:#f5f6ff;--paper:#161c2b;--muted:#d3d8e6;--line:#727f9b;
+  background:#090d16!important;
+  background-image:radial-gradient(ellipse at 80% 0,#151c30 0,transparent 45%),linear-gradient(#0b111e,#080d17)!important;
+  color:#f5f6ff!important;
+}
+body[data-lights=night]::before{background:linear-gradient(180deg,#080c15cc,#0b0e1ecc)!important}
+body[data-lights=night] :is(
+ .style-preset-panel,.source-kind-panel,.profile-editor,.attachment-mode,
+ .generation-quality,.desk,.history-section,.history-card,.direction-card,
+ .view-toolbar,.mix-notice,.intro-line,.stage-caption,.stage-note,
+ .choice-grid,.result-summary,.profile-preview,.stage-side,
+ .auto-proposals,.proposal-card,.section-card,.activity-control
+){
+ background:#182133!important;color:#f5f6ff!important;border-color:#7182a2!important;
+ box-shadow:0 4px 18px #0004;
+}
+body[data-lights=night] .style-preset-panel{
+ background:linear-gradient(130deg,#182034 0%,#22283b 60%,#191d2c 100%)!important;
+ border:2px solid #7f88b0!important;
+ color:#f5f6ff!important;
+}
+body[data-lights=night] .style-preset-panel :is(
+ h2,h3,h4,p,small,label,legend,.microcopy,.style-preset-status,#style-preset-status,
+ #style-preset-trigger,.style-preset-panel-title
+){color:#f7f6ff!important;text-shadow:none!important;opacity:1!important}
+body[data-lights=night] .style-preset-panel :is(.style-preset-preview,.style-preset-preview-frame){
+ background:#202b43!important;border-color:#8090b2!important;color:#f7f8ff!important
+}
+body[data-lights=night] .style-preset-panel :is(button,.secondary-button){
+ background:#2c3855!important;color:#f8f8ff!important;border-color:#92a8d0!important;
+ text-shadow:none!important
+}
+body[data-lights=night] .style-preset-panel button:focus-visible{outline:3px solid #ffe6b1;outline-offset:2px}
+body[data-lights=night] :is(.source-kind-panel,.profile-editor,.generation-quality) :is(h2,h3,h4,label,legend,p,small,.microcopy){
+ color:#edf2ff!important;opacity:1!important;text-shadow:none!important
+}
+body[data-lights=night] :is(.source-kind-choice,.source-kind-choice[aria-pressed=false]){
+ background:#26334b!important;color:#f1f6ff!important;border-color:#8190ad!important;
+}
+body[data-lights=night] .source-kind-choice[aria-pressed=true]{
+ background:#c4a5ee!important;color:#20192e!important;border-color:#f3d9ff!important;
+}
+body[data-lights=night] :is(
+ .mode-panel,.gallery-theater,.playground,.collection-bar,.atelier-deck,
+ .app-shell .workspace,.history-section,.reference-area,.profile-preview,.result-summary,
+ .stage,.selection-notice,.selection-feedback,.quality-assist,.stage-note
+){color:#f5f6ff!important;border-color:#7182a2}
+body[data-lights=night] :is(.source-kind-panel,.style-preset-panel,.generation-quality,.desk,.history-section,.mode-panel,.reference-area,.profile-editor) :is(input,textarea,select){
+ color:#f5f6ff;background:#26344c;border-color:#8e9fbd;
+}
+body[data-lights=night] :is(.mode-panel,.view-toolbar,.source-kind-panel,.generation-quality) :is(.microcopy,.choice-hint,.section-caption,.size-note,.profile-status){
+ color:#dce6f9!important;opacity:1!important;
+}
+/* Text and background contrast in article, not only in surrounding cards. */
+body[data-lights=day] .style-preset-panel{color:#292038!important}
+body[data-lights=day] .style-preset-panel :is(h3,label,p,.microcopy,#style-preset-status){color:#342840!important;opacity:1!important}
+.pp-hub .pp-background-switch{
+ min-height:38px;flex:0 0 auto;padding:6px 12px;font:800 11px/1.4 inherit;
+ border-radius:10px;border:1.5px solid #71829c;background:#e8f0fc;color:#253952;
+ cursor:pointer;white-space:nowrap;touch-action:manipulation;
+}
+.pp-hub .pp-background-switch[aria-pressed=true]{
+ color:#3b2863;background:#e7daf9;border-color:#9c79c8
+}
+.pp-hub[data-pp-appearance=dark] .pp-background-switch{
+ background:#233248;color:#f4f6ff;border-color:#7f96b5;
+}
+.pp-hub[data-pp-appearance=dark] .pp-background-switch[aria-pressed=true]{
+ background:#48345b;border-color:#b59ad1;color:#fff0ff
+}
+.pp-hub .pp-background-switch:focus-visible{outline:3px solid #c08d3c;outline-offset:2px}
+body[data-background-effects=off] #magic-sky,
+body[data-background-effects=off] #effect-layer,
+body[data-background-effects=off] .night-cast,
+body[data-background-effects=off] .night-creatures,
+body[data-background-effects=off] .hero-spectacle,
+body[data-background-effects=off] .scroll-ink{display:none!important}
+body[data-background-effects=off] :is(.masthead,.studio-hero,.atelier-deck)::before,
+body[data-background-effects=off] :is(.masthead,.studio-hero,.atelier-deck)::after{
+ animation:none!important;
+}
+body[data-background-effects=off] .masthead::before,
+body[data-background-effects=off] .studio-hero::after{
+ opacity:0!important;pointer-events:none!important;
+}
+/* No dead space above and below note article rows, while retaining 44px touch targets. */
+.pp-hub .pp-directory-body{row-gap:3px!important;padding:5px!important}
+.pp-hub .pp-panel{padding:4px!important;margin:1px 0!important}
+.pp-hub .pp-articles-heading{min-height:0!important;margin:0 1px 2px!important;padding:0 2px!important;line-height:1.25}
+.pp-hub .pp-articles-list{gap:3px!important;margin:0!important;padding:0!important}
+.pp-hub .pp-article-row{margin:0!important;padding:0!important;min-height:0!important}
+.pp-hub .pp-article-link{
+ min-height:48px!important;padding:2px 6px 2px 3px!important;
+ grid-template-columns:67px minmax(0,1fr) auto;gap:7px!important;
+ border-radius:8px;align-items:center;
+}
+.pp-hub .pp-article-thumb{width:67px;height:44px;max-height:44px;border-radius:6px}
+.pp-hub .pp-article-info{gap:1px!important;padding:0!important;margin:0!important}
+.pp-hub .pp-article-author{line-height:1.2}
+.pp-hub .pp-article-title{line-height:1.26;font-size:clamp(11px,2.7vw,13px);margin:0!important;padding:0!important}
+.pp-hub .pp-article-actions{padding:4px 2px 0!important;gap:4px!important}
+.pp-hub .pp-article-more,.pp-hub .pp-article-search-toggle{min-height:38px}
+.pp-hub .pp-panel-return{margin:5px 0 0!important;padding:4px 0 0!important}
+.pp-hub .pp-article-source-details{margin:2px 0 0;padding:0}
+.pp-hub .pp-article-source-details>summary{font-size:11px;cursor:pointer}
+.pp-hub .pp-article-sources{margin:4px 1px 0!important;padding:4px 0 0!important}
+.pp-hub .pp-tab{min-height:43px}
+.pp-hub .pp-managed-card{min-height:54px;padding-top:3px;padding-bottom:3px}
+.pp-hub .pp-managed-cover{height:48px}
+.pp-hub .pp-managed-list{gap:4px;padding:5px}
+/* Layout for compact mobile, tablet and desktop sizes. */
+@media(min-width:700px){
+ body[data-view=tablet] .pp-hub .pp-magazine-featured,
+ body[data-view=pc] .pp-hub .pp-magazine-featured{grid-template-columns:repeat(2,minmax(0,1fr))}
+ body[data-view=tablet] .pp-hub .pp-managed-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+ body[data-view=pc] .pp-hub .pp-managed-list{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:540px){
+ .pp-hub .pp-portal-head{gap:6px}
+ .pp-hub .pp-global-appearance{margin:0}
+ .pp-hub .pp-background-switch{min-height:36px;font-size:10px;padding:5px 9px}
+ .pp-hub .pp-article-link{grid-template-columns:63px minmax(0,1fr) 29px}
+ .pp-hub .pp-article-thumb{width:63px;height:44px}
+ .pp-hub .pp-article-dest{font-size:0}
+ .pp-hub .pp-article-dest:after{font-size:15px;content:'↗'}
+}
+@media(prefers-reduced-motion:reduce){
+ .pp-hub .pp-background-switch{transition:none}
+}

@@ -111,17 +111,12 @@
       "status": "archived",
       "description": "2026年6月17日公開『お守りつくりませんか？』。添付キャラクター画像から小さな守護精霊の宿るお守りを作るプロンプトです。参加記事は確認できたものだけ掲載します。",
       "articleUrl": "https://note.com/ss_yr/n/nb82a5468398e",
-      "galleryUrl": "https://note.com/ss_yr/m/mc46d0bdd74a9/hashtag/AI",
+      "galleryUrl": null,
       "source": {
         "type": "manual",
         "entries": []
       },
-      "relatedLinks": [
-        {
-          "label": "お守り150名紹介・関連作品記事",
-          "url": "https://note.com/ss_yr/n/n12a05ac10fcc"
-        }
-      ]
+      "relatedLinks": []
     },
     {
       "id": "cyborg-2026",

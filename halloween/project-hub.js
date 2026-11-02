@@ -315,8 +315,11 @@ async function initialize() {
   let managedLoaded = false;
   function addMagazineCard(item) {
     const href = safeURL(item.url);
-    if (!href || !/^\\/[^/]+\\/m\\/m[0-9a-f]+\\/?$/i.test(new URL(href).pathname) ||
-        new URL(href).hostname !== 'note.com') return null;
+    if (!href) return null;
+    const parsed = new URL(href);
+    const pieces = parsed.pathname.split('/').filter(Boolean);
+    if (parsed.hostname !== 'note.com' || pieces.length !== 3 ||
+        pieces[1] !== 'm' || !pieces[2].startsWith('m')) return null;
     const link = externalLink(href,'','pp-managed-card');
     if (!link) return null;
     link.setAttribute('aria-label',item.title+' の共同マガジンを開く');

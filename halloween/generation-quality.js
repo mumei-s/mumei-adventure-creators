@@ -76,7 +76,8 @@ export function buildQualityPrompt(request, basePrompt) {
   return [basePrompt.startsWith(marker) ? '' : marker.trimEnd(),basePrompt,
     basePrompt.includes(scope) ? '' : scope,
     ...extraReferenceLines.filter(line => !basePrompt.includes(line)),
-    ...explicit.filter(line => !basePrompt.includes(line))
+    ...explicit.filter(line => !basePrompt.includes(line)),
+    ...(groupIdentityPolicy(request).enabled && !basePrompt.includes(groupIdentityHeader) ? [groupIdentityRule] : [])
   ].filter(Boolean).join('\n');
 }
 
@@ -102,6 +103,26 @@ function typedConditions(value) {
   return list(value).filter(plain).filter(item => typeof item.attribute === 'string' && item.value != null).map(item => ({target:string(item.target || item.targetId),attribute:item.attribute,value:item.value}));
 }
 
+// Separate a true group of characters from several photographs of ONE subject.
+// Use only the current visitor's selections/subjects, never a fixed owner cast.
+const personKind = kind => /^(?:character|person|human|portrait|人物|キャラクター|人間|人|avatar)$/i.test(string(kind));
+const groupWords = /集合(?:写真|絵|イラスト|画|撮影)|グループ(?:写真|イラスト|ポートレート|ショット)|複数(?:人|名|キャラ|人物)|人物.{0,9}[23456789]人|全員(?:で|の)|[23456789]人(?:の|で|が|集合)|ツーショット|group\s*(?:portrait|photo)|ensemble\s*(?:portrait|photo)/i;
+export function groupIdentityPolicy(request) {
+  if (!request || request.noPerson) return {enabled:false,characters:[],namedTargets:[]};
+  const characters = (request.subjects || []).filter(subject => personKind(subject.kind));
+  const total = characters.reduce((sum,subject) => sum + (Number.isInteger(subject.count) && subject.count > 0 ? subject.count : 1),0);
+  const namedTargets = [...new Set(characters.map(subject => string(subject.id || subject.targetId)).filter(Boolean))];
+  const selections = request.selections || {};
+  const descriptions = ['theme','place','design','type','line','scene','purpose','title','description','costume']
+    .map(key => typeof selections[key] === 'string' ? selections[key] : '').join(' ');
+  const explicitSubjects = (request.constraints?.required || []).map(item =>
+    typeof item === 'string' ? item : plain(item) ? string(item.value) : '').join(' ');
+  const enabled = total >= 2 || groupWords.test(descriptions + ' ' + explicitSubjects);
+  return {enabled,characters,namedTargets};
+}
+const groupIdentityHeader = '【集合絵の人物別識別】';
+const groupIdentityRule = groupIdentityHeader +
+  '描く人物は一人ずつ区別し、指定された対象IDと対応する主参照だけから、顔輪郭・目鼻口の配置・髪型・体格・固有特徴を保持する。統一するのは画風と照明だけで、複数人の顔を平均化・同じ顔に複製・他人の参照へ置換しない。同一人物の複数参照は別人数に数えず、参照がない人物を特定の本人として再現したと断言しない。各人物の左右位置・服・持物・視線を混同しない。';
 export function inspectProductionRequest(request,{values,references,prompt=request?.outputPrompt,deliveryNames,copyPrompt,filePrompt,conflicts=[]}={}) {
   const started = typeof performance !== 'undefined' ? performance.now() : Date.now();
   if (!request || request.schemaVersion !== GENERATION_QUALITY_SCHEMA) throw new TypeError('制作条件の形式を確認できません。');
@@ -179,6 +200,13 @@ export function inspectProductionRequest(request,{values,references,prompt=reque
     if (byAttribute.has(key) && same(byAttribute.get(key),item.value)) add('constraint-conflict','同じ条件が必須と禁止の両方に指定されています。',item.target + ' / ' + item.attribute);
   }
   const subjectIds = new Set(request.subjects.map(subject => string(subject.id || subject.targetId)).filter(Boolean));
+  const group = groupIdentityPolicy(request);
+  if (group.enabled) {
+    if (!prompt.includes(groupIdentityHeader)) add('group-identity-rules','集合絵の人物を個別に描き分ける条件が制作指示にありません。','集合絵の人物別識別が欠落');
+    if (group.characters.length > 1 && group.namedTargets.length !== group.characters.filter(subject => subject.id || subject.targetId).length)
+      add('duplicate-subject','集合絵の対象IDが重複しています。異なる人物を同じ対象へ結び付けられません。',group.namedTargets.join(' / '));
+    if (!findings.some(item => ['group-identity-rules','duplicate-subject'].includes(item.code))) checked.push('集合絵の人物別識別指示');
+  }
   for (const assignment of list(request.constraints.assignments).filter(plain)) {
     const refId = assignment.referenceId || assignment.refId;
     const targetId = string(assignment.targetId || assignment.target);
@@ -225,6 +253,7 @@ export function buildImageReviewPrompt(request) {
     '【今回の確認項目】',...reviewItems(request),
     '各項目を「確認済み」「明確な相違」「要確認」「未確認」に分け、根拠となる画像内の位置・見える特徴を短く示す。小さすぎる・遮蔽・見切れ・画像未添付は確認済みにしない。指定人数が不明なら推測せず、犬・ぬいぐるみを無条件に人物数へ加えない。',
     'ポーズの手・小物は数だけで判定せず、接触先と支持・握り方を確認する。「剣を両手で持つ」は二本の手がその剣を指定どおり握っているかを見る。カメラ位置・光軸・顔向き・身体向きは別々に照合する。固定指定のない髪色や衣装、許可された変化を相違にしない。',
+    ...(groupIdentityPolicy(request).enabled ? ['【集合絵の顔の描き分け】一人ずつ参照対象と画像内の位置を対応させ、輪郭・目鼻口の配置・髪型・体格が別人間で均一化していないか確認する。二人以上が同じ顔に見える場合は該当人物を「要確認」または「明確な相違」とし、参照がない人の本人確認は行わない。画像にいない人・見切れた顔は未確認。'] : []),
     '顔は指定されたキャラクターの外見の参照として扱い、実在人物の身元の特定・認証をしない。かわいさや豪華さだけで自動失敗にしない。画像未取得や全項目未確認の場合に、作品全体の完全一致・100％・品質点数を作らない。'
   ].join('\n');
 }
@@ -241,6 +270,7 @@ export function buildTargetedRepairPrompt(request,{imageName,issues=[],changes=[
     '今回直す箇所：',...changed.map(value => '・' + string(value)),
     '保持する箇所：',...(retained.length ? retained.map(value => '・' + string(value)) : ['・今回の修正で指定していない領域・特徴・文字・構図を保持する。']),
     '引き続き使う参照の役割：',...referenceRoles(request),
+    ...(groupIdentityPolicy(request).enabled ? ['集合絵の顔が似てしまった場合は、変更対象の人物と元の個別参照を結び直す。未指定の他人の顔や体格・位置・衣装は変更せず、すべて同じ顔に描き直さない。'] : []),
     '引き続き守る制作条件：',...reviewItems(request),
     '修正完了時は、変更箇所と保持対象の両方を元画像・参照・今回の条件で再確認する。部分修正でも他の領域が変わる可能性があるため、完全保持したと推測で断言しない。曖昧な所見だけで追加の再生成を繰り返さず、悪化したら元画像へ戻せるよう別画像として返す。',
     '修正版は画像作成機能の通常の生成画像として会話へ表示する。元画像を消さず、説明文やファイルリンクだけで修正版を代用しない。'

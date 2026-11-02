@@ -164,5 +164,14 @@ assert.equal(conflictPanel.dataset.status,'blocked');assert.equal(center.querySe
 assert.equal(center.querySelector('.compatibility-reason'),null,'Conflict text does not stretch the center card');
 assert.ok(!conflictPanel.closest('.ring-stage'),'Notice is outside the swipe band');
 const conflictPage=$('picker-page').textContent;swipe(-100,0,conflictPanel);assert.equal($('picker-page').textContent,conflictPage,'Reading conflict text does not page or rotate');
+// A physically impossible facial crop is unselectable in both UI modes.
+selection={mood:'涙を浮かべる',angle:'手元・動作の接写',pose:'まっすぐ立つ'};
+picker.open(questions.find(q=>q.key==='angle'),{view:'ring'});flush();
+assert.equal(conflictPanel.dataset.status,'blocked','Face + hand crop must not remain a warning');
+assert.equal($('ring-focus').querySelector('.ring-pick').disabled,true,'Disabled on the ring');
+picker.open(questions.find(q=>q.key==='angle'),{view:'list'});flush();
+const blockedCard=$('picker-options').querySelectorAll('.sample-card').find(card=>card.dataset.value==='手元・動作の接写');
+assert.ok(blockedCard,'Selected closeup must be included in the list');
+assert.equal(blockedCard.querySelector('.option-button').disabled,true,'Disabled on the list');
 picker.open(questions.find(q=>q.key==='medium'),{view:'ring'});flush();assert.equal(conflictPanel.hidden,true,'Opening an unrelated valid choice clears the old reason');
 console.log(`PASS picker: clear horizontal band at 320/390/620/1024, 1–6 cards and long labels; first open/resize/cancel; ${checkedCategories} categories and ${checkedPages} pages in both collections; current category; distinct adjacent patterns; left-next/right-previous; recommended/favorite first pages, readonly favorite API/filter/remove/cross-tab events and selected preset restoration; short thumb paging; native vertical pan including bent gestures; taps and intentional orbit preserved.`);

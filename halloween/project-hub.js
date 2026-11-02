@@ -291,7 +291,7 @@ async function initialize() {
       (index + (event.key === 'ArrowDown' ? 1 : buttons.length-1)) % buttons.length;
     buttons[next]?.focus({preventScroll:true});
   });
-  const modeButtons = [...root.querySelectorAll('[data-pp-category]')];
+  const modeButtons = [...root.querySelectorAll('.pp-topic-switch [data-pp-category]')];
   let activeCategory = '';
   function setCategory(category) {
     const next = activeCategory === category ? '' : category;

@@ -230,6 +230,10 @@ async function initialize() {
     const gallery = linkTo(project.galleryUrl,project.id === 'halloween-2026' ? 'Halloweenの元の展示を見る ↗' : '収録マガジンの全記事を見る ↗','pp-text-link');
     if (origin) wrap.append(origin);
     if (gallery) wrap.append(gallery);
+    for (const item of project.relatedLinks || []) {
+      const link = linkTo(item.url, item.label + ' ↗', 'pp-text-link');
+      if (link) wrap.append(link);
+    }
     return wrap;
   }
   function renderEmpty(project) {

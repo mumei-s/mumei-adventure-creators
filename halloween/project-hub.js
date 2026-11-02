@@ -120,7 +120,8 @@ async function initialize() {
   let timer = null;
   let requestId = 0;
   let manualPause = false;
-  const autoEligible = () => details.open && entries.length > 1 && !manualPause &&
+  let inViewport = true;
+  const autoEligible = () => details.open && inViewport && entries.length > 1 && !manualPause &&
     !reducedMotion.matches && !document.hidden &&
     !(matchMedia('(hover: hover)').matches && panel.matches(':hover'));
   function halt() { if (timer !== null) { clearInterval(timer); timer = null; } }
@@ -262,6 +263,13 @@ async function initialize() {
     if (!details.open) { halt(); requestId++; return; }
     selectProject(projects.find(item=>item.id === (currentId || 'halloween-2026')) || projects[0]);
   });
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(changes => {
+      inViewport = changes.some(change => change.isIntersecting);
+      restart();
+    }, {threshold:0.08});
+    observer.observe(panel);
+  }
   root.addEventListener('mouseleave',restart);
   root.addEventListener('focusout',() => { requestAnimationFrame(restart); });
   document.addEventListener('visibilitychange',restart);

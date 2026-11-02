@@ -7,12 +7,85 @@
       "title": "Halloween Atelier 2026",
       "subtitle": "魔法の入口｜参加作品アーカイブ",
       "status": "archived",
-      "description": "2026年の参加作品を、公開済みの展示データから順番に紹介。作品・作者のリンクは既存展示と共通です。",
+      "description": "2026年のHalloween Atelier参加作品。登録済みの投稿をそのまま保存しています。",
       "galleryUrl": "https://mumei-s.github.io/mumei-adventure-creators/halloween-exhibition/preview/",
       "source": {
         "type": "halloweenArchive",
         "url": "../halloween-exhibition/preview/data/archive.json",
         "year": 2026
+      },
+      "theme": "halloween",
+      "icon": "🎃"
+    },
+    {
+      "id": "rpg-2026",
+      "title": "冒険クリエイター名鑑",
+      "subtitle": "RPG・認定noter｜#無名S名鑑",
+      "icon": "⚔️",
+      "theme": "rpg",
+      "status": "archived",
+      "description": "過去のRPG企画。専用マガジンの掲載記事から、個別に確認できた作品を紹介します。",
+      "articleUrl": "https://note.com/ss_yr/n/nf34d092b4032",
+      "galleryUrl": "https://note.com/ss_yr/m/mf8a55ef40b9d",
+      "source": {
+        "type": "manual",
+        "entries": [
+          {
+            "id": "rpg-koyori-2026",
+            "creatorId": "koyorimade",
+            "creatorName": "こより｜暮らしの森の管理人",
+            "title": "【やってみた】もしも、自分のnoteがRPGのクエストだったら？─森の管理人、冒険者になる─",
+            "articleUrl": "https://note.com/koyorimade/n/nbab83dfd2a4b",
+            "status": "published"
+          },
+          {
+            "id": "rpg-amano-2026",
+            "creatorId": "proper_bonobo536",
+            "creatorName": "天野 雫",
+            "title": "言葉を紡ぐ冒険者",
+            "articleUrl": "https://note.com/proper_bonobo536/n/n6a3ad357557c",
+            "status": "published"
+          },
+          {
+            "id": "rpg-coha-2026",
+            "creatorId": "lush_dog9575",
+            "creatorName": "coha👾：AIパートナーと創る人",
+            "title": "note活動がRPG風カードという『名刺』に❣️👀✨#無名S名鑑",
+            "articleUrl": "https://note.com/lush_dog9575/n/n7e4fac74a13c",
+            "status": "published"
+          },
+          {
+            "id": "rpg-musicat-2026",
+            "creatorId": "real_phlox8176",
+            "creatorName": "musicat/おとねこ",
+            "title": "冒険クリエイター名鑑に参加してみます",
+            "articleUrl": "https://note.com/real_phlox8176/n/n14b23e9899e7",
+            "status": "published"
+          },
+          {
+            "id": "rpg-rare-2026",
+            "creatorId": "satoyama_fantasy",
+            "creatorName": "レアカントリークリエイト",
+            "title": "【未来への想像力vol.6】 INFJ×INTJのナビゲーター紹介‼️――魔術師レアカン、荒野へ立つ",
+            "articleUrl": "https://note.com/satoyama_fantasy/n/n19ef10c2856e",
+            "status": "published"
+          }
+        ]
+      }
+    },
+    {
+      "id": "omamori-2026",
+      "title": "お守りプロンプト",
+      "subtitle": "和モダンの守護精霊",
+      "icon": "🍀",
+      "theme": "omamori",
+      "status": "archived",
+      "description": "キャラクター画像から、守護精霊が宿るお守りを制作するプロンプト。記事を確認できましたが、個別参加者は未登録です。",
+      "articleUrl": "https://note.com/ss_yr/n/n8ecf05c19570",
+      "galleryUrl": null,
+      "source": {
+        "type": "manual",
+        "entries": []
       }
     },
     {
@@ -26,7 +99,9 @@
       "source": {
         "type": "manual",
         "entries": []
-      }
+      },
+      "theme": "unwritten",
+      "icon": "🌌"
     }
   ]
 }

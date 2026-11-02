@@ -21,11 +21,11 @@ assert.equal(meta('og:url'), base);
 assert.match(meta('og:title'), /無名S note.*Halloween Atelier/);
 assert.ok(meta('og:description').length > 20);
 assert.equal(meta('twitter:card'), 'summary_large_image');
-assert.equal(meta('og:image'), `${base}assets/halloween-share-card-v28-4-6.png`);
+assert.equal(meta('og:image'), `${base}assets/illustration-tool-share-20261102.jpg`);
 assert.equal(meta('twitter:image'), meta('og:image'));
-assert.equal(meta('og:image:type'), 'image/png');
-assert.equal(meta('og:image:width'), '1200');
-assert.equal(meta('og:image:height'), '630');
+assert.equal(meta('og:image:type'), 'image/jpeg');
+assert.equal(meta('og:image:width'), '400');
+assert.equal(meta('og:image:height'), '210');
 assert.ok(meta('og:image:alt').length > 10);
 assert.ok(meta('twitter:image:alt').length > 10);
 for (const [name,width,height] of [
@@ -42,4 +42,8 @@ for (const [name,width,height] of [
 }
 assert.match(html, /<link\b(?=[^>]*rel=["']icon["'])(?=[^>]*href=["']\.\/assets\/halloween-icon-32-v28-4-6\.png["'])[^>]*>/);
 assert.match(html, /<link\b(?=[^>]*rel=["']apple-touch-icon["'])(?=[^>]*href=["']\.\/assets\/halloween-icon-192-v28-4-6\.png["'])[^>]*>/);
-console.log('Share preview metadata, public image URLs, PNG dimensions and favicon assets: PASS');
+const jpg = fs.readFileSync(path.join(root, 'assets', 'illustration-tool-share-20261102.jpg'));
+assert.equal(jpg.subarray(0,2).toString('hex'), 'ffd8', 'JPEG SOI marker required');
+assert.equal(jpg.subarray(-2).toString('hex'), 'ffd9', 'JPEG EOI marker required');
+assert.ok(jpg.length > 5000, 'OG preview asset unexpectedly small');
+console.log('Share preview metadata, new normal-mode JPEG and existing favicon assets: PASS');

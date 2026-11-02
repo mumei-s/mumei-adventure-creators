@@ -1,418 +1,298 @@
-/* Project hub v2 — independent, responsive, swipe-native archival viewer. */
+/* Compact note-article directory (v5).
+   Each listed work is one real note article link; no duplicated carousel or roster. */
 const root = document.querySelector('[data-project-hub]');
 const registryURL = new URL('./project-registry.json', import.meta.url);
 const registryBase = new URL('.', registryURL);
-const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-const $ = (selector, scope = root) => scope?.querySelector(selector);
-const make = (tag, className, label) => {
-  const el = document.createElement(tag);
-  if (className) el.className = className;
-  if (label !== undefined) el.textContent = label;
-  return el;
+const $ = (selector, base = root) => base?.querySelector(selector);
+const el = (tag, className, value) => {
+  const element = document.createElement(tag);
+  if (className) element.className = className;
+  if (value !== undefined) element.textContent = value;
+  return element;
 };
-const safeURL = (text, base = registryBase) => {
-  if (typeof text !== 'string' || !text.trim()) return null;
+function safeURL(value, base = registryBase) {
+  if (typeof value !== 'string' || !value.trim()) return null;
   try {
-    const url = new URL(text, base);
-    return url.protocol === 'https:' || (url.protocol === 'http:' && url.hostname === 'localhost') ? url.href : null;
-  } catch { return null; }
-};
-function linkTo(url, label, className = 'pp-link') {
-  const href = safeURL(url);
+    const url = new URL(value, base);
+    if (url.protocol === 'https:' || (url.protocol === 'http:' && url.hostname === 'localhost')) return url.href;
+  } catch {}
+  return null;
+}
+function externalLink(rawUrl, text, className = '') {
+  const href = safeURL(rawUrl);
   if (!href) return null;
-  const a = make('a', className, label);
-  a.href = href;
-  a.target = '_blank';
-  a.rel = 'noopener noreferrer';
-  return a;
+  const link = el('a', className, text);
+  link.href = href;
+  link.target = '_blank';
+  link.rel = 'noopener noreferrer';
+  return link;
 }
-async function loadJSON(url) {
-  const result = await fetch(url, {cache: 'no-cache'});
-  if (!result.ok) throw new Error('企画データを取得できませんでした。');
-  return result.json();
+async function readJSON(url) {
+  const response = await fetch(url, {cache:'no-cache'});
+  if (!response.ok) throw new Error('Archive HTTP ' + response.status);
+  return response.json();
 }
-function archiveEntries(archive, project) {
-  const people = new Map((archive.creators || []).map(item => [item.id, item]));
-  const edition = (archive.years || []).find(item => item.year === project.source?.year);
-  const sourceBase = new URL('../halloween-exhibition/preview/', registryBase);
-  return (edition?.entries || [])
-    .filter(entry => entry?.submissionStatus === 'submitted' && entry.visible !== false)
+function halloweenEntries(archive, project) {
+  const people = new Map((archive.creators || []).map(person => [person.id, person]));
+  const year = (archive.years || []).find(item => item.year === project.source?.year);
+  const assetBase = new URL('../halloween-exhibition/preview/',registryBase);
+  return (year?.entries || []).filter(entry => entry?.submissionStatus === 'submitted' && entry.visible !== false)
     .map(entry => {
-      const creator = people.get(entry.creatorId);
-      const article = (entry.links || []).find(item => {
-        const url = safeURL(item.url);
-        return url && new URL(url).hostname === 'note.com' && /\/n\//.test(new URL(url).pathname);
+      const person = people.get(entry.creatorId);
+      const article = (entry.links || []).find(link => {
+        const href = safeURL(link.url);
+        return href && new URL(href).hostname === 'note.com' &&
+          /^\/[^/]+\/n\/n[a-f0-9]+\/?$/i.test(new URL(href).pathname);
       });
-      if (!creator || !article) return null;
+      if (!person || !article) return null;
       return {
-        id: entry.doorId || entry.creatorId,
-        name: creator.name,
-        title: entry.title || '参加作品',
-        image: safeURL(entry.image, sourceBase),
-        avatar: safeURL(creator.avatarSource || creator.avatar, sourceBase),
-        articleUrl: article.url,
-        profileUrl: safeURL(creator.profileURL)
+        id:entry.doorId || entry.creatorId,
+        author:person.name,
+        title:entry.title || '参加記事',
+        image:safeURL(entry.image,assetBase) || safeURL(person.avatarSource || person.avatar,assetBase),
+        url:safeURL(article.url),
+        kind:'article'
       };
-    }).filter(Boolean);
+    }).filter(item => item && item.url);
 }
 function manualEntries(project) {
-  return (project.source?.entries || []).filter(entry => entry?.status === 'published' && entry?.creatorId && entry?.articleUrl)
+  return (project.source?.entries || []).filter(entry =>
+    entry?.status === 'published' && entry?.creatorId && safeURL(entry.articleUrl))
     .map(entry => ({
-      id: entry.id || entry.creatorId,
-      name: entry.creatorName || entry.creatorId,
-      title: entry.title || '参加作品',
-      image: safeURL(entry.image),
-      avatar: safeURL(entry.avatar),
-      articleUrl: safeURL(entry.articleUrl),
-      linkKind: entry.linkKind === 'magazine' ? 'magazine' : 'article',
-      profileUrl: safeURL(entry.profileUrl)
-    })).filter(entry => entry.articleUrl);
+      id:entry.id || entry.creatorId,
+      author:entry.creatorName || entry.creatorId,
+      title:entry.title || '参加記事',
+      image:safeURL(entry.image) || safeURL(entry.avatar),
+      url:safeURL(entry.articleUrl),
+      kind:entry.linkKind === 'magazine' ? 'magazine' : 'article'
+    }));
 }
-async function projectEntries(project) {
+async function entriesFor(project) {
   if (project.source?.type === 'halloweenArchive') {
-    return archiveEntries(await loadJSON(new URL(project.source.url, registryBase)), project);
+    return halloweenEntries(await readJSON(new URL(project.source.url,registryBase)),project);
   }
   return manualEntries(project);
 }
-function projectStatus(project) {
-  return project.status === 'preparing' ? '記事公開準備中' : '過去企画・保存版';
+function renderProjectLinks(project) {
+  const links = el('nav','pp-article-sources');
+  links.setAttribute('aria-label','企画の元記事とマガジン');
+  const original = externalLink(project.articleUrl,'企画・プロンプト記事 ↗');
+  const magazine = externalLink(project.galleryUrl,
+    project.id === 'halloween-2026' ? 'Halloween展示を見る ↗' : '全記事のマガジンを見る ↗');
+  if (original) links.append(original);
+  if (magazine) links.append(magazine);
+  for (const item of project.relatedLinks || []) {
+    const link = externalLink(item.url,(item.label || '関連ページ')+' ↗');
+    if (link) links.append(link);
+  }
+  return links;
 }
-if (root) initialize().catch(() => {
-  const panel = $('#pp-panel');
-  if (panel) panel.replaceChildren(make('p', 'pp-empty', '名鑑を読み込めませんでした。画面を更新してお試しください。'));
-});
+function renderArticleRow(entry, project) {
+  const row = el('li','pp-article-row');
+  const link = externalLink(entry.url,'','pp-article-link');
+  if (!link) return row;
+  link.setAttribute('aria-label',entry.author + '：' + entry.title +
+    (entry.kind === 'magazine' ? '。収録マガジンを開きます' : '。元のnote記事を開きます'));
+  const thumb = el('span','pp-article-thumb');
+  if (entry.image) {
+    const img = el('img');
+    img.src = entry.image;
+    img.alt = '';
+    img.width = 100;
+    img.height = 60;
+    img.loading = 'lazy';
+    img.decoding = 'async';
+    img.onerror = () => {img.remove();thumb.textContent=project.icon || '📖';};
+    thumb.append(img);
+  } else thumb.textContent = project.icon || '📖';
+  thumb.setAttribute('aria-hidden','true');
+  const copy = el('span','pp-article-info');
+  const author = el('span','pp-article-author',entry.author);
+  const title = el('strong','pp-article-title',entry.title);
+  title.title = entry.title;
+  copy.append(author,title);
+  const destination = el('span','pp-article-dest',
+    entry.kind === 'magazine' ? 'マガジン' : '記事');
+  destination.setAttribute('aria-hidden','true');
+  link.append(thumb,copy,destination);
+  row.append(link);
+  return row;
+}
+function renderArticles(project, records, panel) {
+  panel.replaceChildren();
+  const countPeople = new Set(records.map(item => item.author)).size;
+  const heading = el('div','pp-articles-heading');
+  heading.append(el('strong','', '参加記事 ' + records.length + '件'));
+  heading.append(el('span','', countPeople + '名'));
+  panel.append(heading);
+  const list = el('ul','pp-articles-list');
+  const rows = records.map(record => renderArticleRow(record,project));
+  rows.forEach(row => list.append(row));
+  panel.append(list);
+
+  // Start compact. One click reveals the entire list and permits name/title search.
+  const limit = 4;
+  let all = records.length <= limit;
+  const actions = el('div','pp-article-actions');
+  const showMore = el('button','pp-article-more');
+  showMore.type = 'button';
+  showMore.setAttribute('aria-expanded',String(all));
+  const search = el('input','pp-article-search');
+  search.type = 'search';
+  search.placeholder = '参加者・記事を探す';
+  search.setAttribute('aria-label','参加者名・記事名から検索');
+  search.hidden = true;
+  const normalized = records.map(record =>
+    (record.author + ' ' + record.title).normalize('NFKC').toLocaleLowerCase('ja'));
+  const draw = () => {
+    const query = search.value.normalize('NFKC').toLocaleLowerCase('ja').trim();
+    let found=0;
+    rows.forEach((row,index) => {
+      const visible = query ? normalized[index].includes(query) : all || index < limit;
+      row.hidden = !visible;
+      if (visible) found++;
+    });
+    showMore.textContent = all ? '一覧を4件に戻す' : '全' + records.length + '件を見る';
+    showMore.setAttribute('aria-expanded',String(all));
+    showMore.hidden = records.length <= limit;
+    if (query) showMore.textContent='検索を解除';
+    const count = $('.pp-article-search-count',actions);
+    if (count) count.textContent = query ? found + '件見つかりました' : '';
+  };
+  showMore.addEventListener('click', () => {
+    if (search.value) search.value = '';
+    else all = !all;
+    search.hidden = !all || records.length <= limit;
+    draw();
+  });
+  search.addEventListener('input',draw);
+  actions.append(showMore,search,el('span','pp-article-search-count',''));
+  panel.append(actions);
+  const projectLinks = renderProjectLinks(project);
+  if (projectLinks.childElementCount) panel.append(projectLinks);
+  draw();
+}
+function renderEmpty(project, panel) {
+  panel.replaceChildren(el('p','pp-article-empty',
+    project.status === 'preparing' ?
+      '企画記事の公開後に参加作品を追加します。' :
+      '確認済みの参加記事はまだありません。元の企画記事をご覧ください。'));
+  const links = renderProjectLinks(project);
+  if (links.childElementCount) panel.append(links);
+}
 async function initialize() {
-  const registry = await loadJSON(registryURL);
-  if (registry.schemaVersion !== 1 || !Array.isArray(registry.projects)) throw new Error('Invalid registry');
+  const registry = await readJSON(registryURL);
+  if (registry.schemaVersion !== 1 || !Array.isArray(registry.projects)) throw Error('Invalid registry');
   const projects = registry.projects;
-  const feature = projects.find(item => item.id === registry.featuredProjectId);
+  const feature = projects.find(project => project.id === registry.featuredProjectId);
   const featureAction = $('#pp-feature-action');
-  if (feature && featureAction) {
+  if (featureAction && feature) {
     featureAction.replaceChildren();
     const status = $('#pp-feature-status');
-    if (status) status.textContent = projectStatus(feature);
-    const play = feature.status === 'published' ? safeURL(feature.playUrl) : null;
-    const article = feature.status === 'published' ? safeURL(feature.articleUrl) : null;
-    if (play || article) {
-      featureAction.append(linkTo(play || article, play ? 'この世界で遊ぶ ↗' : '記事と遊び方を見る ↗', 'pp-primary-link'));
-      if (play && article) featureAction.append(linkTo(article, '企画記事を見る ↗', 'pp-text-link'));
-    } else {
-      featureAction.append(make('span','pp-coming','記事公開後にここから遊べるようになります。'));
-    }
+    if (status) status.textContent = feature.status === 'published' ? '公開中' : '記事公開準備中';
+    if (feature.status === 'published' && (safeURL(feature.playUrl) || safeURL(feature.articleUrl))) {
+      const playLink = externalLink(feature.playUrl || feature.articleUrl,
+        feature.playUrl ? 'プロンプトで遊ぶ ↗' : '記事と遊び方を見る ↗','pp-primary-link');
+      if (playLink) featureAction.append(playLink);
+      if (feature.playUrl && feature.articleUrl) {
+        const info = externalLink(feature.articleUrl,'企画記事を見る ↗','pp-text-link');
+        if (info) featureAction.append(info);
+      }
+    } else featureAction.append(el('span','pp-coming','記事公開後にここから遊べるようになります。'));
   }
-  const details = $('#pp-directory'), tabs = $('#pp-tabs'), panel = $('#pp-panel');
-  if (!details || !tabs || !panel) return;
-  // Use explicit Atelier day/night mode where available; otherwise follow the OS.
-  const osDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+  // Follow the Atelier's own day/night control; otherwise the OS preference.
+  const osMode = window.matchMedia('(prefers-color-scheme: dark)');
   const syncAppearance = () => {
     const lights = document.body.dataset.lights;
     root.dataset.ppAppearance = lights === 'night' ? 'dark' :
-      lights === 'day' ? 'light' : osDark.matches ? 'dark' : 'light';
+      lights === 'day' ? 'light' : osMode.matches ? 'dark' : 'light';
   };
   syncAppearance();
-  osDark.addEventListener?.('change', syncAppearance);
-  new MutationObserver(syncAppearance).observe(document.body, {attributes:true, attributeFilter:['data-lights']});
-  let selectedId = '';
-  let expandedId = '';
-  let currentEntries = [];
-  let currentIndex = 0;
-  let rail = null;
-  let counter = null;
-  let dots = null;
-  let carouselAuto = null;
-  let autoOn = !prefersReducedMotion.matches;
-  let onScreen = true;
-  let selectVersion = 0;
-  let ticking = false;
-  let pointerMoved = false;
-  const stopAuto = () => { if (carouselAuto !== null) clearInterval(carouselAuto); carouselAuto = null; };
-  const autoAllowed = () => details.open && !panel.hidden && onScreen && !document.hidden && autoOn &&
-    currentEntries.length > 1 && !(window.matchMedia('(hover: hover)').matches && panel.matches(':hover'));
-  const restartAuto = () => {
-    stopAuto();
-    if (!autoAllowed()) return;
-    carouselAuto = setInterval(() => {
-      if (!autoAllowed()) {stopAuto();return;}
-      jumpTo((currentIndex + 1) % currentEntries.length, true);
-    }, 8000);
-  };
-  function jumpTo(next, smooth = false) {
-    if (!rail || !currentEntries.length) return;
-    currentIndex = (next + currentEntries.length) % currentEntries.length;
-    refreshControls();
-    const step = rail.clientWidth;
-    rail.scrollTo({left: currentIndex * step, behavior: smooth && !prefersReducedMotion.matches ? 'smooth' : 'auto'});
-  }
-  function refreshControls() {
-    if (counter) counter.textContent = (currentIndex + 1) + ' / ' + currentEntries.length;
-    if (dots) {
-      [...dots.children].forEach((dot, i) => {
-        const selected = i === currentIndex;
-        dot.setAttribute('aria-current', selected ? 'true' : 'false');
-        dot.tabIndex = selected ? 0 : -1;
-      });
-    }
-  }
-  function buildCard(entry, project) {
-    const card = make('article', 'pp-slide');
-    card.setAttribute('aria-label', entry.name + 'の作品：' + entry.title);
-    const media = make('a','pp-slide-media');
-    media.href = entry.articleUrl;
-    media.rel = 'noopener noreferrer';
-    media.target = '_blank';
-    media.setAttribute('aria-label', entry.linkKind === 'magazine' ? entry.name + 'の収録マガジンを開く' : entry.name + 'の作品画像・記事を開く');
-    const artwork = entry.image || entry.avatar;
-    if (artwork) {
-      const image = make('img','pp-slide-image');
-      image.src = artwork;
-      image.alt = entry.title + 'のサムネイル';
-      image.loading = 'lazy';
-      image.decoding = 'async';
-      image.width = 320;
-      image.height = 175;
-      image.onerror = () => {
-        image.remove();
-        media.append(make('span','pp-no-image',project.icon || '✦'));
-      };
-      media.append(image);
-    } else media.append(make('span','pp-no-image',project.icon || '✦'));
-    const copy = make('div','pp-slide-copy');
-    const name = make('strong','pp-slide-name',entry.name);
-    name.title = entry.name;
-    const work = make('p','pp-slide-work',entry.title);
-    work.title = entry.title;
-    const actions = make('div','pp-slide-actions');
-    if (entry.title.length > 35) {
-      const expand = make('button','pp-expand','記事名を全文表示');
-      expand.type = 'button';
-      expand.setAttribute('aria-expanded','false');
-      expand.addEventListener('click', () => {
-        const expanded = card.classList.toggle('pp-title-expanded');
-        expand.textContent = expanded ? '記事名をたたむ' : '記事名を全文表示';
-        expand.setAttribute('aria-expanded', String(expanded));
-      });
-      actions.append(expand);
-    }
-    actions.append(linkTo(entry.articleUrl,entry.linkKind === 'magazine' ? '収録マガジンで探す ↗' : '記事を読む ↗','pp-card-link'));
-    copy.append(name,work,actions);
-    card.append(media,copy);
-    return card;
-  }
-  function buildRoster(project) {
-    const roster = make('details','pp-roster');
-    const summary = make('summary','', '参加者一覧（' + new Set(currentEntries.map(x => x.name)).size + '名・' + currentEntries.length + '作品）');
-    roster.append(summary);
-    const listArea = make('div','pp-roster-body');
-    const search = make('input','pp-roster-search');
-    search.type = 'search';
-    search.placeholder = '名前・作品名から探す';
-    search.setAttribute('aria-label','参加者を検索');
-    const list = make('ol','pp-roster-list');
-    listArea.append(search,list);
-    roster.append(listArea);
-    const rows = currentEntries.map((entry, i) => {
-      const li = make('li','pp-roster-item');
-      const choose = make('button','pp-roster-select');
-      choose.type = 'button';
-      choose.append(make('strong','',entry.name),make('span','',entry.title));
-      choose.addEventListener('click', () => {
-        roster.open = false;
-        jumpTo(i,true);
-        rail?.focus({preventScroll:true});
-      });
-      const article = linkTo(entry.articleUrl,entry.linkKind === 'magazine' ? 'マガジン ↗' : '記事 ↗','pp-roster-article');
-      li.append(choose);
-      if (article) li.append(article);
-      li.dataset.search = (entry.name + ' ' + entry.title).normalize('NFKC').toLocaleLowerCase('ja');
-      list.append(li);
-      return li;
-    });
-    search.addEventListener('input',() => {
-      const q = search.value.normalize('NFKC').toLocaleLowerCase('ja').trim();
-      let shown = 0;
-      rows.forEach(li => {li.hidden = !li.dataset.search.includes(q);if(!li.hidden) shown++;});
-      search.setAttribute('aria-label','参加者を検索、表示中 ' + shown + '件');
-    });
-    return roster;
-  }
-  function projectLinks(project) {
-    const wrap = make('nav','pp-project-links');
-    wrap.setAttribute('aria-label','企画について');
-    const origin = linkTo(project.articleUrl,'企画・プロンプト記事 ↗','pp-text-link');
-    const gallery = linkTo(project.galleryUrl,project.id === 'halloween-2026' ? 'Halloweenの元の展示を見る ↗' : '収録マガジンの全記事を見る ↗','pp-text-link');
-    if (origin) wrap.append(origin);
-    if (gallery) wrap.append(gallery);
-    for (const item of project.relatedLinks || []) {
-      const link = linkTo(item.url, item.label + ' ↗', 'pp-text-link');
-      if (link) wrap.append(link);
-    }
-    return wrap;
-  }
-  function renderEmpty(project) {
-    panel.replaceChildren();
-    panel.append(make('p','pp-empty',project.status === 'preparing' ?
-      '企画記事の公開後、参加作品をここへ追加します。' :
-      '確認できた参加作品は、まだ個別登録されていません。元の記事からプロンプトをお楽しみください。'));
-    panel.append(projectLinks(project));
-  }
-  function renderCarousel(project) {
-    panel.replaceChildren();
-    const header = make('div','pp-compact-heading');
-    header.append(make('span','pp-compact-count',project.icon + ' ' + project.title));
-    counter = make('span','pp-count','1 / ' + currentEntries.length);
-    header.append(counter);
-    const view = make('div','pp-swipe');
-    view.setAttribute('role','region');
-    view.setAttribute('aria-roledescription','カルーセル');
-    view.setAttribute('aria-label',project.title + 'の参加作品。左右にスワイプしてください。');
-    view.tabIndex = 0;
-    currentEntries.forEach(entry => view.append(buildCard(entry,project)));
-    rail = view;
-    rail.addEventListener('scroll',() => {
-      if(ticking) return;
-      ticking=true;
-      requestAnimationFrame(() => {
-        ticking=false;
-        const width=rail.clientWidth;
-        if (!width) return;
-        const next=Math.min(currentEntries.length-1,Math.max(0,Math.round(rail.scrollLeft/width)));
-        if (next !== currentIndex) {currentIndex=next;refreshControls();}
-      });
-    },{passive:true});
-    rail.addEventListener('pointerdown',e => {if (e.pointerType==='touch') pointerMoved=true;},{passive:true});
-    rail.addEventListener('pointerup',() => {if(pointerMoved){pointerMoved=false;restartAuto();}},{passive:true});
-    rail.addEventListener('keydown', e => {
-      if (e.key==='ArrowRight' || e.key==='ArrowLeft') {
-        e.preventDefault();jumpTo(currentIndex+(e.key==='ArrowRight'?1:-1),true);restartAuto();
-      }
-    });
-    const nav = make('div','pp-carousel-nav');
-    const prev = make('button','pp-arrow','‹');
-    prev.type='button';prev.setAttribute('aria-label','前の作品');
-    const next = make('button','pp-arrow','›');
-    next.type='button';next.setAttribute('aria-label','次の作品');
-    dots = make('div','pp-page-dots');
-    dots.setAttribute('role','group');dots.setAttribute('aria-label','作品を選ぶ');
-    currentEntries.forEach((entry,i) => {
-      const dot=make('button','pp-dot');
-      dot.type='button';dot.setAttribute('aria-label',(i+1)+'件目：'+entry.name);
-      dot.addEventListener('click',()=>{jumpTo(i,true);restartAuto();});
-      dots.append(dot);
-    });
-    prev.addEventListener('click',()=>{jumpTo(currentIndex-1,true);restartAuto();});
-    next.addEventListener('click',()=>{jumpTo(currentIndex+1,true);restartAuto();});
-    const auto = make('button','pp-auto',autoOn ? '自動 ON' : '自動 OFF');
-    auto.type='button';
-    auto.setAttribute('aria-pressed',String(autoOn));
-    auto.addEventListener('click',() => {
-      autoOn=!autoOn;
-      auto.textContent=autoOn?'自動 ON':'自動 OFF';
-      auto.setAttribute('aria-pressed',String(autoOn));
-      restartAuto();
-    });
-    nav.append(prev,dots,next,auto);
-    const hint = make('span','pp-swipe-hint','⇆ 指で左右にスライド');
-    panel.append(header,view,nav,hint,buildRoster(project),projectLinks(project));
-    refreshControls();
-    restartAuto();
-  }
-  function closeCurrent() {
-    stopAuto();
-    ++selectVersion;
-    expandedId = '';
-    currentEntries = [];
-    currentIndex = 0;
-    rail = null;
-    counter = null;
-    dots = null;
+  osMode.addEventListener?.('change',syncAppearance);
+  new MutationObserver(syncAppearance).observe(document.body,
+    {attributes:true,attributeFilter:['data-lights']});
+
+  const directory = $('#pp-directory');
+  const tabs = $('#pp-tabs');
+  const panel = $('#pp-panel');
+  if (!directory || !tabs || !panel) return;
+  let selected = '';
+  let requestID = 0;
+  const close = () => {
+    ++requestID;
+    selected = '';
     panel.hidden = true;
     panel.replaceChildren();
     for (const button of tabs.querySelectorAll('.pp-tab')) {
       button.setAttribute('aria-expanded','false');
       button.setAttribute('aria-pressed','false');
     }
-  }
-  async function selectProject(project, allowToggle = true) {
-    if (!project || !details.open) return;
-    if (expandedId === project.id && allowToggle) {
-      closeCurrent();
-      return;
-    }
-    selectedId = project.id;
-    expandedId = project.id;
-    const token = ++selectVersion;
-    stopAuto();rail=null;counter=null;dots=null;currentIndex=0;currentEntries=[];
-    panel.dataset.ppTheme = project.theme || 'unwritten';
+  };
+  async function open(project) {
+    if (!directory.open) return;
+    if (selected === project.id) {close();return;}
+    selected = project.id;
+    const token = ++requestID;
     panel.hidden = false;
+    panel.dataset.ppTheme = project.theme || 'unwritten';
     for (const button of tabs.querySelectorAll('.pp-tab')) {
       const active = button.dataset.project === project.id;
       button.setAttribute('aria-expanded',String(active));
       button.setAttribute('aria-pressed',String(active));
       if (active) button.after(panel);
     }
-    panel.replaceChildren(make('p','pp-loading','参加作品を読み込み中…'));
+    panel.replaceChildren(el('p','pp-article-empty','記事を読み込み中…'));
     try {
-      const records = await projectEntries(project);
-      if (token !== selectVersion || !details.open || expandedId !== project.id) return;
-      currentEntries = records;
-      if (records.length) renderCarousel(project); else renderEmpty(project);
+      const records = await entriesFor(project);
+      if (token !== requestID || !directory.open) return;
+      if (!records.length) renderEmpty(project,panel);
+      else renderArticles(project,records,panel);
     } catch {
-      if (token !== selectVersion || expandedId !== project.id) return;
-      panel.replaceChildren(
-        make('p','pp-empty','作品データを読み込めませんでした。元の展示からご覧ください。'),
-        projectLinks(project)
-      );
+      if (token !== requestID) return;
+      panel.replaceChildren(el('p','pp-article-empty',
+        '記事を読み込めませんでした。元の企画記事からご覧ください。'));
+      const links = renderProjectLinks(project);
+      if (links.childElementCount) panel.append(links);
     }
   }
-  // Each archive is a full-width, individually colored row; featured prompts
-  // are already represented above, so they are not duplicated in the directory.
   const archives = projects.filter(project => project.id !== feature?.id);
-  archives.forEach(project => {
-    const button = make('button','pp-tab');
-    button.type = 'button';
+  for (const project of archives) {
+    const button = el('button','pp-tab');
+    button.type='button';
     button.dataset.project = project.id;
     button.dataset.ppTheme = project.theme || 'unwritten';
-    button.setAttribute('aria-controls','pp-panel');
     button.setAttribute('aria-expanded','false');
     button.setAttribute('aria-pressed','false');
-    const icon = make('span','pp-tab-icon',project.icon || '✦');
+    button.setAttribute('aria-controls','pp-panel');
+    const icon = el('span','pp-tab-icon',project.icon || '✦');
     icon.setAttribute('aria-hidden','true');
-    const copy = make('span','pp-tab-copy');
-    copy.append(make('strong','',project.title),make('small','',project.subtitle || projectStatus(project)));
-    const tail = make('span','pp-tab-end','作品');
-    tail.setAttribute('aria-hidden','true');
-    button.append(icon,copy,tail);
-    button.addEventListener('click',() => selectProject(project));
+    const copy = el('span','pp-tab-copy');
+    copy.append(el('strong','',project.title));
+    const known = project.source?.type === 'manual' ? project.source.entries?.filter(x=>x.status==='published').length : null;
+    copy.append(el('small','',known === null ? (project.subtitle || '参加記事を見る') :
+      known ? known + '作品を掲載' : '元記事を見る'));
+    const end = el('span','pp-tab-end','記事');
+    end.setAttribute('aria-hidden','true');
+    button.append(icon,copy,end);
+    button.addEventListener('click',()=>open(project));
     tabs.append(button);
-  });
-  tabs.addEventListener('keydown', event => {
-    if (!['ArrowDown','ArrowUp','Home','End'].includes(event.key)) return;
-    if (!event.target.classList?.contains('pp-tab')) return;
+  }
+  tabs.addEventListener('keydown',event => {
+    if (!['ArrowDown','ArrowUp','Home','End'].includes(event.key) ||
+      !event.target.classList?.contains('pp-tab')) return;
     const buttons = [...tabs.querySelectorAll('.pp-tab')];
     const index = buttons.indexOf(event.target);
     if (index < 0) return;
     event.preventDefault();
-    const nextIndex = event.key === 'Home' ? 0 :
-      event.key === 'End' ? buttons.length-1 :
+    const next = event.key === 'Home' ? 0 : event.key === 'End' ? buttons.length-1 :
       (index + (event.key === 'ArrowDown' ? 1 : buttons.length-1)) % buttons.length;
-    buttons[nextIndex]?.focus({preventScroll:true});
-    buttons[nextIndex]?.scrollIntoView({block:'nearest',inline:'nearest'});
+    buttons[next]?.focus({preventScroll:true});
   });
-  details.addEventListener('toggle', () => {
-    if (!details.open) closeCurrent();
-  });
-  if('IntersectionObserver' in window){
-    const observer=new IntersectionObserver(changes=>{
-      onScreen=changes.some(change=>change.isIntersecting);
-      restartAuto();
-    },{threshold:.05});
-    observer.observe(panel);
-  }
-  document.addEventListener('visibilitychange',restartAuto);
-  root.addEventListener('mouseleave',restartAuto);
-  prefersReducedMotion.addEventListener?.('change',()=>{
-    if(prefersReducedMotion.matches)autoOn=false;
-    restartAuto();
-  });
-  panel.hidden = true; // Load no participant images until a category is opened.
+  directory.addEventListener('toggle',()=>{if(!directory.open)close();});
+  panel.hidden = true;
 }
+if (root) initialize().catch(() => {
+  const panel = $('#pp-panel');
+  if (panel) panel.replaceChildren(el('p','pp-article-empty','企画一覧を読み込めませんでした。'));
+});

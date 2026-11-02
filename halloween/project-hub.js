@@ -121,8 +121,8 @@ async function initialize() {
   let requestId = 0;
   let manualPause = false;
   const autoEligible = () => details.open && entries.length > 1 && !manualPause &&
-    !reducedMotion.matches && !document.hidden && !root.matches(':hover') &&
-    !root.contains(document.activeElement);
+    !reducedMotion.matches && !document.hidden &&
+    !(matchMedia('(hover: hover)').matches && panel.matches(':hover'));
   function halt() { if (timer !== null) { clearInterval(timer); timer = null; } }
   function restart() {
     halt();

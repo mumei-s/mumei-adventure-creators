@@ -118,67 +118,121 @@ function renderArticleRow(entry, project) {
   row.append(link);
   return row;
 }
-function renderArticles(project, records, panel) {
+
+let tapShield = null;
+function guardedTap(event, change, anchor) {
+  event?.preventDefault?.();
+  event?.stopPropagation?.();
+  event?.stopImmediatePropagation?.();
+  tapShield?.remove();
+  const shield = document.createElement('div');
+  shield.className = 'pp-tap-shield';
+  shield.setAttribute('aria-hidden','true');
+  document.body.append(shield);
+  tapShield = shield;
+  requestAnimationFrame(() => {
+    if (anchor?.isConnected) {
+      const box = anchor.getBoundingClientRect();
+      if (box.top < 8 || box.top > window.innerHeight - 90) {
+        anchor.scrollIntoView({block:'start',behavior:'auto'});
+      }
+    }
+    change();
+    window.setTimeout(() => {
+      if (tapShield === shield) tapShield = null;
+      shield.remove();
+    }, 430);
+  });
+}
+function panelNavigation(actions) {
+  const bar = el('div','pp-panel-return');
+  const back = el('button','pp-return-button','← 戻る');
+  const close = el('button','pp-return-button','しまう ×');
+  back.type = close.type = 'button';
+  back.addEventListener('click',actions.back);
+  close.addEventListener('click',actions.close);
+  bar.append(back,close);
+  return bar;
+}
+function renderArticles(project, records, panel, navigation) {
   panel.replaceChildren();
-  const countPeople = new Set(records.map(item => item.author)).size;
-  const heading = el('div','pp-articles-heading');
-  heading.append(el('strong','', '参加記事 ' + records.length + '件'));
-  heading.append(el('span','', countPeople + '名'));
+  const heading=el('div','pp-articles-heading');
+  heading.append(el('strong','', '参加記事 '+records.length+'件'),
+    el('span','',new Set(records.map(item=>item.author)).size+'名'));
   panel.append(heading);
-  const list = el('ul','pp-articles-list');
-  const rows = records.map(record => renderArticleRow(record,project));
-  rows.forEach(row => list.append(row));
+  const list=el('ul','pp-articles-list');
+  const rows=records.map(entry=>renderArticleRow(entry,project));
+  rows.forEach(row=>list.append(row));
   panel.append(list);
 
-  // Start compact. One click reveals the entire list and permits name/title search.
-  const limit = 4;
-  let all = records.length <= limit;
-  const actions = el('div','pp-article-actions');
-  const showMore = el('button','pp-article-more');
-  showMore.type = 'button';
-  showMore.setAttribute('aria-expanded',String(all));
-  const search = el('input','pp-article-search');
-  search.type = 'search';
-  search.placeholder = '参加者・記事を探す';
-  search.setAttribute('aria-label','参加者名・記事名から検索');
-  search.hidden = true;
-  const normalized = records.map(record =>
-    (record.author + ' ' + record.title).normalize('NFKC').toLocaleLowerCase('ja'));
-  const draw = () => {
-    const query = search.value.normalize('NFKC').toLocaleLowerCase('ja').trim();
+  // Append four items at a time. Expanding never removes previously displayed rows.
+  // Keep close/back as independent controls to prevent clicking through underlying links.
+  const PAGE=4;
+  let visibleCount=Math.min(PAGE,records.length);
+  const normalized=records.map(record=>
+    (record.author+' '+record.title).normalize('NFKC').toLocaleLowerCase('ja'));
+  const actions=el('div','pp-article-actions');
+  const more=el('button','pp-article-more');
+  more.type='button';
+  const searchToggle=el('button','pp-article-search-toggle','🔎 探す');
+  searchToggle.type='button';
+  searchToggle.setAttribute('aria-expanded','false');
+  const search=el('input','pp-article-search');
+  search.type='search';
+  search.placeholder='参加者名・記事名';
+  search.setAttribute('aria-label','参加者・記事を検索');
+  search.hidden=true;
+  const count=el('span','pp-article-search-count','');
+  const draw=()=>{
+    const query=search.value.normalize('NFKC').toLocaleLowerCase('ja').trim();
     let found=0;
-    rows.forEach((row,index) => {
-      const visible = query ? normalized[index].includes(query) : all || index < limit;
-      row.hidden = !visible;
-      if (visible) found++;
+    rows.forEach((row,index)=>{
+      const visible=query?normalized[index].includes(query):index<visibleCount;
+      row.hidden=!visible;
+      if(visible) found++;
     });
-    showMore.textContent = all ? '一覧を4件に戻す' : '全' + records.length + '件を見る';
-    showMore.setAttribute('aria-expanded',String(all));
-    showMore.hidden = records.length <= limit;
-    if (query) showMore.textContent='検索を解除';
-    const count = $('.pp-article-search-count',actions);
-    if (count) count.textContent = query ? found + '件見つかりました' : '';
+    const remain=records.length-visibleCount;
+    more.textContent=remain?'次の'+Math.min(PAGE,remain)+'件を見る':'すべて表示中';
+    more.disabled=!remain;
+    more.hidden=records.length<=PAGE;
+    count.textContent=query?found+'件見つかりました':'';
   };
-  showMore.addEventListener('click', () => {
-    if (search.value) search.value = '';
-    else all = !all;
-    search.hidden = !all || records.length <= limit;
-    draw();
+  more.addEventListener('click',event=>{
+    guardedTap(event,()=>{
+      visibleCount=Math.min(records.length,visibleCount+PAGE);
+      draw();
+    });
+  });
+  searchToggle.addEventListener('click',event=>{
+    event.preventDefault();
+    event.stopPropagation();
+    search.hidden=!search.hidden;
+    searchToggle.setAttribute('aria-expanded',String(!search.hidden));
+    if(!search.hidden)search.focus({preventScroll:true});
+    else {search.value='';draw();}
   });
   search.addEventListener('input',draw);
-  actions.append(showMore,search,el('span','pp-article-search-count',''));
+  actions.append(more,searchToggle,search,count);
   panel.append(actions);
-  const projectLinks = renderProjectLinks(project);
-  if (projectLinks.childElementCount) panel.append(projectLinks);
+  panel.append(panelNavigation(navigation));
+
+  const source=renderProjectLinks(project);
+  if(source.childElementCount){
+    const info=el('details','pp-article-source-details');
+    info.append(el('summary','','企画元・マガジン'));
+    info.append(source);
+    panel.append(info);
+  }
   draw();
 }
-function renderEmpty(project, panel) {
+function renderEmpty(project, panel, navigation) {
   panel.replaceChildren(el('p','pp-article-empty',
     project.status === 'preparing' ?
       '企画記事の公開後に参加作品を追加します。' :
       '確認済みの参加記事はまだありません。元の企画記事をご覧ください。'));
-  const links = renderProjectLinks(project);
-  if (links.childElementCount) panel.append(links);
+  const links=renderProjectLinks(project);
+  if(links.childElementCount) panel.append(links);
+  panel.append(panelNavigation(navigation));
 }
 async function initialize() {
   const registry = await readJSON(registryURL);
@@ -219,6 +273,10 @@ async function initialize() {
   if (!directory || !tabs || !panel) return;
   let selected = '';
   let requestID = 0;
+  let activeCategory = '';
+  const modeButtons=[...root.querySelectorAll('.pp-topic-switch [data-pp-category]')];
+  const magazineDetails=$('#pp-operated-magazines');
+  const magazineCloseButton=root.querySelector('[data-pp-close-magazines]');
   const close = () => {
     ++requestID;
     selected = '';
@@ -242,18 +300,28 @@ async function initialize() {
       button.setAttribute('aria-pressed',String(active));
       if (active) button.after(panel);
     }
+    const categoryButton=[...tabs.querySelectorAll('.pp-tab')].find(x=>x.dataset.project===project.id);
+    const navigation={
+      back:event=>guardedTap(event,()=>{
+        close();categoryButton?.focus({preventScroll:true});
+      },categoryButton),
+      close:event=>guardedTap(event,()=>{
+        setCategory('');
+      },modeButtons.find(b=>b.dataset.ppCategory===activeCategory))
+    };
     panel.replaceChildren(el('p','pp-article-empty','記事を読み込み中…'));
     try {
       const records = await entriesFor(project);
       if (token !== requestID || directory.hidden) return;
-      if (!records.length) renderEmpty(project,panel);
-      else renderArticles(project,records,panel);
+      if (!records.length) renderEmpty(project,panel,navigation);
+      else renderArticles(project,records,panel,navigation);
     } catch {
       if (token !== requestID) return;
       panel.replaceChildren(el('p','pp-article-empty',
         '記事を読み込めませんでした。元の企画記事からご覧ください。'));
       const links = renderProjectLinks(project);
       if (links.childElementCount) panel.append(links);
+      panel.append(panelNavigation(navigation));
     }
   }
   const archives = projects;
@@ -291,23 +359,49 @@ async function initialize() {
       (index + (event.key === 'ArrowDown' ? 1 : buttons.length-1)) % buttons.length;
     buttons[next]?.focus({preventScroll:true});
   });
-  const modeButtons = [...root.querySelectorAll('.pp-topic-switch [data-pp-category]')];
-  let activeCategory = '';
   function setCategory(category) {
-    const next = activeCategory === category ? '' : category;
+    const next=category && category!==activeCategory?category:'';
     close();
-    activeCategory = next;
-    directory.hidden = !next;
-    for (const button of modeButtons) {
-      const active = button.dataset.ppCategory === next;
+    activeCategory=next;
+    directory.hidden=!next;
+    for(const button of modeButtons){
+      const active=button.dataset.ppCategory===next;
       button.setAttribute('aria-expanded',String(active));
       button.setAttribute('aria-pressed',String(active));
     }
-    for (const button of tabs.querySelectorAll('.pp-tab')) {
-      button.hidden = !next || button.dataset.ppCategory !== next;
+    for(const button of tabs.querySelectorAll('.pp-tab')){
+      button.hidden=!next || button.dataset.ppCategory!==next;
     }
   }
-  modeButtons.forEach(button => button.addEventListener('click', () => setCategory(button.dataset.ppCategory)));
+  modeButtons.forEach(button=>button.addEventListener('click',event=>{
+    event.stopPropagation();
+    if(activeCategory===button.dataset.ppCategory){
+      guardedTap(event,()=>setCategory(''),button);
+    }else setCategory(button.dataset.ppCategory);
+  }));
+  root.querySelector('[data-pp-back="category"]')?.addEventListener('click',event=>{
+    guardedTap(event,()=>{
+      if(selected)close();
+      else setCategory('');
+    },modeButtons.find(b=>b.dataset.ppCategory===activeCategory));
+  });
+  root.querySelector('[data-pp-close="category"]')?.addEventListener('click',event=>{
+    guardedTap(event,()=>setCategory(''),modeButtons.find(b=>b.dataset.ppCategory===activeCategory));
+  });
+  magazineCloseButton?.addEventListener('click',event=>{
+    guardedTap(event,()=>{
+      if(magazineDetails)magazineDetails.open=false;
+    },magazineDetails?.querySelector('summary'));
+  });
+  root.addEventListener('keydown',event=>{
+    if(event.key!=='Escape')return;
+    if(magazineDetails?.open)magazineDetails.open=false;
+    else if(selected)close();
+    else if(activeCategory)setCategory('');
+    else return;
+    event.preventDefault();
+    event.stopPropagation();
+  });
   panel.hidden = true;
   // Construct links only to the actual note magazine (/m/), never to fixed article URLs.
   const managed = $('#pp-operated-magazines');

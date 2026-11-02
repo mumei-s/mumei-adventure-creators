@@ -172,7 +172,7 @@ let integrated=0;
 const integrationPlans=[
  make(),
  make({medium:'発光幻想アニメ',angle:'真上から・90度',appearance:'髪なし'}),
- make({medium:'発光幻想リアル',angle:'手元・動作の接写'}),
+ make({medium:'発光幻想リアル',angle:'手元・動作の接写',mood:'静かで美しい'}),
  make({medium:'宝石光彩アニメ'}),
  make({medium:'宝石光彩リアル'}),
  make({design:'新聞の一面',type:'HALLOWEENのみ'}),

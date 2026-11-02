@@ -230,7 +230,7 @@ async function initialize() {
     }
   };
   async function open(project) {
-    if (!directory.open) return;
+    if (directory.hidden) return;
     if (selected === project.id) {close();return;}
     selected = project.id;
     const token = ++requestID;
@@ -245,7 +245,7 @@ async function initialize() {
     panel.replaceChildren(el('p','pp-article-empty','記事を読み込み中…'));
     try {
       const records = await entriesFor(project);
-      if (token !== requestID || !directory.open) return;
+      if (token !== requestID || directory.hidden) return;
       if (!records.length) renderEmpty(project,panel);
       else renderArticles(project,records,panel);
     } catch {
@@ -256,11 +256,13 @@ async function initialize() {
       if (links.childElementCount) panel.append(links);
     }
   }
-  const archives = projects.filter(project => project.id !== feature?.id);
+  const archives = projects;
   for (const project of archives) {
     const button = el('button','pp-tab');
     button.type='button';
     button.dataset.project = project.id;
+    button.dataset.ppCategory = project.category || 'project';
+    button.hidden = true;
     button.dataset.ppTheme = project.theme || 'unwritten';
     button.setAttribute('aria-expanded','false');
     button.setAttribute('aria-pressed','false');
@@ -270,7 +272,7 @@ async function initialize() {
     const copy = el('span','pp-tab-copy');
     copy.append(el('strong','',project.title));
     const known = project.source?.type === 'manual' ? project.source.entries?.filter(x=>x.status==='published').length : null;
-    copy.append(el('small','',known === null ? (project.subtitle || '参加記事を見る') :
+    copy.append(el('small','',project.status === 'preparing' ? '記事公開準備中' : known === null ? (project.subtitle || '記事一覧') :
       known ? known + '作品を掲載' : '元記事を見る'));
     const end = el('span','pp-tab-end','記事');
     end.setAttribute('aria-hidden','true');
@@ -289,8 +291,67 @@ async function initialize() {
       (index + (event.key === 'ArrowDown' ? 1 : buttons.length-1)) % buttons.length;
     buttons[next]?.focus({preventScroll:true});
   });
-  directory.addEventListener('toggle',()=>{if(!directory.open)close();});
+  const modeButtons = [...root.querySelectorAll('[data-pp-category]')];
+  let activeCategory = '';
+  function setCategory(category) {
+    const next = activeCategory === category ? '' : category;
+    close();
+    activeCategory = next;
+    directory.hidden = !next;
+    for (const button of modeButtons) {
+      const active = button.dataset.ppCategory === next;
+      button.setAttribute('aria-expanded',String(active));
+      button.setAttribute('aria-pressed',String(active));
+    }
+    for (const button of tabs.querySelectorAll('.pp-tab')) {
+      button.hidden = !next || button.dataset.ppCategory !== next;
+    }
+  }
+  modeButtons.forEach(button => button.addEventListener('click', () => setCategory(button.dataset.ppCategory)));
   panel.hidden = true;
+  // Construct links only to the actual note magazine (/m/), never to fixed article URLs.
+  const managed = $('#pp-operated-magazines');
+  const managedList = $('#pp-managed-list');
+  let managedLoaded = false;
+  function addMagazineCard(item) {
+    const href = safeURL(item.url);
+    if (!href || !/^\\/[^/]+\\/m\\/m[0-9a-f]+\\/?$/i.test(new URL(href).pathname) ||
+        new URL(href).hostname !== 'note.com') return null;
+    const link = externalLink(href,'','pp-managed-card');
+    if (!link) return null;
+    link.setAttribute('aria-label',item.title+' の共同マガジンを開く');
+    const image = el('span','pp-managed-cover',item.cover ? '' : '📚');
+    const cover = safeURL(item.cover);
+    if (cover && new URL(cover).hostname === 'assets.st-note.com') {
+      const img = el('img');
+      img.src = cover;
+      img.alt = '';
+      img.loading = 'lazy';
+      img.decoding = 'async';
+      img.width = 140;
+      img.height = 80;
+      img.onerror = () => {img.remove();image.textContent='📚';};
+      image.append(img);
+    }
+    image.setAttribute('aria-hidden','true');
+    const body = el('span','pp-managed-info');
+    body.append(el('strong','',item.title), el('small','',item.subtitle || '共同マガジン'));
+    const side = el('span','pp-managed-role',item.role === '管理' ? '管理者' : '運営');
+    if (item.role === '管理') side.title = 'オーナーはランタン親父さん';
+    link.append(image,body,side);
+    return link;
+  }
+  managed?.addEventListener('toggle', () => {
+    if (!managed.open || managedLoaded || !managedList) return;
+    const magazines = Array.isArray(registry.operatedMagazines) ? registry.operatedMagazines : [];
+    // Ensure the one managed by the user is always the final card.
+    const ordered = [...magazines.filter(item=>item.role !== '管理'),
+      ...magazines.filter(item=>item.role === '管理')];
+    const cards = ordered.map(addMagazineCard).filter(Boolean);
+    managedList.replaceChildren(...(cards.length ? cards :
+      [el('p','pp-article-empty','表示できる共同マガジンがありません。')]));
+    managedLoaded = true;
+  });
 }
 if (root) initialize().catch(() => {
   const panel = $('#pp-panel');

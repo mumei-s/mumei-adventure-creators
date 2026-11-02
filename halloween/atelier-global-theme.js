@@ -54,6 +54,27 @@ applyMode();
 // Module startup and restored drafts may initialize the old switch afterwards.
 if(document.readyState!=='complete')window.addEventListener('load',applyMode,{once:true});
 
+/* Independent decorative background controller: default OFF to keep
+   art, text and form controls clear on mobile. Motion gameplay is unaffected. */
+const backgroundButton=document.getElementById('pp-background-effects');
+const backgroundStorageKey='atelier-background-effects-v1';
+let backgroundOn=false;
+try{backgroundOn=localStorage.getItem(backgroundStorageKey)==='on';}catch{}
+function applyBackgroundEffects(){
+ document.body.dataset.backgroundEffects=backgroundOn?'on':'off';
+ if(backgroundButton){
+  backgroundButton.textContent=backgroundOn?'✦ 背景演出 ON':'✦ 背景演出 OFF';
+  backgroundButton.setAttribute('aria-pressed',String(backgroundOn));
+  backgroundButton.setAttribute('aria-label',backgroundOn?'背景演出をオフにする':'背景演出をオンにする');
+ }
+}
+backgroundButton?.addEventListener('click',()=>{
+ backgroundOn=!backgroundOn;
+ try{localStorage.setItem(backgroundStorageKey,backgroundOn?'on':'off');}catch{}
+ applyBackgroundEffects();
+});
+applyBackgroundEffects();
+
 /* Permanent in-page return control for iOS, Android, tablets and desktop.
    Available throughout the long illustration studio, not only in archives. */
 const returnTop = document.createElement('button');

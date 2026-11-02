@@ -1,7 +1,7 @@
 <!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#edf3fb"><script id="atelier-boot-state">(function(){
   var collection='everyday',theme='system';
   try { if(localStorage.getItem('atelier-main-collection-v1')==='halloween') collection='halloween'; } catch(error){}
-  try { var stored=localStorage.getItem('atelier-global-appearance-v1');if(stored==='dark'||stored==='light')theme=stored; } catch(error){}
+  try { var stored=localStorage.getItem('atelier-global-appearance-v1');if(stored==='dark'||stored==='light')theme=stored;else if(stored===null&&localStorage.getItem('halloween-night')==='on')theme='dark'; } catch(error){}
   var dark=theme==='dark'||(theme==='system'&&typeof matchMedia==='function'&&matchMedia('(prefers-color-scheme: dark)').matches);
   document.documentElement.dataset.atelierBootCollection=collection;
   document.documentElement.dataset.atelierBootLights=dark?'night':'day';

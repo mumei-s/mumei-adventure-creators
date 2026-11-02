@@ -41,7 +41,7 @@ import {HISTORY_STORAGE_FORMAT,restoreHistoryRecord,restoreHistoryCore,mergeUsed
 import {createHistoryPersistence,mergeHistoryStates} from './history-persistence.js?v=28.4.6';
 import {createCreatorDraft} from './creator-draft.js?v=28.4.6';
 import {randomItemSelection} from './random-selections.js?v=28.4.6';
-const APP_VERSION='28.4.23';
+const APP_VERSION='28.4.24';
 const $=id=>document.getElementById(id),STORAGE='mumeis-halloween-v2';
 // Always provide an explicit way to fold long help text back into one compact row.
 const mixGuide=$('mix-guide');

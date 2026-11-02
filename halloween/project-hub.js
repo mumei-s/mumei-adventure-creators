@@ -147,7 +147,7 @@ function guardedTap(event, change, anchor) {
 function panelNavigation(actions) {
   const bar = el('div','pp-panel-return');
   const back = el('button','pp-return-button','← 戻る');
-  const close = el('button','pp-return-button','しまう ×');
+  const close = el('button','pp-return-button','− 閉じる');
   back.type = close.type = 'button';
   back.addEventListener('click',actions.back);
   close.addEventListener('click',actions.close);

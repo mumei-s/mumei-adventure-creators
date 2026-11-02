@@ -32,6 +32,11 @@ body[data-lights=night] :is(.generation-quality,.studio-hero,.atelier-deck,.app-
 body[data-lights=day] :is(.generation-quality,.studio-hero,.atelier-deck,.app-shell,dialog,.masthead){
   accent-color:#286e95;
 }
+/* The separate directory page must follow the manual mode, not only OS media queries. */
+body.project-directory-page[data-lights=night]{background:#141824!important;color:#f7f4ff!important}
+body.project-directory-page[data-lights=day]{background:#e6edf7!important;color:#23344a!important}
+body.project-directory-page[data-lights=night] .pp-page-header a{color:#f6d9a9!important}
+body.project-directory-page[data-lights=day] .pp-page-header a{color:#36537d!important}
 @media(prefers-reduced-motion:reduce){
  body[data-lights] *{scroll-behavior:auto!important}
 }

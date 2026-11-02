@@ -53,3 +53,31 @@ osDark.addEventListener?.('change',()=>{if(mode==='system')applyMode();});
 applyMode();
 // Module startup and restored drafts may initialize the old switch afterwards.
 if(document.readyState!=='complete')window.addEventListener('load',applyMode,{once:true});
+
+/* Permanent in-page return control for iOS, Android, tablets and desktop.
+   Available throughout the long illustration studio, not only in archives. */
+const returnTop = document.createElement('button');
+returnTop.id = 'atelier-back-to-top';
+returnTop.type = 'button';
+returnTop.textContent = '↑ トップへ';
+returnTop.setAttribute('aria-label', 'ページの先頭へ戻る');
+returnTop.title = 'ページの先頭へ戻る';
+returnTop.hidden = true;
+document.body.append(returnTop);
+function updateReturnTop() {
+  const y = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop || 0;
+  returnTop.hidden = y < Math.min(440, window.innerHeight * .68);
+}
+let topScrollQueued = false;
+window.addEventListener('scroll', () => {
+  if (topScrollQueued) return;
+  topScrollQueued = true;
+  requestAnimationFrame(() => { topScrollQueued = false; updateReturnTop(); });
+}, {passive:true});
+window.addEventListener('resize',updateReturnTop,{passive:true});
+returnTop.addEventListener('click', event => {
+  event.preventDefault();
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  window.scrollTo({top:0,left:0,behavior:reduceMotion?'auto':'smooth'});
+});
+updateReturnTop();

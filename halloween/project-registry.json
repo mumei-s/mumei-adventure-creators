@@ -116,7 +116,16 @@
         "type": "manual",
         "entries": []
       },
-      "relatedLinks": []
+      "relatedLinks": [],
+      "relatedCreators": [
+        {
+          "id": "genial_quokka134",
+          "name": "モモ♥️",
+          "profileUrl": "https://note.com/genial_quokka134",
+          "status": "article_unverified",
+          "displayNote": "クリエイター本人を確認済み／お守り作品の記事は未確認"
+        }
+      ]
     },
     {
       "id": "cyborg-2026",

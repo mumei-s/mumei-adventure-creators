@@ -40,3 +40,23 @@ body.project-directory-page[data-lights=day] .pp-page-header a{color:#36537d!imp
 @media(prefers-reduced-motion:reduce){
  body[data-lights] *{scroll-behavior:auto!important}
 }
+
+/* Persistent page return control, including iOS with no device back button. */
+#atelier-back-to-top{
+ position:fixed;right:max(12px,env(safe-area-inset-right));
+ bottom:calc(15px + env(safe-area-inset-bottom));
+ z-index:850;border:2px solid #426b92;border-radius:999px;
+ min-width:100px;min-height:44px;padding:8px 13px;
+ font:750 13px/1.3 system-ui,-apple-system,"Noto Sans JP",sans-serif;
+ color:#183951;background:#f7fcff;box-shadow:0 3px 15px #182c4855;
+ cursor:pointer;touch-action:manipulation;
+}
+#atelier-back-to-top[hidden]{display:none!important}
+#atelier-back-to-top:focus-visible{outline:3px solid #215fb9;outline-offset:3px}
+body[data-lights=night] #atelier-back-to-top{
+ background:#263b5a;color:#f5f6ff;border-color:#b1bfe2;box-shadow:0 3px 18px #0007;
+}
+body[data-lights=night] #atelier-back-to-top:focus-visible{outline-color:#f4dfaa}
+@media(max-width:500px){
+ #atelier-back-to-top{right:max(9px,env(safe-area-inset-right));bottom:calc(12px + env(safe-area-inset-bottom));min-height:44px;min-width:88px;padding:7px 10px;font-size:12px}
+}

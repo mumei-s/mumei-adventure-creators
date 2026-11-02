@@ -59,7 +59,7 @@ body[data-lights=night] :is(.mode-panel,.view-toolbar,.source-kind-panel,.genera
 body[data-lights=day] .style-preset-panel{color:#292038!important}
 body[data-lights=day] .style-preset-panel :is(h3,label,p,.microcopy,#style-preset-status){color:#342840!important;opacity:1!important}
 .pp-hub .pp-background-switch{
- min-height:38px;flex:0 0 auto;padding:6px 12px;font:800 11px/1.4 inherit;
+ min-height:38px;flex:0 0 auto;padding:6px 12px;font-family:inherit;font-weight:800;font-size:11px;line-height:1.4;
  border-radius:10px;border:1.5px solid #71829c;background:#e8f0fc;color:#253952;
  cursor:pointer;white-space:nowrap;touch-action:manipulation;
 }

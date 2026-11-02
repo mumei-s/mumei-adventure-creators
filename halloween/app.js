@@ -274,14 +274,21 @@ async function generate(lockedValues=null){
   const edition=uid(),ordered=attachmentMode==='bundle'?[refs.find(r=>r.role==='identity'),...refs.filter(r=>r.role!=='identity')].filter(Boolean).map(ref=>({...ref})):[];
   const metadata=ordered.length?ordered.map((r,i)=>({id:r.draftId,name:'reference-'+String(i+1).padStart(2,'0')+'-'+r.name,role:r.role,width:r.width,height:r.height})):needsReference(values)?[{id:'pending-primary-'+edition,name:'ChatGPTへ直接添付する主参照',role:'identity',pending:true}]:[];
   const drawing=stylePresetFor(values.medium),drawingReferences=drawing?[drawing]:[];
-  if(drawing)$('generation-status').textContent='選んだ画風見本を準備しています…';
-  const localDrawingRefs=await loadStylePresets(drawingReferences);ensureCurrent();
-  $('generation-status').textContent='項目名から画風・形式・場面を制作指示にしています…';
   const production=productionPlan(profile,values,variant,collection,rng);variant=production.variant;
   const selectionReference=selectionReferenceManifest(values);
   const sheetCount=selectionReferenceCounts(selectionReference).sheet,selectionReferences=sheetCount?[selectionReference]:[];
-  $('generation-status').textContent=sheetCount?'必要な'+sheetCount+'項目の見本を役割付きでまとめています…':'全選択を保持し、作風と人物の参照を分けています…';
-  const localSelectionReference=sheetCount?{...selectionReference,file:await buildSelectionReferenceSheet(selectionReference)}:null;ensureCurrent();
+  $('generation-status').textContent=sheetCount?'画風原画と選択見本を同時に準備しています…':'画風と選択条件を準備しています…';
+  // Independent source loading can overlap. Keep original resolution/bytes,
+  // and wait for both to settle before error recovery so no stale task leaks.
+  const [styleLoad,sheetLoad]=await Promise.allSettled([
+    loadStylePresets(drawingReferences),
+    sheetCount?buildSelectionReferenceSheet(selectionReference):Promise.resolve(null)
+  ]);
+  ensureCurrent();
+  if(styleLoad.status==='rejected')throw styleLoad.reason;
+  if(sheetLoad.status==='rejected')throw sheetLoad.reason;
+  const localDrawingRefs=styleLoad.value;
+  const localSelectionReference=sheetCount?{...selectionReference,file:sheetLoad.value}:null;
   production.referenceManifest=[...metadata,...drawingReferences,...selectionReferences];
   // A one-image bundle preserves the uploaded bytes. Multi-image flattening is optional.
   // Original files are ready immediately; combine only on explicit request.

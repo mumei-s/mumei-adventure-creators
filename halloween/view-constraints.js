@@ -81,8 +81,12 @@ export function viewSelectionIssues(values={}){
   result.push(issue('error','opposed-camera-height',['mood','angle'],'「'+values.mood+'」は'+(m.cameraSide==='above'?'主題より上から見下ろす':'主題より下から見上げる')+'視点です。「'+values.angle+'」の'+(a.cameraSide==='level'?'水平な視点':a.cameraSide==='above'?'上から見下ろす視点':'下から見上げる視点')+'とは同じカメラで両立しません。視点を含まない表情か、同じ方向のアングルを選んでください。'));
  for(const [key,spec] of [['mood',m],['pose',p]])if(spec?.cameraFacing==='rear'&&['front','side'].includes(a.cameraFacing))
   result.push(issue('error','opposed-camera-facing',['angle',key],'「'+values[key]+'」はカメラ側へ背中を向ける指定です。「'+values.angle+'」は主題の'+(a.cameraFacing==='side'?'側面90度':'正面側')+'から見るため、同じ胴体の投影では両立しません。背面のアングルか、背中向きを含まない'+(key==='mood'?'表情':'ポーズ')+'を選んでください。'));
+ // An expression or face-direction requirement must actually be visible in the selected crop.
+ // This is a hard impossibility, unlike a context-dependent occlusion or a distant face.
+ if((m?.faceRequired||m?.headDirection)&&['hands','feet'].includes(a.frame))
+  result.push(issue('error','face-outside-crop',['mood','angle'],'「'+values.angle+'」は手元・足元だけの接写で、選択した「'+values.mood+'」の顔・首を写せません。顔が見える画角へ変更するか、顔向き・表情を固定しない指定を選んでください。'));
  if(m?.faceRequired){
-  if(['hands','feet'].includes(a.frame))result.push(issue('warning','face-outside-crop',['mood','angle'],'「'+values.angle+'」では顔が画角外になり、「'+values.mood+'」を画像で確認できない場合があります。表情を見せたい場合は顔や上半身が入る画角を選んでください。'));
+
   else if(a.frame==='wide')result.push(issue('warning','face-small-in-wide-view',['mood','angle'],'「'+values.angle+'」では人物が小さくなり、「'+values.mood+'」の細部を読み取りにくくなります。世界の広がりを保ったまま表情が見える大きさを確認してください。'));
   if(a.cameraFacing==='rear'&&m.cameraFacing!=='rear')result.push(issue('warning','face-from-rear',['mood','angle','pose'],'背面のカメラから「'+values.mood+'」を見せるには、胸郭と首の自然な回転が必要です。顔の見えない部分を描き足したり、首だけを無理に回したりせず、選択ポーズとの両立を確認してください。'));
   if((a.axes.pitch||0)>=70&&p&&p.orientation!=='supine'&&p.support!=='none')result.push(issue('warning','face-from-steep-overhead',['mood','angle','pose'],'「'+values.angle+'」と「'+values.pose+'」では頭頂や背中が中心になり、「'+values.mood+'」の顔の面が隠れたり強く短縮されたりします。ポーズ・カメラを変えずに見える範囲を確認してください。'));
@@ -90,7 +94,8 @@ export function viewSelectionIssues(values={}){
  if(a.axes.pitch===-90&&p?.bodyOnSupport)result.push(issue('warning','support-occludes-bottom-view',['angle','pose'],'「'+values.pose+'」の床・座面・寝台が真下からの視線を遮る場合があります。支持面を透かしたり浮遊へ変更したりせず、同じポーズと真下90度で実際に見える範囲を確認してください。'));
  if((a.axes.pitch||0)>=70&&p?.overheadOccluder)result.push(issue('warning','umbrella-occludes-overhead',['angle','pose'],'頭上の傘が上からの視線を遮り、顔や身体が隠れる場合があります。傘を透明にしたり位置を変えたりせず、選択した視点での遮蔽を確認してください。'));
  if(['face','eyes','upper','hands','feet'].includes(a.frame)&&p)result.push(issue('warning','pose-outside-crop',['angle','pose'],'「'+values.angle+'」では「'+values.pose+'」の身体全体や支持点が画角外になります。動作は保たれますが、画像で確認できるのは接写に入る部分だけです。全体を見せたい場合は全身の画角を選んでください。'));
- if(a.frame==='eyes'&&m?.faceRequired&&!['目を見開いて驚く','眉を寄せて怒る','涙を浮かべる','目を閉じて安らぐ','片目を閉じてウインク'].includes(values.mood))result.push(issue('warning','expression-outside-eye-crop',['mood','angle'],'目元だけの超接写では、口・顎・横顔の輪郭を使う「'+values.mood+'」を全て見せられません。目元に見える特徴と、画角外になる特徴を確認してください。'));
+ if(a.frame==='eyes'&&m?.faceRequired&&['face','expression'].includes(m.kind)&&!['目を見開いて驚く','眉を寄せて怒る','涙を浮かべる','目を閉じて安らぐ','片目を閉じてウインク'].includes(values.mood))
+  result.push(issue('error','expression-outside-eye-crop',['mood','angle'],'目元だけの超接写では、口・顎・横顔の輪郭を必要とする「'+values.mood+'」を写せません。目元だけで成立する表情か、顔全体が見える画角を選んでください。'));
  if(p?.handsBehind&&(a.cameraFacing==='front'||a.frame==='hands'))result.push(issue('warning','hands-behind-body',['pose','angle'],'背中で組んだ手は身体の後ろに隠れる場合があります。手を見せるために前へ移さず、同じポーズから見える輪郭を確認してください。'));
  for(const key of ['mood','pose'])if(!automaticView(values[key])&&!(key==='mood'?m:p))result.push(issue('warning','custom-'+key+'-review',[key,'angle'],'自由指定「'+values[key]+'」は既知の身体・視点条件として判定できません。「'+values.angle+'」との両立を制作前に確認してください。'));
  return result;

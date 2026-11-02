@@ -15,7 +15,8 @@
         "year": 2026
       },
       "theme": "halloween",
-      "icon": "🎃"
+      "icon": "🎃",
+      "category": "project"
     },
     {
       "id": "rpg-2026",
@@ -100,7 +101,8 @@
             "sourceNote": "RPG名鑑マガジン掲載記事のタイトルと画像を確認。記事の個別URLは未照合。"
           }
         ]
-      }
+      },
+      "category": "project"
     },
     {
       "id": "omamori-2026",
@@ -140,7 +142,8 @@
         ]
       },
       "relatedLinks": [],
-      "relatedCreators": []
+      "relatedCreators": [],
+      "category": "prompt"
     },
     {
       "id": "cyborg-2026",
@@ -155,7 +158,8 @@
       "source": {
         "type": "manual",
         "entries": []
-      }
+      },
+      "category": "prompt"
     },
     {
       "id": "unwritten",
@@ -170,7 +174,24 @@
         "entries": []
       },
       "theme": "unwritten",
-      "icon": "🌌"
+      "icon": "🌌",
+      "category": "prompt"
+    }
+  ],
+  "magazines": [
+    {
+      "id": "magic",
+      "title": "魔法の入口🚪",
+      "subtitle": "共同マガジン｜作品と出会う扉",
+      "url": "https://note.com/ss_yr/m/m642b82518aeb",
+      "kind": "magazine"
+    },
+    {
+      "id": "creative",
+      "title": "クリエイティブワークス",
+      "subtitle": "AI CREATIVE WORKS SELECT｜共同マガジン",
+      "url": "https://note.com/ss_yr/m/m95b78222e9b9",
+      "kind": "magazine"
     }
   ]
 }

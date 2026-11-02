@@ -117,12 +117,14 @@ export function groupIdentityPolicy(request) {
     .map(key => typeof selections[key] === 'string' ? selections[key] : '').join(' ');
   const explicitSubjects = (request.constraints?.required || []).map(item =>
     typeof item === 'string' ? item : plain(item) ? string(item.value) : '').join(' ');
-  const enabled = total >= 2 || groupWords.test(descriptions + ' ' + explicitSubjects);
+  const identityRefs = (request.references || []).filter(ref => ref.role === 'identity' && (ref.target || ref.targetId));
+  const identityTargets = new Set(identityRefs.map(ref => string(ref.targetId || ref.target)).filter(Boolean));
+  const enabled = total >= 2 || identityTargets.size >= 2 || groupWords.test(descriptions + ' ' + explicitSubjects);
   return {enabled,characters,namedTargets};
 }
 const groupIdentityHeader = '【集合絵の人物別識別】';
 const groupIdentityRule = groupIdentityHeader +
-  '描く人物は一人ずつ区別し、指定された対象IDと対応する主参照だけから、顔輪郭・目鼻口の配置・髪型・体格・固有特徴を保持する。統一するのは画風と照明だけで、複数人の顔を平均化・同じ顔に複製・他人の参照へ置換しない。同一人物の複数参照は別人数に数えず、参照がない人物を特定の本人として再現したと断言しない。各人物の左右位置・服・持物・視線を混同しない。';
+  '描く人物は一人ずつ区別し、個々の対象IDに対応する識別用の主参照が指定された場合は、その人物だけの顔輪郭・目鼻口の配置・髪型・体格・固有特徴を保持する。画風・衣装・背景の見本は別人の顔参照に使わない。統一するのは画風と照明だけで、複数人の顔を平均化・同じ顔に複製・他人の参照へ置換しない。同一人物の複数参照は別人数に数えず、顔の参照がない人物は創作上の別キャラクターとして区別し、特定の本人を再現したと断言しない。各人物の左右位置・服・持物・視線を混同しない。';
 export function groupIdentityInstruction(request) {
   return groupIdentityPolicy(request).enabled ? groupIdentityRule : '';
 }

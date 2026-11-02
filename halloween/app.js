@@ -217,6 +217,15 @@ function renderStylePreset(values=selections){
  select.querySelector('[data-custom-preset]')?.remove();
  const preset=stylePresetFor(values.medium),custom=values.medium&&values.medium!==AUTO&&!preset;
  if(custom){const option=el('option',null,'自由指定：'+values.medium);option.value=values.medium;option.dataset.customPreset='true';select.append(option);}
+ // Match the ring and list picker: impossible options cannot be picked from
+ // the native preset selector either (including Safari's option sheet).
+ const candidateBase=mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:effectiveSelections(mode,selections);
+ for(const option of select.querySelectorAll('option')){
+  if(option.value===AUTO){option.disabled=false;option.removeAttribute('title');continue;}
+  const permitted=candidateAvailability('medium',option.value,candidateBase);
+  option.disabled=!permitted.enabled;
+  option.title=permitted.reason||'';
+ }
  select.value=preset||custom?values.medium:AUTO;
  const trigger=$('style-preset-trigger');if(trigger){trigger.textContent=(preset||custom?values.medium:'おまかせ')+' ▾';trigger.setAttribute('aria-expanded',String($('picker').open&&activeQuestion?.key==='medium'));}
  const previewKey=collection+'\u0000'+(preset||custom?values.medium:AUTO);if(previewKey!==stylePreviewKey){stylePreviewKey=previewKey;$('style-preset-preview').replaceChildren(sampleNode('medium',preset||custom?values.medium:AUTO,{eager:true,priority:'high'}));}

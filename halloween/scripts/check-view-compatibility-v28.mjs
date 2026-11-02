@@ -50,9 +50,16 @@ for(const key of ['pose','mood'])for(const value of key==='pose'?['振り向く'
  for(const angle of ['背面から見る','背面斜め45度','肩越しの視点'])assert.equal(selectionConflicts({[key]:value,angle}).length,0);
 }
 
-// Faces/head rotations do not own a camera axis. Visibility limits are soft.
+// Face and head movement are independent of the camera axis. Cropping away
+// their required features is a genuine impossible choice, not a soft warning.
 for(const mood of ['正面・首をまっすぐ','完全な左横顔90度','完全な右横顔90度','顔を上に向ける','顔を下に向ける','歯を見せて大笑い'])
- for(const angle of angleItems)assert.equal(selectionConflicts({mood,angle:angle.value,pose:'四つん這いで進む'}).length,0,'Head/expression incorrectly became a camera conflict: '+mood+' / '+angle.value);
+ for(const angle of angleItems){
+  const values={mood,angle:angle.value,pose:'四つん這いで進む'},conflicts=selectionConflicts(values);
+  const notVisible=['手元・動作の接写','足元・接地の接写'].includes(angle.value) ||
+    (angle.value==='目元の超接写'&&!['顔を上に向ける','顔を下に向ける'].includes(mood));
+  if(notVisible)assert.ok(conflicts.some(issue=>['face-outside-crop','expression-outside-eye-crop'].includes(issue.code)),'Hard crop must block: '+mood+' / '+angle.value);
+  else assert.equal(conflicts.length,0,'Face/head incorrectly became camera conflict: '+mood+' / '+angle.value);
+ }
 const visibleTop={mood:'正面・首をまっすぐ',pose:'仰向けに寝る',angle:'真上から・90度'};
 assert.equal(selectionWarnings(visibleTop).length,0,'A naturally upward-facing supine face is compatible with top90');
 const topProne={...visibleTop,pose:'四つん這いで進む'};
@@ -68,8 +75,23 @@ for(const {value:pose} of supported){
  assert.equal(candidateAvailability('pose',pose,{angle:values.angle}).status,'warning');
 }
 assert.ok(selectionWarnings({pose:'傘を差す',angle:'真上から・90度'}).some(c=>c.code==='umbrella-occludes-overhead'));
-assert.ok(selectionWarnings({mood:'歯を見せて大笑い',angle:'目元の超接写'}).some(c=>c.code==='expression-outside-eye-crop'));
-assert.ok(selectionWarnings({mood:'涙を浮かべる',angle:'手元・動作の接写'}).some(c=>c.code==='face-outside-crop'));
+for(const selection of [
+ {mood:'歯を見せて大笑い',angle:'目元の超接写',error:'expression-outside-eye-crop'},
+ {mood:'完全な左横顔90度',angle:'目元の超接写',error:'expression-outside-eye-crop'},
+ {mood:'涙を浮かべる',angle:'手元・動作の接写',error:'face-outside-crop'},
+ {mood:'正面・首をまっすぐ',angle:'足元・接地の接写',error:'face-outside-crop'},
+ {mood:'顔を上に向ける',angle:'手元・動作の接写',error:'face-outside-crop'}
+]){
+ const values={mood:selection.mood,angle:selection.angle};
+ assert.ok(selectionConflicts(values).some(issue=>issue.code===selection.error),selection.mood+' / '+selection.angle);
+ for(const key of ['mood','angle']){
+  const available=candidateAvailability(key,values[key],values);
+  assert.equal(available.enabled,false,'Both picker directions must block '+key);
+  assert.equal(available.status,'blocked');
+ }
+}
+assert.equal(candidateAvailability('mood','涙を浮かべる',{angle:'目元の超接写'}).enabled,true,'Eye-compatible expression remains selectable');
+assert.equal(candidateAvailability('mood','歯を見せて大笑い',{angle:'顔のクローズアップ'}).enabled,true,'Mouth expression is allowed when face is visible');
 assert.equal(selectionWarnings({mood:'ローアングルっぽく睨む',angle:'真横90度'})[0].code,'custom-mood-review');
 
 // A rejected choice cannot slip through by selecting the same tuple in a

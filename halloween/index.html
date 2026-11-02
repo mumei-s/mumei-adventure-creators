@@ -54,7 +54,7 @@
 </section>
 
 <section class="atelier-deck" aria-label="TOP操作ドック">
-<div class="deck-primary"><div class="collection-bar"><b>作品のモード</b><div class="collection-switch" role="group" aria-label="作品モード切替"><button data-collection="halloween" aria-pressed="false">Halloween</button><button data-collection="everyday" aria-pressed="true">普段の使い作成</button></div><div class="deck-main-switch"><span>最初の表示</span><button id="main-collection" class="secondary-button main-collection">Halloweenをメインに</button></div></div><div class="deck-effects" aria-label="装飾スタイル設定"><span class="deck-effects-title">✦ 装飾スタイル</span><div class="decoration-controls" role="group" aria-label="工房の装飾"><button data-decoration="stars" aria-pressed="true">星の工房</button><button data-decoration="paper" aria-pressed="false">紙と花</button><button data-decoration="gallery" aria-pressed="false">光のギャラリー</button></div></div>
+<div class="deck-primary"><div class="collection-bar"><b>作品のモード</b><div class="collection-switch" role="group" aria-label="作品モード切替"><button data-collection="everyday" aria-pressed="true">普段の使い作成</button><button data-collection="halloween" aria-pressed="false">Halloween</button></div><div class="deck-main-switch"><span>最初の表示</span><button id="main-collection" class="secondary-button main-collection">Halloweenをメインに</button></div></div><div class="deck-effects" aria-label="装飾スタイル設定"><span class="deck-effects-title">✦ 装飾スタイル</span><div class="decoration-controls" role="group" aria-label="工房の装飾"><button data-decoration="stars" aria-pressed="true">星の工房</button><button data-decoration="paper" aria-pressed="false">紙と花</button><button data-decoration="gallery" aria-pressed="false">光のギャラリー</button></div></div>
 <div class="deck-secondary"><div class="deck-size" aria-label="表示サイズ切替"><div class="view-toolbar"><span>表示サイズ</span><div class="view-switch" role="group" aria-label="表示サイズ切替"><button data-view="auto" aria-pressed="true">自動</button><button data-view="phone" aria-pressed="false">スマホ</button><button data-view="tablet" aria-pressed="false">タブレット</button><button data-view="pc" aria-pressed="false">PC</button></div><span id="view-status">画面幅に合わせて表示</span></div></div></div>
 <div class="header-actions"><div class="motion-controls"><div class="switch-control"><span class="switch-label">演出</span><div class="switch-pair" role="group" aria-label="演出のON／OFF"><button id="motion-toggle" aria-pressed="true">ON</button><button id="motion-off" aria-pressed="false">OFF</button></div></div><span id="motion-label" role="status">ON：彩りが動きます</span></div><button id="light-play" class="night-switch" aria-pressed="false"><span aria-hidden="true">☾</span><b>夜モード</b><small id="night-state">OFF</small></button><button id="help" class="dark-button">使い方</button></div></div>
 
@@ -63,6 +63,13 @@
 
 </section><script id="atelier-boot-controls">(function(){
   var initial=document.body.dataset.collection,main=document.getElementById('main-collection');
+  var group=document.querySelector('.collection-switch');
+  if(group) {
+    [initial,initial==='everyday'?'halloween':'everyday'].forEach(function(key){
+      var option=group.querySelector('[data-collection="'+key+'"]');
+      if(option)group.append(option);
+    });
+  }
   document.querySelectorAll('.collection-switch [data-collection]').forEach(function(button){button.setAttribute('aria-pressed',String(button.dataset.collection===initial));});
   if(main)main.textContent=initial==='everyday'?'Halloweenをメインに':'普段の使い作成をメインに';
   var motion=document.getElementById('motion-label');if(motion)motion.textContent=initial==='everyday'?'ON：彩りが動きます':'ON：魔法が動きます';

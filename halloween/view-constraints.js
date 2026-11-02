@@ -86,8 +86,7 @@ export function viewSelectionIssues(values={}){
  if((m?.faceRequired||m?.headDirection)&&['hands','feet'].includes(a.frame))
   result.push(issue('error','face-outside-crop',['mood','angle'],'「'+values.angle+'」は手元・足元だけの接写で、選択した「'+values.mood+'」の顔・首を写せません。顔が見える画角へ変更するか、顔向き・表情を固定しない指定を選んでください。'));
  if(m?.faceRequired){
-
-  else if(a.frame==='wide')result.push(issue('warning','face-small-in-wide-view',['mood','angle'],'「'+values.angle+'」では人物が小さくなり、「'+values.mood+'」の細部を読み取りにくくなります。世界の広がりを保ったまま表情が見える大きさを確認してください。'));
+  if(a.frame==='wide')result.push(issue('warning','face-small-in-wide-view',['mood','angle'],'「'+values.angle+'」では人物が小さくなり、「'+values.mood+'」の細部を読み取りにくくなります。世界の広がりを保ったまま表情が見える大きさを確認してください。'));
   if(a.cameraFacing==='rear'&&m.cameraFacing!=='rear')result.push(issue('warning','face-from-rear',['mood','angle','pose'],'背面のカメラから「'+values.mood+'」を見せるには、胸郭と首の自然な回転が必要です。顔の見えない部分を描き足したり、首だけを無理に回したりせず、選択ポーズとの両立を確認してください。'));
   if((a.axes.pitch||0)>=70&&p&&p.orientation!=='supine'&&p.support!=='none')result.push(issue('warning','face-from-steep-overhead',['mood','angle','pose'],'「'+values.angle+'」と「'+values.pose+'」では頭頂や背中が中心になり、「'+values.mood+'」の顔の面が隠れたり強く短縮されたりします。ポーズ・カメラを変えずに見える範囲を確認してください。'));
  }

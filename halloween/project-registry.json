@@ -24,7 +24,7 @@
       "icon": "⚔️",
       "theme": "rpg",
       "status": "archived",
-      "description": "過去のRPG企画。専用マガジンの掲載記事から、個別に確認できた作品を紹介します。",
+      "description": "冒険クリエイター名鑑。元の専用マガジンで確認できた参加作品を紹介。個別URLを確認できない記事は、収録マガジンへ案内します。",
       "articleUrl": "https://note.com/ss_yr/n/nf34d092b4032",
       "galleryUrl": "https://note.com/ss_yr/m/mf8a55ef40b9d",
       "source": {
@@ -74,6 +74,30 @@
             "articleUrl": "https://note.com/satoyama_fantasy/n/n19ef10c2856e",
             "status": "published",
             "image": "https://assets.st-note.com/production/uploads/images/303300588/rectangle_large_type_2_bee8fd5f7e1ef96086b9aec892d8d83f.jpg?width=1200"
+          },
+          {
+            "id": "rpg-heron-2026",
+            "creatorId": "nifty_sheep7386",
+            "creatorName": "へろん",
+            "title": "【無名 S note 冒険クリエイター名鑑】Geminiさん+ちゃっぴーさんと一緒に参加する！",
+            "articleUrl": "https://note.com/ss_yr/m/mf8a55ef40b9d",
+            "linkKind": "magazine",
+            "profileUrl": "https://note.com/nifty_sheep7386",
+            "image": "https://assets.st-note.com/production/uploads/images/281643413/rectangle_large_type_2_8b3f30d0ca46014619422dbe6dc9d678.png?dpr=2&frame=1&width=297",
+            "status": "published",
+            "sourceNote": "RPG名鑑マガジン掲載記事のタイトルと画像を確認。記事の個別URLは未照合。"
+          },
+          {
+            "id": "rpg-ruruto-ayako-2026",
+            "creatorId": "lovely_coyote546",
+            "creatorName": "ルルトアヤコ",
+            "title": "なんか知らんけど、クリエイターの、無名S noteさんより、画像のプレゼント🎁",
+            "articleUrl": "https://note.com/ss_yr/m/mf8a55ef40b9d",
+            "linkKind": "magazine",
+            "profileUrl": "https://note.com/lovely_coyote546",
+            "image": "https://assets.st-note.com/production/uploads/images/281210912/rectangle_large_type_2_07dbc616d91bf01441acda679e9a7384.jpg?dpr=2&frame=1&width=96",
+            "status": "published",
+            "sourceNote": "RPG名鑑マガジン掲載記事のタイトルと画像を確認。記事の個別URLは未照合。"
           }
         ]
       }
@@ -85,8 +109,8 @@
       "icon": "🍀",
       "theme": "omamori",
       "status": "archived",
-      "description": "過去記事『お守りつくりませんか？』で公開された遊び。画像から、お守りと小さな守護精霊を制作するプロンプトです。",
-      "articleUrl": "https://note.com/ss_yr/n/n8ecf05c19570",
+      "description": "2026年6月17日公開『お守りつくりませんか？』。添付キャラクター画像から小さな守護精霊の宿るお守りを作るプロンプトです。参加記事は確認できたものだけ掲載します。",
+      "articleUrl": "https://note.com/ss_yr/n/nb82a5468398e",
       "galleryUrl": "https://note.com/ss_yr/m/mc46d0bdd74a9/hashtag/AI",
       "source": {
         "type": "manual",
@@ -98,6 +122,21 @@
           "url": "https://note.com/ss_yr/n/n12a05ac10fcc"
         }
       ]
+    },
+    {
+      "id": "cyborg-2026",
+      "title": "サイボーグ化計画",
+      "subtitle": "自分キャラのサイボーグ化",
+      "icon": "🤖",
+      "theme": "cyborg",
+      "status": "archived",
+      "description": "2026年6月16日公開『無名S note サイボーグ化計画』。元記事と公開済みの関連作品を整理するアーカイブ。",
+      "articleUrl": "https://note.com/ss_yr/n/n49acd975d582",
+      "galleryUrl": null,
+      "source": {
+        "type": "manual",
+        "entries": []
+      }
     },
     {
       "id": "unwritten",

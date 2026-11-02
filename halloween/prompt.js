@@ -1,4 +1,5 @@
 import {imageOutputContract} from './output-contract.js?v=28.4.6';
+import {groupIdentityInstruction} from './generation-quality.js';
 import {visibleQuestions} from './catalog.js?v=28.4.6';
 import {productionPlan,planInstructions,conditionInstructions} from './production-plan.js?v=28.4.6';
 import {sceneContract} from './worlds.js?v=28.4.6';
@@ -148,6 +149,7 @@ export function composePrompt({collection='halloween',creator,profile,values,var
  'ツール名・ID・プロフィールURL・制作番号・未指定のページ番号・画風名や技法名は画像に印字しない。本人が指定したクリエイター名だけを作者名として使う。各原稿の綴りを正確に確認し、意味のない疑似文字で水増ししない。',
  '',
  '【技法と品質】',
+ ...[groupIdentityInstruction({noPerson,subjects:Array.isArray(values.subjects)?values.subjects:plan.qualityConstraints?.subjects||[],selections:values,constraints:values.constraints||plan.qualityConstraints||{}})].filter(Boolean),
  '描画の設計には色彩理論、明度階層、構図、透視図法、空気遠近、レンズの画角、反射・屈折・散乱、素材の粗さと透過、'+(noPerson?'主題の構造と支持':'衣服の構造と解剖')+'、印刷と文字の階層を使う。選んだ技法に関係する知識を具体的な形・光・面へ落とし込み、単に最高品質という形容詞で済ませない。指定がない特定作家の固有キャラ・作品構図・署名を模倣しない。',
  '画面全体を「'+values.medium+'」の技法で成立させる。写真なら実在感のある素材と光学的な奥行き、アニメなら線と色面の設計、水墨なら墨の濃淡・余白・筆圧、油彩なら絵具の層、版画なら版の形と刷りの手触り、工芸なら素材の構造を主にする。技法の特徴がすぐ分かる完成にする。選択と関係のない多面体・水晶・月・金箔・黒猫・装飾額を毎回自動的に足さない。',
  '指定された発光粒子・透明感・宝石光は画風に合わせて実行し、指定のない作品へ毎回追加しない。'+(noPerson?(subjectKind==='scenery'?'地形、建築の構造、植生、接地、反射、選択画風に合う遠近、文字の誤りを確認する。':subjectKind==='motif'?'物体の外形、材質、重なり、支持面、余白、文字の誤りを確認する。':'図案の外周、線幅、図形の重なり、内側の抜き、余白、縮小時の識別、文字の誤りを確認する。'):'解剖、手指、首と体の向き、関節、重力、接地、反射、文字の誤りを確認する。')+'拡大しても形の設計が読める品質にする。',

@@ -78,6 +78,7 @@
 .pp-hub[data-pp-theme="halloween"] .pp-card-link{background:linear-gradient(110deg,#ffba6c,#ffdf9d);color:#3d2315!important}
 .pp-hub[data-pp-theme="rpg"]{--pp-main:#b0d7ff;--pp-panel-bg:#1b3046;--pp-border:#8cbbea60;background:linear-gradient(128deg,#1b283f,#292c52 68%,#222642)}
 .pp-hub[data-pp-theme="omamori"]{--pp-main:#cdf2ba;--pp-panel-bg:#1d3a34;--pp-border:#88c2a163;background:linear-gradient(120deg,#173c32,#293d42 75%,#253e37)}
+.pp-hub[data-pp-theme="cyborg"]{--pp-main:#94f2eb;--pp-panel-bg:#19333d;--pp-border:#6bdee180;background:linear-gradient(123deg,#152e39,#283648 65%,#1b3c44)}
 .pp-hub[data-pp-theme="unwritten"]{--pp-main:#f0c5ff;--pp-panel-bg:#2a1b3e}
 body[data-collection=everyday] .pp-hub:not([data-pp-theme]){background:linear-gradient(120deg,#fffaf4,#f2eaf9);color:#46344c;--pp-fg:#44324f;--pp-muted:#6b5972;--pp-panel-bg:#fcf9ff;--pp-border:#bd9fc36e;--pp-main:#78567d}
 body[data-collection=everyday] .pp-hub:not([data-pp-theme]) .pp-feature{background:#efe8f9}

@@ -109,23 +109,38 @@
       "icon": "🍀",
       "theme": "omamori",
       "status": "archived",
-      "description": "2026年6月17日公開『お守りつくりませんか？』。添付キャラクター画像から小さな守護精霊の宿るお守りを作るプロンプトです。参加記事は確認できたものだけ掲載します。",
+      "description": "2026年6月17日公開『お守りつくりませんか？』。参加者の実際の作品を記事本文・画像と照合して紹介します。",
       "articleUrl": "https://note.com/ss_yr/n/nb82a5468398e",
       "galleryUrl": null,
       "source": {
         "type": "manual",
-        "entries": []
+        "entries": [
+          {
+            "id": "omamori-momo-challenge-2026",
+            "creatorId": "genial_quokka134",
+            "creatorName": "モモ♥️",
+            "title": "挑戦守｜龍さんの画像から生まれたお守り",
+            "articleUrl": "https://note.com/genial_quokka134/n/n590776e152f0",
+            "profileUrl": "https://note.com/genial_quokka134",
+            "image": "https://assets.st-note.com/img/1781720687-MthglfXoRL4pDSYTsyGivqW0.png?width=1200",
+            "status": "published",
+            "sourceNote": "2026年6月18日のモモ♥️さんの記事内『メンシプ内プロンプトで龍さんの画像からお守をつくったら、挑戦守が出来た』の記述と掲載画像を照合。"
+          },
+          {
+            "id": "omamori-momo-dream-2026",
+            "creatorId": "genial_quokka134",
+            "creatorName": "モモ♥️",
+            "title": "夢応援守｜モモの世界から生まれたお守り",
+            "articleUrl": "https://note.com/genial_quokka134/n/n590776e152f0",
+            "profileUrl": "https://note.com/genial_quokka134",
+            "image": "https://assets.st-note.com/img/1781743144-n85SwpX4QVMWEHDjyKd9GsAT.png?width=1200",
+            "status": "published",
+            "sourceNote": "同記事『こちらのモモの世界からは 夢応援守ができた』の記述と掲載画像を照合。"
+          }
+        ]
       },
       "relatedLinks": [],
-      "relatedCreators": [
-        {
-          "id": "genial_quokka134",
-          "name": "モモ♥️",
-          "profileUrl": "https://note.com/genial_quokka134",
-          "status": "article_unverified",
-          "displayNote": "クリエイター本人を確認済み／お守り作品の記事は未確認"
-        }
-      ]
+      "relatedCreators": []
     },
     {
       "id": "cyborg-2026",

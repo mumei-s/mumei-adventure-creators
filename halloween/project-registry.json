@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "featuredProjectId": "unwritten",
+  "projects": [
+    {
+      "id": "halloween-2026",
+      "title": "Halloween Atelier 2026",
+      "subtitle": "魔法の入口｜参加作品アーカイブ",
+      "status": "archived",
+      "description": "2026年の参加作品を、公開済みの展示データから順番に紹介。作品・作者のリンクは既存展示と共通です。",
+      "galleryUrl": "https://mumei-s.github.io/mumei-adventure-creators/halloween-exhibition/preview/",
+      "source": {
+        "type": "halloweenArchive",
+        "url": "../halloween-exhibition/preview/data/archive.json",
+        "year": 2026
+      }
+    },
+    {
+      "id": "unwritten",
+      "title": "UNWRITTEN",
+      "subtitle": "世界に残された、ありえない1秒",
+      "status": "preparing",
+      "description": "キャラ画像とnote IDから、世界の異変とその物語を生み出すプロンプト遊び。企画記事の公開後に遊び方と参加作品を掲載します。",
+      "articleUrl": null,
+      "playUrl": null,
+      "source": {
+        "type": "manual",
+        "entries": []
+      }
+    }
+  ]
+}

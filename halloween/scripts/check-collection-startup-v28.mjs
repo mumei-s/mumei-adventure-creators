@@ -41,15 +41,21 @@ for(const test of [
  const heroNodes=Object.fromEntries(['hero-eyebrow','studio-title','hero-copy'].map(k=>[k,makeNode()]));
  const buttons=['halloween','everyday'].map(collection=>({dataset:{collection},attributes:{},setAttribute(k,v){this.attributes[k]=v;}}));
  const mainButton=makeNode(),motion=makeNode();
+ const group={children:buttons,
+  querySelector(selector){return this.children.find(button=>selector.includes(button.dataset.collection+'"'))||null;},
+  append(button){this.children=this.children.filter(item=>item!==button);this.children.push(button);}
+ };
  const document={documentElement,body,
   getElementById(id){return heroNodes[id]||({'main-collection':mainButton,'motion-label':motion}[id]);},
-  querySelectorAll(){return buttons;}
+  querySelector(selector){return selector==='.collection-switch'?group:null;},
+  querySelectorAll(){return group.children;}
  };
  const scope={document,localStorage:{getItem:key=>store.get(key)||null},matchMedia:()=>({matches:test.os})};
  vm.runInNewContext([bootHead,bootBody,bootControls,bootHero].join(';'),scope);
  assert.equal(body.dataset.collection,test.expected,'First paint must match primary selection');
  assert.equal(body.dataset.lights,test.lights,'Theme must not flash on initial HTML');
  assert.equal(buttons.find(b=>b.dataset.collection===test.expected).attributes['aria-pressed'],'true');
+ assert.equal(group.children[0].dataset.collection,test.expected,'The primary button must be first before painting');
  assert.equal(mainButton.textContent,test.expected==='everyday'?'Halloweenをメインに':'普段の使い作成をメインに');
  assert.equal(motion.textContent,test.expected==='everyday'?'ON：彩りが動きます':'ON：魔法が動きます');
  if(test.expected==='halloween')assert.match(heroNodes['hero-eyebrow'].textContent,/HALLOWEEN/);

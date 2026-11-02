@@ -59,7 +59,7 @@
 .pp-roster-body{padding:7px 8px 8px;border-top:1px solid var(--pp-border)}
 .pp-roster-search{display:block;width:100%;min-height:35px;border-radius:8px;border:1px solid var(--pp-border);background:#ffffff0a;color:var(--pp-fg);font-size:12px;padding:6px 10px;outline-offset:2px}
 .pp-roster-search::placeholder{color:var(--pp-muted)}
-.pp-roster-list{list-style:none;padding:0;margin:7px 0 0;max-height:240px;overflow-y:auto;overscroll-behavior-y:contain;scrollbar-width:thin}
+.pp-roster-list{list-style:none;padding:0;margin:7px 0 0;max-height:none;overflow:visible}
 .pp-roster-item{display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--pp-border);min-height:45px;padding:3px 1px}
 .pp-roster-item:last-child{border-bottom:0}
 .pp-roster-item[hidden]{display:none!important}

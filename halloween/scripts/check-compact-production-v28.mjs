@@ -65,7 +65,9 @@ for(const medium of ['透明水彩','水墨画','発光幻想アニメ','発光�
 }
 
 for(const angle of ['真上から・90度','真下から・90度','顔のクローズアップ','手元・動作の接写']){
- const plan=make({angle}),compact=renderCompactChatInput(plan),camera=cameraContract(plan.values);
+ // Hand-only compositions cannot display a chosen face expression.
+ const overrides=angle==='手元・動作の接写'?{angle,mood:'静かで美しい'}:{angle};
+ const plan=make(overrides),compact=renderCompactChatInput(plan),camera=cameraContract(plan.values);
  assert.equal(plan.issues.filter(issue=>issue.severity==='error').length,0,angle+' must remain valid');
  for(const clause of clauses(camera.instructions[0]))includes(compact,clause,'fixed selected angle');
  for(const clause of clauses(camera.framing_instruction))includes(compact,clause,'visible framing');
@@ -74,6 +76,9 @@ for(const angle of ['真上から・90度','真下から・90度','顔のクロ�
  if(/接写|クローズアップ/.test(angle))assert.match(compact,/接写の指定を全身へ引き直さない/);
  cases++;
 }
+
+const forbiddenCrop=make({angle:'手元・動作の接写',mood:'目を閉じて安らぐ'});
+assert.ok(forbiddenCrop.issues.some(issue=>issue.code==='face-outside-crop'&&issue.severity==='error'),'Face-only expression must be blocked by hand-only crop');
 
 for(const sourceKind of ['scenery','mark-object'])for(const costume of ['参照画像の衣装を生かす','風景を主役にする']){
  const plan=make({sourceKind,costume,medium:'発光幻想リアル',...(costume==='風景を主役にする'?{mood:'おまかせ',pose:'おまかせ'}:{})}),compact=renderCompactChatInput(plan);

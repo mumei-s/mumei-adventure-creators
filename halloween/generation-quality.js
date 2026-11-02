@@ -77,7 +77,7 @@ export function buildQualityPrompt(request, basePrompt) {
     basePrompt.includes(scope) ? '' : scope,
     ...extraReferenceLines.filter(line => !basePrompt.includes(line)),
     ...explicit.filter(line => !basePrompt.includes(line)),
-    ...(groupIdentityPolicy(request).enabled && !basePrompt.includes(groupIdentityHeader) ? [groupIdentityRule] : [])
+    ...(groupIdentityInstruction(request) && !basePrompt.includes(groupIdentityHeader) ? [groupIdentityRule] : [])
   ].filter(Boolean).join('\n');
 }
 
@@ -123,6 +123,9 @@ export function groupIdentityPolicy(request) {
 const groupIdentityHeader = '【集合絵の人物別識別】';
 const groupIdentityRule = groupIdentityHeader +
   '描く人物は一人ずつ区別し、指定された対象IDと対応する主参照だけから、顔輪郭・目鼻口の配置・髪型・体格・固有特徴を保持する。統一するのは画風と照明だけで、複数人の顔を平均化・同じ顔に複製・他人の参照へ置換しない。同一人物の複数参照は別人数に数えず、参照がない人物を特定の本人として再現したと断言しない。各人物の左右位置・服・持物・視線を混同しない。';
+export function groupIdentityInstruction(request) {
+  return groupIdentityPolicy(request).enabled ? groupIdentityRule : '';
+}
 export function inspectProductionRequest(request,{values,references,prompt=request?.outputPrompt,deliveryNames,copyPrompt,filePrompt,conflicts=[]}={}) {
   const started = typeof performance !== 'undefined' ? performance.now() : Date.now();
   if (!request || request.schemaVersion !== GENERATION_QUALITY_SCHEMA) throw new TypeError('制作条件の形式を確認できません。');

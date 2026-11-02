@@ -198,6 +198,30 @@
   ],
   "operatedMagazines": [
     {
+      "id": "magic",
+      "title": "魔法の入口🚪",
+      "url": "https://note.com/ss_yr/m/m642b82518aeb",
+      "cover": "https://assets.st-note.com/production/uploads/images/331223103/7d9603985c061971185b433ed7bd421d.png?dpr=2&width=432",
+      "role": "運営",
+      "subtitle": "共同マガジン"
+    },
+    {
+      "id": "creative",
+      "title": "AI CREATIVE WORKS SELECT",
+      "url": "https://note.com/ss_yr/m/m95b78222e9b9",
+      "cover": "https://assets.st-note.com/production/uploads/images/287133766/050c298f569577be905bb4154ad7d594.jpeg?dpr=2&width=432",
+      "role": "運営",
+      "subtitle": "AI作品の共同マガジン"
+    },
+    {
+      "id": "income-lab",
+      "title": "収益ラボ／有料記事ショーケース",
+      "url": "https://note.com/ss_yr/m/ma7a2c6649fa2",
+      "cover": null,
+      "role": "運営",
+      "subtitle": "有料記事の共同マガジン"
+    },
+    {
       "id": "room",
       "title": "無名℃S Room｜仲間がみつかる共同マガジン",
       "url": "https://note.com/ss_yr/m/mca2c344a0f50",

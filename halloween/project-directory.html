@@ -7,9 +7,9 @@
 <title>企画別クリエイター名鑑｜無名S note Atelier</title>
 <meta name="description" content="無名S noteの企画別クリエイター名鑑。Halloween・RPG・お守りプロンプトの過去作品をアーカイブ。指でスライド、参加者一覧から記事へ。">
 <link rel="canonical" href="https://mumei-s.github.io/mumei-adventure-creators/halloween/project-directory.html">
-<link rel="stylesheet" href="./project-hub.css?v=3"><link rel="stylesheet" href="./project-navigation.css?v=4"><link rel="stylesheet" href="./project-articles.css?v=8"><link rel="stylesheet" href="./project-portal-v6.css?v=8"><link rel="stylesheet" href="./atelier-global-theme.css?v=8">
+<link rel="stylesheet" href="./project-hub.css?v=3"><link rel="stylesheet" href="./project-navigation.css?v=4"><link rel="stylesheet" href="./project-articles.css?v=9"><link rel="stylesheet" href="./project-portal-v6.css?v=9"><link rel="stylesheet" href="./atelier-global-theme.css?v=9"><link rel="stylesheet" href="./atelier-finish-v9.css?v=9">
 </head>
-<body class="project-directory-page">
+<body class="project-directory-page" data-background-effects="on">
 <header class="pp-page-header">
   <strong>✦ 無名S note / Atelier</strong>
   <a href="./">イラスト作成ツールへ戻る ↗</a>
@@ -24,10 +24,11 @@
       <button type="button" data-site-theme="light" aria-pressed="false">白</button>
       <button type="button" data-site-theme="dark" aria-pressed="false">黒</button>
     </div>
+    <button type="button" id="pp-background-effects" class="pp-background-switch" aria-pressed="true" aria-label="背景演出をオフにする">✨ 背景演出 ON</button>
   </header>
-  <div class="pp-topic-switch" role="group" aria-label="企画かプロンプト遊びを選ぶ">
+  <div class="pp-topic-switch" role="group" aria-label="企画または無名Sプロンプトを選ぶ">
     <button type="button" id="pp-open-project" data-pp-category="project" aria-controls="pp-directory" aria-expanded="false"><span aria-hidden="true">🎪</span> 企画 <span class="pp-switch-indicator" aria-hidden="true">＋</span></button>
-    <button type="button" id="pp-open-prompt" data-pp-category="prompt" aria-controls="pp-directory" aria-expanded="false"><span aria-hidden="true">✨</span> プロンプト遊び <span class="pp-switch-indicator" aria-hidden="true">＋</span></button>
+    <button type="button" id="pp-open-prompt" data-pp-category="prompt" aria-controls="pp-directory" aria-expanded="false"><span aria-hidden="true">✨</span> #無名Sプロンプト <span class="pp-switch-indicator" aria-hidden="true">＋</span></button>
   </div>
   <div id="pp-directory" class="pp-directory" hidden aria-label="選択した企画の作品一覧">
     <div class="pp-directory-body">
@@ -55,6 +56,6 @@
   </details>
 </section>
 </main>
-<script type="module" src="./project-hub.js?v=8"></script>
-<script type="module" src="./atelier-global-theme.js?v=8"></script></body>
+<script type="module" src="./project-hub.js?v=9"></script>
+<script type="module" src="./atelier-global-theme.js?v=9"></script></body>
 </html>

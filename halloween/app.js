@@ -220,8 +220,8 @@ function renderStylePreset(values=selections){
  // Match the ring and list picker: impossible options cannot be picked from
  // the native preset selector either (including Safari's option sheet).
  const candidateBase=mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:effectiveSelections(mode,selections);
- for(const option of select.querySelectorAll('option')){
-  if(option.value===AUTO){option.disabled=false;option.removeAttribute('title');continue;}
+ for(const option of select.options){
+  if(option.value===AUTO){option.disabled=false;option.title='';continue;}
   const permitted=candidateAvailability('medium',option.value,candidateBase);
   option.disabled=!permitted.enabled;
   option.title=permitted.reason||'';

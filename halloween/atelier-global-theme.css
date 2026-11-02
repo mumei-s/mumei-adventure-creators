@@ -1,0 +1,37 @@
+
+/* Site-wide contrast extension for Atelier's existing data-lights night system.
+   Does not replace the illustration modes, references or saved settings. */
+:root{color-scheme:light}
+body[data-lights=day]{color-scheme:light}
+body[data-lights=night]{color-scheme:dark;--ink:#f4f0ff;--paper:#1b273c;--muted:#d5cce8;--line:#8b88ac}
+body[data-lights=night] :is(input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]),select,textarea){
+  background-color:#243048;color:#f7f4ff;border-color:#929cbb;
+}
+body[data-lights=night] :is(input:not([type=checkbox]):not([type=radio]),textarea)::placeholder{color:#d1d8eb;opacity:1}
+body[data-lights=night] :is(input,select,textarea):focus-visible{outline:3px solid #ffdfac;outline-offset:2px}
+body[data-lights=night] :is(.source-kind-panel,.attachment-mode,.profile-editor,.style-preset-panel,.generation-quality,.quality-assist,.result-panel,.stage-side,.recipe-evidence,.reference-area,.history-section,.history-card,.prompt-receiver){
+  color:var(--ink);border-color:var(--line);
+}
+body[data-lights=night] :is(.source-kind-panel,.profile-editor,.style-preset-panel,.prompt-receiver,.stage-side){
+  background-color:#1b273c;
+}
+body[data-lights=night] :is(.help-body,.form-error,.profile-status,.microcopy,.stage-note,.section-caption,.id-label,.quality-assist,.result-summary){
+  color:#e2ddf3;
+}
+body[data-lights=night] :is(.mix-guide,.mix-guide-toggle,.mix-notice,.intro-line,.view-toolbar,.history-section){
+  border-color:#8b88ac;
+}
+body[data-lights=night] .id-wrap{color:#f4f0ff}
+body[data-lights=night] :is(.secondary-button,.dark-button,.primary-button,.text-button):focus-visible{
+  outline:3px solid #ffe0a4;outline-offset:2px;
+}
+body[data-lights=night] a:focus-visible{outline:3px solid #ffe0a4;outline-offset:3px}
+body[data-lights=night] :is(.generation-quality,.studio-hero,.atelier-deck,.app-shell,dialog,.masthead){
+  accent-color:#cca9f9;
+}
+body[data-lights=day] :is(.generation-quality,.studio-hero,.atelier-deck,.app-shell,dialog,.masthead){
+  accent-color:#286e95;
+}
+@media(prefers-reduced-motion:reduce){
+ body[data-lights] *{scroll-behavior:auto!important}
+}

@@ -11,6 +11,7 @@ let applying=false;
 try{
   const stored=localStorage.getItem(THEME_KEY);
   if(validModes.has(stored)) mode=stored;
+  else if(stored===null && localStorage.getItem('halloween-night')==='on') mode='dark';
 }catch{}
 function applyMode(){
   const effectiveDark=mode==='dark'||(mode==='system'&&osDark.matches);

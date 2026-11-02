@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {createProductionRequest,buildQualityPrompt,finalizeProductionRequest,inspectProductionRequest,safeInspectProductionRequest,buildImageReviewPrompt,buildTargetedRepairPrompt} from '../generation-quality.js';
+import {createProductionRequest,buildQualityPrompt,finalizeProductionRequest,inspectProductionRequest,safeInspectProductionRequest,buildImageReviewPrompt,buildTargetedRepairPrompt,groupIdentityPolicy,groupIdentityInstruction} from '../generation-quality.js';
 import {productionPlan} from '../production-plan.js';
 import {composePrompt} from '../prompt.js';
 import {applyCollection} from '../collection.js';
@@ -81,6 +81,24 @@ assert.equal(inspectProductionRequest(expandedRoles.request,{deliveryNames:expan
 for(const label of ['画風参照','ポーズ参照','衣装参照','背景参照','構図参照'])assert(expandedRoles.prompt.includes(label));
 const intentionalShared=prepare({references:[{id:'face-use',assetId:'one-image',name:'same.png',role:'identity'},{id:'costume-use',assetId:'one-image',name:'same.png',role:'costume'}]});
 assert.equal(inspectProductionRequest(intentionalShared.request,{deliveryNames:['same.png']}).status,'checked');
+
+// Group artwork must keep independent faces and subject assignments.
+assert.equal(groupIdentityPolicy(multiple.request).enabled,true);
+assert.match(multiple.prompt,/【集合絵の人物別識別】/);
+assert.equal((multiple.prompt.match(/【集合絵の人物別識別】/g)||[]).length,1);
+assert.match(buildImageReviewPrompt(multiple.request),/集合絵の顔の描き分け/);
+assert.match(buildTargetedRepairPrompt(multiple.request,{imageName:'group.png',changes:['Bの顔だけ参照に合わせる']}),/他人の顔や体格/);
+const missingGroupGuard=multiple.prompt.replace(/^【集合絵の人物別識別】[^\n]*(?:\n|$)/m,'');
+expectIssue(inspectProductionRequest({...multiple.request,outputPrompt:null},{prompt:missingGroupGuard}),'group-identity-rules');
+const duplicatedSubject=clone(multiple.request);duplicatedSubject.subjects[1].id='A';
+expectIssue(inspectProductionRequest(duplicatedSubject),'duplicate-subject');
+const groupScene=createProductionRequest({edition:'GROUP',values:{theme:'仲間の集合写真',costume:'人物の衣装',type:'文字なし'}});
+assert.equal(groupIdentityPolicy(groupScene).enabled,true);
+assert.match(groupIdentityInstruction(groupScene),/顔を平均化/);
+assert.equal(groupIdentityPolicy(good.request).enabled,false);
+assert.equal(groupIdentityPolicy(scenery).enabled,false);
+assert(!good.prompt.includes('【集合絵の人物別識別】'));
+assert(!sceneryPrompt.includes('【集合絵の人物別識別】'));
 
 // 8: exact Unicode/newlines are checked without normalization or substitutions.
 const special='無名ではない「花」🌸\nA&B <C> 𝑺・①';

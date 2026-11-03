@@ -41,7 +41,7 @@ import {HISTORY_STORAGE_FORMAT,restoreHistoryRecord,restoreHistoryCore,mergeUsed
 import {createHistoryPersistence,mergeHistoryStates} from './history-persistence.js?v=28.4.6';
 import {createCreatorDraft} from './creator-draft.js?v=28.4.6';
 import {randomItemSelection} from './random-selections.js?v=28.4.6';
-const APP_VERSION='28.4.24';
+const APP_VERSION='28.4.25';
 const $=id=>document.getElementById(id),STORAGE='mumeis-halloween-v2';
 // Always provide an explicit way to fold long help text back into one compact row.
 const mixGuide=$('mix-guide');
@@ -154,7 +154,7 @@ function sampleNode(key,value,{eager=false,priority='auto',original=false}={}){
  return n;
 }
 let boardArtKey='',attachmentMode='bundle';const effects=setupEffects();
-let collection='halloween',collectionSnapshots={},mode='detail',modeSnapshots={detail:{...selections}},proposals=[],selectedProposal=null;
+let collection=document.body.dataset.collection==='halloween'?'halloween':'everyday',collectionSnapshots={},mode='detail',modeSnapshots={detail:{...selections}},proposals=[],selectedProposal=null;
 let tagsEnabled=false,excludedTopics=new Set(),ideaSnapshot=null,ideaApplied=null;
 const cropEditor=createCropEditor({$,tell,onApply:async(ref,edit)=>{if(!refs.includes(ref))return;const generation=referenceGeneration,originalFile=ref.originalFile||ref.file,preview=await prepareReferenceView(edit.file);if(generation!==referenceGeneration||!refs.includes(ref)){URL.revokeObjectURL(preview.url);return;}URL.revokeObjectURL(ref.url);Object.assign(ref,{...preview,originalFile,file:edit.file,name:edit.file.name,crop:edit.crop});renderRefs();await persistDraftReferences();}});
 function randomizeItem(q){
@@ -471,4 +471,5 @@ function setMode(next){if(!modeKeys[next])return;const selectedCostume=selection
 function makeProposals(){const input={...selections};input.costume=sourceSubjectFor(sourceKind,input.costume);const batch=proposalBatch(input,rng,{recent:[...proposals,...saved.history.filter(r=>(r.collection||'halloween')===collection).map(r=>r.values)],count:3});proposals=batch.proposals;selectedProposal=null;if(batch.issues.length)formError(batch.issues.map(issue=>issue.reason).join(' '));else $('form-error').hidden=true;$('proposal-cards').replaceChildren();proposals.forEach((values,i)=>{const b=el('button','proposal-card');b.type='button';b.setAttribute('aria-pressed','false');const arts=el('span','proposal-art');arts.append(sampleNode('medium',values.medium,{eager:true,priority:'high'}),sampleNode('design',values.design));b.append(arts,el('b',null,values.medium),el('span',null,values.design),el('small',null,values.theme+' / '+values.palette));b.addEventListener('click',()=>{selectedProposal={...values,size:selections.size};document.querySelectorAll('.proposal-card').forEach(n=>n.setAttribute('aria-pressed',String(n===b)));renderChoices();renderBoard(selectedProposal);$('form-error').hidden=true;tell('この作例の組み合わせを選びました。');});$('proposal-cards').append(b);});renderBoard({...initialSelections(),size:selections.size});$('generation-status').hidden=true;}
 function renderHangingGallery(values){if(!$('hanging-gallery'))return;$('hanging-gallery').replaceChildren();for(const key of ['medium','design','theme','costume','palette']){const card=el('div','hanging-card');const label=questions.find(q=>q.key===key).name;card.append(sampleNode(key,values[key]),el('b',null,label),el('span',null,values[key]));$('hanging-gallery').append(card);}}
 const mc=document.modelContext;if(mc?.registerTool){const lifecycle=new AbortController();const register=tool=>{try{Promise.resolve(mc.registerTool(tool,{signal:lifecycle.signal})).catch(()=>{});}catch{}};register({name:'read_halloween_settings',title:'Halloweenの選択を読む',description:'現在の10項目、クリエイター名と添付数を読む。',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true,untrustedContentHint:true},execute:()=>({mode,profile:currentProfile(),selections:mode==='auto'&&selectedProposal?{...selectedProposal,size:selections.size}:effectiveSelections(mode,selections),referenceCount:refs.length})});register({name:'create_halloween_prompt',title:'Halloween制作プロンプトを作る',description:'画面で設定した名前、参照、10項目を使って制作指示を作成し、画面と端末履歴へ反映する。画像生成や画像転送はしない。',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:true},execute:async input=>{if(!input||typeof input!=='object'||Object.keys(input).length)throw new Error('入力は空のオブジェクトにしてください。');const r=await generate();return {edition:r.edition,prompt:r.prompt,referenceCount:r.references.length};}});window.addEventListener('pagehide',()=>lifecycle.abort(),{once:true});}
+
 

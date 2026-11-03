@@ -3,7 +3,7 @@
    Does not replace the illustration modes, references or saved settings. */
 :root{color-scheme:light}
 body[data-lights=day]{color-scheme:light}
-body[data-lights=night]{color-scheme:dark;--ink:#f4f0ff;--paper:#1b273c;--muted:#d5cce8;--line:#8b88ac}
+body[data-lights=night]{color-scheme:dark;--ink:#f2f3f5;--paper:#101216;--muted:#b8bdc7;--line:#49515e}
 body[data-lights=night] :is(input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]),select,textarea){
   background-color:#243048;color:#f7f4ff;border-color:#929cbb;
 }
@@ -54,9 +54,178 @@ body.project-directory-page[data-lights=day] .pp-page-header a{color:#36537d!imp
 #atelier-back-to-top[hidden]{display:none!important}
 #atelier-back-to-top:focus-visible{outline:3px solid #215fb9;outline-offset:3px}
 body[data-lights=night] #atelier-back-to-top{
- background:#263b5a;color:#f5f6ff;border-color:#b1bfe2;box-shadow:0 3px 18px #0007;
+ background:#15181e;color:#f2f3f5;border-color:#667184;box-shadow:0 3px 18px #0007;
 }
+
+/* A true black theme. This layer owns UI surfaces; legacy collection themes
+   may still choose artwork, but cannot brighten panels or selected controls.
+   Images, canvases, colour swatches and reference artwork are never filtered. */
+html[data-site-theme=dark]{background:#050608;color-scheme:dark}
+html[data-site-theme=dark] body[data-lights=night]{
+ --ink:#f2f3f5;--paper:#101216;--muted:#b8bdc7;--line:#49515e;
+ --night-surface:#101216;--night-chip:#1c222d;--night-copy:#f2f3f5;
+ --night-secondary:#b8bdc7;--night-border:#49515e;
+ --stage-ink:#f2f3f5;--stage-muted:#b8bdc7;--stage-copy:#c0c6d1;--stage-outline:#49515e;
+ --deck-bg:#101216;--deck-ink:#f2f3f5;--deck-border:#49515e;
+ --deck-button:#171b22;--deck-button-ink:#f2f3f5;--deck-button-border:#626d7f;
+ --deck-active:#223047;--deck-active-ink:#f5f8ff;--hero-ground:#0c0e12;
+ background:#050608!important;background-image:none!important;color:#f2f3f5!important;
+}
+html[data-site-theme=dark] body[data-lights=night]::before{
+ background:none!important;box-shadow:none!important;
+}
+html[data-site-theme=dark] body[data-lights=night] :is(
+ .masthead,.atelier-deck,.studio-hero,.deck-primary,.deck-secondary,
+ .style-preset-panel,.source-kind-panel,.profile-editor,.attachment-mode,
+ .generation-quality,.quality-assist,.desk,.history-section,.history-card,
+ .direction-card,.view-toolbar,.mix-guide,.mix-guide-toggle,.mix-notice,.intro-line,
+ .stage-caption,.stage-note,.choice-grid,.result-panel,.result-summary,.profile-preview,
+ .stage-side,.stage,.reference-frame,.auto-proposals,.proposal-card,.section-card,.activity-control,.mode-panel,
+ .gallery-theater,.playground,.collection-bar,.reference-area,.sample-gallery,
+ .selection-notice,.selection-feedback,.recipe-evidence,.recipe-specs,.production-details,
+ .production-note,.transfer-notice,.delivery-help,.transfer-fallback,.prompt-receiver,
+ .paste-target,.picker-favorites,.ring-focus,.ring-stage,.ring-pop,.favorite-chip,
+ .inspector-viewport,dialog,.dialog-header,.motion-controls
+){
+ background:#101216!important;background-image:none!important;
+ color:#f2f3f5!important;border-color:#49515e!important;
+ box-shadow:none!important;text-shadow:none!important;
+}
+html[data-site-theme=dark] body[data-lights=night] :is(
+ .style-preset-preview,.style-preset-preview-frame,.sample-card,.option-button,
+ .choice,.topic-chips span,.candidate-chip,.look-tags>span,.direction-tags>span,
+ .attachment-actions,.reference-thumb figcaption
+){
+ background:#15181e!important;color:#f2f3f5!important;
+ border-color:#49515e!important;box-shadow:none!important;
+}
+html[data-site-theme=dark] body[data-lights=night] :is(
+ input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]),
+ select,textarea,option
+){
+ background:#090b0f!important;background-image:none!important;
+ color:#f2f3f5!important;border-color:#687386!important;
+ box-shadow:none!important;text-shadow:none!important;
+}
+html[data-site-theme=dark] body[data-lights=night] :is(input,textarea)::placeholder{
+ color:#a9b0bd!important;opacity:1;
+}
+html[data-site-theme=dark] body[data-lights=night] :is(
+ button,.secondary-button,.dark-button,.primary-button,.text-button,
+ .pp-card-link,.pp-primary-link,.pp-article-link,.pp-managed-card,
+ .pp-magazine-spotlight,.pp-creative-item
+){
+ background:#171b22!important;background-image:none!important;
+ color:#f2f3f5!important;border-color:#626d7f!important;
+ box-shadow:none!important;text-shadow:none!important;
+}
+html[data-site-theme=dark] body[data-lights=night] button :is(b,small,span){
+ color:inherit!important;text-shadow:none!important;
+}
+/* Checked controls stay dark and use a pale outline/checkmark, not a luminous fill. */
+html[data-site-theme=dark] body[data-lights=night] :is(
+ button[aria-pressed=true],button[aria-selected=true],button[aria-expanded=true],
+ .sample-card.selected,.filter-tabs button.active,.pp-tab[aria-selected=true]
+){
+ background:#223047!important;color:#f5f8ff!important;
+ border-color:#a9c5f5!important;box-shadow:inset 0 0 0 1px #a9c5f5!important;
+}
+@media(hover:hover){
+ html[data-site-theme=dark] body[data-lights=night] :is(button:not(:disabled),.choice,.option-button,.pp-article-link,.pp-managed-card):hover{
+  background:#202631!important;color:#f5f8ff!important;
+ }
+}
+html[data-site-theme=dark] body[data-lights=night] :is(
+ .tool-title,.tool-title h1,.hero-eyebrow,.section-caption,.id-wrap,
+ .style-preset-panel h3,.style-preset-panel label,.style-preset-panel p,
+ .profile-fields label,.profile-editor summary,.choice-name,.help-body,
+ .form-error,.quality-assist,.result-summary,.dialog-header
+){color:#f2f3f5!important;text-shadow:none!important}
+html[data-site-theme=dark] body[data-lights=night] :is(
+ .microcopy,.stage-note,.choice-hint,.option-recipe,.profile-status,.size-note,
+ .generate-note,.history-empty,.eyebrow,.swipe-hint,.compare-hint,.hist-id,.detail,
+ .recipe-specs,.inspector-note,#view-status,#style-preset-status,#motion-label,
+ .pp-article-title,.pp-article-author,.pp-article-dest,.pp-article-source,.pp-managed-info small
+){color:#c0c6d1!important;text-shadow:none!important}
+html[data-site-theme=dark] body[data-lights=night] .profile-status.success{
+ background:#12241d!important;color:#b7ead2!important;border-color:#669b83!important;
+}
+html[data-site-theme=dark] body[data-lights=night] :is(.profile-status.error,.form-error){
+ background:#2a161b!important;color:#ffc4c9!important;border-color:#aa737a!important;
+}
+/* Archive category colours are accents only. Their large surfaces remain black. */
+html[data-site-theme=dark] body[data-lights=night] .pp-hub,
+html[data-site-theme=dark] body[data-lights=night] .pp-hub .pp-panel{
+ --pp-fg:#f2f3f5!important;--pp-muted:#c0c6d1!important;--pp-main:#c8d8fa!important;
+ --pp-panel-bg:#101216!important;--pp-border:#49515e!important;--pp-strong:#101216!important;
+ background:#101216!important;background-image:none!important;
+ color:#f2f3f5!important;border-color:#49515e!important;box-shadow:none!important;
+}
+html[data-site-theme=dark] body[data-lights=night] .pp-hub :is(
+ .pp-feature,.pp-directory,.pp-directory-body,.pp-directory>summary,.pp-panel,
+ .pp-slide,.pp-slide-media,.pp-roster,.pp-operated-magazines,.pp-global-appearance,
+ .pp-managed-cover,.pp-managed-icon,.pp-tab-icon,.pp-creative-icon,
+ .pp-managed-role,.pp-feature-status,.pp-article-thumb,.pp-article-source-details
+){
+ background:#101216!important;background-image:none!important;
+ color:#e9edf5!important;border-color:#49515e!important;box-shadow:none!important;
+}
+html[data-site-theme=dark] body[data-lights=night] .pp-hub :is(
+ .pp-magazine-magic,.pp-magazine-creative,.pp-managed-card:last-child,
+ .pp-managed-card:last-child .pp-managed-role
+){background:#171b22!important;color:#f2f3f5!important;border-color:#626d7f!important}
+html[data-site-theme=dark] body[data-lights=night] .pp-hub :is(
+ .pp-feature strong,.pp-feature p,.pp-eyebrow,.pp-coming,.pp-count,
+ .pp-managed-summary-copy small,.pp-managed-info small,.pp-operated-magazines>summary
+){color:#c8d8fa!important}
+html[data-site-theme=dark] body[data-lights=night] :is(.masthead,.atelier-deck,.studio-hero)::before,
+html[data-site-theme=dark] body[data-lights=night] :is(.masthead,.atelier-deck,.studio-hero)::after{
+ background:none!important;box-shadow:none!important;text-shadow:none!important;
+}
+html[data-site-theme=dark] body[data-lights=night] :is(.tool-title h1,.ornament,.night-companion){
+ text-shadow:none!important;filter:none!important;
+}
+html[data-site-theme=dark] body[data-lights=night] #magic-sky{opacity:.2!important}
+html[data-site-theme=dark] body[data-lights=night] #effect-layer{opacity:.3!important}
+html[data-site-theme=dark] body[data-lights=night] #atelier-back-to-top{
+ background:#171b22!important;color:#f2f3f5!important;border-color:#687386!important;
+ box-shadow:0 3px 18px #0008!important;
+}
+html[data-site-theme=dark] body[data-lights=night] :is(button,a,input,textarea,select,summary):focus-visible{
+ outline:3px solid #a9c5f5!important;outline-offset:3px;
+}
+html[data-site-theme=dark] body[data-lights=night] dialog::backdrop{background:#000b}
 body[data-lights=night] #atelier-back-to-top:focus-visible{outline-color:#f4dfaa}
 @media(max-width:500px){
  #atelier-back-to-top{right:max(9px,env(safe-area-inset-right));bottom:calc(12px + env(safe-area-inset-bottom));min-height:44px;min-width:88px;padding:7px 10px;font-size:12px}
+}
+
+
+/* One compact settings section above the project links; help stays at the studio. */
+.pp-hub .atelier-top-settings{display:grid;gap:8px;padding:0 0 9px;margin:0 0 9px;border-bottom:1px solid var(--pp-border,#71829c);min-width:0}
+.pp-hub .atelier-top-settings .deck-secondary,.pp-hub .atelier-top-settings .deck-size{width:100%;margin:0;padding:0;border:0;min-width:0}
+.pp-hub .atelier-top-settings .view-toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0;padding:0;border:0;border-radius:0;background:transparent!important;box-shadow:none!important}
+.pp-hub .atelier-top-settings .view-toolbar>span:first-child{font-size:12px;font-weight:800}
+.pp-hub .atelier-top-settings .view-switch{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));flex:1;gap:5px;min-width:235px}
+.pp-hub .atelier-top-settings .view-switch button{width:100%;min-width:0;min-height:44px;margin:0;padding:7px 5px;border-radius:9px;font:800 12px/1.35 system-ui,sans-serif;white-space:nowrap}
+.pp-hub .atelier-top-settings #view-status{display:none}
+.pp-hub .atelier-settings-actions{display:flex;align-items:stretch;flex-wrap:wrap;gap:7px;min-width:0}
+.pp-hub .atelier-settings-actions .motion-controls{display:flex;align-items:center;justify-content:center;width:auto;max-width:none;padding:3px 6px;border:1px solid #71829c;border-radius:10px;gap:5px;background:transparent}
+.pp-hub .atelier-settings-actions .switch-control{display:flex;align-items:center;gap:5px}
+.pp-hub .atelier-settings-actions .switch-label{display:inline;font-size:11px;white-space:nowrap}
+.pp-hub .atelier-settings-actions .switch-pair{display:flex;gap:4px}
+.pp-hub .atelier-settings-actions .switch-pair button{min-width:40px;width:auto;min-height:44px;padding:5px;font:800 12px/1.3 system-ui,sans-serif;border-radius:8px}
+.pp-hub .atelier-settings-actions #motion-label{display:none}
+.pp-hub .atelier-settings-actions :is(.night-switch,.pp-background-switch){display:flex;align-items:center;justify-content:center;gap:5px;flex:1;min-width:115px;min-height:44px;margin:0;padding:7px 8px;font:800 12px/1.3 system-ui,sans-serif;border:1px solid #71829c;border-radius:10px}
+.pp-hub .atelier-settings-actions .night-switch small{font-size:10px;line-height:1.3}
+.pp-hub .atelier-settings-actions .night-switch>span{display:none}
+.atelier-deck .header-actions.atelier-help-actions{display:flex;justify-content:flex-end;grid-template-columns:none;margin-top:5px;width:100%}
+.atelier-deck .atelier-help-actions #help{min-height:44px;min-width:84px;flex:0 0 auto;padding:7px 14px}
+@media(max-width:540px){
+ .pp-hub .atelier-top-settings .view-toolbar>span:first-child{width:100%;font-size:11px}
+ .pp-hub .atelier-top-settings .view-switch{min-width:0;flex-basis:100%}
+ .pp-hub .atelier-settings-actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+ .pp-hub .atelier-settings-actions .motion-controls{grid-column:1/-1;justify-content:flex-start;padding:0 7px;border:0;min-height:44px}
+ .pp-hub .atelier-settings-actions .switch-label{min-width:37px}
+ .pp-hub .atelier-settings-actions :is(.night-switch,.pp-background-switch){min-width:0;flex-wrap:wrap}
 }

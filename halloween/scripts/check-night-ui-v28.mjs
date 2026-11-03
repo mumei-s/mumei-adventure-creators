@@ -27,7 +27,8 @@ const scene=add('magic-scene');for(let i=0;i<4;i++){const node=new Node('button'
 for(const id of ['play-ghosts','ghost-title','spell-status','play-spell','ghost-arena','ghost-status','ghost-restart','light-play','night-state'])add(id);
 add('ghost-game','dialog');
 const observers=[],intervals=new Set();let nextInterval=0;
-globalThis.document={body,hidden:false,createElement:tag=>new Node(tag),getElementById:id=>ids.get(id),querySelector:s=>body.querySelector(s),querySelectorAll:s=>body.querySelectorAll(s),addEventListener(){}};
+const documentElement=new Node('html');documentElement.dataset={atelierBootCollection:'halloween',atelierBootLights:'night',siteTheme:'dark'};documentElement.append(body);
+globalThis.document={documentElement,body,hidden:false,createElement:tag=>new Node(tag),getElementById:id=>ids.get(id),querySelector:s=>body.querySelector(s),querySelectorAll:s=>body.querySelectorAll(s),addEventListener(){}};
 globalThis.localStorage={getItem:()=> 'on',setItem(){}};
 globalThis.MutationObserver=class{constructor(callback){observers.push(callback);}observe(){}};
 globalThis.IntersectionObserver=class{observe(){}unobserve(){}};
@@ -133,3 +134,4 @@ const oldPair=buttonPair([...rules,...styleRules(oldMutedRule)],fixture('hallowe
 assert.deepEqual(oldPair,{background:'#b397db',color:'#cfc3e9'});
 assert.ok(ratio(oldPair.background,oldPair.color)<4.5,'The old ID-bearing :is branch is caught, although the selected rule declares dark text');
 console.log(`PASS night UI: persisted night and live collection switches replace actual hero/ornament/game DOM, remove Halloween monsters and cancel stale timers; distinct illustrated day and night floating motifs in both modes; header ON/OFF; both paired night palettes and ${buttonPairs} effective selected/unselected/hover button pairs meet 4.5 contrast; the prior :is specificity failure is reproduced.`);
+

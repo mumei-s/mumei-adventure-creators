@@ -28,7 +28,7 @@ function applyMode(){
   }
   if(hub) hub.dataset.ppAppearance=effectiveDark?'dark':'light';
   const themeMeta=document.querySelector('meta[name="theme-color"]');
-  if(themeMeta) themeMeta.content=effectiveDark?'#11182b':'#edf3fb';
+  if(themeMeta) themeMeta.content=effectiveDark?'#050608':'#edf3fb';
   for(const button of buttons){
     const chosen=button.dataset.siteTheme===mode;
     button.setAttribute('aria-pressed',String(chosen));
@@ -103,3 +103,4 @@ returnTop.addEventListener('click', event => {
   window.scrollTo({top:0,left:0,behavior:reduceMotion?'auto':'smooth'});
 });
 updateReturnTop();
+

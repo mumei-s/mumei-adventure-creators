@@ -153,10 +153,10 @@
     {
       "id": "unwritten",
       "title": "UNWRITTEN",
-      "subtitle": "世界に残された、ありえない1秒",
-      "status": "preparing",
-      "description": "キャラ画像とnote IDから、世界の異変とその物語を生み出すプロンプト遊び。企画記事の公開後に遊び方と参加作品を掲載します。",
-      "articleUrl": null,
+      "subtitle": "あなたの答えで変わる、3枚の物語",
+      "status": "published",
+      "description": "あなたの答えで展開が変わる、全3枚のイラストと物語のプロンプト遊び。遊び終わったら、完成した物語をnote記事にまとめられます。",
+      "articleUrl": "https://note.com/ss_yr/n/nc5830d2e9788",
       "playUrl": null,
       "source": {
         "type": "manual",

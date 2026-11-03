@@ -30,3 +30,9 @@ filter().value='design';filter().emit('change');cards()[0].querySelector('.favor
 collection='halloween';shelf.render();assert.equal(filter().value,'pose','Switching back restores the previous collection filter');collection='everyday';shelf.render();assert.equal(filter().value,'design');cards()[0].querySelector('.favorite-library-remove').click();filter().value='medium';filter().emit('change');cards()[0].querySelector('.favorite-library-remove').click();assert.equal(cards().length,0);assert.match($('favorite-library-items').querySelector('p').textContent,/☆.*保存/);assert.match($('favorite-library-status').textContent,/0件/);
 assert.equal(panel.querySelectorAll('select').length,1,'Repeated rendering retains a single filter');
 console.log('PASS favorites shelf: persistent main-page preview/category/select/remove controls; all category filters; exact single-item pick dispatch; independent collection contents and filter restoration; deletion/empty state; no duplicate filter after updates.');
+
+saved['everyday:theme']=['宇宙のHalloween','月下の墓地'];collection='everyday';filter().value='all';filter().emit('change');shelf.render();
+assert.deepEqual(cards().map(card=>card.dataset.value),['月下の墓地']);
+assert.deepEqual(saved['everyday:theme'],['宇宙のHalloween','月下の墓地'],'Hiding a seasonal favorite does not delete it');
+cards()[0].querySelector('.favorite-library-pick').click();assert.deepEqual(picks.at(-1),{key:'theme',value:'月下の墓地'});
+console.log('PASS ordinary shelf: old seasonal favorite is not offered; generic fantasy remains; stored data is unchanged.');

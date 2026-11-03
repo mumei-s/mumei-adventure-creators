@@ -1,3 +1,4 @@
+import {selectionAvailableInCollection} from '../scene-collection-policy.js';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
@@ -35,7 +36,7 @@ for(let seed=0;seed<100;seed++){const draw=randomItemSelection(question,{...base
 const chooseStart=app.indexOf('function choose('),chooseEnd=app.indexOf('\nfunction summarizeName(',chooseStart);assert.ok(chooseStart>=0&&chooseEnd>chooseStart);
 function contextFor(mode='detail'){
  const messages=[],rendered=[],nodes=new Map();const $=id=>{if(!nodes.has(id))nodes.set(id,{close(){this.closed=true;},closed:false});return nodes.get(id);};
- const context=vm.createContext({mode,selections:{...base,type:'文字を一切入れない'},selectedProposal:mode==='auto'?{...base,type:'文字を一切入れない'}:null,activeQuestion:question,questions,questionsForMode,effectiveSelections,candidateAvailability,renderChoices:key=>rendered.push(key),tell:message=>messages.push(message),$: $,document:{querySelector:()=>({focus(){}})},displayValue:(q,v)=>v,setMode(){throw new Error('A rejected favorite must not change modes');},createFavoritesPanel:options=>options,picker:{},el(){},sampleNode(){},collection:'halloween'});
+ const context=vm.createContext({selectionAvailableInCollection,mode,selections:{...base,type:'文字を一切入れない'},selectedProposal:mode==='auto'?{...base,type:'文字を一切入れない'}:null,activeQuestion:question,questions,questionsForMode,effectiveSelections,candidateAvailability,renderChoices:key=>rendered.push(key),tell:message=>messages.push(message),$: $,document:{querySelector:()=>({focus(){}})},displayValue:(q,v)=>v,setMode(){throw new Error('A rejected favorite must not change modes');},createFavoritesPanel:options=>options,picker:{},el(){},sampleNode(){},collection:'halloween'});
  vm.runInContext(app.slice(chooseStart,chooseEnd),context);return {context,messages,rendered,nodes};
 }
 for(const mode of ['detail','auto']){

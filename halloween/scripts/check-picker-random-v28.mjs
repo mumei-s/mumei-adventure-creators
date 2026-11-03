@@ -1,3 +1,5 @@
+import {applyCollection} from '../collection.js?v=28.4.6';
+import {halloweenOnlySceneTitles} from '../scene-collection-policy.js';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
@@ -104,3 +106,31 @@ assert.notEqual(auto.context.selections.size,autoBefore.size);assert.equal(auto.
 assert.deepEqual(Object.keys(autoBefore).filter(key=>autoBefore[key]!==auto.context.selections[key]),['size']);assert.deepEqual(Object.keys(proposalBefore).filter(key=>proposalBefore[key]!==auto.context.selectedProposal[key]),['size']);
 assert.equal(auto.$('ring-focus').querySelector('b').textContent,auto.context.selections.size.split('｜')[0]);assert.equal(auto.surface.open,true);assert.equal(auto.stats.renders,1);
 console.log('PASS picker random: '+cases+' real picker/app-handler routes across ring/list, category filters and comparison reveal the new selected value without closing or changing other fields; incompatible draw preserves the filtered view; AUTO size updates both selections and chosen proposal.');
+
+// Ordinary favorite shortcuts, the favorite filter and the inspector must all
+// use the ordinary edition rather than reintroducing archived seasonal cards.
+applyCollection('everyday');document.body.dataset.collection='everyday';
+const savedFavorites={'everyday:theme':['宇宙のHalloween','魔女の書斎','月下の墓地']};
+localStorage.getItem=()=>JSON.stringify(savedFavorites);let favoriteWrites=0;localStorage.setItem=()=>{favoriteWrites++;};
+document.createElement=tag=>new Node(tag);
+const daily=fixture(),themeQuestion=questions.find(question=>question.key==='theme');
+daily.context.selections.theme='魔女の書斎';daily.picker.open(themeQuestion);flush();
+assert.equal(daily.$('favorites-options').children.length,2);
+assert.ok(!JSON.stringify(daily.picker.getFavorites()).includes('deleted'),'Reading favorites must not delete legacy saved data');
+assert.deepEqual(daily.picker.getFavorites(),savedFavorites);assert.equal(favoriteWrites,0);
+assert.ok(daily.$('picker-category').children.every(node=>!node.textContent.includes('Halloween')));
+daily.$('picker-category').value='★ お気に入り';daily.$('picker-category').emit('change');
+assert.equal(daily.$('picker-count').textContent,'2種類 · 2枚');
+assert.ok(daily.$('ring-options').children.every(node=>!halloweenOnlySceneTitles.includes(node.dataset.value)));
+daily.$('ring-focus').querySelector('.ring-tools').children[0].click();
+const textOf=node=>node.textContent+' '+node.children.map(textOf).join(' ');
+assert.doesNotMatch(textOf(daily.$('inspector-specs-body')),/Halloween|ハロウィーン|10月31日/,'Ordinary inspector must pass its edition to recipe descriptions');
+assert.equal(daily.$('inspector').open,true);
+assert.deepEqual(daily.picker.getFavorites(),savedFavorites);assert.equal(favoriteWrites,0);
+applyCollection('halloween');document.body.dataset.collection='halloween';
+const archived=fixture();archived.picker.open(questions.find(question=>question.key==='theme'));flush();
+assert.equal(archived.$('favorites-options').children.length,1,'Old ordinary seasonal favorite remains available in Halloween');
+archived.$('favorites-options').children[0].querySelector('.favorite-remove').click();
+assert.deepEqual(archived.picker.getFavorites()['everyday:theme'],['魔女の書斎','月下の墓地'],'Explicit removal frees the original storage slot without touching other values');
+assert.equal(favoriteWrites,1);
+console.log('PASS ordinary picker: seasonal saved favorite is hidden without writes; generic graveyard/study remain in favorites and filters; inspector stays nonseasonal.');

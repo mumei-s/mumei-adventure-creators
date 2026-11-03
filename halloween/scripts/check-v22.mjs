@@ -33,6 +33,6 @@ assert.ok(topSettings,'The consolidated TOP settings section exists');
 assert.match(topSettings,/id="light-play"/,'Night toggle stays with the other TOP settings');
 assert.match(topSettings,/class="view-toolbar"/,'Display controls stay in the same TOP settings section');
 assert.match(topSettings,/id="motion-toggle"/,'Motion controls stay in the same TOP settings section');
-assert.ok(html.indexOf(topSettings)>html.indexOf('</header>')&&html.indexOf('id="light-play"')<html.indexOf('<main class="app-shell">'),'Night toggle belongs in the TOP settings above the studio');
+assert.ok(html.indexOf(topSettings)>html.indexOf('<header class="masthead">')&&html.indexOf(topSettings)+topSettings.length<html.indexOf('</header>'),'TOP settings belong inside the Atelier header');
 assert.match(html,/id="inspector-favorite"/);assert.match(html,/id="picker-favorites"/);
 console.log('PASS crystal/hologram whole-subject recipes, no-person isolation, actual orbital direction, swipe direction, five-favorite limit/removal/serialization/mode isolation, consolidated TOP settings night control.');

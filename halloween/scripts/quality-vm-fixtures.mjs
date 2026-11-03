@@ -1,3 +1,4 @@
+import {sceneAvailableInCollection,restoreSceneSelections} from '../scene-collection-policy.js';
 import fs from 'node:fs';
 import vm from 'node:vm';
 import {prepareGenerationDelivery,inspectDelivery,inspectDeliveryFiles,scopeGenerationStages,qualityAssistEnabled,setQualityAssistEnabled} from '../generation-quality-delivery.js';
@@ -11,7 +12,7 @@ const actualGuard=app.slice(start,end);
 // Bind the real data/check functions as imports, and the actual app guard as
 // source. Panel layout is outside these fixtures; its lifecycle is harmless.
 export function qualityContext(fields){
- const retained={...fields};Object.assign(fields,{File:globalThis.File,Blob:globalThis.Blob,prepareGenerationDelivery,inspectDelivery,inspectDeliveryFiles,scopeGenerationStages,qualityAssistEnabled,setQualityAssistEnabled,
+ const retained={...fields};Object.assign(fields,{sceneAvailableInCollection,restoreSceneSelections,File:globalThis.File,Blob:globalThis.Blob,prepareGenerationDelivery,inspectDelivery,inspectDeliveryFiles,scopeGenerationStages,qualityAssistEnabled,setQualityAssistEnabled,
   mountQualityPanel:()=>()=>{},disposeQualityPanel:()=>{},tell(){}},retained);
  const context=vm.createContext(fields);
  vm.runInContext(actualGuard,context);

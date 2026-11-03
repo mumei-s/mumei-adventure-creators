@@ -43,7 +43,7 @@ for(const mode of ['halloween','everyday']){
 const scenery=optionRecipe('medium','クリスタルホログラム造形アニメ',{values:{costume:'風景を主役にする'}});
 assert.ok(!scenery.sections.map(s=>s.text).join('').match(/眼瞼|瞳孔|眼の|目鼻|袖|髪束/),'No-person material recipe must not introduce anatomy');
 for(const type of ['文字を一切入れない','クリエイター名だけ']){const cover=optionRecipe('design','週刊誌の表紙',{values:{type}});const clause=cover.sections.find(s=>s.label==='日本を基準にした個別条件').text;assert.ok(!clause.includes('大見出し2〜4本'));assert.match(clause,type==='文字を一切入れない'?/一切追加しない/:/標準.*追加せず|補完しない/);}
-assert.match(modeFoundation('everyday'),/日常・幻想・ホラー・Halloweenは明示選択の範囲/);
+assert.match(modeFoundation('everyday'),/日常・幻想・ホラーは明示選択の範囲/);
 assert.match(modeFoundation('everyday'),/AUTOの日常へ仮装・カボチャ・幽霊・魔法を追加しない/);
 assert.match(modeFoundation('halloween'),/すべての作品でHalloweenの出来事・場所・目的を一場面/);
 assert.match(modeFoundation('halloween'),/選択した時刻・主題・画風・衣装と被覆・カメラ・支持を保ち、人物なしを優先/);

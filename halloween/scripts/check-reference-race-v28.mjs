@@ -1,3 +1,4 @@
+import {sceneAvailableInCollection,selectionAvailableInCollection} from '../scene-collection-policy.js';
 import {prepareGenerationDelivery,scopeGenerationStages} from '../generation-quality-delivery.js';
 import {selectionReferenceManifest,selectionReferenceCounts} from '../selection-references.js?v=28.4.6';
 import assert from 'node:assert/strict';
@@ -40,7 +41,7 @@ function fixture({count=2}={}){
  let styleWait=null,context,edition=0,previews=0;
  const stats={shown:[],persisted:0,celebrations:0,revoked:[]};
  const invalidate=()=>context.clearPreparedResult();
- context=vm.createContext({$,el:node,File,performance,refs,selections,mode:'detail',selectedProposal:null,sourceKind:'illustration-person',collection:'halloween',attachmentMode:'bundle',
+ context=vm.createContext({sceneAvailableInCollection,selectionAvailableInCollection,$,el:node,File,performance,refs,selections,mode:'detail',selectedProposal:null,sourceKind:'illustration-person',collection:'halloween',attachmentMode:'bundle',
   creating:false,adding:false,resettingReferences:false,referenceGeneration:0,inputRevision:0,draftProfileRevision:0,resultRequest:0,resultObjectURLs:[],disposeLayoutPreview(){},disposeQualityPanel(){},currentResult:null,
   historyReady:Promise.resolve(),draftReady:Promise.resolve(),saved:{history:[],used:[],count:0},requestAnimationFrame:callback=>callback(),
   normalizeCreator,artworkProfile:()=>({displayName:'競合検証',topics:[],activityEnabled:false}),syncSaved:async()=>{},questions,AUTO,effectiveSelections,sourceSubjectFor,resolveSelections,rng:()=>.23,

@@ -1,3 +1,4 @@
+import {sceneAvailableInCollection} from '../scene-collection-policy.js';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
@@ -18,7 +19,7 @@ function assignTheme({collection='halloween',theme=AUTO,themes,random=0,extraInp
  const profile=themes===undefined?{}:{inspiration:{themes:[...themes],labels:['test creator'],objects:['test object']}};
  const before=structuredClone(profile);
  let randomCalls=0;
- assignment.runInContext(vm.createContext({input,profile,collection,questions,AUTO,rng(){randomCalls++;return random;}}));
+ assignment.runInContext(vm.createContext({input,profile,collection,questions,AUTO,sceneAvailableInCollection,rng(){randomCalls++;return random;}}));
  assert.deepEqual(profile,before,'Selecting inspiration must not change the creator profile or its legacy suggestions');
  checks++;
  return {input,randomCalls};
@@ -69,6 +70,10 @@ try{
   assert.equal(result.randomCalls,1);
  }
 
+ // Known seasonal profile suggestions may not bypass the ordinary picker.
+ for(const themes of [['宇宙のHalloween'],['静かなハロウィーン','カボチャの収穫祭'],['宇宙のHalloween','月下の墓地']]){
+  const result=assignTheme({collection:'everyday',themes});assert.equal(result.input.theme,themes.includes('月下の墓地')?'月下の墓地':AUTO);
+ }
  // Explicit choices, restored history values, and free-form requests arrive
  // as concrete input.theme values and must not be rewritten by inspiration.
  for(const collection of ['halloween','everyday'])for(const [label,theme,extraInput] of [

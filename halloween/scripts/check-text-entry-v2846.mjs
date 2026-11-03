@@ -1,3 +1,4 @@
+import {selectionAvailableInCollection} from '../scene-collection-policy.js';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import vm from 'node:vm';
@@ -29,7 +30,7 @@ let cases=0,blockedEntries=0;
 for(const collection of ['halloween','everyday'])for(const mode of ['detail','simple','auto']){
  applyCollection(collection);
  const nodes=new Map(),$=id=>{if(!nodes.has(id))nodes.set(id,new Node());return nodes.get(id);},tabs=['type','line'].map(part=>{const n=new Node('button');n.dataset.textPart=part;return n;}),selection={...initialSelections(),design:'新聞の一面',type:'新聞風・記事と段組み'},before={...selection};
- const context=vm.createContext({$,questions,questionsForMode,mode,modeSnapshots:{},selections:selection,selectedProposal:mode==='auto'?{...selection}:null,textPart:'type',activeQuestion:null,candidateAvailability,effectiveSelections,el:(tag,cls,text)=>new Node(tag,text),renderChoices:key=>{context.renderedKey=key;},tell:message=>{context.message=message;},picker:{open:q=>{context.openedKey=q.key;}},document:{querySelectorAll:()=>tabs,querySelector:()=>null}});
+ const context=vm.createContext({selectionAvailableInCollection,collection,$,questions,questionsForMode,mode,modeSnapshots:{},selections:selection,selectedProposal:mode==='auto'?{...selection}:null,textPart:'type',activeQuestion:null,candidateAvailability,effectiveSelections,el:(tag,cls,text)=>new Node(tag,text),renderChoices:key=>{context.renderedKey=key;},tell:message=>{context.message=message;},picker:{open:q=>{context.openedKey=q.key;}},document:{querySelectorAll:()=>tabs,querySelector:()=>null}});
  vm.runInContext(actual,context);
  context.openPicker(questions.find(q=>q.key==='type'));assert.equal($('text-subtabs').hidden,false);assert.equal($('text-entry-note').hidden,true);assert.equal(context.openedKey,'type');
  context.openPicker(questions.find(q=>q.key==='line'));assert.equal($('text-subtabs').hidden,false);assert.equal($('text-entry-note').hidden,false);assert.equal(context.openedKey,'line');assert.equal(tabs[1].attributes['aria-pressed'],'true');

@@ -1,3 +1,4 @@
+import {restoreCollectionSnapshot} from '../scene-collection-policy.js';
 import {sourceKinds,sourceSubjectFor} from '../source-kind.js?v=28.4.6';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -75,7 +76,7 @@ function application(){
  const modeButtons=['detail','simple','auto'].map(mode=>Object.assign(element(),{dataset:{mode}}));
  const storage=new Map(),document={body:element(),title:'',createTextNode:text=>({textContent:text}),querySelectorAll:selector=>selector==='.collection-switch button'?buttons:selector==='.mode-switch button'?modeButtons:[]};
  const state=initialSelections();
- const context=vm.createContext({sourceKinds,sourceSubjectFor,sourceKind:'unknown',collection:'halloween',collectionSnapshots:{},mode:'detail',selections:state,modeSnapshots:{detail:{...state}},proposals:[],selectedProposal:null,motion:false,boardArtKey:'old',document,structuredClone,applyCollection,initialSelections,modeKeys,modeCopy,$:id=>{if(!nodes.has(id))nodes.set(id,element());return nodes.get(id);},el:(tag,cls,text)=>({tag,cls,textContent:text}),setMotion(){},renderChoices(){},makeProposals(){},syncProfilePreview(){},effects:{refresh(){}},localStorage:{setItem:(key,value)=>storage.set(key,value)}});
+ const context=vm.createContext({sourceKinds,sourceSubjectFor,sourceKind:'unknown',collection:'halloween',collectionSnapshots:{},mode:'detail',selections:state,modeSnapshots:{detail:{...state}},proposals:[],selectedProposal:null,restoreCollectionSnapshot,tell(){},motion:false,boardArtKey:'old',document,structuredClone,applyCollection,initialSelections,modeKeys,modeCopy,$:id=>{if(!nodes.has(id))nodes.set(id,element());return nodes.get(id);},el:(tag,cls,text)=>({tag,cls,textContent:text}),setMotion(){},renderChoices(){},makeProposals(){},syncProfilePreview(){},effects:{refresh(){}},localStorage:{setItem:(key,value)=>storage.set(key,value)}});
  vm.runInContext(collectionSource+'\n'+modeSource,context);
  return {context,nodes,buttons,storage};
 }
@@ -91,7 +92,7 @@ try{
  assert.equal(nodes.get('tool-name').children[0].textContent,'Atelier');
  assert.equal(context.document.title,'無名S note — Atelier','Title must not change with Halloween/everyday mode');
  assert.ok(questions.find(q=>q.key==='theme').groups.some(g=>g.values.includes('静かな読書の時間')));
- assert.ok(questions.find(q=>q.key==='theme').groups.some(g=>g.values.includes('宇宙のHalloween')),'Everyday mode allows an explicitly selected seasonal scene');
+ assert.ok(!questions.find(q=>q.key==='theme').groups.some(g=>g.values.includes('宇宙のHalloween')),'Everyday mode excludes a seasonal scene');
  assert.ok(!questions.find(q=>q.key==='theme').autoValues.includes('宇宙のHalloween'),'Restored everyday AUTO must remain ordinary');
 
  context.selections.theme='静かな読書の時間';context.selections.costume='リネンシャツとデニム';
@@ -108,6 +109,20 @@ try{
  vm.runInContext("setCollection('halloween')",context);
  assert.equal(context.selections.theme,'宇宙のHalloween');
 
+ // Legacy ordinary snapshots are sanitized in the actual UI switch, not only
+ // in an isolated helper. All edit modes retain non-scene choices.
+ for(const editMode of ['detail','simple','auto']){
+  const legacy=application(),old={...initialSelections(),theme:'宇宙のHalloween',place:'宇宙のHalloween',costume:'リネンシャツとデニム',medium:'透明水彩',size:'横16:9｜3840×2160｜16:9'};
+  const savedState={mode:editMode,selections:old,modeSnapshots:{detail:old,simple:old,auto:old},proposals:[old],selectedProposal:old};
+  const original=structuredClone(savedState);legacy.context.collectionSnapshots.everyday=savedState;
+  vm.runInContext("setCollection('everyday')",legacy.context);
+  assert.equal(legacy.context.document.body.dataset.collection,'everyday');
+  assert.equal(legacy.context.selections.theme,'おまかせ');assert.equal(legacy.context.selections.place,'おまかせ');
+  assert.equal(legacy.context.selections.costume,old.costume);assert.equal(legacy.context.selections.medium,old.medium);assert.equal(legacy.context.selections.size,old.size);
+  assert.equal(legacy.context.selectedProposal,null);
+  assert.deepEqual(savedState,original,'The original snapshot must not be mutated by restoration');
+  for(const target of ['detail','simple','auto']){vm.runInContext("setMode('"+target+"')",legacy.context);assert.equal(legacy.context.selections.theme,'おまかせ');}
+ }
  const restored=application();
  vm.runInContext("setCollection('everyday')",restored.context);
  assert.equal(restored.context.document.body.dataset.collection,'everyday','Saved everyday mode must also start in a fresh page session');

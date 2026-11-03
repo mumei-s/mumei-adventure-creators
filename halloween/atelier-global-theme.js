@@ -64,9 +64,9 @@ try{backgroundOn=localStorage.getItem(backgroundStorageKey)==='on';}catch{}
 function applyBackgroundEffects(){
  document.body.dataset.backgroundEffects=backgroundOn?'on':'off';
  if(backgroundButton){
-  backgroundButton.textContent=backgroundOn?'✦ 背景演出 ON':'✦ 背景演出 OFF';
+  backgroundButton.textContent=backgroundOn?'✦ 背景の飾り ON':'✦ 背景の飾り OFF';
   backgroundButton.setAttribute('aria-pressed',String(backgroundOn));
-  backgroundButton.setAttribute('aria-label',backgroundOn?'背景演出をオフにする':'背景演出をオンにする');
+  backgroundButton.setAttribute('aria-label',backgroundOn?'背景の飾りをオフにする':'背景の飾りをオンにする');
  }
 }
 backgroundButton?.addEventListener('click',()=>{

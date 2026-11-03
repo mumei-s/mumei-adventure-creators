@@ -1,3 +1,4 @@
+import {halloweenOnlySceneTitles,sceneAvailableInCollection} from '../scene-collection-policy.js';
 import assert from 'node:assert/strict';
 import {questions,visibleQuestions,resolveSelections,AUTO} from '../catalog.js?v=28.4.6';
 import {applyCollection} from '../collection.js?v=28.4.6';
@@ -89,9 +90,9 @@ assert.ok(renderChatInput(planFor(custom,'halloween')).includes(customTheme));
 // Everyday fantasy and ordinary locations remain available with nine added scenes;
 // selecting a shared title there must not acquire Halloween decoration.
 applyCollection('everyday');
-assert.equal(valuesFor('theme').length,117);
-assert.equal(new Set(valuesFor('theme')).size,117,'Optional genres must not duplicate existing scene titles');
-for(const theme of halloweenSceneTitles)assert.ok(valuesFor('theme').includes(theme),'Explicit seasonal scene is missing: '+theme);
+assert.equal(valuesFor('theme').length,117-halloweenOnlySceneTitles.length);
+assert.equal(new Set(valuesFor('theme')).size,117-halloweenOnlySceneTitles.length,'Optional genres must not duplicate existing scene titles');
+for(const theme of halloweenSceneTitles)assert.equal(valuesFor('theme').includes(theme),sceneAvailableInCollection(theme,'everyday'),'Explicit scene membership: '+theme);
 const ordinaryAuto=questions.find(question=>question.key==='theme').autoValues;
 for(const theme of halloweenSceneTitles)assert.ok(!ordinaryAuto.includes(theme),'Seasonal scene became an ordinary default: '+theme);
 for(const theme of [...removedWorlds,'空中都市','白いスタジオ','朝の光と小さな日常','山岳と湖のパノラマ'])assert.ok(valuesFor('theme').includes(theme));
@@ -107,4 +108,4 @@ for(let index=0;index<3;index++){
 }
 applyCollection('halloween');
 assert.equal(resolveSelections({...initialSelections(),sceneUnified:true,theme:AUTO},()=>.99).theme,'異界の鳥居');
-console.log('PASS Halloween scenes: 28 seasonal scene contracts (24 stories + 4 locations), 800 automatic/simplified proposals, 32 legacy presets and arbitrary scenes retained; 117 distinct everyday scenes include 83 retained, 27 missing seasonal titles and seven additional legacy places, with ordinary AUTO unchanged; collection restoration checked.');
+console.log('PASS Halloween scenes: 28 seasonal scene contracts (24 stories + 4 locations), 800 automatic/simplified proposals, 32 legacy presets and arbitrary scenes retained; 112 distinct everyday scenes retain year-round fantasy/horror and legacy places, exclude five seasonal events, with ordinary AUTO unchanged; collection restoration checked.');

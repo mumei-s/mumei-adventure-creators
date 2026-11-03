@@ -1,4 +1,4 @@
-import {FAVORITE_LIMIT,favoriteKey} from './favorites.js?v=28.4.6';
+import {FAVORITE_LIMIT,collectionFavorites} from './favorites.js?v=28.4.6';
 
 // A collection-specific shelf of saved single-item choices. Applying a favorite
 // is delegated to the app so it follows the same selection rules as the picker.
@@ -6,7 +6,7 @@ export function createFavoritesPanel({$,el,picker,questions,sampleNode,collectio
  const filters={};let select=null;
  function render(){
   const panel=$('favorite-library'),items=$('favorite-library-items'),status=$('favorite-library-status');if(!panel||!items||!status)return;
-  const current=collection(),favorites=picker.getFavorites(),entries=questions.flatMap(question=>(favorites[favoriteKey(current,question.key)]||[]).map(value=>({question,value}))),filter=filters[current]||'all';
+  const current=collection(),favorites=picker.getFavorites(),entries=questions.flatMap(question=>collectionFavorites(favorites,current,question.key).map(value=>({question,value}))),filter=filters[current]||'all';
   if(!select){const label=el('label','favorite-library-filter');label.append(el('span',null,'分類'));select=el('select');select.id='favorite-library-filter';select.setAttribute('aria-label','お気に入りの分類');select.addEventListener('change',()=>{filters[collection()]=select.value;render();});label.append(select);items.before(label);}
   select.replaceChildren();const all=el('option',null,'すべての項目（'+entries.length+'）');all.value='all';select.append(all);
   for(const question of questions){const count=entries.filter(entry=>entry.question.key===question.key).length,option=el('option',null,question.name+'（'+count+'）');option.value=question.key;select.append(option);}

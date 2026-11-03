@@ -53,11 +53,14 @@ assert.equal(presetCreations,1);assert.equal(preset$('style-preset-preview').fir
 presetContext.renderStylePreset({medium:'立体光彩リアル'});assert.equal(presetCreations,2);
 presetContext.collection='everyday';presetContext.renderStylePreset({medium:'立体光彩リアル'});assert.equal(presetCreations,3,'Collection changes must refresh the preset');
 
-// Execute the actual initialization statement with a retained everyday setting.
+// Execute the actual preferred-collection initialization before its consumer.
+const mainCollectionStartup=source.split('\n').find(line=>line.startsWith("let mainCollection='everyday';"));
 const startup=source.split('\n').find(line=>line.startsWith('setView(view);renderSourceKinds();'));
-assert.ok(startup);
-const collections=[],startupContext=vm.createContext({view:'auto',setView(){},renderSourceKinds(){},renderRefs(){},localStorage:{getItem:()=> 'everyday'},setCollection:value=>collections.push(value),setMode(){throw new Error('Do not render the default collection before restoring the selected collection');},renderHistory(){},initializeHistory(){return Promise.resolve();},initializeCreatorDraft(){return Promise.resolve();},renderDraftStatus(){}});
-vm.runInContext(startup,startupContext);assert.equal(collections.length,1);assert.equal(collections[0],'everyday');
+assert.ok(mainCollectionStartup&&startup);
+for(const saved of ['everyday','halloween',null,'unrecognized','storage-error']){
+ const collections=[],startupContext=vm.createContext({view:'auto',setView(){},renderSourceKinds(){},renderRefs(){},localStorage:{getItem:key=>{assert.equal(key,'atelier-main-collection-v1');if(saved==='storage-error')throw new Error('Storage is unavailable');return saved;}},setCollection:value=>collections.push(value),setMode(){throw new Error('Do not render the default collection before restoring the selected collection');},renderHistory(){},initializeHistory(){return Promise.resolve();},initializeCreatorDraft(){return Promise.resolve();},renderDraftStatus(){}});
+ vm.runInContext(mainCollectionStartup+'\n'+startup,startupContext);assert.equal(collections.length,1);assert.equal(collections[0],saved==='halloween'?'halloween':'everyday');
+}
 
 globalThis.window={innerWidth:390,innerHeight:700,addEventListener(){}};
 globalThis.innerWidth=390;globalThis.document={body:{dataset:{collection:'halloween'}},createElement:tag=>el(tag),createTextNode:text=>el('text','',text)};

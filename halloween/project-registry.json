@@ -214,6 +214,22 @@
       "subtitle": "AI作品の共同マガジン"
     },
     {
+      "id": "literature",
+      "title": "物語で稼ぐnote文芸室",
+      "url": "https://note.com/ss_yr/m/m27c5946c6611",
+      "cover": "https://assets.st-note.com/production/uploads/images/299571159/48b9baefa53b2af415b1e7dd983ce530.jpg?dpr=2&width=432",
+      "role": "運営",
+      "subtitle": "小説・エッセイ・物語の共同マガジン"
+    },
+    {
+      "id": "income-strategy",
+      "title": "note収益ラボ｜収益化戦略",
+      "url": "https://note.com/ss_yr/m/mbe79c0d9105c",
+      "cover": "https://assets.st-note.com/production/uploads/images/299682986/4d8a78c8c871c8bd372cae1b974d4f81.jpeg?dpr=2&width=432",
+      "role": "運営",
+      "subtitle": "note運営と収益化の共同マガジン"
+    },
+    {
       "id": "income-lab",
       "title": "収益ラボ／有料記事ショーケース",
       "url": "https://note.com/ss_yr/m/ma7a2c6649fa2",

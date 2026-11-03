@@ -23,11 +23,11 @@ assert.equal(meta('twitter:title'), meta('og:title'));
 assert.ok(!/halloween/i.test(meta('og:title') + meta('og:description') + meta('twitter:description')), 'share text must be season-neutral');
 assert.ok(meta('og:description').length > 20);
 assert.equal(meta('twitter:card'), 'summary_large_image');
-assert.equal(meta('og:image'), `${base}assets/atelier-link-card-20261102.jpg`);
+assert.equal(meta('og:image'), `${base}assets/atelier-link-card-square-20261103.jpg`);
 assert.equal(meta('twitter:image'), meta('og:image'));
 assert.equal(meta('og:image:type'), 'image/jpeg');
-assert.equal(meta('og:image:width'), '400');
-assert.equal(meta('og:image:height'), '210');
+assert.equal(meta('og:image:width'), '1254');
+assert.equal(meta('og:image:height'), '1254');
 assert.ok(meta('og:image:alt').length > 10);
 assert.ok(meta('twitter:image:alt').length > 10);
 for (const [name,width,height] of [
@@ -44,8 +44,21 @@ for (const [name,width,height] of [
 }
 assert.match(html, /<link\b(?=[^>]*rel=["']icon["'])(?=[^>]*href=["']\.\/assets\/halloween-icon-32-v28-4-6\.png["'])[^>]*>/);
 assert.match(html, /<link\b(?=[^>]*rel=["']apple-touch-icon["'])(?=[^>]*href=["']\.\/assets\/halloween-icon-192-v28-4-6\.png["'])[^>]*>/);
-const jpg = fs.readFileSync(path.join(root, 'assets', 'atelier-link-card-20261102.jpg'));
+const jpg = fs.readFileSync(path.join(root, 'assets', 'atelier-link-card-square-20261103.jpg'));
 assert.equal(jpg.subarray(0,2).toString('hex'), 'ffd8', 'JPEG SOI marker required');
 assert.equal(jpg.subarray(-2).toString('hex'), 'ffd9', 'JPEG EOI marker required');
 assert.ok(jpg.length > 2500, 'OG preview asset unexpectedly small');
-console.log('Share preview metadata, new normal-mode JPEG and existing favicon assets: PASS');
+let dimensions;
+for (let offset = 2; offset < jpg.length - 9;) {
+  assert.equal(jpg[offset], 0xff, 'invalid JPEG marker');
+  const marker = jpg[offset + 1];
+  const length = jpg.readUInt16BE(offset + 2);
+  if ([0xc0, 0xc1, 0xc2].includes(marker)) {
+    dimensions = { height: jpg.readUInt16BE(offset + 5), width: jpg.readUInt16BE(offset + 7) };
+    break;
+  }
+  assert.ok(length >= 2, 'invalid JPEG segment length');
+  offset += 2 + length;
+}
+assert.deepEqual(dimensions, { width: 1254, height: 1254 }, 'square preview dimensions must match metadata');
+console.log('Share preview metadata, square-safe JPEG and existing favicon assets: PASS');

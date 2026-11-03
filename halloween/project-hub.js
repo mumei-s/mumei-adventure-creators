@@ -440,7 +440,12 @@ async function initialize() {
   }
   managed?.addEventListener('toggle', () => {
     if (!managed.open || managedLoaded || !managedList) return;
-    const magazines = Array.isArray(registry.operatedMagazines) ? registry.operatedMagazines : [];
+    const magazines = (Array.isArray(registry.operatedMagazines) ? registry.operatedMagazines : [])
+      .filter(item => {
+        // Member-only results log is intentionally excluded from the public operated list.
+        const href = safeURL(item?.url);
+        return href && new URL(href).pathname !== '/ss_yr/m/m9f1b6d83fe39';
+      });
     // Ensure the one managed by the user is always the final card.
     const ordered = [...magazines.filter(item=>item.role !== '管理'),
       ...magazines.filter(item=>item.role === '管理')];

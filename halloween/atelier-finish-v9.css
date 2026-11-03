@@ -123,8 +123,8 @@ body[data-background-effects=off] .studio-hero::after{
  .pp-hub .pp-portal-head{gap:6px}
  .pp-hub .pp-global-appearance{margin:0}
  .pp-hub .pp-background-switch{min-height:36px;font-size:10px;padding:5px 9px}
- .pp-hub .pp-article-link{grid-template-columns:63px minmax(0,1fr) 29px}
- .pp-hub .pp-article-thumb{width:63px;height:44px}
+ .pp-hub .pp-article-link{grid-template-columns:56px minmax(0,1fr) 16px;gap:5px!important;min-height:44px!important}
+ .pp-hub .pp-article-thumb{width:56px;height:38px}
  .pp-hub .pp-article-dest{font-size:0}
  .pp-hub .pp-article-dest:after{font-size:15px;content:'↗'}
 }

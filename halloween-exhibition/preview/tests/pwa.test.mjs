@@ -25,7 +25,7 @@ test('manifest identity and start URL are confined to the preview subtree', asyn
 
 test('social metadata has a concise share title and real crop-safe 1200 by 628 JPEG',async()=>{
  assert.ok(html.includes('<title>'+title+'</title>'));
- assert.ok(html.includes('property="og:title" content="魔法の入口｜Halloween Atelier"'));
+ assert.ok(html.includes('property="og:title" content="魔法の入口｜無名S note Atelier"'));
  const image=html.match(/property="og:image" content="([^"]+)"/)[1];
  assert.equal(image,base+'assets/atelier-magic-gate-share-wide-20261015.jpg');
  const bytes=await readFile(new URL('../assets/atelier-magic-gate-share-wide-20261015.jpg',import.meta.url));

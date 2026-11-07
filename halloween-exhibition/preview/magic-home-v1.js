@@ -54,8 +54,36 @@
         else if (status) status.textContent = '扉を準備しています。';
         break;
       }
-      case 'coming': {
-        if (status) status.textContent = 'この項目の行き先は未登録です。';
+      case 'install': {
+        const open = document.getElementById('atelier-install-panel') || document.getElementById('atelier-install-open');
+        if (open && !open.hidden) open.click();
+        else if (document.querySelector('dialog.pwa-guide')) {
+          const dialog = document.querySelector('dialog.pwa-guide');
+          if (!dialog.open) dialog.showModal();
+        } else if (status) status.textContent = 'ホームへの追加案内を読み込んでいます。';
+        break;
+      }
+      case 'guide': {
+        let dialog = document.getElementById('magic-home-guide');
+        if (!dialog) {
+          dialog = document.createElement('dialog');
+          dialog.id = 'magic-home-guide';
+          dialog.setAttribute('aria-labelledby', 'magic-home-guide-title');
+          dialog.style.cssText = 'box-sizing:border-box;width:min(92vw,450px);max-height:80svh;overflow:auto;padding:20px;border:1px solid #d8bf8b;border-radius:18px;background:#17263a;color:#fff5df;box-shadow:0 20px 70px #0009;font:14px/1.7 system-ui,sans-serif';
+          const close = document.createElement('button');
+          close.type = 'button';close.textContent = '← 戻る';close.style.cssText = 'padding:8px 14px;border-radius:10px;border:1px solid #d8bf8b;background:#eee0c1;color:#213345';
+          const title = document.createElement('h2');
+          title.id='magic-home-guide-title'; title.textContent='魔法の入口の遊び方';
+          const description = document.createElement('p');
+          description.textContent='画面の扉をタップすると、クリエイターの記事や作品の展示へ進みます。街と地下へはホームのボタンから移動できます。';
+          const details = document.createElement('p');
+          details.textContent='「クリエイター」で参加者一覧、「企画」で共同マガジン、「名鑑」で過去の企画、「イラスト」で作成ツールを開けます。魔法／Halloweenの切替は、ホーム上部で行えます。';
+          dialog.append(close,title,description,details);
+          close.addEventListener('click',()=>dialog.close());
+          dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close();});
+          document.body.append(dialog);
+        }
+        if (!dialog.open) dialog.showModal();
         break;
       }
     }

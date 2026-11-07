@@ -60,7 +60,7 @@
   font:600 clamp(8px,2vw,11px)/1.2 system-ui,sans-serif;overflow-wrap:anywhere;
 }
 #theater .magic-home-nav .magic-home-mini .magic-home-icon{
-  font-size:clamp(15px,4vw,20px);line-height:1.2;aria-hidden:true;
+  font-size:clamp(15px,4vw,20px);line-height:1.2;
 }
 #theater .magic-home-nav .magic-home-world :is(a,button,summary){
   display:flex;align-items:center;justify-content:center;
@@ -148,4 +148,14 @@
 }
 @media(prefers-reduced-motion:reduce){
  #theater .magic-home-nav .magic-home-grid :is(a,button,summary){transition:none}
+}
+/* Budget actual viewport height for the three compact rows above the preserved door. */
+#theater[data-palace-state="palace"] #palace-entrance{
+  flex:1 1 auto;
+  height:calc(100svh - 290px);
+  min-height:350px;
+}
+@media(max-height:700px){
+  #theater[data-palace-state="palace"]{overflow-x:hidden;overflow-y:auto}
+  #theater[data-palace-state="palace"] #palace-entrance{min-height:360px}
 }

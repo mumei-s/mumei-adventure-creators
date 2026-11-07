@@ -159,3 +159,6 @@
   #theater[data-palace-state="palace"]{overflow-x:hidden;overflow-y:auto}
   #theater[data-palace-state="palace"] #palace-entrance{min-height:360px}
 }
+
+/* The old normal exhibition is paused, not deleted. Theme selection now uses the two buttons above. */
+#theater #mode-normal{display:none!important}

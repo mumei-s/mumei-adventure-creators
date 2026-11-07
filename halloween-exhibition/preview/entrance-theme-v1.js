@@ -42,15 +42,21 @@
 
   // The old normal collection stays in the implementation, but its button now
   // switches entrance decoration, not collection data or gallery state.
+  let restoringArchive = false;
+  function restoreArchive() {
+    if (root.dataset.mode !== 'normal') return;
+    restoringArchive = true;
+    try { halloween.click(); } finally { restoringArchive = false; }
+  }
   magic.addEventListener('click', event => {
     event.preventDefault();
     event.stopImmediatePropagation();
-    if (root.dataset.mode === 'normal') halloween.click();
+    restoreArchive();
     apply('fantasy');
   }, true);
   halloween.addEventListener('click', () => {
     // The legacy gallery handler remains responsible for selecting the archive.
-    queueMicrotask(() => apply('halloween'));
+    if (!restoringArchive) queueMicrotask(() => apply('halloween'));
   }, true);
 
   apply(theme, false);
@@ -61,7 +67,7 @@
     if (root.dataset.theaterReady !== 'ready') return;
     if (readyHandled) return;
     readyHandled = true;
-    if (root.dataset.mode === 'normal') halloween.click();
+    restoreArchive();
     apply(theme, false);
     observer?.disconnect();
   }

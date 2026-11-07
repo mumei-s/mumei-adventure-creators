@@ -274,8 +274,26 @@ body[data-mode=normal] #theater .atelier-install-panel{background:#eff5ed;color:
 #theater[data-home-theme="fantasy"] #palace-entrance .palace-path-walkers{visibility:hidden}
 #theater[data-home-theme="fantasy"] #palace-entrance .palace-art img{filter:hue-rotate(26deg) saturate(.72) brightness(1.07)}
 #theater[data-home-theme="fantasy"] #palace-entrance .palace-sparkles{filter:hue-rotate(48deg)}
-/* The drawing reorders existing routes; it does not add buttons or change row height. */
+/* Match the drawn order using existing controls and their original styles.
+   No height, padding or portal dimension is overridden. */
 #theater .masthead #palace-town-entrance{order:-1}
+@media(min-width:290px){
+ :root body #theater.theater>.masthead .palace-toolbar{
+  grid-template-columns:minmax(62px,1.2fr) minmax(28px,.65fr) minmax(34px,.7fr) 44px minmax(56px,1.4fr) 40px;
+ }
+ :root body #theater.theater>.masthead .palace-toolbar #list-open{grid-column:5}
+ :root body #theater.theater>.masthead .header-actions>#atelier-install-panel{grid-column:4}
+}
+:root body #theater.theater>.masthead>#castle-exit-panel{
+ grid-template-columns:repeat(4,minmax(0,1fr));
+}
+:root body #theater.theater>.masthead>#castle-exit-panel>.palace-world-links{
+ display:contents;
+}
+:root body #theater.theater>.masthead>#castle-exit-panel #palace-town-entrance{grid-column:1;grid-row:1}
+:root body #theater.theater>.masthead>#castle-exit-panel>.castle-visit-counter{grid-column:2;grid-row:1;justify-self:center}
+:root body #theater.theater>.masthead>#castle-exit-panel #palace-maze-entrance{grid-column:3;grid-row:1}
+:root body #theater.theater>.masthead>#castle-exit-panel>.app-exit-trigger{grid-column:4;grid-row:1;justify-self:center}
 </style></head><body data-layout-page="gallery">
 <section id="gallery-style-status" aria-label="魔法の入口"><div class="style-shell-art" aria-hidden="true"></div><p class="style-shell-heading"><strong>🎃Halloween Atelier</strong><span>無名S note · 魔法の入口🚪</span></p><nav class="style-shell-links" aria-label="宮殿から歩く"><a href="./maze/?return=theatre">宮殿の地下に進む</a><a href="./town/?return=theatre">街へ行く</a></nav><div class="style-recovery" role="status" aria-live="polite"><p id="gallery-style-message"></p><button type="button" onclick="window.atelierStyleRetry()">もう一度開く</button></div></section><noscript><style>html.gallery-style-pending #gallery-style-status{display:none!important}html.gallery-style-pending body>noscript{visibility:visible!important;display:block;padding:24px}</style><p>魔法の入口を開くにはJavaScriptを有効にしてください。<a href="https://note.com/ss_yr/m/m642b82518aeb">共同マガジンを読む</a></p></noscript>
 <a class="skip" href="#list-open">参加者一覧をひらく</a>

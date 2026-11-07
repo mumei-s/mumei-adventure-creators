@@ -7,7 +7,7 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const MAX_SOURCE_BYTES=32*1024*1024;
 
 /** At most two local art requests run together. Failed art leaves the atlas visible. */
-export function createPalaceCastRigs({fetcher,loadImage,onChange=()=>{},timers=globalThis,timeout=8000}={}){
+export function createPalaceCastRigs({fetcher,loadImage,onChange=()=>{},timers=globalThis,timeout=8000,residents=COURTYARD_RIGS,rigNames={}}={}){
  const records=new Map(),requests=new Set();let disposed=false,sourceBytes=0;
  async function bounded(operation){
   const abort=new AbortController();requests.add(abort);let timer;
@@ -19,7 +19,7 @@ export function createPalaceCastRigs({fetcher,loadImage,onChange=()=>{},timers=g
  async function load(id){
   let image;
   try{
-   const url=new URL(`./maze/assets/rigs/monster-${id}/rig.json`,import.meta.url);
+   const url=new URL(`./maze/assets/rigs/${rigNames[id]||`monster-${id}`}/rig.json`,import.meta.url);
    const manifest=await bounded(async signal=>{const response=await fetcher(url,{signal});if(!response.ok)throw Error('Courtyard rig unavailable');return response.json();});
    if(disposed||!manifest?.views||!manifest.atlases?.main)return false;
    const imageURL=new URL(manifest.atlases.main,url);
@@ -35,7 +35,7 @@ export function createPalaceCastRigs({fetcher,loadImage,onChange=()=>{},timers=g
   }catch{return false;}finally{image?.close?.();}
  }
  let next=0;
- const worker=async()=>{while(!disposed&&next<COURTYARD_RIGS.length){const id=COURTYARD_RIGS[next++];await load(id);}};
+ const worker=async()=>{while(!disposed&&next<residents.length){const id=residents[next++];await load(id);}};
  const ready=Promise.all([worker(),worker()]);
  function poseFor(id,pose,time,width,height){
   const record=records.get(id);if(!record||disposed)return null;

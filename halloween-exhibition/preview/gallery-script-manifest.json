@@ -85,8 +85,8 @@
     },
     {
       "path": "palace-startup.js",
-      "bytes": 8317,
-      "sha256": "3488054d0d07292797733bc0b657a7f0a598e83eaeeeb9bf9adfcf786dc71fd9"
+      "bytes": 8371,
+      "sha256": "3924365fe9cd62e9675db06a5aa3d1bd5d32b04ce6ecc860b1ac4b65a6fabb5e"
     },
     {
       "path": "pwa.js",
@@ -115,8 +115,8 @@
     },
     {
       "path": "theater.js",
-      "bytes": 43687,
-      "sha256": "152f331d7ad961b70f3caf181e93f6f942f4fe54c7d99eecf6dba381dca37bb9"
+      "bytes": 43715,
+      "sha256": "2663ca9c018b143e774bff52563b8cde9d460976651259bf3607e0042574a524"
     },
     {
       "path": "transition-effects.js",
@@ -136,13 +136,13 @@
   ],
   "output": {
     "path": "gallery-entry.js",
-    "bytes": 114983,
-    "sha256": "b6a698537d0f706d473cf071fd50491ba700fb56f153fd332568b4fe38be6339"
+    "bytes": 115062,
+    "sha256": "86e6cb4112c2d5534baf8a3708c090ddffe20303f1ae4a2b8f96acadad2b1f61"
   },
   "styles": {
     "path": "gallery-styles.css",
-    "bytes": 296475,
-    "sha256": "058ff9fab18a725b18f772eb85c11c1000c5157264716fd836df484612e79e31"
+    "bytes": 302121,
+    "sha256": "63148610766839ec5192ba47980ff7d30f81568616f783aed1a168c1263d2b0a"
   },
   "imports": [
     {

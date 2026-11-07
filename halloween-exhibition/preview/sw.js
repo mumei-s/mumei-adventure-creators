@@ -2,13 +2,16 @@
  * credentials and unknown query strings always bypass this worker. */
 const SCOPE = new URL('./', self.location.href);
 // BEGIN GENERATED SHELL (node halloween-exhibition/scripts/build-preview-cache.mjs)
-const SHELL_REVISION = '86a92bb2de4c538c';
+const SHELL_REVISION = '2df118d1335b7e0a';
 const PUBLIC_ASSETS = [
-  ["assets/atelier-door-180.png",56294],
-  ["assets/atelier-door-192.png",62766],
-  ["assets/atelier-door-512.png",374122],
-  ["assets/atelier-door-maskable-512.png",195117],
+  ["assets/atelier-door-normal-180.png",21064],
+  ["assets/atelier-door-normal-192.png",22030],
+  ["assets/atelier-door-normal-512.png",58498],
+  ["assets/atelier-door-normal-maskable-512.png",58498],
   ["assets/haunted-branches.svg",4667],
+  ["assets/home/adventure-creators.jpg",183380],
+  ["assets/home/ai-creative-works.svg",9340],
+  ["assets/home/illustration-tool.svg",6163],
   ["assets/manor-hero.webp",401663],
   ["assets/palace/gate-desktop.webp",267018],
   ["assets/palace/gate-phone.webp",282548],
@@ -18,6 +21,8 @@ const PUBLIC_ASSETS = [
   ["assets/palace/palace-desktop.webp",490143],
   ["assets/palace/palace-franken.webp",95799],
   ["assets/palace/palace-interior.webp",209020],
+  ["assets/palace/palace-normal-desktop.webp",585977],
+  ["assets/palace/palace-normal-phone.webp",612491],
   ["assets/palace/palace-phone.webp",506183],
   ["assets/panel-magic/book.svg",6094],
   ["assets/panel-magic/branch.svg",4788],
@@ -25,9 +30,11 @@ const PUBLIC_ASSETS = [
   ["assets/panel-magic/ghost.svg",5094],
   ["assets/panel-magic/lantern.svg",5194],
   ["castle-visit-counter.js?v=20261017-castle2",15215],
-  ["gallery-entry.js?v=20261019-fast2-b6a698537d0f",130578],
-  ["gallery-styles.css?v=20261019-fast2-058ff9fab18a",330219],
-  ["manifest.webmanifest",4955],
+  ["entrance-theme-v1.js?v=20261108-normal1",13672],
+  ["gallery-entry.js?v=20261019-fast2-86e6cb4112c2",130665],
+  ["gallery-styles.css?v=20261019-fast2-631486107668",336430],
+  ["manifest.webmanifest",4962],
+  ["palace-day-residents.js?v=20261108-normal1",9012],
   ["palace-living-scene.css?v=20261024-ready1",6521],
   ["palace-living-scene.js?v=20261024-ready1",19609]
 ];

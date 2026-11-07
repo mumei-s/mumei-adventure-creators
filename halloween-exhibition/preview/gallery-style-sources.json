@@ -24,5 +24,6 @@
   "./gallery-gap.css?v=20261017-gap1",
   "./creator-cauldron.css?v=20261017-cauldron1",
   "./gallery-panels.css?v=20261017-panels2",
-  "./palace-preview.css"
+  "./palace-preview.css",
+  "./atelier-home-theme.css"
 ]

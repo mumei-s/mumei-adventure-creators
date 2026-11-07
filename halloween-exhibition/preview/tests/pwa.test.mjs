@@ -9,7 +9,7 @@ const installSource = await readFile(new URL('../pwa.js', import.meta.url), 'utf
 const css = await readFile(new URL('../magical-entrance.css', import.meta.url), 'utf8');
 const manifest = JSON.parse(await readFile(new URL('../manifest.webmanifest', import.meta.url)));
 const base = 'https://mumei-s.github.io/mumei-adventure-creators/halloween-exhibition/preview/';
-const title = '無名S note / 🎃Halloween Atelier / 魔法の入口🚪';
+const title = '無名S note / Atelier / 魔法の入口🚪';
 test('manifest identity and start URL are confined to the preview subtree', async()=>{
  assert.equal(manifest.name,title);assert.equal(manifest.display,'standalone');
  for(const key of ['id','scope','start_url'])assert.equal(new URL(manifest[key],base).href,base);
@@ -25,7 +25,7 @@ test('manifest identity and start URL are confined to the preview subtree', asyn
 
 test('social metadata has a concise share title and real crop-safe 1200 by 628 JPEG',async()=>{
  assert.ok(html.includes('<title>'+title+'</title>'));
- assert.ok(html.includes('property="og:title" content="魔法の入口｜Halloween Atelier"'));
+ assert.ok(html.includes('property="og:title" content="無名S note Atelier｜魔法の入口🚪"'));
  const image=html.match(/property="og:image" content="([^"]+)"/)[1];
  assert.equal(image,base+'assets/atelier-magic-gate-share-wide-20261015.jpg');
  const bytes=await readFile(new URL('../assets/atelier-magic-gate-share-wide-20261015.jpg',import.meta.url));
@@ -137,7 +137,7 @@ test('title precedes compact toolbar invitation and Apple icon has a dedicated 1
  assert.ok(html.indexOf('class="palace-toolbar"')<html.indexOf('id="atelier-install-panel"'));
  assert.ok(html.indexOf('id="atelier-install-panel"')<html.indexOf('id="palace-world-links"'));
  assert.match(html,/ホーム画面に追加/);
- assert.match(html,/rel="apple-touch-icon" href=".\/assets\/atelier-door-180.png"/);
+ assert.match(html,/rel="apple-touch-icon" href=".\/assets\/atelier-door-normal-180.png"/);
  const bytes=await readFile(new URL('../assets/atelier-door-180.png',import.meta.url));
  assert.equal(bytes.readUInt32BE(16),180);assert.equal(bytes.readUInt32BE(20),180);
 });

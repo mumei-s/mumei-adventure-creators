@@ -1,0 +1,9 @@
+/* The ordinary palace keeps the original gate, crop and opening animation. */
+#theater[data-home-theme=fantasy] .palace-art{background-image:var(--palace-first-preview-landscape)}
+@media(max-aspect-ratio:11/10){#theater[data-home-theme=fantasy] .palace-art{background-image:var(--palace-first-preview-portrait)}}
+#theater[data-home-theme=fantasy][data-palace-format=portrait] .palace-art{background-image:var(--palace-first-preview-portrait)}
+#theater[data-home-theme=fantasy][data-palace-format=landscape] .palace-art{background-image:var(--palace-first-preview-landscape)}
+#theater[data-home-theme=fantasy] #palace-entrance :is(.palace-path-walkers,.palace-living-cast,.journey-motes){display:none}
+#theater[data-home-theme=fantasy] #palace-entrance :is(.palace-vignette,.palace-moon-halo){opacity:.18}
+#theater[data-home-theme=halloween] .palace-day-residents{visibility:hidden}
+.palace-day-residents{position:absolute;inset:0;z-index:9;width:100%;height:100%;pointer-events:none;filter:brightness(var(--visitor-brightness,1))}

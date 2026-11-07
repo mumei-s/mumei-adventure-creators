@@ -116,7 +116,7 @@ test('Halloween title is prominent in its own compact flow row with static motio
  assert.match(css,/prefers-reduced-motion:reduce[^}]*data-mode=halloween[^}]*animation:none!important/);
  assert.match(css,/data-ambient-paused=true[^}]*animation:none!important/);
  assert.doesNotMatch(css,/min-height:800px|@keyframes[^}]*flash/i);
- assert.match(html,/<span>無名S note<\/span><strong>🎃Halloween Atelier<\/strong><small>魔法の入口🚪<\/small>/);
+ assert.match(html,/<span>無名S note<\/span><strong>Atelier<\/strong><small>魔法の入口🚪<\/small>/);
 });
 
 test('phone gallery fills its available width without changing other page contracts',async()=>{

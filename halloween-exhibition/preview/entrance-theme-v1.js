@@ -15,8 +15,8 @@
   const originalNote = note?.textContent || '';
 
   // Keep the existing switch size and styling; only rename the paused normal slot.
-  magic.textContent = '魔法';
-  magic.setAttribute('aria-label', '魔法の入口のテーマ');
+  magic.textContent = '通常';
+  magic.setAttribute('aria-label', '通常Atelierのテーマ');
   halloween.setAttribute('aria-label', 'ハロウィーンのテーマ');
 
   let theme = 'fantasy';
@@ -35,6 +35,13 @@
     if (status) status.textContent = isHalloween ? '星あかりのハロウィン宮殿' : '魔法の入口';
     if (note) note.textContent = isHalloween ? originalNote : '扉の向こうで、物語が待っています。';
     document.title = isHalloween ? defaultTitle : magicTitle;
+    const image = document.getElementById('palace-image');
+    const source = image?.parentElement?.querySelector('source');
+    const prefix = isHalloween ? 'palace' : 'palace-normal';
+    const desktop = `./assets/palace/${prefix}-desktop.webp`;
+    const portrait = `./assets/palace/${prefix}-phone.webp`;
+    if (source && source.getAttribute('srcset') !== portrait) source.setAttribute('srcset', portrait);
+    if (image && image.getAttribute('src') !== desktop) image.setAttribute('src', desktop);
     if (persist) {
       try { localStorage.setItem(key, theme); } catch { /* Optional. */ }
     }
@@ -60,6 +67,46 @@
   }, true);
 
   apply(theme, false);
+  const titleObserver = new MutationObserver(() => {
+    const expected = theme === 'halloween' ? '🎃Halloween Atelier' : 'Atelier';
+    if (textNode()?.textContent !== expected) apply(theme, false);
+  });
+  titleObserver.observe(document.getElementById('site-title'), { childList: true, subtree: true });
+  window.addEventListener('pagehide', () => titleObserver.disconnect(), { once: true });
+  // Move the original live controls; retain their handlers, count and lifecycle.
+  // The creator district is a real town route; the roster remains in Settings.
+  function arrangeControls() {
+    const toolbar = root.querySelector('.toolbar-primary');
+    const settings = document.querySelector('.visitor-preferences');
+    const exit = document.getElementById('app-exit');
+    const counter = document.getElementById('castle-visit-counter');
+    const roster = document.getElementById('list-open');
+    if (toolbar) {
+      for (const control of [exit, counter]) {
+        if (control && control.parentElement !== toolbar) toolbar.append(control);
+      }
+    }
+    if (settings && roster && roster.parentElement !== settings) settings.append(roster);
+    return Boolean(toolbar && settings && exit && counter && roster);
+  }
+  if (!arrangeControls()) {
+    const controlsObserver = new MutationObserver(() => {
+      if (arrangeControls()) controlsObserver.disconnect();
+    });
+    controlsObserver.observe(document.body, { childList: true, subtree: true });
+    window.addEventListener('pagehide', () => controlsObserver.disconnect(), { once: true });
+  }
+  let dayResidents;
+  function prepareDayResidents() {
+    if (root.dataset.theaterReady !== 'ready' || root.dataset.homeTheme !== 'fantasy' || dayResidents) return;
+    dayResidents = import('./palace-day-residents.js?v=20261108-normal1')
+      .then(module => module.initPalaceDayResidents(root))
+      .catch(() => { dayResidents = null; });
+  }
+  const residentObserver = new MutationObserver(prepareDayResidents);
+  residentObserver.observe(root, { attributes: true, attributeFilter: ['data-theater-ready', 'data-home-theme'] });
+  prepareDayResidents();
+  window.addEventListener('pagehide', () => residentObserver.disconnect(), { once: true });
   // A visitor with the former normal-mode preference should land at the same
   // gate, without deleting the normal-mode collection or other preferences.
   let readyHandled = false;

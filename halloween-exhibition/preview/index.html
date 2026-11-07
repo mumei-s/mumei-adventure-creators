@@ -433,6 +433,15 @@ body[data-mode=normal] #theater .atelier-install-panel{background:#eff5ed;color:
 /* The old normal exhibition is paused, not deleted. Theme selection now uses the two buttons above. */
 #theater #mode-normal{display:none!important}
 
+
+/* Respect the original six-slot TOP rather than inventing navigation items. */
+#theater[data-palace-state="palace"]>.masthead>.brand{display:flex!important}
+#theater[data-palace-state="palace"]>.masthead .palace-toolbar{display:grid!important;grid-template-columns:minmax(62px,1.2fr) minmax(28px,.65fr) minmax(34px,.7fr) minmax(56px,1.4fr) 44px 40px!important;gap:2px!important;max-height:none!important}
+#theater[data-palace-state="palace"]>.masthead :is(#mode-halloween,#year-open,#list-open){display:flex!important}
+#theater[data-palace-state="palace"]>.masthead #mode-normal{display:none!important}
+#theater[data-palace-state="palace"]>.masthead .palace-toolbar .visitor-settings-trigger{display:flex!important}
+#theater[data-palace-state="palace"]>.masthead .header-actions>#atelier-install-panel{display:flex!important;max-width:44px!important;min-width:40px!important;width:44px!important;padding:2px!important}
+#theater[data-palace-state="palace"]>.masthead .palace-toolbar :is(#year-open,#list-open,.visitor-settings-trigger){grid-column:auto!important;grid-row:auto!important}
 </style></head><body data-layout-page="gallery">
 <section id="gallery-style-status" aria-label="魔法の入口"><div class="style-shell-art" aria-hidden="true"></div><p class="style-shell-heading"><strong>魔法の入口</strong><span>無名S note Atelier</span></p><nav class="style-shell-links" aria-label="宮殿から歩く"><a href="./maze/?return=theatre">宮殿の地下に進む</a><a href="./town/?return=theatre">街へ行く</a></nav><div class="style-recovery" role="status" aria-live="polite"><p id="gallery-style-message"></p><button type="button" onclick="window.atelierStyleRetry()">もう一度開く</button></div></section><noscript><style>html.gallery-style-pending #gallery-style-status{display:none!important}html.gallery-style-pending body>noscript{visibility:visible!important;display:block;padding:24px}</style><p>魔法の入口を開くにはJavaScriptを有効にしてください。<a href="https://note.com/ss_yr/m/m642b82518aeb">共同マガジンを読む</a></p></noscript>
 <a class="skip" href="#list-open">参加者一覧をひらく</a>
@@ -451,14 +460,6 @@ body[data-mode=normal] #theater .atelier-install-panel{background:#eff5ed;color:
       <button type="button" data-home-theme-select="halloween" aria-pressed="false">🎃 Halloween</button>
     </div>
   </div>
-  <nav class="magic-home-grid magic-home-mini" aria-label="上部メニュー">
-    <a href="./" aria-label="入口のホーム"><span class="magic-home-icon" aria-hidden="true">⌂</span><span>いえ</span></a>
-    <button type="button" data-home-action="music" aria-label="音楽の設定"><span class="magic-home-icon" aria-hidden="true">♫</span><span>音楽</span></button>
-    <a href="https://note.com/ss_yr" target="_blank" rel="noopener noreferrer" aria-label="無名S noteのスキと記事"><span class="magic-home-icon" aria-hidden="true">♡</span><span>スキ</span></a>
-    <button type="button" data-home-action="install" aria-label="ホーム画面への追加案内"><span class="magic-home-icon" aria-hidden="true">▣</span><span>アプリ追加</span></button>
-    <button type="button" data-home-action="guide" aria-label="魔法の入口の遊び方ガイド"><span class="magic-home-icon" aria-hidden="true">?</span><span>ガイド</span></button>
-    <button type="button" data-home-action="settings"><span class="magic-home-icon" aria-hidden="true">⚙</span><span>設定</span></button>
-  </nav>
   <nav class="magic-home-grid magic-home-world" aria-label="世界を移動">
     <a href="./town/?return=theatre">まち</a>
     <button type="button" data-home-action="creators">クリエイター</button>

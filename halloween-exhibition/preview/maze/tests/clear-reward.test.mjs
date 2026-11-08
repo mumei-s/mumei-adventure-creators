@@ -38,7 +38,14 @@ test('prompt uses ID only for name lookup, requested creative status, exact proj
  const p=buildCardPrompt('001','ss_yr');assert.match(p,/調査用。画像には絶対に印字しない/);assert.match(p,/創作ステータス/);assert.match(p,/Halloween Atelier/);assert.match(p,/CLEAR/);assert.match(p,/確認できない場合/);assert.match(p,/添付した好きなイラスト/);assert.match(p,/この端末のクリア No.001/);assert.throws(()=>buildCardPrompt('001','https://note.com/ss_yr'));
 });
 test('static sample explicitly marked and does not expose issuance or claim actual clear',()=>{
- const html=fs.readFileSync(new URL('../clear-gallery/index.html',import.meta.url),'utf8');assert.match(html,/見本/);assert.match(html,/実際のクリア記録や本人認証を示すものではありません/);assert.doesNotMatch(html,/fetch\(|iframe|<script/);
+ const html=fs.readFileSync(new URL('../clear-gallery/index.html',import.meta.url),'utf8');assert.match(html,/見本/);assert.match(html,/実際のクリア記録や本人認証を示すものではありません/);
+ // Only the shared standalone link handler is allowed. The sample itself
+ // still cannot load game state or issue a receipt.
+ const scripts=[...html.matchAll(/<script\b[^>]*>[\s\S]*?<\/script>/g)].map(match=>match[0]);
+ assert.equal(scripts.length,1);assert.match(scripts[0],/^<script src="\.\.\/\.\.\/pwa-navigation\.js\?v=[\w.-]+" defer><\/script>$/);
+ assert.doesNotMatch(html.replace(scripts[0],''),/fetch\(|iframe|<script/);
+ const navigation=fs.readFileSync(new URL('../../pwa-navigation.js',import.meta.url),'utf8');
+ assert.doesNotMatch(navigation,/fetch\s*\(|localStorage|sessionStorage|issuePrompt|createRewardStore/);
 });
 test('save preserves run/progress, no backend; maze-only assets present',()=>{
  const app=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8');assert.match(app,/runId,reachedVault,cleared:\[\.\.\.cleared\]/);assert.match(app,/if\(!isAdventureComplete\(\)&&!rewardStore.read\(runId\)\)return/);assert.match(app,/clearGallery.href='\.\/clear-gallery\/'/);

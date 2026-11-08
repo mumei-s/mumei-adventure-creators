@@ -57,7 +57,7 @@ identityTitle.textContent = '起動画面を通常版に更新';
 const identityCopy = document.createElement('p');
 identityCopy.textContent = '起動時の名前と画像は端末が保存しています。Halloweenが残る場合は、ブラウザのメニューにアプリの更新確認があれば、通常版の名前・アイコンへの更新を適用してください。';
 const identityFallback = document.createElement('p');
-identityFallback.textContent = '更新項目がない場合は、古いホームアイコンを削除し、この正規URLをブラウザで開いて、もう一度ホーム画面に追加してください。';
+identityFallback.textContent = '更新項目がない場合は、古いアプリを削除（ショートカットの場合はホームアイコンを削除）し、この正規URLをブラウザで開いて、もう一度ホーム画面に追加してください。';
 identity.append(identityTitle, identityCopy, identityFallback);
 dialog.append(identity);
 document.body.append(dialog);

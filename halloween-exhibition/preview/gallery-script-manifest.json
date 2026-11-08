@@ -90,8 +90,8 @@
     },
     {
       "path": "pwa.js",
-      "bytes": 8325,
-      "sha256": "e2d7bfabd51904f412c7c7da22f7427692e72cbbf47375235f9327e49a3340fa"
+      "bytes": 8382,
+      "sha256": "12f064135cb63d490a7943dd503e9913ad14ed1e0d6a6412f865cd125773e751"
     },
     {
       "path": "safe-page-reload.js",
@@ -136,8 +136,8 @@
   ],
   "output": {
     "path": "gallery-entry.js",
-    "bytes": 116238,
-    "sha256": "8bcedf34c861833e7630c3db7f567c40383c5e0683204cf69915b9f86318239b"
+    "bytes": 116295,
+    "sha256": "575165b8dbf9f5ded959ef671a5ad49738974f0682c620e7204f3fbb430a170b"
   },
   "styles": {
     "path": "gallery-styles.css",

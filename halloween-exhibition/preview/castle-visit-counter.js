@@ -143,11 +143,14 @@ export function initCastleVisitCounter({ root, mount = root?.querySelector?.('#c
   const scope = doc.createElement('small'); scope.textContent = '実人数ではありません';
   summary.append(label, number); explanation.append(note, scope, meaning); panel.append(summary, explanation);
   mount.insertBefore(panel, mount.querySelector('#app-exit'));
-  const visible = () => !doc.hidden && !doc.prerendering && !root.hidden && !root.inert
+  const canRecord = () => !doc.hidden && !doc.prerendering && !root.hidden && !root.inert
     && root.dataset.mode === 'halloween' && root.dataset.palaceState === 'palace'
     && ['ready', 'fallback'].includes(root.dataset.palaceReady) && root.dataset.archiveState === 'ready';
+  const visible = () => !doc.hidden && !doc.prerendering && !root.hidden && !root.inert
+    && ['palace', 'gallery'].includes(root.dataset.palaceState)
+    && ['ready', 'fallback'].includes(root.dataset.palaceReady) && root.dataset.archiveState === 'ready';
   const counter = createCastleVisitCounter({
-    isVisible: visible,
+    isVisible: canRecord,
     isAllowed: () => isPublicCastleLocation(win.location, win.navigator) && win.top === win.self,
     storage: () => win.localStorage, locks: win.navigator?.locks, crypto: win.crypto,
     fetchImpl: win.fetch?.bind(win), timers: win, AbortControllerImpl: win.AbortController,
@@ -162,7 +165,8 @@ export function initCastleVisitCounter({ root, mount = root?.querySelector?.('#c
       panel.setAttribute('aria-label', meaning.textContent);
     },
   });
-  function refresh() { panel.hidden = !visible(); if (panel.hidden) panel.open = false; void counter.refresh(); }
+  let previousView = '';
+  function refresh() { const view = root.dataset.mode + ':' + root.dataset.palaceState; panel.hidden = !visible(); if (panel.hidden || view !== previousView) panel.open = false; previousView = view; void counter.refresh(); }
   const observer = new win.MutationObserver(refresh);
   observer.observe(root, { attributes: true, attributeFilter: ['data-mode', 'data-palace-state', 'data-palace-ready', 'data-archive-state', 'hidden', 'inert'] });
   doc.addEventListener('visibilitychange', refresh);

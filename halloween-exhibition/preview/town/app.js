@@ -1,3 +1,4 @@
+import {initAppearance} from '../appearance.js?v=20261108-contrast1';
 import {createViewpointControlLayout} from '../viewpoint-controls.js?v=20261024-viewpoints1';
 import {renderPixelRatio} from '../render-quality.js?v=20261030-quality1';
 import {preloadSelectedView} from '../view-preload.js';
@@ -34,6 +35,8 @@ const canvasPixelRatio=canvas=>renderPixelRatio(canvas.clientWidth||1,canvas.cli
 const viewpointLayout=createViewpointControlLayout({root:$('town-main'),utilities:document.querySelector('.town-utilities'),control:document.querySelector('.viewpoint-control')});
 const el=(tag,text,cls)=>{const node=document.createElement(tag);if(text!==undefined)node.textContent=text;if(cls)node.className=cls;return node;};
 const button=(text,action,cls)=>{const node=el('button',text,cls);node.type='button';node.onclick=action;return node;};
+const appearanceHost=el('div');
+initAppearance({container:appearanceHost});
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let settings=readTownPreferences().preferences;
 let cameraDistance=readCameraDistance('town'),cameraZoom=readCameraZoom('town'),padMode=readPadMode(),padBinding=null;
@@ -221,7 +224,7 @@ function showWalkingSpeed(){
  const section=el('section',undefined,'settings-grid');range.className='full';label.className='full';section.append(label,range,output);content.append(section,presets,el('p','0.5〜2倍を0.25刻みで選べます。この端末に保存し、次回も同じ速さで歩きます。','subtle'),button('標準の1倍に戻す',()=>update(1)),button('メニューに戻る',showMenu));
 }
 function showSettings(){
- beginPanel('街の明るさ・音・画面',{kind:'settings'});const displayControls=el('section');content.append(displayControls);const frame=initGameDisplay({controlsParent:displayControls,page:'town',onChange:scheduleResize}),layout=initDisplayMode({controlsParent:displayControls,page:'town'});displayPreferences={destroy(){frame?.destroy();layout?.destroy();}};const grid=el('div',undefined,'settings-grid');
+ beginPanel('街の明るさ・音・画面',{kind:'settings'});content.append(appearanceHost);const displayControls=el('section');content.append(displayControls);const frame=initGameDisplay({controlsParent:displayControls,page:'town',onChange:scheduleResize}),layout=initDisplayMode({controlsParent:displayControls,page:'town'});displayPreferences={destroy(){frame?.destroy();layout?.destroy();}};const grid=el('div',undefined,'settings-grid');
  const label=el('label','明るさ');label.htmlFor='town-brightness';const output=el('output',`${settings.brightness}`);output.id='town-brightness-value';const range=el('input');Object.assign(range,{id:'town-brightness',type:'range',min:'0',max:'100',step:'1',value:String(settings.brightness)});range.oninput=()=>{settings.brightness=Number(range.value);output.textContent=range.value;persistSettings();};grid.append(label,output,range,el('p','75で本来の色。文章と操作の明るさは変わりません。','subtle full'));
  const music=button('音楽をON',()=>{if(audio.snapshot().enabled)audio.stop();else void audio.start({gesture:true});},'full');music.id='town-music';music.setAttribute('aria-pressed','false');const volumeLabel=el('label','音量');volumeLabel.htmlFor='town-volume';const volumeOutput=el('output','0');volumeOutput.id='town-volume-value';const volume=el('input');Object.assign(volume,{id:'town-volume',type:'range',min:'0',max:'100',step:'1',value:String(audio.snapshot().volume)});volume.oninput=()=>audio.setVolume(volume.value);volume.onpointerup=()=>audio.resumeFromGesture();volume.onchange=()=>audio.resumeFromGesture();const status=el('p',undefined,'subtle full');status.id='town-audio-status';status.setAttribute('role','status');grid.append(music,volumeLabel,volumeOutput,volume,status);
  const movement=button(motion()?'動き：ON → 減らす':'動き：減らす → ON',()=>{if(reduced.matches){notify('端末の「動きを減らす」を優先しています。');return;}settings.motion=!settings.motion;persistSettings();showSettings();},'full');movement.setAttribute('aria-pressed',String(motion()));if(reduced.matches){movement.disabled=true;movement.textContent='端末の設定で動きを減らしています';}grid.append(movement);

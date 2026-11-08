@@ -288,3 +288,8 @@ body[data-mode=normal] #theater .atelier-install-panel{background:#eff5ed;color:
   background:Canvas;color:LinkText;border-color:LinkText;
  }
 }
+
+/* All collections keep the same complete navigation bands. */
+:root body #theater.theater>.masthead #palace-world-links{display:grid!important}
+:root body #theater.theater>.masthead #palace-world-links>a{display:flex!important}
+:root body #theater.theater>.masthead .palace-toolbar :is(#app-exit,#year-open){display:flex}

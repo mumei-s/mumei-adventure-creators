@@ -20,5 +20,6 @@
   "../game-ui-update.css?v=20261019-journey1",
   "../dialog-layout.css?v=20261019-journey1",
   "../game-menu.css?v=20261019-compact1",
-  "../game-shell.css?v=20261019-unified1"
+  "../game-shell.css?v=20261019-unified1",
+  "../appearance.css"
 ]

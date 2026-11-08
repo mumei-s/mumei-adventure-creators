@@ -1,3 +1,4 @@
+import {initAppearance} from './appearance.js?v=20261108-contrast1';
 /** Local visitor settings, shared only by this exhibition and its separate room. */
 export const PREFERENCE_KEY = 'halloween-exhibition:visitor-preferences:v1';
 const clamp = (value, min, max, fallback) => typeof value === 'number' && Number.isFinite(value) ? Math.round(Math.max(min, Math.min(max, value))) : fallback;
@@ -150,6 +151,7 @@ export function initVisitorPreferences({ container, triggerParent, onBrightness 
     const input = make('input'); input.type = 'range'; input.min = String(min); input.max = String(max); input.step = '1'; input.id = `${id}-${suffix}`;
     label.htmlFor = input.id; output.setAttribute('for', input.id); wrap.append(label, output, input); controls.append(wrap); return { input, output };
   };
+  const appearance = initAppearance({container: controls});
   const brightness = row('明るさ', 'brightness', bounds.min, bounds.max);
   const music = make('button', 'visitor-music-toggle', '音楽をON'); music.type = 'button'; music.setAttribute('aria-pressed', 'false'); controls.append(music);
   const volume = row('音楽の音量', 'volume', 0, 100);
@@ -171,6 +173,6 @@ export function initVisitorPreferences({ container, triggerParent, onBrightness 
   const onReturn = event => { if (event.persisted) { preferences.volume = 0; player.setVolume(0); player.stop(); render(); } };
   document.addEventListener('visibilitychange', onHidden); window.addEventListener('pagehide', onPageHide); window.addEventListener('blur', onPageHide); window.addEventListener('pageshow', onReturn);
   render(); player.setVolume(preferences.volume); onBrightness(preferences.brightness);
-  return { setBrightness, stopMusic: () => player.stop(), getPreferences: () => ({ ...preferences }), destroy() { player.stop(); document.removeEventListener('visibilitychange', onHidden); window.removeEventListener('pagehide', onPageHide); window.removeEventListener('blur', onPageHide); window.removeEventListener('pageshow', onReturn); controls.remove(); trigger?.remove(); dialog?.remove(); } };
+  return { setBrightness, stopMusic: () => player.stop(), getPreferences: () => ({ ...preferences }), destroy() { appearance.destroy(); player.stop(); document.removeEventListener('visibilitychange', onHidden); window.removeEventListener('pagehide', onPageHide); window.removeEventListener('blur', onPageHide); window.removeEventListener('pageshow', onReturn); controls.remove(); trigger?.remove(); dialog?.remove(); } };
 }
 

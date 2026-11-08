@@ -23,7 +23,7 @@ assert.equal(meta('twitter:title'), meta('og:title'));
 assert.ok(!/halloween/i.test(meta('og:title') + meta('og:description') + meta('twitter:description')), 'share text must be season-neutral');
 assert.ok(meta('og:description').length > 20);
 assert.equal(meta('twitter:card'), 'summary_large_image');
-assert.equal(meta('og:image'), `${base}assets/atelier-link-card-square-20261103.jpg`);
+assert.equal(meta('og:image'), `${base}assets/atelier-text-card-20261108.jpg`);
 assert.equal(meta('twitter:image'), meta('og:image'));
 assert.equal(meta('og:image:type'), 'image/jpeg');
 assert.equal(meta('og:image:width'), '1254');
@@ -44,7 +44,7 @@ for (const [name,width,height] of [
 }
 assert.match(html, /<link\b(?=[^>]*rel=["']icon["'])(?=[^>]*href=["']\.\/assets\/halloween-icon-32-v28-4-6\.png["'])[^>]*>/);
 assert.match(html, /<link\b(?=[^>]*rel=["']apple-touch-icon["'])(?=[^>]*href=["']\.\/assets\/halloween-icon-192-v28-4-6\.png["'])[^>]*>/);
-const jpg = fs.readFileSync(path.join(root, 'assets', 'atelier-link-card-square-20261103.jpg'));
+const jpg = fs.readFileSync(path.join(root, 'assets', 'atelier-text-card-20261108.jpg'));
 assert.equal(jpg.subarray(0,2).toString('hex'), 'ffd8', 'JPEG SOI marker required');
 assert.equal(jpg.subarray(-2).toString('hex'), 'ffd9', 'JPEG EOI marker required');
 assert.ok(jpg.length > 2500, 'OG preview asset unexpectedly small');

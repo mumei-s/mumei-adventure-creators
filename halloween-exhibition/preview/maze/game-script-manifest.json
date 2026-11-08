@@ -18,6 +18,16 @@
       "sha256": "8825afde8e819cad782b2dcaac6ba9595ebe3c65b07db475b7694bd7c40ca4b5"
     },
     {
+      "path": "appearance.css",
+      "bytes": 6140,
+      "sha256": "5fa0c0f4743bb88c6340ce90640f7287af89b65ecce0739d1a0209eb61701e26"
+    },
+    {
+      "path": "appearance.js",
+      "bytes": 2908,
+      "sha256": "1c440c7932c5a7e2df5dbaaf1cf91133b812ed710196b1eb68fcdbff2b3f80f7"
+    },
+    {
       "path": "camera-distance.js",
       "bytes": 2772,
       "sha256": "433463054482d6380455524348700d31c71b1ba121deafebab743ce10ed1724d"
@@ -104,8 +114,8 @@
     },
     {
       "path": "maze/app.js",
-      "bytes": 84711,
-      "sha256": "891e6b307402f9dc377370ac1c17bf141aeba3632d9c35c613ad8a32a86a45e1"
+      "bytes": 84825,
+      "sha256": "8aae973e0a03c04b21988c083f41be9ae25a9ca59f515b06b79636d36f3ed4ba"
     },
     {
       "path": "maze/battle-cinematic-2d.js",
@@ -209,8 +219,8 @@
     },
     {
       "path": "maze/game-style-sources.json",
-      "bytes": 1014,
-      "sha256": "f837ff15ce68a2d6a150d4731ede1e70e83e645a5c18e71660dbb7a65e4f78d2"
+      "bytes": 1037,
+      "sha256": "04967a24f08eb38c1cc221a739bf1c29bc700c0c922f7c5a71c4f18a8b5c252c"
     },
     {
       "path": "maze/library-catalog.js",
@@ -527,7 +537,7 @@
     },
     {
       "path": "maze/app.js",
-      "bytes": 54253
+      "bytes": 54276
     },
     {
       "path": "maze/stage-2d.js",
@@ -678,6 +688,10 @@
       "bytes": 1780
     },
     {
+      "path": "appearance.js",
+      "bytes": 1740
+    },
+    {
       "path": "maze/overlord-materials.js",
       "bytes": 1554
     },
@@ -764,8 +778,8 @@
   ],
   "output": {
     "path": "maze/game-entry.js",
-    "bytes": 526459,
-    "sha256": "8674a23ac9da3d0b95d9d8f5dd39f0c1c9221c3af3fb570c0f2bc4460d2d7060"
+    "bytes": 528222,
+    "sha256": "fe142a45e09733c078825db0a69d359e011378f26fcd9c1e1feb7f300b2c6f52"
   },
   "styleSources": [
     "./style.css?v=20261014-adventure2",
@@ -789,12 +803,13 @@
     "../game-ui-update.css?v=20261019-journey1",
     "../dialog-layout.css?v=20261019-journey1",
     "../game-menu.css?v=20261019-compact1",
-    "../game-shell.css?v=20261019-unified1"
+    "../game-shell.css?v=20261019-unified1",
+    "../appearance.css"
   ],
   "styles": {
     "path": "maze/game-styles.css",
-    "bytes": 144681,
-    "sha256": "3bc7c208df79530ff3bff95945b375c2132a70a6fe9923da31b4bb8756d36df2"
+    "bytes": 150505,
+    "sha256": "86d3dfc9b31f83ca5c86f6dbd0f776b0691ec1b8cd64ab083c5e5d15b5054adf"
   },
   "world": {
     "path": "maze/game-world.js",

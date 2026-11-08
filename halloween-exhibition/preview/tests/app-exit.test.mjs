@@ -62,10 +62,11 @@ test('DOM exit hides and inerts the app, focuses the end heading, and resumes th
 });
 test('castle exit disappears during transitions and ignores stale direct calls', () => {
   const h = dom();
-  for (const state of ['opening', 'walking', 'gallery']) {
+  for (const state of ['opening', 'walking']) {
     h.root.dataset.palaceState = state; h.observers[0].callback();
     assert.equal(h.panel.hidden, true); assert.equal(h.panel.inert, true); assert.equal(h.trigger.hidden, true); assert.equal(h.trigger.disabled, true); assert.equal(h.api.end(), false);
   }
+  h.root.dataset.palaceState = 'gallery'; h.root.dataset.mode = 'normal'; h.api.refresh(); assert.equal(h.trigger.hidden, false); assert.equal(h.panel.inert, false);
   h.root.dataset.palaceState = 'palace'; h.api.refresh(); assert.equal(h.trigger.hidden, false);
   h.doc.hidden = true; h.api.refresh(); assert.equal(h.api.end(), false); assert.deepEqual(h.calls, []);
 });
@@ -113,6 +114,6 @@ test('street panel retains navigation and return tracking without ending the app
   assert.deepEqual(h.calls, ['remember-return']);
   assert.equal(h.api.getState().ended, false); assert.equal(h.root.hidden, false);
   h.root.dataset.mode = 'normal'; h.observers[0].callback();
-  assert.equal(h.panel.hidden, true); assert.equal(h.panel.inert, true); assert.equal(h.api.end(), false);
+  assert.equal(h.panel.hidden, false); assert.equal(h.panel.inert, false); assert.equal(h.api.getState().ended, false);
   h.root.dataset.mode = 'halloween'; h.api.refresh(); assert.equal(h.panel.hidden, false);
 });

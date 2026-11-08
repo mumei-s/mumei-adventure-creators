@@ -8,8 +8,8 @@
       "bytes": 25788
     },
     "app.js": {
-      "sha256": "a6090697440a2a4f4f24b993128996c8775f98a2b5798656149779b086c3ce9a",
-      "bytes": 94928
+      "sha256": "690e4327751785dc385ba53dced4319507fa225c8995bb32a60d6ba426b0ec91",
+      "bytes": 96062
     },
     "art-direction.js?v=28.4.6": {
       "sha256": "d543d1d928d0d6281e94c83317c897e8861a38d6b18f3f40f271fd235db73bab",
@@ -64,8 +64,8 @@
       "bytes": 16922
     },
     "collection.js?v=28.4.6": {
-      "sha256": "d5b3c338694626ccea1f1d88e0af57741dbf504acc59d76ceba9b9d86c4f8e9b",
-      "bytes": 27975
+      "sha256": "f0cd250db7d755de11942532dd80df66fd95c1ab4ab8e4e11ce654e756fd0a8e",
+      "bytes": 28099
     },
     "color-policy.js?v=28.4.6": {
       "sha256": "6389a2ec7172698c133816986e3128e100d52cc4d8d6b5b608e97d2125c44ddc",
@@ -152,12 +152,12 @@
       "bytes": 12698
     },
     "favorites-panel.js?v=28.4.6": {
-      "sha256": "d3fa0c60755d684a9f9f09c2b3aac9e51b20e22440b26c8bafee42a58ba2f7bd",
-      "bytes": 3210
+      "sha256": "a842869e2828c138477c26c81ff683c182893bac9e3926f9b0484a1a86645201",
+      "bytes": 3219
     },
     "favorites.js?v=28.4.6": {
-      "sha256": "e2c0e1510e9bec7080dad78f096f763084ed89ce740bf7a1d94cf48061592fb1",
-      "bytes": 893
+      "sha256": "e7a88e86bd62686e76c00bc817fed98d1bd6ecc34d2bc4ce202fc9e4afec3bea",
+      "bytes": 1975
     },
     "focused-production.js?v=28.4.6": {
       "sha256": "d03430c8524092b19e71ec4c58f10313b7c24c8b3d3a7d782b03dc96ab7d626d",
@@ -224,8 +224,8 @@
       "bytes": 3579
     },
     "japan-direction.js?v=28.4.6": {
-      "sha256": "b7cb19b338b71dae8159e56b40b90cf0c292fff4d5e959711aa39647d19fd9c9",
-      "bytes": 19971
+      "sha256": "126af37fa099c14c068aaca24705c0200da735e2941671b346ed630c82d4d2dc",
+      "bytes": 20064
     },
     "japan-preview-catalog.js?v=28.4.6": {
       "sha256": "fe781a2df18b9ac8578c709b3d3f26a52b2c8eec0c3b486292c2874bb9e64a34",
@@ -300,8 +300,8 @@
       "bytes": 3305
     },
     "picker.js?v=28.4.16": {
-      "sha256": "80d92cce3d63de27ec3100ae034294f1094daece1db3fe28f9c993ddd46b7e9b",
-      "bytes": 27005
+      "sha256": "8a9f9c7e5e519f2c19287bb51f8bab326a089cf06ad74cf3a02b9b4a5649cac7",
+      "bytes": 27411
     },
     "pose-anatomy.js?v=28.4.6": {
       "sha256": "3e7fabea76087db21b94d4e596408cfac4793da9e7361864ee00386166dc391b",
@@ -358,6 +358,10 @@
     "sample-image.js?v=28.4.16": {
       "sha256": "55302325187ee9154f55c5e0f5cc691cf0ae5ee4dd6a94701211507b407b8096",
       "bytes": 2431
+    },
+    "scene-collection-policy.js": {
+      "sha256": "15e25c14666b71d1721fe8a6e72fe25589070a7bc0e59b73695b24cf3f5aaa3f",
+      "bytes": 2346
     },
     "scene-composition.js?v=28.4.6": {
       "sha256": "8d018594b0d0781d3d604bb1ffbace01efa6834d3749937cdc0b9d176b766db1",
@@ -450,7 +454,7 @@
   },
   "output": {
     "file": "app.bundle.js",
-    "sha256": "04277c2c368e9ebe668dfb6fc0f1fc8bd50c1da1a99449073d48ab75e5f16876",
-    "bytes": 1694313
+    "sha256": "c1e2c7f775937201f70cdfd6d0821a35fc61d6461cfe434febcf787736cf28f6",
+    "bytes": 1696623
   }
 }

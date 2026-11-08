@@ -2,7 +2,8 @@
    Reuses the existing #light-play switch so the canvas, effects and workshop remain in sync. */
 const THEME_KEY='atelier-global-appearance-v1';
 const validModes=new Set(['system','light','dark']);
-const buttons=[...document.querySelectorAll('[data-site-theme]')];
+const buttons=[...document.querySelectorAll('button[data-site-theme]')];
+const appearanceSelect=document.getElementById('atelier-appearance');
 const hub=document.querySelector('[data-project-hub]');
 const osDark=window.matchMedia('(prefers-color-scheme: dark)');
 const oldSwitch=document.getElementById('light-play');
@@ -29,6 +30,7 @@ function applyMode(){
   if(hub) hub.dataset.ppAppearance=effectiveDark?'dark':'light';
   const themeMeta=document.querySelector('meta[name="theme-color"]');
   if(themeMeta) themeMeta.content=effectiveDark?'#050608':'#edf3fb';
+  if(appearanceSelect)appearanceSelect.value=mode;
   for(const button of buttons){
     const chosen=button.dataset.siteTheme===mode;
     button.setAttribute('aria-pressed',String(chosen));
@@ -41,6 +43,16 @@ function setMode(next){
   try{localStorage.setItem(THEME_KEY,next);}catch{}
   applyMode();
 }
+appearanceSelect?.addEventListener('change',()=>setMode(appearanceSelect.value));
+window.addEventListener('pageshow',()=>{
+  try{const saved=localStorage.getItem(THEME_KEY);if(validModes.has(saved))mode=saved;}catch{}
+  applyMode();
+});
+window.addEventListener('storage',event=>{
+  if(event.key!==THEME_KEY&&event.key!==null)return;
+  try{mode=validModes.has(localStorage.getItem(THEME_KEY))?localStorage.getItem(THEME_KEY):'system';}catch{mode='system';}
+  applyMode();
+});
 buttons.forEach(button=>button.addEventListener('click',()=>setMode(button.dataset.siteTheme)));
 oldSwitch?.addEventListener('click',()=>{
   if(applying)return;

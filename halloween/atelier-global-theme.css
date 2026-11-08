@@ -260,3 +260,17 @@ body[data-collection] .masthead .atelier-top-settings button:focus-visible{outli
  .masthead .atelier-settings-actions .switch-label{min-width:75px}
  .masthead .atelier-settings-actions :is(.night-switch,.pp-background-switch){min-width:0;flex-wrap:wrap}
 }
+
+/* Settings are optional; the OS choice is the first-visit default. */
+.atelier-settings-panel{margin:6px 0;padding:0;border:1px solid #648a98;border-radius:12px;background:#e4eef0;color:#183c4b}
+.atelier-settings-panel>summary{padding:12px;min-height:44px;box-sizing:border-box;cursor:pointer;font:700 14px/1.4 system-ui,sans-serif}
+.atelier-appearance-label{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:12px;padding:8px 12px;font:600 14px/1.4 system-ui,sans-serif}
+.atelier-appearance-label select{min-height:44px;min-width:0;padding:8px;border:1px solid #648a98;border-radius:7px;background:#fffdf5;color:#183c4b;font:inherit}
+#light-play[hidden]{display:none!important}
+html[data-site-theme=light] body .app-shell{box-sizing:border-box;border:1px solid #6d8b99;border-radius:14px;box-shadow:0 0 0 3px #284a6122}
+html[data-site-theme=light] body :is(.masthead,.atelier-deck,.studio-hero,.generation-quality,.result-panel,.source-kind-panel,.history-card,.pp-panel,.pp-managed-card){border:1px solid #6d8b99;box-shadow:0 2px 10px #20405215}
+html[data-site-theme=light] body .atelier-settings-panel{background:#e4eef0;color:#183c4b;border-color:#648a98}
+html[data-site-theme=dark] body .atelier-settings-panel{background:#1c2d40;color:#f0f5fa;border-color:#91a5bf}
+html[data-site-theme=dark] body .atelier-appearance-label select{background:#202d40;color:#f0f5fa;border-color:#91a5bf}
+.masthead>.atelier-settings-panel{grid-column:1/-1;width:100%;min-width:0;align-self:stretch;justify-self:stretch;box-sizing:border-box}
+.atelier-settings-panel>.atelier-top-settings{display:block}

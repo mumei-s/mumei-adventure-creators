@@ -506,7 +506,7 @@ test('Halloween-only entrance is a separate maze link, never an inline horror mo
  assert.equal(h.$('horror-toggle'),undefined);
  h.$('mode-normal').click();
  assert.equal(h.$('horror-entrance').hidden,true);
- assert.equal(h.$('year-open').hidden,true);
+ assert.equal(h.$('year-open').hidden,false);
  h.$('mode-halloween').click();
  assert.equal(h.$('horror-entrance').hidden,false);
  assert.equal(h.$('year-open').hidden,false);
@@ -1192,8 +1192,8 @@ test('exit while archive loads stays ended when the load finishes and can resume
  h.doc.querySelector('.app-ended-return').click();assert.equal(h.$('theater').dataset.palaceState,'palace');assert.equal(h.$('palace-gate').disabled,false);
  assert.equal(h.doc.activeElement.id,'palace-gate');
 });
-test('normal mode must return to the castle before exit without overwriting the saved mode',async()=>{
- const h=await harness({entrance:true,savedMode:'normal'});assert.equal(h.$('app-exit').hidden,true);
+test('normal mode retains exit and a castle return without overwriting the saved mode',async()=>{
+ const h=await harness({entrance:true,savedMode:'normal'});assert.equal(h.$('app-exit').hidden,false);
  h.doc.querySelector('.visit-return-panel').querySelector('button').click();
  assert.equal(h.$('theater').dataset.palaceState,'palace');assert.equal(h.$('app-exit').hidden,false);
  assert.equal(h.storage.get('halloween-yearbook:display-mode:v1'),'normal');assert.equal(h.doc.closeAttempts||0,0);
@@ -1231,7 +1231,7 @@ test('outdoor town has a direct palace route and gallery route that stay separat
  assert.equal(h.$('article-theater').hidden,true);assert.equal(h.$('palace-entrance').hidden,false);
  h.$('palace-town-entrance').click();assert.equal(h.$('article-theater').hidden,true,'an outdoor route does not auto-open articles');assert.equal(h.api.countPeople(),0);
  assert.equal(h.doc.closeAttempts||0,0);assert.equal(h.doc.musicStops||0,0);assert.equal(h.$('app-ended-screen').hidden,true);assert.ok(h.getReturn());
- h.api.setMode('normal');for(const id of ['palace-town-entrance','town-entrance','palace-maze-entrance'])assert.equal(h.$(id).hidden,true);
+ h.api.setMode('normal');for(const id of ['palace-town-entrance','town-entrance','palace-maze-entrance'])assert.equal(h.$(id).hidden,false);
  h.api.setMode('halloween');assert.equal(h.$('palace-town-entrance').hidden,false);assert.equal(h.$('town-entrance').hidden,false);
 });
 test('town departure preserves exact existing gallery return context and does not write progression',async()=>{
@@ -1266,13 +1266,13 @@ test('ordinary and fresh gallery visits do not consume an old town return snapsh
  const snapshot=JSON.stringify({year:2026,creatorId:'ss_yr',doorId:'owner-work-2026',search:'old-filter',activeTag:'参加者',rosterPage:2});
  for(const savedMode of ['normal','halloween']){
   const h=await harness({entrance:true,savedMode,returnState:snapshot});assert.equal(h.api.state.displayMode,savedMode);assert.equal(h.api.state.currentIndex,0);assert.equal(h.api.state.search,'');assert.equal(h.api.state.activeTag,'');assert.equal(h.$('roster-page-status').textContent,'1 / 4 ページ');
-  if(savedMode==='normal'){assert.equal(h.$('town-entrance').hidden,true);assert.equal(h.$('artwork-image').src,archive.creators[0].avatar);}
+  if(savedMode==='normal'){assert.equal(h.$('town-entrance').hidden,false);assert.equal(h.$('artwork-image').src,archive.creators[0].avatar);}
  }
 });
 test('choosing ordinary mode during a town-return load prevents Halloween context restoration',async()=>{
  const data=structuredClone(archive);data.years.push({...structuredClone(data.years[0]),year:2025});
  const h=await harness({data,entrance:true,autoLoad:false,urlSearch:'?return=palace',returnState:JSON.stringify({year:2025,creatorId:'ss_yr',doorId:'owner-work-2026',search:'old-filter',activeTag:'参加者',rosterPage:2})});
- h.api.setMode('normal');await h.succeed(h.requests[0]);assert.equal(h.api.state.displayMode,'normal');assert.equal(h.api.state.currentYear,2026);assert.equal(h.api.state.search,'');assert.equal(h.api.state.activeTag,'');assert.equal(h.$('town-entrance').hidden,true);assert.equal(h.$('artwork-image').src,archive.creators[0].avatar);
+ h.api.setMode('normal');await h.succeed(h.requests[0]);assert.equal(h.api.state.displayMode,'normal');assert.equal(h.api.state.currentYear,2026);assert.equal(h.api.state.search,'');assert.equal(h.api.state.activeTag,'');assert.equal(h.$('town-entrance').hidden,false);assert.equal(h.$('artwork-image').src,archive.creators[0].avatar);
 });
 
 

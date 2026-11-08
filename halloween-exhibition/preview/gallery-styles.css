@@ -1870,6 +1870,11 @@ body[data-mode=normal] #theater .atelier-install-panel{background:#eff5ed;color:
  }
 }
 
+/* All collections keep the same complete navigation bands. */
+:root body #theater.theater>.masthead #palace-world-links{display:grid!important}
+:root body #theater.theater>.masthead #palace-world-links>a{display:flex!important}
+:root body #theater.theater>.masthead .palace-toolbar :is(#app-exit,#year-open){display:flex}
+
 
 /* Source: ./town-entry.css?v=20261017-headerstack1 */
 /* Stack destinations left of the centered count, keeping the castle in view. */
@@ -2095,6 +2100,56 @@ body[data-layout-page=gallery][data-gallery-panels-paused=true] .detail-image-lo
 .palace-day-residents{position:absolute;inset:0;z-index:9;width:100%;height:100%;pointer-events:none;filter:brightness(var(--visitor-brightness,1))}
 /* Ordinary introductions need the same visible route back to the palace. */
 body[data-layout-page=gallery] #theater[data-mode=normal] .palace-return-row{display:flex!important}
+
+
+/* Source: ./appearance.css */
+/* A visible page edge survives both a white browser canvas and a dark one. */
+html[data-site-theme=light]{color-scheme:light;background:#d7e0dc;color:#213f38}
+html[data-site-theme=dark]{color-scheme:dark;background:#0c1721;color:#edf5f3}
+.appearance-settings{margin:14px 0;padding:12px;border:1px solid currentColor;border-radius:10px}
+.appearance-settings label{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:12px;font:600 14px/1.4 system-ui,sans-serif}
+.appearance-settings select{min-width:0;width:100%;min-height:44px;padding:7px 10px;border:1px solid currentColor;border-radius:7px;font:inherit}
+.appearance-settings p{font:12px/1.6 system-ui,sans-serif}
+:root[data-site-theme=light] body{background:#d7e0dc;color:#213f38}
+:root[data-site-theme=dark] body{background:#0c1721;color:#edf5f3}
+:root[data-site-theme] body #theater.theater{box-sizing:border-box;border:1px solid var(--appearance-edge);box-shadow:0 0 0 3px var(--appearance-ring);--appearance-edge:#6c887d;--appearance-ring:#23473922}
+:root[data-site-theme=dark] body #theater.theater{--appearance-edge:#809eac;--appearance-ring:#d2e4ee22}
+:root[data-site-theme=light] body #theater.theater>.masthead{background:linear-gradient(120deg,#f6f6e9,#e2eee6);border-bottom:2px solid #6c887d;color:#234b42}
+:root[data-site-theme=dark] body #theater.theater>.masthead{background:linear-gradient(120deg,#11212d,#203644);border-bottom:2px solid #809eac;color:#edf5f3}
+:root[data-site-theme=light] body #theater.theater>.masthead #site-title>:is(span,strong,small){color:#234b42;text-shadow:none}
+:root[data-site-theme=dark] body #theater.theater>.masthead #site-title>:is(span,strong,small){color:#f3f7ef;text-shadow:none}
+:root[data-site-theme=light] body #theater.theater>.masthead .palace-toolbar :is(button,#castle-visit-counter){background:#f5f8f0;color:#224b41;border:1px solid #6c887d}
+:root[data-site-theme=light] body #theater.theater>.masthead .palace-toolbar button[aria-pressed=true]{background:#295e50;color:#fffef2;border-color:#295e50}
+:root[data-site-theme=dark] body #theater.theater>.masthead .palace-toolbar :is(button,#castle-visit-counter){background:#243b49;color:#f0f6ef;border:1px solid #809eac}
+:root[data-site-theme=dark] body #theater.theater>.masthead .palace-toolbar button[aria-pressed=true]{background:#b9ddd0;color:#153e34;border-color:#d4efe2}
+:root[data-site-theme=light] body #theater .palace-toolbar #castle-visit-counter strong{color:#224b41}
+:root[data-site-theme=dark] body #theater .palace-toolbar #castle-visit-counter strong{color:#f0f6ef}
+:root[data-site-theme=light] body #theater :is(.artist-panel,.identity-panel,.story-panel,.roster-card,.artwork-caption){border:1px solid #6c887d;box-shadow:0 3px 12px #193e3222}
+:root[data-site-theme=light] body .visitor-settings-dialog{background:#f2f6ed;color:#21483c;border:2px solid #628777}
+:root[data-site-theme=dark] body .visitor-settings-dialog{background:#152632;color:#f0f6ef;border:2px solid #829daa}
+:root[data-site-theme] body .visitor-settings-dialog:before{content:'✧   ❧   ✦   ❧   ✧';color:inherit;animation:none}
+:root[data-site-theme] body .visitor-settings-dialog :is(h2,.visitor-settings-note,.visitor-setting-value){color:inherit;text-shadow:none}
+:root[data-site-theme=light] body .appearance-settings select{background:#fffdf5;color:#21483c}
+:root[data-site-theme=dark] body .appearance-settings select{background:#233c4a;color:#f0f6ef}
+:root[data-site-theme=dark] body #theater[data-mode=normal]{--paper:#182d36;--ink:#eef6ed;--gold:#bedbd1;background:#182d36;color:#eef6ed}
+:root[data-site-theme=dark] body #theater[data-mode=normal] :is(.identity,.artist-info,.room-info,.caption-panel,.participant-info){background:#1e3540;color:#eef6ed;border:1px solid #829daa}
+:root[data-site-theme=dark] body #theater[data-mode=normal] :is(.intro,.meta,.stage-caption,.edition,.sample-notice){color:#d9ece3}
+:root[data-site-theme=light] body #theater .castle-visit-explanation{background:#f4f8ed;color:#21483c;border:1px solid #628777}
+:root[data-site-theme=light] body #theater .castle-visit-explanation :is(p,small){color:#21483c}
+:root[data-site-theme] body #theater .palace-return-row>#palace-return{border:1px solid var(--appearance-edge)}
+@media(forced-colors:active){html[data-site-theme] body #theater.theater{border:2px solid CanvasText;box-shadow:none}.appearance-settings select{background:Canvas;color:CanvasText;border-color:CanvasText}}
+
+/* Game artwork retains its own lighting. Only navigation and menus follow appearance. */
+html[data-site-theme] body:is([data-layout-page=town],[data-layout-page=maze])>main{box-sizing:border-box;border:1px solid #6c887d}
+html[data-site-theme=light] body:is([data-layout-page=town],[data-layout-page=maze]) :is(header,footer,dialog,.town-hud,.town-controls,.utilities){background:#e8f0e7;color:#21483c;border-color:#6c887d}
+html[data-site-theme=light] body:is([data-layout-page=town],[data-layout-page=maze]) dialog :is(h2,h3,p,label,output){color:#21483c}
+html[data-site-theme=light] body:is([data-layout-page=town],[data-layout-page=maze]) dialog :is(button,select,input:not([type=range])){background:#f6f9ef;color:#21483c;border-color:#6c887d}
+html[data-site-theme=dark] body:is([data-layout-page=town],[data-layout-page=maze]) :is(header,footer,dialog,.town-hud,.town-controls,.utilities){background:#152632;color:#f0f6ef;border-color:#829daa}
+html[data-site-theme] body:is([data-layout-page=town],[data-layout-page=maze]) .pinch-camera-hint{display:block;font:10px/1.3 system-ui,sans-serif;color:inherit;opacity:1;white-space:normal}
+/* The caption has its own opaque surface; pale scenic paper is not a text background in dark mode. */
+:root[data-site-theme=light] body #theater.theater .stage-caption{border:1px solid #6c887d;box-shadow:0 3px 12px #193e3222}
+:root[data-site-theme=dark] body #theater.theater[data-mode=normal] .stage-caption{background:#1e3540;color:#eef6ed;border:1.5px solid #90b2a2;box-shadow:0 3px 16px #07131c66}
+:root[data-site-theme=dark] body #theater.theater[data-mode=normal] .stage-caption :is(h1,p,.room-kicker,#creator-name){color:#eef6ed;text-shadow:none}
 
 
 /* Full-sheet readiness marker: never put this in critical/partial CSS. */

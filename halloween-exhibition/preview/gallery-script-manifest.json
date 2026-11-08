@@ -10,8 +10,13 @@
   "inputs": [
     {
       "path": "app-exit.js",
-      "bytes": 4710,
-      "sha256": "1e46f64491caaa2b64917d26f937efa62dba1d4137146a559ec46a4a1a068bba"
+      "bytes": 4724,
+      "sha256": "09430efd1e3333ab7166a77175dc80e60ff7f8749c764949fafcf3f39ed26420"
+    },
+    {
+      "path": "appearance.js",
+      "bytes": 2908,
+      "sha256": "1c440c7932c5a7e2df5dbaaf1cf91133b812ed710196b1eb68fcdbff2b3f80f7"
     },
     {
       "path": "castle-counter-bootstrap.js",
@@ -115,8 +120,8 @@
     },
     {
       "path": "theater.js",
-      "bytes": 44608,
-      "sha256": "090f546ee4147983d2fc0bd0cb5360e9e3cd171b651c252dec1bbc93e2d8d441"
+      "bytes": 44618,
+      "sha256": "254ab7292e884d0bbd9827225498ae962bdcbb68274822b9d1f6784689baabac"
     },
     {
       "path": "transition-effects.js",
@@ -130,19 +135,19 @@
     },
     {
       "path": "visitor-preferences.js",
-      "bytes": 14053,
-      "sha256": "3fbf78de0a421535f089961613795f4a4c7a9ff96c4c78d52eba0fd58cf33355"
+      "bytes": 14204,
+      "sha256": "8880392c3b7822caa800bb80586eee19f2d4cd8a93deaa2a0e18999bf6e34024"
     }
   ],
   "output": {
     "path": "gallery-entry.js",
-    "bytes": 116295,
-    "sha256": "575165b8dbf9f5ded959ef671a5ad49738974f0682c620e7204f3fbb430a170b"
+    "bytes": 118079,
+    "sha256": "0666af7c1eab6bac98dae0005aba0d3b6c9d7c042d27784ee256d52d94cbcfda"
   },
   "styles": {
     "path": "gallery-styles.css",
-    "bytes": 306254,
-    "sha256": "b5c33dde2023975b7aa29dacc38f9c1072e2fe0b13c4ec2310777f9b378ebedc"
+    "bytes": 312751,
+    "sha256": "fdcd980cedeb7863f454409f0e633d42f4b42deb2c07b992783afcd500c128c6"
   },
   "imports": [
     {

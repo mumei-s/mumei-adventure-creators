@@ -1,3 +1,4 @@
+import {initAppearance} from '../appearance.js?v=20261108-contrast1';
 import {renderPixelRatio} from '../render-quality.js?v=20261030-quality1';
 import {createViewpointControlLayout} from '../viewpoint-controls.js?v=20261024-viewpoints1';
 import {afterViewPaint} from '../view-paint.js?v=20261024-viewpoints1';
@@ -76,6 +77,7 @@ let desiredViewpoint=['2d','3d'].includes(queryView)?migrateViewpoint('maze',{vi
 view=desiredViewpoint.view;cameraDistance=desiredViewpoint.distance;
 let walkingSpeed=1;try{walkingSpeed=normalizeWalkingSpeed(localStorage.getItem(WALKING_SPEED_KEY));}catch{}
 const visitorSection=element('section');
+initAppearance({container:visitorSection});
 const visitorSettings=initAdventureAudio({settingsContainer:visitorSection,legacyBrightness,onBrightness:percent=>{brightness=percent/100;},onAudioInput:()=>soundCheck.stop('')});
 initDisplayMode({controlsParent:visitorSection,page:'maze'});
 const displaySection=visitorSection.querySelector('.display-preferences');

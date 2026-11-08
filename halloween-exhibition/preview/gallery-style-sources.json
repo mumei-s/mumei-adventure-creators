@@ -25,5 +25,6 @@
   "./creator-cauldron.css?v=20261017-cauldron1",
   "./gallery-panels.css?v=20261017-panels2",
   "./palace-preview.css",
-  "./atelier-home-theme.css"
+  "./atelier-home-theme.css",
+  "./appearance.css"
 ]

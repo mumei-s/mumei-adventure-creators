@@ -58,6 +58,10 @@
     try { halloween.click(); } finally { restoringArchive = false; }
   }
   magic.addEventListener('click', event => {
+    if (root.dataset.palaceState !== 'palace') {
+      queueMicrotask(() => apply('fantasy'));
+      return;
+    }
     event.preventDefault();
     event.stopImmediatePropagation();
     restoreArchive();

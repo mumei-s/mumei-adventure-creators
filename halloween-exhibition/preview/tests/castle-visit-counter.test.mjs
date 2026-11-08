@@ -131,9 +131,10 @@ test('DOM panel waits for stable ready castle, hides through transitions, and mo
   const h = dom(); assert.equal(h.panel.hidden, true); assert.equal(h.calls.length, 0); assert.equal(initCastleVisitCounter({ root: h.root }), h.api);
   h.root.dataset.palaceState = 'palace'; h.observers[0].cb(); await flush(); assert.equal(h.panel.hidden, false); assert.equal(h.calls.length, 1); assert.equal(h.panel.children[0].children[1].textContent, '1,234');
   assert.equal(h.panel.children[1].children[1].textContent, '実人数ではありません'); assert.equal(h.panel.children[0].children[1].attributes.get('aria-live'), 'polite');
-  for (const [key, value] of [['palaceState', 'gallery'], ['palaceReady', 'loading'], ['archiveState', 'loading'], ['mode', 'normal']]) {
+  for (const [key, value] of [['palaceState', 'opening'], ['palaceReady', 'loading'], ['archiveState', 'loading']]) {
     const original = h.root.dataset[key]; h.root.dataset[key] = value; h.api.refresh(); assert.equal(h.panel.hidden, true); h.root.dataset[key] = original;
   }
+  h.root.dataset.palaceState = 'gallery'; h.root.dataset.mode = 'normal'; h.api.refresh(); await flush(); assert.equal(h.panel.hidden, false); assert.equal(h.calls.length, 1, 'reading the same count in a gallery never records another visit');
   h.doc.hidden = true; h.doc.handlers.get('visibilitychange')(); assert.equal(h.panel.hidden, true); h.doc.hidden = false;
   h.root.inert = true; h.api.refresh(); assert.equal(h.panel.hidden, true); h.root.inert = false;
   h.api.refresh(); await flush(); assert.equal(h.calls.length, 1); h.api.destroy(); assert.equal(h.mount.children.length, 1); assert.equal(h.observers[0].disconnected, true);

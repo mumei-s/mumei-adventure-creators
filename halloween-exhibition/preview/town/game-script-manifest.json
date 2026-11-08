@@ -18,6 +18,16 @@
       "sha256": "8825afde8e819cad782b2dcaac6ba9595ebe3c65b07db475b7694bd7c40ca4b5"
     },
     {
+      "path": "appearance.css",
+      "bytes": 6140,
+      "sha256": "5fa0c0f4743bb88c6340ce90640f7287af89b65ecce0739d1a0209eb61701e26"
+    },
+    {
+      "path": "appearance.js",
+      "bytes": 2908,
+      "sha256": "1c440c7932c5a7e2df5dbaaf1cf91133b812ed710196b1eb68fcdbff2b3f80f7"
+    },
+    {
       "path": "camera-distance.js",
       "bytes": 2772,
       "sha256": "433463054482d6380455524348700d31c71b1ba121deafebab743ce10ed1724d"
@@ -239,8 +249,8 @@
     },
     {
       "path": "town/app.js",
-      "bytes": 64668,
-      "sha256": "d6c3f12c13be2ad71ab4611c3b1f3a3b10df10a6879cc7711ae2c2e61d7867c8"
+      "bytes": 64845,
+      "sha256": "c1ff6e1575752e14247597a9a3109e711af56626845234c38692a72b57edbfbc"
     },
     {
       "path": "town/audio.js",
@@ -314,8 +324,8 @@
     },
     {
       "path": "town/game-style-sources.json",
-      "bytes": 540,
-      "sha256": "9a632f88f8b33a8ba78eac492daf3cc6df4608e09d76b04f315c313921b1b365"
+      "bytes": 563,
+      "sha256": "10b62e072806a497fca664c4fb6396fb4ec23e719ec7f2c52c9dfcd61fde8029"
     },
     {
       "path": "town/lighting.js",
@@ -497,7 +507,7 @@
     },
     {
       "path": "town/app.js",
-      "bytes": 44961
+      "bytes": 45010
     },
     {
       "path": "town/creator-home-painter.js",
@@ -644,6 +654,10 @@
       "bytes": 2109
     },
     {
+      "path": "appearance.js",
+      "bytes": 1740
+    },
+    {
       "path": "maze/startup-assets.js",
       "bytes": 1436
     },
@@ -762,8 +776,8 @@
   ],
   "output": {
     "path": "town/game-entry.js",
-    "bytes": 494165,
-    "sha256": "261b56149baf0a4e01eacea7e276b39779847c3cb123beecbeb692b223b14580"
+    "bytes": 495954,
+    "sha256": "19cd7fe88f24374a9504d25d90dca4296b62c924929c4204ba951238c4da4483"
   },
   "styleSources": [
     "../display-mode.css?v=20261014-layout1",
@@ -777,12 +791,13 @@
     "../dialog-layout.css?v=20261019-journey1",
     "../game-menu.css?v=20261019-compact1",
     "../game-shell.css?v=20261019-unified1",
-    "../presentation-profiles.css?v=20261019-compact1"
+    "../presentation-profiles.css?v=20261019-compact1",
+    "../appearance.css"
   ],
   "styles": {
     "path": "town/game-styles.css",
-    "bytes": 93662,
-    "sha256": "af5e2f934e0d96bf0f0fde83153b7082497a7837b43c3c38cf4427655b6b745a"
+    "bytes": 99486,
+    "sha256": "879cb0157c0090c69a4005b52114085b5d809fff91a03900a0964cd009456e36"
   },
   "world": {
     "path": "town/game-world.js",

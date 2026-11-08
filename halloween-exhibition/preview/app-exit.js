@@ -1,4 +1,4 @@
-/** Explicit castle-only exit. Browser close restrictions are never worked around. */
+/** Explicit exit from either stable exhibition view. Browser close restrictions are never worked around. */
 export function createAppExitController({ canExit, stop = () => {}, resume = () => {}, render = () => {}, close = () => {} }) {
   let ended = false;
   return {
@@ -53,10 +53,10 @@ export function initAppExit({ root, triggerParent, entranceControl, onStop, onRe
   const guidance = make('p'); guidance.className = 'app-ended-guidance';
   const back = make('button', 'お城に戻る', 'app-ended-return'); back.type = 'button';
   screen.append(title, status, guidance, back); doc.body.append(screen);
-  const atCastle = () => root.dataset.palaceState === 'palace' && root.dataset.mode !== 'normal' && !doc.hidden;
+  const stableView = () => ['palace', 'gallery'].includes(root.dataset.palaceState) && !doc.hidden;
   let priorHidden = false, priorInert = false;
   const controller = createAppExitController({
-    canExit: atCastle,
+    canExit: stableView,
     stop() {
       priorHidden = root.hidden; priorInert = root.inert;
       for (const dialog of doc.querySelectorAll('dialog[open]')) dialog.close();
@@ -84,7 +84,7 @@ export function initAppExit({ root, triggerParent, entranceControl, onStop, onRe
     close: () => win.close(),
   });
   function refresh() {
-    const available = atCastle() && !controller.getState().ended;
+    const available = stableView() && !controller.getState().ended;
     panel.hidden = !available; panel.inert = !available;
     trigger.hidden = !available; trigger.disabled = !available;
   }

@@ -2,7 +2,7 @@
  * credentials and unknown query strings always bypass this worker. */
 const SCOPE = new URL('./', self.location.href);
 // BEGIN GENERATED SHELL (node halloween-exhibition/scripts/build-preview-cache.mjs)
-const SHELL_REVISION = '0e9b87cf702db8ca';
+const SHELL_REVISION = '7a90b8306c08107e';
 const PUBLIC_ASSETS = [
   ["assets/atelier-door-normal-180.png",21064],
   ["assets/atelier-door-normal-192.png",22030],
@@ -30,10 +30,10 @@ const PUBLIC_ASSETS = [
   ["assets/panel-magic/butterfly.svg",4902],
   ["assets/panel-magic/ghost.svg",5094],
   ["assets/panel-magic/lantern.svg",5194],
-  ["castle-visit-counter.js?v=20261017-castle2",15215],
-  ["entrance-theme-v1.js?v=20261108-app2",13819],
-  ["gallery-entry.js?v=20261019-fast2-575165b8dbf9",132021],
-  ["gallery-styles.css?v=20261019-fast2-b5c33dde2023",340976],
+  ["castle-visit-counter.js?v=20261017-castle2",15653],
+  ["entrance-theme-v1.js?v=20261108-contrast1",13946],
+  ["gallery-entry.js?v=20261019-fast2-0666af7c1eab",133983],
+  ["gallery-styles.css?v=20261019-fast2-fdcd980cedeb",348123],
   ["manifest.webmanifest",5015],
   ["palace-day-residents.js?v=20261108-normal1",9012],
   ["palace-living-scene.css?v=20261024-ready1",6521],

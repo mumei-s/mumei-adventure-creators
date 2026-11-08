@@ -10,8 +10,8 @@
   "inputs": [
     {
       "path": "app-exit.js",
-      "bytes": 4701,
-      "sha256": "b187614847488c401a41ffbe4ebd1884f7233a03cee3d551ad398868af56132b"
+      "bytes": 4710,
+      "sha256": "1e46f64491caaa2b64917d26f937efa62dba1d4137146a559ec46a4a1a068bba"
     },
     {
       "path": "castle-counter-bootstrap.js",
@@ -90,8 +90,8 @@
     },
     {
       "path": "pwa.js",
-      "bytes": 7439,
-      "sha256": "42830eb30b32d9c00432f33895a4d51d6c8ec247f44c4681de5778b4d8a6ab5d"
+      "bytes": 8325,
+      "sha256": "e2d7bfabd51904f412c7c7da22f7427692e72cbbf47375235f9327e49a3340fa"
     },
     {
       "path": "safe-page-reload.js",
@@ -115,8 +115,8 @@
     },
     {
       "path": "theater.js",
-      "bytes": 43715,
-      "sha256": "2663ca9c018b143e774bff52563b8cde9d460976651259bf3607e0042574a524"
+      "bytes": 44257,
+      "sha256": "62eaf6348886e00a6e73bf17e94a2dcff0af1671fed9dcf7318ddcd4a11fde0c"
     },
     {
       "path": "transition-effects.js",
@@ -136,13 +136,13 @@
   ],
   "output": {
     "path": "gallery-entry.js",
-    "bytes": 115062,
-    "sha256": "86e6cb4112c2d5534baf8a3708c090ddffe20303f1ae4a2b8f96acadad2b1f61"
+    "bytes": 116008,
+    "sha256": "07e4380bf5da2d18c2ffc47be138ca429e357a7cce4c2b529984ebd4dbdcca92"
   },
   "styles": {
     "path": "gallery-styles.css",
-    "bytes": 302121,
-    "sha256": "63148610766839ec5192ba47980ff7d30f81568616f783aed1a168c1263d2b0a"
+    "bytes": 302299,
+    "sha256": "85f3197426a839204d8af99f93359744e942a06bdd123d6dfdb39feb0fc508c4"
   },
   "imports": [
     {

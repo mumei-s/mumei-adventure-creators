@@ -1038,9 +1038,27 @@ test('real gate opening cannot auto-advance the hidden theater and a new home ac
  h.$('mode-normal').click();assert.equal(h.$('article-theater').hidden,false);h.$('mode-halloween').click();await h.tick(1000);assert.equal(h.$('article-theater').hidden,true);assert.equal(h.$('theater').dataset.palaceState,'palace');
  h.$('palace-gate').click();await h.tick(600);assert.equal(h.$('theater').dataset.palaceState,'walking');assert.equal(h.$('article-theater').hidden,true);await h.tick(550);assert.equal(h.$('article-theater').hidden,false);await h.tick(6200);assert.equal(h.api.state.currentIndex,1);
 });
-test('normal mode bypasses the Halloween palace and exact maze return opens the existing personal-work door',async()=>{
- const normal=await harness({entrance:true,savedMode:'normal'});assert.equal(normal.$('palace-entrance').hidden,true);assert.equal(normal.$('article-theater').hidden,false);assert.equal(normal.$('palace-return').hidden,true);assert.equal(normal.$('horror-entrance').hidden,true);
+test('normal introductions expose castle return and exact maze return opens the existing personal-work door',async()=>{
+ const normal=await harness({entrance:true,savedMode:'normal'});assert.equal(normal.$('palace-entrance').hidden,true);assert.equal(normal.$('article-theater').hidden,false);assert.equal(normal.$('palace-return').hidden,false);assert.equal(normal.$('horror-entrance').hidden,true);
  const restored=await harness({entrance:true,urlSearch:'?mode=halloween',returnState:JSON.stringify({year:2026,creatorId:'ss_yr',doorId:'owner-work-2026',rosterPage:1})});assert.equal(restored.$('article-theater').hidden,false);assert.equal(restored.$('theater').dataset.doorId,'owner-work-2026');assert.equal(restored.$('roster-page-status').textContent,`2 / ${pageCount} ページ`);
+});
+
+test('ordinary gate finishes its animation into normal introductions and returns to the same gate',async()=>{
+ const h=await harness({entrance:true,reduced:false});
+ h.$('theater').dataset.homeTheme='fantasy';
+ h.$('palace-gate').click();
+ await h.tick(600);assert.equal(h.$('theater').dataset.palaceState,'walking');assert.equal(h.$('article-theater').hidden,true);
+ await h.tick(550);
+ assert.equal(h.api.state.displayMode,'normal');assert.equal(h.$('article-theater').hidden,false);
+ assert.equal(h.$('theater').dataset.creatorId,'ss_yr');
+ assert.equal(h.$('artwork-image').src,archive.creators[0].avatar);
+ assert.doesNotMatch(h.$('creator-name').textContent,/ハロウィン企画への招待状/);
+ assert.equal(h.$('palace-return').hidden,false);
+ h.$('palace-return').click();assert.equal(h.$('theater').dataset.palaceState,'palace');assert.equal(h.$('article-theater').hidden,true);
+ h.$('palace-gate').click();await h.tick(1150);assert.equal(h.api.state.displayMode,'normal');
+ h.$('palace-return').click();h.$('theater').dataset.homeTheme='halloween';
+ h.$('palace-gate').click();await h.tick(1150);assert.equal(h.api.state.displayMode,'halloween');
+ assert.equal(h.$('total-index').textContent,String(doorCount).padStart(2,'0'));
 });
 test('TOP roster fixed project opens host article without duplicate owner tile',async()=>{
  const h=await harness({entrance:true});h.$('list-open').click();h.$('roster-host-fixed').children[0].click();await h.tick(0);

@@ -227,7 +227,7 @@ $('previous').addEventListener('click',()=>adjacentDoor(-1));$('next').addEventL
 for(const dialog of document.querySelectorAll('dialog')){if(dialog.classList.contains('pwa-guide'))continue;dialog.querySelector('.close').addEventListener('click',()=>dialog.close());dialog.addEventListener('click',e=>{if(e.target!==dialog)return;const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();});dialog.addEventListener('close',()=>{slideshow?.setBlocked('dialog',Boolean(document.querySelector('dialog[open]')));if(returnTarget?.isConnected)returnTarget.focus({preventScroll:true});});}
 document.addEventListener('keydown',e=>{if(!archive||root.dataset.palaceState!=='gallery'||document.querySelector('dialog[open]')||e.altKey||e.ctrlKey||e.metaKey||['INPUT','TEXTAREA','SELECT'].includes(e.target.tagName))return;if(e.key==='ArrowRight'){e.preventDefault();adjacentDoor(1);}if(e.key==='ArrowLeft'){e.preventDefault();adjacentDoor(-1);}});
 installGalleryGesture($('stage'),{onNavigate:direction=>adjacentDoor(direction),onSuppressClick:()=>{suppressClickUntil=Date.now()+500;}});
-$('palace-return').addEventListener('click',cancelStoryOpening);document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelStoryOpening();});$('retry').addEventListener('click',load);$('mode-halloween').addEventListener('click',()=>setMode('halloween'));$('mode-normal').addEventListener('click',()=>setMode('normal'));function rememberGalleryReturn(){try{sessionStorage.setItem(returnStateKey,JSON.stringify({year:currentYear,creatorId:current()?.creatorId,doorId:current()?.doorId,search,activeTag,rosterPage}));}catch{}}
+$('palace-return').addEventListener('click',()=>{if(displayMode==='normal')returnToCastle();else cancelStoryOpening();});document.addEventListener('visibilitychange',()=>{if(document.hidden)cancelStoryOpening();});$('retry').addEventListener('click',load);$('mode-halloween').addEventListener('click',()=>setMode('halloween'));$('mode-normal').addEventListener('click',()=>setMode('normal'));function rememberGalleryReturn(){try{sessionStorage.setItem(returnStateKey,JSON.stringify({year:currentYear,creatorId:current()?.creatorId,doorId:current()?.doorId,search,activeTag,rosterPage}));}catch{}}
 for(const id of ['horror-entrance','palace-maze-entrance','town-entrance','palace-town-entrance','palace-creators-entrance'])$(id)?.addEventListener('click',rememberGalleryReturn);setMode(displayMode,{save:false});
 root.addEventListener('yearbook:seal-collected',event=>{const id=event.detail?.id;if(displayMode!=='halloween'||!currentYear||!sealIDs.includes(id)||seals().includes(id))return;progress.seals[key()]=[...seals(),id];persist();refreshSeals();});
 const visitorSettings=initVisitorPreferences({brightnessRange:{min:0,max:100,defaultValue:75},preferenceKey:'halloween-exhibition:main-preferences:v2',migrateFromKey:'halloween-exhibition:visitor-preferences:v1',triggerParent:document.querySelector('.header-actions'),onBrightness:value=>{root.style.setProperty('--visitor-brightness',String(value/100));root.style.setProperty('--art-brightness',String(value/75));}});
@@ -268,7 +268,21 @@ function updateSlideshowState(state){
  const status=state.error?'自動送りを停止しました。手動の左右ボタンでご覧ください。':!state.enabled?'自動送りはOFFです。':reason.includes('reduced-motion')?'端末の「動きを減らす」設定中は、自動送りも停止します。':reason.includes('dialog')?'詳細や設定を見ている間は、自動送りを一時停止します。':reason.includes('motion')?'演出を止めている間は、自動送りも一時停止します。':reason.length?'自動送りは一時停止中です。再開時は設定した間隔から始めます。':`扉が開いてから${state.intervalSeconds}秒間展示します。手動で移動すると数え直します。`;
  if($('slideshow-status').textContent!==status)$('slideshow-status').textContent=status;
 }
-palace=initPalaceEntrance({root,initialMode:displayMode,onViewChange:state=>{returnPanel.hidden=state.view!=='gallery';appExit?.refresh();slideshow?.setBlocked('palace',state.view!=='gallery'||state.opening);if(state.view==='gallery'&&!state.opening){startGalleryArtwork();if(archive)revealDoor();}if(state.view!=='gallery'){cancelStoryOpening();cancelRoulette();turnVersion++;busy=false;root.classList.remove('turning-in','turning-out');}}});
+let enteringCollection=false;
+palace=initPalaceEntrance({root,initialMode:displayMode,onViewChange:state=>{
+ if(enteringCollection)return;
+ // Both home themes retain the original animated gate. Choose its collection
+ // only after the walk finishes, before requesting or revealing any artwork.
+ if(state.view==='gallery'&&!state.opening&&root.dataset.homeTheme==='fantasy'&&displayMode!=='normal'){
+  enteringCollection=true;
+  try{setMode('normal',{save:false});}finally{enteringCollection=false;}
+ }
+ returnPanel.hidden=state.view!=='gallery';
+ $('palace-return').hidden=state.view!=='gallery';
+ appExit?.refresh();slideshow?.setBlocked('palace',state.view!=='gallery'||state.opening);
+ if(state.view==='gallery'&&!state.opening){startGalleryArtwork();if(archive)revealDoor();}
+ if(state.view!=='gallery'){cancelStoryOpening();cancelRoulette();turnVersion++;busy=false;root.classList.remove('turning-in','turning-out');}
+}});
 let slideshowStorage=null;try{slideshowStorage=localStorage;}catch{}
 slideshow=createSlideshowController({timers:{setTimeout:(fn,delay)=>setTimeout(fn,delay),clearTimeout:id=>clearTimeout(id)},storage:slideshowStorage,onState:updateSlideshowState,onAdvance:async control=>{
  if(!archive||document.hidden||reduced.matches||root.dataset.motionPaused==='true'||document.querySelector('dialog[open]')||rouletteRunning)return;

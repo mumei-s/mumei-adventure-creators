@@ -32,6 +32,8 @@
     halloween.setAttribute('aria-pressed', String(isHalloween));
     const heading = textNode();
     if (heading) heading.textContent = isHalloween ? '🎃Halloween Atelier' : 'Atelier';
+    const subtitle = document.querySelector('#site-title > small');
+    if (subtitle) subtitle.textContent = '魔法の入口🚪';
     if (status) status.textContent = isHalloween ? '星あかりのハロウィン宮殿' : '魔法の入口';
     if (note) note.textContent = isHalloween ? originalNote : '扉の向こうで、物語が待っています。';
     document.title = isHalloween ? defaultTitle : magicTitle;
@@ -47,8 +49,8 @@
     }
   };
 
-  // The old normal collection stays in the implementation, but its button now
-  // switches entrance decoration, not collection data or gallery state.
+  // Select the entrance here; theater.js opens the corresponding collection
+  // after the existing gate animation. Returning always restores this gate.
   let restoringArchive = false;
   function restoreArchive() {
     if (root.dataset.mode !== 'normal') return;

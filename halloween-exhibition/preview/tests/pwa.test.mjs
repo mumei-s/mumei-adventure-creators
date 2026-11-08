@@ -16,11 +16,21 @@ test('manifest identity and start URL are confined to the preview subtree', asyn
  assert.equal(manifest.icons.length,3);
  for(const icon of manifest.icons){
   assert.ok(new URL(icon.src,base).href.startsWith(base+'assets/'));
-  const bytes=await readFile(new URL('../'+icon.src,import.meta.url));
+  const bytes=await readFile(new URL('../'+icon.src.split('?')[0],import.meta.url));
   assert.equal(bytes.subarray(1,4).toString(),'PNG');
   assert.equal(bytes.readUInt32BE(16)+'x'+bytes.readUInt32BE(20),icon.sizes);
  }
  assert.ok(manifest.icons.some(icon=>icon.purpose==='maskable'));
+});
+
+test('both fresh and legacy install icon URLs resolve to the ordinary identity',async()=>{
+ assert.doesNotMatch(manifest.name,/Halloween|🎃/i);
+ for(const size of ['180','192','512','maskable-512']){
+  assert.deepEqual(await readFile(new URL(`../assets/atelier-door-${size}.png`,import.meta.url)),await readFile(new URL(`../assets/atelier-door-normal-${size}.png`,import.meta.url)));
+ }
+ assert.ok(manifest.icons.every(icon=>new URL(icon.src,base).searchParams.has('v')));
+ const installed=await installerHarness({isStandalone:true});
+ assert.ok(installed.elements.some(element=>element.textContent==='起動画面を通常版に更新'));
 });
 
 test('social metadata has a concise share title and real crop-safe 1200 by 628 JPEG',async()=>{

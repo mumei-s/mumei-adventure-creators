@@ -47,9 +47,9 @@ export function initAppExit({ root, triggerParent, entranceControl, onStop, onRe
   const screen = make('section', undefined, 'app-ended-screen');
   screen.id = 'app-ended-screen'; screen.hidden = true;
   screen.setAttribute('aria-labelledby', 'app-ended-title');
-  const title = make('h1', 'ご来場ありがとうございました。');
+  const title = make('h1', '画面を自動で閉じられませんでした。');
   title.id = 'app-ended-title'; title.tabIndex = -1;
-  const status = make('p', '音楽と演出を停止しました。');
+  const status = make('p', '音楽と演出は停止しています。');
   const guidance = make('p'); guidance.className = 'app-ended-guidance';
   const back = make('button', 'お城に戻る', 'app-ended-return'); back.type = 'button';
   screen.append(title, status, guidance, back); doc.body.append(screen);

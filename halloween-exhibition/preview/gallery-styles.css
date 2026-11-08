@@ -2030,6 +2030,8 @@ body[data-layout-page=gallery][data-gallery-panels-paused=true] .detail-image-lo
 #theater[data-home-theme=fantasy] #palace-entrance :is(.palace-vignette,.palace-moon-halo){opacity:.18}
 #theater[data-home-theme=halloween] .palace-day-residents{visibility:hidden}
 .palace-day-residents{position:absolute;inset:0;z-index:9;width:100%;height:100%;pointer-events:none;filter:brightness(var(--visitor-brightness,1))}
+/* Ordinary introductions need the same visible route back to the palace. */
+body[data-layout-page=gallery] #theater[data-mode=normal] .palace-return-row{display:flex!important}
 
 
 /* Full-sheet readiness marker: never put this in critical/partial CSS. */

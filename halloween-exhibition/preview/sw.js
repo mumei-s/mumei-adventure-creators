@@ -2,7 +2,7 @@
  * credentials and unknown query strings always bypass this worker. */
 const SCOPE = new URL('./', self.location.href);
 // BEGIN GENERATED SHELL (node halloween-exhibition/scripts/build-preview-cache.mjs)
-const SHELL_REVISION = '1e476473fa3de5d3';
+const SHELL_REVISION = 'b8ecdb90e1b4e408';
 const PUBLIC_ASSETS = [
   ["assets/atelier-door-normal-180.png",21064],
   ["assets/atelier-door-normal-192.png",22030],
@@ -32,13 +32,13 @@ const PUBLIC_ASSETS = [
   ["assets/panel-magic/lantern.svg",5194],
   ["castle-visit-counter.js?v=20261017-castle2",15215],
   ["entrance-theme-v1.js?v=20261108-app2",13819],
-  ["gallery-entry.js?v=20261019-fast2-07e4380bf5da",131705],
+  ["gallery-entry.js?v=20261019-fast2-8bcedf34c861",131958],
   ["gallery-styles.css?v=20261019-fast2-85f3197426a8",336625],
   ["manifest.webmanifest",5015],
   ["palace-day-residents.js?v=20261108-normal1",9012],
   ["palace-living-scene.css?v=20261024-ready1",6521],
   ["palace-living-scene.js?v=20261024-ready1",19609],
-  ["pwa-navigation.js?v=20261108-app2",5623]
+  ["pwa-navigation.js?v=20261108-app3",5645]
 ];
 // END GENERATED SHELL
 const CACHE_PREFIX = 'mumei-atelier-shell-';

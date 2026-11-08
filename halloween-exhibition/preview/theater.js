@@ -34,7 +34,7 @@ const profiles={
 };
 const ROSTER_PAGE_SIZE=5;
 let rosterPage=0;
-let palace=null;
+let palace=null,gateCollection=null;
 let archive,currentYear,currentIndex=0,busy=false,search='',activeTag='',timer,loadVersion=0,turnVersion=0,returnTarget=null,suppressClickUntil=0;
 let progress={stamps:{},stars:{},seals:{}};let storageOK=true;const storageKey='halloween-yearbook:night-doors:v1';
 try{const saved=JSON.parse(localStorage.getItem(storageKey)||'{}');if(saved&&saved.stamps&&typeof saved.stamps==='object'&&!Array.isArray(saved.stamps)&&saved.stars&&typeof saved.stars==='object'&&!Array.isArray(saved.stars))progress=saved;}catch{storageOK=false;}
@@ -94,7 +94,7 @@ function applyScene(el,entry){const p=palette(entry);el.style.backgroundImage=`u
 function entryHeading(entry){return entry.submissionStatus!=='pending'&&entry.title?.trim()?entry.title:`@${creator(entry).id}`;}
 function pendingCopy(){return displayMode==='halloween'?'ハロウィン作品は準備中です。まずはnoteのプロフィールから、この参加者に会いにいけます。':'作品の掲載は準備中です。まずはnoteのプロフィールから、この参加者に会いにいけます。';}
 function refreshModeCopy(){root.dataset.mode=displayMode;document.body.dataset.mode=displayMode;$('mode-halloween').setAttribute('aria-pressed',String(displayMode==='halloween'));$('mode-normal').setAttribute('aria-pressed',String(displayMode==='normal'));for(const id of ['horror-entrance','town-entrance','palace-town-entrance','palace-maze-entrance'])$(id).hidden=displayMode!=='halloween';$('year-open').hidden=displayMode==='normal';$('roster-title').textContent=displayMode==='halloween'?'今夜のアトリエをめぐる':'参加者一覧';$('site-title').replaceChildren(node('span','無名S note'),node('strong',displayMode==='halloween'?'🎃Halloween Atelier':'みんなのアトリエ'),node('small',displayMode==='halloween'?'魔法の入口🚪':'作品との出会い'));document.title=displayMode==='halloween'?'無名S note / 🎃Halloween Atelier / 魔法の入口🚪':'無名S note / みんなのアトリエ / 作品との出会い';$('roulette-open').hidden=displayMode!=='halloween';if(currentYear){$('edition-text').textContent=displayMode==='halloween'?`${currentYear} · HALLOWEEN YEARBOOK`:'CREATORS’ YEARBOOK · 通年';$('invitation-year').textContent=displayMode==='halloween'?`HALLOWEEN ${currentYear}`:'CREATORS’ COLLECTION';}const pending=document.querySelector('.pending-copy');if(pending)pending.textContent=pendingCopy();}
-function setMode(value,{save=true}={}){cancelStoryOpening();if(value!=='normal'&&value!=='halloween')return;cancelRoulette();slideshow?.manualNavigation();const previous=displayMode,selectedId=current()?.creatorId,selectedDoor=current()?.doorId;displayMode=value;palace?.setMode(value);refreshModeCopy();if(archive&&previous!==value){turnVersion++;busy=false;root.classList.remove('turning-in','turning-out');currentIndex=Math.max(0,entries().findIndex(e=>e.doorId===selectedDoor));if(!entries().some(e=>e.doorId===selectedDoor))currentIndex=Math.max(0,legacyDoorIndex(selectedId));$('stage').hidden=!entries().length;for(const id of['previous','next','artwork-open'])$(id).disabled=!entries().length;activeTag='';search='';rosterPage=0;$('search').value='';root.dataset.sealRooms=JSON.stringify(entries().length?[0,1,2].map(i=>entries()[Math.floor(i*entries().length/3)].creatorId):[]);refreshSeals();paint();if(!entries().length){$('room-dots').replaceChildren();$('current-index').textContent='00';$('total-index').textContent='00';renderProgress();}renderTags();renderRoster();$('sample-notice').textContent=`参加者${participantCount()}人 · 扉${entries().length}枚`;if($('detail').open)$('detail').close();}slideshow?.setBlocked('empty',entries().length<2);if(save)try{localStorage.setItem(modeStorageKey,displayMode);}catch{};}
+function setMode(value,{save=true}={}){gateCollection=null;cancelStoryOpening();if(value!=='normal'&&value!=='halloween')return;cancelRoulette();slideshow?.manualNavigation();const previous=displayMode,selectedId=current()?.creatorId,selectedDoor=current()?.doorId;displayMode=value;palace?.setMode(value);refreshModeCopy();if(archive&&previous!==value){turnVersion++;busy=false;root.classList.remove('turning-in','turning-out');currentIndex=Math.max(0,entries().findIndex(e=>e.doorId===selectedDoor));if(!entries().some(e=>e.doorId===selectedDoor))currentIndex=Math.max(0,legacyDoorIndex(selectedId));$('stage').hidden=!entries().length;for(const id of['previous','next','artwork-open'])$(id).disabled=!entries().length;activeTag='';search='';rosterPage=0;$('search').value='';root.dataset.sealRooms=JSON.stringify(entries().length?[0,1,2].map(i=>entries()[Math.floor(i*entries().length/3)].creatorId):[]);refreshSeals();paint();if(!entries().length){$('room-dots').replaceChildren();$('current-index').textContent='00';$('total-index').textContent='00';renderProgress();}renderTags();renderRoster();$('sample-notice').textContent=`参加者${participantCount()}人 · 扉${entries().length}枚`;if($('detail').open)$('detail').close();}slideshow?.setBlocked('empty',entries().length<2);if(save)try{localStorage.setItem(modeStorageKey,displayMode);}catch{};}
 function notice(text){$('toast').textContent=text;$('toast').classList.add('visible');clearTimeout(timer);timer=setTimeout(()=>$('toast').classList.remove('visible'),3300);}
 function record(entry){
  const seen=viewedDoors();if(seen.includes(entry.doorId))return;
@@ -269,14 +269,21 @@ function updateSlideshowState(state){
  if($('slideshow-status').textContent!==status)$('slideshow-status').textContent=status;
 }
 let enteringCollection=false;
+$('palace-gate').addEventListener('click',()=>{
+ if(!$('palace-gate').disabled)gateCollection=root.dataset.homeTheme==='fantasy'?'normal':'halloween';
+},true);
 palace=initPalaceEntrance({root,initialMode:displayMode,onViewChange:state=>{
  if(enteringCollection)return;
  // Both home themes retain the original animated gate. Choose its collection
  // only after the walk finishes, before requesting or revealing any artwork.
- if(state.view==='gallery'&&!state.opening&&root.dataset.homeTheme==='fantasy'&&displayMode!=='normal'){
-  enteringCollection=true;
-  try{setMode('normal',{save:false});}finally{enteringCollection=false;}
+ if(state.view==='gallery'&&!state.opening&&gateCollection!==null){
+  const target=root.dataset.homeTheme==='fantasy'?'normal':'halloween';gateCollection=null;
+  if(displayMode!==target){
+   enteringCollection=true;
+   try{setMode(target,{save:false});}finally{enteringCollection=false;}
+  }
  }
+ if(state.view!=='gallery'&&!state.opening)gateCollection=null;
  returnPanel.hidden=state.view!=='gallery';
  $('palace-return').hidden=state.view!=='gallery';
  appExit?.refresh();slideshow?.setBlocked('palace',state.view!=='gallery'||state.opening);

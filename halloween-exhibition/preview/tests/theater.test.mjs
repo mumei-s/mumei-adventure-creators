@@ -1060,6 +1060,12 @@ test('ordinary gate finishes its animation into normal introductions and returns
  h.$('palace-gate').click();await h.tick(1150);assert.equal(h.api.state.displayMode,'halloween');
  assert.equal(h.$('total-index').textContent,String(doorCount).padStart(2,'0'));
 });
+
+test('ordinary home decoration does not redirect an explicit archive article selection',async()=>{
+ const h=await harness({entrance:true});h.$('theater').dataset.homeTheme='fantasy';
+ await h.api.navigate(ownerWorkIndex,{immediate:true});
+ assert.equal(h.api.state.displayMode,'halloween');assert.equal(h.$('theater').dataset.doorId,'owner-work-2026');
+});
 test('TOP roster fixed project opens host article without duplicate owner tile',async()=>{
  const h=await harness({entrance:true});h.$('list-open').click();h.$('roster-host-fixed').children[0].click();await h.tick(0);
  assert.equal(h.$('article-theater').hidden,false);assert.equal(h.$('theater').dataset.doorId,'legacy-archive-2026-ss_yr');assert.equal(h.$('palace-entrance').hidden,true);

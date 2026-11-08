@@ -115,8 +115,8 @@
     },
     {
       "path": "theater.js",
-      "bytes": 44257,
-      "sha256": "62eaf6348886e00a6e73bf17e94a2dcff0af1671fed9dcf7318ddcd4a11fde0c"
+      "bytes": 44608,
+      "sha256": "090f546ee4147983d2fc0bd0cb5360e9e3cd171b651c252dec1bbc93e2d8d441"
     },
     {
       "path": "transition-effects.js",
@@ -136,8 +136,8 @@
   ],
   "output": {
     "path": "gallery-entry.js",
-    "bytes": 116008,
-    "sha256": "07e4380bf5da2d18c2ffc47be138ca429e357a7cce4c2b529984ebd4dbdcca92"
+    "bytes": 116238,
+    "sha256": "8bcedf34c861833e7630c3db7f567c40383c5e0683204cf69915b9f86318239b"
   },
   "styles": {
     "path": "gallery-styles.css",

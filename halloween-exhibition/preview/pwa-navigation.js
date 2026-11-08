@@ -18,7 +18,7 @@
     const route = destination.pathname.slice(scope.pathname.length);
     if (!/^(?:index\.html|(?:town|maze)(?:\/(?:index\.html|clear-gallery\/(?:index\.html)?)?)?)?$/.test(route)) return;
     // Anchors inside the current document should keep their native behavior.
-    if (destination.pathname === location.pathname && destination.search === location.search) return;
+    if (destination.hash && destination.pathname === location.pathname && destination.search === location.search) return;
     event.preventDefault();
     location.replace(destination.href);
   });

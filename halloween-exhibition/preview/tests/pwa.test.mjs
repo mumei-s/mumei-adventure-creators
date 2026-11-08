@@ -37,8 +37,8 @@ test('social metadata has a concise share title and real crop-safe 1200 by 628 J
  assert.ok(html.includes('<title>'+title+'</title>'));
  assert.ok(html.includes('property="og:title" content="無名S note Atelier｜魔法の入口🚪"'));
  const image=html.match(/property="og:image" content="([^"]+)"/)[1];
- assert.equal(image,base+'assets/atelier-magic-gate-share-wide-20261015.jpg');
- const bytes=await readFile(new URL('../assets/atelier-magic-gate-share-wide-20261015.jpg',import.meta.url));
+ assert.equal(image,base+'assets/atelier-magic-gate-share-wide-20261108.jpg');
+ const bytes=await readFile(new URL('../assets/atelier-magic-gate-share-wide-20261108.jpg',import.meta.url));
  assert.equal(bytes.readUInt16BE(0),0xffd8);let dimensions;for(let pos=2;pos<bytes.length;){if(bytes[pos++]!==0xff)continue;const marker=bytes[pos++],length=bytes.readUInt16BE(pos);if([0xc0,0xc1,0xc2].includes(marker)){dimensions=[bytes.readUInt16BE(pos+5),bytes.readUInt16BE(pos+3)];break;}pos+=length;}assert.deepEqual(dimensions,[1200,628]);assert.match(html,/property="og:image:type" content="image\/jpeg"/);assert.match(html,/property="og:image:height" content="628"/);
  assert.match(html,/name="twitter:card" content="summary_large_image"/);
  assert.match(html,/name="note:card" content="summary_large_image"/);

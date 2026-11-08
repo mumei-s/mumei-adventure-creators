@@ -1807,6 +1807,69 @@ body[data-mode=normal] #theater .atelier-install-panel{background:#eff5ed;color:
 }
 @media(forced-colors:active){#theater .palace-toolbar #castle-visit-counter,#theater .palace-toolbar .castle-visit-explanation{background:Canvas;color:CanvasText;border-color:CanvasText}}
 
+/* A larger left-aligned name shares its first row with a real note return. */
+:root body #theater.theater>.masthead>.brand{
+ width:calc(100% - clamp(76px,22cqw,108px) - 10px);min-height:50px;
+ align-self:flex-start;justify-content:flex-start;text-align:left;
+}
+:root body #theater.theater>.masthead #site-title{
+ grid-template-columns:max-content max-content;justify-content:start;column-gap:5px;row-gap:2px;text-align:left;
+}
+:root body #theater.theater>.masthead #site-title>span{
+ justify-self:start;font:600 clamp(20px,6cqw,30px)/1.08 system-ui,sans-serif!important;
+}
+:root body #theater.theater>.masthead #site-title>strong{
+ font:600 clamp(26px,7.8cqw,38px)/1.08 Georgia,'Times New Roman',serif!important;
+}
+:root body #theater.theater>.masthead #site-title>small{
+ justify-self:start;font:500 clamp(15px,4.3cqw,20px)/1.08 system-ui,sans-serif!important;
+}
+:root body #theater.theater>.masthead>.note-return-panel{
+ position:absolute;top:4px;right:max(8px,env(safe-area-inset-right));z-index:2;
+ box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
+ width:clamp(76px,22cqw,108px);min-height:48px;padding:4px 6px;
+ border:1.5px solid #e5c37a;border-radius:11px;background:linear-gradient(135deg,#fdf7dc,#e3f4e9);
+ color:#124f43;text-decoration:none;text-align:center;box-shadow:inset 0 0 0 2px #ffffff88,0 2px 9px #0003;
+}
+:root body #theater.theater>.masthead>.note-return-panel>strong{font:800 20px/1 system-ui,sans-serif;letter-spacing:.01em}
+:root body #theater.theater>.masthead>.note-return-panel>span{font:700 12px/1.2 system-ui,sans-serif;white-space:nowrap}
+/* Reclaim a little height from the two rows directly below the title. */
+:root body #theater.theater>.masthead .palace-toolbar button,
+:root body #theater.theater>.masthead .palace-toolbar .header-actions :is(#year-open,.visitor-settings-trigger),
+:root body #theater.theater>.masthead .palace-toolbar #app-exit{min-height:40px;padding-block:2px}
+:root body #theater.theater>.masthead .palace-toolbar #castle-visit-counter>summary{min-height:38px}
+:root body #theater.theater>.masthead #palace-world-links>a,
+:root body #theater.theater>.masthead #palace-world-links>#palace-town-entrance{min-height:40px;padding-block:2px}
+/* The creation card keeps its own light surface and an intentional two-line name. */
+:root body #theater.theater>.masthead>.creative-world-links>#header-illustration-tool{
+ border:2px solid #e3c171;background:linear-gradient(135deg,#fff8dd,#dff2e7);padding:2px 4px;
+ box-shadow:inset 0 0 0 1px #fff9,0 2px 7px #0003;
+}
+:root body #theater.theater>.masthead>.creative-world-links>#header-illustration-tool:after{
+ background:linear-gradient(110deg,#fff7dded,#e2f3e7b8);
+}
+:root body #theater.theater>.masthead>.creative-world-links>#header-illustration-tool .creative-thumbnail{opacity:.3}
+:root body #theater.theater>.masthead>.creative-world-links>#header-illustration-tool strong{
+ color:#164d40;font:800 clamp(13px,3.65cqw,16px)/1.15 system-ui,sans-serif;
+ text-shadow:0 1px 0 #fff;white-space:nowrap;
+}
+@container gallery-shell (max-width:300px){
+ :root body #theater.theater>.masthead #site-title{grid-template-columns:minmax(0,1fr)}
+ :root body #theater.theater>.masthead #site-title>strong{grid-column:1;grid-row:2}
+ :root body #theater.theater>.masthead #site-title>small{grid-row:3}
+}
+:root body #theater.theater[data-home-theme=halloween]>.masthead #site-title{grid-template-columns:minmax(0,1fr)}
+:root body #theater.theater[data-home-theme=halloween]>.masthead #site-title>strong{
+ grid-column:1;grid-row:2;font-size:clamp(17px,5cqw,26px)!important;
+}
+:root body #theater.theater[data-home-theme=halloween]>.masthead #site-title>small{grid-row:3}
+@media(forced-colors:active){
+ :root body #theater.theater>.masthead>.note-return-panel,
+ :root body #theater.theater>.masthead>.creative-world-links>#header-illustration-tool{
+  background:Canvas;color:LinkText;border-color:LinkText;
+ }
+}
+
 
 /* Source: ./town-entry.css?v=20261017-headerstack1 */
 /* Stack destinations left of the centered count, keeping the castle in view. */

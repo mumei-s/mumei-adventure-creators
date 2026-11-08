@@ -141,8 +141,8 @@
   },
   "styles": {
     "path": "gallery-styles.css",
-    "bytes": 302299,
-    "sha256": "85f3197426a839204d8af99f93359744e942a06bdd123d6dfdb39feb0fc508c4"
+    "bytes": 306254,
+    "sha256": "b5c33dde2023975b7aa29dacc38f9c1072e2fe0b13c4ec2310777f9b378ebedc"
   },
   "imports": [
     {

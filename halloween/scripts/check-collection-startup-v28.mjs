@@ -27,13 +27,15 @@ assert.ok(source.includes('const initialCollection=mainCollection;setCollection(
 for(const test of [
  {main:null,theme:null,legacy:null,os:false,expected:'everyday',lights:'day'},
  {main:'everyday',theme:null,legacy:null,os:true,expected:'everyday',lights:'night'},
- {main:'halloween',theme:'light',legacy:null,os:true,expected:'halloween',lights:'day'},
- {main:'halloween',theme:'dark',legacy:null,os:false,expected:'halloween',lights:'night'},
+ {main:'halloween',theme:'light',legacy:null,os:true,expected:'everyday',lights:'day'},
+ {main:'halloween',theme:'dark',legacy:null,os:false,expected:'everyday',lights:'night'},
+ {main:'halloween',reset:'1',theme:'dark',legacy:null,os:false,expected:'halloween',lights:'night'},
  {main:'everyday',theme:'light',legacy:'on',os:true,expected:'everyday',lights:'day'},
  {main:null,theme:null,legacy:'on',os:false,expected:'everyday',lights:'night'}
 ]){
  const store=new Map(Object.entries({
   'atelier-main-collection-v1':test.main,
+  'atelier-startup-everyday-v1':test.reset,
   'atelier-global-appearance-v1':test.theme,
   'halloween-night':test.legacy
  }).filter(([,v])=>v!=null));
@@ -51,9 +53,12 @@ for(const test of [
   querySelector(selector){return selector==='.collection-switch'?group:null;},
   querySelectorAll(){return group.children;}
  };
- const scope={document,localStorage:{getItem:key=>store.get(key)||null},matchMedia:()=>({matches:test.os})};
+ const localStorage={getItem:key=>store.get(key)||null,setItem:(key,value)=>store.set(key,value),removeItem:key=>store.delete(key)};
+ const scope={document,localStorage,matchMedia:()=>({matches:test.os})};
  vm.runInNewContext([bootHead,bootBody,bootControls,bootHero].join(';'),scope);
  assert.equal(body.dataset.collection,test.expected,'First paint must match primary selection');
+ assert.equal(store.get('atelier-startup-everyday-v1'),'1','The seasonal preference reset must run once');
+ assert.equal(store.get('atelier-main-collection-v1')==='halloween',test.expected==='halloween','App startup must read the same collection as first paint');
  assert.equal(body.dataset.lights,test.lights,'Theme must not flash on initial HTML');
  assert.equal(buttons.find(b=>b.dataset.collection===test.expected).attributes['aria-pressed'],'true');
  assert.equal(group.children[0].dataset.collection,test.expected,'The primary button must be first before painting');

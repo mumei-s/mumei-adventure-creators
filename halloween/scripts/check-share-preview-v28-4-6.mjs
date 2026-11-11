@@ -32,8 +32,8 @@ assert.ok(meta('og:image:alt').length > 10);
 assert.ok(meta('twitter:image:alt').length > 10);
 for (const [name,width,height] of [
   ['halloween-share-card-v28-4-6.png',1200,630],
-  ['halloween-icon-32-v28-4-6.png',32,32],
-  ['halloween-icon-192-v28-4-6.png',192,192]
+  ['atelier-icon-32.png',32,32],
+  ['atelier-icon-192.png',192,192]
 ]) {
   const png = fs.readFileSync(path.join(root, 'assets', name));
   assert.equal(png.subarray(0,8).toString('hex'), '89504e470d0a1a0a');
@@ -42,8 +42,8 @@ for (const [name,width,height] of [
   assert.equal(png.readUInt32BE(20), height);
   assert.ok(png.length > 500);
 }
-assert.match(html, /<link\b(?=[^>]*rel=["']icon["'])(?=[^>]*href=["']\.\/assets\/halloween-icon-32-v28-4-6\.png["'])[^>]*>/);
-assert.match(html, /<link\b(?=[^>]*rel=["']apple-touch-icon["'])(?=[^>]*href=["']\.\/assets\/halloween-icon-192-v28-4-6\.png["'])[^>]*>/);
+assert.match(html, /<link\b(?=[^>]*rel=["']icon["'])(?=[^>]*href=["']\.\/assets\/atelier-icon-32\.png["'])[^>]*>/);
+assert.match(html, /<link\b(?=[^>]*rel=["']apple-touch-icon["'])(?=[^>]*href=["']\.\/assets\/atelier-icon-192\.png["'])[^>]*>/);
 const jpg = fs.readFileSync(path.join(root, 'assets', 'atelier-text-card-20261108.jpg'));
 assert.equal(jpg.subarray(0,2).toString('hex'), 'ffd8', 'JPEG SOI marker required');
 assert.equal(jpg.subarray(-2).toString('hex'), 'ffd9', 'JPEG EOI marker required');
@@ -61,4 +61,4 @@ for (let offset = 2; offset < jpg.length - 9;) {
   offset += 2 + length;
 }
 assert.deepEqual(dimensions, { width: 1254, height: 1254 }, 'square preview dimensions must match metadata');
-console.log('Share preview metadata, square-safe JPEG and existing favicon assets: PASS');
+console.log('Share preview metadata, square-safe JPEG and season-neutral favicon assets: PASS');

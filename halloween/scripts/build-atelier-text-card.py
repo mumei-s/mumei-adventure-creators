@@ -33,6 +33,20 @@ def render(width, height):
         draw.text((x,top),text,font=font,fill='#f2f8f3')
     return image.resize((width,height),Image.Resampling.LANCZOS)
 
+def render_icon(size):
+    canvas = size * 4
+    image = Image.new('RGB', (canvas, canvas), '#152d3c')
+    draw = ImageDraw.Draw(image)
+    inset = round(canvas * .09)
+    draw.rounded_rectangle((inset, inset, canvas - inset, canvas - inset),
+                           radius=round(canvas * .13), outline='#a9c9cb',
+                           width=max(1, round(canvas * .025)))
+    font = ImageFont.truetype(serif, round(canvas * .77))
+    left, top, right, bottom = draw.textbbox((0, 0), 'A', font=font)
+    draw.text(((canvas - left - right) / 2, (canvas - top - bottom) / 2),
+              'A', font=font, fill='#f2f8f3')
+    return image.resize((size, size), Image.Resampling.LANCZOS)
+
 square = render(1254,1254)
 for name in ['atelier-text-card-20261108.jpg', 'atelier-link-card-square-20261103.jpg']:
     square.save(assets/name, quality=94, optimize=True)
@@ -41,3 +55,5 @@ for name in ['atelier-link-card-20261102.jpg', 'illustration-tool-share-20261102
     wide.save(assets/name, quality=94, optimize=True)
 # A crawler may still know the original asset URL. Keep it neutral as well.
 wide.save(assets/'halloween-share-card-v28-4-6.png', optimize=True)
+for size in (32, 192):
+    render_icon(size).save(assets/f'atelier-icon-{size}.png', optimize=True)

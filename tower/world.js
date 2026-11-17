@@ -1,9 +1,9 @@
 import { makeWalkPad, bindWalking } from '../halloween-exhibition/preview/diorama-city/walk-controls.js?v=1';
 import { hostPortrait, hostWalker, residentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=2';
 import { applyDistrictLight } from '../halloween-exhibition/preview/diorama-city/scene-time.js?v=1';
+import { TOWER_API } from './avatar-travel.js?v=1';
 
 const viewNames = ['雨上がりの街', '木立と丘', '海辺の朝焼け', '星明かりの街'];
-export const TOWER_API = 'https://xxhaerjvrgmnadxjqetz.supabase.co/functions/v1/creator-tower';
 const views = ['city', 'grove', 'coast', 'stars'];
 const motifs = {
   reading: { hue: 38, furniture: ['shelf', 'desk', 'plant'], view: 1, name: '書斎' },

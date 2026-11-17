@@ -5,6 +5,7 @@ export const venues = {
     title: '水辺のカフェ',
     image: './assets/cafe.webp',
     alt: '真鍮のカウンターと窓辺の読書席がある、街区のカフェ',
+    scale: [157, .32],
     spots: {
       counter: { label: 'カウンター', point: [300, 467], sign: [300, 330], action: 'コーヒーを注文する' },
       reading: { label: '読書席', point: [710, 482], sign: [710, 338], action: '卓上のしおりを読む' },
@@ -16,6 +17,7 @@ export const venues = {
     title: '水辺の公園',
     image: './assets/park.webp',
     alt: '水盤とベンチの向こうに、Atelier Towerが見える水辺の遊歩道',
+    scale: [123, .32],
     spots: {
       bench: { label: '水盤そばのベンチ', point: [235, 475], sign: [235, 330], action: 'ベンチでひと休み' },
       lookout: { label: '展望デッキ', point: [760, 484], sign: [760, 335], action: '夕景・夜景を切り替える' },

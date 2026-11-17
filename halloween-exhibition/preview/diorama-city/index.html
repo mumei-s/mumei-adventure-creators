@@ -7,15 +7,15 @@
   <meta name="description" content="結界の先に広がる近未来街区。高架を走る電車と水辺を眺め、カフェ、公園、Atelier Towerを訪ねる。">
   <title>近未来街区｜Atelier Tower</title>
   <link rel="preload" as="image" href="./assets/district.webp?v=1">
-  <link rel="stylesheet" href="./district.css?v=2">
+  <link rel="stylesheet" href="./district.css?v=3">
   <link rel="stylesheet" href="./walk-pad.css?v=1">
-  <script type="module" src="./district.js?v=2"></script>
+  <script type="module" src="./district.js?v=3"></script>
 </head>
 <body>
 <main id="district" tabindex="-1">
   <header class="bar">
     <a class="return" href="../town/?arrival=future-gate"><span aria-hidden="true">←</span> クリエイターエリア</a>
-    <div class="title"><span>Atelier Tower</span><h1>近未来街区</h1></div>
+    <div class="title"><span>Atelier Tower</span><h1 id="district-title">近未来街区</h1></div>
     <div class="time-tools">
       <time id="clock" aria-label="街区の時刻">17:40</time>
       <button type="button" id="lighting" aria-label="街の明るさを切り替え">光景 自動</button>
@@ -52,11 +52,17 @@
       <button type="button" id="visit" class="visit" disabled>近くを調べる</button>
       <a id="place-link" class="venue-link" hidden></a>
     </div>
+    <div class="player-info">
+      <p id="walker-name">無名S note</p>
+      <a id="walker-room" href="../../../tower/#prompt-import">自分のアバターで歩く</a>
+    </div>
   </div>
   <nav id="venue-guide" class="venue-guide" aria-label="街区の行き先">
     <button type="button" data-head-to="cafe">カフェへ</button>
     <button type="button" data-head-to="park">公園へ</button>
     <button type="button" data-head-to="tower">マンションへ</button>
+    <button type="button" data-head-to="marketGate">高架の先へ</button>
+    <button type="button" data-head-to="canalGate">運河の向こうへ</button>
   </nav>
   <dialog id="place-dialog" aria-labelledby="place-title">
     <div class="place-image" aria-hidden="true"></div>

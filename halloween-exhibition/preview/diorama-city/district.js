@@ -1,18 +1,30 @@
 import { makeWalkPad, bindWalking } from './walk-controls.js?v=1';
-import { hostWalker } from './host-avatar.js?v=2';
+import { hostWalker, residentWalker } from './host-avatar.js?v=2';
 import { applyDistrictLight } from './scene-time.js?v=1';
-import { distance, places, walkable, walkingRoute } from './paths.js?v=2';
+import { distance, streetAreas, walkable, walkingRoute } from './paths.js?v=3';
 import { districtTraffic } from './traffic.js?v=1';
-import { cafeStory, venues, venueSpawn, venueWalkable } from './venues.js?v=1';
+import { cafeStory, venues, venueSpawn, venueWalkable } from './venues.js?v=2';
+import { TOWER_API, OWNER_STORAGE, avatarImageUrl, readWalkDraft } from '../../../tower/avatar-travel.js?v=1';
 
 const el=id=>document.getElementById(id);
 const root=el('district'), view=el('city-view'), world=el('city-world'), citizen=el('citizen');
 const pad=makeWalkPad(), clock=el('clock'), dialog=el('place-dialog'), visit=el('visit');
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
-const paintAvatar=hostWalker(citizen.querySelector('img'));
+let paintAvatar=hostWalker(citizen.querySelector('img'));
 const drawTraffic=districtTraffic(el('transit'));
-const arrival=new URLSearchParams(location.search).get('arrival');
-const spawn=arrival==='tower' ? [503,320] : [251,512];
+const currentUrl=new URL(location.href);
+const areaId=currentUrl.searchParams.get('area')==='canal' ? 'canal' : 'tower';
+const area=streetAreas[areaId], places=area.places;
+const arrival=currentUrl.searchParams.get('arrival');
+const spawn=Object.hasOwn(area.arrivals,arrival) ? area.arrivals[arrival] :
+  (areaId==='canal' ? area.arrivals.station : area.arrivals.gate);
+const towerHome=new URL('../../../tower/?from=diorama', location.href);
+const onDraft=currentUrl.searchParams.get('walker')==='draft' ? readWalkDraft() : null;
+const visitTower=new URL(towerHome);
+if (onDraft) {
+  visitTower.searchParams.set('resume','walk');
+  visitTower.hash='prompt-import';
+}
 let position=[...spawn], stride=0, vector=null, route=[], active=true, transition=false, overview=false;
 let camera={x:0,y:0,scale:1};
 let lighting='auto', lightLevel=.3, lastLight=-Infinity, lastTraffic=-Infinity;
@@ -21,6 +33,50 @@ let venueId='', venue=null, streetReturn=null, directions=[];
 const spotStatus=el('place-note'), placeLink=el('place-link');
 const controls=el('locations'), venuePhoto=el('venue-plate'), guide=el('venue-guide');
 const streetGuide=[...guide.children];
+
+if (area.image) {
+  const art=el('city-plate');
+  art.src=area.image;
+  art.alt=area.alt;
+  el('district-title').textContent=area.title;
+  world.dataset.area=areaId;
+  document.title=`${area.title}｜Atelier Tower`;
+}
+
+async function chooseWalker() {
+  let actor;
+  const roomLink=new URL(visitTower);
+  if (onDraft) {
+    actor={ source:onDraft.avatar.source, atlas:onDraft.avatar.atlas, name:onDraft.name || onDraft.noteId };
+  } else {
+    let roomId=currentUrl.searchParams.get('resident');
+    try { roomId ||= JSON.parse(localStorage.getItem(OWNER_STORAGE))?.id; } catch { return; }
+    if (!/^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/.test(roomId ?? '')) return;
+    const endpoint=new URL(TOWER_API);
+    endpoint.search=new URLSearchParams({view:'room',id:roomId});
+    const response=await fetch(endpoint,{cache:'no-store',signal:AbortSignal.timeout(8500)});
+    if (!response.ok) return;
+    const room=await response.json();
+    if (room.design?.avatarMode!=='custom' || !room.avatarVersion) return;
+    actor={source:avatarImageUrl(roomId,room.avatarVersion), atlas:room.design.world?.atlas,
+      name:room.design.avatarName || room.profile.name || room.noteId};
+    roomLink.searchParams.set('room',roomId);
+  }
+  const image=new Image();
+  image.alt=actor.name;
+  image.draggable=false;
+  image.src=actor.source;
+  await image.decode();
+  citizen.replaceChildren(image);
+  paintAvatar=actor.atlas ? residentWalker(image) : (_stride,_moving,dx) => {
+    if (dx) image.style.transform=`scaleX(${dx<0?-1:1})`;
+  };
+  paintAvatar(stride,false);
+  el('walker-name').textContent=actor.name;
+  const link=el('walker-room');
+  link.href=roomLink.href;
+  link.textContent=onDraft ? '部屋の下見に戻る' : '自分の部屋に戻る';
+}
 
 el('pad-dock').append(pad);
 function renderLocations() {
@@ -40,8 +96,8 @@ function renderLocations() {
     });
     controls.append(pin);
   }
-  guide.setAttribute('aria-label',`${venue?.title ?? '街区'}の行き先`);
-  if (venue) guide.replaceChildren(...directions.map(([id,place])=>{
+  guide.setAttribute('aria-label',`${venue?.title ?? area.title}の行き先`);
+  if (venue || areaId==='canal') guide.replaceChildren(...directions.map(([id,place])=>{
     const shortcut=document.createElement('button');
     shortcut.type='button';
     shortcut.dataset.headTo=id;
@@ -81,7 +137,7 @@ function updateLocation() {
   if (nearby===priorTarget) return;
   priorTarget=nearby;
   const place=(venue?.spots ?? places)[nearby];
-  el('place-name').textContent=place?.label ?? venue?.title ?? '近未来街区';
+  el('place-name').textContent=place?.label ?? venue?.title ?? area.title;
   spotStatus.textContent=nearby==='gate' ? '結界は創り手の街区につながっています。' :
     nearby==='tower' ? '見学室とフロア案内はマンションの中にあります。' :
     venue?.note ?? '道をタップすると歩いて向かいます。';
@@ -90,19 +146,23 @@ function updateLocation() {
   for (const pin of controls.children) pin.classList.toggle('near',pin.dataset.location===nearby);
   showPlaceLink();
 }
+
+function actorHeight(y) {
+  return venue ? venue.scale[0]+(y-451)*venue.scale[1] : Math.max(13,8+y*.065);
+}
+
 function paint(dx=0,dy=0,moving=false) {
   citizen.style.left=position[0]+'px';
   citizen.style.top=position[1]+'px';
   citizen.dataset.position=position.map(n=>n.toFixed(1)).join(',');
-  citizen.style.scale=String(.8+.22*(position[1]/580));
-  citizen.style.transformOrigin='50% 100%';
+  citizen.style.setProperty('--actor-height',`${actorHeight(position[1]).toFixed(1)}px`);
   paintAvatar(stride,moving,dx,dy);
   centerCamera();
   updateLocation();
 }
 function goTo(point) {
   if (transition||dialog.open) return;
-  const next=venue ? (venueWalkable(point) ? [point] : []) : walkingRoute(position,point);
+  const next=venue ? (venueWalkable(point) ? [point] : []) : walkingRoute(position,point,area);
   if (!next.length) return;
   vector=null;
   route=next;
@@ -124,7 +184,7 @@ function run() {
 function tick(time) {
   frame=0;
   if (!active || document.hidden) {lastTick=0;return;}
-  const elapsed=lastTick ? Math.min(.048,(time-lastTick)/1000) : .016;
+  const elapsed=lastTick ? Math.min(.12,(time-lastTick)/1000) : .016;
   lastTick=time;
   if (time-lastLight>650) {
     const update=applyDistrictLight(root,lighting);
@@ -133,7 +193,7 @@ function tick(time) {
     clock.textContent=update.time;
     lastLight=time;
   }
-  if (!venue && (!reduced.matches || lastTraffic===-Infinity) && time-lastTraffic>34) {
+  if (!venue && areaId==='tower' && (!reduced.matches || lastTraffic===-Infinity) && time-lastTraffic>34) {
     drawTraffic(reduced.matches ? 0 : time/1000,lightLevel);
     lastTraffic=time;
   }
@@ -145,7 +205,7 @@ function tick(time) {
     let dx=0,dy=0;
     if (length>.001) {
       const next=[position[0]+move[0]/length*step,position[1]+move[1]/length*step];
-      const isPath=venue ? venueWalkable : walkable;
+      const isPath=venue ? venueWalkable : point=>walkable(point,area);
       if (isPath(next)) [dx,dy]=[next[0]-position[0],next[1]-position[1]];
       else if (vector && isPath([next[0],position[1]])) dx=next[0]-position[0];
       else if (vector && isPath([position[0],next[1]])) dy=next[1]-position[1];
@@ -153,7 +213,7 @@ function tick(time) {
     }
     if (target && (!dx && !dy || distance(position,target)<=.05)) route.shift();
     const advance=Math.hypot(dx,dy);
-    stride+=advance/11;
+    stride+=advance/(venue ? 13 : Math.max(8,actorHeight(position[1])*.25));
     paint(dx,dy,advance>0);
   } else {
     paintAvatar(stride,false);
@@ -185,7 +245,7 @@ function changeVenue(id) {
     world.dataset.venue=id;
   } else delete world.dataset.venue;
   el('leave-venue').hidden=!venue;
-  view.setAttribute('aria-label',`${venue?.title ?? '近未来街区'}。方向パッド、矢印キー、床のタップで歩けます。`);
+  view.setAttribute('aria-label',`${venue?.title ?? area.title}。方向パッド、矢印キー、床のタップで歩けます。`);
   priorTarget=null;
   renderLocations();
   setCamera(venue ? view.clientWidth>=770 : streetReturn.overview);
@@ -223,13 +283,19 @@ function openPlace() {
     changeVenue(place.venue);
     return;
   }
-  if (place.link) {
+  if (place.link || place.cross) {
+    const destination=place.cross ? new URL(currentUrl) : new URL(nearby==='tower' ? visitTower : place.link,location.href);
+    if (place.cross) {
+      if (place.cross.area==='tower') destination.searchParams.delete('area');
+      else destination.searchParams.set('area',place.cross.area);
+      destination.searchParams.set('arrival',place.cross.arrival);
+    }
     transition=true;
     const veil=el('passage');
-    veil.textContent=nearby==='gate'?'クリエイターエリアへ':'Atelier Towerへ';
+    veil.textContent=place.cross ? `${streetAreas[place.cross.area].title}へ` : nearby==='gate'?'クリエイターエリアへ':'Atelier Towerへ';
     veil.hidden=false;
-    if (reduced.matches) location.assign(place.link);
-    else setTimeout(()=>location.assign(place.link),510);
+    if (reduced.matches) location.assign(destination);
+    else setTimeout(()=>location.assign(destination),510);
     return;
   }
   el('place-title').textContent=place.label;
@@ -284,4 +350,5 @@ renderLocations();
 setCamera(view.clientWidth>=840);
 if (Object.hasOwn(venues,history.state?.dioramaVenue)) changeVenue(history.state.dioramaVenue);
 paint(0,arrival==='tower' ? -1 : 0);
+void chooseWalker().catch(()=>{});
 run();

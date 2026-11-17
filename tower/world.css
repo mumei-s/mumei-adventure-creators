@@ -115,7 +115,8 @@
   transform-origin:center 92%;
   filter:drop-shadow(0 .5cqw .6cqw #0a0912b5);
 }
-.world-control-dock { display:flex; justify-content:space-between; align-items:center; gap:8px; padding-top:9px; }
+.world-control-dock { display:grid; grid-template-columns:minmax(0,1fr) auto minmax(0,1fr); align-items:center; gap:8px; padding-top:9px; }
+.world-control-dock .walk-pad {grid-column:2;grid-row:1;justify-self:center}
 .world-control-hint { display:grid; gap:3px; color:#e8d7c0; min-width:0; }
 .world-control-hint strong { font-size:13px; }
 .world-control-hint span { font-size:11px; color:#bcc2cd; }

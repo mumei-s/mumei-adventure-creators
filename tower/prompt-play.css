@@ -1,4 +1,5 @@
-.hero-play {margin-bottom:17px}
+.hero-play {display:flex;flex-wrap:wrap;gap:7px;margin-bottom:17px}
+.hero-play .button {font-size:13px;padding-inline:11px}
 .prompt-dialog {width:min(656px,calc(100% - 24px))}
 .prompt-dialog :is(input,select,textarea) {width:100%}
 .prompt-dialog .dialog-pad > label {margin-top:13px}
@@ -11,10 +12,23 @@
 .prompt-dialog :is(section,form) > p:first-child {margin:0 0 12px;color:#c4c9ce;font-size:13px}
 .prompt-text {margin-top:9px;resize:vertical;font-size:13px;line-height:1.6}
 .prompt-uploads {display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0;margin-bottom:8px}
-.prompt-uploads label {min-width:0;border:1px solid #4b5056;border-radius:5px;padding:9px;background:#151c25;align-content:start}
-.prompt-uploads input {min-width:0;font-size:12px;color:#c9c9c9}
+.prompt-uploads label {min-width:0;border:1px solid #4b5056;border-radius:5px;padding:9px;background:#151c25;align-content:start;cursor:pointer}
+.prompt-uploads label:focus-within {outline:2px solid var(--gold);outline-offset:2px}
+.prompt-file-button {display:grid;place-items:center;min-height:44px;border:1px solid #a68d69;border-radius:4px;color:var(--gold);font-weight:600;font-size:12px;text-align:center;padding-inline:4px}
 .prompt-uploads img {width:100%;height:100px;margin-top:3px;object-fit:contain;object-position:center;background:#0f141c}
 .prompt-dialog .dialog-actions {margin-top:11px}
+.prompt-launch {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.prompt-launch .button {padding-inline:7px;font-size:13px}
+.prompt-next {margin-top:12px;width:100%}
+#generated-room-title {margin-block:0 3px}
+#prompt-import > label[for="generated-room-title"] {margin-top:12px}
+@media(orientation:landscape) and (max-height:520px) {
+  .prompt-dialog,.room-dialog {max-height:calc(100dvh - 12px)}
+  .prompt-dialog .dialog-pad {padding-block:13px}
+  .prompt-uploads img {height:65px}
+  .room-dialog .room-scene {max-height:calc(100dvh - 150px)}
+  .room-dialog .world-control-dock .walk-pad {--pad-width:82px}
+}
 @media(max-width:375px) {
   .prompt-dialog .dialog-actions > * {width:100%}
 }

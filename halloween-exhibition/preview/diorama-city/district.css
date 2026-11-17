@@ -51,7 +51,7 @@ button:focus-visible,a:focus-visible,#city-view:focus-visible {outline:2px solid
   display:block;position:absolute;inset:0;opacity:var(--deep-night,0);mix-blend-mode:multiply;
   background:linear-gradient(180deg,#0f1e50c9,transparent 58%);
 }
-#city-world[data-venue] .citizen {width:96px;height:136px}
+#city-world[data-area="canal"] :is(.city-portal,.city-cast,.transit) {display:none}
 .city-lights {
   opacity:var(--night);
   background:
@@ -78,11 +78,12 @@ button:focus-visible,a:focus-visible,#city-view:focus-visible {outline:2px solid
 @keyframes gate-light {50%{opacity:.35}}
 .cast,.citizen {position:absolute;transform:translate(-50%,-100%);object-fit:contain;object-position:bottom;filter:drop-shadow(1px 3px 1px #0a10119c)}
 .cast {width:42px;height:68px}
-.cast-plaza {left:239px;top:469px;height:60px}
-.cast-station {left:159px;top:344px;height:62px}
-.cast-waterfront {left:688px;top:349px;height:60px}
-.citizen {width:66px;height:88px;z-index:2}
+.cast-plaza {left:239px;top:469px;height:38px}
+.cast-station {left:159px;top:344px;height:30px}
+.cast-waterfront {left:688px;top:349px;height:31px}
+.citizen {width:calc(.85 * var(--actor-height,38px));height:var(--actor-height,38px);z-index:2}
 .citizen img,.citizen canvas {width:100%;height:100%;object-fit:contain;object-position:bottom}
+.citizen .sprite-atlas-source {opacity:0}
 .locations {pointer-events:none;z-index:4}
 .location {
   position:absolute;
@@ -108,14 +109,19 @@ button:focus-visible,a:focus-visible,#city-view:focus-visible {outline:2px solid
 .leave-venue {right:auto;left:12px}
 .control-bar {
   min-height:132px;
-  display:flex;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
   align-items:center;
-  gap:clamp(15px,5vw,40px);
+  gap:clamp(9px,3vw,27px);
   padding:8px clamp(12px,3.5vw,42px) max(12px,env(safe-area-inset-bottom));
   border-top:1px solid #4d4640;
   background:linear-gradient(170deg,#242c31,#13191d 75%);
 }
-.control-info {min-width:0}
+#pad-dock {grid-column:2;grid-row:1;justify-self:center}
+.control-info {grid-column:1;grid-row:1;min-width:0}
+.player-info {grid-column:3;grid-row:1;min-width:0;text-align:right}
+.player-info p {overflow-wrap:anywhere;margin:0;color:#ebd6b1;font-size:13px}
+.player-info a {display:inline-flex;align-items:center;min-height:40px;text-decoration:underline;text-underline-offset:4px;font-size:12px;line-height:1.4}
 #place-name {font-family:Georgia,"Hiragino Mincho ProN","Yu Mincho",serif;font-size:clamp(20px,3vw,29px);margin:0 0 2px}
 #place-note {margin:0 0 6px;font-size:12px;color:#d3ccbf;line-height:1.45}
 .visit {
@@ -146,18 +152,24 @@ dialog::backdrop {background:#101414b5}
   .return {gap:4px}
   .time-tools {gap:4px}
   .time-tools button {font-size:10px;padding:4px 5px}
-  .city-view {height:calc(100dvh - 251px);min-height:289px}
+  .city-view {height:calc(100dvh - 309px);min-height:260px}
   .camera {right:8px;top:8px;font-size:11px}
   .leave-venue {right:auto;left:8px}
   .venue-link {display:flex;margin-inline-start:0}
+  .control-bar {grid-template-columns:1fr 1fr;column-gap:12px;row-gap:3px;min-height:0;padding-bottom:7px}
+  #pad-dock {grid-column:1/-1;grid-row:1}
+  .control-info {grid-column:1;grid-row:2}
+  .player-info {grid-column:2;grid-row:2}
+  #place-name {font-size:17px}
+  #place-note {font-size:11px}
   .location {font-size:14px}
 }
 @media(max-height:520px) and (min-width:560px) {
-  #district {display:grid;grid-template-columns:1fr 160px;grid-template-rows:auto 1fr}
-  .bar {grid-column:1/-1;min-height:51px}
-  .city-view {height:100%;min-height:240px}
-  .control-bar {flex-direction:column;justify-content:center;gap:8px;padding-inline:8px}
-  .venue-guide {grid-column:1/-1;justify-content:center}
+  .bar {min-height:51px}
+  .city-view {height:calc(100dvh - 174px);min-height:181px}
+  .control-bar {gap:8px;padding:4px 12px;min-height:0}
+  .control-bar .walk-pad {--pad-width:86px}
+  .venue-guide {justify-content:center}
   #place-name {font-size:17px}
 }
 @media(prefers-reduced-motion:reduce) {

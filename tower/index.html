@@ -12,10 +12,10 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://xxhaerjvrgmnadxjqetz.supabase.co; img-src 'self' data: blob: https://assets.st-note.com https://xxhaerjvrgmnadxjqetz.supabase.co; object-src 'none'; base-uri 'none'; form-action 'self'">
   <title>Atelier Tower｜無名S note</title>
   <link rel="stylesheet" href="./style.css?v=5">
-  <link rel="stylesheet" href="./world.css?v=5">
-  <link rel="stylesheet" href="./prompt-play.css?v=1">
+  <link rel="stylesheet" href="./world.css?v=6">
+  <link rel="stylesheet" href="./prompt-play.css?v=2">
   <link rel="stylesheet" href="../halloween-exhibition/preview/diorama-city/walk-pad.css?v=1">
-  <script type="module" src="./app.js?v=5"></script>
+  <script type="module" src="./app.js?v=6"></script>
 </head>
 <body id="top">
   <a href="#main" class="skip">本文へ</a>
@@ -39,7 +39,10 @@
         <p class="hero-kicker">無名S note Atelier</p>
         <h1 id="hero-title">窓の数だけ、<br>書き手の世界。</h1>
         <p class="hero-lead">noteの書き手が暮らす、12階建てのマンション。<br class="desktop-break">隣の部屋を訪ねて、まだ知らない記事に出会う。</p>
-        <button type="button" class="button primary hero-play" id="open-prompt">プロンプト遊びでつくる <span aria-hidden="true">↗</span></button>
+        <div class="hero-play">
+          <button type="button" class="button primary" id="open-prompt">プロンプト遊びでつくる</button>
+          <a class="button outline" href="#prompt-import">生成した画像を添付する</a>
+        </div>
         <form id="preview-form" class="entry" novalidate>
           <label for="creator-id">noteクリエイターID</label>
           <div class="entry-row">
@@ -137,27 +140,31 @@
         <input id="prompt-id" maxlength="100" type="text" inputmode="url" autocapitalize="none" spellcheck="false" placeholder="例 @ss_yr" autocomplete="off">
         <div class="prompt-tabs" aria-label="部屋づくりの手順">
           <button type="button" class="button outline" id="prompt-write-tab" aria-pressed="true" aria-controls="prompt-write">ChatGPTでつくる</button>
-          <button type="button" class="button outline" id="prompt-import-tab" aria-pressed="false" aria-controls="prompt-import">画像を持ち込む</button>
+          <button type="button" class="button outline" id="prompt-import-tab" aria-pressed="false" aria-controls="prompt-import">画像を添付する</button>
         </div>
         <section id="prompt-write">
-          <p>ChatGPTにキャラ画像を添付し、コピーしたプロンプトを貼ってください。アバターと部屋ができたら、２枚を保存します。</p>
+          <p>プロンプトをコピーしてから、好きな方のChatGPTを開いてください。キャラ画像と一緒に送り、できた２枚を保存します。</p>
           <label for="prompt-ideas">部屋の希望 <small>任意</small></label>
           <input id="prompt-ideas" type="text" maxlength="160" placeholder="例 雨の夜景が見える珈琲の書斎">
           <textarea id="prompt-text" class="prompt-text" aria-label="コピーするプロンプト" rows="5" readonly></textarea>
           <div class="dialog-actions">
             <button type="button" class="button primary" id="copy-play-prompt">プロンプトをコピー</button>
-            <a class="button outline" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPTを開く ↗</a>
           </div>
           <p id="prompt-status" class="inline-status" role="status"></p>
+          <div class="prompt-launch" role="group" aria-label="開くChatGPTを選ぶ">
+            <a class="button outline" id="chatgpt-app-launch" href="https://chatgpt.com/open-app" rel="noopener noreferrer">アプリ版を開く</a>
+            <a class="button outline" href="./chatgpt-web.html" target="_blank" rel="noopener noreferrer">Web版を開く</a>
+          </div>
+          <button type="button" class="button outline prompt-next" id="prompt-upload-next">生成した画像を添付する →</button>
         </section>
         <form id="prompt-import" hidden novalidate>
-          <p>生成した２枚を選ぶと、入居前の部屋でアバターを動かせます。</p>
+          <p>ChatGPTで保存したアバターと部屋の画像を１枚ずつ選んでください。</p>
+          <div class="prompt-uploads">
+            <label>アバター画像<input id="generated-avatar" type="file" class="visually-hidden" accept="image/png,image/jpeg,image/webp,image/gif"><span class="prompt-file-button" aria-hidden="true">アバター画像を選ぶ</span><img id="generated-avatar-preview" alt="アバターのプレビュー" hidden></label>
+            <label>部屋画像<input id="generated-interior" type="file" class="visually-hidden" accept="image/png,image/jpeg,image/webp"><span class="prompt-file-button" aria-hidden="true">部屋画像を選ぶ</span><img id="generated-interior-preview" alt="部屋のプレビュー" hidden></label>
+          </div>
           <label for="generated-avatar-mode">アバターの形式</label>
           <select id="generated-avatar-mode"><option value="atlas">歩行シート（４×４）</option><option value="single">全身１枚・GIF</option></select>
-          <div class="prompt-uploads">
-            <label>アバター画像<input id="generated-avatar" type="file" accept="image/png,image/jpeg,image/webp,image/gif"><img id="generated-avatar-preview" alt="アバターのプレビュー" hidden></label>
-            <label>部屋画像<input id="generated-interior" type="file" accept="image/png,image/jpeg,image/webp"><img id="generated-interior-preview" alt="部屋のプレビュー" hidden></label>
-          </div>
           <label for="generated-room-title">部屋の名前 <small>任意</small></label>
           <input id="generated-room-title" type="text" maxlength="38" placeholder="例 雨と書きかけのノートの部屋">
           <div class="dialog-actions"><button class="button primary" type="submit">この部屋を下見する</button></div>

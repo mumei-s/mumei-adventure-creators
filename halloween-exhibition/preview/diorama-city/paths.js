@@ -4,7 +4,7 @@ const points = {
   stationPath:[157,383], station:[152,333], approach:[555,477],
   waterfront:[647,472], bank:[628,410], bridgeFoot:[637,376], bridge:[690,351],
   bridgeEnd:[747,335], northWalk:[602,326], south:[489,579],
-  cafeWalk:[409,396], cafe:[390,377], park:[649,498],
+  cafeWalk:[409,396], cafe:[390,377], park:[649,498], stationExit:[169,281],
 };
 
 const lanes = [
@@ -15,9 +15,10 @@ const lanes = [
   ['bank','bridgeFoot',8], ['bridgeFoot','bridge',8], ['bridge','bridgeEnd',8],
   ['tower','northWalk',10], ['northWalk','bridgeFoot',10],
   ['forecourt','cafeWalk',12], ['cafeWalk','cafe',12], ['waterfront','park',14],
+  ['station','stationExit',14],
 ];
 
-export const places = {
+const places = {
   gate:{label:'結界広場',action:'結界をくぐる',point:points.gate,sign:[220,399],link:'../town/?arrival=future-gate'},
   station:{label:'高架駅',action:'駅前を見学する',point:points.station,sign:[136,276],
     description:'駅前の広場。ここから眺めると、ガラス屋根の下を電車が通り抜けるのが見えます。'},
@@ -26,6 +27,47 @@ export const places = {
   park:{label:'水辺の公園',action:'公園に入る',point:points.park,sign:[663,442],venue:'park'},
   waterfront:{label:'水辺のデッキ',action:'水辺に立ち寄る',point:points.bridge,sign:[706,306],
     description:'水辺の歩道橋。日が落ちると、向かいの建物のネオンが水面に映ります。'},
+  marketGate:{label:'高架の先',action:'高架をくぐって新しい街区へ',point:points.stationExit,sign:[215,224],
+    cross:{area:'canal',arrival:'station'}},
+  canalGate:{label:'運河の向こう',action:'橋を渡って新しい街区へ',point:points.bridgeEnd,sign:[784,268],
+    cross:{area:'canal',arrival:'bridge'}},
+};
+
+const canalPoints = {
+  stationGate:[75,525], westSouth:[124,485], westMid:[158,369], westSquare:[195,210], station:[151,263],
+  market:[316,199], middle:[497,204], east:[784,207], waterside:[810,149], eastMid:[849,332],
+  eastSouth:[886,510], bridgeGate:[937,541], southWest:[174,525], south:[495,525],
+  median:[494,409], crossing:[499,312], north:[504,102], upperEnd:[504,47],
+};
+
+const canalLanes = [
+  ['stationGate','westSouth',26], ['westSouth','westMid',22], ['westMid','westSquare',20],
+  ['westMid','station',14], ['station','westSquare',18], ['westSquare','market',19],
+  ['market','middle',18], ['middle','east',16], ['east','waterside',19], ['east','eastMid',18],
+  ['eastMid','eastSouth',23], ['eastSouth','bridgeGate',21],
+  ['stationGate','southWest',24], ['westSouth','southWest',20], ['southWest','south',22],
+  ['south','eastSouth',22], ['south','median',17], ['median','crossing',18],
+  ['crossing','middle',18], ['middle','north',14], ['north','upperEnd',11],
+];
+
+const canalPlaces = {
+  stationGate:{label:'高架側の入口',action:'高架をくぐってTowerの街へ',point:canalPoints.stationGate,sign:[106,458],
+    cross:{area:'tower',arrival:'station'}},
+  canopy:{label:'ガラス屋根の市場前',action:'市場を眺める',point:canalPoints.market,sign:[316,139],
+    description:'高架のとなりのガラス屋根。夕方に灯りがともると、通りから店先が見渡せます。'},
+  avenue:{label:'中央大通り',action:'並木道を眺める',point:canalPoints.crossing,sign:[499,258],
+    description:'南北に伸びる並木道。南の広場、駅側の通り、運河の遊歩道へ歩いて行けます。'},
+  waterside:{label:'運河の広場',action:'水辺の灯りを眺める',point:canalPoints.waterside,sign:[822,113],
+    description:'運河沿いの円形広場。水面の向こうにTowerが見えます。'},
+  bridgeGate:{label:'運河側の入口',action:'橋を渡ってTowerの街へ',point:canalPoints.bridgeGate,sign:[886,477],
+    cross:{area:'tower',arrival:'bridge'}},
+};
+
+export const streetAreas = {
+  tower:{title:'近未来街区',points,lanes,places,arrivals:{tower:[503,320],gate:[251,512],station:[163,306],bridge:[719,342]}},
+  canal:{title:'運河街区',points:canalPoints,lanes:canalLanes,places:canalPlaces,
+    arrivals:{station:[94,516],bridge:[912,528]}, image:'./assets/canal-city.webp',
+    alt:'高架駅とガラス屋根の市場、並木の大通りと広い運河沿いの遊歩道がある街区'},
 };
 
 export const distance=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
@@ -35,21 +77,22 @@ function projection(point,a,b) {
   const t=clamp(((point[0]-a[0])*dx+(point[1]-a[1])*dy)/(dx*dx+dy*dy));
   return [a[0]+dx*t,a[1]+dy*t];
 }
-export function walkable(point) {
+export function walkable(point, area) {
+  const {points,lanes}=area;
   return lanes.some(([from,to,radius])=>distance(point,projection(point,points[from],points[to]))<=radius);
 }
-function canWalk(a,b) {
+function canWalk(a,b,area) {
   const steps=Math.ceil(distance(a,b)/6);
   for (let i=1;i<=steps;i++) {
     const t=i/steps;
-    if (!walkable([a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t])) return false;
+    if (!walkable([a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t],area)) return false;
   }
   return true;
 }
-export function walkingRoute(start,target) {
-  if (!walkable(target)) return [];
-  if (canWalk(start,target)) return [target];
-  const vertices=[start,...Object.values(points),target];
+export function walkingRoute(start,target,area) {
+  if (!walkable(target,area)) return [];
+  if (canWalk(start,target,area)) return [target];
+  const vertices=[start,...Object.values(area.points),target];
   const previous=new Map();
   const costs=new Map([[0,0]]);
   const unseen=new Set(vertices.keys());
@@ -60,7 +103,7 @@ export function walkingRoute(start,target) {
     unseen.delete(next);
     for (const vertex of unseen) {
       const cost=costs.get(next)+distance(vertices[next],vertices[vertex]);
-      if (cost>=(costs.get(vertex) ?? Infinity) || !canWalk(vertices[next],vertices[vertex])) continue;
+      if (cost>=(costs.get(vertex) ?? Infinity) || !canWalk(vertices[next],vertices[vertex],area)) continue;
       costs.set(vertex,cost);
       previous.set(vertex,next);
     }

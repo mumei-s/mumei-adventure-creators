@@ -1,6 +1,6 @@
-import { chatgptAppLink, hostNoteUrl, parseNoteId, towerUrl } from '../../../tower/prompt-play.js?v=3';
+import { chatgptAppLink, hostNoteUrl, parseNoteId, towerUrl, insightUrl, articleCardBlock, articleCoverInstructions, cardPasteInstructions, bindCardButtons } from '../../../tower/prompt-play.js?v=4';
 
-function makeSpotPrompt({ label, scene, href, id }) {
+export function makeSpotPrompt({ label, scene, href, id }) {
   const profile = id ? `公開プロフィール： https://note.com/${id}\n` : '';
   const room = new URL(towerUrl);
   if (id) room.searchParams.set('creator', id);
@@ -13,12 +13,17 @@ ${profile}添付：自分のキャラクターの参考画像
 【描く場面】
 ${scene}
 
-添付のキャラクターを主人公に、この場面の完成イラストを画像生成機能で横3対2の1枚に描き、このチャットに表示してください。添付画像の顔立ち、髪型、服、アクセサリーと、写真調・アニメ調など元の画風を受け継いでください。歩行シートを添付した場合は同じキャラクター1人を描きます。街の遠近感と、人物・家具・遊具の大きさをそろえ、足や手が触れる位置に気を配ってください。画像には文字・枠・ゲームの操作ボタンを入れません。
+添付のキャラクターを主人公に、この場所で過ごす２つの異なる瞬間を、画像生成機能で横3対2の別々の完成イラスト２枚として描き、このチャットに表示してください。１枚目は場所・空気感・人物の全体が伝わるシーン、２枚目はその後の別の行動や表情、別のカメラ角度のシーンです。同じ構図の色違い、コラージュ、分割画像は禁止。添付画像の顔立ち、髪型、服、アクセサリーと、写真調・アニメ調など元の画風を受け継いでください。歩行シートを添付した場合は同じキャラクター1人を描きます。街の遠近感と、人物・家具・遊具の大きさをそろえ、足や手が触れる位置に気を配ってください。画像には文字・枠・ゲームの操作ボタンを入れません。
 公開プロフィールを読める場合は、公開作品のモチーフを背景や小物に取り入れてください。読めなくても添付と場面指定で制作を続けてください。IDやキャラ画像がまだなければ、不足しているものだけ聞いてください。
 
 【そのまま貼れるnote参加記事】
-絵ができたら、絵に実際に描かれた行動と街の風景をもとに、参加者の視点でタイトルと本文を書いてください。本文に「［ここに街のイラスト］」を入れます。同じチャットですでにTower用のアバターと部屋の画像ができている場合は、「［ここにアバター画像］」「［ここに部屋画像］」も入れて、部屋から街へ出かけた1本の記事にまとめてください。
-記事の最後に、無名S noteが主催する #無名Sプロンプト の遊びだと紹介してください。「企画主・無名S note」は ${hostNoteUrl}、「この場所で遊ぶ」は ${href}、「自分の部屋をつくる」は ${towerUrl}#prompt-play にリンクします。末尾に #無名Sプロンプト を付けます。
+記事のタイトルを先に決め、２枚の絵に実際に描かれた行動と街の風景をもとに、参加者の視点でタイトルと本文を書いてください。本文の異なる位置に「［ここに街のイラスト１］」「［ここに街のイラスト２］」を入れます。未生成の画像は未完了と明記し、別々の２枚とサムネイルを生成し終えるまで完了としないでください。同じチャットですでにTower用のアバターと部屋の画像ができている場合は、「［ここにアバター画像］」「［ここに部屋画像］」も入れて、部屋から街へ出かけた1本の記事にまとめてください。
+${articleCoverInstructions()}
+
+記事の最後に無名S noteが主催する #無名Sプロンプト の遊びだと紹介し、以下のカード用ブロックを改変せずに置いてください。
+${articleCardBlock([['企画主・無名S note',hostNoteUrl],['この場所で遊ぶ',href],['自分の部屋をつくる',towerUrl+'#prompt-play'],['noteの反応を分析する INSIGHT',insightUrl]])}
+
+末尾に #無名Sプロンプト を付けます。${cardPasteInstructions()}
 記事のあとに、Towerに画像を持ち帰る人向けの案内も書いてください。「アバターと部屋の画像を保存 → Towerの『生成した画像を添付する』へ → 自分の部屋を下見・入居」と案内し、「生成した画像を添付する」から ${room.href} にリンクしてください。`;
 }
 
@@ -40,6 +45,7 @@ export function bindSpotIllustration(dialog) {
     app.rel = 'noopener';
   }
   let current, objectUrl;
+  bindCardButtons(dialog.querySelector('#spot-card-actions'), [['企画主',hostNoteUrl],['この場所',()=>current?.href],['部屋づくり',towerUrl+'#prompt-play'],['INSIGHT',insightUrl]], message);
   const render = () => {
     const id = parseNoteId(field.value);
     field.setAttribute('aria-invalid', String(Boolean(field.value.trim()) && !id));
@@ -70,7 +76,7 @@ export function bindSpotIllustration(dialog) {
     }
     try {
       await navigator.clipboard.writeText(text.value);
-      message.textContent = 'コピーしました';
+      message.textContent = 'コピーしました。本文イラスト２枚・専用サムネイル１枚を別々に生成します。';
     } catch {
       dialog.querySelector('.spot-preview').open = true;
       text.focus();

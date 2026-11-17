@@ -6,10 +6,15 @@
   <meta name="theme-color" content="#101417">
   <meta name="description" content="自分のアバターでカフェ、公園、コンビニ、遊園地を訪ねよう。各スポットにはイラストをつくるプロンプトも用意しています。">
   <title>近未来街区｜Atelier Tower</title>
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="近未来街区｜Atelier Tower・無名S note">
+  <meta property="og:description" content="自分のキャラクターで街を歩き、２枚のイラストとnote記事をつくる。">
+  <meta property="og:image" content="https://mumei-s.github.io/mumei-adventure-creators/halloween-exhibition/preview/diorama-city/assets/district.webp">
+  <meta name="note:card" content="summary_large_image">
   <link rel="preload" as="image" href="./assets/district.webp?v=1">
   <link rel="stylesheet" href="./district.css?v=4">
   <link rel="stylesheet" href="./walk-pad.css?v=2">
-  <script type="module" src="./district.js?v=4"></script>
+  <script type="module" src="./district.js?v=5"></script>
 </head>
 <body>
 <main id="district" tabindex="-1">
@@ -106,11 +111,12 @@
       </details>
       <button type="button" class="visit" id="spot-copy">プロンプトをコピー</button>
       <span id="spot-message" role="status"></span>
-      <p class="spot-hint">ChatGPTでプロンプトを貼り付け、同じキャラ画像を添付して送信してください。</p>
+      <p class="spot-hint">ChatGPTで同じキャラ画像とプロンプトを送信。本文イラスト２枚・専用サムネイル１枚・参加記事を作ります。</p>
       <div class="spot-actions">
         <a id="spot-app" class="spot-prompt">アプリ版を開く</a>
         <a class="spot-prompt" href="../../../tower/chatgpt-web.html" target="_blank" rel="noopener">Web版を開く</a>
       </div>
+      <div id="spot-card-actions"></div>
       <form method="dialog" class="spot-return"><button type="submit">← 街歩きに戻る</button></form>
     </div>
   </dialog>

@@ -1,6 +1,6 @@
 import { characterSignature, designWorld, generatedInterior, roomPreview, roomStage } from './world.js?v=7';
 import { cutaway, dailyStory, makeElevator } from './building.js?v=7';
-import { chatgptAppLink, makeRoomPrompt, parseNoteId, residentPost, towerUrl } from './prompt-play.js?v=3';
+import { chatgptAppLink, makeRoomPrompt, parseNoteId, residentPost, towerUrl, hostNoteUrl, insightUrl, bindCardButtons } from './prompt-play.js?v=4';
 import { TOWER_API, OWNER_STORAGE, WALK_DRAFT_STORAGE, avatarImageUrl, readWalkDraft } from './avatar-travel.js?v=1';
 
 const PROOF_STORAGE = 'atelier-tower-proof-v1';
@@ -31,6 +31,7 @@ const errors = {
   avatar_required: 'キャラ画像を選んでから保存してください。',
   bad_image: 'PNG・JPEG・WebP・GIFの画像を選んでください。動く画像は各辺1,200pxまでです。',
   big_image: '動く画像は300KB以下、静止画の元画像は10MB以下にしてください。',
+  bad_interior: '部屋は横長の内装画像（３：２推奨）を選んでください。アバター画像とは別の画像が必要です。',
   bad_sheet: '４×４の歩行シートを選んでください。全身が１体の画像なら「全身１枚・GIF」を選べます。',
   unavailable: '通信できませんでした。接続を確認して、もう一度お試しください。',
 };
@@ -886,6 +887,8 @@ function pictureBlob(canvas, quality) {
 }
 
 async function prepareInterior(image) {
+  const ratioWH = image.naturalWidth / image.naturalHeight;
+  if (ratioWH < 1.2 || ratioWH > 2.2) throw { code: 'bad_interior' };
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d', { alpha: false });
   const ratio = Math.min(1, 1200 / Math.max(image.naturalWidth, image.naturalHeight));
@@ -1038,17 +1041,17 @@ function openPlay(importing = false, incoming = '') {
 function routePlay() {
   const link = new URL(location.href);
   if (!['#prompt-play', '#prompt-import'].includes(link.hash) || link.searchParams.has('room')) return;
-  const draft = link.searchParams.get('resume') === 'walk' ? readWalkDraft() : null;
+  const savedDraft = readWalkDraft();
+  const draft = link.searchParams.get('resume') === 'walk' || (link.hash === '#prompt-import' && savedDraft?.noteId === parseNoteId(link.searchParams.get('creator') || '')) ? savedDraft : null;
   if (draft) {
     state.preferredSlot = draft.slot ?? null;
-    if (!draft.interior) state.entryPicture = draft.avatar;
     openPlay(true, draft.noteId);
     $('#generated-avatar-mode').value = draft.avatar.atlas ? 'atlas' : 'single';
     $('#generated-room-title').value = draft.title || '';
     setPlayPhoto('avatar', draft.avatar);
     setPlayPhoto('interior', draft.interior ?? null);
     if (draft.interior) status($('#import-status'), '街で使ったアバターと部屋を読み込みました。');
-    else $('#prompt-import').requestSubmit();
+    else status($('#import-status'), 'アバターは読み込み済みです。部屋画像を添付してください。部屋だけのプロンプトもコピーできます。');
     return;
   }
   const slot = Number(link.searchParams.get('slot'));
@@ -1062,6 +1065,8 @@ function setPlayPhoto(kind, photo) {
   preview.hidden = !photo;
   if (photo) preview.src = photo.source;
   else preview.removeAttribute('src');
+  const label = preview.parentElement.querySelector('.prompt-file-button');
+  if (label) label.textContent = photo ? '読み込み済み · 選び直す' : (kind === 'avatar' ? 'アバター画像を選ぶ' : '部屋画像を選ぶ');
 }
 
 function resetPlayImages() {
@@ -1076,6 +1081,10 @@ function resetPlayImages() {
 async function readPlayPhoto(kind) {
   const field = $(`#generated-${kind}`);
   const file = field.files?.[0];
+  const other = $(`#generated-${kind === 'avatar' ? 'interior' : 'avatar'}`).files?.[0];
+  if (file && other && file.name === other.name && file.size === other.size && file.lastModified === other.lastModified) {
+    field.value = ''; setPlayPhoto(kind, null); status($('#import-status'), 'アバターと部屋に同じファイルは使えません。', true); return;
+  }
   const variant = kind === 'interior' ? 'interior' : $('#generated-avatar-mode').value === 'atlas' ? 'atlas' : 'avatar';
   const hint = $('#import-status');
   setPlayPhoto(kind, null);
@@ -1101,9 +1110,8 @@ async function submitPlay(event) {
   const id = playNoteId(), hint = $('#import-status');
   if (!id) return;
   if (play.loading.size) { status(hint, '画像を読み込み中です。'); return; }
-  const returning = new URL(location.href).searchParams.get('resume') === 'walk';
-  if (!play.avatar || (!play.interior && !returning)) {
-    status(hint, 'アバターと部屋の画像を１枚ずつ選んでください。', true);
+  if (!play.avatar || !play.interior || play.avatar.source === play.interior.source) {
+    status(hint, 'アバターと部屋の別々の画像を１枚ずつ選んでください。部屋未生成なら「部屋だけ作る」を使ってください。', true);
     return;
   }
   const submit = $('button[type="submit"]', event.currentTarget);
@@ -1234,6 +1242,17 @@ $('#preview-form').addEventListener('submit', submitPreview);
 $('#open-prompt').addEventListener('click', () => openPlay(Boolean(play.avatar || play.interior)));
 $('#prompt-write-tab').addEventListener('click', () => selectPlayStep(false));
 $('#prompt-import-tab').addEventListener('click', () => selectPlayStep(true));
+$('#copy-room-only').addEventListener('click', async () => {
+  const id = playNoteId();
+  if (!id) return;
+  const url = new URL(towerUrl); url.searchParams.set('creator', id); url.hash = 'prompt-import';
+  const profile = play.id === id ? play.profile : null;
+  const value = makeRoomPrompt({id, description:profile?.description, articles:profile?.articles,
+    ideas:$('#prompt-ideas').value.trim(), returnUrl:url.href, roomOnly:true});
+  try { await copy(value); status($('#import-status'), '部屋だけのプロンプトをコピーしました。ChatGPTで既存キャラ画像と一緒に送ってください。'); }
+  catch { selectPlayStep(false); $('#prompt-text').value=value; $('#prompt-text').focus(); $('#prompt-text').select(); status($('#prompt-status'), '選択中の部屋用プロンプトをコピーしてください。'); }
+});
+bindCardButtons($('#tower-card-actions'), [['企画主',hostNoteUrl],['参加ページ',towerUrl+'#prompt-play'],['INSIGHT',insightUrl]], $('#prompt-status'));
 $('#prompt-upload-next').addEventListener('click', () => {
   selectPlayStep(true);
   $('#prompt-import-tab').focus();
@@ -1258,7 +1277,12 @@ $('#copy-play-prompt').addEventListener('click', async () => {
     status($('#prompt-status'), '選択したプロンプトをコピーしてください。');
   }
 });
-$('#generated-avatar-mode').addEventListener('change', () => void readPlayPhoto('avatar'));
+$('#generated-avatar-mode').addEventListener('change', () => {
+  if ($('#generated-avatar').files?.length) void readPlayPhoto('avatar');
+  else if (play.avatar && Boolean(play.avatar.atlas) !== ($('#generated-avatar-mode').value === 'atlas')) {
+    setPlayPhoto('avatar', null); status($('#import-status'), '形式が変わったため、アバターを選び直してください。', true);
+  }
+});
 for (const kind of ['avatar', 'interior']) $(`#generated-${kind}`).addEventListener('change', () => void readPlayPhoto(kind));
 $('#prompt-import').addEventListener('submit', submitPlay);
 promptDialog.addEventListener('close', () => {

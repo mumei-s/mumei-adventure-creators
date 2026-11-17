@@ -12,7 +12,8 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://xxhaerjvrgmnadxjqetz.supabase.co; img-src 'self' data: blob: https://assets.st-note.com https://xxhaerjvrgmnadxjqetz.supabase.co; object-src 'none'; base-uri 'none'; form-action 'self'">
   <title>Atelier Tower｜無名S note</title>
   <link rel="stylesheet" href="./style.css">
-  <script type="module" src="./app.js"></script>
+  <link rel="stylesheet" href="./world.css?v=2">
+  <script type="module" src="./app.js?v=2"></script>
 </head>
 <body id="top">
   <a href="#main" class="skip">本文へ</a>
@@ -42,9 +43,18 @@
             <input id="creator-id" name="creator" type="text" inputmode="url" autocapitalize="none" spellcheck="false" placeholder="例 @ss_yr" maxlength="100" required autocomplete="off">
             <button class="button primary" type="submit">部屋をつくる <span aria-hidden="true">↗</span></button>
           </div>
-          <p class="entry-status" id="entry-status" role="status">IDを入れると、あなたの部屋を下見できます。</p>
+          <div class="entry-avatar">
+            <img id="entry-character-preview" alt="添付した住人キャラ" hidden>
+            <label>キャラ画像を添付 <input id="entry-character" type="file" accept="image/png,image/jpeg,image/webp,image/gif"></label>
+            <button type="button" id="clear-character" class="quiet" hidden>画像を外す</button>
+          </div>
+          <p class="entry-note">全身の透過PNGがおすすめ。輪郭を残して部屋を歩けます。</p>
+          <p class="entry-status" id="entry-status" role="status">IDとキャラ画像から、部屋を下見できます。</p>
         </form>
-        <button type="button" id="showroom" class="quiet sample-link">見学室をのぞく <span aria-hidden="true">→</span></button>
+        <div class="hero-utilities">
+          <a class="quiet" href="#cutaway">マンションの断面を見る ↓</a>
+          <button type="button" id="showroom" class="quiet sample-link">見学室をのぞく <span aria-hidden="true">→</span></button>
+        </div>
       </div>
       <figure class="hero-visual">
         <picture>
@@ -61,6 +71,23 @@
       <div><strong id="building-occupancy">—</strong><span>入居中</span></div>
       <a href="../halloween-exhibition/preview/town/">星灯りの街へ <span aria-hidden="true">↗</span></a>
     </div>
+
+    <section class="cutaway" id="cutaway" aria-labelledby="cutaway-title">
+      <div class="cutaway-head">
+        <div><h2 id="cutaway-title">マンションの断面</h2><p>窓の奥をのぞいて、訪ねたい部屋をタップ。</p></div>
+        <div class="cutaway-controls">
+          <label>階を選ぶ<select id="cutaway-floor"><option value="">屋上</option></select></label>
+          <button type="button" class="button outline" id="cutaway-fit" aria-pressed="false">全景</button>
+        </div>
+      </div>
+      <div id="cutaway-building" class="cutaway-viewport" tabindex="0" aria-label="12階建ての断面ビュー"></div>
+      <p class="cutaway-tip">上下左右にスクロールできます。</p>
+    </section>
+
+    <section class="lobby-story" aria-labelledby="story-title">
+      <div><small>今日の出来事</small><h2 id="story-title"></h2><p id="story-intro"></p></div>
+      <a class="button primary" id="story-visit" href="https://note.com/almabrillante/n/n2ded809d9016" target="_blank" rel="noopener noreferrer">行き先を訪ねる ↗</a>
+    </section>
 
     <section class="directory" id="floors" aria-labelledby="floor-heading">
       <div class="section-head">
@@ -96,6 +123,15 @@
     <span>Atelier Tower <small>無名S note</small></span>
     <div><button type="button" class="quiet" id="open-help">入居・退去の方法</button><a href="#top">トップへ ↑</a></div>
   </footer>
+
+  <dialog id="lift-dialog" class="dialog lift-dialog" aria-labelledby="lift-status">
+    <div class="lift-screen">
+      <output id="lift-floor" class="lift-indicator" aria-hidden="true">1F</output>
+      <div class="lift-cab" aria-hidden="true"><div class="lift-door"></div><div class="lift-door right"></div></div>
+      <p id="lift-status" role="status">階を移動中</p>
+      <button id="lift-skip" class="quiet" type="button">すぐ到着する</button>
+    </div>
+  </dialog>
 
   <dialog id="room-dialog" class="dialog room-dialog" aria-labelledby="room-title">
     <section class="dialog-inner">
@@ -179,7 +215,7 @@
       <div class="dialog-pad">
         <h2 id="help-title">入居・退去の方法</h2>
         <dl class="help-list">
-          <dt>下見</dt><dd>noteのIDを入れると、公開プロフィールと記事の雰囲気から内装が決まります。空室を選んで始めることもできます。</dd>
+          <dt>下見</dt><dd>noteのIDとキャラ画像を読み込むと、公開記事のテーマとキャラの配色が部屋に反映されます。空室を選んで始めることもできます。</dd>
           <dt>入居</dt><dd>「入居する」から、noteの自己紹介欄に確認コードを一時的に入れます。本人確認が済むと部屋が公開され、このブラウザに鍵が保存されます。</dd>
           <dt>改装・鍵の再発行</dt><dd>「自分の部屋」から改装できます。機種変更や鍵を失くしたときは、同じnote IDで本人確認をして鍵を再発行できます。</dd>
           <dt>退去</dt><dd>自分の部屋の「退去する」を選ぶと、すぐに空室に戻ります。再入居も自由です。</dd>

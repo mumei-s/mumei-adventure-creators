@@ -52,7 +52,8 @@ async function hash(value: string) {
 }
 
 async function rpc(command: string, input: Json = {}): Promise<Json> {
-  const response = await fetch(`${BASE}/rest/v1/rpc/creator_tower_rpc`, {
+  const endpoint = command === "list" || command === "finish" ? "creator_tower_world_rpc" : "creator_tower_rpc";
+  const response = await fetch(`${BASE}/rest/v1/rpc/${endpoint}`, {
     method: "POST",
     headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify({ command, input }),
@@ -165,6 +166,19 @@ async function preview(id: string) {
   return { noteId: id, profile, design, existingId: existing.id };
 }
 
+function validateWorld(value: unknown) {
+  if (!value || typeof value !== "object") return fail("invalid");
+  const world = value as Json;
+  const numericFields = { seed: 2 ** 32 - 1, hue: 359, accent: 359, lightness: 100, view: 3, layout: 5 };
+  for (const [name, max] of Object.entries(numericFields)) {
+    if (!Number.isInteger(world[name]) || world[name] < 0 || world[name] > max) return fail("invalid");
+  }
+  return {
+    seed: world.seed, hue: world.hue, accent: world.accent, lightness: world.lightness,
+    view: world.view, layout: world.layout, character: world.character === true,
+  };
+}
+
 function validateDesign(input: Json, profile: Json) {
   if (!input || typeof input !== "object" || !THEMES.includes(input.theme) ||
       !["natural", "warm", "blue"].includes(input.light) ||
@@ -174,6 +188,7 @@ function validateDesign(input: Json, profile: Json) {
   return {
     title: clean(input.title, 38), welcome: clean(input.welcome, 180), theme: input.theme,
     light: input.light, pin, avatarMode: input.avatarMode, avatarName: clean(input.avatarName, 24),
+    ...(input.world ? { world: validateWorld(input.world) } : {}),
   };
 }
 
@@ -303,10 +318,15 @@ async function mutate(request: Request) {
     if (String(account.id) !== proof.noteUser || !exactCode.test(String(account.profile ?? ""))) return fail("proof_missing");
     const { profile } = await profileWithArticles(proof.noteId, account);
     const slot = requireSlot(body.slot);
-    return rpc("finish", {
-      noteId: proof.noteId, noteUser: proof.noteUser, hash: owner, slot,
-      profile, design: defaultDesign(proof.noteId, profile),
-    });
+    const defaults = defaultDesign(proof.noteId, profile);
+    const avatar = body.avatarB64 ? parseAvatar(body.avatarB64) : {};
+    const design = {
+      ...defaults,
+      theme: THEMES.includes(body.theme) ? body.theme : defaults.theme,
+      avatarMode: body.avatarB64 ? "custom" : defaults.avatarMode,
+      ...(body.world ? { world: validateWorld(body.world) } : {}),
+    };
+    return rpc("finish", { noteId: proof.noteId, noteUser: proof.noteUser, hash: owner, slot, profile, design, ...avatar });
   }
 
   const id = requireUuid(body.id);
@@ -325,7 +345,8 @@ async function mutate(request: Request) {
       if (String(refreshed.account.id) !== current.noteUser) return fail("invalid_note");
       profile = refreshed.profile;
     }
-    const design = validateDesign(body.design, profile);
+    const validated = validateDesign(body.design, profile);
+    const design = { world: current.design.world, ...validated };
     const avatar = design.avatarMode === "custom" && body.avatarB64 ? parseAvatar(body.avatarB64) : {};
     return rpc("save", { id, hash: owner, version: body.version, design, ...avatar,
       ...(body.refresh === true ? { profile } : {}) });

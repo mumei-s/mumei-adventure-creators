@@ -1,6 +1,10 @@
+import { characterSignature, designWorld, roomStage } from './world.js';
+import { cutaway, dailyStory, makeElevator } from './building.js';
+
 const API = 'https://xxhaerjvrgmnadxjqetz.supabase.co/functions/v1/creator-tower';
 const OWNER_STORAGE = 'atelier-tower-owner-v1';
 const PROOF_STORAGE = 'atelier-tower-proof-v1';
+const storyFallback = 'https://note.com/almabrillante/n/n2ded809d9016';
 const $ = (selector, root = document) => root.querySelector(selector);
 const themes = {
   reading: { name: '琥珀の書斎', image: './assets/reading.webp', alt: '本棚と木の机がある、夕暮れの書斎' },
@@ -54,8 +58,10 @@ function setStored(storage, key, value) {
 
 const state = {
   catalog: null, catalogError: false, floor: 1, query: '', preferredSlot: null, owner: getStored(localStorage, OWNER_STORAGE),
-  room: null, mode: '', proofIntent: null, proof: null, request: 0, picture: null,
+  room: null, mode: '', proofIntent: null, proof: null, request: 0, picture: null, entryPicture: null, story: null, storyVisit: null,
 };
+
+const travel = makeElevator($('#lift-dialog'));
 
 function node(tag, css = '', text = '') {
   const element = document.createElement(tag);
@@ -130,7 +136,7 @@ function formatRoom(slot) {
   return slot ? `${Math.floor((slot - 1) / perFloor) + 1}${String((slot - 1) % perFloor + 1).padStart(2, '0')}` : '';
 }
 
-function card({ id, slot, title, name, theme }) {
+function card({ id, slot, title, name, theme, ...appearance }) {
   const fragment = $('#room-card-template').content.cloneNode(true);
   const item = $('button', fragment);
   const number = $('.card-number', item);
@@ -139,10 +145,15 @@ function card({ id, slot, title, name, theme }) {
   $('.card-title', item).textContent = title || name || 'ここに入居 →';
   $('.card-subtitle', item).textContent = id ? (title && name && title !== name ? name : themes[theme]?.name || '') : '';
   if (id) {
-    const artwork = themes[theme] || themes.reading;
-    $('img', item).src = artwork.image;
+    const scene = id === 'showroom' ? showroom : {
+      id, noteId: appearance.noteId, avatarVersion: appearance.avatarVersion,
+      profile: { photo: appearance.photo }, design: {
+        theme, world: appearance.world, avatarMode: appearance.avatarMode, light: appearance.light,
+      },
+    };
+    $('.card-image', item).replaceChildren(roomStage(scene, avatarUrl(scene), { mini: true }));
     item.classList.add('occupied');
-    item.addEventListener('click', () => void openPublished(id));
+    item.addEventListener('click', () => travel(floorFor(slot), () => void openPublished(id)));
   } else {
     $('.card-image', item).remove();
     item.addEventListener('click', () => focusEntry(slot));
@@ -167,13 +178,7 @@ function renderDirectory() {
   const rooms = catalog?.rooms ?? [];
   for (let n = 1; n <= count; n++) {
     const hasRooms = rooms.some((room) => Math.floor((room.slot - 1) / perFloor) + 1 === n);
-    const item = button('floor-choice', `${n}F`, () => {
-      state.floor = n;
-      state.query = '';
-      $('#resident-search').value = '';
-      renderDirectory();
-      $(`[data-floor="${n}"]`).focus({ preventScroll: true });
-    });
+    const item = button('floor-choice', `${n}F`, () => travel(n, () => showFloor(n, true)));
     item.dataset.floor = String(n);
     item.dataset.occupied = String(hasRooms);
     item.setAttribute('aria-pressed', String(!query && floor === n));
@@ -213,12 +218,50 @@ async function loadDirectory() {
     state.catalogError = true;
   }
   renderDirectory();
+  renderBuilding();
+}
+
+function floorFor(slot) {
+  return slot ? Math.ceil(slot / (state.catalog?.perFloor ?? 12)) : 1;
+}
+
+function showFloor(floor, focus) {
+  state.floor = floor;
+  state.query = '';
+  $('#resident-search').value = '';
+  renderDirectory();
+  if (focus) $(`[data-floor="${floor}"]`).focus({ preventScroll: true });
+}
+
+function renderBuilding() {
+  const building = $('#cutaway-building');
+  cutaway(building, state.catalog, showroom, {
+    avatar: avatarUrl,
+    visit: room => travel(room.slot ? floorFor(room.slot) : (state.catalog?.floors ?? 12), () => void openPublished(room.id)),
+    enter: focusEntry,
+  });
+  const pick = $('#cutaway-floor');
+  const count = state.catalog?.floors ?? 12;
+  if (pick.options.length !== count + 1) {
+    const selected = pick.value;
+    pick.replaceChildren(new Option('屋上', ''));
+    for (let floor = count; floor >= 1; floor--) pick.append(new Option(`${floor}F`, String(floor)));
+    pick.value = selected;
+  }
+  state.story = dailyStory(state.catalog, state.owner?.id);
+  $('#story-title').textContent = state.story.title;
+  $('#story-intro').textContent = state.story.intro;
+  const action = $('#story-visit');
+  const room = state.story.room;
+  action.href = room ? roomUrl(room.id).href : storyFallback;
+  action.target = room ? '_self' : '_blank';
+  action.textContent = room ? `${formatRoom(room.slot)}号室を訪ねる →` : '公開作品を訪ねる ↗';
 }
 
 function focusEntry(slot = null) {
   state.preferredSlot = slot;
   const entryStatus = $('#entry-status');
-  status(entryStatus, slot ? `${formatRoom(slot)}号室を選択中。` : 'IDを入れると、あなたの部屋を下見できます。');
+  status(entryStatus, slot ? `${formatRoom(slot)}号室を選択中。` : 'IDとキャラ画像から、部屋を下見できます。');
   if (slot) entryStatus.append(' ', button('quiet small', '選択を解除', () => focusEntry()));
   const entry = $('#creator-id');
   entry.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth', block: 'center' });
@@ -250,6 +293,7 @@ function dismissRoom() {
   state.request++;
   closeDialog('room-dialog');
   state.room = null;
+  state.storyVisit = null;
   const url = new URL(location.href);
   if (!url.searchParams.has('room')) return;
   if (history.state?.towerRoom) {
@@ -265,6 +309,7 @@ function titleFor(room) {
 }
 
 function avatarUrl(room) {
+  if (room.draftAvatar?.source) return room.draftAvatar.source;
   if (room.design.avatarMode === 'custom' && room.avatarVersion) {
     const url = new URL(API);
     url.searchParams.set('view', 'avatar');
@@ -292,53 +337,6 @@ function articleCard(article, featured = false) {
   if (article.date) content.append(node('time', '', article.date.replaceAll('-', '.')));
   item.append(content, node('span', 'article-arrow', '↗'));
   return item;
-}
-
-function roomScene(room) {
-  const art = themes[room.design.theme] ?? themes.reading;
-  const frame = node('div', 'scene-frame');
-  const scene = node('div', 'room-scene');
-  scene.dataset.light = room.design.light;
-  const image = node('img', 'room-art');
-  image.src = art.image;
-  image.alt = art.alt;
-  const avatar = node('div', 'resident');
-  avatar.classList.toggle('portrait', room.design.avatarMode === 'profile' && Boolean(room.profile.photo));
-  const sprite = node('img', 'resident-sprite');
-  sprite.src = avatarUrl(room);
-  sprite.alt = room.design.avatarName || '住人キャラクター';
-  sprite.addEventListener('error', () => {
-    if (sprite.getAttribute('src') !== './assets/resident.webp') {
-      sprite.src = './assets/resident.webp';
-      avatar.classList.remove('portrait');
-    }
-  });
-  avatar.append(sprite);
-  scene.append(image, avatar);
-  const controls = node('div', 'scene-controls');
-  controls.append(node('span', '', art.name));
-  const route = [23, 67, 45, 81];
-  let currentX = 58;
-  let step = 0;
-  let timer;
-  function walk(x, y) {
-    clearTimeout(timer);
-    avatar.style.setProperty('--x', `${x}%`);
-    avatar.style.setProperty('--y', `${y}%`);
-    avatar.dataset.left = String(x < currentX);
-    avatar.classList.add('walking');
-    currentX = x;
-    timer = setTimeout(() => avatar.classList.remove('walking'), 630);
-  }
-  scene.addEventListener('click', (event) => {
-    const bounds = scene.getBoundingClientRect();
-    const x = (event.clientX - bounds.left) / bounds.width * 100;
-    const y = (event.clientY - bounds.top) / bounds.height * 100;
-    walk(Math.min(90, Math.max(10, x)), Math.min(96, Math.max(83, y)));
-  });
-  controls.append(button('quiet', 'キャラを歩かせる →', () => { walk(route[step++ % route.length], 93); }));
-  frame.append(scene, controls);
-  return frame;
 }
 
 function renderStamps(target, room) {
@@ -377,11 +375,12 @@ function renderRoom(room, mode) {
   const content = $('#room-content');
   const address = $('#room-address');
   address.textContent = mode === 'draft' ? (room.slot ? `${formatRoom(room.slot)}号室の下見` : '入居前の下見') :
+    mode === 'redesign' ? `${formatRoom(room.slot)}号室の改装プレビュー` :
     mode === 'showroom' ? '見学室' : `${formatRoom(room.slot)}号室`;
-  $('#share-room').hidden = mode === 'draft';
+  $('#share-room').hidden = mode === 'draft' || mode === 'redesign';
   status($('#room-status'));
   const layout = node('div', 'room-layout');
-  const scene = roomScene(room);
+  const scene = roomStage(room, avatarUrl(room), { avatarName: room.design.avatarName });
   const body = node('div', 'room-body');
   const title = node('h2', '', titleFor(room));
   title.id = 'room-title';
@@ -390,8 +389,19 @@ function renderRoom(room, mode) {
   if (room.design.welcome) body.append(node('p', 'welcome', room.design.welcome));
   if (room.profile.description) body.append(node('p', 'room-description', room.profile.description));
 
+  if (mode === 'resident' && state.storyVisit?.room.id === room.id) {
+    const visit = node('aside', 'room-story');
+    visit.append(node('strong', '', state.storyVisit.title), node('p', '', state.storyVisit.arrival));
+    const choice = room.profile.articles.find(article => article.url === room.design.pin) ?? room.profile.articles[0];
+    visit.append(link('quiet', choice ? `「${choice.title}」を開く ↗` : '書き手のnoteを訪ねる ↗',
+      choice?.url || `https://note.com/${room.noteId}`, true));
+    body.append(visit);
+  }
   const actions = node('div', 'room-actions');
-  if (mode === 'draft') {
+  if (mode === 'redesign') {
+    const save = button('button primary', 'この部屋に改装する', () => void saveWorld(room, save));
+    actions.append(save);
+  } else if (mode === 'draft') {
     actions.append(button('button primary', 'この部屋に入居する', () => void beginProof(room, false)));
   } else if (mode === 'showroom') {
     actions.append(button('button primary', '自分の部屋をつくる', () => { dismissRoom(); focusEntry(); }));
@@ -476,7 +486,8 @@ async function submitPreview(event) {
     $('#creator-id').focus();
     return;
   }
-  const submit = $('button', event.currentTarget);
+  const submit = $('button[type="submit"]', event.currentTarget);
+  const picture = state.entryPicture;
   const request = ++state.request;
   submit.disabled = true;
   status(hint, 'noteのプロフィールと記事を読み込んでいます…');
@@ -485,14 +496,50 @@ async function submitPreview(event) {
     if (request !== state.request) return;
     status(hint, state.preferredSlot ? `${formatRoom(state.preferredSlot)}号室を選択中。` : '部屋の下見ができます。');
     if (room.existingId) {
+      if (picture && state.owner?.id === room.existingId) {
+        const current = await write('visit', { id: room.existingId });
+        if (request !== state.request) return;
+        if (current.isOwner) {
+          renderRoom(withWorld(current, picture), 'redesign');
+          return;
+        }
+      }
       await openPublished(room.existingId);
+      if (picture && !state.room?.isOwner) status($('#room-status'), '入居済みの部屋です。鍵を再発行すると改装できます。');
     } else {
       room.slot = state.preferredSlot;
-      renderRoom(room, 'draft');
+      renderRoom(withWorld(room, picture), 'draft');
     }
   } catch (error) {
     if (request === state.request) status(hint, message(error), true);
   } finally { submit.disabled = false; }
+}
+
+function withWorld(room, picture) {
+  const design = { ...room.design, world: designWorld(room, picture?.signature) };
+  if (picture) design.avatarMode = 'custom';
+  return { ...room, design, draftAvatar: picture };
+}
+
+function encodedAvatar(picture) {
+  return picture?.source.split(',')[1];
+}
+
+async function saveWorld(room, control) {
+  control.disabled = true;
+  status($('#room-status'), '部屋を書き換えています…');
+  try {
+    const updated = await write('save', { id: room.id, version: room.version, design: room.design, avatarB64: encodedAvatar(room.draftAvatar) });
+    pushRoom(room.id);
+    renderRoom({ ...updated, isOwner: true }, 'resident');
+    resetEntryCharacter();
+    status($('#room-status'), '新しい部屋とキャラを保存しました。');
+    void loadDirectory();
+  } catch (error) {
+    status($('#room-status'), error.code === 'conflict' ? '部屋が先に更新されました。トップから下見をやり直してください。' : message(error), true);
+  } finally {
+    control.disabled = false;
+  }
 }
 
 function setProofVisible(visible) {
@@ -500,7 +547,12 @@ function setProofVisible(visible) {
 }
 
 async function beginProof(room, recover) {
-  state.proofIntent = { noteId: room.noteId, slot: recover ? null : room.slot, recover };
+  const plan = recover ? undefined : {
+    world: room.design.world,
+    theme: room.design.theme,
+    avatarB64: encodedAvatar(room.draftAvatar),
+  };
+  state.proofIntent = { noteId: room.noteId, slot: recover ? null : room.slot, recover, plan };
   $('#key-title').textContent = recover ? '部屋の鍵を再発行する' : '部屋の鍵をつくる';
   $('#proof-intro').textContent = recover ?
     '本人確認で、このブラウザに新しい鍵を保存します。以前の鍵は更新されます。' :
@@ -509,7 +561,9 @@ async function beginProof(room, recover) {
   const stored = getStored(sessionStorage, PROOF_STORAGE);
   const same = stored && stored.until > Date.now() && stored.noteId === room.noteId && stored.slot === state.proofIntent.slot;
   if (same) {
-    showProof(stored);
+    const proof = { ...stored, ...state.proofIntent };
+    setStored(sessionStorage, PROOF_STORAGE, proof);
+    showProof(proof);
   } else {
     await issueProof();
   }
@@ -554,12 +608,13 @@ async function confirmProof() {
   verify.disabled = true;
   status($('#proof-status'), 'noteの自己紹介欄を確認しています…');
   try {
-    const room = await write('confirm', {}, proof.key);
+    const room = await write('confirm', proof.plan ?? {}, proof.key);
     state.owner = { id: room.id, noteId: room.noteId, key: proof.key };
     const saved = setStored(localStorage, OWNER_STORAGE, state.owner);
     setStored(sessionStorage, PROOF_STORAGE, null);
     state.proof = null;
     state.preferredSlot = null;
+    resetEntryCharacter();
     closeDialog('key-dialog');
     pushRoom(room.id);
     renderRoom({ ...room, isOwner: true }, 'resident');
@@ -619,6 +674,102 @@ function dataUrl(blob) {
   });
 }
 
+function stripSolidBackdrop(canvas) {
+  const { width, height } = canvas;
+  const context = canvas.getContext('2d', { willReadFrequently: true });
+  const pixels = context.getImageData(0, 0, width, height);
+  const data = pixels.data;
+  const edge = [];
+  for (let x = 0; x < width; x++) edge.push(x, (height - 1) * width + x);
+  for (let y = 1; y < height - 1; y++) edge.push(y * width, y * width + width - 1);
+  if (edge.some(index => data[index * 4 + 3] < 170)) return;
+  const difference = index => {
+    const start = index * 4;
+    return Math.max(Math.abs(data[start] - data[0]), Math.abs(data[start + 1] - data[1]), Math.abs(data[start + 2] - data[2]));
+  };
+  if (edge.filter(index => difference(index) <= 20).length < edge.length * .86) return;
+  const seen = new Uint8Array(width * height);
+  const queue = new Int32Array(width * height);
+  let end = 0;
+  function add(index) {
+    if (!seen[index] && difference(index) <= 23) {
+      seen[index] = 1;
+      queue[end++] = index;
+    }
+  }
+  for (const index of edge) add(index);
+  for (let current = 0; current < end; current++) {
+    const index = queue[current];
+    const x = index % width;
+    if (x) add(index - 1);
+    if (x < width - 1) add(index + 1);
+    if (index >= width) add(index - width);
+    if (index < width * (height - 1)) add(index + width);
+  }
+  if (end < width * height * .12 || end > width * height * .92) return;
+  for (let i = 0; i < end; i++) data[queue[i] * 4 + 3] = 0;
+  context.putImageData(pixels, 0, 0);
+}
+
+function trimActor(canvas) {
+  const { width, height } = canvas;
+  const data = canvas.getContext('2d').getImageData(0, 0, width, height).data;
+  let left = width, right = -1, top = height, bottom = -1;
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      if (data[(y * width + x) * 4 + 3] <= 20) continue;
+      left = Math.min(left, x);
+      right = Math.max(right, x);
+      top = Math.min(top, y);
+      bottom = Math.max(bottom, y);
+    }
+  }
+  if (right < left || bottom < top) throw { code: 'bad_image' };
+  const result = document.createElement('canvas');
+  result.width = right - left + 1;
+  result.height = bottom - top + 1;
+  result.getContext('2d').drawImage(canvas, left, top, result.width, result.height, 0, 0, result.width, result.height);
+  return result;
+}
+
+function resetEntryCharacter(announce = false) {
+  state.entryPicture = null;
+  $('#entry-character').value = '';
+  $('#entry-character-preview').removeAttribute('src');
+  $('#entry-character-preview').hidden = true;
+  $('#clear-character').hidden = true;
+  if (announce) status($('#entry-status'), 'キャラ画像を選び直せます。');
+}
+
+async function chooseEntryCharacter(event) {
+  const field = event.currentTarget;
+  const file = field.files?.[0];
+  if (!file) { resetEntryCharacter(); return; }
+  const submit = $('#preview-form button[type="submit"]');
+  const preview = $('#entry-character-preview');
+  state.entryPicture = null;
+  preview.hidden = true;
+  $('#clear-character').hidden = true;
+  submit.disabled = true;
+  status($('#entry-status'), 'キャラ画像を読み込んでいます…');
+  try {
+    const picture = await readPicture(file);
+    if (field.files?.[0] !== file) return;
+    state.entryPicture = picture;
+    preview.src = picture.source;
+    preview.hidden = false;
+    $('#clear-character').hidden = false;
+    status($('#entry-status'), 'キャラ画像を読み込みました。IDを入れて部屋をつくれます。');
+  } catch (error) {
+    if (field.files?.[0] === file) {
+      resetEntryCharacter();
+      status($('#entry-status'), message(error), true);
+    }
+  } finally {
+    if (!field.files?.length || field.files[0] === file) submit.disabled = false;
+  }
+}
+
 async function readPicture(file) {
   const supported = ['image/png', 'image/jpeg', 'image/gif', 'image/webp'];
   if (!supported.includes(file.type)) throw { code: 'bad_image' };
@@ -634,19 +785,26 @@ async function readPicture(file) {
     await image.decode().catch(() => { throw { code: 'bad_image' }; });
     const longestSide = Math.max(image.naturalWidth, image.naturalHeight);
     if (animated && longestSide > 1200) throw { code: 'bad_image' };
-    if (animated || (file.type !== 'image/jpeg' && file.size <= 307200 && longestSide <= 1200)) {
-      return await dataUrl(file);
-    }
+    if (animated) return { source: await dataUrl(file), signature: characterSignature(image) };
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
     if (!context) throw { code: 'bad_image' };
+    let crop;
     for (const side of [720, 512, 384]) {
-      const ratio = Math.min(1, side / longestSide);
-      canvas.width = Math.max(1, Math.round(image.naturalWidth * ratio));
-      canvas.height = Math.max(1, Math.round(image.naturalHeight * ratio));
-      context.drawImage(image, 0, 0, canvas.width, canvas.height);
-      const output = await new Promise(resolve => canvas.toBlob(resolve, 'image/webp', 0.86));
-      if (output && output.size <= 307200) return await dataUrl(output);
+      const width = crop?.width ?? image.naturalWidth;
+      const height = crop?.height ?? image.naturalHeight;
+      const ratio = Math.min(1, side / Math.max(width, height));
+      canvas.width = Math.max(1, Math.round(width * ratio));
+      canvas.height = Math.max(1, Math.round(height * ratio));
+      if (crop) {
+        context.drawImage(crop, 0, 0, canvas.width, canvas.height);
+      } else {
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        stripSolidBackdrop(canvas);
+        crop = trimActor(canvas);
+      }
+      const output = await new Promise(resolve => (side === 720 ? crop : canvas).toBlob(resolve, 'image/webp', 0.86));
+      if (output && output.size <= 307200) return { source: await dataUrl(output), signature: characterSignature(crop) };
     }
     throw { code: 'big_image' };
   } finally { URL.revokeObjectURL(localUrl); }
@@ -660,10 +818,10 @@ async function choosePicture(event) {
   status($('#edit-status'));
   if (!file) return;
   try {
-    const source = await readPicture(file);
+    const picture = await readPicture(file);
     if (field.files?.[0] !== file) return;
-    state.picture = source;
-    preview.src = source;
+    state.picture = picture;
+    preview.src = picture.source;
     preview.hidden = false;
   } catch (error) {
     if (field.files?.[0] === file) {
@@ -688,7 +846,10 @@ async function saveEditor(event) {
     status($('#edit-status'), errors.avatar_required, true);
     return;
   }
-  const avatarB64 = state.picture?.split(',')[1];
+  const picture = design.avatarMode === 'custom' ? state.picture : null;
+  const regenerate = picture || !room.design.world || design.avatarMode !== room.design.avatarMode;
+  design.world = regenerate ? designWorld({ ...room, design }, picture?.signature) : room.design.world;
+  const avatarB64 = encodedAvatar(picture);
   save.disabled = true;
   status($('#edit-status'), '部屋を保存しています…');
   try {
@@ -737,6 +898,36 @@ function route() {
 }
 
 $('#preview-form').addEventListener('submit', submitPreview);
+$('#entry-character').addEventListener('change', chooseEntryCharacter);
+$('#clear-character').addEventListener('click', () => resetEntryCharacter(true));
+$('#cutaway-fit').addEventListener('click', event => {
+  const button = event.currentTarget;
+  const viewport = $('#cutaway-building');
+  const full = viewport.dataset.zoom !== 'fit';
+  viewport.dataset.zoom = full ? 'fit' : 'detail';
+  viewport.scrollLeft = 0;
+  viewport.scrollTop = 0;
+  button.setAttribute('aria-pressed', String(full));
+  button.textContent = full ? '拡大' : '全景';
+});
+$('#cutaway-floor').addEventListener('change', event => {
+  const target = event.currentTarget.value;
+  const viewport = $('#cutaway-building');
+  if (!target) { viewport.scrollTop = 0; return; }
+  travel(Number(target), () => {
+    const row = $(`[data-level="${target}"]`, viewport);
+    if (!row) return;
+    viewport.scrollTop += row.getBoundingClientRect().top - viewport.getBoundingClientRect().top;
+    showFloor(Number(target), false);
+  });
+});
+$('#story-visit').addEventListener('click', event => {
+  if (!state.story?.room) return;
+  event.preventDefault();
+  state.storyVisit = state.story;
+  const room = state.story.room;
+  travel(floorFor(room.slot), () => void openPublished(room.id));
+});
 $('#retry-list').addEventListener('click', () => void loadDirectory());
 $('#search-form').addEventListener('submit', (event) => {
   event.preventDefault();
@@ -803,5 +994,6 @@ $('#room-dialog').addEventListener('cancel', (event) => { event.preventDefault()
 window.addEventListener('popstate', route);
 window.addEventListener('focus', () => void loadDirectory());
 renderDirectory();
+renderBuilding();
 void loadDirectory();
 route();

@@ -1,11 +1,11 @@
 import { makeWalkPad, bindWalking } from './walk-controls.js?v=1';
-import { avatarSnapshot, hostWalker, residentWalker } from './host-avatar.js?v=20261118';
+import { avatarSnapshot, hostWalker, residentWalker, autoResidentWalker } from './host-avatar.js?v=20261118-0838';
 import { applyDistrictLight } from './scene-time.js?v=1';
 import { distance, streetAreas, walkable, walkingRoute } from './paths.js?v=20261118';
 import { districtTraffic } from './traffic.js?v=1';
 import { cafeStory, venues, venueSpawn, venueWalkable } from './venues.js?v=20261118';
 import { bindActivities, playgroundPose } from './district-activities.js?v=20261118';
-import { bindSpotIllustration } from './spot-illustration.js?v=20261118';
+import { bindSpotIllustration } from './spot-illustration.js?v=20261118-0838';
 import { districtCamera, exteriorHeight } from './camera.js?v=20261118';
 import { TOWER_API, OWNER_STORAGE, avatarImageUrl, readWalkDraft, rememberWalker } from '../../../tower/avatar-travel.js?v=20261118';
 
@@ -103,7 +103,7 @@ async function chooseWalker() {
   if (onDraft) {
     root.dataset.walkerState='loading';
     citizen.style.visibility='hidden';
-    actor={ source:onDraft.avatar.source, atlas:onDraft.avatar.atlas, name:onDraft.name || onDraft.noteId };
+    actor={ source:onDraft.avatar.source, atlas:onDraft.avatar.atlas, custom:true, name:onDraft.name || onDraft.noteId };
   } else {
     const roomId=currentUrl.searchParams.get('resident') || owner?.id;
     if (!/^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/.test(roomId ?? '')) return;
@@ -117,13 +117,14 @@ async function chooseWalker() {
     const custom=room.design?.avatarMode==='custom'&&room.avatarVersion;
     const profile=room.design?.avatarMode==='profile'&&room.profile?.photo;
     actor={id:roomId,source:custom ? avatarImageUrl(roomId,room.avatarVersion) : profile || '../../../tower/assets/resident.webp',
-      atlas:custom&&room.design.world?.atlas,
+      atlas:custom&&room.design.world?.atlas, custom:Boolean(custom),
       name:room.design.avatarName || room.profile.name || room.noteId};
     roomLink.searchParams.set('room',roomId);
   }
   const image=new Image();
   image.alt=actor.name;
   image.draggable=false;
+  if(actor.custom&&actor.source.startsWith(TOWER_API))image.crossOrigin='anonymous';
   image.src=actor.source;
   let timer;
   try {
@@ -132,7 +133,7 @@ async function chooseWalker() {
   } finally {clearTimeout(timer);}
   if (actor.id) rememberWalker(actor);
   citizen.replaceChildren(image,seatedFrame);
-  paintAvatar=actor.atlas ? residentWalker(image) : (_stride,_moving,dx) => {
+  paintAvatar=actor.custom || actor.atlas ? autoResidentWalker(image,{atlas:Boolean(actor.atlas)}) : (_stride,_moving,dx) => {
     if (dx) image.style.transform=`scaleX(${dx<0?-1:1})`;
   };
   paintAvatar(stride,false);

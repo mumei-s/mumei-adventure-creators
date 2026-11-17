@@ -1,5 +1,5 @@
 import { makeWalkPad, bindWalking } from '../halloween-exhibition/preview/diorama-city/walk-controls.js?v=1';
-import { hostPortrait, hostWalker, residentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=20261118';
+import { hostPortrait, hostWalker, residentWalker, autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=20261118-0838';
 import { applyDistrictLight } from '../halloween-exhibition/preview/diorama-city/scene-time.js?v=1';
 import { TOWER_API } from './avatar-travel.js?v=20261118';
 
@@ -122,6 +122,7 @@ const make = (tag, className) => {
 
 function art(source, css, alt = '', mini = false) {
   const image = make('img',css);
+  if (source?.startsWith(TOWER_API)) image.crossOrigin='anonymous';
   image.src = source;
   image.alt = alt;
   image.draggable = false;
@@ -231,9 +232,9 @@ export function roomPreview(room,source) {
   const resident=art(usesHostModel(room)?hostPortrait:source,'room-photo-resident','',true);
   if(room.design?.avatarMode==='profile'&&room.profile?.photo) resident.classList.add('profile-photo');
   photo.append(resident);
-  if(usingAtlas(room)) {
+  if(!usesHostModel(room) && room.design?.avatarMode==='custom') {
     resident.addEventListener('error',()=>{resident.src='./assets/resident.webp';resident.hidden=false;},{once:true});
-    residentWalker(resident)(0,false);
+    autoResidentWalker(resident,{atlas:usingAtlas(room)})(0,false);
   }
   return photo;
 }
@@ -295,7 +296,8 @@ export function roomStage(room,source,{mini=false,avatarName,signal,inputRoot,tr
   sprite.addEventListener('error',()=>{sprite.src='./assets/resident.webp';sprite.hidden=false;},{once:true});
   walker.append(sprite);
   const atlas=traveler ? traveler.atlas : usingAtlas(room);
-  const updateAvatar=host&&!mini ? hostWalker(sprite) : atlas ? residentWalker(sprite) : null;
+  const custom=traveler ? (traveler.custom ?? (traveler.atlas || traveler.source?.startsWith(TOWER_API) || traveler.source?.startsWith('data:'))) : room.design?.avatarMode==='custom';
+  const updateAvatar=host&&!mini ? hostWalker(sprite) : custom || atlas ? autoResidentWalker(sprite,{atlas:Boolean(atlas)}) : null;
   scene.append(walker);
   if(mini) {
     updateAvatar?.(0,false);

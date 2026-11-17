@@ -118,3 +118,18 @@ test('facility card pages have original metadata and a direct entrance', async (
     assert.ok(html.includes('data-venue="' + id + '"'));
   }
 });
+
+test('legacy transparent cropped atlas is detected without saved format; single actor is not',async()=>{
+ const {detectAtlas}=await load('../../halloween-exhibition/preview/diorama-city/atlas-layout.js');
+ for(const [width,height] of [[160,160],[173,231]]){
+   const data=new Uint8ClampedArray(width*height*4);
+   for(let row=0;row<4;row++)for(let col=0;col<4;col++){
+     for(let y=Math.floor(row*height/4+height*.016);y<Math.floor((row+1)*height/4-height*.016);y++)
+       for(let x=Math.floor(col*width/4+width*.065);x<Math.floor((col+1)*width/4-width*.065);x++)data[(y*width+x)*4+3]=255;
+   }
+   assert.equal(detectAtlas({width,height,data})?.length,16);
+   data.fill(0);
+   for(let y=8;y<height-8;y++)for(let x=Math.floor(width*.35);x<Math.floor(width*.65);x++)data[(y*width+x)*4+3]=255;
+   assert.equal(detectAtlas({width,height,data}),null);
+ }
+});

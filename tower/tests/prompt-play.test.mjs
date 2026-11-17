@@ -8,7 +8,7 @@ const qualityUrl=asModule(await readFile(new URL('../quality-assist.js',import.m
 const {makeRoomPrompt,residentPost,articleCardBlock,insightUrl,towerUrl,hostNoteUrl}=await import(coreUrl);
 const spotSource=await readFile(new URL('../../halloween-exhibition/preview/diorama-city/spot-illustration.js',import.meta.url),'utf8');
 const {makeSpotPrompt}=await import(asModule(spotSource
-  .replace(/\.\.\/\.\.\/\.\.\/tower\/prompt-play\.js\?v=\d+/,coreUrl)
+  .replace(/\.\.\/\.\.\/\.\.\/tower\/prompt-play\.js\?v=[\d-]+/,coreUrl)
   .replace(/\.\.\/\.\.\/\.\.\/tower\/quality-assist\.js\?v=\d+/,qualityUrl)));
 const app=await readFile(new URL('../app.js',import.meta.url),'utf8');
 const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
@@ -16,6 +16,8 @@ test('room generation first, recovery without new avatar, independent attachment
   const normal=makeRoomPrompt({id:'tester'});
   assert.match(normal,/最初の成果物は必ず部屋画像/);
   assert.match(normal,/次にアバター画像を別の画像/);
+  assert.match(normal,/３枚目は部屋を題材にした記事専用サムネイル/);
+  assert.match(normal,/部屋画像とサムネイルを絶対に兼用・合成しない/);
   assert.match(makeRoomPrompt({id:'tester',roomOnly:true}),/既存アバターを再生成しない/);
   assert.match(app,/if \(!play.avatar \|\| !play.interior/);
   assert.doesNotMatch(app,/else \$\('#prompt-import'\).requestSubmit\(\)/);

@@ -1,6 +1,7 @@
-import { characterSignature, designWorld, generatedInterior, roomPreview, roomStage } from './world.js?v=20261118';
+import { scanAtlas } from '../halloween-exhibition/preview/diorama-city/atlas-layout.js?v=20261118-0838';
+import { characterSignature, designWorld, generatedInterior, roomPreview, roomStage } from './world.js?v=20261118-0838';
 import { cutaway, dailyStory, makeElevator } from './building.js?v=20261118';
-import { chatgptAppLink, makeArtifactPrompt, makeRoomPrompt, parseNoteId, residentPost, towerUrl, hostNoteUrl, insightUrl, bindCardButtons } from './prompt-play.js?v=20261118';
+import { chatgptAppLink, makeArtifactPrompt, makeRoomPrompt, parseNoteId, residentPost, towerUrl, hostNoteUrl, insightUrl, bindCardButtons } from './prompt-play.js?v=20261118-0838';
 import { bindQualityAssist } from './quality-assist.js?v=20261118';
 import { TOWER_API, OWNER_STORAGE, avatarImageUrl, readWalkDraft, saveWalkDraft, clearWalkDraft, readTraveler, rememberWalker } from './avatar-travel.js?v=20261118';
 
@@ -924,8 +925,8 @@ async function prepareInterior(image) {
   throw { code: 'big_image' };
 }
 
-async function prepareAtlas(image) {
-  const aspect = image.naturalWidth / image.naturalHeight;
+async function prepareAtlas(image, detected = null) {
+  const aspect = (image.naturalWidth||image.width) / (image.naturalHeight||image.height);
   if (aspect < .55 || aspect > 1.8) throw { code: 'bad_sheet' };
   const source = document.createElement('canvas');
   const frameWidth = Math.round(240 * Math.min(1, aspect));
@@ -941,7 +942,11 @@ async function prepareAtlas(image) {
   const frames = [];
   for (let index = 0; index < 16; index++) {
     cellContext.clearRect(0, 0, frameWidth, frameHeight);
-    cellContext.drawImage(source, (index % 4) * frameWidth, Math.floor(index / 4) * frameHeight,
+    if (detected) {
+      const [l,t,r,b] = detected[index];
+      const scale = Math.min((frameWidth-8)/(r-l),(frameHeight-8)/(b-t));
+      cellContext.drawImage(image,l,t,r-l,b-t,(frameWidth-(r-l)*scale)/2,frameHeight-4-(b-t)*scale,(r-l)*scale,(b-t)*scale);
+    } else cellContext.drawImage(source, (index % 4) * frameWidth, Math.floor(index / 4) * frameHeight,
       frameWidth, frameHeight, 0, 0, frameWidth, frameHeight);
     let actor;
     try { actor = trimActor(cell); } catch { throw { code: 'bad_sheet' }; }
@@ -1002,6 +1007,8 @@ async function preparePicture(file, variant) {
       } else {
         context.drawImage(image, 0, 0, canvas.width, canvas.height);
         stripSolidBackdrop(canvas);
+        const detected = scanAtlas(canvas);
+        if (detected) return await prepareAtlas(canvas,detected);
         crop = trimActor(canvas);
       }
       const output = await pictureBlob(side === 720 ? crop : canvas, .86);
@@ -1132,6 +1139,7 @@ async function readPlayPhoto(kind) {
   try {
     const picture = await readPicture(file, variant);
     if (currentFile()) {
+      if(kind==='avatar'&&picture.atlas) $('#generated-avatar-mode').value='atlas';
       setPlayPhoto(kind, picture);
       status(hint, play.avatar && play.interior ? '２枚がそろいました。下見できます。' : '画像を読み込みました。');
     }
@@ -1199,8 +1207,9 @@ async function chooseEditorPicture(field) {
     const picture = await readPicture(file, interior ? 'interior' : $('#edit-avatar-format').value);
     if (editImageReads.get(field) !== request) return;
     state[key] = picture;
+    if (!interior && picture.atlas) $('#edit-avatar-format').value='atlas';
     showEditorImage(preview, picture.source);
-    status($('#edit-status'), interior ? '部屋画像を読み込みました。' : 'キャラ画像を読み込みました。');
+    status($('#edit-status'), interior ? '部屋画像を読み込みました。' : picture.atlas ? '歩行シートを認識しました。ゲーム内は１人で歩きます。' : 'キャラ画像を読み込みました。');
   } catch (error) {
     if (editImageReads.get(field) === request) {
       field.value = '';
@@ -1229,6 +1238,7 @@ async function saveEditor(event) {
   const picture = design.avatarMode === 'custom' ? state.picture : null;
   const regenerate = picture || !room.design.world || design.avatarMode !== room.design.avatarMode || design.theme !== room.design.theme;
   design.world = regenerate ? designWorld({ ...room, design }, picture?.signature) : room.design.world;
+  if(design.world) design.world={...design.world, atlas:design.avatarMode==='custom' && (picture ? picture.atlas===true : room.design.world?.atlas===true), artwork:room.design.world?.artwork};
   const clearInterior = Boolean(room.design.world?.artwork && !values.has('keepInterior'));
   const images = draftArtwork({ draftAvatar: picture, draftInterior: state.interiorPicture });
   save.disabled = true;

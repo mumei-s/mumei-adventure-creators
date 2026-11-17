@@ -1,4 +1,4 @@
-import { roomStage } from './world.js?v=7';
+import { roomStage } from './world.js?v=20261118';
 
 function element(tag, css = '', title = '') {
   const item = document.createElement(tag);

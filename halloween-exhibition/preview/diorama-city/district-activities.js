@@ -7,6 +7,14 @@ const rides = {
   wheel: { image: './assets/ferris-view.webp', alt: '観覧車の窓から見下ろす運河の街', seconds: 12 },
   carousel: { image: './assets/fair.webp', alt: '明かりのともったメリーゴーラウンド', seconds: 9 },
 };
+const glassColors = {
+  amber: { label: '琥珀', light: '#ffc177' },
+  teal: { label: '青緑', light: '#68f0d6' },
+  indigo: { label: '藍', light: '#839aff' },
+};
+const eveningGlass = ['amber', 'teal', 'indigo'];
+const glassNames = order => order.map(color => glassColors[color].label).join('・');
+const isEvening = order => eveningGlass.every((color, index) => order[index] === color);
 
 const yen = price => `${price.toLocaleString('ja-JP')}円`;
 const total = items => items.reduce((sum, { price, quantity }) => sum + price * quantity, 0);
@@ -31,7 +39,8 @@ export function bindActivities(dialog, { avatar, status }) {
   const message = dialog.querySelector('#activity-message');
   const close = dialog.querySelector('#activity-close');
   const basket = new Map();
-  let receipt = [], timer = 0;
+  let receipt = [], timer = 0, glass = null;
+  const completedRides = new Set();
 
   function announce(text) {
     message.hidden = !text;
@@ -119,7 +128,7 @@ export function bindActivities(dialog, { avatar, status }) {
     photo.src = ride.image;
     photo.alt = ride.alt;
     scene.append(photo);
-    const source = avatar();
+    const source = avatar('sit');
     const w = source?.naturalWidth ?? source?.width, h = source?.naturalHeight ?? source?.height;
     if (w && h) {
       const rider = element('canvas', '', 'ride-avatar');
@@ -146,6 +155,7 @@ export function bindActivities(dialog, { avatar, status }) {
         scene.classList.remove('riding');
         announce('ひと周しました。');
         status(`${label}に乗ってひと周しました。`);
+        completedRides.add(label);
         rideAgain.textContent = 'もう一周';
         rideAgain.hidden = false;
       }, seconds * 1000);
@@ -163,13 +173,57 @@ export function bindActivities(dialog, { avatar, status }) {
     rideAgain.focus();
   }
 
+  function reflectionStatus() {
+    if (!glass) return '水面は静かです。色ガラスの台で灯りを映せます。';
+    return isEvening(glass) ? '琥珀・青緑・藍。「夕暮れの灯り」が水鏡にそろいました。' :
+      `${glassNames(glass)}の光が水面で揺れています。`;
+  }
+
+  function openGlass(label, reflect) {
+    open(label, '← 水鏡の間に戻る');
+    const selected = glass?.slice() ?? ['indigo', 'amber', 'teal'];
+    const fieldset = element('fieldset', '', 'glass-choices');
+    fieldset.append(element('legend', '水鏡に映す色'));
+    ['左', '中央', '右'].forEach((name, index) => {
+      const row = element('label', name);
+      const select = element('select');
+      select.setAttribute('aria-label', `${name}の色ガラス`);
+      const sample = element('span', '', 'glass-swatch');
+      sample.setAttribute('aria-hidden', 'true');
+      for (const [key, color] of Object.entries(glassColors)) {
+        const option = element('option', color.label);
+        option.value = key;
+        select.append(option);
+      }
+      const update = () => {
+        selected[index] = select.value;
+        sample.style.setProperty('--glass-light', glassColors[select.value].light);
+      };
+      select.value = selected[index];
+      select.addEventListener('change', update);
+      update();
+      row.append(select, sample);
+      fieldset.append(row);
+    });
+    const apply = button('水面に灯す', () => {
+      glass = selected.slice();
+      reflect(glass.map(color => glassColors[color].light));
+      dialog.close();
+      status(reflectionStatus());
+    }, 'visit');
+    body.append(fieldset, apply);
+    fieldset.querySelector('select').focus();
+  }
+
   dialog.addEventListener('close', () => {
     clearTimeout(timer);
     timer = 0;
     body.replaceChildren();
   });
   return {
-    openShelf, openRide,
+    openShelf, openRide, openGlass, reflectionStatus,
+    reflectionMemory: () => glass ? `実際に選んだ色は左から${glassNames(glass)}。水面に同じ順で映してください。` : '',
+    rideMemory: () => completedRides.size ? `実際に乗ってひと周した遊具は${[...completedRides].join('、')}。` : '',
     shoppingMemory: shelf => shelf === 'register' && receipt.length ?
       `お会計したものは${receipt.map(({ name }) => name).join('、')}。この品を絵の小物に使う。` : '',
   };
@@ -178,10 +232,13 @@ export function bindActivities(dialog, { avatar, status }) {
 const mix = (a, b, t) => a.map((value, index) => value + (b[index] - value) * t);
 const unit = t => Math.min(1, Math.max(0, t));
 const swingSeat = [307, 400];
-const slideExit = [606, 469];
+const slideExit = [606, 486];
 
 export function playgroundPose(motion, time) {
   const t = (time - motion.started) / 1000;
+  if (motion.kind === 'bench') {
+    return { pose: mix(motion.origin,[178,448],unit(t/.8)), seated:t>=.8, facing:[0,1], done:t>=5 };
+  }
   if (motion.kind === 'swing') {
     const amount = (11 + 5 * motion.pumps) * Math.sin(Math.max(0, t - .65) * 3.85);
     const pose = t < .65 ? mix(motion.origin, swingSeat, unit(t / .65)) :

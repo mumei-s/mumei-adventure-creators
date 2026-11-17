@@ -5,12 +5,14 @@ const points = {
   waterfront:[647,472], bank:[628,410], bridgeFoot:[637,376], bridge:[690,351],
   bridgeEnd:[747,335], northWalk:[602,326], south:[489,579],
   cafeWalk:[409,396], cafe:[390,377], park:[649,498], stationExit:[169,281],
+  southWest:[347,575], southEast:[578,557],
 };
 
 const lanes = [
-  ['gate','plaza',31], ['gate','plazaWest',25], ['plazaWest','stationPath',15],
-  ['stationPath','station',16], ['plaza','fork',22], ['fork','avenue',14],
-  ['avenue','forecourt',22], ['forecourt','tower',24], ['avenue','south',23],
+  ['gate','plaza',36], ['gate','plazaWest',28], ['plazaWest','stationPath',20],
+  ['stationPath','station',20], ['plaza','fork',25], ['fork','avenue',20],
+  ['avenue','forecourt',26], ['forecourt','tower',28], ['avenue','south',28],
+  ['plaza','southWest',25], ['southWest','south',24], ['south','southEast',23], ['southEast','park',20],
   ['avenue','approach',13], ['approach','waterfront',10], ['waterfront','bank',12],
   ['bank','bridgeFoot',8], ['bridgeFoot','bridge',8], ['bridge','bridgeEnd',8],
   ['tower','northWalk',10], ['northWalk','bridgeFoot',10],
@@ -41,6 +43,7 @@ const canalPoints = {
   eastSouth:[886,510], bridgeGate:[937,541], southWest:[174,525], south:[495,525],
   median:[494,409], crossing:[499,312], north:[504,102], upperEnd:[504,47],
   marketWalk:[323,525], marketFront:[323,489], fairGate:[864,392],
+  manorGate:[655,205], southCourt:[495,577],
 };
 
 const canalLanes = [
@@ -50,7 +53,8 @@ const canalLanes = [
   ['eastMid','eastSouth',23], ['eastSouth','bridgeGate',21],
   ['stationGate','southWest',24], ['westSouth','southWest',20], ['southWest','marketWalk',22],
   ['marketWalk','south',22], ['marketWalk','marketFront',14],
-  ['south','eastSouth',22], ['south','median',17], ['median','crossing',18],
+  ['south','eastSouth',26], ['south','median',23], ['median','crossing',24],
+  ['south','southCourt',28],
   ['crossing','middle',18], ['middle','north',14], ['north','upperEnd',11],
 ];
 
@@ -60,6 +64,9 @@ const canalPlaces = {
   canopy:{label:'ガラス屋根の市場前',action:'市場を眺める',point:canalPoints.market,sign:[316,139],
     description:'高架のとなりのガラス屋根。夕方に灯りがともると、通りから店先が見渡せます。'},
   market:{label:'水辺のコンビニ',action:'コンビニに入る',point:canalPoints.marketFront,sign:[327,444],venue:'market'},
+  manor:{label:'水鏡の屋敷',action:'水鏡の屋敷へ',point:canalPoints.manorGate,sign:[654,151],venue:'manor'},
+  southCourt:{label:'運河の回遊広場',action:'広場でひと休み',point:canalPoints.southCourt,sign:[495,592],
+    description:'並木道から続く回遊広場。高架側から運河までぐるりと歩き、対岸の灯りと街の暮らしを眺められます。'},
   avenue:{label:'中央大通り',action:'並木道を眺める',point:canalPoints.crossing,sign:[499,258],
     description:'南北に伸びる並木道。南の広場、駅側の通り、運河の遊歩道へ歩いて行けます。'},
   waterside:{label:'運河の広場',action:'水辺の灯りを眺める',point:canalPoints.waterside,sign:[822,113],
@@ -70,9 +77,10 @@ const canalPlaces = {
 };
 
 export const streetAreas = {
-  tower:{title:'近未来街区',points,lanes,places,arrivals:{tower:[503,320],gate:[251,512],station:[163,306],bridge:[719,342]}},
+  tower:{title:'近未来街区',points,lanes,places,arrivals:{tower:[503,320],gate:[251,512],station:[163,306],bridge:[719,342]},
+    image:'./assets/district-detailed.webp'},
   canal:{title:'運河街区',points:canalPoints,lanes:canalLanes,places:canalPlaces,
-    arrivals:{station:[94,516],bridge:[912,528]}, image:'./assets/canal-city.webp',
+    arrivals:{station:[94,516],bridge:[912,528]}, image:'./assets/canal-detailed.webp',
     alt:'高架駅とガラス屋根の市場、並木の大通りと広い運河沿いの遊歩道がある街区'},
 };
 

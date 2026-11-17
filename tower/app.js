@@ -1,7 +1,8 @@
-import { characterSignature, designWorld, generatedInterior, roomPreview, roomStage } from './world.js?v=7';
-import { cutaway, dailyStory, makeElevator } from './building.js?v=7';
-import { chatgptAppLink, makeRoomPrompt, parseNoteId, residentPost, towerUrl, hostNoteUrl, insightUrl, bindCardButtons } from './prompt-play.js?v=4';
-import { TOWER_API, OWNER_STORAGE, WALK_DRAFT_STORAGE, avatarImageUrl, readWalkDraft } from './avatar-travel.js?v=1';
+import { characterSignature, designWorld, generatedInterior, roomPreview, roomStage } from './world.js?v=20261118';
+import { cutaway, dailyStory, makeElevator } from './building.js?v=20261118';
+import { chatgptAppLink, makeArtifactPrompt, makeRoomPrompt, parseNoteId, residentPost, towerUrl, hostNoteUrl, insightUrl, bindCardButtons } from './prompt-play.js?v=20261118';
+import { bindQualityAssist } from './quality-assist.js?v=20261118';
+import { TOWER_API, OWNER_STORAGE, avatarImageUrl, readWalkDraft, saveWalkDraft, clearWalkDraft, readTraveler, rememberWalker } from './avatar-travel.js?v=20261118';
 
 const PROOF_STORAGE = 'atelier-tower-proof-v1';
 const storyFallback = 'https://note.com/almabrillante/n/n2ded809d9016';
@@ -67,8 +68,23 @@ const state = {
 };
 
 const travel = makeElevator($('#lift-dialog'));
-const play = { id: '', profile: null, avatar: null, interior: null, loading: new Set() };
+const play = { id: '', profile: null, avatar: null, interior: null, loading: new Set(), target: null };
 const promptDialog = $('#prompt-dialog');
+const roomQuality = bindQualityAssist($('#tower-quality'), {
+  mode: 'room', external: ['avatar', 'interior'],
+  getContext: () => ({ urls: [hostNoteUrl, towerUrl + '#prompt-play', insightUrl],
+    creator: parseNoteId($('#prompt-id').value),
+    occupied: Boolean(state.room?.isOwner && state.room.noteId === parseNoteId($('#prompt-id').value)) }),
+  repair: async (kind, title, reason) => {
+    play.target = { kind, title, reason };
+    const prompt = makeArtifactPrompt({ kind, title, reason, mode: 'room',
+      id: parseNoteId($('#prompt-id').value), scene: $('#prompt-ideas').value });
+    $('#prompt-text').value = prompt;
+    selectPlayStep(false);
+    try { await copy(prompt); status($('#prompt-status'), '指定した成果物だけのプロンプトをコピーしました。'); }
+    catch { $('#prompt-text').focus(); $('#prompt-text').select(); }
+  },
+});
 let roomControls;
 
 function node(tag, css = '', text = '') {
@@ -338,7 +354,7 @@ function walkFromRoom(room) {
   if (room.draftAvatar) {
     const draft = { noteId: room.noteId, slot: room.slot, title: room.design.title,
       name: room.design.avatarName || room.profile.name, avatar: room.draftAvatar, interior: room.draftInterior };
-    if (!setStored('sessionStorage', WALK_DRAFT_STORAGE, draft)) {
+    if (!saveWalkDraft(draft)) {
       status($('#room-status'), 'このブラウザでは、下見の画像を街へ持ち出せませんでした。', true);
       return;
     }
@@ -434,7 +450,13 @@ function renderRoom(room, mode) {
   const layout = node('div', 'room-layout');
   roomControls?.abort();
   roomControls = new AbortController();
-  const scene = roomStage(room, avatarUrl(room), { avatarName: room.design.avatarName, signal: roomControls.signal, inputRoot: dialog });
+  if (room.isOwner && room.design.avatarMode === 'custom' && room.avatarVersion) {
+    rememberWalker({ id: room.id, name: room.design.avatarName || room.profile.name,
+      source: avatarUrl(room), atlas: room.design.world?.atlas });
+  }
+  const traveler = !room.isOwner && mode !== 'draft' && mode !== 'redesign' ? readTraveler() : null;
+  const scene = roomStage(room, avatarUrl(room), { avatarName: room.design.avatarName, traveler,
+    signal: roomControls.signal, inputRoot: dialog });
   const controls = $('.world-control-dock', scene);
   const body = node('div', 'room-body');
   const title = node('h2', '', titleFor(room));
@@ -619,7 +641,7 @@ async function saveWorld(room, control) {
     pushRoom(room.id);
     renderRoom({ ...updated, isOwner: true }, 'resident');
     resetEntryCharacter();
-    setStored('sessionStorage', WALK_DRAFT_STORAGE, null);
+    clearWalkDraft(room.noteId);
     if (room.draftInterior) resetPlayImages();
     status($('#room-status'), '新しい部屋とキャラを保存しました。');
     void loadDirectory();
@@ -711,7 +733,7 @@ async function confirmProof() {
       void loadDirectory();
       return;
     }
-    setStored('sessionStorage', WALK_DRAFT_STORAGE, null);
+    clearWalkDraft(room.noteId);
     if (proof.plan?.interiorB64) resetPlayImages();
     pushRoom(room.id);
     renderRoom({ ...room, isOwner: true }, 'resident');
@@ -1001,6 +1023,11 @@ function playNoteId() {
 
 function syncPrompt() {
   const id = parseNoteId($('#prompt-id').value);
+  if (play.target) {
+    $('#prompt-text').value = makeArtifactPrompt({ ...play.target, id, mode: 'room', scene: $('#prompt-ideas').value });
+    roomQuality.refresh();
+    return;
+  }
   const returnUrl = new URL(towerUrl);
   if (id) returnUrl.searchParams.set('creator', id);
   if (state.preferredSlot) returnUrl.searchParams.set('slot', String(state.preferredSlot));
@@ -1008,6 +1035,7 @@ function syncPrompt() {
   const profile = id === play.id ? play.profile : null;
   $('#prompt-text').value = makeRoomPrompt({ id, description: profile?.description, articles: profile?.articles,
     ideas: $('#prompt-ideas').value.trim(), returnUrl: returnUrl.href });
+  roomQuality.refresh();
 }
 
 function loadPromptProfile() {
@@ -1032,6 +1060,7 @@ function selectPlayStep(importing) {
 }
 
 function openPlay(importing = false, incoming = '') {
+  play.target = null;
   if (incoming || (!$('#prompt-id').value && $('#creator-id').value)) $('#prompt-id').value = incoming || $('#creator-id').value;
   selectPlayStep(importing);
   syncPrompt();
@@ -1067,6 +1096,12 @@ function setPlayPhoto(kind, photo) {
   else preview.removeAttribute('src');
   const label = preview.parentElement.querySelector('.prompt-file-button');
   if (label) label.textContent = photo ? '読み込み済み · 選び直す' : (kind === 'avatar' ? 'アバター画像を選ぶ' : '部屋画像を選ぶ');
+  void roomQuality.accept(kind, photo?.source, { atlas: Boolean(photo?.atlas) });
+  const noteId = parseNoteId($('#prompt-id').value);
+  if (noteId && play.avatar && play.interior) {
+    saveWalkDraft({ noteId, avatar: play.avatar, interior: play.interior,
+      title: $('#generated-room-title').value, name: play.profile?.name || noteId, slot: state.preferredSlot });
+  }
 }
 
 function resetPlayImages() {
@@ -1109,9 +1144,14 @@ async function submitPlay(event) {
   event.preventDefault();
   const id = playNoteId(), hint = $('#import-status');
   if (!id) return;
-  if (play.loading.size) { status(hint, '画像を読み込み中です。'); return; }
+  if (play.loading.size || roomQuality.checking) { status(hint, '画像を読み込み・検査中です。'); return; }
   if (!play.avatar || !play.interior || play.avatar.source === play.interior.source) {
     status(hint, 'アバターと部屋の別々の画像を１枚ずつ選んでください。部屋未生成なら「部屋だけ作る」を使ってください。', true);
+    return;
+  }
+  const problems = roomQuality.problems(['avatar', 'interior']);
+  if (problems.length) {
+    status(hint, problems.join(' '), true);
     return;
   }
   const submit = $('button[type="submit"]', event.currentTarget);
@@ -1240,17 +1280,26 @@ function route() {
 
 $('#preview-form').addEventListener('submit', submitPreview);
 $('#open-prompt').addEventListener('click', () => openPlay(Boolean(play.avatar || play.interior)));
-$('#prompt-write-tab').addEventListener('click', () => selectPlayStep(false));
+$('#prompt-write-tab').addEventListener('click', () => { play.target = null; syncPrompt(); selectPlayStep(false); });
 $('#prompt-import-tab').addEventListener('click', () => selectPlayStep(true));
 $('#copy-room-only').addEventListener('click', async () => {
   const id = playNoteId();
   if (!id) return;
+  play.target = { kind: 'interior' };
   const url = new URL(towerUrl); url.searchParams.set('creator', id); url.hash = 'prompt-import';
   const profile = play.id === id ? play.profile : null;
   const value = makeRoomPrompt({id, description:profile?.description, articles:profile?.articles,
     ideas:$('#prompt-ideas').value.trim(), returnUrl:url.href, roomOnly:true});
   try { await copy(value); status($('#import-status'), '部屋だけのプロンプトをコピーしました。ChatGPTで既存キャラ画像と一緒に送ってください。'); }
   catch { selectPlayStep(false); $('#prompt-text').value=value; $('#prompt-text').focus(); $('#prompt-text').select(); status($('#prompt-status'), '選択中の部屋用プロンプトをコピーしてください。'); }
+});
+$('#copy-avatar-only').addEventListener('click', async () => {
+  const id = playNoteId();
+  if (!id) return;
+  play.target = { kind: 'avatar' };
+  const value = makeRoomPrompt({ id, avatarOnly: true });
+  try { await copy(value); status($('#import-status'), 'アバターだけのプロンプトをコピーしました。完成済みの部屋はそのまま使えます。'); }
+  catch { selectPlayStep(false); $('#prompt-text').value = value; $('#prompt-text').focus(); $('#prompt-text').select(); }
 });
 bindCardButtons($('#tower-card-actions'), [['企画主',hostNoteUrl],['参加ページ',towerUrl+'#prompt-play'],['INSIGHT',insightUrl]], $('#prompt-status'));
 $('#prompt-upload-next').addEventListener('click', () => {

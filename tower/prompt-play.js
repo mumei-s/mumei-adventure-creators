@@ -30,7 +30,13 @@ export function chatgptAppLink({ userAgent, platform, maxTouchPoints }) {
   return { href: 'https://chatgpt.com/download/', label: 'アプリ版の案内', newTab: true };
 }
 
-export function makeRoomPrompt({ id, description, articles = [], ideas, returnUrl = `${towerUrl}#prompt-import`, roomOnly = false } = {}) {
+export function makeRoomPrompt({ id, description, articles = [], ideas, returnUrl = `${towerUrl}#prompt-import`, roomOnly = false, avatarOnly = false } = {}) {
+  if (avatarOnly) return makeArtifactPrompt({ kind: 'avatar', id, scene: ideas, mode: 'room' });
+  if (roomOnly) {
+    const scene = [ideas, description, ...articles.slice(0, 5).map(article => article.title)].filter(Boolean).join('\n');
+    return makeArtifactPrompt({ kind: 'interior', id, scene, mode: 'room' }) +
+      '\n保存した部屋画像をTowerの個別添付欄に入れてください。\n' + returnUrl;
+  }
   const titles = articles.slice(0, 5).map(({ title }) => `・${title}`).join('\n');
   return `【#無名Sプロンプト｜Atelier Towerに住む】
 
@@ -53,6 +59,7 @@ ${roomOnly ? '今回は横３：２の人物なしの部屋画像を実際に生
 
 【参加者のnote記事】
 ２枚ができたら、追加の依頼を待たずに、そのままnoteに貼れる参加記事を１本書いてください。タイトルと本文を付け、「［ここにアバター画像］」「［ここに部屋画像］」を本文の自然な位置に置きます。自分のキャラと、部屋名や窓の景色、選んだ小物など、今回の絵に実際に出てくる見どころを参加者の視点で紹介してください。入居済みと分かるまでは、「部屋をつくった」「これから下見する」など、今の段階で書いてください。
+${articleVoiceInstructions(id)}
 
 ${articleCoverInstructions()}
 
@@ -78,7 +85,36 @@ export function cardPasteInstructions() {
 }
 
 export function articleCoverInstructions() {
-  return '【note専用サムネイル】記事のタイトルを制作前に決め、そのタイトルと「#無名Sプロンプト」を正しい日本語で読みやすく入れた横1280×650相当のサムネイルも別画像で生成してください。本文用の絵とは明確に異なる演出・構図・光・視点で、高級感のある映画ポスターのように仕上げます。キャラの顔立ちと衣装は維持。文字も顔も端から十分離し、切れ・誤字・重複・透かしを検査。サムネイルを本文画像に流用しないこと。タイトルは記事と完全に一致させます。画像を一度に生成できない場合は未生成の画像名と、それだけを生成する短い指示を示し、完成扱いにしないでください。';
+  return '【note専用サムネイル】記事のタイトルを制作前に決め、そのタイトルと「#無名Sプロンプト」を正しい日本語で読みやすく入れた横1280×650のサムネイルを、別の完成画像で生成してください。本文用の絵とは明確に異なる世界観・演出・構図・光・視点を毎回設計し、高級感のある映画ポスターや雑誌表紙のように仕上げます。本文画像に文字を重ねて流用しないでください。キャラの顔立ち・頭身・衣装は維持。上下左右7％を安全余白にし、noteの一覧やマガジンの中央トリミングでも顔と題名が読める中央領域へ配置します。タイトルは記事と完全に一致させ、文字切れ・誤字・脱字・重複・透かしを確認します。自動で画像を続けて出せない場合は、未生成の画像名とその１枚だけを生成する短い指示を提示してください。未生成の画像がある間は未完了と明記してください。';
+}
+
+export function articleVoiceInstructions(id) {
+  return id === 'ss_yr' ?
+    '運営者・無名S note本人の文章は、読者に親しみを込めて語りかけ、顔文字を多めに使ってください。斜め向きの涙笑い絵文字は使わないでください。' :
+    '参加者本人の公開文章や会話で分かる文体を尊重してください。文体が分からなければ読みやすい一人称で書き、実際に遊んだと確認できない行動を体験談にしないでください。';
+}
+
+export function makeArtifactPrompt({ kind, id, title, scene, href, reason, mode = 'spot' } = {}) {
+  const request = {
+    avatar: '既存の部屋画像をそのまま使い、添付キャラの４列×４行の歩行シートだけを透明背景で生成してください。各行は正面・左向き・左斜め後ろ・真後ろ。各列は停止・左足・中間・右足の順です。16マスに全身を１体ずつ描き、頭と靴までを十分な余白内に収め、全マスで顔立ち・頭身・髪・衣装・大きさをそろえます。',
+    interior: '既存アバターを再生成しないでください。横３対２の人物なしの部屋画像１枚だけを生成してください。下３分の１は家具を避けた床とし、家具は奥と両端に置きます。添付キャラや公開作品の好みが伝わる素材・景色・小物を選んでください。',
+    scene1: '本文イラスト１だけを横３対２の完成画像で生成してください。場所と空気感、人物の全身が伝わる広めの構図を設計してください。',
+    scene2: '本文イラスト２だけを横３対２の完成画像で生成してください。完成済みの１枚目を見て、その後の別の行動・別のポーズ・別のカメラ角度へ切り替えてください。同じ構図の色違いや微変更は避けてください。',
+    cover: articleCoverInstructions(),
+    article: `完成した画像を読み、参加者本人のnote記事だけを書き直してください。タイトル、導入、本文、${mode === 'room' ? '［ここにアバター画像］と［ここに部屋画像］' : '［ここに街のイラスト１］と［ここに街のイラスト２］'}の挿入位置、企画紹介を含めてください。`,
+  };
+  return `【#無名Sプロンプト｜不足分だけを制作】
+noteクリエイターID：${id ? '@' + id : '［自分のID］'}
+${id ? '公開プロフィール：https://note.com/' + id : ''}
+${title ? '確定した記事タイトル：' + title : ''}
+${scene ? '場面や希望：' + scene : ''}
+${reason ? '修正が必要な点：' + reason : ''}
+添付のキャラクターと、このチャットで完成済みの画像・設定を引き継いでください。顔立ち、髪型、髪色、衣装と元の画風を保ちます。
+${request[kind] || request.article}
+今回指定した成果物だけを出し、完成済みの他の画像を再生成しないでください。画像は分割や合成をせず、個別の完成画像をチャットに表示してください。
+${articleVoiceInstructions(id)}
+${kind === 'article' ? articleCardBlock([['企画主・無名S note',hostNoteUrl],...(href ? [['遊んだ場所',href]] : []),['Atelier Tower',towerUrl+'#prompt-play'],['INSIGHT',insightUrl]]) + '\n\n' + cardPasteInstructions() + '\n記事の末尾に #無名Sプロンプト を入れてください。' : ''}
+足りない成果物は未完了と明記し、未確認の生成物や入居を完了扱いしないでください。`;
 }
 
 export function bindCardButtons(container, entries, status) {

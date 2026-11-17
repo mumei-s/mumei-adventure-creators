@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#101417">
+  <link rel="manifest" href="../../../tower/manifest.webmanifest">
   <meta name="description" content="自分のアバターでカフェ、公園、コンビニ、遊園地を訪ねよう。各スポットにはイラストをつくるプロンプトも用意しています。">
   <title>近未来街区｜Atelier Tower</title>
   <meta property="og:type" content="website">
@@ -11,15 +12,15 @@
   <meta property="og:description" content="自分のキャラクターで街を歩き、２枚のイラストとnote記事をつくる。">
   <meta property="og:image" content="https://mumei-s.github.io/mumei-adventure-creators/halloween-exhibition/preview/diorama-city/assets/district.webp">
   <meta name="note:card" content="summary_large_image">
-  <link rel="preload" as="image" href="./assets/district.webp?v=1">
-  <link rel="stylesheet" href="./district.css?v=4">
+  <link rel="stylesheet" href="./district.css?v=20261118">
   <link rel="stylesheet" href="./walk-pad.css?v=2">
-  <script type="module" src="./district.js?v=5"></script>
+  <link rel="stylesheet" href="../../../tower/quality-assist.css?v=20261118">
+  <script type="module" src="./district.js?v=20261118"></script>
 </head>
 <body>
 <main id="district" tabindex="-1">
   <header class="bar">
-    <a class="return" href="../town/?arrival=future-gate"><span aria-hidden="true">←</span> クリエイターエリア</a>
+    <div class="return-links"><a class="return" href="../town/?arrival=future-gate"><span aria-hidden="true">←</span> 戻る</a><a href="../../../halloween/">トップ</a></div>
     <div class="title"><span>Atelier Tower</span><h1 id="district-title">近未来街区</h1></div>
     <div class="time-tools">
       <time id="clock" aria-label="街区の時刻">17:40</time>
@@ -29,7 +30,7 @@
   <section id="city-view" class="city-view" tabindex="0" aria-label="街区。方向パッド、矢印キー、または道を選んで移動します。">
     <div id="city-world" class="city-world">
       <div id="district-scene" class="district-scene">
-        <img id="city-plate" class="city-plate" src="./assets/district.webp?v=1" alt="中央にガラスとブロンズのマンション、左に高架駅、右に水辺がある近未来街区のジオラマ" width="1536" height="1024" fetchpriority="high" draggable="false">
+        <img id="city-plate" class="city-plate" alt="中央にガラスとブロンズのマンション、左に高架駅、右に水辺がある近未来街区のジオラマ" width="1536" height="1024" fetchpriority="high" draggable="false">
         <div class="city-lights" aria-hidden="true"></div>
         <canvas id="transit" class="transit" width="1000" height="667" aria-hidden="true"></canvas>
         <div id="city-portal" class="city-portal" aria-hidden="true"></div>
@@ -41,6 +42,7 @@
       </div>
       <img id="venue-plate" class="venue-plate" alt="" width="1440" height="960" draggable="false" hidden>
       <div class="park-sky" aria-hidden="true"></div>
+      <div id="mirror-reflections" class="mirror-reflections" aria-hidden="true" hidden><span></span><span></span><span></span></div>
       <div id="citizen" class="citizen">
         <img src="./assets/host-portrait.webp" alt="無名S note" draggable="false">
       </div>
@@ -52,6 +54,18 @@
       <button type="button" id="pump-swing">もうひとこぎ</button>
       <button type="button" id="end-motion">遊具から降りる</button>
     </div>
+    <details id="destination-menu" class="destination-menu">
+      <summary>行き先</summary>
+      <nav id="venue-guide" class="venue-guide" aria-label="街区の行き先">
+        <button type="button" data-head-to="cafe">カフェへ</button>
+        <button type="button" data-head-to="park">公園へ</button>
+        <button type="button" data-head-to="tower">マンションへ</button>
+        <button type="button" data-head-to="marketGate">高架の先へ</button>
+        <button type="button" data-head-to="canalGate">運河街区（屋敷・コンビニ・遊園地）</button>
+      </nav>
+    </details>
+    <p id="scene-load-status" class="scene-load-status" role="status" hidden></p>
+    <button id="retry-scene" class="camera retry-scene" type="button" hidden>背景を再読み込み</button>
   </section>
   <div class="control-bar">
     <div id="pad-dock"></div>
@@ -67,15 +81,9 @@
     <div class="player-info">
       <p id="walker-name">無名S note</p>
       <a id="walker-room" href="../../../tower/#prompt-import">自分のアバターで歩く</a>
+      <button id="retry-walker" class="spot-prompt" type="button" hidden>アバターを再読み込み</button>
     </div>
   </div>
-  <nav id="venue-guide" class="venue-guide" aria-label="街区の行き先">
-    <button type="button" data-head-to="cafe">カフェへ</button>
-    <button type="button" data-head-to="park">公園へ</button>
-    <button type="button" data-head-to="tower">マンションへ</button>
-    <button type="button" data-head-to="marketGate">高架の先へ</button>
-    <button type="button" data-head-to="canalGate">運河街区（コンビニ・遊園地）</button>
-  </nav>
   <dialog id="place-dialog" aria-labelledby="place-title">
     <div class="place-image" aria-hidden="true"></div>
     <div class="place-body">
@@ -117,6 +125,7 @@
         <a class="spot-prompt" href="../../../tower/chatgpt-web.html" target="_blank" rel="noopener">Web版を開く</a>
       </div>
       <div id="spot-card-actions"></div>
+      <div id="spot-quality"></div>
       <form method="dialog" class="spot-return"><button type="submit">← 街歩きに戻る</button></form>
     </div>
   </dialog>

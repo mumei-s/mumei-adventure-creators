@@ -1,4 +1,5 @@
-import { chatgptAppLink, hostNoteUrl, parseNoteId, towerUrl, insightUrl, articleCardBlock, articleCoverInstructions, cardPasteInstructions, bindCardButtons } from '../../../tower/prompt-play.js?v=4';
+import { chatgptAppLink, hostNoteUrl, parseNoteId, towerUrl, insightUrl, articleCardBlock, articleCoverInstructions, articleVoiceInstructions, cardPasteInstructions, bindCardButtons, makeArtifactPrompt } from '../../../tower/prompt-play.js?v=20261118';
+import { bindQualityAssist } from '../../../tower/quality-assist.js?v=20261118';
 
 export function makeSpotPrompt({ label, scene, href, id }) {
   const profile = id ? `公開プロフィール： https://note.com/${id}\n` : '';
@@ -18,6 +19,7 @@ ${scene}
 
 【そのまま貼れるnote参加記事】
 記事のタイトルを先に決め、２枚の絵に実際に描かれた行動と街の風景をもとに、参加者の視点でタイトルと本文を書いてください。本文の異なる位置に「［ここに街のイラスト１］」「［ここに街のイラスト２］」を入れます。未生成の画像は未完了と明記し、別々の２枚とサムネイルを生成し終えるまで完了としないでください。同じチャットですでにTower用のアバターと部屋の画像ができている場合は、「［ここにアバター画像］」「［ここに部屋画像］」も入れて、部屋から街へ出かけた1本の記事にまとめてください。
+${articleVoiceInstructions(id)}
 ${articleCoverInstructions()}
 
 記事の最後に無名S noteが主催する #無名Sプロンプト の遊びだと紹介し、以下のカード用ブロックを改変せずに置いてください。
@@ -44,9 +46,29 @@ export function bindSpotIllustration(dialog) {
     app.target = '_blank';
     app.rel = 'noopener';
   }
-  let current, objectUrl;
+  let current, objectUrl, targeted = false;
+  const quality = bindQualityAssist(dialog.querySelector('#spot-quality'), {
+    mode: 'spot',
+    getContext: () => ({ urls: [hostNoteUrl, current?.href, towerUrl + '#prompt-play', insightUrl].filter(Boolean),
+      creator: parseNoteId(field.value), scene: current?.scene, occupied: current?.occupied === true }),
+    repair: async (kind, articleTitle, reason) => {
+      targeted = true;
+      text.value = makeArtifactPrompt({ kind, title: articleTitle, reason, id: parseNoteId(field.value),
+        scene: current?.scene, href: current?.href });
+      try {
+        await navigator.clipboard.writeText(text.value);
+        message.textContent = '指定した成果物だけのプロンプトをコピーしました。';
+      } catch {
+        dialog.querySelector('.spot-preview').open = true;
+        text.focus();
+        text.select();
+        message.textContent = '選択したプロンプトをコピーしてください。';
+      }
+    },
+  });
   bindCardButtons(dialog.querySelector('#spot-card-actions'), [['企画主',hostNoteUrl],['この場所',()=>current?.href],['部屋づくり',towerUrl+'#prompt-play'],['INSIGHT',insightUrl]], message);
   const render = () => {
+    targeted = false;
     const id = parseNoteId(field.value);
     field.setAttribute('aria-invalid', String(Boolean(field.value.trim()) && !id));
     text.value = makeSpotPrompt({ ...current, id });
@@ -54,6 +76,7 @@ export function bindSpotIllustration(dialog) {
 
   field.addEventListener('input', () => {
     render();
+    quality.refresh();
     message.textContent = '';
   });
   fileField.addEventListener('change', () => {
@@ -76,7 +99,8 @@ export function bindSpotIllustration(dialog) {
     }
     try {
       await navigator.clipboard.writeText(text.value);
-      message.textContent = 'コピーしました。本文イラスト２枚・専用サムネイル１枚を別々に生成します。';
+      message.textContent = targeted ? '不足分だけのプロンプトをコピーしました。' :
+        'コピーしました。本文イラスト２枚・専用サムネイル１枚を別々に生成します。';
     } catch {
       dialog.querySelector('.spot-preview').open = true;
       text.focus();
@@ -94,6 +118,7 @@ export function bindSpotIllustration(dialog) {
     if (!field.value) field.value = spot.id || '';
     message.textContent = '';
     render();
+    quality.refresh();
     dialog.showModal();
     copy.focus();
   };

@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0c1015">
+  <link rel="manifest" href="./manifest.webmanifest">
   <meta name="description" content="noteのクリエイターが住む12階建てのマンション。部屋を訪ねて記事を読み、自分の部屋には動くキャラクターを住まわせよう。">
   <meta name="note:card" content="summary_large_image">
   <meta property="og:type" content="website">
@@ -14,10 +15,11 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://xxhaerjvrgmnadxjqetz.supabase.co; img-src 'self' data: blob: https://assets.st-note.com https://xxhaerjvrgmnadxjqetz.supabase.co; object-src 'none'; base-uri 'none'; form-action 'self'">
   <title>Atelier Tower｜無名S note</title>
   <link rel="stylesheet" href="./style.css?v=5">
-  <link rel="stylesheet" href="./world.css?v=7">
+  <link rel="stylesheet" href="./world.css?v=20261118">
   <link rel="stylesheet" href="./prompt-play.css?v=3">
+  <link rel="stylesheet" href="./quality-assist.css?v=20261118">
   <link rel="stylesheet" href="../halloween-exhibition/preview/diorama-city/walk-pad.css?v=2">
-  <script type="module" src="./app.js?v=8"></script>
+  <script type="module" src="./app.js?v=20261118"></script>
 </head>
 <body id="top">
   <a href="#main" class="skip">本文へ</a>
@@ -163,6 +165,7 @@
         <form id="prompt-import" hidden novalidate>
           <p>アバターと横長の部屋画像を１枚ずつ選んでください。部屋がまだなら下のボタンから追加で作れます。</p>
           <button type="button" class="button outline" id="copy-room-only">部屋だけ作る・プロンプトをコピー</button>
+          <button type="button" class="button outline" id="copy-avatar-only">アバターだけ作る・プロンプトをコピー</button>
           <div class="prompt-launch"><a class="button outline" href="https://chatgpt.com/open-app" id="room-only-app">ChatGPTアプリ</a><a class="button outline" href="./chatgpt-web.html" target="_blank" rel="noopener noreferrer">Web版を開く</a></div>
           <div class="prompt-uploads">
             <label>アバター画像<input id="generated-avatar" type="file" class="visually-hidden" accept="image/png,image/jpeg,image/webp,image/gif"><span class="prompt-file-button" aria-hidden="true">アバター画像を選ぶ</span><img id="generated-avatar-preview" alt="アバターのプレビュー" hidden></label>
@@ -175,6 +178,7 @@
           <div class="dialog-actions"><button class="button primary" type="submit">この部屋を下見する</button></div>
           <p id="import-status" class="inline-status" role="status"></p>
         </form>
+        <div id="tower-quality"></div>
       </div>
     </div>
   </dialog>
@@ -209,7 +213,7 @@
       <header class="dialog-bar">
         <button type="button" class="quiet" data-close="room-dialog">← 戻る</button>
         <span id="room-address"></span>
-        <button type="button" class="quiet" id="share-room" hidden>共有</button>
+        <div class="room-header-actions"><a class="quiet" href="./">トップ</a><button type="button" class="quiet" id="share-room" hidden>共有</button></div>
       </header>
       <div id="room-content"></div>
       <p id="room-status" class="inline-status" role="status"></p>

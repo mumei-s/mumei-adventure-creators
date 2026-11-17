@@ -56,3 +56,39 @@ export function residentWalker(image) {
   image.addEventListener('error',()=>image.classList.remove('sprite-atlas-source'),{once:true});
   return update;
 }
+
+export function avatarSnapshot(source, pose = 'stand') {
+  const width = source?.naturalWidth ?? source?.width;
+  const height = source?.naturalHeight ?? source?.height;
+  if (!width || !height) return null;
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const context = canvas.getContext('2d');
+  if (!context) return null;
+  if (pose === 'stand') {
+    context.drawImage(source, 0, 0);
+    return canvas;
+  }
+  // Keep the head and torso at their original proportions, and bend each leg
+  // at the hip and knee. The frame remains anchored at the soles.
+  const hip = height * .62;
+  const knee = height * .81;
+  const top = height * .14;
+  context.drawImage(source, 0, 0, width, hip, 0, top, width, hip);
+  for (const side of [-1, 1]) {
+    const left = side < 0 ? 0 : width / 2;
+    const pivot = width * (side < 0 ? .42 : .58);
+    context.save();
+    context.translate(pivot, top + hip - 1);
+    context.rotate(side * -.29);
+    context.drawImage(source, left, hip, width / 2, knee - hip,
+      left - pivot, 0, width / 2, (knee - hip) * .65);
+    context.translate(0, (knee - hip) * .65);
+    context.rotate(side * .38);
+    context.drawImage(source, left, knee - 2, width / 2, height - knee + 2,
+      left - pivot, -2, width / 2, height - knee + 2);
+    context.restore();
+  }
+  return canvas;
+}

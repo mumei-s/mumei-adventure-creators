@@ -18,19 +18,22 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   height:100dvh;
   margin:auto;
   display:grid;
-  grid-template-rows:auto minmax(min(160px,32dvh),1fr) auto auto;
+  grid-template-rows:auto minmax(0,1fr) auto;
+  overflow:hidden;
 }
 .bar {
   display:grid;
   grid-template-columns:1fr auto 1fr;
   align-items:center;
   gap:12px;
-  min-height:70px;
-  padding:8px clamp(12px,3.5vw,42px);
+  min-height:54px;
+  padding:max(3px,env(safe-area-inset-top)) clamp(9px,2vw,26px) 3px;
   border-bottom:1px solid #4d4640;
   background:#151a1e;
 }
 .return {justify-self:start;display:flex;align-items:center;gap:8px;min-height:44px;font-size:clamp(11px,1.5vw,14px);color:#e4d8c6}
+.return-links {display:flex;align-items:center;gap:12px;min-width:0}
+.return-links>a {display:inline-flex;align-items:center;min-height:44px;font-size:12px;color:#e0d1ba}
 .return span {font-size:18px;color:#ccb387}
 .title {text-align:center}
 .title span {display:block;margin-bottom:4px;font:clamp(14px,1.7vw,21px)/1.05 Georgia,serif;color:#d6ba93;white-space:nowrap}
@@ -45,7 +48,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
   background:#192025;
   font-size:12px;
 }
-.city-view {position:relative;overflow:hidden;isolation:isolate;background:#0e1319}
+.city-view {position:relative;min-height:0;overflow:hidden;isolation:isolate;background:#0e1319;touch-action:none}
 .city-world {position:absolute;top:0;left:0;width:1000px;height:667px;transform-origin:top left;will-change:transform}
 .city-world > :not(.locations) {pointer-events:none}
 .district-scene,.city-plate,.city-lights,.transit,.locations,.venue-plate {position:absolute;inset:0;width:100%;height:100%}
@@ -88,9 +91,14 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 .cast-station {left:159px;top:344px;height:30px}
 .cast-waterfront {left:688px;top:349px;height:31px}
 .citizen {width:calc(.85 * var(--actor-height,38px));height:var(--actor-height,38px);z-index:2}
-.citizen[data-seated="true"] {transform:translate(-50%,-100%) rotate(var(--actor-tilt,0deg)) scaleY(.76);transform-origin:50% 100%}
+.citizen[data-seated="true"] {transform:translate(-50%,-100%) rotate(var(--actor-tilt,0deg));transform-origin:50% 100%}
+.citizen::before {content:"";position:absolute;left:27%;right:27%;height:6%;bottom:0;border-radius:50%;background:#070c10a8;filter:blur(2px);z-index:-1}
+.city-view[data-camera="overview"] .citizen::after {content:"";position:absolute;left:50%;bottom:0;width:calc(22px / var(--world-scale));height:calc(22px / var(--world-scale));border:calc(2px / var(--world-scale)) solid #edfff3;border-radius:50%;box-shadow:0 0 calc(8px / var(--world-scale)) #85f9d9;transform:translate(-50%,45%)}
 .citizen img,.citizen canvas {width:100%;height:100%;object-fit:contain;object-position:bottom}
 .citizen .sprite-atlas-source {opacity:0}
+.citizen .pose-frame {position:absolute;inset:0}
+.citizen[data-seated="true"]>:not(.pose-frame) {visibility:hidden}
+.citizen[data-seated="true"] .pose-frame {visibility:visible}
 .locations {pointer-events:none;z-index:4}
 .city-view[data-playing] .locations {visibility:hidden}
 .location {
@@ -112,7 +120,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 }
 .location::before {content:"";height:6px;width:6px;border-radius:50%;background:#e5bc83}
 .location.near::before {background:#83f4d6;box-shadow:0 0 7px #8ffff9}
-.city-view[data-camera=overview] .location {scale:var(--marker-scale,1);transform-origin:left top}
+.location {scale:var(--marker-scale,1);transform-origin:left bottom;max-width:190px;white-space:normal;text-align:center}
 .camera {position:absolute;top:12px;right:12px;z-index:6;background:#101a20f2}
 .leave-venue {right:auto;left:12px}
 .motion-controls {
@@ -135,21 +143,22 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 }
 .motion-controls button:disabled {opacity:.6}
 .control-bar {
-  min-height:132px;
+  min-height:102px;
   display:grid;
   grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
   align-items:center;
-  gap:clamp(9px,3vw,27px);
-  padding:8px clamp(12px,3.5vw,42px) max(12px,env(safe-area-inset-bottom));
+  gap:clamp(6px,2vw,18px);
+  padding:5px clamp(9px,2vw,26px) max(5px,env(safe-area-inset-bottom));
   border-top:1px solid #4d4640;
   background:linear-gradient(170deg,#242c31,#13191d 75%);
 }
+.control-bar .walk-pad {--pad-width:94px}
 #pad-dock {grid-column:2;grid-row:1;justify-self:center}
 .control-info {grid-column:1;grid-row:1;min-width:0}
 .player-info {grid-column:3;grid-row:1;min-width:0;text-align:right}
 .player-info p {overflow-wrap:anywhere;margin:0;color:#ebd6b1;font-size:13px}
 .player-info a {display:inline-flex;align-items:center;min-height:40px;text-decoration:underline;text-underline-offset:4px;font-size:12px;line-height:1.4}
-#place-name {font-family:Georgia,"Hiragino Mincho ProN","Yu Mincho",serif;font-size:clamp(20px,3vw,29px);margin:0 0 2px}
+#place-name {font-family:Georgia,"Hiragino Mincho ProN","Yu Mincho",serif;font-size:clamp(15px,2vw,22px);margin:0 0 2px}
 #place-note {margin:0 0 6px;font-size:12px;color:#d3ccbf;line-height:1.45}
 .visit {
   display:inline-grid;
@@ -177,8 +186,23 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 }
 .spot-prompt:disabled {opacity:.6}
 .venue-link {display:inline-flex;align-items:center;min-height:44px;margin-inline-start:10px;font-size:13px;color:#ebd6b1;text-decoration:underline;text-underline-offset:4px}
-.venue-guide {display:flex;gap:6px;overflow:auto;padding:0 clamp(12px,3.5vw,42px) max(9px,env(safe-area-inset-bottom));background:#13191d}
-.venue-guide button {flex:none;min-height:44px;padding:5px 11px;border:1px solid #625c51;border-radius:3px;background:#1a2226;color:#ebdec5;font-size:12px}
+.destination-menu {position:absolute;right:9px;bottom:9px;z-index:7;max-width:min(290px,calc(100% - 18px));font-size:13px}
+.destination-menu summary {display:flex;align-items:center;justify-content:center;min-height:44px;padding:7px 15px;background:#121e27f2;border:1px solid #8d806c;border-radius:4px;cursor:pointer;list-style:none}
+.destination-menu[open] summary {border-bottom-left-radius:0;border-bottom-right-radius:0}
+.venue-guide {display:grid;gap:6px;max-height:min(300px,calc(100dvh - 230px));overflow:auto;padding:8px;background:#13191df8;border:1px solid #8d806c;border-top:0}
+.venue-guide button {min-height:44px;padding:6px 11px;border:1px solid #625c51;border-radius:3px;background:#1a2226;color:#ebdec5;font-size:12px;text-align:start}
+.scene-load-status {position:absolute;left:10px;bottom:4px;max-width:65%;padding:8px;background:#111c28e8;font-size:12px}
+.retry-scene {top:auto;bottom:50px}
+.mirror-reflections {display:none;position:absolute;left:34%;top:49%;width:62%;height:13%;z-index:1;mix-blend-mode:screen;clip-path:polygon(12% 0,88% 0,100% 100%,0 100%);overflow:hidden}
+#city-world[data-venue="mirrorRoom"] .mirror-reflections {display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.mirror-reflections span {background:radial-gradient(ellipse,var(--glass-light),transparent 72%);mask-image:repeating-linear-gradient(178deg,#000 0 3px,#0005 4px 8px,#000b 9px 12px);opacity:.72;animation:mirror-shimmer 3s ease-in-out infinite alternate}
+.mirror-reflections span:nth-child(2) {animation-delay:-1s}
+.mirror-reflections span:nth-child(3) {animation-delay:-2s}
+@keyframes mirror-shimmer {to{transform:translateX(4%) scaleY(.85)}}
+.glass-choices {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0;padding:10px;border:1px solid #80715d}
+.glass-choices label {display:grid;gap:6px;min-width:0;font-size:13px}
+.glass-choices select {min-width:0;min-height:44px;background:#182630;color:inherit;border:1px solid #8b7f68;font:inherit}
+.glass-swatch {height:12px;border-radius:3px;background:var(--glass-light)}
 dialog {width:min(540px,calc(100% - 24px));max-block-size:calc(100dvh - 20px);padding:0;color:#f1ebdf;background:#171e24;border:1px solid #927b5d;border-radius:5px}
 dialog::backdrop {background:#101414b5}
 .place-image {height:110px;background:url("./assets/district.webp?v=1") center 60% / cover}
@@ -243,36 +267,46 @@ dialog::backdrop {background:#101414b5}
 .passage {position:fixed;inset:0;z-index:8;display:grid;place-items:center;background:radial-gradient(ellipse,#cbfff1,#465d6d 40%,#111a23 75%);color:#182c34;font-weight:700;animation:passage .5s ease-in both}
 @keyframes passage {from{opacity:0;clip-path:circle(8%)}to{opacity:1;clip-path:circle(94%)}}
 @media(max-width:620px) {
-  .bar {gap:6px;min-height:63px;padding-inline:9px}
+  .bar {gap:6px;min-height:49px;padding-inline:9px}
   .return {gap:4px}
   .time-tools {gap:4px}
   .time-tools button {font-size:10px;padding:4px 5px}
   .camera {right:8px;top:8px;font-size:11px}
   .leave-venue {right:auto;left:8px}
   .venue-link {display:flex;margin-inline-start:0}
-  .control-bar {grid-template-columns:1fr 1fr;column-gap:12px;row-gap:3px;min-height:0;padding-bottom:7px}
-  #pad-dock {grid-column:1/-1;grid-row:2}
+  .control-bar {grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:7px;min-height:112px}
+  #pad-dock {grid-column:2;grid-row:1}
   .control-info {grid-column:1;grid-row:1}
-  .player-info {grid-column:2;grid-row:1}
-  #place-name {font-size:17px}
-  #place-note {font-size:11px}
+  .player-info {grid-column:3;grid-row:1}
+  #place-name {font-size:14px;line-height:1.25}
+  #place-note {font-size:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:3px 0}
+  .control-info .spot-actions {gap:3px}
+  .control-info .spot-actions button {min-height:36px;padding:4px 5px;font-size:11px}
+  .player-info p {font-size:11px}
+  .player-info a {font-size:11px}
+  .venue-link {min-height:30px;font-size:11px}
   .location {font-size:14px}
 }
 @media(orientation:landscape) and (max-height:520px) and (min-width:500px) {
-  #district {display:block;height:auto;min-height:100dvh}
   .bar {min-height:44px;padding-block:0}
-  .city-view {height:calc(100dvh - 148px);min-height:90px}
   .control-bar {grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;padding:4px 12px;min-height:0}
   #pad-dock {grid-column:2;grid-row:1}
   .control-info {grid-column:1;grid-row:1}
   .player-info {grid-column:3;grid-row:1}
-  .control-bar .walk-pad {--pad-width:clamp(62px,18dvh,86px)}
+  .control-bar .walk-pad {--pad-width:clamp(62px,20dvh,86px)}
   .spot-actions :is(.visit,.spot-prompt) {min-height:36px;padding-inline:7px;font-size:11px}
   #place-note {display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .venue-guide {justify-content:center}
+  .venue-guide {max-height:max(84px,calc(100dvh - 180px))}
   #place-name {font-size:17px}
 }
 @media(prefers-reduced-motion:reduce) {
-  .city-portal::after,.passage,.ride-window.riding .ride-photo,.ride-window.riding .ride-avatar {animation:none}
+  .city-portal::after,.passage,.ride-window.riding .ride-photo,.ride-window.riding .ride-avatar,.mirror-reflections span {animation:none}
   .ride-photo,.ride-avatar {transition:none}
+}
+@media(orientation:landscape) and (max-height:320px) {
+  .control-bar {padding-block:3px}
+  #place-note {display:none}
+  #place-name {font-size:13px}
+  .player-info a {min-height:30px}
+  .venue-link {min-height:27px}
 }

@@ -1,0 +1,19 @@
+.quality-panel {margin:17px 0 8px;padding:10px 12px;border:1px solid #7c715f;border-radius:5px;background:#152029;color:#f0e8da}
+.quality-panel summary {min-height:36px;cursor:pointer;font-weight:600}
+.quality-panel .quality-description {font-size:12px;line-height:1.65;color:#d6cdbf}
+.quality-files {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,165px),1fr));gap:9px;margin-block:10px}
+.quality-file {display:grid;align-content:start;gap:7px;padding:10px;border:1px solid #5a5c52;border-radius:4px;min-width:0}
+.quality-file strong {font-size:13px}
+.quality-file img {width:100%;height:82px;object-fit:contain}
+.quality-panel label {display:grid;gap:6px;margin:9px 0;font-size:12px}
+.quality-panel input:not([type="checkbox"]),.quality-panel textarea {box-sizing:border-box;width:100%;min-width:0;padding:7px 9px;border:1px solid #827866;border-radius:3px;background:#0f1920;color:#f0e8da;font:inherit}
+.quality-panel input[type="text"] {font-size:16px;min-height:42px}
+.quality-panel input[type="file"] {font-size:11px;padding:3px}
+.quality-panel button {min-height:40px;padding:6px 9px;margin:3px 4px 3px 0;border:1px solid #8e7d63;border-radius:4px;background:#24333c;color:#efe1c7;font:inherit;font-size:12px;cursor:pointer}
+.quality-panel button:disabled {opacity:.5;cursor:default}
+.quality-file p {font-size:11px;line-height:1.6;margin:0}
+.quality-manual {margin:12px 0;padding:8px 10px;border:1px solid #6c6a5b}
+.quality-manual legend {padding:0 5px;font-size:12px}
+.quality-manual label {display:flex;gap:8px;align-items:start;min-height:32px;line-height:1.6}
+.quality-manual input {flex:none;width:18px;height:18px;margin:1px 0}
+.quality-overall {padding:9px;border-left:2px solid #d5ba88;font-size:12px;line-height:1.65}

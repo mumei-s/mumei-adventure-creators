@@ -1,7 +1,7 @@
 import { makeWalkPad, bindWalking } from '../halloween-exhibition/preview/diorama-city/walk-controls.js?v=1';
-import { hostPortrait, hostWalker, residentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=2';
+import { hostPortrait, hostWalker, residentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=20261118';
 import { applyDistrictLight } from '../halloween-exhibition/preview/diorama-city/scene-time.js?v=1';
-import { TOWER_API } from './avatar-travel.js?v=1';
+import { TOWER_API } from './avatar-travel.js?v=20261118';
 
 const viewNames = ['雨上がりの街', '木立と丘', '海辺の朝焼け', '星明かりの街'];
 const views = ['city', 'grove', 'coast', 'stars'];
@@ -238,11 +238,11 @@ export function roomPreview(room,source) {
   return photo;
 }
 
-export function roomStage(room,source,{mini=false,avatarName,signal,inputRoot}={}) {
+export function roomStage(room,source,{mini=false,avatarName,signal,inputRoot,traveler}={}) {
   const theme=themeFor(room);
   const world=worldFor(room);
   const scene=make('div',mini?'world-stage world-mini':'world-stage room-scene');
-  const host=usesHostModel(room), generated=generatedInterior(room), photo=host||generated;
+  const hostModel=usesHostModel(room), host=hostModel&&!traveler, generated=generatedInterior(room), photo=hostModel||generated;
   scene.dataset.layout=String(world.layout);
   scene.dataset.view=views[world.view];
   scene.dataset.material=['timber','stone','tile'][(world.seed>>>6)%3];
@@ -291,10 +291,11 @@ export function roomStage(room,source,{mini=false,avatarName,signal,inputRoot}={
   const walker=make('div','world-resident');
   if(room.design?.avatarMode==='profile'&&room.profile?.photo) walker.classList.add('portrait');
   if(world.character) walker.classList.add('custom-walker');
-  const sprite=art(host?hostPortrait:source,'world-sprite',mini?'':(host?'無名S note':avatarName||'住人キャラクター'),mini);
+  const sprite=art(traveler?.source || (host?hostPortrait:source),'world-sprite',mini?'':(traveler?.name || (host?'無名S note':avatarName||'住人キャラクター')),mini);
   sprite.addEventListener('error',()=>{sprite.src='./assets/resident.webp';sprite.hidden=false;},{once:true});
   walker.append(sprite);
-  const updateAvatar=host&&!mini ? hostWalker(sprite) : usingAtlas(room) ? residentWalker(sprite) : null;
+  const atlas=traveler ? traveler.atlas : usingAtlas(room);
+  const updateAvatar=host&&!mini ? hostWalker(sprite) : atlas ? residentWalker(sprite) : null;
   scene.append(walker);
   if(mini) {
     updateAvatar?.(0,false);

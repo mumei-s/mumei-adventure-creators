@@ -289,6 +289,8 @@ body:has(dialog[open]) .world-mini :is(.world-resident,.world-sprite,.world-glow
 .room-dialog .room-controls .walk-pad {--pad-width:var(--room-pad-size)}
 .room-dialog .room-controls .world-control-hint {text-align:end}
 .room-dialog .room-controls .world-control-hint strong {display:none}
+.room-header-actions {display:flex;align-items:center;gap:8px;justify-self:end}
+.room-header-actions a {display:inline-flex;align-items:center;font-size:12px;text-decoration:none}
 @media (max-width:940px) and (orientation:portrait) {
   .room-dialog:has(.room-controls:not([hidden])) .room-layout {
     height:100%;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);

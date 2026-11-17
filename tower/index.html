@@ -11,9 +11,11 @@
   <meta name="referrer" content="no-referrer">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://xxhaerjvrgmnadxjqetz.supabase.co; img-src 'self' data: blob: https://assets.st-note.com https://xxhaerjvrgmnadxjqetz.supabase.co; object-src 'none'; base-uri 'none'; form-action 'self'">
   <title>Atelier Tower｜無名S note</title>
-  <link rel="stylesheet" href="./style.css">
-  <link rel="stylesheet" href="./world.css?v=3">
-  <script type="module" src="./app.js?v=3"></script>
+  <link rel="stylesheet" href="./style.css?v=5">
+  <link rel="stylesheet" href="./world.css?v=5">
+  <link rel="stylesheet" href="./prompt-play.css?v=1">
+  <link rel="stylesheet" href="../halloween-exhibition/preview/diorama-city/walk-pad.css?v=1">
+  <script type="module" src="./app.js?v=5"></script>
 </head>
 <body id="top">
   <a href="#main" class="skip">本文へ</a>
@@ -25,7 +27,7 @@
       </a>
       <nav aria-label="メイン">
         <a class="nav-item" href="#floors">フロア案内</a>
-        <a class="nav-item nav-town" href="../halloween-exhibition/preview/town/">星灯りの街 <span aria-hidden="true">↗</span></a>
+        <a class="nav-item nav-town" href="../halloween-exhibition/preview/diorama-city/?arrival=tower">近未来街区 <span aria-hidden="true">↗</span></a>
         <button type="button" class="button outline header-key" id="my-room">自分の部屋</button>
       </nav>
     </div>
@@ -37,11 +39,12 @@
         <p class="hero-kicker">無名S note Atelier</p>
         <h1 id="hero-title">窓の数だけ、<br>書き手の世界。</h1>
         <p class="hero-lead">noteの書き手が暮らす、12階建てのマンション。<br class="desktop-break">隣の部屋を訪ねて、まだ知らない記事に出会う。</p>
+        <button type="button" class="button primary hero-play" id="open-prompt">プロンプト遊びでつくる <span aria-hidden="true">↗</span></button>
         <form id="preview-form" class="entry" novalidate>
           <label for="creator-id">noteクリエイターID</label>
           <div class="entry-row">
             <input id="creator-id" name="creator" type="text" inputmode="url" autocapitalize="none" spellcheck="false" placeholder="例 @ss_yr" maxlength="100" required autocomplete="off">
-            <button class="button primary" type="submit">部屋をつくる <span aria-hidden="true">↗</span></button>
+            <button class="button outline" type="submit">部屋を下見 <span aria-hidden="true">↗</span></button>
           </div>
           <div class="entry-avatar">
             <img id="entry-character-preview" alt="添付した住人キャラ" hidden>
@@ -49,7 +52,7 @@
             <button type="button" id="clear-character" class="quiet" hidden>画像を外す</button>
           </div>
           <p class="entry-note">全身の透過PNGがおすすめ。輪郭を残して部屋を歩けます。</p>
-          <p class="entry-status" id="entry-status" role="status">IDとキャラ画像から、部屋を下見できます。</p>
+          <p class="entry-status" id="entry-status" role="status"></p>
         </form>
         <div class="hero-utilities">
           <a class="quiet" href="#cutaway">マンションの断面を見る ↓</a>
@@ -69,7 +72,7 @@
       <div><strong id="building-floors">12</strong><span>フロア</span></div>
       <div><strong id="building-capacity">144</strong><span>部屋</span></div>
       <div><strong id="building-occupancy">—</strong><span>入居中</span></div>
-      <a href="../halloween-exhibition/preview/town/">星灯りの街へ <span aria-hidden="true">↗</span></a>
+      <a href="../halloween-exhibition/preview/diorama-city/?arrival=tower">街区へ出る <span aria-hidden="true">↗</span></a>
     </div>
 
     <section class="cutaway" id="cutaway" aria-labelledby="cutaway-title">
@@ -84,7 +87,7 @@
       <p class="cutaway-tip">上下左右にスクロールできます。</p>
     </section>
 
-    <section class="lobby-story" aria-labelledby="story-title">
+    <section class="lobby-story" id="today" aria-labelledby="story-title">
       <div><small>今日の出来事</small><h2 id="story-title"></h2><p id="story-intro"></p></div>
       <a class="button primary" id="story-visit" href="https://note.com/almabrillante/n/n2ded809d9016" target="_blank" rel="noopener noreferrer">行き先を訪ねる ↗</a>
     </section>
@@ -108,6 +111,7 @@
           <div class="floor-header">
             <h3 id="current-floor">1F</h3>
             <p id="floor-status" role="status">空室を確認しています。</p>
+            <button type="button" class="floor-stair" id="open-stairs">階段へ <span aria-hidden="true">↗</span></button>
             <button id="retry-list" class="quiet" type="button" hidden>再読み込み</button>
           </div>
           <div id="room-cards" class="room-cards"></div>
@@ -124,12 +128,67 @@
     <div><button type="button" class="quiet" id="open-help">入居・退去の方法</button><a href="#top">トップへ ↑</a></div>
   </footer>
 
+  <dialog id="prompt-dialog" class="dialog fit-dialog prompt-dialog" aria-labelledby="prompt-title">
+    <div class="dialog-inner">
+      <header class="dialog-bar"><button type="button" class="quiet" data-close="prompt-dialog">← 戻る</button><span>#無名Sプロンプト</span></header>
+      <div class="dialog-pad">
+        <h2 id="prompt-title">Atelier Towerに住む</h2>
+        <label for="prompt-id">noteクリエイターID</label>
+        <input id="prompt-id" maxlength="100" type="text" inputmode="url" autocapitalize="none" spellcheck="false" placeholder="例 @ss_yr" autocomplete="off">
+        <div class="prompt-tabs" aria-label="部屋づくりの手順">
+          <button type="button" class="button outline" id="prompt-write-tab" aria-pressed="true" aria-controls="prompt-write">ChatGPTでつくる</button>
+          <button type="button" class="button outline" id="prompt-import-tab" aria-pressed="false" aria-controls="prompt-import">画像を持ち込む</button>
+        </div>
+        <section id="prompt-write">
+          <p>ChatGPTにキャラ画像を添付し、コピーしたプロンプトを貼ってください。アバターと部屋ができたら、２枚を保存します。</p>
+          <label for="prompt-ideas">部屋の希望 <small>任意</small></label>
+          <input id="prompt-ideas" type="text" maxlength="160" placeholder="例 雨の夜景が見える珈琲の書斎">
+          <textarea id="prompt-text" class="prompt-text" aria-label="コピーするプロンプト" rows="5" readonly></textarea>
+          <div class="dialog-actions">
+            <button type="button" class="button primary" id="copy-play-prompt">プロンプトをコピー</button>
+            <a class="button outline" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">ChatGPTを開く ↗</a>
+          </div>
+          <p id="prompt-status" class="inline-status" role="status"></p>
+        </section>
+        <form id="prompt-import" hidden novalidate>
+          <p>生成した２枚を選ぶと、入居前の部屋でアバターを動かせます。</p>
+          <label for="generated-avatar-mode">アバターの形式</label>
+          <select id="generated-avatar-mode"><option value="atlas">歩行シート（４×４）</option><option value="single">全身１枚・GIF</option></select>
+          <div class="prompt-uploads">
+            <label>アバター画像<input id="generated-avatar" type="file" accept="image/png,image/jpeg,image/webp,image/gif"><img id="generated-avatar-preview" alt="アバターのプレビュー" hidden></label>
+            <label>部屋画像<input id="generated-interior" type="file" accept="image/png,image/jpeg,image/webp"><img id="generated-interior-preview" alt="部屋のプレビュー" hidden></label>
+          </div>
+          <label for="generated-room-title">部屋の名前 <small>任意</small></label>
+          <input id="generated-room-title" type="text" maxlength="38" placeholder="例 雨と書きかけのノートの部屋">
+          <div class="dialog-actions"><button class="button primary" type="submit">この部屋を下見する</button></div>
+          <p id="import-status" class="inline-status" role="status"></p>
+        </form>
+      </div>
+    </div>
+  </dialog>
+
   <dialog id="lift-dialog" class="dialog lift-dialog" aria-labelledby="lift-status">
     <div class="lift-screen">
-      <output id="lift-floor" class="lift-indicator" aria-hidden="true">1F</output>
-      <div class="lift-cab" aria-hidden="true"><div class="lift-door"></div><div class="lift-door right"></div></div>
-      <p id="lift-status" role="status">階を移動中</p>
-      <button id="lift-skip" class="quiet" type="button">すぐ到着する</button>
+      <div class="lift-cab" aria-hidden="true">
+        <img src="./assets/lift-cabin.webp" alt="" width="1080" height="720" decoding="async">
+        <div class="lift-opening"><div class="lift-door"></div><div class="lift-door right"></div></div>
+        <output id="lift-floor" class="lift-indicator">1F</output>
+      </div>
+      <div class="lift-controls"><p id="lift-status" role="status">階を移動中</p><button id="lift-skip" class="quiet" type="button">すぐ到着する</button></div>
+    </div>
+  </dialog>
+
+  <dialog id="stair-dialog" class="dialog stair-dialog" aria-labelledby="stair-title">
+    <div class="stair-photo">
+      <img src="./assets/stair-landing.webp" alt="窓から夕暮れの街が見える石と真鍮の階段" width="1080" height="608" decoding="async">
+      <h2 id="stair-title">階段</h2>
+    </div>
+    <div class="stair-controls">
+      <div class="stair-buttons">
+        <button id="stair-down" class="button outline" type="button">↓ 下の階へ</button>
+        <button id="stair-up" class="button outline" type="button">↑ 上の階へ</button>
+      </div>
+      <button id="stair-exit" class="button primary" type="button">フロアへ出る</button>
     </div>
   </dialog>
 
@@ -179,6 +238,7 @@
           <legend>内装</legend>
           <div class="theme-choices" id="theme-choices"></div>
         </fieldset>
+        <label class="check" id="keep-interior-field" hidden><input name="keepInterior" type="checkbox" checked>生成した部屋画像を使う</label>
         <label>訪ねてきた人へのひとこと<textarea name="welcome" maxlength="180" rows="2" placeholder="例 今夜はお気に入りの短編を棚に置きました。"></textarea></label>
         <label>玄関に飾る記事<select name="pin" id="pin-select"></select></label>
         <div class="edit-grid">
@@ -215,7 +275,7 @@
       <div class="dialog-pad">
         <h2 id="help-title">入居・退去の方法</h2>
         <dl class="help-list">
-          <dt>下見</dt><dd>noteのIDとキャラ画像を読み込むと、公開記事のテーマとキャラの配色が部屋に反映されます。空室を選んで始めることもできます。</dd>
+          <dt>下見</dt><dd>「プロンプト遊びでつくる」から、ChatGPTで作った２枚を持ち込めます。IDとキャラ画像ですぐに試せる下見や、空室を選んでの下見もできます。</dd>
           <dt>入居</dt><dd>「入居する」から、noteの自己紹介欄に確認コードを一時的に入れます。本人確認が済むと部屋が公開され、このブラウザに鍵が保存されます。</dd>
           <dt>改装・鍵の再発行</dt><dd>「自分の部屋」から改装できます。機種変更や鍵を失くしたときは、同じnote IDで本人確認をして鍵を再発行できます。</dd>
           <dt>退去</dt><dd>自分の部屋の「退去する」を選ぶと、すぐに空室に戻ります。再入居も自由です。</dd>

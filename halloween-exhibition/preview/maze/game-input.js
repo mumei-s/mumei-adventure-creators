@@ -54,7 +54,17 @@ export function directionAtPoint(x,y,width,height,previous=null){
   if(previous==='back'&&dy>0&&Math.abs(dy)*1.22>=Math.abs(dx))return previous;
   return Math.abs(dx)>Math.abs(dy)?dx>0?'right':'left':dy>0?'back':'forward';
 }
-export function bindDirectionPad(pad,{blocked=()=>false,onChange,mode='fixed'}){
+function eightWayDirection(x,y,width,height,previous){
+  const dx=x-width/2,dy=y-height/2,r=Math.min(width,height)/2;
+  if(Math.hypot(dx,dy)<r*.16)return null;
+  const angle=Math.atan2(dy,dx);
+  const sectors=['right','back-right','back','back-left','left','forward-left','forward','forward-right'];
+  const old=sectors.indexOf(previous);
+  if(old>=0&&Math.cos(angle-old*Math.PI/4)>Math.cos(Math.PI/7))return previous;
+  return sectors[(Math.round(angle/(Math.PI/4))+8)%8];
+}
+export function bindDirectionPad(pad,{blocked=()=>false,onChange,mode='fixed',diagonal=false}){
+  const resolveDirection=diagonal?eightWayDirection:directionAtPoint;
   let pointerId=null,direction=null,anchor=null,dragged=false,pressMode='fixed';
   const listeners=[];
   const listen=(target,type,handler)=>{if(!target?.addEventListener)return;target.addEventListener(type,handler);listeners.push(()=>target.removeEventListener?.(type,handler));};
@@ -75,8 +85,8 @@ export function bindDirectionPad(pad,{blocked=()=>false,onChange,mode='fixed'}){
       // slide, even after the captured finger has drifted outside the pad.
       if(length>radius){anchor.x=event.clientX-dx/length*radius;anchor.y=event.clientY-dy/length*radius;dx=event.clientX-anchor.x;dy=event.clientY-anchor.y;}
       if(length>=deadZone)dragged=true;
-      if(dragged)setDirection(Math.hypot(dx,dy)<deadZone?null:directionAtPoint(dx+radius,dy+radius,radius*2,radius*2,direction));
-    }else setDirection(directionAtPoint(event.clientX-rect.left,event.clientY-rect.top,rect.width,rect.height,direction));
+      if(dragged)setDirection(Math.hypot(dx,dy)<deadZone?null:resolveDirection(dx+radius,dy+radius,radius*2,radius*2,direction));
+    }else setDirection(resolveDirection(event.clientX-rect.left,event.clientY-rect.top,rect.width,rect.height,direction));
     visual(event,rect);
   };
   const refresh=()=>{pad.dataset.padMode=selectedMode();};

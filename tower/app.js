@@ -1,7 +1,7 @@
-import { characterSignature, designWorld, roomStage } from './world.js';
-import { cutaway, dailyStory, makeElevator } from './building.js';
+import { TOWER_API, characterSignature, designWorld, roomPreview, roomStage } from './world.js?v=5';
+import { cutaway, dailyStory, makeElevator } from './building.js?v=5';
+import { makeRoomPrompt, towerUrl } from './prompt-play.js?v=1';
 
-const API = 'https://xxhaerjvrgmnadxjqetz.supabase.co/functions/v1/creator-tower';
 const OWNER_STORAGE = 'atelier-tower-owner-v1';
 const PROOF_STORAGE = 'atelier-tower-proof-v1';
 const storyFallback = 'https://note.com/almabrillante/n/n2ded809d9016';
@@ -31,6 +31,7 @@ const errors = {
   avatar_required: 'キャラ画像を選んでから保存してください。',
   bad_image: 'PNG・JPEG・WebP・GIFの画像を選んでください。動く画像は各辺1,200pxまでです。',
   big_image: '動く画像は300KB以下、静止画の元画像は10MB以下にしてください。',
+  bad_sheet: '４×４の歩行シートを選んでください。全身が１体の画像なら「全身１枚・GIF」を選べます。',
   unavailable: '通信できませんでした。接続を確認して、もう一度お試しください。',
 };
 
@@ -65,6 +66,9 @@ const state = {
 };
 
 const travel = makeElevator($('#lift-dialog'));
+const play = { id: '', profile: null, avatar: null, interior: null, loading: new Set() };
+const promptDialog = $('#prompt-dialog');
+let roomControls;
 
 function node(tag, css = '', text = '') {
   const element = document.createElement(tag);
@@ -100,7 +104,7 @@ function message(error) {
 }
 
 async function api(view, query = {}, payload, key) {
-  const url = new URL(API);
+  const url = new URL(TOWER_API);
   if (view) url.searchParams.set('view', view);
   for (const [name, value] of Object.entries(query)) url.searchParams.set(name, String(value));
   const headers = {};
@@ -155,7 +159,7 @@ function card({ id, slot, title, name, theme, ...appearance }) {
   const number = $('.card-number', item);
   number.textContent = slot ? `${formatRoom(slot)}号室` : 'ロビー';
   $('.card-label', item).textContent = id === 'showroom' ? '見学' : id ? '入居中' : '空室';
-  $('.card-title', item).textContent = title || name || 'ここに入居 →';
+  $('.card-title', item).textContent = title || name || '入居する ↗';
   $('.card-subtitle', item).textContent = id ? (title && name && title !== name ? name : themes[theme]?.name || '') : '';
   if (id) {
     const scene = id === 'showroom' ? showroom : {
@@ -164,10 +168,11 @@ function card({ id, slot, title, name, theme, ...appearance }) {
         theme, world: appearance.world, avatarMode: appearance.avatarMode, light: appearance.light,
       },
     };
-    $('.card-image', item).replaceChildren(roomStage(scene, avatarUrl(scene), { mini: true }));
+    $('.card-image', item).replaceChildren(roomPreview(scene, avatarUrl(scene)));
     item.classList.add('occupied');
     item.addEventListener('click', () => travel(floorFor(slot), () => void openPublished(id)));
   } else {
+    item.classList.add('vacant-card');
     $('.card-image', item).remove();
     item.addEventListener('click', () => focusEntry(slot));
   }
@@ -336,7 +341,7 @@ function titleFor(room) {
 function avatarUrl(room) {
   if (room.draftAvatar?.source) return room.draftAvatar.source;
   if (room.design.avatarMode === 'custom' && room.avatarVersion) {
-    const url = new URL(API);
+    const url = new URL(TOWER_API);
     url.searchParams.set('view', 'avatar');
     url.searchParams.set('id', room.id);
     url.searchParams.set('v', room.avatarVersion);
@@ -405,7 +410,9 @@ function renderRoom(room, mode) {
   $('#share-room').hidden = mode === 'draft' || mode === 'redesign';
   status($('#room-status'));
   const layout = node('div', 'room-layout');
-  const scene = roomStage(room, avatarUrl(room), { avatarName: room.design.avatarName });
+  roomControls?.abort();
+  roomControls = new AbortController();
+  const scene = roomStage(room, avatarUrl(room), { avatarName: room.design.avatarName, signal: roomControls.signal });
   const body = node('div', 'room-body');
   const title = node('h2', '', titleFor(room));
   title.id = 'room-title';
@@ -462,6 +469,7 @@ function renderRoom(room, mode) {
 }
 
 function loadingRoom(label) {
+  roomControls?.abort();
   const title = node('h2', '', label);
   title.id = 'room-title';
   const frame = node('div', 'dialog-pad');
@@ -517,47 +525,63 @@ async function submitPreview(event) {
   submit.disabled = true;
   status(hint, 'noteのプロフィールと記事を読み込んでいます…');
   try {
-    const room = await api('preview', { noteId: id });
-    if (request !== state.request) return;
-    status(hint, state.preferredSlot ? `${formatRoom(state.preferredSlot)}号室を選択中。` : '部屋の下見ができます。');
-    if (room.existingId) {
-      if (picture && state.owner?.id === room.existingId) {
-        const current = await write('visit', { id: room.existingId });
-        if (request !== state.request) return;
-        if (current.isOwner) {
-          renderRoom(withWorld(current, picture), 'redesign');
-          return;
-        }
-      }
-      await openPublished(room.existingId);
-      if (picture && !state.room?.isOwner) status($('#room-status'), '入居済みの部屋です。鍵を再発行すると改装できます。');
-    } else {
-      room.slot = state.preferredSlot;
-      renderRoom(withWorld(room, picture), 'draft');
-    }
+    await showEntryPreview(id, picture, null, request, () => {
+      status(hint, state.preferredSlot ? `${formatRoom(state.preferredSlot)}号室を選択中。` : '部屋の下見ができます。');
+    });
   } catch (error) {
     if (request === state.request) status(hint, message(error), true);
   } finally { submit.disabled = false; }
 }
 
-function withWorld(room, picture) {
-  const design = { ...room.design, world: designWorld(room, picture?.signature) };
-  if (picture) design.avatarMode = 'custom';
-  return { ...room, design, draftAvatar: picture };
+async function showEntryPreview(id, picture, interior, request, ready) {
+  const room = await api('preview', { noteId: id });
+  if (request !== state.request) return;
+  if (!room.existingId) {
+    if (ready() === false) return;
+    renderRoom(withWorld({ ...room, slot: state.preferredSlot }, picture, interior), 'draft');
+    return;
+  }
+  if (picture && state.owner?.id === room.existingId) {
+    const current = await write('visit', { id: room.existingId });
+    if (request !== state.request) return;
+    if (current.isOwner) {
+      if (ready() === false) return;
+      renderRoom(withWorld(current, picture, interior), 'redesign');
+      return;
+    }
+  }
+  if (ready() === false) return;
+  await openPublished(room.existingId);
+  if (picture && !state.room?.isOwner) status($('#room-status'), '入居済みの部屋です。鍵を再発行すると改装できます。');
 }
 
-function encodedAvatar(picture) {
+function withWorld(room, picture, interior) {
+  const world = { ...designWorld(room, picture?.signature), artwork: room.design.world?.artwork,
+    atlas: picture ? picture.atlas === true : room.design.world?.atlas === true };
+  const design = { ...room.design, world };
+  if (picture) design.avatarMode = 'custom';
+  if (interior && $('#generated-room-title').value.trim()) design.title = $('#generated-room-title').value.trim();
+  return { ...room, design, draftAvatar: picture, draftInterior: interior };
+}
+
+function encodedImage(picture) {
   return picture?.source.split(',')[1];
+}
+
+function draftArtwork(room) {
+  return { avatarB64: encodedImage(room.draftAvatar), avatarAtlas: room.draftAvatar?.atlas,
+    interiorB64: encodedImage(room.draftInterior) };
 }
 
 async function saveWorld(room, control) {
   control.disabled = true;
   status($('#room-status'), '部屋を書き換えています…');
   try {
-    const updated = await write('save', { id: room.id, version: room.version, design: room.design, avatarB64: encodedAvatar(room.draftAvatar) });
+    const updated = await write('save', { id: room.id, version: room.version, design: room.design, ...draftArtwork(room) });
     pushRoom(room.id);
     renderRoom({ ...updated, isOwner: true }, 'resident');
     resetEntryCharacter();
+    if (room.draftInterior) resetPlayImages();
     status($('#room-status'), '新しい部屋とキャラを保存しました。');
     void loadDirectory();
   } catch (error) {
@@ -575,7 +599,8 @@ async function beginProof(room, recover) {
   const plan = recover ? undefined : {
     world: room.design.world,
     theme: room.design.theme,
-    avatarB64: encodedAvatar(room.draftAvatar),
+    title: room.design.title,
+    ...draftArtwork(room),
   };
   state.proofIntent = { noteId: room.noteId, slot: recover ? null : room.slot, recover, plan };
   $('#key-title').textContent = recover ? '部屋の鍵を再発行する' : '部屋の鍵をつくる';
@@ -641,6 +666,13 @@ async function confirmProof() {
     state.preferredSlot = null;
     resetEntryCharacter();
     closeDialog('key-dialog');
+    if (proof.recover && play.avatar && play.interior && parseNoteId($('#prompt-id').value) === room.noteId) {
+      renderRoom(withWorld({ ...room, isOwner: true }, play.avatar, play.interior), 'redesign');
+      status($('#room-status'), '鍵を再発行しました。生成した部屋とアバターで改装できます。');
+      void loadDirectory();
+      return;
+    }
+    if (proof.plan?.interiorB64) resetPlayImages();
     pushRoom(room.id);
     renderRoom({ ...room, isOwner: true }, 'resident');
     const done = proof.recover ? '鍵を再発行しました。' : `${formatRoom(room.slot)}号室に入居しました。`;
@@ -677,13 +709,15 @@ function openEditor(room) {
     label.append(input, image, node('span', '', theme.name));
     options.append(label);
   }
+  $('#keep-interior-field').hidden = !room.design.world?.artwork;
   const pin = $('#pin-select');
   pin.replaceChildren(new Option('飾らない', ''));
   for (const article of room.profile.articles) pin.append(new Option(article.title, article.url));
   pin.value = room.design.pin || '';
   const preview = $('#avatar-preview');
-  preview.hidden = !room.avatarVersion;
-  if (room.avatarVersion) preview.src = avatarUrl(room);
+  const showAvatar = room.avatarVersion && !room.design.world?.atlas;
+  preview.hidden = !showAvatar;
+  if (showAvatar) preview.src = avatarUrl(room);
   else preview.removeAttribute('src');
   $('#avatar-field').hidden = room.design.avatarMode !== 'custom';
   status($('#edit-status'));
@@ -795,27 +829,92 @@ async function chooseEntryCharacter(event) {
   }
 }
 
-function readPicture(file) {
+function readPicture(file, variant = 'avatar') {
   let timer;
   const limit = new Promise((_, reject) => {
     timer = setTimeout(() => reject({ code: 'picture_timeout' }), 15000);
   });
-  return Promise.race([preparePicture(file), limit]).finally(() => clearTimeout(timer));
+  return Promise.race([preparePicture(file, variant), limit]).finally(() => clearTimeout(timer));
 }
 
-async function preparePicture(file) {
+function pictureBlob(canvas, quality) {
+  return new Promise(resolve => canvas.toBlob(resolve, 'image/webp', quality));
+}
+
+async function prepareInterior(image) {
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d', { alpha: false });
+  const ratio = Math.min(1, 1200 / Math.max(image.naturalWidth, image.naturalHeight));
+  canvas.width = Math.max(1, Math.round(image.naturalWidth * ratio));
+  canvas.height = Math.max(1, Math.round(image.naturalHeight * ratio));
+  context.drawImage(image, 0, 0, canvas.width, canvas.height);
+  for (const quality of [.87, .78, .68, .54]) {
+    const output = await pictureBlob(canvas, quality);
+    if (output && output.size <= 245760) return { source: await dataUrl(output) };
+  }
+  throw { code: 'big_image' };
+}
+
+async function prepareAtlas(image) {
+  const aspect = image.naturalWidth / image.naturalHeight;
+  if (aspect < .55 || aspect > 1.8) throw { code: 'bad_sheet' };
+  const source = document.createElement('canvas');
+  const frameWidth = Math.round(240 * Math.min(1, aspect));
+  const frameHeight = Math.round(240 * Math.min(1, 1 / aspect));
+  source.width = 4 * frameWidth;
+  source.height = 4 * frameHeight;
+  source.getContext('2d').drawImage(image, 0, 0, source.width, source.height);
+  stripSolidBackdrop(source);
+  const cell = document.createElement('canvas');
+  cell.width = frameWidth;
+  cell.height = frameHeight;
+  const cellContext = cell.getContext('2d');
+  const frames = [];
+  for (let index = 0; index < 16; index++) {
+    cellContext.clearRect(0, 0, frameWidth, frameHeight);
+    cellContext.drawImage(source, (index % 4) * frameWidth, Math.floor(index / 4) * frameHeight,
+      frameWidth, frameHeight, 0, 0, frameWidth, frameHeight);
+    let actor;
+    try { actor = trimActor(cell); } catch { throw { code: 'bad_sheet' }; }
+    if (actor.height < 40 || actor.width < 12 || actor.width >= frameWidth - 2 || actor.height >= frameHeight - 2) throw { code: 'bad_sheet' };
+    frames.push(actor);
+  }
+  const canvas = document.createElement('canvas');
+  const context = canvas.getContext('2d');
+  const height = Math.max(...frames.map(frame => frame.height));
+  const width = Math.max(...frames.map(frame => frame.width));
+  for (const size of [240, 192]) {
+    canvas.width = canvas.height = size * 4;
+    const scale = (size - 12) / Math.max(height, width);
+    frames.forEach((actor, index) => {
+      const x = (index % 4) * size + (size - actor.width * scale) / 2;
+      const y = (Math.floor(index / 4) + 1) * size - 4 - actor.height * scale;
+      context.drawImage(actor, x, y, actor.width * scale, actor.height * scale);
+    });
+    for (const quality of [.87, .77, .67]) {
+      const output = await pictureBlob(canvas, quality);
+      if (output && output.size <= 307200) return { source: await dataUrl(output), signature: characterSignature(frames[0]), atlas: true };
+    }
+  }
+  throw { code: 'big_image' };
+}
+
+async function preparePicture(file, variant) {
   const supported = ['image/png', 'image/jpeg', 'image/gif', 'image/webp'];
   if (!supported.includes(file.type)) throw { code: 'bad_image' };
   if (file.size > 10 * 1024 * 1024) throw { code: 'big_image' };
   const mode = new Uint8Array(await file.slice(0, 21).arrayBuffer());
   const animated = file.type === 'image/gif' ||
     (file.type === 'image/webp' && mode[12] === 86 && mode[15] === 88 && (mode[20] & 2) !== 0);
-  if (animated && file.size > 307200) throw { code: 'big_image' };
+  if (animated && variant === 'atlas') throw { code: 'bad_sheet' };
+  if (animated && variant === 'avatar' && file.size > 307200) throw { code: 'big_image' };
   const localUrl = URL.createObjectURL(file);
   const image = new Image();
   try {
     image.src = localUrl;
     await image.decode().catch(() => { throw { code: 'bad_image' }; });
+    if (variant === 'interior') return await prepareInterior(image);
+    if (variant === 'atlas') return await prepareAtlas(image);
     const longestSide = Math.max(image.naturalWidth, image.naturalHeight);
     if (animated && longestSide > 1200) throw { code: 'bad_image' };
     if (animated) return { source: await dataUrl(file), signature: characterSignature(image) };
@@ -836,11 +935,132 @@ async function preparePicture(file) {
         stripSolidBackdrop(canvas);
         crop = trimActor(canvas);
       }
-      const output = await new Promise(resolve => (side === 720 ? crop : canvas).toBlob(resolve, 'image/webp', 0.86));
+      const output = await pictureBlob(side === 720 ? crop : canvas, .86);
       if (output && output.size <= 307200) return { source: await dataUrl(output), signature: characterSignature(crop) };
     }
     throw { code: 'big_image' };
   } finally { URL.revokeObjectURL(localUrl); }
+}
+
+function playNoteId() {
+  const field = $('#prompt-id');
+  const id = parseNoteId(field.value);
+  if (!id) {
+    status($($('#prompt-write').hidden ? '#import-status' : '#prompt-status'), '自分のnote IDかプロフィールURLを入力してください。', true);
+    field.focus();
+  }
+  return id;
+}
+
+function syncPrompt() {
+  const id = parseNoteId($('#prompt-id').value);
+  const returnUrl = new URL(towerUrl);
+  if (id) returnUrl.searchParams.set('creator', id);
+  if (state.preferredSlot) returnUrl.searchParams.set('slot', String(state.preferredSlot));
+  returnUrl.hash = 'prompt-import';
+  const profile = id === play.id ? play.profile : null;
+  $('#prompt-text').value = makeRoomPrompt({ id, description: profile?.description, articles: profile?.articles,
+    ideas: $('#prompt-ideas').value.trim(), returnUrl: returnUrl.href });
+}
+
+function loadPromptProfile() {
+  const id = parseNoteId($('#prompt-id').value);
+  if (!id || id === play.id) return;
+  play.id = id;
+  play.profile = null;
+  void api('preview', { noteId: id }).then(room => {
+    if (play.id !== id) return;
+    play.profile = room.profile;
+    syncPrompt();
+  }).catch(() => {});
+}
+
+function selectPlayStep(importing) {
+  $('#prompt-write').hidden = importing;
+  $('#prompt-import').hidden = !importing;
+  $('#prompt-write-tab').setAttribute('aria-pressed', String(!importing));
+  $('#prompt-import-tab').setAttribute('aria-pressed', String(importing));
+  if (!importing) loadPromptProfile();
+}
+
+function openPlay(importing = false, incoming = '') {
+  if (incoming || (!$('#prompt-id').value && $('#creator-id').value)) $('#prompt-id').value = incoming || $('#creator-id').value;
+  selectPlayStep(importing);
+  syncPrompt();
+  showDialog('prompt-dialog');
+}
+
+function routePlay() {
+  const link = new URL(location.href);
+  if (!['#prompt-play', '#prompt-import'].includes(link.hash) || link.searchParams.has('room')) return;
+  const slot = Number(link.searchParams.get('slot'));
+  if (Number.isInteger(slot) && slot >= 1 && slot <= 144) state.preferredSlot = slot;
+  openPlay(link.hash === '#prompt-import', parseNoteId(link.searchParams.get('creator') || '') || '');
+}
+
+function setPlayPhoto(kind, photo) {
+  play[kind] = photo;
+  const preview = $(`#generated-${kind}-preview`);
+  preview.hidden = !photo;
+  if (photo) preview.src = photo.source;
+  else preview.removeAttribute('src');
+}
+
+function resetPlayImages() {
+  for (const kind of ['avatar', 'interior']) {
+    $(`#generated-${kind}`).value = '';
+    setPlayPhoto(kind, null);
+  }
+  $('#generated-room-title').value = '';
+  status($('#import-status'));
+}
+
+async function readPlayPhoto(kind) {
+  const field = $(`#generated-${kind}`);
+  const file = field.files?.[0];
+  const variant = kind === 'interior' ? 'interior' : $('#generated-avatar-mode').value === 'atlas' ? 'atlas' : 'avatar';
+  const hint = $('#import-status');
+  setPlayPhoto(kind, null);
+  if (!file) return;
+  const pending = { kind };
+  play.loading.add(pending);
+  const currentFile = () => field.files?.[0] === file && (kind === 'interior' ||
+    ($('#generated-avatar-mode').value === 'atlas') === (variant === 'atlas'));
+  status(hint, '画像を読み込んでいます…');
+  try {
+    const picture = await readPicture(file, variant);
+    if (currentFile()) {
+      setPlayPhoto(kind, picture);
+      status(hint, play.avatar && play.interior ? '２枚がそろいました。下見できます。' : '画像を読み込みました。');
+    }
+  } catch (error) {
+    if (currentFile()) status(hint, message(error), true);
+  } finally { play.loading.delete(pending); }
+}
+
+async function submitPlay(event) {
+  event.preventDefault();
+  const id = playNoteId(), hint = $('#import-status');
+  if (!id) return;
+  if (play.loading.size) { status(hint, '画像を読み込み中です。'); return; }
+  if (!play.avatar || !play.interior) {
+    status(hint, 'アバターと部屋の画像を１枚ずつ選んでください。', true);
+    return;
+  }
+  const submit = $('button[type="submit"]', event.currentTarget);
+  const request = ++state.request;
+  submit.disabled = true;
+  $('#creator-id').value = id;
+  status(hint, '公開プロフィールと記事を読み込んでいます…');
+  try {
+    await showEntryPreview(id, play.avatar, play.interior, request, () => {
+      if (!promptDialog.open) return false;
+      status(hint);
+      promptDialog.close();
+    });
+  } catch (error) {
+    if (request === state.request) status(hint, message(error), true);
+  } finally { submit.disabled = false; }
 }
 
 async function choosePicture(event) {
@@ -882,11 +1102,12 @@ async function saveEditor(event) {
   const picture = design.avatarMode === 'custom' ? state.picture : null;
   const regenerate = picture || !room.design.world || design.avatarMode !== room.design.avatarMode;
   design.world = regenerate ? designWorld({ ...room, design }, picture?.signature) : room.design.world;
-  const avatarB64 = encodedAvatar(picture);
+  const avatarB64 = encodedImage(picture);
+  const clearInterior = Boolean(room.design.world?.artwork && !values.has('keepInterior'));
   save.disabled = true;
   status($('#edit-status'), '部屋を保存しています…');
   try {
-    const updated = await write('save', { id: room.id, version: room.version, design, avatarB64, refresh: values.has('refresh') });
+    const updated = await write('save', { id: room.id, version: room.version, design, avatarB64, clearInterior, refresh: values.has('refresh') });
     closeDialog('edit-dialog');
     renderRoom({ ...updated, isOwner: true }, 'resident');
     status($('#room-status'), '改装を保存しました。');
@@ -931,6 +1152,37 @@ function route() {
 }
 
 $('#preview-form').addEventListener('submit', submitPreview);
+$('#open-prompt').addEventListener('click', () => openPlay(Boolean(play.avatar || play.interior)));
+$('#prompt-write-tab').addEventListener('click', () => selectPlayStep(false));
+$('#prompt-import-tab').addEventListener('click', () => selectPlayStep(true));
+$('#prompt-id').addEventListener('input', syncPrompt);
+$('#prompt-id').addEventListener('change', () => { if (!$('#prompt-write').hidden) loadPromptProfile(); });
+$('#prompt-ideas').addEventListener('input', syncPrompt);
+$('#copy-play-prompt').addEventListener('click', async () => {
+  if (!playNoteId()) return;
+  syncPrompt();
+  const prompt = $('#prompt-text');
+  try {
+    await copy(prompt.value);
+    status($('#prompt-status'), 'コピーしました。ChatGPTでキャラ画像と一緒に送信してください。');
+  } catch {
+    prompt.focus();
+    prompt.select();
+    status($('#prompt-status'), '選択したプロンプトをコピーしてください。');
+  }
+});
+$('#generated-avatar-mode').addEventListener('change', () => void readPlayPhoto('avatar'));
+for (const kind of ['avatar', 'interior']) $(`#generated-${kind}`).addEventListener('change', () => void readPlayPhoto(kind));
+$('#prompt-import').addEventListener('submit', submitPlay);
+promptDialog.addEventListener('close', () => {
+  const url = new URL(location.href);
+  if (!['#prompt-play', '#prompt-import'].includes(url.hash)) return;
+  url.hash = '';
+  url.searchParams.delete('creator');
+  url.searchParams.delete('slot');
+  history.replaceState(history.state, '', url);
+});
+window.addEventListener('hashchange', routePlay);
 $('#entry-character').addEventListener('change', chooseEntryCharacter);
 $('#clear-character').addEventListener('click', () => resetEntryCharacter(true));
 $('#cutaway-fit').addEventListener('click', event => {
@@ -960,6 +1212,44 @@ $('#story-visit').addEventListener('click', event => {
   state.storyVisit = state.story;
   const room = state.story.room;
   travel(floorFor(room.slot), () => void openPublished(room.id));
+});
+const stairs=$('#stair-dialog');
+const stairPhoto=$('.stair-photo',stairs);
+let stairFloor=1;
+let stairAnimation=null;
+function updateStairs() {
+  const top=state.catalog?.floors ?? 12;
+  $('#stair-title').textContent=`${stairFloor}F 階段`;
+  $('#stair-up').disabled=stairFloor>=top;
+  $('#stair-down').disabled=stairFloor<=1;
+  $('#stair-up').textContent=stairFloor<top ? `↑ ${stairFloor+1}Fへ` : '最上階';
+  $('#stair-down').textContent=stairFloor>1 ? `↓ ${stairFloor-1}Fへ` : 'エントランス階';
+}
+function climb(direction) {
+  const next=stairFloor+direction;
+  if(next<1||next>(state.catalog?.floors ?? 12)) return;
+  stairFloor=next;
+  updateStairs();
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    stairAnimation?.cancel();
+    stairAnimation=stairPhoto.animate([
+      {transform:'scale(1) translateY(0)',filter:'brightness(.82)'},
+      {transform:`scale(1.07) translateY(${direction*1.4}%)`,filter:'brightness(1.13)',offset:.44},
+      {transform:'scale(1) translateY(0)',filter:'brightness(1)'},
+    ],{duration:420,easing:'ease-in-out'});
+  }
+}
+$('#open-stairs').addEventListener('click',()=>{
+  stairFloor=state.floor;
+  updateStairs();
+  showDialog('stair-dialog');
+});
+$('#stair-up').addEventListener('click',()=>climb(1));
+$('#stair-down').addEventListener('click',()=>climb(-1));
+$('#stair-exit').addEventListener('click',()=>{
+  closeDialog('stair-dialog');
+  travel.setFloor(stairFloor);
+  showFloor(stairFloor,true);
 });
 $('#retry-list').addEventListener('click', () => void loadDirectory());
 $('#search-form').addEventListener('submit', (event) => {
@@ -1023,6 +1313,7 @@ $('#leave-room').addEventListener('click', () => void leaveRoom());
 for (const close of document.querySelectorAll('[data-close]')) {
   close.addEventListener('click', () => close.dataset.close === 'room-dialog' ? dismissRoom() : closeDialog(close.dataset.close));
 }
+$('#room-dialog').addEventListener('close', () => roomControls?.abort());
 $('#room-dialog').addEventListener('cancel', (event) => { event.preventDefault(); dismissRoom(); });
 window.addEventListener('popstate', route);
 window.addEventListener('focus', () => {
@@ -1043,3 +1334,4 @@ renderDirectory();
 renderBuilding();
 void loadDirectory();
 route();
+routePlay();

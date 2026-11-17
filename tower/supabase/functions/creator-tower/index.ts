@@ -5,12 +5,13 @@ const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 const ID = /^[a-z0-9_]{1,32}$/;
 const KEY = /^[a-f0-9]{64}$/;
 const UUID = /^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/;
-const MAX_BODY = 425_000;
+const MAX_BODY = 760_000;
 const MAX_AVATAR = 307_200;
+const MAX_INTERIOR = 245_760;
 const THEMES = ["reading", "gallery", "cinema", "story"];
 const IP_LIMITS: Record<string, number> = { begin: 10, confirm: 14, save: 12, stamp: 40, leave: 8 };
 const ERROR_STATUS: Record<string, number> = {
-  invalid: 400, bad_image: 400, big_image: 413, avatar_required: 400, owner_required: 403,
+  invalid: 400, bad_image: 400, bad_sheet: 400, big_image: 413, avatar_required: 400, owner_required: 403,
   missing: 404, note_missing: 404, invalid_note: 400, proof_missing: 422,
   slot_taken: 409, full: 409, conflict: 409, handle_in_use: 409, own_room: 409, expired: 410,
   too_many: 429, note_down: 502, unavailable: 503,
@@ -192,9 +193,9 @@ function validateDesign(input: Json, profile: Json) {
   };
 }
 
-function parseAvatar(value: unknown) {
+function parseImage(value: unknown, maxBytes: number) {
   if (typeof value !== "string") return fail("bad_image");
-  if (value.length > 409600) return fail("big_image");
+  if (value.length > Math.ceil(maxBytes / 3) * 4) return fail("big_image");
   if (!/^[A-Za-z0-9+/]+={0,2}$/.test(value)) return fail("bad_image");
   let bytes: Uint8Array;
   try {
@@ -202,7 +203,7 @@ function parseAvatar(value: unknown) {
   } catch {
     return fail("bad_image");
   }
-  if (bytes.length > MAX_AVATAR) return fail("big_image");
+  if (bytes.length > maxBytes) return fail("big_image");
   if (bytes.length < 30) return fail("bad_image");
 
   const head = String.fromCharCode(...bytes.subarray(0, 12));
@@ -232,7 +233,37 @@ function parseAvatar(value: unknown) {
     }
   }
   if (!width || !height || width > 1200 || height > 1200) return fail("bad_image");
-  return { avatarMime: png ? "image/png" : gif ? "image/gif" : "image/webp", avatarB64: value };
+  return { mime: png ? "image/png" : gif ? "image/gif" : "image/webp", base64: value, width, height };
+}
+
+async function roomMedia(design: Json, body: Json, previous: Json = {}) {
+  const avatar = design.avatarMode === "custom" && body.avatarB64 ? parseImage(body.avatarB64, MAX_AVATAR) : null;
+  const atlas = avatar && body.avatarAtlas === true;
+  if (atlas && (avatar.mime === "image/gif" || avatar.width % 4 || avatar.height % 4 || avatar.width < 160 || avatar.height < 160)) return fail("bad_sheet");
+  const artwork = body.interiorB64 ? parseImage(body.interiorB64, MAX_INTERIOR) : null;
+  if (artwork?.mime === "image/gif") return fail("bad_image");
+  if ((atlas || artwork) && !design.world) return fail("invalid");
+
+  if (design.world) {
+    design.world = { ...design.world, atlas: design.avatarMode === "custom" && (avatar ? atlas : previous.world?.atlas === true) };
+    delete design.world.artwork;
+    if (artwork) {
+      design.interiorB64 = artwork.base64;
+      design.interiorMime = artwork.mime;
+      design.world.artwork = (await hash(artwork.base64)).slice(0, 24);
+    } else if (body.clearInterior !== true && previous.interiorB64 && previous.world?.artwork) {
+      design.interiorB64 = previous.interiorB64;
+      design.interiorMime = previous.interiorMime;
+      design.world.artwork = previous.world.artwork;
+    }
+  }
+  return { design, ...(avatar ? { avatarMime: avatar.mime, avatarB64: avatar.base64 } : {}) };
+}
+
+function roomResponse(room: Json) {
+  if (!room.design?.interiorB64) return room;
+  const { interiorB64, interiorMime, ...design } = room.design;
+  return { ...room, design };
 }
 
 async function requestJson(request: Request): Promise<Json> {
@@ -319,14 +350,15 @@ async function mutate(request: Request) {
     const { profile } = await profileWithArticles(proof.noteId, account);
     const slot = requireSlot(body.slot);
     const defaults = defaultDesign(proof.noteId, profile);
-    const avatar = body.avatarB64 ? parseAvatar(body.avatarB64) : {};
     const design = {
       ...defaults,
+      title: clean(body.title, 38) || defaults.title,
       theme: THEMES.includes(body.theme) ? body.theme : defaults.theme,
       avatarMode: body.avatarB64 ? "custom" : defaults.avatarMode,
       ...(body.world ? { world: validateWorld(body.world) } : {}),
     };
-    return rpc("finish", { noteId: proof.noteId, noteUser: proof.noteUser, hash: owner, slot, profile, design, ...avatar });
+    const media = await roomMedia(design, body);
+    return rpc("finish", { noteId: proof.noteId, noteUser: proof.noteUser, hash: owner, slot, profile, ...media });
   }
 
   const id = requireUuid(body.id);
@@ -347,8 +379,8 @@ async function mutate(request: Request) {
     }
     const validated = validateDesign(body.design, profile);
     const design = { world: current.design.world, ...validated };
-    const avatar = design.avatarMode === "custom" && body.avatarB64 ? parseAvatar(body.avatarB64) : {};
-    return rpc("save", { id, hash: owner, version: body.version, design, ...avatar,
+    const media = await roomMedia(design, body, current.design);
+    return rpc("save", { id, hash: owner, version: body.version, ...media,
       ...(body.refresh === true ? { profile } : {}) });
   }
   return fail("invalid");
@@ -371,7 +403,7 @@ Deno.serve(async (request: Request) => {
   if (request.method === "OPTIONS") return new Response(null, { status: 204, headers });
 
   try {
-    if (request.method === "POST") return json(await mutate(request));
+    if (request.method === "POST") return json(roomResponse(await mutate(request)));
     if (request.method !== "GET") return json({ error: "invalid" }, 405);
     const url = new URL(request.url);
     const view = url.searchParams.get("view") ?? "list";
@@ -382,7 +414,15 @@ Deno.serve(async (request: Request) => {
       return json(await preview(noteId));
     }
     const id = requireUuid(url.searchParams.get("id"));
-    if (view === "room") return json(await rpc("room", { id }));
+    if (view === "room") return json(roomResponse(await rpc("room", { id })));
+    if (view === "interior") {
+      const version = url.searchParams.get("v") ?? "";
+      if (!/^[a-f0-9]{24}$/.test(version)) return fail("invalid");
+      const { design } = await rpc("room", { id });
+      if (design.world?.artwork !== version || !design.interiorB64) return fail("missing");
+      const bytes = Uint8Array.from(atob(design.interiorB64), (c) => c.charCodeAt(0));
+      return new Response(bytes, { headers: { ...headers, "Content-Type": design.interiorMime } });
+    }
     if (view === "avatar") {
       const version = Number(url.searchParams.get("v"));
       if (!Number.isSafeInteger(version) || version < 1) return fail("invalid");

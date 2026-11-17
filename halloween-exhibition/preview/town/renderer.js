@@ -197,6 +197,7 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
       if(b.kind!=='castle')for(const side of[.08,.91])objects.push({kind:'flowerbed',x:(b.x+b.w*side)*TILE,y:(b.z+b.h-.04)*TILE,depth:(b.z+b.h)*TILE+1,data:{size:Math.min(64,b.w*12)}});
     }
     for(const portal of map.portals||[])if(!portal.openPassage&&(portal.to==='creator-quarter'||map.id==='creator-quarter'&&portal.to==='lantern-town'))objects.push({kind:'quarter-gate',x:portal.x*TILE,y:portal.z*TILE,depth:portal.z*TILE,data:portal});
+    if(map.futureGate)objects.push({kind:'future-gate',x:map.futureGate.x*TILE,y:map.futureGate.z*TILE,depth:map.futureGate.z*TILE});
     for(const sign of map.routeSigns||[])objects.push({kind:'route-sign',x:sign.x*TILE,y:sign.z*TILE,depth:sign.z*TILE,data:sign});
     for(const d of map.decorations||[])objects.push({kind:d.kind,x:d.x*TILE,y:d.z*TILE,depth:d.z*TILE,data:d});
     if(map.id==='lantern-town'&&!map.decorations?.length){
@@ -247,6 +248,19 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
     }
     if(o.kind==='route-sign'){drawCreatorRouteSign2D(c,o.data,{tile:TILE});return;}
     if(o.kind==='quarter-gate'){drawCreatorQuarterGate2D(c,o.data,{tile:TILE});return;}
+    if(o.kind==='future-gate'){
+      const radius=TILE*.91, center=y-radius*1.17;
+      ellipse(c,x,y+2,radius*1.4,radius*.28,'#19272c','#627772',2);
+      c.save();
+      const light=c.createRadialGradient(x,center,2,x,center,radius);
+      light.addColorStop(0,'#d6fff6da');light.addColorStop(.56,'#68ccca6b');light.addColorStop(1,'#1597990a');
+      ellipse(c,x,center,radius,radius,light,'#2d4649',12);
+      c.shadowColor='#6feddb';c.shadowBlur=15;
+      ellipse(c,x,center,radius,radius,'#00000000','#99f7e6',3);
+      ellipse(c,x,center,radius*.86,radius*.86,'#00000000','#d2fcef',1);
+      c.restore();
+      text(c,'近未来街区',x,center-radius-12,15,'#d2f4eb');return;
+    }
     if(o.kind==='tree'||o.kind==='autumnTree'){
       const height=o.data.size||156,overlaps=y>player.y&&(y-player.y)*TOWN_DEPTH_SCALE<height&&Math.abs(x-player.x)<height*.32;c.save();if(overlaps)c.globalAlpha=.35;
       if(!drawProp(c,o.kind,x,y,height))tree(c,x,y,height,o.kind==='autumnTree');c.restore();return;
@@ -363,6 +377,11 @@ export function createTownRenderer({makeCanvas=defaultCanvas,art={images:{},vers
       for(let z=0;z<map.height;z++)for(let x=0;x<map.width;x++){base.fillStyle=colors[map.tiles[z][x]]||'#303d4a';base.fillRect(ox+x*scale,oy+z*scale,scale+.3,scale+.3);}
       for(const b of map.buildings||[]){base.strokeStyle=b.homePalette?.roof||'#b5ae8b';base.lineWidth=.7;base.strokeRect(ox+b.x*scale,oy+b.z*scale,b.w*scale,b.h*scale);}
       if(w>300)for(const portal of map.portals||[])if(portal.openPassage){const x=ox+portal.x*scale,y=oy+portal.z*scale;ellipse(base,x,y,6,6,'#ffe09b');text(base,portal.to==='creator-quarter'?'エリアへ':'街へ',x,y-14,13,'#fff4d2');}
+      if(map.futureGate){
+        const x=ox+map.futureGate.x*scale,y=oy+map.futureGate.z*scale;
+        ellipse(base,x,y,w>300?5:2.5,w>300?5:2.5,'#9ef5dd');
+        if(w>300)text(base,'近未来街区への結界',x+45,y-15,13,'#d4fff5');
+      }
       for(const n of map.npcs||[])ellipse(base,ox+n.x*scale,oy+n.z*scale,1.5,1.5,'#e9c793');
       mapBase={map,width:w,height:h,surface};
     }

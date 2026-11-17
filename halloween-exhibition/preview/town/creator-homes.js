@@ -23,6 +23,10 @@ export const CREATOR_QUARTER_CONNECTION=Object.freeze({
  southStreet:Object.freeze({x:18.5,z:43.5}),
  quarterArrival:Object.freeze({x:39.5,z:82.5}),quarterExit:Object.freeze({x:39.5,z:85.5}),
 });
+export const FUTURE_GATE=Object.freeze({
+ id:'future-district-gate',kind:'future-gate',type:'future-gate',name:'近未来街区への結界',
+ label:'結界をくぐる',x:43.5,z:82.1,arrival:Object.freeze({x:42.05,z:82.5}),
+});
 
 // Open avenues are paired, not extra houses or narrow archways. Arrivals sit
 // at least three tiles inside each street, away from reverse transfer triggers.
@@ -89,12 +93,13 @@ export function createCreatorQuarter(){
  for(const home of buildings){fill(home.x,home.z,home.w,home.h,'b');cells[Math.floor(home.door.z)][Math.floor(home.door.x)]='.';}
  const targets=buildings.map(home=>({id:home.id,type:'creator-home',kind:'creator-home',creatorId:home.creatorId,
   name:home.creatorName+'の家',label:home.creatorName+'の家に入る',portal:true,to:home.interiorId,spawn:{...home.interiorSpawn},arrivalFacing:'up',x:home.door.x,z:home.door.z}));
+ targets.push(FUTURE_GATE);
  const decorations=buildings.flatMap(home=>[
   {id:'lamp-'+home.creatorId,kind:'lamp',x:home.x+1,z:home.z+5.5,radius:.22},
   {id:'tree-'+home.creatorId,kind:home.homeTheme==='cat-garden'||home.homeTheme==='chamomile'?'tree':'autumnTree',x:home.x+9.5,z:home.z+2.5,radius:.4},
  ]);
  return {id:CREATOR_QUARTER_ID,name:'創り手の街区',outdoor:true,width,height,tiles:cells.map(row=>row.join('')),
-  spawn:{...CREATOR_QUARTER_CONNECTION.quarterArrival},buildings,targets,decorations,
+  spawn:{...CREATOR_QUARTER_CONNECTION.quarterArrival},buildings,targets,decorations,futureGate:FUTURE_GATE,
   npcs:[...buildings.map(home=>({id:'neighbor-'+home.creatorId,name:home.creatorName,role:home.homeLabel,creatorId:home.creatorId,creatorHome:true,mapId:CREATOR_QUARTER_ID,appearance:home.homeTheme,x:home.door.x+2.25,z:home.door.z+1.4,dialogue:'ここは'+home.creatorName+'の'+home.homeLabel+'。玄関から中に入ると、制作の部屋と作品を訪ねられます。'})),
    {id:'quarter-guide',name:'街区の案内人 ルーチェ',role:'参加者の家の案内',fictional:true,mapId:CREATOR_QUARTER_ID,appearance:'keeper',x:35.5,z:82.5,dialogue:'この先の五本の広い通りに、'+CREATOR_HOMES.length+'人のクリエイターの家があります。家の前にもクリエイターがいます。名前のある玄関から入ると、その人だけの制作部屋と作品を訪ねられます。東・西・南の並木道から歩いて街へ戻れます。画面の「街へ戻る」でも広場へ戻れます。'}],furniture:[],
   portals:[{id:'leave-creator-quarter',name:'星灯りの街へ戻る',label:'星灯りの街へ戻る',type:'portal',kind:'door',

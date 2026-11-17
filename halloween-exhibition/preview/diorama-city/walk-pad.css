@@ -1,0 +1,57 @@
+.walk-pad {
+  --pad-width:clamp(106px,28vw,128px);
+  --arrow:44px;
+  position:relative;
+  flex:0 0 auto;
+  width:var(--pad-width);
+  height:var(--pad-width);
+  border:1px solid #a6b7b485;
+  border-radius:50%;
+  background:radial-gradient(circle,#253640ce 3%,#182833a1 60%,#121e2799);
+  box-shadow:inset 0 0 22px #0b141eb0,0 3px 14px #03090b7a;
+  touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-touch-callout:none;
+}
+.walk-pad button {
+  position:absolute;
+  display:grid;
+  place-items:center;
+  margin:0;
+  width:var(--arrow);
+  height:var(--arrow);
+  min-width:var(--arrow);
+  min-height:var(--arrow);
+  touch-action:none;
+  padding:0;
+  border-radius:50%;
+  border:1px solid #b8c7c37c;
+  background:#25333eee;
+  color:#efeee5;
+  font:21px system-ui,sans-serif;
+  cursor:pointer;
+}
+.walk-pad [data-move=forward],.walk-pad [data-move=back] {left:calc((100% - var(--arrow))/2)}
+.walk-pad [data-move=left],.walk-pad [data-move=right] {top:calc((100% - var(--arrow))/2)}
+.walk-pad [data-move=forward] {top:1px}
+.walk-pad [data-move=back] {bottom:1px}
+.walk-pad [data-move=left] {left:1px}
+.walk-pad [data-move=right] {right:1px}
+.walk-pad .pad-nub {
+  position:absolute;
+  z-index:1;
+  top:50%;
+  left:50%;
+  width:20px;
+  aspect-ratio:1;
+  border-radius:50%;
+  background:radial-gradient(circle at 45% 32%,#a5b6b7,#405463);
+  border:1px solid #b6c4c1a1;
+  transform:translate(calc(-50% + var(--pad-x,0px)),calc(-50% + var(--pad-y,0px)));
+  pointer-events:none;
+}
+.walk-pad[data-direction^=forward] [data-move=forward],.walk-pad[data-direction^=back] [data-move=back],
+.walk-pad[data-direction$=right] [data-move=right],.walk-pad[data-direction$=left] [data-move=left],
+.walk-pad button:active {background:#4c6467;border-color:#c8eee3}
+.walk-pad button:focus-visible {outline:2px solid #fff3cd;outline-offset:1px}

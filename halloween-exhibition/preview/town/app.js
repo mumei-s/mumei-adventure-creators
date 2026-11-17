@@ -13,7 +13,7 @@ import {bindPinchZoom} from '../touch-camera.js?v=20261030-body1';
 import {readPadMode,savePadMode} from '../control-preferences.js?v=20261019-journey1';
 import {createControlSettings} from '../control-settings.js?v=20261030-body1';
 import {createSceneNameOverlay} from '../scene-names.js?v=20261019-homes2';
-import {CREATOR_HOMES,getCreatorHome} from './creator-homes.js?v=20261019-homes2';
+import {CREATOR_HOMES,CREATOR_QUARTER_ID,FUTURE_GATE,getCreatorHome} from './creator-homes.js?v=20261019-homes2';
 import {readCameraDistance,saveCameraDistance,readCameraZoom,saveCameraZoom,normalizeCameraZoom} from '../camera-distance.js?v=20261019-journey1';
 import {createReloadControl} from '../safe-page-reload.js?v=20261017-reload1';
 import {createTownSession} from './controller.js?v=20261019-homes2';
@@ -43,7 +43,7 @@ let cameraDistance=readCameraDistance('town'),cameraZoom=readCameraZoom('town'),
 let selectedViewpoint=readViewpoint('town',{view:settings.view,distance:cameraDistance});settings.view=selectedViewpoint.view;cameraDistance=selectedViewpoint.distance;
 const sceneNames=createSceneNameOverlay(document.querySelector('.town-world'));
 const store=createTownStore();
-let readingJourney=null;
+let readingJourney=null,gateTransition=false;
 let ready=false,renderer=null,characterArt=null,bootRequest=0,bootAbort=null,pageActive=true,returnFocus=null,panelKind='',panelRevision=0,dialogueTarget=null,minimapSignature='',hudSignature='',toastTimer=null,battleCanvas=null,battleRevision=-1,battleArtReady=false,battleArtFailed=false;
 let sceneImages=createTownSceneImages(),releaseViewPreload=()=>{};
 function prepareSelectedView(){releaseViewPreload();releaseViewPreload=preloadSelectedView({requires3D:selectedViewpoint.view==='3d',worldURL:new URL('./world-3d.js?v=20261019-homes2',import.meta.url),signal:bootAbort?.signal});}
@@ -103,12 +103,22 @@ function applyInteraction(result,targetId){
  if(result.notice)notify(result.notice);
 }
 function contextTarget(){const state=session.snapshot().state,ordinary=getNearbyTargets(state,1.65).filter(item=>!item.creatorHome||!characterArt?.isHomeResidentVisible?.(item.id,state)).map(item=>({...item,distance:Math.hypot(item.x-state.position.x,item.z-state.position.z)})).sort((a,b)=>a.distance-b.distance)[0],guest=characterArt?.nearbyVisitor(state);return guest&&(!ordinary||Math.hypot(guest.x-state.position.x,guest.z-state.position.z)<ordinary.distance)?{...guest,type:'visitor'}:ordinary;}
-function interact(targetId,choiceId){if(!ready||sceneRecovery.blocked||session.snapshot().battle)return;const target=contextTarget(),id=targetId||target?.id,state=session.snapshot().state,map=getTownMap(state.mapId),item=[...(map.targets||[]),...(map.npcs||[])].find(item=>item.id===id);if(item&&(item.type==='creator-works'||item.creatorHome)&&Math.hypot(item.x-state.position.x,item.z-state.position.z)<=2.05){showCreatorHome(item.creatorId);return;}if(characterArt?.visitor(id)){showVisitor(id);return;}applyInteraction(session.interact(id,choiceId),id);}
+function interact(targetId,choiceId){if(!ready||sceneRecovery.blocked||session.snapshot().battle)return;const target=contextTarget(),id=targetId||target?.id,state=session.snapshot().state,map=getTownMap(state.mapId),item=[...(map.targets||[]),...(map.npcs||[])].find(item=>item.id===id);if(item?.id===FUTURE_GATE.id&&state.mapId===CREATOR_QUARTER_ID&&Math.hypot(item.x-state.position.x,item.z-state.position.z)<=1.65){travelThroughFutureGate();return;}if(item&&(item.type==='creator-works'||item.creatorHome)&&Math.hypot(item.x-state.position.x,item.z-state.position.z)<=2.05){showCreatorHome(item.creatorId);return;}if(characterArt?.visitor(id)){showVisitor(id);return;}applyInteraction(session.interact(id,choiceId),id);}
 function showDialogue(dialogue,targetId){
  dialogueTarget=targetId;beginPanel(dialogue.title||dialogue.speaker||'街の物語',{kind:'dialogue',eyebrow:dialogue.speaker||'街の物語'});
  content.append(el('p',dialogue.text||'','dialogue-text'));const choices=el('div',undefined,'dialogue-choices');
  for(const choice of dialogue.choices||[])choices.append(button(choice.label,()=>interact(targetId,choice.id),choice.primary?'primary':''));
  choices.append(button('クリエイターエリアへ',visitCreatorQuarter),button('クリエイター宅を選ぶ',showCreatorHomes),button('街を歩く',closePanel));content.append(choices);choices.querySelector('button')?.focus({preventScroll:true});
+}
+function travelThroughFutureGate(){
+ if(gateTransition)return;
+ gateTransition=true;
+ prepareExit();
+ loop.stop();
+ $('future-gate-transition').hidden=false;
+ const next=new URL('../diorama-city/?arrival=gate',location.href);
+ if(reduced.matches)location.assign(next);
+ else setTimeout(()=>location.assign(next),540);
 }
 function showCastleReturn(){beginPanel('城へ戻りますか。');content.append(el('p','街の記録を保存して、宮殿の入口へ戻ります。城の中の冒険は、街とは別の記録で続けられます。'));const link=el('a','城へ戻る','button-link primary');link.href='../?return=palace';link.onclick=prepareExit;content.append(link,button('街歩きを続ける',closePanel));}
 const pageReload=createReloadControl({save:()=>session.snapshot().battle?{ok:false,notice:'対戦を終えてから再読み込みしてください。'}:session.save(),beforeReload:()=>{clearInput();audio.stop({resetVolume:true});},onState:state=>{$('town-mode-reload').disabled=state.busy;$('town-mode-message').textContent=state.message;}});
@@ -208,7 +218,7 @@ function showInventory(){
  const list=el('div',undefined,'inventory-list');for(const item of townInventory(state)){const card=el('section',undefined,'town-card');card.append(el('h3',item.name),el('strong',`× ${item.count}`,'inventory-count'),el('p',item.description));list.append(card);}if(!list.children.length)list.append(el('p','今は、身軽な旅支度です。'));content.append(list,el('p','星蜜の小瓶は戦闘中に使えます。街の宿屋やベンチでは、休んで体力を戻せます。','subtle'),button('メニューに戻る',showMenu));
 }
 function showMap(){
- const state=session.snapshot().state,map=getTownMap(state.mapId);beginPanel(map.name||'街の地図');const canvas=el('canvas',undefined,'town-map-large');canvas.width=960;canvas.height=720;canvas.setAttribute('aria-label',`${map.name}の地図。三角が現在位置です。`);content.append(canvas);renderer?.drawMap(canvas,state);drawReadingWaypoint(canvas,state);content.append(el('p',state.mapId==='creator-quarter'?'参加者の家が並ぶ住宅街です。各玄関から室内へ入り、本人や作品机から作品を開けます。東・西・南の並木道から、歩いて星灯りの街へ戻れます。':state.mapId==='lantern-town'?'クリエイターエリアへは東・西・南の並木道を歩いて進めます。画面の「クリエイターエリアへ」でも広場へ移動できます。城門は北、従来の案内門は広場の西側です。建物の扉に近づき「入る」を選ぶと室内へ進めます。':'現在いる建物の見取り図です。出口の扉へ近づき、調べると通りへ戻れます。','subtle'),el('p','金色の輪は、次に訪ねる場所です。','subtle'),button('物語の手帳を開く',showJournal),button('クリエイターエリアへ',visitCreatorQuarter),button('クリエイター宅を選ぶ',showCreatorHomes),button('街を歩く',closePanel));
+ const state=session.snapshot().state,map=getTownMap(state.mapId);beginPanel(map.name||'街の地図');const canvas=el('canvas',undefined,'town-map-large');canvas.width=960;canvas.height=720;canvas.setAttribute('aria-label',`${map.name}の地図。三角が現在位置です。`);content.append(canvas);renderer?.drawMap(canvas,state);drawReadingWaypoint(canvas,state);content.append(el('p',state.mapId==='creator-quarter'?'参加者の家が並ぶ住宅街です。各玄関から室内へ入れます。南の広場の結界をくぐると近未来街区へ進みます。東・西・南の並木道から星灯りの街へ戻れます。':state.mapId==='lantern-town'?'クリエイターエリアへは東・西・南の並木道を歩いて進めます。画面の「クリエイターエリアへ」でも広場へ移動できます。城門は北、従来の案内門は広場の西側です。建物の扉に近づき「入る」を選ぶと室内へ進めます。':'現在いる建物の見取り図です。出口の扉へ近づき、調べると通りへ戻れます。','subtle'),el('p','金色の輪は、次に訪ねる場所です。','subtle'),button('物語の手帳を開く',showJournal),button('クリエイターエリアへ',visitCreatorQuarter),button('クリエイター宅を選ぶ',showCreatorHomes),button('街を歩く',closePanel));
 }
 function setSceneZoom(value,{persist=true}={}){cameraZoom=normalizeCameraZoom(value);if(persist)saveCameraZoom('town',cameraZoom);updateCameraButton();renderer?.invalidate?.();viewController?.snapshot().view?.invalidate?.();}
 function showControlSettings(){beginPanel('パッド・拡大縮小');content.append(createControlSettings({getMode:()=>padMode,setMode:value=>{clearInput();padMode=savePadMode(value).mode;padBinding?.refresh();},getZoom:()=>cameraZoom,setZoom:setSceneZoom}),button('街歩きに戻る',closePanel));}
@@ -306,7 +316,7 @@ function prepareExit(){try{clearInput();}finally{try{audio.stop({resetVolume:tru
 $('castle-return').addEventListener('click',prepareExit);
 window.addEventListener('blur',()=>{clearInput();audio.stop({resetVolume:true});});window.addEventListener('orientationchange',()=>{clearInput();scheduleResize();});
 window.addEventListener('pagehide',()=>{pageActive=false;releaseViewPreload();void viewController?.setMode('2d',{suspend:true});if(!ready)bootAbort?.abort();loop.stop();clearInput();audio.stop({resetVolume:true});session.save();});
-window.addEventListener('pageshow',()=>{pageActive=true;clearInput();padMode=readPadMode();padBinding?.refresh();audio.stop({resetVolume:true});resize();if(!ready&&bootAbort?.signal.aborted)void boot();else if(!document.hidden){loop.start();resumeTownView();}});
+window.addEventListener('pageshow',()=>{pageActive=true;gateTransition=false;$('future-gate-transition').hidden=true;clearInput();padMode=readPadMode();padBinding?.refresh();audio.stop({resetVolume:true});resize();if(!ready&&bootAbort?.signal.aborted)void boot();else if(!document.hidden){loop.start();resumeTownView();}});
 document.addEventListener('visibilitychange',()=>{if(document.hidden){loop.stop();clearInput();audio.stop({resetVolume:true});}else{loop.start();resumeTownView();}});
 window.addEventListener('resize',()=>{applySettings();scheduleResize();});reduced.addEventListener('change',()=>{clearInput();applySettings();});initViewport({onChange:scheduleResize,onNativeZoom:clearInput});
 if(typeof ResizeObserver==='function'){const displayObserver=new ResizeObserver(scheduleResize);displayObserver.observe($('town-main'));displayObserver.observe(document.querySelector('.town-world'));}
@@ -314,10 +324,18 @@ if(typeof ResizeObserver==='function'){const displayObserver=new ResizeObserver(
 let layoutStorage;try{layoutStorage=globalThis.localStorage;}catch{}migrateDisplayMode(settings.layout,layoutStorage);
 layoutPreferences=initDisplayMode({page:'town',onChange:state=>{settings.layout=state.mode;scheduleResize();}});
 const pageDisplayPreferences=initGameDisplay({page:'town',onChange:scheduleResize});scheduleResize();
-if(new URLSearchParams(location.search).get('area')==='creators')session.visitCreatorQuarter();
+const entryURL=new URL(location.href),fromFutureGate=entryURL.searchParams.get('arrival')==='future-gate';
+if(fromFutureGate){
+ const {state}=session.snapshot();
+ session.replace({...state,mapId:CREATOR_QUARTER_ID,position:{...FUTURE_GATE.arrival},facing:'right',
+   visited:[...new Set([...state.visited,CREATOR_QUARTER_ID])],updatedAt:Date.now()});
+ entryURL.searchParams.delete('arrival');
+ history.replaceState(history.state,'',entryURL);
+}else if(entryURL.searchParams.get('area')==='creators')session.visitCreatorQuarter();
+const directQuarterEntry=fromFutureGate||entryURL.searchParams.get('area')==='creators';
 async function boot(){
  const request=++bootRequest,revision=panelRevision;releaseViewPreload();bootAbort?.abort();const abort=new AbortController();bootAbort=abort;ready=false;loop.stop();clearInput();resetTownView();renderer?.destroy?.();characterArt?.destroy();sceneImages.clear();sceneImages=createTownSceneImages();$('town-loading').hidden=false;$('town-loading').querySelector('p').textContent='街の灯りをともしています…';$('loading-retry').hidden=true;
- try{characterArt=createTownCharacterArt({deferEnhancements:true,initialState:session.snapshot().state,signal:abort.signal,onState:status=>{if(request!==bootRequest||abort.signal.aborted)return;if(status==='retry')$('town-loading').querySelector('p').textContent='通信を確かめて、主人公と黒猫の姿をもう一度準備しています…';if(status==='rig-failed')notify('一部のキャラの動きを準備できず、元のキャラ画像で続けています。記録はそのままです。');}});renderer=createTownRenderer({art:characterArt.art,deferAssets:true,loadImage:sceneImages.load});const scenery=renderer;void scenery.ready?.then(()=>{if(request!==bootRequest||abort.signal.aborted)return;scenery.invalidate?.();if(scenery.status?.().failed?.length)notify('一部の景色を準備できませんでした。メニューから読み込み直せます。');});await withDeadline(characterArt.ready,{timeout:40000,signal:abort.signal});if(request!==bootRequest||abort.signal.aborted)return;if(typeof characterArt.creatorPage==='function')prepareReadingJourney();resize();tick(0,0);ready=true;$('town-loading').hidden=true;updateHUD();loop.start();prepareSelectedView();requestAnimationFrame(()=>requestAnimationFrame(()=>{if(request!==bootRequest||abort.signal.aborted||!pageActive||document.hidden)return;prepareTownView();characterArt.startEnhancements?.();void scenery.start?.();}));const snapshot=session.snapshot();if(snapshot.notice)notify(snapshot.notice);if(!snapshot.state.flags.intro&&!panel.open&&panelRevision===revision)showHelp();}
+ try{characterArt=createTownCharacterArt({deferEnhancements:true,initialState:session.snapshot().state,signal:abort.signal,onState:status=>{if(request!==bootRequest||abort.signal.aborted)return;if(status==='retry')$('town-loading').querySelector('p').textContent='通信を確かめて、主人公と黒猫の姿をもう一度準備しています…';if(status==='rig-failed')notify('一部のキャラの動きを準備できず、元のキャラ画像で続けています。記録はそのままです。');}});renderer=createTownRenderer({art:characterArt.art,deferAssets:true,loadImage:sceneImages.load});const scenery=renderer;void scenery.ready?.then(()=>{if(request!==bootRequest||abort.signal.aborted)return;scenery.invalidate?.();if(scenery.status?.().failed?.length)notify('一部の景色を準備できませんでした。メニューから読み込み直せます。');});await withDeadline(characterArt.ready,{timeout:40000,signal:abort.signal});if(request!==bootRequest||abort.signal.aborted)return;if(typeof characterArt.creatorPage==='function')prepareReadingJourney();resize();tick(0,0);ready=true;$('town-loading').hidden=true;updateHUD();loop.start();prepareSelectedView();requestAnimationFrame(()=>requestAnimationFrame(()=>{if(request!==bootRequest||abort.signal.aborted||!pageActive||document.hidden)return;prepareTownView();characterArt.startEnhancements?.();void scenery.start?.();}));const snapshot=session.snapshot();if(snapshot.notice)notify(snapshot.notice);if(!snapshot.state.flags.intro&&!directQuarterEntry&&!panel.open&&panelRevision===revision)showHelp();}
  catch(error){if(request!==bootRequest||abort.signal.aborted)return;abort.abort();ready=false;$('town-loading').querySelector('p').textContent='街と主人公の支度を完了できませんでした。記録は消えていません。再試行できます。';$('loading-retry').hidden=false;console.warn('Town loading failed',error);}
 }
 $('loading-retry').onclick=boot;applySettings();updateHUD();boot();

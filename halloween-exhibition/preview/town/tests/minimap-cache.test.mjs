@@ -44,10 +44,10 @@ test('map switches and resize rebuild the same bounded surface and retain route 
   const firstFills=base.fills.length;state.mapId='creator-quarter';state.position={...getTownMap(state.mapId).spawn};
   renderer.drawMap(canvas,state);assert.equal(canvas.images.at(-1)[0],base);
   assert.equal(base.fills.length-firstFills,getTownMap(state.mapId).width*getTownMap(state.mapId).height);
-  assert.equal(base.labels.length,6,'the quarter map retains all three return-route labels');
+  assert.equal(base.labels.length,7,'the quarter map retains all three return routes and the future district gate');
   canvas.width=160;canvas.height=120;const previousFills=base.fills.length;renderer.drawMap(canvas,state);
   assert.equal(base.width,160);assert.equal(base.height,120);assert.ok(base.fills.length>previousFills);
-  assert.equal(base.labels.length,6,'the small minimap still omits large-map labels');
+  assert.equal(base.labels.length,7,'the small minimap still omits large-map labels');
   assert.equal(surfaces.length,count,'changing dimensions or maps never retains another base canvas');
   const draws=canvas.images.length;renderer.destroy();assert.equal(base.width,1);assert.equal(base.height,1);
   renderer.drawMap(canvas,state);assert.equal(canvas.images.length,draws,'destroyed renderers cannot revive the cache');

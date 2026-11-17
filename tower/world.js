@@ -1,4 +1,9 @@
+import { makeWalkPad, bindWalking } from '../halloween-exhibition/preview/diorama-city/walk-controls.js?v=1';
+import { hostPortrait, hostWalker, residentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=2';
+import { applyDistrictLight } from '../halloween-exhibition/preview/diorama-city/scene-time.js?v=1';
+
 const viewNames = ['雨上がりの街', '木立と丘', '海辺の朝焼け', '星明かりの街'];
+export const TOWER_API = 'https://xxhaerjvrgmnadxjqetz.supabase.co/functions/v1/creator-tower';
 const views = ['city', 'grove', 'coast', 'stars'];
 const motifs = {
   reading: { hue: 38, furniture: ['shelf', 'desk', 'plant'], view: 1, name: '書斎' },
@@ -20,10 +25,6 @@ const placements = [
   [[.27,.18],[.75,.36],[.86,.13]],
   [[.74,.20],[.25,.27],[.12,.12]],
 ];
-const directions = {
-  ArrowUp: [0,-1], w: [0,-1], ArrowDown: [0,1], s: [0,1],
-  ArrowLeft: [-1,0], a: [-1,0], ArrowRight: [1,0], d: [1,0],
-};
 const clamp = (number,min,max) => Math.min(max,Math.max(min,number));
 
 function hash(text) {
@@ -135,120 +136,113 @@ function positioned(element,x,z,layer=0) {
   element.style.setProperty('--size-depth',String(.70+.30*z));
 }
 
-function attachMotion(scene, walker, obstacles) {
-  const pressed=new Map();
-  const started=new Map();
-  let x=.50,z=.79, target=null, frame=0,last=0;
-  const valid=(a,b)=>a>=.065&&a<=.935&&b>=.045&&b<=.965
+const floorBounds={left:.135,right:.865,far:.06,near:.91};
+
+function attachMotion(frame,scene,walker,obstacles,updateAvatar,signal) {
+  const controls=makeWalkPad();
+  let x=.5,z=.74, vector=null, target=null, tickHandle=0,last=0,stride=0;
+  const valid=(a,b)=>a>=floorBounds.left&&a<=floorBounds.right&&b>=floorBounds.far&&b<=floorBounds.near
     && !obstacles.some(item=>Math.abs(a-item.x)<item.rx+.022&&Math.abs(b-item.z)<item.rz+.038);
-  function pose() {
+  function pose(dx=0,dz=0,moving=false) {
     positioned(walker,x,z,20);
-    walker.dataset.position = `${x.toFixed(3)},${z.toFixed(3)}`;
-  }
-  function stop() {
-    pressed.clear();
-    started.clear();
-    target=null;
-    walker.classList.remove('is-walking');
-    if(frame) cancelAnimationFrame(frame);
-    frame=0;
-    last=0;
+    walker.dataset.position=`${x.toFixed(3)},${z.toFixed(3)}`;
+    updateAvatar?.(stride,moving,dx,dz);
   }
   function tick(time) {
-    frame=0;
-    if(!walker.isConnected) { stop(); return; }
+    tickHandle=0;
+    if(!walker.isConnected||signal?.aborted) return;
     const elapsed=last ? Math.min((time-last)/1000,.045) : .016;
     last=time;
-    let dx=0,dz=0;
-    for (const [horizontal,vertical] of pressed.values()) { dx+=horizontal; dz+=vertical; }
-    if(!dx&&!dz&&target) { dx=target.x-x; dz=target.z-z; }
-    const amount=Math.hypot(dx,dz);
-    if(amount<.009) { stop(); return; }
-    const speed=Math.min(elapsed*.60, target && !pressed.size ? amount : Infinity);
-    const a=x+dx/amount*speed;
-    const b=z+dz/amount*speed*.72;
-    const oldX=x, oldZ=z;
+    const [dx,dz]=vector ?? (target ? [target.x-x,(target.z-z)/.78] : [0,0]);
+    const length=Math.hypot(dx,dz);
+    if(length<.003) {
+      target=null;
+      last=0;
+      pose();
+      return;
+    }
+    const speed=Math.min(elapsed*.45,vector ? Infinity : length);
+    const a=clamp(x+dx/length*speed,floorBounds.left,floorBounds.right);
+    const b=clamp(z+dz/length*speed*.78,floorBounds.far,floorBounds.near);
+    const oldX=x,oldZ=z;
     if(valid(a,z)) x=a;
     if(valid(x,b)) z=b;
-    const moved=x!==oldX||z!==oldZ;
-    if(moved&&Math.abs(dx)>.008) walker.dataset.left=String(dx<0);
-    walker.classList.toggle('is-walking',moved);
-    if(moved) pose();
-    if(pressed.size||moved&&target) frame=requestAnimationFrame(tick);
-    else { target=null; last=0; }
+    const advance=Math.hypot(x-oldX,(z-oldZ)*1.2);
+    stride+=advance/.061;
+    pose(x-oldX,z-oldZ,advance>0);
+    if(vector || advance>0 && target) run();
+    else {target=null;last=0;}
   }
   function run() {
-    if(!frame) frame=requestAnimationFrame(tick);
-  }
-  function start(key, vector) {
-    target=null;
-    if(!pressed.has(key)) started.set(key,performance.now());
-    pressed.set(key,vector);
-    run();
+    if(!tickHandle) tickHandle=requestAnimationFrame(tick);
   }
   function destination(a,b) {
-    pressed.clear();
-    target={x:clamp(a,.07,.93),z:clamp(b,.06,.95)};
+    vector=null;
+    target={x:clamp(a,floorBounds.left,floorBounds.right),z:clamp(b,floorBounds.far,floorBounds.near)};
     run();
   }
-  function release(key, allowStep) {
-    const vector=pressed.get(key);
-    const startTime=started.get(key);
-    pressed.delete(key);
-    started.delete(key);
-    if(allowStep&&vector&&!pressed.size&&performance.now()-startTime<130) {
-      const [dx,dz]=vector;
-      destination(x+dx*.075,z+dz*.075);
-    }
-  }
   pose();
-  scene.addEventListener('keydown',event=>{
-    const key=event.key.length===1?event.key.toLowerCase():event.key;
-    if(!directions[key]) return;
-    event.preventDefault();
-    start(key,directions[key]);
-  });
-  scene.addEventListener('keyup',event=>release(event.key.length===1?event.key.toLowerCase():event.key,true));
-  scene.addEventListener('blur',stop);
   scene.addEventListener('click',event=>{
     const bounds=scene.getBoundingClientRect();
     const screenX=(event.clientX-bounds.left)/bounds.width;
     const screenY=(event.clientY-bounds.top)/bounds.height;
-    const depth=clamp((screenY-.61)/.36,.08,.95);
+    const depth=clamp((screenY-.61)/.36,floorBounds.far,floorBounds.near);
     destination(.5+(screenX-.5)/(.74+.29*depth),depth);
+    scene.focus({preventScroll:true});
+  },{signal});
+  bindWalking(frame,controls,{
+    signal,
+    blocked:()=>!frame.closest('dialog[open]'),
+    change(value){vector=value;target=null;run();},
+    step([dx,dz]){destination(x+dx*.1,z+dz*.1);},
   });
-  const controls=make('div','world-walk-pad');
-  controls.setAttribute('role','group');
-  controls.setAttribute('aria-label','住人を歩かせる');
-  for(const [label,char,key] of [['上へ','↑','ArrowUp'],['左へ','←','ArrowLeft'],['下へ','↓','ArrowDown'],['右へ','→','ArrowRight']]){
-    const arrow=make('button','world-direction');
-    arrow.type='button';
-    arrow.textContent=char;
-    arrow.setAttribute('aria-label',label);
-    arrow.addEventListener('pointerdown',event=>{
-      event.preventDefault();
-      arrow.setPointerCapture(event.pointerId);
-      start(event.pointerId,directions[key]);
-    });
-    arrow.addEventListener('pointerup',event=>release(event.pointerId,true));
-    for (const eventName of ['pointercancel','lostpointercapture']) {
-      arrow.addEventListener(eventName,event=>release(event.pointerId,false));
-    }
-    arrow.addEventListener('click',event=>{
-      if(event.detail===0) {
-        const [dx,dz]=directions[key];
-        destination(x+dx*.16,z+dz*.16);
-      }
-    });
-    controls.append(arrow);
-  }
+  signal?.addEventListener('abort',()=>cancelAnimationFrame(tickHandle),{once:true});
   return controls;
 }
 
-export function roomStage(room,source,{mini=false,avatarName}={}) {
+const suiteArtwork='./assets/panorama-suite.webp?v=1';
+export function usesHostModel(room) {
+  return room.id==='showroom'||room.noteId==='ss_yr'&&!room.draftAvatar?.source
+    && (room.design?.avatarMode??'resident')==='resident';
+}
+
+const roomArt = room => usesHostModel(room) ? suiteArtwork :
+  `./assets/${Object.hasOwn(motifs,room.design?.theme)?room.design.theme:'reading'}.webp`;
+
+function generatedInterior(room) {
+  if (room.draftInterior?.source) return room.draftInterior.source;
+  if (!room.design?.world?.artwork) return '';
+  const url=new URL(TOWER_API);
+  url.search=new URLSearchParams({view:'interior',id:room.id,v:room.design.world.artwork});
+  return url.href;
+}
+
+const usingAtlas=room=>room.draftAvatar?.atlas ?? room.design?.world?.atlas===true;
+
+function interiorImage(room,source,css,alt,mini) {
+  const image=art(source || roomArt(room),css,alt,mini);
+  if(source) image.addEventListener('error',()=>{image.src=roomArt(room);},{once:true});
+  return image;
+}
+
+export function roomPreview(room,source) {
+  const photo=make('span','room-photo');
+  photo.append(interiorImage(room,generatedInterior(room),'room-photo-interior','',true));
+  const resident=art(usesHostModel(room)?hostPortrait:source,'room-photo-resident','',true);
+  if(room.design?.avatarMode==='profile'&&room.profile?.photo) resident.classList.add('profile-photo');
+  photo.append(resident);
+  if(usingAtlas(room)) {
+    resident.addEventListener('error',()=>{resident.src='./assets/resident.webp';resident.hidden=false;},{once:true});
+    residentWalker(resident)(0,false);
+  }
+  return photo;
+}
+
+export function roomStage(room,source,{mini=false,avatarName,signal}={}) {
   const theme=themeFor(room);
   const world=worldFor(room);
   const scene=make('div',mini?'world-stage world-mini':'world-stage room-scene');
+  const host=usesHostModel(room), generated=generatedInterior(room), photo=host||generated;
   scene.dataset.layout=String(world.layout);
   scene.dataset.view=views[world.view];
   scene.dataset.material=['timber','stone','tile'][(world.seed>>>6)%3];
@@ -266,13 +260,24 @@ export function roomStage(room,source,{mini=false,avatarName}={}) {
   glazing.append(art(`./assets/view-${views[world.view]}.webp`,'window-scenery','',mini));
   const rug=make('div','world-rug');
   const light=make('div','world-glow');
-  scene.append(back,left,right,ceiling,floor,rug,glazing,light);
+  if(photo) {
+    scene.classList.add('world-photo-suite');
+    scene.append(interiorImage(room,generated,'suite-interior',mini?'':generated?'住人がつくった部屋':'窓から街を見渡せる、マンションの室内',mini));
+    if(generated) scene.classList.add('world-generated');
+    else {
+      applyDistrictLight(scene);
+      if(!mini&&signal) {
+        const timer=setInterval(()=>{if(!document.hidden) applyDistrictLight(scene);},1700);
+        signal.addEventListener('abort',()=>clearInterval(timer),{once:true});
+      }
+    }
+  } else scene.append(back,left,right,ceiling,floor,rug,glazing,light);
   const poster=(room.profile?.articles ?? []).find(article=>article.url===room.design?.pin&&article.image) ??
     (room.profile?.articles ?? []).find(article=>article.image);
-  if(poster&&!mini) scene.append(art(poster.image,'world-poster',poster.title));
+  if(poster&&!mini&&!photo) scene.append(art(poster.image,'world-poster',poster.title));
   const placement=placements[world.layout] ?? placements[0];
   const obstacles=[];
-  theme.furniture.forEach((type,index)=>{
+  if(!photo) theme.furniture.forEach((type,index)=>{
     const size=furnitureSizes[type];
     const [x,z]=placement[index];
     obstacles.push({x,z,rx:size.rx,rz:size.rz});
@@ -286,14 +291,15 @@ export function roomStage(room,source,{mini=false,avatarName}={}) {
   const walker=make('div','world-resident');
   if(room.design?.avatarMode==='profile'&&room.profile?.photo) walker.classList.add('portrait');
   if(world.character) walker.classList.add('custom-walker');
-  const sprite=art(source,'world-sprite',mini?'':(avatarName||'住人キャラクター'),mini);
-  sprite.addEventListener('error',()=>{
-    if(sprite.getAttribute('src')!=='./assets/resident.webp') sprite.src='./assets/resident.webp';
-  });
+  const sprite=art(host?hostPortrait:source,'world-sprite',mini?'':(host?'無名S note':avatarName||'住人キャラクター'),mini);
+  sprite.addEventListener('error',()=>{sprite.src='./assets/resident.webp';sprite.hidden=false;},{once:true});
   walker.append(sprite);
+  const updateAvatar=host&&!mini ? hostWalker(sprite) : usingAtlas(room) ? residentWalker(sprite) : null;
   scene.append(walker);
   if(mini) {
+    updateAvatar?.(0,false);
     scene.setAttribute('aria-hidden','true');
+    if(host) walker.classList.add('mini-host');
     walker.style.setProperty('--pace',`${5+world.seed%5}s`);
     walker.style.setProperty('--offset',`-${world.seed%7}s`);
     return scene;
@@ -305,11 +311,11 @@ export function roomStage(room,source,{mini=false,avatarName}={}) {
   const dock=make('div','world-control-dock');
   const hint=make('div','world-control-hint');
   const title=make('strong');
-  title.textContent=`${viewNames[world.view]}の${theme.name}`;
+  title.textContent=generated ? room.design.title || '生成した部屋' : `${viewNames[world.view]}の${theme.name}`;
   const text=make('span');
-  text.textContent='床をタップ · 方向ボタン · 矢印キー';
+  text.textContent='床をタップ・方向パッド・矢印キー';
   hint.append(title,text);
-  dock.append(hint,attachMotion(scene,walker,obstacles));
+  dock.append(hint,attachMotion(frame,scene,walker,obstacles,updateAvatar,signal));
   frame.append(scene,dock);
   return frame;
 }

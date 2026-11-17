@@ -214,8 +214,8 @@
     },
     {
       "path": "maze/game-input.js",
-      "bytes": 8250,
-      "sha256": "fb3ad637d8cc8e22eefe93cddef3c69bfa2f11538ee5190c3b6a209b4150951d"
+      "bytes": 8811,
+      "sha256": "d4506ce51d40ede3dad4e79e8dd8205ba6c7bb31e034a03091fbe5f19d486e1c"
     },
     {
       "path": "maze/game-style-sources.json",
@@ -600,12 +600,12 @@
       "bytes": 4812
     },
     {
-      "path": "maze/monster-motion-data.js",
-      "bytes": 4485
+      "path": "maze/game-input.js",
+      "bytes": 4714
     },
     {
-      "path": "maze/game-input.js",
-      "bytes": 4371
+      "path": "maze/monster-motion-data.js",
+      "bytes": 4485
     },
     {
       "path": "display-mode.js",
@@ -778,8 +778,8 @@
   ],
   "output": {
     "path": "maze/game-entry.js",
-    "bytes": 528222,
-    "sha256": "fe142a45e09733c078825db0a69d359e011378f26fcd9c1e1feb7f300b2c6f52"
+    "bytes": 528565,
+    "sha256": "b189f22cf878d0d458eea15acb09fe21d41974571873fa8784fc8557568eb327"
   },
   "styleSources": [
     "./style.css?v=20261014-adventure2",

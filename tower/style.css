@@ -282,3 +282,78 @@ button.stamp:hover, .stamp[aria-pressed="true"] { border-color: var(--gold); col
   .header-inner nav { gap: 6px; }
   .header-inner .nav-item { font-size: 10px; }
 }
+
+/* The lift controls and apartment directory follow the building's bronze, glass and warm stone palette. */
+.directory-grid {
+  border-color:#574c41;
+  background:linear-gradient(138deg,#23272a 0,#171e25 63%,#13191e);
+}
+.elevator {
+  padding:21px 12px 17px;
+  border-color:#4f4841;
+  background:
+    repeating-linear-gradient(0deg,#ffffff05 0 1px,transparent 1px 3px),
+    linear-gradient(118deg,#262527,#504237 42%,#282829 80%);
+  box-shadow:inset -1px 0 #a48967a1;
+}
+.elevator-title {font-size:12px;font-weight:650;letter-spacing:.09em;color:#efdeca}
+.floor-buttons {gap:6px}
+.floor-choice {
+  min-height:44px;
+  color:#e4ddcd;
+  border-color:#86765f;
+  border-radius:3px;
+  background:linear-gradient(145deg,#3b3b39,#262728 55%,#42403b);
+  box-shadow:inset 0 1px 1px #e9dec261,0 2px 3px #140e0d7a;
+}
+.floor-choice[aria-pressed="true"] {
+  border-color:#f1d1a4;
+  color:#201810;
+  background:linear-gradient(145deg,#f2debc,#b28f61);
+  box-shadow:inset 0 1px 2px #ffead1,0 0 11px #e7b16f66;
+}
+.floor-choice[aria-pressed="true"][data-occupied="true"]::after {background:#54633e}
+.floor-header {align-items:center;flex-wrap:wrap;gap:6px 10px}
+.floor-header h3 {font-size:32px}
+.floor-header p {margin-right:auto}
+.floor-header button {margin-left:0}
+.floor-stair {
+  min-height:44px;
+  padding:3px 10px;
+  color:#f2dac0;
+  background:#242825;
+  border:1px solid #7d6b56;
+  border-radius:3px;
+  font-size:12px;
+}
+.room-card {border-color:#564e44;border-radius:3px;overflow:hidden}
+.room-card.occupied {background:linear-gradient(135deg,#2a2d2d,#1b2127 87%)}
+.room-card.vacant-card {
+  min-height:75px;
+  justify-content:center;
+  background:linear-gradient(135deg,#21282d,#151b20);
+}
+.room-card.vacant-card:hover {background:#2a2f32}
+.vacant-card .card-title {font-size:12px;color:#e0c49a;font-weight:550}
+.vacant-card .card-subtitle {display:none}
+.card-image {aspect-ratio:1.68}
+.room-photo {display:block;width:100%;height:100%;position:relative;isolation:isolate}
+.card-image .room-photo-interior {width:100%;height:100%;object-fit:cover}
+.room-photo::after {
+  content:"";inset:0;position:absolute;z-index:1;pointer-events:none;
+  background:linear-gradient(0deg,#08090c60,transparent 32%);
+}
+.card-image .room-photo-resident {
+  position:absolute;z-index:2;bottom:8%;left:64%;
+  width:28%;height:61%;
+  object-fit:contain;object-position:bottom center;
+  filter:drop-shadow(0 2px 3px #110908a8);
+}
+.card-image .room-photo-resident.profile-photo {height:auto;aspect-ratio:1;border-radius:50%;border:1px solid #dfc397}
+.card-subtitle {display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden}
+@media(max-width:640px) {
+  .elevator {padding:10px 9px 11px;box-shadow:inset 0 1px #a4896799}
+  .floor-buttons {gap:4px}
+  .card-image {aspect-ratio:1.53}
+  .floor-main {padding:10px 8px}
+}

@@ -96,3 +96,9 @@ body[data-game-controls=right] #town-main[data-town-narrow=true] .town-controls{
 .town-world .town-route-controls .home-route{position:static;max-width:100%;min-height:44px;pointer-events:auto}
 .home-route[data-return-to-town="true"]{padding:7px 10px;gap:7px}
 @media(max-height:480px){.town-route-controls{top:5px;left:5px;right:5px;gap:4px}.home-route[data-return-to-town="true"] small{display:none}}
+
+.future-gate-transition{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;pointer-events:auto;background:radial-gradient(ellipse at center,#d6fff4,#507e8f 33%,#080e1b 72%);color:#0d2030;animation:future-gate-travel .54s ease-in both}
+.future-gate-transition[hidden]{display:none}
+.future-gate-transition p{border:1px solid #527474;background:#edf9efeb;padding:.72rem 1.4rem;font-weight:700;letter-spacing:.16em}
+@keyframes future-gate-travel{from{opacity:0;clip-path:circle(4% at 50% 50%)}75%,to{opacity:1;clip-path:circle(95% at 50% 50%)}}
+@media(prefers-reduced-motion:reduce){.future-gate-transition{animation:none}}

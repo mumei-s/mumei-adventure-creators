@@ -1,0 +1,165 @@
+:root {
+  color-scheme:dark;
+  font-family:"Hiragino Sans","Yu Gothic",system-ui,sans-serif;
+  color:#f3eee4;
+  background:#101417;
+  --night:.23;
+  --bronze:#c3a477;
+}
+*,*::before,*::after {box-sizing:border-box}
+body {margin:0}
+a {color:inherit;text-decoration:none}
+button {font:inherit;color:inherit;cursor:pointer}
+button:disabled {cursor:default}
+button:focus-visible,a:focus-visible,#city-view:focus-visible {outline:2px solid #eed6ad;outline-offset:3px}
+[hidden] {display:none!important}
+#district {width:min(100%,1540px);margin:auto;min-height:100dvh}
+.bar {
+  display:grid;
+  grid-template-columns:1fr auto 1fr;
+  align-items:center;
+  gap:12px;
+  min-height:70px;
+  padding:8px clamp(12px,3.5vw,42px);
+  border-bottom:1px solid #4d4640;
+  background:#151a1e;
+}
+.return {justify-self:start;display:flex;align-items:center;gap:8px;min-height:44px;font-size:clamp(11px,1.5vw,14px);color:#e4d8c6}
+.return span {font-size:18px;color:#ccb387}
+.title {text-align:center}
+.title span {display:block;margin-bottom:4px;font:clamp(14px,1.7vw,21px)/1.05 Georgia,serif;color:#d6ba93;white-space:nowrap}
+.title h1 {margin:0;font-size:clamp(12px,1.5vw,16px);font-weight:500;letter-spacing:.14em;white-space:nowrap}
+.time-tools {justify-self:end;display:flex;align-items:center;gap:10px}
+#clock {font:clamp(15px,2.2vw,24px)/1 Georgia,serif;font-variant-numeric:tabular-nums;color:#f2dfbd}
+.time-tools button,.camera,.place-body button {
+  min-height:44px;
+  padding:5px 11px;
+  border:1px solid #7c756b;
+  border-radius:3px;
+  background:#192025;
+  font-size:12px;
+}
+.city-view {position:relative;height:min(70dvh,800px);min-height:305px;overflow:hidden;isolation:isolate;background:#0e1319}
+.city-world {position:absolute;top:0;left:0;width:1000px;height:667px;transform-origin:top left;will-change:transform}
+.city-world > :not(.locations) {pointer-events:none}
+.district-scene,.city-plate,.city-lights,.transit,.locations,.venue-plate {position:absolute;inset:0;width:100%;height:100%}
+.city-plate {object-fit:fill;filter:brightness(calc(1.14 - .43 * var(--night))) saturate(calc(.94 + .12 * var(--night)))}
+.venue-plate {object-fit:fill;filter:brightness(calc(1.13 - .31 * var(--night))) saturate(calc(.96 + .06 * var(--night)))}
+.park-sky {display:none}
+#city-world[data-venue="park"] .venue-plate {filter:brightness(calc(1.08 - .18 * var(--night) - .24 * var(--deep-night,0)))}
+#city-world[data-venue="park"] .park-sky {
+  display:block;position:absolute;inset:0;opacity:var(--deep-night,0);mix-blend-mode:multiply;
+  background:linear-gradient(180deg,#0f1e50c9,transparent 58%);
+}
+#city-world[data-venue] .citizen {width:96px;height:136px}
+.city-lights {
+  opacity:var(--night);
+  background:
+    radial-gradient(ellipse 100px 113px at 9.7% 35%,#48cde64a,transparent 75%),
+    radial-gradient(ellipse 58px 62px at 71.7% 27.8%,#a075ff49,transparent 70%),
+    radial-gradient(ellipse 90px 60px at 81% 71%,#39e4d438,transparent 80%),
+    radial-gradient(ellipse 91px 20px at 50.5% 41.6%,#f9cf886a,transparent),
+    radial-gradient(ellipse 36px 30px at 75% 15%,#a09bff43,transparent),
+    linear-gradient(180deg,#0d1339a0,transparent 48%,#19385c28);
+}
+.city-portal {
+  position:absolute;
+  left:220px;
+  top:487px;
+  width:68px;
+  height:76px;
+  transform:translate(-50%,-100%) rotate(-10deg);
+  border:5px solid #263c42;
+  border-radius:50%;
+  background:radial-gradient(ellipse at 48% 64%,#bdfff587,#27748447 47%,#559d9f18 64%,#96fff994);
+  box-shadow:0 0 0 1px #acfeee,inset 0 0 0 1px #a4e5e0,0 0 17px #6ef9eaa8,0 22px 20px -18px #3bead9;
+}
+.city-portal::after {content:"";position:absolute;inset:5px;border-radius:50%;border:1px solid #b9eee1a3;animation:gate-light 6s ease-in-out infinite}
+@keyframes gate-light {50%{opacity:.35}}
+.cast,.citizen {position:absolute;transform:translate(-50%,-100%);object-fit:contain;object-position:bottom;filter:drop-shadow(1px 3px 1px #0a10119c)}
+.cast {width:42px;height:68px}
+.cast-plaza {left:239px;top:469px;height:60px}
+.cast-station {left:159px;top:344px;height:62px}
+.cast-waterfront {left:688px;top:349px;height:60px}
+.citizen {width:66px;height:88px;z-index:2}
+.citizen img,.citizen canvas {width:100%;height:100%;object-fit:contain;object-position:bottom}
+.locations {pointer-events:none;z-index:4}
+.location {
+  position:absolute;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  transform:translate(-50%,-100%);
+  white-space:nowrap;
+  pointer-events:auto;
+  min-height:39px;
+  padding:6px 10px;
+  border:1px solid #c9b793a8;
+  border-radius:3px;
+  color:#fff2d7;
+  background:#182225f3;
+  box-shadow:0 2px 8px #1017198c;
+  font-size:13px;
+}
+.location::before {content:"";height:6px;width:6px;border-radius:50%;background:#e5bc83}
+.location.near::before {background:#83f4d6;box-shadow:0 0 7px #8ffff9}
+.city-view[data-camera=overview] .location {scale:var(--marker-scale,1);transform-origin:left top}
+.camera {position:absolute;top:12px;right:12px;z-index:6;background:#101a20f2}
+.leave-venue {right:auto;left:12px}
+.control-bar {
+  min-height:132px;
+  display:flex;
+  align-items:center;
+  gap:clamp(15px,5vw,40px);
+  padding:8px clamp(12px,3.5vw,42px) max(12px,env(safe-area-inset-bottom));
+  border-top:1px solid #4d4640;
+  background:linear-gradient(170deg,#242c31,#13191d 75%);
+}
+.control-info {min-width:0}
+#place-name {font-family:Georgia,"Hiragino Mincho ProN","Yu Mincho",serif;font-size:clamp(20px,3vw,29px);margin:0 0 2px}
+#place-note {margin:0 0 6px;font-size:12px;color:#d3ccbf;line-height:1.45}
+.visit {
+  display:inline-grid;
+  min-height:44px;
+  place-items:center;
+  padding:5px 13px;
+  color:#211c14;
+  font-weight:620;
+  background:linear-gradient(130deg,#ecd7aa,#c7a36f);
+  border:1px solid #e6d1ac;
+  border-radius:3px;
+}
+.visit:disabled {color:#bdb6a9;background:#1f272d;border-color:#4d585e;opacity:.85}
+.venue-link {display:inline-flex;align-items:center;min-height:44px;margin-inline-start:10px;font-size:13px;color:#ebd6b1;text-decoration:underline;text-underline-offset:4px}
+.venue-guide {display:flex;flex-wrap:wrap;gap:6px;padding:0 clamp(12px,3.5vw,42px) max(9px,env(safe-area-inset-bottom));background:#13191d}
+.venue-guide button {min-height:44px;padding:5px 11px;border:1px solid #625c51;border-radius:3px;background:#1a2226;color:#ebdec5;font-size:12px}
+dialog {width:min(540px,calc(100% - 24px));padding:0;color:#f1ebdf;background:#171e24;border:1px solid #927b5d;border-radius:5px}
+dialog::backdrop {background:#101414b5}
+.place-image {height:110px;background:url("./assets/district.webp?v=1") center 60% / cover}
+.place-body {padding:18px}
+.place-body h2 {margin:0;font-size:23px;font-weight:500;color:#e6d1b2}
+.place-body p {line-height:1.8;font-size:14px}
+.passage {position:fixed;inset:0;z-index:8;display:grid;place-items:center;background:radial-gradient(ellipse,#cbfff1,#465d6d 40%,#111a23 75%);color:#182c34;font-weight:700;animation:passage .5s ease-in both}
+@keyframes passage {from{opacity:0;clip-path:circle(8%)}to{opacity:1;clip-path:circle(94%)}}
+@media(max-width:620px) {
+  .bar {gap:6px;min-height:63px;padding-inline:9px}
+  .return {gap:4px}
+  .time-tools {gap:4px}
+  .time-tools button {font-size:10px;padding:4px 5px}
+  .city-view {height:calc(100dvh - 251px);min-height:289px}
+  .camera {right:8px;top:8px;font-size:11px}
+  .leave-venue {right:auto;left:8px}
+  .venue-link {display:flex;margin-inline-start:0}
+  .location {font-size:14px}
+}
+@media(max-height:520px) and (min-width:560px) {
+  #district {display:grid;grid-template-columns:1fr 160px;grid-template-rows:auto 1fr}
+  .bar {grid-column:1/-1;min-height:51px}
+  .city-view {height:100%;min-height:240px}
+  .control-bar {flex-direction:column;justify-content:center;gap:8px;padding-inline:8px}
+  .venue-guide {grid-column:1/-1;justify-content:center}
+  #place-name {font-size:17px}
+}
+@media(prefers-reduced-motion:reduce) {
+  .city-portal::after,.passage {animation:none}
+}

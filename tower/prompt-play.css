@@ -1,0 +1,20 @@
+.hero-play {margin-bottom:17px}
+.prompt-dialog {width:min(656px,calc(100% - 24px))}
+.prompt-dialog :is(input,select,textarea) {width:100%}
+.prompt-dialog .dialog-pad > label {margin-top:13px}
+.prompt-dialog label {display:grid;gap:5px;color:#e8dbc7;font-size:13px}
+.prompt-dialog label[for] {display:block;margin-bottom:5px}
+.prompt-dialog small {margin-inline-start:5px;color:var(--muted)}
+.prompt-tabs {display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:15px 0 14px}
+.prompt-tabs button {font-size:13px;padding-inline:8px}
+.prompt-tabs button[aria-pressed="true"] {border-color:#d2ac78;color:var(--gold);background:#2b261f}
+.prompt-dialog :is(section,form) > p:first-child {margin:0 0 12px;color:#c4c9ce;font-size:13px}
+.prompt-text {margin-top:9px;resize:vertical;font-size:13px;line-height:1.6}
+.prompt-uploads {display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0;margin-bottom:8px}
+.prompt-uploads label {min-width:0;border:1px solid #4b5056;border-radius:5px;padding:9px;background:#151c25;align-content:start}
+.prompt-uploads input {min-width:0;font-size:12px;color:#c9c9c9}
+.prompt-uploads img {width:100%;height:100px;margin-top:3px;object-fit:contain;object-position:center;background:#0f141c}
+.prompt-dialog .dialog-actions {margin-top:11px}
+@media(max-width:375px) {
+  .prompt-dialog .dialog-actions > * {width:100%}
+}

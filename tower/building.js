@@ -1,4 +1,4 @@
-import { roomStage } from './world.js';
+import { roomStage } from './world.js?v=5';
 
 function element(tag, css = '', title = '') {
   const item = document.createElement(tag);
@@ -89,13 +89,13 @@ export function makeElevator(dialog) {
     event.preventDefault();
     finish();
   });
-  return function travel(floor,arrive) {
+  function travel(floor,arrive) {
     if(ride) return;
     if(reduce.matches||floor===current){ current=floor; arrive(); return; }
     const from=current;
     const direction=Math.sign(floor-from);
     const distance=Math.abs(floor-from);
-    const interval=Math.min(180,700/distance);
+    const interval=Math.min(355,1240/distance);
     let step=0;
     ride={floor,arrive};
     dialog.dataset.phase='closing';
@@ -103,15 +103,18 @@ export function makeElevator(dialog) {
     label.textContent=`${floor}階へ ${direction>0?'↑':'↓'}`;
     dialog.showModal();
     function advance() {
+      if(step===0) dialog.dataset.phase='moving';
       step++;
       display.textContent=`${from+step*direction}F`;
       if(step<distance){ timer=setTimeout(advance,interval); return; }
       label.textContent=`${floor}階に到着`;
       dialog.dataset.phase='opening';
-      timer=setTimeout(finish,275);
+      timer=setTimeout(finish,500);
     }
-    timer=setTimeout(advance,310);
-  };
+    timer=setTimeout(advance,520);
+  }
+  travel.setFloor=floor=>{if(!ride) current=floor;};
+  return travel;
 }
 
 const stories=[

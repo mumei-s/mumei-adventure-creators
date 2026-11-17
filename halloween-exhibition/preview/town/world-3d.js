@@ -186,6 +186,28 @@ export function createTownSceneGeometry(map=getTownMap(),{materials=null,resourc
     }
     root.userData.creatorRoutes=buildCreatorRoute({map,b,materials,resources,makeCanvas});
     root.userData.creatorGates=(map.portals||[]).filter(portal=>!portal.openPassage&&(portal.to==='creator-quarter'||map.id==='creator-quarter'&&portal.to==='lantern-town')).map(portal=>buildCreatorQuarterGate({portal,b,materials,resources,makeCanvas}));
+    if(map.futureGate){
+      const {x,z}=map.futureGate;
+      b.round(x,.09,z,1.4,.18,materials.stoneDark);
+      const gate=new THREE.Group();
+      gate.name=map.futureGate.id;
+      gate.position.set(x,1.44,z);
+      gate.rotation.y=-Math.PI/9;
+      function ring(radius,width,color,opacity=1){
+        const geometry=new THREE.TorusGeometry(radius,width,10,56);
+        const material=new THREE.MeshBasicMaterial({color,transparent:opacity<1,opacity,depthWrite:opacity===1});
+        resources.add(geometry);resources.add(material);
+        gate.add(new THREE.Mesh(geometry,material));
+      }
+      ring(1.16,.13,0x344c54);
+      ring(1.18,.034,0xa1fff0);
+      ring(1.02,.015,0x86cfe1);
+      const glass=new THREE.CircleGeometry(1.11,56);
+      const shimmer=new THREE.MeshBasicMaterial({color:0x74dbcc,side:THREE.DoubleSide,transparent:true,opacity:.28,depthWrite:false});
+      resources.add(glass);resources.add(shimmer);
+      gate.add(new THREE.Mesh(glass,shimmer));
+      root.add(gate);
+    }
     // Stone banks and bridge rails have height and cast shadows on the water below.
     for(let z=6;z<47;z++)for(const x of[30.84,33.16])if(map.tiles[z]?.[31]==='~')b.box(x,.02,z+.5,.22,.33,1.02,materials.stone);
     for(let z=6;z<47;z++)if(map.tiles[z]?.[31]==='='&&map.tiles[z-1]?.[31]!=='='){

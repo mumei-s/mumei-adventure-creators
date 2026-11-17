@@ -1,12 +1,12 @@
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';
-import {CREATOR_HOMES,getCreatorHome} from '../creator-homes.js';
+import {CREATOR_HOMES,CREATOR_QUARTER_ID,FUTURE_GATE,getCreatorHome} from '../creator-homes.js';
 import {creatorHomeProfile} from '../creator-home-profile.js';
 import {createTownSession} from '../controller.js';
 import {getTownMap,initialTownState} from '../town-model.js';
 import {createReadingJourney} from '../reading-journey.js';
 const source=fs.readFileSync(new URL('../app.js',import.meta.url),'utf8'),archive=JSON.parse(fs.readFileSync(new URL('../../data/archive.json',import.meta.url),'utf8'));
 function interactHarness(home,{mapId='creator-quarter',position=home.door,blocked=false}={}){
- const calls=[],state={...initialTownState(),mapId,position},session=createTownSession({state});const context={ready:true,sceneRecovery:{blocked},CREATOR_HOMES,Math,getTownMap,session,contextTarget:()=>({id:home.id}),characterArt:{visitor:()=>null},showCreatorHome:id=>calls.push(['home',id]),showVisitor:()=>{},applyInteraction:result=>calls.push(['result',result])};
+ const calls=[],state={...initialTownState(),mapId,position},session=createTownSession({state});const context={ready:true,sceneRecovery:{blocked},CREATOR_HOMES,CREATOR_QUARTER_ID,FUTURE_GATE,Math,getTownMap,session,contextTarget:()=>({id:home.id}),characterArt:{visitor:()=>null},showCreatorHome:id=>calls.push(['home',id]),showVisitor:()=>{},applyInteraction:result=>calls.push(['result',result])};
  vm.runInNewContext(source.match(/^function interact\(targetId,choiceId\).*$/m)[0]+';this.run=interact;',context);return {calls,session,run:context.run};
 }
 test('each front door enters its own walkable interior and remote interactions cannot teleport inside',()=>{

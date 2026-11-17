@@ -6,10 +6,10 @@ import os from 'node:os';
 import {exclusionReason, stagePages, validateReferences} from './stage-pages.mjs';
 
 test('dependencies, development evidence and backend code stay out', () => {
-  for (const file of ['halloween/node_modules/esbuild/bin/esbuild', 'halloween/scripts/check.mjs', 'halloween/audit/report.json', 'halloween/verification/v18/published.jpg', 'halloween/supabase/functions/main.ts', 'halloween-exhibition/preview/maze/tests/rpg.test.mjs', '.github/workflows/pages.yml']) assert.ok(exclusionReason(file), file);
+  for (const file of ['halloween/node_modules/esbuild/bin/esbuild', 'halloween/scripts/check.mjs', 'halloween/audit/report.json', 'halloween/verification/v18/published.jpg', 'halloween/supabase/functions/main.ts', 'tower/supabase/functions/creator-tower/index.ts', 'halloween-exhibition/preview/maze/tests/rpg.test.mjs', '.github/workflows/pages.yml']) assert.ok(exclusionReason(file), file);
 });
 test('originals, dynamic assets, visual proofs, backend config and public data stay available', () => {
-  for (const file of ['halloween/assets/verification/v14/woodcut-sea.png', 'halloween/assets/style-film-light-original-v28-4-3.png', 'halloween/japan-photo-v18.png', 'halloween/sample-001.jpg', 'halloween/runtime-config.js', 'halloween-exhibition/preview/data/archive.json', 'halloween-exhibition/preview/maze/assets/rigs/owner/parts.webp', 'preview-v3/chunks/app-01.txt', 'CNAME', '.nojekyll']) assert.equal(exclusionReason(file), null, file);
+  for (const file of ['halloween/assets/verification/v14/woodcut-sea.png', 'halloween/assets/style-film-light-original-v28-4-3.png', 'halloween/japan-photo-v18.png', 'halloween/sample-001.jpg', 'halloween/runtime-config.js', 'halloween-exhibition/preview/data/archive.json', 'halloween-exhibition/preview/maze/assets/rigs/owner/parts.webp', 'preview-v3/chunks/app-01.txt', 'tower/index.html', 'tower/assets/tower.webp', 'CNAME', '.nojekyll']) assert.equal(exclusionReason(file), null, file);
 });
 async function fixture(t) {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'pages-stage-test-'));

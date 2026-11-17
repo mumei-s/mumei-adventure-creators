@@ -3,7 +3,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 
 // Publish a copy, never remove or rewrite sources or browser/user data.
-export const publicRoots = new Set(['halloween', 'halloween-exhibition', 'preview-v2', 'preview-v3', 'atelier-rebuild-20261017']);
+export const publicRoots = new Set(['halloween', 'halloween-exhibition', 'preview-v2', 'preview-v3', 'atelier-rebuild-20261017', 'tower']);
 export function exclusionReason(relative) {
   const parts = relative.split('/');
   if (parts.some(part => part.startsWith('.') && part !== '.well-known' && part !== '.nojekyll')) return 'private or tool metadata';

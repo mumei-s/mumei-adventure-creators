@@ -1261,9 +1261,12 @@ $('#prompt-id').addEventListener('input', syncPrompt);
 $('#prompt-id').addEventListener('change', () => { if (!$('#prompt-write').hidden) loadPromptProfile(); });
 $('#prompt-ideas').addEventListener('input', syncPrompt);
 const appLink = chatgptAppLink(navigator);
-$('#chatgpt-app-launch').href = appLink.href;
-$('#chatgpt-app-launch').textContent = appLink.label;
-if (appLink.newTab) $('#chatgpt-app-launch').target = '_blank';
+for (const id of ['chatgpt-app-launch','room-only-app']) {
+  const launch = $(`#${id}`);
+  launch.href = appLink.href;
+  launch.textContent = appLink.label;
+  if (appLink.newTab) { launch.target = '_blank'; launch.rel = 'noopener noreferrer'; }
+}
 $('#copy-play-prompt').addEventListener('click', async () => {
   if ($('#prompt-id').value.trim() && !playNoteId()) return;
   syncPrompt();

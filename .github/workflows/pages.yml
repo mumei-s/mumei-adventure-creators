@@ -28,6 +28,9 @@ jobs:
           npm --prefix halloween ci --no-audit --no-fund
           npm --prefix halloween run build
           npm --prefix halloween run check
+          node --input-type=module --check < tower/app.js
+          node --input-type=module --check < halloween-exhibition/preview/diorama-city/district.js
+          node --test tower/tests/prompt-play.test.mjs
           node --check preview-v3/admin-app.js
           node --check preview-v3/admin-persist.js
           node --check preview-v3/admin-fixes-v17.js

@@ -76,3 +76,6 @@ jobs:
       - name: 公開
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: 公開したTowerと街を検査
+        run: node scripts/check-tower-release.mjs

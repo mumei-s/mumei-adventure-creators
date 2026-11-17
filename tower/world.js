@@ -138,7 +138,7 @@ function positioned(element,x,z,layer=0) {
 
 const floorBounds={left:.135,right:.865,far:.06,near:.91};
 
-function attachMotion(frame,scene,walker,obstacles,updateAvatar,signal) {
+function attachMotion(frame,scene,walker,obstacles,updateAvatar,signal,inputRoot) {
   const controls=makeWalkPad();
   let x=.5,z=.74, vector=null, target=null, tickHandle=0,last=0,stride=0;
   const valid=(a,b)=>a>=floorBounds.left&&a<=floorBounds.right&&b>=floorBounds.far&&b<=floorBounds.near
@@ -190,7 +190,7 @@ function attachMotion(frame,scene,walker,obstacles,updateAvatar,signal) {
     destination(.5+(screenX-.5)/(.74+.29*depth),depth);
     scene.focus({preventScroll:true});
   },{signal});
-  bindWalking(frame,controls,{
+  bindWalking(inputRoot ?? frame,controls,{
     signal,
     blocked:()=>!frame.closest('dialog[open]'),
     change(value){vector=value;target=null;run();},
@@ -209,7 +209,7 @@ export function usesHostModel(room) {
 const roomArt = room => usesHostModel(room) ? suiteArtwork :
   `./assets/${Object.hasOwn(motifs,room.design?.theme)?room.design.theme:'reading'}.webp`;
 
-function generatedInterior(room) {
+export function generatedInterior(room) {
   if (room.draftInterior?.source) return room.draftInterior.source;
   if (!room.design?.world?.artwork) return '';
   const url=new URL(TOWER_API);
@@ -238,7 +238,7 @@ export function roomPreview(room,source) {
   return photo;
 }
 
-export function roomStage(room,source,{mini=false,avatarName,signal}={}) {
+export function roomStage(room,source,{mini=false,avatarName,signal,inputRoot}={}) {
   const theme=themeFor(room);
   const world=worldFor(room);
   const scene=make('div',mini?'world-stage world-mini':'world-stage room-scene');
@@ -315,7 +315,7 @@ export function roomStage(room,source,{mini=false,avatarName,signal}={}) {
   const text=make('span');
   text.textContent='床をタップ・方向パッド・矢印キー';
   hint.append(title,text);
-  dock.append(hint,attachMotion(frame,scene,walker,obstacles,updateAvatar,signal));
+  dock.append(hint,attachMotion(frame,scene,walker,obstacles,updateAvatar,signal,inputRoot));
   frame.append(scene,dock);
   return frame;
 }

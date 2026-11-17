@@ -11,9 +11,15 @@ body {margin:0}
 a {color:inherit;text-decoration:none}
 button {font:inherit;color:inherit;cursor:pointer}
 button:disabled {cursor:default}
-button:focus-visible,a:focus-visible,#city-view:focus-visible {outline:2px solid #eed6ad;outline-offset:3px}
+button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible,#city-view:focus-visible {outline:2px solid #eed6ad;outline-offset:3px}
 [hidden] {display:none!important}
-#district {width:min(100%,1540px);margin:auto;min-height:100dvh}
+#district {
+  width:min(100%,1540px);
+  height:100dvh;
+  margin:auto;
+  display:grid;
+  grid-template-rows:auto minmax(min(160px,32dvh),1fr) auto auto;
+}
 .bar {
   display:grid;
   grid-template-columns:1fr auto 1fr;
@@ -39,7 +45,7 @@ button:focus-visible,a:focus-visible,#city-view:focus-visible {outline:2px solid
   background:#192025;
   font-size:12px;
 }
-.city-view {position:relative;height:min(70dvh,800px);min-height:305px;overflow:hidden;isolation:isolate;background:#0e1319}
+.city-view {position:relative;overflow:hidden;isolation:isolate;background:#0e1319}
 .city-world {position:absolute;top:0;left:0;width:1000px;height:667px;transform-origin:top left;will-change:transform}
 .city-world > :not(.locations) {pointer-events:none}
 .district-scene,.city-plate,.city-lights,.transit,.locations,.venue-plate {position:absolute;inset:0;width:100%;height:100%}
@@ -82,9 +88,11 @@ button:focus-visible,a:focus-visible,#city-view:focus-visible {outline:2px solid
 .cast-station {left:159px;top:344px;height:30px}
 .cast-waterfront {left:688px;top:349px;height:31px}
 .citizen {width:calc(.85 * var(--actor-height,38px));height:var(--actor-height,38px);z-index:2}
+.citizen[data-seated="true"] {transform:translate(-50%,-100%) rotate(var(--actor-tilt,0deg)) scaleY(.76);transform-origin:50% 100%}
 .citizen img,.citizen canvas {width:100%;height:100%;object-fit:contain;object-position:bottom}
 .citizen .sprite-atlas-source {opacity:0}
 .locations {pointer-events:none;z-index:4}
+.city-view[data-playing] .locations {visibility:hidden}
 .location {
   position:absolute;
   display:flex;
@@ -107,6 +115,25 @@ button:focus-visible,a:focus-visible,#city-view:focus-visible {outline:2px solid
 .city-view[data-camera=overview] .location {scale:var(--marker-scale,1);transform-origin:left top}
 .camera {position:absolute;top:12px;right:12px;z-index:6;background:#101a20f2}
 .leave-venue {right:auto;left:12px}
+.motion-controls {
+  position:absolute;
+  z-index:7;
+  bottom:10px;
+  inset-inline:0;
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  pointer-events:none;
+}
+.motion-controls button {
+  padding:8px 13px;
+  min-height:44px;
+  border:1px solid #c3a477;
+  border-radius:5px;
+  background:#131c23f5;
+  pointer-events:auto;
+}
+.motion-controls button:disabled {opacity:.6}
 .control-bar {
   min-height:132px;
   display:grid;
@@ -136,15 +163,83 @@ button:focus-visible,a:focus-visible,#city-view:focus-visible {outline:2px solid
   border-radius:3px;
 }
 .visit:disabled {color:#bdb6a9;background:#1f272d;border-color:#4d585e;opacity:.85}
+.spot-actions {display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.spot-prompt {
+  display:inline-flex;
+  align-items:center;
+  min-height:44px;
+  padding:6px 10px;
+  color:#f0dfbf;
+  background:#1b262d;
+  border:1px solid #7f7564;
+  border-radius:3px;
+  font-size:13px;
+}
+.spot-prompt:disabled {opacity:.6}
 .venue-link {display:inline-flex;align-items:center;min-height:44px;margin-inline-start:10px;font-size:13px;color:#ebd6b1;text-decoration:underline;text-underline-offset:4px}
-.venue-guide {display:flex;flex-wrap:wrap;gap:6px;padding:0 clamp(12px,3.5vw,42px) max(9px,env(safe-area-inset-bottom));background:#13191d}
-.venue-guide button {min-height:44px;padding:5px 11px;border:1px solid #625c51;border-radius:3px;background:#1a2226;color:#ebdec5;font-size:12px}
-dialog {width:min(540px,calc(100% - 24px));padding:0;color:#f1ebdf;background:#171e24;border:1px solid #927b5d;border-radius:5px}
+.venue-guide {display:flex;gap:6px;overflow:auto;padding:0 clamp(12px,3.5vw,42px) max(9px,env(safe-area-inset-bottom));background:#13191d}
+.venue-guide button {flex:none;min-height:44px;padding:5px 11px;border:1px solid #625c51;border-radius:3px;background:#1a2226;color:#ebdec5;font-size:12px}
+dialog {width:min(540px,calc(100% - 24px));max-block-size:calc(100dvh - 20px);padding:0;color:#f1ebdf;background:#171e24;border:1px solid #927b5d;border-radius:5px}
 dialog::backdrop {background:#101414b5}
 .place-image {height:110px;background:url("./assets/district.webp?v=1") center 60% / cover}
 .place-body {padding:18px}
 .place-body h2 {margin:0;font-size:23px;font-weight:500;color:#e6d1b2}
 .place-body p {line-height:1.8;font-size:14px}
+.place-body .visit {background:linear-gradient(130deg,#ecd7aa,#c7a36f);color:#211c14;font-weight:650;border-color:#e6d1ac}
+.place-body .visit:disabled {background:#273238;color:#c9bda7;border-color:#625c51}
+.spot-field {display:grid;gap:6px;margin:10px 0;font-size:13px}
+.spot-field :is(input,textarea) {width:100%;min-width:0;padding:7px 9px;border:1px solid #6e6d62;border-radius:3px;background:#10191e;color:#f1ebdf;font:inherit}
+.spot-field input {min-height:44px;font-size:16px}
+.spot-field input[type=file] {font-size:13px}
+.spot-field input::file-selector-button {min-height:30px;margin-inline-end:8px;border:1px solid #846f53;border-radius:3px;background:#26343d;color:inherit}
+#spot-image-preview {display:block;width:auto;max-width:100%;height:86px;object-fit:contain}
+.spot-preview {margin:12px 0;color:#ecd9b4}
+.spot-preview summary {cursor:pointer;padding:6px 0;font-size:13px}
+.place-body .spot-hint {margin-block:8px;font-size:13px;color:#ded3c2}
+#spot-message {display:inline-block;margin-inline-start:4px;color:#b9f1dd;font-size:13px}
+.spot-return,#activity-dialog form {margin-top:14px}
+.market-list {padding:0;margin:14px 0;list-style:none}
+.market-list li {display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #433f34}
+.market-list span:nth-child(2) {color:#e6d1b2;font-variant-numeric:tabular-nums}
+.market-total {font-variant-numeric:tabular-nums;color:#eedab7}
+#activity-message {white-space:pre-line;color:#c7e9d7}
+.ride-window {
+  position:relative;
+  isolation:isolate;
+  height:min(230px,44dvh);
+  overflow:hidden;
+  margin:12px 0;
+  border:1px solid #8e7756;
+  border-radius:5px;
+  background:#10191f;
+}
+.ride-photo {width:100%;height:100%;object-fit:cover;transition:scale .45s ease;will-change:transform}
+.ride-outside .ride-photo {scale:1.22}
+.ride-outside .ride-avatar {opacity:0}
+.ride-wheel .ride-photo {object-position:50% 50%}
+.ride-carousel .ride-photo {object-position:94% 66%;transform-origin:90% 62%;scale:1.42}
+.ride-avatar {
+  position:absolute;
+  bottom:6px;
+  left:13%;
+  width:auto;
+  max-width:37%;
+  height:70%;
+  object-fit:contain;
+  object-position:bottom;
+  filter:drop-shadow(1px 3px 2px #151515b8);
+  transition:opacity .25s;
+}
+.ride-carousel .ride-avatar {left:54%;height:77%}
+.ride-wheel.riding .ride-photo {animation:gondola var(--ride-duration) ease-in-out both}
+.ride-carousel.riding .ride-photo {animation:carousel-view 3s ease-in-out infinite alternate}
+.ride-carousel.riding .ride-avatar {animation:carousel-rider 3s ease-in-out infinite alternate}
+.ride-progress {display:none;position:absolute;inset:auto 0 0;height:3px;background:#f1c686;transform-origin:0 50%}
+.ride-window.riding .ride-progress {display:block;animation:ride-progress var(--ride-duration) linear both}
+@keyframes gondola {0%,100%{transform:scale(1.16) translateY(-5%)} 48%,58%{transform:scale(1.02) translateY(0)}}
+@keyframes carousel-view {from{transform:translateX(5%) rotate(-1deg)} to{transform:translateX(-9%) rotate(2deg)}}
+@keyframes carousel-rider {from{transform:translate(18%,0%) rotate(1deg)} to{transform:translate(-12%,-9%) rotate(-2deg)}}
+@keyframes ride-progress {from{transform:scaleX(0)} to{transform:scaleX(1)}}
 .passage {position:fixed;inset:0;z-index:8;display:grid;place-items:center;background:radial-gradient(ellipse,#cbfff1,#465d6d 40%,#111a23 75%);color:#182c34;font-weight:700;animation:passage .5s ease-in both}
 @keyframes passage {from{opacity:0;clip-path:circle(8%)}to{opacity:1;clip-path:circle(94%)}}
 @media(max-width:620px) {
@@ -152,26 +247,32 @@ dialog::backdrop {background:#101414b5}
   .return {gap:4px}
   .time-tools {gap:4px}
   .time-tools button {font-size:10px;padding:4px 5px}
-  .city-view {height:calc(100dvh - 309px);min-height:260px}
   .camera {right:8px;top:8px;font-size:11px}
   .leave-venue {right:auto;left:8px}
   .venue-link {display:flex;margin-inline-start:0}
   .control-bar {grid-template-columns:1fr 1fr;column-gap:12px;row-gap:3px;min-height:0;padding-bottom:7px}
-  #pad-dock {grid-column:1/-1;grid-row:1}
-  .control-info {grid-column:1;grid-row:2}
-  .player-info {grid-column:2;grid-row:2}
+  #pad-dock {grid-column:1/-1;grid-row:2}
+  .control-info {grid-column:1;grid-row:1}
+  .player-info {grid-column:2;grid-row:1}
   #place-name {font-size:17px}
   #place-note {font-size:11px}
   .location {font-size:14px}
 }
-@media(max-height:520px) and (min-width:560px) {
-  .bar {min-height:51px}
-  .city-view {height:calc(100dvh - 174px);min-height:181px}
-  .control-bar {gap:8px;padding:4px 12px;min-height:0}
-  .control-bar .walk-pad {--pad-width:86px}
+@media(orientation:landscape) and (max-height:520px) and (min-width:500px) {
+  #district {display:block;height:auto;min-height:100dvh}
+  .bar {min-height:44px;padding-block:0}
+  .city-view {height:calc(100dvh - 148px);min-height:90px}
+  .control-bar {grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;padding:4px 12px;min-height:0}
+  #pad-dock {grid-column:2;grid-row:1}
+  .control-info {grid-column:1;grid-row:1}
+  .player-info {grid-column:3;grid-row:1}
+  .control-bar .walk-pad {--pad-width:clamp(62px,18dvh,86px)}
+  .spot-actions :is(.visit,.spot-prompt) {min-height:36px;padding-inline:7px;font-size:11px}
+  #place-note {display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
   .venue-guide {justify-content:center}
   #place-name {font-size:17px}
 }
 @media(prefers-reduced-motion:reduce) {
-  .city-portal::after,.passage {animation:none}
+  .city-portal::after,.passage,.ride-window.riding .ride-photo,.ride-window.riding .ride-avatar {animation:none}
+  .ride-photo,.ride-avatar {transition:none}
 }

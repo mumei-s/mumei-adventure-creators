@@ -23,11 +23,9 @@
 #generated-room-title {margin-block:0 3px}
 #prompt-import > label[for="generated-room-title"] {margin-top:12px}
 @media(orientation:landscape) and (max-height:520px) {
-  .prompt-dialog,.room-dialog {max-height:calc(100dvh - 12px)}
+  .prompt-dialog {max-height:calc(100dvh - 12px)}
   .prompt-dialog .dialog-pad {padding-block:13px}
   .prompt-uploads img {height:65px}
-  .room-dialog .room-scene {max-height:calc(100dvh - 150px)}
-  .room-dialog .world-control-dock .walk-pad {--pad-width:82px}
 }
 @media(max-width:375px) {
   .prompt-dialog .dialog-actions > * {width:100%}

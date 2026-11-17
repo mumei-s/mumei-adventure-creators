@@ -1,6 +1,6 @@
-import { characterSignature, designWorld, roomPreview, roomStage } from './world.js?v=6';
-import { cutaway, dailyStory, makeElevator } from './building.js?v=6';
-import { chatgptAppLink, makeRoomPrompt, residentPost, towerUrl } from './prompt-play.js?v=2';
+import { characterSignature, designWorld, generatedInterior, roomPreview, roomStage } from './world.js?v=7';
+import { cutaway, dailyStory, makeElevator } from './building.js?v=7';
+import { chatgptAppLink, makeRoomPrompt, parseNoteId, residentPost, towerUrl } from './prompt-play.js?v=3';
 import { TOWER_API, OWNER_STORAGE, WALK_DRAFT_STORAGE, avatarImageUrl, readWalkDraft } from './avatar-travel.js?v=1';
 
 const PROOF_STORAGE = 'atelier-tower-proof-v1';
@@ -133,19 +133,6 @@ async function api(view, query = {}, payload, key) {
 
 function write(action, payload = {}, key = state.owner?.key) {
   return api(null, {}, { action, ...payload }, key);
-}
-
-function parseNoteId(value) {
-  let id = value.trim().replace(/^[@＠]/, '');
-  if (/^(?:https?:\/\/)?note\.com\//i.test(id)) {
-    try {
-      const url = new URL(/^https?:\/\//i.test(id) ? id : `https://${id}`);
-      if (url.hostname !== 'note.com' || url.username || url.password) return null;
-      id = url.pathname.split('/')[1] || '';
-    } catch { return null; }
-  }
-  id = id.toLowerCase();
-  return /^[a-z0-9_]{1,32}$/.test(id) ? id : null;
 }
 
 function formatRoom(slot) {
@@ -434,6 +421,9 @@ function renderRoom(room, mode) {
   state.room = room;
   state.mode = mode;
   const content = $('#room-content');
+  const dialog = $('#room-dialog');
+  const controlsSlot = $('#room-controls');
+  controlsSlot.replaceChildren();
   const address = $('#room-address');
   address.textContent = mode === 'draft' ? (room.slot ? `${formatRoom(room.slot)}号室の下見` : '入居前の下見') :
     mode === 'redesign' ? `${formatRoom(room.slot)}号室の改装プレビュー` :
@@ -443,10 +433,16 @@ function renderRoom(room, mode) {
   const layout = node('div', 'room-layout');
   roomControls?.abort();
   roomControls = new AbortController();
-  const scene = roomStage(room, avatarUrl(room), { avatarName: room.design.avatarName, signal: roomControls.signal });
+  const scene = roomStage(room, avatarUrl(room), { avatarName: room.design.avatarName, signal: roomControls.signal, inputRoot: dialog });
+  const controls = $('.world-control-dock', scene);
   const body = node('div', 'room-body');
   const title = node('h2', '', titleFor(room));
   title.id = 'room-title';
+  title.tabIndex = -1;
+  controls.append(button('quiet room-details-jump', '部屋の案内へ ↓', () => {
+    title.focus({ preventScroll: true });
+    body.scrollIntoView({ block: 'start', behavior: 'instant' });
+  }));
   body.append(title);
   if (room.noteId) body.append(link('room-byline', `@${room.noteId} · noteプロフィール ↗`, `https://note.com/${room.noteId}`, true));
   if (room.design.welcome) body.append(node('p', 'welcome', room.design.welcome));
@@ -500,11 +496,17 @@ function renderRoom(room, mode) {
   }
   layout.append(scene, body);
   content.replaceChildren(layout);
+  controlsSlot.append(controls);
+  controlsSlot.hidden = false;
   showDialog('room-dialog');
+  dialog.scrollTop = 0;
+  content.scrollTop = 0;
 }
 
 function loadingRoom(label) {
   roomControls?.abort();
+  $('#room-controls').replaceChildren();
+  $('#room-controls').hidden = true;
   const title = node('h2', '', label);
   title.id = 'room-title';
   const frame = node('div', 'dialog-pad');
@@ -730,6 +732,8 @@ function openEditor(room) {
   const form = $('#edit-form');
   form.reset();
   state.picture = null;
+  state.interiorPicture = null;
+  editImageReads.clear();
   for (const key of ['title', 'light', 'welcome', 'avatarMode', 'avatarName']) form.elements.namedItem(key).value = room.design[key] || '';
   const options = $('#theme-choices');
   options.replaceChildren();
@@ -747,6 +751,9 @@ function openEditor(room) {
     options.append(label);
   }
   $('#keep-interior-field').hidden = !room.design.world?.artwork;
+  $('#edit-avatar-format').value = room.design.world?.atlas ? 'atlas' : 'avatar';
+  $('#clear-interior-upload').hidden = true;
+  showEditorImage($('#interior-preview'), generatedInterior(room));
   const pin = $('#pin-select');
   pin.replaceChildren(new Option('飾らない', ''));
   for (const article of room.profile.articles) pin.append(new Option(article.title, article.url));
@@ -1115,26 +1122,45 @@ async function submitPlay(event) {
   } finally { submit.disabled = false; }
 }
 
-async function choosePicture(event) {
-  const field = event.currentTarget;
+const editImageReads = new Map();
+
+function showEditorImage(preview, source) {
+  preview.hidden = !source;
+  if (source) preview.src = source;
+  else preview.removeAttribute('src');
+}
+
+async function chooseEditorPicture(field) {
   const file = field.files?.[0];
-  const preview = $('#avatar-preview');
-  state.picture = null;
+  const interior = field.id === 'interior-file';
+  const preview = $(interior ? '#interior-preview' : '#avatar-preview');
+  const key = interior ? 'interiorPicture' : 'picture';
+  const room = state.room;
+  const existing = interior ? (room && $('#keep-interior-field input').checked ? generatedInterior(room) : '') :
+    (room?.avatarVersion && !room.design.world?.atlas ? avatarUrl(room) : '');
+  editImageReads.delete(field);
+  state[key] = null;
+  if (interior) $('#clear-interior-upload').hidden = !file;
+  showEditorImage(preview, existing);
   status($('#edit-status'));
   if (!file) return;
+  const request = {};
+  editImageReads.set(field, request);
+  status($('#edit-status'), '画像を読み込んでいます…');
   try {
-    const picture = await readPicture(file);
-    if (field.files?.[0] !== file) return;
-    state.picture = picture;
-    preview.src = picture.source;
-    preview.hidden = false;
+    const picture = await readPicture(file, interior ? 'interior' : $('#edit-avatar-format').value);
+    if (editImageReads.get(field) !== request) return;
+    state[key] = picture;
+    showEditorImage(preview, picture.source);
+    status($('#edit-status'), interior ? '部屋画像を読み込みました。' : 'キャラ画像を読み込みました。');
   } catch (error) {
-    if (field.files?.[0] === file) {
+    if (editImageReads.get(field) === request) {
       field.value = '';
-      preview.hidden = !state.room?.avatarVersion;
-      if (state.room?.avatarVersion) preview.src = avatarUrl(state.room);
+      if (interior) $('#clear-interior-upload').hidden = true;
       status($('#edit-status'), message(error), true);
     }
+  } finally {
+    if (editImageReads.get(field) === request) editImageReads.delete(field);
   }
 }
 
@@ -1142,6 +1168,7 @@ async function saveEditor(event) {
   event.preventDefault();
   const room = state.room;
   if (!room?.isOwner) return;
+  if (editImageReads.size) { status($('#edit-status'), '画像の読み込みを待っています…'); return; }
   const save = $('#save-room');
   const form = event.currentTarget;
   const values = new FormData(form);
@@ -1152,14 +1179,14 @@ async function saveEditor(event) {
     return;
   }
   const picture = design.avatarMode === 'custom' ? state.picture : null;
-  const regenerate = picture || !room.design.world || design.avatarMode !== room.design.avatarMode;
+  const regenerate = picture || !room.design.world || design.avatarMode !== room.design.avatarMode || design.theme !== room.design.theme;
   design.world = regenerate ? designWorld({ ...room, design }, picture?.signature) : room.design.world;
-  const avatarB64 = encodedImage(picture);
   const clearInterior = Boolean(room.design.world?.artwork && !values.has('keepInterior'));
+  const images = draftArtwork({ draftAvatar: picture, draftInterior: state.interiorPicture });
   save.disabled = true;
   status($('#edit-status'), '部屋を保存しています…');
   try {
-    const updated = await write('save', { id: room.id, version: room.version, design, avatarB64, clearInterior, refresh: values.has('refresh') });
+    const updated = await write('save', { id: room.id, version: room.version, design, ...images, clearInterior, refresh: values.has('refresh') });
     closeDialog('edit-dialog');
     renderRoom({ ...updated, isOwner: true }, 'resident');
     status($('#room-status'), '改装を保存しました。');
@@ -1369,7 +1396,26 @@ $('#edit-form').addEventListener('submit', saveEditor);
 $('#edit-form [name="avatarMode"]').addEventListener('change', (event) => {
   $('#avatar-field').hidden = event.currentTarget.value !== 'custom';
 });
-$('#avatar-file').addEventListener('change', choosePicture);
+for (const id of ['avatar-file', 'interior-file']) {
+  const field = $(`#${id}`);
+  field.addEventListener('change', () => void chooseEditorPicture(field));
+}
+$('#edit-avatar-format').addEventListener('change', () => void chooseEditorPicture($('#avatar-file')));
+$('#clear-interior-upload').addEventListener('click', () => {
+  const field = $('#interior-file');
+  field.value = '';
+  void chooseEditorPicture(field);
+  field.focus();
+});
+$('#keep-interior-field input').addEventListener('change', event => {
+  showEditorImage($('#interior-preview'), state.interiorPicture?.source || (event.target.checked && state.room ? generatedInterior(state.room) : ''));
+});
+$('#theme-choices').addEventListener('change', () => {
+  if (!state.interiorPicture) {
+    $('#keep-interior-field input').checked = false;
+    showEditorImage($('#interior-preview'), '');
+  }
+});
 $('#leave-room').addEventListener('click', () => void leaveRoom());
 for (const close of document.querySelectorAll('[data-close]')) {
   close.addEventListener('click', () => close.dataset.close === 'room-dialog' ? dismissRoom() : closeDialog(close.dataset.close));

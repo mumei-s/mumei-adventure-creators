@@ -19,10 +19,12 @@ const lanes = [
 ];
 
 const places = {
-  gate:{label:'結界広場',action:'結界をくぐる',point:points.gate,sign:[220,399],link:'../town/?arrival=future-gate'},
+  gate:{label:'結界広場',action:'結界をくぐる',point:points.gate,sign:[220,399],link:'../town/?arrival=future-gate',
+    scene:'青緑に光る結界が雨上がりの広場に浮かぶ。主人公が光へ手を伸ばす瞬間を横から描く。'},
   station:{label:'高架駅',action:'駅前を見学する',point:points.station,sign:[136,276],
     description:'駅前の広場。ここから眺めると、ガラス屋根の下を電車が通り抜けるのが見えます。'},
-  tower:{label:'Atelier Tower',action:'マンションへ入る',point:points.tower,sign:[503,219],link:'../../../tower/?from=diorama'},
+  tower:{label:'Atelier Tower',action:'マンションへ入る',point:points.tower,sign:[503,219],link:'../../../tower/?from=diorama',
+    scene:'ガラスとブロンズの外壁に街の灯りが映る。アトリエに帰ってきた主人公をロビー側から迎える構図。'},
   cafe:{label:'カフェ',action:'カフェに入る',point:points.cafe,sign:[328,303],venue:'cafe'},
   park:{label:'水辺の公園',action:'公園に入る',point:points.park,sign:[663,442],venue:'park'},
   waterfront:{label:'水辺のデッキ',action:'水辺に立ち寄る',point:points.bridge,sign:[706,306],
@@ -30,7 +32,7 @@ const places = {
   marketGate:{label:'高架の先',action:'高架をくぐって新しい街区へ',point:points.stationExit,sign:[215,224],
     cross:{area:'canal',arrival:'station'}},
   canalGate:{label:'運河の向こう',action:'橋を渡って新しい街区へ',point:points.bridgeEnd,sign:[784,268],
-    cross:{area:'canal',arrival:'bridge'}},
+    cross:{area:'canal',arrival:'bridge'}, scene:'運河の橋を渡りながら、対岸の街の灯りを見つけた瞬間。'},
 };
 
 const canalPoints = {
@@ -38,6 +40,7 @@ const canalPoints = {
   market:[316,199], middle:[497,204], east:[784,207], waterside:[810,149], eastMid:[849,332],
   eastSouth:[886,510], bridgeGate:[937,541], southWest:[174,525], south:[495,525],
   median:[494,409], crossing:[499,312], north:[504,102], upperEnd:[504,47],
+  marketWalk:[323,525], marketFront:[323,489], fairGate:[864,392],
 };
 
 const canalLanes = [
@@ -45,7 +48,8 @@ const canalLanes = [
   ['westMid','station',14], ['station','westSquare',18], ['westSquare','market',19],
   ['market','middle',18], ['middle','east',16], ['east','waterside',19], ['east','eastMid',18],
   ['eastMid','eastSouth',23], ['eastSouth','bridgeGate',21],
-  ['stationGate','southWest',24], ['westSouth','southWest',20], ['southWest','south',22],
+  ['stationGate','southWest',24], ['westSouth','southWest',20], ['southWest','marketWalk',22],
+  ['marketWalk','south',22], ['marketWalk','marketFront',14],
   ['south','eastSouth',22], ['south','median',17], ['median','crossing',18],
   ['crossing','middle',18], ['middle','north',14], ['north','upperEnd',11],
 ];
@@ -55,10 +59,12 @@ const canalPlaces = {
     cross:{area:'tower',arrival:'station'}},
   canopy:{label:'ガラス屋根の市場前',action:'市場を眺める',point:canalPoints.market,sign:[316,139],
     description:'高架のとなりのガラス屋根。夕方に灯りがともると、通りから店先が見渡せます。'},
+  market:{label:'水辺のコンビニ',action:'コンビニに入る',point:canalPoints.marketFront,sign:[327,444],venue:'market'},
   avenue:{label:'中央大通り',action:'並木道を眺める',point:canalPoints.crossing,sign:[499,258],
     description:'南北に伸びる並木道。南の広場、駅側の通り、運河の遊歩道へ歩いて行けます。'},
   waterside:{label:'運河の広場',action:'水辺の灯りを眺める',point:canalPoints.waterside,sign:[822,113],
     description:'運河沿いの円形広場。水面の向こうにTowerが見えます。'},
+  fair:{label:'運河の遊園地',action:'遊園地に入る',point:canalPoints.fairGate,sign:[882,344],venue:'fair'},
   bridgeGate:{label:'運河側の入口',action:'橋を渡ってTowerの街へ',point:canalPoints.bridgeGate,sign:[886,477],
     cross:{area:'tower',arrival:'bridge'}},
 };

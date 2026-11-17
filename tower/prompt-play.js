@@ -3,6 +3,19 @@ export const hostNoteUrl = 'https://note.com/ss_yr';
 const appUrl = 'https://chatgpt.com/open-app';
 const androidStore = 'https://play.google.com/store/apps/details?id=com.openai.chatgpt';
 
+export function parseNoteId(value) {
+  let id = value.trim().replace(/^[@＠]/, '');
+  if (/^(?:https?:\/\/)?note\.com\//i.test(id)) {
+    try {
+      const url = new URL(/^https?:\/\//i.test(id) ? id : `https://${id}`);
+      if (url.hostname !== 'note.com' || url.username || url.password) return null;
+      id = url.pathname.split('/')[1] || '';
+    } catch { return null; }
+  }
+  id = id.toLowerCase();
+  return /^[a-z0-9_]{1,32}$/.test(id) ? id : null;
+}
+
 export function chatgptAppLink({ userAgent, platform, maxTouchPoints }) {
   if (/Android/i.test(userAgent)) {
     return {

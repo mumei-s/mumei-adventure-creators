@@ -1,6 +1,6 @@
 .walk-pad {
   --pad-width:clamp(106px,28vw,128px);
-  --arrow:44px;
+  --arrow:min(44px, calc(var(--pad-width) * .44));
   position:relative;
   flex:0 0 auto;
   width:var(--pad-width);
@@ -29,7 +29,7 @@
   border:1px solid #b8c7c37c;
   background:#25333eee;
   color:#efeee5;
-  font:21px system-ui,sans-serif;
+  font:min(21px, calc(var(--pad-width) * .28)) system-ui,sans-serif;
   cursor:pointer;
 }
 .walk-pad [data-move=forward],.walk-pad [data-move=back] {left:calc((100% - var(--arrow))/2)}
@@ -43,7 +43,7 @@
   z-index:1;
   top:50%;
   left:50%;
-  width:20px;
+  width:min(20px, calc(var(--pad-width) * .26));
   aspect-ratio:1;
   border-radius:50%;
   background:radial-gradient(circle at 45% 32%,#a5b6b7,#405463);

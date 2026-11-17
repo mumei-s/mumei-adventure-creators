@@ -25,6 +25,8 @@ const errors = {
   handle_in_use: '同じnote IDの部屋が残っています。現在のプロフィールを確認してください。',
   expired: '確認コードの有効期限が切れました。新しいコードを発行してください。',
   too_many: '操作が続けて行われました。1分ほど待ってからもう一度お試しください。',
+  timeout: '通信に時間がかかっています。もう一度お試しください。',
+  picture_timeout: '画像の読み込みが時間内に終わりませんでした。もう一度添付してください。',
   conflict: '別の画面で部屋が更新されました。入力はそのままです。内容を確認し、もう一度保存できます。',
   avatar_required: 'キャラ画像を選んでから保存してください。',
   bad_image: 'PNG・JPEG・WebP・GIFの画像を選んでください。動く画像は各辺1,200pxまでです。',
@@ -44,12 +46,13 @@ const showroom = {
   stamps: {},
 };
 
-function getStored(storage, key) {
-  try { return JSON.parse(storage.getItem(key)); } catch { return null; }
+function getStored(storageName, key) {
+  try { return JSON.parse(window[storageName].getItem(key)); } catch { return null; }
 }
 
-function setStored(storage, key, value) {
+function setStored(storageName, key, value) {
   try {
+    const storage = window[storageName];
     if (value === null) storage.removeItem(key);
     else storage.setItem(key, JSON.stringify(value));
     return true;
@@ -57,7 +60,7 @@ function setStored(storage, key, value) {
 }
 
 const state = {
-  catalog: null, catalogError: false, floor: 1, query: '', preferredSlot: null, owner: getStored(localStorage, OWNER_STORAGE),
+  catalog: null, catalogError: false, catalogRequest: 0, catalogCheckedAt: 0, floor: 1, query: '', preferredSlot: null, owner: getStored('localStorage', OWNER_STORAGE),
   room: null, mode: '', proofIntent: null, proof: null, request: 0, picture: null, entryPicture: null, story: null, storyVisit: null,
 };
 
@@ -103,15 +106,25 @@ async function api(view, query = {}, payload, key) {
   const headers = {};
   if (payload) headers['Content-Type'] = 'application/json';
   if (key) headers['X-Tower-Key'] = key;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 18000);
   const options = {
     method: payload ? 'POST' : 'GET', headers, cache: 'no-store', credentials: 'omit',
     body: payload ? JSON.stringify(payload) : undefined,
-    signal: AbortSignal.timeout(18000),
+    signal: controller.signal,
   };
-  const response = await fetch(url, options);
-  const value = await response.json().catch(() => ({}));
-  if (!response.ok) throw Object.assign(new Error(value.error || 'unavailable'), { code: value.error || 'unavailable' });
-  return value;
+  try {
+    const response = await fetch(url, options);
+    const value = await response.json().catch(() => ({}));
+    if (controller.signal.aborted) throw new Error('timeout');
+    if (!response.ok) throw Object.assign(new Error(value.error || 'unavailable'), { code: value.error || 'unavailable' });
+    return value;
+  } catch (error) {
+    if (controller.signal.aborted) throw Object.assign(new Error('timeout'), { code: 'timeout' });
+    throw error;
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 function write(action, payload = {}, key = state.owner?.key) {
@@ -209,16 +222,27 @@ function renderDirectory() {
 }
 
 async function loadDirectory() {
+  const check = ++state.catalogRequest;
+  state.catalogCheckedAt = Date.now();
+  let updated;
   try {
-    const catalog = await api('list');
-    if (!Array.isArray(catalog.rooms) || !Number.isInteger(catalog.floors) || !Number.isInteger(catalog.perFloor)) throw new Error();
-    state.catalog = catalog;
-    state.catalogError = false;
+    updated = await api('list');
+    if (!Array.isArray(updated.rooms) || !Number.isInteger(updated.floors) || !Number.isInteger(updated.perFloor)) throw new Error();
   } catch {
-    state.catalogError = true;
+    if (check !== state.catalogRequest) return;
+    if (!state.catalogError) {
+      state.catalogError = true;
+      renderDirectory();
+    }
+    return;
   }
-  renderDirectory();
-  renderBuilding();
+  if (check !== state.catalogRequest) return;
+  const changed = JSON.stringify(updated) !== JSON.stringify(state.catalog);
+  const hadError = state.catalogError;
+  state.catalogError = false;
+  if (changed) state.catalog = updated;
+  if (changed || hadError) renderDirectory();
+  renderBuilding(changed);
 }
 
 function floorFor(slot) {
@@ -233,13 +257,14 @@ function showFloor(floor, focus) {
   if (focus) $(`[data-floor="${floor}"]`).focus({ preventScroll: true });
 }
 
-function renderBuilding() {
-  const building = $('#cutaway-building');
-  cutaway(building, state.catalog, showroom, {
-    avatar: avatarUrl,
-    visit: room => travel(room.slot ? floorFor(room.slot) : (state.catalog?.floors ?? 12), () => void openPublished(room.id)),
-    enter: focusEntry,
-  });
+function renderBuilding(rebuild = true) {
+  if (rebuild) {
+    cutaway($('#cutaway-building'), state.catalog, showroom, {
+      avatar: avatarUrl,
+      visit: room => travel(room.slot ? floorFor(room.slot) : (state.catalog?.floors ?? 12), () => void openPublished(room.id)),
+      enter: focusEntry,
+    });
+  }
   const pick = $('#cutaway-floor');
   const count = state.catalog?.floors ?? 12;
   if (pick.options.length !== count + 1) {
@@ -464,7 +489,7 @@ async function openPublished(id, push = true) {
     if (request !== state.request) return;
     if (state.owner?.id === id && !room.isOwner) {
       state.owner = null;
-      setStored(localStorage, OWNER_STORAGE, null);
+      setStored('localStorage', OWNER_STORAGE, null);
     }
     renderRoom(room, 'resident');
   } catch (error) {
@@ -558,11 +583,11 @@ async function beginProof(room, recover) {
     '本人確認で、このブラウザに新しい鍵を保存します。以前の鍵は更新されます。' :
     'noteの自己紹介欄に確認コードを一時的に入れると、部屋を公開できます。';
   showDialog('key-dialog');
-  const stored = getStored(sessionStorage, PROOF_STORAGE);
+  const stored = getStored('sessionStorage', PROOF_STORAGE);
   const same = stored && stored.until > Date.now() && stored.noteId === room.noteId && stored.slot === state.proofIntent.slot;
   if (same) {
     const proof = { ...stored, ...state.proofIntent };
-    setStored(sessionStorage, PROOF_STORAGE, proof);
+    setStored('sessionStorage', PROOF_STORAGE, proof);
     showProof(proof);
   } else {
     await issueProof();
@@ -587,7 +612,7 @@ async function issueProof() {
     const result = await write('begin', { noteId: intent.noteId, slot: intent.slot }, null);
     if (state.proofIntent !== intent) return;
     const proof = { ...result, ...intent, until: Date.now() + result.expiresIn * 1000 };
-    setStored(sessionStorage, PROOF_STORAGE, proof);
+    setStored('sessionStorage', PROOF_STORAGE, proof);
     showProof(proof);
   } catch (error) {
     if (state.proofIntent !== intent) return;
@@ -610,8 +635,8 @@ async function confirmProof() {
   try {
     const room = await write('confirm', proof.plan ?? {}, proof.key);
     state.owner = { id: room.id, noteId: room.noteId, key: proof.key };
-    const saved = setStored(localStorage, OWNER_STORAGE, state.owner);
-    setStored(sessionStorage, PROOF_STORAGE, null);
+    const saved = setStored('localStorage', OWNER_STORAGE, state.owner);
+    setStored('sessionStorage', PROOF_STORAGE, null);
     state.proof = null;
     state.preferredSlot = null;
     resetEntryCharacter();
@@ -624,7 +649,7 @@ async function confirmProof() {
   } catch (error) {
     status($('#proof-status'), message(error), true);
     if (error.code === 'expired') {
-      setStored(sessionStorage, PROOF_STORAGE, null);
+      setStored('sessionStorage', PROOF_STORAGE, null);
       setProofVisible(false);
       $('#retry-proof').hidden = false;
     }
@@ -770,7 +795,15 @@ async function chooseEntryCharacter(event) {
   }
 }
 
-async function readPicture(file) {
+function readPicture(file) {
+  let timer;
+  const limit = new Promise((_, reject) => {
+    timer = setTimeout(() => reject({ code: 'picture_timeout' }), 15000);
+  });
+  return Promise.race([preparePicture(file), limit]).finally(() => clearTimeout(timer));
+}
+
+async function preparePicture(file) {
   const supported = ['image/png', 'image/jpeg', 'image/gif', 'image/webp'];
   if (!supported.includes(file.type)) throw { code: 'bad_image' };
   if (file.size > 10 * 1024 * 1024) throw { code: 'big_image' };
@@ -876,7 +909,7 @@ async function leaveRoom() {
   try {
     await write('leave', { id: room.id });
     state.owner = null;
-    setStored(localStorage, OWNER_STORAGE, null);
+    setStored('localStorage', OWNER_STORAGE, null);
     closeDialog('leave-dialog');
     dismissRoom();
     status($('#entry-status'), `${formatRoom(room.slot)}号室から退去しました。また同じIDで入居できます。`);
@@ -992,7 +1025,20 @@ for (const close of document.querySelectorAll('[data-close]')) {
 }
 $('#room-dialog').addEventListener('cancel', (event) => { event.preventDefault(); dismissRoom(); });
 window.addEventListener('popstate', route);
-window.addEventListener('focus', () => void loadDirectory());
+window.addEventListener('focus', () => {
+  if (Date.now() - state.catalogCheckedAt >= 20000) void loadDirectory();
+});
+if (typeof IntersectionObserver === 'function') {
+  const motion = new IntersectionObserver(entries => {
+    for (const { target, isIntersecting } of entries) {
+      target.dataset.motion = isIntersecting ? 'visible' : 'paused';
+    }
+  });
+  for (const region of [$('#cutaway-building'), $('.directory-grid')]) {
+    region.dataset.motion = 'paused';
+    motion.observe(region);
+  }
+}
 renderDirectory();
 renderBuilding();
 void loadDirectory();

@@ -244,7 +244,7 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
     }));
     const registration=make('div','vehicle-registration');
     registration.id='vehicle-registration';registration.tabIndex=-1;
-    details.append(maker,registration);
+    details.append(maker);
     const list=make('div','parking-grid');
     const floors=make('select');floors.setAttribute('aria-label','駐車区画の階を選ぶ');
     const caption=make('p','parking-section');
@@ -301,7 +301,7 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
       }
       paintVehicles();
     };
-    floors.addEventListener('change',()=>{chosen=true;selectionRevision++;draw();});details.append(floors,caption,list);
+    floors.addEventListener('change',()=>{chosen=true;selectionRevision++;draw();});details.append(floors,caption,list,registration);
     if(!owner?.id){registration.append(make('p','muted','自分の部屋に入居すると、保存した画像を号室の区画に登録できます。'));
       const enter=make('a','button outline','自分の部屋をつくる');enter.href='./#prompt-play';registration.append(enter);
       return draw;}

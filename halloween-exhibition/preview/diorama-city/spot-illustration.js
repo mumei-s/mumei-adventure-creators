@@ -1,4 +1,4 @@
-import { chatgptAppLink, hostNoteUrl, parseNoteId, towerUrl, insightUrl, articleCardBlock, drawFirst, bindArticleDraft, articleCoverInstructions, articleVoiceInstructions, bindCardButtons, makeArtifactPrompt, creatorReference, characterReferenceInstructions, characterArtInstructions, settingInstructions } from '../../../tower/prompt-play.js?v=20261118-speed';
+import { chatgptAppLink, hostNoteUrl, parseNoteId, towerUrl, insightUrl, articleCardBlock, drawFirst, bindArticleDraft, articleCoverInstructions, articleVoiceInstructions, bindCardButtons, makeArtifactPrompt, creatorReference, characterReferenceInstructions, characterArtInstructions, settingInstructions } from '../../../tower/prompt-play.js?v=20261119-community1';
 import { bindQualityAssist } from '../../../tower/quality-assist.js?v=202611181820';
 
 export { characterReferenceInstructions as spotReferenceInstructions };

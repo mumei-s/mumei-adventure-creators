@@ -15,8 +15,8 @@ const IP_LIMITS: Record<string, number> = { begin: 10, confirm: 14, save: 12, st
 const ERROR_STATUS: Record<string, number> = {
   invalid: 400, bad_image: 400, bad_sheet: 400, big_image: 413, avatar_required: 400, owner_required: 403,
   missing: 404, note_missing: 404, invalid_note: 400, proof_missing: 422,
-  slot_taken: 409, full: 409, conflict: 409, handle_in_use: 409, own_room: 409, expired: 410,
-  too_many: 429, note_down: 502, unavailable: 503,
+  slot_taken: 409, full: 409, manager_full: 409, conflict: 409, handle_in_use: 409, own_room: 409, expired: 410,
+  too_many: 429, note_down: 502, unavailable: 503, intake_pending: 503,
 };
 
 type Json = Record<string, any>;
@@ -254,7 +254,7 @@ async function roomMedia(design: Json, body: Json, previous: Json = {}) {
       design.interiorB64 = artwork.base64;
       design.interiorMime = artwork.mime;
       design.world.artwork = (await hash(artwork.base64)).slice(0, 24);
-    } else if (body.clearInterior !== true && previous.interiorB64 && previous.world?.artwork) {
+    } else if (body.clearInterior !== true && previous.world?.artwork) {
       design.interiorB64 = previous.interiorB64;
       design.interiorMime = previous.interiorMime;
       design.world.artwork = previous.world.artwork;
@@ -318,7 +318,7 @@ function requireNoteId(value: unknown) {
 
 function requireSlot(value: unknown) {
   if (value == null) return undefined;
-  if (typeof value !== "number" || !Number.isInteger(value) || value < 1 || value > 144) return fail("invalid");
+  if (typeof value !== "number" || !Number.isInteger(value) || value < 1 || value > 2147483647) return fail("invalid");
   return value;
 }
 
@@ -329,9 +329,37 @@ async function rateLimit(request: Request, action: string, limit: number) {
   if (!result.allowed) return fail("too_many");
 }
 
+const PAGES = 'https://mumei-s.github.io/mumei-adventure-creators/tower/published/';
+async function acknowledgePublicImages(body: Json){
+  const id=requireUuid(body.id);
+  if(!Number.isSafeInteger(body.version) || !Array.isArray(body.items) || body.items.length>6) return fail('invalid');
+  // Only a copy visible at our fixed, public Pages origin can release pending bytes.
+  const receipt=await fetch(PAGES+'receipts/'+id+'.json',{cache:'no-store',signal:AbortSignal.timeout(6000)});
+  if(!receipt.ok)return {released:0};
+  const published=await receipt.json();
+  if(published.version!==body.version || published.id!==id || !Array.isArray(published.items))return {released:0};
+  const approved=[];
+  for(const item of body.items){
+    if(!['avatar','interior',...Object.keys(PARKING_SPACES)].includes(item.kind)||
+      !/^([0-9]+|[a-f0-9]{24})$/.test(String(item.version))||!/^[a-f0-9]{64}$/.test(item.sha256))return fail('invalid');
+    if(!published.items.some((saved:Json)=>saved.kind===item.kind&&String(saved.version)===String(item.version)&&saved.sha256===item.sha256))continue;
+    const res=await fetch(PAGES+'media/'+id+'/'+item.kind+'-'+item.version+'.img',{cache:'no-store',signal:AbortSignal.timeout(7000)});
+    if(!res.ok)continue;
+    const bytes=await res.arrayBuffer();if(bytes.byteLength>MAX_AVATAR)continue;
+    const digestBytes=new Uint8Array(await crypto.subtle.digest('SHA-256',bytes));
+    const digest=Array.from(digestBytes,b=>b.toString(16).padStart(2,'0')).join('');
+    if(digest===item.sha256)approved.push(item);
+  }
+  if(!approved.length)return {released:0};
+  const result=await fetch(BASE+'/rest/v1/rpc/creator_tower_archive_ack',{method:'POST',headers:{apikey:SERVICE_KEY,Authorization:'Bearer '+SERVICE_KEY,'Content-Type':'application/json'},body:JSON.stringify({input:{id,version:body.version,items:approved}}),signal:AbortSignal.timeout(6000)});
+  if(!result.ok)return fail('unavailable');
+  return result.json();
+}
+
 async function mutate(request: Request) {
   const body = await requestJson(request);
   const action = body.action;
+  if(action==='ack_public_images'){await rateLimit(request,'archive_ack',60);return acknowledgePublicImages(body);}
   if (typeof action !== "string") return fail("invalid");
   if (Object.hasOwn(IP_LIMITS, action)) await rateLimit(request, action, IP_LIMITS[action]);
 
@@ -371,7 +399,7 @@ async function mutate(request: Request) {
   if (action === "leave") return rpc("leave", { id, hash: owner });
   if (action === "stamp") {
     if (body.kind !== null && !["read", "hello", "inspired"].includes(body.kind)) return fail("invalid");
-    return rpc("stamp", { id, hash: owner, kind: body.kind });
+    return rpc("stamp", { id, hash: owner, kind: body.kind, enabled: body.enabled !== false });
   }
   if (action === "park" || action === "engineer" || action === "manager") {
     const current = await rpc("owner", { id, hash: owner });
@@ -380,12 +408,16 @@ async function mutate(request: Request) {
     if (action === "park") {
       if (typeof body.space !== "string" || !Object.hasOwn(PARKING_SPACES, body.space)) return fail("invalid");
       const transport = { ...design.transport };
-      if (body.clear === true) delete transport[body.space];
+      if (body.facing !== undefined && !["left","right"].includes(String(body.facing))) return fail("invalid");
+      if (body.facingOnly === true) {
+        if (!transport[body.space] || !body.facing) return fail("invalid");
+        transport[body.space] = { ...transport[body.space], facing: body.facing };
+      } else if (body.clear === true) delete transport[body.space];
       else {
         const image = parseImage(body.imageB64, MAX_VEHICLE);
         if (image.mime === "image/gif" || image.width < 100 || image.height < 80 || image.width > 1000 || image.height > 1000) return fail("bad_image");
         transport[body.space] = { base64: image.base64, mime: image.mime,
-          version: (await hash(image.base64)).slice(0, 24), kind: PARKING_SPACES[body.space],
+          version: (await hash(image.base64)).slice(0, 24), kind: PARKING_SPACES[body.space], facing: body.facing || (PARKING_SPACES[body.space] === "car" ? "left" : "right"),
           title: clean(body.title, 40), style: clean(body.style, 60) };
       }
       design.transport = transport;
@@ -417,6 +449,14 @@ async function mutate(request: Request) {
   return fail("invalid");
 }
 
+async function intakeReady(): Promise<boolean> {
+  const response = await fetch(BASE+'/rest/v1/rpc/creator_tower_archive_ready', {
+    method:'POST', headers:{apikey:SERVICE_KEY,Authorization:'Bearer '+SERVICE_KEY,'Content-Type':'application/json'},
+    body:'{}', signal:AbortSignal.timeout(5000),
+  });
+  return response.ok && (await response.json()) === true;
+}
+
 Deno.serve(async (request: Request) => {
   const origin = request.headers.get("origin");
   const local = origin && /^http:\/\/(?:localhost|127\.0\.0\.1)(?::\d{1,5})?$/.test(origin);
@@ -434,13 +474,25 @@ Deno.serve(async (request: Request) => {
   if (request.method === "OPTIONS") return new Response(null, { status: 204, headers });
 
   try {
-    if (request.method === "POST") return json(roomResponse(await mutate(request)));
+    if (request.method === "POST") {
+      if (!await intakeReady()) return json({error:"intake_pending"},503);
+      return json(roomResponse(await mutate(request)));
+    }
     if (request.method !== "GET") return json({ error: "invalid" }, 405);
     const url = new URL(request.url);
     const view = url.searchParams.get("view") ?? "list";
+    if (view === "archive-status") return json({ready:await intakeReady()});
+    if (view === "pending-images") {
+      const response=await fetch(BASE+'/rest/v1/rpc/creator_tower_pending_images',{
+        method:'POST',headers:{apikey:SERVICE_KEY,Authorization:'Bearer '+SERVICE_KEY,'Content-Type':'application/json'},
+        body:'{}',signal:AbortSignal.timeout(5000)});
+      if(!response.ok)return fail('unavailable');
+      return json({rooms:await response.json()});
+    }
     if (view === "list") return json(await rpc("list"));
     if (view === "facilities") return json(await rpc("facilities"));
     if (view === "preview") {
+      if (!await intakeReady()) return json({error:"intake_pending"},503);
       const noteId = requireNoteId(url.searchParams.get("noteId"));
       await rateLimit(request, "preview", 35);
       return json(await preview(noteId));
@@ -468,6 +520,7 @@ Deno.serve(async (request: Request) => {
       const version = Number(url.searchParams.get("v"));
       if (!Number.isSafeInteger(version) || version < 1) return fail("invalid");
       const image = await rpc("avatar", { id, version });
+      if (!image.base64) return fail("missing");
       const bytes = Uint8Array.from(atob(image.base64), (c) => c.charCodeAt(0));
       return new Response(bytes, { headers: { ...headers, "Content-Type": image.mime } });
     }

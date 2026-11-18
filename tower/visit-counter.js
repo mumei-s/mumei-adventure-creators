@@ -1,4 +1,4 @@
-import { createDailyVisitCounter } from '../halloween-exhibition/preview/castle-visit-counter.js?v=20261118-city2';
+import { createDailyVisitCounter } from '../halloween-exhibition/preview/castle-visit-counter.js?v=20261119-community1';
 
 const panel = document.querySelector('[data-tower-visits]');
 if (panel) {
@@ -6,7 +6,8 @@ if (panel) {
   const note = panel.querySelector('small');
   const scope = 'マンションと近未来街区の合計。同じブラウザは日本時間で1日1回です。';
   const counter = createDailyVisitCounter({
-    rpcUrl: 'https://xxhaerjvrgmnadxjqetz.supabase.co/rest/v1/rpc/tower_district_visit',
+    rpcUrl: 'https://slamzhgsawfnmwlejgqp.supabase.co/rest/v1/rpc/tower_district_visit',
+    publishableKey: 'sb_publishable_fh6wIQW4iKvCPd99oD2vZg_w1Yn2KMh',
     storageKey: 'atelier-tower:daily-visit:v1',
     lockName: 'atelier-tower:daily-visit-lock',
     isVisible: () => !document.hidden && !document.prerendering,

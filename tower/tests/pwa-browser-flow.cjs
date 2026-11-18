@@ -5,7 +5,7 @@ const assert=require('node:assert/strict');
  const context=await browser.newContext({viewport:{width:390,height:844}});
  const page=await context.newPage();
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
- await page.route('https://xxhaerjvrgmnadxjqetz.supabase.co/**',route=>{const view=new URL(route.request().url()).searchParams.get('view');return route.fulfill({status:200,headers:{'access-control-allow-origin':'*'},json:view==='list'?{floors:12,perFloor:12,rooms:[]}:{residents:[]}});});
+ await page.route('https://slamzhgsawfnmwlejgqp.supabase.co/**',route=>{const view=new URL(route.request().url()).searchParams.get('view');return route.fulfill({status:200,headers:{'access-control-allow-origin':'*'},json:view==='list'?{floors:12,perFloor:12,rooms:[]}:{residents:[]}});});
  await page.goto('http://127.0.0.1:4173/tower/?source=pwa',{waitUntil:'networkidle'});
  const cdp=await context.newCDPSession(page);
  const result=await cdp.send('Page.getAppManifest');

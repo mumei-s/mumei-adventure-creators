@@ -1,4 +1,4 @@
-export const towerUrl = 'https://mumei-s.github.io/mumei-adventure-creators/tower/';
+export const towerUrl = new URL(import.meta.url).protocol === 'https:' && new URL(import.meta.url).pathname.includes('/admission/') ? new URL('./',import.meta.url).href : 'https://mumei-s.github.io/mumei-adventure-creators/tower/';
 export const hostNoteUrl = 'https://note.com/ss_yr';
 export const insightUrl = 'https://mumei-s.github.io/note-insight/';
 const appUrl = 'https://chatgpt.com/open-app';
@@ -32,7 +32,7 @@ export function chatgptAppLink({ userAgent, platform, maxTouchPoints }) {
 
 export function creatorReference(creator, registeredCreator, source) {
   if (!creator || creator !== registeredCreator || !source) return { referenceMode: 'attachment' };
-  if (/^https:\/\//i.test(source)) return { referenceMode: 'registered', referenceUrl: source };
+  if (/^https:\/\//i.test(source) || /^http:\/\/(?:127\.0\.0\.1|localhost)(?::\d+)?\//i.test(source)) return { referenceMode: 'registered', referenceUrl: source };
   if (/^(?:data:image\/|blob:)/i.test(source)) return { referenceMode: 'local' };
   return { referenceMode: 'attachment' };
 }
@@ -61,29 +61,36 @@ export function makeRoomPrompt({ id, description, articles = [], ideas, returnUr
     return makeArtifactPrompt({ kind: 'interior', id, scene, mode: 'room', reference }) +
       '\n保存した部屋画像をTowerの個別添付欄に入れてください。\n' + returnUrl;
   }
-  const titles=articles.slice(0,5).map(article=>article.title).filter(Boolean).join('／');
-  return `【#無名Sプロンプト｜Atelier Towerに住む】
-最初の成果物は必ず部屋画像です。${drawFirst}
+  const back = new URL(returnUrl);
+  if (id) back.searchParams.set('creator', id);
+  back.hash = 'prompt-import';
+  return `【#無名Sプロンプト｜Atelier Tower 入居用】
 noteクリエイターID：${id ? '@'+id : '［自分のnote ID］'}
 ${characterReferenceInstructions(reference)}
 ${characterArtInstructions}
-部屋の希望：${ideas || '本人のキャラ・作品の雰囲気から決める。'}
-${[description && '自己紹介：'+description,titles && '記事の題名：'+titles].filter(Boolean).join('\n')}
-渡された公開情報・希望は創作のモチーフに使い、個人情報は推測しません。
+① 最初にゲーム用アバター画像を１枚生成して表示する。${drawFirst}
+背景透過の正方形の歩行シート。４列×４行。上から正面、左向き、左斜め後ろ、真後ろ。各行は停止、左足前、中間、右足前。各マスに同じ人物の頭から靴までを収め、足底と縮尺をそろえる。枠線・文字・床を入れない。
+② アバターを表示してから「どんなお部屋に住みたいですか？ 色や窓からの景色など、ひとことでも大丈夫です」と聞く。${ideas ? '候補として「'+ideas+'」を伝える。' : ''} ここで返事を待つ。
+③ 本人の返事を受けてから、希望に合わせて部屋画像を１枚生成して表示する。横３対２、人物や文字のない内装。下３分の１に歩ける床を残し、家具は奥と両端に置く。
+④「アバターと部屋の２枚をそれぞれ保存してください」と伝え、次のリンクを「空室を選んで入居する」として表示する。
+${back.href}
+${id ? '' : 'リンクを渡す前に、今回入力されたnote IDをcreatorパラメータに入れてください。'}
+入居ページでは空室を選び、２枚を添付し、確認用パスコードで本人確認する。記事制作は入居後に本人が選べる。`;
+}
 
-【ゲーム用部屋画像】横３：２。少し高い視点から内装を見渡す。人物・文字・UI・枠は入れず、下３分の１に歩ける床を確保。家具は奥と両脇に置き、好みが分かる素材・採光・窓辺の小物を描く。
-【アバター画像】次にアバター画像を別の画像として生成。透明な正方形に４列×４行。上から正面・画面左・左斜め後ろ・真後ろ。各行左から停止・左足を前・中間・右足を前。各マス中央に１人の全身を収め、靴底の高さ・頭身・余白をそろえる。歩行に腕を連動させ、線・枠・文字・床・影を入れない。
-３枚目は部屋を題材にした記事専用サムネイル。部屋画像とサムネイルを絶対に兼用・合成しない。
-${articleCoverInstructions()}
-
-【参加者のnote記事】画像を全て出せない環境でも、この返答で記事と未生成分の短い個別指示を渡す。下見と入居を区別し、入居済みと書くのは本人の確認後。
-${articleWritingInstructions({id,mode:'room'})}
-記事末に無名S noteの企画を紹介。
-${articleCardBlock([['企画主・無名S note',hostNoteUrl],['自分のキャラで参加する',towerUrl+'#prompt-play'],['noteの反応を分析する INSIGHT',insightUrl]])}
-
-末尾は #無名Sプロンプト。${cardPasteInstructions()}
-本文の外で、３枚を個別保存（表紙はnoteへ）→アバターと部屋を「生成した画像を添付する」→下見・街歩き→入居の順に案内。戻り先：${returnUrl}${id ? '' : '（IDが分かれば #prompt-import の前に ?creator=本人のnote ID を追加）'}`;
-
+export function makeMoveInArticlePrompt({id, title, address, href, avatar, interior}) {
+  return [
+    '【#無名Sプロンプト｜入居を記事にする】',
+    '入居確認済み。note IDは @'+id+'。入居先はAtelier Tower '+address+'号室「'+title+'」。',
+    '登録したアバターと部屋を使ってください。画像の添付は任意です。今回の添付があれば該当するキャラや部屋の参考として優先します。URLが開けない場合も、同じチャットの元絵または下記の部屋情報を使って進め、IDや追加添付を求めずに仕上げてください。',
+    avatar && '登録アバター：'+avatar, interior && '登録した部屋：'+interior,
+    characterArtInstructions,
+    '記事の題を一つ決めて、次の３枚を別々の完成画像として順に表示してください。事前の検索や長い説明は省きます。',
+    articleCoverInstructions(),
+    '本文イラスト１はエントランスで自分の部屋の鍵を受け取る場面。本文イラスト２は部屋に入ってお気に入りの場所で過ごす場面。画角・行動を変え、本文用の絵には文字を入れない。',
+    '続けて同じ題でnoteに貼れる記事を最後まで書く。［ここにイラスト１］［ここにイラスト２］を該当する段落の直後に置く。創作の場面を実生活の出来事と混同せず、プロフィールの外の名前・個人情報を推測しない。',
+    articleVoiceInstructions(id), articleCards('room',href), cardPasteInstructions(), '最後の行は #無名Sプロンプト。',
+  ].filter(Boolean).join('\n');
 }
 
 export function residentPost(title, roomUrl) {
@@ -95,7 +102,7 @@ export function articleCardBlock(entries) {
 }
 
 export function cardPasteInstructions() {
-  return 'カード用URLは必ず裸のURLだけを独立した行に置く。引用符、括弧、箇条書き記号、Markdownリンク、コード枠、URLの直後の句読点は禁止。本文の外に「note編集画面でURLを空行に個別に貼り、改行してカード表示を確認」と案内してください。';
+  return '企画主の公開名は「無名S note」。個人名を補わない。カード用URLは必ず裸のURLだけを独立した行に置く。引用符、括弧、箇条書き記号、Markdownリンク、コード枠、URLの直後の句読点は禁止。本文の外に「note編集画面でURLを空行に個別に貼り、改行してカード表示を確認」と案内してください。';
 }
 
 export function articleCoverInstructions() {

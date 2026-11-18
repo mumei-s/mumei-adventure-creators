@@ -20,8 +20,8 @@ const spaces=['owner','sky','lobby','concierge','driveway','bicycle','parking','
    design:{title:'Original room',theme:'story',light:'natural',avatarMode:'custom',avatarName:'Test creator',pin:'',world:{seed:1,hue:35,accent:80,view:3,layout:2,lightness:50,atlas:true,character:true}}};
   const writes=[];let holdFacilities;
   await ctx.addInitScript(({id})=>localStorage.setItem('atelier-tower-owner-v1',JSON.stringify({id,noteId:sessionStorage.getItem('fixture-noteId')||'creator_test',key:'a'.repeat(64)})),{id});
-  await page.route('https://xxhaerjvrgmnadxjqetz.supabase.co/**',async route=>{
-   const request=route.request(),url=new URL(request.url()),view=url.searchParams.get('view');
+  const handleRoom=async route=>{
+   const request=route.request(),url=new URL(request.url()),file=url.pathname.split('/').at(-1),view=url.searchParams.get('view') || (file==='list.json'?'list':file==='facilities.json'?'facilities':url.pathname.includes('/published/rooms/')?'room':url.pathname.includes('/published/media/')?(file.startsWith('avatar-')?'avatar':'vehicle'):null);
    const headers={'access-control-allow-origin':'*','content-type':'application/json'};
    if(view==='avatar')return route.fulfill({status:200,contentType:'image/webp',body:sheet,headers:{'access-control-allow-origin':'*'}});
    if(view==='vehicle')return route.fulfill({status:200,contentType:'image/webp',body:vehicle,headers:{'access-control-allow-origin':'*'}});
@@ -44,7 +44,9 @@ const spaces=['owner','sky','lobby','concierge','driveway','bicycle','parking','
     return route.fulfill({status:200,headers,body:JSON.stringify(room)});
    }
    await route.fulfill({status:400,headers,body:'{"error":"invalid"}'});
-  });
+  };
+  await page.route('https://slamzhgsawfnmwlejgqp.supabase.co/functions/v1/creator-tower**',handleRoom);
+  await page.route('**/tower/published/**',handleRoom);
   await page.goto('http://127.0.0.1:4173/tower/?space=lobby',{waitUntil:'networkidle'});
   await page.waitForSelector('#shared-content .world-resident canvas:not([hidden])');
   const start=await page.locator('#shared-content .world-resident').getAttribute('data-position');
@@ -213,7 +215,7 @@ const spaces=['owner','sky','lobby','concierge','driveway','bicycle','parking','
    const walker=page.locator('#shared-content .world-resident');
    await page.waitForTimeout(50);
    const position=await walker.getAttribute('data-position'),stageHandle=await stage.elementHandle();
-   const read=page.waitForResponse(response=>new URL(response.url()).searchParams.get('view')==='facilities');
+   const read=page.waitForResponse(response=>new URL(response.url()).pathname.endsWith('/published/facilities.json'));
    releaseFacilities();holdFacilities=null;await read;
    await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
    assert.equal(await stageHandle.evaluate(node=>node.isConnected),true,'late data retains original scene');

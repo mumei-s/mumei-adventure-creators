@@ -1,8 +1,9 @@
+import { mediaUrl } from './public-directory.js?v=community1';
 import { canWalkFloorSegment, facilityActorHeight, facilityFloors, facilityRoute, registeredFloorFor } from './facility-floors.js?v=20261118-city2';
 import { makeWalkPad, bindWalking } from '../halloween-exhibition/preview/diorama-city/walk-controls.js?v=202611181820';
 import { hostPortrait, hostWalker, autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=202611181820';
 import { applyDistrictLight } from '../halloween-exhibition/preview/diorama-city/scene-time.js?v=1';
-import { TOWER_API } from './avatar-travel.js?v=20261118';
+import { TOWER_API } from './avatar-travel.js?v=20261119-community1';
 
 const viewNames = ['雨上がりの街', '木立と丘', '海辺の朝焼け', '星明かりの街'];
 const views = ['city', 'grove', 'coast', 'stars'];
@@ -268,9 +269,7 @@ const roomArt = room => usesHostModel(room) ? suiteArtwork :
 export function generatedInterior(room) {
   if (room.draftInterior?.source) return room.draftInterior.source;
   if (!room.design?.world?.artwork) return '';
-  const url=new URL(TOWER_API);
-  url.search=new URLSearchParams({view:'interior',id:room.id,v:room.design.world.artwork});
-  return url.href;
+  return mediaUrl(room.id,'interior',room.design.world.artwork);
 }
 
 const usingAtlas=room=>room.draftAvatar?.atlas ?? room.design?.world?.atlas===true;

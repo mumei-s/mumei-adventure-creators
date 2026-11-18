@@ -85,19 +85,14 @@ jobs:
           for test in tower/tests/*browser-flow.cjs; do
             node "$test"
           done
-      - name: 入居準備画面の確認済みソースを取得
-        uses: actions/checkout@v4
-        with:
-          ref: 079046ffa0f6650c2e8fa7bcdbc3c6657c020f48
-          path: .tower-admission
-          persist-credentials: false
-          sparse-checkout-cone-mode: false
-          sparse-checkout: |
-            /tower/
-            /halloween-exhibition/preview/diorama-city/
-            /halloween-exhibition/preview/castle-visit-counter.js
-      - name: 入居準備と住人の公開展示を追加
-        run: node scripts/stage-tower-admission.mjs .tower-admission _site
+      - name: 準備版で発行した入居リンクを本受付に引き継ぐ
+        run: |
+          for entry in tower halloween-exhibition/preview/diorama-city; do
+            mkdir -p "_site/admission/$entry"
+            cat > "_site/admission/$entry/index.html" <<EOF
+          <!doctype html><html lang="ja"><meta charset="utf-8"><title>Atelier Tower</title><a href="/mumei-adventure-creators/$entry/">入居ページへ</a><script>location.replace('/mumei-adventure-creators/$entry/'+location.search+location.hash)</script></html>
+          EOF
+          done
       - name: 公開ファイルを準備
         uses: actions/upload-pages-artifact@v3
         with:

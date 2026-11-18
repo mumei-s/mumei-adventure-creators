@@ -115,7 +115,8 @@ async function run() {
       if(!await join.isVisible()) await page.locator('#shared-info').click();
       await join.click();
       assert.equal(await page.locator('#shared-dialog').isVisible(),false);
-      assert.equal(await page.locator('#creator-id').evaluate(input=>document.activeElement===input),true);
+      await page.locator('#prompt-dialog[open]').waitFor();
+      assert.equal(await page.locator('#prompt-id').evaluate(input=>document.activeElement===input),true);
       await context.close();
       console.log('PASS '+width+'×'+height+' photographed floor/cabinet/chairs, four cameras in both views, guest registration');
     }

@@ -5,7 +5,7 @@ const src = await readFile(new URL('../prompt-play.js',import.meta.url),'utf8');
 const asModule = source => 'data:text/javascript;base64,'+Buffer.from(source).toString('base64');
 const coreUrl=asModule(src);
 const qualityUrl=asModule(await readFile(new URL('../quality-assist.js',import.meta.url),'utf8'));
-const {makeRoomPrompt,residentPost,articleCardBlock,insightUrl,towerUrl,hostNoteUrl}=await import(coreUrl);
+const {makeRoomPrompt,makeArtifactPrompt,residentPost,articleCardBlock,insightUrl,towerUrl,hostNoteUrl}=await import(coreUrl);
 const spotSource=await readFile(new URL('../../halloween-exhibition/preview/diorama-city/spot-illustration.js',import.meta.url),'utf8');
 const {makeSpotPrompt,spotReferenceInstructions}=await import(asModule(spotSource
   .replace(/\.\.\/\.\.\/\.\.\/tower\/prompt-play\.js\?v=[\d-]+/,coreUrl)
@@ -46,4 +46,12 @@ test('registered reference, new attachment and article follow-up are explicit',(
  assert.match(spotReferenceInstructions({referenceMode:'local'}),/別チャット/);
  assert.match(spotReferenceInstructions({referenceMode:'attachment'}),/今回添付する新しい/);
  assert.doesNotMatch(makeSpotPrompt({...common,referenceMode:'attachment'}),/登録済みアバター画像URL/);
+});
+
+test('room instructions precede avatar and article-only continuation preserves completed images',()=>{
+ const initial=makeRoomPrompt({id:'tester'});
+ assert.ok(initial.indexOf('【ゲーム用部屋画像')<initial.indexOf('【アバター画像'));
+ const article=makeArtifactPrompt({kind:'article',id:'tester',mode:'spot'});
+ for(const marker of ['記事本文だけ','［ここにアバター画像］','［ここに部屋画像］','専用サムネイル']) assert.ok(article.includes(marker));
+ assert.doesNotMatch(article,/個別の完成画像をチャットに表示/);
 });

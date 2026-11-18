@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="../../../tower/quality-assist.css?v=202611181820">
   <link rel="stylesheet" href="../../../tower/game-shell.css?v=202611181820">
   <script type="module" src="./district.js?v=202611181820"></script>
+  <script type="module" src="../../../tower/visit-counter.js?v=202611181951"></script>
 </head>
 <body>
 <main id="district" tabindex="-1">
@@ -81,7 +82,8 @@
       <a id="place-link" class="venue-link" hidden></a>
     </div>
     <div class="player-info">
-      <p id="walker-name">無名S note</p>
+      <details class="tower-visits" data-tower-visits><summary>累計訪問 <strong aria-live="polite">—</strong></summary><small>マンションと近未来街区の合計。同じブラウザは日本時間で1日1回です。</small></details>
+    <p id="walker-name">無名S note</p>
       <a id="walker-room" href="../../../tower/#prompt-import">自分のアバターで歩く</a>
       <button id="retry-walker" class="spot-prompt" type="button" hidden>アバターを再読み込み</button>
     </div>

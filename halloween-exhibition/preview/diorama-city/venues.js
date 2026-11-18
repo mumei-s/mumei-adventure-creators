@@ -12,6 +12,23 @@ function floorPlan(edge, near = 641) {
 }
 
 export const venues = {
+  avenueShops: {
+    title: '中央大通り', card: './spots/avenueShops.html',
+    image: './assets/street-avenue.webp',
+    alt: '運河沿いの並木道に並ぶ車のショールーム、バイク工房、自転車店',
+    scale: [146, .5],
+    ...floorPlan([[60,560],[98,518],[223,489],[360,461],[495,436],[620,416],[713,405]]),
+    scene: '中央大通りの並木を抜けると、左から車、バイク、自転車のお店が並ぶ。ガラスの向こうに手仕事が見える、夕暮れの運河沿い。',
+    spots: {
+      car: { label:'車のショールーム', point:[220,508], sign:[203,346], action:'自分の車をつくる', vehicle:'car',
+        scene:'ショールームの大きなガラス越しに車体を眺め、近くで塗装の光沢と内装の素材を選ぶ。' },
+      motorcycle: { label:'バイク工房', point:[505,457], sign:[504,337], action:'自分のバイクをつくる', vehicle:'motorcycle',
+        scene:'開いた工房に灯りがともる。整備台のバイクの横でハンドルの形とタンクの色を選ぶ。' },
+      bicycle: { label:'自転車店', point:[681,439], sign:[686,301], action:'自分の自転車をつくる', vehicle:'bicycle',
+        scene:'並木道に面した自転車店で、フレームの色を選び、サドルやかごを見比べる。' },
+    },
+    note: '店先へ歩くと自分の乗り物をつくれます。各店でのひとコマもイラストや記事にできます。',
+  },
   cafe: {
     title: '水辺のカフェ',
     card: './spots/cafe.html',

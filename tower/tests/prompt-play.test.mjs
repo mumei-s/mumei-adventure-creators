@@ -5,7 +5,7 @@ const src = await readFile(new URL('../prompt-play.js',import.meta.url),'utf8');
 const asModule = source => 'data:text/javascript;base64,'+Buffer.from(source).toString('base64');
 const coreUrl=asModule(src);
 const qualityUrl=asModule(await readFile(new URL('../quality-assist.js',import.meta.url),'utf8'));
-const {makeRoomPrompt,makeArtifactPrompt,creatorReference,residentPost,articleCardBlock,insightUrl,towerUrl,hostNoteUrl}=await import(coreUrl);
+const {makeRoomPrompt,makeArtifactPrompt,makeArticleDraft,creatorReference,residentPost,articleCardBlock,insightUrl,towerUrl,hostNoteUrl}=await import(coreUrl);
 const spotSource=await readFile(new URL('../../halloween-exhibition/preview/diorama-city/spot-illustration.js',import.meta.url),'utf8');
 const {makeSpotPrompt,spotReferenceInstructions}=await import(asModule(spotSource
   .replace(/\.\.\/\.\.\/\.\.\/tower\/prompt-play\.js\?v=[\d-]+/,coreUrl)
@@ -24,7 +24,7 @@ test('room generation first, recovery without new avatar, independent attachment
   assert.match(html,/id="copy-room-only"/);
   assert.match(html,/id="generated-interior"/);
 });
-test('spot article requires two scenes, distinct cover and title/hashtag',()=>{
+test('spot illustration request keeps two scenes and a distinct cover with matching title and hashtag',()=>{
   const href='https://example.com/city/?spot=cafe';
   const prompt=makeSpotPrompt({label:'カフェ',scene:'窓辺',href,id:'tester'});
   for(const marker of ['［ここに街のイラスト１］','［ここに街のイラスト２］','1280×650','#無名Sプロンプト','本文用の絵とは明確に異なる','未完了']) assert.ok(prompt.includes(marker));
@@ -86,4 +86,37 @@ test('scene and thumbnail prompts distinguish character style from the location 
   assert.ok(article.includes('確定した記事タイトル：窓辺の夜') && article.includes('２枚目の行動を反映'));
   assert.ok(!article.includes(backgroundUrl) && !article.includes(referenceUrl));
   assert.match(article, /画像は再生成しない/);
+});
+
+test('a market article is ready to paste with no uploads, including an actual egg-sandwich handover', () => {
+  const experience = '水辺のコンビニでたまごサンドを1点選んだ。木のレジで260円を支払い、たまごサンドの入った紙袋を受け取った。';
+  const spot = {label:'水辺のコンビニ', href:'https://example.com/market/', id:'ss_yr',
+    articleScene:'運河のそばに木のカウンターがある。棚からは温かい灯りがこぼれる。', experience,
+    title:'運河のそばで、たまごサンドをひとつ', scene:'袋を持つ手を寄りの構図で描く。'};
+  const body = makeArticleDraft(spot), lines = body.split('\n');
+  assert.equal(lines[0], spot.title);
+  for (const line of [spot.articleScene, experience, '［ここに街のイラスト１］','［ここに街のイラスト２］',
+    spot.href, towerUrl+'#prompt-play', hostNoteUrl, insightUrl]) assert.ok(lines.includes(line), line);
+  assert.equal(lines.at(-1),'#無名Sプロンプト');
+  assert.doesNotMatch(body,/構図で描く|添付してください|確認できません|入居しました/);
+  const prompt = makeArtifactPrompt({...spot,kind:'article',draft:body});
+  assert.ok(prompt.includes(experience) && prompt.includes(JSON.stringify(body)));
+  assert.match(prompt,/画像の添付や確認を求めず/);
+  assert.match(prompt,/別作品の表紙/);
+  assert.doesNotMatch(prompt,/本文用画像の添付を依頼|本文画像を.*送ってください/);
+});
+
+test('unseen art, guest visits and room plans remain publishable without claiming a purchase or occupancy', () => {
+  const article = makeArticleDraft({label:'レジ',articleScene:'運河の灯りが見える。木のカウンターは窓のそば。',scene:'支払い済みの絵を描いてください。'});
+  assert.ok(article.includes('［ここに街のイラスト１］\n\n木のカウンターは窓のそば。'));
+  assert.doesNotMatch(article,/支払い|@undefined|添付してください/);
+  for (const occupied of [true,false]) {
+    const room = makeArticleDraft({mode:'room',roomTitle:'月の部屋',ideas:'緑の窓辺',occupied});
+    assert.match(room,/月の部屋/); assert.match(room,/緑の窓辺/);
+    assert.ok(room.includes('［ここにアバター画像］') && room.includes('［ここに部屋画像］'));
+    assert.equal(room.includes('という部屋ができました'),occupied);
+  }
+  const initial = makeRoomPrompt({});
+  assert.match(initial,/画像を全て出せない環境でも/);
+  assert.doesNotMatch(initial,/３枚を揃えたら/);
 });

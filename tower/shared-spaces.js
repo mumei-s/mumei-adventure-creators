@@ -61,6 +61,27 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
     doors.classList.add('doors-open');
     doorTimer=setTimeout(()=>{doors.hidden=true;done();},850);
   }
+  function hideSpace(){
+    session=null;
+    cancelDoors();
+    controller?.abort();
+    controller=null;
+    if(dialog.open)dialog.close();
+  }
+  function removeSpaceFromUrl(){
+    const url=new URL(location.href);
+    if(!url.searchParams.has('space'))return;
+    url.searchParams.delete('space');
+    const state={...history.state};
+    delete state.towerSpace;
+    history.replaceState(state,'',url);
+  }
+  function goBack(){
+    const hasPreviousSpaceEntry=history.state?.towerSpace===true;
+    hideSpace();
+    if(hasPreviousSpaceEntry)history.back();
+    else removeSpaceFromUrl();
+  }
   function recordFacility(room){
     if((savedVersions.get(room.id)??0)>room.version)return;
     savedVersions.set(room.id,room.version);
@@ -98,7 +119,7 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
         guest.append(image,make('small','',room.name||room.noteId));
         stage.append(guest);
         if(room.avatarVersion)autoResidentWalker(image,{atlas:room.world?.atlas===true})(0,false);
-        links.append(action(`${parkingNumber(room.slot,catalog.perFloor)} · ${room.name||room.noteId}`,()=>{dialog.close();visitRoom(room.id);}));
+        links.append(action(`${parkingNumber(room.slot,catalog.perFloor)} · ${room.name||room.noteId}`,()=>{hideSpace();visitRoom(room.id);}));
       });
     };
   }
@@ -186,7 +207,7 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
       });details.append(toggle);
     }else{
       const text=role==='manager'?'入居して管理人に参加':'入居して技術部に参加';
-      details.append(action(text,()=>{session=null;dialog.close();enterTower();}));
+      details.append(action(text,()=>{hideSpace();removeSpaceFromUrl();enterTower();}));
     }
     return refresh;
   }
@@ -360,7 +381,7 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
       const link=make('a','button outline','無名S noteの作品を読む ↗');link.href='https://note.com/ss_yr';link.target='_blank';link.rel='noopener';details.append(link);
     }
   }
-  function open(id,animate=true){
+  function open(id,animate=true,restore=false){
     if(!Object.hasOwn(sharedSpaces,id))return;
     cancelDoors();
     const view={id,arrived:false,facilityStatus:'loading',updates:new Map()};
@@ -374,7 +395,14 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
       for(const link of nav.children){
         if(link.dataset.destination===id)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current');
       }
-      const url=new URL(location.href);url.searchParams.set('space',id);history.replaceState(history.state,'',url);
+      if(!restore){
+        const url=new URL(location.href);
+        if(url.searchParams.get('space')!==id||url.searchParams.has('room')){
+          url.searchParams.delete('room');
+          url.searchParams.set('space',id);
+          history.pushState({towerSpace:true},'',url);
+        }
+      }
       if(!dialog.open)dialog.showModal();
       content.closest('.shared-scroll').scrollTop=0;
       if(id!=='owner'){render(id);return;}
@@ -410,28 +438,38 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
   }
   refreshNav();
   document.querySelectorAll('[data-space]').forEach(item=>item.addEventListener('click',()=>open(item.dataset.space)));
-  document.getElementById('shared-back').addEventListener('click',()=>{session=null;dialog.close();});
+  document.getElementById('shared-back').addEventListener('click',goBack);
+  dialog.addEventListener('cancel',event=>{
+    if(event.target!==dialog)return;
+    event.preventDefault();
+    goBack();
+  });
   document.getElementById('shared-info').addEventListener('click',event=>{
     const open=dialog.dataset.info==='closed';dialog.dataset.info=open?'open':'closed';
     event.currentTarget.setAttribute('aria-expanded',String(open));event.currentTarget.textContent=open?'案内をしまう':'案内を開く';
   });
-  document.getElementById('shared-exit').addEventListener('click',()=>{session=null;dialog.close();entrance(()=>{
+  document.getElementById('shared-exit').addEventListener('click',()=>{hideSpace();entrance(()=>{
     const destination=new URL('../halloween-exhibition/preview/diorama-city/?arrival=tower',location.href);
     if(getOwner()?.id)destination.searchParams.set('resident',getOwner().id);
     else if(readWalkDraft())destination.searchParams.set('walker','draft');
     location.assign(destination);
   });});
-  dialog.addEventListener('close',()=>{
-    if(dialog.open)return;
-    if(session?.arrived)session=null;
-    controller?.abort();
-    const url=new URL(location.href);url.searchParams.delete('space');history.replaceState(history.state,'',url);
-  });
-  window.addEventListener('popstate',()=>{session=null;cancelDoors();if(dialog.open)dialog.close();});
+  function restoreSpace(){
+    const url=new URL(location.href);
+    const id=url.searchParams.get('space');
+    if(!url.searchParams.has('room')&&Object.hasOwn(sharedSpaces,id)){
+      if(!dialog.open||!session?.arrived||session.id!==id)open(id,false,true);
+    }else hideSpace();
+  }
+  window.addEventListener('popstate',restoreSpace);
+  window.addEventListener('pageshow',event=>{if(event.persisted)restoreSpace();});
   const initial=new URL(location.href);
-  if(Object.hasOwn(sharedSpaces,initial.searchParams.get('space')))open(initial.searchParams.get('space'),false);
+  if(!initial.searchParams.has('room')&&Object.hasOwn(sharedSpaces,initial.searchParams.get('space')))restoreSpace();
   else if(initial.searchParams.get('from')==='diorama'&&!initial.searchParams.has('room')){
-    const clean=new URL(initial);clean.searchParams.delete('from');history.replaceState(history.state,'',clean);open('lobby');
+    const clean=new URL(initial);
+    clean.searchParams.delete('from');
+    history.replaceState(history.state,'',clean);
+    if(!['#prompt-play','#prompt-import'].includes(initial.hash))open('lobby');
   }
   return {open,refresh(){refreshNav();if(dialog.open&&session?.arrived)session.refresh?.();}};
 }

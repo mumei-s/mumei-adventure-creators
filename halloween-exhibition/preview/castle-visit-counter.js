@@ -20,50 +20,51 @@ export function isPublicCastleLocation(location, navigator = {}) {
   } catch { return false; }
 }
 
-function savedVisit(storage, day) {
+function savedVisit(storage, day, storageKey) {
   try {
-    const value = JSON.parse(storage?.getItem(CASTLE_VISIT_STORAGE_KEY) || 'null');
+    const value = JSON.parse(storage?.getItem(storageKey) || 'null');
     return value?.day === day && TOKEN_PATTERN.test(value.token) ? value : null;
   } catch { return null; }
 }
 
 /** Cross-tab creation is atomic with Web Locks. Without safe persistence, read only. */
-export async function prepareCastleVisit({ day, storage, locks, crypto } = {}) {
+export async function prepareCastleVisit({ day, storage, locks, crypto, storageKey = CASTLE_VISIT_STORAGE_KEY, lockName = LOCK_NAME } = {}) {
   const readOnly = { p_token: null, p_day: null };
   if (!locks?.request || !crypto?.getRandomValues) return readOnly;
   try {
-    return await locks.request(LOCK_NAME, { mode: 'exclusive', ifAvailable: true }, lock => {
+    return await locks.request(lockName, { mode: 'exclusive', ifAvailable: true }, lock => {
       if (!lock) return readOnly;
       const store = typeof storage === 'function' ? storage() : storage;
       if (!store?.getItem || !store?.setItem) return readOnly;
-      let visit = savedVisit(store, day);
+      let visit = savedVisit(store, day, storageKey);
       if (visit?.recorded === true) return readOnly;
       if (!visit) {
         const bytes = new Uint8Array(32);
         crypto.getRandomValues(bytes);
         visit = { day, token: Array.from(bytes, value => value.toString(16).padStart(2, '0')).join(''), recorded: false };
-        store.setItem(CASTLE_VISIT_STORAGE_KEY, JSON.stringify(visit));
+        store.setItem(storageKey, JSON.stringify(visit));
         // Never count if the storage silently failed to persist the same token.
-        if (savedVisit(store, day)?.token !== visit.token) return readOnly;
+        if (savedVisit(store, day, storageKey)?.token !== visit.token) return readOnly;
       }
       return { p_token: visit.token, p_day: day };
     });
   } catch { return readOnly; }
 }
 
-async function rememberRecorded({ request, storage, locks }) {
+async function rememberRecorded({ request, storage, locks, storageKey, lockName }) {
   if (!request.p_token || !locks?.request) return;
   try {
-    await locks.request(LOCK_NAME, { mode: 'exclusive', ifAvailable: true }, lock => {
+    await locks.request(lockName, { mode: 'exclusive', ifAvailable: true }, lock => {
       if (!lock) return;
       const store = typeof storage === 'function' ? storage() : storage;
-      const visit = savedVisit(store, request.p_day);
-      if (visit?.token === request.p_token) store.setItem(CASTLE_VISIT_STORAGE_KEY, JSON.stringify({ ...visit, recorded: true }));
+      const visit = savedVisit(store, request.p_day, storageKey);
+      if (visit?.token === request.p_token) store.setItem(storageKey, JSON.stringify({ ...visit, recorded: true }));
     });
   } catch { /* Server-side token deduplication still prevents a repeat increment. */ }
 }
 
-export function createCastleVisitCounter({
+export function createDailyVisitCounter({
+  rpcUrl = CASTLE_VISIT_RPC, storageKey = CASTLE_VISIT_STORAGE_KEY, lockName = LOCK_NAME,
   isVisible = () => false, isAllowed = () => false,
   storage = () => globalThis.localStorage, locks = globalThis.navigator?.locks,
   crypto = globalThis.crypto, fetchImpl = globalThis.fetch,
@@ -85,7 +86,7 @@ export function createCastleVisitCounter({
     attemptedDay = day;
     emit({ status: 'loading', total: null });
     pending = (async () => {
-      const request = await prepareCastleVisit({ day, storage, locks, crypto });
+      const request = await prepareCastleVisit({ day, storage, locks, crypto, storageKey, lockName });
       // Preparing a local daily token must not cause a stale view to send a visit.
       if (disposed || !isVisible()) { attemptedDay = null; if (!disposed) emit({ status: 'idle', total: null }); return getState(); }
       try {
@@ -97,7 +98,7 @@ export function createCastleVisitCounter({
         });
         const transfer = Promise.resolve().then(async () => {
           if (typeof fetchImpl !== 'function') throw new Error('Counter unavailable');
-          const response = await fetchImpl(CASTLE_VISIT_RPC, {
+          const response = await fetchImpl(rpcUrl, {
             method: 'POST', mode: 'cors', cache: 'no-store', credentials: 'omit', referrerPolicy: 'no-referrer',
             headers: { apikey: PUBLISHABLE_KEY, 'content-type': 'application/json' },
             body: JSON.stringify(request), signal: controller.signal,
@@ -110,7 +111,7 @@ export function createCastleVisitCounter({
         const result = await Promise.race([transfer, deadline]);
         if (disposed) return getState();
         emit({ status: 'ready', total: result.total, limited: result.status !== 'ok' });
-        if (result.status === 'ok') void rememberRecorded({ request, storage, locks });
+        if (result.status === 'ok') void rememberRecorded({ request, storage, locks, storageKey, lockName });
       } catch {
         if (!disposed) emit({ status: 'unavailable', total: null });
       } finally {
@@ -123,6 +124,8 @@ export function createCastleVisitCounter({
   }
   return { refresh, getState, destroy() { disposed = true; controller?.abort(); cancelDeadline?.(); if (timer !== null) timers.clearTimeout(timer); } };
 }
+
+export const createCastleVisitCounter = createDailyVisitCounter;
 
 const mounted = new WeakMap();
 export function initCastleVisitCounter({ root, mount = root?.querySelector?.('#castle-exit-panel') } = {}) {

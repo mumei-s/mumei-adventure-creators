@@ -41,3 +41,9 @@ html:has(body[data-game-motion=reduced]){scroll-behavior:auto}
 @media(max-width:640px){.game-home-links{grid-template-columns:1fr 1fr}.game-settings-grid{gap:10px}.game-menu-links>a{font-size:12px}body[data-game-page=tower] .header-inner{flex-wrap:wrap;padding-block:9px}body[data-game-page=tower] .header-inner nav{flex-wrap:wrap;gap:10px}body[data-game-page=city] .bar{grid-template-columns:1fr auto;gap:3px 8px}body[data-game-page=city] .title{display:none}body[data-game-page=city] #clock{font-size:16px}body[data-game-page=city] .time-tools button{font-size:10px;padding-inline:6px}}
 @media(min-width:720px){body[data-game-page=tower][data-layout=tablet] .hero{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}body[data-game-page=tower][data-layout=tablet] .hero h1{font-size:42px}}
 @media(orientation:landscape) and (max-height:540px){body[data-game-page=city] .control-bar .walk-pad{--pad-width:72px}}
+
+.tower-visits{position:relative;align-self:center;color:inherit;font-size:12px;text-align:start}
+.tower-visits summary{display:flex;align-items:center;justify-content:center;gap:.5em;min-height:32px;padding:4px 8px;cursor:pointer;white-space:nowrap}
+.tower-visits strong{font-size:1.18em;font-variant-numeric:tabular-nums}
+.tower-visits small{position:absolute;z-index:25;top:100%;left:0;width:min(210px,68vw);padding:10px;border:1px solid #9a8565;border-radius:5px;background:#16252d;color:#fff5de;font:12px/1.55 system-ui;box-shadow:0 4px 14px #0005}
+.player-info .tower-visits small{inset:auto 0 100% auto}

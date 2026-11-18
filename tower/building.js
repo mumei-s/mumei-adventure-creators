@@ -110,6 +110,12 @@ export function makeElevator(dialog) {
     dialog.close();
     arrive();
   }
+  window.addEventListener('popstate',()=>{
+    if(!ride)return;
+    clearTimeout(timer);
+    ride=null;
+    dialog.close();
+  });
   skip.addEventListener('click',finish);
   dialog.addEventListener('cancel',event=>{
     event.preventDefault();

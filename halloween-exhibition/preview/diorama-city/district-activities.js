@@ -19,6 +19,119 @@ const isEvening = order => eveningGlass.every((color, index) => order[index] ===
 const yen = price => `${price.toLocaleString('ja-JP')}円`;
 const total = items => items.reduce((sum, { price, quantity }) => sum + price * quantity, 0);
 
+// A walk belongs to this traveller in this tab. Card URLs never contain personal play history.
+const prices = new Map(Object.values(catalog).flat());
+const actionNotes = {
+  cafe: {
+    counter: '真鍮のカウンターでコーヒーを注文して受け取った。',
+    reading: '窓辺の読書席でしおりを裏返すと、小さな部屋番号が書かれていた。',
+  },
+  park: {
+    bench: '水盤そばの木のベンチでひと休みした。',
+    dusk: '展望デッキから、塔の向こうに残る夕景を眺めた。',
+    night: '展望デッキから、夜の運河に窓明かりが映る様子を眺めた。',
+  },
+  playground: {
+    swing: '運河沿いのブランコに腰かけて、風を感じた。',
+    slide: '青い滑り台を滑って、遊具広場の地面に降りた。',
+  },
+  fair: {
+    wheel: '観覧車に乗り、ゴンドラから運河の街を眺めながら一周した。',
+    carousel: 'メリーゴーラウンドに乗り、白い木馬で一周した。',
+  },
+  manor: { plaque: '屋敷の入口で古い案内札を読み、三色のガラスの手がかりを見つけた。' },
+};
+
+function readItems(pairs) {
+  const items = new Map();
+  if (Array.isArray(pairs)) for (const pair of pairs) {
+    if (!Array.isArray(pair)) continue;
+    const [name, quantity] = pair;
+    if (prices.has(name) && Number.isSafeInteger(quantity) && quantity > 0 && quantity <= 99)
+      items.set(name, { name, price: prices.get(name), quantity });
+  }
+  return items;
+}
+
+export function createCityVisit(storage, traveller) {
+  const key = 'atelier-city:visit:v1:' + traveller;
+  let saved;
+  try { saved = JSON.parse(storage?.getItem(key)); } catch { /* Memory works without storage. */ }
+  const basket = readItems(saved?.basket);
+  let receipt = [...readItems(saved?.receipt).values()];
+  let glass = Array.isArray(saved?.glass) && saved.glass.length === 3 &&
+    saved.glass.every(color => Object.hasOwn(glassColors,color)) ? saved.glass : null;
+  const actions = new Set(Array.isArray(saved?.actions) ? saved.actions.filter(value => {
+    if (typeof value !== 'string') return false;
+    const [venue,point] = value.split('.');
+    return Object.hasOwn(actionNotes,venue) && Object.hasOwn(actionNotes[venue],point);
+  }) : []);
+  const pairs = items => Array.from(items, ({name,quantity}) => [name,quantity]);
+  function save() {
+    try { storage?.setItem(key, JSON.stringify({basket:pairs(basket.values()),receipt:pairs(receipt),glass,actions:[...actions]})); }
+    catch { /* Retain the visit in memory if the browser rejects storage. */ }
+  }
+  function purchaseNote() {
+    if (!receipt.length) return '';
+    const items = receipt.map(({name,quantity}) => `${name}を${quantity}点`).join('、');
+    const names = receipt.map(item => item.name).join('と');
+    return `水辺のコンビニで${items}選んだ。木のレジで${yen(total(receipt))}を支払い、${names}の入った紙袋を受け取った。`;
+  }
+  return {
+    basket,
+    get receipt() { return receipt; },
+    get glass() { return glass; },
+    add(name) {
+      if (!prices.has(name)) return false;
+      const item = basket.get(name) ?? {name, price:prices.get(name), quantity:0};
+      if (item.quantity >= 99) return false;
+      item.quantity++;
+      basket.set(name,item);
+      save();
+      return true;
+    },
+    remove(name) {
+      const item = basket.get(name);
+      if (!item) return;
+      if (--item.quantity === 0) basket.delete(name);
+      save();
+    },
+    pay() {
+      if (!basket.size) return false;
+      receipt = [...basket.values()];
+      basket.clear();
+      save();
+      return true;
+    },
+    setGlass(colors) {
+      glass = [...colors];
+      save();
+    },
+    remember(venue,point) {
+      if (!Object.hasOwn(actionNotes,venue) || !Object.hasOwn(actionNotes[venue],point)) return;
+      if (venue === 'park' && (point === 'dusk' || point === 'night'))
+        actions.delete('park.' + (point === 'dusk' ? 'night' : 'dusk'));
+      actions.add(venue+'.'+point);
+      save();
+    },
+    experience(venue,point) {
+      if (venue === 'market') {
+        if (basket.size) {
+          const selected = [...basket.values()].map(({name,quantity}) => `${name}を${quantity}点`).join('、');
+          return `水辺のコンビニで${selected}かごに入れた。会計はこれから。`;
+        }
+        return purchaseNote();
+      }
+      if (venue === 'mirrorRoom' && glass) return `作業台で左から${glassNames(glass)}の色ガラスを選び、水鏡に灯した。`;
+      const notes = actionNotes[venue];
+      if (!notes) return '';
+      if (point && Object.hasOwn(notes,point))
+        return actions.has(venue+'.'+point) ? notes[point] : '';
+      return Object.entries(notes).filter(([name]) => actions.has(venue+'.'+name)).map(([,text]) => text).join('');
+    },
+  };
+}
+
 function element(tag, text, className) {
   const node = document.createElement(tag);
   if (text) node.textContent = text;
@@ -33,17 +146,16 @@ function button(label, activate, className) {
   return node;
 }
 
-export function bindActivities(dialog, { avatar, status, motionAllowed = () => !matchMedia('(prefers-reduced-motion: reduce)').matches }) {
+export function bindActivities(dialog, { avatar, status, journey, openArticle, motionAllowed = () => !matchMedia('(prefers-reduced-motion: reduce)').matches }) {
   const title = dialog.querySelector('#activity-title');
   const body = dialog.querySelector('#activity-content');
   const message = dialog.querySelector('#activity-message');
   const close = dialog.querySelector('#activity-close');
-  const basket = new Map();
-  let receipt = [], glass = null, syncRide = null;
+  const basket = journey.basket;
+  let syncRide = null;
   document.addEventListener('visibilitychange',()=>syncRide?.(!document.hidden));
   window.addEventListener('pagehide',()=>syncRide?.(false));
   window.addEventListener('pageshow',()=>syncRide?.(!document.hidden));
-  const completedRides = new Set();
 
   function announce(text) {
     message.hidden = !text;
@@ -75,8 +187,7 @@ export function bindActivities(dialog, { avatar, status, motionAllowed = () => !
       for (const item of basket.values()) {
         const { name, price, quantity } = item;
         const remove = button('1つ戻す', () => {
-          if (item.quantity === 1) basket.delete(name);
-          else item.quantity -= 1;
+          journey.remove(name);
           announce(`${name}を1つ棚に戻しました。`);
           renderRegister();
           (list.querySelector('button') || close).focus();
@@ -88,28 +199,32 @@ export function bindActivities(dialog, { avatar, status, motionAllowed = () => !
       }
       showTotal();
       pay.disabled = !basket.size;
+      article.hidden = !journey.receipt.length || basket.size > 0;
     };
     const pay = button('ゲーム内で会計する', () => {
-      if (!basket.size) return;
-      receipt = [...basket.values()];
-      basket.clear();
+      if (!journey.pay()) return;
+      const receipt = journey.receipt;
       renderRegister();
       const names = receipt.map(({ name, quantity }) => `${name}×${quantity}`).join('、');
       announce(`お会計完了 · ${yen(total(receipt))}\n${names}\n商品を受け取りました。`);
       status(`お会計完了。袋に${receipt.map(({ name }) => name).join('、')}を入れてもらいました。`);
       close.focus();
     }, 'visit');
+    const article = button('この買い物で記事を書く', () => {
+      dialog.close();
+      openArticle();
+    }, 'spot-prompt');
     if (shelf === 'register') {
-      body.append(pay);
+      body.append(pay,article);
       renderRegister();
-      if (!basket.size) announce('かごは空です。飲み物か食べ物の棚で商品を選べます。');
+      if (!basket.size) announce(journey.receipt.length
+        ? '前回のお会計 · ' + yen(total(journey.receipt)) + '　' + journey.receipt.map(({name,quantity}) => name+'×'+quantity).join('、')
+        : 'かごは空です。飲み物か食べ物の棚で商品を選べます。');
     } else {
       for (const [name, price] of catalog[shelf]) {
         const row = element('li');
         const add = button('かごに入れる', () => {
-          const item = basket.get(name) ?? { name, price, quantity: 0 };
-          item.quantity += 1;
-          basket.set(name, item);
+          if (!journey.add(name)) { announce('同じ商品は99点までです。'); return; }
           showTotal();
           announce(`${name}をかごに入れました。`);
           status(`かごに${[...basket.values()].reduce((sum, { quantity }) => sum + quantity, 0)}点入っています。右側のレジで会計できます。`);
@@ -165,7 +280,7 @@ export function bindActivities(dialog, { avatar, status, motionAllowed = () => !
         scene.classList.remove('riding');
         announce('ひと周しました。');
         status(`${label}に乗ってひと周しました。`);
-        completedRides.add(label);
+        journey.remember('fair',kind);
         rideAgain.textContent = 'もう一周';
         rideAgain.hidden = false;
       };
@@ -197,6 +312,7 @@ export function bindActivities(dialog, { avatar, status, motionAllowed = () => !
   }
 
   function reflectionStatus() {
+    const glass = journey.glass;
     if (!glass) return '水面は静かです。色ガラスの台で灯りを映せます。';
     return isEvening(glass) ? '琥珀・青緑・藍。「夕暮れの灯り」が水鏡にそろいました。' :
       `${glassNames(glass)}の光が水面で揺れています。`;
@@ -204,7 +320,7 @@ export function bindActivities(dialog, { avatar, status, motionAllowed = () => !
 
   function openGlass(label, reflect) {
     open(label, '← 水鏡の間に戻る');
-    const selected = glass?.slice() ?? ['indigo', 'amber', 'teal'];
+    const selected = journey.glass?.slice() ?? ['indigo', 'amber', 'teal'];
     const fieldset = element('fieldset', '', 'glass-choices');
     fieldset.append(element('legend', '水鏡に映す色'));
     ['左', '中央', '右'].forEach((name, index) => {
@@ -229,8 +345,8 @@ export function bindActivities(dialog, { avatar, status, motionAllowed = () => !
       fieldset.append(row);
     });
     const apply = button('水面に灯す', () => {
-      glass = selected.slice();
-      reflect(glass.map(color => glassColors[color].light));
+      journey.setGlass(selected);
+      reflect(selected.map(color => glassColors[color].light));
       dialog.close();
       status(reflectionStatus());
     }, 'visit');
@@ -246,10 +362,9 @@ export function bindActivities(dialog, { avatar, status, motionAllowed = () => !
   });
   return {
     openShelf, openRide, openGlass, reflectionStatus,
-    reflectionMemory: () => glass ? `実際に選んだ色は左から${glassNames(glass)}。水面に同じ順で映してください。` : '',
-    rideMemory: () => completedRides.size ? `実際に乗ってひと周した遊具は${[...completedRides].join('、')}。` : '',
-    shoppingMemory: shelf => shelf === 'register' && receipt.length ?
-      `お会計したものは${receipt.map(({ name }) => name).join('、')}。この品を絵の小物に使う。` : '',
+    restoreGlass(reflect) {
+      if (journey.glass) reflect(journey.glass.map(color => glassColors[color].light));
+    },
   };
 }
 

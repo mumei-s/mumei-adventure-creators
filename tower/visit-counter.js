@@ -1,4 +1,4 @@
-import { createDailyVisitCounter } from '../halloween-exhibition/preview/castle-visit-counter.js?v=202611181951';
+import { createDailyVisitCounter } from '../halloween-exhibition/preview/castle-visit-counter.js?v=20261118-city2';
 
 const panel = document.querySelector('[data-tower-visits]');
 if (panel) {

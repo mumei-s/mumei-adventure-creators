@@ -1,12 +1,13 @@
-import { canWalkFloorSegment, facilityRoute } from '../../../tower/facility-floors.js?v=202611181820';
+import { canWalkFloorSegment, facilityRoute } from '../../../tower/facility-floors.js?v=20261118-city2';
 import { makeWalkPad, bindWalking } from './walk-controls.js?v=202611181820';
 import { avatarSnapshot, hostWalker, autoResidentWalker } from './host-avatar.js?v=202611181820';
 import { applyDistrictLight } from './scene-time.js?v=1';
-import { distance, streetAreas, walkable, walkingRoute } from './paths.js?v=20261118';
+import { distance, streetAreas, walkable, walkingRoute } from './paths.js?v=20261118-city2';
 import { districtTraffic } from './traffic.js?v=202611181820';
-import { cafeStory, venues, venueSpawn, venueFloor } from './venues.js?v=202611181820';
-import { bindActivities, playgroundPose } from './district-activities.js?v=202611181820';
-import { bindSpotIllustration } from './spot-illustration.js?v=202611181820';
+import { cafeStory, venues, venueSpawn, venueFloor } from './venues.js?v=20261118-city2';
+import { vehicleStudio } from '../../../tower/vehicle-studio.js?v=20261118-city2';
+import { bindActivities, createCityVisit, playgroundPose } from './district-activities.js?v=20261118-city2';
+import { bindSpotIllustration } from './spot-illustration.js?v=20261118-city2';
 import { districtCamera, exteriorHeight } from './camera.js?v=20261118';
 import { TOWER_API, OWNER_STORAGE, avatarImageUrl, readWalkDraft, rememberWalker } from '../../../tower/avatar-travel.js?v=20261118';
 import { initGameShell } from '../../../tower/game-shell.js?v=20261118-controls';
@@ -53,7 +54,13 @@ seatedFrame.setAttribute('aria-hidden','true');
 seatedFrame.hidden=true;
 citizen.append(seatedFrame);
 const actorFrame=()=>citizen.querySelector('canvas:not(.pose-frame):not([hidden]), img:not([hidden])');
+let visitStorage;
+try { visitStorage=window.sessionStorage; } catch { /* A private walk still works in memory. */ }
+const traveller=onDraft ? 'draft.'+onDraft.noteId : currentUrl.searchParams.get('resident') || owner?.id || 'guest';
+const journey=createCityVisit(visitStorage,traveller);
 const activities=bindActivities(activityDialog,{
+  journey,
+  openArticle:()=>openSpot(true),
   motionAllowed:gameShell.motionAllowed,
   avatar:pose=>{
     paintAvatar(stride,false,pose==='saddle'?-1:0,pose==='saddle'?0:1);
@@ -401,6 +408,7 @@ function changeVenue(id) {
   venuePhoto.hidden=!venue;
   if (venue) {
     void loadBackdrop(venuePhoto,venue.image,venue.alt);
+    if(id==='mirrorRoom')activities.restoreGlass(showReflections);
     world.dataset.venue=id;
   } else {
     delete world.dataset.venue;
@@ -442,13 +450,15 @@ function openPlace() {
     return;
   }
   if (venue) {
+    if (place.vehicle) {
+      activities.openVehicle(place.label,vehicleStudio(place.vehicle,{id:activeSpotActor?.noteId || onDraft?.noteId || owner?.noteId}));
+      return;
+    }
+    if (!(place.ride || nearby==='lookout')) journey.remember(venueId,nearby);
     if (place.shelf) activities.openShelf(place.shelf,place.label);
     if (place.ride) activities.openRide(place.ride,place.label);
     if (place.motion) startMotion(place.motion);
-    if (place.lamp) activities.openGlass(place.label, colors=>{
-      [...reflections.children].forEach((ray,index)=>ray.style.setProperty('--glass-light',colors[index]));
-      reflections.hidden=false;
-    });
+    if (place.lamp) activities.openGlass(place.label,showReflections);
     if (place.reflection) spotStatus.textContent=activities.reflectionStatus();
     if (place.description) showDescription(place);
     if (nearby==='counter') spotStatus.textContent='コーヒーを受け取りました。窓辺の読書席に、誰かのしおりが置いてあります。';
@@ -459,6 +469,7 @@ function openPlace() {
     if (nearby==='bench'&&motion?.kind==='bench') spotStatus.textContent='ベンチに座って水盤に映る光を眺めています。右奥のデッキからは街全体を見渡せます。';
     if (nearby==='lookout') {
       setLighting(lighting==='night'?'dusk':'night');
+      journey.remember('park',lighting);
       spotStatus.textContent=lighting==='night' ? '夜景。窓明かりと駅の光が運河に映っています。' : '夕景。塔の向こうに夕方の空が残っています。';
     }
     return;
@@ -482,14 +493,21 @@ function openPlace() {
   showDescription(place);
 }
 
+function showReflections(colors) {
+  [...reflections.children].forEach((ray,index)=>ray.style.setProperty('--glass-light',colors[index]));
+  reflections.hidden=false;
+}
+
 function showDescription(place) {
   el('place-title').textContent=place.label;
   el('place-description').textContent=place.description;
-  dialog.querySelector('.place-image').style.backgroundImage=venue ? `url("${venue.image}")` : '';
+  const image=dialog.querySelector('.place-image');
+  image.src=place.image || venue?.image || area.image;
+  image.alt=place.alt || venue?.alt || place.label;
   dialog.showModal();
 }
 
-function openSpot() {
+function openSpot(article=false) {
   if (blocked()) return;
   const place=(venue?.spots ?? places)[nearby];
   const setting=venues[place?.venue] ?? venue;
@@ -504,12 +522,14 @@ function openSpot() {
   href.searchParams.set('spot',place?.venue || [venueId || 'street',nearby].filter(Boolean).join('.'));
   const card=setting?.card ? new URL(setting.card,location.href) : href;
   if (setting?.card && venue && nearby && !place?.venue) card.searchParams.set('point',nearby);
-  const shopping=venueId==='mirrorRoom' ? activities.reflectionMemory() :
-    venueId==='fair' ? activities.rideMemory() : activities.shoppingMemory(place?.shelf);
+  const settingId=place?.venue || venueId;
+  const experience=journey.experience(settingId,place?.venue ? '' : nearby==='lookout' ? '' : nearby);
+  const articleScene=place?.articleScene || setting?.articleScene || place?.description || setting?.alt || label;
   showSpotPrompt({
-    label, scene:shopping ? scene+' '+shopping : scene, href:card.href, id:activeSpotActor?.noteId || onDraft?.noteId || owner?.noteId,
+    label, scene, experience, articleScene, article:article===true,
+    href:card.href, id:activeSpotActor?.noteId || onDraft?.noteId || owner?.noteId,
     avatarSource:activeSpotActor?.custom||activeSpotActor?.reference ? activeSpotActor.source : null,
-    backgroundUrl:new URL(setting?.image||area.image||el('city-plate').getAttribute('src'),location.href).href,
+    backgroundUrl:new URL(place?.image||setting?.image||area.image,location.href).href,
   });
 }
 
@@ -529,7 +549,8 @@ function arriveAtSpot() {
 }
 
 visit.addEventListener('click',openPlace);
-spotButton.addEventListener('click',openSpot);
+spotButton.addEventListener('click',()=>openSpot());
+el('place-create').addEventListener('click',()=>{dialog.close();openSpot();});
 pump.addEventListener('click',()=>{
   if (motion?.kind!=='swing') return;
   if(motion.dismount||motion.pumpTimes.length>=5||motion.elapsed>=4.9+motion.pumpTimes.length*.45)return;

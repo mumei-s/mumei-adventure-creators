@@ -47,3 +47,20 @@ html:has(body[data-game-motion=reduced]){scroll-behavior:auto}
 .tower-visits strong{font-size:1.18em;font-variant-numeric:tabular-nums}
 .tower-visits small{position:absolute;z-index:25;top:100%;left:0;width:min(210px,68vw);padding:10px;border:1px solid #9a8565;border-radius:5px;background:#16252d;color:#fff5de;font:12px/1.55 system-ui;box-shadow:0 4px 14px #0005}
 .player-info .tower-visits small{inset:auto 0 100% auto}
+.vehicle-studio {display:grid;gap:.65rem;padding:.85rem 0;color:inherit}
+.vehicle-studio p,.vehicle-studio label {margin:0}
+.vehicle-studio label {display:grid;gap:.3rem}
+.vehicle-studio :is(input,textarea) {box-sizing:border-box;width:100%;border:1px solid #938168;border-radius:5px;padding:.55rem;background:#14222a;color:#fff4df;font:inherit;font-size:16px}
+.vehicle-studio :is(button,a) {display:inline-flex;align-items:center;justify-content:center;min-height:44px;border:1px solid #a98c62;border-radius:5px;padding:.45rem .8rem;background:#253641;color:#fff0d6;text-decoration:none;font:inherit;cursor:pointer}
+.vehicle-studio button {background:#ead0a2;color:#242020;font-weight:700}
+.vehicle-studio div {display:flex;flex-wrap:wrap;gap:.5rem}
+.vehicle-studio [role=status]:empty {display:none}
+.vehicle-studio summary,.vehicle-maker>summary {min-height:40px;align-content:center;cursor:pointer}
+.vehicle-maker {margin:.5rem 0}
+
+.article-draft {margin:.85rem 0;border-block:1px solid #716652;padding:.35rem 0}
+.article-draft summary {color:inherit;cursor:pointer;min-height:42px;align-content:center;font-weight:600}
+.article-draft label {display:grid;gap:.4rem}
+.article-draft textarea {resize:vertical;box-sizing:border-box;width:100%;border:1px solid #8f8069;border-radius:4px;padding:.6rem;background:#15212a;color:#fff3df;font:16px/1.6 system-ui}
+.article-draft button {min-height:44px;margin-top:.5rem;padding:.4rem .8rem;border:1px solid #b39162;border-radius:4px;background:#e6c697;color:#231d17;cursor:pointer}
+.article-draft [role=status]:empty {display:none}

@@ -1,12 +1,11 @@
+import { makeRideStage } from './ride-stage.js?v=20261118-city2';
+
 const catalog = {
   drinks: [['緑茶', 130], ['カフェラテ', 180], ['季節のソーダ', 200]],
   snacks: [['鮭おにぎり', 160], ['たまごサンド', 260], ['プリン', 190]],
 };
 
-const rides = {
-  wheel: { image: './assets/ferris-view.webp', alt: '観覧車の窓から見下ろす運河の街', seconds: 12 },
-  carousel: { image: './assets/fair.webp', alt: '明かりのともったメリーゴーラウンド', seconds: 9 },
-};
+const rideSeconds = {wheel:12, carousel:9};
 const glassColors = {
   amber: { label: '琥珀', light: '#ffc177' },
   teal: { label: '青緑', light: '#68f0d6' },
@@ -38,6 +37,7 @@ const actionNotes = {
   fair: {
     wheel: '観覧車に乗り、ゴンドラから運河の街を眺めながら一周した。',
     carousel: 'メリーゴーラウンドに乗り、白い木馬で一周した。',
+    coach: 'メリーゴーラウンドの馬車席に乗り、灯りの下を一周した。',
   },
   manor: { plaque: '屋敷の入口で古い案内札を読み、三色のガラスの手がかりを見つけた。' },
 };
@@ -125,6 +125,7 @@ export function createCityVisit(storage, traveller) {
       if (venue === 'mirrorRoom' && glass) return `作業台で左から${glassNames(glass)}の色ガラスを選び、水鏡に灯した。`;
       const notes = actionNotes[venue];
       if (!notes) return '';
+      if (venue==='fair' && point==='carousel' && actions.has('fair.coach')) return notes.coach;
       if (point && Object.hasOwn(notes,point))
         return actions.has(venue+'.'+point) ? notes[point] : '';
       return Object.entries(notes).filter(([name]) => actions.has(venue+'.'+name)).map(([,text]) => text).join('');
@@ -239,35 +240,11 @@ export function bindActivities(dialog, { avatar, status, journey, openArticle, m
   }
 
   function openRide(kind, label) {
-    const ride = rides[kind];
+    const seconds = rideSeconds[kind];
     open(label, '← 降りる');
     const scene = element('div', '', `ride-window ride-${kind}`);
-    scene.style.setProperty('--ride-duration', `${ride.seconds}s`);
-    const photo = element('img', '', 'ride-photo');
-    photo.src = ride.image;
-    photo.alt = ride.alt;
-    scene.append(photo);
-    const carriage=element('div','','ride-carriage');
-    scene.append(carriage);
-    if(kind==='carousel'){
-      const horse=element('img','','ride-horse');horse.src='./assets/carousel-horse.webp';horse.alt='白木と金装具の回転木馬';carriage.append(horse);
-    }else{
-      carriage.append(element('div','','gondola-seat'),element('div','','gondola-rail'));
-    }
-    const source = avatar(kind==='carousel'?'saddle':'sit');
-    const w = source?.naturalWidth ?? source?.width, h = source?.naturalHeight ?? source?.height;
-    if (w && h) {
-      const rider = element('canvas', '', 'ride-avatar');
-      rider.dataset.poseArt=source.dataset?.poseArt??'original';
-      rider.width = w;
-      rider.height = h;
-      rider.setAttribute('aria-hidden', 'true');
-      const context = rider.getContext('2d');
-      if (context) {
-        context.drawImage(source, 0, 0);
-        carriage.append(rider);
-      }
-    }
+    scene.style.setProperty('--ride-duration', `${seconds}s`);
+    const stage = makeRideStage(scene, kind, avatar(kind==='carousel'?'saddle':'sit'));
     const progress = element('span', '', 'ride-progress');
     progress.setAttribute('aria-hidden', 'true');
     scene.append(progress);
@@ -280,28 +257,38 @@ export function bindActivities(dialog, { avatar, status, journey, openArticle, m
         scene.classList.remove('riding');
         announce('ひと周しました。');
         status(`${label}に乗ってひと周しました。`);
-        journey.remember('fair',kind);
+        journey.remember('fair',kind==='carousel' && scene.querySelector('.carousel-coach') ? 'coach' : kind);
         rideAgain.textContent = 'もう一周';
         rideAgain.hidden = false;
       };
       if(!motionAllowed()){finish();rideAgain.focus();return;}
       scene.classList.add('riding');
       announce(kind === 'wheel' ? 'ゴンドラが上がり始めました。窓の外を見渡せます。' : 'メリーゴーラウンドが回り始めました。');
-      let timer=0,remaining=ride.seconds*1000,since=null;
+      let frame=0,elapsed=0,since=null;
+      const duration=seconds*1000;
+      const tick=now=>{
+        if(since===null)return;
+        elapsed+=now-since;
+        since=now;
+        const fraction=Math.min(1,elapsed/duration);
+        stage.draw(fraction);
+        if(fraction===1||!motionAllowed()){stage.draw(1);finish();return;}
+        frame=requestAnimationFrame(tick);
+      };
       syncRide=visible=>{
-        clearTimeout(timer);
+        cancelAnimationFrame(frame);
         const now=performance.now();
-        if(since!==null)remaining-=now-since;
+        if(since!==null)elapsed+=now-since;
         since=visible?now:null;
         scene.classList.toggle('ride-paused',!visible);
-        if(visible)timer=setTimeout(finish,Math.max(0,remaining));
+        if(visible)frame=requestAnimationFrame(tick);
       };
       syncRide(!document.hidden);
       (kind === 'wheel' ? look : close).focus();
     }, 'visit');
     const look = button('外の景色を見る', () => {
-      const outer = scene.classList.toggle('ride-outside');
-      look.textContent = outer ? '元の視点に戻す' : '外の景色を見る';
+      const outer = stage.switchView();
+      look.textContent = outer ? '観覧車全体に戻す' : '外の景色を見る';
       look.setAttribute('aria-pressed', String(outer));
     });
     look.setAttribute('aria-pressed', 'false');
@@ -362,6 +349,10 @@ export function bindActivities(dialog, { avatar, status, journey, openArticle, m
   });
   return {
     openShelf, openRide, openGlass, reflectionStatus,
+    openVehicle(label, panel) {
+      open(label, '← お店に戻る');
+      body.append(panel);
+    },
     restoreGlass(reflect) {
       if (journey.glass) reflect(journey.glass.map(color => glassColors[color].light));
     },

@@ -1,15 +1,8 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
-const src = await readFile(new URL('../prompt-play.js',import.meta.url),'utf8');
-const asModule = source => 'data:text/javascript;base64,'+Buffer.from(source).toString('base64');
-const coreUrl=asModule(src);
-const qualityUrl=asModule(await readFile(new URL('../quality-assist.js',import.meta.url),'utf8'));
-const {makeRoomPrompt,makeArtifactPrompt,makeArticleDraft,creatorReference,residentPost,articleCardBlock,insightUrl,towerUrl,hostNoteUrl}=await import(coreUrl);
-const spotSource=await readFile(new URL('../../halloween-exhibition/preview/diorama-city/spot-illustration.js',import.meta.url),'utf8');
-const {makeSpotPrompt,spotReferenceInstructions}=await import(asModule(spotSource
-  .replace(/\.\.\/\.\.\/\.\.\/tower\/prompt-play\.js\?v=[\d-]+/,coreUrl)
-  .replace(/\.\.\/\.\.\/\.\.\/tower\/quality-assist\.js\?v=\d+/,qualityUrl)));
+import {makeRoomPrompt,makeArtifactPrompt,makeArticleDraft,creatorReference,residentPost,articleCardBlock,insightUrl,towerUrl,hostNoteUrl} from '../prompt-play.js';
+import {makeSpotPrompt,spotReferenceInstructions} from '../../halloween-exhibition/preview/diorama-city/spot-illustration.js';
 const app=await readFile(new URL('../app.js',import.meta.url),'utf8');
 const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
 test('room generation first, recovery without new avatar, independent attachments',()=>{

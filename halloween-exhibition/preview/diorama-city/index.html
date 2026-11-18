@@ -12,12 +12,12 @@
   <meta property="og:description" content="自分のキャラクターで街を歩き、２枚のイラストとnote記事をつくる。">
   <meta property="og:image" content="https://mumei-s.github.io/mumei-adventure-creators/halloween-exhibition/preview/diorama-city/assets/district.webp">
   <meta name="note:card" content="summary_large_image">
-  <link rel="stylesheet" href="./district.css?v=202611181820">
+  <link rel="stylesheet" href="./district.css?v=20261118-city2">
   <link rel="stylesheet" href="./walk-pad.css?v=2">
   <link rel="stylesheet" href="../../../tower/quality-assist.css?v=202611181820">
-  <link rel="stylesheet" href="../../../tower/game-shell.css?v=202611181820">
-  <script type="module" src="./district.js?v=202611181820"></script>
-  <script type="module" src="../../../tower/visit-counter.js?v=202611181951"></script>
+  <link rel="stylesheet" href="../../../tower/game-shell.css?v=20261118-city2">
+  <script type="module" src="./district.js?v=20261118-city2"></script>
+  <script type="module" src="../../../tower/visit-counter.js?v=20261118-city2"></script>
 </head>
 <body>
 <main id="district" tabindex="-1">
@@ -83,16 +83,17 @@
     </div>
     <div class="player-info">
       <details class="tower-visits" data-tower-visits><summary>累計訪問 <strong aria-live="polite">—</strong></summary><small>マンションと近未来街区の合計。同じブラウザは日本時間で1日1回です。</small></details>
-    <p id="walker-name">無名S note</p>
+      <p id="walker-name">無名S note</p>
       <a id="walker-room" href="../../../tower/#prompt-import">自分のアバターで歩く</a>
       <button id="retry-walker" class="spot-prompt" type="button" hidden>アバターを再読み込み</button>
     </div>
   </div>
   <dialog id="place-dialog" aria-labelledby="place-title">
-    <div class="place-image" aria-hidden="true"></div>
+    <img class="place-image" alt="">
     <div class="place-body">
       <h2 id="place-title"></h2>
       <p id="place-description"></p>
+      <button type="button" id="place-create" class="spot-prompt">この景色でイラスト・note記事をつくる</button>
       <form method="dialog"><button type="submit">← 街歩きに戻る</button></form>
     </div>
   </dialog>
@@ -127,8 +128,12 @@
       <button type="button" class="visit" id="spot-copy">イラスト作成プロンプトをコピー</button>
       <span id="spot-message" role="status"></span>
       <p class="spot-hint">登録済みのキャラは再入力不要（ChatGPTで参照できない場合だけ画像を添付）。別のキャラに変更する場合は新しい画像を添付してください。本文イラスト２枚と専用サムネイル１枚を作成します。</p>
-      <button type="button" class="visit" id="spot-article">イラストができたら note記事を作る</button>
-      <p class="spot-hint">イラストができた同じChatGPTチャットに「記事にする」と送るか、上のボタンで記事専用プロンプトをコピーしてください。画像の再生成は不要です。</p>
+      <details id="spot-article-draft" class="article-draft"><summary>そのままnoteに貼れる記事本文</summary>
+        <label>記事原稿（編集できます）<textarea rows="9" aria-label="編集できる記事本文"></textarea></label>
+        <button type="button">記事本文をコピー</button><p role="status"></p>
+      </details>
+      <button type="button" class="visit" id="spot-article">ChatGPTで記事を仕上げるプロンプトをコピー</button>
+      <p class="spot-hint">この記事原稿は画像を作る前にも使えます。イラストができたら同じチャットで「記事にする」と送れます。</p>
       <div class="spot-actions">
         <a id="spot-app" class="spot-prompt">アプリ版を開く</a>
         <a class="spot-prompt" href="../../../tower/chatgpt-web.html" target="_blank" rel="noopener">Web版を開く</a>

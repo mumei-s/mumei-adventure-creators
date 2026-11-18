@@ -1,9 +1,9 @@
-import { chatgptAppLink, hostNoteUrl, parseNoteId, towerUrl, insightUrl, articleCardBlock, articleCoverInstructions, articleVoiceInstructions, cardPasteInstructions, bindCardButtons, makeArtifactPrompt, creatorReference, characterReferenceInstructions, characterArtInstructions, settingInstructions } from '../../../tower/prompt-play.js?v=202611181820';
+import { chatgptAppLink, hostNoteUrl, parseNoteId, towerUrl, insightUrl, articleCardBlock, articleWritingInstructions, bindArticleDraft, articleCoverInstructions, articleVoiceInstructions, cardPasteInstructions, bindCardButtons, makeArtifactPrompt, creatorReference, characterReferenceInstructions, characterArtInstructions, settingInstructions } from '../../../tower/prompt-play.js?v=20261118-city2';
 import { bindQualityAssist } from '../../../tower/quality-assist.js?v=202611181820';
 
 export { characterReferenceInstructions as spotReferenceInstructions };
 
-export function makeSpotPrompt({ label, scene, href, id, referenceMode, referenceUrl, backgroundUrl }) {
+export function makeSpotPrompt({ label, scene, href, id, referenceMode, referenceUrl, backgroundUrl, experience }) {
   const profile = id ? `公開プロフィール： https://note.com/${id}\n` : '';
   const room = new URL(towerUrl);
   if (id) room.searchParams.set('creator', id);
@@ -15,15 +15,15 @@ ${profile}${characterReferenceInstructions({referenceMode,referenceUrl})}
 
 【描く場面】
 ${scene}
-${settingInstructions(backgroundUrl)}
+${experience ? 'この参加者が実際に行ったこと：'+experience+'\n' : ''}${settingInstructions(backgroundUrl)}
 
 確認できた登録済みまたは今回添付したキャラクターを主人公に、この場所で過ごす２つの異なる瞬間を、画像生成機能で横3対2の別々の完成イラスト２枚として描き、このチャットに表示してください。１枚目では、広めの構図で場所の特徴と人物の全身、足を置いた床を見せてください。２枚目では続いて起きた行動に近づき、１枚目と異なる角度から視線や手と物の接点を描いてください。足の接地・影の方向、指と持ち手の重なり、人物と家具や遊具の縮尺を場面ごとに見直してください。２枚を同じ絵の色違いやコラージュにせず、それぞれ文字・操作ボタンのない完成画像にしてください。
 ${characterArtInstructions}
 公開プロフィールを読める場合は、公開作品のモチーフを背景や小物に取り入れてください。読めなくても添付と場面指定で制作を続けてください。IDが記載されていれば再質問しないでください。キャラ画像は確認できない場合だけ聞いてください。
 
 【そのまま貼れるnote参加記事】
-記事のタイトルを先に決め、本文イラスト２枚と専用サムネイルを生成します。画像が出たら必ず次の質問をしてください：「今回のイラストをnoteの記事にしますか？『記事にする』と送ってください。」 画像だけで応答が終わる環境では、利用者がサイトの「note記事を作る」ボタンを使えるように案内してください。「記事にする」と返答されたら、２枚の絵に実際に描かれた行動と街の風景をもとに、参加者の視点でタイトルと本文を書いてください。既にある画像を再生成しないでください。本文の異なる位置に「［ここに街のイラスト１］」「［ここに街のイラスト２］」を入れます。未生成の画像は未完了と明記し、別々の２枚とサムネイルを生成し終えるまで完了としないでください。同じチャットですでにTower用のアバターと部屋の画像ができている場合は、「［ここにアバター画像］」「［ここに部屋画像］」も入れて、部屋から街へ出かけた1本の記事にまとめてください。
-${articleVoiceInstructions(id)}
+記事のタイトルを先に決め、本文イラスト２枚と専用サムネイルを生成します。画像が出たら必ず次の質問をしてください：「今回のイラストをnoteの記事にしますか？『記事にする』と送ってください。」 画像だけで応答が終わる環境では、利用者がサイトの「note記事を作る」ボタンを使えるように案内してください。「記事にする」と返答されたら、その場で記事を書いてください。
+${articleWritingInstructions({id})}
 ${articleCoverInstructions()}
 
 記事の最後に無名S noteが主催する #無名Sプロンプト の遊びだと紹介し、以下のカード用ブロックを改変せずに置いてください。
@@ -56,6 +56,10 @@ export function bindSpotIllustration(dialog) {
   const resetRef = dialog.querySelector('#spot-reset-reference');
   const restorePrompt = dialog.querySelector('#spot-main-prompt');
   let current, objectUrl, attachmentCreator, reviewedCreator, referenceRevision = 0;
+  const draft=bindArticleDraft(dialog.querySelector('#spot-article-draft'),()=>{
+    const id=parseNoteId(field.value);
+    return {...current,id,title:quality.articleTitle,experience:!current.id || id===current.id ? current.experience : ''};
+  });
 
   function savedReference() {
     return creatorReference(parseNoteId(field.value), current?.id, current?.avatarSource);
@@ -94,7 +98,7 @@ export function bindSpotIllustration(dialog) {
     field.setAttribute('aria-invalid', String(Boolean(field.value.trim()) && !id));
     const ref = reference();
     const saved = ref.referenceMode !== 'attachment';
-    text.value = makeSpotPrompt({ ...current, id, ...ref });
+    text.value = makeSpotPrompt({ ...current, id, experience:(!current.id || id===current.id) ? current.experience : '', ...ref });
     copy.textContent = 'イラスト作成プロンプトをコピー';
     restorePrompt.hidden = true;
     if (saved) {
@@ -116,7 +120,8 @@ export function bindSpotIllustration(dialog) {
   function copyArtifact(kind, articleTitle, reason) {
     if (!validCreator()) return;
     text.value = makeArtifactPrompt({ kind, title: articleTitle, reason, id: parseNoteId(field.value),
-      scene: current.scene, href: current.href, reference: reference(), backgroundUrl: current.backgroundUrl });
+      scene: current.scene, href: current.href, reference: reference(), backgroundUrl: current.backgroundUrl,
+      experience:!current.id || parseNoteId(field.value)===current.id ? current.experience : null, draft:kind==='article' ? draft.text : undefined });
     restorePrompt.hidden = false;
     copy.textContent = kind === 'article' ? '記事用プロンプトをコピー' : '選んだ作品の修正プロンプトをコピー';
     return copyPrompt(kind === 'article' ? '記事用プロンプトをコピーしました。イラストを作った同じチャットに貼り付けてください。' :
@@ -134,6 +139,7 @@ export function bindSpotIllustration(dialog) {
     if (attachmentCreator && parseNoteId(field.value) !== attachmentCreator) clearAttachment();
     render();
     quality.refresh();
+    draft.refresh();
     message.textContent = '';
   });
   fileField.addEventListener('change', () => {
@@ -219,12 +225,14 @@ export function bindSpotIllustration(dialog) {
       reviewedCreator = parseNoteId(field.value);
     }
     current = spot;
+    dialog.querySelector('#spot-article-draft').open=false;
     title.textContent = `${spot.label}でイラストをつくる`;
     summary.textContent = spot.scene;
     message.textContent = '';
     render();
     quality.refresh();
     dialog.showModal();
-    copy.focus();
+    if(spot.article)draft.reveal();
+    else copy.focus();
   };
 }

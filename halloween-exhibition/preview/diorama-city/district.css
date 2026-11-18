@@ -205,7 +205,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 .glass-swatch {height:12px;border-radius:3px;background:var(--glass-light)}
 dialog {width:min(540px,calc(100% - 24px));max-block-size:calc(100dvh - 20px);padding:0;color:#f1ebdf;background:#171e24;border:1px solid #927b5d;border-radius:5px}
 dialog::backdrop {background:#101414b5}
-.place-image {height:110px;background:url("./assets/district.webp?v=1") center 60% / cover}
+.place-image {display:block;width:100%;height:auto;max-height:47dvh;object-fit:contain;background:#10191f}
 .place-body {padding:18px}
 .place-body h2 {margin:0;font-size:23px;font-weight:500;color:#e6d1b2}
 .place-body p {line-height:1.8;font-size:14px}
@@ -227,50 +227,45 @@ dialog::backdrop {background:#101414b5}
 .market-list span:nth-child(2) {color:#e6d1b2;font-variant-numeric:tabular-nums}
 .market-total {font-variant-numeric:tabular-nums;color:#eedab7}
 #activity-message {white-space:pre-line;color:#c7e9d7}
-.ride-window {
-  position:relative;
-  isolation:isolate;
-  height:min(230px,44dvh);
-  overflow:hidden;
-  margin:12px 0;
-  border:1px solid #8e7756;
-  border-radius:5px;
-  background:#10191f;
-}
-.ride-photo {width:100%;height:100%;object-fit:cover;transition:scale .45s ease;will-change:transform}
-.ride-outside .ride-photo {scale:1.22}
-.ride-outside .ride-avatar {opacity:0}
-.ride-wheel .ride-photo {object-position:50% 50%}
-.ride-avatar {
-  position:absolute;
-  bottom:6px;
-  left:13%;
-  width:auto;
-  max-width:37%;
-  height:70%;
-  object-fit:contain;
-  object-position:bottom;
-  filter:drop-shadow(1px 3px 2px #151515b8);
-  transition:opacity .25s;
-}
-.ride-carriage {position:absolute;inset:0;transform-origin:50% 70%;z-index:2}
-.ride-horse {position:absolute;left:25%;top:7%;width:58%;height:90%;object-fit:contain;filter:drop-shadow(0 8px 8px #12191a8c);z-index:2}
-.ride-carousel .ride-photo {object-position:50% 55%;scale:1.1;filter:brightness(.75) blur(.5px);transform:none}
-.ride-carousel .ride-avatar {left:38%;top:3%;bottom:auto;width:35%;max-width:none;height:68%;z-index:3;object-position:50% 100%}
-.ride-carousel .ride-avatar[data-pose-art="original"] {z-index:1;top:0;height:82%}
-.ride-wheel .ride-avatar {left:18%;bottom:-13%;max-width:38%;height:76%;z-index:2}
-.gondola-seat {position:absolute;left:6%;right:6%;bottom:2%;height:15%;background:linear-gradient(#d6c6ad,#80694e);border:3px solid #5e503d;border-radius:10px;box-shadow:0 -3px 14px #1b25316e;z-index:1}
-.gondola-rail {position:absolute;left:0;right:0;top:0;bottom:0;border:13px solid #263e4b;border-radius:40% 40% 7% 7%;box-shadow:inset 0 0 0 2px #d4c8a8;z-index:4}
-.ride-wheel.riding .ride-photo {animation:gondola var(--ride-duration) ease-in-out both}
-.ride-wheel.riding .ride-carriage {animation:gondola-sway calc(var(--ride-duration) / 2) ease-in-out 2}
-.ride-carousel.riding .ride-photo {animation:carousel-pan var(--ride-duration) ease-in-out both}
-.ride-carousel.riding .ride-carriage {animation:horse-rise calc(var(--ride-duration) / 3) ease-in-out 3}
-@keyframes horse-rise {0%,100%{transform:translateY(0)}50%{transform:translateY(-6%)}}
-@keyframes carousel-pan {0%,100%{transform:none}25%{transform:scale(1.035) translateX(2%)}75%{transform:scale(1.035) translateX(-2%)}}
-@keyframes gondola-sway {0%,100%{transform:rotate(0)}25%{transform:rotate(.55deg)}75%{transform:rotate(-.55deg)}}
-.ride-progress {display:none;position:absolute;inset:auto 0 0;height:3px;background:#f1c686;transform-origin:0 50%}
+.ride-window {position:relative;isolation:isolate;width:min(100%,69dvh);aspect-ratio:3/2;overflow:hidden;margin:12px auto;border:1px solid #8e7756;border-radius:6px;background:#15212c}
+.ride-scenery,.carousel-hub,.wheel-skyline {position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ride-wheel>.ride-scenery {filter:brightness(.77)}
+.wheel-layout {position:absolute;top:3%;height:89%;aspect-ratio:1;left:50%;transform:translateX(-50%)}
+.wheel-support {position:absolute;inset:43% 16% -8%;background:linear-gradient(100deg,#52656e,#ddbc86 35%,#296072 56%,#839ca1);clip-path:polygon(47% 0,54% 0,100% 100%,90% 100%,50% 10%,10% 100%,0 100%)}
+.wheel-rim {position:absolute;inset:4%;border-radius:50%;border:3px solid #e3c58c;outline:1px solid #53636a;box-shadow:inset 0 0 0 1px #54483b,0 0 5px #e8bc68}
+.wheel-rim::before,.wheel-rim::after {content:'';position:absolute;border-radius:50%;inset:3%;border:2px solid #97785b}
+.wheel-rim::after {inset:-3px;border:3px dotted #fff4bd}
+.wheel-spoke {position:absolute;bottom:50%;left:calc(50% - 1px);width:2px;height:50%;transform-origin:bottom;background:linear-gradient(#f4ce7f,#927869);box-shadow:1px 0 0 #334656}
+.wheel-hub {position:absolute;left:47%;top:47%;width:6%;height:6%;border-radius:50%;background:radial-gradient(circle at 33% 30%,#fff7ce,#c69250 48%,#455361 73%);box-shadow:0 0 5px #eec484}
+.wheel-cabin {position:absolute;width:13%;height:11%;transform:translate(-50%,2%);border:1px solid #d4c29d;border-radius:32% 32% 30% 30%;background:linear-gradient(to right,#466470aa,#c5d4cdad 52%,#486777c4);box-shadow:0 1px 2px #14252b}
+.wheel-cabin::before {content:'';position:absolute;bottom:97%;height:34%;left:47%;width:7%;border-radius:2px;background:#e3c796}
+.wheel-cabin::after {content:'';position:absolute;inset:54% -1px -1px;border:1px solid #514b40;border-top-color:#efdcb4;border-radius:0 0 45% 45%;background:linear-gradient(115deg,#e0c095,var(--cabin-color) 35% 70%,#343f42)}
+.wheel-cabin.selected-cabin {--cabin-color:#b12f32!important;z-index:2;outline:1px solid #fff1bd}
+.ride-avatar {position:absolute;object-fit:contain;pointer-events:none}
+.wheel-cabin .ride-avatar {width:80%;height:93%;left:10%;bottom:5%}
+.wheel-interior {display:none;position:absolute;inset:0;overflow:hidden}
+.ride-outside .wheel-layout {display:none}
+.ride-outside .wheel-interior {display:block}
+.window-glass {position:absolute;inset:0;background:linear-gradient(115deg,#d1f5ff30,transparent 30% 65%,#ffe5b143);pointer-events:none}
+.wheel-interior>.wheel-cabin {inset:0!important;width:auto;height:auto;transform:none;border:0;background:none;outline:none;box-shadow:none}
+.wheel-interior>.wheel-cabin::before {display:none}
+.wheel-interior>.wheel-cabin::after {inset:91% 0 0;border-radius:0;background:linear-gradient(#b79975,#746049)}
+.wheel-interior .ride-avatar {left:4%;bottom:-5%;width:42%;height:90%}
+.ride-station {position:absolute;bottom:5px;right:6px;z-index:30;border-radius:3px;padding:2px 7px;color:#fff3d0;background:#17212dda;font-size:.75rem}
+.carousel-mount {position:absolute;width:41%;aspect-ratio:860/573;transform-origin:50% 100%;filter:drop-shadow(0 3px 2px #37211280)}
+.ride-horse {display:block;width:100%;height:100%;object-fit:contain}
+.carousel-mount.returning>.ride-horse {transform:scaleX(-1)}
+.carousel-mount .ride-avatar {left:19%;top:-14%;width:56%;height:auto;aspect-ratio:1;object-fit:contain}
+.carousel-mount.returning .ride-avatar[data-pose-art="seated"] {left:25%;transform:scaleX(-1)}
+.carousel-hub {z-index:6;clip-path:polygon(32% 0,68% 0,64% 46%,59% 54%,40% 54%,35% 47%);pointer-events:none}
+.coach-back,.coach-side {position:absolute;border:2px solid #e6bf7c;background:linear-gradient(110deg,#805129,#b78738 13%,#641e32 28%,#9c4050 72%,#54321b);border-radius:45% 30% 25% 28%}
+.coach-back {inset:25% 16% 19% 13%}
+.coach-side {inset:53% 6% 7%;box-shadow:inset 0 3px 0 #d2ad75,0 3px 0 #583728}
+.coach-side::before {content:'✦';display:grid;place-content:center;height:100%;color:#ebcf93;font:1.2rem Georgia,serif}
+.carousel-coach .ride-avatar {width:62%;height:95%;left:19%;top:-7%;object-position:center bottom}
+.ride-progress {display:none;position:absolute;inset:auto 0 0;z-index:32;height:3px;background:#f1c686;transform-origin:0 50%}
 .ride-window.riding .ride-progress {display:block;animation:ride-progress var(--ride-duration) linear both}
-@keyframes gondola {0%,100%{transform:none}48%,58%{transform:scale(1.09) translateY(3%)}}
+
 .ride-window.ride-paused * {animation-play-state:paused!important}
 body[data-game-motion="reduced"] :is(.ride-window *, .passage, .mirror-reflections span) {animation:none!important;transition:none!important}
 @keyframes ride-progress {from{transform:scaleX(0)} to{transform:scaleX(1)}}

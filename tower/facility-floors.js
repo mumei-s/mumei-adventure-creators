@@ -22,12 +22,16 @@ const driveway = floor({
   spawn: [53,85], heights: [10,41], parking: drivewayBays,
 });
 const parkingTower = floor({
-  outline: [[28,91],[37,76],[42,64],[45,59],[51,57],[54,61],[65,65],[79,70],[95,80],[95,96],[28,96]],
-  spawn: [56,84], heights: [10,41], parking: drivewayBays,
+  outline: [[6,92],[17,77],[26,68],[34,61],[42,58],[59,58],[67,62],[78,70],[93,79],[96,82],[96,96],[6,96]],
+  spawn: [54,84], heights: [10,43], aspect:16/9, parking:[[14,70],[32,61],[69,60],[86,68]],
 });
 const bicycles = floor({
   outline: [[6,94],[19,78],[24,70],[34,60],[42,55],[55,55],[58,59],[62,65],[74,83],[83,96],[6,96]],
   spawn: [44,85], heights: [9,41], parking: [[12,72],[20,67],[28,62],[34,59],[39,56]],
+});
+const motorcycles = floor({
+  outline: [[5,78],[16,72],[30,70],[47,69],[64,69],[80,70],[94,73],[96,78],[96,96],[5,96]],
+  spawn:[50,85],heights:[12,43],aspect:16/9,parking:[[23,67],[40,66],[56,66],[73,67]],
 });
 export const facilityFloors = Object.freeze({
   concierge: floor({
@@ -55,7 +59,7 @@ export const facilityFloors = Object.freeze({
     outline: [[5,70],[13,65],[15,59],[84,59],[86,65],[95,67],[95,96],[5,96]],
     spawn: [54,85], heights: [17,46], aspect: 1320/743,
   }),
-  parking: garage, driveway, parkingTower, bicycle: bicycles, motorcycle: bicycles,
+  parking: garage, driveway, parkingTower, bicycle: bicycles, motorcycle: motorcycles,
   boiler: floor({
     outline: [[4,82],[19,76],[38,70],[56,65],[74,59],[89,55],[96,55],[96,96],[4,96]],
     spawn: [57,85], heights: [10,43],

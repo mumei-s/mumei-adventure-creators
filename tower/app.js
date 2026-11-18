@@ -1,9 +1,9 @@
 import { scanAtlas } from '../halloween-exhibition/preview/diorama-city/atlas-layout.js?v=20261118-sprites-2';
-import { characterSignature, designWorld, generatedInterior, roomPreview, roomStage } from './world.js?v=202611181820';
-import { cutaway, dailyStory, makeElevator } from './building.js?v=202611181820';
-import { bindSharedSpaces, floorLabel } from './shared-spaces.js?v=202611181820';
-import { bindSpotIllustration } from '../halloween-exhibition/preview/diorama-city/spot-illustration.js?v=202611181820';
-import { chatgptAppLink, makeArtifactPrompt, makeRoomPrompt, parseNoteId, creatorReference, residentPost, towerUrl, hostNoteUrl, insightUrl, bindCardButtons } from './prompt-play.js?v=202611181820';
+import { characterSignature, designWorld, generatedInterior, roomPreview, roomStage } from './world.js?v=20261118-city2';
+import { cutaway, dailyStory, makeElevator } from './building.js?v=20261118-city2';
+import { bindSharedSpaces, floorLabel } from './shared-spaces.js?v=20261118-city2';
+import { bindSpotIllustration } from '../halloween-exhibition/preview/diorama-city/spot-illustration.js?v=20261118-city2';
+import { chatgptAppLink, makeArtifactPrompt, makeRoomPrompt, bindArticleDraft, parseNoteId, creatorReference, residentPost, towerUrl, hostNoteUrl, insightUrl, bindCardButtons } from './prompt-play.js?v=20261118-city2';
 import { bindQualityAssist } from './quality-assist.js?v=202611181820';
 import { TOWER_API, OWNER_STORAGE, avatarImageUrl, readWalkDraft, saveWalkDraft, clearWalkDraft, readTraveler, rememberWalker } from './avatar-travel.js?v=20261118';
 import { initGameShell } from './game-shell.js?v=20261118-controls';
@@ -91,6 +91,15 @@ const roomQuality = bindQualityAssist($('#tower-quality'), {
     try { await copy(prompt); status($('#prompt-status'), '指定した成果物だけのプロンプトをコピーしました。'); }
     catch { $('#prompt-text').focus(); $('#prompt-text').select(); }
   },
+});
+const roomDraft=bindArticleDraft($('#room-article-draft'),()=>{
+  const id=parseNoteId($('#prompt-id').value);
+  const occupied=Boolean(id && state.room?.isOwner && state.room.noteId===id);
+  const href=new URL(towerUrl);
+  if(occupied)href.searchParams.set('room',state.room.id);
+  else href.hash='prompt-play';
+  return {mode:'room',id,occupied,href:href.href,ideas:$('#prompt-ideas').value,
+    title:roomQuality.articleTitle,roomTitle:occupied ? state.room.design.title : $('#generated-room-title').value};
 });
 let roomControls;
 
@@ -1087,6 +1096,7 @@ function reconcileRoomCreator() {
 function syncPrompt() {
   const id = parseNoteId($('#prompt-id').value);
   const reference = roomReference();
+  if($('#room-article-draft').open)roomDraft.refresh();
   const save = $('#room-save-reference');
   save.hidden = reference.referenceMode !== 'local';
   if (save.hidden) save.removeAttribute('href');
@@ -1099,7 +1109,7 @@ function syncPrompt() {
     reference.referenceMode === 'local' ? '@' + id + ' の画像はこの端末にあります。別のチャットでは必要に応じて元の画像を添付してください。' :
     'ChatGPTに自分のキャラ画像を添付してください。同じチャットにある本人の絵も使えます。';
   if (play.target) {
-    $('#prompt-text').value = makeArtifactPrompt({ ...play.target, id, mode: 'room', scene: $('#prompt-ideas').value, reference });
+    $('#prompt-text').value = makeArtifactPrompt({ ...play.target, id, mode: 'room', scene: $('#prompt-ideas').value, reference, draft:play.target.kind==='article' ? roomDraft.text : undefined });
     roomQuality.refresh();
     return;
   }

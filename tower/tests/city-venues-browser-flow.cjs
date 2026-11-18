@@ -30,7 +30,7 @@ async function renderedFeet(page) {
     const page = await browser.newPage({viewport:{width:390,height:844}, reducedMotion:'reduce', serviceWorkers:'block'});
     try {
       const url = new URL(process.env.CITY_URL || 'http://127.0.0.1:4173/halloween-exhibition/preview/diorama-city/');
-      if (['market','manor','mirrorRoom','fair'].includes(name)) url.searchParams.set('area','canal');
+      if (['market','manor','mirrorRoom','fair','avenueShops'].includes(name)) url.searchParams.set('area','canal');
       url.searchParams.set('spot',name);
       await page.goto(url.href,{waitUntil:'domcontentloaded'});
       await page.waitForSelector('#city-world[data-venue="' + name + '"]');

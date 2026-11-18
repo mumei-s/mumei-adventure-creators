@@ -1,4 +1,4 @@
-/** Castle-only, approximate cumulative visits. No identity, image or article data is sent. */
+/** Daily visitor totals. Castle and Tower use independent counters. No identity, image or article data is sent. */
 export const CASTLE_VISIT_STORAGE_KEY = 'halloween-exhibition:castle-visits:v1';
 export const CASTLE_VISIT_RPC = 'https://xxhaerjvrgmnadxjqetz.supabase.co/rest/v1/rpc/castle_record_visit';
 const PUBLISHABLE_KEY = 'sb_publishable_yUoJtk-zLMLBZFyBUZehIw_9Bym2Z3w';

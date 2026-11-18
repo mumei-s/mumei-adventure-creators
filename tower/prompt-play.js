@@ -215,6 +215,30 @@ ${cardPasteInstructions()}
   ].filter(Boolean).join('\n');
 }
 
+export function bindArticleDraft(panel, getContext) {
+  const field=panel.querySelector('textarea');
+  const message=panel.querySelector('[role=status]');
+  let previous='';
+  function refresh() {
+    const next=makeArticleDraft(getContext());
+    if(next!==previous) { field.value=next; previous=next; message.textContent=''; }
+  }
+  panel.addEventListener('toggle',()=>{if(panel.open)refresh();});
+  panel.querySelector('button').addEventListener('click',async()=>{
+    try {
+      await navigator.clipboard.writeText(field.value);
+      message.textContent='記事本文をコピーしました。noteの本文に貼り付けられます。';
+    } catch {
+      field.focus();field.select();message.textContent='選択中の記事本文をコピーできます。';
+    }
+  });
+  return {
+    reveal() {refresh();panel.open=true;field.focus();},
+    refresh,
+    get text() {refresh();return field.value;},
+  };
+}
+
 export function bindCardButtons(container, entries, status) {
   const box = document.createElement('div');
   box.className = 'prompt-card-links';

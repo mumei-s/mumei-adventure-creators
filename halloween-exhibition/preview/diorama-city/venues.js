@@ -1,4 +1,4 @@
-import { canStandOnFloor } from '../../../tower/facility-floors.js?v=202611181820';
+import { canStandOnFloor } from '../../../tower/facility-floors.js?v=20261118-city2';
 
 const tower = '../../../tower/?from=diorama';
 
@@ -13,7 +13,7 @@ function floorPlan(edge, near = 641) {
 
 export const venues = {
   avenueShops: {
-    title: '中央大通り', card: './spots/avenueShops.html',
+    title: '中央大通り', articleScene:'並木の奥にショールームのガラス窓が光る。少し歩くと、バイク工房の作業台の向こうに自転車店が見えてくる。', card: './spots/avenueShops.html',
     image: './assets/street-avenue.webp',
     alt: '運河沿いの並木道に並ぶ車のショールーム、バイク工房、自転車店',
     scale: [146, .5],
@@ -30,7 +30,7 @@ export const venues = {
     note: '店先へ歩くと自分の乗り物をつくれます。各店でのひとコマもイラストや記事にできます。',
   },
   cafe: {
-    title: '水辺のカフェ',
+    title: '水辺のカフェ', articleScene:'真鍮のカウンターは、窓から差し込む青い光をやわらかく返している。運河のほうを向けば、一人で本を開ける席がある。',
     card: './spots/cafe.html',
     image: './assets/cafe.webp',
     alt: '真鍮のカウンターと窓辺の読書席がある、街区のカフェ',
@@ -48,7 +48,7 @@ export const venues = {
     link: { label: 'プロンプト遊びへ ↗', href: `${tower}#prompt-play` },
   },
   park: {
-    title: '水辺の公園',
+    title: '水辺の公園', articleScene:'水盤のそばに木のベンチがある。水面を目でたどった先に、Atelier Towerが見える。',
     card: './spots/park.html',
     image: './assets/park.webp',
     alt: '水盤とベンチの向こうに、Atelier Towerが見える水辺の遊歩道',
@@ -67,7 +67,7 @@ export const venues = {
     note: 'ベンチ、展望デッキ、ブランコと滑り台のある遊具広場へ歩けます。',
   },
   playground: {
-    title: '遊具広場',
+    title: '遊具広場', articleScene:'運河沿いの桜のそばにブランコが二つ並ぶ。青い滑り台の上からは、街灯が少し近く見えそうだ。',
     card: './spots/playground.html',
     parent: 'park',
     image: './assets/playground.webp',
@@ -86,7 +86,7 @@ export const venues = {
     note: '遊具のそばまで歩くと、ブランコに乗ったり滑り台で遊んだりできます。',
   },
   market: {
-    title: '水辺のコンビニ',
+    title: '水辺のコンビニ', articleScene:'水辺のコンビニに入ると、左手に飲み物の冷蔵棚が並んでいる。木のレジカウンターの向こうには、運河の灯りが映る窓がある。',
     card: './spots/market.html',
     image: './assets/market.webp',
     alt: '左に飲料の冷蔵棚、正面に食品の棚、右に木のカウンターがあるコンビニ',
@@ -105,7 +105,7 @@ export const venues = {
     note: '棚で商品をかごに入れたあと、右側のレジでお会計できます。',
   },
   fair: {
-    title: '運河の遊園地',
+    title: '運河の遊園地', articleScene:'木馬のいる回転台に、金色の灯りがともっている。その先には、ゴンドラがゆっくり空へ向かう観覧車がある。',
     card: './spots/fair.html',
     image: './assets/fair.webp',
     alt: '運河を背景に明かりをともした観覧車とメリーゴーラウンドが並ぶ遊園地',
@@ -118,12 +118,12 @@ export const venues = {
       wheel: { label: '観覧車', point: [339, 449], sign: [322, 362], action: '観覧車に乗る', ride: 'wheel',
         scene: '観覧車のゴンドラの窓に近づき、眼下の運河とAtelier Towerの灯りを見下ろす。窓越しの街と主人公の横顔を描く。' },
       carousel: { label: 'メリーゴーラウンド', point: [700, 449], sign: [710, 361], action: 'メリーゴーラウンドに乗る', ride: 'carousel',
-        scene: '明かりのともるメリーゴーラウンドの白い木馬で、手すりを握って笑う。あたたかい電球、背景の動き、木馬と人物の釣り合いを描く。' },
+        scene: '金色の灯りの下を回るメリーゴーラウンド。乗った記録があれば、その座席（木馬または馬車席）と人物の接点を保つ。乗る前なら木馬と馬車席が通り過ぎるのを見送る場面。' },
     },
     note: '観覧車とメリーゴーラウンドの乗り場へ歩けます。',
   },
   manor: {
-    title: '水鏡の屋敷',
+    title: '水鏡の屋敷', articleScene:'屋敷の門の奥から、玄関灯が雨上がりの石畳を照らす。古い案内札には、この先の部屋の手がかりが残されている。',
     card: './spots/manor.html',
     image: './assets/manor-forecourt.webp',
     alt: '青灰色の壁と銅屋根の古い屋敷。雨上がりの石畳に玄関の灯りが映る',
@@ -141,7 +141,7 @@ export const venues = {
     note: '案内札の手がかりを読んで、玄関から水鏡の間へ入れます。',
   },
   mirrorRoom: {
-    title: '水鏡の間',
+    title: '水鏡の間', articleScene:'作業台に小さな色ガラスが並ぶ。窓辺の黒石の水盤まで、その色が静かに届く。',
     card: './spots/mirrorRoom.html',
     parent: 'manor',
     image: './assets/manor-mirror-room.webp',

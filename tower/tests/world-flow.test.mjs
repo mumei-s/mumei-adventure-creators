@@ -9,7 +9,7 @@ const { streetAreas, walkingRoute, walkable } = await load('../../halloween-exhi
 import { venues, venueSpawn, venueWalkable } from '../../halloween-exhibition/preview/diorama-city/venues.js';
 const { atlasChecks, articleChecks, normalizeCardLines, pixelDifference } = await load('../quality-assist.js');
 const { makeArtifactPrompt } = await load('../prompt-play.js');
-const { playgroundPose } = await load('../../halloween-exhibition/preview/diorama-city/district-activities.js');
+import { playgroundPose } from '../../halloween-exhibition/preview/diorama-city/district-activities.js';
 const { readWalkDraft, saveWalkDraft, clearWalkDraft, WALK_DRAFT_STORAGE } = await load('../avatar-travel.js');
 
 test('walking camera reveals the character while overview has a distinct stable scale', () => {

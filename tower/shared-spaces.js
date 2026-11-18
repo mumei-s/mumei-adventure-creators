@@ -1,7 +1,9 @@
-import { roomStage } from './world.js?v=202611181820';
-import { facilityFloors, facilityActorHeight } from './facility-floors.js?v=202611181820';
+import { roomStage } from './world.js?v=20261118-city2';
+import { facilityFloors, facilityActorHeight } from './facility-floors.js?v=20261118-city2';
 import { readTraveler, readWalkDraft, rememberWalker, TOWER_API, avatarImageUrl } from './avatar-travel.js?v=20261118';
 import { hostPortrait, autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=202611181820';
+
+import { vehicleStudio } from './vehicle-studio.js?v=20261118-city2';
 
 export const sharedSpaces = {
   owner: { title:'オーナーズ・アトリエ', floor:14, image:'panorama-suite', note:'天空ラウンジの一つ上にある、タワーオーナーの専用室です。', scene:'天空ラウンジより上のオーナーズ・アトリエ。大きな窓と作品、運河都市のパノラマ。' },
@@ -9,10 +11,10 @@ export const sharedSpaces = {
   lobby: { title:'エントランス・ラウンジ', floor:1, image:'entrance-lounge', note:'自動ドアの先に広がる１階のラウンジ。管理人室と各階へつながっています。', scene:'自動ドアを抜けた高級タワーの大きなエントランス。ラウンジの奥にエレベーター、窓辺にゆったりしたソファ。' },
   concierge: { title:'管理人室', floor:1, image:'concierge', note:'防犯モニターでエントランス、車寄せ、地下駐車場、駐輪場のゲーム内風景を確認できます。', scene:'木と真鍮のコンシェルジュ室。防犯モニターにエントランスと地下駐車場の風景が映る。' },
   driveway: { title:'車寄せ', floor:0, image:'driveway', note:'街からタワーへ続く車寄せ。雨上がりの床に玄関の灯りが映っています。', scene:'ブルーアワーのタワー車寄せ。大きな庇と石床、ガラスのエントランス。' },
-  bicycle: { title:'駐輪コート', floor:0, image:'bicycle-court', note:'号室ごとに自転車・バイクを置けます。画像は下の車両登録から選べます。', scene:'青い時間のガラスと青銅の駐輪コート。登録した自転車やバイクを号室の区画に置く。' },
+  bicycle: { title:'駐輪コート', floor:0, image:'bicycle-court', note:'号室ごとの自転車区画。ここで自分の自転車をつくって登録できます。', scene:'青い時間のガラスと青銅の駐輪コート。登録した自転車を号室の区画に置く。' },
   parking: { title:'地下駐車場', floor:-1, image:'garage', note:'号室と同じ番号の専用区画。車両画像を登録すると自分の区画に展示されます。', scene:'高級タワーの広い地下駐車場。間接照明、コンクリートの柱、号室に対応した専用区画。' },
-  parkingTower: { title:'立体駐車場', floor:0, image:'driveway', note:'タワーの車寄せに面した立体駐車場。地下とは別に、号室ごとの車両を登録できます。', scene:'運河都市のタワーに併設された立体駐車場。青い時間の車寄せと、号室ごとの愛車。' },
-  motorcycle: { title:'バイク置き場', floor:0, image:'bicycle-court', note:'自転車と分かれたバイクの専用区画。号室に合わせて愛車を置けます。', scene:'高級タワーの屋根付きバイク置き場。ガラスと青銅、足元の間接照明。' },
+  parkingTower: { title:'立体駐車場', floor:0, image:'parking-decks', note:'タワーの車寄せに面した立体駐車場。地下とは別に、号室ごとの車両を登録できます。', scene:'運河都市のタワーに併設された立体駐車場。青い時間の車寄せと、号室ごとの愛車。' },
+  motorcycle: { title:'バイク置き場', floor:0, image:'motorcycle-bays', note:'自転車と分かれたバイクの専用区画。号室に合わせて愛車を置けます。', scene:'高級タワーの屋根付きバイク置き場。ガラスと青銅、足元の間接照明。' },
   boiler: { title:'ボイラー・設備室', floor:-2, image:'plant-room', note:'見学通路から給湯ボイラー、配管、空調設備を眺められます。案内ボタンで設備を調べられます。', scene:'タワー地下のボイラー室。ステンレスの配管と給湯タンクが並び、見学用の手すりから設備を眺める。' },
   seismic: { title:'免震構造・見学回廊', floor:-3, image:'seismic-gallery', note:'建物を支える免震層の見学回廊。積層ゴムとダンパーの動きを模型演出で確認できます。', scene:'地下免震層のガラス見学回廊。大きな積層ゴム支承とダンパー、連続する基礎構造。' },
 };
@@ -235,6 +237,14 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
     const owner=getOwner(),view=session;
     const parkingSpace={parking:'garage',parkingTower:'parkingTower',bicycle:'bicycle',motorcycle:'motorcycle'}[id];
     const vehicleKind=id==='bicycle'?'bicycle':id==='motorcycle'?'motorcycle':'car';
+    const maker=make('details','vehicle-maker');
+    maker.append(make('summary','','自分の'+kinds[vehicleKind]+'をつくる'),vehicleStudio(vehicleKind,{
+      id:owner?.noteId || getActor()?.noteId,space:id,
+      onRegister:()=>{maker.open=false;registration.scrollIntoView({block:'center'});registration.focus({preventScroll:true});},
+    }));
+    const registration=make('div','vehicle-registration');
+    registration.id='vehicle-registration';registration.tabIndex=-1;
+    details.append(maker,registration);
     const list=make('div','parking-grid');
     const floors=make('select');floors.setAttribute('aria-label','駐車区画の階を選ぶ');
     const caption=make('p','parking-section');
@@ -292,7 +302,9 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
       paintVehicles();
     };
     floors.addEventListener('change',()=>{chosen=true;selectionRevision++;draw();});details.append(floors,caption,list);
-    if(!owner?.id){details.append(make('p','muted','自分の部屋に入居すると、専用区画に車両画像を登録できます。'));return draw;}
+    if(!owner?.id){registration.append(make('p','muted','自分の部屋に入居すると、保存した画像を号室の区画に登録できます。'));
+      const enter=make('a','button outline','自分の部屋をつくる');enter.href='./#prompt-play';registration.append(enter);
+      return draw;}
     const form=make('form','vehicle-upload');
     ownLabel=make('strong','vehicle-slot-label');
     const kind=make('select');kind.setAttribute('aria-label','登録する車両');
@@ -301,7 +313,7 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
     const file=make('input');file.type='file';file.accept='image/png,image/webp,image/jpeg';label.append(file);
     const save=make('button','button primary','号室の区画に保存');save.type='submit';
     const remove=action('自分の区画から車両を外す',()=>void store(null));
-    form.append(ownLabel,kind,label,save,remove);details.append(form);
+    form.append(ownLabel,kind,label,save,remove);registration.append(form);
     let busy=false;
     async function store(image){
       if(busy)return;
@@ -360,6 +372,11 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
     if(['parking','parkingTower','bicycle','motorcycle'].includes(id))view.refresh=parking(stage,id);
     if(id==='boiler'||id==='seismic')view.refresh=equipment(stage,id);
     view.refresh?.();
+    if(location.hash==='#vehicle-registration' && details.querySelector('.vehicle-registration')){
+      if(dialog.dataset.info==='closed')document.getElementById('shared-info').click();
+      const registration=details.querySelector('.vehicle-registration');
+      registration.focus({preventScroll:true});registration.scrollIntoView({block:'center'});
+    }
     if(facilitySpaces.includes(id)){
       void loadFacilities().then(data=>{
         if(view!==session)return;
@@ -371,7 +388,7 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
     const create=action('ここでイラスト・note記事をつくる',()=>{
       const owner=getOwner(),actor=getActor();
       const href=new URL(location.href);href.search='';href.searchParams.set('space',id);href.hash='';
-      illustrate({label:space.title,scene:space.scene,href:href.href,id:actor?.noteId||owner?.noteId,
+      illustrate({label:space.title,scene:space.scene,articleScene:space.scene,href:href.href,id:actor?.noteId||owner?.noteId,
         avatarSource:actor?.custom||actor?.profile?actor.source:undefined,
         backgroundUrl:new URL(`./assets/${space.image}.webp`,location.href).href,occupied:Boolean(owner?.id)});
     });

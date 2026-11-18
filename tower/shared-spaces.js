@@ -1,9 +1,9 @@
-import { roomStage } from './world.js?v=20261118-city2';
+import { roomStage } from './world.js?v=20261118-speed';
 import { facilityFloors, facilityActorHeight } from './facility-floors.js?v=20261118-city2';
 import { readTraveler, readWalkDraft, rememberWalker, TOWER_API, avatarImageUrl } from './avatar-travel.js?v=20261118';
 import { hostPortrait, autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=202611181820';
 
-import { vehicleStudio } from './vehicle-studio.js?v=20261118-city2';
+import { vehicleStudio } from './vehicle-studio.js?v=20261118-speed';
 
 export const sharedSpaces = {
   owner: { title:'オーナーズ・アトリエ', floor:14, image:'panorama-suite', note:'天空ラウンジの一つ上にある、タワーオーナーの専用室です。', scene:'天空ラウンジより上のオーナーズ・アトリエ。大きな窓と作品、運河都市のパノラマ。' },
@@ -130,15 +130,15 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
     const wall=make('div','concierge-wall-screens');
     wall.setAttribute('aria-hidden','true');
     for(const [,image] of feeds){
-      const screen=make('img');screen.alt='';screen.src=`./assets/${image}.webp`;
+      const screen=make('img');screen.alt='';screen.decoding='async';screen.src=`./assets/thumbs/${image}.webp`;
       wall.append(screen);
     }
     stage.append(wall);
     const clocks=new Set();
-    function makeFeeds(container){
+    function makeFeeds(container,expanded=false){
       for(const [name,image] of feeds){
         const panel=make('span','security-feed');
-        const photo=make('img');photo.src=`./assets/${image}.webp`;photo.alt=name;
+        const photo=make('img');photo.alt=name;photo.decoding='async';photo.src=`./assets/${expanded?'':'thumbs/'}${image}.webp`;
         const time=make('time');
         panel.append(photo,make('span','',name),time);
         container.append(panel);clocks.add(time);
@@ -155,7 +155,7 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
       const close=action('← 管理人室に戻る',()=>viewer.close());
       const grid=make('div','camera-grid');
       viewer.append(close,grid);dialog.append(viewer);
-      makeFeeds(grid);viewer.showModal();
+      makeFeeds(grid,true);viewer.showModal();
       const dismiss=()=>viewer.close();
       const signal=controller.signal;
       viewer.addEventListener('close',()=>{
@@ -345,7 +345,7 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
     const traveler=getActor();
     const room={id:'showroom',sharedSpace:id,profile:{name:space.title,articles:[]},
       design:{title:space.title,theme:'cinema',light:'natural',avatarMode:'resident'},draftInterior:{source:`./assets/${space.image}.webp`}};
-    const scene=roomStage(room,hostPortrait,{traveler,signal:controller.signal,inputRoot:dialog});
+    const scene=roomStage(room,hostPortrait,{traveler,signal:controller.signal,inputRoot:dialog,preparedInterior:view.interior});
     const stage=scene.querySelector('.world-stage');stage.classList.add('shared-stage');stage.dataset.space=id;
     details.replaceChildren(make('p','',space.note));
     const controls=scene.querySelector('.world-control-dock');
@@ -403,6 +403,14 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
     cancelDoors();
     const view={id,arrived:false,facilityStatus:'loading',updates:new Map()};
     session=view;
+    // Start the selected floor while the doors or lift are still moving.
+    if(id!=='owner'){
+      view.interior=new Image();
+      view.interior.fetchPriority='high';
+      view.interior.decoding='async';
+      view.interior.src='./assets/'+sharedSpaces[id].image+'.webp';
+      view.interior.decode().catch(()=>{});
+    }
     const arrive=()=>{
       if(session!==view)return;
       controller?.abort();controller=new AbortController();current=id;view.arrived=true;

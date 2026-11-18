@@ -1,4 +1,4 @@
-import { chatgptAppLink, towerUrl } from './prompt-play.js?v=20261118-city2';
+import { chatgptAppLink, towerUrl } from './prompt-play.js?v=20261118-speed';
 
 const models = {
   car: {name:'車', shop:'車のショールーム', space:'parking', bay:'地下駐車場', example:'深緑の小さなワゴン、アイボリーの屋根', details:'四輪の位置、タイヤの接地、窓とドアの境界、前後の灯火が自然につながる車体にする。'},
@@ -14,7 +14,7 @@ export function vehiclePrompt(kind, ideas, id, space) {
   return [
     '【#無名Sプロンプト｜' + model.shop + 'で自分の' + model.name + 'をつくる】',
     id && '参加クリエイター：@' + id,
-    '画像生成機能で、私のオリジナルの' + model.name + 'を１台、完成画像としてこのチャットに表示してください。参照画像の添付やID入力は不要です。',
+    '画像生成機能で、私のオリジナルの' + model.name + 'を１台、完成画像としてこのチャットに表示してください。写真・ID・外部検索・デザイン案の確認は不要です。希望がそろった今すぐ描いてください。',
     ideas.trim() ? '希望の車種・色・装備・画風：' + ideas.trim() :
       '色・形・装備はおまかせ。同じ会話で私の作品や好みが分かる場合は、それを１つデザインに取り入れてください。',
     '指定した実写・アニメ・幻想などの画風を守ってください。斜め前から見て手前を向く構図で、車体全体と全ての車輪を余白の内側に収めます。' + model.details,

@@ -1,4 +1,4 @@
-import { roomStage } from './world.js?v=20261118-city2';
+import { roomStage } from './world.js?v=20261118-speed';
 
 function element(tag, css = '', title = '') {
   const item = document.createElement(tag);
@@ -39,7 +39,7 @@ export function cutaway(container, catalog, demo, {avatar, visit, enter, space})
     const bays=element('div','public-bays');
     for(const [id,title,image] of areas){
       const bay=element('button','bay public-bay');bay.type='button';bay.setAttribute('aria-label',title);
-      const photo=element('img');photo.src=`./assets/${image}.webp`;photo.alt='';photo.loading='lazy';
+      const photo=element('img');photo.alt='';photo.loading='lazy';photo.decoding='async';photo.src=`./assets/thumbs/${image}.webp`;
       bay.append(photo,element('span','bay-address',title));bay.addEventListener('click',()=>space(id));bays.append(bay);
     }
     row.append(bays);return row;
@@ -83,7 +83,7 @@ export function cutaway(container, catalog, demo, {avatar, visit, enter, space})
   }
   if(space){
     building.append(publicFloor('lobby',1,'1F 共用',[['lobby','エントランス・ラウンジ','entrance-lounge'],['concierge','管理人室','concierge']]));
-    building.append(publicFloor('bicycle',0,'G',[['bicycle','駐輪コート','bicycle-court'],['motorcycle','バイク置き場','bicycle-court'],['parkingTower','立体駐車場','driveway'],['driveway','車寄せ','driveway']]));
+    building.append(publicFloor('bicycle',0,'G',[['bicycle','駐輪コート','bicycle-court'],['motorcycle','バイク置き場','motorcycle-bays'],['parkingTower','立体駐車場','parking-decks'],['driveway','車寄せ','driveway']]));
     building.append(publicFloor('parking',-1,'B1',[['parking','地下駐車場','garage']]));
     building.append(publicFloor('boiler',-2,'B2',[['boiler','ボイラー・設備室','plant-room']]));
     building.append(publicFloor('seismic',-3,'B3',[['seismic','免震構造・見学回廊','seismic-gallery']]));

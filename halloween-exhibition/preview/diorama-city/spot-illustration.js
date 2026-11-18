@@ -1,36 +1,30 @@
-import { chatgptAppLink, hostNoteUrl, parseNoteId, towerUrl, insightUrl, articleCardBlock, articleWritingInstructions, bindArticleDraft, articleCoverInstructions, articleVoiceInstructions, cardPasteInstructions, bindCardButtons, makeArtifactPrompt, creatorReference, characterReferenceInstructions, characterArtInstructions, settingInstructions } from '../../../tower/prompt-play.js?v=20261118-city2';
+import { chatgptAppLink, hostNoteUrl, parseNoteId, towerUrl, insightUrl, articleCardBlock, drawFirst, bindArticleDraft, articleCoverInstructions, articleVoiceInstructions, bindCardButtons, makeArtifactPrompt, creatorReference, characterReferenceInstructions, characterArtInstructions, settingInstructions } from '../../../tower/prompt-play.js?v=20261118-speed';
 import { bindQualityAssist } from '../../../tower/quality-assist.js?v=202611181820';
 
 export { characterReferenceInstructions as spotReferenceInstructions };
 
 export function makeSpotPrompt({ label, scene, href, id, referenceMode, referenceUrl, backgroundUrl, experience }) {
-  const profile = id ? `公開プロフィール： https://note.com/${id}\n` : '';
   const room = new URL(towerUrl);
-  if (id) room.searchParams.set('creator', id);
-  room.hash = 'prompt-import';
-  return `【#無名Sプロンプト｜${label}で過ごす一日】
-
-noteクリエイターID：${id ? '@' + id : '［自分のID］'}
-${profile}${characterReferenceInstructions({referenceMode,referenceUrl})}
-
-【描く場面】
-${scene}
-${experience ? 'この参加者が実際に行ったこと：'+experience+'\n' : ''}${settingInstructions(backgroundUrl)}
-
-確認できた登録済みまたは今回添付したキャラクターを主人公に、この場所で過ごす２つの異なる瞬間を、画像生成機能で横3対2の別々の完成イラスト２枚として描き、このチャットに表示してください。１枚目では、広めの構図で場所の特徴と人物の全身、足を置いた床を見せてください。２枚目では続いて起きた行動に近づき、１枚目と異なる角度から視線や手と物の接点を描いてください。足の接地・影の方向、指と持ち手の重なり、人物と家具や遊具の縮尺を場面ごとに見直してください。２枚を同じ絵の色違いやコラージュにせず、それぞれ文字・操作ボタンのない完成画像にしてください。
+  if(id)room.searchParams.set('creator',id);
+  room.hash='prompt-import';
+  return `【#無名Sプロンプト｜${label}】
+まず本文イラスト１を描いてください。${drawFirst}
+noteクリエイターID：${id?'@'+id:'［自分のID］'}
+${characterReferenceInstructions({referenceMode,referenceUrl})}
 ${characterArtInstructions}
-公開プロフィールを読める場合は、公開作品のモチーフを背景や小物に取り入れてください。読めなくても添付と場面指定で制作を続けてください。IDが記載されていれば再質問しないでください。キャラ画像は確認できない場合だけ聞いてください。
 
-【そのまま貼れるnote参加記事】
-記事のタイトルを先に決め、本文イラスト２枚と専用サムネイルを生成します。画像が出たら必ず次の質問をしてください：「今回のイラストをnoteの記事にしますか？『記事にする』と送ってください。」 画像だけで応答が終わる環境では、利用者がサイトの「note記事を作る」ボタンを使えるように案内してください。「記事にする」と返答されたら、その場で記事を書いてください。
-${articleWritingInstructions({id})}
+場面：${scene}
+${experience?'ゲームで実際に行ったこと：'+experience+'\n':''}${settingInstructions(backgroundUrl)}
+本文イラストは横３対２、別々の完成画像２枚。１枚目は場所の特徴、全身、足元の接地が分かる引き。２枚目は続く行動に寄り、別の角度から視線と手が物に触れる位置を描く。影・遠近・縮尺を合わせ、文字・UI・コラージュは入れません。
 ${articleCoverInstructions()}
+本文２枚のあとで記事の題を決めて表紙を制作。画像ができたら「今回のイラストをnoteの記事にしますか？『記事にする』と送ってください。」と案内。画像のみで終了したら、サイトの記事作成ボタンからも続けられます。
 
-記事の最後に無名S noteが主催する #無名Sプロンプト の遊びだと紹介し、以下のカード用ブロックを改変せずに置いてください。
+「記事にする」なら、追加の画像や検索を待たず、タイトルと完成本文を渡す。題名の指定を優先し、今回の表紙と合わせる。実際の行動と創作の設定を区別し、［ここに街のイラスト１］と［ここに街のイラスト２］を各段落のあとに置く。${articleVoiceInstructions(id)}
+記事末で無名S noteの企画を紹介し、各URLはカード用に単独行へ。
 ${articleCardBlock([['企画主・無名S note',hostNoteUrl],['この場所で遊ぶ',href],['自分の部屋をつくる',towerUrl+'#prompt-play'],['noteの反応を分析する INSIGHT',insightUrl]])}
 
-末尾に #無名Sプロンプト を付けます。${cardPasteInstructions()}
-記事のあとに、Towerに画像を持ち帰る人向けの案内も書いてください。「アバターと部屋の画像を保存 → Towerの『生成した画像を添付する』へ → 自分の部屋を下見・入居」と案内し、「生成した画像を添付する」から ${room.href} にリンクしてください。`;
+末尾は #無名Sプロンプト。本文の外で、noteにURLを１つずつ貼り改行することと、部屋・アバターを保存してTowerで下見・入居できることを案内。戻り先：${room.href}`;
+
 }
 
 export function bindSpotIllustration(dialog) {
@@ -42,6 +36,7 @@ export function bindSpotIllustration(dialog) {
   const text = dialog.querySelector('#spot-text');
   const message = dialog.querySelector('#spot-message');
   const copy = dialog.querySelector('#spot-copy');
+  const output = dialog.querySelector('#spot-output');
   const app = dialog.querySelector('#spot-app');
   const link = chatgptAppLink(navigator);
   app.href = link.href;
@@ -98,8 +93,11 @@ export function bindSpotIllustration(dialog) {
     field.setAttribute('aria-invalid', String(Boolean(field.value.trim()) && !id));
     const ref = reference();
     const saved = ref.referenceMode !== 'attachment';
-    text.value = makeSpotPrompt({ ...current, id, experience:(!current.id || id===current.id) ? current.experience : '', ...ref });
-    copy.textContent = 'イラスト作成プロンプトをコピー';
+    const experience=!current.id || id===current.id ? current.experience : '';
+    const params={...current,id,experience};
+    text.value = output.value==='set' ? makeSpotPrompt({...params,...ref}) :
+      makeArtifactPrompt({...params,kind:output.value,reference:ref,title:quality.articleTitle});
+    copy.textContent = output.value==='set' ? 'イラスト作成プロンプトをコピー' : output.selectedOptions[0].textContent+'のプロンプトをコピー';
     restorePrompt.hidden = true;
     if (saved) {
       const where = ref.referenceMode === 'registered' ? '画像URLもプロンプトに入ります。' : '同じChatGPTチャットで参照済みなら、添付は不要です。';
@@ -113,8 +111,8 @@ export function bindSpotIllustration(dialog) {
     resetRef.hidden = !objectUrl;
     resetRef.textContent = savedReference().referenceMode === 'attachment' ? '選んだ画像を外す' : '登録済み画像に戻す';
     const source = objectUrl || (saved ? current.avatarSource : '');
-    if (source) preview.src = source;
-    else preview.removeAttribute('src');
+    if (source && preview.getAttribute('src')!==source) preview.src=source;
+    else if (!source) preview.removeAttribute('src');
     preview.hidden = !source;
   }
   function copyArtifact(kind, articleTitle, reason) {
@@ -204,7 +202,8 @@ export function bindSpotIllustration(dialog) {
     preview.hidden = true;
     message.textContent = '画像を開けませんでした。元のキャラ画像を選び直してください。';
   });
-  restorePrompt.addEventListener('click', () => { render(); message.textContent = ''; });
+  output.addEventListener('change',()=>{render();message.textContent='';});
+  restorePrompt.addEventListener('click', () => { output.value='set';render(); message.textContent = ''; });
   copy.addEventListener('click', () => {
     if (validCreator()) void copyPrompt(restorePrompt.hidden ?
       'イラスト用プロンプトをコピーしました。画像ができたら同じチャットで「記事にする」と送れます。' :

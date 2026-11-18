@@ -96,14 +96,27 @@ export const streetAreas = {
 
 export const distance=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
 const clamp=value=>Math.max(0,Math.min(1,value));
-function projection(point,a,b) {
-  const dx=b[0]-a[0],dy=b[1]-a[1];
-  const t=clamp(((point[0]-a[0])*dx+(point[1]-a[1])*dy)/(dx*dx+dy*dy));
-  return [a[0]+dx*t,a[1]+dy*t];
+// The two street plans are static. Movement and route searches share their lane geometry.
+const geometry=new WeakMap();
+function streetGeometry(area) {
+  if(!geometry.has(area)){
+    const lanes=area.lanes.map(([from,to,radius])=>{
+      const [x,y]=area.points[from], [endX,endY]=area.points[to];
+      const dx=endX-x,dy=endY-y;
+      return {x,y,dx,dy,length2:dx*dx+dy*dy,radius2:radius*radius};
+    });
+    geometry.set(area,{lanes,visibility:new Map()});
+  }
+  return geometry.get(area);
 }
-export function walkable(point, area) {
-  const {points,lanes}=area;
-  return lanes.some(([from,to,radius])=>distance(point,projection(point,points[from],points[to]))<=radius);
+export function walkable([x,y],area) {
+  for(const lane of streetGeometry(area).lanes){
+    const ox=x-lane.x,oy=y-lane.y;
+    const t=clamp((ox*lane.dx+oy*lane.dy)/lane.length2);
+    const ex=ox-t*lane.dx,ey=oy-t*lane.dy;
+    if(ex*ex+ey*ey<=lane.radius2)return true;
+  }
+  return false;
 }
 function canWalk(a,b,area) {
   const steps=Math.ceil(distance(a,b)/6);
@@ -121,13 +134,21 @@ export function walkingRoute(start,target,area) {
   const costs=new Map([[0,0]]);
   const unseen=new Set(vertices.keys());
   const end=vertices.length-1;
+  const visibility=streetGeometry(area).visibility;
+  function connected(a,b) {
+    if(a===0 || b===end)return canWalk(vertices[a],vertices[b],area);
+    // Only the fixed street vertices have stable indices across different walks.
+    const pair=Math.min(a,b)*end+Math.max(a,b);
+    if(!visibility.has(pair))visibility.set(pair,canWalk(vertices[a],vertices[b],area));
+    return visibility.get(pair);
+  }
   while (unseen.size) {
     const next=[...unseen].sort((a,b)=>(costs.get(a) ?? Infinity)-(costs.get(b) ?? Infinity))[0];
     if (next===end || !costs.has(next)) break;
     unseen.delete(next);
     for (const vertex of unseen) {
       const cost=costs.get(next)+distance(vertices[next],vertices[vertex]);
-      if (cost>=(costs.get(vertex) ?? Infinity) || !canWalk(vertices[next],vertices[vertex],area)) continue;
+      if (cost>=(costs.get(vertex) ?? Infinity) || !connected(next,vertex)) continue;
       costs.set(vertex,cost);
       previous.set(vertex,next);
     }

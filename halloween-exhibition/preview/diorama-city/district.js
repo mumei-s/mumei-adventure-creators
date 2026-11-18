@@ -1,13 +1,14 @@
+import { areaFor, firstScene, sceneArt } from './scene-entry.js?v=20261118-speed';
 import { canWalkFloorSegment, facilityRoute } from '../../../tower/facility-floors.js?v=20261118-city2';
 import { makeWalkPad, bindWalking } from './walk-controls.js?v=202611181820';
 import { avatarSnapshot, hostWalker, autoResidentWalker } from './host-avatar.js?v=202611181820';
 import { applyDistrictLight } from './scene-time.js?v=1';
-import { distance, streetAreas, walkable, walkingRoute } from './paths.js?v=20261118-city2';
+import { distance, streetAreas, walkable, walkingRoute } from './paths.js?v=20261118-speed';
 import { districtTraffic } from './traffic.js?v=202611181820';
 import { cafeStory, venues, venueSpawn, venueFloor } from './venues.js?v=20261118-city2';
-import { vehicleStudio } from '../../../tower/vehicle-studio.js?v=20261118-city2';
+import { vehicleStudio } from '../../../tower/vehicle-studio.js?v=20261118-speed';
 import { bindActivities, createCityVisit, playgroundPose } from './district-activities.js?v=20261118-city2';
-import { bindSpotIllustration } from './spot-illustration.js?v=20261118-city2';
+import { bindSpotIllustration } from './spot-illustration.js?v=20261118-speed';
 import { districtCamera, exteriorHeight } from './camera.js?v=20261118';
 import { TOWER_API, OWNER_STORAGE, avatarImageUrl, readWalkDraft, rememberWalker } from '../../../tower/avatar-travel.js?v=20261118';
 import { initGameShell } from '../../../tower/game-shell.js?v=20261118-controls';
@@ -19,12 +20,14 @@ const root=el('district'), view=el('city-view'), world=el('city-world'), citizen
 const pad=makeWalkPad(), clock=el('clock'), dialog=el('place-dialog'), visit=el('visit');
 let paintAvatar=hostWalker(citizen.querySelector('img'));
 const drawTraffic=districtTraffic(el('transit'));
-const currentUrl=new URL(location.href);
-const areaId=currentUrl.searchParams.get('area')==='canal' ? 'canal' : 'tower';
-const area=streetAreas[areaId], places=area.places;
+let currentUrl=new URL(location.href);
+let areaId=areaFor(currentUrl);
+let area=streetAreas[areaId], places=area.places;
 const arrival=currentUrl.searchParams.get('arrival');
-const spawn=Object.hasOwn(area.arrivals,arrival) ? area.arrivals[arrival] :
-  (areaId==='canal' ? area.arrivals.station : area.arrivals.gate);
+function arrivalPoint(key) {
+  return Object.hasOwn(area.arrivals,key) ? area.arrivals[key] : (areaId==='canal' ? area.arrivals.station : area.arrivals.gate);
+}
+let spawn=arrivalPoint(arrival);
 const towerHome=new URL('../../../tower/?from=diorama', location.href);
 let owner;
 try {owner=JSON.parse(localStorage.getItem(OWNER_STORAGE));} catch {}
@@ -43,7 +46,8 @@ let venueId='', venue=null, directions=[], motion=null;
 let scenePending=false, sceneRequest=0, currentBackdrop;
 const visits=new Map();
 const spotStatus=el('place-note'), placeLink=el('place-link');
-const controls=el('locations'), venuePhoto=el('venue-plate'), guide=el('venue-guide');
+const controls=el('locations'), guide=el('venue-guide');
+const defaultStreetAlt=el('city-plate').alt;
 const streetGuide=[...guide.children];
 const activityDialog=el('activity-dialog'), spotDialog=el('spot-dialog'), spotButton=el('spot-prompt');
 const motionControls=el('motion-controls'), pump=el('pump-swing');
@@ -74,43 +78,64 @@ const blocked=()=>transition || scenePending ||
   Boolean(motion) || Boolean(document.querySelector('dialog[open]'));
 document.addEventListener('atelier:menu-open',()=>{vector=null;route=[];});
 
-async function loadBackdrop(image, source, alt) {
+function warmDestination(place) {
+  if(!place || navigator.connection?.saveData || /(^|-)2g$/.test(navigator.connection?.effectiveType || ''))return;
+  const source=place.venue ? venues[place.venue].image : place.cross ? streetAreas[place.cross.area].image : place.image;
+  if(source)sceneArt(source,'low');
+}
+
+async function loadBackdrop(id, source, alt) {
   const request=++sceneRequest;
-  currentBackdrop={image,source,alt};
-  scenePending=true;
+  currentBackdrop={id,source,alt};
   const message=el('scene-load-status'), retry=el('retry-scene');
-  message.textContent='風景を読み込んでいます…';
-  message.hidden=false;
-  retry.hidden=true;
+  const item=sceneArt(source,'high'), image=item.image, previous=el(id);
+  if(previous!==image){
+    image.className=previous.className;
+    image.width=previous.width; image.height=previous.height;
+    image.id=id;
+    image.hidden=false;
+    const slot=previous.closest('picture') || previous;
+    slot.replaceWith(item.frame);
+  }
   image.alt=alt;
-  image.src=source;
+  message.textContent='風景を読み込んでいます…';
+  message.hidden=item.decoded;
+  retry.hidden=true;
+  scenePending=!item.decoded;
+  if(item.decoded)return;
   let timer;
   try {
-    await Promise.race([image.decode(),
-      new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('timeout')),12000);})]);
-    if (request!==sceneRequest) return;
-    message.hidden=true;
+    await Promise.race([item.ready,new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('timeout')),12000);})]);
+    if(request===sceneRequest)message.hidden=true;
   } catch {
-    if (request!==sceneRequest) return;
+    if(request!==sceneRequest)return;
+    item.discard();
     message.textContent='風景を読み込めませんでした。再読み込みできます。';
     retry.hidden=false;
   } finally {
     clearTimeout(timer);
-    if (request===sceneRequest) scenePending=false;
+    if(request===sceneRequest)scenePending=false;
   }
 }
 el('retry-scene').addEventListener('click',()=>{
-  if (currentBackdrop) void loadBackdrop(currentBackdrop.image,currentBackdrop.source,currentBackdrop.alt);
+  if(currentBackdrop)void loadBackdrop(currentBackdrop.id,currentBackdrop.source,currentBackdrop.alt);
 });
 
-if (area.image) {
-  const art=el('city-plate');
-  art.src=area.image;
-  if (area.alt) art.alt=area.alt;
+function showStreet() {
+  void loadBackdrop('city-plate',area.image,area.alt || defaultStreetAlt);
+  if(areaId==='tower'){
+    for(const image of world.querySelectorAll('.city-cast img[data-src]')){
+      image.src=image.dataset.src;
+      image.removeAttribute('data-src');
+    }
+  }
+}
+function setAreaInfo() {
   el('district-title').textContent=area.title;
   world.dataset.area=areaId;
-  document.title=`${area.title}｜Atelier Tower`;
+  document.title=area.title+'｜Atelier Tower';
 }
+setAreaInfo();
 
 let activeSpotActor=null;
 async function chooseWalker() {
@@ -184,8 +209,9 @@ function renderLocations() {
     pin.style.top=place.sign[1]+'px';
     pin.addEventListener('click',()=>{
       if (nearby===id) openPlace();
-      else goTo(place.point);
+      else {warmDestination(place);goTo(place.point);}
     });
+    pin.addEventListener('pointerenter',event=>{if(event.pointerType==='mouse')warmDestination(place);},{once:true});
     controls.append(pin);
   }
   guide.setAttribute('aria-label',`${venue?.title ?? area.title}の行き先`);
@@ -393,27 +419,26 @@ function setCamera(whole) {
   centerCamera();
 }
 
-function changeVenue(id) {
-  if (id===venueId) return;
+function changeVenue(id, districtArrival) {
+  if (id===venueId && !districtArrival) return;
   if (motion) finishMotion();
   for (const open of [dialog,activityDialog,spotDialog]) if (open.open) open.close();
-  visits.set(venueId,{position:[...position],overview});
+  if(!districtArrival)visits.set(areaId+':'+venueId,{position:[...position],overview});
   movement.reset();
   route=[];
   venueId=id;
   venue=venues[id] ?? null;
-  const last=visits.get(id);
+  const last=districtArrival || visits.get(areaId+':'+id);
   position=[...(last?.position ?? (venue ? venueSpawn : spawn))];
   el('district-scene').hidden=Boolean(venue);
-  venuePhoto.hidden=!venue;
+  el('venue-plate').hidden=!venue;
   if (venue) {
-    void loadBackdrop(venuePhoto,venue.image,venue.alt);
+    void loadBackdrop('venue-plate',venue.image,venue.alt);
     if(id==='mirrorRoom')activities.restoreGlass(showReflections);
     world.dataset.venue=id;
   } else {
     delete world.dataset.venue;
-    const photo=el('city-plate');
-    void loadBackdrop(photo,area.image || './assets/district.webp?v=1',photo.alt);
+    showStreet();
   }
   const leave=el('leave-venue');
   leave.hidden=!venue;
@@ -426,6 +451,17 @@ function changeVenue(id) {
   paint(0,-1);
   if (window.scrollY) window.scrollTo(0,0);
   view.focus({preventScroll:true});
+}
+
+function switchDistrict(url, saved) {
+  areaId=areaFor(url);
+  currentUrl=url;
+  area=streetAreas[areaId];
+  places=area.places;
+  spawn=arrivalPoint(url.searchParams.get('arrival'));
+  setAreaInfo();
+  lastTraffic=-Infinity;
+  changeVenue('',saved || {position:spawn,overview:false});
 }
 
 function enterVenue(id) {
@@ -482,12 +518,17 @@ function openPlace() {
       else destination.searchParams.set('area',place.cross.area);
       destination.searchParams.set('arrival',place.cross.arrival);
     }
-    transition=true;
-    const veil=el('passage');
-    veil.textContent=place.cross ? `${streetAreas[place.cross.area].title}へ` : nearby==='gate'?'クリエイターエリアへ':'Atelier Towerへ';
-    veil.hidden=false;
-    if (!gameShell.motionAllowed()) location.assign(destination);
-    else setTimeout(()=>location.assign(destination),510);
+    if(place.cross){
+      history.replaceState({...history.state,streetReturn:{position:[...position],overview}},'');
+      history.pushState({dioramaVenue:''},'',destination);
+      switchDistrict(destination);
+    } else {
+      transition=true;
+      const veil=el('passage');
+      veil.textContent=nearby==='gate'?'クリエイターエリアへ':'Atelier Towerへ';
+      veil.hidden=false;
+      location.assign(destination);
+    }
     return;
   }
   showDescription(place);
@@ -508,7 +549,7 @@ function showDescription(place) {
 }
 
 function openSpot(article=false) {
-  if (blocked()) return;
+  if (transition || motion || (root.dataset.walkerState && root.dataset.walkerState!=='ready') || document.querySelector('dialog[open]')) return;
   const place=(venue?.spots ?? places)[nearby];
   const setting=venues[place?.venue] ?? venue;
   const label=setting && place && !place.venue ? `${setting.title}・${place.label}` : setting?.title ?? place?.label;
@@ -533,21 +574,6 @@ function openSpot(article=false) {
   });
 }
 
-function arriveAtSpot() {
-  const [building,key]=currentUrl.searchParams.get('spot')?.split('.') ?? [];
-  if (building==='street' && Object.hasOwn(places,key)) {
-    position=[...places[key].point];
-    return;
-  }
-  if (!Object.hasOwn(venues,building)) return;
-  const entry=Object.values(places).find(place=>place.venue===(venues[building].parent ?? building));
-  if (!entry) return;
-  position=[...entry.point];
-  history.replaceState({dioramaVenue:building,inline:true},'');
-  changeVenue(building);
-  if (Object.hasOwn(venue.spots,key)) position=[...venue.spots[key].point];
-}
-
 visit.addEventListener('click',openPlace);
 spotButton.addEventListener('click',()=>openSpot());
 el('place-create').addEventListener('click',()=>{dialog.close();openSpot();});
@@ -567,7 +593,9 @@ guide.addEventListener('click',event=>{
   const destination=event.target.closest('[data-head-to]');
   if (!destination) return;
   destinations.open=false;
-  goTo((venue?.spots ?? places)[destination.dataset.headTo].point);
+  const place=(venue?.spots ?? places)[destination.dataset.headTo];
+  warmDestination(place);
+  goTo(place.point);
   if (window.scrollY) window.scrollTo(0,0);
 });
 el('leave-venue').addEventListener('click',()=>{
@@ -578,7 +606,12 @@ el('leave-venue').addEventListener('click',()=>{
     changeVenue(target);
   }
 });
-window.addEventListener('popstate',event=>changeVenue(Object.hasOwn(venues,event.state?.dioramaVenue) ? event.state.dioramaVenue : ''));
+window.addEventListener('popstate',event=>{
+  const url=new URL(location.href);
+  if(areaFor(url)!==areaId){switchDistrict(url,event.state?.streetReturn);return;}
+  currentUrl=url;
+  changeVenue(Object.hasOwn(venues,event.state?.dioramaVenue) ? event.state.dioramaVenue : '');
+});
 root.addEventListener('keydown',event=>{
   if (!event.repeat && !event.target.closest('button,a,dialog') && ['e','enter'].includes(event.key.toLowerCase())) {
     event.preventDefault();
@@ -614,12 +647,12 @@ const resize=new ResizeObserver(()=>centerCamera());
 resize.observe(view);
 renderLocations();
 setCamera(false);
-const cityPhoto=el('city-plate');
-void loadBackdrop(cityPhoto,cityPhoto.getAttribute('src'),cityPhoto.alt);
-const requestedVenue=currentUrl.searchParams.get('spot')?.split('.')[0];
-if(requestedVenue&&history.state?.inline&&history.state.dioramaVenue===requestedVenue)arriveAtSpot();
-else if (Object.hasOwn(venues,history.state?.dioramaVenue)) changeVenue(history.state.dioramaVenue);
-else if (!history.state?.inline) arriveAtSpot();
+if(firstScene.id){
+  position=[...firstScene.entrance];
+  if(firstScene.inline)history.replaceState({dioramaVenue:firstScene.id,inline:true},'');
+  changeVenue(firstScene.id);
+} else showStreet();
+if(firstScene.point)position=[...firstScene.point];
 paint(0,arrival==='tower' ? -1 : 0);
 void chooseWalker().catch(failedWalker);
 run();

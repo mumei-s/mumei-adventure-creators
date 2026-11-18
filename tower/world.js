@@ -124,10 +124,11 @@ const make = (tag, className) => {
 function art(source, css, alt = '', mini = false) {
   const image = make('img',css);
   if (source?.startsWith(TOWER_API)) image.crossOrigin='anonymous';
-  image.src = source;
   image.alt = alt;
   image.draggable = false;
   if(mini) image.loading = 'lazy';
+  image.decoding = 'async';
+  image.src = source;
   return image;
 }
 
@@ -274,8 +275,9 @@ export function generatedInterior(room) {
 
 const usingAtlas=room=>room.draftAvatar?.atlas ?? room.design?.world?.atlas===true;
 
-function interiorImage(room,source,css,alt,mini) {
-  const image=art(source || roomArt(room),css,alt,mini);
+function interiorImage(room,source,css,alt,mini,prepared) {
+  const image=prepared || art(source || roomArt(room),css,alt,mini);
+  if(prepared){image.className=css;image.alt=alt;image.draggable=false;}
   if(source) image.addEventListener('error',()=>{image.dataset.loadError='true';image.alt='登録した部屋画像を読み込めませんでした';});
   return image;
 }
@@ -293,7 +295,7 @@ export function roomPreview(room,source) {
   return photo;
 }
 
-export function roomStage(room,source,{mini=false,avatarName,signal,inputRoot,traveler}={}) {
+export function roomStage(room,source,{mini=false,avatarName,signal,inputRoot,traveler,preparedInterior}={}) {
   const theme=themeFor(room);
   const world=worldFor(room);
   const scene=make('div',mini?'world-stage world-mini':'world-stage room-scene');
@@ -312,15 +314,15 @@ export function roomStage(room,source,{mini=false,avatarName,signal,inputRoot,tr
   const floor=make('div','world-floor');
   const ceiling=make('div','world-ceiling');
   const glazing=make('div','world-window');
-  glazing.append(art(`./assets/view-${views[world.view]}.webp`,'window-scenery','',mini));
+
   const rug=make('div','world-rug');
   const light=make('div','world-glow');
   if(photo) {
     scene.classList.add('world-photo-suite');
-    const interior=interiorImage(room,generated,'suite-interior',mini?'':generated?'住人がつくった部屋':'窓から街を見渡せる、マンションの室内',mini);
+    const interior=interiorImage(room,generated,'suite-interior',mini?'':generated?'住人がつくった部屋':'窓から街を見渡せる、マンションの室内',mini,preparedInterior);
     scene.append(interior);
     if(generated&&!mini){
-      const retry=make('button','scene-art-retry');retry.type='button';retry.hidden=true;retry.textContent='元の部屋画像を再読み込み';
+      const retry=make('button','scene-art-retry');retry.type='button';retry.hidden=!(interior.complete && !interior.naturalWidth);retry.textContent='元の部屋画像を再読み込み';
       interior.addEventListener('error',()=>{retry.hidden=false;});
       interior.addEventListener('load',()=>{retry.hidden=true;delete interior.dataset.loadError;});
       retry.addEventListener('click',event=>{event.stopPropagation();retry.hidden=true;interior.src=generated;});
@@ -334,7 +336,10 @@ export function roomStage(room,source,{mini=false,avatarName,signal,inputRoot,tr
         signal.addEventListener('abort',()=>clearInterval(timer),{once:true});
       }
     }
-  } else scene.append(back,left,right,ceiling,floor,rug,glazing,light);
+  } else {
+    glazing.append(art(`./assets/view-${views[world.view]}.webp`,'window-scenery','',mini));
+    scene.append(back,left,right,ceiling,floor,rug,glazing,light);
+  }
   const poster=(room.profile?.articles ?? []).find(article=>article.url===room.design?.pin&&article.image) ??
     (room.profile?.articles ?? []).find(article=>article.image);
   if(poster&&!mini&&!photo) scene.append(art(poster.image,'world-poster',poster.title));

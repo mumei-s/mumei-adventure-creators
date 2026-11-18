@@ -12,11 +12,15 @@
   <meta property="og:description" content="自分のキャラクターで街を歩き、２枚のイラストとnote記事をつくる。">
   <meta property="og:image" content="https://mumei-s.github.io/mumei-adventure-creators/halloween-exhibition/preview/diorama-city/assets/district.webp">
   <meta name="note:card" content="summary_large_image">
-  <link rel="stylesheet" href="./district.css?v=20261118-city2">
+  <link rel="modulepreload" href="./paths.js?v=20261118-speed">
+  <link rel="modulepreload" href="./venues.js?v=20261118-city2">
+  <link rel="modulepreload" href="../../../tower/facility-floors.js?v=20261118-city2">
+  <script type="module" async src="./scene-entry.js?v=20261118-speed"></script>
+  <link rel="stylesheet" href="./district.css?v=20261118-speed">
   <link rel="stylesheet" href="./walk-pad.css?v=2">
   <link rel="stylesheet" href="../../../tower/quality-assist.css?v=202611181820">
   <link rel="stylesheet" href="../../../tower/game-shell.css?v=20261118-city2">
-  <script type="module" src="./district.js?v=20261118-city2"></script>
+  <script type="module" src="./district.js?v=20261118-speed"></script>
   <script type="module" src="../../../tower/visit-counter.js?v=20261118-city2"></script>
 </head>
 <body>
@@ -38,9 +42,9 @@
         <canvas id="transit" class="transit" width="1000" height="667" aria-hidden="true"></canvas>
         <div id="city-portal" class="city-portal" aria-hidden="true"></div>
         <div class="city-cast" aria-hidden="true">
-          <img class="cast cast-plaza" src="./assets/host-anime-pink.webp" alt="" draggable="false">
-          <img class="cast cast-station" src="./assets/host-real-gold.webp" alt="" draggable="false">
-          <img class="cast cast-waterfront" src="./assets/host-anime-gold.webp" alt="" draggable="false">
+          <img class="cast cast-plaza" data-src="./assets/host-anime-pink.webp" alt="" draggable="false">
+          <img class="cast cast-station" data-src="./assets/host-real-gold.webp" alt="" draggable="false">
+          <img class="cast cast-waterfront" data-src="./assets/host-anime-gold.webp" alt="" draggable="false">
         </div>
       </div>
       <img id="venue-plate" class="venue-plate" alt="" width="1440" height="960" draggable="false" hidden>
@@ -118,6 +122,14 @@
       </label>
       <div class="spot-actions"><button type="button" class="spot-prompt" id="spot-save-reference" hidden>登録済み参照画像を保存</button><button type="button" class="spot-prompt" id="spot-reset-reference" hidden>登録済み画像に戻す</button></div>
       <img id="spot-image-preview" alt="添付したキャラクターの参照画像" hidden>
+      <label class="spot-field">つくる画像
+        <select id="spot-output">
+          <option value="set">本文２枚＋記事のサムネイル</option>
+          <option value="scene1">最初のイラスト１枚だけ</option>
+          <option value="scene2">続きのイラスト２枚目だけ</option>
+          <option value="cover">記事のサムネイルだけ</option>
+        </select>
+      </label>
       <details class="spot-preview">
         <summary>プロンプトを表示</summary>
         <label class="spot-field">コピー用プロンプト
@@ -127,7 +139,7 @@
       <button type="button" class="spot-prompt" id="spot-main-prompt">通常のイラスト作成に戻す</button>
       <button type="button" class="visit" id="spot-copy">イラスト作成プロンプトをコピー</button>
       <span id="spot-message" role="status"></span>
-      <p class="spot-hint">登録済みのキャラは再入力不要（ChatGPTで参照できない場合だけ画像を添付）。別のキャラに変更する場合は新しい画像を添付してください。本文イラスト２枚と専用サムネイル１枚を作成します。</p>
+      <p class="spot-hint">登録済みのキャラは再入力不要（ChatGPTで参照できない場合だけ画像を添付）。別のキャラに変更する場合は新しい画像を添付してください。１枚だけ先に作りたいときは「つくる画像」で選べます。</p>
       <details id="spot-article-draft" class="article-draft"><summary>そのままnoteに貼れる記事本文</summary>
         <label>記事原稿（編集できます）<textarea rows="9" aria-label="編集できる記事本文"></textarea></label>
         <button type="button">記事本文をコピー</button><p role="status"></p>

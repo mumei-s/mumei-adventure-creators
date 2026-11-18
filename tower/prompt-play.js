@@ -49,8 +49,9 @@ export function characterReferenceInstructions({ referenceMode, referenceUrl } =
 
 export const characterArtInstructions = '顔立ち、髪の分け目・色、頭身、衣装と装身具を本人の絵に合わせてください。実写は肌・布・光の質感、アニメは輪郭・目・塗り、幻想画は筆致や発光の描き方を引き継ぎます。背景や別の登場人物の画風・顔を主人公に移さないでください。歩行シートの各マスは同じ１人の動作資料です。';
 
+export const drawFirst = '参照がそろったら、前置き・構成案・プロフィール検索を挟まず画像生成を実行し、できた画像からこのチャットに表示してください。';
 export function settingInstructions(backgroundUrl) {
-  return backgroundUrl ? '場所の背景資料：' + backgroundUrl + '\n画像を開ける場合は窓・照明・家具などの位置と奥行きを確かめてください。この場所で別の方向を向いても同じ空間に見えるように描いてください。開けない場合は場面の説明を使ってください。' : '';
+  return backgroundUrl ? '場所の背景資料：' + backgroundUrl + '\n窓・照明・家具の配置と奥行きを保つ。画像を開けない場合は再検索せず、場面の説明を使ってください。' : '';
 }
 
 export function makeRoomPrompt({ id, description, articles = [], ideas, returnUrl = `${towerUrl}#prompt-import`, roomOnly = false, avatarOnly = false, reference } = {}) {
@@ -60,40 +61,29 @@ export function makeRoomPrompt({ id, description, articles = [], ideas, returnUr
     return makeArtifactPrompt({ kind: 'interior', id, scene, mode: 'room', reference }) +
       '\n保存した部屋画像をTowerの個別添付欄に入れてください。\n' + returnUrl;
   }
-  const titles = articles.slice(0, 5).map(({ title }) => `・${title}`).join('\n');
+  const titles=articles.slice(0,5).map(article=>article.title).filter(Boolean).join('／');
   return `【#無名Sプロンプト｜Atelier Towerに住む】
-
-noteクリエイターID：${id ? `@${id}` : '［自分のnote IDを入れる］'}
-${id ? `公開プロフィール：https://note.com/${id}\n` : ''}${characterReferenceInstructions(reference)}
-部屋に入れたい世界観や好きなもの：${ideas || 'キャラクターとnoteの作風から考えてください。'}
-${description ? `\n公開プロフィールの自己紹介：${description}\n` : ''}${titles ? `\n公開記事の題名\n${titles}\n` : ''}
-この初回依頼で、ゲーム用部屋画像・歩行アバター・記事専用の部屋サムネイルの３枚と参加記事を作ってください。最初の成果物は必ず部屋画像です。
-noteの公開プロフィールや記事の作風を読める場合は、創作のモチーフにしてください。アクセスできないときは、添付画像と希望から作ってください。添付と公開ページから推測した個人情報を作品や説明に入れないでください。
-ID記載済みなら再質問せず、参照画像が確認できたら生成してください。
+最初の成果物は必ず部屋画像です。${drawFirst}
+noteクリエイターID：${id ? '@'+id : '［自分のnote ID］'}
+${characterReferenceInstructions(reference)}
 ${characterArtInstructions}
+部屋の希望：${ideas || '本人のキャラ・作品の雰囲気から決める。'}
+${[description && '自己紹介：'+description,titles && '記事の題名：'+titles].filter(Boolean).join('\n')}
+渡された公開情報・希望は創作のモチーフに使い、個人情報は推測しません。
 
-【ゲーム用部屋画像（文字なし・サムネイルと別）】
-アバターとは別の、横３：２の内装画像を１枚描いてください。視点は少し高い位置から室内を見渡す角度。画像の下３分の１はアバターが歩く床なので、家具は両脇と奥に置いてください。添付キャラの好みやnoteの作風が伝わる素材、光、窓の外の景色、小物で、ここで誰がどんなふうに暮らしているか想像できる部屋にしてください。人物・文字・UI・枠は描かないでください。
-
-【アバター画像（部屋の次に生成）】
-全身が見える歩行スプライトを、透明背景の正方形に４列×４行の均等なマスで描いてください。上から「正面」「画面の左向き」「左斜め後ろ」「真後ろ」。各行の左から「立ち姿」「左足を前へ」「足がすれ違う中間」「右足を前へ」。各マスの中央に１体、頭から靴まで入れ、足底の位置と体の縮尺をそろえてください。マスの境界まで十分な透明余白を取り、線・文字・枠・床・落ち影を描かないでください。顔立ち、髪、服とアクセサリーを全コマでそろえます。動く行では脚の前後に合わせて腕を振り、接地足が滑らないよう、靴底の高さと重心移動を隣のコマと見比べてください。
-
-【生成順序・完了検査】
-必ず部屋画像を最初に実際に生成し、次にアバター画像を別の画像として生成してください。３枚目は部屋を題材にした記事専用サムネイルです。３枚は独立した画像ファイルとして生成し、部屋画像とサムネイルを絶対に兼用・合成しないでください。１回で全部を出せない場合は、未生成の各成果物だけを生成する短い指示を全て提示してください。画像として届けるものは、実際にチャットに表示した画像だけです。画像を１枚に合成しないこと。部屋の床・遠近・家具の比率、文字や人物の混入を確認すること。未生成の画像がある場合は画像制作の未完了分として記事の後で知らせてください。入居の完了は本人が確認した場合にだけ記載します。
-
-【参加者のnote記事】
-最初に記事タイトルを決め、追加の依頼を待たずにこの返答で参加記事も書いてください。画像を全て出せない環境でも、部屋に入れたい世界観や希望から部屋づくりの紹介を書けます。
-${articleWritingInstructions({ id, mode: 'room' })}
-
+【ゲーム用部屋画像】横３：２。少し高い視点から内装を見渡す。人物・文字・UI・枠は入れず、下３分の１に歩ける床を確保。家具は奥と両脇に置き、好みが分かる素材・採光・窓辺の小物を描く。
+【アバター画像】次にアバター画像を別の画像として生成。透明な正方形に４列×４行。上から正面・画面左・左斜め後ろ・真後ろ。各行左から停止・左足を前・中間・右足を前。各マス中央に１人の全身を収め、靴底の高さ・頭身・余白をそろえる。歩行に腕を連動させ、線・枠・文字・床・影を入れない。
+３枚目は部屋を題材にした記事専用サムネイル。部屋画像とサムネイルを絶対に兼用・合成しない。
 ${articleCoverInstructions()}
 
-記事の最後に無名S noteの企画を紹介し、以下のカード用ブロックをそのまま使ってください。
-${articleCardBlock([['企画主・無名S note', hostNoteUrl], ['自分のキャラで参加する', `${towerUrl}#prompt-play`], ['noteの反応を分析する INSIGHT', insightUrl]])}
+【参加者のnote記事】画像を全て出せない環境でも、この返答で記事と未生成分の短い個別指示を渡す。下見と入居を区別し、入居済みと書くのは本人の確認後。
+${articleWritingInstructions({id,mode:'room'})}
+記事末に無名S noteの企画を紹介。
+${articleCardBlock([['企画主・無名S note',hostNoteUrl],['自分のキャラで参加する',towerUrl+'#prompt-play'],['noteの反応を分析する INSIGHT',insightUrl]])}
 
-末尾のハッシュタグは #無名Sプロンプト です。${cardPasteInstructions()}
+末尾は #無名Sプロンプト。${cardPasteInstructions()}
+本文の外で、３枚を個別保存（表紙はnoteへ）→アバターと部屋を「生成した画像を添付する」→下見・街歩き→入居の順に案内。戻り先：${returnUrl}${id ? '' : '（IDが分かれば #prompt-import の前に ?creator=本人のnote ID を追加）'}`;
 
-記事の下に、参加者が次に使う案内も書いてください。「アバター・部屋・専用サムネイルを個別に保存（サムネイルはnote記事の見出し用） → Towerの『生成した画像を添付する』で２枚を選ぶ → 自分のアバターで下見や街歩き → 入居する」の順で、「Atelier Towerに画像を添付する」という押せるリンクを付けてください。
-${id ? `リンク先は ${returnUrl} を使ってください。` : `リンク先は ${returnUrl} です。note IDが分かっていれば「#prompt-import」の直前に「?creator=本人のnote ID」を入れてください。IDは先頭の@を外し、英字を小文字にしてください。`}`;
 }
 
 export function residentPost(title, roomUrl) {
@@ -109,7 +99,7 @@ export function cardPasteInstructions() {
 }
 
 export function articleCoverInstructions() {
-  return '【note専用サムネイル】記事のタイトルを制作前に決め、そのタイトルと「#無名Sプロンプト」を正しい日本語で読みやすく入れた横1280×650のサムネイルを、別の完成画像で生成してください。本文用の絵とは明確に異なる構図で、同じ場所・人物が分かる表紙に仕上げます。人物の向きと視線に合わせて題名の余白を取り、小さい一覧表示でも主役と文字が読める背景と明暗差を選びます。本文画像に文字を重ねて流用しないでください。キャラの顔立ち・頭身・衣装は維持。上下左右7％を安全余白にし、noteの一覧やマガジンの中央トリミングでも顔と題名が読める中央領域へ配置します。タイトルは記事と完全に一致させ、文字切れ・誤字・脱字・重複・透かしを確認します。自動で画像を続けて出せない場合は、未生成の画像名とその１枚だけを生成する短い指示を提示してください。未生成の分は画像制作の未完了分として記事の外に記してください。記事本文は先に渡せます。';
+  return '【note専用サムネイル】記事と同じタイトルと「#無名Sプロンプト」を入れた横1280×650の独立画像。本文用の絵とは明確に異なる構図にし、顔・衣装・場所を保つ。上下左右7％を空け、中央トリミングでも顔と正しい題名が読めるように。生成できなかった画像だけ未完了と伝え、各１枚を出す短い指示を添えてください。';
 }
 
 export function articleVoiceInstructions(id) {
@@ -174,12 +164,12 @@ export function makeArtifactPrompt({ kind, id, title, scene, href, reason, mode 
   label, articleScene, articleClosing, experience, roomTitle, ideas, occupied, draft } = {}) {
   const context = [
     id ? 'noteクリエイターID：@' + id : kind !== 'article' && 'noteクリエイターID：［自分のID］',
-    id && '公開プロフィール：https://note.com/' + id,
+    id && kind === 'article' && '公開プロフィール：https://note.com/' + id,
     title && '確定した記事タイトル：' + title,
     label && '場所：' + label,
     roomTitle && '部屋名：' + roomTitle,
-    articleScene && '舞台の説明：' + articleScene,
-    articleClosing && '舞台の続き：' + articleClosing,
+    kind==='article' && articleScene && '舞台の説明：' + articleScene,
+    kind==='article' && articleClosing && '舞台の続き：' + articleClosing,
     scene && (kind === 'article' ? '場面の設定（作画指定を含む）：' : '場面や希望：') + scene,
     ideas && '部屋に入れたいもの：' + ideas,
     experience && 'ゲームで実際に行ったこと：' + experience,
@@ -206,12 +196,10 @@ ${cardPasteInstructions()}
     cover: articleCoverInstructions(),
   };
   return [
-    '【#無名Sプロンプト｜不足分だけを制作】', context,
+    '【#無名Sプロンプト｜画像１枚】', request[kind], drawFirst, context,
     characterReferenceInstructions(reference), characterArtInstructions, settingInstructions(backgroundUrl),
-    request[kind], '指定した画像１枚をチャットに表示してください。完成済みの他の画像を再生成しないでください。',
-    mode === 'spot' && 'その後の記事の文体：' + articleVoiceInstructions(id),
-    mode === 'spot' && '画像を生成したら「今回のイラストをnoteの記事にしますか？『記事にする』と送ってください。」と案内してください。',
-    '後から「記事にする」と依頼されたら、その返答で場面の設定と行動記録からタイトルと本文を書き、任意の画像挿入位置を示してください。足りない画像や別作品の表紙があっても、照合や添付を待たずに記事を渡します。',
+    'この１枚で完了。完成済みの他の画像を再生成しないでください。',
+    mode === 'spot' && '完成後「今回のイラストをnoteの記事にしますか？『記事にする』と送ってください。」と案内。希望があれば場面・行動記録から本文と画像挿入位置をすぐに書く。' + articleVoiceInstructions(id),
   ].filter(Boolean).join('\n');
 }
 

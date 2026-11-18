@@ -212,8 +212,8 @@ dialog::backdrop {background:#101414b5}
 .place-body .visit {background:linear-gradient(130deg,#ecd7aa,#c7a36f);color:#211c14;font-weight:650;border-color:#e6d1ac}
 .place-body .visit:disabled {background:#273238;color:#c9bda7;border-color:#625c51}
 .spot-field {display:grid;gap:6px;margin:10px 0;font-size:13px}
-.spot-field :is(input,textarea) {width:100%;min-width:0;padding:7px 9px;border:1px solid #6e6d62;border-radius:3px;background:#10191e;color:#f1ebdf;font:inherit}
-.spot-field input {min-height:44px;font-size:16px}
+.spot-field :is(input,textarea,select) {width:100%;min-width:0;padding:7px 9px;border:1px solid #6e6d62;border-radius:3px;background:#10191e;color:#f1ebdf;font:inherit}
+.spot-field :is(input,select) {min-height:44px;font-size:16px}
 .spot-field input[type=file] {font-size:13px}
 .spot-field input::file-selector-button {min-height:30px;margin-inline-end:8px;border:1px solid #846f53;border-radius:3px;background:#26343d;color:inherit}
 #spot-image-preview {display:block;width:auto;max-width:100%;height:86px;object-fit:contain}

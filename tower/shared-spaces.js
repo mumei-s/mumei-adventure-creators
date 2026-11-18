@@ -1,4 +1,4 @@
-import { roomStage } from './world.js?v=20261118-spaces';
+import { roomStage } from './world.js?v=20261118-spaces-4';
 import { readTraveler, readWalkDraft, rememberWalker, TOWER_API, avatarImageUrl } from './avatar-travel.js?v=20261118';
 import { hostPortrait, autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=20261118-spaces';
 
@@ -101,11 +101,14 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
         });details.append(join);
       }
     }else{
+      let timer=0;
       details.append(action('免震の動きを見る',()=>{
         stage.classList.remove('isolation-demo');void stage.offsetWidth;stage.classList.add('isolation-demo');
+        model.hidden=false;clearTimeout(timer);timer=setTimeout(()=>{model.hidden=true;},4000);
         announce('地面側の揺れと、免震支承によってゆっくり動く建物側を比べる模型演出です。');
       }));
       const model=make('div','isolation-model');
+      model.hidden=true;controller.signal.addEventListener('abort',()=>clearTimeout(timer),{once:true});
       model.append(make('span','isolation-building','建物'),make('span','isolation-bearing'),make('span','isolation-ground','地盤'));
       stage.append(model);
     }
@@ -216,6 +219,10 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
   for(const [id,space] of Object.entries(sharedSpaces))nav.append(action(`${floorLabel(space.floor)} ${space.title}`,()=>open(id),'shared-nav-button'));
   document.querySelectorAll('[data-space]').forEach(item=>item.addEventListener('click',()=>open(item.dataset.space)));
   document.getElementById('shared-back').addEventListener('click',()=>dialog.close());
+  document.getElementById('shared-info').addEventListener('click',event=>{
+    const open=dialog.dataset.info==='closed';dialog.dataset.info=open?'open':'closed';
+    event.currentTarget.setAttribute('aria-expanded',String(open));event.currentTarget.textContent=open?'案内をしまう':'案内を開く';
+  });
   document.getElementById('shared-exit').addEventListener('click',()=>{dialog.close();entrance(()=>{
     const destination=new URL('../halloween-exhibition/preview/diorama-city/?arrival=tower',location.href);
     if(getOwner()?.id)destination.searchParams.set('resident',getOwner().id);

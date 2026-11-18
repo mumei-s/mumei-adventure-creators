@@ -40,3 +40,19 @@
 @media(max-width:640px){.shared-directory{padding:16px}.shared-shortcuts{grid-template-columns:repeat(2,minmax(0,1fr))}.shared-dialog .dialog-bar{padding:4px 7px;gap:4px}.shared-dialog .dialog-bar button{font-size:10px;min-height:40px;padding:4px}.shared-dialog h2{font-size:12px}.parking-grid{grid-template-columns:repeat(3,minmax(0,1fr))}#shared-content{padding:5px 4px 0}#shared-controls .world-control-hint{max-width:95px}#shared-controls .walk-pad{--pad-width:88px}}
 @media(orientation:landscape) and (max-height:540px){.shared-dialog[open]{grid-template-columns:minmax(0,1fr) 150px;grid-template-rows:auto auto minmax(0,1fr)}.shared-dialog .dialog-bar,.shared-dialog #shared-nav{grid-column:1/-1}#shared-controls{grid-column:2;grid-row:3;display:grid;align-items:center}.shared-dialog .world-control-dock{display:flex;flex-direction:column}.shared-viewport{height:calc(100dvh - 120px);min-height:160px}.shared-dialog .world-control-hint{text-align:center}}
 @media(prefers-reduced-motion:reduce){.security-feed img,.isolation-demo *{animation:none!important}.entrance-doors i{transition:none}}
+/* Keep the overview focused on the room; guidance remains one tap away. */
+.shared-dialog .dialog-bar{padding:3px 9px;min-height:34px;gap:6px}
+.shared-dialog .dialog-bar .quiet{font-size:10px;min-height:30px;padding:4px 6px;white-space:nowrap}
+.shared-dialog h2{font-size:clamp(11px,1.2vw,15px);line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#shared-nav{padding:4px 6px;gap:4px}
+.shared-nav-button{font-size:10px;min-height:29px;padding:5px 8px}
+#shared-details>p{font-size:11px;line-height:1.6}#shared-details .button{font-size:11px;min-height:34px;padding:5px 8px}
+.shared-dialog[data-info="closed"] #shared-nav,.shared-dialog[data-info="closed"] #shared-details{display:none}
+.shared-dialog[data-info="closed"][open]{grid-template-rows:auto minmax(0,1fr) auto}
+.shared-dialog[data-camera="overview"] #shared-content{padding:3px}
+.shared-dialog[data-camera="overview"] .shared-viewport{height:auto;aspect-ratio:1.5;min-height:0;max-height:calc(100dvh - 120px)}
+.shared-dialog[data-camera="overview"] #shared-controls .world-control-hint{display:none}
+.shared-dialog[data-camera="overview"] #shared-controls .walk-pad{--pad-width:68px}
+.shared-dialog[data-camera="overview"] .shared-camera{font-size:10px;min-height:32px}
+@media(max-width:640px){.shared-dialog .dialog-bar{padding:3px 4px;gap:2px}.shared-dialog .dialog-bar .quiet{font-size:9px;padding:3px 4px}.shared-dialog h2{font-size:10px}.shared-dialog[data-camera="overview"]{width:calc(100vw - 4px)}}
+@media(orientation:landscape) and (max-height:540px){.shared-dialog[data-info="closed"][open]{grid-template-rows:auto minmax(0,1fr)}.shared-dialog[data-info="closed"] #shared-controls{grid-row:2}.shared-dialog[data-camera="overview"] .shared-viewport{height:calc(100dvh - 65px);max-height:none;aspect-ratio:auto}.shared-dialog[data-camera="overview"] .shared-scroll{grid-column:1}.shared-dialog[data-camera="overview"] #shared-controls .world-control-hint{display:none}}

@@ -322,3 +322,14 @@ dialog::backdrop {background:#101414b5}
 }
 
 @media(prefers-reduced-motion:reduce){.ride-window.riding .ride-carriage{animation:none}}
+/* Smaller labels and controls leave more of the city visible in overview. */
+.city-view[data-camera="overview"] .location{font-size:10px;min-height:26px;max-width:124px;padding:3px 6px;gap:3px;background:#10202abb;border-color:#c9b79380;box-shadow:0 1px 4px #10171955}
+.city-view[data-camera="overview"] .location::before{width:4px;height:4px}
+.city-view[data-camera="overview"] .location.near{background:#182d37e8;border-color:#dcceb2}
+#district:has(.city-view[data-camera="overview"]) .control-bar{min-height:78px;padding-block:3px}
+#district:has(.city-view[data-camera="overview"]) .control-bar .walk-pad{--pad-width:72px}
+#district:has(.city-view[data-camera="overview"]) #place-note{display:none}
+#district:has(.city-view[data-camera="overview"]) #place-name{font-size:13px}
+#district:has(.city-view[data-camera="overview"]) .player-info p{font-size:10px}
+#district:has(.city-view[data-camera="overview"]) .player-info a{font-size:10px;min-height:30px}
+#district:has(.city-view[data-camera="overview"]) .control-info>button{font-size:10px;min-height:31px;padding:4px 6px}

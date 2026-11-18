@@ -48,6 +48,7 @@ const spaces=['owner','sky','lobby','concierge','driveway','bicycle','parking','
   await page.keyboard.down('ArrowRight');await page.waitForTimeout(350);await page.keyboard.up('ArrowRight');
   assert.notEqual(await page.locator('#shared-content .world-resident').getAttribute('data-position'),start);
   for(const space of spaces){
+   if(!(await page.locator('#shared-nav').isVisible()))await page.locator('#shared-info').click();
    if(space!=='lobby'){
     const labels={owner:'14F オーナーズ・アトリエ',sky:'13F 天空ラウンジ',concierge:'1F 管理人室',driveway:'G 車寄せ',bicycle:'G 駐輪コート',parking:'B1 地下駐車場',parkingTower:'G 立体駐車場',motorcycle:'G バイク置き場',boiler:'B2 ボイラー・設備室',seismic:'B3 免震構造・見学回廊'};
     await page.locator('#shared-nav').getByRole('button',{name:labels[space],exact:true}).click();
@@ -80,14 +81,20 @@ const spaces=['owner','sky','lobby','concierge','driveway','bicycle','parking','
    assert.ok(Object.keys(room.design.transport).length===4);
    await page.locator('#shared-nav').getByRole('button',{name:'13F 天空ラウンジ',exact:true}).click();
    await page.waitForSelector('[data-space="sky"].shared-stage');
+   await page.locator('.shared-camera').click();
+   assert.equal(await page.locator('#shared-nav').isVisible(),false);
    await page.screenshot({path:path.join(evidence,'sky-phone.png')});
   }
+  if(!(await page.locator('#shared-details').isVisible()))await page.locator('#shared-info').click();
   await page.getByRole('button',{name:'ここでイラスト・note記事をつくる',exact:true}).click();
   assert.equal(await page.locator('#spot-id').inputValue(),'creator_test');
   assert.match(await page.locator('#spot-text').inputValue(),/登録済みアバター画像URL/);
   await page.locator('#spot-article').click();assert.match(await page.locator('#spot-text').inputValue(),/画像は再生成しない/);
   await page.locator('#spot-dialog form button').click();
   assert.ok(await page.locator('#shared-dialog').getAttribute('open')!==null);
+  if(await page.locator('#shared-dialog').getAttribute('data-camera')!=='overview')await page.locator('.shared-camera').click();
+  if(await page.locator('#shared-nav').isVisible())await page.locator('#shared-info').click();
+  assert.equal(await page.locator('#shared-nav').isVisible(),false);
   if(name==='landscape')await page.screenshot({path:path.join(evidence,'landscape.png')});
   if(name==='desktop')await page.screenshot({path:path.join(evidence,'desktop.png')});
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);

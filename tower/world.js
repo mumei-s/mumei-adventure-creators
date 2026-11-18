@@ -147,6 +147,13 @@ function attachMotion(frame,scene,walker,obstacles,updateAvatar,signal,inputRoot
   const viewport=shared?scene.parentElement:null;
   function camera(){
     if(!shared||!viewport?.clientWidth)return;
+    const dialog=frame.closest('dialog');
+    const mode=overview?'overview':'walk';
+    if(dialog&&dialog.dataset.camera!==mode){
+      dialog.dataset.camera=mode;dialog.dataset.info=overview?'closed':'open';
+      const info=dialog.querySelector('#shared-info');
+      if(info){info.setAttribute('aria-expanded',String(!overview));info.textContent=overview?'案内を開く':'案内をしまう';}
+    }
     const width=viewport.clientWidth,height=viewport.clientHeight;
     const fit=Math.min(width/1000,height/667);
     const scale=overview?fit:Math.max(width/1000,height/667,.52);

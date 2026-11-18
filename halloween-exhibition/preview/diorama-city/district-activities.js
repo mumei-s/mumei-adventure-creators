@@ -249,7 +249,9 @@ export function bindActivities(dialog, { avatar, status, journey, openArticle, m
     progress.setAttribute('aria-hidden', 'true');
     scene.append(progress);
     const controls = element('div', '', 'spot-actions ride-actions');
+    let artReady=false;
     const rideAgain = button('乗る', () => {
+      if (!artReady) {void prepareArt(true);return;}
       if (syncRide) return;
       rideAgain.hidden = true;
       const finish = () => {
@@ -295,7 +297,32 @@ export function bindActivities(dialog, { avatar, status, journey, openArticle, m
     controls.append(rideAgain);
     if (kind === 'wheel') controls.append(look);
     body.append(scene, controls);
-    rideAgain.focus();
+    async function prepareArt(retrying=false) {
+      rideAgain.disabled=true;
+      rideAgain.textContent='読み込み中…';
+      scene.classList.add('loading-art');
+      scene.setAttribute('aria-busy','true');
+      const images=[...scene.querySelectorAll('img')];
+      if(retrying)for(const image of images){
+        if(!image.naturalWidth)image.src=image.getAttribute('src');
+      }
+      try {
+        await Promise.all(images.map(image=>image.decode()));
+        if(!scene.isConnected)return;
+        artReady=true;
+        scene.classList.remove('loading-art');
+        rideAgain.textContent='乗る';
+        announce('');
+      } catch {
+        if(!scene.isConnected)return;
+        rideAgain.textContent='乗り場の画像を再読み込み';
+        announce('乗り場の画像を読み込めませんでした。もう一度読み込めます。');
+      } finally {
+        rideAgain.disabled=false;
+        scene.setAttribute('aria-busy','false');
+      }
+    }
+    void prepareArt();
   }
 
   function reflectionStatus() {

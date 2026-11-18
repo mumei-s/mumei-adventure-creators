@@ -44,7 +44,7 @@ const base = process.env.CITY_URL || 'http://127.0.0.1:4173/halloween-exhibition
       await studio.getByRole('link',{name:'できた画像を号室に登録する'}).click();
       await page.waitForSelector('.shared-stage[data-space="'+space+'"]');
       assert.ok(await page.locator('#vehicle-registration').isVisible());
-      await page.locator('.vehicle-maker summary').click();
+      await page.locator('.vehicle-maker > summary').click();
       assert.ok(await page.locator('#shared-details .vehicle-studio input').isVisible());
     }
     await reach('market.snacks');

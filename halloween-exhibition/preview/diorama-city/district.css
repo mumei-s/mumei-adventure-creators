@@ -228,6 +228,7 @@ dialog::backdrop {background:#101414b5}
 .market-total {font-variant-numeric:tabular-nums;color:#eedab7}
 #activity-message {white-space:pre-line;color:#c7e9d7}
 .ride-window {position:relative;isolation:isolate;width:min(100%,69dvh);aspect-ratio:3/2;overflow:hidden;margin:12px auto;border:1px solid #8e7756;border-radius:6px;background:#15212c}
+.ride-window.loading-art :is(.ride-carriage,.carousel-mount) {visibility:hidden}
 .ride-scenery,.carousel-hub,.wheel-skyline {position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .ride-wheel>.ride-scenery {filter:brightness(.77)}
 .wheel-layout {position:absolute;top:3%;height:89%;aspect-ratio:1;left:50%;transform:translateX(-50%)}

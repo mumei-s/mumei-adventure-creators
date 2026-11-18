@@ -208,19 +208,19 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
       if(dialog.open&&current===id)render(id);
     }).catch(()=>{if(current===id)announce('登録済みアバターを読み込めませんでした。施設を開き直すと再試行できます。');});
     if(['parking','parkingTower','bicycle','motorcycle','boiler'].includes(id))void loadFacilities().then(data=>{if(request!==facilitiesRequest)return;facilities=data.residents??[];if(dialog.open&&current===id)render(id);}).catch(()=>{if(current===id)announce('車両と技術部の情報を読み込めませんでした。施設を開き直すと再試行できます。');});
-    if(id==='lobby'&&animate){entrance(()=>render(id));return;}
+    if(id==='lobby'&&animate){if(dialog.open)dialog.close();entrance(()=>render(id));return;}
     const level=id==='sky'?(getCatalog()?.floors??12)+1:id==='owner'?(getCatalog()?.floors??12)+2:space.floor;
     if(animate)travel(level,()=>render(id));else render(id);
   }
   for(const [id,space] of Object.entries(sharedSpaces))nav.append(action(`${floorLabel(space.floor)} ${space.title}`,()=>open(id),'shared-nav-button'));
   document.querySelectorAll('[data-space]').forEach(item=>item.addEventListener('click',()=>open(item.dataset.space)));
   document.getElementById('shared-back').addEventListener('click',()=>dialog.close());
-  document.getElementById('shared-exit').addEventListener('click',()=>entrance(()=>{
+  document.getElementById('shared-exit').addEventListener('click',()=>{dialog.close();entrance(()=>{
     const destination=new URL('../halloween-exhibition/preview/diorama-city/?arrival=tower',location.href);
     if(getOwner()?.id)destination.searchParams.set('resident',getOwner().id);
     else if(readWalkDraft())destination.searchParams.set('walker','draft');
     location.assign(destination);
-  }));
+  });});
   dialog.addEventListener('close',()=>{
     controller?.abort();
     const url=new URL(location.href);url.searchParams.delete('space');history.replaceState(history.state,'',url);

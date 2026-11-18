@@ -27,3 +27,5 @@ Pagesの公開対象はルートの `scripts/stage-pages.mjs` で管理します
 検査：`npm --prefix halloween ci` の後、`node --test tower/tests/*.test.mjs scripts/stage-pages.test.mjs`。車両所有権、更新競合、４区画の独立保存、改装時の保持、公開応答からの画像データ除外を検査します。
 
 ブラウザ検査：ルートを4173番で配信し、Playwrightが使える環境で `node tower/tests/browser-flow.cjs`。必要に応じ `BROWSER_EXECUTABLE` を指定します。４画面サイズで11施設、歩行、車両添付、記事導線、乗車を確認し、画像は一時ディレクトリへ保存します。登録APIをテスト用応答へ置き換えるため、本番の部屋や車両は書き換えません。
+
+`node tower/tests/pwa-browser-flow.cjs` はChromeのPWAマニフェスト解析、起動URL、実際の入退館ドアの表示、街との往復と戻る操作を検査します。

@@ -85,6 +85,19 @@ jobs:
           for test in tower/tests/*browser-flow.cjs; do
             node "$test"
           done
+      - name: 入居準備画面の確認済みソースを取得
+        uses: actions/checkout@v4
+        with:
+          ref: df0e6aa90eff77eb0f82c9509ab585ce23218f75
+          path: .tower-admission
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /tower/
+            /halloween-exhibition/preview/diorama-city/
+            /halloween-exhibition/preview/castle-visit-counter.js
+      - name: 入居準備と住人の公開展示を追加
+        run: node scripts/stage-tower-admission.mjs .tower-admission _site
       - name: 公開ファイルを準備
         uses: actions/upload-pages-artifact@v3
         with:

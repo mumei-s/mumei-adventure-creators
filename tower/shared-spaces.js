@@ -367,6 +367,11 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
         loading.remove();
       }).catch(()=>{if(view===session)loading.textContent='登録済みアバターを読み込めませんでした。施設を開き直すと再試行できます。';});
     }
+    if(id==='lobby'||id==='driveway'){
+      const entry=make('a','button primary lobby-intake','入居の準備を始める');
+      entry.href='../admission/tower/#prompt-play';
+      scene.querySelector('.shared-viewport').append(entry);
+    }
     if(id==='lobby'||id==='sky')view.refresh=guests(stage);
     if(id==='concierge'){cameras(stage);view.refresh=rolePanel('manager');}
     if(['parking','parkingTower','bicycle','motorcycle'].includes(id))view.refresh=parking(stage,id);

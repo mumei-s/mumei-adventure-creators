@@ -93,3 +93,5 @@
 body[data-game-motion=reduced] .security-bank .security-feed img{animation:none}
 
 #spot-output {min-height:44px;font-size:16px}
+
+.shared-viewport>.lobby-intake{position:absolute;z-index:95;top:.6rem;left:.6rem;max-width:80%;touch-action:manipulation}

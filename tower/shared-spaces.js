@@ -371,6 +371,7 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
       const entry=make('a','button primary lobby-intake','入居の準備を始める');
       entry.href='../admission/tower/#prompt-play';
       scene.querySelector('.shared-viewport').append(entry);
+      details.prepend(make('p','', 'アバターと部屋を作り、空室を選んでこの端末に保存できます。'));
     }
     if(id==='lobby'||id==='sky')view.refresh=guests(stage);
     if(id==='concierge'){cameras(stage);view.refresh=rolePanel('manager');}

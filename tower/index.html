@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="./quality-assist.css?v=202611181820">
   <link rel="stylesheet" href="../halloween-exhibition/preview/diorama-city/walk-pad.css?v=2">
   <link rel="stylesheet" href="./game-shell.css?v=20261118-city2">
-  <script type="module" src="./app.js?v=entry-20261118-speed2"></script>
+  <script type="module" src="./app.js?v=entry2-20261118-speed2"></script>
   <script type="module" src="./visit-counter.js?v=20261118-city2"></script>
 </head>
 <body id="top">
@@ -57,9 +57,11 @@
         <p class="hero-lead">noteの書き手が暮らす12の住居階。<br class="desktop-break">隣の部屋を訪ねて、まだ知らない記事に出会う。</p>
         <div class="hero-play">
           <a class="button primary" href="../admission/tower/#prompt-play">入居の準備を始める</a>
-          <button type="button" class="button outline" id="open-prompt">プロンプト遊びでつくる</button>
-          <a class="button outline" href="#prompt-import">生成した画像を添付する</a>
+          <a class="button outline" href="../admission/tower/#prompt-import">２枚を保存した方は空室を選ぶ</a>
         </div>
+        <p class="entry-note">今はアバターと部屋を作り、この端末に保存できます。入居を確定するパスコードの発行は準備中です。</p>
+        <details id="previous-entry"><summary>これまでの下見を続ける</summary>
+        <button type="button" class="button outline" id="open-prompt">以前のプロンプト・下見を開く</button>
         <form id="preview-form" class="entry" novalidate>
           <label for="creator-id">noteクリエイターID（登録済みは自動入力）</label>
           <div class="entry-row">
@@ -74,6 +76,7 @@
           <p class="entry-note">全身の透過PNGがおすすめ。輪郭を残して部屋を歩けます。</p>
           <p class="entry-status" id="entry-status" role="status"></p>
         </form>
+        </details>
         <div class="hero-utilities">
           <a class="quiet" href="#cutaway">マンションの断面を見る ↓</a>
           <button type="button" id="showroom" class="quiet sample-link">見学室をのぞく <span aria-hidden="true">→</span></button>

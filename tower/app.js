@@ -1,7 +1,7 @@
 import { scanAtlas } from '../halloween-exhibition/preview/diorama-city/atlas-layout.js?v=20261118-sprites-2';
 import { characterSignature, designWorld, generatedInterior, roomPreview, roomStage } from './world.js?v=20261118-speed';
 import { cutaway, dailyStory, makeElevator } from './building.js?v=20261118-speed';
-import { bindSharedSpaces, floorLabel } from './shared-spaces.js?v=entry-20261118-speed2';
+import { bindSharedSpaces, floorLabel } from './shared-spaces.js?v=entry2-20261118-speed2';
 import { bindSpotIllustration } from '../halloween-exhibition/preview/diorama-city/spot-illustration.js?v=20261118-speed';
 import { chatgptAppLink, makeArtifactPrompt, makeRoomPrompt, bindArticleDraft, parseNoteId, creatorReference, residentPost, towerUrl, hostNoteUrl, insightUrl, bindCardButtons } from './prompt-play.js?v=20261118-speed';
 import { bindQualityAssist } from './quality-assist.js?v=202611181820';
@@ -309,6 +309,7 @@ function renderBuilding(rebuild = true) {
 }
 
 function focusEntry(slot = null) {
+  document.getElementById('previous-entry').open=true;
   state.preferredSlot = slot;
   const entryStatus = $('#entry-status');
   status(entryStatus, slot ? `${formatRoom(slot)}号室を選択中。` : 'IDとキャラ画像から、部屋を下見できます。');

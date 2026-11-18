@@ -1,3 +1,5 @@
+import { publicView } from '../../../tower/public-directory.js?v=community1';
+import {streetResidents} from './residents.js?v=community1';
 import { areaFor, firstScene, sceneArt } from './scene-entry.js?v=20261118-speed';
 import { canWalkFloorSegment, facilityRoute } from '../../../tower/facility-floors.js?v=20261118-city2';
 import { makeWalkPad, bindWalking } from './walk-controls.js?v=202611181820';
@@ -6,11 +8,11 @@ import { applyDistrictLight } from './scene-time.js?v=1';
 import { distance, streetAreas, walkable, walkingRoute } from './paths.js?v=20261118-speed';
 import { districtTraffic } from './traffic.js?v=202611181820';
 import { cafeStory, venues, venueSpawn, venueFloor } from './venues.js?v=20261118-city2';
-import { vehicleStudio } from '../../../tower/vehicle-studio.js?v=20261118-speed';
+import { vehicleStudio } from '../../../tower/vehicle-studio.js?v=20261119-community1';
 import { bindActivities, createCityVisit, playgroundPose } from './district-activities.js?v=20261118-city2';
-import { bindSpotIllustration } from './spot-illustration.js?v=20261118-speed';
+import { bindSpotIllustration } from './spot-illustration.js?v=20261119-community1';
 import { districtCamera, exteriorHeight } from './camera.js?v=20261118';
-import { TOWER_API, OWNER_STORAGE, avatarImageUrl, readWalkDraft, readTraveler, rememberWalker } from '../../../tower/avatar-travel.js?v=20261118';
+import { TOWER_API, OWNER_STORAGE, avatarImageUrl, readWalkDraft, readTraveler, rememberWalker } from '../../../tower/avatar-travel.js?v=20261119-community1';
 import { initGameShell } from '../../../tower/game-shell.js?v=20261118-controls';
 
 const gameShell=initGameShell({page:'city'});
@@ -122,6 +124,7 @@ el('retry-scene').addEventListener('click',()=>{
 });
 
 function showStreet() {
+  streetPeople.scene(area,false);
   void loadBackdrop('city-plate',area.image,area.alt || defaultStreetAlt);
   if(areaId==='tower'){
     for(const image of world.querySelectorAll('.city-cast img[data-src]')){
@@ -138,12 +141,13 @@ function setAreaInfo() {
 setAreaInfo();
 
 const requestedRoom=currentUrl.searchParams.get('resident') || owner?.id;
+const streetPeople=streetResidents(el('street-residents'),el('street-roster'),onDraft?'':requestedRoom);
 const hasRoom=/^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/.test(requestedRoom ?? '');
 const previousWalker=!onDraft && hasRoom && requestedRoom===owner?.id ? readTraveler() : null;
 function ownedReference(walker) {
   if(!walker?.custom || !walker.noteId || (owner.noteId && owner.noteId!==walker.noteId))return null;
   const url=new URL(walker.source);
-  if(url.searchParams.get('view')!=='avatar' || url.searchParams.get('id')!==requestedRoom)return null;
+  if(!url.pathname.endsWith('/'+requestedRoom+'/avatar-'+(url.pathname.match(/avatar-(\d+)\.img$/)?.[1]||'')+'.img'))return null;
   return walker;
 }
 const knownWalker=onDraft ? {source:onDraft.avatar.source,atlas:onDraft.avatar.atlas,custom:true,
@@ -174,11 +178,7 @@ async function chooseWalker() {
   el('retry-walker').hidden=true;
   if(!onDraft){
     const roomId=requestedRoom;
-    const endpoint=new URL(TOWER_API);
-    endpoint.search=new URLSearchParams({view:'room',id:roomId});
-    const response=await fetch(endpoint,{cache:'no-store',signal:AbortSignal.timeout(8500)});
-    if (!response.ok) throw new Error('walker');
-    const room=await response.json();
+    const room=await publicView('room',{id:roomId});
     const custom=room.design?.avatarMode==='custom'&&room.avatarVersion;
     const profile=room.design?.avatarMode==='profile'&&room.profile?.photo;
     actor={id:roomId,source:custom ? avatarImageUrl(roomId,room.avatarVersion) : profile || '../../../tower/assets/resident.webp',
@@ -206,7 +206,7 @@ async function chooseWalker() {
   el('walker-name').textContent=actor.name;
   const link=el('walker-room');
   link.href=roomLink.href;
-  link.textContent=onDraft ? '部屋の下見に戻る' : '自分の部屋に戻る';
+  link.textContent=onDraft ? '部屋の下見に戻る' : owner?.id===requestedRoom?'自分の部屋に戻る':'この住人の部屋へ';
   root.dataset.walkerState='ready';
   citizen.style.visibility='';
   el('retry-walker').hidden=true;
@@ -395,6 +395,7 @@ function tick(time) {
     clock.textContent=update.time;
     lastLight=time;
   }
+  if(!venue)streetPeople.tick(elapsed,gameShell.motionAllowed()&&!document.querySelector('dialog[open]'));
   if(!venue&&areaId==='tower'){
     const drive=gameShell.motionAllowed()&&!document.querySelector('dialog[open]');
     if(drive)trafficSeconds+=elapsed;
@@ -457,6 +458,7 @@ function changeVenue(id, districtArrival) {
   el('district-scene').hidden=Boolean(venue);
   el('venue-plate').hidden=!venue;
   if (venue) {
+    streetPeople.scene(area,true);
     void loadBackdrop('venue-plate',venue.image,venue.alt);
     if(id==='mirrorRoom')activities.restoreGlass(showReflections);
     world.dataset.venue=id;

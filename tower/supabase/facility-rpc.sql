@@ -11,7 +11,7 @@ begin
   if command <> 'facilities' then return '{"error":"invalid"}'::jsonb; end if;
   return jsonb_build_object('residents', coalesce((
     select jsonb_agg(jsonb_build_object(
-      'id', r.id, 'slot', r.slot, 'noteId', r.note_id, 'name', r.profile->>'name',
+      'id', r.id, 'slot', r.slot, 'version', r.version, 'noteId', r.note_id, 'name', r.profile->>'name',
       'engineer', coalesce((r.design->>'engineer')::boolean, false),
       'manager', coalesce(r.design->'manager' = 'true'::jsonb, false),
       'transport', coalesce((select jsonb_object_agg(v.key, v.value - 'base64' - 'mime')

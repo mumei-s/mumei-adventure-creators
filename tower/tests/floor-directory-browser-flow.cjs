@@ -99,6 +99,8 @@ async function run() {
     for (const [width, height] of sizes) {
       const context = await browser.newContext({ viewport: { width, height }, reducedMotion: 'reduce', serviceWorkers: 'block' });
       await context.route('https://**.supabase.co/**', route => route.fulfill({json: new URL(route.request().url()).searchParams.get('view') === 'list' ? catalog : {residents}, headers: {'access-control-allow-origin':'*'}}));
+      await context.route('**/tower/published/list.json', route => route.fulfill({json:catalog}));
+      await context.route('**/tower/published/facilities.json', route => route.fulfill({json:{residents}}));
       const page = await context.newPage();
       const errors = [];
       page.on('pageerror', error => errors.push(error.message));

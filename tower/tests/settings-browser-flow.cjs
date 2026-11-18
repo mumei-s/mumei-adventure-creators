@@ -16,7 +16,7 @@ async function assertFits(page){
  let checks=0;
  for(const [name,width,height] of [['phone',390,844],['landscape',844,390],['tablet',820,1180],['desktop',1440,960]]){
   const context=await browser.newContext({viewport:{width,height},reducedMotion:'no-preference'});
-  await context.route('https://xxhaerjvrgmnadxjqetz.supabase.co/**',route=>route.fulfill({status:200,contentType:'application/json',headers:{'access-control-allow-origin':'*'},body:JSON.stringify({floors:12,perFloor:12,rooms:[],residents:[]})}));
+  await context.route('https://slamzhgsawfnmwlejgqp.supabase.co/**',route=>route.fulfill({status:200,contentType:'application/json',headers:{'access-control-allow-origin':'*'},body:JSON.stringify({floors:12,perFloor:12,rooms:[],residents:[]})}));
   const page=await context.newPage(),errors=[];
   page.on('pageerror',error=>errors.push(error.message));
   await page.goto(origin+'/tower/',{waitUntil:'networkidle'});

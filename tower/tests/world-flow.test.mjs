@@ -10,7 +10,7 @@ import { venues, venueSpawn, venueWalkable } from '../../halloween-exhibition/pr
 const { atlasChecks, articleChecks, normalizeCardLines, pixelDifference } = await load('../quality-assist.js');
 const { makeArtifactPrompt } = await load('../prompt-play.js');
 import { playgroundPose } from '../../halloween-exhibition/preview/diorama-city/district-activities.js';
-const { readWalkDraft, saveWalkDraft, clearWalkDraft, WALK_DRAFT_STORAGE } = await load('../avatar-travel.js');
+import { readWalkDraft, saveWalkDraft, clearWalkDraft, WALK_DRAFT_STORAGE } from '../avatar-travel.js';
 
 test('walking camera reveals the character while overview has a distinct stable scale', () => {
   for (const [width, height] of [[390, 575], [844, 235], [820, 910], [1180, 650], [1440, 700]]) {

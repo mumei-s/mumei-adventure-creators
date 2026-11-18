@@ -1,16 +1,19 @@
 import assert from 'node:assert/strict';
 import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
-import {makeRoomPrompt,makeArtifactPrompt,makeArticleDraft,creatorReference,residentPost,articleCardBlock,insightUrl,towerUrl,hostNoteUrl} from '../prompt-play.js';
+import {makeMoveInArticlePrompt,makeRoomPrompt,makeArtifactPrompt,makeArticleDraft,creatorReference,residentPost,articleCardBlock,insightUrl,towerUrl,hostNoteUrl} from '../prompt-play.js';
 import {makeSpotPrompt,spotReferenceInstructions} from '../../halloween-exhibition/preview/diorama-city/spot-illustration.js';
 const app=await readFile(new URL('../app.js',import.meta.url),'utf8');
 const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
-test('room generation first, recovery without new avatar, independent attachments',()=>{
+test('avatar followed by a room request and ID-bearing return, recovery without new avatar, independent attachments',()=>{
   const normal=makeRoomPrompt({id:'tester'});
-  assert.match(normal,/最初の成果物は必ず部屋画像/);
-  assert.match(normal,/次にアバター画像を別の画像/);
-  assert.match(normal,/３枚目は部屋を題材にした記事専用サムネイル/);
-  assert.match(normal,/部屋画像とサムネイルを絶対に兼用・合成しない/);
+  assert.match(normal,/最初にゲーム用アバター画像/);
+  assert.match(normal,/ここで返事を待つ/);
+  assert.match(normal,/２枚をそれぞれ保存/);
+  assert.match(normal,/\?creator=tester#prompt-import/);
+  assert.doesNotMatch(normal,/note専用サムネイル/);
+  const article=makeMoveInArticlePrompt({id:'tester',title:'月の書斎',address:'504',href:towerUrl+'?room=abc'});
+  for(const word of ['入居確認済み','1280×650','本文イラスト１','本文イラスト２','記事を最後まで','添付は任意','月の書斎','504号室']) assert.ok(article.includes(word),word);
   assert.match(makeRoomPrompt({id:'tester',roomOnly:true}),/既存アバターを再生成しない/);
   assert.match(app,/if \(!play.avatar \|\| !play.interior/);
   assert.doesNotMatch(app,/else \$\('#prompt-import'\).requestSubmit\(\)/);
@@ -41,9 +44,9 @@ test('registered reference, new attachment and article follow-up are explicit',(
  assert.doesNotMatch(makeSpotPrompt({...common,referenceMode:'attachment'}),/登録済みアバター画像URL/);
 });
 
-test('room instructions precede avatar and article-only continuation preserves completed images',()=>{
+test('avatar and question precede room and article-only continuation preserves completed images',()=>{
  const initial=makeRoomPrompt({id:'tester'});
- assert.ok(initial.indexOf('【ゲーム用部屋画像')<initial.indexOf('【アバター画像'));
+ assert.ok(initial.indexOf('最初にゲーム用アバター') < initial.indexOf('ここで返事を待つ') && initial.indexOf('ここで返事を待つ') < initial.indexOf('部屋画像を１枚生成'));
  const article=makeArtifactPrompt({kind:'article',id:'tester',mode:'spot'});
  for(const marker of ['記事本文だけ','［ここにアバター画像］','［ここに部屋画像］','専用サムネイル']) assert.ok(article.includes(marker));
  assert.doesNotMatch(article,/個別の完成画像をチャットに表示/);
@@ -110,6 +113,6 @@ test('unseen art, guest visits and room plans remain publishable without claimin
     assert.equal(room.includes('という部屋ができました'),occupied);
   }
   const initial = makeRoomPrompt({});
-  assert.match(initial,/画像を全て出せない環境でも/);
+  assert.match(initial,/今回入力されたnote IDをcreatorパラメータ/);
   assert.doesNotMatch(initial,/３枚を揃えたら/);
 });

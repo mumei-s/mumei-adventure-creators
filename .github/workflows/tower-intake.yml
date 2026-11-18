@@ -1,0 +1,37 @@
+name: Atelier Tower resident updates
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: tower-intake
+  cancel-in-progress: false
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - id: intake
+        run: node scripts/archive-tower.mjs check
+      - if: steps.intake.outputs.ready == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          node scripts/archive-tower.mjs sync
+          git add -- tower/published
+          if ! git diff --cached --quiet; then
+            git -c user.name='github-actions[bot]' -c user.email='41898282+github-actions[bot]@users.noreply.github.com' commit -m "Refresh public Tower residents"
+            git push origin HEAD:main
+          fi
+          # Recover a missed dispatch or a prior failed Pages run even with no new intake.
+          if ! node scripts/archive-tower.mjs current; then
+            gh workflow run pages.yml --ref main
+          else
+            node scripts/archive-tower.mjs ack
+          fi

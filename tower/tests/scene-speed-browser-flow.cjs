@@ -80,8 +80,7 @@ const originalFeed = /\/assets\/(?:entrance-lounge|driveway|garage|bicycle-court
     assert.equal(new Set(paths.filter(path=>originalFeed.test(path))).size,4,'Expanded monitors retain full resolution');
     // A returning creator can use their own confirmed reference while the room is checked.
     const id='bcd12345-abcd-4bcd-abcd-abcdef123456',noteId='test_resident';
-    const api='https://xxhaerjvrgmnadxjqetz.supabase.co/functions/v1/creator-tower';
-    const version='a'.repeat(24),source=api+'?view=avatar&id='+id+'&v='+version;
+    const version=2,source=new URL('published/media/'+id+'/avatar-'+version+'.img',tower).href;
     await page.addInitScript(({id,noteId,source})=>{
       localStorage.setItem('atelier-tower-owner-v1',JSON.stringify({id,noteId}));
       sessionStorage.setItem('atelier-tower-traveler-v1',JSON.stringify({id,noteId,source,custom:true,atlas:true,name:'テスト住人'}));
@@ -89,11 +88,9 @@ const originalFeed = /\/assets\/(?:entrance-lounge|driveway|garage|bicycle-court
     let confirmRoom;
     const pendingRoom=new Promise(resolve=>{confirmRoom=resolve;});
     const actor=await readFile(path.join(__dirname,'../../halloween-exhibition/preview/diorama-city/assets/host-walk.webp'));
-    await page.route(api+'?*',async route=>{
-      const view=new URL(route.request().url()).searchParams.get('view');
-      const headers={'access-control-allow-origin':'*'};
-      if(view==='avatar')return route.fulfill({body:actor,contentType:'image/webp',headers});
-      if(view!=='room')return route.fallback();
+    const headers={'access-control-allow-origin':'*'};
+    await page.route(source,route=>route.fulfill({body:actor,contentType:'image/webp',headers}));
+    await page.route('**/published/rooms/'+id+'.json',async route=>{
       await pendingRoom;
       await route.fulfill({json:{id,noteId,profile:{name:'テスト住人'},avatarVersion:version,design:{avatarMode:'custom',world:{atlas:true}}},headers});
     });

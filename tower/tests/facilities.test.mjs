@@ -17,6 +17,7 @@ function fixture(){
  let handler;
  const clone=value=>structuredClone(value);
  const fetch=async(url,options)=>{
+   if(String(url).endsWith('/creator_tower_archive_ready'))return Response.json(true);
    const {command,input}=JSON.parse(options.body);
    if(command==='limit')return Response.json({allowed:true});
    if(command==='owner')return Response.json(input.id===id&&input.hash===hashed?clone(room):{error:'owner_required'});

@@ -1,11 +1,10 @@
-export const TOWER_API = 'https://xxhaerjvrgmnadxjqetz.supabase.co/functions/v1/creator-tower';
+import { mediaUrl } from './public-directory.js?v=community1';
+export const TOWER_API = 'https://slamzhgsawfnmwlejgqp.supabase.co/functions/v1/creator-tower';
 export const OWNER_STORAGE = 'atelier-tower-owner-v1';
 export const WALK_DRAFT_STORAGE = 'atelier-tower-walk-draft-v1';
 
 export function avatarImageUrl(id, version) {
-  const url = new URL(TOWER_API);
-  url.search = new URLSearchParams({ view: 'avatar', id, v: version });
-  return url.href;
+  return mediaUrl(id,'avatar',version);
 }
 
 export function readWalkDraft() {
@@ -49,7 +48,13 @@ export function readTraveler() {
   try {
     const owner = JSON.parse(localStorage.getItem(OWNER_STORAGE));
     const walker = JSON.parse(sessionStorage.getItem(walkerStorage));
-    if (owner?.id && walker?.id === owner.id && walker.source?.startsWith(TOWER_API + '?')) return walker;
+    if(owner?.id && walker?.id===owner.id && walker.source){
+      const source=new URL(walker.source,location.href);
+      const legacyVersion=source.searchParams.get('view')==='avatar'&&source.searchParams.get('id')===owner.id?source.searchParams.get('v'):null;
+      const version=legacyVersion||source.pathname.match(/\/avatar-(\d+)\.img$/)?.[1];
+      const published=version&&avatarImageUrl(owner.id,version);
+      if(published&&(legacyVersion||source.href===published))return {...walker,source:published};
+    }
     if (!owner?.id) {
       const draft = readWalkDraft();
       if (draft) return { source: draft.avatar.source, atlas: draft.avatar.atlas, custom:true, noteId:draft.noteId, name: draft.name || draft.noteId };

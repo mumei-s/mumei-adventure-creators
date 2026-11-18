@@ -12,17 +12,18 @@
   <meta property="og:description" content="12の住居階と天空ラウンジがある、noteクリエイターのマンション。">
   <meta property="og:image" content="https://mumei-s.github.io/mumei-adventure-creators/tower/assets/tower.webp">
   <meta name="referrer" content="no-referrer">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://xxhaerjvrgmnadxjqetz.supabase.co; img-src 'self' data: blob: https://assets.st-note.com https://xxhaerjvrgmnadxjqetz.supabase.co; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://slamzhgsawfnmwlejgqp.supabase.co; img-src 'self' data: blob: https://assets.st-note.com https://slamzhgsawfnmwlejgqp.supabase.co; object-src 'none'; base-uri 'none'; form-action 'self'">
   <title>Atelier Tower｜無名S note</title>
   <link rel="stylesheet" href="./style.css?v=202611181820">
+  <link rel="stylesheet" href="./resident-talk.css?v=community1">
   <link rel="stylesheet" href="./world.css?v=202611181820">
   <link rel="stylesheet" href="./prompt-play.css?v=3">
-  <link rel="stylesheet" href="./shared-spaces.css?v=20261118-speed">
+  <link rel="stylesheet" href="./shared-spaces.css?v=20261119-community1">
   <link rel="stylesheet" href="./quality-assist.css?v=202611181820">
   <link rel="stylesheet" href="../halloween-exhibition/preview/diorama-city/walk-pad.css?v=2">
   <link rel="stylesheet" href="./game-shell.css?v=20261118-city2">
-  <script type="module" src="./app.js?v=20261118-speed2"></script>
-  <script type="module" src="./visit-counter.js?v=20261118-city2"></script>
+  <script type="module" src="./app.js?v=20261119-community1"></script>
+  <script type="module" src="./visit-counter.js?v=20261119-community1"></script>
 </head>
 <body id="top">
   <a href="#main" class="skip">本文へ</a>
@@ -54,11 +55,12 @@
       <div class="hero-copy">
         <p class="hero-kicker">無名S note Atelier</p>
         <h1 id="hero-title">窓の数だけ、<br>書き手の世界。</h1>
-        <p class="hero-lead">noteの書き手が暮らす12の住居階。<br class="desktop-break">隣の部屋を訪ねて、まだ知らない記事に出会う。</p>
+        <p class="hero-lead">noteの書き手が暮らすマンション。<br class="desktop-break">隣の部屋を訪ねて、まだ知らない記事に出会う。</p>
         <div class="hero-play">
-          <button type="button" class="button primary" id="open-prompt">プロンプト遊びでつくる</button>
-          <a class="button outline" href="#prompt-import">生成した画像を添付する</a>
+          <button type="button" class="button primary" id="open-prompt">入居する</button>
+          <a class="button outline" href="#prompt-import">２枚ができた方は空室を選ぶ</a>
         </div>
+        <details class="optional-preview"><summary>入居前に下見だけする</summary>
         <form id="preview-form" class="entry" novalidate>
           <label for="creator-id">noteクリエイターID（登録済みは自動入力）</label>
           <div class="entry-row">
@@ -73,6 +75,7 @@
           <p class="entry-note">全身の透過PNGがおすすめ。輪郭を残して部屋を歩けます。</p>
           <p class="entry-status" id="entry-status" role="status"></p>
         </form>
+        </details>
         <div class="hero-utilities">
           <a class="quiet" href="#cutaway">マンションの断面を見る ↓</a>
           <button type="button" id="showroom" class="quiet sample-link">見学室をのぞく <span aria-hidden="true">→</span></button>
@@ -170,15 +173,15 @@
         <label for="prompt-id">noteクリエイターID</label>
         <input id="prompt-id" maxlength="100" type="text" inputmode="url" autocapitalize="none" spellcheck="false" placeholder="例 @ss_yr" autocomplete="off">
         <div class="prompt-tabs" aria-label="部屋づくりの手順">
-          <button type="button" class="button outline" id="prompt-write-tab" aria-pressed="true" aria-controls="prompt-write">ChatGPTでつくる</button>
-          <button type="button" class="button outline" id="prompt-import-tab" aria-pressed="false" aria-controls="prompt-import">画像を添付する</button>
+          <button type="button" class="button outline" id="prompt-write-tab" aria-pressed="true" aria-controls="prompt-write">アバターと部屋をつくる</button>
+          <button type="button" class="button outline" id="prompt-import-tab" aria-pressed="false" aria-controls="prompt-import">空室を選んで入居する</button>
         </div>
         <section id="prompt-write">
-          <p>ChatGPTで、部屋・歩行アバター・note専用サムネイルの３枚と参加記事を作ります。</p>
+          <p>IDを入れてプロンプトをコピーし、キャラ画像と一緒にChatGPTへ送ります。アバターができたら部屋の希望を聞かれます。完成した２枚を保存し、チャットに出る入居リンクを開いてください。</p>
           <p id="room-reference-status" role="status"></p>
           <a id="room-save-reference" class="quiet" download hidden>端末の参照画像を保存</a>
-          <label for="prompt-ideas">部屋の希望 <small>任意</small></label>
-          <input id="prompt-ideas" type="text" maxlength="160" placeholder="例 雨の夜景が見える珈琲の書斎">
+          <details><summary>部屋の希望を先にメモする（任意）</summary><label for="prompt-ideas">部屋の希望 <small>任意</small></label>
+          <input id="prompt-ideas" type="text" maxlength="160" placeholder="例 雨の夜景が見える珈琲の書斎"></details>
           <textarea id="prompt-text" class="prompt-text" aria-label="コピーするプロンプト" rows="5" readonly></textarea>
           <div class="dialog-actions">
             <button type="button" class="button primary" id="copy-play-prompt">プロンプトをコピー</button>
@@ -188,30 +191,33 @@
             <a class="button outline" id="chatgpt-app-launch" href="https://chatgpt.com/open-app" rel="noopener noreferrer">アプリ版を開く</a>
             <a class="button outline" href="./chatgpt-web.html" target="_blank" rel="noopener noreferrer">Web版を開く</a>
           </div>
-          <details id="room-article-draft" class="article-draft"><summary>そのままnoteに貼れる記事本文</summary>
+          <details hidden id="room-article-draft" class="article-draft"><summary>そのままnoteに貼れる記事本文</summary>
         <label>記事原稿（編集できます）<textarea rows="9" aria-label="編集できる記事本文"></textarea></label>
         <button type="button">記事本文をコピー</button><p role="status"></p>
       </details>
-          <div id="tower-card-actions"></div>
-          <button type="button" class="button outline prompt-next" id="prompt-upload-next">生成した画像を添付する →</button>
+          <div id="tower-card-actions" hidden></div>
+          <button type="button" class="button outline prompt-next" id="prompt-upload-next">２枚を保存したら空室を選ぶ →</button>
         </section>
         <form id="prompt-import" hidden novalidate>
-          <p>ゲーム用アバターと文字なしの横長の部屋画像を１枚ずつ選んでください。専用サムネイルはこの下の品質検査欄へ。画像が不足していれば個別に追加生成できます。</p>
-          <button type="button" class="button outline" id="copy-room-only">部屋だけ作る・プロンプトをコピー</button>
-          <button type="button" class="button outline" id="copy-avatar-only">アバターだけ作る・プロンプトをコピー</button>
-          <div class="prompt-launch"><a class="button outline" href="https://chatgpt.com/open-app" id="room-only-app">ChatGPTアプリ</a><a class="button outline" href="./chatgpt-web.html" target="_blank" rel="noopener noreferrer">Web版を開く</a></div>
+          <label for="entry-slot">入居する部屋</label>
+          <select id="entry-slot" required><option value="">空室を選んでください</option></select>
+          <p>保存したアバターと部屋を１枚ずつ添付してください。そのあとに発行されるパスコードを、ご自身のnoteのプロフィールに入力して本人確認します。</p>
           <div class="prompt-uploads">
             <label>アバター画像<input id="generated-avatar" type="file" class="visually-hidden" accept="image/png,image/jpeg,image/webp,image/gif"><span class="prompt-file-button" aria-hidden="true">アバター画像を選ぶ</span><img id="generated-avatar-preview" alt="アバターのプレビュー" hidden></label>
             <label>部屋画像<input id="generated-interior" type="file" class="visually-hidden" accept="image/png,image/jpeg,image/webp"><span class="prompt-file-button" aria-hidden="true">部屋画像を選ぶ</span><img id="generated-interior-preview" alt="部屋のプレビュー" hidden></label>
           </div>
+          <details><summary>画像を作り直す・形式や部屋名を変える</summary>
+          <button type="button" class="button outline" id="copy-room-only">部屋だけ作る・プロンプトをコピー</button>
+          <button type="button" class="button outline" id="copy-avatar-only">アバターだけ作る・プロンプトをコピー</button>
+          <div class="prompt-launch"><a class="button outline" href="https://chatgpt.com/open-app" id="room-only-app">ChatGPTアプリ</a><a class="button outline" href="./chatgpt-web.html" target="_blank" rel="noopener noreferrer">Web版を開く</a></div>
           <label for="generated-avatar-mode">アバターの形式</label>
-          <select id="generated-avatar-mode"><option value="atlas">歩行シート（４×４）</option><option value="single">自動判別・全身１枚・GIF</option></select>
+          <select id="generated-avatar-mode"><option value="single">自動判別（歩行シート・全身１枚・GIF）</option><option value="atlas">歩行シート（４×４）を指定</option></select>
           <label for="generated-room-title">部屋の名前 <small>任意</small></label>
-          <input id="generated-room-title" type="text" maxlength="38" placeholder="例 雨と書きかけのノートの部屋">
-          <div class="dialog-actions"><button class="button primary" type="submit">この部屋を下見する</button></div>
+          <input id="generated-room-title" type="text" maxlength="38" placeholder="例 雨と書きかけのノートの部屋"></details>
+          <div class="dialog-actions"><button class="button primary" type="submit">２枚を登録して本人確認へ</button></div>
           <p id="import-status" class="inline-status" role="status"></p>
         </form>
-        <div id="tower-quality"></div>
+        <details><summary>画像の品質を確認する</summary><div id="tower-quality"></div></details>
       </div>
     </div>
   </dialog>
@@ -252,6 +258,20 @@
       <p id="room-status" class="inline-status" role="status"></p>
       <div id="room-controls" class="room-controls" hidden></div>
     </section>
+  </dialog>
+
+  <dialog id="move-article-dialog" class="dialog fit-dialog" aria-labelledby="move-article-title">
+    <div class="dialog-inner"><header class="dialog-bar"><button type="button" class="quiet" data-close="move-article-dialog">← 部屋に戻る</button></header>
+      <div class="dialog-pad">
+        <h2 id="move-article-title">入居を記事にする</h2>
+        <p>登録済みのID・アバター・部屋を使います。別の絵を参考にしたいときだけ、ChatGPTでその画像を一緒に添付してください。</p>
+        <p>このプロンプトで記事用サムネイル１枚、本文イラスト２枚、note用の本文を作れます。</p>
+        <textarea id="move-article-text" class="prompt-text" rows="5" readonly aria-label="入居記事プロンプト"></textarea>
+        <button type="button" id="copy-move-article" class="button primary">記事プロンプトをコピー</button>
+        <p id="move-article-status" role="status"></p>
+        <div class="prompt-launch"><a class="button outline" id="move-article-app" href="https://chatgpt.com/open-app">アプリ版を開く</a><a class="button outline" href="./chatgpt-web.html" target="_blank" rel="noopener noreferrer">Web版を開く</a></div>
+      </div>
+    </div>
   </dialog>
 
   <dialog id="key-dialog" class="dialog fit-dialog" aria-labelledby="key-title">
@@ -333,8 +353,8 @@
       <div class="dialog-pad">
         <h2 id="help-title">入居・退去の方法</h2>
         <dl class="help-list">
-          <dt>下見</dt><dd>「プロンプト遊びでつくる」から、ChatGPTで作った２枚を持ち込めます。IDとキャラ画像ですぐに試せる下見や、空室を選んでの下見もできます。</dd>
-          <dt>入居</dt><dd>「入居する」から、noteの自己紹介欄に確認コードを一時的に入れます。本人確認が済むと部屋が公開され、このブラウザに鍵が保存されます。</dd>
+          <dt>下見</dt><dd>トップの「入居前に下見だけする」から、部屋を試せます。</dd>
+          <dt>入居</dt><dd>「入居する」からアバターと部屋の２枚を作り、入居リンクで空室を選んで添付します。発行された確認用パスコードを一時的にnoteの自己紹介欄に貼り付けます。本人確認が済むと部屋が公開され、このブラウザに鍵が保存されます。</dd>
           <dt>改装・鍵の再発行</dt><dd>「自分の部屋」から改装できます。機種変更や鍵を失くしたときは、同じnote IDで本人確認をして鍵を再発行できます。</dd>
           <dt>退去</dt><dd>自分の部屋の「退去する」を選ぶと、すぐに空室に戻ります。再入居も自由です。</dd>
         </dl>

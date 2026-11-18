@@ -64,7 +64,7 @@ async function rememberRecorded({ request, storage, locks, storageKey, lockName 
 }
 
 export function createDailyVisitCounter({
-  rpcUrl = CASTLE_VISIT_RPC, storageKey = CASTLE_VISIT_STORAGE_KEY, lockName = LOCK_NAME,
+  rpcUrl = CASTLE_VISIT_RPC, publishableKey = PUBLISHABLE_KEY, storageKey = CASTLE_VISIT_STORAGE_KEY, lockName = LOCK_NAME,
   isVisible = () => false, isAllowed = () => false,
   storage = () => globalThis.localStorage, locks = globalThis.navigator?.locks,
   crypto = globalThis.crypto, fetchImpl = globalThis.fetch,
@@ -100,7 +100,7 @@ export function createDailyVisitCounter({
           if (typeof fetchImpl !== 'function') throw new Error('Counter unavailable');
           const response = await fetchImpl(rpcUrl, {
             method: 'POST', mode: 'cors', cache: 'no-store', credentials: 'omit', referrerPolicy: 'no-referrer',
-            headers: { apikey: PUBLISHABLE_KEY, 'content-type': 'application/json' },
+            headers: { apikey: publishableKey, 'content-type': 'application/json' },
             body: JSON.stringify(request), signal: controller.signal,
           });
           if (!response.ok) throw new Error('Counter unavailable');

@@ -93,3 +93,37 @@
 body[data-game-motion=reduced] .security-bank .security-feed img{animation:none}
 
 #spot-output {min-height:44px;font-size:16px}
+
+.facility-walkers{position:absolute;inset:0;pointer-events:none}
+.public-walker{position:absolute;display:block;transform:translate(-50%,-100%);pointer-events:none}
+.public-walker img,.public-walker canvas{width:100%;height:100%;object-fit:contain;object-position:bottom}
+.public-walker img[hidden],.public-walker canvas[hidden]{display:none}
+.public-walker .sprite-atlas-source{opacity:0}
+.public-walker.profile-walker img{border-radius:45%;object-fit:contain}
+.public-walker small,.role-self{position:absolute;left:50%;bottom:0;transform:translate(-50%,80%);background:#0c1922db;color:#f8edda;border-radius:3px;padding:1px 4px;max-width:125px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:10px/1.3 system-ui}
+.service-roster{width:100%;font-size:12px}.service-roster p{margin:5px 0}
+.staff-pages,.garage-tools{display:flex;gap:6px;flex-wrap:wrap;align-items:center;width:100%}
+.facility-action{position:absolute;left:7px;bottom:7px;z-index:4;background:#11222ded;color:#f8e6c6;border:1px solid #a69677;border-radius:4px;padding:6px 9px;min-height:36px;cursor:pointer;font:12px system-ui}
+.facility-viewer{box-sizing:border-box;width:min(840px,calc(100vw - 16px));max-height:calc(100dvh - 16px);overflow:auto;margin:auto;border:1px solid #b7a17d;border-radius:6px;padding:12px;background:#121e28;color:#f7ead7}
+.facility-viewer::backdrop{background:#020710df}.facility-viewer header{display:flex;gap:8px;align-items:center;justify-content:space-between}.facility-viewer h3{margin:0;font:600 16px/1.45 system-ui}
+.facility-viewer button,.garage-tools button,.staff-pages button{min-height:40px}
+.facility-viewer .equipment-art{width:100%;display:block;margin:10px 0;border-radius:4px}
+.equipment-choices{display:flex;flex-wrap:wrap;gap:6px}.equipment-choices [aria-pressed=true]{border-color:#efd0a4;background:#354a52}
+.vehicle-portrait{margin:10px 0;display:grid;place-items:center;width:100%;height:clamp(190px,48dvh,410px);background:radial-gradient(ellipse at 50% 85%,#637278,#31434b 56%,#172730);border-radius:5px}
+.vehicle-portrait img{width:94%;height:90%;object-fit:contain}.vehicle-switcher{display:flex;justify-content:space-between;gap:8px}
+.shared-stage .parked-vehicle{display:block;position:absolute;transform:translate(-50%,-100%);height:auto;padding:0;border:0;background:none;cursor:zoom-in;line-height:0}
+.parked-vehicle img{width:100%;height:auto;display:block;filter:drop-shadow(0 2px 1px #0005);transform:scaleX(var(--face,1))}
+.parked-vehicle:focus-visible{outline:2px solid #f0cb91}.vehicle-owner{color:#e1d3ba;font-size:11px}
+.vehicle-registration{width:100%}.vehicle-upload select{max-width:100%}
+.seismic-tools{position:absolute;left:8px;right:8px;top:8px;z-index:5;display:grid;justify-items:start;gap:5px;pointer-events:none}
+.seismic-tools>*{pointer-events:auto}.seismic-tools button{position:static}
+.seismic-tools .isolation-model{position:relative;inset:auto;box-sizing:border-box;width:min(230px,90%);height:110px;border-radius:4px;font:12px/1.5 system-ui;overflow:hidden;pointer-events:none}
+.isolation-model[hidden]{display:none}.seismic-tools .isolation-ground{animation-duration:.32s;animation-iteration-count:infinite}.seismic-tools .isolation-building,.seismic-tools .isolation-bearing{animation-iteration-count:infinite}
+@keyframes ground-shake{0%,100%{transform:translateX(-10px)}50%{transform:translateX(10px)}}
+@keyframes building-sway{0%,100%{transform:translateX(0)}25%{transform:translateX(3px)}75%{transform:translateX(-3px)}}
+@media(prefers-reduced-motion:reduce){.isolation-demo .isolation-ground{transform:translateX(9px)}.isolation-demo .isolation-bearing{transform:skewX(-8deg)}}
+body[data-game-motion=reduced] .isolation-demo *{animation:none!important}
+body[data-game-motion=reduced] .isolation-demo .isolation-ground{transform:translateX(9px)}
+.staff-pages[hidden]{display:none}.equipment-frame{overflow:hidden;margin:10px 0;aspect-ratio:1.6;border-radius:4px}
+.facility-viewer .equipment-frame .equipment-art{width:100%;height:100%;object-fit:cover;margin:0;transform:scale(1.85)}
+.vehicle-switcher[hidden],.garage-tools button[hidden]{display:none}

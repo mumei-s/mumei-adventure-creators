@@ -1,5 +1,5 @@
 import { makeWalkPad, bindWalking } from './walk-controls.js?v=1';
-import { avatarSnapshot, hostWalker, residentWalker, autoResidentWalker } from './host-avatar.js?v=20261118-spaces';
+import { avatarSnapshot, hostWalker, residentWalker, autoResidentWalker } from './host-avatar.js?v=20261118-spaces-5';
 import { applyDistrictLight } from './scene-time.js?v=1';
 import { distance, streetAreas, walkable, walkingRoute } from './paths.js?v=20261118';
 import { districtTraffic } from './traffic.js?v=1';

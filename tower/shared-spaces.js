@@ -1,6 +1,6 @@
-import { roomStage } from './world.js?v=20261118-spaces-4';
+import { roomStage } from './world.js?v=20261118-spaces-5';
 import { readTraveler, readWalkDraft, rememberWalker, TOWER_API, avatarImageUrl } from './avatar-travel.js?v=20261118';
-import { hostPortrait, autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=20261118-spaces';
+import { hostPortrait, autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=20261118-spaces-5';
 
 export const sharedSpaces = {
   owner: { title:'オーナーズ・アトリエ', floor:14, image:'panorama-suite', note:'天空ラウンジのさらに上。無名S noteの作品と街の眺めを楽しめる最上階です。', scene:'天空ラウンジより上のオーナーズ・アトリエ。大きな窓と作品、運河都市のパノラマ。' },

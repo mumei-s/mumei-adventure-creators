@@ -1,4 +1,4 @@
-import { scanAtlas } from './atlas-layout.js?v=20261118-0838';
+import { scanAtlas } from './atlas-layout.js?v=20261118-sprites-2';
 const frameWidth=152, frameHeight=224;
 const atlasURL=new URL('./assets/host-walk.webp?v=1',import.meta.url);
 export const hostPortrait=new URL('./assets/host-portrait.webp?v=1',import.meta.url).href;

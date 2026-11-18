@@ -133,3 +133,22 @@ test('legacy transparent cropped atlas is detected without saved format; single 
    assert.equal(detectAtlas({width,height,data}),null);
  }
 });
+
+test('touching legacy sheet rows are split while four ordinary standing people stay intact',async()=>{
+ const {detectAtlas}=await load('../../halloween-exhibition/preview/diorama-city/atlas-layout.js');
+ const width=240,height=320,data=new Uint8ClampedArray(width*height*4);
+ function figure(row,col,whole=false){
+  const span=whole?height:height/4;
+  for(let y=0;y<span;y++){
+   const phase=y/span;
+   const half=phase<.15?10:phase<.22?6:phase<.55?16:phase<.72?13:9;
+   const center=30+col*60;
+   for(let x=center-half;x<center+half;x++)data[((row*height/4+y)*width+x)*4+3]=255;
+  }
+ }
+ for(let row=0;row<4;row++)for(let col=0;col<4;col++)figure(row,col);
+ assert.equal(detectAtlas({width,height,data})?.length,16);
+ data.fill(0);
+ for(let col=0;col<4;col++)figure(0,col,true);
+ assert.equal(detectAtlas({width,height,data}),null);
+});

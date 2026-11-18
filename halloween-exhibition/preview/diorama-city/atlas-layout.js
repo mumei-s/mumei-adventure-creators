@@ -27,7 +27,36 @@ export function detectAtlas({width:w,height:h,data}) {
     if(Math.min(...spacings)<counts.length*.15||Math.max(...spacings)>Math.min(...spacings)*1.6)return null;
     return [0,...valid.slice(1).map(([a],i)=>Math.floor((valid[i][1]+a)/2)),counts.length];
   }
-  const bx=bands(xs,h),by=bands(ys,w);
+  const bx=bands(xs,h);
+  let by=bands(ys,w);
+  // Legacy uploads can be trimmed until consecutive rows almost touch. Require
+  // four separated columns and recurring silhouettes before splitting those rows.
+  // This rejects ordinary four-person group portraits, which have one body per column.
+  if(bx&&!by){
+    const cuts=[0];
+    for(let row=1;row<4;row++){
+      const target=h*row/4,radius=Math.max(2,Math.floor(h*.045));
+      let best=Math.round(target),score=Infinity;
+      for(let y=Math.max(2,Math.floor(target)-radius);y<=Math.min(h-3,Math.ceil(target)+radius);y++){
+        const value=(ys[y-1]+ys[y]+ys[y+1])/3+Math.abs(y-target)*.07;
+        if(value<score){score=value;best=y;}
+      }
+      cuts.push(best);
+    }
+    cuts.push(h);
+    const profiles=Array.from({length:4},(_,row)=>Array.from({length:32},(_,i)=>{
+      const at=cuts[row]+(cuts[row+1]-cuts[row]-1)*i/31,lo=Math.floor(at),fraction=at-lo;
+      return ys[lo]*(1-fraction)+ys[Math.min(h-1,lo+1)]*fraction;
+    }));
+    const correlation=(a,b)=>{
+      const ma=a.reduce((s,n)=>s+n,0)/a.length,mb=b.reduce((s,n)=>s+n,0)/b.length;
+      let dot=0,aa=0,bb=0;
+      for(let i=0;i<a.length;i++){const x=a[i]-ma,y=b[i]-mb;dot+=x*y;aa+=x*x;bb+=y*y;}
+      return aa&&bb?dot/Math.sqrt(aa*bb):0;
+    };
+    const repeats=profiles.slice(1).map((row,index)=>correlation(profiles[index],row));
+    if(repeats.every(n=>n>0)&&repeats.filter(n=>n>.35).length>=2&&repeats.reduce((a,b)=>a+b,0)/3>.42)by=cuts;
+  }
   if(!bx||!by)return null;
   const frames=[];
   for(let row=0;row<4;row++)for(let col=0;col<4;col++){

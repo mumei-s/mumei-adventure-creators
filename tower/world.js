@@ -1,5 +1,5 @@
 import { makeWalkPad, bindWalking } from '../halloween-exhibition/preview/diorama-city/walk-controls.js?v=1';
-import { hostPortrait, hostWalker, residentWalker, autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=20261118-spaces';
+import { hostPortrait, hostWalker, residentWalker, autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=20261118-spaces-5';
 import { applyDistrictLight } from '../halloween-exhibition/preview/diorama-city/scene-time.js?v=1';
 import { TOWER_API } from './avatar-travel.js?v=20261118';
 

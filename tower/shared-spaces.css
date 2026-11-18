@@ -42,6 +42,7 @@
 @media(prefers-reduced-motion:reduce){.security-feed img,.isolation-demo *{animation:none!important}.entrance-doors i{transition:none}}
 /* Keep the overview focused on the room; guidance remains one tap away. */
 .shared-dialog .dialog-bar{padding:3px 9px;min-height:34px;gap:6px}
+.lounge-guest small{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:clamp(6px,.8cqw,10px)}
 .shared-dialog .dialog-bar .quiet{font-size:10px;min-height:30px;padding:4px 6px;white-space:nowrap}
 .shared-dialog h2{font-size:clamp(11px,1.2vw,15px);line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #shared-nav{padding:4px 6px;gap:4px}

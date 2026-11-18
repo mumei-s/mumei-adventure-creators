@@ -1,7 +1,7 @@
-import { scanAtlas } from '../halloween-exhibition/preview/diorama-city/atlas-layout.js?v=20261118-0838';
-import { characterSignature, designWorld, generatedInterior, roomPreview, roomStage } from './world.js?v=20261118-spaces-4';
-import { cutaway, dailyStory, makeElevator } from './building.js?v=20261118-spaces-4';
-import { bindSharedSpaces } from './shared-spaces.js?v=20261118-spaces-4';
+import { scanAtlas } from '../halloween-exhibition/preview/diorama-city/atlas-layout.js?v=20261118-sprites-2';
+import { characterSignature, designWorld, generatedInterior, roomPreview, roomStage } from './world.js?v=20261118-spaces-5';
+import { cutaway, dailyStory, makeElevator } from './building.js?v=20261118-spaces-5';
+import { bindSharedSpaces } from './shared-spaces.js?v=20261118-spaces-5';
 import { bindSpotIllustration } from '../halloween-exhibition/preview/diorama-city/spot-illustration.js?v=202611181359';
 import { chatgptAppLink, makeArtifactPrompt, makeRoomPrompt, parseNoteId, residentPost, towerUrl, hostNoteUrl, insightUrl, bindCardButtons } from './prompt-play.js?v=202611181359';
 import { bindQualityAssist } from './quality-assist.js?v=202611180955';

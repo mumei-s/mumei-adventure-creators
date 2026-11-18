@@ -52,7 +52,7 @@ export function readTraveler() {
     if (owner?.id && walker?.id === owner.id && walker.source?.startsWith(TOWER_API + '?')) return walker;
     if (!owner?.id) {
       const draft = readWalkDraft();
-      if (draft) return { source: draft.avatar.source, atlas: draft.avatar.atlas, name: draft.name || draft.noteId };
+      if (draft) return { source: draft.avatar.source, atlas: draft.avatar.atlas, custom:true, noteId:draft.noteId, name: draft.name || draft.noteId };
     }
   } catch {}
   return null;

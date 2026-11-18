@@ -1,4 +1,4 @@
-import { roomStage } from './world.js?v=20261118';
+import { roomStage } from './world.js?v=20261118-spaces';
 
 function element(tag, css = '', title = '') {
   const item = document.createElement(tag);
@@ -11,7 +11,7 @@ function numberRoom(slot,roomsPerFloor) {
   return `${Math.floor((slot - 1) / roomsPerFloor) + 1}${String((slot-1)%roomsPerFloor+1).padStart(2,'0')}`;
 }
 
-export function cutaway(container, catalog, demo, {avatar, visit, enter}) {
+export function cutaway(container, catalog, demo, {avatar, visit, enter, space}) {
   const floors = catalog?.floors ?? 12;
   const roomsPerFloor = catalog?.perFloor ?? 12;
   const bySlot = new Map((catalog?.rooms ?? []).map(room=>[room.slot,room]));
@@ -23,11 +23,23 @@ export function cutaway(container, catalog, demo, {avatar, visit, enter}) {
   for(let i=0;i<7;i++) terrace.append(element('i','roof-light'));
   const model = element('button','bay occupied viewing-room');
   model.type='button';
-  model.setAttribute('aria-label','展望ラウンジの見学室を開く');
-  model.append(roomStage(demo,avatar(demo),{mini:true}),element('span','bay-address','展望ラウンジ'));
-  model.addEventListener('click',()=>visit(demo));
+  model.setAttribute('aria-label',space?'最上階のオーナーズ・アトリエを開く':'展望ラウンジの見学室を開く');
+  model.append(roomStage(demo,avatar(demo),{mini:true}),element('span','bay-address',space?`${floors+2}F オーナーズ・アトリエ`:'展望ラウンジ'));
+  model.addEventListener('click',()=>space?space('owner'):visit(demo));
   roof.append(sign,model,terrace);
   building.append(roof);
+  function publicFloor(level,label,areas){
+    const row=element('div','sectioned-floor public-floor');row.dataset.level=level;
+    row.append(element('span','floor-marker',label));
+    const bays=element('div','public-bays');
+    for(const [id,title,image] of areas){
+      const bay=element('button','bay public-bay');bay.type='button';bay.setAttribute('aria-label',title);
+      const photo=element('img');photo.src=`./assets/${image}.webp`;photo.alt='';photo.loading='lazy';
+      bay.append(photo,element('span','bay-address',title));bay.addEventListener('click',()=>space(id));bays.append(bay);
+    }
+    row.append(bays);return row;
+  }
+  if(space)building.append(publicFloor('sky',`${floors+1}F`,[['sky','天空ラウンジ','sky-lounge']]));
   for(let floor=floors;floor>=1;floor--){
     const row=element('div','sectioned-floor');
     row.dataset.level=String(floor);
@@ -61,6 +73,12 @@ export function cutaway(container, catalog, demo, {avatar, visit, enter}) {
     }
     row.append(bays);
     building.append(row);
+  }
+  if(space){
+    building.append(publicFloor('lobby','1F 共用',[['lobby','エントランス・ラウンジ','entrance-lounge'],['concierge','管理人室','concierge']]));
+    building.append(publicFloor('parking','B1',[['parking','地下駐車場','garage']]));
+    building.append(publicFloor('boiler','B2',[['boiler','ボイラー・設備室','plant-room']]));
+    building.append(publicFloor('seismic','B3',[['seismic','免震構造・見学回廊','seismic-gallery']]));
   }
   building.append(element('div','sectioned-foundation'));
   container.replaceChildren(building);
@@ -99,15 +117,16 @@ export function makeElevator(dialog) {
     let step=0;
     ride={floor,arrive};
     dialog.dataset.phase='closing';
-    display.textContent=`${from}F`;
-    label.textContent=`${floor}階へ ${direction>0?'↑':'↓'}`;
+    const labelFloor=n=>n<0?`B${-n}`:n===0?'G':`${n}F`;
+    display.textContent=labelFloor(from);
+    label.textContent=`${labelFloor(floor)}へ ${direction>0?'↑':'↓'}`;
     dialog.showModal();
     function advance() {
       if(step===0) dialog.dataset.phase='moving';
       step++;
-      display.textContent=`${from+step*direction}F`;
+      display.textContent=labelFloor(from+step*direction);
       if(step<distance){ timer=setTimeout(advance,interval); return; }
-      label.textContent=`${floor}階に到着`;
+      label.textContent=`${labelFloor(floor)}に到着`;
       dialog.dataset.phase='opening';
       timer=setTimeout(finish,500);
     }

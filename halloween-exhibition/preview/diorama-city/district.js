@@ -1,10 +1,10 @@
 import { makeWalkPad, bindWalking } from './walk-controls.js?v=1';
-import { avatarSnapshot, hostWalker, residentWalker, autoResidentWalker } from './host-avatar.js?v=20261118-0838';
+import { avatarSnapshot, hostWalker, residentWalker, autoResidentWalker } from './host-avatar.js?v=20261118-spaces';
 import { applyDistrictLight } from './scene-time.js?v=1';
 import { distance, streetAreas, walkable, walkingRoute } from './paths.js?v=20261118';
 import { districtTraffic } from './traffic.js?v=1';
 import { cafeStory, venues, venueSpawn, venueWalkable } from './venues.js?v=20261118';
-import { bindActivities, playgroundPose } from './district-activities.js?v=20261118';
+import { bindActivities, playgroundPose } from './district-activities.js?v=20261118-spaces';
 import { bindSpotIllustration } from './spot-illustration.js?v=202611181359';
 import { districtCamera, exteriorHeight } from './camera.js?v=20261118';
 import { TOWER_API, OWNER_STORAGE, avatarImageUrl, readWalkDraft, rememberWalker } from '../../../tower/avatar-travel.js?v=20261118';
@@ -51,7 +51,10 @@ seatedFrame.hidden=true;
 citizen.append(seatedFrame);
 const actorFrame=()=>citizen.querySelector('canvas:not(.pose-frame):not([hidden]), img:not([hidden])');
 const activities=bindActivities(activityDialog,{
-  avatar:pose=>avatarSnapshot(actorFrame(),pose),
+  avatar:pose=>{
+    paintAvatar(stride,false,pose==='saddle'?-1:0,pose==='saddle'?0:1);
+    return avatarSnapshot(actorFrame(),pose,{host:!activeSpotActor});
+  },
   status:text=>{spotStatus.textContent=text;},
 });
 const showSpotPrompt=bindSpotIllustration(spotDialog);
@@ -304,7 +307,7 @@ function animateMotion(time) {
   citizen.style.setProperty('--actor-tilt',tilt+'deg');
   drawWalker(pose,...facing,!seated);
   if (seated && seatedFrame.hidden) {
-    const poseImage=avatarSnapshot(actorFrame(),'sit');
+    const poseImage=avatarSnapshot(actorFrame(),'sit',{host:!activeSpotActor});
     if (poseImage) {
       seatedFrame.width=poseImage.width;
       seatedFrame.height=poseImage.height;

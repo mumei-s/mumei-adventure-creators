@@ -8,8 +8,10 @@ const UUID = /^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/;
 const MAX_BODY = 760_000;
 const MAX_AVATAR = 307_200;
 const MAX_INTERIOR = 245_760;
+const MAX_VEHICLE = 98_304;
+const PARKING_SPACES: Record<string, string> = { garage: 'car', parkingTower: 'car', bicycle: 'bicycle', motorcycle: 'motorcycle' };
 const THEMES = ["reading", "gallery", "cinema", "story"];
-const IP_LIMITS: Record<string, number> = { begin: 10, confirm: 14, save: 12, stamp: 40, leave: 8 };
+const IP_LIMITS: Record<string, number> = { begin: 10, confirm: 14, save: 12, stamp: 40, leave: 8, park: 16, engineer: 8 };
 const ERROR_STATUS: Record<string, number> = {
   invalid: 400, bad_image: 400, bad_sheet: 400, big_image: 413, avatar_required: 400, owner_required: 403,
   missing: 404, note_missing: 404, invalid_note: 400, proof_missing: 422,
@@ -53,7 +55,8 @@ async function hash(value: string) {
 }
 
 async function rpc(command: string, input: Json = {}): Promise<Json> {
-  const endpoint = command === "list" || command === "finish" ? "creator_tower_world_rpc" : "creator_tower_rpc";
+  const endpoint = command === "facilities" ? "creator_tower_facility_rpc" :
+    command === "list" || command === "finish" ? "creator_tower_world_rpc" : "creator_tower_rpc";
   const response = await fetch(`${BASE}/rest/v1/rpc/${endpoint}`, {
     method: "POST",
     headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}`, "Content-Type": "application/json" },
@@ -261,8 +264,10 @@ async function roomMedia(design: Json, body: Json, previous: Json = {}) {
 }
 
 function roomResponse(room: Json) {
-  if (!room.design?.interiorB64) return room;
+  if (!room.design) return room;
   const { interiorB64, interiorMime, ...design } = room.design;
+  if (design.transport) design.transport = Object.fromEntries(Object.entries(design.transport)
+    .map(([space, raw]) => { const { base64, mime, ...metadata } = raw as Json; return [space, metadata]; }));
   return { ...room, design };
 }
 
@@ -368,6 +373,29 @@ async function mutate(request: Request) {
     if (body.kind !== null && !["read", "hello", "inspired"].includes(body.kind)) return fail("invalid");
     return rpc("stamp", { id, hash: owner, kind: body.kind });
   }
+  if (action === "park" || action === "engineer") {
+    const current = await rpc("owner", { id, hash: owner });
+    if (!Number.isSafeInteger(body.version) || body.version !== current.version) return fail("conflict");
+    const design = { ...current.design };
+    if (action === "park") {
+      if (typeof body.space !== "string" || !Object.hasOwn(PARKING_SPACES, body.space)) return fail("invalid");
+      const transport = { ...design.transport };
+      if (body.clear === true) delete transport[body.space];
+      else {
+        const image = parseImage(body.imageB64, MAX_VEHICLE);
+        if (image.mime === "image/gif" || image.width < 100 || image.height < 80 || image.width > 1000 || image.height > 1000) return fail("bad_image");
+        transport[body.space] = { base64: image.base64, mime: image.mime,
+          version: (await hash(image.base64)).slice(0, 24), kind: PARKING_SPACES[body.space],
+          title: clean(body.title, 40), style: clean(body.style, 60) };
+      }
+      design.transport = transport;
+    } else {
+      if (typeof body.join !== "boolean") return fail("invalid");
+      // A public creative role only; this never grants database or management access.
+      design.engineer = body.join;
+    }
+    return rpc("save", { id, hash: owner, version: current.version, design });
+  }
   if (action === "save") {
     if (!Number.isSafeInteger(body.version) || body.version < 1) return fail("invalid");
     const current = await rpc("owner", { id, hash: owner });
@@ -378,7 +406,9 @@ async function mutate(request: Request) {
       profile = refreshed.profile;
     }
     const validated = validateDesign(body.design, profile);
-    const design = { world: current.design.world, ...validated };
+    const design = { world: current.design.world, ...validated,
+      ...(current.design.transport ? { transport: current.design.transport } : {}),
+      ...(current.design.engineer !== undefined ? { engineer: current.design.engineer } : {}) };
     const media = await roomMedia(design, body, current.design);
     return rpc("save", { id, hash: owner, version: body.version, ...media,
       ...(body.refresh === true ? { profile } : {}) });
@@ -408,6 +438,7 @@ Deno.serve(async (request: Request) => {
     const url = new URL(request.url);
     const view = url.searchParams.get("view") ?? "list";
     if (view === "list") return json(await rpc("list"));
+    if (view === "facilities") return json(await rpc("facilities"));
     if (view === "preview") {
       const noteId = requireNoteId(url.searchParams.get("noteId"));
       await rateLimit(request, "preview", 35);
@@ -415,6 +446,15 @@ Deno.serve(async (request: Request) => {
     }
     const id = requireUuid(url.searchParams.get("id"));
     if (view === "room") return json(roomResponse(await rpc("room", { id })));
+    if (view === "vehicle") {
+      const space = url.searchParams.get("space") ?? "", version = url.searchParams.get("v") ?? "";
+      if (!Object.hasOwn(PARKING_SPACES, space) || !/^[a-f0-9]{24}$/.test(version)) return fail("invalid");
+      const { design } = await rpc("room", { id });
+      const vehicle = design.transport?.[space];
+      if (!vehicle?.base64 || vehicle.version !== version) return fail("missing");
+      const bytes = Uint8Array.from(atob(vehicle.base64), c => c.charCodeAt(0));
+      return new Response(bytes, { headers: { ...headers, "Content-Type": vehicle.mime } });
+    }
     if (view === "interior") {
       const version = url.searchParams.get("v") ?? "";
       if (!/^[a-f0-9]{24}$/.test(version)) return fail("invalid");

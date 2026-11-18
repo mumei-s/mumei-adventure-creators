@@ -4,6 +4,12 @@ const atlasURL=new URL('./assets/host-walk.webp?v=1',import.meta.url);
 export const hostPortrait=new URL('./assets/host-portrait.webp?v=1',import.meta.url).href;
 
 let atlas;
+let seatedAtlas;
+function loadSeatedAtlas(){
+  seatedAtlas??=new Image();
+  if(!seatedAtlas.src)seatedAtlas.src=new URL('./assets/host-seated.webp?v=1',import.meta.url).href;
+  return seatedAtlas;
+}
 function loadAtlas() {
   atlas ??= new Image();
   if (!atlas.src) atlas.src=atlasURL.href;
@@ -47,6 +53,7 @@ function walkAtlas(image,sheet,cellSize,idle,walkingFrames) {
 }
 
 export function hostWalker(image) {
+  loadSeatedAtlas();
   return walkAtlas(image,loadAtlas(),()=>[frameWidth,frameHeight],1,[0,1,2,3]);
 }
 
@@ -58,7 +65,7 @@ export function residentWalker(image) {
   return update;
 }
 
-export function avatarSnapshot(source, pose = 'stand') {
+export function avatarSnapshot(source, pose = 'stand', {host=false} = {}) {
   const width = source?.naturalWidth ?? source?.width;
   const height = source?.naturalHeight ?? source?.height;
   if (!width || !height) return null;
@@ -67,29 +74,36 @@ export function avatarSnapshot(source, pose = 'stand') {
   canvas.height = height;
   const context = canvas.getContext('2d');
   if (!context) return null;
+  if(host&&pose!=='stand'){
+    const sheet=loadSeatedAtlas();
+    if(sheet.complete&&sheet.naturalWidth){
+      const half=sheet.naturalWidth/2;
+      const x=pose==='saddle'?0:half;
+      canvas.width=Math.round(half);canvas.height=sheet.naturalHeight;
+      context.drawImage(sheet,x,0,half,sheet.naturalHeight,0,0,half,sheet.naturalHeight);
+      return canvas;
+    }
+  }
   if (pose === 'stand') {
     context.drawImage(source, 0, 0);
     return canvas;
   }
-  // Keep the head and torso at their original proportions, and bend each leg
-  // at the hip and knee. The frame remains anchored at the soles.
-  const hip = height * .62;
-  const knee = height * .81;
-  const top = height * .14;
-  context.drawImage(source, 0, 0, width, hip, 0, top, width, hip);
-  for (const side of [-1, 1]) {
-    const left = side < 0 ? 0 : width / 2;
-    const pivot = width * (side < 0 ? .42 : .58);
-    context.save();
-    context.translate(pivot, top + hip - 1);
-    context.rotate(side * -.29);
-    context.drawImage(source, left, hip, width / 2, knee - hip,
-      left - pivot, 0, width / 2, (knee - hip) * .65);
-    context.translate(0, (knee - hip) * .65);
-    context.rotate(side * .38);
-    context.drawImage(source, left, knee - 2, width / 2, height - knee + 2,
-      left - pivot, -2, width / 2, height - knee + 2);
+  // Retain the creator's original face, costume, texture and proportions.
+  // Only articulated leg regions move; the torso is never stretched or rotated.
+  const hip=height*.60,knee=height*.80;
+  if(pose==='saddle'){
+    canvas.width=Math.max(width,Math.round(height*.76));
+    const offset=(canvas.width-width)/2;
+    context.drawImage(source,0,0,width,hip,offset,0,width,hip);
+    const pivotX=offset+width*.5,pivotY=hip-1,thigh=knee-hip;
+    context.save();context.translate(pivotX,pivotY);context.rotate(-Math.PI/3);
+    context.drawImage(source,0,hip,width,thigh,-width/2,0,width,thigh);
     context.restore();
+    context.drawImage(source,0,knee-2,width,height-knee+2,pivotX+thigh*.866-width/2,pivotY+thigh*.5-2,width,height-knee+2);
+  }else{
+    context.drawImage(source,0,0,width,hip,0,0,width,hip);
+    context.drawImage(source,0,hip,width,knee-hip,0,hip-1,width,(knee-hip)*.3);
+    context.drawImage(source,0,knee-2,width,height-knee+2,0,hip+(knee-hip)*.3-2,width,height-knee+2);
   }
   return canvas;
 }
@@ -100,7 +114,12 @@ export function autoResidentWalker(image,{atlas=false}={}) {
   if(atlas)return residentWalker(image);
   image.classList.add('sprite-atlas-source');
   let updateFrame=null,last=[0,false], facing=0;
-  const single=(distance,walking,dx)=>{if(dx)image.style.transform='scaleX('+(dx<0?-1:1)+')';};
+  let singleFacing=1;
+  const single=(distance,walking,dx)=>{
+    if(dx)singleFacing=dx<0?-1:1;
+    const phase=distance*Math.PI/2;
+    image.style.transform=`translateY(${walking?-Math.abs(Math.sin(phase))*1.8:0}%) rotate(${walking?Math.sin(phase)*.65:0}deg) scaleX(${singleFacing})`;
+  };
   function restore(){image.classList.remove('sprite-atlas-source');updateFrame=single;updateFrame(...last);}
   function inspect(){
     if(!image.naturalWidth){restore();return;}

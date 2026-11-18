@@ -269,6 +269,7 @@ body:has(dialog[open]) .world-mini :is(.world-resident,.world-sprite,.world-glow
 .world-stage .world-resident .world-sprite {display:block;object-fit:contain}
 .world-stage .world-resident .world-sprite[hidden] {display:none}
 .sprite-atlas-source {opacity:0}
+.world-stage>.scene-art-retry{position:absolute;left:10%;right:10%;top:18%;z-index:200;pointer-events:auto;padding:10px;border:1px solid #bba27c;border-radius:4px;background:#172531;color:#ffe0b6;font:inherit;font-size:12px;cursor:pointer}
 .room-dialog:has(.room-controls:not([hidden])) {
   --room-panel-height:min(860px,calc(100dvh - 2 * max(6px, env(safe-area-inset-top), env(safe-area-inset-bottom))));
   --room-pad-size:108px;

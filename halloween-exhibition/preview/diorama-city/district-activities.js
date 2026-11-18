@@ -128,7 +128,14 @@ export function bindActivities(dialog, { avatar, status }) {
     photo.src = ride.image;
     photo.alt = ride.alt;
     scene.append(photo);
-    const source = avatar('sit');
+    const carriage=element('div','','ride-carriage');
+    scene.append(carriage);
+    if(kind==='carousel'){
+      const horse=element('img','','ride-horse');horse.src='./assets/carousel-horse.webp';horse.alt='白木と金装具の回転木馬';carriage.append(horse);
+    }else{
+      carriage.append(element('div','','gondola-seat'),element('div','','gondola-rail'));
+    }
+    const source = avatar(kind==='carousel'?'saddle':'sit');
     const w = source?.naturalWidth ?? source?.width, h = source?.naturalHeight ?? source?.height;
     if (w && h) {
       const rider = element('canvas', '', 'ride-avatar');
@@ -138,7 +145,7 @@ export function bindActivities(dialog, { avatar, status }) {
       const context = rider.getContext('2d');
       if (context) {
         context.drawImage(source, 0, 0);
-        scene.append(rider);
+        carriage.append(rider);
       }
     }
     const progress = element('span', '', 'ride-progress');

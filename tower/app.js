@@ -1,6 +1,8 @@
 import { scanAtlas } from '../halloween-exhibition/preview/diorama-city/atlas-layout.js?v=20261118-0838';
-import { characterSignature, designWorld, generatedInterior, roomPreview, roomStage } from './world.js?v=20261118-0838';
-import { cutaway, dailyStory, makeElevator } from './building.js?v=20261118';
+import { characterSignature, designWorld, generatedInterior, roomPreview, roomStage } from './world.js?v=20261118-spaces';
+import { cutaway, dailyStory, makeElevator } from './building.js?v=20261118-spaces';
+import { bindSharedSpaces } from './shared-spaces.js?v=20261118-spaces';
+import { bindSpotIllustration } from '../halloween-exhibition/preview/diorama-city/spot-illustration.js?v=202611181359';
 import { chatgptAppLink, makeArtifactPrompt, makeRoomPrompt, parseNoteId, residentPost, towerUrl, hostNoteUrl, insightUrl, bindCardButtons } from './prompt-play.js?v=202611181359';
 import { bindQualityAssist } from './quality-assist.js?v=202611180955';
 import { TOWER_API, OWNER_STORAGE, avatarImageUrl, readWalkDraft, saveWalkDraft, clearWalkDraft, readTraveler, rememberWalker } from './avatar-travel.js?v=20261118';
@@ -253,6 +255,7 @@ async function loadDirectory() {
   if (changed) state.catalog = updated;
   if (changed || hadError) renderDirectory();
   renderBuilding(changed);
+  shared.refresh();
 }
 
 function floorFor(slot) {
@@ -273,6 +276,7 @@ function renderBuilding(rebuild = true) {
       avatar: avatarUrl,
       visit: room => travel(room.slot ? floorFor(room.slot) : (state.catalog?.floors ?? 12), () => void openPublished(room.id)),
       enter: focusEntry,
+      space:id=>shared.open(id),
     });
   }
   const pick = $('#cutaway-floor');
@@ -452,7 +456,7 @@ function renderRoom(room, mode) {
   roomControls?.abort();
   roomControls = new AbortController();
   if (room.isOwner && room.design.avatarMode === 'custom' && room.avatarVersion) {
-    rememberWalker({ id: room.id, name: room.design.avatarName || room.profile.name,
+    rememberWalker({ id: room.id, noteId: room.noteId, custom:true, name: room.design.avatarName || room.profile.name,
       source: avatarUrl(room), atlas: room.design.world?.atlas });
   }
   const traveler = !room.isOwner && mode !== 'draft' && mode !== 'redesign' ? readTraveler() : null;
@@ -1523,6 +1527,36 @@ if (typeof IntersectionObserver === 'function') {
     motion.observe(region);
   }
 }
+const shared=bindSharedSpaces({
+  getCatalog:()=>state.catalog,
+  getOwner:()=>state.owner,
+  loadOwner:()=>write('visit',{id:state.owner.id}),
+  loadFacilities:()=>api('facilities'),
+  setEngineer:(room,join)=>write('engineer',{id:room.id,version:room.version,join}),
+  saveVehicle:async(room,kind,file)=>{
+    let image=null;
+    if(file){
+      const picture=await readPicture(file,'avatar');
+      const source=new Image();source.src=picture.source;await source.decode();
+      const canvas=document.createElement('canvas');
+      const ratio=Math.min(1,640/Math.max(source.naturalWidth,source.naturalHeight));
+      const width=Math.round(source.naturalWidth*ratio),height=Math.round(source.naturalHeight*ratio);
+      canvas.width=Math.max(100,width);canvas.height=Math.max(80,height);
+      canvas.getContext('2d').drawImage(source,(canvas.width-width)/2,(canvas.height-height)/2,width,height);
+      for(const quality of [.88,.75,.6,.45]){
+        const blob=await pictureBlob(canvas,quality);
+        if(blob&&blob.size<=98304){image=(await dataUrl(blob)).split(',')[1];break;}
+      }
+      if(!image)throw {code:'big_image'};
+    }
+    const saved=await write('park',{id:room.id,version:room.version,space:kind,imageB64:image,clear:!file,title:''});
+    if(state.room?.id===room.id)state.room={...saved,isOwner:true};
+    return saved;
+  },
+  visitRoom:id=>void openPublished(id),
+  illustrate:bindSpotIllustration($('#spot-dialog')),
+  travel,
+});
 renderDirectory();
 renderBuilding();
 void loadDirectory();

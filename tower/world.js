@@ -1,5 +1,5 @@
 import { makeWalkPad, bindWalking } from '../halloween-exhibition/preview/diorama-city/walk-controls.js?v=1';
-import { hostPortrait, hostWalker, residentWalker, autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=20261118-0838';
+import { hostPortrait, hostWalker, residentWalker, autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=20261118-spaces';
 import { applyDistrictLight } from '../halloween-exhibition/preview/diorama-city/scene-time.js?v=1';
 import { TOWER_API } from './avatar-travel.js?v=20261118';
 
@@ -139,15 +139,29 @@ function positioned(element,x,z,layer=0) {
 
 const floorBounds={left:.135,right:.865,far:.06,near:.91};
 
-function attachMotion(frame,scene,walker,obstacles,updateAvatar,signal,inputRoot) {
+function attachMotion(frame,scene,walker,obstacles,updateAvatar,signal,inputRoot,shared=false) {
+  const bounds=shared ? {left:.05,right:.95,far:.02,near:.94} : floorBounds;
   const controls=makeWalkPad();
   let x=.5,z=.74, vector=null, target=null, tickHandle=0,last=0,stride=0;
-  const valid=(a,b)=>a>=floorBounds.left&&a<=floorBounds.right&&b>=floorBounds.far&&b<=floorBounds.near
+  let overview=shared&&matchMedia('(orientation: landscape) and (max-height: 540px)').matches;
+  const viewport=shared?scene.parentElement:null;
+  function camera(){
+    if(!shared||!viewport?.clientWidth)return;
+    const width=viewport.clientWidth,height=viewport.clientHeight;
+    const fit=Math.min(width/1000,height/667);
+    const scale=overview?fit:Math.max(width/1000,height/667,.52);
+    const focus=[(50+(x-.5)*96)*10,(48+49*z)*6.67];
+    const offset=(span,total,at)=>total<span?(span-total)/2:Math.max(span-total,Math.min(0,span*.58-at*scale));
+    scene.style.transform=`translate(${offset(width,1000*scale,focus[0])}px,${offset(height,667*scale,focus[1])}px) scale(${scale})`;
+  }
+  const valid=(a,b)=>a>=bounds.left&&a<=bounds.right&&b>=bounds.far&&b<=bounds.near
     && !obstacles.some(item=>Math.abs(a-item.x)<item.rx+.022&&Math.abs(b-item.z)<item.rz+.038);
   function pose(dx=0,dz=0,moving=false) {
     positioned(walker,x,z,20);
+    if(shared){walker.style.left=`${50+(x-.5)*96}%`;walker.style.top=`${48+49*z}%`;}
     walker.dataset.position=`${x.toFixed(3)},${z.toFixed(3)}`;
     updateAvatar?.(stride,moving,dx,dz);
+    camera();
   }
   function tick(time) {
     tickHandle=0;
@@ -162,9 +176,9 @@ function attachMotion(frame,scene,walker,obstacles,updateAvatar,signal,inputRoot
       pose();
       return;
     }
-    const speed=Math.min(elapsed*.45,vector ? Infinity : length);
-    const a=clamp(x+dx/length*speed,floorBounds.left,floorBounds.right);
-    const b=clamp(z+dz/length*speed*.78,floorBounds.far,floorBounds.near);
+    const speed=Math.min(elapsed*(shared ? .61 : .55),vector ? Infinity : length);
+    const a=clamp(x+dx/length*speed,bounds.left,bounds.right);
+    const b=clamp(z+dz/length*speed*.78,bounds.far,bounds.near);
     const oldX=x,oldZ=z;
     if(valid(a,z)) x=a;
     if(valid(x,b)) z=b;
@@ -179,7 +193,7 @@ function attachMotion(frame,scene,walker,obstacles,updateAvatar,signal,inputRoot
   }
   function destination(a,b) {
     vector=null;
-    target={x:clamp(a,floorBounds.left,floorBounds.right),z:clamp(b,floorBounds.far,floorBounds.near)};
+    target={x:clamp(a,bounds.left,bounds.right),z:clamp(b,bounds.far,bounds.near)};
     run();
   }
   pose();
@@ -187,17 +201,23 @@ function attachMotion(frame,scene,walker,obstacles,updateAvatar,signal,inputRoot
     const bounds=scene.getBoundingClientRect();
     const screenX=(event.clientX-bounds.left)/bounds.width;
     const screenY=(event.clientY-bounds.top)/bounds.height;
-    const depth=clamp((screenY-.61)/.36,floorBounds.far,floorBounds.near);
-    destination(.5+(screenX-.5)/(.74+.29*depth),depth);
+    const depth=clamp(shared?(screenY-.48)/.49:(screenY-.61)/.36,bounds.far,bounds.near);
+    destination(shared ? .5+(screenX-.5)/.96 : .5+(screenX-.5)/(.74+.29*depth),depth);
     scene.focus({preventScroll:true});
   },{signal});
   bindWalking(inputRoot ?? frame,controls,{
     signal,
-    blocked:()=>!frame.closest('dialog[open]'),
+    blocked:()=>!frame.closest('dialog[open]')||Array.from(document.querySelectorAll('dialog[open]')).at(-1)!==frame.closest('dialog'),
     change(value){vector=value;target=null;run();},
     step([dx,dz]){destination(x+dx*.1,z+dz*.1);},
   });
   signal?.addEventListener('abort',()=>cancelAnimationFrame(tickHandle),{once:true});
+  if(shared){
+    const viewButton=make('button','quiet shared-camera');viewButton.type='button';viewButton.textContent=overview?'歩く視点へ':'全景を見る';viewButton.setAttribute('aria-pressed',String(overview));
+    viewButton.addEventListener('click',()=>{overview=!overview;viewButton.textContent=overview?'歩く視点へ':'全景を見る';viewButton.setAttribute('aria-pressed',String(overview));camera();});
+    frame.querySelector('.world-control-dock').append(viewButton);
+    const observer=new ResizeObserver(camera);observer.observe(viewport);signal?.addEventListener('abort',()=>observer.disconnect(),{once:true});
+  }
   return controls;
 }
 
@@ -222,7 +242,7 @@ const usingAtlas=room=>room.draftAvatar?.atlas ?? room.design?.world?.atlas===tr
 
 function interiorImage(room,source,css,alt,mini) {
   const image=art(source || roomArt(room),css,alt,mini);
-  if(source) image.addEventListener('error',()=>{image.src=roomArt(room);},{once:true});
+  if(source) image.addEventListener('error',()=>{image.dataset.loadError='true';image.alt='登録した部屋画像を読み込めませんでした';});
   return image;
 }
 
@@ -233,7 +253,7 @@ export function roomPreview(room,source) {
   if(room.design?.avatarMode==='profile'&&room.profile?.photo) resident.classList.add('profile-photo');
   photo.append(resident);
   if(!usesHostModel(room) && room.design?.avatarMode==='custom') {
-    resident.addEventListener('error',()=>{resident.src='./assets/resident.webp';resident.hidden=false;},{once:true});
+    resident.addEventListener('error',()=>{resident.hidden=true;photo.dataset.avatarError='true';},{once:true});
     autoResidentWalker(resident,{atlas:usingAtlas(room)})(0,false);
   }
   return photo;
@@ -263,7 +283,15 @@ export function roomStage(room,source,{mini=false,avatarName,signal,inputRoot,tr
   const light=make('div','world-glow');
   if(photo) {
     scene.classList.add('world-photo-suite');
-    scene.append(interiorImage(room,generated,'suite-interior',mini?'':generated?'住人がつくった部屋':'窓から街を見渡せる、マンションの室内',mini));
+    const interior=interiorImage(room,generated,'suite-interior',mini?'':generated?'住人がつくった部屋':'窓から街を見渡せる、マンションの室内',mini);
+    scene.append(interior);
+    if(generated&&!mini){
+      const retry=make('button','scene-art-retry');retry.type='button';retry.hidden=true;retry.textContent='元の部屋画像を再読み込み';
+      interior.addEventListener('error',()=>{retry.hidden=false;});
+      interior.addEventListener('load',()=>{retry.hidden=true;delete interior.dataset.loadError;});
+      retry.addEventListener('click',event=>{event.stopPropagation();retry.hidden=true;interior.src=generated;});
+      scene.append(retry);
+    }
     if(generated) scene.classList.add('world-generated');
     else {
       applyDistrictLight(scene);
@@ -293,7 +321,10 @@ export function roomStage(room,source,{mini=false,avatarName,signal,inputRoot,tr
   if(room.design?.avatarMode==='profile'&&room.profile?.photo) walker.classList.add('portrait');
   if(world.character) walker.classList.add('custom-walker');
   const sprite=art(traveler?.source || (host?hostPortrait:source),'world-sprite',mini?'':(traveler?.name || (host?'無名S note':avatarName||'住人キャラクター')),mini);
-  sprite.addEventListener('error',()=>{sprite.src='./assets/resident.webp';sprite.hidden=false;},{once:true});
+  sprite.addEventListener('error',()=>{
+    sprite.hidden=true;
+    if(!mini){const warning=make('span','avatar-unavailable');warning.textContent='アバター画像を読み込めませんでした';walker.append(warning);}
+  },{once:true});
   walker.append(sprite);
   const atlas=traveler ? traveler.atlas : usingAtlas(room);
   const custom=traveler ? (traveler.custom ?? (traveler.atlas || traveler.source?.startsWith(TOWER_API) || traveler.source?.startsWith('data:'))) : room.design?.avatarMode==='custom';
@@ -302,7 +333,6 @@ export function roomStage(room,source,{mini=false,avatarName,signal,inputRoot,tr
   if(mini) {
     updateAvatar?.(0,false);
     scene.setAttribute('aria-hidden','true');
-    if(host) walker.classList.add('mini-host');
     walker.style.setProperty('--pace',`${5+world.seed%5}s`);
     walker.style.setProperty('--offset',`-${world.seed%7}s`);
     return scene;
@@ -318,7 +348,9 @@ export function roomStage(room,source,{mini=false,avatarName,signal,inputRoot,tr
   const text=make('span');
   text.textContent='床をタップ・方向パッド・矢印キー';
   hint.append(title,text);
-  dock.append(hint,attachMotion(frame,scene,walker,obstacles,updateAvatar,signal,inputRoot));
-  frame.append(scene,dock);
+  const shared=Boolean(room.sharedSpace);
+  if(shared){const viewport=make('div','shared-viewport');viewport.append(scene);frame.append(viewport,dock);}
+  else frame.append(scene,dock);
+  dock.append(hint,attachMotion(frame,scene,walker,obstacles,updateAvatar,signal,inputRoot,shared));
   return frame;
 }

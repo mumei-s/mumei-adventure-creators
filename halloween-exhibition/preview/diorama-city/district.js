@@ -10,7 +10,7 @@ import { vehicleStudio } from '../../../tower/vehicle-studio.js?v=20261118-speed
 import { bindActivities, createCityVisit, playgroundPose } from './district-activities.js?v=20261118-city2';
 import { bindSpotIllustration } from './spot-illustration.js?v=20261118-speed';
 import { districtCamera, exteriorHeight } from './camera.js?v=20261118';
-import { TOWER_API, OWNER_STORAGE, avatarImageUrl, readWalkDraft, rememberWalker } from '../../../tower/avatar-travel.js?v=20261118';
+import { TOWER_API, OWNER_STORAGE, avatarImageUrl, readWalkDraft, readTraveler, rememberWalker } from '../../../tower/avatar-travel.js?v=20261118';
 import { initGameShell } from '../../../tower/game-shell.js?v=20261118-controls';
 
 const gameShell=initGameShell({page:'city'});
@@ -18,7 +18,7 @@ const gameShell=initGameShell({page:'city'});
 const el=id=>document.getElementById(id);
 const root=el('district'), view=el('city-view'), world=el('city-world'), citizen=el('citizen');
 const pad=makeWalkPad(), clock=el('clock'), dialog=el('place-dialog'), visit=el('visit');
-let paintAvatar=hostWalker(citizen.querySelector('img'));
+let paintAvatar=()=>{};
 const drawTraffic=districtTraffic(el('transit'));
 let currentUrl=new URL(location.href);
 let areaId=areaFor(currentUrl);
@@ -137,19 +137,43 @@ function setAreaInfo() {
 }
 setAreaInfo();
 
-let activeSpotActor=null;
+const requestedRoom=currentUrl.searchParams.get('resident') || owner?.id;
+const hasRoom=/^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/.test(requestedRoom ?? '');
+const previousWalker=!onDraft && hasRoom && requestedRoom===owner?.id ? readTraveler() : null;
+function ownedReference(walker) {
+  if(!walker?.custom || !walker.noteId || (owner.noteId && owner.noteId!==walker.noteId))return null;
+  const url=new URL(walker.source);
+  if(url.searchParams.get('view')!=='avatar' || url.searchParams.get('id')!==requestedRoom)return null;
+  return walker;
+}
+const knownWalker=onDraft ? {source:onDraft.avatar.source,atlas:onDraft.avatar.atlas,custom:true,
+  noteId:onDraft.noteId,name:onDraft.name || onDraft.noteId} : ownedReference(previousWalker);
+function walkerImage(actor) {
+  const image=new Image();
+  image.alt=actor.name;
+  image.draggable=false;
+  if(actor.custom&&actor.source.startsWith(TOWER_API))image.crossOrigin='anonymous';
+  image.src=actor.source;
+  return image;
+}
+let activeSpotActor=knownWalker;
+let preparedWalker=knownWalker ? walkerImage(knownWalker) : null;
+if(onDraft || hasRoom){
+  root.dataset.walkerState='loading';
+  citizen.style.visibility='hidden';
+} else {
+  const host=citizen.querySelector('img');
+  host.src=host.dataset.src;
+  paintAvatar=hostWalker(host);
+}
 async function chooseWalker() {
-  let actor;
+  let actor=knownWalker;
   const roomLink=new URL(visitTower);
-  if (onDraft) {
-    root.dataset.walkerState='loading';
-    citizen.style.visibility='hidden';
-    actor={ source:onDraft.avatar.source, atlas:onDraft.avatar.atlas, custom:true, noteId:onDraft.noteId, name:onDraft.name || onDraft.noteId };
-  } else {
-    const roomId=currentUrl.searchParams.get('resident') || owner?.id;
-    if (!/^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/.test(roomId ?? '')) return;
-    root.dataset.walkerState='loading';
-    citizen.style.visibility='hidden';
+  if(!onDraft && !hasRoom)return;
+  root.dataset.walkerState='loading';
+  el('retry-walker').hidden=true;
+  if(!onDraft){
+    const roomId=requestedRoom;
     const endpoint=new URL(TOWER_API);
     endpoint.search=new URLSearchParams({view:'room',id:roomId});
     const response=await fetch(endpoint,{cache:'no-store',signal:AbortSignal.timeout(8500)});
@@ -162,17 +186,17 @@ async function chooseWalker() {
       noteId:room.noteId, name:room.design.avatarName || room.profile.name || room.noteId};
     roomLink.searchParams.set('room',roomId);
   }
-  const image=new Image();
+  // The saved reference can start downloading alongside the authoritative room lookup.
+  // An edited avatar uses the newer version returned by the room API.
+  activeSpotActor=actor;
+  const image=preparedWalker && actor.source===knownWalker.source ? preparedWalker : walkerImage(actor);
+  preparedWalker=null;
   image.alt=actor.name;
-  image.draggable=false;
-  if(actor.custom&&actor.source.startsWith(TOWER_API))image.crossOrigin='anonymous';
-  image.src=actor.source;
   let timer;
   try {
     await Promise.race([image.decode(),
       new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('walker')),12000);})]);
   } finally {clearTimeout(timer);}
-  activeSpotActor=actor;
   if (actor.id) rememberWalker(actor);
   citizen.replaceChildren(image,seatedFrame);
   paintAvatar=actor.custom || actor.atlas ? autoResidentWalker(image,{atlas:Boolean(actor.atlas)}) : (_stride,_moving,dx) => {
@@ -549,7 +573,7 @@ function showDescription(place) {
 }
 
 function openSpot(article=false) {
-  if (transition || motion || (root.dataset.walkerState && root.dataset.walkerState!=='ready') || document.querySelector('dialog[open]')) return;
+  if (transition || motion || (root.dataset.walkerState && !activeSpotActor) || document.querySelector('dialog[open]')) return;
   const place=(venue?.spots ?? places)[nearby];
   const setting=venues[place?.venue] ?? venue;
   const label=setting && place && !place.venue ? `${setting.title}・${place.label}` : setting?.title ?? place?.label;

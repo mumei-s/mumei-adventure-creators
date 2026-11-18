@@ -1,5 +1,7 @@
 const assert = require('node:assert/strict');
 const { chromium } = require('playwright');
+const { readFile } = require('node:fs/promises');
+const path = require('node:path');
 
 const site = process.env.ATELIER_TEST_URL || 'http://127.0.0.1:4173/';
 const city = new URL('halloween-exhibition/preview/diorama-city/', site);
@@ -72,10 +74,40 @@ const originalFeed = /\/assets\/(?:entrance-lounge|driveway|garage|bicycle-court
     await page.waitForSelector('.shared-stage[data-space="concierge"] .suite-interior');
     await page.locator('.concierge-wall-screens img').evaluateAll(images=>Promise.all(images.map(img=>img.decode())));
     assert.equal(paths.filter(path=>originalFeed.test(path)).length,0,'Small monitors must not fetch four full-size rooms');
-    assert.equal(new Set(paths.filter(path=>path.includes('/thumbs/') && /entrance-lounge|driveway|garage|bicycle-court/.test(path))).size,4);
+    assert.equal(new Set(paths.filter(path=>path.includes('/monitors/') && /entrance-lounge|driveway|garage|bicycle-court/.test(path))).size,4);
     await page.locator('.security-bank').click();
     await page.locator('.camera-viewer .security-feed img').evaluateAll(images=>Promise.all(images.map(img=>img.decode())));
     assert.equal(new Set(paths.filter(path=>originalFeed.test(path))).size,4,'Expanded monitors retain full resolution');
+    // A returning creator can use their own confirmed reference while the room is checked.
+    const id='bcd12345-abcd-4bcd-abcd-abcdef123456',noteId='test_resident';
+    const api='https://xxhaerjvrgmnadxjqetz.supabase.co/functions/v1/creator-tower';
+    const version='a'.repeat(24),source=api+'?view=avatar&id='+id+'&v='+version;
+    await page.addInitScript(({id,noteId,source})=>{
+      localStorage.setItem('atelier-tower-owner-v1',JSON.stringify({id,noteId}));
+      sessionStorage.setItem('atelier-tower-traveler-v1',JSON.stringify({id,noteId,source,custom:true,atlas:true,name:'テスト住人'}));
+    },{id,noteId,source});
+    let confirmRoom;
+    const pendingRoom=new Promise(resolve=>{confirmRoom=resolve;});
+    const actor=await readFile(path.join(__dirname,'../../halloween-exhibition/preview/diorama-city/assets/host-walk.webp'));
+    await page.route(api+'?*',async route=>{
+      const view=new URL(route.request().url()).searchParams.get('view');
+      const headers={'access-control-allow-origin':'*'};
+      if(view==='avatar')return route.fulfill({body:actor,contentType:'image/webp',headers});
+      if(view!=='room')return route.fallback();
+      await pendingRoom;
+      await route.fulfill({json:{id,noteId,profile:{name:'テスト住人'},avatarVersion:version,design:{avatarMode:'custom',world:{atlas:true}}},headers});
+    });
+    paths.length=0;
+    await page.goto(new URL('?area=canal&spot=avenueShops.car',city).href,{waitUntil:'domcontentloaded'});
+    await page.waitForSelector('#city-world[data-venue="avenueShops"]');
+    assert.equal(await page.getAttribute('#district','data-walker-state'),'loading');
+    await page.click('#spot-prompt');
+    await page.selectOption('#spot-output','scene1');
+    const ownedPrompt=await page.inputValue('#spot-text');
+    assert.ok(ownedPrompt.includes('@'+noteId) && ownedPrompt.includes(source));
+    confirmRoom();
+    await page.waitForSelector('#district[data-walker-state="ready"]');
+    assert.equal(paths.some(p=>/\/host-(?:walk|seated|portrait)\.webp$/.test(p)),false,'A registered walker must not load the host sprites');
     assert.deepEqual(errors,[]);
     console.log('PASS direct venue: one backdrop, zero exterior transfers; prompt copied while art was pending; district crossing, back and forward: one document; small and expanded cameras use the right resolution.');
   } finally {await browser.close();}

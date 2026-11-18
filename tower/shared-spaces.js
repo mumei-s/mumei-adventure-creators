@@ -130,7 +130,7 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
     const wall=make('div','concierge-wall-screens');
     wall.setAttribute('aria-hidden','true');
     for(const [,image] of feeds){
-      const screen=make('img');screen.alt='';screen.decoding='async';screen.src=`./assets/thumbs/${image}.webp`;
+      const screen=make('img');screen.alt='';screen.decoding='async';screen.src=`./assets/monitors/${image}.webp`;
       wall.append(screen);
     }
     stage.append(wall);
@@ -138,7 +138,7 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
     function makeFeeds(container,expanded=false){
       for(const [name,image] of feeds){
         const panel=make('span','security-feed');
-        const photo=make('img');photo.alt=name;photo.decoding='async';photo.src=`./assets/${expanded?'':'thumbs/'}${image}.webp`;
+        const photo=make('img');photo.alt=name;photo.decoding='async';photo.src=`./assets/${expanded?'':'monitors/'}${image}.webp`;
         const time=make('time');
         panel.append(photo,make('span','',name),time);
         container.append(panel);clocks.add(time);

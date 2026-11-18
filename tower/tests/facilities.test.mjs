@@ -98,3 +98,57 @@ test('engineering membership is reversible and never changes ownership credentia
  assert.equal(f.room().design.engineer,false);
  await assert.rejects(f.api.mutate(f.request({action:'engineer',version:3,join:true},'f'.repeat(64))),e=>e.code==='owner_required');
 });
+
+test('manager enrolment and withdrawal are owner-only, versioned and independent of artwork and other roles', async () => {
+  const f = fixture();
+  const post = async (body, token) => f.handler(f.request(body, token));
+  const join = { action: 'manager', join: true, version: 1 };
+  for (const [body, token, status, error] of [
+    [join, null, 403, 'owner_required'],
+    [{ ...join, id: other }, key, 403, 'owner_required'],
+    [{ ...join, version: 2 }, key, 409, 'conflict'],
+    [{ ...join, join: 'true' }, key, 400, 'invalid'],
+  ]) {
+    const response = await post(body, token);
+    assert.equal(response.status, status);
+    assert.equal((await response.json()).error, error);
+  }
+  const before = f.room();
+  assert.equal(before.version, 1);
+  const response = await post(join);
+  assert.equal(response.status, 200);
+  assert.equal((await response.json()).design.manager, true);
+  const member = f.room();
+  assert.deepEqual(member, { ...before, version: 2, design: { ...before.design, manager: true } });
+
+  await post({ action: 'park', space: 'garage', imageB64: image, version: 2 });
+  await post({ action: 'engineer', join: true, version: 3 });
+  const occupied = f.room();
+  assert.equal(occupied.design.manager, true);
+  assert.equal(occupied.design.engineer, true);
+
+  const remodel = await post({ action: 'save', version: 4, design: { ...occupied.design, manager: false, title: 'New room' } });
+  assert.equal(remodel.status, 200);
+  assert.equal(f.room().design.manager, true);
+  assert.deepEqual(f.room().design.world, occupied.design.world);
+  assert.equal(f.room().design.interiorB64, occupied.design.interiorB64);
+  assert.deepEqual(f.room().design.transport, occupied.design.transport);
+
+  const stale = await post({ action: 'manager', join: false, version: 4 });
+  assert.equal(stale.status, 409);
+  assert.equal(f.room().design.manager, true);
+  const current = f.room();
+  const withdrawn = await post({ action: 'manager', join: false, version: current.version });
+  assert.equal(withdrawn.status, 200);
+  assert.deepEqual(f.room(), {
+    ...current, version: current.version + 1, design: { ...current.design, manager: false },
+  });
+});
+
+test('legacy room data remains opt-in and renovation cannot set manager membership', async () => {
+  const f = fixture();
+  const original = f.room();
+  const remodel = await f.handler(f.request({ action: 'save', version: 1, design: { ...original.design, manager: true } }));
+  assert.equal(remodel.status, 200);
+  assert.equal(Object.hasOwn(f.room().design, 'manager'), false);
+});

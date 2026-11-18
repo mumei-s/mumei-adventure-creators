@@ -81,30 +81,14 @@ export function avatarSnapshot(source, pose = 'stand', {host=false} = {}) {
       const x=pose==='saddle'?0:half;
       canvas.width=Math.round(half);canvas.height=sheet.naturalHeight;
       context.drawImage(sheet,x,0,half,sheet.naturalHeight,0,0,half,sheet.naturalHeight);
+      canvas.dataset.poseArt='seated';
       return canvas;
     }
   }
-  if (pose === 'stand') {
-    context.drawImage(source, 0, 0);
-    return canvas;
-  }
-  // Retain the creator's original face, costume, texture and proportions.
-  // Only articulated leg regions move; the torso is never stretched or rotated.
-  const hip=height*.60,knee=height*.80;
-  if(pose==='saddle'){
-    canvas.width=Math.max(width,Math.round(height*.76));
-    const offset=(canvas.width-width)/2;
-    context.drawImage(source,0,0,width,hip,offset,0,width,hip);
-    const pivotX=offset+width*.5,pivotY=hip-1,thigh=knee-hip;
-    context.save();context.translate(pivotX,pivotY);context.rotate(-Math.PI/3);
-    context.drawImage(source,0,hip,width,thigh,-width/2,0,width,thigh);
-    context.restore();
-    context.drawImage(source,0,knee-2,width,height-knee+2,pivotX+thigh*.866-width/2,pivotY+thigh*.5-2,width,height-knee+2);
-  }else{
-    context.drawImage(source,0,0,width,hip,0,0,width,hip);
-    context.drawImage(source,0,hip,width,knee-hip,0,hip-1,width,(knee-hip)*.3);
-    context.drawImage(source,0,knee-2,width,height-knee+2,0,hip+(knee-hip)*.3-2,width,height-knee+2);
-  }
+  // Arbitrary creator art can be a portrait or fantasy subject without human joints.
+  // Keep its registered frame intact and let the carriage provide foreground occlusion.
+  context.drawImage(source,0,0);
+  canvas.dataset.poseArt='original';
   return canvas;
 }
 

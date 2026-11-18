@@ -33,6 +33,7 @@ jobs:
           node --input-type=module --check < tower/world.js
           node --input-type=module --check < halloween-exhibition/preview/diorama-city/district.js
           node --test tower/tests/*.test.mjs
+          node --test tests/*.test.mjs halloween-exhibition/tests/*.test.mjs halloween-exhibition/preview/admin/tests/*.test.mjs halloween-exhibition/preview/horror-night/tests/*.test.mjs
           node --check preview-v3/admin-app.js
           node --check preview-v3/admin-persist.js
           node --check preview-v3/admin-fixes-v17.js
@@ -71,6 +72,19 @@ jobs:
         run: |
           node --test scripts/stage-pages.test.mjs
           node scripts/stage-pages.mjs . _site > /tmp/pages-staging-report.json
+      - name: 公開用ファイルをブラウザで操作して検査
+        timeout-minutes: 12
+        run: |
+          npm install --prefix "$RUNNER_TEMP/tower-browser" --no-audit --no-fund playwright@1.56.1
+          export NODE_PATH="$RUNNER_TEMP/tower-browser/node_modules"
+          export BROWSER_EXECUTABLE="$(command -v google-chrome)"
+          python3 -m http.server 4173 --bind 127.0.0.1 --directory _site > "$RUNNER_TEMP/tower-http.log" 2>&1 &
+          server=$!
+          trap 'kill "$server"' EXIT
+          curl --silent --show-error --fail --retry 10 --retry-connrefused http://127.0.0.1:4173/tower/ --output /dev/null
+          for test in tower/tests/*browser-flow.cjs; do
+            node "$test"
+          done
       - name: 公開ファイルを準備
         uses: actions/upload-pages-artifact@v3
         with:

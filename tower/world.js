@@ -1,5 +1,6 @@
-import { makeWalkPad, bindWalking } from '../halloween-exhibition/preview/diorama-city/walk-controls.js?v=20261118-controls';
-import { hostPortrait, hostWalker, residentWalker, autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=20261118-spaces-5';
+import { canWalkFloorSegment, facilityActorHeight, facilityFloors, facilityRoute, registeredFloorFor } from './facility-floors.js?v=202611181820';
+import { makeWalkPad, bindWalking } from '../halloween-exhibition/preview/diorama-city/walk-controls.js?v=202611181820';
+import { hostPortrait, hostWalker, autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=202611181820';
 import { applyDistrictLight } from '../halloween-exhibition/preview/diorama-city/scene-time.js?v=1';
 import { TOWER_API } from './avatar-travel.js?v=20261118';
 
@@ -137,36 +138,61 @@ function positioned(element,x,z,layer=0) {
   element.style.setProperty('--size-depth',String(.70+.30*z));
 }
 
-const floorBounds={left:.135,right:.865,far:.06,near:.91};
+const privateFloor=[.135,.865,.06,.91];
 
-function attachMotion(frame,scene,walker,obstacles,updateAvatar,signal,inputRoot,shared=false) {
-  const bounds=shared ? {left:.05,right:.95,far:.02,near:.94} : floorBounds;
+export function roomFloorPoint(rect,clientX,clientY,shared=false) {
+  if(!rect.width||!rect.height)return null;
+  const u=(clientX-rect.left)/rect.width,v=(clientY-rect.top)/rect.height;
+  if(shared)return [u,v];
+  const [left,right,far,near]=privateFloor;
+  const z=clamp((v-.61)/.36,far,near);
+  return [clamp(.5+(u-.5)/(.74+.29*z),left,right),z];
+}
+
+function attachMotion(frame,scene,walker,obstacles,updateAvatar,signal,inputRoot,facility,privateBounds) {
+  const calibrated=Boolean(facility);
+  const [left,right,far,near]=facility?.bounds??privateBounds;
+  const floor=facility??{
+    bounds:privateBounds,aspect:1,obstacles,
+    polygon:[[left,far],[right,far],[right,near],[left,near]],
+  };
+  const worldWidth=1000,worldHeight=calibrated ? worldWidth/facility.aspect : 667;
+  const depthRate=calibrated ? .62 : .78;
   const controls=makeWalkPad();
-  let x=.5,z=.74, vector=null, target=null, tickHandle=0,last=0,stride=0;
-  let overview=shared&&matchMedia('(orientation: landscape) and (max-height: 540px)').matches;
-  const viewport=shared?scene.parentElement:null;
+  let [x,z]=facility?.spawn??[.5,.74];
+  let vector=null,route=[],tickHandle=0,last=0,stride=0;
+  let overview=calibrated&&matchMedia('(orientation: landscape) and (max-height: 540px)').matches;
+  const viewport=calibrated?scene.parentElement:null;
+  if(calibrated){
+    scene.style.width=worldWidth+'px';scene.style.height=worldHeight+'px';
+    scene.style.aspectRatio=String(facility.aspect);
+    scene.dataset.floorCoordinates='image';
+  }
   function camera(){
-    if(!shared||!viewport?.clientWidth)return;
+    if(!calibrated||!viewport?.clientWidth)return;
     const dialog=frame.closest('dialog');
     const mode=overview?'overview':'walk';
-    if(dialog&&dialog.dataset.camera!==mode){
+    if(dialog?.id==='shared-dialog'&&dialog.dataset.camera!==mode){
       dialog.dataset.camera=mode;dialog.dataset.info=overview?'closed':'open';
       const info=dialog.querySelector('#shared-info');
       if(info){info.setAttribute('aria-expanded',String(!overview));info.textContent=overview?'案内を開く':'案内をしまう';}
     }
     const width=viewport.clientWidth,height=viewport.clientHeight;
-    const fit=Math.min(width/1000,height/667);
-    const scale=overview?fit:Math.max(width/1000,height/667,.52);
-    const focus=[(50+(x-.5)*96)*10,(48+49*z)*6.67];
-    const offset=(span,total,at)=>total<span?(span-total)/2:Math.max(span-total,Math.min(0,span*.58-at*scale));
-    scene.style.transform=`translate(${offset(width,1000*scale,focus[0])}px,${offset(height,667*scale,focus[1])}px) scale(${scale})`;
+    const fit=Math.min(width/worldWidth,height/worldHeight);
+    const scale=overview?fit:Math.max(width/worldWidth,height/worldHeight,fit*1.18,.52);
+    const offset=(span,total,at,anchor)=>total<span?(span-total)/2:Math.max(span-total,Math.min(0,span*anchor-at*total));
+    const tx=offset(width,worldWidth*scale,x,.5),ty=offset(height,worldHeight*scale,z,.76);
+    scene.style.transform=`translate(${tx}px,${ty}px) scale(${scale})`;
   }
-  const valid=(a,b)=>a>=bounds.left&&a<=bounds.right&&b>=bounds.far&&b<=bounds.near
-    && !obstacles.some(item=>Math.abs(a-item.x)<item.rx+.022&&Math.abs(b-item.z)<item.rz+.038);
   function pose(dx=0,dz=0,moving=false) {
-    positioned(walker,x,z,20);
-    if(shared){walker.style.left=`${50+(x-.5)*96}%`;walker.style.top=`${48+49*z}%`;}
-    walker.dataset.position=`${x.toFixed(3)},${z.toFixed(3)}`;
+    if(calibrated){
+      const height=facilityActorHeight(facility,z);
+      walker.style.left=`${x*100}%`;walker.style.top=`${z*100}%`;
+      walker.style.height=`${height*100}%`;
+      walker.style.width=`${height*85/facility.aspect}%`;
+      walker.style.zIndex=String(21+Math.round(z*100));
+    }else positioned(walker,x,z,20);
+    walker.dataset.position=calibrated?`${x},${z}`:`${x.toFixed(3)},${z.toFixed(3)}`;
     updateAvatar?.(stride,moving,dx,dz);
     camera();
   }
@@ -175,54 +201,53 @@ function attachMotion(frame,scene,walker,obstacles,updateAvatar,signal,inputRoot
     if(!walker.isConnected||signal?.aborted) return;
     const elapsed=last ? Math.min((time-last)/1000,.045) : .016;
     last=time;
-    const [dx,dz]=vector ?? (target ? [target.x-x,(target.z-z)/.78] : [0,0]);
+    if(blocked()){vector=null;route=[];last=0;pose();return;}
+    const target=route[0];
+    const [dx,dz]=vector ?? (target ? [target[0]-x,(target[1]-z)/depthRate] : [0,0]);
     const length=Math.hypot(dx,dz);
-    if(length<.003) {
-      target=null;
-      last=0;
-      pose();
-      return;
-    }
-    if(blocked()){vector=null;target=null;last=0;pose();return;}
-    const speed=Math.min(elapsed*(shared ? .61 : .55)*(Number(document.body.dataset.walkSpeed)||1),vector ? Infinity : length);
-    const a=clamp(x+dx/length*speed,bounds.left,bounds.right);
-    const b=clamp(z+dz/length*speed*.78,bounds.far,bounds.near);
+    const speed=elapsed*(calibrated ? .13+.9*facilityActorHeight(facility,z) : .55)*(Number(document.body.dataset.walkSpeed)||1);
     const oldX=x,oldZ=z;
-    if(valid(a,z)) x=a;
-    if(valid(x,b)) z=b;
+    if(target&&length<=speed){
+      [x,z]=route.shift();
+    }else if(length){
+      const a=clamp(x+dx/length*speed,left,right);
+      const b=clamp(z+dz/length*speed*depthRate,far,near);
+      if(target||canWalkFloorSegment(floor,[x,z],[a,b])){x=a;z=b;}
+      else if(canWalkFloorSegment(floor,[x,z],[a,z]))x=a;
+      else if(canWalkFloorSegment(floor,[x,z],[x,b]))z=b;
+    }
     const advance=Math.hypot(x-oldX,(z-oldZ)*1.2);
     stride+=advance/.061;
     pose(x-oldX,z-oldZ,advance>0);
-    if(vector || advance>0 && target) run();
-    else {target=null;last=0;}
+    if(vector||route.length||advance>0)run();
+    else last=0;
   }
   function run() {
     if(!tickHandle) tickHandle=requestAnimationFrame(tick);
   }
   function destination(a,b) {
+    const next=facilityRoute(floor,[x,z],[a,b]);
+    if(!next.length)return;
     vector=null;
-    target={x:clamp(a,bounds.left,bounds.right),z:clamp(b,bounds.far,bounds.near)};
+    route=next;
     run();
   }
   pose();
   scene.addEventListener('click',event=>{
-    const bounds=scene.getBoundingClientRect();
-    const screenX=(event.clientX-bounds.left)/bounds.width;
-    const screenY=(event.clientY-bounds.top)/bounds.height;
-    const depth=clamp(shared?(screenY-.48)/.49:(screenY-.61)/.36,bounds.far,bounds.near);
-    destination(shared ? .5+(screenX-.5)/.96 : .5+(screenX-.5)/(.74+.29*depth),depth);
+    const point=roomFloorPoint(scene.getBoundingClientRect(),event.clientX,event.clientY,calibrated);
+    if(point)destination(...point);
     scene.focus({preventScroll:true});
   },{signal});
   const blocked=()=>document.hidden||!frame.closest('dialog[open]')||Array.from(document.querySelectorAll('dialog[open]')).at(-1)!==frame.closest('dialog');
   bindWalking(inputRoot ?? frame,controls,{
     signal,
     blocked,
-    change(value){vector=value;target=null;run();},
+    change(value){vector=value;route=[];run();},
     step([dx,dz]){destination(x+dx*.1,z+dz*.1);},
   });
   signal?.addEventListener('abort',()=>cancelAnimationFrame(tickHandle),{once:true});
-  if(shared){
-    const viewButton=make('button','quiet shared-camera');viewButton.type='button';viewButton.textContent=overview?'歩く視点へ':'全景を見る';viewButton.setAttribute('aria-pressed',String(overview));
+  if(calibrated){
+    const viewButton=make('button',viewport.classList.contains('registered-viewport')?'quiet registered-camera':'quiet shared-camera');viewButton.type='button';viewButton.textContent=overview?'歩く視点へ':'全景を見る';viewButton.setAttribute('aria-pressed',String(overview));
     viewButton.addEventListener('click',()=>{overview=!overview;viewButton.textContent=overview?'歩く視点へ':'全景を見る';viewButton.setAttribute('aria-pressed',String(overview));camera();});
     frame.querySelector('.world-control-dock').append(viewButton);
     const observer=new ResizeObserver(camera);observer.observe(viewport);signal?.addEventListener('abort',()=>observer.disconnect(),{once:true});
@@ -272,7 +297,7 @@ export function roomStage(room,source,{mini=false,avatarName,signal,inputRoot,tr
   const theme=themeFor(room);
   const world=worldFor(room);
   const scene=make('div',mini?'world-stage world-mini':'world-stage room-scene');
-  const hostModel=usesHostModel(room), host=hostModel&&!traveler, generated=generatedInterior(room), photo=hostModel||generated;
+  const hostModel=usesHostModel(room), generated=generatedInterior(room), photo=hostModel||generated;
   scene.dataset.layout=String(world.layout);
   scene.dataset.view=views[world.view];
   scene.dataset.material=['timber','stone','tile'][(world.seed>>>6)%3];
@@ -314,11 +339,11 @@ export function roomStage(room,source,{mini=false,avatarName,signal,inputRoot,tr
     (room.profile?.articles ?? []).find(article=>article.image);
   if(poster&&!mini&&!photo) scene.append(art(poster.image,'world-poster',poster.title));
   const placement=placements[world.layout] ?? placements[0];
-  const obstacles=[];
+  const obstacles=[...(room.obstacles??[])];
   if(!photo) theme.furniture.forEach((type,index)=>{
     const size=furnitureSizes[type];
     const [x,z]=placement[index];
-    obstacles.push({x,z,rx:size.rx,rz:size.rz});
+    obstacles.push([x-size.rx-.022,x+size.rx+.022,z-size.rz-.038,z+size.rz+.038]);
     const item=make('div',`world-furniture furniture-${type}`);
     item.style.setProperty('--prop-width',`${size.width}%`);
     item.style.setProperty('--prop-height',`${size.height}%`);
@@ -327,20 +352,27 @@ export function roomStage(room,source,{mini=false,avatarName,signal,inputRoot,tr
     scene.append(item);
   });
   const walker=make('div','world-resident');
-  if(room.design?.avatarMode==='profile'&&room.profile?.photo) walker.classList.add('portrait');
-  if(world.character) walker.classList.add('custom-walker');
-  const sprite=art(traveler?.source || (host?hostPortrait:source),'world-sprite',mini?'':(traveler?.name || (host?'無名S note':avatarName||'住人キャラクター')),mini);
-  sprite.addEventListener('error',()=>{
-    sprite.hidden=true;
-    if(!mini){const warning=make('span','avatar-unavailable');warning.textContent='アバター画像を読み込めませんでした';walker.append(warning);}
-  },{once:true});
-  walker.append(sprite);
-  const atlas=traveler ? traveler.atlas : usingAtlas(room);
-  const custom=traveler ? (traveler.custom ?? (traveler.atlas || traveler.source?.startsWith(TOWER_API) || traveler.source?.startsWith('data:'))) : room.design?.avatarMode==='custom';
-  const updateAvatar=host&&!mini ? hostWalker(sprite) : custom || atlas ? autoResidentWalker(sprite,{atlas:Boolean(atlas)}) : null;
+  let updateAvatar;
+  function setTraveler(actor) {
+    const isHost=hostModel&&!actor;
+    const atlas=actor?actor.atlas:usingAtlas(room);
+    const custom=actor?(actor.custom??(atlas||actor.source?.startsWith(TOWER_API)||actor.source?.startsWith('data:'))):room.design?.avatarMode==='custom';
+    walker.classList.toggle('portrait',actor?Boolean(actor.profile):room.design?.avatarMode==='profile'&&Boolean(room.profile?.photo));
+    walker.classList.toggle('custom-walker',actor?Boolean(custom):world.character);
+    const sprite=art(actor?.source||(isHost?hostPortrait:source),'world-sprite',mini?'':(actor?.name||(isHost?'無名S note':avatarName||'住人キャラクター')),mini);
+    sprite.addEventListener('error',()=>{
+      if(!walker.contains(sprite))return;
+      sprite.hidden=true;
+      if(!mini){const warning=make('span','avatar-unavailable');warning.textContent='アバター画像を読み込めませんでした';walker.append(warning);}
+    },{once:true});
+    walker.replaceChildren(sprite);
+    updateAvatar=isHost&&!mini?hostWalker(sprite):custom||atlas?autoResidentWalker(sprite,{atlas:Boolean(atlas)}):null;
+    updateAvatar?.(0,false);
+    walker.hidden=false;
+  }
+  setTraveler(traveler);
   scene.append(walker);
   if(mini) {
-    updateAvatar?.(0,false);
     scene.setAttribute('aria-hidden','true');
     walker.style.setProperty('--pace',`${5+world.seed%5}s`);
     walker.style.setProperty('--offset',`-${world.seed%7}s`);
@@ -357,9 +389,15 @@ export function roomStage(room,source,{mini=false,avatarName,signal,inputRoot,tr
   const text=make('span');
   text.textContent='床をタップ・方向パッド・矢印キー';
   hint.append(title,text);
-  const shared=Boolean(room.sharedSpace);
-  if(shared){const viewport=make('div','shared-viewport');viewport.append(scene);frame.append(viewport,dock);}
+  const facility=facilityFloors[room.sharedSpace]??registeredFloorFor(room);
+  const privateBounds=generated&&!facility?[.32,.68,.54,.91]:privateFloor;
+  if(facility){
+    const viewport=make('div',room.sharedSpace?'shared-viewport':'registered-viewport');
+    viewport.style.setProperty('--room-image-aspect',String(facility.aspect));
+    viewport.append(scene);frame.append(viewport,dock);
+  }
   else frame.append(scene,dock);
-  dock.append(hint,attachMotion(frame,scene,walker,obstacles,updateAvatar,signal,inputRoot,shared));
+  frame.setTraveler=setTraveler;
+  dock.append(hint,attachMotion(frame,scene,walker,obstacles,(...pose)=>updateAvatar?.(...pose),signal,inputRoot,facility,privateBounds));
   return frame;
 }

@@ -241,7 +241,6 @@ dialog::backdrop {background:#101414b5}
 .ride-outside .ride-photo {scale:1.22}
 .ride-outside .ride-avatar {opacity:0}
 .ride-wheel .ride-photo {object-position:50% 50%}
-.ride-carousel .ride-photo {object-position:94% 66%;transform-origin:90% 62%;scale:1.42}
 .ride-avatar {
   position:absolute;
   bottom:6px;
@@ -258,21 +257,22 @@ dialog::backdrop {background:#101414b5}
 .ride-horse {position:absolute;left:25%;top:7%;width:58%;height:90%;object-fit:contain;filter:drop-shadow(0 8px 8px #12191a8c);z-index:2}
 .ride-carousel .ride-photo {object-position:50% 55%;scale:1.1;filter:brightness(.75) blur(.5px);transform:none}
 .ride-carousel .ride-avatar {left:38%;top:3%;bottom:auto;width:35%;max-width:none;height:68%;z-index:3;object-position:50% 100%}
+.ride-carousel .ride-avatar[data-pose-art="original"] {z-index:1;top:0;height:82%}
 .ride-wheel .ride-avatar {left:18%;bottom:-13%;max-width:38%;height:76%;z-index:2}
 .gondola-seat {position:absolute;left:6%;right:6%;bottom:2%;height:15%;background:linear-gradient(#d6c6ad,#80694e);border:3px solid #5e503d;border-radius:10px;box-shadow:0 -3px 14px #1b25316e;z-index:1}
 .gondola-rail {position:absolute;left:0;right:0;top:0;bottom:0;border:13px solid #263e4b;border-radius:40% 40% 7% 7%;box-shadow:inset 0 0 0 2px #d4c8a8;z-index:4}
 .ride-wheel.riding .ride-photo {animation:gondola var(--ride-duration) ease-in-out both}
-.ride-wheel.riding .ride-carriage {animation:gondola-sway 5s ease-in-out infinite}
-.ride-carousel.riding .ride-photo {animation:carousel-pan var(--ride-duration) linear both}
-.ride-carousel.riding .ride-carriage {animation:horse-rise 2.8s ease-in-out infinite}
-@keyframes horse-rise {0%,100%{transform:translateY(3%)}50%{transform:translateY(-5%)}}
-@keyframes carousel-pan {0%{transform:scale(1.03) translateX(-3%)}50%{transform:scale(1.07) translateX(3%)}100%{transform:scale(1.03) translateX(-3%)}}
-@keyframes gondola-sway {0%,100%{transform:rotate(-.45deg)}50%{transform:rotate(.45deg)}}
+.ride-wheel.riding .ride-carriage {animation:gondola-sway calc(var(--ride-duration) / 2) ease-in-out 2}
+.ride-carousel.riding .ride-photo {animation:carousel-pan var(--ride-duration) ease-in-out both}
+.ride-carousel.riding .ride-carriage {animation:horse-rise calc(var(--ride-duration) / 3) ease-in-out 3}
+@keyframes horse-rise {0%,100%{transform:translateY(0)}50%{transform:translateY(-6%)}}
+@keyframes carousel-pan {0%,100%{transform:none}25%{transform:scale(1.035) translateX(2%)}75%{transform:scale(1.035) translateX(-2%)}}
+@keyframes gondola-sway {0%,100%{transform:rotate(0)}25%{transform:rotate(.55deg)}75%{transform:rotate(-.55deg)}}
 .ride-progress {display:none;position:absolute;inset:auto 0 0;height:3px;background:#f1c686;transform-origin:0 50%}
 .ride-window.riding .ride-progress {display:block;animation:ride-progress var(--ride-duration) linear both}
-@keyframes gondola {0%,100%{transform:scale(1.16) translateY(-5%)} 48%,58%{transform:scale(1.02) translateY(0)}}
-@keyframes carousel-view {from{transform:translateX(5%) rotate(-1deg)} to{transform:translateX(-9%) rotate(2deg)}}
-@keyframes carousel-rider {from{transform:translate(18%,0%) rotate(1deg)} to{transform:translate(-12%,-9%) rotate(-2deg)}}
+@keyframes gondola {0%,100%{transform:none}48%,58%{transform:scale(1.09) translateY(3%)}}
+.ride-window.ride-paused * {animation-play-state:paused!important}
+body[data-game-motion="reduced"] :is(.ride-window *, .passage, .mirror-reflections span) {animation:none!important;transition:none!important}
 @keyframes ride-progress {from{transform:scaleX(0)} to{transform:scaleX(1)}}
 .passage {position:fixed;inset:0;z-index:8;display:grid;place-items:center;background:radial-gradient(ellipse,#cbfff1,#465d6d 40%,#111a23 75%);color:#182c34;font-weight:700;animation:passage .5s ease-in both}
 @keyframes passage {from{opacity:0;clip-path:circle(8%)}to{opacity:1;clip-path:circle(94%)}}

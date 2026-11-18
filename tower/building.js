@@ -1,4 +1,4 @@
-import { roomStage } from './world.js?v=20261118-controls';
+import { roomStage } from './world.js?v=202611181820';
 
 function element(tag, css = '', title = '') {
   const item = document.createElement(tag);
@@ -18,18 +18,23 @@ export function cutaway(container, catalog, demo, {avatar, visit, enter, space})
   container.style.setProperty('--bays',String(roomsPerFloor));
   const building = element('div','sectioned-building');
   const roof = element('div','sectioned-roof');
+  roof.dataset.level = 'owner';
+  roof.dataset.stop = String(floors + 2);
+  roof.dataset.label = `${floors + 2}F 専用室`;
   const sign = element('span','roof-mark','ATELIER');
   const terrace = element('div','roof-terrace');
   for(let i=0;i<7;i++) terrace.append(element('i','roof-light'));
   const model = element('button','bay occupied viewing-room');
   model.type='button';
-  model.setAttribute('aria-label',space?'最上階のオーナーズ・アトリエを開く':'展望ラウンジの見学室を開く');
-  model.append(roomStage(demo,avatar(demo),{mini:true}),element('span','bay-address',space?`${floors+2}F オーナーズ・アトリエ`:'展望ラウンジ'));
+  model.setAttribute('aria-label',space?'最上階のオーナー専用室の入口へ':'展望ラウンジの見学室を開く');
+  model.append(roomStage(demo,avatar(demo),{mini:true}),element('span','bay-address',space?`${floors+2}F オーナー専用室`:'展望ラウンジ'));
   model.addEventListener('click',()=>space?space('owner'):visit(demo));
   roof.append(sign,model,terrace);
   building.append(roof);
-  function publicFloor(level,label,areas){
+  function publicFloor(level,stop,label,areas){
     const row=element('div','sectioned-floor public-floor');row.dataset.level=level;
+    row.dataset.stop=String(stop);
+    row.dataset.label=label;
     row.append(element('span','floor-marker',label));
     const bays=element('div','public-bays');
     for(const [id,title,image] of areas){
@@ -39,10 +44,12 @@ export function cutaway(container, catalog, demo, {avatar, visit, enter, space})
     }
     row.append(bays);return row;
   }
-  if(space)building.append(publicFloor('sky',`${floors+1}F`,[['sky','天空ラウンジ','sky-lounge']]));
+  if(space)building.append(publicFloor('sky',floors+1,`${floors+1}F 天空`,[['sky','天空ラウンジ','sky-lounge']]));
   for(let floor=floors;floor>=1;floor--){
     const row=element('div','sectioned-floor');
     row.dataset.level=String(floor);
+    row.dataset.stop=String(floor);
+    row.dataset.label=floor===1?'1F 住居':`${floor}F`;
     row.append(element('span','floor-marker',`${floor}F`));
     const bays=element('div','floor-bays');
     for(let unit=1;unit<=roomsPerFloor;unit++){
@@ -75,10 +82,11 @@ export function cutaway(container, catalog, demo, {avatar, visit, enter, space})
     building.append(row);
   }
   if(space){
-    building.append(publicFloor('lobby','1F 共用',[['lobby','エントランス・ラウンジ','entrance-lounge'],['concierge','管理人室','concierge']]));
-    building.append(publicFloor('parking','B1',[['parking','地下駐車場','garage']]));
-    building.append(publicFloor('boiler','B2',[['boiler','ボイラー・設備室','plant-room']]));
-    building.append(publicFloor('seismic','B3',[['seismic','免震構造・見学回廊','seismic-gallery']]));
+    building.append(publicFloor('lobby',1,'1F 共用',[['lobby','エントランス・ラウンジ','entrance-lounge'],['concierge','管理人室','concierge']]));
+    building.append(publicFloor('bicycle',0,'G',[['bicycle','駐輪コート','bicycle-court'],['motorcycle','バイク置き場','bicycle-court'],['parkingTower','立体駐車場','driveway'],['driveway','車寄せ','driveway']]));
+    building.append(publicFloor('parking',-1,'B1',[['parking','地下駐車場','garage']]));
+    building.append(publicFloor('boiler',-2,'B2',[['boiler','ボイラー・設備室','plant-room']]));
+    building.append(publicFloor('seismic',-3,'B3',[['seismic','免震構造・見学回廊','seismic-gallery']]));
   }
   building.append(element('div','sectioned-foundation'));
   container.replaceChildren(building);
@@ -109,7 +117,7 @@ export function makeElevator(dialog) {
   });
   function travel(floor,arrive) {
     if(ride) return;
-    if(reduce.matches||floor===current){ current=floor; arrive(); return; }
+    if(reduce.matches||document.body.dataset.gameMotion==='reduced'||floor===current){ current=floor; arrive(); return; }
     const from=current;
     const direction=Math.sign(floor-from);
     const distance=Math.abs(floor-from);

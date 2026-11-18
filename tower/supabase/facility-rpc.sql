@@ -1,4 +1,4 @@
--- Snapshot of the already-deployed facility query (2026-11-18).
+-- Public facility roster served through the Edge Function.
 -- Vehicle bytes remain server-side; only metadata enters the public directory.
 create or replace function public.creator_tower_facility_rpc(command text, input jsonb)
 returns jsonb
@@ -13,11 +13,12 @@ begin
     select jsonb_agg(jsonb_build_object(
       'id', r.id, 'slot', r.slot, 'noteId', r.note_id, 'name', r.profile->>'name',
       'engineer', coalesce((r.design->>'engineer')::boolean, false),
+      'manager', coalesce(r.design->'manager' = 'true'::jsonb, false),
       'transport', coalesce((select jsonb_object_agg(v.key, v.value - 'base64' - 'mime')
         from jsonb_each(coalesce(r.design->'transport', '{}'::jsonb)) v), '{}'::jsonb)
     ) order by r.slot)
     from creator_tower.rooms r
-    where r.design ? 'transport' or r.design->>'engineer' = 'true'
+    where r.design ? 'transport' or r.design->>'engineer' = 'true' or r.design->'manager' = 'true'::jsonb
   ), '[]'::jsonb));
 end;
 $$;

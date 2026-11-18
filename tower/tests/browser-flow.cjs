@@ -18,15 +18,19 @@ const spaces=['owner','sky','lobby','concierge','driveway','bicycle','parking','
   const page=await ctx.newPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));
   let room={id,slot:13,noteId:'creator_test',version:1,isOwner:true,avatarVersion:1,profile:{name:'Test creator',photo:'',description:'Test room',articles:[]},
    design:{title:'Original room',theme:'story',light:'natural',avatarMode:'custom',avatarName:'Test creator',pin:'',world:{seed:1,hue:35,accent:80,view:3,layout:2,lightness:50,atlas:true,character:true}}};
-  const writes=[];
-  await ctx.addInitScript(({id})=>localStorage.setItem('atelier-tower-owner-v1',JSON.stringify({id,noteId:'creator_test',key:'a'.repeat(64)})),{id});
+  const writes=[];let holdFacilities;
+  await ctx.addInitScript(({id})=>localStorage.setItem('atelier-tower-owner-v1',JSON.stringify({id,noteId:sessionStorage.getItem('fixture-noteId')||'creator_test',key:'a'.repeat(64)})),{id});
   await page.route('https://xxhaerjvrgmnadxjqetz.supabase.co/**',async route=>{
    const request=route.request(),url=new URL(request.url()),view=url.searchParams.get('view');
    const headers={'access-control-allow-origin':'*','content-type':'application/json'};
    if(view==='avatar')return route.fulfill({status:200,contentType:'image/webp',body:sheet,headers:{'access-control-allow-origin':'*'}});
    if(view==='vehicle')return route.fulfill({status:200,contentType:'image/webp',body:vehicle,headers:{'access-control-allow-origin':'*'}});
    if(view==='list')return route.fulfill({status:200,headers,body:JSON.stringify({floors:12,perFloor:12,rooms:[{id,slot:13,noteId:room.noteId,name:room.profile.name,title:room.design.title,theme:room.design.theme,avatarMode:'custom',world:room.design.world,avatarVersion:1}]})});
-   if(view==='facilities')return route.fulfill({status:200,headers,body:JSON.stringify({residents:[{id,slot:13,noteId:room.noteId,name:room.profile.name,transport:room.design.transport??{},engineer:room.design.engineer===true}]})});
+   if(view==='facilities'){
+    const snapshot=JSON.stringify({residents:[{id,slot:13,noteId:room.noteId,name:room.profile.name,transport:room.design.transport??{},engineer:room.design.engineer===true,manager:room.design.manager===true}]});
+    if(holdFacilities)await holdFacilities;
+    return route.fulfill({status:200,headers,body:snapshot});
+   }
    if(view==='room')return route.fulfill({status:200,headers,body:JSON.stringify(room)});
    if(request.method()==='POST'){
     const body=request.postDataJSON();writes.push(body);
@@ -36,7 +40,7 @@ const spaces=['owner','sky','lobby','concierge','driveway','bicycle','parking','
      if(body.clear)delete room.design.transport[body.space];else room.design.transport[body.space]={version:'b'.repeat(24),kind:{garage:'car',parkingTower:'car',motorcycle:'motorcycle',bicycle:'bicycle'}[body.space]};
      room.version++;
     }
-    if(body.action==='engineer'){assert.equal(body.version,room.version);room.design.engineer=body.join;room.version++;}
+    if(['engineer','manager'].includes(body.action)){assert.equal(body.version,room.version);room.design[body.action]=body.join;room.version++;}
     return route.fulfill({status:200,headers,body:JSON.stringify(room)});
    }
    await route.fulfill({status:400,headers,body:'{"error":"invalid"}'});
@@ -53,20 +57,82 @@ const spaces=['owner','sky','lobby','concierge','driveway','bicycle','parking','
     const labels={owner:'14F オーナーズ・アトリエ',sky:'13F 天空ラウンジ',concierge:'1F 管理人室',driveway:'G 車寄せ',bicycle:'G 駐輪コート',parking:'B1 地下駐車場',parkingTower:'G 立体駐車場',motorcycle:'G バイク置き場',boiler:'B2 ボイラー・設備室',seismic:'B3 免震構造・見学回廊'};
     await page.locator('#shared-nav').getByRole('button',{name:labels[space],exact:true}).click();
    }else await page.locator('#shared-nav').getByRole('button',{name:'1F エントランス・ラウンジ',exact:true}).click();
+   if(space==='owner'){
+    await page.locator('#shared-content .owner-door').waitFor();
+    assert.match(await page.locator('#shared-content').innerText(),/オーナー専用/);
+    assert.equal(await page.locator('#shared-content .shared-stage').count(),0);
+    assert.equal(await page.locator('#shared-details').getByRole('button',{name:'ここでイラスト・note記事をつくる'}).count(),0);
+    await page.getByRole('button',{name:'天空ラウンジへ戻る',exact:true}).click();
+    await page.waitForSelector('#shared-content [data-space="sky"]');passed++;continue;
+   }
    await page.waitForSelector(`#shared-content [data-space="${space}"]`);
    await page.waitForTimeout(80);
    assert.equal(await page.locator('#shared-content .suite-interior').evaluate(i=>i.complete&&i.naturalWidth>0),true,space+' backdrop');
    assert.equal(await page.locator('#shared-content .world-resident canvas:not([hidden])').count(),1,space+' one actor');
    const clipped=await page.locator('#shared-content .shared-viewport').evaluate(e=>{const b=e.getBoundingClientRect(),d=e.closest('dialog').getBoundingClientRect();return b.width>0&&b.height>0&&b.right<=d.right+1;});assert.ok(clipped,space+' viewport');
-   if(space==='concierge')assert.equal(await page.locator('.security-feed').count(),4);
+   if(space==='concierge'){
+    assert.equal(await page.locator('.security-feed').count(),4);
+    const physical=await page.locator('.concierge-wall-screens img').evaluateAll(async screens=>{
+     await Promise.all(screens.map(screen=>screen.decode()));
+     return screens.map(screen=>[screen.currentSrc,screen.naturalWidth,getComputedStyle(screen).clipPath]);
+    });
+    assert.equal(new Set(physical.map(([url])=>url)).size,4);
+    assert.ok(physical.every(([,width,edge])=>width>=800&&edge.startsWith('polygon(')));
+    assert.ok(await page.locator('.security-bank').evaluate(bank=>{
+     const r=bank.getBoundingClientRect(),viewport=bank.closest('.shared-viewport').getBoundingClientRect();
+     return r.width>100&&r.right<=viewport.right&&r.left>=viewport.left&&r.top>=viewport.top&&r.bottom<=viewport.bottom;
+    }),'four camera feeds completely visible');
+    await page.locator('.security-bank').click();
+    assert.equal(await page.locator('.camera-viewer[open] .security-feed').count(),4);
+    await page.locator('.camera-viewer button').click();
+    if(name==='phone'){
+     await page.getByRole('button',{name:'管理人になる',exact:true}).click();
+     await page.getByRole('button',{name:'管理人を辞める',exact:true}).waitFor();
+     assert.equal(room.design.manager,true);
+     await page.reload({waitUntil:'networkidle'});
+     await page.getByRole('button',{name:'管理人を辞める',exact:true}).click();
+     await page.getByRole('button',{name:'管理人になる',exact:true}).waitFor();
+     assert.equal(room.design.manager,false);
+    }
+   }
    if(['parking','parkingTower','bicycle','motorcycle'].includes(space)){
     assert.equal(await page.locator('.parking-bay').count(),12);
     assert.match(await page.locator('.parking-bay').first().textContent(),/201号室/);
     if(name==='phone'){
-     await page.locator('.vehicle-upload input[type="file"]').setInputFiles(root+'/tower/assets/prop-desk.webp');
+     // The broad flat backdrop and transparent window must both survive a vehicle upload.
+     let upload = root + '/tower/assets/prop-desk.webp';
+     if (space === 'parking') {
+      const source = await page.evaluate(() => {
+       const canvas = document.createElement('canvas');
+       canvas.width = 280; canvas.height = 160;
+       const paint = canvas.getContext('2d');
+       paint.fillStyle = '#f2d98b'; paint.fillRect(0, 0, 280, 160);
+       paint.fillStyle = '#18659a'; paint.fillRect(48, 50, 180, 62);
+       paint.clearRect(96, 62, 48, 28);
+       return canvas.toDataURL('image/png').split(',')[1];
+      });
+      upload = {name:'car-with-window.png', mimeType:'image/png', buffer:Buffer.from(source, 'base64')};
+     }
+     await page.locator('.vehicle-upload input[type="file"]').setInputFiles(upload);
      await page.locator('.vehicle-upload button[type="submit"]').click();
      await page.waitForFunction(()=>document.querySelector('#shared-status').textContent.includes('車両を保存しました'));
      assert.equal(await page.locator('.parking-bay img').count(),1);
+     if (space === 'parking') {
+      const stored = writes.filter(request => request.action === 'park').at(-1).imageB64;
+      assert.ok(Buffer.from(stored, 'base64').length <= 98_304);
+      const samples = await page.evaluate(async data => {
+       const image = new Image();
+       image.src = 'data:image/webp;base64,' + data;
+       await image.decode();
+       const canvas = document.createElement('canvas');
+       canvas.width = image.width; canvas.height = image.height;
+       const ctx = canvas.getContext('2d'); ctx.drawImage(image, 0, 0);
+       return {width:image.width, height:image.height, corner:[...ctx.getImageData(6, 6, 1, 1).data], windowAlpha:ctx.getImageData(114, 76, 1, 1).data[3]};
+      }, stored);
+      assert.deepEqual([samples.width, samples.height], [280, 160]);
+      assert.ok(samples.corner[0] > 220 && samples.corner[1] > 180 && samples.corner[3] === 255);
+      assert.equal(samples.windowAlpha, 0);
+     }
     }
    }
    if(space==='boiler'&&name==='phone'){
@@ -89,6 +155,39 @@ const spaces=['owner','sky','lobby','concierge','driveway','bicycle','parking','
   await page.getByRole('button',{name:'ここでイラスト・note記事をつくる',exact:true}).click();
   assert.equal(await page.locator('#spot-id').inputValue(),'creator_test');
   assert.match(await page.locator('#spot-text').inputValue(),/登録済みアバター画像URL/);
+  assert.match(await page.locator('#spot-text').inputValue(), /場所の背景資料：.*\.webp/);
+  if (name === 'phone') {
+   const panel = page.locator('#spot-quality');
+   await panel.locator('summary').click();
+   await panel.getByLabel('記事とサムネイルのタイトル').fill('夜景の向こうへ');
+   const results = panel.locator('.quality-file input[type=file]');
+   await results.nth(0).setInputFiles(root + '/tower/assets/gallery.webp');
+   await results.nth(1).setInputFiles(root + '/tower/assets/cinema.webp');
+   const cover = await page.evaluate(() => {
+    const canvas = document.createElement('canvas'); canvas.width = 1280; canvas.height = 650;
+    const paint = canvas.getContext('2d'); paint.fillStyle = '#163348'; paint.fillRect(0, 0, 1280, 650);
+    paint.fillStyle = '#c8e5ed'; paint.fillRect(140, 95, 650, 280);
+    return canvas.toDataURL('image/png').split(',')[1];
+   });
+   await results.nth(2).setInputFiles({name:'cover.png', mimeType:'image/png', buffer:Buffer.from(cover, 'base64')});
+   const approval = panel.locator('.quality-manual input').first();
+   await approval.check();
+   await page.locator('#spot-image').setInputFiles(root + '/tower/assets/prop-desk.webp');
+   assert.equal(await approval.isChecked(), false);
+   assert.doesNotMatch(await page.locator('#spot-text').inputValue(), /登録済みアバター画像URL/);
+   await page.locator('#spot-reset-reference').click();
+   assert.match(await page.locator('#spot-text').inputValue(), /登録済みアバター画像URL/);
+   await page.locator('#spot-id').fill('other_creator');
+   assert.doesNotMatch(await page.locator('#spot-text').inputValue(), /登録済みアバター画像URL/);
+   await page.locator('#spot-id').fill('bad/id');
+   await panel.getByRole('button', {name:'本文イラスト２だけ修正する'}).click();
+   assert.equal(await page.locator('#spot-id').getAttribute('aria-invalid'), 'true');
+   await page.locator('#spot-article').click();
+   assert.match(await page.locator('#spot-message').textContent(), /IDまたはプロフィール/);
+   await page.locator('#spot-id').fill('creator_test');
+   await page.locator('#spot-article').click();
+   assert.match(await page.locator('#spot-text').inputValue(), /確定した記事タイトル：夜景の向こうへ/);
+  }
   await page.locator('#spot-article').click();assert.match(await page.locator('#spot-text').inputValue(),/画像は再生成しない/);
   await page.locator('#spot-dialog form button').click();
   assert.ok(await page.locator('#shared-dialog').getAttribute('open')!==null);
@@ -100,6 +199,54 @@ const spaces=['owner','sky','lobby','concierge','driveway','bicycle','parking','
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
   assert.deepEqual(errors,[]);
   if(name==='phone'){
+   // Finish a directory request after the user walked, selected a different floor and picked an image.
+   let releaseFacilities;
+   holdFacilities=new Promise(resolve=>{releaseFacilities=resolve;});
+   await page.goto('http://127.0.0.1:4173/tower/?space=parking',{waitUntil:'domcontentloaded'});
+   const stage=page.locator('#shared-content .shared-stage');
+   await stage.waitFor();
+   if(!(await page.locator('#shared-details').isVisible()))await page.locator('#shared-info').click();
+   await page.locator('#shared-details select').first().selectOption('12');
+   await page.locator('.vehicle-upload input[type=file]').setInputFiles(root+'/tower/assets/prop-desk.webp');
+   await page.locator('#shared-controls [data-move="right"]').focus();
+   await page.keyboard.down('ArrowRight');await page.waitForTimeout(180);await page.keyboard.up('ArrowRight');
+   const walker=page.locator('#shared-content .world-resident');
+   await page.waitForTimeout(50);
+   const position=await walker.getAttribute('data-position'),stageHandle=await stage.elementHandle();
+   const read=page.waitForResponse(response=>new URL(response.url()).searchParams.get('view')==='facilities');
+   releaseFacilities();holdFacilities=null;await read;
+   await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+   assert.equal(await stageHandle.evaluate(node=>node.isConnected),true,'late data retains original scene');
+   assert.equal(await walker.getAttribute('data-position'),position,'late data retains walker');
+   assert.equal(await page.locator('#shared-details select').first().inputValue(),'12');
+   assert.equal(await page.locator('.vehicle-upload input[type=file]').evaluate(node=>node.files.length),1);
+   assert.match(await page.locator('.parking-bay').first().innerText(),/1201号室/);
+
+   // The stored note ID alone does not unlock the private suite.
+   await page.evaluate(()=>sessionStorage.setItem('fixture-noteId','ss_yr'));
+   await page.goto('http://127.0.0.1:4173/tower/?space=owner',{waitUntil:'networkidle'});
+   assert.match(await page.locator('.owner-door').innerText(),/鍵を確認できません/);
+   room.noteId='ss_yr';room.isOwner=false;
+   await page.reload({waitUntil:'networkidle'});
+   assert.equal(await page.locator('.owner-door').count(),1);
+   room.isOwner=true;
+   await page.reload({waitUntil:'networkidle'});
+   assert.equal(await page.locator('.shared-stage[data-space="owner"]').count(),1,'verified owner enters');
+   assert.equal(await page.locator('.owner-door').count(),0);
+   room.noteId='creator_test';
+   await page.evaluate(()=>sessionStorage.removeItem('fixture-noteId'));
+   await page.goto('http://127.0.0.1:4173/tower/?room=' + id);
+   await page.getByRole('button', {name:'部屋を改装',exact:true}).click();
+   const avatarPreview = page.locator('#avatar-preview');
+   assert.equal(await avatarPreview.isVisible(), true);
+   assert.match(await avatarPreview.getAttribute('alt'), /登録済みの歩行シート/);
+   assert.equal(await page.locator('#avatar-preview-note').isVisible(), true);
+   assert.equal(await avatarPreview.evaluate(async image => { await image.decode(); return image.naturalWidth > 0; }), true);
+   await page.locator('#save-room').click();
+   await page.waitForSelector('#edit-dialog', {state:'hidden'});
+   const renovation = writes.filter(request => request.action === 'save').at(-1);
+   assert.ok(renovation && !renovation.avatarB64 && !renovation.clearInterior);
+   assert.equal(renovation.design.world.atlas, true);
    for(const kind of ['carousel','wheel']){
     await page.goto(`http://127.0.0.1:4173/halloween-exhibition/preview/diorama-city/?area=canal&spot=fair.${kind}&resident=${id}`,{waitUntil:'networkidle'});
     await page.waitForSelector('#district[data-walker-state="ready"]');

@@ -4,7 +4,15 @@ import fs from 'node:fs/promises';
 import vm from 'node:vm';
 import * as model from '../model.js';
 import * as story from '../story.js';
-const html=await fs.readFile(new URL('../index.html',import.meta.url),'utf8');
+// DOM contract of the retained main.js reader, from its original HTML in 9f89ab7.
+// The public index.html and reading.html now bootstrap the separate journey-app.js.
+const legacyIds = [
+ 'contents-open','reading','chapter-label','story-title','chapter-heading','paragraphs','enter','read-next',
+ 'ending','restart','exploration','back-reading','walk-label','objective','sound','world','scene3d',
+ 'scene2d','goal-marker','loading','loading-copy','retry','fallback-read','walk-notice','pad','interact',
+ 'auto-walk','view-switch','distance','skip-scene','page-footer','save-status','event-dialog','event-image',
+ 'mask-shadow','event-title','event-text','event-next','return-note','contents','contents-close','contents-title','chapter-nav',
+];
 const code=(await fs.readFile(new URL('../main.js',import.meta.url),'utf8')).replace(/^import .*;\n/gm,'').replace("import('./town.js?v=1')","loadTown()");
 class Node {
  constructor(id=''){this.id=id;this.hidden=false;this.disabled=false;this.open=false;this.textContent='';this.dataset={};this.style={};this.children=[];this.listeners={};this.classList={add(){},remove(){}};}
@@ -15,7 +23,7 @@ class Node {
  querySelectorAll(){return this.children;}
 }
 function boot({search='',saved=null,rejectLoad=false}={}){
- const nodes=new Map([...html.matchAll(/id="([^"]+)"/g)].map(m=>[m[1],new Node(m[1])]));
+ const nodes=new Map(legacyIds.map(id=>[id,new Node(id)]));
  for(const [dx,dz]of [[0,-1],[-1,0],[1,0],[0,1]]){const b=new Node();b.dataset={dx,dz};nodes.get('pad').append(b);}
  const intro=new Node(),actions=new Node(),writes=[];let options,paused=true,entered=0;
  const engine={pause(){paused=true;},resume(){paused=false;},enter(){entered++;paused=false;return Promise.resolve();},stop(){},resize(){},setMuted(){},destroy(){},toggleAuto(){return true;},switchView(){return Promise.resolve();},capture(){return 'data:image/jpeg;base64,eA==';},direction(){}};

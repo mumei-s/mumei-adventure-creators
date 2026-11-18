@@ -57,3 +57,37 @@
 .shared-dialog[data-camera="overview"] .shared-camera{font-size:10px;min-height:32px}
 @media(max-width:640px){.shared-dialog .dialog-bar{padding:3px 4px;gap:2px}.shared-dialog .dialog-bar .quiet{font-size:9px;padding:3px 4px}.shared-dialog h2{font-size:10px}.shared-dialog[data-camera="overview"]{width:calc(100vw - 4px)}}
 @media(orientation:landscape) and (max-height:540px){.shared-dialog[data-info="closed"][open]{grid-template-rows:auto minmax(0,1fr)}.shared-dialog[data-info="closed"] #shared-controls{grid-row:2}.shared-dialog[data-camera="overview"] .shared-viewport{height:calc(100dvh - 65px);max-height:none;aspect-ratio:auto}.shared-dialog[data-camera="overview"] .shared-scroll{grid-column:1}.shared-dialog[data-camera="overview"] #shared-controls .world-control-hint{display:none}}
+
+.guest-links{display:flex;align-items:center;flex-wrap:wrap;gap:6px;max-width:100%}
+.guest-links:empty{display:none}
+.guest-links p{flex-basis:100%;font-size:11px;margin:0}
+.guest-links button{max-width:100%;overflow-wrap:anywhere}
+.shared-nav-button[aria-current=location]{border-color:#dcc29a;background:#32444f}
+.owner-door{padding:14px 8px 18px;text-align:center}
+.owner-door p{margin:0 0 10px;font-size:14px}
+.parking-bay strong{font-variant-numeric:tabular-nums;line-height:1.35}
+.vehicle-upload label{max-width:100%;min-width:0}
+.shared-viewport>button.security-bank{inset:6px 6px auto auto;width:clamp(110px,23%,188px);height:auto;aspect-ratio:1.8;max-height:42%;padding:3px;border:1px solid #6e877b;gap:2px;border-radius:3px;transform:none;cursor:zoom-in;z-index:4}
+.security-bank:focus-visible{outline:2px solid #f2dbb7}
+.security-bank .security-feed span,.security-bank .security-feed time{font-size:clamp(5px,.75vw,9px)}
+.camera-viewer .security-feed img{animation:none}
+.camera-viewer{width:min(860px,calc(100vw - 16px));max-height:calc(100dvh - 16px);box-sizing:border-box;overflow:auto;padding:10px;border:1px solid #8d9a92;border-radius:5px;background:#101a21;color:#f0e8da}
+.camera-viewer::backdrop{background:#03070ddc}
+.camera-viewer>.button{font-size:12px;min-height:40px;margin-bottom:8px}
+.camera-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.camera-grid .security-feed{display:block;aspect-ratio:1.5;min-width:0}
+.camera-grid .security-feed span,.camera-grid .security-feed time{left:4px;padding:2px 3px;background:#101d20d9;font:11px/1.25 system-ui,sans-serif}
+
+.vehicle-slot-label{flex-basis:100%;font-size:12px;color:#f5dbad}
+
+.bay-view{max-width:100%;min-height:34px;border:1px solid #728389;border-radius:3px;background:#192830;color:#f3e7d3;font:11px/1.35 system-ui,sans-serif;cursor:pointer}
+.bay-view[aria-pressed=true]{background:#36494e;border-color:#baa582}
+
+/* Active glass only, leaving the photographed bezels, seams and counter exposed. */
+.concierge-wall-screens{position:absolute;inset:0;z-index:2;pointer-events:none}
+.concierge-wall-screens img{position:absolute;object-fit:cover;filter:brightness(.72) saturate(.8);opacity:.93}
+.concierge-wall-screens img:nth-child(1){left:58.1%;top:18.6%;width:11.55%;height:10%;clip-path:polygon(0 10%,100% 0,100% 92%,0 100%)}
+.concierge-wall-screens img:nth-child(2){left:70.9%;top:17.18%;width:11.9%;height:10.55%;clip-path:polygon(0 12%,100% 0,100% 94%,0 100%)}
+.concierge-wall-screens img:nth-child(3){left:58.1%;top:29.25%;width:11.55%;height:9.7%;clip-path:polygon(0 7%,100% 0,100% 99%,0 100%)}
+.concierge-wall-screens img:nth-child(4){left:70.9%;top:28.55%;width:11.9%;height:10.25%;clip-path:polygon(0 6%,100% 0,100% 100%,0 100%)}
+body[data-game-motion=reduced] .security-bank .security-feed img{animation:none}

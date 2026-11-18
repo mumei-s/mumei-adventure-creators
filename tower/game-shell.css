@@ -31,7 +31,6 @@ body[data-game-page=tower][data-layout=phone] .hero h1{font-size:32px}
 body[data-game-page=tower][data-layout=phone] .hero-visual{min-height:240px}
 body[data-game-page=tower][data-layout=phone] .header-inner{gap:8px;flex-wrap:wrap;padding-block:9px;min-height:60px}
 body[data-game-page=tower][data-layout=phone] .header-inner nav{gap:10px;flex-wrap:wrap}
-body[data-game-page=tower][data-layout=phone] .directory-grid{grid-template-columns:90px minmax(0,1fr)}
 body[data-game-page=city] #district{width:min(100%,var(--game-content-width,1540px))}
 body[data-game-page=city] .control-bar .walk-pad{--pad-width:var(--game-pad-size)}
 body[data-game-page=city][data-layout=phone] .bar{gap:6px}

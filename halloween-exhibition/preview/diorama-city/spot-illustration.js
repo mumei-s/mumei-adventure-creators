@@ -1,13 +1,9 @@
-import { chatgptAppLink, hostNoteUrl, parseNoteId, towerUrl, insightUrl, articleCardBlock, articleCoverInstructions, articleVoiceInstructions, cardPasteInstructions, bindCardButtons, makeArtifactPrompt } from '../../../tower/prompt-play.js?v=202611181359';
-import { bindQualityAssist } from '../../../tower/quality-assist.js?v=202611180955';
+import { chatgptAppLink, hostNoteUrl, parseNoteId, towerUrl, insightUrl, articleCardBlock, articleCoverInstructions, articleVoiceInstructions, cardPasteInstructions, bindCardButtons, makeArtifactPrompt, creatorReference, characterReferenceInstructions, characterArtInstructions, settingInstructions } from '../../../tower/prompt-play.js?v=202611181820';
+import { bindQualityAssist } from '../../../tower/quality-assist.js?v=202611181820';
 
-export function spotReferenceInstructions({ referenceMode, referenceUrl } = {}) {
-  if (referenceMode === 'registered' && referenceUrl) return '登録済みアバター画像URL：'+referenceUrl+'\n新規添付は原則不要です。このURLの画像を実際に閲覧できる場合のみ同じキャラクターを使用してください。URLを開けない、または画像を確認できない場合だけ、元のキャラ画像１枚の添付を依頼してください。IDは再質問しないでください。';
-  if (referenceMode === 'local') return '登録済みアバター（端末内）：同じChatGPTチャットで既に参照した本人のキャラクター画像があれば再添付不要です。別チャットなど画像が確認できない場合だけ、サイトの参照画像保存ボタンから画像を取得して添付してください。';
-  return 'キャラクターを変更する場合、今回添付する新しい画像を最優先してください。以前の画像より今回の添付を優先し、画像がない場合だけ添付を依頼してください。';
-}
+export { characterReferenceInstructions as spotReferenceInstructions };
 
-export function makeSpotPrompt({ label, scene, href, id, referenceMode, referenceUrl }) {
+export function makeSpotPrompt({ label, scene, href, id, referenceMode, referenceUrl, backgroundUrl }) {
   const profile = id ? `公開プロフィール： https://note.com/${id}\n` : '';
   const room = new URL(towerUrl);
   if (id) room.searchParams.set('creator', id);
@@ -15,12 +11,14 @@ export function makeSpotPrompt({ label, scene, href, id, referenceMode, referenc
   return `【#無名Sプロンプト｜${label}で過ごす一日】
 
 noteクリエイターID：${id ? '@' + id : '［自分のID］'}
-${profile}${spotReferenceInstructions({referenceMode,referenceUrl})}
+${profile}${characterReferenceInstructions({referenceMode,referenceUrl})}
 
 【描く場面】
 ${scene}
+${settingInstructions(backgroundUrl)}
 
-確認できた登録済みまたは今回添付したキャラクターを主人公に、この場所で過ごす２つの異なる瞬間を、画像生成機能で横3対2の別々の完成イラスト２枚として描き、このチャットに表示してください。１枚目は場所・空気感・人物の全体が伝わるシーン、２枚目はその後の別の行動や表情、別のカメラ角度のシーンです。同じ構図の色違い、コラージュ、分割画像は禁止。添付画像の顔立ち、髪型、服、アクセサリーと、写真調・アニメ調など元の画風を受け継いでください。歩行シートを添付した場合は同じキャラクター1人を描きます。街の遠近感と、人物・家具・遊具の大きさをそろえ、足や手が触れる位置に気を配ってください。画像には文字・枠・ゲームの操作ボタンを入れません。
+確認できた登録済みまたは今回添付したキャラクターを主人公に、この場所で過ごす２つの異なる瞬間を、画像生成機能で横3対2の別々の完成イラスト２枚として描き、このチャットに表示してください。１枚目では、広めの構図で場所の特徴と人物の全身、足を置いた床を見せてください。２枚目では続いて起きた行動に近づき、１枚目と異なる角度から視線や手と物の接点を描いてください。足の接地・影の方向、指と持ち手の重なり、人物と家具や遊具の縮尺を場面ごとに見直してください。２枚を同じ絵の色違いやコラージュにせず、それぞれ文字・操作ボタンのない完成画像にしてください。
+${characterArtInstructions}
 公開プロフィールを読める場合は、公開作品のモチーフを背景や小物に取り入れてください。読めなくても添付と場面指定で制作を続けてください。IDが記載されていれば再質問しないでください。キャラ画像は確認できない場合だけ聞いてください。
 
 【そのまま貼れるnote参加記事】
@@ -52,52 +50,88 @@ export function bindSpotIllustration(dialog) {
     app.target = '_blank';
     app.rel = 'noopener';
   }
-  let current, objectUrl, targeted = false;
-  const refState=dialog.querySelector('#spot-reference-status');
-  const refLabel=dialog.querySelector('#spot-reference-label');
-  const saveRef=dialog.querySelector('#spot-save-reference');
-  const resetRef=dialog.querySelector('#spot-reset-reference');
-  const articleButton=dialog.querySelector('#spot-article');
-  const reference=()=> {
-    if(fileField.files?.length) return {referenceMode:'attachment'};
-    if(!current?.avatarSource || parseNoteId(field.value)!==current.id) return {referenceMode:'attachment'};
-    return current.avatarSource.startsWith('https://') ? {referenceMode:'registered',referenceUrl:current.avatarSource} : {referenceMode:'local'};
-  };
+  const refState = dialog.querySelector('#spot-reference-status');
+  const refLabel = dialog.querySelector('#spot-reference-label');
+  const saveRef = dialog.querySelector('#spot-save-reference');
+  const resetRef = dialog.querySelector('#spot-reset-reference');
+  const restorePrompt = dialog.querySelector('#spot-main-prompt');
+  let current, objectUrl, attachmentCreator, reviewedCreator, referenceRevision = 0;
+
+  function savedReference() {
+    return creatorReference(parseNoteId(field.value), current?.id, current?.avatarSource);
+  }
+  function reference() {
+    return objectUrl ? { referenceMode: 'attachment' } : savedReference();
+  }
+  function clearAttachment() {
+    if (objectUrl) URL.revokeObjectURL(objectUrl);
+    objectUrl = '';
+    attachmentCreator = null;
+    fileField.value = '';
+  }
+  function validCreator() {
+    const invalid = Boolean(field.value.trim()) && !parseNoteId(field.value);
+    field.setAttribute('aria-invalid', String(invalid));
+    if (invalid) {
+      message.textContent = 'noteのIDまたはプロフィールのURLを確認してください。';
+      field.focus();
+    }
+    return !invalid;
+  }
+  async function copyPrompt(success) {
+    try {
+      await navigator.clipboard.writeText(text.value);
+      message.textContent = success;
+    } catch {
+      dialog.querySelector('.spot-preview').open = true;
+      text.focus();
+      text.select();
+      message.textContent = '選択したプロンプトをコピーしてください。';
+    }
+  }
+  function render() {
+    const id = parseNoteId(field.value);
+    field.setAttribute('aria-invalid', String(Boolean(field.value.trim()) && !id));
+    const ref = reference();
+    const saved = ref.referenceMode !== 'attachment';
+    text.value = makeSpotPrompt({ ...current, id, ...ref });
+    copy.textContent = 'イラスト作成プロンプトをコピー';
+    restorePrompt.hidden = true;
+    if (saved) {
+      const where = ref.referenceMode === 'registered' ? '画像URLもプロンプトに入ります。' : '同じChatGPTチャットで参照済みなら、添付は不要です。';
+      refState.textContent = '@' + id + ' の登録画像を使います。' + where + ' ChatGPTで絵が見られないときは保存して添付してください。';
+    } else {
+      refState.textContent = objectUrl ? '今回選んだキャラ画像を、ChatGPTにも添付してください。' :
+        '使うキャラ画像をChatGPTに添付してください。同じチャットにある本人の絵も使えます。';
+    }
+    refLabel.textContent = saved ? '別のイラストに変更する場合だけ画像を添付（任意）' : 'キャラクターの参照画像';
+    saveRef.hidden = !saved;
+    resetRef.hidden = !objectUrl;
+    resetRef.textContent = savedReference().referenceMode === 'attachment' ? '選んだ画像を外す' : '登録済み画像に戻す';
+    const source = objectUrl || (saved ? current.avatarSource : '');
+    if (source) preview.src = source;
+    else preview.removeAttribute('src');
+    preview.hidden = !source;
+  }
+  function copyArtifact(kind, articleTitle, reason) {
+    if (!validCreator()) return;
+    text.value = makeArtifactPrompt({ kind, title: articleTitle, reason, id: parseNoteId(field.value),
+      scene: current.scene, href: current.href, reference: reference(), backgroundUrl: current.backgroundUrl });
+    restorePrompt.hidden = false;
+    copy.textContent = kind === 'article' ? '記事用プロンプトをコピー' : '選んだ作品の修正プロンプトをコピー';
+    return copyPrompt(kind === 'article' ? '記事用プロンプトをコピーしました。イラストを作った同じチャットに貼り付けてください。' :
+      '選んだ作品だけの修正プロンプトをコピーしました。');
+  }
   const quality = bindQualityAssist(dialog.querySelector('#spot-quality'), {
     mode: 'spot',
     getContext: () => ({ urls: [hostNoteUrl, current?.href, towerUrl + '#prompt-play', insightUrl].filter(Boolean),
-      creator: parseNoteId(field.value), scene: current?.scene, occupied: current?.occupied === true }),
-    repair: async (kind, articleTitle, reason) => {
-      targeted = true;
-      text.value = makeArtifactPrompt({ kind, title: articleTitle, reason, id: parseNoteId(field.value),
-        scene: current?.scene, href: current?.href }) + (kind==='article' ? '\n同じチャットで作った画像をもとに記事のみ作成する。画像を読めない場合のみ本文画像を添付してもらう。' : '\n'+spotReferenceInstructions(reference()));
-      try {
-        await navigator.clipboard.writeText(text.value);
-        message.textContent = '指定した成果物だけのプロンプトをコピーしました。';
-      } catch {
-        dialog.querySelector('.spot-preview').open = true;
-        text.focus();
-        text.select();
-        message.textContent = '選択したプロンプトをコピーしてください。';
-      }
-    },
+      creator: parseNoteId(field.value), scene: current?.scene, backgroundUrl: current?.backgroundUrl,
+      referenceKey: objectUrl || referenceRevision, occupied: current?.occupied === true && parseNoteId(field.value) === current.id }),
+    repair: copyArtifact,
   });
-  bindCardButtons(dialog.querySelector('#spot-card-actions'), [['企画主',hostNoteUrl],['この場所',()=>current?.href],['部屋づくり',towerUrl+'#prompt-play'],['INSIGHT',insightUrl]], message);
-  const render = () => {
-    targeted = false;
-    const id = parseNoteId(field.value);
-    field.setAttribute('aria-invalid', String(Boolean(field.value.trim()) && !id));
-    const ref=reference();
-    text.value = makeSpotPrompt({ ...current, id, ...ref });
-    const saved=ref.referenceMode!=='attachment';
-    refState.textContent=saved ? '登録済み：@'+id+' のアバターを使用します。IDの再入力は不要です。'+(ref.referenceMode==='registered'?' 画像URLをプロンプトへ引き継ぎます。ChatGPTで画像を読めない場合だけ添付してください。':' 同じChatGPTチャットで参照済みなら添付不要。別チャットで画像が読めない場合は保存して添付してください。') : fileField.files?.length ? '今回添付したキャラクターを使用します。ChatGPTにも同じ画像を添付してください。' : '登録済みの参照画像がありません。note IDを入力し、ChatGPTへ自分のキャラ画像を添付してください。';
-    refLabel.textContent=saved?'別のイラストに変更する場合だけ画像を添付（任意）':'キャラクターの参照画像';
-    saveRef.hidden=!saved;
-    resetRef.hidden=!fileField.files?.length;
-    if(!objectUrl){ if(saved)preview.src=current.avatarSource;else preview.removeAttribute('src'); preview.hidden=!saved; }
-  };
-
+  bindCardButtons(dialog.querySelector('#spot-card-actions'), [['企画主', hostNoteUrl], ['この場所', () => current?.href], ['部屋づくり', towerUrl + '#prompt-play'], ['INSIGHT', insightUrl]], message);
   field.addEventListener('input', () => {
+    if (attachmentCreator && parseNoteId(field.value) !== attachmentCreator) clearAttachment();
     render();
     quality.refresh();
     message.textContent = '';
@@ -106,61 +140,87 @@ export function bindSpotIllustration(dialog) {
     if (objectUrl) URL.revokeObjectURL(objectUrl);
     const file = fileField.files[0];
     objectUrl = file ? URL.createObjectURL(file) : '';
-    if (objectUrl) preview.src = objectUrl;
-    else preview.removeAttribute('src');
-    preview.hidden = !objectUrl;
-    render(); quality.refresh();
+    attachmentCreator = file ? parseNoteId(field.value) : null;
+    render();
+    quality.refresh();
+    message.textContent = '';
   });
-  resetRef.addEventListener('click',()=>{fileField.value='';fileField.dispatchEvent(new Event('change'));});
-  saveRef.addEventListener('click',async()=>{
-    if(reference().referenceMode==='attachment')return;
-    try{
-      const response=await fetch(current.avatarSource);if(!response.ok)throw Error('reference');
-      const blob=await response.blob();if(!blob.type.startsWith('image/'))throw Error('reference');
-      const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='atelier-avatar.'+(blob.type.split('/')[1]||'png').replace('jpeg','jpg');a.click();setTimeout(()=>URL.revokeObjectURL(url),30000);
-      message.textContent='参照画像を保存しました。必要な場合だけChatGPTに添付してください。';
-    }catch{message.textContent='画像を保存できませんでした。元の登録画像を添付してください。';}
+  field.addEventListener('change', () => {
+    const id = parseNoteId(field.value);
+    if (!id) return;
+    if (reviewedCreator && reviewedCreator !== id) quality.reset();
+    reviewedCreator = id;
+    if (objectUrl && !attachmentCreator) attachmentCreator = id;
+    quality.refresh();
   });
-  articleButton.addEventListener('click',async()=>{
-    targeted=true;
-    text.value=makeArtifactPrompt({kind:'article',id:parseNoteId(field.value),scene:current?.scene,href:current?.href})+'\n同じチャットで完成した今回のイラストと専用サムネイルを使って、記事にしてください。画像は再生成しない。記事タイトルは既に生成したサムネイルの文字と一致させる。画像が見られない場合のみ本文画像の添付を依頼する。';
-    try{await navigator.clipboard.writeText(text.value);message.textContent='記事用プロンプトをコピーしました。イラストを作った同じChatGPTチャットに貼り付けてください。';}
-    catch{dialog.querySelector('.spot-preview').open=true;text.focus();text.select();message.textContent='記事用プロンプトを選択しました。コピーして同じチャットへ。';}
+  resetRef.addEventListener('click', () => {
+    clearAttachment();
+    render();
+    quality.refresh();
+    message.textContent = '';
   });
+  saveRef.addEventListener('click', async () => {
+    if (reference().referenceMode === 'attachment') return;
+    const source = current.avatarSource, creator = current.id;
+    try {
+      if (reference().referenceMode === 'local') {
+        const download = document.createElement('a');
+        download.href = source;
+        download.download = creator + '-avatar.' + (source.match(/^data:image\/([a-z]+)/i)?.[1]?.replace('jpeg', 'jpg') || 'png');
+        download.click();
+        message.textContent = '保存した画像をChatGPTに添付できます。';
+        return;
+      }
+      const response = await fetch(source);
+      if (!response.ok) throw Error();
+      const blob = await response.blob();
+      if (!blob.type.startsWith('image/')) throw Error();
+      if (current.avatarSource !== source || parseNoteId(field.value) !== creator) return;
+      const url = URL.createObjectURL(blob);
+      const download = document.createElement('a');
+      download.href = url;
+      download.download = creator + '-avatar.' + blob.type.split('/')[1].replace('jpeg', 'jpg');
+      download.click();
+      setTimeout(() => URL.revokeObjectURL(url), 30000);
+      message.textContent = '参照画像を保存しました。必要な場合だけChatGPTに添付してください。';
+    } catch {
+      if (current.avatarSource !== source || parseNoteId(field.value) !== creator) return;
+      const original = document.createElement('a');
+      original.href = source;
+      original.textContent = '登録画像を開く';
+      original.target = '_blank';
+      original.rel = 'noopener noreferrer';
+      message.replaceChildren('画像を別画面で開き、長押しまたは右クリックで保存できます。 ', original);
+    }
+  });
+  dialog.querySelector('#spot-article').addEventListener('click', () => copyArtifact('article', quality.articleTitle));
   preview.addEventListener('error', () => {
     preview.hidden = true;
-    message.textContent = '画像を開けませんでした。PNG・JPEG・WebP・GIFを選んでください。';
+    message.textContent = '画像を開けませんでした。元のキャラ画像を選び直してください。';
   });
-  dialog.querySelector('#spot-main-prompt').addEventListener('click',render);
-  copy.addEventListener('click', async () => {
-    if (field.getAttribute('aria-invalid') === 'true') {
-      message.textContent = 'noteのIDまたはプロフィールのURLを確認してください。';
-      field.focus();
-      return;
-    }
-    try {
-      await navigator.clipboard.writeText(text.value);
-      message.textContent = targeted ? '不足分だけのプロンプトをコピーしました。' :
-        'コピーしました。'+(reference().referenceMode==='attachment'?'キャラ画像をChatGPTにも添付してください。':'同じキャラを利用します。')+' 画像ができたら「記事にする」または下の「note記事を作る」を使えます。';
-    } catch {
-      dialog.querySelector('.spot-preview').open = true;
-      text.focus();
-      text.select();
-      message.textContent = '選択したプロンプトをコピーしてください。';
-    }
+  restorePrompt.addEventListener('click', () => { render(); message.textContent = ''; });
+  copy.addEventListener('click', () => {
+    if (validCreator()) void copyPrompt(restorePrompt.hidden ?
+      'イラスト用プロンプトをコピーしました。画像ができたら同じチャットで「記事にする」と送れます。' :
+      '表示中のプロンプトをコピーしました。同じChatGPTチャットで使ってください。');
   });
   window.addEventListener('pagehide', ({ persisted }) => {
     if (objectUrl && !persisted) URL.revokeObjectURL(objectUrl);
   });
   return spot => {
-    if(current?.href!==spot.href || current?.id!==spot.id){
-      if(objectUrl)URL.revokeObjectURL(objectUrl);objectUrl='';fileField.value='';quality.reset();
+    const changedCreator = current?.id !== spot.id;
+    if (!current || changedCreator || current.avatarSource !== spot.avatarSource) referenceRevision++;
+    if (!current || changedCreator || current.href !== spot.href) {
+      clearAttachment();
+      quality.reset();
+    }
+    if (!current || changedCreator) {
+      field.value = spot.id || '';
+      reviewedCreator = parseNoteId(field.value);
     }
     current = spot;
     title.textContent = `${spot.label}でイラストをつくる`;
     summary.textContent = spot.scene;
-    if (spot.id) field.value = spot.id;
-    else if (!field.value) field.value = '';
     message.textContent = '';
     render();
     quality.refresh();

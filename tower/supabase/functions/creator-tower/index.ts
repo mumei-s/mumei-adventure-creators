@@ -11,7 +11,7 @@ const MAX_INTERIOR = 245_760;
 const MAX_VEHICLE = 98_304;
 const PARKING_SPACES: Record<string, string> = { garage: 'car', parkingTower: 'car', bicycle: 'bicycle', motorcycle: 'motorcycle' };
 const THEMES = ["reading", "gallery", "cinema", "story"];
-const IP_LIMITS: Record<string, number> = { begin: 10, confirm: 14, save: 12, stamp: 40, leave: 8, park: 16, engineer: 8 };
+const IP_LIMITS: Record<string, number> = { begin: 10, confirm: 14, save: 12, stamp: 40, leave: 8, park: 16, engineer: 8, manager: 8 };
 const ERROR_STATUS: Record<string, number> = {
   invalid: 400, bad_image: 400, bad_sheet: 400, big_image: 413, avatar_required: 400, owner_required: 403,
   missing: 404, note_missing: 404, invalid_note: 400, proof_missing: 422,
@@ -373,7 +373,7 @@ async function mutate(request: Request) {
     if (body.kind !== null && !["read", "hello", "inspired"].includes(body.kind)) return fail("invalid");
     return rpc("stamp", { id, hash: owner, kind: body.kind });
   }
-  if (action === "park" || action === "engineer") {
+  if (action === "park" || action === "engineer" || action === "manager") {
     const current = await rpc("owner", { id, hash: owner });
     if (!Number.isSafeInteger(body.version) || body.version !== current.version) return fail("conflict");
     const design = { ...current.design };
@@ -392,7 +392,7 @@ async function mutate(request: Request) {
     } else {
       if (typeof body.join !== "boolean") return fail("invalid");
       // A public creative role only; this never grants database or management access.
-      design.engineer = body.join;
+      design[action] = body.join;
     }
     return rpc("save", { id, hash: owner, version: current.version, design });
   }
@@ -408,7 +408,8 @@ async function mutate(request: Request) {
     const validated = validateDesign(body.design, profile);
     const design = { world: current.design.world, ...validated,
       ...(current.design.transport ? { transport: current.design.transport } : {}),
-      ...(current.design.engineer !== undefined ? { engineer: current.design.engineer } : {}) };
+      ...(current.design.engineer !== undefined ? { engineer: current.design.engineer } : {}),
+      ...(current.design.manager !== undefined ? { manager: current.design.manager } : {}) };
     const media = await roomMedia(design, body, current.design);
     return rpc("save", { id, hash: owner, version: body.version, ...media,
       ...(body.refresh === true ? { profile } : {}) });

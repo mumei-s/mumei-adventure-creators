@@ -11,13 +11,28 @@ test('private previews, query credentials, profiles and foreign hosts rejected',
 test('all scenes have honest null unconfigured return, never local manuscript',()=>{for(const n of [1,2,3]){assert.equal(data.returnTarget(n,''),null);assert.equal(data.returnTarget(n,'?return='+encodeURIComponent(valid)),valid);}});
 const source=fs.readFileSync(new URL('../journey-app.js',import.meta.url),'utf8').replace(/^import .*;\n/gm,'').replace("import('./town.js?v=20261031-performance-1')","loadTownStub()");
 function boot(search,{town,referrer='',historyLength=1,opener=null,backThrows=false,closeThrows=false,assignThrows=false,prepare=prepareIllustration}={}){
- const nodes=new Map(); const events={};const assigned=[],timers=[];let backs=0,closes=0;
+ const nodes=new Map(); const events={};const assigned=[],timers=[];let backs=0,closes=0,townRequests=0;
  function node(id){if(!nodes.has(id))nodes.set(id,{hidden:false,disabled:false,textContent:'',innerHTML:'',classList:{add(){},remove(){},toggle(){}},closest(){return node('figure')},querySelector(selector){if(selector==='img')return node('image-placeholder');if(selector==='.image-fallback')return node('caption');if(selector==='.image-retry')return node('retry');return {focus(){}}},querySelectorAll(){return []},scrollIntoView(){}});return nodes.get(id);}
- const document={referrer,body:node('body'),getElementById:node,addEventListener(){},hidden:false};const window={opener,close(){closes++;if(closeThrows)throw Error('blocked');},addEventListener(k,f){events[k]=f}};
- const location={search,href:'https://example.test/?'+search,assign:x=>{if(assignThrows)throw Error("blocked");assigned.push(x)}};
- const context=vm.createContext({...data,...returnNavigation,prepareIllustration:prepare,history:{length:historyLength,back(){backs++;if(backThrows)throw Error('blocked');}},document,window,location,URL,URLSearchParams,console:{error(){}},setTimeout(fn,ms){const timer={fn,ms,cleared:false};timers.push(timer);return timer;},clearTimeout(timer){if(timer)timer.cleared=true;},COPY_VERSION:'test',loadTownStub:()=>town||Promise.reject(Error('offline'))}); vm.runInContext(source,context);return {node,assigned,events,window,backs:()=>backs,closes:()=>closes,fireTimer(ms){const timer=timers.findLast(t=>t.ms===ms&&!t.cleared);assert.ok(timer);timer.fn();}};
+ const document={referrer,body:node('body'),getElementById:node,querySelector:node,addEventListener(){},hidden:false};const window={opener,close(){closes++;if(closeThrows)throw Error('blocked');},addEventListener(k,f){events[k]=f}};
+ const location={search,hash:'',href:'https://example.test/?'+search,assign:x=>{if(assignThrows)throw Error("blocked");assigned.push(x)}};
+ const context=vm.createContext({...data,...returnNavigation,prepareIllustration:prepare,history:{length:historyLength,back(){backs++;if(backThrows)throw Error('blocked');}},document,window,location,URL,URLSearchParams,console:{error(){}},setTimeout(fn,ms){const timer={fn,ms,cleared:false};timers.push(timer);return timer;},clearTimeout(timer){if(timer)timer.cleared=true;},COPY_VERSION:'test',installCopyChecks(){},loadTownStub:()=>{townRequests++;return town||Promise.reject(Error('offline'));}}); vm.runInContext(source,context);return {node,assigned,events,window,townRequests:()=>townRequests,backs:()=>backs,closes:()=>closes,fireTimer(ms){const timer=timers.findLast(t=>t.ms===ms&&!t.cleared);assert.ok(timer);timer.fn();}};
 }
 const settle=()=>new Promise(r=>setImmediate(r));
+test('both public readers start on the article and expose each game and text-only return without loading the town', () => {
+ for (const name of ['index.html', 'reading.html']) {
+  const markup = fs.readFileSync(new URL('../' + name, import.meta.url), 'utf8');
+  assert.match(markup, /<main id="app">/);
+  assert.match(markup, /<script type="module" src="\.\/journey-app\.js(?:\?[^"]*)?">/);
+ }
+ const reader = boot('');
+ const article = reader.node('app').innerHTML;
+ assert.equal(reader.townRequests(), 0);
+ for (const scene of data.SCENES) {
+  assert.ok(article.includes('?scene=' + scene.id + '&v='));
+  assert.ok(article.includes('href="#' + scene.after + '"'));
+ }
+ assert.equal((article.match(/class="text-alternative"/g) || []).length, 3);
+});
 test('unconfigured scene3 displays real image and cannot falsely return',async()=>{const t=boot('?scene=3');await settle();t.node('primary-action').onclick();assert.match(t.node('scene-passage').innerHTML,/window-reflection-q94.webp/);assert.doesNotMatch(t.node('scene-passage').innerHTML,/〔挿絵②/);assert.ok(t.node('scene-passage').innerHTML.indexOf('window-reflection-q94.webp')<t.node('scene-passage').innerHTML.indexOf('黒い上着。'));assert.equal(t.node('primary-action').disabled,false);t.node('primary-action').onclick();assert.deepEqual(t.assigned,[]);});
 test('direct/new-tab scenes use explicit note destination; repeated clicks and bfcache safe',async()=>{for(const n of [1,2,3]){const t=boot('?scene='+n+'&return='+encodeURIComponent(valid+'#section'));await settle();assert.match(t.node('app').innerHTML,/https:\/\/note.com/);assert.doesNotMatch(t.node('app').innerHTML,/reading.html/);t.node('primary-action').onclick();assert.equal(t.node('primary-action').disabled,false);t.node('primary-action').onclick();t.node('primary-action').onclick();assert.deepEqual(t.assigned,[valid+'#section']);t.events.pageshow({persisted:true});t.node('primary-action').onclick();assert.equal(t.assigned.length,2);}});
 test('scene image exists and clean original has no crop',()=>{assert.ok(fs.statSync(new URL('../assets/window-reflection-q94.webp',import.meta.url)).size>100000);const html=fs.readFileSync(new URL('../index.html',import.meta.url),'utf8');assert.doesNotMatch(html,/aspect-ratio:1122/);assert.match(html,/width:100%;height:auto/);});

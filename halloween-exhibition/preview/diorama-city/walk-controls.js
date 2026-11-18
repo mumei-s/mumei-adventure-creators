@@ -31,6 +31,8 @@ export function makeWalkPad() {
   return pad;
 }
 
+const protectedSurfaces=new WeakSet();
+
 export function bindWalking(root,pad,{change,step,signal,blocked=()=>false}={}) {
   const pressed = new Map();
   let held = null, touchedAt=0;
@@ -48,9 +50,9 @@ export function bindWalking(root,pad,{change,step,signal,blocked=()=>false}={}) 
   pad.addEventListener('pointerdown',()=>{touchedAt=performance.now();},{capture:true,signal});
   pad.addEventListener('pointerup',()=>{
     const tapped=held;
-    if(tapped&&!blocked()&&performance.now()-touchedAt<125) queueMicrotask(()=>step(moveVector[tapped]));
+    if(tapped&&!blocked()&&performance.now()-touchedAt<125) queueMicrotask(()=>{if(!signal?.aborted&&!blocked())step(moveVector[tapped]);});
   },{capture:true,signal});
-  protectGameSurface(root);
+  if(!protectedSurfaces.has(root)){protectGameSurface(root);protectedSurfaces.add(root);}
   const release = () => {pressed.clear();directionPad.reset();};
   root.addEventListener('keydown', event => {
     const direction = keys[event.key.toLowerCase()];

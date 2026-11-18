@@ -1,4 +1,4 @@
-.quality-panel {margin:17px 0 8px;padding:10px 12px;border:1px solid #7c715f;border-radius:5px;background:#152029;color:#f0e8da}
+.quality-panel {margin:17px 0 8px;padding:10px 12px;border:1px solid #7c715f;border-radius:5px;background:#152029;color:#f0e8da;min-width:0;overflow-wrap:anywhere}
 .quality-panel summary {min-height:36px;cursor:pointer;font-weight:600}
 .quality-panel .quality-description {font-size:12px;line-height:1.65;color:#d6cdbf}
 .quality-files {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,165px),1fr));gap:9px;margin-block:10px}
@@ -12,7 +12,7 @@
 .quality-panel button {min-height:40px;padding:6px 9px;margin:3px 4px 3px 0;border:1px solid #8e7d63;border-radius:4px;background:#24333c;color:#efe1c7;font:inherit;font-size:12px;cursor:pointer}
 .quality-panel button:disabled {opacity:.5;cursor:default}
 .quality-file p {font-size:11px;line-height:1.6;margin:0}
-.quality-manual {margin:12px 0;padding:8px 10px;border:1px solid #6c6a5b}
+.quality-manual {margin:12px 0;padding:8px 10px;border:1px solid #6c6a5b;min-width:0}
 .quality-manual legend {padding:0 5px;font-size:12px}
 .quality-manual label {display:flex;gap:8px;align-items:start;min-height:32px;line-height:1.6}
 .quality-manual input {flex:none;width:18px;height:18px;margin:1px 0}

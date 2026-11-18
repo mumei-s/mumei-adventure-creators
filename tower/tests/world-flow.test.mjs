@@ -6,7 +6,7 @@ const load = async path => import('data:text/javascript;base64,' +
   Buffer.from(await readFile(new URL(path, import.meta.url), 'utf8')).toString('base64'));
 const { districtCamera, exteriorHeight } = await load('../../halloween-exhibition/preview/diorama-city/camera.js');
 const { streetAreas, walkingRoute, walkable } = await load('../../halloween-exhibition/preview/diorama-city/paths.js');
-const { venues, venueSpawn, venueWalkable } = await load('../../halloween-exhibition/preview/diorama-city/venues.js');
+import { venues, venueSpawn, venueWalkable } from '../../halloween-exhibition/preview/diorama-city/venues.js';
 const { atlasChecks, articleChecks, normalizeCardLines, pixelDifference } = await load('../quality-assist.js');
 const { makeArtifactPrompt } = await load('../prompt-play.js');
 const { playgroundPose } = await load('../../halloween-exhibition/preview/diorama-city/district-activities.js');

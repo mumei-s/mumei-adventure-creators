@@ -33,13 +33,16 @@ function button(label, activate, className) {
   return node;
 }
 
-export function bindActivities(dialog, { avatar, status }) {
+export function bindActivities(dialog, { avatar, status, motionAllowed = () => !matchMedia('(prefers-reduced-motion: reduce)').matches }) {
   const title = dialog.querySelector('#activity-title');
   const body = dialog.querySelector('#activity-content');
   const message = dialog.querySelector('#activity-message');
   const close = dialog.querySelector('#activity-close');
   const basket = new Map();
-  let receipt = [], timer = 0, glass = null;
+  let receipt = [], glass = null, syncRide = null;
+  document.addEventListener('visibilitychange',()=>syncRide?.(!document.hidden));
+  window.addEventListener('pagehide',()=>syncRide?.(false));
+  window.addEventListener('pageshow',()=>syncRide?.(!document.hidden));
   const completedRides = new Set();
 
   function announce(text) {
@@ -48,6 +51,8 @@ export function bindActivities(dialog, { avatar, status }) {
   }
 
   function open(label, closeLabel) {
+    syncRide?.(false);
+    syncRide=null;
     title.textContent = label;
     close.textContent = closeLabel;
     body.replaceChildren();
@@ -120,10 +125,9 @@ export function bindActivities(dialog, { avatar, status }) {
 
   function openRide(kind, label) {
     const ride = rides[kind];
-    const seconds = matchMedia('(prefers-reduced-motion: reduce)').matches ? 3 : ride.seconds;
     open(label, '← 降りる');
     const scene = element('div', '', `ride-window ride-${kind}`);
-    scene.style.setProperty('--ride-duration', `${seconds}s`);
+    scene.style.setProperty('--ride-duration', `${ride.seconds}s`);
     const photo = element('img', '', 'ride-photo');
     photo.src = ride.image;
     photo.alt = ride.alt;
@@ -139,6 +143,7 @@ export function bindActivities(dialog, { avatar, status }) {
     const w = source?.naturalWidth ?? source?.width, h = source?.naturalHeight ?? source?.height;
     if (w && h) {
       const rider = element('canvas', '', 'ride-avatar');
+      rider.dataset.poseArt=source.dataset?.poseArt??'original';
       rider.width = w;
       rider.height = h;
       rider.setAttribute('aria-hidden', 'true');
@@ -153,19 +158,30 @@ export function bindActivities(dialog, { avatar, status }) {
     scene.append(progress);
     const controls = element('div', '', 'spot-actions ride-actions');
     const rideAgain = button('乗る', () => {
-      if (timer) return;
+      if (syncRide) return;
       rideAgain.hidden = true;
-      scene.classList.add('riding');
-      announce(kind === 'wheel' ? 'ゴンドラが上がり始めました。窓の外を見渡せます。' : 'メリーゴーラウンドが回り始めました。');
-      timer = setTimeout(() => {
-        timer = 0;
+      const finish = () => {
+        syncRide = null;
         scene.classList.remove('riding');
         announce('ひと周しました。');
         status(`${label}に乗ってひと周しました。`);
         completedRides.add(label);
         rideAgain.textContent = 'もう一周';
         rideAgain.hidden = false;
-      }, seconds * 1000);
+      };
+      if(!motionAllowed()){finish();rideAgain.focus();return;}
+      scene.classList.add('riding');
+      announce(kind === 'wheel' ? 'ゴンドラが上がり始めました。窓の外を見渡せます。' : 'メリーゴーラウンドが回り始めました。');
+      let timer=0,remaining=ride.seconds*1000,since=null;
+      syncRide=visible=>{
+        clearTimeout(timer);
+        const now=performance.now();
+        if(since!==null)remaining-=now-since;
+        since=visible?now:null;
+        scene.classList.toggle('ride-paused',!visible);
+        if(visible)timer=setTimeout(finish,Math.max(0,remaining));
+      };
+      syncRide(!document.hidden);
       (kind === 'wheel' ? look : close).focus();
     }, 'visit');
     const look = button('外の景色を見る', () => {
@@ -223,8 +239,9 @@ export function bindActivities(dialog, { avatar, status }) {
   }
 
   dialog.addEventListener('close', () => {
-    clearTimeout(timer);
-    timer = 0;
+    if(dialog.open)return;
+    syncRide?.(false);
+    syncRide=null;
     body.replaceChildren();
   });
   return {
@@ -238,28 +255,50 @@ export function bindActivities(dialog, { avatar, status }) {
 
 const mix = (a, b, t) => a.map((value, index) => value + (b[index] - value) * t);
 const unit = t => Math.min(1, Math.max(0, t));
-const swingSeat = [307, 400];
+// Positions are the sprite’s feet; seated hips lie above them on the painted seat.
+const swingSeat = [306, 423];
 const slideExit = [606, 486];
 
 export function playgroundPose(motion, time) {
-  const t = (time - motion.started) / 1000;
+  let t = Math.max(0,(time - motion.started) / 1000);
+  const smooth=value=>{const n=unit(value);return n*n*(3-2*n);};
+  const stop=motion.dismount;
+  if(stop&&motion.kind==='slide'){
+    const elapsed=t-stop.at;
+    if(stop.at<1.55){
+      t=Math.max(0,stop.at-elapsed*1.5);
+      if(!t)return {pose:motion.origin,exit:motion.origin,facing:[0,1],done:true};
+    }else t=stop.at+elapsed*1.35;
+  }else if(stop){
+    const progress=smooth((t-stop.at)/.65);
+    return {pose:mix(stop.from,motion.origin,progress),seated:false,facing:[0,1],done:progress===1,exit:motion.origin};
+  }
   if (motion.kind === 'bench') {
-    return { pose: mix(motion.origin,[178,448],unit(t/.8)), seated:t>=.8, facing:[0,1], done:t>=5 };
+    const seat=[181,389];
+    const pose=t<.8?mix(motion.origin,seat,smooth(t/.8)):mix(seat,motion.origin,smooth((t-4.2)/.8));
+    return {pose,seated:t>=.8&&t<=4.2,facing:[0,1],done:t>=5,exit:motion.origin};
   }
   if (motion.kind === 'swing') {
-    const amount = (11 + 5 * motion.pumps) * Math.sin(Math.max(0, t - .65) * 3.85);
-    const pose = t < .65 ? mix(motion.origin, swingSeat, unit(t / .65)) :
-      [swingSeat[0] + amount * .24, swingSeat[1] + amount];
-    return { pose, seated: t >= .65, tilt: amount * .22, facing: [0, 1], done: t >= 5.3 + motion.pumps * .42 };
+    const pumps=motion.pumpTimes??[];
+    const end=5.3+.45*pumps.length;
+    const amplitude=11+pumps.reduce((sum,at)=>sum+5*smooth((t-at)/.6),0);
+    const envelope=smooth((t-.65)/.55)*smooth((end-t)/.75);
+    const angle=amplitude*envelope*Math.sin(Math.max(0,t-.65)*3.85)*Math.PI/180;
+    const arc=66*Math.sin(angle);
+    const pose=t<.65?mix(motion.origin,swingSeat,smooth(t/.65)):
+      t>end?mix(swingSeat,motion.origin,smooth((t-end)/.7)):
+      [swingSeat[0]+arc*.24,swingSeat[1]+arc*.60-66*(1-Math.cos(angle))];
+    return {pose,seated:t>=.65&&t<=end,tilt:angle*28,facing:[0,1],done:t>=end+.7,exit:motion.origin};
   }
   if (t < 1.55) {
-    const steps = [[935, 433], [908, 352], [857, 259], [812, 247]];
+    const steps = [[932, 410], [903, 349], [862, 272], [789, 254]];
     const p = unit(t / 1.55) * steps.length, index = Math.min(steps.length - 1, Math.floor(p));
     const from = index ? steps[index - 1] : motion.origin;
-    return { pose: mix(from, steps[index], p - index), facing: [index ? -1 : 1, -1] };
+    const pose=mix(from,steps[index],p-index);
+    return {pose, groundY:index===0?pose[1]:steps[0][1], facing:[index?-1:1,-1]};
   }
   const descent = unit((t - 1.55) / 1.45);
-  const top = [812, 247], curve = [734, 390];
+  const top = [789, 254], curve = [728, 410];
   return { pose: mix(mix(top, curve, descent), mix(curve, slideExit, descent), descent),
-    seated: true, tilt: 13 * Math.sin(descent * Math.PI), facing: [-1, 1], done: descent === 1, exit: slideExit };
+    groundY:410+(slideExit[1]-410)*descent, seated:true, tilt:13*Math.sin(descent*Math.PI), facing:[-1,1], done:descent===1, exit:slideExit };
 }

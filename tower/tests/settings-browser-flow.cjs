@@ -12,7 +12,7 @@ async function assertFits(page){
 }
 (async()=>{
  await fs.mkdir(evidence,{recursive:true});
- browser=await chromium.launch({executablePath:'/usr/bin/chromium',headless:true,args:['--no-sandbox']});
+ browser=await chromium.launch({executablePath:process.env.BROWSER_EXECUTABLE||'/usr/bin/chromium',headless:true,args:['--no-sandbox']});
  let checks=0;
  for(const [name,width,height] of [['phone',390,844],['landscape',844,390],['tablet',820,1180],['desktop',1440,960]]){
   const context=await browser.newContext({viewport:{width,height},reducedMotion:'no-preference'});

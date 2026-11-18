@@ -138,14 +138,14 @@
 body:has(dialog[open]) .world-mini :is(.world-resident,.world-sprite,.world-glow) { animation-play-state:paused; }
 @keyframes room-lamp { 50%{opacity:.48;} }
 .cutaway { scroll-margin-top:18px; margin-top:52px; }
-.cutaway-head { display:flex; align-items:end; justify-content:space-between; gap:12px; margin-bottom:13px; }
+.cutaway-head { display:flex; flex-wrap:wrap; align-items:end; justify-content:space-between; gap:12px; margin-bottom:13px; }
 .cutaway-head h2,.lobby-story h2 { font:500 clamp(26px,4vw,42px)/1.3 var(--serif); }
 .cutaway-head p { color:var(--muted); margin-top:5px; font-size:13px; }
 .cutaway-head label { display:grid; gap:4px; font-size:11px; color:#d6ccb8; }
 .cutaway-controls { display:flex; align-items:end; gap:6px; }
 .cutaway-controls .button { font-size:12px; padding-inline:10px; }
 .cutaway-viewport {
-  container-type:inline-size;
+  container: cutaway / inline-size;
   --bay-width:clamp(69px,7.05cqw,104px);
   --bay-height:clamp(60px,6.3cqw,95px);
   max-height:clamp(330px,60vh,640px);
@@ -201,6 +201,16 @@ body:has(dialog[open]) .world-mini :is(.world-resident,.world-sprite,.world-glow
   padding-inline:0;
 }
 .cutaway-viewport[data-zoom="fit"] .sectioned-roof { grid-template-columns:48px calc(var(--bay-width)*3) 1fr; }
+
+
+/* At this scale the room numbers cannot fit. The detailed view keeps every address. */
+@container cutaway (max-width: 40rem) {
+  .cutaway-viewport[data-zoom="fit"] .floor-bays .bay-address { display:none; }
+  .cutaway-viewport[data-zoom="fit"] .public-bay .bay-address,
+  .cutaway-viewport[data-zoom="fit"] .viewing-room .bay-address {
+    max-width:100%; right:0; white-space:normal; line-height:1.15; overflow-wrap:anywhere;
+  }
+}
 
 .cutaway-tip { margin-top:5px; color:var(--muted); font-size:11px; }
 .lobby-story {
@@ -260,6 +270,15 @@ body:has(dialog[open]) .world-mini :is(.world-resident,.world-sprite,.world-glow
   object-fit:cover;object-position:center 61%;
   filter:brightness(calc(1.15 - .26 * var(--night,.4))) brightness(var(--game-brightness,1));
 }
+.world-stage[data-floor-coordinates="image"] {border:0}
+.registered-viewport {position:relative;overflow:hidden;width:100%;aspect-ratio:var(--room-image-aspect);max-height:52dvh;background:#101a21}
+.room-dialog .registered-viewport>.room-scene {position:absolute;inset:0;margin:0;max-width:none;max-height:none;transform-origin:top left}
+.registered-camera {grid-column:1;grid-row:1;justify-self:end;font:inherit;font-size:11px;min-height:38px}
+.world-control-dock:has(.registered-camera) .world-control-hint {display:none}
+@media(orientation:landscape) and (max-height:520px) {
+  .registered-viewport {height:max(1px,calc(100cqh - 8px));max-height:none;aspect-ratio:auto}
+}
+.world-stage[data-floor-coordinates="image"] .suite-interior {object-fit:fill}
 .world-photo-suite {border-color:#7d6e5c}
 .world-photo-suite::before {display:none}
 .world-photo-suite .world-resident {height:calc(52% * var(--size-depth))}

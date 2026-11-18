@@ -5,7 +5,7 @@ const src = await readFile(new URL('../prompt-play.js',import.meta.url),'utf8');
 const asModule = source => 'data:text/javascript;base64,'+Buffer.from(source).toString('base64');
 const coreUrl=asModule(src);
 const qualityUrl=asModule(await readFile(new URL('../quality-assist.js',import.meta.url),'utf8'));
-const {makeRoomPrompt,makeArtifactPrompt,residentPost,articleCardBlock,insightUrl,towerUrl,hostNoteUrl}=await import(coreUrl);
+const {makeRoomPrompt,makeArtifactPrompt,creatorReference,residentPost,articleCardBlock,insightUrl,towerUrl,hostNoteUrl}=await import(coreUrl);
 const spotSource=await readFile(new URL('../../halloween-exhibition/preview/diorama-city/spot-illustration.js',import.meta.url),'utf8');
 const {makeSpotPrompt,spotReferenceInstructions}=await import(asModule(spotSource
   .replace(/\.\.\/\.\.\/\.\.\/tower\/prompt-play\.js\?v=[\d-]+/,coreUrl)
@@ -54,4 +54,36 @@ test('room instructions precede avatar and article-only continuation preserves c
  const article=makeArtifactPrompt({kind:'article',id:'tester',mode:'spot'});
  for(const marker of ['記事本文だけ','［ここにアバター画像］','［ここに部屋画像］','専用サムネイル']) assert.ok(article.includes(marker));
  assert.doesNotMatch(article,/個別の完成画像をチャットに表示/);
+});
+
+test('a reference belongs to one creator and only a public image URL is copied', () => {
+  const image = 'https://example.com/creator.png', local = 'data:image/webp;base64,private';
+  const saved = creatorReference('alice', 'alice', image);
+  assert.equal(saved.referenceUrl, image);
+  assert.deepEqual(creatorReference('bob', 'alice', image), {referenceMode:'attachment'});
+  assert.deepEqual(creatorReference(null, null, image), {referenceMode:'attachment'});
+  assert.deepEqual(creatorReference('alice', 'alice', './assets/resident.webp'), {referenceMode:'attachment'});
+  const device = creatorReference('alice', 'alice', local);
+  assert.deepEqual(device, {referenceMode:'local'});
+  for (const variant of [{}, {roomOnly:true}, {avatarOnly:true}]) {
+    assert.ok(makeRoomPrompt({id:'alice', reference:saved, ...variant}).includes(image));
+    assert.ok(!makeRoomPrompt({id:'alice', reference:device, ...variant}).includes(local));
+  }
+});
+
+test('scene and thumbnail prompts distinguish character style from the location reference', () => {
+  const backgroundUrl = 'https://example.com/sky.webp', referenceUrl = 'https://example.com/actor.webp';
+  const reference = {referenceMode:'registered', referenceUrl};
+  const spot = {id:'alice', label:'天空ラウンジ', scene:'夜景の見える窓辺', href:'https://example.com/sky/', backgroundUrl};
+  for (const prompt of [
+    makeSpotPrompt({...spot, ...reference}),
+    ...['scene1','scene2','cover'].map(kind => makeArtifactPrompt({...spot, reference, kind}))
+  ]) {
+    assert.ok(prompt.includes(backgroundUrl) && prompt.includes(referenceUrl));
+    for (const detail of ['顔立ち','衣装','実写','アニメ','幻想画','背景や別の登場人物']) assert.ok(prompt.includes(detail), detail);
+  }
+  const article = makeArtifactPrompt({...spot, reference, kind:'article', title:'窓辺の夜', reason:'２枚目の行動を反映'});
+  assert.ok(article.includes('確定した記事タイトル：窓辺の夜') && article.includes('２枚目の行動を反映'));
+  assert.ok(!article.includes(backgroundUrl) && !article.includes(referenceUrl));
+  assert.match(article, /画像は再生成しない/);
 });

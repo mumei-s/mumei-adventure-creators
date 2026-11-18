@@ -17,6 +17,34 @@ export function pixelDifference(a, b) {
   return difference / (a.length * 255);
 }
 
+export function imageContentChecks(data) {
+  // Transparent pixels may retain RGB values. Only visible colours and the
+  // alpha silhouette can distinguish the artwork from a single flat layer.
+  let hasTransparency = false, visible = -1;
+  for (let index = 0; index < data.length; index += 4) {
+    if (!data[index + 3]) {
+      hasTransparency = true;
+      if (visible !== -1) return [];
+      continue;
+    }
+    if (hasTransparency) return [];
+    if (visible === -1) visible = index;
+    else if (data[index] !== data[visible] || data[index + 1] !== data[visible + 1] ||
+             data[index + 2] !== data[visible + 2] || data[index + 3] !== data[visible + 3]) return [];
+  }
+  return [visible === -1 ? '画像がすべて透明です。作品が表示される元画像を選んでください。' :
+    '画像が一色で、絵柄を確認できません。完成した作品を選んでください。'];
+}
+
+function imageMatch(a, b) {
+  const difference = pixelDifference(a, b);
+  if (difference >= .045) return '';
+  // Sparse line drawings can have a very small average difference even when
+  // individual strokes are entirely different. Only block a close pixel match.
+  if (difference < .004 && a.every((channel, index) => Math.abs(channel - b[index]) <= 12)) return 'same';
+  return 'similar';
+}
+
 export function atlasChecks({ width, height, data }) {
   const errors = [], warnings = [];
   if (width % 4 || height % 4 || width < 160 || height < 160) {
@@ -45,34 +73,65 @@ export function atlasChecks({ width, height, data }) {
   return { errors, warnings };
 }
 
+function articleLines(text, prose, code) {
+  let fence = '';
+  return text.split(/\r?\n/).map(line => {
+    const marker = line.match(/^ {0,3}(`{3,}|~{3,})/u)?.[1];
+    if (fence) {
+      if (marker?.startsWith(fence) && !line.trim().slice(marker.length)) fence = '';
+      return code(line);
+    }
+    if (marker) { fence = marker; return code(line); }
+    return prose(line);
+  });
+}
+
 export function articleChecks(text, { title, urls = [], mode = 'spot', occupied = false } = {}) {
-  const lines = text.split(/\r?\n/).map(line => line.trim());
+  const lines = articleLines(text, line => line.trim(), () => '');
+  const prose = lines.join('\n');
   const errors = [];
   if (!text.trim()) return ['記事本文が未入力です。'];
-  if (!text.includes('無名S note') || !text.includes('企画主')) errors.push('企画主・無名S noteの紹介を入れてください。');
+  if (!prose.trim()) return ['コード枠の外に記事本文を貼り付けてください。'];
+  if (!prose.includes('無名S note') || !prose.includes('企画主')) errors.push('企画主・無名S noteの紹介を入れてください。');
   const actualTitle = lines.find(Boolean)?.replace(/^#+\s*/, '');
-  if (title && actualTitle !== title.trim()) errors.push('記事の先頭タイトルと入力したタイトルが一致しません。');
+  if (title !== undefined && !title.trim()) errors.push('記事とサムネイルのタイトルを入力してください。');
+  else if (title && actualTitle !== title.trim()) errors.push('記事の先頭タイトルと入力したタイトルが一致しません。');
   const markers = mode === 'room' ? ['［ここにアバター画像］', '［ここに部屋画像］'] :
     ['［ここに街のイラスト１］', '［ここに街のイラスト２］'];
-  for (const marker of markers) if (!text.includes(marker)) errors.push(`${marker} の挿入位置がありません。`);
+  for (const marker of markers) if (!prose.includes(marker)) errors.push(`${marker} の挿入位置がありません。`);
   for (const url of urls) if (!lines.includes(url)) errors.push(`カード用URLを単独行にしてください。 ${url}`);
   if (lines.filter(Boolean).at(-1) !== '#無名Sプロンプト') errors.push('末尾のハッシュタグを #無名Sプロンプト にしてください。');
-  if (!occupied && /入居しました|入居を完了しました|入居済みです|引っ越しが完了しました/.test(text)) {
+  if (!occupied && /入居しました|入居を完了しました|入居済みです|引っ越しが完了しました/.test(prose)) {
     errors.push('入居の完了を確認できていません。現在の状態に合わせて表現を確認してください。');
   }
   return errors;
 }
 
 export function normalizeCardLines(text, urls) {
-  return text.split(/\r?\n/).map(line => {
-    const found = (line.match(/https?:\/\/[^\s<>"'）)\]]+/g) ?? []).map(item => item.replace(/[。、」』]+$/u, ''));
-    const url = urls.find(item => found.includes(item));
-    if (!url) return line;
-    const escaped = url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const label = line.replace(new RegExp('\\[([^\\]]+)\\]\\(' + escaped + '\\)'), '$1')
-      .replace(url, '').replace(/^[\s>・*-]+|[\s「」『』"'\[\]（）()。]+$/g, '').trim();
-    return label ? label + '\n\n' + url + '\n' : '\n' + url + '\n';
-  }).join('\n').replace(/\n{4,}/g, '\n\n');
+  const known = new Set(urls);
+  return articleLines(text, line => {
+    if (known.has(line.trim())) return line.trim();
+    const tokens = /(`+).*?\1|(!?)\[([^\]\n]*)\]\((https?:\/\/[^\s)]+)\)|<(https?:\/\/[^\s<>]+)>|https?:\/\/[^\s<>"'`\[\]()（）「」『』【】。、，！？]+/gu;
+    const parts = [];
+    let start = 0;
+    for (const match of line.matchAll(tokens)) {
+      if (match[1] || match[2] === '!') continue;
+      const raw = match[4] || match[5] || match[0];
+      const url = match[4] || match[5] || known.has(raw) ? raw : raw.replace(/[.,!;:]+$/u, '');
+      if (!known.has(url)) continue;
+      let from = match.index, to = from + match[0].length - (raw.length - url.length);
+      const pairs = { '(': ')', '（': '）', '「': '」', '『': '』', '【': '】', '"': '"', "'": "'" };
+      if (Object.hasOwn(pairs, line[from - 1]) && pairs[line[from - 1]] === line[to]) { from--; to++; }
+      const label = (line.slice(start, from) + (match[3] || '')).trim();
+      if (label && !/^[>*・-]+$/u.test(label)) parts.push(label);
+      parts.push(url);
+      start = to;
+    }
+    if (!parts.length) return line;
+    const tail = line.slice(start).trim();
+    if (tail && !/^[。.,!]+$/u.test(tail)) parts.push(tail);
+    return parts.join('\n\n');
+  }, line => line).join('\n');
 }
 
 export async function inspectImage(source, role, { atlas = false } = {}) {
@@ -84,6 +143,7 @@ export async function inspectImage(source, role, { atlas = false } = {}) {
   const image = new Image();
   let timeout;
   try {
+    if (!temporary && /^https?:\/\//i.test(url) && new URL(url).origin !== location.origin) image.crossOrigin = 'anonymous';
     image.src = url;
     await Promise.race([
       image.decode(),
@@ -96,7 +156,7 @@ export async function inspectImage(source, role, { atlas = false } = {}) {
     if (!context) throw new Error('この端末で画像を検査できません。');
     context.drawImage(image, 0, 0, canvas.width, canvas.height);
     const pixels = context.getImageData(0, 0, canvas.width, canvas.height);
-    const errors = [], warnings = [];
+    const errors = imageContentChecks(pixels.data), warnings = [];
     if (atlas) {
       if (width % 4 || height % 4 || width < 160 || height < 160) errors.push('歩行シートの４×４形式を確認してください。');
       const result = atlasChecks(pixels);
@@ -104,7 +164,7 @@ export async function inspectImage(source, role, { atlas = false } = {}) {
       warnings.push(...result.warnings);
     }
     const ratio = width / height;
-    if (role === 'interior' && ratio < 1.2) errors.push('部屋には横長の内装画像を選んでください。');
+    if (role === 'interior' && (ratio < 1.2 || ratio > 2.2)) errors.push('部屋には横長の内装画像を選んでください。横３対２を推奨します。');
     if (role === 'cover') {
       if (Math.abs(ratio - 1280 / 650) > .06) errors.push('サムネイルは1280×650に合う横長比率で作り直してください。');
       if (width < 1280 || height < 650) errors.push('サムネイルは1280×650以上の画像が必要です。');
@@ -113,18 +173,19 @@ export async function inspectImage(source, role, { atlas = false } = {}) {
     if (role === 'avatar' ? height < 160 || width < 32 : Math.min(width, height) < 200) {
       errors.push('画像が小さすぎます。元の完成画像を添付してください。');
     }
-    // Use a small opaque preview for compression-independent duplicate checks.
-    canvas.width = canvas.height = 32;
-    context.fillStyle = '#fafafa';
-    context.fillRect(0, 0, 32, 32);
-    context.drawImage(image, 0, 0, 32, 32);
-    const fingerprint = Array.from(context.getImageData(0, 0, 32, 32).data);
-    canvas.width = Math.min(width, 240);
-    canvas.height = Math.max(1, Math.round(canvas.width * height / width));
+    canvas.width = canvas.height = 64;
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    const fingerprint = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    const scale = Math.min(1, 240 / Math.max(width, height));
+    canvas.width = Math.max(1, Math.round(width * scale));
+    canvas.height = Math.max(1, Math.round(height * scale));
     context.drawImage(image, 0, 0, canvas.width, canvas.height);
     const preview = canvas.toDataURL('image/png');
     return { width, height, fingerprint, errors, warnings, preview };
   } catch (error) {
+    if (['SecurityError', 'EncodingError', 'InvalidStateError'].includes(error.name)) {
+      throw new Error('画像を読み取れません。元の画像を端末に保存して添付してください。');
+    }
     throw new Error(error.message || '画像を開けません。保存した画像を選び直してください。');
   } finally {
     clearTimeout(timeout);
@@ -141,6 +202,15 @@ export function bindQualityAssist(container, { mode, getContext, repair, externa
   details.append(node('p', '画像の表示・形式・重複と記事のリンクを自動検査します。人物や文字の正しさは、下の確認欄で作品を見て確認してください。', 'quality-description'));
   const files = node('div', '', 'quality-files');
   const rows = new Map();
+  const noteLabel = node('label', '修正したい点（任意）');
+  const note = node('input');
+  note.type = 'text';
+  note.maxLength = 300;
+  note.placeholder = '例：衣装はそのまま、右手の指だけ直す';
+  noteLabel.append(note);
+  function requestRepair(role, issues) {
+    repair(role, title.value.trim(), [...issues, note.value.trim()].filter(Boolean).join('\n'));
+  }
   function invalidateManual() {
     for (const input of manual.querySelectorAll('input')) input.checked = false;
   }
@@ -163,7 +233,10 @@ export function bindQualityAssist(container, { mode, getContext, repair, externa
     }
     const fix = node('button', labels[role] + 'だけ修正する');
     fix.type = 'button';
-    fix.addEventListener('click', () => repair(role, title.value, entries.get(role)?.errors?.join(' ')));
+    fix.addEventListener('click', () => {
+      const { errors, warnings } = imageFindings(role);
+      requestRepair(role, [...errors, ...warnings]);
+    });
     row.append(preview, result, fix);
     rows.set(role, { preview, result });
     files.append(row);
@@ -183,16 +256,21 @@ export function bindQualityAssist(container, { mode, getContext, repair, externa
   const format = node('button', 'カード用URLを単独行に整える');
   format.type = 'button';
   format.addEventListener('click', () => {
-    article.value = normalizeCardLines(article.value, getContext().urls);
+    const formatted = normalizeCardLines(article.value, getContext().urls);
+    if (formatted !== article.value) {
+      article.value = formatted;
+      invalidateManual();
+    }
     render();
   });
   const fixArticle = node('button', '記事だけ修正する');
   fixArticle.type = 'button';
-  fixArticle.addEventListener('click', () => repair('article', title.value, articleStatus.textContent));
+  fixArticle.addEventListener('click', () => requestRepair('article',
+    articleChecks(article.value, { ...getContext(), mode, title: title.value })));
   const manual = node('fieldset', '', 'quality-manual');
   manual.append(node('legend', '作品を見て確認する項目'));
   const checks = [
-    '参照キャラと顔立ち・髪型・髪色・衣装が一致している',
+    '参照キャラの顔立ち・髪・衣装と、元の画風（実写・アニメ・幻想など）が保たれている',
     mode === 'room' ? '全身と靴が入り、歩行シートの向きと姿勢がそろっている' : '本文の２枚は場面・動作・構図・カメラ角度が異なる',
     '手足・接地・家具や建物との大きさと遠近感が自然',
     '専用サムネイルの演出が本文画像と異なり、顔と文字が切れていない',
@@ -203,6 +281,7 @@ export function bindQualityAssist(container, { mode, getContext, repair, externa
     const label = node('label');
     const input = node('input');
     input.type = 'checkbox';
+    input.disabled = true;
     input.addEventListener('change', render);
     label.append(input, node('span', check));
     manual.append(label);
@@ -223,33 +302,46 @@ export function bindQualityAssist(container, { mode, getContext, repair, externa
     }
   });
   for (const input of [article, title]) input.addEventListener('input', () => { invalidateManual(); render(); });
-  details.append(files, titleLabel, articleLabel, articleStatus, format, fixArticle, manual, overall, copy);
+  details.append(noteLabel, files, titleLabel, articleLabel, articleStatus, format, fixArticle, manual, overall, copy);
   container.append(details);
+
+  function imageFindings(role, selection = roles) {
+    const entry = entries.get(role);
+    if (!entry) return { errors: [labels[role] + 'の画像検査が終わっていません。'], warnings: [] };
+    const errors = [...entry.errors], warnings = [...entry.warnings];
+    for (const otherRole of selection) {
+      if (role === otherRole) continue;
+      const match = imageMatch(entry.fingerprint, entries.get(otherRole)?.fingerprint);
+      if (match === 'same') errors.push(`${labels[otherRole]}と同じ画像です。別々の完成画像を選んでください。`);
+      if (match === 'similar') warnings.push(`${labels[otherRole]}と構図が似ています。場面や動作の違いを確認してください。`);
+    }
+    return { errors, warnings };
+  }
 
   function render() {
     const missing = roles.filter(role => !entries.has(role));
     let errors = 0, warnings = 0;
     for (const [role, result] of entries) {
       const { preview, result: line } = rows.get(role);
-      const duplicate = [...entries].find(([key, other]) => key !== role &&
-        pixelDifference(other.fingerprint, result.fingerprint) < .004);
-      const similar = [...entries].some(([key, other]) => key !== role &&
-        pixelDifference(other.fingerprint, result.fingerprint) < .045);
-      const problems = [...result.errors];
-      if (duplicate) problems.push(`${labels[duplicate[0]]}と同じ画像です。別々の完成画像を選んでください。`);
-      if (similar && !duplicate) warnings++;
+      const { errors: problems, warnings: notices } = imageFindings(role);
       errors += problems.length;
-      warnings += result.warnings.length;
+      warnings += notices.length;
       line.textContent = problems.length ? problems.join(' ') :
-        `自動検査 ${result.width}×${result.height} · 表示・形式確認済み${similar ? ' · 構図の類似を目視確認してください。' : ''}`;
-      if (result.warnings.length) line.textContent += ' ' + result.warnings.join(' ');
-      preview.src = result.preview;
-      preview.hidden = false;
+        `自動検査 ${result.width}×${result.height} · 表示・形式確認済み`;
+      if (notices.length) line.textContent += ' ' + notices.join(' ');
+      if (result.preview && preview.getAttribute('src') !== result.preview) preview.src = result.preview;
+      preview.hidden = !result.preview;
     }
     const context = getContext();
     const textErrors = articleChecks(article.value, { ...context, mode, title: title.value });
     articleStatus.textContent = textErrors.length ? textErrors.join(' ') : '記事のタイトル・挿入位置・URL・ハッシュタグの書式を確認しました。';
-    const checked = [...manual.querySelectorAll('input')].every(input => input.checked);
+    const checks = [...manual.querySelectorAll('input')];
+    const readyForReview = !pending.size && !missing.length && !errors;
+    for (const check of checks) {
+      check.disabled = !readyForReview;
+      if (!readyForReview) check.checked = false;
+    }
+    const checked = checks.every(input => input.checked);
     copy.disabled = Boolean(missing.length || pending.size || errors || textErrors.length || !checked || !title.value.trim());
     const stage = pending.size ? '画像を検査中です。' : missing.length ? `未添付 ${missing.map(role => labels[role]).join('、')}` :
       errors ? `自動検査で${errors}件の修正が必要です。` :
@@ -265,6 +357,7 @@ export function bindQualityAssist(container, { mode, getContext, repair, externa
     invalidateManual();
     const row = rows.get(role);
     row.preview.hidden = true;
+    row.preview.removeAttribute('src');
     row.result.textContent = source ? '画像を検査中です…' : '未添付';
     render();
     if (!source) { pending.delete(role); render(); return; }
@@ -272,10 +365,7 @@ export function bindQualityAssist(container, { mode, getContext, repair, externa
       const result = await inspectImage(source, role, options);
       if (pending.get(role) === request) entries.set(role, result);
     } catch (error) {
-      if (pending.get(role) === request) {
-        row.result.textContent = error.message;
-        overall.textContent = '画像を開けませんでした。該当する画像だけ選び直してください。';
-      }
+      if (pending.get(role) === request) entries.set(role, { errors: [error.message], warnings: [] });
     } finally {
       if (pending.get(role) === request) pending.delete(role);
       render();
@@ -289,26 +379,15 @@ export function bindQualityAssist(container, { mode, getContext, repair, externa
     render();
   }
   function reset(){
-    entries.clear();pending.clear();invalidateManual();article.value='';title.value='';
+    entries.clear();pending.clear();invalidateManual();article.value='';title.value='';note.value='';
     for(const [role,row] of rows){row.preview.hidden=true;row.preview.removeAttribute('src');row.result.textContent='未添付';}
     for(const input of files.querySelectorAll('input[type=file]'))input.value='';
     previousContext='';render();
   }
   return {
     accept, refresh, reset,
+    get articleTitle() { return title.value.trim(); },
     get checking() { return Boolean(pending.size); },
-    problems: selection => {
-      const problems = [];
-      for (const role of selection) {
-        const entry = entries.get(role);
-        if (!entry) { problems.push(labels[role] + 'の画像検査が終わっていません。'); continue; }
-        problems.push(...entry.errors);
-      }
-      if (selection.length === 2 && selection.every(role => entries.has(role)) &&
-          pixelDifference(entries.get(selection[0]).fingerprint, entries.get(selection[1]).fingerprint) < .004) {
-        problems.push('同じ画像が選ばれています。アバターと部屋は別々に添付してください。');
-      }
-      return problems;
-    },
+    problems: selection => selection.flatMap(role => imageFindings(role, selection).errors),
   };
 }

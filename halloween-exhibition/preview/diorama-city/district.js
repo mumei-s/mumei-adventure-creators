@@ -1,11 +1,12 @@
-import { makeWalkPad, bindWalking } from './walk-controls.js?v=20261118-controls';
-import { avatarSnapshot, hostWalker, residentWalker, autoResidentWalker } from './host-avatar.js?v=20261118-spaces-5';
+import { canWalkFloorSegment, facilityRoute } from '../../../tower/facility-floors.js?v=202611181820';
+import { makeWalkPad, bindWalking } from './walk-controls.js?v=202611181820';
+import { avatarSnapshot, hostWalker, autoResidentWalker } from './host-avatar.js?v=202611181820';
 import { applyDistrictLight } from './scene-time.js?v=1';
 import { distance, streetAreas, walkable, walkingRoute } from './paths.js?v=20261118';
-import { districtTraffic } from './traffic.js?v=1';
-import { cafeStory, venues, venueSpawn, venueWalkable } from './venues.js?v=20261118';
-import { bindActivities, playgroundPose } from './district-activities.js?v=20261118-spaces';
-import { bindSpotIllustration } from './spot-illustration.js?v=202611181359';
+import { districtTraffic } from './traffic.js?v=202611181820';
+import { cafeStory, venues, venueSpawn, venueFloor } from './venues.js?v=202611181820';
+import { bindActivities, playgroundPose } from './district-activities.js?v=202611181820';
+import { bindSpotIllustration } from './spot-illustration.js?v=202611181820';
 import { districtCamera, exteriorHeight } from './camera.js?v=20261118';
 import { TOWER_API, OWNER_STORAGE, avatarImageUrl, readWalkDraft, rememberWalker } from '../../../tower/avatar-travel.js?v=20261118';
 import { initGameShell } from '../../../tower/game-shell.js?v=20261118-controls';
@@ -35,7 +36,7 @@ if (onDraft) {
 }
 let position=[...spawn], stride=0, vector=null, route=[], active=true, transition=false, overview=false;
 let camera={x:0,y:0,scale:1};
-let lighting='auto', lightLevel=.3, lastLight=-Infinity, lastTraffic=-Infinity;
+let lighting='auto', lightLevel=.3, lastLight=-Infinity, lastTraffic=-Infinity, trafficSeconds=0;
 let frame=0, lastTick=0, nearby='', priorTarget='';
 let venueId='', venue=null, directions=[], motion=null;
 let scenePending=false, sceneRequest=0, currentBackdrop;
@@ -53,6 +54,7 @@ seatedFrame.hidden=true;
 citizen.append(seatedFrame);
 const actorFrame=()=>citizen.querySelector('canvas:not(.pose-frame):not([hidden]), img:not([hidden])');
 const activities=bindActivities(activityDialog,{
+  motionAllowed:gameShell.motionAllowed,
   avatar:pose=>{
     paintAvatar(stride,false,pose==='saddle'?-1:0,pose==='saddle'?0:1);
     return avatarSnapshot(actorFrame(),pose,{host:!activeSpotActor});
@@ -124,7 +126,7 @@ async function chooseWalker() {
     const custom=room.design?.avatarMode==='custom'&&room.avatarVersion;
     const profile=room.design?.avatarMode==='profile'&&room.profile?.photo;
     actor={id:roomId,source:custom ? avatarImageUrl(roomId,room.avatarVersion) : profile || '../../../tower/assets/resident.webp',
-      atlas:custom&&room.design.world?.atlas, custom:Boolean(custom),
+      atlas:custom&&room.design.world?.atlas, custom:Boolean(custom), reference:Boolean(profile),
       noteId:room.noteId, name:room.design.avatarName || room.profile.name || room.noteId};
     roomLink.searchParams.set('room',roomId);
   }
@@ -142,7 +144,7 @@ async function chooseWalker() {
   if (actor.id) rememberWalker(actor);
   citizen.replaceChildren(image,seatedFrame);
   paintAvatar=actor.custom || actor.atlas ? autoResidentWalker(image,{atlas:Boolean(actor.atlas)}) : (_stride,_moving,dx) => {
-    if (dx) image.style.transform=`scaleX(${dx<0?-1:1})`;
+    if (dx&&!actor.reference) image.style.transform=`scaleX(${dx<0?-1:1})`;
   };
   paintAvatar(stride,false);
   el('walker-name').textContent=actor.name;
@@ -236,11 +238,11 @@ function actorHeight(y) {
   return venue ? venue.scale[0]+(y-451)*venue.scale[1] : exteriorHeight(y);
 }
 
-function drawWalker(point,dx,dy,moving=false) {
+function drawWalker(point,dx,dy,moving=false,groundY=point[1]) {
   citizen.style.left=point[0]+'px';
   citizen.style.top=point[1]+'px';
   citizen.dataset.position=point.map(n=>n.toFixed(1)).join(',');
-  citizen.style.setProperty('--actor-height',`${actorHeight(point[1]).toFixed(1)}px`);
+  citizen.style.setProperty('--actor-height',`${actorHeight(groundY).toFixed(1)}px`);
   paintAvatar(stride,moving,dx,dy);
 }
 function paint(dx=0,dy=0,moving=false) {
@@ -249,7 +251,7 @@ function paint(dx=0,dy=0,moving=false) {
 }
 function goTo(point) {
   if (blocked()) return;
-  const next=venue ? (venueWalkable(point,venue) ? [point] : []) : walkingRoute(position,point,area);
+  const next=venue ? facilityRoute(venueFloor(venue),position,point) : walkingRoute(position,point,area);
   if (!next.length) return;
   vector=null;
   route=next;
@@ -284,7 +286,7 @@ function finishMotion(exit) {
 }
 
 function startMotion(kind) {
-  motion={kind, started:performance.now(), origin:[...position], pumps:0};
+  motion={kind, started:0, elapsed:0, origin:[...position], pumpTimes:[]};
   if (!gameShell.motionAllowed()) {
     finishMotion(playgroundPose(motion,motion.started+10000).exit);
     return;
@@ -302,16 +304,17 @@ function startMotion(kind) {
 }
 
 function animateMotion(time) {
-  const { pose, seated, tilt=0, facing, done, exit }=playgroundPose(motion,time);
+  const { pose, seated, tilt=0, facing, done, exit, groundY }=playgroundPose(motion,time);
   if (done) {finishMotion(exit);return;}
   if (motion.pose && !seated) stride+=distance(motion.pose,pose)/13;
   motion.pose=pose;
   citizen.dataset.seated=String(Boolean(seated));
   citizen.style.setProperty('--actor-tilt',tilt+'deg');
-  drawWalker(pose,...facing,!seated);
+  drawWalker(pose,...facing,!seated,groundY);
   if (seated && seatedFrame.hidden) {
     const poseImage=avatarSnapshot(actorFrame(),'sit',{host:!activeSpotActor});
     if (poseImage) {
+      seatedFrame.dataset.poseArt=poseImage.dataset.poseArt;
       seatedFrame.width=poseImage.width;
       seatedFrame.height=poseImage.height;
       seatedFrame.getContext('2d').drawImage(poseImage,0,0);
@@ -335,14 +338,20 @@ function tick(time) {
     clock.textContent=update.time;
     lastLight=time;
   }
-  if (!venue && areaId==='tower' && (gameShell.motionAllowed() || lastTraffic===-Infinity) && time-lastTraffic>34) {
-    drawTraffic(gameShell.motionAllowed() ? time/1000 : 0,lightLevel);
-    lastTraffic=time;
+  if(!venue&&areaId==='tower'){
+    const drive=gameShell.motionAllowed()&&!document.querySelector('dialog[open]');
+    if(drive)trafficSeconds+=elapsed;
+    if((drive||lastTraffic===-Infinity)&&time-lastTraffic>34){
+      drawTraffic(trafficSeconds,lightLevel);
+      lastTraffic=time;
+    }
   }
   if (motion) {
-    if (document.querySelector('dialog[open]')) motion.started+=elapsed*1000;
-    else if (!gameShell.motionAllowed()) finishMotion(playgroundPose(motion,motion.started+10000).exit);
-    else animateMotion(time);
+    if (!gameShell.motionAllowed()) finishMotion(playgroundPose(motion,10000).exit);
+    else if (!document.querySelector('dialog[open]')) {
+      motion.elapsed+=elapsed;
+      animateMotion(motion.elapsed*1000);
+    }
   }
   else if (!blocked() && (vector || route.length)) {
     const target=route[0];
@@ -352,7 +361,7 @@ function tick(time) {
     let dx=0,dy=0;
     if (length>.001) {
       const next=[position[0]+move[0]/length*step,position[1]+move[1]/length*step];
-      const isPath=point=>venue ? venueWalkable(point,venue) : walkable(point,area);
+      const isPath=point=>venue ? canWalkFloorSegment(venueFloor(venue),position,point) : walkable(point,area);
       if (isPath(next)) [dx,dy]=[next[0]-position[0],next[1]-position[1]];
       else if (vector && isPath([next[0],position[1]])) dx=next[0]-position[0];
       else if (vector && isPath([position[0],next[1]])) dy=next[1]-position[1];
@@ -447,7 +456,7 @@ function openPlace() {
       spotStatus.textContent='しおりの裏に、小さく部屋番号が書かれていました。マンションの掲示板に手がかりがありそうです。';
       showPlaceLink(cafeStory);
     }
-    if (nearby==='bench') spotStatus.textContent='ベンチに座って水盤に映る光を眺めています。右奥のデッキからは街全体を見渡せます。';
+    if (nearby==='bench'&&motion?.kind==='bench') spotStatus.textContent='ベンチに座って水盤に映る光を眺めています。右奥のデッキからは街全体を見渡せます。';
     if (nearby==='lookout') {
       setLighting(lighting==='night'?'dusk':'night');
       spotStatus.textContent=lighting==='night' ? '夜景。窓明かりと駅の光が運河に映っています。' : '夕景。塔の向こうに夕方の空が残っています。';
@@ -498,7 +507,9 @@ function openSpot() {
   const shopping=venueId==='mirrorRoom' ? activities.reflectionMemory() :
     venueId==='fair' ? activities.rideMemory() : activities.shoppingMemory(place?.shelf);
   showSpotPrompt({
-    label, scene:shopping ? scene+' '+shopping : scene, href:card.href, id:activeSpotActor?.noteId || onDraft?.noteId || owner?.noteId, avatarSource:activeSpotActor?.custom ? activeSpotActor.source : null,
+    label, scene:shopping ? scene+' '+shopping : scene, href:card.href, id:activeSpotActor?.noteId || onDraft?.noteId || owner?.noteId,
+    avatarSource:activeSpotActor?.custom||activeSpotActor?.reference ? activeSpotActor.source : null,
+    backgroundUrl:new URL(setting?.image||area.image||el('city-plate').getAttribute('src'),location.href).href,
   });
 }
 
@@ -521,11 +532,15 @@ visit.addEventListener('click',openPlace);
 spotButton.addEventListener('click',openSpot);
 pump.addEventListener('click',()=>{
   if (motion?.kind!=='swing') return;
-  motion.pumps+=1;
-  pump.disabled=motion.pumps>=5;
+  if(motion.dismount||motion.pumpTimes.length>=5||motion.elapsed>=4.9+motion.pumpTimes.length*.45)return;
+  motion.pumpTimes.push(motion.elapsed);
+  pump.disabled=motion.pumpTimes.length>=5;
 });
 el('end-motion').addEventListener('click',()=>{
-  if (motion) finishMotion();
+  if(!motion||motion.dismount)return;
+  if(!gameShell.motionAllowed()){finishMotion();return;}
+  motion.dismount={at:motion.elapsed,from:motion.pose??position};
+  pump.disabled=true;
 });
 guide.addEventListener('click',event=>{
   const destination=event.target.closest('[data-head-to]');
@@ -558,7 +573,7 @@ view.addEventListener('click',event=>{
 el('camera').addEventListener('click',()=>setCamera(!overview));
 el('lighting').addEventListener('click',()=>setLighting({auto:'dusk',dusk:'night',night:'auto'}[lighting]));
 document.addEventListener('visibilitychange',()=>{
-  if (document.hidden) {movement.reset();route=[];}
+  if (document.hidden) {movement.reset();route=[];cancelAnimationFrame(frame);frame=lastTick=0;}
   else run();
 });
 window.addEventListener('pagehide',()=>{
@@ -580,7 +595,9 @@ renderLocations();
 setCamera(false);
 const cityPhoto=el('city-plate');
 void loadBackdrop(cityPhoto,cityPhoto.getAttribute('src'),cityPhoto.alt);
-if (Object.hasOwn(venues,history.state?.dioramaVenue)) changeVenue(history.state.dioramaVenue);
+const requestedVenue=currentUrl.searchParams.get('spot')?.split('.')[0];
+if(requestedVenue&&history.state?.inline&&history.state.dioramaVenue===requestedVenue)arriveAtSpot();
+else if (Object.hasOwn(venues,history.state?.dioramaVenue)) changeVenue(history.state.dioramaVenue);
 else if (!history.state?.inline) arriveAtSpot();
 paint(0,arrival==='tower' ? -1 : 0);
 void chooseWalker().catch(failedWalker);

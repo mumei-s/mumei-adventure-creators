@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="./district.css?v=20261118">
   <link rel="stylesheet" href="./walk-pad.css?v=2">
   <link rel="stylesheet" href="../../../tower/quality-assist.css?v=20261118">
-  <script type="module" src="./district.js?v=20261118-0838"></script>
+  <script type="module" src="./district.js?v=202611180955"></script>
 </head>
 <body>
 <main id="district" tabindex="-1">
@@ -104,12 +104,14 @@
     <div class="place-body">
       <h2 id="spot-title"></h2>
       <p id="spot-scene"></p>
-      <label class="spot-field">noteクリエイターID
+      <p id="spot-reference-status" role="status"></p>
+      <label class="spot-field">noteクリエイターID（登録済みの場合は自動入力）
         <input id="spot-id" type="text" autocomplete="off" autocapitalize="none" maxlength="160" placeholder="@ID または noteプロフィールのURL">
       </label>
-      <label class="spot-field">キャラクターの参照画像
+      <label class="spot-field"><span id="spot-reference-label">キャラクターの参照画像</span>
         <input id="spot-image" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
       </label>
+      <div class="spot-actions"><button type="button" class="spot-prompt" id="spot-save-reference" hidden>登録済み参照画像を保存</button><button type="button" class="spot-prompt" id="spot-reset-reference" hidden>登録済み画像に戻す</button></div>
       <img id="spot-image-preview" alt="添付したキャラクターの参照画像" hidden>
       <details class="spot-preview">
         <summary>プロンプトを表示</summary>
@@ -117,9 +119,12 @@
           <textarea id="spot-text" rows="9" readonly></textarea>
         </label>
       </details>
-      <button type="button" class="visit" id="spot-copy">プロンプトをコピー</button>
+      <button type="button" class="spot-prompt" id="spot-main-prompt">通常のイラスト作成に戻す</button>
+      <button type="button" class="visit" id="spot-copy">イラスト作成プロンプトをコピー</button>
       <span id="spot-message" role="status"></span>
-      <p class="spot-hint">ChatGPTで同じキャラ画像とプロンプトを送信。本文イラスト２枚・専用サムネイル１枚・参加記事を作ります。</p>
+      <p class="spot-hint">登録済みのキャラは再入力不要（ChatGPTで参照できない場合だけ画像を添付）。別のキャラに変更する場合は新しい画像を添付してください。本文イラスト２枚と専用サムネイル１枚を作成します。</p>
+      <button type="button" class="visit" id="spot-article">イラストができたら note記事を作る</button>
+      <p class="spot-hint">イラストができた同じChatGPTチャットに「記事にする」と送るか、上のボタンで記事専用プロンプトをコピーしてください。画像の再生成は不要です。</p>
       <div class="spot-actions">
         <a id="spot-app" class="spot-prompt">アプリ版を開く</a>
         <a class="spot-prompt" href="../../../tower/chatgpt-web.html" target="_blank" rel="noopener">Web版を開く</a>

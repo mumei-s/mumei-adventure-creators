@@ -288,8 +288,14 @@ export function bindQualityAssist(container, { mode, getContext, repair, externa
     previousContext = context;
     render();
   }
+  function reset(){
+    entries.clear();pending.clear();invalidateManual();article.value='';title.value='';
+    for(const [role,row] of rows){row.preview.hidden=true;row.preview.removeAttribute('src');row.result.textContent='未添付';}
+    for(const input of files.querySelectorAll('input[type=file]'))input.value='';
+    previousContext='';render();
+  }
   return {
-    accept, refresh,
+    accept, refresh, reset,
     get checking() { return Boolean(pending.size); },
     problems: selection => {
       const problems = [];

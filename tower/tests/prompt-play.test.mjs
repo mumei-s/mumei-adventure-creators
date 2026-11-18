@@ -7,7 +7,7 @@ const coreUrl=asModule(src);
 const qualityUrl=asModule(await readFile(new URL('../quality-assist.js',import.meta.url),'utf8'));
 const {makeRoomPrompt,residentPost,articleCardBlock,insightUrl,towerUrl,hostNoteUrl}=await import(coreUrl);
 const spotSource=await readFile(new URL('../../halloween-exhibition/preview/diorama-city/spot-illustration.js',import.meta.url),'utf8');
-const {makeSpotPrompt}=await import(asModule(spotSource
+const {makeSpotPrompt,spotReferenceInstructions}=await import(asModule(spotSource
   .replace(/\.\.\/\.\.\/\.\.\/tower\/prompt-play\.js\?v=[\d-]+/,coreUrl)
   .replace(/\.\.\/\.\.\/\.\.\/tower\/quality-assist\.js\?v=\d+/,qualityUrl)));
 const app=await readFile(new URL('../app.js',import.meta.url),'utf8');
@@ -34,4 +34,16 @@ test('note cards contain raw URL lines, not bracket markup',()=>{
   const block=articleCardBlock([['企画主',hostNoteUrl],['INSIGHT',insightUrl]]);
   assert.equal(block,'企画主\n\n'+hostNoteUrl+'\n\nINSIGHT\n\n'+insightUrl);
   assert.ok(residentPost('部屋',towerUrl+'?room=1').split('\n').includes(insightUrl));
+});
+
+test('registered reference, new attachment and article follow-up are explicit',()=>{
+ const common={label:'カフェ',scene:'窓辺',href:'https://example.com/',id:'tester'};
+ const url='https://example.com/avatar.webp';
+ const registered=makeSpotPrompt({...common,referenceMode:'registered',referenceUrl:url});
+ assert.ok(registered.includes(url));
+ assert.match(registered,/IDは再質問しない/);
+ assert.match(registered,/今回のイラストをnoteの記事にしますか/);
+ assert.match(spotReferenceInstructions({referenceMode:'local'}),/別チャット/);
+ assert.match(spotReferenceInstructions({referenceMode:'attachment'}),/今回添付する新しい/);
+ assert.doesNotMatch(makeSpotPrompt({...common,referenceMode:'attachment'}),/登録済みアバター画像URL/);
 });

@@ -5,7 +5,7 @@ import { distance, streetAreas, walkable, walkingRoute } from './paths.js?v=2026
 import { districtTraffic } from './traffic.js?v=1';
 import { cafeStory, venues, venueSpawn, venueWalkable } from './venues.js?v=20261118';
 import { bindActivities, playgroundPose } from './district-activities.js?v=20261118';
-import { bindSpotIllustration } from './spot-illustration.js?v=20261118-0838';
+import { bindSpotIllustration } from './spot-illustration.js?v=202611180955';
 import { districtCamera, exteriorHeight } from './camera.js?v=20261118';
 import { TOWER_API, OWNER_STORAGE, avatarImageUrl, readWalkDraft, rememberWalker } from '../../../tower/avatar-travel.js?v=20261118';
 
@@ -97,13 +97,14 @@ if (area.image) {
   document.title=`${area.title}｜Atelier Tower`;
 }
 
+let activeSpotActor=null;
 async function chooseWalker() {
   let actor;
   const roomLink=new URL(visitTower);
   if (onDraft) {
     root.dataset.walkerState='loading';
     citizen.style.visibility='hidden';
-    actor={ source:onDraft.avatar.source, atlas:onDraft.avatar.atlas, custom:true, name:onDraft.name || onDraft.noteId };
+    actor={ source:onDraft.avatar.source, atlas:onDraft.avatar.atlas, custom:true, noteId:onDraft.noteId, name:onDraft.name || onDraft.noteId };
   } else {
     const roomId=currentUrl.searchParams.get('resident') || owner?.id;
     if (!/^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/.test(roomId ?? '')) return;
@@ -118,7 +119,7 @@ async function chooseWalker() {
     const profile=room.design?.avatarMode==='profile'&&room.profile?.photo;
     actor={id:roomId,source:custom ? avatarImageUrl(roomId,room.avatarVersion) : profile || '../../../tower/assets/resident.webp',
       atlas:custom&&room.design.world?.atlas, custom:Boolean(custom),
-      name:room.design.avatarName || room.profile.name || room.noteId};
+      noteId:room.noteId, name:room.design.avatarName || room.profile.name || room.noteId};
     roomLink.searchParams.set('room',roomId);
   }
   const image=new Image();
@@ -131,6 +132,7 @@ async function chooseWalker() {
     await Promise.race([image.decode(),
       new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('walker')),12000);})]);
   } finally {clearTimeout(timer);}
+  activeSpotActor=actor;
   if (actor.id) rememberWalker(actor);
   citizen.replaceChildren(image,seatedFrame);
   paintAvatar=actor.custom || actor.atlas ? autoResidentWalker(image,{atlas:Boolean(actor.atlas)}) : (_stride,_moving,dx) => {
@@ -486,7 +488,7 @@ function openSpot() {
   const shopping=venueId==='mirrorRoom' ? activities.reflectionMemory() :
     venueId==='fair' ? activities.rideMemory() : activities.shoppingMemory(place?.shelf);
   showSpotPrompt({
-    label, scene:shopping ? scene+' '+shopping : scene, href:card.href, id:onDraft?.noteId || owner?.noteId,
+    label, scene:shopping ? scene+' '+shopping : scene, href:card.href, id:activeSpotActor?.noteId || onDraft?.noteId || owner?.noteId, avatarSource:activeSpotActor?.custom ? activeSpotActor.source : null,
   });
 }
 

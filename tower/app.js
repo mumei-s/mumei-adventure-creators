@@ -1,8 +1,8 @@
 import { scanAtlas } from '../halloween-exhibition/preview/diorama-city/atlas-layout.js?v=20261118-0838';
 import { characterSignature, designWorld, generatedInterior, roomPreview, roomStage } from './world.js?v=20261118-0838';
 import { cutaway, dailyStory, makeElevator } from './building.js?v=20261118';
-import { chatgptAppLink, makeArtifactPrompt, makeRoomPrompt, parseNoteId, residentPost, towerUrl, hostNoteUrl, insightUrl, bindCardButtons } from './prompt-play.js?v=20261118-0838';
-import { bindQualityAssist } from './quality-assist.js?v=20261118';
+import { chatgptAppLink, makeArtifactPrompt, makeRoomPrompt, parseNoteId, residentPost, towerUrl, hostNoteUrl, insightUrl, bindCardButtons } from './prompt-play.js?v=202611180955';
+import { bindQualityAssist } from './quality-assist.js?v=202611180955';
 import { TOWER_API, OWNER_STORAGE, avatarImageUrl, readWalkDraft, saveWalkDraft, clearWalkDraft, readTraveler, rememberWalker } from './avatar-travel.js?v=20261118';
 
 const PROOF_STORAGE = 'atelier-tower-proof-v1';
@@ -1068,7 +1068,7 @@ function selectPlayStep(importing) {
 
 function openPlay(importing = false, incoming = '') {
   play.target = null;
-  if (incoming || (!$('#prompt-id').value && $('#creator-id').value)) $('#prompt-id').value = incoming || $('#creator-id').value;
+  if (incoming || (!$('#prompt-id').value && (state.owner?.noteId || $('#creator-id').value))) $('#prompt-id').value = incoming || state.owner?.noteId || $('#creator-id').value;
   selectPlayStep(importing);
   syncPrompt();
   showDialog('prompt-dialog');

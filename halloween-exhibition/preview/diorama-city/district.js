@@ -5,7 +5,7 @@ import { distance, streetAreas, walkable, walkingRoute } from './paths.js?v=2026
 import { districtTraffic } from './traffic.js?v=1';
 import { cafeStory, venues, venueSpawn, venueWalkable } from './venues.js?v=20261118';
 import { bindActivities, playgroundPose } from './district-activities.js?v=20261118';
-import { bindSpotIllustration } from './spot-illustration.js?v=202611180955';
+import { bindSpotIllustration } from './spot-illustration.js?v=202611181359';
 import { districtCamera, exteriorHeight } from './camera.js?v=20261118';
 import { TOWER_API, OWNER_STORAGE, avatarImageUrl, readWalkDraft, rememberWalker } from '../../../tower/avatar-travel.js?v=20261118';
 

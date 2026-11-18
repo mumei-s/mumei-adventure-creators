@@ -1,7 +1,5 @@
 name: Tower browser checks
 on:
-  push:
-    branches: [atelier-guided-move-in]
   pull_request:
     paths:
       - 'tower/**'
@@ -11,6 +9,17 @@ on:
 permissions:
   contents: read
 jobs:
+  storage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify room assignment, facility limits and image retention in a disposable database
+        run: |
+          sudo systemctl start postgresql
+          sudo -u postgres createdb tower_ci
+          sudo -u postgres psql -v ON_ERROR_STOP=1 -d tower_ci -c 'create role anon; create role authenticated; create role service_role bypassrls;'
+          sudo -u postgres psql -v ON_ERROR_STOP=1 --single-transaction -d tower_ci -f - < tower/supabase/muumei-intake.sql
+          sudo -u postgres psql -v ON_ERROR_STOP=1 -d tower_ci -f - < tower/tests/intake.sql
   check:
     runs-on: ubuntu-latest
     timeout-minutes: 15

@@ -1234,6 +1234,8 @@ function openPlay(importing = false, incoming = '') {
   if(intakePreview && importing) status($('#import-status'),'受付準備中です。空室を選んで２枚を添付すると、この端末に保存できます。');
   syncPrompt();
   showDialog('prompt-dialog');
+  const first = importing && $('#prompt-id').value ? $('#entry-slot') : $('#prompt-id');
+  first.focus({preventScroll:true});
 }
 
 function routePlay() {

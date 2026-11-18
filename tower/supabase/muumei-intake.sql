@@ -373,6 +373,15 @@ select ready from creator_tower.publication_state where singleton;
 $$;
 revoke all on function public.creator_tower_archive_ready() from public,anon,authenticated;
 grant execute on function public.creator_tower_archive_ready() to service_role;
+create function public.creator_tower_pending_images() returns jsonb
+language sql stable security invoker set search_path='' as $$
+  select coalesce(jsonb_agg(jsonb_build_object('id',r.id,'version',r.version)),'[]'::jsonb)
+  from creator_tower.rooms r
+  where r.avatar_b64 is not null or r.design ? 'interiorB64'
+     or exists(select 1 from jsonb_each(coalesce(r.design->'transport','{}'::jsonb)) t where t.value ? 'base64');
+$$;
+revoke all on function public.creator_tower_pending_images() from public,anon,authenticated;
+grant execute on function public.creator_tower_pending_images() to service_role;
 create schema tower_visit_private;
 revoke all on schema tower_visit_private from public, anon, authenticated;
 create table tower_visit_private.counter (

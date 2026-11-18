@@ -1,5 +1,7 @@
 name: Tower browser checks
 on:
+  push:
+    branches: [atelier-guided-move-in]
   pull_request:
     paths:
       - 'tower/**'

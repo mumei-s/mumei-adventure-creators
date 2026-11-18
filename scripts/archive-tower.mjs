@@ -58,8 +58,13 @@ async function storeRoom(value,local){
   return room;
 }
 async function acknowledge(){
+  const pending=await origin('pending-images');
+  const versions=new Map(pending.rooms.map(room=>[room.id,room.version]));
   for(const name of await readdir(join(directory,'receipts'))){
+    const id=name.replace(/\.json$/,'');
+    if(!versions.has(id))continue;
     const receipt=JSON.parse(await readFile(join(directory,'receipts',name),'utf8'));
+    if(receipt.version!==versions.get(id))continue;
     const res=await fetch(publicRoot+'rooms/'+name,{cache:'no-store',signal:AbortSignal.timeout(12000)});
     if(!res.ok||digest(Buffer.from(await res.arrayBuffer()))!==receipt.roomSha256)continue;
     await json(endpoint,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({action:'ack_public_images',...receipt})});

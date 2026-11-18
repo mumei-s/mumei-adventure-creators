@@ -482,6 +482,13 @@ Deno.serve(async (request: Request) => {
     const url = new URL(request.url);
     const view = url.searchParams.get("view") ?? "list";
     if (view === "archive-status") return json({ready:await intakeReady()});
+    if (view === "pending-images") {
+      const response=await fetch(BASE+'/rest/v1/rpc/creator_tower_pending_images',{
+        method:'POST',headers:{apikey:SERVICE_KEY,Authorization:'Bearer '+SERVICE_KEY,'Content-Type':'application/json'},
+        body:'{}',signal:AbortSignal.timeout(5000)});
+      if(!response.ok)return fail('unavailable');
+      return json({rooms:await response.json()});
+    }
     if (view === "list") return json(await rpc("list"));
     if (view === "facilities") return json(await rpc("facilities"));
     if (view === "preview") {

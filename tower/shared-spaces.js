@@ -169,6 +169,7 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
     const space=sharedSpaces[id];if(!space)return;
     controller?.abort();controller=new AbortController();current=id;
     const level=id==='sky'?(getCatalog()?.floors??12)+1:id==='owner'?(getCatalog()?.floors??12)+2:space.floor;
+    travel.setFloor(level);
     title.textContent=`${floorLabel(level)} · ${space.title}`;
     details.replaceChildren(make('p','',space.note));announce('');
     const traveler=getActor();

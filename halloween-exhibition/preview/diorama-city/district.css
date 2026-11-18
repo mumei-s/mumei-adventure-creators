@@ -52,10 +52,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,
 .city-world {position:absolute;top:0;left:0;width:1000px;height:667px;transform-origin:top left;will-change:transform}
 .city-world > :not(.locations) {pointer-events:none}
 .district-scene,.city-plate,.city-lights,.transit,.locations,.venue-plate {position:absolute;inset:0;width:100%;height:100%}
-.city-plate {object-fit:fill;filter:brightness(calc(1.14 - .43 * var(--night))) saturate(calc(.94 + .12 * var(--night)))}
-.venue-plate {object-fit:fill;filter:brightness(calc(1.13 - .31 * var(--night))) saturate(calc(.96 + .06 * var(--night)))}
+.city-plate {object-fit:fill;filter:brightness(calc(1.14 - .43 * var(--night))) saturate(calc(.94 + .12 * var(--night))) brightness(var(--game-brightness,1))}
+.venue-plate {object-fit:fill;filter:brightness(calc(1.13 - .31 * var(--night))) saturate(calc(.96 + .06 * var(--night))) brightness(var(--game-brightness,1))}
 .park-sky {display:none}
-#city-world[data-venue="park"] .venue-plate {filter:brightness(calc(1.08 - .18 * var(--night) - .24 * var(--deep-night,0)))}
+#city-world[data-venue="park"] .venue-plate {filter:brightness(calc(1.08 - .18 * var(--night) - .24 * var(--deep-night,0))) brightness(var(--game-brightness,1))}
 #city-world[data-venue="park"] .park-sky {
   display:block;position:absolute;inset:0;opacity:var(--deep-night,0);mix-blend-mode:multiply;
   background:linear-gradient(180deg,#0f1e50c9,transparent 58%);

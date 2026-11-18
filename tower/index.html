@@ -15,12 +15,13 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://xxhaerjvrgmnadxjqetz.supabase.co; img-src 'self' data: blob: https://assets.st-note.com https://xxhaerjvrgmnadxjqetz.supabase.co; object-src 'none'; base-uri 'none'; form-action 'self'">
   <title>Atelier Tower｜無名S note</title>
   <link rel="stylesheet" href="./style.css?v=5">
-  <link rel="stylesheet" href="./world.css?v=20261118-spaces">
+  <link rel="stylesheet" href="./world.css?v=20261118-controls">
   <link rel="stylesheet" href="./prompt-play.css?v=3">
   <link rel="stylesheet" href="./shared-spaces.css?v=20261118-spaces-5">
   <link rel="stylesheet" href="./quality-assist.css?v=20261118">
   <link rel="stylesheet" href="../halloween-exhibition/preview/diorama-city/walk-pad.css?v=2">
-  <script type="module" src="./app.js?v=20261118-spaces-5"></script>
+  <link rel="stylesheet" href="./game-shell.css?v=20261118-controls">
+  <script type="module" src="./app.js?v=20261118-controls"></script>
 </head>
 <body id="top">
   <a href="#main" class="skip">本文へ</a>
@@ -34,9 +35,17 @@
         <a class="nav-item" href="#floors">フロア案内</a>
         <a class="nav-item nav-town" href="../halloween-exhibition/preview/diorama-city/?arrival=tower">近未来街区 <span aria-hidden="true">↗</span></a>
         <button type="button" class="button outline header-key" id="my-room">自分の部屋</button>
+        <button type="button" data-game-settings>設定</button>
       </nav>
     </div>
   </header>
+
+  <nav class="game-home-links shell" aria-label="ホーム画面への追加とAtelierの入口">
+    <button type="button" data-game-install>ホーム画面に追加</button>
+    <a href="https://mumei-s.github.io/note-insight/">INSIGHT</a>
+    <a href="../halloween/">Atelier<small>イラスト作成ツール</small></a>
+    <a href="../halloween-exhibition/preview/town/?arrival=future-gate">元の街へ戻る<small>時空の歪みの手前</small></a>
+  </nav>
 
   <main class="shell" id="main">
     <section class="hero" aria-labelledby="hero-title">
@@ -229,7 +238,7 @@
       <header class="dialog-bar">
         <button type="button" class="quiet" data-close="room-dialog">← 戻る</button>
         <span id="room-address"></span>
-        <div class="room-header-actions"><a class="quiet" href="./">トップ</a><button type="button" class="quiet" id="share-room" hidden>共有</button></div>
+        <div class="room-header-actions"><a class="quiet" href="./">トップ</a><button type="button" class="quiet" data-game-settings>設定</button><button type="button" class="quiet" id="share-room" hidden>共有</button></div>
       </header>
       <div id="room-content"></div>
       <p id="room-status" class="inline-status" role="status"></p>
@@ -326,7 +335,7 @@
   <noscript><p class="shell">部屋を見学するにはJavaScriptを有効にしてください。</p></noscript>
 
   <dialog id="shared-dialog" class="shared-dialog" aria-labelledby="shared-title">
-    <header class="dialog-bar"><button type="button" id="shared-back" class="quiet">← 戻る</button><h2 id="shared-title"></h2><button type="button" id="shared-info" class="quiet" aria-expanded="true" aria-controls="shared-nav shared-details">案内をしまう</button><button type="button" id="shared-exit" class="quiet">街へ →</button></header>
+    <header class="dialog-bar"><button type="button" id="shared-back" class="quiet">← 戻る</button><h2 id="shared-title"></h2><button type="button" id="shared-info" class="quiet" aria-expanded="true" aria-controls="shared-nav shared-details">案内をしまう</button><button type="button" class="quiet" data-game-settings>設定</button><button type="button" id="shared-exit" class="quiet">街へ →</button></header>
     <nav id="shared-nav" aria-label="共用施設の行き先"></nav>
     <div class="shared-scroll"><div id="shared-content"></div><p id="shared-status" role="status"></p><div id="shared-details"></div></div>
     <div id="shared-controls"></div>

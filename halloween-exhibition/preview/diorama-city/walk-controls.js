@@ -1,4 +1,5 @@
 import { bindDirectionPad, protectGameSurface } from '../maze/game-input.js?v=district-1';
+import { readPadMode } from '../control-preferences.js';
 
 export const moveVector = {
   forward:[0,-1], 'forward-right':[1,-1], right:[1,0], 'back-right':[1,1],
@@ -41,7 +42,7 @@ export function bindWalking(root,pad,{change,step,signal,blocked=()=>false}={}) 
     change(length ? vector.map(value=>value/length) : null);
   };
   const directionPad = bindDirectionPad(pad, {
-    blocked, diagonal:true,
+    blocked, diagonal:true, mode:()=>document.body.dataset.padMode??readPadMode(),
     onChange(value){held=value;update();},
   });
   pad.addEventListener('pointerdown',()=>{touchedAt=performance.now();},{capture:true,signal});

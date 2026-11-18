@@ -1,11 +1,14 @@
 import { scanAtlas } from '../halloween-exhibition/preview/diorama-city/atlas-layout.js?v=20261118-sprites-2';
-import { characterSignature, designWorld, generatedInterior, roomPreview, roomStage } from './world.js?v=20261118-spaces-5';
-import { cutaway, dailyStory, makeElevator } from './building.js?v=20261118-spaces-5';
-import { bindSharedSpaces } from './shared-spaces.js?v=20261118-spaces-5';
+import { characterSignature, designWorld, generatedInterior, roomPreview, roomStage } from './world.js?v=20261118-controls';
+import { cutaway, dailyStory, makeElevator } from './building.js?v=20261118-controls';
+import { bindSharedSpaces } from './shared-spaces.js?v=20261118-controls';
 import { bindSpotIllustration } from '../halloween-exhibition/preview/diorama-city/spot-illustration.js?v=202611181359';
 import { chatgptAppLink, makeArtifactPrompt, makeRoomPrompt, parseNoteId, residentPost, towerUrl, hostNoteUrl, insightUrl, bindCardButtons } from './prompt-play.js?v=202611181359';
 import { bindQualityAssist } from './quality-assist.js?v=202611180955';
 import { TOWER_API, OWNER_STORAGE, avatarImageUrl, readWalkDraft, saveWalkDraft, clearWalkDraft, readTraveler, rememberWalker } from './avatar-travel.js?v=20261118';
+import { initGameShell } from './game-shell.js?v=20261118-controls';
+
+initGameShell({ page: 'tower' });
 
 const PROOF_STORAGE = 'atelier-tower-proof-v1';
 const storyFallback = 'https://note.com/almabrillante/n/n2ded809d9016';

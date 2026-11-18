@@ -258,14 +258,14 @@ body:has(dialog[open]) .world-mini :is(.world-resident,.world-sprite,.world-glow
   position:absolute;inset:0;
   width:100%;height:100%;
   object-fit:cover;object-position:center 61%;
-  filter:brightness(calc(1.15 - .26 * var(--night,.4)));
+  filter:brightness(calc(1.15 - .26 * var(--night,.4))) brightness(var(--game-brightness,1));
 }
 .world-photo-suite {border-color:#7d6e5c}
 .world-photo-suite::before {display:none}
 .world-photo-suite .world-resident {height:calc(52% * var(--size-depth))}
-.world-generated .suite-interior {filter:none;object-position:center bottom}
-.world-generated[data-light="warm"] .suite-interior {filter:sepia(.15) saturate(1.08)}
-.world-generated[data-light="blue"] .suite-interior {filter:hue-rotate(-8deg) brightness(.91)}
+.world-generated .suite-interior {filter:brightness(var(--game-brightness,1));object-position:center bottom}
+.world-generated[data-light="warm"] .suite-interior {filter:sepia(.15) saturate(1.08) brightness(var(--game-brightness,1))}
+.world-generated[data-light="blue"] .suite-interior {filter:hue-rotate(-8deg) brightness(.91) brightness(var(--game-brightness,1))}
 .world-stage .world-resident .world-sprite {display:block;object-fit:contain}
 .world-stage .world-resident .world-sprite[hidden] {display:none}
 .sprite-atlas-source {opacity:0}

@@ -1,4 +1,4 @@
-import { makeWalkPad, bindWalking } from '../halloween-exhibition/preview/diorama-city/walk-controls.js?v=1';
+import { makeWalkPad, bindWalking } from '../halloween-exhibition/preview/diorama-city/walk-controls.js?v=20261118-controls';
 import { hostPortrait, hostWalker, residentWalker, autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=20261118-spaces-5';
 import { applyDistrictLight } from '../halloween-exhibition/preview/diorama-city/scene-time.js?v=1';
 import { TOWER_API } from './avatar-travel.js?v=20261118';
@@ -183,7 +183,8 @@ function attachMotion(frame,scene,walker,obstacles,updateAvatar,signal,inputRoot
       pose();
       return;
     }
-    const speed=Math.min(elapsed*(shared ? .61 : .55),vector ? Infinity : length);
+    if(blocked()){vector=null;target=null;last=0;pose();return;}
+    const speed=Math.min(elapsed*(shared ? .61 : .55)*(Number(document.body.dataset.walkSpeed)||1),vector ? Infinity : length);
     const a=clamp(x+dx/length*speed,bounds.left,bounds.right);
     const b=clamp(z+dz/length*speed*.78,bounds.far,bounds.near);
     const oldX=x,oldZ=z;
@@ -212,9 +213,10 @@ function attachMotion(frame,scene,walker,obstacles,updateAvatar,signal,inputRoot
     destination(shared ? .5+(screenX-.5)/.96 : .5+(screenX-.5)/(.74+.29*depth),depth);
     scene.focus({preventScroll:true});
   },{signal});
+  const blocked=()=>document.hidden||!frame.closest('dialog[open]')||Array.from(document.querySelectorAll('dialog[open]')).at(-1)!==frame.closest('dialog');
   bindWalking(inputRoot ?? frame,controls,{
     signal,
-    blocked:()=>!frame.closest('dialog[open]')||Array.from(document.querySelectorAll('dialog[open]')).at(-1)!==frame.closest('dialog'),
+    blocked,
     change(value){vector=value;target=null;run();},
     step([dx,dz]){destination(x+dx*.1,z+dz*.1);},
   });

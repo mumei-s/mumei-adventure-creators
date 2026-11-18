@@ -1,4 +1,4 @@
-import { roomStage } from './world.js?v=20261118-spaces-5';
+import { roomStage } from './world.js?v=20261118-controls';
 import { readTraveler, readWalkDraft, rememberWalker, TOWER_API, avatarImageUrl } from './avatar-travel.js?v=20261118';
 import { hostPortrait, autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=20261118-spaces-5';
 

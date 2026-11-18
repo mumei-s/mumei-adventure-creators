@@ -1,4 +1,4 @@
-import { makeWalkPad, bindWalking } from './walk-controls.js?v=1';
+import { makeWalkPad, bindWalking } from './walk-controls.js?v=20261118-controls';
 import { avatarSnapshot, hostWalker, residentWalker, autoResidentWalker } from './host-avatar.js?v=20261118-spaces-5';
 import { applyDistrictLight } from './scene-time.js?v=1';
 import { distance, streetAreas, walkable, walkingRoute } from './paths.js?v=20261118';
@@ -8,11 +8,13 @@ import { bindActivities, playgroundPose } from './district-activities.js?v=20261
 import { bindSpotIllustration } from './spot-illustration.js?v=202611181359';
 import { districtCamera, exteriorHeight } from './camera.js?v=20261118';
 import { TOWER_API, OWNER_STORAGE, avatarImageUrl, readWalkDraft, rememberWalker } from '../../../tower/avatar-travel.js?v=20261118';
+import { initGameShell } from '../../../tower/game-shell.js?v=20261118-controls';
+
+const gameShell=initGameShell({page:'city'});
 
 const el=id=>document.getElementById(id);
 const root=el('district'), view=el('city-view'), world=el('city-world'), citizen=el('citizen');
 const pad=makeWalkPad(), clock=el('clock'), dialog=el('place-dialog'), visit=el('visit');
-const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 let paintAvatar=hostWalker(citizen.querySelector('img'));
 const drawTraffic=districtTraffic(el('transit'));
 const currentUrl=new URL(location.href);
@@ -60,7 +62,8 @@ const activities=bindActivities(activityDialog,{
 const showSpotPrompt=bindSpotIllustration(spotDialog);
 const blocked=()=>transition || scenePending ||
   (Boolean(root.dataset.walkerState)&&root.dataset.walkerState!=='ready') ||
-  Boolean(motion) || dialog.open || activityDialog.open || spotDialog.open;
+  Boolean(motion) || Boolean(document.querySelector('dialog[open]'));
+document.addEventListener('atelier:menu-open',()=>{vector=null;route=[];});
 
 async function loadBackdrop(image, source, alt) {
   const request=++sceneRequest;
@@ -282,7 +285,7 @@ function finishMotion(exit) {
 
 function startMotion(kind) {
   motion={kind, started:performance.now(), origin:[...position], pumps:0};
-  if (reduced.matches) {
+  if (!gameShell.motionAllowed()) {
     finishMotion(playgroundPose(motion,motion.started+10000).exit);
     return;
   }
@@ -332,16 +335,20 @@ function tick(time) {
     clock.textContent=update.time;
     lastLight=time;
   }
-  if (!venue && areaId==='tower' && (!reduced.matches || lastTraffic===-Infinity) && time-lastTraffic>34) {
-    drawTraffic(reduced.matches ? 0 : time/1000,lightLevel);
+  if (!venue && areaId==='tower' && (gameShell.motionAllowed() || lastTraffic===-Infinity) && time-lastTraffic>34) {
+    drawTraffic(gameShell.motionAllowed() ? time/1000 : 0,lightLevel);
     lastTraffic=time;
   }
-  if (motion) animateMotion(time);
+  if (motion) {
+    if (document.querySelector('dialog[open]')) motion.started+=elapsed*1000;
+    else if (!gameShell.motionAllowed()) finishMotion(playgroundPose(motion,motion.started+10000).exit);
+    else animateMotion(time);
+  }
   else if (!blocked() && (vector || route.length)) {
     const target=route[0];
     const move=vector || [target[0]-position[0],target[1]-position[1]];
     const length=Math.hypot(...move);
-    const step=Math.min(elapsed*88,vector ? Infinity : length);
+    const step=Math.min(elapsed*88*gameShell.preferences.speed,vector ? Infinity : length);
     let dx=0,dy=0;
     if (length>.001) {
       const next=[position[0]+move[0]/length*step,position[1]+move[1]/length*step];
@@ -459,7 +466,7 @@ function openPlace() {
     const veil=el('passage');
     veil.textContent=place.cross ? `${streetAreas[place.cross.area].title}へ` : nearby==='gate'?'クリエイターエリアへ':'Atelier Towerへ';
     veil.hidden=false;
-    if (reduced.matches) location.assign(destination);
+    if (!gameShell.motionAllowed()) location.assign(destination);
     else setTimeout(()=>location.assign(destination),510);
     return;
   }

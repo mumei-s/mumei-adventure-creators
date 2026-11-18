@@ -3,6 +3,10 @@ on:
   schedule:
     - cron: '*/10 * * * *'
   workflow_dispatch:
+  workflow_run:
+    workflows: ['名鑑を公開']
+    branches: [main]
+    types: [completed]
 permissions:
   contents: write
   actions: write
@@ -11,6 +15,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   archive:
+    if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_repository.full_name == github.repository)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

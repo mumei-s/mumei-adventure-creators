@@ -53,6 +53,14 @@ const design={title:'月の書斎',theme:'story',light:'natural',avatarMode:'res
     await page.locator('.move-in-complete').getByRole('button',{name:'記事にする'}).click();
     const article=await page.inputValue('#move-article-text');
     for(const text of ['@'+noteId,'101号室','1280×650','本文イラスト１','本文イラスト２','添付は任意',id]) assert.ok(article.includes(text),text);
+    for (const [kind,version] of [['avatar','1'],['interior','b'.repeat(24)]]) {
+      assert.ok(article.includes('/published/media/'+id+'/'+kind+'-'+version+'.img'));
+      const staged = new URL(article.match(new RegExp('https://[^\\s]+[?]view='+kind+'[^\\s]+'))[0]);
+      assert.equal(staged.origin,'https://slamzhgsawfnmwlejgqp.supabase.co');
+      assert.deepEqual([...staged.searchParams],[['view',kind],['id',id],['v',version]]);
+    }
+    assert.ok(!article.includes('f'.repeat(64)));
+    assert.ok(article.includes('「無名S note」と表記') && article.includes('本名・姓は記事にも画像にも載せません'));
     assert.deepEqual(calls,['preview','begin','confirm']);assert.deepEqual(errors,[]);
     console.log('PASS lobby, avatar, room preference, ID-bearing return, vacant unit, both images, ownership challenge and optional four-part article.');
   }finally{await browser.close();}

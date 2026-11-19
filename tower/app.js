@@ -411,11 +411,19 @@ function walkFromRoom(room) {
   location.assign(url);
 }
 
+function articleImageReference(id, kind, version) {
+  const published = mediaUrl(id, kind, version);
+  if (!published) return '';
+  const intake = new URL(TOWER_API);
+  intake.search = new URLSearchParams({ view: kind, id, v: String(version) }).toString();
+  return published + '\nこの画像が公開先にまだ届いていない場合：' + intake.href;
+}
+
 function openMoveArticle(room) {
   const address = formatRoom(room.slot);
   const href = roomUrl(room.id).href;
-  const avatar = room.design.avatarMode === 'custom' ? mediaUrl(room.id,'avatar',room.avatarVersion) : room.profile.photo;
-  const interior = mediaUrl(room.id,'interior',room.design.world?.artwork);
+  const avatar = room.design.avatarMode === 'custom' ? articleImageReference(room.id, 'avatar', room.avatarVersion) : room.profile.photo;
+  const interior = articleImageReference(room.id, 'interior', room.design.world?.artwork);
   $('#move-article-text').value = makeMoveInArticlePrompt({id:room.noteId, title:titleFor(room), address, href, avatar, interior});
   status($('#move-article-status'));
   showDialog('move-article-dialog');

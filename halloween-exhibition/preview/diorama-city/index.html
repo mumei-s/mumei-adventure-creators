@@ -21,7 +21,7 @@
   <link rel="stylesheet" href="./walk-pad.css?v=2">
   <link rel="stylesheet" href="../../../tower/quality-assist.css?v=202611181820">
   <link rel="stylesheet" href="../../../tower/game-shell.css?v=20261118-city2">
-  <script type="module" src="./district.js?v=20261119-review"></script>
+  <script type="module" src="./district.js?v=20261119-owner"></script>
   <script type="module" src="../../../tower/visit-counter.js?v=20261119-community1"></script>
 </head>
 <body>
@@ -52,7 +52,7 @@
       <div class="park-sky" aria-hidden="true"></div>
       <div id="mirror-reflections" class="mirror-reflections" aria-hidden="true" hidden><span></span><span></span><span></span></div>
       <div id="citizen" class="citizen">
-        <img data-src="./assets/host-portrait.webp" alt="無名S note" draggable="false">
+        <img alt="" hidden draggable="false">
       </div>
       <div id="street-residents" class="street-residents" aria-label="街を歩く住人"></div>
       <div id="locations" class="locations"></div>
@@ -90,8 +90,8 @@
     <div id="street-roster" class="street-roster" hidden><label>街の住人 <select aria-label="話しかける住人"></select></label><button type="button">話しかける</button></div>
     <div class="player-info">
       <details class="tower-visits" data-tower-visits><summary>累計訪問 <strong aria-live="polite">—</strong></summary><small>マンションと近未来街区の合計。同じブラウザは日本時間で1日1回です。</small></details>
-      <p id="walker-name">無名S note</p>
-      <a id="walker-room" href="../../../tower/#prompt-import">自分のアバターで歩く</a>
+      <p id="walker-name">ビジター</p>
+      <a id="walker-room" href="../../../tower/#prompt-play">自分のアバターをつくる</a>
       <button id="retry-walker" class="spot-prompt" type="button" hidden>アバターを再読み込み</button>
     </div>
   </div>

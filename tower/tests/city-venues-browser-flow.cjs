@@ -3,10 +3,12 @@ const {chromium} = require('playwright');
 
 async function renderedFeet(page) {
   return page.evaluate(() => {
-    const sprite = document.querySelector('#citizen canvas:not([hidden]):not(.pose-frame)');
+    const sprite = document.querySelector('#citizen img:not([hidden]), #citizen canvas:not([hidden]):not(.pose-frame)');
     const plate = document.getElementById('venue-plate').getBoundingClientRect();
-    const box = sprite.getBoundingClientRect(), width = sprite.width, height = sprite.height;
-    const alpha = sprite.getContext('2d').getImageData(0, 0, width, height).data;
+    const box = sprite.getBoundingClientRect(), width = sprite.naturalWidth || sprite.width, height = sprite.naturalHeight || sprite.height;
+    const sample=document.createElement('canvas');sample.width=width;sample.height=height;
+    const ctx=sample.getContext('2d');ctx.drawImage(sprite,0,0);
+    const alpha = ctx.getImageData(0, 0, width, height).data;
     const scale = Math.min(box.width / width, box.height / height);
     for (let y = height - 1; y >= 0; y--) {
       let weight = 0, totalX = 0;
@@ -35,7 +37,7 @@ async function renderedFeet(page) {
       await page.goto(url.href,{waitUntil:'domcontentloaded'});
       await page.waitForSelector('#city-world[data-venue="' + name + '"]');
       await page.locator('#venue-plate').evaluate(image => image.decode());
-      await page.waitForSelector('#citizen canvas:not([hidden]):not(.pose-frame)');
+      await page.waitForSelector('#district[data-walker-state=ready]');
       for (const [key,spot] of Object.entries(venue.spots)) {
         await page.locator('#destination-menu summary').click();
         await page.locator('#venue-guide [data-head-to="' + key + '"]').click();

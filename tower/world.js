@@ -3,7 +3,7 @@ import { canWalkFloorSegment, facilityActorHeight, facilityFloors, facilityRoute
 import { makeWalkPad, bindWalking } from '../halloween-exhibition/preview/diorama-city/walk-controls.js?v=202611181820';
 import { hostPortrait, hostWalker, autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=202611181820';
 import { applyDistrictLight } from '../halloween-exhibition/preview/diorama-city/scene-time.js?v=1';
-import { TOWER_API } from './avatar-travel.js?v=20261119-review';
+import { TOWER_API } from './avatar-travel.js?v=20261119-owner';
 
 const viewNames = ['雨上がりの街', '木立と丘', '海辺の朝焼け', '星明かりの街'];
 const views = ['city', 'grove', 'coast', 'stars'];
@@ -358,7 +358,7 @@ export function roomStage(room,source,{mini=false,avatarName,signal,inputRoot,tr
   const walker=make('div','world-resident');
   let updateAvatar;
   function setTraveler(actor) {
-    const isHost=hostModel&&!actor;
+    const isHost=actor ? actor.host === true : hostModel;
     const atlas=actor?actor.atlas:usingAtlas(room);
     const custom=actor?(actor.custom??(atlas||actor.source?.startsWith(TOWER_API)||actor.source?.startsWith('data:'))):room.design?.avatarMode==='custom';
     walker.classList.toggle('portrait',actor?Boolean(actor.profile):room.design?.avatarMode==='profile'&&Boolean(room.profile?.photo));
@@ -370,7 +370,7 @@ export function roomStage(room,source,{mini=false,avatarName,signal,inputRoot,tr
       if(!mini){const warning=make('span','avatar-unavailable');warning.textContent='アバター画像を読み込めませんでした';walker.append(warning);}
     },{once:true});
     walker.replaceChildren(sprite);
-    updateAvatar=isHost&&!mini?hostWalker(sprite):custom||atlas?autoResidentWalker(sprite,{atlas:Boolean(atlas)}):null;
+    updateAvatar=isHost&&!mini?hostWalker(sprite):custom||atlas||actor?.visitor?autoResidentWalker(sprite,{atlas:Boolean(atlas)}):null;
     updateAvatar?.(0,false);
     walker.hidden=false;
   }

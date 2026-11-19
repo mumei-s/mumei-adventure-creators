@@ -19,10 +19,11 @@ function floorEdge(x) {
 function visibleFeet() {
   const actor = document.querySelector('#shared-content .world-resident');
   const scene = actor.closest('.world-stage').getBoundingClientRect();
-  const canvas = actor.querySelector('canvas:not([hidden])');
-  const box = canvas.getBoundingClientRect();
-  const {width, height} = canvas;
-  const pixels = canvas.getContext('2d').getImageData(0, 0, width, height).data;
+  const sprite=actor.querySelector('img:not([hidden]),canvas:not([hidden])');
+  const box=sprite.getBoundingClientRect(),width=sprite.naturalWidth || sprite.width,height=sprite.naturalHeight || sprite.height;
+  const sample=document.createElement('canvas');sample.width=width;sample.height=height;
+  const ctx=sample.getContext('2d');ctx.drawImage(sprite,0,0);
+  const pixels = ctx.getImageData(0, 0, width, height).data;
   const scale = Math.min(box.width/width, box.height/height);
   for (let y=height-1; y>=0; y--) {
     let mass=0, center=0;
@@ -88,7 +89,7 @@ async function run() {
       const page=await context.newPage();
       const url=new URL(tower);url.searchParams.set('space','concierge');
       await page.goto(url.href,{waitUntil:'domcontentloaded'});
-      await page.locator('#shared-content .world-resident canvas:not([hidden])').waitFor();
+      await page.locator('#shared-content .world-resident img').evaluate(image=>image.decode());
       await page.locator('#shared-content .suite-interior').evaluate(image=>image.decode());
       await toggleToOverview(page);
       await checkFeet(page,width,'entry');

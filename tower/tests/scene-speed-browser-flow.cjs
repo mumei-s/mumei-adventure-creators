@@ -78,33 +78,39 @@ const originalFeed = /\/assets\/(?:entrance-lounge|driveway|garage|bicycle-court
     await page.locator('.security-bank').click();
     await page.locator('.camera-viewer .security-feed img').evaluateAll(images=>Promise.all(images.map(img=>img.decode())));
     assert.equal(new Set(paths.filter(path=>originalFeed.test(path))).size,4,'Expanded monitors retain full resolution');
-    // A returning creator can use their own confirmed reference while the room is checked.
-    const id='bcd12345-abcd-4bcd-abcd-abcdef123456',noteId='test_resident';
+    // The location and prompts load in parallel with the owner's key check and image.
+    const id='bcd12345-abcd-4bcd-abcd-abcdef123456',noteId='test_resident',key='a'.repeat(64);
     const version=2,source=new URL('published/media/'+id+'/avatar-'+version+'.img',tower).href;
-    await page.addInitScript(({id,noteId,source})=>{
-      localStorage.setItem('atelier-tower-owner-v1',JSON.stringify({id,noteId}));
-      sessionStorage.setItem('atelier-tower-traveler-v1',JSON.stringify({id,noteId,source,custom:true,atlas:true,name:'テスト住人'}));
-    },{id,noteId,source});
-    let confirmRoom;
-    const pendingRoom=new Promise(resolve=>{confirmRoom=resolve;});
+    await page.addInitScript(owner=>localStorage.setItem('atelier-tower-owner-v1',JSON.stringify(owner)),{id,noteId,key});
+    let confirmRoom,showImage;
+    const keyCheck=new Promise(resolve=>{confirmRoom=resolve;});
+    const imageReady=new Promise(resolve=>{showImage=resolve;});
     const actor=await readFile(path.join(__dirname,'../../halloween-exhibition/preview/diorama-city/assets/host-walk.webp'));
     const headers={'access-control-allow-origin':'*'};
-    await page.route(source,route=>route.fulfill({body:actor,contentType:'image/webp',headers}));
-    await page.route('**/published/rooms/'+id+'.json',async route=>{
-      await pendingRoom;
-      await route.fulfill({json:{id,noteId,profile:{name:'テスト住人'},avatarVersion:version,design:{avatarMode:'custom',world:{atlas:true}}},headers});
+    await page.route(source,async route=>{
+      await imageReady;await route.fulfill({body:actor,contentType:'image/webp',headers});
+    });
+    await page.route('https://slamzhgsawfnmwlejgqp.supabase.co/functions/v1/creator-tower',async route=>{
+      const req=route.request();assert.deepEqual(req.postDataJSON(),{action:'visit',id});assert.equal(req.headers()['x-tower-key'],key);
+      await keyCheck;
+      await route.fulfill({json:{id,noteId,isOwner:true,profile:{name:'テスト住人'},avatarVersion:version,design:{avatarMode:'custom',world:{atlas:true}}},headers});
     });
     paths.length=0;
     await page.goto(new URL('?area=canal&spot=avenueShops.car',city).href,{waitUntil:'domcontentloaded'});
     await page.waitForSelector('#city-world[data-venue="avenueShops"]');
-    assert.equal(await page.getAttribute('#district','data-walker-state'),'loading');
     await page.click('#spot-prompt');
-    await page.selectOption('#spot-output','scene1');
+    assert.ok(!(await page.inputValue('#spot-text')).includes(source));
+    await page.locator('#spot-dialog .spot-return button').click();
+    const started=page.waitForRequest(source);
+    confirmRoom();await started;
+    assert.equal(await page.getAttribute('#district','data-walker-state'),'loading');
+    await page.click('#spot-prompt');await page.selectOption('#spot-output','scene1');
     const ownedPrompt=await page.inputValue('#spot-text');
-    assert.ok(ownedPrompt.includes('@'+noteId) && ownedPrompt.includes(source));
-    confirmRoom();
+    assert.ok(ownedPrompt.includes('@'+noteId) && ownedPrompt.includes(source) && !ownedPrompt.includes(key));
+    showImage();
     await page.waitForSelector('#district[data-walker-state="ready"]');
-    assert.equal(paths.some(p=>/\/host-(?:walk|seated|portrait)\.webp$/.test(p)),false,'A registered walker must not load the host sprites');
+    assert.equal(await page.textContent('#walker-name'),'テスト住人');
+    assert.equal(paths.some(p=>/\/host-(?:walk|seated|portrait)\.webp$/.test(p)),false,'A registered walker uses their own sprites');
     assert.deepEqual(errors,[]);
     console.log('PASS direct venue: one backdrop, zero exterior transfers; prompt copied while art was pending; district crossing, back and forward: one document; small and expanded cameras use the right resolution.');
   } finally {await browser.close();}

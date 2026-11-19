@@ -1,5 +1,5 @@
-import { publicView, decodeArtwork } from '../../../tower/public-directory.js?v=20261119-review';
-import {streetResidents} from './residents.js?v=20261119-review';
+import { decodeArtwork } from '../../../tower/public-directory.js?v=20261119-review';
+import {streetResidents} from './residents.js?v=20261119-owner';
 import { areaFor, firstScene, sceneArt } from './scene-entry.js?v=20261118-speed';
 import { canWalkFloorSegment, facilityRoute } from '../../../tower/facility-floors.js?v=20261118-city2';
 import { makeWalkPad, bindWalking } from './walk-controls.js?v=202611181820';
@@ -8,11 +8,11 @@ import { applyDistrictLight } from './scene-time.js?v=1';
 import { distance, streetAreas, walkable, walkingRoute } from './paths.js?v=20261118-speed';
 import { districtTraffic } from './traffic.js?v=202611181820';
 import { cafeStory, venues, venueSpawn, venueFloor } from './venues.js?v=20261118-city2';
-import { vehicleStudio } from '../../../tower/vehicle-studio.js?v=20261119-review';
+import { vehicleStudio } from '../../../tower/vehicle-studio.js?v=20261119-owner';
 import { bindActivities, createCityVisit, playgroundPose } from './district-activities.js?v=20261118-city2';
-import { bindSpotIllustration } from './spot-illustration.js?v=20261119-review';
+import { bindSpotIllustration } from './spot-illustration.js?v=20261119-owner';
 import { districtCamera, exteriorHeight } from './camera.js?v=20261118';
-import { TOWER_API, OWNER_STORAGE, avatarImageUrl, readWalkDraft, readTraveler, rememberWalker } from '../../../tower/avatar-travel.js?v=20261119-review';
+import { TOWER_API, OWNER_STORAGE, readWalkDraft, draftTraveler, visitor, residentTraveler, hasRoomKey, createPlayerSession } from '../../../tower/avatar-travel.js?v=20261119-owner';
 import { initGameShell } from '../../../tower/game-shell.js?v=20261118-controls';
 
 const gameShell=initGameShell({page:'city'});
@@ -23,6 +23,11 @@ const pad=makeWalkPad(), clock=el('clock'), dialog=el('place-dialog'), visit=el(
 let paintAvatar=()=>{};
 const drawTraffic=districtTraffic(el('transit'));
 let currentUrl=new URL(location.href);
+// Old shared links still open their destination. The local player comes from this device.
+if(currentUrl.searchParams.has('resident')){
+  currentUrl.searchParams.delete('resident');
+  history.replaceState(history.state,'',currentUrl);
+}
 let areaId=areaFor(currentUrl);
 let area=streetAreas[areaId], places=area.places;
 const arrival=currentUrl.searchParams.get('arrival');
@@ -33,8 +38,10 @@ let spawn=arrivalPoint(arrival);
 const towerHome=new URL('../../../tower/?from=diorama', location.href);
 let owner;
 try {owner=JSON.parse(localStorage.getItem(OWNER_STORAGE));} catch {}
-const onDraft=currentUrl.searchParams.get('walker')==='draft' ||
-  (!currentUrl.searchParams.has('resident')&&!owner?.id) ? readWalkDraft() : null;
+const player=createPlayerSession(()=>owner);
+const localDraft=readWalkDraft();
+const onDraft=(!hasRoomKey(owner) || (currentUrl.searchParams.get('walker')==='draft' && localDraft?.noteId===owner.noteId)) ? localDraft : null;
+window.addEventListener('storage',event=>{if(event.key===OWNER_STORAGE || event.key===null) location.reload();});
 const visitTower=new URL(towerHome);
 if (onDraft) {
   visitTower.searchParams.set('resume','walk');
@@ -62,7 +69,7 @@ citizen.append(seatedFrame);
 const actorFrame=()=>citizen.querySelector('canvas:not(.pose-frame):not([hidden]), img:not([hidden])');
 let visitStorage;
 try { visitStorage=window.sessionStorage; } catch { /* A private walk still works in memory. */ }
-const traveller=onDraft ? 'draft.'+onDraft.noteId : currentUrl.searchParams.get('resident') || owner?.id || 'guest';
+const traveller=onDraft ? 'draft.'+onDraft.noteId : hasRoomKey(owner) ? owner.id : 'guest';
 const journey=createCityVisit(visitStorage,traveller);
 const activities=bindActivities(activityDialog,{
   journey,
@@ -70,7 +77,7 @@ const activities=bindActivities(activityDialog,{
   motionAllowed:gameShell.motionAllowed,
   avatar:pose=>{
     paintAvatar(stride,false,pose==='saddle'?-1:0,pose==='saddle'?0:1);
-    return avatarSnapshot(actorFrame(),pose,{host:!activeSpotActor});
+    return avatarSnapshot(actorFrame(),pose,{host:activeSpotActor?.host===true});
   },
   status:text=>{spotStatus.textContent=text;},
 });
@@ -140,76 +147,44 @@ function setAreaInfo() {
 }
 setAreaInfo();
 
-const requestedRoom=currentUrl.searchParams.get('resident') || owner?.id;
-const streetPeople=streetResidents(el('street-residents'),el('street-roster'),onDraft?'':requestedRoom);
-const hasRoom=/^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/.test(requestedRoom ?? '');
-const previousWalker=!onDraft && hasRoom && requestedRoom===owner?.id ? readTraveler() : null;
-function ownedReference(walker) {
-  if(!walker?.custom || !walker.noteId || (owner.noteId && owner.noteId!==walker.noteId))return null;
-  const url=new URL(walker.source);
-  if(!url.pathname.endsWith('/'+requestedRoom+'/avatar-'+(url.pathname.match(/avatar-(\d+)\.img$/)?.[1]||'')+'.img'))return null;
-  return walker;
-}
-const knownWalker=onDraft ? {source:onDraft.avatar.source,atlas:onDraft.avatar.atlas,custom:true,
-  noteId:onDraft.noteId,name:onDraft.name || onDraft.noteId} : ownedReference(previousWalker);
-function walkerImage(actor) {
-  const image=new Image();
-  image.alt=actor.name;
-  image.draggable=false;
-  if(actor.custom&&actor.source.startsWith(TOWER_API))image.crossOrigin='anonymous';
-  image.src=actor.source;
-  return image;
-}
-let activeSpotActor=knownWalker;
-let preparedWalker=knownWalker ? walkerImage(knownWalker) : null;
-if(onDraft || hasRoom){
-  root.dataset.walkerState='loading';
-  citizen.style.visibility='hidden';
-} else {
-  const host=citizen.querySelector('img');
-  host.src=host.dataset.src;
-  paintAvatar=hostWalker(host);
-}
+const streetPeople=streetResidents(el('street-residents'),el('street-roster'));
+let activeSpotActor=null, walkerRequest=0;
 async function chooseWalker() {
-  let actor=knownWalker;
-  const roomLink=new URL(visitTower);
-  if(!onDraft && !hasRoom)return;
+  const request=++walkerRequest;
+  let actor=draftTraveler(onDraft) || visitor, keyNotice='';
   root.dataset.walkerState='loading';
   el('retry-walker').hidden=true;
-  if(!onDraft){
-    const roomId=requestedRoom;
-    const room=await publicView('room',{id:roomId});
-    const custom=room.design?.avatarMode==='custom'&&room.avatarVersion;
-    const profile=room.design?.avatarMode==='profile'&&room.profile?.photo;
-    actor={id:roomId,source:custom ? avatarImageUrl(roomId,room.avatarVersion) : profile || '../../../tower/assets/resident.webp',
-      atlas:custom&&room.design.world?.atlas, custom:Boolean(custom), reference:Boolean(profile),
-      noteId:room.noteId, name:room.design.avatarName || room.profile.name || room.noteId};
-    roomLink.searchParams.set('room',roomId);
+  if(!onDraft && hasRoomKey(owner)){
+    el('walker-name').textContent='部屋の鍵を確認中…';
+    try{
+      const room=await player.load();
+      if(room) actor=residentTraveler(room);
+      else keyNotice='部屋の鍵を確認できません。本人の部屋で鍵を再発行できます。';
+    }catch{keyNotice='部屋の鍵を確認できませんでした。もう一度確認できます。';}
   }
-  // The saved reference can start downloading alongside the authoritative room lookup.
-  // An edited avatar uses the newer version returned by the room API.
+  if(request!==walkerRequest)return;
   activeSpotActor=actor;
-  const image=preparedWalker && actor.source===knownWalker.source ? preparedWalker : walkerImage(actor);
-  preparedWalker=null;
-  image.alt=actor.name;
+  const image=new Image();
+  image.alt=actor.name;image.draggable=false;
+  if(actor.custom && actor.source.startsWith(TOWER_API))image.crossOrigin='anonymous';
+  image.src=actor.source;
   let timer;
-  try {
-    await Promise.race([decodeArtwork(image),
-      new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('walker')),12000);})]);
-  } finally {clearTimeout(timer);}
-  if (actor.id && actor.id === owner?.id) rememberWalker(actor);
+  try{
+    await Promise.race([decodeArtwork(image),new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('walker')),12000);})]);
+  }finally{clearTimeout(timer);}
+  if(request!==walkerRequest)return;
+  streetPeople.setPlayer(actor.id || '');
   citizen.replaceChildren(image,seatedFrame);
-  paintAvatar=actor.custom || actor.atlas ? autoResidentWalker(image,{atlas:Boolean(actor.atlas)}) : (_stride,_moving,dx) => {
-    if (dx&&!actor.reference) image.style.transform=`scaleX(${dx<0?-1:1})`;
-  };
+  paintAvatar=actor.host ? hostWalker(image) : autoResidentWalker(image,{atlas:actor.atlas});
   paintAvatar(stride,false);
-  el('walker-name').textContent=actor.name;
-  const link=el('walker-room');
-  link.href=roomLink.href;
-  link.textContent=onDraft ? '部屋の下見に戻る' : owner?.id===requestedRoom?'自分の部屋に戻る':'この住人の部屋へ';
+  el('walker-name').textContent=actor.name+(keyNotice?' · '+keyNotice:'');
+  const link=el('walker-room'),home=new URL(visitTower);
+  if(actor.id)home.searchParams.set('room',actor.id);
+  else if(!onDraft){home.search='';home.hash='prompt-play';}
+  link.href=home.href;link.textContent=actor.id?'自分の部屋に戻る':onDraft?'部屋の下見に戻る':'自分のアバターをつくる';
   root.dataset.walkerState='ready';
   citizen.style.visibility='';
-  el('retry-walker').hidden=true;
+  el('retry-walker').hidden=!keyNotice;
 }
 
 function failedWalker() {
@@ -369,7 +344,7 @@ function animateMotion(time) {
   citizen.style.setProperty('--actor-tilt',tilt+'deg');
   drawWalker(pose,...facing,!seated,groundY);
   if (seated && seatedFrame.hidden) {
-    const poseImage=avatarSnapshot(actorFrame(),'sit',{host:!activeSpotActor});
+    const poseImage=avatarSnapshot(actorFrame(),'sit',{host:activeSpotActor?.host===true});
     if (poseImage) {
       seatedFrame.dataset.poseArt=poseImage.dataset.poseArt;
       seatedFrame.width=poseImage.width;
@@ -513,7 +488,7 @@ function openPlace() {
   }
   if (venue) {
     if (place.vehicle) {
-      activities.openVehicle(place.label,vehicleStudio(place.vehicle,{id:onDraft?.noteId || owner?.noteId}));
+      activities.openVehicle(place.label,vehicleStudio(place.vehicle,{id:activeSpotActor?.noteId}));
       return;
     }
     if (!(place.ride || nearby==='lookout')) journey.remember(venueId,nearby);
@@ -575,7 +550,7 @@ function showDescription(place) {
 }
 
 function openSpot(article=false) {
-  if (transition || motion || (root.dataset.walkerState && !activeSpotActor) || document.querySelector('dialog[open]')) return;
+  if (transition || motion || document.querySelector('dialog[open]')) return;
   const place=(venue?.spots ?? places)[nearby];
   const setting=venues[place?.venue] ?? venue;
   const label=setting && place && !place.venue ? `${setting.title}・${place.label}` : setting?.title ?? place?.label;
@@ -592,12 +567,11 @@ function openSpot(article=false) {
   const settingId=place?.venue || venueId;
   const experience=journey.experience(settingId,place?.venue ? '' : nearby==='lookout' ? '' : nearby);
   const articleScene=place?.articleScene || setting?.articleScene || place?.description || setting?.alt || label;
-  const guest = activeSpotActor?.id && activeSpotActor.id !== owner?.id ? activeSpotActor.noteId : '';
   showSpotPrompt({
     label, scene, experience, articleScene, article:article===true,
-    href:card.href, id:onDraft?.noteId || owner?.noteId || '', guest,
-    occupied:Boolean(!onDraft && owner?.id && owner.noteId),
-    avatarSource:activeSpotActor?.custom||activeSpotActor?.reference ? activeSpotActor.source : null,
+    href:card.href, id:activeSpotActor?.noteId || '',
+    occupied:Boolean(activeSpotActor?.id && player.room?.id===activeSpotActor.id),
+    avatarSource:activeSpotActor?.custom||activeSpotActor?.profile||activeSpotActor?.host ? activeSpotActor.source : null,
     backgroundUrl:new URL(place?.image||setting?.image||area.image,location.href).href,
   });
 }

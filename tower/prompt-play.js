@@ -39,8 +39,7 @@ export function creatorReference(creator, registeredCreator, source) {
   return { referenceMode: 'attachment' };
 }
 
-export function characterReferenceInstructions({ referenceMode, referenceUrl, guest } = {}) {
-  if (referenceMode === 'guest') return '街で選んだ住人 @'+guest+' のキャラ資料：'+referenceUrl+'。この住人の姿を描きます。記事の著者は遊んだ人です。住人本人の体験や発言は作らないでください。';
+export function characterReferenceInstructions({ referenceMode, referenceUrl } = {}) {
   if (referenceMode === 'registered' && referenceUrl) {
     return '登録済みアバター画像URL：' + referenceUrl + '\n今回の添付があればその画像を優先し、それ以外はこのURLで本人の絵を確認してください。開けないときだけ、同じチャットにある本人の参照画像を使うか、元の画像１枚の添付を依頼してください。IDは再質問しないでください。';
   }
@@ -179,13 +178,12 @@ export function makeArticleDraft({ mode = 'spot', id, label, title, href, experi
 }
 
 export function makeArtifactPrompt({ kind, id, title, scene, href, reason, mode = 'spot', reference, backgroundUrl,
-  label, articleScene, articleClosing, experience, roomTitle, ideas, occupied, draft, guest } = {}) {
+  label, articleScene, articleClosing, experience, roomTitle, ideas, occupied, draft } = {}) {
   const context = [
     id ? 'noteクリエイターID：@' + id : kind !== 'article' && 'noteクリエイターID：［自分のID］',
     id && kind === 'article' && '公開プロフィール：https://note.com/' + id,
     title && '確定した記事タイトル：' + title,
     label && '場所：' + label,
-    guest && '街で遊んだキャラは住人 @'+guest+'。記事の著者は遊んだ人です。住人本人の発言や体験を作らないでください。',
     roomTitle && '部屋名：' + roomTitle,
     kind==='article' && articleScene && '舞台の説明：' + articleScene,
     kind==='article' && articleClosing && '舞台の続き：' + articleClosing,

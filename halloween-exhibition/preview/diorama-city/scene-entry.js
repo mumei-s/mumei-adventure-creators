@@ -1,4 +1,4 @@
-import { streetAreas } from './paths.js?v=20261118-speed';
+import { streetAreas } from './paths.js?v=20261119-scene';
 import { venues } from './venues.js?v=20261118-city2';
 
 export const areaFor=url=>url.searchParams.get('area')==='canal' ? 'canal' : 'tower';

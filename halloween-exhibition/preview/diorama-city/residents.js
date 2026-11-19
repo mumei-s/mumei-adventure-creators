@@ -1,4 +1,4 @@
-import { residentWalkers } from '../../../tower/resident-walkers.js?v=20261119-owner';
+import { residentWalkers } from '../../../tower/resident-walkers.js?v=20261119-scene';
 import { talkToResident } from '../../../tower/resident-talk.js?v=20261119-owner';
 import { publicView } from '../../../tower/public-directory.js?v=20261119-review';
 import { exteriorHeight } from './camera.js?v=20261118';

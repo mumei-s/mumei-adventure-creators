@@ -21,6 +21,7 @@ const lanes = [
 ];
 
 const places = {
+  shops:{label:'乗り物のショップ',action:'車・バイク・自転車のお店へ',point:points.northWalk,sign:[608,280],venue:'avenueShops'},
   gate:{label:'結界広場',action:'結界をくぐる',point:points.gate,sign:[220,399],link:'../town/?arrival=future-gate',
     scene:'青緑に光る結界が雨上がりの広場に浮かぶ。主人公が光へ手を伸ばす瞬間を横から描く。'},
   station:{label:'高架駅',action:'駅前を見学する',point:points.station,sign:[136,276],
@@ -75,7 +76,7 @@ const canalPlaces = {
     image:'./assets/street-south-court.webp', alt:'花の咲いた木を囲んで円形のベンチが並ぶ回遊広場',
     scene:'並木道が円形ベンチに続く広場。花の下で足を止め、木漏れ日と石畳の模様を眺める。',
     description:'並木道から続く回遊広場。高架側から運河までぐるりと歩き、対岸の灯りと街の暮らしを眺められます。'},
-  avenue:{label:'中央大通り',action:'通りの車・バイク・自転車のお店へ',point:canalPoints.crossing,sign:[499,258],venue:'avenueShops',
+  avenue:{label:'中央大通り・乗り物のショップ',action:'通りの車・バイク・自転車のお店へ',point:canalPoints.crossing,sign:[519,260],venue:'avenueShops',
     description:'南北に伸びる並木道。南の広場、駅側の通り、運河の遊歩道へ歩いて行けます。'},
   waterside:{label:'運河の広場',action:'水辺の灯りを眺める',point:canalPoints.waterside,sign:[822,113],
     image:'./assets/street-canal-plaza.webp', alt:'運河に張り出した円形の広場と、対岸のタワー',

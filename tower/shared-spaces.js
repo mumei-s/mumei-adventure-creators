@@ -1,12 +1,12 @@
 import { mediaUrl, setArtworkSource } from './public-directory.js?v=20261119-review';
-import { residentWalkers } from './resident-walkers.js?v=20261119-owner';
+import { residentWalkers } from './resident-walkers.js?v=20261119-scene';
 import { displayVehicle, vehicleBays } from './vehicle-display.js?v=20261119-review';
-import { roomStage } from './world.js?v=20261119-owner';
+import { roomStage } from './world.js?v=20261119-scene';
 import { facilityFloors, facilityActorHeight } from './facility-floors.js?v=20261118-city2';
-import { visitor, residentTraveler, hasRoomKey, readWalkDraft, avatarImageUrl } from './avatar-travel.js?v=20261119-owner';
-import { autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=202611181820';
+import { visitor, residentTraveler, hasRoomKey, readWalkDraft, avatarImageUrl } from './avatar-travel.js?v=20261119-scene';
+import { autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=20261119-scene';
 
-import { vehicleStudio } from './vehicle-studio.js?v=20261119-owner';
+import { vehicleStudio } from './vehicle-studio.js?v=20261119-scene';
 
 export const sharedSpaces = {
   owner: { title:'オーナーズ・アトリエ', floor:14, image:'panorama-suite', note:'天空ラウンジの一つ上にある、タワーオーナーの専用室です。', scene:'天空ラウンジより上のオーナーズ・アトリエ。大きな窓と作品、運河都市のパノラマ。' },
@@ -84,6 +84,7 @@ export function bindSharedSpaces({getCatalog,getOwner,getTraveler:getActor,loadP
     if((savedVersions.get(room.id)??0)>room.version)return;
     savedVersions.set(room.id,room.version);
     const person={id:room.id,slot:room.slot,name:room.profile.name,noteId:room.noteId,version:room.version,
+      avatarMode:room.design.avatarMode,avatarVersion:room.avatarVersion,avatarName:room.design.avatarName,world:room.design.world,photo:room.profile.photo,
       engineer:room.design.engineer===true,manager:room.design.manager===true,transport:room.design.transport??{}};
     // A request begun before this write may still return its older public snapshot.
     if(session?.updates)session.updates.set(room.id,person);
@@ -205,7 +206,7 @@ export function bindSharedSpaces({getCatalog,getOwner,getTraveler:getActor,loadP
     details.append(panel);
     function paint(){
       const playerId=getActor()?.id;
-      const others=members.filter(person=>person.id!==playerId);
+      const others=members.filter(person=>person.id!==playerId && person.appearanceReady);
       const pageCount=Math.max(1,Math.ceil(others.length/waypoints.length));
       page=(page%pageCount+pageCount)%pageCount;pages.hidden=pageCount===1;
       pageText.textContent=(page+1)+' / '+pageCount+' 班';
@@ -232,7 +233,8 @@ export function bindSharedSpaces({getCatalog,getOwner,getTraveler:getActor,loadP
     function refresh(){
       const ready=view.facilityStatus==='ready',catalog=getCatalog();
       const byId=new Map((catalog?.rooms||[]).map(room=>[room.id,room]));
-      members=facilities.filter(person=>person[role]).sort((a,b)=>a.slot-b.slot).map(person=>({...byId.get(person.id),...person}));
+      members=facilities.filter(person=>person[role]).sort((a,b)=>a.slot-b.slot).map(person=>({...byId.get(person.id),...person,
+        appearanceReady:byId.has(person.id)||Boolean(person.avatarMode||person.avatarVersion||person.photo)}));
       const names=members.map(person=>person.name||person.noteId).join('、');
       roster.textContent=spec.title+' · '+(ready?(manager?members.length+' / 5人':members.length+'人')+'　'+(names||'参加者募集中'):view.facilityStatus==='error'?'名簿を再確認しています':'名簿を確認中…');
       const playerId=getActor()?.id;
@@ -465,20 +467,14 @@ export function bindSharedSpaces({getCatalog,getOwner,getTraveler:getActor,loadP
     const traveler=residentTraveler(verifiedRoom) || getActor();
     const room={id:'showroom',sharedSpace:id,profile:{name:space.title,articles:[]},
       design:{title:space.title,theme:'cinema',light:'natural',avatarMode:'resident'},draftInterior:{source:`./assets/${space.image}.webp`}};
-    const scene=roomStage(room,visitor.source,{traveler:traveler || visitor,signal:controller.signal,inputRoot:dialog,preparedInterior:view.interior});
+    const loadTraveler=hasRoomKey(getOwner()) && !traveler ? async()=>residentTraveler(await loadPlayer()) || visitor : null;
+    const onTraveler=actor=>{if(actor.id && view===session){illustrate.updateActor(actor);view.refresh?.();}};
+    const scene=roomStage(room,visitor.source,{traveler:traveler || visitor,loadTraveler,onTraveler,signal:controller.signal,inputRoot:dialog,preparedInterior:view.interior});
     const stage=scene.querySelector('.world-stage');stage.classList.add('shared-stage');stage.dataset.space=id;
     details.replaceChildren(make('p','',space.note));
     const controls=scene.querySelector('.world-control-dock');
     dock.hidden=false;dock.replaceChildren(controls);content.replaceChildren(scene);
 
-    if(hasRoomKey(getOwner()) && !traveler){
-      void loadPlayer().then(own=>{
-        if(view===session && own){
-          scene.setTraveler(residentTraveler(own));
-          view.refresh?.();
-        }
-      }).catch(()=>{});
-    }
     if(id==='lobby'||id==='driveway'){
       const join=()=>{hideSpace();removeSpaceFromUrl();enterTower();};
       const entry=action('ここから入居する',join,'facility-action lobby-entry');
@@ -523,6 +519,7 @@ export function bindSharedSpaces({getCatalog,getOwner,getTraveler:getActor,loadP
       const actor=getActor();
       const href=new URL(location.href);href.search='';href.searchParams.set('space',id);href.hash='';
       illustrate({label:space.title,scene:space.scene,articleScene:space.scene,href:href.href,id:actor?.noteId,
+        vehicles:actor?.vehicles,vehiclePlace:id==='parking'?'garage':id,
         avatarSource:actor?.custom||actor?.profile||actor?.host ? actor.source : undefined,
         backgroundUrl:new URL(`./assets/${space.image}.webp`,location.href).href,occupied:Boolean(actor?.id)});
     });

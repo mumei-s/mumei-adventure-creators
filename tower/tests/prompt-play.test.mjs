@@ -3,6 +3,14 @@ import {test} from 'node:test';
 import {readFile} from 'node:fs/promises';
 import {makeMoveInArticlePrompt,makeRoomPrompt,makeArtifactPrompt,makeArticleDraft,creatorReference,residentPost,articleCardBlock,insightUrl,towerUrl,hostNoteUrl} from '../prompt-play.js';
 import {makeSpotPrompt,spotReferenceInstructions} from '../../halloween-exhibition/preview/diorama-city/spot-illustration.js';
+test('unregistered objects can be reused in the same chat without forcing a new attachment or inventing one',()=>{
+ const args={id:'writer',label:'バイク工房',scene:'工房の窓',href:'https://example.com/',item:{mode:'chat',label:'バイク'},referenceMode:'none'};
+ for(const prompt of [makeSpotPrompt(args),makeArtifactPrompt({...args,kind:'cover',reference:{referenceMode:'none'}})]){
+   assert.match(prompt,/バイクの画像が１つに定まれば、自動/);
+   assert.match(prompt,/物を追加せずそのまま場面を描く/);
+   assert.doesNotMatch(prompt,/登録した乗り物の画像URL|登録済みアバター画像URL/);
+ }
+});
 const app=await readFile(new URL('../app.js',import.meta.url),'utf8');
 const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
 test('avatar followed by a room request and ID-bearing return, recovery without new avatar, independent attachments',()=>{

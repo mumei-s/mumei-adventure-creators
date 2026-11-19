@@ -78,12 +78,12 @@ function carouselStage(scene, source) {
   const seats = [];
   for (let i=0;i<3;i++) {
     const mount = part('div','carousel-mount'+(i===0?' ride-carriage':''),scene);
-    const useBench = i===0 && source?.dataset.poseArt!=='seated';
+    const useBench = i===(source?.dataset.poseArt==='seated' ? 1 : 0);
     if (useBench) {
       mount.classList.add('carousel-coach');
-      part('div','coach-back',mount);
-      rider(mount,source);
-      part('div','coach-side',mount);
+      photo(mount,'coach-back','ride-gondola','金の彫刻と深緑のベルベットをあしらった回転木馬の客車');
+      if(i===0)rider(mount,source);
+      photo(mount,'coach-side','ride-gondola');
     } else {
       photo(mount,'ride-horse','ride-saddle');
       if (i===0)rider(mount,source);

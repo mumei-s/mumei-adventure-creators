@@ -1,4 +1,4 @@
-import { articleImageMarkers, articleChecks } from './quality-assist.js?v=20261119-review';
+import { articleImageMarkers, articleChecks } from './quality-assist.js?v=20261119-scene';
 
 export const towerUrl = new URL(import.meta.url).protocol === 'https:' && new URL(import.meta.url).pathname.includes('/admission/') ? new URL('./',import.meta.url).href : 'https://mumei-s.github.io/mumei-adventure-creators/tower/';
 export const hostNoteUrl = 'https://note.com/ss_yr';
@@ -53,6 +53,24 @@ export const characterArtInstructions = '顔立ち、髪の分け目・色、頭
 
 export const drawFirst = '参照がそろったら、前置き・構成案・プロフィール検索を挟まず画像生成を実行し、できた画像からこのチャットに表示してください。';
 export const checkArtwork = '表示する前に、今回の指定と実際の絵を照合してください。見える範囲で向き・全身の欠け・手足・縮尺・文字の見切れを確認し、食い違う部分だけ直します。正しい画像はそのまま使い、確認できない部分は断定しません。';
+export function spotSubjectInstructions(reference = {}, item) {
+  const empty = reference.referenceMode === 'none';
+  let person;
+  if (empty) person='人物なし。場面説明に動作があっても、人物・乗り手・アバター・人の映り込みは全画像から省く。人物資料は不要。';
+  else if (reference.referenceMode === 'registered') person='登録済みアバター画像URL：'+reference.referenceUrl+'\n人物にはこの登録画像を使う。参照先が開けなければ同じチャットの本人の人物画像を使い、必要なときだけ人物の元の画像１枚を依頼。IDは再質問しない。';
+  else if (reference.referenceMode === 'local') person='人物には同じチャットで確認した本人のキャラを使う。別チャットで見られなければ人物画像だけを依頼。';
+  else person='人物には今回添付する新しいキャラ画像、またはこのチャットで人物用に指定された本人・使用許可のある画像を使う。IDからほかの住人の絵を探さず、人物の資料がない場合だけその１枚を依頼。';
+  const lines=[person, !empty && characterArtInstructions];
+  if (item?.mode==='registered') lines.push('一緒に描くもの：自分の'+item.label+'。登録した乗り物の画像URL：'+item.url, item.fallback && '公開直後で上の画像が開けないときの予備URL：'+item.fallback, '画像を確認できないときは同じチャットの元絵を使い、必要ならその乗り物の画像だけを依頼。似た別の車体で代用しない。');
+  if (item?.mode==='attachment') lines.push('一緒に描くもの：乗り物・小物用の添付画像を使う。同じチャットですでに指定した物も使える。見られなければその物の画像だけを依頼。');
+  if (item?.mode==='chat') lines.push('このチャットで利用者が作った、または自分の物として指定した'+(item.label||'この場面に合う乗り物・小物')+'の画像が１つに定まれば、自動で一緒に描く。別の人の絵は使わない。絵がない場合や候補が複数で決まらない場合は、物を追加せずそのまま場面を描く。');
+  if (item?.mode==='none') lines.push('自分の乗り物・小物は今回の絵に追加しない。');
+  if (item?.mode==='registered' || item?.mode==='attachment') {
+    if (reference.referenceMode==='attachment' && item.mode==='attachment') lines.push('２枚とも添付する場合は、１枚目が人物、２枚目が乗り物・小物。役割を入れ替えない。');
+    lines.push('乗り物・小物の資料から人物を採用しない。指定の物を本文絵とサムネイルに入れ、形・配色・部品・縮尺を合わせる。屋内で乗り物が不自然なら入口の外や窓越しに見せる。資料URLやファイル名は記事本文に載せない。');
+  }
+  return lines.filter(Boolean).join('\n');
+}
 export function settingInstructions(backgroundUrl) {
   return backgroundUrl ? '場所の背景資料：' + backgroundUrl + '\n窓・照明・家具の配置と奥行きを保つ。画像を開けない場合は再検索せず、場面の説明を使ってください。' : '';
 }
@@ -110,8 +128,9 @@ export function cardPasteInstructions() {
   return '企画主の公開名は「無名S note」。個人名を補わない。カード用URLは必ず裸のURLだけを独立した行に置く。引用符、括弧、箇条書き記号、Markdownリンク、コード枠、URLの直後の句読点は禁止。本文の外に「note編集画面でURLを空行に個別に貼り、改行してカード表示を確認」と案内してください。';
 }
 
-export function articleCoverInstructions() {
-  return '【note専用サムネイル】記事と同じタイトルと「#無名Sプロンプト」を入れた横1280×650の独立画像。本文用の絵とは明確に異なる構図にし、顔・衣装・場所を保つ。上下左右7％を空け、中央トリミングでも顔と正しい題名が読めるように。生成できなかった画像だけ未完了と伝え、各１枚を出す短い指示を添えてください。';
+export function articleCoverInstructions(noPeople = false) {
+  const subject=noPeople ? '場所と選んだ物を主役に、人物なしで描く。' : '顔・衣装・場所を保つ。';
+  return '【note専用サムネイル】記事と同じタイトルと「#無名Sプロンプト」を入れた横1280×650の独立画像。本文用の絵とは明確に異なる構図にし、'+subject+'上下左右7％を空け、中央トリミングでも主役が収まり、正しい題名が読めるように。生成できなかった画像だけ未完了と伝え、各１枚を出す短い指示を添えてください。';
 }
 
 export function articleVoiceInstructions(id) {
@@ -177,8 +196,9 @@ export function makeArticleDraft({ mode = 'spot', id, label, title, href, experi
   return paragraphs.join('\n\n');
 }
 
-export function makeArtifactPrompt({ kind, id, title, scene, href, reason, mode = 'spot', reference, backgroundUrl,
+export function makeArtifactPrompt({ kind, id, title, scene, href, reason, mode = 'spot', reference, item, backgroundUrl,
   label, articleScene, articleClosing, experience, roomTitle, ideas, occupied, draft } = {}) {
+  const noPeople=mode==='spot' && reference?.referenceMode==='none';
   const context = [
     id ? 'noteクリエイターID：@' + id : kind !== 'article' && 'noteクリエイターID：［自分のID］',
     id && kind === 'article' && '公開プロフィール：https://note.com/' + id,
@@ -187,6 +207,8 @@ export function makeArtifactPrompt({ kind, id, title, scene, href, reason, mode 
     roomTitle && '部屋名：' + roomTitle,
     kind==='article' && articleScene && '舞台の説明：' + articleScene,
     kind==='article' && articleClosing && '舞台の続き：' + articleClosing,
+    kind==='article' && noPeople && '選んだ絵は人物なし。そこに描かれた人物や体験を作り足さない。',
+    kind==='article' && item && item.mode!=='none' && '完成した絵に'+(item.label||'乗り物・小物')+'が写っているときだけ記事に触れる。乗った・買った等の体験は本人の記録に合わせる。',
     scene && (kind === 'article' ? '場面の設定（作画指定を含む）：' : '場面や希望：') + scene,
     ideas && '部屋に入れたいもの：' + ideas,
     experience && 'ゲームで実際に行ったこと：' + experience,
@@ -208,15 +230,15 @@ ${cardPasteInstructions()}
   const request = {
     avatar: '既存の部屋画像をそのまま使い、透明な正方形の４列×４行の歩行シートだけを生成してください。各行は正面・左向き・左斜め後ろ・真後ろ。各列は停止・左足・中間・右足。16マスに全身を１体ずつ描き、全コマで頭と靴を余白内に収め、足底の位置と体の縮尺をそろえてください。',
     interior: '既存アバターを再生成しないでください。横３対２の人物なしの部屋画像１枚だけを生成してください。下３分の１はアバターが歩ける床とし、家具は奥と両端に置きます。添付キャラや公開作品の好みが伝わる素材・景色・小物を選んでください。',
-    scene1: '本文イラスト１だけを横３対２で生成してください。広めの視点からこの場所が分かる特徴と人物の全身を描き、床に接した足と家具の縮尺・遠近を見比べてください。',
-    scene2: '本文イラスト２だけを横３対２で生成してください。１枚目に続く別の行動を、別の距離・角度から描いてください。手が触れる物、指の前後、視線の先をその行動に合わせます。同じ構図の色違いは避けてください。',
-    cover: articleCoverInstructions(),
+    scene1: '本文イラスト１だけを横３対２で生成してください。'+(noPeople?'引きの視点で場所と物の全体、接地と奥行きを描く。':'広めの視点からこの場所が分かる特徴と人物の全身を描き、床に接した足と家具の縮尺・遠近を見比べてください。'),
+    scene2: '本文イラスト２だけを横３対２で生成してください。'+(noPeople?'同じ場所と物を別の距離・角度からとらえ、光や素材の細部を描く。':'１枚目に続く別の行動を、別の距離・角度から描いてください。手が触れる物、指の前後、視線の先をその行動に合わせます。同じ構図の色違いは避けてください。'),
+    cover: articleCoverInstructions(noPeople),
   };
   return [
     '【#無名Sプロンプト｜画像１枚】', request[kind], drawFirst, context,
     kind === 'interior' ? '部屋の希望があれば、その内容で人物のいない部屋を描いてください。キャラ資料があるときは色や画風の手掛かりにだけ使います。' +
       (reference?.referenceUrl ? '\n配色・画風の資料：'+reference.referenceUrl : '') :
-      characterReferenceInstructions(reference) + '\n' + characterArtInstructions,
+      mode==='spot' ? spotSubjectInstructions(reference,item) : characterReferenceInstructions(reference) + '\n' + characterArtInstructions,
     settingInstructions(backgroundUrl), checkArtwork,
     'この１枚で完了。完成済みの他の画像を再生成しないでください。',
     mode === 'spot' && '完成後「今回のイラストをnoteの記事にしますか？『記事にする』と送ってください。」と案内。希望があれば場面・行動記録から本文と画像挿入位置をすぐに書く。' + articleVoiceInstructions(id),

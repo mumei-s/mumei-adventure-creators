@@ -1,4 +1,4 @@
-import { chatgptAppLink, towerUrl, checkArtwork } from './prompt-play.js?v=20261119-owner';
+import { chatgptAppLink, towerUrl, checkArtwork } from './prompt-play.js?v=20261119-scene';
 
 const models = {
   car: {name:'車', shop:'車のショールーム', space:'parking', bay:'地下駐車場', example:'深緑の小さなワゴン、アイボリーの屋根', details:'四輪の位置、タイヤの接地、窓とドアの境界、前後の灯火が自然につながる車体にする。'},

@@ -60,6 +60,7 @@ const design={title:'月の書斎',theme:'story',light:'natural',avatarMode:'res
       assert.deepEqual([...staged.searchParams],[['view',kind],['id',id],['v',version]]);
     }
     assert.ok(!article.includes('f'.repeat(64)));
+    assert.ok(article.includes('「無名S note」と表記') && article.includes('本名・姓は記事にも画像にも載せません'));
     assert.deepEqual(calls,['preview','begin','confirm']);assert.deepEqual(errors,[]);
     console.log('PASS lobby, avatar, room preference, ID-bearing return, vacant unit, both images, ownership challenge and optional four-part article.');
   }finally{await browser.close();}

@@ -110,9 +110,10 @@ export function articleCoverInstructions() {
 }
 
 export function articleVoiceInstructions(id) {
-  return id === 'ss_yr' ?
+  const credit = '企画主の名前は題名・本文・署名・画像・リンク見出しのすべてで「無名S note」と表記してください。会話や添付にある企画主の本名・姓は記事にも画像にも載せません。';
+  return credit + (id === 'ss_yr' ?
     '運営者・無名S note本人の文章は、読者に親しみを込めて語りかけ、顔文字を多めに使ってください。斜め向きの涙笑い絵文字は使わないでください。' :
-    '参加者本人の公開文章や会話で分かる文体を尊重してください。文体が分からなければ読みやすい一人称で書き、実際に遊んだと確認できない行動を体験談にしないでください。';
+    '参加者本人の公開文章や会話で分かる文体を尊重してください。文体が分からなければ読みやすい一人称で書き、実際に遊んだと確認できない行動を体験談にしないでください。');
 }
 
 function articleCards(mode, href) {

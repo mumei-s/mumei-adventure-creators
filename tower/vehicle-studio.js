@@ -1,4 +1,4 @@
-import { chatgptAppLink, towerUrl } from './prompt-play.js?v=20261118-speed';
+import { chatgptAppLink, towerUrl, checkArtwork } from './prompt-play.js?v=20261119-review';
 
 const models = {
   car: {name:'車', shop:'車のショールーム', space:'parking', bay:'地下駐車場', example:'深緑の小さなワゴン、アイボリーの屋根', details:'四輪の位置、タイヤの接地、窓とドアの境界、前後の灯火が自然につながる車体にする。'},
@@ -19,6 +19,7 @@ export function vehiclePrompt(kind, ideas, id, space) {
       '色・形・装備はおまかせ。同じ会話で私の作品や好みが分かる場合は、それを１つデザインに取り入れてください。',
     '指定した実写・アニメ・幻想などの画風を守ってください。斜め前から見て手前を向く構図で、車体全体と全ての車輪を余白の内側に収めます。' + model.details,
     '背景は本物のアルファ透過PNG。影はタイヤ直下に薄く。人物、文字、ロゴ、ナンバーの文字、背景の市松模様は描かず、車両単体を出力してください。',
+    checkArtwork,
     '完成したら、画像を保存して、自分の号室の区画へ登録するリンクを案内してください。\n' + parking.href,
   ].filter(Boolean).join('\n\n');
 }

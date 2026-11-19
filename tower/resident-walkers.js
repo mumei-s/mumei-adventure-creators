@@ -1,4 +1,5 @@
-import { avatarImageUrl } from './avatar-travel.js?v=20261119-community1';
+import { setArtworkSource } from './public-directory.js?v=20261119-review';
+import { avatarImageUrl } from './avatar-travel.js?v=20261119-review';
 import { autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=202611181820';
 
 const defaultResident=new URL('./assets/resident.webp',import.meta.url).href;
@@ -25,7 +26,7 @@ export function residentWalkers(layer,pointFor,position) {
         if(custom)art.crossOrigin='anonymous';
         if(photo)node.classList.add('profile-walker');
         const label=document.createElement('small');label.textContent=name;
-        node.append(art,label);layer.append(node);art.src=source;
+        node.append(art,label);layer.append(node);setArtworkSource(art,source);
         const pose=custom?autoResidentWalker(art,{atlas:person.world?.atlas===true}):null;
         actor={key,node,pose,slot:person.slot};actors.set(person.id,actor);
       }

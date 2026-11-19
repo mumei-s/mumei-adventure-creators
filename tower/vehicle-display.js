@@ -1,3 +1,5 @@
+import { decodeArtwork } from './public-directory.js?v=20261119-review';
+
 // Use the silhouette, including wheels and tall handlebars, as the displayed vehicle's bounds.
 export function trimTransparentEdges(canvas) {
   const {width,height}=canvas;
@@ -19,12 +21,12 @@ const presentations=new Map();
 export function displayVehicle(url) {
   if(presentations.has(url))return presentations.get(url);
   const ready=(async()=>{
-    const img=new Image();img.crossOrigin='anonymous';img.src=url;await img.decode();
+    const img=new Image();img.crossOrigin='anonymous';img.src=url;await decodeArtwork(img);
     const canvas=document.createElement('canvas');
     canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
     canvas.getContext('2d').drawImage(img,0,0);
     const cropped=trimTransparentEdges(canvas);
-    return cropped===canvas?url:cropped.toDataURL('image/webp',.96);
+    return cropped===canvas?img.src:cropped.toDataURL('image/webp',.96);
   })().catch(()=>{presentations.delete(url);return url;});
   if(presentations.size>=24)presentations.delete(presentations.keys().next().value);
   presentations.set(url,ready);

@@ -8,7 +8,7 @@ const { districtCamera, exteriorHeight } = await load('../../halloween-exhibitio
 const { streetAreas, walkingRoute, walkable } = await load('../../halloween-exhibition/preview/diorama-city/paths.js');
 import { venues, venueSpawn, venueWalkable } from '../../halloween-exhibition/preview/diorama-city/venues.js';
 const { atlasChecks, articleChecks, normalizeCardLines, pixelDifference } = await load('../quality-assist.js');
-const { makeArtifactPrompt } = await load('../prompt-play.js');
+import { makeArtifactPrompt } from '../prompt-play.js';
 import { playgroundPose } from '../../halloween-exhibition/preview/diorama-city/district-activities.js';
 import { readWalkDraft, saveWalkDraft, clearWalkDraft, WALK_DRAFT_STORAGE } from '../avatar-travel.js';
 
@@ -59,7 +59,7 @@ test('sprite inspection detects missing cells, opaque backdrops, and clipping wa
 
 test('article validation preserves raw card URLs and catches incomplete or premature articles', () => {
   const urls = ['https://note.com/ss_yr', 'https://mumei-s.github.io/note-insight/'];
-  const article = ['題名', '［ここに街のイラスト１］', '［ここに街のイラスト２］', '企画主・無名S note', ...urls, '#無名Sプロンプト'].join('\n\n');
+  const article = ['題名', '窓から広場が見えました。','［ここに街のイラスト１］', '［ここに街のイラスト２］', '企画主・無名S note', ...urls, '#無名Sプロンプト'].join('\n\n');
   assert.deepEqual(articleChecks(article, { title: '題名', urls }), []);
   assert.match(articleChecks(article.replace(urls[0], `[企画主](${urls[0]})`), { urls }).join(' '), /単独行/);
   assert.match(articleChecks(article.replace('題名', '入居しました'), { urls }).join(' '), /入居/);

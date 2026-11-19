@@ -59,7 +59,12 @@ const base = process.env.CITY_URL || 'http://127.0.0.1:4173/halloween-exhibition
     assert.match(await draft.inputValue(),/たまごサンドを1点.*260円.*紙袋/s);
     await draft.fill((await draft.inputValue())+'\n窓辺でひと休み。');
     await page.locator('#spot-article-draft button').click();
-    assert.ok((await page.evaluate(()=>navigator.clipboard.readText())).endsWith('窓辺でひと休み。'));
+    await page.locator('#spot-article-draft [role=status]').filter({hasText:'末尾のハッシュタグ'}).waitFor();
+    assert.ok((await draft.inputValue()).endsWith('窓辺でひと休み。'));
+    const corrected=(await draft.inputValue()).replace('#無名Sプロンプト\n窓辺でひと休み。','窓辺でひと休み。\n#無名Sプロンプト');
+    await draft.fill(corrected);
+    await page.locator('#spot-article-draft button').click();
+    assert.equal(await page.evaluate(()=>navigator.clipboard.readText()),corrected);
     await page.locator('#spot-article').click();
     assert.ok((await page.locator('#spot-text').inputValue()).includes('窓辺でひと休み。'));
     await reach('fair.carousel');

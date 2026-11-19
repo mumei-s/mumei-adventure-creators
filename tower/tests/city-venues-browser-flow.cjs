@@ -47,6 +47,14 @@ async function renderedFeet(page) {
         assert.ok(venueWalkable(foot,venue), name + '/' + key + ' visible foot at ' + foot);
         assert.equal(await page.locator('#visit').isEnabled(),true,name+' '+key);
         assert.equal(await page.locator('#place-name').textContent(),spot.label);
+        await page.click('#spot-prompt');
+        const prompt = await page.inputValue('#spot-text');
+        assert.ok(prompt.includes(spot.venue ? venues[spot.venue].title : spot.label),name+'/'+key+' prompt location');
+        const card = new URL((venues[spot.venue] || venue).card,url);
+        if (!spot.venue) card.searchParams.set('point',key);
+        assert.ok(prompt.split('\n').includes(card.href),name+'/'+key+' card');
+        assert.ok(prompt.includes('［ここに街のイラスト１］') && prompt.includes('［ここに街のイラスト２］'));
+        await page.locator('#spot-dialog .spot-return button').click();
       }
       console.log('PASS registered walk-to actions and visible feet on pictured floor: '+name+' ('+Object.keys(venue.spots).length+')');
     } finally { await page.close(); }

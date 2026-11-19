@@ -61,6 +61,41 @@ const design={title:'月の書斎',theme:'story',light:'natural',avatarMode:'res
     }
     assert.ok(!article.includes('f'.repeat(64)));
     assert.ok(article.includes('「無名S note」と表記') && article.includes('本名・姓は記事にも画像にも載せません'));
+    const panel=page.locator('#move-article-quality');
+    await panel.locator('summary').click();
+    await panel.getByLabel('記事とサムネイルのタイトル').fill('月の書斎の鍵');
+    const roomHref='https://mumei-s.github.io/mumei-adventure-creators/tower/?room='+id;
+    const manuscript=['月の書斎の鍵','企画主・無名S note','鍵を受け取り、青い飾りがついた本棚の前に座りました。',
+      '［ここにイラスト１］','お気に入りは窓辺のランプです。','［ここにイラスト２］',
+      'https://note.com/ss_yr',roomHref,'https://mumei-s.github.io/mumei-adventure-creators/tower/#prompt-play',
+      'https://mumei-s.github.io/note-insight/','#無名Sプロンプト'].join('\n');
+    await panel.getByLabel('生成した参加記事').fill(manuscript.replace('［ここにイラスト１］','［ここにアバター画像］'));
+    await panel.getByText(/［ここにイラスト１］ は本文中の独立した行/).waitFor();
+    await panel.getByLabel('生成した参加記事').fill(manuscript);
+    await panel.getByText(/URL・ハッシュタグの書式を確認しました/).waitFor();
+    const filesToCheck=await page.evaluate(()=>{
+      const canvas=document.createElement('canvas');canvas.width=1280;canvas.height=650;
+      const ctx=canvas.getContext('2d');
+      return ['#13768a','#af3272','#174427'].map((color,i)=>{
+        ctx.fillStyle=color;ctx.fillRect(0,0,1280,650);
+        ctx.fillStyle='#eee';ctx.fillRect(200*i+35,34+85*i,360,180);
+        return canvas.toDataURL().split(',')[1];
+      });
+    });
+    const inputs=panel.locator('input[type=file]');
+    const upload=(i,bytes)=>inputs.nth(i).setInputFiles({name:'illustration.png',mimeType:'image/png',buffer:Buffer.from(bytes,'base64')});
+    await upload(0,filesToCheck[0]);await upload(1,filesToCheck[0]);await upload(2,filesToCheck[2]);
+    await panel.locator('.quality-file').nth(1).getByText(/本文イラスト１と同じ画像/).waitFor();
+    assert.ok(await panel.getByRole('button',{name:'検査後の記事をコピー'}).isDisabled());
+    await upload(1,filesToCheck[1]);
+    for(const input of await panel.getByRole('checkbox').all()) await input.check();
+    await panel.getByRole('button',{name:'検査後の記事をコピー'}).click();
+    assert.equal(await page.evaluate(()=>navigator.clipboard.readText()),manuscript);
+    await panel.getByRole('button',{name:'記事だけ修正する'}).click();
+    const repair=await page.inputValue('#move-article-text');
+    assert.equal(JSON.parse(repair.split('\n').find(line=>line.startsWith('"'))),manuscript);
+    assert.ok(repair.split('\n').includes(roomHref));
+    assert.ok(!repair.includes('f'.repeat(64)));
     assert.deepEqual(calls,['preview','begin','confirm']);assert.deepEqual(errors,[]);
     console.log('PASS lobby, avatar, room preference, ID-bearing return, vacant unit, both images, ownership challenge and optional four-part article.');
   }finally{await browser.close();}

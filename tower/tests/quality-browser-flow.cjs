@@ -53,7 +53,7 @@ const { chromium } = require('playwright');
       const article = panel.querySelector('textarea');
       const title = panel.querySelector('input[maxlength="100"]');
       title.value = '  街の一枚  ';
-      article.value = ['# 街の一枚', '企画主・無名S note', '［ここに街のイラスト１］',
+      article.value = ['# 街の一枚', 'カフェの窓から運河を見ました。', '企画主・無名S note', '［ここに街のイラスト１］',
         '［ここに街のイラスト２］', '#無名Sプロンプト'].join('\n');
       article.dispatchEvent(new Event('input'));
       const checks = [...panel.querySelectorAll('input[type="checkbox"]')];

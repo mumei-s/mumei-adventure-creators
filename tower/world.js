@@ -1,9 +1,9 @@
-import { mediaUrl } from './public-directory.js?v=community1';
+import { mediaUrl, setArtworkSource } from './public-directory.js?v=20261119-review';
 import { canWalkFloorSegment, facilityActorHeight, facilityFloors, facilityRoute, registeredFloorFor } from './facility-floors.js?v=20261118-city2';
 import { makeWalkPad, bindWalking } from '../halloween-exhibition/preview/diorama-city/walk-controls.js?v=202611181820';
 import { hostPortrait, hostWalker, autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=202611181820';
 import { applyDistrictLight } from '../halloween-exhibition/preview/diorama-city/scene-time.js?v=1';
-import { TOWER_API } from './avatar-travel.js?v=20261119-community1';
+import { TOWER_API } from './avatar-travel.js?v=20261119-review';
 
 const viewNames = ['雨上がりの街', '木立と丘', '海辺の朝焼け', '星明かりの街'];
 const views = ['city', 'grove', 'coast', 'stars'];
@@ -129,7 +129,7 @@ function art(source, css, alt = '', mini = false) {
   image.draggable = false;
   if(mini) image.loading = 'lazy';
   image.decoding = 'async';
-  image.src = source;
+  setArtworkSource(image,source);
   return image;
 }
 

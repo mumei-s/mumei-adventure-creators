@@ -2,6 +2,7 @@ import { readFile, writeFile, mkdir, readdir, rm } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { artworkMime } from '../tower/quality-assist.js';
 
 const directory=fileURLToPath(new URL('../tower/published/',import.meta.url));
 const endpoint='https://slamzhgsawfnmwlejgqp.supabase.co/functions/v1/creator-tower';
@@ -23,9 +24,13 @@ function media(room){
   for(const item of items)if(!/^([0-9]+|[a-f0-9]{24})$/.test(String(item.version)))throw Error('Invalid image version');
   return items;
 }
-function publicRoom(value){
+function publicRoom(value,expected){
   const {id,slot,noteId,version,avatarVersion,profile,design,stamps,joinedAt}=value;
-  if(!uuid.test(id)||!Number.isInteger(slot)||!Number.isInteger(version)||!profile||!design)throw Error('Invalid room');
+  if(id!==expected.id || slot!==expected.slot || noteId!==expected.noteId)throw Error('Directory and room identity disagree');
+  if(!uuid.test(id)||!Number.isSafeInteger(slot)||slot<1||!Number.isSafeInteger(version)||version<1||
+     !/^[a-z0-9_]{1,32}$/.test(noteId)||!profile||!design)throw Error('Invalid room');
+  const articleUrl=new RegExp('^https://note\\.com/'+noteId+'/n/n[a-f0-9]{8,20}$');
+  if((profile.articles||[]).some(article=>!articleUrl.test(article.url)))throw Error('Article does not match the public note ID');
   const safe={};
   for(const key of ['title','avatarMode','avatarName','theme','light','welcome','pin','world','engineer','manager'])if(Object.hasOwn(design,key))safe[key]=design[key];
   safe.transport={};
@@ -36,24 +41,31 @@ function publicRoom(value){
   const pubProfile=Object.fromEntries(['name','description','photo','articles'].filter(k=>Object.hasOwn(profile,k)).map(k=>[k,profile[k]]));
   return {id,slot,noteId,version,avatarVersion,profile:pubProfile,design:safe,stamps,joinedAt};
 }
-async function storeRoom(value,local){
-  const room=publicRoom(value),dir=join(directory,'media',room.id);await mkdir(dir,{recursive:true});
+async function storeRoom(value,expected,local){
+  const room=publicRoom(value,expected),dir=join(directory,'media',room.id);await mkdir(dir,{recursive:true});
+  const receiptPath=join(directory,'receipts',room.id+'.json');
+  let previous;
+  try{previous=JSON.parse(await readFile(receiptPath,'utf8'));}
+  catch(error){if(error.code!=='ENOENT')throw error;}
   const items=media(room),kept=new Set();
   for(const item of items){
     const file=item.kind+'-'+item.version+'.img',path=join(dir,file);kept.add(file);
+    const recorded=previous?.items.find(old=>old.kind===item.kind && String(old.version)===String(item.version))?.sha256;
+    const valid=bytes=>bytes.length>0 && bytes.length<=307200 && artworkMime(bytes) && (!recorded || digest(bytes)===recorded);
     let bytes;
-    try{bytes=await readFile(path);if(!bytes.length)throw Error('Empty file');}
+    try{bytes=await readFile(path);if(!valid(bytes))throw Error('Invalid archived image: '+file);}
     catch(error){
       if(local)throw error;
       const u=new URL(endpoint);u.search=new URLSearchParams({view:['avatar','interior'].includes(item.kind)?item.kind:'vehicle',id:room.id,space:item.kind,v:String(item.version)});
       const response=await fetch(u,{signal:AbortSignal.timeout(18000)});if(!response.ok||!response.headers.get('content-type')?.startsWith('image/'))throw Error('Pending picture unavailable');
-      bytes=Buffer.from(await response.arrayBuffer());if(!bytes.length||bytes.length>307200)throw Error('Invalid picture size');await writeFile(path,bytes);
+      bytes=Buffer.from(await response.arrayBuffer());if(!valid(bytes))throw Error('Image format or digest mismatch: '+file);
+      await writeFile(path,bytes);
     }
     item.sha256=digest(bytes);
   }
   const jsonText=fmt(room);await writeFile(join(directory,'rooms',room.id+'.json'),jsonText);
   const receipt={id:room.id,version:room.version,roomSha256:digest(jsonText),items};
-  await writeFile(join(directory,'receipts',room.id+'.json'),fmt(receipt));
+  await writeFile(receiptPath,fmt(receipt));
   for(const file of await readdir(dir))if(!kept.has(file))await rm(join(dir,file));
   return room;
 }
@@ -71,7 +83,18 @@ async function acknowledge(){
   }
 }
 if(mode==='current') {
-  for (const file of ['list.json','facilities.json',...(await readdir(join(directory,'rooms'))).map(name=>'rooms/'+name)]) {
+  const files=['list.json','facilities.json',...(await readdir(join(directory,'rooms'))).map(name=>'rooms/'+name)];
+  const pending=await origin('pending-images');
+  for(const {id,version} of pending.rooms){
+    if(!uuid.test(id))throw Error('Invalid pending room');
+    const name='receipts/'+id+'.json';
+    let receipt;
+    try{receipt=JSON.parse(await readFile(join(directory,name),'utf8'));}
+    catch(error){if(error.code==='ENOENT')continue;throw error;}
+    if(receipt.version!==version)continue;
+    files.push(name,...receipt.items.map(item=>'media/'+id+'/'+item.kind+'-'+item.version+'.img'));
+  }
+  for (const file of files) {
     const response=await fetch(publicRoot+file,{cache:'no-store',signal:AbortSignal.timeout(12000)});
     if(!response.ok||digest(Buffer.from(await response.arrayBuffer()))!==digest(await readFile(join(directory,file))))process.exit(1);
   }
@@ -84,17 +107,21 @@ else{
   const local=mode==='local';
   for(const sub of ['media','rooms','receipts'])await mkdir(join(directory,sub),{recursive:true});
   const existing=await readdir(join(directory,'rooms'));
-  const catalog=local?null:await origin('list');
-  if(catalog&&!Array.isArray(catalog.rooms))throw Error('Invalid directory');
-  const ids=local?existing.map(name=>name.replace(/\.json$/,'')):catalog.rooms.map(r=>r.id);
-  if(ids.some(id=>!uuid.test(id))||new Set(ids).size!==ids.length)throw Error('Invalid room directory');
+  const catalog=local?JSON.parse(await readFile(join(directory,'list.json'),'utf8')):await origin('list');
+  if(!Array.isArray(catalog.rooms))throw Error('Invalid directory');
+  const ids=catalog.rooms.map(r=>r.id);
+  if(ids.some(id=>!uuid.test(id)) || ['id','slot','noteId'].some(key=>new Set(catalog.rooms.map(room=>room[key])).size!==ids.length))throw Error('Duplicate or invalid room directory');
+  if(local && (existing.length!==ids.length || existing.some(name=>!ids.includes(name.replace(/\.json$/,'')))))throw Error('Archived roster and room files disagree');
   if(!local){
     // An empty or partially migrated backend must never displace the live directory.
     const flag=await origin('archive-status');
     if(flag.ready!==true)throw Error('MUUMEI intake migration is not marked ready');
   }
   const rooms=[];
-  for(const id of ids)rooms.push(await storeRoom(local?JSON.parse(await readFile(join(directory,'rooms',id+'.json'),'utf8')):await origin('room',{id}),local));
+  for(const entry of catalog.rooms){
+    const value=local?JSON.parse(await readFile(join(directory,'rooms',entry.id+'.json'),'utf8')):await origin('room',{id:entry.id});
+    rooms.push(await storeRoom(value,entry,local));
+  }
   rooms.sort((a,b)=>a.slot-b.slot);
   const list=rooms.map(r=>({id:r.id,slot:r.slot,noteId:r.noteId,name:r.profile.name,photo:r.profile.photo,avatarName:r.design.avatarName,avatarVersion:r.design.avatarMode==='custom'?r.avatarVersion:null,avatarMode:r.design.avatarMode,title:r.design.title,theme:r.design.theme,light:r.design.light,world:r.design.world,joinedAt:r.joinedAt}));
   const residents=rooms.filter(r=>r.design.engineer||r.design.manager||Object.keys(r.design.transport).length).map(r=>({id:r.id,slot:r.slot,noteId:r.noteId,name:r.profile.name,version:r.version,manager:!!r.design.manager,engineer:!!r.design.engineer,transport:r.design.transport}));

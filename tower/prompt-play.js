@@ -1,3 +1,5 @@
+import { articleImageMarkers, articleChecks } from './quality-assist.js?v=20261119-review';
+
 export const towerUrl = new URL(import.meta.url).protocol === 'https:' && new URL(import.meta.url).pathname.includes('/admission/') ? new URL('./',import.meta.url).href : 'https://mumei-s.github.io/mumei-adventure-creators/tower/';
 export const hostNoteUrl = 'https://note.com/ss_yr';
 export const insightUrl = 'https://mumei-s.github.io/note-insight/';
@@ -37,7 +39,8 @@ export function creatorReference(creator, registeredCreator, source) {
   return { referenceMode: 'attachment' };
 }
 
-export function characterReferenceInstructions({ referenceMode, referenceUrl } = {}) {
+export function characterReferenceInstructions({ referenceMode, referenceUrl, guest } = {}) {
+  if (referenceMode === 'guest') return '街で選んだ住人 @'+guest+' のキャラ資料：'+referenceUrl+'。この住人の姿を描きます。記事の著者は遊んだ人です。住人本人の体験や発言は作らないでください。';
   if (referenceMode === 'registered' && referenceUrl) {
     return '登録済みアバター画像URL：' + referenceUrl + '\n今回の添付があればその画像を優先し、それ以外はこのURLで本人の絵を確認してください。開けないときだけ、同じチャットにある本人の参照画像を使うか、元の画像１枚の添付を依頼してください。IDは再質問しないでください。';
   }
@@ -50,24 +53,27 @@ export function characterReferenceInstructions({ referenceMode, referenceUrl } =
 export const characterArtInstructions = '顔立ち、髪の分け目・色、頭身、衣装と装身具を本人の絵に合わせてください。実写は肌・布・光の質感、アニメは輪郭・目・塗り、幻想画は筆致や発光の描き方を引き継ぎます。背景や別の登場人物の画風・顔を主人公に移さないでください。歩行シートの各マスは同じ１人の動作資料です。';
 
 export const drawFirst = '参照がそろったら、前置き・構成案・プロフィール検索を挟まず画像生成を実行し、できた画像からこのチャットに表示してください。';
+export const checkArtwork = '表示する前に、今回の指定と実際の絵を照合してください。見える範囲で向き・全身の欠け・手足・縮尺・文字の見切れを確認し、食い違う部分だけ直します。正しい画像はそのまま使い、確認できない部分は断定しません。';
 export function settingInstructions(backgroundUrl) {
   return backgroundUrl ? '場所の背景資料：' + backgroundUrl + '\n窓・照明・家具の配置と奥行きを保つ。画像を開けない場合は再検索せず、場面の説明を使ってください。' : '';
 }
 
 export function makeRoomPrompt({ id, description, articles = [], ideas, returnUrl = `${towerUrl}#prompt-import`, roomOnly = false, avatarOnly = false, reference } = {}) {
-  if (avatarOnly) return makeArtifactPrompt({ kind: 'avatar', id, scene: ideas, mode: 'room', reference });
-  if (roomOnly) {
-    const scene = [ideas, description, ...articles.slice(0, 5).map(article => article.title)].filter(Boolean).join('\n');
-    return makeArtifactPrompt({ kind: 'interior', id, scene, mode: 'room', reference }) +
-      '\n保存した部屋画像をTowerの個別添付欄に入れてください。\n' + returnUrl;
-  }
   const back = new URL(returnUrl);
   if (id) back.searchParams.set('creator', id);
   back.hash = 'prompt-import';
+  if (avatarOnly) return makeArtifactPrompt({ kind: 'avatar', id, scene: ideas, mode: 'room', reference }) +
+    '\n保存したアバターをTowerの個別添付欄に入れてください。\n' + back.href;
+  if (roomOnly) {
+    const scene = [ideas, description, ...articles.slice(0, 5).map(article => article.title)].filter(Boolean).join('\n');
+    return makeArtifactPrompt({ kind: 'interior', id, scene, mode: 'room', reference }) +
+      '\n保存した部屋画像をTowerの個別添付欄に入れてください。\n' + back.href;
+  }
   return `【#無名Sプロンプト｜Atelier Tower 入居用】
 noteクリエイターID：${id ? '@'+id : '［自分のnote ID］'}
 ${characterReferenceInstructions(reference)}
 ${characterArtInstructions}
+${checkArtwork}
 ① 最初にゲーム用アバター画像を１枚生成して表示する。${drawFirst}
 背景透過の正方形の歩行シート。４列×４行。上から正面、左向き、左斜め後ろ、真後ろ。各行は停止、左足前、中間、右足前。各マスに同じ人物の頭から靴までを収め、足底と縮尺をそろえる。枠線・文字・床を入れない。
 ② アバターを表示してから「どんなお部屋に住みたいですか？ 色や窓からの景色など、ひとことでも大丈夫です」と聞く。${ideas ? '候補として「'+ideas+'」を伝える。' : ''} ここで返事を待つ。
@@ -84,11 +90,11 @@ export function makeMoveInArticlePrompt({id, title, address, href, avatar, inter
     '入居確認済み。note IDは @'+id+'。入居先はAtelier Tower '+address+'号室「'+title+'」。',
     '登録したアバターと部屋を使ってください。画像の添付は任意です。今回の添付があれば該当するキャラや部屋の参考として優先します。登録画像は公開先から読み、まだ反映されていない画像だけ、その下の一時URLから読みます。どちらも開けない場合は同じチャットの元絵または部屋情報を使い、IDや追加添付を求めずに仕上げてください。画像の参照URLは記事本文に載せません。',
     avatar && '登録アバター：'+avatar, interior && '登録した部屋：'+interior,
-    characterArtInstructions,
+    characterArtInstructions, checkArtwork,
     '記事の題を一つ決めて、次の３枚を別々の完成画像として順に表示してください。事前の検索や長い説明は省きます。',
     articleCoverInstructions(),
     '本文イラスト１はエントランスで自分の部屋の鍵を受け取る場面。本文イラスト２は部屋に入ってお気に入りの場所で過ごす場面。画角・行動を変え、本文用の絵には文字を入れない。',
-    '続けて同じ題でnoteに貼れる記事を最後まで書く。［ここにイラスト１］［ここにイラスト２］を該当する段落の直後に置く。創作の場面を実生活の出来事と混同せず、プロフィールの外の名前・個人情報を推測しない。',
+    '続けて同じ題でnoteに貼れる記事を最後まで書く。'+articleImageMarkers('move-in').join('と')+'を該当する段落の直後の独立した行に１回ずつ置く。創作の場面を実生活の出来事と混同せず、プロフィールの外の名前・個人情報を推測しない。',
     articleVoiceInstructions(id), articleCards('room',href), cardPasteInstructions(), '最後の行は #無名Sプロンプト。',
   ].filter(Boolean).join('\n');
 }
@@ -116,17 +122,21 @@ export function articleVoiceInstructions(id) {
     '参加者本人の公開文章や会話で分かる文体を尊重してください。文体が分からなければ読みやすい一人称で書き、実際に遊んだと確認できない行動を体験談にしないでください。');
 }
 
-function articleCards(mode, href) {
+export function articleCardEntries(mode, href) {
   const cards = new Map([[hostNoteUrl, '企画主・無名S note']]);
-  if (href) cards.set(href, mode === 'room' ? '私の部屋' : 'この場所へ');
+  if (href) cards.set(href, mode === 'spot' ? 'この場所へ' : '私の部屋');
   cards.set(towerUrl + '#prompt-play', '自分のキャラで参加する');
   cards.set(insightUrl, 'noteの反応を分析する INSIGHT');
-  return articleCardBlock(Array.from(cards, ([url, label]) => [label, url]));
+  return Array.from(cards, ([url, label]) => [label, url]);
+}
+
+function articleCards(mode, href) {
+  return articleCardBlock(articleCardEntries(mode, href));
 }
 
 export function articleWritingInstructions({ id, mode = 'spot' } = {}) {
-  const room = mode === 'room';
-  const markers = room ? '［ここにアバター画像］と［ここに部屋画像］' : '［ここに街のイラスト１］と［ここに街のイラスト２］';
+  const room = mode !== 'spot';
+  const markers = articleImageMarkers(mode).join('と');
   return [
     '「記事にする」または記事作成の依頼を受けたら、その返答でタイトルと記事本文だけを書き上げてください。最初の行は記事タイトルです。質問、確認待ち、作業報告で終えないでください。画像は再生成しないでください。',
     '本文画像が０枚・１枚の場合、別チャットの場合、参照画像しかない場合も、画像の添付や確認を求めず、渡された舞台・場面を使って最後の行まで書いてください。読者に向けた具体的な場面から書き始め、制作手順や画像が足りない事情は本文に入れません。',
@@ -169,12 +179,13 @@ export function makeArticleDraft({ mode = 'spot', id, label, title, href, experi
 }
 
 export function makeArtifactPrompt({ kind, id, title, scene, href, reason, mode = 'spot', reference, backgroundUrl,
-  label, articleScene, articleClosing, experience, roomTitle, ideas, occupied, draft } = {}) {
+  label, articleScene, articleClosing, experience, roomTitle, ideas, occupied, draft, guest } = {}) {
   const context = [
     id ? 'noteクリエイターID：@' + id : kind !== 'article' && 'noteクリエイターID：［自分のID］',
     id && kind === 'article' && '公開プロフィール：https://note.com/' + id,
     title && '確定した記事タイトル：' + title,
     label && '場所：' + label,
+    guest && '街で遊んだキャラは住人 @'+guest+'。記事の著者は遊んだ人です。住人本人の発言や体験を作らないでください。',
     roomTitle && '部屋名：' + roomTitle,
     kind==='article' && articleScene && '舞台の説明：' + articleScene,
     kind==='article' && articleClosing && '舞台の続き：' + articleClosing,
@@ -205,7 +216,10 @@ ${cardPasteInstructions()}
   };
   return [
     '【#無名Sプロンプト｜画像１枚】', request[kind], drawFirst, context,
-    characterReferenceInstructions(reference), characterArtInstructions, settingInstructions(backgroundUrl),
+    kind === 'interior' ? '部屋の希望があれば、その内容で人物のいない部屋を描いてください。キャラ資料があるときは色や画風の手掛かりにだけ使います。' +
+      (reference?.referenceUrl ? '\n配色・画風の資料：'+reference.referenceUrl : '') :
+      characterReferenceInstructions(reference) + '\n' + characterArtInstructions,
+    settingInstructions(backgroundUrl), checkArtwork,
     'この１枚で完了。完成済みの他の画像を再生成しないでください。',
     mode === 'spot' && '完成後「今回のイラストをnoteの記事にしますか？『記事にする』と送ってください。」と案内。希望があれば場面・行動記録から本文と画像挿入位置をすぐに書く。' + articleVoiceInstructions(id),
   ].filter(Boolean).join('\n');
@@ -214,16 +228,27 @@ ${cardPasteInstructions()}
 export function bindArticleDraft(panel, getContext) {
   const field=panel.querySelector('textarea');
   const message=panel.querySelector('[role=status]');
-  let previous='';
+  let previous='', previousOwner;
   function refresh() {
-    const next=makeArticleDraft(getContext());
-    if(next!==previous) { field.value=next; previous=next; message.textContent=''; }
+    const context=getContext();
+    const owner=JSON.stringify([context.mode, context.id, context.href]);
+    const next=makeArticleDraft(context);
+    if(owner!==previousOwner || field.value===previous) field.value=next;
+    if(next!==previous || owner!==previousOwner) message.textContent='';
+    previous=next;
+    previousOwner=owner;
   }
   panel.addEventListener('toggle',()=>{if(panel.open)refresh();});
   panel.querySelector('button').addEventListener('click',async()=>{
+    refresh();
+    const context = getContext();
+    const mode = context.mode || 'spot';
+    const issues = articleChecks(field.value, {...context, mode, title:context.title?.trim() || undefined,
+      urls:articleCardEntries(mode,context.href).map(([,url])=>url)});
+    if (issues.length) { message.textContent=issues.join(' '); field.focus(); return; }
     try {
       await navigator.clipboard.writeText(field.value);
-      message.textContent='記事本文をコピーしました。noteの本文に貼り付けられます。';
+      message.textContent='本文の書式を確認してコピーしました。画像は作品の検査欄で確認できます。';
     } catch {
       field.focus();field.select();message.textContent='選択中の記事本文をコピーできます。';
     }

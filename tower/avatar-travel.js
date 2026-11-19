@@ -1,5 +1,5 @@
-import { mediaUrl } from './public-directory.js?v=community1';
-export const TOWER_API = 'https://slamzhgsawfnmwlejgqp.supabase.co/functions/v1/creator-tower';
+import { mediaUrl } from './public-directory.js?v=20261119-review';
+export { TOWER_API } from './public-directory.js?v=20261119-review';
 export const OWNER_STORAGE = 'atelier-tower-owner-v1';
 export const WALK_DRAFT_STORAGE = 'atelier-tower-walk-draft-v1';
 

@@ -71,6 +71,15 @@ const spaces=['owner','sky','lobby','concierge','driveway','bicycle','parking','
    await page.waitForTimeout(80);
    assert.equal(await page.locator('#shared-content .suite-interior').evaluate(i=>i.complete&&i.naturalWidth>0),true,space+' backdrop');
    assert.equal(await page.locator('#shared-content .world-resident canvas:not([hidden])').count(),1,space+' one actor');
+   if(name==='phone'){
+    await page.getByRole('button',{name:'ここでイラスト・note記事をつくる'}).click();
+    const prompt=await page.inputValue('#spot-text');
+    const url=new URL('http://127.0.0.1:4173/tower/');url.searchParams.set('space',space);
+    assert.ok(prompt.split('\n').includes(url.href),space+' facility article card');
+    const backdrop=await page.locator('#shared-content .suite-interior').getAttribute('src');
+    assert.ok(prompt.includes(new URL(backdrop,url).href),space+' illustration backdrop');
+    await page.locator('#spot-dialog .spot-return button').click();
+   }
    const clipped=await page.locator('#shared-content .shared-viewport').evaluate(e=>{const b=e.getBoundingClientRect(),d=e.closest('dialog').getBoundingClientRect();return b.width>0&&b.height>0&&b.right<=d.right+1;});assert.ok(clipped,space+' viewport');
    if(space==='concierge'){
     assert.equal(await page.locator('.security-feed').count(),4);
@@ -104,6 +113,17 @@ const spaces=['owner','sky','lobby','concierge','driveway','bicycle','parking','
      // The broad flat backdrop and transparent window must both survive a vehicle upload.
      let upload = root + '/tower/assets/prop-desk.webp';
      if (space === 'parking') {
+      const blank=await page.evaluate(()=>{
+       const canvas=document.createElement('canvas');
+       canvas.width=280;canvas.height=160;
+       const paint=canvas.getContext('2d');paint.fillStyle='navy';paint.fillRect(0,0,280,160);
+       return canvas.toDataURL().split(',')[1];
+      });
+      const parks=writes.filter(item=>item.action==='park').length;
+      await page.locator('.vehicle-upload input[type="file"]').setInputFiles({name:'car.png',mimeType:'image/png',buffer:Buffer.from(blank,'base64')});
+      await page.locator('.vehicle-upload button[type="submit"]').click();
+      await page.waitForFunction(()=>document.querySelector('#shared-status').textContent.includes('一色'));
+      assert.equal(writes.filter(item=>item.action==='park').length,parks);
       const source = await page.evaluate(() => {
        const canvas = document.createElement('canvas');
        canvas.width = 280; canvas.height = 160;

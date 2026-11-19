@@ -36,13 +36,42 @@ export function imageContentChecks(data) {
     '画像が一色で、絵柄を確認できません。完成した作品を選んでください。'];
 }
 
-function imageMatch(a, b) {
+export function imageMatch(a, b) {
   const difference = pixelDifference(a, b);
   if (difference >= .045) return '';
   // Sparse line drawings can have a very small average difference even when
   // individual strokes are entirely different. Only block a close pixel match.
   if (difference < .004 && a.every((channel, index) => Math.abs(channel - b[index]) <= 12)) return 'same';
   return 'similar';
+}
+
+export function sampleArtwork(image) {
+  const canvas = document.createElement('canvas');
+  canvas.width = canvas.height = 64;
+  const context = canvas.getContext('2d', { willReadFrequently: true });
+  context.drawImage(image, 0, 0, 64, 64);
+  return context.getImageData(0, 0, 64, 64).data;
+}
+
+export function artworkMatch(a, b) {
+  if (!a || !b) return '';
+  const match = imageMatch(a.fingerprint, b.fingerprint);
+  return imageMatch(a.original, b.original) === 'same' ? 'same' : match;
+}
+
+export function articleImageMarkers(mode) {
+  if (mode === 'room') return ['［ここにアバター画像］', '［ここに部屋画像］'];
+  if (mode === 'move-in') return ['［ここにイラスト１］', '［ここにイラスト２］'];
+  return ['［ここに街のイラスト１］', '［ここに街のイラスト２］'];
+}
+
+export function artworkMime(bytes) {
+  const starts = (at, signature) => signature.every((value, index) => bytes[at + index] === value);
+  if (starts(0,[137,80,78,71,13,10,26,10])) return 'image/png';
+  if (starts(0,[255,216,255])) return 'image/jpeg';
+  if (starts(0,[71,73,70,56]) && [55,57].includes(bytes[4]) && bytes[5]===97) return 'image/gif';
+  if (starts(0,[82,73,70,70]) && starts(8,[87,69,66,80])) return 'image/webp';
+  return '';
 }
 
 export function atlasChecks({ width, height, data }) {
@@ -96,9 +125,19 @@ export function articleChecks(text, { title, urls = [], mode = 'spot', occupied 
   const actualTitle = lines.find(Boolean)?.replace(/^#+\s*/, '');
   if (title !== undefined && !title.trim()) errors.push('記事とサムネイルのタイトルを入力してください。');
   else if (title && actualTitle !== title.trim()) errors.push('記事の先頭タイトルと入力したタイトルが一致しません。');
-  const markers = mode === 'room' ? ['［ここにアバター画像］', '［ここに部屋画像］'] :
-    ['［ここに街のイラスト１］', '［ここに街のイラスト２］'];
-  for (const marker of markers) if (!prose.includes(marker)) errors.push(`${marker} の挿入位置がありません。`);
+  const markers = articleImageMarkers(mode);
+  for (const marker of markers) {
+    const count = lines.filter(line => line === marker).length;
+    if (count !== 1) errors.push(`${marker} は本文中の独立した行に１回置いてください。`);
+  }
+  if (lines.includes(markers[1]) && lines.indexOf(markers[0]) > lines.indexOf(markers[1])) {
+    errors.push('本文の画像を１枚目、２枚目の順に置いてください。');
+  }
+  const content = lines.filter(Boolean).slice(1);
+  const narrative = content.some((line, i) => !markers.includes(line) &&
+    !/^(?:https?:\/\/|#|@|企画主[・\s]|［ここに)/u.test(line) &&
+    !urls.includes(content[i + 1]));
+  if (!narrative) errors.push('場面や体験を書いた記事本文を入れてください。');
   for (const url of urls) if (!lines.includes(url)) errors.push(`カード用URLを単独行にしてください。 ${url}`);
   if (lines.filter(Boolean).at(-1) !== '#無名Sプロンプト') errors.push('末尾のハッシュタグを #無名Sプロンプト にしてください。');
   if (!occupied && /入居しました|入居を完了しました|入居済みです|引っ越しが完了しました/.test(prose)) {
@@ -135,7 +174,8 @@ export function normalizeCardLines(text, urls) {
 }
 
 export async function inspectImage(source, role, { atlas = false } = {}) {
-  if (source instanceof File && (!/^image\/(png|jpeg|webp|gif)$/.test(source.type) || source.size > 10 * 1024 * 1024)) {
+  if (source instanceof File && (source.size > 10 * 1024 * 1024 ||
+      !artworkMime(new Uint8Array(await source.slice(0,12).arrayBuffer())))) {
     throw new Error('PNG・JPEG・WebP・GIFの10MB以下の画像を選んでください。');
   }
   const temporary = source instanceof Blob;
@@ -170,7 +210,9 @@ export async function inspectImage(source, role, { atlas = false } = {}) {
       if (width < 1280 || height < 650) errors.push('サムネイルは1280×650以上の画像が必要です。');
     }
     if (role.startsWith('scene') && ratio < 1.2) warnings.push('本文用は横３対２を推奨します。構図を確認してください。');
-    if (role === 'avatar' ? height < 160 || width < 32 : Math.min(width, height) < 200) {
+    const tooSmall = role === 'avatar' ? height < 160 || width < 32 :
+      role === 'vehicle' ? width < 100 || height < 80 : role !== 'reference' && Math.min(width, height) < 200;
+    if (tooSmall) {
       errors.push('画像が小さすぎます。元の完成画像を添付してください。');
     }
     canvas.width = canvas.height = 64;
@@ -209,7 +251,8 @@ export function bindQualityAssist(container, { mode, getContext, repair, externa
   note.placeholder = '例：衣装はそのまま、右手の指だけ直す';
   noteLabel.append(note);
   function requestRepair(role, issues) {
-    repair(role, title.value.trim(), [...issues, note.value.trim()].filter(Boolean).join('\n'));
+    repair(role, title.value.trim(), [...issues, note.value.trim()].filter(Boolean).join('\n'),
+      role === 'article' ? article.value : undefined);
   }
   function invalidateManual() {
     for (const input of manual.querySelectorAll('input')) input.checked = false;
@@ -311,7 +354,7 @@ export function bindQualityAssist(container, { mode, getContext, repair, externa
     const errors = [...entry.errors], warnings = [...entry.warnings];
     for (const otherRole of selection) {
       if (role === otherRole) continue;
-      const match = imageMatch(entry.fingerprint, entries.get(otherRole)?.fingerprint);
+      const match = artworkMatch(entry, entries.get(otherRole));
       if (match === 'same') errors.push(`${labels[otherRole]}と同じ画像です。別々の完成画像を選んでください。`);
       if (match === 'similar') warnings.push(`${labels[otherRole]}と構図が似ています。場面や動作の違いを確認してください。`);
     }
@@ -362,7 +405,7 @@ export function bindQualityAssist(container, { mode, getContext, repair, externa
     render();
     if (!source) { pending.delete(role); render(); return; }
     try {
-      const result = await inspectImage(source, role, options);
+      const result = options?.review ?? await inspectImage(source, role, options);
       if (pending.get(role) === request) entries.set(role, result);
     } catch (error) {
       if (pending.get(role) === request) entries.set(role, { errors: [error.message], warnings: [] });
@@ -388,6 +431,7 @@ export function bindQualityAssist(container, { mode, getContext, repair, externa
     accept, refresh, reset,
     get articleTitle() { return title.value.trim(); },
     get checking() { return Boolean(pending.size); },
+    checkingRoles: selection => selection.some(role => pending.has(role)),
     problems: selection => selection.flatMap(role => imageFindings(role, selection).errors),
   };
 }

@@ -1,6 +1,6 @@
-import { residentWalkers } from '../../../tower/resident-walkers.js?v=community1';
+import { residentWalkers } from '../../../tower/resident-walkers.js?v=20261119-review';
 import { talkToResident } from '../../../tower/resident-talk.js?v=community1';
-import { publicView } from '../../../tower/public-directory.js?v=community1';
+import { publicView } from '../../../tower/public-directory.js?v=20261119-review';
 import { exteriorHeight } from './camera.js?v=20261118';
 
 export function streetResidents(layer,menu,exclude){

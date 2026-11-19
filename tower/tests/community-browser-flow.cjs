@@ -46,6 +46,14 @@ const site=process.env.ATELIER_TEST_URL||'http://127.0.0.1:4173/';
     await page.getByRole('button',{name:'この住人のアバターで街を歩く'}).click();
     await page.locator('#district[data-walker-state=ready]').waitFor();
     assert.equal(new URL(page.url()).searchParams.get('resident'),person.id);
+    await page.click('#spot-prompt');
+    assert.equal(await page.inputValue('#spot-id'),'');
+    assert.ok((await page.inputValue('#spot-text')).includes('@'+person.noteId));
+    await page.fill('#spot-id','visiting_writer');
+    await page.click('#spot-article');
+    const guestArticle=await page.inputValue('#spot-text');
+    assert.ok(guestArticle.includes('noteクリエイターID：@visiting_writer') && guestArticle.includes('住人 @'+person.noteId));
+    await page.locator('#spot-dialog .spot-return button').click();
     assert.deepEqual(errors,[]);assert.deepEqual(backend,[]);
     console.log('PASS existing resident, visitor and repeat dialogue; boiler illustration, repeatable isolation, motorcycle enlargement, residents in both districts and playing their avatars without backend reads.');
   }finally{await browser.close();}

@@ -1,4 +1,4 @@
-import { publicView } from '../../../tower/public-directory.js?v=community1';
+import { publicView, decodeArtwork } from '../../../tower/public-directory.js?v=20261119-review';
 import {streetResidents} from './residents.js?v=community1';
 import { areaFor, firstScene, sceneArt } from './scene-entry.js?v=20261118-speed';
 import { canWalkFloorSegment, facilityRoute } from '../../../tower/facility-floors.js?v=20261118-city2';
@@ -8,11 +8,11 @@ import { applyDistrictLight } from './scene-time.js?v=1';
 import { distance, streetAreas, walkable, walkingRoute } from './paths.js?v=20261118-speed';
 import { districtTraffic } from './traffic.js?v=202611181820';
 import { cafeStory, venues, venueSpawn, venueFloor } from './venues.js?v=20261118-city2';
-import { vehicleStudio } from '../../../tower/vehicle-studio.js?v=20261119-community1';
+import { vehicleStudio } from '../../../tower/vehicle-studio.js?v=20261119-review';
 import { bindActivities, createCityVisit, playgroundPose } from './district-activities.js?v=20261118-city2';
-import { bindSpotIllustration } from './spot-illustration.js?v=20261119-community1';
+import { bindSpotIllustration } from './spot-illustration.js?v=20261119-review';
 import { districtCamera, exteriorHeight } from './camera.js?v=20261118';
-import { TOWER_API, OWNER_STORAGE, avatarImageUrl, readWalkDraft, readTraveler, rememberWalker } from '../../../tower/avatar-travel.js?v=20261119-community1';
+import { TOWER_API, OWNER_STORAGE, avatarImageUrl, readWalkDraft, readTraveler, rememberWalker } from '../../../tower/avatar-travel.js?v=20261119-review';
 import { initGameShell } from '../../../tower/game-shell.js?v=20261118-controls';
 
 const gameShell=initGameShell({page:'city'});
@@ -194,10 +194,10 @@ async function chooseWalker() {
   image.alt=actor.name;
   let timer;
   try {
-    await Promise.race([image.decode(),
+    await Promise.race([decodeArtwork(image),
       new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('walker')),12000);})]);
   } finally {clearTimeout(timer);}
-  if (actor.id) rememberWalker(actor);
+  if (actor.id && actor.id === owner?.id) rememberWalker(actor);
   citizen.replaceChildren(image,seatedFrame);
   paintAvatar=actor.custom || actor.atlas ? autoResidentWalker(image,{atlas:Boolean(actor.atlas)}) : (_stride,_moving,dx) => {
     if (dx&&!actor.reference) image.style.transform=`scaleX(${dx<0?-1:1})`;
@@ -513,7 +513,7 @@ function openPlace() {
   }
   if (venue) {
     if (place.vehicle) {
-      activities.openVehicle(place.label,vehicleStudio(place.vehicle,{id:activeSpotActor?.noteId || onDraft?.noteId || owner?.noteId}));
+      activities.openVehicle(place.label,vehicleStudio(place.vehicle,{id:onDraft?.noteId || owner?.noteId}));
       return;
     }
     if (!(place.ride || nearby==='lookout')) journey.remember(venueId,nearby);
@@ -592,9 +592,11 @@ function openSpot(article=false) {
   const settingId=place?.venue || venueId;
   const experience=journey.experience(settingId,place?.venue ? '' : nearby==='lookout' ? '' : nearby);
   const articleScene=place?.articleScene || setting?.articleScene || place?.description || setting?.alt || label;
+  const guest = activeSpotActor?.id && activeSpotActor.id !== owner?.id ? activeSpotActor.noteId : '';
   showSpotPrompt({
     label, scene, experience, articleScene, article:article===true,
-    href:card.href, id:activeSpotActor?.noteId || onDraft?.noteId || owner?.noteId,
+    href:card.href, id:onDraft?.noteId || owner?.noteId || '', guest,
+    occupied:Boolean(!onDraft && owner?.id && owner.noteId),
     avatarSource:activeSpotActor?.custom||activeSpotActor?.reference ? activeSpotActor.source : null,
     backgroundUrl:new URL(place?.image||setting?.image||area.image,location.href).href,
   });

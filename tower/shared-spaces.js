@@ -1,12 +1,12 @@
-import { publicView, mediaUrl } from './public-directory.js?v=community1';
-import { residentWalkers } from './resident-walkers.js?v=community1';
-import { displayVehicle, vehicleBays } from './vehicle-display.js?v=community1';
-import { roomStage } from './world.js?v=20261119-community1';
+import { publicView, mediaUrl, setArtworkSource } from './public-directory.js?v=20261119-review';
+import { residentWalkers } from './resident-walkers.js?v=20261119-review';
+import { displayVehicle, vehicleBays } from './vehicle-display.js?v=20261119-review';
+import { roomStage } from './world.js?v=20261119-review';
 import { facilityFloors, facilityActorHeight } from './facility-floors.js?v=20261118-city2';
-import { readTraveler, readWalkDraft, rememberWalker, TOWER_API, avatarImageUrl } from './avatar-travel.js?v=20261119-community1';
+import { readTraveler, readWalkDraft, rememberWalker, TOWER_API, avatarImageUrl } from './avatar-travel.js?v=20261119-review';
 import { hostPortrait, autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=202611181820';
 
-import { vehicleStudio } from './vehicle-studio.js?v=20261119-community1';
+import { vehicleStudio } from './vehicle-studio.js?v=20261119-review';
 
 export const sharedSpaces = {
   owner: { title:'オーナーズ・アトリエ', floor:14, image:'panorama-suite', note:'天空ラウンジの一つ上にある、タワーオーナーの専用室です。', scene:'天空ラウンジより上のオーナーズ・アトリエ。大きな窓と作品、運河都市のパノラマ。' },
@@ -118,7 +118,7 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
         const image=make('img');
         image.alt=room.name||room.noteId;
         if(room.avatarVersion)image.crossOrigin='anonymous';
-        image.src=room.avatarVersion ? avatarImageUrl(room.id,room.avatarVersion) : room.photo;
+        setArtworkSource(image,room.avatarVersion ? avatarImageUrl(room.id,room.avatarVersion) : room.photo);
         guest.append(image,make('small','',room.name||room.noteId));
         stage.append(guest);
         if(room.avatarVersion)autoResidentWalker(image,{atlas:room.world?.atlas===true})(0,false);
@@ -353,7 +353,7 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
         selected=person;featuredSlot=person.slot;
         if(!scope.some(e=>e.slot===featuredSlot)){allRooms=true;redraw();}else paintVehicles();
         heading.textContent=parkingNumber(person.slot,per)+'号室 · '+person.name+'の'+kinds[vehicleKind];
-        image.alt=heading.textContent;image.src=person.url;
+        image.alt=heading.textContent;setArtworkSource(image,person.url);
         displayVehicle(person.url).then(src=>{if(selected===person)image.src=src;});
       };
       function step(by){const i=entries.findIndex(e=>e.slot===selected.slot);if(entries.length)display(entries[(i+by+entries.length)%entries.length]);}
@@ -407,7 +407,7 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
         const room=catalog?.rooms?.find(item=>item.slot===slot),number=parkingNumber(slot,per),entry=entries.find(e=>e.slot===slot);
         const bay=make('div','parking-bay');bay.dataset.slot=String(slot);bay.append(make('strong','',number+'号室'));
         if(entry){
-          const img=make('img');img.alt=number+'号室の'+kinds[vehicleKind];img.src=entry.url;img.loading='lazy';
+          const img=make('img');img.alt=number+'号室の'+kinds[vehicleKind];setArtworkSource(img,entry.url);img.loading='lazy';
           const show=action('実景で見る・拡大',()=>enlarge(entry),'bay-view');show.dataset.slot=slot;
           show.setAttribute('aria-label',number+'号室の'+kinds[vehicleKind]+'を実景で見る・拡大');
           bay.append(img,make('span','vehicle-owner',entry.name),show);
@@ -458,7 +458,7 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
         if(view!==session)return;
         const number=parkingNumber(updated.slot,getCatalog()?.perFloor);
         announce(facingOnly?number+'号室の車両の向きを更新しました。':image?`${number}号室の車両を保存しました。`:`${number}号室の車両を外しました。`);
-      }catch(error){if(view===session)announce(error.code==='conflict'?'部屋が更新されました。もう一度保存できます。':'車両を保存できませんでした。画像と部屋の鍵を確認してください。');}
+      }catch(error){if(view===session)announce(error.qualityMessage || (error.code==='conflict'?'部屋が更新されました。もう一度保存できます。':'車両を保存できませんでした。画像と部屋の鍵を確認してください。'));}
       finally{busy=false;save.disabled=remove.disabled=false;}
     }
     form.addEventListener('submit',event=>{event.preventDefault();if(!file.files[0]){announce('保存する車両画像を選んでください。');return;}void store(file.files[0]);});
@@ -535,9 +535,11 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
     const create=action('ここでイラスト・note記事をつくる',()=>{
       const owner=getOwner(),actor=getActor();
       const href=new URL(location.href);href.search='';href.searchParams.set('space',id);href.hash='';
-      illustrate({label:space.title,scene:space.scene,articleScene:space.scene,href:href.href,id:actor?.noteId||owner?.noteId,
-        avatarSource:actor?.custom||actor?.profile?actor.source:undefined,
-        backgroundUrl:new URL(`./assets/${space.image}.webp`,location.href).href,occupied:Boolean(owner?.id)});
+      const guest = actor?.id && actor.id!==owner?.id ? actor.noteId : '';
+      illustrate({label:space.title,scene:space.scene,articleScene:space.scene,href:href.href,guest,
+        id:owner?.noteId || (guest ? '' : actor?.noteId),
+        avatarSource:actor?.custom||actor?.profile||actor?.reference?actor.source:undefined,
+        backgroundUrl:new URL(`./assets/${space.image}.webp`,location.href).href,occupied:Boolean(owner?.id && (!actor || actor.id===owner.id))});
     });
     details.append(create);
     if(id==='owner'){

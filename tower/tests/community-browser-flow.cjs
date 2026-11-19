@@ -12,10 +12,13 @@ const site=process.env.ATELIER_TEST_URL||'http://127.0.0.1:4173/';
     const directory=await (await page.request.get(new URL('published/list.json',tower).href)).json();
     const person=directory.rooms.find(r=>r.noteId==='amita777');
     assert.ok(person && person.slot===52);
-    await page.goto(new URL('?room='+person.id,tower).href);
+    await page.addInitScript(()=>Object.defineProperty(navigator,'share',{value:async data=>{window.sharedRoomUrl=data.url;},configurable:true}));
+    await page.goto(new URL('?creator=previous_visitor&slot=12&space=lobby&room='+person.id,tower).href);
     const host=page.locator('#room-content .room-host');
     await host.waitFor();
     assert.equal(await page.locator('#room-content .world-resident').count(),1);
+    await page.locator('#share-room').click();
+    assert.deepEqual([...new URL(await page.evaluate(()=>window.sharedRoomUrl)).searchParams],[['room',person.id]]);
     await host.click();
     for(const name of ['部屋の話をする','作品の話をする','部屋の話をする']){
       await page.locator('.resident-talk').getByRole('button',{name}).click();

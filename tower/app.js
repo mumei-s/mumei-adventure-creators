@@ -4,7 +4,7 @@ import {autoResidentWalker} from '../halloween-exhibition/preview/diorama-city/h
 import { trimTransparentEdges } from './vehicle-display.js?v=20261119-review';
 import { scanAtlas } from '../halloween-exhibition/preview/diorama-city/atlas-layout.js?v=20261118-sprites-2';
 import { characterSignature, designWorld, generatedInterior, roomPreview, roomStage } from './world.js?v=20261119-review';
-import { cutaway, dailyStory, makeElevator } from './building.js?v=20261119-community1';
+import { cutaway, dailyStory, makeElevator } from './building.js?v=20261119-review';
 import { bindSharedSpaces, floorLabel } from './shared-spaces.js?v=20261119-review';
 import { bindSpotIllustration } from '../halloween-exhibition/preview/diorama-city/spot-illustration.js?v=20261119-review';
 import { chatgptAppLink, makeArtifactPrompt, makeRoomPrompt, makeMoveInArticlePrompt, articleCardEntries, bindArticleDraft, parseNoteId, creatorReference, residentPost, towerUrl, hostNoteUrl, insightUrl, bindCardButtons } from './prompt-play.js?v=20261119-review';
@@ -377,6 +377,7 @@ function closeDialog(id) {
 
 function roomUrl(id) {
   const url = new URL(location.href);
+  url.search = '';
   url.searchParams.set('room', id);
   url.hash = '';
   return url;

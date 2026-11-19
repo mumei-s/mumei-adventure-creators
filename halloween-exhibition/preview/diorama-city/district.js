@@ -1,5 +1,5 @@
 import { publicView, decodeArtwork } from '../../../tower/public-directory.js?v=20261119-review';
-import {streetResidents} from './residents.js?v=community1';
+import {streetResidents} from './residents.js?v=20261119-review';
 import { areaFor, firstScene, sceneArt } from './scene-entry.js?v=20261118-speed';
 import { canWalkFloorSegment, facilityRoute } from '../../../tower/facility-floors.js?v=20261118-city2';
 import { makeWalkPad, bindWalking } from './walk-controls.js?v=202611181820';

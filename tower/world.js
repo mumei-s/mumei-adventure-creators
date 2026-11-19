@@ -402,7 +402,8 @@ export function roomStage(room,source,{mini=false,avatarName,signal,inputRoot,tr
       try{
         const actor=await loadTraveler();
         if(signal?.aborted)return;
-        setTraveler(actor);onTraveler?.(actor);status.remove();retry.remove();
+        setTraveler(actor);onTraveler?.(actor);retry.remove();
+        if(actor?.visitor)status.textContent='鍵を確認できないため、ビジターで見学中です。';else status.remove();
       }catch{
         if(signal?.aborted)return;
         status.textContent='キャラを確認できませんでした。';retry.hidden=false;

@@ -104,6 +104,22 @@ const media=new URL('published/media/'+roomId+'/',tower).href;
     assert.equal(await gondola.locator('.coach-side').getAttribute('src'),await gondola.locator('.coach-back').getAttribute('src'));
     assert.ok(await gondola.locator('.coach-side').evaluate(img=>getComputedStyle(img).clipPath.startsWith('polygon')));
     assert.equal(await gondola.locator('.ride-avatar + .coach-side').count(),1);
+    const host='bca00034-abcd-4f00-a001-04000000abcd';
+    await page.route(new URL('published/rooms/'+host+'.json',tower).href,route=>route.fulfill({json:{
+      ...room,id:host,noteId:'another_resident',slot:22,isOwner:false,profile:{name:'訪問先の住人',articles:[]}}}));
+    await page.route(new URL('published/media/'+host+'/avatar-9.img',tower).href,route=>route.fulfill({body:bytes,contentType:'image/webp'}));
+    let releaseVisit;
+    const visiting=new Promise(resolve=>{releaseVisit=resolve;});
+    await page.route('https://*.supabase.co/**',async route=>{
+      if(route.request().postDataJSON()?.action!=='visit')return route.fallback();
+      await visiting;await route.fulfill({json:room});
+    });
+    await page.goto(new URL('?room='+host,tower).href,{waitUntil:'domcontentloaded'});
+    await page.locator('#room-content .room-host').waitFor();
+    const visitingWalker=page.locator('#room-content .world-resident');
+    assert.ok(await visitingWalker.isHidden());assert.equal(await visitingWalker.locator('img').count(),0);
+    releaseVisit();await visitingWalker.locator('canvas:not([hidden])').waitFor();
+    assert.deepEqual(await page.evaluate(()=>window.wrongFrames),[]);
     assert.deepEqual(errors,[]);
     console.log('PASS two independent references, automatic owned cars/motorcycles/bicycles, object-only and no-object artwork, no placeholder frames, both districts’ shop doors and layered carousel gondola.');
   }finally{await browser.close();}

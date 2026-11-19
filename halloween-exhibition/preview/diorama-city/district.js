@@ -181,6 +181,13 @@ async function chooseWalker() {
   citizen.replaceChildren(image,seatedFrame);
   paintAvatar=actor.host ? hostWalker(image) : autoResidentWalker(image,{atlas:actor.atlas});
   paintAvatar(stride,false);
+  if(paintAvatar.ready){
+    try{
+      const visible=await Promise.race([paintAvatar.ready,new Promise(resolve=>{timer=setTimeout(()=>resolve(false),12000);})]);
+      if(!visible)throw new Error('歩行画像を準備できませんでした。');
+    }finally{clearTimeout(timer);}
+  }
+  if(request!==walkerRequest)return;
   el('walker-name').textContent=actor.name+(keyNotice?' · '+keyNotice:'');
   const link=el('walker-room'),home=new URL(visitTower);
   if(actor.id)home.searchParams.set('room',actor.id);

@@ -84,6 +84,7 @@ export function bindSharedSpaces({getCatalog,getOwner,getTraveler:getActor,loadP
     if((savedVersions.get(room.id)??0)>room.version)return;
     savedVersions.set(room.id,room.version);
     const person={id:room.id,slot:room.slot,name:room.profile.name,noteId:room.noteId,version:room.version,
+      avatarMode:room.design.avatarMode,avatarVersion:room.avatarVersion,avatarName:room.design.avatarName,world:room.design.world,photo:room.profile.photo,
       engineer:room.design.engineer===true,manager:room.design.manager===true,transport:room.design.transport??{}};
     // A request begun before this write may still return its older public snapshot.
     if(session?.updates)session.updates.set(room.id,person);
@@ -205,7 +206,7 @@ export function bindSharedSpaces({getCatalog,getOwner,getTraveler:getActor,loadP
     details.append(panel);
     function paint(){
       const playerId=getActor()?.id;
-      const others=members.filter(person=>person.id!==playerId);
+      const others=members.filter(person=>person.id!==playerId && person.appearanceReady);
       const pageCount=Math.max(1,Math.ceil(others.length/waypoints.length));
       page=(page%pageCount+pageCount)%pageCount;pages.hidden=pageCount===1;
       pageText.textContent=(page+1)+' / '+pageCount+' 班';
@@ -232,7 +233,8 @@ export function bindSharedSpaces({getCatalog,getOwner,getTraveler:getActor,loadP
     function refresh(){
       const ready=view.facilityStatus==='ready',catalog=getCatalog();
       const byId=new Map((catalog?.rooms||[]).map(room=>[room.id,room]));
-      members=facilities.filter(person=>person[role]).sort((a,b)=>a.slot-b.slot).map(person=>({...byId.get(person.id),...person}));
+      members=facilities.filter(person=>person[role]).sort((a,b)=>a.slot-b.slot).map(person=>({...byId.get(person.id),...person,
+        appearanceReady:byId.has(person.id)||Boolean(person.avatarMode||person.avatarVersion||person.photo)}));
       const names=members.map(person=>person.name||person.noteId).join('、');
       roster.textContent=spec.title+' · '+(ready?(manager?members.length+' / 5人':members.length+'人')+'　'+(names||'参加者募集中'):view.facilityStatus==='error'?'名簿を再確認しています':'名簿を確認中…');
       const playerId=getActor()?.id;

@@ -8,7 +8,7 @@ import { cutaway, dailyStory, makeElevator } from './building.js?v=20261119-comm
 import { bindSharedSpaces, floorLabel } from './shared-spaces.js?v=20261119-review';
 import { bindSpotIllustration } from '../halloween-exhibition/preview/diorama-city/spot-illustration.js?v=20261119-review';
 import { chatgptAppLink, makeArtifactPrompt, makeRoomPrompt, makeMoveInArticlePrompt, articleCardEntries, bindArticleDraft, parseNoteId, creatorReference, residentPost, towerUrl, hostNoteUrl, insightUrl, bindCardButtons } from './prompt-play.js?v=20261119-review';
-import { bindQualityAssist, inspectImage, sampleArtwork, artworkMatch, artworkMime, articleChecks } from './quality-assist.js?v=20261119-review';
+import { bindQualityAssist, inspectImage, imageContentChecks, sampleArtwork, artworkMatch, artworkMime, articleChecks } from './quality-assist.js?v=20261119-review';
 import { TOWER_API, OWNER_STORAGE, avatarImageUrl, readWalkDraft, saveWalkDraft, clearWalkDraft, readTraveler, rememberWalker } from './avatar-travel.js?v=20261119-review';
 import { initGameShell } from './game-shell.js?v=20261118-controls';
 
@@ -1149,6 +1149,8 @@ async function preparePicture(file, variant) {
     image.src = localUrl;
     await image.decode().catch(() => { throw { code: 'bad_image' }; });
     const original = sampleArtwork(image);
+    const sourceErrors = imageContentChecks(original);
+    if (sourceErrors.length) throw {code:'bad_image', qualityMessage:sourceErrors.join(' ')};
     const picture = await encodePicture(image, file, variant, animated, actualType);
     const role = variant === 'atlas' ? 'avatar' : variant;
     const review = await inspectImage(picture.source, role, {atlas:picture.atlas});
@@ -1369,7 +1371,7 @@ async function readPlayPhoto(kind) {
   if (!file) return;
   const pending = { kind };
   play.loading.add(pending);
-  const currentFile = () => field.files?.[0] === file && parseNoteId($('#prompt-id').value) === creator && (kind === 'interior' ||
+  const currentFile = () => field.files?.[0] === file && (!creator || parseNoteId($('#prompt-id').value) === creator) && (kind === 'interior' ||
     ($('#generated-avatar-mode').value === 'atlas') === (variant === 'atlas'));
   status(hint, '画像を読み込んでいます…');
   try {

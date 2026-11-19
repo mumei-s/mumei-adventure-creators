@@ -93,7 +93,9 @@ const design={title:'月の書斎',theme:'story',light:'natural',avatarMode:'res
     assert.equal(await page.evaluate(()=>navigator.clipboard.readText()),manuscript);
     await panel.getByRole('button',{name:'記事だけ修正する'}).click();
     const repair=await page.inputValue('#move-article-text');
-    assert.ok(repair.includes(manuscript) && repair.includes(roomHref) && !repair.includes('f'.repeat(64)));
+    assert.equal(JSON.parse(repair.split('\n').find(line=>line.startsWith('"'))),manuscript);
+    assert.ok(repair.split('\n').includes(roomHref));
+    assert.ok(!repair.includes('f'.repeat(64)));
     assert.deepEqual(calls,['preview','begin','confirm']);assert.deepEqual(errors,[]);
     console.log('PASS lobby, avatar, room preference, ID-bearing return, vacant unit, both images, ownership challenge and optional four-part article.');
   }finally{await browser.close();}

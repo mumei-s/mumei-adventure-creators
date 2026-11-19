@@ -313,7 +313,7 @@ export function bindQualityAssist(container, { mode, getContext, repair, externa
   const manual = node('fieldset', '', 'quality-manual');
   manual.append(node('legend', '作品を見て確認する項目'));
   const checks = [
-    '参照キャラの顔立ち・髪・衣装と、元の画風（実写・アニメ・幻想など）が保たれている',
+    mode==='spot' ? '選んだ人物・乗り物・小物の形や色、元の画風が合っている。「人物なし」なら人が映っていない' : '参照キャラの顔立ち・髪・衣装と、元の画風（実写・アニメ・幻想など）が保たれている',
     mode === 'room' ? '全身と靴が入り、歩行シートの向きと姿勢がそろっている' : '本文の２枚は場面・動作・構図・カメラ角度が異なる',
     '手足・接地・家具や建物との大きさと遠近感が自然',
     '専用サムネイルの演出が本文画像と異なり、顔と文字が切れていない',

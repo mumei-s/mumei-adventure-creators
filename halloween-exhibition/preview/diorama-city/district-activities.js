@@ -1,4 +1,4 @@
-import { makeRideStage } from './ride-stage.js?v=20261118-city2';
+import { makeRideStage } from './ride-stage.js?v=20261119-scene';
 
 const catalog = {
   drinks: [['緑茶', 130], ['カフェラテ', 180], ['季節のソーダ', 200]],
@@ -376,8 +376,11 @@ export function bindActivities(dialog, { avatar, status, journey, openArticle, m
   });
   return {
     openShelf, openRide, openGlass, reflectionStatus,
-    openVehicle(label, panel) {
+    openVehicle(label, panel, kind) {
       open(label, '← お店に戻る');
+      const windowView=document.createElement('div');windowView.className='shop-window shop-'+kind;
+      const image=new Image();image.src='./assets/shopfronts.webp';image.alt=label+'の店先';windowView.append(image);
+      body.append(windowView);
       body.append(panel);
     },
     restoreGlass(reflect) {

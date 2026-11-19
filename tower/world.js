@@ -1,9 +1,9 @@
 import { mediaUrl, setArtworkSource } from './public-directory.js?v=20261119-review';
 import { canWalkFloorSegment, facilityActorHeight, facilityFloors, facilityRoute, registeredFloorFor } from './facility-floors.js?v=20261118-city2';
 import { makeWalkPad, bindWalking } from '../halloween-exhibition/preview/diorama-city/walk-controls.js?v=202611181820';
-import { hostPortrait, hostWalker, autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=202611181820';
+import { hostPortrait, hostWalker, autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=20261119-scene';
 import { applyDistrictLight } from '../halloween-exhibition/preview/diorama-city/scene-time.js?v=1';
-import { TOWER_API } from './avatar-travel.js?v=20261119-owner';
+import { TOWER_API } from './avatar-travel.js?v=20261119-scene';
 
 const viewNames = ['雨上がりの街', '木立と丘', '海辺の朝焼け', '星明かりの街'];
 const views = ['city', 'grove', 'coast', 'stars'];
@@ -294,7 +294,7 @@ export function roomPreview(room,source) {
   return photo;
 }
 
-export function roomStage(room,source,{mini=false,avatarName,signal,inputRoot,traveler,preparedInterior}={}) {
+export function roomStage(room,source,{mini=false,avatarName,signal,inputRoot,traveler,loadTraveler,onTraveler,preparedInterior}={}) {
   const theme=themeFor(room);
   const world=worldFor(room);
   const scene=make('div',mini?'world-stage world-mini':'world-stage room-scene');
@@ -374,7 +374,8 @@ export function roomStage(room,source,{mini=false,avatarName,signal,inputRoot,tr
     updateAvatar?.(0,false);
     walker.hidden=false;
   }
-  setTraveler(traveler);
+  if(loadTraveler)walker.hidden=true;
+  else setTraveler(traveler);
   scene.append(walker);
   if(mini) {
     scene.setAttribute('aria-hidden','true');
@@ -393,6 +394,22 @@ export function roomStage(room,source,{mini=false,avatarName,signal,inputRoot,tr
   const text=make('span');
   text.textContent='床をタップ・方向パッド・矢印キー';
   hint.append(title,text);
+  if(loadTraveler){
+    const status=make('span','traveler-status');status.setAttribute('role','status');
+    const retry=make('button','quiet');retry.type='button';retry.textContent='キャラを再読み込み';
+    const check=async()=>{
+      retry.hidden=true;status.textContent='自分のキャラを確認中…';
+      try{
+        const actor=await loadTraveler();
+        if(signal?.aborted)return;
+        setTraveler(actor);onTraveler?.(actor);status.remove();retry.remove();
+      }catch{
+        if(signal?.aborted)return;
+        status.textContent='キャラを確認できませんでした。';retry.hidden=false;
+      }
+    };
+    retry.addEventListener('click',check);hint.append(status,retry);void check();
+  }
   const facility=facilityFloors[room.sharedSpace]??registeredFloorFor(room);
   const privateBounds=generated&&!facility?[.32,.68,.54,.91]:privateFloor;
   if(facility){

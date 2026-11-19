@@ -1,6 +1,6 @@
 import { setArtworkSource } from './public-directory.js?v=20261119-review';
-import { avatarImageUrl } from './avatar-travel.js?v=20261119-owner';
-import { autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=202611181820';
+import { avatarImageUrl } from './avatar-travel.js?v=20261119-scene';
+import { autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=20261119-scene';
 
 const defaultResident=new URL('./assets/resident.webp',import.meta.url).href;
 

@@ -18,11 +18,11 @@
   <link rel="stylesheet" href="./resident-talk.css?v=community1">
   <link rel="stylesheet" href="./world.css?v=202611181820">
   <link rel="stylesheet" href="./prompt-play.css?v=3">
-  <link rel="stylesheet" href="./shared-spaces.css?v=20261119-community1">
+  <link rel="stylesheet" href="./shared-spaces.css?v=20261119-scene">
   <link rel="stylesheet" href="./quality-assist.css?v=202611181820">
   <link rel="stylesheet" href="../halloween-exhibition/preview/diorama-city/walk-pad.css?v=2">
   <link rel="stylesheet" href="./game-shell.css?v=20261118-city2">
-  <script type="module" src="./app.js?v=20261119-owner"></script>
+  <script type="module" src="./app.js?v=20261119-scene"></script>
   <script type="module" src="./visit-counter.js?v=20261119-community1"></script>
 </head>
 <body id="top">
@@ -381,11 +381,23 @@
       <label class="spot-field">noteクリエイターID（登録済みの場合は自動入力）
         <input id="spot-id" type="text" autocomplete="off" autocapitalize="none" maxlength="160" placeholder="@ID または noteプロフィールのURL">
       </label>
-      <label class="spot-field"><span id="spot-reference-label">キャラクターの参照画像</span>
+      <label class="spot-field">イラストに描く人物
+        <select id="spot-person"><option value="auto">自分のキャラ</option><option value="attachment">別の人物・キャラ</option><option value="none">人物なし</option></select>
+      </label>
+      <label class="spot-field" id="spot-person-file"><span id="spot-reference-label">人物用の画像（任意・１枚）</span>
         <input id="spot-image" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
       </label>
-      <div class="spot-actions"><button type="button" class="spot-prompt" id="spot-save-reference" hidden>登録済み参照画像を保存</button><button type="button" class="spot-prompt" id="spot-reset-reference" hidden>登録済み画像に戻す</button></div>
-      <img id="spot-image-preview" alt="添付したキャラクターの参照画像" hidden>
+      <div class="spot-actions"><button type="button" class="spot-prompt" id="spot-save-reference" hidden>登録キャラの画像を保存</button><button type="button" class="spot-prompt" id="spot-reset-reference" hidden>人物の指定を戻す</button></div>
+      <img id="spot-image-preview" class="spot-ref-preview" alt="選んだ人物の画像" hidden>
+      <label class="spot-field">一緒に描く乗り物・小物
+        <select id="spot-item"><option value="auto">自動（自分の登録車両）</option><option value="attachment">添付・同じチャットの物を使う</option><option value="none">入れない</option></select>
+      </label>
+      <p id="spot-item-status" class="spot-hint" role="status"></p>
+      <label class="spot-field" id="spot-item-file">乗り物・小物用の画像（任意・１枚）
+        <input id="spot-item-image" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
+      </label>
+      <div class="spot-actions"><button type="button" class="spot-prompt" id="spot-save-item" hidden>登録車両の画像を保存</button><button type="button" class="spot-prompt" id="spot-reset-item" hidden>乗り物・小物を自動に戻す</button></div>
+      <img id="spot-item-preview" class="spot-ref-preview" alt="選んだ乗り物・小物の画像" hidden>
       <label class="spot-field">つくる画像
         <select id="spot-output">
           <option value="set">本文２枚＋記事のサムネイル</option>
@@ -403,7 +415,7 @@
       <button type="button" class="spot-prompt" id="spot-main-prompt">通常のイラスト作成に戻す</button>
       <button type="button" class="visit" id="spot-copy">イラスト作成プロンプトをコピー</button>
       <span id="spot-message" role="status"></span>
-      <p class="spot-hint">登録済みのキャラは再入力不要（ChatGPTで参照できない場合だけ画像を添付）。別のキャラに変更する場合は新しい画像を添付してください。１枚だけ先に作りたいときは「つくる画像」で選べます。</p>
+      <p class="spot-hint">登録画像はプロンプトに参照先が入ります。端末で選んだ画像は、ChatGPTにも添えてください。両方添付するときは人物が１枚目、乗り物・小物が２枚目です。</p>
       <details id="spot-article-draft" class="article-draft"><summary>そのままnoteに貼れる記事本文</summary>
         <label>記事原稿（編集できます）<textarea rows="9" aria-label="編集できる記事本文"></textarea></label>
         <button type="button">記事本文をコピー</button><p role="status"></p>

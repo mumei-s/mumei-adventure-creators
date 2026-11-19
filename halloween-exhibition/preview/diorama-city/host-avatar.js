@@ -27,6 +27,7 @@ function walkAtlas(image,sheet,cellSize,idle,walkingFrames) {
   const context=canvas.getContext('2d');
   let facing=0, fixedFrame='', last=[0,false];
   if (!context) return () => {};
+  image.style.visibility='hidden';
   function update(distance,walking,dx,dy) {
     if (dx || dy) facing=(Math.round(Math.atan2(dx,dy)*4/Math.PI)+8)%8;
     last=[distance,walking,dx,dy];
@@ -58,8 +59,7 @@ export function hostWalker(image) {
 }
 
 export function residentWalker(image) {
-  const source=image.src;
-  const update=walkAtlas(image,image,sheet=>sheet.src===source ? [sheet.naturalWidth/4,sheet.naturalHeight/4] : [],0,[1,2,3,2]);
+  const update=walkAtlas(image,image,sheet=>[sheet.naturalWidth/4,sheet.naturalHeight/4],0,[1,2,3,2]);
   image.classList.add('sprite-atlas-source');
   image.addEventListener('error',()=>image.classList.remove('sprite-atlas-source'),{once:true});
   return update;
@@ -97,6 +97,7 @@ export function avatarSnapshot(source, pose = 'stand', {host=false} = {}) {
 export function autoResidentWalker(image,{atlas=false}={}) {
   if(atlas)return residentWalker(image);
   image.classList.add('sprite-atlas-source');
+  image.style.visibility='hidden';
   let updateFrame=null,last=[0,false], facing=0;
   let singleFacing=1;
   const single=(distance,walking,dx)=>{
@@ -104,7 +105,7 @@ export function autoResidentWalker(image,{atlas=false}={}) {
     const phase=distance*Math.PI/2;
     image.style.transform=`translateY(${walking?-Math.abs(Math.sin(phase))*1.8:0}%) rotate(${walking?Math.sin(phase)*.65:0}deg) scaleX(${singleFacing})`;
   };
-  function restore(){image.classList.remove('sprite-atlas-source');updateFrame=single;updateFrame(...last);}
+  function restore(){image.classList.remove('sprite-atlas-source');if(image.naturalWidth)image.style.visibility='';updateFrame=single;updateFrame(...last);}
   function inspect(){
     if(!image.naturalWidth){restore();return;}
     let boxes;

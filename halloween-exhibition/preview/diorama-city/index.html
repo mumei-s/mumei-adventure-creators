@@ -12,16 +12,16 @@
   <meta property="og:description" content="自分のキャラクターで街を歩き、２枚のイラストとnote記事をつくる。">
   <meta property="og:image" content="https://mumei-s.github.io/mumei-adventure-creators/halloween-exhibition/preview/diorama-city/assets/district.webp">
   <meta name="note:card" content="summary_large_image">
-  <link rel="modulepreload" href="./paths.js?v=20261118-speed">
+  <link rel="modulepreload" href="./paths.js?v=20261119-scene">
   <link rel="modulepreload" href="./venues.js?v=20261118-city2">
   <link rel="modulepreload" href="../../../tower/facility-floors.js?v=20261118-city2">
-  <script type="module" async src="./scene-entry.js?v=20261118-speed"></script>
+  <script type="module" async src="./scene-entry.js?v=20261119-scene"></script>
   <link rel="stylesheet" href="../../../tower/resident-talk.css?v=community1">
-  <link rel="stylesheet" href="./district.css?v=20261119-owner">
+  <link rel="stylesheet" href="./district.css?v=20261119-scene">
   <link rel="stylesheet" href="./walk-pad.css?v=2">
   <link rel="stylesheet" href="../../../tower/quality-assist.css?v=202611181820">
   <link rel="stylesheet" href="../../../tower/game-shell.css?v=20261118-city2">
-  <script type="module" src="./district.js?v=20261119-owner"></script>
+  <script type="module" src="./district.js?v=20261119-scene"></script>
   <script type="module" src="../../../tower/visit-counter.js?v=20261119-community1"></script>
 </head>
 <body>
@@ -42,6 +42,12 @@
         <div class="city-lights" aria-hidden="true"></div>
         <canvas id="transit" class="transit" width="1000" height="667" aria-hidden="true"></canvas>
         <div id="city-portal" class="city-portal" aria-hidden="true"></div>
+        <div id="street-shops" class="street-shops" role="group" aria-label="乗り物のショップ">
+          <img id="shopfront-art" alt="" draggable="false">
+          <button type="button" data-shop="car" aria-label="車のショールームに入る"></button>
+          <button type="button" data-shop="motorcycle" aria-label="バイク工房に入る"></button>
+          <button type="button" data-shop="bicycle" aria-label="自転車店に入る"></button>
+        </div>
         <div class="city-cast" aria-hidden="true">
           <img class="cast cast-plaza" data-src="./assets/host-anime-pink.webp" alt="" draggable="false">
           <img class="cast cast-station" data-src="./assets/host-real-gold.webp" alt="" draggable="false">
@@ -51,13 +57,14 @@
       <img id="venue-plate" class="venue-plate" alt="" width="1440" height="960" draggable="false" hidden>
       <div class="park-sky" aria-hidden="true"></div>
       <div id="mirror-reflections" class="mirror-reflections" aria-hidden="true" hidden><span></span><span></span><span></span></div>
-      <div id="citizen" class="citizen">
+      <div id="citizen" class="citizen" hidden>
         <img alt="" hidden draggable="false">
       </div>
       <div id="street-residents" class="street-residents" aria-label="街を歩く住人"></div>
       <div id="locations" class="locations"></div>
     </div>
     <button type="button" id="leave-venue" class="camera leave-venue" hidden>← 街に戻る</button>
+    <button type="button" id="shop-directory" class="camera leave-venue" aria-haspopup="dialog">ショップ <small>車・バイク・自転車</small></button>
     <button type="button" id="camera" class="camera" aria-pressed="false">全景を見る</button>
     <div id="motion-controls" class="motion-controls" hidden>
       <button type="button" id="pump-swing">もうひとこぎ</button>
@@ -68,6 +75,7 @@
       <nav id="venue-guide" class="venue-guide" aria-label="街区の行き先">
         <button type="button" data-head-to="cafe">カフェへ</button>
         <button type="button" data-head-to="park">公園へ</button>
+        <button type="button" data-head-to="shops">乗り物のショップへ</button>
         <button type="button" data-head-to="tower">マンションへ</button>
         <button type="button" data-head-to="marketGate">高架の先へ</button>
         <button type="button" data-head-to="canalGate">運河街区（屋敷・コンビニ・遊園地）</button>
@@ -90,7 +98,7 @@
     <div id="street-roster" class="street-roster" hidden><label>街の住人 <select aria-label="話しかける住人"></select></label><button type="button">話しかける</button></div>
     <div class="player-info">
       <details class="tower-visits" data-tower-visits><summary>累計訪問 <strong aria-live="polite">—</strong></summary><small>マンションと近未来街区の合計。同じブラウザは日本時間で1日1回です。</small></details>
-      <p id="walker-name">ビジター</p>
+      <p id="walker-name">アバターを確認中…</p>
       <a id="walker-room" href="../../../tower/#prompt-play">自分のアバターをつくる</a>
       <button id="retry-walker" class="spot-prompt" type="button" hidden>アバターを再読み込み</button>
     </div>
@@ -101,6 +109,13 @@
       <h2 id="place-title"></h2>
       <p id="place-description"></p>
       <button type="button" id="place-create" class="spot-prompt">この景色でイラスト・note記事をつくる</button>
+      <form method="dialog"><button type="submit">← 街歩きに戻る</button></form>
+    </div>
+  </dialog>
+  <dialog id="shop-dialog" aria-labelledby="shop-title">
+    <div class="place-body"><h2 id="shop-title">街のショップ</h2>
+      <img class="shop-directory-art" alt="左から車のショールーム、バイク工房、自転車店" width="960" height="410">
+      <div class="shop-doors"><button type="button" data-shop="car">車のショールーム</button><button type="button" data-shop="motorcycle">バイク工房</button><button type="button" data-shop="bicycle">自転車店</button></div>
       <form method="dialog"><button type="submit">← 街歩きに戻る</button></form>
     </div>
   </dialog>
@@ -120,11 +135,23 @@
       <label class="spot-field">noteクリエイターID（登録済みの場合は自動入力）
         <input id="spot-id" type="text" autocomplete="off" autocapitalize="none" maxlength="160" placeholder="@ID または noteプロフィールのURL">
       </label>
-      <label class="spot-field"><span id="spot-reference-label">キャラクターの参照画像</span>
+      <label class="spot-field">イラストに描く人物
+        <select id="spot-person"><option value="auto">自分のキャラ</option><option value="attachment">別の人物・キャラ</option><option value="none">人物なし</option></select>
+      </label>
+      <label class="spot-field" id="spot-person-file"><span id="spot-reference-label">人物用の画像（任意・１枚）</span>
         <input id="spot-image" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
       </label>
-      <div class="spot-actions"><button type="button" class="spot-prompt" id="spot-save-reference" hidden>登録済み参照画像を保存</button><button type="button" class="spot-prompt" id="spot-reset-reference" hidden>登録済み画像に戻す</button></div>
-      <img id="spot-image-preview" alt="添付したキャラクターの参照画像" hidden>
+      <div class="spot-actions"><button type="button" class="spot-prompt" id="spot-save-reference" hidden>登録キャラの画像を保存</button><button type="button" class="spot-prompt" id="spot-reset-reference" hidden>人物の指定を戻す</button></div>
+      <img id="spot-image-preview" class="spot-ref-preview" alt="選んだ人物の画像" hidden>
+      <label class="spot-field">一緒に描く乗り物・小物
+        <select id="spot-item"><option value="auto">自動（自分の登録車両）</option><option value="attachment">添付・同じチャットの物を使う</option><option value="none">入れない</option></select>
+      </label>
+      <p id="spot-item-status" class="spot-hint" role="status"></p>
+      <label class="spot-field" id="spot-item-file">乗り物・小物用の画像（任意・１枚）
+        <input id="spot-item-image" type="file" accept="image/png,image/jpeg,image/webp,image/gif">
+      </label>
+      <div class="spot-actions"><button type="button" class="spot-prompt" id="spot-save-item" hidden>登録車両の画像を保存</button><button type="button" class="spot-prompt" id="spot-reset-item" hidden>乗り物・小物を自動に戻す</button></div>
+      <img id="spot-item-preview" class="spot-ref-preview" alt="選んだ乗り物・小物の画像" hidden>
       <label class="spot-field">つくる画像
         <select id="spot-output">
           <option value="set">本文２枚＋記事のサムネイル</option>
@@ -142,7 +169,7 @@
       <button type="button" class="spot-prompt" id="spot-main-prompt">通常のイラスト作成に戻す</button>
       <button type="button" class="visit" id="spot-copy">イラスト作成プロンプトをコピー</button>
       <span id="spot-message" role="status"></span>
-      <p class="spot-hint">登録済みのキャラは再入力不要（ChatGPTで参照できない場合だけ画像を添付）。別のキャラに変更する場合は新しい画像を添付してください。１枚だけ先に作りたいときは「つくる画像」で選べます。</p>
+      <p class="spot-hint">登録画像はプロンプトに参照先が入ります。端末で選んだ画像は、ChatGPTにも添えてください。両方添付するときは人物が１枚目、乗り物・小物が２枚目です。</p>
       <details id="spot-article-draft" class="article-draft"><summary>そのままnoteに貼れる記事本文</summary>
         <label>記事原稿（編集できます）<textarea rows="9" aria-label="編集できる記事本文"></textarea></label>
         <button type="button">記事本文をコピー</button><p role="status"></p>

@@ -1,4 +1,4 @@
-import { hostPortrait } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=202611181820';
+import { hostPortrait } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=20261119-scene';
 import { mediaUrl, TOWER_API } from './public-directory.js?v=20261119-review';
 export { TOWER_API };
 export const OWNER_STORAGE = 'atelier-tower-owner-v1';
@@ -44,6 +44,14 @@ export const visitor = Object.freeze({
   name: 'ビジター', source: new URL('./assets/resident.webp', import.meta.url).href, visitor: true,
 });
 
+export const vehicleLabels = Object.freeze({bicycle:'自転車', motorcycle:'バイク', garage:'地下駐車場の車', parkingTower:'立体駐車場の車'});
+
+export function automaticVehicle(vehicles, place, lastUsed) {
+  if (place === 'car') return [lastUsed,'garage','parkingTower'].find(key => ['garage','parkingTower'].includes(key) && vehicles[key]);
+  if (Object.hasOwn(vehicleLabels,place)) return vehicles[place] ? place : undefined;
+  return [lastUsed,...Object.keys(vehicleLabels)].find(key=>Object.hasOwn(vehicleLabels,key) && vehicles[key]);
+}
+
 export function draftTraveler(draft) {
   return draft && {source:draft.avatar.source, atlas:draft.avatar.atlas, custom:true,
     noteId:draft.noteId, name:draft.name || draft.noteId};
@@ -58,7 +66,12 @@ export function residentTraveler(room) {
   const custom = room.design.avatarMode === 'custom' && Boolean(room.avatarVersion);
   const profile = room.design.avatarMode === 'profile' && Boolean(room.profile.photo);
   const host = room.noteId === 'ss_yr' && room.design.avatarMode === 'resident';
-  return {id:room.id, noteId:room.noteId, host, name:room.design.avatarName || room.profile.name || room.noteId,
+  const vehicles = {};
+  for (const kind of Object.keys(vehicleLabels)) {
+    const source = mediaUrl(room.id,kind,room.design.transport?.[kind]?.version);
+    if (source) vehicles[kind]=source;
+  }
+  return {id:room.id, noteId:room.noteId, host, vehicles, name:room.design.avatarName || room.profile.name || room.noteId,
     custom, profile, atlas:custom && room.design.world?.atlas === true,
     source:custom ? avatarImageUrl(room.id,room.avatarVersion) : profile ? room.profile.photo : host ? hostPortrait : visitor.source};
 }

@@ -1,7 +1,8 @@
 import { automaticVehicle, vehicleLabels } from '../../../tower/avatar-travel.js?v=20261119-scene';
-import { creatorReference } from '../../../tower/prompt-play.js?v=20261119-scene';
+import { creatorReference } from '../../../tower/prompt-play.js?v=20261119-handoff';
 import { inspectImage, artworkMime } from '../../../tower/quality-assist.js?v=20261119-scene';
 import { pendingMediaUrl, setArtworkSource } from '../../../tower/public-directory.js?v=20261119-review';
+import { prepareSpotFile } from './spot-handoff.js?v=20261119-handoff';
 
 export function bindSpotReferences(dialog, context, changed) {
   const el=id=>dialog.querySelector('#'+id);
@@ -13,7 +14,7 @@ export function bindSpotReferences(dialog, context, changed) {
   ];
   function clearFile(slot) {
     if(slot.url) URL.revokeObjectURL(slot.url);
-    slot.input.value='';slot.url='';slot.issue='';slot.creator='';
+    slot.input.value='';slot.url='';slot.issue='';slot.creator='';slot.file=null;
   }
   function reset() {
     for(const slot of slots){clearFile(slot);slot.mode.value='auto';}
@@ -35,6 +36,8 @@ export function bindSpotReferences(dialog, context, changed) {
     const reference=person.value==='none' ? {referenceMode:'none'} : person.value==='attachment' ?
       {referenceMode:'attachment'} : creatorReference(id,spot?.id,spot?.avatarSource);
     const object=item.value==='attachment' ? {mode:'attachment'} : source ? {mode:'registered',label:vehicleLabels[kind],url:source,fallback:pendingMediaUrl(source)} : item.value==='none' ? {mode:'none'} : {mode:'chat',label:sceneItem};
+    reference.selectedFile=Boolean(slots[0].file);
+    object.selectedFile=Boolean(slots[1].file);
     return {reference,item:object,kind,sceneItem,issue:slots.find(s=>s.issue)?.issue||'',key:[reference.referenceMode,reference.referenceUrl,person.value,slots[0].url,object?.url,item.value,slots[1].url]};
   }
   let lastOptions='';
@@ -54,10 +57,10 @@ export function bindSpotReferences(dialog, context, changed) {
     const saved=ref.referenceMode==='registered'||ref.referenceMode==='local';
     const auto=automaticVehicle(vehicles,spot?.vehiclePlace,recent());
     item.options[0].textContent=auto?'自動（自分の'+vehicleLabels[auto]+'）':'自動（同じチャットの'+(result.sceneItem||'物')+'があれば）';
-    el('spot-reference-status').textContent=person.value==='none' ? '人物を描かず、場所や選んだ物を主役にします。' : saved ?
+    el('spot-reference-status').textContent=person.value==='none' ? '人物を描かず、場所や選んだ物を主役にします。' : ref.selectedFile ? '選んだ画像を、この場面の人物に使います。' : saved ?
       '@'+id+' の登録キャラを使います。'+(ref.referenceMode==='registered'?'画像の参照先がプロンプトに入ります。':'同じChatGPTチャットの元絵を使えます。') :
       '人物用には自分の絵・使用許可のある絵を添付するか、同じチャットで指定してください。';
-    el('spot-item-status').textContent=object?.mode==='registered'?'自分の'+object.label+'の参照先が入ります。ChatGPTが画像を開けないときだけ、下の保存ボタンで車両画像を添えてください。':
+    el('spot-item-status').textContent=object.selectedFile?'選んだ画像を、この場面の乗り物・小物に使います。':object?.mode==='registered'?'自分の'+object.label+'の参照先が入ります。ChatGPTが画像を開けないときだけ、下の保存ボタンで車両画像を添えてください。':
       object?.mode==='attachment'?'人物用とは別に、使いたい物を１枚添付できます。同じチャットで作った物は、その絵を指定しても使えます。':
       item.value==='none'?'この絵には自分の乗り物・小物を入れません。':'登録車両がないときは、同じChatGPTチャットで作った場面に合う自分の物が１つなら使います。別チャットで作った物は下の欄で指定できます。';
     for(const [i,slot] of slots.entries()){
@@ -78,15 +81,26 @@ export function bindSpotReferences(dialog, context, changed) {
     slot.input.addEventListener('change',async()=>{
       const file=slot.input.files[0];
       if(slot.url)URL.revokeObjectURL(slot.url);
+      slot.file=null;
       slot.url=file?URL.createObjectURL(file):'';
       slot.creator=context().id;slot.issue=file?slot.label+'の画像を検査中です。':'';
       slot.mode.value=file?'attachment':'auto';
       const chosen=slot.url;
       message.textContent=slot.issue;changed();
       if(!file)return;
-      try{const review=await inspectImage(file,'reference');if(chosen!==slot.url)return;slot.issue=review.errors.join(' ');}
+      try{
+        const review=await inspectImage(file,'reference');
+        if(chosen!==slot.url)return;
+        const error=review.errors.join(' ');
+        if(!error){
+          const ready=await prepareSpotFile(file,i===0?'person':'item');
+          if(chosen!==slot.url)return;
+          slot.file=ready;
+        }
+        slot.issue=error;
+      }
       catch(error){if(chosen!==slot.url)return;slot.issue=error.message;}
-      changed();message.textContent=slot.issue||slot.label+'の画像を確認しました。ChatGPTにもこの画像を添えてください。';
+      changed();message.textContent=selection().issue||slot.label+'の参照画像を渡せる状態になりました。';
     });
     slot.mode.addEventListener('change',()=>{
       clearFile(slot);
@@ -130,5 +144,5 @@ export function bindSpotReferences(dialog, context, changed) {
     }
   }
   function commitCreator(id){for(const slot of slots)if(slot.url&&!slot.creator)slot.creator=id;}
-  return {paint,selection,reset,changeCreator,commitCreator};
+  return {paint,selection,reset,changeCreator,commitCreator,files:()=>slots.map(slot=>slot.file).filter(Boolean)};
 }

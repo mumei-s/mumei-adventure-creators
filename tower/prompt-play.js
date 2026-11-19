@@ -61,12 +61,18 @@ export function spotSubjectInstructions(reference = {}, item) {
   else if (reference.referenceMode === 'local') person='人物には同じチャットで確認した本人のキャラを使う。別チャットで見られなければ人物画像だけを依頼。';
   else person='人物には今回添付する新しいキャラ画像、またはこのチャットで人物用に指定された本人・使用許可のある画像を使う。IDからほかの住人の絵を探さず、人物の資料がない場合だけその１枚を依頼。';
   const lines=[person, !empty && characterArtInstructions];
+  if (reference.selectedFile || item?.selectedFile) {
+    const role = reference.selectedFile && item?.selectedFile
+      ? '１枚目が人物、２枚目が乗り物・小物。１枚にまとまった参照シートなら「人物 / PERSON」と「乗り物・小物 / ITEM」の欄を使う。'
+      : reference.selectedFile ? '今回添えた１枚が人物の資料。' : '今回添えた１枚が乗り物・小物の資料。';
+    lines.unshift('【今回選んだ参照画像】'+role+' このメッセージまたは直前に届いた該当画像をその役割で使う。届いた画像の再添付や用途の確認を求めず、作画に進む。参照シートの見出し・枠・配置は完成絵に写さない。');
+  }
   if (item?.mode==='registered') lines.push('一緒に描くもの：自分の'+item.label+'。登録した乗り物の画像URL：'+item.url, item.fallback && '公開直後で上の画像が開けないときの予備URL：'+item.fallback, '画像を確認できないときは同じチャットの元絵を使い、必要ならその乗り物の画像だけを依頼。似た別の車体で代用しない。');
   if (item?.mode==='attachment') lines.push('一緒に描くもの：乗り物・小物用の添付画像を使う。同じチャットですでに指定した物も使える。見られなければその物の画像だけを依頼。');
   if (item?.mode==='chat') lines.push('このチャットで利用者が作った、または自分の物として指定した'+(item.label||'この場面に合う乗り物・小物')+'の画像が１つに定まれば、自動で一緒に描く。別の人の絵は使わない。絵がない場合や候補が複数で決まらない場合は、物を追加せずそのまま場面を描く。');
   if (item?.mode==='none') lines.push('自分の乗り物・小物は今回の絵に追加しない。');
   if (item?.mode==='registered' || item?.mode==='attachment') {
-    if (reference.referenceMode==='attachment' && item.mode==='attachment') lines.push('２枚とも添付する場合は、１枚目が人物、２枚目が乗り物・小物。役割を入れ替えない。');
+    if (!reference.selectedFile && !item.selectedFile && reference.referenceMode==='attachment' && item.mode==='attachment') lines.push('２枚とも添付する場合は、１枚目が人物、２枚目が乗り物・小物。役割を入れ替えない。');
     lines.push('乗り物・小物の資料から人物を採用しない。指定の物を本文絵とサムネイルに入れ、形・配色・部品・縮尺を合わせる。屋内で乗り物が不自然なら入口の外や窓越しに見せる。資料URLやファイル名は記事本文に載せない。');
   }
   return lines.filter(Boolean).join('\n');

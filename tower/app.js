@@ -6,8 +6,8 @@ import { scanAtlas } from '../halloween-exhibition/preview/diorama-city/atlas-la
 import { characterSignature, designWorld, generatedInterior, roomPreview, roomStage } from './world.js?v=20261119-scene';
 import { cutaway, dailyStory, makeElevator } from './building.js?v=20261119-scene';
 import { bindSharedSpaces, floorLabel } from './shared-spaces.js?v=20261119-scene';
-import { bindSpotIllustration } from '../halloween-exhibition/preview/diorama-city/spot-illustration.js?v=20261119-scene';
-import { chatgptAppLink, makeArtifactPrompt, makeRoomPrompt, makeMoveInArticlePrompt, articleCardEntries, bindArticleDraft, parseNoteId, creatorReference, residentPost, towerUrl, hostNoteUrl, insightUrl, bindCardButtons } from './prompt-play.js?v=20261119-scene';
+import { bindSpotIllustration } from '../halloween-exhibition/preview/diorama-city/spot-illustration.js?v=20261119-handoff';
+import { chatgptAppLink, makeArtifactPrompt, makeRoomPrompt, makeMoveInArticlePrompt, articleCardEntries, bindArticleDraft, parseNoteId, creatorReference, residentPost, towerUrl, hostNoteUrl, insightUrl, bindCardButtons } from './prompt-play.js?v=20261119-handoff';
 import { bindQualityAssist, inspectImage, imageContentChecks, sampleArtwork, artworkMatch, artworkMime, articleChecks } from './quality-assist.js?v=20261119-scene';
 import { TOWER_API, OWNER_STORAGE, avatarImageUrl, readWalkDraft, saveWalkDraft, clearWalkDraft, visitor, draftTraveler, residentTraveler, hasRoomKey, createPlayerSession } from './avatar-travel.js?v=20261119-scene';
 import { initGameShell } from './game-shell.js?v=20261118-controls';

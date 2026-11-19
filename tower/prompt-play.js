@@ -63,8 +63,9 @@ export function spotSubjectInstructions(reference = {}, item) {
   const lines=[person, !empty && characterArtInstructions];
   if (item?.mode==='registered') lines.push('一緒に描くもの：自分の'+item.label+'。登録した乗り物の画像URL：'+item.url, item.fallback && '公開直後で上の画像が開けないときの予備URL：'+item.fallback, '画像を確認できないときは同じチャットの元絵を使い、必要ならその乗り物の画像だけを依頼。似た別の車体で代用しない。');
   if (item?.mode==='attachment') lines.push('一緒に描くもの：乗り物・小物用の添付画像を使う。同じチャットですでに指定した物も使える。見られなければその物の画像だけを依頼。');
+  if (item?.mode==='chat') lines.push('このチャットで利用者が作った、または自分の物として指定した'+(item.label||'この場面に合う乗り物・小物')+'の画像が１つに定まれば、自動で一緒に描く。別の人の絵は使わない。絵がない場合や候補が複数で決まらない場合は、物を追加せずそのまま場面を描く。');
   if (item?.mode==='none') lines.push('自分の乗り物・小物は今回の絵に追加しない。');
-  if (item && item.mode!=='none') {
+  if (item?.mode==='registered' || item?.mode==='attachment') {
     if (reference.referenceMode==='attachment' && item.mode==='attachment') lines.push('２枚とも添付する場合は、１枚目が人物、２枚目が乗り物・小物。役割を入れ替えない。');
     lines.push('乗り物・小物の資料から人物を採用しない。指定の物を本文絵とサムネイルに入れ、形・配色・部品・縮尺を合わせる。屋内で乗り物が不自然なら入口の外や窓越しに見せる。資料URLやファイル名は記事本文に載せない。');
   }
@@ -207,7 +208,7 @@ export function makeArtifactPrompt({ kind, id, title, scene, href, reason, mode 
     kind==='article' && articleScene && '舞台の説明：' + articleScene,
     kind==='article' && articleClosing && '舞台の続き：' + articleClosing,
     kind==='article' && noPeople && '選んだ絵は人物なし。そこに描かれた人物や体験を作り足さない。',
-    kind==='article' && item && item.mode!=='none' && '選んだ絵には'+(item.label||'指定した乗り物・小物')+'を入れる。乗った・買った等の体験は本人の記録に合わせる。',
+    kind==='article' && item && item.mode!=='none' && '完成した絵に'+(item.label||'乗り物・小物')+'が写っているときだけ記事に触れる。乗った・買った等の体験は本人の記録に合わせる。',
     scene && (kind === 'article' ? '場面の設定（作画指定を含む）：' : '場面や希望：') + scene,
     ideas && '部屋に入れたいもの：' + ideas,
     experience && 'ゲームで実際に行ったこと：' + experience,

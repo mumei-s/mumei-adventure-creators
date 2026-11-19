@@ -31,10 +31,11 @@ export function bindSpotReferences(dialog, context, changed) {
     const vehicles=available();
     const kind=item.value==='auto' ? automaticVehicle(vehicles,spot?.vehiclePlace,recent()) : item.value;
     const source=vehicles[kind];
+    const sceneItem=spot?.vehiclePlace==='car'||spot?.vehiclePlace==='garage'||spot?.vehiclePlace==='parkingTower' ? '車' : vehicleLabels[spot?.vehiclePlace];
     const reference=person.value==='none' ? {referenceMode:'none'} : person.value==='attachment' ?
       {referenceMode:'attachment'} : creatorReference(id,spot?.id,spot?.avatarSource);
-    const object=item.value==='attachment' ? {mode:'attachment'} : source ? {mode:'registered',label:vehicleLabels[kind],url:source,fallback:pendingMediaUrl(source)} : item.value==='none' ? {mode:'none'} : null;
-    return {reference,item:object,kind,issue:slots.find(s=>s.issue)?.issue||'',key:[reference.referenceMode,reference.referenceUrl,person.value,slots[0].url,object?.url,item.value,slots[1].url]};
+    const object=item.value==='attachment' ? {mode:'attachment'} : source ? {mode:'registered',label:vehicleLabels[kind],url:source,fallback:pendingMediaUrl(source)} : item.value==='none' ? {mode:'none'} : {mode:'chat',label:sceneItem};
+    return {reference,item:object,kind,sceneItem,issue:slots.find(s=>s.issue)?.issue||'',key:[reference.referenceMode,reference.referenceUrl,person.value,slots[0].url,object?.url,item.value,slots[1].url]};
   }
   let lastOptions='';
   function paint() {
@@ -52,13 +53,13 @@ export function bindSpotReferences(dialog, context, changed) {
     const {spot,id}=context(), result=selection(), ref=result.reference, object=result.item;
     const saved=ref.referenceMode==='registered'||ref.referenceMode==='local';
     const auto=automaticVehicle(vehicles,spot?.vehiclePlace,recent());
-    item.options[0].textContent=auto?'自動（自分の'+vehicleLabels[auto]+'）':'自動（この場面の登録車両なし）';
+    item.options[0].textContent=auto?'自動（自分の'+vehicleLabels[auto]+'）':'自動（同じチャットの'+(result.sceneItem||'物')+'があれば）';
     el('spot-reference-status').textContent=person.value==='none' ? '人物を描かず、場所や選んだ物を主役にします。' : saved ?
       '@'+id+' の登録キャラを使います。'+(ref.referenceMode==='registered'?'画像の参照先がプロンプトに入ります。':'同じChatGPTチャットの元絵を使えます。') :
       '人物用には自分の絵・使用許可のある絵を添付するか、同じチャットで指定してください。';
     el('spot-item-status').textContent=object?.mode==='registered'?'自分の'+object.label+'の参照先が入ります。ChatGPTが画像を開けないときだけ、下の保存ボタンで車両画像を添えてください。':
       object?.mode==='attachment'?'人物用とは別に、使いたい物を１枚添付できます。同じチャットで作った物は、その絵を指定しても使えます。':
-      item.value==='none'?'この絵には自分の乗り物・小物を入れません。':'号室の区画に登録すると自動で使えます。未登録の乗り物や小物も下の欄で選べます。';
+      item.value==='none'?'この絵には自分の乗り物・小物を入れません。':'登録車両がないときは、同じChatGPTチャットで作った場面に合う自分の物が１つなら使います。別チャットで作った物は下の欄で指定できます。';
     for(const [i,slot] of slots.entries()){
       const registered=i===0 ? (saved ? spot.avatarSource : '') : object?.url;
       const source=slot.url||registered||'';

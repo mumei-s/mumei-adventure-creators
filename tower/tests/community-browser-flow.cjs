@@ -18,6 +18,8 @@ const site=process.env.ATELIER_TEST_URL||'http://127.0.0.1:4173/';
     await host.waitFor();
     assert.equal(await page.locator('#room-content .world-resident').count(),1);
     assert.equal(await page.getByRole('button',{name:/アバターで街を歩く/}).count(),0);
+    const streetExit=await page.locator('#room-content').getByRole('link',{name:'街へ出る'}).getAttribute('href');
+    assert.equal(new URL(streetExit,tower).search,'?arrival=tower');
     await page.locator('#share-room').click();
     assert.deepEqual([...new URL(await page.evaluate(()=>window.sharedRoomUrl)).searchParams],[['room',person.id]]);
     await host.click();

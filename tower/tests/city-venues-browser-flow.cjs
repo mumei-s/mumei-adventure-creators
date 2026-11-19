@@ -16,7 +16,8 @@ async function renderedFeet(page) {
         if (alpha[(y * width + x) * 4 + 3] > 128) { totalX += x + .5; weight++; }
       }
       if (weight < 3) continue;
-      const screenX = box.left + (box.width - width * scale) / 2 + totalX / weight * scale;
+      const footX = new DOMMatrix(getComputedStyle(sprite).transform).a < 0 ? width-totalX/weight : totalX/weight;
+      const screenX = box.left + (box.width - width * scale) / 2 + footX * scale;
       const screenY = box.bottom - (height - y - 1) * scale;
       return [(screenX - plate.left) / plate.width * 1000, (screenY - plate.top) / plate.height * 667];
     }

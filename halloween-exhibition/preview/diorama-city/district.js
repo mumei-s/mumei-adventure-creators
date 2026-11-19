@@ -166,6 +166,7 @@ async function chooseWalker() {
   activeSpotActor=actor;
   const image=new Image();
   image.alt=actor.name;image.draggable=false;
+  if(actor.source===visitor.source) image.className='visitor-art';
   if(actor.custom && actor.source.startsWith(TOWER_API))image.crossOrigin='anonymous';
   image.src=actor.source;
   let timer;

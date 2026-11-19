@@ -82,7 +82,7 @@ const originalFeed = /\/assets\/(?:entrance-lounge|driveway|garage|bicycle-court
     const id='bcd12345-abcd-4bcd-abcd-abcdef123456',noteId='test_resident',key='a'.repeat(64);
     const version=2,source=new URL('published/media/'+id+'/avatar-'+version+'.img',tower).href;
     await page.addInitScript(owner=>localStorage.setItem('atelier-tower-owner-v1',JSON.stringify(owner)),{id,noteId,key});
-    let confirmRoom,showImage;
+    let confirmRoom,showImage,authorized=true;
     const keyCheck=new Promise(resolve=>{confirmRoom=resolve;});
     const imageReady=new Promise(resolve=>{showImage=resolve;});
     const actor=await readFile(path.join(__dirname,'../../halloween-exhibition/preview/diorama-city/assets/host-walk.webp'));
@@ -93,7 +93,7 @@ const originalFeed = /\/assets\/(?:entrance-lounge|driveway|garage|bicycle-court
     await page.route('https://slamzhgsawfnmwlejgqp.supabase.co/functions/v1/creator-tower',async route=>{
       const req=route.request();assert.deepEqual(req.postDataJSON(),{action:'visit',id});assert.equal(req.headers()['x-tower-key'],key);
       await keyCheck;
-      await route.fulfill({json:{id,noteId,isOwner:true,profile:{name:'テスト住人'},avatarVersion:version,design:{avatarMode:'custom',world:{atlas:true}}},headers});
+      await route.fulfill({json:{id,noteId,isOwner:authorized,profile:{name:'テスト住人'},avatarVersion:version,design:{avatarMode:'custom',world:{atlas:true}}},headers});
     });
     paths.length=0;
     await page.goto(new URL('?area=canal&spot=avenueShops.car',city).href,{waitUntil:'domcontentloaded'});
@@ -111,6 +111,13 @@ const originalFeed = /\/assets\/(?:entrance-lounge|driveway|garage|bicycle-court
     await page.waitForSelector('#district[data-walker-state="ready"]');
     assert.equal(await page.textContent('#walker-name'),'テスト住人');
     assert.equal(paths.some(p=>/\/host-(?:walk|seated|portrait)\.webp$/.test(p)),false,'A registered walker uses their own sprites');
+    authorized=false;
+    await page.reload({waitUntil:'domcontentloaded'});
+    await page.waitForSelector('#district[data-walker-state="ready"]');
+    assert.match(await page.textContent('#walker-name'),/^ビジター/);
+    await page.click('#spot-prompt');await page.fill('#spot-id',noteId);
+    assert.ok(!(await page.inputValue('#spot-text')).includes(source));
+    assert.ok(await page.locator('#spot-save-reference').isHidden());
     assert.deepEqual(errors,[]);
     console.log('PASS direct venue: one backdrop, zero exterior transfers; prompt copied while art was pending; district crossing, back and forward: one document; small and expanded cameras use the right resolution.');
   } finally {await browser.close();}

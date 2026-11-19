@@ -33,7 +33,8 @@ function visibleFeet() {
       center+=x+.5;
     }
     if (mass<3) continue;
-    const screenX=box.left+(box.width-width*scale)/2+(center/mass)*scale;
+    const footX=new DOMMatrix(getComputedStyle(sprite).transform).a<0 ? width-center/mass : center/mass;
+    const screenX=box.left+(box.width-width*scale)/2+footX*scale;
     const screenY=box.bottom-(height-1-y)*scale;
     return { x:(screenX-scene.left)/scene.width, y:(screenY-scene.top)/scene.height };
   }

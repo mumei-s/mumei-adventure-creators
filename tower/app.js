@@ -615,6 +615,8 @@ function renderRoom(room, mode) {
   }
   if ((room.draftAvatar && mode !== 'resident') || (mode === 'resident' && room.isOwner === true)) {
     actions.append(button('button outline', '自分のアバターで街を歩く', () => walkFromRoom(room)));
+  } else if (visitingResident) {
+    actions.append(link('button outline', '街へ出る', '../halloween-exhibition/preview/diorama-city/?arrival=tower'));
   }
   if (actions.childElementCount) body.append(actions);
   const articles = node('section', 'room-articles');

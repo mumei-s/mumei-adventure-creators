@@ -93,16 +93,15 @@ export function bindSharedSpaces({getCatalog,getOwner,getTraveler:getActor,loadP
   function guests(stage) {
     const links=make('div','guest-links');
     details.append(links);
-    let lastCatalog;
+    let lastCatalog,lastPlayer;
     return ()=>{
-      const catalog=getCatalog();
-      if(catalog===lastCatalog)return;
-      lastCatalog=catalog;
+      const catalog=getCatalog(),playerId=getActor()?.id;
+      if(catalog===lastCatalog && playerId===lastPlayer)return;
+      lastCatalog=catalog;lastPlayer=playerId;
       stage.querySelectorAll('.lounge-guest').forEach(guest=>guest.remove());
       links.replaceChildren();
-      const actor=getActor();
       const floor=facilityFloors[stage.dataset.space];
-      const rooms=(catalog?.rooms??[]).filter(room=>(room.avatarVersion||room.photo)&&room.id!==getOwner()?.id&&room.noteId!==actor?.noteId).slice(0,floor.guests.length);
+      const rooms=(catalog?.rooms??[]).filter(room=>(room.avatarVersion||room.photo)&&room.id!==playerId).slice(0,floor.guests.length);
       if(rooms.length)links.append(make('p','muted','名前を選ぶと、その住人の部屋を訪ねられます。'));
       rooms.forEach((room,index)=>{
         const guest=make('span','lounge-guest');
@@ -205,13 +204,14 @@ export function bindSharedSpaces({getCatalog,getOwner,getTraveler:getActor,loadP
     panel.append(make('p','',manager?'管理人は5人まで。参加すると自分のアバターが管理人室を巡回し、来訪者にも見えます。':'技術部は人数制限なし。参加すると自分のアバターがこの設備室を巡回します。人数が増えると巡回する班が交代します。'),roster,pages);
     details.append(panel);
     function paint(){
-      const others=members.filter(person=>person.id!==owner?.id);
+      const playerId=getActor()?.id;
+      const others=members.filter(person=>person.id!==playerId);
       const pageCount=Math.max(1,Math.ceil(others.length/waypoints.length));
       page=(page%pageCount+pageCount)%pageCount;pages.hidden=pageCount===1;
       pageText.textContent=(page+1)+' / '+pageCount+' 班';
       people.set(others.slice(page*waypoints.length,(page+1)*waypoints.length));
       const self=stage.querySelector('.world-resident');let badge=self.querySelector('.role-self');
-      if(members.some(person=>person.id===owner?.id)){
+      if(members.some(person=>person.id===playerId)){
         if(!badge)self.append(make('small','role-self',manager?'管理人 · あなた':'技術部 · あなた'));
       }else badge?.remove();
     }
@@ -235,10 +235,11 @@ export function bindSharedSpaces({getCatalog,getOwner,getTraveler:getActor,loadP
       members=facilities.filter(person=>person[role]).sort((a,b)=>a.slot-b.slot).map(person=>({...byId.get(person.id),...person}));
       const names=members.map(person=>person.name||person.noteId).join('、');
       roster.textContent=spec.title+' · '+(ready?(manager?members.length+' / 5人':members.length+'人')+'　'+(names||'参加者募集中'):view.facilityStatus==='error'?'名簿を再確認しています':'名簿を確認中…');
-      const signature=JSON.stringify(members);
+      const playerId=getActor()?.id;
+      const signature=JSON.stringify([playerId,members]);
       if(signature!==last){last=signature;paint();}
       if(toggle){
-        const joined=members.some(person=>person.id===owner.id),full=manager&&!joined&&members.length>=5;
+        const joined=members.some(person=>person.id===playerId),full=manager&&!joined&&members.length>=5;
         toggle.disabled=busy||!ready||full;
         toggle.textContent=joined?spec.leave:full?'管理人は満員です（5 / 5人）':spec.join;
         toggle.setAttribute('aria-pressed',String(joined));
@@ -472,7 +473,10 @@ export function bindSharedSpaces({getCatalog,getOwner,getTraveler:getActor,loadP
 
     if(hasRoomKey(getOwner()) && !traveler){
       void loadPlayer().then(own=>{
-        if(view===session && own) scene.setTraveler(residentTraveler(own));
+        if(view===session && own){
+          scene.setTraveler(residentTraveler(own));
+          view.refresh?.();
+        }
       }).catch(()=>{});
     }
     if(id==='lobby'||id==='driveway'){

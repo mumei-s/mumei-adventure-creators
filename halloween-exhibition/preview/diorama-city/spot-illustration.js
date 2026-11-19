@@ -1,10 +1,11 @@
-import { chatgptAppLink, hostNoteUrl, parseNoteId, towerUrl, insightUrl, articleCardBlock, drawFirst, bindArticleDraft, articleCoverInstructions, articleVoiceInstructions, bindCardButtons, makeArtifactPrompt, characterReferenceInstructions, spotSubjectInstructions, settingInstructions, checkArtwork, articleCardEntries } from '../../../tower/prompt-play.js?v=20261119-scene';
+import { chatgptAppLink, hostNoteUrl, parseNoteId, towerUrl, insightUrl, articleCardBlock, drawFirst, bindArticleDraft, articleCoverInstructions, articleVoiceInstructions, bindCardButtons, makeArtifactPrompt, characterReferenceInstructions, spotSubjectInstructions, settingInstructions, checkArtwork, articleCardEntries } from '../../../tower/prompt-play.js?v=20261119-handoff';
 import { bindQualityAssist, articleImageMarkers } from '../../../tower/quality-assist.js?v=20261119-scene';
-import { bindSpotReferences } from './spot-references.js?v=20261119-scene';
+import { bindSpotReferences } from './spot-references.js?v=20261119-handoff';
+import { bindSpotHandoff } from './spot-handoff.js?v=20261119-handoff';
 
 export { characterReferenceInstructions as spotReferenceInstructions };
 
-export function makeSpotPrompt({ label, scene, href, id, referenceMode, referenceUrl, item, backgroundUrl, experience, articleScene }) {
+export function makeSpotPrompt({ label, scene, href, id, referenceMode, referenceUrl, selectedFile, item, backgroundUrl, experience, articleScene }) {
   const noPeople=referenceMode==='none';
   const room = new URL(towerUrl);
   if(id)room.searchParams.set('creator',id);
@@ -12,7 +13,7 @@ export function makeSpotPrompt({ label, scene, href, id, referenceMode, referenc
   return `【#無名Sプロンプト｜${label}】
 まず本文イラスト１を描いてください。${drawFirst}
 noteクリエイターID：${id?'@'+id:'［自分のID］'}
-${spotSubjectInstructions({referenceMode,referenceUrl},item)}
+${spotSubjectInstructions({referenceMode,referenceUrl,selectedFile},item)}
 ${checkArtwork}
 
 場面：${noPeople ? articleScene||label : scene}
@@ -46,8 +47,9 @@ export function bindSpotIllustration(dialog) {
     app.rel = 'noopener';
   }
   const restorePrompt = dialog.querySelector('#spot-main-prompt');
-  let current, reviewedCreator, idEdited=false;
+  let current, reviewedCreator, idEdited=false, showingArticle=false;
   const refs=bindSpotReferences(dialog,()=>({spot:current,id:parseNoteId(field.value)}),()=>{render();quality.refresh();});
+  const handoff=bindSpotHandoff(dialog,refs.files,success=>{if(validCreator())return copyText(success);});
   const draft=bindArticleDraft(dialog.querySelector('#spot-article-draft'),()=>{
     const id=parseNoteId(field.value);
     return {...current,id,title:quality.articleTitle,occupied:Boolean(id && current.id===id && current.occupied),
@@ -63,7 +65,7 @@ export function bindSpotIllustration(dialog) {
     }
     return !invalid;
   }
-  async function copyPrompt(success) {
+  async function copyText(success) {
     try {
       await navigator.clipboard.writeText(text.value);
       message.textContent = success;
@@ -74,7 +76,12 @@ export function bindSpotIllustration(dialog) {
       message.textContent = '選択したプロンプトをコピーしてください。';
     }
   }
+  function transfer(success) {
+    if(!showingArticle && refs.files().length) return handoff.send();
+    return copyText(success);
+  }
   function render() {
+    showingArticle=false;
     const id = parseNoteId(field.value);
     field.setAttribute('aria-invalid', String(Boolean(field.value.trim()) && !id));
     const {reference:ref,item,issue}=refs.paint();
@@ -82,7 +89,7 @@ export function bindSpotIllustration(dialog) {
     const params={...current,id,experience,item,scene:ref.referenceMode==='none' ? current.articleScene||current.label : current.scene,occupied:Boolean(id && id===current.id && current.occupied)};
     text.value = output.value==='set' ? makeSpotPrompt({...params,...ref}) :
       makeArtifactPrompt({...params,kind:output.value,reference:ref,title:quality.articleTitle});
-    copy.textContent = output.value==='set' ? 'イラスト作成プロンプトをコピー' : output.selectedOptions[0].textContent+'のプロンプトをコピー';
+    copy.textContent = handoff.paint(true,issue) || (output.value==='set' ? 'イラスト作成プロンプトをコピー' : output.selectedOptions[0].textContent+'のプロンプトをコピー');
     copy.disabled = Boolean(issue);
     restorePrompt.hidden = true;
   }
@@ -97,8 +104,9 @@ export function bindSpotIllustration(dialog) {
       experience:!current.id || id===current.id ? current.experience : null, draft:kind==='article' ? reviewedDraft ?? draft.text : undefined });
     copy.disabled = false;
     restorePrompt.hidden = false;
-    copy.textContent = kind === 'article' ? '記事用プロンプトをコピー' : '選んだ作品の修正プロンプトをコピー';
-    return copyPrompt(kind === 'article' ? '記事用プロンプトをコピーしました。イラストを作った同じチャットに貼り付けてください。' :
+    showingArticle = kind === 'article';
+    copy.textContent = handoff.paint(!showingArticle,issue) || (showingArticle ? '記事用プロンプトをコピー' : '選んだ作品の修正プロンプトをコピー');
+    return transfer(showingArticle ? '記事用プロンプトをコピーしました。イラストを作った同じチャットに貼り付けてください。' :
       '選んだ作品だけの修正プロンプトをコピーしました。');
   }
   const quality = bindQualityAssist(dialog.querySelector('#spot-quality'), {
@@ -128,7 +136,7 @@ export function bindSpotIllustration(dialog) {
   output.addEventListener('change',()=>{render();message.textContent='';});
   restorePrompt.addEventListener('click', () => { output.value='set';render(); message.textContent = ''; });
   copy.addEventListener('click', () => {
-    if (validCreator()) void copyPrompt(restorePrompt.hidden ?
+    if (validCreator()) void transfer(restorePrompt.hidden ?
       'イラスト用プロンプトをコピーしました。画像ができたら同じチャットで「記事にする」と送れます。' :
       '表示中のプロンプトをコピーしました。同じChatGPTチャットで使ってください。');
   });

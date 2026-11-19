@@ -2,6 +2,7 @@ const assert=require('node:assert/strict');
 const {readFile}=require('node:fs/promises');
 const path=require('node:path');
 const {chromium}=require('playwright');
+const {checkReferenceHandoff}=require('./reference-handoff.cjs');
 const base=process.env.ATELIER_TEST_URL||'http://127.0.0.1:4173/';
 const tower=new URL('tower/',base), city=new URL('halloween-exhibition/preview/diorama-city/',base);
 const roomId='cba00012-abcd-4f00-a001-04000000abcd',noteId='scene_artist';
@@ -11,7 +12,7 @@ const media=new URL('published/media/'+roomId+'/',tower).href;
 (async()=>{
   const browser=await chromium.launch({executablePath:process.env.BROWSER_EXECUTABLE||'/usr/bin/chromium',args:['--no-sandbox']});
   try{
-    const page=await browser.newPage({viewport:{width:390,height:844},serviceWorkers:'block',reducedMotion:'reduce'});
+    const page=await browser.newPage({viewport:{width:390,height:844},serviceWorkers:'block',reducedMotion:'reduce',permissions:['clipboard-read','clipboard-write']});
     const errors=[];page.on('pageerror',error=>errors.push(error.message));
     await page.addInitScript(owner=>{
       localStorage.setItem('atelier-tower-owner-v1',JSON.stringify(owner));
@@ -57,9 +58,7 @@ const media=new URL('published/media/'+roomId+'/',tower).href;
     }
     const ref1=path.join(__dirname,'../assets/prop-desk.webp'),ref2=path.join(__dirname,'../assets/gallery.webp');
     await page.selectOption('#spot-person','attachment');
-    await page.locator('#spot-image').setInputFiles(ref1);
-    assert.ok((await prompt.inputValue()).includes(media+'bicycle-7.img'));
-    await page.locator('#spot-item-image').setInputFiles(ref2);
+    await checkReferenceHandoff(page,media+'bicycle-7.img',ref1,ref2);
     await page.waitForFunction(()=>!document.getElementById('spot-copy').disabled);
     const two=await prompt.inputValue();assert.ok(two.includes('１枚目が人物、２枚目が乗り物・小物') && !two.includes(media));
     assert.equal(await page.locator('.spot-ref-preview:visible').count(),2);

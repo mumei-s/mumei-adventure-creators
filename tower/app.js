@@ -1,15 +1,15 @@
 import { publicView, mediaUrl, setArtworkSource, pendingMediaUrl } from './public-directory.js?v=20261119-review';
-import { talkToResident } from './resident-talk.js?v=community1';
+import { talkToResident } from './resident-talk.js?v=20261119-owner';
 import {autoResidentWalker} from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=202611181820';
 import { trimTransparentEdges } from './vehicle-display.js?v=20261119-review';
 import { scanAtlas } from '../halloween-exhibition/preview/diorama-city/atlas-layout.js?v=20261118-sprites-2';
-import { characterSignature, designWorld, generatedInterior, roomPreview, roomStage } from './world.js?v=20261119-review';
-import { cutaway, dailyStory, makeElevator } from './building.js?v=20261119-review';
-import { bindSharedSpaces, floorLabel } from './shared-spaces.js?v=20261119-review';
-import { bindSpotIllustration } from '../halloween-exhibition/preview/diorama-city/spot-illustration.js?v=20261119-review';
-import { chatgptAppLink, makeArtifactPrompt, makeRoomPrompt, makeMoveInArticlePrompt, articleCardEntries, bindArticleDraft, parseNoteId, creatorReference, residentPost, towerUrl, hostNoteUrl, insightUrl, bindCardButtons } from './prompt-play.js?v=20261119-review';
+import { characterSignature, designWorld, generatedInterior, roomPreview, roomStage } from './world.js?v=20261119-owner';
+import { cutaway, dailyStory, makeElevator } from './building.js?v=20261119-owner';
+import { bindSharedSpaces, floorLabel } from './shared-spaces.js?v=20261119-owner';
+import { bindSpotIllustration } from '../halloween-exhibition/preview/diorama-city/spot-illustration.js?v=20261119-owner';
+import { chatgptAppLink, makeArtifactPrompt, makeRoomPrompt, makeMoveInArticlePrompt, articleCardEntries, bindArticleDraft, parseNoteId, creatorReference, residentPost, towerUrl, hostNoteUrl, insightUrl, bindCardButtons } from './prompt-play.js?v=20261119-owner';
 import { bindQualityAssist, inspectImage, imageContentChecks, sampleArtwork, artworkMatch, artworkMime, articleChecks } from './quality-assist.js?v=20261119-review';
-import { TOWER_API, OWNER_STORAGE, avatarImageUrl, readWalkDraft, saveWalkDraft, clearWalkDraft, readTraveler, rememberWalker } from './avatar-travel.js?v=20261119-review';
+import { TOWER_API, OWNER_STORAGE, avatarImageUrl, readWalkDraft, saveWalkDraft, clearWalkDraft, visitor, draftTraveler, residentTraveler, hasRoomKey, createPlayerSession } from './avatar-travel.js?v=20261119-owner';
 import { initGameShell } from './game-shell.js?v=20261118-controls';
 
 const gameShell = initGameShell({ page: 'tower' });
@@ -79,6 +79,14 @@ const state = {
   catalog: null, catalogError: false, catalogRequest: 0, catalogCheckedAt: 0, floor: 1, query: '', preferredSlot: null, owner: getStored('localStorage', OWNER_STORAGE),
   room: null, mode: '', proofIntent: null, proof: null, request: 0, picture: null, entryPicture: null, story: null, storyVisit: null,
 };
+
+const player = createPlayerSession(()=>state.owner, owner=>write('visit',{id:owner.id},owner.key));
+function currentTraveler() {
+  return residentTraveler(player.room) || (!hasRoomKey(state.owner) && draftTraveler(readWalkDraft())) || null;
+}
+window.addEventListener('storage',event=>{
+  if (event.key===OWNER_STORAGE || event.key===null) location.reload();
+});
 
 const travel = makeElevator($('#lift-dialog'));
 const play = { id: '', profile: null, avatar: null, interior: null, photoId: '', formCreator: '', draft: null, referenceRevision: 0, loading: new Set(), target: null };
@@ -423,9 +431,7 @@ function walkFromRoom(room) {
       return;
     }
     url.searchParams.set('walker', 'draft');
-  } else {
-    url.searchParams.set('resident', room.id);
-  }
+  } else if (room.isOwner !== true || player.room?.id !== room.id) return;
   location.assign(url);
 }
 
@@ -540,15 +546,19 @@ function renderRoom(room, mode) {
   const layout = node('div', 'room-layout');
   roomControls?.abort();
   roomControls = new AbortController();
-  if (room.isOwner && room.design.avatarMode === 'custom' && room.avatarVersion) {
-    rememberWalker({ id: room.id, noteId: room.noteId, custom:true, name: room.design.avatarName || room.profile.name,
-      source: avatarUrl(room), atlas: room.design.world?.atlas });
-  }
+  if (room.isOwner === true) player.accept(state.owner, room);
   const visitingResident=mode==='resident'&&!room.isOwner;
-  const traveler=visitingResident?(readTraveler()||{source:'./assets/resident.webp',name:'訪問者',custom:false}):
-    mode==='showroom'?readTraveler():null;
+  const visiting=visitingResident || mode==='showroom';
+  const mine=visiting ? currentTraveler() : null;
+  const traveler=visiting ? mine || visitor : null;
   const scene = roomStage(room, avatarUrl(room), { avatarName: room.design.avatarName, traveler,
     signal: roomControls.signal, inputRoot: dialog });
+  if (visiting && !mine && hasRoomKey(state.owner)) {
+    const signal=roomControls.signal;
+    void player.load().then(own=>{
+      if (own && !signal.aborted) scene.setTraveler(residentTraveler(own));
+    }).catch(()=>{});
+  }
   const talk=()=>talkToResident(room,{parent:dialog,place:'この部屋'});
   if(visitingResident){
     const host=button('room-host','',event=>{event.stopPropagation();talk();});
@@ -603,8 +613,10 @@ function renderRoom(room, mode) {
       showDialog('leave-dialog');
     }));
   }
-  if (room.draftAvatar || mode === 'resident') {
-    actions.append(button('button outline', 'このアバターで街を歩く', () => walkFromRoom(room)));
+  if ((room.draftAvatar && mode !== 'resident') || (mode === 'resident' && room.isOwner === true)) {
+    actions.append(button('button outline', '自分のアバターで街を歩く', () => walkFromRoom(room)));
+  } else if (visitingResident) {
+    actions.append(link('button outline', '街へ出る', '../halloween-exhibition/preview/diorama-city/?arrival=tower'));
   }
   if (actions.childElementCount) body.append(actions);
   const articles = node('section', 'room-articles');
@@ -662,18 +674,14 @@ async function openPublished(id, push = true) {
   loadingRoom('部屋の扉を開いています…');
   try {
     let room;
-    if(state.owner?.id===id && state.owner?.key){
-      try{room=await write('visit',{id});}
-      catch(error){if(error.code==='owner_required')throw error;room=await api('room',{id});}
-    }else{
-      room=await api('room',{id});
-      if(state.owner?.key)room={...room, canStamp:true, myStamps:getStored('localStorage','tower-stamps-'+state.owner.id+'-'+id) || []};
+    if(state.owner?.id===id && hasRoomKey(state.owner)) {
+      try { room = await player.load(true); } catch { /* The public room can still be visited. */ }
+    }
+    if(!room){
+      room={...await api('room',{id}),isOwner:false};
+      if(state.owner?.key && state.owner.id!==id)room={...room, canStamp:true, myStamps:getStored('localStorage','tower-stamps-'+state.owner.id+'-'+id) || []};
     }
     if (request !== state.request) return;
-    if (state.owner?.id === id && room.isOwner === false) {
-      state.owner = null;
-      setStored('localStorage', OWNER_STORAGE, null);
-    }
     renderRoom(room, 'resident');
   } catch (error) {
     if (request !== state.request) return;
@@ -1212,11 +1220,10 @@ function localRoomAvatar(id) {
 function roomReference() {
   const id = parseNoteId($('#prompt-id').value);
   if (id && play.photoId === id && play.avatar) return creatorReference(id, id, play.avatar.source);
-  const resident = id && state.catalog?.rooms.find(room => room.noteId === id);
-  if (resident?.avatarMode === 'custom' && resident.avatarVersion) {
-    return creatorReference(id, resident.noteId, avatarImageUrl(resident.id, resident.avatarVersion));
+  const actor = residentTraveler(player.room);
+  if (id && actor?.noteId === id && (actor.custom || actor.profile || actor.host)) {
+    return creatorReference(id, actor.noteId, actor.source);
   }
-  if (resident?.avatarMode === 'profile' && resident.photo) return creatorReference(id, resident.noteId, resident.photo);
   return creatorReference(id, id, localRoomAvatar(id));
 }
 
@@ -1308,6 +1315,9 @@ function openPlay(importing = false, incoming = '') {
   if(intakePreview && importing) status($('#import-status'),'受付準備中です。空室を選んで２枚を添付すると、この端末に保存できます。');
   syncPrompt();
   showDialog('prompt-dialog');
+  if(hasRoomKey(state.owner) && !player.room) void player.load().then(own=>{
+    if(own && promptDialog.open) syncPrompt();
+  }).catch(()=>{});
   const first = importing && $('#prompt-id').value ? $('#entry-slot') : $('#prompt-id');
   first.focus({preventScroll:true});
 }
@@ -1828,7 +1838,7 @@ if (typeof IntersectionObserver === 'function') {
 }
 const shared=bindSharedSpaces({
   getCatalog:()=>state.catalog,
-  getOwner:()=>state.owner,
+  getOwner:()=>state.owner, getTraveler:currentTraveler, loadPlayer:()=>player.load(),
   loadOwner:()=>write('visit',{id:state.owner.id}),
   loadFacilities:()=>api('facilities'),
   setEngineer:(room,join)=>write('engineer',{id:room.id,version:room.version,join}),

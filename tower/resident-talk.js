@@ -1,5 +1,5 @@
 // NPCs use public room settings and articles. Opening a conversation never contacts the real resident.
-export function talkToResident(person,{parent=document.body,roomUrl,onWalk,place='街'}={}){
+export function talkToResident(person,{parent=document.body,roomUrl,place='街'}={}){
   const name=person.design?.avatarName||person.avatarName||person.name||person.profile?.name||person.noteId;
   const room=person.design?.title||person.title||'アトリエ';
   const line=(tag,text,css='')=>{const el=document.createElement(tag);el.className=css;el.textContent=text;return el;};
@@ -24,7 +24,6 @@ export function talkToResident(person,{parent=document.body,roomUrl,onWalk,place
     });choices.append(b);
   }
   dialog.append(head,line('small','住人NPCとの会話'),reply,choices,links);
-  if(onWalk){const b=line('button','この住人のアバターで街を歩く');b.type='button';b.addEventListener('click',onWalk);dialog.append(b);}
   dialog.addEventListener('close',()=>dialog.remove(),{once:true});parent.append(dialog);dialog.showModal();
   return dialog;
 }

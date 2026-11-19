@@ -1,17 +1,17 @@
-import { chatgptAppLink, hostNoteUrl, parseNoteId, towerUrl, insightUrl, articleCardBlock, drawFirst, bindArticleDraft, articleCoverInstructions, articleVoiceInstructions, bindCardButtons, makeArtifactPrompt, creatorReference, characterReferenceInstructions, characterArtInstructions, settingInstructions, checkArtwork, articleCardEntries } from '../../../tower/prompt-play.js?v=20261119-review';
+import { chatgptAppLink, hostNoteUrl, parseNoteId, towerUrl, insightUrl, articleCardBlock, drawFirst, bindArticleDraft, articleCoverInstructions, articleVoiceInstructions, bindCardButtons, makeArtifactPrompt, creatorReference, characterReferenceInstructions, characterArtInstructions, settingInstructions, checkArtwork, articleCardEntries } from '../../../tower/prompt-play.js?v=20261119-owner';
 import { bindQualityAssist, inspectImage, artworkMime, articleImageMarkers } from '../../../tower/quality-assist.js?v=20261119-review';
 import { pendingMediaUrl } from '../../../tower/public-directory.js?v=20261119-review';
 
 export { characterReferenceInstructions as spotReferenceInstructions };
 
-export function makeSpotPrompt({ label, scene, href, id, guest, referenceMode, referenceUrl, backgroundUrl, experience }) {
+export function makeSpotPrompt({ label, scene, href, id, referenceMode, referenceUrl, backgroundUrl, experience }) {
   const room = new URL(towerUrl);
   if(id)room.searchParams.set('creator',id);
   room.hash='prompt-import';
   return `【#無名Sプロンプト｜${label}】
 まず本文イラスト１を描いてください。${drawFirst}
 noteクリエイターID：${id?'@'+id:'［自分のID］'}
-${characterReferenceInstructions({referenceMode,referenceUrl,guest})}
+${characterReferenceInstructions({referenceMode,referenceUrl})}
 ${characterArtInstructions}
 ${checkArtwork}
 
@@ -61,7 +61,6 @@ export function bindSpotIllustration(dialog) {
   });
 
   function savedReference() {
-    if (current?.guest && current.avatarSource) return {referenceMode:'guest',referenceUrl:current.avatarSource,guest:current.guest};
     return creatorReference(parseNoteId(field.value), current?.id, current?.avatarSource);
   }
   function reference() {
@@ -108,8 +107,7 @@ export function bindSpotIllustration(dialog) {
     restorePrompt.hidden = true;
     if (saved) {
       const where = ref.referenceMode === 'registered' ? '画像URLもプロンプトに入ります。' : '同じChatGPTチャットで参照済みなら、添付は不要です。';
-      refState.textContent = ref.referenceMode === 'guest' ? '@'+current.guest+' のアバターで街歩き中です。記事は遊んだ方の名義で作ります。' :
-        '@' + id + ' の登録画像を使います。' + where + ' ChatGPTで絵が見られないときは保存して添付してください。';
+      refState.textContent = '@' + id + ' の登録画像を使います。' + where + ' ChatGPTで絵が見られないときは保存して添付してください。';
     } else {
       refState.textContent = objectUrl ? '今回選んだキャラ画像を、ChatGPTにも添付してください。' :
         '使うキャラ画像をChatGPTに添付してください。同じチャットにある本人の絵も使えます。';
@@ -128,7 +126,7 @@ export function bindSpotIllustration(dialog) {
     if (kind !== 'article' && referenceIssue) { message.textContent = referenceIssue; return; }
     const id = parseNoteId(field.value);
     text.value = makeArtifactPrompt({ kind, title: articleTitle, reason, id: parseNoteId(field.value),
-      label:current.label, articleScene:current.articleScene, scene:current.scene, href:current.href, guest:current.guest,
+      label:current.label, articleScene:current.articleScene, scene:current.scene, href:current.href,
       reference:reference(), backgroundUrl:current.backgroundUrl, occupied:Boolean(id && id===current.id && current.occupied),
       experience:!current.id || id===current.id ? current.experience : null, draft:kind==='article' ? reviewedDraft ?? draft.text : undefined });
     copy.disabled = false;
@@ -190,8 +188,8 @@ export function bindSpotIllustration(dialog) {
   });
   saveRef.addEventListener('click', async () => {
     if (reference().referenceMode === 'attachment') return;
-    const source = current.avatarSource, creator = current.guest || current.id;
-    const stillSelected = () => current.avatarSource === source && (current.guest || parseNoteId(field.value)) === creator && !objectUrl;
+    const source = current.avatarSource, creator = current.id;
+    const stillSelected = () => current.avatarSource === source && parseNoteId(field.value) === creator && !objectUrl;
     try {
       if (reference().referenceMode === 'local') {
         const download = document.createElement('a');
@@ -243,7 +241,7 @@ export function bindSpotIllustration(dialog) {
     if (objectUrl && !persisted) URL.revokeObjectURL(objectUrl);
   });
   return spot => {
-    const changedCreator = current?.id !== spot.id || current?.guest !== spot.guest;
+    const changedCreator = current?.id !== spot.id;
     if (!current || changedCreator || current.avatarSource !== spot.avatarSource) referenceRevision++;
     if (!current || changedCreator || current.href !== spot.href) {
       clearAttachment();

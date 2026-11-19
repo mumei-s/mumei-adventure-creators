@@ -1,5 +1,6 @@
-import { mediaUrl } from './public-directory.js?v=20261119-review';
-export { TOWER_API } from './public-directory.js?v=20261119-review';
+import { hostPortrait } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=202611181820';
+import { mediaUrl, TOWER_API } from './public-directory.js?v=20261119-review';
+export { TOWER_API };
 export const OWNER_STORAGE = 'atelier-tower-owner-v1';
 export const WALK_DRAFT_STORAGE = 'atelier-tower-walk-draft-v1';
 
@@ -39,26 +40,59 @@ export function clearWalkDraft(noteId) {
   }
 }
 
-const walkerStorage = 'atelier-tower-traveler-v1';
-export function rememberWalker(walker) {
-  try { sessionStorage.setItem(walkerStorage, JSON.stringify(walker)); } catch {}
+export const visitor = Object.freeze({
+  name: 'ビジター', source: new URL('./assets/resident.webp', import.meta.url).href, visitor: true,
+});
+
+export function draftTraveler(draft) {
+  return draft && {source:draft.avatar.source, atlas:draft.avatar.atlas, custom:true,
+    noteId:draft.noteId, name:draft.name || draft.noteId};
 }
 
-export function readTraveler() {
-  try {
-    const owner = JSON.parse(localStorage.getItem(OWNER_STORAGE));
-    const walker = JSON.parse(sessionStorage.getItem(walkerStorage));
-    if(owner?.id && walker?.id===owner.id && walker.source){
-      const source=new URL(walker.source,location.href);
-      const legacyVersion=source.searchParams.get('view')==='avatar'&&source.searchParams.get('id')===owner.id?source.searchParams.get('v'):null;
-      const version=legacyVersion||source.pathname.match(/\/avatar-(\d+)\.img$/)?.[1];
-      const published=version&&avatarImageUrl(owner.id,version);
-      if(published&&(legacyVersion||source.href===published))return {...walker,source:published};
-    }
-    if (!owner?.id) {
-      const draft = readWalkDraft();
-      if (draft) return { source: draft.avatar.source, atlas: draft.avatar.atlas, custom:true, noteId:draft.noteId, name: draft.name || draft.noteId };
-    }
-  } catch {}
-  return null;
+export function hasRoomKey(owner) {
+  return Boolean(owner && /^[a-f0-9]{64}$/.test(owner.key) && avatarImageUrl(owner.id,1));
+}
+
+export function residentTraveler(room) {
+  if (room?.isOwner !== true) return null;
+  const custom = room.design.avatarMode === 'custom' && Boolean(room.avatarVersion);
+  const profile = room.design.avatarMode === 'profile' && Boolean(room.profile.photo);
+  const host = room.noteId === 'ss_yr' && room.design.avatarMode === 'resident';
+  return {id:room.id, noteId:room.noteId, host, name:room.design.avatarName || room.profile.name || room.noteId,
+    custom, profile, atlas:custom && room.design.world?.atlas === true,
+    source:custom ? avatarImageUrl(room.id,room.avatarVersion) : profile ? room.profile.photo : host ? hostPortrait : visitor.source};
+}
+
+async function visitOwnRoom(owner) {
+  const response = await fetch(TOWER_API, {method:'POST', credentials:'omit', cache:'no-store',
+    headers:{'Content-Type':'application/json', 'X-Tower-Key':owner.key},
+    body:JSON.stringify({action:'visit', id:owner.id}), signal:AbortSignal.timeout(12000)});
+  if (response.status === 403 || response.status === 404) return null;
+  if (!response.ok) throw new Error('部屋の鍵を確認できませんでした。');
+  return response.json();
+}
+
+// Only a response to a keyed request can authorize a registered player on this page.
+export function createPlayerSession(getOwner, visit = visitOwnRoom) {
+  let entry;
+  function accept(owner, room) {
+    if (getOwner() !== owner || !hasRoomKey(owner) || room?.isOwner !== true || room.id !== owner.id ||
+        !room.noteId || (owner.noteId && owner.noteId !== room.noteId)) return null;
+    entry = {owner, room};
+    return room;
+  }
+  return {
+    accept,
+    get room() { return entry?.owner === getOwner() ? entry?.room ?? null : null; },
+    async load(fresh = false) {
+      const owner = getOwner();
+      if (!hasRoomKey(owner)) return null;
+      if (entry?.owner === owner && (entry.pending || (!fresh && entry.room))) return entry.pending || entry.room;
+      const request = {owner};
+      entry = request;
+      request.pending = Promise.resolve().then(()=>visit(owner)).then(room=>entry===request ? accept(owner,room) : null);
+      try { return await request.pending; }
+      finally { if (entry===request) entry=null; }
+    },
+  };
 }

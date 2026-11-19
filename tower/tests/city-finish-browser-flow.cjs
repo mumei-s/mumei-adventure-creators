@@ -70,8 +70,9 @@ const base = process.env.CITY_URL || 'http://127.0.0.1:4173/halloween-exhibition
     await reach('fair.carousel');
     await page.locator('#visit').click();
     await page.locator('.ride-horse').first().evaluate(i=>i.decode());
-    assert.ok((await page.locator('.ride-carriage .ride-horse').getAttribute('src')).endsWith('ride-saddle.webp'));
+    assert.ok((await page.locator('.ride-horse').first().getAttribute('src')).endsWith('ride-saddle.webp'));
     const mount=page.locator('.ride-carousel .ride-carriage');
+    await mount.locator('.coach-side').waitFor({state:'visible'});
     await page.getByRole('button',{name:'乗る',exact:true}).click();
     await page.waitForFunction(()=>parseFloat(document.querySelector('.ride-carousel .ride-carriage').style.left)<24);
     assert.ok(await mount.locator('.ride-avatar').isVisible());

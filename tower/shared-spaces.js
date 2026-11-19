@@ -1,12 +1,12 @@
-import { publicView, mediaUrl, setArtworkSource } from './public-directory.js?v=20261119-review';
-import { residentWalkers } from './resident-walkers.js?v=20261119-review';
+import { mediaUrl, setArtworkSource } from './public-directory.js?v=20261119-review';
+import { residentWalkers } from './resident-walkers.js?v=20261119-owner';
 import { displayVehicle, vehicleBays } from './vehicle-display.js?v=20261119-review';
-import { roomStage } from './world.js?v=20261119-review';
+import { roomStage } from './world.js?v=20261119-owner';
 import { facilityFloors, facilityActorHeight } from './facility-floors.js?v=20261118-city2';
-import { readTraveler, readWalkDraft, rememberWalker, TOWER_API, avatarImageUrl } from './avatar-travel.js?v=20261119-review';
-import { hostPortrait, autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=202611181820';
+import { visitor, residentTraveler, hasRoomKey, readWalkDraft, avatarImageUrl } from './avatar-travel.js?v=20261119-owner';
+import { autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=202611181820';
 
-import { vehicleStudio } from './vehicle-studio.js?v=20261119-review';
+import { vehicleStudio } from './vehicle-studio.js?v=20261119-owner';
 
 export const sharedSpaces = {
   owner: { title:'オーナーズ・アトリエ', floor:14, image:'panorama-suite', note:'天空ラウンジの一つ上にある、タワーオーナーの専用室です。', scene:'天空ラウンジより上のオーナーズ・アトリエ。大きな窓と作品、運河都市のパノラマ。' },
@@ -32,7 +32,7 @@ const make=(tag,css='',text='')=>{const item=document.createElement(tag);item.cl
 const action=(text,call,css='button outline')=>{const item=make('button',css,text);item.type='button';item.addEventListener('click',call);return item;};
 const kinds={car:'車',motorcycle:'バイク',bicycle:'自転車'};
 
-export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,saveVehicle,setEngineer,setManager,enterTower,visitRoom,illustrate,travel}) {
+export function bindSharedSpaces({getCatalog,getOwner,getTraveler:getActor,loadPlayer,loadOwner,loadFacilities,saveVehicle,setEngineer,setManager,enterTower,visitRoom,illustrate,travel}) {
   const dialog=document.getElementById('shared-dialog');
   const content=document.getElementById('shared-content');
   const title=document.getElementById('shared-title');
@@ -41,13 +41,8 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
   const dock=document.getElementById('shared-controls');
   const nav=document.getElementById('shared-nav');
   const doors=document.getElementById('entrance-doors');
-  let controller, current='', doorTimer=0, facilities=[], session=null, cachedActor=null;
+  let controller, current='', doorTimer=0, facilities=[], session=null;
   const savedVersions=new Map();
-  function getActor(){
-    const owner=getOwner(),traveler=readTraveler();
-    if(traveler&&(!owner?.id||traveler.id===owner.id&&(!owner.noteId||traveler.noteId===owner.noteId)))return traveler;
-    return cachedActor&&owner?.id===cachedActor.id?cachedActor:null;
-  }
   const announce=text=>{message.textContent=text;};
   const levelFor=id=>id==='sky'?(getCatalog()?.floors??12)+1:id==='owner'?(getCatalog()?.floors??12)+2:sharedSpaces[id].floor;
   const facilitySpaces=['concierge','parking','parkingTower','bicycle','motorcycle','boiler'];
@@ -98,16 +93,15 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
   function guests(stage) {
     const links=make('div','guest-links');
     details.append(links);
-    let lastCatalog;
+    let lastCatalog,lastPlayer;
     return ()=>{
-      const catalog=getCatalog();
-      if(catalog===lastCatalog)return;
-      lastCatalog=catalog;
+      const catalog=getCatalog(),playerId=getActor()?.id;
+      if(catalog===lastCatalog && playerId===lastPlayer)return;
+      lastCatalog=catalog;lastPlayer=playerId;
       stage.querySelectorAll('.lounge-guest').forEach(guest=>guest.remove());
       links.replaceChildren();
-      const actor=getActor();
       const floor=facilityFloors[stage.dataset.space];
-      const rooms=(catalog?.rooms??[]).filter(room=>(room.avatarVersion||room.photo)&&room.id!==getOwner()?.id&&room.noteId!==actor?.noteId).slice(0,floor.guests.length);
+      const rooms=(catalog?.rooms??[]).filter(room=>(room.avatarVersion||room.photo)&&room.id!==playerId).slice(0,floor.guests.length);
       if(rooms.length)links.append(make('p','muted','名前を選ぶと、その住人の部屋を訪ねられます。'));
       rooms.forEach((room,index)=>{
         const guest=make('span','lounge-guest');
@@ -210,13 +204,14 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
     panel.append(make('p','',manager?'管理人は5人まで。参加すると自分のアバターが管理人室を巡回し、来訪者にも見えます。':'技術部は人数制限なし。参加すると自分のアバターがこの設備室を巡回します。人数が増えると巡回する班が交代します。'),roster,pages);
     details.append(panel);
     function paint(){
-      const others=members.filter(person=>person.id!==owner?.id);
+      const playerId=getActor()?.id;
+      const others=members.filter(person=>person.id!==playerId);
       const pageCount=Math.max(1,Math.ceil(others.length/waypoints.length));
       page=(page%pageCount+pageCount)%pageCount;pages.hidden=pageCount===1;
       pageText.textContent=(page+1)+' / '+pageCount+' 班';
       people.set(others.slice(page*waypoints.length,(page+1)*waypoints.length));
       const self=stage.querySelector('.world-resident');let badge=self.querySelector('.role-self');
-      if(members.some(person=>person.id===owner?.id)){
+      if(members.some(person=>person.id===playerId)){
         if(!badge)self.append(make('small','role-self',manager?'管理人 · あなた':'技術部 · あなた'));
       }else badge?.remove();
     }
@@ -240,10 +235,11 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
       members=facilities.filter(person=>person[role]).sort((a,b)=>a.slot-b.slot).map(person=>({...byId.get(person.id),...person}));
       const names=members.map(person=>person.name||person.noteId).join('、');
       roster.textContent=spec.title+' · '+(ready?(manager?members.length+' / 5人':members.length+'人')+'　'+(names||'参加者募集中'):view.facilityStatus==='error'?'名簿を再確認しています':'名簿を確認中…');
-      const signature=JSON.stringify(members);
+      const playerId=getActor()?.id;
+      const signature=JSON.stringify([playerId,members]);
       if(signature!==last){last=signature;paint();}
       if(toggle){
-        const joined=members.some(person=>person.id===owner.id),full=manager&&!joined&&members.length>=5;
+        const joined=members.some(person=>person.id===playerId),full=manager&&!joined&&members.length>=5;
         toggle.disabled=busy||!ready||full;
         toggle.textContent=joined?spec.leave:full?'管理人は満員です（5 / 5人）':spec.join;
         toggle.setAttribute('aria-pressed',String(joined));
@@ -322,7 +318,7 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
     const vehicleKind=id==='bicycle'?'bicycle':id==='motorcycle'?'motorcycle':'car';
     const maker=make('details','vehicle-maker');
     maker.append(make('summary','','自分の'+kinds[vehicleKind]+'をつくる'),vehicleStudio(vehicleKind,{
-      id:owner?.noteId || getActor()?.noteId,space:id,
+      id:getActor()?.noteId,space:id,
       onRegister:()=>{maker.open=false;registration.scrollIntoView({block:'center'});registration.focus({preventScroll:true});},
     }));
     const registration=make('div','vehicle-registration');
@@ -466,31 +462,22 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
   }
   function render(id,verifiedRoom){
     const space=sharedSpaces[id],view=session;
-    const traveler=getActor();
+    const traveler=residentTraveler(verifiedRoom) || getActor();
     const room={id:'showroom',sharedSpace:id,profile:{name:space.title,articles:[]},
       design:{title:space.title,theme:'cinema',light:'natural',avatarMode:'resident'},draftInterior:{source:`./assets/${space.image}.webp`}};
-    const scene=roomStage(room,hostPortrait,{traveler,signal:controller.signal,inputRoot:dialog,preparedInterior:view.interior});
+    const scene=roomStage(room,visitor.source,{traveler:traveler || visitor,signal:controller.signal,inputRoot:dialog,preparedInterior:view.interior});
     const stage=scene.querySelector('.world-stage');stage.classList.add('shared-stage');stage.dataset.space=id;
     details.replaceChildren(make('p','',space.note));
     const controls=scene.querySelector('.world-control-dock');
     dock.hidden=false;dock.replaceChildren(controls);content.replaceChildren(scene);
 
-    if(getOwner()?.id&&!traveler){
-      stage.querySelector('.world-resident').hidden=true;
-      const loading=make('p','muted','登録済みアバターを読み込んでいます…');details.prepend(loading);
-      const known = getCatalog()?.rooms.find(person => person.id === getOwner()?.id);
-      const current = verifiedRoom || (known && {id:known.id,noteId:known.noteId,avatarVersion:known.avatarVersion,profile:{photo:known.photo,name:known.name},design:{avatarMode:known.avatarMode,avatarName:known.avatarName,world:known.world}});
-      void (current ? Promise.resolve(current) : publicView('room',{id:getOwner().id})).then(room=>{
-        if(view!==session||getOwner()?.id!==room.id)return;
-        const custom=room.design.avatarMode==='custom'&&Boolean(room.avatarVersion);
-        const profile=room.design.avatarMode==='profile'&&Boolean(room.profile.photo);
-        cachedActor={id:room.id,noteId:room.noteId,name:room.design.avatarName||room.profile.name,custom,
-          atlas:custom&&room.design.world?.atlas===true,profile,
-          source:custom?avatarImageUrl(room.id,room.avatarVersion):profile?room.profile.photo:new URL('./assets/resident.webp',location.href).href};
-        if(custom)rememberWalker(cachedActor);
-        scene.setTraveler(cachedActor);
-        loading.remove();
-      }).catch(()=>{if(view===session)loading.textContent='登録済みアバターを読み込めませんでした。施設を開き直すと再試行できます。';});
+    if(hasRoomKey(getOwner()) && !traveler){
+      void loadPlayer().then(own=>{
+        if(view===session && own){
+          scene.setTraveler(residentTraveler(own));
+          view.refresh?.();
+        }
+      }).catch(()=>{});
     }
     if(id==='lobby'||id==='driveway'){
       const join=()=>{hideSpace();removeSpaceFromUrl();enterTower();};
@@ -533,13 +520,11 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
       controller.signal.addEventListener('abort',()=>clearInterval(timer),{once:true});
     }
     const create=action('ここでイラスト・note記事をつくる',()=>{
-      const owner=getOwner(),actor=getActor();
+      const actor=getActor();
       const href=new URL(location.href);href.search='';href.searchParams.set('space',id);href.hash='';
-      const guest = actor?.id && actor.id!==owner?.id ? actor.noteId : '';
-      illustrate({label:space.title,scene:space.scene,articleScene:space.scene,href:href.href,guest,
-        id:owner?.noteId || (guest ? '' : actor?.noteId),
-        avatarSource:actor?.custom||actor?.profile||actor?.reference?actor.source:undefined,
-        backgroundUrl:new URL(`./assets/${space.image}.webp`,location.href).href,occupied:Boolean(owner?.id && (!actor || actor.id===owner.id))});
+      illustrate({label:space.title,scene:space.scene,articleScene:space.scene,href:href.href,id:actor?.noteId,
+        avatarSource:actor?.custom||actor?.profile||actor?.host ? actor.source : undefined,
+        backgroundUrl:new URL(`./assets/${space.image}.webp`,location.href).href,occupied:Boolean(actor?.id)});
     });
     details.append(create);
     if(id==='owner'){
@@ -623,8 +608,7 @@ export function bindSharedSpaces({getCatalog,getOwner,loadOwner,loadFacilities,s
   });
   document.getElementById('shared-exit').addEventListener('click',()=>{hideSpace();entrance(()=>{
     const destination=new URL('../halloween-exhibition/preview/diorama-city/?arrival=tower',location.href);
-    if(getOwner()?.id)destination.searchParams.set('resident',getOwner().id);
-    else if(readWalkDraft())destination.searchParams.set('walker','draft');
+    if(!hasRoomKey(getOwner()) && readWalkDraft())destination.searchParams.set('walker','draft');
     location.assign(destination);
   });});
   function restoreSpace(){

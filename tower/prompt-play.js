@@ -39,15 +39,14 @@ export function creatorReference(creator, registeredCreator, source) {
   return { referenceMode: 'attachment' };
 }
 
-export function characterReferenceInstructions({ referenceMode, referenceUrl, guest } = {}) {
-  if (referenceMode === 'guest') return '街で選んだ住人 @'+guest+' のキャラ資料：'+referenceUrl+'。この住人の姿を描きます。記事の著者は遊んだ人です。住人本人の体験や発言は作らないでください。';
+export function characterReferenceInstructions({ referenceMode, referenceUrl } = {}) {
   if (referenceMode === 'registered' && referenceUrl) {
     return '登録済みアバター画像URL：' + referenceUrl + '\n今回の添付があればその画像を優先し、それ以外はこのURLで本人の絵を確認してください。開けないときだけ、同じチャットにある本人の参照画像を使うか、元の画像１枚の添付を依頼してください。IDは再質問しないでください。';
   }
   if (referenceMode === 'local') {
     return '登録済みアバターはこの端末内にあります。同じチャットで確認できた本人の絵を使い、別チャットで絵が見られないときだけ、元の画像１枚の添付を依頼してください。今回添付する別のキャラ画像があれば、その画像を優先します。';
   }
-  return '今回添付する新しいキャラ画像を使ってください。添付がなければ同じチャットで確認済みの、このID本人の参照画像を使います。確認できない場合だけ元の画像１枚を依頼してください。';
+  return '今回添付する新しいキャラ画像、またはこのチャットで利用者が自分のキャラや使用許可のある絵として指定した画像を使ってください。note IDだけでほかの住人の画像を探したり代用したりせず、参照が確認できない場合だけ元の画像１枚を依頼してください。';
 }
 
 export const characterArtInstructions = '顔立ち、髪の分け目・色、頭身、衣装と装身具を本人の絵に合わせてください。実写は肌・布・光の質感、アニメは輪郭・目・塗り、幻想画は筆致や発光の描き方を引き継ぎます。背景や別の登場人物の画風・顔を主人公に移さないでください。歩行シートの各マスは同じ１人の動作資料です。';
@@ -179,13 +178,12 @@ export function makeArticleDraft({ mode = 'spot', id, label, title, href, experi
 }
 
 export function makeArtifactPrompt({ kind, id, title, scene, href, reason, mode = 'spot', reference, backgroundUrl,
-  label, articleScene, articleClosing, experience, roomTitle, ideas, occupied, draft, guest } = {}) {
+  label, articleScene, articleClosing, experience, roomTitle, ideas, occupied, draft } = {}) {
   const context = [
     id ? 'noteクリエイターID：@' + id : kind !== 'article' && 'noteクリエイターID：［自分のID］',
     id && kind === 'article' && '公開プロフィール：https://note.com/' + id,
     title && '確定した記事タイトル：' + title,
     label && '場所：' + label,
-    guest && '街で遊んだキャラは住人 @'+guest+'。記事の著者は遊んだ人です。住人本人の発言や体験を作らないでください。',
     roomTitle && '部屋名：' + roomTitle,
     kind==='article' && articleScene && '舞台の説明：' + articleScene,
     kind==='article' && articleClosing && '舞台の続き：' + articleClosing,

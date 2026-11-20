@@ -55,17 +55,20 @@ export const drawFirst = '参照がそろったら、前置き・構成案・プ
 export const checkArtwork = '表示する前に、今回の指定と実際の絵を照合してください。見える範囲で向き・全身の欠け・手足・縮尺・文字の見切れを確認し、食い違う部分だけ直します。正しい画像はそのまま使い、確認できない部分は断定しません。';
 export function spotSubjectInstructions(reference = {}, item) {
   const empty = reference.referenceMode === 'none';
-  let person;
-  if (empty) person='人物なし。場面説明に動作があっても、人物・乗り手・アバター・人の映り込みは全画像から省く。人物資料は不要。';
-  else if (reference.referenceMode === 'registered') person='登録済みアバター画像URL：'+reference.referenceUrl+'\n人物にはこの登録画像を使う。参照先が開けなければ同じチャットの本人の人物画像を使い、必要なときだけ人物の元の画像１枚を依頼。IDは再質問しない。';
-  else if (reference.referenceMode === 'local') person='人物には同じチャットで確認した本人のキャラを使う。別チャットで見られなければ人物画像だけを依頼。';
-  else person='人物には今回添付する新しいキャラ画像、またはこのチャットで人物用に指定された本人・使用許可のある画像を使う。IDからほかの住人の絵を探さず、人物の資料がない場合だけその１枚を依頼。';
-  const lines=[person, !empty && characterArtInstructions];
+  const lines=empty ? ['人物なし。場面説明に動作があっても、人物・乗り手・アバター・人の映り込みは全画像から省く。人物資料は不要。'] : [
+    '今回の人物用添付、またはこの制作・シリーズ用に利用者が明示指定した、実際に見られる本人の絵・使用許可のある人物画像を最優先にします。両方あれば最後の明示指定を維持します。見られる資料があれば再添付は求めません。',
+    reference.referenceMode === 'registered' && reference.referenceUrl
+      ? '登録済みアバター画像URL：'+reference.referenceUrl+'\n今回の制作・シリーズ用の明示指定がない場合は、このURLで見られる本人と一致する登録アバターを使います。'
+      : reference.referenceMode === 'local' && '登録済みアバターはこの端末内にあり、別のチャットから直接は見られません。',
+    'この制作・シリーズ用の明示指定がなく、登録画像も見られない場合に限り、同じチャットで本人・使用許可が確認できる人物画像が１つに定まれば使います。単に表示されている無関係な絵は使いません。',
+    '明示指定した人物画像が見られなければ、その１枚だけ依頼し、別の人物に戻しません。それ以外も、人物資料を確認できないときだけ元の画像１枚を依頼し、届くまで生成しません。人物なしに切り替えず、風景・別人・街の住人・仮のサムネイルで代用しません。プロフィール検索は不要です。IDは再質問しないでください。',
+    characterArtInstructions,
+  ];
   if (reference.selectedFile || item?.selectedFile) {
     const role = reference.selectedFile && item?.selectedFile
       ? '１枚目が人物、２枚目が乗り物・小物。１枚にまとまった参照シートなら「人物 / PERSON」と「乗り物・小物 / ITEM」の欄を使う。'
       : reference.selectedFile ? '今回添えた１枚が人物の資料。' : '今回添えた１枚が乗り物・小物の資料。';
-    lines.unshift('【今回選んだ参照画像】'+role+' このメッセージまたは直前に届いた該当画像をその役割で使う。届いた画像の再添付や用途の確認を求めず、作画に進む。参照シートの見出し・枠・配置は完成絵に写さない。');
+    lines.unshift('【今回選んだ参照画像】'+role+' このメッセージまたは直前に届いた該当画像をその役割で使う。届いた画像の再添付や用途の確認を求めず、'+(empty?'作画に進む。':'必要な資料がそろったら作画に進む。')+'参照シートの見出し・枠・配置は完成絵に写さない。');
   }
   if (item?.mode==='registered') lines.push('一緒に描くもの：自分の'+item.label+'。登録した乗り物の画像URL：'+item.url, item.fallback && '公開直後で上の画像が開けないときの予備URL：'+item.fallback, '画像を確認できないときは同じチャットの元絵を使い、必要ならその乗り物の画像だけを依頼。似た別の車体で代用しない。');
   if (item?.mode==='attachment') lines.push('一緒に描くもの：乗り物・小物用の添付画像を使う。同じチャットですでに指定した物も使える。見られなければその物の画像だけを依頼。');

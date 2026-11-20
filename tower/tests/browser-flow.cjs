@@ -177,6 +177,7 @@ const spaces=['owner','sky','lobby','concierge','driveway','bicycle','parking','
   await page.getByRole('button',{name:'ここでイラスト・note記事をつくる',exact:true}).click();
   assert.equal(await page.locator('#spot-id').inputValue(),'creator_test');
   assert.match(await page.locator('#spot-text').inputValue(),/登録済みアバター画像URL/);
+  assert.match(await page.locator('#spot-text').inputValue(),/明示指定がない場合は、このURLで見られる本人と一致する登録アバターを使います/);
   assert.match(await page.locator('#spot-text').inputValue(), /場所の背景資料：.*\.webp/);
   if (name === 'phone') {
    const panel = page.locator('#spot-quality');

@@ -66,10 +66,10 @@ test('the shared Tower and city image set keeps the selected character and asks 
   for (const spot of spots) {
     for (const source of choice) {
       const prompt = makeSpotPrompt({...spot,...source});
-      assert.match(prompt,/今回指定され、この会話で見られる人物画像を最優先/);
-      assert.match(prompt,/本人と一致する登録アバターか、同じチャットですでに合意した/);
+      assert.match(prompt,/今回の人物用添付、またはこの制作・シリーズ用に利用者が明示指定した.*人物画像を最優先/);
+      assert.match(prompt,/この制作・シリーズ用の明示指定がなく、登録画像も見られない場合に限り、同じチャットで本人・使用許可が確認できる人物画像が１つに定まれば使います/);
       assert.match(prompt,/見られる資料があれば再添付は求めません/);
-      assert.match(prompt,/どの人物資料も確認できないときだけ、使いたい人物の画像１枚を依頼し、届くまで生成しません/);
+      assert.match(prompt,/人物資料を確認できないときだけ元の画像１枚を依頼し、届くまで生成しません/);
       assert.match(prompt,/人物なしに切り替えず、風景・別人・街の住人・仮のサムネイルで代用しません/);
       assert.match(prompt,/本文イラスト１・本文イラスト２・専用サムネイルすべてに、同じキャラクター/);
       assert.equal(prompt.match(/記事をつくりますか？/g).length,1);
@@ -92,6 +92,32 @@ test('the shared Tower and city image set keeps the selected character and asks 
     assert.match(article,/画像は再生成しない/);
     assert.doesNotMatch(article,/実際に３点すべての完成画像/);
   }
+});
+test('a visible approved character choice beats the registered default in both set and targeted retries', () => {
+  const spot={label:'免震構造・見学回廊',scene:'積層ゴム支承とダンパー',href:'https://example.com/tower/?space=seismic'};
+  const mode={referenceMode:'registered',referenceUrl:'https://example.com/registered.webp',selectedFile:true};
+  const options= [
+    makeSpotPrompt({...spot,...mode}),
+    ...['scene1','scene2','cover'].map(kind=>makeArtifactPrompt({...spot,kind,reference:mode,reason:'今回の人物を保つ'})),
+  ];
+  for(const prompt of options){
+    const chosen=prompt.indexOf('人物画像を最優先');
+    const registered=prompt.indexOf('本人と一致する登録アバターを使います');
+    const fallback=prompt.indexOf('登録画像も見られない場合に限り');
+    assert.ok(chosen>=0 && chosen<registered && registered<fallback);
+    assert.match(prompt,/今回添えた１枚が人物の資料/);
+    assert.match(prompt,/両方あれば最後の明示指定を維持します/);
+    assert.match(prompt,/明示指定した人物画像が見られなければ、その１枚だけ依頼し、別の人物に戻しません/);
+    assert.match(prompt,/単に表示されている無関係な絵は使いません/);
+    assert.doesNotMatch(prompt,/人物にはこの登録画像を使う/);
+  }
+  const itemOnly=makeSpotPrompt({...spot,item:{mode:'attachment',selectedFile:true}});
+  assert.match(itemOnly,/今回添えた１枚が乗り物・小物の資料/);
+  assert.match(itemOnly,/必要な資料がそろったら作画に進む/);
+  assert.match(itemOnly,/人物資料を確認できないときだけ元の画像１枚を依頼/);
+  const article=makeArtifactPrompt({...spot,kind:'article',reference:mode});
+  assert.doesNotMatch(article,/人物画像を最優先|登録済みアバター画像URL/);
+  assert.match(article,/画像は再生成しない/);
 });
 test('note cards contain raw URL lines, not bracket markup',()=>{
   const block=articleCardBlock([['企画主',hostNoteUrl],['INSIGHT',insightUrl]]);

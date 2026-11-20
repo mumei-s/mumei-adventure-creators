@@ -1,4 +1,4 @@
-import { chatgptAppLink, hostNoteUrl, parseNoteId, towerUrl, insightUrl, articleCardBlock, drawFirst, bindArticleDraft, articleCoverInstructions, articleVoiceInstructions, bindCardButtons, makeArtifactPrompt, characterReferenceInstructions, spotSubjectInstructions, settingInstructions, checkArtwork, articleCardEntries } from '../../../tower/prompt-play.js?v=20261119-handoff';
+import { chatgptAppLink, hostNoteUrl, parseNoteId, towerUrl, insightUrl, articleCardBlock, drawFirst, bindArticleDraft, articleCoverInstructions, articleVoiceInstructions, bindCardButtons, makeArtifactPrompt, characterReferenceInstructions, spotSubjectInstructions, settingInstructions, checkArtwork, articleCardEntries } from '../../../tower/prompt-play.js?v=20261120-spot-reference';
 import { bindQualityAssist, articleImageMarkers } from '../../../tower/quality-assist.js?v=20261119-scene';
 import { bindSpotReferences } from './spot-references.js?v=20261119-handoff';
 import { bindSpotHandoff } from './spot-handoff.js?v=20261120-art-choice';
@@ -10,14 +10,16 @@ export function makeSpotPrompt({ label, scene, href, id, referenceMode, referenc
   const room = new URL(towerUrl);
   if(id)room.searchParams.set('creator',id);
   room.hash='prompt-import';
+  const start=`まず本文イラスト１を、画像生成機能で１枚描いてください。${drawFirst}`;
+  const creator=`noteクリエイターID：${id?'@'+id:'［自分のID］'}`;
+  const subjects=spotSubjectInstructions({referenceMode,referenceUrl,selectedFile},item);
+  const opener=noPeople ? ['今回は利用者が「人物なし」を選びました。',start,creator,subjects] : [
+    '【人物の参照を確認してから生成】',creator,subjects,
+    '本文イラスト１・本文イラスト２・専用サムネイルすべてに、同じキャラクターを同じ顔立ち・髪・衣装・画風で描きます。変えるのは構図・場面・ポーズです。',
+    start,
+  ];
   return `【#無名Sプロンプト｜${label}】
-${noPeople ? '今回は利用者が「人物なし」を選びました。' : `【人物の参照を確認してから生成】
-今回指定され、この会話で見られる人物画像を最優先にします。指定し直していなければ、本人と一致する登録アバターか、同じチャットですでに合意した本人・使用許可のあるキャラクターを使います。登録と合意済みの絵が両方見える場合は、最後に利用者が指定したものを維持してください。見られる資料があれば再添付は求めません。
-どの人物資料も確認できないときだけ、使いたい人物の画像１枚を依頼し、届くまで生成しません。人物なしに切り替えず、風景・別人・街の住人・仮のサムネイルで代用しません。プロフィール検索やIDの再質問も不要です。
-本文イラスト１・本文イラスト２・専用サムネイルすべてに、同じキャラクターを同じ顔立ち・髪・衣装・画風で描きます。変えるのは構図・場面・ポーズです。`}
-まず本文イラスト１を、画像生成機能で１枚描いてください。${drawFirst}
-noteクリエイターID：${id?'@'+id:'［自分のID］'}
-${spotSubjectInstructions({referenceMode,referenceUrl,selectedFile},item)}
+${opener.join('\n')}
 ${checkArtwork}
 
 場面：${noPeople ? articleScene||label : scene}

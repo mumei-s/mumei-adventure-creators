@@ -67,6 +67,8 @@ const base = process.env.CITY_URL || 'http://127.0.0.1:4173/halloween-exhibition
     await copyDraft.click();
     assert.equal(await page.evaluate(()=>navigator.clipboard.readText()),corrected);
     const imagePrompt=await page.locator('#spot-text').inputValue();
+    assert.match(imagePrompt,/本文イラスト１・本文イラスト２・専用サムネイルすべてに、同じキャラクター/);
+    assert.match(imagePrompt,/「記事をつくりますか？」と一度だけ聞き、返事を待つ/);
     await page.locator('#spot-article').click();
     const articlePrompt=await page.evaluate(()=>navigator.clipboard.readText());
     assert.match(articlePrompt,/^【#無名Sプロンプト｜note記事をつくる】/);

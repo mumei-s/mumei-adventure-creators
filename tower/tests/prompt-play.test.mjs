@@ -43,10 +43,54 @@ test('tower and city spot prompts expose actual missing outputs and retry only t
     assert.ok(prompt.includes(label) && prompt.includes(scene));
     assert.match(prompt,/本文イラスト１ → 本文イラスト２ → 専用サムネイル/);
     assert.match(prompt,/別の完成画像としてこのチャットに表示/);
+    assert.match(prompt,/３点はすべて今回新しく生成/);
+    assert.match(prompt,/既存のサイト背景、添付資料、表示済みの別作品、その切り抜き・拡大・文字載せだけでは代用しない/);
     assert.match(prompt,/目印は完成画像として数えない/);
     assert.match(prompt,/背景資料のURLが開けないだけなら、上の場面説明で描く/);
     assert.match(prompt,/未完了の画像だけを作る。すでに完成した画像は再生成しない/);
     assert.match(prompt,/不足画像を待たず次の指示で本文だけ/);
+  }
+});
+test('the shared Tower and city image set keeps the selected character and asks once only after three new outputs', () => {
+  const spots = [
+    {label:'免震構造・見学回廊',scene:'積層ゴム支承とダンパー',href:'https://example.com/tower/?space=seismic'},
+    {label:'運河沿いのカフェ',scene:'灯りが映る運河の窓辺',href:'https://example.com/city/?spot=cafe.counter'},
+  ];
+  const choice = [
+    {referenceMode:'registered',referenceUrl:'https://example.com/avatar.webp'},
+    {referenceMode:'local'},
+    {referenceMode:'attachment',selectedFile:true},
+    {referenceMode:'attachment'},
+    {},
+  ];
+  for (const spot of spots) {
+    for (const source of choice) {
+      const prompt = makeSpotPrompt({...spot,...source});
+      assert.match(prompt,/今回指定され、この会話で見られる人物画像を最優先/);
+      assert.match(prompt,/本人と一致する登録アバターか、同じチャットですでに合意した/);
+      assert.match(prompt,/見られる資料があれば再添付は求めません/);
+      assert.match(prompt,/どの人物資料も確認できないときだけ、使いたい人物の画像１枚を依頼し、届くまで生成しません/);
+      assert.match(prompt,/人物なしに切り替えず、風景・別人・街の住人・仮のサムネイルで代用しません/);
+      assert.match(prompt,/本文イラスト１・本文イラスト２・専用サムネイルすべてに、同じキャラクター/);
+      assert.equal(prompt.match(/記事をつくりますか？/g).length,1);
+      assert.match(prompt,/実際に３点すべての完成画像.*「記事をつくりますか？」と一度だけ聞き、返事を待つ/);
+      assert.match(prompt,/不足や表示失敗がある間はこの質問をしない/);
+      assert.match(prompt,/「はい」「お願いします」「記事にする」には、同じ題で記事のタイトルと本文だけ/);
+      assert.match(prompt,/追加の画像生成・再生成・画像の添付依頼はしない/);
+      if (source.referenceUrl) assert.ok(prompt.includes(source.referenceUrl));
+      if (source.selectedFile) assert.match(prompt,/今回添えた１枚が人物の資料/);
+    }
+    const personless=makeSpotPrompt({...spot,referenceMode:'none'});
+    assert.match(personless,/利用者が「人物なし」を選びました/);
+    assert.match(personless,/人物資料は不要/);
+    assert.doesNotMatch(personless,/【人物の参照を確認してから生成】|届くまで生成しません/);
+    assert.match(personless,/実際に３点すべての完成画像.*「記事をつくりますか？」と一度だけ/);
+    const single=makeArtifactPrompt({...spot,kind:'scene2'});
+    assert.match(single,/本文イラスト２だけ/);
+    assert.doesNotMatch(single,/実際に３点すべての完成画像/);
+    const article=makeArtifactPrompt({...spot,kind:'article'});
+    assert.match(article,/画像は再生成しない/);
+    assert.doesNotMatch(article,/実際に３点すべての完成画像/);
   }
 });
 test('note cards contain raw URL lines, not bracket markup',()=>{
@@ -61,7 +105,7 @@ test('registered reference, new attachment and article follow-up are explicit',(
  const registered=makeSpotPrompt({...common,referenceMode:'registered',referenceUrl:url});
  assert.ok(registered.includes(url));
  assert.match(registered,/IDは再質問しない/);
- assert.match(registered,/今回のイラストをnoteの記事にしますか/);
+ assert.match(registered,/記事をつくりますか？/);
  assert.match(spotReferenceInstructions({referenceMode:'local'}),/別チャット/);
  assert.match(spotReferenceInstructions({referenceMode:'attachment'}),/今回添付する新しい/);
  assert.doesNotMatch(makeSpotPrompt({...common,referenceMode:'attachment'}),/登録済みアバター画像URL/);

@@ -11,6 +11,10 @@ export function makeSpotPrompt({ label, scene, href, id, referenceMode, referenc
   if(id)room.searchParams.set('creator',id);
   room.hash='prompt-import';
   return `【#無名Sプロンプト｜${label}】
+${noPeople ? '今回は利用者が「人物なし」を選びました。' : `【人物の参照を確認してから生成】
+今回指定され、この会話で見られる人物画像を最優先にします。指定し直していなければ、本人と一致する登録アバターか、同じチャットですでに合意した本人・使用許可のあるキャラクターを使います。登録と合意済みの絵が両方見える場合は、最後に利用者が指定したものを維持してください。見られる資料があれば再添付は求めません。
+どの人物資料も確認できないときだけ、使いたい人物の画像１枚を依頼し、届くまで生成しません。人物なしに切り替えず、風景・別人・街の住人・仮のサムネイルで代用しません。プロフィール検索やIDの再質問も不要です。
+本文イラスト１・本文イラスト２・専用サムネイルすべてに、同じキャラクターを同じ顔立ち・髪・衣装・画風で描きます。変えるのは構図・場面・ポーズです。`}
 まず本文イラスト１を、画像生成機能で１枚描いてください。${drawFirst}
 noteクリエイターID：${id?'@'+id:'［自分のID］'}
 ${spotSubjectInstructions({referenceMode,referenceUrl,selectedFile},item)}
@@ -21,10 +25,11 @@ ${experience?'ゲームで実際に行ったこと：'+experience+'\n':''}${sett
 本文イラストは横３対２、別々の完成画像２枚。${noPeople?'１枚目は場所と物の全景。２枚目は別の角度から光と素材の細部を描く。':'１枚目は場所の特徴、全身、足元の接地が分かる引き。２枚目は続く行動に寄り、別の角度から視線と手が物に触れる位置を描く。'}影・遠近・縮尺を合わせ、文字・UI・コラージュは入れません。
 ${articleCoverInstructions(noPeople)}
 【画像の抜け・取り違えチェック】
-画像生成は本文イラスト１ → 本文イラスト２ → 専用サムネイルの順。本文２枚がそろってから記事の題を決めて表紙を作る。３点は合成やコラージュにせず、それぞれ別の完成画像としてこのチャットに表示する。
+画像生成は本文イラスト１ → 本文イラスト２ → 専用サムネイルの順。本文２枚がそろってから記事の題を決めて表紙を作る。３点はすべて今回新しく生成し、合成やコラージュにせず、それぞれ別の完成画像としてこのチャットに表示する。既存のサイト背景、添付資料、表示済みの別作品、その切り抜き・拡大・文字載せだけでは代用しない。
 本文２枚は今回の場所が分かる特徴と、それぞれの構図・場面の違いを確認する。写真資料・参照画像・説明文・「ここに画像」などの目印は完成画像として数えない。既にチャットに届いた人物・小物の参照資料は再添付を求めない。背景資料のURLが開けないだけなら、上の場面説明で描く。
 画像が表示されなかった、生成できなかった、または別の場所の絵になった場合は、その画像名だけを未完了と伝える。「続き」「不足分を作って」と言われたら、同じ場所と参照を引き継ぎ、未完了の画像だけを作る。すでに完成した画像は再生成しない。画像生成が使えない場合は短く伝え、完成したと書かない。
-画像３点が表示できたら「今回のイラストをnoteの記事にしますか？『記事にする』と送ってください。」と案内。利用者が先に「記事にする」と言った場合は、不足画像を待たず次の指示で本文だけ書く。サイトの記事作成ボタンからも続けられます。
+実際に３点すべての完成画像をこのチャットに表示できたときだけ、最後に「記事をつくりますか？」と一度だけ聞き、返事を待つ。不足や表示失敗がある間はこの質問をしない。先に記事を書き始めない。
+この質問への「はい」「お願いします」「記事にする」には、同じ題で記事のタイトルと本文だけを返す。追加の画像生成・再生成・画像の添付依頼はしない。利用者が先に明示して「記事にする」と頼んだ場合も、不足画像を待たず次の指示で本文だけ書く。サイトの記事作成ボタンからも続けられます。
 
 「記事にする」なら、追加の画像や検索を待たず、タイトルと完成本文を渡す。題名の指定を優先し、今回の表紙と合わせる。実際の行動と創作の設定を区別し、${articleImageMarkers('spot').join('と')}を各段落のあとの独立した行に１回ずつ置く。${articleVoiceInstructions(id)}
 記事末で無名S noteの企画を紹介し、各URLはカード用に単独行へ。
@@ -42,6 +47,7 @@ export function bindSpotIllustration(dialog) {
   const message = dialog.querySelector('#spot-message');
   const copy = dialog.querySelector('#spot-copy');
   const output = dialog.querySelector('#spot-output');
+  const standardFlow = dialog.querySelector('#spot-standard-flow');
   const articlePanel = dialog.querySelector('#spot-article-draft');
   const articleMessage = dialog.querySelector('#spot-article-message');
   const articlePreview = dialog.querySelector('#spot-article-preview');
@@ -113,6 +119,7 @@ export function bindSpotIllustration(dialog) {
     const params={...current,id,experience,item,scene:ref.referenceMode==='none' ? current.articleScene||current.label : current.scene,occupied:Boolean(id && id===current.id && current.occupied)};
     text.value = output.value==='set' ? makeSpotPrompt({...params,...ref}) :
       makeArtifactPrompt({...params,kind:output.value,reference:ref,title:quality.articleTitle});
+    standardFlow.hidden=output.value!=='set';
     copy.textContent = imageCopyLabel(handoff.paint(true,issue));
     copy.disabled = Boolean(issue);
     restorePrompt.hidden = true;
@@ -131,6 +138,7 @@ export function bindSpotIllustration(dialog) {
     // Article-only is a separate destination. Never replace the selected image prompt or its reference handoff.
     if(articleOnly)return copyArticleText(prompt);
     text.value = prompt;
+    standardFlow.hidden = true;
     copy.disabled = false;
     restorePrompt.hidden = false;
     copy.textContent = imageCopyLabel(handoff.paint(true,issue),true);

@@ -89,8 +89,26 @@ jobs:
         run: |
           for entry in tower halloween-exhibition/preview/diorama-city; do
             mkdir -p "_site/admission/$entry"
+            card_metadata=''
+            if [ "$entry" = tower ]; then
+              card_metadata="$(grep -E '<meta (name="(description|note:card)"|property="og:(type|title|description|image)") ' "_site/$entry/index.html")"
+              for field in title description image; do
+                printf '%s\n' "$card_metadata" | grep -q "property=\"og:$field\""
+              done
+            fi
             cat > "_site/admission/$entry/index.html" <<EOF
-          <!doctype html><html lang="ja"><meta charset="utf-8"><title>Atelier Tower</title><a href="/mumei-adventure-creators/$entry/">入居ページへ</a><script>location.replace('/mumei-adventure-creators/$entry/'+location.search+location.hash)</script></html>
+          <!doctype html>
+          <html lang="ja">
+          <head>
+          <meta charset="utf-8">
+          <title>Atelier Tower</title>
+          $card_metadata
+          </head>
+          <body>
+          <a href="/mumei-adventure-creators/$entry/">入居ページへ</a>
+          <script>location.replace('/mumei-adventure-creators/$entry/'+location.search+location.hash)</script>
+          </body>
+          </html>
           EOF
           done
       - name: 公開ファイルを準備

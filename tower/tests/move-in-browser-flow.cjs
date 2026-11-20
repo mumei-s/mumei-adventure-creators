@@ -7,10 +7,15 @@ const source=path.join(__dirname,'..');
 const noteId='enrollment_test', id='a2222222-aaaa-4444-bbbb-222222222222';
 const profile={name:'テスト住人',photo:'',description:'',articles:[]};
 const design={title:'月の書斎',theme:'story',light:'natural',avatarMode:'resident',avatarName:'',pin:'',welcome:''};
+// Enrollment uses a local catalog fixture so a real move-in cannot change which slots are tested.
+const catalog={floors:12,perFloor:12,rooms:[
+  {id:'a3333333-aaaa-4444-bbbb-333333333333',slot:52,noteId:'occupied_test',name:'入居済みテスト住人',theme:'story'}
+]};
 (async()=>{
   const browser=await chromium.launch({executablePath:process.env.BROWSER_EXECUTABLE||'/usr/bin/chromium',args:['--no-sandbox']});
   try {
     const ctx=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce',serviceWorkers:'block',permissions:['clipboard-read','clipboard-write']});
+    await ctx.route('**/tower/published/list.json',route=>route.fulfill({json:catalog}));
     const page=await ctx.newPage(), calls=[], errors=[];
     page.on('pageerror',error=>errors.push(error.message));
     await page.route('https://*.supabase.co/**',async route=>{

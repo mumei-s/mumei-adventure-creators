@@ -7,11 +7,13 @@ import { exclusionReason } from './stage-pages.mjs';
 const root = path.resolve(process.argv[2] || '.');
 const base = 'https://mumei-s.github.io/mumei-adventure-creators/';
 const revision = process.env.GITHUB_SHA || 'manual';
-const files = execFileSync('git', ['ls-files', '--', 'tower', 'halloween-exhibition/preview/diorama-city', 'halloween-exhibition/preview/admin'],
+const trackedFiles = execFileSync('git', ['ls-files', '--', 'tower', 'halloween-exhibition/preview/diorama-city', 'halloween-exhibition/preview/admin'],
   { cwd: root, encoding: 'utf8' }).trim().split('\n').filter(file => file && !exclusionReason(file));
+const admissionAlias = 'admission/tower/index.html';
+const files = [...trackedFiles, admissionAlias];
 const digest = data => createHash('sha256').update(data).digest('hex');
 const expected = new Map(await Promise.all(files.map(async file =>
-  [file, digest(await readFile(path.join(root, file)))])));
+  [file, digest(await readFile(file === admissionAlias ? path.join(root, '_site', file) : path.join(root, file)))])));
 let pending = files;
 
 async function check(file, attempt) {
@@ -42,6 +44,6 @@ for (let attempt = 0; pending.length && attempt < 8; attempt++) {
 if (pending.length) {
   throw new Error('Published content differs from this release at\n' + pending.join('\n'));
 }
-console.log('Verified ' + files.length + ' published Tower, city and editor files match commit ' + revision + '.');
+console.log('Verified ' + files.length + ' published Tower, city and editor files (including the generated admission alias) match release ' + revision + '.');
 console.log('https://mumei-s.github.io/mumei-adventure-creators/tower/?v=20261118');
 console.log('https://mumei-s.github.io/mumei-adventure-creators/halloween-exhibition/preview/diorama-city/?v=20261118');

@@ -34,6 +34,21 @@ test('spot illustration request keeps two scenes and a distinct cover with match
   for(const marker of ['［ここに街のイラスト１］','［ここに街のイラスト２］','1280×650','#無名Sプロンプト','本文用の絵とは明確に異なる','未完了']) assert.ok(prompt.includes(marker));
   for(const url of [href,hostNoteUrl,insightUrl,towerUrl+'#prompt-play']) assert.ok(prompt.split('\n').includes(url));
 });
+test('tower and city spot prompts expose actual missing outputs and retry only those outputs', () => {
+  for (const [label,scene] of [
+    ['免震構造・見学回廊','積層ゴム支承とダンパーが並ぶ地下の見学回廊'],
+    ['運河沿いのカフェ','運河の窓辺でコーヒーを楽しむ'],
+  ]) {
+    const prompt=makeSpotPrompt({label,scene,referenceMode:'attachment',selectedFile:true,backgroundUrl:'https://example.com/place.webp'});
+    assert.ok(prompt.includes(label) && prompt.includes(scene));
+    assert.match(prompt,/本文イラスト１ → 本文イラスト２ → 専用サムネイル/);
+    assert.match(prompt,/別の完成画像としてこのチャットに表示/);
+    assert.match(prompt,/目印は完成画像として数えない/);
+    assert.match(prompt,/背景資料のURLが開けないだけなら、上の場面説明で描く/);
+    assert.match(prompt,/未完了の画像だけを作る。すでに完成した画像は再生成しない/);
+    assert.match(prompt,/不足画像を待たず次の指示で本文だけ/);
+  }
+});
 test('note cards contain raw URL lines, not bracket markup',()=>{
   const block=articleCardBlock([['企画主',hostNoteUrl],['INSIGHT',insightUrl]]);
   assert.equal(block,'企画主\n\n'+hostNoteUrl+'\n\nINSIGHT\n\n'+insightUrl);

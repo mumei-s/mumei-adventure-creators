@@ -300,6 +300,50 @@ export function bindSharedSpaces({getCatalog,getOwner,getTraveler:getActor,loadP
       instruments.forEach(([label],i)=>details.append(action(label,()=>inspect(i))));
       return rolePanel(stage,'engineer');
     }
+    function showSeismicArt(){
+      const {popup}=viewer('免震構造のイラスト','← 見学回廊に戻る');
+      const imageName=sharedSpaces.seismic.image+'.webp';
+      const full=new URL('./assets/'+imageName,import.meta.url);
+      const preview=new URL('./assets/thumbs/'+imageName,import.meta.url);
+      const frame=make('div','seismic-art-frame'),image=make('img','equipment-art');
+      const description=make('p'),choices=make('div','equipment-choices');
+      const status=make('p','seismic-art-status');status.setAttribute('role','status');
+      const views=[
+        ['回廊全景','ガラス越しに、柱を支える黒い積層ゴム支承と、その間をつなぐ水平のダンパーが見えます。','50% 50%'],
+        ['積層ゴム支承','左手前の黒い円筒が積層ゴム支承です。建物の重さを支えながら、横方向に変形して揺れを伝わりにくくします。','16% 46%'],
+        ['ダンパー','中央の水平な装置がダンパーです。建物と地盤の相対的な動きを抑え、揺れのエネルギーを吸収します。','47% 42%'],
+      ];
+      image.width=1536;image.height=1024;image.decoding='async';
+      let variant;
+      const loadFull=(retrying=false)=>{
+        const source=new URL(full);
+        if(retrying)source.searchParams.set('retry',String(Date.now()));
+        variant='full';image.hidden=false;retry.hidden=true;
+        status.textContent='イラストを読み込んでいます…';image.src=source.href;
+      };
+      const retry=action('イラストを再読み込み',()=>loadFull(true));
+      image.addEventListener('load',()=>{
+        status.textContent=variant==='preview'?'縮小版を表示しています。原寸版は再読み込みできます。':'';
+        retry.hidden=variant!=='preview';
+      });
+      image.addEventListener('error',()=>{
+        if(variant==='full'){
+          variant='preview';status.textContent='縮小版を読み込んでいます…';image.src=preview.href;return;
+        }
+        image.hidden=true;retry.hidden=false;
+        status.textContent='免震構造のイラストを読み込めませんでした。再読み込みできます。';
+      });
+      function select(index){
+        const [label,caption,focus]=views[index];
+        frame.dataset.focus=index===0?'overview':'detail';
+        image.alt='免震見学回廊：'+label;image.style.transformOrigin=focus;
+        description.textContent=caption;
+        [...choices.children].forEach((button,i)=>button.setAttribute('aria-pressed',String(i===index)));
+      }
+      views.forEach(([label],i)=>choices.append(action(label,()=>select(i))));
+      frame.append(image);popup.append(frame,description,choices,status,retry);
+      select(0);loadFull();popup.showModal();
+    }
     const overlay=make('div','seismic-tools'),model=make('div','isolation-model');
     model.hidden=true;model.setAttribute('aria-label','免震模型。建物側と地盤側の動きの違い');
     model.append(make('span','isolation-building','建物'),make('span','isolation-bearing','免震支承'),make('span','isolation-ground','地盤'));
@@ -311,7 +355,9 @@ export function bindSharedSpaces({getCatalog,getOwner,getTraveler:getActor,loadP
       announce('下の地盤が大きく動き、支承が変形して上の建物の動きを小さくする模型です。');
       timer=setTimeout(()=>{overlay.classList.remove('isolation-demo');model.hidden=true;play.textContent='免震の動きをもう一度見る';},5200);
     },'facility-action');
-    overlay.append(play,model);viewport.append(overlay);
+    const seismicActions=make('div','seismic-actions');
+    seismicActions.append(action('免震構造のイラストを見る',showSeismicArt,'facility-action'),play);
+    overlay.append(seismicActions,model);viewport.append(overlay);
     controller.signal.addEventListener('abort',()=>clearTimeout(timer),{once:true});
   }
   function parking(stage,id){

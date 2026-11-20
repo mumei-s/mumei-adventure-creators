@@ -60,11 +60,33 @@ const fullAsset = '/tower/assets/seismic-gallery.webp';
     const spot=page.locator('#spot-dialog[open]');
     await spot.locator('#spot-output').selectOption('scene1');
     await spot.locator('#spot-person').selectOption('none');
-    await spot.locator('#spot-copy').click();
+    const imageCopy=spot.getByRole('button',{name:'画像を作る指示をコピー',exact:true});
+    await imageCopy.click();
     const prompt=await page.evaluate(()=>navigator.clipboard.readText());
     assert.match(prompt,/本文イラスト１/);
     assert.match(prompt,/積層ゴム支承とダンパー/);
     assert.match(prompt,/\/tower\/assets\/seismic-gallery\.webp/);
+    const articleCopy=spot.getByRole('button',{name:'ChatGPT用：記事本文だけの指示をコピー',exact:true});
+    assert.ok(await articleCopy.isHidden());
+    await spot.getByText('記事本文だけ（画像は作らない）',{exact:true}).click();
+    await articleCopy.click();
+    const article=await page.evaluate(()=>navigator.clipboard.readText());
+    assert.match(article,/^【#無名Sプロンプト｜note記事をつくる】/);
+    assert.match(article,/画像は再生成しない/);
+    assert.match(article,/免震構造/);
+    assert.equal(await spot.locator('#spot-output').inputValue(),'scene1');
+    assert.equal(await spot.locator('#spot-text').inputValue(),prompt);
+    assert.ok(await spot.locator('#spot-main-prompt').isHidden());
+    // Manual-copy fallback exposes article text separately from the image prompt.
+    await page.evaluate(()=>Object.defineProperty(navigator.clipboard,'writeText',{
+      value:async()=>{throw new DOMException('denied','NotAllowedError');},configurable:true,
+    }));
+    await articleCopy.click();
+    await spot.locator('#spot-article-text').waitFor({state:'visible'});
+    assert.equal(await spot.locator('#spot-article-text').inputValue(),article);
+    await page.evaluate(()=>{delete navigator.clipboard.writeText;});
+    await imageCopy.click();
+    assert.equal(await page.evaluate(()=>navigator.clipboard.readText()),prompt);
     assert.deepEqual(errors,[]);
 
     // Exercise a fresh page with the original image intentionally unavailable.
@@ -81,6 +103,6 @@ const fullAsset = '/tower/assets/seismic-gallery.webp';
       const image=document.querySelector('.facility-viewer[open] .equipment-art');
       return image?.currentSrc.includes('/seismic-gallery.webp?retry=') && image.naturalWidth === 1536;
     });
-    console.log('PASS '+assets.length+' staged scene images, B3 view, animation, spot prompt, preview fallback and full-image retry.');
+    console.log('PASS '+assets.length+' staged scene images, B3 view, animation, separate image and article-only clipboard, preview fallback and full-image retry.');
   }finally{await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;});

@@ -64,3 +64,7 @@ html:has(body[data-game-motion=reduced]){scroll-behavior:auto}
 .article-draft textarea {resize:vertical;box-sizing:border-box;width:100%;border:1px solid #8f8069;border-radius:4px;padding:.6rem;background:#15212a;color:#fff3df;font:16px/1.6 system-ui}
 .article-draft button {min-height:44px;margin-top:.5rem;padding:.4rem .8rem;border:1px solid #b39162;border-radius:4px;background:#e6c697;color:#231d17;cursor:pointer}
 .article-draft [role=status]:empty {display:none}
+#spot-dialog #spot-copy:not(:disabled){background:#e7c98f;color:#211c14;border-color:#efd9aa;font-weight:700;min-height:44px}
+#spot-dialog #spot-article{background:#233542;color:#f3dfba;border-color:#a18a65}
+#spot-dialog :is(#spot-article-preview,#spot-main-prompt)[hidden]{display:none}
+#spot-article-message{font-size:13px;line-height:1.55}

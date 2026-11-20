@@ -77,10 +77,15 @@ async function checkReferenceHandoff(page, registeredBike, person, item) {
   await page.selectOption('#spot-person','none');
   assert.match(await button.textContent(),/乗り物・小物の画像をコピー/);
   assert.match(await page.inputValue('#spot-text'),/今回添えた１枚が乗り物・小物/);
+  const imagePrompt=await page.inputValue('#spot-text');
+  await page.locator('#spot-article-draft > summary').click();
   await page.click('#spot-article');
-  assert.ok(await page.locator('#spot-file-actions').isHidden());
+  assert.ok(await page.locator('#spot-file-actions').isVisible());
   assert.match(await page.evaluate(() => navigator.clipboard.readText()),/画像は再生成しない/);
-  await page.click('#spot-main-prompt');
+  assert.equal(await page.inputValue('#spot-output'),'scene2');
+  assert.equal(await page.inputValue('#spot-text'),imagePrompt);
+  await page.click('#spot-copy-text');
+  assert.equal(await page.evaluate(() => navigator.clipboard.readText()),imagePrompt);
   await page.locator('#spot-image').setInputFiles(person);
   await button.filter({hasText:'人物と乗り物・小物の画像をコピー'}).waitFor();
   console.log('PASS bicycle prompt with the actual person file, two named image files, share cancellation, real PNG clipboard and download, object-only, article text.');

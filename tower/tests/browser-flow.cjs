@@ -204,13 +204,15 @@ const spaces=['owner','sky','lobby','concierge','driveway','bicycle','parking','
    await page.locator('#spot-id').fill('bad/id');
    await panel.getByRole('button', {name:'本文イラスト２だけ修正する'}).click();
    assert.equal(await page.locator('#spot-id').getAttribute('aria-invalid'), 'true');
+   await page.locator('#spot-article-draft > summary').click();
    await page.locator('#spot-article').click();
-   assert.match(await page.locator('#spot-message').textContent(), /IDまたはプロフィール/);
+   assert.match(await page.locator('#spot-article-message').textContent(), /IDまたはプロフィール/);
    await page.locator('#spot-id').fill('creator_test');
    await page.locator('#spot-article').click();
-   assert.match(await page.locator('#spot-text').inputValue(), /確定した記事タイトル：夜景の向こうへ/);
+   assert.match(await page.locator('#spot-article-text').inputValue(), /確定した記事タイトル：夜景の向こうへ/);
   }
-  await page.locator('#spot-article').click();assert.match(await page.locator('#spot-text').inputValue(),/画像は再生成しない/);
+  if(!await page.locator('#spot-article').isVisible())await page.locator('#spot-article-draft > summary').click();
+  await page.locator('#spot-article').click();assert.match(await page.locator('#spot-article-text').inputValue(),/画像は再生成しない/);
   await page.locator('#spot-dialog form button').click();
   assert.ok(await page.locator('#shared-dialog').getAttribute('open')!==null);
   if(await page.locator('#shared-dialog').getAttribute('data-camera')!=='overview')await page.locator('.shared-camera').click();

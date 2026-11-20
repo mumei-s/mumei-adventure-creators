@@ -1,7 +1,7 @@
 import { chatgptAppLink, hostNoteUrl, parseNoteId, towerUrl, insightUrl, articleCardBlock, drawFirst, bindArticleDraft, articleCoverInstructions, articleVoiceInstructions, bindCardButtons, makeArtifactPrompt, characterReferenceInstructions, spotSubjectInstructions, settingInstructions, checkArtwork, articleCardEntries } from '../../../tower/prompt-play.js?v=20261119-handoff';
 import { bindQualityAssist, articleImageMarkers } from '../../../tower/quality-assist.js?v=20261119-scene';
 import { bindSpotReferences } from './spot-references.js?v=20261119-handoff';
-import { bindSpotHandoff } from './spot-handoff.js?v=20261119-handoff';
+import { bindSpotHandoff } from './spot-handoff.js?v=20261120-art-choice';
 
 export { characterReferenceInstructions as spotReferenceInstructions };
 
@@ -42,6 +42,10 @@ export function bindSpotIllustration(dialog) {
   const message = dialog.querySelector('#spot-message');
   const copy = dialog.querySelector('#spot-copy');
   const output = dialog.querySelector('#spot-output');
+  const articlePanel = dialog.querySelector('#spot-article-draft');
+  const articleMessage = dialog.querySelector('#spot-article-message');
+  const articlePreview = dialog.querySelector('#spot-article-preview');
+  const articleText = dialog.querySelector('#spot-article-text');
   const app = dialog.querySelector('#spot-app');
   const link = chatgptAppLink(navigator);
   app.href = link.href;
@@ -51,20 +55,20 @@ export function bindSpotIllustration(dialog) {
     app.rel = 'noopener';
   }
   const restorePrompt = dialog.querySelector('#spot-main-prompt');
-  let current, reviewedCreator, idEdited=false, showingArticle=false;
+  let current, reviewedCreator, idEdited=false;
   const refs=bindSpotReferences(dialog,()=>({spot:current,id:parseNoteId(field.value)}),()=>{render();quality.refresh();});
   const handoff=bindSpotHandoff(dialog,refs.files,success=>{if(validCreator())return copyText(success);});
-  const draft=bindArticleDraft(dialog.querySelector('#spot-article-draft'),()=>{
+  const draft=bindArticleDraft(articlePanel,()=>{
     const id=parseNoteId(field.value);
     return {...current,id,title:quality.articleTitle,occupied:Boolean(id && current.id===id && current.occupied),
       experience:!current.id || id===current.id ? current.experience : ''};
   });
 
-  function validCreator() {
+  function validCreator(status=message) {
     const invalid = Boolean(field.value.trim()) && !parseNoteId(field.value);
     field.setAttribute('aria-invalid', String(invalid));
     if (invalid) {
-      message.textContent = 'noteのIDまたはプロフィールのURLを確認してください。';
+      status.textContent = 'noteのIDまたはプロフィールのURLを確認してください。';
       field.focus();
     }
     return !invalid;
@@ -80,12 +84,28 @@ export function bindSpotIllustration(dialog) {
       message.textContent = '選択したプロンプトをコピーしてください。';
     }
   }
+  async function copyArticleText(prompt) {
+    articlePanel.open = true;
+    articleText.value = prompt;
+    articlePreview.hidden = true;
+    try {
+      await navigator.clipboard.writeText(prompt);
+      articleMessage.textContent = '記事本文だけの指示をコピーしました。ChatGPTに貼り付けると、画像を作らず本文を書きます。';
+    } catch {
+      articlePreview.hidden = false;
+      articleText.focus();
+      articleText.select();
+      articleMessage.textContent = '選択した記事本文だけの指示をコピーしてください。';
+    }
+  }
   function transfer(success) {
-    if(!showingArticle && refs.files().length) return handoff.send();
+    if(refs.files().length) return handoff.send();
     return copyText(success);
   }
+  function imageCopyLabel(handoffLabel,repair=false) {
+    return handoffLabel ? '画像を作る：'+handoffLabel : repair ? '選んだ画像の修正指示をコピー' : '画像を作る指示をコピー';
+  }
   function render() {
-    showingArticle=false;
     const id = parseNoteId(field.value);
     field.setAttribute('aria-invalid', String(Boolean(field.value.trim()) && !id));
     const {reference:ref,item,issue}=refs.paint();
@@ -93,25 +113,28 @@ export function bindSpotIllustration(dialog) {
     const params={...current,id,experience,item,scene:ref.referenceMode==='none' ? current.articleScene||current.label : current.scene,occupied:Boolean(id && id===current.id && current.occupied)};
     text.value = output.value==='set' ? makeSpotPrompt({...params,...ref}) :
       makeArtifactPrompt({...params,kind:output.value,reference:ref,title:quality.articleTitle});
-    copy.textContent = handoff.paint(true,issue) || (output.value==='set' ? 'イラスト作成プロンプトをコピー' : output.selectedOptions[0].textContent+'のプロンプトをコピー');
+    copy.textContent = imageCopyLabel(handoff.paint(true,issue));
     copy.disabled = Boolean(issue);
     restorePrompt.hidden = true;
   }
   function copyArtifact(kind, articleTitle, reason, reviewedDraft) {
-    if (!validCreator()) return;
+    const articleOnly=kind==='article';
+    if (articleOnly) articlePanel.open=true;
+    if (!validCreator(articleOnly ? articleMessage : message)) return;
     const {reference,item,issue}=refs.selection();
     if (kind !== 'article' && issue) { message.textContent=issue;return; }
     const id = parseNoteId(field.value);
-    text.value = makeArtifactPrompt({ kind, title: articleTitle, reason, id: parseNoteId(field.value),
+    const prompt = makeArtifactPrompt({ kind, title: articleTitle, reason, id,
       label:current.label, articleScene:current.articleScene, scene:reference.referenceMode==='none' ? current.articleScene||current.label : current.scene, href:current.href,
       reference,item, backgroundUrl:current.backgroundUrl, occupied:Boolean(id && id===current.id && current.occupied),
-      experience:!current.id || id===current.id ? current.experience : null, draft:kind==='article' ? reviewedDraft ?? draft.text : undefined });
+      experience:!current.id || id===current.id ? current.experience : null, draft:articleOnly ? reviewedDraft ?? draft.text : undefined });
+    // Article-only is a separate destination. Never replace the selected image prompt or its reference handoff.
+    if(articleOnly)return copyArticleText(prompt);
+    text.value = prompt;
     copy.disabled = false;
     restorePrompt.hidden = false;
-    showingArticle = kind === 'article';
-    copy.textContent = handoff.paint(!showingArticle,issue) || (showingArticle ? '記事用プロンプトをコピー' : '選んだ作品の修正プロンプトをコピー');
-    return transfer(showingArticle ? '記事用プロンプトをコピーしました。イラストを作った同じチャットに貼り付けてください。' :
-      '選んだ作品だけの修正プロンプトをコピーしました。');
+    copy.textContent = imageCopyLabel(handoff.paint(true,issue),true);
+    return transfer('選んだ作品だけの修正プロンプトをコピーしました。');
   }
   const quality = bindQualityAssist(dialog.querySelector('#spot-quality'), {
     mode: 'spot',
@@ -127,6 +150,8 @@ export function bindSpotIllustration(dialog) {
     quality.refresh();
     draft.refresh();
     message.textContent = '';
+    articleMessage.textContent = '';
+    articlePreview.hidden = true;
   });
   field.addEventListener('change', () => {
     const id = parseNoteId(field.value);
@@ -155,7 +180,10 @@ export function bindSpotIllustration(dialog) {
       reviewedCreator = parseNoteId(field.value);
     }
     current = spot;
-    dialog.querySelector('#spot-article-draft').open=false;
+    articlePanel.open=false;
+    articleMessage.textContent='';
+    articleText.value='';
+    articlePreview.hidden=true;
     title.textContent = `${spot.label}でイラストをつくる`;
     summary.textContent = spot.scene;
     message.textContent = '';

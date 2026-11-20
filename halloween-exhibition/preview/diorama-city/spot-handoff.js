@@ -120,7 +120,7 @@ export function bindSpotHandoff(dialog, getFiles, copyText) {
       }
       if (stillSelected(files, value)) message.textContent = download
         ? 'ChatGPTの「＋」から、ダウンロードした ' + filename + ' を添えてください。'
-        : '参照画像をコピーしました。今のChatGPTの入力欄に貼り付けてください。プロンプトも必要なら、画像を貼ったあとで「文章だけコピー」を押します。';
+        : '参照画像をコピーしました。今のChatGPTの入力欄に貼り付けてください。そのあとで「画像を作る指示だけコピー」を押します。';
     } catch {
       if (stillSelected(files, value)) message.textContent = download ? '画像を保存できませんでした。上のプレビューを長押しして保存できます。' : '画像をコピーできませんでした。「参照画像を保存」から渡せます。';
     }
@@ -137,14 +137,14 @@ export function bindSpotHandoff(dialog, getFiles, copyText) {
       await navigator.share(payload);
       const copied = await backup;
       if (stillSelected(files, value)) message.textContent = '共有先で画像を確認してください。文章が空なら' +
-        (copied ? 'コピー済みのプロンプトを貼り付けてください。' : 'ここで「文章だけコピー」を押して貼り付けてください。');
+        (copied ? 'コピー済みのプロンプトを貼り付けてください。' : 'ここで「画像を作る指示だけコピー」を押して貼り付けてください。');
     } catch (error) {
       if (stillSelected(files, value)) message.textContent = error.name === 'AbortError'
         ? '共有を閉じました。選んだ画像はここに残っています。'
         : '共有を開けませんでした。参照画像をコピーまたは保存して、今のチャットで使えます。';
     }
   }
-  textOnly.addEventListener('click', () => copyText('文章をコピーしました。参照画像が入ったチャットに貼り付けてください。'));
+  textOnly.addEventListener('click', () => copyText('画像を作る指示をコピーしました。参照画像が入ったチャットに貼り付けてください。'));
   paste.addEventListener('click', () => imageAction(false));
   save.addEventListener('click', () => imageAction(true));
   return { paint, send };

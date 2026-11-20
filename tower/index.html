@@ -21,8 +21,8 @@
   <link rel="stylesheet" href="./shared-spaces.css?v=20261120-seismic-art">
   <link rel="stylesheet" href="./quality-assist.css?v=202611181820">
   <link rel="stylesheet" href="../halloween-exhibition/preview/diorama-city/walk-pad.css?v=2">
-  <link rel="stylesheet" href="./game-shell.css?v=20261118-city2">
-  <script type="module" src="./app.js?v=20261120-seismic-art"></script>
+  <link rel="stylesheet" href="./game-shell.css?v=20261120-art-choice">
+  <script type="module" src="./app.js?v=20261120-art-choice"></script>
   <script type="module" src="./visit-counter.js?v=20261119-community1"></script>
 </head>
 <body id="top">
@@ -412,21 +412,26 @@
           <textarea id="spot-text" rows="9" readonly></textarea>
         </label>
       </details>
-      <button type="button" class="spot-prompt" id="spot-main-prompt">通常のイラスト作成に戻す</button>
-      <button type="button" class="visit" id="spot-copy">イラスト作成プロンプトをコピー</button>
+      <button type="button" class="spot-prompt" id="spot-main-prompt" hidden>通常のイラスト作成に戻す</button>
+      <button type="button" class="visit" id="spot-copy">画像を作る指示をコピー</button>
       <span id="spot-message" role="status"></span>
       <p id="spot-transfer-hint" class="spot-hint"></p>
       <div id="spot-file-actions" class="spot-actions" hidden>
         <button type="button" class="spot-prompt" id="spot-copy-image">参照画像をコピー</button>
         <button type="button" class="spot-prompt" id="spot-save-images">参照画像を保存</button>
-        <button type="button" class="spot-prompt" id="spot-copy-text">文章だけコピー</button>
+        <button type="button" class="spot-prompt" id="spot-copy-text">画像を作る指示だけコピー</button>
       </div>
-      <details id="spot-article-draft" class="article-draft"><summary>そのままnoteに貼れる記事本文</summary>
+      <details id="spot-article-draft" class="article-draft">
+        <summary>記事本文だけ（画像は作らない）</summary>
+        <p class="spot-hint">画像なしでも本文を先に作れます。絵を作ったあとなら、同じチャットで「記事にする」と送るだけでもOKです。</p>
         <label>記事原稿（編集できます）<textarea rows="9" aria-label="編集できる記事本文"></textarea></label>
         <button type="button">記事本文をコピー</button><p role="status"></p>
+        <button type="button" class="spot-prompt" id="spot-article">ChatGPT用：記事本文だけの指示をコピー</button>
+        <p id="spot-article-message" role="status"></p>
+        <label id="spot-article-preview" class="spot-field" hidden>記事本文だけの指示
+          <textarea id="spot-article-text" rows="8" readonly></textarea>
+        </label>
       </details>
-      <button type="button" class="visit" id="spot-article">ChatGPTで記事を仕上げるプロンプトをコピー</button>
-      <p class="spot-hint">この記事原稿は画像を作る前にも使えます。イラストができたら同じチャットで「記事にする」と送れます。</p>
       <div class="spot-actions">
         <a id="spot-app" class="spot-prompt">アプリ版を開く</a>
         <a class="spot-prompt" href="./chatgpt-web.html" target="_blank" rel="noopener">Web版を開く</a>

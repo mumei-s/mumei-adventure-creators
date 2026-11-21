@@ -1,6 +1,6 @@
 import { mediaUrl, setArtworkSource } from './public-directory.js?v=20261119-review';
 import { residentWalkers } from './resident-walkers.js?v=20261119-scene';
-import { displayVehicle, vehicleBays } from './vehicle-display.js?v=20261119-review';
+import { displayVehicle, garageVehiclePose, vehicleBays } from './vehicle-display.js?v=20261121-garage-lines';
 import { roomStage } from './world.js?v=20261119-scene';
 import { facilityFloors, facilityActorHeight } from './facility-floors.js?v=20261118-city2';
 import { visitor, residentTraveler, hasRoomKey, readWalkDraft, avatarImageUrl } from './avatar-travel.js?v=20261119-scene';
@@ -413,15 +413,30 @@ export function bindSharedSpaces({getCatalog,getOwner,getTraveler:getActor,loadP
       all.setAttribute('aria-pressed',String(allRooms));
       caption.textContent=sharing.length?(allRooms?'全フロアの展示':'この階の展示')+'　'+sharing.map(e=>parkingNumber(e.slot,per)+'号室').join('・')+'　車両をタップすると拡大できます。':'この展示区画にはまだ車両がありません。';
       sharing.forEach((entry,index)=>{
-        const [u,v,width,direction]=bays[index];
         const parked=action('',event=>{event.stopPropagation();enlarge(entry);},'parked-vehicle');
         const label=parkingNumber(entry.slot,per)+'号室 · '+entry.name+'の'+kinds[vehicleKind];
         parked.setAttribute('aria-label',label+'を拡大');parked.title=label;parked.dataset.slot=entry.slot;
         const img=make('img');img.alt=label;img.draggable=false;
-        const flip=entry.facing!==direction;
-        parked.style.setProperty('--face',flip?'-1':'1');
-        parked.style.left=u*100+'%';parked.style.top=v*100+'%';parked.style.width=width*100+'%';
-        parked.style.zIndex=String(20+Math.round(v*100));parked.append(img);stage.append(parked);
+        const place=({u,v,width,flip})=>{
+          parked.style.setProperty('--face',flip?'-1':'1');
+          parked.style.left=u*100+'%';parked.style.top=v*100+'%';parked.style.width=width*100+'%';
+          parked.style.zIndex=String(20+Math.round(v*100));
+        };
+        if(id==='parking'){
+          const align=(ratio)=>{
+            const pose=garageVehiclePose(index,entry.facing,entry.version,ratio);
+            place(pose);
+            parked.style.setProperty('--garage-axle-x',pose.anchorX*100+'%');
+            parked.style.setProperty('--garage-axle-y',pose.anchorY*100+'%');
+            parked.style.setProperty('--garage-skew',pose.skew+'deg');
+          };
+          align();
+          img.addEventListener('load',()=>align(img.naturalHeight/img.naturalWidth),{once:true});
+        }else{
+          const [u,v,width,direction]=bays[index];
+          place({u,v,width,flip:entry.facing!==direction});
+        }
+        parked.append(img);stage.append(parked);
         displayVehicle(entry.url).then(src=>{if(parked.isConnected)img.src=src;});
       });
       [...list.querySelectorAll('.bay-view')].forEach(button=>button.setAttribute('aria-pressed',String(sharing.some(e=>String(e.slot)===button.dataset.slot))));
@@ -440,7 +455,7 @@ export function bindSharedSpaces({getCatalog,getOwner,getTraveler:getActor,loadP
       const start=(Number(floors.value)-1)*per+1;
       entries=facilities.filter(person=>person.transport?.[parkingSpace]).map(person=>{
         const item=person.transport[parkingSpace];
-        return {slot:person.slot,id:person.id,name:person.name||person.noteId,facing:item.facing||(vehicleKind==='car'?'left':'right'),url:vehicleImageUrl(person.id,parkingSpace,item.version)};
+        return {slot:person.slot,id:person.id,name:person.name||person.noteId,facing:item.facing||(vehicleKind==='car'?'left':'right'),version:item.version,url:vehicleImageUrl(person.id,parkingSpace,item.version)};
       }).sort((a,b)=>a.slot-b.slot);
       scope=allRooms?entries:entries.filter(e=>e.slot>=start&&e.slot<start+per);
       const own=entries.find(e=>e.id===owner?.id);

@@ -33,9 +33,53 @@ export function displayVehicle(url) {
   return ready;
 }
 
-// Foot positions and widths are measured in the full photograph. The garage aisle is on the right.
+// The B1 backdrop is 1536 × 1024. Measure both painted side lines in each
+// visible bay, with a shorter usable span where the aisle or columns cut in.
+const garageImage = [1536, 1024];
+const garageBays = [
+  {far:[[277,611],[558,625]],near:[[277,655],[405,662]],span:[283,458]},
+  {far:[[653,565],[742,568]],near:[[653,579],[742,582]],span:[653,746]},
+  {far:[[800,547],[858,549]],near:[[800,555],[858,557]],span:[800,858]},
+  {far:[[880,537],[930,539]],near:[[880,542],[930,544]],span:[881,930]},
+];
+
+// Correct two known source silhouettes by immutable media version. These are
+// rear/front wheel contacts on the trimmed image, not overrides by resident or
+// room. Replacement artwork uses the direction selected at registration.
+const knownGarageArt = new Map([
+  ['fd841db7aecbec5ccfeb5802', { facing:'right', wheels:[[.095,.896],[.493,.998]] }],
+  ['8e3064b99218d3bd53c60276', { facing:'left', wheels:[[815/909,436/469],[462/909,468/469]] }],
+]);
+const nominalRightWheels = [[.12,.90],[.53,.995]];
+const lineY = ([[x0,y0],[x1,y1]], x) => y0+(y1-y0)*(x-x0)/(x1-x0);
+
+export function garageVehiclePose(index, sourceFacing, version, heightOverWidth = .5) {
+  const {far, near, span:[left,right]} = garageBays[index];
+  const art = knownGarageArt.get(version);
+  const flip = (art?.facing ?? sourceFacing) !== 'right';
+  const displayed = art
+    ? art.wheels.map(([x,y]) => [flip ? 1-x : x,y])
+    : nominalRightWheels;
+  const [[rearX,rearY],[frontX,frontY]] = displayed;
+  const anchorX = (rearX+frontX)/2, anchorY = (rearY+frontY)/2;
+  const width = right-left, x = left+width*anchorX;
+  // The visible wheels run nearer to the viewer than the middle of the bay.
+  const tireY = u => .32*lineY(far,u)+.68*lineY(near,u);
+  const rear = left+width*rearX, front = left+width*frontX;
+  const lineSlope = (tireY(front)-tireY(rear))/(front-rear);
+  const imageSlope = (frontY-rearY)*heightOverWidth/(frontX-rearX);
+  // Shear vertically instead of rotating the body. Pillars on the car stay
+  // vertical and its tire contact line follows the pavement perspective.
+  const skew = Math.atan(lineSlope-imageSlope)*180/Math.PI;
+  return {
+    u:x/garageImage[0], v:tireY(x)/garageImage[1], width:width/garageImage[0],
+    anchorX, anchorY, flip, skew:art ? skew : Math.max(-8,Math.min(8,skew)),
+  };
+}
+
+// Foot positions and widths are measured in the respective full photographs.
 export const vehicleBays={
-  parking:[[.213,.658,.235,'right'],[.447,.572,.151,'right'],[.549,.533,.104,'right'],[.620,.51,.079,'right']],
+  parking:garageBays,
   parkingTower:[[.16,.72,.23,'right'],[.343,.633,.17,'right'],[.687,.628,.17,'left'],[.854,.715,.23,'left']],
   motorcycle:[[.263,.682,.133,'left'],[.420,.676,.133,'left'],[.586,.676,.133,'left'],[.745,.682,.133,'left']],
   bicycle:[[.123,.724,.122,'right'],[.231,.666,.102,'right'],[.322,.626,.087,'right'],[.395,.592,.074,'right']],

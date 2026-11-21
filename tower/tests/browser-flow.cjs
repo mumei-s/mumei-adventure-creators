@@ -7,6 +7,41 @@ const root=path.resolve(__dirname,'../..');
 let evidence;
 const id='12345678-1234-1234-1234-123456789012';
 const spaces=['owner','sky','lobby','concierge','driveway','bicycle','parking','parkingTower','motorcycle','boiler','seismic'];
+
+async function checkGarageDisplay(page) {
+ const residents = [
+  {id:'00000001-0000-4000-8000-000000000001',slot:40,name:'404',transport:{garage:{version:'8e3064b99218d3bd53c60276',facing:'right'}}},
+  {id:'00000002-0000-4000-8000-000000000002',slot:52,name:'504',transport:{garage:{version:'fd841db7aecbec5ccfeb5802',facing:'left'}}},
+ ];
+ await page.route('**/tower/published/facilities.json*', route => route.fulfill({json:{residents}}));
+ await page.goto('http://127.0.0.1:4173/tower/?space=parking');
+ const cars = page.locator('.shared-stage[data-space="parking"] .parked-vehicle');
+ await page.waitForFunction(() => {
+  const images = [...document.querySelectorAll('.parked-vehicle img')];
+  return images.length === 2 && images.every(image => image.naturalWidth > 0);
+ });
+ const together = await cars.evaluateAll(buttons => buttons.map(button => {
+  const box = button.getBoundingClientRect();
+  const imageMatrix = new DOMMatrix(getComputedStyle(button.querySelector('img')).transform);
+  return {slot:button.dataset.slot, face:imageMatrix.a, left:box.left, right:box.right, width:button.offsetWidth};
+ }));
+ assert.deepEqual(together.map(car => [car.slot,car.face]), [['40',-1],['52',1]]);
+ assert.ok(together[0].right < together[1].left && together[0].width > together[1].width);
+ const floor = page.getByRole('combobox',{name:'駐車区画の階を選ぶ'});
+ if (!await floor.isVisible()) await page.click('#shared-info');
+ for (const [index,number] of ['4','5'].entries()) {
+  await floor.selectOption(number);
+  assert.equal(await cars.count(),1);
+  assert.equal(await cars.getAttribute('data-slot'),together[index].slot);
+  const single = await cars.evaluate(button => ({
+   width:button.offsetWidth,
+   face:new DOMMatrix(getComputedStyle(button.querySelector('img')).transform).a,
+  }));
+  assert.equal(single.width,together[0].width,'a car displayed alone occupies the foreground bay');
+  assert.equal(single.face,together[index].face);
+ }
+}
+
 (async()=>{
  evidence=await fs.mkdtemp(path.join(os.tmpdir(),'atelier-tower-browser-'));
  const browser=await chromium.launch({executablePath:process.env.BROWSER_EXECUTABLE||'/usr/bin/chromium',headless:true,args:['--no-sandbox']});
@@ -140,6 +175,19 @@ const spaces=['owner','sky','lobby','concierge','driveway','bicycle','parking','
      await page.waitForFunction(()=>document.querySelector('#shared-status').textContent.includes('車両を保存しました'));
      assert.equal(await page.locator('.parking-bay img').count(),1);
      if (space === 'parking') {
+      const parked=page.locator('.shared-stage[data-space="parking"] .parked-vehicle');
+      await page.waitForFunction(()=>document.querySelector('.shared-stage[data-space=parking] .parked-vehicle img')?.naturalWidth>0);
+      const parkedStyle=await parked.evaluate(button=>{
+       const style=getComputedStyle(button), matrix=new DOMMatrix(style.transform);
+       return {face:style.getPropertyValue('--face').trim(),left:parseFloat(button.style.left),
+        top:parseFloat(button.style.top),width:parseFloat(button.style.width),shear:matrix.b,rotate:matrix.c};
+      });
+      assert.equal(parkedStyle.face,'-1','left-facing fixture follows the aisle');
+      assert.ok(parkedStyle.left>21 && parkedStyle.left<23 && parkedStyle.top>62 && parkedStyle.top<64,
+        'B1 fixture is anchored on the white-lined bay');
+      assert.ok(parkedStyle.width>11 && parkedStyle.width<12);
+      assert.ok(parkedStyle.shear!==0 && Math.abs(parkedStyle.shear)<.15 && parkedStyle.rotate===0,
+        'vehicle aligns to floor without tilting its cabin');
       const stored = writes.filter(request => request.action === 'park').at(-1).imageB64;
       assert.ok(Buffer.from(stored, 'base64').length <= 98_304);
       const samples = await page.evaluate(async data => {
@@ -283,7 +331,8 @@ const spaces=['owner','sky','lobby','concierge','driveway','bicycle','parking','
     await page.locator('#activity-close').click();
    }
   }
-  console.log(name,'all spaces, movement, original avatar, parking and article flow passed');await ctx.close();
+  await checkGarageDisplay(page);
+  console.log(name,'all spaces, movement, original avatar, paired and individual garage bays, and article flow passed');await ctx.close();
  }
  console.log('Evidence:',evidence);
  console.log('PASS',passed,'space/viewport combinations and two ride flows');await browser.close();

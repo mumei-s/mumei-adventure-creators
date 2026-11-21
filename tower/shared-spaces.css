@@ -113,6 +113,10 @@ body[data-game-motion=reduced] .security-bank .security-feed img{animation:none}
 .vehicle-portrait img{width:94%;height:90%;object-fit:contain}.vehicle-switcher{display:flex;justify-content:space-between;gap:8px}
 .shared-stage .parked-vehicle{display:block;position:absolute;transform:translate(-50%,-100%);height:auto;padding:0;border:0;background:none;cursor:zoom-in;line-height:0}
 .parked-vehicle img{width:100%;height:auto;display:block;filter:drop-shadow(0 2px 1px #0005);transform:scaleX(var(--face,1))}
+.shared-stage[data-space="parking"] .parked-vehicle{
+  transform-origin:var(--garage-axle-x) var(--garage-axle-y);
+  transform:translate(calc(0% - var(--garage-axle-x)),calc(0% - var(--garage-axle-y))) skewY(var(--garage-skew));
+}
 .parked-vehicle:focus-visible{outline:2px solid #f0cb91}.vehicle-owner{color:#e1d3ba;font-size:11px}
 .vehicle-registration{width:100%}.vehicle-upload select{max-width:100%}
 .seismic-tools{position:absolute;left:8px;right:8px;top:8px;z-index:5;display:grid;justify-items:start;gap:5px;pointer-events:none}

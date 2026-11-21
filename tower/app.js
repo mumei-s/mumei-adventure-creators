@@ -1,11 +1,11 @@
 import { publicView, mediaUrl, setArtworkSource, pendingMediaUrl } from './public-directory.js?v=20261119-review';
 import { talkToResident } from './resident-talk.js?v=20261119-owner';
 import {autoResidentWalker} from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=20261119-scene';
-import { trimTransparentEdges } from './vehicle-display.js?v=20261119-review';
+import { trimTransparentEdges } from './vehicle-display.js?v=20261121-garage-lines';
 import { scanAtlas } from '../halloween-exhibition/preview/diorama-city/atlas-layout.js?v=20261118-sprites-2';
 import { characterSignature, designWorld, generatedInterior, roomPreview, roomStage } from './world.js?v=20261119-scene';
 import { cutaway, dailyStory, makeElevator } from './building.js?v=20261119-scene';
-import { bindSharedSpaces, floorLabel } from './shared-spaces.js?v=20261120-seismic-art';
+import { bindSharedSpaces, floorLabel } from './shared-spaces.js?v=20261121-garage-lines';
 import { bindSpotIllustration } from '../halloween-exhibition/preview/diorama-city/spot-illustration.js?v=20261120-spot-reference';
 import { chatgptAppLink, makeArtifactPrompt, makeRoomPrompt, makeMoveInArticlePrompt, articleCardEntries, bindArticleDraft, parseNoteId, creatorReference, residentPost, towerUrl, hostNoteUrl, insightUrl, bindCardButtons } from './prompt-play.js?v=20261119-handoff';
 import { bindQualityAssist, inspectImage, imageContentChecks, sampleArtwork, artworkMatch, artworkMime, articleChecks } from './quality-assist.js?v=20261119-scene';

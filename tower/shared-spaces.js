@@ -1,8 +1,8 @@
 import { mediaUrl, setArtworkSource } from './public-directory.js?v=20261119-review';
 import { residentWalkers } from './resident-walkers.js?v=20261119-scene';
 import { displayVehicle, garageVehiclePose, vehicleBays } from './vehicle-display.js?v=20261121-garage-lines';
-import { roomStage } from './world.js?v=20261119-scene';
-import { facilityFloors, facilityActorHeight } from './facility-floors.js?v=20261118-city2';
+import { roomStage } from './world.js?v=20261121-garage-view';
+import { facilityFloors, facilityActorHeight } from './facility-floors.js?v=20261121-garage-view';
 import { visitor, residentTraveler, hasRoomKey, readWalkDraft, avatarImageUrl } from './avatar-travel.js?v=20261119-scene';
 import { autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=20261119-scene';
 

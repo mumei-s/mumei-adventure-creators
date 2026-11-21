@@ -1,5 +1,5 @@
 import { mediaUrl, setArtworkSource } from './public-directory.js?v=20261119-review';
-import { canWalkFloorSegment, facilityActorHeight, facilityFloors, facilityRoute, registeredFloorFor } from './facility-floors.js?v=20261118-city2';
+import { canWalkFloorSegment, facilityActorHeight, facilityFloors, facilityRoute, registeredFloorFor } from './facility-floors.js?v=20261121-garage-view';
 import { makeWalkPad, bindWalking } from '../halloween-exhibition/preview/diorama-city/walk-controls.js?v=202611181820';
 import { hostPortrait, hostWalker, autoResidentWalker } from '../halloween-exhibition/preview/diorama-city/host-avatar.js?v=20261119-scene';
 import { applyDistrictLight } from '../halloween-exhibition/preview/diorama-city/scene-time.js?v=1';

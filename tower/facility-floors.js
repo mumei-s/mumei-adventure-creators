@@ -14,7 +14,8 @@ function floor({ outline, spawn, heights, guests = [], parking = [], aspect = 1.
 
 const garage = floor({
   outline: [[4,78],[22,69],[42,61],[62,54],[72,52],[77,52],[79,62],[88,96],[4,96]],
-  spawn: [52,84], heights: [8,42], parking: [[13,69],[29,62],[42,58],[52,55]],
+  // Enter the aisle opposite the displayed bays so the nearest bumper is visible on a phone.
+  spawn: [39.5,84], heights: [8,42], parking: [[13,69],[29,62],[42,58],[52,55]],
 });
 const drivewayBays = [[13,77],[24,68],[32,63],[39,59]];
 const driveway = floor({

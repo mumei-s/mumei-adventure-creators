@@ -22,10 +22,13 @@ async function checkGarageDisplay(page) {
  });
  const together = await cars.evaluateAll(buttons => buttons.map(button => {
   const box = button.getBoundingClientRect();
+  const view = button.closest('.shared-viewport').getBoundingClientRect();
   const imageMatrix = new DOMMatrix(getComputedStyle(button.querySelector('img')).transform);
-  return {slot:button.dataset.slot, face:imageMatrix.a, left:box.left, right:box.right, width:button.offsetWidth};
+  const fullyVisible = box.left >= view.left && box.right <= view.right && box.top >= view.top && box.bottom <= view.bottom;
+  return {slot:button.dataset.slot, face:imageMatrix.a, left:box.left, right:box.right, width:button.offsetWidth, fullyVisible};
  }));
  assert.deepEqual(together.map(car => [car.slot,car.face]), [['40',-1],['52',1]]);
+ assert.ok(together.every(car => car.fullyVisible),'both cars are fully visible on entering B1');
  assert.ok(together[0].right < together[1].left && together[0].width > together[1].width);
  const floor = page.getByRole('combobox',{name:'駐車区画の階を選ぶ'});
  if (!await floor.isVisible()) await page.click('#shared-info');

@@ -1,0 +1,16 @@
+{
+  "id": "./",
+  "name": "秋の陣｜スキ動画展示室",
+  "short_name": "秋の陣 展示室",
+  "description": "スキ動画コンテスト「秋の陣」の作品展示室。制作：無名S note。",
+  "lang": "ja",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#21161e",
+  "theme_color": "#21161e",
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

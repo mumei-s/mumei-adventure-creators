@@ -31,3 +31,11 @@ body[data-layout="tablet"] .exhibit,body[data-layout="tablet"] footer{max-width:
 body[data-layout="desktop"] #grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 @media(max-width:36rem){.mast{justify-content:center}.mast-brand{margin-right:auto}.layout-switch{justify-content:flex-start;gap:.18rem}.layout-switch button{padding-inline:.34rem;font-size:.74rem;min-height:2.45rem}.film-tools{gap:.35rem}.hero-links .official-link strong{font-size:.98rem}.hero-links .official-link small{font-size:.67rem}body[data-layout="landscape"] #grid .card,body[data-layout="tablet"] #grid .card,body[data-layout="desktop"] #grid .card{display:flex}body[data-layout="landscape"] #grid .media,body[data-layout="tablet"] #grid .media,body[data-layout="desktop"] #grid .media{min-height:0;aspect-ratio:1.91}body[data-layout="desktop"] #grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,8rem),1fr))}body[data-layout="desktop"] #grid .card-copy{padding:.47rem}body[data-layout="desktop"] #grid .card h3{font-size:.86rem}}
 @media(orientation:landscape) and (max-height:520px){body[data-layout="landscape"] .hero .stage{padding-block:1rem}body[data-layout="landscape"] .hero h1 .edition{font-size:clamp(3rem,9vw,5rem)}}
+body[data-layout="portrait"] .exhibit,body[data-layout="portrait"] footer{max-width:none}
+body[data-layout="portrait"] .exhibit,body[data-layout="portrait"] footer{width:min(100% - 3rem,73rem)}
+@media(max-width:36rem){body[data-layout="portrait"] .exhibit,body[data-layout="portrait"] footer{width:calc(100% - 1.5rem)}}
+body[data-layout="tablet"] #grid .card{display:flex}
+body[data-layout="tablet"] #grid .media{aspect-ratio:1.91}
+.install-cta{min-height:2.55rem;font-size:.81rem;padding:.38rem .63rem;white-space:nowrap;border-color:#c88859;color:#ffe4b8}.install-cta[hidden]{display:none}
+#install-help{width:min(34rem,calc(100% - 1.5rem));max-height:calc(100dvh - 1.5rem);color:var(--paper);background:#21181d;border:1px solid #8b5554;border-radius:.65rem;padding:0}#install-help::backdrop{background:#110e13dd}#install-help h2{margin:0;font-size:1.2rem}#install-help p,#install-help ul{line-height:1.65}#install-help li:not(:first-child){margin-top:.55rem}
+@media(max-width:36rem){.mast{justify-content:flex-start}.install-cta{order:3;min-height:2.45rem}.layout-switch{order:2}}

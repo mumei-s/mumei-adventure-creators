@@ -96,3 +96,17 @@ setMotion(reduce.matches);
 motion.addEventListener("click",()=>setMotion(!document.body.classList.contains("paused")));
 reduce.addEventListener?.("change",e=>setMotion(e.matches));
 start();
+
+const installApp=$("#install-app"), installHelp=$("#install-help");
+let installPrompt=null;
+const installed=()=>matchMedia("(display-mode: standalone)").matches||navigator.standalone===true;
+installApp.hidden=installed();
+window.addEventListener("beforeinstallprompt",event=>{event.preventDefault();installPrompt=event;installApp.hidden=false;});
+window.addEventListener("appinstalled",()=>{installPrompt=null;installApp.hidden=true;});
+$("#install-close").addEventListener("click",()=>installHelp.close());
+installApp.addEventListener("click",async()=>{
+ if(installPrompt){const p=installPrompt;installPrompt=null;try{await p.prompt();const choice=await p.userChoice;if(choice?.outcome==="accepted")installApp.hidden=true;return;}catch{}}
+ $("#install-note").textContent="端末やブラウザによって、追加する場所が違います。";
+ installHelp.showModal();
+});
+if("serviceWorker" in navigator&&window.isSecureContext&&/\.github\.io$/.test(location.hostname))window.addEventListener("load",()=>{navigator.serviceWorker.register("./sw.js",{scope:"./"}).catch(()=>{});},{once:true});

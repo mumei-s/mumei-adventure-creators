@@ -39,3 +39,18 @@ body[data-layout="tablet"] #grid .media{aspect-ratio:1.91}
 .install-cta{min-height:2.55rem;font-size:.81rem;padding:.38rem .63rem;white-space:nowrap;border-color:#c88859;color:#ffe4b8}.install-cta[hidden]{display:none}
 #install-help{width:min(34rem,calc(100% - 1.5rem));max-height:calc(100dvh - 1.5rem);color:var(--paper);background:#21181d;border:1px solid #8b5554;border-radius:.65rem;padding:0}#install-help::backdrop{background:#110e13dd}#install-help h2{margin:0;font-size:1.2rem}#install-help p,#install-help ul{line-height:1.65}#install-help li:not(:first-child){margin-top:.55rem}
 @media(max-width:36rem){.mast{justify-content:flex-start}.install-cta{order:3;min-height:2.45rem}.layout-switch{order:2}}
+
+/* Auto and phone-portrait share the same readable layout on phone widths. */
+@media(max-width:36rem){
+ body:is([data-layout="auto"],[data-layout="portrait"]) .hero .stage{grid-template-columns:minmax(0,1fr);gap:.9rem;padding-top:1.45rem;padding-bottom:1.35rem}
+ body:is([data-layout="auto"],[data-layout="portrait"]) .hero h1 .event-title{font-size:clamp(1.73rem,7.1vw,2.55rem);text-wrap:balance}
+ body:is([data-layout="auto"],[data-layout="portrait"]) .hero h1 .edition{font-size:clamp(2.95rem,12vw,4.2rem)}
+ body:is([data-layout="auto"],[data-layout="portrait"]) .hero-links{max-width:none;grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch;gap:.38rem}
+ body:is([data-layout="auto"],[data-layout="portrait"]) .hero-links a{min-height:4.7rem;padding:.46rem .36rem}
+ body:is([data-layout="auto"],[data-layout="portrait"]) .hero-links .official-link{grid-row:auto}
+ body:is([data-layout="auto"],[data-layout="portrait"]) .hero-links a strong{font-size:clamp(.79rem,3.5vw,.97rem)}
+ body:is([data-layout="auto"],[data-layout="portrait"]) .hero-links a small{line-height:1.25}
+ body:is([data-layout="auto"],[data-layout="portrait"]) #grid .card{display:flex;flex-direction:column}
+ body:is([data-layout="auto"],[data-layout="portrait"]) #grid .media{width:100%;height:auto;min-height:0;aspect-ratio:1.91}
+ body:is([data-layout="auto"],[data-layout="portrait"]) #grid .card-copy{padding:.58rem .73rem}
+}

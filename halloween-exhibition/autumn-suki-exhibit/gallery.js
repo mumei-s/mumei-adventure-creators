@@ -13,6 +13,29 @@ function seenButton(items,title){const b=el("button","seen-button");b.type="butt
 function syncSeen(){document.querySelectorAll(".seen-button").forEach(b=>{if(b.seenInfo)paintSeen(b)});}
 try{watched=readSeen(localStorage.getItem(seenKey));}catch{}
 window.addEventListener("storage",e=>{if(e.key===seenKey||e.key===null){watched=readSeen(e.newValue);syncSeen();}});
+const markFilter=$("#mark-filter"), reviewMemo=$("#review-memo"), markStorage=$("#mark-storage");
+const markKeys={favorite:"autumn-suki-2026:favorite:v1",candidate:"autumn-suki-2026:candidate:v1"};
+const markState={favorite:readMark("favorite"),candidate:readMark("candidate")};
+const markNames={favorite:"お気に入り",candidate:"審査候補"};
+function readMark(kind){try{return readSeen(localStorage.getItem(markKeys[kind]))}catch{return new Set()}}
+function markMode(){return markFilter.value==="candidate"&&!reviewMemo.checked?"all":markFilter.value}
+function matchesMark(x,mode=markMode()){return mode==="all"||Boolean(markState[mode]?.has(x.key));}
+function paintMark(b){const {x,kind}=b.markInfo,active=markState[kind].has(x.key),label=markNames[kind];
+ b.textContent=kind==="favorite"?(active?"★":"☆"):(active?"✓ 審査候補":"審査候補");b.hidden=kind==="candidate"&&!reviewMemo.checked;
+ b.setAttribute("aria-pressed",String(active));b.setAttribute("aria-label",x.title+"："+label);b.title=label;
+}
+function refreshMarks(){document.querySelectorAll(".article-mark").forEach(b=>paintMark(b));}
+function toggleMark(kind,key){const set=markState[kind];set.has(key)?set.delete(key):set.add(key);
+ try{localStorage.setItem(markKeys[kind],JSON.stringify([...set]));}catch{markStorage.hidden=false;markStorage.textContent="このブラウザではメモを一時表示します。ページを閉じると消えます。";}
+ refreshMarks();
+ if(markMode()===kind){const focus=document.activeElement;update();if(focus&&!focus.isConnected)markFilter.focus();}
+}
+function articleMarks(x){const row=el("div","article-marks");for(const kind of Object.keys(markKeys)){const b=el("button","article-mark mark-"+kind);b.type="button";b.markInfo={x,kind};paintMark(b);b.addEventListener("click",()=>toggleMark(kind,x.key));row.append(b);}return row;}
+markFilter.addEventListener("change",()=>{limit=STEP;update();});
+reviewMemo.addEventListener("change",()=>{const option=markFilter.querySelector('[value="candidate"]');option.hidden=option.disabled=!reviewMemo.checked;
+ if(!reviewMemo.checked&&markFilter.value==="candidate"){markFilter.value="all";limit=STEP;update();}refreshMarks();
+});
+window.addEventListener("storage",e=>{const kinds=Object.keys(markKeys).filter(kind=>e.key===null||e.key===markKeys[kind]);if(!kinds.length)return;for(const kind of kinds)markState[kind]=readMark(kind);refreshMarks();if(markMode()!=="all")update();});
 $("#screen-seen").addEventListener("click",e=>{if(e.currentTarget.seenInfo)setSeen(e.currentTarget.seenInfo.keys);});
 function buildFilm(){const people=new Set();
 const list=[...pinned,...entries].filter(x=>{if(people.has(x.handle))return false;people.add(x.handle);return true;});
@@ -39,24 +62,25 @@ function el(tag,cls,value){const t=document.createElement(tag);if(cls)t.classNam
 function addImage(target,src,mode="lazy"){if(!src)return;const img=el("img");img.alt="";img.loading=mode;img.decoding="async";img.referrerPolicy="no-referrer";img.fetchPriority=mode==="lazy"?"low":"auto";img.addEventListener("error",()=>img.remove(),{once:true});img.src=src;target.append(img);}
 function card(x,special=false){const a=el("a","card"+(picked===x.url?" picked":""));a.href=x.url;a.dataset.handle=x.handle;
 const media=el("div","media");media.setAttribute("aria-hidden","true");addImage(media,x.cover);
-const copy=el("div","card-copy");if(special)copy.append(el("span","badge",x.role));if(x.published){const date=el("time","date",new Intl.DateTimeFormat("ja-JP",{timeZone:"Asia/Tokyo",dateStyle:"medium"}).format(new Date(x.published)));date.setAttribute("datetime",x.published);copy.append(date);}copy.append(el("p","creator",x.name),el(special?"h4":"h3",null,x.title),el("small",null,"noteで作品を見る"));a.append(media,copy);const tile=el("div","tile");tile.append(a,seenButton([x],x.title));return tile;}
-function namesView(keys){const list=keys.length?entries.filter(x=>keys.every(k=>x.index.includes(k))):[...pinned,...shown];
+const copy=el("div","card-copy");if(special)copy.append(el("span","badge",x.role));if(x.published){const date=el("time","date",new Intl.DateTimeFormat("ja-JP",{timeZone:"Asia/Tokyo",dateStyle:"medium"}).format(new Date(x.published)));date.setAttribute("datetime",x.published);copy.append(date);}copy.append(el("p","creator",x.name),el(special?"h4":"h3",null,x.title),el("small",null,"noteで作品を見る"));a.append(media,copy);const tile=el("div","tile");const marks=articleMarks(x);marks.append(seenButton([x],x.title));tile.append(a,marks);return tile;}
+function namesView(keys){const list=keys.length||markMode()!=="all"?shown:[...pinned,...shown];
 const seen=new Set(), groups=[["主催",[]],["神7",[]],["参加者",[]]];
 for(const x of list){if(seen.has(x.handle))continue;seen.add(x.handle);groups[x.role==="主催"?0:x.role==="神7"?1:2][1].push(x);}
 const frag=document.createDocumentFragment();
 for(const [title,items] of groups){if(!items.length)continue;const section=el("section","name-group"),heading=el("h3",null,title),ul=el("ul","names-grid");for(const x of items){const item=el("li"),a=el("a",null,x.name);a.href=x.url;item.append(a,seenButton(byAuthor.get(x.handle)||[x],x.name));ul.append(item);}section.append(heading,ul);frag.append(section);}
-people.replaceChildren(frag);status.textContent=seen.size?seen.size+"人を名前で表示中":"見つかりませんでした。名前やタイトルの一部でお試しください。";}
+people.replaceChildren(frag);status.textContent=seen.size?seen.size+"人を名前で表示中":(markMode()==="all"?"見つかりませんでした。名前やタイトルの一部でお試しください。":"条件に合うメモ付きの作品はありません。");}
 function update(reset=true){const keys=NORMALIZE(search.value).trim().split(/\s+/).filter(Boolean);
-shown=(keys.length?entries:entries.filter(x=>!x.role)).filter(x=>keys.every(k=>x.index.includes(k)));
-featured.hidden=namesOnly||keys.length>0||!pinned.length;$("#participants-head").hidden=namesOnly||keys.length>0;
+const scoped=keys.length>0||markMode()!=="all";
+shown=(scoped?[...pinned,...entries.filter(x=>!x.role)]:entries.filter(x=>!x.role)).filter(x=>keys.every(k=>x.index.includes(k))&&matchesMark(x));
+featured.hidden=namesOnly||scoped||!pinned.length;$("#participants-head").hidden=namesOnly||scoped;
 grid.hidden=namesOnly;people.hidden=!namesOnly;
-screen.disabled=random.disabled=!(shown.length||!keys.length&&pinned.length);
+screen.disabled=random.disabled=!(shown.length||!scoped&&pinned.length);
 if(namesOnly){more.hidden=true;namesView(keys);return;}
 if(reset)grid.replaceChildren();const batch=document.createDocumentFragment();for(const x of shown.slice(grid.children.length,limit))batch.append(card(x));grid.append(batch);
-status.textContent=shown.length?(keys.length?shown.length+"件。":"作品一覧 ") + Math.min(limit,shown.length)+"件を表示中":"見つかりませんでした。名前やタイトルの一部でお試しください。";more.hidden=shown.length<=limit;screen.disabled=random.disabled=!(shown.length||!keys.length&&pinned.length);}
-function currentPool(){return NORMALIZE(search.value).trim()?shown:[...pinned,...shown];}
+status.textContent=shown.length?(scoped?shown.length+"件。":"作品一覧 ") + Math.min(limit,shown.length)+"件を表示中":(markMode()==="all"?"見つかりませんでした。名前やタイトルの一部でお試しください。":"条件に合うメモ付きの作品はありません。");more.hidden=shown.length<=limit;}
+function currentPool(){return NORMALIZE(search.value).trim()||markMode()!=="all"?shown:[...pinned,...shown];}
 function openScreen(pool,index){if(!pool.length)return;room=pool;pos=index;previousFocus=document.activeElement;renderFrame(0);theater.showModal();document.body.classList.add("in-theater");}
-function renderFrame(direction){const x=room[pos];const media=$("#screen-media");media.replaceChildren();addImage(media,x.cover,"eager");$("#screen-name").textContent=x.name;$("#screen-title").textContent=x.title;$("#position").textContent=(pos+1)+" / "+room.length;$("#watch").href=x.url;updateSeenButton($("#screen-seen"),[x],x.title);
+function renderFrame(direction){const x=room[pos];const media=$("#screen-media");media.replaceChildren();addImage(media,x.cover,"eager");$("#screen-name").textContent=x.name;$("#screen-title").textContent=x.title;$("#position").textContent=(pos+1)+" / "+room.length;$("#watch").href=x.url;updateSeenButton($("#screen-seen"),[x],x.title);const marks=articleMarks(x);$("#screen-marks").replaceChildren(...marks.children);
 swipe.classList.remove("screen-forward","screen-back");if(direction){requestAnimationFrame(()=>{if(theater.open)swipe.classList.add(direction>0?"screen-forward":"screen-back")});}
 $("#prev").disabled=pos===0;$("#next").disabled=pos===room.length-1;}
 function step(d){const i=pos+d;if(i<0||i>=room.length)return;pos=i;renderFrame(d);}
@@ -78,7 +102,7 @@ if(!entries.length)throw Error("empty");const mapRow=([handle,key,name,title,cov
 const hosts=data.host.map(mapRow).map(x=>({...x,role:"主催"}));entries=entries.filter(x=>x.handle!=="ai_naoyuki");
 const byHandle=new Map(entries.map(x=>[x.handle,x]));const judges=data.pin.filter(([h])=>h!=="ai_naoyuki").map(([handle,role])=>byHandle.has(handle)?Object.assign(byHandle.get(handle),{role}):null).filter(Boolean);
 pinned=[...hosts,...judges];entries=[...hosts,...entries];for(const x of entries){if(!byAuthor.has(x.handle))byAuthor.set(x.handle,[]);byAuthor.get(x.handle).push(x);}buildFilm();for(const x of hosts)hostGrid.append(card(x,true));for(const x of judges)featuredGrid.append(card(x,true));
-$("#stats").textContent=new Set(entries.map(x=>x.handle)).size+"人・"+entries.length+"記事掲載";$("#snapshot").textContent="マガジン取得日（日本時間）："+new Intl.DateTimeFormat("ja-JP",{timeZone:"Asia/Tokyo",dateStyle:"medium"}).format(new Date(data.updated));$(".controls").hidden=false;update();
+$("#stats").textContent=new Set(entries.map(x=>x.handle)).size+"人・"+entries.length+"記事掲載";$("#snapshot").textContent="マガジン取得日（日本時間）："+new Intl.DateTimeFormat("ja-JP",{timeZone:"Asia/Tokyo",dateStyle:"medium"}).format(new Date(data.updated));$(".controls").hidden=false;$("#marks-toolbar").hidden=false;reviewMemo.checked=false;markFilter.value="all";update();
 }catch{status.classList.add("error");const link=el("a",null,"企画マガジンで作品を見る");link.href=NOTE+"/ai_naoyuki/m/ma1a87b1b24ca";status.replaceChildren("一覧を読み込めませんでした。",link);}}
 function rollHost(direction){const width=hostGrid.querySelector(".card")?.getBoundingClientRect().width||200;hostGrid.scrollBy({left:direction*(width+16),behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});}
 $("#host-prev").addEventListener("click",()=>rollHost(-1));$("#host-next").addEventListener("click",()=>rollHost(1));

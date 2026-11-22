@@ -52,3 +52,16 @@
  #grid .card small{font-size:.68rem}
  #grid .tile>.seen-button{margin:.05rem .34rem .35rem}
 }
+.marks-toolbar:not([hidden]){display:flex;flex-wrap:wrap;align-items:center;gap:.35rem .8rem;margin:.2rem 0 .85rem}
+.marks-toolbar label,.marks-toolbar select{font:inherit;font-size:.83rem;color:var(--paper)}
+.marks-toolbar select{padding:.25rem .4rem;background:#2b2128;border:1px solid #806667;border-radius:.32rem;min-height:2.5rem}
+.marks-toolbar .memo-switch{display:inline-flex;align-items:center;min-height:2.5rem;cursor:pointer}
+.marks-toolbar :is(select,input):focus-visible{outline:3px solid var(--acid);outline-offset:3px}
+#mark-storage{margin:0;font-size:.82rem;color:var(--muted)}
+.article-marks{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:center;gap:.23rem}
+.tile>.article-marks{padding:.08rem .34rem .35rem}
+.article-mark{font:inherit;font-size:.76rem;font-weight:800;line-height:1.12;color:var(--paper);background:#34272e;border:1px solid #987576;border-radius:.3rem;min-height:2rem;padding:.25rem .37rem;cursor:pointer}
+.article-mark:hover,.article-mark[aria-pressed="true"]{background:#5a3c37;border-color:var(--acid);color:#fff0af}
+.article-mark.mark-favorite{font-size:1.13rem;min-width:2.05rem}
+.article-mark[hidden]{display:none}
+@media(max-width:36rem){#grid .article-marks .seen-button{font-size:.73rem;padding-inline:.29rem;min-height:2rem}}

@@ -115,6 +115,8 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: _site
+      - name: 公開ファイルの反映を待つ
+        run: sleep 30
       - name: 公開
         id: deployment
         uses: actions/deploy-pages@v4

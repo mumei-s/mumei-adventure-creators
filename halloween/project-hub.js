@@ -27,6 +27,12 @@ function externalLink(rawUrl, text, className = '') {
   link.rel = 'noopener noreferrer';
   return link;
 }
+function projectMagazineURL(project) {
+  const href = safeURL(project.galleryUrl);
+  if (!href) return null;
+  const url = new URL(href);
+  return url.hostname === 'note.com' && /^\/[^/]+\/m\/m[a-f0-9]+\/?$/i.test(url.pathname) ? href : null;
+}
 async function readJSON(url) {
   const response = await fetch(url, {cache:'no-cache'});
   if (!response.ok) throw new Error('Archive HTTP ' + response.status);
@@ -226,11 +232,13 @@ function renderArticles(project, records, panel, navigation) {
   draw();
 }
 function renderEmpty(project, panel, navigation) {
+  const magazine = projectMagazineURL(project);
   panel.replaceChildren(el('p','pp-article-empty',
-    project.status === 'preparing' ?
+    magazine ? '参加作品は、専用マガジンにまとめています。' : project.status === 'preparing' ?
       '企画記事の公開後に参加作品を追加します。' :
       '確認済みの参加記事はまだありません。元の企画記事をご覧ください。'));
-  const links=renderProjectLinks(project);
+  if (magazine) panel.append(externalLink(magazine,'参加作品のマガジンを開く ↗','pp-primary-link'));
+  const links=renderProjectLinks(magazine ? {...project,galleryUrl:null} : project);
   if(links.childElementCount) panel.append(links);
   panel.append(panelNavigation(navigation));
 }
@@ -341,8 +349,8 @@ async function initialize() {
     copy.append(el('strong','',project.title));
     const known = project.source?.type === 'manual' ? project.source.entries?.filter(x=>x.status==='published').length : null;
     copy.append(el('small','',project.status === 'preparing' ? '記事公開準備中' : known === null ? (project.subtitle || '記事一覧') :
-      known ? known + '作品を掲載' : '元記事を見る'));
-    const end = el('span','pp-tab-end','記事');
+      known ? known + '作品を掲載' : projectMagazineURL(project) ? '参加作品のマガジンを見る' : '元記事を見る'));
+    const end = el('span','pp-tab-end',known === 0 && projectMagazineURL(project) ? 'マガジン' : '記事');
     end.setAttribute('aria-hidden','true');
     button.append(icon,copy,end);
     button.addEventListener('click',()=>open(project));

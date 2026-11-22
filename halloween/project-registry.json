@@ -136,14 +136,14 @@
     },
     {
       "id": "cyborg-2026",
-      "title": "サイボーグ化計画",
-      "subtitle": "自分キャラのサイボーグ化",
+      "title": "アンドロイド・サイボーグ化計画",
+      "subtitle": "参加作品を専用マガジンで読む",
       "icon": "🤖",
       "theme": "cyborg",
-      "status": "archived",
-      "description": "2026年6月16日公開『無名S note サイボーグ化計画』。元記事と公開済みの関連作品を整理するアーカイブ。",
+      "status": "published",
+      "description": "自分のキャラクターをアンドロイド・サイボーグにした参加作品。専用マガジンから、収録された記事を読むことができます。",
       "articleUrl": "https://note.com/ss_yr/n/n49acd975d582",
-      "galleryUrl": null,
+      "galleryUrl": "https://note.com/ss_yr/m/m7b8ee749cc69",
       "source": {
         "type": "manual",
         "entries": []
@@ -170,11 +170,55 @@
             "profileUrl": "https://note.com/almabrillante",
             "image": "https://assets.st-note.com/production/uploads/images/334553610/rectangle_large_type_2_9d806b523a9a853e39f938bb82cad649.png?width=400",
             "status": "published"
+          },
+          {
+            "id": "n8ea9fe1cb8ce",
+            "creatorId": "charm_phlox8784",
+            "creatorName": "moci moci 可視総合光線療法",
+            "title": "今週のnoteまとめ💕moci moci weekly journal 🩵",
+            "articleUrl": "https://note.com/charm_phlox8784/n/n8ea9fe1cb8ce",
+            "profileUrl": "https://note.com/charm_phlox8784",
+            "image": "https://assets.st-note.com/production/uploads/images/333739780/rectangle_large_type_2_c06f3be3ebfd991b7c7f632e14d895a9.jpg?fit=bounds&quality=85&width=400",
+            "status": "published"
           }
         ]
       },
       "theme": "unwritten",
       "icon": "🌌",
+      "category": "prompt"
+    },
+    {
+      "id": "atelier-tower",
+      "title": "Atelier Tower",
+      "subtitle": "自分の部屋と街で遊ぶ｜#無名Sプロンプト",
+      "status": "published",
+      "description": "自分のキャラクターが暮らすマンションと街。入居やお出かけを楽しんだ参加者の記事を紹介します。",
+      "articleUrl": "https://note.com/ss_yr/n/n5b97463ecf03",
+      "galleryUrl": null,
+      "playUrl": "https://mumei-s.github.io/mumei-adventure-creators/tower/",
+      "relatedLinks": [
+        {
+          "label": "Atelier Towerで遊ぶ",
+          "url": "https://mumei-s.github.io/mumei-adventure-creators/tower/"
+        }
+      ],
+      "source": {
+        "type": "manual",
+        "entries": [
+          {
+            "id": "n36438177c3c5",
+            "creatorId": "almabrillante",
+            "creatorName": "あまね〘ฅ՞•ﻌ•՞ฅฅ^•ﻌ•^ฅ〙",
+            "title": "やってみた🙌Part6✨",
+            "articleUrl": "https://note.com/almabrillante/n/n36438177c3c5",
+            "profileUrl": "https://note.com/almabrillante",
+            "image": "https://assets.st-note.com/production/uploads/images/336870789/rectangle_large_type_2_b4b62073181dd01c6cdaa2395b97f07a.png?fit=bounds&quality=85&width=400",
+            "status": "published"
+          }
+        ]
+      },
+      "theme": "tower",
+      "icon": "🏙️",
       "category": "prompt"
     }
   ],

@@ -82,13 +82,10 @@ $("#stats").textContent=new Set(entries.map(x=>x.handle)).size+"人・"+entries.
 }catch{status.classList.add("error");const link=el("a",null,"企画マガジンで作品を見る");link.href=NOTE+"/ai_naoyuki/m/ma1a87b1b24ca";status.replaceChildren("一覧を読み込めませんでした。",link);}}
 function rollHost(direction){const width=hostGrid.querySelector(".card")?.getBoundingClientRect().width||200;hostGrid.scrollBy({left:direction*(width+16),behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});}
 $("#host-prev").addEventListener("click",()=>rollHost(-1));$("#host-next").addEventListener("click",()=>rollHost(1));
-const motion=$("#motion"), layoutButtons=[...document.querySelectorAll(".layout-switch button")];
-const layoutKey="autumn-suki-2026:layout:v1", speedKey="autumn-suki-2026:film-speed:v1";
+const motion=$("#motion");
+const speedKey="autumn-suki-2026:film-speed:v1";
 function pref(key){try{return localStorage.getItem(key);}catch{return null;}}
 function storePref(key,value){try{localStorage.setItem(key,value);}catch{}}
-function chooseLayout(value,persist=false){if(!layoutButtons.some(btn=>btn.dataset.layout===value))value="auto";document.body.dataset.layout=value;for(const btn of layoutButtons)btn.setAttribute("aria-pressed",String(btn.dataset.layout===value));if(persist)storePref(layoutKey,value);}
-for(const btn of layoutButtons)btn.addEventListener("click",()=>chooseLayout(btn.dataset.layout,true));
-chooseLayout(pref(layoutKey));
 const speed=$("#film-speed");const savedSpeed=pref(speedKey);if(["slow","normal","fast"].includes(savedSpeed))speed.value=savedSpeed;
 speed.addEventListener("change",()=>storePref(speedKey,speed.value));
 function setMotion(paused){document.body.classList.toggle("paused",paused);motion.setAttribute("aria-pressed",String(paused));motion.textContent=paused?"再生":"停止";motion.setAttribute("aria-label",paused?"フィルムを再生":"フィルムを停止");}

@@ -37,25 +37,106 @@ reviewMemo.addEventListener("change",()=>{const option=markFilter.querySelector(
 });
 window.addEventListener("storage",e=>{const kinds=Object.keys(markKeys).filter(kind=>e.key===null||e.key===markKeys[kind]);if(!kinds.length)return;for(const kind of kinds)markState[kind]=readMark(kind);refreshMarks();if(markMode()!=="all")update();});
 $("#screen-seen").addEventListener("click",e=>{if(e.currentTarget.seenInfo)setSeen(e.currentTarget.seenInfo.keys);});
-function buildFilm(){const people=new Set();
+function buildFilm(){
+const people=new Set(), frames=[];
 const list=[...pinned,...entries].filter(x=>{if(people.has(x.handle))return false;people.add(x.handle);return true;});
-const observer=typeof IntersectionObserver==="function"?new IntersectionObserver(es=>{for(const e of es){if(e.isIntersecting){addImage(e.target,e.target.dataset.cover,"eager");observer.unobserve(e.target);}}},{root:film,rootMargin:"0px 160px"}):null;
-for(const x of list){const a=el("a","film-frame");a.href=x.url;a.setAttribute("aria-label",x.name+"の作品： "+x.title);a.append(el("span","film-fallback",x.name));film.append(a);if(x.cover&&observer){a.dataset.cover=x.cover;observer.observe(a);}else if(x.cover)addImage(a,x.cover);}
-let visible=false, manualTill=0;
-if(typeof IntersectionObserver==="function")new IntersectionObserver(es=>{visible=es[0].isIntersecting;}).observe(film);else visible=true;
-for(const event of ["pointerdown","wheel","keydown"])film.addEventListener(event,()=>{manualTill=Date.now()+7000;},{passive:true});
-const speeds={slow:36,normal:72,fast:130};
-let last=0,nextX=null;
-film.addEventListener("scrollend",()=>{if(Date.now()<manualTill)nextX=null;},{passive:true});
+const frag=document.createDocumentFragment();
+for(const x of list){
+ const a=el("a","film-frame");a.href=x.url;a.setAttribute("aria-label",x.name+"の作品： "+x.title);
+ a.append(el("span","film-fallback",x.name));frag.append(a);frames.push({a,cover:x.cover,queued:false});
+}
+film.append(frag);
+let visible=typeof IntersectionObserver!=="function", frameID=0, loadID=0, manualTill=0, activePointers=new Set();
+let mouseInput=false, keyboardInput=false, last=null, nextX=null;
+const fineHover=matchMedia("(any-hover: hover) and (any-pointer: fine)");
+const speeds={slow:36,normal:72,fast:130}, speedSelect=$("#film-speed");
+const queue=[];
+let inflight=0;
+function drain(){
+ while(inflight<5&&queue.length){
+  const {a,cover}=queue.shift();
+  const img=el("img");img.alt="";img.loading="eager";img.decoding="async";img.fetchPriority="low";img.referrerPolicy="no-referrer";img.hidden=true;
+  const thumb=cover+"?width=384&format=webp";
+  let attempts=0;
+  inflight++;
+  function settle(ok){
+   if(ok)img.hidden=false;else img.remove();
+   inflight--;drain();
+  }
+  img.onload=()=>settle(true);
+  img.onerror=()=>{
+   if(++attempts===1){setTimeout(()=>{img.src=thumb+"&retry=1";},450);return;}
+   if(attempts===2){img.src=cover;return;}
+   settle(false);
+  };
+  a.append(img);img.src=thumb;
+ }
+}
+function preload(){
+ loadID=0;
+ if(!visible||document.hidden||!frames.length||!film.clientWidth)return;
+ const first=frames[0].a.offsetLeft, stride=(frames[1]?.a.offsetLeft??first+1)-first;
+ if(stride<1)return;
+ const left=Math.max(0,Math.floor((film.scrollLeft-first)/stride));
+ const right=Math.min(frames.length-1,Math.ceil((film.scrollLeft+film.clientWidth-first)/stride));
+ const ahead=Math.max(7,Math.ceil(1100/stride));
+ // Prioritize the current screen, then preload forward and a little behind.
+ function enqueue(i){const f=frames[i];if(!f?.cover||f.queued)return;f.queued=true;queue.push(f);}
+ for(let i=left;i<=right+ahead;i++)enqueue(i);
+ for(let i=left-1;i>=Math.max(0,left-3);i--)enqueue(i);
+ // Large touch jumps must not wait behind previously queued, off-screen work.
+ for(let i=queue.length-1;i>=0;i--){
+  const x=queue[i], offset=x.a.offsetLeft;
+  if(offset<film.scrollLeft-4*stride||offset>film.scrollLeft+film.clientWidth+(ahead+2)*stride){
+   x.queued=false;queue.splice(i,1);
+  }
+ }
+ queue.sort((a,b)=>Math.abs(a.a.offsetLeft-film.scrollLeft)-Math.abs(b.a.offsetLeft-film.scrollLeft));
+ drain();
+}
+function requestLoad(){if(visible&&!document.hidden&&!loadID)loadID=requestAnimationFrame(preload);}
+function wake(){
+ if(visible&&!document.hidden&&!frameID)frameID=requestAnimationFrame(advance);
+ requestLoad();
+}
+function reset(){last=null;nextX=null;manualTill=0;activePointers.clear();wake();}
 function advance(now){
-const dt=last?Math.min(now-last,50):0;last=now;
-const allowed=visible&&!document.hidden&&!theater.open&&!document.body.classList.contains("paused")&&!film.matches(":hover,:focus-within")&&Date.now()>=manualTill;
-if(!allowed){nextX=null;}else{
-if(nextX===null||Math.abs(nextX-film.scrollLeft)>5)nextX=film.scrollLeft;
-const end=Math.max(0,film.scrollWidth-film.clientWidth);nextX+=dt*(speeds[$("#film-speed").value]||speeds.normal)/1000;
-film.scrollLeft=nextX>=end?nextX=0:nextX;}
-window.requestAnimationFrame(advance);}
-window.requestAnimationFrame(advance);
+ frameID=0;
+ if(!visible||document.hidden)return;
+ const allowed=!document.querySelector("dialog[open]")&&!document.body.classList.contains("paused")&&
+  !(mouseInput&&fineHover.matches&&film.matches(":hover"))&&!(keyboardInput&&film.contains(document.activeElement))&&
+  activePointers.size===0&&now>=manualTill;
+ if(!allowed){last=null;nextX=null;}
+ else{
+  const dt=last===null?0:Math.min(now-last,50);last=now;
+  const end=Math.max(0,film.scrollWidth-film.clientWidth);
+  if(end){
+   if(nextX===null||Math.abs(nextX-film.scrollLeft)>2)nextX=Math.max(0,film.scrollLeft);
+   nextX=Math.min(end,nextX+dt*(speeds[speedSelect.value]||speeds.normal)/1000);
+   if(film.scrollLeft>=end-1&&nextX>=end)nextX=0;
+   film.scrollLeft=Math.floor(nextX);
+  }
+ }
+ frameID=requestAnimationFrame(advance);
+}
+if(typeof IntersectionObserver==="function")new IntersectionObserver(([e])=>{
+ visible=e.isIntersecting;if(!visible){last=null;nextX=null;}else wake();
+}).observe(film);
+const hold=()=>{manualTill=performance.now()+3000;};
+document.addEventListener("pointerdown",e=>{mouseInput=e.pointerType==="mouse";keyboardInput=false;},{capture:true,passive:true});
+film.addEventListener("pointermove",e=>{if(e.pointerType==="mouse"&&e.buttons===0)mouseInput=true;},{passive:true});
+film.addEventListener("pointerdown",e=>{activePointers.add(e.pointerId);hold();},{passive:true});
+for(const event of ["pointerup","pointercancel"])window.addEventListener(event,e=>{if(activePointers.delete(e.pointerId))hold();},{passive:true});
+document.addEventListener("keydown",()=>{keyboardInput=true;},{capture:true});
+film.addEventListener("wheel",hold,{passive:true});
+film.addEventListener("scroll",requestLoad,{passive:true});
+if(typeof ResizeObserver==="function")new ResizeObserver(()=>{last=null;nextX=null;wake();}).observe(film);
+else window.addEventListener("resize",()=>{last=null;nextX=null;wake();});
+document.addEventListener("visibilitychange",reset);
+window.addEventListener("pageshow",reset);
+window.addEventListener("pagehide",()=>{mouseInput=false;activePointers.clear();});
+for(const dialog of document.querySelectorAll("dialog"))dialog.addEventListener("close",reset);
+wake();
 }
 let entries=[], pinned=[], shown=[], limit=STEP, picked="", room=[], pos=0, finger, previousFocus=null;
 function el(tag,cls,value){const t=document.createElement(tag);if(cls)t.className=cls;if(value)t.textContent=value;return t}
